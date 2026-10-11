@@ -745,7 +745,11 @@ some of their C1 is an inflection rather than a word. The picture rule set
 their size too — 280 of 1,100 German candidates and 256 of 700 Russian ones
 had an honest cue — and Wiktionary's own-language editions had no translation
 table for any of the 22 phrasebook entries among them, so every item is a
-Tatoeba sentence. Both are `"reviewed": false`.
+Tatoeba sentence. Both were read on 11 October and are `"reviewed": true`,
+and the reading halved them — to 137 German and 131 Russian — mostly by
+taking out sentences a learner at A2 already reads (`Ich mag Orangen.`,
+`Я люблю яблоки.`), which is the inflection problem above showing up as
+content. `content/echo/ATTRIBUTION.md` says what that reading covered.
 
 **Sources and licence** — verify at the version downloaded, record it:
 

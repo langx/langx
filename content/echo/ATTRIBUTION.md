@@ -633,8 +633,10 @@ both are the honest answer rather than a gap to fill.
 
 ### German and Russian `fluent`: drafts, 7 October
 
-**`de:fluent` (270 items) and `ru:fluent` (244), `"reviewed": false`.** The
-seed refuses both until somebody reads them. Every item is a Tatoeba sentence
+**`de:fluent` (270 items) and `ru:fluent` (244), drafted `"reviewed": false`;
+read on 11 October and now 137 and 131, `"reviewed": true`** — see _What the
+review of German and Russian `fluent` was, exactly_ below; what follows here
+describes the drafts as they were. Every item is a Tatoeba sentence
 glossed by its own contributors; English is on every item and the other
 columns are what Tatoeba has.
 
@@ -696,6 +698,71 @@ image (Linux, the only place Piper's wheel runs) with
 `generate.py --pack de:fluent` / `--pack ru:fluent`. The 514 m4a files are not
 uploaded; `upload-echo-voices.ts` is the step that puts them where the keys in
 the packs point.
+
+### What the review of German and Russian `fluent` was, exactly
+
+**A Claude review, not a native speaker's**, done on 11 October 2026 to the
+standard of the fifteen: **the front, English and Turkish read line by line,
+all 514 items**, and **the cue on every item** held to `ILLUSTRATION.md`'s test
+— does the picture say what the sentence is about before the words do. The
+other columns (German or Russian, Spanish, French, Portuguese, Arabic) were
+**linted and not read**; `lint-glosses.mjs` has nothing left to say about
+either pack. Turkish is on only 34 of the German and 52 of the Russian items
+that remain, and the rest stay without it: nothing was machine-translated in.
+
+**One question the fifteen did not ask: is it fluent at all?** The band is the
+rarest surface form in the sentence, and in two inflecting languages that is
+often an ending — `Bälle sind rund.` is C1 for its plural, `Я вижу льва.` for
+its accusative. Every sentence an A2 learner already reads end to end went,
+and that is most of what went.
+
+| Pack        | Before | Kept | Dropped | of which A1–A2 | Glosses fixed (en / tr) | Fronts fixed |
+| ----------- | -----: | ---: | ------: | -------------: | ----------------------: | -----------: |
+| `de:fluent` |    270 |  137 |     133 |            115 |                  12 / 7 |            1 |
+| `ru:fluent` |    244 |  131 |     113 |            106 |                   9 / 4 |            2 |
+
+**The other drops**, 25 in all:
+
+- **No honest cue — a place, a language or a nationality** (13): the four
+  German "I speak Hungarian / Portuguese / four languages" lines drawn with a
+  speaking head, `Sumatra ist eine Insel.`, Minsk, Beijing, Poland's election
+  day, South America, a Spanish book, Chaplin's nationality; in Russian a
+  German car and a letter in English.
+- **Near-duplicates** (8): `Elefanten sind Säugetiere.` beside
+  `Wale sind Säugetiere.`, two "shivering with cold" and two "it was windy" in
+  Russian, and the like.
+- **Odd** (2): `Der Goldfisch lebt.` and `Er will rote Brillen.` (several
+  pairs of glasses).
+- **A reading that cannot be right** (2): Piper says `1610` as
+  _eintausendsechshundertzehn_, not as a year, and `Я родился 22 января 1933
+года.` needs case endings on its numerals that espeak does not produce.
+  Checked by phonemising, not by ear.
+
+**What was fixed.** English glosses that were loose or wrong: `Der Wasserhahn
+tropft.` had "leaking" and, in Turkish, "the tap is working"; `Яичница` is fried
+eggs, not scrambled; `Er zitterte vor Wut.` read "His body was shaking in
+anger"; `I need an analgesic`, `fish dealer`, `We never work on
+Sunday`. Turkish: `Kedi mırıldıyor` (mumbling) for a purring cat, `saç sitili`,
+a slash left between two readings, a missing full stop. Three fronts, each
+keeping the original in `review.frontWas`: `Der Schreiber` (a clerk) for a
+novelist became `Der Schriftsteller`, and two Russian lines lacked the ё that
+changes the stress — Piper read _муравьев_ and _ушел_ with the wrong vowel,
+which is how they were found.
+
+**No cue was changed.** Every kept item's picture passed; the weak ones went
+with their sentence (a speaking head for a language). The cue tables lost the
+246 dropped lines and took the three new fronts, and `images/build.mjs` agrees
+with the packs.
+
+**The readings followed the renumbering.** The 265 takes whose front did not
+change were copied to their new index, the three new fronts re-read in the
+`apps/tts` image with the same Piper voices, and the old directories kept
+beside them as `<pack>.pre-review`. Every key in both packs resolves to a
+file: 137 and 131 m4a, none extra. Still not uploaded.
+
+**What a native speaker would still find.** The level line is a judgement,
+made once and quickly; a German or Russian reader will disagree with some of it
+in both directions. And the unread columns are where a wrong gloss would hide.
 
 ### Japanese: where it came from
 
