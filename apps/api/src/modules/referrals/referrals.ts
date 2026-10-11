@@ -1,4 +1,10 @@
-import { ERROR_CODES, REFERRAL_LIST_LIMIT, TOKEN_RULES } from '@langx/shared'
+import {
+  ERROR_CODES,
+  REFERRAL_LIST_LIMIT,
+  TOKEN_RULES,
+  handleSchema,
+  referralSourceSchema,
+} from '@langx/shared'
 import type {
   PaidPlanTier,
   ReferralInvitee,
@@ -8,6 +14,7 @@ import type {
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { authId } from '../../lib/authId'
 import type { Profile } from '../profiles/profiles'
 
 /**
@@ -110,8 +117,10 @@ export async function attachReferral(
     { projection: { handle: 1 } },
   )
   if (!referrer) return null
-  // Cannot happen at onboarding — the invitee has no handle yet — but the
-  // module is callable elsewhere and the rule deserves to be written down.
+  // Reachable at onboarding: the profile is written before this runs, so a
+  // handle the invitee has just taken — typed into the form, or carried from
+  // sign-up by `rememberSignUpReferrer` while it was still free — resolves to
+  // them.
   if (referrer._id === inviteeId) return null
 
   const row: Referral = {
@@ -130,6 +139,66 @@ export async function attachReferral(
   }
   await profiles.updateOne({ _id: inviteeId }, { $set: { referredBy: referrer._id } })
   return row
+}
+
+/**
+ * The invite an account was created with, kept on the Better Auth `user`
+ * document until onboarding can use it.
+ *
+ * The device flag `pendingReferrer` is the primary carrier, and it is lost
+ * whenever onboarding runs in a different browser from the one that opened the
+ * invite: the verification link opened in a phone mail app's own browser, or
+ * an invite opened inside Instagram and the sign-up finished in Safari. The
+ * account is the one thing both browsers share, so the sign-up body carries
+ * the handle and it is written here.
+ *
+ * On `user` rather than a collection of ours, beside `terms` and for the same
+ * reasons: it is captured before any profile exists, and it goes when the
+ * account goes without the purge having to know about it. A field, never an
+ * index — nothing queries by it.
+ *
+ * Nothing is resolved or attributed here. This is only a note; the attribution
+ * still happens once, in `createProfile`, through `attachReferral`, so a
+ * stored handle meets exactly the checks a typed one does.
+ */
+export interface SignUpReferrer {
+  handle: string
+  source: ReferralSource
+  at: Date
+}
+
+/**
+ * Writes the sign-up's invite onto the new account, if the body carried one
+ * that parses. Silent otherwise, for the reason every referral failure is: the
+ * sign-up must never fail over an invite code.
+ */
+export async function rememberSignUpReferrer(db: Db, userId: string, body: unknown): Promise<void> {
+  if (typeof body !== 'object' || body === null) return
+  const fields = body as { referredByHandle?: unknown; referredBySource?: unknown }
+  const handle = handleSchema.safeParse(fields.referredByHandle)
+  if (!handle.success) return
+  const source = referralSourceSchema.safeParse(fields.referredBySource)
+  const signUpReferrer: SignUpReferrer = {
+    handle: handle.data,
+    // Defaulted the way `onboardingProfileSchema` defaults it: "typed by hand"
+    // is the claim that asserts less.
+    source: source.success ? source.data : 'manual',
+    at: new Date(),
+  }
+  await db
+    .collection(COLLECTIONS.user)
+    .updateOne({ _id: authId(userId) }, { $set: { signUpReferrer } })
+}
+
+export async function readSignUpReferrer(
+  db: Db,
+  userId: string,
+): Promise<Pick<SignUpReferrer, 'handle' | 'source'> | null> {
+  const row = await db
+    .collection<{ signUpReferrer?: SignUpReferrer }>(COLLECTIONS.user)
+    .findOne({ _id: authId(userId) }, { projection: { signUpReferrer: 1 } })
+  const stored = row?.signUpReferrer
+  return stored ? { handle: stored.handle, source: stored.source } : null
 }
 
 /**

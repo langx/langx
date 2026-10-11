@@ -1589,6 +1589,29 @@ referral row as `unpaidReason` (`monthlyLimit`, `sharedNetwork`,
 `sharedDevice`), because the ledger cannot represent a withheld payment on its
 own. Referrals that were already activated keep what they were paid.
 
+**Amendment, 11 October 2026 — the invite also rides on the sign-up.** The
+`pendingReferrer` device flag was the only carrier, and it lives in one
+browser. An email sign-up on the web whose verification link was then opened in
+a phone mail app's own browser reached onboarding with an empty flag, and the
+invite was silently lost. The sign-up body now carries `referredByHandle` /
+`referredBySource` as well, and `rememberSignUpReferrer` writes them onto the
+Better Auth `user` document as `signUpReferrer` — a field beside `terms`, for
+the same reasons (it exists before any profile does, and it goes with the
+account), and never an index. `createProfile` uses it only when the form sends
+no code of its own, so a typed code still wins as `resolveReferrer` says, and
+it goes through the same single `attachReferral` call: every check, every cap
+and the one-referrer-per-invitee key apply to it unchanged. Attribution is
+still written once, at onboarding; nothing reads the note after that.
+
+What it does not cover, knowingly. **OAuth sign-ups** do not carry it: they
+stay in one browser, where the flag survives. **An invite opened in an in-app
+browser** (Instagram, WhatsApp) **with the sign-up done afterwards in Safari or
+Chrome** is lost as before, because nothing about that invite ever reached an
+account; recovering it would mean matching the two browsers to each other,
+which is fingerprinting, and is not done. If the sign-up itself happened in the
+in-app browser, the note covers it. The invite code field at onboarding remains
+the path that always works.
+
 ## Countries are a compile-time table, like languages
 
 `profiles.country` was a free-text two-letter field, which meant the edit form

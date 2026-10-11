@@ -55,3 +55,19 @@ export function resolveReferrer(
   const handle = normalizeInviteCode(pending)
   return handle ? { handle, source: 'link' } : null
 }
+
+/**
+ * The extra sign-up fields that carry an invite link onto the account.
+ *
+ * The device flag is the primary carrier and onboarding still reads it; this
+ * is the copy for when onboarding runs in another browser, typically the
+ * verification link opened from a mail app, where the flag does not exist.
+ * The API keeps it on the account and uses it only if the onboarding form
+ * sends no code of its own. Empty when there is nothing usable to send.
+ */
+export function signUpReferrerFields(
+  pending: string | null | undefined,
+): { referredByHandle: string; referredBySource: ReferralSource } | Record<string, never> {
+  const handle = normalizeInviteCode(pending)
+  return handle ? { referredByHandle: handle, referredBySource: 'link' } : {}
+}

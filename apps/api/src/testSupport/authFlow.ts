@@ -65,7 +65,8 @@ export interface SignedUpUser {
 export async function signUpAndSignIn(
   app: FastifyInstance,
   emailSender: CapturingEmailSender,
-  opts: { email: string; password: string; name: string },
+  /** Anything else rides along in the sign-up body, as the app's own extra fields do. */
+  opts: { email: string; password: string; name: string } & Record<string, unknown>,
 ): Promise<SignedUpUser> {
   const signUp = await app.inject({
     method: 'POST',
