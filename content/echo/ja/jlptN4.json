@@ -3,8 +3,8 @@
   "lang": "ja",
   "level": "beginner",
   "jlpt": 4,
-  "contentVersion": 3,
-  "reviewed": false,
+  "contentVersion": 4,
+  "reviewed": true,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
     {
@@ -231,13 +231,18 @@
       "reading": "たしかだよ。",
       "gloss": {
         "en": "There's no mistake about it.",
-        "tr": "Onunla ilgili hata yok.",
         "de": "Ich bin mir sicher.",
         "es": "Estoy seguro.",
         "fr": "Je suis sûr.",
         "ru": "В этом нет ошибки."
       },
-      "review": { "words": "確か", "readingFrom": "tatoeba", "indirect": ["ru", "tr"] },
+      "review": {
+        "words": "確か",
+        "readingFrom": "tatoeba",
+        "indirect": ["ru"],
+        "glossRemoved": { "tr": "Onunla ilgili hata yok." },
+        "note": "tr is a literal machine chain ('there is no error about it'), not what 確かだよ says"
+      },
       "image": "cue:check-mark-button",
       "voices": [
         { "key": "echo/packs/ja_jlptN4/9-jf_nezumi.m4a", "voice": "jf_nezumi" },
@@ -449,14 +454,20 @@
       "reading": "たべすぎた。",
       "gloss": {
         "en": "I ate too much.",
-        "tr": "Ben çok yedim.",
+        "tr": "Fazla yedim.",
         "de": "Ich habe zu viel gegessen.",
         "es": "Comí demasiado.",
         "fr": "J'ai trop mangé.",
         "pt-BR": "Comi demais.",
         "ru": "Я переел."
       },
-      "review": { "words": "食べる 過ぎる", "readingFrom": "unidic", "indirect": ["tr"] },
+      "review": {
+        "words": "食べる 過ぎる",
+        "readingFrom": "unidic",
+        "indirect": ["tr"],
+        "edited": ["tr"],
+        "note": "tr: 'çok yedim' = ate a lot; ja is ate too much"
+      },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
         { "key": "echo/packs/ja_jlptN4/19-jf_nezumi.m4a", "voice": "jf_nezumi" },
@@ -494,7 +505,7 @@
       "index": 21,
       "kind": "phrase",
       "text": "どういうこと？",
-      "reading": "どう いう こと？",
+      "reading": "どういう こと？",
       "gloss": {
         "en": "What do you mean?",
         "tr": "Ne demek istiyorsun?",
@@ -508,7 +519,10 @@
       "review": {
         "words": "どう 言う 事",
         "readingFrom": "unidic",
-        "indirect": ["ar", "pt-BR", "tr"]
+        "indirect": ["ar", "pt-BR", "tr"],
+        "readingWas": "どう いう こと？",
+        "note": "spacing: どういう is one phrase",
+        "voicesRemade": true
       },
       "image": "cue:confused-face",
       "voices": [
@@ -523,14 +537,20 @@
       "reading": "まだ おこってる？",
       "gloss": {
         "en": "Are you still upset?",
-        "tr": "Hâlâ üzgün müsün?",
+        "tr": "Hâlâ kızgın mısın?",
         "de": "Bist du mir noch böse?",
         "es": "¿Estás todavía enfadado?",
         "fr": "T’es toujours fâché ?",
         "pt-BR": "Ainda está chateado?",
         "ru": "Всё ещё злишься?"
       },
-      "review": { "words": "未だ 怒る", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
+      "review": {
+        "words": "未だ 怒る",
+        "readingFrom": "tatoeba",
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["tr"],
+        "note": "tr: 怒る = angry, not sad"
+      },
       "image": "cue:angry-face",
       "voices": [
         { "key": "echo/packs/ja_jlptN4/22-jf_nezumi.m4a", "voice": "jf_nezumi" },
@@ -650,13 +670,18 @@
       "text": "探してください。",
       "reading": "さがして ください。",
       "gloss": {
-        "en": "Could you help me to find it?",
+        "en": "Please look for it.",
         "de": "Suche bitte danach!",
         "es": "Búscalo por favor.",
         "fr": "Pouvez-vous m'aider à le trouver ?",
         "ru": "Поищите, пожалуйста."
       },
-      "review": { "words": "探す 下さる", "readingFrom": "tatoeba" },
+      "review": {
+        "words": "探す 下さる",
+        "readingFrom": "tatoeba",
+        "edited": ["en"],
+        "note": "en: ja is a plain request to search, not 'help me find'"
+      },
       "image": "cue:magnifying-glass-tilted-left",
       "voices": [
         { "key": "echo/packs/ja_jlptN4/28-jf_nezumi.m4a", "voice": "jf_nezumi" },
@@ -667,7 +692,7 @@
       "index": 29,
       "kind": "phrase",
       "text": "お入りください。",
-      "reading": "おはいりください。",
+      "reading": "おはいり ください。",
       "gloss": {
         "en": "Come right in.",
         "tr": "İçeri buyurun.",
@@ -676,7 +701,14 @@
         "fr": "Entrez, je vous prie.",
         "ru": "Входите, пожалуйста."
       },
-      "review": { "words": "御 入る 下さる", "readingFrom": "tatoeba", "indirect": ["tr"] },
+      "review": {
+        "words": "御 入る 下さる",
+        "readingFrom": "tatoeba",
+        "indirect": ["tr"],
+        "readingWas": "おはいりください。",
+        "note": "spacing: お〜 + ください are two phrases",
+        "voicesRemade": true
+      },
       "image": "cue:door",
       "voices": [
         { "key": "echo/packs/ja_jlptN4/29-jf_nezumi.m4a", "voice": "jf_nezumi" },
@@ -708,7 +740,7 @@
       "index": 31,
       "kind": "phrase",
       "text": "お座りください。",
-      "reading": "おすわりください。",
+      "reading": "おすわり ください。",
       "gloss": {
         "en": "Sit down, please.",
         "tr": "Oturun, lütfen.",
@@ -722,7 +754,10 @@
       "review": {
         "words": "御 座る 下さる",
         "readingFrom": "tatoeba",
-        "indirect": ["ar", "pt-BR", "tr"]
+        "indirect": ["ar", "pt-BR", "tr"],
+        "readingWas": "おすわりください。",
+        "note": "spacing: お〜 + ください are two phrases",
+        "voicesRemade": true
       },
       "image": "cue:chair",
       "voices": [
@@ -754,32 +789,6 @@
     {
       "index": 33,
       "kind": "phrase",
-      "text": "今の音何？",
-      "reading": "いまの おと なに？",
-      "gloss": {
-        "en": "What was that sound?",
-        "tr": "O ses neydi?",
-        "de": "Was war das für ein Geräusch?",
-        "es": "¿Qué era ese ruido?",
-        "fr": "C’était quoi, ce bruit ?",
-        "pt-BR": "O que foi esse barulho?",
-        "ru": "Что это был за звук?"
-      },
-      "review": {
-        "words": "今 音 何",
-        "readingFrom": "tatoeba",
-        "readingDiffers": ["何: なん → なに"],
-        "indirect": ["tr"]
-      },
-      "image": "cue:ear",
-      "voices": [
-        { "key": "echo/packs/ja_jlptN4/33-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/33-jm_kumo.m4a", "voice": "jm_kumo" }
-      ]
-    },
-    {
-      "index": 34,
-      "kind": "phrase",
       "text": "僕もだよ。",
       "reading": "ぼくもだよ。",
       "gloss": {
@@ -795,12 +804,12 @@
       "review": { "words": "僕", "readingFrom": "tatoeba", "indirect": ["ar", "de", "tr"] },
       "image": "cue:person-raising-hand",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/34-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/34-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/33-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/33-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 35,
+      "index": 34,
       "kind": "phrase",
       "text": "何のために？",
       "reading": "なんの ために？",
@@ -814,12 +823,12 @@
       "review": { "words": "何 為", "readingFrom": "tatoeba" },
       "image": "cue:red-question-mark",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/35-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/35-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/34-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/34-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 36,
+      "index": 35,
       "kind": "phrase",
       "text": "僕は寝たい。",
       "reading": "ぼくは ねたい。",
@@ -836,12 +845,12 @@
       "review": { "words": "僕 寝る", "readingFrom": "tatoeba", "indirect": ["de", "pt-BR", "tr"] },
       "image": "cue:sleeping-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/36-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/36-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/35-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/35-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 37,
+      "index": 36,
       "kind": "phrase",
       "text": "気をつけて！",
       "reading": "きを つけて！",
@@ -855,12 +864,12 @@
       "review": { "words": "気 付ける", "readingFrom": "tatoeba" },
       "image": "cue:warning",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/37-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/37-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/36-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/36-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 38,
+      "index": 37,
       "kind": "phrase",
       "text": "犬が怖いの？",
       "reading": "いぬが こわいの？",
@@ -876,15 +885,15 @@
       "review": { "words": "犬 怖い", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:dog",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/38-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/38-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/37-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/37-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 39,
+      "index": 38,
       "kind": "phrase",
       "text": "眠そうだね。",
-      "reading": "ねむ そうだね。",
+      "reading": "ねむそうだね。",
       "gloss": {
         "en": "You look sleepy.",
         "tr": "Uykulu görünüyorsun.",
@@ -894,15 +903,22 @@
         "pt-BR": "Você parece estar sonolento.",
         "ru": "У тебя сонный вид."
       },
-      "review": { "words": "眠い そう", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
+      "review": {
+        "words": "眠い そう",
+        "readingFrom": "tatoeba",
+        "indirect": ["pt-BR", "tr"],
+        "readingWas": "ねむ そうだね。",
+        "note": "spacing: 〜そう stays attached",
+        "voicesRemade": true
+      },
       "image": "cue:sleepy-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/39-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/39-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/38-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/38-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 40,
+      "index": 39,
       "kind": "phrase",
       "text": "私も行った。",
       "reading": "わたしも いった。",
@@ -924,12 +940,12 @@
       },
       "image": "cue:person-walking",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/40-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/40-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/39-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/39-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 41,
+      "index": 40,
       "kind": "phrase",
       "text": "今日の予定は？",
       "reading": "きょうの よていは？",
@@ -943,18 +959,18 @@
       "review": { "words": "今日 予定", "readingFrom": "tatoeba" },
       "image": "cue:calendar",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/41-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/41-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/40-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/40-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 42,
+      "index": 41,
       "kind": "phrase",
       "text": "何探してんの？",
       "reading": "なに さがしてんの？",
       "gloss": {
         "en": "What are you looking for?",
-        "tr": "Ne arıyorsunuz?",
+        "tr": "Ne arıyorsun?",
         "de": "Was suchst du?",
         "es": "¿Qué estáis buscando?",
         "fr": "Qu'est-ce que tu cherches ?",
@@ -966,16 +982,18 @@
         "words": "何 探す",
         "readingFrom": "tatoeba",
         "readingDiffers": ["何: なん → なに"],
-        "indirect": ["ar", "pt-BR", "tr"]
+        "indirect": ["ar", "pt-BR", "tr"],
+        "edited": ["tr"],
+        "note": "tr: casual ja, siz → sen"
       },
       "image": "cue:magnifying-glass-tilted-left",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/42-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/42-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/41-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/41-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 43,
+      "index": 42,
       "kind": "phrase",
       "text": "僕のこと好き？",
       "reading": "ぼくの こと すき？",
@@ -989,12 +1007,12 @@
       "review": { "words": "僕 事 好き", "readingFrom": "tatoeba" },
       "image": "cue:red-heart",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/43-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/43-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/42-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/42-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 44,
+      "index": 43,
       "kind": "phrase",
       "text": "何考えてるの？",
       "reading": "なに かんがえてるの？",
@@ -1016,18 +1034,18 @@
       },
       "image": "cue:thinking-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/44-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/44-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/43-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/43-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 45,
+      "index": 44,
       "kind": "phrase",
       "text": "心配しないで。",
-      "reading": "しんぱい しないで。",
+      "reading": "しんぱいしないで。",
       "gloss": {
         "en": "Don't worry about it!",
-        "tr": "Merak etmeyin!",
+        "tr": "Merak etme!",
         "de": "Mach dir keine Sorgen.",
         "es": "No te preocupes.",
         "fr": "Ne t'inquiète pas.",
@@ -1035,15 +1053,23 @@
         "ru": "Не беспокойся.",
         "ar": "لا تقلق."
       },
-      "review": { "words": "心配 為る", "readingFrom": "tatoeba", "indirect": ["tr"] },
+      "review": {
+        "words": "心配 為る",
+        "readingFrom": "tatoeba",
+        "indirect": ["tr"],
+        "readingWas": "しんぱい しないで。",
+        "edited": ["tr"],
+        "note": "spacing: suru-verb one phrase (as #17); tr siz → sen for casual ja",
+        "voicesRemade": true
+      },
       "image": "cue:relieved-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/45-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/45-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/44-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/44-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 46,
+      "index": 45,
       "kind": "phrase",
       "text": "眠いんですか？",
       "reading": "ねむいんですか？",
@@ -1059,12 +1085,12 @@
       "review": { "words": "眠い", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:sleepy-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/46-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/46-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/45-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/45-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 47,
+      "index": 46,
       "kind": "phrase",
       "text": "私もそう思う。",
       "reading": "わたしも そう おもう。",
@@ -1080,18 +1106,18 @@
       "review": { "words": "私 そう 思う", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:handshake",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/47-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/47-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/46-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/46-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 48,
+      "index": 47,
       "kind": "phrase",
       "text": "警察を呼んで！",
       "reading": "けいさつを よんで！",
       "gloss": {
         "en": "Call the police!",
-        "tr": "Polis çağır!",
+        "tr": "Polisi çağır!",
         "de": "Rufen Sie die Polizei!",
         "es": "¡Llama a la policía!",
         "fr": "Appelez la police !",
@@ -1099,15 +1125,21 @@
         "ru": "Вызовите полицию!",
         "ar": "اتصل بالشرطة!"
       },
-      "review": { "words": "警察 呼ぶ", "readingFrom": "tatoeba", "indirect": ["ar", "tr"] },
+      "review": {
+        "words": "警察 呼ぶ",
+        "readingFrom": "tatoeba",
+        "indirect": ["ar", "tr"],
+        "edited": ["tr"],
+        "note": "tr: accusative suffix"
+      },
       "image": "cue:police-officer",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/48-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/48-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/47-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/47-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 49,
+      "index": 48,
       "kind": "phrase",
       "text": "今から直します。",
       "reading": "いまから なおします。",
@@ -1123,12 +1155,12 @@
       "review": { "words": "今 直す", "readingFrom": "tatoeba", "indirect": ["de", "tr"] },
       "image": "cue:wrench",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/49-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/49-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/48-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/48-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 50,
+      "index": 49,
       "kind": "phrase",
       "text": "今日用事あるの？",
       "reading": "きょう ようじ あるの？",
@@ -1149,15 +1181,15 @@
       },
       "image": "cue:calendar",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/50-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/50-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/49-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/49-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 51,
+      "index": 50,
       "kind": "phrase",
       "text": "値段が高すぎる！",
-      "reading": "ねだんが たか すぎる！",
+      "reading": "ねだんが たかすぎる！",
       "gloss": {
         "en": "It's too expensive!",
         "tr": "Çok pahalı!",
@@ -1171,22 +1203,25 @@
       "review": {
         "words": "値段 高い 過ぎる",
         "readingFrom": "tatoeba",
-        "indirect": ["pt-BR", "tr"]
+        "indirect": ["pt-BR", "tr"],
+        "readingWas": "ねだんが たか すぎる！",
+        "note": "spacing: 高すぎる is one word",
+        "voicesRemade": true
       },
       "image": "cue:heavy-dollar-sign",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/51-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/51-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/50-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/50-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 52,
+      "index": 51,
       "kind": "phrase",
       "text": "手を洗いなさい。",
       "reading": "てを あらいなさい。",
       "gloss": {
-        "en": "Wash up.",
-        "tr": "Yıkayın.",
+        "en": "Wash your hands.",
+        "tr": "Ellerini yıka.",
         "de": "Wasch dir die Hände.",
         "es": "Lávate las manos.",
         "fr": "Lave-toi !",
@@ -1197,16 +1232,18 @@
       "review": {
         "words": "手 洗う 為さる",
         "readingFrom": "tatoeba",
-        "indirect": ["fr", "pt-BR", "tr"]
+        "indirect": ["fr", "pt-BR", "tr"],
+        "edited": ["en", "tr"],
+        "note": "en/tr: ja says wash your hands; tr siz → sen for なさい"
       },
       "image": "cue:soap",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/52-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/52-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/51-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/51-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 53,
+      "index": 52,
       "kind": "phrase",
       "text": "あ、カメラ忘れた！",
       "reading": "あ、カメラ わすれた！",
@@ -1222,12 +1259,12 @@
       "review": { "words": "あっ カメラ 忘れる", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:camera",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/53-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/53-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/52-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/52-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 54,
+      "index": 53,
       "kind": "phrase",
       "text": "それ取ってくれる？",
       "reading": "それ とって くれる？",
@@ -1242,12 +1279,12 @@
       "review": { "words": "其れ 取る 呉れる", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:palms-up-together",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/54-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/54-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/53-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/53-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 55,
+      "index": 54,
       "kind": "phrase",
       "text": "午後の会議、出る？",
       "reading": "ごごの かいぎ、でる？",
@@ -1262,18 +1299,18 @@
       "review": { "words": "午後 会議 出る", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:briefcase",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/55-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/55-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/54-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/54-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 56,
+      "index": 55,
       "kind": "phrase",
       "text": "席にもどりなさい。",
       "reading": "せきに もどりなさい。",
       "gloss": {
         "en": "Go back to your seat.",
-        "tr": "Koltuğunuza geri dönün.",
+        "tr": "Yerine dön.",
         "de": "Geh zurück auf deinen Platz.",
         "es": "Vuelve a tu asiento.",
         "fr": "Regagnez votre place.",
@@ -1284,16 +1321,18 @@
       "review": {
         "words": "席 戻る 為さる",
         "readingFrom": "tatoeba",
-        "indirect": ["de", "fr", "tr"]
+        "indirect": ["de", "fr", "tr"],
+        "edited": ["tr"],
+        "note": "tr: なさい to a child → sen; seat, not armchair"
       },
       "image": "cue:chair",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/56-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/56-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/55-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/55-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 57,
+      "index": 56,
       "kind": "phrase",
       "text": "お腹がいっぱいです。",
       "reading": "おなかが いっぱいです。",
@@ -1309,12 +1348,12 @@
       "review": { "words": "御腹 一杯", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/57-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/57-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/56-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/56-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 58,
+      "index": 57,
       "kind": "phrase",
       "text": "ベッドから出なさい。",
       "reading": "ベッドから でなさい。",
@@ -1334,12 +1373,12 @@
       },
       "image": "cue:bed",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/58-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/58-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/57-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/57-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 59,
+      "index": 58,
       "kind": "phrase",
       "text": "動かないでください。",
       "reading": "うごかないで ください。",
@@ -1355,15 +1394,15 @@
       "review": { "words": "動く 下さる", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:raised-hand",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/59-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/59-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/58-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/58-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 60,
+      "index": 59,
       "kind": "phrase",
       "text": "しばらくお待ちください。",
-      "reading": "しばらく おまちください。",
+      "reading": "しばらく おまち ください。",
       "gloss": {
         "en": "Just a moment, please.",
         "tr": "Bir saniye, lütfen.",
@@ -1377,16 +1416,19 @@
       "review": {
         "words": "暫く 御 待つ 下さる",
         "readingFrom": "tatoeba",
-        "indirect": ["ar", "tr"]
+        "indirect": ["ar", "tr"],
+        "readingWas": "しばらく おまちください。",
+        "note": "spacing: お〜 + ください are two phrases",
+        "voicesRemade": true
       },
       "image": "cue:timer-clock",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/60-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/60-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/59-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/59-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 61,
+      "index": 60,
       "kind": "phrase",
       "text": "何が心配なの？",
       "reading": "なにが しんぱいなの？",
@@ -1403,12 +1445,12 @@
       "review": { "words": "何 心配", "readingFrom": "tatoeba", "indirect": ["ar", "pt-BR", "tr"] },
       "image": "cue:worried-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/61-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/61-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/60-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/60-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 62,
+      "index": 61,
       "kind": "phrase",
       "text": "君はどうだい？",
       "reading": "きみは どうだい？",
@@ -1425,12 +1467,12 @@
       "review": { "words": "君 どう", "readingFrom": "tatoeba", "indirect": ["ar", "pt-BR", "tr"] },
       "image": "cue:index-pointing-at-the-viewer",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/62-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/62-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/61-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/61-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 63,
+      "index": 62,
       "kind": "phrase",
       "text": "彼の足は長い。",
       "reading": "かれの あしは ながい。",
@@ -1446,38 +1488,12 @@
       "review": { "words": "彼 足 長い", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:leg",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/63-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/63-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/62-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/62-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 64,
-      "kind": "phrase",
-      "text": "私は犬が恐い。",
-      "reading": "わたしは いぬが こわい。",
-      "gloss": {
-        "en": "I am afraid of dogs.",
-        "tr": "Köpeklerden korkarım.",
-        "de": "Ich habe Furcht vor Hunden.",
-        "es": "Me dan miedo los perros.",
-        "fr": "J'ai peur des chiens.",
-        "pt-BR": "Eu tenho medo de cachorro.",
-        "ru": "Я боюсь собак.",
-        "ar": "أنا أخاف الكلاب."
-      },
-      "review": {
-        "words": "私 犬 怖い",
-        "readingFrom": "unidic",
-        "indirect": ["ar", "pt-BR", "tr"]
-      },
-      "image": "cue:dog",
-      "voices": [
-        { "key": "echo/packs/ja_jlptN4/64-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/64-jm_kumo.m4a", "voice": "jm_kumo" }
-      ]
-    },
-    {
-      "index": 65,
+      "index": 63,
       "kind": "phrase",
       "text": "彼は誰ですか。",
       "reading": "かれは だれですか。",
@@ -1494,12 +1510,12 @@
       "review": { "words": "彼 誰", "readingFrom": "tatoeba", "indirect": ["fr", "pt-BR", "tr"] },
       "image": "cue:man",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/65-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/65-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/63-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/63-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 66,
+      "index": 64,
       "kind": "phrase",
       "text": "今空港にいます。",
       "reading": "いま くうこうに います。",
@@ -1521,12 +1537,12 @@
       },
       "image": "cue:airplane",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/66-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/66-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/64-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/64-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 67,
+      "index": 65,
       "kind": "phrase",
       "text": "彼は食事中だ。",
       "reading": "かれは しょくじちゅうだ。",
@@ -1543,33 +1559,39 @@
       "review": { "words": "彼 食事 中", "readingFrom": "tatoeba", "indirect": ["ar", "ru", "tr"] },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/67-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/67-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/65-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/65-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 68,
+      "index": 66,
       "kind": "phrase",
       "text": "何か探してるの？",
       "reading": "なにか さがしてるの？",
       "gloss": {
         "en": "Are you looking for something?",
-        "tr": "Bir şey mi arıyorsunuz?",
+        "tr": "Bir şey mi arıyorsun?",
         "de": "Suchst du etwas?",
         "es": "¿Buscan algo?",
         "fr": "Est-ce que tu cherches quelque chose ?",
         "pt-BR": "Você está procurando alguma coisa?",
         "ru": "Ты что-то ищешь?"
       },
-      "review": { "words": "何 探す", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
+      "review": {
+        "words": "何 探す",
+        "readingFrom": "tatoeba",
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["tr"],
+        "note": "tr: casual ja, siz → sen"
+      },
       "image": "cue:magnifying-glass-tilted-left",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/68-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/68-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/66-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/66-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 69,
+      "index": 67,
       "kind": "phrase",
       "text": "僕は歌い続けた。",
       "reading": "ぼくは うたいつづけた。",
@@ -1589,12 +1611,12 @@
       },
       "image": "cue:microphone",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/69-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/69-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/67-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/67-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 70,
+      "index": 68,
       "kind": "phrase",
       "text": "彼女の髪は短い。",
       "reading": "かのじょの かみは みじかい。",
@@ -1610,12 +1632,12 @@
       "review": { "words": "彼女 髪 短い", "readingFrom": "unidic", "indirect": ["pt-BR", "tr"] },
       "image": "cue:person-getting-haircut",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/70-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/70-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/68-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/68-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 71,
+      "index": 69,
       "kind": "phrase",
       "text": "熱があるんです。",
       "reading": "ねつが あるんです。",
@@ -1632,12 +1654,12 @@
       "review": { "words": "熱 有る", "readingFrom": "tatoeba", "indirect": ["ar", "pt-BR", "tr"] },
       "image": "cue:face-with-thermometer",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/71-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/71-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/69-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/69-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 72,
+      "index": 70,
       "kind": "phrase",
       "text": "頭痛いの治った？",
       "reading": "あたま いたいの なおった？",
@@ -1653,18 +1675,18 @@
       "review": { "words": "頭 痛い 直る", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:face-with-head-bandage",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/72-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/72-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/70-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/70-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 73,
+      "index": 71,
       "kind": "phrase",
       "text": "あの家を見なさい。",
       "reading": "あの いえを みなさい。",
       "gloss": {
         "en": "Look at that house.",
-        "tr": "Şu eve bakın.",
+        "tr": "Şu eve bak.",
         "de": "Sieh dir dieses Haus an.",
         "es": "Mira esa casa.",
         "fr": "Regarde cette maison.",
@@ -1675,16 +1697,18 @@
       "review": {
         "words": "あの 家 見る 為さる",
         "readingFrom": "unidic",
-        "indirect": ["ar", "pt-BR", "tr"]
+        "indirect": ["ar", "pt-BR", "tr"],
+        "edited": ["tr"],
+        "note": "tr: なさい → sen"
       },
       "image": "cue:house",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/73-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/73-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/71-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/71-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 74,
+      "index": 72,
       "kind": "phrase",
       "text": "お風呂空いてるよ。",
       "reading": "おふろ あいてるよ。",
@@ -1700,12 +1724,12 @@
       "review": { "words": "御 風呂 空く", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:bathtub",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/74-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/74-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/72-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/72-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 75,
+      "index": 73,
       "kind": "phrase",
       "text": "それは最近の写真？",
       "reading": "それは さいきんの しゃしん？",
@@ -1722,18 +1746,18 @@
       "review": { "words": "其れ 最近 写真", "readingFrom": "tatoeba", "indirect": ["ar", "tr"] },
       "image": "cue:camera",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/75-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/75-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/73-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/73-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 76,
+      "index": 74,
       "kind": "phrase",
       "text": "なんでそう思うの？",
       "reading": "なんで そう おもうの？",
       "gloss": {
         "en": "Why do you think so?",
-        "tr": "Neden böyle düşünüyorsunuz?",
+        "tr": "Neden öyle düşünüyorsun?",
         "de": "Warum glaubst du das?",
         "es": "¿Por qué piensas así?",
         "fr": "Pourquoi pensez-vous ça ?",
@@ -1744,16 +1768,18 @@
       "review": {
         "words": "何 そう 思う",
         "readingFrom": "tatoeba",
-        "indirect": ["ar", "pt-BR", "tr"]
+        "indirect": ["ar", "pt-BR", "tr"],
+        "edited": ["tr"],
+        "note": "tr: casual ja, siz → sen"
       },
       "image": "cue:thinking-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/76-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/76-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/74-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/74-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 77,
+      "index": 75,
       "kind": "phrase",
       "text": "二人とも正しいよ。",
       "reading": "ふたりとも ただしいよ。",
@@ -1769,12 +1795,12 @@
       "review": { "words": "二人 正しい", "readingFrom": "tatoeba", "indirect": ["ar", "tr"] },
       "image": "cue:check-mark",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/77-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/77-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/75-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/75-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 78,
+      "index": 76,
       "kind": "phrase",
       "text": "なんで笑ってるの？",
       "reading": "なんで わらってるの？",
@@ -1791,12 +1817,12 @@
       "review": { "words": "何 笑う", "readingFrom": "tatoeba", "indirect": ["ar", "pt-BR", "tr"] },
       "image": "cue:face-with-tears-of-joy",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/78-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/78-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/76-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/76-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 79,
+      "index": 77,
       "kind": "phrase",
       "text": "今日の夜予定ある？",
       "reading": "きょうの よる よてい ある？",
@@ -1816,12 +1842,12 @@
       },
       "image": "cue:calendar",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/79-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/79-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/77-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/77-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 80,
+      "index": 78,
       "kind": "phrase",
       "text": "彼はいつも忙しい。",
       "reading": "かれは いつも いそがしい。",
@@ -1836,12 +1862,12 @@
       "review": { "words": "彼 何時 忙しい", "readingFrom": "unidic", "indirect": ["pt-BR"] },
       "image": "cue:person-running",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/80-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/80-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/78-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/78-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 81,
+      "index": 79,
       "kind": "phrase",
       "text": "理由聞いてもいい？",
       "reading": "りゆう きいても いい？",
@@ -1862,12 +1888,12 @@
       },
       "image": "cue:red-question-mark",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/81-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/81-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/79-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/79-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 82,
+      "index": 80,
       "kind": "phrase",
       "text": "彼は早く起きない。",
       "reading": "かれは はやく おきない。",
@@ -1883,12 +1909,12 @@
       "review": { "words": "彼 早い 起きる", "readingFrom": "unidic", "indirect": ["pt-BR", "tr"] },
       "image": "cue:alarm-clock",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/82-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/82-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/80-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/80-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 83,
+      "index": 81,
       "kind": "phrase",
       "text": "眠れないんですよ。",
       "reading": "ねむれないんですよ。",
@@ -1904,12 +1930,12 @@
       "review": { "words": "眠る", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:bed",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/83-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/83-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/81-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/81-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 84,
+      "index": 82,
       "kind": "phrase",
       "text": "私を見てください。",
       "reading": "わたしを みて ください。",
@@ -1926,18 +1952,18 @@
       "review": { "words": "私 見る 下さる", "readingFrom": "unidic", "indirect": ["pt-BR", "tr"] },
       "image": "cue:eyes",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/84-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/84-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/82-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/82-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 85,
+      "index": 83,
       "kind": "phrase",
       "text": "説明もできないよ。",
       "reading": "せつめいも できないよ。",
       "gloss": {
         "en": "I can't explain it either.",
-        "tr": "Onu ben de açıklayamam.",
+        "tr": "Bunu açıklayamam da.",
         "de": "Ich kann es auch nicht erklären.",
         "es": "Tampoco lo puedo explicar.",
         "fr": "Je ne peux pas l'expliquer non plus.",
@@ -1948,16 +1974,18 @@
       "review": {
         "words": "説明 出来る",
         "readingFrom": "tatoeba",
-        "indirect": ["ar", "pt-BR", "tr"]
+        "indirect": ["ar", "pt-BR", "tr"],
+        "edited": ["tr"],
+        "note": "tr said 'I too can't explain'; も attaches to 説明 (can't even/also explain)"
       },
       "image": "cue:person-shrugging",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/85-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/85-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/83-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/83-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 86,
+      "index": 84,
       "kind": "phrase",
       "text": "もっと時間が必要だ。",
       "reading": "もっと じかんが ひつようだ。",
@@ -1978,12 +2006,12 @@
       },
       "image": "cue:hourglass-not-done",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/86-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/86-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/84-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/84-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 87,
+      "index": 85,
       "kind": "phrase",
       "text": "テニスは好きですか。",
       "reading": "テニスは すきですか。",
@@ -2000,12 +2028,12 @@
       "review": { "words": "テニス 好き", "readingFrom": "unidic", "indirect": ["ar", "ru", "tr"] },
       "image": "cue:tennis",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/87-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/87-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/85-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/85-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 88,
+      "index": 86,
       "kind": "phrase",
       "text": "バスを乗り間違えた。",
       "reading": "バスを のりまちがえた。",
@@ -2026,12 +2054,12 @@
       },
       "image": "cue:bus",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/88-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/88-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/86-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/86-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 89,
+      "index": 87,
       "kind": "phrase",
       "text": "医者を呼んで下さい。",
       "reading": "いしゃを よんで ください。",
@@ -2046,12 +2074,12 @@
       "review": { "words": "医者 呼ぶ 下さる", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:stethoscope",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/89-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/89-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/87-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/87-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 90,
+      "index": 88,
       "kind": "phrase",
       "text": "外は暖かいようです。",
       "reading": "そとは あたたかい ようです。",
@@ -2067,12 +2095,12 @@
       "review": { "words": "外 温かい 様", "readingFrom": "tatoeba", "indirect": ["pt-BR"] },
       "image": "cue:sun",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/90-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/90-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/88-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/88-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 91,
+      "index": 89,
       "kind": "phrase",
       "text": "目を開けてください。",
       "reading": "めを あけて ください。",
@@ -2088,32 +2116,38 @@
       "review": { "words": "目 開ける 下さる", "readingFrom": "unidic", "indirect": ["ru"] },
       "image": "cue:eye",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/91-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/91-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/89-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/89-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 92,
+      "index": 90,
       "kind": "phrase",
       "text": "眠いからもう寝るね。",
       "reading": "ねむいから もう ねるね。",
       "gloss": {
-        "en": "I'm tired, so I'm gonna go to sleep.",
-        "tr": "Yorgunum, bu nedenle uyumaya gideceğim.",
+        "en": "I'm sleepy, so I'm going to bed now.",
+        "tr": "Uykum geldi, artık yatıyorum.",
         "de": "Ich gehe schlafen. Ich bin müde.",
         "es": "Tengo sueño por lo que dormiré.",
         "pt-BR": "Estou com sono, por isso vou já dormir.",
         "ru": "Спать хочу, пойду уже лягу."
       },
-      "review": { "words": "眠い もう 寝る", "readingFrom": "tatoeba", "indirect": ["tr"] },
+      "review": {
+        "words": "眠い もう 寝る",
+        "readingFrom": "tatoeba",
+        "indirect": ["tr"],
+        "edited": ["en", "tr"],
+        "note": "en/tr: 眠い = sleepy, not tired; もう = now"
+      },
       "image": "cue:sleepy-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/92-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/92-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/90-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/90-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 93,
+      "index": 91,
       "kind": "phrase",
       "text": "もうその話はやめよう。",
       "reading": "もう その はなしは やめよう。",
@@ -2128,12 +2162,12 @@
       "review": { "words": "もう 其の 話 止める", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:zipper-mouth-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/93-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/93-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/91-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/91-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 94,
+      "index": 92,
       "kind": "phrase",
       "text": "テレビを点けて下さい。",
       "reading": "テレビを つけて ください。",
@@ -2153,12 +2187,12 @@
       },
       "image": "cue:television",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/94-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/94-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/92-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/92-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 95,
+      "index": 93,
       "kind": "phrase",
       "text": "ドアを開けてください。",
       "reading": "ドアを あけて ください。",
@@ -2173,12 +2207,12 @@
       "review": { "words": "ドア 開ける 下さる", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:door",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/95-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/95-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/93-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/93-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 96,
+      "index": 94,
       "kind": "phrase",
       "text": "ビルは勝つでしょうね？",
       "reading": "ビルは かつでしょうね？",
@@ -2199,12 +2233,12 @@
       },
       "image": "cue:trophy",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/96-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/96-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/94-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/94-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 97,
+      "index": 95,
       "kind": "phrase",
       "text": "彼女は大変忙しかった。",
       "reading": "かのじょは たいへん いそがしかった。",
@@ -2224,18 +2258,18 @@
       },
       "image": "cue:person-running",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/97-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/97-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/95-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/95-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 98,
+      "index": 96,
       "kind": "phrase",
       "text": "来てくれてありがとう。",
       "reading": "きて くれて ありがとう。",
       "gloss": {
         "en": "Thank you for coming.",
-        "tr": "Geldiğiniz için teşekkür ederiz.",
+        "tr": "Geldiğin için teşekkürler.",
         "de": "Danke, dass du gekommen bist.",
         "es": "Gracias por venir.",
         "fr": "Merci d'être venue.",
@@ -2246,16 +2280,18 @@
       "review": {
         "words": "来る 呉れる 有り難う",
         "readingFrom": "tatoeba",
-        "indirect": ["ar", "pt-BR", "tr"]
+        "indirect": ["ar", "pt-BR", "tr"],
+        "edited": ["tr"],
+        "note": "tr: 'we thank you (plural)' → casual singular, matching ja"
       },
       "image": "cue:folded-hands",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/98-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/98-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/96-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/96-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 99,
+      "index": 97,
       "kind": "phrase",
       "text": "もう少し食べてください。",
       "reading": "もう すこし たべて ください。",
@@ -2270,12 +2306,12 @@
       "review": { "words": "もう 少し 食べる 下さる", "readingFrom": "unidic", "indirect": ["tr"] },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/99-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/99-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/97-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/97-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 100,
+      "index": 98,
       "kind": "phrase",
       "text": "起きなさい、もう遅いよ。",
       "reading": "おきなさい、もう おそいよ。",
@@ -2289,12 +2325,12 @@
       "review": { "words": "起きる 為さる もう 遅い", "readingFrom": "unidic" },
       "image": "cue:alarm-clock",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/100-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/100-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/98-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/98-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 101,
+      "index": 99,
       "kind": "phrase",
       "text": "僕は車にいます。",
       "reading": "ぼくは くるまに います。",
@@ -2311,12 +2347,12 @@
       "review": { "words": "僕 車 居る", "readingFrom": "tatoeba", "indirect": ["ar", "tr"] },
       "image": "cue:automobile",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/101-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/101-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/99-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/99-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 102,
+      "index": 100,
       "kind": "phrase",
       "text": "彼は窓を壊した。",
       "reading": "かれは まどを こわした。",
@@ -2332,12 +2368,12 @@
       "review": { "words": "彼 窓 壊す", "readingFrom": "tatoeba", "indirect": ["ru", "tr"] },
       "image": "cue:window",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/102-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/102-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/100-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/100-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 103,
+      "index": 101,
       "kind": "phrase",
       "text": "お待たせしました。",
       "reading": "おまたせ しました。",
@@ -2353,12 +2389,12 @@
       "review": { "words": "御 待つ 為る", "readingFrom": "unidic", "indirect": ["pt-BR", "tr"] },
       "image": "cue:hourglass-not-done",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/103-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/103-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/101-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/101-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 104,
+      "index": 102,
       "kind": "phrase",
       "text": "彼は車を買った。",
       "reading": "かれは くるまを かった。",
@@ -2374,12 +2410,12 @@
       "review": { "words": "彼 車 買う", "readingFrom": "unidic", "indirect": ["pt-BR", "tr"] },
       "image": "cue:automobile",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/104-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/104-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/102-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/102-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 105,
+      "index": 103,
       "kind": "phrase",
       "text": "それ誰がくれたの？",
       "reading": "それ だれが くれたの？",
@@ -2399,12 +2435,12 @@
       },
       "image": "cue:wrapped-gift",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/105-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/105-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/103-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/103-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 106,
+      "index": 104,
       "kind": "phrase",
       "text": "彼を招待したの？",
       "reading": "かれを しょうたいしたの？",
@@ -2420,12 +2456,12 @@
       "review": { "words": "彼 招待 為る", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:envelope",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/106-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/106-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/104-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/104-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 107,
+      "index": 105,
       "kind": "phrase",
       "text": "今日は何日ですか。",
       "reading": "きょうは なんにちですか。",
@@ -2441,12 +2477,12 @@
       "review": { "words": "今日 何 日", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:tear-off-calendar",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/107-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/107-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/105-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/105-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 108,
+      "index": 106,
       "kind": "phrase",
       "text": "彼は私の先生です。",
       "reading": "かれは わたしの せんせいです。",
@@ -2467,18 +2503,18 @@
       },
       "image": "cue:school",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/108-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/108-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/106-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/106-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 109,
+      "index": 107,
       "kind": "phrase",
       "text": "最近何か映画見た？",
       "reading": "さいきん なにか えいが みた？",
       "gloss": {
         "en": "Have you seen any movies lately?",
-        "tr": "Son zamanlarda hiç film izlediniz mi?",
+        "tr": "Son zamanlarda film izledin mi?",
         "de": "Hast du in letzter Zeit irgendwelche Filme gesehen?",
         "es": "¿Habéis visto alguna película recientemente?",
         "fr": "T’as vu des films, dernièrement ?",
@@ -2488,16 +2524,18 @@
       "review": {
         "words": "最近 何 映画 見る",
         "readingFrom": "tatoeba",
-        "indirect": ["pt-BR", "tr"]
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["tr"],
+        "note": "tr: casual ja, siz → sen"
       },
       "image": "cue:clapper-board",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/109-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/109-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/107-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/107-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 110,
+      "index": 108,
       "kind": "phrase",
       "text": "眠った方がいいよ。",
       "reading": "ねむった ほうが いいよ。",
@@ -2518,12 +2556,12 @@
       },
       "image": "cue:sleeping-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/110-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/110-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/108-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/108-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 111,
+      "index": 109,
       "kind": "phrase",
       "text": "私のこと嫌いなの？",
       "reading": "わたしの こと きらいなの？",
@@ -2539,12 +2577,12 @@
       "review": { "words": "私 事 嫌い", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:thumbs-down",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/111-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/111-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/109-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/109-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 112,
+      "index": 110,
       "kind": "phrase",
       "text": "誰もケガしてない？",
       "reading": "だれも ケガしてない？",
@@ -2560,12 +2598,12 @@
       "review": { "words": "誰 怪我 為る", "readingFrom": "tatoeba", "indirect": ["fr", "tr"] },
       "image": "cue:adhesive-bandage",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/112-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/112-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/110-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/110-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 113,
+      "index": 111,
       "kind": "phrase",
       "text": "私は机を片付けた。",
       "reading": "わたしは つくえを かたづけた。",
@@ -2580,12 +2618,12 @@
       "review": { "words": "私 机 片付ける", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:broom",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/113-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/113-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/111-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/111-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 114,
+      "index": 112,
       "kind": "phrase",
       "text": "僕の鍵、見なかった？",
       "reading": "ぼくの かぎ、みなかった？",
@@ -2600,12 +2638,12 @@
       "review": { "words": "僕 鍵 見る", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:key",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/114-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/114-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/112-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/112-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 115,
+      "index": 113,
       "kind": "phrase",
       "text": "私は構いませんよ。",
       "reading": "わたしは かまいませんよ。",
@@ -2621,12 +2659,12 @@
       "review": { "words": "私 構う", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:ok-hand",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/115-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/115-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/113-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/113-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 116,
+      "index": 114,
       "kind": "phrase",
       "text": "僕もケーキが好きだ。",
       "reading": "ぼくも ケーキが すきだ。",
@@ -2647,12 +2685,12 @@
       },
       "image": "cue:shortcake",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/116-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/116-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/114-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/114-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 117,
+      "index": 115,
       "kind": "phrase",
       "text": "私は歴史が好きだ。",
       "reading": "わたしは れきしが すきだ。",
@@ -2668,12 +2706,12 @@
       "review": { "words": "私 歴史 好き", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:scroll",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/117-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/117-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/115-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/115-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 118,
+      "index": 116,
       "kind": "phrase",
       "text": "彼は金持ちになった。",
       "reading": "かれは かねもちに なった。",
@@ -2694,12 +2732,12 @@
       },
       "image": "cue:money-mouth-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/118-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/118-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/116-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/116-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 119,
+      "index": 117,
       "kind": "phrase",
       "text": "急いでいるんですか。",
       "reading": "いそいで いるんですか。",
@@ -2715,12 +2753,12 @@
       "review": { "words": "急ぐ 居る", "readingFrom": "tatoeba", "indirect": ["ar", "tr"] },
       "image": "cue:person-running",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/119-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/119-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/117-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/117-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 120,
+      "index": 118,
       "kind": "phrase",
       "text": "水は少し残っている。",
       "reading": "みずは すこし のこって いる。",
@@ -2735,12 +2773,12 @@
       "review": { "words": "水 少し 残る 居る", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:droplet",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/120-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/120-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/118-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/118-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 121,
+      "index": 119,
       "kind": "phrase",
       "text": "私は世界を変えたい。",
       "reading": "わたしは せかいを かえたい。",
@@ -2760,12 +2798,12 @@
       },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/121-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/121-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/119-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/119-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 122,
+      "index": 120,
       "kind": "phrase",
       "text": "空は星でいっぱいだ。",
       "reading": "そらは ほしで いっぱいだ。",
@@ -2782,12 +2820,12 @@
       "review": { "words": "空 星 一杯", "readingFrom": "tatoeba", "indirect": ["ru", "tr"] },
       "image": "cue:night-with-stars",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/122-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/122-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/120-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/120-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 123,
+      "index": 121,
       "kind": "phrase",
       "text": "私は来週出発します。",
       "reading": "わたしは らいしゅう しゅっぱつします。",
@@ -2807,38 +2845,12 @@
       },
       "image": "cue:luggage",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/123-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/123-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/121-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/121-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 124,
-      "kind": "phrase",
-      "text": "なんと美しい庭だこと。",
-      "reading": "なんと うつくしい にわだ こと。",
-      "gloss": {
-        "en": "What a beautiful garden!",
-        "tr": "Ne güzel bir bahçe.",
-        "de": "Was für ein schöner Garten.",
-        "es": "¡Pero qué hermoso jardín!",
-        "fr": "Quel beau jardin.",
-        "pt-BR": "Que lindo jardim.",
-        "ru": "Какой прекрасный сад!",
-        "ar": "يا لها من حديقة جميلة."
-      },
-      "review": {
-        "words": "何 美しい 庭 事",
-        "readingFrom": "unidic",
-        "indirect": ["pt-BR", "tr"]
-      },
-      "image": "cue:house-with-garden",
-      "voices": [
-        { "key": "echo/packs/ja_jlptN4/124-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/124-jm_kumo.m4a", "voice": "jm_kumo" }
-      ]
-    },
-    {
-      "index": 125,
+      "index": 122,
       "kind": "phrase",
       "text": "カーテンに火が点いた。",
       "reading": "カーテンに ひが ついた。",
@@ -2854,31 +2866,36 @@
       "review": { "words": "カーテン 火 付く", "readingFrom": "tatoeba", "indirect": ["ru", "tr"] },
       "image": "cue:fire",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/125-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/125-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/122-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/122-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 126,
+      "index": 123,
       "kind": "phrase",
       "text": "彼は果物しか食べない。",
       "reading": "かれは くだものしか たべない。",
       "gloss": {
-        "en": "He eats nothing more than fruit.",
+        "en": "He eats only fruit.",
         "de": "Er isst nichts weiter als Früchte.",
         "es": "Él no come nada más que fruta.",
         "fr": "Il ne mange rien d'autre que des fruits.",
         "ru": "Он ест одни лишь фрукты."
       },
-      "review": { "words": "彼 果物 食べる", "readingFrom": "tatoeba" },
+      "review": {
+        "words": "彼 果物 食べる",
+        "readingFrom": "tatoeba",
+        "edited": ["en"],
+        "note": "en: awkward 'nothing more than'"
+      },
       "image": "cue:red-apple",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/126-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/126-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/123-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/123-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 127,
+      "index": 124,
       "kind": "phrase",
       "text": "彼女はトイレにいます。",
       "reading": "かのじょは トイレに います。",
@@ -2892,12 +2909,12 @@
       "review": { "words": "彼女 トイレ 居る", "readingFrom": "unidic" },
       "image": "cue:restroom",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/127-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/127-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/124-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/124-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 128,
+      "index": 125,
       "kind": "phrase",
       "text": "彼は私より速く走れる。",
       "reading": "かれは わたしより はやく はしれる。",
@@ -2911,12 +2928,12 @@
       "review": { "words": "彼 私 早い 走る", "readingFrom": "tatoeba" },
       "image": "cue:person-running",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/128-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/128-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/125-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/125-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 129,
+      "index": 126,
       "kind": "phrase",
       "text": "早くしないと遅れるよ。",
       "reading": "はやく しないと おくれるよ。",
@@ -2932,15 +2949,15 @@
       "review": { "words": "早い 為る 遅れる", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:alarm-clock",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/129-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/129-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/126-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/126-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 130,
+      "index": 127,
       "kind": "phrase",
       "text": "椅子は足りそうですか？",
-      "reading": "いすは たり そうですか？",
+      "reading": "いすは たりそうですか？",
       "gloss": {
         "en": "Are there enough chairs?",
         "tr": "Yeterli sandalye var mı?",
@@ -2949,15 +2966,22 @@
         "pt-BR": "Acha que há cadeiras suficientes?",
         "ru": "Стульев хватает?"
       },
-      "review": { "words": "椅子 足りる そう", "readingFrom": "tatoeba", "indirect": ["tr"] },
+      "review": {
+        "words": "椅子 足りる そう",
+        "readingFrom": "tatoeba",
+        "indirect": ["tr"],
+        "readingWas": "いすは たり そうですか？",
+        "note": "spacing: 〜そう stays attached",
+        "voicesRemade": true
+      },
       "image": "cue:chair",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/130-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/130-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/127-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/127-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 131,
+      "index": 128,
       "kind": "phrase",
       "text": "眠くなったら言ってね。",
       "reading": "ねむく なったら いってね。",
@@ -2973,12 +2997,12 @@
       "review": { "words": "眠い 成る 言う", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:sleepy-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/131-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/131-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/128-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/128-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 132,
+      "index": 129,
       "kind": "phrase",
       "text": "私はピアノを弾きます。",
       "reading": "わたしは ピアノを ひきます。",
@@ -2994,33 +3018,39 @@
       "review": { "words": "私 ピアノ 弾く", "readingFrom": "unidic", "indirect": ["ru", "tr"] },
       "image": "cue:musical-note",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/132-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/132-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/129-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/129-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 133,
+      "index": 130,
       "kind": "phrase",
       "text": "すみません、前通ります。",
       "reading": "すみません、まえ とおります。",
       "gloss": {
         "en": "Excuse me, I'm coming through.",
-        "tr": "Affedersiniz, ben geliyorum.",
+        "tr": "Affedersiniz, önünüzden geçiyorum.",
         "de": "Entschuldigung, könnte ich bitte durchgehen?",
         "es": "Disculpe, que paso.",
         "fr": "Excusez-moi, je passe.",
         "pt-BR": "Com licença, estou passando.",
         "ru": "Извините, разрешите пройти."
       },
-      "review": { "words": "済む 前 通る", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
+      "review": {
+        "words": "済む 前 通る",
+        "readingFrom": "tatoeba",
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["tr"],
+        "note": "tr said 'I'm coming' (arriving); ja is passing in front"
+      },
       "image": "cue:person-bowing",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/133-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/133-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/130-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/130-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 134,
+      "index": 131,
       "kind": "phrase",
       "text": "とうとう雨が降り出した。",
       "reading": "とうとう あめが ふりだした。",
@@ -3035,12 +3065,12 @@
       "review": { "words": "到頭 雨 降る 出す", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:cloud-with-rain",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/134-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/134-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/131-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/131-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 135,
+      "index": 132,
       "kind": "phrase",
       "text": "入ってもよろしいですか。",
       "reading": "はいっても よろしいですか。",
@@ -3056,12 +3086,12 @@
       "review": { "words": "入る 宜しい", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:door",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/135-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/135-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/132-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/132-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 136,
+      "index": 133,
       "kind": "phrase",
       "text": "彼はアフリカで生まれた。",
       "reading": "かれは アフリカで うまれた。",
@@ -3081,12 +3111,12 @@
       },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/136-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/136-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/133-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/133-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 137,
+      "index": 134,
       "kind": "phrase",
       "text": "数学のテストどうだった？",
       "reading": "すうがくの テスト どうだった？",
@@ -3106,12 +3136,12 @@
       },
       "image": "cue:memo",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/137-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/137-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/134-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/134-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 138,
+      "index": 135,
       "kind": "phrase",
       "text": "私のことどれくらい好き？",
       "reading": "わたしの こと どれくらい すき？",
@@ -3127,12 +3157,12 @@
       "review": { "words": "私 事 何れ 好き", "readingFrom": "tatoeba", "indirect": ["ar", "tr"] },
       "image": "cue:red-heart",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/138-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/138-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/135-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/135-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 139,
+      "index": 136,
       "kind": "phrase",
       "text": "車の運転はとても楽しい。",
       "reading": "くるまの うんてんは とても たのしい。",
@@ -3153,12 +3183,12 @@
       },
       "image": "cue:automobile",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/139-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/139-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/136-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/136-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 140,
+      "index": 137,
       "kind": "phrase",
       "text": "説明してくれてありがとう。",
       "reading": "せつめいして くれて ありがとう。",
@@ -3179,12 +3209,12 @@
       },
       "image": "cue:folded-hands",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/140-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/140-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/137-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/137-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 141,
+      "index": 138,
       "kind": "phrase",
       "text": "それ全部一人で食べるつもり？",
       "reading": "それ ぜんぶ ひとりで たべる つもり？",
@@ -3203,12 +3233,12 @@
       },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/141-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/141-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/138-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/138-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 142,
+      "index": 139,
       "kind": "phrase",
       "text": "一晩中泣いていた。",
       "reading": "ひとばんじゅう ないて いた。",
@@ -3230,12 +3260,12 @@
       },
       "image": "cue:loudly-crying-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/142-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/142-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/139-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/139-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 143,
+      "index": 140,
       "kind": "phrase",
       "text": "君は僕の友達なの？",
       "reading": "きみは ぼくの ともだちなの？",
@@ -3252,12 +3282,12 @@
       "review": { "words": "君 僕 友達", "readingFrom": "tatoeba", "indirect": ["ar", "ru", "tr"] },
       "image": "cue:handshake",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/143-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/143-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/140-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/140-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 144,
+      "index": 141,
       "kind": "phrase",
       "text": "彼に電話したんだ。",
       "reading": "かれに でんわしたんだ。",
@@ -3272,12 +3302,12 @@
       "review": { "words": "彼 電話 為る", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:telephone-receiver",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/144-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/144-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/141-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/141-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 145,
+      "index": 142,
       "kind": "phrase",
       "text": "月には人がいない。",
       "reading": "つきには ひとが いない。",
@@ -3291,12 +3321,12 @@
       "review": { "words": "月 人 居る", "readingFrom": "tatoeba" },
       "image": "cue:crescent-moon",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/145-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/145-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/142-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/142-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 146,
+      "index": 143,
       "kind": "phrase",
       "text": "彼は家にいますか。",
       "reading": "かれは いえに いますか。",
@@ -3312,12 +3342,12 @@
       "review": { "words": "彼 家 居る", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:house",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/146-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/146-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/143-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/143-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 147,
+      "index": 144,
       "kind": "phrase",
       "text": "私には娘がいます。",
       "reading": "わたしには むすめが います。",
@@ -3333,12 +3363,12 @@
       "review": { "words": "私 娘 居る", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:family-man-woman-girl",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/147-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/147-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/144-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/144-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 148,
+      "index": 145,
       "kind": "phrase",
       "text": "彼は私の倍食べた。",
       "reading": "かれは わたしの ばい たべた。",
@@ -3358,12 +3388,12 @@
       },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/148-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/148-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/145-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/145-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 149,
+      "index": 146,
       "kind": "phrase",
       "text": "朝は髪を洗いません。",
       "reading": "あさは かみを あらいません。",
@@ -3379,12 +3409,12 @@
       "review": { "words": "朝 髪 洗う", "readingFrom": "unidic", "indirect": ["es", "tr"] },
       "image": "cue:soap",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/149-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/149-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/146-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/146-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 150,
+      "index": 147,
       "kind": "phrase",
       "text": "彼に話しても良いよ。",
       "reading": "かれに はなしても いいよ。",
@@ -3404,12 +3434,12 @@
       },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/150-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/150-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/147-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/147-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 151,
+      "index": 148,
       "kind": "phrase",
       "text": "私は昨日彼に会った。",
       "reading": "わたしは きのう かれに あった。",
@@ -3430,12 +3460,12 @@
       },
       "image": "cue:handshake",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/151-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/151-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/148-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/148-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 152,
+      "index": 149,
       "kind": "phrase",
       "text": "彼は嘘をつき続けた。",
       "reading": "かれは うそを つきつづけた。",
@@ -3455,12 +3485,12 @@
       },
       "image": "cue:lying-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/152-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/152-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/149-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/149-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 153,
+      "index": 150,
       "kind": "phrase",
       "text": "私は試験に失敗した。",
       "reading": "わたしは しけんに しっぱいした。",
@@ -3475,12 +3505,12 @@
       "review": { "words": "私 試験 失敗 為る", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:memo",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/153-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/153-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/150-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/150-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 154,
+      "index": 151,
       "kind": "phrase",
       "text": "彼は急に泣き出した。",
       "reading": "かれは きゅうに なきだした。",
@@ -3500,12 +3530,12 @@
       },
       "image": "cue:loudly-crying-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/154-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/154-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/151-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/151-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 155,
+      "index": 152,
       "kind": "phrase",
       "text": "お腹は空いていますか？",
       "reading": "おなかは すいて いますか？",
@@ -3527,12 +3557,12 @@
       },
       "image": "cue:hamburger",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/155-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/155-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/152-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/152-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 156,
+      "index": 153,
       "kind": "phrase",
       "text": "彼は財布を盗まれた。",
       "reading": "かれは さいふを ぬすまれた。",
@@ -3548,12 +3578,12 @@
       "review": { "words": "彼 財布 盗む", "readingFrom": "unidic", "indirect": ["pt-BR", "tr"] },
       "image": "cue:purse",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/156-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/156-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/153-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/153-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 157,
+      "index": 154,
       "kind": "phrase",
       "text": "これは気にいりません。",
       "reading": "これは きに いりません。",
@@ -3569,12 +3599,12 @@
       "review": { "words": "此れ 気 要る", "readingFrom": "unidic", "indirect": ["pt-BR", "tr"] },
       "image": "cue:thumbs-down",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/157-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/157-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/154-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/154-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 158,
+      "index": 155,
       "kind": "phrase",
       "text": "なんか変な臭いしない？",
       "reading": "なんか へんな におい しない？",
@@ -3589,12 +3619,12 @@
       "review": { "words": "何 変 匂い 為る", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:nose",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/158-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/158-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/155-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/155-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 159,
+      "index": 156,
       "kind": "phrase",
       "text": "変なこと聞いてもいい？",
       "reading": "へんな こと きいても いい？",
@@ -3609,12 +3639,12 @@
       "review": { "words": "変 事 聞く 良い", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:person-raising-hand",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/159-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/159-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/156-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/156-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 160,
+      "index": 157,
       "kind": "phrase",
       "text": "彼はとても疲れていた。",
       "reading": "かれは とても つかれて いた。",
@@ -3634,17 +3664,17 @@
       },
       "image": "cue:weary-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/160-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/160-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/157-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/157-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 161,
+      "index": 158,
       "kind": "phrase",
       "text": "彼女はお風呂にいます。",
       "reading": "かのじょは おふろに います。",
       "gloss": {
-        "en": "She is in the bathroom.",
+        "en": "She's in the bath.",
         "tr": "O, banyoda.",
         "de": "Sie ist im Badezimmer.",
         "es": "Ella está en la bañera.",
@@ -3652,15 +3682,21 @@
         "ru": "Она в ванной.",
         "ar": "إنها في الحمام."
       },
-      "review": { "words": "彼女 御 風呂 居る", "readingFrom": "unidic", "indirect": ["fr", "tr"] },
+      "review": {
+        "words": "彼女 御 風呂 居る",
+        "readingFrom": "unidic",
+        "indirect": ["fr", "tr"],
+        "edited": ["en"],
+        "note": "en: お風呂 = bath (was identical to #127 トイレ gloss)"
+      },
       "image": "cue:bathtub",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/161-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/161-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/158-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/158-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 162,
+      "index": 159,
       "kind": "phrase",
       "text": "彼は新しい家を建てた。",
       "reading": "かれは あたらしい いえを たてた。",
@@ -3680,52 +3716,64 @@
       },
       "image": "cue:house-with-garden",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/162-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/162-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/159-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/159-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 163,
+      "index": 160,
       "kind": "phrase",
       "text": "明日は雪になると思う。",
       "reading": "あしたは ゆきに なると おもう。",
       "gloss": {
         "en": "I believe it will be snowing tomorrow.",
-        "tr": "Yarın kar yağıyor olacağına inanıyorum.",
+        "tr": "Sanırım yarın kar yağacak.",
         "de": "Ich glaube, dass es morgen schneit.",
         "es": "Creo que nevará mañana.",
         "fr": "Je crois qu'il neigera demain.",
         "ru": "Я думаю, завтра будет снег."
       },
-      "review": { "words": "明日 雪 成る 思う", "readingFrom": "tatoeba", "indirect": ["tr"] },
+      "review": {
+        "words": "明日 雪 成る 思う",
+        "readingFrom": "tatoeba",
+        "indirect": ["tr"],
+        "edited": ["tr"],
+        "note": "tr: stilted machine chain; と思う = I think"
+      },
       "image": "cue:cloud-with-snow",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/163-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/163-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/160-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/160-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 164,
+      "index": 161,
       "kind": "phrase",
       "text": "彼は昨夜テレビに出た。",
       "reading": "かれは さくや テレビに でた。",
       "gloss": {
         "en": "He appeared on TV last night.",
-        "tr": "O, dün gece televizyonda çıktı.",
+        "tr": "Dün gece televizyona çıktı.",
         "de": "Er war gestern Abend im Fernsehen.",
         "es": "Salió en la tele anoche.",
         "fr": "Il est passé à la télévision la nuit dernière.",
         "ru": "Вчера вечером его показали по телевизору."
       },
-      "review": { "words": "彼 昨夜 テレビ 出る", "readingFrom": "unidic", "indirect": ["tr"] },
+      "review": {
+        "words": "彼 昨夜 テレビ 出る",
+        "readingFrom": "unidic",
+        "indirect": ["tr"],
+        "edited": ["tr"],
+        "note": "tr: case suffix (televizyona çıkmak)"
+      },
       "image": "cue:television",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/164-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/164-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/161-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/161-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 165,
+      "index": 162,
       "kind": "phrase",
       "text": "私にうそは言わないで。",
       "reading": "わたしに うそは いわないで。",
@@ -3740,12 +3788,12 @@
       "review": { "words": "私 嘘 言う", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:lying-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/165-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/165-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/162-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/162-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 166,
+      "index": 163,
       "kind": "phrase",
       "text": "ふつう、猫は犬が嫌いだ。",
       "reading": "ふつう、ねこは いぬが きらいだ。",
@@ -3766,32 +3814,38 @@
       },
       "image": "cue:cat",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/166-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/166-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/163-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/163-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 167,
+      "index": 164,
       "kind": "phrase",
       "text": "私にやらせてくれない？",
       "reading": "わたしに やらせて くれない？",
       "gloss": {
-        "en": "Will you let me at it?",
+        "en": "Will you let me do it?",
         "de": "Könntest du mich das nicht tun lassen?",
         "es": "¿Me dejas hacerlo?",
         "fr": "Tu peux me laisser le faire ?",
         "pt-BR": "Você vai me deixar experimentar?",
         "ru": "Не позволишь мне это сделать?"
       },
-      "review": { "words": "私 遣る 呉れる", "readingFrom": "tatoeba", "indirect": ["pt-BR"] },
+      "review": {
+        "words": "私 遣る 呉れる",
+        "readingFrom": "tatoeba",
+        "indirect": ["pt-BR"],
+        "edited": ["en"],
+        "note": "en: 'let me at it' is odd"
+      },
       "image": "cue:person-raising-hand",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/167-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/167-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/164-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/164-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 168,
+      "index": 165,
       "kind": "phrase",
       "text": "両親を紹介させて下さい。",
       "reading": "りょうしんを しょうかいさせて ください。",
@@ -3811,12 +3865,12 @@
       },
       "image": "cue:family",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/168-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/168-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/165-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/165-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 169,
+      "index": 166,
       "kind": "phrase",
       "text": "私はテニスをしました。",
       "reading": "わたしは テニスを しました。",
@@ -3837,12 +3891,12 @@
       },
       "image": "cue:tennis",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/169-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/169-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/166-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/166-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 170,
+      "index": 167,
       "kind": "phrase",
       "text": "傘持ってくればよかった。",
       "reading": "かさ もって くれば よかった。",
@@ -3857,12 +3911,12 @@
       "review": { "words": "傘 持つ 来る 良い", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:umbrella-with-rain-drops",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/170-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/170-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/167-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/167-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 171,
+      "index": 168,
       "kind": "phrase",
       "text": "私は歩いて学校に通う。",
       "reading": "わたしは あるいて がっこうに かよう。",
@@ -3877,12 +3931,12 @@
       "review": { "words": "私 歩く 学校 通う", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:school",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/171-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/171-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/168-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/168-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 172,
+      "index": 169,
       "kind": "phrase",
       "text": "君はパンを買わなかった。",
       "reading": "きみは パンを かわなかった。",
@@ -3897,12 +3951,12 @@
       "review": { "words": "君 パン 買う", "readingFrom": "tatoeba", "indirect": ["pt-BR"] },
       "image": "cue:bread",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/172-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/172-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/169-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/169-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 173,
+      "index": 170,
       "kind": "phrase",
       "text": "私は煙草をやめました。",
       "reading": "わたしは たばこを やめました。",
@@ -3923,12 +3977,12 @@
       },
       "image": "cue:no-smoking",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/173-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/173-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/170-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/170-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 174,
+      "index": 171,
       "kind": "phrase",
       "text": "彼女はどこで生まれたの？",
       "reading": "かのじょは どこで うまれたの？",
@@ -3942,15 +3996,15 @@
       "review": { "words": "彼女 何処 生まれる", "readingFrom": "tatoeba" },
       "image": "cue:baby",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/174-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/174-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/171-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/171-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 175,
+      "index": 172,
       "kind": "phrase",
       "text": "明日雨ならば行きません。",
-      "reading": "あしたあめならば いきません。",
+      "reading": "あした あめならば いきません。",
       "gloss": {
         "en": "I would not go if it rains tomorrow.",
         "tr": "Yarın yağmur yağarsa gitmem.",
@@ -3960,15 +4014,22 @@
         "pt-BR": "Se amanhã chover eu não virei.",
         "ru": "Если завтра будет дождь, я не пойду."
       },
-      "review": { "words": "明日 雨 行く", "readingFrom": "unidic", "indirect": ["pt-BR", "tr"] },
+      "review": {
+        "words": "明日 雨 行く",
+        "readingFrom": "unidic",
+        "indirect": ["pt-BR", "tr"],
+        "readingWas": "あしたあめならば いきません。",
+        "note": "spacing: 明日 and 雨ならば are two phrases",
+        "voicesRemade": true
+      },
       "image": "cue:cloud-with-rain",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/175-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/175-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/172-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/172-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 176,
+      "index": 173,
       "kind": "phrase",
       "text": "私は毎日テニスをします。",
       "reading": "わたしは まいにち テニスを します。",
@@ -3989,12 +4050,12 @@
       },
       "image": "cue:tennis",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/176-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/176-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/173-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/173-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 177,
+      "index": 174,
       "kind": "phrase",
       "text": "風邪の具合はどうですか。",
       "reading": "かぜの ぐあいは どうですか。",
@@ -4010,32 +4071,40 @@
       "review": { "words": "風邪 具合 どう", "readingFrom": "unidic", "indirect": ["pt-BR", "tr"] },
       "image": "cue:sneezing-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/177-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/177-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/174-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/174-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 178,
+      "index": 175,
       "kind": "phrase",
       "text": "ご一緒できなくて残念です。",
-      "reading": "ごいっしょ できなくて ざんねんです。",
+      "reading": "ごいっしょできなくて ざんねんです。",
       "gloss": {
         "en": "It is regrettable that I can't go with you.",
-        "tr": "Seninle gidememem üzücüdür.",
+        "tr": "Sizinle gelemediğim için üzgünüm.",
         "de": "Ich bedauere es sehr, dass wir es nicht zusammen machen können.",
         "es": "Es una pena que no podamos hacerlo juntos.",
         "fr": "Il est regrettable que je ne puisse pas y aller avec toi.",
         "ru": "Мне жаль, что я не могу пойти с Вами."
       },
-      "review": { "words": "御 一緒 出来る 残念", "readingFrom": "tatoeba", "indirect": ["tr"] },
+      "review": {
+        "words": "御 一緒 出来る 残念",
+        "readingFrom": "tatoeba",
+        "indirect": ["tr"],
+        "readingWas": "ごいっしょ できなくて ざんねんです。",
+        "edited": ["tr"],
+        "note": "tr: polite ja → siz; natural phrasing; spacing: ご一緒できなくて is one phrase (する-verbs joined across the packs)",
+        "voicesRemade": true
+      },
       "image": "cue:disappointed-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/178-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/178-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/175-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/175-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 179,
+      "index": 176,
       "kind": "phrase",
       "text": "なんでそんなに疲れてるの？",
       "reading": "なんで そんなに つかれてるの？",
@@ -4051,12 +4120,12 @@
       "review": { "words": "何 そんな 疲れる", "readingFrom": "unidic", "indirect": ["es", "tr"] },
       "image": "cue:weary-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/179-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/179-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/176-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/176-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 180,
+      "index": 177,
       "kind": "phrase",
       "text": "君がいなくてとても寂しい。",
       "reading": "きみが いなくて とても さびしい。",
@@ -4077,53 +4146,65 @@
       },
       "image": "cue:pleading-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/180-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/180-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/177-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/177-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 181,
+      "index": 178,
       "kind": "phrase",
       "text": "宿題はもう終わりましたか。",
       "reading": "しゅくだいは もう おわりましたか。",
       "gloss": {
         "en": "Have you finished doing your homework yet?",
-        "tr": "Ödevini yapmayı bitirmedin mi daha?",
+        "tr": "Ödevini bitirdin mi?",
         "de": "Bist du mit deinen Hausaufgaben schon fertig?",
         "es": "¿Ya acabaste tu tarea?",
         "fr": "Tu as déjà fini de faire tes devoirs ?",
         "ru": "Вы уже закончили домашнее задание?"
       },
-      "review": { "words": "宿題 もう 終わる", "readingFrom": "tatoeba", "indirect": ["tr"] },
+      "review": {
+        "words": "宿題 もう 終わる",
+        "readingFrom": "tatoeba",
+        "indirect": ["tr"],
+        "edited": ["tr"],
+        "note": "tr had a negation ('didn't you finish') not in ja"
+      },
       "image": "cue:memo",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/181-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/181-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/178-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/178-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 182,
+      "index": 179,
       "kind": "phrase",
       "text": "彼は午後には来るでしょう。",
       "reading": "かれは ごごには くるでしょう。",
       "gloss": {
-        "en": "He will come this afternoon.",
-        "tr": "O, bu öğleden sonra gelecek.",
+        "en": "He'll probably come this afternoon.",
+        "tr": "Muhtemelen öğleden sonra gelir.",
         "de": "Er wird nachmittags kommen.",
         "es": "Él vendrá esta tarde.",
         "fr": "Il viendra cet après-midi.",
         "pt-BR": "Ele virá nesta tarde.",
         "ru": "Вероятно, он приедет после полудня."
       },
-      "review": { "words": "彼 午後 来る", "readingFrom": "unidic", "indirect": ["es", "tr"] },
+      "review": {
+        "words": "彼 午後 来る",
+        "readingFrom": "unidic",
+        "indirect": ["es", "tr"],
+        "edited": ["en", "tr"],
+        "note": "en/tr: でしょう = probably"
+      },
       "image": "cue:three-o-clock",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/182-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/182-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/179-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/179-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 183,
+      "index": 180,
       "kind": "phrase",
       "text": "彼女はなにも言わなかった。",
       "reading": "かのじょは なにも いわなかった。",
@@ -4139,12 +4220,12 @@
       "review": { "words": "彼女 何 言う", "readingFrom": "tatoeba", "indirect": ["ru", "tr"] },
       "image": "cue:zipper-mouth-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/183-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/183-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/180-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/180-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 184,
+      "index": 181,
       "kind": "phrase",
       "text": "彼は私よりピアノがうまい。",
       "reading": "かれは わたしより ピアノが うまい。",
@@ -4164,12 +4245,12 @@
       },
       "image": "cue:musical-note",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/184-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/184-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/181-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/181-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 185,
+      "index": 182,
       "kind": "phrase",
       "text": "部屋は人でいっぱいだった。",
       "reading": "へやは ひとで いっぱいだった。",
@@ -4183,12 +4264,12 @@
       "review": { "words": "部屋 人 一杯", "readingFrom": "tatoeba" },
       "image": "cue:busts-in-silhouette",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/185-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/185-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/182-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/182-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 186,
+      "index": 183,
       "kind": "phrase",
       "text": "もう行かなければなりません。",
       "reading": "もう いかなければ なりません。",
@@ -4209,12 +4290,12 @@
       },
       "image": "cue:waving-hand",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/186-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/186-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/183-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/183-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 187,
+      "index": 184,
       "kind": "phrase",
       "text": "寒かったら暖房つけていいよ。",
       "reading": "さむかったら だんぼう つけて いいよ。",
@@ -4230,12 +4311,12 @@
       "review": { "words": "寒い 暖房 付ける 良い", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:cold-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/187-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/187-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/184-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/184-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 188,
+      "index": 185,
       "kind": "phrase",
       "text": "彼はほとんど毎日ここへくる。",
       "reading": "かれは ほとんど まいにち ここへ くる。",
@@ -4250,12 +4331,12 @@
       "review": { "words": "彼 殆ど 毎日 此処 来る", "readingFrom": "unidic", "indirect": ["tr"] },
       "image": "cue:calendar",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/188-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/188-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/185-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/185-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 189,
+      "index": 186,
       "kind": "phrase",
       "text": "明日の朝まで待ってください。",
       "reading": "あしたの あさまで まって ください。",
@@ -4275,12 +4356,12 @@
       },
       "image": "cue:sunrise",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/189-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/189-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/186-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/186-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 190,
+      "index": 187,
       "kind": "phrase",
       "text": "風邪引くから早く服着なさい。",
       "reading": "かぜ ひくから はやく ふく きなさい。",
@@ -4299,12 +4380,12 @@
       },
       "image": "cue:t-shirt",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/190-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/190-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/187-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/187-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 191,
+      "index": 188,
       "kind": "phrase",
       "text": "食べながら話しちゃダメだよ。",
       "reading": "たべながら はなしちゃ ダメだよ。",
@@ -4320,12 +4401,12 @@
       "review": { "words": "食べる 話す 駄目", "readingFrom": "tatoeba", "indirect": ["ru", "tr"] },
       "image": "cue:fork-and-knife",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/191-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/191-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/188-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/188-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 192,
+      "index": 189,
       "kind": "phrase",
       "text": "お兄ちゃん捜してる。知らない？",
       "reading": "おにいちゃん さがしてる。しらない？",
@@ -4345,12 +4426,12 @@
       },
       "image": "cue:magnifying-glass-tilted-left",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/192-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/192-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/189-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/189-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 193,
+      "index": 190,
       "kind": "phrase",
       "text": "彼は石を池に投げた。",
       "reading": "かれは いしを いけに なげた。",
@@ -4365,12 +4446,12 @@
       "review": { "words": "彼 石 池 投げる", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:rock",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/193-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/193-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/190-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/190-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 194,
+      "index": 191,
       "kind": "phrase",
       "text": "私は君の車が好きだ。",
       "reading": "わたしは きみの くるまが すきだ。",
@@ -4387,12 +4468,12 @@
       "review": { "words": "私 君 車 好き", "readingFrom": "tatoeba", "indirect": ["pt-BR", "tr"] },
       "image": "cue:automobile",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/194-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/194-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/191-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/191-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 195,
+      "index": 192,
       "kind": "phrase",
       "text": "彼は私に嘘をついた。",
       "reading": "かれは わたしに うそを ついた。",
@@ -4408,15 +4489,15 @@
       "review": { "words": "彼 私 嘘 つく", "readingFrom": "unidic", "indirect": ["pt-BR", "tr"] },
       "image": "cue:lying-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/195-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/195-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/192-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/192-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 196,
+      "index": 193,
       "kind": "phrase",
       "text": "声変だよ。どうしたの？",
-      "reading": "こえへんだよ。どうしたの？",
+      "reading": "こえ へんだよ。どうしたの？",
       "gloss": {
         "en": "Your voice is strange. What's wrong?",
         "tr": "Sesin garip. Sorun nedir?",
@@ -4429,36 +4510,45 @@
       "review": {
         "words": "声 変 どう 為る",
         "readingFrom": "tatoeba",
-        "indirect": ["pt-BR", "tr"]
+        "indirect": ["pt-BR", "tr"],
+        "readingWas": "こえへんだよ。どうしたの？",
+        "note": "spacing: 声 and 変だよ are two phrases",
+        "voicesRemade": true
       },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/196-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/196-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/193-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/193-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 197,
+      "index": 194,
       "kind": "phrase",
       "text": "彼が部屋に入ってきた。",
       "reading": "かれが へやに はいって きた。",
       "gloss": {
         "en": "He came into the room.",
-        "tr": "O, odaya geldi.",
+        "tr": "Odaya girdi.",
         "de": "Er hat das Zimmer betreten.",
         "es": "Él entró en la habitación.",
         "fr": "Il est entré dans la chambre.",
         "ru": "Он вошёл в комнату."
       },
-      "review": { "words": "彼 部屋 入る 来る", "readingFrom": "unidic", "indirect": ["tr"] },
+      "review": {
+        "words": "彼 部屋 入る 来る",
+        "readingFrom": "unidic",
+        "indirect": ["tr"],
+        "edited": ["tr"],
+        "note": "tr: 入ってきた = entered, not 'came'"
+      },
       "image": "cue:door",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/197-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/197-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/194-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/194-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 198,
+      "index": 195,
       "kind": "phrase",
       "text": "私の力を甘く見ないで。",
       "reading": "わたしの ちからを あまく みないで。",
@@ -4479,15 +4569,15 @@
       },
       "image": "cue:flexed-biceps",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/198-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/198-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/195-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/195-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 199,
+      "index": 196,
       "kind": "phrase",
       "text": "彼は彼女を安心させた。",
-      "reading": "かれは かのじょを あんしん させた。",
+      "reading": "かれは かのじょを あんしんさせた。",
       "gloss": {
         "en": "He set her mind at rest.",
         "de": "Er hat sie beruhigt.",
@@ -4495,15 +4585,21 @@
         "pt-BR": "Ele tranquilizou-a.",
         "ru": "Он успокоил её."
       },
-      "review": { "words": "彼 彼女 安心 為る", "readingFrom": "tatoeba" },
+      "review": {
+        "words": "彼 彼女 安心 為る",
+        "readingFrom": "tatoeba",
+        "readingWas": "かれは かのじょを あんしん させた。",
+        "note": "spacing: suru-verb causative is one phrase",
+        "voicesRemade": true
+      },
       "image": "cue:relieved-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/199-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/199-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/196-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/196-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 200,
+      "index": 197,
       "kind": "phrase",
       "text": "私は川に沿って歩いた。",
       "reading": "わたしは かわに そって あるいた。",
@@ -4518,12 +4614,12 @@
       "review": { "words": "私 川 沿う 歩く", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:person-walking",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/200-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/200-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/197-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/197-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 201,
+      "index": 198,
       "kind": "phrase",
       "text": "彼は急に病気になった。",
       "reading": "かれは きゅうに びょうきに なった。",
@@ -4543,12 +4639,12 @@
       },
       "image": "cue:face-with-thermometer",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/201-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/201-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/198-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/198-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 202,
+      "index": 199,
       "kind": "phrase",
       "text": "僕と踊ってくれませんか。",
       "reading": "ぼくと おどって くれませんか。",
@@ -4565,12 +4661,12 @@
       "review": { "words": "僕 踊る 呉れる", "readingFrom": "tatoeba", "indirect": ["ar", "tr"] },
       "image": "cue:woman-dancing",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/202-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/202-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/199-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/199-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 203,
+      "index": 200,
       "kind": "phrase",
       "text": "彼は銀行で働いています。",
       "reading": "かれは ぎんこうで はたらいて います。",
@@ -4591,12 +4687,12 @@
       },
       "image": "cue:briefcase",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/203-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/203-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/200-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/200-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 204,
+      "index": 201,
       "kind": "phrase",
       "text": "僕は辞書を持っています。",
       "reading": "ぼくは じしょを もって います。",
@@ -4617,12 +4713,12 @@
       },
       "image": "cue:closed-book",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/204-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/204-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/201-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/201-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 205,
+      "index": 202,
       "kind": "phrase",
       "text": "私はナイフで怪我をした。",
       "reading": "わたしは ナイフで けがを した。",
@@ -4642,12 +4738,12 @@
       },
       "image": "cue:adhesive-bandage",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/205-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/205-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/202-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/202-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 206,
+      "index": 203,
       "kind": "phrase",
       "text": "値段は全部同じなんですか？",
       "reading": "ねだんは ぜんぶ おなじなんですか？",
@@ -4662,12 +4758,12 @@
       "review": { "words": "値段 全部 同じ", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:heavy-dollar-sign",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/206-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/206-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/203-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/203-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 207,
+      "index": 204,
       "kind": "phrase",
       "text": "私は地理と歴史が好きだ。",
       "reading": "わたしは ちりと れきしが すきだ。",
@@ -4687,12 +4783,12 @@
       },
       "image": "cue:world-map",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/207-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/207-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/204-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/204-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 208,
+      "index": 205,
       "kind": "phrase",
       "text": "僕はまだ暗いうちに起きた。",
       "reading": "ぼくは まだ くらい うちに おきた。",
@@ -4712,12 +4808,12 @@
       },
       "image": "cue:night-with-stars",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/208-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/208-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/205-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/205-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 209,
+      "index": 206,
       "kind": "phrase",
       "text": "私は彼女を家まで送った。",
       "reading": "わたしは かのじょを いえまで おくった。",
@@ -4733,12 +4829,12 @@
       "review": { "words": "私 彼女 家 送る", "readingFrom": "unidic", "indirect": ["fr", "tr"] },
       "image": "cue:house",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/209-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/209-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/206-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/206-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 210,
+      "index": 207,
       "kind": "phrase",
       "text": "彼がそれを聞いたら喜ぶよ。",
       "reading": "かれが それを きいたら よろこぶよ。",
@@ -4758,12 +4854,12 @@
       },
       "image": "cue:grinning-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/210-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/210-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/207-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/207-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 211,
+      "index": 208,
       "kind": "phrase",
       "text": "彼女は野菜を売っています。",
       "reading": "かのじょは やさいを うって います。",
@@ -4779,18 +4875,18 @@
       "review": { "words": "彼女 野菜 売る 居る", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:tomato",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/211-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/211-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/208-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/208-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 212,
+      "index": 209,
       "kind": "phrase",
       "text": "明日のご出発は何時ですか？",
       "reading": "あしたの ごしゅっぱつは なんじですか？",
       "gloss": {
         "en": "What time do you leave tomorrow?",
-        "tr": "Yarın kaçta çıkıyorsun?",
+        "tr": "Yarın kaçta yola çıkıyorsunuz?",
         "de": "Wann geht es morgen los?",
         "es": "¿A qué hora parte usted mañana?",
         "fr": "À quelle heure est votre départ, demain ?",
@@ -4801,16 +4897,18 @@
         "words": "明日 御 出発 何時",
         "readingFrom": "tatoeba",
         "readingDiffers": ["何時: いつ → なんじ"],
-        "indirect": ["pt-BR", "tr"]
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["tr"],
+        "note": "tr: honorific ご出発 → siz"
       },
       "image": "cue:luggage",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/212-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/212-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/209-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/209-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 213,
+      "index": 210,
       "kind": "phrase",
       "text": "私は寝なければなりません。",
       "reading": "わたしは ねなければ なりません。",
@@ -4827,12 +4925,12 @@
       "review": { "words": "私 寝る 成る", "readingFrom": "tatoeba", "indirect": ["ar", "tr"] },
       "image": "cue:bed",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/213-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/213-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/210-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/210-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 214,
+      "index": 211,
       "kind": "phrase",
       "text": "なんか変なもの踏んじゃった。",
       "reading": "なんか へんな もの ふんじゃった。",
@@ -4847,12 +4945,12 @@
       "review": { "words": "何 変 物 踏む", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:footprints",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/214-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/214-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/211-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/211-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 215,
+      "index": 212,
       "kind": "phrase",
       "text": "私は昨日大きな魚を釣った。",
       "reading": "わたしは きのう おおきな さかなを つった。",
@@ -4872,15 +4970,15 @@
       },
       "image": "cue:fish",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/215-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/215-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/212-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/212-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 216,
+      "index": 213,
       "kind": "phrase",
       "text": "まず第一に、それは高すぎる。",
-      "reading": "まず だい いちに、それは たか すぎる。",
+      "reading": "まず だいいちに、それは たかすぎる。",
       "gloss": {
         "en": "First of all, it is too expensive.",
         "tr": "Her şeyden önce, o çok pahalı.",
@@ -4892,16 +4990,19 @@
       "review": {
         "words": "先ず 第 一 其れ 高い 過ぎる",
         "readingFrom": "tatoeba",
-        "indirect": ["tr"]
+        "indirect": ["tr"],
+        "readingWas": "まず だい いちに、それは たか すぎる。",
+        "note": "spacing: 第一に and 高すぎる are single words",
+        "voicesRemade": true
       },
       "image": "cue:heavy-dollar-sign",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/216-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/216-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/213-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/213-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 217,
+      "index": 214,
       "kind": "phrase",
       "text": "私は音楽に興味があります。",
       "reading": "わたしは おんがくに きょうみが あります。",
@@ -4917,12 +5018,12 @@
       "review": { "words": "私 音楽 興味 有る", "readingFrom": "unidic", "indirect": ["es", "tr"] },
       "image": "cue:musical-notes",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/217-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/217-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/214-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/214-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 218,
+      "index": 215,
       "kind": "phrase",
       "text": "先生は驚いているようだった。",
       "reading": "せんせいは おどろいて いる ようだった。",
@@ -4942,12 +5043,12 @@
       },
       "image": "cue:astonished-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/218-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/218-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/215-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/215-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 219,
+      "index": 216,
       "kind": "phrase",
       "text": "彼女は昨日野菜を買いました。",
       "reading": "かのじょは きのう やさいを かいました。",
@@ -4962,12 +5063,12 @@
       "review": { "words": "彼女 昨日 野菜 買う", "readingFrom": "unidic", "indirect": ["tr"] },
       "image": "cue:shopping-cart",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/219-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/219-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/216-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/216-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 220,
+      "index": 217,
       "kind": "phrase",
       "text": "本を取ってそれを読みなさい。",
       "reading": "ほんを とって それを よみなさい。",
@@ -4987,12 +5088,12 @@
       },
       "image": "cue:open-book",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/220-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/220-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/217-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/217-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 221,
+      "index": 218,
       "kind": "phrase",
       "text": "薬を飲まなければなりません。",
       "reading": "くすりを のまなければ なりません。",
@@ -5013,12 +5114,12 @@
       },
       "image": "cue:pill",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/221-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/221-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/218-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/218-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 222,
+      "index": 219,
       "kind": "phrase",
       "text": "しばらくの間座っていて下さい。",
       "reading": "しばらくの あいだ すわって いて ください。",
@@ -5037,12 +5138,12 @@
       },
       "image": "cue:chair",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/222-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/222-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/219-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/219-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 223,
+      "index": 220,
       "kind": "phrase",
       "text": "テーブルの上に本を置きなさい。",
       "reading": "テーブルの うえに ほんを おきなさい。",
@@ -5061,12 +5162,12 @@
       },
       "image": "cue:closed-book",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/223-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/223-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/220-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/220-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 224,
+      "index": 221,
       "kind": "phrase",
       "text": "彼はうまく歌うことが出来ない。",
       "reading": "かれは うまく うたう ことが できない。",
@@ -5082,12 +5183,12 @@
       "review": { "words": "彼 旨い 歌う 事 出来る", "readingFrom": "unidic", "indirect": ["tr"] },
       "image": "cue:microphone",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/224-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/224-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/221-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/221-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 225,
+      "index": 222,
       "kind": "phrase",
       "text": "私は明日手紙を書くつもりです。",
       "reading": "わたしは あした てがみを かく つもりです。",
@@ -5107,12 +5208,12 @@
       },
       "image": "cue:envelope",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/225-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/225-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/222-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/222-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 226,
+      "index": 223,
       "kind": "phrase",
       "text": "彼はピアノをとても上手に弾く。",
       "reading": "かれは ピアノを とても じょうずに ひく。",
@@ -5133,12 +5234,12 @@
       },
       "image": "cue:musical-note",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/226-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/226-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/223-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/223-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 227,
+      "index": 224,
       "kind": "phrase",
       "text": "ここで写真を撮らないでください。",
       "reading": "ここで しゃしんを とらないで ください。",
@@ -5153,12 +5254,12 @@
       "review": { "words": "此処 写真 取る 下さる", "readingFrom": "tatoeba", "indirect": ["ar"] },
       "image": "cue:camera",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/227-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/227-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/224-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/224-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 228,
+      "index": 225,
       "kind": "phrase",
       "text": "みんな、お腹が空いてると思うよ。",
       "reading": "みんな、おなかが すいてると おもうよ。",
@@ -5178,12 +5279,12 @@
       },
       "image": "cue:drooling-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/228-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/228-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/225-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/225-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 229,
+      "index": 226,
       "kind": "phrase",
       "text": "彼は毎日牛乳をたくさん飲みます。",
       "reading": "かれは まいにち ぎゅうにゅうを たくさん のみます。",
@@ -5197,12 +5298,12 @@
       "review": { "words": "彼 毎日 牛乳 沢山 飲む", "readingFrom": "unidic" },
       "image": "cue:glass-of-milk",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/229-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/229-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/226-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/226-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 230,
+      "index": 227,
       "kind": "phrase",
       "text": "私は来年アメリカに行くつもりです。",
       "reading": "わたしは らいねん アメリカに いく つもりです。",
@@ -5221,12 +5322,12 @@
       },
       "image": "cue:airplane",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/230-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/230-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/227-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/227-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 231,
+      "index": 228,
       "kind": "phrase",
       "text": "彼は三日前に出発した。",
       "reading": "かれは みっか まえに しゅっぱつした。",
@@ -5246,12 +5347,12 @@
       },
       "image": "cue:luggage",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/231-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/231-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/228-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/228-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 232,
+      "index": 229,
       "kind": "phrase",
       "text": "私は君の事を考えている。",
       "reading": "わたしは きみの ことを かんがえて いる。",
@@ -5272,12 +5373,12 @@
       },
       "image": "cue:thought-balloon",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/232-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/232-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/229-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/229-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 233,
+      "index": 230,
       "kind": "phrase",
       "text": "彼は夏に泳ぐのが好きだ。",
       "reading": "かれは なつに およぐのが すきだ。",
@@ -5298,12 +5399,12 @@
       },
       "image": "cue:person-swimming",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/233-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/233-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/230-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/230-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 234,
+      "index": 231,
       "kind": "phrase",
       "text": "君はその紙を切りましたか。",
       "reading": "きみは その かみを きりましたか。",
@@ -5318,12 +5419,12 @@
       "review": { "words": "君 其の 紙 切る", "readingFrom": "unidic", "indirect": ["tr"] },
       "image": "cue:scissors",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/234-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/234-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/231-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/231-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 235,
+      "index": 232,
       "kind": "phrase",
       "text": "彼女は私を医者だと思った。",
       "reading": "かのじょは わたしを いしゃだと おもった。",
@@ -5333,22 +5434,23 @@
         "de": "Sie dachte, ich wäre Ärztin.",
         "es": "Ella pensaba que yo era médica.",
         "fr": "Elle supposa que j'étais médecin.",
-        "ru": "Она думала, что доктор - это я.",
+        "ru": "Она думала, что доктор — это я.",
         "ar": "ظنت أني طبيب."
       },
       "review": {
         "words": "彼女 私 医者 思う",
         "readingFrom": "tatoeba",
-        "indirect": ["fr", "tr"]
+        "indirect": ["fr", "tr"],
+        "edited": ["ru"]
       },
       "image": "cue:stethoscope",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/235-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/235-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/232-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/232-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 236,
+      "index": 233,
       "kind": "phrase",
       "text": "私の娘は人形遊びが好きだ。",
       "reading": "わたしの むすめは にんぎょうあそびが すきだ。",
@@ -5368,12 +5470,12 @@
       },
       "image": "cue:girl",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/236-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/236-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/233-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/233-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 237,
+      "index": 234,
       "kind": "phrase",
       "text": "その虫はまだ生きているんだ。",
       "reading": "その むしは まだ いきて いるんだ。",
@@ -5393,12 +5495,12 @@
       },
       "image": "cue:ant",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/237-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/237-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/234-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/234-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 238,
+      "index": 235,
       "kind": "phrase",
       "text": "私は昨日、兄と喧嘩をした。",
       "reading": "わたしは きのう、あにと けんかを した。",
@@ -5413,18 +5515,18 @@
       "review": { "words": "私 昨日 兄 喧嘩 為る", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:anger-symbol",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/238-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/238-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/235-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/235-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 239,
+      "index": 236,
       "kind": "phrase",
       "text": "冬は私の一番好きな季節です。",
       "reading": "ふゆは わたしの いちばん すきな きせつです。",
       "gloss": {
         "en": "Winter is my favorite season.",
-        "tr": "Kış benim gözde mevsimimdir.",
+        "tr": "Kış en sevdiğim mevsimdir.",
         "de": "Der Winter ist meine Lieblingsjahreszeit.",
         "es": "El invierno es mi estación favorita.",
         "fr": "L’hiver est ma saison préférée.",
@@ -5434,16 +5536,18 @@
       "review": {
         "words": "冬 私 一番 好き 季節",
         "readingFrom": "tatoeba",
-        "indirect": ["pt-BR", "tr"]
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["tr"],
+        "note": "tr: 一番好き = favourite; 'gözde' is off"
       },
       "image": "cue:snowflake",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/239-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/239-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/236-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/236-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 240,
+      "index": 237,
       "kind": "phrase",
       "text": "私は本を読む事が好きです。",
       "reading": "わたしは ほんを よむ ことが すきです。",
@@ -5464,12 +5568,12 @@
       },
       "image": "cue:books",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/240-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/240-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/237-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/237-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 241,
+      "index": 238,
       "kind": "phrase",
       "text": "彼はテレビを見るのが好きだ。",
       "reading": "かれは テレビを みるのが すきだ。",
@@ -5490,12 +5594,12 @@
       },
       "image": "cue:television",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/241-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/241-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/238-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/238-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 242,
+      "index": 239,
       "kind": "phrase",
       "text": "彼女がだれか知っていますか。",
       "reading": "かのじょが だれか しって いますか。",
@@ -5516,12 +5620,12 @@
       },
       "image": "cue:woman",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/242-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/242-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/239-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/239-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 243,
+      "index": 240,
       "kind": "phrase",
       "text": "最近は車で旅行する人が多い。",
       "reading": "さいきんは くるまで りょこうする ひとが おおい。",
@@ -5541,12 +5645,12 @@
       },
       "image": "cue:automobile",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/243-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/243-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/240-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/240-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 244,
+      "index": 241,
       "kind": "phrase",
       "text": "私は家にいなければならない。",
       "reading": "わたしは いえに いなければ ならない。",
@@ -5566,12 +5670,12 @@
       },
       "image": "cue:house",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/244-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/244-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/241-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/241-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 245,
+      "index": 242,
       "kind": "phrase",
       "text": "この映画見たことある気がする。",
       "reading": "この えいが みた こと ある きが する。",
@@ -5590,12 +5694,12 @@
       },
       "image": "cue:clapper-board",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/245-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/245-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/242-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/242-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 246,
+      "index": 243,
       "kind": "phrase",
       "text": "私は彼に言いたいことがある。",
       "reading": "わたしは かれに いいたい ことが ある。",
@@ -5610,12 +5714,12 @@
       "review": { "words": "私 彼 言う 事 有る", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/246-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/246-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/243-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/243-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 247,
+      "index": 244,
       "kind": "phrase",
       "text": "わたしはあなたの夢を見ました。",
       "reading": "わたしは あなたの ゆめを みました。",
@@ -5635,12 +5739,12 @@
       },
       "image": "cue:zzz",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/247-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/247-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/244-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/244-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 248,
+      "index": 245,
       "kind": "phrase",
       "text": "彼はギターの弾き方を知らない。",
       "reading": "かれは ギターの ひきかたを しらない。",
@@ -5660,12 +5764,12 @@
       },
       "image": "cue:guitar",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/248-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/248-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/245-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/245-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 249,
+      "index": 246,
       "kind": "phrase",
       "text": "私はテニスをするのが好きです。",
       "reading": "わたしは テニスを するのが すきです。",
@@ -5686,12 +5790,12 @@
       },
       "image": "cue:tennis",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/249-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/249-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/246-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/246-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 250,
+      "index": 247,
       "kind": "phrase",
       "text": "電話してくれればよかったのに。",
       "reading": "でんわして くれれば よかったのに。",
@@ -5707,18 +5811,18 @@
       "review": { "words": "電話 為る 呉れる 良い", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:telephone-receiver",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/250-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/250-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/247-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/247-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 251,
+      "index": 248,
       "kind": "phrase",
       "text": "私は次の駅で降りるつもりです。",
       "reading": "わたしは つぎの えきで おりる つもりです。",
       "gloss": {
         "en": "I am getting off at the next station.",
-        "tr": "Gelecek durakta iniyorum.",
+        "tr": "Bir sonraki istasyonda ineceğim.",
         "de": "Ich steige beim nächsten Bahnhof aus.",
         "es": "Bajaré en la próxima parada.",
         "fr": "J'ai l'intention de descendre au prochain arrêt.",
@@ -5729,42 +5833,50 @@
       "review": {
         "words": "私 次 駅 下りる 積り",
         "readingFrom": "tatoeba",
-        "indirect": ["pt-BR", "ru", "tr"]
+        "indirect": ["pt-BR", "ru", "tr"],
+        "edited": ["tr"],
+        "note": "tr: 駅 = station, 次 = next (not 'future stop')"
       },
       "image": "cue:station",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/251-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/251-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/248-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/248-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 252,
+      "index": 249,
       "kind": "phrase",
       "text": "音を立てないで。勉強中だから。",
       "reading": "おとを たてないで。べんきょうちゅうだから。",
       "gloss": {
         "en": "Don't make any noise, I'm studying.",
-        "tr": "Hiç gürültü yapmayın, ders çalışıyorum.",
+        "tr": "Gürültü yapma, ders çalışıyorum.",
         "de": "Mach keinen Krach, ich lerne.",
         "es": "No hagas ruido. Estoy estudiando.",
         "fr": "Ne faites pas de bruit. J'étudie.",
         "ru": "Не шуми! Я занимаюсь."
       },
-      "review": { "words": "音 立てる 勉強 中", "readingFrom": "tatoeba", "indirect": ["tr"] },
+      "review": {
+        "words": "音 立てる 勉強 中",
+        "readingFrom": "tatoeba",
+        "indirect": ["tr"],
+        "edited": ["tr"],
+        "note": "tr: casual ja, siz → sen"
+      },
       "image": "cue:shushing-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/252-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/252-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/249-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/249-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 253,
+      "index": 250,
       "kind": "phrase",
       "text": "魚は音が聞こえると思いますか。",
       "reading": "さかなは おとが きこえると おもいますか。",
       "gloss": {
         "en": "Do you think fish can hear?",
-        "tr": "Balığın duyabileceğini düşünüyor musun?",
+        "tr": "Balıkların ses duyabildiğini düşünüyor musunuz?",
         "de": "Glaubst du, dass Fische hören können?",
         "es": "¿Crees que los peces pueden oír?",
         "fr": "Penses-tu que les poissons puissent entendre ?",
@@ -5775,19 +5887,21 @@
       "review": {
         "words": "魚 音 聞こえる 思う",
         "readingFrom": "tatoeba",
-        "indirect": ["ar", "ru", "tr"]
+        "indirect": ["ar", "ru", "tr"],
+        "edited": ["tr"],
+        "note": "tr: plural fish, polite ja → siz"
       },
       "image": "cue:fish",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/253-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/253-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/250-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/250-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 254,
+      "index": 251,
       "kind": "phrase",
       "text": "そんなこと心配しなくていいのに。",
-      "reading": "そんな こと しんぱい しなくて いいのに。",
+      "reading": "そんな こと しんぱいしなくて いいのに。",
       "gloss": {
         "en": "You don't need to worry about such a thing.",
         "tr": "Böyle bir şey hakkında üzülmene gerek yok.",
@@ -5800,56 +5914,70 @@
       "review": {
         "words": "そんな 事 心配 為る 良い",
         "readingFrom": "tatoeba",
-        "indirect": ["fr", "tr"]
+        "indirect": ["fr", "tr"],
+        "readingWas": "そんな こと しんぱい しなくて いいのに。",
+        "note": "spacing: suru-verb one phrase",
+        "voicesRemade": true
       },
       "image": "cue:relieved-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/254-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/254-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/251-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/251-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 255,
+      "index": 252,
       "kind": "phrase",
       "text": "なんでそんなに英語の発音いいの？",
       "reading": "なんで そんなに えいごの はつおん いいの？",
       "gloss": {
         "en": "Why is your English pronunciation so good?",
-        "tr": "İngilizce aksanın neden bu kadar iyi?",
+        "tr": "İngilizce telaffuzun neden bu kadar iyi?",
         "de": "Warum hast du nur so eine gute englische Aussprache?",
         "es": "¿Cómo es que tienes tan buena pronunciación en inglés?",
         "fr": "Comment ça se fait que tu as un si bon accent, en anglais ?",
         "ru": "Почему у тебя такое хорошее английское произношение?"
       },
-      "review": { "words": "何 そんな 英語 発音 良い", "readingFrom": "tatoeba" },
+      "review": {
+        "words": "何 そんな 英語 発音 良い",
+        "readingFrom": "tatoeba",
+        "edited": ["tr"],
+        "note": "tr: 発音 = pronunciation, not accent"
+      },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/255-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/255-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/252-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/252-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 256,
+      "index": 253,
       "kind": "phrase",
       "text": "今日は泣かないつもりだったのに。",
       "reading": "きょうは なかない つもりだったのに。",
       "gloss": {
-        "en": "I tried not to cry today.",
+        "en": "I wasn't going to cry today.",
         "tr": "Bugün ağlamamaya çalıştım.",
         "de": "Dabei wollte ich doch heute nicht weinen!",
         "es": "Hoy me había propuesto no llorar.",
         "fr": "Moi qui voulais pas pleurer aujourd’hui…",
         "ru": "Ну вот, а я хотела не плакать сегодня."
       },
-      "review": { "words": "今日 泣く 積り", "readingFrom": "tatoeba", "indirect": ["tr"] },
+      "review": {
+        "words": "今日 泣く 積り",
+        "readingFrom": "tatoeba",
+        "indirect": ["tr"],
+        "edited": ["en"],
+        "note": "en: つもりだったのに = had meant not to (but did)"
+      },
       "image": "cue:crying-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/256-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/256-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/253-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/253-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 257,
+      "index": 254,
       "kind": "phrase",
       "text": "宿題って何のためにあるんだろう。",
       "reading": "しゅくだいって なんの ために あるんだろう。",
@@ -5864,12 +5992,12 @@
       "review": { "words": "宿題 何 為 有る", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:memo",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/257-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/257-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/254-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/254-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 258,
+      "index": 255,
       "kind": "phrase",
       "text": "彼が戻ってくるまでここで待とう。",
       "reading": "かれが もどって くるまで ここで まとう。",
@@ -5889,12 +6017,12 @@
       },
       "image": "cue:hourglass-not-done",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/258-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/258-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/255-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/255-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 259,
+      "index": 256,
       "kind": "phrase",
       "text": "数学はあまり好きではありません。",
       "reading": "すうがくは あまり すきでは ありません。",
@@ -5914,37 +6042,12 @@
       },
       "image": "cue:input-numbers",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/259-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/259-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/256-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/256-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 260,
-      "kind": "phrase",
-      "text": "彼は金持ちであったように見える。",
-      "reading": "かれは かねもちで あった ように みえる。",
-      "gloss": {
-        "en": "He seems to have been rich.",
-        "tr": "O zengin olmuş gibi görünüyor.",
-        "de": "Er scheint reich gewesen zu sein.",
-        "es": "Él parece haber sido rico.",
-        "fr": "Il semble avoir été riche.",
-        "ru": "Похоже, он был богат.",
-        "ar": "يبدو أنه كان غنياً."
-      },
-      "review": {
-        "words": "彼 金持ち 有る 様 見える",
-        "readingFrom": "unidic",
-        "indirect": ["ru", "tr"]
-      },
-      "image": "cue:money-bag",
-      "voices": [
-        { "key": "echo/packs/ja_jlptN4/260-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/260-jm_kumo.m4a", "voice": "jm_kumo" }
-      ]
-    },
-    {
-      "index": 261,
+      "index": 257,
       "kind": "phrase",
       "text": "アメリカに行ったことはありますか？",
       "reading": "アメリカに いった ことは ありますか？",
@@ -5965,12 +6068,12 @@
       },
       "image": "cue:airplane",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/261-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/261-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/257-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/257-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 262,
+      "index": 258,
       "kind": "phrase",
       "text": "今日はとてもいいことがありました。",
       "reading": "きょうは とても いい ことが ありました。",
@@ -5985,12 +6088,12 @@
       "review": { "words": "今日 迚も 良い 事 有る", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:grinning-face-with-smiling-eyes",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/262-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/262-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/258-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/258-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 263,
+      "index": 259,
       "kind": "phrase",
       "text": "君がいなければできなかった。ありがとう。",
       "reading": "きみが いなければ できなかった。ありがとう。",
@@ -6002,26 +6105,27 @@
         "fr": "Je n'aurais pas pu le faire sans toi. Merci.",
         "pt-BR": "Eu não conseguiria ter feito sem você. Obrigado.",
         "ru": "Без тебя я бы не справился. Спасибо!",
-        "ar": "لم أكن لأفعل ذلك بدونك ، شكراً لك ."
+        "ar": "لم أكن لأفعل ذلك بدونك، شكراً لك."
       },
       "review": {
         "words": "君 居る 出来る 有り難う",
         "readingFrom": "tatoeba",
-        "indirect": ["pt-BR", "tr"]
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["ar"]
       },
       "image": "cue:folded-hands",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/263-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/263-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/259-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/259-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 264,
+      "index": 260,
       "kind": "phrase",
       "text": "二日後に彼は帰ってきた。",
       "reading": "ふつかごに かれは かえって きた。",
       "gloss": {
-        "en": "He came back two days after.",
+        "en": "He came back two days later.",
         "de": "Er kam zwei Tage später zurück.",
         "es": "Volvió dos días más tarde.",
         "fr": "Il revint deux jours plus tard.",
@@ -6032,16 +6136,18 @@
         "words": "二 日 後 彼 返る 来る",
         "readingFrom": "tatoeba",
         "readingDiffers": ["二: ふた → ふつ"],
-        "indirect": ["pt-BR"]
+        "indirect": ["pt-BR"],
+        "edited": ["en"],
+        "note": "en: 'two days after' is incomplete"
       },
       "image": "cue:back-arrow",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/264-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/264-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/260-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/260-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 265,
+      "index": 261,
       "kind": "phrase",
       "text": "これこそ私が探していた本だ。",
       "reading": "これこそ わたしが さがして いた ほんだ。",
@@ -6055,12 +6161,12 @@
       "review": { "words": "此れ 私 探す 居る 本", "readingFrom": "unidic" },
       "image": "cue:closed-book",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/265-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/265-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/261-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/261-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 266,
+      "index": 262,
       "kind": "phrase",
       "text": "彼は私に時計を買ってくれた。",
       "reading": "かれは わたしに とけいを かって くれた。",
@@ -6075,12 +6181,12 @@
       "review": { "words": "彼 私 時計 買う 呉れる", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:wrapped-gift",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/266-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/266-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/262-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/262-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 267,
+      "index": 263,
       "kind": "phrase",
       "text": "私はいつものように早く起きた。",
       "reading": "わたしは いつもの ように はやく おきた。",
@@ -6095,12 +6201,12 @@
       "review": { "words": "私 何時 様 早い 起きる", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:alarm-clock",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/267-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/267-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/263-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/263-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 268,
+      "index": 264,
       "kind": "phrase",
       "text": "彼には一緒に遊ぶ友達がいない。",
       "reading": "かれには いっしょに あそぶ ともだちが いない。",
@@ -6114,12 +6220,12 @@
       "review": { "words": "彼 一緒 遊ぶ 友達 居る", "readingFrom": "tatoeba" },
       "image": "cue:person-standing",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/268-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/268-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/264-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/264-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 269,
+      "index": 265,
       "kind": "phrase",
       "text": "駅まで車で送ってくれませんか。",
       "reading": "えきまで くるまで おくって くれませんか。",
@@ -6139,12 +6245,12 @@
       },
       "image": "cue:automobile",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/269-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/269-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/265-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/265-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 270,
+      "index": 266,
       "kind": "phrase",
       "text": "彼は車の運転の仕方を知らない。",
       "reading": "かれは くるまの うんてんの しかたを しらない。",
@@ -6165,12 +6271,12 @@
       },
       "image": "cue:automobile",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/270-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/270-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/266-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/266-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 271,
+      "index": 267,
       "kind": "phrase",
       "text": "彼女はいいお医者さんなんだって。",
       "reading": "かのじょは いい おいしゃさんなんだって。",
@@ -6185,12 +6291,12 @@
       "review": { "words": "彼女 良い 御 医者 さん", "readingFrom": "tatoeba" },
       "image": "cue:stethoscope",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/271-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/271-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/267-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/267-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 272,
+      "index": 268,
       "kind": "phrase",
       "text": "彼はたばこを吸わないと約束した。",
       "reading": "かれは たばこを すわないと やくそくした。",
@@ -6209,15 +6315,15 @@
       },
       "image": "cue:no-smoking",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/272-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/272-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/268-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/268-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 273,
+      "index": 269,
       "kind": "phrase",
       "text": "新聞によれば明日は雪だそうです。",
-      "reading": "しんぶんに よれば あすは ゆきだ そうです。",
+      "reading": "しんぶんに よれば あすは ゆきだそうです。",
       "gloss": {
         "en": "According to the paper, it will snow tomorrow.",
         "tr": "Gazeteye göre, yarın kar yağacak.",
@@ -6230,16 +6336,19 @@
         "words": "新聞 因る 明日 雪 そう",
         "readingFrom": "tatoeba",
         "readingDiffers": ["明日: あした → あす"],
-        "indirect": ["tr"]
+        "indirect": ["tr"],
+        "readingWas": "しんぶんに よれば あすは ゆきだ そうです。",
+        "note": "spacing: 〜そうです stays attached",
+        "voicesRemade": true
       },
       "image": "cue:cloud-with-snow",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/273-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/273-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/269-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/269-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 274,
+      "index": 270,
       "kind": "phrase",
       "text": "彼はタバコを吸うのをやめました。",
       "reading": "かれは タバコを すうのを やめました。",
@@ -6255,12 +6364,12 @@
       "review": { "words": "彼 タバコ 吸う 止める", "readingFrom": "tatoeba", "indirect": ["tr"] },
       "image": "cue:no-smoking",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/274-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/274-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/270-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/270-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 275,
+      "index": 271,
       "kind": "phrase",
       "text": "暗くなる前に家に帰ってきなさい。",
       "reading": "くらく なる まえに うちに かえって きなさい。",
@@ -6280,18 +6389,18 @@
       },
       "image": "cue:house",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/275-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/275-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/271-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/271-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 276,
+      "index": 272,
       "kind": "phrase",
       "text": "最近何か面白い本読まれましたか？",
       "reading": "さいきん なにか おもしろい ほん よまれましたか？",
       "gloss": {
         "en": "Have you read any interesting books recently?",
-        "tr": "Son zamanlarda hiç ilginç kitaplar okudun mu?",
+        "tr": "Son zamanlarda ilginç bir kitap okudunuz mu?",
         "de": "Haben Sie in letzter Zeit irgendein interessantes Buch gelesen?",
         "es": "¿Te has leído algún libro interesante últimamente?",
         "fr": "Avez-vous lu un livre intéressant, dernièrement ?",
@@ -6301,16 +6410,18 @@
       "review": {
         "words": "最近 何 面白い 本 読む",
         "readingFrom": "tatoeba",
-        "indirect": ["pt-BR", "tr"]
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["tr"],
+        "note": "tr: honorific 読まれました → siz"
       },
       "image": "cue:open-book",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/276-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/276-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/272-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/272-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 277,
+      "index": 273,
       "kind": "phrase",
       "text": "私は自分のカメラを捜しています。",
       "reading": "わたしは じぶんの カメラを さがして います。",
@@ -6330,12 +6441,12 @@
       },
       "image": "cue:camera",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/277-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/277-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/273-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/273-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 278,
+      "index": 274,
       "kind": "phrase",
       "text": "誰も私のことを分かってくれない。",
       "reading": "だれも わたしの ことを わかって くれない。",
@@ -6356,18 +6467,18 @@
       },
       "image": "cue:pensive-face",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/278-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/278-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/274-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/274-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 279,
+      "index": 275,
       "kind": "phrase",
       "text": "私は今朝バターつきのパンを食べた。",
       "reading": "わたしは けさ バターつきの パンを たべた。",
       "gloss": {
         "en": "I ate bread and butter this morning.",
-        "tr": "Bu sabah ekmek ve tereyağı yedim.",
+        "tr": "Bu sabah tereyağlı ekmek yedim.",
         "de": "Heute Morgen habe ich Butterbrot gegessen.",
         "es": "Esta mañana, he comido pan con mantequilla.",
         "fr": "Ce matin, j'ai mangé du pain beurré.",
@@ -6376,22 +6487,24 @@
       "review": {
         "words": "私 今朝 バター 付き パン 食べる",
         "readingFrom": "unidic",
-        "indirect": ["tr"]
+        "indirect": ["tr"],
+        "edited": ["tr"],
+        "note": "tr: buttered bread, not bread and butter separately"
       },
       "image": "cue:bread",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/279-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/279-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/275-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/275-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 280,
+      "index": 276,
       "kind": "phrase",
       "text": "仕事忙しいのに話聞いてくれてありがとう。",
       "reading": "しごと いそがしいのに はなし きいて くれて ありがとう。",
       "gloss": {
         "en": "Thanks for hearing me out despite being so busy with work.",
-        "tr": "İşle çok meşgul olduğunuz halde beni dinlediğiniz için teşekkürler.",
+        "tr": "İşin yoğunken beni dinlediğin için teşekkürler.",
         "de": "Danke, dass du mir zugehört hast, obwohl du mit deiner Arbeit so beschäftigt bist.",
         "es": "Gracias por escucharme a pesar de estar ocupado con el trabajo.",
         "fr": "Merci de m’avoir écouté malgré que tu sois pris par ton travail.",
@@ -6400,16 +6513,18 @@
       "review": {
         "words": "仕事 忙しい 話 聞く 呉れる 有り難う",
         "readingFrom": "tatoeba",
-        "indirect": ["tr"]
+        "indirect": ["tr"],
+        "edited": ["tr"],
+        "note": "tr: casual ja → sen"
       },
       "image": "cue:folded-hands",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/280-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/280-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/276-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/276-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 281,
+      "index": 277,
       "kind": "phrase",
       "text": "私は英語の発音をもっとよくしたい。",
       "reading": "わたしは えいごの はつおんを もっと よく したい。",
@@ -6429,12 +6544,12 @@
       },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/281-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/281-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/277-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/277-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 282,
+      "index": 278,
       "kind": "phrase",
       "text": "十二月は一年の最後の月です。",
       "reading": "じゅうにがつは いちねんの さいごの つきです。",
@@ -6449,12 +6564,12 @@
       "review": { "words": "十 二 月 一 年 最後 月", "readingFrom": "tatoeba", "indirect": ["ru"] },
       "image": "cue:tear-off-calendar",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/282-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/282-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/278-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/278-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 283,
+      "index": 279,
       "kind": "phrase",
       "text": "彼は私の娘と結婚したがっている。",
       "reading": "かれは わたしの むすめと けっこんしたがって いる。",
@@ -6474,12 +6589,12 @@
       },
       "image": "cue:wedding",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/283-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/283-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/279-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/279-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 284,
+      "index": 280,
       "kind": "phrase",
       "text": "人に聞く前に少しは自分で調べたら？",
       "reading": "ひとに きく まえに すこしは じぶんで しらべたら？",
@@ -6493,12 +6608,12 @@
       "review": { "words": "人 聞く 前 少し 自分 調べる", "readingFrom": "tatoeba" },
       "image": "cue:magnifying-glass-tilted-left",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/284-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/284-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/280-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/280-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 285,
+      "index": 281,
       "kind": "phrase",
       "text": "彼は私に新しい辞書を買ってくれた。",
       "reading": "かれは わたしに あたらしい じしょを かって くれた。",
@@ -6518,12 +6633,12 @@
       },
       "image": "cue:closed-book",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/285-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/285-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/281-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/281-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 286,
+      "index": 282,
       "kind": "phrase",
       "text": "彼女がどこにいるか知っていますか。",
       "reading": "かのじょが どこに いるか しって いますか。",
@@ -6543,12 +6658,12 @@
       },
       "image": "cue:round-pushpin",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/286-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/286-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/282-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/282-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 287,
+      "index": 283,
       "kind": "phrase",
       "text": "私は彼ほど上手に英語を話せません。",
       "reading": "わたしは かれほど じょうずに えいごを はなせません。",
@@ -6563,12 +6678,12 @@
       "review": { "words": "私 彼 上手 英語 話す", "readingFrom": "tatoeba", "indirect": ["ru"] },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/287-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/287-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/283-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/283-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 288,
+      "index": 284,
       "kind": "phrase",
       "text": "彼女は自分のことを話すのが好きだ。",
       "reading": "かのじょは じぶんの ことを はなすのが すきだ。",
@@ -6583,18 +6698,18 @@
       "review": { "words": "彼女 自分 事 話す 好き", "readingFrom": "unidic", "indirect": ["tr"] },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/288-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/288-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/284-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/284-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 289,
+      "index": 285,
       "kind": "phrase",
       "text": "私は食事をしながら本を読みました。",
       "reading": "わたしは しょくじを しながら ほんを よみました。",
       "gloss": {
         "en": "I read a book while eating.",
-        "tr": "Yemek yerken bir kitap okurum.",
+        "tr": "Yemek yerken kitap okudum.",
         "de": "Ich habe während des Essens ein Buch gelesen.",
         "es": "Leí un libro mientras comía.",
         "fr": "J'ai lu un livre en mangeant.",
@@ -6605,22 +6720,24 @@
       "review": {
         "words": "私 食事 為る 本 読む",
         "readingFrom": "unidic",
-        "indirect": ["fr", "pt-BR", "tr"]
+        "indirect": ["fr", "pt-BR", "tr"],
+        "edited": ["tr"],
+        "note": "tr: present → past"
       },
       "image": "cue:open-book",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/289-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/289-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/285-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/285-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 290,
+      "index": 286,
       "kind": "phrase",
       "text": "あなたの勉強を邪魔しないようにします。",
-      "reading": "あなたの べんきょうを じゃま しない ように します。",
+      "reading": "あなたの べんきょうを じゃましない ように します。",
       "gloss": {
-        "en": "I'll do my best not to disturb your studying.",
-        "tr": "Çalışmanı bölmemek için elimden gelenin en iyisini yapacağım.",
+        "en": "I'll try not to disturb your studying.",
+        "tr": "Çalışmanızı bölmemeye çalışacağım.",
         "de": "Ich werde mir Mühe geben, dich nicht beim Lernen zu stören.",
         "es": "Me voy a esforzar por no molestarte en tus estudios.",
         "fr": "Je ferai de mon mieux pour ne pas perturber tes révisions.",
@@ -6631,16 +6748,20 @@
       "review": {
         "words": "貴方 勉強 邪魔 為る 様 為る",
         "readingFrom": "tatoeba",
-        "indirect": ["ar", "pt-BR", "tr"]
+        "indirect": ["ar", "pt-BR", "tr"],
+        "readingWas": "あなたの べんきょうを じゃま しない ように します。",
+        "edited": ["en", "tr"],
+        "note": "spacing: suru-verb one phrase; en/tr: ようにする = try to, not 'do my best'; tr: あなた + します → siz",
+        "voicesRemade": true
       },
       "image": "cue:books",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/290-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/290-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/286-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/286-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 291,
+      "index": 287,
       "kind": "phrase",
       "text": "こんな変な法律誰のためにあるんだろう。",
       "reading": "こんな へんな ほうりつ だれの ために あるんだろう。",
@@ -6659,12 +6780,12 @@
       },
       "image": "cue:balance-scale",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/291-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/291-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/287-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/287-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 292,
+      "index": 288,
       "kind": "phrase",
       "text": "あなたはいつ旅行から戻って来ましたか。",
       "reading": "あなたは いつ りょこうから もどって きましたか。",
@@ -6684,12 +6805,12 @@
       },
       "image": "cue:luggage",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/292-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/292-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/288-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/288-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 293,
+      "index": 289,
       "kind": "phrase",
       "text": "入ってきてください。ドアは開いています。",
       "reading": "はいって きて ください。ドアは あいて います。",
@@ -6710,18 +6831,18 @@
       },
       "image": "cue:door",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/293-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/293-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/289-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/289-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 294,
+      "index": 290,
       "kind": "phrase",
       "text": "してもいないことをどうして謝るの？",
       "reading": "しても いない ことを どうして あやまるの？",
       "gloss": {
-        "en": "Why are you sorry for something you haven't done?",
-        "tr": "Yapmadığınız bir şey için niçin üzülüyorsunuz?",
+        "en": "Why are you apologizing for something you didn't do?",
+        "tr": "Yapmadığın bir şey için neden özür diliyorsun?",
         "de": "Wieso tut dir etwas leid, das du nicht gemacht hast?",
         "es": "¿Por qué lamentas algo que no has hecho?",
         "fr": "Pourquoi es-tu désolée pour quelque chose que tu n'as pas fait ?",
@@ -6731,16 +6852,18 @@
       "review": {
         "words": "為る 居る 事 どう 為る 謝る",
         "readingFrom": "tatoeba",
-        "indirect": ["pt-BR", "tr"]
+        "indirect": ["pt-BR", "tr"],
+        "edited": ["en", "tr"],
+        "note": "en/tr: 謝る = apologize; casual → sen"
       },
       "image": "cue:person-bowing",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/294-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/294-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/290-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/290-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 295,
+      "index": 291,
       "kind": "phrase",
       "text": "私は彼の本の半分しか持っていない。",
       "reading": "わたしは かれの ほんの はんぶんしか もって いない。",
@@ -6755,12 +6878,12 @@
       "review": { "words": "私 彼 本 半分 持つ 居る", "readingFrom": "unidic", "indirect": ["ru"] },
       "image": "cue:books",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/295-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/295-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/291-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/291-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 296,
+      "index": 292,
       "kind": "phrase",
       "text": "一緒に旅行してくれる人がいないんだ。",
       "reading": "いっしょに りょこうして くれる ひとが いないんだ。",
@@ -6780,12 +6903,12 @@
       },
       "image": "cue:luggage",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/296-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/296-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/292-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/292-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 297,
+      "index": 293,
       "kind": "phrase",
       "text": "彼がどこに住んでいるのか知ってるよ。",
       "reading": "かれが どこに すんで いるのか しってるよ。",
@@ -6805,15 +6928,15 @@
       },
       "image": "cue:house",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/297-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/297-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/293-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/293-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 298,
+      "index": 294,
       "kind": "phrase",
       "text": "きみにちょっとしたものをもってきたよ。",
-      "reading": "きみに ちょっと した ものを もって きたよ。",
+      "reading": "きみに ちょっとした ものを もって きたよ。",
       "gloss": {
         "en": "I brought you a little something.",
         "tr": "Sana küçük bir şey getirdim.",
@@ -6827,16 +6950,19 @@
       "review": {
         "words": "君 一寸 為る 物 持つ 来る",
         "readingFrom": "unidic",
-        "indirect": ["es", "pt-BR"]
+        "indirect": ["es", "pt-BR"],
+        "readingWas": "きみに ちょっと した ものを もって きたよ。",
+        "note": "spacing: ちょっとした is one phrase",
+        "voicesRemade": true
       },
       "image": "cue:wrapped-gift",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/298-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/298-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/294-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/294-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     },
     {
-      "index": 299,
+      "index": 295,
       "kind": "phrase",
       "text": "電車に乗ると、横に誰も座ってくれない。",
       "reading": "でんしゃに のると、よこに だれも すわって くれない。",
@@ -6850,8 +6976,8 @@
       "review": { "words": "電車 乗る 横 誰 座る 呉れる", "readingFrom": "tatoeba" },
       "image": "cue:train",
       "voices": [
-        { "key": "echo/packs/ja_jlptN4/299-jf_nezumi.m4a", "voice": "jf_nezumi" },
-        { "key": "echo/packs/ja_jlptN4/299-jm_kumo.m4a", "voice": "jm_kumo" }
+        { "key": "echo/packs/ja_jlptN4/295-jf_nezumi.m4a", "voice": "jf_nezumi" },
+        { "key": "echo/packs/ja_jlptN4/295-jm_kumo.m4a", "voice": "jm_kumo" }
       ]
     }
   ]
