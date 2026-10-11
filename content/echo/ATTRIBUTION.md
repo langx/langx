@@ -532,8 +532,10 @@ packs have passed it; see "In use" above for what passing meant.
 **The three Japanese packs are drafts too** — see _Japanese: where it came
 from_ at the end of this file.
 
-**Five drafts today, all at `fluent`: `es`, `fr` and `it`**, drafted on 7 October
-2026 — 296, 298 and 299 items, every one with a cue and Kokoro's readings —
+**Five packs drafted on 7 October 2026, all at `fluent`: `es`, `fr` and `it`**
+— 296, 298 and 299 items, every one with a cue and Kokoro's readings, read
+on 11 October and now 267, 263 and 254 (see "What the review of the Spanish,
+French and Italian `fluent` was" below) —
 **and `de` and `ru`**, 270 and 244 items read by Piper, described at the end of
 this section. They draw on no source the packs above do not: Tatoeba for the
 sentences and their glosses, FrequencyWords for the level (its bands now
@@ -630,6 +632,93 @@ carry one voice where the other three carry two. Both are explained above, and
 both are the honest answer rather than a gap to fill.
 
 **Four columns per file unread**, as above.
+
+### What the review of the Spanish, French and Italian `fluent` was, exactly
+
+**The same three columns as on the fifteen — the front, English and Turkish —
+read line by line, every item, plus the cue on every item.** 893 drafted items,
+of which **784** remain: es 296 → 267, fr 298 → 263, it 299 → 254. The cue was
+held to `tools/echo-content/images/ILLUSTRATION.md`'s test — does the picture
+say what the sentence is about before the words do. The other gloss columns
+were **linted and not read**, and every finding `lint-glosses.mjs` had on
+these three packs — eighteen, all mechanical — was dealt with: thirteen
+repaired, five gone with items dropped for other reasons. It has nothing left
+to say about them. None of these packs has a `reading`.
+
+**This was a Claude review, not a native speaker's.** That matters less here
+than for Japanese or Arabic — every gloss is a Tatoeba contributor's and the
+fronts are short, everyday sentences — but a native speaker reading the
+fronts would still be the better check, and the English column is where a
+loose gloss is likeliest to survive.
+
+**109 items dropped**, in the fifteen's kinds:
+
+- **Near-duplicates, 88 of them**, which is most of the work. The cue rule
+  pulls the pool towards what the palette draws, so the drafts came back with
+  families: ten Portuguese-speaking sentences across the three, five ages
+  over a birthday cake, nine Italian dictionaries, four Italian "Come si
+  dice in …?", five French "Je l'ai cherché(e)/trouvé" under the magnifying
+  glass, pairs that differ only in a pronoun or a gender (`Je l'ai revu.` /
+  `Je l'ai revue.`, `Tom è musulmano.` / `Io sono musulmano.`). Each family
+  was thinned to one or two, keeping the one with a Turkish gloss where there
+  was a choice.
+- **Tatoeba meta and nonsense, 11** — "¿Cómo puedo modificar esta frase?", "No
+  quiero traducir esta frase.", "Vogliamo frasi complete.", the English
+  spelling question `¿Cómo se escribe "pretty"?` in two languages, "Sono una
+  gatta.", "Sono una lupa.", "Tom è un cyborg.", the alchemist in two
+  languages, and "Je respirais contre le miroir.".
+- **Proverbs, quotations and slogans, 7** — "De tal palo, tal astilla.", "La
+  storia si ripete.", "Insegnare è apprendere.", "La musique est une langue
+  universelle.", "Dio creò il mondo." (Genesis, dropped from three languages
+  on the fifteen too), "Cristo è resuscitato dai morti!", and "Le judaïsme est
+  beau.", a position rather than a sentence a learner needs.
+- **War, 1** — "La guerra durò due anni.", the line the German and Russian
+  drafts drew.
+- **A broken front, 1** — "Où habite lain ?", a name whose capital I was
+  typed as a lower-case L.
+- **No honest cue, 1** — "Era sorprendentemente bella." under a cherry
+  blossom. Every item in these packs has to carry a picture, so a sentence
+  without an honest one goes rather than ships bare.
+
+**31 glosses corrected on reading** (18 English, 13 Turkish, on 29
+items), each naming its locale in `review.edited` with the old text in
+`review.glossWas`. The recurring kinds:
+
+- **A false friend glossed literally.** `Il est comédien.` said "comedian";
+  _comédien_ is an actor, which is also what its clapperboard shows. `Ne sois
+pas si avare.` said "greedy" for _stingy_.
+- **An English idiom that says something else.** `Llámame cuando decidas
+casarte conmigo.` was "Give me a ring when you decide to marry me" — a pun
+  the Turkish then translated literally, as handing over a ring. Both now say
+  _call me_.
+- **The wrong object.** `La copa se quebró.` sat under a wine glass and said
+  "The cup broke" in English and _fincan_ in Turkish; it is a glass. `Tom est
+philosophe.` said "philosophical".
+- **Tense and register slips** — `Il a neigé toute la nuit.` as "It's been
+  snowing", `¿Ya has almorzado?` in a Turkish past perfect, a passé simple as
+  "Spring has come around", `Estoy aprendiendo checo.` as "I learn Czech".
+- **Turkish spelling and grammar** — _vejeteryan_ for _vejetaryen_ twice, a
+  colloquial _bakıyolardı_, _e postamı_, a plural formal imperative for a
+  singular informal one.
+
+**Thirteen mechanical repairs**, also in `review.edited`: eleven Russian
+glosses with a hyphen for the copula dash and two Arabic ones spaced before
+their punctuation.
+
+**One front corrected**, `¡Necesito un medico!` → `¡Necesito un médico!`,
+with the original in `review.frontWas` — and since the reading is keyed to the
+text, its two Kokoro takes were made again with the same voices. **One cue
+changed**: `Non traduco più romanzi.` no longer borrows the Latin-letters
+badge and shows books (`review.cueWas`). No concept was drawn or edited.
+
+**The packs were renumbered.** Dropping items left gaps the seed would not
+close (it deletes by index at or past the new length), so the survivors were
+put back through `order.mjs`'s `spread` — keeping neighbours from opening
+with the same word — and numbered from 0. Every `voices[].key` was rewritten
+to its new index and the m4a files renamed to match by a copy into a fresh
+directory, checked (every key resolves to a file, no file without a key: 534,
+263 and 508), and only then swapped in for the old one. The files are still
+not uploaded.
 
 ### German and Russian `fluent`: drafts, 7 October
 
