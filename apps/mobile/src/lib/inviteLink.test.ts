@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { inviteHandleFromUrl, normalizeInviteCode, resolveReferrer } from './inviteLink'
+import {
+  inviteHandleFromUrl,
+  normalizeInviteCode,
+  resolveReferrer,
+  signUpReferrerFields,
+} from './inviteLink'
 
 /**
  * These run on paths where a throw is not an error message but a launch that
@@ -70,5 +75,20 @@ describe('resolveReferrer', () => {
 
   it('normalises what it found, since the flag is written from a URL', () => {
     expect(resolveReferrer('', '@Deniz')?.handle).toBe('deniz')
+  })
+})
+
+describe('signUpReferrerFields', () => {
+  it('sends a captured invite as a link', () => {
+    expect(signUpReferrerFields('sofia')).toEqual({
+      referredByHandle: 'sofia',
+      referredBySource: 'link',
+    })
+  })
+
+  it('sends nothing when there is no usable flag', () => {
+    expect(signUpReferrerFields(null)).toEqual({})
+    expect(signUpReferrerFields('')).toEqual({})
+    expect(signUpReferrerFields('not a handle!!')).toEqual({})
   })
 })
