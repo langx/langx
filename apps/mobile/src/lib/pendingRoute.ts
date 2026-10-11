@@ -31,5 +31,14 @@ export function pendingRouteHref(route: string | null): Href | null {
    * which would accept a traversal or a query string as readily as an id.
    */
   const conversation = /^\/chat\/([a-f\d]{1,64})$/.exec(route ?? '')
-  return conversation ? `/chat/${conversation[1]}` : null
+  if (conversation) return `/chat/${conversation[1]}`
+
+  /*
+   * "Call Maria on LangX": the Intents extension cannot place a call — it has
+   * no media engine — so it opens the thread with the call asked for, and the
+   * thread places it through its own gate. The media is one of two words, not
+   * whatever followed the `=`.
+   */
+  const call = /^\/chat\/([a-f\d]{1,64})\?call=(audio|video)$/.exec(route ?? '')
+  return call ? `/chat/${call[1]}?call=${call[2]}` : null
 }
