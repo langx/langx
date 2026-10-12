@@ -2,8 +2,8 @@
   "id": "fr:fluent",
   "lang": "fr",
   "level": "fluent",
-  "contentVersion": 3,
-  "reviewed": false,
+  "contentVersion": 4,
+  "reviewed": true,
   "sources": [
     {
       "name": "Wiktionary, via kaikki.org (wiktextract)",
@@ -42,7 +42,7 @@
       "index": 1,
       "kind": "phrase",
       "text": "bonne continuation",
-      "gloss": { "en": "keep it up" },
+      "gloss": { "en": "all the best" },
       "freqRank": 2,
       "review": {
         "sense": "J’apprécie votre travail et je vous souhaite de continuer.",
@@ -60,7 +60,9 @@
             "file": "LL-Q150 (fra)-LoquaxFR-bonne continuation.wav",
             "tags": []
           }
-        ]
+        ],
+        "glossWas": { "en": "keep it up" },
+        "edited": ["en"]
       },
       "image": "cue:thumbs-up",
       "voices": [{ "key": "echo/packs/fr_fluent/1-ff_siwis.m4a", "voice": "ff_siwis" }]
@@ -70,13 +72,17 @@
       "kind": "phrase",
       "text": "Ne tombez pas !",
       "gloss": {
-        "en": "Don't fall off!",
+        "en": "Don't fall!",
         "de": "Fallen Sie nicht!",
         "es": "¡No os caigáis!",
         "ru": "Не упадите!"
       },
       "freqRank": 5,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "en": "Don't fall off!" },
+        "edited": ["en"]
+      },
       "image": "cue:warning",
       "voices": [{ "key": "echo/packs/fr_fluent/2-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
@@ -208,11 +214,15 @@
       "gloss": {
         "en": "Tom is a mechanic.",
         "es": "Tom es mecánico.",
-        "ru": "Том - механик.",
+        "ru": "Том — механик.",
         "ar": "توم ميكانيكي."
       },
       "freqRank": 14,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "ru": "Том - механик." },
+        "edited": ["ru"]
+      },
       "image": "cue:wrench",
       "voices": [{ "key": "echo/packs/fr_fluent/11-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
@@ -249,17 +259,16 @@
     {
       "index": 14,
       "kind": "phrase",
-      "text": "Tom est musulman.",
+      "text": "Nous partirons demain.",
       "gloss": {
-        "en": "Tom is a Muslim.",
-        "de": "Tom ist Moslem.",
-        "es": "Tom es musulmán.",
-        "pt-BR": "Tom é muçulmano.",
-        "ar": "توم مسلم."
+        "en": "We're leaving tomorrow.",
+        "de": "Morgen fahren wir ab.",
+        "es": "Iremos mañana.",
+        "ru": "Мы завтра уезжаем."
       },
-      "freqRank": 17,
+      "freqRank": 19,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:place-of-worship",
+      "image": "cue:luggage",
       "voices": [{ "key": "echo/packs/fr_fluent/14-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
@@ -281,16 +290,16 @@
     {
       "index": 16,
       "kind": "phrase",
-      "text": "Nous partirons demain.",
+      "text": "Elle était déprimée.",
       "gloss": {
-        "en": "We're leaving tomorrow.",
-        "de": "Morgen fahren wir ab.",
-        "es": "Iremos mañana.",
-        "ru": "Мы завтра уезжаем."
+        "en": "She was depressed.",
+        "de": "Sie blies Trübsal.",
+        "es": "Ella estaba deprimida.",
+        "pt-BR": "Ela estava deprimida."
       },
-      "freqRank": 19,
+      "freqRank": 23,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:luggage",
+      "image": "cue:pensive-face",
       "voices": [{ "key": "echo/packs/fr_fluent/16-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
@@ -311,17 +320,16 @@
     {
       "index": 18,
       "kind": "phrase",
-      "text": "Il est enseignant.",
+      "text": "Elle a souri.",
       "gloss": {
-        "en": "He is a teacher.",
-        "de": "Er ist Lehrer.",
-        "es": "Él es profesor.",
-        "pt-BR": "Ele é professor.",
-        "ru": "Он учитель."
+        "en": "She smiled.",
+        "de": "Sie lächelte.",
+        "es": "Ella sonrió.",
+        "ru": "Она улыбнулась."
       },
-      "freqRank": 21,
+      "freqRank": 25,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:school",
+      "image": "cue:slightly-smiling-face",
       "voices": [{ "key": "echo/packs/fr_fluent/18-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
@@ -342,51 +350,6 @@
     {
       "index": 20,
       "kind": "phrase",
-      "text": "Elle était déprimée.",
-      "gloss": {
-        "en": "She was depressed.",
-        "de": "Sie blies Trübsal.",
-        "es": "Ella estaba deprimida.",
-        "pt-BR": "Ela estava deprimida."
-      },
-      "freqRank": 23,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pensive-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/20-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 21,
-      "kind": "phrase",
-      "text": "Mike a souri.",
-      "gloss": {
-        "en": "Mike smiled.",
-        "es": "Mike sonrió.",
-        "pt-BR": "Mike sorriu.",
-        "ru": "Майк улыбнулся."
-      },
-      "freqRank": 24,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:slightly-smiling-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/21-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 22,
-      "kind": "phrase",
-      "text": "Elle a souri.",
-      "gloss": {
-        "en": "She smiled.",
-        "de": "Sie lächelte.",
-        "es": "Ella sonrió.",
-        "ru": "Она улыбнулась."
-      },
-      "freqRank": 25,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:slightly-smiling-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/22-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 23,
-      "kind": "phrase",
       "text": "Tu me déçois.",
       "gloss": {
         "en": "I'm disappointed with you.",
@@ -398,10 +361,10 @@
       "freqRank": 26,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:disappointed-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/23-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/20-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 24,
+      "index": 21,
       "kind": "phrase",
       "text": "Ils le respectent.",
       "gloss": {
@@ -414,10 +377,10 @@
       "freqRank": 27,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-bowing",
-      "voices": [{ "key": "echo/packs/fr_fluent/24-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/21-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 25,
+      "index": 22,
       "kind": "phrase",
       "text": "La nuit tombait.",
       "gloss": {
@@ -429,10 +392,10 @@
       "freqRank": 28,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sunset",
-      "voices": [{ "key": "echo/packs/fr_fluent/25-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/22-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 26,
+      "index": 23,
       "kind": "phrase",
       "text": "Nous nous reverrons.",
       "gloss": {
@@ -444,25 +407,29 @@
       "freqRank": 29,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:waving-hand",
-      "voices": [{ "key": "echo/packs/fr_fluent/26-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/23-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 27,
+      "index": 24,
       "kind": "phrase",
       "text": "Le printemps arriva.",
       "gloss": {
-        "en": "Spring has come around.",
+        "en": "Spring came.",
         "es": "Llegó la primavera.",
         "pt-BR": "A primavera chegou.",
         "ru": "Наступила весна."
       },
       "freqRank": 30,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "en": "Spring has come around." },
+        "edited": ["en"]
+      },
       "image": "cue:cherry-blossom",
-      "voices": [{ "key": "echo/packs/fr_fluent/27-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/24-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 28,
+      "index": 25,
       "kind": "phrase",
       "text": "Un renard arriva.",
       "gloss": {
@@ -474,10 +441,10 @@
       "freqRank": 31,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fox",
-      "voices": [{ "key": "echo/packs/fr_fluent/28-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/25-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 29,
+      "index": 26,
       "kind": "phrase",
       "text": "Il lisait beaucoup.",
       "gloss": {
@@ -490,10 +457,10 @@
       "freqRank": 32,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
-      "voices": [{ "key": "echo/packs/fr_fluent/29-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/26-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 30,
+      "index": 27,
       "kind": "phrase",
       "text": "Pourquoi boites-tu ?",
       "gloss": {
@@ -505,10 +472,10 @@
       "freqRank": 33,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:leg",
-      "voices": [{ "key": "echo/packs/fr_fluent/30-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/27-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 31,
+      "index": 28,
       "kind": "phrase",
       "text": "Elle est pianiste.",
       "gloss": {
@@ -520,25 +487,29 @@
       "freqRank": 34,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-score",
-      "voices": [{ "key": "echo/packs/fr_fluent/31-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/28-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 32,
+      "index": 29,
       "kind": "phrase",
       "text": "Il est végétarien.",
       "gloss": {
         "en": "He's a vegetarian.",
-        "tr": "O bir vejeteryan.",
+        "tr": "O bir vejetaryen.",
         "de": "Er ist Vegetarier.",
         "ru": "Он вегетарианец."
       },
       "freqRank": 35,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "tr": "O bir vejeteryan." },
+        "edited": ["tr"]
+      },
       "image": "cue:green-salad",
-      "voices": [{ "key": "echo/packs/fr_fluent/32-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/29-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 33,
+      "index": 30,
       "kind": "phrase",
       "text": "Elle est agressive.",
       "gloss": {
@@ -551,41 +522,29 @@
       "freqRank": 36,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:angry-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/33-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/30-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 34,
-      "kind": "phrase",
-      "text": "Je suis végétarien.",
-      "gloss": {
-        "en": "I am a vegetarian.",
-        "de": "Ich bin Vegetarier.",
-        "es": "Soy vegetariano.",
-        "pt-BR": "Sou vegetariano.",
-        "ru": "Я вегетарианец."
-      },
-      "freqRank": 37,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:green-salad",
-      "voices": [{ "key": "echo/packs/fr_fluent/34-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 35,
+      "index": 31,
       "kind": "phrase",
       "text": "Il est comédien.",
       "gloss": {
-        "en": "He's a comedian.",
+        "en": "He's an actor.",
         "de": "Er ist ein Komödiant.",
         "es": "Él es comediante.",
         "pt-BR": "Ele é comediante."
       },
       "freqRank": 38,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "en": "He's a comedian." },
+        "edited": ["en"]
+      },
       "image": "cue:clapper-board",
-      "voices": [{ "key": "echo/packs/fr_fluent/35-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/31-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 36,
+      "index": 32,
       "kind": "phrase",
       "text": "Je dormirai ici.",
       "gloss": {
@@ -597,10 +556,10 @@
       "freqRank": 39,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bed",
-      "voices": [{ "key": "echo/packs/fr_fluent/36-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/32-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 37,
+      "index": 33,
       "kind": "phrase",
       "text": "Nous sommes déçus.",
       "gloss": {
@@ -612,10 +571,10 @@
       "freqRank": 40,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:disappointed-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/37-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/33-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 38,
+      "index": 34,
       "kind": "phrase",
       "text": "Je suis divorcée.",
       "gloss": {
@@ -628,25 +587,29 @@
       "freqRank": 41,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:broken-heart",
-      "voices": [{ "key": "echo/packs/fr_fluent/38-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/34-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 39,
+      "index": 35,
       "kind": "phrase",
       "text": "Tom est philosophe.",
       "gloss": {
-        "en": "Tom is philosophical.",
+        "en": "Tom is a philosopher.",
         "tr": "Tom bir filozof.",
-        "ru": "Том - философ.",
+        "ru": "Том — философ.",
         "ar": "توم فيلسوف."
       },
       "freqRank": 42,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "en": "Tom is philosophical.", "ru": "Том - философ." },
+        "edited": ["en", "ru"]
+      },
       "image": "cue:thinking-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/39-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/35-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 40,
+      "index": 36,
       "kind": "phrase",
       "text": "Elle parle portugais.",
       "gloss": {
@@ -660,26 +623,10 @@
       "freqRank": 43,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/40-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/36-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 41,
-      "kind": "phrase",
-      "text": "Il parle portugais.",
-      "gloss": {
-        "en": "He speaks Portuguese.",
-        "de": "Er spricht Portugiesisch.",
-        "es": "Él habla portugués.",
-        "pt-BR": "Ele fala português.",
-        "ru": "Он говорит по-португальски."
-      },
-      "freqRank": 44,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/41-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 42,
+      "index": 37,
       "kind": "phrase",
       "text": "Parles-tu portugais ?",
       "gloss": {
@@ -692,10 +639,10 @@
       "freqRank": 45,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/42-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/37-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 43,
+      "index": 38,
       "kind": "phrase",
       "text": "Êtes-vous sûres ?",
       "gloss": {
@@ -708,10 +655,10 @@
       "freqRank": 46,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-with-raised-eyebrow",
-      "voices": [{ "key": "echo/packs/fr_fluent/43-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/38-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 44,
+      "index": 39,
       "kind": "phrase",
       "text": "Le chien aboie.",
       "gloss": {
@@ -724,25 +671,10 @@
       "freqRank": 47,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
-      "voices": [{ "key": "echo/packs/fr_fluent/44-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/39-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 45,
-      "kind": "phrase",
-      "text": "Un chien aboie.",
-      "gloss": {
-        "en": "A dog is barking.",
-        "de": "Ein Hund bellt.",
-        "es": "Un perro está ladrando.",
-        "ru": "Лает собака."
-      },
-      "freqRank": 48,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog",
-      "voices": [{ "key": "echo/packs/fr_fluent/45-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 46,
+      "index": 40,
       "kind": "phrase",
       "text": "Ils sont chanteurs.",
       "gloss": {
@@ -755,25 +687,10 @@
       "freqRank": 49,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:microphone",
-      "voices": [{ "key": "echo/packs/fr_fluent/46-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/40-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 47,
-      "kind": "phrase",
-      "text": "Vous êtes chanteurs.",
-      "gloss": {
-        "en": "You're singers.",
-        "de": "Ihr seid Sänger.",
-        "pt-BR": "Vocês são cantores.",
-        "ru": "Вы певцы."
-      },
-      "freqRank": 50,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:microphone",
-      "voices": [{ "key": "echo/packs/fr_fluent/47-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 48,
+      "index": 41,
       "kind": "phrase",
       "text": "Hier il pleuvait.",
       "gloss": {
@@ -785,26 +702,10 @@
       "freqRank": 51,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cloud-with-rain",
-      "voices": [{ "key": "echo/packs/fr_fluent/48-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/41-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 49,
-      "kind": "phrase",
-      "text": "Elle mourut en 1960.",
-      "gloss": {
-        "en": "She died in 1960.",
-        "de": "Sie starb 1960.",
-        "es": "Ella murió en 1960.",
-        "pt-BR": "Ela morreu em 1960.",
-        "ru": "Она умерла в 1960 году."
-      },
-      "freqRank": 52,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:coffin",
-      "voices": [{ "key": "echo/packs/fr_fluent/49-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 50,
+      "index": 42,
       "kind": "phrase",
       "text": "Il mourut soudainement.",
       "gloss": {
@@ -816,10 +717,10 @@
       "freqRank": 53,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:coffin",
-      "voices": [{ "key": "echo/packs/fr_fluent/50-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/42-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 51,
+      "index": 43,
       "kind": "phrase",
       "text": "Son père mourut.",
       "gloss": {
@@ -832,10 +733,10 @@
       "freqRank": 54,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:coffin",
-      "voices": [{ "key": "echo/packs/fr_fluent/51-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/43-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 52,
+      "index": 44,
       "kind": "phrase",
       "text": "Vous me plaisez.",
       "gloss": {
@@ -847,10 +748,10 @@
       "freqRank": 55,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-heart",
-      "voices": [{ "key": "echo/packs/fr_fluent/52-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/44-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 53,
+      "index": 45,
       "kind": "phrase",
       "text": "Facebook est ennuyant.",
       "gloss": {
@@ -863,10 +764,10 @@
       "freqRank": 56,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:expressionless-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/53-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/45-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 54,
+      "index": 46,
       "kind": "phrase",
       "text": "Tom est bibliothécaire.",
       "gloss": {
@@ -878,10 +779,10 @@
       "freqRank": 57,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
-      "voices": [{ "key": "echo/packs/fr_fluent/54-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/46-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 55,
+      "index": 47,
       "kind": "phrase",
       "text": "Je le lirai.",
       "gloss": {
@@ -893,10 +794,10 @@
       "freqRank": 58,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
-      "voices": [{ "key": "echo/packs/fr_fluent/55-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/47-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 56,
+      "index": 48,
       "kind": "phrase",
       "text": "Tu nous manqueras.",
       "gloss": {
@@ -908,10 +809,10 @@
       "freqRank": 59,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pleading-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/56-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/48-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 57,
+      "index": 49,
       "kind": "phrase",
       "text": "Il a accéléré.",
       "gloss": {
@@ -923,10 +824,10 @@
       "freqRank": 60,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fast-forward-button",
-      "voices": [{ "key": "echo/packs/fr_fluent/57-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/49-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 58,
+      "index": 50,
       "kind": "phrase",
       "text": "Étiez-vous occupées ?",
       "gloss": {
@@ -938,42 +839,10 @@
       "freqRank": 61,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-running",
-      "voices": [{ "key": "echo/packs/fr_fluent/58-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/50-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 59,
-      "kind": "phrase",
-      "text": "Elle parle hongrois.",
-      "gloss": {
-        "en": "She speaks Hungarian.",
-        "de": "Sie spricht Ungarisch.",
-        "es": "Ella habla húngaro.",
-        "pt-BR": "Ela fala húngaro.",
-        "ru": "Она говорит по-венгерски."
-      },
-      "freqRank": 62,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/59-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 60,
-      "kind": "phrase",
-      "text": "Parles-tu hébreu ?",
-      "gloss": {
-        "en": "Do you speak Hebrew?",
-        "de": "Sprichst du Hebräisch?",
-        "es": "¿Hablas hebreo?",
-        "pt-BR": "Você fala hebraico?",
-        "ru": "Ты говоришь на иврите?"
-      },
-      "freqRank": 63,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/60-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 61,
+      "index": 51,
       "kind": "phrase",
       "text": "Jésus était charpentier.",
       "gloss": {
@@ -987,10 +856,10 @@
       "freqRank": 64,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hammer-and-wrench",
-      "voices": [{ "key": "echo/packs/fr_fluent/61-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/51-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 62,
+      "index": 52,
       "kind": "phrase",
       "text": "Tu me dégoûtes.",
       "gloss": {
@@ -1002,10 +871,10 @@
       "freqRank": 65,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:nauseated-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/62-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/52-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 63,
+      "index": 53,
       "kind": "phrase",
       "text": "Elle est coiffeuse.",
       "gloss": {
@@ -1017,10 +886,10 @@
       "freqRank": 66,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-getting-haircut",
-      "voices": [{ "key": "echo/packs/fr_fluent/63-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/53-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 64,
+      "index": 54,
       "kind": "phrase",
       "text": "Je suis boulanger.",
       "gloss": {
@@ -1033,10 +902,10 @@
       "freqRank": 67,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bread",
-      "voices": [{ "key": "echo/packs/fr_fluent/64-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/54-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 65,
+      "index": 55,
       "kind": "phrase",
       "text": "Tom est électricien.",
       "gloss": {
@@ -1048,10 +917,10 @@
       "freqRank": 68,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:light-bulb",
-      "voices": [{ "key": "echo/packs/fr_fluent/65-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/55-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 66,
+      "index": 56,
       "kind": "phrase",
       "text": "Ils sont lents.",
       "gloss": {
@@ -1063,10 +932,10 @@
       "freqRank": 69,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:turtle",
-      "voices": [{ "key": "echo/packs/fr_fluent/66-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/56-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 67,
+      "index": 57,
       "kind": "phrase",
       "text": "Tom aime expérimenter.",
       "gloss": {
@@ -1078,40 +947,48 @@
       "freqRank": 70,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:test-tube",
-      "voices": [{ "key": "echo/packs/fr_fluent/67-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/57-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 68,
+      "index": 58,
       "kind": "phrase",
       "text": "Nous sommes victorieux.",
       "gloss": {
         "en": "We are victorious.",
-        "tr": "Biz galip gelenleriz.",
+        "tr": "Galibiz.",
         "es": "Somos vencedores.",
         "pt-BR": "Nós somos vencedores."
       },
       "freqRank": 71,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "tr": "Biz galip gelenleriz." },
+        "edited": ["tr"]
+      },
       "image": "cue:trophy",
-      "voices": [{ "key": "echo/packs/fr_fluent/68-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/58-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 69,
+      "index": 59,
       "kind": "phrase",
       "text": "Tom est somnambule.",
       "gloss": {
         "en": "Tom is a sleepwalker.",
         "de": "Tom ist Schlafwandler.",
         "es": "Tom es sonámbulo.",
-        "ru": "Том - лунатик."
+        "ru": "Том — лунатик."
       },
       "freqRank": 72,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "ru": "Том - лунатик." },
+        "edited": ["ru"]
+      },
       "image": "cue:sleeping-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/69-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/59-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 70,
+      "index": 60,
       "kind": "phrase",
       "text": "Es-tu bouddhiste ?",
       "gloss": {
@@ -1123,25 +1000,10 @@
       "freqRank": 73,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:place-of-worship",
-      "voices": [{ "key": "echo/packs/fr_fluent/70-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/60-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 71,
-      "kind": "phrase",
-      "text": "Ils ont nagé.",
-      "gloss": {
-        "en": "They swam.",
-        "de": "Sie schwammen.",
-        "pt-BR": "Eles nadaram.",
-        "ru": "Они поплавали."
-      },
-      "freqRank": 74,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-swimming",
-      "voices": [{ "key": "echo/packs/fr_fluent/71-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 72,
+      "index": 61,
       "kind": "phrase",
       "text": "Tu as nagé.",
       "gloss": {
@@ -1153,10 +1015,10 @@
       "freqRank": 75,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-swimming",
-      "voices": [{ "key": "echo/packs/fr_fluent/72-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/61-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 73,
+      "index": 62,
       "kind": "phrase",
       "text": "Que suggères-tu ?",
       "gloss": {
@@ -1169,10 +1031,10 @@
       "freqRank": 76,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:light-bulb",
-      "voices": [{ "key": "echo/packs/fr_fluent/73-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/62-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 74,
+      "index": 63,
       "kind": "phrase",
       "text": "Le soir approchait.",
       "gloss": {
@@ -1184,10 +1046,10 @@
       "freqRank": 77,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sunset",
-      "voices": [{ "key": "echo/packs/fr_fluent/74-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/63-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 75,
+      "index": 64,
       "kind": "phrase",
       "text": "Nous étions voisines.",
       "gloss": {
@@ -1200,41 +1062,10 @@
       "freqRank": 78,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:houses",
-      "voices": [{ "key": "echo/packs/fr_fluent/75-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/64-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 76,
-      "kind": "phrase",
-      "text": "Je suis musulmane.",
-      "gloss": {
-        "en": "I'm Muslim.",
-        "es": "Soy musulmana.",
-        "pt-BR": "Sou muçulmana.",
-        "ru": "Я - мусульманка.",
-        "ar": "أنا مسلمة."
-      },
-      "freqRank": 79,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:place-of-worship",
-      "voices": [{ "key": "echo/packs/fr_fluent/76-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 77,
-      "kind": "phrase",
-      "text": "Nous vendons tout.",
-      "gloss": {
-        "en": "We sell everything.",
-        "de": "Wir verkaufen alles.",
-        "pt-BR": "Nós vendemos tudo.",
-        "ru": "Мы продаём всё."
-      },
-      "freqRank": 80,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:label",
-      "voices": [{ "key": "echo/packs/fr_fluent/77-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 78,
+      "index": 65,
       "kind": "phrase",
       "text": "Elle est débutante.",
       "gloss": {
@@ -1246,10 +1077,25 @@
       "freqRank": 81,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:new-button",
-      "voices": [{ "key": "echo/packs/fr_fluent/78-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/65-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 79,
+      "index": 66,
+      "kind": "phrase",
+      "text": "Nous vendons tout.",
+      "gloss": {
+        "en": "We sell everything.",
+        "de": "Wir verkaufen alles.",
+        "pt-BR": "Nós vendemos tudo.",
+        "ru": "Мы продаём всё."
+      },
+      "freqRank": 80,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:label",
+      "voices": [{ "key": "echo/packs/fr_fluent/66-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 67,
       "kind": "phrase",
       "text": "Il est borgne.",
       "gloss": {
@@ -1261,10 +1107,10 @@
       "freqRank": 82,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:eye",
-      "voices": [{ "key": "echo/packs/fr_fluent/79-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/67-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 80,
+      "index": 68,
       "kind": "phrase",
       "text": "Tom était imbattable.",
       "gloss": {
@@ -1276,10 +1122,10 @@
       "freqRank": 83,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:trophy",
-      "voices": [{ "key": "echo/packs/fr_fluent/80-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/68-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 81,
+      "index": 69,
       "kind": "phrase",
       "text": "Il est historien.",
       "gloss": {
@@ -1292,10 +1138,10 @@
       "freqRank": 84,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:scroll",
-      "voices": [{ "key": "echo/packs/fr_fluent/81-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/69-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 82,
+      "index": 70,
       "kind": "phrase",
       "text": "Nous nous aimions.",
       "gloss": {
@@ -1308,10 +1154,10 @@
       "freqRank": 85,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:two-hearts",
-      "voices": [{ "key": "echo/packs/fr_fluent/82-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/70-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 83,
+      "index": 71,
       "kind": "phrase",
       "text": "Il est ponctuel.",
       "gloss": {
@@ -1324,10 +1170,10 @@
       "freqRank": 86,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:alarm-clock",
-      "voices": [{ "key": "echo/packs/fr_fluent/83-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/71-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 84,
+      "index": 72,
       "kind": "phrase",
       "text": "Je voyage fréquemment.",
       "gloss": {
@@ -1339,10 +1185,10 @@
       "freqRank": 87,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:luggage",
-      "voices": [{ "key": "echo/packs/fr_fluent/84-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/72-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 85,
+      "index": 73,
       "kind": "phrase",
       "text": "Il est biologiste.",
       "gloss": {
@@ -1355,10 +1201,10 @@
       "freqRank": 88,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:test-tube",
-      "voices": [{ "key": "echo/packs/fr_fluent/85-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/73-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 86,
+      "index": 74,
       "kind": "phrase",
       "text": "Je parle basque.",
       "gloss": {
@@ -1370,41 +1216,10 @@
       "freqRank": 89,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/86-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/74-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 87,
-      "kind": "phrase",
-      "text": "Thomas est biologiste.",
-      "gloss": {
-        "en": "Tom is a biologist.",
-        "de": "Tom ist Biologe.",
-        "es": "Tomás es biólogo.",
-        "pt-BR": "Tom é biólogo.",
-        "ru": "Том - биолог."
-      },
-      "freqRank": 90,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:test-tube",
-      "voices": [{ "key": "echo/packs/fr_fluent/87-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 88,
-      "kind": "phrase",
-      "text": "Je suis alchimiste.",
-      "gloss": {
-        "en": "I'm an alchemist.",
-        "tr": "Simyacıyım.",
-        "de": "Ich bin Alchemistin.",
-        "es": "Soy alquimista."
-      },
-      "freqRank": 91,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:test-tube",
-      "voices": [{ "key": "echo/packs/fr_fluent/88-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 89,
+      "index": 75,
       "kind": "phrase",
       "text": "Soyez plus modestes.",
       "gloss": {
@@ -1416,10 +1231,10 @@
       "freqRank": 92,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-bowing",
-      "voices": [{ "key": "echo/packs/fr_fluent/89-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/75-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 90,
+      "index": 76,
       "kind": "phrase",
       "text": "Le soleil brillait.",
       "gloss": {
@@ -1431,10 +1246,10 @@
       "freqRank": 93,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sun",
-      "voices": [{ "key": "echo/packs/fr_fluent/90-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/76-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 91,
+      "index": 77,
       "kind": "phrase",
       "text": "Tu parles hindi ?",
       "gloss": {
@@ -1446,10 +1261,10 @@
       "freqRank": 94,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/91-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/77-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 92,
+      "index": 78,
       "kind": "phrase",
       "text": "Nous sommes désolées.",
       "gloss": {
@@ -1461,10 +1276,10 @@
       "freqRank": 95,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-bowing",
-      "voices": [{ "key": "echo/packs/fr_fluent/92-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/78-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 93,
+      "index": 79,
       "kind": "phrase",
       "text": "Les oiseaux chantaient.",
       "gloss": {
@@ -1477,10 +1292,10 @@
       "freqRank": 96,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dove",
-      "voices": [{ "key": "echo/packs/fr_fluent/93-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/79-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 94,
+      "index": 80,
       "kind": "phrase",
       "text": "Je suis myope.",
       "gloss": {
@@ -1492,25 +1307,10 @@
       "freqRank": 97,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:glasses",
-      "voices": [{ "key": "echo/packs/fr_fluent/94-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/80-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 95,
-      "kind": "phrase",
-      "text": "Il le nia.",
-      "gloss": {
-        "en": "He denied it.",
-        "es": "Él lo negó.",
-        "pt-BR": "Ele negou-o.",
-        "ru": "Он это отрицал."
-      },
-      "freqRank": 98,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-gesturing-no",
-      "voices": [{ "key": "echo/packs/fr_fluent/95-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 96,
+      "index": 81,
       "kind": "phrase",
       "text": "Où enseignes-tu ?",
       "gloss": {
@@ -1522,10 +1322,10 @@
       "freqRank": 99,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:school",
-      "voices": [{ "key": "echo/packs/fr_fluent/96-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/81-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 97,
+      "index": 82,
       "kind": "phrase",
       "text": "Il nia tout.",
       "gloss": {
@@ -1537,10 +1337,10 @@
       "freqRank": 100,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-gesturing-no",
-      "voices": [{ "key": "echo/packs/fr_fluent/97-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/82-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 98,
+      "index": 83,
       "kind": "phrase",
       "text": "Je suis mathématicien.",
       "gloss": {
@@ -1552,25 +1352,10 @@
       "freqRank": 101,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:divide",
-      "voices": [{ "key": "echo/packs/fr_fluent/98-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/83-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 99,
-      "kind": "phrase",
-      "text": "Tom est mathématicien.",
-      "gloss": {
-        "en": "Tom is a mathematician.",
-        "es": "Tom es matemático.",
-        "pt-BR": "Tom é matemático.",
-        "ru": "Том - математик."
-      },
-      "freqRank": 102,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:divide",
-      "voices": [{ "key": "echo/packs/fr_fluent/99-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 100,
+      "index": 84,
       "kind": "phrase",
       "text": "Trois semaines passèrent.",
       "gloss": {
@@ -1582,10 +1367,10 @@
       "freqRank": 103,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:tear-off-calendar",
-      "voices": [{ "key": "echo/packs/fr_fluent/100-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/84-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 101,
+      "index": 85,
       "kind": "phrase",
       "text": "Je suis musicienne.",
       "gloss": {
@@ -1598,10 +1383,10 @@
       "freqRank": 104,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-note",
-      "voices": [{ "key": "echo/packs/fr_fluent/101-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/85-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 102,
+      "index": 86,
       "kind": "phrase",
       "text": "Il est photogénique.",
       "gloss": {
@@ -1613,10 +1398,10 @@
       "freqRank": 105,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:camera",
-      "voices": [{ "key": "echo/packs/fr_fluent/102-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/86-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 103,
+      "index": 87,
       "kind": "phrase",
       "text": "Elle se leva.",
       "gloss": {
@@ -1628,10 +1413,10 @@
       "freqRank": 106,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-standing",
-      "voices": [{ "key": "echo/packs/fr_fluent/103-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/87-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 104,
+      "index": 88,
       "kind": "phrase",
       "text": "Nous travaillerons demain.",
       "gloss": {
@@ -1643,10 +1428,10 @@
       "freqRank": 107,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:briefcase",
-      "voices": [{ "key": "echo/packs/fr_fluent/104-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/88-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 105,
+      "index": 89,
       "kind": "phrase",
       "text": "Je suis horrifié.",
       "gloss": {
@@ -1658,10 +1443,10 @@
       "freqRank": 108,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-screaming-in-fear",
-      "voices": [{ "key": "echo/packs/fr_fluent/105-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/89-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 106,
+      "index": 90,
       "kind": "phrase",
       "text": "Tom est programmeur.",
       "gloss": {
@@ -1673,40 +1458,10 @@
       "freqRank": 109,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:laptop",
-      "voices": [{ "key": "echo/packs/fr_fluent/106-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/90-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 107,
-      "kind": "phrase",
-      "text": "Parles-tu néerlandais ?",
-      "gloss": {
-        "en": "Do you speak Dutch?",
-        "de": "Sprichst du Niederländisch?",
-        "pt-BR": "Falas holandês?",
-        "ru": "Ты говоришь по-голландски?"
-      },
-      "freqRank": 110,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/107-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 108,
-      "kind": "phrase",
-      "text": "Où habite lain ?",
-      "gloss": {
-        "en": "Where does Iain live?",
-        "de": "Wo wohnt Iain?",
-        "es": "¿Dónde vive Iain?",
-        "pt-BR": "Onde Iain mora?"
-      },
-      "freqRank": 111,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house",
-      "voices": [{ "key": "echo/packs/fr_fluent/108-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 109,
+      "index": 91,
       "kind": "phrase",
       "text": "Je suis enrhumé.",
       "gloss": {
@@ -1719,10 +1474,10 @@
       "freqRank": 112,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sneezing-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/109-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/91-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 110,
+      "index": 92,
       "kind": "phrase",
       "text": "Demain, il pleuvra.",
       "gloss": {
@@ -1734,10 +1489,10 @@
       "freqRank": 113,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cloud-with-rain",
-      "voices": [{ "key": "echo/packs/fr_fluent/110-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/92-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 111,
+      "index": 93,
       "kind": "phrase",
       "text": "Je te protègerai !",
       "gloss": {
@@ -1749,10 +1504,10 @@
       "freqRank": 114,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:shield",
-      "voices": [{ "key": "echo/packs/fr_fluent/111-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/93-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 112,
+      "index": 94,
       "kind": "phrase",
       "text": "Il est dramaturge.",
       "gloss": {
@@ -1764,10 +1519,10 @@
       "freqRank": 115,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
-      "voices": [{ "key": "echo/packs/fr_fluent/112-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/94-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 113,
+      "index": 95,
       "kind": "phrase",
       "text": "Je m'en excuse.",
       "gloss": {
@@ -1779,10 +1534,10 @@
       "freqRank": 116,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-bowing",
-      "voices": [{ "key": "echo/packs/fr_fluent/113-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/95-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 114,
+      "index": 96,
       "kind": "phrase",
       "text": "Elle est soliste.",
       "gloss": {
@@ -1794,10 +1549,10 @@
       "freqRank": 117,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-note",
-      "voices": [{ "key": "echo/packs/fr_fluent/114-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/96-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 115,
+      "index": 97,
       "kind": "phrase",
       "text": "Je m'en fiche !",
       "gloss": {
@@ -1809,10 +1564,10 @@
       "freqRank": 118,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-shrugging",
-      "voices": [{ "key": "echo/packs/fr_fluent/115-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/97-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 116,
+      "index": 98,
       "kind": "phrase",
       "text": "Le chat ronronne.",
       "gloss": {
@@ -1824,25 +1579,10 @@
       "freqRank": 119,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
-      "voices": [{ "key": "echo/packs/fr_fluent/116-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/98-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 117,
-      "kind": "phrase",
-      "text": "Je m'en fous.",
-      "gloss": {
-        "en": "I don't care.",
-        "de": "Es ist mir egal.",
-        "es": "Me la suda.",
-        "ru": "Мне на это наплевать."
-      },
-      "freqRank": 120,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-shrugging",
-      "voices": [{ "key": "echo/packs/fr_fluent/117-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 118,
+      "index": 99,
       "kind": "phrase",
       "text": "Pourquoi rêvons-nous ?",
       "gloss": {
@@ -1855,10 +1595,10 @@
       "freqRank": 121,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:thought-balloon",
-      "voices": [{ "key": "echo/packs/fr_fluent/118-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/99-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 119,
+      "index": 100,
       "kind": "phrase",
       "text": "Je m'en souviendrai.",
       "gloss": {
@@ -1870,10 +1610,10 @@
       "freqRank": 122,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
-      "voices": [{ "key": "echo/packs/fr_fluent/119-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/100-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 120,
+      "index": 101,
       "kind": "phrase",
       "text": "Pourquoi mentons-nous ?",
       "gloss": {
@@ -1885,10 +1625,10 @@
       "freqRank": 123,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lying-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/120-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/101-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 121,
+      "index": 102,
       "kind": "phrase",
       "text": "Je parle finlandais.",
       "gloss": {
@@ -1900,10 +1640,10 @@
       "freqRank": 124,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/121-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/102-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 122,
+      "index": 103,
       "kind": "phrase",
       "text": "Tu me mentis.",
       "gloss": {
@@ -1915,10 +1655,10 @@
       "freqRank": 125,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lying-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/122-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/103-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 123,
+      "index": 104,
       "kind": "phrase",
       "text": "Je t'ai aimé.",
       "gloss": {
@@ -1930,20 +1670,20 @@
       "freqRank": 126,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-heart",
-      "voices": [{ "key": "echo/packs/fr_fluent/123-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/104-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 124,
+      "index": 105,
       "kind": "phrase",
       "text": "Il a neigé.",
       "gloss": { "en": "It snowed.", "de": "Es hat geschneit.", "es": "Nevó.", "ru": "Был снег." },
       "freqRank": 127,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cloud-with-snow",
-      "voices": [{ "key": "echo/packs/fr_fluent/124-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/105-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 125,
+      "index": 106,
       "kind": "phrase",
       "text": "Je t'ai cherché.",
       "gloss": {
@@ -1955,10 +1695,10 @@
       "freqRank": 128,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:magnifying-glass-tilted-left",
-      "voices": [{ "key": "echo/packs/fr_fluent/125-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/106-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 126,
+      "index": 107,
       "kind": "phrase",
       "text": "Elle se réveilla.",
       "gloss": {
@@ -1971,10 +1711,10 @@
       "freqRank": 129,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:alarm-clock",
-      "voices": [{ "key": "echo/packs/fr_fluent/126-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/107-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 127,
+      "index": 108,
       "kind": "phrase",
       "text": "Je t'ai entendu.",
       "gloss": {
@@ -1986,10 +1726,10 @@
       "freqRank": 130,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ear",
-      "voices": [{ "key": "echo/packs/fr_fluent/127-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/108-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 128,
+      "index": 109,
       "kind": "phrase",
       "text": "Le coréen est facile.",
       "gloss": {
@@ -2001,10 +1741,10 @@
       "freqRank": 131,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/128-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/109-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 129,
+      "index": 110,
       "kind": "phrase",
       "text": "Je t'ai manqué ?",
       "gloss": {
@@ -2018,10 +1758,10 @@
       "freqRank": 132,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pleading-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/129-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/110-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 130,
+      "index": 111,
       "kind": "phrase",
       "text": "Ses cheveux ont repoussé.",
       "gloss": {
@@ -2033,10 +1773,10 @@
       "freqRank": 133,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-getting-haircut",
-      "voices": [{ "key": "echo/packs/fr_fluent/130-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/111-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 131,
+      "index": 112,
       "kind": "phrase",
       "text": "Je t'ai trouvé.",
       "gloss": {
@@ -2048,10 +1788,10 @@
       "freqRank": 134,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:magnifying-glass-tilted-left",
-      "voices": [{ "key": "echo/packs/fr_fluent/131-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/112-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 132,
+      "index": 113,
       "kind": "phrase",
       "text": "Il pleut à verse.",
       "gloss": {
@@ -2064,10 +1804,10 @@
       "freqRank": 135,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:umbrella-with-rain-drops",
-      "voices": [{ "key": "echo/packs/fr_fluent/132-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/113-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 133,
+      "index": 114,
       "kind": "phrase",
       "text": "Je l'ai acheté.",
       "gloss": {
@@ -2081,41 +1821,10 @@
       "freqRank": 136,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:shopping-cart",
-      "voices": [{ "key": "echo/packs/fr_fluent/133-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/114-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 134,
-      "kind": "phrase",
-      "text": "Le suédois est facile.",
-      "gloss": {
-        "en": "Swedish is easy.",
-        "de": "Schwedisch ist leicht.",
-        "es": "El sueco es fácil.",
-        "pt-BR": "O sueco é fácil.",
-        "ru": "Шведский лёгкий."
-      },
-      "freqRank": 137,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/134-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 135,
-      "kind": "phrase",
-      "text": "Je l'ai cherché.",
-      "gloss": {
-        "en": "I looked for him.",
-        "de": "Ich suchte ihn.",
-        "es": "Lo busqué a él.",
-        "ru": "Я его искал."
-      },
-      "freqRank": 138,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:magnifying-glass-tilted-left",
-      "voices": [{ "key": "echo/packs/fr_fluent/135-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 136,
+      "index": 115,
       "kind": "phrase",
       "text": "Tu aimes le rap ?",
       "gloss": {
@@ -2128,25 +1837,25 @@
       "freqRank": 139,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:microphone",
-      "voices": [{ "key": "echo/packs/fr_fluent/136-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/115-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 137,
+      "index": 116,
       "kind": "phrase",
-      "text": "Je l'ai cherchée.",
+      "text": "Je l'ai revu.",
       "gloss": {
-        "en": "I was looking for her.",
-        "de": "Ich suchte sie.",
-        "es": "La busqué.",
-        "ru": "Я её искал."
+        "en": "I saw him again.",
+        "de": "Ich bin ihm wieder begegnet.",
+        "pt-BR": "Eu o vi de novo.",
+        "ru": "Я опять его видел."
       },
-      "freqRank": 140,
+      "freqRank": 142,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:magnifying-glass-tilted-left",
-      "voices": [{ "key": "echo/packs/fr_fluent/137-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "image": "cue:eyes",
+      "voices": [{ "key": "echo/packs/fr_fluent/116-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 138,
+      "index": 117,
       "kind": "phrase",
       "text": "Tu aimes les éléphants.",
       "gloss": {
@@ -2159,25 +1868,10 @@
       "freqRank": 141,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:elephant",
-      "voices": [{ "key": "echo/packs/fr_fluent/138-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/117-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 139,
-      "kind": "phrase",
-      "text": "Je l'ai revu.",
-      "gloss": {
-        "en": "I saw him again.",
-        "de": "Ich bin ihm wieder begegnet.",
-        "pt-BR": "Eu o vi de novo.",
-        "ru": "Я опять его видел."
-      },
-      "freqRank": 142,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eyes",
-      "voices": [{ "key": "echo/packs/fr_fluent/139-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 140,
+      "index": 118,
       "kind": "phrase",
       "text": "Ils habitent à côté.",
       "gloss": {
@@ -2190,25 +1884,10 @@
       "freqRank": 143,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:houses",
-      "voices": [{ "key": "echo/packs/fr_fluent/140-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/118-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 141,
-      "kind": "phrase",
-      "text": "Je l'ai revue.",
-      "gloss": {
-        "en": "I saw her again.",
-        "de": "Ich habe sie wieder gesehen.",
-        "es": "La vi nuevamente.",
-        "ru": "Я её снова видел."
-      },
-      "freqRank": 144,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eyes",
-      "voices": [{ "key": "echo/packs/fr_fluent/141-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 142,
+      "index": 119,
       "kind": "phrase",
       "text": "Ce gâteau est sucré.",
       "gloss": {
@@ -2222,10 +1901,10 @@
       "freqRank": 145,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:shortcake",
-      "voices": [{ "key": "echo/packs/fr_fluent/142-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/119-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 143,
+      "index": 120,
       "kind": "phrase",
       "text": "Je l'ai trouvé !",
       "gloss": {
@@ -2237,10 +1916,10 @@
       "freqRank": 146,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:magnifying-glass-tilted-left",
-      "voices": [{ "key": "echo/packs/fr_fluent/143-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/120-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 144,
+      "index": 121,
       "kind": "phrase",
       "text": "Mon père est enseignant.",
       "gloss": {
@@ -2248,30 +1927,38 @@
         "tr": "Babam bir öğretmendir.",
         "de": "Mein Vater ist Lehrer.",
         "es": "Mi padre es maestro.",
-        "ru": "Мой отец - учитель."
+        "ru": "Мой отец — учитель."
       },
       "freqRank": 147,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "ru": "Мой отец - учитель." },
+        "edited": ["ru"]
+      },
       "image": "cue:school",
-      "voices": [{ "key": "echo/packs/fr_fluent/144-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/121-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 145,
+      "index": 122,
       "kind": "phrase",
       "text": "Je l'ai vu.",
       "gloss": {
-        "en": "I did see him.",
+        "en": "I saw him.",
         "de": "Ich habe ihn gesehen.",
         "pt-BR": "Eu o vi.",
         "ru": "Я видел его."
       },
       "freqRank": 148,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "en": "I did see him." },
+        "edited": ["en"]
+      },
       "image": "cue:eyes",
-      "voices": [{ "key": "echo/packs/fr_fluent/145-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/122-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 146,
+      "index": 123,
       "kind": "phrase",
       "text": "Combien coûtent les carottes ?",
       "gloss": {
@@ -2284,10 +1971,10 @@
       "freqRank": 149,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:heavy-dollar-sign",
-      "voices": [{ "key": "echo/packs/fr_fluent/146-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/123-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 147,
+      "index": 124,
       "kind": "phrase",
       "text": "Je déjeune à midi.",
       "gloss": {
@@ -2299,10 +1986,10 @@
       "freqRank": 150,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
-      "voices": [{ "key": "echo/packs/fr_fluent/147-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/124-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 148,
+      "index": 125,
       "kind": "phrase",
       "text": "Il aime les oranges.",
       "gloss": {
@@ -2316,10 +2003,10 @@
       "freqRank": 151,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:tangerine",
-      "voices": [{ "key": "echo/packs/fr_fluent/148-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/125-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 149,
+      "index": 126,
       "kind": "phrase",
       "text": "Je lisais un livre.",
       "gloss": {
@@ -2333,10 +2020,10 @@
       "freqRank": 152,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
-      "voices": [{ "key": "echo/packs/fr_fluent/149-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/126-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 150,
+      "index": 127,
       "kind": "phrase",
       "text": "Tom commença à pleurer.",
       "gloss": {
@@ -2350,10 +2037,10 @@
       "freqRank": 153,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crying-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/150-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/127-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 151,
+      "index": 128,
       "kind": "phrase",
       "text": "Je dispose de temps.",
       "gloss": {
@@ -2366,43 +2053,10 @@
       "freqRank": 154,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hourglass-not-done",
-      "voices": [{ "key": "echo/packs/fr_fluent/151-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/128-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 152,
-      "kind": "phrase",
-      "text": "Ces livres sont neufs.",
-      "gloss": {
-        "en": "These books are new.",
-        "de": "Diese Bücher sind neu.",
-        "es": "Estos libros son nuevos.",
-        "pt-BR": "Estes livros são novos.",
-        "ru": "Эти книги новые."
-      },
-      "freqRank": 155,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:books",
-      "voices": [{ "key": "echo/packs/fr_fluent/152-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 153,
-      "kind": "phrase",
-      "text": "Je suis tout ouïe.",
-      "gloss": {
-        "en": "I am all ears to what you say.",
-        "tr": "Can kulağıyla dinliyorum.",
-        "de": "Ich bin ganz Ohr.",
-        "es": "Soy todo oídos.",
-        "pt-BR": "Sou todo ouvidos.",
-        "ru": "Я весь внимание."
-      },
-      "freqRank": 156,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ear",
-      "voices": [{ "key": "echo/packs/fr_fluent/153-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 154,
+      "index": 129,
       "kind": "phrase",
       "text": "Mes livres sont neufs.",
       "gloss": {
@@ -2415,26 +2069,31 @@
       "freqRank": 157,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
-      "voices": [{ "key": "echo/packs/fr_fluent/154-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/129-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 155,
+      "index": 130,
       "kind": "phrase",
-      "text": "Je déteste le karaoké.",
+      "text": "Je suis tout ouïe.",
       "gloss": {
-        "en": "I hate karaoke.",
-        "de": "Ich hasse Karaoke.",
-        "es": "Odio el karaoke.",
-        "pt-BR": "Odeio karaokê.",
-        "ru": "Ненавижу караоке."
+        "en": "I'm all ears.",
+        "tr": "Can kulağıyla dinliyorum.",
+        "de": "Ich bin ganz Ohr.",
+        "es": "Soy todo oídos.",
+        "pt-BR": "Sou todo ouvidos.",
+        "ru": "Я весь внимание."
       },
-      "freqRank": 158,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:microphone",
-      "voices": [{ "key": "echo/packs/fr_fluent/155-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "freqRank": 156,
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "en": "I am all ears to what you say." },
+        "edited": ["en"]
+      },
+      "image": "cue:ear",
+      "voices": [{ "key": "echo/packs/fr_fluent/130-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 156,
+      "index": 131,
       "kind": "phrase",
       "text": "As-tu des crayons ?",
       "gloss": {
@@ -2447,26 +2106,26 @@
       "freqRank": 159,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
-      "voices": [{ "key": "echo/packs/fr_fluent/156-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/131-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 157,
+      "index": 132,
       "kind": "phrase",
-      "text": "Je ne perdrai pas !",
+      "text": "Je déteste le karaoké.",
       "gloss": {
-        "en": "I won't lose!",
-        "de": "Ich werde nicht verlieren!",
-        "es": "¡No voy a perder!",
-        "pt-BR": "Eu não perderei!",
-        "ru": "Я не проиграю!"
+        "en": "I hate karaoke.",
+        "de": "Ich hasse Karaoke.",
+        "es": "Odio el karaoke.",
+        "pt-BR": "Odeio karaokê.",
+        "ru": "Ненавижу караоке."
       },
-      "freqRank": 160,
+      "freqRank": 158,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:flexed-biceps",
-      "voices": [{ "key": "echo/packs/fr_fluent/157-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "image": "cue:microphone",
+      "voices": [{ "key": "echo/packs/fr_fluent/132-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 158,
+      "index": 133,
       "kind": "phrase",
       "text": "Ils ont habité ici ?",
       "gloss": {
@@ -2479,10 +2138,26 @@
       "freqRank": 161,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
-      "voices": [{ "key": "echo/packs/fr_fluent/158-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/133-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 159,
+      "index": 134,
+      "kind": "phrase",
+      "text": "Je ne perdrai pas !",
+      "gloss": {
+        "en": "I won't lose!",
+        "de": "Ich werde nicht verlieren!",
+        "es": "¡No voy a perder!",
+        "pt-BR": "Eu não perderei!",
+        "ru": "Я не проиграю!"
+      },
+      "freqRank": 160,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flexed-biceps",
+      "voices": [{ "key": "echo/packs/fr_fluent/134-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 135,
       "kind": "phrase",
       "text": "Les chats rêvent-ils ?",
       "gloss": {
@@ -2495,10 +2170,10 @@
       "freqRank": 162,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
-      "voices": [{ "key": "echo/packs/fr_fluent/159-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/135-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 160,
+      "index": 136,
       "kind": "phrase",
       "text": "Elles lisent son livre.",
       "gloss": {
@@ -2511,10 +2186,10 @@
       "freqRank": 163,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
-      "voices": [{ "key": "echo/packs/fr_fluent/160-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/136-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 161,
+      "index": 137,
       "kind": "phrase",
       "text": "Est-ce ta bicyclette ?",
       "gloss": {
@@ -2527,10 +2202,10 @@
       "freqRank": 164,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bicycle",
-      "voices": [{ "key": "echo/packs/fr_fluent/161-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/137-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 162,
+      "index": 138,
       "kind": "phrase",
       "text": "Non, elle est enseignante.",
       "gloss": {
@@ -2543,10 +2218,10 @@
       "freqRank": 165,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:school",
-      "voices": [{ "key": "echo/packs/fr_fluent/162-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/138-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 163,
+      "index": 139,
       "kind": "phrase",
       "text": "Quelle est sa nationalité ?",
       "gloss": {
@@ -2559,10 +2234,10 @@
       "freqRank": 166,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:passport-control",
-      "voices": [{ "key": "echo/packs/fr_fluent/163-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/139-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 164,
+      "index": 140,
       "kind": "phrase",
       "text": "Ma femme est végétarienne.",
       "gloss": {
@@ -2575,10 +2250,10 @@
       "freqRank": 167,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:green-salad",
-      "voices": [{ "key": "echo/packs/fr_fluent/164-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/140-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 165,
+      "index": 141,
       "kind": "phrase",
       "text": "Les citrons sont acides.",
       "gloss": {
@@ -2591,10 +2266,10 @@
       "freqRank": 168,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lemon",
-      "voices": [{ "key": "echo/packs/fr_fluent/165-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/141-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 166,
+      "index": 142,
       "kind": "phrase",
       "text": "Quel navigateur utilises-tu ?",
       "gloss": {
@@ -2607,10 +2282,10 @@
       "freqRank": 169,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:laptop",
-      "voices": [{ "key": "echo/packs/fr_fluent/166-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/142-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 167,
+      "index": 143,
       "kind": "phrase",
       "text": "Le monde me fascine.",
       "gloss": {
@@ -2623,10 +2298,10 @@
       "freqRank": 170,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
-      "voices": [{ "key": "echo/packs/fr_fluent/167-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/143-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 168,
+      "index": 144,
       "kind": "phrase",
       "text": "Il a la rougeole.",
       "gloss": {
@@ -2639,26 +2314,10 @@
       "freqRank": 171,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-with-thermometer",
-      "voices": [{ "key": "echo/packs/fr_fluent/168-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/144-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 169,
-      "kind": "phrase",
-      "text": "Les oiseaux chantent joyeusement.",
-      "gloss": {
-        "en": "The birds are singing merrily.",
-        "de": "Die Vögel singen fröhlich.",
-        "es": "Los pájaros cantan alegremente.",
-        "ru": "Весело поют птицы.",
-        "ar": "تغرد العصافير بفرحة."
-      },
-      "freqRank": 172,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dove",
-      "voices": [{ "key": "echo/packs/fr_fluent/169-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 170,
+      "index": 145,
       "kind": "phrase",
       "text": "Je déteste les lundis.",
       "gloss": {
@@ -2671,10 +2330,10 @@
       "freqRank": 173,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:calendar",
-      "voices": [{ "key": "echo/packs/fr_fluent/170-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/145-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 171,
+      "index": 146,
       "kind": "phrase",
       "text": "Nous étions très fatiguées.",
       "gloss": {
@@ -2687,10 +2346,10 @@
       "freqRank": 174,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:weary-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/171-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/146-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 172,
+      "index": 147,
       "kind": "phrase",
       "text": "Elle refusa notre proposition.",
       "gloss": {
@@ -2704,26 +2363,10 @@
       "freqRank": 175,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-gesturing-no",
-      "voices": [{ "key": "echo/packs/fr_fluent/172-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/147-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 173,
-      "kind": "phrase",
-      "text": "Le judaïsme est beau.",
-      "gloss": {
-        "en": "Judaism is beautiful.",
-        "tr": "Yahudilik güzeldir.",
-        "de": "Das Judentum ist schön.",
-        "es": "El judaísmo es lindo.",
-        "ar": "اليهودية جميلة."
-      },
-      "freqRank": 176,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:place-of-worship",
-      "voices": [{ "key": "echo/packs/fr_fluent/173-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 174,
+      "index": 148,
       "kind": "phrase",
       "text": "Les accidents sont inévitables.",
       "gloss": {
@@ -2736,10 +2379,10 @@
       "freqRank": 177,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:collision",
-      "voices": [{ "key": "echo/packs/fr_fluent/174-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/148-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 175,
+      "index": 149,
       "kind": "phrase",
       "text": "La pierre est pesante.",
       "gloss": {
@@ -2752,10 +2395,10 @@
       "freqRank": 178,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:rock",
-      "voices": [{ "key": "echo/packs/fr_fluent/175-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/149-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 176,
+      "index": 150,
       "kind": "phrase",
       "text": "Le bruit est assourdissant.",
       "gloss": {
@@ -2768,10 +2411,10 @@
       "freqRank": 179,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:loudspeaker",
-      "voices": [{ "key": "echo/packs/fr_fluent/176-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/150-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 177,
+      "index": 151,
       "kind": "phrase",
       "text": "Oui, je l'ai embrassé.",
       "gloss": {
@@ -2784,10 +2427,10 @@
       "freqRank": 180,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:kiss-mark",
-      "voices": [{ "key": "echo/packs/fr_fluent/177-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/151-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 178,
+      "index": 152,
       "kind": "phrase",
       "text": "Elle tint sa promesse.",
       "gloss": {
@@ -2800,10 +2443,10 @@
       "freqRank": 181,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
-      "voices": [{ "key": "echo/packs/fr_fluent/178-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/152-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 179,
+      "index": 153,
       "kind": "phrase",
       "text": "Envoie-moi une carte postale.",
       "gloss": {
@@ -2816,10 +2459,10 @@
       "freqRank": 182,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:envelope",
-      "voices": [{ "key": "echo/packs/fr_fluent/179-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/153-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 180,
+      "index": 154,
       "kind": "phrase",
       "text": "Elle a les cheveux courts.",
       "gloss": {
@@ -2832,10 +2475,10 @@
       "freqRank": 183,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-getting-haircut",
-      "voices": [{ "key": "echo/packs/fr_fluent/180-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/154-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 181,
+      "index": 155,
       "kind": "phrase",
       "text": "Pourquoi apprends-tu le turc ?",
       "gloss": {
@@ -2848,10 +2491,10 @@
       "freqRank": 184,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/181-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/155-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 182,
+      "index": 156,
       "kind": "phrase",
       "text": "Ces plantes sont toutes toxiques.",
       "gloss": {
@@ -2864,10 +2507,10 @@
       "freqRank": 185,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:skull-and-crossbones",
-      "voices": [{ "key": "echo/packs/fr_fluent/182-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/156-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 183,
+      "index": 157,
       "kind": "phrase",
       "text": "Nous écoutons de la musique.",
       "gloss": {
@@ -2880,10 +2523,10 @@
       "freqRank": 186,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-notes",
-      "voices": [{ "key": "echo/packs/fr_fluent/183-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/157-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 184,
+      "index": 158,
       "kind": "phrase",
       "text": "Les bananes sont encore vertes.",
       "gloss": {
@@ -2896,10 +2539,10 @@
       "freqRank": 187,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:banana",
-      "voices": [{ "key": "echo/packs/fr_fluent/184-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/158-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 185,
+      "index": 159,
       "kind": "phrase",
       "text": "Elle a presque soixante ans.",
       "gloss": {
@@ -2912,10 +2555,10 @@
       "freqRank": 188,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:birthday-cake",
-      "voices": [{ "key": "echo/packs/fr_fluent/185-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/159-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 186,
+      "index": 160,
       "kind": "phrase",
       "text": "Il pèse soixante-dix kilos.",
       "gloss": {
@@ -2928,26 +2571,10 @@
       "freqRank": 189,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:balance-scale",
-      "voices": [{ "key": "echo/packs/fr_fluent/186-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/160-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 187,
-      "kind": "phrase",
-      "text": "Je ne parle pas portugais.",
-      "gloss": {
-        "en": "I don't speak Portuguese.",
-        "de": "Ich spreche kein Portugiesisch.",
-        "es": "Yo no hablo portugués.",
-        "pt-BR": "Não falo português.",
-        "ru": "Я не говорю по-португальски."
-      },
-      "freqRank": 190,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/187-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 188,
+      "index": 161,
       "kind": "phrase",
       "text": "Cherche-le dans le dictionnaire.",
       "gloss": {
@@ -2960,26 +2587,10 @@
       "freqRank": 191,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
-      "voices": [{ "key": "echo/packs/fr_fluent/188-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/161-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 189,
-      "kind": "phrase",
-      "text": "Je veux un bon dictionnaire.",
-      "gloss": {
-        "en": "I want a good dictionary.",
-        "de": "Ich will ein gutes Wörterbuch.",
-        "es": "Quiero un buen diccionario.",
-        "pt-BR": "Eu quero um bom dicionário.",
-        "ru": "Мне нужен хороший словарь."
-      },
-      "freqRank": 192,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:open-book",
-      "voices": [{ "key": "echo/packs/fr_fluent/189-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 190,
+      "index": 162,
       "kind": "phrase",
       "text": "Puis-je utiliser ce dictionnaire ?",
       "gloss": {
@@ -2992,26 +2603,10 @@
       "freqRank": 193,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
-      "voices": [{ "key": "echo/packs/fr_fluent/190-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/162-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 191,
-      "kind": "phrase",
-      "text": "La salade est très salée.",
-      "gloss": {
-        "en": "The salad is very salty.",
-        "de": "Der Salat ist sehr salzig.",
-        "es": "La ensalada está muy salada.",
-        "ru": "Салат очень солёный.",
-        "ar": "السَلطة مالحة جدا."
-      },
-      "freqRank": 194,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:salt",
-      "voices": [{ "key": "echo/packs/fr_fluent/191-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 192,
+      "index": 163,
       "kind": "phrase",
       "text": "Elle voulait que je mente.",
       "gloss": {
@@ -3024,10 +2619,10 @@
       "freqRank": 195,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lying-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/192-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/163-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 193,
+      "index": 164,
       "kind": "phrase",
       "text": "La soupe est trop salée.",
       "gloss": {
@@ -3041,10 +2636,10 @@
       "freqRank": 196,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:salt",
-      "voices": [{ "key": "echo/packs/fr_fluent/193-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/164-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 194,
+      "index": 165,
       "kind": "phrase",
       "text": "Les lumières se sont éteintes.",
       "gloss": {
@@ -3057,10 +2652,10 @@
       "freqRank": 197,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:light-bulb",
-      "voices": [{ "key": "echo/packs/fr_fluent/194-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/165-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 195,
+      "index": 166,
       "kind": "phrase",
       "text": "Je ne parle pas hébreu.",
       "gloss": {
@@ -3073,10 +2668,10 @@
       "freqRank": 198,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/195-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/166-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 196,
+      "index": 167,
       "kind": "phrase",
       "text": "La température commence à chuter.",
       "gloss": {
@@ -3089,26 +2684,30 @@
       "freqRank": 199,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:thermometer",
-      "voices": [{ "key": "echo/packs/fr_fluent/196-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/167-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 197,
+      "index": 168,
       "kind": "phrase",
       "text": "Ne sois pas si avare.",
       "gloss": {
-        "en": "Don't be so greedy.",
+        "en": "Don't be so stingy.",
         "de": "Sei nicht so geizig.",
         "es": "No seas tan avaricioso.",
         "pt-BR": "Não seja tão avaro.",
         "ru": "Не будь таким жадным."
       },
       "freqRank": 200,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "en": "Don't be so greedy." },
+        "edited": ["en"]
+      },
       "image": "cue:money-mouth-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/197-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/168-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 198,
+      "index": 169,
       "kind": "phrase",
       "text": "Nos rêves se sont réalisés.",
       "gloss": {
@@ -3121,10 +2720,10 @@
       "freqRank": 201,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:thought-balloon",
-      "voices": [{ "key": "echo/packs/fr_fluent/198-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/169-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 199,
+      "index": 170,
       "kind": "phrase",
       "text": "Je suis occupé aujourd’hui.",
       "gloss": {
@@ -3137,10 +2736,10 @@
       "freqRank": 202,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-running",
-      "voices": [{ "key": "echo/packs/fr_fluent/199-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/170-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 200,
+      "index": 171,
       "kind": "phrase",
       "text": "Les oiseaux construisent des nids.",
       "gloss": {
@@ -3153,10 +2752,10 @@
       "freqRank": 203,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dove",
-      "voices": [{ "key": "echo/packs/fr_fluent/200-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/171-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 201,
+      "index": 172,
       "kind": "phrase",
       "text": "Il y avait un embouteillage.",
       "gloss": {
@@ -3169,10 +2768,10 @@
       "freqRank": 204,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
-      "voices": [{ "key": "echo/packs/fr_fluent/201-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/172-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 202,
+      "index": 173,
       "kind": "phrase",
       "text": "Nous avons célébré son anniversaire.",
       "gloss": {
@@ -3185,26 +2784,30 @@
       "freqRank": 205,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:birthday-cake",
-      "voices": [{ "key": "echo/packs/fr_fluent/202-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/173-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 203,
+      "index": 174,
       "kind": "phrase",
       "text": "Ne néglige pas ton travail.",
       "gloss": {
-        "en": "Don't neglect your business.",
+        "en": "Don't neglect your work.",
         "tr": "İşini başından savma.",
         "de": "Vernachlässige deine Arbeit nicht.",
         "pt-BR": "Não negligencie o seu trabalho.",
         "ru": "Не относись небрежно к своей работе."
       },
       "freqRank": 206,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "en": "Don't neglect your business." },
+        "edited": ["en"]
+      },
       "image": "cue:briefcase",
-      "voices": [{ "key": "echo/packs/fr_fluent/203-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/174-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 204,
+      "index": 175,
       "kind": "phrase",
       "text": "Il va probablement neiger demain.",
       "gloss": {
@@ -3217,10 +2820,10 @@
       "freqRank": 207,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cloud-with-snow",
-      "voices": [{ "key": "echo/packs/fr_fluent/204-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/175-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 205,
+      "index": 176,
       "kind": "phrase",
       "text": "Dix ans se sont écoulés.",
       "gloss": {
@@ -3233,10 +2836,10 @@
       "freqRank": 208,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hourglass-not-done",
-      "voices": [{ "key": "echo/packs/fr_fluent/205-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/176-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 206,
+      "index": 177,
       "kind": "phrase",
       "text": "Il sait où nous habitons.",
       "gloss": {
@@ -3249,10 +2852,10 @@
       "freqRank": 209,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
-      "voices": [{ "key": "echo/packs/fr_fluent/206-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/177-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 207,
+      "index": 178,
       "kind": "phrase",
       "text": "Les cerisiers étaient en fleur.",
       "gloss": {
@@ -3265,10 +2868,10 @@
       "freqRank": 210,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cherry-blossom",
-      "voices": [{ "key": "echo/packs/fr_fluent/207-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/178-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 208,
+      "index": 179,
       "kind": "phrase",
       "text": "Il vadrouille dans les rues.",
       "gloss": {
@@ -3281,10 +2884,10 @@
       "freqRank": 211,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-walking",
-      "voices": [{ "key": "echo/packs/fr_fluent/208-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/179-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 209,
+      "index": 180,
       "kind": "phrase",
       "text": "Elle épousa un homme riche.",
       "gloss": {
@@ -3297,10 +2900,10 @@
       "freqRank": 212,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ring",
-      "voices": [{ "key": "echo/packs/fr_fluent/209-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/180-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 210,
+      "index": 181,
       "kind": "phrase",
       "text": "Il vécut une vie malheureuse.",
       "gloss": {
@@ -3313,10 +2916,10 @@
       "freqRank": 213,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:disappointed-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/210-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/181-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 211,
+      "index": 182,
       "kind": "phrase",
       "text": "Elle lui montra la photo.",
       "gloss": {
@@ -3329,10 +2932,10 @@
       "freqRank": 214,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:camera",
-      "voices": [{ "key": "echo/packs/fr_fluent/211-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/182-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 212,
+      "index": 183,
       "kind": "phrase",
       "text": "Je t'ai apporté des fleurs.",
       "gloss": {
@@ -3345,10 +2948,10 @@
       "freqRank": 215,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bouquet",
-      "voices": [{ "key": "echo/packs/fr_fluent/212-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/183-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 213,
+      "index": 184,
       "kind": "phrase",
       "text": "Elle lui raconta une blague.",
       "gloss": {
@@ -3361,10 +2964,10 @@
       "freqRank": 216,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-with-tears-of-joy",
-      "voices": [{ "key": "echo/packs/fr_fluent/213-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/184-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 214,
+      "index": 185,
       "kind": "phrase",
       "text": "Je l'ai prévenu du danger.",
       "gloss": {
@@ -3377,10 +2980,10 @@
       "freqRank": 217,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:warning",
-      "voices": [{ "key": "echo/packs/fr_fluent/214-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/185-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 215,
+      "index": 186,
       "kind": "phrase",
       "text": "1, 3 et 5 sont des nombres impairs.",
       "gloss": {
@@ -3393,10 +2996,10 @@
       "freqRank": 218,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:input-numbers",
-      "voices": [{ "key": "echo/packs/fr_fluent/215-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/186-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 216,
+      "index": 187,
       "kind": "phrase",
       "text": "Je ne l'ai pas vu.",
       "gloss": {
@@ -3409,42 +3012,10 @@
       "freqRank": 219,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:see-no-evil-monkey",
-      "voices": [{ "key": "echo/packs/fr_fluent/216-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/187-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 217,
-      "kind": "phrase",
-      "text": "Elle a les cheveux très courts.",
-      "gloss": {
-        "en": "Her hair is very short.",
-        "de": "Sie hat sehr kurzes Haar.",
-        "es": "Ella tiene el cabello muy corto.",
-        "pt-BR": "Ela tem cabelo muito curto.",
-        "ru": "У неё очень короткие волосы."
-      },
-      "freqRank": 220,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-getting-haircut",
-      "voices": [{ "key": "echo/packs/fr_fluent/217-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 218,
-      "kind": "phrase",
-      "text": "Je respirais contre le miroir.",
-      "gloss": {
-        "en": "I blew my breath against the mirror.",
-        "de": "Ich hauchte auf den Spiegel.",
-        "es": "Espiré sobre el espejo.",
-        "ru": "Я подышал на зеркало.",
-        "ar": "كنت أتنفس على سطح المرآة"
-      },
-      "freqRank": 221,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:mirror",
-      "voices": [{ "key": "echo/packs/fr_fluent/218-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 219,
+      "index": 188,
       "kind": "phrase",
       "text": "Nous utilisons notre bouche pour manger.",
       "gloss": {
@@ -3457,26 +3028,10 @@
       "freqRank": 222,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:mouth",
-      "voices": [{ "key": "echo/packs/fr_fluent/219-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/188-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 220,
-      "kind": "phrase",
-      "text": "Je ne parle pas le suédois.",
-      "gloss": {
-        "en": "I don't speak Swedish.",
-        "de": "Ich spreche kein Schwedisch.",
-        "es": "No hablo sueco.",
-        "pt-BR": "Não falo sueco.",
-        "ru": "Я не говорю по-шведски."
-      },
-      "freqRank": 223,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/220-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 221,
+      "index": 189,
       "kind": "phrase",
       "text": "Le turc est une langue difficile.",
       "gloss": {
@@ -3485,15 +3040,19 @@
         "de": "Türkisch ist eine schwierige Sprache.",
         "es": "El turco es una lengua difícil.",
         "pt-BR": "O turco é uma língua difícil.",
-        "ru": "Турецкий - сложный язык."
+        "ru": "Турецкий — сложный язык."
       },
       "freqRank": 224,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "ru": "Турецкий - сложный язык." },
+        "edited": ["ru"]
+      },
       "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/221-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/189-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 222,
+      "index": 190,
       "kind": "phrase",
       "text": "Je ne parle pas le turc.",
       "gloss": {
@@ -3507,10 +3066,10 @@
       "freqRank": 225,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/222-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/190-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 223,
+      "index": 191,
       "kind": "phrase",
       "text": "Un carré a quatre côtés égaux.",
       "gloss": {
@@ -3523,10 +3082,10 @@
       "freqRank": 226,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:triangular-ruler",
-      "voices": [{ "key": "echo/packs/fr_fluent/223-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/191-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 224,
+      "index": 192,
       "kind": "phrase",
       "text": "Le bureau est recouvert de poussière.",
       "gloss": {
@@ -3539,10 +3098,10 @@
       "freqRank": 227,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:broom",
-      "voices": [{ "key": "echo/packs/fr_fluent/224-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/192-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 225,
+      "index": 193,
       "kind": "phrase",
       "text": "Cette ville se situe en France.",
       "gloss": {
@@ -3555,10 +3114,10 @@
       "freqRank": 228,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:world-map",
-      "voices": [{ "key": "echo/packs/fr_fluent/225-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/193-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 226,
+      "index": 194,
       "kind": "phrase",
       "text": "Les tortues ont-elles des dents ?",
       "gloss": {
@@ -3572,10 +3131,10 @@
       "freqRank": 229,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:turtle",
-      "voices": [{ "key": "echo/packs/fr_fluent/226-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/194-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 227,
+      "index": 195,
       "kind": "phrase",
       "text": "Pourquoi les plantes sont-elles vertes ?",
       "gloss": {
@@ -3589,10 +3148,10 @@
       "freqRank": 230,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:seedling",
-      "voices": [{ "key": "echo/packs/fr_fluent/227-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/195-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 228,
+      "index": 196,
       "kind": "phrase",
       "text": "Les pommes sont rouges ou vertes.",
       "gloss": {
@@ -3605,10 +3164,10 @@
       "freqRank": 231,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-apple",
-      "voices": [{ "key": "echo/packs/fr_fluent/228-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/196-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 229,
+      "index": 197,
       "kind": "phrase",
       "text": "Trois enfants jouaient dans le parc.",
       "gloss": {
@@ -3622,10 +3181,10 @@
       "freqRank": 232,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-cartwheeling",
-      "voices": [{ "key": "echo/packs/fr_fluent/229-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/197-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 230,
+      "index": 198,
       "kind": "phrase",
       "text": "Il était assis, buvant du vin.",
       "gloss": {
@@ -3638,26 +3197,30 @@
       "freqRank": 233,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:wine-glass",
-      "voices": [{ "key": "echo/packs/fr_fluent/230-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/198-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 231,
+      "index": 199,
       "kind": "phrase",
       "text": "Ils se regardaient dans le miroir.",
       "gloss": {
         "en": "They were looking at themselves in the mirror.",
-        "tr": "Aynaya bakıyolardı.",
+        "tr": "Aynada kendilerine bakıyorlardı.",
         "de": "Sie betrachteten sich im Spiegel.",
         "pt-BR": "Olhavam-se ao espelho.",
         "ru": "Они смотрелись в зеркало."
       },
       "freqRank": 234,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "tr": "Aynaya bakıyolardı." },
+        "edited": ["tr"]
+      },
       "image": "cue:mirror",
-      "voices": [{ "key": "echo/packs/fr_fluent/231-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/199-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 232,
+      "index": 200,
       "kind": "phrase",
       "text": "Ma mère a peur des ascenseurs.",
       "gloss": {
@@ -3670,26 +3233,30 @@
       "freqRank": 235,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:elevator",
-      "voices": [{ "key": "echo/packs/fr_fluent/232-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/200-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 233,
+      "index": 201,
       "kind": "phrase",
       "text": "Je voulais juste vérifier mes emails.",
       "gloss": {
         "en": "I just wanted to check my email.",
-        "tr": "Sadece e postamı kontrol etmek istedim.",
+        "tr": "Sadece e-postamı kontrol etmek istedim.",
         "de": "Ich wollte gerade meine E-Mails abrufen.",
         "es": "Yo sólo quería revisar mis correos electrónicos.",
         "ru": "Я просто хотел проверить почтовый ящик."
       },
       "freqRank": 236,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "tr": "Sadece e postamı kontrol etmek istedim." },
+        "edited": ["tr"]
+      },
       "image": "cue:envelope",
-      "voices": [{ "key": "echo/packs/fr_fluent/233-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/201-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 234,
+      "index": 202,
       "kind": "phrase",
       "text": "Il économise pour acheter une maison.",
       "gloss": {
@@ -3702,10 +3269,10 @@
       "freqRank": 237,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house-with-garden",
-      "voices": [{ "key": "echo/packs/fr_fluent/234-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/202-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 235,
+      "index": 203,
       "kind": "phrase",
       "text": "Je construis des maisons de pierre.",
       "gloss": {
@@ -3718,43 +3285,10 @@
       "freqRank": 238,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
-      "voices": [{ "key": "echo/packs/fr_fluent/235-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/203-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 236,
-      "kind": "phrase",
-      "text": "La musique est une langue universelle.",
-      "gloss": {
-        "en": "Music is a universal language.",
-        "tr": "Müzik evrensel bir dildir.",
-        "de": "Musik ist eine Weltsprache.",
-        "es": "La música es un lenguaje universal.",
-        "pt-BR": "A música é uma linguagem universal.",
-        "ru": "Музыка является универсальным языком."
-      },
-      "freqRank": 239,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-note",
-      "voices": [{ "key": "echo/packs/fr_fluent/236-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 237,
-      "kind": "phrase",
-      "text": "Je te présenterai à mes parents.",
-      "gloss": {
-        "en": "I will introduce you to my parents.",
-        "tr": "Seni ailemle tanıştıracağım.",
-        "de": "Ich werde dich meinen Eltern vorstellen.",
-        "es": "Yo te presentaré a mis padres.",
-        "ru": "Я представлю тебя своим родителям."
-      },
-      "freqRank": 240,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:family",
-      "voices": [{ "key": "echo/packs/fr_fluent/237-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 238,
+      "index": 204,
       "kind": "phrase",
       "text": "Le thaï est une langue intéressante.",
       "gloss": {
@@ -3767,10 +3301,26 @@
       "freqRank": 241,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/238-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/204-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 239,
+      "index": 205,
+      "kind": "phrase",
+      "text": "Je te présenterai à mes parents.",
+      "gloss": {
+        "en": "I will introduce you to my parents.",
+        "tr": "Seni ailemle tanıştıracağım.",
+        "de": "Ich werde dich meinen Eltern vorstellen.",
+        "es": "Yo te presentaré a mis padres.",
+        "ru": "Я представлю тебя своим родителям."
+      },
+      "freqRank": 240,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:family",
+      "voices": [{ "key": "echo/packs/fr_fluent/205-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 206,
       "kind": "phrase",
       "text": "Que le soleil levant est beau !",
       "gloss": {
@@ -3783,10 +3333,10 @@
       "freqRank": 242,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sunrise",
-      "voices": [{ "key": "echo/packs/fr_fluent/239-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/206-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 240,
+      "index": 207,
       "kind": "phrase",
       "text": "Les raisins sont transformés en vin.",
       "gloss": {
@@ -3799,10 +3349,10 @@
       "freqRank": 243,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:wine-glass",
-      "voices": [{ "key": "echo/packs/fr_fluent/240-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/207-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 241,
+      "index": 208,
       "kind": "phrase",
       "text": "La vapeur sort de la marmite.",
       "gloss": {
@@ -3815,10 +3365,10 @@
       "freqRank": 244,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pot-of-food",
-      "voices": [{ "key": "echo/packs/fr_fluent/241-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/208-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 242,
+      "index": 209,
       "kind": "phrase",
       "text": "Les rues étaient couvertes de neige.",
       "gloss": {
@@ -3831,10 +3381,10 @@
       "freqRank": 245,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:snowflake",
-      "voices": [{ "key": "echo/packs/fr_fluent/242-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/209-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 243,
+      "index": 210,
       "kind": "phrase",
       "text": "Tom travaillait pour une société pétrolière.",
       "gloss": {
@@ -3847,10 +3397,10 @@
       "freqRank": 246,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fuel-pump",
-      "voices": [{ "key": "echo/packs/fr_fluent/243-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/210-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 244,
+      "index": 211,
       "kind": "phrase",
       "text": "Les tortues changent-elles de carapace ?",
       "gloss": {
@@ -3863,10 +3413,10 @@
       "freqRank": 247,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:turtle",
-      "voices": [{ "key": "echo/packs/fr_fluent/244-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/211-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 245,
+      "index": 212,
       "kind": "phrase",
       "text": "Il a gagné beaucoup de compétitions.",
       "gloss": {
@@ -3879,42 +3429,10 @@
       "freqRank": 248,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:trophy",
-      "voices": [{ "key": "echo/packs/fr_fluent/245-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/212-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 246,
-      "kind": "phrase",
-      "text": "Quelques enfants nagent dans la mer.",
-      "gloss": {
-        "en": "Some children are swimming in the sea.",
-        "de": "Einige Kinder schwimmen im Meer.",
-        "es": "Algunos niños nadan en el mar.",
-        "ru": "Несколько детей плавает в море.",
-        "ar": "بعض الأطفال يسبحون في البحر."
-      },
-      "freqRank": 249,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-swimming",
-      "voices": [{ "key": "echo/packs/fr_fluent/246-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 247,
-      "kind": "phrase",
-      "text": "Il entendit un appel au secours.",
-      "gloss": {
-        "en": "He heard a cry for help.",
-        "tr": "Bir yardım çağrısı duydu.",
-        "de": "Er hörte einen Hilferuf.",
-        "es": "Él oyó una llamada de auxilio.",
-        "pt-BR": "Ele ouviu um chamado de socorro."
-      },
-      "freqRank": 250,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sos-button",
-      "voices": [{ "key": "echo/packs/fr_fluent/247-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 248,
+      "index": 213,
       "kind": "phrase",
       "text": "Elle emplit le verre de vin.",
       "gloss": {
@@ -3927,26 +3445,46 @@
       "freqRank": 251,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:wine-glass",
-      "voices": [{ "key": "echo/packs/fr_fluent/248-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/213-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 249,
+      "index": 214,
+      "kind": "phrase",
+      "text": "Il entendit un appel au secours.",
+      "gloss": {
+        "en": "He heard a cry for help.",
+        "tr": "Bir yardım çağrısı duydu.",
+        "de": "Er hörte einen Hilferuf.",
+        "es": "Él oyó una llamada de auxilio.",
+        "pt-BR": "Ele ouviu um chamado de socorro."
+      },
+      "freqRank": 250,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sos-button",
+      "voices": [{ "key": "echo/packs/fr_fluent/214-ff_siwis.m4a", "voice": "ff_siwis" }]
+    },
+    {
+      "index": 215,
       "kind": "phrase",
       "text": "Petit-déjeunes-tu à la maison ?",
       "gloss": {
         "en": "Do you have breakfast at home?",
-        "tr": "Kahvaltıyı evde mi yapacaksın?",
+        "tr": "Kahvaltıyı evde mi yaparsın?",
         "de": "Frühstückst du zu Hause?",
         "es": "¿Desayunas en casa?",
         "ru": "Ты завтракаешь дома?"
       },
       "freqRank": 252,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "tr": "Kahvaltıyı evde mi yapacaksın?" },
+        "edited": ["tr"]
+      },
       "image": "cue:fork-and-knife-with-plate",
-      "voices": [{ "key": "echo/packs/fr_fluent/249-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/215-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 250,
+      "index": 216,
       "kind": "phrase",
       "text": "Que me conseillez-vous de faire ?",
       "gloss": {
@@ -3959,26 +3497,30 @@
       "freqRank": 253,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:light-bulb",
-      "voices": [{ "key": "echo/packs/fr_fluent/250-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/216-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 251,
+      "index": 217,
       "kind": "phrase",
       "text": "Il a neigé toute la nuit.",
       "gloss": {
-        "en": "It's been snowing all night.",
+        "en": "It snowed all night.",
         "tr": "Gece boyunca kar yağdı.",
         "de": "Es hat die ganze Nacht geschneit.",
         "es": "Ha nevado toda la noche.",
         "ru": "Снег шёл всю ночь."
       },
       "freqRank": 254,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "en": "It's been snowing all night." },
+        "edited": ["en"]
+      },
       "image": "cue:cloud-with-snow",
-      "voices": [{ "key": "echo/packs/fr_fluent/251-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/217-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 252,
+      "index": 218,
       "kind": "phrase",
       "text": "Je l'ai vue la semaine dernière.",
       "gloss": {
@@ -3991,10 +3533,10 @@
       "freqRank": 255,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:eyes",
-      "voices": [{ "key": "echo/packs/fr_fluent/252-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/218-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 253,
+      "index": 219,
       "kind": "phrase",
       "text": "Un oiseau volait haut dans le ciel.",
       "gloss": {
@@ -4007,10 +3549,10 @@
       "freqRank": 256,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dove",
-      "voices": [{ "key": "echo/packs/fr_fluent/253-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/219-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 254,
+      "index": 220,
       "kind": "phrase",
       "text": "Je ne l'ai jamais entendu chanter.",
       "gloss": {
@@ -4023,10 +3565,10 @@
       "freqRank": 257,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:microphone",
-      "voices": [{ "key": "echo/packs/fr_fluent/254-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/220-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 255,
+      "index": 221,
       "kind": "phrase",
       "text": "Le lac fournit la ville en eau.",
       "gloss": {
@@ -4039,10 +3581,10 @@
       "freqRank": 258,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:droplet",
-      "voices": [{ "key": "echo/packs/fr_fluent/255-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/221-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 256,
+      "index": 222,
       "kind": "phrase",
       "text": "Mary et moi sommes devenues bonnes amies.",
       "gloss": {
@@ -4055,10 +3597,10 @@
       "freqRank": 259,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:women-holding-hands",
-      "voices": [{ "key": "echo/packs/fr_fluent/256-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/222-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 257,
+      "index": 223,
       "kind": "phrase",
       "text": "Le professeur a parlé de théories mathématiques.",
       "gloss": {
@@ -4071,10 +3613,10 @@
       "freqRank": 260,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:divide",
-      "voices": [{ "key": "echo/packs/fr_fluent/257-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/223-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 258,
+      "index": 224,
       "kind": "phrase",
       "text": "Ce passeport est valide pendant cinq ans.",
       "gloss": {
@@ -4087,10 +3629,10 @@
       "freqRank": 261,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:passport-control",
-      "voices": [{ "key": "echo/packs/fr_fluent/258-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/224-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 259,
+      "index": 225,
       "kind": "phrase",
       "text": "Le sang circule à travers les veines.",
       "gloss": {
@@ -4103,10 +3645,10 @@
       "freqRank": 262,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:drop-of-blood",
-      "voices": [{ "key": "echo/packs/fr_fluent/259-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/225-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 260,
+      "index": 226,
       "kind": "phrase",
       "text": "Une minute se compose de soixante secondes.",
       "gloss": {
@@ -4119,10 +3661,10 @@
       "freqRank": 263,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:stopwatch",
-      "voices": [{ "key": "echo/packs/fr_fluent/260-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/226-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 261,
+      "index": 227,
       "kind": "phrase",
       "text": "Est-ce un étalon ou une jument ?",
       "gloss": {
@@ -4135,10 +3677,10 @@
       "freqRank": 264,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:horse",
-      "voices": [{ "key": "echo/packs/fr_fluent/261-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/227-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 262,
+      "index": 228,
       "kind": "phrase",
       "text": "Une équipe est composée de onze joueurs.",
       "gloss": {
@@ -4151,10 +3693,10 @@
       "freqRank": 265,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:soccer-ball",
-      "voices": [{ "key": "echo/packs/fr_fluent/262-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/228-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 263,
+      "index": 229,
       "kind": "phrase",
       "text": "Les vêtements sont gardés dans des placards.",
       "gloss": {
@@ -4167,10 +3709,10 @@
       "freqRank": 266,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:t-shirt",
-      "voices": [{ "key": "echo/packs/fr_fluent/263-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/229-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 264,
+      "index": 230,
       "kind": "phrase",
       "text": "Est-ce que tu étudies la chimie ?",
       "gloss": {
@@ -4183,10 +3725,10 @@
       "freqRank": 267,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:test-tube",
-      "voices": [{ "key": "echo/packs/fr_fluent/264-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/230-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 265,
+      "index": 231,
       "kind": "phrase",
       "text": "Les oranges sont riches en vitamine C.",
       "gloss": {
@@ -4199,10 +3741,10 @@
       "freqRank": 268,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:tangerine",
-      "voices": [{ "key": "echo/packs/fr_fluent/265-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/231-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 266,
+      "index": 232,
       "kind": "phrase",
       "text": "Je dois vous avouer que je ronfle...",
       "gloss": {
@@ -4215,10 +3757,10 @@
       "freqRank": 269,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:zzz",
-      "voices": [{ "key": "echo/packs/fr_fluent/266-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/232-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 267,
+      "index": 233,
       "kind": "phrase",
       "text": "Ils sont les défenseurs de la ville.",
       "gloss": {
@@ -4231,10 +3773,10 @@
       "freqRank": 270,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:shield",
-      "voices": [{ "key": "echo/packs/fr_fluent/267-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/233-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 268,
+      "index": 234,
       "kind": "phrase",
       "text": "Je ne me marierai pas cette année.",
       "gloss": {
@@ -4247,10 +3789,10 @@
       "freqRank": 271,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ring",
-      "voices": [{ "key": "echo/packs/fr_fluent/268-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/234-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 269,
+      "index": 235,
       "kind": "phrase",
       "text": "Il laissa le livre sur la table.",
       "gloss": {
@@ -4263,10 +3805,10 @@
       "freqRank": 272,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:closed-book",
-      "voices": [{ "key": "echo/packs/fr_fluent/269-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/235-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 270,
+      "index": 236,
       "kind": "phrase",
       "text": "Un chat apparut de derrière le rideau.",
       "gloss": {
@@ -4279,10 +3821,10 @@
       "freqRank": 273,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
-      "voices": [{ "key": "echo/packs/fr_fluent/270-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/236-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 271,
+      "index": 237,
       "kind": "phrase",
       "text": "Dans deux heures le soleil se couchera.",
       "gloss": {
@@ -4295,10 +3837,10 @@
       "freqRank": 274,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sunset",
-      "voices": [{ "key": "echo/packs/fr_fluent/271-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/237-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 272,
+      "index": 238,
       "kind": "phrase",
       "text": "Le grand homme regarda Tom et sourit.",
       "gloss": {
@@ -4311,10 +3853,10 @@
       "freqRank": 275,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:slightly-smiling-face",
-      "voices": [{ "key": "echo/packs/fr_fluent/272-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/238-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 273,
+      "index": 239,
       "kind": "phrase",
       "text": "Je dédie ce livre à ma fille.",
       "gloss": {
@@ -4327,10 +3869,10 @@
       "freqRank": 276,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:closed-book",
-      "voices": [{ "key": "echo/packs/fr_fluent/273-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/239-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 274,
+      "index": 240,
       "kind": "phrase",
       "text": "Combien mesures-tu et combien pèses-tu ?",
       "gloss": {
@@ -4343,10 +3885,10 @@
       "freqRank": 277,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:straight-ruler",
-      "voices": [{ "key": "echo/packs/fr_fluent/274-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/240-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 275,
+      "index": 241,
       "kind": "phrase",
       "text": "Les rues de cette ville sont étroites.",
       "gloss": {
@@ -4359,10 +3901,10 @@
       "freqRank": 278,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cityscape-at-dusk",
-      "voices": [{ "key": "echo/packs/fr_fluent/275-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/241-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 276,
+      "index": 242,
       "kind": "phrase",
       "text": "Elle joue au golf tous les weekends.",
       "gloss": {
@@ -4375,10 +3917,10 @@
       "freqRank": 279,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:flag-in-hole",
-      "voices": [{ "key": "echo/packs/fr_fluent/276-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/242-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 277,
+      "index": 243,
       "kind": "phrase",
       "text": "Le vieil homme tenta de nager 5 kilomètres.",
       "gloss": {
@@ -4391,26 +3933,10 @@
       "freqRank": 280,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-swimming",
-      "voices": [{ "key": "echo/packs/fr_fluent/277-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/243-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 278,
-      "kind": "phrase",
-      "text": "Il a neigé de lundi à vendredi.",
-      "gloss": {
-        "en": "It snowed from Monday to Friday.",
-        "de": "Es schneite von Montag bis Freitag.",
-        "es": "Nevó desde el lunes hasta el viernes.",
-        "pt-BR": "Nevou de segunda a sexta.",
-        "ru": "Снег шёл с понедельника по пятницу."
-      },
-      "freqRank": 281,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cloud-with-snow",
-      "voices": [{ "key": "echo/packs/fr_fluent/278-ff_siwis.m4a", "voice": "ff_siwis" }]
-    },
-    {
-      "index": 279,
+      "index": 244,
       "kind": "phrase",
       "text": "Les chiens ont aboyé toute la nuit.",
       "gloss": {
@@ -4423,10 +3949,10 @@
       "freqRank": 282,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
-      "voices": [{ "key": "echo/packs/fr_fluent/279-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/244-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 280,
+      "index": 245,
       "kind": "phrase",
       "text": "Le nouveau médicament lui sauva la vie.",
       "gloss": {
@@ -4439,10 +3965,10 @@
       "freqRank": 283,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pill",
-      "voices": [{ "key": "echo/packs/fr_fluent/280-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/245-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 281,
+      "index": 246,
       "kind": "phrase",
       "text": "Quelques enfants se baignent dans la rivière.",
       "gloss": {
@@ -4456,10 +3982,10 @@
       "freqRank": 284,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-swimming",
-      "voices": [{ "key": "echo/packs/fr_fluent/281-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/246-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 282,
+      "index": 247,
       "kind": "phrase",
       "text": "Il demeurera à jamais dans nos cœurs.",
       "gloss": {
@@ -4472,10 +3998,10 @@
       "freqRank": 285,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:reminder-ribbon",
-      "voices": [{ "key": "echo/packs/fr_fluent/282-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/247-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 283,
+      "index": 248,
       "kind": "phrase",
       "text": "Ne songe même pas à manger mon chocolat !",
       "gloss": {
@@ -4488,10 +4014,10 @@
       "freqRank": 286,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:chocolate-bar",
-      "voices": [{ "key": "echo/packs/fr_fluent/283-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/248-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 284,
+      "index": 249,
       "kind": "phrase",
       "text": "Aucun étudiant ne put répondre à la question.",
       "gloss": {
@@ -4504,10 +4030,10 @@
       "freqRank": 287,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-question-mark",
-      "voices": [{ "key": "echo/packs/fr_fluent/284-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/249-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 285,
+      "index": 250,
       "kind": "phrase",
       "text": "Il mit ses lunettes et commença à lire.",
       "gloss": {
@@ -4520,10 +4046,10 @@
       "freqRank": 288,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:glasses",
-      "voices": [{ "key": "echo/packs/fr_fluent/285-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/250-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 286,
+      "index": 251,
       "kind": "phrase",
       "text": "Où se situe la source de ce fleuve ?",
       "gloss": {
@@ -4536,10 +4062,10 @@
       "freqRank": 289,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:world-map",
-      "voices": [{ "key": "echo/packs/fr_fluent/286-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/251-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 287,
+      "index": 252,
       "kind": "phrase",
       "text": "Il y a du lait dans le réfrigérateur.",
       "gloss": {
@@ -4552,10 +4078,10 @@
       "freqRank": 290,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:glass-of-milk",
-      "voices": [{ "key": "echo/packs/fr_fluent/287-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/252-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 288,
+      "index": 253,
       "kind": "phrase",
       "text": "Elle ne sait pas faire de la bicyclette.",
       "gloss": {
@@ -4568,10 +4094,10 @@
       "freqRank": 291,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bicycle",
-      "voices": [{ "key": "echo/packs/fr_fluent/288-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/253-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 289,
+      "index": 254,
       "kind": "phrase",
       "text": "Le Japon importe de grandes quantités de pétrole.",
       "gloss": {
@@ -4584,10 +4110,10 @@
       "freqRank": 292,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fuel-pump",
-      "voices": [{ "key": "echo/packs/fr_fluent/289-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/254-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 290,
+      "index": 255,
       "kind": "phrase",
       "text": "Il y a quelqu’un à la porte.",
       "gloss": {
@@ -4600,10 +4126,10 @@
       "freqRank": 293,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:door",
-      "voices": [{ "key": "echo/packs/fr_fluent/290-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/255-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 291,
+      "index": 256,
       "kind": "phrase",
       "text": "Ne confonds pas le chinois avec le japonais.",
       "gloss": {
@@ -4616,10 +4142,10 @@
       "freqRank": 294,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
-      "voices": [{ "key": "echo/packs/fr_fluent/291-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/256-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 292,
+      "index": 257,
       "kind": "phrase",
       "text": "Si je connaissais son adresse, je lui écrirais.",
       "gloss": {
@@ -4632,10 +4158,10 @@
       "freqRank": 295,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:envelope",
-      "voices": [{ "key": "echo/packs/fr_fluent/292-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/257-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 293,
+      "index": 258,
       "kind": "phrase",
       "text": "Ne confonds pas le sucre et le sel.",
       "gloss": {
@@ -4648,10 +4174,10 @@
       "freqRank": 296,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:salt",
-      "voices": [{ "key": "echo/packs/fr_fluent/293-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/258-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 294,
+      "index": 259,
       "kind": "phrase",
       "text": "Fred écrivit une longue lettre à sa mère.",
       "gloss": {
@@ -4664,10 +4190,10 @@
       "freqRank": 297,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:envelope",
-      "voices": [{ "key": "echo/packs/fr_fluent/294-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/259-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 295,
+      "index": 260,
       "kind": "phrase",
       "text": "Vous appelleriez les pompiers pour sauver une fourmi ?",
       "gloss": {
@@ -4680,10 +4206,10 @@
       "freqRank": 298,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fire-engine",
-      "voices": [{ "key": "echo/packs/fr_fluent/295-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/260-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 296,
+      "index": 261,
       "kind": "phrase",
       "text": "Son nouveau roman est devenu un best-seller.",
       "gloss": {
@@ -4696,10 +4222,10 @@
       "freqRank": 299,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:closed-book",
-      "voices": [{ "key": "echo/packs/fr_fluent/296-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/261-ff_siwis.m4a", "voice": "ff_siwis" }]
     },
     {
-      "index": 297,
+      "index": 262,
       "kind": "phrase",
       "text": "Je l'ai acheté à un vendeur de rue.",
       "gloss": {
@@ -4712,7 +4238,7 @@
       "freqRank": 300,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:shopping-cart",
-      "voices": [{ "key": "echo/packs/fr_fluent/297-ff_siwis.m4a", "voice": "ff_siwis" }]
+      "voices": [{ "key": "echo/packs/fr_fluent/262-ff_siwis.m4a", "voice": "ff_siwis" }]
     }
   ]
 }

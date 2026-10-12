@@ -55,7 +55,7 @@ import { cameFromV1 } from '../handles/legacyPrecreate'
 import { isUserSuppressed } from '../notifications/suppressions'
 import { restoreByHash } from '../handles/legacyRestore'
 import { isSuspended } from '../moderation/suspension'
-import { attachReferral } from '../referrals/referrals'
+import { attachReferral, readSignUpReferrer } from '../referrals/referrals'
 import { grantSignupBonus } from '../tokens/signupBonus'
 import { streakDaysInZone } from '../tokens/streak'
 
@@ -693,13 +693,21 @@ export async function createProfile(
    *
    * Nothing is paid here. See `settleReferral` — the award waits until this
    * person has written to somebody.
+   *
+   * What the form sends wins, matching `resolveReferrer` on the device: a code
+   * typed here is a more deliberate answer than a link opened earlier. Only
+   * when it sends none is the invite the account was created with used — the
+   * case where onboarding runs in a different browser from the one that held
+   * the device flag. Either way it is the same single `attachReferral` call,
+   * so a stored handle meets every check a typed one does.
    */
-  if (input.referredByHandle) {
-    try {
-      await attachReferral(db, userId, input.referredByHandle, input.referredBySource ?? 'manual')
-    } catch (error) {
-      console.error('[referral] attach failed', { userId, error })
-    }
+  try {
+    const referrer = input.referredByHandle
+      ? { handle: input.referredByHandle, source: input.referredBySource ?? 'manual' }
+      : await readSignUpReferrer(db, userId)
+    if (referrer) await attachReferral(db, userId, referrer.handle, referrer.source)
+  } catch (error) {
+    console.error('[referral] attach failed', { userId, error })
   }
 
   // Finishes a restore that could not run at verification time because the v1

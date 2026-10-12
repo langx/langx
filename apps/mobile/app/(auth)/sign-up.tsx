@@ -12,6 +12,8 @@ import { openExternal } from '../../src/lib/openExternal'
 import { FormField } from '../../src/components/ui/FormField'
 import { SocialAuthButtons } from '../../src/components/SocialAuthButtons'
 import { recordSignupSubmitted } from '../../src/lib/signupOrigin'
+import { signUpReferrerFields } from '../../src/lib/inviteLink'
+import { FLAG_KEYS, readFlag } from '../../src/lib/localFlags'
 import { useGuestBrowse } from '../../src/hooks/useGuestBrowse'
 import { shouldGateGuest } from '../../src/lib/guestGate'
 import { authClient } from '../../src/lib/auth-client'
@@ -72,6 +74,10 @@ export default function SignUp() {
       name: nameFromEmail(email),
       email,
       password,
+      // The invite rides along to the account as well as staying on the
+      // device, because the verification link is often opened in a mail app's
+      // own browser, where onboarding cannot see this device's flag.
+      ...signUpReferrerFields(await readFlag(FLAG_KEYS.pendingReferrer)),
       // No `callbackURL`: the API builds the mailed link itself, as
       // `app/verify-email.tsx` explains, so anything passed here is ignored.
       fetchOptions: captcha.fetchOptions,

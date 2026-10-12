@@ -2,8 +2,8 @@
   "id": "it:fluent",
   "lang": "it",
   "level": "fluent",
-  "contentVersion": 3,
-  "reviewed": false,
+  "contentVersion": 4,
+  "reviewed": true,
   "sources": [
     {
       "name": "Wiktionary, via kaikki.org (wiktextract)",
@@ -52,11 +52,17 @@
     {
       "index": 2,
       "kind": "phrase",
-      "text": "Tu sei timida.",
-      "gloss": { "en": "You're shy.", "fr": "Tu es timide.", "pt-BR": "Tu és tímida." },
-      "freqRank": 4,
+      "text": "Lui è puntuale.",
+      "gloss": {
+        "en": "He is punctual.",
+        "de": "Er ist pünktlich.",
+        "es": "Él es puntual.",
+        "fr": "Il est ponctuel.",
+        "pt-BR": "Ele é pontual."
+      },
+      "freqRank": 6,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:flushed-face",
+      "image": "cue:alarm-clock",
       "voices": [
         { "key": "echo/packs/it_fluent/2-if_sara.m4a", "voice": "if_sara" },
         { "key": "echo/packs/it_fluent/2-im_nicola.m4a", "voice": "im_nicola" }
@@ -85,25 +91,6 @@
     {
       "index": 4,
       "kind": "phrase",
-      "text": "Lui è puntuale.",
-      "gloss": {
-        "en": "He is punctual.",
-        "de": "Er ist pünktlich.",
-        "es": "Él es puntual.",
-        "fr": "Il est ponctuel.",
-        "pt-BR": "Ele é pontual."
-      },
-      "freqRank": 6,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:alarm-clock",
-      "voices": [
-        { "key": "echo/packs/it_fluent/4-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/4-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 5,
-      "kind": "phrase",
       "text": "È una tassista?",
       "gloss": {
         "en": "Is she a taxi driver?",
@@ -115,12 +102,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
-        { "key": "echo/packs/it_fluent/5-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/5-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/4-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/4-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 6,
+      "index": 5,
       "kind": "phrase",
       "text": "Guida con prudenza.",
       "gloss": {
@@ -133,12 +120,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
-        { "key": "echo/packs/it_fluent/6-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/6-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/5-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/5-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 7,
+      "index": 6,
       "kind": "phrase",
       "text": "Io sono razionale.",
       "gloss": {
@@ -152,12 +139,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
       "voices": [
-        { "key": "echo/packs/it_fluent/7-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/7-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/6-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/6-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 8,
+      "index": 7,
       "kind": "phrase",
       "text": "Gli uccelli volano.",
       "gloss": {
@@ -172,12 +159,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dove",
       "voices": [
-        { "key": "echo/packs/it_fluent/8-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/8-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/7-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/7-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 9,
+      "index": 8,
       "kind": "phrase",
       "text": "Voglio renderla felice.",
       "gloss": {
@@ -190,12 +177,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:smiling-face-with-smiling-eyes",
       "voices": [
-        { "key": "echo/packs/it_fluent/9-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/9-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/8-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/8-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 10,
+      "index": 9,
       "kind": "phrase",
       "text": "Mangi e beva.",
       "gloss": {
@@ -208,12 +195,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
-        { "key": "echo/packs/it_fluent/10-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/10-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/9-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/9-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 11,
+      "index": 10,
       "kind": "phrase",
       "text": "Dove possiamo parcheggiare?",
       "gloss": {
@@ -226,12 +213,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:p-button",
       "voices": [
-        { "key": "echo/packs/it_fluent/11-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/11-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/10-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/10-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 12,
+      "index": 11,
       "kind": "phrase",
       "text": "Bevo per rilassarmi.",
       "gloss": {
@@ -243,12 +230,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:wine-glass",
       "voices": [
-        { "key": "echo/packs/it_fluent/12-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/12-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/11-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/11-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 13,
+      "index": 12,
       "kind": "phrase",
       "text": "Perché stanno sorridendo?",
       "gloss": {
@@ -260,12 +247,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:smiling-face-with-smiling-eyes",
       "voices": [
-        { "key": "echo/packs/it_fluent/13-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/13-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/12-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/12-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 14,
+      "index": 13,
       "kind": "phrase",
       "text": "Si lamenta sempre.",
       "gloss": {
@@ -278,12 +265,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:unamused-face",
       "voices": [
-        { "key": "echo/packs/it_fluent/14-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/14-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/13-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/13-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 15,
+      "index": 14,
       "kind": "phrase",
       "text": "Ieri ero ammalato.",
       "gloss": {
@@ -295,25 +282,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-with-thermometer",
       "voices": [
-        { "key": "echo/packs/it_fluent/15-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/15-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/14-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/14-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 16,
-      "kind": "phrase",
-      "text": "Tom è ammalato.",
-      "gloss": { "en": "Tom is sick.", "fr": "Tom est malade.", "ru": "Том болен." },
-      "freqRank": 18,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-thermometer",
-      "voices": [
-        { "key": "echo/packs/it_fluent/16-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/16-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 17,
+      "index": 15,
       "kind": "phrase",
       "text": "Noi eravamo sposate.",
       "gloss": {
@@ -325,12 +299,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ring",
       "voices": [
-        { "key": "echo/packs/it_fluent/17-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/17-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/15-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/15-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 18,
+      "index": 16,
       "kind": "phrase",
       "text": "Chi sta gridando?",
       "gloss": {
@@ -342,12 +316,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-screaming-in-fear",
       "voices": [
-        { "key": "echo/packs/it_fluent/18-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/18-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/16-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/16-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 19,
+      "index": 17,
       "kind": "phrase",
       "text": "Spero di sposarla.",
       "gloss": {
@@ -359,12 +333,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ring",
       "voices": [
-        { "key": "echo/packs/it_fluent/19-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/19-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/17-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/17-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 20,
+      "index": 18,
       "kind": "phrase",
       "text": "Ho appena cenato.",
       "gloss": {
@@ -376,12 +350,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
-        { "key": "echo/packs/it_fluent/20-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/20-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/18-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/18-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 21,
+      "index": 19,
       "kind": "phrase",
       "text": "Noi non dimentichiamo.",
       "gloss": {
@@ -393,30 +367,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
       "voices": [
-        { "key": "echo/packs/it_fluent/21-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/21-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/19-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/19-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 22,
-      "kind": "phrase",
-      "text": "Sono una gatta.",
-      "gloss": {
-        "en": "I'm a cat.",
-        "tr": "Ben bir kediyim.",
-        "de": "Ich bin eine Katze.",
-        "ru": "Я кошка."
-      },
-      "freqRank": 24,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cat",
-      "voices": [
-        { "key": "echo/packs/it_fluent/22-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/22-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 23,
+      "index": 20,
       "kind": "phrase",
       "text": "Loro sono professori.",
       "gloss": { "en": "They are teachers.", "fr": "Ils sont professeurs.", "ru": "Они учителя." },
@@ -424,12 +380,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:school",
       "voices": [
-        { "key": "echo/packs/it_fluent/23-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/23-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/20-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/20-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 24,
+      "index": 21,
       "kind": "phrase",
       "text": "Chi sta vincendo?",
       "gloss": {
@@ -441,12 +397,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:trophy",
       "voices": [
-        { "key": "echo/packs/it_fluent/24-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/24-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/21-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/21-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 25,
+      "index": 22,
       "kind": "phrase",
       "text": "Manca una forchetta.",
       "gloss": {
@@ -459,12 +415,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife",
       "voices": [
-        { "key": "echo/packs/it_fluent/25-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/25-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/22-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/22-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 26,
+      "index": 23,
       "kind": "phrase",
       "text": "Perché Marie sanguina?",
       "gloss": {
@@ -476,12 +432,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:drop-of-blood",
       "voices": [
-        { "key": "echo/packs/it_fluent/26-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/26-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/23-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/23-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 27,
+      "index": 24,
       "kind": "phrase",
       "text": "Voglio una caramella.",
       "gloss": {
@@ -495,12 +451,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:candy",
       "voices": [
-        { "key": "echo/packs/it_fluent/27-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/27-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/24-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/24-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 28,
+      "index": 25,
       "kind": "phrase",
       "text": "Sono un informatico.",
       "gloss": {
@@ -512,12 +468,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:laptop",
       "voices": [
-        { "key": "echo/packs/it_fluent/28-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/28-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/25-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/25-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 29,
+      "index": 26,
       "kind": "phrase",
       "text": "Ci siamo baciati.",
       "gloss": { "en": "We kissed each other.", "es": "Nos besamos.", "pt-BR": "Beijamo-nos." },
@@ -525,12 +481,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:kiss-mark",
       "voices": [
-        { "key": "echo/packs/it_fluent/29-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/29-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/26-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/26-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 30,
+      "index": 27,
       "kind": "phrase",
       "text": "È molto frustrante.",
       "gloss": {
@@ -542,12 +498,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:weary-face",
       "voices": [
-        { "key": "echo/packs/it_fluent/30-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/30-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/27-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/27-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 31,
+      "index": 28,
       "kind": "phrase",
       "text": "Lo capivo appena.",
       "gloss": {
@@ -559,12 +515,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:confused-face",
       "voices": [
-        { "key": "echo/packs/it_fluent/31-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/31-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/28-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/28-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 32,
+      "index": 29,
       "kind": "phrase",
       "text": "Il sole brilla.",
       "gloss": { "en": "The sun is shining.", "pt-BR": "O sol brilha.", "ru": "Солнце светит." },
@@ -572,12 +528,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sun",
       "voices": [
-        { "key": "echo/packs/it_fluent/32-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/32-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/29-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/29-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 33,
+      "index": 30,
       "kind": "phrase",
       "text": "Sono una casalinga.",
       "gloss": {
@@ -590,12 +546,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:broom",
       "voices": [
-        { "key": "echo/packs/it_fluent/33-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/33-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/30-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/30-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 34,
+      "index": 31,
       "kind": "phrase",
       "text": "Prendo delle vitamine.",
       "gloss": {
@@ -607,12 +563,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pill",
       "voices": [
-        { "key": "echo/packs/it_fluent/34-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/34-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/31-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/31-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 35,
+      "index": 32,
       "kind": "phrase",
       "text": "Ti scriverò presto.",
       "gloss": {
@@ -625,30 +581,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:envelope",
       "voices": [
-        { "key": "echo/packs/it_fluent/35-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/35-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/32-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/32-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 36,
-      "kind": "phrase",
-      "text": "Il cane abbaia.",
-      "gloss": {
-        "en": "The dog barks.",
-        "de": "Der Hund bellt.",
-        "es": "El perro ladra.",
-        "pt-BR": "O cão late."
-      },
-      "freqRank": 38,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog",
-      "voices": [
-        { "key": "echo/packs/it_fluent/36-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/36-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 37,
+      "index": 33,
       "kind": "phrase",
       "text": "Loro sono noiosi.",
       "gloss": {
@@ -660,12 +598,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:expressionless-face",
       "voices": [
-        { "key": "echo/packs/it_fluent/37-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/37-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/33-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/33-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 38,
+      "index": 34,
       "kind": "phrase",
       "text": "Tom è resistente.",
       "gloss": { "en": "Tom's tough.", "es": "Tom es resistente.", "ru": "Том выносливый." },
@@ -673,12 +611,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:flexed-biceps",
       "voices": [
-        { "key": "echo/packs/it_fluent/38-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/38-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/34-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/34-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 39,
+      "index": 35,
       "kind": "phrase",
       "text": "Non sono ammalata.",
       "gloss": { "en": "I'm not sick.", "de": "Ich bin nicht krank.", "ru": "Я не болен." },
@@ -686,12 +624,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:face-with-thermometer",
       "voices": [
-        { "key": "echo/packs/it_fluent/39-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/39-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/35-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/35-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 40,
+      "index": 36,
       "kind": "phrase",
       "text": "Tom è disoccupato.",
       "gloss": {
@@ -703,29 +641,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:briefcase",
       "voices": [
-        { "key": "echo/packs/it_fluent/40-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/40-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/36-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/36-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 41,
-      "kind": "phrase",
-      "text": "Era sorprendentemente bella.",
-      "gloss": {
-        "en": "She was astonishingly beautiful.",
-        "es": "Era asombrosamente hermosa.",
-        "fr": "Elle était incroyablement belle."
-      },
-      "freqRank": 43,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cherry-blossom",
-      "voices": [
-        { "key": "echo/packs/it_fluent/41-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/41-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 42,
+      "index": 37,
       "kind": "phrase",
       "text": "Sono un imprenditore.",
       "gloss": {
@@ -737,12 +658,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:briefcase",
       "voices": [
-        { "key": "echo/packs/it_fluent/42-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/42-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/37-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/37-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 43,
+      "index": 38,
       "kind": "phrase",
       "text": "Mangia più verdura.",
       "gloss": {
@@ -754,12 +675,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:green-salad",
       "voices": [
-        { "key": "echo/packs/it_fluent/43-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/43-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/38-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/38-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 44,
+      "index": 39,
       "kind": "phrase",
       "text": "Non sono sorda.",
       "gloss": {
@@ -772,12 +693,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ear",
       "voices": [
-        { "key": "echo/packs/it_fluent/44-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/44-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/39-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/39-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 45,
+      "index": 40,
       "kind": "phrase",
       "text": "Lei è creativa.",
       "gloss": { "en": "You're creative.", "de": "Sie sind kreativ.", "fr": "Vous êtes créative." },
@@ -785,12 +706,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:artist-palette",
       "voices": [
-        { "key": "echo/packs/it_fluent/45-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/45-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/40-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/40-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 46,
+      "index": 41,
       "kind": "phrase",
       "text": "Sono un turista.",
       "gloss": { "en": "I'm a tourist.", "pt-BR": "Sou um turista.", "ru": "Я турист." },
@@ -798,12 +719,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:luggage",
       "voices": [
-        { "key": "echo/packs/it_fluent/46-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/46-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/41-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/41-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 47,
+      "index": 42,
       "kind": "phrase",
       "text": "Ho ventiquattro anni.",
       "gloss": {
@@ -817,12 +738,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:birthday-cake",
       "voices": [
-        { "key": "echo/packs/it_fluent/47-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/47-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/42-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/42-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 48,
+      "index": 43,
       "kind": "phrase",
       "text": "Prova a controllarti.",
       "gloss": {
@@ -835,12 +756,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-in-lotus-position",
       "voices": [
-        { "key": "echo/packs/it_fluent/48-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/48-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/43-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/43-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 49,
+      "index": 44,
       "kind": "phrase",
       "text": "Canto quando cucino.",
       "gloss": {
@@ -852,12 +773,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-note",
       "voices": [
-        { "key": "echo/packs/it_fluent/49-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/49-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/44-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/44-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 50,
+      "index": 45,
       "kind": "phrase",
       "text": "Lui vende automobili.",
       "gloss": {
@@ -872,29 +793,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
-        { "key": "echo/packs/it_fluent/50-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/50-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/45-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/45-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 51,
-      "kind": "phrase",
-      "text": "Ho appena pranzato.",
-      "gloss": {
-        "en": "I've just had lunch.",
-        "tr": "Az önce öğle yemeğini yedim.",
-        "ru": "Я только что пообедал."
-      },
-      "freqRank": 53,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife-with-plate",
-      "voices": [
-        { "key": "echo/packs/it_fluent/51-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/51-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 52,
+      "index": 46,
       "kind": "phrase",
       "text": "Ti amerò sempre.",
       "gloss": {
@@ -906,29 +810,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-heart",
       "voices": [
-        { "key": "echo/packs/it_fluent/52-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/52-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/46-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/46-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 53,
-      "kind": "phrase",
-      "text": "Ho già pranzato.",
-      "gloss": {
-        "en": "I have already eaten lunch.",
-        "fr": "J'ai déjà pris mon déjeuner.",
-        "ru": "Я уже обедал."
-      },
-      "freqRank": 55,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fork-and-knife-with-plate",
-      "voices": [
-        { "key": "echo/packs/it_fluent/53-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/53-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 54,
+      "index": 47,
       "kind": "phrase",
       "text": "Io sono musulmano.",
       "gloss": { "en": "I am a Muslim.", "de": "Ich bin Muslim.", "fr": "Je suis musulman." },
@@ -936,30 +823,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:place-of-worship",
       "voices": [
-        { "key": "echo/packs/it_fluent/54-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/54-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/47-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/47-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 55,
-      "kind": "phrase",
-      "text": "Tom è musulmano.",
-      "gloss": {
-        "en": "Tom is a Muslim.",
-        "es": "Tom es musulmán.",
-        "fr": "Tom est musulman.",
-        "ar": "توم مسلم."
-      },
-      "freqRank": 57,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:place-of-worship",
-      "voices": [
-        { "key": "echo/packs/it_fluent/55-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/55-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 56,
+      "index": 48,
       "kind": "phrase",
       "text": "È un dizionario.",
       "gloss": {
@@ -973,12 +842,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:closed-book",
       "voices": [
-        { "key": "echo/packs/it_fluent/56-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/56-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/48-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/48-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 57,
+      "index": 49,
       "kind": "phrase",
       "text": "Tom si ricorderà.",
       "gloss": {
@@ -990,29 +859,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
       "voices": [
-        { "key": "echo/packs/it_fluent/57-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/57-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/49-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/49-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 58,
-      "kind": "phrase",
-      "text": "Ho il dizionario.",
-      "gloss": {
-        "en": "I have the dictionary.",
-        "de": "Ich habe das Wörterbuch.",
-        "fr": "J'ai le dictionnaire."
-      },
-      "freqRank": 60,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book",
-      "voices": [
-        { "key": "echo/packs/it_fluent/58-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/58-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 59,
+      "index": 50,
       "kind": "phrase",
       "text": "Suona il flauto.",
       "gloss": {
@@ -1024,12 +876,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-note",
       "voices": [
-        { "key": "echo/packs/it_fluent/59-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/59-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/50-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/50-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 60,
+      "index": 51,
       "kind": "phrase",
       "text": "Ho un dizionario.",
       "gloss": {
@@ -1043,12 +895,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:closed-book",
       "voices": [
-        { "key": "echo/packs/it_fluent/60-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/60-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/51-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/51-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 61,
+      "index": 52,
       "kind": "phrase",
       "text": "Noi siamo divorziati.",
       "gloss": { "en": "We're divorced.", "pt-BR": "Estamos divorciados.", "ru": "Мы разведены." },
@@ -1056,12 +908,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:broken-heart",
       "voices": [
-        { "key": "echo/packs/it_fluent/61-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/61-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/52-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/52-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 62,
+      "index": 53,
       "kind": "phrase",
       "text": "Tom sta cucinando.",
       "gloss": { "en": "Tom's cooking.", "de": "Tom kocht gerade.", "es": "Tom está cocinando." },
@@ -1069,31 +921,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pot-of-food",
       "voices": [
-        { "key": "echo/packs/it_fluent/62-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/62-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/53-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/53-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 63,
-      "kind": "phrase",
-      "text": "Ho diciannove anni.",
-      "gloss": {
-        "en": "I am 19 years old.",
-        "de": "Ich bin 19 Jahre alt.",
-        "es": "Tengo 19 años.",
-        "fr": "J'ai 19 ans.",
-        "ru": "Мне девятнадцать лет."
-      },
-      "freqRank": 65,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:birthday-cake",
-      "voices": [
-        { "key": "echo/packs/it_fluent/63-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/63-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 64,
+      "index": 54,
       "kind": "phrase",
       "text": "Lei nuota bene.",
       "gloss": { "en": "She swims well.", "de": "Sie schwimmt gut.", "fr": "Elle nage bien." },
@@ -1101,12 +934,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-swimming",
       "voices": [
-        { "key": "echo/packs/it_fluent/64-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/64-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/54-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/54-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 65,
+      "index": 55,
       "kind": "phrase",
       "text": "Ti piace danzare?",
       "gloss": {
@@ -1118,12 +951,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman-dancing",
       "voices": [
-        { "key": "echo/packs/it_fluent/65-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/65-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/55-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/55-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 66,
+      "index": 56,
       "kind": "phrase",
       "text": "Non sta piovendo.",
       "gloss": {
@@ -1135,12 +968,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cloud-with-rain",
       "voices": [
-        { "key": "echo/packs/it_fluent/66-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/66-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/56-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/56-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 67,
+      "index": 57,
       "kind": "phrase",
       "text": "Tom abitava lì.",
       "gloss": { "en": "Tom lived there.", "de": "Tom lebte dort.", "es": "Tom vivía ahí." },
@@ -1148,12 +981,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
-        { "key": "echo/packs/it_fluent/67-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/67-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/57-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/57-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 68,
+      "index": 58,
       "kind": "phrase",
       "text": "Javier diventò rosso.",
       "gloss": {
@@ -1166,12 +999,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:flushed-face",
       "voices": [
-        { "key": "echo/packs/it_fluent/68-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/68-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/58-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/58-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 69,
+      "index": 59,
       "kind": "phrase",
       "text": "Sono un matematico.",
       "gloss": {
@@ -1185,32 +1018,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:divide",
       "voices": [
-        { "key": "echo/packs/it_fluent/69-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/69-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/59-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/59-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 70,
-      "kind": "phrase",
-      "text": "Lui parla portoghese.",
-      "gloss": {
-        "en": "He speaks Portuguese.",
-        "de": "Sie spricht Portugiesisch.",
-        "es": "Él habla portugués.",
-        "fr": "Il parle portugais.",
-        "pt-BR": "Ele fala português.",
-        "ru": "Он говорит по-португальски."
-      },
-      "freqRank": 72,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head",
-      "voices": [
-        { "key": "echo/packs/it_fluent/70-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/70-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 71,
+      "index": 60,
       "kind": "phrase",
       "text": "Non parlo portoghese.",
       "gloss": {
@@ -1223,30 +1036,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/it_fluent/71-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/71-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/60-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/60-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 72,
-      "kind": "phrase",
-      "text": "Si lamentano sempre.",
-      "gloss": {
-        "en": "They are always complaining.",
-        "es": "Siempre se están quejando.",
-        "fr": "Ils se plaignent toujours.",
-        "ru": "Они всегда жалуются."
-      },
-      "freqRank": 74,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:unamused-face",
-      "voices": [
-        { "key": "echo/packs/it_fluent/72-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/72-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 73,
+      "index": 61,
       "kind": "phrase",
       "text": "Lei è vegetariana.",
       "gloss": {
@@ -1261,48 +1056,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:green-salad",
       "voices": [
-        { "key": "echo/packs/it_fluent/73-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/73-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/61-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/61-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 74,
-      "kind": "phrase",
-      "text": "Insegnare è apprendere.",
-      "gloss": {
-        "en": "Teaching is learning.",
-        "de": "Unterrichten ist Lernen.",
-        "es": "Enseñar es aprender.",
-        "fr": "Enseigner c'est apprendre."
-      },
-      "freqRank": 76,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:graduation-cap",
-      "voices": [
-        { "key": "echo/packs/it_fluent/74-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/74-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 75,
-      "kind": "phrase",
-      "text": "Lei è deceduta?",
-      "gloss": {
-        "en": "Is she dead?",
-        "de": "Ist sie tot?",
-        "es": "¿Está muerta?",
-        "fr": "Est-elle décédée ?"
-      },
-      "freqRank": 77,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:coffin",
-      "voices": [
-        { "key": "echo/packs/it_fluent/75-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/75-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 76,
+      "index": 62,
       "kind": "phrase",
       "text": "Tom è vegano.",
       "gloss": {
@@ -1315,12 +1074,48 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:green-salad",
       "voices": [
-        { "key": "echo/packs/it_fluent/76-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/76-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/62-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/62-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 77,
+      "index": 63,
+      "kind": "phrase",
+      "text": "Lei è deceduta?",
+      "gloss": {
+        "en": "Is she dead?",
+        "de": "Ist sie tot?",
+        "es": "¿Está muerta?",
+        "fr": "Est-elle décédée ?"
+      },
+      "freqRank": 77,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:coffin",
+      "voices": [
+        { "key": "echo/packs/it_fluent/63-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/63-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 64,
+      "kind": "phrase",
+      "text": "Noi studiamo musica.",
+      "gloss": {
+        "en": "We study music.",
+        "de": "Wir studieren Musik.",
+        "es": "Nosotros estudiamos música.",
+        "fr": "Nous étudions la musique."
+      },
+      "freqRank": 80,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-score",
+      "voices": [
+        { "key": "echo/packs/it_fluent/64-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/64-im_nicola.m4a", "voice": "im_nicola" }
+      ]
+    },
+    {
+      "index": 65,
       "kind": "phrase",
       "text": "Lei sta nuotando.",
       "gloss": {
@@ -1334,49 +1129,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-swimming",
       "voices": [
-        { "key": "echo/packs/it_fluent/77-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/77-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/65-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/65-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 78,
-      "kind": "phrase",
-      "text": "Noi studiamo musica.",
-      "gloss": {
-        "en": "We study music.",
-        "de": "Wir studieren Musik.",
-        "es": "Nosotros estudiamos música.",
-        "fr": "Nous étudions la musique."
-      },
-      "freqRank": 80,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-score",
-      "voices": [
-        { "key": "echo/packs/it_fluent/78-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/78-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 79,
-      "kind": "phrase",
-      "text": "Vogliamo frasi complete.",
-      "gloss": {
-        "en": "We want complete sentences.",
-        "de": "Wir wollen vollständige Sätze.",
-        "es": "Queremos frases completas.",
-        "fr": "Nous voulons des phrases complètes.",
-        "pt-BR": "Queremos frases completas."
-      },
-      "freqRank": 81,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:memo",
-      "voices": [
-        { "key": "echo/packs/it_fluent/79-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/79-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 80,
+      "index": 66,
       "kind": "phrase",
       "text": "È un cardiologo.",
       "gloss": {
@@ -1392,12 +1150,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:stethoscope",
       "voices": [
-        { "key": "echo/packs/it_fluent/80-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/80-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/66-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/66-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 81,
+      "index": 67,
       "kind": "phrase",
       "text": "Io sono analfabeta.",
       "gloss": {
@@ -1410,12 +1168,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:input-latin-letters",
       "voices": [
-        { "key": "echo/packs/it_fluent/81-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/81-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/67-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/67-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 82,
+      "index": 68,
       "kind": "phrase",
       "text": "Il piccione tuba.",
       "gloss": {
@@ -1430,12 +1188,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dove",
       "voices": [
-        { "key": "echo/packs/it_fluent/82-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/82-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/68-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/68-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 83,
+      "index": 69,
       "kind": "phrase",
       "text": "È un girasole.",
       "gloss": {
@@ -1448,12 +1206,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sunflower",
       "voices": [
-        { "key": "echo/packs/it_fluent/83-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/83-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/69-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/69-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 84,
+      "index": 70,
       "kind": "phrase",
       "text": "Noi tutti mentiamo.",
       "gloss": {
@@ -1466,31 +1224,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lying-face",
       "voices": [
-        { "key": "echo/packs/it_fluent/84-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/84-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/70-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/70-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 85,
-      "kind": "phrase",
-      "text": "Sono una lupa.",
-      "gloss": {
-        "en": "I'm a she-wolf.",
-        "tr": "Ben kurdum.",
-        "de": "Ich bin eine Wölfin.",
-        "fr": "Je suis une louve.",
-        "ru": "Я волчица."
-      },
-      "freqRank": 87,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:wolf",
-      "voices": [
-        { "key": "echo/packs/it_fluent/85-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/85-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 86,
+      "index": 71,
       "kind": "phrase",
       "text": "Quando ti trasferirai?",
       "gloss": {
@@ -1503,12 +1242,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:package",
       "voices": [
-        { "key": "echo/packs/it_fluent/86-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/86-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/71-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/71-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 87,
+      "index": 72,
       "kind": "phrase",
       "text": "Sono un tennista.",
       "gloss": {
@@ -1521,12 +1260,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:tennis",
       "voices": [
-        { "key": "echo/packs/it_fluent/87-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/87-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/72-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/72-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 88,
+      "index": 73,
       "kind": "phrase",
       "text": "Loro stanno danzando.",
       "gloss": {
@@ -1539,31 +1278,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman-dancing",
       "voices": [
-        { "key": "echo/packs/it_fluent/88-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/88-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/73-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/73-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 89,
-      "kind": "phrase",
-      "text": "Sono un alchimista.",
-      "gloss": {
-        "en": "I'm an alchemist.",
-        "tr": "Simyacıyım.",
-        "de": "Ich bin Alchemist.",
-        "es": "Soy alquimista.",
-        "fr": "Je suis alchimiste."
-      },
-      "freqRank": 91,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:test-tube",
-      "voices": [
-        { "key": "echo/packs/it_fluent/89-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/89-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 90,
+      "index": 74,
       "kind": "phrase",
       "text": "Il gatto miagola.",
       "gloss": {
@@ -1576,12 +1296,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
-        { "key": "echo/packs/it_fluent/90-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/90-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/74-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/74-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 91,
+      "index": 75,
       "kind": "phrase",
       "text": "Nessuno è invulnerabile.",
       "gloss": {
@@ -1594,12 +1314,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:shield",
       "voices": [
-        { "key": "echo/packs/it_fluent/91-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/91-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/75-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/75-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 92,
+      "index": 76,
       "kind": "phrase",
       "text": "Il lupo ulula.",
       "gloss": {
@@ -1612,48 +1332,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:wolf",
       "voices": [
-        { "key": "echo/packs/it_fluent/92-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/92-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/76-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/76-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 93,
-      "kind": "phrase",
-      "text": "I fiori sono gialli.",
-      "gloss": {
-        "en": "Flowers are yellow.",
-        "tr": "Çiçekler sarıdır.",
-        "es": "Las flores son amarillas.",
-        "pt-BR": "As flores são amarelas."
-      },
-      "freqRank": 95,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sunflower",
-      "voices": [
-        { "key": "echo/packs/it_fluent/93-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/93-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 94,
-      "kind": "phrase",
-      "text": "Tom è un rabbino.",
-      "gloss": {
-        "en": "Tom is a rabbi.",
-        "tr": "Tom bir haham.",
-        "es": "Tom es un rabino.",
-        "fr": "Tom est un rabbin."
-      },
-      "freqRank": 96,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:place-of-worship",
-      "voices": [
-        { "key": "echo/packs/it_fluent/94-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/94-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 95,
+      "index": 77,
       "kind": "phrase",
       "text": "Puoi insegnarmi il francese?",
       "gloss": {
@@ -1667,12 +1351,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/it_fluent/95-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/95-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/77-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/77-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 96,
+      "index": 78,
       "kind": "phrase",
       "text": "Ho sposato un canadese.",
       "gloss": {
@@ -1685,12 +1369,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ring",
       "voices": [
-        { "key": "echo/packs/it_fluent/96-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/96-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/78-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/78-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 97,
+      "index": 79,
       "kind": "phrase",
       "text": "Sono solo un messaggero.",
       "gloss": {
@@ -1703,12 +1387,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:envelope",
       "voices": [
-        { "key": "echo/packs/it_fluent/97-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/97-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/79-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/79-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 98,
+      "index": 80,
       "kind": "phrase",
       "text": "Le formiche hanno orecchie?",
       "gloss": {
@@ -1722,12 +1406,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:ant",
       "voices": [
-        { "key": "echo/packs/it_fluent/98-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/98-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/80-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/80-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 99,
+      "index": 81,
       "kind": "phrase",
       "text": "Non ha animali domestici.",
       "gloss": {
@@ -1740,12 +1424,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:paw-prints",
       "voices": [
-        { "key": "echo/packs/it_fluent/99-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/99-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/81-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/81-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 100,
+      "index": 82,
       "kind": "phrase",
       "text": "Tom mangia un pomodoro.",
       "gloss": {
@@ -1759,31 +1443,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:tomato",
       "voices": [
-        { "key": "echo/packs/it_fluent/100-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/100-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/82-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/82-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 101,
-      "kind": "phrase",
-      "text": "Siamo tutti dei bugiardi.",
-      "gloss": {
-        "en": "We're all liars.",
-        "es": "Todos somos mentirosos.",
-        "fr": "Nous sommes tous des menteurs.",
-        "pt-BR": "Todos somos mentirosos.",
-        "ar": "كلنا كذّابون."
-      },
-      "freqRank": 103,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:lying-face",
-      "voices": [
-        { "key": "echo/packs/it_fluent/101-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/101-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 102,
+      "index": 83,
       "kind": "phrase",
       "text": "Gli sanguina il naso.",
       "gloss": {
@@ -1796,48 +1461,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:drop-of-blood",
       "voices": [
-        { "key": "echo/packs/it_fluent/102-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/102-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/83-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/83-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 103,
-      "kind": "phrase",
-      "text": "Il suo dito sanguina.",
-      "gloss": {
-        "en": "His finger bleeds.",
-        "de": "Sein Finger blutet.",
-        "es": "Su dedo sangra.",
-        "fr": "Son doigt saigne."
-      },
-      "freqRank": 105,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:drop-of-blood",
-      "voices": [
-        { "key": "echo/packs/it_fluent/103-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/103-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 104,
-      "kind": "phrase",
-      "text": "La storia si ripete.",
-      "gloss": {
-        "en": "History repeats itself.",
-        "es": "La historia se repite.",
-        "fr": "L'histoire se répète.",
-        "pt-BR": "A história se repete."
-      },
-      "freqRank": 106,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:repeat-button",
-      "voices": [
-        { "key": "echo/packs/it_fluent/104-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/104-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 105,
+      "index": 84,
       "kind": "phrase",
       "text": "Perché non ci sediamo?",
       "gloss": {
@@ -1850,12 +1479,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:chair",
       "voices": [
-        { "key": "echo/packs/it_fluent/105-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/105-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/84-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/84-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 106,
+      "index": 85,
       "kind": "phrase",
       "text": "Questo cane abbaia molto.",
       "gloss": {
@@ -1869,12 +1498,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
-        { "key": "echo/packs/it_fluent/106-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/106-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/85-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/85-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 107,
+      "index": 86,
       "kind": "phrase",
       "text": "Sono uno studente universitario.",
       "gloss": {
@@ -1887,12 +1516,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:graduation-cap",
       "voices": [
-        { "key": "echo/packs/it_fluent/107-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/107-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/86-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/86-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 108,
+      "index": 87,
       "kind": "phrase",
       "text": "Questo giornale è gratuito.",
       "gloss": {
@@ -1905,12 +1534,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:free-button",
       "voices": [
-        { "key": "echo/packs/it_fluent/108-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/108-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/87-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/87-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 109,
+      "index": 88,
       "kind": "phrase",
       "text": "Non so il polacco.",
       "gloss": {
@@ -1923,12 +1552,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/it_fluent/109-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/109-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/88-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/88-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 110,
+      "index": 89,
       "kind": "phrase",
       "text": "Le luci sono spente.",
       "gloss": {
@@ -1941,30 +1570,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:light-bulb",
       "voices": [
-        { "key": "echo/packs/it_fluent/110-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/110-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/89-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/89-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 111,
-      "kind": "phrase",
-      "text": "Ho i piedi freddi.",
-      "gloss": {
-        "en": "I've got cold feet.",
-        "es": "Tengo los pies fríos.",
-        "fr": "J'ai les pieds froids.",
-        "ru": "У меня ноги холодные."
-      },
-      "freqRank": 113,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cold-face",
-      "voices": [
-        { "key": "echo/packs/it_fluent/111-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/111-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 112,
+      "index": 90,
       "kind": "phrase",
       "text": "Sei un bambino prodigio?",
       "gloss": {
@@ -1977,12 +1588,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
       "voices": [
-        { "key": "echo/packs/it_fluent/112-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/112-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/90-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/90-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 113,
+      "index": 91,
       "kind": "phrase",
       "text": "Ti piacciono gli elefanti.",
       "gloss": {
@@ -1995,12 +1606,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:elephant",
       "voices": [
-        { "key": "echo/packs/it_fluent/113-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/113-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/91-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/91-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 114,
+      "index": 92,
       "kind": "phrase",
       "text": "Ho gli occhi azzurri.",
       "gloss": {
@@ -2014,31 +1625,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:eye",
       "voices": [
-        { "key": "echo/packs/it_fluent/114-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/114-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/92-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/92-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 115,
-      "kind": "phrase",
-      "text": "Come si scrive \"pretty\"?",
-      "gloss": {
-        "en": "How do you spell \"pretty\"?",
-        "de": "Wie schreibt man \"pretty\"?",
-        "es": "¿Cómo se escribe \"pretty\"?",
-        "fr": "Comment épelles-tu \"pretty\" ?",
-        "pt-BR": "Como se escreve \"pretty\"?"
-      },
-      "freqRank": 117,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:input-latin-letters",
-      "voices": [
-        { "key": "echo/packs/it_fluent/115-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/115-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 116,
+      "index": 93,
       "kind": "phrase",
       "text": "Non ho ancora pranzato.",
       "gloss": {
@@ -2051,48 +1643,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
-        { "key": "echo/packs/it_fluent/116-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/116-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/93-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/93-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 117,
-      "kind": "phrase",
-      "text": "È il mio fratellastro.",
-      "gloss": {
-        "en": "He's my half-brother.",
-        "de": "Er ist mein Halbbruder.",
-        "es": "Es mi hermanastro.",
-        "fr": "Il est mon demi-frère."
-      },
-      "freqRank": 119,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:men-holding-hands",
-      "voices": [
-        { "key": "echo/packs/it_fluent/117-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/117-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 118,
-      "kind": "phrase",
-      "text": "Tom nuota molto bene.",
-      "gloss": {
-        "en": "Tom swims very well.",
-        "de": "Tom schwimmt sehr gut.",
-        "pt-BR": "Tom nada muito bem.",
-        "ru": "Том очень хорошо плавает."
-      },
-      "freqRank": 120,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-swimming",
-      "voices": [
-        { "key": "echo/packs/it_fluent/118-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/118-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 119,
+      "index": 94,
       "kind": "phrase",
       "text": "Dove sono le docce?",
       "gloss": {
@@ -2105,12 +1661,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:soap",
       "voices": [
-        { "key": "echo/packs/it_fluent/119-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/119-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/94-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/94-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 120,
+      "index": 95,
       "kind": "phrase",
       "text": "Tom nuota molto velocemente.",
       "gloss": {
@@ -2123,12 +1679,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-swimming",
       "voices": [
-        { "key": "echo/packs/it_fluent/120-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/120-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/95-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/95-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 121,
+      "index": 96,
       "kind": "phrase",
       "text": "Non dimentichi lo scontrino.",
       "gloss": {
@@ -2141,12 +1697,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:receipt",
       "voices": [
-        { "key": "echo/packs/it_fluent/121-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/121-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/96-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/96-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 122,
+      "index": 97,
       "kind": "phrase",
       "text": "Tom ha abbracciato Mary.",
       "gloss": {
@@ -2160,12 +1716,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:people-hugging",
       "voices": [
-        { "key": "echo/packs/it_fluent/122-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/122-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/97-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/97-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 123,
+      "index": 98,
       "kind": "phrase",
       "text": "È una persona perbene.",
       "gloss": {
@@ -2178,12 +1734,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:smiling-face-with-halo",
       "voices": [
-        { "key": "echo/packs/it_fluent/123-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/123-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/98-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/98-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 124,
+      "index": 99,
       "kind": "phrase",
       "text": "Ha una figlia pianista.",
       "gloss": {
@@ -2196,30 +1752,34 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-score",
       "voices": [
-        { "key": "echo/packs/it_fluent/124-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/124-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/99-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/99-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 125,
+      "index": 100,
       "kind": "phrase",
       "text": "Tom è un pianista.",
       "gloss": {
         "en": "Tom is a pianist.",
         "de": "Tom ist Pianist.",
         "es": "Tom es pianista.",
-        "ru": "Том - пианист."
+        "ru": "Том — пианист."
       },
       "freqRank": 127,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "ru": "Том - пианист." },
+        "edited": ["ru"]
+      },
       "image": "cue:musical-score",
       "voices": [
-        { "key": "echo/packs/it_fluent/125-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/125-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/100-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/100-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 126,
+      "index": 101,
       "kind": "phrase",
       "text": "Voglio abitare in Italia.",
       "gloss": {
@@ -2232,12 +1792,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
-        { "key": "echo/packs/it_fluent/126-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/126-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/101-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/101-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 127,
+      "index": 102,
       "kind": "phrase",
       "text": "Le banane sono gialle.",
       "gloss": {
@@ -2252,12 +1812,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:banana",
       "voices": [
-        { "key": "echo/packs/it_fluent/127-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/127-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/102-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/102-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 128,
+      "index": 103,
       "kind": "phrase",
       "text": "Il pollo è crudo.",
       "gloss": {
@@ -2270,12 +1830,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:meat-on-bone",
       "voices": [
-        { "key": "echo/packs/it_fluent/128-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/128-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/103-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/103-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 129,
+      "index": 104,
       "kind": "phrase",
       "text": "Spesso mangiamo pesce crudo.",
       "gloss": {
@@ -2288,12 +1848,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fish",
       "voices": [
-        { "key": "echo/packs/it_fluent/129-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/129-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/104-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/104-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 130,
+      "index": 105,
       "kind": "phrase",
       "text": "Mi piacciono le lasagne.",
       "gloss": {
@@ -2306,12 +1866,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
-        { "key": "echo/packs/it_fluent/130-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/130-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/105-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/105-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 131,
+      "index": 106,
       "kind": "phrase",
       "text": "Il cavallo sta saltando.",
       "gloss": {
@@ -2326,12 +1886,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:horse",
       "voices": [
-        { "key": "echo/packs/it_fluent/131-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/131-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/106-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/106-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 132,
+      "index": 107,
       "kind": "phrase",
       "text": "Ti proibisco di fumare.",
       "gloss": {
@@ -2344,12 +1904,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:no-smoking",
       "voices": [
-        { "key": "echo/packs/it_fluent/132-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/132-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/107-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/107-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 133,
+      "index": 108,
       "kind": "phrase",
       "text": "Adoro il cinema statunitense.",
       "gloss": {
@@ -2362,12 +1922,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:clapper-board",
       "voices": [
-        { "key": "echo/packs/it_fluent/133-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/133-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/108-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/108-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 134,
+      "index": 109,
       "kind": "phrase",
       "text": "Tua moglie è credente?",
       "gloss": {
@@ -2380,12 +1940,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:place-of-worship",
       "voices": [
-        { "key": "echo/packs/it_fluent/134-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/134-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/109-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/109-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 135,
+      "index": 110,
       "kind": "phrase",
       "text": "Mi dimenticherai un giorno.",
       "gloss": {
@@ -2398,12 +1958,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:brain",
       "voices": [
-        { "key": "echo/packs/it_fluent/135-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/135-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/110-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/110-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 136,
+      "index": 111,
       "kind": "phrase",
       "text": "I cani sono leali.",
       "gloss": {
@@ -2416,31 +1976,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
-        { "key": "echo/packs/it_fluent/136-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/136-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/111-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/111-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 137,
-      "kind": "phrase",
-      "text": "Mia moglie è vegetariana.",
-      "gloss": {
-        "en": "My wife is a vegetarian.",
-        "de": "Meine Frau ist Vegetarierin.",
-        "es": "Mi mujer es vegetariana.",
-        "fr": "Ma femme est végétarienne.",
-        "pt-BR": "Minha mulher é vegetariana."
-      },
-      "freqRank": 139,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:green-salad",
-      "voices": [
-        { "key": "echo/packs/it_fluent/137-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/137-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 138,
+      "index": 112,
       "kind": "phrase",
       "text": "Ho un visto turistico.",
       "gloss": {
@@ -2453,30 +1994,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:passport-control",
       "voices": [
-        { "key": "echo/packs/it_fluent/138-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/138-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/112-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/112-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 139,
-      "kind": "phrase",
-      "text": "Tom è un cyborg.",
-      "gloss": {
-        "en": "Tom is a cyborg.",
-        "tr": "Tom bir sayborg.",
-        "es": "Tom es un cíborg.",
-        "fr": "Tom est un cyborg."
-      },
-      "freqRank": 141,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:gear",
-      "voices": [
-        { "key": "echo/packs/it_fluent/139-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/139-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 140,
+      "index": 113,
       "kind": "phrase",
       "text": "Gli mandò una cartolina.",
       "gloss": {
@@ -2489,12 +2012,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:envelope",
       "voices": [
-        { "key": "echo/packs/it_fluent/140-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/140-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/113-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/113-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 141,
+      "index": 114,
       "kind": "phrase",
       "text": "Io scrissi il libro.",
       "gloss": {
@@ -2507,12 +2030,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:writing-hand",
       "voices": [
-        { "key": "echo/packs/it_fluent/141-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/141-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/114-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/114-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 142,
+      "index": 115,
       "kind": "phrase",
       "text": "Chi governa il mondo?",
       "gloss": {
@@ -2527,30 +2050,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
-        { "key": "echo/packs/it_fluent/142-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/142-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/115-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/115-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 143,
-      "kind": "phrase",
-      "text": "Dio creò il mondo.",
-      "gloss": {
-        "en": "God created the world.",
-        "de": "Gott schuf die Welt.",
-        "es": "Dios creó el mundo.",
-        "ru": "Бог создал мир."
-      },
-      "freqRank": 145,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:globe-showing-europe-africa",
-      "voices": [
-        { "key": "echo/packs/it_fluent/143-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/143-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 144,
+      "index": 116,
       "kind": "phrase",
       "text": "Non abbiamo acqua potabile.",
       "gloss": {
@@ -2563,12 +2068,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:potable-water",
       "voices": [
-        { "key": "echo/packs/it_fluent/144-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/144-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/116-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/116-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 145,
+      "index": 117,
       "kind": "phrase",
       "text": "I mammiferi producono latte.",
       "gloss": {
@@ -2581,12 +2086,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:glass-of-milk",
       "voices": [
-        { "key": "echo/packs/it_fluent/145-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/145-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/117-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/117-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 146,
+      "index": 118,
       "kind": "phrase",
       "text": "Il legno galleggia bene.",
       "gloss": {
@@ -2599,12 +2104,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:wood",
       "voices": [
-        { "key": "echo/packs/it_fluent/146-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/146-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/118-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/118-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 147,
+      "index": 119,
       "kind": "phrase",
       "text": "Queste banane sono mature?",
       "gloss": {
@@ -2618,12 +2123,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:banana",
       "voices": [
-        { "key": "echo/packs/it_fluent/147-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/147-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/119-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/119-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 148,
+      "index": 120,
       "kind": "phrase",
       "text": "Il mondo mi affascina.",
       "gloss": {
@@ -2638,12 +2143,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:globe-showing-europe-africa",
       "voices": [
-        { "key": "echo/packs/it_fluent/148-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/148-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/120-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/120-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 149,
+      "index": 121,
       "kind": "phrase",
       "text": "Vivo nella Svezia settentrionale.",
       "gloss": {
@@ -2656,12 +2161,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:compass",
       "voices": [
-        { "key": "echo/packs/it_fluent/149-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/149-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/121-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/121-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 150,
+      "index": 122,
       "kind": "phrase",
       "text": "Questa pianta è commestibile.",
       "gloss": {
@@ -2674,12 +2179,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:seedling",
       "voices": [
-        { "key": "echo/packs/it_fluent/150-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/150-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/122-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/122-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 151,
+      "index": 123,
       "kind": "phrase",
       "text": "I bambini comprendono tutto.",
       "gloss": {
@@ -2692,12 +2197,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
-        { "key": "echo/packs/it_fluent/151-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/151-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/123-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/123-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 152,
+      "index": 124,
       "kind": "phrase",
       "text": "Alcuni serpenti sono velenosi.",
       "gloss": {
@@ -2711,12 +2216,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:snake",
       "voices": [
-        { "key": "echo/packs/it_fluent/152-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/152-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/124-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/124-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 153,
+      "index": 125,
       "kind": "phrase",
       "text": "Ho molte macchine fotografiche.",
       "gloss": {
@@ -2729,12 +2234,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:camera",
       "voices": [
-        { "key": "echo/packs/it_fluent/153-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/153-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/125-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/125-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 154,
+      "index": 126,
       "kind": "phrase",
       "text": "Mi sanguinano le gengive.",
       "gloss": {
@@ -2747,12 +2252,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:tooth",
       "voices": [
-        { "key": "echo/packs/it_fluent/154-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/154-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/126-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/126-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 155,
+      "index": 127,
       "kind": "phrase",
       "text": "Tutti commettiamo degli errori.",
       "gloss": {
@@ -2766,12 +2271,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cross-mark",
       "voices": [
-        { "key": "echo/packs/it_fluent/155-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/155-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/127-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/127-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 156,
+      "index": 128,
       "kind": "phrase",
       "text": "Il cane mi seguì.",
       "gloss": {
@@ -2784,12 +2289,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
-        { "key": "echo/packs/it_fluent/156-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/156-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/128-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/128-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 157,
+      "index": 129,
       "kind": "phrase",
       "text": "È solo un placebo.",
       "gloss": {
@@ -2803,12 +2308,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:pill",
       "voices": [
-        { "key": "echo/packs/it_fluent/157-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/157-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/129-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/129-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 158,
+      "index": 130,
       "kind": "phrase",
       "text": "Gli uomini stanno pranzando.",
       "gloss": {
@@ -2821,12 +2326,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
-        { "key": "echo/packs/it_fluent/158-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/158-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/130-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/130-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 159,
+      "index": 131,
       "kind": "phrase",
       "text": "È difficile essere vegani?",
       "gloss": {
@@ -2839,12 +2344,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:green-salad",
       "voices": [
-        { "key": "echo/packs/it_fluent/159-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/159-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/131-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/131-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 160,
+      "index": 132,
       "kind": "phrase",
       "text": "Tom è un biologo.",
       "gloss": {
@@ -2853,36 +2358,18 @@
         "es": "Tomás es biólogo.",
         "fr": "Thomas est biologiste.",
         "pt-BR": "Tom é biólogo.",
-        "ru": "Том - биолог."
+        "ru": "Том — биолог."
       },
       "freqRank": 162,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": { "glossedBy": "Tatoeba", "glossWas": { "ru": "Том - биолог." }, "edited": ["ru"] },
       "image": "cue:test-tube",
       "voices": [
-        { "key": "echo/packs/it_fluent/160-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/160-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/132-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/132-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 161,
-      "kind": "phrase",
-      "text": "Kenji è un tennista.",
-      "gloss": {
-        "en": "Kenji is a tennis player.",
-        "de": "Kenji ist ein Tennisspieler.",
-        "es": "Kenji es un tenista.",
-        "fr": "Kenji est un joueur de tennis."
-      },
-      "freqRank": 163,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:tennis",
-      "voices": [
-        { "key": "echo/packs/it_fluent/161-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/161-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 162,
+      "index": 133,
       "kind": "phrase",
       "text": "Oggi studieremo Charles Dickens.",
       "gloss": {
@@ -2895,12 +2382,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
       "voices": [
-        { "key": "echo/packs/it_fluent/162-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/162-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/133-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/133-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 163,
+      "index": 134,
       "kind": "phrase",
       "text": "Quanto costa questo sofà?",
       "gloss": {
@@ -2914,12 +2401,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:heavy-dollar-sign",
       "voices": [
-        { "key": "echo/packs/it_fluent/163-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/163-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/134-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/134-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 164,
+      "index": 135,
       "kind": "phrase",
       "text": "No, non sono assonnato.",
       "gloss": {
@@ -2932,12 +2419,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sleepy-face",
       "voices": [
-        { "key": "echo/packs/it_fluent/164-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/164-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/135-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/135-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 165,
+      "index": 136,
       "kind": "phrase",
       "text": "I leoni sono carnivori.",
       "gloss": {
@@ -2950,12 +2437,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lion",
       "voices": [
-        { "key": "echo/packs/it_fluent/165-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/165-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/136-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/136-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 166,
+      "index": 137,
       "kind": "phrase",
       "text": "Ha vinto molte competizioni.",
       "gloss": {
@@ -2968,12 +2455,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:trophy",
       "voices": [
-        { "key": "echo/packs/it_fluent/166-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/166-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/137-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/137-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 167,
+      "index": 138,
       "kind": "phrase",
       "text": "Mangiando troppo si ingrassa.",
       "gloss": {
@@ -2987,12 +2474,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
-        { "key": "echo/packs/it_fluent/167-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/167-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/138-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/138-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 168,
+      "index": 139,
       "kind": "phrase",
       "text": "Io studierò il tedesco.",
       "gloss": {
@@ -3005,12 +2492,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/it_fluent/168-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/168-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/139-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/139-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 169,
+      "index": 140,
       "kind": "phrase",
       "text": "Non traduco più romanzi.",
       "gloss": {
@@ -3020,34 +2507,15 @@
         "ru": "Я больше не перевожу романы."
       },
       "freqRank": 171,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:input-latin-letters",
+      "review": { "glossedBy": "Tatoeba", "cueWas": "cue:input-latin-letters" },
+      "image": "cue:books",
       "voices": [
-        { "key": "echo/packs/it_fluent/169-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/169-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/140-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/140-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 170,
-      "kind": "phrase",
-      "text": "Tom non è un rabbino.",
-      "gloss": {
-        "en": "Tom isn't a rabbi.",
-        "tr": "Tom bir haham değil.",
-        "de": "Tom ist kein Rabbi.",
-        "es": "Tom no es un rabino.",
-        "ru": "Том не раввин."
-      },
-      "freqRank": 172,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:place-of-worship",
-      "voices": [
-        { "key": "echo/packs/it_fluent/170-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/170-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 171,
+      "index": 141,
       "kind": "phrase",
       "text": "Chi sta suonando la chitarra?",
       "gloss": {
@@ -3061,12 +2529,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:guitar",
       "voices": [
-        { "key": "echo/packs/it_fluent/171-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/171-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/141-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/141-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 172,
+      "index": 142,
       "kind": "phrase",
       "text": "Qualcuno sta suonando il pianoforte.",
       "gloss": {
@@ -3080,12 +2548,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-note",
       "voices": [
-        { "key": "echo/packs/it_fluent/172-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/172-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/142-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/142-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 173,
+      "index": 143,
       "kind": "phrase",
       "text": "Come si dice in serbo?",
       "gloss": {
@@ -3098,12 +2566,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/it_fluent/173-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/173-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/143-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/143-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 174,
+      "index": 144,
       "kind": "phrase",
       "text": "Non trattarmi come un bambino.",
       "gloss": {
@@ -3116,12 +2584,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
-        { "key": "echo/packs/it_fluent/174-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/174-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/144-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/144-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 175,
+      "index": 145,
       "kind": "phrase",
       "text": "Il nostro tempo è limitato.",
       "gloss": {
@@ -3134,12 +2602,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hourglass-not-done",
       "voices": [
-        { "key": "echo/packs/it_fluent/175-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/175-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/145-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/145-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 176,
+      "index": 146,
       "kind": "phrase",
       "text": "La famiglia ha cenato insieme.",
       "gloss": {
@@ -3153,12 +2621,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family",
       "voices": [
-        { "key": "echo/packs/it_fluent/176-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/176-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/146-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/146-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 177,
+      "index": 147,
       "kind": "phrase",
       "text": "Le carote costano tre dollari.",
       "gloss": {
@@ -3173,12 +2641,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dollar-banknote",
       "voices": [
-        { "key": "echo/packs/it_fluent/177-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/177-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/147-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/147-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 178,
+      "index": 148,
       "kind": "phrase",
       "text": "Il mio cane non morde.",
       "gloss": {
@@ -3193,12 +2661,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
-        { "key": "echo/packs/it_fluent/178-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/178-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/148-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/148-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 179,
+      "index": 149,
       "kind": "phrase",
       "text": "Abbiamo festeggiato il suo compleanno.",
       "gloss": {
@@ -3211,12 +2679,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:birthday-cake",
       "voices": [
-        { "key": "echo/packs/it_fluent/179-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/179-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/149-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/149-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 180,
+      "index": 150,
       "kind": "phrase",
       "text": "Le balene non sono pesci.",
       "gloss": {
@@ -3229,12 +2697,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:whale",
       "voices": [
-        { "key": "echo/packs/it_fluent/180-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/180-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/150-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/150-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 181,
+      "index": 151,
       "kind": "phrase",
       "text": "Perché non mangi la verdura?",
       "gloss": {
@@ -3248,30 +2716,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:green-salad",
       "voices": [
-        { "key": "echo/packs/it_fluent/181-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/181-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/151-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/151-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 182,
-      "kind": "phrase",
-      "text": "Come si dice in polacco?",
-      "gloss": {
-        "en": "How do you say it in Polish?",
-        "de": "Wie sagt man das auf polnisch?",
-        "fr": "Comment ça se dit en polonais ?",
-        "ru": "Как это будет по-польски?"
-      },
-      "freqRank": 184,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head",
-      "voices": [
-        { "key": "echo/packs/it_fluent/182-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/182-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 183,
+      "index": 152,
       "kind": "phrase",
       "text": "Il ghiaccio si è sciolto.",
       "gloss": {
@@ -3284,12 +2734,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:droplet",
       "voices": [
-        { "key": "echo/packs/it_fluent/183-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/183-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/152-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/152-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 184,
+      "index": 153,
       "kind": "phrase",
       "text": "I miei piedi sono freddi.",
       "gloss": {
@@ -3302,12 +2752,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cold-face",
       "voices": [
-        { "key": "echo/packs/it_fluent/184-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/184-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/153-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/153-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 185,
+      "index": 154,
       "kind": "phrase",
       "text": "Gli elefanti bevono molta acqua.",
       "gloss": {
@@ -3321,30 +2771,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:elephant",
       "voices": [
-        { "key": "echo/packs/it_fluent/185-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/185-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/154-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/154-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 186,
-      "kind": "phrase",
-      "text": "I miei occhi sono azzurri.",
-      "gloss": {
-        "en": "My eyes are blue.",
-        "es": "Mis ojos son azules.",
-        "fr": "Mes yeux sont bleus.",
-        "pt-BR": "Meus olhos são azuis."
-      },
-      "freqRank": 188,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eye",
-      "voices": [
-        { "key": "echo/packs/it_fluent/186-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/186-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 187,
+      "index": 155,
       "kind": "phrase",
       "text": "Maria ha gli occhi azzurri.",
       "gloss": {
@@ -3358,30 +2790,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:eye",
       "voices": [
-        { "key": "echo/packs/it_fluent/187-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/187-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/155-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/155-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 188,
-      "kind": "phrase",
-      "text": "I suoi occhi sono azzurri.",
-      "gloss": {
-        "en": "His eyes are blue.",
-        "es": "Sus ojos son azules.",
-        "fr": "Ses yeux sont bleus.",
-        "pt-BR": "Seus olhos são azuis."
-      },
-      "freqRank": 190,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eye",
-      "voices": [
-        { "key": "echo/packs/it_fluent/188-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/188-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 189,
+      "index": 156,
       "kind": "phrase",
       "text": "Tom è il mio fratellastro.",
       "gloss": {
@@ -3394,12 +2808,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:men-holding-hands",
       "voices": [
-        { "key": "echo/packs/it_fluent/189-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/189-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/156-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/156-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 190,
+      "index": 157,
       "kind": "phrase",
       "text": "Quante arance ha mangiato Tom?",
       "gloss": {
@@ -3412,12 +2826,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:tangerine",
       "voices": [
-        { "key": "echo/packs/it_fluent/190-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/190-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/157-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/157-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 191,
+      "index": 158,
       "kind": "phrase",
       "text": "Di chi è questo dizionario?",
       "gloss": {
@@ -3430,30 +2844,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:closed-book",
       "voices": [
-        { "key": "echo/packs/it_fluent/191-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/191-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/158-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/158-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 192,
-      "kind": "phrase",
-      "text": "Io ho un buon dizionario.",
-      "gloss": {
-        "en": "I have a good dictionary.",
-        "fr": "J'ai un bon dictionnaire.",
-        "pt-BR": "Eu tenho um bom dicionário.",
-        "ru": "У меня есть хороший словарь."
-      },
-      "freqRank": 194,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book",
-      "voices": [
-        { "key": "echo/packs/it_fluent/192-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/192-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 193,
+      "index": 159,
       "kind": "phrase",
       "text": "Ti racconterò la mia storia.",
       "gloss": {
@@ -3466,12 +2862,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
-        { "key": "echo/packs/it_fluent/193-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/193-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/159-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/159-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 194,
+      "index": 160,
       "kind": "phrase",
       "text": "I miei genitori sono divorziati.",
       "gloss": {
@@ -3485,12 +2881,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:broken-heart",
       "voices": [
-        { "key": "echo/packs/it_fluent/194-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/194-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/160-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/160-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 195,
+      "index": 161,
       "kind": "phrase",
       "text": "Le tartarughe non hanno denti.",
       "gloss": {
@@ -3503,12 +2899,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:turtle",
       "voices": [
-        { "key": "echo/packs/it_fluent/195-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/195-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/161-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/161-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 196,
+      "index": 162,
       "kind": "phrase",
       "text": "Ho letto i suoi diari.",
       "gloss": {
@@ -3521,12 +2917,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
-        { "key": "echo/packs/it_fluent/196-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/196-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/162-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/162-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 197,
+      "index": 163,
       "kind": "phrase",
       "text": "Gli orsi amano le bacche.",
       "gloss": {
@@ -3540,12 +2936,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bear",
       "voices": [
-        { "key": "echo/packs/it_fluent/197-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/197-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/163-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/163-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 198,
+      "index": 164,
       "kind": "phrase",
       "text": "Devo andare a far compere.",
       "gloss": {
@@ -3559,12 +2955,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:shopping-cart",
       "voices": [
-        { "key": "echo/packs/it_fluent/198-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/198-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/164-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/164-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 199,
+      "index": 165,
       "kind": "phrase",
       "text": "Questa zuppa è troppo salata.",
       "gloss": {
@@ -3577,12 +2973,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:salt",
       "voices": [
-        { "key": "echo/packs/it_fluent/199-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/199-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/165-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/165-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 200,
+      "index": 166,
       "kind": "phrase",
       "text": "Quattro più diciotto fa ventidue.",
       "gloss": {
@@ -3595,30 +2991,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:plus",
       "voices": [
-        { "key": "echo/packs/it_fluent/200-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/200-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/166-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/166-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 201,
-      "kind": "phrase",
-      "text": "Il cibo è troppo salato.",
-      "gloss": {
-        "en": "The food is too salty.",
-        "de": "Das Essen ist versalzen.",
-        "fr": "La nourriture est trop salée.",
-        "ru": "Еда пересолена."
-      },
-      "freqRank": 203,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:salt",
-      "voices": [
-        { "key": "echo/packs/it_fluent/201-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/201-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 202,
+      "index": 167,
       "kind": "phrase",
       "text": "Questo serpente non è velenoso.",
       "gloss": {
@@ -3631,12 +3009,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:snake",
       "voices": [
-        { "key": "echo/packs/it_fluent/202-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/202-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/167-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/167-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 203,
+      "index": 168,
       "kind": "phrase",
       "text": "Uno specchio riflette la luce.",
       "gloss": {
@@ -3649,12 +3027,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:mirror",
       "voices": [
-        { "key": "echo/packs/it_fluent/203-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/203-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/168-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/168-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 204,
+      "index": 169,
       "kind": "phrase",
       "text": "Prendi un libro e leggilo!",
       "gloss": {
@@ -3668,12 +3046,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
-        { "key": "echo/packs/it_fluent/204-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/204-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/169-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/169-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 205,
+      "index": 170,
       "kind": "phrase",
       "text": "Il treno partirà in ritardo.",
       "gloss": {
@@ -3686,12 +3064,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:train",
       "voices": [
-        { "key": "echo/packs/it_fluent/205-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/205-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/170-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/170-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 206,
+      "index": 171,
       "kind": "phrase",
       "text": "Mio padre smise di bere.",
       "gloss": {
@@ -3704,12 +3082,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:beer-mug",
       "voices": [
-        { "key": "echo/packs/it_fluent/206-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/206-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/171-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/171-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 207,
+      "index": 172,
       "kind": "phrase",
       "text": "Gli atomi formano delle molecole.",
       "gloss": {
@@ -3722,30 +3100,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:test-tube",
       "voices": [
-        { "key": "echo/packs/it_fluent/207-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/207-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/172-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/172-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 208,
-      "kind": "phrase",
-      "text": "Come si dice in ungherese?",
-      "gloss": {
-        "en": "How do you say it in Hungarian?",
-        "de": "Wie sagt man das auf Ungarisch?",
-        "fr": "Comment ça se dit en hongrois ?",
-        "ru": "Как это будет по-венгерски?"
-      },
-      "freqRank": 210,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head",
-      "voices": [
-        { "key": "echo/packs/it_fluent/208-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/208-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 209,
+      "index": 173,
       "kind": "phrase",
       "text": "I pomodori maturi sono rossi.",
       "gloss": {
@@ -3759,12 +3119,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:tomato",
       "voices": [
-        { "key": "echo/packs/it_fluent/209-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/209-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/173-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/173-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 210,
+      "index": 174,
       "kind": "phrase",
       "text": "Sono i difensori della città.",
       "gloss": {
@@ -3779,12 +3139,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:shield",
       "voices": [
-        { "key": "echo/packs/it_fluent/210-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/210-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/174-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/174-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 211,
+      "index": 175,
       "kind": "phrase",
       "text": "Gli scrissi una lunga lettera.",
       "gloss": {
@@ -3797,12 +3157,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:envelope",
       "voices": [
-        { "key": "echo/packs/it_fluent/211-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/211-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/175-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/175-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 212,
+      "index": 176,
       "kind": "phrase",
       "text": "Sto studiando la grammatica francese.",
       "gloss": {
@@ -3815,12 +3175,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
-        { "key": "echo/packs/it_fluent/212-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/212-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/176-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/176-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 213,
+      "index": 177,
       "kind": "phrase",
       "text": "Tom è un cantante talentuoso.",
       "gloss": {
@@ -3833,12 +3193,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:microphone",
       "voices": [
-        { "key": "echo/packs/it_fluent/213-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/213-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/177-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/177-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 214,
+      "index": 178,
       "kind": "phrase",
       "text": "Posso digitare 50 parole al minuto.",
       "gloss": {
@@ -3852,30 +3212,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:laptop",
       "voices": [
-        { "key": "echo/packs/it_fluent/214-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/214-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/178-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/178-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 215,
-      "kind": "phrase",
-      "text": "Cristo è resuscitato dai morti!",
-      "gloss": {
-        "en": "Christ is risen from the dead!",
-        "de": "Christus ist von den Toten auferstanden!",
-        "es": "¡Cristo resucitó de entre los muertos!",
-        "fr": "Le Christ est ressuscité des morts !"
-      },
-      "freqRank": 217,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:latin-cross",
-      "voices": [
-        { "key": "echo/packs/it_fluent/215-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/215-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 216,
+      "index": 179,
       "kind": "phrase",
       "text": "Il sito web è offline.",
       "gloss": {
@@ -3888,12 +3230,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:laptop",
       "voices": [
-        { "key": "echo/packs/it_fluent/216-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/216-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/179-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/179-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 217,
+      "index": 180,
       "kind": "phrase",
       "text": "Tutte le risposte sono corrette.",
       "gloss": {
@@ -3906,12 +3248,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:check-mark-button",
       "voices": [
-        { "key": "echo/packs/it_fluent/217-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/217-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/180-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/180-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 218,
+      "index": 181,
       "kind": "phrase",
       "text": "Questo è un testo biblico.",
       "gloss": {
@@ -3924,12 +3266,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:scroll",
       "voices": [
-        { "key": "echo/packs/it_fluent/218-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/218-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/181-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/181-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 219,
+      "index": 182,
       "kind": "phrase",
       "text": "Ho incontrato delle persone simpatiche.",
       "gloss": {
@@ -3942,12 +3284,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
-        { "key": "echo/packs/it_fluent/219-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/219-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/182-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/182-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 220,
+      "index": 183,
       "kind": "phrase",
       "text": "Hanno inventato una storia inverosimile.",
       "gloss": {
@@ -3960,12 +3302,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lying-face",
       "voices": [
-        { "key": "echo/packs/it_fluent/220-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/220-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/183-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/183-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 221,
+      "index": 184,
       "kind": "phrase",
       "text": "Tom scriverà a sua sorella.",
       "gloss": {
@@ -3978,12 +3320,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:envelope",
       "voices": [
-        { "key": "echo/packs/it_fluent/221-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/221-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/184-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/184-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 222,
+      "index": 185,
       "kind": "phrase",
       "text": "Secondo la radio pioverà domani.",
       "gloss": {
@@ -3996,12 +3338,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cloud-with-rain",
       "voices": [
-        { "key": "echo/packs/it_fluent/222-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/222-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/185-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/185-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 223,
+      "index": 186,
       "kind": "phrase",
       "text": "Tom è un bugiardo patologico.",
       "gloss": {
@@ -4009,36 +3351,22 @@
         "tr": "Tom hastalık düzeyinde bir yalancıdır.",
         "de": "Tom ist ein krankhafter Lügner.",
         "es": "Tom es un mentiroso patológico.",
-        "ru": "Том - патологический лжец."
+        "ru": "Том — патологический лжец."
       },
       "freqRank": 225,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "ru": "Том - патологический лжец." },
+        "edited": ["ru"]
+      },
       "image": "cue:lying-face",
       "voices": [
-        { "key": "echo/packs/it_fluent/223-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/223-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/186-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/186-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 224,
-      "kind": "phrase",
-      "text": "Come si dice in ceco?",
-      "gloss": {
-        "en": "How do you say it in Czech?",
-        "de": "Wie sagt man das auf Tschechisch?",
-        "fr": "Comment ça se dit en tchèque ?",
-        "ru": "Как это будет по-чешски?"
-      },
-      "freqRank": 226,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head",
-      "voices": [
-        { "key": "echo/packs/it_fluent/224-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/224-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 225,
+      "index": 187,
       "kind": "phrase",
       "text": "I vegetariani non mangiano carne.",
       "gloss": {
@@ -4051,12 +3379,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:green-salad",
       "voices": [
-        { "key": "echo/packs/it_fluent/225-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/225-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/187-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/187-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 226,
+      "index": 188,
       "kind": "phrase",
       "text": "Mary e Jane sono cugine.",
       "gloss": {
@@ -4069,31 +3397,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:women-holding-hands",
       "voices": [
-        { "key": "echo/packs/it_fluent/226-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/226-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/188-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/188-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 227,
-      "kind": "phrase",
-      "text": "La guerra durò due anni.",
-      "gloss": {
-        "en": "The war lasted two years.",
-        "es": "La guerra duró dos años.",
-        "fr": "La guerre dura deux ans.",
-        "pt-BR": "A guerra durou dois anos.",
-        "ru": "Война длилась два года."
-      },
-      "freqRank": 229,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:crossed-swords",
-      "voices": [
-        { "key": "echo/packs/it_fluent/227-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/227-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 228,
+      "index": 189,
       "kind": "phrase",
       "text": "Si trasferì a Parigi nel 1966.",
       "gloss": {
@@ -4106,30 +3415,34 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:package",
       "voices": [
-        { "key": "echo/packs/it_fluent/228-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/228-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/189-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/189-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 229,
+      "index": 190,
       "kind": "phrase",
       "text": "Io fumavo quando ero giovane.",
       "gloss": {
-        "en": "I did smoke when I was young.",
+        "en": "I used to smoke when I was young.",
         "de": "Als ich jung war, habe ich geraucht.",
         "es": "Yo fumaba cuando era joven.",
         "fr": "Je fumais quand j'étais jeune."
       },
       "freqRank": 231,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "en": "I did smoke when I was young." },
+        "edited": ["en"]
+      },
       "image": "cue:cigarette",
       "voices": [
-        { "key": "echo/packs/it_fluent/229-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/229-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/190-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/190-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 230,
+      "index": 191,
       "kind": "phrase",
       "text": "Posso farle una domanda indiscreta?",
       "gloss": {
@@ -4142,12 +3455,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-question-mark",
       "voices": [
-        { "key": "echo/packs/it_fluent/230-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/230-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/191-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/191-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 231,
+      "index": 192,
       "kind": "phrase",
       "text": "Meg ha trovato un quadrifoglio.",
       "gloss": {
@@ -4160,12 +3473,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:four-leaf-clover",
       "voices": [
-        { "key": "echo/packs/it_fluent/231-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/231-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/192-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/192-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 232,
+      "index": 193,
       "kind": "phrase",
       "text": "A me piace dormire bocconi.",
       "gloss": {
@@ -4178,12 +3491,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bed",
       "voices": [
-        { "key": "echo/packs/it_fluent/232-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/232-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/193-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/193-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 233,
+      "index": 194,
       "kind": "phrase",
       "text": "Mi piacerebbe lavorare al refettorio.",
       "gloss": {
@@ -4196,31 +3509,35 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fork-and-knife-with-plate",
       "voices": [
-        { "key": "echo/packs/it_fluent/233-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/233-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/194-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/194-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 234,
+      "index": 195,
       "kind": "phrase",
       "text": "Ha nevicato tutta la notte.",
       "gloss": {
-        "en": "It's been snowing all night.",
+        "en": "It snowed all night.",
         "de": "Es hat die ganze Nacht geschneit.",
         "es": "Ha estado nevando toda la noche.",
         "fr": "Il a neigé toute la nuit.",
         "ru": "Шёл снег всю ночь."
       },
       "freqRank": 236,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "en": "It's been snowing all night." },
+        "edited": ["en"]
+      },
       "image": "cue:cloud-with-snow",
       "voices": [
-        { "key": "echo/packs/it_fluent/234-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/234-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/195-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/195-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 235,
+      "index": 196,
       "kind": "phrase",
       "text": "Il sole sta per tramontare.",
       "gloss": {
@@ -4233,12 +3550,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sunset",
       "voices": [
-        { "key": "echo/packs/it_fluent/235-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/235-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/196-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/196-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 236,
+      "index": 197,
       "kind": "phrase",
       "text": "Tom fuma come una ciminiera.",
       "gloss": {
@@ -4252,12 +3569,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cigarette",
       "voices": [
-        { "key": "echo/packs/it_fluent/236-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/236-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/197-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/197-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 237,
+      "index": 198,
       "kind": "phrase",
       "text": "La lampadina si è fulminata.",
       "gloss": {
@@ -4270,12 +3587,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:light-bulb",
       "voices": [
-        { "key": "echo/packs/it_fluent/237-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/237-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/198-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/198-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 238,
+      "index": 199,
       "kind": "phrase",
       "text": "Il cesto era pieno di mele.",
       "gloss": {
@@ -4290,12 +3607,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-apple",
       "voices": [
-        { "key": "echo/packs/it_fluent/238-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/238-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/199-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/199-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 239,
+      "index": 200,
       "kind": "phrase",
       "text": "Vorrei migliorare la mia pronuncia inglese.",
       "gloss": {
@@ -4308,30 +3625,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/it_fluent/239-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/239-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/200-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/200-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 240,
-      "kind": "phrase",
-      "text": "Maria divenne rossa come un pomodoro.",
-      "gloss": {
-        "en": "Mary turned red as a tomato.",
-        "de": "Maria wurde rot wie eine Tomate.",
-        "fr": "Marie devint rouge comme une tomate.",
-        "ru": "Мэри стала красная как помидор."
-      },
-      "freqRank": 242,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:flushed-face",
-      "voices": [
-        { "key": "echo/packs/it_fluent/240-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/240-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 241,
+      "index": 201,
       "kind": "phrase",
       "text": "Tom divenne rosso come un pomodoro.",
       "gloss": {
@@ -4344,12 +3643,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:flushed-face",
       "voices": [
-        { "key": "echo/packs/it_fluent/241-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/241-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/201-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/201-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 242,
+      "index": 202,
       "kind": "phrase",
       "text": "I gatti non mangiano le banane.",
       "gloss": {
@@ -4363,12 +3662,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
-        { "key": "echo/packs/it_fluent/242-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/242-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/202-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/202-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 243,
+      "index": 203,
       "kind": "phrase",
       "text": "La mela non è ancora matura.",
       "gloss": {
@@ -4381,12 +3680,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-apple",
       "voices": [
-        { "key": "echo/packs/it_fluent/243-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/243-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/203-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/203-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 244,
+      "index": 204,
       "kind": "phrase",
       "text": "Perché la luna brilla la notte?",
       "gloss": {
@@ -4399,12 +3698,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:crescent-moon",
       "voices": [
-        { "key": "echo/packs/it_fluent/244-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/244-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/204-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/204-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 245,
+      "index": 205,
       "kind": "phrase",
       "text": "Helen Keller era sorda e cieca.",
       "gloss": {
@@ -4417,12 +3716,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:white-cane",
       "voices": [
-        { "key": "echo/packs/it_fluent/245-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/245-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/205-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/205-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 246,
+      "index": 206,
       "kind": "phrase",
       "text": "La settimana scorsa eravamo molto occupate.",
       "gloss": {
@@ -4435,12 +3734,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-running",
       "voices": [
-        { "key": "echo/packs/it_fluent/246-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/246-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/206-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/206-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 247,
+      "index": 207,
       "kind": "phrase",
       "text": "Tom sperava di ottenere un bacio.",
       "gloss": {
@@ -4453,12 +3752,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:kiss-mark",
       "voices": [
-        { "key": "echo/packs/it_fluent/247-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/247-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/207-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/207-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 248,
+      "index": 208,
       "kind": "phrase",
       "text": "Nessuna delle automobili è la mia.",
       "gloss": {
@@ -4472,12 +3771,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
-        { "key": "echo/packs/it_fluent/248-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/248-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/208-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/208-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 249,
+      "index": 209,
       "kind": "phrase",
       "text": "Il simbolo chimico H significa idrogeno.",
       "gloss": {
@@ -4491,12 +3790,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:test-tube",
       "voices": [
-        { "key": "echo/packs/it_fluent/249-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/249-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/209-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/209-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 250,
+      "index": 210,
       "kind": "phrase",
       "text": "La partita è terminata senza goal.",
       "gloss": {
@@ -4509,12 +3808,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:soccer-ball",
       "voices": [
-        { "key": "echo/packs/it_fluent/250-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/250-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/210-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/210-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 251,
+      "index": 211,
       "kind": "phrase",
       "text": "Il prezzo della benzina sta aumentando.",
       "gloss": {
@@ -4528,12 +3827,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:fuel-pump",
       "voices": [
-        { "key": "echo/packs/it_fluent/251-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/251-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/211-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/211-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 252,
+      "index": 212,
       "kind": "phrase",
       "text": "Sei un filosofo, non è vero?",
       "gloss": {
@@ -4547,12 +3846,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:thinking-face",
       "voices": [
-        { "key": "echo/packs/it_fluent/252-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/252-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/212-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/212-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 253,
+      "index": 213,
       "kind": "phrase",
       "text": "Le macchine tedesche sono molto popolari.",
       "gloss": {
@@ -4566,12 +3865,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
-        { "key": "echo/packs/it_fluent/253-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/253-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/213-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/213-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 254,
+      "index": 214,
       "kind": "phrase",
       "text": "Il mio migliore amico è portoghese.",
       "gloss": {
@@ -4584,12 +3883,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
-        { "key": "echo/packs/it_fluent/254-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/254-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/214-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/214-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 255,
+      "index": 215,
       "kind": "phrase",
       "text": "Mi piace studiare le lingue straniere.",
       "gloss": {
@@ -4603,30 +3902,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/it_fluent/255-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/255-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/215-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/215-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 256,
-      "kind": "phrase",
-      "text": "Trovo molto interessanti le lingue straniere.",
-      "gloss": {
-        "en": "I find foreign languages very interesting.",
-        "de": "Ich finde Fremdsprachen sehr interessant.",
-        "es": "Encuentro las lenguas extranjeras muy interesantes.",
-        "fr": "Je trouve les langues étrangères très intéressantes."
-      },
-      "freqRank": 258,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speaking-head",
-      "voices": [
-        { "key": "echo/packs/it_fluent/256-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/256-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 257,
+      "index": 216,
       "kind": "phrase",
       "text": "Jimmy è il mio figlio adottivo.",
       "gloss": {
@@ -4640,12 +3921,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family-man-boy",
       "voices": [
-        { "key": "echo/packs/it_fluent/257-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/257-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/216-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/216-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 258,
+      "index": 217,
       "kind": "phrase",
       "text": "Il sole tramonta sempre ad ovest.",
       "gloss": {
@@ -4658,12 +3939,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sunset",
       "voices": [
-        { "key": "echo/packs/it_fluent/258-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/258-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/217-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/217-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 259,
+      "index": 218,
       "kind": "phrase",
       "text": "La nostra classe ha quarantacinque studenti.",
       "gloss": {
@@ -4676,12 +3957,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:school",
       "voices": [
-        { "key": "echo/packs/it_fluent/259-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/259-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/218-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/218-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 260,
+      "index": 219,
       "kind": "phrase",
       "text": "Un giorno correrò come il vento.",
       "gloss": {
@@ -4695,12 +3976,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-running",
       "voices": [
-        { "key": "echo/packs/it_fluent/260-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/260-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/219-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/219-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 261,
+      "index": 220,
       "kind": "phrase",
       "text": "Ha rifiutato di prendere la tangente.",
       "gloss": {
@@ -4714,12 +3995,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:money-bag",
       "voices": [
-        { "key": "echo/packs/it_fluent/261-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/261-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/220-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/220-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 262,
+      "index": 221,
       "kind": "phrase",
       "text": "San Valentino viene celebrato in febbraio.",
       "gloss": {
@@ -4732,12 +4013,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:heart-with-arrow",
       "voices": [
-        { "key": "echo/packs/it_fluent/262-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/262-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/221-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/221-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 263,
+      "index": 222,
       "kind": "phrase",
       "text": "Tom dispone di poco tempo libero.",
       "gloss": {
@@ -4750,12 +4031,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hourglass-not-done",
       "voices": [
-        { "key": "echo/packs/it_fluent/263-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/263-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/222-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/222-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 264,
+      "index": 223,
       "kind": "phrase",
       "text": "Il numero atomico del ferro è 26.",
       "gloss": {
@@ -4764,18 +4045,22 @@
         "es": "El número atómico del hierro es 26.",
         "fr": "Le numéro atomique du fer est le 26.",
         "pt-BR": "O número atômico do ferro é 26.",
-        "ru": "Порядковый номер железа - 26."
+        "ru": "Порядковый номер железа — 26."
       },
       "freqRank": 266,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "ru": "Порядковый номер железа - 26." },
+        "edited": ["ru"]
+      },
       "image": "cue:test-tube",
       "voices": [
-        { "key": "echo/packs/it_fluent/264-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/264-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/223-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/223-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 265,
+      "index": 224,
       "kind": "phrase",
       "text": "Come si dice \"grazie\" in ceco?",
       "gloss": {
@@ -4788,12 +4073,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:folded-hands",
       "voices": [
-        { "key": "echo/packs/it_fluent/265-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/265-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/224-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/224-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 266,
+      "index": 225,
       "kind": "phrase",
       "text": "Quando mi sono svegliato stava nevicando.",
       "gloss": {
@@ -4806,31 +4091,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cloud-with-snow",
       "voices": [
-        { "key": "echo/packs/it_fluent/266-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/266-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/225-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/225-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 267,
-      "kind": "phrase",
-      "text": "Il leone è un animale carnivoro.",
-      "gloss": {
-        "en": "The lion is a carnivorous animal.",
-        "tr": "Aslan etçil bir hayvandır.",
-        "es": "El león es un animal carnívoro.",
-        "fr": "Le lion est un animal carnivore.",
-        "ru": "Лев - плотоядное животное."
-      },
-      "freqRank": 269,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:lion",
-      "voices": [
-        { "key": "echo/packs/it_fluent/267-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/267-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 268,
+      "index": 226,
       "kind": "phrase",
       "text": "\"Roma\" è un anagramma di \"amor\".",
       "gloss": {
@@ -4843,12 +4109,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:input-latin-letters",
       "voices": [
-        { "key": "echo/packs/it_fluent/268-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/268-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/226-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/226-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 269,
+      "index": 227,
       "kind": "phrase",
       "text": "Tutti i fiori nel giardino sono gialli.",
       "gloss": {
@@ -4856,18 +4122,22 @@
         "de": "Alle Blumen im Garten sind gelb.",
         "es": "Todas las flores del jardín son amarillas.",
         "pt-BR": "Todas as flores no jardim são amarelas.",
-        "ru": "Все цветы в саду - жёлтые."
+        "ru": "Все цветы в саду — жёлтые."
       },
       "freqRank": 271,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "ru": "Все цветы в саду - жёлтые." },
+        "edited": ["ru"]
+      },
       "image": "cue:sunflower",
       "voices": [
-        { "key": "echo/packs/it_fluent/269-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/269-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/227-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/227-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 270,
+      "index": 228,
       "kind": "phrase",
       "text": "Il registratore ha registrato la sua voce.",
       "gloss": {
@@ -4881,12 +4151,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:microphone",
       "voices": [
-        { "key": "echo/packs/it_fluent/270-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/270-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/228-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/228-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 271,
+      "index": 229,
       "kind": "phrase",
       "text": "Non ho letto nessuno dei suoi romanzi.",
       "gloss": {
@@ -4899,12 +4169,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:books",
       "voices": [
-        { "key": "echo/packs/it_fluent/271-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/271-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/229-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/229-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 272,
+      "index": 230,
       "kind": "phrase",
       "text": "È proibito dare da mangiare ai piccioni.",
       "gloss": {
@@ -4917,12 +4187,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dove",
       "voices": [
-        { "key": "echo/packs/it_fluent/272-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/272-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/230-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/230-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 273,
+      "index": 231,
       "kind": "phrase",
       "text": "Dobbiamo aiutare coloro che non possono difendersi.",
       "gloss": {
@@ -4935,12 +4205,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:shield",
       "voices": [
-        { "key": "echo/packs/it_fluent/273-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/273-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/231-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/231-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 274,
+      "index": 232,
       "kind": "phrase",
       "text": "È sempre bello ritrovare le vecchie amicizie.",
       "gloss": {
@@ -4953,12 +4223,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:people-hugging",
       "voices": [
-        { "key": "echo/packs/it_fluent/274-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/274-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/232-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/232-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 275,
+      "index": 233,
       "kind": "phrase",
       "text": "Quella piccola stella è la più luminosa.",
       "gloss": {
@@ -4971,12 +4241,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:night-with-stars",
       "voices": [
-        { "key": "echo/packs/it_fluent/275-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/275-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/233-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/233-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 276,
+      "index": 234,
       "kind": "phrase",
       "text": "Oggi è la Giornata mondiale degli elefanti.",
       "gloss": {
@@ -4990,67 +4260,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:elephant",
       "voices": [
-        { "key": "echo/packs/it_fluent/276-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/276-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/234-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/234-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 277,
-      "kind": "phrase",
-      "text": "Ho lasciato il mio dizionario di sotto.",
-      "gloss": {
-        "en": "I left my dictionary downstairs.",
-        "de": "Ich habe mein Wörterbuch unten gelassen.",
-        "es": "Me dejé el diccionario en el piso de abajo.",
-        "fr": "J'ai laissé mon dictionnaire en bas."
-      },
-      "freqRank": 279,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book",
-      "voices": [
-        { "key": "echo/packs/it_fluent/277-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/277-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 278,
-      "kind": "phrase",
-      "text": "Non ho soldi per comprare il dizionario.",
-      "gloss": {
-        "en": "I have no money to buy the dictionary.",
-        "es": "No tengo dinero para comprar el diccionario.",
-        "fr": "Je n'ai pas d'argent pour acheter le dictionnaire.",
-        "pt-BR": "Não tenho dinheiro para comprar o dicionário."
-      },
-      "freqRank": 280,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book",
-      "voices": [
-        { "key": "echo/packs/it_fluent/278-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/278-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 279,
-      "kind": "phrase",
-      "text": "Prima di tutto devi cercarlo nel dizionario.",
-      "gloss": {
-        "en": "First of all, you must look it up in the dictionary.",
-        "de": "Zuallererst musst du es im Wörterbuch nachschlagen.",
-        "es": "Primero que todo, debes buscarlo en el diccionario.",
-        "fr": "Tout d'abord, tu dois le chercher dans un dictionnaire.",
-        "pt-BR": "Antes de tudo, você deve procurar no dicionário."
-      },
-      "freqRank": 281,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:closed-book",
-      "voices": [
-        { "key": "echo/packs/it_fluent/279-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/279-im_nicola.m4a", "voice": "im_nicola" }
-      ]
-    },
-    {
-      "index": 280,
+      "index": 235,
       "kind": "phrase",
       "text": "Questa parola non è sul mio dizionario.",
       "gloss": {
@@ -5065,12 +4280,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:closed-book",
       "voices": [
-        { "key": "echo/packs/it_fluent/280-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/280-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/235-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/235-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 281,
+      "index": 236,
       "kind": "phrase",
       "text": "Avresti dovuto rifiutare una proposta così ingiusta.",
       "gloss": {
@@ -5083,12 +4298,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-gesturing-no",
       "voices": [
-        { "key": "echo/packs/it_fluent/281-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/281-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/236-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/236-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 282,
+      "index": 237,
       "kind": "phrase",
       "text": "Al mio gatto piace la mia tastiera.",
       "gloss": {
@@ -5101,12 +4316,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cat",
       "voices": [
-        { "key": "echo/packs/it_fluent/282-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/282-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/237-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/237-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 283,
+      "index": 238,
       "kind": "phrase",
       "text": "Tom voleva sapere come finiva la storia.",
       "gloss": {
@@ -5119,12 +4334,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:open-book",
       "voices": [
-        { "key": "echo/packs/it_fluent/283-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/283-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/238-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/238-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 284,
+      "index": 239,
       "kind": "phrase",
       "text": "Il vecchio uomo mi parlò in francese.",
       "gloss": {
@@ -5137,12 +4352,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:speaking-head",
       "voices": [
-        { "key": "echo/packs/it_fluent/284-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/284-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/239-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/239-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 285,
+      "index": 240,
       "kind": "phrase",
       "text": "Jane ed io suoniamo bene il piano.",
       "gloss": {
@@ -5155,12 +4370,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-note",
       "voices": [
-        { "key": "echo/packs/it_fluent/285-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/285-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/240-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/240-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 286,
+      "index": 241,
       "kind": "phrase",
       "text": "Le arance sono più dolci dei limoni.",
       "gloss": {
@@ -5173,12 +4388,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:lemon",
       "voices": [
-        { "key": "echo/packs/it_fluent/286-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/286-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/241-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/241-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 287,
+      "index": 242,
       "kind": "phrase",
       "text": "Per quanto tempo hanno abitato in Inghilterra?",
       "gloss": {
@@ -5191,12 +4406,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
-        { "key": "echo/packs/it_fluent/287-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/287-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/242-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/242-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 288,
+      "index": 243,
       "kind": "phrase",
       "text": "Questo è uno stallone o una cavalla?",
       "gloss": {
@@ -5211,12 +4426,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:horse",
       "voices": [
-        { "key": "echo/packs/it_fluent/288-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/288-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/243-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/243-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 289,
+      "index": 244,
       "kind": "phrase",
       "text": "Questa sedia ha bisogno di essere riparata.",
       "gloss": {
@@ -5229,12 +4444,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:chair",
       "voices": [
-        { "key": "echo/packs/it_fluent/289-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/289-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/244-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/244-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 290,
+      "index": 245,
       "kind": "phrase",
       "text": "Se non ci fossi tu dovrei inventarti.",
       "gloss": {
@@ -5247,12 +4462,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:red-heart",
       "voices": [
-        { "key": "echo/packs/it_fluent/290-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/290-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/245-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/245-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 291,
+      "index": 246,
       "kind": "phrase",
       "text": "Nonostante tutte le sue ricchezze, non è felice.",
       "gloss": {
@@ -5265,12 +4480,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:money-bag",
       "voices": [
-        { "key": "echo/packs/it_fluent/291-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/291-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/246-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/246-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 292,
+      "index": 247,
       "kind": "phrase",
       "text": "Abbiamo dovuto chiudere la finestra per le zanzare.",
       "gloss": {
@@ -5283,12 +4498,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:window",
       "voices": [
-        { "key": "echo/packs/it_fluent/292-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/292-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/247-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/247-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 293,
+      "index": 248,
       "kind": "phrase",
       "text": "Il bebè non può ancora usare un cucchiaio.",
       "gloss": {
@@ -5301,12 +4516,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:baby",
       "voices": [
-        { "key": "echo/packs/it_fluent/293-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/293-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/248-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/248-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 294,
+      "index": 249,
       "kind": "phrase",
       "text": "La nostra ipotesi si basa su solidi esperimenti.",
       "gloss": {
@@ -5319,12 +4534,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:test-tube",
       "voices": [
-        { "key": "echo/packs/it_fluent/294-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/294-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/249-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/249-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 295,
+      "index": 250,
       "kind": "phrase",
       "text": "Il nostro aereo ha decollato alle 18 in punto.",
       "gloss": {
@@ -5337,12 +4552,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:airplane",
       "voices": [
-        { "key": "echo/packs/it_fluent/295-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/295-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/250-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/250-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 296,
+      "index": 251,
       "kind": "phrase",
       "text": "La stazione è situata tra queste due città.",
       "gloss": {
@@ -5355,12 +4570,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:station",
       "voices": [
-        { "key": "echo/packs/it_fluent/296-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/296-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/251-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/251-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 297,
+      "index": 252,
       "kind": "phrase",
       "text": "Per rendere le cose peggiori, iniziò a nevicare.",
       "gloss": {
@@ -5373,12 +4588,12 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cloud-with-snow",
       "voices": [
-        { "key": "echo/packs/it_fluent/297-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/297-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/252-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/252-im_nicola.m4a", "voice": "im_nicola" }
       ]
     },
     {
-      "index": 298,
+      "index": 253,
       "kind": "phrase",
       "text": "Ogni giorno utilizziamo molte cose inventate da Edison.",
       "gloss": {
@@ -5391,8 +4606,8 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:light-bulb",
       "voices": [
-        { "key": "echo/packs/it_fluent/298-if_sara.m4a", "voice": "if_sara" },
-        { "key": "echo/packs/it_fluent/298-im_nicola.m4a", "voice": "im_nicola" }
+        { "key": "echo/packs/it_fluent/253-if_sara.m4a", "voice": "if_sara" },
+        { "key": "echo/packs/it_fluent/253-im_nicola.m4a", "voice": "im_nicola" }
       ]
     }
   ]

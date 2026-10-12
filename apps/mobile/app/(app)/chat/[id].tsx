@@ -11,12 +11,13 @@ import { useTwoPane } from '../../../src/hooks/useTwoPane'
  * the route's parameters and hands them over, and nothing else.
  */
 export default function ChatRoute() {
-  const { id, at, inPlace, ask, draft } = useLocalSearchParams<{
+  const { id, at, inPlace, ask, draft, call } = useLocalSearchParams<{
     id: string
     at?: string
     inPlace?: string
     ask?: string
     draft?: string
+    call?: string
   }>()
   const twoPane = useTwoPane()
 
@@ -33,7 +34,10 @@ export default function ChatRoute() {
   if (twoPane && id) {
     return (
       <Redirect
-        href={{ pathname: '/(app)/(tabs)/chats', params: { open: id, ...(at ? { at } : {}) } }}
+        href={{
+          pathname: '/(app)/(tabs)/chats',
+          params: { open: id, ...(at ? { at } : {}), ...(call ? { call } : {}) },
+        }}
       />
     )
   }
@@ -45,6 +49,7 @@ export default function ChatRoute() {
       {...(inPlace ? { inPlace } : {})}
       {...(ask ? { ask } : {})}
       {...(draft ? { draft } : {})}
+      {...(call ? { call } : {})}
     />
   )
 }

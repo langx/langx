@@ -34,6 +34,7 @@ import { sendWelcomeBackMessage } from './modules/official/welcomeBack'
 import { restoreLegacyProfile } from './modules/handles/legacyRestore'
 import { notifyLifetimeGift } from './modules/handles/lifetimeGiftNotice'
 import { recordTermsAcceptance } from './modules/account/terms'
+import { rememberSignUpReferrer } from './modules/referrals/referrals'
 import { cancelDeletionOnSignIn } from './modules/account/deletion'
 import type { EmailSender } from './email/sender'
 import {
@@ -601,7 +602,7 @@ export async function createAuth({
            * unverified email/password sign-up from restoring someone else's
            * profile by claiming their address.
            */
-          after: async (user) => {
+          after: async (user, context) => {
             /**
              * Stamped here rather than taken from the sign-up body, because a
              * client that skipped the tickbox could otherwise assert it. Every
@@ -614,6 +615,22 @@ export async function createAuth({
              * the question that gets asked is "which text did they agree to".
              */
             await recordTermsAcceptance(db, user.id)
+
+            /*
+             * The invite, from the email sign-up body only. That is the route
+             * where onboarding most often runs in another browser — the
+             * verification link opened from a mail app — so it is the one
+             * where the device flag is lost. OAuth stays on one device with
+             * the flag intact. Its own try: a referral must never fail a
+             * sign-up.
+             */
+            if (context?.path === '/sign-up/email') {
+              try {
+                await rememberSignUpReferrer(db, user.id, context.body)
+              } catch (error) {
+                console.error('[referral] sign-up note failed', { userId: user.id, error })
+              }
+            }
 
             if (!user.emailVerified) return
             await tryRestore(user.id, user.email)
