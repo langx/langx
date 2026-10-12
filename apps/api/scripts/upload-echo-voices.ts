@@ -15,8 +15,7 @@
  *   pnpm exec tsx scripts/upload-echo-voices.ts --dir ../../tools/echo-content/tts/out
  *   pnpm exec tsx --env-file=../../.env scripts/upload-echo-voices.ts --dir <dir> --apply
  */
-import { readFile } from 'node:fs/promises'
-import { readdir } from 'node:fs/promises'
+import { access, readFile, readdir } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { echoPackFileSchema, packVoiceKey } from '@langx/shared'
 import { loadEnv } from '../src/env'
@@ -51,7 +50,10 @@ async function main(): Promise<void> {
     throw new Error('Storage is not configured — see .env.example')
   }
 
-  let uploaded = 0
+  // Every file is found before the first one is sent, so the run knows its
+  // total and can say how far along it is. It puts one object at a time and a
+  // full run is thousands of them; without a count it looks hung for an hour.
+  const queue: { key: string; source: string }[] = []
   let missing = 0
   for (const path of await packFiles()) {
     const pack = echoPackFileSchema.parse(JSON.parse(await readFile(path, 'utf8')))
@@ -63,6 +65,7 @@ async function main(): Promise<void> {
       continue
     }
 
+    let found = 0
     for (const take of takes) {
       // The key the file claims has to be the one this pack and index derive,
       // or the upload would put the bytes somewhere the card never looks.
@@ -71,22 +74,45 @@ async function main(): Promise<void> {
         throw new Error(`${pack.id}#${take.index}: ${take.key} is not ${expected}`)
 
       const source = join(root, pack.id.replace(':', '_'), `${take.index}-${take.voice}.m4a`)
-      let body: Buffer
       try {
-        body = await readFile(source)
+        await access(source)
       } catch {
         missing += 1
         continue
       }
-      if (apply) await storage!.putObject(take.key, body, 'audio/mp4')
-      uploaded += 1
+      queue.push({ key: take.key, source })
+      found += 1
     }
-    console.log(`  ${pack.id}: ${takes.length} readings`)
+    console.log(`  ${pack.id}: ${found} of ${takes.length} readings here`)
   }
 
   if (missing > 0)
     console.log(`  ${missing} named by a pack and not generated — re-run generate.py`)
-  console.log(apply ? `Done. ${uploaded} uploaded.` : `Dry run. ${uploaded} would upload.`)
+  if (!apply) {
+    console.log(`Dry run. ${queue.length} would upload.`)
+    return
+  }
+
+  const started = Date.now()
+  for (const [index, { key, source }] of queue.entries()) {
+    await storage!.putObject(key, await readFile(source), 'audio/mp4')
+    const done = index + 1
+    if (done % 50 === 0 || done === queue.length) console.log(progress(done, queue.length, started))
+  }
+  console.log(`Done. ${queue.length} uploaded.`)
+}
+
+/** `1200/5045 (24%) · 9m elapsed · ~29m left`, the rate taken from the run so far. */
+function progress(done: number, total: number, started: number): string {
+  const elapsed = Date.now() - started
+  const left = (elapsed / done) * (total - done)
+  const percent = Math.floor((done / total) * 100)
+  return `  ${done}/${total} (${percent}%) · ${minutes(elapsed)} elapsed · ~${minutes(left)} left`
+}
+
+function minutes(ms: number): string {
+  const m = Math.round(ms / 60_000)
+  return m < 60 ? `${m}m` : `${Math.floor(m / 60)}h ${m % 60}m`
 }
 
 void main()
