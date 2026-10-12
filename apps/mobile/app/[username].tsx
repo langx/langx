@@ -21,6 +21,7 @@ import { Screen } from '../src/components/ui/Screen'
 import { Skeleton } from '../src/components/ui/Skeleton'
 import { authLandingHref } from '../src/lib/authLanding'
 import { FLAG_KEYS, writeFlag } from '../src/lib/localFlags'
+import { writePendingMessageIntent } from '../src/lib/pendingIntent'
 import { makeStyles } from '../src/lib/theme'
 import { useDisplayNames, useLocale, useT } from '../src/i18n'
 import { usePullToRefresh } from '../src/hooks/usePullToRefresh'
@@ -52,14 +53,15 @@ export default function SharedProfileScreen() {
   const params = useLocalSearchParams<{ username: string; invite?: string }>()
   const handle = (params.username ?? '').toLowerCase()
   /*
-   * The web half of the invite flow, and today the only half that fires: the
-   * app claims `app.langx.io` while links point at `app.langx.io`, so on a
-   * phone an invite link opens a browser rather than the app. This screen is
-   * already what that browser lands on.
+   * The web half of the invite flow. Links and the app's claimed domain are
+   * the same host now, so on a phone with the app installed the link opens the
+   * app and `usePendingInvite` writes the flag from the URL; without the app,
+   * and on the web build, the link lands in a browser on this screen, and this
+   * is what writes it.
    *
-   * Writing the flag here rather than in `usePendingInvite` because on web the
-   * router resolves the URL itself and the hook's `getInitialURL` is not the
-   * event that matters.
+   * Written here rather than left to the hook because on web the router
+   * resolves the URL itself and the hook's `getInitialURL` is not the event
+   * that matters. Both writing the same handle is harmless.
    */
   const invited = params[INVITE_QUERY_PARAM] === '1' && HANDLE_PATTERN.test(handle)
   useEffect(() => {
@@ -203,8 +205,21 @@ export default function SharedProfileScreen() {
             very page, so on web the button reloaded it and on a phone the
             universal link brought it straight back — a loop either way.
             Signed out, `(auth)` is the mounted branch, so pushing at it
-            crosses nothing; the invite flag above is already written. */}
-        <Button label={t('shared.ctaLabel')} onPress={() => router.push(authLandingHref())} />
+            crosses nothing; the invite flag above is already written.
+
+            The intent is the profile itself: this person is why the visitor
+            is about to make an account, so the end of onboarding offers to
+            say hello to them — the same offer a guest stopped at the message
+            gate gets. `_id` is the account id `chat/new` takes. Not for an
+            official account, which the public card cannot tell apart from
+            the ones that take no messages at all. */}
+        <Button
+          label={t('shared.ctaLabel')}
+          onPress={() => {
+            if (!user.official) void writePendingMessageIntent(user._id)
+            router.push(authLandingHref())
+          }}
+        />
       </View>
     </Screen>
   )

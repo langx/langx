@@ -10,8 +10,10 @@ import { getDraft, hydrateDraft, isDraftHydrated } from '../src/hooks/useOnboard
 import { authClient } from '../src/lib/auth-client'
 import { authLandingHref } from '../src/lib/authLanding'
 import { errorStatusOf } from '../src/lib/errors'
+import { shouldGateGuest } from '../src/lib/guestGate'
 import { meState } from '../src/lib/meState'
 import { furthestOnboardingStep, onboardingHref } from '../src/lib/onboardingStep'
+import { clearSignupCarryOver, signupCarryOverIsStale } from '../src/lib/signupCarryOver'
 
 /**
  * The one screen at `/`, and the gate `Stack.Protected` alone cannot express:
@@ -63,6 +65,22 @@ export default function Index() {
    * cover the whole redirect chain instead of ending a beat too early.
    */
   useSignalAppReady(signedIn ? !isPending && draftReady : true)
+
+  /*
+   * Here because every way into an existing account ends on this screen —
+   * password, magic link, Google, Apple, Facebook, a QR — and this is where it
+   * is first known that the account already has a profile. See
+   * `signupCarryOverIsStale` for what leaks without it.
+   */
+  const carryOverStale =
+    signedIn &&
+    signupCarryOverIsStale({
+      state: meState({ hasProfile: Boolean(profile), errorStatus: errorStatusOf(error) }),
+      isGuest: shouldGateGuest(session?.user),
+    })
+  useEffect(() => {
+    if (carryOverStale) void clearSignupCarryOver()
+  }, [carryOverStale])
 
   if (!signedIn) return <Redirect href={authLandingHref()} />
 

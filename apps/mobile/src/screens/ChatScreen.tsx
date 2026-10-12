@@ -199,6 +199,8 @@ export interface ChatScreenProps {
   ask?: string
   /** Seeds the composer. The sentence being asked about, from a card. */
   draft?: string
+  /** Places a call once the thread knows whether it may: "Call Maria on LangX". */
+  call?: string
   /**
    * Drawn beside the conversation list rather than pushed over it.
    *
@@ -220,6 +222,7 @@ export function ChatScreen({
   inPlace,
   ask: askParam,
   draft: draftParam,
+  call: callParam,
   embedded = false,
   onClose,
 }: ChatScreenProps) {
@@ -631,7 +634,8 @@ export function ChatScreen({
    * one or explains the gate — see `callAvailability`. The gate is the photo
    * gate's own number: the same messages unlock both.
    */
-  const callService = useAppConfig().data?.callService === true
+  const appConfig = useAppConfig()
+  const callService = appConfig.data?.callService === true
   const callGate = callAvailability({
     callService,
     engineSupported: engineSupported(),
@@ -2550,7 +2554,10 @@ export function ChatScreen({
    * the *server* refuses is said by the call screen itself, as the line it
    * closes with.
    */
-  async function startCall(media: CallMedia, source: 'header' | 'row' | 'meeting'): Promise<void> {
+  async function startCall(
+    media: CallMedia,
+    source: 'header' | 'row' | 'meeting' | 'siri',
+  ): Promise<void> {
     if (!partner || callGate === 'hidden') return
     if (callGate === 'locked') {
       void showAlert(t('chat.mediaLockedTitle'), t('calls.locked', { count: mediaLockedFor }))
@@ -2585,6 +2592,28 @@ export function ChatScreen({
   const onCallBack = useCallback((message: MessageDto) => {
     if (message.call) void startCallRef.current(message.call.media, 'row')
   }, [])
+  /*
+   * A call asked for from outside the thread — Siri, which cannot place one
+   * itself (see `CallingHandler.swift`). Placed once, and only when the gate's
+   * every input has arrived: until the app config, the profile and the first
+   * page are in, the gate reads "hidden" for a thread that may well be open,
+   * and deciding then would drop the call. Through `startCall`, so a locked
+   * thread explains itself rather than ringing.
+   */
+  const requestedCall = useRef<CallMedia | null>(
+    callParam === 'audio' || callParam === 'video' ? callParam : null,
+  )
+  const callGateSettled =
+    appConfig.data !== undefined &&
+    me.data !== undefined &&
+    partner !== undefined &&
+    messages.data !== undefined
+  useEffect(() => {
+    const media = requestedCall.current
+    if (!media || !callGateSettled) return
+    requestedCall.current = null
+    if (callGate !== 'hidden') void startCallRef.current(media, 'siri')
+  }, [callGateSettled, callGate])
   /** "Call now" on an agreed time's card. A voice call: the card never said which. */
   const onMeetingCall = useCallback(() => {
     void startCallRef.current('audio', 'meeting')

@@ -18,12 +18,12 @@ import { FLAG_KEYS, writeFlag } from '../lib/localFlags'
  * cold start, where the link *is* the launch, and the listener is the app
  * already running when the link is tapped.
  *
- * Today this is mostly dormant. `APP_LINK_HOST` is `app.langx.io` — what the
- * app claims in its association files — while shared links point at
- * `WEB_HOST`, `app.langx.io`, so on a phone an invite link opens the browser
- * rather than the app. The web build is where it actually fires, and
- * `app/[username].tsx` covers that case directly. This is written now so that
- * the day the hosts converge, the flow already works.
+ * This is the native half. `APP_LINK_HOST` and `WEB_HOST` are the same host,
+ * which the app claims through its associated domains and Android intent
+ * filters, so on a phone with the app installed an invite link opens the app
+ * and arrives here. Without the app, and on the web build, the link opens in a
+ * browser instead, and `app/[username].tsx` writes the same flag from the
+ * screen it lands on.
  */
 export function usePendingInvite(): void {
   useEffect(() => {

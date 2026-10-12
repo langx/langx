@@ -512,6 +512,75 @@ and the next candidate was. That cost Arabic the most at `absoluteBeginner`:
 its best-covered 650 candidates are mostly "Who's that?" and "Why me?", and
 76 of its 300 items came from the 1,116 candidates further down.
 
+#### What the review of the three Arabic packs was, exactly
+
+**A Claude review, not a native speaker's.** On 11 October 2026 Claude read
+the Arabic front, the English and the Turkish of all 900 items line by line,
+and the cue on every one against `ILLUSTRATION.md`, to the standard of the
+fifteen (_What the review of the fifteen was, exactly_, below). No Arabic
+speaker has read the packs since, and **no human has listened to a single
+Chatterbox take**. The only ear on the audio is Whisper's.
+
+| Pack                  | Before | After | Dropped | Fronts corrected | Glosses corrected | Cues repointed |
+| --------------------- | ------ | ----- | ------- | ---------------- | ----------------- | -------------- |
+| `ar:absoluteBeginner` | 300    | 281   | 19      | 16               | 9                 | 0              |
+| `ar:beginner`         | 300    | 290   | 10      | 18               | 17                | 1              |
+| `ar:intermediate`     | 300    | 276   | 24      | 24               | 7                 | 1              |
+
+**53 items dropped**, on the fifteen's grounds:
+
+- **Slogans, positions and sayings** — "Yes, we can", "War is bad", "We are
+  against war", "Love and Peace", two more about peace, "Water is life", "Life
+  is short", "Love hurts", "People are people", "The world is a school",
+  "Science is the art of seeking the truth".
+- **Quotations** — "I am your father" in two packs, and Soseki's "I am a cat".
+- **Tatoeba meta and nonsense** — "Tom is a name", "I have an elephant", "The
+  password is 'password'".
+- **The Sami and Layla family, thinned hard** — sixteen of nineteen in
+  `intermediate`, most of them "Sami came in", "Sami left", "Sami danced".
+  Three stay, each for its verb or its shape: "Sami counted the money", "I'm
+  Layla, Sami's wife", "Sami had a huge dog".
+- **Arabic that would mislead a learner of MSA** — `هي، أنت!` uses هي, which
+  is "she", for "hey"; `سأتصل عليك` for `سأتصل بك`; `ماذا للغداء؟`, a calque
+  of "What's for lunch?"; `غاضب معي` for `غاضب مني`; two ungrammatical
+  (`توم عنده السيارة جديدة`, `علي بالذهاب`); and `كلا معا`, whose first word
+  a beginner reads as "no".
+- **Near-duplicates** — "Mary is beautiful" beside "She is beautiful", and
+  the like; a hold-up line in a pack already thick with money; and "Woof!",
+  which is not a phrase.
+- **Four whose reading stayed unintelligible** — below 70% after eight takes:
+  `أعتقد ذلك.`, `عندي عائلة.`, `هم دائما معا.` and `عمري تسعة عشر عاماً.`.
+
+**58 fronts corrected**, each keeping the original in `review.frontWas`, and
+only where the slip was plain: a hamza missing (`انا`, `انها`, `احب`,
+`الاسبوع`) or added to a hamzat al-wasl (`إسمع`, `إفتح`, `إنتهى`, `أنظر`);
+`الأن`, `شئ`, `سيء`, `علي` and `إلي` for `الآن`, `شيء`, `سيئ`, `على` and
+`إلى`; `الموسيقي`, which is the musician, for `الموسيقى`; a detached `و`
+written on to its word; `مال` and `السابعة عشر` given their case and gender;
+`قال أنه` as `قال إنه`; and one invisible right-to-left mark.
+
+**33 glosses corrected**, each naming its locale in `review.edited` — English
+and Turkish only, the columns read. The worst: `كانت ليلة رائعة` was "It was a
+fairly cool night", `إنك في خطر!` was "It's dangerous!", `أخذت تبكي` had
+"he" for "she", and `نحن نعود إلى السفينة` said "by ship" in Turkish.
+
+**Two cues repointed**, each keeping the old slug in `review.cueWas`: a gate
+closed and a door closed both pointed at a key, and point at the door now.
+Every other cue passed `ILLUSTRATION.md`'s test as it was.
+
+**The readings.** Every corrected front was drawn again from scratch, and
+every kept item that the draft had left below 85% was drawn up to four more
+times with seeds the draft never used, the old take competing. 109 items now
+carry a new take (`review.readingRedrawn`); the rest are the draft's files,
+renumbered with their items. Read back by Whisper, the three packs average
+97.9%, 97.1% and 96.3%; 23 takes sit between 70% and 85%, and none lower.
+Each pack's `readback.json` holds the seed, the score and the count of takes.
+
+**What a native speaker should read first**: the 58 corrected fronts, where
+Claude's Arabic decided, and a listen to the 23 weakest readings, where
+Whisper's did; then the Russian, French and other
+columns, which were linted and not read.
+
 #### What the review of the Turkish three was, exactly
 
 **A Claude review, on 11 October 2026, and nobody has listened.** The three
@@ -602,8 +671,10 @@ packs have passed it; see "In use" above for what passing meant.
 **The three Japanese packs are drafts too** — see _Japanese: where it came
 from_ at the end of this file.
 
-**Five drafts today, all at `fluent`: `es`, `fr` and `it`**, drafted on 7 October
-2026 — 296, 298 and 299 items, every one with a cue and Kokoro's readings —
+**Five packs drafted on 7 October 2026, all at `fluent`: `es`, `fr` and `it`**
+— 296, 298 and 299 items, every one with a cue and Kokoro's readings, read
+on 11 October and now 267, 263 and 254 (see "What the review of the Spanish,
+French and Italian `fluent` was" below) —
 **and `de` and `ru`**, 270 and 244 items read by Piper, described at the end of
 this section. They draw on no source the packs above do not: Tatoeba for the
 sentences and their glosses, FrequencyWords for the level (its bands now
@@ -703,10 +774,99 @@ both are the honest answer rather than a gap to fill.
 
 **Four columns per file unread**, as above.
 
+### What the review of the Spanish, French and Italian `fluent` was, exactly
+
+**The same three columns as on the fifteen — the front, English and Turkish —
+read line by line, every item, plus the cue on every item.** 893 drafted items,
+of which **784** remain: es 296 → 267, fr 298 → 263, it 299 → 254. The cue was
+held to `tools/echo-content/images/ILLUSTRATION.md`'s test — does the picture
+say what the sentence is about before the words do. The other gloss columns
+were **linted and not read**, and every finding `lint-glosses.mjs` had on
+these three packs — eighteen, all mechanical — was dealt with: thirteen
+repaired, five gone with items dropped for other reasons. It has nothing left
+to say about them. None of these packs has a `reading`.
+
+**This was a Claude review, not a native speaker's.** That matters less here
+than for Japanese or Arabic — every gloss is a Tatoeba contributor's and the
+fronts are short, everyday sentences — but a native speaker reading the
+fronts would still be the better check, and the English column is where a
+loose gloss is likeliest to survive.
+
+**109 items dropped**, in the fifteen's kinds:
+
+- **Near-duplicates, 88 of them**, which is most of the work. The cue rule
+  pulls the pool towards what the palette draws, so the drafts came back with
+  families: ten Portuguese-speaking sentences across the three, five ages
+  over a birthday cake, nine Italian dictionaries, four Italian "Come si
+  dice in …?", five French "Je l'ai cherché(e)/trouvé" under the magnifying
+  glass, pairs that differ only in a pronoun or a gender (`Je l'ai revu.` /
+  `Je l'ai revue.`, `Tom è musulmano.` / `Io sono musulmano.`). Each family
+  was thinned to one or two, keeping the one with a Turkish gloss where there
+  was a choice.
+- **Tatoeba meta and nonsense, 11** — "¿Cómo puedo modificar esta frase?", "No
+  quiero traducir esta frase.", "Vogliamo frasi complete.", the English
+  spelling question `¿Cómo se escribe "pretty"?` in two languages, "Sono una
+  gatta.", "Sono una lupa.", "Tom è un cyborg.", the alchemist in two
+  languages, and "Je respirais contre le miroir.".
+- **Proverbs, quotations and slogans, 7** — "De tal palo, tal astilla.", "La
+  storia si ripete.", "Insegnare è apprendere.", "La musique est une langue
+  universelle.", "Dio creò il mondo." (Genesis, dropped from three languages
+  on the fifteen too), "Cristo è resuscitato dai morti!", and "Le judaïsme est
+  beau.", a position rather than a sentence a learner needs.
+- **War, 1** — "La guerra durò due anni.", the line the German and Russian
+  drafts drew.
+- **A broken front, 1** — "Où habite lain ?", a name whose capital I was
+  typed as a lower-case L.
+- **No honest cue, 1** — "Era sorprendentemente bella." under a cherry
+  blossom. Every item in these packs has to carry a picture, so a sentence
+  without an honest one goes rather than ships bare.
+
+**31 glosses corrected on reading** (18 English, 13 Turkish, on 29
+items), each naming its locale in `review.edited` with the old text in
+`review.glossWas`. The recurring kinds:
+
+- **A false friend glossed literally.** `Il est comédien.` said "comedian";
+  _comédien_ is an actor, which is also what its clapperboard shows. `Ne sois
+pas si avare.` said "greedy" for _stingy_.
+- **An English idiom that says something else.** `Llámame cuando decidas
+casarte conmigo.` was "Give me a ring when you decide to marry me" — a pun
+  the Turkish then translated literally, as handing over a ring. Both now say
+  _call me_.
+- **The wrong object.** `La copa se quebró.` sat under a wine glass and said
+  "The cup broke" in English and _fincan_ in Turkish; it is a glass. `Tom est
+philosophe.` said "philosophical".
+- **Tense and register slips** — `Il a neigé toute la nuit.` as "It's been
+  snowing", `¿Ya has almorzado?` in a Turkish past perfect, a passé simple as
+  "Spring has come around", `Estoy aprendiendo checo.` as "I learn Czech".
+- **Turkish spelling and grammar** — _vejeteryan_ for _vejetaryen_ twice, a
+  colloquial _bakıyolardı_, _e postamı_, a plural formal imperative for a
+  singular informal one.
+
+**Thirteen mechanical repairs**, also in `review.edited`: eleven Russian
+glosses with a hyphen for the copula dash and two Arabic ones spaced before
+their punctuation.
+
+**One front corrected**, `¡Necesito un medico!` → `¡Necesito un médico!`,
+with the original in `review.frontWas` — and since the reading is keyed to the
+text, its two Kokoro takes were made again with the same voices. **One cue
+changed**: `Non traduco più romanzi.` no longer borrows the Latin-letters
+badge and shows books (`review.cueWas`). No concept was drawn or edited.
+
+**The packs were renumbered.** Dropping items left gaps the seed would not
+close (it deletes by index at or past the new length), so the survivors were
+put back through `order.mjs`'s `spread` — keeping neighbours from opening
+with the same word — and numbered from 0. Every `voices[].key` was rewritten
+to its new index and the m4a files renamed to match by a copy into a fresh
+directory, checked (every key resolves to a file, no file without a key: 534,
+263 and 508), and only then swapped in for the old one. The files are still
+not uploaded.
+
 ### German and Russian `fluent`: drafts, 7 October
 
-**`de:fluent` (270 items) and `ru:fluent` (244), `"reviewed": false`.** The
-seed refuses both until somebody reads them. Every item is a Tatoeba sentence
+**`de:fluent` (270 items) and `ru:fluent` (244), drafted `"reviewed": false`;
+read on 11 October and now 137 and 131, `"reviewed": true`** — see _What the
+review of German and Russian `fluent` was, exactly_ below; what follows here
+describes the drafts as they were. Every item is a Tatoeba sentence
 glossed by its own contributors; English is on every item and the other
 columns are what Tatoeba has.
 
@@ -768,6 +928,71 @@ image (Linux, the only place Piper's wheel runs) with
 `generate.py --pack de:fluent` / `--pack ru:fluent`. The 514 m4a files are not
 uploaded; `upload-echo-voices.ts` is the step that puts them where the keys in
 the packs point.
+
+### What the review of German and Russian `fluent` was, exactly
+
+**A Claude review, not a native speaker's**, done on 11 October 2026 to the
+standard of the fifteen: **the front, English and Turkish read line by line,
+all 514 items**, and **the cue on every item** held to `ILLUSTRATION.md`'s test
+— does the picture say what the sentence is about before the words do. The
+other columns (German or Russian, Spanish, French, Portuguese, Arabic) were
+**linted and not read**; `lint-glosses.mjs` has nothing left to say about
+either pack. Turkish is on only 34 of the German and 52 of the Russian items
+that remain, and the rest stay without it: nothing was machine-translated in.
+
+**One question the fifteen did not ask: is it fluent at all?** The band is the
+rarest surface form in the sentence, and in two inflecting languages that is
+often an ending — `Bälle sind rund.` is C1 for its plural, `Я вижу льва.` for
+its accusative. Every sentence an A2 learner already reads end to end went,
+and that is most of what went.
+
+| Pack        | Before | Kept | Dropped | of which A1–A2 | Glosses fixed (en / tr) | Fronts fixed |
+| ----------- | -----: | ---: | ------: | -------------: | ----------------------: | -----------: |
+| `de:fluent` |    270 |  137 |     133 |            115 |                  12 / 7 |            1 |
+| `ru:fluent` |    244 |  131 |     113 |            106 |                   9 / 4 |            2 |
+
+**The other drops**, 25 in all:
+
+- **No honest cue — a place, a language or a nationality** (13): the four
+  German "I speak Hungarian / Portuguese / four languages" lines drawn with a
+  speaking head, `Sumatra ist eine Insel.`, Minsk, Beijing, Poland's election
+  day, South America, a Spanish book, Chaplin's nationality; in Russian a
+  German car and a letter in English.
+- **Near-duplicates** (8): `Elefanten sind Säugetiere.` beside
+  `Wale sind Säugetiere.`, two "shivering with cold" and two "it was windy" in
+  Russian, and the like.
+- **Odd** (2): `Der Goldfisch lebt.` and `Er will rote Brillen.` (several
+  pairs of glasses).
+- **A reading that cannot be right** (2): Piper says `1610` as
+  _eintausendsechshundertzehn_, not as a year, and `Я родился 22 января 1933
+года.` needs case endings on its numerals that espeak does not produce.
+  Checked by phonemising, not by ear.
+
+**What was fixed.** English glosses that were loose or wrong: `Der Wasserhahn
+tropft.` had "leaking" and, in Turkish, "the tap is working"; `Яичница` is fried
+eggs, not scrambled; `Er zitterte vor Wut.` read "His body was shaking in
+anger"; `I need an analgesic`, `fish dealer`, `We never work on
+Sunday`. Turkish: `Kedi mırıldıyor` (mumbling) for a purring cat, `saç sitili`,
+a slash left between two readings, a missing full stop. Three fronts, each
+keeping the original in `review.frontWas`: `Der Schreiber` (a clerk) for a
+novelist became `Der Schriftsteller`, and two Russian lines lacked the ё that
+changes the stress — Piper read _муравьев_ and _ушел_ with the wrong vowel,
+which is how they were found.
+
+**No cue was changed.** Every kept item's picture passed; the weak ones went
+with their sentence (a speaking head for a language). The cue tables lost the
+246 dropped lines and took the three new fronts, and `images/build.mjs` agrees
+with the packs.
+
+**The readings followed the renumbering.** The 265 takes whose front did not
+change were copied to their new index, the three new fronts re-read in the
+`apps/tts` image with the same Piper voices, and the old directories kept
+beside them as `<pack>.pre-review`. Every key in both packs resolves to a
+file: 137 and 131 m4a, none extra. Still not uploaded.
+
+**What a native speaker would still find.** The level line is a judgement,
+made once and quickly; a German or Russian reader will disagree with some of it
+in both directions. And the unread columns are where a wrong gloss would hide.
 
 ### Japanese: where it came from
 

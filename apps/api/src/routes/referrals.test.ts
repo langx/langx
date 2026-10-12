@@ -45,9 +45,15 @@ describe('referrals', () => {
    *  real `POST /profiles`, which is the only way a referral is ever attached. */
   async function newUser(
     overrides: Record<string, unknown> = {},
+    signUpExtra: Record<string, unknown> = {},
   ): Promise<SignedUpUser & { handle: string }> {
     const email = `ref-${seq}-${Math.random().toString(36).slice(2, 8)}@example.com`
-    const user = await signUpAndSignIn(app, emailSender, { email, password: PASSWORD, name: 'T' })
+    const user = await signUpAndSignIn(app, emailSender, {
+      email,
+      password: PASSWORD,
+      name: 'T',
+      ...signUpExtra,
+    })
     const body = onboardingBody(overrides)
     const created = await app.inject({
       method: 'POST',
@@ -230,6 +236,79 @@ describe('referrals', () => {
       const { attachReferral } = await import('../modules/referrals/referrals')
       expect(await attachReferral(handle.db, b.userId, c.handle, 'manual')).toBeNull()
       expect((await rowOf(b.userId))?.referrerId).toBe(a.userId)
+    })
+  })
+
+  /**
+   * The invite carried in the sign-up body, for when onboarding runs in a
+   * browser that never saw the device flag — the verification link opened in a
+   * mail app. `newUser`'s first argument is the onboarding form; the second is
+   * the sign-up body.
+   */
+  describe('remembered from sign-up', () => {
+    it('attaches the sign-up invite when the form sends none', async () => {
+      const a = await newUser()
+      const b = await newUser({}, { referredByHandle: a.handle, referredBySource: 'link' })
+      expect(await rowOf(b.userId)).toMatchObject({
+        referrerId: a.userId,
+        referrerHandle: a.handle,
+        source: 'link',
+      })
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: b.userId })
+      expect(profile?.referredBy).toBe(a.userId)
+    })
+
+    it('lets a code sent with the form win over the sign-up invite', async () => {
+      const a = await newUser()
+      const c = await newUser()
+      const b = await newUser(
+        { referredByHandle: c.handle, referredBySource: 'manual' },
+        { referredByHandle: a.handle, referredBySource: 'link' },
+      )
+      expect(await rowOf(b.userId)).toMatchObject({ referrerId: c.userId, source: 'manual' })
+    })
+
+    it('ignores an unknown or malformed sign-up invite without failing either step', async () => {
+      const b = await newUser({}, { referredByHandle: 'nobodyhere' })
+      expect(await rowOf(b.userId)).toBeNull()
+      const d = await newUser({}, { referredByHandle: 'not a handle!!' })
+      expect(await rowOf(d.userId)).toBeNull()
+    })
+
+    /**
+     * The stored handle goes through `attachReferral` like a typed one, so the
+     * self-referral rule holds for it. Unlike a typed code this one can name
+     * the account itself: the handle is free at sign-up and the same person
+     * then takes it at onboarding, so by the time the note is read it resolves
+     * to them.
+     */
+    it('refuses a sign-up invite naming the account itself', async () => {
+      const email = `self-${Math.random().toString(36).slice(2, 8)}@example.com`
+      const ownHandle = `self${(seq += 1).toString().padStart(4, '0')}`
+      const user = await signUpAndSignIn(app, emailSender, {
+        email,
+        password: PASSWORD,
+        name: 'T',
+        referredByHandle: ownHandle,
+      })
+      const created = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle: ownHandle }),
+      })
+      expect(created.statusCode).toBe(201)
+      expect(await rowOf(user.userId)).toBeNull()
+    })
+
+    it('pays once, as an invite sent with the form does', async () => {
+      const a = await newUser()
+      const b = await newUser({}, { referredByHandle: a.handle, referredBySource: 'link' })
+      for (let i = 0; i < 3; i++) await earn(b.userId)
+      expect(await ledgerOf(a.userId, 'referral')).toHaveLength(1)
+      expect(await ledgerOf(b.userId, 'referralWelcome')).toHaveLength(1)
     })
   })
 

@@ -293,7 +293,7 @@ final class MessagingHandler: NSObject, INSendMessageIntentHandling,
    resolved carries the conversation id as its `customIdentifier`, so that is
    checked first — it is the one match that cannot be ambiguous.
   */
-  private static func matches(
+  static func matches(
     for recipient: INPerson, in conversations: [DirectoryConversation]
   ) -> [DirectoryConversation] {
     if let identifier = recipient.customIdentifier,
@@ -309,7 +309,7 @@ final class MessagingHandler: NSObject, INSendMessageIntentHandling,
     }
   }
 
-  private static func person(for conversation: DirectoryConversation) -> INPerson {
+  static func person(for conversation: DirectoryConversation) -> INPerson {
     INPerson(
       personHandle: INPersonHandle(value: conversation.id, type: .unknown),
       nameComponents: nil,
