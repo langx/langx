@@ -1,5 +1,6 @@
 import { inviteHandleFromUrl, HANDLE_PATTERN } from '@langx/shared'
 import type { ReferralSource } from '@langx/shared'
+import { shouldGateGuest } from './guestGate'
 
 export { inviteHandleFromUrl }
 
@@ -72,4 +73,21 @@ export function signUpReferrerFields(
 ): { referredByHandle: string; referredBySource: ReferralSource } | Record<string, never> {
   const handle = normalizeInviteCode(pending)
   return handle ? { referredByHandle: handle, referredBySource: 'link' } : {}
+}
+
+/**
+ * Whether an invite link opened right now may be kept for a sign-up.
+ *
+ * Not while the session is still unknown, since a stranger and a member look
+ * the same then. Not for a member: they will never onboard, so the flag would
+ * outlive them, and after they sign out the next person to register in the
+ * same launch would be credited to an invite nobody sent them. A guest still
+ * counts, because a guest is somebody who has not signed up yet.
+ */
+export function inviteMayBeRemembered(input: {
+  settled: boolean
+  user: { isAnonymous?: boolean | null | undefined } | null | undefined
+}): boolean {
+  if (!input.settled) return false
+  return !input.user || shouldGateGuest(input.user)
 }

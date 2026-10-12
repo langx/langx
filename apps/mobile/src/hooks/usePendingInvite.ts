@@ -1,6 +1,6 @@
 import * as Linking from 'expo-linking'
-import { useEffect } from 'react'
-import { inviteHandleFromUrl } from '../lib/inviteLink'
+import { useEffect, useState } from 'react'
+import { inviteHandleFromUrl, inviteMayBeRemembered } from '../lib/inviteLink'
 import { FLAG_KEYS, writeFlag } from '../lib/localFlags'
 
 /**
@@ -25,19 +25,37 @@ import { FLAG_KEYS, writeFlag } from '../lib/localFlags'
  * browser instead, and `app/[username].tsx` writes the same flag from the
  * screen it lands on.
  */
-export function usePendingInvite(): void {
+export function usePendingInvite(session: {
+  settled: boolean
+  user: { isAnonymous?: boolean | null | undefined } | null | undefined
+}): void {
+  // Captured as soon as the link arrives, written only once the session says
+  // whose launch this is: on a cold start the URL usually resolves first.
+  const [handle, setHandle] = useState<string | null>(null)
+
   useEffect(() => {
     let cancelled = false
-    const remember = (url: string | null | undefined) => {
-      const handle = inviteHandleFromUrl(url)
-      if (handle && !cancelled) void writeFlag(FLAG_KEYS.pendingReferrer, handle)
+    const capture = (url: string | null | undefined) => {
+      const found = inviteHandleFromUrl(url)
+      if (found && !cancelled) setHandle(found)
     }
 
-    void Linking.getInitialURL().then(remember)
-    const subscription = Linking.addEventListener('url', (event) => remember(event.url))
+    void Linking.getInitialURL().then(capture)
+    const subscription = Linking.addEventListener('url', (event) => capture(event.url))
     return () => {
       cancelled = true
       subscription.remove()
     }
   }, [])
+
+  // Decided once, the first time the session is known, and dropped either
+  // way: a member's link kept waiting would be written the moment they sign
+  // out, which is the leak this check exists to close.
+  const { settled } = session
+  const remember = inviteMayBeRemembered(session)
+  useEffect(() => {
+    if (!handle || !settled) return
+    if (remember) void writeFlag(FLAG_KEYS.pendingReferrer, handle)
+    setHandle(null)
+  }, [handle, settled, remember])
 }

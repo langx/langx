@@ -215,7 +215,7 @@ function RootShell() {
   // Above `Stack.Protected`, because an invite link is by definition opened by
   // somebody with no account. It only writes a flag; see the hook for why that
   // is what makes mounting it this high safe.
-  usePendingInvite()
+  usePendingInvite({ settled: !isPending, user: session?.user })
   useCompanionOpenTracking()
 
   /*
