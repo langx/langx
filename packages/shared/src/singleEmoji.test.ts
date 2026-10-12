@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { bigEmojiCount, isBigEmoji, isSingleEmoji, MAX_BIG_EMOJI } from './singleEmoji'
+import {
+  bigEmojiClusters,
+  bigEmojiCount,
+  isBigEmoji,
+  isSingleEmoji,
+  MAX_BIG_EMOJI,
+} from './singleEmoji'
 
 describe('bigEmojiCount', () => {
   it('counts plain emoji', () => {
@@ -77,5 +83,16 @@ describe('isSingleEmoji', () => {
     expect(isSingleEmoji('')).toBe(false)
     expect(isSingleEmoji('😀 ')).toBe(false)
     expect(isSingleEmoji('hi')).toBe(false)
+  })
+})
+
+describe('bigEmojiClusters', () => {
+  it('returns each emoji once, without the spaces between them', () => {
+    expect(bigEmojiClusters('👊 👊 👊')).toEqual(['👊', '👊', '👊'])
+    expect(bigEmojiClusters('👍🏽❤️🇹🇷')).toEqual(['👍🏽', '❤️', '🇹🇷'])
+  })
+
+  it('returns nothing for a message that is not only emoji', () => {
+    expect(bigEmojiClusters('hi 👊')).toEqual([])
   })
 })

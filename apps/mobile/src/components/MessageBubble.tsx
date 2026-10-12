@@ -28,7 +28,7 @@ import {
   type MessageAsk,
   type MessageType,
 } from '@langx/shared'
-import { isBigEmoji } from '../lib/singleEmoji'
+import { bigEmojiClusters, isBigEmoji } from '../lib/singleEmoji'
 import { internalTarget } from '../lib/internalLink'
 import { diffCorrection } from '../lib/correctionDiff'
 import type { AnchorRect } from '../lib/messageMenu'
@@ -1016,10 +1016,16 @@ export const MessageBubble = memo(function MessageBubble({
       >
         {forwarded}
         {quote}
+        {/* One Text per emoji: in a single Text, Android wraps the last one
+            onto a line the box has no room for, and the sender sees two of three. */}
         <View ref={box}>
-          <Animated.Text style={[styles.heroText, { transform: [{ scale: heroScale }] }]}>
-            {message.body}
-          </Animated.Text>
+          <Animated.View style={[styles.heroRow, { transform: [{ scale: heroScale }] }]}>
+            {bigEmojiClusters(message.body).map((emoji, index) => (
+              <Text key={index} style={styles.heroText}>
+                {emoji}
+              </Text>
+            ))}
+          </Animated.View>
         </View>
         {translating ? <Text style={styles.translateLink}>{t('chat.translating')}</Text> : null}
         {reading}
@@ -1291,6 +1297,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   reactionCount: { ...font.caption, color: colors.textMuted, fontWeight: '700' },
   // 48 is the house size for a hero glyph — `AppGate` uses it, `IntroCarousel`
   // 64. Bubble text is 16, so this reads as deliberate rather than as a font bug.
+  heroRow: { flexDirection: 'row', gap: 4 },
   heroText: { fontSize: 48, lineHeight: 58 },
   // 16 on 23: the prototype's 16px/1.45.
   bubbleText: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 23 },

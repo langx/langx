@@ -55,13 +55,23 @@ function is(pattern: RegExp | null, codePoint: string): boolean {
  * that mixes emoji with words.
  */
 export function bigEmojiCount(body: string): number {
-  const points = [...body.trim()]
-  if (points.length === 0) return 0
+  return bigEmojiClusters(body).length
+}
 
-  let count = 0
+/**
+ * The emoji themselves, one string per emoji, whitespace dropped — or none at
+ * all when the message is not only emoji. The hero draws each in its own
+ * `Text`, because Android measures a run of large emoji narrower than it
+ * draws it, wraps the last one onto a second line and clips it away.
+ */
+export function bigEmojiClusters(body: string): string[] {
+  const points = [...body.trim()]
+  const clusters: string[] = []
+
   let i = 0
   while (i < points.length) {
     const point = points[i]!
+    const start = i
 
     if (/\s/u.test(point)) {
       i++
@@ -70,9 +80,9 @@ export function bigEmojiCount(body: string): number {
 
     // A flag: exactly two regional indicators. A lone one is not an emoji.
     if (is(REGIONAL, point)) {
-      if (!is(REGIONAL, points[i + 1] ?? '')) return 0
-      count++
+      if (!is(REGIONAL, points[i + 1] ?? '')) return []
       i += 2
+      clusters.push(points.slice(start, i).join(''))
       continue
     }
 
@@ -80,13 +90,13 @@ export function bigEmojiCount(body: string): number {
     if (/^[0-9#*]$/u.test(point)) {
       const next = points[i + 1]
       const after = next === VARIATION_SELECTOR_16 ? points[i + 2] : next
-      if (after !== KEYCAP) return 0
-      count++
+      if (after !== KEYCAP) return []
       i += next === VARIATION_SELECTOR_16 ? 3 : 2
+      clusters.push(points.slice(start, i).join(''))
       continue
     }
 
-    if (!is(PICTOGRAPHIC, point)) return 0
+    if (!is(PICTOGRAPHIC, point)) return []
 
     // One pictograph, then everything that modifies or joins to it.
     i++
@@ -103,16 +113,16 @@ export function bigEmojiCount(body: string): number {
       // A subdivision flag: tags, closed by the cancel tag. Unclosed is not one.
       if (is(TAG, next ?? '')) {
         while (is(TAG, points[i] ?? '')) i++
-        if (points[i] !== CANCEL_TAG) return 0
+        if (points[i] !== CANCEL_TAG) return []
         i++
         continue
       }
       break
     }
-    count++
+    clusters.push(points.slice(start, i).join(''))
   }
 
-  return count
+  return clusters
 }
 
 /** Whether the message should be drawn as a hero rather than in a bubble. */
