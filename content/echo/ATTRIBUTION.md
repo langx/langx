@@ -668,8 +668,10 @@ A draft is a pack file with `"reviewed": false`. **The seed script refuses to
 write one**, and that refusal is the whole quality gate. The three English
 packs have passed it; see "In use" above for what passing meant.
 
-**The three Japanese packs are drafts too** — see _Japanese: where it came
-from_ at the end of this file.
+**The three Japanese packs are not drafts any more** — read and
+`"reviewed": true` on 11 October 2026, by Claude rather than a native
+speaker; see _What the review of the Japanese three was_ at the end of this
+file.
 
 **Five packs drafted on 7 October 2026, all at `fluent`: `es`, `fr` and `it`**
 — 296, 298 and 299 items, every one with a cue and Kokoro's readings, read
@@ -996,8 +998,8 @@ in both directions. And the unread columns are where a wrong gloss would hide.
 
 ### Japanese: where it came from
 
-Three packs, JLPT N5, N4 and N3, 300 items each, drafted on 7 October 2026 and
-`"reviewed": false`. Named and levelled as `docs/echo.md` says under
+Three packs, JLPT N5, N4 and N3, drafted on 7 October 2026 at 300 items each
+and read on 11 October down to 288, 296 and 285 (see the end of this file). Named and levelled as `docs/echo.md` says under
 _Japanese is named by JLPT_.
 
 | Source                                                                                                                                       | Gives                                                                    | Licence                                          | Use                                                                   |
@@ -1041,7 +1043,8 @@ non-commercial licence was considered.
 **Glosses, direct first.** Tatoeba links Japanese directly to English almost
 everywhere and to Turkish and Arabic hardly at all, so — as for Mandarin — a
 column with no direct translation takes the translation of the English gloss,
-and `review.indirect` names it:
+and `review.indirect` names it. The counts are the drafts', before the
+reading dropped 31 items and one Turkish gloss:
 
 | Locale | N5 (indirect) | N4 (indirect) | N3 (indirect) |
 | ------ | ------------- | ------------- | ------------- |
@@ -1071,41 +1074,84 @@ afterwards (a second "Do you like to travel?", a third "I don't know", and
 
 **Two synthesised readings each**, in Kokoro's `jf_nezumi` and `jm_kumo`,
 made from the reading through misaki's Japanese front end — so the kana a card
-is read in are the reviewed ones, once they have been reviewed. A speech
+is read in are the reviewed ones. A speech
 recogniser got back 99.2% and 97.8% of the kana from them on thirty pack
 sentences, against 4.8% through espeak-ng; the table is in `docs/echo.md`.
 The recogniser was faster-whisper (MIT) running `large-v3-turbo` (MIT, in
 Mobius Labs' CTranslate2 conversion, MIT) — a measuring instrument, not
-shipped. The 1,800 files were made on 7 October and are not uploaded.
+shipped. The 1,800 files were made on 7 October; the review dropped 62 with their
+items and remade 102, so 1,738 remain. None is uploaded.
 
-### What the Japanese drafts still need
+### What the review of the Japanese three was, exactly
 
-**Nobody has read them.** The six subagents that chose the cues looked at the
-sentence, the reading and the English, and dropped what was plainly wrong; that
-is a filter, not a review. Before any of the three is `"reviewed": true`:
+**Read by Claude subagents, one per pack, finished on 11 October 2026 — not
+by a native speaker, and not by a person.** That is the footing the Mandarin
+six are on, and it is worth saying the same way: believe no more than was
+done. A native listener should still spot-check the audio; the list of where
+to start is below.
 
-1. **The sentence and the reading, every item**, by somebody who reads
-   Japanese. The reading is what a learner copies. Start with the 65 items
-   carrying `review.readingDiffers`, then the 190 whose `review.readingFrom` is
-   `unidic`. Spacing between phrases is drafted by rule and is worth a glance
-   on every line (どうして, 〜ている and 〜そうです are where the rules are
-   thinnest).
-2. **English, every item** — the floor every other locale falls back to.
-3. **Turkish, every item** — 776 of the 820 Turkish glosses are indirect,
-   translations of the English rather than of the Japanese, exactly the
-   column the Mandarin reading found the most in.
-4. **The cue, every item**, against `ILLUSTRATION.md`'s test: does the picture
-   say what the sentence is about before the words do. The subagents' own
-   least-sure lists are in the pull request.
-5. **The level of a sample.** Waller's lists are a guess and the grammar gate
-   is one rule; an N5 sentence that a first-month learner could not read
-   belongs in N4.
-6. `tools/echo-content/lint-glosses.mjs ja` names ten mechanical defects (five
-   Arabic spaces before punctuation, four Russian hyphens for a dash, one
-   Latin word) and 107 "three times the front", which in Japanese is the
-   script being dense rather than the gloss being long.
-7. **Listen to a sample** of the readings, in both voices — a speech
-   recogniser is not a native ear.
+Every one of the 900 drafted items was read, in five columns: the sentence,
+its kana, English, Turkish and the cue. The other six glosses were not read.
+The linter's mechanical classes were repaired without reading, and
+`lint-glosses.mjs ja` now names none: nine were repaired (five Arabic spaces
+before punctuation, four Russian hyphens for a dash) and the tenth, a Latin
+_MasterCard_ in Russian, left with its item. What it still prints, 102 "three
+times the front", is the script being dense, as before.
 
-German, Spanish, French, Portuguese, Russian and Arabic are owed the same
-check-for-meaning pass the Mandarin six had.
+**31 dropped, 900 → 869** — N5 300 → 288, N4 300 → 296, N3 300 → 285:
+
+- **Near-duplicates (17)** — a second "where are you from", a second "it is
+  Monday", 今の音何？ beside この音何？. The first or the plainer one stayed.
+- **Above the level (4)**, all N5: 〜ておくな, お飲みになりますか, 〜べきだ and
+  〜っけ. None was moved to another pack.
+- **Blunt (3)** — 財布を返せ。, かばんを返せ。 and もっと金をくれ。.
+- **Sayings (3)** — 人は人です。, 時間はいくらでも作れる。, うそをつくな、正直であれ。.
+- **Unnatural for the level (2)** — なんと美しい庭だこと。 and
+  彼は金持ちであったように見える。, both stiff written style.
+- **Tatoeba meta (1)** — 文を変更しました。 **A brand (1)** — マスターカードは使えますか？.
+
+**51 readings changed**, each keeping the old one in `review.readingWas`.
+Four changed the kana: 何か as _なにか_ rather than the colloquial _なんか_,
+昨日 as _きのう_ rather than the formal _さくじつ_, and 描く as _かく_ — not
+the tagger's _えがく_ — in 何描いてるの？ and 絵を描く. The other 47 are
+phrase spacing, made one way across the three packs: a する-verb is one
+phrase with its noun (しんぱいしないで, ごいっしょできなくて); お〜 and ください are
+two (おまち ください), as 〜て and ください are; 〜そう(です) and である stay
+attached (ねむそうだね, どうぶつである); どういう, ちょっとした, 自分自身 and
+きれいさっぱり are one word each. A する with its particle dropped (におい
+しない) stays a phrase of its own. The 102 readings of those 51 items were
+synthesised again from the new kana, in the same two voices; the other
+1,636 files were kept and renumbered with their items. `review.voicesRemade`
+marks the 51.
+
+**58 English glosses and 139 Turkish corrected**, each naming its locale in
+`review.edited`, and **one Turkish gloss removed** rather than rewritten
+(確かだよ。, whose Turkish was a word-for-word chain of "there's no mistake
+about it"), kept in `review.glossRemoved`. English lost things the
+Japanese does not say — a _them_, a _your_, an _Oh, terribly_ — and gained
+the ones it does: 兄 is an older brother, 妹 a younger sister, 兄弟 siblings,
+分かりません _I don't understand_ beside 知りません _I don't know_, でしょう
+_probably_. Turkish was, as with Mandarin, mostly register: _siz_ where the
+Japanese is polite (〜ですか, お〜, ご〜) and _sen_ where it is casual — the
+English in between had flattened both — then calques of the English (_merak
+ediyorum_ for 〜かな, _Niçin … gelmiyorsun_ for 〜ませんか), _banyo_ for トイレ,
+_dizüstü_ for a ノート that is a notebook, and _çok yedim_ for 食べ過ぎた.
+
+**No cue was swapped and no front changed.** The level was checked in the same
+reading; the four N5 drops above are what it found, and nothing at N4 or N3
+was dropped as above its level.
+
+**Listen to these first**, by their index after renumbering — the kana that
+changed, and the sentences where the voices were least certain to land:
+
+- N5: 263 私は何か冷たいものが飲みたい。, 268 昨日はお会いできてよかったです。, 2, 28,
+  39, 80–84 (the casual 何〜てるの questions), 144, 165, 283.
+- N4: 2, 5 変なのー。, 139 一晩中泣いていた。, 189, 209 明日のご出発は何時ですか？,
+  260 二日後に彼は帰ってきた。, 271.
+- N3: 29 何描いてるの？, 272 彼の趣味は花の絵を描くことです。, 144, 200
+  列車は十分遅れて到着した。, 229, 266, 274, 280.
+
+**What is still owed**: a native speaker's ear on the readings, both voices,
+starting with that list — a speech recogniser and a model's reading are not
+one. And German, Spanish, French, Portuguese, Russian and Arabic are owed the
+same check-for-meaning pass the Mandarin six had.
