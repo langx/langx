@@ -602,6 +602,29 @@ On 10 October 2026 steps 2 and 4 were done — the reply covered all three
 items and pointed at the Android recording — and 2.9 went back into the queue.
 Steps 1 and 3 were still open.
 
+**It worked, and uncovered the next rule.** The reply cleared all three items;
+the same submission came back on 10 October under **2.1(a)**: _a CarPlay app
+that provides VoIP calling must support CallKit and the SiriKit intent
+`INStartCallIntent`._ CarPlay messaging had passed in 2.7 and 2.8 with the
+three messaging intents; adding calls is what made the app a CarPlay VoIP app
+and brought the fourth intent with it. #1764 added it
+(`targets/intents/CallingHandler.swift`): Siri's "Call Maria on LangX"
+resolves the person against the conversation directory, leaves
+`/chat/<id>?call=audio|video` in the App Group and opens the app, which places
+the call through the thread's own gate. Build 191 went back to review on
+11 October.
+
+Play rejected the same round under _Auto App Quality Guidelines: Message
+functionality — the app is not able to receive incoming messages._ The
+Android Auto code had not changed since 2.8; a reviewer whose demo account
+nobody writes to has no incoming message to see. The Sign-in details
+instructions now tell them to write to @langx, whose assistant answers.
+
+**So, for any build that adds a car or call surface:** check Apple's CarPlay
+guide and Google's Auto quality list for what the new capability brings with
+it, and make sure the demo account can _receive_ what the reviewer is meant to
+test — a reviewer cannot write to themselves.
+
 **The rule that follows:** any build that adds a `UIBackgroundModes` entry, a
 CallKit/PushKit capability or anything else App Review checks against
 behaviour ships with a review note that says where the behaviour is and how to
