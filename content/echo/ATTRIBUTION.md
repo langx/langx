@@ -510,6 +510,75 @@ and the next candidate was. That cost Arabic the most at `absoluteBeginner`:
 its best-covered 650 candidates are mostly "Who's that?" and "Why me?", and
 76 of its 300 items came from the 1,116 candidates further down.
 
+#### What the review of the three Arabic packs was, exactly
+
+**A Claude review, not a native speaker's.** On 11 October 2026 Claude read
+the Arabic front, the English and the Turkish of all 900 items line by line,
+and the cue on every one against `ILLUSTRATION.md`, to the standard of the
+fifteen (_What the review of the fifteen was, exactly_, below). No Arabic
+speaker has read the packs since, and **no human has listened to a single
+Chatterbox take**. The only ear on the audio is Whisper's.
+
+| Pack                  | Before | After | Dropped | Fronts corrected | Glosses corrected | Cues repointed |
+| --------------------- | ------ | ----- | ------- | ---------------- | ----------------- | -------------- |
+| `ar:absoluteBeginner` | 300    | 281   | 19      | 16               | 9                 | 0              |
+| `ar:beginner`         | 300    | 290   | 10      | 18               | 17                | 1              |
+| `ar:intermediate`     | 300    | 276   | 24      | 24               | 7                 | 1              |
+
+**53 items dropped**, on the fifteen's grounds:
+
+- **Slogans, positions and sayings** — "Yes, we can", "War is bad", "We are
+  against war", "Love and Peace", two more about peace, "Water is life", "Life
+  is short", "Love hurts", "People are people", "The world is a school",
+  "Science is the art of seeking the truth".
+- **Quotations** — "I am your father" in two packs, and Soseki's "I am a cat".
+- **Tatoeba meta and nonsense** — "Tom is a name", "I have an elephant", "The
+  password is 'password'".
+- **The Sami and Layla family, thinned hard** — sixteen of nineteen in
+  `intermediate`, most of them "Sami came in", "Sami left", "Sami danced".
+  Three stay, each for its verb or its shape: "Sami counted the money", "I'm
+  Layla, Sami's wife", "Sami had a huge dog".
+- **Arabic that would mislead a learner of MSA** — `هي، أنت!` uses هي, which
+  is "she", for "hey"; `سأتصل عليك` for `سأتصل بك`; `ماذا للغداء؟`, a calque
+  of "What's for lunch?"; `غاضب معي` for `غاضب مني`; two ungrammatical
+  (`توم عنده السيارة جديدة`, `علي بالذهاب`); and `كلا معا`, whose first word
+  a beginner reads as "no".
+- **Near-duplicates** — "Mary is beautiful" beside "She is beautiful", and
+  the like; a hold-up line in a pack already thick with money; and "Woof!",
+  which is not a phrase.
+- **Four whose reading stayed unintelligible** — below 70% after eight takes:
+  `أعتقد ذلك.`, `عندي عائلة.`, `هم دائما معا.` and `عمري تسعة عشر عاماً.`.
+
+**58 fronts corrected**, each keeping the original in `review.frontWas`, and
+only where the slip was plain: a hamza missing (`انا`, `انها`, `احب`,
+`الاسبوع`) or added to a hamzat al-wasl (`إسمع`, `إفتح`, `إنتهى`, `أنظر`);
+`الأن`, `شئ`, `سيء`, `علي` and `إلي` for `الآن`, `شيء`, `سيئ`, `على` and
+`إلى`; `الموسيقي`, which is the musician, for `الموسيقى`; a detached `و`
+written on to its word; `مال` and `السابعة عشر` given their case and gender;
+`قال أنه` as `قال إنه`; and one invisible right-to-left mark.
+
+**33 glosses corrected**, each naming its locale in `review.edited` — English
+and Turkish only, the columns read. The worst: `كانت ليلة رائعة` was "It was a
+fairly cool night", `إنك في خطر!` was "It's dangerous!", `أخذت تبكي` had
+"he" for "she", and `نحن نعود إلى السفينة` said "by ship" in Turkish.
+
+**Two cues repointed**, each keeping the old slug in `review.cueWas`: a gate
+closed and a door closed both pointed at a key, and point at the door now.
+Every other cue passed `ILLUSTRATION.md`'s test as it was.
+
+**The readings.** Every corrected front was drawn again from scratch, and
+every kept item that the draft had left below 85% was drawn up to four more
+times with seeds the draft never used, the old take competing. 109 items now
+carry a new take (`review.readingRedrawn`); the rest are the draft's files,
+renumbered with their items. Read back by Whisper, the three packs average
+97.9%, 97.1% and 96.3%; 23 takes sit between 70% and 85%, and none lower.
+Each pack's `readback.json` holds the seed, the score and the count of takes.
+
+**What a native speaker should read first**: the 58 corrected fronts, where
+Claude's Arabic decided, and a listen to the 23 weakest readings, where
+Whisper's did; then the Russian, French and other
+columns, which were linted and not read.
+
 ## Rejected
 
 | Source                                 | Why not                                                                                                    |
