@@ -20,6 +20,7 @@ import { PhotoViewer } from '../src/components/PhotoViewer'
 import { Screen } from '../src/components/ui/Screen'
 import { Skeleton } from '../src/components/ui/Skeleton'
 import { authLandingHref } from '../src/lib/authLanding'
+import { inviteMayBeRemembered } from '../src/lib/inviteLink'
 import { FLAG_KEYS, writeFlag } from '../src/lib/localFlags'
 import { writePendingMessageIntent } from '../src/lib/pendingIntent'
 import { makeStyles } from '../src/lib/theme'
@@ -62,17 +63,21 @@ export default function SharedProfileScreen() {
    * Written here rather than left to the hook because on web the router
    * resolves the URL itself and the hook's `getInitialURL` is not the event
    * that matters. Both writing the same handle is harmless.
+   *
+   * Only for somebody who can still sign up — see `inviteMayBeRemembered`.
    */
+  const { data: session, isPending: sessionPending } = authClient.useSession()
   const invited = params[INVITE_QUERY_PARAM] === '1' && HANDLE_PATTERN.test(handle)
+  const remember =
+    invited && inviteMayBeRemembered({ settled: !sessionPending, user: session?.user })
   useEffect(() => {
-    if (invited) void writeFlag(FLAG_KEYS.pendingReferrer, handle)
-  }, [invited, handle])
+    if (remember) void writeFlag(FLAG_KEYS.pendingReferrer, handle)
+  }, [remember, handle])
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
   const n = (value: number) => value.toLocaleString(locale)
   const names = useDisplayNames()
-  const { data: session, isPending: sessionPending } = authClient.useSession()
 
   const profile = useQuery({
     queryKey: ['sharedProfile', handle],

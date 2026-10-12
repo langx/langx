@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   inviteHandleFromUrl,
+  inviteMayBeRemembered,
   normalizeInviteCode,
   resolveReferrer,
   signUpReferrerFields,
@@ -94,5 +95,24 @@ describe('signUpReferrerFields', () => {
     expect(signUpReferrerFields(null)).toEqual({})
     expect(signUpReferrerFields('')).toEqual({})
     expect(signUpReferrerFields('not a handle!!')).toEqual({})
+  })
+})
+
+describe('inviteMayBeRemembered', () => {
+  it('waits until the session is known', () => {
+    expect(inviteMayBeRemembered({ settled: false, user: null })).toBe(false)
+  })
+
+  it('keeps an invite for somebody signed out', () => {
+    expect(inviteMayBeRemembered({ settled: true, user: null })).toBe(true)
+  })
+
+  it('keeps an invite for a guest, who has not signed up yet', () => {
+    expect(inviteMayBeRemembered({ settled: true, user: { isAnonymous: true } })).toBe(true)
+  })
+
+  it('drops an invite a member opens, which nobody would ever spend', () => {
+    expect(inviteMayBeRemembered({ settled: true, user: {} })).toBe(false)
+    expect(inviteMayBeRemembered({ settled: true, user: { isAnonymous: false } })).toBe(false)
   })
 })
