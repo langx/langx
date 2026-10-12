@@ -1,0 +1,2874 @@
+{
+  "id": "en:fluent",
+  "lang": "en",
+  "level": "fluent",
+  "contentVersion": 2,
+  "reviewed": false,
+  "sources": [
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
+    {
+      "name": "CEFR-J Vocabulary Profile 1.5",
+      "licence": "Free for research and commercial use with citation",
+      "url": "http://www.cefr-j.org/"
+    },
+    {
+      "name": "Octanove Vocabulary Profile C1/C2 1.0",
+      "licence": "CC BY-SA 4.0",
+      "url": "https://github.com/openlanguageprofiles/olp-en-cefrj"
+    },
+    {
+      "name": "NGSL 1.2",
+      "licence": "CC BY-SA 4.0",
+      "url": "https://www.newgeneralservicelist.com/"
+    },
+    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" }
+  ],
+  "items": [
+    {
+      "index": 0,
+      "kind": "phrase",
+      "text": "Could you elaborate?",
+      "gloss": {
+        "tr": "Ayrıntılara girer misin?",
+        "de": "Könnten Sie das näher ausführen?",
+        "es": "¿Podría dar más detalles?",
+        "pt-BR": "Você poderia ser mais específico?"
+      },
+      "freqRank": 1,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:speech-balloon"
+    },
+    {
+      "index": 1,
+      "kind": "phrase",
+      "text": "He writes haphazardly.",
+      "gloss": { "tr": "O, rastgele yazar.", "ru": "Он пишет вкривь и вкось." },
+      "freqRank": 2,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:writing-hand"
+    },
+    {
+      "index": 2,
+      "kind": "phrase",
+      "text": "I abhor violence.",
+      "gloss": {
+        "tr": "Şiddetten nefret ediyorum.",
+        "de": "Ich verabscheue Gewalt.",
+        "es": "Aborrezco la violencia.",
+        "fr": "Je déteste la violence.",
+        "pt-BR": "Eu abomino a violência.",
+        "ru": "Я ненавижу насилие."
+      },
+      "freqRank": 3,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:peace-symbol"
+    },
+    {
+      "index": 3,
+      "kind": "phrase",
+      "text": "I'm claustrophobic.",
+      "gloss": {
+        "tr": "Ben klostrofobikim.",
+        "de": "Ich bin klaustrophob.",
+        "pt-BR": "Eu sou claustrofóbico."
+      },
+      "freqRank": 4,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fearful-face"
+    },
+    {
+      "index": 4,
+      "kind": "phrase",
+      "text": "I feel lethargic.",
+      "gloss": {
+        "tr": "Ben uyuşuk hissediyorum.",
+        "de": "Ich fühle mich träge.",
+        "pt-BR": "Eu me sinto letárgico.",
+        "ru": "Я чувствую себя сонным."
+      },
+      "freqRank": 5,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sleepy-face"
+    },
+    {
+      "index": 5,
+      "kind": "phrase",
+      "text": "Is this ethical?",
+      "gloss": {
+        "tr": "Bu ahlaki mi?",
+        "de": "Ist das ethisch?",
+        "fr": "Est-ce éthique ?",
+        "pt-BR": "Isso é ético?",
+        "ru": "Это этично?"
+      },
+      "freqRank": 6,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:balance-scale"
+    },
+    {
+      "index": 6,
+      "kind": "phrase",
+      "text": "I hate hypocrisy.",
+      "gloss": {
+        "tr": "Ben ikiyüzlülükten nefret ederim.",
+        "de": "Ich hasse Heuchelei.",
+        "es": "Odio la hipocresía.",
+        "fr": "Je déteste l'hypocrisie.",
+        "pt-BR": "Eu odeio hipocrisia.",
+        "ru": "Я ненавижу лицемерие.",
+        "ar": "أكره النفاق."
+      },
+      "freqRank": 7,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face"
+    },
+    {
+      "index": 7,
+      "kind": "phrase",
+      "text": "It's chilly.",
+      "gloss": {
+        "tr": "Hava serin.",
+        "es": "Hace fresco.",
+        "pt-BR": "Está frio.",
+        "ru": "Прохладно."
+      },
+      "freqRank": 8,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cold-face"
+    },
+    {
+      "index": 8,
+      "kind": "phrase",
+      "text": "I like surrealism.",
+      "gloss": {
+        "tr": "Gerçeküstücülüğü severim.",
+        "es": "Me gusta el surrealismo.",
+        "pt-BR": "Eu gosto de surrealismo.",
+        "ru": "Я люблю сюрреализм."
+      },
+      "freqRank": 9,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:artist-palette"
+    },
+    {
+      "index": 9,
+      "kind": "phrase",
+      "text": "The tactic worked.",
+      "gloss": {
+        "tr": "Taktik işe yaradı.",
+        "de": "Die Taktik ging auf.",
+        "es": "La táctica funcionó.",
+        "fr": "La tactique a fonctionné.",
+        "ru": "Тактика сработала."
+      },
+      "freqRank": 10,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:check-mark"
+    },
+    {
+      "index": 10,
+      "kind": "phrase",
+      "text": "I was naive.",
+      "gloss": {
+        "tr": "Saftım.",
+        "de": "Ich war naiv.",
+        "es": "Yo era ingenuo.",
+        "fr": "J'étais crédule.",
+        "pt-BR": "Eu era ingênuo.",
+        "ru": "Я была наивна."
+      },
+      "freqRank": 11,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-halo"
+    },
+    {
+      "index": 11,
+      "kind": "phrase",
+      "text": "They were victorious.",
+      "gloss": {
+        "tr": "Onlar galipti.",
+        "de": "Sie waren siegreich.",
+        "es": "Salieron victoriosos.",
+        "fr": "Ils furent victorieux.",
+        "ru": "Они победили."
+      },
+      "freqRank": 12,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:trophy"
+    },
+    {
+      "index": 12,
+      "kind": "phrase",
+      "text": "This is ludicrous.",
+      "gloss": {
+        "tr": "Bu gülünç.",
+        "de": "Das ist lachhaft.",
+        "fr": "C'est absurde.",
+        "pt-BR": "Isso é absurdo.",
+        "ru": "Это нелепо."
+      },
+      "freqRank": 13,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-rolling-eyes"
+    },
+    {
+      "index": 13,
+      "kind": "phrase",
+      "text": "Why so glum?",
+      "gloss": {
+        "tr": "Niye suratını asıyorsun?",
+        "fr": "Pourquoi es-tu si morose ?",
+        "ru": "Ты чего такой мрачный?"
+      },
+      "freqRank": 14,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:disappointed-face"
+    },
+    {
+      "index": 14,
+      "kind": "phrase",
+      "text": "You flatter me.",
+      "gloss": {
+        "tr": "Beni methediyorsun.",
+        "de": "Du schmeichelst mir.",
+        "pt-BR": "Aumentam-me o ego em demasia.",
+        "ru": "Вы мне льстите."
+      },
+      "freqRank": 15,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flushed-face"
+    },
+    {
+      "index": 15,
+      "kind": "phrase",
+      "text": "A tailor makes clothes.",
+      "gloss": {
+        "tr": "Terzi kıyafet diker.",
+        "de": "Ein Schneider fertigt Kleidung an.",
+        "fr": "Un tailleur fait des vêtements."
+      },
+      "freqRank": 16,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:scissors"
+    },
+    {
+      "index": 16,
+      "kind": "phrase",
+      "text": "Cats are nocturnal animals.",
+      "gloss": {
+        "tr": "Kediler gececi hayvanlardır.",
+        "de": "Katzen sind nachtaktive Tiere.",
+        "fr": "Les chats sont des animaux nocturnes.",
+        "ru": "Коты — ночные животные."
+      },
+      "freqRank": 17,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cat"
+    },
+    {
+      "index": 17,
+      "kind": "phrase",
+      "text": "Hand me the wrench.",
+      "gloss": {
+        "tr": "Bana anahtarı uzat.",
+        "es": "Pásame la llave.",
+        "fr": "Passez-moi la clé.",
+        "pt-BR": "Passa-me a chave inglesa.",
+        "ru": "Дай гаечный ключ."
+      },
+      "freqRank": 18,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wrench"
+    },
+    {
+      "index": 18,
+      "kind": "phrase",
+      "text": "He started laughing hysterically.",
+      "gloss": {
+        "tr": "O histerik bir biçimde gülmeye başladı.",
+        "de": "Er begann hysterisch zu lachen.",
+        "es": "Él empezó a reírse de forma histérica.",
+        "ru": "Он истерически засмеялся."
+      },
+      "freqRank": 19,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-tears-of-joy"
+    },
+    {
+      "index": 19,
+      "kind": "phrase",
+      "text": "Her mother was aghast.",
+      "gloss": {
+        "tr": "Onun annesi donakalmıştı.",
+        "fr": "Sa mère était atterrée.",
+        "ru": "Её мать была в ужасе."
+      },
+      "freqRank": 20,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:astonished-face"
+    },
+    {
+      "index": 20,
+      "kind": "phrase",
+      "text": "He turned a somersault.",
+      "gloss": {
+        "tr": "O parande attı.",
+        "de": "Er machte einen Purzelbaum.",
+        "fr": "Il effectua un saut périlleux.",
+        "ru": "Он сделал сальто."
+      },
+      "freqRank": 21,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-cartwheeling"
+    },
+    {
+      "index": 21,
+      "kind": "phrase",
+      "text": "His explanation is unconvincing.",
+      "gloss": {
+        "tr": "Onun açıklaması inandırıcı değil.",
+        "de": "Seine Erklärung ist nicht überzeugend.",
+        "fr": "Son explication n'est pas convaincante.",
+        "ru": "Его объяснение неубедительно."
+      },
+      "freqRank": 22,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:face-with-raised-eyebrow"
+    },
+    {
+      "index": 22,
+      "kind": "phrase",
+      "text": "I admire their ingenuity.",
+      "gloss": {
+        "tr": "Onların marifetine hayranım.",
+        "de": "Ich bewundere ihren Einfallsreichtum.",
+        "fr": "J'admire leur ingéniosité.",
+        "ru": "Я восхищён их изобретательностью."
+      },
+      "freqRank": 23,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:light-bulb"
+    },
+    {
+      "index": 23,
+      "kind": "phrase",
+      "text": "His jokes are meaningless.",
+      "gloss": {
+        "tr": "Onun esprileri anlamsızdır.",
+        "de": "Seine Witze sind ohne Bedeutung.",
+        "fr": "Ses blagues n'ont aucun sens.",
+        "ar": "نكته ليس لديها معنى."
+      },
+      "freqRank": 24,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:unamused-face"
+    },
+    {
+      "index": 24,
+      "kind": "phrase",
+      "text": "I detest the noise.",
+      "gloss": {
+        "tr": "Gürültüden nefret ediyorum.",
+        "fr": "Je déteste le bruit.",
+        "ru": "Ненавижу шум."
+      },
+      "freqRank": 25,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:loudspeaker"
+    },
+    {
+      "index": 25,
+      "kind": "phrase",
+      "text": "I'm absolutely elated.",
+      "gloss": { "tr": "Kesinlikle sevinçliyim." },
+      "freqRank": 26,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:beaming-face-with-smiling-eyes"
+    },
+    {
+      "index": 26,
+      "kind": "phrase",
+      "text": "I love bearded men.",
+      "gloss": {
+        "tr": "Sakallı erkekleri seviyorum.",
+        "de": "Ich liebe bärtige Männer.",
+        "fr": "J'adore les barbus.",
+        "ru": "Я люблю бородатых мужчин."
+      },
+      "freqRank": 27,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-beard"
+    },
+    {
+      "index": 27,
+      "kind": "phrase",
+      "text": "It’s frosty outside.",
+      "gloss": { "tr": "Dışarısı ayaz.", "ru": "На улице морозно." },
+      "freqRank": 28,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:snowflake"
+    },
+    {
+      "index": 28,
+      "kind": "phrase",
+      "text": "I was being sarcastic.",
+      "gloss": {
+        "tr": "Kinaye yapıyordum.",
+        "fr": "J'étais sarcastique.",
+        "pt-BR": "Eu estava sendo sarcástico."
+      },
+      "freqRank": 29,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:winking-face-with-tongue"
+    },
+    {
+      "index": 29,
+      "kind": "phrase",
+      "text": "My ears feel stuffy.",
+      "gloss": {
+        "tr": "Kulaklarım tıkalı hissediyorum.",
+        "pt-BR": "Meus ouvidos parecem estar abafados.",
+        "ru": "У меня заложило уши.",
+        "ar": "أحس بأن أذني مسدودة."
+      },
+      "freqRank": 30,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ear"
+    },
+    {
+      "index": 30,
+      "kind": "phrase",
+      "text": "I watched a flick.",
+      "gloss": { "tr": "Bir film izledim.", "fr": "J'ai regardé un film." },
+      "freqRank": 31,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clapper-board"
+    },
+    {
+      "index": 31,
+      "kind": "phrase",
+      "text": "My legs are numb.",
+      "gloss": { "tr": "Bacaklarım uyuşmuş.", "ru": "У меня ноги занемели." },
+      "freqRank": 32,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:leg"
+    },
+    {
+      "index": 32,
+      "kind": "phrase",
+      "text": "Potatoes are very versatile.",
+      "gloss": { "tr": "Patatesler çok yönlüdür.", "es": "Las patatas son muy versátiles." },
+      "freqRank": 33,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:potato"
+    },
+    {
+      "index": 33,
+      "kind": "phrase",
+      "text": "My password was compromised.",
+      "gloss": { "tr": "Şifrem tehlikeye girdi." },
+      "freqRank": 34,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:key"
+    },
+    {
+      "index": 34,
+      "kind": "phrase",
+      "text": "She phoned the psychiatrist.",
+      "gloss": {
+        "tr": "O, psikiyatriste telefon etti.",
+        "es": "Ella llamó al psiquiatra.",
+        "pt-BR": "Ela telefonou ao psiquiatra.",
+        "ru": "Она позвонила психиатру."
+      },
+      "freqRank": 35,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:telephone-receiver"
+    },
+    {
+      "index": 35,
+      "kind": "phrase",
+      "text": "The boats looked unoccupied.",
+      "gloss": { "tr": "Gemiler boş görünüyordu.", "ar": "بدت تلك السّفن شاغرة." },
+      "freqRank": 36,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ship"
+    },
+    {
+      "index": 36,
+      "kind": "phrase",
+      "text": "She was hysterically crying.",
+      "gloss": { "tr": "O, histerik bir biçimde ağlıyordu." },
+      "freqRank": 37,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:loudly-crying-face"
+    },
+    {
+      "index": 37,
+      "kind": "phrase",
+      "text": "The drinks are complimentary.",
+      "gloss": {
+        "tr": "İçecekler ücretsizdir.",
+        "de": "Die Getränke sind kostenlos.",
+        "fr": "Les boissons sont offertes."
+      },
+      "freqRank": 38,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:free-button"
+    },
+    {
+      "index": 38,
+      "kind": "phrase",
+      "text": "There's another hitch.",
+      "gloss": {
+        "tr": "Bir aksaklık daha var.",
+        "es": "Hay otro obstáculo.",
+        "fr": "Il y a un autre problème.",
+        "ru": "Есть ещё одна загвоздка."
+      },
+      "freqRank": 39,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ok-hand"
+    },
+    {
+      "index": 39,
+      "kind": "phrase",
+      "text": "The number was staggering.",
+      "gloss": { "tr": "Numara şaşırtıcıydı." },
+      "freqRank": 40,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:broken-heart"
+    },
+    {
+      "index": 40,
+      "kind": "phrase",
+      "text": "This is very acidic.",
+      "gloss": { "tr": "Bu çok asidiktir.", "es": "Esto es muy ácido." },
+      "freqRank": 41,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lemon"
+    },
+    {
+      "index": 41,
+      "kind": "phrase",
+      "text": "The pay is meager.",
+      "gloss": {
+        "tr": "Ödeme yetersiz.",
+        "de": "Die Bezahlung ist mager.",
+        "fr": "La paie est maigre.",
+        "pt-BR": "O salário é insuficiente."
+      },
+      "freqRank": 42,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:coin"
+    },
+    {
+      "index": 42,
+      "kind": "phrase",
+      "text": "What caused the malfunction?",
+      "gloss": {
+        "tr": "Arızaya ne neden oldu?",
+        "de": "Was hat die Fehlfunktion verursacht?",
+        "ru": "Что послужило причиной неисправности?"
+      },
+      "freqRank": 43,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:gear"
+    },
+    {
+      "index": 43,
+      "kind": "phrase",
+      "text": "The question was rhetorical.",
+      "gloss": {
+        "tr": "Soru retorikti.",
+        "fr": "La question était rhétorique.",
+        "pt-BR": "A pergunta era retórica.",
+        "ru": "Вопрос был риторический."
+      },
+      "freqRank": 44,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-question-mark"
+    },
+    {
+      "index": 44,
+      "kind": "phrase",
+      "text": "Why do cows ruminate?",
+      "gloss": {
+        "tr": "İnekler neden geviş getirirler?",
+        "fr": "Pourquoi les vaches ruminent-elles ?",
+        "ru": "Почему коровы жуют жвачку?"
+      },
+      "freqRank": 45,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cow"
+    },
+    {
+      "index": 45,
+      "kind": "phrase",
+      "text": "The smell was detestable.",
+      "gloss": { "tr": "Koku tiksinçti.", "de": "Der Geruch war verabscheuungswürdig." },
+      "freqRank": 46,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:nauseated-face"
+    },
+    {
+      "index": 46,
+      "kind": "phrase",
+      "text": "Would you chill out?",
+      "gloss": { "tr": "Sakin olur musun?", "fr": "Voudrais-tu te détendre ?" },
+      "freqRank": 47,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-in-lotus-position"
+    },
+    {
+      "index": 47,
+      "kind": "phrase",
+      "text": "The timing was impeccable.",
+      "gloss": { "tr": "Zamanlama kusursuzdu.", "ru": "Время было выбрано безупречно." },
+      "freqRank": 48,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:timer-clock"
+    },
+    {
+      "index": 48,
+      "kind": "phrase",
+      "text": "You're my heroine.",
+      "gloss": {
+        "tr": "Sen benim kadın kahramanımsın.",
+        "fr": "Tu es mon héroïne.",
+        "ru": "Ты моя героиня."
+      },
+      "freqRank": 49,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:superhero"
+    },
+    {
+      "index": 49,
+      "kind": "phrase",
+      "text": "The tumor was benign.",
+      "gloss": {
+        "tr": "Tümör iyi huylu idi.",
+        "de": "Der Tumor war gutartig.",
+        "fr": "La tumeur était bénigne.",
+        "pt-BR": "O tumor era benigno.",
+        "ru": "Опухоль была доброкачественной."
+      },
+      "freqRank": 50,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stethoscope"
+    },
+    {
+      "index": 50,
+      "kind": "phrase",
+      "text": "You're very perceptive.",
+      "gloss": {
+        "tr": "Sen çok algısalsın.",
+        "de": "Du bist sehr scharfsichtig.",
+        "es": "Eres muy perspicaz.",
+        "fr": "Tu es très perspicace.",
+        "pt-BR": "Você é muito perspicaz.",
+        "ru": "Вы очень проницательны.",
+        "ar": "أنت دقيق الملاحظة."
+      },
+      "freqRank": 51,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye"
+    },
+    {
+      "index": 51,
+      "kind": "phrase",
+      "text": "Your behavior was inexcusable.",
+      "gloss": {
+        "tr": "Davranışın affedilmezdi.",
+        "de": "Dein Verhalten war unentschuldbar.",
+        "es": "Tu conducta fue imperdonable.",
+        "fr": "Ton comportement était inexcusable.",
+        "pt-BR": "Sua conduta foi irremissível.",
+        "ru": "Твоё поведение было непростительным."
+      },
+      "freqRank": 52,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:angry-face"
+    },
+    {
+      "index": 52,
+      "kind": "phrase",
+      "text": "You're very timid.",
+      "gloss": {
+        "tr": "Çok ürkeksin.",
+        "de": "Du bist sehr furchtsam.",
+        "fr": "Tu es très timide.",
+        "pt-BR": "Você é muito tímido.",
+        "ru": "Ты очень робкий."
+      },
+      "freqRank": 53,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bear"
+    },
+    {
+      "index": 53,
+      "kind": "phrase",
+      "text": "Your hypothesis is correct.",
+      "gloss": {
+        "tr": "Hipoteziniz doğrudur.",
+        "de": "Deine Annahme ist richtig.",
+        "es": "Vuestra hipótesis es correcta.",
+        "pt-BR": "A sua hipótese é correta.",
+        "ru": "Твоя гипотеза верна."
+      },
+      "freqRank": 54,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:check-mark-button"
+    },
+    {
+      "index": 54,
+      "kind": "phrase",
+      "text": "Birds learn to fly instinctively.",
+      "gloss": {
+        "tr": "Kuşlar uçmayı içgüdüsel olarak öğrenirler.",
+        "de": "Vögel lernen instinktiv zu fliegen.",
+        "fr": "Les oiseaux apprennent à voler instinctivement.",
+        "ru": "Птицы учатся летать инстинктивно."
+      },
+      "freqRank": 55,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove"
+    },
+    {
+      "index": 55,
+      "kind": "phrase",
+      "text": "Don't be so naive.",
+      "gloss": {
+        "tr": "Bu kadar saf olmayın.",
+        "fr": "Ne sois pas si naïf.",
+        "ru": "Не будь таким наивным."
+      },
+      "freqRank": 56,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:smiling-face-with-halo"
+    },
+    {
+      "index": 56,
+      "kind": "phrase",
+      "text": "He doesn't understand sarcasm.",
+      "gloss": {
+        "tr": "O, iğnelemeyi anlamaz.",
+        "de": "Er versteht keinen Sarkasmus.",
+        "es": "Él no entiende el sarcasmo.",
+        "fr": "Il ne comprend pas les sarcasmes.",
+        "ru": "Он не понимает сарказма."
+      },
+      "freqRank": 57,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:confused-face"
+    },
+    {
+      "index": 57,
+      "kind": "phrase",
+      "text": "Her cleverness often amazes me.",
+      "gloss": {
+        "tr": "Onun akıllılığı sık sık beni şaşırtır.",
+        "fr": "Son intelligence me surprend souvent.",
+        "ru": "Её сообразительность меня часто поражает."
+      },
+      "freqRank": 58,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:brain"
+    },
+    {
+      "index": 58,
+      "kind": "phrase",
+      "text": "He has a robust constitution.",
+      "gloss": {
+        "tr": "Onun sağlam bir yapısı var.",
+        "es": "Él es de complexión fuerte.",
+        "ru": "У него крепкое телосложение."
+      },
+      "freqRank": 59,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flexed-biceps"
+    },
+    {
+      "index": 59,
+      "kind": "phrase",
+      "text": "I am a trifle sad.",
+      "gloss": {
+        "tr": "Ben biraz üzgünüm.",
+        "fr": "Je suis un peu triste.",
+        "ru": "Мне немного грустно."
+      },
+      "freqRank": 60,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pensive-face"
+    },
+    {
+      "index": 60,
+      "kind": "phrase",
+      "text": "He took the job reluctantly.",
+      "gloss": {
+        "tr": "İşi istemeyerek aldı.",
+        "fr": "Il a accepté ce travail à contre-cœur.",
+        "ru": "Он с неохотой взял эту работу."
+      },
+      "freqRank": 61,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase"
+    },
+    {
+      "index": 61,
+      "kind": "phrase",
+      "text": "I just like to daydream.",
+      "gloss": {
+        "tr": "Sadece hayal kurmayı seviyorum.",
+        "es": "Me encanta hacerme ilusiones.",
+        "fr": "J'aime faire des rêves éveillés."
+      },
+      "freqRank": 62,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thought-balloon"
+    },
+    {
+      "index": 62,
+      "kind": "phrase",
+      "text": "I'm a cheese connoisseur.",
+      "gloss": {
+        "tr": "Ben bir peynir eksperiyim.",
+        "de": "Ich bin ein Käsekenner.",
+        "fr": "Je m'y connais en fromage."
+      },
+      "freqRank": 63,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cheese-wedge"
+    },
+    {
+      "index": 63,
+      "kind": "phrase",
+      "text": "I like the color violet.",
+      "gloss": {
+        "tr": "Eflatun rengini severim.",
+        "es": "Me gusta el color violeta.",
+        "pt-BR": "Eu gosto da cor violeta.",
+        "ru": "Я люблю фиолетовый цвет."
+      },
+      "freqRank": 64,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:artist-palette"
+    },
+    {
+      "index": 64,
+      "kind": "phrase",
+      "text": "I'm a sports fanatic.",
+      "gloss": { "tr": "Ben bir spor fanatiğiyim.", "pt-BR": "Eu sou fanático por esportes." },
+      "freqRank": 65,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:soccer-ball"
+    },
+    {
+      "index": 65,
+      "kind": "phrase",
+      "text": "I like to walk aimlessly.",
+      "gloss": {
+        "tr": "Amaçsızca yürümekten hoşlanırım.",
+        "es": "Me gusta pasear sin rumbo.",
+        "pt-BR": "Gosto de andar a esmo.",
+        "ru": "Мне нравится гулять без определённого направления."
+      },
+      "freqRank": 66,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-walking"
+    },
+    {
+      "index": 66,
+      "kind": "phrase",
+      "text": "I'm an avid golfer.",
+      "gloss": { "tr": "Ben hırslı bir golfçüyüm.", "ru": "Я заядлый игрок в гольф." },
+      "freqRank": 67,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flag-in-hole"
+    },
+    {
+      "index": 67,
+      "kind": "phrase",
+      "text": "I prefer grapefruit to oranges.",
+      "gloss": {
+        "tr": "Greyfurtu portakala tercih ederim.",
+        "de": "Ich mag Grapefruits lieber als Orangen.",
+        "fr": "Je préfère le pamplemousse aux oranges.",
+        "ru": "Грейпфруты мне нравятся больше, чем апельсины."
+      },
+      "freqRank": 68,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tangerine"
+    },
+    {
+      "index": 68,
+      "kind": "phrase",
+      "text": "Is that a rhetorical question?",
+      "gloss": {
+        "tr": "Bu retorik bir soru mu?",
+        "pt-BR": "Isso é uma pergunta retórica?",
+        "ru": "Это риторический вопрос?"
+      },
+      "freqRank": 69,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-question-mark"
+    },
+    {
+      "index": 69,
+      "kind": "phrase",
+      "text": "I will scrutinize you closely.",
+      "gloss": {
+        "tr": "Seni dikkatle inceleyeceğim.",
+        "de": "Ich werde dich genau unter die Lupe nehmen.",
+        "ar": "سأراقبك عن كثب."
+      },
+      "freqRank": 70,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eyes"
+    },
+    {
+      "index": 70,
+      "kind": "phrase",
+      "text": "It was a tedious job.",
+      "gloss": {
+        "tr": "Can sıkıcı bir işti.",
+        "es": "Fue un trabajo tedioso.",
+        "fr": "C'était un travail fastidieux.",
+        "pt-BR": "Era um trabalho tedioso.",
+        "ru": "Это была утомительная работа."
+      },
+      "freqRank": 71,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:weary-face"
+    },
+    {
+      "index": 71,
+      "kind": "phrase",
+      "text": "It's a risky proposition.",
+      "gloss": {
+        "tr": "Bu riskli bir öneri.",
+        "fr": "C'est une proposition risquée.",
+        "ru": "Это дело рискованное."
+      },
+      "freqRank": 72,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:warning"
+    },
+    {
+      "index": 72,
+      "kind": "phrase",
+      "text": "It was just a formality.",
+      "gloss": {
+        "tr": "Sadece bir formaliteydi.",
+        "es": "Era solo una formalidad.",
+        "fr": "Ce ne fut qu'une formalité.",
+        "pt-BR": "Era apenas uma formalidade.",
+        "ru": "Это была просто формальность."
+      },
+      "freqRank": 73,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clipboard"
+    },
+    {
+      "index": 73,
+      "kind": "phrase",
+      "text": "It's a riveting story.",
+      "gloss": {
+        "tr": "O sürükleyici bir hikaye.",
+        "de": "Es ist eine fesselnde Geschichte.",
+        "fr": "C'est une histoire fascinante.",
+        "pt-BR": "É uma história fascinante.",
+        "ru": "Это захватывающая история."
+      },
+      "freqRank": 74,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:open-book"
+    },
+    {
+      "index": 74,
+      "kind": "phrase",
+      "text": "My grandfather is a carpenter.",
+      "gloss": {
+        "tr": "Dedem marangoz.",
+        "de": "Mein Großvater ist Zimmermann.",
+        "es": "Mi abuelo es carpintero.",
+        "fr": "Mon grand-père est menuisier.",
+        "pt-BR": "Meu avô é carpinteiro.",
+        "ru": "Мой дедушка - плотник."
+      },
+      "freqRank": 75,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hammer-and-wrench"
+    },
+    {
+      "index": 75,
+      "kind": "phrase",
+      "text": "It's an autonomous car.",
+      "gloss": {
+        "tr": "O otonom bir araba.",
+        "es": "Es un carro autónomo.",
+        "pt-BR": "É um carro autônomo.",
+        "ru": "Это автомобиль с системой автоматического управления."
+      },
+      "freqRank": 76,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 76,
+      "kind": "phrase",
+      "text": "My right hand is numb.",
+      "gloss": {
+        "tr": "Benim sağ elim uyuşmuş.",
+        "de": "Meine rechte Hand ist taub.",
+        "es": "Mi mano derecha está entumecida.",
+        "fr": "Ma main droite est ankylosée.",
+        "pt-BR": "A minha mão direita está dormente.",
+        "ru": "Моя правая рука онемела."
+      },
+      "freqRank": 77,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:raised-hand"
+    },
+    {
+      "index": 77,
+      "kind": "phrase",
+      "text": "Our work began to flourish.",
+      "gloss": {
+        "tr": "İşlerimiz gelişmeye başladı.",
+        "pt-BR": "Nosso trabalho começou a prosperar."
+      },
+      "freqRank": 78,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:chart-increasing"
+    },
+    {
+      "index": 78,
+      "kind": "phrase",
+      "text": "Oxygen is needed for combustion.",
+      "gloss": {
+        "tr": "Oksijen yanma için gereklidir.",
+        "de": "Sauerstoff ist notwendig für die Verbrennung.",
+        "es": "El oxígeno es esencial para la combustión.",
+        "fr": "L'oxygène est nécessaire à la combustion.",
+        "pt-BR": "O oxigênio é necessário para a combustão."
+      },
+      "freqRank": 79,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fire"
+    },
+    {
+      "index": 79,
+      "kind": "phrase",
+      "text": "Please conserve water in summer.",
+      "gloss": {
+        "tr": "Lütfen yazın suyu koruyun.",
+        "pt-BR": "Por favor, economize água no verão."
+      },
+      "freqRank": 80,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:droplet"
+    },
+    {
+      "index": 80,
+      "kind": "phrase",
+      "text": "She is an avid reader.",
+      "gloss": { "tr": "O hırslı bir okuyucu.", "fr": "Elle est une lectrice vorace." },
+      "freqRank": 81,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books"
+    },
+    {
+      "index": 81,
+      "kind": "phrase",
+      "text": "That doesn't reassure me.",
+      "gloss": {
+        "tr": "Bu benim endişelerimi gidermiyor.",
+        "de": "Das beruhigt mich nicht.",
+        "ru": "Это меня не успокаивает."
+      },
+      "freqRank": 82,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:worried-face"
+    },
+    {
+      "index": 82,
+      "kind": "phrase",
+      "text": "The choreography is quite simple.",
+      "gloss": { "tr": "Koreografi oldukça basittir.", "ru": "Хореография достаточно простая." },
+      "freqRank": 83,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:woman-dancing"
+    },
+    {
+      "index": 83,
+      "kind": "phrase",
+      "text": "These facts support my hypothesis.",
+      "gloss": {
+        "tr": "Bu durum hipotezimi destekliyor.",
+        "fr": "Ces faits soutiennent mon hypothèse.",
+        "ru": "Эти факты поддерживают мою гипотезу."
+      },
+      "freqRank": 84,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:test-tube"
+    },
+    {
+      "index": 84,
+      "kind": "phrase",
+      "text": "The committee comprises ten members.",
+      "gloss": {
+        "tr": "Komisyon 10 üyeden oluşuyor.",
+        "es": "El comité se compone de diez miembros.",
+        "fr": "Le comité se compose de dix membres.",
+        "ru": "Комитет состоит из десяти членов.",
+        "ar": "اللجنة تشمل عشر اعضاء."
+      },
+      "freqRank": 85,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:busts-in-silhouette"
+    },
+    {
+      "index": 85,
+      "kind": "phrase",
+      "text": "These presents are really bulky.",
+      "gloss": {
+        "tr": "Bu hediyeler gerçekten büyük.",
+        "pt-BR": "Estes presentes são realmente volumosos."
+      },
+      "freqRank": 86,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wrapped-gift"
+    },
+    {
+      "index": 86,
+      "kind": "phrase",
+      "text": "The contract will expire soon.",
+      "gloss": {
+        "tr": "Sözleşme yakında sona erecek.",
+        "de": "Der Vertrag läuft in Kürze aus.",
+        "es": "El contrato expirará pronto.",
+        "fr": "Le contrat expirera bientôt.",
+        "ru": "Контракт скоро истечёт."
+      },
+      "freqRank": 87,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hourglass-not-done"
+    },
+    {
+      "index": 87,
+      "kind": "phrase",
+      "text": "This book deals with anthropology.",
+      "gloss": {
+        "tr": "Bu kitap antropoloji ile ilgilenir.",
+        "de": "Dieses Buch handelt von Anthropologie.",
+        "fr": "Ce livre parle d'anthropologie.",
+        "ru": "Эта книга посвящена антропологии."
+      },
+      "freqRank": 88,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:books"
+    },
+    {
+      "index": 88,
+      "kind": "phrase",
+      "text": "The house is suitably isolated.",
+      "gloss": {
+        "tr": "Ev uygun şekilde yalıtılmış.",
+        "de": "Das Haus ist angemessen isoliert.",
+        "ar": "المنزل معزول بشكل مناسب."
+      },
+      "freqRank": 89,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house-with-garden"
+    },
+    {
+      "index": 89,
+      "kind": "phrase",
+      "text": "This is a vertical line.",
+      "gloss": {
+        "tr": "Bu dikey bir çizgi.",
+        "fr": "C'est une ligne verticale.",
+        "pt-BR": "Essa é uma linha vertical.",
+        "ru": "Это вертикальная линия."
+      },
+      "freqRank": 90,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:straight-ruler"
+    },
+    {
+      "index": 90,
+      "kind": "phrase",
+      "text": "The pigeon has flown away.",
+      "gloss": {
+        "tr": "Güvercin uçup gitti.",
+        "de": "Die Taube ist weggeflogen.",
+        "fr": "Le pigeon s'est envolé.",
+        "pt-BR": "O pombo voou longe.",
+        "ru": "Голубь улетел."
+      },
+      "freqRank": 91,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dove"
+    },
+    {
+      "index": 91,
+      "kind": "phrase",
+      "text": "This room is very stuffy.",
+      "gloss": {
+        "tr": "Bu oda çok havasız.",
+        "de": "Dieses Zimmer ist sehr stickig.",
+        "es": "La habitación está muy sucia.",
+        "fr": "Cette pièce manque vraiment d'air.",
+        "pt-BR": "Essa sala é bem abafada.",
+        "ru": "Эта комната очень душная."
+      },
+      "freqRank": 92,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:window"
+    },
+    {
+      "index": 92,
+      "kind": "phrase",
+      "text": "The plane began its descent.",
+      "gloss": { "tr": "Uçak alçalmaya başladı." },
+      "freqRank": 93,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:airplane-arrival"
+    },
+    {
+      "index": 93,
+      "kind": "phrase",
+      "text": "This snake is not venomous.",
+      "gloss": {
+        "tr": "Bu yılan zehirli değil.",
+        "de": "Diese Schlange ist nicht giftig.",
+        "es": "Esta serpiente no es venenosa.",
+        "fr": "Ce serpent n'est pas venimeux.",
+        "ru": "Эта змея не ядовитая."
+      },
+      "freqRank": 94,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:snake"
+    },
+    {
+      "index": 94,
+      "kind": "phrase",
+      "text": "The road is closed indefinitely.",
+      "gloss": {
+        "tr": "Yol süresiz olarak kapalıdır.",
+        "de": "Der Weg ist auf unbestimmte Zeit gesperrt."
+      },
+      "freqRank": 95,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:no-entry"
+    },
+    {
+      "index": 95,
+      "kind": "phrase",
+      "text": "This tooth is an incisor.",
+      "gloss": {
+        "tr": "Bu diş bir kesici diş.",
+        "fr": "Cette dent est une incisive.",
+        "ru": "Этот зуб называется резец."
+      },
+      "freqRank": 96,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tooth"
+    },
+    {
+      "index": 96,
+      "kind": "phrase",
+      "text": "We all sang in unison.",
+      "gloss": {
+        "tr": "Hep bir ağızdan şarkı söyledik.",
+        "fr": "Nous chantâmes tous à l'unisson."
+      },
+      "freqRank": 97,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-notes"
+    },
+    {
+      "index": 97,
+      "kind": "phrase",
+      "text": "What you lack is stamina.",
+      "gloss": {
+        "tr": "Yoksun olduğun şey dayanma gücü.",
+        "de": "Was dir fehlt, ist Ausdauer!",
+        "fr": "Ce qui vous manque, c'est de l'endurance.",
+        "ru": "Чего тебе не хватает, так это выносливости."
+      },
+      "freqRank": 98,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-running"
+    },
+    {
+      "index": 98,
+      "kind": "phrase",
+      "text": "What's your favorite gadget?",
+      "gloss": {
+        "tr": "En sevdiğin araç hangisidir?",
+        "es": "¿Cuál es tu gadget favorito?",
+        "pt-BR": "Qual é o seu gadget favorito?",
+        "ru": "Какой у тебя любимый гаджет?"
+      },
+      "freqRank": 99,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:mobile-phone"
+    },
+    {
+      "index": 99,
+      "kind": "phrase",
+      "text": "When does your passport expire?",
+      "gloss": {
+        "tr": "Pasaportunun süresi ne zaman doluyor?",
+        "de": "Wann läuft Ihr Reisepass aus?",
+        "fr": "Quand est-ce que ton passeport expire ?",
+        "pt-BR": "Quando é que seu passaporte perde a validade?",
+        "ru": "Когда истекает срок действия твоего паспорта?"
+      },
+      "freqRank": 100,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:passport-control"
+    },
+    {
+      "index": 100,
+      "kind": "phrase",
+      "text": "A bout lasts about five minutes.",
+      "gloss": {
+        "tr": "Bir nöbet yaklaşık beş dakika sürer.",
+        "de": "Ein Anfall dauert ungefähr fünf Minuten.",
+        "fr": "Un combat dure à peu près cinq minutes.",
+        "ar": "تستغرق النوبة حوالي خمس دقائق."
+      },
+      "freqRank": 101,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:stopwatch"
+    },
+    {
+      "index": 101,
+      "kind": "phrase",
+      "text": "Are you attempting to bribe me?",
+      "gloss": {
+        "tr": "Bana rüşvet vermeye mi kalkışıyorsun?",
+        "de": "Versuchst du etwa, mich zu bestechen?",
+        "fr": "Essayez-vous de me soudoyer ?",
+        "pt-BR": "Está tentando me subornar?",
+        "ru": "Вы пытаетесь меня подкупить?"
+      },
+      "freqRank": 102,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dollar-banknote"
+    },
+    {
+      "index": 102,
+      "kind": "phrase",
+      "text": "A convict has escaped from prison.",
+      "gloss": {
+        "tr": "Hapishaneden bir mahkûm kaçtı.",
+        "de": "Ein Häftling ist aus dem Gefängnis ausgebrochen.",
+        "es": "Un convicto ha escapado de prisión.",
+        "fr": "Un détenu s'est échappé de prison.",
+        "ar": "هرب أحد السجناء من السجن."
+      },
+      "freqRank": 103,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:police-car-light"
+    },
+    {
+      "index": 103,
+      "kind": "phrase",
+      "text": "Does this hotel have a sauna?",
+      "gloss": { "tr": "Bu otelin bir saunası var mı?" },
+      "freqRank": 104,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hotel"
+    },
+    {
+      "index": 104,
+      "kind": "phrase",
+      "text": "A mouse is a timid creature.",
+      "gloss": {
+        "tr": "Bir fare çekingen bir yaratıktır.",
+        "ru": "Мышь — робкое существо.",
+        "ar": "الفئران حيوانات خجولة."
+      },
+      "freqRank": 105,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:mouse-face"
+    },
+    {
+      "index": 105,
+      "kind": "phrase",
+      "text": "Drive carefully! The roads are treacherous.",
+      "gloss": {
+        "tr": "Dikkatlice sür! Yollar tehlikeli.",
+        "de": "Fahr vorsichtig! Die Straßen sind tückisch.",
+        "ru": "Веди осторожно! Наверху дороги коварны."
+      },
+      "freqRank": 106,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:warning"
+    },
+    {
+      "index": 106,
+      "kind": "phrase",
+      "text": "Fill the glass to the brim.",
+      "gloss": {
+        "tr": "Bardağı ağzına kadar doldur.",
+        "es": "Llena el vaso hasta el borde.",
+        "fr": "Remplissez le verre à ras bord.",
+        "pt-BR": "Encha o copo até a borda.",
+        "ru": "Наполни бокал до краёв."
+      },
+      "freqRank": 107,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tumbler-glass"
+    },
+    {
+      "index": 107,
+      "kind": "phrase",
+      "text": "Has the jury reached a verdict?",
+      "gloss": {
+        "tr": "Jüri bir karara vardı mı?",
+        "de": "Sind die Geschworenen zu einem Urteil gelangt?",
+        "es": "¿El jurado ha alcanzado un veredicto?",
+        "fr": "Le jury a-t-il rendu son verdict ?"
+      },
+      "freqRank": 108,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:balance-scale"
+    },
+    {
+      "index": 108,
+      "kind": "phrase",
+      "text": "He asked a few pertinent questions.",
+      "gloss": {
+        "tr": "O birkaç tane uygun soru sordu.",
+        "es": "Hizo unas preguntas pertinentes.",
+        "fr": "Il a posé quelques questions pertinentes.",
+        "pt-BR": "Fez umas perguntas pertinentes.",
+        "ru": "Он задал несколько уместных вопросов."
+      },
+      "freqRank": 109,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-question-mark"
+    },
+    {
+      "index": 109,
+      "kind": "phrase",
+      "text": "I am accustomed to cold weather.",
+      "gloss": {
+        "tr": "Ben soğuk havaya alışkınım.",
+        "de": "Ich habe mich an das kalte Wetter gewöhnt.",
+        "es": "Estoy acostumbrada al tiempo frío.",
+        "fr": "Je suis accoutumé au temps froid.",
+        "pt-BR": "Estou acostumado ao tempo frio.",
+        "ru": "Я привык к холодной погоде."
+      },
+      "freqRank": 110,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cold-face"
+    },
+    {
+      "index": 110,
+      "kind": "phrase",
+      "text": "He is a very good batter.",
+      "gloss": { "tr": "O, çok iyi bir top vurucusu.", "de": "Er ist ein sehr guter Schläger." },
+      "freqRank": 111,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:baseball"
+    },
+    {
+      "index": 111,
+      "kind": "phrase",
+      "text": "I can't stand her hypocrisy.",
+      "gloss": {
+        "tr": "Onun ikiyüzlülüğüne katlanamıyorum.",
+        "de": "Ich kann ihre Heuchelei nicht leiden.",
+        "fr": "Je ne supporte pas son hypocrisie.",
+        "ar": "لا أستطيع تحمّل نفاقها."
+      },
+      "freqRank": 112,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:lying-face"
+    },
+    {
+      "index": 112,
+      "kind": "phrase",
+      "text": "He is very knowledgeable about animals.",
+      "gloss": {
+        "tr": "O, hayvanlar hakkında çok bilgi sahibi.",
+        "de": "Er kennt sich sehr gut mit Tieren aus.",
+        "es": "Sabe mucho de animales.",
+        "fr": "Il s'y connaît bien en animaux."
+      },
+      "freqRank": 113,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:paw-prints"
+    },
+    {
+      "index": 113,
+      "kind": "phrase",
+      "text": "I have a proposition for you.",
+      "gloss": {
+        "tr": "Sana bir teklifim var.",
+        "de": "Ich habe ein Angebot für Sie.",
+        "fr": "J'ai une proposition pour toi.",
+        "ru": "У меня к тебе есть предложение."
+      },
+      "freqRank": 114,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 114,
+      "kind": "phrase",
+      "text": "He refused to take the bribe.",
+      "gloss": {
+        "tr": "O, rüşvet almayı reddetti.",
+        "de": "Er weigerte sich, das Schmiergeld anzunehmen.",
+        "es": "Él se rehusó a recibir el soborno.",
+        "fr": "Il s'est refusé à prendre le pot-de-vin.",
+        "pt-BR": "Ele se recusou a receber o suborno.",
+        "ru": "Он отказался принять взятку."
+      },
+      "freqRank": 115,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dollar-banknote"
+    },
+    {
+      "index": 115,
+      "kind": "phrase",
+      "text": "I love thick, creamy mushroom soup.",
+      "gloss": {
+        "tr": "Koyu, kremalı mantar çorbası severim.",
+        "de": "Ich liebe dickflüssige, cremige Pilzsuppe.",
+        "fr": "J'aime bien la soupe de champignons épaisse et crémeuse.",
+        "pt-BR": "Eu amo sopa de cogumelo grossa e cremosa."
+      },
+      "freqRank": 116,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food"
+    },
+    {
+      "index": 116,
+      "kind": "phrase",
+      "text": "I've already spent my inheritance.",
+      "gloss": { "tr": "Mirasımı çoktan harcadım.", "pt-BR": "Já gastei todo minha herança." },
+      "freqRank": 117,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:money-with-wings"
+    },
+    {
+      "index": 117,
+      "kind": "phrase",
+      "text": "I think I have a cavity.",
+      "gloss": {
+        "tr": "Sanırım dişimde bir delik var.",
+        "de": "Ich glaube, ich habe ein Loch im Zahn.",
+        "fr": "Je pense que j'ai une carie."
+      },
+      "freqRank": 118,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:tooth"
+    },
+    {
+      "index": 118,
+      "kind": "phrase",
+      "text": "My clothes are full of suds.",
+      "gloss": {
+        "tr": "Kıyafetlerim köpük dolu.",
+        "pt-BR": "Minhas roupas estão cheias de espuma."
+      },
+      "freqRank": 119,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:soap"
+    },
+    {
+      "index": 119,
+      "kind": "phrase",
+      "text": "I think it's mutually beneficial.",
+      "gloss": {
+        "tr": "Bence bu karşılıklı olark yararlı.",
+        "fr": "Je pense que c'est mutuellement bénéfique.",
+        "pt-BR": "Acredito ser de benefício mutuo.",
+        "ru": "Я думаю, это взаимовыгодно."
+      },
+      "freqRank": 120,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 120,
+      "kind": "phrase",
+      "text": "My paternal grandmother enjoys tea ceremonies.",
+      "gloss": {
+        "tr": "Benim babaannem çay törenlerini seviyor.",
+        "fr": "Ma grand-mère paternelle aime les cérémonies de thé."
+      },
+      "freqRank": 121,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:teacup-without-handle"
+    },
+    {
+      "index": 121,
+      "kind": "phrase",
+      "text": "I want to charter a bus.",
+      "gloss": {
+        "tr": "Bir otobüs kiralamak istiyorum.",
+        "fr": "Je veux affréter un bus.",
+        "pt-BR": "Quero fretar um ônibus.",
+        "ar": "أريد أن أستأجر حافلة."
+      },
+      "freqRank": 122,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bus"
+    },
+    {
+      "index": 122,
+      "kind": "phrase",
+      "text": "Now clean up any residual dust.",
+      "gloss": {
+        "tr": "Şimdi kalan tozu temizleyin",
+        "fr": "Maintenant, nettoyez toute poussière résiduelle."
+      },
+      "freqRank": 123,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:broom"
+    },
+    {
+      "index": 123,
+      "kind": "phrase",
+      "text": "She fell into a profound sleep.",
+      "gloss": {
+        "tr": "O derin bir uykuya daldı.",
+        "de": "Sie ist in einen tiefen Schlaf gefallen.",
+        "ru": "Она погрузилась в глубокий сон."
+      },
+      "freqRank": 124,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sleeping-face"
+    },
+    {
+      "index": 124,
+      "kind": "phrase",
+      "text": "Take your foot off the clutch.",
+      "gloss": {
+        "tr": "Ayağını debriyajdan kaldır.",
+        "de": "Nimm den Fuß von der Kupplung.",
+        "es": "Quita el pie del embrague.",
+        "ru": "Сними ногу со сцепления."
+      },
+      "freqRank": 125,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 125,
+      "kind": "phrase",
+      "text": "She reluctantly agreed to our proposal.",
+      "gloss": {
+        "tr": "Teklifimizi isteksizce kabul etti.",
+        "de": "Sie willigte zögernd in unseren Vorschlag ein.",
+        "es": "Accedió con reservas a nuestra propuesta.",
+        "pt-BR": "Ela concordou com a nossa proposta com hesitação.",
+        "ru": "Она неохотно согласилась на наше предложение."
+      },
+      "freqRank": 126,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:handshake"
+    },
+    {
+      "index": 126,
+      "kind": "phrase",
+      "text": "Television and newspapers play complementary roles.",
+      "gloss": {
+        "tr": "Televizyon ve gazeteler tamamlayıcı rol oynuyorlar.",
+        "de": "Fernsehen und Zeitungen ergänzen sich gegenseitig.",
+        "es": "La televisión y los periódicos juegan papeles complementarios.",
+        "ru": "Телевидение и газеты играют взаимодополняющие роли."
+      },
+      "freqRank": 127,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:television"
+    },
+    {
+      "index": 127,
+      "kind": "phrase",
+      "text": "The cows looked big and docile.",
+      "gloss": {
+        "tr": "İnekler kocaman ve uysal görünüyordu.",
+        "de": "Die Kühe sahen groß und zahm aus.",
+        "es": "Las vacas parecían grandes y dóciles."
+      },
+      "freqRank": 128,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cow"
+    },
+    {
+      "index": 128,
+      "kind": "phrase",
+      "text": "This concert hall has wonderful acoustics.",
+      "gloss": {
+        "tr": "Bu konser salonu harika akustiğe sahiptir.",
+        "de": "Dieser Konzertsaal hat eine wundervolle Akustik."
+      },
+      "freqRank": 129,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-score"
+    },
+    {
+      "index": 129,
+      "kind": "phrase",
+      "text": "The king ruled his kingdom justly.",
+      "gloss": {
+        "tr": "Kral, krallığını adil biçimde yönetti.",
+        "de": "Der König herrschte gerecht über sein Königreich.",
+        "es": "El rey reinaba su reino con justicia.",
+        "fr": "Le roi régnait sur son royaume avec justice.",
+        "pt-BR": "O rei governou o seu reino com justiça.",
+        "ru": "Король правил своим королевством справедливо."
+      },
+      "freqRank": 130,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:castle"
+    },
+    {
+      "index": 130,
+      "kind": "phrase",
+      "text": "This is an old rock quarry.",
+      "gloss": { "tr": "Burası eski bir taş ocağı." },
+      "freqRank": 131,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:rock"
+    },
+    {
+      "index": 131,
+      "kind": "phrase",
+      "text": "The leaves rustle in the wind.",
+      "gloss": { "tr": "Yapraklar rüzgarda hışırdıyor.", "ru": "Листья шелестят на ветру." },
+      "freqRank": 132,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:leaf-fluttering-in-wind"
+    },
+    {
+      "index": 132,
+      "kind": "phrase",
+      "text": "Waiting for a train is tedious.",
+      "gloss": {
+        "tr": "Bir tren beklemek sıkıcı.",
+        "de": "Das Warten auf einen Zug ist langweilig.",
+        "fr": "Attendre le train est ennuyeux.",
+        "ru": "Ждать поезд утомительно."
+      },
+      "freqRank": 133,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:station"
+    },
+    {
+      "index": 133,
+      "kind": "phrase",
+      "text": "The night was clear and frosty.",
+      "gloss": { "tr": "Gece açık ve buzluydu." },
+      "freqRank": 134,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:night-with-stars"
+    },
+    {
+      "index": 134,
+      "kind": "phrase",
+      "text": "We can haggle over price later.",
+      "gloss": {
+        "tr": "Daha sonra fiyat üzerine pazarlık yapabiliriz.",
+        "fr": "On peut marchander le prix plus tard.",
+        "ru": "Мы можем сторговаться позже."
+      },
+      "freqRank": 135,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:heavy-dollar-sign"
+    },
+    {
+      "index": 135,
+      "kind": "phrase",
+      "text": "The police searched the premises thoroughly.",
+      "gloss": {
+        "tr": "Polis binaları adamakıllı araştırdı.",
+        "de": "Die Polizei durchsuchte die Räumlichkeiten gründlich.",
+        "es": "La policía registró el local a fondo.",
+        "fr": "Les policiers ont soigneusement fouillé les lieux."
+      },
+      "freqRank": 136,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:police-officer"
+    },
+    {
+      "index": 136,
+      "kind": "phrase",
+      "text": "We have just cleaned the lavatory.",
+      "gloss": {
+        "tr": "Biz az önce tuvaleti temizledik.",
+        "fr": "Nous venons de nettoyer les toilettes."
+      },
+      "freqRank": 137,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:restroom"
+    },
+    {
+      "index": 137,
+      "kind": "phrase",
+      "text": "The room is spacious and light.",
+      "gloss": {
+        "tr": "Oda geniş ve aydınlıktır.",
+        "de": "Das Zimmer ist geräumig und hell.",
+        "fr": "La chambre est vaste et claire.",
+        "pt-BR": "O quarto é vasto e claro.",
+        "ru": "Комната большая и светлая."
+      },
+      "freqRank": 138,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:automobile"
+    },
+    {
+      "index": 138,
+      "kind": "phrase",
+      "text": "We should collaborate on the project.",
+      "gloss": {
+        "tr": "Proje üzerinde işbirliği yapmalıyız.",
+        "es": "Deberíamos colaborar en el proyecto.",
+        "fr": "Nous devrions collaborer au projet.",
+        "pt-BR": "Deveríamos colaborar com o projeto."
+      },
+      "freqRank": 139,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:busts-in-silhouette"
+    },
+    {
+      "index": 139,
+      "kind": "phrase",
+      "text": "Wet clothes adhere to the skin.",
+      "gloss": {
+        "tr": "Islak giysiler tene yapışır.",
+        "de": "Nasse Kleidung haftet an der Haut.",
+        "es": "La ropa mojada se adhiere a la piel.",
+        "fr": "Les vêtements mouillés collent à la peau.",
+        "pt-BR": "Roupas molhadas grudam na pele.",
+        "ru": "Мокрая одежда липнет к коже."
+      },
+      "freqRank": 140,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:t-shirt"
+    },
+    {
+      "index": 140,
+      "kind": "phrase",
+      "text": "We went astray in the woods.",
+      "gloss": { "tr": "Biz ormanda yolu şaşırdık.", "ru": "Мы заблудились в лесу." },
+      "freqRank": 141,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:compass"
+    },
+    {
+      "index": 141,
+      "kind": "phrase",
+      "text": "What's your favorite acoustic song?",
+      "gloss": { "tr": "En sevdiğiniz akustik şarkı nedir?" },
+      "freqRank": 142,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:guitar"
+    },
+    {
+      "index": 142,
+      "kind": "phrase",
+      "text": "Why are you always so cynical?",
+      "gloss": {
+        "tr": "Neden her zaman bu kadar alaycısın?",
+        "de": "Warum bist du immer so zynisch?",
+        "es": "¿Por qué siempre eres tan cínico?",
+        "ru": "Почему ты всегда такая циничная?"
+      },
+      "freqRank": 143,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:unamused-face"
+    },
+    {
+      "index": 143,
+      "kind": "phrase",
+      "text": "You must conform to the rules.",
+      "gloss": {
+        "tr": "Kurallara uymak zorundasın.",
+        "de": "Du musst dich den Vorschriften anpassen.",
+        "es": "Usted debe conformarse a las reglas.",
+        "fr": "Tu dois obéir aux règles.",
+        "ru": "Вы должны выполнять правила."
+      },
+      "freqRank": 144,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clipboard"
+    },
+    {
+      "index": 144,
+      "kind": "phrase",
+      "text": "A big ship is anchored near here.",
+      "gloss": {
+        "tr": "Büyük bir gemi buraya yakın demirledi.",
+        "de": "Ein großes Schiff liegt in der Nähe vor Anker.",
+        "es": "Un barco grande está anclado cerca de aquí.",
+        "pt-BR": "Um navio grande está ancorado aqui perto.",
+        "ru": "Большой корабль стоит на якоре неподалёку."
+      },
+      "freqRank": 145,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ship"
+    },
+    {
+      "index": 145,
+      "kind": "phrase",
+      "text": "Don't squander your newly earned money!",
+      "gloss": {
+        "tr": "Yeni kazandığın parayı israf etme!",
+        "fr": "Ne dilapide pas l'argent que tu viens de gagner !"
+      },
+      "freqRank": 146,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:money-with-wings"
+    },
+    {
+      "index": 146,
+      "kind": "phrase",
+      "text": "A spontaneous fire started in the hay.",
+      "gloss": {
+        "tr": "Samanda kendiliğinden yangın başladı.",
+        "fr": "Un feu partit spontanément des herbes sèches."
+      },
+      "freqRank": 147,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fire"
+    },
+    {
+      "index": 147,
+      "kind": "phrase",
+      "text": "He filled the cup to the brim.",
+      "gloss": {
+        "tr": "Fincanı ağzına kadar doldurdu.",
+        "pt-BR": "Ele encheu a xícara até a borda.",
+        "ru": "Он наполнил кружку до краёв.",
+        "ar": "هو أترعَ الكأس."
+      },
+      "freqRank": 148,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:teacup-without-handle"
+    },
+    {
+      "index": 148,
+      "kind": "phrase",
+      "text": "How many trees are in your orchard?",
+      "gloss": {
+        "tr": "Meyve bahçende kaç tane ağaç var?",
+        "es": "¿Cuántos árboles hay en tu huerto?",
+        "fr": "Combien d'arbres y a-t-il dans votre verger ?",
+        "pt-BR": "Quantas árvores há em seu pomar?",
+        "ru": "Сколько у тебя в саду деревьев?"
+      },
+      "freqRank": 149,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-apple"
+    },
+    {
+      "index": 149,
+      "kind": "phrase",
+      "text": "He has a remarkable aptitude for music.",
+      "gloss": {
+        "tr": "Onun müziğe olağanüstü bir yeteneği var.",
+        "de": "Er hat eine außergewöhnliche musikalische Begabung."
+      },
+      "freqRank": 150,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:musical-note"
+    },
+    {
+      "index": 150,
+      "kind": "phrase",
+      "text": "I am sending the invoice by fax.",
+      "gloss": {
+        "tr": "Faturayı faksla gönderiyorum.",
+        "de": "Ich sende die Rechnung per Fax.",
+        "fr": "Je transmets la facture par fax.",
+        "ru": "Я посылаю инвойс по факсу."
+      },
+      "freqRank": 151,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:receipt"
+    },
+    {
+      "index": 151,
+      "kind": "phrase",
+      "text": "He is very meticulous in his work.",
+      "gloss": {
+        "tr": "O, işinde çok titiz.",
+        "es": "Él es sumamente meticuloso en su trabajo.",
+        "fr": "Il est très méticuleux dans son travail.",
+        "ru": "Он очень дотошен в своей работе."
+      },
+      "freqRank": 152,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:magnifying-glass-tilted-left"
+    },
+    {
+      "index": 152,
+      "kind": "phrase",
+      "text": "I am wholly in agreement with you.",
+      "gloss": {
+        "tr": "Seninle tamamen aynı fikirdeyim.",
+        "es": "Estoy completamente de acuerdo contigo.",
+        "pt-BR": "Estou inteiramente de acordo com você.",
+        "ru": "Я с тобой полностью согласен."
+      },
+      "freqRank": 153,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thumbs-up"
+    },
+    {
+      "index": 153,
+      "kind": "phrase",
+      "text": "He was in favor of the proposition.",
+      "gloss": {
+        "tr": "O, teklifin lehindeydi.",
+        "es": "Él estuvo a favor de la proposición.",
+        "fr": "Il était en faveur de la proposition.",
+        "pt-BR": "Ele esteve a favor da proposição.",
+        "ru": "Он был за это предложение."
+      },
+      "freqRank": 154,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thumbs-up"
+    },
+    {
+      "index": 154,
+      "kind": "phrase",
+      "text": "I doubt the authenticity of the document.",
+      "gloss": {
+        "tr": "Belgenin gerçekliğinden şüpheliyim.",
+        "es": "Dudo de la autenticidad del documento.",
+        "fr": "J'ai des doutes quant à l'authenticité de ce document.",
+        "pt-BR": "Eu duvido da autenticidade do documento.",
+        "ru": "Я сомневаюсь в подлинности документа."
+      },
+      "freqRank": 155,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:magnifying-glass-tilted-left"
+    },
+    {
+      "index": 155,
+      "kind": "phrase",
+      "text": "In winter, I often suffer from melancholy.",
+      "gloss": {
+        "tr": "Kışın sık sık melankoliden muzdarip olurum.",
+        "fr": "En hiver, je souffre souvent de mélancolie.",
+        "ru": "Зимой я часто впадаю в меланхолию."
+      },
+      "freqRank": 156,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-snow"
+    },
+    {
+      "index": 156,
+      "kind": "phrase",
+      "text": "I have a blister on my foot.",
+      "gloss": {
+        "tr": "Ayağımın üzerinde bir kabarcığım var.",
+        "de": "Ich habe eine Blase am Fuß.",
+        "fr": "J'ai une ampoule au pied."
+      },
+      "freqRank": 157,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:adhesive-bandage"
+    },
+    {
+      "index": 157,
+      "kind": "phrase",
+      "text": "It's hot and stuffy in here.",
+      "gloss": {
+        "tr": "Burası sıcak ve havasız.",
+        "de": "Hier drin ist es heiß und stickig.",
+        "ru": "Здесь жарко и душно."
+      },
+      "freqRank": 158,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-face"
+    },
+    {
+      "index": 158,
+      "kind": "phrase",
+      "text": "I have a business proposition for you.",
+      "gloss": { "tr": "Sana bir iş teklifim var.", "ru": "У меня к вам деловое предложение." },
+      "freqRank": 159,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:briefcase"
+    },
+    {
+      "index": 159,
+      "kind": "phrase",
+      "text": "Let's drink to our charming hostess!",
+      "gloss": {
+        "tr": "Çekici hostesimize içelim!",
+        "fr": "Buvons à notre charmante hôtesse !",
+        "ru": "Выпьем за нашу очаровательную хозяйку!"
+      },
+      "freqRank": 160,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clinking-beer-mugs"
+    },
+    {
+      "index": 160,
+      "kind": "phrase",
+      "text": "I have a craving for fresh fruit.",
+      "gloss": {
+        "tr": "Canım taze meyve istiyor.",
+        "es": "Tengo un antojo de fruta fresca.",
+        "fr": "J'ai une envie irrésistible de fruits frais."
+      },
+      "freqRank": 161,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:drooling-face"
+    },
+    {
+      "index": 161,
+      "kind": "phrase",
+      "text": "Let's have some coffee during recess.",
+      "gloss": { "tr": "Mola sırasında biraz kahve içelim." },
+      "freqRank": 162,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-beverage"
+    },
+    {
+      "index": 162,
+      "kind": "phrase",
+      "text": "I read a synopsis of the film.",
+      "gloss": {
+        "tr": "Ben filmin bir özetini okudum.",
+        "de": "Ich las eine Inhaltsübersicht des Films.",
+        "ru": "Я читаю аннотацию к фильму."
+      },
+      "freqRank": 163,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:clapper-board"
+    },
+    {
+      "index": 163,
+      "kind": "phrase",
+      "text": "My dog likes to gnaw on bones.",
+      "gloss": {
+        "tr": "Köpeğim kemikleri kemirmeyi seviyor.",
+        "de": "Mein Hund kaut gerne auf Knochen herum.",
+        "fr": "Mon chien aime ronger des os.",
+        "ru": "Мой пёс любит глодать кости."
+      },
+      "freqRank": 164,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 164,
+      "kind": "phrase",
+      "text": "I want to chill the wine more.",
+      "gloss": {
+        "tr": "Ben şarabı daha çok soğutmak istiyorum.",
+        "de": "Ich möchte den Wein besser kühlen.",
+        "fr": "Je veux refroidir le vin un peu plus."
+      },
+      "freqRank": 165,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wine-glass"
+    },
+    {
+      "index": 165,
+      "kind": "phrase",
+      "text": "My father left me a large inheritance.",
+      "gloss": {
+        "tr": "Babam bana büyük bir miras bıraktı.",
+        "de": "Mein Vater hat mir ein großes Vermögen hinterlassen.",
+        "es": "Mi padre me dejó una gran herencia.",
+        "fr": "Mon père me laissa un gros héritage.",
+        "ru": "Мой отец оставил мне большое наследство."
+      },
+      "freqRank": 166,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:money-bag"
+    },
+    {
+      "index": 166,
+      "kind": "phrase",
+      "text": "Please keep your cynical remarks to yourself.",
+      "gloss": {
+        "tr": "Alaycı görüşlerini kendine saklamanı rica ediyorum.",
+        "de": "Bitte behalten Sie Ihre zynischen Bemerkungen für sich.",
+        "es": "Por favor, guárdate tus comentarios cínicos.",
+        "fr": "Je te prie de garder tes remarques cyniques pour toi-même.",
+        "ru": "Оставь, пожалуйста, свои циничные замечания при себе."
+      },
+      "freqRank": 167,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:zipper-mouth-face"
+    },
+    {
+      "index": 167,
+      "kind": "phrase",
+      "text": "My life would be meaningless without you.",
+      "gloss": {
+        "tr": "Hayatım sensiz anlamsız olurdu.",
+        "de": "Ohne dich hätte mein Leben keinen Sinn.",
+        "pt-BR": "Minha vida não teria sentido sem você.",
+        "ru": "Без тебя моя жизнь была бы бессмысленна."
+      },
+      "freqRank": 168,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-heart"
+    },
+    {
+      "index": 168,
+      "kind": "phrase",
+      "text": "Sleep deprivation increases risk of heart attacks.",
+      "gloss": {
+        "tr": "Uyku yoksunluğu kalp krizi riskini artırır.",
+        "es": "La falta de sueño aumenta el riesgo de ataques cardíacos.",
+        "fr": "Le manque de sommeil augmente le risque de crise cardiaque.",
+        "pt-BR": "A privação do sono aumenta o risco de ataques cardíacos.",
+        "ru": "Недостаток сна увеличивает риск инфаркта."
+      },
+      "freqRank": 169,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sleepy-face"
+    },
+    {
+      "index": 169,
+      "kind": "phrase",
+      "text": "The continent is abundant in fossil fuels.",
+      "gloss": {
+        "tr": "Kıta fosil yakıtlarca zengindir.",
+        "de": "Der Kontinent ist reich an fossilen Brennstoffen.",
+        "es": "El continente abunda en combustibles fósiles.",
+        "pt-BR": "O continente é abundante em combustíveis fósseis."
+      },
+      "freqRank": 170,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fuel-pump"
+    },
+    {
+      "index": 170,
+      "kind": "phrase",
+      "text": "There are five fish in my aquarium.",
+      "gloss": {
+        "tr": "Akvaryumumda beş tane balık var.",
+        "de": "In meinem Aquarium sind fünf Fische.",
+        "fr": "Il y a cinq poissons dans mon aquarium.",
+        "pt-BR": "Há cinco peixes no meu aquário.",
+        "ru": "В моём аквариуме пять рыбок."
+      },
+      "freqRank": 171,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:fish"
+    },
+    {
+      "index": 171,
+      "kind": "phrase",
+      "text": "The letter carrier comes every three days.",
+      "gloss": {
+        "tr": "Postacı her üç günde gelir.",
+        "fr": "Le facteur passe tous les trois jours."
+      },
+      "freqRank": 172,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope"
+    },
+    {
+      "index": 172,
+      "kind": "phrase",
+      "text": "There is a crumb in his beard.",
+      "gloss": {
+        "tr": "Onun sakalında bir kırıntı var.",
+        "fr": "Il y a une miette dans sa barbe.",
+        "ru": "У него в бороде крошка."
+      },
+      "freqRank": 173,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-beard"
+    },
+    {
+      "index": 173,
+      "kind": "phrase",
+      "text": "The mountaineer set out for the summit.",
+      "gloss": {
+        "tr": "Dağcı zirve için yola çıktı.",
+        "de": "Der Bergsteiger brach zum Gipfel auf."
+      },
+      "freqRank": 174,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:sunrise-over-mountains"
+    },
+    {
+      "index": 174,
+      "kind": "phrase",
+      "text": "There's a sauna and a pool.",
+      "gloss": {
+        "tr": "Bir sauna ve bir havuz var.",
+        "de": "Es gibt eine Sauna und ein Schwimmbecken.",
+        "ru": "Здесь есть сауна и бассейн."
+      },
+      "freqRank": 175,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-swimming"
+    },
+    {
+      "index": 175,
+      "kind": "phrase",
+      "text": "The ruined castle is now under restoration.",
+      "gloss": {
+        "tr": "Harap kale şimdi restorasyon altında.",
+        "es": "El castillo en ruinas ahora está en restauración.",
+        "ru": "Разрушенный замок под реконструкцией."
+      },
+      "freqRank": 176,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:castle"
+    },
+    {
+      "index": 176,
+      "kind": "phrase",
+      "text": "This box is too bulky to carry.",
+      "gloss": {
+        "tr": "Bu kutu taşımak için çok fazla büyüktür.",
+        "de": "Diese Kiste ist zu sperrig zum Tragen.",
+        "fr": "Ce carton est trop volumineux pour être porté.",
+        "ru": "Этот ящик слишком громоздкий, чтобы его нести."
+      },
+      "freqRank": 177,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:package"
+    },
+    {
+      "index": 177,
+      "kind": "phrase",
+      "text": "The secretary gave me an agreeable smile.",
+      "gloss": {
+        "tr": "Sekreter bana hoş bir gülümseme verdi.",
+        "de": "Die Sekretärin lächelte mich freundlich an."
+      },
+      "freqRank": 178,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:slightly-smiling-face"
+    },
+    {
+      "index": 178,
+      "kind": "phrase",
+      "text": "This girl was always good and dutiful.",
+      "gloss": {
+        "tr": "Bu kız hep iyi ve saygılıydı.",
+        "es": "La chica siempre fue buena y dudosa.",
+        "fr": "La fille a toujours été bonne et obéissante.",
+        "ru": "Эта девочка была всегда хорошая и исполнительная.",
+        "ar": "هذه الفتاة كانت دائماً جيدة ومُطيعة."
+      },
+      "freqRank": 179,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:girl"
+    },
+    {
+      "index": 179,
+      "kind": "phrase",
+      "text": "The students are having a recess now.",
+      "gloss": {
+        "tr": "Öğrenciler şimdi bir tatile giriyorlar.",
+        "es": "Los estudiantes están en recreo ahora.",
+        "fr": "Les étudiants sont en vacances actuellement.",
+        "ar": "الطلبة في استراحة الآن."
+      },
+      "freqRank": 180,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:school"
+    },
+    {
+      "index": 180,
+      "kind": "phrase",
+      "text": "This wine is pleasing to the palate.",
+      "gloss": {
+        "tr": "Bu şarap damağa hoş geliyor.",
+        "de": "Dieser Wein ist eine Gaumenfreude.",
+        "fr": "Ce vin est plaisant au palais."
+      },
+      "freqRank": 181,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wine-glass"
+    },
+    {
+      "index": 181,
+      "kind": "phrase",
+      "text": "A carpenter is someone who works with wood.",
+      "gloss": {
+        "tr": "Bir marangoz ahşapla çalışan bir kişidir.",
+        "de": "Ein Zimmermann ist jemand, der Holz bearbeitet.",
+        "fr": "Un charpentier est quelqu'un travaillant avec le bois.",
+        "ru": "Плотник - это тот, кто работает с деревом."
+      },
+      "freqRank": 182,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wood"
+    },
+    {
+      "index": 182,
+      "kind": "phrase",
+      "text": "Being able to use a computer is advantageous.",
+      "gloss": {
+        "tr": "Bir bilgisayar kullanabiliyor olmak avantajlıdır.",
+        "es": "Ser capaz de utilizar un ordenador es una ventaja.",
+        "fr": "Savoir utiliser un ordinateur est un atout."
+      },
+      "freqRank": 183,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:laptop"
+    },
+    {
+      "index": 183,
+      "kind": "phrase",
+      "text": "A firewall guarantees your security on the internet.",
+      "gloss": {
+        "tr": "Güvenlik duvarı, internette güvenliğinizi garanti eder.",
+        "de": "Eine Firewall garantiert Ihre Sicherheit im Internet.",
+        "fr": "Un pare-feu garantit votre sécurité sur Internet."
+      },
+      "freqRank": 184,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shield"
+    },
+    {
+      "index": 184,
+      "kind": "phrase",
+      "text": "Chemistry has made notable progress in recent years.",
+      "gloss": {
+        "tr": "Kimya bilimi son zamanlarda dikkate değer bir gelişim gösterdi.",
+        "es": "La química progresó notablemente los últimos años.",
+        "fr": "La chimie a fait des progrès considérables ces dernières années.",
+        "pt-BR": "A química progrediu notavelmente nos últimos anos.",
+        "ru": "За последние годы химия сделала заметный прогресс."
+      },
+      "freqRank": 185,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:test-tube"
+    },
+    {
+      "index": 185,
+      "kind": "phrase",
+      "text": "Don't worry. You can confide in me.",
+      "gloss": {
+        "tr": "Merak etme. Bana güvenebilirsin.",
+        "pt-BR": "Não se preocupe. Você pode confiar em mim."
+      },
+      "freqRank": 186,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shushing-face"
+    },
+    {
+      "index": 186,
+      "kind": "phrase",
+      "text": "First class plane flights come with complimentary alcohol.",
+      "gloss": {
+        "tr": "Birinci sınıf uçak bileti ücretsiz alkol ile birlikte gelir.",
+        "de": "Bei Flügen in der ersten Klasse ist Alkohol mit inbegriffen."
+      },
+      "freqRank": 187,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:airplane"
+    },
+    {
+      "index": 187,
+      "kind": "phrase",
+      "text": "Freezing rain is a rather rare meteorological phenomenon.",
+      "gloss": {
+        "tr": "Donan yağmur oldukça nadir bir meteorolojik olaydır.",
+        "de": "Der Eisregen ist ein eher seltenes meteorologisches Phänomen.",
+        "ru": "Ледяной дождь - довольно редкое погодное явление."
+      },
+      "freqRank": 188,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:cloud-with-rain"
+    },
+    {
+      "index": 188,
+      "kind": "phrase",
+      "text": "Get out of my life. I detest you.",
+      "gloss": {
+        "tr": "Yaşamımdan çık. Senden iğreniyorum.",
+        "ru": "Убирайся из моей жизни. Я тебя ненавижу.",
+        "ar": "أخرج من حياتي! أنا أمقتك!"
+      },
+      "freqRank": 189,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:broken-heart"
+    },
+    {
+      "index": 189,
+      "kind": "phrase",
+      "text": "Have you been bitten by a stray dog?",
+      "gloss": {
+        "tr": "Bir sokak köpeği tarafından ısırıldın mı?",
+        "de": "Wurden Sie von einem herrenlosen Hund gebissen?",
+        "ru": "Вас укусила бездомная собака?"
+      },
+      "freqRank": 190,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:dog"
+    },
+    {
+      "index": 190,
+      "kind": "phrase",
+      "text": "He had enough stamina to run a marathon.",
+      "gloss": {
+        "tr": "Onun bir maraton koşmak için yeterli gücü vardı.",
+        "fr": "Il avait assez d'endurance pour courir un marathon."
+      },
+      "freqRank": 191,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-running"
+    },
+    {
+      "index": 191,
+      "kind": "phrase",
+      "text": "High calorie foods are bad for my health.",
+      "gloss": {
+        "tr": "Yüksek kalorili yiyecekler sağlığım için kötüdür.",
+        "de": "Kalorienreiches Essen ist nicht gut für meine Gesundheit.",
+        "fr": "Les nourritures à niveau élevé en calories sont mauvaises pour ma santé."
+      },
+      "freqRank": 192,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hamburger"
+    },
+    {
+      "index": 192,
+      "kind": "phrase",
+      "text": "He lifted the car with his phenomenal strength.",
+      "gloss": {
+        "tr": "O, olağanüstü gücüyle arabayı kaldırdı.",
+        "es": "Él levantó el automóvil gracias a su fuerza excepcional.",
+        "fr": "Il souleva la voiture grâce à sa force exceptionnelle."
+      },
+      "freqRank": 193,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:flexed-biceps"
+    },
+    {
+      "index": 193,
+      "kind": "phrase",
+      "text": "How many apple trees are in your orchard?",
+      "gloss": {
+        "tr": "Meyve bahçenizde kaç tane elma ağacı var?",
+        "fr": "Combien de pommiers as-tu dans ton verger?",
+        "pt-BR": "Quantas macieiras há em seu pomar?",
+        "ru": "Сколько в твоём саду яблонь?"
+      },
+      "freqRank": 194,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:red-apple"
+    },
+    {
+      "index": 194,
+      "kind": "phrase",
+      "text": "He presented me with a bouquet of flowers.",
+      "gloss": {
+        "tr": "Bana bir buket çiçek sundu.",
+        "de": "Er überreichte mir einen Blumenstrauß.",
+        "es": "Él me regaló un ramillete de flores.",
+        "pt-BR": "Ele me presenteou com um buquê de flores.",
+        "ru": "Он презентовал мне букет цветов."
+      },
+      "freqRank": 195,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:bouquet"
+    },
+    {
+      "index": 195,
+      "kind": "phrase",
+      "text": "I am not accustomed to speaking in public.",
+      "gloss": {
+        "tr": "Ben herkesin önünde konuşmaya alışık değilim.",
+        "de": "Ich bin es nicht gewohnt, vor anderen zu sprechen.",
+        "es": "No estoy acostumbrada a hablar en público.",
+        "fr": "Je ne suis pas habituée à parler en public."
+      },
+      "freqRank": 196,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:microphone"
+    },
+    {
+      "index": 196,
+      "kind": "phrase",
+      "text": "I'm craving for beef stew right now.",
+      "gloss": { "tr": "Şu an canım dana güveç çekiyor." },
+      "freqRank": 197,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:pot-of-food"
+    },
+    {
+      "index": 197,
+      "kind": "phrase",
+      "text": "I am not accustomed to walking long distances.",
+      "gloss": {
+        "tr": "Ben uzun mesafeler yürümeye alışkın değilim.",
+        "es": "No estoy acostumbrado a caminar largas distancias.",
+        "fr": "Je ne suis pas habitué à marcher sur de longues distances.",
+        "ru": "Я не приспособлен для долгих пеших прогулок.",
+        "ar": "لست معتادا على مشي مسافات طويلة."
+      },
+      "freqRank": 198,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-walking"
+    },
+    {
+      "index": 198,
+      "kind": "phrase",
+      "text": "I'm not accustomed to getting up early.",
+      "gloss": {
+        "tr": "Erken kalkmaya alışkın değilim.",
+        "de": "Ich bin es nicht gewohnt, zeitig aufzustehen.",
+        "es": "No estoy acostumbrado a levantarme temprano.",
+        "fr": "Je ne suis pas habituée à me lever tôt.",
+        "ru": "Я не привык рано вставать."
+      },
+      "freqRank": 199,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:alarm-clock"
+    },
+    {
+      "index": 199,
+      "kind": "phrase",
+      "text": "I have a twitch in my right eye.",
+      "gloss": {
+        "tr": "Benim sağ gözümde bir seğirme var.",
+        "de": "Mein rechtes Auge zuckt.",
+        "fr": "J'ai un tic dans l'œil droit.",
+        "pt-BR": "Eu tenho um tique no meu olho direito.",
+        "ru": "У меня правый глаз дёргается."
+      },
+      "freqRank": 200,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:eye"
+    },
+    {
+      "index": 200,
+      "kind": "phrase",
+      "text": "If you buy in bulk, it's 20% cheaper.",
+      "gloss": {
+        "tr": "Toplu olarak satın alırsanız, % 20 daha ucuz dur.",
+        "fr": "Si tu achètes en gros, c'est 20 % moins cher.",
+        "ru": "Если купишь оптом, будет на двадцать процентов дешевле.",
+        "ar": "ستوفّر ٢٠٪ إن اشتريت بالجملة."
+      },
+      "freqRank": 201,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:shopping-cart"
+    },
+    {
+      "index": 201,
+      "kind": "phrase",
+      "text": "I listen to the radio while in transit.",
+      "gloss": {
+        "tr": "Transit halindeyken radyo dinlerim.",
+        "es": "Escucho la radio en el trayecto.",
+        "ru": "В дороге я слушаю радио."
+      },
+      "freqRank": 202,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:radio"
+    },
+    {
+      "index": 202,
+      "kind": "phrase",
+      "text": "It's forbidden to use this information commercially.",
+      "gloss": {
+        "tr": "Bu bilgiyi ticari amaçlı kullanmak yasak.",
+        "de": "Es ist verboten, diese Information kommerziell zu nutzen.",
+        "es": "Está prohibido usar comercialmente esta información.",
+        "fr": "Il est interdit d'utiliser ces informations à des fins commerciales.",
+        "ru": "Эту информацию запрещено использовать в коммерческих целях.",
+        "ar": "يمنع استخدام هذه المعلومات لأغراض تجارية."
+      },
+      "freqRank": 203,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:prohibited"
+    },
+    {
+      "index": 203,
+      "kind": "phrase",
+      "text": "I think I'll snooze for a while.",
+      "gloss": {
+        "tr": "Sanırım bir süre uyuyacağım.",
+        "fr": "Je pense que je vais somnoler un moment.",
+        "ru": "Думаю, я немного вздремну."
+      },
+      "freqRank": 204,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:zzz"
+    },
+    {
+      "index": 204,
+      "kind": "phrase",
+      "text": "Many fantasy novels depict worlds with two moons.",
+      "gloss": {
+        "tr": "Birçok fantezi romanı iki uydulu dünyalar betimliyor.",
+        "fr": "De nombreux romans fantastiques décrivent des mondes avec deux lunes.",
+        "ru": "Во многих фантастических романах описываются миры с двумя лунами."
+      },
+      "freqRank": 205,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:crescent-moon"
+    },
+    {
+      "index": 205,
+      "kind": "phrase",
+      "text": "My house is comprised of these four rooms.",
+      "gloss": {
+        "tr": "Benim evim bu dört odadan oluşur.",
+        "ru": "Мой дом состоит из этих четырёх комнат.",
+        "ar": "بيتي يتالف من هذه الغرف الاربعة"
+      },
+      "freqRank": 206,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:house"
+    },
+    {
+      "index": 206,
+      "kind": "phrase",
+      "text": "She looked at him with an inscrutable expression.",
+      "gloss": {
+        "tr": "O anlaşılmaz bir ifadeyle ona baktı.",
+        "fr": "Elle le regarda d'un air impénétrable."
+      },
+      "freqRank": 207,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:expressionless-face"
+    },
+    {
+      "index": 207,
+      "kind": "phrase",
+      "text": "So there is a magnetic field around earth.",
+      "gloss": {
+        "tr": "Öyleyse dünyanın etrafında bir manyetik alan var.",
+        "de": "Rings um die Erde besteht also ein Magnetfeld.",
+        "es": "Así que hay un campo magnético alrededor de la tierra.",
+        "ru": "Таким образом, вокруг Земли существует магнитное поле."
+      },
+      "freqRank": 208,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:globe-showing-europe-africa"
+    },
+    {
+      "index": 208,
+      "kind": "phrase",
+      "text": "The answer leads us to a vicious circle.",
+      "gloss": {
+        "tr": "Cevap bizi kısır bir döngüye götürür.",
+        "de": "Die Antwort führt uns in einen Teufelskreis.",
+        "es": "La respuesta nos lleva a un círculo vicioso.",
+        "fr": "La réponse nous mène à un cercle vicieux.",
+        "pt-BR": "A resposta leva-nos a um círculo vicioso.",
+        "ru": "Ответ приводит нас к порочному кругу."
+      },
+      "freqRank": 209,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:counterclockwise-arrows-button"
+    },
+    {
+      "index": 209,
+      "kind": "phrase",
+      "text": "There were coffee grounds left in my cup.",
+      "gloss": {
+        "tr": "Benim fincanımda bırakılmış kahve telveleri vardı.",
+        "ru": "На дне моей чашки осталась кофейная гуща."
+      },
+      "freqRank": 210,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:hot-beverage"
+    },
+    {
+      "index": 210,
+      "kind": "phrase",
+      "text": "The chairs are made of a synthetic material.",
+      "gloss": {
+        "tr": "Sandalyeler sentetik malzemeden yapılır.",
+        "de": "Die Stühle bestehen aus einem Kunststoff."
+      },
+      "freqRank": 211,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:chair"
+    },
+    {
+      "index": 211,
+      "kind": "phrase",
+      "text": "There's a post office in the vicinity.",
+      "gloss": {
+        "tr": "Bu çevrede bir postane var.",
+        "fr": "Il y a une poste dans les environs.",
+        "ru": "Поблизости есть почта."
+      },
+      "freqRank": 212,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:envelope"
+    },
+    {
+      "index": 212,
+      "kind": "phrase",
+      "text": "Unfortunately I forgot to charge my camera beforehand.",
+      "gloss": {
+        "tr": "Ne yazık ki önceden benim kamerayı şarj etmeyi unuttum.",
+        "de": "Leider habe ich vergessen, vorher meinen Fotoapparat aufzuladen."
+      },
+      "freqRank": 213,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:camera"
+    },
+    {
+      "index": 213,
+      "kind": "phrase",
+      "text": "We must try to conserve our natural resources.",
+      "gloss": {
+        "tr": "Doğal kaynaklarımızı korumaya çalışmalıyız.",
+        "pt-BR": "Devemos tentar conservar nossos recursos naturais.",
+        "ru": "Мы должны попытаться сохранить наши природные ресурсы."
+      },
+      "freqRank": 214,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:recycling-symbol"
+    },
+    {
+      "index": 214,
+      "kind": "phrase",
+      "text": "Who can I call to fix my plumbing?",
+      "gloss": { "tr": "Su tesisatımı tamir etmek için kimi arayabilirim?" },
+      "freqRank": 215,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:wrench"
+    },
+    {
+      "index": 215,
+      "kind": "phrase",
+      "text": "Why does that goose sit on her eggs?",
+      "gloss": {
+        "tr": "O kaz niçin yumurtalarının üstünde oturuyor?",
+        "de": "Warum sitzt diese Ente auf ihren Eiern?",
+        "es": "¿Por qué ese ganso se sienta sobre sus huevos?"
+      },
+      "freqRank": 216,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:egg"
+    },
+    {
+      "index": 216,
+      "kind": "phrase",
+      "text": "Young plants should be protected in frosty weather.",
+      "gloss": { "tr": "Genç bitkiler kırağılı havadan korunmalıdır." },
+      "freqRank": 217,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:seedling"
+    }
+  ]
+}
