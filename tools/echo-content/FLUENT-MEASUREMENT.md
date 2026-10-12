@@ -70,7 +70,7 @@ Build `es`, `fr`, `it`, `de` and `ru`, each where at least **200 items survive
 every rule** — the above plus a cue picture on every item (rule 1 of the
 overnight brief). The gloss and length rules leave thousands; the picture is
 the binding rule, and its numbers are below once the mapping is done. Do not
-build `en`.
+build `en` — superseded on 12 October; see _English, built on 12 October_.
 
 ## The picture rule
 
@@ -112,6 +112,34 @@ before near-duplicates were thinned, too close to the 200 floor once the
 phrasebook lines fell out. "Taken" is after `build-pack.mjs`, which found no
 translation table on de.wiktionary or ru.wiktionary for any of the 22
 phrasebook entries the cue tables had kept, so both packs are all Tatoeba.
+
+## English, built on 12 October
+
+Behic took the decision above: for `en:fluent` only, **Turkish is the one
+required gloss** and the rest are preferred. The three lower English levels
+keep the eight-locale rule. The 2,540 candidates were not what limited the
+pack, and the projection above (5.1 of 7 locales, Arabic 6%) did not hold,
+for two reasons the measurement could not see:
+
+- **764 of the 2,540 are "fluent" by a word form.** Octanove bands the
+  adjective _trying_ C1 and the noun _standing_ C2, and `gradedWords` lets
+  the first profile win over NGSL's inflections of _try_ and _stand_ — so
+  `I'm trying to help.` and `He was standing at the door.` came out C1. Those
+  sentences are A1–A2 everywhere else, and they were most of the best-covered
+  ones: 22 of the 48 sentences with an Arabic gloss are among them. They were
+  kept out of the pool (`trying`, `standing`, `removed` and six rarer forms
+  whose only hard word was such a form); `pick-phrases.mjs` is unchanged, and
+  the cue table is what enforces it, since none of them is in it.
+- **The picture rule took 12%, not 61–72%.** C1 English is abstract
+  vocabulary — _hypocrisy_, _plausible_, _speculation_ — and the 372 concepts
+  are concrete. All 1,776 remaining candidates were read, in three blocks by
+  coverage (608, 742, 426), and 217 got an honest cue.
+
+| Pool  | Given an honest cue | Picked | After review | tr   | ru  | fr  | de  | es  | pt-BR | ar  |
+| ----- | ------------------: | -----: | -----------: | ---- | --- | --- | --- | --- | ----- | --- |
+| 1,776 |                 217 |    217 |          213 | 100% | 62% | 59% | 49% | 36% | 33%   | 9%  |
+
+Under the 300 a pack aims for and above the 200 floor, so it is built.
 
 ## How to repeat it
 

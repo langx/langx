@@ -996,6 +996,115 @@ file: 137 and 131 m4a, none extra. Still not uploaded.
 made once and quickly; a German or Russian reader will disagree with some of it
 in both directions. And the unread columns are where a wrong gloss would hide.
 
+### English `fluent`: where it came from, 12 October
+
+**213 items, `"reviewed": true`, every one with a cue and Kokoro's two
+readings** (`af_heart` and `am_michael`, the voices of the other English
+packs). It draws on nothing the English packs below it do not:
+
+- **Tatoeba** (CC BY 2.0 FR) for every sentence and every gloss. No
+  phrasebook entry reached C1–C2, so nothing came from kaikki.
+- **CEFR-J 1.5 and the Octanove C1/C2 profile** (CC BY-SA 4.0) for the
+  level, first band wins, with **NGSL 1.2** (CC BY-SA 4.0) for the
+  inflections and the order.
+- **Kokoro-82M** (Apache-2.0) for the readings, made locally and not
+  uploaded.
+
+**Turkish is the one required gloss, and this is the only English pack where
+that is so.** The three below it require all seven other locales. At C1–C2
+that rule leaves three sentences, and 63 with Arabic optional; Turkish alone
+leaves 2,540. Behic chose that on 12 October, and the picker still prefers
+the best-covered sentences, so the other columns fill as far as Tatoeba goes:
+
+| tr   | ru  | fr  | de  | es  | pt-BR | ar  |
+| ---- | --- | --- | --- | --- | ----- | --- |
+| 100% | 62% | 59% | 49% | 36% | 33%   | 9%  |
+
+Arabic is the thin one, and it is thin in the source: 48 of the 2,540
+candidates have an Arabic translation at all. Twenty are in the pack; 22 were
+C1 only by a word form (next paragraph); the other six had no honest picture
+or, in one case, translated a different sense. A reader whose column is
+missing falls back through `glossFor` — their own locale, the interface
+locale, then English, which an English pack never has, and then the first
+column the item carries, which is always Turkish here.
+
+**What "fluent" had to be protected from.** The Octanove profile lists
+_trying_ (adjective), _standing_ (noun) and _removed_ (adjective), and it is
+read before NGSL's inflections, so `I'm trying to help.` banded C1. 764 of the
+2,540 candidates were C1 only that way — those three and six rarer forms
+(_refreshing_, _stretching_, _revealing_, _cleanly_, _enormously_,
+_diligently_) — and none was put in the cue table, which is what keeps them
+out. `pick-phrases.mjs` is unchanged; a later English `fluent` run has to make
+the same exclusion, or teach `gradedWords` to prefer an NGSL lemma's band.
+
+**The picture rule set the size.** All 1,776 remaining candidates were read
+for a cue, in three blocks by coverage, and 217 had an honest one: C1 English
+is abstract, and the 372 concepts are not. The rest were mostly no picture
+(_hypocrisy_, _plausible_, _speculation_, a hedgehog, a canoe), and the rest
+of that the content line below.
+
+### What the review of English `fluent` was, exactly
+
+**A Claude review, not a person's, and nobody has listened to the readings.**
+Done on 12 October 2026 to the standard of the Spanish, French and Italian
+`fluent`: **the English front, the Turkish gloss, the Arabic gloss where there
+is one, and the cue, read on every item.** The other five columns were
+**linted and not read**; `lint-glosses.mjs` had three findings, all Russian
+copula dashes written as hyphens, and all three were repaired. Nothing was
+machine-translated into an empty column.
+
+**Most of the content judgement was made at mapping time**, the way the
+other `fluent` packs did it: a candidate that was a slogan, a quotation or a
+proverb (_Ignorance is bliss._, _Practice what you preach._, _The descent to
+hell is easy._), a religious or political statement (_Are you the prophet?_,
+_We tend to associate politicians with hypocrisy._), violence, war, suicide
+or a corpse, a stereotype (_She is a hysterical woman._), Tatoeba meta or
+nonsense (_The meaning of this sentence is obscure._, _What is the difference
+between a pigeon?_), an idiom whose only picture is its literal one (_Our
+goose is cooked._, _It was a wild goose chase._), or a Turkish gloss that
+translated something else (_The verdict is in._ as "the verdict is at home")
+was never given a cue, so it could not be picked. Families were thinned to one
+or two there too — forty "naive" sentences, forty "accustomed to", twenty-two
+carpenters and seventeen bribes left two to four each.
+
+**Four items dropped on reading**, 217 → 213:
+
+- **Near-duplicates (3)** — `I have a business proposition for you.` beside
+  `I have a proposition for you.`, `How many trees are in your orchard?`
+  beside the apple-tree one, `The question was rhetorical.` beside `Is that a
+rhetorical question?`.
+- **A gloss for a different sense (1)** — `The house is suitably isolated.`,
+  whose Turkish says _insulated_; the English is unnatural either way.
+
+**Fifteen glosses corrected**, each naming its locale in `review.edited` with
+the old text in `review.glossWas`:
+
+- **Turkish, nine.** _algısal_ ("perceptual") for _perceptive_; _hırslı_
+  ("ambitious") for _avid_, twice; a bare _anahtar_ (key) for a wrench; a
+  recess glossed as going on holiday; `ucuz dur` and `% 20`; `benim kamerayı`
+  for _kameramı_; `olark`; a missing full stop.
+- **Arabic, three.** `عشر اعضاء` → `عشرة أعضاء` (agreement and hamza),
+  `أخرج` → `اخرج` for the imperative, and `يتالف … الاربعة` → `يتألف … الأربع`.
+- **Russian, three.** The copula dashes above.
+
+**Four cues were corrected before the review began**, and they were slips
+rather than judgements: the table had keyed four cues to the line next to the
+one meant in the pool (`You're very timid.` under a bear meant for _Bears
+hibernate during the winter._, and three like it). The four intended
+sentences took their places and the pick was run again.
+
+**Renumbered** through `order.mjs`'s `spread` after the drops, before any
+audio existed, so the readings were made once against the final numbering.
+**426 m4a**, two per item, made locally; every `voices[].key` resolves to a
+file and no file lacks a key. A machine readback (faster-whisper) of twelve
+takes — the four lines with a digit, a percent sign, a curly apostrophe or a
+rare word, both voices, and two others — came back word for word. That is
+the only check the readings have had. Not uploaded.
+
+**What a person would still find.** The level line: `It's chilly.` and
+`There's a sauna and a pool.` are C1 by the profile and easy by any ear.
+The five unread columns. And the readings, which no one has heard.
+
 ### Japanese: where it came from
 
 Three packs, JLPT N5, N4 and N3, drafted on 7 October 2026 at 300 items each

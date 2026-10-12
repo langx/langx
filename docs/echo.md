@@ -692,8 +692,8 @@ them.
 
 **Scope**: three packs per language, at `absoluteBeginner`, `beginner` and
 `intermediate`, about 300 phrases each — in eight locales for English, and in
-English plus what exists for the rest; see below. Outside English there is a
-fourth, at `fluent`, also below. A
+English plus what exists for the rest; see below. There is a fourth, at
+`fluent`, also below — in English too since 12 October, on a rule of its own. A
 sentence is its own example, so `example` is filled only for a phrasebook
 entry, where the dictionary has one. Each is read end to end by a person before
 its `"reviewed": true`; they are drafted together because the Tatoeba exports
@@ -709,16 +709,33 @@ decided that **Turkish is the one required gloss** — 2,540 candidates, measure
 in `tools/echo-content/FLUENT-MEASUREMENT.md` — and the picker keeps
 preferring the best-covered sentences, so the other six columns, Arabic above
 all since Arabic natives are LangX's second-largest group, fill as far as
-Tatoeba allows. How far each column reached is recorded below once the pack is built.
+Tatoeba allows. `content/echo/en/fluent.json` is that pack: 213 items, read
+on 12 October and `"reviewed": true`. **Turkish 100%, Russian 62%, French 59%,
+German 49%, Spanish 36%, Portuguese 33%, Arabic 9%.** Arabic is as far as the
+data goes, not as far as the picker went: of the 2,540 candidates only 48
+carry an Arabic translation at all, 22 of those are C1 only by a word form
+(below), six had no honest picture or translated a different sense, and the
+other 20 are in the pack.
+
+**Two more things bind at this level in English, and both are in the pack's
+size.** _Trying_, _standing_ and _removed_ are C1 and C2 headwords in the
+Octanove profile — the adjective (_a trying day_), the noun (_his standing_) —
+and the profile wins over NGSL's inflections of _try_, _stand_ and _remove_, so
+`I'm trying to help.` came out "fluent". 764 of the 2,540 candidates were
+fluent only that way and were left out of the pool. And the picture rule, which
+took 61–72% of the Spanish, French and Italian pools, took 12% here: all 1,776
+remaining candidates were read, and 217 had an honest cue among the 372
+concepts — C1 English is abstract vocabulary (_hypocrisy_, _plausible_,
+_speculation_), which is exactly what a closed palette of drawings cannot say.
 
 **A reader whose column is missing falls back, and the order is `glossFor`'s:**
 their native locale, then the app's interface locale, then English — which an
 English pack never has, being the side the learner is reading — and then the
 first column the item carries. Every item is built with Turkish first, so in
 practice an Arabic reader of the app in Arabic whose item has no Arabic gloss
-is shown the Turkish one. That is a worse card than an English one would be,
-and it is the cost of the pack existing at all; the three levels below keep
-the eight-locale rule.
+is shown the Turkish one. That is a poor card for somebody who reads no
+Turkish, and it is the cost of the pack existing at all; the three levels
+below keep the eight-locale rule.
 
 **Outside English that requirement had to go, and the same number is why.**
 Tatoeba links Arabic to 3,393 Spanish sentences, 3,104 French, 2,971 German,
@@ -865,7 +882,7 @@ eight locales; folding it into `streak` would mislabel it. Goes into
 | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1     | `srs.ts` + `SRS_RULES`; the four collections and indexes; `POST /echo/cards` (capture from a message or a post), `GET /echo/queue`, `POST /echo/reviews` (batch, idempotent), `GET /echo/summary`; Add echo in chat (menu + translation line) and on feed posts; the tab, session, done and cards screens; phrase cards mirrored into Echo; a post's pronunciation answer and a chat voice note attached as the card's audio; a message's photo attached as the card's image. **Not** the server voice — see "Audio"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | A card made from a message in one chat is reviewed, graded, and comes back on the day `srs.ts` said. A review batch sent twice advances once. |
 | 2     | **Built:** content pipeline and licence file; seed script; pack screen; `echoNewCardsPerDay` intake; token kind and cap; the streak rule; the 19:00 push; the tour step. pack audio, from Commons with its licence checked per file; the three **English packs**, 809 items, read in two passes and marked `"reviewed": true` — see `content/echo/ATTRIBUTION.md` for what that review covered and what it only sampled. **Also built:** fifteen more packs — Spanish, German, French, Russian and Italian, three levels each, 4,101 items, read and `"reviewed": true` on 20 September; `content/echo/ATTRIBUTION.md` says which three of their seven columns that reading covered. Their cue pictures and synthesised readings too: every card but sixteen carries one of the same 372 concepts, and every item is read — Kokoro's two takes for Spanish, French and Italian, Piper's one for German and Russian. **Also built:** six Mandarin packs, HSK 1–6, each item with its pinyin and 1,586 of 1,639 with a cue from the same 372 — each read in two Kokoro voices from that pinyin; see _Chinese is named by HSK_. **Also built:** three Japanese packs, JLPT N5–N3, 869 items, each with its kana, a cue and two Kokoro readings, read by Claude; see _Japanese is named by JLPT_. **Not built:** OpenMoji icons | A new account with no conversations opens Echo and has something to do within ten seconds.                                                    |
-| 3     | **Built:** production cards, offline review. **Reviewed:** `fluent` in Spanish, French, Italian, German and Russian. **Reviewed by Claude, not yet heard by a person:** the Arabic and Turkish packs, three each, read offline by Chatterbox. **Left:** pack multiple choice, listening cards, English `fluent`, FSRS                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Each is its own decision; none blocks 1 or 2.                                                                                                 |
+| 3     | **Built:** production cards, offline review. **Reviewed:** `fluent` in Spanish, French, Italian, German and Russian. **Reviewed by Claude, not yet heard by a person:** the Arabic and Turkish packs, three each, read offline by Chatterbox. **Reviewed by Claude, 12 October:** English `fluent`, Turkish the one required gloss. **Left:** pack multiple choice, listening cards, FSRS                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Each is its own decision; none blocks 1 or 2.                                                                                                 |
 
 Phase 1 is the whole promise and is deliberately content-free, so it cannot be
 blocked by licensing. Phase 2 is where content can fail; nothing in 3 is worth

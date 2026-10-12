@@ -2,7 +2,7 @@
   "id": "en:fluent",
   "lang": "en",
   "level": "fluent",
-  "contentVersion": 2,
+  "contentVersion": 3,
   "reviewed": true,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
@@ -40,7 +40,11 @@
       },
       "freqRank": 1,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:speech-balloon"
+      "image": "cue:speech-balloon",
+      "voices": [
+        { "key": "echo/packs/en_fluent/0-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/0-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 1,
@@ -49,7 +53,11 @@
       "gloss": { "tr": "O, rastgele yazar.", "ru": "Он пишет вкривь и вкось." },
       "freqRank": 2,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:writing-hand"
+      "image": "cue:writing-hand",
+      "voices": [
+        { "key": "echo/packs/en_fluent/1-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/1-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 2,
@@ -65,7 +73,11 @@
       },
       "freqRank": 3,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:peace-symbol"
+      "image": "cue:peace-symbol",
+      "voices": [
+        { "key": "echo/packs/en_fluent/2-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/2-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 3,
@@ -78,7 +90,11 @@
       },
       "freqRank": 4,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fearful-face"
+      "image": "cue:fearful-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/3-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/3-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 4,
@@ -92,7 +108,11 @@
       },
       "freqRank": 5,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sleepy-face"
+      "image": "cue:sleepy-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/4-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/4-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 5,
@@ -107,7 +127,11 @@
       },
       "freqRank": 6,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:balance-scale"
+      "image": "cue:balance-scale",
+      "voices": [
+        { "key": "echo/packs/en_fluent/5-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/5-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 6,
@@ -124,7 +148,11 @@
       },
       "freqRank": 7,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:lying-face"
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/6-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/6-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 7,
@@ -138,7 +166,11 @@
       },
       "freqRank": 8,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cold-face"
+      "image": "cue:cold-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/7-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/7-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 8,
@@ -152,7 +184,11 @@
       },
       "freqRank": 9,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:artist-palette"
+      "image": "cue:artist-palette",
+      "voices": [
+        { "key": "echo/packs/en_fluent/8-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/8-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 9,
@@ -167,7 +203,11 @@
       },
       "freqRank": 10,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:check-mark"
+      "image": "cue:check-mark",
+      "voices": [
+        { "key": "echo/packs/en_fluent/9-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/9-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 10,
@@ -183,7 +223,11 @@
       },
       "freqRank": 11,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:smiling-face-with-halo"
+      "image": "cue:smiling-face-with-halo",
+      "voices": [
+        { "key": "echo/packs/en_fluent/10-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/10-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 11,
@@ -198,7 +242,11 @@
       },
       "freqRank": 12,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:trophy"
+      "image": "cue:trophy",
+      "voices": [
+        { "key": "echo/packs/en_fluent/11-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/11-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 12,
@@ -213,7 +261,11 @@
       },
       "freqRank": 13,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-rolling-eyes"
+      "image": "cue:face-with-rolling-eyes",
+      "voices": [
+        { "key": "echo/packs/en_fluent/12-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/12-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 13,
@@ -226,7 +278,11 @@
       },
       "freqRank": 14,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:disappointed-face"
+      "image": "cue:disappointed-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/13-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/13-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 14,
@@ -240,7 +296,11 @@
       },
       "freqRank": 15,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:flushed-face"
+      "image": "cue:flushed-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/14-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/14-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 15,
@@ -253,7 +313,11 @@
       },
       "freqRank": 16,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:scissors"
+      "image": "cue:scissors",
+      "voices": [
+        { "key": "echo/packs/en_fluent/15-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/15-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 16,
@@ -267,7 +331,11 @@
       },
       "freqRank": 17,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cat"
+      "image": "cue:cat",
+      "voices": [
+        { "key": "echo/packs/en_fluent/16-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/16-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 17,
@@ -286,7 +354,11 @@
         "glossWas": { "tr": "Bana anahtarı uzat." },
         "edited": ["tr"]
       },
-      "image": "cue:wrench"
+      "image": "cue:wrench",
+      "voices": [
+        { "key": "echo/packs/en_fluent/17-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/17-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 18,
@@ -300,7 +372,11 @@
       },
       "freqRank": 19,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-tears-of-joy"
+      "image": "cue:face-with-tears-of-joy",
+      "voices": [
+        { "key": "echo/packs/en_fluent/18-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/18-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 19,
@@ -313,7 +389,11 @@
       },
       "freqRank": 20,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:astonished-face"
+      "image": "cue:astonished-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/19-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/19-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 20,
@@ -327,7 +407,11 @@
       },
       "freqRank": 21,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-cartwheeling"
+      "image": "cue:person-cartwheeling",
+      "voices": [
+        { "key": "echo/packs/en_fluent/20-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/20-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 21,
@@ -341,7 +425,11 @@
       },
       "freqRank": 22,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:face-with-raised-eyebrow"
+      "image": "cue:face-with-raised-eyebrow",
+      "voices": [
+        { "key": "echo/packs/en_fluent/21-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/21-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 22,
@@ -355,7 +443,11 @@
       },
       "freqRank": 23,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:light-bulb"
+      "image": "cue:light-bulb",
+      "voices": [
+        { "key": "echo/packs/en_fluent/22-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/22-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 23,
@@ -369,7 +461,11 @@
       },
       "freqRank": 24,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:unamused-face"
+      "image": "cue:unamused-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/23-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/23-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 24,
@@ -382,7 +478,11 @@
       },
       "freqRank": 25,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:loudspeaker"
+      "image": "cue:loudspeaker",
+      "voices": [
+        { "key": "echo/packs/en_fluent/24-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/24-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 25,
@@ -391,7 +491,11 @@
       "gloss": { "tr": "Kesinlikle sevinçliyim." },
       "freqRank": 26,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:beaming-face-with-smiling-eyes"
+      "image": "cue:beaming-face-with-smiling-eyes",
+      "voices": [
+        { "key": "echo/packs/en_fluent/25-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/25-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 26,
@@ -405,7 +509,11 @@
       },
       "freqRank": 27,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-beard"
+      "image": "cue:person-beard",
+      "voices": [
+        { "key": "echo/packs/en_fluent/26-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/26-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 27,
@@ -414,7 +522,11 @@
       "gloss": { "tr": "Dışarısı ayaz.", "ru": "На улице морозно." },
       "freqRank": 28,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:snowflake"
+      "image": "cue:snowflake",
+      "voices": [
+        { "key": "echo/packs/en_fluent/27-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/27-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 28,
@@ -427,7 +539,11 @@
       },
       "freqRank": 29,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:winking-face-with-tongue"
+      "image": "cue:winking-face-with-tongue",
+      "voices": [
+        { "key": "echo/packs/en_fluent/28-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/28-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 29,
@@ -441,7 +557,11 @@
       },
       "freqRank": 30,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ear"
+      "image": "cue:ear",
+      "voices": [
+        { "key": "echo/packs/en_fluent/29-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/29-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 30,
@@ -450,7 +570,11 @@
       "gloss": { "tr": "Bir film izledim.", "fr": "J'ai regardé un film." },
       "freqRank": 31,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:clapper-board"
+      "image": "cue:clapper-board",
+      "voices": [
+        { "key": "echo/packs/en_fluent/30-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/30-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 31,
@@ -459,7 +583,11 @@
       "gloss": { "tr": "Bacaklarım uyuşmuş.", "ru": "У меня ноги занемели." },
       "freqRank": 32,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:leg"
+      "image": "cue:leg",
+      "voices": [
+        { "key": "echo/packs/en_fluent/31-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/31-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 32,
@@ -468,7 +596,11 @@
       "gloss": { "tr": "Patatesler çok yönlüdür.", "es": "Las patatas son muy versátiles." },
       "freqRank": 33,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:potato"
+      "image": "cue:potato",
+      "voices": [
+        { "key": "echo/packs/en_fluent/32-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/32-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 33,
@@ -477,7 +609,11 @@
       "gloss": { "tr": "Şifrem tehlikeye girdi." },
       "freqRank": 34,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:key"
+      "image": "cue:key",
+      "voices": [
+        { "key": "echo/packs/en_fluent/33-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/33-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 34,
@@ -491,7 +627,11 @@
       },
       "freqRank": 35,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:telephone-receiver"
+      "image": "cue:telephone-receiver",
+      "voices": [
+        { "key": "echo/packs/en_fluent/34-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/34-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 35,
@@ -500,7 +640,11 @@
       "gloss": { "tr": "Gemiler boş görünüyordu.", "ar": "بدت تلك السّفن شاغرة." },
       "freqRank": 36,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ship"
+      "image": "cue:ship",
+      "voices": [
+        { "key": "echo/packs/en_fluent/35-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/35-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 36,
@@ -509,7 +653,11 @@
       "gloss": { "tr": "O, histerik bir biçimde ağlıyordu." },
       "freqRank": 37,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:loudly-crying-face"
+      "image": "cue:loudly-crying-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/36-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/36-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 37,
@@ -522,7 +670,11 @@
       },
       "freqRank": 38,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:free-button"
+      "image": "cue:free-button",
+      "voices": [
+        { "key": "echo/packs/en_fluent/37-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/37-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 38,
@@ -531,7 +683,11 @@
       "gloss": { "tr": "Bu çok asidiktir.", "es": "Esto es muy ácido." },
       "freqRank": 39,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:lemon"
+      "image": "cue:lemon",
+      "voices": [
+        { "key": "echo/packs/en_fluent/38-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/38-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 39,
@@ -540,7 +696,11 @@
       "gloss": { "tr": "Aşıklar isteksizce ayrıldı." },
       "freqRank": 40,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:broken-heart"
+      "image": "cue:broken-heart",
+      "voices": [
+        { "key": "echo/packs/en_fluent/39-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/39-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 40,
@@ -553,7 +713,11 @@
       },
       "freqRank": 41,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:gear"
+      "image": "cue:gear",
+      "voices": [
+        { "key": "echo/packs/en_fluent/40-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/40-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 41,
@@ -567,7 +731,11 @@
       },
       "freqRank": 42,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:coin"
+      "image": "cue:coin",
+      "voices": [
+        { "key": "echo/packs/en_fluent/41-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/41-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 42,
@@ -580,7 +748,11 @@
       },
       "freqRank": 43,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cow"
+      "image": "cue:cow",
+      "voices": [
+        { "key": "echo/packs/en_fluent/42-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/42-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 43,
@@ -589,7 +761,11 @@
       "gloss": { "tr": "Sakin olur musun?", "fr": "Voudrais-tu te détendre ?" },
       "freqRank": 45,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-in-lotus-position"
+      "image": "cue:person-in-lotus-position",
+      "voices": [
+        { "key": "echo/packs/en_fluent/43-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/43-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 44,
@@ -598,7 +774,11 @@
       "gloss": { "tr": "Koku tiksinçti.", "de": "Der Geruch war verabscheuungswürdig." },
       "freqRank": 46,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:nauseated-face"
+      "image": "cue:nauseated-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/44-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/44-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 45,
@@ -611,7 +791,11 @@
       },
       "freqRank": 47,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:superhero"
+      "image": "cue:superhero",
+      "voices": [
+        { "key": "echo/packs/en_fluent/45-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/45-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 46,
@@ -620,7 +804,11 @@
       "gloss": { "tr": "Zamanlama kusursuzdu.", "ru": "Время было выбрано безупречно." },
       "freqRank": 48,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:timer-clock"
+      "image": "cue:timer-clock",
+      "voices": [
+        { "key": "echo/packs/en_fluent/46-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/46-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 47,
@@ -641,7 +829,11 @@
         "glossWas": { "tr": "Sen çok algısalsın." },
         "edited": ["tr"]
       },
-      "image": "cue:eye"
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/en_fluent/47-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/47-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 48,
@@ -656,7 +848,11 @@
       },
       "freqRank": 50,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:stethoscope"
+      "image": "cue:stethoscope",
+      "voices": [
+        { "key": "echo/packs/en_fluent/48-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/48-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 49,
@@ -672,7 +868,11 @@
       },
       "freqRank": 51,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:angry-face"
+      "image": "cue:angry-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/49-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/49-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 50,
@@ -687,7 +887,11 @@
       },
       "freqRank": 52,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:bear"
+      "image": "cue:bear",
+      "voices": [
+        { "key": "echo/packs/en_fluent/50-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/50-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 51,
@@ -702,7 +906,11 @@
       },
       "freqRank": 53,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:check-mark-button"
+      "image": "cue:check-mark-button",
+      "voices": [
+        { "key": "echo/packs/en_fluent/51-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/51-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 52,
@@ -716,7 +924,11 @@
       },
       "freqRank": 54,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dove"
+      "image": "cue:dove",
+      "voices": [
+        { "key": "echo/packs/en_fluent/52-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/52-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 53,
@@ -729,7 +941,11 @@
       },
       "freqRank": 55,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:smiling-face-with-halo"
+      "image": "cue:smiling-face-with-halo",
+      "voices": [
+        { "key": "echo/packs/en_fluent/53-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/53-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 54,
@@ -743,7 +959,11 @@
       },
       "freqRank": 56,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ok-hand"
+      "image": "cue:ok-hand",
+      "voices": [
+        { "key": "echo/packs/en_fluent/54-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/54-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 55,
@@ -758,7 +978,11 @@
       },
       "freqRank": 57,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:confused-face"
+      "image": "cue:confused-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/55-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/55-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 56,
@@ -771,7 +995,11 @@
       },
       "freqRank": 58,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:brain"
+      "image": "cue:brain",
+      "voices": [
+        { "key": "echo/packs/en_fluent/56-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/56-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 57,
@@ -784,7 +1012,11 @@
       },
       "freqRank": 59,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:flexed-biceps"
+      "image": "cue:flexed-biceps",
+      "voices": [
+        { "key": "echo/packs/en_fluent/57-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/57-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 58,
@@ -797,7 +1029,11 @@
       },
       "freqRank": 60,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pensive-face"
+      "image": "cue:pensive-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/58-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/58-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 59,
@@ -810,7 +1046,11 @@
       },
       "freqRank": 61,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
+      "image": "cue:briefcase",
+      "voices": [
+        { "key": "echo/packs/en_fluent/59-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/59-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 60,
@@ -823,7 +1063,11 @@
       },
       "freqRank": 62,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thought-balloon"
+      "image": "cue:thought-balloon",
+      "voices": [
+        { "key": "echo/packs/en_fluent/60-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/60-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 61,
@@ -836,7 +1080,11 @@
       },
       "freqRank": 63,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cheese-wedge"
+      "image": "cue:cheese-wedge",
+      "voices": [
+        { "key": "echo/packs/en_fluent/61-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/61-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 62,
@@ -850,7 +1098,11 @@
       },
       "freqRank": 64,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:artist-palette"
+      "image": "cue:artist-palette",
+      "voices": [
+        { "key": "echo/packs/en_fluent/62-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/62-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 63,
@@ -859,7 +1111,11 @@
       "gloss": { "tr": "Ben bir spor fanatiğiyim.", "pt-BR": "Eu sou fanático por esportes." },
       "freqRank": 65,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:soccer-ball"
+      "image": "cue:soccer-ball",
+      "voices": [
+        { "key": "echo/packs/en_fluent/63-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/63-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 64,
@@ -873,7 +1129,11 @@
       },
       "freqRank": 66,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-walking"
+      "image": "cue:person-walking",
+      "voices": [
+        { "key": "echo/packs/en_fluent/64-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/64-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 65,
@@ -886,7 +1146,11 @@
         "glossWas": { "tr": "Ben hırslı bir golfçüyüm." },
         "edited": ["tr"]
       },
-      "image": "cue:flag-in-hole"
+      "image": "cue:flag-in-hole",
+      "voices": [
+        { "key": "echo/packs/en_fluent/65-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/65-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 66,
@@ -900,7 +1164,11 @@
       },
       "freqRank": 68,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:tangerine"
+      "image": "cue:tangerine",
+      "voices": [
+        { "key": "echo/packs/en_fluent/66-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/66-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 67,
@@ -913,7 +1181,11 @@
       },
       "freqRank": 69,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-question-mark"
+      "image": "cue:red-question-mark",
+      "voices": [
+        { "key": "echo/packs/en_fluent/67-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/67-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 68,
@@ -926,7 +1198,11 @@
       },
       "freqRank": 70,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eyes"
+      "image": "cue:eyes",
+      "voices": [
+        { "key": "echo/packs/en_fluent/68-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/68-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 69,
@@ -941,7 +1217,11 @@
       },
       "freqRank": 71,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:weary-face"
+      "image": "cue:weary-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/69-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/69-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 70,
@@ -954,7 +1234,11 @@
       },
       "freqRank": 72,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:warning"
+      "image": "cue:warning",
+      "voices": [
+        { "key": "echo/packs/en_fluent/70-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/70-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 71,
@@ -969,7 +1253,11 @@
       },
       "freqRank": 73,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:clipboard"
+      "image": "cue:clipboard",
+      "voices": [
+        { "key": "echo/packs/en_fluent/71-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/71-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 72,
@@ -984,7 +1272,11 @@
       },
       "freqRank": 74,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:open-book"
+      "image": "cue:open-book",
+      "voices": [
+        { "key": "echo/packs/en_fluent/72-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/72-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 73,
@@ -1004,7 +1296,11 @@
         "glossWas": { "ru": "Мой дедушка - плотник." },
         "edited": ["ru"]
       },
-      "image": "cue:hammer-and-wrench"
+      "image": "cue:hammer-and-wrench",
+      "voices": [
+        { "key": "echo/packs/en_fluent/73-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/73-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 74,
@@ -1018,7 +1314,11 @@
       },
       "freqRank": 76,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/en_fluent/74-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/74-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 75,
@@ -1034,7 +1334,11 @@
       },
       "freqRank": 77,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:raised-hand"
+      "image": "cue:raised-hand",
+      "voices": [
+        { "key": "echo/packs/en_fluent/75-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/75-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 76,
@@ -1046,7 +1350,11 @@
       },
       "freqRank": 78,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:chart-increasing"
+      "image": "cue:chart-increasing",
+      "voices": [
+        { "key": "echo/packs/en_fluent/76-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/76-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 77,
@@ -1061,7 +1369,11 @@
       },
       "freqRank": 79,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fire"
+      "image": "cue:fire",
+      "voices": [
+        { "key": "echo/packs/en_fluent/77-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/77-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 78,
@@ -1073,7 +1385,11 @@
       },
       "freqRank": 80,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:droplet"
+      "image": "cue:droplet",
+      "voices": [
+        { "key": "echo/packs/en_fluent/78-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/78-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 79,
@@ -1086,7 +1402,11 @@
         "glossWas": { "tr": "O hırslı bir okuyucu." },
         "edited": ["tr"]
       },
-      "image": "cue:books"
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/en_fluent/79-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/79-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 80,
@@ -1099,7 +1419,11 @@
       },
       "freqRank": 82,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:worried-face"
+      "image": "cue:worried-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/80-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/80-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 81,
@@ -1108,7 +1432,11 @@
       "gloss": { "tr": "Koreografi oldukça basittir.", "ru": "Хореография достаточно простая." },
       "freqRank": 83,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:woman-dancing"
+      "image": "cue:woman-dancing",
+      "voices": [
+        { "key": "echo/packs/en_fluent/81-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/81-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 82,
@@ -1121,7 +1449,11 @@
       },
       "freqRank": 84,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:test-tube"
+      "image": "cue:test-tube",
+      "voices": [
+        { "key": "echo/packs/en_fluent/82-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/82-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 83,
@@ -1140,7 +1472,11 @@
         "glossWas": { "ar": "اللجنة تشمل عشر اعضاء." },
         "edited": ["ar"]
       },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/en_fluent/83-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/83-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 84,
@@ -1152,7 +1488,11 @@
       },
       "freqRank": 86,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:wrapped-gift"
+      "image": "cue:wrapped-gift",
+      "voices": [
+        { "key": "echo/packs/en_fluent/84-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/84-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 85,
@@ -1167,7 +1507,11 @@
       },
       "freqRank": 87,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hourglass-not-done"
+      "image": "cue:hourglass-not-done",
+      "voices": [
+        { "key": "echo/packs/en_fluent/85-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/85-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 86,
@@ -1181,7 +1525,11 @@
       },
       "freqRank": 88,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:books"
+      "image": "cue:books",
+      "voices": [
+        { "key": "echo/packs/en_fluent/86-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/86-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 87,
@@ -1196,7 +1544,11 @@
       },
       "freqRank": 91,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dove"
+      "image": "cue:dove",
+      "voices": [
+        { "key": "echo/packs/en_fluent/87-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/87-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 88,
@@ -1210,7 +1562,11 @@
       },
       "freqRank": 90,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:straight-ruler"
+      "image": "cue:straight-ruler",
+      "voices": [
+        { "key": "echo/packs/en_fluent/88-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/88-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 89,
@@ -1219,7 +1575,11 @@
       "gloss": { "tr": "Uçak alçalmaya başladı." },
       "freqRank": 93,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:airplane-arrival"
+      "image": "cue:airplane-arrival",
+      "voices": [
+        { "key": "echo/packs/en_fluent/89-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/89-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 90,
@@ -1235,7 +1595,11 @@
       },
       "freqRank": 92,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:window"
+      "image": "cue:window",
+      "voices": [
+        { "key": "echo/packs/en_fluent/90-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/90-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 91,
@@ -1247,7 +1611,11 @@
       },
       "freqRank": 95,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:no-entry"
+      "image": "cue:no-entry",
+      "voices": [
+        { "key": "echo/packs/en_fluent/91-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/91-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 92,
@@ -1262,7 +1630,11 @@
       },
       "freqRank": 94,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:snake"
+      "image": "cue:snake",
+      "voices": [
+        { "key": "echo/packs/en_fluent/92-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/92-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 93,
@@ -1274,7 +1646,11 @@
       },
       "freqRank": 97,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-notes"
+      "image": "cue:musical-notes",
+      "voices": [
+        { "key": "echo/packs/en_fluent/93-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/93-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 94,
@@ -1287,7 +1663,11 @@
       },
       "freqRank": 96,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:tooth"
+      "image": "cue:tooth",
+      "voices": [
+        { "key": "echo/packs/en_fluent/94-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/94-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 95,
@@ -1301,7 +1681,11 @@
       },
       "freqRank": 98,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-running"
+      "image": "cue:person-running",
+      "voices": [
+        { "key": "echo/packs/en_fluent/95-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/95-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 96,
@@ -1315,7 +1699,11 @@
       },
       "freqRank": 99,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:mobile-phone"
+      "image": "cue:mobile-phone",
+      "voices": [
+        { "key": "echo/packs/en_fluent/96-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/96-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 97,
@@ -1330,7 +1718,11 @@
       },
       "freqRank": 100,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:passport-control"
+      "image": "cue:passport-control",
+      "voices": [
+        { "key": "echo/packs/en_fluent/97-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/97-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 98,
@@ -1344,7 +1736,11 @@
       },
       "freqRank": 101,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:stopwatch"
+      "image": "cue:stopwatch",
+      "voices": [
+        { "key": "echo/packs/en_fluent/98-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/98-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 99,
@@ -1359,7 +1755,11 @@
       },
       "freqRank": 102,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dollar-banknote"
+      "image": "cue:dollar-banknote",
+      "voices": [
+        { "key": "echo/packs/en_fluent/99-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/99-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 100,
@@ -1374,7 +1774,11 @@
       },
       "freqRank": 103,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:police-car-light"
+      "image": "cue:police-car-light",
+      "voices": [
+        { "key": "echo/packs/en_fluent/100-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/100-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 101,
@@ -1383,7 +1787,11 @@
       "gloss": { "tr": "Bu otelin bir saunası var mı?" },
       "freqRank": 104,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hotel"
+      "image": "cue:hotel",
+      "voices": [
+        { "key": "echo/packs/en_fluent/101-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/101-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 102,
@@ -1396,7 +1804,11 @@
       },
       "freqRank": 105,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:mouse-face"
+      "image": "cue:mouse-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/102-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/102-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 103,
@@ -1409,7 +1821,11 @@
       },
       "freqRank": 106,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:warning"
+      "image": "cue:warning",
+      "voices": [
+        { "key": "echo/packs/en_fluent/103-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/103-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 104,
@@ -1424,7 +1840,11 @@
       },
       "freqRank": 107,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:tumbler-glass"
+      "image": "cue:tumbler-glass",
+      "voices": [
+        { "key": "echo/packs/en_fluent/104-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/104-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 105,
@@ -1438,7 +1858,11 @@
       },
       "freqRank": 108,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:balance-scale"
+      "image": "cue:balance-scale",
+      "voices": [
+        { "key": "echo/packs/en_fluent/105-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/105-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 106,
@@ -1453,7 +1877,11 @@
       },
       "freqRank": 109,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-question-mark"
+      "image": "cue:red-question-mark",
+      "voices": [
+        { "key": "echo/packs/en_fluent/106-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/106-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 107,
@@ -1469,7 +1897,11 @@
       },
       "freqRank": 110,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cold-face"
+      "image": "cue:cold-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/107-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/107-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 108,
@@ -1478,7 +1910,11 @@
       "gloss": { "tr": "O, çok iyi bir top vurucusu.", "de": "Er ist ein sehr guter Schläger." },
       "freqRank": 111,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:baseball"
+      "image": "cue:baseball",
+      "voices": [
+        { "key": "echo/packs/en_fluent/108-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/108-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 109,
@@ -1492,7 +1928,11 @@
       },
       "freqRank": 112,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:lying-face"
+      "image": "cue:lying-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/109-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/109-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 110,
@@ -1506,7 +1946,11 @@
       },
       "freqRank": 113,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:paw-prints"
+      "image": "cue:paw-prints",
+      "voices": [
+        { "key": "echo/packs/en_fluent/110-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/110-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 111,
@@ -1520,7 +1964,11 @@
       },
       "freqRank": 114,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/en_fluent/111-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/111-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 112,
@@ -1536,7 +1984,11 @@
       },
       "freqRank": 115,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dollar-banknote"
+      "image": "cue:dollar-banknote",
+      "voices": [
+        { "key": "echo/packs/en_fluent/112-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/112-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 113,
@@ -1550,7 +2002,11 @@
       },
       "freqRank": 116,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pot-of-food"
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/en_fluent/113-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/113-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 114,
@@ -1559,7 +2015,11 @@
       "gloss": { "tr": "Mirasımı çoktan harcadım.", "pt-BR": "Já gastei todo minha herança." },
       "freqRank": 117,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:money-with-wings"
+      "image": "cue:money-with-wings",
+      "voices": [
+        { "key": "echo/packs/en_fluent/114-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/114-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 115,
@@ -1572,7 +2032,11 @@
       },
       "freqRank": 118,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:tooth"
+      "image": "cue:tooth",
+      "voices": [
+        { "key": "echo/packs/en_fluent/115-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/115-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 116,
@@ -1584,7 +2048,11 @@
       },
       "freqRank": 119,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:soap"
+      "image": "cue:soap",
+      "voices": [
+        { "key": "echo/packs/en_fluent/116-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/116-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 117,
@@ -1602,7 +2070,11 @@
         "glossWas": { "tr": "Bence bu karşılıklı olark yararlı." },
         "edited": ["tr"]
       },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/en_fluent/117-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/117-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 118,
@@ -1614,7 +2086,11 @@
       },
       "freqRank": 121,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:teacup-without-handle"
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        { "key": "echo/packs/en_fluent/118-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/118-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 119,
@@ -1628,7 +2104,11 @@
       },
       "freqRank": 122,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:bus"
+      "image": "cue:bus",
+      "voices": [
+        { "key": "echo/packs/en_fluent/119-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/119-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 120,
@@ -1644,7 +2124,11 @@
         "glossWas": { "tr": "Şimdi kalan tozu temizleyin" },
         "edited": ["tr"]
       },
-      "image": "cue:broom"
+      "image": "cue:broom",
+      "voices": [
+        { "key": "echo/packs/en_fluent/120-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/120-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 121,
@@ -1657,7 +2141,11 @@
       },
       "freqRank": 124,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sleeping-face"
+      "image": "cue:sleeping-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/121-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/121-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 122,
@@ -1671,7 +2159,11 @@
       },
       "freqRank": 125,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/en_fluent/122-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/122-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 123,
@@ -1686,7 +2178,11 @@
       },
       "freqRank": 126,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:handshake"
+      "image": "cue:handshake",
+      "voices": [
+        { "key": "echo/packs/en_fluent/123-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/123-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 124,
@@ -1700,7 +2196,11 @@
       },
       "freqRank": 127,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:television"
+      "image": "cue:television",
+      "voices": [
+        { "key": "echo/packs/en_fluent/124-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/124-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 125,
@@ -1713,7 +2213,11 @@
       },
       "freqRank": 128,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cow"
+      "image": "cue:cow",
+      "voices": [
+        { "key": "echo/packs/en_fluent/125-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/125-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 126,
@@ -1727,7 +2231,11 @@
       },
       "freqRank": 129,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:automobile",
+      "voices": [
+        { "key": "echo/packs/en_fluent/126-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/126-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 127,
@@ -1743,7 +2251,11 @@
       },
       "freqRank": 130,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:castle"
+      "image": "cue:castle",
+      "voices": [
+        { "key": "echo/packs/en_fluent/127-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/127-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 128,
@@ -1755,7 +2267,11 @@
       },
       "freqRank": 131,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-score"
+      "image": "cue:musical-score",
+      "voices": [
+        { "key": "echo/packs/en_fluent/128-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/128-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 129,
@@ -1764,7 +2280,11 @@
       "gloss": { "tr": "Yapraklar rüzgarda hışırdıyor.", "ru": "Листья шелестят на ветру." },
       "freqRank": 132,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:leaf-fluttering-in-wind"
+      "image": "cue:leaf-fluttering-in-wind",
+      "voices": [
+        { "key": "echo/packs/en_fluent/129-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/129-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 130,
@@ -1773,7 +2293,11 @@
       "gloss": { "tr": "Burası eski bir taş ocağı." },
       "freqRank": 133,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:rock"
+      "image": "cue:rock",
+      "voices": [
+        { "key": "echo/packs/en_fluent/130-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/130-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 131,
@@ -1782,7 +2306,11 @@
       "gloss": { "tr": "Gece açık ve buzluydu." },
       "freqRank": 134,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:night-with-stars"
+      "image": "cue:night-with-stars",
+      "voices": [
+        { "key": "echo/packs/en_fluent/131-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/131-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 132,
@@ -1796,7 +2324,11 @@
       },
       "freqRank": 135,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:station"
+      "image": "cue:station",
+      "voices": [
+        { "key": "echo/packs/en_fluent/132-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/132-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 133,
@@ -1810,7 +2342,11 @@
       },
       "freqRank": 136,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:police-officer"
+      "image": "cue:police-officer",
+      "voices": [
+        { "key": "echo/packs/en_fluent/133-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/133-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 134,
@@ -1823,7 +2359,11 @@
       },
       "freqRank": 137,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:heavy-dollar-sign"
+      "image": "cue:heavy-dollar-sign",
+      "voices": [
+        { "key": "echo/packs/en_fluent/134-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/134-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 135,
@@ -1839,7 +2379,11 @@
       },
       "freqRank": 138,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:t-shirt"
+      "image": "cue:t-shirt",
+      "voices": [
+        { "key": "echo/packs/en_fluent/135-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/135-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 136,
@@ -1851,7 +2395,11 @@
       },
       "freqRank": 139,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:restroom"
+      "image": "cue:restroom",
+      "voices": [
+        { "key": "echo/packs/en_fluent/136-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/136-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 137,
@@ -1860,7 +2408,11 @@
       "gloss": { "tr": "En sevdiğiniz akustik şarkı nedir?" },
       "freqRank": 140,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:guitar"
+      "image": "cue:guitar",
+      "voices": [
+        { "key": "echo/packs/en_fluent/137-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/137-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 138,
@@ -1874,7 +2426,11 @@
       },
       "freqRank": 141,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:busts-in-silhouette"
+      "image": "cue:busts-in-silhouette",
+      "voices": [
+        { "key": "echo/packs/en_fluent/138-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/138-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 139,
@@ -1888,7 +2444,11 @@
       },
       "freqRank": 142,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:unamused-face"
+      "image": "cue:unamused-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/139-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/139-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 140,
@@ -1897,7 +2457,11 @@
       "gloss": { "tr": "Biz ormanda yolu şaşırdık.", "ru": "Мы заблудились в лесу." },
       "freqRank": 143,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:compass"
+      "image": "cue:compass",
+      "voices": [
+        { "key": "echo/packs/en_fluent/140-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/140-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 141,
@@ -1912,7 +2476,11 @@
       },
       "freqRank": 144,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:clipboard"
+      "image": "cue:clipboard",
+      "voices": [
+        { "key": "echo/packs/en_fluent/141-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/141-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 142,
@@ -1927,7 +2495,11 @@
       },
       "freqRank": 145,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ship"
+      "image": "cue:ship",
+      "voices": [
+        { "key": "echo/packs/en_fluent/142-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/142-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 143,
@@ -1939,7 +2511,11 @@
       },
       "freqRank": 146,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:money-with-wings"
+      "image": "cue:money-with-wings",
+      "voices": [
+        { "key": "echo/packs/en_fluent/143-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/143-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 144,
@@ -1951,7 +2527,11 @@
       },
       "freqRank": 147,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fire"
+      "image": "cue:fire",
+      "voices": [
+        { "key": "echo/packs/en_fluent/144-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/144-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 145,
@@ -1965,7 +2545,11 @@
       },
       "freqRank": 148,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:teacup-without-handle"
+      "image": "cue:teacup-without-handle",
+      "voices": [
+        { "key": "echo/packs/en_fluent/145-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/145-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 146,
@@ -1979,7 +2563,11 @@
       },
       "freqRank": 151,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:receipt"
+      "image": "cue:receipt",
+      "voices": [
+        { "key": "echo/packs/en_fluent/146-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/146-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 147,
@@ -1991,7 +2579,11 @@
       },
       "freqRank": 150,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-note"
+      "image": "cue:musical-note",
+      "voices": [
+        { "key": "echo/packs/en_fluent/147-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/147-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 148,
@@ -2005,7 +2597,11 @@
       },
       "freqRank": 153,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thumbs-up"
+      "image": "cue:thumbs-up",
+      "voices": [
+        { "key": "echo/packs/en_fluent/148-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/148-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 149,
@@ -2019,7 +2615,11 @@
       },
       "freqRank": 152,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:magnifying-glass-tilted-left"
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [
+        { "key": "echo/packs/en_fluent/149-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/149-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 150,
@@ -2034,7 +2634,11 @@
       },
       "freqRank": 155,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:magnifying-glass-tilted-left"
+      "image": "cue:magnifying-glass-tilted-left",
+      "voices": [
+        { "key": "echo/packs/en_fluent/150-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/150-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 151,
@@ -2049,7 +2653,11 @@
       },
       "freqRank": 154,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thumbs-up"
+      "image": "cue:thumbs-up",
+      "voices": [
+        { "key": "echo/packs/en_fluent/151-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/151-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 152,
@@ -2062,7 +2670,11 @@
       },
       "freqRank": 156,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:cloud-with-snow"
+      "image": "cue:cloud-with-snow",
+      "voices": [
+        { "key": "echo/packs/en_fluent/152-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/152-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 153,
@@ -2075,7 +2687,11 @@
       },
       "freqRank": 157,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:adhesive-bandage"
+      "image": "cue:adhesive-bandage",
+      "voices": [
+        { "key": "echo/packs/en_fluent/153-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/153-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 154,
@@ -2088,7 +2704,11 @@
       },
       "freqRank": 158,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-face"
+      "image": "cue:hot-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/154-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/154-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 155,
@@ -2101,7 +2721,11 @@
       },
       "freqRank": 160,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:clinking-beer-mugs"
+      "image": "cue:clinking-beer-mugs",
+      "voices": [
+        { "key": "echo/packs/en_fluent/155-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/155-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 156,
@@ -2114,7 +2738,11 @@
       },
       "freqRank": 161,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:drooling-face"
+      "image": "cue:drooling-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/156-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/156-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 157,
@@ -2123,7 +2751,11 @@
       "gloss": { "tr": "Mola sırasında biraz kahve içelim." },
       "freqRank": 162,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-beverage"
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/en_fluent/157-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/157-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 158,
@@ -2136,7 +2768,11 @@
       },
       "freqRank": 163,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:clapper-board"
+      "image": "cue:clapper-board",
+      "voices": [
+        { "key": "echo/packs/en_fluent/158-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/158-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 159,
@@ -2150,7 +2786,11 @@
       },
       "freqRank": 164,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/en_fluent/159-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/159-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 160,
@@ -2163,7 +2803,11 @@
       },
       "freqRank": 165,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:wine-glass"
+      "image": "cue:wine-glass",
+      "voices": [
+        { "key": "echo/packs/en_fluent/160-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/160-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 161,
@@ -2178,7 +2822,11 @@
       },
       "freqRank": 166,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:money-bag"
+      "image": "cue:money-bag",
+      "voices": [
+        { "key": "echo/packs/en_fluent/161-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/161-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 162,
@@ -2193,7 +2841,11 @@
       },
       "freqRank": 167,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:zipper-mouth-face"
+      "image": "cue:zipper-mouth-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/162-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/162-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 163,
@@ -2207,7 +2859,11 @@
       },
       "freqRank": 168,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-heart"
+      "image": "cue:red-heart",
+      "voices": [
+        { "key": "echo/packs/en_fluent/163-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/163-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 164,
@@ -2222,7 +2878,11 @@
       },
       "freqRank": 169,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sleepy-face"
+      "image": "cue:sleepy-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/164-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/164-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 165,
@@ -2236,7 +2896,11 @@
       },
       "freqRank": 170,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fuel-pump"
+      "image": "cue:fuel-pump",
+      "voices": [
+        { "key": "echo/packs/en_fluent/165-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/165-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 166,
@@ -2251,7 +2915,11 @@
       },
       "freqRank": 171,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:fish"
+      "image": "cue:fish",
+      "voices": [
+        { "key": "echo/packs/en_fluent/166-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/166-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 167,
@@ -2263,7 +2931,11 @@
       },
       "freqRank": 172,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:envelope"
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/en_fluent/167-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/167-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 168,
@@ -2276,7 +2948,11 @@
       },
       "freqRank": 173,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-beard"
+      "image": "cue:person-beard",
+      "voices": [
+        { "key": "echo/packs/en_fluent/168-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/168-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 169,
@@ -2288,7 +2964,11 @@
       },
       "freqRank": 174,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:sunrise-over-mountains"
+      "image": "cue:sunrise-over-mountains",
+      "voices": [
+        { "key": "echo/packs/en_fluent/169-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/169-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 170,
@@ -2301,7 +2981,11 @@
       },
       "freqRank": 175,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-swimming"
+      "image": "cue:person-swimming",
+      "voices": [
+        { "key": "echo/packs/en_fluent/170-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/170-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 171,
@@ -2314,7 +2998,11 @@
       },
       "freqRank": 176,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:castle"
+      "image": "cue:castle",
+      "voices": [
+        { "key": "echo/packs/en_fluent/171-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/171-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 172,
@@ -2328,7 +3016,11 @@
       },
       "freqRank": 177,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:package"
+      "image": "cue:package",
+      "voices": [
+        { "key": "echo/packs/en_fluent/172-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/172-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 173,
@@ -2340,7 +3032,11 @@
       },
       "freqRank": 178,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:slightly-smiling-face"
+      "image": "cue:slightly-smiling-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/173-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/173-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 174,
@@ -2355,7 +3051,11 @@
       },
       "freqRank": 179,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:girl"
+      "image": "cue:girl",
+      "voices": [
+        { "key": "echo/packs/en_fluent/174-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/174-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 175,
@@ -2373,7 +3073,11 @@
         "glossWas": { "tr": "Öğrenciler şimdi bir tatile giriyorlar." },
         "edited": ["tr"]
       },
-      "image": "cue:school"
+      "image": "cue:school",
+      "voices": [
+        { "key": "echo/packs/en_fluent/175-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/175-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 176,
@@ -2386,7 +3090,11 @@
       },
       "freqRank": 181,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:wine-glass"
+      "image": "cue:wine-glass",
+      "voices": [
+        { "key": "echo/packs/en_fluent/176-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/176-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 177,
@@ -2404,7 +3112,11 @@
         "glossWas": { "ru": "Плотник - это тот, кто работает с деревом." },
         "edited": ["ru"]
       },
-      "image": "cue:wood"
+      "image": "cue:wood",
+      "voices": [
+        { "key": "echo/packs/en_fluent/177-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/177-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 178,
@@ -2417,7 +3129,11 @@
       },
       "freqRank": 183,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:laptop"
+      "image": "cue:laptop",
+      "voices": [
+        { "key": "echo/packs/en_fluent/178-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/178-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 179,
@@ -2430,7 +3146,11 @@
       },
       "freqRank": 184,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:shield"
+      "image": "cue:shield",
+      "voices": [
+        { "key": "echo/packs/en_fluent/179-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/179-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 180,
@@ -2445,7 +3165,11 @@
       },
       "freqRank": 185,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:test-tube"
+      "image": "cue:test-tube",
+      "voices": [
+        { "key": "echo/packs/en_fluent/180-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/180-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 181,
@@ -2457,7 +3181,11 @@
       },
       "freqRank": 186,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:shushing-face"
+      "image": "cue:shushing-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/181-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/181-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 182,
@@ -2469,7 +3197,11 @@
       },
       "freqRank": 187,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:airplane"
+      "image": "cue:airplane",
+      "voices": [
+        { "key": "echo/packs/en_fluent/182-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/182-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 183,
@@ -2486,7 +3218,11 @@
         "glossWas": { "ru": "Ледяной дождь - довольно редкое погодное явление." },
         "edited": ["ru"]
       },
-      "image": "cue:cloud-with-rain"
+      "image": "cue:cloud-with-rain",
+      "voices": [
+        { "key": "echo/packs/en_fluent/183-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/183-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 184,
@@ -2503,7 +3239,11 @@
         "glossWas": { "ar": "أخرج من حياتي! أنا أمقتك!" },
         "edited": ["ar"]
       },
-      "image": "cue:broken-heart"
+      "image": "cue:broken-heart",
+      "voices": [
+        { "key": "echo/packs/en_fluent/184-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/184-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 185,
@@ -2516,7 +3256,11 @@
       },
       "freqRank": 190,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:dog"
+      "image": "cue:dog",
+      "voices": [
+        { "key": "echo/packs/en_fluent/185-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/185-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 186,
@@ -2528,7 +3272,11 @@
       },
       "freqRank": 191,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-running"
+      "image": "cue:person-running",
+      "voices": [
+        { "key": "echo/packs/en_fluent/186-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/186-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 187,
@@ -2541,7 +3289,11 @@
       },
       "freqRank": 192,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hamburger"
+      "image": "cue:hamburger",
+      "voices": [
+        { "key": "echo/packs/en_fluent/187-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/187-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 188,
@@ -2554,7 +3306,11 @@
       },
       "freqRank": 193,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:flexed-biceps"
+      "image": "cue:flexed-biceps",
+      "voices": [
+        { "key": "echo/packs/en_fluent/188-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/188-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 189,
@@ -2568,7 +3324,11 @@
       },
       "freqRank": 194,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-apple"
+      "image": "cue:red-apple",
+      "voices": [
+        { "key": "echo/packs/en_fluent/189-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/189-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 190,
@@ -2583,7 +3343,11 @@
       },
       "freqRank": 195,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:bouquet"
+      "image": "cue:bouquet",
+      "voices": [
+        { "key": "echo/packs/en_fluent/190-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/190-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 191,
@@ -2597,7 +3361,11 @@
       },
       "freqRank": 196,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:microphone"
+      "image": "cue:microphone",
+      "voices": [
+        { "key": "echo/packs/en_fluent/191-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/191-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 192,
@@ -2606,7 +3374,11 @@
       "gloss": { "tr": "Şu an canım dana güveç çekiyor." },
       "freqRank": 197,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:pot-of-food"
+      "image": "cue:pot-of-food",
+      "voices": [
+        { "key": "echo/packs/en_fluent/192-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/192-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 193,
@@ -2621,7 +3393,11 @@
       },
       "freqRank": 198,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-walking"
+      "image": "cue:person-walking",
+      "voices": [
+        { "key": "echo/packs/en_fluent/193-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/193-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 194,
@@ -2636,7 +3412,11 @@
       },
       "freqRank": 199,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:alarm-clock"
+      "image": "cue:alarm-clock",
+      "voices": [
+        { "key": "echo/packs/en_fluent/194-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/194-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 195,
@@ -2651,7 +3431,11 @@
       },
       "freqRank": 200,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eye"
+      "image": "cue:eye",
+      "voices": [
+        { "key": "echo/packs/en_fluent/195-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/195-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 196,
@@ -2669,7 +3453,11 @@
         "glossWas": { "tr": "Toplu olarak satın alırsanız, % 20 daha ucuz dur." },
         "edited": ["tr"]
       },
-      "image": "cue:shopping-cart"
+      "image": "cue:shopping-cart",
+      "voices": [
+        { "key": "echo/packs/en_fluent/196-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/196-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 197,
@@ -2682,7 +3470,11 @@
       },
       "freqRank": 202,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:radio"
+      "image": "cue:radio",
+      "voices": [
+        { "key": "echo/packs/en_fluent/197-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/197-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 198,
@@ -2698,7 +3490,11 @@
       },
       "freqRank": 203,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:prohibited"
+      "image": "cue:prohibited",
+      "voices": [
+        { "key": "echo/packs/en_fluent/198-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/198-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 199,
@@ -2711,7 +3507,11 @@
       },
       "freqRank": 204,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:zzz"
+      "image": "cue:zzz",
+      "voices": [
+        { "key": "echo/packs/en_fluent/199-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/199-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 200,
@@ -2724,7 +3524,11 @@
       },
       "freqRank": 205,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:crescent-moon"
+      "image": "cue:crescent-moon",
+      "voices": [
+        { "key": "echo/packs/en_fluent/200-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/200-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 201,
@@ -2741,7 +3545,11 @@
         "glossWas": { "ar": "بيتي يتالف من هذه الغرف الاربعة" },
         "edited": ["ar"]
       },
-      "image": "cue:house"
+      "image": "cue:house",
+      "voices": [
+        { "key": "echo/packs/en_fluent/201-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/201-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 202,
@@ -2753,7 +3561,11 @@
       },
       "freqRank": 207,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:expressionless-face"
+      "image": "cue:expressionless-face",
+      "voices": [
+        { "key": "echo/packs/en_fluent/202-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/202-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 203,
@@ -2767,7 +3579,11 @@
       },
       "freqRank": 208,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:globe-showing-europe-africa"
+      "image": "cue:globe-showing-europe-africa",
+      "voices": [
+        { "key": "echo/packs/en_fluent/203-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/203-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 204,
@@ -2783,7 +3599,11 @@
       },
       "freqRank": 209,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:counterclockwise-arrows-button"
+      "image": "cue:counterclockwise-arrows-button",
+      "voices": [
+        { "key": "echo/packs/en_fluent/204-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/204-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 205,
@@ -2795,7 +3615,11 @@
       },
       "freqRank": 210,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:hot-beverage"
+      "image": "cue:hot-beverage",
+      "voices": [
+        { "key": "echo/packs/en_fluent/205-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/205-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 206,
@@ -2807,7 +3631,11 @@
       },
       "freqRank": 211,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:chair"
+      "image": "cue:chair",
+      "voices": [
+        { "key": "echo/packs/en_fluent/206-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/206-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 207,
@@ -2820,7 +3648,11 @@
       },
       "freqRank": 212,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:envelope"
+      "image": "cue:envelope",
+      "voices": [
+        { "key": "echo/packs/en_fluent/207-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/207-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 208,
@@ -2836,7 +3668,11 @@
         "glossWas": { "tr": "Ne yazık ki önceden benim kamerayı şarj etmeyi unuttum." },
         "edited": ["tr"]
       },
-      "image": "cue:camera"
+      "image": "cue:camera",
+      "voices": [
+        { "key": "echo/packs/en_fluent/208-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/208-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 209,
@@ -2849,7 +3685,11 @@
       },
       "freqRank": 214,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:recycling-symbol"
+      "image": "cue:recycling-symbol",
+      "voices": [
+        { "key": "echo/packs/en_fluent/209-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/209-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 210,
@@ -2858,7 +3698,11 @@
       "gloss": { "tr": "Su tesisatımı tamir etmek için kimi arayabilirim?" },
       "freqRank": 215,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:wrench"
+      "image": "cue:wrench",
+      "voices": [
+        { "key": "echo/packs/en_fluent/210-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/210-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 211,
@@ -2871,7 +3715,11 @@
       },
       "freqRank": 216,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:egg"
+      "image": "cue:egg",
+      "voices": [
+        { "key": "echo/packs/en_fluent/211-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/211-am_michael.m4a", "voice": "am_michael" }
+      ]
     },
     {
       "index": 212,
@@ -2880,7 +3728,11 @@
       "gloss": { "tr": "Genç bitkiler kırağılı havadan korunmalıdır." },
       "freqRank": 217,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:seedling"
+      "image": "cue:seedling",
+      "voices": [
+        { "key": "echo/packs/en_fluent/212-af_heart.m4a", "voice": "af_heart" },
+        { "key": "echo/packs/en_fluent/212-am_michael.m4a", "voice": "am_michael" }
+      ]
     }
   ]
 }
