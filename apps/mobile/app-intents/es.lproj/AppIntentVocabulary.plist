@@ -29,6 +29,14 @@
         <string>Marca mis mensajes de LangX como leídos</string>
       </array>
     </dict>
+    <dict>
+      <key>IntentName</key>
+      <string>INStartCallIntent</string>
+      <key>IntentExamples</key>
+      <array>
+        <string>Llama a Sofia en LangX</string>
+      </array>
+    </dict>
   </array>
 </dict>
 </plist>

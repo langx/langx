@@ -29,6 +29,14 @@
         <string>علّم رسائل LangX كمقروءة</string>
       </array>
     </dict>
+    <dict>
+      <key>IntentName</key>
+      <string>INStartCallIntent</string>
+      <key>IntentExamples</key>
+      <array>
+        <string>اتصل بصوفيا على LangX</string>
+      </array>
+    </dict>
   </array>
 </dict>
 </plist>

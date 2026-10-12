@@ -25,7 +25,7 @@ import {
   APPLICATION_NAME,
   applicationNameCount,
   SIRI_INTENT_EXAMPLES,
-  SIRI_MESSAGING_INTENTS,
+  SIRI_INTENTS,
   SIRI_PHRASES,
   SIRI_SHORTCUTS,
   SIRI_SOURCE,
@@ -162,7 +162,7 @@ function shortcutFiles(): Map<string, string> {
  * The SiriKit example phrases, one `AppIntentVocabulary.plist` per language.
  *
  * A different mechanism from the App Shortcuts above, and older: SiriKit's
- * messaging intents read their examples from this file in the **app**
+ * intents read their examples from this file in the **app**
  * bundle's `<locale>.lproj`, and App Store Connect checks for it at upload —
  * ITMS-90626 for every intent × language that has none. It does not fail the
  * build and does not fail the upload; it arrives by mail afterwards, which is
@@ -175,7 +175,7 @@ function vocabularyFiles(): Map<string, string> {
   const files = new Map<string, string>()
 
   for (const locale of Object.keys(catalogs) as (keyof typeof SIRI_INTENT_EXAMPLES)[]) {
-    const phrases = SIRI_MESSAGING_INTENTS.map(
+    const phrases = SIRI_INTENTS.map(
       (intent) =>
         `    <dict>\n` +
         `      <key>IntentName</key>\n` +
