@@ -700,11 +700,16 @@ export async function createProfile(
    * case where onboarding runs in a different browser from the one that held
    * the device flag. Either way it is the same single `attachReferral` call,
    * so a stored handle meets every check a typed one does.
+   *
+   * An emptied field is an answer too, and it wins over the stored invite for
+   * the same reason a typed code does.
    */
   try {
     const referrer = input.referredByHandle
       ? { handle: input.referredByHandle, source: input.referredBySource ?? 'manual' }
-      : await readSignUpReferrer(db, userId)
+      : input.referralDeclined
+        ? null
+        : await readSignUpReferrer(db, userId)
     if (referrer) await attachReferral(db, userId, referrer.handle, referrer.source)
   } catch (error) {
     console.error('[referral] attach failed', { userId, error })

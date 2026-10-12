@@ -49,9 +49,11 @@ export function normalizeInviteCode(input: string | null | undefined): string | 
  */
 export function resolveReferrer(
   draftHandle: string,
+  declined: boolean,
   pending: string | null | undefined,
 ): { handle: string; source: ReferralSource } | null {
-  if (draftHandle) return null
+  // An emptied field is the reader's answer, and the flag is older than it.
+  if (draftHandle || declined) return null
   const handle = normalizeInviteCode(pending)
   return handle ? { handle, source: 'link' } : null
 }

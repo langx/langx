@@ -11,6 +11,7 @@ const EMPTY: OnboardingDraft = {
   gender: 'undisclosed',
   referredByHandle: '',
   referredBySource: 'manual' as const,
+  referralDeclined: false,
   country: '',
 }
 

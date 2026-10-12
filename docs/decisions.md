@@ -1603,6 +1603,12 @@ it goes through the same single `attachReferral` call: every check, every cap
 and the one-referrer-per-invitee key apply to it unchanged. Attribution is
 still written once, at onboarding; nothing reads the note after that.
 
+Emptying the invite field is an answer as well, and the form says so with
+`referralDeclined` rather than by sending nothing — sending nothing is exactly
+when the note is used, so a code somebody deleted would have come straight
+back. The same flag stops the device copy refilling the field on the next
+launch.
+
 What it does not cover, knowingly. **OAuth sign-ups** do not carry it: they
 stay in one browser, where the flag survives. **An invite opened in an in-app
 browser** (Instagram, WhatsApp) **with the sign-up done afterwards in Safari or

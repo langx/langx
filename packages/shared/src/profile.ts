@@ -217,6 +217,14 @@ export const onboardingProfileSchema = z
      * not know, since it is the claim that asserts less.
      */
     referredBySource: referralSourceSchema.optional().catch(undefined),
+    /**
+     * True when the person emptied the invite field themselves. Sending no
+     * handle is not the same answer: the server keeps the invite an account
+     * was created with and falls back to it when the form is silent, so
+     * without this a cleared code would come straight back. Optional, so an
+     * older client means "not declined", which is what it meant before.
+     */
+    referralDeclined: z.boolean().optional().catch(undefined),
     bio: bioSchema.optional(),
     interests: interestsSchema.optional(),
     country: countryCodeSchema.optional(),
