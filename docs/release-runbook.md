@@ -618,7 +618,7 @@ Play rejected the same round under _Auto App Quality Guidelines: Message
 functionality — the app is not able to receive incoming messages._ The
 Android Auto code had not changed since 2.8; a reviewer whose demo account
 nobody writes to has no incoming message to see. The Sign-in details
-instructions now tell them to write to @langx, whose assistant answers.
+instructions are the fix: tell them to write to @langx, whose assistant answers.
 
 **So, for any build that adds a car or call surface:** check Apple's CarPlay
 guide and Google's Auto quality list for what the new capability brings with
