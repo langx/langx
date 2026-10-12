@@ -6,7 +6,7 @@ thing, plus the reasoning about what was left out.
 
 ## In use
 
-**Twenty-four packs, seven languages, 6,549 items**, all `"reviewed": true`, so
+**Twenty-seven packs, eight languages, 7,436 items**, all `"reviewed": true`, so
 the seed script will write them:
 
 | Language | absoluteBeginner | beginner | intermediate |
@@ -17,6 +17,7 @@ the seed script will write them:
 | French   | 272              | 281      | 281          |
 | Russian  | 252              | 268      | 278          |
 | Italian  | 260              | 279      | 279          |
+| Turkish  | 298              | 294      | 295          |
 
 And Mandarin, which is named by HSK level rather than by ours — see
 `docs/echo.md`, _Chinese is named by HSK_:
@@ -27,7 +28,8 @@ And Mandarin, which is named by HSK level rather than by ours — see
 
 The flag does not mean the same thing for English, for the other five, and for
 Mandarin. The three "what that review was" sections say what each one actually
-was.
+was. Turkish has a fourth, under "Arabic and Turkish: the voice": its review
+was Claude's, and no person has listened to its readings.
 
 ### What the English review was, exactly
 
@@ -579,6 +581,74 @@ Claude's Arabic decided, and a listen to the 23 weakest readings, where
 Whisper's did; then the Russian, French and other
 columns, which were linted and not read.
 
+#### What the review of the Turkish three was, exactly
+
+**A Claude review, on 11 October 2026, and nobody has listened.** The three
+Turkish packs are `"reviewed": true` because a model read them, to the
+standard of "What the review of the fifteen was" below — not because a person
+did. And no person has heard any of the 900 Chatterbox takes: the only ear on
+them is Whisper's read-back. Behic, a native speaker, should spot-listen —
+the short ones first, since those are where the read-back is least sure.
+
+**Read line by line: the Turkish front, the English gloss and the Arabic
+gloss, on every item, and every cue against `ILLUSTRATION.md`.** Arabic
+because Arabic natives are the second-largest group on LangX and the likeliest
+learners of Turkish — it is only on 99 of the 900 items, which is what Tatoeba
+has. The other columns were linted (`lint-glosses.mjs tr`: nothing to say) and
+not read, as with the fifteen.
+
+| Pack                  | Before | After | Dropped | Fronts | Glosses | Cues |
+| --------------------- | ------ | ----- | ------- | ------ | ------- | ---- |
+| `tr:absoluteBeginner` | 300    | 298   | 2       | 2      | 9       | 0    |
+| `tr:beginner`         | 300    | 294   | 6       | 5      | 4       | 0    |
+| `tr:intermediate`     | 300    | 295   | 5       | 6      | 7       | 1    |
+
+**Dropped**, on the fifteen's grounds: two slogans about war ("Kimse savaş
+istemiyor.", "Savaş istemiyoruz."), three aphorisms ("Para hiçbir şeydir.",
+"Sevgi her şeydir.", "Hayat bir rüya." — the last Calderón's), two proverbs
+("Su varsa, hayat var.", "İki kişinin bildiği sır, sır değildir."), two pieces
+of Tatoeba nonsense ("Kedi insan değildir.", "Kedi olmak istiyorum."), and two
+near-duplicates ("Kahve içmem." between "Çay içmem." and "Şarap içmem."; "Bugün
+Dünya Yılan Günü." beside its elephant twin). And two for their reading,
+on the brief's floor of 70% after eight takes: "Su iç." (25%) and "Işığı
+açma." (67%). Both are the short kind where Whisper is least sure, so the take
+may be fine and the recogniser wrong — but nobody has listened to find out.
+
+**Thirteen fronts corrected**, each keeping the original in `review.frontWas`
+and each read again. Most were circumflexes the current Yazım Kılavuzu keeps:
+`kâğıt`, `rüzgâr`, `dükkân`, `hikâye` four times. One was a different word:
+"Hala işte misin?" asked whether your _aunt_ is at work — `hâlâ` is _still_.
+The rest were commas: a vocative without one ("Teşekkürler, anne.",
+"Günaydın, arkadaşlar!", as the packs already write "Günaydın, Mike."), and
+three subjects with one they do not take ("Tony kapıda durdu.", "Tom kahve
+içiyor.", "Nehir her zamankinden…"). `O, hasta.` and `Bu, babamın evi.` keep
+theirs: that comma is the one the Kılavuzu asks for, so that _o_ is read as
+the pronoun and not as "that patient".
+
+**Twenty glosses corrected**, each naming its locale in `review.edited`.
+English, eleven: answers looser than the question ("What time?" for _Saat
+kaç?_, "Where's your head at?" for _Ne düşünüyorsun?_, "I would love to go"
+for _Gitmek istiyorum_), a tense ("My sister has been sick"), _kapı_ as a gate,
+_bu_ as _that_, and "I wish you would be quiet" for _Keşke sakin olsan_, which
+is _calm down_ — its cue moved from 🤫 to 🧘 with it (`review.cueWas`). Arabic,
+nine, in the classes the English pass found: a hamza (`انت` for `أنت`,
+`إشتقت` for `اشتقت`, `ببطئ` for `ببطء`), `الى` for `إلى`, `ماءا` for `ماءً`, a stray space after `و`, Tom
+spelled `تام` (_complete_), a feminine singular for _siz_, and `مساء جميل`
+where the greeting is `مساء الخير`.
+
+**God never came up**: no item in the three says Allah or Tanrı.
+
+**The readings.** Every changed front was read afresh with `--readback`'s
+rule (up to four takes, the best kept), and every kept item that had stayed
+below 85% after its first four takes was given four more seeds. The thirteen
+new fronts came back at 90% or better. Of the twenty-one low items, six rose
+past 85%, two fell under 70% and were dropped (above), and **thirteen ship
+between 76% and 85%** — 4 in `absoluteBeginner`, 3 in `beginner`, 6 in
+`intermediate`, each named in its pack's `readback.json`. Those are the first
+ones to listen to. The packs were then renumbered, and the takes and `readback.json` copied to
+the new numbers and checked against every `voices` key before they replaced
+the old directory. Nothing was uploaded.
+
 ## Rejected
 
 | Source                                 | Why not                                                                                                    |
@@ -614,8 +684,10 @@ and Kokoro-82M and Piper for the readings. Nothing non-commercial. The fifteen
 drafted on 20 September were read the same night; see "What the review of the
 fifteen was" below.
 
-**The six Arabic and Turkish packs are drafts too** — see "Arabic and Turkish:
-the voice" above for what they are and what a reader has to do.
+**The six Arabic and Turkish packs were drafts too** — see "Arabic and Turkish:
+the voice" above for what they are and what a reader has to do; the Turkish
+three have since been read, by Claude rather than a person (see "What the
+review of the Turkish three was" there).
 `tools/echo-content/lint-glosses.mjs` had 92 things to say about them before
 that reading — 64 Russian copula dashes written as a hyphen, 13 Arabic
 sentences spaced before their punctuation, 3 Persian letters inside Arabic
