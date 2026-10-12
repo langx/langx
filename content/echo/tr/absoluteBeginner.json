@@ -2,8 +2,8 @@
   "id": "tr:absoluteBeginner",
   "lang": "tr",
   "level": "absoluteBeginner",
-  "contentVersion": 4,
-  "reviewed": false,
+  "contentVersion": 5,
+  "reviewed": true,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
     {
@@ -230,10 +230,10 @@
     {
       "index": 15,
       "kind": "phrase",
-      "text": "Teşekkürler anne.",
+      "text": "Teşekkürler, anne.",
       "gloss": { "en": "Thanks, Mom.", "de": "Danke, Mama!", "es": "¡Gracias, mamá!" },
       "freqRank": 16,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Teşekkürler anne." },
       "image": "cue:folded-hands",
       "voices": [
         { "key": "echo/packs/tr_absoluteBeginner/15-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
@@ -313,9 +313,9 @@
       "index": 21,
       "kind": "phrase",
       "text": "Emin misin?",
-      "gloss": { "en": "Are you sure?", "de": "Bist du sicher?", "ar": "هل انت متأكد" },
+      "gloss": { "en": "Are you sure?", "de": "Bist du sicher?", "ar": "هل أنت متأكد؟" },
       "freqRank": 22,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "image": "cue:face-with-raised-eyebrow",
       "voices": [
         { "key": "echo/packs/tr_absoluteBeginner/21-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
@@ -414,14 +414,14 @@
       "kind": "phrase",
       "text": "Saat kaç?",
       "gloss": {
-        "en": "What time?",
+        "en": "What time is it?",
         "de": "Wie spät ist es?",
         "es": "¿Qué hora es?",
         "fr": "Quelle heure est-il ?",
         "ru": "Который час?"
       },
       "freqRank": 30,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:one-o-clock",
       "voices": [
         { "key": "echo/packs/tr_absoluteBeginner/29-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
@@ -692,9 +692,9 @@
       "index": 48,
       "kind": "phrase",
       "text": "Sonra görüşürüz.",
-      "gloss": { "en": "See you then.", "es": "Nos vemos luego.", "ru": "Увидимся позже." },
+      "gloss": { "en": "See you later.", "es": "Nos vemos luego.", "ru": "Увидимся позже." },
       "freqRank": 49,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:waving-hand",
       "voices": [
         { "key": "echo/packs/tr_absoluteBeginner/48-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
@@ -932,9 +932,9 @@
       "index": 65,
       "kind": "phrase",
       "text": "Gitmek istiyorum.",
-      "gloss": { "en": "I would love to go.", "es": "Me quiero ir.", "ru": "Я хочу уйти." },
+      "gloss": { "en": "I want to go.", "es": "Me quiero ir.", "ru": "Я хочу уйти." },
       "freqRank": 66,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:luggage",
       "voices": [
         { "key": "echo/packs/tr_absoluteBeginner/65-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
@@ -1006,9 +1006,9 @@
       "index": 70,
       "kind": "phrase",
       "text": "Ne düşünüyorsun?",
-      "gloss": { "en": "Where's your head at?", "de": "Was denken Sie?", "es": "¿Qué opinas?" },
+      "gloss": { "en": "What do you think?", "de": "Was denken Sie?", "es": "¿Qué opinas?" },
       "freqRank": 71,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:thought-balloon",
       "voices": [
         { "key": "echo/packs/tr_absoluteBeginner/70-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
@@ -1896,10 +1896,10 @@
         "es": "No sé, Tom.",
         "fr": "Je ne sais pas, Tom.",
         "ru": "Я не знаю, Том.",
-        "ar": "لا أعلم يا تام."
+        "ar": "لا أعلم يا توم."
       },
       "freqRank": 130,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": { "glossedBy": "Tatoeba", "edited": ["ar"] },
       "image": "cue:person-shrugging",
       "voices": [
         { "key": "echo/packs/tr_absoluteBeginner/129-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
@@ -2176,9 +2176,9 @@
       "index": 149,
       "kind": "phrase",
       "text": "Kapı nerede?",
-      "gloss": { "en": "Where is the gate?", "pt-BR": "Onde está a porta?", "ru": "Где дверь?" },
+      "gloss": { "en": "Where is the door?", "pt-BR": "Onde está a porta?", "ru": "Где дверь?" },
       "freqRank": 150,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:door",
       "voices": [
         { "key": "echo/packs/tr_absoluteBeginner/149-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
@@ -2299,14 +2299,14 @@
       "kind": "phrase",
       "text": "Bu adam kim?",
       "gloss": {
-        "en": "Who is that man?",
+        "en": "Who is this man?",
         "de": "Wer ist dieser Mann?",
         "es": "¿Quién es este hombre?",
         "fr": "Qui est cet homme ?",
         "ar": "من هذا الرجل؟"
       },
       "freqRank": 159,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:man",
       "voices": [
         { "key": "echo/packs/tr_absoluteBeginner/158-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
@@ -2557,14 +2557,14 @@
     {
       "index": 175,
       "kind": "phrase",
-      "text": "Hala işte misin?",
+      "text": "Hâlâ işte misin?",
       "gloss": {
         "en": "Are you still at work?",
         "pt-BR": "Você ainda está no trabalho?",
         "ru": "Ты ещё на работе?"
       },
       "freqRank": 176,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": { "glossedBy": "Tatoeba", "frontWas": "Hala işte misin?" },
       "image": "cue:briefcase",
       "voices": [
         { "key": "echo/packs/tr_absoluteBeginner/175-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
@@ -3636,12 +3636,12 @@
       "kind": "phrase",
       "text": "Kız kardeşim hasta.",
       "gloss": {
-        "en": "My sister has been sick.",
+        "en": "My sister is sick.",
         "de": "Meine Schwester ist krank.",
         "es": "Mi hermana está enferma."
       },
       "freqRank": 246,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": { "glossedBy": "Tatoeba", "edited": ["en"] },
       "image": "cue:face-with-thermometer",
       "voices": [
         { "key": "echo/packs/tr_absoluteBeginner/245-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
@@ -3892,24 +3892,6 @@
     {
       "index": 260,
       "kind": "phrase",
-      "text": "Kimse savaş istemiyor.",
-      "gloss": {
-        "en": "Nobody wants war.",
-        "de": "Niemand will Krieg.",
-        "es": "Nadie quiere guerra.",
-        "pt-BR": "Ninguém quer guerra.",
-        "ru": "Никто не хочет войны."
-      },
-      "freqRank": 261,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:peace-symbol",
-      "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/260-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
-      ]
-    },
-    {
-      "index": 261,
-      "kind": "phrase",
       "text": "Kim için çalışıyorsun?",
       "gloss": {
         "en": "Who do you work for?",
@@ -3921,11 +3903,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:briefcase",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/261-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/260-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 262,
+      "index": 261,
       "kind": "phrase",
       "text": "Birçok çocukları oldu.",
       "gloss": {
@@ -3938,11 +3920,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/262-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/261-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 263,
+      "index": 262,
       "kind": "phrase",
       "text": "Bir araba istiyoruz.",
       "gloss": {
@@ -3955,11 +3937,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/263-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/262-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 264,
+      "index": 263,
       "kind": "phrase",
       "text": "Onun ne olduğunu bilmiyorum.",
       "gloss": {
@@ -3973,11 +3955,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:person-shrugging",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/264-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/263-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 265,
+      "index": 264,
       "kind": "phrase",
       "text": "Daha fazla para istiyorum.",
       "gloss": {
@@ -3990,11 +3972,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:money-mouth-face",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/265-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/264-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 266,
+      "index": 265,
       "kind": "phrase",
       "text": "O sadece bir çocuk.",
       "gloss": {
@@ -4007,11 +3989,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:boy",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/266-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/265-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 267,
+      "index": 266,
       "kind": "phrase",
       "text": "Seni tekrar görmek istiyorum.",
       "gloss": {
@@ -4024,11 +4006,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:people-hugging",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/267-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/266-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 268,
+      "index": 267,
       "kind": "phrase",
       "text": "O beni mutlu ediyor.",
       "gloss": {
@@ -4042,11 +4024,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:smiling-face-with-smiling-eyes",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/268-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/267-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 269,
+      "index": 268,
       "kind": "phrase",
       "text": "Bir ev almak istiyorum.",
       "gloss": {
@@ -4059,11 +4041,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:house",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/269-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/268-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 270,
+      "index": 269,
       "kind": "phrase",
       "text": "O benden daha genç.",
       "gloss": {
@@ -4077,11 +4059,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:birthday-cake",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/270-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/269-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 271,
+      "index": 270,
       "kind": "phrase",
       "text": "Beş dakika önce çıktı.",
       "gloss": {
@@ -4095,11 +4077,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:door",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/271-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/270-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 272,
+      "index": 271,
       "kind": "phrase",
       "text": "Bu araba yeni mi?",
       "gloss": {
@@ -4113,11 +4095,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:automobile",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/272-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/271-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 273,
+      "index": 272,
       "kind": "phrase",
       "text": "Bir kız arkadaşım var.",
       "gloss": {
@@ -4130,11 +4112,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman-and-man-holding-hands",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/273-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/272-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 274,
+      "index": 273,
       "kind": "phrase",
       "text": "Bu benim kız kardeşim.",
       "gloss": {
@@ -4148,11 +4130,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:women-holding-hands",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/274-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/273-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 275,
+      "index": 274,
       "kind": "phrase",
       "text": "Bir erkek kardeşim var.",
       "gloss": {
@@ -4165,11 +4147,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:men-holding-hands",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/275-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/274-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 276,
+      "index": 275,
       "kind": "phrase",
       "text": "İki erkek kardeşim var.",
       "gloss": {
@@ -4184,11 +4166,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:men-holding-hands",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/276-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/275-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 277,
+      "index": 276,
       "kind": "phrase",
       "text": "Bir kız kardeşim var.",
       "gloss": {
@@ -4201,11 +4183,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:women-holding-hands",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/277-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/276-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 278,
+      "index": 277,
       "kind": "phrase",
       "text": "O benim erkek kardeşim.",
       "gloss": {
@@ -4219,31 +4201,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:men-holding-hands",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/278-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/277-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 279,
-      "kind": "phrase",
-      "text": "Su varsa, hayat var.",
-      "gloss": {
-        "en": "Where there's water, there's life.",
-        "de": "Wo Wasser ist, ist Leben.",
-        "es": "Donde hay agua hay vida.",
-        "fr": "Là où il y a de l'eau, il y a de la vie.",
-        "pt-BR": "Se existe água, há vida.",
-        "ru": "Где вода, там жизнь.",
-        "ar": "حيث يوجد الماء، توجد الحياة؟"
-      },
-      "freqRank": 280,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:droplet",
-      "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/279-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
-      ]
-    },
-    {
-      "index": 280,
+      "index": 278,
       "kind": "phrase",
       "text": "Babam bana yardım edecek.",
       "gloss": {
@@ -4256,11 +4218,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family-man-boy",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/280-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/278-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 281,
+      "index": 279,
       "kind": "phrase",
       "text": "Neden bizi takip ediyorsun?",
       "gloss": {
@@ -4274,11 +4236,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:footprints",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/281-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/279-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 282,
+      "index": 280,
       "kind": "phrase",
       "text": "O senin annen mi?",
       "gloss": {
@@ -4291,11 +4253,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/282-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/280-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 283,
+      "index": 281,
       "kind": "phrase",
       "text": "Bugün hava çok sıcak.",
       "gloss": {
@@ -4308,11 +4270,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:hot-face",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/283-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/281-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 284,
+      "index": 282,
       "kind": "phrase",
       "text": "Ne sıcak bir gün!",
       "gloss": {
@@ -4325,11 +4287,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:sun",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/284-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/282-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 285,
+      "index": 283,
       "kind": "phrase",
       "text": "Bu küçük bir köpek.",
       "gloss": {
@@ -4342,11 +4304,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dog",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/285-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/283-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 286,
+      "index": 284,
       "kind": "phrase",
       "text": "İki kadın şarkı söylüyor.",
       "gloss": {
@@ -4360,11 +4322,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:microphone",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/286-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/284-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 287,
+      "index": 285,
       "kind": "phrase",
       "text": "O bir şarkı söyledi.",
       "gloss": {
@@ -4377,11 +4339,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:musical-note",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/287-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/285-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 288,
+      "index": 286,
       "kind": "phrase",
       "text": "Bugün hava çok soğuk.",
       "gloss": {
@@ -4395,11 +4357,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cold-face",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/288-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/286-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 289,
+      "index": 287,
       "kind": "phrase",
       "text": "O onu hâlâ seviyor.",
       "gloss": {
@@ -4412,11 +4374,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:two-hearts",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/289-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/287-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 290,
+      "index": 288,
       "kind": "phrase",
       "text": "Onun kim olduğunu merak ediyorum.",
       "gloss": {
@@ -4430,11 +4392,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:thinking-face",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/290-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/288-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 291,
+      "index": 289,
       "kind": "phrase",
       "text": "O, benim bir arkadaşım için.",
       "gloss": {
@@ -4448,11 +4410,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:wrapped-gift",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/291-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/289-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 292,
+      "index": 290,
       "kind": "phrase",
       "text": "Ona her gün telefon ederim.",
       "gloss": {
@@ -4465,11 +4427,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:telephone-receiver",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/292-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/290-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 293,
+      "index": 291,
       "kind": "phrase",
       "text": "O kötü bir fikir değil.",
       "gloss": {
@@ -4482,11 +4444,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:light-bulb",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/293-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/291-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 294,
+      "index": 292,
       "kind": "phrase",
       "text": "Tom bu gece geri geliyor.",
       "gloss": {
@@ -4499,11 +4461,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:back-arrow",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/294-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/292-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 295,
+      "index": 293,
       "kind": "phrase",
       "text": "Onun babası bir doktor mu?",
       "gloss": {
@@ -4517,11 +4479,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:stethoscope",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/295-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/293-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 296,
+      "index": 294,
       "kind": "phrase",
       "text": "Bir erkek ve bir kadın görüyorum.",
       "gloss": {
@@ -4534,11 +4496,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:woman-and-man-holding-hands",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/296-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/294-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 297,
+      "index": 295,
       "kind": "phrase",
       "text": "Tom şu anda bana yardım ediyor.",
       "gloss": {
@@ -4552,11 +4514,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:handshake",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/297-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/295-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 298,
+      "index": 296,
       "kind": "phrase",
       "text": "Onun on bir tane çocuğu var.",
       "gloss": {
@@ -4569,11 +4531,11 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:family",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/298-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/296-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     },
     {
-      "index": 299,
+      "index": 297,
       "kind": "phrase",
       "text": "Tom onu sadece para için yaptı.",
       "gloss": {
@@ -4586,7 +4548,7 @@
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:money-bag",
       "voices": [
-        { "key": "echo/packs/tr_absoluteBeginner/299-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
+        { "key": "echo/packs/tr_absoluteBeginner/297-chatterbox-tr.m4a", "voice": "chatterbox-tr" }
       ]
     }
   ]
