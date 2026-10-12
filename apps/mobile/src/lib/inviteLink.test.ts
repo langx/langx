@@ -60,21 +60,25 @@ describe('inviteHandleFromUrl, as the app calls it', () => {
  */
 describe('resolveReferrer', () => {
   it('takes the handle an invite link left on the device', () => {
-    expect(resolveReferrer('', 'deniz')).toEqual({ handle: 'deniz', source: 'link' })
+    expect(resolveReferrer('', false, 'deniz')).toEqual({ handle: 'deniz', source: 'link' })
   })
 
   it('leaves a code already in the draft alone, and does not relabel it', () => {
-    expect(resolveReferrer('typed', 'deniz')).toBeNull()
+    expect(resolveReferrer('typed', false, 'deniz')).toBeNull()
   })
 
   it('has nothing to say when no link was opened', () => {
     for (const pending of [null, undefined, '', 'not a handle!!']) {
-      expect(resolveReferrer('', pending), String(pending)).toBeNull()
+      expect(resolveReferrer('', false, pending), String(pending)).toBeNull()
     }
   })
 
+  it('leaves an invite field the reader emptied empty', () => {
+    expect(resolveReferrer('', true, 'deniz')).toBeNull()
+  })
+
   it('normalises what it found, since the flag is written from a URL', () => {
-    expect(resolveReferrer('', '@Deniz')?.handle).toBe('deniz')
+    expect(resolveReferrer('', false, '@Deniz')?.handle).toBe('deniz')
   })
 })
 

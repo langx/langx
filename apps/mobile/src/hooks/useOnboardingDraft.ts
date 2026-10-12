@@ -29,6 +29,12 @@ export interface OnboardingDraft {
    * row says "typed", including the ones that were not.
    */
   referredBySource: ReferralSource
+  /**
+   * The invite field was emptied by hand. Without it an empty handle reads as
+   * "nothing yet", and both the device flag on the next launch and the invite
+   * the server kept from sign-up would fill it back in.
+   */
+  referralDeclined: boolean
   country: string
 }
 
@@ -41,6 +47,7 @@ const EMPTY: OnboardingDraft = {
   gender: 'undisclosed',
   referredByHandle: '',
   referredBySource: 'manual',
+  referralDeclined: false,
   country: '',
 }
 
@@ -119,6 +126,7 @@ export async function hydrateDraft(): Promise<void> {
    */
   const referrer = resolveReferrer(
     draft.referredByHandle,
+    draft.referralDeclined,
     await readFlag(FLAG_KEYS.pendingReferrer),
   )
   if (referrer) {

@@ -114,7 +114,9 @@ export default function HandleStep() {
               referredByHandle: current.referredByHandle,
               referredBySource: current.referredBySource,
             }
-          : {}),
+          : current.referralDeclined
+            ? { referralDeclined: true }
+            : {}),
         // The device already knows the user's timezone; asking would be a
         // question with one correct answer the app can read itself. It drives
         // the streak's notion of "today".
@@ -251,13 +253,15 @@ export default function HandleStep() {
           <>
             <FormField
               value={draft.referredByHandle}
-              onChangeText={(value) =>
+              onChangeText={(value) => {
+                const referredByHandle = normalizeInviteCode(value) ?? value.trim()
                 updateDraft({
-                  referredByHandle: normalizeInviteCode(value) ?? value.trim(),
+                  referredByHandle,
                   // Typed over, so it is no longer whatever the link said.
                   referredBySource: 'manual',
+                  referralDeclined: referredByHandle === '',
                 })
-              }
+              }}
               placeholder={t('onboarding.inviteCodePlaceholder')}
               accessibilityLabel={t('onboarding.inviteCodeLabel')}
               autoCapitalize="none"

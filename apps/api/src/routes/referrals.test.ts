@@ -270,6 +270,15 @@ describe('referrals', () => {
       expect(await rowOf(b.userId)).toMatchObject({ referrerId: c.userId, source: 'manual' })
     })
 
+    it('leaves the sign-up invite unused when the field was emptied', async () => {
+      const a = await newUser()
+      const b = await newUser(
+        { referralDeclined: true },
+        { referredByHandle: a.handle, referredBySource: 'link' },
+      )
+      expect(await rowOf(b.userId)).toBeNull()
+    })
+
     it('ignores an unknown or malformed sign-up invite without failing either step', async () => {
       const b = await newUser({}, { referredByHandle: 'nobodyhere' })
       expect(await rowOf(b.userId)).toBeNull()
