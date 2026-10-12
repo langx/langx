@@ -699,15 +699,26 @@ entry, where the dictionary has one. Each is read end to end by a person before
 its `"reviewed": true`; they are drafted together because the Tatoeba exports
 are two hundred megabytes and one pass answers every level.
 
-**English `fluent` has no pack, and the reason is the eight locales rather
-than the level.** Requiring a human translation in all eight is what makes a
-gloss trustworthy, and Arabic is where it binds: across every level Tatoeba
-links Arabic to 16,322 of the 657,063 candidate English sentences, 2.5%. At A1
-a pool that large still leaves a thousand; at C1 and C2 it leaves three, and
-63 even with Arabic allowed to be missing. Requiring Turkish alone would leave
-2,540 — whether English moves to the rule below is a decision still open, and
-`tools/echo-content/FLUENT-MEASUREMENT.md` has the numbers it would be taken
-on.
+**English `fluent` was the one level the eight-locale rule could not fill.**
+Requiring a human translation in all eight is what makes a gloss trustworthy,
+and Arabic is where it binds: across every level Tatoeba links Arabic to
+16,322 of the 657,063 candidate English sentences, 2.5%. At A1 a pool that
+large still leaves a thousand; at C1 and C2 it leaves three, and 63 even with
+Arabic allowed to be missing. So for `en:fluent` alone, on 12 October, Behic
+decided that **Turkish is the one required gloss** — 2,540 candidates, measured
+in `tools/echo-content/FLUENT-MEASUREMENT.md` — and the picker keeps
+preferring the best-covered sentences, so the other six columns, Arabic above
+all since Arabic natives are LangX's second-largest group, fill as far as
+Tatoeba allows. How far each column reached is recorded below once the pack is built.
+
+**A reader whose column is missing falls back, and the order is `glossFor`'s:**
+their native locale, then the app's interface locale, then English — which an
+English pack never has, being the side the learner is reading — and then the
+first column the item carries. Every item is built with Turkish first, so in
+practice an Arabic reader of the app in Arabic whose item has no Arabic gloss
+is shown the Turkish one. That is a worse card than an English one would be,
+and it is the cost of the pack existing at all; the three levels below keep
+the eight-locale rule.
 
 **Outside English that requirement had to go, and the same number is why.**
 Tatoeba links Arabic to 3,393 Spanish sentences, 3,104 French, 2,971 German,
@@ -719,8 +730,8 @@ Spanish candidates average 6.1 of 7 locales. The cost is stated rather than
 hidden: Arabic reaches 87% of the English items, 36% of the Russian and 9% of
 the Italian, and a reader whose column is missing gets English.
 
-That decision does not reach back to English, which still requires all
-eight. It does reach up to `fluent`, which outside English is drafted:
+That decision does not reach back to English below `fluent`, which still
+requires all eight. It does reach up to `fluent`, which outside English is drafted:
 `es`, `fr` and `it` in this repository, `de` and `ru` beside them. Three things
 made that level different from the three below it:
 
