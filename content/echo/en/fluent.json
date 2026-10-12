@@ -3,25 +3,29 @@
   "lang": "en",
   "level": "fluent",
   "contentVersion": 2,
-  "reviewed": false,
+  "reviewed": true,
   "sources": [
     { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" },
     {
-      "name": "CEFR-J Vocabulary Profile 1.5",
+      "name": "CEFR-J Vocabulary Profile 1.5 (Tono Laboratory, TUFS)",
       "licence": "Free for research and commercial use with citation",
-      "url": "http://www.cefr-j.org/"
+      "url": "https://github.com/openlanguageprofiles/olp-en-cefrj"
     },
     {
-      "name": "Octanove Vocabulary Profile C1/C2 1.0",
+      "name": "Octanove Vocabulary Profile C1/C2 1.0 (Octanove Labs)",
       "licence": "CC BY-SA 4.0",
       "url": "https://github.com/openlanguageprofiles/olp-en-cefrj"
     },
     {
-      "name": "NGSL 1.2",
+      "name": "New General Service List (NGSL) 1.2",
       "licence": "CC BY-SA 4.0",
       "url": "https://www.newgeneralservicelist.com/"
     },
-    { "name": "Tatoeba", "licence": "CC BY 2.0 FR", "url": "https://tatoeba.org/" }
+    {
+      "name": "Kokoro-82M (hexgrad)",
+      "licence": "Apache-2.0",
+      "url": "https://huggingface.co/hexgrad/Kokoro-82M"
+    }
   ],
   "items": [
     {
@@ -270,14 +274,18 @@
       "kind": "phrase",
       "text": "Hand me the wrench.",
       "gloss": {
-        "tr": "Bana anahtarı uzat.",
+        "tr": "Bana İngiliz anahtarını uzat.",
         "es": "Pásame la llave.",
         "fr": "Passez-moi la clé.",
         "pt-BR": "Passa-me a chave inglesa.",
         "ru": "Дай гаечный ключ."
       },
       "freqRank": 18,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "tr": "Bana anahtarı uzat." },
+        "edited": ["tr"]
+      },
       "image": "cue:wrench"
     },
     {
@@ -519,22 +527,17 @@
     {
       "index": 38,
       "kind": "phrase",
-      "text": "There's another hitch.",
-      "gloss": {
-        "tr": "Bir aksaklık daha var.",
-        "es": "Hay otro obstáculo.",
-        "fr": "Il y a un autre problème.",
-        "ru": "Есть ещё одна загвоздка."
-      },
+      "text": "This is very acidic.",
+      "gloss": { "tr": "Bu çok asidiktir.", "es": "Esto es muy ácido." },
       "freqRank": 39,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:ok-hand"
+      "image": "cue:lemon"
     },
     {
       "index": 39,
       "kind": "phrase",
-      "text": "The number was staggering.",
-      "gloss": { "tr": "Numara şaşırtıcıydı." },
+      "text": "The lovers reluctantly parted.",
+      "gloss": { "tr": "Aşıklar isteksizce ayrıldı." },
       "freqRank": 40,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:broken-heart"
@@ -542,11 +545,15 @@
     {
       "index": 40,
       "kind": "phrase",
-      "text": "This is very acidic.",
-      "gloss": { "tr": "Bu çok asidiktir.", "es": "Esto es muy ácido." },
+      "text": "What caused the malfunction?",
+      "gloss": {
+        "tr": "Arızaya ne neden oldu?",
+        "de": "Was hat die Fehlfunktion verursacht?",
+        "ru": "Что послужило причиной неисправности?"
+      },
       "freqRank": 41,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:lemon"
+      "image": "cue:gear"
     },
     {
       "index": 41,
@@ -565,45 +572,27 @@
     {
       "index": 42,
       "kind": "phrase",
-      "text": "What caused the malfunction?",
-      "gloss": {
-        "tr": "Arızaya ne neden oldu?",
-        "de": "Was hat die Fehlfunktion verursacht?",
-        "ru": "Что послужило причиной неисправности?"
-      },
-      "freqRank": 43,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:gear"
-    },
-    {
-      "index": 43,
-      "kind": "phrase",
-      "text": "The question was rhetorical.",
-      "gloss": {
-        "tr": "Soru retorikti.",
-        "fr": "La question était rhétorique.",
-        "pt-BR": "A pergunta era retórica.",
-        "ru": "Вопрос был риторический."
-      },
-      "freqRank": 44,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-question-mark"
-    },
-    {
-      "index": 44,
-      "kind": "phrase",
       "text": "Why do cows ruminate?",
       "gloss": {
         "tr": "İnekler neden geviş getirirler?",
         "fr": "Pourquoi les vaches ruminent-elles ?",
         "ru": "Почему коровы жуют жвачку?"
       },
-      "freqRank": 45,
+      "freqRank": 43,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:cow"
     },
     {
-      "index": 45,
+      "index": 43,
+      "kind": "phrase",
+      "text": "Would you chill out?",
+      "gloss": { "tr": "Sakin olur musun?", "fr": "Voudrais-tu te détendre ?" },
+      "freqRank": 45,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:person-in-lotus-position"
+    },
+    {
+      "index": 44,
       "kind": "phrase",
       "text": "The smell was detestable.",
       "gloss": { "tr": "Koku tiksinçti.", "de": "Der Geruch war verabscheuungswürdig." },
@@ -612,16 +601,20 @@
       "image": "cue:nauseated-face"
     },
     {
-      "index": 46,
+      "index": 45,
       "kind": "phrase",
-      "text": "Would you chill out?",
-      "gloss": { "tr": "Sakin olur musun?", "fr": "Voudrais-tu te détendre ?" },
+      "text": "You're my heroine.",
+      "gloss": {
+        "tr": "Sen benim kadın kahramanımsın.",
+        "fr": "Tu es mon héroïne.",
+        "ru": "Ты моя героиня."
+      },
       "freqRank": 47,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:person-in-lotus-position"
+      "image": "cue:superhero"
     },
     {
-      "index": 47,
+      "index": 46,
       "kind": "phrase",
       "text": "The timing was impeccable.",
       "gloss": { "tr": "Zamanlama kusursuzdu.", "ru": "Время было выбрано безупречно." },
@@ -630,20 +623,28 @@
       "image": "cue:timer-clock"
     },
     {
-      "index": 48,
+      "index": 47,
       "kind": "phrase",
-      "text": "You're my heroine.",
+      "text": "You're very perceptive.",
       "gloss": {
-        "tr": "Sen benim kadın kahramanımsın.",
-        "fr": "Tu es mon héroïne.",
-        "ru": "Ты моя героиня."
+        "tr": "Sen çok anlayışlısın.",
+        "de": "Du bist sehr scharfsichtig.",
+        "es": "Eres muy perspicaz.",
+        "fr": "Tu es très perspicace.",
+        "pt-BR": "Você é muito perspicaz.",
+        "ru": "Вы очень проницательны.",
+        "ar": "أنت دقيق الملاحظة."
       },
       "freqRank": 49,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:superhero"
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "tr": "Sen çok algısalsın." },
+        "edited": ["tr"]
+      },
+      "image": "cue:eye"
     },
     {
-      "index": 49,
+      "index": 48,
       "kind": "phrase",
       "text": "The tumor was benign.",
       "gloss": {
@@ -658,24 +659,7 @@
       "image": "cue:stethoscope"
     },
     {
-      "index": 50,
-      "kind": "phrase",
-      "text": "You're very perceptive.",
-      "gloss": {
-        "tr": "Sen çok algısalsın.",
-        "de": "Du bist sehr scharfsichtig.",
-        "es": "Eres muy perspicaz.",
-        "fr": "Tu es très perspicace.",
-        "pt-BR": "Você é muito perspicaz.",
-        "ru": "Вы очень проницательны.",
-        "ar": "أنت دقيق الملاحظة."
-      },
-      "freqRank": 51,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:eye"
-    },
-    {
-      "index": 51,
+      "index": 49,
       "kind": "phrase",
       "text": "Your behavior was inexcusable.",
       "gloss": {
@@ -686,27 +670,27 @@
         "pt-BR": "Sua conduta foi irremissível.",
         "ru": "Твоё поведение было непростительным."
       },
-      "freqRank": 52,
+      "freqRank": 51,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:angry-face"
     },
     {
-      "index": 52,
+      "index": 50,
       "kind": "phrase",
-      "text": "You're very timid.",
+      "text": "Bears hibernate during the winter.",
       "gloss": {
-        "tr": "Çok ürkeksin.",
-        "de": "Du bist sehr furchtsam.",
-        "fr": "Tu es très timide.",
-        "pt-BR": "Você é muito tímido.",
-        "ru": "Ты очень робкий."
+        "tr": "Ayılar kış uykusuna yatar.",
+        "es": "Los osos hibernan durante el invierno.",
+        "fr": "Les ours hibernent durant l'hiver.",
+        "pt-BR": "Os ursos hibernam durante o inverno.",
+        "ru": "Медведи зимой впадают в спячку."
       },
-      "freqRank": 53,
+      "freqRank": 52,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:bear"
     },
     {
-      "index": 53,
+      "index": 51,
       "kind": "phrase",
       "text": "Your hypothesis is correct.",
       "gloss": {
@@ -716,12 +700,12 @@
         "pt-BR": "A sua hipótese é correta.",
         "ru": "Твоя гипотеза верна."
       },
-      "freqRank": 54,
+      "freqRank": 53,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:check-mark-button"
     },
     {
-      "index": 54,
+      "index": 52,
       "kind": "phrase",
       "text": "Birds learn to fly instinctively.",
       "gloss": {
@@ -730,12 +714,12 @@
         "fr": "Les oiseaux apprennent à voler instinctivement.",
         "ru": "Птицы учатся летать инстинктивно."
       },
-      "freqRank": 55,
+      "freqRank": 54,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:dove"
     },
     {
-      "index": 55,
+      "index": 53,
       "kind": "phrase",
       "text": "Don't be so naive.",
       "gloss": {
@@ -743,12 +727,26 @@
         "fr": "Ne sois pas si naïf.",
         "ru": "Не будь таким наивным."
       },
-      "freqRank": 56,
+      "freqRank": 55,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:smiling-face-with-halo"
     },
     {
-      "index": 56,
+      "index": 54,
+      "kind": "phrase",
+      "text": "Everything worked without a hitch.",
+      "gloss": {
+        "tr": "Bir aksilik olmadan her şey çalıştı.",
+        "es": "Todo funcionó sin problemas.",
+        "fr": "Tout a fonctionné sans accroc.",
+        "ru": "Всё сработало без сучка без задоринки."
+      },
+      "freqRank": 56,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:ok-hand"
+    },
+    {
+      "index": 55,
       "kind": "phrase",
       "text": "He doesn't understand sarcasm.",
       "gloss": {
@@ -763,7 +761,7 @@
       "image": "cue:confused-face"
     },
     {
-      "index": 57,
+      "index": 56,
       "kind": "phrase",
       "text": "Her cleverness often amazes me.",
       "gloss": {
@@ -776,7 +774,7 @@
       "image": "cue:brain"
     },
     {
-      "index": 58,
+      "index": 57,
       "kind": "phrase",
       "text": "He has a robust constitution.",
       "gloss": {
@@ -789,7 +787,7 @@
       "image": "cue:flexed-biceps"
     },
     {
-      "index": 59,
+      "index": 58,
       "kind": "phrase",
       "text": "I am a trifle sad.",
       "gloss": {
@@ -802,7 +800,7 @@
       "image": "cue:pensive-face"
     },
     {
-      "index": 60,
+      "index": 59,
       "kind": "phrase",
       "text": "He took the job reluctantly.",
       "gloss": {
@@ -815,7 +813,7 @@
       "image": "cue:briefcase"
     },
     {
-      "index": 61,
+      "index": 60,
       "kind": "phrase",
       "text": "I just like to daydream.",
       "gloss": {
@@ -828,7 +826,7 @@
       "image": "cue:thought-balloon"
     },
     {
-      "index": 62,
+      "index": 61,
       "kind": "phrase",
       "text": "I'm a cheese connoisseur.",
       "gloss": {
@@ -841,7 +839,7 @@
       "image": "cue:cheese-wedge"
     },
     {
-      "index": 63,
+      "index": 62,
       "kind": "phrase",
       "text": "I like the color violet.",
       "gloss": {
@@ -855,7 +853,7 @@
       "image": "cue:artist-palette"
     },
     {
-      "index": 64,
+      "index": 63,
       "kind": "phrase",
       "text": "I'm a sports fanatic.",
       "gloss": { "tr": "Ben bir spor fanatiğiyim.", "pt-BR": "Eu sou fanático por esportes." },
@@ -864,7 +862,7 @@
       "image": "cue:soccer-ball"
     },
     {
-      "index": 65,
+      "index": 64,
       "kind": "phrase",
       "text": "I like to walk aimlessly.",
       "gloss": {
@@ -878,16 +876,20 @@
       "image": "cue:person-walking"
     },
     {
-      "index": 66,
+      "index": 65,
       "kind": "phrase",
       "text": "I'm an avid golfer.",
-      "gloss": { "tr": "Ben hırslı bir golfçüyüm.", "ru": "Я заядлый игрок в гольф." },
+      "gloss": { "tr": "Ben tutkulu bir golfçüyüm.", "ru": "Я заядлый игрок в гольф." },
       "freqRank": 67,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "tr": "Ben hırslı bir golfçüyüm." },
+        "edited": ["tr"]
+      },
       "image": "cue:flag-in-hole"
     },
     {
-      "index": 67,
+      "index": 66,
       "kind": "phrase",
       "text": "I prefer grapefruit to oranges.",
       "gloss": {
@@ -901,7 +903,7 @@
       "image": "cue:tangerine"
     },
     {
-      "index": 68,
+      "index": 67,
       "kind": "phrase",
       "text": "Is that a rhetorical question?",
       "gloss": {
@@ -914,7 +916,7 @@
       "image": "cue:red-question-mark"
     },
     {
-      "index": 69,
+      "index": 68,
       "kind": "phrase",
       "text": "I will scrutinize you closely.",
       "gloss": {
@@ -927,7 +929,7 @@
       "image": "cue:eyes"
     },
     {
-      "index": 70,
+      "index": 69,
       "kind": "phrase",
       "text": "It was a tedious job.",
       "gloss": {
@@ -942,7 +944,7 @@
       "image": "cue:weary-face"
     },
     {
-      "index": 71,
+      "index": 70,
       "kind": "phrase",
       "text": "It's a risky proposition.",
       "gloss": {
@@ -955,7 +957,7 @@
       "image": "cue:warning"
     },
     {
-      "index": 72,
+      "index": 71,
       "kind": "phrase",
       "text": "It was just a formality.",
       "gloss": {
@@ -970,7 +972,7 @@
       "image": "cue:clipboard"
     },
     {
-      "index": 73,
+      "index": 72,
       "kind": "phrase",
       "text": "It's a riveting story.",
       "gloss": {
@@ -985,7 +987,7 @@
       "image": "cue:open-book"
     },
     {
-      "index": 74,
+      "index": 73,
       "kind": "phrase",
       "text": "My grandfather is a carpenter.",
       "gloss": {
@@ -994,14 +996,18 @@
         "es": "Mi abuelo es carpintero.",
         "fr": "Mon grand-père est menuisier.",
         "pt-BR": "Meu avô é carpinteiro.",
-        "ru": "Мой дедушка - плотник."
+        "ru": "Мой дедушка — плотник."
       },
       "freqRank": 75,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "ru": "Мой дедушка - плотник." },
+        "edited": ["ru"]
+      },
       "image": "cue:hammer-and-wrench"
     },
     {
-      "index": 75,
+      "index": 74,
       "kind": "phrase",
       "text": "It's an autonomous car.",
       "gloss": {
@@ -1015,7 +1021,7 @@
       "image": "cue:automobile"
     },
     {
-      "index": 76,
+      "index": 75,
       "kind": "phrase",
       "text": "My right hand is numb.",
       "gloss": {
@@ -1031,7 +1037,7 @@
       "image": "cue:raised-hand"
     },
     {
-      "index": 77,
+      "index": 76,
       "kind": "phrase",
       "text": "Our work began to flourish.",
       "gloss": {
@@ -1043,7 +1049,7 @@
       "image": "cue:chart-increasing"
     },
     {
-      "index": 78,
+      "index": 77,
       "kind": "phrase",
       "text": "Oxygen is needed for combustion.",
       "gloss": {
@@ -1058,7 +1064,7 @@
       "image": "cue:fire"
     },
     {
-      "index": 79,
+      "index": 78,
       "kind": "phrase",
       "text": "Please conserve water in summer.",
       "gloss": {
@@ -1070,16 +1076,20 @@
       "image": "cue:droplet"
     },
     {
-      "index": 80,
+      "index": 79,
       "kind": "phrase",
       "text": "She is an avid reader.",
-      "gloss": { "tr": "O hırslı bir okuyucu.", "fr": "Elle est une lectrice vorace." },
+      "gloss": { "tr": "O tutkulu bir okur.", "fr": "Elle est une lectrice vorace." },
       "freqRank": 81,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "tr": "O hırslı bir okuyucu." },
+        "edited": ["tr"]
+      },
       "image": "cue:books"
     },
     {
-      "index": 81,
+      "index": 80,
       "kind": "phrase",
       "text": "That doesn't reassure me.",
       "gloss": {
@@ -1092,7 +1102,7 @@
       "image": "cue:worried-face"
     },
     {
-      "index": 82,
+      "index": 81,
       "kind": "phrase",
       "text": "The choreography is quite simple.",
       "gloss": { "tr": "Koreografi oldukça basittir.", "ru": "Хореография достаточно простая." },
@@ -1101,7 +1111,7 @@
       "image": "cue:woman-dancing"
     },
     {
-      "index": 83,
+      "index": 82,
       "kind": "phrase",
       "text": "These facts support my hypothesis.",
       "gloss": {
@@ -1114,7 +1124,7 @@
       "image": "cue:test-tube"
     },
     {
-      "index": 84,
+      "index": 83,
       "kind": "phrase",
       "text": "The committee comprises ten members.",
       "gloss": {
@@ -1122,14 +1132,18 @@
         "es": "El comité se compone de diez miembros.",
         "fr": "Le comité se compose de dix membres.",
         "ru": "Комитет состоит из десяти членов.",
-        "ar": "اللجنة تشمل عشر اعضاء."
+        "ar": "اللجنة تشمل عشرة أعضاء."
       },
       "freqRank": 85,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "ar": "اللجنة تشمل عشر اعضاء." },
+        "edited": ["ar"]
+      },
       "image": "cue:busts-in-silhouette"
     },
     {
-      "index": 85,
+      "index": 84,
       "kind": "phrase",
       "text": "These presents are really bulky.",
       "gloss": {
@@ -1141,7 +1155,7 @@
       "image": "cue:wrapped-gift"
     },
     {
-      "index": 86,
+      "index": 85,
       "kind": "phrase",
       "text": "The contract will expire soon.",
       "gloss": {
@@ -1156,7 +1170,7 @@
       "image": "cue:hourglass-not-done"
     },
     {
-      "index": 87,
+      "index": 86,
       "kind": "phrase",
       "text": "This book deals with anthropology.",
       "gloss": {
@@ -1170,34 +1184,7 @@
       "image": "cue:books"
     },
     {
-      "index": 88,
-      "kind": "phrase",
-      "text": "The house is suitably isolated.",
-      "gloss": {
-        "tr": "Ev uygun şekilde yalıtılmış.",
-        "de": "Das Haus ist angemessen isoliert.",
-        "ar": "المنزل معزول بشكل مناسب."
-      },
-      "freqRank": 89,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:house-with-garden"
-    },
-    {
-      "index": 89,
-      "kind": "phrase",
-      "text": "This is a vertical line.",
-      "gloss": {
-        "tr": "Bu dikey bir çizgi.",
-        "fr": "C'est une ligne verticale.",
-        "pt-BR": "Essa é uma linha vertical.",
-        "ru": "Это вертикальная линия."
-      },
-      "freqRank": 90,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:straight-ruler"
-    },
-    {
-      "index": 90,
+      "index": 87,
       "kind": "phrase",
       "text": "The pigeon has flown away.",
       "gloss": {
@@ -1212,7 +1199,30 @@
       "image": "cue:dove"
     },
     {
-      "index": 91,
+      "index": 88,
+      "kind": "phrase",
+      "text": "This is a vertical line.",
+      "gloss": {
+        "tr": "Bu dikey bir çizgi.",
+        "fr": "C'est une ligne verticale.",
+        "pt-BR": "Essa é uma linha vertical.",
+        "ru": "Это вертикальная линия."
+      },
+      "freqRank": 90,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:straight-ruler"
+    },
+    {
+      "index": 89,
+      "kind": "phrase",
+      "text": "The plane began its descent.",
+      "gloss": { "tr": "Uçak alçalmaya başladı." },
+      "freqRank": 93,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:airplane-arrival"
+    },
+    {
+      "index": 90,
       "kind": "phrase",
       "text": "This room is very stuffy.",
       "gloss": {
@@ -1228,16 +1238,19 @@
       "image": "cue:window"
     },
     {
-      "index": 92,
+      "index": 91,
       "kind": "phrase",
-      "text": "The plane began its descent.",
-      "gloss": { "tr": "Uçak alçalmaya başladı." },
-      "freqRank": 93,
+      "text": "The road is closed indefinitely.",
+      "gloss": {
+        "tr": "Yol süresiz olarak kapalıdır.",
+        "de": "Der Weg ist auf unbestimmte Zeit gesperrt."
+      },
+      "freqRank": 95,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:airplane-arrival"
+      "image": "cue:no-entry"
     },
     {
-      "index": 93,
+      "index": 92,
       "kind": "phrase",
       "text": "This snake is not venomous.",
       "gloss": {
@@ -1252,19 +1265,19 @@
       "image": "cue:snake"
     },
     {
-      "index": 94,
+      "index": 93,
       "kind": "phrase",
-      "text": "The road is closed indefinitely.",
+      "text": "We all sang in unison.",
       "gloss": {
-        "tr": "Yol süresiz olarak kapalıdır.",
-        "de": "Der Weg ist auf unbestimmte Zeit gesperrt."
+        "tr": "Hep bir ağızdan şarkı söyledik.",
+        "fr": "Nous chantâmes tous à l'unisson."
       },
-      "freqRank": 95,
+      "freqRank": 97,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:no-entry"
+      "image": "cue:musical-notes"
     },
     {
-      "index": 95,
+      "index": 94,
       "kind": "phrase",
       "text": "This tooth is an incisor.",
       "gloss": {
@@ -1277,19 +1290,7 @@
       "image": "cue:tooth"
     },
     {
-      "index": 96,
-      "kind": "phrase",
-      "text": "We all sang in unison.",
-      "gloss": {
-        "tr": "Hep bir ağızdan şarkı söyledik.",
-        "fr": "Nous chantâmes tous à l'unisson."
-      },
-      "freqRank": 97,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-notes"
-    },
-    {
-      "index": 97,
+      "index": 95,
       "kind": "phrase",
       "text": "What you lack is stamina.",
       "gloss": {
@@ -1303,7 +1304,7 @@
       "image": "cue:person-running"
     },
     {
-      "index": 98,
+      "index": 96,
       "kind": "phrase",
       "text": "What's your favorite gadget?",
       "gloss": {
@@ -1317,7 +1318,7 @@
       "image": "cue:mobile-phone"
     },
     {
-      "index": 99,
+      "index": 97,
       "kind": "phrase",
       "text": "When does your passport expire?",
       "gloss": {
@@ -1332,7 +1333,7 @@
       "image": "cue:passport-control"
     },
     {
-      "index": 100,
+      "index": 98,
       "kind": "phrase",
       "text": "A bout lasts about five minutes.",
       "gloss": {
@@ -1346,7 +1347,7 @@
       "image": "cue:stopwatch"
     },
     {
-      "index": 101,
+      "index": 99,
       "kind": "phrase",
       "text": "Are you attempting to bribe me?",
       "gloss": {
@@ -1361,7 +1362,7 @@
       "image": "cue:dollar-banknote"
     },
     {
-      "index": 102,
+      "index": 100,
       "kind": "phrase",
       "text": "A convict has escaped from prison.",
       "gloss": {
@@ -1376,7 +1377,7 @@
       "image": "cue:police-car-light"
     },
     {
-      "index": 103,
+      "index": 101,
       "kind": "phrase",
       "text": "Does this hotel have a sauna?",
       "gloss": { "tr": "Bu otelin bir saunası var mı?" },
@@ -1385,7 +1386,7 @@
       "image": "cue:hotel"
     },
     {
-      "index": 104,
+      "index": 102,
       "kind": "phrase",
       "text": "A mouse is a timid creature.",
       "gloss": {
@@ -1398,7 +1399,7 @@
       "image": "cue:mouse-face"
     },
     {
-      "index": 105,
+      "index": 103,
       "kind": "phrase",
       "text": "Drive carefully! The roads are treacherous.",
       "gloss": {
@@ -1411,7 +1412,7 @@
       "image": "cue:warning"
     },
     {
-      "index": 106,
+      "index": 104,
       "kind": "phrase",
       "text": "Fill the glass to the brim.",
       "gloss": {
@@ -1426,7 +1427,7 @@
       "image": "cue:tumbler-glass"
     },
     {
-      "index": 107,
+      "index": 105,
       "kind": "phrase",
       "text": "Has the jury reached a verdict?",
       "gloss": {
@@ -1440,7 +1441,7 @@
       "image": "cue:balance-scale"
     },
     {
-      "index": 108,
+      "index": 106,
       "kind": "phrase",
       "text": "He asked a few pertinent questions.",
       "gloss": {
@@ -1455,7 +1456,7 @@
       "image": "cue:red-question-mark"
     },
     {
-      "index": 109,
+      "index": 107,
       "kind": "phrase",
       "text": "I am accustomed to cold weather.",
       "gloss": {
@@ -1471,7 +1472,7 @@
       "image": "cue:cold-face"
     },
     {
-      "index": 110,
+      "index": 108,
       "kind": "phrase",
       "text": "He is a very good batter.",
       "gloss": { "tr": "O, çok iyi bir top vurucusu.", "de": "Er ist ein sehr guter Schläger." },
@@ -1480,7 +1481,7 @@
       "image": "cue:baseball"
     },
     {
-      "index": 111,
+      "index": 109,
       "kind": "phrase",
       "text": "I can't stand her hypocrisy.",
       "gloss": {
@@ -1494,7 +1495,7 @@
       "image": "cue:lying-face"
     },
     {
-      "index": 112,
+      "index": 110,
       "kind": "phrase",
       "text": "He is very knowledgeable about animals.",
       "gloss": {
@@ -1508,7 +1509,7 @@
       "image": "cue:paw-prints"
     },
     {
-      "index": 113,
+      "index": 111,
       "kind": "phrase",
       "text": "I have a proposition for you.",
       "gloss": {
@@ -1522,7 +1523,7 @@
       "image": "cue:handshake"
     },
     {
-      "index": 114,
+      "index": 112,
       "kind": "phrase",
       "text": "He refused to take the bribe.",
       "gloss": {
@@ -1538,7 +1539,7 @@
       "image": "cue:dollar-banknote"
     },
     {
-      "index": 115,
+      "index": 113,
       "kind": "phrase",
       "text": "I love thick, creamy mushroom soup.",
       "gloss": {
@@ -1552,7 +1553,7 @@
       "image": "cue:pot-of-food"
     },
     {
-      "index": 116,
+      "index": 114,
       "kind": "phrase",
       "text": "I've already spent my inheritance.",
       "gloss": { "tr": "Mirasımı çoktan harcadım.", "pt-BR": "Já gastei todo minha herança." },
@@ -1561,7 +1562,7 @@
       "image": "cue:money-with-wings"
     },
     {
-      "index": 117,
+      "index": 115,
       "kind": "phrase",
       "text": "I think I have a cavity.",
       "gloss": {
@@ -1574,7 +1575,7 @@
       "image": "cue:tooth"
     },
     {
-      "index": 118,
+      "index": 116,
       "kind": "phrase",
       "text": "My clothes are full of suds.",
       "gloss": {
@@ -1586,21 +1587,25 @@
       "image": "cue:soap"
     },
     {
-      "index": 119,
+      "index": 117,
       "kind": "phrase",
       "text": "I think it's mutually beneficial.",
       "gloss": {
-        "tr": "Bence bu karşılıklı olark yararlı.",
+        "tr": "Bence bu karşılıklı olarak yararlı.",
         "fr": "Je pense que c'est mutuellement bénéfique.",
         "pt-BR": "Acredito ser de benefício mutuo.",
         "ru": "Я думаю, это взаимовыгодно."
       },
       "freqRank": 120,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "tr": "Bence bu karşılıklı olark yararlı." },
+        "edited": ["tr"]
+      },
       "image": "cue:handshake"
     },
     {
-      "index": 120,
+      "index": 118,
       "kind": "phrase",
       "text": "My paternal grandmother enjoys tea ceremonies.",
       "gloss": {
@@ -1612,7 +1617,7 @@
       "image": "cue:teacup-without-handle"
     },
     {
-      "index": 121,
+      "index": 119,
       "kind": "phrase",
       "text": "I want to charter a bus.",
       "gloss": {
@@ -1626,19 +1631,23 @@
       "image": "cue:bus"
     },
     {
-      "index": 122,
+      "index": 120,
       "kind": "phrase",
       "text": "Now clean up any residual dust.",
       "gloss": {
-        "tr": "Şimdi kalan tozu temizleyin",
+        "tr": "Şimdi kalan tozu temizleyin.",
         "fr": "Maintenant, nettoyez toute poussière résiduelle."
       },
       "freqRank": 123,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "tr": "Şimdi kalan tozu temizleyin" },
+        "edited": ["tr"]
+      },
       "image": "cue:broom"
     },
     {
-      "index": 123,
+      "index": 121,
       "kind": "phrase",
       "text": "She fell into a profound sleep.",
       "gloss": {
@@ -1651,7 +1660,7 @@
       "image": "cue:sleeping-face"
     },
     {
-      "index": 124,
+      "index": 122,
       "kind": "phrase",
       "text": "Take your foot off the clutch.",
       "gloss": {
@@ -1665,7 +1674,7 @@
       "image": "cue:automobile"
     },
     {
-      "index": 125,
+      "index": 123,
       "kind": "phrase",
       "text": "She reluctantly agreed to our proposal.",
       "gloss": {
@@ -1680,7 +1689,7 @@
       "image": "cue:handshake"
     },
     {
-      "index": 126,
+      "index": 124,
       "kind": "phrase",
       "text": "Television and newspapers play complementary roles.",
       "gloss": {
@@ -1694,7 +1703,7 @@
       "image": "cue:television"
     },
     {
-      "index": 127,
+      "index": 125,
       "kind": "phrase",
       "text": "The cows looked big and docile.",
       "gloss": {
@@ -1707,19 +1716,21 @@
       "image": "cue:cow"
     },
     {
-      "index": 128,
+      "index": 126,
       "kind": "phrase",
-      "text": "This concert hall has wonderful acoustics.",
+      "text": "This car is spacious and comfortable.",
       "gloss": {
-        "tr": "Bu konser salonu harika akustiğe sahiptir.",
-        "de": "Dieser Konzertsaal hat eine wundervolle Akustik."
+        "tr": "Bu araba geniş ve komforlu.",
+        "de": "Dieser Wagen bietet Raum und Komfort.",
+        "fr": "Cette voiture est spacieuse et confortable.",
+        "pt-BR": "Este carro é espaçoso e confortável."
       },
       "freqRank": 129,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-score"
+      "image": "cue:automobile"
     },
     {
-      "index": 129,
+      "index": 127,
       "kind": "phrase",
       "text": "The king ruled his kingdom justly.",
       "gloss": {
@@ -1735,22 +1746,43 @@
       "image": "cue:castle"
     },
     {
-      "index": 130,
+      "index": 128,
       "kind": "phrase",
-      "text": "This is an old rock quarry.",
-      "gloss": { "tr": "Burası eski bir taş ocağı." },
+      "text": "This concert hall has wonderful acoustics.",
+      "gloss": {
+        "tr": "Bu konser salonu harika akustiğe sahiptir.",
+        "de": "Dieser Konzertsaal hat eine wundervolle Akustik."
+      },
       "freqRank": 131,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:rock"
+      "image": "cue:musical-score"
     },
     {
-      "index": 131,
+      "index": 129,
       "kind": "phrase",
       "text": "The leaves rustle in the wind.",
       "gloss": { "tr": "Yapraklar rüzgarda hışırdıyor.", "ru": "Листья шелестят на ветру." },
       "freqRank": 132,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:leaf-fluttering-in-wind"
+    },
+    {
+      "index": 130,
+      "kind": "phrase",
+      "text": "This is an old rock quarry.",
+      "gloss": { "tr": "Burası eski bir taş ocağı." },
+      "freqRank": 133,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:rock"
+    },
+    {
+      "index": 131,
+      "kind": "phrase",
+      "text": "The night was clear and frosty.",
+      "gloss": { "tr": "Gece açık ve buzluydu." },
+      "freqRank": 134,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:night-with-stars"
     },
     {
       "index": 132,
@@ -1762,34 +1794,12 @@
         "fr": "Attendre le train est ennuyeux.",
         "ru": "Ждать поезд утомительно."
       },
-      "freqRank": 133,
+      "freqRank": 135,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:station"
     },
     {
       "index": 133,
-      "kind": "phrase",
-      "text": "The night was clear and frosty.",
-      "gloss": { "tr": "Gece açık ve buzluydu." },
-      "freqRank": 134,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:night-with-stars"
-    },
-    {
-      "index": 134,
-      "kind": "phrase",
-      "text": "We can haggle over price later.",
-      "gloss": {
-        "tr": "Daha sonra fiyat üzerine pazarlık yapabiliriz.",
-        "fr": "On peut marchander le prix plus tard.",
-        "ru": "Мы можем сторговаться позже."
-      },
-      "freqRank": 135,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:heavy-dollar-sign"
-    },
-    {
-      "index": 135,
       "kind": "phrase",
       "text": "The police searched the premises thoroughly.",
       "gloss": {
@@ -1803,6 +1813,35 @@
       "image": "cue:police-officer"
     },
     {
+      "index": 134,
+      "kind": "phrase",
+      "text": "We can haggle over price later.",
+      "gloss": {
+        "tr": "Daha sonra fiyat üzerine pazarlık yapabiliriz.",
+        "fr": "On peut marchander le prix plus tard.",
+        "ru": "Мы можем сторговаться позже."
+      },
+      "freqRank": 137,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:heavy-dollar-sign"
+    },
+    {
+      "index": 135,
+      "kind": "phrase",
+      "text": "Wet clothes adhere to the skin.",
+      "gloss": {
+        "tr": "Islak giysiler tene yapışır.",
+        "de": "Nasse Kleidung haftet an der Haut.",
+        "es": "La ropa mojada se adhiere a la piel.",
+        "fr": "Les vêtements mouillés collent à la peau.",
+        "pt-BR": "Roupas molhadas grudam na pele.",
+        "ru": "Мокрая одежда липнет к коже."
+      },
+      "freqRank": 138,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:t-shirt"
+    },
+    {
       "index": 136,
       "kind": "phrase",
       "text": "We have just cleaned the lavatory.",
@@ -1810,24 +1849,18 @@
         "tr": "Biz az önce tuvaleti temizledik.",
         "fr": "Nous venons de nettoyer les toilettes."
       },
-      "freqRank": 137,
+      "freqRank": 139,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:restroom"
     },
     {
       "index": 137,
       "kind": "phrase",
-      "text": "The room is spacious and light.",
-      "gloss": {
-        "tr": "Oda geniş ve aydınlıktır.",
-        "de": "Das Zimmer ist geräumig und hell.",
-        "fr": "La chambre est vaste et claire.",
-        "pt-BR": "O quarto é vasto e claro.",
-        "ru": "Комната большая и светлая."
-      },
-      "freqRank": 138,
+      "text": "What's your favorite acoustic song?",
+      "gloss": { "tr": "En sevdiğiniz akustik şarkı nedir?" },
+      "freqRank": 140,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:automobile"
+      "image": "cue:guitar"
     },
     {
       "index": 138,
@@ -1839,46 +1872,12 @@
         "fr": "Nous devrions collaborer au projet.",
         "pt-BR": "Deveríamos colaborar com o projeto."
       },
-      "freqRank": 139,
+      "freqRank": 141,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:busts-in-silhouette"
     },
     {
       "index": 139,
-      "kind": "phrase",
-      "text": "Wet clothes adhere to the skin.",
-      "gloss": {
-        "tr": "Islak giysiler tene yapışır.",
-        "de": "Nasse Kleidung haftet an der Haut.",
-        "es": "La ropa mojada se adhiere a la piel.",
-        "fr": "Les vêtements mouillés collent à la peau.",
-        "pt-BR": "Roupas molhadas grudam na pele.",
-        "ru": "Мокрая одежда липнет к коже."
-      },
-      "freqRank": 140,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:t-shirt"
-    },
-    {
-      "index": 140,
-      "kind": "phrase",
-      "text": "We went astray in the woods.",
-      "gloss": { "tr": "Biz ormanda yolu şaşırdık.", "ru": "Мы заблудились в лесу." },
-      "freqRank": 141,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:compass"
-    },
-    {
-      "index": 141,
-      "kind": "phrase",
-      "text": "What's your favorite acoustic song?",
-      "gloss": { "tr": "En sevdiğiniz akustik şarkı nedir?" },
-      "freqRank": 142,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:guitar"
-    },
-    {
-      "index": 142,
       "kind": "phrase",
       "text": "Why are you always so cynical?",
       "gloss": {
@@ -1887,12 +1886,21 @@
         "es": "¿Por qué siempre eres tan cínico?",
         "ru": "Почему ты всегда такая циничная?"
       },
-      "freqRank": 143,
+      "freqRank": 142,
       "review": { "glossedBy": "Tatoeba" },
       "image": "cue:unamused-face"
     },
     {
-      "index": 143,
+      "index": 140,
+      "kind": "phrase",
+      "text": "We went astray in the woods.",
+      "gloss": { "tr": "Biz ormanda yolu şaşırdık.", "ru": "Мы заблудились в лесу." },
+      "freqRank": 143,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:compass"
+    },
+    {
+      "index": 141,
       "kind": "phrase",
       "text": "You must conform to the rules.",
       "gloss": {
@@ -1907,7 +1915,7 @@
       "image": "cue:clipboard"
     },
     {
-      "index": 144,
+      "index": 142,
       "kind": "phrase",
       "text": "A big ship is anchored near here.",
       "gloss": {
@@ -1922,7 +1930,7 @@
       "image": "cue:ship"
     },
     {
-      "index": 145,
+      "index": 143,
       "kind": "phrase",
       "text": "Don't squander your newly earned money!",
       "gloss": {
@@ -1934,7 +1942,7 @@
       "image": "cue:money-with-wings"
     },
     {
-      "index": 146,
+      "index": 144,
       "kind": "phrase",
       "text": "A spontaneous fire started in the hay.",
       "gloss": {
@@ -1946,7 +1954,7 @@
       "image": "cue:fire"
     },
     {
-      "index": 147,
+      "index": 145,
       "kind": "phrase",
       "text": "He filled the cup to the brim.",
       "gloss": {
@@ -1960,34 +1968,7 @@
       "image": "cue:teacup-without-handle"
     },
     {
-      "index": 148,
-      "kind": "phrase",
-      "text": "How many trees are in your orchard?",
-      "gloss": {
-        "tr": "Meyve bahçende kaç tane ağaç var?",
-        "es": "¿Cuántos árboles hay en tu huerto?",
-        "fr": "Combien d'arbres y a-t-il dans votre verger ?",
-        "pt-BR": "Quantas árvores há em seu pomar?",
-        "ru": "Сколько у тебя в саду деревьев?"
-      },
-      "freqRank": 149,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:red-apple"
-    },
-    {
-      "index": 149,
-      "kind": "phrase",
-      "text": "He has a remarkable aptitude for music.",
-      "gloss": {
-        "tr": "Onun müziğe olağanüstü bir yeteneği var.",
-        "de": "Er hat eine außergewöhnliche musikalische Begabung."
-      },
-      "freqRank": 150,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:musical-note"
-    },
-    {
-      "index": 150,
+      "index": 146,
       "kind": "phrase",
       "text": "I am sending the invoice by fax.",
       "gloss": {
@@ -2001,21 +1982,19 @@
       "image": "cue:receipt"
     },
     {
-      "index": 151,
+      "index": 147,
       "kind": "phrase",
-      "text": "He is very meticulous in his work.",
+      "text": "He has a remarkable aptitude for music.",
       "gloss": {
-        "tr": "O, işinde çok titiz.",
-        "es": "Él es sumamente meticuloso en su trabajo.",
-        "fr": "Il est très méticuleux dans son travail.",
-        "ru": "Он очень дотошен в своей работе."
+        "tr": "Onun müziğe olağanüstü bir yeteneği var.",
+        "de": "Er hat eine außergewöhnliche musikalische Begabung."
       },
-      "freqRank": 152,
+      "freqRank": 150,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:magnifying-glass-tilted-left"
+      "image": "cue:musical-note"
     },
     {
-      "index": 152,
+      "index": 148,
       "kind": "phrase",
       "text": "I am wholly in agreement with you.",
       "gloss": {
@@ -2029,22 +2008,21 @@
       "image": "cue:thumbs-up"
     },
     {
-      "index": 153,
+      "index": 149,
       "kind": "phrase",
-      "text": "He was in favor of the proposition.",
+      "text": "He is very meticulous in his work.",
       "gloss": {
-        "tr": "O, teklifin lehindeydi.",
-        "es": "Él estuvo a favor de la proposición.",
-        "fr": "Il était en faveur de la proposition.",
-        "pt-BR": "Ele esteve a favor da proposição.",
-        "ru": "Он был за это предложение."
+        "tr": "O, işinde çok titiz.",
+        "es": "Él es sumamente meticuloso en su trabajo.",
+        "fr": "Il est très méticuleux dans son travail.",
+        "ru": "Он очень дотошен в своей работе."
       },
-      "freqRank": 154,
+      "freqRank": 152,
       "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:thumbs-up"
+      "image": "cue:magnifying-glass-tilted-left"
     },
     {
-      "index": 154,
+      "index": 150,
       "kind": "phrase",
       "text": "I doubt the authenticity of the document.",
       "gloss": {
@@ -2059,7 +2037,22 @@
       "image": "cue:magnifying-glass-tilted-left"
     },
     {
-      "index": 155,
+      "index": 151,
+      "kind": "phrase",
+      "text": "He was in favor of the proposition.",
+      "gloss": {
+        "tr": "O, teklifin lehindeydi.",
+        "es": "Él estuvo a favor de la proposición.",
+        "fr": "Il était en faveur de la proposition.",
+        "pt-BR": "Ele esteve a favor da proposição.",
+        "ru": "Он был за это предложение."
+      },
+      "freqRank": 154,
+      "review": { "glossedBy": "Tatoeba" },
+      "image": "cue:thumbs-up"
+    },
+    {
+      "index": 152,
       "kind": "phrase",
       "text": "In winter, I often suffer from melancholy.",
       "gloss": {
@@ -2072,7 +2065,7 @@
       "image": "cue:cloud-with-snow"
     },
     {
-      "index": 156,
+      "index": 153,
       "kind": "phrase",
       "text": "I have a blister on my foot.",
       "gloss": {
@@ -2085,7 +2078,7 @@
       "image": "cue:adhesive-bandage"
     },
     {
-      "index": 157,
+      "index": 154,
       "kind": "phrase",
       "text": "It's hot and stuffy in here.",
       "gloss": {
@@ -2098,16 +2091,7 @@
       "image": "cue:hot-face"
     },
     {
-      "index": 158,
-      "kind": "phrase",
-      "text": "I have a business proposition for you.",
-      "gloss": { "tr": "Sana bir iş teklifim var.", "ru": "У меня к вам деловое предложение." },
-      "freqRank": 159,
-      "review": { "glossedBy": "Tatoeba" },
-      "image": "cue:briefcase"
-    },
-    {
-      "index": 159,
+      "index": 155,
       "kind": "phrase",
       "text": "Let's drink to our charming hostess!",
       "gloss": {
@@ -2120,7 +2104,7 @@
       "image": "cue:clinking-beer-mugs"
     },
     {
-      "index": 160,
+      "index": 156,
       "kind": "phrase",
       "text": "I have a craving for fresh fruit.",
       "gloss": {
@@ -2133,7 +2117,7 @@
       "image": "cue:drooling-face"
     },
     {
-      "index": 161,
+      "index": 157,
       "kind": "phrase",
       "text": "Let's have some coffee during recess.",
       "gloss": { "tr": "Mola sırasında biraz kahve içelim." },
@@ -2142,7 +2126,7 @@
       "image": "cue:hot-beverage"
     },
     {
-      "index": 162,
+      "index": 158,
       "kind": "phrase",
       "text": "I read a synopsis of the film.",
       "gloss": {
@@ -2155,7 +2139,7 @@
       "image": "cue:clapper-board"
     },
     {
-      "index": 163,
+      "index": 159,
       "kind": "phrase",
       "text": "My dog likes to gnaw on bones.",
       "gloss": {
@@ -2169,7 +2153,7 @@
       "image": "cue:dog"
     },
     {
-      "index": 164,
+      "index": 160,
       "kind": "phrase",
       "text": "I want to chill the wine more.",
       "gloss": {
@@ -2182,7 +2166,7 @@
       "image": "cue:wine-glass"
     },
     {
-      "index": 165,
+      "index": 161,
       "kind": "phrase",
       "text": "My father left me a large inheritance.",
       "gloss": {
@@ -2197,7 +2181,7 @@
       "image": "cue:money-bag"
     },
     {
-      "index": 166,
+      "index": 162,
       "kind": "phrase",
       "text": "Please keep your cynical remarks to yourself.",
       "gloss": {
@@ -2212,7 +2196,7 @@
       "image": "cue:zipper-mouth-face"
     },
     {
-      "index": 167,
+      "index": 163,
       "kind": "phrase",
       "text": "My life would be meaningless without you.",
       "gloss": {
@@ -2226,7 +2210,7 @@
       "image": "cue:red-heart"
     },
     {
-      "index": 168,
+      "index": 164,
       "kind": "phrase",
       "text": "Sleep deprivation increases risk of heart attacks.",
       "gloss": {
@@ -2241,7 +2225,7 @@
       "image": "cue:sleepy-face"
     },
     {
-      "index": 169,
+      "index": 165,
       "kind": "phrase",
       "text": "The continent is abundant in fossil fuels.",
       "gloss": {
@@ -2255,7 +2239,7 @@
       "image": "cue:fuel-pump"
     },
     {
-      "index": 170,
+      "index": 166,
       "kind": "phrase",
       "text": "There are five fish in my aquarium.",
       "gloss": {
@@ -2270,7 +2254,7 @@
       "image": "cue:fish"
     },
     {
-      "index": 171,
+      "index": 167,
       "kind": "phrase",
       "text": "The letter carrier comes every three days.",
       "gloss": {
@@ -2282,7 +2266,7 @@
       "image": "cue:envelope"
     },
     {
-      "index": 172,
+      "index": 168,
       "kind": "phrase",
       "text": "There is a crumb in his beard.",
       "gloss": {
@@ -2295,7 +2279,7 @@
       "image": "cue:person-beard"
     },
     {
-      "index": 173,
+      "index": 169,
       "kind": "phrase",
       "text": "The mountaineer set out for the summit.",
       "gloss": {
@@ -2307,7 +2291,7 @@
       "image": "cue:sunrise-over-mountains"
     },
     {
-      "index": 174,
+      "index": 170,
       "kind": "phrase",
       "text": "There's a sauna and a pool.",
       "gloss": {
@@ -2320,7 +2304,7 @@
       "image": "cue:person-swimming"
     },
     {
-      "index": 175,
+      "index": 171,
       "kind": "phrase",
       "text": "The ruined castle is now under restoration.",
       "gloss": {
@@ -2333,7 +2317,7 @@
       "image": "cue:castle"
     },
     {
-      "index": 176,
+      "index": 172,
       "kind": "phrase",
       "text": "This box is too bulky to carry.",
       "gloss": {
@@ -2347,7 +2331,7 @@
       "image": "cue:package"
     },
     {
-      "index": 177,
+      "index": 173,
       "kind": "phrase",
       "text": "The secretary gave me an agreeable smile.",
       "gloss": {
@@ -2359,7 +2343,7 @@
       "image": "cue:slightly-smiling-face"
     },
     {
-      "index": 178,
+      "index": 174,
       "kind": "phrase",
       "text": "This girl was always good and dutiful.",
       "gloss": {
@@ -2374,21 +2358,25 @@
       "image": "cue:girl"
     },
     {
-      "index": 179,
+      "index": 175,
       "kind": "phrase",
       "text": "The students are having a recess now.",
       "gloss": {
-        "tr": "Öğrenciler şimdi bir tatile giriyorlar.",
+        "tr": "Öğrenciler şimdi teneffüste.",
         "es": "Los estudiantes están en recreo ahora.",
         "fr": "Les étudiants sont en vacances actuellement.",
         "ar": "الطلبة في استراحة الآن."
       },
       "freqRank": 180,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "tr": "Öğrenciler şimdi bir tatile giriyorlar." },
+        "edited": ["tr"]
+      },
       "image": "cue:school"
     },
     {
-      "index": 180,
+      "index": 176,
       "kind": "phrase",
       "text": "This wine is pleasing to the palate.",
       "gloss": {
@@ -2401,21 +2389,25 @@
       "image": "cue:wine-glass"
     },
     {
-      "index": 181,
+      "index": 177,
       "kind": "phrase",
       "text": "A carpenter is someone who works with wood.",
       "gloss": {
         "tr": "Bir marangoz ahşapla çalışan bir kişidir.",
         "de": "Ein Zimmermann ist jemand, der Holz bearbeitet.",
         "fr": "Un charpentier est quelqu'un travaillant avec le bois.",
-        "ru": "Плотник - это тот, кто работает с деревом."
+        "ru": "Плотник — это тот, кто работает с деревом."
       },
       "freqRank": 182,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "ru": "Плотник - это тот, кто работает с деревом." },
+        "edited": ["ru"]
+      },
       "image": "cue:wood"
     },
     {
-      "index": 182,
+      "index": 178,
       "kind": "phrase",
       "text": "Being able to use a computer is advantageous.",
       "gloss": {
@@ -2428,7 +2420,7 @@
       "image": "cue:laptop"
     },
     {
-      "index": 183,
+      "index": 179,
       "kind": "phrase",
       "text": "A firewall guarantees your security on the internet.",
       "gloss": {
@@ -2441,7 +2433,7 @@
       "image": "cue:shield"
     },
     {
-      "index": 184,
+      "index": 180,
       "kind": "phrase",
       "text": "Chemistry has made notable progress in recent years.",
       "gloss": {
@@ -2456,7 +2448,7 @@
       "image": "cue:test-tube"
     },
     {
-      "index": 185,
+      "index": 181,
       "kind": "phrase",
       "text": "Don't worry. You can confide in me.",
       "gloss": {
@@ -2468,7 +2460,7 @@
       "image": "cue:shushing-face"
     },
     {
-      "index": 186,
+      "index": 182,
       "kind": "phrase",
       "text": "First class plane flights come with complimentary alcohol.",
       "gloss": {
@@ -2480,33 +2472,41 @@
       "image": "cue:airplane"
     },
     {
-      "index": 187,
+      "index": 183,
       "kind": "phrase",
       "text": "Freezing rain is a rather rare meteorological phenomenon.",
       "gloss": {
         "tr": "Donan yağmur oldukça nadir bir meteorolojik olaydır.",
         "de": "Der Eisregen ist ein eher seltenes meteorologisches Phänomen.",
-        "ru": "Ледяной дождь - довольно редкое погодное явление."
+        "ru": "Ледяной дождь — довольно редкое погодное явление."
       },
       "freqRank": 188,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "ru": "Ледяной дождь - довольно редкое погодное явление." },
+        "edited": ["ru"]
+      },
       "image": "cue:cloud-with-rain"
     },
     {
-      "index": 188,
+      "index": 184,
       "kind": "phrase",
       "text": "Get out of my life. I detest you.",
       "gloss": {
         "tr": "Yaşamımdan çık. Senden iğreniyorum.",
         "ru": "Убирайся из моей жизни. Я тебя ненавижу.",
-        "ar": "أخرج من حياتي! أنا أمقتك!"
+        "ar": "اخرج من حياتي! أنا أمقتك!"
       },
       "freqRank": 189,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "ar": "أخرج من حياتي! أنا أمقتك!" },
+        "edited": ["ar"]
+      },
       "image": "cue:broken-heart"
     },
     {
-      "index": 189,
+      "index": 185,
       "kind": "phrase",
       "text": "Have you been bitten by a stray dog?",
       "gloss": {
@@ -2519,7 +2519,7 @@
       "image": "cue:dog"
     },
     {
-      "index": 190,
+      "index": 186,
       "kind": "phrase",
       "text": "He had enough stamina to run a marathon.",
       "gloss": {
@@ -2531,7 +2531,7 @@
       "image": "cue:person-running"
     },
     {
-      "index": 191,
+      "index": 187,
       "kind": "phrase",
       "text": "High calorie foods are bad for my health.",
       "gloss": {
@@ -2544,7 +2544,7 @@
       "image": "cue:hamburger"
     },
     {
-      "index": 192,
+      "index": 188,
       "kind": "phrase",
       "text": "He lifted the car with his phenomenal strength.",
       "gloss": {
@@ -2557,7 +2557,7 @@
       "image": "cue:flexed-biceps"
     },
     {
-      "index": 193,
+      "index": 189,
       "kind": "phrase",
       "text": "How many apple trees are in your orchard?",
       "gloss": {
@@ -2571,7 +2571,7 @@
       "image": "cue:red-apple"
     },
     {
-      "index": 194,
+      "index": 190,
       "kind": "phrase",
       "text": "He presented me with a bouquet of flowers.",
       "gloss": {
@@ -2586,7 +2586,7 @@
       "image": "cue:bouquet"
     },
     {
-      "index": 195,
+      "index": 191,
       "kind": "phrase",
       "text": "I am not accustomed to speaking in public.",
       "gloss": {
@@ -2600,7 +2600,7 @@
       "image": "cue:microphone"
     },
     {
-      "index": 196,
+      "index": 192,
       "kind": "phrase",
       "text": "I'm craving for beef stew right now.",
       "gloss": { "tr": "Şu an canım dana güveç çekiyor." },
@@ -2609,7 +2609,7 @@
       "image": "cue:pot-of-food"
     },
     {
-      "index": 197,
+      "index": 193,
       "kind": "phrase",
       "text": "I am not accustomed to walking long distances.",
       "gloss": {
@@ -2624,7 +2624,7 @@
       "image": "cue:person-walking"
     },
     {
-      "index": 198,
+      "index": 194,
       "kind": "phrase",
       "text": "I'm not accustomed to getting up early.",
       "gloss": {
@@ -2639,7 +2639,7 @@
       "image": "cue:alarm-clock"
     },
     {
-      "index": 199,
+      "index": 195,
       "kind": "phrase",
       "text": "I have a twitch in my right eye.",
       "gloss": {
@@ -2654,21 +2654,25 @@
       "image": "cue:eye"
     },
     {
-      "index": 200,
+      "index": 196,
       "kind": "phrase",
       "text": "If you buy in bulk, it's 20% cheaper.",
       "gloss": {
-        "tr": "Toplu olarak satın alırsanız, % 20 daha ucuz dur.",
+        "tr": "Toplu olarak satın alırsanız %20 daha ucuzdur.",
         "fr": "Si tu achètes en gros, c'est 20 % moins cher.",
         "ru": "Если купишь оптом, будет на двадцать процентов дешевле.",
         "ar": "ستوفّر ٢٠٪ إن اشتريت بالجملة."
       },
       "freqRank": 201,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "tr": "Toplu olarak satın alırsanız, % 20 daha ucuz dur." },
+        "edited": ["tr"]
+      },
       "image": "cue:shopping-cart"
     },
     {
-      "index": 201,
+      "index": 197,
       "kind": "phrase",
       "text": "I listen to the radio while in transit.",
       "gloss": {
@@ -2681,7 +2685,7 @@
       "image": "cue:radio"
     },
     {
-      "index": 202,
+      "index": 198,
       "kind": "phrase",
       "text": "It's forbidden to use this information commercially.",
       "gloss": {
@@ -2697,7 +2701,7 @@
       "image": "cue:prohibited"
     },
     {
-      "index": 203,
+      "index": 199,
       "kind": "phrase",
       "text": "I think I'll snooze for a while.",
       "gloss": {
@@ -2710,7 +2714,7 @@
       "image": "cue:zzz"
     },
     {
-      "index": 204,
+      "index": 200,
       "kind": "phrase",
       "text": "Many fantasy novels depict worlds with two moons.",
       "gloss": {
@@ -2723,20 +2727,24 @@
       "image": "cue:crescent-moon"
     },
     {
-      "index": 205,
+      "index": 201,
       "kind": "phrase",
       "text": "My house is comprised of these four rooms.",
       "gloss": {
         "tr": "Benim evim bu dört odadan oluşur.",
         "ru": "Мой дом состоит из этих четырёх комнат.",
-        "ar": "بيتي يتالف من هذه الغرف الاربعة"
+        "ar": "بيتي يتألف من هذه الغرف الأربع."
       },
       "freqRank": 206,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "ar": "بيتي يتالف من هذه الغرف الاربعة" },
+        "edited": ["ar"]
+      },
       "image": "cue:house"
     },
     {
-      "index": 206,
+      "index": 202,
       "kind": "phrase",
       "text": "She looked at him with an inscrutable expression.",
       "gloss": {
@@ -2748,7 +2756,7 @@
       "image": "cue:expressionless-face"
     },
     {
-      "index": 207,
+      "index": 203,
       "kind": "phrase",
       "text": "So there is a magnetic field around earth.",
       "gloss": {
@@ -2762,7 +2770,7 @@
       "image": "cue:globe-showing-europe-africa"
     },
     {
-      "index": 208,
+      "index": 204,
       "kind": "phrase",
       "text": "The answer leads us to a vicious circle.",
       "gloss": {
@@ -2778,7 +2786,7 @@
       "image": "cue:counterclockwise-arrows-button"
     },
     {
-      "index": 209,
+      "index": 205,
       "kind": "phrase",
       "text": "There were coffee grounds left in my cup.",
       "gloss": {
@@ -2790,7 +2798,7 @@
       "image": "cue:hot-beverage"
     },
     {
-      "index": 210,
+      "index": 206,
       "kind": "phrase",
       "text": "The chairs are made of a synthetic material.",
       "gloss": {
@@ -2802,7 +2810,7 @@
       "image": "cue:chair"
     },
     {
-      "index": 211,
+      "index": 207,
       "kind": "phrase",
       "text": "There's a post office in the vicinity.",
       "gloss": {
@@ -2815,19 +2823,23 @@
       "image": "cue:envelope"
     },
     {
-      "index": 212,
+      "index": 208,
       "kind": "phrase",
       "text": "Unfortunately I forgot to charge my camera beforehand.",
       "gloss": {
-        "tr": "Ne yazık ki önceden benim kamerayı şarj etmeyi unuttum.",
+        "tr": "Ne yazık ki kameramı önceden şarj etmeyi unuttum.",
         "de": "Leider habe ich vergessen, vorher meinen Fotoapparat aufzuladen."
       },
       "freqRank": 213,
-      "review": { "glossedBy": "Tatoeba" },
+      "review": {
+        "glossedBy": "Tatoeba",
+        "glossWas": { "tr": "Ne yazık ki önceden benim kamerayı şarj etmeyi unuttum." },
+        "edited": ["tr"]
+      },
       "image": "cue:camera"
     },
     {
-      "index": 213,
+      "index": 209,
       "kind": "phrase",
       "text": "We must try to conserve our natural resources.",
       "gloss": {
@@ -2840,7 +2852,7 @@
       "image": "cue:recycling-symbol"
     },
     {
-      "index": 214,
+      "index": 210,
       "kind": "phrase",
       "text": "Who can I call to fix my plumbing?",
       "gloss": { "tr": "Su tesisatımı tamir etmek için kimi arayabilirim?" },
@@ -2849,7 +2861,7 @@
       "image": "cue:wrench"
     },
     {
-      "index": 215,
+      "index": 211,
       "kind": "phrase",
       "text": "Why does that goose sit on her eggs?",
       "gloss": {
@@ -2862,7 +2874,7 @@
       "image": "cue:egg"
     },
     {
-      "index": 216,
+      "index": 212,
       "kind": "phrase",
       "text": "Young plants should be protected in frosty weather.",
       "gloss": { "tr": "Genç bitkiler kırağılı havadan korunmalıdır." },
