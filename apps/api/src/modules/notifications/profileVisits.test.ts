@@ -7,9 +7,10 @@ import { COLLECTIONS } from '../../db/collections'
 import type { NotificationEmailContext } from '../../email/notify'
 import { authId } from '../../lib/authId'
 import { CapturingEmailSender } from '../../testSupport/authFlow'
+import type { Profile } from '../profiles/profiles'
 import { LoggingPushSender, type Device } from '../push/devices'
 import { runDailyDigestPass } from './digest'
-import { runProfileVisitsPushPass } from './profileVisits'
+import { profileVisitsSectionFor, runProfileVisitsPushPass } from './profileVisits'
 
 const SECRET = 'e'.repeat(40)
 const DAY = 24 * 60 * 60 * 1000
@@ -174,94 +175,64 @@ describe('the profile-visit round-up', () => {
   })
 
   describe('the weekly section of the evening digest', () => {
+    async function sectionFor(userId: string, now = mondayEvening) {
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: userId })
+      return profileVisitsSectionFor(handle.db, profile as Profile, now)
+    }
+
+    /** A passenger: the week's visits ride in a letter going anyway. */
+    it('never sends a letter on its own', async () => {
+      const me = await newProfile()
+      await view(await newProfile(), me, 2)
+
+      expect((await sectionFor(me))?.trigger).toBe(false)
+      expect(await runDailyDigestPass(handle.db, email, mondayEvening)).toMatchObject({ sent: 0 })
+      expect(sender.messages).toHaveLength(0)
+    })
+
     it('gives a free account the count and the reason to upgrade', async () => {
       const me = await newProfile()
       await view(await newProfile({ name: 'Ada Lovelace' }), me, 2)
 
-      expect(await runDailyDigestPass(handle.db, email, mondayEvening)).toMatchObject({ sent: 1 })
-      const message = sender.messages[0]
-      expect(message?.subject).toContain('1')
-      expect(message?.html).not.toContain('Ada Lovelace')
-      expect(message?.text).toContain('Upgrade')
+      const built = (await sectionFor(me))?.build('en')
+      expect(built?.subject).toContain('1')
+      expect(built?.html).not.toContain('Ada Lovelace')
+      expect(built?.text.join('\n')).toContain('Upgrade')
     })
 
     it('names them for an account allowed to see who', async () => {
       const me = await newProfile({ tier: 'pro' })
       await view(await newProfile({ name: 'Ada Lovelace' }), me, 2)
-
-      await runDailyDigestPass(handle.db, email, mondayEvening)
-      expect(sender.messages[0]?.html).toContain('Ada Lovelace')
+      expect((await sectionFor(me))?.build('en').html).toContain('Ada Lovelace')
     })
 
     /** A Polyglot row not merged yet is Pro, and sees who looked. */
     it('names them for a row still stored as pro_plus', async () => {
       const me = await newProfile({ tier: 'pro_plus' })
       await view(await newProfile({ name: 'Ada Lovelace' }), me, 2)
-
-      await runDailyDigestPass(handle.db, email, mondayEvening)
-      expect(sender.messages[0]?.html).toContain('Ada Lovelace')
+      expect((await sectionFor(me))?.build('en').html).toContain('Ada Lovelace')
     })
 
     it('only goes out on the reader’s own Monday', async () => {
       const me = await newProfile()
       await view(await newProfile(), me, 2)
-
-      const tuesday = new Date(mondayEvening.getTime() + DAY)
-      expect(await runDailyDigestPass(handle.db, email, tuesday)).toMatchObject({ sent: 0 })
+      expect(await sectionFor(me, new Date(mondayEvening.getTime() + DAY))).toBeNull()
     })
 
-    it('does not send twice in one week', async () => {
+    it('does not ride twice in one week', async () => {
       const me = await newProfile()
       await view(await newProfile(), me, 2)
 
-      await runDailyDigestPass(handle.db, email, mondayEvening)
-      expect(await runDailyDigestPass(handle.db, email, mondayEvening)).toMatchObject({ sent: 0 })
-      expect(sender.messages).toHaveLength(1)
+      expect(await (await sectionFor(me))?.claim()).toBe(true)
+      expect(await sectionFor(me)).toBeNull()
     })
 
     it('counts the whole week, not just today', async () => {
       const me = await newProfile()
       for (const daysAgo of [0, 2, 5]) await view(await newProfile(), me, daysAgo)
-
-      await runDailyDigestPass(handle.db, email, mondayEvening)
-      expect(sender.messages[0]?.subject).toContain('3')
-    })
-
-    /**
-     * The daily round-up wrote a row for each of these days and the bell has
-     * been showing them all week. A summary of visits somebody has already
-     * counted off one by one is a second telling, not a summary.
-     */
-    async function visitRow(userId: string, daysAgo: number, read: boolean): Promise<void> {
-      const at = new Date(mondayEvening.getTime() - daysAgo * DAY)
-      await handle.db.collection(COLLECTIONS.notifications).insertOne({
-        _id: new ObjectId(),
-        userId,
-        kind: 'profileVisits',
-        refId: at.toISOString().slice(0, 10),
-        count: 1,
-        createdAt: at,
-        ...(read ? { readAt: new Date(at.getTime() + 60 * 60 * 1000) } : {}),
-      })
-    }
-
-    it('writes no letter about a week already read on the bell', async () => {
-      const me = await newProfile()
-      for (const daysAgo of [2, 5]) await view(await newProfile(), me, daysAgo)
-      await visitRow(me, 2, true)
-      await visitRow(me, 5, true)
-
-      expect(await runDailyDigestPass(handle.db, email, mondayEvening)).toMatchObject({ sent: 0 })
-      expect(sender.messages).toHaveLength(0)
-    })
-
-    it('still writes when one of the days is unread', async () => {
-      const me = await newProfile()
-      for (const daysAgo of [2, 5]) await view(await newProfile(), me, daysAgo)
-      await visitRow(me, 2, true)
-      await visitRow(me, 5, false)
-
-      expect(await runDailyDigestPass(handle.db, email, mondayEvening)).toMatchObject({ sent: 1 })
+      expect((await sectionFor(me))?.build('en').subject).toContain('3')
     })
   })
 })
