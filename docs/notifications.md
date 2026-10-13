@@ -346,10 +346,10 @@ that was going anyway.
 | The day's replies to your posts    | `social`        | unless read in the app  | local day                                |
 | Badges earned                      | `badges`        | no push, and unread     | local day                                |
 | Yesterday's pool paid you N tokens | `wallet`        | no push device, unread  | pool day                                 |
-| Who looked at you                  | `profileVisits` | Mondays, unless read    | ISO week                                 |
+| Who looked at you                  | `profileVisits` | **no — passenger**      | ISO week, Mondays                        |
 | People you could practise with     | `promotions`    | **no — passenger**      | fortnight                                |
 
-Two of those sections say something the phone has already said, and that is
+Three of those sections say something the phone or the bell has already said, and that is
 what the trigger column is for: they are worth a line in a letter that is
 going out, and never worth one of their own. The hourly gift is in neither
 table — a button becoming available is not something that happened.
