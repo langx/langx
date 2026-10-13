@@ -186,16 +186,19 @@ export function tokensIn(phrase: string): string[] {
 }
 
 /**
- * The three SiriKit messaging intents the Intents extension answers — see
- * `targets/intents/Info.plist`, which declares the same three.
+ * The four SiriKit intents the Intents extension answers — see
+ * `targets/intents/Info.plist`, which declares the same four. Three are
+ * messaging; the fourth, starting a call, is what Apple requires of a CarPlay
+ * app that places VoIP calls (2.9, guideline 2.1(a)).
  */
-export const SIRI_MESSAGING_INTENTS = [
+export const SIRI_INTENTS = [
   'INSendMessageIntent',
   'INSearchForMessagesIntent',
   'INSetMessageAttributeIntent',
+  'INStartCallIntent',
 ] as const
 
-export type SiriMessagingIntent = (typeof SIRI_MESSAGING_INTENTS)[number]
+export type SiriIntent = (typeof SIRI_INTENTS)[number]
 
 /**
  * The app's name as it is spoken in an example, literally.
@@ -207,7 +210,7 @@ export type SiriMessagingIntent = (typeof SIRI_MESSAGING_INTENTS)[number]
 export const SPOKEN_APP_NAME = 'LangX'
 
 /**
- * One example sentence per messaging intent, per language, for the
+ * One example sentence per intent, per language, for the
  * `AppIntentVocabulary.plist` iOS reads them from.
  *
  * **Apple checks these at upload, not at build.** Build 172 of 2.6 compiled,
@@ -216,49 +219,59 @@ export const SPOKEN_APP_NAME = 'LangX'
  * all three intents in all eight languages: twenty-four warnings, delivered
  * after the binary was already there. Siri shows these to somebody who asks
  * what LangX can do, which is why each one names the app and a person.
+ * Build 191 of 2.9 got the same eight warnings for `INStartCallIntent`, the
+ * day it was added.
  *
  * The person is Sofia, the demo account every example in this repo uses, and
  * never a real user's name.
  */
-export const SIRI_INTENT_EXAMPLES: Record<Locale, Record<SiriMessagingIntent, string>> = {
+export const SIRI_INTENT_EXAMPLES: Record<Locale, Record<SiriIntent, string>> = {
   en: {
     INSendMessageIntent: 'Send a message to Sofia on LangX',
     INSearchForMessagesIntent: 'Read my new messages on LangX',
     INSetMessageAttributeIntent: 'Mark my LangX messages as read',
+    INStartCallIntent: 'Call Sofia on LangX',
   },
   tr: {
     INSendMessageIntent: "LangX'te Sofia'ya mesaj gönder",
     INSearchForMessagesIntent: "LangX'teki yeni mesajlarımı oku",
     INSetMessageAttributeIntent: 'LangX mesajlarımı okundu olarak işaretle',
+    INStartCallIntent: "LangX'te Sofia'yı ara",
   },
   es: {
     INSendMessageIntent: 'Envía un mensaje a Sofia en LangX',
     INSearchForMessagesIntent: 'Lee mis mensajes nuevos de LangX',
     INSetMessageAttributeIntent: 'Marca mis mensajes de LangX como leídos',
+    INStartCallIntent: 'Llama a Sofia en LangX',
   },
   ru: {
     INSendMessageIntent: 'Отправь сообщение Софии в LangX',
     INSearchForMessagesIntent: 'Прочитай мои новые сообщения в LangX',
     INSetMessageAttributeIntent: 'Отметь мои сообщения в LangX как прочитанные',
+    INStartCallIntent: 'Позвони Софии в LangX',
   },
   ar: {
     INSendMessageIntent: 'أرسل رسالة إلى صوفيا على LangX',
     INSearchForMessagesIntent: 'اقرأ رسائلي الجديدة على LangX',
     INSetMessageAttributeIntent: 'علّم رسائل LangX كمقروءة',
+    INStartCallIntent: 'اتصل بصوفيا على LangX',
   },
   fr: {
     INSendMessageIntent: 'Envoie un message à Sofia sur LangX',
     INSearchForMessagesIntent: 'Lis mes nouveaux messages LangX',
     INSetMessageAttributeIntent: 'Marque mes messages LangX comme lus',
+    INStartCallIntent: 'Appelle Sofia sur LangX',
   },
   de: {
     INSendMessageIntent: 'Sende eine Nachricht an Sofia mit LangX',
     INSearchForMessagesIntent: 'Lies meine neuen LangX Nachrichten',
     INSetMessageAttributeIntent: 'Markiere meine LangX Nachrichten als gelesen',
+    INStartCallIntent: 'Ruf Sofia mit LangX an',
   },
   'pt-BR': {
     INSendMessageIntent: 'Envie uma mensagem para Sofia no LangX',
     INSearchForMessagesIntent: 'Leia minhas novas mensagens do LangX',
     INSetMessageAttributeIntent: 'Marque minhas mensagens do LangX como lidas',
+    INStartCallIntent: 'Ligue para Sofia no LangX',
   },
 }
