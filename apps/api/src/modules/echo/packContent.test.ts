@@ -285,6 +285,7 @@ describe('the packs in content/echo', () => {
     'it:fluent',
     'de:fluent',
     'ru:fluent',
+    'en:fluent',
     'ar:absoluteBeginner',
     'ar:beginner',
     'ar:intermediate',
