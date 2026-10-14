@@ -2390,6 +2390,9 @@ export const ptBR: Localized<EnMessages> = {
 
   calls: {
     call: 'Ligar',
+    beta: 'Beta',
+    feedback: 'Feedback',
+    feedbackBody: 'As chamadas são novas. Conte o que deu errado ou o que você gostaria.',
     channel: 'Chamadas',
     ongoingChannel: 'Chamadas em andamento',
     speaker: 'Alto-falante',

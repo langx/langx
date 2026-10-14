@@ -2392,6 +2392,9 @@ export const es: Localized<EnMessages> = {
 
   calls: {
     call: 'Llamar',
+    beta: 'Beta',
+    feedback: 'Comentarios',
+    feedbackBody: 'Las llamadas son nuevas. Cuéntanos qué falló o qué te gustaría.',
     channel: 'Llamadas',
     ongoingChannel: 'Llamadas en curso',
     speaker: 'Altavoz',

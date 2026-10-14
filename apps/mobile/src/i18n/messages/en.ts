@@ -2622,6 +2622,9 @@ export const en = {
    */
   calls: {
     call: 'Call',
+    beta: 'Beta',
+    feedback: 'Feedback',
+    feedbackBody: 'Calls are new. Tell us what broke, or what you’d want.',
     channel: 'Calls',
     ongoingChannel: 'Calls in progress',
     speaker: 'Speaker',
