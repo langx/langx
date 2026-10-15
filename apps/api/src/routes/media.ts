@@ -6,6 +6,7 @@ import {
   mediaKindOfContentType,
   mediaUploadUrlSchema,
   photoAddSchema,
+  photoOrderSchema,
   postMediaUploadUrlSchema,
   photoRemoveSchema,
 } from '@langx/shared'
@@ -23,7 +24,7 @@ import {
 import { assertConversationAccess, assertMediaUnlocked } from '../modules/chat/access'
 import { recordPendingUpload } from '../modules/chat/pendingUploads'
 import { objectExtension } from '../modules/media/objectExtension'
-import { addPhoto, removePhoto, setAvatarUrl } from '../modules/profiles/profiles'
+import { addPhoto, removePhoto, reorderPhotos, setAvatarUrl } from '../modules/profiles/profiles'
 import { toOwnProfileWire } from '../modules/profiles/ownProfileWire'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
@@ -247,6 +248,16 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       return reply.send(
         toOwnProfileWire(await removePhoto(app.mongo.db, request.userId, request.body.url)),
+      )
+    },
+  )
+
+  app.put(
+    '/me/photos/order',
+    { preHandler: requireMember, schema: { body: photoOrderSchema } },
+    async (request, reply) => {
+      return reply.send(
+        toOwnProfileWire(await reorderPhotos(app.mongo.db, request.userId, request.body.urls)),
       )
     },
   )

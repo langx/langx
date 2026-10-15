@@ -1834,6 +1834,46 @@ export async function addPhoto(db: Db, userId: string, url: string): Promise<Pro
   return result
 }
 
+/**
+ * Puts the gallery in the order given, which must name every photo once.
+ *
+ * Only the order is the client's to say: each entry keeps its own `createdAt`,
+ * and a list that adds, drops or repeats a URL is refused rather than taken as
+ * an add or a remove by the back door — those have their own routes, and the
+ * add is the one that checks the cap.
+ *
+ * The write is filtered on the array it was computed from. A photo added or
+ * removed between the read and the write — a second device, or the upload
+ * queue on this one finishing mid-drag — makes it match nothing, and the
+ * person is told to try again instead of having that change silently undone.
+ */
+export async function reorderPhotos(db: Db, userId: string, urls: string[]): Promise<Profile> {
+  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const current = await profiles.findOne({ _id: userId }, { projection: { photos: 1 } })
+  if (!current) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+
+  const photos = current.photos ?? []
+  const byUrl = new Map(photos.map((photo) => [photo.url, photo]))
+  const reordered = urls.flatMap((url) => {
+    const photo = byUrl.get(url)
+    byUrl.delete(url)
+    return photo ? [photo] : []
+  })
+  if (reordered.length !== photos.length || urls.length !== photos.length) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'The order must name every photo once')
+  }
+
+  const result = await profiles.findOneAndUpdate(
+    { _id: userId, photos },
+    { $set: { photos: reordered, updatedAt: new Date() } },
+    { returnDocument: 'after' },
+  )
+  if (!result) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'The gallery changed; try again')
+  }
+  return result
+}
+
 export async function removePhoto(db: Db, userId: string, url: string): Promise<Profile> {
   const result = await db
     .collection<Profile>(COLLECTIONS.profiles)

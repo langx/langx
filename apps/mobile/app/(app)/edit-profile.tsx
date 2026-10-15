@@ -15,11 +15,13 @@ import {
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Image, Pressable, ScrollView, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 import {
   useEffectiveTier,
   useMe,
   useRemovePhoto,
+  useReorderPhotos,
   useSetGender,
   useUpdateProfile,
   type MeProfile,
@@ -40,7 +42,9 @@ import { Skeleton } from '../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo, openLanguages } from '../../src/lib/navigation'
 import { confirmAlert, showAlert } from '../../src/lib/alert'
+import { DraggablePhotos } from '../../src/components/DraggablePhotos'
 import { PendingPhotoTile } from '../../src/components/PendingPhotoTile'
+import { moveItem } from '../../src/lib/gridReorder'
 import { pickMediaAssets } from '../../src/lib/pickMediaAsset'
 import { showToast } from '../../src/lib/toast'
 import { makeStyles, useTheme } from '../../src/lib/theme'
@@ -115,6 +119,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   const setGender = useSetGender()
   const avatar = useChangeAvatar()
   const removePhoto = useRemovePhoto()
+  const reorderPhotos = useReorderPhotos()
   const uploads = useProfilePhotoUploads(onUploadError)
 
   const [displayName, setDisplayName] = useState(profile.displayName ?? '')
@@ -272,29 +277,34 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
                 {avatar.isPending ? t('onboarding.uploading') : t('onboarding.changePhoto')}
               </Text>
             </Pressable>
-            <Text style={styles.hint}>{t('editProfile.longPressToRemove')}</Text>
+            <Text style={styles.hint}>{t('editProfile.holdPhotoHint')}</Text>
           </View>
         </View>
 
         {/* The photos the hint above is about, directly under it. */}
         <View style={styles.gallery}>
-          {photos.map((photo) => (
-            <Pressable
-              key={photo.url}
-              onLongPress={() =>
-                void confirmAlert({
-                  title: t('editProfile.removePhotoTitle'),
-                  message: t('editProfile.removePhotoBody'),
-                  confirmLabel: t('common.remove'),
-                  destructive: true,
-                }).then((yes) => {
-                  if (yes) removePhoto.mutate(photo.url)
-                })
-              }
-            >
-              <Image source={{ uri: photo.url }} style={styles.photo} />
-            </Pressable>
-          ))}
+          <DraggablePhotos
+            photos={photos}
+            size={PHOTO_TILE}
+            onMove={(from, to) =>
+              reorderPhotos.mutate(
+                moveItem(photos, from, to).map((photo) => photo.url),
+                { onError: () => showToast(t('editProfile.photoOrderFailed')) },
+              )
+            }
+            onRemove={(index) => {
+              const photo = photos[index]
+              if (!photo) return
+              void confirmAlert({
+                title: t('editProfile.removePhotoTitle'),
+                message: t('editProfile.removePhotoBody'),
+                confirmLabel: t('common.remove'),
+                destructive: true,
+              }).then((yes) => {
+                if (yes) removePhoto.mutate(photo.url)
+              })
+            }}
+          />
           {uploads.pending.map((photo) => (
             <PendingPhotoTile
               key={photo.id}

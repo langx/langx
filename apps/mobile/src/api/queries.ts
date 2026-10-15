@@ -2487,6 +2487,38 @@ export function useRemovePhoto() {
 }
 
 /**
+ * A gallery photo dropped in a new place.
+ *
+ * Optimistic, so the tile stays where it was let go of instead of jumping back
+ * for the length of a request and then forward again. A refusal — most often
+ * the gallery changing under the drag, which the server checks for — puts the
+ * old order back and says so.
+ */
+export function useReorderPhotos() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (urls: string[]) => apiPut<MeProfile>('/me/photos/order', { urls }),
+    onMutate: async (urls) => {
+      await queryClient.cancelQueries({ queryKey: keys.me })
+      const previous = queryClient.getQueryData<MeProfile>(keys.me)
+      if (previous) {
+        queryClient.setQueryData<MeProfile>(keys.me, {
+          ...previous,
+          photos: urls.map((url) => ({ url })),
+        })
+      }
+      return { previous }
+    },
+    onError: (_error, _urls, context) => {
+      if (context?.previous) queryClient.setQueryData(keys.me, context.previous)
+    },
+    onSuccess: (profile) => {
+      queryClient.setQueryData(keys.me, profile)
+    },
+  })
+}
+
+/**
  * What to sign an upload as: the caller's claim, corrected by the blob.
  *
  * Only for audio, and only on the web, which is where the two can disagree.
