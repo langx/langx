@@ -1481,10 +1481,10 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
         payload: { urls: [urls[2], urls[0], urls[1]] },
       })
       expect(response.statusCode, response.body).toBe(200)
-      expect(response.json<Profile>().photos).toEqual([
-        { url: urls[2] },
-        { url: urls[0] },
-        { url: urls[1] },
+      expect(response.json<Profile>().photos?.map((p) => p.url)).toEqual([
+        urls[2],
+        urls[0],
+        urls[1],
       ])
 
       const after = await profiles.findOne({ _id: user.userId })
