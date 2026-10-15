@@ -1198,7 +1198,7 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       const cdn = 'https://cdn.example.com'
       const photo = `${cdn}/photos/${user.userId}/one.png`
       const calls: {
-        method: 'GET' | 'POST' | 'PATCH' | 'DELETE'
+        method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
         url: string
         payload?: object
       }[] = [
@@ -1219,6 +1219,7 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
           payload: { avatarUrl: `${cdn}/avatars/${user.userId}/a.png` },
         },
         { method: 'POST', url: '/me/photos', payload: { url: photo } },
+        { method: 'PUT', url: '/me/photos/order', payload: { urls: [photo] } },
         { method: 'DELETE', url: '/me/photos', payload: { url: photo } },
       ]
 
@@ -1463,6 +1464,58 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
 
       const after = await removePhoto(handle.db, user.userId, `${BUCKET}/drop.jpg`)
       expect(after.photos?.map((p) => p.url)).toEqual([`${BUCKET}/keep.jpg`])
+    })
+
+    it('reorders the gallery, keeping each photo as it was', async () => {
+      const user = await onboarded('photos-order@example.com', 'photosorder')
+      const urls = ['a', 'b', 'c'].map((name) => `${BUCKET}/photos/${user.userId}/${name}.jpg`)
+      const { addPhoto: addPhotoDirect } = await import('../modules/profiles/profiles')
+      for (const url of urls) await addPhotoDirect(handle.db, user.userId, url)
+      const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+      const before = await profiles.findOne({ _id: user.userId })
+
+      const response = await app.inject({
+        method: 'PUT',
+        url: '/me/photos/order',
+        headers: { cookie: user.cookie },
+        payload: { urls: [urls[2], urls[0], urls[1]] },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json<Profile>().photos).toEqual([
+        { url: urls[2] },
+        { url: urls[0] },
+        { url: urls[1] },
+      ])
+
+      const after = await profiles.findOne({ _id: user.userId })
+      expect(after?.photos?.[0]?.createdAt).toEqual(before?.photos?.[2]?.createdAt)
+    })
+
+    /**
+     * Only the order is the client's to set. A list that adds a URL would be
+     * an add that skipped both the cap and the bucket check; one that drops a
+     * URL would be a remove nobody asked for.
+     */
+    it('refuses an order that is not exactly the gallery', async () => {
+      const user = await onboarded('photos-order-bad@example.com', 'photosorderbad')
+      const [a, b] = ['a', 'b'].map((name) => `${BUCKET}/photos/${user.userId}/${name}.jpg`)
+      const { addPhoto: addPhotoDirect } = await import('../modules/profiles/profiles')
+      await addPhotoDirect(handle.db, user.userId, a!)
+      await addPhotoDirect(handle.db, user.userId, b!)
+
+      for (const urls of [[b], [b, a, a], [b, a, 'https://evil.example.net/x.jpg'], [a, a]]) {
+        const response = await app.inject({
+          method: 'PUT',
+          url: '/me/photos/order',
+          headers: { cookie: user.cookie },
+          payload: { urls },
+        })
+        expect(response.statusCode, JSON.stringify(urls)).toBe(400)
+      }
+      const after = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(after?.photos?.map((p) => p.url)).toEqual([a, b])
     })
   })
 

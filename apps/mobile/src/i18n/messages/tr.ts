@@ -1729,7 +1729,12 @@ export const tr: Localized<EnMessages> = {
     genderConfirmTitle: 'Cinsiyetin belirlensin mi?',
     genderConfirmBody: 'Profilinde {gender} yazacak. {days} gün sonra tekrar değiştirebilirsin.',
     languages: 'Diller',
-    longPressToRemove: 'Kaldırmak için fotoğrafa basılı tut.',
+    holdPhotoHint:
+      'Sırasını değiştirmek için bir fotoğrafa basılı tutup sürükle. Kıpırdatmadan bırakırsan kaldırırsın.',
+    photoPosition: 'Fotoğraf {position} / {count}',
+    movePhotoEarlier: 'Öne al',
+    movePhotoLater: 'Arkaya al',
+    photoOrderFailed: 'Fotoğrafların yeni sırası kaydedilemedi.',
     removePhotoTitle: 'Fotoğrafı kaldır',
     removePhotoBody: 'Bu fotoğraf profilinden kaldırılsın mı?',
     photoPreparing: 'Fotoğraf hazırlanıyor…',

@@ -1931,7 +1931,12 @@ export const en = {
     genderConfirmTitle: 'Set your gender?',
     genderConfirmBody: 'Your profile will say {gender}. You can change it again in {days} days.',
     languages: 'Languages',
-    longPressToRemove: 'Long-press a photo to remove it.',
+    holdPhotoHint:
+      'Hold a photo and drag it to change the order. Let go without moving it to remove it.',
+    photoPosition: 'Photo {position} of {count}',
+    movePhotoEarlier: 'Move earlier',
+    movePhotoLater: 'Move later',
+    photoOrderFailed: 'Could not save the new photo order.',
     removePhotoTitle: 'Remove photo',
     removePhotoBody: 'Remove this photo from your profile?',
     photoPreparing: 'Preparing photo…',

@@ -1755,7 +1755,12 @@ export const fr: Localized<EnMessages> = {
     genderConfirmBody:
       'Votre profil indiquera {gender}. Vous pourrez le changer à nouveau dans {days} jours.',
     languages: 'Langues',
-    longPressToRemove: 'Appuie longuement sur une photo pour la retirer.',
+    holdPhotoHint:
+      'Appuie longuement sur une photo et fais-la glisser pour changer l’ordre. Relâche-la sans la bouger pour la retirer.',
+    photoPosition: 'Photo {position} sur {count}',
+    movePhotoEarlier: 'Déplacer avant',
+    movePhotoLater: 'Déplacer après',
+    photoOrderFailed: 'Impossible d’enregistrer le nouvel ordre des photos.',
     removePhotoTitle: 'Retirer la photo',
     removePhotoBody: 'Retirer cette photo de ton profil ?',
     photoPreparing: 'Préparation de la photo…',

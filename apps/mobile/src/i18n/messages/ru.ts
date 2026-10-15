@@ -1906,7 +1906,12 @@ export const ru: Localized<EnMessages> = {
     genderConfirmBody:
       'В профиле будет указано: {gender}. Изменить снова можно будет через {days} дней.',
     languages: 'Языки',
-    longPressToRemove: 'Удерживай фото, чтобы убрать его.',
+    holdPhotoHint:
+      'Удерживай фото и перетащи его, чтобы изменить порядок. Отпусти, не двигая, чтобы убрать его.',
+    photoPosition: 'Фото {position} из {count}',
+    movePhotoEarlier: 'Переместить раньше',
+    movePhotoLater: 'Переместить позже',
+    photoOrderFailed: 'Не удалось сохранить новый порядок фото.',
     removePhotoTitle: 'Убрать фото',
     removePhotoBody: 'Убрать это фото из профиля?',
     photoPreparing: 'Подготовка фото…',

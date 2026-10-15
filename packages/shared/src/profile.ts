@@ -475,6 +475,17 @@ export const photoRemoveSchema = z.object({ url: z.url() })
 export type PhotoRemoveInput = z.infer<typeof photoRemoveSchema>
 
 /**
+ * `PUT /me/photos/order` — the whole gallery, in its new order, by URL.
+ *
+ * The full list rather than "move this one to there": a move names a position
+ * in an array the client may hold a stale copy of, while a list names exactly
+ * the order the person saw when they let go — and the server can refuse it
+ * outright if that is no longer the gallery it has.
+ */
+export const photoOrderSchema = z.object({ urls: z.array(z.url()).max(50) })
+export type PhotoOrderInput = z.infer<typeof photoOrderSchema>
+
+/**
  * The profile behind a shared link, read without a session. A strict subset of
  * what a signed-in member sees — see `getSharedProfile` for what is left out
  * and why.

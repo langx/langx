@@ -1778,7 +1778,12 @@ export const de: Localized<EnMessages> = {
     genderConfirmBody:
       'In deinem Profil steht dann {gender}. In {days} Tagen kannst du es wieder ändern.',
     languages: 'Sprachen',
-    longPressToRemove: 'Halte ein Foto gedrückt, um es zu entfernen.',
+    holdPhotoHint:
+      'Halte ein Foto gedrückt und zieh es, um die Reihenfolge zu ändern. Lässt du es los, ohne es zu bewegen, entfernst du es.',
+    photoPosition: 'Foto {position} von {count}',
+    movePhotoEarlier: 'Nach vorne',
+    movePhotoLater: 'Nach hinten',
+    photoOrderFailed: 'Die neue Reihenfolge der Fotos konnte nicht gespeichert werden.',
     removePhotoTitle: 'Foto entfernen',
     removePhotoBody: 'Dieses Foto aus deinem Profil entfernen?',
     photoPreparing: 'Foto wird vorbereitet…',
