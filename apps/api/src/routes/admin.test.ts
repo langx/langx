@@ -785,11 +785,17 @@ describe('the operator panel', () => {
       )!.id
 
       const body = 'Asking for money is against our rules. Questions: hi@langx.io'
+      // The inbox too: warn-then-suspend is the usual order, and a suspended
+      // account cannot open the thread the warning is in.
+      const mailed = () =>
+        emailSender.messages.filter((m) => m.to === target.email && m.text.includes(body))
       const warned = await post(admin, `/admin/reports/${firstId}/warn`, { body })
-      expect(warned.json()).toEqual({ warned: true })
-      // A second press sends nothing and says it did not warn.
+      expect(warned.json()).toEqual({ warned: true, emailed: true })
+      expect(mailed()).toHaveLength(1)
+      // A second press sends nothing — no message, no mail — and says so.
       const again = await post(admin, `/admin/reports/${firstId}/warn`, { body })
-      expect(again.json()).toEqual({ warned: false })
+      expect(again.json()).toEqual({ warned: false, emailed: false })
+      expect(mailed()).toHaveLength(1)
 
       const sent = await handle.db
         .collection<Message>(COLLECTIONS.messages)
@@ -1173,10 +1179,10 @@ describe('the operator panel', () => {
     })
 
     /*
-     * The thread is the one place a suspended account cannot open, so the
-     * panel can put the same words in the inbox — and only when asked.
+     * The thread is the one place a suspended account cannot open, so every
+     * note puts the same words in the inbox as well — not only when asked.
      */
-    it('mails the note too when asked, and only then', async () => {
+    it('mails every note too', async () => {
       const admin = await newUser()
       await makeAdmin(admin)
       const recipient = await newUser()
@@ -1185,18 +1191,11 @@ describe('the operator panel', () => {
       const mailed = (words: string) =>
         emailSender.messages.filter((m) => m.to === recipient.email && m.text.includes(words))
 
-      const quiet = await post(admin, `/admin/users/${recipient.userId}/message`, {
-        body: 'Only in the app.',
-      })
-      expect(quiet.json()).toMatchObject({ emailed: false })
-      expect(mailed('Only in the app.')).toHaveLength(0)
-
-      const loud = await post(admin, `/admin/users/${recipient.userId}/message`, {
+      const sent = await post(admin, `/admin/users/${recipient.userId}/message`, {
         body: 'Your account is suspended.\n\nReplies go to hi@langx.io.',
-        email: true,
       })
-      expect(loud.statusCode).toBe(201)
-      expect(loud.json()).toMatchObject({ emailed: true })
+      expect(sent.statusCode).toBe(201)
+      expect(sent.json()).toMatchObject({ emailed: true })
       expect(mailed('Replies go to hi@langx.io.')).toHaveLength(1)
     })
 

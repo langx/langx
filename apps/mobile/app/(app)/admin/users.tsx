@@ -215,20 +215,14 @@ function Found({ data }: { data: AdminUserDto }) {
     }
   }
 
-  async function sendMessage(email: boolean) {
+  async function sendMessage() {
     try {
       const result = (await action.mutateAsync({
         userId: user.userId,
         action: 'message',
-        body: { body: message.trim(), email },
+        body: { body: message.trim() },
       })) as { emailed?: boolean }
-      showToast(
-        !email
-          ? ADMIN.users.sent
-          : result.emailed
-            ? ADMIN.users.sentAndEmailed
-            : ADMIN.users.sentNotEmailed,
-      )
+      showToast(result.emailed ? ADMIN.users.sentAndEmailed : ADMIN.users.sentNotEmailed)
       setMessage('')
     } catch {
       showToast(ADMIN.common.failed)
@@ -352,16 +346,9 @@ function Found({ data }: { data: AdminUserDto }) {
           label={ADMIN.users.send}
           variant="secondary"
           disabled={message.trim().length === 0}
-          onPress={() => sendMessage(false)}
-        />
-        <Button
-          label={ADMIN.users.sendAndEmail}
-          variant="secondary"
-          disabled={message.trim().length === 0 || !user.email || !user.emailVerified}
-          onPress={() => sendMessage(true)}
+          onPress={() => sendMessage()}
         />
       </View>
-      <Text style={styles.hint}>{ADMIN.users.sendAndEmailHint}</Text>
 
       <FormField
         label={ADMIN.reports.days}

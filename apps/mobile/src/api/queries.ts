@@ -3603,7 +3603,9 @@ export function useAdminWarnReported() {
   const client = useQueryClient()
   return useMutation({
     mutationFn: (input: { id: string; body: string }) =>
-      api.post<{ warned: boolean }>(`/admin/reports/${input.id}/warn`, { body: input.body }),
+      api.post<{ warned: boolean; emailed: boolean }>(`/admin/reports/${input.id}/warn`, {
+        body: input.body,
+      }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
     },

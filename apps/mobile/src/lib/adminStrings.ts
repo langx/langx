@@ -234,7 +234,7 @@ export const ADMIN = {
      */
     warn: 'Warn first',
     warnHint:
-      'From @langx, filled in for this reason — edit it if you like. It closes the report and stays on it, and on every later report against them.',
+      'From @langx, filled in for this reason — edit it if you like. Also mailed to their verified address. It closes the report and stays on it, and on every later report against them.',
     sendWarning: 'Send the warning',
     confirmWarn: (who: string) => `Warn ${who} from @langx? This closes the report.`,
     warned: (date: string) => `Warned on ${date}. Next step: suspend for some days.`,
@@ -359,12 +359,10 @@ export const ADMIN = {
       `Remove ${who}'s profile photo? The file is deleted and cannot be restored.`,
     avatarRemoved: 'Profile photo removed.',
     message: 'Message from @langx',
-    messageHint: 'One way — they cannot reply. Say where a reply should go.',
+    messageHint:
+      'One way — they cannot reply. Say where a reply should go. Also mailed to their verified address, so a suspended account still reads it.',
     presetsHint: 'Ready to send — tap one to fill the box, then edit if needed.',
     send: 'Send',
-    sendAndEmail: 'Send + email',
-    sendAndEmailHint:
-      'Also mails the same words to their verified address — for somebody who cannot open the app, such as a suspended account.',
     sent: 'Sent.',
     sentAndEmailed: 'Sent, and emailed.',
     sentNotEmailed: 'Sent in the app. Not emailed — no verified address.',
