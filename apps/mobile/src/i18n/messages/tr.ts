@@ -2382,6 +2382,9 @@ export const tr: Localized<EnMessages> = {
 
   calls: {
     call: 'Ara',
+    beta: 'Beta',
+    feedback: 'Geri bildirim',
+    feedbackBody: 'Aramalar yeni. Neyin bozulduğunu ya da ne istediğini bize söyle.',
     channel: 'Aramalar',
     ongoingChannel: 'Süren aramalar',
     speaker: 'Hoparlör',

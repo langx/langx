@@ -2728,6 +2728,9 @@ export const ar: Localized<EnMessages> = {
 
   calls: {
     call: 'اتصال',
+    beta: 'تجريبي',
+    feedback: 'ملاحظات',
+    feedbackBody: 'المكالمات ميزة جديدة. أخبرنا بما تعطّل أو بما تودّ إضافته.',
     channel: 'المكالمات',
     ongoingChannel: 'المكالمات الجارية',
     speaker: 'مكبر الصوت',

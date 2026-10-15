@@ -2636,6 +2636,9 @@ export const ru: Localized<EnMessages> = {
 
   calls: {
     call: 'Позвонить',
+    beta: 'Бета',
+    feedback: 'Отзыв',
+    feedbackBody: 'Звонки — новая функция. Расскажите, что сломалось или чего не хватает.',
     channel: 'Звонки',
     ongoingChannel: 'Текущие звонки',
     speaker: 'Динамик',

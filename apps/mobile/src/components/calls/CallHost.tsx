@@ -1,4 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
+import type { FeedbackKind } from '@langx/shared'
+import { router } from 'expo-router'
 import { useEffect, useRef, useState, type ComponentProps } from 'react'
 import {
   Animated,
@@ -14,7 +16,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useCallClock, useCallState, useCallStreams } from '../../hooks/useCalls'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useT } from '../../i18n'
-import { showAlert } from '../../lib/alert'
+import { askAlert, showAlert } from '../../lib/alert'
 import { callStatusKey } from '../../lib/calls/callLabels'
 import type { CallState } from '../../lib/calls/machine'
 import {
@@ -179,6 +181,8 @@ function CallScreen({ call }: { call: CallState }) {
               onPress={() => setCallMinimized(true)}
             />
           ) : null}
+          <View style={styles.spacer} />
+          {up || call.phase === 'ended' ? <BetaFeedback ended={call.phase === 'ended'} /> : null}
         </View>
 
         {picture ? (
@@ -386,6 +390,48 @@ function RingingAvatar({ call }: { call: CallState }) {
   )
 }
 
+/**
+ * Calls are new, and the screen says so — with the way to tell us beside it,
+ * because the person most able to describe what went wrong is the one still
+ * looking at it.
+ *
+ * Only while the call can get out of the way: the feedback screen is under
+ * this `Modal`, so a call that is up is put away first (the strip keeps it
+ * running) and a closing line is closed. A ringing call has a decision to
+ * make and gets no detour.
+ */
+function BetaFeedback({ ended }: { ended: boolean }) {
+  const t = useT()
+  const styles = useStyles()
+  const { colors } = useTheme()
+
+  async function open(): Promise<void> {
+    const kind = await askAlert<FeedbackKind | null>(t('calls.feedback'), t('calls.feedbackBody'), [
+      { label: t('feedback.bugTitle'), value: 'bug', icon: 'alert-circle' },
+      { label: t('feedback.featureTitle'), value: 'feature', icon: 'zap' },
+      { label: t('common.cancel'), value: null, style: 'cancel' },
+    ])
+    if (!kind) return
+    if (ended) dismissCall()
+    else setCallMinimized(true)
+    router.push(`/(app)/settings/feedback?kind=${kind}`)
+  }
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`${t('calls.beta')} · ${t('calls.feedback')}`}
+      hitSlop={8}
+      onPress={() => void open()}
+      style={({ pressed }) => [styles.beta, pressed && styles.discPressed]}
+    >
+      <Text style={styles.betaBadge}>{t('calls.beta')}</Text>
+      <Feather name="message-square" size={14} color={colors.onScrim} />
+      <Text style={styles.betaLabel}>{t('calls.feedback')}</Text>
+    </Pressable>
+  )
+}
+
 function Note({ icon, text }: { icon: IconName; text: string }) {
   const styles = useStyles()
   const { colors } = useTheme()
@@ -466,7 +512,30 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   backdrop: { backgroundColor: colors.stage, flex: 1 },
   fill: { bottom: 0, left: 0, position: 'absolute', right: 0, top: 0 },
   chrome: { alignItems: 'center', flex: 1, paddingHorizontal: spacing.xl },
-  topBar: { alignSelf: 'stretch', flexDirection: 'row', minHeight: 40 },
+  topBar: { alignItems: 'center', alignSelf: 'stretch', flexDirection: 'row', minHeight: 40 },
+  beta: {
+    alignItems: 'center',
+    backgroundColor: colors.scrim,
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    gap: 6,
+    paddingLeft: 4,
+    paddingRight: spacing.md,
+    paddingVertical: 4,
+  },
+  betaBadge: {
+    ...font.label,
+    backgroundColor: colors.onScrim,
+    borderRadius: radius.pill,
+    color: colors.scrimStrong,
+    fontSize: 11,
+    fontWeight: '700',
+    overflow: 'hidden',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    textTransform: 'uppercase',
+  },
+  betaLabel: { ...font.label, color: colors.onScrim },
   identity: { alignItems: 'center', gap: spacing.md, marginTop: spacing.xxxl, maxWidth: 420 },
   avatarBox: {
     alignItems: 'center',

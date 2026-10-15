@@ -2418,6 +2418,10 @@ export const fr: Localized<EnMessages> = {
 
   calls: {
     call: 'Appeler',
+    beta: 'Bêta',
+    feedback: 'Avis',
+    feedbackBody:
+      'Les appels sont nouveaux. Dites-nous ce qui n’a pas marché, ou ce que vous voudriez.',
     channel: 'Appels',
     ongoingChannel: 'Appels en cours',
     speaker: 'Haut-parleur',
