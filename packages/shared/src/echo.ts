@@ -3,7 +3,7 @@ import { echoVoiceSchema } from './echoPacks'
 import { languageCodeSchema } from './languages'
 import { mediaSchema } from './media'
 import { ECHO_GRADES, SRS_RULES } from './srs'
-import { TOKEN_RULES } from './token'
+import { TOKEN_RULES, streakAwardSchema } from './token'
 
 /**
  * Echo: the cards a person keeps out of their own conversations.
@@ -549,8 +549,23 @@ export const echoReviewResultSchema = z.object({
   srs: echoSrsSchema.nullable(),
 })
 
+/**
+ * What this batch paid, as the ledger decided it: the sessions it completed
+ * that had not been paid before, and the streak credit the first of them
+ * earned. A batch that completed nothing new, or one the app sent twice,
+ * answers `tokens: 0` and a null streak.
+ */
+export const echoAwardSchema = z.object({
+  /** Token credited by this batch, a streak milestone included. */
+  tokens: z.number().int().nonnegative(),
+  streak: streakAwardSchema.nullable(),
+})
+export type EchoAward = z.infer<typeof echoAwardSchema>
+
 export const submitEchoReviewsResultSchema = z.object({
   results: z.array(echoReviewResultSchema),
+  /** Absent from a server that predates it. */
+  award: echoAwardSchema.optional(),
 })
 export type SubmitEchoReviewsResult = z.infer<typeof submitEchoReviewsResultSchema>
 

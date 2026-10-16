@@ -876,3 +876,43 @@ export const checkInResultSchema = z.object({
   freezeUsed: z.boolean(),
 })
 export type CheckInResult = z.infer<typeof checkInResultSchema>
+
+/**
+ * What one real action did to the streak, as the response of that action
+ * reports it: the check-in's fields plus `milestoneXp`, the token paid for
+ * crossing a milestone with this action.
+ */
+export const streakAwardSchema = z.object({
+  current: z.number().int().nonnegative(),
+  longest: z.number().int().nonnegative(),
+  lastQualifiedDay: z.string(),
+  /** True only for the action that actually credited today. */
+  advanced: z.boolean(),
+  /** Token paid for crossing a milestone with this action; 0 otherwise. */
+  milestoneXp: z.number().int().nonnegative(),
+  /** True when a banked freeze was spent to bridge a single missed day. */
+  freezeUsed: z.boolean(),
+})
+export type StreakAward = z.infer<typeof streakAwardSchema>
+
+/**
+ * What a send earned, answered with the send and never stored on the message.
+ *
+ * On the socket it is `award` in the ack, a sibling of `data`: `data` is the
+ * message view the echo carries too, the sender draws from whichever of the two
+ * arrives first, and a reward inside it would be cached and replayed as if it
+ * had just happened. Over REST it is an `award` key on the response body.
+ *
+ * Optional wherever it appears: a send answered from its retry key was paid by
+ * the first attempt, and the second reports nothing rather than computing the
+ * payout again.
+ */
+export const sendAwardSchema = z.object({
+  /** Token credited to the sender for this send, milestone and mutual bonus included. */
+  tokens: z.number().int().nonnegative(),
+  /** Null when the thread is outside the economy (an official account's). */
+  streak: streakAwardSchema.nullable(),
+  /** True when this send crossed the daily or per-partner message cap. */
+  capped: z.boolean(),
+})
+export type SendAward = z.infer<typeof sendAwardSchema>
