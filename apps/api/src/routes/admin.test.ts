@@ -1160,9 +1160,10 @@ describe('the operator panel', () => {
       expect(sent.statusCode, sent.body).toBe(201)
       expect(sent.json<{ emailed: boolean }>().emailed).toBe(true)
 
-      expect(
-        emailSender.messages.some((m) => m.to === finder.email && m.text.includes(issue)),
-      ).toBe(true)
+      // A whole word of the mail, not a substring — CodeQL reads `includes` on
+      // a URL as a host check.
+      const mail = emailSender.messages.find((m) => m.to === finder.email)
+      expect(mail?.text.split(/\s+/)).toContain(issue)
       const message = await handle.db
         .collection(COLLECTIONS.messages)
         .findOne({ body: draft }, { sort: { _id: -1 } })
