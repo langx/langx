@@ -125,7 +125,13 @@ export default function AdminCaseScreen() {
     if (!ok) return
     try {
       const result = await warn.mutateAsync({ id, body: warning.trim() })
-      showToast(result.warned ? ADMIN.users.sent : ADMIN.reports.alreadyWarned)
+      showToast(
+        !result.warned
+          ? ADMIN.reports.alreadyWarned
+          : result.emailed
+            ? ADMIN.users.sentAndEmailed
+            : ADMIN.users.sentNotEmailed,
+      )
     } catch {
       showToast(ADMIN.common.failed)
     }
