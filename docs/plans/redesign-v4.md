@@ -1,6 +1,6 @@
 # Redesign v4 — tracker
 
-**Status (16 October 2026):** Phase 0 started. Lanes A–D not yet started.
+**Status (16 October 2026):** Phase 0 started: tracker open, baseline published (84 shots, 14 screens). Lanes A–D not yet started.
 Phase 1 waits for D3.
 
 This is the one page that says where the v4 redesign stands. Any session that
@@ -48,15 +48,15 @@ The paywall is urgent although it is seventh, because there have been no sales.
 
 ## Phase 0 and the lanes
 
-| Item                                      | PR      | State       |
-| ----------------------------------------- | ------- | ----------- |
-| Tracker (this page)                       | pending | draft       |
-| 0.1 Baseline screenshots, "before" set    | —       | not started |
-| 0.2 Instrumentation                       | —       | not started |
-| Lane A — skeletons on Me and the Echo tab | —       | not started |
-| Lane B — D0 price hierarchy               | —       | not started |
-| Lane C — return the send award in the ack | —       | not started |
-| Lane D — `.value` to `.get()/.set()`      | —       | not started |
+| Item                                      | PR    | State       |
+| ----------------------------------------- | ----- | ----------- |
+| Tracker (this page)                       | #1783 | draft       |
+| 0.1 Baseline screenshots, "before" set    | —     | published   |
+| 0.2 Instrumentation                       | —     | not started |
+| Lane A — skeletons on Me and the Echo tab | —     | not started |
+| Lane B — D0 price hierarchy               | —     | not started |
+| Lane C — return the send award in the ack | —     | not started |
+| Lane D — `.value` to `.get()/.set()`      | —     | not started |
 
 **Next, after each lane's first PR:**
 
