@@ -5,6 +5,7 @@ import {
   useAdminCloseFeedback,
   useAdminFeedback,
   useAdminPayBounty,
+  useAdminReplyFeedback,
   type AdminFeedbackDto,
 } from '../../../../src/api/queries'
 import { AdminGate } from '../../../../src/components/AdminGate'
@@ -94,7 +95,10 @@ function Row({ row }: { row: AdminFeedbackDto }) {
   const styles = useStyles()
   const pay = useAdminPayBounty()
   const close = useAdminCloseFeedback()
+  const sendReply = useAdminReplyFeedback()
   const [amount, setAmount] = useState(String(BOUNTY_MIN))
+  // Null until "Write back" is pressed, then the server's draft to edit.
+  const [reply, setReply] = useState<string | null>(null)
 
   const who = row.sender.handle ? `@${row.sender.handle}` : row.sender.userId
   const tokens = Math.min(BOUNTY_MAX, Math.max(BOUNTY_MIN, Number.parseInt(amount, 10) || 0))
@@ -121,6 +125,23 @@ function Row({ row }: { row: AdminFeedbackDto }) {
     if (!reason) return
     try {
       await close.mutateAsync({ id: row._id, closeReason: reason })
+    } catch {
+      showToast(ADMIN.common.failed)
+    }
+  }
+
+  async function onSendReply() {
+    const body = reply?.trim()
+    if (!body) return
+    const ok = await confirmAlert({
+      title: ADMIN.feedback.confirmReply(who),
+      confirmLabel: ADMIN.feedback.sendReply,
+    })
+    if (!ok) return
+    try {
+      const result = await sendReply.mutateAsync({ id: row._id, body })
+      setReply(null)
+      showToast(ADMIN.feedback.replied(result.emailed))
     } catch {
       showToast(ADMIN.common.failed)
     }
@@ -158,6 +179,34 @@ function Row({ row }: { row: AdminFeedbackDto }) {
               loading={close.isPending}
             />
           </View>
+        </>
+      )}
+
+      {row.repliedAt ? (
+        <Text style={styles.meta}>{ADMIN.feedback.repliedAt(row.repliedAt.slice(0, 10))}</Text>
+      ) : null}
+
+      {reply === null ? (
+        <Button
+          label={ADMIN.feedback.reply}
+          variant="neutral"
+          size="small"
+          onPress={() => setReply(row.replyDraft)}
+        />
+      ) : (
+        <>
+          <FormField
+            label={ADMIN.feedback.replyLabel}
+            value={reply}
+            onChangeText={setReply}
+            multiline
+          />
+          <Button
+            label={ADMIN.feedback.sendReply}
+            onPress={onSendReply}
+            loading={sendReply.isPending}
+            disabled={!reply.trim()}
+          />
         </>
       )}
 

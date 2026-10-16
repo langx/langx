@@ -4042,6 +4042,26 @@ The link drops its `body` parameter past 6000 characters, since GitHub answers
 there. The title and label still land, and the text is in the mail the link
 arrived in.
 
+**Since October 2026 the token is back, as the first try rather than the only
+path.** With `GITHUB_ISSUE_TOKEN` set, `POST /feedback` opens the issue itself,
+labelled with its kind and `triage`, so that the panel can hand the sender a
+link to follow. What made the old token dangerous was not the token but the
+silence, and that is what changed: `openIssue` throws instead of answering
+`null`, a failure is logged as an error, and the support mail says in red that
+opening failed and falls back to the prefilled form above. An expired token
+now costs one click per report and announces itself on the first one.
+
+The other half of the old objection — a stranger's words going public with
+nobody reading them first — is accepted rather than solved. `triage` is how
+the tracker says an issue has not been looked at, the issue still carries
+nothing about the sender, and `POST /feedback` stays at six an hour.
+
+The panel then writes back: each report carries a `replyDraft` in the sender's
+native language, with the issue's link once a real issue exists (never the
+prefilled form, which is ours to press). The operator edits it and
+`POST /admin/feedback/:id/reply` sends it from @langx **and always by mail** —
+it is one person hearing back about something they wrote, not a broadcast.
+
 ## A paid report says so, on every channel, whatever the settings say
 
 `awardTokens` notified nobody. Confirming a bounty wrote a ledger row, and the

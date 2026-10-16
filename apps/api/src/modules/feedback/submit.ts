@@ -7,7 +7,7 @@ import { publicApiUrl } from '../../env'
 import { assertAttachmentsAllowed } from '../media/assertMedia'
 import { emailFor } from '../profiles/emailFor'
 import { getProfile } from '../profiles/profiles'
-import { newIssueUrl } from './githubIssue'
+import { newIssueUrl, openIssue } from './githubIssue'
 import { recordFeedback } from './reports'
 
 /**
@@ -40,16 +40,26 @@ export async function submitFeedback(
   const attachmentUrls = attachments.map((item) => item.url)
 
   /*
-   * A link to GitHub's own new-issue form, prefilled — not an issue. This
-   * service holds no credential that can write to the tracker, so nothing here
-   * can be revoked, leaked or silently expire, and a person decides what
-   * becomes public. See `githubIssue.ts`.
+   * The issue itself when there is a token, labelled `triage`; otherwise — or
+   * when GitHub refuses — the prefilled form, as before. Never a failed
+   * report: the person is told it was sent whatever the tracker does. But a
+   * failure is an *error* in the log and a red line in the support mail,
+   * because an expired token that said nothing is how this broke last time.
+   * See `githubIssue.ts`.
    */
-  const issueUrl = newIssueUrl(app.env.GITHUB_ISSUE_REPO, {
-    kind: input.kind,
-    body: input.body,
-    attachmentCount: attachments.length,
-  })
+  const issue = { kind: input.kind, body: input.body, attachmentCount: attachments.length }
+  const formUrl = newIssueUrl(app.env.GITHUB_ISSUE_REPO, issue)
+  let filedIssueUrl: string | undefined
+  let issueFailed = false
+  if (app.env.GITHUB_ISSUE_TOKEN) {
+    try {
+      filedIssueUrl = await openIssue(app.env.GITHUB_ISSUE_TOKEN, app.env.GITHUB_ISSUE_REPO, issue)
+    } catch (error) {
+      issueFailed = true
+      app.log.error({ err: error, userId }, 'opening the feedback issue failed')
+    }
+  }
+  const issueUrl = filedIssueUrl ?? formUrl
 
   /*
    * The report's own id, and one string in three places: the row below, the
@@ -77,7 +87,9 @@ export async function submitFeedback(
       email: address?.email ?? null,
     },
     awardUrl,
-    newIssueUrl: issueUrl,
+    newIssueUrl: formUrl,
+    ...(filedIssueUrl ? { filedIssueUrl } : {}),
+    issueFailed,
   })
 
   /*

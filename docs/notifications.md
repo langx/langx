@@ -812,15 +812,16 @@ Written down so the next person does not have to re-derive them.
 
 ## Messages sent by hand
 
-Two of them, both from `@langx`, both landing in the same chat thread the
+Three of them, all from `@langx`, all landing in the same chat thread the
 welcome did — never only an email and not a push-only broadcast, so they are still
 there next week.
 
-| Message                  | Sent from                                             | Once because                                                      |
-| ------------------------ | ----------------------------------------------------- | ----------------------------------------------------------------- |
-| **A broadcast**          | the operator panel, or `scripts/send-announcement.ts` | `messages.sender_client_id_unique` on `broadcast:<slug>:<userId>` |
-| **A note to one person** | the operator panel's user screen                      | nothing — the same words twice are two messages here              |
-| …mailed as well          | **Send + email** on that screen                       | ledger `officialNoteEmail:<userId>:<messageId>`                   |
+| Message                  | Sent from                                               | Once because                                                      |
+| ------------------------ | ------------------------------------------------------- | ----------------------------------------------------------------- |
+| **A broadcast**          | the operator panel, or `scripts/send-announcement.ts`   | `messages.sender_client_id_unique` on `broadcast:<slug>:<userId>` |
+| **A note to one person** | the operator panel's user screen                        | nothing — the same words twice are two messages here              |
+| …mailed as well          | **Send + email** on that screen                         | ledger `officialNoteEmail:<userId>:<messageId>`                   |
+| **A reply to a report**  | **Write back** on the bug-reports screen, always mailed | nothing per send; the mail is claimed like a note's               |
 
 A broadcast is a row in `broadcastQueue` that the notification scheduler works
 through, 500 recipients a tick inside 07–21 UTC. That ceiling is **not** a

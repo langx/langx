@@ -68,7 +68,12 @@ import { suspendMany } from '../modules/admin/bulkSuspend'
 import { findLinkedAccounts } from '../modules/admin/linked'
 import { getAppConfig, updateAppConfig } from '../modules/appConfig/appConfig'
 import { payBounty } from '../modules/feedback/awardBounty'
-import { getFeedback, listFeedback, updateFeedback } from '../modules/feedback/reports'
+import {
+  getFeedback,
+  listFeedback,
+  markFeedbackReplied,
+  updateFeedback,
+} from '../modules/feedback/reports'
 import { setPostHidden } from '../modules/feed/feed'
 import { applyReviewDecision, type ReviewRefusal } from '../modules/moderation/decide'
 import { rewardReporter } from '../modules/moderation/reward'
@@ -963,6 +968,71 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         })
       }
       return reply.send(result)
+    },
+  )
+
+  /**
+   * Writing back to whoever sent a report: from @langx, and by mail.
+   *
+   * The panel opens this with `replyDraft` in the box — a thank-you in their
+   * language with the issue's link — and the operator edits it. Always mailed,
+   * unlike `/admin/users/:userId/message`, where it is a choice: this is one
+   * person hearing back about something they took the trouble to write, and a
+   * push is gone once it is swiped. The sender's address is verified already,
+   * since `POST /feedback` requires it.
+   */
+  app.post(
+    '/admin/feedback/:id/reply',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ id: z.string() }), body: adminMessageSchema },
+      config: { rateLimit: limit(60, '1 minute') },
+    },
+    async (request, reply) => {
+      const row = await getFeedback(app.mongo.db, request.params.id)
+      if (!row) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such report')
+      const recipient = await getProfile(app.mongo.db, row.userId)
+      if (!recipient || recipient.deletedAt) {
+        throw new ApiError(ERROR_CODES.NOT_FOUND, 'That account is gone')
+      }
+
+      const delivered = await deliverOfficialMessage(app.mongo.db, {
+        fromHandle: 'langx',
+        toUserId: recipient._id,
+        body: request.body.body,
+        // Per send, not per report: a second reply — "it's fixed now" — is a
+        // second message, not a duplicate of the first.
+        clientId: `feedbackReply:${row._id}:${Date.now()}`,
+      })
+      if (!delivered) {
+        throw new ApiError(ERROR_CODES.NOT_FOUND, 'There is no @langx account to send from')
+      }
+      await fanOutMessage(app, app.io, delivered.conversation, delivered.message, {
+        pushWhenAway: true,
+      })
+
+      // Logged, not thrown: the message is delivered, and a 500 here would
+      // invite sending it twice.
+      let emailed = false
+      try {
+        emailed =
+          (await emailOfficialNote(app.mongo.db, app.email, {
+            userId: recipient._id,
+            messageId: delivered.message._id.toHexString(),
+            body: request.body.body,
+          })) === 'sent'
+      } catch (error) {
+        request.log.warn({ err: error, userId: recipient._id }, 'feedback reply email failed')
+      }
+
+      await markFeedbackReplied(app.mongo.db, row._id)
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'feedback.reply',
+        subjectUserId: recipient._id,
+        refId: row._id,
+      })
+      return reply.code(201).send({ emailed })
     },
   )
 

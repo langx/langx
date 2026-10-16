@@ -43,6 +43,22 @@ describe('feedbackEmail', () => {
     expect(built.text).toContain(newIssueUrl)
   })
 
+  it('names the filed issue instead of offering the form', () => {
+    const built = mail({ filedIssueUrl: 'https://github.com/langx/langx/issues/7' })
+    for (const body of [built.html, built.text]) {
+      expect(body).toContain('https://github.com/langx/langx/issues/7')
+      expect(body).not.toContain('issues/new')
+    }
+  })
+
+  it('says so when opening the issue failed, and still offers the form', () => {
+    const built = mail({ issueFailed: true })
+    for (const body of [built.html, built.text]) {
+      expect(body).toContain('Opening the issue automatically failed')
+      expect(body).toContain('issues/new')
+    }
+  })
+
   it('offers to open the issue rather than opening one', () => {
     const built = mail()
     expect(built.html).toContain('Open this as a GitHub issue')

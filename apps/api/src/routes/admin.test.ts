@@ -1125,6 +1125,52 @@ describe('the operator panel', () => {
       expect(triaged.items[0]?.bounty?.amount).toBe(BOUNTY_MIN)
     })
 
+    it('writes back from @langx and by mail, with the issue in the draft once it exists', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const finder = await newUser()
+      await post(finder, '/feedback', { kind: 'feature', body: 'Let me pin a chat to the top.' })
+
+      const open = () =>
+        get(admin, '/admin/feedback?status=open').then((r) =>
+          r.json<{ items: { _id: string; replyDraft: string; repliedAt: string | null }[] }>(),
+        )
+      const row = (await open()).items[0]!
+      // No token in tests, so there is only the prefilled form — which is ours
+      // to press, never a link to hand the sender.
+      expect(row.replyDraft).not.toContain('github.com')
+      // In their native language (Turkish here), not the panel's.
+      expect(row.replyDraft).toContain('Fikrin için teşekkürler')
+
+      const issue = 'https://github.com/langx/langx/issues/4242'
+      await handle.db
+        .collection(COLLECTIONS.feedback)
+        .updateOne({ _id: row._id as never }, { $set: { issueUrl: issue } })
+      const draft = (await open()).items[0]!.replyDraft
+      expect(draft).toContain(issue)
+
+      emailSender.messages.length = 0
+      const sent = await post(admin, `/admin/feedback/${row._id}/reply`, { body: draft })
+      expect(sent.statusCode, sent.body).toBe(201)
+      expect(sent.json<{ emailed: boolean }>().emailed).toBe(true)
+
+      expect(
+        emailSender.messages.some((m) => m.to === finder.email && m.text.includes(issue)),
+      ).toBe(true)
+      const message = await handle.db
+        .collection(COLLECTIONS.messages)
+        .findOne({ body: draft }, { sort: { _id: -1 } })
+      expect(message).not.toBeNull()
+
+      // Answered, and still open: writing back is not paying.
+      expect((await open()).items[0]?.repliedAt).not.toBeNull()
+
+      // Out of the open queue, so the next test's queue starts empty.
+      await handle.db
+        .collection(COLLECTIONS.feedback)
+        .updateOne({ _id: row._id as never }, { $set: { status: 'closed' } })
+    })
+
     it('shows the oldest open report first, because it is a queue and not a feed', async () => {
       const admin = await newUser()
       await makeAdmin(admin)

@@ -626,4 +626,9 @@ export const ptBR: Localized<ServerMessages> = {
     assistantRefusal:
       'Nisso eu não consigo ajudar. Se eu entendi errado, {email} chega a uma pessoa.',
   },
+  feedbackReply: {
+    bug: 'Oi! Obrigado por avisar — a gente leu e está investigando.',
+    feature: 'Oi! Obrigado pela ideia — a gente leu e ela já está na nossa lista.',
+    issue: 'Você pode acompanhar aqui: {url}',
+  },
 }
