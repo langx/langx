@@ -5439,6 +5439,41 @@ my week chart" is off. Tapping either opens the privacy settings. The rule is
 that the owner always sees their own data and is told which of it is theirs
 alone.
 
+## A number that has not arrived is a skeleton, not a zero
+
+**16 October 2026.** The Me tab's tiles and rows were written `data?.n ?? 0`,
+which draws a zero for three different things: a request still on its way, a
+request that never arrived, and an account that really has none. The first is
+the one people watched — a "0" that turned into the real number a moment
+later, with the badge shelf appearing under it and pushing the rows down — and
+the Echo tab showed a bare spinner where its whole stage was about to be.
+
+`loadState` (`src/lib/loadState.ts`) tells the three apart: a block of
+`ui/Skeleton` for the first, a dash for the second, and `0` only for the third.
+Data in hand outranks a failed refetch, and a paused or refused request with
+nothing to show stops being "loading" — a skeleton that pulses for as long as
+the train is in the tunnel is what `queryFailed` exists to prevent. The check is
+`data !== undefined`, never truthiness, so a loaded zero keeps drawing itself.
+
+`ui/CrossFade` is the dissolve from placeholder to content. It is opacity and
+nothing else: it measures nothing and animates no layout, so a skeleton is only
+as good as its size — `StatTile`, `ListRow` and the files in `skeletons/` are
+each drawn to the height of the thing they stand in for. That is also why it
+needs no Reanimated layout animation, which this app must not put on a recycled
+row until a newer Reanimated is in the binary. It stays on RN's `Animated`, like
+`Skeleton`, for the reason recorded above (_The row swipe runs on the UI
+thread_): an opacity needs nothing from the JS thread.
+
+Two rules ride along. Content that is there on the first render — a screen
+restored from the persisted cache — never animates, because there was no
+skeleton to leave. And with Reduce Motion on, content simply replaces the
+placeholder, and `Skeleton` holds still instead of pulsing.
+
+What this does not cover: a skeleton cannot know the shape of an answer it has
+not received. An account with no badge earned has no strip, so the shelf is a
+strip shorter than its placeholder; the rows under it move up once. The
+placeholder is drawn for the common case, not the rare one.
+
 ## The media viewer zooms on the UI thread, and saving is write-only
 
 **The pinch was wrong arithmetic before it was slow.** `PhotoViewer` recomputed

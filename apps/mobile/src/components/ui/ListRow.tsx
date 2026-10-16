@@ -2,6 +2,8 @@ import Feather from '@expo/vector-icons/Feather'
 import type { ReactNode } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { CrossFade } from './CrossFade'
+import { Skeleton } from './Skeleton'
 
 interface ListRowProps {
   title: string
@@ -10,6 +12,14 @@ interface ListRowProps {
   subtitleColor?: string | undefined
   /** The right-hand value, e.g. "Language matches". Drawn before the chevron. */
   value?: string | undefined
+  /**
+   * Pass it, true or false, when the value comes from a request: a block holds
+   * its place until this turns false and then dissolves into it. Left out, the
+   * row is drawn as it always was.
+   */
+  valueLoading?: boolean | undefined
+  /** The same for the line under the title. */
+  subtitleLoading?: boolean | undefined
   onPress?: (() => void) | undefined
   /** A control instead of a value: a `Toggle`, a `Chip`. */
   accessory?: ReactNode
@@ -31,6 +41,8 @@ export function ListRow({
   subtitle,
   subtitleColor,
   value,
+  valueLoading,
+  subtitleLoading,
   onPress,
   accessory,
   last = false,
@@ -39,18 +51,41 @@ export function ListRow({
   const { colors } = useTheme()
   const styles = useStyles()
 
+  const subtitleLine = subtitle ? (
+    <Text style={[styles.subtitle, subtitleColor ? { color: subtitleColor } : null]}>
+      {subtitle}
+    </Text>
+  ) : null
+  const valueText = value ? <Text style={styles.value}>{value}</Text> : null
+
   const body = (
     <>
       <View style={styles.text}>
         <Text style={[styles.title, destructive && styles.destructive]}>{title}</Text>
-        {subtitle ? (
-          <Text style={[styles.subtitle, subtitleColor ? { color: subtitleColor } : null]}>
-            {subtitle}
-          </Text>
-        ) : null}
+        {subtitleLoading === undefined ? (
+          subtitleLine
+        ) : (
+          <CrossFade
+            ready={!subtitleLoading}
+            // The subtitle's own line height, so the row is as tall as it will be.
+            skeleton={
+              <View style={styles.subtitleSlot}>
+                <Skeleton width={150} height={13} />
+              </View>
+            }
+          >
+            {subtitleLine}
+          </CrossFade>
+        )}
       </View>
       {accessory}
-      {value ? <Text style={styles.value}>{value}</Text> : null}
+      {valueLoading === undefined ? (
+        valueText
+      ) : (
+        <CrossFade ready={!valueLoading} skeleton={<Skeleton width={36} height={14} />}>
+          {valueText}
+        </CrossFade>
+      )}
       {onPress ? <Feather name="chevron-right" size={18} color={colors.textFaint} /> : null}
     </>
   )
@@ -82,5 +117,6 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
   title: { color: colors.text, fontSize: 17, fontWeight: '600' },
   destructive: { color: colors.danger },
   subtitle: { color: colors.textMuted, fontSize: 14, lineHeight: 20 },
+  subtitleSlot: { height: 20, justifyContent: 'center' },
   value: { color: colors.textFaint, fontSize: 15 },
 }))

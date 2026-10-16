@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Animated, type ViewStyle } from 'react-native'
+import { useReduceMotion } from '../../hooks/useReduceMotion'
 // `radius` stays a direct import: it is scheme-independent, and `corner`
 // defaults from it before any hook could have run.
 import { makeStyles, radius } from '../../lib/theme'
@@ -29,9 +30,17 @@ export function Skeleton({
   style?: ViewStyle
 }) {
   const styles = useStyles()
+  const reduceMotion = useReduceMotion()
   const opacity = useRef(new Animated.Value(MIN_OPACITY)).current
 
   useEffect(() => {
+    // Reduced motion: a still block, a little stronger than the pulse's low
+    // point so it reads as a placeholder rather than as a faded one.
+    if (reduceMotion) {
+      opacity.setValue(STILL_OPACITY)
+      return
+    }
+    opacity.setValue(MIN_OPACITY)
     const loop = Animated.loop(
       Animated.sequence([
         Animated.timing(opacity, { toValue: 1, duration: 700, useNativeDriver: true }),
@@ -40,7 +49,7 @@ export function Skeleton({
     )
     loop.start()
     return () => loop.stop()
-  }, [opacity])
+  }, [opacity, reduceMotion])
 
   return (
     <Animated.View
@@ -59,6 +68,7 @@ export function Skeleton({
 }
 
 const MIN_OPACITY = 0.35
+const STILL_OPACITY = 0.6
 
 const useStyles = makeStyles(({ colors }) => ({
   block: { backgroundColor: colors.border },
