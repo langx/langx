@@ -13,7 +13,7 @@ import {
   TIER_NAMES,
 } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Linking,
   Platform,
@@ -36,6 +36,7 @@ import { track } from '../../src/lib/analytics'
 import { PAYWALL_SOURCES, type PaywallSource } from '../../src/lib/analyticsEvents'
 import { selection } from '../../src/lib/haptics'
 import { goBackTo } from '../../src/lib/navigation'
+import { paywallOffersState, restoreResult } from '../../src/lib/paywallAnalytics'
 import { perMonthPriceString } from '../../src/lib/perMonthPrice'
 import { yearlyFreeMonths, yearlySavingPercent } from '../../src/lib/planSaving'
 import {
@@ -48,6 +49,7 @@ import {
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { APPLE_EULA_URL, PRIVACY_URL, TERMS_URL } from '../../src/lib/externalLinks'
 import { useLocale, useT, type MessageKey } from '../../src/i18n'
+import { usePaywallTracking } from '../../src/hooks/usePaywallTracking'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 const PERIOD_LABEL: Record<BillingPeriod, MessageKey> = {
@@ -333,32 +335,14 @@ export default function PaywallScreen() {
     }
   }, [])
 
-  // Once per opening, with what sent them here. The paywall is the end of the
-  // funnel, and which capability people hit it from is the question. Mount
-  // only: the tier changing after a purchase is not a second viewing.
-  useEffect(() => {
-    track({ name: 'paywall_viewed', properties: { feature: feature ?? null, tier, source, gift } })
-  }, [])
-
   /**
-   * Closing without buying, and how long the screen was open for.
-   *
-   * The pair `paywall_viewed`/`paywall_dismissed` is what separates "nobody
-   * reads this" from "everybody reads it and says no" — two failures with
-   * opposite fixes. Both exits go through here: the X, and the onboarding
-   * paywall's own "Continue free".
-   *
-   * A hardware back on Android is not caught, and deliberately not fought
-   * over: it leaves the same view unbought and shows up as a view with no
-   * dismissal, which is a known and countable gap rather than a wrong number.
+   * The X and the onboarding paywall's "Continue free". The dismissal event is
+   * not sent from here: every way out of the screen — these, Android's back
+   * button, the iOS swipe — is counted once by `usePaywallTracking`, which is
+   * only told that this one was ours.
    */
-  const openedAt = useRef(Date.now())
-
   function dismiss(): void {
-    track({
-      name: 'paywall_dismissed',
-      properties: { source, seconds_open: Math.round((Date.now() - openedAt.current) / 1000) },
-    })
+    tracking.markClosed()
     // The onboarding exposure is the last screen of the wizard, so there is
     // nothing behind it worth going back to — and `goBackTo` would pop onto
     // `done`, whose CTA opened this.
@@ -394,6 +378,7 @@ export default function PaywallScreen() {
     // be seconds late or lost entirely, so the client asks the server to
     // reconcile rather than waiting and hoping.
     if (outcome === 'purchased') {
+      tracking.markPurchased()
       refresh.mutate()
       return
     }
@@ -404,9 +389,11 @@ export default function PaywallScreen() {
   }
 
   async function restore(): Promise<void> {
+    track({ name: 'restore_tapped', properties: { source } })
     setNotice(null)
     setRestoring(true)
     const ok = await restorePurchases()
+    track({ name: 'restore_finished', properties: { source, result: restoreResult(ok) } })
     setRestoring(false)
     // Reconcile either way: the server is the authority on entitlement, and it
     // can find a subscription the local store call could not.
@@ -417,7 +404,13 @@ export default function PaywallScreen() {
   function pick(next: BillingPeriod): void {
     if (next === period) return
     void selection()
+    track({ name: 'plan_selected', properties: { source, period: next } })
     setPickedPeriod(next)
+  }
+
+  function toggleBenefits(): void {
+    if (!showAll) track({ name: 'benefits_expanded', properties: { source } })
+    setShowAll((open) => !open)
   }
 
   const tierOffers = offers?.filter((offer) => offer.tier === 'pro') ?? []
@@ -455,6 +448,17 @@ export default function PaywallScreen() {
   // The entrance waits for the store (see `STORE_WAIT_MS`), except over a plan
   // already held, whose page does not depend on it.
   const ready = offers !== null || storeWaitOver || isCurrent
+
+  // Opened and left, once each. The view is counted when the page is first
+  // shown so that it can say what the store had to sell; see the hook.
+  const tracking = usePaywallTracking({
+    feature,
+    tier,
+    source,
+    gift,
+    ready,
+    offers: paywallOffersState({ owned: isCurrent, offers }),
+  })
 
   const headline = isCurrent
     ? t('paywall.ownedHeadline', { plan: TIER_NAMES.pro })
@@ -643,7 +647,7 @@ export default function PaywallScreen() {
               <Pressable
                 accessibilityRole="button"
                 accessibilityState={{ expanded: showAll }}
-                onPress={() => setShowAll((open) => !open)}
+                onPress={toggleBenefits}
                 hitSlop={8}
                 style={({ pressed }) => [styles.more, pressed && styles.pressed]}
               >

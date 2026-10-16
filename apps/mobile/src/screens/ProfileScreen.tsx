@@ -34,6 +34,7 @@ import { StatTile } from '../components/ui/StatTile'
 import { ProfileSkeleton } from '../components/skeletons/ProfileSkeleton'
 import { Screen } from '../components/ui/Screen'
 import { chooseAlert, confirmAlert, showAlert } from '../lib/alert'
+import { track } from '../lib/analytics'
 import { emitWithAck, getSocket } from '../lib/socket'
 import { goBackTo, openBadges, openFollows, openPostCorrections } from '../lib/navigation'
 import { shareLink } from '../lib/share'
@@ -182,8 +183,10 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
       { label: t('common.report'), value: 'report', destructive: true },
       { label: t('common.block'), value: 'block', destructive: true },
     ])
-    if (action === 'share')
+    if (action === 'share') {
+      track({ name: 'profile_shared', properties: { own: false, via: 'sheet' } })
       void shareLink(profileShareText(t, { name: user.displayName, handle: user.handle }))
+    }
     if (action === 'send' && requireAccount(session?.user, { action: 'other' })) setSending(true)
     if (action === 'report')
       router.push({ pathname: '/(app)/report', params: { userId: user._id } })

@@ -2,7 +2,7 @@ import { STREAK_REMINDER_LOCAL_HOUR } from '@langx/shared'
 import * as Device from 'expo-device'
 import { useEffect, useState } from 'react'
 import { Platform, Pressable, Text, View } from 'react-native'
-import { registerPushToken } from '../hooks/usePushRegistration'
+import { registerPushToken, requestPushPermission } from '../hooks/usePushRegistration'
 import { makeStyles } from '../lib/theme'
 import { useT } from '../i18n'
 
@@ -53,7 +53,7 @@ export function NotificationPriming() {
     setBusy(true)
     try {
       const Notifications = await import('expo-notifications')
-      const result = await Notifications.requestPermissionsAsync()
+      const result = await requestPushPermission('priming')
       if (result.status === Notifications.PermissionStatus.GRANTED) await registerPushToken()
     } catch {
       // A declined or broken permission is a normal outcome, not an error.

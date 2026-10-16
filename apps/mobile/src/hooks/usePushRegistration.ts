@@ -9,7 +9,12 @@ import { deviceId } from '../lib/deviceId'
 import { pushEnabledOnThisDevice } from '../lib/devicePush'
 import { currentLocale } from '../i18n/runtime'
 import { FLAG_KEYS, readBoolFlag, setBoolFlag } from '../lib/localFlags'
-import { pushSwitchAction, shouldAskForPush } from '../lib/pushPermission'
+import {
+  pushAnswer,
+  pushSwitchAction,
+  shouldAskForPush,
+  type PushPermissionSource,
+} from '../lib/pushPermission'
 
 /**
  * Expo needs to know which project a push token belongs to. It can usually
@@ -205,6 +210,30 @@ export async function pushPermissionGranted(): Promise<boolean> {
 }
 
 /**
+ * Raises the system notification dialog, and reports that it did and what came
+ * back. The one place the three askers — the onboarding card, the chats tab,
+ * the Settings switch — reach `requestPermissionsAsync`, so none of them can
+ * ask without being counted. It changes nothing about the request itself.
+ */
+export async function requestPushPermission(source: PushPermissionSource) {
+  const Notifications = await import('expo-notifications')
+  track({ name: 'push_permission_prompted', properties: { source } })
+  const result = await Notifications.requestPermissionsAsync()
+  track({
+    name: 'push_permission_answered',
+    properties: {
+      source,
+      answer: pushAnswer({
+        granted: result.granted,
+        // Expo's own enum, never the string, as everywhere else here.
+        undetermined: result.status === Notifications.PermissionStatus.UNDETERMINED,
+      }),
+    },
+  })
+  return result
+}
+
+/**
  * The second asker, and the only one somebody can reach on purpose.
  *
  * Every other ask happens once and passes: the priming card mounts on the two
@@ -237,7 +266,7 @@ export async function enablePushOnThisDevice(): Promise<boolean> {
         await registerPushToken()
         return true
       case 'ask': {
-        const result = await Notifications.requestPermissionsAsync()
+        const result = await requestPushPermission('settings')
         // After the dialog, like the chats tab's — a flag written beside one
         // that never opened is what silences a phone for good.
         await setBoolFlag(FLAG_KEYS.pushAsked, true)
@@ -299,7 +328,7 @@ export function usePushPermissionPrompt(): void {
             platform: Platform.OS,
           })
           if (!ask) return
-          const result = await Notifications.requestPermissionsAsync()
+          const result = await requestPushPermission('chats')
           await setBoolFlag(FLAG_KEYS.pushAsked, true)
           if (result.granted) await registerPushToken()
         } catch {
