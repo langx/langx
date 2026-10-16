@@ -6,7 +6,6 @@ import {
   adminCaptchaRequiredSchema,
   adminMemberListQuerySchema,
   adminMessageSchema,
-  adminUserMessageSchema,
   adminReportListQuerySchema,
   adminFeedbackListQuerySchema,
   adminGiftCodeCreateSchema,
@@ -423,6 +422,27 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       })
       if (!result) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such report')
 
+      /*
+       * Always mailed too, as every note to one person is: a warning is usually
+       * followed by a suspension, and a suspended account cannot open the
+       * thread it was written to. Only for the press that warned — a second
+       * press sends nothing, so it mails nothing — and a failed mail is logged
+       * rather than thrown, the warning being delivered.
+       */
+      let emailed = false
+      if (result.warned && result.messageId) {
+        try {
+          emailed =
+            (await emailOfficialNote(app.mongo.db, app.email, {
+              userId: result.reportedId,
+              messageId: result.messageId,
+              body: request.body.body,
+            })) === 'sent'
+        } catch (error) {
+          request.log.warn({ err: error, userId: result.reportedId }, 'warning email failed')
+        }
+      }
+
       if (result.warned) {
         await recordAdminAction(app.mongo.db, request.log, {
           adminId: request.userId,
@@ -431,7 +451,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
           refId: request.params.id,
         })
       }
-      return reply.send({ warned: result.warned })
+      return reply.send({ warned: result.warned, emailed })
     },
   )
 
@@ -983,7 +1003,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     '/admin/users/:userId/message',
     {
       preHandler: requireAdmin,
-      schema: { params: z.object({ userId: z.string() }), body: adminUserMessageSchema },
+      schema: { params: z.object({ userId: z.string() }), body: adminMessageSchema },
       config: { rateLimit: limit(60, '1 minute') },
     },
     async (request, reply) => {
@@ -1014,24 +1034,23 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       })
 
       /*
-       * And in their inbox, when asked. The thread is the record, but a
-       * suspended account cannot open it and a push is gone once dismissed —
-       * which is exactly when a note matters most. A mail that fails is
-       * logged, not thrown: the message is already delivered, and a 500 here
-       * would invite sending it twice.
+       * And in their inbox, always. The thread is the record, but a suspended
+       * account cannot open it and a push is gone once dismissed — which is
+       * exactly when a note matters most. It was a second button once, and the
+       * note that needed the mail was the one sent without it. A mail that
+       * fails is logged, not thrown: the message is already delivered, and a
+       * 500 here would invite sending it twice.
        */
       let emailed = false
-      if (request.body.email) {
-        try {
-          emailed =
-            (await emailOfficialNote(app.mongo.db, app.email, {
-              userId: recipient._id,
-              messageId: delivered.message._id.toHexString(),
-              body: request.body.body,
-            })) === 'sent'
-        } catch (error) {
-          request.log.warn({ err: error, userId: recipient._id }, 'note email failed')
-        }
+      try {
+        emailed =
+          (await emailOfficialNote(app.mongo.db, app.email, {
+            userId: recipient._id,
+            messageId: delivered.message._id.toHexString(),
+            body: request.body.body,
+          })) === 'sent'
+      } catch (error) {
+        request.log.warn({ err: error, userId: recipient._id }, 'note email failed')
       }
 
       await recordAdminAction(app.mongo.db, request.log, {

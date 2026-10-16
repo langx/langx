@@ -812,7 +812,7 @@ Written down so the next person does not have to re-derive them.
 
 ## Messages sent by hand
 
-Two of them, both from `@langx`, both landing in the same chat thread the
+Three of them, all from `@langx`, all landing in the same chat thread the
 welcome did — never only an email and not a push-only broadcast, so they are still
 there next week.
 
@@ -820,7 +820,8 @@ there next week.
 | ------------------------ | ----------------------------------------------------- | ----------------------------------------------------------------- |
 | **A broadcast**          | the operator panel, or `scripts/send-announcement.ts` | `messages.sender_client_id_unique` on `broadcast:<slug>:<userId>` |
 | **A note to one person** | the operator panel's user screen                      | nothing — the same words twice are two messages here              |
-| …mailed as well          | **Send + email** on that screen                       | ledger `officialNoteEmail:<userId>:<messageId>`                   |
+| **A report's warning**   | the operator panel's report screen                    | `sender_client_id_unique` on `reportWarning:<reportId>`           |
+| …both mailed as well     | always, with the message                              | ledger `officialNoteEmail:<userId>:<messageId>`                   |
 
 A broadcast is a row in `broadcastQueue` that the notification scheduler works
 through, 500 recipients a tick inside 07–21 UTC. That ceiling is **not** a
@@ -828,15 +829,22 @@ deliverability ramp like `campaignDayBudget` — an in-app message has no domain
 reputation to warm up; it bounds the Expo relay, the write rate, and how much
 of a broadcast is already gone by the time somebody presses stop.
 
-**Send + email** puts the same words in the person's inbox, to a verified
+Both notes to one person — the user screen's and a report's warning — put
+the same words in the person's inbox as well, to a verified
 address only (`modules/official/noteEmail.ts`). The thread is still the
 record; the mail is for whoever cannot open it — a suspended account is
 refused everything but the suspension screen, and the push the note made is
 gone once dismissed. `scripts/email-suspension-notes.ts` was the one-off
-backfill for notes sent to accounts suspended before the button existed; it
+backfill for notes sent to accounts suspended before the mail existed; it
 claims the same ledger row, so neither path mails a note twice.
 
-Neither can be replied to: `@langx` is a channel, `OFFICIAL_WRITABLE.langx` is
+It used to be a second **Send + email** button on the user screen, and the
+warning had none, on the reasoning that whoever is warned can still open the
+app. But the usual order is warn, then suspend, and the suspension locked them
+out of the one place the warning said why. A choice made at send time is the
+one that gets forgotten, so there is no choice: every note is mailed.
+
+None can be replied to: `@langx` is a channel, `OFFICIAL_WRITABLE.langx` is
 false, and the chat screen draws no composer on that thread. So a note to one
 person is right for "we got your report" and wrong for a conversation — what
 is written should say where a reply goes.
