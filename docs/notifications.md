@@ -812,7 +812,7 @@ Written down so the next person does not have to re-derive them.
 
 ## Messages sent by hand
 
-Three of them, all from `@langx`, all landing in the same chat thread the
+Four of them, all from `@langx`, all landing in the same chat thread the
 welcome did — never only an email and not a push-only broadcast, so they are still
 there next week.
 
@@ -821,7 +821,8 @@ there next week.
 | **A broadcast**          | the operator panel, or `scripts/send-announcement.ts` | `messages.sender_client_id_unique` on `broadcast:<slug>:<userId>` |
 | **A note to one person** | the operator panel's user screen                      | nothing — the same words twice are two messages here              |
 | **A report's warning**   | the operator panel's report screen                    | `sender_client_id_unique` on `reportWarning:<reportId>`           |
-| …both mailed as well     | always, with the message                              | ledger `officialNoteEmail:<userId>:<messageId>`                   |
+| **A reply to a report**  | **Write back** on the bug-reports screen              | nothing — a second reply is a second message                      |
+| …all three mailed too    | always, with the message                              | ledger `officialNoteEmail:<userId>:<messageId>`                   |
 
 A broadcast is a row in `broadcastQueue` that the notification scheduler works
 through, 500 recipients a tick inside 07–21 UTC. That ceiling is **not** a
@@ -829,7 +830,8 @@ deliverability ramp like `campaignDayBudget` — an in-app message has no domain
 reputation to warm up; it bounds the Expo relay, the write rate, and how much
 of a broadcast is already gone by the time somebody presses stop.
 
-Both notes to one person — the user screen's and a report's warning — put
+The notes to one person — the user screen's, a report's warning and the
+reply to a bug report or idea — put
 the same words in the person's inbox as well, to a verified
 address only (`modules/official/noteEmail.ts`). The thread is still the
 record; the mail is for whoever cannot open it — a suspended account is

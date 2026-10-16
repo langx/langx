@@ -3363,7 +3363,10 @@ export interface AdminFeedbackDto {
   status: 'open' | 'triaged' | 'closed'
   bounty: { amount: number; at: string } | null
   createdAt: string
+  repliedAt: string | null
   sender: { userId: string; handle: string | null; displayName: string | null }
+  /** A thank-you in the sender's language, with the issue's link once there is one. */
+  replyDraft: string
 }
 
 export interface AdminBroadcastDto {
@@ -3658,6 +3661,17 @@ export function useAdminPayBounty() {
       api.post<{ awarded: boolean; amount: number }>(`/admin/feedback/${input.id}/award`, {
         amount: input.amount,
       }),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+export function useAdminReplyFeedback() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; body: string }) =>
+      api.post<{ emailed: boolean }>(`/admin/feedback/${input.id}/reply`, { body: input.body }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
     },

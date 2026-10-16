@@ -279,6 +279,13 @@ export const ADMIN = {
       invalid: 'Not a bug',
     },
     note: 'Note',
+    reply: 'Write back',
+    replyLabel: 'Message from @langx, also emailed',
+    sendReply: 'Send message and email',
+    confirmReply: (who: string) => `Send this to ${who} in the @langx chat and by email?`,
+    replied: (emailed: boolean) =>
+      emailed ? 'Sent, and emailed.' : 'Sent in the app. The email did not go.',
+    repliedAt: (date: string) => `Answered ${date}`,
   },
 
   broadcast: {

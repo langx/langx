@@ -638,4 +638,9 @@ export const fr: Localized<ServerMessages> = {
     assistantRefusal:
       'Je ne peux pas t’aider là-dessus. Si je me trompe, {email} joint une personne.',
   },
+  feedbackReply: {
+    bug: 'Bonjour ! Merci pour ton signalement — on l’a lu et on s’en occupe.',
+    feature: 'Bonjour ! Merci pour l’idée — on l’a lue et elle est sur notre liste.',
+    issue: 'Tu peux suivre ça ici : {url}',
+  },
 }

@@ -1,7 +1,15 @@
-import type { AdminFeedbackListQuery, FeedbackKind } from '@langx/shared'
+import {
+  DEFAULT_LOCALE,
+  matchLocale,
+  type AdminFeedbackListQuery,
+  type FeedbackKind,
+  type Locale,
+} from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { translator } from '../../i18n'
 import type { Profile } from '../profiles/profiles'
+import { isFiledIssue } from './githubIssue'
 
 /**
  * A bug report or an idea, as a row somebody can close.
@@ -42,17 +50,50 @@ export interface FeedbackReport {
   closedBy?: string
   closeReason?: FeedbackCloseReason
   note?: string
+  /** When the panel last wrote back to the sender about it. */
+  repliedAt?: Date
   createdAt: Date
 }
 
 export type FeedbackStatus = 'open' | 'triaged' | 'closed'
 export type FeedbackCloseReason = 'fixed' | 'shipped' | 'wontfix' | 'duplicate' | 'invalid'
 
-export interface FeedbackRow extends Omit<FeedbackReport, 'createdAt' | 'bounty' | 'closedAt'> {
+export interface FeedbackRow extends Omit<
+  FeedbackReport,
+  'createdAt' | 'bounty' | 'closedAt' | 'repliedAt'
+> {
   createdAt: string
   bounty: { amount: number; at: string } | null
   closedAt: string | null
+  repliedAt: string | null
   sender: { userId: string; handle: string | null; displayName: string | null }
+  /** A thank-you in the sender's language, with the issue's link once there is one. */
+  replyDraft: string
+}
+
+/**
+ * What the panel offers to send back, in the sender's native language — the
+ * rule `localeFor` gives every server-worded text, since a reply is read like
+ * a mail rather than like a screen.
+ */
+export function replyDraft(
+  locale: Locale,
+  report: Pick<FeedbackReport, 'kind' | 'issueUrl'>,
+): string {
+  const t = translator(locale)
+  const lines = [t(report.kind === 'bug' ? 'feedbackReply.bug' : 'feedbackReply.feature')]
+  if (isFiledIssue(report.issueUrl)) lines.push(t('feedbackReply.issue', { url: report.issueUrl }))
+  return lines.join('\n\n')
+}
+
+/**
+ * Marks a report as answered. The status stays where it is: the panel's
+ * `triaged` tab reads "Paid", and writing back is not paying.
+ */
+export async function markFeedbackReplied(db: Db, id: string): Promise<void> {
+  await db
+    .collection<FeedbackReport>(COLLECTIONS.feedback)
+    .updateOne({ _id: id }, { $set: { repliedAt: new Date() } })
 }
 
 export async function recordFeedback(
@@ -141,17 +182,25 @@ async function withSenders(db: Db, rows: FeedbackReport[]): Promise<FeedbackRow[
   const ids = [...new Set(rows.map((row) => row.userId))]
   const profiles = await db
     .collection<Profile>(COLLECTIONS.profiles)
-    .find({ _id: { $in: ids } }, { projection: { handle: 1, displayName: 1 } })
+    .find(
+      { _id: { $in: ids } },
+      { projection: { handle: 1, displayName: 1, 'nativeLanguages.code': 1 } },
+    )
     .toArray()
   const byId = new Map(profiles.map((profile) => [profile._id, profile]))
 
   return rows.map((row) => {
     const profile = byId.get(row.userId)
+    const locale =
+      matchLocale((profile?.nativeLanguages ?? []).map((language) => language.code)) ??
+      DEFAULT_LOCALE
     return {
       ...row,
       createdAt: row.createdAt.toISOString(),
       bounty: row.bounty ? { amount: row.bounty.amount, at: row.bounty.at.toISOString() } : null,
       closedAt: row.closedAt ? row.closedAt.toISOString() : null,
+      repliedAt: row.repliedAt ? row.repliedAt.toISOString() : null,
+      replyDraft: replyDraft(locale, row),
       sender: {
         userId: row.userId,
         handle: profile?.handle ?? null,

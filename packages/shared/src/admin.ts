@@ -236,6 +236,7 @@ export const ADMIN_ACTIONS = [
   'post.unhide',
   'feedback.update',
   'feedback.award',
+  'feedback.reply',
   'broadcast.create',
   'broadcast.edit',
   'broadcast.image',

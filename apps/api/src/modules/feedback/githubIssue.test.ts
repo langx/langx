@@ -1,6 +1,6 @@
 import { FEEDBACK_MAX_LENGTH } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
-import { issueTitle, newIssueUrl } from './githubIssue'
+import { isFiledIssue, issueTitle, newIssueUrl, openIssue } from './githubIssue'
 
 const report = {
   kind: 'bug' as const,
@@ -15,14 +15,14 @@ describe('newIssueUrl', () => {
     const url = new URL(newIssueUrl('langx/langx', report))
 
     expect(`${url.origin}${url.pathname}`).toBe('https://github.com/langx/langx/issues/new')
-    expect(url.searchParams.get('labels')).toBe('bug')
+    expect(url.searchParams.get('labels')).toBe('bug,triage')
     expect(url.searchParams.get('title')).toBe('Bug: The wallet shows a negative balance.')
     expect(url.searchParams.get('body')).toContain('1 file(s) attached')
   })
 
   it('labels a feature request as a feature', () => {
     expect(fields(newIssueUrl('langx/langx', { ...report, kind: 'feature' })).get('labels')).toBe(
-      'feature',
+      'feature,triage',
     )
   })
 
@@ -47,7 +47,7 @@ describe('newIssueUrl', () => {
     expect(url.length).toBeLessThan(6100)
     expect(fields(url).get('body')).toBeNull()
     expect(fields(url).get('title')).toContain('Bug: ')
-    expect(fields(url).get('labels')).toBe('bug')
+    expect(fields(url).get('labels')).toBe('bug,triage')
   })
 })
 
@@ -66,5 +66,42 @@ describe('issueTitle', () => {
 
   it('still says something when the body starts with a blank line', () => {
     expect(issueTitle('bug', '\n\nsomething')).toBe('Bug: something')
+  })
+})
+
+describe('openIssue', () => {
+  it('files it labelled by kind and triage, and answers its page', async () => {
+    let sent: { url: string; body: string } | undefined
+    const fake = (url: string, init: { body: string }) => {
+      sent = { url, body: init.body }
+      return Promise.resolve(
+        new Response(JSON.stringify({ html_url: 'https://github.com/langx/langx/issues/7' }), {
+          status: 201,
+        }),
+      )
+    }
+
+    const url = await openIssue('t0ken', 'langx/langx', report, fake as unknown as typeof fetch)
+
+    expect(url).toBe('https://github.com/langx/langx/issues/7')
+    expect(sent?.url).toBe('https://api.github.com/repos/langx/langx/issues')
+    const body = JSON.parse(sent?.body ?? '{}') as { labels: string[]; body: string }
+    expect(body.labels).toEqual(['bug', 'triage'])
+    expect(body.body).not.toContain('feedback/')
+  })
+
+  it('throws rather than answering nothing when GitHub refuses', async () => {
+    const fake = () => Promise.resolve(new Response('Bad credentials', { status: 401 }))
+    await expect(openIssue('expired', 'langx/langx', report, fake as typeof fetch)).rejects.toThrow(
+      '401',
+    )
+  })
+})
+
+describe('isFiledIssue', () => {
+  it('tells a filed issue from the form that would file one', () => {
+    expect(isFiledIssue('https://github.com/langx/langx/issues/7')).toBe(true)
+    expect(isFiledIssue(newIssueUrl('langx/langx', report))).toBe(false)
+    expect(isFiledIssue(undefined)).toBe(false)
   })
 })

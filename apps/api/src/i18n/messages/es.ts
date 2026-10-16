@@ -632,4 +632,9 @@ export const es: Localized<ServerMessages> = {
     assistantRefusal:
       'Con eso no puedo ayudarte. Si me he equivocado, en {email} te atiende una persona.',
   },
+  feedbackReply: {
+    bug: '¡Hola! Gracias por avisarnos — lo hemos leído y lo estamos revisando.',
+    feature: '¡Hola! Gracias por la idea — la hemos leído y ya está en nuestra lista.',
+    issue: 'Puedes seguirlo aquí: {url}',
+  },
 }

@@ -613,4 +613,9 @@ export const tr: Localized<ServerMessages> = {
     assistantRefusal:
       'Bu konuda yardımcı olamıyorum. Yanlış anladıysam {email} adresinden bir insana ulaşabilirsin.',
   },
+  feedbackReply: {
+    bug: 'Merhaba! Bildirdiğin için teşekkürler — okuduk, inceliyoruz.',
+    feature: 'Merhaba! Fikrin için teşekkürler — okuduk, listemize ekledik.',
+    issue: 'Buradan takip edebilirsin: {url}',
+  },
 }

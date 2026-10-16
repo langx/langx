@@ -776,6 +776,18 @@ export const en = {
     assistantRefusal:
       'I can’t help with that one. If I have got it wrong, {email} reaches a person.',
   },
+  /**
+   * The reply the operator panel offers for a bug report or an idea, ready
+   * to edit and send from @langx — in the thread and by mail. A draft, not a
+   * send: the panel shows it in a box and nothing goes until someone presses
+   * the button. `issue` is added only once a real issue exists; the prefilled
+   * form is ours to press, not theirs to follow.
+   */
+  feedbackReply: {
+    bug: 'Hi! Thanks for reporting this — we read it, and we’re looking into it.',
+    feature: 'Hi! Thanks for the idea — we read it, and it’s on our list.',
+    issue: 'You can follow it here: {url}',
+  },
 } as const
 
 export type ServerMessages = typeof en
