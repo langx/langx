@@ -363,6 +363,14 @@ const v3LightColors = {
   /** A correction's green, as text on the ground. */
   correction: '#0b7a3e',
   /**
+   * The destructive action's red — Delete account, Sign out everywhere —
+   * drawn as the outline and the label on the ground, never as a fill: a red
+   * block would be the loudest thing on the screen, and the action that
+   * cannot be undone should not be the one the eye lands on. Darker than the
+   * current look's `danger`, which as text falls under 4.5:1 on white.
+   */
+  danger: '#c0281b',
+  /**
    * The one elevation v3 keeps. Tinted with the ground in light, where pure
    * black over white reads as a hole; deeper in dark, where a light scrim
    * would do nothing over a ground that is already near-black.
@@ -389,6 +397,7 @@ const v3DarkColors: V3Colors = {
   yellow: '#ffc409',
   onYellow: '#14161b',
   correction: '#5ee39a',
+  danger: '#ff8a80',
   scrim: 'rgba(0, 0, 0, 0.7)',
 }
 
@@ -460,6 +469,16 @@ export const v3Type = {
   callout: { fontSize: 16, lineHeight: 21, fontWeight: '400' },
   caption: { fontSize: 14, lineHeight: 20, fontWeight: '400' },
   label: { fontFamily: DISPLAY_FONT, fontSize: 13, lineHeight: 16 },
+  /**
+   * A button's label, in sentence case. A point under the drawings' 18, so a
+   * German or Russian label still fits a half-width pill on a 390pt phone
+   * before it has to wrap; and ExtraBold rather than their Black, because the
+   * button is on the launch path and Black is not loaded there (see
+   * `DISPLAY_FONT_BLACK`).
+   */
+  button: { fontFamily: DISPLAY_FONT, fontSize: 17, lineHeight: 22 },
+  /** The small pill's label: a row-end action, a price in the token store. */
+  buttonSmall: { fontFamily: DISPLAY_FONT, fontSize: 16, lineHeight: 20 },
 } as const satisfies Record<string, TextStyle>
 
 export type V3TypeStep = keyof typeof v3Type

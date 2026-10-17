@@ -605,6 +605,8 @@ export const ADMIN = {
         callout: 'Callout',
         caption: 'Caption',
         label: 'Label',
+        button: 'Button',
+        buttonSmall: 'Button, small',
       },
       faces: {
         Nunito_900Black: 'Nunito 900',
