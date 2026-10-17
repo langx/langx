@@ -14,15 +14,7 @@ import {
 } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
-import {
-  Linking,
-  Platform,
-  Pressable,
-  ScrollView,
-  Text,
-  useWindowDimensions,
-  View,
-} from 'react-native'
+import { Linking, Platform, Pressable, ScrollView, Text, View } from 'react-native'
 import { useEffectiveTier, useMe, useQuota, useRefreshEntitlement } from '../../src/api/queries'
 import { GiftCodeEntry } from '../../src/components/GiftCodeEntry'
 import { PlanOption } from '../../src/components/paywall/PlanOption'
@@ -265,20 +257,12 @@ function parseSource(raw: string | undefined): PaywallSource {
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
-/**
- * Below this window height — an iPhone SE, a phone in split view — the lead
- * paragraph gives its lines to the plan cards, so the yearly card is on screen
- * without a scroll. The headline and the four benefits already make the case.
- */
-const COMPACT_HEIGHT = 700
-
 export default function PaywallScreen() {
   useScreenInteractive()
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
-  const { height: windowHeight } = useWindowDimensions()
 
   // Reached from the profile, the viewer list, filters, Discover and a chat
   // thread, so the caller says where back leads.
@@ -586,11 +570,11 @@ export default function PaywallScreen() {
             </View>
             {/*
               The lead is the free plan's promise, so it is not said to
-              somebody who already pays, and it gives way on a short screen.
+              somebody who already pays. It is on the first screen at every
+              window height — on a short one it is the plan cards that scroll
+              into view, not the promise that goes.
             */}
-            {isCurrent || windowHeight < COMPACT_HEIGHT ? null : (
-              <Text style={styles.lead}>{t('paywall.headlineBody')}</Text>
-            )}
+            {isCurrent ? null : <Text style={styles.lead}>{t('paywall.headlineBody')}</Text>}
           </Reveal>
 
           {/*
