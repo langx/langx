@@ -7,6 +7,7 @@ import {
   type MessageTranslation,
   type MessageMedia,
   type MessageType,
+  type SendAward,
   type SharedLocationPrecision,
   type StartConversationInput,
 } from '@langx/shared'
@@ -302,6 +303,8 @@ export interface Message {
 export interface StartResult {
   conversation: Conversation
   message: Message
+  /** What the opening message earned. Always set: a first message has no retry key to replay. */
+  award: SendAward
 }
 
 /** `<minId>_<maxId>` — the same two people can never open a second conversation. */
@@ -504,11 +507,11 @@ export async function startConversation(
   // This path writes its own message rather than going through
   // `recordMessage`, so it has to pay out itself. `becameMutual` is always
   // false here by construction — only one side has spoken.
-  await awardForSend(db, { conversation, message, becameMutual: false })
+  const award = await awardForSend(db, { conversation, message, becameMutual: false })
 
   // The message comes back as well as the conversation because the caller has
   // to fan it out, and it is the only thing that holds it: this path does not
   // go through `recordMessage`, so nothing else ever sees the first message of
   // a thread. Returning just the conversation is what let it go unannounced.
-  return { conversation, message }
+  return { conversation, message, award }
 }
