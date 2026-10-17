@@ -249,7 +249,8 @@ Some of these carry a number that needs a caveat rather than a footnote:
   `tip_shown` is the slot's cursor advancing — the moment the existing code
   already treats a tip as shown — so it is once per mount of the screen that
   holds it, not once per look. The `composer` slot is the half-row under the
-  chat composer; it has no close button and sends only `tip_shown`. `tip_action`
+  chat composer and `chat` the line that opens a short thread; neither has a
+  close button, so both send only `tip_shown`. `tip_action`
   is in the union and sent by nothing: no tip has a button today, and the first
   that does will be measured from its first day.
 - **`invite_shared` and `profile_shared`** with `via: sheet` count the share
