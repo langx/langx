@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { ERROR_CODES, type TranslateRequestInput } from '@langx/shared'
+import { ERROR_CODES, type PlanLimits, type TranslateRequestInput } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
@@ -86,8 +86,8 @@ export async function rememberTranslation(
 
 /**
  * A cache hit costs nothing: no quota check, no provider call. Only a genuine
- * miss consumes the caller's daily quota (unlimited on Pro) and reaches the
- * network.
+ * miss consumes the caller's daily quota (unlimited on Pro) and the fair-use
+ * ceiling (the same on every plan), and reaches the network.
  */
 export async function translateText(
   db: Db,
@@ -101,13 +101,33 @@ export async function translateText(
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
 
-  const quota = await consumeQuota(db, userId, effectiveTier(profile), 'translations')
+  const tier = effectiveTier(profile)
+  const quota = await consumeQuota(db, userId, tier, 'translations')
   if (!quota.consumed) {
     throw new ApiError(
       ERROR_CODES.QUOTA_EXCEEDED,
       'Daily translation limit reached',
       quota.nextAvailableAt ? { retryAt: quota.nextAvailableAt.toISOString() } : undefined,
     )
+  }
+
+  /*
+   * Second, so a free account refused its allowance spends nothing here. The
+   * allowance is not given back when this refuses, because it cannot: the
+   * ceiling sits above it (`rules.test.ts`), so only an account with no
+   * allowance to spend ever gets this far and is turned away.
+   *
+   * `limit` is what tells the app this is fair use and not the free plan's
+   * allowance — the post cap is told apart the same way. A build that predates
+   * it sees a plain `QUOTA_EXCEEDED` at the same count Pro's old daily limit
+   * stood at, and says what it said about that limit.
+   */
+  const fairUse = await consumeQuota(db, userId, tier, 'translationFairUse')
+  if (!fairUse.consumed) {
+    throw new ApiError(ERROR_CODES.QUOTA_EXCEEDED, 'Translation fair-use limit reached', {
+      limit: 'translationFairUsePer24h' satisfies keyof PlanLimits,
+      ...(fairUse.nextAvailableAt ? { retryAt: fairUse.nextAvailableAt.toISOString() } : {}),
+    })
   }
 
   const result = await provider.translate(input)

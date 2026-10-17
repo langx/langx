@@ -166,16 +166,15 @@ const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
     shipped: true,
   },
   /*
-   * Both of these are the paid number, not the free one — unlike the chat
-   * allowance above, which sells by naming the limit you are hitting.
-   * Translation is not unlimited anywhere, so the honest pitch is how much
-   * more you get.
+   * Translation sells as the chat allowance above does, by naming the free
+   * plan's limit: Pro's has no number to quote. Languages below are the paid
+   * number instead, because Pro raises that allowance rather than removing it.
    */
   translationQuota: {
     title: 'paywall.translationQuota',
     body: 'paywall.translationQuotaBody',
     icon: 'globe',
-    vars: { count: PLAN_LIMITS.pro.translationsPer24h },
+    vars: { count: PLAN_LIMITS.free.translationsPer24h ?? 0 },
     shipped: true,
   },
   learningLanguages: {

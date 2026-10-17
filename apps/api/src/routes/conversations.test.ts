@@ -481,6 +481,7 @@ describe('Faz 4 — starting a conversation', () => {
       })
       expect(response.json()).toMatchObject({
         initiations: { limit: null, remaining: null, nextAvailableAt: null },
+        translations: { limit: null, remaining: null, nextAvailableAt: null },
       })
     })
 

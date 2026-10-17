@@ -127,7 +127,11 @@ import { meetingClock } from '../lib/meetingClock'
 import { messagePreviewKey } from '../lib/messagePreview'
 import { openMessageMenu, type AnchorRect, type MessageMenuRequest } from '../lib/messageMenu'
 import { goBackTo, openProfile } from '../lib/navigation'
-import { offersPlansAtTranslationLimit, translationQuotaText } from '../lib/limitCopy'
+import {
+  isTranslationFairUse,
+  offersPlansAtTranslationLimit,
+  translationQuotaText,
+} from '../lib/limitCopy'
 import { openPaywall } from '../lib/paywall'
 import { lookupWords, wordCardLang } from '../lib/wordLookup'
 import { pickMediaAssets, type PickSource } from '../lib/pickMediaAsset'
@@ -670,7 +674,7 @@ export function ChatScreen({
    */
   /** Reading a translation is free; sending one is Pro. See `PLAN_LIMITS`. */
   const canSendTranslation = hasFeature(useEffectiveTier(), 'sendTranslation')
-  /** Pro has a translation limit too; its owner is told, not sold to. */
+  /** A refused translation never sells to a Pro account: it has the lot. */
   const plansAtTranslationLimit = offersPlansAtTranslationLimit(useEffectiveTier())
   const translateInto = partner
     ? translateTargetFor({ nativeLanguages: partner.nativeLanguages })
@@ -1872,15 +1876,20 @@ export function ChatScreen({
       setTranslations((current) => ({ ...current, [message._id]: result.translatedText }))
     } catch (error) {
       if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
-        await showAlert(t('chat.translationUnavailable'), translationQuotaText(t))
-        // Only for an account that can still buy something: a Pro account at
-        // its own ceiling has been told what it is, and that is all.
+        const fairUse = isTranslationFairUse(error)
+        if (fairUse) track({ name: 'fair_use_limit_hit', properties: { kind: 'translations' } })
+        await showAlert(t('chat.translationUnavailable'), translationQuotaText(t, fairUse))
+        // Only for an account that can still buy something, and never from
+        // the fair-use ceiling: whoever meets that has been told what it is,
+        // and that is all.
         //
         // Bare, deliberately. `unlimitedTranslation` is a `ProBenefit` and
         // not a `PlanFeature` — it is a quota that stops applying rather than
         // a capability flag — so there is no key to pass. The paywall's Pro
         // column already lists it.
-        if (plansAtTranslationLimit) openPaywall(undefined, `/(app)/chat/${conversationId}`)
+        if (plansAtTranslationLimit && !fairUse) {
+          openPaywall(undefined, `/(app)/chat/${conversationId}`)
+        }
       } else {
         await showAlert(t('chat.translationUnavailable'), t('chat.translationFailed'))
       }

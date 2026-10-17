@@ -15,6 +15,12 @@ import type { Profile } from '../modules/profiles/profiles'
 export type TrackedQuotaKind =
   | 'initiations'
   | 'translations'
+  /**
+   * Every translation miss, on every tier: the fair-use ceiling under Pro's
+   * unlimited translations. Its own bucket because Pro's `translations` is
+   * null and so writes nothing, and the ceiling still has to count.
+   */
+  | 'translationFairUse'
   | 'media'
   | 'echoCaptures'
   /**

@@ -565,7 +565,7 @@ export const tr: Localized<ServerMessages> = {
       other: '🎟️ {code} kodu işe yaradı: {count} ay LangX Pro senin.',
     },
     perks:
-      'Artık senin için açık:\n💬 sınırsız yeni sohbet\n🌍 her gün çok daha fazla çeviri\n👀 profiline kimin baktığı ve görünmeden gezinme\n✨ Keşfet’te öne çıkma, cinsiyet ve şehir filtreleri',
+      'Artık senin için açık:\n💬 sınırsız yeni sohbet\n🌍 sınırsız çeviri\n👀 profiline kimin baktığı ve görünmeden gezinme\n✨ Keşfet’te öne çıkma, cinsiyet ve şehir filtreleri',
     andMore: '…ve daha fazlası.',
     until: '{date} tarihine kadar keyfini çıkar. 💛',
     untilPaying:
