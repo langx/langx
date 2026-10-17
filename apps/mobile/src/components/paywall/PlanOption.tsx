@@ -36,10 +36,11 @@ interface PlanOptionProps {
  * The figure on the end is **what will be charged**, with its period — the
  * largest, heaviest, full-contrast price on the card, as both stores require.
  * Everything computed from it — a year's month, "3 months free" — sits
- * under the title in the muted line and the badge beside it, below and
- * smaller. The card used to lead with the month, because `$6.99` beside
- * `$9.99` is the cleaner comparison; it is also the layout Apple and Google
- * name as misleading (`planPrice.ts`).
+ * under the title, below and smaller: the month as the muted line, the saving
+ * as a badge after it that wraps onto a line of its own when the card is
+ * narrow, which on a phone it always is. The card used to lead with the
+ * month, because `$6.99` beside `$9.99` is the cleaner comparison; it is also
+ * the layout Apple and Google name as misleading (`planPrice.ts`).
  *
  * The border is always two points wide and only changes colour, so picking a
  * card never moves a pixel of the layout around it. The dot inside the radio
@@ -103,8 +104,10 @@ export function PlanOption({
             {title}
           </Text>
           {/*
-            Wraps rather than truncates: a long translation of the badge drops
-            to its own line under the month instead of pushing into the price.
+            The badge follows the month when there is room, as on a wide
+            window, and drops to its own line under it when there is not —
+            always, on a phone. It wraps rather than truncates, so a long
+            translation never pushes into the price.
           */}
           {detail || badge ? (
             <View style={styles.sub}>
@@ -172,8 +175,9 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   // The period belongs to the charge — "$83.99" alone is not a price — so it
   // is set in full ink, a step above the muted month under the title.
   unit: { color: colors.text, fontSize: 13, fontWeight: '600' },
-  // Beside the month, under the title: below the charge and smaller than it,
-  // so the saving is said without outranking what is billed.
+  // After the month, under the title — on a line of its own where the card is
+  // narrow: below the charge and smaller than it, so the saving is said
+  // without outranking what is billed.
   badge: {
     backgroundColor: colors.pro,
     borderRadius: radius.sm,

@@ -6362,12 +6362,14 @@ before. A comparison that wins the argument and fails the review sells nothing.
 store's own price for the period — `$83.99`, with "a year" under it in full ink
 — at the size and weight the month used to have. The month a year works out to
 moves under the title as the muted line, and "3 months free" moves from the
-card's top edge, where it sat above the price, to a small badge beside that
-line. Both are still computed from the store's two prices (`planSaving.ts`,
-`perMonthPrice.ts`), and every price is still the store's string. `planPrice.ts`
-is the one place that decides which figure leads, and its test pins it to the
-charge. The monthly card keeps "Billed monthly" under its title, so both cards
-still read title, then one quiet line.
+card's top edge, where it sat above the price, to a small badge after that
+line, which wraps onto a line of its own under the month when the card is
+narrow — on a phone, always. Both are still computed from the store's two
+prices (`planSaving.ts`, `perMonthPrice.ts`), and every price is still the
+store's string. `planPrice.ts` is the one place that decides which figure
+leads, and its test pins it to the charge. The monthly card keeps "Billed
+monthly" under its title, so both cards still read title, then the quiet line;
+on the yearly card the badge sits under that line on a phone.
 
 **The terms line sets the charge strong.** "1 week free, then **$83.99 a year**
 · Cancel anytime" keeps its order — the trial, then what follows it — but the

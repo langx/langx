@@ -257,6 +257,14 @@ function parseSource(raw: string | undefined): PaywallSource {
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
+/**
+ * What the yearly plan card measures on a phone, for the loading skeleton: more
+ * than the 76-point minimum, because its saving badge wraps onto a line of its
+ * own. A wider window, or a yearly price with no saving to state, gives a
+ * shorter card.
+ */
+const YEARLY_CARD_HEIGHT = 94
+
 export default function PaywallScreen() {
   useScreenInteractive()
   const { colors } = useTheme()
@@ -664,11 +672,14 @@ export default function PaywallScreen() {
           {isCurrent ? null : (
             <Reveal index={3} ready={ready} style={styles.plans}>
               {offers === null ? (
-                // The cards' own height, so nothing jumps when the store answers.
-                <>
+                // The cards' own heights and the gap between them, so nothing
+                // jumps when the store answers. Measured at a phone's width:
+                // the yearly card's badge wraps under its month there, which
+                // makes it taller than the monthly card's one-line minimum.
+                <View style={styles.options}>
+                  <Skeleton height={YEARLY_CARD_HEIGHT} radius={16} />
                   <Skeleton height={76} radius={16} />
-                  <Skeleton height={76} radius={16} />
-                </>
+                </View>
               ) : periods.length > 0 ? (
                 <View
                   accessibilityRole="radiogroup"
