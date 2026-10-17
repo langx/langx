@@ -1225,7 +1225,11 @@ export const ptBR: Localized<EnMessages> = {
     photosPermission: 'O LangX precisa de permissão para abrir sua galeria.',
     microphoneTitle: 'Microfone',
     translationUnavailable: 'Tradução indisponível',
-    translationQuota: 'Você usou as traduções gratuitas de hoje. Um plano pago remove o limite.',
+    translationQuota: {
+      one: 'Você atingiu o limite de traduções de hoje. Com o Pro você pode fazer {count} tradução por dia.',
+      other:
+        'Você atingiu o limite de traduções de hoje. Com o Pro você pode fazer {count} traduções por dia.',
+    },
     translationFailed: 'Não deu para traduzir essa mensagem agora.',
     wordTranslationFailed: 'Não deu para traduzir essa palavra agora.',
     wordSeePlans: 'Ver os planos',
@@ -1862,8 +1866,11 @@ export const ptBR: Localized<EnMessages> = {
     historyBody: 'Cada dia dos últimos dois meses e o que contou',
     leaderboardBody: 'Quem tem a maior sequência agora e de todos os tempos',
     protectTitle: 'Proteja sua sequência',
-    protectBody:
-      'Um congelamento cobre o próximo dia que você perder. Um dia já perdido pode ser recuperado no mapa acima durante um mês.',
+    protectBody: {
+      one: 'Um congelamento cobre o próximo dia que você perder. Um dia já perdido pode ser recuperado no mapa acima até {count} dia depois.',
+      other:
+        'Um congelamento cobre o próximo dia que você perder. Um dia já perdido pode ser recuperado no mapa acima até {count} dias depois.',
+    },
     longest: 'A maior',
     missed: 'Perdido',
     bought: 'Preenchido com fichas',

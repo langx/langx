@@ -6,6 +6,7 @@ import { Button } from './ui/Button'
 import { useT } from '../i18n'
 import { track } from '../lib/analytics'
 import { errorCodeOf } from '../lib/errors'
+import { translationQuotaText } from '../lib/limitCopy'
 import { makeStyles, useTheme } from '../lib/theme'
 import { wordCardClientId } from '../lib/wordLookup'
 
@@ -108,7 +109,7 @@ export function WordLookup({
         </View>
       ) : translation.status === 'quota' ? (
         <>
-          <Text style={styles.muted}>{t('chat.translationQuota')}</Text>
+          <Text style={styles.muted}>{translationQuotaText(t)}</Text>
           <Button label={t('chat.wordSeePlans')} variant="secondary" onPress={onSeePlans} />
         </>
       ) : translation.status === 'failed' ? (

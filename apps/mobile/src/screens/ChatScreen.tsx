@@ -127,6 +127,7 @@ import { meetingClock } from '../lib/meetingClock'
 import { messagePreviewKey } from '../lib/messagePreview'
 import { openMessageMenu, type AnchorRect, type MessageMenuRequest } from '../lib/messageMenu'
 import { goBackTo, openProfile } from '../lib/navigation'
+import { translationQuotaText } from '../lib/limitCopy'
 import { openPaywall } from '../lib/paywall'
 import { lookupWords, wordCardLang } from '../lib/wordLookup'
 import { pickMediaAssets, type PickSource } from '../lib/pickMediaAsset'
@@ -1869,7 +1870,7 @@ export function ChatScreen({
       setTranslations((current) => ({ ...current, [message._id]: result.translatedText }))
     } catch (error) {
       if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
-        await showAlert(t('chat.translationUnavailable'), t('chat.translationQuota'))
+        await showAlert(t('chat.translationUnavailable'), translationQuotaText(t))
         // Bare, deliberately. `unlimitedTranslation` is a `ProBenefit` and
         // not a `PlanFeature` — it is a quota that stops applying rather than
         // a capability flag — so there is no key to pass. The paywall's Pro

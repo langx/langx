@@ -1262,8 +1262,11 @@ export const de: Localized<EnMessages> = {
     photosPermission: 'LangX braucht die Erlaubnis, deine Fotomediathek zu öffnen.',
     microphoneTitle: 'Mikrofon',
     translationUnavailable: 'Übersetzung nicht verfügbar',
-    translationQuota:
-      'Du hast die kostenlosen Übersetzungen für heute aufgebraucht. Ein bezahlter Tarif hebt das Limit auf.',
+    translationQuota: {
+      one: 'Du hast das Übersetzungslimit für heute erreicht. Mit Pro ist {count} Übersetzung am Tag möglich.',
+      other:
+        'Du hast das Übersetzungslimit für heute erreicht. Mit Pro sind {count} Übersetzungen am Tag möglich.',
+    },
     translationFailed: 'Diese Nachricht konnte gerade nicht übersetzt werden.',
     wordTranslationFailed: 'Dieses Wort konnte gerade nicht übersetzt werden.',
     wordSeePlans: 'Tarife ansehen',
@@ -1910,8 +1913,11 @@ export const de: Localized<EnMessages> = {
     historyBody: 'Jeder Tag der letzten zwei Monate und was gezählt hat',
     leaderboardBody: 'Wer gerade und überhaupt die längste Serie hat',
     protectTitle: 'Schütze deine Serie',
-    protectBody:
-      'Ein Schutz deckt den nächsten Tag ab, den du verpasst. Ein bereits verpasster Tag lässt sich einen Monat lang oben in der Karte zurückkaufen.',
+    protectBody: {
+      one: 'Ein Schutz deckt den nächsten Tag ab, den du verpasst. Ein bereits verpasster Tag lässt sich bis zu {count} Tag danach oben in der Karte zurückkaufen.',
+      other:
+        'Ein Schutz deckt den nächsten Tag ab, den du verpasst. Ein bereits verpasster Tag lässt sich bis zu {count} Tage danach oben in der Karte zurückkaufen.',
+    },
     longest: 'Am längsten',
     missed: 'Verpasst',
     bought: 'Mit Token aufgefüllt',

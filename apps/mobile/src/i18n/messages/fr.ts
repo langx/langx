@@ -1241,8 +1241,11 @@ export const fr: Localized<EnMessages> = {
     photosPermission: 'LangX a besoin d’une autorisation pour ouvrir ta photothèque.',
     microphoneTitle: 'Micro',
     translationUnavailable: 'Traduction indisponible',
-    translationQuota:
-      'Tu as utilisé les traductions gratuites du jour. Une formule payante lève la limite.',
+    translationQuota: {
+      one: 'Tu as atteint la limite de traductions du jour. Pro permet {count} traduction par jour.',
+      other:
+        'Tu as atteint la limite de traductions du jour. Pro permet {count} traductions par jour.',
+    },
     translationFailed: 'Impossible de traduire ce message pour le moment.',
     wordTranslationFailed: 'Impossible de traduire ce mot pour le moment.',
     wordSeePlans: 'Voir les formules',
@@ -1889,8 +1892,11 @@ export const fr: Localized<EnMessages> = {
     historyBody: 'Chaque jour des deux derniers mois, et ce qui a compté',
     leaderboardBody: 'Qui a la plus longue série en ce moment, et de tous les temps',
     protectTitle: 'Protège ta série',
-    protectBody:
-      'Un gel couvre le prochain jour manqué. Un jour déjà manqué peut être racheté sur la carte ci-dessus pendant un mois.',
+    protectBody: {
+      one: 'Un gel couvre le prochain jour manqué. Un jour déjà manqué peut être racheté sur la carte ci-dessus jusqu’à {count} jour après.',
+      other:
+        'Un gel couvre le prochain jour manqué. Un jour déjà manqué peut être racheté sur la carte ci-dessus jusqu’à {count} jours après.',
+    },
     longest: 'La plus longue',
     missed: 'Manqué',
     bought: 'Rempli avec des jetons',

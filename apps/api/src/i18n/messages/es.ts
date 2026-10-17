@@ -369,7 +369,7 @@ export const es: Localized<ServerMessages> = {
       limitReachedSubject: 'Estás chocando con los límites gratuitos',
 
       limitReachedBody:
-        'Has alcanzado un límite diario tres veces en los últimos días. Un plan los quita: más conversaciones, más traducciones, más adjuntos, cada día.',
+        'Has alcanzado un límite diario tres veces en los últimos días. Un plan los quita: más conversaciones y más traducciones, cada día.',
 
       limitReachedButton: 'Ver los planes',
 

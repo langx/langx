@@ -387,7 +387,7 @@ export const en = {
       limitReachedSubject: 'You are running into the free limits',
 
       limitReachedBody:
-        'You have hit a daily limit three times in the last few days. A plan lifts them — more conversations, more translations, more attachments, every day.',
+        'You have hit a daily limit three times in the last few days. A plan lifts them — more conversations and more translations, every day.',
 
       limitReachedButton: 'See the plans',
 
