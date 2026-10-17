@@ -350,7 +350,7 @@ export const tr: Localized<ServerMessages> = {
       limitReachedSubject: 'Ücretsiz sınırlara takılıyorsun',
 
       limitReachedBody:
-        'Son birkaç günde üç kez günlük sınıra takıldın. Bir plan bunları kaldırır — her gün daha fazla sohbet, daha fazla çeviri, daha fazla ek.',
+        'Son birkaç günde üç kez günlük sınıra takıldın. Bir plan bunları kaldırır — her gün daha fazla sohbet ve daha fazla çeviri.',
 
       limitReachedButton: 'Planlara bak',
 

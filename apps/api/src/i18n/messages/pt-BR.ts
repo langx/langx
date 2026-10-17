@@ -365,7 +365,7 @@ export const ptBR: Localized<ServerMessages> = {
       limitReachedSubject: 'Você está esbarrando nos limites gratuitos',
 
       limitReachedBody:
-        'Você atingiu um limite diário três vezes nos últimos dias. Um plano remove esses limites — mais conversas, mais traduções, mais anexos, todo dia.',
+        'Você atingiu um limite diário três vezes nos últimos dias. Um plano remove esses limites — mais conversas e mais traduções, todo dia.',
 
       limitReachedButton: 'Ver os planos',
 
