@@ -3743,6 +3743,47 @@ still run unchanged — and that is exactly why they proved nothing here. What
 was missing was one swipe on a device: the simulator build in the tree and the
 last device build both predated the commit.
 
+## Shared values are read with `get()` and written with `set()`
+
+Every `useSharedValue` in the app used to be read and assigned through
+`.value`. Since 16 October 2026 it is `get()` and `set()`, in worklets and in
+plain JS alike — one spelling, not one per thread. The library documents the
+pair as the React-Compiler-compliant way and its own example uses them inside
+`useAnimatedStyle`, so there was no reason to leave half of each file on the
+old form. `modify()` stays for editing an array or object in place; it already
+runs on the UI thread, which is the reason the drag lists use it.
+
+**Why now.** The compiler treats what a hook returns as frozen and refuses an
+assignment to a property of it, and the assignment to `.value` is exactly that.
+Run directly over the app, it rejected the swipe row, the photo viewer, the
+recap story, the photo grid and the languages list for that single reason, and
+the rejection hides whatever else is wrong in the same component. Turning the
+compiler on later (`experiments.reactCompiler`, in the native batch) was going
+to leave those five out of it; this removes that, and changes no behaviour.
+
+**Nothing moves between threads.** `get()` and `set()` are the `.value`
+accessors, installed on the mutable on both runtimes, so a read from JS still
+blocks until the UI thread answers and a write from JS still lands there later
+— the hazard the languages screen's `onLayout` comment describes is unchanged.
+`set()` differs in exactly one case: a function that is not an animation is
+treated as an updater, `(previous) => next`. A shared value could not hold a
+plain function before either (the library says so), and animation definitions
+such as `withSpring(...)` are exempt, so no call site is affected.
+
+**What it does not change.** Every function a gesture or animation callback
+calls still carries `'worklet'` (see _The row swipe runs on the UI thread_).
+
+**The healthcheck cannot be believed as it prints.** `react-compiler-healthcheck`
+at the version current when this was written reports every component compiled,
+and a file the compiler certainly rejects shows as "0 out of 0". Its failure
+branch switches on severity names the compiler no longer uses, throws, and the
+exception is swallowed by its own `try`, so a rejected component is dropped from
+the count rather than added to the failures. Run the compiler plugin itself
+(`babel-plugin-react-compiler`, already in the tree through `babel-preset-expo`)
+with a logger on `CompileError` when the question is whether a file compiles.
+What still stops the animated files is separate: reading or writing a ref
+during render, in `PhotoViewer`, `RecapStory` and `MessageBubble`.
+
 ## A video is one file, and playing it needs a new build
 
 **No thumbnail.** The obvious build is a poster image uploaded beside the
@@ -4075,6 +4116,26 @@ The link drops its `body` parameter past 6000 characters, since GitHub answers
 414 to a long enough URL and a 2000-character report in Cyrillic or Arabic gets
 there. The title and label still land, and the text is in the mail the link
 arrived in.
+
+**Since October 2026 the token is back, as the first try rather than the only
+path.** With `GITHUB_ISSUE_TOKEN` set, `POST /feedback` opens the issue itself,
+labelled with its kind and `triage`, so that the panel can hand the sender a
+link to follow. What made the old token dangerous was not the token but the
+silence, and that is what changed: `openIssue` throws instead of answering
+`null`, a failure is logged as an error, and the support mail says in red that
+opening failed and falls back to the prefilled form above. An expired token
+now costs one click per report and announces itself on the first one.
+
+The other half of the old objection — a stranger's words going public with
+nobody reading them first — is accepted rather than solved. `triage` is how
+the tracker says an issue has not been looked at, the issue still carries
+nothing about the sender, and `POST /feedback` stays at six an hour.
+
+The panel then writes back: each report carries a `replyDraft` in the sender's
+native language, with the issue's link once a real issue exists (never the
+prefilled form, which is ours to press). The operator edits it and
+`POST /admin/feedback/:id/reply` sends it from @langx **and always by mail** —
+it is one person hearing back about something they wrote, not a broadcast.
 
 ## A paid report says so, on every channel, whatever the settings say
 
@@ -5083,6 +5144,141 @@ it. So the feature is right for "we got your report" and wrong for a
 conversation, and what is written should say where a reply goes. A test asserts
 the refusal, so opening that thread stays a decision somebody makes.
 
+## Measure first: activation, cohorts and a money timeline, from what the server already keeps
+
+The redesign is judged against a baseline, and until now there was none that
+could be read twice. PostHog answers the funnel; it cannot say whether the
+person who sent a first message was answered, who came back on the seventh day,
+or what one account has been given and paid for, because those are facts about
+rows we hold. `/admin/measure` and the money timeline on the account screen
+read them, and nothing else. They are the first thing built for the redesign
+because every later move is judged against them.
+
+**Private, and no number is ever written down.** Retention and activation are
+the figures [`insight.md`](insight.md) keeps off the public page, for the reason
+_The analytics dashboard is private_ gives, so none of this may be re-exported
+to `modules/insight/publicStats.ts`. And the repo is public: a reading reaches a
+decision as "the figures shared on <date>", in chat, never in a file, a commit
+or a PR. The tests use fixtures and say so.
+
+### The definitions are config
+
+`packages/shared/src/measurement.ts` is where "it is working" is written down:
+**activation** is two two-way conversations inside the first 72 hours
+(`ACTIVATION_RULES`), the cohorts are read at **Day 1, 7 and 30**
+(`COHORT_RETURN_DAYS`), and a first message is **unanswered** after 24 hours
+(`FIRST_MESSAGE_RULES`). A baseline is only a baseline if the thing it measures
+stays still, so changing one of these is a dated entry here, not a tweak — a
+reading taken against one definition cannot be set beside one taken against
+another.
+
+_Two-way_ means both people have written. A first message nobody answered is an
+attempt, and counting attempts would make the number rise when we got better at
+sending rather than at connecting people. The moment a conversation becomes
+two-way is when the person who did not open it first writes back, so it counts
+for a member only if that reply landed inside their window — and it does not
+matter who opened it, because answering a stranger is as much a start as writing
+to one. A call's row is not a reply: it records something that happened to both
+people, not something one of them said.
+
+### Where each figure comes from
+
+Said on the screen as well as here, because "from the data we have" is only
+honest if it says which data.
+
+- **Sign-ups** are `profiles.createdAt`, weekly by the UTC Monday. Guests,
+  official accounts and deleted accounts are out; they are not people who could
+  have been retained.
+- **Returned on Day N** is a `streakDays` document for the Nth local day after
+  the one they joined on, other than a bought one. That collection is the only
+  record of which days a person showed up (`profiles.stats.lastActiveAt` keeps
+  the last one and nothing before it). It is keyed on the person's **own**
+  calendar, so Day 7 is counted on it too: someone who joined at 23:30 in Toronto
+  joined, to their streak, on a different UTC day. A bought day is somebody
+  paying to mend a streak, not somebody being there.
+- **The cut-off is real.** `streakDays` exists from 29 August 2026, and a day
+  with only a visit in it was written from 1 September ("Let opening the app
+  hold the streak"). Before that a day was recorded only when the person did
+  something that counted, so a return day earlier than `RETURN_RECORDED_FROM`
+  reads low for a reason that has nothing to do with them. It is not measured,
+  rather than measured wrongly.
+- **Rates carry their denominator.** A cohort is only counted for Day N once
+  that day has fully ended on the person's calendar, and for activation once the
+  72 hours have passed. Before that "not yet" would read as "no", and every young
+  cohort would look like a failure. The panel prints `x of y` under every rate: a
+  cohort of four people at half and one of four hundred at half are different
+  readings.
+- **Activated, unanswered and the median reply** all need the instant a
+  conversation became two-way. `conversations.bothSpoke` is a boolean with no
+  time, and adding a timestamp would change the send path for a measurement, so
+  the time is read: the earliest message in the thread from someone other than
+  its opener, one `$lookup` over the two-way conversations of the window. It
+  works for history without a backfill. The median covers conversations that got
+  a reply, however late, so the newest weeks read faster than they will turn out
+  to be; the screen says so.
+- **Refusals per limit** are `profiles.quotaRefusals` and the kind now recorded
+  beside it. See below.
+- **The money timeline** is three things the server holds: `proGifts` (an
+  operator's, a streak's, an invitee's, a code's), `subscriptions` (one row per
+  RevenueCat webhook event), and `profiles.churnedFrom`.
+
+### What it cannot say, and the screen says so
+
+- **Paywall views and taps on them are PostHog's.** The server never sees them,
+  and a timeline with a stretch of nothing between "joined" and "bought" would
+  read as a person who never saw the paywall. The card says it is not measured
+  here rather than leaving the gap to look like an answer. Inventing a view from
+  anything else was the alternative, and it was refused.
+- **A free trial cannot be told from a first paid period in the history.** The
+  stored webhook rows do not keep RevenueCat's `period_type`; only the
+  entitlement's _current_ `periodType` is known. So each start shows how long the
+  period it opened was, which is what a person reads a trial off, and the "right
+  now" line says whether the one running is a trial. Recording `period_type` on
+  the row is one additive field and a later change; this PR reads and does not
+  change what a webhook writes.
+- **Refusals reach back three days and no further**, because that is all
+  `quotaRefusals` keeps. It is a rolling picture of the last three days, not a
+  trend, and says so.
+
+### The one write: which limit it was
+
+`consumeQuota` is where a refusal is decided and already wrote the instant to
+`quotaRefusals`. It now also writes `{at, kind}` to **`quotaRefusalKinds`**,
+beside it, in the same pipeline and pruned by the same cut-off.
+
+A second array rather than changing the first one's elements, because
+`quotaRefusals` is read as a list of instants by the upsell nudge
+(`promotions.ts`), and during a rolling deploy an API instance from before this
+change appends to it as exactly that. Changing the element type would have made
+the old instance corrupt what the new one reads and the reverse. A refusal with
+an instant and no entry in the second array predates the field, and the panel
+calls it **unknown** rather than guessing which limit it was.
+
+It stays on the profile and is not a collection of its own. A collection with a
+`userId` is a collection the account purge has to learn about, and a log of who
+hit which limit is exactly what a purge must not forget; a field on the profile
+goes with the profile.
+
+### Bounded, because it runs on a small shared cluster
+
+Every read has a date range on an index or goes by `_id`, and every one has a
+ceiling; when a ceiling is hit the answer says `truncated` rather than quietly
+covering less than it claims. Two indexes are new, both in `indexes.ts` and
+neither on a Better Auth collection: `conversations.first_message_at` (a bare
+range that no existing index could serve), and a **partial** index on
+`profiles.quotaRefusals`, which is absent on everybody who has never hit a
+limit, so it holds only the ones who did. The cohort read rides the existing
+`joined` index. The answer is kept for five minutes, per window of weeks, so
+opening the screen twice is one set of reads.
+
+### What this does not do
+
+It asks nobody anything and switches nothing. "What would make Pro worth it?"
+is built with the paywall, under the rule that a dismissal question appears only
+after the paywall has closed, and the cohort switches follow as their own
+changes judged against decision rules written first. This is the baseline they
+are measured against, and nothing more.
+
 ## A card is a copy, the cap is not a price, and a phrase card is mirrored
 
 [`echo.md`](./echo.md) is the design. Four things about the first phase are
@@ -5472,6 +5668,41 @@ name says who does not see it; the week's chart gets the same mark when "Show
 my week chart" is off. Tapping either opens the privacy settings. The rule is
 that the owner always sees their own data and is told which of it is theirs
 alone.
+
+## A number that has not arrived is a skeleton, not a zero
+
+**16 October 2026.** The Me tab's tiles and rows were written `data?.n ?? 0`,
+which draws a zero for three different things: a request still on its way, a
+request that never arrived, and an account that really has none. The first is
+the one people watched — a "0" that turned into the real number a moment
+later, with the badge shelf appearing under it and pushing the rows down — and
+the Echo tab showed a bare spinner where its whole stage was about to be.
+
+`loadState` (`src/lib/loadState.ts`) tells the three apart: a block of
+`ui/Skeleton` for the first, a dash for the second, and `0` only for the third.
+Data in hand outranks a failed refetch, and a paused or refused request with
+nothing to show stops being "loading" — a skeleton that pulses for as long as
+the train is in the tunnel is what `queryFailed` exists to prevent. The check is
+`data !== undefined`, never truthiness, so a loaded zero keeps drawing itself.
+
+`ui/CrossFade` is the dissolve from placeholder to content. It is opacity and
+nothing else: it measures nothing and animates no layout, so a skeleton is only
+as good as its size — `StatTile`, `ListRow` and the files in `skeletons/` are
+each drawn to the height of the thing they stand in for. That is also why it
+needs no Reanimated layout animation, which this app must not put on a recycled
+row until a newer Reanimated is in the binary. It stays on RN's `Animated`, like
+`Skeleton`, for the reason recorded above (_The row swipe runs on the UI
+thread_): an opacity needs nothing from the JS thread.
+
+Two rules ride along. Content that is there on the first render — a screen
+restored from the persisted cache — never animates, because there was no
+skeleton to leave. And with Reduce Motion on, content simply replaces the
+placeholder, and `Skeleton` holds still instead of pulsing.
+
+What this does not cover: a skeleton cannot know the shape of an answer it has
+not received. An account with no badge earned has no strip, so the shelf is a
+strip shorter than its placeholder; the rows under it move up once. The
+placeholder is drawn for the common case, not the rare one.
 
 ## The media viewer zooms on the UI thread, and saving is write-only
 

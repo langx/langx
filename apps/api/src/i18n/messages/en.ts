@@ -387,7 +387,7 @@ export const en = {
       limitReachedSubject: 'You are running into the free limits',
 
       limitReachedBody:
-        'You have hit a daily limit three times in the last few days. A plan lifts them — more conversations, more translations, more attachments, every day.',
+        'You have hit a daily limit three times in the last few days. A plan lifts them — more conversations and more translations, every day.',
 
       limitReachedButton: 'See the plans',
 
@@ -775,6 +775,18 @@ export const en = {
     assistantError: 'Something went wrong on my side. Try sending that again in a moment.',
     assistantRefusal:
       'I can’t help with that one. If I have got it wrong, {email} reaches a person.',
+  },
+  /**
+   * The reply the operator panel offers for a bug report or an idea, ready
+   * to edit and send from @langx — in the thread and by mail. A draft, not a
+   * send: the panel shows it in a box and nothing goes until someone presses
+   * the button. `issue` is added only once a real issue exists; the prefilled
+   * form is ours to press, not theirs to follow.
+   */
+  feedbackReply: {
+    bug: 'Hi! Thanks for reporting this — we read it, and we’re looking into it.',
+    feature: 'Hi! Thanks for the idea — we read it, and it’s on our list.',
+    issue: 'You can follow it here: {url}',
   },
 } as const
 

@@ -80,12 +80,16 @@ const envSchema = z.object({
    */
   ANTHROPIC_MODEL: z.string().min(1).default('claude-sonnet-5'),
   /**
-   * Where a bug report or feature request offers to become an issue, as
-   * `owner/name`. The support email carries a prefilled link to this
-   * repository's new-issue form; nothing here writes to GitHub, so there is no
-   * token beside it. See `githubIssue.ts` for why it stopped being one.
+   * Where a bug report or feature request becomes an issue, as `owner/name`.
    */
   GITHUB_ISSUE_REPO: z.string().min(1).default('langx/langx'),
+  /**
+   * Opens that issue for us, labelled `triage`. Optional: without it, or when
+   * it fails, the support mail carries a prefilled link to the new-issue form
+   * instead, and a failure says so in the mail. Needs Issues: write on the
+   * repository and nothing else. See `githubIssue.ts`.
+   */
+  GITHUB_ISSUE_TOKEN: emptyToUndefined(z.string().optional()),
   // resend.dev requires no domain verification, so this works immediately;
   // point it at a verified langx.io sender before Faz 13's launch.
   EMAIL_FROM: z.string().min(1).default('LangX <onboarding@resend.dev>'),

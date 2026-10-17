@@ -170,14 +170,12 @@ export function RecapStory(props: RecapStoryProps) {
       scheduleOnUI(() => {
         'worklet'
         cancelAnimation(progress)
-        if (restart) progress.value = 0
-        const remaining = (1 - progress.value) * SLIDE_MS
-        progress.value = withTiming(
-          1,
-          { duration: remaining, easing: Easing.linear },
-          (finished) => {
+        if (restart) progress.set(0)
+        const remaining = (1 - progress.get()) * SLIDE_MS
+        progress.set(
+          withTiming(1, { duration: remaining, easing: Easing.linear }, (finished) => {
             if (finished) scheduleOnRN(advanceFrom, from)
-          },
+          }),
         )
       })
     },
@@ -192,7 +190,7 @@ export function RecapStory(props: RecapStoryProps) {
     scheduleOnUI(() => {
       'worklet'
       cancelAnimation(progress)
-      progress.value = 1
+      progress.set(1)
     })
   }, [index, last, autoplay, progress, run])
 
@@ -223,25 +221,27 @@ export function RecapStory(props: RecapStoryProps) {
   // The ground cross-fades rather than cuts: 500ms, as designed.
   const ground = useSharedValue(look.ground)
   useEffect(() => {
-    ground.value = reduce
-      ? look.ground
-      : withTiming(look.ground, { duration: 500, easing: Easing.bezier(0.2, 0.8, 0.2, 1) })
+    ground.set(
+      reduce
+        ? look.ground
+        : withTiming(look.ground, { duration: 500, easing: Easing.bezier(0.2, 0.8, 0.2, 1) }),
+    )
   }, [look.ground, reduce, ground])
-  const groundStyle = useAnimatedStyle(() => ({ backgroundColor: ground.value }))
+  const groundStyle = useAnimatedStyle(() => ({ backgroundColor: ground.get() }))
 
   // Dragging down takes the whole story with the finger; far or fast enough
   // and it closes, otherwise it springs home.
   const drag = useSharedValue(0)
   const dragStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: drag.value }],
-    opacity: 1 - Math.min(drag.value / 600, 0.4),
+    transform: [{ translateY: drag.get() }],
+    opacity: 1 - Math.min(drag.get() / 600, 0.4),
   }))
 
   const pan = Gesture.Pan()
     .minDistance(12)
     .onUpdate((event) => {
       if (event.translationY > 0 && Math.abs(event.translationY) > Math.abs(event.translationX)) {
-        drag.value = event.translationY
+        drag.set(event.translationY)
       }
     })
     .onEnd((event) => {
@@ -256,7 +256,7 @@ export function RecapStory(props: RecapStoryProps) {
         scheduleOnRN(onClose)
         return
       }
-      drag.value = withSpring(0, { duration: 400, dampingRatio: 0.8, velocity: event.velocityY })
+      drag.set(withSpring(0, { duration: 400, dampingRatio: 0.8, velocity: event.velocityY }))
       if (intent) scheduleOnRN(tap, intent)
     })
 
@@ -503,7 +503,7 @@ function ProgressBar({
 }) {
   const current = state === 'current'
   const fill = useAnimatedStyle(() => ({
-    width: `${(current ? progress.value : state === 'done' ? 1 : 0) * 100}%`,
+    width: `${(current ? progress.get() : state === 'done' ? 1 : 0) * 100}%`,
   }))
   return (
     <View

@@ -350,7 +350,7 @@ export const tr: Localized<ServerMessages> = {
       limitReachedSubject: 'Ücretsiz sınırlara takılıyorsun',
 
       limitReachedBody:
-        'Son birkaç günde üç kez günlük sınıra takıldın. Bir plan bunları kaldırır — her gün daha fazla sohbet, daha fazla çeviri, daha fazla ek.',
+        'Son birkaç günde üç kez günlük sınıra takıldın. Bir plan bunları kaldırır — her gün daha fazla sohbet ve daha fazla çeviri.',
 
       limitReachedButton: 'Planlara bak',
 
@@ -612,5 +612,10 @@ export const tr: Localized<ServerMessages> = {
     assistantError: 'Bende bir şeyler ters gitti. Birazdan tekrar göndermeyi dene.',
     assistantRefusal:
       'Bu konuda yardımcı olamıyorum. Yanlış anladıysam {email} adresinden bir insana ulaşabilirsin.',
+  },
+  feedbackReply: {
+    bug: 'Merhaba! Bildirdiğin için teşekkürler — okuduk, inceliyoruz.',
+    feature: 'Merhaba! Fikrin için teşekkürler — okuduk, listemize ekledik.',
+    issue: 'Buradan takip edebilirsin: {url}',
   },
 }

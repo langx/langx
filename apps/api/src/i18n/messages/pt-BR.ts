@@ -365,7 +365,7 @@ export const ptBR: Localized<ServerMessages> = {
       limitReachedSubject: 'Você está esbarrando nos limites gratuitos',
 
       limitReachedBody:
-        'Você atingiu um limite diário três vezes nos últimos dias. Um plano remove esses limites — mais conversas, mais traduções, mais anexos, todo dia.',
+        'Você atingiu um limite diário três vezes nos últimos dias. Um plano remove esses limites — mais conversas e mais traduções, todo dia.',
 
       limitReachedButton: 'Ver os planos',
 
@@ -625,5 +625,10 @@ export const ptBR: Localized<ServerMessages> = {
     assistantError: 'Algo deu errado do meu lado. Tente enviar de novo daqui a pouco.',
     assistantRefusal:
       'Nisso eu não consigo ajudar. Se eu entendi errado, {email} chega a uma pessoa.',
+  },
+  feedbackReply: {
+    bug: 'Oi! Obrigado por avisar — a gente leu e está investigando.',
+    feature: 'Oi! Obrigado pela ideia — a gente leu e ela já está na nossa lista.',
+    issue: 'Você pode acompanhar aqui: {url}',
   },
 }

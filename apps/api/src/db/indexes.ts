@@ -129,6 +129,18 @@ export const INDEXES: Partial<IndexSpec> = {
      */
     { key: { 'stats.lastActiveAt': 1 }, name: 'last_active' },
     /*
+     * "Who was refused in the last three days?" — the operator panel's count of
+     * refusals per limit. `quotaRefusals` is absent on everybody who has never
+     * hit a limit, which is most people, so the index is partial and only holds
+     * the ones who did. Multikey over the instants, which is what lets a bare
+     * `$gte` find them without reading every profile.
+     */
+    {
+      key: { quotaRefusals: 1 },
+      name: 'quota_refusals',
+      partialFilterExpression: { quotaRefusals: { $exists: true } },
+    },
+    /*
      * "How many people joined today?" — the number the operator dashboard is
      * opened for, and until this existed the only way to answer it was a
      * collection scan. Nothing in `profiles` led with `createdAt`: the text
@@ -266,6 +278,15 @@ export const INDEXES: Partial<IndexSpec> = {
      */
     // Backs the rolling-24h initiation quota without a separate collection.
     { key: { firstMessageBy: 1, firstMessageAt: -1 }, name: 'first_message_by' },
+    /*
+     * "Which conversations opened since Monday N weeks ago?" — a bare range,
+     * which neither index above can serve (both lead with something else).
+     * The operator panel's measurement reads the conversations opened in a
+     * window to ask who answered whom and how fast, and without this that read
+     * is a scan of every thread there has ever been. Descending, like the
+     * range it serves: the newest weeks are the ones that matter.
+     */
+    { key: { firstMessageAt: -1 }, name: 'first_message_at' },
   ],
 
   [COLLECTIONS.messages]: [

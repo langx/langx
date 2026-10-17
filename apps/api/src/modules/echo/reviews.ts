@@ -5,7 +5,9 @@ import {
   periodKeys,
   schedule,
   TOKEN_RULES,
+  type EchoAward,
   type PeriodType,
+  type StreakAward,
   type SubmitEchoReviewsInput,
   type SubmitEchoReviewsResult,
 } from '@langx/shared'
@@ -141,8 +143,8 @@ export async function submitReviews(
     )
   }
 
-  await settleSessions(db, userId, now)
-  return { results }
+  const award = await settleSessions(db, userId, now)
+  return { results, award }
 }
 
 /**
@@ -162,10 +164,18 @@ export async function submitReviews(
  * Nothing here calls `recordActivity`. Echo is outside the daily pool on
  * purpose: the pool is zero-sum and scores acts done with another person, so
  * a solitary repeatable one would dilute the people it exists to reward.
+ *
+ * Returns what it paid, for the response of the batch to say. Counted from the
+ * same `paid` results that decide the streak, so the number the person is shown
+ * and the rows the ledger holds cannot disagree: a resent batch finds every
+ * session already paid and reports nothing.
  */
-async function settleSessions(db: Db, userId: string, now: Date): Promise<void> {
+async function settleSessions(db: Db, userId: string, now: Date): Promise<EchoAward> {
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
-  if (!profile) return
+  if (!profile) return { tokens: 0, streak: null }
+
+  let tokens = 0
+  let streak: StreakAward | null = null
 
   const day = streakDay(profile, now)
   const since = new Date(now.getTime() - 24 * 60 * 60 * 1000)
@@ -188,6 +198,16 @@ async function settleSessions(db: Db, userId: string, now: Date): Promise<void> 
      * under another name. A resubmitted batch reports `duplicate` here and
      * leaves the square exactly as it found it.
      */
-    if (paid.awarded) await recordQualifyingAction(db, profile, now)
+    tokens += paid.amount
+    if (paid.awarded) {
+      const credit = await recordQualifyingAction(db, profile, now)
+      // The streak's own bonus is token this batch earned, the way a message's
+      // is in `awardForSend`. The first credit is the one that did the work:
+      // a second session paid by the same batch reads the same profile, finds
+      // today claimed, and reports `advanced: false` with nothing to add.
+      tokens += credit.milestoneXp
+      streak ??= credit
+    }
   }
+  return { tokens, streak }
 }

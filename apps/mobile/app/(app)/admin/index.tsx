@@ -123,6 +123,10 @@ export default function AdminHomeScreen() {
                 onPress={() => router.push('/(app)/admin/gift-codes')}
               />
               <ListRow
+                title={ADMIN.home.measure}
+                onPress={() => router.push('/(app)/admin/measure')}
+              />
+              <ListRow
                 title={ADMIN.home.system}
                 onPress={() => router.push('/(app)/admin/system')}
                 last

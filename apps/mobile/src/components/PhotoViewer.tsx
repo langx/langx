@@ -208,8 +208,8 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
     const { index: open, photos: album } = latest.current
     const natural = naturals.current.get(album[open ?? -1]?.url ?? '') ?? { width: 0, height: 0 }
     const fitted = fittedSize(natural, frame.current)
-    contentW.value = fitted.width
-    contentH.value = fitted.height
+    contentW.set(fitted.width)
+    contentH.set(fitted.height)
   }
 
   function rememberSize(url: string, width: number | undefined, height: number | undefined): void {
@@ -218,13 +218,13 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   }
 
   function settleStrip(): void {
-    pageX.value = withSpring(-turned.current * frame.current.width, SPRING)
+    pageX.set(withSpring(-turned.current * frame.current.width, SPRING))
   }
 
   /** The end of a page turn, back on the JS side once the slide has landed. */
   function landTurn(to: number, next: number): void {
     turned.current = to
-    turnedAt.value = to
+    turnedAt.set(to)
     latest.current.onIndexChange?.(next)
   }
 
@@ -241,26 +241,28 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
     }
     const to = turned.current + step
     const next = (at + album.length + step) % album.length
-    pageX.value = withTiming(-to * frame.current.width, { duration: 160 }, (finished) => {
-      // Cut short by a finger landing mid-slide: the strip is wherever that
-      // finger now has it, and its release decides.
-      if (finished) runOnJS(landTurn)(to, next)
-    })
+    pageX.set(
+      withTiming(-to * frame.current.width, { duration: 160 }, (finished) => {
+        // Cut short by a finger landing mid-slide: the strip is wherever that
+        // finger now has it, and its release decides.
+        if (finished) runOnJS(landTurn)(to, next)
+      }),
+    )
   }
 
   // A new picture starts life-size. Without this, paging while zoomed lands the
   // next one already halfway off the screen.
   useEffect(() => {
-    scale.value = MIN_SCALE
-    offsetX.value = 0
-    offsetY.value = 0
+    scale.set(MIN_SCALE)
+    offsetX.set(0)
+    offsetY.set(0)
     syncContent()
     // Closed: nothing is on screen, so this is the one moment the strip can go
     // back to the start without anyone seeing it move.
     if (index === null) {
       turned.current = 0
-      turnedAt.value = 0
-      pageX.value = 0
+      turnedAt.set(0)
+      pageX.set(0)
     }
     // Shared values and refs only besides `index`; listing the functions
     // would rebuild this on every render.
@@ -276,46 +278,46 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   function settleZoomNow(): void {
     'worklet'
     const next = settleZoom(
-      { x: offsetX.value, y: offsetY.value },
-      scale.value,
-      { width: frameW.value, height: frameH.value },
-      { width: contentW.value, height: contentH.value },
+      { x: offsetX.get(), y: offsetY.get() },
+      scale.get(),
+      { width: frameW.get(), height: frameH.get() },
+      { width: contentW.get(), height: contentH.get() },
     )
-    scale.value = withSpring(next.scale, SPRING)
-    offsetX.value = withSpring(next.offset.x, SPRING)
-    offsetY.value = withSpring(next.offset.y, SPRING)
+    scale.set(withSpring(next.scale, SPRING))
+    offsetX.set(withSpring(next.offset.x, SPRING))
+    offsetY.set(withSpring(next.offset.y, SPRING))
   }
 
   function settleStripNow(): void {
     'worklet'
-    pageX.value = withSpring(-turnedAt.value * frameW.value, SPRING)
+    pageX.set(withSpring(-turnedAt.get() * frameW.get(), SPRING))
   }
 
   const multiple = photos.length > 1
 
   const pinch = Gesture.Pinch()
     .onStart(() => {
-      pinching.value = true
+      pinching.set(true)
       // A second finger landing mid page-turn or mid-dismiss takes the gesture
       // over; the strip goes back to rest rather than staying half-turned.
-      if (panMode.value === PAN_PAGE) settleStripNow()
-      panMode.value = PAN_ZOOM
+      if (panMode.get() === PAN_PAGE) settleStripNow()
+      panMode.set(PAN_ZOOM)
     })
     .onChange((event) => {
       const next = zoomAbout(
-        { x: offsetX.value, y: offsetY.value },
-        scale.value,
-        { x: event.focalX - frameW.value / 2, y: event.focalY - frameH.value / 2 },
-        resistScaleChange(scale.value, event.scaleChange),
+        { x: offsetX.get(), y: offsetY.get() },
+        scale.get(),
+        { x: event.focalX - frameW.get() / 2, y: event.focalY - frameH.get() / 2 },
+        resistScaleChange(scale.get(), event.scaleChange),
       )
-      scale.value = next.scale
-      offsetX.value = next.offset.x
-      offsetY.value = next.offset.y
+      scale.set(next.scale)
+      offsetX.set(next.offset.x)
+      offsetY.set(next.offset.y)
     })
     .onEnd(() => {
-      pinching.value = false
+      pinching.set(false)
       // A finger still down carries on as a pan, and that pan's release settles.
-      if (!panning.value) settleZoomNow()
+      if (!panning.get()) settleZoomNow()
     })
 
   const pan = Gesture.Pan()
@@ -323,11 +325,11 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
     // back moves the picture by what the fingers did and nothing else.
     .averageTouches(true)
     .onStart(() => {
-      panning.value = true
-      panMode.value = pinching.value || scale.value > MIN_SCALE ? PAN_ZOOM : PAN_IDLE
+      panning.set(true)
+      panMode.set(pinching.get() || scale.get() > MIN_SCALE ? PAN_ZOOM : PAN_IDLE)
     })
     .onChange((event) => {
-      if (panMode.value === PAN_IDLE) {
+      if (panMode.get() === PAN_IDLE) {
         // Not yet: too little travel to tell sideways from down. The web's
         // gesture-handler measures from where the pan was recognised, so its
         // first frame is 0,0 — which read as "not sideways" and made every
@@ -337,34 +339,35 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
         // whole strip follows the finger, so the next picture is in view
         // before the gesture is committed to; anything else is a dismissal,
         // and the open picture follows that on its own.
-        panMode.value =
+        panMode.set(
           multiple && Math.abs(event.translationX) > Math.abs(event.translationY)
             ? PAN_PAGE
-            : PAN_DISMISS
-      }
-      if (panMode.value === PAN_ZOOM) {
-        const limit = maxOffset(
-          scale.value,
-          { width: frameW.value, height: frameH.value },
-          { width: contentW.value, height: contentH.value },
+            : PAN_DISMISS,
         )
-        offsetX.value += resist(offsetX.value, event.changeX, limit.x)
-        offsetY.value += resist(offsetY.value, event.changeY, limit.y)
+      }
+      if (panMode.get() === PAN_ZOOM) {
+        const limit = maxOffset(
+          scale.get(),
+          { width: frameW.get(), height: frameH.get() },
+          { width: contentW.get(), height: contentH.get() },
+        )
+        offsetX.set(offsetX.get() + resist(offsetX.get(), event.changeX, limit.x))
+        offsetY.set(offsetY.get() + resist(offsetY.get(), event.changeY, limit.y))
         return
       }
-      if (panMode.value === PAN_PAGE) {
-        pageX.value = -turnedAt.value * frameW.value + event.translationX
+      if (panMode.get() === PAN_PAGE) {
+        pageX.set(-turnedAt.get() * frameW.get() + event.translationX)
         return
       }
-      offsetY.value = event.translationY
-      offsetX.value = event.translationX / 3
+      offsetY.set(event.translationY)
+      offsetX.set(event.translationX / 3)
     })
     .onEnd((event) => {
-      panning.value = false
-      const mode = panMode.value
-      panMode.value = PAN_IDLE
+      panning.set(false)
+      const mode = panMode.get()
+      panMode.set(PAN_IDLE)
       // Still pinching: the pinch's release settles.
-      if (pinching.value) return
+      if (pinching.get()) return
       if (mode === PAN_PAGE) {
         // gesture-handler reports px/s; `swipeStep` is in px/ms like the rest.
         const step = swipeStep(event.translationX, event.translationY, event.velocityX / 1000)
@@ -384,24 +387,24 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
     .maxDelay(DOUBLE_TAP_MS)
     .onEnd((event, success) => {
       if (!success) return
-      if (scale.value > MIN_SCALE) {
-        scale.value = withSpring(MIN_SCALE, SPRING)
-        offsetX.value = withSpring(0, SPRING)
-        offsetY.value = withSpring(0, SPRING)
+      if (scale.get() > MIN_SCALE) {
+        scale.set(withSpring(MIN_SCALE, SPRING))
+        offsetX.set(withSpring(0, SPRING))
+        offsetY.set(withSpring(0, SPRING))
         return
       }
       // Zoomed about the point tapped, so the face somebody tapped stays
       // under their finger rather than walking off the edge.
-      const focus = { x: event.x - frameW.value / 2, y: event.y - frameH.value / 2 }
+      const focus = { x: event.x - frameW.get() / 2, y: event.y - frameH.get() / 2 }
       const offset = clampOffset(
         offsetForFocus(focus, DOUBLE_TAP_SCALE),
         DOUBLE_TAP_SCALE,
-        { width: frameW.value, height: frameH.value },
-        { width: contentW.value, height: contentH.value },
+        { width: frameW.get(), height: frameH.get() },
+        { width: contentW.get(), height: contentH.get() },
       )
-      scale.value = withSpring(DOUBLE_TAP_SCALE, SPRING)
-      offsetX.value = withSpring(offset.x, SPRING)
-      offsetY.value = withSpring(offset.y, SPRING)
+      scale.set(withSpring(DOUBLE_TAP_SCALE, SPRING))
+      offsetX.set(withSpring(offset.x, SPRING))
+      offsetY.set(withSpring(offset.y, SPRING))
     })
 
   /*
@@ -412,7 +415,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
    * spot somebody zoomed in on.
    */
   const singleTap = Gesture.Tap().onEnd((_event, success) => {
-    if (success && scale.value <= MIN_SCALE) runOnJS(onClose)()
+    if (success && scale.get() <= MIN_SCALE) runOnJS(onClose)()
   })
 
   /*
@@ -429,10 +432,10 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
    */
   const longPress = Gesture.LongPress()
     .onStart(() => {
-      if (!SHEET_ON_RELEASE && !pinching.value) runOnJS(offerSave)()
+      if (!SHEET_ON_RELEASE && !pinching.get()) runOnJS(offerSave)()
     })
     .onEnd((_event, success) => {
-      if (SHEET_ON_RELEASE && success && !pinching.value) runOnJS(offerSave)()
+      if (SHEET_ON_RELEASE && success && !pinching.get()) runOnJS(offerSave)()
     })
 
   const gesture = Gesture.Race(
@@ -441,12 +444,12 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
     Gesture.Exclusive(doubleTap, singleTap),
   )
 
-  const stripStyle = useAnimatedStyle(() => ({ transform: [{ translateX: pageX.value }] }))
+  const stripStyle = useAnimatedStyle(() => ({ transform: [{ translateX: pageX.get() }] }))
   const openStyle = useAnimatedStyle(() => ({
     transform: [
-      { translateX: offsetX.value },
-      { translateY: offsetY.value },
-      { scale: scale.value },
+      { translateX: offsetX.get() },
+      { translateY: offsetY.get() },
+      { scale: scale.get() },
     ],
   }))
 
@@ -526,11 +529,11 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
               onLayout={(event) => {
                 const { width, height } = event.nativeEvent.layout
                 frame.current = { width, height }
-                frameW.value = width
-                frameH.value = height
+                frameW.set(width)
+                frameH.set(height)
                 // A rotation changes the width a page is, and so where the
                 // strip rests.
-                pageX.value = -turned.current * width
+                pageX.set(-turned.current * width)
                 syncContent()
               }}
             >

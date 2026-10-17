@@ -551,12 +551,19 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
       config: { rateLimit: { max: 20, timeWindow: '1 minute' } },
     },
     async (request, reply) => {
-      const { message, conversation } = await sendTextMessage(app.mongo.db, request.userId, {
+      const { message, conversation, award } = await sendTextMessage(app.mongo.db, request.userId, {
         ...request.body,
         conversationId: request.params.id,
       })
       await fanOutMessage(app, app.io, conversation, message, { pushWhenAway: true })
-      return reply.send(toMessageView(message, request.userId))
+      // An extra key the message view has no use for, so a client that does
+      // not know it reads the body exactly as before. The socket ack carries
+      // the same award beside `data`. Absent when the send was a retry
+      // answered from its `clientId`, which the first attempt already paid.
+      return reply.send({
+        ...toMessageView(message, request.userId),
+        ...(award ? { award } : {}),
+      })
     },
   )
 

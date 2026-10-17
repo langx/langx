@@ -50,6 +50,8 @@ export const en = {
     edit: 'Edit',
     enable: 'Enable',
     update: 'Update',
+    /** Read aloud in place of the dash a number shows when it did not load. */
+    notLoaded: 'Couldn’t load',
   },
 
   tabs: {
@@ -1373,7 +1375,10 @@ export const en = {
     photosPermission: 'LangX needs permission to open your photo library.',
     microphoneTitle: 'Microphone',
     translationUnavailable: 'Translation unavailable',
-    translationQuota: 'You’ve used today’s free translations. A paid plan removes the limit.',
+    translationQuota: {
+      one: 'You’ve reached today’s translation limit. Pro allows {count} translation a day.',
+      other: 'You’ve reached today’s translation limit. Pro allows {count} translations a day.',
+    },
     translationFailed: 'Could not translate that message right now.',
     wordTranslationFailed: 'Could not translate that word right now.',
     wordSeePlans: 'See the plans',
@@ -2067,8 +2072,11 @@ export const en = {
     historyBody: 'Every day of the last two months, and what counted',
     leaderboardBody: 'Who has the longest run right now, and ever',
     protectTitle: 'Protect your streak',
-    protectBody:
-      'A freeze covers the next day you miss. A day already missed can be bought back on the map above, for a month.',
+    protectBody: {
+      one: 'A freeze covers the next day you miss. A day already missed can be bought back on the map above, up to {count} day after you miss it.',
+      other:
+        'A freeze covers the next day you miss. A day already missed can be bought back on the map above, up to {count} days after you miss it.',
+    },
     longest: 'Longest',
     missed: 'Missed',
     bought: 'Filled in with tokens',

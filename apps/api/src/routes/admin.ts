@@ -2,6 +2,7 @@ import {
   ERROR_CODES,
   adminLatestVersionSchema,
   adminListQuerySchema,
+  adminMeasureQuerySchema,
   adminMinVersionSchema,
   adminCaptchaRequiredSchema,
   adminMemberListQuerySchema,
@@ -60,6 +61,8 @@ import { sendBroadcastTest } from '../modules/admin/broadcastQueue'
 import { pollResults } from '../modules/chat/polls'
 import { getReport, listAppeals, listReports, toObjectId } from '../modules/admin/reports'
 import { FUNNEL_WINDOWS, readFunnel } from '../modules/admin/funnel'
+import { readAdminMeasure } from '../modules/admin/measure'
+import { readMoneyTimeline } from '../modules/admin/moneyTimeline'
 import { listOnline, readAdminPulse } from '../modules/admin/pulse'
 import { forgetAdminStats, readAdminStats } from '../modules/admin/stats'
 import { findAdminUser, getAdminUser, listMembers } from '../modules/admin/users'
@@ -67,7 +70,12 @@ import { suspendMany } from '../modules/admin/bulkSuspend'
 import { findLinkedAccounts } from '../modules/admin/linked'
 import { getAppConfig, updateAppConfig } from '../modules/appConfig/appConfig'
 import { payBounty } from '../modules/feedback/awardBounty'
-import { getFeedback, listFeedback, updateFeedback } from '../modules/feedback/reports'
+import {
+  getFeedback,
+  listFeedback,
+  markFeedbackReplied,
+  updateFeedback,
+} from '../modules/feedback/reports'
 import { setPostHidden } from '../modules/feed/feed'
 import { applyReviewDecision, type ReviewRefusal } from '../modules/moderation/decide'
 import { rewardReporter } from '../modules/moderation/reward'
@@ -172,6 +180,25 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     },
     async (request, reply) => {
       return reply.send(await readFunnel(app.env, request.query.window))
+    },
+  )
+
+  /**
+   * The baseline: weekly cohorts with Day 1 / 7 / 30 return and activation,
+   * how first messages fare, and which limits people hit.
+   *
+   * One route for the three because they share the one expensive read — the
+   * conversations of the window and their first replies — and a screen that
+   * showed them side by side would otherwise pay for it twice. Five minutes of
+   * memory behind it, per window of weeks. Read only, and private: see the note
+   * at the top of `modules/admin/measure.ts` for where each figure comes from
+   * and why none of it may reach the public stats page.
+   */
+  app.get(
+    '/admin/measure',
+    { preHandler: requireAdmin, schema: { querystring: adminMeasureQuerySchema } },
+    async (request, reply) => {
+      return reply.send(await readAdminMeasure(app.mongo.db, request.query.weeks))
     },
   )
 
@@ -540,6 +567,22 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       const profile = await getProfile(app.mongo.db, request.params.userId)
       if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such account')
       return reply.send(await findLinkedAccounts(app.mongo.db, profile._id))
+    },
+  )
+
+  /**
+   * One person's money, in order: gifts of Pro, what the store told us, and
+   * the fall to free. A read, so nothing is recorded. Its own route rather
+   * than part of the detail because the detail is opened far more often than
+   * anybody wants this.
+   */
+  app.get(
+    '/admin/users/:userId/money',
+    { preHandler: requireAdmin, schema: { params: z.object({ userId: z.string() }) } },
+    async (request, reply) => {
+      const profile = await getProfile(app.mongo.db, request.params.userId)
+      if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such account')
+      return reply.send(await readMoneyTimeline(app.mongo.db, profile))
     },
   )
 
@@ -983,6 +1026,69 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         })
       }
       return reply.send(result)
+    },
+  )
+
+  /**
+   * Writing back to whoever sent a report: from @langx, and by mail.
+   *
+   * The panel opens this with `replyDraft` in the box — a thank-you in their
+   * language with the issue's link — and the operator edits it. Always mailed,
+   * like every note to one person: a push is gone once it is swiped. The
+   * sender's address is verified already, since `POST /feedback` requires it.
+   */
+  app.post(
+    '/admin/feedback/:id/reply',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ id: z.string() }), body: adminMessageSchema },
+      config: { rateLimit: limit(60, '1 minute') },
+    },
+    async (request, reply) => {
+      const row = await getFeedback(app.mongo.db, request.params.id)
+      if (!row) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such report')
+      const recipient = await getProfile(app.mongo.db, row.userId)
+      if (!recipient || recipient.deletedAt) {
+        throw new ApiError(ERROR_CODES.NOT_FOUND, 'That account is gone')
+      }
+
+      const delivered = await deliverOfficialMessage(app.mongo.db, {
+        fromHandle: 'langx',
+        toUserId: recipient._id,
+        body: request.body.body,
+        // Per send, not per report: a second reply — "it's fixed now" — is a
+        // second message, not a duplicate of the first.
+        clientId: `feedbackReply:${row._id}:${Date.now()}`,
+      })
+      if (!delivered) {
+        throw new ApiError(ERROR_CODES.NOT_FOUND, 'There is no @langx account to send from')
+      }
+      await fanOutMessage(app, app.io, delivered.conversation, delivered.message, {
+        pushWhenAway: true,
+      })
+
+      // Logged, not thrown: the message is delivered, and a 500 here would
+      // invite sending it twice.
+      let emailed = false
+      try {
+        emailed =
+          (await emailOfficialNote(app.mongo.db, app.email, {
+            userId: recipient._id,
+            messageId: delivered.message._id.toHexString(),
+            body: request.body.body,
+          })) === 'sent'
+      } catch (error) {
+        request.log.warn({ err: error, userId: recipient._id }, 'feedback reply email failed')
+      }
+
+      await markFeedbackReplied(app.mongo.db, row._id)
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'feedback.reply',
+        subjectUserId: recipient._id,
+        refId: row._id,
+      })
+      return reply.code(201).send({ emailed })
     },
   )
 

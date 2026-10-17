@@ -34,6 +34,7 @@ export const es: Localized<EnMessages> = {
     edit: 'Editar',
     enable: 'Activar',
     update: 'Actualizar',
+    notLoaded: 'No se pudo cargar',
   },
 
   tabs: { discover: 'Descubrir', chats: 'Chats', echo: 'Echo', feed: 'Muro', me: 'Yo' },
@@ -1231,8 +1232,11 @@ export const es: Localized<EnMessages> = {
     photosPermission: 'LangX necesita permiso para abrir tu galería.',
     microphoneTitle: 'Micrófono',
     translationUnavailable: 'Traducción no disponible',
-    translationQuota:
-      'Has usado las traducciones gratuitas de hoy. Un plan de pago quita el límite.',
+    translationQuota: {
+      one: 'Has llegado al límite de traducciones de hoy. Pro permite {count} traducción al día.',
+      other:
+        'Has llegado al límite de traducciones de hoy. Pro permite {count} traducciones al día.',
+    },
     translationFailed: 'No se pudo traducir ese mensaje ahora mismo.',
     wordTranslationFailed: 'No se pudo traducir esa palabra ahora mismo.',
     wordSeePlans: 'Ver los planes',
@@ -1866,8 +1870,11 @@ export const es: Localized<EnMessages> = {
     historyBody: 'Cada día de los últimos dos meses y qué contó',
     leaderboardBody: 'Quién tiene la racha más larga ahora y de siempre',
     protectTitle: 'Protege tu racha',
-    protectBody:
-      'Un protector cubre el próximo día que te saltes. Un día ya perdido se puede recuperar en el mapa de arriba durante un mes.',
+    protectBody: {
+      one: 'Un protector cubre el próximo día que te saltes. Un día ya perdido se puede recuperar en el mapa de arriba hasta {count} día después.',
+      other:
+        'Un protector cubre el próximo día que te saltes. Un día ya perdido se puede recuperar en el mapa de arriba hasta {count} días después.',
+    },
     longest: 'La más larga',
     missed: 'Perdido',
     bought: 'Rellenado con tokens',

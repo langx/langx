@@ -40,6 +40,7 @@ export const tr: Localized<EnMessages> = {
     edit: 'Düzenle',
     enable: 'Aç',
     update: 'Güncelle',
+    notLoaded: 'Yüklenemedi',
   },
 
   tabs: {
@@ -1221,8 +1222,10 @@ export const tr: Localized<EnMessages> = {
     photosPermission: 'LangX’in fotoğraf kitaplığını açmak için izne ihtiyacı var.',
     microphoneTitle: 'Mikrofon',
     translationUnavailable: 'Çeviri kullanılamıyor',
-    translationQuota:
-      'Bugünkü ücretsiz çevirilerini kullandın. Ücretli bir plan bu sınırı kaldırır.',
+    translationQuota: {
+      one: 'Bugünkü çeviri sınırına ulaştın. Pro ile günde {count} çeviri yapabilirsin.',
+      other: 'Bugünkü çeviri sınırına ulaştın. Pro ile günde {count} çeviri yapabilirsin.',
+    },
     translationFailed: 'Bu mesaj şu anda çevrilemedi.',
     wordTranslationFailed: 'Bu kelime şu anda çevrilemedi.',
     wordSeePlans: 'Planlara bak',
@@ -1859,8 +1862,11 @@ export const tr: Localized<EnMessages> = {
     historyBody: 'Son iki ayın her günü ve neyin sayıldığı',
     leaderboardBody: 'Şu an ve tüm zamanların en uzun serileri',
     protectTitle: 'Serini koru',
-    protectBody:
-      'Dondurma, kaçıracağın bir sonraki günü kapatır. Kaçırılmış bir gün ise yukarıdaki haritadan bir ay boyunca geri alınabilir.',
+    protectBody: {
+      one: 'Dondurma, kaçıracağın bir sonraki günü kapatır. Kaçırılmış bir gün ise, kaçırıldıktan sonra en fazla {count} gün boyunca yukarıdaki haritadan geri alınabilir.',
+      other:
+        'Dondurma, kaçıracağın bir sonraki günü kapatır. Kaçırılmış bir gün ise, kaçırıldıktan sonra en fazla {count} gün boyunca yukarıdaki haritadan geri alınabilir.',
+    },
     longest: 'En uzun',
     missed: 'Kaçırıldı',
     bought: 'Jetonla dolduruldu',

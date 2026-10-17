@@ -367,7 +367,7 @@ export const de: Localized<ServerMessages> = {
       limitReachedSubject: 'Du stößt an die kostenlosen Limits',
 
       limitReachedBody:
-        'Du hast in den letzten Tagen dreimal ein Tageslimit erreicht. Ein Tarif hebt sie auf — mehr Gespräche, mehr Übersetzungen, mehr Anhänge, jeden Tag.',
+        'Du hast in den letzten Tagen dreimal ein Tageslimit erreicht. Ein Tarif hebt sie auf — mehr Gespräche und mehr Übersetzungen, jeden Tag.',
 
       limitReachedButton: 'Tarife ansehen',
 
@@ -630,5 +630,10 @@ export const de: Localized<ServerMessages> = {
     assistantError: 'Bei mir ist etwas schiefgelaufen. Versuch es gleich noch einmal.',
     assistantRefusal:
       'Dabei kann ich nicht helfen. Falls ich das falsch verstanden habe, erreichst du unter {email} einen Menschen.',
+  },
+  feedbackReply: {
+    bug: 'Hallo! Danke für deine Meldung — wir haben sie gelesen und schauen sie uns an.',
+    feature: 'Hallo! Danke für die Idee — wir haben sie gelesen, und sie steht auf unserer Liste.',
+    issue: 'Hier kannst du den Stand verfolgen: {url}',
   },
 }

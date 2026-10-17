@@ -15,6 +15,7 @@ import {
   type SendQuizInput,
   type SendStickerInput,
   type SendLocationInput,
+  type SendAward,
   storedLocationPoint,
   findCosmetic,
   hasFeature,
@@ -53,6 +54,13 @@ import { openingThreadTestimonialState, threadTestimonialState } from '../testim
 export interface SendResult {
   message: Message
   conversation: Conversation
+  /**
+   * What this send earned. Absent when nothing was paid because nothing was
+   * sent: a retry answered from its `clientId` is the first attempt's message,
+   * and its payout went out with the first attempt's ack. A kind that pays
+   * nothing by design (answering a quiz, answering a meeting) never writes it.
+   */
+  award?: SendAward
 }
 
 /**
@@ -177,12 +185,16 @@ async function resolveAnswerTarget(
  * doing that by hand would mean a second copy of the counter arithmetic that
  * could drift from this one — the chat list quietly showing the wrong preview
  * or an unread badge that never clears.
+ *
+ * The award comes back with the conversation so the sender's response can say
+ * what the send earned. It is the value `awardForSend` computed, passed on
+ * untouched; the caller that has nobody to tell (`deliver.ts`) drops it.
  */
 export async function recordMessage(
   db: Db,
   conversation: Conversation,
   message: Message,
-): Promise<Conversation> {
+): Promise<{ conversation: Conversation; award: SendAward }> {
   const recipientId = conversation.participants.find((id) => id !== message.senderId)
 
   /*
@@ -295,7 +307,7 @@ export async function recordMessage(
   )
   if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Conversation not found')
 
-  await awardForSend(db, {
+  const award = await awardForSend(db, {
     conversation: updated,
     message,
     // The transition, not the state: `bothSpoke` stays true forever after, so
@@ -304,7 +316,7 @@ export async function recordMessage(
     becameMutual,
   })
 
-  return updated
+  return { conversation: updated, award }
 }
 
 export async function sendTextMessage(
@@ -369,8 +381,12 @@ export async function sendTextMessage(
     createdAt: new Date(),
   }
 
-  const updatedConversation = await recordMessage(db, conversation, message)
-  return { message, conversation: updatedConversation }
+  const { conversation: updatedConversation, award } = await recordMessage(
+    db,
+    conversation,
+    message,
+  )
+  return { message, conversation: updatedConversation, award }
 }
 
 /**
@@ -414,7 +430,11 @@ export async function sendPhrase(
     createdAt: new Date(),
   }
 
-  const updatedConversation = await recordMessage(db, conversation, message)
+  const { conversation: updatedConversation, award } = await recordMessage(
+    db,
+    conversation,
+    message,
+  )
 
   // Minted here rather than left to Mongo, so the Echo mirror below has a key
   // on both the success and the duplicate path.
@@ -443,7 +463,7 @@ export async function sendPhrase(
     const existing = await db
       .collection<{ _id: ObjectId }>(COLLECTIONS.phraseCards)
       .findOne({ conversationId: conversation._id, term: phrase.term })
-    if (!existing) return { message, conversation: updatedConversation }
+    if (!existing) return { message, conversation: updatedConversation, award }
     phraseCardId = existing._id
   }
 
@@ -459,7 +479,7 @@ export async function sendPhrase(
     phrase,
   })
 
-  return { message, conversation: updatedConversation }
+  return { message, conversation: updatedConversation, award }
 }
 
 /**
@@ -573,8 +593,12 @@ export async function sendMeeting(
     createdAt: new Date(),
   }
 
-  const updatedConversation = await recordMessage(db, conversation, message)
-  return { message, conversation: updatedConversation }
+  const { conversation: updatedConversation, award } = await recordMessage(
+    db,
+    conversation,
+    message,
+  )
+  return { message, conversation: updatedConversation, award }
 }
 
 /**
@@ -657,8 +681,12 @@ export async function sendQuiz(
     createdAt: new Date(),
   }
 
-  const updatedConversation = await recordMessage(db, conversation, message)
-  return { message, conversation: updatedConversation }
+  const { conversation: updatedConversation, award } = await recordMessage(
+    db,
+    conversation,
+    message,
+  )
+  return { message, conversation: updatedConversation, award }
 }
 
 /**
@@ -755,8 +783,12 @@ export async function sendSticker(
     createdAt: new Date(),
   }
 
-  const updatedConversation = await recordMessage(db, conversation, message)
-  return { message, conversation: updatedConversation }
+  const { conversation: updatedConversation, award } = await recordMessage(
+    db,
+    conversation,
+    message,
+  )
+  return { message, conversation: updatedConversation, award }
 }
 
 /**
@@ -805,8 +837,12 @@ export async function sendLocation(
     createdAt: new Date(),
   }
 
-  const updatedConversation = await recordMessage(db, conversation, message)
-  return { message, conversation: updatedConversation }
+  const { conversation: updatedConversation, award } = await recordMessage(
+    db,
+    conversation,
+    message,
+  )
+  return { message, conversation: updatedConversation, award }
 }
 
 /**
@@ -882,8 +918,12 @@ export async function sendCorrection(
     .collection<Message>(COLLECTIONS.messages)
     .updateOne({ _id: target._id }, { $set: { correctedAt: message.createdAt } })
 
-  const updatedConversation = await recordMessage(db, conversation, message)
-  return { message, conversation: updatedConversation }
+  const { conversation: updatedConversation, award } = await recordMessage(
+    db,
+    conversation,
+    message,
+  )
+  return { message, conversation: updatedConversation, award }
 }
 
 /**
@@ -983,8 +1023,12 @@ export async function sendMediaMessage(
     db,
     attachments.map((item) => item.url),
   )
-  const updatedConversation = await recordMessage(db, conversation, message)
-  return { message, conversation: updatedConversation }
+  const { conversation: updatedConversation, award } = await recordMessage(
+    db,
+    conversation,
+    message,
+  )
+  return { message, conversation: updatedConversation, award }
 }
 
 /**
@@ -1080,8 +1124,12 @@ export async function forwardMessage(
     forwarded: true,
     createdAt: new Date(),
   }
-  const updatedConversation = await recordMessage(db, conversation, message)
-  return { message, conversation: updatedConversation }
+  const { conversation: updatedConversation, award } = await recordMessage(
+    db,
+    conversation,
+    message,
+  )
+  return { message, conversation: updatedConversation, award }
 }
 
 export interface MessagePage {

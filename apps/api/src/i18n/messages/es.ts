@@ -369,7 +369,7 @@ export const es: Localized<ServerMessages> = {
       limitReachedSubject: 'Estás chocando con los límites gratuitos',
 
       limitReachedBody:
-        'Has alcanzado un límite diario tres veces en los últimos días. Un plan los quita: más conversaciones, más traducciones, más adjuntos, cada día.',
+        'Has alcanzado un límite diario tres veces en los últimos días. Un plan los quita: más conversaciones y más traducciones, cada día.',
 
       limitReachedButton: 'Ver los planes',
 
@@ -631,5 +631,10 @@ export const es: Localized<ServerMessages> = {
     assistantError: 'Algo ha fallado por mi parte. Prueba a enviarlo otra vez en un momento.',
     assistantRefusal:
       'Con eso no puedo ayudarte. Si me he equivocado, en {email} te atiende una persona.',
+  },
+  feedbackReply: {
+    bug: '¡Hola! Gracias por avisarnos — lo hemos leído y lo estamos revisando.',
+    feature: '¡Hola! Gracias por la idea — la hemos leído y ya está en nuestra lista.',
+    issue: 'Puedes seguirlo aquí: {url}',
   },
 }

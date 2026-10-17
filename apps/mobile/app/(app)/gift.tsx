@@ -67,12 +67,12 @@ export default function GiftScreen() {
   // froze part-way on web — the number sat at forty percent opacity forever.
   useEffect(() => {
     if (phase !== 'revealed') return
-    pop.value = reduceMotion ? 1 : withSpring(1, { damping: 12, stiffness: 160 })
+    pop.set(reduceMotion ? 1 : withSpring(1, { damping: 12, stiffness: 160 }))
   }, [phase, reduceMotion, pop])
 
   const amountStyle = useAnimatedStyle(() => ({
-    opacity: pop.value,
-    transform: [{ scale: 0.6 + 0.4 * pop.value }],
+    opacity: pop.get(),
+    transform: [{ scale: 0.6 + 0.4 * pop.get() }],
   }))
 
   function open(): void {

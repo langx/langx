@@ -1232,9 +1232,8 @@ function escapeHtml(value: string): string {
  * The one email in this file with no locale. Every other one is read by the
  * person it is about; this one is read by us, and the repo is English.
  *
- * It is also where the whole thing is decided: nothing is stored, so this mail
- * is the report. `Reply-To` is set to the sender by the route, the issue link
- * is where the work is tracked, and the award link is where they are paid.
+ * `Reply-To` is set to the sender by the route, the issue is where the work is
+ * tracked, and the award link is where they are paid.
  */
 export function feedbackEmail(input: {
   kind: FeedbackKind
@@ -1246,6 +1245,13 @@ export function feedbackEmail(input: {
   awardUrl: string
   /** GitHub's own new-issue form, prefilled — see `githubIssue.ts`. */
   newIssueUrl: string
+  /** The issue `openIssue` filed, when it did. */
+  filedIssueUrl?: string
+  /**
+   * A token was set and opening the issue failed anyway. Said in the mail
+   * because the last time this failed it said nothing, for a day.
+   */
+  issueFailed?: boolean
 }): Email {
   const who = input.sender.handle ? `@${input.sender.handle}` : input.sender.userId
   const subject = `${input.kind === 'bug' ? 'Bug report' : 'Feature request'} from ${who}`
@@ -1260,8 +1266,19 @@ export function feedbackEmail(input: {
   )
   // Already percent-encoded, so `encodeURI` would double-encode it; the
   // ampersands between the query fields are what needs escaping in an href.
-  const issueLine = `<p>${button(escapeHtml(input.newIssueUrl), 'Open this as a GitHub issue')}</p>
+  const failedLine = input.issueFailed
+    ? '<p style="color: #b00020;"><strong>Opening the issue automatically failed</strong> — the reason is in the API log. Use the button below.</p>'
+    : ''
+  const issueLine = input.filedIssueUrl
+    ? `<p>Filed as <a href="${encodeURI(input.filedIssueUrl)}">${escapeHtml(input.filedIssueUrl)}</a>, labelled triage.</p>`
+    : `${failedLine}<p>${button(escapeHtml(input.newIssueUrl), 'Open this as a GitHub issue')}</p>
     <p style="color: #888; font-size: 12px;">Opens GitHub's own form with the title, body and label already in it. Nothing is posted until you press Submit, and you can edit it first.</p>`
+  const issueText = input.filedIssueUrl
+    ? [`Filed as ${input.filedIssueUrl} (triage)`]
+    : [
+        ...(input.issueFailed ? ['Opening the issue automatically failed — see the API log.'] : []),
+        `Open this as a GitHub issue: ${input.newIssueUrl}`,
+      ]
 
   return {
     subject,
@@ -1282,7 +1299,7 @@ export function feedbackEmail(input: {
       '',
       ...input.attachmentUrls,
       '',
-      `Open this as a GitHub issue: ${input.newIssueUrl}`,
+      ...issueText,
       `Confirm and set the reward: ${input.awardUrl}`,
       '',
       ...from,

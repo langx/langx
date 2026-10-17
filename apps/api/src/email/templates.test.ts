@@ -1,5 +1,7 @@
+import { PLAN_LIMITS, SUPPORTED_LOCALES, type Locale } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
-import { feedbackEmail, lifetimeGiftEmail } from './templates'
+import { translator } from '../i18n'
+import { feedbackEmail, lifetimeGiftEmail, promotionEmail } from './templates'
 
 describe('feedbackEmail', () => {
   const sender = { userId: 'user-1', handle: 'bugfinder', email: 'finder@example.com' }
@@ -41,6 +43,22 @@ describe('feedbackEmail', () => {
     // The `&` between the query fields is escaped in the href, so only the
     // plain-text body carries the URL character for character.
     expect(built.text).toContain(newIssueUrl)
+  })
+
+  it('names the filed issue instead of offering the form', () => {
+    const built = mail({ filedIssueUrl: 'https://github.com/langx/langx/issues/7' })
+    for (const body of [built.html, built.text]) {
+      expect(body).toContain('https://github.com/langx/langx/issues/7')
+      expect(body).not.toContain('issues/new')
+    }
+  })
+
+  it('says so when opening the issue failed, and still offers the form', () => {
+    const built = mail({ issueFailed: true })
+    for (const body of [built.html, built.text]) {
+      expect(body).toContain('Opening the issue automatically failed')
+      expect(body).toContain('issues/new')
+    }
   })
 
   it('offers to open the issue rather than opening one', () => {
@@ -97,5 +115,47 @@ describe('lifetimeGiftEmail', () => {
   it('is written in the reader’s language', () => {
     expect(mail('tr').subject).toBe('Pro, ömür boyu')
     expect(mail('tr').text).toContain('Tebrikler')
+  })
+})
+
+describe('promotionEmail: limitReached', () => {
+  /**
+   * "More attachments" was in the mail's promise and not in Pro: photos, video
+   * and voice messages have the same daily ceiling on both plans, a fair-use
+   * limit that refuses with a plain alert rather than the paywall. Each
+   * locale's word for it, so a translator re-adding the claim in one language
+   * is caught as well as the English.
+   */
+  const ATTACHMENTS: Record<Locale, RegExp> = {
+    en: /attachment/i,
+    tr: /\bek(ler)?\b/i,
+    es: /adjunto/i,
+    'pt-BR': /anexo/i,
+    fr: /pièces? jointes?/i,
+    de: /anh[aä]ng/i,
+    ru: /вложени/i,
+    ar: /مرفق/,
+  }
+  const mail = (locale: Locale) =>
+    promotionEmail(locale, 'limitReached', { unsubscribe: 'https://app.langx.io/unsubscribe' })
+
+  it.each(SUPPORTED_LOCALES)('does not promise attachments in %s', (locale) => {
+    // The mail is allowed to name attachments again the day a plan sells them.
+    if (PLAN_LIMITS.pro.mediaPer24h !== PLAN_LIMITS.free.mediaPer24h) return
+    const built = mail(locale)
+    for (const text of [built.subject, built.text]) {
+      expect(text).not.toMatch(ATTACHMENTS[locale])
+    }
+  })
+
+  it('still says what Pro really does give more of', () => {
+    // Both halves of the sentence, checked against the table it describes.
+    expect(PLAN_LIMITS.pro.initiationsPer24h).toBeNull()
+    expect(PLAN_LIMITS.free.initiationsPer24h).not.toBeNull()
+    expect(PLAN_LIMITS.pro.translationsPer24h).toBeGreaterThan(PLAN_LIMITS.free.translationsPer24h)
+    expect(translator('en')('email.promo.limitReachedBody')).toContain(
+      'more conversations and more translations',
+    )
+    expect(mail('en').text).toContain('more conversations and more translations')
   })
 })
