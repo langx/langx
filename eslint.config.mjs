@@ -6,8 +6,12 @@ import fontSizeAllowlist from './eslint.font-size-allowlist.mjs'
 const LITERAL_FONT_SIZE =
   'A literal fontSize. Take the size from the type ramp (theme.v3.type) so the ramp stays the one place a size is decided — see eslint.font-size-allowlist.mjs.'
 
-/** A path as a glob that matches only itself: `[id].tsx` is otherwise a character class. */
-const literalPath = (path) => path.replace(/[[\]()*?{}!+@]/g, '\\$&')
+/**
+ * A path as a glob that matches only itself: `[id].tsx` is otherwise a
+ * character class. Every glob metacharacter is escaped, the backslash first
+ * among them — an unescaped one would swallow the escape added after it.
+ */
+const literalPath = (path) => path.replace(/[\\[\]()*?{}!+@|]/g, '\\$&')
 
 export default tseslint.config(
   {
