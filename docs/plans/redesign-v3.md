@@ -123,6 +123,7 @@ Merge order: #1784 before any client PR that reads the award; #1785 before
 | 16 Oct 2026 | D3 — design language | (a) the app's palette may leave the website's; (b) `primary` and its text stay identical in both schemes; (c) yellow stays once per screen; (d) flat, hairlines, no cards and one blue may all go                                                                                                      |
 | 16 Oct 2026 | Name and version     | The redesign is called v3, and it ships as app version 3.0 once everything is ready (the version bump waits for that release round)                                                                                                                                                                    |
 | 16 Oct 2026 | Yearly plan display  | The billed yearly amount stays the biggest price; the per-month figure becomes a coloured badge under it ("$6.99 a month · 3 months free"). Because the yearly total is now the headline number, every yearly price is rounded to end in .99 in every storefront — done last, in the 3.0 release round |
+| 16 Oct 2026 | Pro translations     | Unlimited on Pro, everywhere; the free plan keeps its daily allowance                                                                                                                                                                                                                                  |
 
 ## Open questions
 
@@ -140,6 +141,16 @@ Merge order: #1784 before any client PR that reads the award; #1785 before
 Enabled on Behic's account and confirmed on 16 Oct 2026: Expo skills,
 frontend-design, mobile-app-design and design. The Expo and UXKIN MCP servers
 need sign-in and are not used; the skills work without them.
+
+## Decided, not yet built
+
+- **Pro translations become unlimited (Behic, 16 Oct 2026).** The free plan
+  keeps its daily allowance. Code: `PLAN_LIMITS` in `packages/shared`, the
+  server quota, the in-app copy (including `chat.translationQuota` from
+  #1789), and every copy listed in `docs/repo-map.md` (website plans data and
+  Terms §5, the GitBook pages, `docs/store/listing.md`, the store metadata).
+  The provider bills per character, so the PR states the fair-use guard it
+  keeps against automated abuse and how the Terms already cover it.
 
 ## Before the 3.0 release
 
