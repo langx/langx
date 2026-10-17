@@ -370,8 +370,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
    */
   inputEmpty: { height: 48 },
   /**
-   * The one yellow on the screen, standing on the same hard shadow `ui/Button`
-   * does: a shell in the shade, a face on it that drops on press. The negative
+   * The one yellow on the screen, standing on the current look's hard shadow,
+   * which `ui/Button` drew too until v3 made it a flat pill: a shell in the
+   * shade, a face on it that drops on press. The negative
    * margin lets the shade hang below the row the way `box-shadow` does, so it
    * is the face — not the shade — that lines up with the input's bottom.
    */

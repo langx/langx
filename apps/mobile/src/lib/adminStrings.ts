@@ -749,6 +749,8 @@ export const ADMIN = {
         callout: 'Callout',
         caption: 'Caption',
         label: 'Label',
+        button: 'Button',
+        buttonSmall: 'Button, small',
       },
       faces: {
         Nunito_900Black: 'Nunito 900',
@@ -775,6 +777,24 @@ export const ADMIN = {
       pressScale: (scale: number) => `Press scale · ${scale}`,
       timing: (name: string, ms: number) => `${name} · ${ms} ms`,
       spring: (name: string) => `spring · ${name}`,
+    },
+    buttons: {
+      title: 'Buttons',
+      hint: 'Flat pills in sentence case. Every target is at least 44pt on iOS and 48dp on Android. Tap the first one to run loading, then success.',
+      variants: 'Variants',
+      sizes: 'Sizes',
+      states: 'States',
+      iconButtons: 'Icon buttons',
+      pressable: 'PressableScale',
+      pressableHint:
+        'Press and hold: the face shrinks and the target does not. Under reduce motion it dims instead.',
+      /** "primary · 56": the variant or size, and the face height in points. */
+      spec: (name: string, face?: number) => (face ? `${name} · ${face}` : name),
+      loading: 'loading',
+      success: 'success',
+      disabled: 'disabled',
+      iconEnd: 'icon at the end',
+      wraps: 'a long label wraps rather than truncating',
     },
   },
 

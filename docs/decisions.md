@@ -789,6 +789,50 @@ a design gallery in the operator panel for dev builds, and a lint rule that
 refuses a literal `fontSize` in a screen or component outside a shrinking
 allowlist.
 
+## Buttons are flat pills in sentence case, and still press on `Animated`
+
+**17 October 2026.** The first piece of the current look that v3 replaces,
+and the one D4 swaps in place: every screen at once, in one pull request.
+The current look's button was a face standing on a hard 4px shadow that the
+press collapsed, with an upper-case, letter-spaced label. Both rules lived in
+`ui/Button.tsx`'s comments rather than here, and both go.
+
+- **Flat.** v3 draws no shadows (the entry above). The yellow still reads as
+  the thing to press because it is the only yellow on the screen, not because
+  it is the only thing standing up. The press is a 3% shrink on the motion
+  module's ease-out, and under reduce motion a dim instead.
+- **Sentence case, as written.** An upper-case transform is never done in
+  the app's language: iOS upper-cases with no locale at all, so Turkish labels
+  lost the dotted capital İ ("GIRIŞ YAP"), and Android upper-cases in the
+  phone's locale, so an English label on a Turkish phone gained one ("SİGN
+  İN"). Labels are now drawn exactly as the catalogue writes them.
+- **Targets.** Faces of 56, 52 and 44pt, the small one 48dp on Android. The
+  56pt face sits in a 60pt touch band — the footprint the old face and its
+  drop took, so no stack of buttons moved. A minimum height, not a height, and
+  no line limit: at the largest text sizes a long label wraps into a taller
+  pill instead of truncating.
+- **Variants.** `primary` is still the once-per-screen yellow. `blue` is new,
+  for the main action that does not commit. `secondary` becomes the outline in
+  the text colour: the old blue label is the blue the palette entry above
+  keeps off text on the dark ground. `neutral` now draws the same and stays
+  only as a name, so older call sites and open branches compile. `ink` is v3's
+  pill. `danger` becomes a red outline with a red label — never a fill, never
+  yellow — in v3's darker red, because the current look's red falls under
+  4.5:1 as text on white.
+- **Still `Animated`.** The welcome screen and every onboarding step render
+  `Button`, and the launch path stays on React Native's `Animated` (_The row
+  swipe runs on the UI thread, and Reanimated is the price_, and §7 of
+  `docs/plans/onboarding-funnel-scenarios.md`). To press by the same duration, curve and scale as a Reanimated screen
+  without evaluating Reanimated, the motion module's numbers moved to
+  `src/lib/theme/motionValues.ts`, which imports nothing, and `motion.ts`
+  re-exports them. The `collapsable={false}` wrappers stay; `PressableScale`
+  says which Fabric crash they prevent.
+- **`IconButton`** for every control that is only a glyph: the platform's
+  minimum target however small the glyph, and a screen-reader name the type
+  will not let it go without. Chats' star and Me's bell and menu moved onto it
+  here; the back arrows in `ScreenHeader` and `StepProgress` change the height
+  of every header, and move with the screens that own them.
+
 ## Client — one socket, opened in the tab layout
 
 The server already puts every client in a single per-user room, so a socket per

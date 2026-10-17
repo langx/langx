@@ -1,4 +1,3 @@
-import Feather from '@expo/vector-icons/Feather'
 import { profileQrUrl, profileUrl } from '@langx/shared'
 import * as Clipboard from 'expo-clipboard'
 import { Image } from 'expo-image'
@@ -14,7 +13,7 @@ import { track } from '../../src/lib/analytics'
 import { API_URL } from '../../src/lib/apiUrl'
 import { goBackTo } from '../../src/lib/navigation'
 import { shareLink } from '../../src/lib/share'
-import { makeStyles, radius, useTheme } from '../../src/lib/theme'
+import { makeStyles, radius } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -35,7 +34,6 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 export default function ShareProfileScreen() {
   useScreenInteractive()
   const styles = useStyles()
-  const { colors } = useTheme()
   const t = useT()
   const me = useMe()
 
@@ -102,7 +100,7 @@ export default function ShareProfileScreen() {
 
       <Button
         label={t('invite.share')}
-        icon={<Feather name="share" size={20} color={colors.primaryText} />}
+        icon="share"
         onPress={() => {
           track({ name: 'profile_shared', properties: { own: true, via: 'sheet' } })
           void shareLink({ message: t('me.shareMessage', { url }), url })
@@ -111,7 +109,7 @@ export default function ShareProfileScreen() {
       <Button
         label={t('invite.copy')}
         variant="secondary"
-        icon={<Feather name="copy" size={18} color={colors.accent} />}
+        icon="copy"
         onPress={async () => {
           await Clipboard.setStringAsync(url)
           track({ name: 'profile_shared', properties: { own: true, via: 'copy' } })

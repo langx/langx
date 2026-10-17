@@ -610,7 +610,7 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
           <Button
             label={following ? t('profile.following') : t('profile.follow')}
             variant="secondary"
-            icon={following ? <Feather name="check" size={16} color={colors.accent} /> : undefined}
+            icon={following ? 'check' : undefined}
             loading={setFollow.isPending}
             // No confirmation on unfollow. It is trivially reversible, and
             // `confirmAlert` is what blocking is for.
