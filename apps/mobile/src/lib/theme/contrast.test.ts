@@ -36,11 +36,16 @@ const PAIRS: Pair[] = [
   { text: 'fg', on: 'bg' },
   { text: 'fg', on: 'surface' },
   { text: 'fg', on: 'tabOn' },
+  // An initial on a hairline-grey circle; body text in an Echo-tinted card.
+  { text: 'fg', on: 'line' },
+  { text: 'fg', on: 'echoTint' },
   { text: 'muted', on: 'bg' },
   { text: 'muted', on: 'surface' },
   { text: 'muted', on: 'tabOn' },
   { text: 'echoText', on: 'echoTint' },
   { text: 'echoText', on: 'bg' },
+  // A translation, and Home's "cards ready", on the grey block.
+  { text: 'echoText', on: 'surface' },
   { text: 'pillText', on: 'pill' },
   { text: 'onYellow', on: 'yellow' },
   // The closest call on the list, at 4.50:1: white on the blue clears the bar
