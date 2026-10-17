@@ -58,14 +58,28 @@ export interface PlanLimits {
    */
   initiationsPer24h: Limit
   /**
-   * Machine translations per rolling 24 hours.
+   * Machine translations per rolling 24 hours: the free plan's allowance.
    *
-   * Finite on **every** tier, unlike the other quotas here. Translation is the
-   * one feature with a real per-request cost — Google bills per character — so
-   * "unlimited" was a promise made against somebody else's meter. A number
-   * high enough that ordinary use never meets it is honest; the word was not.
+   * Unlimited on Pro since 17 October 2026. It used to be finite on every tier,
+   * because Google bills per character and "unlimited" read as a promise made
+   * against somebody else's meter. What answers that now is
+   * `translationFairUsePer24h` below — a ceiling on scripts, the same for
+   * everyone — so this row can be what a plan sells, and Pro sells it whole.
    */
-  translationsPer24h: number
+  translationsPer24h: Limit
+  /**
+   * Machine translations per rolling 24 hours that anybody may ask for — the
+   * fair-use ceiling under "unlimited".
+   *
+   * The same number on every tier, like `mediaPer24h` and `echoCapturesPerDay`,
+   * and for their reason: translation is billed per character by somebody
+   * else, so this stops a script from turning Pro into a free translator. It
+   * sits above the free allowance, so only an unlimited account ever meets
+   * it, and far above what a person tapping Translate reaches in a day. **Not
+   * a paywall**: the refusal is a plain alert naming fair use, never the
+   * upgrade screen — there is nothing above it to sell.
+   */
+  translationFairUsePer24h: Limit
   /**
    * Corrections written per rolling 24 hours.
    *
@@ -116,8 +130,8 @@ export interface PlanLimits {
    * Cards a person may have read aloud by the server voice per rolling 24
    * hours — one unit per card, however many voices it is read in.
    *
-   * Finite on every tier, like `translationsPer24h`, and for a cousin of that
-   * reason: synthesis is CPU seconds on a machine of ours rather than a bill
+   * Finite on every tier, like `translationFairUsePer24h`, and for a cousin of
+   * that reason: synthesis is CPU seconds on a machine of ours rather than a bill
    * from someone else's, so the number is a ceiling on how long that machine
    * stays awake, not a meter on cost. A pack's readings do not count — they
    * were made once, offline, and a card started from a pack arrives with them.
@@ -291,6 +305,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
   free: {
     initiationsPer24h: 5,
     translationsPer24h: 20,
+    translationFairUsePer24h: 1000,
     correctionsPer24h: null,
     mediaPer24h: 500,
     echoNewCardsPerDay: null,
@@ -312,13 +327,15 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     maxNativeLanguages: 1,
   },
   /**
-   * What Polyglot was, under Fluent's price. Media and photos are the same
-   * number on both rows: they are a fair-use ceiling, not something a plan
-   * sells, and refusing either shows a plain alert rather than the paywall.
+   * What Polyglot was, under Fluent's price. Media, photos and the translation
+   * fair-use ceiling are the same number on both rows: they are a fair-use
+   * ceiling, not something a plan sells, and refusing any of them shows a
+   * plain alert rather than the paywall.
    */
   pro: {
     initiationsPer24h: null,
-    translationsPer24h: 1000,
+    translationsPer24h: null,
+    translationFairUsePer24h: 1000,
     correctionsPer24h: null,
     mediaPer24h: 500,
     echoNewCardsPerDay: null,
@@ -374,6 +391,7 @@ export const TIER_BADGES: Record<PlanTier, string | null> = {
 export const QUOTA_KINDS = [
   'initiations',
   'translations',
+  'translationFairUse',
   'corrections',
   'media',
   'echoCaptures',
@@ -387,6 +405,7 @@ export type QuotaKind = (typeof QUOTA_KINDS)[number]
 const QUOTA_LIMIT_KEY = {
   initiations: 'initiationsPer24h',
   translations: 'translationsPer24h',
+  translationFairUse: 'translationFairUsePer24h',
   corrections: 'correctionsPer24h',
   media: 'mediaPer24h',
   echoCaptures: 'echoCapturesPerDay',

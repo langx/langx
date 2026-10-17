@@ -1326,12 +1326,9 @@ export const ru: Localized<EnMessages> = {
     photosPermission: 'LangX нужен доступ, чтобы открыть галерею.',
     microphoneTitle: 'Микрофон',
     translationUnavailable: 'Перевод недоступен',
-    translationQuota: {
-      one: 'Лимит переводов на сегодня исчерпан. В Pro доступен {count} перевод в день.',
-      few: 'Лимит переводов на сегодня исчерпан. В Pro доступно {count} перевода в день.',
-      many: 'Лимит переводов на сегодня исчерпан. В Pro доступно {count} переводов в день.',
-      other: 'Лимит переводов на сегодня исчерпан. В Pro доступно {count} перевода в день.',
-    },
+    translationQuota: 'Лимит переводов на сегодня исчерпан. В Pro переводы безлимитные.',
+    translationFairUse:
+      'Достигнут сегодняшний лимит честного использования переводов — он защищает от автоматических запросов. Лимит освобождается в течение дня.',
     translationFailed: 'Сейчас не удалось перевести это сообщение.',
     wordTranslationFailed: 'Сейчас не удалось перевести это слово.',
     wordSeePlans: 'Посмотреть тарифы',
@@ -2808,8 +2805,8 @@ export const ru: Localized<EnMessages> = {
     deckExportBody:
       'Выгрузи сохранённые выражения одной беседы или все свои карточки в файл. Он открывается в Anki.',
     advancedFiltersBody: 'Поиск по конкретному полу и по городу.',
-    translationQuota: 'Переводи сколько нужно',
-    translationQuotaBody: '{count} переводов в день — намного больше, чем нужно для разговора.',
+    translationQuota: 'Безлимитные переводы',
+    translationQuotaBody: '{count} в день на бесплатном тарифе.',
     learningLanguages: 'Больше языков сразу',
     learningLanguagesBody: 'Учи {count} языка одновременно, а не один.',
     whoViewed: 'Кто тебя смотрел',

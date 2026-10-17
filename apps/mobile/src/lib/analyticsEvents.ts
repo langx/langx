@@ -738,12 +738,13 @@ export type AnalyticsEvent =
     }
   | {
       /**
-       * A fair-use ceiling was hit — today, the media quota on a chat send.
-       * It is a plain alert with nothing to buy, not a paywall, which is why
-       * it is its own event rather than a `paywall_viewed` source.
+       * A fair-use ceiling was hit — the media quota on a chat send, or the
+       * translation ceiling under Pro's unlimited translations. It is a plain
+       * alert with nothing to buy, not a paywall, which is why it is its own
+       * event rather than a `paywall_viewed` source.
        */
       name: 'fair_use_limit_hit'
-      properties: { kind: 'media' }
+      properties: { kind: 'media' | 'translations' }
     }
   | {
       /**

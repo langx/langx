@@ -286,6 +286,8 @@ export interface Profile {
     initiations: Date[]
     translations: Date[]
     media: Date[]
+    /** Optional for `echoCaptures`' reason; added on 17 October 2026. */
+    translationFairUse?: Date[]
     echoCaptures?: Date[]
     echoNewCards?: Date[]
     echoVoices?: Date[]

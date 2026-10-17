@@ -1263,11 +1263,10 @@ export const de: Localized<EnMessages> = {
     photosPermission: 'LangX braucht die Erlaubnis, deine Fotomediathek zu öffnen.',
     microphoneTitle: 'Mikrofon',
     translationUnavailable: 'Übersetzung nicht verfügbar',
-    translationQuota: {
-      one: 'Du hast das Übersetzungslimit für heute erreicht. Mit Pro ist {count} Übersetzung am Tag möglich.',
-      other:
-        'Du hast das Übersetzungslimit für heute erreicht. Mit Pro sind {count} Übersetzungen am Tag möglich.',
-    },
+    translationQuota:
+      'Du hast das Übersetzungslimit für heute erreicht. Mit Pro übersetzt du unbegrenzt.',
+    translationFairUse:
+      'Du hast das heutige Fair-Use-Limit für Übersetzungen erreicht. Es soll automatisierte Nutzung verhindern und wird im Laufe des Tages wieder frei.',
     translationFailed: 'Diese Nachricht konnte gerade nicht übersetzt werden.',
     wordTranslationFailed: 'Dieses Wort konnte gerade nicht übersetzt werden.',
     wordSeePlans: 'Tarife ansehen',
@@ -2605,8 +2604,8 @@ export const de: Localized<EnMessages> = {
     deckExportBody:
       'Exportiere die gespeicherten Wendungen eines Chats — oder alle, die du gespeichert hast — als Datei. Sie öffnet sich in Anki.',
     advancedFiltersBody: 'Nach einem bestimmten Geschlecht und nach Stadt suchen.',
-    translationQuota: 'Übersetze so viel du brauchst',
-    translationQuotaBody: '{count} Übersetzungen am Tag — weit mehr als ein Gespräch braucht.',
+    translationQuota: 'Unbegrenzte Übersetzungen',
+    translationQuotaBody: '{count} am Tag im kostenlosen Tarif.',
     learningLanguages: 'Mehr Sprachen gleichzeitig',
     learningLanguagesBody: 'Lerne {count} Sprachen nebeneinander statt einer.',
     whoViewed: 'Wer dich angesehen hat',

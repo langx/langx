@@ -1334,14 +1334,9 @@ export const ar: Localized<EnMessages> = {
     photosPermission: 'يحتاج LangX إلى إذن لفتح مكتبة صورك.',
     microphoneTitle: 'الميكروفون',
     translationUnavailable: 'الترجمة غير متاحة',
-    translationQuota: {
-      zero: 'بلغت حدّ الترجمات لهذا اليوم. يتيح Pro {count} ترجمة في اليوم.',
-      one: 'بلغت حدّ الترجمات لهذا اليوم. يتيح Pro ترجمة واحدة في اليوم.',
-      two: 'بلغت حدّ الترجمات لهذا اليوم. يتيح Pro ترجمتين في اليوم.',
-      few: 'بلغت حدّ الترجمات لهذا اليوم. يتيح Pro {count} ترجمات في اليوم.',
-      many: 'بلغت حدّ الترجمات لهذا اليوم. يتيح Pro {count} ترجمةً في اليوم.',
-      other: 'بلغت حدّ الترجمات لهذا اليوم. يتيح Pro {count} ترجمة في اليوم.',
-    },
+    translationQuota: 'بلغت حدّ الترجمات لهذا اليوم. الترجمات في Pro بلا حدود.',
+    translationFairUse:
+      'بلغت حد الاستخدام العادل للترجمات لهذا اليوم، وهو موجود لمنع الاستخدام الآلي. ويتجدّد على مدار اليوم.',
     translationFailed: 'تعذّرت ترجمة هذه الرسالة الآن.',
     wordTranslationFailed: 'تعذّرت ترجمة هذه الكلمة الآن.',
     wordSeePlans: 'شاهد الخطط',
@@ -2905,8 +2900,8 @@ export const ar: Localized<EnMessages> = {
     deckExportBody:
       'صدّر العبارات المحفوظة في محادثة، أو كل البطاقات التي حفظتها، كملف. يفتح في Anki.',
     advancedFiltersBody: 'ابحث عن جنس محدد، وحسب المدينة.',
-    translationQuota: 'ترجم بقدر ما تحتاج',
-    translationQuotaBody: '{count} ترجمة في اليوم — أكثر بكثير مما تستهلكه محادثة.',
+    translationQuota: 'ترجمات بلا حدود',
+    translationQuotaBody: '{count} يوميًا في الخطة المجانية.',
     learningLanguages: 'لغات أكثر في وقت واحد',
     learningLanguagesBody: 'تعلّم {count} لغات جنبًا إلى جنب، لا لغة واحدة.',
     whoViewed: 'من زارك',

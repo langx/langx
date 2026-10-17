@@ -1375,10 +1375,10 @@ export const en = {
     photosPermission: 'LangX needs permission to open your photo library.',
     microphoneTitle: 'Microphone',
     translationUnavailable: 'Translation unavailable',
-    translationQuota: {
-      one: 'You’ve reached today’s translation limit. Pro allows {count} translation a day.',
-      other: 'You’ve reached today’s translation limit. Pro allows {count} translations a day.',
-    },
+    translationQuota: 'You’ve reached today’s translation limit. Pro has unlimited translations.',
+    /** The ceiling every plan shares, under Pro's unlimited: never followed by the paywall. */
+    translationFairUse:
+      'You’ve reached today’s fair-use limit for translations, which is there to stop automated use. It frees up again through the day.',
     translationFailed: 'Could not translate that message right now.',
     wordTranslationFailed: 'Could not translate that word right now.',
     wordSeePlans: 'See the plans',
@@ -2778,8 +2778,8 @@ export const en = {
     deckExportBody:
       'Export one conversation’s saved phrases, or every card you have saved, as a file. It opens in Anki.',
     advancedFiltersBody: 'Search for a specific gender, and by city.',
-    translationQuota: 'Translate as much as you need',
-    translationQuotaBody: '{count} translations a day — far more than a conversation uses.',
+    translationQuota: 'Unlimited translations',
+    translationQuotaBody: '{count} a day on the free plan.',
     learningLanguages: 'More languages at once',
     learningLanguagesBody: 'Learn {count} languages side by side, not one.',
     whoViewed: 'Who viewed you',

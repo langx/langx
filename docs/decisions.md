@@ -2274,6 +2274,8 @@ the purge only began sweeping `posts/{userId}/` on 27 September 2026.)_
 > Polyglot were merged into one plan on 28 September 2026; what follows is the
 > record of the two-plan design.
 
+> **Amended 17 October 2026 — see _Pro's translations are unlimited, under a fair-use ceiling_ below.**
+
 `pro` and `pro_plus` are what the code calls them and what RevenueCat calls
 them; **Fluent** and **Polyglot** are what a person sees. The two are separate
 on purpose — a RevenueCat entitlement identifier cannot be renamed after it is
@@ -2339,6 +2341,49 @@ None of this introduced a `tier > 'free'` comparison. `hasFeature`,
 `tierUnlocking` and `effectivePlanTier` read the real table and were not
 touched — which is the property that let two capabilities change tier without a
 single call site moving with them.
+
+## Pro's translations are unlimited, under a fair-use ceiling
+
+**17 October 2026.** This reverses _Translation has a number on every tier_ in
+the entry above — the bullet that took "unlimited translation" out of the plan
+and gave the paid tiers a daily number instead, which Pro inherited as
+Polyglot's 1,000 (_One plan: Pro_). Behic's decision of 16 October 2026: Pro's
+translations are unlimited. The free plan keeps its 20 a day.
+
+The reason the number existed has not gone away. Google bills per character,
+and the bullet refused to sell a word that would have to be quietly
+rate-limited the first time somebody scripted it. So the word now stands on a
+ceiling that is said out loud:
+
+- **`translationsPer24h` is `null` on Pro**, the way `initiationsPer24h` is.
+  Nothing writes Pro's daily bucket any more, `/me/quota` reports it
+  unlimited, and no Pro account is refused for it — including one that spent a
+  whole day of the old allowance just before the deploy.
+- **`translationFairUsePer24h` is the ceiling**: 1,000 misses per rolling 24
+  hours, the same on every row, like `mediaPer24h` and `echoCapturesPerDay`.
+  `rules.test.ts` pins the sameness and that it sits above the free allowance,
+  so only an unlimited account ever reaches it. It has its own bucket,
+  `quota.translationFairUse`, because Pro's daily one writes nothing; a cache
+  hit costs neither. The number is Pro's old daily one on purpose: the most a
+  scripted account can bill in a day does not move, and a person would have to
+  translate a message every half-minute for eight hours to meet it. Changing
+  it is one number in `limits.ts`.
+- **Its refusal is fair use, never a sale.** The server marks it
+  `limit: 'translationFairUsePer24h'` beside `QUOTA_EXCEEDED`, as the post cap
+  is marked, and the app answers with a plain alert that names fair use and
+  offers nothing (`limitCopy.ts`). The free allowance's refusal carries no mark
+  and still leads a free account to the plans. Refusals of both kinds land in
+  `quotaRefusalKinds`, so the operator panel shows whether the ceiling ever
+  bites.
+- **The copy says "unlimited translations"**: the chat refusal, the paywall
+  row — whose body now names the free plan's allowance, as the chat row names
+  its own — Settings → Plan, the store listings, langx.io and the GitBook
+  docs. The Terms (§5) name the ceiling, as they name the media one.
+
+A build whose bundled copy predates this keeps quoting a number until its OTA
+arrives; the server stops refusing Pro for the allowance at once, and such a
+build meets the ceiling at the count its old Pro limit stood at, worded as it
+worded that limit.
 
 ## Known risks
 
