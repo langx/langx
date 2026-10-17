@@ -9,6 +9,7 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated'
+import { TIMING } from '../../lib/theme/motion'
 
 /**
  * The story's four movements, from the Claude Design motion spec: text rises,
@@ -19,12 +20,10 @@ import Animated, {
  * All four start from an effect, after the view exists. Started during the
  * first render, a Reanimated animation on the web build can freeze part-way —
  * `gift.tsx` lost a day to exactly that.
+ *
+ * The rise and the pop are the app's `TIMING.rise` and `TIMING.pop`: the
+ * design's curves were first written here, and now live in `lib/theme/motion`.
  */
-
-/** The design's rise curve: fast out of the gate, long soft landing. */
-const EASE_RISE = Easing.bezier(0.2, 0.8, 0.2, 1)
-/** A small overshoot, for the one thing on the story that is "thrown". */
-const EASE_POP = Easing.bezier(0.34, 1.56, 0.64, 1)
 
 /** The stagger of a slide's four lines, in ms, as designed. */
 export const RISE_DELAYS = [80, 220, 400, 600] as const
@@ -47,7 +46,7 @@ export function Rise({
       shown.set(1)
       return
     }
-    shown.set(withDelay(delay, withTiming(1, { duration: 700, easing: EASE_RISE })))
+    shown.set(withDelay(delay, withTiming(1, TIMING.rise)))
     return () => cancelAnimation(shown)
   }, [delay, reduce, shown])
   const animated = useAnimatedStyle(() => ({
@@ -121,7 +120,7 @@ export function Pop({
       shown.set(1)
       return
     }
-    shown.set(withDelay(delay, withTiming(1, { duration: 900, easing: EASE_POP })))
+    shown.set(withDelay(delay, withTiming(1, TIMING.pop)))
     return () => cancelAnimation(shown)
   }, [delay, reduce, shown])
   const animated = useAnimatedStyle(() => ({

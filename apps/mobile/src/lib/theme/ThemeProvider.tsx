@@ -9,8 +9,10 @@ import {
   palettes,
   radius,
   spacing,
+  v3,
   type ColorScheme,
   type ThemeColors,
+  type V3Tokens,
 } from './tokens'
 
 /**
@@ -35,6 +37,8 @@ export interface Theme {
   radius: typeof radius
   font: typeof font
   layout: typeof layout
+  /** The redesign's tokens, beside the current look's until each screen moves. */
+  v3: V3Tokens
 }
 
 interface ThemeContextValue {
@@ -44,7 +48,7 @@ interface ThemeContextValue {
 }
 
 function buildTheme(scheme: ColorScheme): Theme {
-  return { scheme, ...palettes[scheme], spacing, radius, font, layout }
+  return { scheme, ...palettes[scheme], spacing, radius, font, layout, v3: v3[scheme] }
 }
 
 /**
