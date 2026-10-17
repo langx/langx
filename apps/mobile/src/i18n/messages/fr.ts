@@ -2648,7 +2648,7 @@ export const fr: Localized<EnMessages> = {
       other: 'Et {count} de plus',
     },
     showLess: 'Afficher moins',
-    billedYearly: '{price} facturé à l’année',
+    pricePerPeriod: '{price} {period}',
     billedMonthly: 'Facturé chaque mois',
     lifetimeDetail: 'Un seul paiement, sans renouvellement',
     timelineTitle: 'Comment fonctionne ton essai gratuit',

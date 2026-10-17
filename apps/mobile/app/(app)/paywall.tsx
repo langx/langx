@@ -34,11 +34,11 @@ import { Screen } from '../../src/components/ui/Screen'
 import { Skeleton } from '../../src/components/ui/Skeleton'
 import { track } from '../../src/lib/analytics'
 import { PAYWALL_SOURCES, type PaywallSource } from '../../src/lib/analyticsEvents'
+import { emphasise, emphasisRuns } from '../../src/lib/emphasis'
 import { selection } from '../../src/lib/haptics'
 import { goBackTo } from '../../src/lib/navigation'
 import { paywallOffersState, restoreResult } from '../../src/lib/paywallAnalytics'
-import { perMonthPriceString } from '../../src/lib/perMonthPrice'
-import { yearlyFreeMonths, yearlySavingPercent } from '../../src/lib/planSaving'
+import { planPrice } from '../../src/lib/planPrice'
 import {
   getOffers,
   isPurchasesAvailable,
@@ -423,12 +423,7 @@ export default function PaywallScreen() {
   const offer = tierOffers.find((candidate) => candidate.period === period)
   // What the yearly saving is measured against. Taken from the offers the store
   // just returned rather than from a constant — `planSaving.ts` says why.
-  const yearly = tierOffers.find((candidate) => candidate.period === 'yearly')
   const monthly = tierOffers.find((candidate) => candidate.period === 'monthly')
-  // Months first — "3 months free" — and the percentage only when a year gives
-  // away less than one whole month.
-  const freeMonths = yearly ? yearlyFreeMonths(yearly, monthly) : null
-  const saving = yearly && freeMonths === null ? yearlySavingPercent(yearly, monthly) : null
 
   const boughtOn = platformOfStore(held.store)
   const gift = tier !== 'free' && held.store === 'gift' && Boolean(held.expiresAt)
@@ -509,7 +504,12 @@ export default function PaywallScreen() {
    * directly above the button that starts it, not only in the small print.
    * App Review guideline 3.1.2 asks for the trial's own terms next to the
    * trial, and for the renewal price next to any subscription.
+   *
+   * The charge and its period are set strong inside the line, so on the one
+   * line that names the free week, the billed amount still outranks it.
    */
+  const billedPrice = offer ? emphasise(offer.priceString) : ''
+  const billedPeriod = emphasise(periodPhrase)
   const terms =
     offer && !isCurrent
       ? trialDays !== null
@@ -517,16 +517,16 @@ export default function PaywallScreen() {
             trialWeeks !== null
               ? t('paywall.trialWeeks', {
                   count: trialWeeks,
-                  price: offer.priceString,
-                  period: periodPhrase,
+                  price: billedPrice,
+                  period: billedPeriod,
                 })
               : t('paywall.trialTerms', {
                   count: trialDays,
-                  price: offer.priceString,
-                  period: periodPhrase,
+                  price: billedPrice,
+                  period: billedPeriod,
                 })
           } · ${t('paywall.cancelAnytime')}`
-        : t('paywall.renewsSummary', { price: offer.priceString, period: periodPhrase })
+        : t('paywall.renewsSummary', { price: billedPrice, period: billedPeriod })
       : null
 
   const hasTopLines = refused !== null || remaining === 0 || tier !== 'free'
@@ -686,7 +686,7 @@ export default function PaywallScreen() {
                         key={candidate}
                         selected={candidate === period}
                         onSelect={() => pick(candidate)}
-                        {...optionCopy(option, t, { freeMonths, saving })}
+                        {...optionCopy(option, monthly, t)}
                       />
                     )
                   })}
@@ -743,7 +743,19 @@ export default function PaywallScreen() {
               {notice}
             </Text>
           ) : null}
-          {terms ? <Text style={styles.terms}>{terms}</Text> : null}
+          {terms ? (
+            <Text style={styles.terms}>
+              {emphasisRuns(terms).map((run, index) =>
+                run.strong ? (
+                  <Text key={index} style={styles.termsBilled}>
+                    {run.text}
+                  </Text>
+                ) : (
+                  run.text
+                ),
+              )}
+            </Text>
+          ) : null}
           <Button
             label={
               // The plan held, said plainly, rather than a greyed-out "Start".
@@ -782,51 +794,47 @@ export default function PaywallScreen() {
 }
 
 /**
- * What one plan card says. Every card quotes a month on the right, so the two
- * compare at a glance, and the charge itself underneath in the store's words.
+ * What one plan card says. Every card leads with what the store will charge
+ * and its period; a yearly card says what that comes to a month, and what it
+ * saves, beneath it and smaller (`planPrice`).
  *
- * A yearly plan's month is truncated so the `.99` the price was chosen for
- * survives — see `perMonthPriceString` — with the store's rounded text only as
- * a fallback, and the full yearly charge as the card's own detail line.
+ * The other periods keep a line saying how the charge recurs, so every card
+ * reads the same way: title, one quiet line, the charge on the end.
  */
 function optionCopy(
   offer: PurchaseOffer,
+  monthly: PurchaseOffer | undefined,
   t: ReturnType<typeof useT>,
-  saving: { freeMonths: number | null; saving: number | null },
 ): Omit<Parameters<typeof PlanOption>[0], 'selected' | 'onSelect'> {
-  const title = t(PERIOD_LABEL[offer.period])
-  if (offer.period === 'yearly') {
-    const perMonth =
-      perMonthPriceString(offer.priceString, offer.price) ?? offer.perMonthPriceString ?? null
-    const price = perMonth ?? offer.priceString
-    const unit = t(perMonth ? 'paywall.perMonth' : 'paywall.perYear')
-    const detail = t('paywall.billedYearly', { price: offer.priceString })
-    const badge =
-      saving.freeMonths !== null
-        ? t('paywall.freeMonths', { count: saving.freeMonths })
-        : saving.saving !== null
-          ? t('paywall.savePercent', { percent: saving.saving })
-          : null
-    return {
-      title,
-      price,
-      unit,
-      detail,
-      badge,
-      accessibilityLabel: [title, `${price} ${unit}`, detail, badge]
-        .filter((part): part is string => Boolean(part))
-        .join('. '),
-    }
-  }
-  const unit = t(PERIOD_PHRASE[offer.period])
-  const detail = t(offer.period === 'monthly' ? 'paywall.billedMonthly' : 'paywall.lifetimeDetail')
+  const { billed, period, perMonth, saving } = planPrice(offer, monthly)
+  const title = t(PERIOD_LABEL[period])
+  const unit = t(PERIOD_PHRASE[period])
+  const detail =
+    period === 'yearly'
+      ? perMonth !== null
+        ? t('paywall.pricePerPeriod', { price: perMonth, period: t('paywall.perMonth') })
+        : null
+      : t(period === 'monthly' ? 'paywall.billedMonthly' : 'paywall.lifetimeDetail')
+  const badge =
+    saving === null
+      ? null
+      : 'months' in saving
+        ? t('paywall.freeMonths', { count: saving.months })
+        : t('paywall.savePercent', { percent: saving.percent })
   return {
     title,
-    price: offer.priceString,
+    price: billed,
     unit,
     detail,
-    badge: null,
-    accessibilityLabel: [title, `${offer.priceString} ${unit}`, detail].join('. '),
+    badge,
+    accessibilityLabel: [
+      title,
+      t('paywall.pricePerPeriod', { price: billed, period: unit }),
+      detail,
+      badge,
+    ]
+      .filter((part): part is string => Boolean(part))
+      .join('. '),
   }
 }
 
@@ -930,8 +938,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   },
   moreText: { color: colors.accent, fontSize: 15, fontWeight: '600' },
 
-  // Room above the first card for the badge that straddles its edge.
-  plans: { gap: spacing.md, paddingTop: spacing.sm },
+  plans: { gap: spacing.md },
   options: { gap: spacing.lg },
   unavailable: { color: colors.textMuted, fontSize: 14, lineHeight: 22 },
 
@@ -952,4 +959,5 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   footerColumn: { gap: spacing.md, maxWidth: COLUMN, width: '100%' },
   notice: { color: colors.danger, fontSize: 14, lineHeight: 20, textAlign: 'center' },
   terms: { color: colors.textMuted, fontSize: 13, lineHeight: 18, textAlign: 'center' },
+  termsBilled: { color: colors.text, fontWeight: '700' },
 }))

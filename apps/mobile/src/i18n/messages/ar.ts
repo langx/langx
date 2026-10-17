@@ -2989,7 +2989,7 @@ export const ar: Localized<EnMessages> = {
       other: 'و{count} ميزة أخرى',
     },
     showLess: 'عرض أقل',
-    billedYearly: '{price} تُحصَّل سنويًا',
+    pricePerPeriod: '{price} {period}',
     billedMonthly: 'تُحصَّل شهريًا',
     lifetimeDetail: 'دفعة واحدة، دون تجديد',
     timelineTitle: 'كيف تعمل تجربتك المجانية',
