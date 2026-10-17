@@ -1223,8 +1223,11 @@ export const tr: Localized<EnMessages> = {
     microphoneTitle: 'Mikrofon',
     translationUnavailable: 'Çeviri kullanılamıyor',
     translationQuota: 'Bugünkü çeviri sınırına ulaştın. Pro ile sınırsız çeviri yapabilirsin.',
-    translationFairUse:
-      'Bugünkü çeviri adil kullanım sınırına ulaştın. Bu sınır otomatik kullanımı engellemek için var ve gün içinde yeniden açılıyor.',
+    translationFairUse: {
+      one: 'Çeviri için adil kullanım sınırına ulaştın. Bu sınır otomatik kullanımı engellemek için var ve {count} saat içinde sıfırlanıyor.',
+      other:
+        'Çeviri için adil kullanım sınırına ulaştın. Bu sınır otomatik kullanımı engellemek için var ve {count} saat içinde sıfırlanıyor.',
+    },
     translationFailed: 'Bu mesaj şu anda çevrilemedi.',
     wordTranslationFailed: 'Bu kelime şu anda çevrilemedi.',
     wordSeePlans: 'Planlara bak',

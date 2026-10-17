@@ -1234,8 +1234,11 @@ export const es: Localized<EnMessages> = {
     translationUnavailable: 'Traducción no disponible',
     translationQuota:
       'Has llegado al límite de traducciones de hoy. Con Pro, las traducciones son ilimitadas.',
-    translationFairUse:
-      'Has llegado al límite de uso justo de traducciones de hoy, que existe para frenar el uso automatizado. Se va liberando a lo largo del día.',
+    translationFairUse: {
+      one: 'Has alcanzado el límite de uso justo de traducciones, que existe para frenar el uso automatizado. Se restablece en un plazo de {count} hora.',
+      other:
+        'Has alcanzado el límite de uso justo de traducciones, que existe para frenar el uso automatizado. Se restablece en un plazo de {count} horas.',
+    },
     translationFailed: 'No se pudo traducir ese mensaje ahora mismo.',
     wordTranslationFailed: 'No se pudo traducir esa palabra ahora mismo.',
     wordSeePlans: 'Ver los planes',

@@ -1376,9 +1376,16 @@ export const en = {
     microphoneTitle: 'Microphone',
     translationUnavailable: 'Translation unavailable',
     translationQuota: 'You’ve reached today’s translation limit. Pro has unlimited translations.',
-    /** The ceiling every plan shares, under Pro's unlimited: never followed by the paywall. */
-    translationFairUse:
-      'You’ve reached today’s fair-use limit for translations, which is there to stop automated use. It frees up again through the day.',
+    /**
+     * The ceiling every plan shares, under Pro's unlimited. Says "fair use" and
+     * when it resets — `{count}` is the rolling window in hours — and never a
+     * plan or a price: it is not followed by the paywall.
+     */
+    translationFairUse: {
+      one: 'You’ve reached the fair-use limit for translations, which is there to stop automated use. It resets within {count} hour.',
+      other:
+        'You’ve reached the fair-use limit for translations, which is there to stop automated use. It resets within {count} hours.',
+    },
     translationFailed: 'Could not translate that message right now.',
     wordTranslationFailed: 'Could not translate that word right now.',
     wordSeePlans: 'See the plans',

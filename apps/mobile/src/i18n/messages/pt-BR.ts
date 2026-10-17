@@ -1228,8 +1228,11 @@ export const ptBR: Localized<EnMessages> = {
     translationUnavailable: 'Tradução indisponível',
     translationQuota:
       'Você atingiu o limite de traduções de hoje. Com o Pro, as traduções são ilimitadas.',
-    translationFairUse:
-      'Você atingiu o limite de uso justo de traduções de hoje, que existe para impedir o uso automatizado. Ele vai sendo liberado ao longo do dia.',
+    translationFairUse: {
+      one: 'Você atingiu o limite de uso justo de traduções, que existe para impedir o uso automatizado. Ele é restabelecido em até {count} hora.',
+      other:
+        'Você atingiu o limite de uso justo de traduções, que existe para impedir o uso automatizado. Ele é restabelecido em até {count} horas.',
+    },
     translationFailed: 'Não deu para traduzir essa mensagem agora.',
     wordTranslationFailed: 'Não deu para traduzir essa palavra agora.',
     wordSeePlans: 'Ver os planos',

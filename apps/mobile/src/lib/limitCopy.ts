@@ -1,4 +1,10 @@
-import { isPaidTier, TOKEN_RULES, type PlanLimits, type PlanTier } from '@langx/shared'
+import {
+  isPaidTier,
+  QUOTA_WINDOW_MS,
+  TOKEN_RULES,
+  type PlanLimits,
+  type PlanTier,
+} from '@langx/shared'
 import type { TranslateFn } from '../i18n/runtime'
 
 /**
@@ -36,12 +42,17 @@ export function isTranslationFairUse(error: unknown): boolean {
   return (error as { limit?: unknown }).limit === TRANSLATION_FAIR_USE
 }
 
+const HOUR_MS = 60 * 60 * 1000
+
 /**
  * Said when a translation is refused: the free allowance, which Pro removes,
- * or the fair-use ceiling, which is the same for everyone and names no plan.
+ * or the fair-use ceiling, which is the same for everyone, names no plan, and
+ * says when it resets — the rolling window the server counts in, in hours.
  */
 export function translationQuotaText(t: TranslateFn, fairUse: boolean): string {
-  return t(fairUse ? 'chat.translationFairUse' : 'chat.translationQuota')
+  return fairUse
+    ? t('chat.translationFairUse', { count: QUOTA_WINDOW_MS / HOUR_MS })
+    : t('chat.translationQuota')
 }
 
 /** The streak page's note on what a freeze and a repair each cover. */

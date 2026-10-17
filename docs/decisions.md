@@ -2370,8 +2370,10 @@ ceiling that is said out loud:
   it is one number in `limits.ts`.
 - **Its refusal is fair use, never a sale.** The server marks it
   `limit: 'translationFairUsePer24h'` beside `QUOTA_EXCEEDED`, as the post cap
-  is marked, and the app answers with a plain alert that names fair use and
-  offers nothing (`limitCopy.ts`). The free allowance's refusal carries no mark
+  is marked, and the app answers with a plain alert that says "fair use" and
+  when it resets — within the rolling window, quoted in hours from
+  `QUOTA_WINDOW_MS` — and never mentions buying or opens the paywall
+  (`limitCopy.ts`). The free allowance's refusal carries no mark
   and still leads a free account to the plans. Refusals of both kinds land in
   `quotaRefusalKinds`, so the operator panel shows whether the ceiling ever
   bites.
@@ -2379,6 +2381,14 @@ ceiling that is said out loud:
   row — whose body now names the free plan's allowance, as the chat row names
   its own — Settings → Plan, the store listings, langx.io and the GitBook
   docs. The Terms (§5) name the ceiling, as they name the media one.
+
+**Behic's decision of 17 October 2026, on the ceiling:** it stays at 1,000
+translations per rolling 24 hours; the app keeps saying "unlimited
+translations" and quotes no number; and the number is disclosed in the Terms
+(§5), which say plainly that Pro has unlimited translations subject to a
+fair-use limit of 1,000 per 24 hours to prevent automated abuse, that reaching
+it shows a notice, and that it resets after 24 hours. Raising or lowering it is
+still the one number in `limits.ts` — and the Terms with it.
 
 A build whose bundled copy predates this keeps quoting a number until its OTA
 arrives; the server stops refusing Pro for the allowance at once, and such a

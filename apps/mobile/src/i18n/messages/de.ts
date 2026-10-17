@@ -1265,8 +1265,11 @@ export const de: Localized<EnMessages> = {
     translationUnavailable: 'Übersetzung nicht verfügbar',
     translationQuota:
       'Du hast das Übersetzungslimit für heute erreicht. Mit Pro übersetzt du unbegrenzt.',
-    translationFairUse:
-      'Du hast das heutige Fair-Use-Limit für Übersetzungen erreicht. Es soll automatisierte Nutzung verhindern und wird im Laufe des Tages wieder frei.',
+    translationFairUse: {
+      one: 'Du hast das Fair-Use-Limit für Übersetzungen erreicht. Es soll automatisierte Nutzung verhindern und wird innerhalb von {count} Stunde zurückgesetzt.',
+      other:
+        'Du hast das Fair-Use-Limit für Übersetzungen erreicht. Es soll automatisierte Nutzung verhindern und wird innerhalb von {count} Stunden zurückgesetzt.',
+    },
     translationFailed: 'Diese Nachricht konnte gerade nicht übersetzt werden.',
     wordTranslationFailed: 'Dieses Wort konnte gerade nicht übersetzt werden.',
     wordSeePlans: 'Tarife ansehen',

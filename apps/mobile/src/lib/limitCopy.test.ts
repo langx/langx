@@ -2,6 +2,7 @@ import {
   effectivePlanTier,
   isRepairable,
   PLAN_LIMITS,
+  QUOTA_WINDOW_MS,
   shiftDayKey,
   SUPPORTED_LOCALES,
   TOKEN_RULES,
@@ -45,6 +46,24 @@ const fairUseRefusal = {
 /** What it sends at the free plan's allowance. */
 const allowanceRefusal = { code: 'QUOTA_EXCEEDED', retryAt: '2026-10-18T12:00:00.000Z' }
 
+/** The rolling window the server counts in, as the fair-use alert quotes it. */
+const windowHours = QUOTA_WINDOW_MS / (60 * 60 * 1000)
+
+/**
+ * The word each locale uses for fair use — the same one its media alert
+ * (`chat.mediaQuota`) already uses, so the two ceilings read as one idea.
+ */
+const FAIR_USE: Record<Locale, RegExp> = {
+  en: /fair-use/,
+  tr: /adil kullanım/,
+  es: /uso justo/,
+  'pt-BR': /uso justo/,
+  fr: /usage raisonnable/,
+  de: /Fair-Use/,
+  ru: /честного использования/,
+  ar: /الاستخدام العادل/,
+}
+
 describe.each(SUPPORTED_LOCALES)('%s', (locale) => {
   const t = createTranslate(locale)
 
@@ -52,9 +71,21 @@ describe.each(SUPPORTED_LOCALES)('%s', (locale) => {
     const allowance = translationQuotaText(t, false)
     const fairUse = translationQuotaText(t, true)
     expect(allowance).toBe(t('chat.translationQuota'))
-    expect(fairUse).toBe(t('chat.translationFairUse'))
+    expect(fairUse).toBe(t('chat.translationFairUse', { count: windowHours }))
     expect(fairUse).not.toBe(allowance)
     for (const text of [allowance, fairUse]) expect(text).not.toMatch(/[{}]/)
+  })
+
+  /**
+   * Behic's call of 17 October 2026: the alert says fair use and when it
+   * resets, and never sells — the ceiling is the same on every plan, so there
+   * is nothing to buy past it.
+   */
+  it('names fair use and when it resets, and no plan or purchase', () => {
+    const fairUse = translationQuotaText(t, true)
+    expect(fairUse).toMatch(FAIR_USE[locale])
+    expect(fairUse).toContain(String(windowHours))
+    expect(fairUse).not.toMatch(/\bPro\b|LangX/)
   })
 
   it('quotes the repair window the server enforces', () => {
@@ -106,8 +137,10 @@ describe('english', () => {
 
   it('calls the ceiling fair use, and names no plan in it', () => {
     const text = translationQuotaText(t, true)
-    expect(text).toMatch(/fair-use/)
-    expect(text).not.toMatch(/\bPro\b|plan|upgrade/i)
+    expect(text).toBe(
+      `You’ve reached the fair-use limit for translations, which is there to stop automated use. It resets within ${windowHours} hours.`,
+    )
+    expect(text).not.toMatch(/\bPro\b|plan|upgrade|buy|subscri/i)
   })
 })
 
@@ -117,6 +150,8 @@ describe('the count inflects where the language needs it', () => {
     expect(t('streak.protectBody', { count: 1 })).toContain('1 дня')
     expect(t('streak.protectBody', { count: 3 })).toContain('3 дней')
     expect(t('streak.protectBody', { count: 14 })).toContain('14 дней')
+    expect(t('chat.translationFairUse', { count: 1 })).toContain('в течение 1 часа')
+    expect(t('chat.translationFairUse', { count: 24 })).toContain('в течение 24 часов')
   })
 
   it('arabic has a form for each band', () => {
@@ -125,11 +160,14 @@ describe('the count inflects where the language needs it', () => {
     expect(t('streak.protectBody', { count: 2 })).toContain('خلال يومين')
     expect(t('streak.protectBody', { count: 5 })).toContain('5 أيام')
     expect(t('streak.protectBody', { count: 14 })).toContain('14 يومًا')
+    expect(t('chat.translationFairUse', { count: 2 })).toContain('خلال ساعتين')
+    expect(t('chat.translationFairUse', { count: 24 })).toContain('خلال 24 ساعةً')
   })
 
   it('english says "1 day", not "1 days"', () => {
     const t = createTranslate('en')
     expect(t('streak.protectBody', { count: 1 })).toContain('up to 1 day after')
+    expect(t('chat.translationFairUse', { count: 1 })).toContain('within 1 hour.')
   })
 })
 
