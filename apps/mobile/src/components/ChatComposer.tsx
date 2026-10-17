@@ -60,6 +60,8 @@ interface ChatComposerProps {
    * only draws them, and only while the field is empty.
    */
   topicSeed?: string | undefined
+  /** The partner's interests, which the starters lead with when any match. */
+  topicInterests?: readonly string[] | undefined
 }
 
 /**
@@ -85,6 +87,7 @@ export function ChatComposer({
   idleAction,
   above,
   topicSeed,
+  topicInterests,
 }: ChatComposerProps) {
   const styles = useStyles()
   const { colors } = useTheme()
@@ -114,7 +117,10 @@ export function ChatComposer({
    * also means there is no emoticon under the caret, so the two chip rows
    * are never on screen together.
    */
-  const topics = topicSeed !== undefined && value === '' ? pickStarters(topicSeed, topicRound) : []
+  const topics =
+    topicSeed !== undefined && value === ''
+      ? pickStarters(topicSeed, topicRound, undefined, topicInterests)
+      : []
 
   const pickEmoji = (emoji: string) => {
     if (!emoticon) return

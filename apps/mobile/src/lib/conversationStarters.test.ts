@@ -1,4 +1,4 @@
-import { CONVERSATION_STALE_DAYS, CONVERSATION_TOPICS } from '@langx/shared'
+import { CONVERSATION_STALE_DAYS, CONVERSATION_TOPICS, INTEREST_TOPICS } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { en } from '../i18n/messages/en'
 import { STARTERS_SHOWN, pickStarters, startersDue } from './conversationStarters'
@@ -66,6 +66,33 @@ describe('pickStarters', () => {
     const picked = pickStarters('conv-1', 1000)
     expect(picked).toHaveLength(STARTERS_SHOWN)
     expect(new Set(picked).size).toBe(STARTERS_SHOWN)
+  })
+})
+
+describe('pickStarters with the partner’s interests', () => {
+  it('opens with topics from what they like', () => {
+    const picked = pickStarters('conv-1', 0, STARTERS_SHOWN, ['travel'])
+    for (const topic of picked) expect(INTEREST_TOPICS.travel).toContain(topic)
+  })
+
+  it('draws on every interest they listed', () => {
+    const liked = [...INTEREST_TOPICS.books, ...INTEREST_TOPICS.photography]
+    const picked = pickStarters('conv-1', 0, liked.length, ['books', 'photography'])
+    expect([...picked].sort()).toEqual([...liked].sort())
+  })
+
+  it('still reaches every topic when shuffled', () => {
+    const rounds = Math.floor(CONVERSATION_TOPICS.length / STARTERS_SHOWN)
+    const seen = Array.from({ length: rounds }, (_, round) =>
+      pickStarters('conv-1', round, STARTERS_SHOWN, ['travel', 'music']),
+    ).flat()
+    expect(new Set(seen).size).toBe(seen.length)
+  })
+
+  it('opens as before when no interest is one it knows', () => {
+    const plain = pickStarters('conv-1', 0)
+    expect(pickStarters('conv-1', 0, STARTERS_SHOWN, ['knitting', 'constructor'])).toEqual(plain)
+    expect(pickStarters('conv-1', 0, STARTERS_SHOWN, ['politics'])).toEqual(plain)
   })
 })
 
