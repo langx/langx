@@ -80,11 +80,12 @@ const PERIOD_PHRASE: Record<BillingPeriod, MessageKey> = {
 /**
  * How long the hero waits for the store before it shows anyway.
  *
- * The headline depends on the store's answer — "Try Pro free for a week" is
+ * The hero depends on the store's answer — the free week under the headline is
  * only true when a trial came back — so the page holds its entrance until the
- * offers arrive rather than opening on one headline and swapping to another.
- * RevenueCat usually answers from its cache in a fraction of this; a store
- * that has not answered by then gets the plain headline and the skeletons.
+ * offers arrive rather than opening without that line and pushing everything
+ * down when it lands. RevenueCat usually answers from its cache in a fraction
+ * of this; a store that has not answered by then gets no trial line and the
+ * skeletons.
  */
 const STORE_WAIT_MS = 1000
 
@@ -457,11 +458,20 @@ export default function PaywallScreen() {
 
   const headline = isCurrent
     ? t('paywall.ownedHeadline', { plan: TIER_NAMES.pro })
-    : trialWeeks !== null
+    : t('paywall.headline', { plan: TIER_NAMES.pro })
+  /*
+   * The free week, under the headline rather than as it. At title size the
+   * headline is the largest type on the page, and a week for nothing is a
+   * price claim: leading with it outranked the charge on every card, which
+   * both stores want to be the most prominent price. The `trialHeadline*`
+   * keys keep their names and their words, one size down.
+   */
+  const trialLine =
+    trialWeeks !== null
       ? t('paywall.trialHeadlineWeeks', { count: trialWeeks, plan: TIER_NAMES.pro })
       : trialDays !== null
         ? t('paywall.trialHeadlineDays', { count: trialDays, plan: TIER_NAMES.pro })
-        : t('paywall.headline', { plan: TIER_NAMES.pro })
+        : null
 
   /*
    * The trial laid out as dates rather than "day 7": the reader's own calendar
@@ -568,9 +578,12 @@ export default function PaywallScreen() {
         <View style={styles.column}>
           <Reveal index={0} ready={ready} style={styles.hero}>
             <ProMark />
-            <Text style={styles.headline} accessibilityRole="header">
-              {headline}
-            </Text>
+            <View style={styles.titles}>
+              <Text style={styles.headline} accessibilityRole="header">
+                {headline}
+              </Text>
+              {trialLine ? <Text style={styles.trialLine}>{trialLine}</Text> : null}
+            </View>
             {/*
               The lead is the free plan's promise, so it is not said to
               somebody who already pays, and it gives way on a short screen.
@@ -891,7 +904,10 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   column: { gap: 20, maxWidth: COLUMN, paddingBottom: spacing.lg, width: '100%' },
 
   hero: { alignItems: 'flex-start', gap: spacing.md },
+  titles: { alignSelf: 'stretch', gap: spacing.xs },
   headline: { ...font.title, color: colors.text, letterSpacing: -0.3, lineHeight: 36 },
+  // Below the charge on the cards in size and weight, above the lead in ink.
+  trialLine: { color: colors.text, fontSize: 17, fontWeight: '600', lineHeight: 24 },
   lead: { color: colors.textMuted, fontSize: 15, lineHeight: 22 },
 
   context: {

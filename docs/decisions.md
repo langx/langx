@@ -6380,6 +6380,17 @@ first.
 week" where the store offers a free week this person can still have,
 "Subscribe" otherwise — and the line directly above it says what that costs.
 
+**The free week leaves the headline.** At title size the headline is the
+largest type on the page, and "Try Pro free for a week" is a price claim — a
+week for nothing — so leading with it outranked the charge on every card. The
+headline is now "Go further with Pro" for everybody who can buy, and the same
+words about the free week sit directly under it, one size down, wherever the
+store offers a free week this person can still have. The button and the terms
+line still say it, and it stays above the fold. The alternative was the
+trial-led headline with only the cards and the terms line changed; it leaves
+the largest words on the screen a price claim, which is what both stores'
+rules are about.
+
 Unchanged: the two cards, yearly picked on open, the dated timeline, the trial's
 terms in one line directly above the button, Restore, Terms, Privacy and the iOS
 EULA, and the X that closes the screen in one tap.
