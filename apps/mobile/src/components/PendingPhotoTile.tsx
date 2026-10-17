@@ -43,23 +43,23 @@ export function PendingPhotoTile({ photo, size, onRetry, onDiscard }: PendingPho
 
   const fill = useSharedValue(0)
   useEffect(() => {
-    fill.value = reduceMotion ? percent / 100 : withTiming(percent / 100, { duration: 220 })
+    fill.set(reduceMotion ? percent / 100 : withTiming(percent / 100, { duration: 220 }))
   }, [percent, reduceMotion, fill])
 
   const entrance = useSharedValue(reduceMotion ? 1 : 0)
   useEffect(() => {
     if (reduceMotion) {
-      entrance.value = 1
+      entrance.set(1)
       return
     }
-    entrance.value = withSpring(1, { damping: 12, stiffness: 160 })
+    entrance.set(withSpring(1, { damping: 12, stiffness: 160 }))
   }, [reduceMotion, entrance])
 
   // Two flex children rather than a percentage width: the pair always sums
   // to one, so the fill cannot drift out of the track as it animates.
-  const barStyle = useAnimatedStyle(() => ({ flex: fill.value }))
-  const restStyle = useAnimatedStyle(() => ({ flex: 1 - fill.value }))
-  const tileStyle = useAnimatedStyle(() => ({ transform: [{ scale: entrance.value }] }))
+  const barStyle = useAnimatedStyle(() => ({ flex: fill.get() }))
+  const restStyle = useAnimatedStyle(() => ({ flex: 1 - fill.get() }))
+  const tileStyle = useAnimatedStyle(() => ({ transform: [{ scale: entrance.get() }] }))
 
   return (
     <Animated.View style={tileStyle}>

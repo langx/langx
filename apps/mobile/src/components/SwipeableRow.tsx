@@ -98,17 +98,17 @@ export function SwipeableRow({ right, left, open, onOpenChange, children }: Swip
   const leftWidth = drawerWidth(left.length)
 
   const settle = (to: number): void => {
-    restingAt.value = to
+    restingAt.set(to)
     // `bounciness: 0`'s successor: a drawer that overshoots its own width
     // shows the row's background through the gap it opens.
-    translateX.value = withSpring(to, { damping: 20, stiffness: 220, overshootClamping: true })
+    translateX.set(withSpring(to, { damping: 20, stiffness: 220, overshootClamping: true }))
   }
 
   // The list closes this row by flipping `open`; the row is what animates.
   useEffect(() => {
     // `settle` touches two shared values, both stable, so it is deliberately
     // not a dependency — listing it would rebuild this on every render.
-    if (!open && restingAt.value !== 0) settle(0)
+    if (!open && restingAt.get() !== 0) settle(0)
   }, [open])
 
   const pan = Gesture.Pan()
@@ -127,23 +127,23 @@ export function SwipeableRow({ right, left, open, onOpenChange, children }: Swip
     .activeOffsetX([-ACTION_LOCK_PX, ACTION_LOCK_PX])
     .failOffsetY([-ACTION_LOCK_PX, ACTION_LOCK_PX])
     .onUpdate((event) => {
-      translateX.value = rowTranslation(restingAt.value + event.translationX, rightWidth, leftWidth)
+      translateX.set(rowTranslation(restingAt.get() + event.translationX, rightWidth, leftWidth))
     })
     .onEnd((event) => {
       const to = settleOffset(
-        restingAt.value + event.translationX,
+        restingAt.get() + event.translationX,
         rightWidth,
         leftWidth,
         event.velocityX,
       )
-      restingAt.value = to
-      translateX.value = withSpring(to, { damping: 20, stiffness: 220, overshootClamping: true })
+      restingAt.set(to)
+      translateX.set(withSpring(to, { damping: 20, stiffness: 220, overshootClamping: true }))
       // The list's state lives in React, so crossing back costs one hop —
       // once, on release, rather than on every frame.
       runOnJS(onOpenChange)(to !== 0)
     })
 
-  const movingStyle = useAnimatedStyle(() => ({ transform: [{ translateX: translateX.value }] }))
+  const movingStyle = useAnimatedStyle(() => ({ transform: [{ translateX: translateX.get() }] }))
 
   /**
    * The actions again, for anyone not using a gesture. Swipe-only actions are
