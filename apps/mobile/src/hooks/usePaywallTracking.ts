@@ -24,7 +24,9 @@ interface PaywallTrackingInput {
  * free", Android's back button and the iOS swipe all remove the screen, and
  * only the navigator sees every one of them. The X has no way to be told apart
  * from the back button by the action alone — both are `GO_BACK` — so it says so
- * with `markClosed()` before it navigates.
+ * with `markClosed()` before it navigates. The one exit it cannot see is the
+ * web browser's back button, which resets the navigator without an action: a
+ * view with no dismissal, on web only.
  *
  * **The listener never calls `preventDefault`.** Nothing here may delay or
  * intercept leaving: the X, back and the swipe each close the paywall in one
@@ -59,6 +61,12 @@ export function usePaywallTracking(input: PaywallTrackingInput): {
   useEffect(() => {
     if (input.ready) sendViewed()
   }, [input.ready])
+
+  // A screen can go without any `beforeRemove`: the web's own back button
+  // resets the navigator instead of dispatching an action, and a session
+  // change unmounts the whole signed-in tree. The view is owed either way, so
+  // the unmount pays it if nothing earlier did.
+  useEffect(() => sendViewed, [])
 
   // Leaving with a plan they did not arrive with — bought, restored, a gift
   // code — is a conversion, not a dismissal. The explicit mark covers the

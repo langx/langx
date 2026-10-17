@@ -140,7 +140,11 @@ Some of these carry a number that needs a caveat rather than a footnote:
   meaningful for installs from that release onwards. It is `null` where nothing
   was recorded.
 - **`paywall_dismissed`** is sent once, from the navigator's `beforeRemove`, so
-  it sees every way out of the screen. `exit` is `close` for the X and
+  it sees every way out of the screen that goes through a navigation action —
+  on iOS and Android, all of them. The web browser's own back button does not:
+  it resets the navigator without an action, so on web that exit is still a
+  view with no dismissal (decision _The paywall counts every way out_). `exit`
+  is `close` for the X and
   "Continue free" — the two the screen knows are its own — `back` for Android's
   back button and system back gesture, `gesture` for the iOS swipe, and `other`
   for anything else that takes the screen off the stack: a `replace`, a reset, a
@@ -157,8 +161,11 @@ Some of these carry a number that needs a caveat rather than a footnote:
   on any package — the app cannot tell "no trial offered" from "this account
   has had it", because the store only says so on iOS), `trial`, or `owned` (the
   plan held already covers Pro, so the store was not consulted). A paywall left
-  before that second is still counted, as `pending`. Builds before this send
-  the view on open and carry no `offers`.
+  before that second is still counted, as `pending` — on the way out, or when
+  the screen unmounts without one. Builds before this send the view on open and
+  carry no `offers`, and that is a break in the series, not a footnote: an app
+  killed inside that first second counted a view before and counts none now.
+  Read views before and after this build as two series, split by app version.
 - **`restore_finished.result`** is the small truth. `completed` means the store
   call returned without error and `failed` that it threw or there was no store
   behind it; neither says whether a subscription was found, because the server
