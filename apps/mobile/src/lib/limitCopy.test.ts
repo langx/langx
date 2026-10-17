@@ -1,4 +1,5 @@
 import {
+  effectivePlanTier,
   isRepairable,
   PLAN_LIMITS,
   shiftDayKey,
@@ -10,7 +11,7 @@ import {
 import { describe, expect, it } from 'vitest'
 import { catalogs } from '../i18n/catalogs'
 import { createTranslate } from '../i18n/runtime'
-import { streakProtectText, translationQuotaText } from './limitCopy'
+import { offersPlansAtTranslationLimit, streakProtectText, translationQuotaText } from './limitCopy'
 
 /**
  * Two sentences that quote a number the server enforces, pinned to it.
@@ -105,5 +106,41 @@ describe('the count inflects where the language needs it', () => {
     const t = createTranslate('en')
     expect(t('streak.protectBody', { count: 1 })).toContain('up to 1 day after')
     expect(t('chat.translationQuota', { count: 1 })).toContain('1 translation a day')
+  })
+})
+
+describe('who is sent on to the paywall from a refused translation', () => {
+  // The tier is derived the way the app derives it (`useEffectiveTier`), from
+  // what `me.entitlement` holds, so each account is the shape it really
+  // arrives in rather than a hand-written `'pro'`.
+  const day = 24 * 60 * 60 * 1000
+  const later = new Date(Date.now() + day).toISOString()
+  const earlier = new Date(Date.now() - day).toISOString()
+  const offers = (stored: string, expiresAt?: string) =>
+    offersPlansAtTranslationLimit(effectivePlanTier(stored, expiresAt))
+
+  it('a free account is, because it can still buy a higher ceiling', () => {
+    expect(offers('free')).toBe(true)
+  })
+
+  it('Pro has a translation limit of its own, which is why the question comes up', () => {
+    expect(Number.isFinite(PLAN_LIMITS.pro.translationsPer24h)).toBe(true)
+  })
+
+  it.each([
+    ['a paid subscription', 'pro', later],
+    ['a gift, which ends on a date', 'pro', later],
+    ['a lifetime plan, which never ends', 'pro', undefined],
+    ['the retired tier name', 'pro_plus', later],
+  ])('%s is not, because there is nothing above Pro to sell it', (_name, stored, expiresAt) => {
+    expect(offers(stored, expiresAt)).toBe(false)
+  })
+
+  it('a lapsed subscription is a free account again, as everywhere else in the app', () => {
+    expect(offers('pro', earlier)).toBe(true)
+  })
+
+  it('a tier this build has never heard of reads as free rather than throwing', () => {
+    expect(offers('platinum')).toBe(true)
   })
 })

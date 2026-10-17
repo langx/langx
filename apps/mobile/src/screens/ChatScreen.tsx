@@ -127,7 +127,7 @@ import { meetingClock } from '../lib/meetingClock'
 import { messagePreviewKey } from '../lib/messagePreview'
 import { openMessageMenu, type AnchorRect, type MessageMenuRequest } from '../lib/messageMenu'
 import { goBackTo, openProfile } from '../lib/navigation'
-import { translationQuotaText } from '../lib/limitCopy'
+import { offersPlansAtTranslationLimit, translationQuotaText } from '../lib/limitCopy'
 import { openPaywall } from '../lib/paywall'
 import { lookupWords, wordCardLang } from '../lib/wordLookup'
 import { pickMediaAssets, type PickSource } from '../lib/pickMediaAsset'
@@ -670,6 +670,8 @@ export function ChatScreen({
    */
   /** Reading a translation is free; sending one is Pro. See `PLAN_LIMITS`. */
   const canSendTranslation = hasFeature(useEffectiveTier(), 'sendTranslation')
+  /** Pro has a translation limit too; its owner is told, not sold to. */
+  const plansAtTranslationLimit = offersPlansAtTranslationLimit(useEffectiveTier())
   const translateInto = partner
     ? translateTargetFor({ nativeLanguages: partner.nativeLanguages })
     : undefined
@@ -1871,11 +1873,14 @@ export function ChatScreen({
     } catch (error) {
       if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
         await showAlert(t('chat.translationUnavailable'), translationQuotaText(t))
+        // Only for an account that can still buy something: a Pro account at
+        // its own ceiling has been told what it is, and that is all.
+        //
         // Bare, deliberately. `unlimitedTranslation` is a `ProBenefit` and
         // not a `PlanFeature` — it is a quota that stops applying rather than
         // a capability flag — so there is no key to pass. The paywall's Pro
         // column already lists it.
-        openPaywall(undefined, `/(app)/chat/${conversationId}`)
+        if (plansAtTranslationLimit) openPaywall(undefined, `/(app)/chat/${conversationId}`)
       } else {
         await showAlert(t('chat.translationUnavailable'), t('chat.translationFailed'))
       }
@@ -3519,11 +3524,15 @@ export function ChatScreen({
                   sourceLang: lookingUp.message.translation?.sourceLang,
                   myLearning: me.data?.learning,
                 })}
-                onSeePlans={() => {
-                  setLookingUp(null)
-                  // Bare, as Translate's own quota refusal is: see `translate`.
-                  openPaywall(undefined, `/(app)/chat/${conversationId}`)
-                }}
+                onSeePlans={
+                  plansAtTranslationLimit
+                    ? () => {
+                        setLookingUp(null)
+                        // Bare, as Translate's own quota refusal is: see `translate`.
+                        openPaywall(undefined, `/(app)/chat/${conversationId}`)
+                      }
+                    : undefined
+                }
               />
             ) : null
           }

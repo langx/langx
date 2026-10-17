@@ -1,4 +1,4 @@
-import { PLAN_LIMITS, TOKEN_RULES } from '@langx/shared'
+import { isPaidTier, PLAN_LIMITS, TOKEN_RULES, type PlanTier } from '@langx/shared'
 import type { TranslateFn } from '../i18n/runtime'
 
 /**
@@ -23,4 +23,18 @@ export function translationQuotaText(t: TranslateFn): string {
 /** The streak page's note on what a freeze and a repair each cover. */
 export function streakProtectText(t: TranslateFn): string {
   return t('streak.protectBody', { count: TOKEN_RULES.sinks.dayRepairMaxAgeDays })
+}
+
+/**
+ * Whether a refused translation may lead on to the paywall.
+ *
+ * Pro has a translation limit of its own, so the refusal reaches a Pro account
+ * too, and for that account there is nothing to buy: the alert says what the
+ * limit is and stops there. Nothing is ever sold to a paid, gifted or lifetime
+ * Pro account. The tier is the one `useEffectiveTier` returns, which has
+ * already been through `effectivePlanTier`: a lapsed subscription whose webhook
+ * was late reads as free here, as it does everywhere else.
+ */
+export function offersPlansAtTranslationLimit(tier: PlanTier): boolean {
+  return !isPaidTier(tier)
 }

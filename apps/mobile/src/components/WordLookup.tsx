@@ -44,7 +44,8 @@ export function WordLookup({
   targetLang: string
   /** What the card is filed under; `undefined` leaves the button out. */
   cardLang: LanguageCode | undefined
-  onSeePlans: () => void
+  /** Absent for a Pro account at its own ceiling: nothing to sell it. */
+  onSeePlans: (() => void) | undefined
 }) {
   const styles = useStyles()
   const { colors } = useTheme()
@@ -110,7 +111,9 @@ export function WordLookup({
       ) : translation.status === 'quota' ? (
         <>
           <Text style={styles.muted}>{translationQuotaText(t)}</Text>
-          <Button label={t('chat.wordSeePlans')} variant="secondary" onPress={onSeePlans} />
+          {onSeePlans ? (
+            <Button label={t('chat.wordSeePlans')} variant="secondary" onPress={onSeePlans} />
+          ) : null}
         </>
       ) : translation.status === 'failed' ? (
         <Text style={styles.muted}>{t('chat.wordTranslationFailed')}</Text>
