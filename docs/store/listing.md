@@ -17,8 +17,10 @@ Polyglot were merged into it — `decisions.md` → _One plan: Pro_). Every
 language's description carries the same three blocks, straight from
 `PLAN_LIMITS`: what Free gives (5 new chats and 20 translations a day; photo
 and voice messages up to 500 a day and 10 profile photos on every plan), the
-Pro list, with translation at 1,000 a day rather than "unlimited", and the ways
-to get Pro without paying — invites, streaks and gift codes. The free week is
+Pro list, with translations unlimited — since 17 October 2026, under a
+fair-use ceiling the Terms name (`decisions.md` → _Pro's translations are
+unlimited, under a fair-use ceiling_) — and the ways to get Pro without
+paying: invites, streaks and gift codes. The free week is
 promised for the _first_ subscription only, because that is who the stores give
 it to. No prices anywhere: the store shows its own, in the reader's currency.
 The in-app purchase display names and descriptions read "LangX Pro" in all
@@ -88,7 +90,7 @@ Alternative", which named a competitor (App Review guideline 2.3.7).
 >
 > **LangX Pro is one plan with everything:**
 > • Unlimited new conversations
-> • 1,000 translations a day
+> • Unlimited translations
 > • Gender and city filters
 > • See who viewed your profile
 > • Incognito browsing
@@ -142,7 +144,7 @@ Alternative", which named a competitor (App Review guideline 2.3.7).
 >
 > **LangX Pro, her şeyi içeren tek plan:**
 > • Sınırsız yeni sohbet
-> • Günde 1.000 çeviri
+> • Sınırsız çeviri
 > • Cinsiyet ve şehir filtreleri
 > • Profiline kimlerin baktığı
 > • Gizli gezinme
@@ -196,7 +198,7 @@ Alternative", which named a competitor (App Review guideline 2.3.7).
 >
 > **LangX Pro es un solo plan con todo:**
 > • Conversaciones nuevas ilimitadas
-> • 1.000 traducciones al día
+> • Traducciones ilimitadas
 > • Filtros por género y ciudad
 > • Quién ha visto tu perfil
 > • Navegación de incógnito
@@ -250,7 +252,7 @@ Alternative", which named a competitor (App Review guideline 2.3.7).
 >
 > **LangX Pro — один тариф со всем сразу:**
 > • Безлимитные новые разговоры
-> • 1000 переводов в день
+> • Безлимитные переводы
 > • Фильтры по полу и городу
 > • Кто заходил в твой профиль
 > • Невидимый режим
@@ -304,7 +306,7 @@ Alternative", which named a competitor (App Review guideline 2.3.7).
 >
 > **LangX Pro خطة واحدة فيها كل شيء:**
 > • محادثات جديدة بلا حدود
-> • 1000 ترجمة يوميًا
+> • ترجمات بلا حدود
 > • فلاتر حسب الجنس والمدينة
 > • معرفة من زار ملفك
 > • التصفّح الخفي
@@ -358,7 +360,7 @@ Alternative", which named a competitor (App Review guideline 2.3.7).
 >
 > **LangX Pro, une seule formule qui contient tout :**
 > • Nouvelles conversations illimitées
-> • 1 000 traductions par jour
+> • Traductions illimitées
 > • Filtres par genre et par ville
 > • Les visiteurs de votre profil
 > • Navigation en incognito
@@ -412,7 +414,7 @@ Alternative", which named a competitor (App Review guideline 2.3.7).
 >
 > **LangX Pro ist ein Tarif mit allem:**
 > • Unbegrenzt neue Gespräche
-> • 1.000 Übersetzungen am Tag
+> • Unbegrenzte Übersetzungen
 > • Filter nach Geschlecht und Stadt
 > • Sehen, wer dein Profil besucht hat
 > • Surfen im Inkognito-Modus
@@ -466,7 +468,7 @@ Alternative", which named a competitor (App Review guideline 2.3.7).
 >
 > **O LangX Pro é um plano só, com tudo:**
 > • Conversas novas ilimitadas
-> • 1.000 traduções por dia
+> • Traduções ilimitadas
 > • Filtros por gênero e cidade
 > • Quem visitou seu perfil
 > • Navegação anônima
