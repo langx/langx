@@ -1,7 +1,11 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Pressable, Text, View } from 'react-native'
+import { useT } from '../../i18n'
+import { NO_NUMBER } from '../../lib/loadState'
 import { makeStyles, useTheme } from '../../lib/theme'
 import type { CalloutTone } from './Callout'
+import { CrossFade } from './CrossFade'
+import { Skeleton } from './Skeleton'
 
 interface StatTileProps {
   value: string
@@ -21,6 +25,14 @@ interface StatTileProps {
    * tab and the wallet, 34 on the streak page where the number is the point.
    */
   valueSize?: number
+  /**
+   * Pass it, true or false, when the number comes from a request: while true a
+   * block stands where the numeral will be, and it dissolves into the number
+   * when this turns false. `value` is not read meanwhile. A tile whose number
+   * is zero is not loading — it says `0`. Left out, the numeral is drawn as it
+   * always was, with nothing around it.
+   */
+  loading?: boolean
   onPress?: () => void
 }
 
@@ -37,10 +49,12 @@ export function StatTile({
   iconColor,
   tone,
   valueSize = 24,
+  loading,
   onPress,
 }: StatTileProps) {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
   const toneColour =
     tone === 'success'
       ? colors.success
@@ -51,6 +65,22 @@ export function StatTile({
           : tone === 'error'
             ? colors.danger
             : null
+
+  const lineHeight = Math.round(valueSize * 1.2)
+  // The dash is a picture of "no number"; read aloud it is a punctuation mark,
+  // or nothing at all.
+  const spoken = value === NO_NUMBER ? t('common.notLoaded') : value
+  const numeral = (
+    <Text
+      style={[
+        styles.value,
+        { fontSize: valueSize, lineHeight },
+        toneColour ? { color: toneColour } : null,
+      ]}
+    >
+      {value}
+    </Text>
+  )
 
   const body = (
     <>
@@ -64,15 +94,24 @@ export function StatTile({
             color={iconColor ?? toneColour ?? colors.text}
           />
         ) : null}
-        <Text
-          style={[
-            styles.value,
-            { fontSize: valueSize, lineHeight: Math.round(valueSize * 1.2) },
-            toneColour ? { color: toneColour } : null,
-          ]}
-        >
-          {value}
-        </Text>
+        {loading === undefined ? (
+          numeral
+        ) : (
+          <CrossFade
+            ready={!loading}
+            // The numeral's own line, so the tile is the height it will be.
+            skeleton={
+              <View style={{ height: lineHeight, justifyContent: 'center' }}>
+                <Skeleton
+                  width={Math.round(valueSize * 1.4)}
+                  height={Math.round(valueSize * 0.8)}
+                />
+              </View>
+            }
+          >
+            {numeral}
+          </CrossFade>
+        )}
       </View>
       <Text style={styles.label}>{label}</Text>
     </>
@@ -82,7 +121,9 @@ export function StatTile({
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`${label}: ${value}`}
+      // No number to read out yet; saying the placeholder would be a lie.
+      accessibilityLabel={loading ? label : `${label}: ${spoken}`}
+      accessibilityState={loading ? { busy: true } : undefined}
       onPress={onPress}
       style={({ pressed }) => [styles.tile, pressed && styles.pressed]}
     >

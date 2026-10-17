@@ -31,6 +31,7 @@ export const ptBR: Localized<EnMessages> = {
     edit: 'Editar',
     enable: 'Ativar',
     update: 'Atualizar',
+    notLoaded: 'Não foi possível carregar',
   },
 
   tabs: { discover: 'Descobrir', chats: 'Conversas', echo: 'Echo', feed: 'Feed', me: 'Eu' },

@@ -40,6 +40,7 @@ export const tr: Localized<EnMessages> = {
     edit: 'Düzenle',
     enable: 'Aç',
     update: 'Güncelle',
+    notLoaded: 'Yüklenemedi',
   },
 
   tabs: {

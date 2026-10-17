@@ -3,10 +3,11 @@ import type { TokenSummary } from '@langx/shared'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
 import { HiddenFromOthers } from './HiddenFromOthers'
+import { CrossFade } from './ui/CrossFade'
 import { WeekBars, WeekBarsSkeleton } from './WeekBars'
 
 interface WeeklyChartProps {
-  /** Undefined while the summary loads: the slot is kept, the bars pulse. */
+  /** Undefined while the summary loads: the slot is kept, the bars pulse, then dissolve into the real ones. */
   week?: TokenSummary['week'] | undefined
   /**
    * The owner's own tab, with "Show my week chart" off: the chart is still
@@ -33,21 +34,21 @@ export function WeeklyChart({ week, hiddenFromOthers = false }: WeeklyChartProps
 
   return (
     <View style={styles.section}>
-      {week ? (
-        <WeekBars
-          days={week.map((day) => ({
-            day: day.day,
-            total: day.messages,
-            stacked: day.corrections,
-          }))}
-          accessibilityLabel={t('weekly.summary', {
-            messages: t('format.messages', { count: messages }),
-            corrections: t('format.corrections', { count: corrections }),
-          })}
-        />
-      ) : (
-        <WeekBarsSkeleton />
-      )}
+      <CrossFade ready={Boolean(week)} skeleton={<WeekBarsSkeleton />}>
+        {week ? (
+          <WeekBars
+            days={week.map((day) => ({
+              day: day.day,
+              total: day.messages,
+              stacked: day.corrections,
+            }))}
+            accessibilityLabel={t('weekly.summary', {
+              messages: t('format.messages', { count: messages }),
+              corrections: t('format.corrections', { count: corrections }),
+            })}
+          />
+        ) : null}
+      </CrossFade>
 
       <View style={styles.legend}>
         <View style={styles.legendItem}>

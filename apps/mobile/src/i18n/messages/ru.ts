@@ -41,6 +41,7 @@ export const ru: Localized<EnMessages> = {
     edit: 'Изменить',
     enable: 'Включить',
     update: 'Обновить',
+    notLoaded: 'Не загрузилось',
   },
 
   tabs: { discover: 'Поиск', chats: 'Чаты', echo: 'Эхо', feed: 'Лента', me: 'Я' },
