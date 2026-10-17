@@ -435,6 +435,15 @@ export const DAILY_DIGEST_LOCAL_HOUR = 19
 export const PROMOTION_LOCAL_HOUR = 20
 
 /**
+ * The shortest streak worth offering a repair for, by mail or by push.
+ *
+ * Three days: a run of one or two is a start rather than a habit, and telling
+ * somebody it broke is a sentence about loss — worth saying only when there
+ * was something to lose.
+ */
+export const STREAK_REPAIR_NUDGE_MIN_STREAK = 3
+
+/**
  * "People you could practise with" — the only section that names people the
  * reader has never spoken to, so every number here is a restraint. It is the
  * digest's one passenger and never a reason to send it.
