@@ -6,7 +6,9 @@
  * **This list only shrinks.** A file leaves it in the PR that moves it onto
  * the v3 type ramp (`theme.v3.type`), and nothing new is added: a new file
  * starts on the ramp. When it is empty, delete it and the `ignores` line
- * that reads it. Three of the paths below do not exist on `main` yet; they
+ * that reads it. `apps/mobile/src/lib/fontSizeAllowlist.test.ts` fails while
+ * a listed file no longer types a size, so a migrated file cannot stay here
+ * unguarded. Three of the paths below do not exist on `main` yet; they
  * are the operator panel's measurement screen and its two tables, from a
  * pull request that was open when the rule landed, listed so that whichever
  * of the two merges second does not fail lint.
