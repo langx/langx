@@ -1171,6 +1171,10 @@ permanently hiding a message someone genuinely never opened.
 
 ## The analytics dashboard is private, and that decides the tool
 
+> **Amended 16 October 2026 — see _The paywall counts every way out_ below.**
+> The paywall's uncounted back-button exit, a caveat in the event list rather
+> than in this entry, is closed there; nothing above changes.
+
 v1 published its analytics. `insight.langx.io` was a self-hosted Plausible CE
 instance with the dashboard shared publicly, and there is a blog post on the
 website inviting people to go and look at it. That was a coherent thing to do
@@ -1284,6 +1288,36 @@ warn about a module it will never have. How many sessions are recorded is a
 dial in PostHog rather than a constant here, for the same reason every other
 threshold is config — set locally it would win over the project's, and
 recording less would mean a release.
+
+## The paywall counts every way out
+
+**16 October 2026.** This reverses the event list's paywall caveat — and the
+comment on the screen's `dismiss()` behind it — that a hardware back on Android
+was "deliberately not fought over" and left "a known and countable gap": the
+back button and the iOS swipe sent no `paywall_dismissed`, so those exposures
+read as a view with no dismissal. That was cheap while the only question was
+whether anybody bought. The redesign's paywall work is judged by how people
+leave it, and a dismissal count whose missing share differs by platform cannot
+be compared between iOS and Android, nor across a change that moves people from
+the X to the swipe.
+
+`usePaywallTracking` listens to the navigator's `beforeRemove`, the one place
+every exit passes through, and sends `paywall_dismissed` once, with `exit`. It
+never calls `preventDefault` and never waits: the X, back and the swipe still
+close the paywall in one gesture. The X and "Continue free" flag themselves
+before they navigate, because the X's `router.back()` is the same `GO_BACK` as
+the back button. Leaving with a plan not held on arrival — a purchase, a
+restore that found one, a gift code — is a conversion and sends nothing.
+
+`paywall_viewed` moved with it. It is sent when the page is first drawn, after
+the store wait the page already had (`STORE_WAIT_MS`), so that it can say what
+the store had to sell; a screen left sooner is counted on the way out. Older
+builds send it on open, so views are two series either side of this build, read
+by app version.
+
+What it still cannot see is the web browser's back button, which resets the
+navigator rather than dispatching an action and so raises no `beforeRemove`.
+On web that exit is the old gap: a view with no dismissal.
 
 ## Discovery filters live in the URL, not a store
 
@@ -5200,6 +5234,141 @@ it. So the feature is right for "we got your report" and wrong for a
 conversation, and what is written should say where a reply goes. A test asserts
 the refusal, so opening that thread stays a decision somebody makes.
 
+## Measure first: activation, cohorts and a money timeline, from what the server already keeps
+
+The redesign is judged against a baseline, and until now there was none that
+could be read twice. PostHog answers the funnel; it cannot say whether the
+person who sent a first message was answered, who came back on the seventh day,
+or what one account has been given and paid for, because those are facts about
+rows we hold. `/admin/measure` and the money timeline on the account screen
+read them, and nothing else. They are the first thing built for the redesign
+because every later move is judged against them.
+
+**Private, and no number is ever written down.** Retention and activation are
+the figures [`insight.md`](insight.md) keeps off the public page, for the reason
+_The analytics dashboard is private_ gives, so none of this may be re-exported
+to `modules/insight/publicStats.ts`. And the repo is public: a reading reaches a
+decision as "the figures shared on <date>", in chat, never in a file, a commit
+or a PR. The tests use fixtures and say so.
+
+### The definitions are config
+
+`packages/shared/src/measurement.ts` is where "it is working" is written down:
+**activation** is two two-way conversations inside the first 72 hours
+(`ACTIVATION_RULES`), the cohorts are read at **Day 1, 7 and 30**
+(`COHORT_RETURN_DAYS`), and a first message is **unanswered** after 24 hours
+(`FIRST_MESSAGE_RULES`). A baseline is only a baseline if the thing it measures
+stays still, so changing one of these is a dated entry here, not a tweak — a
+reading taken against one definition cannot be set beside one taken against
+another.
+
+_Two-way_ means both people have written. A first message nobody answered is an
+attempt, and counting attempts would make the number rise when we got better at
+sending rather than at connecting people. The moment a conversation becomes
+two-way is when the person who did not open it first writes back, so it counts
+for a member only if that reply landed inside their window — and it does not
+matter who opened it, because answering a stranger is as much a start as writing
+to one. A call's row is not a reply: it records something that happened to both
+people, not something one of them said.
+
+### Where each figure comes from
+
+Said on the screen as well as here, because "from the data we have" is only
+honest if it says which data.
+
+- **Sign-ups** are `profiles.createdAt`, weekly by the UTC Monday. Guests,
+  official accounts and deleted accounts are out; they are not people who could
+  have been retained.
+- **Returned on Day N** is a `streakDays` document for the Nth local day after
+  the one they joined on, other than a bought one. That collection is the only
+  record of which days a person showed up (`profiles.stats.lastActiveAt` keeps
+  the last one and nothing before it). It is keyed on the person's **own**
+  calendar, so Day 7 is counted on it too: someone who joined at 23:30 in Toronto
+  joined, to their streak, on a different UTC day. A bought day is somebody
+  paying to mend a streak, not somebody being there.
+- **The cut-off is real.** `streakDays` exists from 29 August 2026, and a day
+  with only a visit in it was written from 1 September ("Let opening the app
+  hold the streak"). Before that a day was recorded only when the person did
+  something that counted, so a return day earlier than `RETURN_RECORDED_FROM`
+  reads low for a reason that has nothing to do with them. It is not measured,
+  rather than measured wrongly.
+- **Rates carry their denominator.** A cohort is only counted for Day N once
+  that day has fully ended on the person's calendar, and for activation once the
+  72 hours have passed. Before that "not yet" would read as "no", and every young
+  cohort would look like a failure. The panel prints `x of y` under every rate: a
+  cohort of four people at half and one of four hundred at half are different
+  readings.
+- **Activated, unanswered and the median reply** all need the instant a
+  conversation became two-way. `conversations.bothSpoke` is a boolean with no
+  time, and adding a timestamp would change the send path for a measurement, so
+  the time is read: the earliest message in the thread from someone other than
+  its opener, one `$lookup` over the two-way conversations of the window. It
+  works for history without a backfill. The median covers conversations that got
+  a reply, however late, so the newest weeks read faster than they will turn out
+  to be; the screen says so.
+- **Refusals per limit** are `profiles.quotaRefusals` and the kind now recorded
+  beside it. See below.
+- **The money timeline** is three things the server holds: `proGifts` (an
+  operator's, a streak's, an invitee's, a code's), `subscriptions` (one row per
+  RevenueCat webhook event), and `profiles.churnedFrom`.
+
+### What it cannot say, and the screen says so
+
+- **Paywall views and taps on them are PostHog's.** The server never sees them,
+  and a timeline with a stretch of nothing between "joined" and "bought" would
+  read as a person who never saw the paywall. The card says it is not measured
+  here rather than leaving the gap to look like an answer. Inventing a view from
+  anything else was the alternative, and it was refused.
+- **A free trial cannot be told from a first paid period in the history.** The
+  stored webhook rows do not keep RevenueCat's `period_type`; only the
+  entitlement's _current_ `periodType` is known. So each start shows how long the
+  period it opened was, which is what a person reads a trial off, and the "right
+  now" line says whether the one running is a trial. Recording `period_type` on
+  the row is one additive field and a later change; this PR reads and does not
+  change what a webhook writes.
+- **Refusals reach back three days and no further**, because that is all
+  `quotaRefusals` keeps. It is a rolling picture of the last three days, not a
+  trend, and says so.
+
+### The one write: which limit it was
+
+`consumeQuota` is where a refusal is decided and already wrote the instant to
+`quotaRefusals`. It now also writes `{at, kind}` to **`quotaRefusalKinds`**,
+beside it, in the same pipeline and pruned by the same cut-off.
+
+A second array rather than changing the first one's elements, because
+`quotaRefusals` is read as a list of instants by the upsell nudge
+(`promotions.ts`), and during a rolling deploy an API instance from before this
+change appends to it as exactly that. Changing the element type would have made
+the old instance corrupt what the new one reads and the reverse. A refusal with
+an instant and no entry in the second array predates the field, and the panel
+calls it **unknown** rather than guessing which limit it was.
+
+It stays on the profile and is not a collection of its own. A collection with a
+`userId` is a collection the account purge has to learn about, and a log of who
+hit which limit is exactly what a purge must not forget; a field on the profile
+goes with the profile.
+
+### Bounded, because it runs on a small shared cluster
+
+Every read has a date range on an index or goes by `_id`, and every one has a
+ceiling; when a ceiling is hit the answer says `truncated` rather than quietly
+covering less than it claims. Two indexes are new, both in `indexes.ts` and
+neither on a Better Auth collection: `conversations.first_message_at` (a bare
+range that no existing index could serve), and a **partial** index on
+`profiles.quotaRefusals`, which is absent on everybody who has never hit a
+limit, so it holds only the ones who did. The cohort read rides the existing
+`joined` index. The answer is kept for five minutes, per window of weeks, so
+opening the screen twice is one set of reads.
+
+### What this does not do
+
+It asks nobody anything and switches nothing. "What would make Pro worth it?"
+is built with the paywall, under the rule that a dismissal question appears only
+after the paywall has closed, and the cohort switches follow as their own
+changes judged against decision rules written first. This is the baseline they
+are measured against, and nothing more.
+
 ## A card is a copy, the cap is not a price, and a phrase card is mirrored
 
 [`echo.md`](./echo.md) is the design. Four things about the first phase are
@@ -5589,6 +5758,41 @@ name says who does not see it; the week's chart gets the same mark when "Show
 my week chart" is off. Tapping either opens the privacy settings. The rule is
 that the owner always sees their own data and is told which of it is theirs
 alone.
+
+## A number that has not arrived is a skeleton, not a zero
+
+**16 October 2026.** The Me tab's tiles and rows were written `data?.n ?? 0`,
+which draws a zero for three different things: a request still on its way, a
+request that never arrived, and an account that really has none. The first is
+the one people watched — a "0" that turned into the real number a moment
+later, with the badge shelf appearing under it and pushing the rows down — and
+the Echo tab showed a bare spinner where its whole stage was about to be.
+
+`loadState` (`src/lib/loadState.ts`) tells the three apart: a block of
+`ui/Skeleton` for the first, a dash for the second, and `0` only for the third.
+Data in hand outranks a failed refetch, and a paused or refused request with
+nothing to show stops being "loading" — a skeleton that pulses for as long as
+the train is in the tunnel is what `queryFailed` exists to prevent. The check is
+`data !== undefined`, never truthiness, so a loaded zero keeps drawing itself.
+
+`ui/CrossFade` is the dissolve from placeholder to content. It is opacity and
+nothing else: it measures nothing and animates no layout, so a skeleton is only
+as good as its size — `StatTile`, `ListRow` and the files in `skeletons/` are
+each drawn to the height of the thing they stand in for. That is also why it
+needs no Reanimated layout animation, which this app must not put on a recycled
+row until a newer Reanimated is in the binary. It stays on RN's `Animated`, like
+`Skeleton`, for the reason recorded above (_The row swipe runs on the UI
+thread_): an opacity needs nothing from the JS thread.
+
+Two rules ride along. Content that is there on the first render — a screen
+restored from the persisted cache — never animates, because there was no
+skeleton to leave. And with Reduce Motion on, content simply replaces the
+placeholder, and `Skeleton` holds still instead of pulsing.
+
+What this does not cover: a skeleton cannot know the shape of an answer it has
+not received. An account with no badge earned has no strip, so the shelf is a
+strip shorter than its placeholder; the rows under it move up once. The
+placeholder is drawn for the common case, not the rare one.
 
 ## The media viewer zooms on the UI thread, and saving is write-only
 
@@ -6414,6 +6618,8 @@ plan, the paywall says what will happen_.
 
 ## The paywall sells the free week
 
+> **Amended 16 October 2026 — see _The paywall leads with what it charges_ below.**
+
 With one plan the paywall has one question left — yearly or monthly — so the
 page was rebuilt around the thing that actually lowers the bar: a week free.
 When the store offers the trial, the headline is "Try Pro free for a week", the
@@ -6459,6 +6665,58 @@ never arrives with one headline and swaps to another. The picked card's radio
 dot springs, with a selection haptic; nothing else moves, and with reduced
 motion nothing moves at all. No native module was added, so it ships over the
 air.
+
+## The paywall leads with what it charges
+
+**16 October 2026.** This reverses _Two cards, not a segmented control_ in the
+entry above, and the reason it gave: both cards quoted a month on the right,
+because "`$6.99` beside `$9.99` is the whole argument for the year", with the
+actual charge underneath in small muted type. That is the layout both stores
+name. Apple's subscription guidance wants the billed amount to be the most
+prominent pricing element on the screen, with anything calculated from it — a
+month's worth of a year — subordinate in position and size; Google Play's
+subscription policy lists an annual subscription priced most prominently in
+monthly terms as a violation. This app has been rejected under guideline 3.1.2
+before. A comparison that wins the argument and fails the review sells nothing.
+
+**Each card leads with what will be charged.** The figure on the end is the
+store's own price for the period — `$83.99`, with "a year" under it in full ink
+— at the size and weight the month used to have. The month a year works out to
+moves under the title as the muted line, and "3 months free" moves from the
+card's top edge, where it sat above the price, to a small badge after that
+line, which wraps onto a line of its own under the month when the card is
+narrow — on a phone, always. Both are still computed from the store's two
+prices (`planSaving.ts`, `perMonthPrice.ts`), and every price is still the
+store's string. `planPrice.ts` is the one place that decides which figure
+leads, and its test pins it to the charge. The monthly card keeps "Billed
+monthly" under its title, so both cards still read title, then the quiet line;
+on the yearly card the badge sits under that line on a phone.
+
+**The terms line sets the charge strong.** "1 week free, then **$83.99 a year**
+· Cancel anytime" keeps its order — the trial, then what follows it — but the
+price and its period are the only words in it set in full ink and bold. The
+values are marked inside the translated sentence (`emphasis.ts`) rather than
+translated as fragments either side of them, because Turkish puts the period
+first.
+
+**The button carries no figure.** It names what the tap does — "Start your free
+week" where the store offers a free week this person can still have,
+"Subscribe" otherwise — and the line directly above it says what that costs.
+
+**The free week leaves the headline.** At title size the headline is the
+largest type on the page, and "Try Pro free for a week" is a price claim — a
+week for nothing — so leading with it outranked the charge on every card. The
+headline is now "Go further with Pro" for everybody who can buy, and the same
+words about the free week sit directly under it, one size down, wherever the
+store offers a free week this person can still have. The button and the terms
+line still say it, and it stays above the fold. The alternative was the
+trial-led headline with only the cards and the terms line changed; it leaves
+the largest words on the screen a price claim, which is what both stores'
+rules are about.
+
+Unchanged: the two cards, yearly picked on open, the dated timeline, the trial's
+terms in one line directly above the button, Restore, Terms, Privacy and the iOS
+EULA, and the X that closes the screen in one tap.
 
 ## Gift codes give time, not discounts
 

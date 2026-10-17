@@ -91,6 +91,72 @@ describe('what a refused quota leaves behind', () => {
     }
     expect(await refusalsOf(userId)).toEqual([])
   })
+
+  const kindsOf = async (userId: string) =>
+    (
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: userId }, { projection: { quotaRefusalKinds: 1 } })
+    )?.quotaRefusalKinds ?? []
+
+  /** The operator panel's "which limit", kept beside the instants the nudge reads. */
+  describe('which limit it was', () => {
+    it('writes the kind next to each instant', async () => {
+      const userId = await newProfile()
+      for (let index = 0; index < FREE_INITIATIONS; index++) {
+        await consumeQuota(handle.db, userId, 'free', 'initiations')
+      }
+      for (let index = 0; index < FREE_CAPTURES; index++) {
+        await consumeQuota(handle.db, userId, 'free', 'echoCaptures')
+      }
+      await consumeQuota(handle.db, userId, 'free', 'initiations')
+      await consumeQuota(handle.db, userId, 'free', 'echoCaptures')
+
+      const instants = await refusalsOf(userId)
+      const kinds = await kindsOf(userId)
+      expect(kinds.map((entry) => entry.kind)).toEqual(['initiations', 'echoCaptures'])
+      // The same refusals, not a second count: one instant each, in step.
+      expect(kinds.map((entry) => entry.at.getTime())).toEqual(instants.map((at) => at.getTime()))
+    })
+
+    it('leaves the list the nudge reads as bare instants', async () => {
+      const userId = await newProfile()
+      for (let index = 0; index < FREE_INITIATIONS; index++) {
+        await consumeQuota(handle.db, userId, 'free', 'initiations')
+      }
+      await consumeQuota(handle.db, userId, 'free', 'initiations')
+      const [only] = await refusalsOf(userId)
+      expect(only).toBeInstanceOf(Date)
+    })
+
+    it('prunes both lists by the same cut-off', async () => {
+      const old = new Date(Date.now() - QUOTA_REFUSAL_WINDOW_MS - 60_000)
+      const userId = await newProfile([old])
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: userId }, { $set: { quotaRefusalKinds: [{ at: old, kind: 'media' }] } })
+      for (let index = 0; index < FREE_INITIATIONS; index++) {
+        await consumeQuota(handle.db, userId, 'free', 'initiations')
+      }
+      await consumeQuota(handle.db, userId, 'free', 'initiations')
+
+      expect(await refusalsOf(userId)).toHaveLength(1)
+      expect((await kindsOf(userId)).map((entry) => entry.kind)).toEqual(['initiations'])
+    })
+
+    it('leaves an old refusal with no kind, so it can be called unknown', async () => {
+      // Written by an API from before the kind was kept: an instant, no entry.
+      const recent = new Date(Date.now() - 60_000)
+      const userId = await newProfile([recent])
+      for (let index = 0; index < FREE_INITIATIONS; index++) {
+        await consumeQuota(handle.db, userId, 'free', 'initiations')
+      }
+      await consumeQuota(handle.db, userId, 'free', 'initiations')
+
+      expect(await refusalsOf(userId)).toHaveLength(2)
+      expect(await kindsOf(userId)).toHaveLength(1)
+    })
+  })
 })
 
 /**

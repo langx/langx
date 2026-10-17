@@ -7,8 +7,12 @@ import {
   MAX_VIDEO_SECONDS,
   MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES,
   PLAN_LIMITS,
+  sendAwardSchema,
   sendMediaMessageSchema,
+  streakMilestoneBonus,
+  TOKEN_RULES,
   UPCOMING_MEETING_LOOKAHEAD_HOURS,
+  utcDayKey,
   WAVEFORM_BARS,
 } from '@langx/shared'
 import { ObjectId } from 'mongodb'
@@ -22,6 +26,7 @@ import { COLLECTIONS } from '../db/collections'
 import type { Profile } from '../modules/profiles/profiles'
 import type { Message } from '../modules/chat/conversations'
 import { pollResults } from '../modules/chat/polls'
+import { dailyActivityId, type DailyActivity } from '../modules/tokens/dailyActivity'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createStorageProvider } from '../storage/createStorageProvider'
@@ -3971,6 +3976,148 @@ describe('Faz 5 — conversation/message history REST', () => {
         .collection(COLLECTIONS.messages)
         .findOne({ _id: new ObjectId(message._id) })
       expect(stored?.body).toBe('from my wrist')
+    })
+
+    describe('what the send earned', () => {
+      const send = (user: SignedUpUser, conversationId: string, payload: Record<string, unknown>) =>
+        app.inject({
+          method: 'POST',
+          url: `/conversations/${conversationId}/messages`,
+          headers: { cookie: user.cookie },
+          payload,
+        })
+
+      const awardOf = (response: { json: () => unknown }) =>
+        sendAwardSchema.parse((response.json() as { award?: unknown }).award)
+
+      /** The books for one sender, to hold the response against. */
+      const earnedBy = async (userId: string) =>
+        (
+          await handle.db
+            .collection<{ amount: number }>(COLLECTIONS.tokenLedger)
+            .find({ userId, kind: 'message' })
+            .toArray()
+        ).reduce((sum, row) => sum + row.amount, 0)
+
+      const dayKey = (offsetDays: number) =>
+        new Date(Date.now() - offsetDays * 86_400_000).toISOString().slice(0, 10)
+
+      /** The streak as it stood `daysAgo` days back, so today's send is the one that moves it. */
+      const rewindStreak = (userId: string, current: number, daysAgo: number, freezes = 0) =>
+        handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+          { _id: userId },
+          {
+            $set: {
+              'streak.current': current,
+              'streak.longest': current,
+              'streak.lastQualifiedDay': dayKey(daysAgo),
+              'streak.lastActionDay': dayKey(daysAgo),
+              streakFreezes: freezes,
+            },
+          },
+        )
+
+      it('returns it beside the message, with the message unchanged', async () => {
+        const { a, b, conversationId } = await pair('rest-award')
+
+        // Their first reply makes the thread two-way: the message, the
+        // reciprocity bonus, and the day's streak.
+        const reply = await send(b, conversationId, { body: 'merhaba' })
+        expect(reply.statusCode, reply.body).toBe(200)
+        expect(reply.json()).toMatchObject({ body: 'merhaba', senderId: b.userId })
+        const award = awardOf(reply)
+        expect(award).toEqual({
+          tokens: TOKEN_RULES.award.message + TOKEN_RULES.award.mutualConversation,
+          streak: {
+            current: 1,
+            longest: 1,
+            lastQualifiedDay: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/) as string,
+            advanced: true,
+            milestoneXp: 0,
+            freezeUsed: false,
+          },
+          capped: false,
+        })
+        expect(await earnedBy(b.userId)).toBe(award.tokens)
+
+        // The opener already has today's streak and was paid the mutual
+        // bonus when this reply landed, so their next send is the message alone.
+        const next = await send(a, conversationId, { body: 'nasılsın' })
+        expect(awardOf(next)).toMatchObject({
+          tokens: TOKEN_RULES.award.message,
+          streak: { current: 1, advanced: false },
+          capped: false,
+        })
+      })
+
+      it('says so when the send crossed the per-partner cap', async () => {
+        const { a, b, conversationId } = await pair('rest-award-capped')
+        // Opening the thread already wrote today's row for this sender, so the
+        // partner's tally is moved up to the cap rather than sixty sends made.
+        await handle.db
+          .collection<DailyActivity>(COLLECTIONS.dailyActivity)
+          .updateOne(
+            { _id: dailyActivityId(a.userId, utcDayKey(new Date())) },
+            { $set: { [`perPartner.${b.userId}`]: TOKEN_RULES.caps.messagesPerPartnerPerDay } },
+          )
+        const before = await earnedBy(a.userId)
+
+        const response = await send(a, conversationId, { body: 'one over' })
+        expect(response.statusCode, response.body).toBe(200)
+        expect(awardOf(response)).toMatchObject({ tokens: 0, capped: true })
+        expect(await earnedBy(a.userId)).toBe(before)
+      })
+
+      it('says a banked freeze bridged the missed day', async () => {
+        const { a, conversationId } = await pair('rest-award-freeze')
+        await rewindStreak(a.userId, 5, 2, 1)
+
+        const response = await send(a, conversationId, { body: 'back again' })
+        expect(response.statusCode, response.body).toBe(200)
+        const award = awardOf(response)
+        expect(award.streak).toMatchObject({ current: 6, advanced: true, freezeUsed: true })
+
+        // The freeze is gone from the profile the response describes.
+        const profile = await handle.db
+          .collection<Profile>(COLLECTIONS.profiles)
+          .findOne({ _id: a.userId })
+        expect(profile?.streakFreezes).toBe(0)
+        expect(profile?.streak.current).toBe(6)
+      })
+
+      it('counts a streak milestone in the tokens and names it in the streak', async () => {
+        const { a, conversationId } = await pair('rest-award-milestone')
+        await rewindStreak(a.userId, 6, 1)
+
+        const response = await send(a, conversationId, { body: 'seven days' })
+        expect(response.statusCode, response.body).toBe(200)
+        const award = awardOf(response)
+        expect(award.streak).toMatchObject({
+          current: 7,
+          advanced: true,
+          milestoneXp: streakMilestoneBonus(7),
+          freezeUsed: false,
+        })
+        expect(award.tokens).toBe(TOKEN_RULES.award.message + streakMilestoneBonus(7))
+      })
+
+      // A resent send is the first attempt's message and was paid with it, so
+      // the second answer carries the message and no award, and the books show
+      // one payment rather than two.
+      it('answers a retry from its clientId without an award', async () => {
+        const { a, conversationId } = await pair('rest-award-retry')
+        const payload = { body: 'sent once', clientId: new ObjectId().toHexString() }
+
+        const first = await send(a, conversationId, payload)
+        const afterFirst = await earnedBy(a.userId)
+        const second = await send(a, conversationId, payload)
+
+        expect(awardOf(first).tokens).toBe(TOKEN_RULES.award.message)
+        expect(second.statusCode).toBe(200)
+        expect(second.json<{ _id: string }>()._id).toBe(first.json<{ _id: string }>()._id)
+        expect(second.json()).not.toHaveProperty('award')
+        expect(await earnedBy(a.userId)).toBe(afterFirst)
+      })
     })
 
     /*

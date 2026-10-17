@@ -4,6 +4,7 @@ import { Pressable, Text, View } from 'react-native'
 import { useTips } from '../hooks/useTips'
 import { useT } from '../i18n'
 import type { MessageKey } from '../i18n/runtime'
+import { track } from '../lib/analytics'
 import { makeStyles, useTheme } from '../lib/theme'
 import type { TipId, TipSlot } from '../lib/tips'
 
@@ -62,6 +63,7 @@ export function Tip({ slot, spaced = true }: TipProps) {
     setId(candidate)
     // `tips` is rebuilt every render; `id` above is what makes this happen once.
     tips.advance(slot)
+    track({ name: 'tip_shown', properties: { tip: candidate, slot } })
   }, [candidate, id, slot, tips])
 
   // Sending one away empties the row for this visit rather than sliding the
@@ -78,6 +80,7 @@ export function Tip({ slot, spaced = true }: TipProps) {
         onPress={() => {
           setSentAway(true)
           tips.dismiss(id)
+          track({ name: 'tip_dismissed', properties: { tip: id, slot } })
         }}
         hitSlop={12}
         style={({ pressed }) => [styles.close, pressed && styles.pressed]}

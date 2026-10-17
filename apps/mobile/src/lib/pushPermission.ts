@@ -151,3 +151,27 @@ export async function readPushGuideStatus(platform: string): Promise<PushGuideSt
 
 /** What the web has, and the shape `pushGuideStatus` answers `web` to anyway. */
 const NO_PERMISSION = { granted: false, canAskAgain: false }
+
+/**
+ * Which of the three askers raised the system dialog: the card at the end of
+ * onboarding, the chats tab's one attempt, or the switch in Settings. Reported
+ * with the ask, because the answer rate of a dialog that follows a reason and
+ * one that follows nothing are two different numbers.
+ */
+export type PushPermissionSource = 'priming' | 'chats' | 'settings'
+
+/**
+ * What the dialog was left with, from the two facts the permission response
+ * gives.
+ *
+ * `undetermined` is not a refusal: Android's dialog can be dismissed without
+ * an answer and leaves exactly this, with the app free to ask again. iOS never
+ * produces it from a dialog that was shown. Folding it into `denied` would
+ * count a dismissal as a no.
+ */
+export type PushAnswer = 'granted' | 'denied' | 'undetermined'
+
+export function pushAnswer(input: { granted: boolean; undetermined: boolean }): PushAnswer {
+  if (input.granted) return 'granted'
+  return input.undetermined ? 'undetermined' : 'denied'
+}

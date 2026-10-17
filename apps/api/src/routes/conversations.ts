@@ -22,7 +22,7 @@ export const conversationRoutes: FastifyPluginAsyncZod = async (app) => {
     '/conversations',
     { preHandler: requireVerifiedEmail, schema: { body: startConversationSchema } },
     async (request, reply) => {
-      const { conversation, message } = await startConversation(
+      const { conversation, message, award } = await startConversation(
         app.mongo.db,
         request.userId,
         request.body,
@@ -48,10 +48,16 @@ export const conversationRoutes: FastifyPluginAsyncZod = async (app) => {
        * Added alongside the conversation rather than nesting it under one:
        * the shape a client reads `_id` off is the conversation itself, and
        * `{ conversation, firstPage }` would break every one already deployed.
+       *
+       * `award` rides the same way, for the same reason: what the first
+       * message earned (the streak's day, usually) is known here and nowhere
+       * the client could ask for it later.
        */
-      return reply
-        .code(201)
-        .send({ ...conversation, firstPage: openingPage(conversation, message, request.userId) })
+      return reply.code(201).send({
+        ...conversation,
+        firstPage: openingPage(conversation, message, request.userId),
+        award,
+      })
     },
   )
 
