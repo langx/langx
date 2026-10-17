@@ -230,9 +230,9 @@ function LearningList({
   }
 
   function settle(): void {
-    drag.from.value = -1
-    drag.to.value = -1
-    drag.dy.value = 0
+    drag.from.set(-1)
+    drag.to.set(-1)
+    drag.dy.set(0)
   }
 
   const order = learning.map((entry) => entry.code).join(',')
@@ -291,42 +291,44 @@ function DraggableRow({
   const pan = Gesture.Pan()
     .activateAfterLongPress(LIFT_AFTER_MS)
     .onStart(() => {
-      drag.from.value = index
-      drag.to.value = index
-      drag.dy.value = 0
+      drag.from.set(index)
+      drag.to.set(index)
+      drag.dy.set(0)
       runOnJS(lift)()
     })
     .onUpdate((event) => {
-      drag.dy.value = event.translationY
+      drag.dy.set(event.translationY)
       // Sliced, because a removed row's height is left behind at the end.
-      drag.to.value = dropIndex(drag.heights.value.slice(0, count), index, event.translationY)
+      drag.to.set(dropIndex(drag.heights.get().slice(0, count), index, event.translationY))
     })
     .onEnd((_event, success) => {
       // The list redrew under the finger — a failed write rolled back — and
       // this index no longer names the row that was picked up.
-      if (drag.from.value !== index) return
+      if (drag.from.get() !== index) return
       // Cancelled rather than released — the system took the touch — goes home.
-      const to = success ? drag.to.value : index
-      const rest = slotOffset(drag.heights.value.slice(0, count), index, to)
-      drag.dy.value = withTiming(rest, { duration: 150 }, (finished) => {
-        if (finished) runOnJS(onDrop)(index, to)
-      })
+      const to = success ? drag.to.get() : index
+      const rest = slotOffset(drag.heights.get().slice(0, count), index, to)
+      drag.dy.set(
+        withTiming(rest, { duration: 150 }, (finished) => {
+          if (finished) runOnJS(onDrop)(index, to)
+        }),
+      )
     })
 
   const moving = useAnimatedStyle(() => {
-    const from = drag.from.value
+    const from = drag.from.get()
     if (from === -1) {
       return { transform: [{ translateY: 0 }], zIndex: 0, shadowOpacity: 0, elevation: 0 }
     }
     if (from === index) {
       return {
-        transform: [{ translateY: drag.dy.value }],
+        transform: [{ translateY: drag.dy.get() }],
         zIndex: 1,
         shadowOpacity: 0.18,
         elevation: 6,
       }
     }
-    const room = makeRoom(drag.heights.value, index, from, drag.to.value)
+    const room = makeRoom(drag.heights.get(), index, from, drag.to.get())
     return {
       transform: [{ translateY: withTiming(room, { duration: 150 }) }],
       zIndex: 0,
@@ -366,8 +368,8 @@ function DraggableRow({
       onLayout={(event) => {
         const height = event.nativeEvent.layout.height
         /*
-         * `modify`, on the UI thread, and not a copy made here. A write to
-         * `.value` from JS lands on the UI thread later, so every row laid
+         * `modify`, on the UI thread, and not a copy made here. A write
+         * with `.set()` from JS lands on the UI thread later, so every row laid
          * out in the same pass read the same empty array and the last write
          * won: one height out of three. Heights of 0 meant the neighbours
          * never made room and the dropped row flew back to where it started.

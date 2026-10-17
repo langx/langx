@@ -136,12 +136,12 @@ function WelcomeSheet({
   // The badge lands with an overshoot, after the sheet has faded in. With
   // reduced motion it is simply there.
   useEffect(() => {
-    pop.value = reduceMotion ? 1 : withDelay(180, withSpring(1, { damping: 9, stiffness: 170 }))
+    pop.set(reduceMotion ? 1 : withDelay(180, withSpring(1, { damping: 9, stiffness: 170 })))
   }, [reduceMotion, pop])
 
   const badgeStyle = useAnimatedStyle(() => ({
-    opacity: Math.min(1, pop.value * 2),
-    transform: [{ scale: 0.4 + 0.6 * pop.value }],
+    opacity: Math.min(1, pop.get() * 2),
+    transform: [{ scale: 0.4 + 0.6 * pop.get() }],
   }))
 
   return (
@@ -233,15 +233,15 @@ function Drop({
   const progress = useSharedValue(0)
 
   useEffect(() => {
-    progress.value = withDelay(delay, withTiming(1, { duration, easing: Easing.in(Easing.quad) }))
+    progress.set(withDelay(delay, withTiming(1, { duration, easing: Easing.in(Easing.quad) })))
   }, [progress, delay, duration])
 
   const style = useAnimatedStyle(() => ({
     // Invisible until it starts, and fading over the last fifth of the fall.
-    opacity: progress.value === 0 ? 0 : Math.min(1, (1 - progress.value) * 5),
+    opacity: progress.get() === 0 ? 0 : Math.min(1, (1 - progress.get()) * 5),
     transform: [
-      { translateY: -60 + progress.value * fall },
-      { rotate: `${progress.value * spin}deg` },
+      { translateY: -60 + progress.get() * fall },
+      { rotate: `${progress.get() * spin}deg` },
     ],
   }))
 

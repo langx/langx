@@ -3743,6 +3743,47 @@ still run unchanged — and that is exactly why they proved nothing here. What
 was missing was one swipe on a device: the simulator build in the tree and the
 last device build both predated the commit.
 
+## Shared values are read with `get()` and written with `set()`
+
+Every `useSharedValue` in the app used to be read and assigned through
+`.value`. Since 16 October 2026 it is `get()` and `set()`, in worklets and in
+plain JS alike — one spelling, not one per thread. The library documents the
+pair as the React-Compiler-compliant way and its own example uses them inside
+`useAnimatedStyle`, so there was no reason to leave half of each file on the
+old form. `modify()` stays for editing an array or object in place; it already
+runs on the UI thread, which is the reason the drag lists use it.
+
+**Why now.** The compiler treats what a hook returns as frozen and refuses an
+assignment to a property of it, and the assignment to `.value` is exactly that.
+Run directly over the app, it rejected the swipe row, the photo viewer, the
+recap story, the photo grid and the languages list for that single reason, and
+the rejection hides whatever else is wrong in the same component. Turning the
+compiler on later (`experiments.reactCompiler`, in the native batch) was going
+to leave those five out of it; this removes that, and changes no behaviour.
+
+**Nothing moves between threads.** `get()` and `set()` are the `.value`
+accessors, installed on the mutable on both runtimes, so a read from JS still
+blocks until the UI thread answers and a write from JS still lands there later
+— the hazard the languages screen's `onLayout` comment describes is unchanged.
+`set()` differs in exactly one case: a function that is not an animation is
+treated as an updater, `(previous) => next`. A shared value could not hold a
+plain function before either (the library says so), and animation definitions
+such as `withSpring(...)` are exempt, so no call site is affected.
+
+**What it does not change.** Every function a gesture or animation callback
+calls still carries `'worklet'` (see _The row swipe runs on the UI thread_).
+
+**The healthcheck cannot be believed as it prints.** `react-compiler-healthcheck`
+at the version current when this was written reports every component compiled,
+and a file the compiler certainly rejects shows as "0 out of 0". Its failure
+branch switches on severity names the compiler no longer uses, throws, and the
+exception is swallowed by its own `try`, so a rejected component is dropped from
+the count rather than added to the failures. Run the compiler plugin itself
+(`babel-plugin-react-compiler`, already in the tree through `babel-preset-expo`)
+with a logger on `CompileError` when the question is whether a file compiles.
+What still stops the animated files is separate: reading or writing a ref
+during render, in `PhotoViewer`, `RecapStory` and `MessageBubble`.
+
 ## A video is one file, and playing it needs a new build
 
 **No thumbnail.** The obvious build is a poster image uploaded beside the

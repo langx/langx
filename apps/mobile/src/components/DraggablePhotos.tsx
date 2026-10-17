@@ -69,10 +69,10 @@ export function DraggablePhotos({
   }
 
   function settle(): void {
-    drag.from.value = -1
-    drag.to.value = -1
-    drag.dx.value = 0
-    drag.dy.value = 0
+    drag.from.set(-1)
+    drag.to.set(-1)
+    drag.dx.set(0)
+    drag.dy.set(0)
   }
 
   const order = photos.map((photo) => photo.url).join('\n')
@@ -136,27 +136,29 @@ function DraggablePhoto({
   const pan = Gesture.Pan()
     .activateAfterLongPress(LIFT_AFTER_MS)
     .onStart(() => {
-      drag.from.value = index
-      drag.to.value = index
-      drag.dx.value = 0
-      drag.dy.value = 0
+      drag.from.set(index)
+      drag.to.set(index)
+      drag.dx.set(0)
+      drag.dy.set(0)
       runOnJS(lift)()
     })
     .onUpdate((event) => {
-      drag.dx.value = event.translationX
-      drag.dy.value = event.translationY
+      drag.dx.set(event.translationX)
+      drag.dy.set(event.translationY)
       // Sliced, because a removed tile's slot is left behind at the end.
-      drag.to.value = nearestSlot(
-        drag.slots.value.slice(0, count),
-        index,
-        event.translationX,
-        event.translationY,
+      drag.to.set(
+        nearestSlot(
+          drag.slots.get().slice(0, count),
+          index,
+          event.translationX,
+          event.translationY,
+        ),
       )
     })
     .onEnd((event, success) => {
       // The grid redrew under the finger — an upload landed, or a failed
       // write rolled back — and this index no longer names the tile picked up.
-      if (drag.from.value !== index) return
+      if (drag.from.get() !== index) return
       if (
         success &&
         Math.abs(event.translationX) + Math.abs(event.translationY) < HELD_NOT_DRAGGED
@@ -165,26 +167,28 @@ function DraggablePhoto({
         return
       }
       // Cancelled rather than released — the system took the touch — goes home.
-      const to = success ? drag.to.value : index
-      const rest = offsetTo(drag.slots.value, index, to)
-      drag.dy.value = withTiming(rest.y, { duration: 150 })
-      drag.dx.value = withTiming(rest.x, { duration: 150 }, (finished) => {
-        if (finished) runOnJS(onDrop)(index, to)
-      })
+      const to = success ? drag.to.get() : index
+      const rest = offsetTo(drag.slots.get(), index, to)
+      drag.dy.set(withTiming(rest.y, { duration: 150 }))
+      drag.dx.set(
+        withTiming(rest.x, { duration: 150 }, (finished) => {
+          if (finished) runOnJS(onDrop)(index, to)
+        }),
+      )
     })
 
   const moving = useAnimatedStyle(() => {
-    const from = drag.from.value
+    const from = drag.from.get()
     if (from === -1) {
       return { transform: [{ translateX: 0 }, { translateY: 0 }, { scale: 1 }], zIndex: 0 }
     }
     if (from === index) {
       return {
-        transform: [{ translateX: drag.dx.value }, { translateY: drag.dy.value }, { scale: 1.08 }],
+        transform: [{ translateX: drag.dx.get() }, { translateY: drag.dy.get() }, { scale: 1.08 }],
         zIndex: 1,
       }
     }
-    const room = offsetTo(drag.slots.value, index, shiftedIndex(index, from, drag.to.value))
+    const room = offsetTo(drag.slots.get(), index, shiftedIndex(index, from, drag.to.get()))
     return {
       transform: [
         { translateX: withTiming(room.x, { duration: 150 }) },
@@ -217,7 +221,7 @@ function DraggablePhoto({
         onLayout={(event) => {
           const { x, y } = event.nativeEvent.layout
           // `modify` on the UI thread, for the reason the languages screen
-          // gives: writes to `.value` from JS in one layout pass race, and
+          // gives: writes with `.set()` from JS in one layout pass race, and
           // the last one wins.
           drag.slots.modify((slots) => {
             'worklet'

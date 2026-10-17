@@ -41,27 +41,27 @@ export function UploadRing({ fraction, label }: { fraction: number | null; label
   useEffect(() => {
     // A sliver at the start, so 0% is still visibly a ring that has begun.
     const target = fraction === null ? PENDING_ARC : Math.max(0.02, fraction)
-    fill.value = reduceMotion ? target : withTiming(target, { duration: 220 })
+    fill.set(reduceMotion ? target : withTiming(target, { duration: 220 }))
   }, [fraction, reduceMotion, fill])
 
   const spin = useSharedValue(0)
   useEffect(() => {
     if (reduceMotion) {
       cancelAnimation(spin)
-      spin.value = 0
+      spin.set(0)
       return
     }
-    spin.value = withRepeat(withTiming(1, { duration: 1400, easing: Easing.linear }), -1, false)
+    spin.set(withRepeat(withTiming(1, { duration: 1400, easing: Easing.linear }), -1, false))
     return () => cancelAnimation(spin)
   }, [reduceMotion, spin])
 
   const arcProps = useAnimatedProps(() => ({
-    strokeDashoffset: CIRCUMFERENCE * (1 - fill.value),
+    strokeDashoffset: CIRCUMFERENCE * (1 - fill.get()),
   }))
   const spinStyle = useAnimatedStyle(() => ({
     // Less a quarter turn, so a still ring starts at twelve o'clock rather
     // than three, which is where SVG begins a circle.
-    transform: [{ rotate: `${spin.value * 360 - 90}deg` }],
+    transform: [{ rotate: `${spin.get() * 360 - 90}deg` }],
   }))
 
   return (

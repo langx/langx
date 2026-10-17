@@ -44,15 +44,15 @@ export function Rise({
   const shown = useSharedValue(reduce ? 1 : 0)
   useEffect(() => {
     if (reduce) {
-      shown.value = 1
+      shown.set(1)
       return
     }
-    shown.value = withDelay(delay, withTiming(1, { duration: 700, easing: EASE_RISE }))
+    shown.set(withDelay(delay, withTiming(1, { duration: 700, easing: EASE_RISE })))
     return () => cancelAnimation(shown)
   }, [delay, reduce, shown])
   const animated = useAnimatedStyle(() => ({
-    opacity: shown.value,
-    transform: [{ translateY: (1 - shown.value) * 18 }],
+    opacity: shown.get(),
+    transform: [{ translateY: (1 - shown.get()) * 18 }],
   }))
   return <Animated.View style={[style, animated]}>{children}</Animated.View>
 }
@@ -118,17 +118,17 @@ export function Pop({
   const shown = useSharedValue(reduce ? 1 : 0)
   useEffect(() => {
     if (reduce) {
-      shown.value = 1
+      shown.set(1)
       return
     }
-    shown.value = withDelay(delay, withTiming(1, { duration: 900, easing: EASE_POP }))
+    shown.set(withDelay(delay, withTiming(1, { duration: 900, easing: EASE_POP })))
     return () => cancelAnimation(shown)
   }, [delay, reduce, shown])
   const animated = useAnimatedStyle(() => ({
     // Opacity follows the unclamped curve only up to 1: the overshoot is for
     // the size and the turn, not a flash brighter than opaque.
-    opacity: Math.min(1, shown.value),
-    transform: [{ scale: 0.6 + 0.4 * shown.value }, { rotate: `${(1 - shown.value) * -6}deg` }],
+    opacity: Math.min(1, shown.get()),
+    transform: [{ scale: 0.6 + 0.4 * shown.get() }, { rotate: `${(1 - shown.get()) * -6}deg` }],
   }))
   return <Animated.View style={[style, animated]}>{children}</Animated.View>
 }
@@ -156,18 +156,14 @@ export function Disc({
   const drift = useSharedValue(0)
   useEffect(() => {
     if (reduce) {
-      drift.value = 0
+      drift.set(0)
       return
     }
-    drift.value = withRepeat(
-      withTiming(1, { duration, easing: Easing.inOut(Easing.ease) }),
-      -1,
-      true,
-    )
+    drift.set(withRepeat(withTiming(1, { duration, easing: Easing.inOut(Easing.ease) }), -1, true))
     return () => cancelAnimation(drift)
   }, [duration, reduce, drift])
   const animated = useAnimatedStyle(() => ({
-    transform: [{ translateX: -18 * drift.value }, { translateY: 14 * drift.value }],
+    transform: [{ translateX: -18 * drift.get() }, { translateY: 14 * drift.get() }],
   }))
   return (
     <Animated.View

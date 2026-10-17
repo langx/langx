@@ -337,11 +337,11 @@ export const MessageBubble = memo(function MessageBubble({
     .activeOffsetX(SWIPE_LOCK_PX)
     .failOffsetY([-SWIPE_LOCK_PX, SWIPE_LOCK_PX])
     .onUpdate((event) => {
-      translateX.value = swipeTranslation(event.translationX)
+      translateX.set(swipeTranslation(event.translationX))
     })
     .onEnd((event) => {
       if (swipeReleased(event.translationX)) runOnJS(onReply)(message)
-      translateX.value = withSpring(0, { damping: 20, stiffness: 220, overshootClamping: true })
+      translateX.set(withSpring(0, { damping: 20, stiffness: 220, overshootClamping: true }))
     })
   const flash = highlighted ? styles.highlighted : null
 
@@ -391,10 +391,10 @@ export const MessageBubble = memo(function MessageBubble({
    * there is one value and one reader.
    */
   const arrowStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(translateX.value, [0, SWIPE_ACTIVATE_PX], [0, 1], 'clamp'),
+    opacity: interpolate(translateX.get(), [0, SWIPE_ACTIVATE_PX], [0, 1], 'clamp'),
   }))
   const sliderStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
+    transform: [{ translateX: translateX.get() }],
   }))
 
   /**
