@@ -2,6 +2,7 @@ import {
   ERROR_CODES,
   adminLatestVersionSchema,
   adminListQuerySchema,
+  adminMeasureQuerySchema,
   adminMinVersionSchema,
   adminCaptchaRequiredSchema,
   adminMemberListQuerySchema,
@@ -60,6 +61,8 @@ import { sendBroadcastTest } from '../modules/admin/broadcastQueue'
 import { pollResults } from '../modules/chat/polls'
 import { getReport, listAppeals, listReports, toObjectId } from '../modules/admin/reports'
 import { FUNNEL_WINDOWS, readFunnel } from '../modules/admin/funnel'
+import { readAdminMeasure } from '../modules/admin/measure'
+import { readMoneyTimeline } from '../modules/admin/moneyTimeline'
 import { listOnline, readAdminPulse } from '../modules/admin/pulse'
 import { forgetAdminStats, readAdminStats } from '../modules/admin/stats'
 import { findAdminUser, getAdminUser, listMembers } from '../modules/admin/users'
@@ -177,6 +180,25 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     },
     async (request, reply) => {
       return reply.send(await readFunnel(app.env, request.query.window))
+    },
+  )
+
+  /**
+   * The baseline: weekly cohorts with Day 1 / 7 / 30 return and activation,
+   * how first messages fare, and which limits people hit.
+   *
+   * One route for the three because they share the one expensive read — the
+   * conversations of the window and their first replies — and a screen that
+   * showed them side by side would otherwise pay for it twice. Five minutes of
+   * memory behind it, per window of weeks. Read only, and private: see the note
+   * at the top of `modules/admin/measure.ts` for where each figure comes from
+   * and why none of it may reach the public stats page.
+   */
+  app.get(
+    '/admin/measure',
+    { preHandler: requireAdmin, schema: { querystring: adminMeasureQuerySchema } },
+    async (request, reply) => {
+      return reply.send(await readAdminMeasure(app.mongo.db, request.query.weeks))
     },
   )
 
@@ -545,6 +567,22 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       const profile = await getProfile(app.mongo.db, request.params.userId)
       if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such account')
       return reply.send(await findLinkedAccounts(app.mongo.db, profile._id))
+    },
+  )
+
+  /**
+   * One person's money, in order: gifts of Pro, what the store told us, and
+   * the fall to free. A read, so nothing is recorded. Its own route rather
+   * than part of the detail because the detail is opened far more often than
+   * anybody wants this.
+   */
+  app.get(
+    '/admin/users/:userId/money',
+    { preHandler: requireAdmin, schema: { params: z.object({ userId: z.string() }) } },
+    async (request, reply) => {
+      const profile = await getProfile(app.mongo.db, request.params.userId)
+      if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such account')
+      return reply.send(await readMoneyTimeline(app.mongo.db, profile))
     },
   )
 

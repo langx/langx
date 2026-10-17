@@ -1,4 +1,4 @@
-import { TOKEN_RULES } from '@langx/shared'
+import { TOKEN_RULES, type SendAward } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Conversation, Message } from '../chat/conversations'
@@ -7,15 +7,7 @@ import { isOfficialId } from '../official/accounts'
 import { settleReferral } from '../referrals/settle'
 import { recordActivity } from './dailyActivity'
 import { MUTUAL_REF_PREFIX, awardTokens } from './ledger'
-import { recordQualifyingAction, type StreakResult } from './streak'
-
-export interface SendAward {
-  /** token credited to the sender for this send, milestone and mutual bonus included. */
-  tokens: number
-  streak: StreakResult | null
-  /** True when this send crossed the daily or per-partner message cap. */
-  capped: boolean
-}
+import { recordQualifyingAction } from './streak'
 
 /** `refId` for the reciprocity bonus — can never collide with a message id. */
 function mutualRefId(conversation: Conversation): string {
@@ -48,6 +40,11 @@ function messageCorrectionRefId(message: Message): string {
  * else is the database being unavailable, in which case the message insert
  * that precedes it would have failed too. Silently catching would trade a
  * loud, recoverable error for a quiet drift in everyone's balance.
+ *
+ * What it returns is what the sender is told, as is: both call sites hand it
+ * to the response of the send (`SendResult.award`, `StartResult.award`), and
+ * that is the only place it is computed. A transport that worked the payout
+ * out for itself would be a second set of arithmetic to disagree with this one.
  */
 export async function awardForSend(
   db: Db,

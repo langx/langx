@@ -367,7 +367,7 @@ export const de: Localized<ServerMessages> = {
       limitReachedSubject: 'Du stößt an die kostenlosen Limits',
 
       limitReachedBody:
-        'Du hast in den letzten Tagen dreimal ein Tageslimit erreicht. Ein Tarif hebt sie auf — mehr Gespräche, mehr Übersetzungen, mehr Anhänge, jeden Tag.',
+        'Du hast in den letzten Tagen dreimal ein Tageslimit erreicht. Ein Tarif hebt sie auf — mehr Gespräche und mehr Übersetzungen, jeden Tag.',
 
       limitReachedButton: 'Tarife ansehen',
 

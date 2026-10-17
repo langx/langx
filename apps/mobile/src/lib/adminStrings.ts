@@ -81,6 +81,7 @@ export const ADMIN = {
     broadcast: 'Broadcast',
     users: 'Find someone',
     giftCodes: 'Gift codes',
+    measure: 'Measurement',
     system: 'System',
     waiting: 'waiting',
     sections: {
@@ -433,6 +434,149 @@ export const ADMIN = {
       'Each one gets the usual notice and is logged on its own account. Operators, official accounts, you, and anyone already suspended are skipped.',
     done: (suspended: number, skipped: number) =>
       skipped === 0 ? `${suspended} suspended.` : `${suspended} suspended, ${skipped} skipped.`,
+  },
+
+  /**
+   * The measurement screen. Every definition is printed where it is used,
+   * because a rate whose denominator is a mystery cannot be compared with
+   * anything — least of all with itself a month from now.
+   */
+  measure: {
+    title: 'Measurement',
+    intro:
+      'Read from what the server already keeps, nothing more. Private: none of this belongs on a public page.',
+    clocks:
+      'Weeks start on the UTC Monday of the sign-up. A person’s Day 1, 7 and 30 are counted on their own calendar.',
+    window: 'Weeks shown',
+    weeks: (n: number) => `${n} weeks`,
+    failedToLoad: 'Could not load the measurement.',
+    truncated:
+      'A ceiling was hit while reading, so these figures cover the most recent part of the window only.',
+    generated: (time: string) => `Read at ${time} UTC. Kept for five minutes.`,
+    /** "3 of 8" — who a rate is out of. */
+    ratio: (count: number, whole: number) => `${count} of ${whole}`,
+    duration: {
+      underMinute: 'under a minute',
+      minutes: (n: number) => `${n} min`,
+      hours: (n: number) => `${n} h`,
+      days: (n: number) => `${n} days`,
+    },
+
+    cohorts: {
+      title: 'Sign-up cohorts',
+      hint: (hours: number, conversations: number) =>
+        `Return is being in the app on that exact day. Activated is ${conversations} two-way conversations within ${hours} hours of joining. Guests, official accounts and deleted accounts are left out. Under each rate is who it is out of: only people whose day has fully passed are counted.`,
+      returnSource: (from: string) =>
+        `Return is read from the streak calendar, which records a visit with nothing else in it from ${from}. Days before that are not measured.`,
+      week: 'Week of',
+      joined: 'Joined',
+      day1: 'Day 1',
+      day7: 'Day 7',
+      day30: 'Day 30',
+      activated: 'Activated',
+      total: 'All weeks',
+      nobody: 'Nobody joined in this window.',
+    },
+
+    firstMessages: {
+      title: 'First messages',
+      hint: (hours: number) =>
+        `Conversations between two people, by the week they were opened. A message is judged once it is ${hours} hours old. Unanswered includes a reply that came later than that. @langx’s own messages are left out.`,
+      medianNote:
+        'The median covers conversations that got a reply, however late, so the newest weeks read faster than they will turn out to be.',
+      week: 'Week of',
+      opened: 'Opened',
+      unanswered: (hours: number) => `No reply in ${hours} h`,
+      outOf: (n: number) => `of ${n}`,
+      never: 'Never answered',
+      median: 'Median reply',
+      total: 'All weeks',
+      none: 'No conversations were opened in this window.',
+    },
+
+    refusals: {
+      title: 'Limits people hit',
+      hint: (days: number) =>
+        `Every time someone was told they had run out, by which limit, over the last ${days} days — all the server keeps. Free and Pro accounts are both here. “Unknown” was recorded before the limit was.`,
+      none: (days: number) => `Nobody was refused in the last ${days} days.`,
+      people: (n: number) => `${n} ${n === 1 ? 'person' : 'people'}`,
+      kinds: {
+        initiations: 'New conversations',
+        translations: 'Translations',
+        media: 'Photos, voice and video',
+        echoCaptures: 'Echo cards kept',
+        echoNewCards: 'Echo starter cards',
+        echoVoices: 'Echo card read aloud',
+        chatVoices: 'Message read aloud',
+        transcripts: 'Voice note transcripts',
+        unknown: 'Unknown',
+      },
+    },
+
+    notHere:
+      'Not on this screen: paywall views and what was tapped on them, and installs. They live in PostHog.',
+  },
+
+  /** One person's money, on the account screen. */
+  money: {
+    title: 'Money timeline',
+    hint: 'Gifts of Pro, what the store told us, and the fall back to free — in order, newest first.',
+    notHere:
+      'Paywall views and taps on them are in PostHog, not the server, so a quiet stretch here does not mean the paywall was never seen. The stored store events do not say whether a period was a free trial; each start shows how long the period it opened was instead.',
+    empty: 'Nothing recorded: no gift, and no event from the store.',
+    truncated: (n: number) =>
+      `Showing the newest ${n} lines of at least one source. There are more.`,
+    failed: 'Could not load the timeline.',
+    now: {
+      title: 'Right now',
+      free: 'Free',
+      pro: 'Pro',
+      trial: 'in the free week',
+      intro: 'on an introductory price',
+      store: (store: string) => `via ${store}`,
+      renews: 'renews',
+      wontRenew: 'will not renew',
+      until: (date: string) => `until ${date}`,
+    },
+    day: (days: number) =>
+      days < 0 ? 'before joining' : days === 0 ? 'day of joining' : `day ${days} after joining`,
+    sandbox: 'sandbox',
+    period: (days: number) => `opens a ${days}-day period`,
+    churn: 'Fell back to free',
+    gift: {
+      title: 'Gift of Pro',
+      length: (months: number, weeks: number) => {
+        const parts: string[] = []
+        if (months > 0) parts.push(`${months} month${months === 1 ? '' : 's'}`)
+        if (weeks > 0) parts.push(`${weeks} week${weeks === 1 ? '' : 's'}`)
+        return parts.join(' and ') || 'no time'
+      },
+      sources: {
+        admin: 'from an operator',
+        streak: 'for a streak',
+        referral: 'for invitations',
+        code: 'from a gift code',
+      },
+      statuses: {
+        pending: 'waiting to be granted',
+        granted: 'granted',
+        failed: 'could not be granted',
+        skipped: 'skipped',
+      },
+    },
+    events: {
+      INITIAL_PURCHASE: 'Subscription started',
+      RENEWAL: 'Renewed',
+      CANCELLATION: 'Cancelled',
+      UNCANCELLATION: 'Auto-renew turned back on',
+      EXPIRATION: 'Ended',
+      BILLING_ISSUE: 'Billing problem',
+      PRODUCT_CHANGE: 'Changed plan',
+      NON_RENEWING_PURCHASE: 'One-off purchase',
+      SUBSCRIPTION_PAUSED: 'Paused',
+      TRANSFER: 'Moved between accounts',
+      TEST: 'Test event',
+    },
   },
 
   online: {

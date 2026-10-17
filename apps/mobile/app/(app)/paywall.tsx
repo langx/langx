@@ -13,16 +13,8 @@ import {
   TIER_NAMES,
 } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useEffect, useRef, useState } from 'react'
-import {
-  Linking,
-  Platform,
-  Pressable,
-  ScrollView,
-  Text,
-  useWindowDimensions,
-  View,
-} from 'react-native'
+import { useEffect, useState } from 'react'
+import { Linking, Platform, Pressable, ScrollView, Text, View } from 'react-native'
 import { useEffectiveTier, useMe, useQuota, useRefreshEntitlement } from '../../src/api/queries'
 import { GiftCodeEntry } from '../../src/components/GiftCodeEntry'
 import { PlanOption } from '../../src/components/paywall/PlanOption'
@@ -34,10 +26,11 @@ import { Screen } from '../../src/components/ui/Screen'
 import { Skeleton } from '../../src/components/ui/Skeleton'
 import { track } from '../../src/lib/analytics'
 import { PAYWALL_SOURCES, type PaywallSource } from '../../src/lib/analyticsEvents'
+import { emphasise, emphasisRuns } from '../../src/lib/emphasis'
 import { selection } from '../../src/lib/haptics'
 import { goBackTo } from '../../src/lib/navigation'
-import { perMonthPriceString } from '../../src/lib/perMonthPrice'
-import { yearlyFreeMonths, yearlySavingPercent } from '../../src/lib/planSaving'
+import { paywallOffersState, restoreResult } from '../../src/lib/paywallAnalytics'
+import { planPrice } from '../../src/lib/planPrice'
 import {
   getOffers,
   isPurchasesAvailable,
@@ -48,6 +41,7 @@ import {
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { APPLE_EULA_URL, PRIVACY_URL, TERMS_URL } from '../../src/lib/externalLinks'
 import { useLocale, useT, type MessageKey } from '../../src/i18n'
+import { usePaywallTracking } from '../../src/hooks/usePaywallTracking'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 const PERIOD_LABEL: Record<BillingPeriod, MessageKey> = {
@@ -78,11 +72,12 @@ const PERIOD_PHRASE: Record<BillingPeriod, MessageKey> = {
 /**
  * How long the hero waits for the store before it shows anyway.
  *
- * The headline depends on the store's answer — "Try Pro free for a week" is
+ * The hero depends on the store's answer — the free week under the headline is
  * only true when a trial came back — so the page holds its entrance until the
- * offers arrive rather than opening on one headline and swapping to another.
- * RevenueCat usually answers from its cache in a fraction of this; a store
- * that has not answered by then gets the plain headline and the skeletons.
+ * offers arrive rather than opening without that line and pushing everything
+ * down when it lands. RevenueCat usually answers from its cache in a fraction
+ * of this; a store that has not answered by then gets no trial line and the
+ * skeletons.
  */
 const STORE_WAIT_MS = 1000
 
@@ -263,11 +258,12 @@ function parseSource(raw: string | undefined): PaywallSource {
 const DAY_MS = 24 * 60 * 60 * 1000
 
 /**
- * Below this window height — an iPhone SE, a phone in split view — the lead
- * paragraph gives its lines to the plan cards, so the yearly card is on screen
- * without a scroll. The headline and the four benefits already make the case.
+ * What the yearly plan card measures on a phone, for the loading skeleton: more
+ * than the 76-point minimum, because its saving badge wraps onto a line of its
+ * own. A wider window, or a yearly price with no saving to state, gives a
+ * shorter card.
  */
-const COMPACT_HEIGHT = 700
+const YEARLY_CARD_HEIGHT = 94
 
 export default function PaywallScreen() {
   useScreenInteractive()
@@ -275,7 +271,6 @@ export default function PaywallScreen() {
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
-  const { height: windowHeight } = useWindowDimensions()
 
   // Reached from the profile, the viewer list, filters, Discover and a chat
   // thread, so the caller says where back leads.
@@ -333,32 +328,14 @@ export default function PaywallScreen() {
     }
   }, [])
 
-  // Once per opening, with what sent them here. The paywall is the end of the
-  // funnel, and which capability people hit it from is the question. Mount
-  // only: the tier changing after a purchase is not a second viewing.
-  useEffect(() => {
-    track({ name: 'paywall_viewed', properties: { feature: feature ?? null, tier, source, gift } })
-  }, [])
-
   /**
-   * Closing without buying, and how long the screen was open for.
-   *
-   * The pair `paywall_viewed`/`paywall_dismissed` is what separates "nobody
-   * reads this" from "everybody reads it and says no" — two failures with
-   * opposite fixes. Both exits go through here: the X, and the onboarding
-   * paywall's own "Continue free".
-   *
-   * A hardware back on Android is not caught, and deliberately not fought
-   * over: it leaves the same view unbought and shows up as a view with no
-   * dismissal, which is a known and countable gap rather than a wrong number.
+   * The X and the onboarding paywall's "Continue free". The dismissal event is
+   * not sent from here: every way out of the screen — these, Android's back
+   * button, the iOS swipe — is counted once by `usePaywallTracking`, which is
+   * only told that this one was ours.
    */
-  const openedAt = useRef(Date.now())
-
   function dismiss(): void {
-    track({
-      name: 'paywall_dismissed',
-      properties: { source, seconds_open: Math.round((Date.now() - openedAt.current) / 1000) },
-    })
+    tracking.markClosed()
     // The onboarding exposure is the last screen of the wizard, so there is
     // nothing behind it worth going back to — and `goBackTo` would pop onto
     // `done`, whose CTA opened this.
@@ -394,6 +371,7 @@ export default function PaywallScreen() {
     // be seconds late or lost entirely, so the client asks the server to
     // reconcile rather than waiting and hoping.
     if (outcome === 'purchased') {
+      tracking.markPurchased()
       refresh.mutate()
       return
     }
@@ -404,9 +382,11 @@ export default function PaywallScreen() {
   }
 
   async function restore(): Promise<void> {
+    track({ name: 'restore_tapped', properties: { source } })
     setNotice(null)
     setRestoring(true)
     const ok = await restorePurchases()
+    track({ name: 'restore_finished', properties: { source, result: restoreResult(ok) } })
     setRestoring(false)
     // Reconcile either way: the server is the authority on entitlement, and it
     // can find a subscription the local store call could not.
@@ -417,7 +397,13 @@ export default function PaywallScreen() {
   function pick(next: BillingPeriod): void {
     if (next === period) return
     void selection()
+    track({ name: 'plan_selected', properties: { source, period: next } })
     setPickedPeriod(next)
+  }
+
+  function toggleBenefits(): void {
+    if (!showAll) track({ name: 'benefits_expanded', properties: { source } })
+    setShowAll((open) => !open)
   }
 
   const tierOffers = offers?.filter((offer) => offer.tier === 'pro') ?? []
@@ -430,12 +416,7 @@ export default function PaywallScreen() {
   const offer = tierOffers.find((candidate) => candidate.period === period)
   // What the yearly saving is measured against. Taken from the offers the store
   // just returned rather than from a constant — `planSaving.ts` says why.
-  const yearly = tierOffers.find((candidate) => candidate.period === 'yearly')
   const monthly = tierOffers.find((candidate) => candidate.period === 'monthly')
-  // Months first — "3 months free" — and the percentage only when a year gives
-  // away less than one whole month.
-  const freeMonths = yearly ? yearlyFreeMonths(yearly, monthly) : null
-  const saving = yearly && freeMonths === null ? yearlySavingPercent(yearly, monthly) : null
 
   const boughtOn = platformOfStore(held.store)
   const gift = tier !== 'free' && held.store === 'gift' && Boolean(held.expiresAt)
@@ -456,13 +437,33 @@ export default function PaywallScreen() {
   // already held, whose page does not depend on it.
   const ready = offers !== null || storeWaitOver || isCurrent
 
+  // Opened and left, once each. The view is counted when the page is first
+  // shown so that it can say what the store had to sell; see the hook.
+  const tracking = usePaywallTracking({
+    feature,
+    tier,
+    source,
+    gift,
+    ready,
+    offers: paywallOffersState({ owned: isCurrent, offers }),
+  })
+
   const headline = isCurrent
     ? t('paywall.ownedHeadline', { plan: TIER_NAMES.pro })
-    : trialWeeks !== null
+    : t('paywall.headline', { plan: TIER_NAMES.pro })
+  /*
+   * The free week, under the headline rather than as it. At title size the
+   * headline is the largest type on the page, and a week for nothing is a
+   * price claim: leading with it outranked the charge on every card, which
+   * both stores want to be the most prominent price. The `trialHeadline*`
+   * keys keep their names and their words, one size down.
+   */
+  const trialLine =
+    trialWeeks !== null
       ? t('paywall.trialHeadlineWeeks', { count: trialWeeks, plan: TIER_NAMES.pro })
       : trialDays !== null
         ? t('paywall.trialHeadlineDays', { count: trialDays, plan: TIER_NAMES.pro })
-        : t('paywall.headline', { plan: TIER_NAMES.pro })
+        : null
 
   /*
    * The trial laid out as dates rather than "day 7": the reader's own calendar
@@ -505,7 +506,12 @@ export default function PaywallScreen() {
    * directly above the button that starts it, not only in the small print.
    * App Review guideline 3.1.2 asks for the trial's own terms next to the
    * trial, and for the renewal price next to any subscription.
+   *
+   * The charge and its period are set strong inside the line, so on the one
+   * line that names the free week, the billed amount still outranks it.
    */
+  const billedPrice = offer ? emphasise(offer.priceString) : ''
+  const billedPeriod = emphasise(periodPhrase)
   const terms =
     offer && !isCurrent
       ? trialDays !== null
@@ -513,16 +519,16 @@ export default function PaywallScreen() {
             trialWeeks !== null
               ? t('paywall.trialWeeks', {
                   count: trialWeeks,
-                  price: offer.priceString,
-                  period: periodPhrase,
+                  price: billedPrice,
+                  period: billedPeriod,
                 })
               : t('paywall.trialTerms', {
                   count: trialDays,
-                  price: offer.priceString,
-                  period: periodPhrase,
+                  price: billedPrice,
+                  period: billedPeriod,
                 })
           } · ${t('paywall.cancelAnytime')}`
-        : t('paywall.renewsSummary', { price: offer.priceString, period: periodPhrase })
+        : t('paywall.renewsSummary', { price: billedPrice, period: billedPeriod })
       : null
 
   const hasTopLines = refused !== null || remaining === 0 || tier !== 'free'
@@ -564,16 +570,19 @@ export default function PaywallScreen() {
         <View style={styles.column}>
           <Reveal index={0} ready={ready} style={styles.hero}>
             <ProMark />
-            <Text style={styles.headline} accessibilityRole="header">
-              {headline}
-            </Text>
+            <View style={styles.titles}>
+              <Text style={styles.headline} accessibilityRole="header">
+                {headline}
+              </Text>
+              {trialLine ? <Text style={styles.trialLine}>{trialLine}</Text> : null}
+            </View>
             {/*
               The lead is the free plan's promise, so it is not said to
-              somebody who already pays, and it gives way on a short screen.
+              somebody who already pays. It is on the first screen at every
+              window height — on a short one it is the plan cards that scroll
+              into view, not the promise that goes.
             */}
-            {isCurrent || windowHeight < COMPACT_HEIGHT ? null : (
-              <Text style={styles.lead}>{t('paywall.headlineBody')}</Text>
-            )}
+            {isCurrent ? null : <Text style={styles.lead}>{t('paywall.headlineBody')}</Text>}
           </Reveal>
 
           {/*
@@ -643,7 +652,7 @@ export default function PaywallScreen() {
               <Pressable
                 accessibilityRole="button"
                 accessibilityState={{ expanded: showAll }}
-                onPress={() => setShowAll((open) => !open)}
+                onPress={toggleBenefits}
                 hitSlop={8}
                 style={({ pressed }) => [styles.more, pressed && styles.pressed]}
               >
@@ -663,11 +672,14 @@ export default function PaywallScreen() {
           {isCurrent ? null : (
             <Reveal index={3} ready={ready} style={styles.plans}>
               {offers === null ? (
-                // The cards' own height, so nothing jumps when the store answers.
-                <>
+                // The cards' own heights and the gap between them, so nothing
+                // jumps when the store answers. Measured at a phone's width:
+                // the yearly card's badge wraps under its month there, which
+                // makes it taller than the monthly card's one-line minimum.
+                <View style={styles.options}>
+                  <Skeleton height={YEARLY_CARD_HEIGHT} radius={16} />
                   <Skeleton height={76} radius={16} />
-                  <Skeleton height={76} radius={16} />
-                </>
+                </View>
               ) : periods.length > 0 ? (
                 <View
                   accessibilityRole="radiogroup"
@@ -682,7 +694,7 @@ export default function PaywallScreen() {
                         key={candidate}
                         selected={candidate === period}
                         onSelect={() => pick(candidate)}
-                        {...optionCopy(option, t, { freeMonths, saving })}
+                        {...optionCopy(option, monthly, t)}
                       />
                     )
                   })}
@@ -739,7 +751,19 @@ export default function PaywallScreen() {
               {notice}
             </Text>
           ) : null}
-          {terms ? <Text style={styles.terms}>{terms}</Text> : null}
+          {terms ? (
+            <Text style={styles.terms}>
+              {emphasisRuns(terms).map((run, index) =>
+                run.strong ? (
+                  <Text key={index} style={styles.termsBilled}>
+                    {run.text}
+                  </Text>
+                ) : (
+                  run.text
+                ),
+              )}
+            </Text>
+          ) : null}
           <Button
             label={
               // The plan held, said plainly, rather than a greyed-out "Start".
@@ -778,51 +802,47 @@ export default function PaywallScreen() {
 }
 
 /**
- * What one plan card says. Every card quotes a month on the right, so the two
- * compare at a glance, and the charge itself underneath in the store's words.
+ * What one plan card says. Every card leads with what the store will charge
+ * and its period; a yearly card says what that comes to a month, and what it
+ * saves, beneath it and smaller (`planPrice`).
  *
- * A yearly plan's month is truncated so the `.99` the price was chosen for
- * survives — see `perMonthPriceString` — with the store's rounded text only as
- * a fallback, and the full yearly charge as the card's own detail line.
+ * The other periods keep a line saying how the charge recurs, so every card
+ * reads the same way: title, one quiet line, the charge on the end.
  */
 function optionCopy(
   offer: PurchaseOffer,
+  monthly: PurchaseOffer | undefined,
   t: ReturnType<typeof useT>,
-  saving: { freeMonths: number | null; saving: number | null },
 ): Omit<Parameters<typeof PlanOption>[0], 'selected' | 'onSelect'> {
-  const title = t(PERIOD_LABEL[offer.period])
-  if (offer.period === 'yearly') {
-    const perMonth =
-      perMonthPriceString(offer.priceString, offer.price) ?? offer.perMonthPriceString ?? null
-    const price = perMonth ?? offer.priceString
-    const unit = t(perMonth ? 'paywall.perMonth' : 'paywall.perYear')
-    const detail = t('paywall.billedYearly', { price: offer.priceString })
-    const badge =
-      saving.freeMonths !== null
-        ? t('paywall.freeMonths', { count: saving.freeMonths })
-        : saving.saving !== null
-          ? t('paywall.savePercent', { percent: saving.saving })
-          : null
-    return {
-      title,
-      price,
-      unit,
-      detail,
-      badge,
-      accessibilityLabel: [title, `${price} ${unit}`, detail, badge]
-        .filter((part): part is string => Boolean(part))
-        .join('. '),
-    }
-  }
-  const unit = t(PERIOD_PHRASE[offer.period])
-  const detail = t(offer.period === 'monthly' ? 'paywall.billedMonthly' : 'paywall.lifetimeDetail')
+  const { billed, period, perMonth, saving } = planPrice(offer, monthly)
+  const title = t(PERIOD_LABEL[period])
+  const unit = t(PERIOD_PHRASE[period])
+  const detail =
+    period === 'yearly'
+      ? perMonth !== null
+        ? t('paywall.pricePerPeriod', { price: perMonth, period: t('paywall.perMonth') })
+        : null
+      : t(period === 'monthly' ? 'paywall.billedMonthly' : 'paywall.lifetimeDetail')
+  const badge =
+    saving === null
+      ? null
+      : 'months' in saving
+        ? t('paywall.freeMonths', { count: saving.months })
+        : t('paywall.savePercent', { percent: saving.percent })
   return {
     title,
-    price: offer.priceString,
+    price: billed,
     unit,
     detail,
-    badge: null,
-    accessibilityLabel: [title, `${offer.priceString} ${unit}`, detail].join('. '),
+    badge,
+    accessibilityLabel: [
+      title,
+      t('paywall.pricePerPeriod', { price: billed, period: unit }),
+      detail,
+      badge,
+    ]
+      .filter((part): part is string => Boolean(part))
+      .join('. '),
   }
 }
 
@@ -879,7 +899,10 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   column: { gap: 20, maxWidth: COLUMN, paddingBottom: spacing.lg, width: '100%' },
 
   hero: { alignItems: 'flex-start', gap: spacing.md },
+  titles: { alignSelf: 'stretch', gap: spacing.xs },
   headline: { ...font.title, color: colors.text, letterSpacing: -0.3, lineHeight: 36 },
+  // Below the charge on the cards in size and weight, above the lead in ink.
+  trialLine: { color: colors.text, fontSize: 17, fontWeight: '600', lineHeight: 24 },
   lead: { color: colors.textMuted, fontSize: 15, lineHeight: 22 },
 
   context: {
@@ -926,8 +949,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   },
   moreText: { color: colors.accent, fontSize: 15, fontWeight: '600' },
 
-  // Room above the first card for the badge that straddles its edge.
-  plans: { gap: spacing.md, paddingTop: spacing.sm },
+  plans: { gap: spacing.md },
   options: { gap: spacing.lg },
   unavailable: { color: colors.textMuted, fontSize: 14, lineHeight: 22 },
 
@@ -948,4 +970,5 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   footerColumn: { gap: spacing.md, maxWidth: COLUMN, width: '100%' },
   notice: { color: colors.danger, fontSize: 14, lineHeight: 20, textAlign: 'center' },
   terms: { color: colors.textMuted, fontSize: 13, lineHeight: 18, textAlign: 'center' },
+  termsBilled: { color: colors.text, fontWeight: '700' },
 }))

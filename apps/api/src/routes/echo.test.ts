@@ -17,9 +17,11 @@ import {
   weekKey,
   ECHO_ARCHIVE_BATCH_MAX,
   ECHO_AUDIO_MAX,
+  echoAwardSchema,
   newCardSrs,
   PLAN_LIMITS,
   SRS_RULES,
+  streakMilestoneBonus,
   TOKEN_RULES,
 } from '@langx/shared'
 
@@ -674,6 +676,117 @@ describe('echo', () => {
       expect(
         await handle.db.collection(COLLECTIONS.echoReviews).countDocuments({ userId: user.userId }),
       ).toBe(SRS_RULES.sessionSize)
+    })
+
+    describe('and says so in the response', () => {
+      const dayKey = (offsetDays: number) =>
+        new Date(Date.now() - offsetDays * 86_400_000).toISOString().slice(0, 10)
+
+      /** A full session of `good` grades, with ids that are the test's own. */
+      async function fullSession(user: SignedUpUser, tag: string) {
+        const cards = await giveCards(user.userId, SRS_RULES.sessionSize)
+        return cards.map((cardId, index) => ({
+          reviewId: `rv-${tag}-${index}-0000`,
+          cardId,
+          grade: 'good',
+          durationMs: 900,
+        }))
+      }
+
+      const awardOf = (response: { json: () => unknown }) =>
+        echoAwardSchema.parse((response.json() as { award?: unknown }).award)
+
+      const rewindStreak = (userId: string, current: number, daysAgo: number, freezes = 0) =>
+        handle.db.collection(COLLECTIONS.profiles).updateOne(
+          { _id: userId as never },
+          {
+            $set: {
+              'streak.current': current,
+              'streak.longest': current,
+              'streak.lastQualifiedDay': dayKey(daysAgo),
+              'streak.lastActionDay': dayKey(daysAgo),
+              streakFreezes: freezes,
+            },
+          },
+        )
+
+      it('returns the session’s tokens and the streak it credited, beside the results', async () => {
+        const user = await newUser('award-full@example.com')
+        const reviews = await fullSession(user, 'award-full')
+
+        const response = await grade(user, reviews)
+        expect(response.statusCode, response.body).toBe(200)
+        expect(response.json<{ results: unknown[] }>().results).toHaveLength(reviews.length)
+        expect(awardOf(response)).toEqual({
+          tokens: TOKEN_RULES.award.echoSession,
+          streak: {
+            current: 1,
+            longest: 1,
+            lastQualifiedDay: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/) as string,
+            advanced: true,
+            milestoneXp: 0,
+            freezeUsed: false,
+          },
+        })
+        // The books say the same thing, which is the point of reading it off them.
+        expect(await balanceOf(user.userId)).toBe(TOKEN_RULES.award.echoSession)
+      })
+
+      it('says nothing was paid for part of a session', async () => {
+        const user = await newUser('award-part@example.com')
+        const cards = await giveCards(user.userId, SRS_RULES.sessionSize - 1)
+
+        const response = await grade(
+          user,
+          cards.map((cardId, index) => ({
+            reviewId: `rv-award-part-${index}-0000`,
+            cardId,
+            grade: 'good',
+            durationMs: 900,
+          })),
+        )
+        expect(response.statusCode, response.body).toBe(200)
+        expect(awardOf(response)).toEqual({ tokens: 0, streak: null })
+      })
+
+      // The retry after a dropped socket: the first answer was the payout, and
+      // a second one claiming it again would have the app show it twice.
+      it('says nothing was paid when the same batch is sent again', async () => {
+        const user = await newUser('award-resent@example.com')
+        const reviews = await fullSession(user, 'award-resent')
+
+        expect(awardOf(await grade(user, reviews)).tokens).toBe(TOKEN_RULES.award.echoSession)
+        expect(awardOf(await grade(user, reviews))).toEqual({ tokens: 0, streak: null })
+        expect(await balanceOf(user.userId)).toBe(TOKEN_RULES.award.echoSession)
+      })
+
+      it('says a banked freeze bridged the missed day', async () => {
+        const user = await newUser('award-freeze@example.com')
+        await rewindStreak(user.userId, 5, 2, 1)
+
+        const response = await grade(user, await fullSession(user, 'award-freeze'))
+        expect(response.statusCode, response.body).toBe(200)
+        expect(awardOf(response).streak).toMatchObject({
+          current: 6,
+          advanced: true,
+          freezeUsed: true,
+        })
+      })
+
+      it('counts a streak milestone the session crossed in its tokens', async () => {
+        const user = await newUser('award-milestone@example.com')
+        await rewindStreak(user.userId, 6, 1)
+
+        const response = await grade(user, await fullSession(user, 'award-milestone'))
+        expect(response.statusCode, response.body).toBe(200)
+        const award = awardOf(response)
+        expect(award.streak).toMatchObject({
+          current: 7,
+          advanced: true,
+          milestoneXp: streakMilestoneBonus(7),
+        })
+        expect(award.tokens).toBe(TOKEN_RULES.award.echoSession + streakMilestoneBonus(7))
+      })
     })
 
     it('fills the streak square, and leaves the daily pool alone', async () => {

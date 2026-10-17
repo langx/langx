@@ -9,6 +9,7 @@ import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { Skeleton } from '../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { track } from '../../src/lib/analytics'
 import { API_URL } from '../../src/lib/apiUrl'
 import { goBackTo } from '../../src/lib/navigation'
 import { shareLink } from '../../src/lib/share'
@@ -100,7 +101,10 @@ export default function ShareProfileScreen() {
       <Button
         label={t('invite.share')}
         icon="share"
-        onPress={() => void shareLink({ message: t('me.shareMessage', { url }), url })}
+        onPress={() => {
+          track({ name: 'profile_shared', properties: { own: true, via: 'sheet' } })
+          void shareLink({ message: t('me.shareMessage', { url }), url })
+        }}
       />
       <Button
         label={t('invite.copy')}
@@ -108,6 +112,7 @@ export default function ShareProfileScreen() {
         icon="copy"
         onPress={async () => {
           await Clipboard.setStringAsync(url)
+          track({ name: 'profile_shared', properties: { own: true, via: 'copy' } })
           showToast(t('shareProfile.copied'))
         }}
       />

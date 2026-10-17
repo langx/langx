@@ -71,6 +71,8 @@ import {
   type AdminBulkSuspendInput,
   type AdminBulkSuspendResponse,
   type AdminLinkedAccounts,
+  type AdminMeasure,
+  type AdminMoneyTimeline,
   CONVERSATION_SEARCH_MIN_LENGTH,
   MEDIA_LIMITS,
 } from '@langx/shared'
@@ -132,6 +134,7 @@ import { clearFromTray } from '../lib/notifications'
 import type { questionsFor, TrayFacts } from '../lib/trayScope'
 import { api, ApiRequestError } from './client'
 import { authClient } from '../lib/auth-client'
+import { track } from '../lib/analytics'
 import type { ConversationPageDto } from '../lib/conversationCache'
 import { putWithProgress } from '../lib/putWithProgress'
 import { withoutViewOnceFallback } from '../lib/viewOnce'
@@ -344,6 +347,8 @@ export const keys = {
   adminBroadcast: (id: string) => ['admin', 'broadcasts', id] as const,
   adminUser: (q: string) => ['admin', 'user', q] as const,
   adminLinked: (userId: string) => ['admin', 'linked', userId] as const,
+  adminMeasure: (weeks: number) => ['admin', 'measure', weeks] as const,
+  adminMoney: (userId: string) => ['admin', 'money', userId] as const,
   adminMembers: (tier: string) => ['admin', 'members', tier] as const,
 }
 
@@ -1329,7 +1334,8 @@ export function useRepairDay() {
   return useMutation({
     mutationFn: (day: string) =>
       api.post<{ day: string; streak: { current: number } }>('/me/activity/repair', { day }),
-    onSuccess: () => {
+    onSuccess: (result) => {
+      track({ name: 'streak_repaired', properties: { days: result.streak.current } })
       // The map, the balance and the streak all move together.
       void queryClient.invalidateQueries({ queryKey: ['activity'] })
       void queryClient.invalidateQueries({ queryKey: keys.wallet })
@@ -3528,6 +3534,22 @@ export function useAdminFunnel(window: AdminFunnelWindow, enabled = true) {
 }
 
 /**
+ * The baseline: cohorts, first messages and the limits people hit.
+ *
+ * Kept for five minutes on the server, which is why `staleTime` matches it and
+ * why there is no polling: the answer cannot change inside that window, and
+ * the screen is read, not watched. One request per window of weeks, so
+ * switching back to one already looked at costs nothing.
+ */
+export function useAdminMeasure(weeks: number) {
+  return useQuery({
+    queryKey: keys.adminMeasure(weeks),
+    queryFn: () => api.get<AdminMeasure>(`/admin/measure?weeks=${weeks}`),
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+/**
  * Raising the update banner for one platform, from the system screen.
  *
  * The config this screen prints comes from the dashboard's response, so the
@@ -3892,6 +3914,14 @@ export function useAdminLinkedAccounts(userId: string) {
   return useQuery({
     queryKey: keys.adminLinked(userId),
     queryFn: () => api.get<AdminLinkedAccounts>(`/admin/users/${userId}/linked`),
+  })
+}
+
+/** One person's gifts of Pro and store events, in order — the account screen's money timeline. */
+export function useAdminMoneyTimeline(userId: string) {
+  return useQuery({
+    queryKey: keys.adminMoney(userId),
+    queryFn: () => api.get<AdminMoneyTimeline>(`/admin/users/${userId}/money`),
   })
 }
 

@@ -144,7 +144,7 @@ export async function deliverOfficialMessage(
 
   message.conversationId = conversation._id
   try {
-    const updated = await recordMessage(db, conversation, message)
+    const { conversation: updated } = await recordMessage(db, conversation, message)
     return { conversation: updated, message }
   } catch (error) {
     // The clientId index caught a repeat that the read above missed, which is

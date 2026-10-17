@@ -27,6 +27,7 @@ import {
   CALLS_AUTH_KEY,
   ERROR_CODES,
   INBOX_KINDS_AUTH_KEY,
+  type SendAward,
 } from '@langx/shared'
 import { ApiError } from '../lib/ApiError'
 import { consumeQuota } from '../lib/quota'
@@ -68,8 +69,23 @@ import { SocketRateLimiter } from './rateLimit'
 import { callsRoom, inboxRoom, userRoom, type AppServer, type AppSocket } from './types'
 
 type AckResponse =
-  { ok: true; data?: unknown } | { ok: false; error: { code: string; message: string } }
+  | { ok: true; data?: unknown; award?: SendAward }
+  | { ok: false; error: { code: string; message: string } }
 type Ack = ((response: AckResponse) => void) | undefined
+
+/**
+ * The ack of a send: what it answered before, and what it earned beside it.
+ *
+ * `award` is a sibling of `data` and not a field of it, because `data` is the
+ * message view and has to equal the echo's copy of the same message — the
+ * sender draws from whichever arrives first. A build that predates the award
+ * resolves `data` and never looks at the envelope, so the extra key costs it
+ * nothing. Omitted rather than null when there is none (a retry answered from
+ * its `clientId`), so "no award" is one shape.
+ */
+function sentAck(data: unknown, award: SendAward | undefined): AckResponse {
+  return award ? { ok: true, data, award } : { ok: true, data }
+}
 
 function errorPayload(error: unknown): { code: string; message: string } {
   if (error instanceof ApiError) return { code: error.code, message: error.message }
@@ -377,7 +393,7 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
       sendTextMessageSchema
         .parseAsync(payload)
         .then((input) => sendTextMessage(app.mongo.db, userId, input))
-        .then(({ message, conversation }) => {
+        .then(({ message, conversation, award }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
           /*
            * The projection, not the raw document — the same object the echo
@@ -385,7 +401,7 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
            * with. The sender now draws the message from whichever of the two
            * arrives first, so the two have to agree.
            */
-          ack?.({ ok: true, data: toMessageView(message, userId) })
+          ack?.(sentAck(toMessageView(message, userId), award))
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })
@@ -445,10 +461,10 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
             app.normalizeAttachments,
           )
         })
-        .then(({ message, conversation }) => {
+        .then(({ message, conversation, award }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
           // Projected, for the reason `message:send` gives above.
-          ack?.({ ok: true, data: toMessageView(message, userId) })
+          ack?.(sentAck(toMessageView(message, userId), award))
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })
@@ -464,9 +480,9 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
       forwardMessageSchema
         .parseAsync(payload)
         .then((input) => forwardMessage(app.mongo.db, userId, input))
-        .then(({ message, conversation }) => {
+        .then(({ message, conversation, award }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
-          ack?.({ ok: true, data: toMessageView(message, userId) })
+          ack?.(sentAck(toMessageView(message, userId), award))
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })
@@ -476,11 +492,11 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
       sendCorrectionSchema
         .parseAsync(payload)
         .then((input) => sendCorrection(app.mongo.db, userId, input))
-        .then(({ message, conversation }) => {
+        .then(({ message, conversation, award }) => {
           // Ticks, but no push: a correction is help arriving in a thread the
           // recipient chose to be in, not something to wake a phone for.
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: false })
-          ack?.({ ok: true, data: message })
+          ack?.(sentAck(message, award))
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })
@@ -497,9 +513,9 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
       sendPhraseSchema
         .parseAsync(payload)
         .then((input) => sendPhrase(app.mongo.db, userId, input))
-        .then(({ message, conversation }) => {
+        .then(({ message, conversation, award }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
-          ack?.({ ok: true, data: message })
+          ack?.(sentAck(message, award))
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })
@@ -509,9 +525,9 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
       sendMeetingSchema
         .parseAsync(payload)
         .then((input) => sendMeeting(app.mongo.db, userId, input))
-        .then(({ message, conversation }) => {
+        .then(({ message, conversation, award }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
-          ack?.({ ok: true, data: message })
+          ack?.(sentAck(message, award))
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })
@@ -521,9 +537,9 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
       sendStickerSchema
         .parseAsync(payload)
         .then((input) => sendSticker(app.mongo.db, userId, input))
-        .then(({ message, conversation }) => {
+        .then(({ message, conversation, award }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
-          ack?.({ ok: true, data: message })
+          ack?.(sentAck(message, award))
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })
@@ -538,9 +554,9 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
       sendLocationSchema
         .parseAsync(payload)
         .then((input) => sendLocation(app.mongo.db, userId, input))
-        .then(({ message, conversation }) => {
+        .then(({ message, conversation, award }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
-          ack?.({ ok: true, data: toMessageView(message, userId) })
+          ack?.(sentAck(toMessageView(message, userId), award))
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })
@@ -550,9 +566,9 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
       sendQuizSchema
         .parseAsync(payload)
         .then((input) => sendQuiz(app.mongo.db, userId, input))
-        .then(({ message, conversation }) => {
+        .then(({ message, conversation, award }) => {
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: true })
-          ack?.({ ok: true, data: message })
+          ack?.(sentAck(message, award))
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })

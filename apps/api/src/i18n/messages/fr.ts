@@ -374,7 +374,7 @@ export const fr: Localized<ServerMessages> = {
       limitReachedSubject: 'Vous butez sur les limites gratuites',
 
       limitReachedBody:
-        'Vous avez atteint une limite quotidienne trois fois ces derniers jours. Une formule les lève : plus de conversations, plus de traductions, plus de pièces jointes, chaque jour.',
+        'Vous avez atteint une limite quotidienne trois fois ces derniers jours. Une formule les lève : plus de conversations et plus de traductions, chaque jour.',
 
       limitReachedButton: 'Voir les formules',
 

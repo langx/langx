@@ -1,12 +1,17 @@
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from 'react-native'
+import { Pressable, RefreshControl, ScrollView, Text, View } from 'react-native'
 import { useEchoPacks, useEchoSummary } from '../../../src/api/queries'
 import { Button } from '../../../src/components/ui/Button'
 import { Chip } from '../../../src/components/ui/Chip'
+import { CrossFade } from '../../../src/components/ui/CrossFade'
 import { EchoAboutSheet } from '../../../src/components/EchoAboutSheet'
 import { LoadFailed } from '../../../src/components/LoadFailed'
+import {
+  EchoStageSkeleton,
+  EchoStatsSkeleton,
+} from '../../../src/components/skeletons/EchoSkeleton'
 import { Screen } from '../../../src/components/ui/Screen'
 import { Tip } from '../../../src/components/Tip'
 import { useT } from '../../../src/i18n'
@@ -68,6 +73,9 @@ export default function EchoScreen() {
   const total = lang ? (chosen?.total ?? 0) : (counts?.total ?? 0)
   const packRows = packs.data?.items ?? []
   const nextDue = summary.data?.nextDue ? dueInCompact(summary.data.nextDue, { t }) : null
+  // Nothing from the server and nothing saved on the device: the stage and the
+  // numbers under it are drawn as placeholders, then dissolve into the real ones.
+  const loading = summary.isPending && !counts
 
   function open(pick: string | null): void {
     router.push({
@@ -120,7 +128,6 @@ export default function EchoScreen() {
 
   /** The stage: what is due, what is resting, or what has not started yet. */
   function stage() {
-    if (summary.isPending && !counts) return <ActivityIndicator />
     if (summary.isError && !counts) return <LoadFailed onRetry={() => void summary.refetch()} />
 
     if (due > 0) {
@@ -227,24 +234,28 @@ export default function EchoScreen() {
         refreshControl={<RefreshControl {...pull} />}
       >
         <View style={styles.stage}>
-          {stage()}
-          {languages.length > 1 ? (
-            <View style={styles.chips}>
-              <Chip
-                label={t('echo.allLanguages')}
-                selected={lang === null}
-                onPress={() => setLang(null)}
-              />
-              {languages.map((row) => (
-                <Chip
-                  key={row.lang}
-                  label={names.language(row.lang)}
-                  selected={lang === row.lang}
-                  onPress={() => setLang(row.lang)}
-                />
-              ))}
+          <CrossFade ready={!loading} skeleton={<EchoStageSkeleton />} style={styles.dissolve}>
+            <View style={styles.stageBody}>
+              {stage()}
+              {languages.length > 1 ? (
+                <View style={styles.chips}>
+                  <Chip
+                    label={t('echo.allLanguages')}
+                    selected={lang === null}
+                    onPress={() => setLang(null)}
+                  />
+                  {languages.map((row) => (
+                    <Chip
+                      key={row.lang}
+                      label={names.language(row.lang)}
+                      selected={lang === row.lang}
+                      onPress={() => setLang(row.lang)}
+                    />
+                  ))}
+                </View>
+              ) : null}
             </View>
-          ) : null}
+          </CrossFade>
         </View>
 
         {/*
@@ -253,16 +264,21 @@ export default function EchoScreen() {
          * is every card kept. Hairlines rather than tiles — v3 has no card
          * layer, and these are meta, not the action.
          */}
-        {counts ? (
-          <View style={styles.stats}>
-            <Stat label={t('echo.statToday')} value={compactCount(counts.reviewedToday, locale)} />
-            <Stat
-              label={t('echo.statWeek')}
-              value={compactCount(counts.reviewedThisWeek, locale)}
-            />
-            <Stat label={t('echo.statCards')} value={compactCount(counts.total, locale)} />
-          </View>
-        ) : null}
+        <CrossFade ready={!loading} skeleton={<EchoStatsSkeleton />}>
+          {counts ? (
+            <View style={styles.stats}>
+              <Stat
+                label={t('echo.statToday')}
+                value={compactCount(counts.reviewedToday, locale)}
+              />
+              <Stat
+                label={t('echo.statWeek')}
+                value={compactCount(counts.reviewedThisWeek, locale)}
+              />
+              <Stat label={t('echo.statCards')} value={compactCount(counts.total, locale)} />
+            </View>
+          ) : null}
+        </CrossFade>
 
         {/*
           Only once there is a card: every tip in this slot is about grading,
@@ -366,10 +382,13 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   stage: {
     alignItems: 'center',
     flex: 1,
-    gap: spacing.xl,
     justifyContent: 'center',
     paddingVertical: spacing.xl,
   },
+  // The stage is centred, so its slot has to span it: the empty state's button
+  // stretches to the stage's width, not to its widest line.
+  dissolve: { alignSelf: 'stretch' },
+  stageBody: { alignItems: 'center', gap: spacing.xl },
   // 40 is the gift tile's radius: rounder than any card, squarer than a circle.
   tileShade: { backgroundColor: colors.primaryShade, borderRadius: 40, paddingBottom: 8 },
   tileFace: {

@@ -5,6 +5,8 @@ import {
   INBOX_KINDS_AUTH_KEY,
   INBOX_KINDS_HEADER,
   MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES,
+  sendAwardSchema,
+  TOKEN_RULES,
   TRAY_SYNC_MAX_THREADS,
 } from '@langx/shared'
 import { ObjectId } from 'mongodb'
@@ -355,6 +357,114 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     // The retry key rides back on the ack too: it is what retires the row the
     // sender drew before the send, and it is only ever sent to its author.
     expect(ack.data?.clientId).toBe('c-ack-shape')
+  })
+
+  describe('what a send earned, in the ack', () => {
+    type EarnedAck = {
+      ok: boolean
+      data?: Record<string, unknown>
+      award?: unknown
+    }
+
+    function emitForAck(socket: ClientSocket, event: string, payload: Record<string, unknown>) {
+      return new Promise<EarnedAck>((resolve) => {
+        socket.emit(event, payload, (response: EarnedAck) => resolve(response))
+      })
+    }
+
+    // Beside `data` and not in it: `data` is what the echo carries, so an
+    // award inside it would make the two copies of the message differ — and
+    // would be cached with the message and replayed as if it were new.
+    it('carries the award beside the message, and the message still equals the echo', async () => {
+      const alice = await newUser('ws-award-alice@example.com')
+      const bob = await newUser('ws-award-bob@example.com')
+      const conversation = await startConversation(alice, bob.userId, 'hi bob')
+      const bobSocket = await connectSocket(bob.cookie)
+
+      const echoed = waitForEvent<Record<string, unknown>>(
+        bobSocket,
+        'message:new',
+        2000,
+        (message) => message.body === 'first reply',
+      )
+      const ack = await emitForAck(bobSocket, 'message:send', {
+        conversationId: conversation._id,
+        body: 'first reply',
+      })
+
+      expect(ack.ok).toBe(true)
+      expect(ack.data).toEqual(await echoed)
+      expect(ack.data).not.toHaveProperty('award')
+      // The reply that makes the thread two-way: the message, the reciprocity
+      // bonus and the day's streak, exactly what the books were given.
+      expect(sendAwardSchema.parse(ack.award)).toEqual({
+        tokens: TOKEN_RULES.award.message + TOKEN_RULES.award.mutualConversation,
+        streak: {
+          current: 1,
+          longest: 1,
+          lastQualifiedDay: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/) as string,
+          advanced: true,
+          milestoneXp: 0,
+          freezeUsed: false,
+        },
+        capped: false,
+      })
+      const paid = await handle.db
+        .collection<{ amount: number }>(COLLECTIONS.tokenLedger)
+        .find({ userId: bob.userId, kind: 'message' })
+        .toArray()
+      expect(paid.reduce((sum, row) => sum + row.amount, 0)).toBe(
+        (ack.award as { tokens: number }).tokens,
+      )
+    })
+
+    it('carries it on a correction, which pays the most', async () => {
+      const alice = await newUser('ws-award-correct-alice@example.com')
+      const bob = await newUser('ws-award-correct-bob@example.com')
+      const conversation = await startConversation(alice, bob.userId, 'I has a apple')
+      const bobSocket = await connectSocket(bob.cookie)
+      const history = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversation._id}/messages`,
+        headers: { cookie: bob.cookie },
+      })
+      const originalId = history.json<{ items: { _id: string }[] }>().items[0]?._id
+
+      const ack = await emitForAck(bobSocket, 'message:correct', {
+        conversationId: conversation._id,
+        targetMessageId: originalId ?? '',
+        corrected: 'I have an apple',
+      })
+
+      expect(ack.ok).toBe(true)
+      expect(sendAwardSchema.parse(ack.award)).toMatchObject({
+        tokens: TOKEN_RULES.award.correction + TOKEN_RULES.award.mutualConversation,
+        streak: { advanced: true },
+        capped: false,
+      })
+    })
+
+    // The first attempt was paid and its ack was lost; the retry is answered
+    // from the same message and must not claim a second payment.
+    it('leaves it out of the ack of a retry answered from its clientId', async () => {
+      const alice = await newUser('ws-award-retry-alice@example.com')
+      const bob = await newUser('ws-award-retry-bob@example.com')
+      const conversation = await startConversation(alice, bob.userId, 'hi bob')
+      const aliceSocket = await connectSocket(alice.cookie)
+      const payload = {
+        conversationId: conversation._id,
+        body: 'sent once',
+        clientId: 'c-award-retry',
+      }
+
+      const first = await emitForAck(aliceSocket, 'message:send', payload)
+      const second = await emitForAck(aliceSocket, 'message:send', payload)
+
+      expect(sendAwardSchema.parse(first.award).tokens).toBe(TOKEN_RULES.award.message)
+      expect(second.ok).toBe(true)
+      expect(second.data?._id).toBe(first.data?._id)
+      expect(second).not.toHaveProperty('award')
+    })
   })
 
   it('no message loss across a reconnect — history has it even if the recipient was offline', async () => {
