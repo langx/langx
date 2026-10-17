@@ -1,11 +1,16 @@
-# Redesign v4 — tracker
+# Redesign v3 — tracker
 
 **Status (16 October 2026):** Phase 0 and the first PR of every lane are open as drafts. D3 answered; Phase 1 (concepts) started.
 
-This is the one page that says where the v4 redesign stands. Any session that
+This is the one page that says where the v3 redesign stands. Any session that
 continues the work reads it right after CLAUDE.md. Only the session that
 coordinates the programme edits it, once at the end of each turn; feature PRs
 never touch it, because parallel PRs editing one file conflict on every merge.
+
+**Naming.** Behic named this redesign "v3" on 16 October 2026. Its brief calls it
+"v4", and the brief and `docs/decisions.md` use "the v3 look" for the look the
+app has today (the one that matches the website). On this page and in PR text,
+"v3" means the redesign; today's look is "the current look".
 
 No metrics live here. Conversion, retention, funnel and revenue figures are
 shared in chat and stay there; this page records the conclusions.
@@ -116,6 +121,7 @@ Merge order: #1784 before any client PR that reads the award; #1785 before
 | 16 Oct 2026 | Programme plan       | Approved                                                                                                                                                                                          |
 | 16 Oct 2026 | Merges               | Every programme PR stays a draft; Behic merges                                                                                                                                                    |
 | 16 Oct 2026 | D3 — design language | (a) the app's palette may leave the website's; (b) `primary` and its text stay identical in both schemes; (c) yellow stays once per screen; (d) flat, hairlines, no cards and one blue may all go |
+| 16 Oct 2026 | Name and version     | The redesign is called v3, and it ships as app version 3.0 once everything is ready (the version bump waits for that release round)                                                               |
 
 ## Open questions
 
