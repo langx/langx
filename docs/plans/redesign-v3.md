@@ -116,12 +116,13 @@ Merge order: #1784 before any client PR that reads the award; #1785 before
 
 ## Behic's answers
 
-| Date        | Item                 | Answer                                                                                                                                                                                            |
-| ----------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 16 Oct 2026 | Programme plan       | Approved                                                                                                                                                                                          |
-| 16 Oct 2026 | Merges               | Every programme PR stays a draft; Behic merges                                                                                                                                                    |
-| 16 Oct 2026 | D3 — design language | (a) the app's palette may leave the website's; (b) `primary` and its text stay identical in both schemes; (c) yellow stays once per screen; (d) flat, hairlines, no cards and one blue may all go |
-| 16 Oct 2026 | Name and version     | The redesign is called v3, and it ships as app version 3.0 once everything is ready (the version bump waits for that release round)                                                               |
+| Date        | Item                 | Answer                                                                                                                                                                                                                                                                                                 |
+| ----------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 16 Oct 2026 | Programme plan       | Approved                                                                                                                                                                                                                                                                                               |
+| 16 Oct 2026 | Merges               | Every programme PR stays a draft; Behic merges                                                                                                                                                                                                                                                         |
+| 16 Oct 2026 | D3 — design language | (a) the app's palette may leave the website's; (b) `primary` and its text stay identical in both schemes; (c) yellow stays once per screen; (d) flat, hairlines, no cards and one blue may all go                                                                                                      |
+| 16 Oct 2026 | Name and version     | The redesign is called v3, and it ships as app version 3.0 once everything is ready (the version bump waits for that release round)                                                                                                                                                                    |
+| 16 Oct 2026 | Yearly plan display  | The billed yearly amount stays the biggest price; the per-month figure becomes a coloured badge under it ("$6.99 a month · 3 months free"). Because the yearly total is now the headline number, every yearly price is rounded to end in .99 in every storefront — done last, in the 3.0 release round |
 
 ## Open questions
 
@@ -139,6 +140,14 @@ Merge order: #1784 before any client PR that reads the award; #1785 before
 Enabled on Behic's account and confirmed on 16 Oct 2026: Expo skills,
 frontend-design, mobile-app-design and design. The Expo and UXKIN MCP servers
 need sign-in and are not used; the skills work without them.
+
+## Before the 3.0 release
+
+- Round every yearly price to end in .99 in every storefront (App Store,
+  Play, RevenueCat web), now that the yearly total is the headline price.
+  Behic operates the store consoles; the repo records follow
+  (`planSaving.test.ts`, `docs/release-runbook.md`, `docs/decisions.md`).
+- Bump the app to 3.0 in the same round.
 
 ## Native-batch candidates
 
