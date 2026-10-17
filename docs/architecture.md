@@ -346,7 +346,7 @@ stored tier is always read through `normalizePlanTier` / `effectivePlanTier`.
 | Filters                             | Language, country, age, CEFR, only-my-gender | + gender, city       |
 | Sort by distance (Nearby)           | —                                            | **Yes**              |
 | Boosted profile on Discover         | —                                            | **Yes**              |
-| Translation                         | **20** per rolling 24h                       | **1000**             |
+| Translation                         | **20** per rolling 24h                       | Unlimited (fair use) |
 | Read aloud / Echo voice / notes     | **100 / 50 / 50** per rolling 24h            | **1000 / 500 / 400** |
 | Photo, video and voice messages     | **500** per rolling 24h (fair use)           | **500** (fair use)   |
 | Profile photos                      | **10**                                       | **10**               |

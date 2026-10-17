@@ -668,7 +668,7 @@ export const en = {
       other: '🎟️ Code {code} worked: {count} months of LangX Pro are yours.',
     },
     perks:
-      'Now open for you:\n💬 unlimited new conversations\n🌍 far more translations every day\n👀 who viewed you, and browsing unseen\n✨ standing out in Discover, gender and city filters',
+      'Now open for you:\n💬 unlimited new conversations\n🌍 unlimited translations\n👀 who viewed you, and browsing unseen\n✨ standing out in Discover, gender and city filters',
     andMore: '…and more.',
     until: 'Enjoy it until {date}. 💛',
     untilPaying:

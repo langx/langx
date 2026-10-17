@@ -66,11 +66,14 @@ export function WordLookup({
       },
       (error: unknown) => {
         if (!live) return
-        setTranslation(
-          errorCodeOf(error) === 'QUOTA_EXCEEDED'
-            ? { status: 'quota', fairUse: isTranslationFairUse(error) }
-            : { status: 'failed' },
-        )
+        if (errorCodeOf(error) !== 'QUOTA_EXCEEDED') {
+          setTranslation({ status: 'failed' })
+          return
+        }
+        const fairUse = isTranslationFairUse(error)
+        // Counted as the chat's own Translate counts it.
+        if (fairUse) track({ name: 'fair_use_limit_hit', properties: { kind: 'translations' } })
+        setTranslation({ status: 'quota', fairUse })
       },
     )
     return () => {
