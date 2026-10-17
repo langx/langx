@@ -1,7 +1,6 @@
 # Redesign v4 — tracker
 
-**Status (16 October 2026):** Phase 0 and the first PR of every lane are open as drafts and reviewed (D0 review in progress). Phase 1 waits for D3.
-Phase 1 waits for D3.
+**Status (16 October 2026):** Phase 0 and the first PR of every lane are open as drafts. D3 answered; Phase 1 (concepts) started.
 
 This is the one page that says where the v4 redesign stands. Any session that
 continues the work reads it right after CLAUDE.md. Only the session that
@@ -36,7 +35,7 @@ The paywall is urgent although it is seventh, because there have been no sales.
 | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | Phase 0, lanes A–D           | now                                                                                                                        | in progress |
 | Lane E (AI)                  | D12a or D12g approved                                                                                                      | waiting     |
-| Phase 1                      | D3 answered                                                                                                                | waiting     |
+| Phase 1                      | D3 answered                                                                                                                | in progress |
 | Phase 2                      | Phase 1 recorded                                                                                                           | waiting     |
 | Phase 3                      | Phase 2 Button/sheet PRs merged (or Behic's OK to stack); D12 for its money items                                          | waiting     |
 | Phase 4                      | Phase 2 merged; Phase 3's subscriber status card, or build it here                                                         | waiting     |
@@ -112,10 +111,11 @@ Merge order: #1784 before any client PR that reads the award; #1785 before
 
 ## Behic's answers
 
-| Date        | Item           | Answer                                         |
-| ----------- | -------------- | ---------------------------------------------- |
-| 16 Oct 2026 | Programme plan | Approved                                       |
-| 16 Oct 2026 | Merges         | Every programme PR stays a draft; Behic merges |
+| Date        | Item                 | Answer                                                                                                                                                                                            |
+| ----------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 16 Oct 2026 | Programme plan       | Approved                                                                                                                                                                                          |
+| 16 Oct 2026 | Merges               | Every programme PR stays a draft; Behic merges                                                                                                                                                    |
+| 16 Oct 2026 | D3 — design language | (a) the app's palette may leave the website's; (b) `primary` and its text stay identical in both schemes; (c) yellow stays once per screen; (d) flat, hairlines, no cards and one blue may all go |
 
 ## Open questions
 
@@ -124,8 +124,6 @@ Merge order: #1784 before any client PR that reads the award; #1785 before
   been done per platform? Funnel figures in chat only.
 - **D2** — Is iOS 2.9 approved and live, has Play accepted its 2.9 bundle, which
   binary does each production track run, and when is the next store build?
-- **D3** — Design language: may the palette leave the website's, do `primary`
-  and yellow-once-per-screen stay as brand anchors, which other v3 traits may go?
 - **D12** — The money and promise package (Copilot as Pro's headline, Pro Week,
   give a week / get a week, Founding Member, one exit offer, the newcomer hello,
   the AI practice partner, the rest case by case).
