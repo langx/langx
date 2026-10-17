@@ -2611,7 +2611,7 @@ export const tr: Localized<EnMessages> = {
       other: 'Ve {count} özellik daha',
     },
     showLess: 'Daha az göster',
-    billedYearly: 'Yılda bir {price} faturalandırılır',
+    pricePerPeriod: '{period} {price}',
     billedMonthly: 'Her ay faturalandırılır',
     lifetimeDetail: 'Tek ödeme, yenilenmez',
     timelineTitle: 'Ücretsiz deneme nasıl işler',

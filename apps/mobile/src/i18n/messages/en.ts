@@ -2853,7 +2853,12 @@ export const en = {
       other: 'And {count} more',
     },
     showLess: 'Show less',
-    billedYearly: '{price} billed yearly',
+    /**
+     * A price and what it is per — "$6.99 a month" — in the order the language
+     * says them; Turkish puts the period first. `{period}` is one of `perMonth`,
+     * `perYear` or `perLifetime`.
+     */
+    pricePerPeriod: '{price} {period}',
     billedMonthly: 'Billed monthly',
     lifetimeDetail: 'One payment, nothing renews',
     timelineTitle: 'How your free trial works',

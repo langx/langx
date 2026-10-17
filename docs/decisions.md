@@ -6528,6 +6528,8 @@ plan, the paywall says what will happen_.
 
 ## The paywall sells the free week
 
+> **Amended 16 October 2026 — see _The paywall leads with what it charges_ below.**
+
 With one plan the paywall has one question left — yearly or monthly — so the
 page was rebuilt around the thing that actually lowers the bar: a week free.
 When the store offers the trial, the headline is "Try Pro free for a week", the
@@ -6573,6 +6575,58 @@ never arrives with one headline and swaps to another. The picked card's radio
 dot springs, with a selection haptic; nothing else moves, and with reduced
 motion nothing moves at all. No native module was added, so it ships over the
 air.
+
+## The paywall leads with what it charges
+
+**16 October 2026.** This reverses _Two cards, not a segmented control_ in the
+entry above, and the reason it gave: both cards quoted a month on the right,
+because "`$6.99` beside `$9.99` is the whole argument for the year", with the
+actual charge underneath in small muted type. That is the layout both stores
+name. Apple's subscription guidance wants the billed amount to be the most
+prominent pricing element on the screen, with anything calculated from it — a
+month's worth of a year — subordinate in position and size; Google Play's
+subscription policy lists an annual subscription priced most prominently in
+monthly terms as a violation. This app has been rejected under guideline 3.1.2
+before. A comparison that wins the argument and fails the review sells nothing.
+
+**Each card leads with what will be charged.** The figure on the end is the
+store's own price for the period — `$83.99`, with "a year" under it in full ink
+— at the size and weight the month used to have. The month a year works out to
+moves under the title as the muted line, and "3 months free" moves from the
+card's top edge, where it sat above the price, to a small badge after that
+line, which wraps onto a line of its own under the month when the card is
+narrow — on a phone, always. Both are still computed from the store's two
+prices (`planSaving.ts`, `perMonthPrice.ts`), and every price is still the
+store's string. `planPrice.ts` is the one place that decides which figure
+leads, and its test pins it to the charge. The monthly card keeps "Billed
+monthly" under its title, so both cards still read title, then the quiet line;
+on the yearly card the badge sits under that line on a phone.
+
+**The terms line sets the charge strong.** "1 week free, then **$83.99 a year**
+· Cancel anytime" keeps its order — the trial, then what follows it — but the
+price and its period are the only words in it set in full ink and bold. The
+values are marked inside the translated sentence (`emphasis.ts`) rather than
+translated as fragments either side of them, because Turkish puts the period
+first.
+
+**The button carries no figure.** It names what the tap does — "Start your free
+week" where the store offers a free week this person can still have,
+"Subscribe" otherwise — and the line directly above it says what that costs.
+
+**The free week leaves the headline.** At title size the headline is the
+largest type on the page, and "Try Pro free for a week" is a price claim — a
+week for nothing — so leading with it outranked the charge on every card. The
+headline is now "Go further with Pro" for everybody who can buy, and the same
+words about the free week sit directly under it, one size down, wherever the
+store offers a free week this person can still have. The button and the terms
+line still say it, and it stays above the fold. The alternative was the
+trial-led headline with only the cards and the terms line changed; it leaves
+the largest words on the screen a price claim, which is what both stores'
+rules are about.
+
+Unchanged: the two cards, yearly picked on open, the dated timeline, the trial's
+terms in one line directly above the button, Restore, Terms, Privacy and the iOS
+EULA, and the X that closes the screen in one tap.
 
 ## Gift codes give time, not discounts
 

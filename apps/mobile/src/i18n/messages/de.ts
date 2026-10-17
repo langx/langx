@@ -2679,7 +2679,7 @@ export const de: Localized<EnMessages> = {
       other: 'Und {count} weitere',
     },
     showLess: 'Weniger anzeigen',
-    billedYearly: '{price} jährlich abgerechnet',
+    pricePerPeriod: '{price} {period}',
     billedMonthly: 'Monatlich abgerechnet',
     lifetimeDetail: 'Einmal zahlen, nichts verlängert sich',
     timelineTitle: 'So funktioniert dein Gratis-Test',

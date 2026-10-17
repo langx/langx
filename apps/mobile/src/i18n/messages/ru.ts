@@ -2896,7 +2896,7 @@ export const ru: Localized<EnMessages> = {
       other: 'И ещё {count}',
     },
     showLess: 'Свернуть',
-    billedYearly: '{price} раз в год',
+    pricePerPeriod: '{price} {period}',
     billedMonthly: 'Оплата каждый месяц',
     lifetimeDetail: 'Один платёж, без продлений',
     timelineTitle: 'Как работает пробный период',

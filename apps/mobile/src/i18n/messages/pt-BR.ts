@@ -2623,7 +2623,7 @@ export const ptBR: Localized<EnMessages> = {
       other: 'E mais {count}',
     },
     showLess: 'Mostrar menos',
-    billedYearly: '{price} cobrado por ano',
+    pricePerPeriod: '{price} {period}',
     billedMonthly: 'Cobrado todo mês',
     lifetimeDetail: 'Um pagamento só, sem renovação',
     timelineTitle: 'Como funciona seu teste grátis',
