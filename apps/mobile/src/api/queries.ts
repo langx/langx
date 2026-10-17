@@ -132,6 +132,7 @@ import { clearFromTray } from '../lib/notifications'
 import type { questionsFor, TrayFacts } from '../lib/trayScope'
 import { api, ApiRequestError } from './client'
 import { authClient } from '../lib/auth-client'
+import { track } from '../lib/analytics'
 import type { ConversationPageDto } from '../lib/conversationCache'
 import { putWithProgress } from '../lib/putWithProgress'
 import { withoutViewOnceFallback } from '../lib/viewOnce'
@@ -1329,7 +1330,8 @@ export function useRepairDay() {
   return useMutation({
     mutationFn: (day: string) =>
       api.post<{ day: string; streak: { current: number } }>('/me/activity/repair', { day }),
-    onSuccess: () => {
+    onSuccess: (result) => {
+      track({ name: 'streak_repaired', properties: { days: result.streak.current } })
       // The map, the balance and the streak all move together.
       void queryClient.invalidateQueries({ queryKey: ['activity'] })
       void queryClient.invalidateQueries({ queryKey: keys.wallet })

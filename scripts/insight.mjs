@@ -18,6 +18,12 @@
  * published. It writes to a temporary directory, never into the repository,
  * and the key it needs is a *read* key that stays on the machine that runs it.
  *
+ * Under the funnel it also answers the questions the redesign is judged by —
+ * how many people come back on day 1, 7 and 30, how long a session lasts, and
+ * how many reach activation — as their own HogQL queries. A query PostHog
+ * refuses as malformed shows its error on its own card instead of taking the
+ * funnel down with it; a bad key or project still stops the run.
+ *
  * Needs, in the root `.env` or the environment (see `.env.example`):
  *
  *   POSTHOG_PERSONAL_API_KEY   PostHog → Settings → Personal API keys
@@ -40,6 +46,12 @@ const REGION = process.env.POSTHOG_REGION ?? 'eu'
 const KEY = process.env.POSTHOG_PERSONAL_API_KEY
 const PROJECT = process.env.POSTHOG_PROJECT_ID
 const DAYS = Number(process.argv[2] ?? 30)
+/**
+ * Day-30 return can only be read for people who appeared more than 30 days
+ * ago, so the cohorts look back further than a short window would: the default
+ * 30-day page would otherwise show an empty column.
+ */
+const COHORT_DAYS = Math.max(DAYS, 90)
 
 /**
  * The funnel itself, and the only thing here that is a product decision rather
@@ -130,7 +142,13 @@ const HOST =
       ? 'https://us.posthog.com'
       : fail(`POSTHOG_REGION is 'eu' or 'us', got ${REGION}`)
 
-async function query(body) {
+/**
+ * `soft` is for the queries whose text is ours and not yet proven against the
+ * live API: a 400 — PostHog's answer to HogQL it cannot parse — is thrown for
+ * the caller to show on its own card. Every other failure, a wrong key above
+ * all, still ends the run.
+ */
+async function query(body, { soft = false } = {}) {
   let response
   try {
     response = await fetch(`${HOST}/api/projects/${PROJECT_ID}/query/`, {
@@ -149,15 +167,25 @@ async function query(body) {
         : response.status === 404
           ? `\nA 404 is the project id: ${PROJECT_ID} is not a project on ${HOST}. It is the\nnumber in the project's own URL, and the region may be the other one.`
           : ''
+    if (soft && response.status === 400) throw new Error(`PostHog answered 400. ${detail}`)
     return fail(`PostHog answered ${response.status}.${hint}\n\n${detail}`)
   }
   return response.json()
 }
 
 /** Rows for a HogQL query, as arrays in the order the SELECT names them. */
-async function rows(sql) {
-  const answer = await query({ kind: 'HogQLQuery', query: sql })
+async function rows(sql, options) {
+  const answer = await query({ kind: 'HogQLQuery', query: sql }, options)
   return answer.results ?? []
+}
+
+/** As `rows`, but a malformed query becomes `{ error }` instead of ending the run. */
+async function softRows(sql) {
+  try {
+    return { rows: await rows(sql, { soft: true }) }
+  } catch (error) {
+    return { error: String(error.message).slice(0, 300) }
+  }
 }
 
 async function funnel() {
@@ -243,7 +271,117 @@ function chart(days) {
 
 const since = `now() - INTERVAL ${DAYS} DAY`
 
-const [steps, active, screens, surfaces, methods, totals] = await Promise.all([
+/**
+ * Who came back, by the week they first appeared.
+ *
+ * "First appeared" is PostHog's own `person.created_at`, and a person counts
+ * only if they have looked at a screen in the app — the marketing sites share
+ * this project and send no `$screen`. Day *N* means a screen view on exactly the
+ * Nth calendar day after that one, so a cohort is measured on a day N only once
+ * it is N days old: the `_base` counts are the people old enough to ask, and a
+ * week too young for day 30 shows "not yet" rather than a rate of zero.
+ *
+ * Calendar days in the project's timezone, not 24-hour windows, which is what
+ * the usual retention chart does too — the numbers are comparable with it.
+ */
+const COHORTS = `
+  SELECT cohort,
+         count() AS size,
+         countIf(age >= 1) AS d1_base,
+         countIf(age >= 1 AND d1_views > 0) AS d1,
+         countIf(age >= 7) AS d7_base,
+         countIf(age >= 7 AND d7_views > 0) AS d7,
+         countIf(age >= 30) AS d30_base,
+         countIf(age >= 30 AND d30_views > 0) AS d30
+  FROM (
+    SELECT person_id,
+           toString(toStartOfWeek(min(person.created_at))) AS cohort,
+           dateDiff('day', toDate(min(person.created_at)), toDate(now())) AS age,
+           countIf(dateDiff('day', toDate(person.created_at), toDate(timestamp)) = 1) AS d1_views,
+           countIf(dateDiff('day', toDate(person.created_at), toDate(timestamp)) = 7) AS d7_views,
+           countIf(dateDiff('day', toDate(person.created_at), toDate(timestamp)) = 30) AS d30_views
+    FROM events
+    WHERE event = '$screen'
+      AND timestamp >= now() - INTERVAL ${COHORT_DAYS} DAY
+      AND person.created_at >= now() - INTERVAL ${COHORT_DAYS} DAY
+    GROUP BY person_id
+    LIMIT 1000000
+  )
+  GROUP BY cohort
+  ORDER BY cohort
+  LIMIT 100`
+
+/**
+ * Activation, as far as PostHog can see it: two messages sent and two received
+ * within 72 hours of first appearing.
+ *
+ * **This is a proxy, and the page says so.** The goal is two two-way
+ * *conversations*, and PostHog cannot count conversations: its events carry no
+ * conversation id, deliberately (`docs/analytics.md` → _Never_). What it does
+ * hold is every message sent and every message received while the app was
+ * open. Two conversations that went both ways need at least two of each, so the
+ * rule below is a necessary condition — it counts some people with one long
+ * exchange — while `message_received` is a lower bound (a push read from the
+ * lock screen is not seen), which counts some activated people out. The two
+ * errors run in opposite directions and neither is measured. The exact figure
+ * is on the server, in the ledger's mutual-conversation rows, and arrives with
+ * the operator panel.
+ *
+ * Only people old enough to have had their 72 hours.
+ */
+const ACTIVATION = `
+  SELECT cohort, count() AS size, countIf(sent >= 2 AND received >= 2) AS activated
+  FROM (
+    SELECT person_id,
+           toString(toStartOfWeek(min(person.created_at))) AS cohort,
+           countIf(event = 'message_sent' AND timestamp < person.created_at + INTERVAL 72 HOUR) AS sent,
+           countIf(event = 'message_received' AND timestamp < person.created_at + INTERVAL 72 HOUR) AS received
+    FROM events
+    WHERE event IN ('$screen', 'message_sent', 'message_received')
+      AND timestamp >= now() - INTERVAL ${COHORT_DAYS} DAY
+      AND person.created_at >= now() - INTERVAL ${COHORT_DAYS} DAY
+      AND person.created_at <= now() - INTERVAL 72 HOUR
+    GROUP BY person_id
+    HAVING countIf(event = '$screen') > 0
+    LIMIT 1000000
+  )
+  GROUP BY cohort
+  ORDER BY cohort
+  LIMIT 100`
+
+/**
+ * One row per session: from its first event to its last.
+ *
+ * A session that ends in silence — the app killed, the phone locked — is cut
+ * at its last event, and a session with one event has no length at all, so
+ * those are left out rather than counted as zero seconds. The marketing sites
+ * stamp their own surface and are excluded; server-side events carry no
+ * session id and fall out of the second condition.
+ */
+const SESSIONS = `
+  SELECT properties.$session_id AS sid,
+         min(timestamp) AS started,
+         dateDiff('second', min(timestamp), max(timestamp)) AS seconds
+  FROM events
+  WHERE timestamp >= ${since}
+    AND coalesce(toString(properties.$session_id), '') != ''
+    AND coalesce(toString(properties.langx_surface), '') NOT IN ('website', 'token-website')
+  GROUP BY sid
+  HAVING count() > 1
+  LIMIT 1000000`
+
+const [
+  steps,
+  active,
+  screens,
+  surfaces,
+  methods,
+  totals,
+  cohorts,
+  activation,
+  sessionWeeks,
+  sessionAll,
+] = await Promise.all([
   funnel(),
   rows(
     `SELECT toString(toDate(timestamp)) AS day, count(DISTINCT person_id) AS people
@@ -267,6 +405,13 @@ const [steps, active, screens, surfaces, methods, totals] = await Promise.all([
     `SELECT count() AS events, count(DISTINCT person_id) AS people
      FROM events WHERE timestamp >= ${since}`,
   ),
+  softRows(COHORTS),
+  softRows(ACTIVATION),
+  softRows(
+    `SELECT toString(toStartOfWeek(started)) AS week, count() AS sessions, quantile(0.5)(seconds) AS median
+     FROM (${SESSIONS}) GROUP BY week ORDER BY week LIMIT 100`,
+  ),
+  softRows(`SELECT count() AS sessions, quantile(0.5)(seconds) AS median FROM (${SESSIONS})`),
 ])
 
 // The number the split is for: of the people who started with this door, how
@@ -277,6 +422,80 @@ const methodRows = methods.map(([method, submitted, finished]) => [
 ])
 
 const [events = 0, people = 0] = totals[0] ?? []
+
+/** A malformed query's own message, drawn where its answer would have been. */
+const unanswered = (error) =>
+  `<p class="empty">PostHog could not answer this one, and the rest of the page is unaffected: ${escapeHtml(error)}</p>`
+
+/** "4m 12s": a session's length is read at a glance, not to the decimal. */
+function duration(seconds) {
+  const whole = Math.round(Number(seconds) || 0)
+  return whole >= 60 ? `${Math.floor(whole / 60)}m ${whole % 60}s` : `${whole}s`
+}
+
+/**
+ * A rate and the two numbers behind it. A cohort too young to have a day N has
+ * no base for it, and says so: a dash would read as zero.
+ */
+const rate = (hit, base) =>
+  base > 0
+    ? `${percent(hit, base)} <span class="of">${NUM.format(hit)} of ${NUM.format(base)}</span>`
+    : '<span class="of">not yet</span>'
+
+function table(head, body) {
+  const cells = (tag, values) => values.map((value) => `<${tag}>${value}</${tag}>`).join('')
+  return `<table>
+      <thead><tr>${cells('th', head)}</tr></thead>
+      <tbody>${body.map((row) => `<tr>${cells('td', row)}</tr>`).join('')}</tbody>
+    </table>`
+}
+
+function cohortCard(answer) {
+  if (answer.error) return unanswered(answer.error)
+  if (answer.rows.length === 0) return '<p class="empty">Nobody first appeared in this window</p>'
+  return table(
+    ['Week of', 'New', 'Day 1', 'Day 7', 'Day 30'],
+    answer.rows.map(([week, size, d1Base, d1, d7Base, d7, d30Base, d30]) => [
+      escapeHtml(label(week)),
+      NUM.format(Number(size)),
+      rate(Number(d1), Number(d1Base)),
+      rate(Number(d7), Number(d7Base)),
+      rate(Number(d30), Number(d30Base)),
+    ]),
+  )
+}
+
+function activationCard(answer) {
+  if (answer.error) return unanswered(answer.error)
+  if (answer.rows.length === 0) return '<p class="empty">Nobody has had their 72 hours yet</p>'
+  const size = answer.rows.reduce((sum, row) => sum + Number(row[1]), 0)
+  const activated = answer.rows.reduce((sum, row) => sum + Number(row[2]), 0)
+  return `<p class="figure">${percent(activated, size)} <span class="of">${NUM.format(activated)} of ${NUM.format(size)}</span></p>
+    ${table(
+      ['Week of', 'People', 'Activated'],
+      answer.rows.map(([week, weekSize, weekActivated]) => [
+        escapeHtml(label(week)),
+        NUM.format(Number(weekSize)),
+        rate(Number(weekActivated), Number(weekSize)),
+      ]),
+    )}`
+}
+
+function sessionCard(weeks, all) {
+  if (weeks.error || all.error) return unanswered(weeks.error ?? all.error)
+  const [sessions = 0, median = 0] = all.rows[0] ?? []
+  if (Number(sessions) === 0)
+    return '<p class="empty">No sessions with more than one event in this window</p>'
+  return `<p class="figure">${duration(median)} <span class="of">median, over ${NUM.format(Number(sessions))} sessions</span></p>
+    ${table(
+      ['Week of', 'Sessions', 'Median'],
+      weeks.rows.map(([week, count, weekMedian]) => [
+        escapeHtml(label(week)),
+        NUM.format(Number(count)),
+        duration(weekMedian),
+      ]),
+    )}`
+}
 const bought = steps.at(-1)?.count ?? 0
 const installed = steps[0]?.count ?? 0
 
@@ -335,6 +554,13 @@ const html = `<!doctype html>
       .plot { display: flex; align-items: flex-end; gap: 2px; height: 120px; }
       .bar { flex: 1; height: 100%; display: flex; align-items: flex-end; }
       .bar i { display: block; width: 100%; background: var(--accent); border-radius: 3px 3px 0 0; }
+      table { border-collapse: collapse; width: 100%; font-size: 14px; }
+      th, td { text-align: start; padding: 6px 10px; font-variant-numeric: tabular-nums; }
+      th { color: var(--muted); font-size: 12px; font-weight: 600; border-bottom: 1px solid var(--border); }
+      td { border-bottom: 1px solid var(--border); }
+      tr:last-child td { border-bottom: 0; }
+      .of { color: var(--faint); font-size: 12px; }
+      .figure { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 12px; }
       .axis { display: flex; justify-content: space-between; color: var(--faint); font-size: 11px; margin: 8px 0 0; }
     </style>
   </head>
@@ -360,6 +586,35 @@ const html = `<!doctype html>
         <h2>Where people stop</h2>
         <p class="hint">Each step counts the people who reached it, in order</p>
         <ul>${funnelRows(steps)}</ul>
+      </section>
+
+      <section class="card">
+        <h2>Coming back</h2>
+        <p class="hint">
+          By the week people first appeared (last ${COHORT_DAYS} days). Day N is a screen view
+          on exactly the Nth day after the first; a week counts toward it once it is N days old
+        </p>
+        ${cohortCard(cohorts)}
+      </section>
+
+      <section class="card">
+        <h2>Activation — a proxy</h2>
+        <p class="hint">
+          At least two messages sent and two received within 72 hours of first appearing, among
+          people old enough to have had them. PostHog holds no conversation ids, so
+          “two conversations” cannot be counted here: this over-counts one long exchange and
+          under-counts replies read from a notification. The exact figure is on the server
+        </p>
+        ${activationCard(activation)}
+      </section>
+
+      <section class="card">
+        <h2>Session length</h2>
+        <p class="hint">
+          First event to last, over sessions with more than one event, last ${DAYS} days. A
+          session that ends in silence is cut at its last event
+        </p>
+        ${sessionCard(sessionWeeks, sessionAll)}
       </section>
 
       <section class="card">
@@ -401,4 +656,11 @@ const html = `<!doctype html>
 const out = join(mkdtempSync(join(tmpdir(), 'langx-insight-')), `funnel-${DAYS}d.html`)
 writeFileSync(out, html, { mode: 0o600 })
 console.log(`\n  ${steps.map((s) => `${s.label}: ${NUM.format(s.count)}`).join('\n  ')}\n`)
+for (const [name, answer] of [
+  ['Coming back', cohorts],
+  ['Activation', activation],
+  ['Session length', sessionAll],
+]) {
+  if (answer.error) console.log(`  ${name}: not answered — ${answer.error.split('\n')[0]}`)
+}
 console.log(`  Written to file://${out}\n`)

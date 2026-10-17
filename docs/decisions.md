@@ -1081,6 +1081,10 @@ permanently hiding a message someone genuinely never opened.
 
 ## The analytics dashboard is private, and that decides the tool
 
+> **Amended 16 October 2026 — see _The paywall counts every way out_ below.**
+> The paywall's uncounted back-button exit, a caveat in the event list rather
+> than in this entry, is closed there; nothing above changes.
+
 v1 published its analytics. `insight.langx.io` was a self-hosted Plausible CE
 instance with the dashboard shared publicly, and there is a blog post on the
 website inviting people to go and look at it. That was a coherent thing to do
@@ -1194,6 +1198,36 @@ warn about a module it will never have. How many sessions are recorded is a
 dial in PostHog rather than a constant here, for the same reason every other
 threshold is config — set locally it would win over the project's, and
 recording less would mean a release.
+
+## The paywall counts every way out
+
+**16 October 2026.** This reverses the event list's paywall caveat — and the
+comment on the screen's `dismiss()` behind it — that a hardware back on Android
+was "deliberately not fought over" and left "a known and countable gap": the
+back button and the iOS swipe sent no `paywall_dismissed`, so those exposures
+read as a view with no dismissal. That was cheap while the only question was
+whether anybody bought. The redesign's paywall work is judged by how people
+leave it, and a dismissal count whose missing share differs by platform cannot
+be compared between iOS and Android, nor across a change that moves people from
+the X to the swipe.
+
+`usePaywallTracking` listens to the navigator's `beforeRemove`, the one place
+every exit passes through, and sends `paywall_dismissed` once, with `exit`. It
+never calls `preventDefault` and never waits: the X, back and the swipe still
+close the paywall in one gesture. The X and "Continue free" flag themselves
+before they navigate, because the X's `router.back()` is the same `GO_BACK` as
+the back button. Leaving with a plan not held on arrival — a purchase, a
+restore that found one, a gift code — is a conversion and sends nothing.
+
+`paywall_viewed` moved with it. It is sent when the page is first drawn, after
+the store wait the page already had (`STORE_WAIT_MS`), so that it can say what
+the store had to sell; a screen left sooner is counted on the way out. Older
+builds send it on open, so views are two series either side of this build, read
+by app version.
+
+What it still cannot see is the web browser's back button, which resets the
+navigator rather than dispatching an action and so raises no `beforeRemove`.
+On web that exit is the old gap: a view with no dismissal.
 
 ## Discovery filters live in the URL, not a store
 

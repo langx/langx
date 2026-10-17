@@ -3,6 +3,7 @@ import { Text, type StyleProp, type TextStyle } from 'react-native'
 import { useTips } from '../hooks/useTips'
 import { useT } from '../i18n'
 import type { MessageKey } from '../i18n/runtime'
+import { track } from '../lib/analytics'
 import type { TipId, TipSlot } from '../lib/tips'
 
 /**
@@ -41,6 +42,7 @@ export function ComposerHint({
     if (id || !candidate) return
     setId(candidate)
     tips.advance(slot)
+    track({ name: 'tip_shown', properties: { tip: candidate, slot } })
   }, [candidate, id, slot, tips])
 
   if (!id) return null
