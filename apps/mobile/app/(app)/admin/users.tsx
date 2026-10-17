@@ -16,6 +16,7 @@ import {
 } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
 import { LinkedAccounts } from '../../../src/components/admin/LinkedAccounts'
+import { MoneyTimeline } from '../../../src/components/admin/MoneyTimeline'
 import { Button } from '../../../src/components/ui/Button'
 import { Callout } from '../../../src/components/ui/Callout'
 import { Card } from '../../../src/components/ui/Card'
@@ -380,6 +381,9 @@ function Found({ data }: { data: AdminUserDto }) {
 
       {/* ── who else this might be ── */}
       <LinkedAccounts key={user.userId} userId={user.userId} />
+
+      {/* ── what they have been given and what they have paid ── */}
+      <MoneyTimeline key={user.userId} userId={user.userId} />
 
       {/* ── Pro as a gift ── */}
       <Text style={styles.heading}>{ADMIN.users.gift.title}</Text>

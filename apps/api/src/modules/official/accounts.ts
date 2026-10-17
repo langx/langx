@@ -215,6 +215,7 @@ async function ensureOne(
           proMergeWelcomedAt: '',
           proGiftStreaks: '',
           quotaRefusals: '',
+          quotaRefusalKinds: '',
           'stats.notifiedBadgeIds': '',
           'stats.digestBadges': '',
           'stats.appVersion': '',

@@ -5069,6 +5069,141 @@ it. So the feature is right for "we got your report" and wrong for a
 conversation, and what is written should say where a reply goes. A test asserts
 the refusal, so opening that thread stays a decision somebody makes.
 
+## Measure first: activation, cohorts and a money timeline, from what the server already keeps
+
+The redesign is judged against a baseline, and until now there was none that
+could be read twice. PostHog answers the funnel; it cannot say whether the
+person who sent a first message was answered, who came back on the seventh day,
+or what one account has been given and paid for, because those are facts about
+rows we hold. `/admin/measure` and the money timeline on the account screen
+read them, and nothing else. They are the first thing built for the redesign
+because every later move is judged against them.
+
+**Private, and no number is ever written down.** Retention and activation are
+the figures [`insight.md`](insight.md) keeps off the public page, for the reason
+_The analytics dashboard is private_ gives, so none of this may be re-exported
+to `modules/insight/publicStats.ts`. And the repo is public: a reading reaches a
+decision as "the figures shared on <date>", in chat, never in a file, a commit
+or a PR. The tests use fixtures and say so.
+
+### The definitions are config
+
+`packages/shared/src/measurement.ts` is where "it is working" is written down:
+**activation** is two two-way conversations inside the first 72 hours
+(`ACTIVATION_RULES`), the cohorts are read at **Day 1, 7 and 30**
+(`COHORT_RETURN_DAYS`), and a first message is **unanswered** after 24 hours
+(`FIRST_MESSAGE_RULES`). A baseline is only a baseline if the thing it measures
+stays still, so changing one of these is a dated entry here, not a tweak — a
+reading taken against one definition cannot be set beside one taken against
+another.
+
+_Two-way_ means both people have written. A first message nobody answered is an
+attempt, and counting attempts would make the number rise when we got better at
+sending rather than at connecting people. The moment a conversation becomes
+two-way is when the person who did not open it first writes back, so it counts
+for a member only if that reply landed inside their window — and it does not
+matter who opened it, because answering a stranger is as much a start as writing
+to one. A call's row is not a reply: it records something that happened to both
+people, not something one of them said.
+
+### Where each figure comes from
+
+Said on the screen as well as here, because "from the data we have" is only
+honest if it says which data.
+
+- **Sign-ups** are `profiles.createdAt`, weekly by the UTC Monday. Guests,
+  official accounts and deleted accounts are out; they are not people who could
+  have been retained.
+- **Returned on Day N** is a `streakDays` document for the Nth local day after
+  the one they joined on, other than a bought one. That collection is the only
+  record of which days a person showed up (`profiles.stats.lastActiveAt` keeps
+  the last one and nothing before it). It is keyed on the person's **own**
+  calendar, so Day 7 is counted on it too: someone who joined at 23:30 in Toronto
+  joined, to their streak, on a different UTC day. A bought day is somebody
+  paying to mend a streak, not somebody being there.
+- **The cut-off is real.** `streakDays` exists from 29 August 2026, and a day
+  with only a visit in it was written from 1 September ("Let opening the app
+  hold the streak"). Before that a day was recorded only when the person did
+  something that counted, so a return day earlier than `RETURN_RECORDED_FROM`
+  reads low for a reason that has nothing to do with them. It is not measured,
+  rather than measured wrongly.
+- **Rates carry their denominator.** A cohort is only counted for Day N once
+  that day has fully ended on the person's calendar, and for activation once the
+  72 hours have passed. Before that "not yet" would read as "no", and every young
+  cohort would look like a failure. The panel prints `x of y` under every rate: a
+  cohort of four people at half and one of four hundred at half are different
+  readings.
+- **Activated, unanswered and the median reply** all need the instant a
+  conversation became two-way. `conversations.bothSpoke` is a boolean with no
+  time, and adding a timestamp would change the send path for a measurement, so
+  the time is read: the earliest message in the thread from someone other than
+  its opener, one `$lookup` over the two-way conversations of the window. It
+  works for history without a backfill. The median covers conversations that got
+  a reply, however late, so the newest weeks read faster than they will turn out
+  to be; the screen says so.
+- **Refusals per limit** are `profiles.quotaRefusals` and the kind now recorded
+  beside it. See below.
+- **The money timeline** is three things the server holds: `proGifts` (an
+  operator's, a streak's, an invitee's, a code's), `subscriptions` (one row per
+  RevenueCat webhook event), and `profiles.churnedFrom`.
+
+### What it cannot say, and the screen says so
+
+- **Paywall views and taps on them are PostHog's.** The server never sees them,
+  and a timeline with a stretch of nothing between "joined" and "bought" would
+  read as a person who never saw the paywall. The card says it is not measured
+  here rather than leaving the gap to look like an answer. Inventing a view from
+  anything else was the alternative, and it was refused.
+- **A free trial cannot be told from a first paid period in the history.** The
+  stored webhook rows do not keep RevenueCat's `period_type`; only the
+  entitlement's _current_ `periodType` is known. So each start shows how long the
+  period it opened was, which is what a person reads a trial off, and the "right
+  now" line says whether the one running is a trial. Recording `period_type` on
+  the row is one additive field and a later change; this PR reads and does not
+  change what a webhook writes.
+- **Refusals reach back three days and no further**, because that is all
+  `quotaRefusals` keeps. It is a rolling picture of the last three days, not a
+  trend, and says so.
+
+### The one write: which limit it was
+
+`consumeQuota` is where a refusal is decided and already wrote the instant to
+`quotaRefusals`. It now also writes `{at, kind}` to **`quotaRefusalKinds`**,
+beside it, in the same pipeline and pruned by the same cut-off.
+
+A second array rather than changing the first one's elements, because
+`quotaRefusals` is read as a list of instants by the upsell nudge
+(`promotions.ts`), and during a rolling deploy an API instance from before this
+change appends to it as exactly that. Changing the element type would have made
+the old instance corrupt what the new one reads and the reverse. A refusal with
+an instant and no entry in the second array predates the field, and the panel
+calls it **unknown** rather than guessing which limit it was.
+
+It stays on the profile and is not a collection of its own. A collection with a
+`userId` is a collection the account purge has to learn about, and a log of who
+hit which limit is exactly what a purge must not forget; a field on the profile
+goes with the profile.
+
+### Bounded, because it runs on a small shared cluster
+
+Every read has a date range on an index or goes by `_id`, and every one has a
+ceiling; when a ceiling is hit the answer says `truncated` rather than quietly
+covering less than it claims. Two indexes are new, both in `indexes.ts` and
+neither on a Better Auth collection: `conversations.first_message_at` (a bare
+range that no existing index could serve), and a **partial** index on
+`profiles.quotaRefusals`, which is absent on everybody who has never hit a
+limit, so it holds only the ones who did. The cohort read rides the existing
+`joined` index. The answer is kept for five minutes, per window of weeks, so
+opening the screen twice is one set of reads.
+
+### What this does not do
+
+It asks nobody anything and switches nothing. "What would make Pro worth it?"
+is built with the paywall, under the rule that a dismissal question appears only
+after the paywall has closed, and the cohort switches follow as their own
+changes judged against decision rules written first. This is the baseline they
+are measured against, and nothing more.
+
 ## A card is a copy, the cap is not a price, and a phrase card is mirrored
 
 [`echo.md`](./echo.md) is the design. Four things about the first phase are
