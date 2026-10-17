@@ -11,7 +11,21 @@
 export const en = {
   push: {
     streakTitle: { one: '{count} day streak! 🔥', other: '{count} day streak! 🔥' },
-    streakBody: 'Send one message today to keep it going.',
+    /*
+     * The real rule: opening the app checks today in, so the tap on this push
+     * is already enough. It used to ask for a message, which was the rule
+     * before check-ins and has not been true since. It names no plan, price or
+     * purchase, which is what keeps it a streak notification rather than a
+     * promotional one; `reminderScheduler.test.ts` holds it to that.
+     */
+    streakBody: 'Open LangX today to keep it going.',
+    /*
+     * The evening after a streak broke, when a repair is the only thing that
+     * brings it back. "Pick … back up", never "buy": a repair costs tokens,
+     * and the store says how many before anything is spent.
+     */
+    streakRepairTitle: 'Pick your streak back up',
+    streakRepairBody: 'A repair fills in yesterday, and your streak carries on.',
     echoTitle: {
       one: '1 card is ready',
       other: '{count} cards are ready',
@@ -48,11 +62,6 @@ export const en = {
     promo: {
       addPhotoTitle: 'Add a photo',
       addPhotoBody: 'Profiles with a face get far more replies.',
-      streakBrokeTitle: {
-        one: 'Your {count}-day streak broke',
-        other: 'Your {count}-day streak broke',
-      },
-      streakBrokeBody: 'A repair puts yesterday back.',
       awayTitle: 'People are still here',
       awayBody: 'New people to practise with.',
       awayLongTitle: 'Still here when you are',
