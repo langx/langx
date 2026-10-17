@@ -30,6 +30,7 @@ import { Avatar } from '../../../src/components/ui/Avatar'
 import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
 import { GenderMark } from '../../../src/components/GenderMark'
 import { Button } from '../../../src/components/ui/Button'
+import { IconButton } from '../../../src/components/ui/IconButton'
 import { LanguageColumns } from '../../../src/components/LanguageColumns'
 import { ListRow } from '../../../src/components/ui/ListRow'
 import { ProgressBar } from '../../../src/components/ui/ProgressBar'
@@ -238,20 +239,18 @@ export default function MeScreen() {
           a number appears, not a place you live, so it gets no tab.
         */}
         <View style={styles.topRow}>
-          <Pressable
-            accessibilityRole="button"
+          <IconButton
+            icon="bell"
             accessibilityLabel={t('inbox.bell')}
             hitSlop={8}
             onPress={() => router.push('/(app)/notifications')}
-            style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
           >
-            <Feather name="bell" size={26} color={colors.text} />
             {news ? (
               <View style={styles.bellBadge}>
                 <Text style={styles.bellCount}>{news}</Text>
               </View>
             ) : null}
-          </Pressable>
+          </IconButton>
           {/*
             Settings used to be a button below the token store, at the bottom of a
             screen that scrolls for a while — reachable, but only by someone who
@@ -260,15 +259,12 @@ export default function MeScreen() {
             put in a profile's corner for exactly this. The scanner that sat
             beside it is now the first row inside Settings.
           */}
-          <Pressable
-            onPress={() => router.push('/(app)/settings')}
-            hitSlop={8}
-            accessibilityRole="button"
+          <IconButton
+            icon="menu"
             accessibilityLabel={t('me.settings')}
-            style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
-          >
-            <Feather name="menu" size={26} color={colors.text} />
-          </Pressable>
+            hitSlop={8}
+            onPress={() => router.push('/(app)/settings')}
+          />
         </View>
       </View>
 
@@ -568,7 +564,6 @@ export default function MeScreen() {
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // Last in the hero so it is drawn, and touched, over the text column.
   topRow: { flexDirection: 'row', position: 'absolute', right: 0, top: 0 },
-  iconButton: { alignItems: 'center', height: 44, justifyContent: 'center', width: 44 },
   // On the bell's shoulder, whatever the touch target is padded out to.
   bellBadge: {
     alignItems: 'center',
