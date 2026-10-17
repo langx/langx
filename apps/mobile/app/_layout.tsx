@@ -8,6 +8,7 @@
  */
 import { Nunito_700Bold } from '@expo-google-fonts/nunito/700Bold'
 import { Nunito_800ExtraBold } from '@expo-google-fonts/nunito/800ExtraBold'
+import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
 import { useFonts } from 'expo-font'
 import { ObserveRoot } from 'expo-observe'
 import * as SplashScreen from 'expo-splash-screen'
@@ -354,8 +355,17 @@ function RootShell() {
    * nothing else. `fontError` is therefore treated as "carry on" rather than a
    * failure: shipping the platform stack is far better than holding the splash
    * open on a font that is never going to arrive.
+   *
+   * The black weight is v3's Display and Title. It loads here, before any
+   * screen reads it, because a family that is named but not loaded falls
+   * back to the platform face without a word — a migrated screen would look
+   * finished and be in the wrong font.
    */
-  const [fontsLoaded, fontError] = useFonts({ Nunito_700Bold, Nunito_800ExtraBold })
+  const [fontsLoaded, fontError] = useFonts({
+    Nunito_700Bold,
+    Nunito_800ExtraBold,
+    Nunito_900Black,
+  })
   const showSpinner =
     (isPending && !hasResolvedOnce.current) || (!fontsLoaded && !fontError) || resetting
 

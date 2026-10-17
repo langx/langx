@@ -1,4 +1,4 @@
-import type { ViewStyle } from 'react-native'
+import type { TextStyle, ViewStyle } from 'react-native'
 
 /**
  * Design tokens, not a styling library.
@@ -301,3 +301,245 @@ export const layout = {
   avatar: 48,
   avatarLarge: 96,
 } as const
+
+/*
+ * ---------------------------------------------------------------------------
+ * v3 — the redesign's tokens (ships with app 3.0)
+ * ---------------------------------------------------------------------------
+ *
+ * Everything above is the current look and stays exactly as it is until the
+ * screen that reads it is migrated: a screen changes look only in the PR that
+ * moves it, so the two sets live side by side and nothing here renames,
+ * re-values or removes a current token. Read these as `theme.v3.*`.
+ *
+ * Not the "v3" the comments above mean. Those name the drawing the current
+ * look came from; since 16 October 2026 "v3" names the redesign, and the
+ * look above is "the current look".
+ *
+ * Phase 1 chose flat colour blocks, a colour per partner, big Nunito type and
+ * flat pill buttons with no shadows (see _The redesign is v3: A's structure,
+ * B's look_ in `docs/decisions.md`). The values are the design canvas's own,
+ * so a migrating PR can match a drawing by eye without a conversion table.
+ *
+ * The app's palette may now leave the website's (_Client — the app's palette
+ * may leave the website's, and yellow still does not move_). Two anchors do
+ * not move:
+ * `yellow` and its text are identical in both schemes and appear once per
+ * screen, on the committing action — and v3 holds `blue` to the same rule, so
+ * the main action that does not commit is the same blue after dark too.
+ */
+
+const v3LightColors = {
+  bg: '#ffffff',
+  fg: '#14161b',
+  muted: '#5a5f69',
+  /** The grey block: a row group, a search field, an unselected tab pill. */
+  surface: '#f2f2ee',
+  line: '#e4e4df',
+  /** The selected tab's pill. */
+  tabOn: '#e8e7e1',
+  /** Echo's tab and Echo's own surfaces: set apart by tint, never by size. */
+  echoTint: '#e3ebfe',
+  echoText: '#2a54d0',
+  /** The ink pill — Correct, a selected chip. Inverts with the ground. */
+  pill: '#14161b',
+  pillText: '#ffffff',
+  /**
+   * Text on a partner hue, and the ground of a hue-lettered chip. Constant in
+   * both schemes, unlike the current look's `ink`: the hues are light in both
+   * schemes, so what reads on them does not change when the ground does.
+   */
+  ink: '#14161b',
+  /**
+   * A fill, not a text colour. As text on the dark ground it falls under
+   * 4.5:1, which is the price of keeping it the same in both schemes; text
+   * that should read as blue is `echoText`.
+   */
+  blue: '#3b6cf6',
+  onBlue: '#ffffff',
+  yellow: '#ffc409',
+  onYellow: '#14161b',
+  /** A correction's green, as text on the ground. */
+  correction: '#0b7a3e',
+  /**
+   * The one elevation v3 keeps. Tinted with the ground in light, where pure
+   * black over white reads as a hole; deeper in dark, where a light scrim
+   * would do nothing over a ground that is already near-black.
+   */
+  scrim: 'rgba(12, 13, 16, 0.55)',
+} as const
+
+export type V3Colors = { readonly [K in keyof typeof v3LightColors]: string }
+
+const v3DarkColors: V3Colors = {
+  bg: '#0c0d10',
+  fg: '#f2f3f5',
+  muted: '#a3a8b3',
+  surface: '#1a1c21',
+  line: '#2a2d33',
+  tabOn: '#2a2d33',
+  echoTint: '#1c2748',
+  echoText: '#8aa6ff',
+  pill: '#f2f3f5',
+  pillText: '#14161b',
+  ink: '#14161b',
+  blue: '#3b6cf6',
+  onBlue: '#ffffff',
+  yellow: '#ffc409',
+  onYellow: '#14161b',
+  correction: '#5ee39a',
+  scrim: 'rgba(0, 0, 0, 0.7)',
+}
+
+/**
+ * The six partner hues, in the order `partnerHueFor` indexes them.
+ *
+ * **The order and the length are part of every partner's identity.** A hue
+ * is picked from an id by its position here, so reordering the list, or
+ * adding a seventh, re-colours every partner someone already knows by colour.
+ * Change it only with a decision that says so.
+ */
+export const PARTNER_HUES = ['lilac', 'aqua', 'mint', 'lime', 'sky', 'tangerine'] as const
+export type PartnerHue = (typeof PARTNER_HUES)[number]
+
+/** Always `ink` on top, in both schemes: the dark set is a step deeper, not inverted. */
+const v3Hues: Record<ColorScheme, Readonly<Record<PartnerHue, string>>> = {
+  light: {
+    lilac: '#bba4ff',
+    aqua: '#48d3d0',
+    mint: '#5fdc98',
+    lime: '#b8e15c',
+    sky: '#74b9ff',
+    tangerine: '#ff9f52',
+  },
+  dark: {
+    lilac: '#a68cf5',
+    aqua: '#2fbfbc',
+    mint: '#45c883',
+    lime: '#a2cf45',
+    sky: '#5aa5f5',
+    tangerine: '#f08a3c',
+  },
+}
+
+/** The heaviest Nunito, for v3's Display and Title. Loaded in the root layout. */
+export const DISPLAY_FONT_BLACK = 'Nunito_900Black'
+
+/**
+ * The v3 type ramp. Nunito carries display, title, headline and label; body,
+ * callout and caption keep the platform face, for the reason `DISPLAY_FONT`
+ * gives — reading text here is often in someone's second language.
+ *
+ * Body is 17 and nothing a person reads is under 12, so the floor holds at
+ * the default text size before Dynamic Type adds anything. Every step names
+ * its line height: a ramp without them leaves each screen to guess, and at
+ * 200% text a guessed line height is what clips the descenders.
+ *
+ * The Nunito steps carry no `fontWeight`. The family name already is the
+ * weight, and the web build registers each family as one normal-weight face,
+ * so a weight on top asks the browser to embolden a face that is already
+ * black.
+ */
+export const v3Type = {
+  display: { fontFamily: DISPLAY_FONT_BLACK, fontSize: 44, lineHeight: 46, letterSpacing: -0.5 },
+  title: { fontFamily: DISPLAY_FONT_BLACK, fontSize: 32, lineHeight: 36 },
+  headline: { fontFamily: DISPLAY_FONT, fontSize: 22, lineHeight: 28 },
+  body: { fontSize: 17, lineHeight: 24, fontWeight: '400' },
+  callout: { fontSize: 16, lineHeight: 21, fontWeight: '400' },
+  caption: { fontSize: 14, lineHeight: 20, fontWeight: '400' },
+  label: { fontFamily: DISPLAY_FONT, fontSize: 13, lineHeight: 16 },
+} as const satisfies Record<string, TextStyle>
+
+export type V3TypeStep = keyof typeof v3Type
+
+/**
+ * Keyed by the value, deliberately. The drawings are measured in points, and
+ * a key that says the number is one a migrating PR can match against a
+ * drawing without a lookup table; the type still refuses a value that is not
+ * on the scale. The half steps (6, 10, 14) are here because the drawings use
+ * them more than some of the whole ones — 10 is their commonest gap.
+ */
+export const v3Space = {
+  2: 2,
+  4: 4,
+  6: 6,
+  8: 8,
+  10: 10,
+  12: 12,
+  14: 14,
+  /** The screen's side gutter. */
+  16: 16,
+  20: 20,
+  24: 24,
+  32: 32,
+} as const
+
+export const v3Radius = {
+  /** The 40pt leading square in a row. */
+  icon: 12,
+  /** A tile — a partner card, a stat. */
+  tile: 22,
+  /** A full-width block — the next-step card, a sheet's top corners. */
+  block: 28,
+  /** The one big hero block on a screen. */
+  hero: 32,
+  pill: 999,
+} as const
+
+/** Glyph sizes. The touch target around a glyph is a separate, larger number. */
+export const v3Icon = {
+  /** Inside a chip, or beside a number. */
+  xs: 16,
+  /** Inside a 30pt circle. */
+  sm: 18,
+  /** A secondary pill's glyph, a row's trailing mark. */
+  md: 20,
+  /** A primary button's glyph, a row's leading glyph. */
+  lg: 22,
+  /** Header chrome — back, close. */
+  xl: 26,
+} as const
+
+/**
+ * v3 is flat: depth comes from colour, not shadow. These are the only two
+ * levels it draws — a plane with nothing under it, and the scrim that puts a
+ * sheet or a dialog in front of the screen.
+ */
+export interface V3Elevation {
+  none: ViewStyle
+  overlay: ViewStyle
+}
+
+function v3Elevation(colors: V3Colors): V3Elevation {
+  return {
+    none: { elevation: 0, shadowOpacity: 0 },
+    overlay: { backgroundColor: colors.scrim },
+  }
+}
+
+export interface V3Tokens {
+  colors: V3Colors
+  hues: Readonly<Record<PartnerHue, string>>
+  type: typeof v3Type
+  space: typeof v3Space
+  radius: typeof v3Radius
+  icon: typeof v3Icon
+  elevation: V3Elevation
+}
+
+const v3Shared = { type: v3Type, space: v3Space, radius: v3Radius, icon: v3Icon } as const
+
+export const v3: Record<ColorScheme, V3Tokens> = {
+  light: {
+    ...v3Shared,
+    colors: v3LightColors,
+    hues: v3Hues.light,
+    elevation: v3Elevation(v3LightColors),
+  },
+  dark: {
+    ...v3Shared,
+    colors: v3DarkColors,
+    hues: v3Hues.dark,
+    elevation: v3Elevation(v3DarkColors),
+  },
+}
