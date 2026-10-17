@@ -1,6 +1,6 @@
 # Redesign v4 — tracker
 
-**Status (16 October 2026):** Phase 0 started: tracker open, baseline published (84 shots, 14 screens). Lanes A–D not yet started.
+**Status (16 October 2026):** Phase 0 and the first PR of every lane are open as drafts and reviewed (D0 review in progress). Phase 1 waits for D3.
 Phase 1 waits for D3.
 
 This is the one page that says where the v4 redesign stands. Any session that
@@ -48,15 +48,34 @@ The paywall is urgent although it is seventh, because there have been no sales.
 
 ## Phase 0 and the lanes
 
-| Item                                      | PR    | State       |
-| ----------------------------------------- | ----- | ----------- |
-| Tracker (this page)                       | #1783 | draft       |
-| 0.1 Baseline screenshots, "before" set    | —     | published   |
-| 0.2 Instrumentation                       | —     | not started |
-| Lane A — skeletons on Me and the Echo tab | —     | not started |
-| Lane B — D0 price hierarchy               | —     | not started |
-| Lane C — return the send award in the ack | —     | not started |
-| Lane D — `.value` to `.get()/.set()`      | —     | not started |
+| Item                                      | PR    | State                          |
+| ----------------------------------------- | ----- | ------------------------------ |
+| Tracker (this page)                       | #1783 | draft                          |
+| 0.1 Baseline screenshots, "before" set    | —     | published                      |
+| 0.2 Instrumentation                       | #1785 | draft, reviewed                |
+| Lane A — skeletons on Me and the Echo tab | #1786 | draft, reviewed                |
+| Lane B — D0 price hierarchy               | #1788 | draft, stacks on #1785, review |
+| Lane C — return the send award in the ack | #1784 | draft, reviewed                |
+| Lane D — `.value` to `.get()/.set()`      | #1787 | draft, reviewed                |
+
+Merge order: #1784 before any client PR that reads the award; #1785 before
+#1788. #1788 waits for the App Review question in rule 26.
+
+**Found in review, not fixed (each a follow-up):**
+
+- The send award leaves out a referral welcome credited in the same send
+  (#1784; under-reports only).
+- A frozen account still earns the Echo session and streak milestone payouts
+  (predates #1784).
+- Web browser back records a paywall view with no dismissal; a Pro account that
+  loads after the paywall opens looks free; leaving right after a gift code or
+  restore can count as a dismissal (#1785).
+- Echo offline with no cache keeps the skeleton pulsing; the Packs row says
+  "No packs yet" while packs load; accounts with no badges shift once when the
+  shelf arrives (#1786).
+- React Compiler: refs read or written during render, unsupported syntax and
+  use-before-declare still block it in several files; the stock healthcheck
+  reports success falsely (#1787).
 
 **Next, after each lane's first PR:**
 
@@ -72,7 +91,8 @@ The paywall is urgent although it is seventh, because there have been no sales.
 - **C:** the 20:00 streak push rewritten to the real rule; a streak-repair push
   kind; no silent drops in the nudge engine; S2 ranking and S4 automatic
   capture, both behind flags that stay off.
-- **D:** React Compiler healthcheck; the native-batch candidate list below.
+- **D:** a fingerprint compare for native tabs, `expo-symbols` and
+  `expo-glass-effect`; then the remaining compiler blockers, file by file.
 - **After Phase 0:** H6 measurement in the operator panel is the first PR of
   the next turn.
 
@@ -118,15 +138,17 @@ need sign-in and are not used; the skills work without them.
 
 ## Native-batch candidates
 
-Each gets a fingerprint verdict before it is proposed for Phase 9.
+Each gets a fingerprint verdict before it is proposed for Phase 9. Verdicts
+below come from the docs and the dependency tree; each is confirmed with a
+fingerprint compare before anything is built on it.
 
-| Candidate                          | Fingerprint verdict |
-| ---------------------------------- | ------------------- |
-| React Compiler flag                | —                   |
-| Native tabs                        | —                   |
-| `expo-symbols`                     | —                   |
-| `expo-glass-effect`                | —                   |
-| A celebration library              | —                   |
-| `react-native-keyboard-controller` | —                   |
-| Quick actions                      | —                   |
-| Reanimated bump or SDK 58 upgrade  | —                   |
+| Candidate                          | Fingerprint verdict                                                                                    |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| React Compiler flag                | Moves it: `experiments` in `app.config.ts` is hashed                                                   |
+| Native tabs                        | Expected unchanged: built on react-native-screens, already in the binary — confirm                     |
+| `expo-symbols`                     | Possibly unchanged: expo-router 57 already depends on it, so it may already be linked on iOS — confirm |
+| `expo-glass-effect`                | Possibly unchanged: same reason as `expo-symbols` — confirm                                            |
+| A celebration library              | Moves it: a new native module (Lottie or Rive)                                                         |
+| `react-native-keyboard-controller` | Moves it: a new native module                                                                          |
+| Quick actions                      | Moves it: a native module and config                                                                   |
+| Reanimated bump or SDK 58 upgrade  | Moves it: a native version bump                                                                        |
