@@ -1,6 +1,6 @@
 # Redesign v3 — tracker
 
-**Status (16 October 2026):** Phase 0 and the first PR of every lane are open as drafts. D3 answered; Phase 1 (concepts) started.
+**Status (17 October 2026):** Phase 0 and the first PR of every lane are open as drafts and reviewed. Phase 1: direction chosen (A's structure, B's look); every screen drawn.
 
 This is the one page that says where the v3 redesign stands. Any session that
 continues the work reads it right after CLAUDE.md. Only the session that
@@ -36,31 +36,33 @@ The paywall is urgent although it is seventh, because there have been no sales.
 
 ## Gates
 
-| Work                         | Can start when                                                                                                             | Status      |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| Phase 0, lanes A–D           | now                                                                                                                        | in progress |
-| Lane E (AI)                  | D12a or D12g approved                                                                                                      | waiting     |
-| Phase 1                      | D3 answered                                                                                                                | in progress |
-| Phase 2                      | Phase 1 recorded                                                                                                           | waiting     |
-| Phase 3                      | Phase 2 Button/sheet PRs merged (or Behic's OK to stack); D12 for its money items                                          | waiting     |
-| Phase 4                      | Phase 2 merged; Phase 3's subscriber status card, or build it here                                                         | waiting     |
-| Phase 5                      | Phase 2 merged; lane C merged for reward chips and Echo session-done numbers                                               | waiting     |
-| Phase 6                      | Phase 2 and lane C reward ack merged; D12 (incl. h) for anything that gives Pro time or changes the Terms; minors defaults | waiting     |
-| Phase 7                      | Phase 2 merged; D11 for the campaign; D12 for Copilot or Pro Week claims; D12h for store-listing claims                    | waiting     |
-| Phase 8                      | D6c and minors defaults for any new push category; Phase 2 merged for its screens                                          | waiting     |
-| Phase 9 (native batch ships) | D2                                                                                                                         | waiting     |
+| Work                         | Can start when                                                                                                             | Status           |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| Phase 0, lanes A–D           | now                                                                                                                        | in progress      |
+| Lane E (AI)                  | D12a or D12g approved                                                                                                      | waiting          |
+| Phase 1                      | D3 answered                                                                                                                | direction chosen |
+| Phase 2                      | Phase 1 recorded                                                                                                           | waiting          |
+| Phase 3                      | Phase 2 Button/sheet PRs merged (or Behic's OK to stack); D12 for its money items                                          | waiting          |
+| Phase 4                      | Phase 2 merged; Phase 3's subscriber status card, or build it here                                                         | waiting          |
+| Phase 5                      | Phase 2 merged; lane C merged for reward chips and Echo session-done numbers                                               | waiting          |
+| Phase 6                      | Phase 2 and lane C reward ack merged; D12 (incl. h) for anything that gives Pro time or changes the Terms; minors defaults | waiting          |
+| Phase 7                      | Phase 2 merged; D11 for the campaign; D12 for Copilot or Pro Week claims; D12h for store-listing claims                    | waiting          |
+| Phase 8                      | D6c and minors defaults for any new push category; Phase 2 merged for its screens                                          | waiting          |
+| Phase 9 (native batch ships) | D2                                                                                                                         | waiting          |
 
 ## Phase 0 and the lanes
 
-| Item                                      | PR    | State                          |
-| ----------------------------------------- | ----- | ------------------------------ |
-| Tracker (this page)                       | #1783 | draft                          |
-| 0.1 Baseline screenshots, "before" set    | —     | published                      |
-| 0.2 Instrumentation                       | #1785 | draft, reviewed                |
-| Lane A — skeletons on Me and the Echo tab | #1786 | draft, reviewed                |
-| Lane B — D0 price hierarchy               | #1788 | draft, stacks on #1785, review |
-| Lane C — return the send award in the ack | #1784 | draft, reviewed                |
-| Lane D — `.value` to `.get()/.set()`      | #1787 | draft, reviewed                |
+| Item                                      | PR    | State                            |
+| ----------------------------------------- | ----- | -------------------------------- |
+| Tracker (this page)                       | #1783 | draft                            |
+| 0.1 Baseline screenshots, "before" set    | —     | published                        |
+| 0.2 Instrumentation                       | #1785 | draft, reviewed                  |
+| Lane A — skeletons on Me and the Echo tab | #1786 | draft, reviewed                  |
+| Lane B — D0 price hierarchy               | #1788 | draft, stacks on #1785, reviewed |
+| Lane B — honesty fixes in copy            | #1789 | draft, reviewed                  |
+| H6 — measurement in the operator panel    | #1790 | draft, reviewed                  |
+| Lane C — return the send award in the ack | #1784 | draft, reviewed                  |
+| Lane D — `.value` to `.get()/.set()`      | #1787 | draft, reviewed                  |
 
 Merge order: #1784 before any client PR that reads the award; #1785 before
 #1788. #1788 waits for the App Review question in rule 26.
@@ -77,6 +79,10 @@ Merge order: #1784 before any client PR that reads the award; #1785 before
 - Echo offline with no cache keeps the skeleton pulsing; the Packs row says
   "No packs yet" while packs load; accounts with no badges shift once when the
   shelf arrives (#1786).
+- #1790: an explain test for the `readThreads` shapes, a comment that says
+  "earliest" where it means "most recent", and the header accessibility flag.
+- #1789: the `limitReached` email and push still fire after refusals of quotas
+  Pro does not lift.
 - React Compiler: refs read or written during render, unsupported syntax and
   use-before-declare still block it in several files; the stock healthcheck
   reports success falsely (#1787).
@@ -99,6 +105,31 @@ Merge order: #1784 before any client PR that reads the award; #1785 before
   `expo-glass-effect`; then the remaining compiler blockers, file by file.
 - **After Phase 0:** H6 measurement in the operator panel is the first PR of
   the next turn.
+
+## Phase 1 — the concepts and the chosen direction
+
+Three product concepts were drawn on 16 October 2026 (A "Today": a Home tab with
+one next step; B "Partners": the app organised around exchange partners with pair
+streaks; C "Talk": three tabs and one Talk-now button). Behic chose **A's structure
+with B's look**, plus two ideas from C:
+
+- Tabs: Home · Chats · Echo · People · Me. Every launch lands on Home with one
+  next step and Today's three rings; Discover and Feed merge into People
+  (People | Posts).
+- Look: flat colour blocks, a colour per partner, big Nunito type, flat pill
+  buttons, no shadows; `primary` blue and yellow-once-per-screen kept.
+- Rewards: pair streaks per partner ("9 days together", +15 for both on a
+  two-way day).
+- From C: a received correction is saved to Echo automatically (with Undo); Home
+  shows a "Talk now" card when someone who fits is online.
+- The yearly plan shows the billed amount biggest, with the per-month figure as
+  a coloured badge under it.
+
+The whole app (108 screens, every route but the operator panel) is drawn in this
+direction on a private design canvas shared with Behic. Next: the five-person
+usability test (goal 6) and the dated decision entries in `docs/decisions.md`
+for every product rule this direction reverses, landing with the first Phase 2
+PR.
 
 ## Decisions taken by the executor
 
