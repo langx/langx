@@ -1,4 +1,5 @@
 import { Easing, type WithSpringConfig, type WithTimingConfig } from 'react-native-reanimated'
+import { CURVE, DURATION } from './motionValues'
 
 /**
  * How things move: the curves, the durations, the springs and the press,
@@ -23,31 +24,21 @@ import { Easing, type WithSpringConfig, type WithTimingConfig } from 'react-nati
  * `'worklet'`, and what is built here is started from an effect, never during
  * render: a spring started before its view existed froze part-way on the web
  * build (see the hourly gift).
+ *
+ * The numbers themselves — durations, curve points, the press scale — are in
+ * `motionValues.ts`, which imports nothing, so that `Button` can press by
+ * them on the launch path without evaluating Reanimated. They are re-exported
+ * here, and a Reanimated screen reads them from this file.
  */
 
+export { CURVE, DURATION, PRESS_SCALE, STAGGER } from './motionValues'
+
 /** A strong ease-out: the movement is at its fastest when the eye arrives. */
-export const EASE_OUT = Easing.bezier(0.23, 1, 0.32, 1)
+export const EASE_OUT = Easing.bezier(...CURVE.out)
 /** Fast out of the gate, then a long soft landing: text rising into place. */
-export const EASE_RISE = Easing.bezier(0.2, 0.8, 0.2, 1)
+export const EASE_RISE = Easing.bezier(...CURVE.rise)
 /** A small overshoot, for the one thing on a screen that is thrown. */
-export const EASE_POP = Easing.bezier(0.34, 1.56, 0.64, 1)
-
-/** In milliseconds. */
-export const DURATION = {
-  /** Press feedback. The finger is still down, so anything longer reads as lag. */
-  press: 120,
-  /** A control letting go of a state — a radio dot leaving. Quicker out than in. */
-  release: 150,
-  /** A block arriving on a screen. */
-  enter: 320,
-  /** A line of text rising, on a screen that is itself the event (the recap). */
-  rise: 700,
-  /** The thrown card. The longest thing here, and inside a celebration's 1.5 s. */
-  pop: 900,
-} as const
-
-/** Between neighbours in a cascade. Short enough that nothing waits on it. */
-export const STAGGER = 60
+export const EASE_POP = Easing.bezier(...CURVE.pop)
 
 export const TIMING = {
   press: { duration: DURATION.press, easing: EASE_OUT },
@@ -79,12 +70,6 @@ export const SPRING = {
    */
   bounce: { duration: 500, dampingRatio: 0.5 },
 } as const satisfies Record<string, WithSpringConfig>
-
-/**
- * How far a pressed control shrinks. Enough to feel under the finger, not so
- * much that a label wobbles; a whole card wants less, and says so locally.
- */
-export const PRESS_SCALE = 0.97
 
 /**
  * The animation — or, when motion is reduced, the value it would have ended
