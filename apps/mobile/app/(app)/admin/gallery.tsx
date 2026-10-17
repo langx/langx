@@ -1,3 +1,5 @@
+import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
+import { useFonts } from 'expo-font'
 import { Redirect } from 'expo-router'
 import { Text } from 'react-native'
 import { AdminGate } from '../../../src/components/AdminGate'
@@ -23,9 +25,15 @@ import { makeStyles } from '../../../src/lib/theme'
  * The sections are not written here. They are listed in
  * `src/components/gallery/sections.ts`, so the PR that adds a component adds
  * its section there and leaves this file alone.
+ *
+ * It loads Nunito Black for itself, since the root layout does not yet — see
+ * `DISPLAY_FONT_BLACK`. Nothing waits on it: the screen draws at once and the
+ * Display and Title samples take the face when it lands. Once a shipped
+ * screen moves the font into the root, this load is a no-op and can go.
  */
 export default function AdminGalleryScreen() {
   useScreenInteractive()
+  useFonts({ Nunito_900Black })
   const styles = useStyles()
 
   if (!isDebugPanelEnabled()) return <Redirect href="/(app)/admin" />
