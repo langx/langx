@@ -1,5 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Pressable, Text, View } from 'react-native'
+import { useT } from '../../i18n'
+import { NO_NUMBER } from '../../lib/loadState'
 import { makeStyles, useTheme } from '../../lib/theme'
 import type { CalloutTone } from './Callout'
 import { CrossFade } from './CrossFade'
@@ -52,6 +54,7 @@ export function StatTile({
 }: StatTileProps) {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
   const toneColour =
     tone === 'success'
       ? colors.success
@@ -64,6 +67,9 @@ export function StatTile({
             : null
 
   const lineHeight = Math.round(valueSize * 1.2)
+  // The dash is a picture of "no number"; read aloud it is a punctuation mark,
+  // or nothing at all.
+  const spoken = value === NO_NUMBER ? t('common.notLoaded') : value
   const numeral = (
     <Text
       style={[
@@ -116,7 +122,7 @@ export function StatTile({
     <Pressable
       accessibilityRole="button"
       // No number to read out yet; saying the placeholder would be a lie.
-      accessibilityLabel={loading ? label : `${label}: ${value}`}
+      accessibilityLabel={loading ? label : `${label}: ${spoken}`}
       accessibilityState={loading ? { busy: true } : undefined}
       onPress={onPress}
       style={({ pressed }) => [styles.tile, pressed && styles.pressed]}

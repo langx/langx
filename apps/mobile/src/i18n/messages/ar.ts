@@ -44,6 +44,7 @@ export const ar: Localized<EnMessages> = {
     edit: 'تعديل',
     enable: 'تفعيل',
     update: 'تحديث',
+    notLoaded: 'تعذّر التحميل',
   },
 
   tabs: { discover: 'استكشاف', chats: 'المحادثات', echo: 'صدى', feed: 'الأخبار', me: 'أنا' },

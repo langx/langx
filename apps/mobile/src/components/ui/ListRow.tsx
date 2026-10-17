@@ -1,6 +1,8 @@
 import Feather from '@expo/vector-icons/Feather'
 import type { ReactNode } from 'react'
 import { Pressable, Text, View } from 'react-native'
+import { useT } from '../../i18n'
+import { NO_NUMBER } from '../../lib/loadState'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { CrossFade } from './CrossFade'
 import { Skeleton } from './Skeleton'
@@ -50,13 +52,22 @@ export function ListRow({
 }: ListRowProps) {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
 
   const subtitleLine = subtitle ? (
     <Text style={[styles.subtitle, subtitleColor ? { color: subtitleColor } : null]}>
       {subtitle}
     </Text>
   ) : null
-  const valueText = value ? <Text style={styles.value}>{value}</Text> : null
+  const valueText = value ? (
+    <Text
+      // The dash for a value that did not load is read as what it means.
+      accessibilityLabel={value === NO_NUMBER ? t('common.notLoaded') : undefined}
+      style={styles.value}
+    >
+      {value}
+    </Text>
+  ) : null
 
   const body = (
     <>

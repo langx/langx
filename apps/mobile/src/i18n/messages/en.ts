@@ -50,6 +50,8 @@ export const en = {
     edit: 'Edit',
     enable: 'Enable',
     update: 'Update',
+    /** Read aloud in place of the dash a number shows when it did not load. */
+    notLoaded: 'Couldn’t load',
   },
 
   tabs: {

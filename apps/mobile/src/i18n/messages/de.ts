@@ -31,6 +31,7 @@ export const de: Localized<EnMessages> = {
     edit: 'Bearbeiten',
     enable: 'Aktivieren',
     update: 'Aktualisieren',
+    notLoaded: 'Nicht geladen',
   },
 
   tabs: { discover: 'Entdecken', chats: 'Chats', echo: 'Echo', feed: 'Feed', me: 'Ich' },
