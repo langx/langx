@@ -1,4 +1,3 @@
-import Feather from '@expo/vector-icons/Feather'
 import { STREAK_FREEZE_SKU } from '@langx/shared'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
@@ -127,7 +126,7 @@ export default function StreakScreen() {
           <Button
             label={t('share.streak')}
             variant="secondary"
-            icon={<Feather name="share" size={18} color={colors.accent} />}
+            icon="share"
             onPress={() =>
               setCard({
                 kind: 'streak',

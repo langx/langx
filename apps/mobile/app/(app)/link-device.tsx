@@ -165,7 +165,7 @@ export default function LinkDeviceScreen() {
               label={t('linkDevice.scan')}
               variant="ink"
               size="small"
-              icon={<Feather name="maximize" size={18} color={colors.bg} />}
+              icon="maximize"
               onPress={() => router.push('/(app)/scan')}
               style={styles.scan}
             />
