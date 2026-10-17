@@ -123,7 +123,7 @@ export default function GiftScreen() {
           <ActivityIndicator />
         ) : state.ready ? (
           <>
-            {/* Two views for the hard shadow, as `Button` draws it: the face drops onto the shade on press. */}
+            {/* Two views for the hard shadow, as the current look's `Button` drew it: the face drops onto the shade on press. */}
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t('gift.openAccessibility')}

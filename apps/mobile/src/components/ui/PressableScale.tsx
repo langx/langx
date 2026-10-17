@@ -47,18 +47,28 @@ export interface PressableScaleProps extends Omit<PressableProps, 'style' | 'chi
  * and Fabric failed with "addViewAt: … already has a parent": a white page in a
  * release build. The onboarding finish button did exactly that on every tap.
  */
-export function PressableScale({
+export function PressableScale(props: PressableScaleProps) {
+  const reduceMotion = useReduceMotion()
+  return <PressableScaleBase {...props} reduceMotion={reduceMotion} />
+}
+
+/**
+ * `PressableScale` for a caller that already reads reduce motion for itself —
+ * `Button`, whose check needs it too — so a button on a long list subscribes
+ * to the setting once rather than twice.
+ */
+export function PressableScaleBase({
   children,
   style,
   touchStyle,
   scaleTo = PRESS_SCALE,
+  reduceMotion,
   onPressIn,
   onPressOut,
   disabled,
   ...rest
-}: PressableScaleProps) {
+}: PressableScaleProps & { reduceMotion: boolean }) {
   const styles = useStyles()
-  const reduceMotion = useReduceMotion()
   const scale = useRef(new Animated.Value(1)).current
 
   const settle = (toValue: number, duration: number): void => {

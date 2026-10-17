@@ -13,7 +13,7 @@ import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { impact, notification } from '../../lib/haptics'
 import { makeStyles, useTheme, type V3Colors } from '../../lib/theme'
 import { CURVE, DURATION } from '../../lib/theme/motionValues'
-import { PressableScale } from './PressableScale'
+import { PressableScaleBase } from './PressableScale'
 
 type Variant = 'primary' | 'blue' | 'secondary' | 'neutral' | 'ink' | 'danger'
 type Size = 'default' | 'medium' | 'small'
@@ -180,7 +180,8 @@ export function Button({
       collapsable={false}
       style={[styles.wrap, isDisabled && styles.disabled, style]}
     >
-      <PressableScale
+      <PressableScaleBase
+        reduceMotion={reduceMotion}
         accessibilityRole="button"
         accessibilityState={{ disabled: isDisabled, busy: loading }}
         {...(accessibilityLabel ? { accessibilityLabel } : {})}
@@ -217,7 +218,7 @@ export function Button({
           {iconPosition === 'end' ? iconNode : null}
         </View>
         {loading ? <ActivityIndicator color={look.label} style={styles.spinner} /> : null}
-      </PressableScale>
+      </PressableScaleBase>
     </View>
   )
 }
