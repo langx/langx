@@ -155,6 +155,8 @@ PR.
 | 16 Oct 2026 | Name and version     | The redesign is called v3, and it ships as app version 3.0 once everything is ready (the version bump waits for that release round)                                                                                                                                                                    |
 | 16 Oct 2026 | Yearly plan display  | The billed yearly amount stays the biggest price; the per-month figure becomes a coloured badge under it ("$6.99 a month · 3 months free"). Because the yearly total is now the headline number, every yearly price is rounded to end in .99 in every storefront — done last, in the 3.0 release round |
 | 16 Oct 2026 | Pro translations     | Unlimited on Pro, everywhere; the free plan keeps its daily allowance                                                                                                                                                                                                                                  |
+| 17 Oct 2026 | Rule 26 for #1788    | No build is in App Review; #1788 merges with commit 2 (the free week in the subline)                                                                                                                                                                                                                   |
+| 17 Oct 2026 | Merges               | Behic asked the coordinator to merge in order; the auto-mode classifier allowed #1784 only, so the rest are his clicks                                                                                                                                                                                 |
 
 ## Open questions
 
