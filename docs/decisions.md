@@ -801,10 +801,11 @@ press collapsed, with an upper-case, letter-spaced label. Both rules lived in
   the thing to press because it is the only yellow on the screen, not because
   it is the only thing standing up. The press is a 3% shrink on the motion
   module's ease-out, and under reduce motion a dim instead.
-- **Sentence case, as written.** An upper-case transform is applied by the
-  platform in the device's locale, not the app's: an English app on a Turkish
-  phone wrote "SIGN İN", and the Turkish copy on an English phone lost its
-  dotted capital. Labels are now drawn exactly as the catalogue writes them.
+- **Sentence case, as written.** An upper-case transform is never done in
+  the app's language: iOS upper-cases with no locale at all, so Turkish labels
+  lost the dotted capital İ ("GIRIŞ YAP"), and Android upper-cases in the
+  phone's locale, so an English label on a Turkish phone gained one ("SİGN
+  İN"). Labels are now drawn exactly as the catalogue writes them.
 - **Targets.** Faces of 56, 52 and 44pt, the small one 48dp on Android. The
   56pt face sits in a 60pt touch band — the footprint the old face and its
   drop took, so no stack of buttons moved. A minimum height, not a height, and

@@ -103,10 +103,11 @@ const EASE_POP = Easing.bezier(...CURVE.pop)
  * and the yellow is still unmistakably the thing to press because it is the
  * only yellow on the screen, not because it is the only thing standing up.
  *
- * Sentence case, untransformed. An upper-case transform is applied by the
- * platform in the device's locale, not the app's, so "Sign in" in an English
- * app on a Turkish phone came out with a dotted capital İ, and the Turkish
- * copy on an English phone lost its dots. Words are drawn as written.
+ * Sentence case, untransformed. An upper-case transform is never done in the
+ * app's language: iOS upper-cases with no locale at all, so the Turkish
+ * "Giriş yap" came out "GIRIŞ YAP" where Turkish writes "GİRİŞ YAP", and
+ * Android upper-cases in the phone's locale, so an English "Sign in" on a
+ * Turkish phone gained a dotted İ. Words are drawn as the catalogue writes them.
  *
  * Nothing truncates. The face has a minimum height rather than a height, and
  * the label wraps, so at the largest text sizes a long label makes a taller
