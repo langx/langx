@@ -351,9 +351,10 @@ const v3LightColors = {
    */
   ink: '#14161b',
   /**
-   * A fill, not a text colour. As text on the dark ground it falls under
-   * 4.5:1, which is the price of keeping it the same in both schemes; text
-   * that should read as blue is `echoText`.
+   * A fill, not a text colour. As text it clears 4.5:1 only on the white
+   * ground — on the dark ground it falls under, which is the price of keeping
+   * it the same in both schemes, and on `surface` or `echoTint` it fails in
+   * light too. Text that should read as blue is `echoText`.
    */
   blue: '#3b6cf6',
   onBlue: '#ffffff',
