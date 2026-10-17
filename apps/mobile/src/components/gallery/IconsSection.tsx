@@ -29,7 +29,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[16] },
   cell: { alignItems: 'center', gap: v3.space[4] },
   // A fixed box the size of the largest glyph, so the sizes compare on one baseline.
-  glyph: { alignItems: 'center', height: v3Icon.xl, justifyContent: 'center', width: v3Icon.xl },
+  glyph: { alignItems: 'center', height: v3Icon.xxl, justifyContent: 'center', width: v3Icon.xxl },
   name: { ...v3.type.label, color: v3.colors.fg },
   value: { ...v3.type.caption, color: v3.colors.muted },
 }))

@@ -475,11 +475,21 @@ export const v3Space = {
   32: 32,
 } as const
 
+/**
+ * The drawings pick a corner by how tall the block is, so the middle steps
+ * are named for the size of thing that carries them.
+ */
 export const v3Radius = {
   /** The 40pt leading square in a row. */
   icon: 12,
+  /** A block 56–68pt tall standing on its own — a field, a single row. */
+  row: 18,
+  /** A tile about 100pt tall. */
+  card: 20,
   /** A tile — a partner card, a stat. */
   tile: 22,
+  /** An 80pt badge square, and cards 80–120pt tall. */
+  badge: 24,
   /** A full-width block — the next-step card, a sheet's top corners. */
   block: 28,
   /** The one big hero block on a screen. */
@@ -497,8 +507,10 @@ export const v3Icon = {
   md: 20,
   /** A primary button's glyph, a row's leading glyph. */
   lg: 22,
+  /** The tab bar's glyphs. */
+  xl: 24,
   /** Header chrome — back, close. */
-  xl: 26,
+  xxl: 26,
 } as const
 
 /**
