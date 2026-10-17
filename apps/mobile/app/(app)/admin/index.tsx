@@ -21,6 +21,7 @@ import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { StatTile } from '../../../src/components/ui/StatTile'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { ADMIN, adminPercent } from '../../../src/lib/adminStrings'
+import { isDebugPanelEnabled } from '../../../src/lib/debugPanel'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 
@@ -80,6 +81,20 @@ export default function AdminHomeScreen() {
          * must not hold back the one number on this screen that is about now.
          */}
         <LiveCard />
+
+        {/*
+         * A developer's page rather than an operator's, so it only exists
+         * where the other debug surfaces do: a dev build with the flag set.
+         */}
+        {isDebugPanelEnabled() ? (
+          <View style={styles.group}>
+            <ListRow
+              title={ADMIN.gallery.entryRow}
+              onPress={() => router.push('/(app)/admin/gallery')}
+              last
+            />
+          </View>
+        ) : null}
 
         {stats.isPending ? (
           <View style={styles.loading}>
