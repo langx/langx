@@ -1,3 +1,5 @@
+import type { INTEREST_SUGGESTIONS } from './profile'
+
 /**
  * Conversation starters: the questions a thread offers above its composer when
  * there is nothing to answer — an empty conversation, or one gone quiet.
@@ -78,6 +80,20 @@ export const CONVERSATION_TOPICS = [
   'learnedRecently',
   'favoriteSubject',
   'focusTips',
+  // Interests — each one the opener for an `INTEREST_SUGGESTIONS` entry no
+  // topic above already covered
+  'favoriteTeam',
+  'stayActive',
+  'favoriteArtist',
+  'lastPhoto',
+  'localHistory',
+  'scienceFact',
+  'favoriteApp',
+  'natureSpot',
+  'favoriteAnimal',
+  'localStyle',
+  'businessIdea',
+  'bestTeacher',
   // Just for fun
   'superpower',
   'overnightLanguage',
@@ -85,6 +101,39 @@ export const CONVERSATION_TOPICS = [
 ] as const
 
 export type ConversationTopic = (typeof CONVERSATION_TOPICS)[number]
+
+/**
+ * The topics an interest from the onboarding chips points at, so a thread
+ * opens with what the other person said they like. Keyed by every suggestion
+ * — a chip added there without a line here does not compile. An interest
+ * typed as free text matches nothing; it is in whatever language its author
+ * wrote it in, and guessing at it would put the wrong question in front of
+ * somebody.
+ */
+export const INTEREST_TOPICS = {
+  music: ['favoriteSong', 'musicLately'],
+  films: ['filmToRecommend', 'childhoodShow'],
+  books: ['recentBook'],
+  cooking: ['comfortFood', 'signatureDish', 'dishToTry'],
+  travel: ['dreamTrip', 'bestPlaceVisited', 'travelSurprise', 'nextTrip', 'travelStyle'],
+  football: ['favoriteTeam', 'popularSport'],
+  fitness: ['stayActive', 'sportsYouPlay'],
+  gaming: ['games', 'childhoodGame'],
+  art: ['favoriteArtist', 'makeThings'],
+  photography: ['lastPhoto'],
+  history: ['localHistory', 'timeTravel'],
+  science: ['scienceFact', 'learnedRecently'],
+  technology: ['favoriteApp', 'channelToRecommend'],
+  nature: ['natureSpot', 'favoriteSeason'],
+  animals: ['favoriteAnimal', 'pets'],
+  fashion: ['localStyle'],
+  business: ['businessIdea', 'dreamJob'],
+  // Listing it as an interest is not an invitation to open with it: the
+  // reason politics is left out above holds for this person's partner too.
+  politics: [],
+  languages: ['untranslatableWord', 'favoriteWord', 'localSaying', 'slang'],
+  teaching: ['bestTeacher', 'favoriteSubject'],
+} as const satisfies Record<(typeof INTEREST_SUGGESTIONS)[number], readonly ConversationTopic[]>
 
 /**
  * A conversation whose last message is at least this many days old offers
