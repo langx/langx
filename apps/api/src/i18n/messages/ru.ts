@@ -14,7 +14,9 @@ export const ru: Localized<ServerMessages> = {
       many: 'Серия из {count} дней! 🔥',
       other: 'Серия из {count} дня! 🔥',
     },
-    streakBody: 'Отправьте сегодня сообщение, чтобы её сохранить.',
+    streakBody: 'Откройте LangX сегодня, чтобы её сохранить.',
+    streakRepairTitle: 'Вернитесь к своей серии',
+    streakRepairBody: 'Починка заполнит вчерашний день, и серия продолжится.',
     echoTitle: {
       one: '{count} карточка ждёт',
       few: '{count} карточки ждут',
@@ -55,11 +57,6 @@ export const ru: Localized<ServerMessages> = {
     promo: {
       addPhotoTitle: 'Добавьте фото',
       addPhotoBody: 'Профили с лицом получают больше ответов.',
-      streakBrokeTitle: {
-        one: 'Серия из {count} дня прервалась',
-        other: 'Серия из {count} дней прервалась',
-      },
-      streakBrokeBody: 'Починка вернёт вчерашний день.',
       awayTitle: 'Люди всё ещё здесь',
       awayBody: 'Новые собеседники.',
       awayLongTitle: 'Мы здесь, когда захотите',

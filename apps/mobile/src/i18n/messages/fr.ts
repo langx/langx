@@ -693,7 +693,7 @@ export const fr: Localized<EnMessages> = {
       'Corrige la phrase de quelqu’un et il voit exactement ce qui a changé. Les corrections sont illimitées sur tous les forfaits — c’est tout l’intérêt.',
     slide3Title: 'Reviens, et ça s’accumule',
     slide3Body:
-      'Un message par jour garde ta série en vie. Gagne des jetons en parlant et en enseignant, et dépense-les en gel de série ou en style pour ton profil.',
+      'Ouvrir l’app chaque jour garde ta série en vie. Gagne des jetons en parlant et en enseignant, et dépense-les en gel de série ou en style pour ton profil.',
     getStarted: 'Commencer',
     skip: 'Passer',
     next: 'Suivant',
@@ -898,7 +898,7 @@ export const fr: Localized<EnMessages> = {
     messagesBody: 'Quand quelqu’un vous écrit. Par e-mail seulement après une absence.',
     streak: 'Rappel de série',
     streakBody:
-      'Le soir, si votre série est sur le point de s’interrompre. Par e-mail si aucun téléphone n’est connecté.',
+      'Le soir, si votre série est sur le point de s’interrompre ou s’est interrompue la veille. L’alerte n’arrive par e-mail que si aucun téléphone n’est connecté.',
     badges: 'Badges',
     badgesBody: 'Quand vous en gagnez un. Un récapitulatif le soir, pas une alerte à chaque fois.',
     profileVisits: 'Visites de profil',
@@ -1315,6 +1315,18 @@ export const fr: Localized<EnMessages> = {
       learnedRecently: 'Qu’as-tu appris d’intéressant récemment ?',
       favoriteSubject: 'Quelle était ta matière préférée à l’école ?',
       focusTips: 'Qu’est-ce qui t’aide à te concentrer quand tu as beaucoup à faire ?',
+      favoriteTeam: 'Tu suis une équipe de foot ? Laquelle ?',
+      stayActive: 'Comment aimes-tu rester actif ?',
+      favoriteArtist: 'Y a-t-il un artiste dont tu adores le travail ?',
+      lastPhoto: 'Quelle est la dernière photo que tu as prise et dont tu es fier ?',
+      localHistory: 'Quelle anecdote historique y a-t-il sur l’endroit où tu vis ?',
+      scienceFact: 'Quel fait scientifique ne cesse de t’étonner ?',
+      favoriteApp: 'Sans quelle appli ou quel appareil ne pourrais-tu pas vivre ?',
+      natureSpot: 'Où vas-tu quand tu as envie de nature ?',
+      favoriteAnimal: 'Quel animal trouves-tu le plus fascinant ?',
+      localStyle: 'Comment les gens s’habillent-ils d’habitude là où tu vis ?',
+      businessIdea: 'Si tu pouvais créer n’importe quelle entreprise, laquelle serait-ce ?',
+      bestTeacher: 'Qui a été ton meilleur professeur, et pourquoi ?',
       superpower: 'Si tu pouvais avoir un super-pouvoir, lequel choisirais-tu ?',
       overnightLanguage:
         'Si tu pouvais parler une autre langue parfaitement du jour au lendemain, laquelle choisirais-tu ?',
@@ -1729,7 +1741,7 @@ export const fr: Localized<EnMessages> = {
       'Partagez une photo, une vidéo ou une phrase. Besoin d’aide ? Cochez Besoin d’une correction ou Besoin de la prononciation et un locuteur natif répondra. Puis faites de même pour quelqu’un d’autre.',
     streakTitle: 'Séries et jetons',
     streakBody:
-      'Un message par jour garde ta série en vie. Parler et enseigner rapportent des jetons, à dépenser en gel de série ou en nouveau style pour ton profil.',
+      'Ouvrir LangX chaque jour garde ta série en vie. Parler et enseigner rapportent des jetons, à dépenser en gel de série ou en nouveau style pour ton profil.',
     discoverTitle: 'Trouver un partenaire',
     discoverBody:
       'Tout le monde dans Découvrir parle une langue que tu apprends et apprend une langue que tu parles. Pour toi suit tes langues, Actifs montre qui vient de passer, et À proximité utilise ta position une fois que tu la partages. Ouvre un profil et dis bonjour — c’est ainsi que commence presque chaque échange ici.',

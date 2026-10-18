@@ -687,7 +687,7 @@ export const es: Localized<EnMessages> = {
       'Arregla la frase de alguien y verá exactamente qué ha cambiado. Las correcciones son ilimitadas en todos los planes: de eso se trata.',
     slide3Title: 'Aparece y suma',
     slide3Body:
-      'Un mensaje al día mantiene viva tu racha. Gana fichas hablando y enseñando, y gástalas en congelar la racha o en un detalle para tu perfil.',
+      'Abrir la app cada día mantiene viva tu racha. Gana fichas hablando y enseñando, y gástalas en congelar la racha o en un detalle para tu perfil.',
     getStarted: 'Empezar',
     skip: 'Saltar',
     next: 'Siguiente',
@@ -888,7 +888,7 @@ export const es: Localized<EnMessages> = {
     messagesBody: 'Cuando alguien te escribe. Por correo solo si llevas un tiempo sin entrar.',
     streak: 'Recordatorio de racha',
     streakBody:
-      'Por la tarde, si tu racha está a punto de romperse. Por correo si no hay ningún teléfono con sesión iniciada.',
+      'Por la tarde, si tu racha está a punto de romperse o se rompió el día anterior. El aviso llega por correo solo si no hay ningún teléfono con sesión iniciada.',
     badges: 'Insignias',
     badgesBody: 'Cuando ganas una. Un resumen por la tarde, no un aviso cada vez.',
     profileVisits: 'Visitas a tu perfil',
@@ -1305,6 +1305,18 @@ export const es: Localized<EnMessages> = {
       learnedRecently: '¿Qué has aprendido últimamente que te haya parecido interesante?',
       favoriteSubject: '¿Cuál era tu asignatura favorita en el colegio?',
       focusTips: '¿Qué te ayuda a concentrarte cuando tienes mucho que hacer?',
+      favoriteTeam: '¿Sigues a algún equipo de fútbol? ¿A cuál?',
+      stayActive: '¿Cómo te gusta mantenerte activo?',
+      favoriteArtist: '¿Hay algún artista cuya obra te encante?',
+      lastPhoto: '¿Cuál es la última foto que hiciste y de la que te sientes orgulloso?',
+      localHistory: '¿Qué historia curiosa tiene el lugar donde vives?',
+      scienceFact: '¿Qué dato científico te sigue sorprendiendo?',
+      favoriteApp: '¿Sin qué app o aparato no podrías vivir?',
+      natureSpot: '¿Adónde vas cuando quieres estar en contacto con la naturaleza?',
+      favoriteAnimal: '¿Qué animal te parece más fascinante?',
+      localStyle: '¿Cómo se suele vestir la gente donde vives?',
+      businessIdea: 'Si pudieras montar cualquier negocio, ¿cuál sería?',
+      bestTeacher: '¿Quién fue el mejor profesor que has tenido y por qué?',
       superpower: 'Si pudieras tener un superpoder, ¿cuál sería?',
       overnightLanguage:
         'Si pudieras hablar otro idioma perfectamente de la noche a la mañana, ¿cuál elegirías?',
@@ -1712,7 +1724,7 @@ export const es: Localized<EnMessages> = {
       'Comparte una foto, un vídeo o una frase. ¿Quieres ayuda? Marca Necesito corrección o Necesito pronunciación y un hablante nativo responderá. Luego haz lo mismo por otra persona.',
     streakTitle: 'Rachas y fichas',
     streakBody:
-      'Un mensaje al día mantiene viva tu racha. Hablar y enseñar dan fichas, que puedes gastar en congelar la racha o en un nuevo detalle para tu perfil.',
+      'Abrir LangX cada día mantiene viva tu racha. Hablar y enseñar dan fichas, que puedes gastar en congelar la racha o en un nuevo detalle para tu perfil.',
     discoverTitle: 'Encuentra un compañero',
     discoverBody:
       'Todas las personas en Descubrir hablan un idioma que aprendes y aprenden uno que tú hablas. Para ti se ajusta a tus idiomas, Activos muestra quién acaba de pasar por aquí y Cerca usa tu ubicación cuando la compartes. Abre un perfil y saluda: así empieza casi cada intercambio aquí.',

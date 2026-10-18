@@ -4,7 +4,9 @@ import type { ServerMessages } from './en'
 export const tr: Localized<ServerMessages> = {
   push: {
     streakTitle: { one: '{count} günlük seri! 🔥', other: '{count} günlük seri! 🔥' },
-    streakBody: 'Seriyi sürdürmek için bugün bir mesaj gönder.',
+    streakBody: "Seriyi sürdürmek için bugün LangX'i aç.",
+    streakRepairTitle: 'Serine kaldığın yerden devam et',
+    streakRepairBody: 'Bir onarım dünü doldurur, serin devam eder.',
     echoTitle: {
       one: '1 kart hazır',
       other: '{count} kart hazır',
@@ -33,11 +35,6 @@ export const tr: Localized<ServerMessages> = {
     promo: {
       addPhotoTitle: 'Bir fotoğraf ekle',
       addPhotoBody: 'Yüzü olan profiller çok daha fazla cevap alıyor.',
-      streakBrokeTitle: {
-        one: '{count} günlük serin bozuldu',
-        other: '{count} günlük serin bozuldu',
-      },
-      streakBrokeBody: 'Onarım dünü geri koyar.',
       awayTitle: 'İnsanlar hâlâ burada',
       awayBody: 'Pratik yapacak yeni insanlar var.',
       awayLongTitle: 'Sen gelene kadar buradayız',

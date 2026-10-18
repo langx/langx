@@ -805,7 +805,7 @@ export const en = {
       'Fix someone’s sentence and they see exactly what changed. Corrections are unlimited on every plan — teaching is the point.',
     slide3Title: 'Show up, and it adds up',
     slide3Body:
-      'One message a day keeps your streak alive. Earn tokens for talking and teaching, and spend them on a streak freeze or a look for your profile.',
+      'Opening the app each day keeps your streak alive. Earn tokens for talking and teaching, and spend them on a streak freeze or a look for your profile.',
     getStarted: 'Get started',
     skip: 'Skip',
     next: 'Next',
@@ -1008,7 +1008,7 @@ export const en = {
     messagesBody: 'When somebody writes to you. By email only if you have been away a while.',
     streak: 'Streak reminder',
     streakBody:
-      'In the evening, if your streak is about to break. By email if no phone is signed in.',
+      'In the evening, if your streak is about to break, or broke the day before. The warning comes by email only when no phone is signed in.',
     badges: 'Badges',
     badgesBody: 'When you earn one. A round-up in the evening, not a buzz each time.',
     profileVisits: 'Profile visits',
@@ -1453,6 +1453,18 @@ export const en = {
       learnedRecently: 'What’s something interesting you learned recently?',
       favoriteSubject: 'What was your favorite subject at school?',
       focusTips: 'What helps you focus when you have a lot to do?',
+      favoriteTeam: 'Do you follow a football team? Which one?',
+      stayActive: 'How do you like to stay active?',
+      favoriteArtist: 'Is there an artist whose work you really love?',
+      lastPhoto: 'What’s the last photo you took that you were proud of?',
+      localHistory: 'What’s an interesting bit of history from where you live?',
+      scienceFact: 'What’s a science fact that never stops amazing you?',
+      favoriteApp: 'Which app or gadget could you not live without?',
+      natureSpot: 'Where do you go when you want to be out in nature?',
+      favoriteAnimal: 'Which animal do you find the most fascinating?',
+      localStyle: 'What do people usually wear where you live?',
+      businessIdea: 'If you could start any business, what would it be?',
+      bestTeacher: 'Who was the best teacher you ever had, and why?',
       superpower: 'If you could have one superpower, what would it be?',
       overnightLanguage:
         'If you could speak one more language perfectly overnight, which would it be?',
@@ -1912,7 +1924,7 @@ export const en = {
       'Share a photo, a video or a sentence. Want help with it? Tick Correction needed or Pronunciation needed and someone native will answer. Then do the same for somebody else.',
     streakTitle: 'Streaks and tokens',
     streakBody:
-      'One message a day keeps your streak alive. Talking and teaching earn tokens, which you can spend on a streak freeze or a new look for your profile.',
+      'Opening LangX each day keeps your streak alive. Talking and teaching earn tokens, which you can spend on a streak freeze or a new look for your profile.',
     discoverTitle: 'Find a partner',
     discoverBody:
       'Everyone in Discover speaks a language you are learning and is learning one you speak. For you is matched to your languages, Active is who has just been around, and Nearby uses your location once you share it. Open a profile and say hello — that is how almost every exchange here begins.',
