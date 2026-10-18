@@ -75,7 +75,13 @@ export const COPILOT_RULES = {
  * Why Copilot did not answer — the `reason` on `COPILOT_UNAVAILABLE`. See
  * `ERROR_CODES.COPILOT_UNAVAILABLE` for each one.
  */
-export const COPILOT_UNAVAILABLE_REASONS = ['off', 'age', 'busy', 'no_answer'] as const
+export const COPILOT_UNAVAILABLE_REASONS = [
+  'off',
+  'age',
+  'partner_age',
+  'busy',
+  'no_answer',
+] as const
 export type CopilotUnavailableReason = (typeof COPILOT_UNAVAILABLE_REASONS)[number]
 
 /**

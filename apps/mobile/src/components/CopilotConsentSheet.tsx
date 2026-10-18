@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
+import { ActivityIndicator, Modal, Pressable, ScrollView, Text, View } from 'react-native'
 import { useCopilotStatus, useGiveCopilotConsent } from '../api/copilot'
 import { useAppConfig } from '../hooks/useAppConfig'
 import { useReduceMotion } from '../hooks/useReduceMotion'
@@ -60,6 +60,9 @@ export function CopilotConsentSheet({
   const status = useCopilotStatus(visible && member && service === true)
   const consent = useGiveCopilotConsent()
   const gate = copilotGate(service, status.data)
+  // Until `GET /copilot` answers, the gate reads "off" — which is not true yet,
+  // so the sheet waits rather than saying it.
+  const loading = member && service === true && status.isPending
 
   const accept = (): void => {
     consent.mutate(undefined, {
@@ -85,7 +88,11 @@ export function CopilotConsentSheet({
       >
         {/* Swallows the press so tapping the sheet does not close it. */}
         <Pressable style={styles.sheet} onPress={() => undefined}>
-          {gate === 'off' ? (
+          {loading ? (
+            <View style={styles.content}>
+              <ActivityIndicator color={colors.info} />
+            </View>
+          ) : gate === 'off' ? (
             <View style={styles.content}>
               <Text style={styles.body}>{t('copilot.off')}</Text>
             </View>

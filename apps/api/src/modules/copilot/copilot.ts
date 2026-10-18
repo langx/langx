@@ -17,7 +17,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { consumeQuota, getQuotaStatus, refundQuota } from '../../lib/quota'
 import { assertConversationAccess } from '../chat/access'
-import type { Message } from '../chat/conversations'
+import type { Conversation, Message } from '../chat/conversations'
 import { loadMutableMessage } from '../chat/mutations'
 import type { StructuredProvider } from '../official/assistantProvider'
 import { effectiveTier } from '../profiles/entitlement'
@@ -136,6 +136,31 @@ async function recentLines(
 }
 
 /**
+ * Refuses a thread whose other person is under Copilot's age, for the two
+ * actions that send their words: Reply ideas reads their lines, and Explain a
+ * correction one of them wrote or received. Check sends only the asker's own
+ * sentence, so it does not ask.
+ *
+ * "Off for 16- and 17-year-olds" has to mean their text never reaches the
+ * provider, not only that they cannot press the button — otherwise any adult
+ * in a chat with one sends it for them. A profile that is gone has no lines
+ * left to send: a purge clears the bodies.
+ */
+async function assertPartnerOldEnough(
+  db: Db,
+  conversation: Conversation,
+  userId: string,
+  now: Date,
+): Promise<void> {
+  const partnerId = conversation.participants.find((id) => id !== userId)
+  if (!partnerId) return
+  const partner = await getProfile(db, partnerId)
+  if (partner && !copilotAgeAllows(partner.birthDate, now)) {
+    throw unavailable('partner_age', 'Copilot does not read this chat')
+  }
+}
+
+/**
  * Reads what the question is about, through the same doors everything else
  * in a chat goes through: `assertConversationAccess` for the thread, and
  * `loadMutableMessage` for a message in it. So a blocked pair, a thread the
@@ -148,6 +173,7 @@ async function prepare(
   profile: Profile,
   locale: Locale,
   question: CopilotQuestion,
+  now: Date,
 ): Promise<Job> {
   const learner = learnerFacts(profile)
 
@@ -176,6 +202,7 @@ async function prepare(
 
   if (question.action === 'replyIdeas') {
     const conversation = await assertConversationAccess(db, question.conversationId, userId)
+    await assertPartnerOldEnough(db, conversation, userId, now)
     const thread = await recentLines(db, conversation._id, userId)
     if (thread.length === 0) {
       throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'There is nothing to reply to yet', {
@@ -200,12 +227,13 @@ async function prepare(
     }
   }
 
-  const { message } = await loadMutableMessage(
+  const { conversation, message } = await loadMutableMessage(
     db,
     userId,
     question.conversationId,
     question.messageId,
   )
+  await assertPartnerOldEnough(db, conversation, userId, now)
   const correction = message.correction
   if (
     message.type !== 'correction' ||
@@ -247,7 +275,8 @@ async function prepare(
  * 1. **The service** — the operator's switch and a key. Off, nothing is read.
  * 2. **The person** — old enough, and agreed to the current consent sheet.
  *    Nothing of theirs is read for the model, let alone sent, before both.
- * 3. **The question** — through the chat's own access checks.
+ * 3. **The question** — through the chat's own access checks, and for the
+ *    actions that send the other person's words, their age as well.
  * 4. **The cache** — an answer somebody already paid for costs nothing.
  * 5. **The person's allowance**, then **everybody's** — in that order, so a
  *    free account refused its own allowance spends nothing of the global
@@ -274,7 +303,7 @@ export async function askCopilot(
     throw new ApiError(ERROR_CODES.COPILOT_CONSENT_REQUIRED, 'Agree to the Copilot sheet first')
   }
 
-  const job = await prepare(db, userId, profile, locale, question)
+  const job = await prepare(db, userId, profile, locale, question, now)
   const key = copilotCacheKey(provider.model, question.action, job.userTurn)
   const hit = await lookupCopilotResult(db, key)
   if (hit) return { source: 'ai', cached: true, result: hit }

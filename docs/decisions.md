@@ -4626,8 +4626,12 @@ it.
 
 **Off for 16- and 17-year-olds by default**, with an exact birthday check
 rather than the year arithmetic profiles print, because that one would let a
-17-year-old in for up to a year. `COPILOT_RULES.minimumAge` is the one number
-to change if Behic decides otherwise.
+17-year-old in for up to a year. Off covers their words as well as their
+button: Reply ideas and Explain refuse a chat whose other person is under the
+age (`partner_age`), because both send that person's lines, and otherwise any
+adult they talk to would send them for them. Check sends only the asker's own
+sentence and still works there. `COPILOT_RULES.minimumAge` is the one number
+to change if Behic decides otherwise; it moves both.
 
 **Finite on both tiers.** `copilotPer24h` is a small free taste and a Pro
 ceiling sized so that one person spending every unit every day for a month

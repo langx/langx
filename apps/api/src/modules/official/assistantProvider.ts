@@ -110,8 +110,8 @@ export function createAnthropicProvider(env: Env): AssistantProvider | null {
         model: env.ANTHROPIC_MODEL,
         max_tokens: OFFICIAL_ASSISTANT.maxReplyTokens,
         system,
-        // See `effort` above: present for the thinking models, absent for Haiku,
-        // which refuses it.
+        // See `effort` above: absent for the models in `REFUSES_EFFORT`,
+        // present for every other.
         ...effort,
         /*
          * The tool definitions and the system prompt are the same bytes on

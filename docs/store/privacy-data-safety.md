@@ -195,7 +195,8 @@ carries no identifier of ours — no user id, and no metadata naming one. Text
 only, by construction (`modules/copilot/copilot.ts`).
 
 Off for 16- and 17-year-olds by default (`COPILOT_RULES.minimumAge`), checked
-against the birthday, server-side.
+against the birthday, server-side — and their words are not sent either: Reply
+ideas and Explain refuse a chat whose other person is under that age.
 
 For the forms, once it is on: the data is message content, which is already
 collected; what changes is that a processor sees it. Anthropic processes it for

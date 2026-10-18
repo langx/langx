@@ -228,6 +228,47 @@ describe('Copilot', () => {
       const birthday = new Date('2026-10-19T00:30:00Z')
       expect((await askCopilot(deps, me, 'en', check(), birthday)).source).toBe('ai')
     })
+
+    /**
+     * Off for them has to mean their words stay here too — not only that
+     * their own button is missing — or any adult they talk to sends them.
+     */
+    it('sends none of their words when an adult asks in a chat with one', async () => {
+      await handle.db
+        .collection(COLLECTIONS.profiles)
+        .updateOne({ _id: partner as never }, { $set: { birthDate: SEVENTEEN } })
+      const text = await addMessage({ senderId: me, body: 'I have a apple.' })
+      const correction = await addMessage({
+        senderId: partner,
+        type: 'correction',
+        body: 'I have an apple.',
+        correction: {
+          targetMessageId: new ObjectId(text),
+          original: 'I have a apple.',
+          corrected: 'I have an apple.',
+        },
+      })
+
+      const ideas = await refusal(
+        askCopilot(deps, me, 'en', { action: 'replyIdeas', conversationId }, NOW),
+      )
+      expect(ideas.reason).toBe('partner_age')
+      const explain = await refusal(
+        askCopilot(
+          deps,
+          me,
+          'en',
+          { action: 'explain', conversationId, messageId: correction },
+          NOW,
+        ),
+      )
+      expect(explain.reason).toBe('partner_age')
+      expect(model.asked).toHaveLength(0)
+      expect(await quotaUsed(me)).toBe(0)
+
+      // Check sends only the asker's own sentence.
+      expect((await askCopilot(deps, me, 'en', check(), NOW)).source).toBe('ai')
+    })
   })
 
   describe('the allowance', () => {
