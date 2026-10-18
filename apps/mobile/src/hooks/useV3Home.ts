@@ -44,12 +44,14 @@ export function useV3Home(): boolean {
  */
 export function useV3HomeDecision(): boolean | undefined {
   const config = useAppConfig()
-  const [waitOver, setWaitOver] = useState(() => v3HomeWaitLeft(Date.now()) === 0)
+  const [waitOver, setWaitOver] = useState(false)
+  // The clock starts in an effect, never during render: the web export
+  // prerenders, and a clock started there would run out mid-build and latch
+  // the build's own "off" into pages the browser then hydrates differently.
   useEffect(() => {
-    if (waitOver) return
     const timer = setTimeout(() => setWaitOver(true), v3HomeWaitLeft(Date.now()))
     return () => clearTimeout(timer)
-  }, [waitOver])
+  }, [])
   return latchV3Home({
     settled: waitOver || appConfigSettled(config),
     on: config.data?.flags.v3Home === true,
