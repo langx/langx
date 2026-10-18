@@ -561,6 +561,16 @@ export const ptBR: Localized<ServerMessages> = {
       other:
         '🎉 {friends} amigos que você convidou já estão conversando no LangX. {count} meses de Pro são seus!',
     },
+    introReferralWeeks: {
+      one: '🎉 Uma pessoa que você convidou já está conversando no LangX. {count} semana de Pro é sua, e ela também ganha Pro!',
+      other:
+        '🎉 Uma pessoa que você convidou já está conversando no LangX. {count} semanas de Pro são suas, e ela também ganha Pro!',
+    },
+    introInvitedWeeks: {
+      one: '🎉 Sua primeira conversa de verdade no LangX! Você entrou com um convite, então {count} semana de Pro é sua.',
+      other:
+        '🎉 Sua primeira conversa de verdade no LangX! Você entrou com um convite, então {count} semanas de Pro são suas.',
+    },
     introStreak: {
       one: '🔥 {days} dias seguidos, que incrível! Para agradecer, a gente te dá {count} mês de Pro.',
       other:

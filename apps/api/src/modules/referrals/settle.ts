@@ -7,7 +7,8 @@ import type { Conversation } from '../chat/conversations'
 import { isEmailVerified } from '../profiles/emailVerified'
 import type { Profile } from '../profiles/profiles'
 import type { Device } from '../push/devices'
-import { queueReferralGifts } from '../billing/proGiftRewards'
+import { getAppConfig } from '../appConfig/appConfig'
+import { queueInvitedWeek, queueReferralGifts, queueReferralWeek } from '../billing/proGiftRewards'
 import {
   MUTUAL_REF_PREFIX,
   awardTokens,
@@ -158,7 +159,27 @@ export async function settleReferral(db: Db, inviteeId: string, at: Date): Promi
      * leaves out of its count as well.
      */
     const gifts = !frozen && !unpaid
-    if (gifts) await queueReferralGifts(db, referral.referrerId, inviteeId, at)
+    /*
+     * Or, while `giveAWeek` is on, a week each: the rule is read from the row
+     * when an earlier settle already chose it, and otherwise from the switch,
+     * and is written down before any gift it decides — so a settle that
+     * crashed under one rule and runs again under the other finishes the
+     * rule it started.
+     */
+    let weekly = referral.proReward === 'week'
+    if (!weekly && (await getAppConfig(db)).flags.giveAWeek) {
+      await latch(db, inviteeId, { proReward: 'week' })
+      weekly = true
+    }
+    if (weekly) {
+      // The referrer's week, on the conditions their month had.
+      if (gifts) await queueReferralWeek(db, referral.referrerId, inviteeId, at)
+      // The friend's, on the conditions their welcome has: only a shared
+      // network or device withholds it, never the referrer's standing.
+      if (!shared) await queueInvitedWeek(db, inviteeId, at)
+    } else if (gifts) {
+      await queueReferralGifts(db, referral.referrerId, inviteeId, at)
+    }
     await latch(db, inviteeId, {
       activatedAt: at,
       activationAward: award,
@@ -166,8 +187,9 @@ export async function settleReferral(db: Db, inviteeId: string, at: Date): Promi
       ...(unpaid ? { unpaidReason: unpaid } : {}),
     })
     // Once more now that this activation is on the record: two invitees
-    // settling at the same moment each counted the other as not yet in.
-    if (gifts) await queueReferralGifts(db, referral.referrerId, inviteeId, at)
+    // settling at the same moment each counted the other as not yet in. A
+    // week needs no second pass — its slots are taken, not counted.
+    if (gifts && !weekly) await queueReferralGifts(db, referral.referrerId, inviteeId, at)
   }
 
   if (referral.subscribedAt && !subscriptionDone) {

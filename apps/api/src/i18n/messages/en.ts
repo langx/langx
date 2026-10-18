@@ -661,6 +661,21 @@ export const en = {
       other:
         '🎉 {friends} friends you invited are talking on LangX. {count} months of Pro are yours!',
     },
+    /**
+     * "Give a week, get a week" (`flags.giveAWeek`): one friend, counted in
+     * weeks. `Referral` is the inviter's letter and gives no number for the
+     * friend, whose length is config of its own; `Invited` is the friend's.
+     */
+    introReferralWeeks: {
+      one: '🎉 A friend you invited is talking on LangX. {count} week of Pro is yours, and they get Pro too!',
+      other:
+        '🎉 A friend you invited is talking on LangX. {count} weeks of Pro are yours, and they get Pro too!',
+    },
+    introInvitedWeeks: {
+      one: '🎉 Your first real conversation on LangX! You came with a friend’s invite, so {count} week of Pro is yours.',
+      other:
+        '🎉 Your first real conversation on LangX! You came with a friend’s invite, so {count} weeks of Pro are yours.',
+    },
     introStreak: {
       one: '🔥 {days} days in a row, that’s amazing! To say thanks, here’s {count} month of Pro on us.',
       other:
