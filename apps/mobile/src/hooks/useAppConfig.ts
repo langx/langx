@@ -25,8 +25,15 @@ export function useAppConfig() {
   const queryClient = useQueryClient()
 
   useEffect(() => {
+    // Every mounted caller registers this listener, so one return to the
+    // foreground invalidates once per caller. `cancelRefetch: false` lets the
+    // second and later calls join the request the first one started; the
+    // default cancels it and starts another, which sent one `/app-config` per
+    // caller each time the app came back.
     const subscription = AppState.addEventListener('change', (state) => {
-      if (state === 'active') void queryClient.invalidateQueries({ queryKey: APP_CONFIG_KEY })
+      if (state === 'active') {
+        void queryClient.invalidateQueries({ queryKey: APP_CONFIG_KEY }, { cancelRefetch: false })
+      }
     })
     return () => subscription.remove()
   }, [queryClient])

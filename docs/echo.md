@@ -535,6 +535,10 @@ tab-layout comment said "the four tabs, and only the four tabs"; the number
 was never the rule — the rule is that nothing which is not a tab may be
 registered there — and it now says five and states the rule instead.
 Icon: Feather `repeat` — the same glyph carries the toast and the bubble mark.
+With `flags.v3Home` on the bar is **Home · Chats · Echo · People · Me**: Echo
+stays in the middle, in a tinted pill that is always on rather than a raised
+disc (`docs/decisions.md` → _Home leads the bar, and People holds Discover
+and the Feed — behind a flag_).
 
 | Route                  | Screen                                                                                                                                     |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |

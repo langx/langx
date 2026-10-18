@@ -764,6 +764,23 @@ export const en = {
     welcomeBackClosing:
       'This is where news about LangX lands, so it’s worth keeping an eye on. If something’s missing or broken, Settings → About → Feedback comes straight to us. Good to have you back. 💛',
     /**
+     * The poll that follows the welcome — see `official/heardAbout.ts`. The
+     * option ids are fixed there; these are only their words, so a count
+     * adds up across every language. Brand names stay as they are.
+     */
+    heardAbout: {
+      question:
+        'Quick question, and then I’ll leave you to it: how did you hear about LangX? Tap the one that fits — it tells us where to find more people like you.',
+      store: 'App Store or Google Play',
+      search: 'Google or another search engine',
+      ai: 'ChatGPT or another AI',
+      friend: 'A friend',
+      tiktokInstagram: 'TikTok or Instagram',
+      youtube: 'YouTube',
+      appList: 'An app list or review site',
+      other: 'Somewhere else',
+    },
+    /**
      * Thanking somebody for a report we acted on, sent from the panel beside
      * the tokens. It says the report was looked into and never what was
      * decided: the outcome belongs to the person it is about, and the reporter

@@ -738,6 +738,8 @@ change in the 3.0 release round.
 
 ## The redesign is v3: A's structure, B's look
 
+> **Amended 18 October 2026 — see _Home leads the bar, and People holds Discover and the Feed — behind a flag_ below.**
+
 **16 October 2026.** Behic named the redesign "v3". It ships as app version
 3.0 once everything is ready, and the version bump waits for that release
 round. Its brief calls it "v4", and entries above this one say "the v3 look"
@@ -788,6 +790,63 @@ pull requests adds the tokens, the motion module (`src/lib/theme/motion.ts`),
 a design gallery in the operator panel for dev builds, and a lint rule that
 refuses a literal `fontSize` in a screen or component outside a shrinking
 allowlist.
+
+## Home leads the bar, and People holds Discover and the Feed — behind a flag
+
+**18 October 2026.** The first restructured surface (D4, D5, move S1), and the
+first change to the app's structure rather than its look. Two rules go, and
+neither had an entry of its own — they lived in `app/index.tsx`, which sent
+every signed-in launch to Discover, and in the tab layout's "the five tabs,
+and only the five tabs", which were Discover · Chats · Echo · Feed · Me. The
+entry above named both as rules the direction overturns, so this one sits
+beside it. **None of it takes effect until `flags.v3Home` is on**; with it off
+the app is exactly what it was.
+
+With the flag on:
+
+- **Home is the first tab, and a signed-in launch lands on it.** It leads with
+  one next step, chosen by the pure, tested `planHome` (`src/lib/homePlan.ts`)
+  in a fixed order: a thread waiting on you, an agreed call within
+  `MEETING_SOON_MINUTES`, today's streak not yet earned (by `streakSavable`,
+  so a run already beyond saving sends nobody anywhere), Echo cards due, a
+  hello to the first of today's people. That step owns the screen's one
+  yellow button. Under it: today's three goals, the streak with its next
+  reward read from `TOKEN_RULES`, the ready hourly gift, two of today's people
+  with a big Say hello each, the Pro card for a free account (paywall source
+  `home`, yellow only when there is no next step — D6a) and the invite. Every
+  block is built from a query another screen already makes, and every block
+  with nothing to do is not drawn. A guest gets the account on the yellow and
+  today's people with gated hellos (rule 9).
+- **The bar is Home · Chats · Echo · People · Me.** Echo is centred and set
+  apart by a tint that is always on, never by size: the raised disc cannot be
+  drawn by the platform's own tab bar, which the native batch moves to.
+- **People is the `discover` route under a new word**, with Discover and the
+  Feed as its two segments (People | Posts, `?segment=posts`). The route keeps
+  its name so every link, email and push that says `/discover` still lands;
+  `/feed` redirects to the Posts segment. The tab layout's rule stands —
+  nothing that is not a tab is registered there — with two sets of five, each
+  registering the other's odd one out without a button, so `/home` with the
+  flag off goes to Discover.
+
+**Why a flag, and why it is read once.** D4 puts restructured surfaces behind
+a staged-rollout switch so nobody sees half of each. `flags.v3Home` is an
+`appConfig` flag that starts off, like `captchaRequired`, and is turned on
+with `scripts/maintenance.ts flag v3Home true`. The client latches the first
+answer of each launch (`latchV3Home`): a bar that rearranged itself the next
+time somebody came back from another app would be worse than either bar. So
+that the landing and the bar agree from the first frame, the launch splash
+waits for one attempt of `/app-config`, which runs beside the profile request
+it already waits for; a failed or offline attempt is the flag off, and so is
+one still out after 1.5 seconds (`V3_HOME_WAIT_MS`), so a slow network costs a
+returning person at most that much on the splash. A build older than the flag
+never reads it, and an API older than the client sends no flag, which reads as
+off.
+
+**Not yet.** The end of onboarding still lands on People, where the first-run
+tour plays; under the flag the tour's Feed step finds no Feed tab and is
+skipped, as any step with nothing to point at is. The streak row draws a
+plain disc where `StreakFlame` could go. The screens behind the tabs keep the
+current look, and the web tab title for `/discover` still says Discover.
 
 ## Buttons are flat pills in sentence case, and still press on `Animated`
 
@@ -6129,6 +6188,8 @@ about each other.
 
 ## The Me tab is the public profile, plus what only its owner can use
 
+> **Amended 18 October 2026 — see _Home holds the day; Me goes back to being the profile — behind a flag_ below.**
+
 **22 September 2026.** The owner's tab had grown into its own arrangement: an
 80px avatar where every other profile draws 96, the photos under the upgrade
 card at the very bottom, badges as a bare count, no interests at all, and a
@@ -6161,6 +6222,22 @@ name says who does not see it; the week's chart gets the same mark when "Show
 my week chart" is off. Tapping either opens the privacy settings. The rule is
 that the owner always sees their own data and is told which of it is theirs
 alone.
+
+## Home holds the day; Me goes back to being the profile — behind a flag
+
+**18 October 2026.** The entry above made the Me tab the public profile plus
+the rows only its owner can use, and the owner's day — the streak, the next
+badge, the Pro card — rode along on it because there was nowhere else to put
+it. With `flags.v3Home` on there is: Home holds the day (the entry _Home leads the bar, and People holds Discover and the Feed — behind a flag_),
+and Me's job narrows back to the profile and the owner's rows, as move S1 and
+Phase 4 have it.
+
+This pull request moves nothing off Me. Under the flag, the streak, the next
+step and the Pro card appear on Home **as well as** on Me, and Me is unchanged
+in both bars — taking a block off Me is a change somebody without the flag
+would see, so it waits for the Me pull request, which takes off what Home now
+shows and keeps the bell, the wallet, the viewers, follows and preview. The
+rules about what the owner sees of their own profile do not change.
 
 ## A number that has not arrived is a skeleton, not a zero
 
@@ -7022,6 +7099,7 @@ plan, the paywall says what will happen_.
 ## The paywall sells the free week
 
 > **Amended 16 October 2026 — see _The paywall leads with what it charges_ below.**
+> **Amended 18 October 2026 — see _The paywall in v3: a reason per road, then the table_ below.**
 
 With one plan the paywall has one question left — yearly or monthly — so the
 page was rebuilt around the thing that actually lowers the bar: a week free.
@@ -7070,6 +7148,8 @@ motion nothing moves at all. No native module was added, so it ships over the
 air.
 
 ## The paywall leads with what it charges
+
+> **Amended 18 October 2026 — see _The paywall in v3: a reason per road, then the table_ below.**
 
 **16 October 2026.** This reverses _Two cards, not a segmented control_ in the
 entry above, and the reason it gave: both cards quoted a month on the right,
@@ -7120,6 +7200,75 @@ rules are about.
 Unchanged: the two cards, yearly picked on open, the dated timeline, the trial's
 terms in one line directly above the button, Restore, Terms, Privacy and the iOS
 EULA, and the X that closes the screen in one tap.
+
+## The paywall in v3: a reason per road, then the table
+
+**18 October 2026.** The paywall is the first screen to move onto the v3 look
+(_The redesign is v3: A's structure, B's look_), and the move changes five
+things the two entries above recorded.
+
+**The yearly card's computed figures are one coloured badge.** Behic's call on
+16 October, from the drawings: the charge and its period — "$83.99 a year" —
+stay the biggest, heaviest, full-ink price on the card, at headline size, and
+what a year comes to a month and the months it gives away sit under it as one
+mint badge, "$6.99 a month · 3 months free", at the small label size. Colour is
+how the badge is found; size and position still rank it below the charge, which
+is what both stores' rules are about. This replaces the muted month line with a
+separate saving badge after it. The monthly card loses "Billed monthly": its
+price already says "a month". `planPrice.ts` still decides which figure leads,
+and its test still pins it to the charge.
+
+**A reason per road instead of four rows for everybody.** The page now knows why
+it opened (`paywallRoad`): the new-chat allowance ran out, a locked capability
+was tapped, or nothing — the profile, Settings, an @langx card, a link. A gate
+leads with three rows, the refused feature first, and the headline names what
+that person was trying to do: "Meet as many English speakers as you like" (their
+first learning language) when the chats ran out, "See who viewed your profile"
+from the viewer list, "Find exactly who you're looking for" from filters, with
+the locked filters drawn as chips. With no gate the headline stays "Go further
+with Pro" and a Free and Pro table takes the rows' place: five rows, then the
+rest behind "And N more", every cell read off `PLAN_LIMITS` by `compareRows`, so
+a limit changed in `packages/shared` changes the table and nothing else has to.
+A feature that has not shipped reads "Soon" in the Pro column, never a tick. On
+a gate the whole table follows the plans.
+
+**The spent allowance says when the next chat opens, from the server.** The
+composer passes the refusal's `retryAt` to `openPaywall`, and the screen says
+"The next one opens at 14:20" — or "tomorrow at", because the window is a
+rolling day. A plain time and no countdown: a ticking clock on a sales screen is
+pressure, and the line is there to say the wait is short. "Continue free" sits
+under the purchase on this road, at the same size, as it does at the end of
+onboarding: replying is still free, and going back to it has to be as easy as
+paying. The viewer list's road says how many people looked in the last week only
+at or above `PAYWALL_RULES.viewerCountMin`; under it the plain "is part of Pro"
+line stands. The count is the one the viewer list already shows that person,
+read from its cache, never an identity and never fetched again.
+
+**The free promise is pinned beside the button.** "Replies and corrections stay
+free on every plan", in a correction's green, sits in the footer directly above
+the terms line, so it is on screen at every window height and next to the plans
+whatever scrolls. The free plan's promise belongs on the paywall's first
+screen, next to the plans, and a block that scrolls with the page cannot be
+there on every phone. It replaces the lead line under the headline, which had
+been kept on short screens for the same reason.
+
+**Restore moves to the row under the button**, beside Terms, Privacy and the
+iOS EULA, and the header keeps the X and the plan's mark. The gift-code link
+moves from under the button to the foot of the page.
+
+Nunito Black, which the v3 title uses, is loaded by the paywall itself rather
+than at the root: the root's `useFonts` holds every cold start's splash, and
+most launches never open this screen. The entrance already waits up to a second
+for the store; it waits for the font under the same second, so the headline
+never arrives in the platform face and swaps.
+
+Unchanged: the charge leads every card; the free week is in the line under the
+headline, not the headline (the trial-led headline stays the alternative Behic
+can pick at merge); the button names what the tap does and carries no figure;
+the trial's terms in one line directly above it, the charge set strong; yearly
+picked on open; the dated timeline; the X closes in one tap and nothing
+intercepts back or the swipe; nothing is sold to a paid or lifetime plan; every
+event in _The paywall counts every way out_.
 
 ## Gift codes give time, not discounts
 
@@ -7756,3 +7905,29 @@ so every reward paid before this change sits in all-time and nowhere else.
 of everyone who has ever been paid a reward from the ledger, which carries the
 period keys each row was written with, and writes only the rows that disagree.
 Run it once after deploying; a second run finds nothing to do.
+
+## "Where did you hear about us?" is asked, not inferred
+
+Nothing in the app can say where a new account came from. PostHog's
+`$initial_referring_domain` and UTM fields are empty on every app sign-up —
+a store install carries no referrer — and the store consoles' acquisition
+reports are per install, not per person. So @langx asks, once, as a poll
+under the welcome.
+
+The options come from where people actually arrive, read from PostHog before
+the list was written: store search, web search, AI assistants (ChatGPT tags
+its links, and they turned out to be a real channel), a friend, two social
+buckets, app-list sites, and "other". Channels we have no traffic from are not
+offered, because an option nobody picks says nothing and one that is merely
+plausible draws answers from people who are not sure.
+
+"Other" is only a choice. @langx is a channel nobody can write back to
+(`OFFICIAL_WRITABLE`), so there is no reply to collect a free-text answer in,
+and opening the thread for one question would undo that decision for a
+footnote's worth of data.
+
+Telegram hears about it from `langx/admin-tg`, not from this API. The bot
+already follows inserts on the collections it announces, holds a read-only
+database user, and runs on exactly one machine; the unique
+`{pollId, userId}` index means an insert happens once per person, so "only
+the first answer" needs no code at all.

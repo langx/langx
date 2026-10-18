@@ -605,6 +605,18 @@ export const tr: Localized<ServerMessages> = {
       'Çok şey değişti. Düzeltmeler artık başlı başına bir iş, insanlara yardım ettikçe jeton kazanıyorsun ve Keşfet senin dilini öğrenen, senin öğrendiğin dili konuşan birini arıyor. Aynı fikir, ama bu sefer düzgün yapacak yer var — bir dolan bakalım.',
     welcomeBackClosing:
       'LangX’le ilgili haberler buraya düşüyor, ara ara bakmakta fayda var. Eksik ya da bozuk bir şey görürsen Ayarlar → Hakkında → Geri bildirim doğrudan bize geliyor. Yeniden aramızda olman güzel. 💛',
+    heardAbout: {
+      question:
+        'Kısa bir soru, sonra seni rahat bırakıyorum: LangX’i nereden duydun? Sana uyana dokun — senin gibi insanları nerede bulacağımızı bize söylüyor.',
+      store: 'App Store ya da Google Play',
+      search: 'Google ya da başka bir arama motoru',
+      ai: 'ChatGPT ya da başka bir yapay zekâ',
+      friend: 'Bir arkadaş',
+      tiktokInstagram: 'TikTok ya da Instagram',
+      youtube: 'YouTube',
+      appList: 'Bir uygulama listesi ya da inceleme sitesi',
+      other: 'Başka bir yer',
+    },
     reportReward: {
       one: "Bildirimin için teşekkürler. İnceledik ve LangX'i öğrenmek için iyi bir yer olarak tutmaya yardım ettiğin için cüzdanına {count} jeton ekledik. Bildirdiğin kişiye, onu kimin bildirdiği asla söylenmez.",
       other:

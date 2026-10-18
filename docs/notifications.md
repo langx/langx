@@ -90,6 +90,7 @@ carrying every kind cannot honestly offer to stop one of them.
 | **Thanks for a report**            | an operator rewards whoever reported somebody      | @langx message + push         | the ledger's unique `{userId, kind, refId}`     |
 | **The v1 lifetime gift**           | a restore grants a lifetime tier                   | @langx message + push + email | ledger `lifetimeGift:<id>:once`                 |
 | **Welcome back from v1**           | first session on a `precreatedFromV1` row          | @langx message                | `sender_client_id_unique` on `welcomeback:<id>` |
+| **Where did you hear about us?**   | onboarding completes, right after the @langx hello | @langx message (poll)         | `sender_client_id_unique` on `heard-about:<id>` |
 | **Your account is open again**     | a timed suspension's end date passes, within a day | @langx message + push         | ledger `suspensionEnded:<id>:<until>`           |
 | Report received / feedback         | somebody reports or writes in                      | email to support              | —                                               |
 
@@ -112,6 +113,16 @@ with the message it already wrote, so a fan-out would push the same greeting
 forever, and a ledger claim would not stop it because those rows expire after
 thirty days. And the badge it is about pushes that evening anyway: two knocks
 for one piece of news is one too many.
+
+**Where did you hear about us?** is a poll from @langx, sent by
+`official/heardAbout.ts` straight after the in-app welcome — new accounts only,
+never the welcome-back, because somebody returning from v1 knows where they
+heard of us and would only blur the answer. It does not push: the welcome a
+second earlier already did. One `pollId` (`HEARD_ABOUT_POLL_ID`) for every
+language, so the answers add up in `pollAnswers`; the operator panel reads them
+on the measure screen, and the Telegram bot in `langx/admin-tg` announces each
+first answer from a change stream on that collection — nothing in this repo
+talks to Telegram.
 
 Whoever earned a rung and has **not** come back is not in this table at all:
 there is nothing to notify an account nobody has opened. The same goes for the

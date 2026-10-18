@@ -1206,6 +1206,12 @@ export const INDEXES: Partial<IndexSpec> = {
      * panel's per-option count, which filters on `pollId` first.
      */
     { key: { pollId: 1, userId: 1 }, name: 'poll_user_unique', unique: true },
+    /*
+     * The panel's newest-first list of one poll's answers. The heard-about
+     * poll goes to every new account and never closes, so this is the one
+     * poll whose answers keep growing.
+     */
+    { key: { pollId: 1, createdAt: -1 }, name: 'poll_recent' },
     // The account purge.
     { key: { userId: 1 }, name: 'poll_answer_owner' },
   ],

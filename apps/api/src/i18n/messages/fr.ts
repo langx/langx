@@ -630,6 +630,18 @@ export const fr: Localized<ServerMessages> = {
       'Beaucoup de choses ont bougé. Les corrections sont devenues une chose à part entière, tu gagnes des jetons en aidant les autres, et Découvrir cherche quelqu’un qui apprend ta langue et parle celle que tu vises. La même idée, avec cette fois la place de bien la faire — fais un tour.',
     welcomeBackClosing:
       'C’est ici qu’arrivent les nouvelles de LangX, ça vaut le coup d’y jeter un œil. S’il manque quelque chose ou si quelque chose casse, Réglages → À propos → Commentaires arrive directement chez nous. Content de te retrouver. 💛',
+    heardAbout: {
+      question:
+        'Petite question, et après je te laisse : comment as-tu entendu parler de LangX ? Touche la réponse qui correspond — ça nous dit où trouver d’autres personnes comme toi.',
+      store: 'App Store ou Google Play',
+      search: 'Google ou un autre moteur de recherche',
+      ai: 'ChatGPT ou une autre IA',
+      friend: 'Par un proche',
+      tiktokInstagram: 'TikTok ou Instagram',
+      youtube: 'YouTube',
+      appList: 'Une liste d’applis ou un site d’avis',
+      other: 'Ailleurs',
+    },
     reportReward: {
       one: 'Merci pour ton signalement. Nous l’avons examiné et ajouté {count} jeton à ton portefeuille, pour avoir aidé à faire de LangX un bon endroit pour apprendre. La personne signalée ne saura jamais qui l’a signalée.',
       other:
