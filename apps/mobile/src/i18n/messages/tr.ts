@@ -2207,6 +2207,28 @@ export const tr: Localized<EnMessages> = {
       one: 'Davetler ayda en fazla {count} kişi için token kazandırır.',
       other: 'Davetler ayda en fazla {count} kişi için token kazandırır.',
     },
+    weekTitle: {
+      one: 'Bir hafta Pro hediye et, bir hafta kazan',
+      other: '{count} hafta Pro hediye et, {count} hafta kazan',
+    },
+    weekTitleGive: {
+      one: 'Birine bir hafta Pro hediye et',
+      other: 'Birine {count} hafta Pro hediye et',
+    },
+    weekUnit: {
+      one: 'hafta Pro, ikinize de',
+      other: 'hafta Pro, ikinize de',
+    },
+    weekUnitGive: {
+      one: 'hafta Pro, davet ettiğin kişiye',
+      other: 'hafta Pro, davet ettiğin kişiye',
+    },
+    weekWhen: 'Davet ettiğin biri biriyle gerçek bir sohbet ettiğinde',
+    weekCap: {
+      one: 'Yılda en fazla {count} hafta kazanabilirsin.',
+      other: 'Yılda en fazla {count} hafta kazanabilirsin.',
+    },
+    weekAddsOn: 'Seninki, şu anki Pro’nun sonuna eklenir.',
   },
 
   tokenKind: {
