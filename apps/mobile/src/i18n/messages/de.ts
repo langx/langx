@@ -2657,7 +2657,6 @@ export const de: Localized<EnMessages> = {
   paywall: {
     screenTitle: 'Tarife',
     restorePurchases: 'Käufe wiederherstellen',
-    partOf: 'gehört zu',
     unlimitedChats: 'Unbegrenzt neue Chats',
     unlimitedChatsBody: '{count} am Tag im kostenlosen Tarif.',
     welcomePack: 'Ein Willkommenspaket',
@@ -2718,8 +2717,6 @@ export const de: Localized<EnMessages> = {
     yearly: 'Jährlich',
     lifetime: 'Einmalig',
     headline: 'Mit {plan} weiterkommen',
-    headlineBody:
-      'Korrekturen und Antworten bleiben in jedem Plan unbegrenzt. Mit einem Abo fallen die anderen Grenzen weg.',
     savePercent: '{percent}% sparen',
     freeMonths: {
       one: '{count} Monat gratis',
@@ -2746,7 +2743,6 @@ export const de: Localized<EnMessages> = {
     },
     showLess: 'Weniger anzeigen',
     pricePerPeriod: '{price} {period}',
-    billedMonthly: 'Monatlich abgerechnet',
     lifetimeDetail: 'Einmal zahlen, nichts verlängert sich',
     timelineTitle: 'So funktioniert dein Gratis-Test',
     timelineToday: 'Heute: voller Zugang',
@@ -2760,6 +2756,37 @@ export const de: Localized<EnMessages> = {
     subscribe: 'Abonnieren',
     startFreeTrial: 'Gratis-Test starten',
     eula: 'Nutzungsbedingungen (EULA)',
+    planMark: 'LangX {plan}',
+    heroChats: 'Triff so viele Menschen, die {language} sprechen, wie du willst',
+    heroChatsAny: 'Starte so viele neue Chats, wie du willst',
+    heroViewers: 'Sieh, wer dein Profil angesehen hat',
+    heroFilters: 'Finde genau, wen du suchst',
+    heroNearby: 'Finde Leute in deiner Nähe',
+    chatLimitToday: {
+      one: 'Du hast in den letzten 24 Stunden {count} neuen Chat begonnen. Der nächste ist ab {time} möglich.',
+      other:
+        'Du hast in den letzten 24 Stunden {count} neue Chats begonnen. Der nächste ist ab {time} möglich.',
+    },
+    chatLimitTomorrow: {
+      one: 'Du hast in den letzten 24 Stunden {count} neuen Chat begonnen. Der nächste ist morgen ab {time} möglich.',
+      other:
+        'Du hast in den letzten 24 Stunden {count} neue Chats begonnen. Der nächste ist morgen ab {time} möglich.',
+    },
+    viewersWeek: {
+      one: '{count} Person hat in der letzten Woche dein Profil angesehen.',
+      other: '{count} Personen haben in der letzten Woche dein Profil angesehen.',
+    },
+    featurePartOf: '{feature} gehört zu {plan}.',
+    freePromise: 'Antworten und Korrekturen bleiben in jedem Tarif kostenlos.',
+    compareHeading: 'Vergleich',
+    compareNewChats: 'Neue Chats pro Tag',
+    compareTranslations: 'Übersetzungen pro Tag',
+    compareLanguages: 'Sprachen, die du lernst',
+    compareUnlimited: 'Unbegrenzt',
+    compareSoon: 'Bald',
+    compareIncluded: 'Enthalten',
+    compareNotIncluded: 'Nicht enthalten',
+    yearlyBadge: '{perMonth} · {saving}',
   },
 
   proWelcome: {

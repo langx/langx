@@ -156,7 +156,8 @@ Some of these carry a number that needs a caveat rather than a footnote:
   `exit`, so Android back is missing from them: a view with no dismissal.
 - **`paywall_viewed`** is sent when the page is first shown, not when the route
   opens. The page waits up to a second for the store so that its headline is
-  true, and `offers` is what the store had said by then: `pending` (not yet),
+  true — and, since the v3 paywall, for its title font under the same second —
+  and `offers` is what the store had said by then: `pending` (not yet),
   `none` (answered with nothing to sell), `plain` (Pro is sold with no free week
   on any package — the app cannot tell "no trial offered" from "this account
   has had it", because the store only says so on iOS), `trial`, or `owned` (the

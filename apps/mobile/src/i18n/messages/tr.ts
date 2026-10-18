@@ -2581,7 +2581,6 @@ export const tr: Localized<EnMessages> = {
   paywall: {
     screenTitle: 'Planlar',
     restorePurchases: 'Satın alımları geri yükle',
-    partOf: 'şunun parçası:',
     unlimitedChats: 'Sınırsız yeni sohbet',
     unlimitedChatsBody: 'Ücretsiz planda günde {count} tane.',
     welcomePack: 'Hoş geldin paketi',
@@ -2642,8 +2641,6 @@ export const tr: Localized<EnMessages> = {
     yearly: 'Yıllık',
     lifetime: 'Tek seferlik',
     headline: '{plan} ile daha ileri git',
-    headlineBody:
-      'Düzeltmeler ve yanıtlar her planda sınırsız kalır. Ödeme yapmak diğer sınırları kaldırır.',
     savePercent: '%{percent} indirim',
     freeMonths: {
       one: '{count} ay bedava',
@@ -2670,7 +2667,6 @@ export const tr: Localized<EnMessages> = {
     },
     showLess: 'Daha az göster',
     pricePerPeriod: '{period} {price}',
-    billedMonthly: 'Her ay faturalandırılır',
     lifetimeDetail: 'Tek ödeme, yenilenmez',
     timelineTitle: 'Ücretsiz deneme nasıl işler',
     timelineToday: 'Bugün: tam erişim',
@@ -2684,6 +2680,36 @@ export const tr: Localized<EnMessages> = {
     subscribe: 'Abone ol',
     startFreeTrial: 'Ücretsiz denemeyi başlat',
     eula: 'Kullanım Koşulları (EULA)',
+    planMark: 'LangX {plan}',
+    heroChats: 'İstediğin kadar {language} konuşanla tanış',
+    heroChatsAny: 'İstediğin kadar yeni sohbet başlat',
+    heroViewers: 'Profiline kimin baktığını gör',
+    heroFilters: 'Tam aradığın kişiyi bul',
+    heroNearby: 'Yakınındaki dil partnerlerini bul',
+    chatLimitToday: {
+      one: 'Son bir günde {count} yeni sohbet başlattın. Bir sonraki {time} itibarıyla açılır.',
+      other: 'Son bir günde {count} yeni sohbet başlattın. Bir sonraki {time} itibarıyla açılır.',
+    },
+    chatLimitTomorrow: {
+      one: 'Son bir günde {count} yeni sohbet başlattın. Bir sonraki yarın {time} itibarıyla açılır.',
+      other:
+        'Son bir günde {count} yeni sohbet başlattın. Bir sonraki yarın {time} itibarıyla açılır.',
+    },
+    viewersWeek: {
+      one: 'Son bir haftada profiline {count} kişi baktı.',
+      other: 'Son bir haftada profiline {count} kişi baktı.',
+    },
+    featurePartOf: '{feature}, {plan} kapsamında.',
+    freePromise: 'Yanıtlar ve düzeltmeler her planda ücretsiz.',
+    compareHeading: 'Karşılaştır',
+    compareNewChats: 'Günlük yeni sohbet',
+    compareTranslations: 'Günlük çeviri',
+    compareLanguages: 'Öğrendiğin diller',
+    compareUnlimited: 'Sınırsız',
+    compareSoon: 'Yakında',
+    compareIncluded: 'Dahil',
+    compareNotIncluded: 'Dahil değil',
+    yearlyBadge: '{perMonth} · {saving}',
   },
 
   proWelcome: {
