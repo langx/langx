@@ -892,6 +892,47 @@ press collapsed, with an upper-case, letter-spaced label. Both rules lived in
   here; the back arrows in `ScreenHeader` and `StepProgress` change the height
   of every header, and move with the screens that own them.
 
+## Switches, segments, bars and toasts move, and two of them on Reanimated
+
+**18 October 2026.** The second part of the kit D4 swaps in place: `Toggle`,
+`SegmentedControl`, `ProgressBar` and `ToastHost` take v3's look on every
+screen at once. All four now move, and none of them did before except the
+toast's way in.
+
+- **Which engine is a question of where it is drawn.** `Toggle` and
+  `ProgressBar` run on Reanimated: the switch lives in the settings and the
+  filters, the bar in Echo, Me and the operator panel, none of them on the
+  launch path. `SegmentedControl` stays on React Native's `Animated` with the
+  native driver, because the onboarding steps draw it, and so does
+  `ToastHost`, which is mounted at the root. The onboarding steps also drew a
+  `ProgressBar`; `StepProgress` now draws its own bars — one per step, as v3
+  does — so that importing a step does not import Reanimated. Each step is a
+  new screen, so nothing in it needed to move.
+- **One tick, on a change a press caused.** A switch or a segment gives a
+  selection haptic when its value changes within a moment of a press on it —
+  not on the press, which a screen may refuse (Nearby asks for the location
+  and may open the paywall; push waits on the phone's permission), and not on
+  a change nobody pressed for (filters reset, a refetch).
+  `src/lib/changeHaptic.ts` holds the window and the reason.
+- **The segment's pill slides, and the labels cross over with it.** Ink pill
+  and white label, ink label on grey: a label that changed colour at the tap
+  would be white on grey until the pill arrived, so the pill carries a white
+  copy of the labels, moved against it and clipped to its shape: a label is
+  white exactly where the pill covers it, mid-slide too. Where more than one
+  segment is chosen (the filters' level band) each is its own pill, as drawn.
+  Four segments or more set their labels a step smaller, and on iOS and
+  Android a label shrinks to fit before it truncates.
+- **The toast leaves the way it came**, a little quicker, before the next one
+  takes its place. The swap waits on a timer of the same length rather than
+  on the animation's end, for the reason the entry on root overlays gives.
+- **Reduce motion** means no motion in all four: each is simply in its new
+  state.
+- **In the meantime.** v3's `surface` grey is a shade from the current look's
+  dark ground, so on a screen that has not moved yet a segmented control's
+  track nearly disappears after dark; the pill still carries the choice. The
+  bar's track and the steps ahead are v3's `track`, the grey the progress
+  rings use.
+
 ## Client — one socket, opened in the tab layout
 
 The server already puts every client in a single per-user room, so a socket per

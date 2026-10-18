@@ -817,6 +817,25 @@ export const ADMIN = {
       iconEnd: 'icon at the end',
       wraps: 'a long label wraps rather than truncating',
     },
+    controls: {
+      title: 'Controls',
+      hint: 'The switch, the segmented control, the progress bar and the toast. All of them move; under reduce motion each is simply in its new state. A switch or a segment ticks once, on a change that a press caused.',
+      toggles: 'Switch',
+      toggleStates: 'waiting on the server, on and off · disabled, on and off',
+      segmented: 'Segmented control',
+      twoWay: 'two segments · 16pt',
+      fourWay: 'four segments · the label step',
+      band: 'more than one chosen: each its own pill',
+      progress: 'Progress bar',
+      progressHint: 'Tap to move it on a fifth.',
+      steps:
+        'Onboarding steps: drawn in StepProgress, not this bar — the launch path stays off Reanimated.',
+      toast: 'Toast',
+      toastHint:
+        'Raises a real toast at the foot of the screen. Tap it, or wait, to watch it leave.',
+      raise: 'Raise a toast',
+      raiseWithAction: 'Raise one with an action',
+    },
     game: {
       title: 'Gamification',
       hint: 'The v3 primitives, in every state. No shipped screen uses them yet. Copy is real catalogue copy.',
