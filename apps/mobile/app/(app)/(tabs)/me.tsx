@@ -30,10 +30,13 @@ import { Avatar } from '../../../src/components/ui/Avatar'
 import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
 import { GenderMark } from '../../../src/components/GenderMark'
 import { Button } from '../../../src/components/ui/Button'
+import { IconButton } from '../../../src/components/ui/IconButton'
 import { LanguageColumns } from '../../../src/components/LanguageColumns'
 import { ListRow } from '../../../src/components/ui/ListRow'
 import { ProgressBar } from '../../../src/components/ui/ProgressBar'
+import { BadgeShelfSkeleton } from '../../../src/components/skeletons/BadgeShelfSkeleton'
 import { ProfileSkeleton } from '../../../src/components/skeletons/ProfileSkeleton'
+import { CrossFade } from '../../../src/components/ui/CrossFade'
 import { Screen } from '../../../src/components/ui/Screen'
 import { StatTile } from '../../../src/components/ui/StatTile'
 import { openFollows, openLanguages, openProfile } from '../../../src/lib/navigation'
@@ -41,6 +44,7 @@ import { openPaywall } from '../../../src/lib/paywall'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { badgeLabel, interestLabel, useDisplayNames, useLocale, useT } from '../../../src/i18n'
 import { compactCount } from '../../../src/lib/format'
+import { loadState, statText } from '../../../src/lib/loadState'
 import { monthName, recapMonthFor, recapYearFor } from '../../../src/lib/recapMonth'
 import { unreadBadge } from '../../../src/lib/unreadBadge'
 import { useChangeAvatar } from '../../../src/hooks/useChangeAvatar'
@@ -134,7 +138,6 @@ export default function MeScreen() {
   }
 
   const profile = me.data
-  const balance = wallet.data?.balance ?? 0
   const owned = wallet.data?.owned ?? []
   const wornFrame = wornCosmetic(wallet.data?.equipped, owned, 'frame')
   const wornTitle = wornCosmetic(wallet.data?.equipped, owned, 'title')
@@ -143,6 +146,19 @@ export default function MeScreen() {
   const follows = ownProfile.data?.follow
   const shelf = badges.data
   const nextBadge = shelf?.next ?? null
+  /*
+   * Each number below used to be `data?.n ?? 0`, which drew a zero for a
+   * request on its way, a request that never arrived and an account that
+   * really has none — and the first of those was the one people watched turn
+   * into another number. A block stands for the first, a dash for the second,
+   * and only the third says 0.
+   */
+  const summaryState = loadState(xp)
+  const echoState = loadState(echo)
+  const walletState = loadState(wallet)
+  const viewersState = loadState(viewers)
+  const followsState = loadState(ownProfile)
+  const shelfState = loadState(badges)
 
   /*
    * The city is drawn whether or not "Hide my city" is on: it is the owner's
@@ -238,20 +254,18 @@ export default function MeScreen() {
           a number appears, not a place you live, so it gets no tab.
         */}
         <View style={styles.topRow}>
-          <Pressable
-            accessibilityRole="button"
+          <IconButton
+            icon="bell"
             accessibilityLabel={t('inbox.bell')}
             hitSlop={8}
             onPress={() => router.push('/(app)/notifications')}
-            style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
           >
-            <Feather name="bell" size={26} color={colors.text} />
             {news ? (
               <View style={styles.bellBadge}>
                 <Text style={styles.bellCount}>{news}</Text>
               </View>
             ) : null}
-          </Pressable>
+          </IconButton>
           {/*
             Settings used to be a button below the token store, at the bottom of a
             screen that scrolls for a while — reachable, but only by someone who
@@ -260,15 +274,12 @@ export default function MeScreen() {
             put in a profile's corner for exactly this. The scanner that sat
             beside it is now the first row inside Settings.
           */}
-          <Pressable
-            onPress={() => router.push('/(app)/settings')}
-            hitSlop={8}
-            accessibilityRole="button"
+          <IconButton
+            icon="menu"
             accessibilityLabel={t('me.settings')}
-            style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
-          >
-            <Feather name="menu" size={26} color={colors.text} />
-          </Pressable>
+            hitSlop={8}
+            onPress={() => router.push('/(app)/settings')}
+          />
         </View>
       </View>
 
@@ -316,7 +327,8 @@ export default function MeScreen() {
         <StatTile
           icon="zap"
           label={`${t('me.dayStreak')} ›`}
-          value={String(summary?.streak.current ?? 0)}
+          value={statText(summary?.streak.current)}
+          loading={summaryState === 'loading'}
           valueSize={26}
           onPress={() => router.push('/(app)/streak')}
         />
@@ -326,14 +338,16 @@ export default function MeScreen() {
         <StatTile
           tone="success"
           label={`${t('me.corrections')} ›`}
-          value={String(summary?.lifetime.corrections ?? 0)}
+          value={statText(summary?.lifetime.corrections)}
+          loading={summaryState === 'loading'}
           valueSize={26}
           onPress={() => router.push('/(app)/corrections')}
         />
         {/* Posts up, the other tab of the same screen. */}
         <StatTile
           label={`${t('tabs.feed')} ›`}
-          value={String(summary?.lifetime.posts ?? 0)}
+          value={statText(summary?.lifetime.posts)}
+          loading={summaryState === 'loading'}
           valueSize={26}
           onPress={() => router.push('/(app)/corrections?tab=posts')}
         />
@@ -342,7 +356,8 @@ export default function MeScreen() {
             already shows; a profile is the place for what has added up. */}
         <StatTile
           label={`${t('tabs.echo')} ›`}
-          value={compactCount(echo.data?.reviewedAllTime ?? 0, locale)}
+          value={statText(echo.data?.reviewedAllTime, (count) => compactCount(count, locale))}
+          loading={echoState === 'loading'}
           valueSize={26}
           onPress={() => router.push('/(app)/(tabs)/echo')}
         />
@@ -362,48 +377,54 @@ export default function MeScreen() {
         the next badge and its bar give the same account something to aim at
         on a screen that is otherwise about what has already happened. The
         strip draws nothing until there is a badge to draw.
+
+        Held by a skeleton while the badges load, so the rows under it do not
+        drop when it arrives — and drawn as nothing when they never do, as
+        before.
       */}
-      {shelf ? (
-        <View style={styles.shelf}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('me.badges')}
-            onPress={() => router.push('/(app)/badges')}
-            style={({ pressed }) => [styles.shelfHead, pressed && styles.pressed]}
-          >
-            <Text style={styles.shelfTitle}>{t('me.badges')}</Text>
-            <Text style={styles.shelfCount}>
-              {t('badges.earnedOf', { earned: shelf.earnedCount, total: shelf.badges.length })}
-            </Text>
-            <Feather name="chevron-right" size={18} color={colors.textFaint} />
-          </Pressable>
-          <BadgeStrip
-            badges={badgeStripMarks(shelf.badges.filter((badge) => badge.earned))}
-            onPress={() => router.push('/(app)/badges')}
-          />
-          {nextBadge ? (
-            <View style={styles.next}>
-              <View style={styles.nextRow}>
-                <Text style={styles.nextLabel} numberOfLines={1}>
-                  {t('me.nextBadge', {
+      <CrossFade ready={shelfState !== 'loading'} skeleton={<BadgeShelfSkeleton />}>
+        {shelf ? (
+          <View style={styles.shelf}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('me.badges')}
+              onPress={() => router.push('/(app)/badges')}
+              style={({ pressed }) => [styles.shelfHead, pressed && styles.pressed]}
+            >
+              <Text style={styles.shelfTitle}>{t('me.badges')}</Text>
+              <Text style={styles.shelfCount}>
+                {t('badges.earnedOf', { earned: shelf.earnedCount, total: shelf.badges.length })}
+              </Text>
+              <Feather name="chevron-right" size={18} color={colors.textFaint} />
+            </Pressable>
+            <BadgeStrip
+              badges={badgeStripMarks(shelf.badges.filter((badge) => badge.earned))}
+              onPress={() => router.push('/(app)/badges')}
+            />
+            {nextBadge ? (
+              <View style={styles.next}>
+                <View style={styles.nextRow}>
+                  <Text style={styles.nextLabel} numberOfLines={1}>
+                    {t('me.nextBadge', {
+                      label: badgeLabel({ t, locale }, nextBadge.kind, nextBadge.threshold),
+                    })}
+                  </Text>
+                  <Text style={styles.nextCount}>
+                    {nextBadge.current.toLocaleString(locale)} /{' '}
+                    {nextBadge.threshold.toLocaleString(locale)}
+                  </Text>
+                </View>
+                <ProgressBar
+                  value={nextBadge.current / nextBadge.threshold}
+                  accessibilityLabel={t('me.nextBadge', {
                     label: badgeLabel({ t, locale }, nextBadge.kind, nextBadge.threshold),
                   })}
-                </Text>
-                <Text style={styles.nextCount}>
-                  {nextBadge.current.toLocaleString(locale)} /{' '}
-                  {nextBadge.threshold.toLocaleString(locale)}
-                </Text>
+                />
               </View>
-              <ProgressBar
-                value={nextBadge.current / nextBadge.threshold}
-                accessibilityLabel={t('me.nextBadge', {
-                  label: badgeLabel({ t, locale }, nextBadge.kind, nextBadge.threshold),
-                })}
-              />
-            </View>
-          ) : null}
-        </View>
-      ) : null}
+            ) : null}
+          </View>
+        ) : null}
+      </CrossFade>
 
       {/*
         The about text, on the owner's own screen. It was only ever drawn on
@@ -469,7 +490,8 @@ export default function MeScreen() {
 
       <ListRow
         title={t('me.wallet')}
-        value={compactCount(balance, locale)}
+        value={statText(wallet.data?.balance, (balance) => compactCount(balance, locale))}
+        valueLoading={walletState === 'loading'}
         onPress={() => router.push('/(app)/wallet')}
       />
 
@@ -485,8 +507,11 @@ export default function MeScreen() {
                 count: viewerPage.total,
                 plan: TIER_NAMES.pro,
               })
-            : t('me.viewersCount', { count: viewerPage?.total ?? 0 })
+            : viewerPage
+              ? t('me.viewersCount', { count: viewerPage.total })
+              : undefined
         }
+        subtitleLoading={viewersState === 'loading'}
         onPress={() => router.push('/(app)/viewers')}
       />
       <ListRow
@@ -504,6 +529,7 @@ export default function MeScreen() {
               ].join(' · ')
             : undefined
         }
+        subtitleLoading={followsState === 'loading'}
         onPress={() => openFollows(profile._id, 'followers', '/(app)/(tabs)/me')}
       />
       {/*
@@ -568,7 +594,6 @@ export default function MeScreen() {
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // Last in the hero so it is drawn, and touched, over the text column.
   topRow: { flexDirection: 'row', position: 'absolute', right: 0, top: 0 },
-  iconButton: { alignItems: 'center', height: 44, justifyContent: 'center', width: 44 },
   // On the bell's shoulder, whatever the touch target is padded out to.
   bellBadge: {
     alignItems: 'center',

@@ -170,9 +170,8 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
       {socialError ? <Text style={styles.socialError}>{socialError}</Text> : null}
 
       {/*
-        `neutral`, not `secondary`: a provider's button is nobody's second
-        choice, it is a different door — so it takes the plain ink label and
-        the provider's own mark, and leaves the blue for the app's own links.
+        `neutral` and `secondary` draw the same; a provider's button is a
+        different door, with the provider's own mark.
       */}
       {providers.google ? (
         <Button

@@ -9,6 +9,7 @@ import { Skeleton } from '../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { StatTile } from '../../src/components/ui/StatTile'
 import { useLocale, useT } from '../../src/i18n'
+import { track } from '../../src/lib/analytics'
 import { goBackTo } from '../../src/lib/navigation'
 import { shareLink } from '../../src/lib/share'
 import { makeStyles, useTheme } from '../../src/lib/theme'
@@ -89,6 +90,7 @@ export default function InviteScreen() {
           style={styles.copy}
           onPress={async () => {
             await Clipboard.setStringAsync(url)
+            track({ name: 'invite_shared', properties: { via: 'copy' } })
             showToast(t('invite.copied'))
           }}
         />
@@ -164,7 +166,10 @@ export default function InviteScreen() {
       <Button
         label={t('invite.share')}
         style={styles.share}
-        onPress={() => void shareLink({ message: t('invite.shareMessage', { url }), url })}
+        onPress={() => {
+          track({ name: 'invite_shared', properties: { via: 'sheet' } })
+          void shareLink({ message: t('invite.shareMessage', { url }), url })
+        }}
       />
     </Screen>
   )

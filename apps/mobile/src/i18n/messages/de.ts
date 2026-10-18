@@ -31,6 +31,7 @@ export const de: Localized<EnMessages> = {
     edit: 'Bearbeiten',
     enable: 'Aktivieren',
     update: 'Aktualisieren',
+    notLoaded: 'Nicht geladen',
   },
 
   tabs: { discover: 'Entdecken', chats: 'Chats', echo: 'Echo', feed: 'Feed', me: 'Ich' },
@@ -1263,7 +1264,12 @@ export const de: Localized<EnMessages> = {
     microphoneTitle: 'Mikrofon',
     translationUnavailable: 'Übersetzung nicht verfügbar',
     translationQuota:
-      'Du hast die kostenlosen Übersetzungen für heute aufgebraucht. Ein bezahlter Tarif hebt das Limit auf.',
+      'Du hast das Übersetzungslimit für heute erreicht. Mit Pro übersetzt du unbegrenzt.',
+    translationFairUse: {
+      one: 'Du hast das Fair-Use-Limit für Übersetzungen erreicht. Es soll automatisierte Nutzung verhindern und wird innerhalb von {count} Stunde zurückgesetzt.',
+      other:
+        'Du hast das Fair-Use-Limit für Übersetzungen erreicht. Es soll automatisierte Nutzung verhindern und wird innerhalb von {count} Stunden zurückgesetzt.',
+    },
     translationFailed: 'Diese Nachricht konnte gerade nicht übersetzt werden.',
     wordTranslationFailed: 'Dieses Wort konnte gerade nicht übersetzt werden.',
     wordSeePlans: 'Tarife ansehen',
@@ -1910,8 +1916,11 @@ export const de: Localized<EnMessages> = {
     historyBody: 'Jeder Tag der letzten zwei Monate und was gezählt hat',
     leaderboardBody: 'Wer gerade und überhaupt die längste Serie hat',
     protectTitle: 'Schütze deine Serie',
-    protectBody:
-      'Ein Schutz deckt den nächsten Tag ab, den du verpasst. Ein bereits verpasster Tag lässt sich einen Monat lang oben in der Karte zurückkaufen.',
+    protectBody: {
+      one: 'Ein Schutz deckt den nächsten Tag ab, den du verpasst. Ein bereits verpasster Tag lässt sich bis zu {count} Tag danach oben in der Karte zurückkaufen.',
+      other:
+        'Ein Schutz deckt den nächsten Tag ab, den du verpasst. Ein bereits verpasster Tag lässt sich bis zu {count} Tage danach oben in der Karte zurückkaufen.',
+    },
     longest: 'Am längsten',
     missed: 'Verpasst',
     bought: 'Mit Token aufgefüllt',
@@ -2598,8 +2607,8 @@ export const de: Localized<EnMessages> = {
     deckExportBody:
       'Exportiere die gespeicherten Wendungen eines Chats — oder alle, die du gespeichert hast — als Datei. Sie öffnet sich in Anki.',
     advancedFiltersBody: 'Nach einem bestimmten Geschlecht und nach Stadt suchen.',
-    translationQuota: 'Übersetze so viel du brauchst',
-    translationQuotaBody: '{count} Übersetzungen am Tag — weit mehr als ein Gespräch braucht.',
+    translationQuota: 'Unbegrenzte Übersetzungen',
+    translationQuotaBody: '{count} am Tag im kostenlosen Tarif.',
     learningLanguages: 'Mehr Sprachen gleichzeitig',
     learningLanguagesBody: 'Lerne {count} Sprachen nebeneinander statt einer.',
     whoViewed: 'Wer dich angesehen hat',
@@ -2672,7 +2681,7 @@ export const de: Localized<EnMessages> = {
       other: 'Und {count} weitere',
     },
     showLess: 'Weniger anzeigen',
-    billedYearly: '{price} jährlich abgerechnet',
+    pricePerPeriod: '{price} {period}',
     billedMonthly: 'Monatlich abgerechnet',
     lifetimeDetail: 'Einmal zahlen, nichts verlängert sich',
     timelineTitle: 'So funktioniert dein Gratis-Test',

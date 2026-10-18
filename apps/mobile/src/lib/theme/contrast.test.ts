@@ -53,6 +53,10 @@ const PAIRS: Pair[] = [
   { text: 'onBlue', on: 'blue' },
   { text: 'correction', on: 'bg' },
   { text: 'correction', on: 'surface' },
+  // The destructive button: a red label in a red outline, on the ground or
+  // on the grey block a settings group sits in.
+  { text: 'danger', on: 'bg' },
+  { text: 'danger', on: 'surface' },
   // A partner's tile carries ink; an ink chip carries the partner's hue.
   ...PARTNER_HUES.flatMap((hue): Pair[] => [
     { text: 'ink', on: hue },

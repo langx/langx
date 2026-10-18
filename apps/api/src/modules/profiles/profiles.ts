@@ -286,6 +286,8 @@ export interface Profile {
     initiations: Date[]
     translations: Date[]
     media: Date[]
+    /** Optional for `echoCaptures`' reason; added on 17 October 2026. */
+    translationFairUse?: Date[]
     echoCaptures?: Date[]
     echoNewCards?: Date[]
     echoVoices?: Date[]
@@ -301,6 +303,14 @@ export interface Profile {
    * on everybody who has never hit a limit, which is most people.
    */
   quotaRefusals?: Date[]
+  /**
+   * Which limit each of those refusals was, kept beside them for the operator
+   * panel. A second array rather than a changed element type so the nudge
+   * that reads `quotaRefusals` — and an API instance from before this field —
+   * keeps working untouched. Same window, pruned by the same write. A refusal
+   * with no entry here predates the field and reads as "unknown".
+   */
+  quotaRefusalKinds?: { at: Date; kind: string }[]
   photos?: { url: string; createdAt: Date }[]
   /**
    * Where a `promotions.email: true` on this profile came from, when it was

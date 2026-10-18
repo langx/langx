@@ -21,6 +21,8 @@ const SAMPLES: Record<V3TypeStep, (t: TranslateFn) => string> = {
   callout: (t) => t('me.previewProfileBody'),
   caption: (t) => t('presence.lastSeenHours', { count: 2 }),
   label: (t) => t('tabs.chats'),
+  button: (t) => t('welcome.createAccount'),
+  buttonSmall: (t) => t('common.save'),
 }
 
 /** One line of the v3 ramp, set in its own step. */

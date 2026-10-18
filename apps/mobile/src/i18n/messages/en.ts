@@ -50,6 +50,8 @@ export const en = {
     edit: 'Edit',
     enable: 'Enable',
     update: 'Update',
+    /** Read aloud in place of the dash a number shows when it did not load. */
+    notLoaded: 'Couldn’t load',
   },
 
   tabs: {
@@ -1373,7 +1375,17 @@ export const en = {
     photosPermission: 'LangX needs permission to open your photo library.',
     microphoneTitle: 'Microphone',
     translationUnavailable: 'Translation unavailable',
-    translationQuota: 'You’ve used today’s free translations. A paid plan removes the limit.',
+    translationQuota: 'You’ve reached today’s translation limit. Pro has unlimited translations.',
+    /**
+     * The ceiling every plan shares, under Pro's unlimited. Says "fair use" and
+     * when it resets — `{count}` is the rolling window in hours — and never a
+     * plan or a price: it is not followed by the paywall.
+     */
+    translationFairUse: {
+      one: 'You’ve reached the fair-use limit for translations, which is there to stop automated use. It resets within {count} hour.',
+      other:
+        'You’ve reached the fair-use limit for translations, which is there to stop automated use. It resets within {count} hours.',
+    },
     translationFailed: 'Could not translate that message right now.',
     wordTranslationFailed: 'Could not translate that word right now.',
     wordSeePlans: 'See the plans',
@@ -2067,8 +2079,11 @@ export const en = {
     historyBody: 'Every day of the last two months, and what counted',
     leaderboardBody: 'Who has the longest run right now, and ever',
     protectTitle: 'Protect your streak',
-    protectBody:
-      'A freeze covers the next day you miss. A day already missed can be bought back on the map above, for a month.',
+    protectBody: {
+      one: 'A freeze covers the next day you miss. A day already missed can be bought back on the map above, up to {count} day after you miss it.',
+      other:
+        'A freeze covers the next day you miss. A day already missed can be bought back on the map above, up to {count} days after you miss it.',
+    },
     longest: 'Longest',
     missed: 'Missed',
     bought: 'Filled in with tokens',
@@ -2770,8 +2785,8 @@ export const en = {
     deckExportBody:
       'Export one conversation’s saved phrases, or every card you have saved, as a file. It opens in Anki.',
     advancedFiltersBody: 'Search for a specific gender, and by city.',
-    translationQuota: 'Translate as much as you need',
-    translationQuotaBody: '{count} translations a day — far more than a conversation uses.',
+    translationQuota: 'Unlimited translations',
+    translationQuotaBody: '{count} a day on the free plan.',
     learningLanguages: 'More languages at once',
     learningLanguagesBody: 'Learn {count} languages side by side, not one.',
     whoViewed: 'Who viewed you',
@@ -2845,7 +2860,12 @@ export const en = {
       other: 'And {count} more',
     },
     showLess: 'Show less',
-    billedYearly: '{price} billed yearly',
+    /**
+     * A price and what it is per — "$6.99 a month" — in the order the language
+     * says them; Turkish puts the period first. `{period}` is one of `perMonth`,
+     * `perYear` or `perLifetime`.
+     */
+    pricePerPeriod: '{price} {period}',
     billedMonthly: 'Billed monthly',
     lifetimeDetail: 'One payment, nothing renews',
     timelineTitle: 'How your free trial works',

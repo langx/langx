@@ -40,6 +40,7 @@ export const tr: Localized<EnMessages> = {
     edit: 'Düzenle',
     enable: 'Aç',
     update: 'Güncelle',
+    notLoaded: 'Yüklenemedi',
   },
 
   tabs: {
@@ -1221,8 +1222,12 @@ export const tr: Localized<EnMessages> = {
     photosPermission: 'LangX’in fotoğraf kitaplığını açmak için izne ihtiyacı var.',
     microphoneTitle: 'Mikrofon',
     translationUnavailable: 'Çeviri kullanılamıyor',
-    translationQuota:
-      'Bugünkü ücretsiz çevirilerini kullandın. Ücretli bir plan bu sınırı kaldırır.',
+    translationQuota: 'Bugünkü çeviri sınırına ulaştın. Pro ile sınırsız çeviri yapabilirsin.',
+    translationFairUse: {
+      one: 'Çeviri için adil kullanım sınırına ulaştın. Bu sınır otomatik kullanımı engellemek için var ve {count} saat içinde sıfırlanıyor.',
+      other:
+        'Çeviri için adil kullanım sınırına ulaştın. Bu sınır otomatik kullanımı engellemek için var ve {count} saat içinde sıfırlanıyor.',
+    },
     translationFailed: 'Bu mesaj şu anda çevrilemedi.',
     wordTranslationFailed: 'Bu kelime şu anda çevrilemedi.',
     wordSeePlans: 'Planlara bak',
@@ -1859,8 +1864,11 @@ export const tr: Localized<EnMessages> = {
     historyBody: 'Son iki ayın her günü ve neyin sayıldığı',
     leaderboardBody: 'Şu an ve tüm zamanların en uzun serileri',
     protectTitle: 'Serini koru',
-    protectBody:
-      'Dondurma, kaçıracağın bir sonraki günü kapatır. Kaçırılmış bir gün ise yukarıdaki haritadan bir ay boyunca geri alınabilir.',
+    protectBody: {
+      one: 'Dondurma, kaçıracağın bir sonraki günü kapatır. Kaçırılmış bir gün ise, kaçırıldıktan sonra en fazla {count} gün boyunca yukarıdaki haritadan geri alınabilir.',
+      other:
+        'Dondurma, kaçıracağın bir sonraki günü kapatır. Kaçırılmış bir gün ise, kaçırıldıktan sonra en fazla {count} gün boyunca yukarıdaki haritadan geri alınabilir.',
+    },
     longest: 'En uzun',
     missed: 'Kaçırıldı',
     bought: 'Jetonla dolduruldu',
@@ -2531,8 +2539,8 @@ export const tr: Localized<EnMessages> = {
     deckExportBody:
       'Bir sohbetin kaydedilmiş ifadelerini ya da kaydettiğin bütün kartları dosya olarak dışa aktar. Anki’de açılır.',
     advancedFiltersBody: 'Belirli bir cinsiyete ve şehre göre ara.',
-    translationQuota: 'İhtiyacın kadar çeviri',
-    translationQuotaBody: 'Günde {count} çeviri — bir sohbetin kullandığından çok daha fazla.',
+    translationQuota: 'Sınırsız çeviri',
+    translationQuotaBody: 'Ücretsiz planda günde {count} tane.',
     learningLanguages: 'Aynı anda daha çok dil',
     learningLanguagesBody: 'Bir yerine {count} dili yan yana öğren.',
     whoViewed: 'Sana kim baktı',
@@ -2605,7 +2613,7 @@ export const tr: Localized<EnMessages> = {
       other: 'Ve {count} özellik daha',
     },
     showLess: 'Daha az göster',
-    billedYearly: 'Yılda bir {price} faturalandırılır',
+    pricePerPeriod: '{period} {price}',
     billedMonthly: 'Her ay faturalandırılır',
     lifetimeDetail: 'Tek ödeme, yenilenmez',
     timelineTitle: 'Ücretsiz deneme nasıl işler',

@@ -374,7 +374,7 @@ export const fr: Localized<ServerMessages> = {
       limitReachedSubject: 'Vous butez sur les limites gratuites',
 
       limitReachedBody:
-        'Vous avez atteint une limite quotidienne trois fois ces derniers jours. Une formule les lève : plus de conversations, plus de traductions, plus de pièces jointes, chaque jour.',
+        'Vous avez atteint une limite quotidienne trois fois ces derniers jours. Une formule les lève : plus de conversations et plus de traductions, chaque jour.',
 
       limitReachedButton: 'Voir les formules',
 
@@ -590,7 +590,7 @@ export const fr: Localized<ServerMessages> = {
       other: '🎟️ Le code {code} a marché : {count} mois de LangX Pro pour toi.',
     },
     perks:
-      'Tu peux maintenant :\n💬 lancer de nouvelles conversations sans limite\n🌍 traduire bien plus chaque jour\n👀 voir qui a consulté ton profil, et naviguer incognito\n✨ te démarquer dans Découvrir et filtrer par genre et par ville',
+      'Tu peux maintenant :\n💬 lancer de nouvelles conversations sans limite\n🌍 traduire sans limite\n👀 voir qui a consulté ton profil, et naviguer incognito\n✨ te démarquer dans Découvrir et filtrer par genre et par ville',
     andMore: '…et plus encore.',
     until: 'Profite-en jusqu’au {date}. 💛',
     untilPaying:

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  pushAnswer,
   pushGuideStatus,
   pushSwitchAction,
   pushSwitchIsOn,
@@ -120,5 +121,20 @@ describe('what the guide screen says', () => {
   it('answers web before it looks at anything else', () => {
     expect(pushGuideStatus({ ...native, platform: 'web' })).toBe('web')
     expect(pushGuideStatus({ ...native, granted: true, platform: 'web' })).toBe('web')
+  })
+})
+
+describe('pushAnswer', () => {
+  it('is granted whenever the OS says so', () => {
+    expect(pushAnswer({ granted: true, undetermined: false })).toBe('granted')
+  })
+
+  it('is denied when the dialog was answered no', () => {
+    expect(pushAnswer({ granted: false, undetermined: false })).toBe('denied')
+  })
+
+  /** Android lets the dialog be dismissed; that is a dialog left alone, not a no. */
+  it('keeps a dismissed dialog apart from a refusal', () => {
+    expect(pushAnswer({ granted: false, undetermined: true })).toBe('undetermined')
   })
 })

@@ -34,6 +34,7 @@ export const es: Localized<EnMessages> = {
     edit: 'Editar',
     enable: 'Activar',
     update: 'Actualizar',
+    notLoaded: 'No se pudo cargar',
   },
 
   tabs: { discover: 'Descubrir', chats: 'Chats', echo: 'Echo', feed: 'Muro', me: 'Yo' },
@@ -1232,7 +1233,12 @@ export const es: Localized<EnMessages> = {
     microphoneTitle: 'Micrófono',
     translationUnavailable: 'Traducción no disponible',
     translationQuota:
-      'Has usado las traducciones gratuitas de hoy. Un plan de pago quita el límite.',
+      'Has llegado al límite de traducciones de hoy. Con Pro, las traducciones son ilimitadas.',
+    translationFairUse: {
+      one: 'Has alcanzado el límite de uso justo de traducciones, que existe para frenar el uso automatizado. Se restablece en un plazo de {count} hora.',
+      other:
+        'Has alcanzado el límite de uso justo de traducciones, que existe para frenar el uso automatizado. Se restablece en un plazo de {count} horas.',
+    },
     translationFailed: 'No se pudo traducir ese mensaje ahora mismo.',
     wordTranslationFailed: 'No se pudo traducir esa palabra ahora mismo.',
     wordSeePlans: 'Ver los planes',
@@ -1866,8 +1872,11 @@ export const es: Localized<EnMessages> = {
     historyBody: 'Cada día de los últimos dos meses y qué contó',
     leaderboardBody: 'Quién tiene la racha más larga ahora y de siempre',
     protectTitle: 'Protege tu racha',
-    protectBody:
-      'Un protector cubre el próximo día que te saltes. Un día ya perdido se puede recuperar en el mapa de arriba durante un mes.',
+    protectBody: {
+      one: 'Un protector cubre el próximo día que te saltes. Un día ya perdido se puede recuperar en el mapa de arriba hasta {count} día después.',
+      other:
+        'Un protector cubre el próximo día que te saltes. Un día ya perdido se puede recuperar en el mapa de arriba hasta {count} días después.',
+    },
     longest: 'La más larga',
     missed: 'Perdido',
     bought: 'Rellenado con tokens',
@@ -2544,8 +2553,8 @@ export const es: Localized<EnMessages> = {
     deckExportBody:
       'Exporta las expresiones guardadas de una conversación, o todas las que has guardado, como archivo. Se abre en Anki.',
     advancedFiltersBody: 'Busca por un género concreto y por ciudad.',
-    translationQuota: 'Traduce lo que necesites',
-    translationQuotaBody: '{count} traducciones al día, mucho más de lo que usa una conversación.',
+    translationQuota: 'Traducciones ilimitadas',
+    translationQuotaBody: '{count} al día en el plan gratuito.',
     learningLanguages: 'Más idiomas a la vez',
     learningLanguagesBody: 'Aprende {count} idiomas a la vez, no uno.',
     whoViewed: 'Quién te ha visto',
@@ -2618,7 +2627,7 @@ export const es: Localized<EnMessages> = {
       other: 'Y {count} más',
     },
     showLess: 'Mostrar menos',
-    billedYearly: '{price} facturado al año',
+    pricePerPeriod: '{price} {period}',
     billedMonthly: 'Facturado cada mes',
     lifetimeDetail: 'Un solo pago, sin renovaciones',
     timelineTitle: 'Cómo funciona tu prueba gratis',

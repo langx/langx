@@ -387,7 +387,7 @@ export const en = {
       limitReachedSubject: 'You are running into the free limits',
 
       limitReachedBody:
-        'You have hit a daily limit three times in the last few days. A plan lifts them — more conversations, more translations, more attachments, every day.',
+        'You have hit a daily limit three times in the last few days. A plan lifts them — more conversations and more translations, every day.',
 
       limitReachedButton: 'See the plans',
 
@@ -668,7 +668,7 @@ export const en = {
       other: '🎟️ Code {code} worked: {count} months of LangX Pro are yours.',
     },
     perks:
-      'Now open for you:\n💬 unlimited new conversations\n🌍 far more translations every day\n👀 who viewed you, and browsing unseen\n✨ standing out in Discover, gender and city filters',
+      'Now open for you:\n💬 unlimited new conversations\n🌍 unlimited translations\n👀 who viewed you, and browsing unseen\n✨ standing out in Discover, gender and city filters',
     andMore: '…and more.',
     until: 'Enjoy it until {date}. 💛',
     untilPaying:

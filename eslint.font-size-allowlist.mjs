@@ -181,7 +181,6 @@ export default [
   'apps/mobile/src/components/testimonials/TestimonialSheet.tsx',
   'apps/mobile/src/components/testimonials/ThreadTestimonialCard.tsx',
   'apps/mobile/src/components/ui/Avatar.tsx',
-  'apps/mobile/src/components/ui/Button.tsx',
   'apps/mobile/src/components/ui/Chip.tsx',
   'apps/mobile/src/components/ui/FormField.tsx',
   'apps/mobile/src/components/ui/ListRow.tsx',

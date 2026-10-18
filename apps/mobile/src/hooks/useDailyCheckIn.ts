@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { AppState } from 'react-native'
 import { useCheckIn } from '../api/queries'
+import { track } from '../lib/analytics'
 import { deviceDayKey } from '../lib/deviceDay'
+import { streakEventsFor } from '../lib/streakEvents'
 import { useReviewPrompt } from './useReviewPrompt'
 
 /**
@@ -56,6 +58,7 @@ export function useDailyCheckIn({ enabled }: { enabled: boolean }) {
         // here on day seven has been coming back for a week. Which days count
         // is read from the shared table, never typed here.
         onSuccess: (result) => {
+          for (const event of streakEventsFor(result)) track(event)
           if (result.advanced) {
             requestReview.current({ kind: 'streakMilestone', day: result.current })
           }

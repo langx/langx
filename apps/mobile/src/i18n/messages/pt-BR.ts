@@ -31,6 +31,7 @@ export const ptBR: Localized<EnMessages> = {
     edit: 'Editar',
     enable: 'Ativar',
     update: 'Atualizar',
+    notLoaded: 'Não foi possível carregar',
   },
 
   tabs: { discover: 'Descobrir', chats: 'Conversas', echo: 'Echo', feed: 'Feed', me: 'Eu' },
@@ -1225,7 +1226,13 @@ export const ptBR: Localized<EnMessages> = {
     photosPermission: 'O LangX precisa de permissão para abrir sua galeria.',
     microphoneTitle: 'Microfone',
     translationUnavailable: 'Tradução indisponível',
-    translationQuota: 'Você usou as traduções gratuitas de hoje. Um plano pago remove o limite.',
+    translationQuota:
+      'Você atingiu o limite de traduções de hoje. Com o Pro, as traduções são ilimitadas.',
+    translationFairUse: {
+      one: 'Você atingiu o limite de uso justo de traduções, que existe para impedir o uso automatizado. Ele é restabelecido em até {count} hora.',
+      other:
+        'Você atingiu o limite de uso justo de traduções, que existe para impedir o uso automatizado. Ele é restabelecido em até {count} horas.',
+    },
     translationFailed: 'Não deu para traduzir essa mensagem agora.',
     wordTranslationFailed: 'Não deu para traduzir essa palavra agora.',
     wordSeePlans: 'Ver os planos',
@@ -1862,8 +1869,11 @@ export const ptBR: Localized<EnMessages> = {
     historyBody: 'Cada dia dos últimos dois meses e o que contou',
     leaderboardBody: 'Quem tem a maior sequência agora e de todos os tempos',
     protectTitle: 'Proteja sua sequência',
-    protectBody:
-      'Um congelamento cobre o próximo dia que você perder. Um dia já perdido pode ser recuperado no mapa acima durante um mês.',
+    protectBody: {
+      one: 'Um congelamento cobre o próximo dia que você perder. Um dia já perdido pode ser recuperado no mapa acima até {count} dia depois.',
+      other:
+        'Um congelamento cobre o próximo dia que você perder. Um dia já perdido pode ser recuperado no mapa acima até {count} dias depois.',
+    },
     longest: 'A maior',
     missed: 'Perdido',
     bought: 'Preenchido com fichas',
@@ -2541,8 +2551,8 @@ export const ptBR: Localized<EnMessages> = {
     deckExportBody:
       'Exporte as expressões salvas de uma conversa, ou todos os cartões que você salvou, como arquivo. Abre no Anki.',
     advancedFiltersBody: 'Busque por um gênero específico e por cidade.',
-    translationQuota: 'Traduza o quanto precisar',
-    translationQuotaBody: '{count} traduções por dia — muito mais do que uma conversa usa.',
+    translationQuota: 'Traduções ilimitadas',
+    translationQuotaBody: '{count} por dia no plano gratuito.',
     learningLanguages: 'Mais idiomas ao mesmo tempo',
     learningLanguagesBody: 'Aprenda {count} idiomas lado a lado, não um.',
     whoViewed: 'Quem viu você',
@@ -2615,7 +2625,7 @@ export const ptBR: Localized<EnMessages> = {
       other: 'E mais {count}',
     },
     showLess: 'Mostrar menos',
-    billedYearly: '{price} cobrado por ano',
+    pricePerPeriod: '{price} {period}',
     billedMonthly: 'Cobrado todo mês',
     lifetimeDetail: 'Um pagamento só, sem renovação',
     timelineTitle: 'Como funciona seu teste grátis',

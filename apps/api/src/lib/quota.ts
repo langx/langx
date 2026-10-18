@@ -15,6 +15,12 @@ import type { Profile } from '../modules/profiles/profiles'
 export type TrackedQuotaKind =
   | 'initiations'
   | 'translations'
+  /**
+   * Every translation miss, on every tier: the fair-use ceiling under Pro's
+   * unlimited translations. Its own bucket because Pro's `translations` is
+   * null and so writes nothing, and the ceiling still has to count.
+   */
+  | 'translationFairUse'
   | 'media'
   | 'echoCaptures'
   /**
@@ -152,7 +158,7 @@ export async function consumeQuota(
 
   if (result) return { consumed: true, spentAt: now }
 
-  await recordRefusal(db, userId, now)
+  await recordRefusal(db, userId, kind, now)
   const status = await getQuotaStatus(db, userId, tier, kind)
   return { consumed: false, nextAvailableAt: status.nextAvailableAt }
 }
@@ -166,18 +172,31 @@ export const QUOTA_REFUSAL_WINDOW_MS = 3 * 24 * 60 * 60 * 1000
 
 /**
  * Remembers that somebody was refused, so a nudge can tell "hit the limit
- * once" from "keeps hitting it".
+ * once" from "keeps hitting it" — and the operator panel can tell which limit.
  *
  * Here rather than at the three call sites, because here is the only place
  * a refusal is decided — and the fourth caller, whenever it arrives, gets
  * this for free rather than being the one that forgot.
  *
- * The same prune-and-append pipeline the quota itself uses, so the array
- * cannot grow: everything outside the window is dropped on each write.
+ * **Two arrays, one window.** `quotaRefusals` stays a bare list of instants:
+ * the upsell nudge reads it as exactly that, and a running API instance from
+ * before this change appends to it as exactly that during a rolling deploy.
+ * The kind goes in `quotaRefusalKinds` beside it, pruned by the same cut-off in
+ * the same write. A refusal recorded before the kind was kept has an instant
+ * and no kind, which is how the panel knows to call it "unknown" rather than
+ * guessing.
+ *
+ * The same prune-and-append pipeline the quota itself uses, so neither array
+ * can grow: everything outside the window is dropped on each write.
  * Failure is swallowed — this is a counter for a marketing nudge, and
  * nothing about it is worth turning a 429 into a 500.
  */
-async function recordRefusal(db: Db, userId: string, now: Date): Promise<void> {
+async function recordRefusal(
+  db: Db,
+  userId: string,
+  kind: TrackedQuotaKind,
+  now: Date,
+): Promise<void> {
   const since = new Date(now.getTime() - QUOTA_REFUSAL_WINDOW_MS)
   try {
     await db.collection<Profile>(COLLECTIONS.profiles).updateOne({ _id: userId }, [
@@ -192,6 +211,17 @@ async function recordRefusal(db: Db, userId: string, now: Date): Promise<void> {
                 },
               },
               [now],
+            ],
+          },
+          quotaRefusalKinds: {
+            $concatArrays: [
+              {
+                $filter: {
+                  input: { $ifNull: ['$quotaRefusalKinds', []] },
+                  cond: { $gte: ['$$this.at', since] },
+                },
+              },
+              [{ at: now, kind }],
             ],
           },
         },

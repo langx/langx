@@ -1,4 +1,4 @@
-import { PLAN_LIMITS, SUSPENSION_FOREVER } from '@langx/shared'
+import { PLAN_LIMITS, SUSPENSION_FOREVER, TOKEN_RULES, sendAwardSchema } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -355,6 +355,59 @@ describe('Faz 4 — starting a conversation', () => {
   })
 
   /**
+   * What the opening message earned is told to the person who sent it. The
+   * figures are checked against the ledger and the profile, which is the
+   * other half of "returned as is": the response and the books are one
+   * computation, so they cannot disagree.
+   */
+  it('answers with what the opening message earned, and the books agree', async () => {
+    const viewer = await newUser('convo-award@example.com')
+    const recipient = await newUser('convo-award-to@example.com')
+
+    const response = await startConversation(viewer, recipient.userId, 'ilk mesaj')
+    expect(response.statusCode, response.body).toBe(201)
+    const body = response.json<{ _id: string; award?: unknown }>()
+    const award = sendAwardSchema.parse(body.award)
+
+    expect(award).toEqual({
+      tokens: TOKEN_RULES.award.message,
+      streak: {
+        current: 1,
+        longest: 1,
+        lastQualifiedDay: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/) as string,
+        advanced: true,
+        milestoneXp: 0,
+        freezeUsed: false,
+      },
+      capped: false,
+    })
+
+    const ledger = await handle.db
+      .collection<{ amount: number }>(COLLECTIONS.tokenLedger)
+      .find({ userId: viewer.userId, kind: 'message' })
+      .toArray()
+    expect(ledger.map((row) => row.amount)).toEqual([award.tokens])
+    const profile = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ _id: viewer.userId })
+    expect(profile?.streak.current).toBe(award.streak?.current)
+  })
+
+  it('says the streak was already credited when a second thread opens the same day', async () => {
+    const viewer = await newUser('convo-award-twice@example.com')
+    const first = await newUser('convo-award-twice-1@example.com')
+    const second = await newUser('convo-award-twice-2@example.com')
+
+    await startConversation(viewer, first.userId)
+    const response = await startConversation(viewer, second.userId)
+    expect(response.statusCode, response.body).toBe(201)
+
+    const award = sendAwardSchema.parse(response.json<{ award?: unknown }>().award)
+    expect(award.tokens).toBe(TOKEN_RULES.award.message)
+    expect(award.streak).toMatchObject({ current: 1, advanced: false, freezeUsed: false })
+  })
+
+  /**
    * The point of `firstPage` is that a client can put it straight into the
    * cache the thread reads and be right, so this compares it against the page
    * that thread would otherwise have fetched rather than against a shape
@@ -428,6 +481,7 @@ describe('Faz 4 — starting a conversation', () => {
       })
       expect(response.json()).toMatchObject({
         initiations: { limit: null, remaining: null, nextAvailableAt: null },
+        translations: { limit: null, remaining: null, nextAvailableAt: null },
       })
     })
 

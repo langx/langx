@@ -1,4 +1,3 @@
-import Feather from '@expo/vector-icons/Feather'
 import { STREAK_FREEZE_SKU } from '@langx/shared'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
@@ -15,6 +14,7 @@ import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { StatTile } from '../../../src/components/ui/StatTile'
 import { useT, type MessageKey } from '../../../src/i18n'
 import { showAlert } from '../../../src/lib/alert'
+import { streakProtectText } from '../../../src/lib/limitCopy'
 import { goBackTo } from '../../../src/lib/navigation'
 import { streakShareText } from '../../../src/lib/shareText'
 import { buildStoreOffers, type StoreOffer } from '../../../src/lib/storeOffers'
@@ -127,7 +127,7 @@ export default function StreakScreen() {
           <Button
             label={t('share.streak')}
             variant="secondary"
-            icon={<Feather name="share" size={18} color={colors.accent} />}
+            icon="share"
             onPress={() =>
               setCard({
                 kind: 'streak',
@@ -146,7 +146,7 @@ export default function StreakScreen() {
       {freeze && wallet.data ? (
         <View style={styles.protect}>
           <Text style={styles.protectTitle}>{t('streak.protectTitle')}</Text>
-          <Text style={styles.protectBody}>{t('streak.protectBody')}</Text>
+          <Text style={styles.protectBody}>{streakProtectText(t)}</Text>
           <StoreRow
             offer={freeze}
             pending={purchase.isPending}

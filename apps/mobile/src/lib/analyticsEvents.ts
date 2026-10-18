@@ -17,7 +17,10 @@ import type {
   PushKind,
 } from '@langx/shared'
 import type { OnboardingStep } from './onboardingStep'
+import type { PaywallExit, PaywallOffersState, RestoreResult } from './paywallAnalytics'
 import type { AskSummary } from './postAsks'
+import type { PushAnswer, PushPermissionSource } from './pushPermission'
+import type { TipId, TipSlot } from './tips'
 import type { TourTargetId } from './tour'
 import type { PurchaseOutcome } from './purchases'
 
@@ -141,12 +144,52 @@ export type AnalyticsEvent =
         source: PaywallSource
         /** Opened over a gift of months, which can be subscribed on top of. */
         gift: boolean
+        /**
+         * What the store had to sell when the page was counted. Sent once the
+         * page is first shown — up to a second after it opens, since it waits
+         * for the store — or when it is left sooner, in which case this reads
+         * `pending`. Absent from builds that send the view on open.
+         */
+        offers: PaywallOffersState
       }
     }
   | {
-      /** The paywall was closed without a purchase — the X, back, or "Continue free". */
+      /**
+       * The paywall was left without a purchase — the X, back, a swipe, or
+       * "Continue free". Sent once, from the navigator's `beforeRemove`, and
+       * never when the person leaves holding a plan they did not arrive with.
+       *
+       * `exit` is how, as far as the navigation event can say: `close` is the
+       * X and "Continue free", `back` Android's back button and system back
+       * gesture, `gesture` the iOS swipe, `other` anything else that took the
+       * screen off the stack. Absent from builds that predate it.
+       */
       name: 'paywall_dismissed'
-      properties: { source: PaywallSource; seconds_open: number }
+      properties: { source: PaywallSource; seconds_open: number; exit: PaywallExit }
+    }
+  | {
+      /** A plan card was picked that was not already the picked one. `period` is its billing period. */
+      name: 'plan_selected'
+      properties: { source: PaywallSource; period: BillingPeriod }
+    }
+  | {
+      /** "And N more" was opened. Opening only: closing it again is not interest. */
+      name: 'benefits_expanded'
+      properties: { source: PaywallSource }
+    }
+  | {
+      /** "Restore purchases" was tapped. */
+      name: 'restore_tapped'
+      properties: { source: PaywallSource }
+    }
+  | {
+      /**
+       * The store call behind that tap came back. `completed` means it went
+       * through, not that anything was restored; `failed` that it threw or had
+       * no store behind it. See `RestoreResult`.
+       */
+      name: 'restore_finished'
+      properties: { source: PaywallSource; result: RestoreResult }
     }
   | {
       name: 'purchase_started'
@@ -317,6 +360,25 @@ export type AnalyticsEvent =
     }
   | {
       /**
+       * The system notification dialog was requested. Counts asks, not
+       * dialogs shown — the OS can answer from what it already holds without
+       * drawing one — and `source` is which of the three askers it was, so a
+       * dialog that followed a reason can be read against one that did not.
+       */
+      name: 'push_permission_prompted'
+      properties: { source: PushPermissionSource }
+    }
+  | {
+      /**
+       * The dialog came back. `undetermined` is Android's dismissed-without-
+       * answering, which is not a refusal. A prompt with no answer after it is
+       * an app killed on the frame, or a request that threw.
+       */
+      name: 'push_permission_answered'
+      properties: { source: PushPermissionSource; answer: PushAnswer }
+    }
+  | {
+      /**
        * The discovery filter sheet was applied.
        *
        * `pro` is the question: the advanced filters are a paid feature, and
@@ -347,6 +409,52 @@ export type AnalyticsEvent =
        */
       name: 'tokens_spent'
       properties: { sku: string; kind: CosmeticKind | 'consumable'; amount: number }
+    }
+  | {
+      /**
+       * The app's check-in credited today to the streak; `days` is the streak
+       * it reached. Only the first credit of a day, so it is once per active
+       * day — and only when the check-in was the one that credited it, which a
+       * message sent before the launch request landed can pre-empt. Read off
+       * the check-in response; the client infers nothing.
+       */
+      name: 'streak_checked_in'
+      properties: { days: number }
+    }
+  | {
+      /**
+       * That check-in carried the streak to a length in the shared milestone
+       * table. The payout is a separate claim, made on the day's first real
+       * action, so this is the milestone being reached and not the reward being
+       * paid.
+       */
+      name: 'streak_milestone_reached'
+      properties: { days: number }
+    }
+  | {
+      /** That check-in spent a banked freeze to bridge yesterday; `days` is the streak it kept. */
+      name: 'freeze_used'
+      properties: { days: number }
+    }
+  | {
+      /**
+       * A missed day was bought back and the server accepted it; `days` is
+       * the streak after. The spend is not `tokens_spent` — the repair does
+       * not pass through the wallet store's purchase — so this is its only
+       * trace.
+       */
+      name: 'streak_repaired'
+      properties: { days: number }
+    }
+  | {
+      /**
+       * A check-in began a new run at one while the account's longest on
+       * record is longer. `longest` is that best, not the length of the run
+       * that ended, which the response does not carry. Sent on return from the
+       * lapse, so it counts people who came back from one.
+       */
+      name: 'streak_broken'
+      properties: { longest: number }
     }
   | {
       /**
@@ -381,6 +489,30 @@ export type AnalyticsEvent =
       /** The last step was passed. Against `tour_started`, this is the funnel. */
       name: 'tour_completed'
       properties: { is_guest: boolean }
+    }
+  | {
+      /**
+       * A tip was put on screen: the moment its slot's cursor advanced, which
+       * is once per mount of the screen that holds it. `tip` is the tip's id
+       * and `slot` the place that showed it — never the sentence, which is
+       * translated and would arrive in eight spellings for one tip.
+       */
+      name: 'tip_shown'
+      properties: { tip: TipId; slot: TipSlot }
+    }
+  | {
+      /** The tip's own close button was tapped. Turning tips off in Settings is not this. */
+      name: 'tip_dismissed'
+      properties: { tip: TipId; slot: TipSlot }
+    }
+  | {
+      /**
+       * The button on a tip was tapped. No tip has a button today, so nothing
+       * sends this yet; it is here so the first one that does is measured from
+       * its first day.
+       */
+      name: 'tip_action'
+      properties: { tip: TipId; slot: TipSlot }
     }
   | {
       /**
@@ -588,12 +720,31 @@ export type AnalyticsEvent =
     }
   | {
       /**
-       * A fair-use ceiling was hit — today, the media quota on a chat send.
-       * It is a plain alert with nothing to buy, not a paywall, which is why
-       * it is its own event rather than a `paywall_viewed` source.
+       * The invite link was copied, or its share sheet opened. `sheet` counts
+       * the sheet being opened, not anything being sent: the sheet does not
+       * say whether it was used, and a cancelled one looks the same.
+       */
+      name: 'invite_shared'
+      properties: { via: 'sheet' | 'copy' }
+    }
+  | {
+      /**
+       * A profile link was copied, or its share sheet opened. `own` is the
+       * share screen under Me; false is somebody else's profile from its
+       * menu. Never whose profile, and `sheet` counts opens as above.
+       */
+      name: 'profile_shared'
+      properties: { own: boolean; via: 'sheet' | 'copy' }
+    }
+  | {
+      /**
+       * A fair-use ceiling was hit — the media quota on a chat send, or the
+       * translation ceiling under Pro's unlimited translations. It is a plain
+       * alert with nothing to buy, not a paywall, which is why it is its own
+       * event rather than a `paywall_viewed` source.
        */
       name: 'fair_use_limit_hit'
-      properties: { kind: 'media' }
+      properties: { kind: 'media' | 'translations' }
     }
   | {
       /**
