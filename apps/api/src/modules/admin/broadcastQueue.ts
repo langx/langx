@@ -1,4 +1,4 @@
-import { broadcastTickShare, utcDayKey } from '@langx/shared'
+import { BROADCAST_PER_TICK, broadcastTickShare, utcDayKey } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import {
@@ -10,7 +10,9 @@ import {
   revOf,
   type BroadcastJob,
 } from './broadcast'
+import { officialIds } from '../official/accounts'
 import { deliverOfficialMessage } from '../official/deliver'
+import { profilesInLocalHour } from '../profiles/localHour'
 import { localeFor } from '../profiles/localeFor'
 import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensFor, type PushSender } from '../push/devices'
@@ -45,7 +47,9 @@ export async function runBroadcastQueuePass(
     (await broadcasts(db).findOne({ status: 'queued' }, { sort: { createdAt: 1 } }))
   if (!job) return { sent: 0 }
 
-  const share = broadcastTickShare(now)
+  // A local-hour broadcast has no UTC window: its hour is the window, asked
+  // per person below.
+  const share = job.localHour === undefined ? broadcastTickShare(now) : BROADCAST_PER_TICK
   if (share <= 0) return { sent: 0 } // outside the sending window
 
   /*
@@ -72,17 +76,29 @@ export async function runBroadcastQueuePass(
     )
   }
 
-  const recipients = await db
-    .collection<Profile>(COLLECTIONS.profiles)
-    .find(
-      {
-        ...broadcastAudience(now),
-        ...(job.cursorUserId ? { _id: { $gt: job.cursorUserId } } : {}),
-      },
-      { projection: { _id: 1 }, sort: { _id: 1 }, limit: share },
-    )
-    .toArray()
+  if (job.localHour !== undefined && localRoundIsOver(job, now)) {
+    await broadcasts(db).updateOne({ _id: job._id }, { $set: { status: 'done', finishedAt: now } })
+    options.logger?.info({ broadcast: job._id, sent: job.sent }, 'broadcast finished')
+    return { sent: 0 }
+  }
 
+  const recipients =
+    job.localHour === undefined
+      ? await db
+          .collection<Profile>(COLLECTIONS.profiles)
+          .find(
+            {
+              ...broadcastAudience(now),
+              ...(job.cursorUserId ? { _id: { $gt: job.cursorUserId } } : {}),
+            },
+            { projection: { _id: 1 }, sort: { _id: 1 }, limit: share },
+          )
+          .toArray()
+      : await dueInLocalHour(db, job, job.localHour, now, share)
+
+  // Nobody due this hour is not the end of a local-hour broadcast — the next
+  // zone's evening is half an hour away. Only the day running out is.
+  if (recipients.length === 0 && job.localHour !== undefined) return { sent: 0 }
   if (recipients.length === 0) {
     await broadcasts(db).updateOne({ _id: job._id }, { $set: { status: 'done', finishedAt: now } })
     options.logger?.info({ broadcast: job._id, sent: job.sent }, 'broadcast finished')
@@ -109,7 +125,7 @@ export async function runBroadcastQueuePass(
    * message in it is refused as a duplicate — which is the cheap half of the
    * trade, and the reason there is no ledger here.
    */
-  const last = recipients.at(-1)?._id
+  const last = job.localHour === undefined ? recipients.at(-1)?._id : undefined
   await broadcasts(db).updateOne(
     { _id: job._id },
     {
@@ -118,6 +134,67 @@ export async function runBroadcastQueuePass(
     },
   )
   return { sent, ...(failed > 0 ? { failed } : {}) }
+}
+
+/**
+ * How long a local-hour broadcast stays open: every zone's hour comes round
+ * once in 24, and the extra one covers a zone whose hour ended just before the
+ * broadcast was armed, plus a missed tick.
+ */
+const LOCAL_ROUND_MS = 25 * 60 * 60 * 1000
+
+function localRoundIsOver(job: BroadcastJob, now: Date): boolean {
+  return job.startedAt !== undefined && now.getTime() - job.startedAt.getTime() >= LOCAL_ROUND_MS
+}
+
+/**
+ * Who is in `hour` on their own clock right now and has no copy yet.
+ *
+ * "No copy yet" is asked of the messages themselves, by the clientId every
+ * copy carries — the same `{senderId, clientId}` index that makes the send
+ * exactly once. It has to be asked rather than left to that index: the hour
+ * spans two ticks, and a duplicate refused at the write is still handed back
+ * by `deliverOfficialMessage` as if it were new, which here would push it a
+ * second time.
+ *
+ * Only accounts that existed when the broadcast was written. Someone who
+ * signs up during the day it takes to go round was not in the count, and
+ * whatever it says, the welcome has just said to them.
+ */
+async function dueInLocalHour(
+  db: Db,
+  job: BroadcastJob,
+  hour: number,
+  now: Date,
+  share: number,
+): Promise<Pick<Profile, '_id'>[]> {
+  const due = await profilesInLocalHour(db, hour, now, {
+    ...broadcastAudience(now),
+    createdAt: { $lte: job.createdAt },
+  })
+  if (due.length === 0) return []
+
+  const senderId = officialIds().get('langx')
+  const clientIds = due.map((profile) => `broadcast:${job._id}:${profile._id}`)
+  const already = senderId
+    ? new Set(
+        (
+          await db
+            .collection(COLLECTIONS.messages)
+            .find(
+              { senderId, clientId: { $in: clientIds } },
+              { projection: { _id: 0, clientId: 1 } },
+            )
+            .toArray()
+        ).map((message) => message.clientId as string),
+      )
+    : new Set<string>()
+
+  return due
+    .filter((profile) => !already.has(`broadcast:${job._id}:${profile._id}`))
+    .sort((a, b) => (a._id < b._id ? -1 : 1))
+    .slice(0, share)
+    .map((profile) => ({ _id: profile._id }))
 }
 
 async function deliver(

@@ -31,9 +31,14 @@
  * locale, and each reader gets theirs. One or the other, and never with a
  * picture: chips belong under a sentence, not a caption.
  *
+ * `--local-hour 19` sends to each person at 19:00 on their own clock instead
+ * of as fast as the UTC window allows — a day to go round rather than an hour,
+ * and nobody's push lands at night. Read only when the draft is written.
+ *
  * Usage:
  *   pnpm --filter @langx/api exec tsx --env-file=../../.env \
- *     scripts/send-announcement.ts --id 2026-09-copilot --body announcements/copilot [--confirm]
+ *     scripts/send-announcement.ts --id 2026-09-copilot --body announcements/copilot \
+ *     [--local-hour 19] [--confirm]
  *
  * Without `--confirm` it writes the draft and stops there — which is a real
  * preview now rather than a printed one: the row is in the panel, where it can
@@ -141,6 +146,15 @@ async function main(): Promise<void> {
   const dir = flag('body')
   if (!slug || !dir) throw new Error('usage: --id <slug> --body <dir> [--confirm]')
 
+  const hourFlag = flag('local-hour')
+  const localHour = hourFlag === undefined ? undefined : Number(hourFlag)
+  if (
+    localHour !== undefined &&
+    !(Number.isInteger(localHour) && localHour >= 0 && localHour <= 23)
+  ) {
+    throw new Error(`--local-hour must be a whole hour, 0-23 — got "${hourFlag}"`)
+  }
+
   const env = loadEnv()
   const bodies = loadBodies(dir)
   const interactive = loadInteractive(dir)
@@ -174,6 +188,7 @@ async function main(): Promise<void> {
         bodies,
         images,
         ...(interactive ? { interactive } : {}),
+        ...(localHour !== undefined ? { localHour } : {}),
         pushTitle: 'LangX',
         createdBy: 'script:send-announcement',
       }))
@@ -183,6 +198,9 @@ async function main(): Promise<void> {
     console.log(`  recipients: ${job.total}`)
     console.log(`  locales:    ${Object.keys(job.bodies).join(', ')}`)
     console.log(`  interactive: ${job.interactive?.kind ?? 'none'}`)
+    console.log(
+      `  sends:      ${job.localHour === undefined ? 'now, inside the UTC window' : `${job.localHour}:00 on each reader's clock`}`,
+    )
     console.log(`  pictures:   ${Object.keys(job.images ?? {}).join(', ') || 'none'}`)
     console.log(`\n  en.txt:\n${job.bodies.en?.slice(0, 300) ?? ''}\n`)
 

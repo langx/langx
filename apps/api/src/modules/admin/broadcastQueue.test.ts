@@ -119,6 +119,75 @@ describe('the in-app broadcast queue', () => {
     expect((await broadcasts(db).findOne({ _id: 'hello' }))?.status).toBe('done')
   })
 
+  /**
+   * `localHour`: each person at that hour on their own clock, the UTC window
+   * ignored, and nobody twice although their hour spans two ticks. Mid
+   * September, so Paris is UTC+2 and Toronto UTC-4; no timezone reads as UTC.
+   */
+  it('sends to each person at the local hour, once, over a day', async () => {
+    await Promise.all([
+      member('paris', { timezone: 'Europe/Paris' }),
+      member('toronto', { timezone: 'America/Toronto' }),
+      member('nozone'),
+    ])
+    await createBroadcast(
+      db,
+      {
+        id: 'evening',
+        bodies: { en: 'Something new' },
+        localHour: 19,
+        pushTitle: 'LangX',
+        createdBy: 'test',
+      },
+      NOON,
+    )
+    await arm(db, 'evening')
+    const at = (iso: string) => runBroadcastQueuePass(db, push, new Date(iso))
+    const sentTo = async () =>
+      (await db.collection(COLLECTIONS.messages).find({}).toArray()).map((m) =>
+        String(m.clientId).split(':').at(-1),
+      )
+
+    // Noon UTC is inside the UTC window, and nobody's 19:00.
+    expect(await at('2026-09-13T12:00:00Z')).toEqual({ sent: 0 })
+    // 19:00 in Paris, then its second tick, which must not send again.
+    expect(await at('2026-09-13T17:00:00Z')).toEqual({ sent: 1 })
+    expect(await at('2026-09-13T17:30:00Z')).toEqual({ sent: 0 })
+    expect(await sentTo()).toEqual(['paris'])
+    // No timezone is UTC.
+    expect(await at('2026-09-13T19:00:00Z')).toEqual({ sent: 1 })
+    // 23:00 UTC is outside the UTC window — and 19:00 in Toronto.
+    expect(await at('2026-09-13T23:00:00Z')).toEqual({ sent: 1 })
+    expect((await sentTo()).sort()).toEqual(['nozone', 'paris', 'toronto'])
+    expect((await broadcasts(db).findOne({ _id: 'evening' }))?.status).toBe('sending')
+
+    // The next evening finds everybody served; the day after the start closes it.
+    expect(await at('2026-09-14T17:00:00Z')).toEqual({ sent: 0 })
+    expect(await at('2026-09-14T18:00:00Z')).toEqual({ sent: 0 })
+    const job = await broadcasts(db).findOne({ _id: 'evening' })
+    expect(job?.status).toBe('done')
+    expect(job?.sent).toBe(3)
+    expect(await messagesSent()).toBe(3)
+  })
+
+  it('leaves out accounts opened after a local-hour broadcast was written', async () => {
+    await member('before', { timezone: 'Europe/Paris' })
+    await createBroadcast(
+      db,
+      { id: 'cohort', bodies: { en: 'Hi' }, localHour: 19, pushTitle: 'LangX', createdBy: 'test' },
+      NOON,
+    )
+    await member('after', {
+      timezone: 'Europe/Paris',
+      createdAt: new Date('2026-09-13T13:00:00Z'),
+    })
+    await arm(db, 'cohort')
+
+    expect(await runBroadcastQueuePass(db, push, new Date('2026-09-13T17:00:00Z'))).toEqual({
+      sent: 1,
+    })
+  })
+
   it("puts a poll under each copy, in the reader's own language", async () => {
     await Promise.all([member('ayse', { nativeLanguages: [{ code: 'tr' }] }), member('ben')])
     await createBroadcast(db, {
