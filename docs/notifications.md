@@ -320,6 +320,7 @@ every one claims a row in `notificationLedger` before it sends.
 | A message arrived                                | `messages`      | on the message     | — (fan-out)                                       |
 | **A call you missed**                            | `messages`      | when it ends       | the call — `messages.call_id_unique`              |
 | Streak reminder — only while still savable today | `streak`        | 20:00 local        | local day                                         |
+| **Pick your streak back up** — after it broke    | `streak`        | 20:00 local, flag  | the missed day                                    |
 | Badge round-up                                   | `badges`        | 18:00 local        | badge ids                                         |
 | Profile visits                                   | `profileVisits` | 12:00 local        | local day                                         |
 | Meeting reminder                                 | `meetings`      | an hour before     | message id                                        |
@@ -331,6 +332,36 @@ every one claims a row in `notificationLedger` before it sends.
 | **Yesterday's pool paid you N tokens**           | `wallet`        | 09:00 local        | pool day, and not if the bell's row is read       |
 | **Your hourly gift is ready**                    | `wallet`        | waking hours       | UTC day, and only if they have taken one before   |
 | **Cards are due in Echo**                        | `echo`          | 19:00 local        | local day, and only if nothing was reviewed today |
+
+**The two streak pushes.** The reminder says what keeps a streak: opening the
+app, which checks the day in — "Open LangX today to keep it going." It used to
+ask for a message, which was the rule before check-ins. It claims its day in
+`streakReminders`, which predates the ledger and is shared with the digest
+section below.
+
+The repair push (`modules/notifications/streakRepair.ts`) goes the evening
+after a missed day, and only when a repair is the one thing that brings the
+streak back: a run of at least `STREAK_REPAIR_NUDGE_MIN_STREAK`, the last day
+the day before yesterday on the reader's own calendar, no freeze banked (with
+one, showing up is enough and the reminder is the message), a repair left this
+month and the tokens for one. So the two never reach the same person on the
+same evening. It is gated by the push half of the streak switch alone, claims
+`streakRepair:<userId>:<missedDay>` in `notificationLedger`, and is sent as a
+`wallet` push carrying `repairDay` — see _Where a tapped push lands_. It was
+the push half of the repair mail until October 2026, and could only go out
+behind it: with streak mail on, no digest that day and no marketing that week.
+
+It is **off until `flags.streakRepairPush` is switched on**
+(`scripts/maintenance.ts flag streakRepairPush true`), because it reaches
+people the old one never did — streak push on, streak mail off — and that
+widening is a consent decision, not a deploy's. While it is off nobody gets a
+repair push at all; the mail is unaffected. On, it still skips anybody under
+`STREAK_REPAIR_PUSH_MIN_AGE` (18) by `ageFromBirthDate`, and anybody with no
+birth date. Accounts carrying a placeholder birth date read as adults.
+
+Neither names Pro, a price or a purchase, in any of the eight languages
+(`streakRepair.test.ts` checks them), which is what keeps both notifications
+rather than promotions. The repair is "Pick your streak back up", never "buy".
 
 **Email, all of it in one letter at 19:00 local.** The order is the order in
 the mail, and the first section that survives gives the letter its subject —
@@ -457,7 +488,7 @@ and leave the evening's real news with nowhere to go.
 | #   | Nudge                                   | Trigger                                               | Kind       |
 | --- | --------------------------------------- | ----------------------------------------------------- | ---------- |
 | 1   | Add a photo, and people will find you   | no `avatarUrl`, account > 48 h                        | promotions |
-| 2   | Your streak broke — repair it           | streak ≥ 3 that lapsed **yesterday**                  | **streak** |
+| 2   | Your streak broke — repair it           | `streakRepairDay`: broke **yesterday**, repairable    | **streak** |
 | 3   | People are still practising without you | `lastActiveAt` 7–8 days ago                           | promotions |
 | 4   | We will stop writing after this         | `lastActiveAt` 30–31 days ago                         | promotions |
 | 5   | Your free week ends in two days         | `periodType: trial`, not renewing, ends within 2 days | promotions |
@@ -472,7 +503,16 @@ began, or whose plan ended, after that deploy.
 
 The streak repair sits under the **streak** switch, not promotions: it is
 about the streak, and hiding it behind the marketing switch would hide it
-from the people it is for.
+from the people it is for. This row is the **mail**; its push is the repair
+push in section 2, which the slot, the week's gap and the digest never hold
+back. Both ask `streakRepairDay`, so they agree on who is told. Until October
+2026 this row counted hours from noon UTC, and west of about UTC+8 told people
+their streak had broken on the evening it was still alive.
+
+Unlike the reminder, the repair mail is not a fallback for the phone: it goes
+whether or not one is signed in. The Streak reminder row in Settings says so
+since October 2026 — "the warning comes by email only when no phone is signed
+in" — where it used to say that of both.
 
 ### The monthly recap
 
@@ -721,10 +761,19 @@ appears at noon the next day.
 | `profileVisits`              | `/viewers`                                              |
 | `social`                     | the post, the person, your reviews, or `/notifications` |
 | `wallet`, `bountyPaid`       | `/wallet`                                               |
+| `wallet` with `repairDay`    | `/wallet/store`; `/wallet` on a build that predates it  |
 | `billing`                    | `/settings/plan`                                        |
 | `security`                   | `/settings/password`                                    |
 | `echo`                       | `/echo`                                                 |
 | `promotion`                  | `/discover`                                             |
+
+**A kind is routing, not consent.** The streak repair is a streak notification
+sent as `wallet`, because an unknown kind routes nowhere: `notificationRoute`
+returns `null` for it, and the app opens wherever it was. Every build since the
+`wallet` kind opens the wallet, one tap from the store that sells the repair; a
+build older than that shows the push and opens where it was. A kind of its own
+would have had that fallback on every phone until a store release taught them
+the name. The `notification_opened` event counts a tapped repair as `wallet`.
 
 ## What a read clears from the shade
 
@@ -738,9 +787,12 @@ lock screen in the morning.
 - **Answering from the notification** marks the thread read, so it clears the
   same way and the icon's count drops with it.
 - **Opening the wallet** clears `wallet` and `bountyPaid`: the gift, the pool
-  and a bounty's tokens are all drawn there.
+  and a bounty's tokens are all drawn there, and the store a streak repair
+  leads to is in it.
 - **"Mark all read"** clears `social`, `badgeEarned`, `profileVisits` and
-  `wallet`.
+  `wallet` — except a streak repair, which has no row in the centre and is a
+  reminder, not tokens arriving. Neither does a read pool row clear it. A
+  build that predates `repairDay` treats it as any `wallet` push.
 - **Tapping a row** clears the pushes behind it, read or not. A push carries no
   notification id, so the match is on its `data`: a follow by the follower's
   `handle`, a reply or like row by `postId` (every push about that post), a

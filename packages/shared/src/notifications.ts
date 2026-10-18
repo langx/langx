@@ -435,6 +435,26 @@ export const DAILY_DIGEST_LOCAL_HOUR = 19
 export const PROMOTION_LOCAL_HOUR = 20
 
 /**
+ * The shortest streak worth offering a repair for, by mail or by push.
+ *
+ * Three days: a run of one or two is a start rather than a habit, and telling
+ * somebody it broke is a sentence about loss — worth saying only when there
+ * was something to lose.
+ */
+export const STREAK_REPAIR_NUDGE_MIN_STREAK = 3
+
+/**
+ * The youngest reader the streak repair push goes to.
+ *
+ * Eighteen while LangX admits sixteen: a push about a streak is the pattern
+ * the EU's guidance on minors (DSA Article 28) asks to be off by default for
+ * them, and the repair push is the one streak push that is new. Counted by
+ * `ageFromBirthDate`, the app's one age rule, which goes by the birth year —
+ * so somebody turning eighteen later this year already counts as eighteen.
+ */
+export const STREAK_REPAIR_PUSH_MIN_AGE = 18
+
+/**
  * "People you could practise with" — the only section that names people the
  * reader has never spoken to, so every number here is a restraint. It is the
  * digest's one passenger and never a reason to send it.
