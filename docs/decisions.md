@@ -7507,3 +7507,29 @@ so every reward paid before this change sits in all-time and nowhere else.
 of everyone who has ever been paid a reward from the ledger, which carries the
 period keys each row was written with, and writes only the rows that disagree.
 Run it once after deploying; a second run finds nothing to do.
+
+## "Where did you hear about us?" is asked, not inferred
+
+Nothing in the app can say where a new account came from. PostHog's
+`$initial_referring_domain` and UTM fields are empty on every app sign-up —
+a store install carries no referrer — and the store consoles' acquisition
+reports are per install, not per person. So @langx asks, once, as a poll
+under the welcome.
+
+The options come from where people actually arrive, read from PostHog before
+the list was written: store search, web search, AI assistants (ChatGPT tags
+its links, and they turned out to be a real channel), a friend, two social
+buckets, app-list sites, and "other". Channels we have no traffic from are not
+offered, because an option nobody picks says nothing and one that is merely
+plausible draws answers from people who are not sure.
+
+"Other" is only a choice. @langx is a channel nobody can write back to
+(`OFFICIAL_WRITABLE`), so there is no reply to collect a free-text answer in,
+and opening the thread for one question would undo that decision for a
+footnote's worth of data.
+
+Telegram hears about it from `langx/admin-tg`, not from this API. The bot
+already follows inserts on the collections it announces, holds a read-only
+database user, and runs on exactly one machine; the unique
+`{pollId, userId}` index means an insert happens once per person, so "only
+the first answer" needs no code at all.
