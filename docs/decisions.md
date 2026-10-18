@@ -4506,7 +4506,19 @@ the app is what keeps it now, the tap on the push included. The reminder
 says so, and so do the intro slide, How it works and @copilot's notes. The
 repair says "Pick your streak back up", never "buy". The Streak reminder
 row's description in Settings now names the evening after a streak broke,
-which this switch has gated since September without saying so.
+which this switch has gated since September without saying so, and stops
+saying that everything under it comes by email only without a phone: that was
+true of the reminder and never of the repair mail.
+
+**It ships off.** The new pass reaches people the old repair push never did —
+the streak push on and the streak mail off — so it is a widening of what this
+switch sends, and that is a consent decision rather than a merge's.
+`flags.streakRepairPush` starts false, like `captchaRequired`; while it is,
+nobody gets a repair push of either kind, and the mail goes on as before.
+Switched on, it skips readers under eighteen (`STREAK_REPAIR_PUSH_MIN_AGE`,
+by `ageFromBirthDate`) and readers with no birth date, the default the EU's
+guidance on minors asks for streak pushes. Placeholder birth dates read as
+adults, which is a limit of the data rather than of the rule.
 
 ## The newsletter is monthly, and its editorial half is a pull request
 

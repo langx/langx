@@ -884,7 +884,7 @@ export const tr: Localized<EnMessages> = {
     messagesBody: 'Biri sana yazdığında. E-posta yalnızca bir süredir uzaktaysan.',
     streak: 'Streak hatırlatması',
     streakBody:
-      'Akşam, streak’in kırılmak üzereyse ya da bir gün önce kırıldıysa. Girişli telefonun yoksa e-postayla.',
+      'Akşam, streak’in kırılmak üzereyse ya da bir gün önce kırıldıysa. Uyarı, yalnızca girişli telefonun yoksa e-postayla gelir.',
     badges: 'Rozetler',
     badgesBody: 'Bir rozet kazandığında. Her seferinde değil, akşam toplu olarak.',
     profileVisits: 'Profil ziyaretleri',

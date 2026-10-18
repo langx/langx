@@ -444,6 +444,17 @@ export const PROMOTION_LOCAL_HOUR = 20
 export const STREAK_REPAIR_NUDGE_MIN_STREAK = 3
 
 /**
+ * The youngest reader the streak repair push goes to.
+ *
+ * Eighteen while LangX admits sixteen: a push about a streak is the pattern
+ * the EU's guidance on minors (DSA Article 28) asks to be off by default for
+ * them, and the repair push is the one streak push that is new. Counted by
+ * `ageFromBirthDate`, the app's one age rule, which goes by the birth year —
+ * so somebody turning eighteen later this year already counts as eighteen.
+ */
+export const STREAK_REPAIR_PUSH_MIN_AGE = 18
+
+/**
  * "People you could practise with" — the only section that names people the
  * reader has never spoken to, so every number here is a restraint. It is the
  * digest's one passenger and never a reason to send it.

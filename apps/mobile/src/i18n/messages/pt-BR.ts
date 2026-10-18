@@ -884,7 +884,7 @@ export const ptBR: Localized<EnMessages> = {
     messagesBody: 'Quando alguém te escreve. Por e-mail só se você ficar um tempo fora.',
     streak: 'Lembrete de sequência',
     streakBody:
-      'À noite, se sua sequência estiver prestes a quebrar ou tiver quebrado no dia anterior. Por e-mail se nenhum telefone estiver conectado.',
+      'À noite, se sua sequência estiver prestes a quebrar ou tiver quebrado no dia anterior. O aviso só vai por e-mail se nenhum telefone estiver conectado.',
     badges: 'Medalhas',
     badgesBody: 'Quando você ganha uma. Um resumo à noite, não um aviso a cada vez.',
     profileVisits: 'Visitas ao perfil',

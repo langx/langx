@@ -1007,7 +1007,7 @@ export const en = {
     messagesBody: 'When somebody writes to you. By email only if you have been away a while.',
     streak: 'Streak reminder',
     streakBody:
-      'In the evening, if your streak is about to break, or broke the day before. By email if no phone is signed in.',
+      'In the evening, if your streak is about to break, or broke the day before. The warning comes by email only when no phone is signed in.',
     badges: 'Badges',
     badgesBody: 'When you earn one. A round-up in the evening, not a buzz each time.',
     profileVisits: 'Profile visits',

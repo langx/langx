@@ -320,7 +320,7 @@ every one claims a row in `notificationLedger` before it sends.
 | A message arrived                                | `messages`      | on the message     | — (fan-out)                                       |
 | **A call you missed**                            | `messages`      | when it ends       | the call — `messages.call_id_unique`              |
 | Streak reminder — only while still savable today | `streak`        | 20:00 local        | local day                                         |
-| **Pick your streak back up** — after it broke    | `streak`        | 20:00 local        | the missed day                                    |
+| **Pick your streak back up** — after it broke    | `streak`        | 20:00 local, flag  | the missed day                                    |
 | Badge round-up                                   | `badges`        | 18:00 local        | badge ids                                         |
 | Profile visits                                   | `profileVisits` | 12:00 local        | local day                                         |
 | Meeting reminder                                 | `meetings`      | an hour before     | message id                                        |
@@ -350,6 +350,14 @@ same evening. It is gated by the push half of the streak switch alone, claims
 `wallet` push carrying `repairDay` — see _Where a tapped push lands_. It was
 the push half of the repair mail until October 2026, and could only go out
 behind it: with streak mail on, no digest that day and no marketing that week.
+
+It is **off until `flags.streakRepairPush` is switched on**
+(`scripts/maintenance.ts flag streakRepairPush true`), because it reaches
+people the old one never did — streak push on, streak mail off — and that
+widening is a consent decision, not a deploy's. While it is off nobody gets a
+repair push at all; the mail is unaffected. On, it still skips anybody under
+`STREAK_REPAIR_PUSH_MIN_AGE` (18) by `ageFromBirthDate`, and anybody with no
+birth date. Accounts carrying a placeholder birth date read as adults.
 
 Neither names Pro, a price or a purchase, in any of the eight languages
 (`streakRepair.test.ts` checks them), which is what keeps both notifications
@@ -500,6 +508,11 @@ push in section 2, which the slot, the week's gap and the digest never hold
 back. Both ask `streakRepairDay`, so they agree on who is told. Until October
 2026 this row counted hours from noon UTC, and west of about UTC+8 told people
 their streak had broken on the evening it was still alive.
+
+Unlike the reminder, the repair mail is not a fallback for the phone: it goes
+whether or not one is signed in. The Streak reminder row in Settings says so
+since October 2026 — "the warning comes by email only when no phone is signed
+in" — where it used to say that of both.
 
 ### The monthly recap
 

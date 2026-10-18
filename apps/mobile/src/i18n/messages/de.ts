@@ -899,7 +899,7 @@ export const de: Localized<EnMessages> = {
     messagesBody: 'Wenn dir jemand schreibt. Per E-Mail nur, wenn du länger weg warst.',
     streak: 'Streak-Erinnerung',
     streakBody:
-      'Abends, wenn dein Streak zu reißen droht oder am Vortag gerissen ist. Per E-Mail, wenn kein Telefon angemeldet ist.',
+      'Abends, wenn dein Streak zu reißen droht oder am Vortag gerissen ist. Die Warnung kommt nur per E-Mail, wenn kein Telefon angemeldet ist.',
     badges: 'Abzeichen',
     badgesBody: 'Wenn du eines bekommst. Abends gesammelt, nicht jedes Mal einzeln.',
     profileVisits: 'Profilbesuche',

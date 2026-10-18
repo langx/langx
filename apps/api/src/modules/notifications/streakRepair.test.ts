@@ -1,4 +1,5 @@
 import {
+  DEFAULT_APP_CONFIG,
   STREAK_REMINDER_LOCAL_HOUR,
   SUPPORTED_LOCALES,
   TOKEN_RULES,
@@ -10,6 +11,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import { translator } from '../../i18n'
+import { invalidateAppConfigCache, updateAppConfig } from '../appConfig/appConfig'
 import { LoggingPushSender, type Device } from '../push/devices'
 import { runStreakRepairPushPass } from './streakRepair'
 
@@ -47,9 +49,16 @@ describe('the streak repair push', () => {
       COLLECTIONS.notificationLedger,
       COLLECTIONS.tokenAggregates,
       COLLECTIONS.streakDays,
+      COLLECTIONS.appConfig,
     ]) {
       await handle.db.collection(name).deleteMany({})
     }
+    invalidateAppConfigCache()
+    // Every case below is about what happens once it is switched on; the one
+    // that is not says so.
+    await updateAppConfig(handle.db, {
+      flags: { ...DEFAULT_APP_CONFIG.flags, streakRepairPush: true },
+    })
   })
 
   async function broken(
@@ -63,6 +72,7 @@ describe('the streak repair push', () => {
       timezone?: string
       locale?: Locale
       withDevice?: boolean
+      birthDate?: string | null
     } = {},
   ): Promise<string> {
     const userId = new ObjectId().toHexString()
@@ -70,6 +80,7 @@ describe('the streak repair push', () => {
       _id: userId,
       handle: `h${userId.slice(-10)}`,
       displayName: 'Sofia R.',
+      ...(opts.birthDate === null ? {} : { birthDate: opts.birthDate ?? '1994-05-20' }),
       timezone: opts.timezone ?? zone,
       streak: {
         current: opts.current ?? 9,
@@ -189,6 +200,46 @@ describe('the streak repair push', () => {
   it('waits for the evening on the reader’s own clock', async () => {
     await broken({ timezone: 'UTC' })
     expect(await runStreakRepairPushPass(handle.db, push, now)).toEqual({ sent: 0 })
+  })
+
+  /**
+   * Both ends of the clock. At 20:00 in UTC+14 the UTC day is the same one; at
+   * 20:00 in UTC−12 it is already the next, so the last day there is three UTC
+   * days back — exactly the edge of the pass's prefilter.
+   */
+  it('finds the broken streak on both sides of the date line', async () => {
+    await broken({ timezone: 'Pacific/Kiritimati' })
+    // 20:00 on the 14th in UTC+14.
+    const east = new Date('2026-09-14T06:00:00Z')
+    expect(await runStreakRepairPushPass(handle.db, push, east)).toEqual({ sent: 1 })
+    expect(push.sent[0]?.data).toEqual({ kind: 'wallet', repairDay: missed })
+
+    await broken({ timezone: 'Etc/GMT+12' })
+    // 20:00 on the 14th in UTC−12 is 08:00 on the 15th in UTC.
+    const west = new Date('2026-09-15T08:00:00Z')
+    expect(await runStreakRepairPushPass(handle.db, push, west)).toEqual({ sent: 1 })
+    expect(push.sent[1]?.data).toEqual({ kind: 'wallet', repairDay: missed })
+  })
+
+  /** A merge sends nobody anything new: switching it on is the decision. */
+  it('sends nothing while its flag is off, which is how it ships', async () => {
+    await updateAppConfig(handle.db, { flags: DEFAULT_APP_CONFIG.flags })
+    invalidateAppConfigCache()
+    await broken()
+    expect(DEFAULT_APP_CONFIG.flags.streakRepairPush).toBe(false)
+    expect(await runStreakRepairPushPass(handle.db, push, now)).toEqual({ sent: 0 })
+    expect(await handle.db.collection(COLLECTIONS.notificationLedger).countDocuments()).toBe(0)
+  })
+
+  /** Counted by birth year, the app's one age rule: 2008 is eighteen in 2026. */
+  it('never goes to a reader under eighteen, or one whose age is unknown', async () => {
+    await broken({ birthDate: '2009-01-01' })
+    await broken({ birthDate: '2010-06-30' })
+    await broken({ birthDate: null })
+    expect(await runStreakRepairPushPass(handle.db, push, now)).toEqual({ sent: 0 })
+
+    await broken({ birthDate: '2008-12-31' })
+    expect(await runStreakRepairPushPass(handle.db, push, now)).toEqual({ sent: 1 })
   })
 })
 

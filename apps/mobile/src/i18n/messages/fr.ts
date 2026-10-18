@@ -897,7 +897,7 @@ export const fr: Localized<EnMessages> = {
     messagesBody: 'Quand quelqu’un vous écrit. Par e-mail seulement après une absence.',
     streak: 'Rappel de série',
     streakBody:
-      'Le soir, si votre série est sur le point de s’interrompre ou s’est interrompue la veille. Par e-mail si aucun téléphone n’est connecté.',
+      'Le soir, si votre série est sur le point de s’interrompre ou s’est interrompue la veille. L’alerte n’arrive par e-mail que si aucun téléphone n’est connecté.',
     badges: 'Badges',
     badgesBody: 'Quand vous en gagnez un. Un récapitulatif le soir, pas une alerte à chaque fois.',
     profileVisits: 'Visites de profil',

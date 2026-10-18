@@ -1,7 +1,9 @@
 import {
   STREAK_REMINDER_LOCAL_HOUR,
   STREAK_REPAIR_NUDGE_MIN_STREAK,
+  STREAK_REPAIR_PUSH_MIN_AGE,
   TOKEN_RULES,
+  ageFromBirthDate,
   localDayKey,
   notificationsAllowed,
   shiftDayKey,
@@ -10,6 +12,7 @@ import {
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { translator } from '../../i18n'
+import { getAppConfig } from '../appConfig/appConfig'
 import { profilesInLocalHour } from '../profiles/localHour'
 import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
@@ -64,12 +67,21 @@ export async function streakRepairDay(db: Db, profile: Profile, now: Date): Prom
  * the wallet and a build that reads the day opens the store: see `PUSH_KINDS`.
  * No inbox row — like the reminder, it is about the reader's own habit, not
  * something anybody did to them.
+ *
+ * **Off until `flags.streakRepairPush` is switched on.** It reaches people the
+ * old repair push did not — streak push on and streak mail off — and under the
+ * same switch as before, so turning it on is a decision about consent rather
+ * than a side effect of a deploy. And never to a reader under
+ * `STREAK_REPAIR_PUSH_MIN_AGE`: a streak push is the thing the guidance on
+ * minors asks to be off by default for them.
  */
 export async function runStreakRepairPushPass(
   db: Db,
   sender: PushSender,
   now: Date = new Date(),
 ): Promise<{ sent: number }> {
+  if (!(await getAppConfig(db)).flags.streakRepairPush) return { sent: 0 }
+
   const readers = await profilesInLocalHour(db, STREAK_REMINDER_LOCAL_HOUR, now, {
     deletedAt: { $exists: false },
     guest: { $exists: false },
@@ -86,6 +98,15 @@ export async function runStreakRepairPushPass(
   let sent = 0
   for (const profile of readers) {
     if (!notificationsAllowed(profile.settings?.notifications, 'streak', 'push')) continue
+    // A missing date is not an adult. A placeholder date — some accounts were
+    // given one before a real date was asked for — reads as an adult, and
+    // nothing here can tell it from a real one.
+    if (
+      !profile.birthDate ||
+      ageFromBirthDate(profile.birthDate, now) < STREAK_REPAIR_PUSH_MIN_AGE
+    ) {
+      continue
+    }
     const repairDay = await streakRepairDay(db, profile, now)
     if (repairDay === null) continue
 
