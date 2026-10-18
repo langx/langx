@@ -1,6 +1,7 @@
 import { buttonsSection } from './ButtonsSection'
 import { colorsSection } from './ColorsSection'
 import { elevationSection } from './ElevationSection'
+import { gamificationSection } from './GamificationSection'
 import type { GallerySectionEntry } from './GallerySection'
 import { huesSection } from './HuesSection'
 import { iconsSection } from './IconsSection'
@@ -28,4 +29,5 @@ export const GALLERY_SECTIONS: readonly GallerySectionEntry[] = [
   elevationSection,
   motionSection,
   buttonsSection,
+  gamificationSection,
 ]

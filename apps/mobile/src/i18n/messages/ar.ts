@@ -44,6 +44,7 @@ export const ar: Localized<EnMessages> = {
     edit: 'تعديل',
     enable: 'تفعيل',
     update: 'تحديث',
+    close: 'إغلاق',
     notLoaded: 'تعذّر التحميل',
   },
 
@@ -2130,6 +2131,14 @@ export const ar: Localized<EnMessages> = {
     emptyTitle: 'لا شيء هنا بعد',
     emptyBody: 'أرسل رسالة أو اكتب تصحيحًا، ويصبح اليوم أول أيامك.',
     legendMissed: 'فائت · اضغط لتعويضه',
+    daysTogether: {
+      zero: '{count} يوم معًا',
+      one: 'يوم واحد معًا',
+      two: 'يومان معًا',
+      few: '{count} أيام معًا',
+      many: '{count} يومًا معًا',
+      other: '{count} يوم معًا',
+    },
   },
   settings: {
     scanBody: 'سجّل الدخول على حاسوب أو افتح ملف صديق',
