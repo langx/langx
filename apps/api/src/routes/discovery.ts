@@ -1,7 +1,7 @@
 import { discoveryQuerySchema, handleSearchQuerySchema } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { requireAuth } from '../middleware/requireAuth'
-import { boostedProfiles, discoverProfiles } from '../modules/discovery/discovery'
+import { boostedProfiles, discoverProfiles, newProfiles } from '../modules/discovery/discovery'
 import { searchHandles } from '../modules/discovery/handleSearch'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
@@ -25,6 +25,20 @@ export const discoveryRoutes: FastifyPluginAsyncZod = async (app) => {
     { preHandler: requireAuth, schema: { querystring: discoveryQuerySchema } },
     async (request, reply) => {
       const page = await boostedProfiles(app.mongo.db, request.userId, request.query)
+      return reply.send(page)
+    },
+  )
+
+  /**
+   * "New on LangX" — never a mode of `/discovery/boosted`, whose items every
+   * installed build labels "Boosted". Same querystring for the same reason;
+   * empty while `flags.discoveryReplyFirst` is off. See `newProfiles`.
+   */
+  app.get(
+    '/discovery/new',
+    { preHandler: requireAuth, schema: { querystring: discoveryQuerySchema } },
+    async (request, reply) => {
+      const page = await newProfiles(app.mongo.db, request.userId, request.query)
       return reply.send(page)
     },
   )

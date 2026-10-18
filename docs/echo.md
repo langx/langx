@@ -67,6 +67,8 @@ message type between two people, the token pool.
 
 ## The Add echo gesture
 
+> **Amended 18 October 2026 — a correction somebody writes to you is kept without the tap once `flags.echoFromCorrections` is on, and never translated by the provider; see _A correction you receive is kept in Echo by itself, behind a switch_ in [`decisions.md`](./decisions.md).**
+
 This is the feature. Everything else is the machinery under it.
 
 **One tap, no form.** The existing "Save as a phrase" action pushes a
