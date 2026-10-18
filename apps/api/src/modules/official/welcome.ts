@@ -4,6 +4,7 @@ import { deviceIdentity } from '../security/deviceLabel'
 import { fanOutMessage } from '../../ws/fanOut'
 import { localeFor } from '../profiles/localeFor'
 import { deliverOfficialMessage } from './deliver'
+import { sendHeardAboutPoll } from './heardAbout'
 
 /**
  * The first thing in a new account's chat list: @langx, saying hello.
@@ -68,4 +69,7 @@ export async function sendWelcomeMessage(
   await fanOutMessage(app, app.io, delivered.conversation, delivered.message, {
     pushWhenAway: true,
   })
+  // After the hello, never before it: the question reads as a postscript, and
+  // the chat list shows the last message, which should be the one to answer.
+  await sendHeardAboutPoll(app, userId)
 }

@@ -1,10 +1,18 @@
 import {
+  adultBornOnOrBefore,
   ageFromBirthDate,
+  isAdult,
   LANGUAGE_LEVELS,
   levelRank,
   bucketDistanceKm,
   DISCOVERY_BOOSTED_CANDIDATE_MAX,
   DISCOVERY_BOOSTED_LIMIT,
+  DISCOVERY_DORMANT_DAYS,
+  DISCOVERY_NEW_DAYS,
+  DISCOVERY_NEW_LIMIT,
+  DISCOVERY_REPLY_SIGNAL_MIN_RATE,
+  DISCOVERY_REPLY_SIGNAL_MIN_SAMPLE,
+  DISCOVERY_RESPONSIVENESS_WEIGHT,
   STORED_PLAN_TIERS,
   normalizePlanTier,
   PLAN_LIMITS,
@@ -21,10 +29,13 @@ import {
   type DiscoveryItem,
   type DiscoveryPage,
   type DiscoveryQuery,
+  type NewProfilesPage,
   type PlanTier,
 } from '@langx/shared'
 import type { Db, Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { getAppConfig } from '../appConfig/appConfig'
+import type { Conversation } from '../chat/conversations'
 import { blockedUserIds } from '../moderation/blocks'
 import { notSuspended } from '../moderation/suspension'
 import { hidesOnlineStatus } from '../profiles/presenceVisibility'
@@ -295,12 +306,72 @@ export async function resolveDiscoveryScope(
   return { viewer, tier, match, myNativeCodes, myLearningCodes }
 }
 
+const DAY_MS = 24 * 60 * 60 * 1000
+
+/**
+ * Everybody the viewer already has a thread with, whoever opened it.
+ *
+ * Rides `participants_recent`, projected to the pair. Reply-first discovery
+ * leaves them out of the default list and the new strip: they are a tap away
+ * in Chats, and a list that keeps proposing them spends its first rows on
+ * people the viewer has already found.
+ */
+async function conversationPartnerIds(db: Db, viewerId: string): Promise<string[]> {
+  const rows = await db
+    .collection<Conversation>(COLLECTIONS.conversations)
+    .find({ participants: viewerId }, { projection: { participants: 1 } })
+    .toArray()
+  return rows.flatMap((row) => row.participants.filter((id) => id !== viewerId))
+}
+
+/**
+ * `(answered + 1) / (received + 2)` — how often somebody answers a first
+ * message, with one imagined answered and one imagined unanswered added so a
+ * stranger to the counters sits at one half rather than at zero or one.
+ *
+ * Absent counters read as zero, which is exactly the prior: every profile
+ * written before the counters existed, and everybody nobody has written to
+ * yet, scores what the whole list scored before this term was added.
+ * `$min` because answered can only outgrow received if the two writes that
+ * keep them were ever split by a failure, and a rate above one is not one.
+ */
+const RESPONSIVENESS: Document = {
+  $let: {
+    vars: {
+      received: { $ifNull: ['$stats.openersReceived', 0] },
+      answered: { $ifNull: ['$stats.openersAnswered', 0] },
+    },
+    in: {
+      $divide: [{ $add: [{ $min: ['$$answered', '$$received'] }, 1] }, { $add: ['$$received', 2] }],
+    },
+  },
+}
+
+/**
+ * "Usually replies within a day", decided from the raw counters past a
+ * minimum sample — no prior here: the line is a claim about a person, and it
+ * should rest on what they did rather than on what everybody is assumed to.
+ *
+ * Off for somebody who hides their online status, for the reason
+ * `hidesOnlineStatus` is read below: the line says when they are around.
+ */
+function repliesWithinDay(profile: Profile): boolean {
+  if (hidesOnlineStatus(profile)) return false
+  const received = profile.stats.openersReceived ?? 0
+  if (received < DISCOVERY_REPLY_SIGNAL_MIN_SAMPLE) return false
+  return (profile.stats.openersAnsweredWithinDay ?? 0) / received >= DISCOVERY_REPLY_SIGNAL_MIN_RATE
+}
+
 /**
  * The DTO every discovery surface returns. One mapping, so a field added to
  * the card is added once — the strip spreads its own `tier` on top and
  * changes nothing else.
  */
-function toDiscoveryItem(doc: Profile & { distanceMeters?: number }, now: Date): DiscoveryItem {
+function toDiscoveryItem(
+  doc: Profile & { distanceMeters?: number },
+  now: Date,
+  replyFirst: boolean,
+): DiscoveryItem {
   const item: DiscoveryItem = {
     _id: doc._id,
     handle: doc.handle,
@@ -324,6 +395,7 @@ function toDiscoveryItem(doc: Profile & { distanceMeters?: number }, now: Date):
   // Bucketed, never the measured value — `bucketDistanceKm` explains what
   // reporting the real one would give away.
   if (doc.distanceMeters !== undefined) item.distanceKm = bucketDistanceKm(doc.distanceMeters)
+  if (replyFirst && repliesWithinDay(doc)) item.repliesWithinDay = true
   return item
 }
 
@@ -333,11 +405,18 @@ export async function discoverProfiles(
   query: DiscoveryQuery,
 ): Promise<DiscoveryPage> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
-  const { viewer, tier, match, myNativeCodes, myLearningCodes } = await resolveDiscoveryScope(
-    db,
-    viewerId,
-    query,
-  )
+  const [{ viewer, tier, match, myNativeCodes, myLearningCodes }, config] = await Promise.all([
+    resolveDiscoveryScope(db, viewerId, query),
+    getAppConfig(db),
+  ])
+  /*
+   * Reply-first applies to `recommended` only, for the reason online-first
+   * does (below): `active` and `nearby` are questions the reader asked — who
+   * is here, who is close — and somebody they already talk to is a true
+   * answer to both. Off, nothing below differs from the pipeline before it.
+   */
+  const replyFirst = config.flags.discoveryReplyFirst
+  const rankReplyFirst = replyFirst && query.sort === 'recommended'
 
   if (query.sort === 'nearby') {
     if (!hasFeature(tier, 'nearby')) {
@@ -376,6 +455,15 @@ export async function discoverProfiles(
    * exactly the search whose answer used to be a blank screen. Watch it if
    * discovery ever becomes the bottleneck; see `decisions.md`.
    */
+  /*
+   * `$and` rather than a second `_id` key, for the boosted strip's reason: the
+   * scope already holds `_id: { $nin }` for the viewer and the blocks, and a
+   * spread would replace it.
+   */
+  const partnerIds = rankReplyFirst ? await conversationPartnerIds(db, viewerId) : []
+  const eligible: Document =
+    partnerIds.length > 0 ? { $and: [match, { _id: { $nin: partnerIds } }] } : match
+
   const pipeline: Document[] =
     query.sort === 'nearby' && viewer.location
       ? [
@@ -392,11 +480,11 @@ export async function discoverProfiles(
               // this into an error at runtime instead of at review.
               key: 'location',
               spherical: true,
-              query: match,
+              query: eligible,
             },
           },
         ]
-      : [{ $match: match }]
+      : [{ $match: eligible }]
 
   /**
    * "Online first" is an *ordering*, not a filter, and no longer a choice.
@@ -501,27 +589,54 @@ export async function discoverProfiles(
      */
     if (query.cursor) pipeline.push({ $skip: skipOffset })
   } else {
+    /*
+     * Measured from the moment page one was served — the pinned online cutoff
+     * plus its own window — so the dormant line holds still across pages for
+     * the reason the online one does, with no new field in the cursor.
+     */
+    const dormantCutoff =
+      rankReplyFirst && onlineCutoff
+        ? new Date(onlineCutoff.getTime() + ONLINE_WINDOW_MS - DISCOVERY_DORMANT_DAYS * DAY_MS)
+        : null
+
     // Small, capped arrays (MAX_LANGUAGES=5, MAX_INTERESTS=10) — cheap to
     // score with $setIntersection per candidate rather than needing a
     // separate scoring pass.
+    const scoreTerms: Document[] = [
+      { $size: { $setIntersection: ['$learning.code', myNativeCodes] } },
+      { $size: { $setIntersection: ['$nativeLanguages.code', myLearningCodes] } },
+      {
+        $multiply: [0.5, { $size: { $setIntersection: ['$interests', viewer.interests] } }],
+      },
+    ]
+    if (rankReplyFirst) {
+      scoreTerms.push({ $multiply: [DISCOVERY_RESPONSIVENESS_WEIGHT, RESPONSIVENESS] })
+    }
+
     pipeline.push(
       {
         $addFields: {
-          score: {
-            $add: [
-              { $size: { $setIntersection: ['$learning.code', myNativeCodes] } },
-              { $size: { $setIntersection: ['$nativeLanguages.code', myLearningCodes] } },
-              {
-                $multiply: [0.5, { $size: { $setIntersection: ['$interests', viewer.interests] } }],
-              },
-            ],
-          },
+          score: { $add: scoreTerms },
+          /*
+           * After online-first and before the score: somebody away for weeks
+           * is unlikely to answer this week, however well they fit. A missing
+           * `lastActiveAt` compares below any date and lands here too.
+           */
+          ...(dormantCutoff
+            ? {
+                dormantBucket: {
+                  $cond: [{ $lt: ['$stats.lastActiveAt', dormantCutoff] }, 1, 0],
+                },
+              }
+            : {}),
         },
       },
       {
-        $sort: onlineCutoff
-          ? { onlineBucket: -1, score: -1, 'stats.lastActiveAt': -1, _id: 1 }
-          : { score: -1, 'stats.lastActiveAt': -1, _id: 1 },
+        $sort: dormantCutoff
+          ? { onlineBucket: -1, dormantBucket: 1, score: -1, 'stats.lastActiveAt': -1, _id: 1 }
+          : onlineCutoff
+            ? { onlineBucket: -1, score: -1, 'stats.lastActiveAt': -1, _id: 1 }
+            : { score: -1, 'stats.lastActiveAt': -1, _id: 1 },
       },
     )
     if (query.cursor) pipeline.push({ $skip: skipOffset })
@@ -536,7 +651,7 @@ export async function discoverProfiles(
   const hasMore = docs.length > query.limit
   const page = hasMore ? docs.slice(0, query.limit) : docs
 
-  const items = page.map((doc) => toDiscoveryItem(doc, now))
+  const items = page.map((doc) => toDiscoveryItem(doc, now, replyFirst))
 
   let nextCursor: string | null = null
   if (hasMore) {
@@ -592,7 +707,10 @@ export async function boostedProfiles(
   query: DiscoveryQuery,
 ): Promise<BoostedProfilesPage> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
-  const { viewer, tier, match } = await resolveDiscoveryScope(db, viewerId, query)
+  const [{ viewer, tier, match }, config] = await Promise.all([
+    resolveDiscoveryScope(db, viewerId, query),
+    getAppConfig(db),
+  ])
   const now = new Date()
 
   /*
@@ -705,11 +823,86 @@ export async function boostedProfiles(
 
   return {
     items: ordered.map((doc) => ({
-      ...toDiscoveryItem(doc, now),
+      ...toDiscoveryItem(doc, now, config.flags.discoveryReplyFirst),
       // Always `pro` on the wire, whichever spelling the row still has. Sent
       // only for apps released before the single plan, which draw a chip
       // from it; `boostedProfileSchema` says why.
       tier: 'pro' satisfies BoostedProfile['tier'],
     })),
   }
+}
+
+/**
+ * "New on LangX": accounts made in the last `DISCOVERY_NEW_DAYS`, newest
+ * first, inside exactly the scope the list uses.
+ *
+ * Its own endpoint rather than a mode of `/discovery/boosted`. Every build in
+ * the stores draws what that one returns under a "Boosted" label, so a
+ * newcomer sent down it would be called a paying member on every old phone.
+ *
+ * **Adults only, at both ends.** A fresh account is the one a stranger is most
+ * likely to write to first, which is what the strip is for and exactly why a
+ * 16- or 17-year-old is never on it; and a minor viewer gets an empty strip,
+ * because a row of brand-new strangers is not what their Discover should lead
+ * with. The exact birthday, not the year arithmetic the age on a card uses —
+ * see `adultBornOnOrBefore`. A missing birth date matches nothing.
+ *
+ * Off with the rest of reply-first: an empty strip, which the app hides. The
+ * cursor, limit and sort of the shared querystring are ignored, as on the
+ * boosted strip — one size, one order. People the viewer already talks to are
+ * left out, as on the default list.
+ *
+ * `joined` (`{ createdAt: -1 }`) serves the range and the sort; nothing was
+ * added to `indexes.ts` for it.
+ */
+export async function newProfiles(
+  db: Db,
+  viewerId: string,
+  query: DiscoveryQuery,
+): Promise<NewProfilesPage> {
+  if (!(await getAppConfig(db)).flags.discoveryReplyFirst) return { items: [] }
+
+  const { viewer, match } = await resolveDiscoveryScope(db, viewerId, query)
+  const now = new Date()
+  // A guest's `1900-01-01` is a placeholder, not an age: nobody has asked
+  // them one yet, so they are not known to be an adult and get the empty strip.
+  if (viewer.guest === true || !isAdult(viewer.birthDate, now)) return { items: [] }
+
+  const partnerIds = await conversationPartnerIds(db, viewerId)
+
+  const docs = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .aggregate<Profile>(newProfilesPipeline(match, partnerIds, now))
+    .toArray()
+
+  return { items: docs.map((doc) => toDiscoveryItem(doc, now, true)) }
+}
+
+/**
+ * The strip's pipeline, exported so the index test explains the one that
+ * runs rather than a copy of it that could drift.
+ */
+export function newProfilesPipeline(
+  match: Document,
+  partnerIds: readonly string[],
+  now: Date,
+): Document[] {
+  return [
+    {
+      $match: {
+        // `$and`, for `boostedProfiles`' reason: the scope carries an `_id`
+        // and, under an age filter, a `birthDate` of its own.
+        $and: [
+          match,
+          {
+            _id: { $nin: [...partnerIds] },
+            createdAt: { $gte: new Date(now.getTime() - DISCOVERY_NEW_DAYS * DAY_MS) },
+            birthDate: { $lte: adultBornOnOrBefore(now) },
+          },
+        ],
+      },
+    },
+    { $sort: { createdAt: -1, _id: 1 } },
+    { $limit: DISCOVERY_NEW_LIMIT },
+  ]
 }

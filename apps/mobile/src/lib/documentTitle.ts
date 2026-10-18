@@ -20,6 +20,7 @@ import { unreadBadge } from './unreadBadge'
  * title per step would announce a change the person did not make.
  */
 const PAGE_TITLES: Readonly<Record<string, MessageKey>> = {
+  '/home': 'tabs.home',
   '/discover': 'tabs.discover',
   '/chats': 'tabs.chats',
   '/echo': 'tabs.echo',

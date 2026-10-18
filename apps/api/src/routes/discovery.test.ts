@@ -5,6 +5,7 @@ import {
   type BoostedProfilesPage,
   type DiscoveryPage,
   type HandleSearchPage,
+  type NewProfilesPage,
 } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
@@ -187,6 +188,25 @@ describe('Faz 3 — discovery aggregation', () => {
   it('rejects an unauthenticated request', async () => {
     const response = await app.inject({ method: 'GET', url: '/discovery' })
     expect(response.statusCode).toBe(401)
+  })
+
+  /*
+   * The strip's ordering and gates are `replyFirst.test.ts`'s; this is only
+   * the route — that it exists, asks for a session, and stays empty while the
+   * switch is off, which is how every deployment starts.
+   */
+  it('serves "New on LangX" at its own route, empty while the switch is off', async () => {
+    expect((await app.inject({ method: 'GET', url: '/discovery/new' })).statusCode).toBe(401)
+
+    // Every candidate in this file joined seconds ago, and none of them may appear.
+    const viewer = await newUser('new-strip-viewer@example.com')
+    const response = await app.inject({
+      method: 'GET',
+      url: '/discovery/new',
+      headers: { cookie: viewer.cookie },
+    })
+    expect(response.statusCode, response.body).toBe(200)
+    expect(response.json<NewProfilesPage>()).toEqual({ items: [] })
   })
 
   it('404s for an authenticated user who has not onboarded yet', async () => {

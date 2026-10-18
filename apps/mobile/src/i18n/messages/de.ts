@@ -35,7 +35,57 @@ export const de: Localized<EnMessages> = {
     notLoaded: 'Nicht geladen',
   },
 
-  tabs: { discover: 'Entdecken', chats: 'Chats', echo: 'Echo', feed: 'Feed', me: 'Ich' },
+  tabs: {
+    discover: 'Entdecken',
+    chats: 'Chats',
+    echo: 'Echo',
+    feed: 'Feed',
+    me: 'Ich',
+    home: 'Start',
+    people: 'Leute',
+    posts: 'Beiträge',
+  },
+
+  home: {
+    greetingMorning: 'Guten Morgen, {name}',
+    greetingAfternoon: 'Guten Tag, {name}',
+    greetingEvening: 'Guten Abend, {name}',
+    subtitle: 'Erst eine Sache, dann der Rest des Tages.',
+    waitingTitle: '{name} wartet auf dich',
+    yourTurn: 'Du bist dran',
+    replyTo: '{name} antworten',
+    sessionTitle: 'Dein Anruf mit {name}',
+    sessionAt: 'Um {time}',
+    sessionOpen: 'Chat öffnen',
+    streakTitle: {
+      one: 'Halte deine Serie von {count} Tag',
+      other: 'Halte deine Serie von {count} Tagen',
+    },
+    streakBody: 'Der heutige Tag zählt noch nicht.',
+    streakEcho: 'Karten wiederholen',
+    streakChats: 'Jemandem schreiben',
+    echoTitle: { one: '{count} Karte bereit', other: '{count} Karten bereit' },
+    echoBody: 'Ein paar Minuten in Echo halten sie frisch.',
+    echoStart: 'Wiederholung starten',
+    todayTitle: 'Drei für heute',
+    todayCount: '{done} von {total} erledigt',
+    todayCorrect: 'Bei einem Satz helfen',
+    todayNotYet: 'Noch nicht',
+    streakDays: { one: '{count} Tag in Folge', other: '{count} Tage in Folge' },
+    streakNext: {
+      one: 'Noch {count} Tag bis zur Belohnung für {day} Tage',
+      other: 'Noch {count} Tage bis zur Belohnung für {day} Tage',
+    },
+    peopleTitle: 'Leute von heute',
+    seeAll: 'Alle ansehen',
+    sayHello: 'Hallo sagen',
+    proTitle: 'Mehr mit Pro',
+    proButton: 'Ansehen, was Pro bietet',
+    inviteTitle: 'Mit Freunden lernen',
+    guestTitle: 'Mach LangX zu deinem',
+    guestBody:
+      'Mit einem Konto kannst du Leuten schreiben, eine Serie halten und Gelerntes in Echo speichern.',
+  },
 
   composer: {
     removeAttachment: 'Anhang entfernen',
@@ -2607,7 +2657,6 @@ export const de: Localized<EnMessages> = {
   paywall: {
     screenTitle: 'Tarife',
     restorePurchases: 'Käufe wiederherstellen',
-    partOf: 'gehört zu',
     unlimitedChats: 'Unbegrenzt neue Chats',
     unlimitedChatsBody: '{count} am Tag im kostenlosen Tarif.',
     welcomePack: 'Ein Willkommenspaket',
@@ -2668,8 +2717,6 @@ export const de: Localized<EnMessages> = {
     yearly: 'Jährlich',
     lifetime: 'Einmalig',
     headline: 'Mit {plan} weiterkommen',
-    headlineBody:
-      'Korrekturen und Antworten bleiben in jedem Plan unbegrenzt. Mit einem Abo fallen die anderen Grenzen weg.',
     savePercent: '{percent}% sparen',
     freeMonths: {
       one: '{count} Monat gratis',
@@ -2696,7 +2743,6 @@ export const de: Localized<EnMessages> = {
     },
     showLess: 'Weniger anzeigen',
     pricePerPeriod: '{price} {period}',
-    billedMonthly: 'Monatlich abgerechnet',
     lifetimeDetail: 'Einmal zahlen, nichts verlängert sich',
     timelineTitle: 'So funktioniert dein Gratis-Test',
     timelineToday: 'Heute: voller Zugang',
@@ -2710,6 +2756,37 @@ export const de: Localized<EnMessages> = {
     subscribe: 'Abonnieren',
     startFreeTrial: 'Gratis-Test starten',
     eula: 'Nutzungsbedingungen (EULA)',
+    planMark: 'LangX {plan}',
+    heroChats: 'Triff so viele Menschen, die {language} sprechen, wie du willst',
+    heroChatsAny: 'Starte so viele neue Chats, wie du willst',
+    heroViewers: 'Sieh, wer dein Profil angesehen hat',
+    heroFilters: 'Finde genau, wen du suchst',
+    heroNearby: 'Finde Leute in deiner Nähe',
+    chatLimitToday: {
+      one: 'Du hast in den letzten 24 Stunden {count} neuen Chat begonnen. Der nächste ist ab {time} möglich.',
+      other:
+        'Du hast in den letzten 24 Stunden {count} neue Chats begonnen. Der nächste ist ab {time} möglich.',
+    },
+    chatLimitTomorrow: {
+      one: 'Du hast in den letzten 24 Stunden {count} neuen Chat begonnen. Der nächste ist morgen ab {time} möglich.',
+      other:
+        'Du hast in den letzten 24 Stunden {count} neue Chats begonnen. Der nächste ist morgen ab {time} möglich.',
+    },
+    viewersWeek: {
+      one: '{count} Person hat in der letzten Woche dein Profil angesehen.',
+      other: '{count} Personen haben in der letzten Woche dein Profil angesehen.',
+    },
+    featurePartOf: '{feature} gehört zu {plan}.',
+    freePromise: 'Antworten und Korrekturen bleiben in jedem Tarif kostenlos.',
+    compareHeading: 'Vergleich',
+    compareNewChats: 'Neue Chats pro Tag',
+    compareTranslations: 'Übersetzungen pro Tag',
+    compareLanguages: 'Sprachen, die du lernst',
+    compareUnlimited: 'Unbegrenzt',
+    compareSoon: 'Bald',
+    compareIncluded: 'Enthalten',
+    compareNotIncluded: 'Nicht enthalten',
+    yearlyBadge: '{perMonth} · {saving}',
   },
 
   proWelcome: {

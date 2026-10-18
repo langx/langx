@@ -2,6 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { Tabs } from 'expo-router'
 import { useEffect } from 'react'
 import { View, type ColorValue } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useEchoSummary, useNotificationUnread, useUnreadTotal } from '../../../src/api/queries'
 import { TourTarget } from '../../../src/components/TourTarget'
 import type { TourTargetId } from '../../../src/lib/tour'
@@ -11,6 +12,7 @@ import { authClient } from '../../../src/lib/auth-client'
 import { shouldGateGuest } from '../../../src/lib/guestGate'
 import { syncIconBadge } from '../../../src/lib/iconBadge'
 import { unreadBadge } from '../../../src/lib/unreadBadge'
+import { useV3Home } from '../../../src/hooks/useV3Home'
 
 /**
  * Feather rather than Lucide, which is what the design specifies: Lucide is a
@@ -119,10 +121,79 @@ const useStyles = makeStyles(({ cardShadow, colors, radius }) => ({
 }))
 
 /**
- * The five tabs, and only the five tabs.
+ * The redesign's bar, behind `flags.v3Home`: Home · Chats · Echo · People ·
+ * Me, drawn from the design canvas's tab bar.
+ *
+ * The tab you are on sits in a grey pill; the rest are the muted glyph alone.
+ * Echo is set apart by its tint, never by size — the pill is always there, in
+ * Echo's blue, focused or not, for the reason the raised disc was (a habit
+ * that only announces itself once you are looking at it announces nothing).
+ * It is not raised because a raised disc cannot be drawn by the platform's
+ * own tab bar, and the native batch is to move this bar onto it.
+ *
+ * The pill is 56 by 32, so the icon slot is widened to hold it rather than
+ * the glyph spilling out of the 31 by 28 the bar lays out by default.
+ */
+const V3_PILL = { width: 56, height: 32 } as const
+
+/** The bar above the bottom inset: the pill, the word and the padding round them. */
+const V3_BAR_HEIGHT = 62
+
+function V3TabIcon({
+  name,
+  focused,
+  tour,
+}: {
+  name: keyof typeof Feather.glyphMap
+  focused: boolean
+  tour?: TourTargetId
+}) {
+  const styles = useV3Styles()
+  const { v3 } = useTheme()
+  const pill = (
+    <View style={[styles.pill, focused && styles.pillOn]}>
+      <Feather name={name} size={v3.icon.xl} color={focused ? v3.colors.fg : v3.colors.muted} />
+    </View>
+  )
+  return tour ? (
+    <TourTarget id={tour} pad={4} radius={v3.radius.pill}>
+      {pill}
+    </TourTarget>
+  ) : (
+    pill
+  )
+}
+
+function V3EchoTabIcon() {
+  const styles = useV3Styles()
+  const { v3 } = useTheme()
+  return (
+    <TourTarget id="tabEcho" pad={4} radius={v3.radius.pill}>
+      <View style={[styles.pill, styles.pillEcho]}>
+        <Feather name="repeat" size={v3.icon.xl} color={v3.colors.echoText} />
+      </View>
+    </TourTarget>
+  )
+}
+
+const useV3Styles = makeStyles(({ v3 }) => ({
+  pill: {
+    alignItems: 'center',
+    borderRadius: v3.radius.pill,
+    height: V3_PILL.height,
+    justifyContent: 'center',
+    width: V3_PILL.width,
+  },
+  pillOn: { backgroundColor: v3.colors.tabOn },
+  pillEcho: { backgroundColor: v3.colors.echoTint },
+}))
+
+/**
+ * The five tabs, and only the five tabs — one of two sets of five.
  *
  * The rule the number is standing in for is the one that matters, and adding
- * Echo does not touch it: nothing that is not a tab may be registered here.
+ * Echo did not touch it, nor does the second set: nothing that is not a tab
+ * may be registered here.
  *
  * Every other signed-in screen used to be registered here too, as a
  * `Tabs.Screen` with `href: null` and a hidden bar — which made them tabs
@@ -131,10 +202,23 @@ const useStyles = makeStyles(({ cardShadow, colors, radius }) => ({
  * gesture to pop and every back control was a `router.replace`. They are stack
  * screens now, in the layout above this one; this navigator is the stack's
  * first entry.
+ *
+ * **Which five is `flags.v3Home`'s** (`useV3Home`, read once per launch).
+ * Off — the default, and every build older than the flag — it is today's
+ * Discover · Chats · Echo · Feed · Me. On, it is the redesign's Home · Chats ·
+ * Echo · People · Me: People is the `discover` route under a new word, with
+ * Discover and Feed as its two segments, so every link and push that names
+ * `/discover` still lands. Each set registers the other's odd one out with
+ * `href: null` — expo-router makes a tab of every file in this folder, and a
+ * hidden one is the only way for a route to exist without a button. They are
+ * still tabs, not stack screens, so the rule above holds: `feed` redirects to
+ * People's Posts segment when hidden, and `home` to Discover.
  */
 export default function TabsLayout() {
-  const { colors } = useTheme()
+  const { colors, v3 } = useTheme()
   const t = useT()
+  const v3Home = useV3Home()
+  const insets = useSafeAreaInsets()
   const { data: session } = authClient.useSession()
   // A guest has no conversations, so asking for a total would be a request
   // that can only ever answer zero.
@@ -171,6 +255,93 @@ export default function TabsLayout() {
   useEffect(() => {
     if (unread.data !== undefined) void syncIconBadge(unread.data)
   }, [unread.data, unread.dataUpdatedAt])
+
+  /*
+   * A badge in the redesign's bar. Spread rather than passed as `undefined`,
+   * like the badges in today's bar below.
+   */
+  const v3Badge = (count: string | undefined, look: 'blue' | 'pill') =>
+    count
+      ? {
+          tabBarBadge: count,
+          tabBarBadgeStyle: {
+            backgroundColor: look === 'blue' ? v3.colors.blue : v3.colors.pill,
+            color: look === 'blue' ? v3.colors.onBlue : v3.colors.pillText,
+            ...v3.type.label,
+          },
+        }
+      : {}
+
+  if (v3Home) {
+    return (
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: v3.colors.fg,
+          tabBarInactiveTintColor: v3.colors.muted,
+          tabBarShowLabel: true,
+          tabBarLabelStyle: v3.type.label,
+          tabBarLabelPosition: 'below-icon',
+          tabBarIconStyle: V3_PILL,
+          /*
+           * Taller than the bar's own 49: the pill is 32 and the word under it
+           * 16, which the default height clips. A custom height replaces the
+           * bar's whole sum, so the bottom inset is added back here.
+           */
+          tabBarStyle: {
+            backgroundColor: v3.colors.bg,
+            borderTopColor: v3.colors.line,
+            height: V3_BAR_HEIGHT + insets.bottom,
+          },
+        }}
+      >
+        <Tabs.Screen
+          name="home"
+          options={{
+            title: t('tabs.home'),
+            tabBarIcon: ({ focused }) => <V3TabIcon name="home" focused={focused} />,
+          }}
+        />
+        <Tabs.Screen
+          name="chats"
+          options={{
+            title: t('tabs.chats'),
+            tabBarIcon: ({ focused }) => (
+              <V3TabIcon name="message-square" focused={focused} tour="tabChats" />
+            ),
+            // Blue, as the drawing has it: in this bar a count is news, and
+            // red is kept for what went wrong.
+            ...v3Badge(badge, 'blue'),
+          }}
+        />
+        <Tabs.Screen
+          name="echo"
+          options={{
+            title: t('tabs.echo'),
+            tabBarIcon: () => <V3EchoTabIcon />,
+            ...v3Badge(echoBadge, 'pill'),
+          }}
+        />
+        <Tabs.Screen
+          name="discover"
+          options={{
+            title: t('tabs.people'),
+            tabBarIcon: ({ focused }) => <V3TabIcon name="users" focused={focused} />,
+          }}
+        />
+        <Tabs.Screen
+          name="me"
+          options={{
+            title: t('tabs.me'),
+            tabBarIcon: ({ focused }) => <V3TabIcon name="user" focused={focused} />,
+            ...v3Badge(meBadge, 'blue'),
+          }}
+        />
+        {/* People's Posts segment now; reached by a link, it redirects there. */}
+        <Tabs.Screen name="feed" options={{ href: null }} />
+      </Tabs>
+    )
+  }
 
   return (
     <Tabs
@@ -287,6 +458,8 @@ export default function TabsLayout() {
             : {}),
         }}
       />
+      {/* The redesign's Home, behind `flags.v3Home`; reached by a link, it redirects to Discover. */}
+      <Tabs.Screen name="home" options={{ href: null }} />
     </Tabs>
   )
 }

@@ -64,7 +64,7 @@ reached a screen of ours.
 | `onboarding_step_completed` | `step`, `guest`, `resumed`                                                                                                                                                                 | One wizard step was finished — what `$screen` cannot say                                         |
 | `onboarding_completed`      | `referred`, `native_languages`, `learning_languages`, `method`, `from_guest`, `seconds_since_install`                                                                                      | The profile is created                                                                           |
 | `message_sent`              | `kind` (text, correction, image, audio, video), `reply`                                                                                                                                    | The server acknowledged a send. Never the body                                                   |
-| `paywall_viewed`            | `feature` (what sent them), `tier` (the viewer's own plan), `source` (onboarding, gate, me, deeplink, first_reply, langx, gift_code), `gift` (over a gift of months), `offers` (see below) | The paywall is first shown — up to a second after it opens — or left before then                 |
+| `paywall_viewed`            | `feature` (what sent them), `tier` (the viewer's plan), `source` (onboarding, gate, me, deeplink, first_reply, langx, gift_code, home), `gift` (over a gift of N months), `offers` (below) | The paywall is first shown — up to a second after it opens — or left before then                 |
 | `paywall_dismissed`         | `source`, `seconds_open`, `exit` (close, back, gesture, other)                                                                                                                             | It was left without a plan gained: the X, "Continue free", back or a swipe. Once                 |
 | `plan_selected`             | `source`, `period` (monthly, yearly, lifetime)                                                                                                                                             | A plan card was picked that was not already the picked one                                       |
 | `benefits_expanded`         | `source`                                                                                                                                                                                   | "And N more" was opened. Opening only                                                            |
@@ -156,7 +156,8 @@ Some of these carry a number that needs a caveat rather than a footnote:
   `exit`, so Android back is missing from them: a view with no dismissal.
 - **`paywall_viewed`** is sent when the page is first shown, not when the route
   opens. The page waits up to a second for the store so that its headline is
-  true, and `offers` is what the store had said by then: `pending` (not yet),
+  true — and, since the v3 paywall, for its title font under the same second —
+  and `offers` is what the store had said by then: `pending` (not yet),
   `none` (answered with nothing to sell), `plain` (Pro is sold with no free week
   on any package — the app cannot tell "no trial offered" from "this account
   has had it", because the store only says so on iOS), `trial`, or `owned` (the
