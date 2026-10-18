@@ -256,6 +256,12 @@ async function chatAudioFor(db: Db, message: Message): Promise<EchoAudio | undef
  * is the correct one: two taps race routinely, and only the index decides for
  * the whole cluster at once. Neither path is an error — Add echo twice is a
  * no-op by design.
+ *
+ * `fillBack` is the one exception to "no-op": a card already there with an
+ * empty back — kept by itself from a correction, which never asks the
+ * provider — gets its back from this tap, because a tap is a person asking.
+ * Still free: the card spent its capture when it was made, and a back is
+ * filled at most once, since a filled one is never empty again.
  */
 async function upsertCard(
   db: Db,
@@ -265,12 +271,24 @@ async function upsertCard(
     Omit<EchoCardDoc, '_id' | 'userId' | 'source' | 'sourceKey' | 'srs' | 'createdAt'>
   >,
   profile: Profile,
+  fillBack?: () => Promise<string>,
 ): Promise<CaptureEchoResult> {
   const cards = db.collection<EchoCardDoc>(COLLECTIONS.echoCards)
   const sourceKey = sourceKeyOf(source)
 
   const existing = await cards.findOne({ userId, sourceKey })
-  if (existing) return { card: toEchoCard(existing), created: false }
+  if (existing) {
+    const back = existing.back === '' && fillBack ? await fillBack() : ''
+    if (back === '') return { card: toEchoCard(existing), created: false }
+    // `back: ''` in the filter, so two taps racing fill it once.
+    const filled = await cards.findOneAndUpdate(
+      { _id: existing._id, userId, back: '' },
+      { $set: { back } },
+      { returnDocument: 'after' },
+    )
+    const card = filled ?? (await cards.findOne({ _id: existing._id, userId })) ?? existing
+    return { card: toEchoCard(card), created: false }
+  }
 
   // After the lookup and before the provider call: a capture that will not
   // write a card must not spend a slot, and a slot must be spent before
@@ -379,6 +397,7 @@ export async function captureFromMessage(
       return { lang, front, back, ...(audio ? { audio } : {}), ...(image ? { image } : {}) }
     },
     me,
+    () => backFor(db, deps, front, target, offered),
   )
 }
 

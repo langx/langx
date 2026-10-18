@@ -79,6 +79,20 @@ export interface Conversation {
   firstMessageAt: Date
   bothSpoke: boolean
   /**
+   * When the other side first wrote back. Three states, and the difference
+   * between the first two is the point:
+   *
+   * - absent — the thread predates the reply counters, or was opened by one
+   *   of our own accounts. Its reply counts for nobody.
+   * - `null` — opened by a person since the counters existed, and counted as
+   *   received; still waiting.
+   * - a date — answered. Set in the same write that claims `bothSpoke`, so
+   *   exactly one reply ever counts.
+   *
+   * See `Profile.stats.openersReceived`.
+   */
+  firstReplyAt?: Date | null
+  /**
    * Messages in this thread, both sides together. Denormalized because the
    * media gate reads it on a path that must not pay for a `countDocuments` —
    * and it costs nothing to keep, since `recordMessage` already issues a
@@ -461,6 +475,10 @@ export async function startConversation(
     firstMessageBy: viewerId,
     firstMessageAt: now,
     bothSpoke: false,
+    // Waiting for a reply that will count — see `firstReplyAt`. Not for a
+    // thread with one of our own accounts: the assistant answering everybody
+    // is not a person being responsive.
+    ...(recipient.official ? {} : { firstReplyAt: null }),
     // One, because this call writes the opening message itself rather than
     // going through `recordMessage`. Set here so no conversation created from
     // now on can have an absent count — which is what lets `messagesInThread`
@@ -503,6 +521,12 @@ export async function startConversation(
     createdAt: now,
   }
   await db.collection<Message>(COLLECTIONS.messages).insertOne(message)
+
+  // After the thread exists, so a refused or raced start counts nothing. The
+  // reply half is in `recordMessage`, on the write that claims `bothSpoke`.
+  if (conversation.firstReplyAt === null) {
+    await profiles.updateOne({ _id: recipient._id }, { $inc: { 'stats.openersReceived': 1 } })
+  }
 
   // This path writes its own message rather than going through
   // `recordMessage`, so it has to pay out itself. `becameMutual` is always
