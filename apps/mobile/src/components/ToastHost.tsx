@@ -85,6 +85,10 @@ export function ToastHost() {
   useEffect(() => {
     if (head?.id === shown?.id) return
     if (!shown || !settled || reduce) {
+      // Also ends a way out cut short here — reduce motion switched on
+      // mid-exit — whose swap timer the cleanup cleared, or the next pill
+      // would be drawn untappable.
+      setLeaving(false)
       setShown(head)
       return
     }
