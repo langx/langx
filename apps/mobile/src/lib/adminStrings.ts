@@ -715,6 +715,89 @@ export const ADMIN = {
     notFound: 'No such code.',
   },
 
+  /**
+   * The design gallery: the tokens the app draws with, the current look's
+   * beside v3's. A developer's page rather than an operator's, so it is only
+   * reachable in a dev build with the debug panel on. Copy that a person
+   * would read — the type ramp's sample lines — is real catalogue copy from
+   * `src/components/gallery/GallerySamples.tsx`; these are the labels round it.
+   */
+  gallery: {
+    entryRow: 'Design gallery',
+    title: 'Design gallery',
+    intro:
+      'Every token the app draws with. It follows the app’s theme, so switch the theme to see the other scheme.',
+    current: 'Current look',
+    v3: 'v3',
+    colors: {
+      title: 'Colours',
+      hint: 'The current look first, then v3’s set on its own ground. v3 keeps yellow and blue the same in both schemes.',
+    },
+    hues: {
+      title: 'Partner hues',
+      hint: 'One per partner, picked from their id, and the same on every screen. Ink on the hue; on a chip, the hue on ink.',
+      sample: 'Aa',
+    },
+    type: {
+      title: 'Type',
+      hint: 'v3’s ramp. Each line is real app copy in the step it would use.',
+      steps: {
+        display: 'Display',
+        title: 'Title',
+        headline: 'Headline',
+        body: 'Body',
+        callout: 'Callout',
+        caption: 'Caption',
+        label: 'Label',
+        button: 'Button',
+        buttonSmall: 'Button, small',
+      },
+      faces: {
+        Nunito_900Black: 'Nunito 900',
+        Nunito_800ExtraBold: 'Nunito 800',
+        system: 'system 400',
+      },
+      /** Size over line height, the way the drawings write it: "44/46". */
+      metrics: (size: number, line: number) => `${size}/${line}`,
+    },
+    radii: { title: 'Corners' },
+    spacing: { title: 'Spacing', hint: 'Keyed by points. 16 is the screen’s side gutter.' },
+    icons: { title: 'Icon sizes', hint: 'The glyph only; the touch target round it is bigger.' },
+    elevation: {
+      title: 'Elevation',
+      hint: 'v3 is flat: a plane, or the scrim in front of it. Nothing has a shadow.',
+      none: 'none',
+      overlay: 'overlay',
+    },
+    motion: {
+      title: 'Motion',
+      hint: 'Tap a preset to play it. Under reduce motion each one is simply at its end.',
+      reduced: 'Reduce motion is on, so nothing below moves.',
+      press: 'Press and hold',
+      pressScale: (scale: number) => `Press scale · ${scale}`,
+      timing: (name: string, ms: number) => `${name} · ${ms} ms`,
+      spring: (name: string) => `spring · ${name}`,
+    },
+    buttons: {
+      title: 'Buttons',
+      hint: 'Flat pills in sentence case. Every target is at least 44pt on iOS and 48dp on Android. Tap the first one to run loading, then success.',
+      variants: 'Variants',
+      sizes: 'Sizes',
+      states: 'States',
+      iconButtons: 'Icon buttons',
+      pressable: 'PressableScale',
+      pressableHint:
+        'Press and hold: the face shrinks and the target does not. Under reduce motion it dims instead.',
+      /** "primary · 56": the variant or size, and the face height in points. */
+      spec: (name: string, face?: number) => (face ? `${name} · ${face}` : name),
+      loading: 'loading',
+      success: 'success',
+      disabled: 'disabled',
+      iconEnd: 'icon at the end',
+      wraps: 'a long label wraps rather than truncating',
+    },
+  },
+
   common: {
     back: 'Back',
     cancel: 'Cancel',

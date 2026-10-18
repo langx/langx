@@ -6,14 +6,15 @@ import { Button } from './ui/Button'
 import { useT } from '../i18n'
 import { track } from '../lib/analytics'
 import { errorCodeOf } from '../lib/errors'
-import { translationQuotaText } from '../lib/limitCopy'
+import { isTranslationFairUse, translationQuotaText } from '../lib/limitCopy'
 import { makeStyles, useTheme } from '../lib/theme'
 import { wordCardClientId } from '../lib/wordLookup'
 
 type Translation =
   | { status: 'loading' }
   | { status: 'done'; text: string }
-  | { status: 'quota' }
+  /** `fairUse`: the ceiling every plan shares, rather than the free allowance. */
+  | { status: 'quota'; fairUse: boolean }
   | { status: 'failed' }
 
 type Keeping = 'idle' | 'saving' | 'added' | 'already' | 'limit' | 'failed'
@@ -44,7 +45,7 @@ export function WordLookup({
   targetLang: string
   /** What the card is filed under; `undefined` leaves the button out. */
   cardLang: LanguageCode | undefined
-  /** Absent for a Pro account at its own ceiling: nothing to sell it. */
+  /** Absent for a Pro account: nothing to sell it. */
   onSeePlans: (() => void) | undefined
 }) {
   const styles = useStyles()
@@ -65,7 +66,14 @@ export function WordLookup({
       },
       (error: unknown) => {
         if (!live) return
-        setTranslation({ status: errorCodeOf(error) === 'QUOTA_EXCEEDED' ? 'quota' : 'failed' })
+        if (errorCodeOf(error) !== 'QUOTA_EXCEEDED') {
+          setTranslation({ status: 'failed' })
+          return
+        }
+        const fairUse = isTranslationFairUse(error)
+        // Counted as the chat's own Translate counts it.
+        if (fairUse) track({ name: 'fair_use_limit_hit', properties: { kind: 'translations' } })
+        setTranslation({ status: 'quota', fairUse })
       },
     )
     return () => {
@@ -110,8 +118,9 @@ export function WordLookup({
         </View>
       ) : translation.status === 'quota' ? (
         <>
-          <Text style={styles.muted}>{translationQuotaText(t)}</Text>
-          {onSeePlans ? (
+          <Text style={styles.muted}>{translationQuotaText(t, translation.fairUse)}</Text>
+          {/* Nothing above the fair-use ceiling to sell, whoever meets it. */}
+          {onSeePlans && !translation.fairUse ? (
             <Button label={t('chat.wordSeePlans')} variant="secondary" onPress={onSeePlans} />
           ) : null}
         </>

@@ -1222,9 +1222,11 @@ export const tr: Localized<EnMessages> = {
     photosPermission: 'LangX’in fotoğraf kitaplığını açmak için izne ihtiyacı var.',
     microphoneTitle: 'Mikrofon',
     translationUnavailable: 'Çeviri kullanılamıyor',
-    translationQuota: {
-      one: 'Bugünkü çeviri sınırına ulaştın. Pro ile günde {count} çeviri yapabilirsin.',
-      other: 'Bugünkü çeviri sınırına ulaştın. Pro ile günde {count} çeviri yapabilirsin.',
+    translationQuota: 'Bugünkü çeviri sınırına ulaştın. Pro ile sınırsız çeviri yapabilirsin.',
+    translationFairUse: {
+      one: 'Çeviri için adil kullanım sınırına ulaştın. Bu sınır otomatik kullanımı engellemek için var ve {count} saat içinde sıfırlanıyor.',
+      other:
+        'Çeviri için adil kullanım sınırına ulaştın. Bu sınır otomatik kullanımı engellemek için var ve {count} saat içinde sıfırlanıyor.',
     },
     translationFailed: 'Bu mesaj şu anda çevrilemedi.',
     wordTranslationFailed: 'Bu kelime şu anda çevrilemedi.',
@@ -2537,8 +2539,8 @@ export const tr: Localized<EnMessages> = {
     deckExportBody:
       'Bir sohbetin kaydedilmiş ifadelerini ya da kaydettiğin bütün kartları dosya olarak dışa aktar. Anki’de açılır.',
     advancedFiltersBody: 'Belirli bir cinsiyete ve şehre göre ara.',
-    translationQuota: 'İhtiyacın kadar çeviri',
-    translationQuotaBody: 'Günde {count} çeviri — bir sohbetin kullandığından çok daha fazla.',
+    translationQuota: 'Sınırsız çeviri',
+    translationQuotaBody: 'Ücretsiz planda günde {count} tane.',
     learningLanguages: 'Aynı anda daha çok dil',
     learningLanguagesBody: 'Bir yerine {count} dili yan yana öğren.',
     whoViewed: 'Sana kim baktı',

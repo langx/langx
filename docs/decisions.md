@@ -681,6 +681,9 @@ white on them, dark mode's are pastel and want black.
 
 ## Client — the palette is the website's, and yellow does not move
 
+> **Amended 16 October 2026 — see _Client — the app's palette may leave the website's, and yellow
+> still does not move_ below.**
+
 The app's colours are `website/src/lib/scss/_themes.scss`, not a second set
 invented for mobile. A plan limit rendered in the app and the same limit
 rendered on langx.io are the same claim, and they should not be two different
@@ -698,6 +701,137 @@ Scrims are the other deliberate constant. A scrim's job is to put distance
 between a sheet and what is behind it, and tinting one with the ground would
 make it do least of that in exactly the scheme where sheet and ground are
 already closest.
+
+## Client — the app's palette may leave the website's, and yellow still does not move
+
+**16 October 2026, Behic's answer to D3.** The app's colours no longer have to
+be `_themes.scss`. The redesign (v3, the entry below) draws flat colour blocks,
+a near-black dark ground and a colour for every exchange partner, and the
+website has no counterpart for any of it. Holding the app to the site's
+palette would have meant either freezing the app or redesigning the site in
+step with every screen. The argument above was about one claim rendered in
+two places, and that part survives untouched: a plan limit is the same number
+in the app and on langx.io because both read it from `packages/shared` and the
+copies `docs/repo-map.md` lists — colour was never what made it the same
+claim.
+
+**What does not move.** `primary`, the committing yellow, and the text on it
+stay identical in light and dark, and yellow still appears once per screen, on
+the action that commits. Those are the two anchors Behic kept. v3 holds its
+blue to the same rule: `theme.v3.colors.blue` is the same value in both
+schemes, so the main action that does not commit does not change colour after
+dark either. The price is that the blue is a fill and not a text colour — as
+text on the dark ground it falls under 4.5:1 — so text that should read as
+blue uses `echoText`. `src/lib/theme/contrast.test.ts` measures every pair v3
+uses, in both schemes, and asserts the anchors.
+
+**Scrims keep the reasoning and change the value.** v3's scrim is near-black
+at 55% in light and black at 70% in dark: stronger in exactly the scheme where
+sheet and ground are closest, which is what the paragraph above asked of a
+scrim. The current look's constant scrim is unchanged.
+
+**The website and branding follow at the release.** The current look stays
+the website's palette until the app ships v3 as 3.0, since the site describes
+the app people have. `branding/BRAND.md` records v3's tokens now, marked as
+shipping with 3.0; `website/DESIGN.md` and `website/src/lib/scss/_themes.scss`
+change in the 3.0 release round.
+
+## The redesign is v3: A's structure, B's look
+
+**16 October 2026.** Behic named the redesign "v3". It ships as app version
+3.0 once everything is ready, and the version bump waits for that release
+round. Its brief calls it "v4", and entries above this one say "the v3 look"
+or "the v3 design" for the drawings the 2.x app was built from; from here on
+that is "the current look", and "v3" is the redesign. The older entries are
+not rewritten.
+
+**D3, the design language.** (a) The app's palette may leave the website's —
+yes (the entry above). (b) `primary` and its text stay identical in both
+schemes — kept. (c) Yellow stays once per screen — kept. (d) Flat, hairlines,
+no cards and one blue — all of them may go.
+
+**The direction.** Three product concepts were drawn on 16 October: A,
+"Today", a Home tab with one next step; B, "Partners", the app organised round
+exchange partners with a streak per pair; C, "Talk", three tabs and one
+Talk-now button. Behic chose **A's structure with B's look**, and two ideas
+from C:
+
+- **Structure, from A.** Five tabs: Home · Chats · Echo · People · Me. Every
+  launch lands on Home, with one yellow next step and today's three rings.
+  Discover and Feed become one People tab (People | Posts).
+- **Look, from B.** Flat colour blocks and no shadows; big Nunito type; flat
+  pill buttons; ink on colour; a hue per partner, six in all; a streak per
+  pair ("9 days together", and +15 for both on a day both wrote); a dark
+  theme drawn as carefully as the light one.
+- **From C.** A correction someone receives is saved to Echo by itself, with
+  Undo. Home shows a second, smaller "Talk now" card when someone who fits is
+  online.
+
+The whole app is drawn in this direction on a private design canvas shared
+with Behic, and v3's token values in `src/lib/theme/tokens.ts` are the
+canvas's own.
+
+**What it reverses, and when.** The direction overturns several recorded
+rules: Discover as the first signed-in screen and today's five tabs, Me
+following the public profile's order, capturing an Echo card only by a
+deliberate gesture, the streak as one person's alone, and the current look
+itself. None of them is amended here. Each gets its own dated entry directly
+after the one it reverses, in the pull request that makes the app stop
+following it — a rule is reversed when the app changes, not when a direction
+is chosen, and amendments that land beside their originals keep parallel pull
+requests off each other's lines.
+
+**How it is built: additive first.** v3's tokens sit beside the current
+look's as `theme.v3`, new components beside the current ones, and a screen
+changes look only in the pull request that migrates it. The first of those
+pull requests adds the tokens, the motion module (`src/lib/theme/motion.ts`),
+a design gallery in the operator panel for dev builds, and a lint rule that
+refuses a literal `fontSize` in a screen or component outside a shrinking
+allowlist.
+
+## Buttons are flat pills in sentence case, and still press on `Animated`
+
+**17 October 2026.** The first piece of the current look that v3 replaces,
+and the one D4 swaps in place: every screen at once, in one pull request.
+The current look's button was a face standing on a hard 4px shadow that the
+press collapsed, with an upper-case, letter-spaced label. Both rules lived in
+`ui/Button.tsx`'s comments rather than here, and both go.
+
+- **Flat.** v3 draws no shadows (the entry above). The yellow still reads as
+  the thing to press because it is the only yellow on the screen, not because
+  it is the only thing standing up. The press is a 3% shrink on the motion
+  module's ease-out, and under reduce motion a dim instead.
+- **Sentence case, as written.** An upper-case transform is never done in
+  the app's language: iOS upper-cases with no locale at all, so Turkish labels
+  lost the dotted capital İ ("GIRIŞ YAP"), and Android upper-cases in the
+  phone's locale, so an English label on a Turkish phone gained one ("SİGN
+  İN"). Labels are now drawn exactly as the catalogue writes them.
+- **Targets.** Faces of 56, 52 and 44pt, the small one 48dp on Android. The
+  56pt face sits in a 60pt touch band — the footprint the old face and its
+  drop took, so no stack of buttons moved. A minimum height, not a height, and
+  no line limit: at the largest text sizes a long label wraps into a taller
+  pill instead of truncating.
+- **Variants.** `primary` is still the once-per-screen yellow. `blue` is new,
+  for the main action that does not commit. `secondary` becomes the outline in
+  the text colour: the old blue label is the blue the palette entry above
+  keeps off text on the dark ground. `neutral` now draws the same and stays
+  only as a name, so older call sites and open branches compile. `ink` is v3's
+  pill. `danger` becomes a red outline with a red label — never a fill, never
+  yellow — in v3's darker red, because the current look's red falls under
+  4.5:1 as text on white.
+- **Still `Animated`.** The welcome screen and every onboarding step render
+  `Button`, and the launch path stays on React Native's `Animated` (_The row
+  swipe runs on the UI thread, and Reanimated is the price_, and §7 of
+  `docs/plans/onboarding-funnel-scenarios.md`). To press by the same duration, curve and scale as a Reanimated screen
+  without evaluating Reanimated, the motion module's numbers moved to
+  `src/lib/theme/motionValues.ts`, which imports nothing, and `motion.ts`
+  re-exports them. The `collapsable={false}` wrappers stay; `PressableScale`
+  says which Fabric crash they prevent.
+- **`IconButton`** for every control that is only a glyph: the platform's
+  minimum target however small the glyph, and a screen-reader name the type
+  will not let it go without. Chats' star and Me's bell and menu moved onto it
+  here; the back arrows in `ScreenHeader` and `StepProgress` change the height
+  of every header, and move with the screens that own them.
 
 ## Client — one socket, opened in the tab layout
 
@@ -2274,6 +2408,8 @@ the purge only began sweeping `posts/{userId}/` on 27 September 2026.)_
 > Polyglot were merged into one plan on 28 September 2026; what follows is the
 > record of the two-plan design.
 
+> **Amended 17 October 2026 — see _Pro's translations are unlimited, under a fair-use ceiling_ below.**
+
 `pro` and `pro_plus` are what the code calls them and what RevenueCat calls
 them; **Fluent** and **Polyglot** are what a person sees. The two are separate
 on purpose — a RevenueCat entitlement identifier cannot be renamed after it is
@@ -2339,6 +2475,59 @@ None of this introduced a `tier > 'free'` comparison. `hasFeature`,
 `tierUnlocking` and `effectivePlanTier` read the real table and were not
 touched — which is the property that let two capabilities change tier without a
 single call site moving with them.
+
+## Pro's translations are unlimited, under a fair-use ceiling
+
+**17 October 2026.** This reverses _Translation has a number on every tier_ in
+the entry above — the bullet that took "unlimited translation" out of the plan
+and gave the paid tiers a daily number instead, which Pro inherited as
+Polyglot's 1,000 (_One plan: Pro_). Behic's decision of 16 October 2026: Pro's
+translations are unlimited. The free plan keeps its 20 a day.
+
+The reason the number existed has not gone away. Google bills per character,
+and the bullet refused to sell a word that would have to be quietly
+rate-limited the first time somebody scripted it. So the word now stands on a
+ceiling that is said out loud:
+
+- **`translationsPer24h` is `null` on Pro**, the way `initiationsPer24h` is.
+  Nothing writes Pro's daily bucket any more, `/me/quota` reports it
+  unlimited, and no Pro account is refused for it — including one that spent a
+  whole day of the old allowance just before the deploy.
+- **`translationFairUsePer24h` is the ceiling**: 1,000 misses per rolling 24
+  hours, the same on every row, like `mediaPer24h` and `echoCapturesPerDay`.
+  `rules.test.ts` pins the sameness and that it sits above the free allowance,
+  so only an unlimited account ever reaches it. It has its own bucket,
+  `quota.translationFairUse`, because Pro's daily one writes nothing; a cache
+  hit costs neither. The number is Pro's old daily one on purpose: the most a
+  scripted account can bill in a day does not move, and a person would have to
+  translate a message every half-minute for eight hours to meet it. Changing
+  it is one number in `limits.ts`.
+- **Its refusal is fair use, never a sale.** The server marks it
+  `limit: 'translationFairUsePer24h'` beside `QUOTA_EXCEEDED`, as the post cap
+  is marked, and the app answers with a plain alert that says "fair use" and
+  when it resets — within the rolling window, quoted in hours from
+  `QUOTA_WINDOW_MS` — and never mentions buying or opens the paywall
+  (`limitCopy.ts`). The free allowance's refusal carries no mark
+  and still leads a free account to the plans. Refusals of both kinds land in
+  `quotaRefusalKinds`, so the operator panel shows whether the ceiling ever
+  bites.
+- **The copy says "unlimited translations"**: the chat refusal, the paywall
+  row — whose body now names the free plan's allowance, as the chat row names
+  its own — Settings → Plan, the store listings, langx.io and the GitBook
+  docs. The Terms (§5) name the ceiling, as they name the media one.
+
+**Behic's decision of 17 October 2026, on the ceiling:** it stays at 1,000
+translations per rolling 24 hours; the app keeps saying "unlimited
+translations" and quotes no number; and the number is disclosed in the Terms
+(§5), which say plainly that Pro has unlimited translations subject to a
+fair-use limit of 1,000 per 24 hours to prevent automated abuse, that reaching
+it shows a notice, and that it resets after 24 hours. Raising or lowering it is
+still the one number in `limits.ts` — and the Terms with it.
+
+A build whose bundled copy predates this keeps quoting a number until its OTA
+arrives; the server stops refusing Pro for the allowance at once, and such a
+build meets the ceiling at the count its old Pro limit stood at, worded as it
+worded that limit.
 
 ## Known risks
 

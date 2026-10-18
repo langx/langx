@@ -133,8 +133,9 @@ export default function EchoScreen() {
     if (due > 0) {
       return (
         <>
-          {/* Two views for the hard shadow, as `Button` and the gift tile draw
-              it: the face drops onto the shade on press. */}
+          {/* Two views for the hard shadow, as the gift tile draws it (and the
+              current look's `Button` did): the face drops onto the shade on
+              press. */}
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('echo.due', { count: due })}

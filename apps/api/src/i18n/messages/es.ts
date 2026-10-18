@@ -581,7 +581,7 @@ export const es: Localized<ServerMessages> = {
       other: '🎟️ El código {code} funcionó: {count} meses de LangX Pro son tuyos.',
     },
     perks:
-      'Ahora puedes:\n💬 empezar conversaciones nuevas sin límite\n🌍 traducir mucho más cada día\n👀 ver quién visitó tu perfil y navegar sin que te vean\n✨ destacar en Descubrir y filtrar por género y ciudad',
+      'Ahora puedes:\n💬 empezar conversaciones nuevas sin límite\n🌍 traducir sin límite\n👀 ver quién visitó tu perfil y navegar sin que te vean\n✨ destacar en Descubrir y filtrar por género y ciudad',
     andMore: '…y más.',
     until: 'Disfrútalo hasta el {date}. 💛',
     untilPaying:

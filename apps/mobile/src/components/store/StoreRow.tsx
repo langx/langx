@@ -149,8 +149,8 @@ export function StoreRow({
    * small pressables styled by hand because they are *states* of the row, not
    * actions the row offers: Wearing and Locked do nothing when pressed, and
    * Wear swaps a choice rather than committing anything. Giving them the
-   * button's hard shadow would put three things that look like purchases on a
-   * row that sells one.
+   * button's pill would put three things that look like purchases on a row
+   * that sells one.
    */
   const cta = offer.owned ? (
     <Pressable

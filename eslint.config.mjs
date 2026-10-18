@@ -1,6 +1,17 @@
 // @ts-check
 import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
+import fontSizeAllowlist from './eslint.font-size-allowlist.mjs'
+
+const LITERAL_FONT_SIZE =
+  'A literal fontSize. Take the size from the type ramp (theme.v3.type) so the ramp stays the one place a size is decided — see eslint.font-size-allowlist.mjs.'
+
+/**
+ * A path as a glob that matches only itself: `[id].tsx` is otherwise a
+ * character class. Every glob metacharacter is escaped, the backslash first
+ * among them — an unescaped one would swallow the escape added after it.
+ */
+const literalPath = (path) => path.replace(/[\\[\]()*?{}!+@|]/g, '\\$&')
 
 export default tseslint.config(
   {
@@ -143,6 +154,51 @@ export default tseslint.config(
                 'The operator panel is English by design. Its words are in src/lib/adminStrings.ts.',
             },
           ],
+        },
+      ],
+    },
+  },
+  {
+    /*
+     * No literal `fontSize` in a screen or a component. A size that is typed
+     * where it is used is a size nobody can change in one place, and the v3
+     * ramp exists so that one change reaches every screen — including the
+     * 200%-text pass, which only works if every line height came with its size.
+     *
+     * Every file that had one when the rule arrived is listed in
+     * `eslint.font-size-allowlist.mjs`. The list only shrinks: a file leaves it
+     * in the PR that moves it onto the ramp, and nothing is added to it — a
+     * new file starts on the ramp.
+     *
+     * `no-restricted-syntax` is set nowhere else. A later block that sets it
+     * for an overlapping glob replaces this one rather than adding to it (the
+     * same trap the admin block's `no-restricted-imports` documents), so add a
+     * selector here instead.
+     */
+    files: [
+      'apps/mobile/app/**/*.ts',
+      'apps/mobile/app/**/*.tsx',
+      'apps/mobile/src/components/**/*.ts',
+      'apps/mobile/src/components/**/*.tsx',
+    ],
+    ignores: fontSizeAllowlist.map(literalPath),
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'Property[key.name="fontSize"][value.type="Literal"]',
+          message: LITERAL_FONT_SIZE,
+        },
+        {
+          // `compact ? 13 : 15`, and `13 * scale` — still a size typed in place.
+          selector:
+            'Property[key.name="fontSize"] > ConditionalExpression > Literal.consequent, Property[key.name="fontSize"] > ConditionalExpression > Literal.alternate, Property[key.name="fontSize"] > BinaryExpression > Literal',
+          message: LITERAL_FONT_SIZE,
+        },
+        {
+          selector:
+            'JSXAttribute[name.name="fontSize"] > Literal, JSXAttribute[name.name="fontSize"] > JSXExpressionContainer > Literal',
+          message: LITERAL_FONT_SIZE,
         },
       ],
     },

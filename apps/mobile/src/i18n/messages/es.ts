@@ -1232,10 +1232,12 @@ export const es: Localized<EnMessages> = {
     photosPermission: 'LangX necesita permiso para abrir tu galería.',
     microphoneTitle: 'Micrófono',
     translationUnavailable: 'Traducción no disponible',
-    translationQuota: {
-      one: 'Has llegado al límite de traducciones de hoy. Pro permite {count} traducción al día.',
+    translationQuota:
+      'Has llegado al límite de traducciones de hoy. Con Pro, las traducciones son ilimitadas.',
+    translationFairUse: {
+      one: 'Has alcanzado el límite de uso justo de traducciones, que existe para frenar el uso automatizado. Se restablece en un plazo de {count} hora.',
       other:
-        'Has llegado al límite de traducciones de hoy. Pro permite {count} traducciones al día.',
+        'Has alcanzado el límite de uso justo de traducciones, que existe para frenar el uso automatizado. Se restablece en un plazo de {count} horas.',
     },
     translationFailed: 'No se pudo traducir ese mensaje ahora mismo.',
     wordTranslationFailed: 'No se pudo traducir esa palabra ahora mismo.',
@@ -2551,8 +2553,8 @@ export const es: Localized<EnMessages> = {
     deckExportBody:
       'Exporta las expresiones guardadas de una conversación, o todas las que has guardado, como archivo. Se abre en Anki.',
     advancedFiltersBody: 'Busca por un género concreto y por ciudad.',
-    translationQuota: 'Traduce lo que necesites',
-    translationQuotaBody: '{count} traducciones al día, mucho más de lo que usa una conversación.',
+    translationQuota: 'Traducciones ilimitadas',
+    translationQuotaBody: '{count} al día en el plan gratuito.',
     learningLanguages: 'Más idiomas a la vez',
     learningLanguagesBody: 'Aprende {count} idiomas a la vez, no uno.',
     whoViewed: 'Quién te ha visto',

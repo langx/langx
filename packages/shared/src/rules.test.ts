@@ -426,20 +426,36 @@ describe('language allowances', () => {
   })
 })
 
-describe('translation is never sold as unlimited', () => {
-  /**
-   * The one quota with a real per-request cost — Google bills per character —
-   * so `null` here would be a promise made against somebody else's meter. This
-   * pins the *shape*, not the numbers, so nobody can quietly put the word back.
-   */
-  it('is a finite number on every tier', () => {
-    for (const tier of PLAN_TIERS) {
-      expect(typeof PLAN_LIMITS[tier].translationsPer24h, tier).toBe('number')
-    }
+describe('translation is unlimited on Pro, under a fair-use ceiling', () => {
+  it('gives the free plan a daily allowance and Pro none', () => {
+    expect(quotaLimit('free', 'translations')).toBeGreaterThan(0)
+    expect(quotaLimit('pro', 'translations')).toBeNull()
   })
 
-  it('rises with the tier', () => {
-    expect(PLAN_LIMITS.pro.translationsPer24h).toBeGreaterThan(PLAN_LIMITS.free.translationsPer24h)
+  /**
+   * The one quota with a real per-request cost — Google bills per character —
+   * so "unlimited" stands on a ceiling against scripts. The same number on
+   * every row is what keeps it a ceiling: the day Pro's is larger it becomes
+   * something to sell, and its refusal is a plain alert that offers nothing.
+   */
+  it('charges every tier the same finite fair-use ceiling', () => {
+    for (const tier of PLAN_TIERS) {
+      expect(PLAN_LIMITS[tier].translationFairUsePer24h, tier).toBe(
+        PLAN_LIMITS.free.translationFairUsePer24h,
+      )
+    }
+    expect(PLAN_LIMITS.free.translationFairUsePer24h).toBeGreaterThan(0)
+  })
+
+  /**
+   * Below the allowance, a free account would meet the fair-use alert where
+   * it should meet the paywall — and the server spends the allowance first
+   * and does not give it back when the ceiling refuses.
+   */
+  it('sits above the free allowance, so only an unlimited account reaches it', () => {
+    expect(PLAN_LIMITS.free.translationFairUsePer24h).toBeGreaterThan(
+      PLAN_LIMITS.free.translationsPer24h ?? Infinity,
+    )
   })
 })
 

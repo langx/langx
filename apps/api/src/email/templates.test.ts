@@ -152,7 +152,8 @@ describe('promotionEmail: limitReached', () => {
     // Both halves of the sentence, checked against the table it describes.
     expect(PLAN_LIMITS.pro.initiationsPer24h).toBeNull()
     expect(PLAN_LIMITS.free.initiationsPer24h).not.toBeNull()
-    expect(PLAN_LIMITS.pro.translationsPer24h).toBeGreaterThan(PLAN_LIMITS.free.translationsPer24h)
+    expect(PLAN_LIMITS.pro.translationsPer24h).toBeNull()
+    expect(PLAN_LIMITS.free.translationsPer24h).not.toBeNull()
     expect(translator('en')('email.promo.limitReachedBody')).toContain(
       'more conversations and more translations',
     )
