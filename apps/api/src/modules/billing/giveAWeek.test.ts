@@ -215,13 +215,15 @@ describe('give a week, get a week', () => {
 
     /** Unset reads as off: a deployment whose stored flags predate the switch. */
     it('is off when the stored config has never heard of it', async () => {
-      await db.collection(COLLECTIONS.appConfig).insertOne({
-        _id: 'current',
-        maintenance: DEFAULT_APP_CONFIG.maintenance,
-        minVersion: DEFAULT_APP_CONFIG.minVersion,
-        flags: { translationEnabled: true, discoveryEnabled: true, signupsEnabled: true },
-        updatedAt: now,
-      })
+      await db
+        .collection<{ _id: string; [field: string]: unknown }>(COLLECTIONS.appConfig)
+        .insertOne({
+          _id: 'current',
+          maintenance: DEFAULT_APP_CONFIG.maintenance,
+          minVersion: DEFAULT_APP_CONFIG.minVersion,
+          flags: { translationEnabled: true, discoveryEnabled: true, signupsEnabled: true },
+          updatedAt: now,
+        })
       invalidateAppConfigCache()
       const referrer = await person()
       const inviteeId = await readyInvitee(referrer._id)
