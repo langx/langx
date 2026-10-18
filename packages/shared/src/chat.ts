@@ -281,6 +281,16 @@ export type SendMeetingInput = z.infer<typeof sendMeetingSchema>
  */
 export const UPCOMING_MEETING_LOOKAHEAD_HOURS = 48
 
+/**
+ * How close an agreed call has to be before Home makes it the next step.
+ *
+ * An hour: near enough that opening the thread now is the thing to do, far
+ * enough that somebody who opens the app once an evening still sees the call
+ * before it starts rather than after. Further out it is only a card in the
+ * thread, as it always was.
+ */
+export const MEETING_SOON_MINUTES = 60
+
 /** One agreed call, as the person in it sees it. */
 export const upcomingMeetingSchema = z.object({
   conversationId: z.string(),

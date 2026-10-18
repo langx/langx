@@ -738,6 +738,8 @@ change in the 3.0 release round.
 
 ## The redesign is v3: A's structure, B's look
 
+> **Amended 18 October 2026 — see _Home leads the bar, and People holds Discover and the Feed — behind a flag_ below.**
+
 **16 October 2026.** Behic named the redesign "v3". It ships as app version
 3.0 once everything is ready, and the version bump waits for that release
 round. Its brief calls it "v4", and entries above this one say "the v3 look"
@@ -788,6 +790,63 @@ pull requests adds the tokens, the motion module (`src/lib/theme/motion.ts`),
 a design gallery in the operator panel for dev builds, and a lint rule that
 refuses a literal `fontSize` in a screen or component outside a shrinking
 allowlist.
+
+## Home leads the bar, and People holds Discover and the Feed — behind a flag
+
+**18 October 2026.** The first restructured surface (D4, D5, move S1), and the
+first change to the app's structure rather than its look. Two rules go, and
+neither had an entry of its own — they lived in `app/index.tsx`, which sent
+every signed-in launch to Discover, and in the tab layout's "the five tabs,
+and only the five tabs", which were Discover · Chats · Echo · Feed · Me. The
+entry above named both as rules the direction overturns, so this one sits
+beside it. **None of it takes effect until `flags.v3Home` is on**; with it off
+the app is exactly what it was.
+
+With the flag on:
+
+- **Home is the first tab, and a signed-in launch lands on it.** It leads with
+  one next step, chosen by the pure, tested `planHome` (`src/lib/homePlan.ts`)
+  in a fixed order: a thread waiting on you, an agreed call within
+  `MEETING_SOON_MINUTES`, today's streak not yet earned (by `streakSavable`,
+  so a run already beyond saving sends nobody anywhere), Echo cards due, a
+  hello to the first of today's people. That step owns the screen's one
+  yellow button. Under it: today's three goals, the streak with its next
+  reward read from `TOKEN_RULES`, the ready hourly gift, two of today's people
+  with a big Say hello each, the Pro card for a free account (paywall source
+  `home`, yellow only when there is no next step — D6a) and the invite. Every
+  block is built from a query another screen already makes, and every block
+  with nothing to do is not drawn. A guest gets the account on the yellow and
+  today's people with gated hellos (rule 9).
+- **The bar is Home · Chats · Echo · People · Me.** Echo is centred and set
+  apart by a tint that is always on, never by size: the raised disc cannot be
+  drawn by the platform's own tab bar, which the native batch moves to.
+- **People is the `discover` route under a new word**, with Discover and the
+  Feed as its two segments (People | Posts, `?segment=posts`). The route keeps
+  its name so every link, email and push that says `/discover` still lands;
+  `/feed` redirects to the Posts segment. The tab layout's rule stands —
+  nothing that is not a tab is registered there — with two sets of five, each
+  registering the other's odd one out without a button, so `/home` with the
+  flag off goes to Discover.
+
+**Why a flag, and why it is read once.** D4 puts restructured surfaces behind
+a staged-rollout switch so nobody sees half of each. `flags.v3Home` is an
+`appConfig` flag that starts off, like `captchaRequired`, and is turned on
+with `scripts/maintenance.ts flag v3Home true`. The client latches the first
+answer of each launch (`latchV3Home`): a bar that rearranged itself the next
+time somebody came back from another app would be worse than either bar. So
+that the landing and the bar agree from the first frame, the launch splash
+waits for one attempt of `/app-config`, which runs beside the profile request
+it already waits for; a failed or offline attempt is the flag off, and so is
+one still out after 1.5 seconds (`V3_HOME_WAIT_MS`), so a slow network costs a
+returning person at most that much on the splash. A build older than the flag
+never reads it, and an API older than the client sends no flag, which reads as
+off.
+
+**Not yet.** The end of onboarding still lands on People, where the first-run
+tour plays; under the flag the tour's Feed step finds no Feed tab and is
+skipped, as any step with nothing to point at is. The streak row draws a
+plain disc where `StreakFlame` could go. The screens behind the tabs keep the
+current look, and the web tab title for `/discover` still says Discover.
 
 ## Buttons are flat pills in sentence case, and still press on `Animated`
 
@@ -6029,6 +6088,8 @@ about each other.
 
 ## The Me tab is the public profile, plus what only its owner can use
 
+> **Amended 18 October 2026 — see _Home holds the day; Me goes back to being the profile — behind a flag_ below.**
+
 **22 September 2026.** The owner's tab had grown into its own arrangement: an
 80px avatar where every other profile draws 96, the photos under the upgrade
 card at the very bottom, badges as a bare count, no interests at all, and a
@@ -6061,6 +6122,22 @@ name says who does not see it; the week's chart gets the same mark when "Show
 my week chart" is off. Tapping either opens the privacy settings. The rule is
 that the owner always sees their own data and is told which of it is theirs
 alone.
+
+## Home holds the day; Me goes back to being the profile — behind a flag
+
+**18 October 2026.** The entry above made the Me tab the public profile plus
+the rows only its owner can use, and the owner's day — the streak, the next
+badge, the Pro card — rode along on it because there was nowhere else to put
+it. With `flags.v3Home` on there is: Home holds the day (the entry _Home leads the bar, and People holds Discover and the Feed — behind a flag_),
+and Me's job narrows back to the profile and the owner's rows, as move S1 and
+Phase 4 have it.
+
+This pull request moves nothing off Me. Under the flag, the streak, the next
+step and the Pro card appear on Home **as well as** on Me, and Me is unchanged
+in both bars — taking a block off Me is a change somebody without the flag
+would see, so it waits for the Me pull request, which takes off what Home now
+shows and keeps the bell, the wallet, the viewers, follows and preview. The
+rules about what the owner sees of their own profile do not change.
 
 ## A number that has not arrived is a skeleton, not a zero
 
