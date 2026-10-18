@@ -3332,6 +3332,7 @@ export function ChatScreen({
               }
               onSend={() => void send()}
               topicSeed={offerTopics ? conversationId : undefined}
+              topicInterests={partner?.interests}
               {...(canSchedule ? { onSendLongPress: () => void openScheduleMenu() } : {})}
               hasAttachment={pendingMedia.length > 0}
               busy={sendingMedia}
