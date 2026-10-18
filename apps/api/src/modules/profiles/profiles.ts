@@ -362,6 +362,21 @@ export interface Profile {
     lastActiveAt: Date
     messagesSent: number
     /**
+     * First messages from people, and how many of them this account answered
+     * — at all, and within a day. Discovery's responsiveness term and the
+     * "usually replies within a day" line read them; nothing shows a number.
+     *
+     * Written on every deploy since 18 October 2026, whatever the flag says, so
+     * the sample exists by the time somebody turns it on. Absent on everyone
+     * before that and read as zero, which the prior turns into "no evidence"
+     * rather than "never answers". Only conversations opened after the counter
+     * existed count on either side (`Conversation.firstReplyAt` says which),
+     * so an old thread answered today cannot push answered past received.
+     */
+    openersReceived?: number
+    openersAnswered?: number
+    openersAnsweredWithinDay?: number
+    /**
      * The build this account was last seen on, from the pair every client
      * already sends (headers on REST, `auth` on the socket) — validated in
      * `clientBuildOf` before it is stored, because a client says whatever it
