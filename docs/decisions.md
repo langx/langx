@@ -836,16 +836,17 @@ answer of each launch (`latchV3Home`): a bar that rearranged itself the next
 time somebody came back from another app would be worse than either bar. So
 that the landing and the bar agree from the first frame, the launch splash
 waits for one attempt of `/app-config`, which runs beside the profile request
-it already waits for; a failed or offline attempt is the flag off. A build
-older than the flag never reads it, and an API older than the client sends no
-flag, which reads as off.
+it already waits for; a failed or offline attempt is the flag off, and so is
+one still out after 1.5 seconds (`V3_HOME_WAIT_MS`), so a slow network costs a
+returning person at most that much on the splash. A build older than the flag
+never reads it, and an API older than the client sends no flag, which reads as
+off.
 
 **Not yet.** The end of onboarding still lands on People, where the first-run
 tour plays; under the flag the tour's Feed step finds no Feed tab and is
-skipped, as any step with nothing to point at is. Home's rings are plain
-circles until the gamification primitives land. The screens behind the tabs
-keep the current look, and the web tab title for `/discover` still says
-Discover.
+skipped, as any step with nothing to point at is. The streak row draws a
+plain disc where `StreakFlame` could go. The screens behind the tabs keep the
+current look, and the web tab title for `/discover` still says Discover.
 
 ## Buttons are flat pills in sentence case, and still press on `Animated`
 
