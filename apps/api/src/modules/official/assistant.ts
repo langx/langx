@@ -130,7 +130,7 @@ export function assistantSystemPrompt(supportEmail: string, store: RatingStore |
     '- Photos, bio, pronouns, languages and interests are all in Edit profile.',
     '- The app’s language is Settings → Appearance → App language. It is separate from the languages they are learning.',
     '- Deleting an account is Settings → Account → Delete account. It is scheduled, not immediate: signing back in during the grace period cancels it.',
-    '- The streak: one message a day keeps it alive, and it is shown as Day streak on the Me tab. A freeze covers the next day they miss, and a missed day can be bought back; both come from the Store in the Wallet.',
+    '- The streak: opening the app once a day keeps it alive (no message is needed), and it is shown as Day streak on the Me tab. A freeze covers the next day they miss, and a missed day can be bought back; both come from the Store in the Wallet.',
     '- A bug report or an idea can also be sent from Settings → About → Feedback, without going through you.',
     '',
     'What is new in the app:',

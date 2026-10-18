@@ -2,7 +2,7 @@ import { countryFlag, formatDistance, type DiscoverySort } from '@langx/shared'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { openProfile } from '../../../src/lib/navigation'
 import { track } from '../../../src/lib/analytics'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
 import Feather from '@expo/vector-icons/Feather'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useDiscovery, useHasFeature, useMe, useShareLocation } from '../../../src/api/queries'
@@ -45,6 +45,9 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useTwoPane } from '../../../src/hooks/useTwoPane'
 import { TwoPane } from '../../../src/components/TwoPane'
 import { ProfileScreen } from '../../../src/screens/ProfileScreen'
+import { PeopleSegments } from '../../../src/components/PeopleSegments'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { FeedScreen } from './feed'
 
 const SORTS: { key: DiscoverySort; label: MessageKey }[] = [
   { key: 'recommended', label: 'discover.forYou' },
@@ -93,7 +96,35 @@ function LanguageLine({ item }: { item: DiscoveryItem }) {
  */
 const FOCUS_REFRESH_DEBOUNCE_MS = 60_000
 
-export default function DiscoverScreen() {
+/**
+ * Discover, or — with `flags.v3Home` on — the redesign's People tab, whose
+ * two segments are this list and the Feed.
+ *
+ * The route keeps its name either way, so every link and push that says
+ * `/discover` lands on the same tab it always did. Which segment is showing
+ * is a route param (`?segment=posts`) rather than state, so the Feed's own
+ * route can redirect here and a web URL says what is on screen.
+ */
+export default function DiscoverRoute() {
+  const v3Home = useV3Home()
+  const { segment } = useLocalSearchParams<{ segment?: string }>()
+  if (!v3Home) return <DiscoverScreen />
+
+  const posts = segment === 'posts'
+  const segments = (
+    <PeopleSegments
+      value={posts ? 'posts' : 'people'}
+      onChange={(next) => router.setParams({ segment: next === 'posts' ? 'posts' : undefined })}
+    />
+  )
+  return posts ? <FeedScreen people={segments} /> : <DiscoverScreen people={segments} />
+}
+
+/**
+ * `people` is the People | Posts control, passed only under the redesign's
+ * tabs: the title then reads "People" and the control sits under it.
+ */
+function DiscoverScreen({ people }: { people?: ReactNode } = {}) {
   useScreenInteractive()
   /*
    * The same two halves the chat list has, and for the same reason: a row is
@@ -371,7 +402,9 @@ export default function DiscoverScreen() {
           The `x` inside the field puts them all back.
         */}
         <View style={styles.titleRow}>
-          {searching ? null : <Text style={styles.title}>{t('discover.title')}</Text>}
+          {searching ? null : (
+            <Text style={styles.title}>{people ? t('tabs.people') : t('discover.title')}</Text>
+          )}
           {/* Advanced filters are the Pro hook, so the control is shown to
               everyone and the *screen* handles the upsell — hiding it makes
               the paywall a surprise instead of an offer. Free filters still
@@ -400,6 +433,9 @@ export default function DiscoverScreen() {
             </Pressable>
           )}
         </View>
+        {/* Search takes the header, the segments included, for the reason it
+            takes the title: the field needs the room. */}
+        {people && !searching ? <View style={styles.segments}>{people}</View> : null}
         {/* Which direction this list is matched in. Without it the list
             looks unsorted rather than matched. Rows below are matched on
             that pair — on both sides of it normally, on either side while
@@ -678,6 +714,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     textAlign: 'center',
   },
   segmented: { marginTop: 18 },
+  segments: { marginBottom: spacing.sm, marginTop: spacing.md },
   list: { paddingBottom: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
   row: {

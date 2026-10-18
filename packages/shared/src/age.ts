@@ -80,6 +80,32 @@ export function meetsMinimumAge(birthDate: string, now: Date = new Date()): bool
   return ageFromBirthDate(birthDate, now) >= MINIMUM_AGE
 }
 
+/**
+ * The age a surface asks for when it puts a *new* account in front of
+ * strangers — "New on LangX" today. A fresh account is the one a stranger is
+ * most likely to write to first, and a 16- or 17-year-old should not be shown
+ * there, nor be shown it.
+ */
+export const ADULT_AGE = 18
+
+/**
+ * The latest birth date that is {@link ADULT_AGE} or older today (UTC), as
+ * `YYYY-MM-DD`, so a Mongo range and a string comparison ask the same thing.
+ *
+ * The exact day, unlike `meetsMinimumAge`: that one errs towards letting a
+ * person in, which is right for a sign-up and wrong for a safety gate. A
+ * 29 February birthday reads as 1 March in a year without one — late by a day,
+ * which is the direction a gate should be wrong in.
+ */
+export function adultBornOnOrBefore(now: Date = new Date()): string {
+  const day = now.toISOString().slice(4, 10)
+  return `${String(now.getUTCFullYear() - ADULT_AGE).padStart(4, '0')}${day}`
+}
+
+export function isAdult(birthDate: string, now: Date = new Date()): boolean {
+  return birthDate <= adultBornOnOrBefore(now)
+}
+
 export function birthDateSchema(now: Date = new Date()) {
   return z
     .string()

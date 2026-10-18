@@ -24,7 +24,7 @@ export interface TrialStep {
  */
 export function TrialTimeline({ title, steps }: { title: string; steps: readonly TrialStep[] }) {
   const styles = useStyles()
-  const { colors } = useTheme()
+  const { v3 } = useTheme()
 
   return (
     <View style={styles.box}>
@@ -41,8 +41,8 @@ export function TrialTimeline({ title, steps }: { title: string; steps: readonly
                 <View style={[styles.node, first ? styles.nodeNow : null]}>
                   <Feather
                     name={step.icon}
-                    size={14}
-                    color={first ? colors.bg : colors.textMuted}
+                    size={v3.icon.xs}
+                    color={first ? v3.colors.pillText : v3.colors.muted}
                   />
                 </View>
                 {last ? null : <View style={[styles.line, first ? styles.lineNow : null]} />}
@@ -59,31 +59,32 @@ export function TrialTimeline({ title, steps }: { title: string; steps: readonly
   )
 }
 
-const useStyles = makeStyles(({ colors, radius, spacing, font }) => ({
+/** The node's diameter: a disc a glyph sits in, on a rail as wide. */
+const NODE = 30
+
+const useStyles = makeStyles(({ v3 }) => ({
   box: {
-    backgroundColor: colors.fill,
-    borderRadius: radius.lg,
-    gap: spacing.lg,
-    padding: spacing.lg,
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.block,
+    gap: v3.space[16],
+    padding: v3.space[16],
   },
-  heading: { ...font.heading, color: colors.text, fontSize: 17 },
-  step: { flexDirection: 'row', gap: spacing.md },
-  rail: { alignItems: 'center', width: 28 },
+  heading: { ...v3.type.headline, color: v3.colors.fg },
+  step: { flexDirection: 'row', gap: v3.space[12] },
+  rail: { alignItems: 'center', width: NODE },
   node: {
     alignItems: 'center',
-    backgroundColor: colors.bg,
-    borderColor: colors.border,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    height: 28,
+    backgroundColor: v3.colors.bg,
+    borderRadius: v3.radius.pill,
+    height: NODE,
     justifyContent: 'center',
-    width: 28,
+    width: NODE,
   },
-  nodeNow: { backgroundColor: colors.pro, borderColor: colors.pro },
-  line: { backgroundColor: colors.border, flex: 1, marginVertical: spacing.xs, width: 2 },
-  lineNow: { backgroundColor: colors.pro },
-  text: { flex: 1, gap: 2, paddingTop: 4 },
-  textSpaced: { paddingBottom: spacing.lg },
-  title: { color: colors.text, fontSize: 15, fontWeight: '700' },
-  body: { color: colors.textMuted, fontSize: 14, lineHeight: 20 },
+  nodeNow: { backgroundColor: v3.colors.pill },
+  line: { backgroundColor: v3.colors.line, flex: 1, marginVertical: v3.space[4], width: 2 },
+  lineNow: { backgroundColor: v3.colors.pill },
+  text: { flex: 1, gap: v3.space[2], paddingTop: v3.space[4] },
+  textSpaced: { paddingBottom: v3.space[16] },
+  title: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '700' },
+  body: { ...v3.type.caption, color: v3.colors.muted },
 }))

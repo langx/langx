@@ -35,7 +35,57 @@ export const fr: Localized<EnMessages> = {
     notLoaded: 'Chargement impossible',
   },
 
-  tabs: { discover: 'Découvrir', chats: 'Discussions', echo: 'Echo', feed: 'Fil', me: 'Moi' },
+  tabs: {
+    discover: 'Découvrir',
+    chats: 'Discussions',
+    echo: 'Echo',
+    feed: 'Fil',
+    me: 'Moi',
+    home: 'Accueil',
+    people: 'Personnes',
+    posts: 'Publications',
+  },
+
+  home: {
+    greetingMorning: 'Bonjour, {name}',
+    greetingAfternoon: 'Bon après-midi, {name}',
+    greetingEvening: 'Bonsoir, {name}',
+    subtitle: 'Une chose d’abord, puis le reste de la journée.',
+    waitingTitle: '{name} attend ta réponse',
+    yourTurn: 'À toi',
+    replyTo: 'Répondre à {name}',
+    sessionTitle: 'Ton appel avec {name}',
+    sessionAt: 'À {time}',
+    sessionOpen: 'Ouvrir la discussion',
+    streakTitle: {
+      one: 'Garde ta série de {count} jour',
+      other: 'Garde ta série de {count} jours',
+    },
+    streakBody: 'Aujourd’hui ne compte pas encore.',
+    streakEcho: 'Revoir tes cartes',
+    streakChats: 'Écrire à quelqu’un',
+    echoTitle: { one: '{count} carte prête', other: '{count} cartes prêtes' },
+    echoBody: 'Quelques minutes dans Echo les gardent fraîches.',
+    echoStart: 'Commencer une révision',
+    todayTitle: 'Les trois du jour',
+    todayCount: '{done} sur {total} faites',
+    todayCorrect: 'Aider avec une phrase',
+    todayNotYet: 'Pas encore',
+    streakDays: { one: 'Série de {count} jour', other: 'Série de {count} jours' },
+    streakNext: {
+      one: 'Encore {count} jour avant ta récompense des {day} jours',
+      other: 'Encore {count} jours avant ta récompense des {day} jours',
+    },
+    peopleTitle: 'Les personnes du jour',
+    seeAll: 'Tout voir',
+    sayHello: 'Dire bonjour',
+    proTitle: 'Aller plus loin avec Pro',
+    proButton: 'Voir ce qu’apporte Pro',
+    inviteTitle: 'Apprends avec un ami',
+    guestTitle: 'Fais de LangX le tien',
+    guestBody:
+      'Avec un compte, tu peux écrire aux gens, garder une série et enregistrer ce que tu apprends dans Echo.',
+  },
 
   composer: {
     removeAttachment: 'Retirer la pièce jointe',
@@ -693,7 +743,7 @@ export const fr: Localized<EnMessages> = {
       'Corrige la phrase de quelqu’un et il voit exactement ce qui a changé. Les corrections sont illimitées sur tous les forfaits — c’est tout l’intérêt.',
     slide3Title: 'Reviens, et ça s’accumule',
     slide3Body:
-      'Un message par jour garde ta série en vie. Gagne des jetons en parlant et en enseignant, et dépense-les en gel de série ou en style pour ton profil.',
+      'Ouvrir l’app chaque jour garde ta série en vie. Gagne des jetons en parlant et en enseignant, et dépense-les en gel de série ou en style pour ton profil.',
     getStarted: 'Commencer',
     skip: 'Passer',
     next: 'Suivant',
@@ -898,7 +948,7 @@ export const fr: Localized<EnMessages> = {
     messagesBody: 'Quand quelqu’un vous écrit. Par e-mail seulement après une absence.',
     streak: 'Rappel de série',
     streakBody:
-      'Le soir, si votre série est sur le point de s’interrompre. Par e-mail si aucun téléphone n’est connecté.',
+      'Le soir, si votre série est sur le point de s’interrompre ou s’est interrompue la veille. L’alerte n’arrive par e-mail que si aucun téléphone n’est connecté.',
     badges: 'Badges',
     badgesBody: 'Quand vous en gagnez un. Un récapitulatif le soir, pas une alerte à chaque fois.',
     profileVisits: 'Visites de profil',
@@ -1741,7 +1791,7 @@ export const fr: Localized<EnMessages> = {
       'Partagez une photo, une vidéo ou une phrase. Besoin d’aide ? Cochez Besoin d’une correction ou Besoin de la prononciation et un locuteur natif répondra. Puis faites de même pour quelqu’un d’autre.',
     streakTitle: 'Séries et jetons',
     streakBody:
-      'Un message par jour garde ta série en vie. Parler et enseigner rapportent des jetons, à dépenser en gel de série ou en nouveau style pour ton profil.',
+      'Ouvrir LangX chaque jour garde ta série en vie. Parler et enseigner rapportent des jetons, à dépenser en gel de série ou en nouveau style pour ton profil.',
     discoverTitle: 'Trouver un partenaire',
     discoverBody:
       'Tout le monde dans Découvrir parle une langue que tu apprends et apprend une langue que tu parles. Pour toi suit tes langues, Actifs montre qui vient de passer, et À proximité utilise ta position une fois que tu la partages. Ouvre un profil et dis bonjour — c’est ainsi que commence presque chaque échange ici.',
@@ -2581,7 +2631,6 @@ export const fr: Localized<EnMessages> = {
   paywall: {
     screenTitle: 'Formules',
     restorePurchases: 'Restaurer les achats',
-    partOf: 'fait partie de',
     unlimitedChats: 'Discussions nouvelles illimitées',
     unlimitedChatsBody: '{count} par jour sur le forfait gratuit.',
     welcomePack: 'Un pack de bienvenue',
@@ -2643,8 +2692,6 @@ export const fr: Localized<EnMessages> = {
     yearly: 'Annuel',
     lifetime: 'Paiement unique',
     headline: 'Va plus loin avec {plan}',
-    headlineBody:
-      'Les corrections et les réponses restent illimitées avec chaque formule. Payer supprime les autres limites.',
     savePercent: '{percent}% d’économie',
     freeMonths: {
       one: '{count} mois offert',
@@ -2671,7 +2718,6 @@ export const fr: Localized<EnMessages> = {
     },
     showLess: 'Afficher moins',
     pricePerPeriod: '{price} {period}',
-    billedMonthly: 'Facturé chaque mois',
     lifetimeDetail: 'Un seul paiement, sans renouvellement',
     timelineTitle: 'Comment fonctionne ton essai gratuit',
     timelineToday: 'Aujourd’hui : accès complet',
@@ -2685,6 +2731,37 @@ export const fr: Localized<EnMessages> = {
     subscribe: 'S’abonner',
     startFreeTrial: 'Commencer l’essai gratuit',
     eula: 'Conditions d’utilisation (CLUF)',
+    planMark: 'LangX {plan}',
+    heroChats: 'Rencontre autant de personnes qui parlent {language} que tu veux',
+    heroChatsAny: 'Lance autant de nouvelles discussions que tu veux',
+    heroViewers: 'Vois qui a consulté ton profil',
+    heroFilters: 'Trouve exactement qui tu cherches',
+    heroNearby: 'Trouve des gens près de chez toi',
+    chatLimitToday: {
+      one: 'Tu as lancé {count} nouvelle discussion ces dernières 24 heures. La prochaine s’ouvre à {time}.',
+      other:
+        'Tu as lancé {count} nouvelles discussions ces dernières 24 heures. La prochaine s’ouvre à {time}.',
+    },
+    chatLimitTomorrow: {
+      one: 'Tu as lancé {count} nouvelle discussion ces dernières 24 heures. La prochaine s’ouvre demain à {time}.',
+      other:
+        'Tu as lancé {count} nouvelles discussions ces dernières 24 heures. La prochaine s’ouvre demain à {time}.',
+    },
+    viewersWeek: {
+      one: '{count} personne a consulté ton profil la semaine dernière.',
+      other: '{count} personnes ont consulté ton profil la semaine dernière.',
+    },
+    featurePartOf: '{feature} fait partie de {plan}.',
+    freePromise: 'Les réponses et les corrections restent gratuites avec tous les forfaits.',
+    compareHeading: 'Comparer',
+    compareNewChats: 'Nouvelles discussions par jour',
+    compareTranslations: 'Traductions par jour',
+    compareLanguages: 'Langues apprises',
+    compareUnlimited: 'Sans limite',
+    compareSoon: 'Bientôt',
+    compareIncluded: 'Inclus',
+    compareNotIncluded: 'Non inclus',
+    yearlyBadge: '{perMonth} · {saving}',
   },
 
   proWelcome: {

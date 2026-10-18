@@ -18,6 +18,10 @@ import { z } from 'zod'
  * `nearby` came later and is the one sort that is not free: it is Pro+
  * (`PLAN_LIMITS.nearby`), it needs the viewer to have shared a location of
  * their own, and it only ever sees candidates who have shared one too.
+ *
+ * "New Users" came back as a strip rather than a sort — `GET /discovery/new`,
+ * behind `flags.discoveryReplyFirst` — and the `createdAt` index it needed
+ * already existed by then (`joined`).
  */
 export const DISCOVERY_SORTS = ['recommended', 'active', 'nearby'] as const
 export type DiscoverySort = (typeof DISCOVERY_SORTS)[number]
@@ -117,6 +121,56 @@ export const DISCOVERY_PRO_FILTER_KEYS = ['gender', 'cityId'] as const
  * a page, and delete the tests that pin the relaxed behaviour with it.
  */
 export const DISCOVERY_CROSS_MATCH_FALLBACK: boolean = true
+
+/*
+ * Reply-first discovery — every number below is read only while
+ * `flags.discoveryReplyFirst` is on. See `docs/decisions.md` → _Discovery puts
+ * the people who answer first, behind a switch_.
+ */
+
+/**
+ * Idle this long and a profile sorts after everybody who has been here more
+ * recently, whatever it scores. A bucket, not a filter: they still come back,
+ * at the end. Two weeks is past a holiday and short of giving up on somebody.
+ */
+export const DISCOVERY_DORMANT_DAYS = 14
+
+/**
+ * How much "answers first messages" counts in the recommended score, which
+ * otherwise sums the language fit (one point a side) and half a point per
+ * shared interest.
+ *
+ * The term itself runs from just above 0 to just below 1 —
+ * `(answered + 1) / (received + 2)`, so somebody nobody has written to yet
+ * sits at one half, exactly where everybody sat before the counters existed.
+ * At a weight of one the whole spread is less than one language side, so a
+ * mutual fit still always leads a one-sided one, and it is worth about two
+ * shared interests.
+ */
+export const DISCOVERY_RESPONSIVENESS_WEIGHT = 1
+
+/**
+ * How many first messages somebody must have received before the card may
+ * say "Usually replies within a day". Below it a rate is noise — one reply
+ * out of one is "always", and nobody should be labelled by it.
+ */
+export const DISCOVERY_REPLY_SIGNAL_MIN_SAMPLE = 5
+
+/**
+ * The share of those first messages answered within a day for the line to
+ * appear. Two in three, so "usually" is true with room to spare. The line is
+ * the only thing that ever leaves the server: never the rate, never a count.
+ */
+export const DISCOVERY_REPLY_SIGNAL_MIN_RATE = 2 / 3
+
+/** What "within a day" means for that line: the first reply, at most this long after the first message. */
+export const DISCOVERY_REPLY_SIGNAL_WINDOW_MS = 24 * 60 * 60 * 1000
+
+/** How long an account counts as new on the "New on LangX" strip. */
+export const DISCOVERY_NEW_DAYS = 14
+
+/** How many cards that strip holds — the boosted strip's size, for the same reason. */
+export const DISCOVERY_NEW_LIMIT = 12
 
 /**
  * `en,ru` → `['en', 'ru']`. Capped at the largest allowance any tier has, so
@@ -260,6 +314,14 @@ export const discoveryItemSchema = z.object({
    * `bucketDistanceKm` for why the real number never leaves the server.
    */
   distanceKm: z.number().optional(),
+  /**
+   * "Usually replies within a day". Present only while
+   * `flags.discoveryReplyFirst` is on, only past
+   * `DISCOVERY_REPLY_SIGNAL_MIN_SAMPLE` first messages, and never for somebody
+   * who hides their online status — it is a statement about when they are
+   * around. A flag on purpose: the rate behind it does not leave the server.
+   */
+  repliesWithinDay: z.literal(true).optional(),
 })
 export type DiscoveryItem = z.infer<typeof discoveryItemSchema>
 
@@ -374,3 +436,11 @@ export type BoostedProfile = z.infer<typeof boostedProfileSchema>
 
 export const boostedProfilesPageSchema = z.object({ items: z.array(boostedProfileSchema) })
 export type BoostedProfilesPage = z.infer<typeof boostedProfilesPageSchema>
+
+/**
+ * `GET /discovery/new` — "New on LangX". Its own endpoint and its own shape,
+ * never `/discovery/boosted` with a different query: every installed build
+ * draws whatever that endpoint returns under a "Boosted" label.
+ */
+export const newProfilesPageSchema = z.object({ items: z.array(discoveryItemSchema) })
+export type NewProfilesPage = z.infer<typeof newProfilesPageSchema>

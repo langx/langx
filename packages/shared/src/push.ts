@@ -85,7 +85,18 @@ export const PUSH_KINDS = [
   'promotion',
   /** A follow, a correction or an answer on a post, a batch of likes. */
   'social',
-  /** Yesterday's pool, or the hourly gift being ready again. */
+  /**
+   * Yesterday's pool, or the hourly gift being ready again.
+   *
+   * Also the streak repair, which carries `repairDay` and is gated by the
+   * `streak` switch, not `wallet`. A kind is routing, not consent: the repair
+   * is sold in the wallet's store, and `wallet` is a kind every installed
+   * build already opens the wallet for. A kind of its own would have been
+   * dropped by all of them — an unknown kind routes nowhere — and the builds
+   * that learn it reach most phones only with a store release. A build that
+   * reads `repairDay` opens the store itself. See `modules/notifications/
+   * streakRepair.ts`.
+   */
   'wallet',
   /**
    * Somebody is calling, said as an ordinary notification.

@@ -1,3 +1,4 @@
+import { HEARD_ABOUT_OPTIONS, HEARD_ABOUT_POLL_ID, type HeardAboutView } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -210,6 +211,76 @@ describe('a new account meets @langx', () => {
     expect(back[0]?.body).toContain('tekrar hoş geldin')
     // Not both. One person, one hello.
     expect(said.filter((m) => m.clientId === `welcome:${user.userId}`)).toHaveLength(0)
+    // And no poll: they know where they heard of us, and would skew the answer.
+    expect(said.filter((m) => m.clientId === `heard-about:${user.userId}`)).toHaveLength(0)
+  })
+
+  /**
+   * The heard-about poll: after the welcome, in the reader's language, with
+   * the same language-free ids for everybody so the counts add up — and only
+   * the welcome pushes.
+   */
+  it('asks where they heard of us, right after the welcome', async () => {
+    const user = await onboard('heard-tr@example.com', 'heardone', 'tr')
+    await settle(`welcome:${user.userId}`, `heard-about:${user.userId}`)
+
+    const said = await messagesFrom(officialIds().get('langx')!)
+    const welcome = said.find((m) => m.clientId === `welcome:${user.userId}`)!
+    const polls = said.filter((m) => m.clientId === `heard-about:${user.userId}`)
+    expect(polls).toHaveLength(1)
+    const poll = polls[0]!
+
+    expect(poll.createdAt.getTime()).toBeGreaterThanOrEqual(welcome.createdAt.getTime())
+    expect(poll.body).toContain('nereden duydun')
+    expect(poll.interactive).toMatchObject({ kind: 'poll', pollId: HEARD_ABOUT_POLL_ID })
+    const options = poll.interactive?.kind === 'poll' ? poll.interactive.options : []
+    expect(options.map((o) => o.id)).toEqual([...HEARD_ABOUT_OPTIONS])
+    expect(options.find((o) => o.id === 'friend')?.label).toBe('Bir arkadaş')
+  })
+
+  /**
+   * The panel's view of it: every option present, a zero included, and the
+   * latest answers with who gave them. A second tap is not a second vote.
+   */
+  it('counts the answers for the operator panel', async () => {
+    const admin = await onboard('heard-admin@example.com', 'heardadmin', 'en')
+    await handle.db
+      .collection(COLLECTIONS.profiles)
+      .updateOne({ _id: admin.userId } as never, { $set: { admin: true, country: 'CA' } })
+    const voter = await onboard('heard-voter@example.com', 'heardvoter', 'en')
+    await settle(`heard-about:${voter.userId}`)
+
+    const poll = (await messagesFrom(officialIds().get('langx')!)).find(
+      (m) => m.clientId === `heard-about:${voter.userId}`,
+    )!
+    const answer = (optionId: string) =>
+      app.inject({
+        method: 'POST',
+        url: `/conversations/${poll.conversationId.toHexString()}/messages/${poll._id.toHexString()}/poll-answer`,
+        headers: { cookie: voter.cookie },
+        payload: { optionId },
+      })
+    expect((await answer('ai')).statusCode).toBe(200)
+    expect((await answer('youtube')).statusCode).toBe(200)
+
+    const forbidden = await app.inject({
+      method: 'GET',
+      url: '/admin/heard-about',
+      headers: { cookie: voter.cookie },
+    })
+    expect(forbidden.statusCode).toBe(403)
+
+    const view = await app.inject({
+      method: 'GET',
+      url: '/admin/heard-about',
+      headers: { cookie: admin.cookie },
+    })
+    expect(view.statusCode).toBe(200)
+    const body = view.json<HeardAboutView>()
+    expect(body.results.counts.ai).toBe(1)
+    expect(body.results.counts.youtube).toBe(0)
+    expect(Object.keys(body.results.counts)).toEqual([...HEARD_ABOUT_OPTIONS])
+    expect(body.recent[0]).toMatchObject({ handle: 'heardvoter', optionId: 'ai' })
   })
 
   /**
@@ -285,11 +356,15 @@ describe('a new account meets @langx', () => {
       }),
     ).rejects.toMatchObject({ code: 'FORBIDDEN' })
 
-    // The welcome, and nothing after it, in this thread.
+    // The welcome and the poll under it, and nothing after them, in this thread.
+    await settle(`heard-about:${user.userId}`)
     const inThread = (await messagesFrom(langxId)).filter((m) =>
       m.conversationId.equals(conversation._id),
     )
-    expect(inThread).toHaveLength(1)
+    expect(inThread.map((m) => m.clientId)).toEqual([
+      `welcome:${user.userId}`,
+      `heard-about:${user.userId}`,
+    ])
 
     // And it is reported to the app as a channel, which is what hides the box.
     const view = await app.inject({

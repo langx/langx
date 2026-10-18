@@ -74,6 +74,46 @@ export const appConfigSchema = z.object({
      * `docs/decisions.md` → _Turnstile on the password forms_.
      */
     captchaRequired: z.boolean(),
+    /**
+     * The redesign's Home tab and the bar that leads with it — Home · Chats ·
+     * Echo · People · Me — instead of today's five. Starts off, like
+     * `captchaRequired`, because it is a rollout stage rather than a kill
+     * switch: merging the code changes nothing until an operator turns it on.
+     *
+     * Read by the client once per launch (`useV3Home`), so turning it on or
+     * off reaches a running app at its next cold start rather than
+     * rearranging the bar under somebody's thumb. A build older than the flag
+     * never reads it and keeps today's tabs whatever it says.
+     */
+    v3Home: z.boolean(),
+    /**
+     * The streak repair push, "Pick your streak back up". Starts off, like
+     * `captchaRequired`, and for a different reason: it reaches people the
+     * old repair push never did — anyone with the streak push on, whatever
+     * their mail says — so whether it goes out is a consent decision, made by
+     * switching this on rather than by a merge. Off, nobody gets a repair
+     * push at all; the repair mail is not affected. See
+     * `modules/notifications/streakRepair.ts`.
+     */
+    streakRepairPush: z.boolean(),
+    /**
+     * Reply-first discovery: the default list leaves out people you already
+     * talk to, sorts profiles idle past `DISCOVERY_DORMANT_DAYS` after active
+     * ones, and weighs how often somebody answers a first message; the "New
+     * on LangX" strip and the "usually replies within a day" line come with
+     * it. Off, `/discovery` orders exactly as it did and `/discovery/new` is
+     * empty. Starts off, like `captchaRequired`, because it is a rollout
+     * stage — see `docs/decisions.md` → _Discovery puts the people who answer
+     * first, behind a switch_.
+     */
+    discoveryReplyFirst: z.boolean(),
+    /**
+     * A correction somebody receives becomes an Echo card for them without a
+     * tap. Starts off until the app ships the "Saved to your Echo · Undo"
+     * toast and the setting that go with it — see `docs/decisions.md` → _A
+     * correction you receive is kept in Echo by itself, behind a switch_.
+     */
+    echoFromCorrections: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -94,6 +134,10 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     signupsEnabled: true,
     callsEnabled: true,
     captchaRequired: false,
+    v3Home: false,
+    streakRepairPush: false,
+    discoveryReplyFirst: false,
+    echoFromCorrections: false,
   },
 }
 

@@ -13,6 +13,7 @@ import { runCampaignQueuePass } from './campaignQueue'
 import { runDailyDigestPass } from './digest'
 import { runProfileVisitsPushPass } from './profileVisits'
 import { runEchoReminderPass } from './echoReminder'
+import { runStreakRepairPushPass } from './streakRepair'
 import { runNewsletterPass } from './newsletter'
 import { runLikesRoundUpPass } from './social'
 import { runPromotionsPass } from './promotions'
@@ -100,6 +101,7 @@ export function startNotificationScheduler(
       for (const pass of [
         () => run('profile visit push', () => runProfileVisitsPushPass(db, senders.push, now)),
         () => run('echo reminder', () => runEchoReminderPass(db, senders.push, now)),
+        () => run('streak repair push', () => runStreakRepairPushPass(db, senders.push, now)),
         () => run('badge round-up', () => runBadgeRoundUpPass(db, senders.push, now, logger)),
         ...(options.resendVerification
           ? [

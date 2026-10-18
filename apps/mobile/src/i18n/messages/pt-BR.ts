@@ -35,7 +35,57 @@ export const ptBR: Localized<EnMessages> = {
     notLoaded: 'Não foi possível carregar',
   },
 
-  tabs: { discover: 'Descobrir', chats: 'Conversas', echo: 'Echo', feed: 'Feed', me: 'Eu' },
+  tabs: {
+    discover: 'Descobrir',
+    chats: 'Conversas',
+    echo: 'Echo',
+    feed: 'Feed',
+    me: 'Eu',
+    home: 'Início',
+    people: 'Pessoas',
+    posts: 'Publicações',
+  },
+
+  home: {
+    greetingMorning: 'Bom dia, {name}',
+    greetingAfternoon: 'Boa tarde, {name}',
+    greetingEvening: 'Boa noite, {name}',
+    subtitle: 'Uma coisa primeiro, depois o resto do dia.',
+    waitingTitle: '{name} está esperando',
+    yourTurn: 'Sua vez',
+    replyTo: 'Responder a {name}',
+    sessionTitle: 'Sua chamada com {name}',
+    sessionAt: 'Às {time}',
+    sessionOpen: 'Abrir a conversa',
+    streakTitle: {
+      one: 'Mantenha sua sequência de {count} dia',
+      other: 'Mantenha sua sequência de {count} dias',
+    },
+    streakBody: 'Hoje ainda não contou.',
+    streakEcho: 'Revisar seus cartões',
+    streakChats: 'Escrever para alguém',
+    echoTitle: { one: '{count} cartão pronto', other: '{count} cartões prontos' },
+    echoBody: 'Alguns minutos no Echo mantêm tudo fresco.',
+    echoStart: 'Começar uma revisão',
+    todayTitle: 'As três de hoje',
+    todayCount: '{done} de {total} feitas',
+    todayCorrect: 'Ajudar com uma frase',
+    todayNotYet: 'Ainda não',
+    streakDays: { one: 'Sequência de {count} dia', other: 'Sequência de {count} dias' },
+    streakNext: {
+      one: 'Falta {count} dia para sua recompensa de {day} dias',
+      other: 'Faltam {count} dias para sua recompensa de {day} dias',
+    },
+    peopleTitle: 'Pessoas de hoje',
+    seeAll: 'Ver tudo',
+    sayHello: 'Dizer oi',
+    proTitle: 'Vá além com o Pro',
+    proButton: 'Ver o que o Pro oferece',
+    inviteTitle: 'Aprenda com um amigo',
+    guestTitle: 'Deixe o LangX com a sua cara',
+    guestBody:
+      'Com uma conta, você pode escrever para as pessoas, manter uma sequência e salvar o que aprende no Echo.',
+  },
 
   composer: {
     removeAttachment: 'Remover anexo',
@@ -684,7 +734,7 @@ export const ptBR: Localized<EnMessages> = {
       'Arrume a frase de alguém e a pessoa vê exatamente o que mudou. Correções são ilimitadas em todos os planos — é disso que se trata.',
     slide3Title: 'Apareça, e vai somando',
     slide3Body:
-      'Uma mensagem por dia mantém sua sequência viva. Ganhe fichas conversando e ensinando, e gaste em um congelamento de sequência ou num visual para o perfil.',
+      'Abrir o app todo dia mantém sua sequência viva. Ganhe fichas conversando e ensinando, e gaste em um congelamento de sequência ou num visual para o perfil.',
     getStarted: 'Começar',
     skip: 'Pular',
     next: 'Avançar',
@@ -885,7 +935,7 @@ export const ptBR: Localized<EnMessages> = {
     messagesBody: 'Quando alguém te escreve. Por e-mail só se você ficar um tempo fora.',
     streak: 'Lembrete de sequência',
     streakBody:
-      'À noite, se sua sequência estiver prestes a quebrar. Por e-mail se nenhum telefone estiver conectado.',
+      'À noite, se sua sequência estiver prestes a quebrar ou tiver quebrado no dia anterior. O aviso só vai por e-mail se nenhum telefone estiver conectado.',
     badges: 'Medalhas',
     badgesBody: 'Quando você ganha uma. Um resumo à noite, não um aviso a cada vez.',
     profileVisits: 'Visitas ao perfil',
@@ -1720,7 +1770,7 @@ export const ptBR: Localized<EnMessages> = {
       'Compartilhe uma foto, um vídeo ou uma frase. Quer ajuda? Marque Preciso de correção ou Preciso da pronúncia e um falante nativo vai responder. Depois faça o mesmo por outra pessoa.',
     streakTitle: 'Sequências e fichas',
     streakBody:
-      'Uma mensagem por dia mantém sua sequência viva. Conversar e ensinar rendem fichas, que você pode gastar em um congelamento de sequência ou num visual novo para o perfil.',
+      'Abrir o LangX todo dia mantém sua sequência viva. Conversar e ensinar rendem fichas, que você pode gastar em um congelamento de sequência ou num visual novo para o perfil.',
     discoverTitle: 'Encontre um parceiro',
     discoverBody:
       'Todo mundo em Descobrir fala um idioma que você aprende e aprende um que você fala. Para você combina com seus idiomas, Ativos mostra quem passou por aqui há pouco e Por perto usa sua localização quando você a compartilha. Abra um perfil e diga oi — é assim que quase toda troca aqui começa.',
@@ -2550,7 +2600,6 @@ export const ptBR: Localized<EnMessages> = {
   paywall: {
     screenTitle: 'Planos',
     restorePurchases: 'Restaurar compras',
-    partOf: 'faz parte do',
     unlimitedChats: 'Conversas novas ilimitadas',
     unlimitedChatsBody: '{count} por dia no plano gratuito.',
     welcomePack: 'Um pacote de boas-vindas',
@@ -2612,8 +2661,6 @@ export const ptBR: Localized<EnMessages> = {
     yearly: 'Anual',
     lifetime: 'Pagamento único',
     headline: 'Vá mais longe com o {plan}',
-    headlineBody:
-      'Correções e respostas continuam ilimitadas em todos os planos. Pagar remove os outros limites.',
     savePercent: 'Economize {percent}%',
     freeMonths: {
       one: '{count} mês grátis',
@@ -2640,7 +2687,6 @@ export const ptBR: Localized<EnMessages> = {
     },
     showLess: 'Mostrar menos',
     pricePerPeriod: '{price} {period}',
-    billedMonthly: 'Cobrado todo mês',
     lifetimeDetail: 'Um pagamento só, sem renovação',
     timelineTitle: 'Como funciona seu teste grátis',
     timelineToday: 'Hoje: acesso completo',
@@ -2654,6 +2700,35 @@ export const ptBR: Localized<EnMessages> = {
     subscribe: 'Assinar',
     startFreeTrial: 'Começar o teste grátis',
     eula: 'Termos de uso (EULA)',
+    planMark: 'LangX {plan}',
+    heroChats: 'Conheça quantas pessoas que falam {language} você quiser',
+    heroChatsAny: 'Comece quantas conversas novas você quiser',
+    heroViewers: 'Veja quem viu seu perfil',
+    heroFilters: 'Encontre exatamente quem você procura',
+    heroNearby: 'Encontre pessoas perto de você',
+    chatLimitToday: {
+      one: 'Você começou {count} conversa nova no último dia. A próxima abre às {time}.',
+      other: 'Você começou {count} conversas novas no último dia. A próxima abre às {time}.',
+    },
+    chatLimitTomorrow: {
+      one: 'Você começou {count} conversa nova no último dia. A próxima abre amanhã às {time}.',
+      other: 'Você começou {count} conversas novas no último dia. A próxima abre amanhã às {time}.',
+    },
+    viewersWeek: {
+      one: '{count} pessoa viu seu perfil na última semana.',
+      other: '{count} pessoas viram seu perfil na última semana.',
+    },
+    featurePartOf: '{feature} faz parte do {plan}.',
+    freePromise: 'Respostas e correções continuam grátis em todos os planos.',
+    compareHeading: 'Comparar',
+    compareNewChats: 'Conversas novas por dia',
+    compareTranslations: 'Traduções por dia',
+    compareLanguages: 'Idiomas que você aprende',
+    compareUnlimited: 'Sem limite',
+    compareSoon: 'Em breve',
+    compareIncluded: 'Incluído',
+    compareNotIncluded: 'Não incluído',
+    yearlyBadge: '{perMonth} · {saving}',
   },
 
   proWelcome: {

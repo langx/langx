@@ -1,4 +1,9 @@
-import { ERROR_CODES, type AnswerPollInput, type PollResults } from '@langx/shared'
+import {
+  ERROR_CODES,
+  type AnswerPollInput,
+  type HeardAboutAnswerView,
+  type PollResults,
+} from '@langx/shared'
 import { MongoServerError, ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
@@ -121,4 +126,51 @@ export async function pollResults(
     total += row.count
   }
   return { pollId, total, counts }
+}
+
+/**
+ * The latest answers to one poll with who gave them, for the operator panel.
+ *
+ * The profile is joined rather than copied onto the answer, so a handle
+ * changed since reads as it is now. `profiles._id` is the user id string, the
+ * same form `pollAnswers.userId` holds — no `authId` crossing here. An answer
+ * whose profile is gone (a purged account) still lists, with nulls, because
+ * the vote was counted and the list should agree with the count.
+ */
+export async function recentPollAnswers(
+  db: Db,
+  pollId: string,
+  limit: number,
+): Promise<HeardAboutAnswerView[]> {
+  const rows = await db
+    .collection<PollAnswer>(COLLECTIONS.pollAnswers)
+    .aggregate<{
+      userId: string
+      optionId: string
+      createdAt: Date
+      profile?: { handle?: string; displayName?: string; country?: string }
+    }>([
+      { $match: { pollId } },
+      { $sort: { createdAt: -1 } },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: COLLECTIONS.profiles,
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'profile',
+          pipeline: [{ $project: { handle: 1, displayName: 1, country: 1 } }],
+        },
+      },
+      { $set: { profile: { $first: '$profile' } } },
+    ])
+    .toArray()
+  return rows.map((row) => ({
+    userId: row.userId,
+    handle: row.profile?.handle ?? null,
+    displayName: row.profile?.displayName ?? null,
+    country: row.profile?.country ?? null,
+    optionId: row.optionId,
+    createdAt: row.createdAt.toISOString(),
+  }))
 }

@@ -738,6 +738,8 @@ change in the 3.0 release round.
 
 ## The redesign is v3: A's structure, B's look
 
+> **Amended 18 October 2026 — see _Home leads the bar, and People holds Discover and the Feed — behind a flag_ below.**
+
 **16 October 2026.** Behic named the redesign "v3". It ships as app version
 3.0 once everything is ready, and the version bump waits for that release
 round. Its brief calls it "v4", and entries above this one say "the v3 look"
@@ -788,6 +790,63 @@ pull requests adds the tokens, the motion module (`src/lib/theme/motion.ts`),
 a design gallery in the operator panel for dev builds, and a lint rule that
 refuses a literal `fontSize` in a screen or component outside a shrinking
 allowlist.
+
+## Home leads the bar, and People holds Discover and the Feed — behind a flag
+
+**18 October 2026.** The first restructured surface (D4, D5, move S1), and the
+first change to the app's structure rather than its look. Two rules go, and
+neither had an entry of its own — they lived in `app/index.tsx`, which sent
+every signed-in launch to Discover, and in the tab layout's "the five tabs,
+and only the five tabs", which were Discover · Chats · Echo · Feed · Me. The
+entry above named both as rules the direction overturns, so this one sits
+beside it. **None of it takes effect until `flags.v3Home` is on**; with it off
+the app is exactly what it was.
+
+With the flag on:
+
+- **Home is the first tab, and a signed-in launch lands on it.** It leads with
+  one next step, chosen by the pure, tested `planHome` (`src/lib/homePlan.ts`)
+  in a fixed order: a thread waiting on you, an agreed call within
+  `MEETING_SOON_MINUTES`, today's streak not yet earned (by `streakSavable`,
+  so a run already beyond saving sends nobody anywhere), Echo cards due, a
+  hello to the first of today's people. That step owns the screen's one
+  yellow button. Under it: today's three goals, the streak with its next
+  reward read from `TOKEN_RULES`, the ready hourly gift, two of today's people
+  with a big Say hello each, the Pro card for a free account (paywall source
+  `home`, yellow only when there is no next step — D6a) and the invite. Every
+  block is built from a query another screen already makes, and every block
+  with nothing to do is not drawn. A guest gets the account on the yellow and
+  today's people with gated hellos (rule 9).
+- **The bar is Home · Chats · Echo · People · Me.** Echo is centred and set
+  apart by a tint that is always on, never by size: the raised disc cannot be
+  drawn by the platform's own tab bar, which the native batch moves to.
+- **People is the `discover` route under a new word**, with Discover and the
+  Feed as its two segments (People | Posts, `?segment=posts`). The route keeps
+  its name so every link, email and push that says `/discover` still lands;
+  `/feed` redirects to the Posts segment. The tab layout's rule stands —
+  nothing that is not a tab is registered there — with two sets of five, each
+  registering the other's odd one out without a button, so `/home` with the
+  flag off goes to Discover.
+
+**Why a flag, and why it is read once.** D4 puts restructured surfaces behind
+a staged-rollout switch so nobody sees half of each. `flags.v3Home` is an
+`appConfig` flag that starts off, like `captchaRequired`, and is turned on
+with `scripts/maintenance.ts flag v3Home true`. The client latches the first
+answer of each launch (`latchV3Home`): a bar that rearranged itself the next
+time somebody came back from another app would be worse than either bar. So
+that the landing and the bar agree from the first frame, the launch splash
+waits for one attempt of `/app-config`, which runs beside the profile request
+it already waits for; a failed or offline attempt is the flag off, and so is
+one still out after 1.5 seconds (`V3_HOME_WAIT_MS`), so a slow network costs a
+returning person at most that much on the splash. A build older than the flag
+never reads it, and an API older than the client sends no flag, which reads as
+off.
+
+**Not yet.** The end of onboarding still lands on People, where the first-run
+tour plays; under the flag the tour's Feed step finds no Feed tab and is
+skipped, as any step with nothing to point at is. The streak row draws a
+plain disc where `StreakFlame` could go. The screens behind the tabs keep the
+current look, and the web tab title for `/discover` still says Discover.
 
 ## Buttons are flat pills in sentence case, and still press on `Animated`
 
@@ -4479,6 +4538,8 @@ a bad minute must not turn that into an error page.
 
 ## Six nudges, one pass, one at a time
 
+> **Amended 18 October 2026 — see _The streak repair push leaves the table, and both streak pushes say the rule_ below.**
+
 The remarketing scenarios could each have been a pass, the way the digest and
 the visit round-up are. They are not, and the reason is arithmetic: the
 candidates are the same people every time — everybody with `promotions.email`
@@ -4505,6 +4566,59 @@ and what makes "we miss you" one letter rather than a daily one.
 The push half is not a fallback for the mail and not gated on it. Somebody
 with the app installed and promotions on asked for both, and the mail is
 often the one that is never opened.
+
+## The streak repair push leaves the table, and both streak pushes say the rule
+
+_18 October 2026._ This changes the entry above for one row of its table.
+
+**The repair's push is a pass of its own** (`modules/notifications/
+streakRepair.ts`). The entry above says the push half is not gated on the
+mail; in the code it was. The push was sent from inside the table's loop, so
+it went out only after the mail's own checks had passed: `streak.email` on, no
+digest that evening, no marketing in the last week. Somebody who kept the
+streak push and turned streak mail off never heard about a repair at all. A
+streak push that names no plan, price or purchase is a streak notification,
+not a promotion, so the marketing slot and the week's gap were never its
+rules. It now answers to the push half of the streak switch alone, at the
+reminder's hour, and claims its own row in `notificationLedger`. The mail stays
+in the table, where its slot and its gap belong.
+
+**Who is told changed, on both channels.** The row counted hours from noon UTC
+on the last qualified day and fired between one and two days later. West of
+about UTC+8 that was the evening the streak was still alive, and the same
+evening's reminder said "keep it going". Both now ask one function,
+`streakRepairDay`: the last day was the day before yesterday on the reader's
+calendar, no freeze is banked, the run was at least
+`STREAK_REPAIR_NUDGE_MIN_STREAK` long, and a repair is left this month and
+affordable. An offer that ends on "you have used both" or "not enough tokens"
+is a loss with nothing to do about it.
+
+**It is sent as `wallet`, not a kind of its own.** An unknown kind routes
+nowhere on an installed build, and most phones learn a new one only from a
+store release. `wallet` already opens the wallet on every build since it
+existed; a `repairDay` field lets a newer build open the store instead and
+keep the push in the shade as a reminder. The cost is analytics:
+`notification_opened` counts a tapped repair as `wallet`.
+
+**Both pushes word the rule as it is.** "Send one message today to keep it
+going" was the rule before _Opening the app holds the streak_, and opening
+the app is what keeps it now, the tap on the push included. The reminder
+says so, and so do the intro slide, How it works and @copilot's notes. The
+repair says "Pick your streak back up", never "buy". The Streak reminder
+row's description in Settings now names the evening after a streak broke,
+which this switch has gated since September without saying so, and stops
+saying that everything under it comes by email only without a phone: that was
+true of the reminder and never of the repair mail.
+
+**It ships off.** The new pass reaches people the old repair push never did —
+the streak push on and the streak mail off — so it is a widening of what this
+switch sends, and that is a consent decision rather than a merge's.
+`flags.streakRepairPush` starts false, like `captchaRequired`; while it is,
+nobody gets a repair push of either kind, and the mail goes on as before.
+Switched on, it skips readers under eighteen (`STREAK_REPAIR_PUSH_MIN_AGE`,
+by `ageFromBirthDate`) and readers with no birth date, the default the EU's
+guidance on minors asks for streak pushes. Placeholder birth dates read as
+adults, which is a limit of the data rather than of the rule.
 
 ## The newsletter is monthly, and its editorial half is a pull request
 
@@ -5195,6 +5309,8 @@ first rather than handing somebody work that is already done.
 
 ## Discovery accepts a one-sided match while the app is this small — temporarily
 
+> **Amended 18 October 2026 — see _Discovery puts the people who answer first, behind a switch_ below.**
+
 Mutual fit is the honest rule and the whole point of the product: their native
 is something I am learning **and** their learning is something I speak. With
 the number of profiles there are today that conjunction returns nothing for
@@ -5245,6 +5361,93 @@ two halves with `$and` instead, and a test pins it.
 Reverting is the constant, the tests named `cross-match fallback`, and the
 second case in the index-usage test. Do it once there are enough profiles for
 the honest rule to fill a page.
+
+## Discovery puts the people who answer first, behind a switch
+
+**18 October 2026.** Bold move S2, built on the server and switched off:
+`flags.discoveryReplyFirst` in `appConfig`, default false, thrown by Behic with
+`scripts/maintenance.ts flag discoveryReplyFirst true`. Off, `/discovery`
+builds exactly the pipeline it built before and `/discovery/new` is empty. On,
+it changes the claim in the entry above that ranking needed no rule.
+
+The default list is where a first message gets written, and a first message
+nobody answers is the worst first evening the app can give somebody. Today's
+order says how well a person fits and whether they are online. It says nothing
+about whether they will answer, or whether they have been here this month.
+
+**Four changes, all to `recommended`:**
+
+- **People you already talk to are left out** — any thread, whoever opened it.
+  They are a tap away in Chats, and a list that keeps proposing them spends its
+  first rows on people already found. Only the default sort: `active` and
+  `nearby` answer "who is here" and "who is close", and a partner is a true
+  answer to both. The boosted strip is untouched; a placement somebody paid for
+  is not this list's to thin.
+- **Profiles idle past `DISCOVERY_DORMANT_DAYS` sort after everybody else**,
+  after online-first and before the score. A bucket, not a filter: they still
+  come back, at the end. This is what amends the entry above. A mutual fit now
+  leads a one-sided one only among people seen in the last two weeks; an
+  English native learning Turkish who left a month ago sorts after an English
+  native learning French who was here this morning. The line is measured from
+  page one's moment, read off the pinned online cutoff, so it does not move
+  mid-scroll.
+- **A responsiveness term**, `(answered + 1) / (received + 2)` times
+  `DISCOVERY_RESPONSIVENESS_WEIGHT`. The prior is the point. An account nobody
+  has written to — every account, the day this ships — sits at one half, which
+  is where everybody sat before the term existed, so nobody is ranked down for
+  being new or for predating the counters. The whole spread is less than one
+  language side, so inside a bucket a mutual fit still always leads a
+  one-sided one: the entry above's claim survives there.
+- **"Usually replies within a day"**, a `repliesWithinDay: true` on the card:
+  only past `DISCOVERY_REPLY_SIGNAL_MIN_SAMPLE` first messages, only at
+  `DISCOVERY_REPLY_SIGNAL_MIN_RATE` or better, never for somebody who hides
+  their online status (it says when they are around), and never a number. The
+  rate stays on the server.
+
+**The counters.** The recipient's `stats.openersReceived` goes up when a person
+opens a thread with them; `openersAnswered` and `openersAnsweredWithinDay` on
+their first reply, and the thread gets `firstReplyAt`. The reply rides the
+conditional write that already claims `bothSpoke` — exactly one writer can win
+it, which is why the reciprocity bonus pays once — so a reply counts once
+however the sends race. A thread opened since the counters exist starts at
+`firstReplyAt: null`, and only a `null` thread's reply counts: one from before
+has no field and counts for nobody, so answered cannot outgrow received (and
+the term clamps it anyway). Threads with our own accounts count on neither
+side. The counters are written whatever the switch says, so a sample exists
+the day it is thrown; nothing reads them while it is off. They are in the
+account export with the rest of the profile, and in
+`docs/store/privacy-data-safety.md`.
+
+One weakness, named so it is not rediscovered: an opener counts as received
+whoever sent it, so being written to by somebody you rightly ignore lowers
+your term a little, and a block does not refund it. The prior and the weight
+bound it — ten ignored openers move a score by less than one language side. If
+it shows in practice, count only openers from accounts the recipient has not
+blocked.
+
+**"New on LangX"** is `GET /discovery/new`: accounts made in the last
+`DISCOVERY_NEW_DAYS`, newest first, at most `DISCOVERY_NEW_LIMIT`, inside the
+list's own scope — blocks, "Show me in Discover", suspensions, the language
+fit, every filter — less the people already talked to. Its own route, never a
+mode of `/discovery/boosted`: every installed build labels that endpoint's
+items "Boosted", so a newcomer sent through it would be called a paying member
+on every old phone. **Adults only, at both ends**, by the exact birthday
+(`adultBornOnOrBefore`) rather than the year arithmetic the age on a card
+uses: a new account is the one strangers write to first, so a 16- or
+17-year-old is never on the strip, and a viewer under 18 gets an empty one.
+`joined` (`{ createdAt: -1 }`) already served the range; no index was added.
+
+**"Show me in Discover" off still means off everywhere.** Every change here
+narrows or reorders inside `resolveDiscoveryScope`'s match, which keeps
+`settings.discoverable: true`, and the new strip uses the same match.
+
+**What old builds see once it is on:** the list in the new order without their
+partners. No line on the card — they drop a field they do not know — and no
+strip, because they never ask for one. Nothing breaks.
+
+Reverting is the switch. Deleting it is the flag, the reply-first branches in
+`discoverProfiles`, `newProfiles` and its route, and `replyFirst.test.ts`; the
+counters can stay.
 
 ## The operator panel, and why the mailbox stays
 
@@ -5511,6 +5714,8 @@ are measured against, and nothing more.
 
 ## A card is a copy, the cap is not a price, and a phrase card is mirrored
 
+> **Amended 18 October 2026 — see _A correction you receive is kept in Echo by itself, behind a switch_ below.**
+
 [`echo.md`](./echo.md) is the design. Four things about the first phase are
 decisions rather than details, and each one has an obvious-looking alternative
 that is wrong for a reason worth writing down.
@@ -5690,6 +5895,64 @@ The price is a floor: below twelve characters, or with fewer than two languages
 to choose between, there is no button. "ok" does not get read aloud, and that is
 the right way round.
 
+## A correction you receive is kept in Echo by itself, behind a switch
+
+**18 October 2026.** Bold move S4, the server half, built and switched off:
+`flags.echoFromCorrections` in `appConfig`, default false. It reverses _The
+Add echo gesture_ in [`echo.md`](./echo.md) — a card is made only when somebody
+taps — for one source: a correction somebody else wrote to you. The reversal
+takes effect the day the switch is thrown, and that waits for the app's half
+(Phase 5): a "Saved to your Echo · Undo" toast and a "Save corrections to
+Echo" setting, on by default. Until then nothing anybody sees changes. It is
+one of the rules the redesign's direction (_The redesign is v3_, above) said
+would be overturned in the pull request that builds it.
+
+The reason is that a correction is the sentence a learner most needs to keep:
+written by a person, about their own mistake, in a thread they chose. Today it
+is kept only if they remember to long-press it, and the ones that matter most
+are the ones that arrive mid-conversation, when nobody stops to file anything.
+
+**The same capture the tap runs.** After `sendCorrection` has stored the
+message, `captureReceivedCorrection` calls `captureFromMessage` for the other
+participant — the person whose sentence it was — so the access check, the
+corrected text on the front, the language and the daily ceiling are one
+definition, not two. Fired rather than awaited, unlike the phrase mirror: that
+one is one insert, this is a whole capture, and the corrector's ack should not
+wait on a card for somebody else. In `sendCorrection` rather than the socket
+handler, so every way of sending a correction gets it. It never throws.
+
+**The source key is the idempotence.** The card is filed under
+`msg:<correctionId>`, the key the tap writes, so `card_source_unique` makes a
+later tap spend nothing and write no second card, and the thread draws the
+message as already kept. Removing it is the existing "Remove from Echo", which
+is what the toast's Undo will call.
+
+**It never asks Google.** The tap translates a missing back at capture time;
+this does not. The privacy declaration says the text sent for translation is
+"the text you asked to translate", and nobody asked — and it would bill a
+sentence for every correction, to an account that may never open the card. A
+translation already on the message, or already in the shared cache, is copied:
+neither costs anything or sends anything anywhere. Otherwise the card is kept
+with an empty back, the state `backFor` already returns when no key is
+configured. A later "Add echo" tap on the same correction fills that empty
+back, once — the tap is a person asking, and the card already spent its
+capture. Translating it when the person opens or reviews the card is the app's
+half, and is a person asking too.
+
+**The ceiling still counts, and a full one is silent.** Each card spends one
+`echoCapturesPerDay`, like a tap: the ceiling bounds how many cards a day can
+make as well as what they cost, and a later translation of this card is a bill
+too. Two hundred and fifty is far beyond a day of corrections. When it is
+full, the capture is skipped without a word — no alert, never the paywall:
+the person did nothing they need telling about.
+
+**What old builds will see once it is on**, which is why the switch waits:
+the card appears in their Echo and the correction shows as kept, with no toast
+saying so and no setting to stop it. Nothing breaks; it is simply unexplained.
+
+Reverting is the switch. Deleting it is the flag, `correctionCapture.ts`, its
+one call in `sendCorrection`, and its tests.
+
 ## The opening is a ripple, because the old one looked like a fault
 
 The first version of `AppSplash` opened with four arcs: partial rings — two of
@@ -5866,6 +6129,8 @@ about each other.
 
 ## The Me tab is the public profile, plus what only its owner can use
 
+> **Amended 18 October 2026 — see _Home holds the day; Me goes back to being the profile — behind a flag_ below.**
+
 **22 September 2026.** The owner's tab had grown into its own arrangement: an
 80px avatar where every other profile draws 96, the photos under the upgrade
 card at the very bottom, badges as a bare count, no interests at all, and a
@@ -5898,6 +6163,22 @@ name says who does not see it; the week's chart gets the same mark when "Show
 my week chart" is off. Tapping either opens the privacy settings. The rule is
 that the owner always sees their own data and is told which of it is theirs
 alone.
+
+## Home holds the day; Me goes back to being the profile — behind a flag
+
+**18 October 2026.** The entry above made the Me tab the public profile plus
+the rows only its owner can use, and the owner's day — the streak, the next
+badge, the Pro card — rode along on it because there was nowhere else to put
+it. With `flags.v3Home` on there is: Home holds the day (the entry _Home leads the bar, and People holds Discover and the Feed — behind a flag_),
+and Me's job narrows back to the profile and the owner's rows, as move S1 and
+Phase 4 have it.
+
+This pull request moves nothing off Me. Under the flag, the streak, the next
+step and the Pro card appear on Home **as well as** on Me, and Me is unchanged
+in both bars — taking a block off Me is a change somebody without the flag
+would see, so it waits for the Me pull request, which takes off what Home now
+shows and keeps the bell, the wallet, the viewers, follows and preview. The
+rules about what the owner sees of their own profile do not change.
 
 ## A number that has not arrived is a skeleton, not a zero
 
@@ -6759,6 +7040,7 @@ plan, the paywall says what will happen_.
 ## The paywall sells the free week
 
 > **Amended 16 October 2026 — see _The paywall leads with what it charges_ below.**
+> **Amended 18 October 2026 — see _The paywall in v3: a reason per road, then the table_ below.**
 
 With one plan the paywall has one question left — yearly or monthly — so the
 page was rebuilt around the thing that actually lowers the bar: a week free.
@@ -6807,6 +7089,8 @@ motion nothing moves at all. No native module was added, so it ships over the
 air.
 
 ## The paywall leads with what it charges
+
+> **Amended 18 October 2026 — see _The paywall in v3: a reason per road, then the table_ below.**
 
 **16 October 2026.** This reverses _Two cards, not a segmented control_ in the
 entry above, and the reason it gave: both cards quoted a month on the right,
@@ -6857,6 +7141,75 @@ rules are about.
 Unchanged: the two cards, yearly picked on open, the dated timeline, the trial's
 terms in one line directly above the button, Restore, Terms, Privacy and the iOS
 EULA, and the X that closes the screen in one tap.
+
+## The paywall in v3: a reason per road, then the table
+
+**18 October 2026.** The paywall is the first screen to move onto the v3 look
+(_The redesign is v3: A's structure, B's look_), and the move changes five
+things the two entries above recorded.
+
+**The yearly card's computed figures are one coloured badge.** Behic's call on
+16 October, from the drawings: the charge and its period — "$83.99 a year" —
+stay the biggest, heaviest, full-ink price on the card, at headline size, and
+what a year comes to a month and the months it gives away sit under it as one
+mint badge, "$6.99 a month · 3 months free", at the small label size. Colour is
+how the badge is found; size and position still rank it below the charge, which
+is what both stores' rules are about. This replaces the muted month line with a
+separate saving badge after it. The monthly card loses "Billed monthly": its
+price already says "a month". `planPrice.ts` still decides which figure leads,
+and its test still pins it to the charge.
+
+**A reason per road instead of four rows for everybody.** The page now knows why
+it opened (`paywallRoad`): the new-chat allowance ran out, a locked capability
+was tapped, or nothing — the profile, Settings, an @langx card, a link. A gate
+leads with three rows, the refused feature first, and the headline names what
+that person was trying to do: "Meet as many English speakers as you like" (their
+first learning language) when the chats ran out, "See who viewed your profile"
+from the viewer list, "Find exactly who you're looking for" from filters, with
+the locked filters drawn as chips. With no gate the headline stays "Go further
+with Pro" and a Free and Pro table takes the rows' place: five rows, then the
+rest behind "And N more", every cell read off `PLAN_LIMITS` by `compareRows`, so
+a limit changed in `packages/shared` changes the table and nothing else has to.
+A feature that has not shipped reads "Soon" in the Pro column, never a tick. On
+a gate the whole table follows the plans.
+
+**The spent allowance says when the next chat opens, from the server.** The
+composer passes the refusal's `retryAt` to `openPaywall`, and the screen says
+"The next one opens at 14:20" — or "tomorrow at", because the window is a
+rolling day. A plain time and no countdown: a ticking clock on a sales screen is
+pressure, and the line is there to say the wait is short. "Continue free" sits
+under the purchase on this road, at the same size, as it does at the end of
+onboarding: replying is still free, and going back to it has to be as easy as
+paying. The viewer list's road says how many people looked in the last week only
+at or above `PAYWALL_RULES.viewerCountMin`; under it the plain "is part of Pro"
+line stands. The count is the one the viewer list already shows that person,
+read from its cache, never an identity and never fetched again.
+
+**The free promise is pinned beside the button.** "Replies and corrections stay
+free on every plan", in a correction's green, sits in the footer directly above
+the terms line, so it is on screen at every window height and next to the plans
+whatever scrolls. The free plan's promise belongs on the paywall's first
+screen, next to the plans, and a block that scrolls with the page cannot be
+there on every phone. It replaces the lead line under the headline, which had
+been kept on short screens for the same reason.
+
+**Restore moves to the row under the button**, beside Terms, Privacy and the
+iOS EULA, and the header keeps the X and the plan's mark. The gift-code link
+moves from under the button to the foot of the page.
+
+Nunito Black, which the v3 title uses, is loaded by the paywall itself rather
+than at the root: the root's `useFonts` holds every cold start's splash, and
+most launches never open this screen. The entrance already waits up to a second
+for the store; it waits for the font under the same second, so the headline
+never arrives in the platform face and swaps.
+
+Unchanged: the charge leads every card; the free week is in the line under the
+headline, not the headline (the trial-led headline stays the alternative Behic
+can pick at merge); the button names what the tap does and carries no figure;
+the trial's terms in one line directly above it, the charge set strong; yearly
+picked on open; the dated timeline; the X closes in one tap and nothing
+intercepts back or the swipe; nothing is sold to a paid or lifetime plan; every
+event in _The paywall counts every way out_.
 
 ## Gift codes give time, not discounts
 
@@ -7493,3 +7846,29 @@ so every reward paid before this change sits in all-time and nowhere else.
 of everyone who has ever been paid a reward from the ledger, which carries the
 period keys each row was written with, and writes only the rows that disagree.
 Run it once after deploying; a second run finds nothing to do.
+
+## "Where did you hear about us?" is asked, not inferred
+
+Nothing in the app can say where a new account came from. PostHog's
+`$initial_referring_domain` and UTM fields are empty on every app sign-up —
+a store install carries no referrer — and the store consoles' acquisition
+reports are per install, not per person. So @langx asks, once, as a poll
+under the welcome.
+
+The options come from where people actually arrive, read from PostHog before
+the list was written: store search, web search, AI assistants (ChatGPT tags
+its links, and they turned out to be a real channel), a friend, two social
+buckets, app-list sites, and "other". Channels we have no traffic from are not
+offered, because an option nobody picks says nothing and one that is merely
+plausible draws answers from people who are not sure.
+
+"Other" is only a choice. @langx is a channel nobody can write back to
+(`OFFICIAL_WRITABLE`), so there is no reply to collect a free-text answer in,
+and opening the thread for one question would undo that decision for a
+footnote's worth of data.
+
+Telegram hears about it from `langx/admin-tg`, not from this API. The bot
+already follows inserts on the collections it announces, holds a read-only
+database user, and runs on exactly one machine; the unique
+`{pollId, userId}` index means an insert happens once per person, so "only
+the first answer" needs no code at all.

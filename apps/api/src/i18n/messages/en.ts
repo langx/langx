@@ -11,7 +11,21 @@
 export const en = {
   push: {
     streakTitle: { one: '{count} day streak! 🔥', other: '{count} day streak! 🔥' },
-    streakBody: 'Send one message today to keep it going.',
+    /*
+     * The real rule: opening the app checks today in, so the tap on this push
+     * is already enough. It used to ask for a message, which was the rule
+     * before check-ins and has not been true since. It names no plan, price or
+     * purchase, which is what keeps it a streak notification rather than a
+     * promotional one; `streakRepair.test.ts` holds every locale to that.
+     */
+    streakBody: 'Open LangX today to keep it going.',
+    /*
+     * The evening after a streak broke, when a repair is the only thing that
+     * brings it back. "Pick … back up", never "buy": a repair costs tokens,
+     * and the store says how many before anything is spent.
+     */
+    streakRepairTitle: 'Pick your streak back up',
+    streakRepairBody: 'A repair fills in yesterday, and your streak carries on.',
     echoTitle: {
       one: '1 card is ready',
       other: '{count} cards are ready',
@@ -48,11 +62,6 @@ export const en = {
     promo: {
       addPhotoTitle: 'Add a photo',
       addPhotoBody: 'Profiles with a face get far more replies.',
-      streakBrokeTitle: {
-        one: 'Your {count}-day streak broke',
-        other: 'Your {count}-day streak broke',
-      },
-      streakBrokeBody: 'A repair puts yesterday back.',
       awayTitle: 'People are still here',
       awayBody: 'New people to practise with.',
       awayLongTitle: 'Still here when you are',
@@ -739,6 +748,23 @@ export const en = {
     /** The sign-off, last and after a blank line, as `welcomeClosing` is. */
     welcomeBackClosing:
       'This is where news about LangX lands, so it’s worth keeping an eye on. If something’s missing or broken, Settings → About → Feedback comes straight to us. Good to have you back. 💛',
+    /**
+     * The poll that follows the welcome — see `official/heardAbout.ts`. The
+     * option ids are fixed there; these are only their words, so a count
+     * adds up across every language. Brand names stay as they are.
+     */
+    heardAbout: {
+      question:
+        'Quick question, and then I’ll leave you to it: how did you hear about LangX? Tap the one that fits — it tells us where to find more people like you.',
+      store: 'App Store or Google Play',
+      search: 'Google or another search engine',
+      ai: 'ChatGPT or another AI',
+      friend: 'A friend',
+      tiktokInstagram: 'TikTok or Instagram',
+      youtube: 'YouTube',
+      appList: 'An app list or review site',
+      other: 'Somewhere else',
+    },
     /**
      * Thanking somebody for a report we acted on, sent from the panel beside
      * the tokens. It says the report was looked into and never what was

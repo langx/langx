@@ -268,3 +268,27 @@ export function streakSavable(
 export function streakLapsed(lastQualifiedDay: string | null, today: string): boolean {
   return lastQualifiedDay !== null && lastQualifiedDay < shiftDayKey(today, -2)
 }
+
+/**
+ * Whether a streak broke yesterday, so that only a repair brings it back: the
+ * last qualified day is the day before yesterday, and no banked freeze is
+ * there to bridge the gap — with one, showing up today is enough, and that is
+ * the evening reminder's case, not this one.
+ *
+ * The local day, like everything else about a streak. The repair offer used to
+ * measure hours from noon UTC on the last qualified day, which landed a day
+ * early west of about UTC+8 — "your streak broke" to somebody whose streak
+ * was alive and whose reminder went out the same evening.
+ *
+ * Only that one day. Today they have not been back (a check-in would have
+ * moved the day), the decay pass leaves `current` alone until tomorrow (see
+ * `streakLapsed`), and yesterday is the newest day a repair can reach.
+ */
+export function streakBrokeYesterday(
+  streak: { current: number; lastQualifiedDay: string | null },
+  freezes: number,
+  today: string,
+): boolean {
+  if (streak.lastQualifiedDay === null || streak.current < 1) return false
+  return streak.lastQualifiedDay === shiftDayKey(today, -2) && freezes === 0
+}

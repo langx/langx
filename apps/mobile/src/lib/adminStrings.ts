@@ -513,6 +513,25 @@ export const ADMIN = {
       },
     },
 
+    heardAbout: {
+      title: 'Where they heard of us',
+      hint: (total: number) =>
+        `The poll @langx sends every new account under the welcome. ${total} answered so far, all time — first answer only. Returning v1 accounts are not asked.`,
+      none: 'Nobody has answered yet.',
+      failedToLoad: 'Could not load the answers.',
+      recent: 'Latest answers',
+      options: {
+        store: 'App Store or Google Play',
+        search: 'Google or another search engine',
+        ai: 'ChatGPT or another AI',
+        friend: 'A friend',
+        'tiktok-instagram': 'TikTok or Instagram',
+        youtube: 'YouTube',
+        'app-list': 'An app list or review site',
+        other: 'Somewhere else',
+      } as Record<string, string>,
+    },
+
     notHere:
       'Not on this screen: paywall views and what was tapped on them, and installs. They live in PostHog.',
   },

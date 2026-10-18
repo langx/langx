@@ -4,7 +4,9 @@ import type { ServerMessages } from './en'
 export const tr: Localized<ServerMessages> = {
   push: {
     streakTitle: { one: '{count} günlük seri! 🔥', other: '{count} günlük seri! 🔥' },
-    streakBody: 'Seriyi sürdürmek için bugün bir mesaj gönder.',
+    streakBody: "Seriyi sürdürmek için bugün LangX'i aç.",
+    streakRepairTitle: 'Serine kaldığın yerden devam et',
+    streakRepairBody: 'Bir onarım dünü doldurur, serin devam eder.',
     echoTitle: {
       one: '1 kart hazır',
       other: '{count} kart hazır',
@@ -33,11 +35,6 @@ export const tr: Localized<ServerMessages> = {
     promo: {
       addPhotoTitle: 'Bir fotoğraf ekle',
       addPhotoBody: 'Yüzü olan profiller çok daha fazla cevap alıyor.',
-      streakBrokeTitle: {
-        one: '{count} günlük serin bozuldu',
-        other: '{count} günlük serin bozuldu',
-      },
-      streakBrokeBody: 'Onarım dünü geri koyar.',
       awayTitle: 'İnsanlar hâlâ burada',
       awayBody: 'Pratik yapacak yeni insanlar var.',
       awayLongTitle: 'Sen gelene kadar buradayız',
@@ -598,6 +595,18 @@ export const tr: Localized<ServerMessages> = {
       'Çok şey değişti. Düzeltmeler artık başlı başına bir iş, insanlara yardım ettikçe jeton kazanıyorsun ve Keşfet senin dilini öğrenen, senin öğrendiğin dili konuşan birini arıyor. Aynı fikir, ama bu sefer düzgün yapacak yer var — bir dolan bakalım.',
     welcomeBackClosing:
       'LangX’le ilgili haberler buraya düşüyor, ara ara bakmakta fayda var. Eksik ya da bozuk bir şey görürsen Ayarlar → Hakkında → Geri bildirim doğrudan bize geliyor. Yeniden aramızda olman güzel. 💛',
+    heardAbout: {
+      question:
+        'Kısa bir soru, sonra seni rahat bırakıyorum: LangX’i nereden duydun? Sana uyana dokun — senin gibi insanları nerede bulacağımızı bize söylüyor.',
+      store: 'App Store ya da Google Play',
+      search: 'Google ya da başka bir arama motoru',
+      ai: 'ChatGPT ya da başka bir yapay zekâ',
+      friend: 'Bir arkadaş',
+      tiktokInstagram: 'TikTok ya da Instagram',
+      youtube: 'YouTube',
+      appList: 'Bir uygulama listesi ya da inceleme sitesi',
+      other: 'Başka bir yer',
+    },
     reportReward: {
       one: "Bildirimin için teşekkürler. İnceledik ve LangX'i öğrenmek için iyi bir yer olarak tutmaya yardım ettiğin için cüzdanına {count} jeton ekledik. Bildirdiğin kişiye, onu kimin bildirdiği asla söylenmez.",
       other:
