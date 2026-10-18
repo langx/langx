@@ -85,6 +85,24 @@ export const appConfigSchema = z.object({
      */
     streakRepairPush: z.boolean(),
     /**
+     * Reply-first discovery: the default list leaves out people you already
+     * talk to, sorts profiles idle past `DISCOVERY_DORMANT_DAYS` after active
+     * ones, and weighs how often somebody answers a first message; the "New
+     * on LangX" strip and the "usually replies within a day" line come with
+     * it. Off, `/discovery` orders exactly as it did and `/discovery/new` is
+     * empty. Starts off, like `captchaRequired`, because it is a rollout
+     * stage — see `docs/decisions.md` → _Discovery puts the people who answer
+     * first, behind a switch_.
+     */
+    discoveryReplyFirst: z.boolean(),
+    /**
+     * A correction somebody receives becomes an Echo card for them without a
+     * tap. Starts off until the app ships the "Saved to your Echo · Undo"
+     * toast and the setting that go with it — see `docs/decisions.md` → _A
+     * correction you receive is kept in Echo by itself, behind a switch_.
+     */
+    echoFromCorrections: z.boolean(),
+    /**
      * The reminder two days before a free trial turns into a charge — a
      * billing notice, so no switch gates it (`modules/billing/trialEnding.ts`).
      * Starts off because it is new mail and push to people who never had it,
@@ -123,6 +141,8 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     callsEnabled: true,
     captchaRequired: false,
     streakRepairPush: false,
+    discoveryReplyFirst: false,
+    echoFromCorrections: false,
     trialEndingReminder: false,
     nudgeNoSilentDrops: false,
   },

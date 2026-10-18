@@ -971,6 +971,15 @@ $addFields score = language fit + shared interests + activity recency
 $sort:     onlineBucket desc, score desc, lastActiveAt desc  → cursor pagination
 ```
 
+**Reply-first, behind `flags.discoveryReplyFirst` (off by default).** On, the
+`recommended` list also leaves out everyone the viewer already has a thread
+with, adds `dormantBucket` (idle past `DISCOVERY_DORMANT_DAYS`) between
+`onlineBucket` and `score`, and adds `(answered + 1) / (received + 2)` from
+`stats.openersReceived` / `openersAnswered` to the score; cards may carry
+`repliesWithinDay`. `GET /discovery/new` is "New on LangX": adults only at
+both ends, the same scope, newest first. `decisions.md` → _Discovery puts the
+people who answer first, behind a switch_.
+
 `discoverable: false` reaches past this aggregation: it also keeps somebody off
 the leaderboards and out of other people's follower and following lists.
 
