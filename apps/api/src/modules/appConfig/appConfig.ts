@@ -37,7 +37,7 @@ function toDto(doc: AppConfigDoc | null): AppConfig {
     // `callsEnabled` existed, so a stored document carries three of the four.
     // A switch nobody has thrown is at its default — on for the kill switches,
     // off for `captchaRequired` and `v3Home`, which are rollout stages rather
-    // than kill switches.
+    // than kill switches, and off for `copilotEnabled`, which is a consent.
     flags: { ...DEFAULT_APP_CONFIG.flags, ...doc.flags },
     updatedAt: doc.updatedAt.toISOString(),
   }

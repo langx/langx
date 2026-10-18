@@ -13,6 +13,7 @@ import { createTranslationProvider } from './translation/createTranslationProvid
 import { createSttProvider } from './stt/createSttProvider'
 import { createTtsProvider } from './tts/createTtsProvider'
 import { createAnthropicProvider } from './modules/official/assistantProvider'
+import { createCopilotProvider } from './modules/copilot/provider'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
 import { startPurgeScheduler } from './modules/account/purgeScheduler'
 import { startPresenceSampler } from './modules/admin/pulse'
@@ -69,6 +70,9 @@ async function main(): Promise<void> {
   // `null` without a key. @langx still greets and announces — those are ours,
   // not the model's — and a message to it is answered with the offline line.
   const assistant = createAnthropicProvider(env)
+  // `null` without a key — and with one, still off until the operator turns
+  // `flags.copilotEnabled` on. The same key as the assistant's, never the switch.
+  const copilot = createCopilotProvider(env)
 
   // The not-configured one in production without a relay, and then the app is
   // told there is no call service and draws no button for it.
@@ -105,6 +109,7 @@ async function main(): Promise<void> {
     voip,
     email: emailSender,
     assistant,
+    copilot,
   })
 
   // Declarative indexes are applied before the first request is served, so a

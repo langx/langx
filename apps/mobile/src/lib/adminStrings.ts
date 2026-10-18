@@ -509,6 +509,7 @@ export const ADMIN = {
         echoVoices: 'Echo card read aloud',
         chatVoices: 'Message read aloud',
         transcripts: 'Voice note transcripts',
+        copilot: 'Copilot answers',
         unknown: 'Unknown',
       },
     },
@@ -867,6 +868,45 @@ export const ADMIN = {
       empty: 'EmptyStateV3',
       emptyStates: 'chats · cards (secondary action) · people',
     },
+  },
+
+  /**
+   * The Copilot lab: an operator trying Copilot on their own account, against
+   * their own chats — the only way into it in the app until its screens
+   * exist. What it asks is real: the consent sheet, the allowance, the cache.
+   */
+  copilot: {
+    entryRow: 'Copilot lab',
+    title: 'Copilot lab',
+    hint: 'Copilot on your own account, in your own chats. Every answer the model writes is a real call: it spends one of your units and one of the day’s calls for everybody. An answer from the cache spends neither.',
+    switchNote:
+      'Turning it on for everybody is not on this screen. It is `scripts/maintenance.ts flag copilotEnabled true`, and only after the privacy policy and both store forms name the provider and a spend limit is set on the key.',
+    service: 'Service',
+    serviceOn: 'On — a key, and flags.copilotEnabled',
+    serviceOff: 'Off — no key, or flags.copilotEnabled is off',
+    access: 'Your account',
+    accessOk: 'Can use it',
+    accessAge: 'Off — under Copilot’s minimum age',
+    accessOff: 'Off',
+    consent: 'Consent',
+    consentGiven: 'Given',
+    consentMissing: 'Not given',
+    left: 'Left today',
+    leftValue: (remaining: number | null, limit: number | null) =>
+      remaining === null || limit === null ? 'No limit' : `${remaining} of ${limit}`,
+    showSheet: 'Show the consent sheet',
+    withdraw: 'Withdraw consent',
+    pick: 'Pick a chat',
+    pickTitle: 'Try Copilot in',
+    picked: (name: string) => `In the chat with ${name}`,
+    sentence: 'Sentence to check',
+    check: 'Check',
+    replyIdeas: 'Reply ideas',
+    explain: 'Explain the newest correction',
+    noCorrection: 'No correction among the newest messages of this chat.',
+    cached: 'From the cache — nothing spent',
+    fresh: 'Written now',
+    refused: (code: string, reason?: string) => `Refused: ${code}${reason ? ` (${reason})` : ''}`,
   },
 
   common: {

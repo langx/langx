@@ -80,6 +80,17 @@ const envSchema = z.object({
    */
   ANTHROPIC_MODEL: z.string().min(1).default('claude-sonnet-5'),
   /**
+   * The model behind Copilot, when it should not be the assistant's. Unset,
+   * Copilot uses `ANTHROPIC_MODEL`. Its own variable so a cheaper model can
+   * be tried for Copilot without moving the assistant — but the ceilings in
+   * `PLAN_LIMITS.copilotPer24h` are sized for Sonnet 5's price, so re-do that
+   * sum before pointing this anywhere dearer, and judge the answers in all
+   * eight languages before pointing it anywhere cheaper.
+   *
+   * The key is never what turns Copilot on: `flags.copilotEnabled` is.
+   */
+  COPILOT_MODEL: emptyToUndefined(z.string().min(1).optional()),
+  /**
    * Where a bug report or feature request becomes an issue, as `owner/name`.
    */
   GITHUB_ISSUE_REPO: z.string().min(1).default('langx/langx'),
