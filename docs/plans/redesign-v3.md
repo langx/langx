@@ -1,6 +1,6 @@
 # Redesign v3 — tracker
 
-**Status (17 October 2026):** Phase 0 and the first PR of every lane are open as drafts and reviewed. Phase 1: direction chosen (A's structure, B's look); every screen drawn.
+**Status (18 October 2026):** Every round-1 PR is merged. Phase 2 is under way: the v3 foundations (#1792) and Button v2 with IconButton (#1794) are merged; gamification primitives (#1795) and the streak push rewrite (#1796) are in progress. Phase 1 stays as recorded: direction chosen (A's structure, B's look); every screen drawn.
 
 This is the one page that says where the v3 redesign stands. Any session that
 continues the work reads it right after CLAUDE.md. Only the session that
@@ -41,7 +41,7 @@ The paywall is urgent although it is seventh, because there have been no sales.
 | Phase 0, lanes A–D           | now                                                                                                                        | in progress      |
 | Lane E (AI)                  | D12a or D12g approved                                                                                                      | waiting          |
 | Phase 1                      | D3 answered                                                                                                                | direction chosen |
-| Phase 2                      | Phase 1 recorded                                                                                                           | waiting          |
+| Phase 2                      | Phase 1 recorded                                                                                                           | in progress      |
 | Phase 3                      | Phase 2 Button/sheet PRs merged (or Behic's OK to stack); D12 for its money items                                          | waiting          |
 | Phase 4                      | Phase 2 merged; Phase 3's subscriber status card, or build it here                                                         | waiting          |
 | Phase 5                      | Phase 2 merged; lane C merged for reward chips and Echo session-done numbers                                               | waiting          |
@@ -52,20 +52,26 @@ The paywall is urgent although it is seventh, because there have been no sales.
 
 ## Phase 0 and the lanes
 
-| Item                                      | PR    | State                            |
-| ----------------------------------------- | ----- | -------------------------------- |
-| Tracker (this page)                       | #1783 | draft                            |
-| 0.1 Baseline screenshots, "before" set    | —     | published                        |
-| 0.2 Instrumentation                       | #1785 | draft, reviewed                  |
-| Lane A — skeletons on Me and the Echo tab | #1786 | draft, reviewed                  |
-| Lane B — D0 price hierarchy               | #1788 | draft, stacks on #1785, reviewed |
-| Lane B — honesty fixes in copy            | #1789 | draft, reviewed                  |
-| H6 — measurement in the operator panel    | #1790 | draft, reviewed                  |
-| Lane C — return the send award in the ack | #1784 | draft, reviewed                  |
-| Lane D — `.value` to `.get()/.set()`      | #1787 | draft, reviewed                  |
+| Item                                       | PR    | State                                                             |
+| ------------------------------------------ | ----- | ----------------------------------------------------------------- |
+| Tracker (this page)                        | #1783 | merged                                                            |
+| 0.1 Baseline screenshots, "before" set     | —     | published                                                         |
+| 0.2 Instrumentation                        | #1785 | merged                                                            |
+| Lane A — skeletons on Me and the Echo tab  | #1786 | merged                                                            |
+| Lane B — D0 price hierarchy                | #1788 | merged                                                            |
+| Lane B — honesty fixes in copy             | #1789 | merged                                                            |
+| H6 — measurement in the operator panel     | #1790 | merged                                                            |
+| Lane C — return the send award in the ack  | #1784 | merged                                                            |
+| Lane D — `.value` to `.get()/.set()`       | #1787 | merged                                                            |
+| Phase 2 — v3 foundations                   | #1792 | merged                                                            |
+| Phase 2 — Pro translations unlimited       | #1793 | merged; companions langx/website#267 and langx/docs#49 merged     |
+| Phase 2 — Button v2 with IconButton        | #1794 | merged; branding companions langx/branding#24 and #25 still draft |
+| Phase 2 — gamification primitives          | #1795 | in progress                                                       |
+| Lane C — streak push truth and repair push | #1796 | in progress                                                       |
 
-Merge order: #1784 before any client PR that reads the award; #1785 before
-#1788. #1788 waits for the App Review question in rule 26.
+Merge order that applied: #1784 before any client PR that reads the award;
+#1785 before #1788. The App Review question in rule 26 was answered on 17 Oct
+(see Behic's answers).
 
 **Found in review, not fixed (each a follow-up):**
 
@@ -83,6 +89,8 @@ Merge order: #1784 before any client PR that reads the award; #1785 before
   "earliest" where it means "most recent", and the header accessibility flag.
 - #1789: the `limitReached` email and push still fire after refusals of quotas
   Pro does not lift.
+- #1794: the CTA label size beside the terms line is Behic's call under rule 15;
+  the remaining corner icons still to move to IconButton (list in #1794's body).
 - React Compiler: refs read or written during render, unsupported syntax and
   use-before-declare still block it in several files; the stock healthcheck
   reports success falsely (#1787).
@@ -157,6 +165,8 @@ PR.
 | 16 Oct 2026 | Pro translations     | Unlimited on Pro, everywhere; the free plan keeps its daily allowance                                                                                                                                                                                                                                  |
 | 17 Oct 2026 | Rule 26 for #1788    | No build is in App Review; #1788 merges with commit 2 (the free week in the subline)                                                                                                                                                                                                                   |
 | 17 Oct 2026 | Merges               | Behic asked the coordinator to merge in order; the auto-mode classifier allowed #1784 only, so the rest are his clicks                                                                                                                                                                                 |
+| 17 Oct 2026 | Fair use             | Pro translations stay "unlimited" in all copy, with a fair-use guard of 1,000 per 24 hours, disclosed in Terms §5 (merged with langx/website#267)                                                                                                                                                      |
+| 17 Oct 2026 | Merges               | The coordinator merges reviewed, CI-green PRs in order (Behic added the permission)                                                                                                                                                                                                                    |
 
 ## Open questions
 
@@ -177,13 +187,9 @@ need sign-in and are not used; the skills work without them.
 
 ## Decided, not yet built
 
-- **Pro translations become unlimited (Behic, 16 Oct 2026).** The free plan
-  keeps its daily allowance. Code: `PLAN_LIMITS` in `packages/shared`, the
-  server quota, the in-app copy (including `chat.translationQuota` from
-  #1789), and every copy listed in `docs/repo-map.md` (website plans data and
-  Terms §5, the GitBook pages, `docs/store/listing.md`, the store metadata).
-  The provider bills per character, so the PR states the fair-use guard it
-  keeps against automated abuse and how the Terms already cover it.
+Nothing waits at the moment. The one item that sat here, unlimited Pro
+translations, shipped in #1793 with its companions, langx/website#267 and
+langx/docs#49.
 
 ## Before the 3.0 release
 
