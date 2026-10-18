@@ -92,6 +92,16 @@ export const appConfigSchema = z.object({
      * for everybody in a trial. Off, both behave exactly as before.
      */
     trialEndingReminder: z.boolean(),
+    /**
+     * The promotional nudges stop vanishing: a nudge already said this period
+     * no longer holds the evening's slot, the one-day windows wait out the
+     * week's gap, the money nudges outrank idle tokens, and the likes batch
+     * keeps to a local hour (`promotions.ts`, `social.ts`). Nobody new
+     * becomes eligible — consent, the gap and waking hours still decide — but
+     * more of what consenting people qualify for reaches them, so it starts
+     * off and is switched on as a decision rather than by a merge.
+     */
+    nudgeNoSilentDrops: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -114,6 +124,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     captchaRequired: false,
     streakRepairPush: false,
     trialEndingReminder: false,
+    nudgeNoSilentDrops: false,
   },
 }
 
