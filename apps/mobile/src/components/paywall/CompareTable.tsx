@@ -4,6 +4,7 @@ import { Pressable, Text, View } from 'react-native'
 import { useT } from '../../i18n'
 import type { CompareCell, CompareRow } from '../../lib/paywallBenefits'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { ICON_BUTTON_TARGET } from '../ui/IconButton'
 
 interface CompareTableProps {
   rows: readonly CompareRow[]
@@ -195,7 +196,8 @@ const useStyles = makeStyles(({ v3 }) => ({
     borderTopWidth: 1,
     flexDirection: 'row',
     gap: v3.space[6],
-    minHeight: 44,
+    // The platform's minimum target: 48dp on Android, 44pt on iOS.
+    minHeight: ICON_BUTTON_TARGET,
     paddingHorizontal: v3.space[16],
   },
   moreText: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '600' },

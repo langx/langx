@@ -450,13 +450,15 @@ const v3Hues: Record<ColorScheme, Readonly<Record<PartnerHue, string>>> = {
  * The heaviest Nunito, for v3's Numeral, Display and Title.
  *
  * **Not loaded at the root yet.** The root layout's `useFonts` holds the
- * splash until every font in it arrives, and no shipped screen uses this one,
- * so loading it there would make every cold web start wait for a font nobody
- * sees. The design gallery loads it for itself. The first screen that moves
- * onto Numeral, Display or Title adds `Nunito_900Black` to the root `useFonts` in
- * `app/_layout.tsx` in the same PR — a family named but not loaded falls back
- * to the platform face without a word, so a migrated screen would look
- * finished and be in the wrong font.
+ * splash until every font in it arrives, and no screen on the launch path uses
+ * this one, so loading it there would make every cold web start wait for a
+ * font most launches never show. A screen off that path loads it for itself:
+ * the design gallery does, and the paywall waits for it under the second it
+ * already waits for the store (_The paywall in v3_ in `docs/decisions.md`).
+ * The first launch-path screen that moves onto Numeral, Display or Title adds
+ * `Nunito_900Black` to the root `useFonts` in `app/_layout.tsx` in the same PR
+ * — a family named but not loaded falls back to the platform face without a
+ * word, so a migrated screen would look finished and be in the wrong font.
  */
 export const DISPLAY_FONT_BLACK = 'Nunito_900Black'
 

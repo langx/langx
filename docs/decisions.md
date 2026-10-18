@@ -6827,7 +6827,7 @@ EULA, and the X that closes the screen in one tap.
 things the two entries above recorded.
 
 **The yearly card's computed figures are one coloured badge.** Behic's call on
-17 October, from the drawings: the charge and its period — "$83.99 a year" —
+16 October, from the drawings: the charge and its period — "$83.99 a year" —
 stay the biggest, heaviest, full-ink price on the card, at headline size, and
 what a year comes to a month and the months it gives away sit under it as one
 mint badge, "$6.99 a month · 3 months free", at the small label size. Colour is

@@ -30,7 +30,7 @@ import { PlanCard } from '../../src/components/paywall/PlanCard'
 import { Reveal } from '../../src/components/paywall/Reveal'
 import { TrialTimeline, type TrialStep } from '../../src/components/paywall/TrialTimeline'
 import { Button } from '../../src/components/ui/Button'
-import { IconButton } from '../../src/components/ui/IconButton'
+import { ICON_BUTTON_TARGET, IconButton } from '../../src/components/ui/IconButton'
 import { Screen } from '../../src/components/ui/Screen'
 import { Skeleton } from '../../src/components/ui/Skeleton'
 import { track } from '../../src/lib/analytics'
@@ -153,10 +153,10 @@ export default function PaywallScreen() {
   const { locale } = useLocale()
   const names = useDisplayNames()
   const queryClient = useQueryClient()
-  // Title and the prices are Nunito Black, which the root layout does not
-  // load: it would hold every cold start's splash for a screen most launches
-  // never open. The page waits for it under the same second it waits for
-  // the store, so the headline never arrives in the platform face and swaps.
+  // The title is Nunito Black, which the root layout does not load: it would
+  // hold every cold start's splash for a screen most launches never open.
+  // The page waits for it under the same second it waits for the store, so
+  // the headline never arrives in the platform face and swaps.
   const [fontLoaded, fontError] = useFonts({ Nunito_900Black })
 
   // Reached from the profile, the viewer list, filters, Discover and a chat
@@ -971,7 +971,12 @@ const useStyles = makeStyles(({ v3 }) => ({
   terms: { ...v3.type.caption, color: v3.colors.muted, textAlign: 'center' },
   termsBilled: { color: v3.colors.fg, fontWeight: '700' },
   links: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' },
-  // A target a thumb can find, on words set small.
-  link: { justifyContent: 'center', minHeight: 44, paddingHorizontal: v3.space[10] },
+  // A target a thumb can find, on words set small: the platform's minimum,
+  // 48dp on Android rather than iOS's 44.
+  link: {
+    justifyContent: 'center',
+    minHeight: ICON_BUTTON_TARGET,
+    paddingHorizontal: v3.space[10],
+  },
   linkText: { ...v3.type.label, color: v3.colors.muted },
 }))
