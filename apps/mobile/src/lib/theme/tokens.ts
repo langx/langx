@@ -336,6 +336,12 @@ const v3LightColors = {
   /** The grey block: a row group, a search field, an unselected tab pill. */
   surface: '#f2f2ee',
   line: '#e4e4df',
+  /**
+   * The unfilled part of a progress ring — Today's three, the first week.
+   * A step darker than `line`, because the rings sit on `surface` as often as
+   * on the ground, and `line` all but vanishes there. Not a text colour.
+   */
+  track: '#dcdcd5',
   /** The selected tab's pill. */
   tabOn: '#e8e7e1',
   /** Echo's tab and Echo's own surfaces: set apart by tint, never by size. */
@@ -392,6 +398,7 @@ const v3DarkColors: V3Colors = {
   muted: '#a3a8b3',
   surface: '#1a1c21',
   line: '#2a2d33',
+  track: '#2f333b',
   tabOn: '#2a2d33',
   echoTint: '#1c2748',
   echoText: '#8aa6ff',
@@ -440,13 +447,13 @@ const v3Hues: Record<ColorScheme, Readonly<Record<PartnerHue, string>>> = {
 }
 
 /**
- * The heaviest Nunito, for v3's Display and Title.
+ * The heaviest Nunito, for v3's Numeral, Display and Title.
  *
  * **Not loaded at the root yet.** The root layout's `useFonts` holds the
  * splash until every font in it arrives, and no shipped screen uses this one,
  * so loading it there would make every cold web start wait for a font nobody
  * sees. The design gallery loads it for itself. The first screen that moves
- * onto Display or Title adds `Nunito_900Black` to the root `useFonts` in
+ * onto Numeral, Display or Title adds `Nunito_900Black` to the root `useFonts` in
  * `app/_layout.tsx` in the same PR — a family named but not loaded falls back
  * to the platform face without a word, so a migrated screen would look
  * finished and be in the wrong font.
@@ -454,7 +461,7 @@ const v3Hues: Record<ColorScheme, Readonly<Record<PartnerHue, string>>> = {
 export const DISPLAY_FONT_BLACK = 'Nunito_900Black'
 
 /**
- * The v3 type ramp. Nunito carries display, title, headline and label; body,
+ * The v3 type ramp. Nunito carries numeral, display, title, headline and label; body,
  * callout and caption keep the platform face, for the reason `DISPLAY_FONT`
  * gives — reading text here is often in someone's second language.
  *
@@ -469,6 +476,14 @@ export const DISPLAY_FONT_BLACK = 'Nunito_900Black'
  * black.
  */
 export const v3Type = {
+  /**
+   * The one number a block is about — the streak's count, the cards due —
+   * set beside its unit rather than in a sentence. Bigger than Display
+   * because it is a figure, not words: two or three digits, never a line
+   * that has to wrap. Tracked tight, as the drawings do, so "12" reads as
+   * one shape.
+   */
+  numeral: { fontFamily: DISPLAY_FONT_BLACK, fontSize: 76, lineHeight: 76, letterSpacing: -2 },
   display: { fontFamily: DISPLAY_FONT_BLACK, fontSize: 44, lineHeight: 46, letterSpacing: -0.5 },
   title: { fontFamily: DISPLAY_FONT_BLACK, fontSize: 32, lineHeight: 36 },
   headline: { fontFamily: DISPLAY_FONT, fontSize: 22, lineHeight: 28 },

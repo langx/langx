@@ -14,6 +14,8 @@ import { useTheme, type V3TypeStep } from '../../lib/theme'
  * translate for a developer's page.
  */
 const SAMPLES: Record<V3TypeStep, (t: TranslateFn) => string> = {
+  // A figure, which is all the step is for: the catalogue's "+{count}".
+  numeral: (t) => t('tokens.shareAmount', { count: 12 }),
   display: (t) => t('format.days', { count: 9 }),
   title: (t) => t('welcomeBack.title'),
   headline: (t) => t('streak.protectTitle'),

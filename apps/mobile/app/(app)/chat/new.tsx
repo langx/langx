@@ -341,6 +341,7 @@ export default function NewChatScreen() {
             }
             onSend={() => void send()}
             topicSeed={offerTopics ? partnerId : undefined}
+            topicInterests={partner?.interests}
             busy={startConversation.isPending}
             autoFocus
           />
