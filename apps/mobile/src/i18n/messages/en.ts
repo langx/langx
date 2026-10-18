@@ -2786,7 +2786,6 @@ export const en = {
   paywall: {
     screenTitle: 'Plans',
     restorePurchases: 'Restore purchases',
-    partOf: 'is part of',
     unlimitedChats: 'Unlimited new chats',
     unlimitedChatsBody: '{count} a day on the free plan.',
     welcomePack: 'A welcome pack',
@@ -2848,8 +2847,6 @@ export const en = {
     yearly: 'Yearly',
     lifetime: 'One-off',
     headline: 'Go further with {plan}',
-    headlineBody:
-      'Corrections and replies stay unlimited on every plan. Paying removes the other limits.',
     savePercent: 'Save {percent}%',
     freeMonths: {
       one: '{count} month free',
@@ -2881,7 +2878,6 @@ export const en = {
      * `perYear` or `perLifetime`.
      */
     pricePerPeriod: '{price} {period}',
-    billedMonthly: 'Billed monthly',
     lifetimeDetail: 'One payment, nothing renews',
     timelineTitle: 'How your free trial works',
     timelineToday: 'Today: full access',
@@ -2895,6 +2891,36 @@ export const en = {
     subscribe: 'Subscribe',
     startFreeTrial: 'Start your free trial',
     eula: 'Terms of Use (EULA)',
+    planMark: 'LangX {plan}',
+    heroChats: 'Meet as many {language} speakers as you like',
+    heroChatsAny: 'Start as many new chats as you like',
+    heroViewers: 'See who viewed your profile',
+    heroFilters: 'Find exactly who you’re looking for',
+    heroNearby: 'Find partners near you',
+    chatLimitToday: {
+      one: 'You’ve started {count} new chat in the last day. The next one opens at {time}.',
+      other: 'You’ve started {count} new chats in the last day. The next one opens at {time}.',
+    },
+    chatLimitTomorrow: {
+      one: 'You’ve started {count} new chat in the last day. The next one opens tomorrow at {time}.',
+      other:
+        'You’ve started {count} new chats in the last day. The next one opens tomorrow at {time}.',
+    },
+    viewersWeek: {
+      one: '{count} person viewed your profile in the last week.',
+      other: '{count} people viewed your profile in the last week.',
+    },
+    featurePartOf: '{feature} is part of {plan}.',
+    freePromise: 'Replies and corrections stay free on every plan.',
+    compareHeading: 'Compare',
+    compareNewChats: 'New chats a day',
+    compareTranslations: 'Translations a day',
+    compareLanguages: 'Languages you learn',
+    compareUnlimited: 'Unlimited',
+    compareSoon: 'Soon',
+    compareIncluded: 'Included',
+    compareNotIncluded: 'Not included',
+    yearlyBadge: '{perMonth} · {saving}',
   },
 
   proWelcome: {

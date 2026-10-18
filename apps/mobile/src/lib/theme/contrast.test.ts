@@ -53,6 +53,11 @@ const PAIRS: Pair[] = [
   { text: 'onBlue', on: 'blue' },
   { text: 'correction', on: 'bg' },
   { text: 'correction', on: 'surface' },
+  // The paywall's free promise, and the ground on the Pro column's tick.
+  { text: 'correction', on: 'correctionTint' },
+  { text: 'bg', on: 'correction' },
+  // The paywall's cross in the Free column, on a hairline-grey disc.
+  { text: 'muted', on: 'line' },
   // The destructive button: a red label in a red outline, on the ground or
   // on the grey block a settings group sits in.
   { text: 'danger', on: 'bg' },

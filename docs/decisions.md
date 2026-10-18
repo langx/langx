@@ -6922,6 +6922,7 @@ plan, the paywall says what will happen_.
 ## The paywall sells the free week
 
 > **Amended 16 October 2026 — see _The paywall leads with what it charges_ below.**
+> **Amended 18 October 2026 — see _The paywall in v3: a reason per road, then the table_ below.**
 
 With one plan the paywall has one question left — yearly or monthly — so the
 page was rebuilt around the thing that actually lowers the bar: a week free.
@@ -6970,6 +6971,8 @@ motion nothing moves at all. No native module was added, so it ships over the
 air.
 
 ## The paywall leads with what it charges
+
+> **Amended 18 October 2026 — see _The paywall in v3: a reason per road, then the table_ below.**
 
 **16 October 2026.** This reverses _Two cards, not a segmented control_ in the
 entry above, and the reason it gave: both cards quoted a month on the right,
@@ -7020,6 +7023,75 @@ rules are about.
 Unchanged: the two cards, yearly picked on open, the dated timeline, the trial's
 terms in one line directly above the button, Restore, Terms, Privacy and the iOS
 EULA, and the X that closes the screen in one tap.
+
+## The paywall in v3: a reason per road, then the table
+
+**18 October 2026.** The paywall is the first screen to move onto the v3 look
+(_The redesign is v3: A's structure, B's look_), and the move changes five
+things the two entries above recorded.
+
+**The yearly card's computed figures are one coloured badge.** Behic's call on
+16 October, from the drawings: the charge and its period — "$83.99 a year" —
+stay the biggest, heaviest, full-ink price on the card, at headline size, and
+what a year comes to a month and the months it gives away sit under it as one
+mint badge, "$6.99 a month · 3 months free", at the small label size. Colour is
+how the badge is found; size and position still rank it below the charge, which
+is what both stores' rules are about. This replaces the muted month line with a
+separate saving badge after it. The monthly card loses "Billed monthly": its
+price already says "a month". `planPrice.ts` still decides which figure leads,
+and its test still pins it to the charge.
+
+**A reason per road instead of four rows for everybody.** The page now knows why
+it opened (`paywallRoad`): the new-chat allowance ran out, a locked capability
+was tapped, or nothing — the profile, Settings, an @langx card, a link. A gate
+leads with three rows, the refused feature first, and the headline names what
+that person was trying to do: "Meet as many English speakers as you like" (their
+first learning language) when the chats ran out, "See who viewed your profile"
+from the viewer list, "Find exactly who you're looking for" from filters, with
+the locked filters drawn as chips. With no gate the headline stays "Go further
+with Pro" and a Free and Pro table takes the rows' place: five rows, then the
+rest behind "And N more", every cell read off `PLAN_LIMITS` by `compareRows`, so
+a limit changed in `packages/shared` changes the table and nothing else has to.
+A feature that has not shipped reads "Soon" in the Pro column, never a tick. On
+a gate the whole table follows the plans.
+
+**The spent allowance says when the next chat opens, from the server.** The
+composer passes the refusal's `retryAt` to `openPaywall`, and the screen says
+"The next one opens at 14:20" — or "tomorrow at", because the window is a
+rolling day. A plain time and no countdown: a ticking clock on a sales screen is
+pressure, and the line is there to say the wait is short. "Continue free" sits
+under the purchase on this road, at the same size, as it does at the end of
+onboarding: replying is still free, and going back to it has to be as easy as
+paying. The viewer list's road says how many people looked in the last week only
+at or above `PAYWALL_RULES.viewerCountMin`; under it the plain "is part of Pro"
+line stands. The count is the one the viewer list already shows that person,
+read from its cache, never an identity and never fetched again.
+
+**The free promise is pinned beside the button.** "Replies and corrections stay
+free on every plan", in a correction's green, sits in the footer directly above
+the terms line, so it is on screen at every window height and next to the plans
+whatever scrolls. The free plan's promise belongs on the paywall's first
+screen, next to the plans, and a block that scrolls with the page cannot be
+there on every phone. It replaces the lead line under the headline, which had
+been kept on short screens for the same reason.
+
+**Restore moves to the row under the button**, beside Terms, Privacy and the
+iOS EULA, and the header keeps the X and the plan's mark. The gift-code link
+moves from under the button to the foot of the page.
+
+Nunito Black, which the v3 title uses, is loaded by the paywall itself rather
+than at the root: the root's `useFonts` holds every cold start's splash, and
+most launches never open this screen. The entrance already waits up to a second
+for the store; it waits for the font under the same second, so the headline
+never arrives in the platform face and swaps.
+
+Unchanged: the charge leads every card; the free week is in the line under the
+headline, not the headline (the trial-led headline stays the alternative Behic
+can pick at merge); the button names what the tap does and carries no figure;
+the trial's terms in one line directly above it, the charge set strong; yearly
+picked on open; the dated timeline; the X closes in one tap and nothing
+intercepts back or the swipe; nothing is sold to a paid or lifetime plan; every
+event in _The paywall counts every way out_.
 
 ## Gift codes give time, not discounts
 
