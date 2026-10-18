@@ -44,6 +44,7 @@ import {
   FEATURE_TITLE,
   compareRows,
   highlightsFor,
+  sellableFeature,
   type BenefitCopy,
 } from '../../src/lib/paywallBenefits'
 import { paywallOffersState, restoreResult } from '../../src/lib/paywallAnalytics'
@@ -190,8 +191,10 @@ export default function PaywallScreen() {
   }
   const change = planChangeFor(held)
   // The context line only for somebody who can still buy what they were
-  // refused — a subscriber sent here from the Boosted strip already has it.
-  const refused = feature !== null && change === 'buy' ? feature : null
+  // refused — a subscriber sent here from the Boosted strip already has it —
+  // and only for a capability that has shipped (`sellableFeature`).
+  // Analytics keep the raw `feature`.
+  const refused = change === 'buy' ? sellableFeature(feature) : null
   const remaining = quota.data?.initiations.remaining
   const freeChats = PLAN_LIMITS.free.initiationsPer24h ?? 0
 
@@ -461,21 +464,25 @@ export default function PaywallScreen() {
   const billedPeriod = emphasise(periodPhrase)
   const terms =
     offer && !isCurrent
-      ? trialDays !== null
-        ? `${
-            trialWeeks !== null
-              ? t('paywall.trialWeeks', {
-                  count: trialWeeks,
-                  price: billedPrice,
-                  period: billedPeriod,
-                })
-              : t('paywall.trialTerms', {
-                  count: trialDays,
-                  price: billedPrice,
-                  period: billedPeriod,
-                })
-          } · ${t('paywall.cancelAnytime')}`
-        : t('paywall.renewsSummary', { price: billedPrice, period: billedPeriod })
+      ? // A one-off payment has nothing to cancel: it says what it costs and
+        // that nothing renews, never "Cancel anytime".
+        offer.period === 'lifetime'
+        ? `${t('paywall.pricePerPeriod', { price: billedPrice, period: billedPeriod })} · ${t('paywall.lifetimeDetail')}`
+        : trialDays !== null
+          ? `${
+              trialWeeks !== null
+                ? t('paywall.trialWeeks', {
+                    count: trialWeeks,
+                    price: billedPrice,
+                    period: billedPeriod,
+                  })
+                : t('paywall.trialTerms', {
+                    count: trialDays,
+                    price: billedPrice,
+                    period: billedPeriod,
+                  })
+            } · ${t('paywall.cancelAnytime')}`
+          : t('paywall.renewsSummary', { price: billedPrice, period: billedPeriod })
       : null
 
   // Over a gate, the reasons lead and the whole table follows the plans; with

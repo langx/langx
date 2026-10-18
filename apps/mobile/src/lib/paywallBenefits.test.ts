@@ -6,6 +6,7 @@ import {
   HIGHLIGHT_COUNT,
   compareRows,
   highlightsFor,
+  sellableFeature,
 } from './paywallBenefits'
 
 function row(benefit: string, limits?: Record<PlanTier, PlanLimits>) {
@@ -92,5 +93,21 @@ describe('highlightsFor', () => {
     expect(new Set(rows).size).toBe(rows.length)
     expect(highlightsFor('profileViewerIdentities')[0]).toBe('profileViewerIdentities')
     expect(highlightsFor('nearby')).toEqual(['nearby', 'unlimitedInitiations', 'translationQuota'])
+  })
+})
+
+describe('sellableFeature', () => {
+  it('names a shipped capability', () => {
+    expect(sellableFeature('advancedFilters')).toBe('advancedFilters')
+    expect(sellableFeature('profileViewerIdentities')).toBe('profileViewerIdentities')
+  })
+
+  it('never sells one that has not shipped as part of Pro', () => {
+    expect(BENEFIT_COPY.copilot.shipped).toBe(false)
+    expect(sellableFeature('copilot')).toBeNull()
+  })
+
+  it('passes no gate through as none', () => {
+    expect(sellableFeature(null)).toBeNull()
   })
 })

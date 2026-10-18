@@ -175,6 +175,19 @@ export function highlightsFor(refused: PlanFeature | null): readonly ProBenefit[
 }
 
 /**
+ * The refused capability the paywall may name as part of Pro, or `null`.
+ *
+ * Only a shipped one. Nothing in the app opens the paywall over a feature that
+ * has not shipped — Copilot's controls do not exist yet — but the feature is a
+ * route param, so a hand-typed or stale link can still carry one, and "Copilot
+ * is part of Pro" over a feature that does nothing sells it as present. Such a
+ * link gets the general page, where the table already says "Soon".
+ */
+export function sellableFeature(feature: PlanFeature | null): PlanFeature | null {
+  return feature !== null && BENEFIT_COPY[feature].shipped ? feature : null
+}
+
+/**
  * Names for the contextual line, derived from the copy above rather than
  * retyped — the paywall must not call a capability one thing in its list and
  * another in the sentence explaining why the screen opened.
