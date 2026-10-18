@@ -1,9 +1,19 @@
-import { CONVERSATION_STALE_DAYS, CONVERSATION_TOPICS, type ConversationTopic } from '@langx/shared'
+import {
+  CONVERSATION_STALE_DAYS,
+  CONVERSATION_TOPICS,
+  INTEREST_TOPICS,
+  type ConversationTopic,
+} from '@langx/shared'
 
 /** How many starters sit above the composer at once. */
 export const STARTERS_SHOWN = 3
 
 const DAY_MS = 24 * 60 * 60 * 1000
+
+/** A Map, so an interest typed as `constructor` finds nothing on the prototype. */
+const TOPICS_BY_INTEREST = new Map<string, readonly ConversationTopic[]>(
+  Object.entries(INTEREST_TOPICS),
+)
 
 /**
  * Whether a thread should offer starters: it has no message yet, or its newest
@@ -34,13 +44,24 @@ export function startersDue(
  * partner before there is one. Rounds walk one fixed order of all the topics,
  * so a shuffle never brings back a chip that is on screen, and every topic
  * comes round before any repeats.
+ *
+ * `interests` are the partner's: the topics they point at lead that order, so
+ * the first chips are about something the other person said they like. Moved
+ * to the front rather than offered alone, so a shuffle still reaches every
+ * topic, and a profile with no known interest opens exactly as before.
  */
 export function pickStarters(
   seed: string,
   round: number,
   count: number = STARTERS_SHOWN,
+  interests: readonly string[] = [],
 ): ConversationTopic[] {
-  const order = shuffled(CONVERSATION_TOPICS, seed)
+  const liked = new Set(interests.flatMap((interest) => TOPICS_BY_INTEREST.get(interest) ?? []))
+  const all = shuffled(CONVERSATION_TOPICS, seed)
+  const order = [
+    ...all.filter((topic) => liked.has(topic)),
+    ...all.filter((topic) => !liked.has(topic)),
+  ]
   const take = Math.min(count, order.length)
   const start = (((round * take) % order.length) + order.length) % order.length
   return Array.from({ length: take }, (_, at) => order[(start + at) % order.length]!)
