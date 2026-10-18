@@ -1,26 +1,26 @@
 import Feather from '@expo/vector-icons/Feather'
 import { effectivePlanTier, TIER_BADGES } from '@langx/shared'
 import { router } from 'expo-router'
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
-import { Modal, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { Modal, Text, View } from 'react-native'
 import Animated, {
-  Easing,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
   withSpring,
-  withTiming,
 } from 'react-native-reanimated'
 import { useAckProWelcome, useMe, type MeProfile } from '../api/queries'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useTourOpen } from '../hooks/useTour'
 import { useT } from '../i18n'
 import { track } from '../lib/analytics'
+import { RAIN } from '../lib/celebration'
 import { notification } from '../lib/haptics'
 import { isLaunchOver, subscribeToLaunchOver } from '../lib/launchOver'
 import { PRO_WELCOME_HIGHLIGHTS, proWelcomeCopy, setProWelcomeOpen } from '../lib/proWelcome'
 import { makeStyles, useTheme } from '../lib/theme'
 import { Button } from './ui/Button'
+import { Confetti } from './ui/Confetti'
 
 type Welcome = NonNullable<MeProfile['proWelcome']>
 
@@ -168,89 +168,14 @@ function WelcomeSheet({
           </View>
           <Button label={t('proWelcome.start')} onPress={onStart} style={styles.start} />
         </View>
-        {reduceMotion ? null : <EmojiRain />}
+        {reduceMotion ? null : <Confetti pieces={WELCOME_RAIN} count={24} rain={RAIN.welcome} />}
       </View>
     </Modal>
   )
 }
 
-/** Decoration, not content: never read out, never in the way of a tap. */
-const RAIN = ['🎉', '✨', '🎊', '⭐', '💜'] as const
-const DROPS = 24
-
-/**
- * One shower, then gone. Every drop waits a beat before it starts, which is
- * also what keeps it off screen while `useReduceMotion` is still answering:
- * the hook starts at "motion is fine" and a drop already falling when it says
- * otherwise would be exactly the movement somebody asked not to see.
- */
-function EmojiRain() {
-  const { width, height } = useWindowDimensions()
-  const drops = useMemo(
-    () =>
-      Array.from({ length: DROPS }, (_, index) => ({
-        emoji: RAIN[index % RAIN.length] ?? RAIN[0],
-        left: Math.random() * Math.max(0, width - 36),
-        delay: 250 + Math.random() * 900,
-        duration: 1900 + Math.random() * 1300,
-        size: 22 + Math.random() * 14,
-        spin: (Math.random() - 0.5) * 300,
-      })),
-    [width],
-  )
-
-  return (
-    <View
-      pointerEvents="none"
-      style={StyleSheet.absoluteFill}
-      accessibilityElementsHidden
-      importantForAccessibility="no-hide-descendants"
-    >
-      {drops.map((drop, index) => (
-        <Drop key={index} {...drop} fall={height + 120} />
-      ))}
-    </View>
-  )
-}
-
-function Drop({
-  emoji,
-  left,
-  delay,
-  duration,
-  size,
-  spin,
-  fall,
-}: {
-  emoji: string
-  left: number
-  delay: number
-  duration: number
-  size: number
-  spin: number
-  fall: number
-}) {
-  const progress = useSharedValue(0)
-
-  useEffect(() => {
-    progress.set(withDelay(delay, withTiming(1, { duration, easing: Easing.in(Easing.quad) })))
-  }, [progress, delay, duration])
-
-  const style = useAnimatedStyle(() => ({
-    // Invisible until it starts, and fading over the last fifth of the fall.
-    opacity: progress.get() === 0 ? 0 : Math.min(1, (1 - progress.get()) * 5),
-    transform: [
-      { translateY: -60 + progress.get() * fall },
-      { rotate: `${progress.get() * spin}deg` },
-    ],
-  }))
-
-  return (
-    <Animated.Text style={[{ fontSize: size, left, position: 'absolute', top: 0 }, style]}>
-      {emoji}
-    </Animated.Text>
-  )
-}
+/** The emoji shower that has always greeted Pro; `Confetti` draws it. */
+const WELCOME_RAIN = { kind: 'glyph', glyphs: ['🎉', '✨', '🎊', '⭐', '💜'] } as const
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   backdrop: {

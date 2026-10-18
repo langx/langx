@@ -31,6 +31,7 @@ export const ptBR: Localized<EnMessages> = {
     edit: 'Editar',
     enable: 'Ativar',
     update: 'Atualizar',
+    close: 'Fechar',
     notLoaded: 'Não foi possível carregar',
   },
 
@@ -1886,6 +1887,7 @@ export const ptBR: Localized<EnMessages> = {
     emptyTitle: 'Ainda não há nada aqui',
     emptyBody: 'Mande uma mensagem ou escreva uma correção, e hoje vira seu primeiro dia.',
     legendMissed: 'Perdido · toque para preencher',
+    daysTogether: { one: '{count} dia juntos', other: '{count} dias juntos' },
   },
   settings: {
     scanBody: 'Entre em um computador ou abra o perfil de um amigo',

@@ -34,6 +34,7 @@ export const es: Localized<EnMessages> = {
     edit: 'Editar',
     enable: 'Activar',
     update: 'Actualizar',
+    close: 'Cerrar',
     notLoaded: 'No se pudo cargar',
   },
 
@@ -1889,6 +1890,7 @@ export const es: Localized<EnMessages> = {
     emptyTitle: 'Aquí todavía no hay nada',
     emptyBody: 'Envía un mensaje o escribe una corrección y hoy será tu primer día.',
     legendMissed: 'Perdido · toca para rellenarlo',
+    daysTogether: { one: '{count} día juntos', other: '{count} días juntos' },
   },
   settings: {
     scanBody: 'Inicia sesión en un ordenador o abre el perfil de un amigo',
