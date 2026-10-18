@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { OFFICIAL_ASSISTANT } from '@langx/shared'
-import { betaZodTool } from '@anthropic-ai/sdk/helpers/beta/zod'
+import { betaZodOutputFormat, betaZodTool } from '@anthropic-ai/sdk/helpers/beta/zod'
 import type { z } from 'zod'
 import type { Env } from '../../env'
 
@@ -44,19 +44,56 @@ export interface AssistantProvider {
 }
 
 /**
+ * The models that **reject** `output_config.effort` rather than ignoring it:
+ * Haiku 4.5 and Sonnet 4.5, and everything before the 4.5 generation, which
+ * is where the parameter arrived. The dated ids of Opus 4 and Sonnet 4 begin
+ * `-4-2025…`, hence those two entries.
+ */
+const REFUSES_EFFORT = [
+  'claude-3',
+  'claude-haiku-4',
+  'claude-sonnet-4-5',
+  'claude-sonnet-4-0',
+  'claude-sonnet-4-2025',
+  'claude-opus-4-0',
+  'claude-opus-4-1',
+  'claude-opus-4-2025',
+]
+
+/**
  * Whether this model is sent an effort level.
  *
- * `effort` tunes how much a model thinks, and Haiku does not think — it
- * **rejects** the parameter rather than ignoring it, so sending it to the
- * default model would 400 every reply, invisibly, until somebody wrote to
- * @langx. Every other model here defaults to thinking hard, which this
- * workload does not need, so they are sent `low`.
+ * Sending it to a model in `REFUSES_EFFORT` would 400 every reply, invisibly,
+ * until somebody wrote to @langx. Every newer model takes it, and defaults to
+ * thinking harder than this workload needs — `high`, or `medium` on Haiku 5.5
+ * and Opus 5.5 — so they are sent `low`.
  *
- * A prefix match rather than a list of ids: the rule is about the family, and
- * a list would be one more thing to remember to edit.
+ * This used to withhold effort from every Haiku, written when the only Haiku
+ * was 4.5. Haiku 5.5 takes it, so a move to the cheap model would have left
+ * it thinking at its `medium` default — paying for thought nobody asked for,
+ * on exactly the change that was meant to save money.
+ *
+ * Prefixes rather than ids: the rule is about generations, and the list only
+ * names old ones, so a new model is sent `low` without anybody editing this.
  */
 export function sendsEffort(model: string): boolean {
-  return !model.startsWith('claude-haiku')
+  return !REFUSES_EFFORT.some((prefix) => model.startsWith(prefix))
+}
+
+/**
+ * Whether a refused request is re-run server-side, on the model Anthropic
+ * recommends for that kind of refusal (`fallbacks: "default"`).
+ *
+ * Only for the models that offer it: Fable 5.1, Opus 5 and 5.5, Sonnet 5.5.
+ * Haiku 5.5 has no fallback, and a beta an endpoint does not recognise is a
+ * 400 on every call — so everything else is sent nothing, and a refusal comes
+ * back as one, which the caller handles. Copilot's only; the assistant keeps
+ * its own reasoning, below.
+ */
+const OFFERS_REFUSAL_FALLBACK = ['claude-fable-5-1', 'claude-opus-5', 'claude-sonnet-5-5']
+
+export function sendsRefusalFallback(model: string): boolean {
+  return OFFERS_REFUSAL_FALLBACK.some((prefix) => model.startsWith(prefix))
 }
 
 export function createAnthropicProvider(env: Env): AssistantProvider | null {
@@ -122,6 +159,81 @@ export function createAnthropicProvider(env: Env): AssistantProvider | null {
         .map((block) => block.text)
         .join('\n')
         .trim()
+    },
+  }
+}
+
+/** One question with one typed answer — what Copilot asks. */
+export interface StructuredRequest<T> {
+  system: string
+  /** Everything the model is asked about, as the one user turn. */
+  prompt: string
+  schema: z.ZodType<T>
+}
+
+/**
+ * The same provider asked for one typed answer instead of a turn in a
+ * conversation: structured output, so what comes back is JSON the schema
+ * accepts, or nothing.
+ *
+ * An interface for `AssistantProvider`'s reason — everything worth testing
+ * about Copilot (the consent gate, the allowance, the cache, what a refusal
+ * says) is orchestration, and none of it should need a key or a network.
+ *
+ * `null` means no answer: the model declined, ran out of room before the
+ * answer was whole, or wrote something the schema refuses. A thrown error is
+ * a failure to reach it at all. The caller words both, and gives back the
+ * allowance either way.
+ */
+export interface StructuredProvider {
+  /** Which model answers — part of a cached answer's key, so a new model starts a fresh cache. */
+  readonly model: string
+  ask<T>(request: StructuredRequest<T>): Promise<T | null>
+}
+
+export function createStructuredProvider(
+  apiKey: string | undefined,
+  model: string,
+  maxTokens: number,
+): StructuredProvider | null {
+  if (!apiKey) return null
+  const client = new Anthropic({ apiKey })
+
+  // `sendsEffort`'s rule, decided once rather than per request.
+  const effort = sendsEffort(model) ? { effort: 'low' as const } : {}
+  const fallback = sendsRefusalFallback(model)
+    ? { betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' as const }
+    : {}
+
+  return {
+    model,
+    async ask({ system, prompt, schema }) {
+      let message
+      try {
+        message = await client.beta.messages.parse({
+          model,
+          max_tokens: maxTokens,
+          system,
+          messages: [{ role: 'user', content: prompt }],
+          output_config: { ...effort, format: betaZodOutputFormat(schema) },
+          ...fallback,
+        })
+      } catch (error) {
+        /*
+         * A refused or cut-off answer is not JSON the schema accepts, and the
+         * SDK's parse is what notices first — it throws a plain
+         * `AnthropicError` before `stop_reason` can be read. That is "no
+         * answer", not an outage. `APIError` is the request itself failing,
+         * and goes up as one.
+         */
+        if (error instanceof Anthropic.AnthropicError && !(error instanceof Anthropic.APIError)) {
+          return null
+        }
+        throw error
+      }
+      // Checked before the answer is read, for `respond`'s reason above.
+      if (message.stop_reason === 'refusal' || message.stop_reason === 'max_tokens') return null
+      return message.parsed_output
     },
   }
 }

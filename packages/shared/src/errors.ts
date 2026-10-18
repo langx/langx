@@ -206,6 +206,25 @@ export const ERROR_CODES = {
    */
   CALLS_UNAVAILABLE: 'CALLS_UNAVAILABLE',
 
+  // copilot
+  /**
+   * Copilot did not answer, and nothing was spent. `reason` is one of
+   * `COPILOT_UNAVAILABLE_REASONS`: `off` (no key, or the operator's switch is
+   * off — `/app-config` says so first), `age` (the account is under
+   * `COPILOT_RULES.minimumAge`), `busy` (today's global ceiling is spent) or
+   * `no_answer` (the model declined or failed; the unit was given back).
+   * One code, because the client's answer is one shape — a sentence, never
+   * the paywall — and only the sentence differs.
+   */
+  COPILOT_UNAVAILABLE: 'COPILOT_UNAVAILABLE',
+  /**
+   * Nothing goes to the model before the person has agreed to it, on the
+   * current version of the consent sheet. 409 for `LOCATION_REQUIRED`'s
+   * reason: the request is fine, and the fix is a step the account has not
+   * taken yet.
+   */
+  COPILOT_CONSENT_REQUIRED: 'COPILOT_CONSENT_REQUIRED',
+
   // testimonials
   /**
    * A testimonial about somebody this pair has not earned the right to write
@@ -355,6 +374,8 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   CALL_COOLDOWN: 429,
   CALL_UNREACHABLE: 409,
   CALLS_UNAVAILABLE: 503,
+  COPILOT_UNAVAILABLE: 503,
+  COPILOT_CONSENT_REQUIRED: 409,
   TESTIMONIAL_LOCKED: 409,
   TESTIMONIAL_REMOVED: 409,
   NOT_FOUND: 404,

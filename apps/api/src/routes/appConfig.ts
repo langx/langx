@@ -51,6 +51,9 @@ export const appConfigRoutes: FastifyPluginAsyncZod = async (app) => {
       // A relay to carry calls, and the operator's switch left on. The config
       // is the one already read above, so this costs nothing.
       callService: app.ice.configured && config.flags.callsEnabled,
+      // Both switches: a key, and the operator's flag, which starts off. The
+      // key alone is shared with the assistant and turns nothing on.
+      copilotService: app.copilot !== null && config.flags.copilotEnabled,
     }
     // Short cache: long enough to absorb a launch stampede, short enough that
     // turning maintenance on is not stuck behind a CDN.

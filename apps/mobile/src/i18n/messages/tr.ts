@@ -2848,4 +2848,18 @@ export const tr: Localized<EnMessages> = {
       },
     },
   },
+  copilot: {
+    label: 'Yapay zekâ · yanılabilir',
+    off: 'Copilot kapalı.',
+    consentTitle: 'Copilot: başlamadan önce',
+    consentBody:
+      'Copilot bir yapay zekâ yardımcısı. Göndermeden önce bir cümleni kontrol edebilir, yanıt önerebilir ve birinin yaptığı bir düzeltmeyi açıklayabilir.',
+    consentSends:
+      'Bir şey sorduğunda, sorduğun metin dillerin ve seviyelerinle birlikte yapay zekâ modelini çalıştıran şirkete gönderilir: Anthropic. Yanıt önerilerinde buna sohbetteki son birkaç mesaj da dahildir.',
+    consentNever: 'Adın, e-posta adresin, fotoğrafların ve sesli mesajların asla gönderilmez.',
+    consentWrong:
+      'Yapay zekâ yanılabilir. Yanıtları yapay zekâ olarak işaretlenir ve sen kendin göndermedikçe karşı tarafa hiçbir şey ulaşmaz.',
+    consentAccept: 'Kabul et ve aç',
+    consentDecline: 'Şimdi değil',
+  },
 }

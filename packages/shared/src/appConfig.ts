@@ -74,6 +74,16 @@ export const appConfigSchema = z.object({
      * `docs/decisions.md` → _Turnstile on the password forms_.
      */
     captchaRequired: z.boolean(),
+    /**
+     * Copilot, for everybody at once. Starts **off**, like `captchaRequired`
+     * and for a stronger reason: it is not a kill switch but a consent the
+     * operator gives for the whole service — that the privacy policy and both
+     * store forms name the AI provider, and that a spend limit is set where
+     * the key lives. A key alone never turns Copilot on; this does, and only
+     * with a key beside it (`copilotService` below). See `docs/decisions.md`
+     * → _Copilot ships dark, behind two switches and a consent_.
+     */
+    copilotEnabled: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -94,6 +104,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     signupsEnabled: true,
     callsEnabled: true,
     captchaRequired: false,
+    copilotEnabled: false,
   },
 }
 
@@ -153,6 +164,15 @@ export const appConfigResponseSchema = appConfigSchema.extend({
    * not be drawn, and the app does not need to know which half said no.
    */
   callService: z.boolean(),
+  /**
+   * Whether Copilot answers here at all — a model key is configured **and**
+   * `flags.copilotEnabled` is on. One answer for `callService`'s reason.
+   *
+   * Read as `=== true` on the client, so an API that predates the field reads
+   * as off. Whether *this person* may use it — age, consent, today's
+   * allowance — is `GET /copilot`'s answer, not this one.
+   */
+  copilotService: z.boolean(),
 })
 export type AppConfigResponse = z.infer<typeof appConfigResponseSchema>
 
