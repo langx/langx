@@ -41,6 +41,7 @@ export const ru: Localized<EnMessages> = {
     edit: 'Изменить',
     enable: 'Включить',
     update: 'Обновить',
+    close: 'Закрыть',
     notLoaded: 'Не загрузилось',
   },
 
@@ -2071,6 +2072,12 @@ export const ru: Localized<EnMessages> = {
     emptyTitle: 'Здесь пока пусто',
     emptyBody: 'Отправь сообщение или напиши исправление — и сегодня станет первым днём.',
     legendMissed: 'Пропущен · нажмите, чтобы восполнить',
+    daysTogether: {
+      one: '{count} день вместе',
+      few: '{count} дня вместе',
+      many: '{count} дней вместе',
+      other: '{count} дня вместе',
+    },
   },
   settings: {
     scanBody: 'Войти на компьютере или открыть профиль друга',

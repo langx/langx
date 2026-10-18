@@ -40,6 +40,7 @@ export const tr: Localized<EnMessages> = {
     edit: 'Düzenle',
     enable: 'Aç',
     update: 'Güncelle',
+    close: 'Kapat',
     notLoaded: 'Yüklenemedi',
   },
 
@@ -1882,6 +1883,7 @@ export const tr: Localized<EnMessages> = {
     emptyTitle: 'Burada henüz bir şey yok',
     emptyBody: 'Bir mesaj gönder ya da bir düzeltme yaz; bugün ilk günün olsun.',
     legendMissed: 'Kaçırıldı · doldurmak için dokun',
+    daysTogether: { one: '{count} gündür birlikte', other: '{count} gündür birlikte' },
   },
   settings: {
     scanBody: 'Bilgisayarda giriş yap ya da bir arkadaşının profilini aç',

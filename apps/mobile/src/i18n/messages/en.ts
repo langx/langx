@@ -50,6 +50,7 @@ export const en = {
     edit: 'Edit',
     enable: 'Enable',
     update: 'Update',
+    close: 'Close',
     /** Read aloud in place of the dash a number shows when it did not load. */
     notLoaded: 'Couldn’t load',
   },
@@ -2096,6 +2097,8 @@ export const en = {
     emptyTitle: 'Nothing here yet',
     emptyBody: 'Send a message or write a correction, and today becomes your first day.',
     legendMissed: 'Missed · tap to fill in',
+    /** Two partners who have both written, day after day: the pair flame's words. */
+    daysTogether: { one: '{count} day together', other: '{count} days together' },
   },
   settings: {
     scanBody: 'Sign in on a computer, or open a friend’s profile',
