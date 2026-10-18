@@ -53,9 +53,9 @@ export function ProgressBar({ value, height = 4, color, accessibilityLabel }: Pr
 }
 
 const useStyles = makeStyles(({ v3 }) => ({
-  // `line` until the palette has a track grey; the drawings' is a shade
-  // darker. Blue, not yellow: yellow belongs to the one committing control on
-  // a screen, and a bar commits nothing.
-  track: { backgroundColor: v3.colors.line, borderRadius: v3.radius.pill, overflow: 'hidden' },
+  // `track`, the drawings' grey for what is not done yet. Blue, not yellow:
+  // yellow belongs to the one committing control on a screen, and a bar
+  // commits nothing.
+  track: { backgroundColor: v3.colors.track, borderRadius: v3.radius.pill, overflow: 'hidden' },
   fill: { backgroundColor: v3.colors.blue, borderRadius: v3.radius.pill, height: '100%' },
 }))

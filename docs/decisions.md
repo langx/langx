@@ -857,8 +857,9 @@ toast's way in.
   `src/lib/changeHaptic.ts` holds the window and the reason.
 - **The segment's pill slides, and the labels cross over with it.** Ink pill
   and white label, ink label on grey: a label that changed colour at the tap
-  would be white on grey until the pill arrived, so both labels are drawn and
-  cross-fade by how much of the pill is under them. Where more than one
+  would be white on grey until the pill arrived, so the pill carries a white
+  copy of the labels, moved against it and clipped to its shape: a label is
+  white exactly where the pill covers it, mid-slide too. Where more than one
   segment is chosen (the filters' level band) each is its own pill, as drawn.
   Four segments or more set their labels a step smaller, and on iOS and
   Android a label shrinks to fit before it truncates.
@@ -870,8 +871,8 @@ toast's way in.
 - **In the meantime.** v3's `surface` grey is a shade from the current look's
   dark ground, so on a screen that has not moved yet a segmented control's
   track nearly disappears after dark; the pill still carries the choice. The
-  bar's track and the steps ahead use v3's `line`, a shade lighter than the
-  drawings' track grey, until the palette has one.
+  bar's track and the steps ahead are v3's `track`, the grey the progress
+  rings use.
 
 ## Client — one socket, opened in the tab layout
 

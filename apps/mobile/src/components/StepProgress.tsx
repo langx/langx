@@ -83,8 +83,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   block: { flex: 1, gap: v3.space[6] },
   step: { ...v3.type.label, color: v3.colors.muted },
   bars: { flexDirection: 'row', gap: v3.space[4] },
-  // `line` for the steps ahead until the palette has a track grey; the
-  // drawing's is a shade darker.
-  bar: { backgroundColor: v3.colors.line, borderRadius: v3.radius.pill, flex: 1, height: 8 },
+  // The steps ahead in `track`, as the drawing has them.
+  bar: { backgroundColor: v3.colors.track, borderRadius: v3.radius.pill, flex: 1, height: 8 },
   barDone: { backgroundColor: v3.colors.fg },
 }))
