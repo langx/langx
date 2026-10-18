@@ -196,13 +196,18 @@ describe('the nudges that need permission', () => {
   })
 
   it('offers the repair the day after a real streak broke, and only then', async () => {
+    // The 13th was missed; the 12th was the last day that counted.
     await newProfile({
       avatar: true,
-      streak: { current: 9, lastQualifiedDay: '2026-09-13' },
+      earned: 900,
+      device: true,
+      streak: { current: 9, lastQualifiedDay: '2026-09-12' },
       notifications: { streak: { push: true, email: true } },
     })
     expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
     expect(subjects()[0]).toContain('9')
+    // The mail only: the repair's push is its own pass, which no mail holds back.
+    expect(push.sent).toHaveLength(0)
 
     // A streak of two is not worth a letter, and neither is one that broke a
     // week ago.
@@ -212,12 +217,29 @@ describe('the nudges that need permission', () => {
     await newProfile({
       avatar: true,
       invited: true,
-      streak: { current: 2, lastQualifiedDay: '2026-09-13' },
+      streak: { current: 2, lastQualifiedDay: '2026-09-12' },
     })
     await newProfile({
       avatar: true,
       invited: true,
       streak: { current: 9, lastQualifiedDay: '2026-09-01' },
+    })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+  })
+
+  /**
+   * The old test of this nudge used exactly this profile and expected a mail:
+   * it counted hours from noon UTC, so on the 14th a streak whose last day was
+   * the 13th — alive, and due tonight's reminder — read as broken.
+   */
+  it('never tells somebody a streak broke while it is still alive', async () => {
+    // Away eight days only so that no other nudge answers instead.
+    await newProfile({
+      avatar: true,
+      invited: true,
+      earned: 900,
+      activeDaysAgo: 8,
+      streak: { current: 9, lastQualifiedDay: '2026-09-13' },
     })
     expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
   })

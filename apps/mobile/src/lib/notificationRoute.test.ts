@@ -54,6 +54,19 @@ describe('notificationRoute', () => {
     expect(notificationRoute({ kind: 'wallet' })).toBe('/wallet')
   })
 
+  /**
+   * The repair push is a `wallet` push carrying the missed day. A build that
+   * predates the day reads only the kind, which every build since the wallet
+   * kind routes to the wallet — the store is one tap from there. Stripping
+   * the field is exactly what such a build sees.
+   */
+  it('opens the store for a streak repair, and the wallet on a build that cannot tell', () => {
+    const repair = { kind: 'wallet', repairDay: '2026-09-13' }
+    expect(notificationRoute(repair)).toBe('/wallet/store')
+    expect(notificationRoute({ kind: repair.kind })).toBe('/wallet')
+    expect(notificationRoute({ kind: 'wallet', repairDay: '' })).toBe('/wallet')
+  })
+
   it('opens the thread a call notification came from', () => {
     // Where the app rings for itself if the call is still live, and where the
     // row that says it ended is if it is not.

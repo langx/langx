@@ -156,6 +156,12 @@ export interface PushMessage {
     postId?: string
     /** Whose profile to open — the follow push, which has no post. */
     handle?: string
+    /**
+     * The missed day a streak repair would fill in. On a `wallet` push it is
+     * what makes it the repair push rather than tokens arriving: a build that
+     * reads it opens the store, and one that does not opens the wallet.
+     */
+    repairDay?: string
   }
   /**
    * The number to put on the app icon — the recipient's unread total, from

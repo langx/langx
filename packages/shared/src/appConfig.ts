@@ -74,6 +74,16 @@ export const appConfigSchema = z.object({
      * `docs/decisions.md` → _Turnstile on the password forms_.
      */
     captchaRequired: z.boolean(),
+    /**
+     * The streak repair push, "Pick your streak back up". Starts off, like
+     * `captchaRequired`, and for a different reason: it reaches people the
+     * old repair push never did — anyone with the streak push on, whatever
+     * their mail says — so whether it goes out is a consent decision, made by
+     * switching this on rather than by a merge. Off, nobody gets a repair
+     * push at all; the repair mail is not affected. See
+     * `modules/notifications/streakRepair.ts`.
+     */
+    streakRepairPush: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -94,6 +104,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     signupsEnabled: true,
     callsEnabled: true,
     captchaRequired: false,
+    streakRepairPush: false,
   },
 }
 
