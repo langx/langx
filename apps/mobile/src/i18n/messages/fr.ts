@@ -2567,7 +2567,6 @@ export const fr: Localized<EnMessages> = {
   paywall: {
     screenTitle: 'Formules',
     restorePurchases: 'Restaurer les achats',
-    partOf: 'fait partie de',
     unlimitedChats: 'Discussions nouvelles illimitées',
     unlimitedChatsBody: '{count} par jour sur le forfait gratuit.',
     welcomePack: 'Un pack de bienvenue',
@@ -2629,8 +2628,6 @@ export const fr: Localized<EnMessages> = {
     yearly: 'Annuel',
     lifetime: 'Paiement unique',
     headline: 'Va plus loin avec {plan}',
-    headlineBody:
-      'Les corrections et les réponses restent illimitées avec chaque formule. Payer supprime les autres limites.',
     savePercent: '{percent}% d’économie',
     freeMonths: {
       one: '{count} mois offert',
@@ -2657,7 +2654,6 @@ export const fr: Localized<EnMessages> = {
     },
     showLess: 'Afficher moins',
     pricePerPeriod: '{price} {period}',
-    billedMonthly: 'Facturé chaque mois',
     lifetimeDetail: 'Un seul paiement, sans renouvellement',
     timelineTitle: 'Comment fonctionne ton essai gratuit',
     timelineToday: 'Aujourd’hui : accès complet',
@@ -2671,6 +2667,37 @@ export const fr: Localized<EnMessages> = {
     subscribe: 'S’abonner',
     startFreeTrial: 'Commencer l’essai gratuit',
     eula: 'Conditions d’utilisation (CLUF)',
+    planMark: 'LangX {plan}',
+    heroChats: 'Rencontre autant de personnes qui parlent {language} que tu veux',
+    heroChatsAny: 'Lance autant de nouvelles discussions que tu veux',
+    heroViewers: 'Vois qui a consulté ton profil',
+    heroFilters: 'Trouve exactement qui tu cherches',
+    heroNearby: 'Trouve des gens près de chez toi',
+    chatLimitToday: {
+      one: 'Tu as lancé {count} nouvelle discussion ces dernières 24 heures. La prochaine s’ouvre à {time}.',
+      other:
+        'Tu as lancé {count} nouvelles discussions ces dernières 24 heures. La prochaine s’ouvre à {time}.',
+    },
+    chatLimitTomorrow: {
+      one: 'Tu as lancé {count} nouvelle discussion ces dernières 24 heures. La prochaine s’ouvre demain à {time}.',
+      other:
+        'Tu as lancé {count} nouvelles discussions ces dernières 24 heures. La prochaine s’ouvre demain à {time}.',
+    },
+    viewersWeek: {
+      one: '{count} personne a consulté ton profil la semaine dernière.',
+      other: '{count} personnes ont consulté ton profil la semaine dernière.',
+    },
+    featurePartOf: '{feature} fait partie de {plan}.',
+    freePromise: 'Les réponses et les corrections restent gratuites avec tous les forfaits.',
+    compareHeading: 'Comparer',
+    compareNewChats: 'Nouvelles discussions par jour',
+    compareTranslations: 'Traductions par jour',
+    compareLanguages: 'Langues apprises',
+    compareUnlimited: 'Sans limite',
+    compareSoon: 'Bientôt',
+    compareIncluded: 'Inclus',
+    compareNotIncluded: 'Non inclus',
+    yearlyBadge: '{perMonth} · {saving}',
   },
 
   proWelcome: {

@@ -363,6 +363,12 @@ const v3LightColors = {
   /** A correction's green, as text on the ground. */
   correction: '#0b7a3e',
   /**
+   * The green block, with `correction` on it: what stays free. The paywall's
+   * promise that replies and corrections are free on every plan is drawn in
+   * the correction's own colour, because a correction is what it promises.
+   */
+  correctionTint: '#dcf3e5',
+  /**
    * The destructive action's red — Delete account, Sign out everywhere —
    * drawn as the outline and the label on the ground, never as a fill: a red
    * block would be the loudest thing on the screen, and the action that
@@ -397,6 +403,7 @@ const v3DarkColors: V3Colors = {
   yellow: '#ffc409',
   onYellow: '#14161b',
   correction: '#5ee39a',
+  correctionTint: '#14301f',
   danger: '#ff8a80',
   scrim: 'rgba(0, 0, 0, 0.7)',
 }

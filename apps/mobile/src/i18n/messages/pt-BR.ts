@@ -2536,7 +2536,6 @@ export const ptBR: Localized<EnMessages> = {
   paywall: {
     screenTitle: 'Planos',
     restorePurchases: 'Restaurar compras',
-    partOf: 'faz parte do',
     unlimitedChats: 'Conversas novas ilimitadas',
     unlimitedChatsBody: '{count} por dia no plano gratuito.',
     welcomePack: 'Um pacote de boas-vindas',
@@ -2598,8 +2597,6 @@ export const ptBR: Localized<EnMessages> = {
     yearly: 'Anual',
     lifetime: 'Pagamento único',
     headline: 'Vá mais longe com o {plan}',
-    headlineBody:
-      'Correções e respostas continuam ilimitadas em todos os planos. Pagar remove os outros limites.',
     savePercent: 'Economize {percent}%',
     freeMonths: {
       one: '{count} mês grátis',
@@ -2626,7 +2623,6 @@ export const ptBR: Localized<EnMessages> = {
     },
     showLess: 'Mostrar menos',
     pricePerPeriod: '{price} {period}',
-    billedMonthly: 'Cobrado todo mês',
     lifetimeDetail: 'Um pagamento só, sem renovação',
     timelineTitle: 'Como funciona seu teste grátis',
     timelineToday: 'Hoje: acesso completo',
@@ -2640,6 +2636,35 @@ export const ptBR: Localized<EnMessages> = {
     subscribe: 'Assinar',
     startFreeTrial: 'Começar o teste grátis',
     eula: 'Termos de uso (EULA)',
+    planMark: 'LangX {plan}',
+    heroChats: 'Conheça quantas pessoas que falam {language} você quiser',
+    heroChatsAny: 'Comece quantas conversas novas você quiser',
+    heroViewers: 'Veja quem viu seu perfil',
+    heroFilters: 'Encontre exatamente quem você procura',
+    heroNearby: 'Encontre pessoas perto de você',
+    chatLimitToday: {
+      one: 'Você começou {count} conversa nova no último dia. A próxima abre às {time}.',
+      other: 'Você começou {count} conversas novas no último dia. A próxima abre às {time}.',
+    },
+    chatLimitTomorrow: {
+      one: 'Você começou {count} conversa nova no último dia. A próxima abre amanhã às {time}.',
+      other: 'Você começou {count} conversas novas no último dia. A próxima abre amanhã às {time}.',
+    },
+    viewersWeek: {
+      one: '{count} pessoa viu seu perfil na última semana.',
+      other: '{count} pessoas viram seu perfil na última semana.',
+    },
+    featurePartOf: '{feature} faz parte do {plan}.',
+    freePromise: 'Respostas e correções continuam grátis em todos os planos.',
+    compareHeading: 'Comparar',
+    compareNewChats: 'Conversas novas por dia',
+    compareTranslations: 'Traduções por dia',
+    compareLanguages: 'Idiomas que você aprende',
+    compareUnlimited: 'Sem limite',
+    compareSoon: 'Em breve',
+    compareIncluded: 'Incluído',
+    compareNotIncluded: 'Não incluído',
+    yearlyBadge: '{perMonth} · {saving}',
   },
 
   proWelcome: {

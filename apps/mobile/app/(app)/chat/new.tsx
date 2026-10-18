@@ -184,7 +184,10 @@ export default function NewChatScreen() {
         // `openPaywall` rather than the raw route: it is the one place that
         // knows how the paywall is reached.
         if (caught.code === 'QUOTA_EXCEEDED') {
-          openPaywall(undefined, here)
+          openPaywall(undefined, here, 'gate', {
+            limit: 'initiations',
+            retryAt: caught.retryAt,
+          })
           return
         }
         // Somebody else got there first — from another device, or the other
