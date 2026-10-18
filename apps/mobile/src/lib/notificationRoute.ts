@@ -17,7 +17,7 @@ import type { Href } from 'expo-router'
  */
 export function notificationRoute(data: unknown): Href | null {
   if (typeof data !== 'object' || data === null) return null
-  const { kind, conversationId, postId, handle, commentId, testimonialId } = data as {
+  const { kind, conversationId, postId, handle, commentId, testimonialId, repairDay } = data as {
     kind?: unknown
     conversationId?: unknown
     postId?: unknown
@@ -26,6 +26,8 @@ export function notificationRoute(data: unknown): Href | null {
     commentId?: unknown
     /** A review on the reader's profile. */
     testimonialId?: unknown
+    /** The streak repair, sent as a `wallet` push: the day it would fill in. */
+    repairDay?: unknown
   }
   if (typeof kind !== 'string' || !(PUSH_KINDS as readonly string[]).includes(kind)) return null
 
@@ -41,8 +43,9 @@ export function notificationRoute(data: unknown): Href | null {
       // reason to open the app, and how much of it to do is the reader's.
       return '/echo'
     case 'streakReminder':
-      // The nudge asks for one message, so the useful destination is the list
-      // of people already being talked to, not the feed of strangers.
+      // Opening the app is what keeps the streak, so the tap has already done
+      // the job; the chats are where the next useful thing is — the people
+      // already being talked to, not the feed of strangers.
       return '/chats'
     case 'badgeEarned':
       // The badges live on your own profile, which is what `me` is.
@@ -90,6 +93,10 @@ export function notificationRoute(data: unknown): Href | null {
       // room and the wrong screen: nothing in it mentions the thing notified.
       return '/notifications'
     case 'wallet':
+      // A streak repair rides on this kind so that every installed build
+      // opens the wallet for it; this one goes a step further, to the store
+      // where the missed day is the newest repair on offer.
+      if (typeof repairDay === 'string' && repairDay.length > 0) return '/wallet/store'
       // Tokens arrived. The wallet is where they are counted.
       return '/wallet'
     case 'promotion':

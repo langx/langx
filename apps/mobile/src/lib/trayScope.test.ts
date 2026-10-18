@@ -225,6 +225,24 @@ describe('what a sweep clears: on opening, or after a read on another device', (
     }
   })
 
+  /**
+   * A `wallet` push only so that older builds open the wallet for it. The
+   * pool's row being read says nothing about a streak, and neither does
+   * "Mark all read"; going to the wallet, where it leads, does.
+   */
+  it('treats a streak repair as a reminder, not as tokens arriving', () => {
+    const repair = { kind: 'wallet', repairDay: '2026-09-24' }
+    const poolRead: TrayFacts = {
+      readThreads: new Set(),
+      rows: [{ kind: 'walletPool', read: true }],
+    }
+    expect(finishedWith(repair, now, poolRead, now)).toBe(false)
+    expect(belongsTo(repair, 'inbox')).toBe(false)
+    expect(belongsTo(repair, { row: { kind: 'walletPool' } })).toBe(false)
+    expect(belongsTo(repair, 'wallet')).toBe(true)
+    expect(questionsFor([repair])).toEqual({ threads: [], inbox: false })
+  })
+
   it('leaves anything it does not recognise', () => {
     const facts: TrayFacts = {
       readThreads: new Set(['c1']),

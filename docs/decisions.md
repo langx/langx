@@ -4438,6 +4438,8 @@ a bad minute must not turn that into an error page.
 
 ## Six nudges, one pass, one at a time
 
+> **Amended 18 October 2026 — see _The streak repair push leaves the table, and both streak pushes say the rule_ below.**
+
 The remarketing scenarios could each have been a pass, the way the digest and
 the visit round-up are. They are not, and the reason is arithmetic: the
 candidates are the same people every time — everybody with `promotions.email`
@@ -4464,6 +4466,47 @@ and what makes "we miss you" one letter rather than a daily one.
 The push half is not a fallback for the mail and not gated on it. Somebody
 with the app installed and promotions on asked for both, and the mail is
 often the one that is never opened.
+
+## The streak repair push leaves the table, and both streak pushes say the rule
+
+_18 October 2026._ This changes the entry above for one row of its table.
+
+**The repair's push is a pass of its own** (`modules/notifications/
+streakRepair.ts`). The entry above says the push half is not gated on the
+mail; in the code it was. The push was sent from inside the table's loop, so
+it went out only after the mail's own checks had passed: `streak.email` on, no
+digest that evening, no marketing in the last week. Somebody who kept the
+streak push and turned streak mail off never heard about a repair at all. A
+streak push that names no plan, price or purchase is a streak notification,
+not a promotion, so the marketing slot and the week's gap were never its
+rules. It now answers to the push half of the streak switch alone, at the
+reminder's hour, and claims its own row in `notificationLedger`. The mail stays
+in the table, where its slot and its gap belong.
+
+**Who is told changed, on both channels.** The row counted hours from noon UTC
+on the last qualified day and fired between one and two days later. West of
+about UTC+8 that was the evening the streak was still alive, and the same
+evening's reminder said "keep it going". Both now ask one function,
+`streakRepairDay`: the last day was the day before yesterday on the reader's
+calendar, no freeze is banked, the run was at least
+`STREAK_REPAIR_NUDGE_MIN_STREAK` long, and a repair is left this month and
+affordable. An offer that ends on "you have used both" or "not enough tokens"
+is a loss with nothing to do about it.
+
+**It is sent as `wallet`, not a kind of its own.** An unknown kind routes
+nowhere on an installed build, and most phones learn a new one only from a
+store release. `wallet` already opens the wallet on every build since it
+existed; a `repairDay` field lets a newer build open the store instead and
+keep the push in the shade as a reminder. The cost is analytics:
+`notification_opened` counts a tapped repair as `wallet`.
+
+**Both pushes word the rule as it is.** "Send one message today to keep it
+going" was the rule before _Opening the app holds the streak_, and opening
+the app is what keeps it now, the tap on the push included. The reminder
+says so, and so do the intro slide, How it works and @copilot's notes. The
+repair says "Pick your streak back up", never "buy". The Streak reminder
+row's description in Settings now names the evening after a streak broke,
+which this switch has gated since September without saying so.
 
 ## The newsletter is monthly, and its editorial half is a pull request
 

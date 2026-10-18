@@ -688,7 +688,7 @@ export const tr: Localized<EnMessages> = {
       'Birinin cümlesini düzelt, tam olarak neyin değiştiğini görsün. Düzeltmeler her planda sınırsız — mesele zaten öğretmek.',
     slide3Title: 'Uğra, birikSin',
     slide3Body:
-      'Günde bir mesaj serini ayakta tutar. Konuşarak ve öğreterek jeton kazan, seri dondurmaya ya da profiline bir görünüm almaya harca.',
+      'Uygulamayı her gün açmak serini ayakta tutar. Konuşarak ve öğreterek jeton kazan, seri dondurmaya ya da profiline bir görünüm almaya harca.',
     getStarted: 'Başla',
     skip: 'Geç',
     next: 'İleri',
@@ -883,7 +883,8 @@ export const tr: Localized<EnMessages> = {
     messages: 'Mesajlar',
     messagesBody: 'Biri sana yazdığında. E-posta yalnızca bir süredir uzaktaysan.',
     streak: 'Streak hatırlatması',
-    streakBody: 'Akşam, streak’in kırılmak üzereyse. Girişli telefonun yoksa e-postayla.',
+    streakBody:
+      'Akşam, streak’in kırılmak üzereyse ya da bir gün önce kırıldıysa. Girişli telefonun yoksa e-postayla.',
     badges: 'Rozetler',
     badgesBody: 'Bir rozet kazandığında. Her seferinde değil, akşam toplu olarak.',
     profileVisits: 'Profil ziyaretleri',
@@ -1702,7 +1703,7 @@ export const tr: Localized<EnMessages> = {
       'Bir fotoğraf, video ya da cümle paylaş. Yardım mı istiyorsun? Düzeltme gerekli ya da Telaffuz gerekli seçeneğini işaretle, anadili olan biri yanıtlasın. Sonra sen de başkası için aynısını yap.',
     streakTitle: 'Seriler ve jetonlar',
     streakBody:
-      'Günde bir mesaj serini ayakta tutar. Konuşmak ve öğretmek jeton kazandırır; bunları seri dondurmaya ya da profilin için yeni bir görünüme harcayabilirsin.',
+      'LangX’i her gün açmak serini ayakta tutar. Konuşmak ve öğretmek jeton kazandırır; bunları seri dondurmaya ya da profilin için yeni bir görünüme harcayabilirsin.',
     discoverTitle: 'Partner bul',
     discoverBody:
       'Keşfet’teki herkes senin öğrendiğin bir dili konuşuyor ve senin konuştuğun bir dili öğreniyor. Sana özel dillerine göre eşleşir, Aktif az önce buralarda olanları gösterir, Yakında ise konumunu paylaştığında çalışır. Bir profil aç ve merhaba de — buradaki neredeyse her değişim böyle başlar.',
