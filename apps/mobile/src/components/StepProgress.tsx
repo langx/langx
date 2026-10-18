@@ -3,14 +3,19 @@ import { Pressable, Text, View } from 'react-native'
 import { ONBOARDING_STEPS } from '../lib/onboardingStep'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
-import { ProgressBar } from './ui/ProgressBar'
 
 /**
- * v3's wizard header: "Step 1 of 4" over one continuous track, filled in
- * `accent` up to where you are. Both the count and the fill come from
- * `ONBOARDING_STEPS`, so merging two steps into one — as the language
- * questions just were — cannot leave a screen claiming a total the wizard no
- * longer has.
+ * The wizard header: "Step 1 of 5" over one bar per step, the steps up to
+ * this one filled in ink — v3's drawing of it. Both the count and the bars
+ * come from `ONBOARDING_STEPS`, so merging two steps into one — as the
+ * language questions just were — cannot leave a screen claiming a total the
+ * wizard no longer has.
+ *
+ * Drawn here rather than with `ui/ProgressBar`, which moves on Reanimated:
+ * every onboarding step renders this, and the launch path stays on React
+ * Native's `Animated` (_The row swipe runs on the UI thread_). Nothing here
+ * needs to move anyway — each step is a new screen, so its bars are simply
+ * there.
  */
 export function StepProgress({
   step,
@@ -54,18 +59,32 @@ export function StepProgress({
       ) : null}
       <View style={styles.block}>
         <Text style={styles.step}>{stepText}</Text>
-        <ProgressBar value={(index + 1) / total} height={6} accessibilityLabel={stepText} />
+        <View
+          accessibilityRole="progressbar"
+          accessibilityLabel={stepText}
+          accessibilityValue={{ min: 1, max: total, now: index + 1 }}
+          style={styles.bars}
+        >
+          {steps.map((each, at) => (
+            <View key={each} style={[styles.bar, at <= index && styles.barDone]} />
+          ))}
+        </View>
       </View>
     </View>
   )
 }
 
-const useStyles = makeStyles(({ colors }) => ({
+const useStyles = makeStyles(({ v3 }) => ({
   row: { alignItems: 'center', flexDirection: 'row', gap: 14 },
   // 34 square, as `ScreenHeader` draws it: the arrow's own hit box before
   // `hitSlop` widens it.
   back: { alignItems: 'center', height: 34, justifyContent: 'center', width: 34 },
   pressed: { opacity: 0.5 },
-  block: { flex: 1, gap: 10 },
-  step: { color: colors.textFaint, fontSize: 13, fontWeight: '600' },
+  block: { flex: 1, gap: v3.space[6] },
+  step: { ...v3.type.label, color: v3.colors.muted },
+  bars: { flexDirection: 'row', gap: v3.space[4] },
+  // `line` for the steps ahead until the palette has a track grey; the
+  // drawing's is a shade darker.
+  bar: { backgroundColor: v3.colors.line, borderRadius: v3.radius.pill, flex: 1, height: 8 },
+  barDone: { backgroundColor: v3.colors.fg },
 }))
