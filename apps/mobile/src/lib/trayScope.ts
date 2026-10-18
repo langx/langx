@@ -37,6 +37,17 @@ export type TrayScope =
 const INBOX_KINDS: readonly string[] = ['social', 'badgeEarned', 'profileVisits', 'wallet']
 const WALLET_KINDS: readonly string[] = ['wallet', 'bountyPaid']
 
+/**
+ * The streak repair: a `wallet` push only so that older builds open the
+ * wallet for it (see `PUSH_KINDS`). In the shade it is a streak reminder — no
+ * row in the centre stands for it, so neither "Mark all read" nor the pool's
+ * row being read says anything about it. Opening the wallet, where it leads,
+ * still clears it.
+ */
+function isStreakRepair(data: { kind?: unknown; repairDay?: unknown }): boolean {
+  return data.kind === 'wallet' && typeof data.repairDay === 'string' && data.repairDay.length > 0
+}
+
 export function belongsTo(data: unknown, scope: TrayScope): boolean {
   if (typeof data !== 'object' || data === null) return false
   const { kind, conversationId, postId, handle, testimonialId } = data as {
@@ -47,8 +58,9 @@ export function belongsTo(data: unknown, scope: TrayScope): boolean {
     testimonialId?: unknown
   }
   if (typeof kind !== 'string') return false
-  if (scope === 'inbox') return INBOX_KINDS.includes(kind)
   if (scope === 'wallet') return WALLET_KINDS.includes(kind)
+  if (isStreakRepair(data)) return false
+  if (scope === 'inbox') return INBOX_KINDS.includes(kind)
   if ('conversationId' in scope) {
     return kind === 'message' && conversationId === scope.conversationId
   }
@@ -117,9 +129,12 @@ export function questionsFor(data: readonly unknown[]): { threads: string[]; inb
   const threads = new Set<string>()
   let inbox = false
   for (const item of data) {
-    const { kind, conversationId } = fieldsOf(item)
+    const fields = fieldsOf(item)
+    const { kind, conversationId } = fields
     if (kind === 'message' && typeof conversationId === 'string') threads.add(conversationId)
-    if (typeof kind === 'string' && INBOX_KINDS.includes(kind)) inbox = true
+    if (typeof kind === 'string' && INBOX_KINDS.includes(kind) && !isStreakRepair(fields)) {
+      inbox = true
+    }
   }
   return { threads: [...threads], inbox }
 }

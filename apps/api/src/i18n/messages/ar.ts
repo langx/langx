@@ -12,7 +12,9 @@ export const ar: Localized<ServerMessages> = {
       many: 'سلسلة من {count} يومًا! 🔥',
       other: 'سلسلة من {count} يوم! 🔥',
     },
-    streakBody: 'أرسل رسالة اليوم للحفاظ عليها.',
+    streakBody: 'افتح LangX اليوم للحفاظ عليها.',
+    streakRepairTitle: 'استأنف سلسلتك',
+    streakRepairBody: 'الإصلاح يملأ يوم أمس، وتستمر سلسلتك.',
     echoTitle: {
       zero: 'لا بطاقات الآن',
       one: 'بطاقة واحدة جاهزة',
@@ -53,11 +55,6 @@ export const ar: Localized<ServerMessages> = {
     promo: {
       addPhotoTitle: 'أضف صورة',
       addPhotoBody: 'الملفات التي تحمل وجهاً تتلقى ردوداً أكثر.',
-      streakBrokeTitle: {
-        one: 'انقطعت سلسلتك البالغة {count} يوم',
-        other: 'انقطعت سلسلتك البالغة {count} يوماً',
-      },
-      streakBrokeBody: 'الإصلاح يعيد يوم أمس.',
       awayTitle: 'الناس ما زالوا هنا',
       awayBody: 'أشخاص جدد للتدرب معهم.',
       awayLongTitle: 'نحن هنا متى أردت',

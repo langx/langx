@@ -8,6 +8,7 @@ import {
   nextStreak,
   periodKeys,
   shiftDayKey,
+  streakBrokeYesterday,
   streakLapsed,
   streakSavable,
   utcDayKey,
@@ -140,6 +141,30 @@ describe('streak days (user-local)', () => {
     expect(streakSavable({ current: 3, lastQualifiedDay: today }, 0, today)).toBe(false)
     expect(streakSavable({ current: 0, lastQualifiedDay: '2026-09-12' }, 0, today)).toBe(false)
     expect(streakSavable({ current: 0, lastQualifiedDay: null }, 0, today)).toBe(false)
+  })
+
+  it('broke yesterday only when the day before was the last, and no freeze can bridge it', () => {
+    const today = '2026-09-13'
+    expect(streakBrokeYesterday({ current: 9, lastQualifiedDay: '2026-09-11' }, 0, today)).toBe(
+      true,
+    )
+    // Yesterday counted: alive, and tonight's reminder is the message.
+    expect(streakBrokeYesterday({ current: 9, lastQualifiedDay: '2026-09-12' }, 0, today)).toBe(
+      false,
+    )
+    // A freeze bridges the gap, so showing up today is enough.
+    expect(streakBrokeYesterday({ current: 9, lastQualifiedDay: '2026-09-11' }, 1, today)).toBe(
+      false,
+    )
+    // Already back today, or gone for longer than a day.
+    expect(streakBrokeYesterday({ current: 1, lastQualifiedDay: today }, 0, today)).toBe(false)
+    expect(streakBrokeYesterday({ current: 9, lastQualifiedDay: '2026-09-10' }, 0, today)).toBe(
+      false,
+    )
+    expect(streakBrokeYesterday({ current: 0, lastQualifiedDay: '2026-09-11' }, 0, today)).toBe(
+      false,
+    )
+    expect(streakBrokeYesterday({ current: 0, lastQualifiedDay: null }, 0, today)).toBe(false)
   })
 
   it('lapses one day after the last day a freeze could have bridged', () => {

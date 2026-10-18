@@ -11,6 +11,7 @@ import { QUOTA_REFUSAL_WINDOW_MS } from '../../lib/quota'
 import { alreadyClaimed, claimOnce } from './ledger'
 import { MARKETING_SLOT_JOB, recentlyMarketed } from './marketing'
 import { readAggregates } from '../tokens/ledger'
+import { streakRepairDay } from './streakRepair'
 
 const HOUR_MS = 60 * 60 * 1000
 const DAY_MS = 24 * HOUR_MS
@@ -102,19 +103,18 @@ export const PROMOTIONS: Promotion[] = [
      * repair is one sentence, and somebody who asked for streak reminders has
      * asked for exactly this. The store sells the repair, which is why it is
      * in this file rather than beside the evening nudge.
+     *
+     * The mail only. The push is `runStreakRepairPushPass`, and both ask
+     * `streakRepairDay` — the reader's own day, a repair left this month and
+     * the tokens for it — so they say the same thing to the same people. This
+     * used to count hours from noon UTC, which west of about UTC+8 told
+     * somebody their streak had broken on the evening it was still alive.
      */
     job: 'promo.streakRepair',
     scenario: 'streakBroke',
     type: 'streak',
     periodKey: ({ profile }) => profile.streak?.lastQualifiedDay ?? 'none',
-    eligible: ({ profile, now }) => {
-      const last = profile.streak?.lastQualifiedDay
-      if (!last || (profile.streak?.current ?? 0) < 3) return false
-      const missed = daysAgo(new Date(`${last}T12:00:00Z`), now)
-      // Yesterday, not today (still savable by simply showing up) and not the
-      // day before (by then it is a cold fact rather than a repair).
-      return missed >= 1 && missed < 2
-    },
+    eligible: async ({ profile, now, db }) => (await streakRepairDay(db, profile, now)) !== null,
     detail: ({ profile }) => ({ count: profile.streak?.current ?? 0 }),
   },
   {
@@ -322,6 +322,9 @@ export async function runPromotionsPass(
  * channel. Not a fallback for the mail and not gated on it: somebody with the
  * app installed and promotions on has asked for both, and the mail may be the
  * one that is never opened.
+ *
+ * Not for the streak repair, whose push is a pass of its own that the mail
+ * cannot hold back — see `streakRepair.ts`.
  */
 async function pushIt(
   db: Db,
@@ -330,6 +333,7 @@ async function pushIt(
   promotion: Promotion,
   detail: Record<string, number>,
 ): Promise<void> {
+  if (promotion.type === 'streak') return
   if (!notificationsAllowed(profile.settings?.notifications, promotion.type, 'push')) return
   for (const [locale, tokens] of await tokensByLocale(db, profile._id)) {
     if (tokens.length === 0) continue
@@ -338,7 +342,7 @@ async function pushIt(
       to: tokens,
       title: t(`push.promo.${promotion.scenario}Title` as never, detail),
       body: t(`push.promo.${promotion.scenario}Body` as never, detail),
-      data: { kind: promotion.type === 'streak' ? 'streakReminder' : 'promotion' },
+      data: { kind: 'promotion' },
     })
   }
 }

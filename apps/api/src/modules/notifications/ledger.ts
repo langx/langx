@@ -14,6 +14,12 @@ export type NotificationJob =
   | 'profileVisitsPush'
   /** The evening Echo nudge. One per person per local day. */
   | 'echoReminder'
+  /**
+   * The streak repair push — keyed by the missed day, so one broken streak is
+   * one push. Not `promo.streakRepair`, which is the mail's and rides the
+   * marketing slot; this one is a streak notification and does not.
+   */
+  | 'streakRepair'
   | 'profileVisitsEmail'
   | 'badgeEarned'
   | 'badgeDigest'
