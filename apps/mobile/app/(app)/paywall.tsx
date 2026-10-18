@@ -499,7 +499,13 @@ export default function PaywallScreen() {
    * line about the held plan belongs in this block.
    */
   const contextLines: { icon: keyof typeof Feather.glyphMap; text: string; chips?: boolean }[] = []
-  if (road === 'chatLimit' || (tier === 'free' && remaining === 0)) {
+  // Only while the allowance really is spent, by the server's own count: a
+  // link that names the road, or a chat that freed up since the refusal,
+  // must not be told it has started chats it has not. Before the count has
+  // loaded, the refusal that opened the screen is the evidence.
+  const spent =
+    tier === 'free' && (remaining === 0 || (remaining === undefined && road === 'chatLimit'))
+  if (spent) {
     contextLines.push({ icon: 'clock', text: chatLimitLine })
   }
   if (road === 'viewers' && showsViewerCount(weekPeople)) {
