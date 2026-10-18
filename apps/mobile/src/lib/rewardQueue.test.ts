@@ -5,7 +5,10 @@ const wrote = 'you both wrote today'
 const echo = 'Echo session'
 
 function build(...rewards: { amount: number; reason: string; haptic?: boolean }[]) {
-  return rewards.reduce<QueuedReward[]>((queue, reward, i) => enqueueReward(queue, reward, i + 1), [])
+  return rewards.reduce<QueuedReward[]>(
+    (queue, reward, i) => enqueueReward(queue, reward, i + 1),
+    [],
+  )
 }
 
 describe('enqueueReward', () => {

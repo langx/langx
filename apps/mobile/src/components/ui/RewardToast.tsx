@@ -95,7 +95,6 @@ export function RewardToast({
     return clear
     // Keyed on the id alone: a merged amount or a late answer from
     // `useReduceMotion` must not restart a toast that is already up.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   const motion = useAnimatedStyle(() => ({

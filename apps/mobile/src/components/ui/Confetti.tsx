@@ -15,8 +15,7 @@ import { rainDrops, type Drop, type RainStyle } from '../../lib/celebration'
  * never from here, so a piece is the right shade in either scheme.
  */
 export type ConfettiPieces =
-  | { kind: 'glyph'; glyphs: readonly string[] }
-  | { kind: 'flat'; colours: readonly string[] }
+  { kind: 'glyph'; glyphs: readonly string[] } | { kind: 'flat'; colours: readonly string[] }
 
 /**
  * One shower over the whole window, then gone. Decoration, not content:

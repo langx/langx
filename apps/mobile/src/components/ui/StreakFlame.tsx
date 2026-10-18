@@ -65,7 +65,12 @@ interface StreakFlameProps {
  * number that did not grow. A count that goes up in front of the person is
  * a celebration's job (`CelebrationSheet`), not the flame's.
  */
-export function StreakFlame({ count, kind = 'solo', size = 'row', on = 'ground' }: StreakFlameProps) {
+export function StreakFlame({
+  count,
+  kind = 'solo',
+  size = 'row',
+  on = 'ground',
+}: StreakFlameProps) {
   const t = useT()
   const { locale } = useLocale()
   const styles = useStyles()

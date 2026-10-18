@@ -31,6 +31,7 @@ export const fr: Localized<EnMessages> = {
     edit: 'Modifier',
     enable: 'Activer',
     update: 'Mettre à jour',
+    close: 'Fermer',
     notLoaded: 'Chargement impossible',
   },
 
@@ -1912,6 +1913,7 @@ export const fr: Localized<EnMessages> = {
     emptyTitle: 'Rien ici pour l’instant',
     emptyBody: 'Envoie un message ou écris une correction, et aujourd’hui sera ton premier jour.',
     legendMissed: 'Manqué · touche pour le rattraper',
+    daysTogether: { one: '{count} jour ensemble', other: '{count} jours ensemble' },
   },
   settings: {
     scanBody: 'Se connecter sur un ordinateur ou ouvrir le profil d’un ami',

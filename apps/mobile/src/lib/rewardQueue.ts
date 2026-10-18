@@ -52,7 +52,8 @@ export function enqueueReward(
   if (!Number.isInteger(reward.amount) || reward.amount <= 0) return [...queue]
   const haptic = reward.haptic ?? false
   const waiting = queue.findIndex((item, index) => index > 0 && item.reason === reward.reason)
-  if (waiting === -1) return [...queue, { id, amount: reward.amount, reason: reward.reason, haptic }]
+  if (waiting === -1)
+    return [...queue, { id, amount: reward.amount, reason: reward.reason, haptic }]
   return queue.map((item, index) =>
     index === waiting
       ? { ...item, amount: item.amount + reward.amount, haptic: item.haptic || haptic }

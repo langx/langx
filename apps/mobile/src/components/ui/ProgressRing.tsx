@@ -126,12 +126,12 @@ export function ProgressRing({
           />
         </Svg>
       </View>
-      <View style={styles.middle}>{children}</View>
+      <View style={[StyleSheet.absoluteFill, styles.middle]}>{children}</View>
     </View>
   )
 }
 
 const useStyles = makeStyles(() => ({
   turned: { transform: [{ rotate: '-90deg' }] },
-  middle: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center' },
+  middle: { alignItems: 'center', justifyContent: 'center' },
 }))
