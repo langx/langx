@@ -5,6 +5,7 @@ import { ProMark } from '../ProMark'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
 import { PressableScale } from '../ui/PressableScale'
+import { ProgressRing } from '../ui/ProgressRing'
 
 /*
  * The blocks under Home's hero, drawn from `V-Home`. Each is dumb: the screen
@@ -27,10 +28,8 @@ export interface HomeGoal {
 /**
  * "Today's three": three goals that are real practice, each a ring.
  *
- * The rings are placeholders — a plain circle, full when the goal is done —
- * for `ProgressRing` from the gamification primitives, which were still an
- * open pull request when Home was built. A goal is done or not, so a full
- * circle or an empty one says all a ring would until the primitives land.
+ * A goal is done or not, so each ring is full or empty. The ring is hidden
+ * from screen readers — the goal's own label already says "Done" or not.
  */
 export function HomeToday({
   title,
@@ -61,17 +60,10 @@ export function HomeToday({
             onPress={goal.onPress}
             style={({ pressed }) => [styles.goal, pressed && styles.pressed]}
           >
-            <View
-              style={[
-                styles.ring,
-                {
-                  borderColor: goal.done
-                    ? v3.colors.correction
-                    : goal.echo
-                      ? v3.colors.echoTint
-                      : v3.colors.line,
-                },
-              ]}
+            <ProgressRing
+              progress={goal.done ? 1 : 0}
+              color={v3.colors.correction}
+              {...(goal.echo ? { trackColor: v3.colors.echoTint } : {})}
             >
               <Feather
                 name={goal.done ? 'check' : goal.icon}
@@ -80,7 +72,7 @@ export function HomeToday({
                   goal.done ? v3.colors.correction : goal.echo ? v3.colors.echoText : v3.colors.fg
                 }
               />
-            </View>
+            </ProgressRing>
             <Text style={styles.goalLabel} numberOfLines={2}>
               {goal.label}
             </Text>
@@ -335,15 +327,6 @@ const useStyles = makeStyles(({ v3 }) => ({
     minWidth: 0,
     paddingHorizontal: v3.space[2],
     paddingVertical: v3.space[6],
-  },
-  // The drawing's 58pt ring with an 8pt stroke.
-  ring: {
-    alignItems: 'center',
-    borderRadius: v3.radius.pill,
-    borderWidth: 8,
-    height: 58,
-    justifyContent: 'center',
-    width: 58,
   },
   goalLabel: { ...v3.type.buttonSmall, color: v3.colors.fg, textAlign: 'center' },
   goalStatus: { ...v3.type.caption, color: v3.colors.muted, fontWeight: '600' },
