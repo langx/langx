@@ -1,17 +1,19 @@
-import { latchV3Home } from '../lib/v3Home'
+import { useEffect, useState } from 'react'
+import { latchV3Home, v3HomeWaitLeft } from '../lib/v3Home'
 import { useAppConfig } from './useAppConfig'
 
 /**
- * Whether the config has said anything yet, for `app/index.tsx`, which holds
- * the splash until it has — the landing is Home or Discover by this flag, and
- * landing on the wrong one would be the bar rearranging a moment after launch.
+ * Whether the config has said anything yet. The landing is Home or Discover
+ * by this flag, and landing on the wrong one would be the bar rearranging a
+ * moment after launch, so `app/index.tsx` holds the splash until it has.
  *
  * Settled after one attempt, success or not. The query retries once, and a
  * launch must not wait out that retry for a flag: an unreachable config is
  * today's tabs (`latchV3Home`). A request held back for want of a network is
- * settled too, for `app/index.tsx`'s own reason — it will never fire.
+ * settled too, for `app/index.tsx`'s own reason — it will never fire. A
+ * request that is simply slow is `useV3HomeDecision`'s ceiling to cut short.
  */
-export function appConfigSettled(config: {
+function appConfigSettled(config: {
   isPending: boolean
   fetchStatus: string
   failureCount: number
@@ -32,14 +34,24 @@ export function useV3Home(): boolean {
 
 /**
  * The same answer, or `undefined` while the config has not settled — for the
- * one caller that has to wait rather than assume off: Home's own route, which
- * with the flag off sends itself to Discover, and on a web page load would
- * otherwise do that before the config had said anything.
+ * callers that have to wait rather than assume off: the launch splash, and
+ * Home's own route, which with the flag off sends itself to Discover and on a
+ * web page load would otherwise do that before the config had said anything.
+ *
+ * Never `undefined` for longer than `V3_HOME_WAIT_MS` from the first caller:
+ * past that the answer is taken from whatever the config has said by then,
+ * which for a request still out is nothing, and so off.
  */
 export function useV3HomeDecision(): boolean | undefined {
   const config = useAppConfig()
+  const [waitOver, setWaitOver] = useState(() => v3HomeWaitLeft(Date.now()) === 0)
+  useEffect(() => {
+    if (waitOver) return
+    const timer = setTimeout(() => setWaitOver(true), v3HomeWaitLeft(Date.now()))
+    return () => clearTimeout(timer)
+  }, [waitOver])
   return latchV3Home({
-    settled: appConfigSettled(config),
+    settled: waitOver || appConfigSettled(config),
     on: config.data?.flags.v3Home === true,
   })
 }

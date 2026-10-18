@@ -10,9 +10,10 @@
  * for the life of this JS runtime: a change reaches a running app at its next
  * cold start, or on the web at the next page load.
  *
- * "Settled" includes a failed request. An unreachable config is today's tabs,
- * the same as a flag that is off, and it stays today's tabs until the next
- * launch rather than switching the moment the network comes back.
+ * "Settled" includes a failed request, and one still going after
+ * `V3_HOME_WAIT_MS`. An unreachable config is today's tabs, the same as a
+ * flag that is off, and it stays today's tabs until the next launch rather
+ * than switching the moment the network comes back.
  *
  * Module state rather than React state, because the answer has to outlive the
  * tab layout: signing out unmounts it, and signing back in must not be the
@@ -29,7 +30,34 @@ export function latchV3Home(answer: { settled: boolean; on: boolean }): boolean 
   return latched
 }
 
-/** For tests: forget the answer, as a cold start would. */
+/**
+ * The longest a launch waits for the config before deciding without it.
+ *
+ * The launch splash holds for this answer, so without a ceiling a request
+ * that neither answers nor fails — a captive portal, a tunnel the phone still
+ * calls online, a hotspot that drops packets — kept a returning person on the
+ * splash for as long as the request took to give up, where before the flag
+ * their stored profile let them straight in. One try of `/app-config` is a
+ * round trip of a few hundred milliseconds; past this, the launch is today's
+ * tabs, as an unreachable config always was, and the latch keeps it so.
+ */
+export const V3_HOME_WAIT_MS = 1_500
+
+let waitStartedAt: number | undefined
+
+/**
+ * How much of the wait is left at `now`, in milliseconds. The clock starts at
+ * the first call — the first screen that asks, at launch — and is shared by
+ * every caller after it, so a screen mounted late does not start a wait of
+ * its own.
+ */
+export function v3HomeWaitLeft(now: number): number {
+  waitStartedAt ??= now
+  return Math.max(0, waitStartedAt + V3_HOME_WAIT_MS - now)
+}
+
+/** For tests: forget the answer and the wait, as a cold start would. */
 export function resetV3HomeLatch(): void {
   latched = undefined
+  waitStartedAt = undefined
 }

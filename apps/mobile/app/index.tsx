@@ -5,8 +5,7 @@ import { SplashFill } from '../src/components/AppSplash'
 import { LoadFailed } from '../src/components/LoadFailed'
 import { Screen } from '../src/components/ui/Screen'
 import { useSignalAppReady } from '../src/hooks/useAppReady'
-import { useAppConfig } from '../src/hooks/useAppConfig'
-import { appConfigSettled, useV3Home } from '../src/hooks/useV3Home'
+import { useV3HomeDecision } from '../src/hooks/useV3Home'
 import { useMe } from '../src/api/queries'
 import { getDraft, hydrateDraft, isDraftHydrated } from '../src/hooks/useOnboardingDraft'
 import { authClient } from '../src/lib/auth-client'
@@ -48,11 +47,13 @@ export default function Index() {
   /*
    * Which tab a signed-in launch lands on is `flags.v3Home`'s to say, so the
    * splash also waits for the config — one attempt of it, which runs beside
-   * the profile request rather than after it. Landing first and asking second
-   * would put the bar through a rearrangement a moment after launch.
+   * the profile request rather than after it, and never longer than
+   * `V3_HOME_WAIT_MS`. Landing first and asking second would put the bar
+   * through a rearrangement a moment after launch.
    */
-  const configSettled = appConfigSettled(useAppConfig())
-  const v3Home = useV3Home()
+  const v3HomeDecision = useV3HomeDecision()
+  const configSettled = v3HomeDecision !== undefined
+  const v3Home = v3HomeDecision === true
 
   // Reading the stored draft is asynchronous, and redirecting before it lands
   // would send someone who was three screens in back to screen one — the exact
