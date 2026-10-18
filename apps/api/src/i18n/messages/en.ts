@@ -16,7 +16,7 @@ export const en = {
      * is already enough. It used to ask for a message, which was the rule
      * before check-ins and has not been true since. It names no plan, price or
      * purchase, which is what keeps it a streak notification rather than a
-     * promotional one; `reminderScheduler.test.ts` holds it to that.
+     * promotional one; `streakRepair.test.ts` holds every locale to that.
      */
     streakBody: 'Open LangX today to keep it going.',
     /*

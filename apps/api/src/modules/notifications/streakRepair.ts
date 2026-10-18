@@ -30,11 +30,7 @@ import { claimOnce } from './ledger'
  * asked here, before anything is said — the store would ask them one tap
  * later anyway.
  */
-export async function streakRepairDay(
-  db: Db,
-  profile: Profile,
-  now: Date,
-): Promise<string | null> {
+export async function streakRepairDay(db: Db, profile: Profile, now: Date): Promise<string | null> {
   const streak = profile.streak
   if (!streak || streak.current < STREAK_REPAIR_NUDGE_MIN_STREAK) return null
   const today = localDayKey(now, profile.timezone ?? 'UTC')
