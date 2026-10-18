@@ -1082,6 +1082,11 @@ export const tr: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Yerel saat {time}.',
   },
   chat: {
+    firstReplyTitle: '{name} cevap yazdı',
+    firstReplyBody: {
+      one: 'Yanıtlar her planda ücretsiz. {plan}, günde {count} yeni sohbet sınırını kaldırır.',
+      other: 'Yanıtlar her planda ücretsiz. {plan}, günde {count} yeni sohbet sınırını kaldırır.',
+    },
     channelOnly: 'Bu hesap haber ve duyuru paylaşır. Buraya yanıt yazamazsın.',
     suspendedOnly: 'Bu hesap askıya alındı. Mesaj gönderemezsin.',
     sendingAttachment: 'Gönderiliyor…',
@@ -1602,6 +1607,8 @@ export const tr: Localized<EnMessages> = {
 
   profile: {
     proBadge: 'Pro üye',
+    proSheetTitle: '{plan} nedir?',
+    proSheetBody: '{name}, {plan} kullanıyor. {plan} ücretsiz plana şunları ekler:',
     official: 'Resmî hesap',
     suspendedTag: 'Askıya alındı',
     deletedTag: 'Hesap silindi',

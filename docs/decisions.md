@@ -7093,6 +7093,61 @@ picked on open; the dated timeline; the X closes in one tap and nothing
 intercepts back or the swipe; nothing is sold to a paid or lifetime plan; every
 event in _The paywall counts every way out_.
 
+## The roads to Pro that are not a gate
+
+**18 October 2026.** Four ways into the paywall that no refusal opens, each
+with its own `source` in `PAYWALL_SOURCES` and one rule in `proRoads.ts`, whose
+test walks every plan through every road: nothing is sold to an account that
+already holds Pro, and nothing is sold before the viewer's own profile has
+loaded, because until then every account reads as free.
+
+**Settings and the app-icon picker get their own sources.** "See the plans" in
+Settings → Subscription is `settings` and a tile in the app-icon picker is
+`app_icon`; both were sent as `me`, so the Me card's numbers included them. The
+row keeps its rule: the free plan's and a gift's, never a paid or lifetime
+plan's — a gift ends on a date, and subscribing on top is how Pro carries on
+after it, from a paywall the holder opens themselves. A search for the row from
+Pro lands on the plan page, never on the paywall. An icon tile does nothing
+until the profile has loaded, so a subscriber's tap never lands on a sale.
+
+**The PRO badge on a profile opens "What's Pro?"** It was a mark nobody could
+ask about. The sheet lists the paywall's comparison lead with its numbers from
+`PLAN_LIMITS`, through the paywall's own copy so the two cannot describe Pro
+differently, and the paywall's promise that replies and corrections stay free,
+because a badge beside a name must not read as the price of talking to that
+person. Only the end differs: a free account gets one button (`pro_badge`); an
+account holding Pro — paid, gifted or lifetime — is told "Everything in Pro is
+yours"; a guest, and an owner on their own page, get neither.
+
+**The first reply waits until it has been answered.** `first_reply` was
+declared and never sent. It is now a card at the foot of the thread — inline,
+not a sheet, a toast or anything that takes focus — in a thread the viewer
+opened, after the partner wrote back _and the viewer has answered them_. A
+reply after a first hello is the moment this app exists for, and a card that
+arrived with it would stand between somebody and their answer; one that waits
+is read in the pause after. It says first that replies stay free, then that Pro
+removes the daily limit on new chats. The ✕ closes it in one tap.
+
+- **Once per account.** Written to the device when it is first drawn, keyed
+  by account, so it does not come back whether it was closed, tapped or
+  ignored. A second phone holds no copy of that flag, so the card is also tied
+  to the account's first two-way thread: it shows only when no other thread in
+  the chat list has both people in it, threads with official accounts aside. A
+  second device can therefore only ever show it about the same reply. A flag on
+  the server would make it strictly once; a write on the send path for one
+  card was not worth it.
+- **Read, never fetched.** Whether another thread is two-way comes from the
+  chat list's cache. A list that is not loaded, or not loaded to its end,
+  leaves the card out — a road missed costs less than a sale to somebody it was
+  never for. The thread's own history must be loaded to its start for the same
+  reason.
+- **Never for Pro, gifted Pro or a guest**, never with an official account or
+  one that can no longer be written to.
+
+The card has no event of its own; `paywall_viewed` with `first_reply` counts
+its taps. What old builds see: nothing — the sources exist only in this JS, and
+a link naming one reaches an older paywall as `gate`.
+
 ## Gift codes give time, not discounts
 
 An operator can hand out a code — `UBER` on a partner's newsletter, a word on

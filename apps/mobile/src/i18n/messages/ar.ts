@@ -1184,6 +1184,15 @@ export const ar: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. {time} بالتوقيت المحلي.',
   },
   chat: {
+    firstReplyTitle: 'وصلك رد من {name}',
+    firstReplyBody: {
+      zero: 'الردود مجانية في كل الخطط. يزيل {plan} الحدّ اليومي للمحادثات الجديدة.',
+      one: 'الردود مجانية في كل الخطط. يزيل {plan} حدّ محادثة جديدة واحدة يوميًا.',
+      two: 'الردود مجانية في كل الخطط. يزيل {plan} حدّ محادثتين جديدتين يوميًا.',
+      few: 'الردود مجانية في كل الخطط. يزيل {plan} حدّ {count} محادثات جديدة يوميًا.',
+      many: 'الردود مجانية في كل الخطط. يزيل {plan} حدّ {count} محادثة جديدة يوميًا.',
+      other: 'الردود مجانية في كل الخطط. يزيل {plan} حدّ {count} محادثة جديدة يوميًا.',
+    },
     channelOnly: 'ينشر هذا الحساب الأخبار والإعلانات. لا يمكنك الرد هنا.',
     suspendedOnly: 'هذا الحساب معلّق. لا يمكنك إرسال رسائل إليه.',
     sendingAttachment: 'جارٍ الإرسال…',
@@ -1797,6 +1806,8 @@ export const ar: Localized<EnMessages> = {
 
   profile: {
     proBadge: 'عضو Pro',
+    proSheetTitle: 'ما هو {plan}؟',
+    proSheetBody: 'لدى {name} اشتراك {plan}. إليك ما يضيفه إلى الخطة المجانية:',
     official: 'حساب رسمي',
     suspendedTag: 'معلّق',
     deletedTag: 'حساب محذوف',

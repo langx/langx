@@ -41,6 +41,18 @@ export type GiftCodeOutcome =
  * quota or a locked feature, the only moment the pitch answers a question the
  * person just asked. Keeping them apart is the whole point — mixed together,
  * a conversion rate says nothing about either.
+ *
+ * Every road declares itself here, once, and nowhere else. `openPaywall`
+ * takes only these, so a misspelt road does not compile, and the paywall
+ * reads an unknown one off a link as `gate` — a typo can never arrive in
+ * PostHog as a new road nobody knows to read. `docs/analytics.md` lists the
+ * same values, and `proRoads.test.ts` holds the two together.
+ *
+ * `settings` is "See the plans" in Settings → Subscription and `app_icon` a
+ * tile in the app-icon picker; both were counted as `me` until they had their
+ * own, so `me` before that build includes them. `pro_badge` is the button in
+ * the "What's Pro?" sheet behind the PRO badge on somebody's profile, and
+ * `first_reply` the card in a thread once a partner has written back.
  */
 export const PAYWALL_SOURCES = [
   'onboarding',
@@ -50,6 +62,9 @@ export const PAYWALL_SOURCES = [
   'first_reply',
   'langx',
   'gift_code',
+  'settings',
+  'app_icon',
+  'pro_badge',
 ] as const
 export type PaywallSource = (typeof PAYWALL_SOURCES)[number]
 
