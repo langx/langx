@@ -1,4 +1,10 @@
-import { PLAN_LIMITS, SUSPENSION_FOREVER, TOKEN_RULES, sendAwardSchema } from '@langx/shared'
+import {
+  DEFAULT_APP_CONFIG,
+  PLAN_LIMITS,
+  SUSPENSION_FOREVER,
+  TOKEN_RULES,
+  sendAwardSchema,
+} from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -8,6 +14,7 @@ import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
+import { updateAppConfig } from '../modules/appConfig/appConfig'
 import type { Profile } from '../modules/profiles/profiles'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -467,6 +474,58 @@ describe('Faz 4 — starting a conversation', () => {
 
     const responses = await Promise.all(recipients.map((r) => startConversation(viewer, r.userId)))
     expect(responses.every((r) => r.statusCode === 201)).toBe(true)
+  })
+
+  /*
+   * Every account in this file is minutes old, so every recipient is a
+   * newcomer. With the switch off — its default, and how every other test
+   * here runs — the race above is also the proof that the newcomer hello
+   * changes nothing until somebody throws it.
+   */
+  describe('the newcomer hello, switched on', () => {
+    async function setNewcomerHello(on: boolean) {
+      await updateAppConfig(handle.db, {
+        flags: { ...DEFAULT_APP_CONFIG.flags, newcomerHello: on },
+      })
+    }
+
+    it('tells the profile the hello is free, and the start spends no new chat', async () => {
+      const viewer = await newUser('hello-viewer@example.com')
+      const recipient = await newUser('hello-recipient@example.com')
+      const profile = async () =>
+        (
+          await app.inject({
+            method: 'GET',
+            url: `/profiles/${recipient.userId}`,
+            headers: { cookie: viewer.cookie },
+          })
+        ).json<{ freeHello?: boolean; conversationId?: string }>()
+
+      expect((await profile()).freeHello).toBeUndefined()
+
+      await setNewcomerHello(true)
+      try {
+        expect((await profile()).freeHello).toBe(true)
+
+        const started = await startConversation(viewer, recipient.userId)
+        expect(started.statusCode, started.body).toBe(201)
+
+        const quota = await app.inject({
+          method: 'GET',
+          url: '/me/quota',
+          headers: { cookie: viewer.cookie },
+        })
+        expect(quota.json()).toMatchObject({
+          initiations: { remaining: PLAN_LIMITS.free.initiationsPer24h },
+        })
+        // Talking to them now: the profile offers the thread, and says nothing about a hello.
+        const after = await profile()
+        expect(after.conversationId).toBeDefined()
+        expect(after.freeHello).toBeUndefined()
+      } finally {
+        await setNewcomerHello(false)
+      }
+    })
   })
 
   describe('GET /me/quota', () => {

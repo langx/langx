@@ -1234,6 +1234,7 @@ export const tr: Localized<EnMessages> = {
     wordTranslationFailed: 'Bu kelime şu anda çevrilemedi.',
     wordSeePlans: 'Planlara bak',
     sayHello: '{name} adlı kişiye merhaba de…',
+    newcomerHelloFree: 'LangX’te yeni — bu selam yeni sohbet hakkından düşmez.',
     topicsShuffle: 'Başka konular',
     topicChip: 'Sohbet başlatıcı: {topic}',
     topics: {

@@ -1254,6 +1254,8 @@ export const fr: Localized<EnMessages> = {
     wordTranslationFailed: 'Impossible de traduire ce mot pour le moment.',
     wordSeePlans: 'Voir les formules',
     sayHello: 'Dis bonjour à {name}…',
+    newcomerHelloFree:
+      'Vient d’arriver sur LangX : ce bonjour ne compte pas dans tes nouvelles discussions.',
     topicsShuffle: 'Autres sujets',
     topicChip: 'Idée de conversation : {topic}',
     topics: {

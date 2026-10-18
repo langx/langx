@@ -20,6 +20,7 @@ import type { Profile } from '../profiles/profiles'
 import { isSuspended } from '../moderation/suspension'
 import { acceptsMessages } from '../official/accounts'
 import { awardForSend } from '../tokens/awards'
+import { claimNewcomerHello, newcomerHelloIsFree, releaseNewcomerHello } from './newcomerHello'
 
 export interface Conversation {
   _id: ObjectId
@@ -442,8 +443,25 @@ export async function startConversation(
    *
    * Everything above still applies: a blocked pair is still refused, and a
    * second conversation is still impossible.
+   *
+   * A hello to a newcomer is the one other start that can be free, and only
+   * with `flags.newcomerHello` on. It is asked here, after every refusal
+   * above, so it only ever decides which bucket pays for a start that was
+   * already allowed: one of a small daily ceiling instead of one of the new
+   * chats. Past the ceiling, or for anybody who does not qualify, the start
+   * counts exactly as it did. See `newcomerHello.ts`.
    */
+  let newcomerHelloAt: Date | null = null
   if (!recipient.official) {
+    const at = new Date()
+    if (
+      (await newcomerHelloIsFree(db, viewer, recipient, at)) &&
+      (await claimNewcomerHello(db, viewerId, recipient._id, at))
+    ) {
+      newcomerHelloAt = at
+    }
+  }
+  if (!recipient.official && !newcomerHelloAt) {
     const quota = await consumeQuota(db, viewerId, effectiveTier(viewer), 'initiations')
     if (!quota.consumed) {
       throw new ApiError(
@@ -499,6 +517,18 @@ export async function startConversation(
   try {
     await conversations.insertOne(conversation)
   } catch (error) {
+    /*
+     * A newcomer hello pays for a conversation, and none was started, so it
+     * goes back — unlike the new-chat slot below, which the race leaves spent.
+     * The ceiling is small, so one lost to a race is a real share of the
+     * day's. A failed give-back is swallowed: the error worth reporting is the
+     * one that stopped the start.
+     */
+    if (newcomerHelloAt) {
+      await releaseNewcomerHello(db, viewerId, recipient._id, newcomerHelloAt).catch(
+        () => undefined,
+      )
+    }
     if (isDuplicateKeyError(error, 'pair_key_unique')) {
       // The quota slot consumed above is not refunded here — the plan
       // accepts this as the rare cost of the true concurrent-race case

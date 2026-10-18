@@ -311,6 +311,19 @@ export interface Profile {
    * with no entry here predates the field and reads as "unknown".
    */
   quotaRefusalKinds?: { at: Date; kind: string }[]
+  /**
+   * The newcomer hellos this account has made: who to, and when. Read and
+   * written only by `chat/newcomerHello.ts`, in one conditional write that is
+   * both the daily ceiling and the once-per-recipient rule.
+   *
+   * Not an array under `quota`, because its elements carry a recipient as
+   * well as a time — the once-per-recipient half needs it. Pruned to
+   * `NEWCOMER_HELLO_RULES.newForDays` on every write: a recipient that much
+   * older is no longer new, so nothing earlier can matter, and the array never
+   * holds more than a week of the ceiling. Absent on everybody who never made
+   * one, which is everybody while the switch is off.
+   */
+  newcomerHellos?: { to: string; at: Date }[]
   photos?: { url: string; createdAt: Date }[]
   /**
    * Where a `promotions.email: true` on this profile came from, when it was
@@ -1601,6 +1614,15 @@ export interface PublicProfile {
    * message" button from promising what it will refuse.
    */
   acceptsNewChats?: false
+  /**
+   * Present, and true, when a first message from this viewer to this person
+   * would be a newcomer hello now — it would not count against the viewer's
+   * new chats. Per viewer, like `conversationId`, and set by the route.
+   * Absent while `flags.newcomerHello` is off, on Pro, and whenever the hello
+   * would count. A hint for the "say hello" screen; `startConversation`
+   * decides again when the message is sent.
+   */
+  freeHello?: true
   /**
    * Whether this account is still an account.
    *
