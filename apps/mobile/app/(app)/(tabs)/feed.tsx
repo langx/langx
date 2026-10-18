@@ -1,8 +1,8 @@
 import Feather from '@expo/vector-icons/Feather'
 import { FEED_TOP_CORRECTIONS, MAX_POST_LENGTH, PLAN_LIMITS } from '@langx/shared'
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query'
-import { router, useFocusEffect } from 'expo-router'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { Redirect, router, useFocusEffect } from 'expo-router'
+import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
   ActivityIndicator,
   Animated,
@@ -66,6 +66,7 @@ import { showToast } from '../../../src/lib/toast'
 import { relativeTime } from '../../../src/lib/format'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../../src/hooks/useV3Home'
 import { useTwoPane } from '../../../src/hooks/useTwoPane'
 import { TwoPane } from '../../../src/components/TwoPane'
 import { PostScreen } from '../../../src/screens/PostScreen'
@@ -111,7 +112,26 @@ function CorrectedLine({ original, corrected }: { original: string; corrected: s
   )
 }
 
-export default function FeedScreen() {
+/**
+ * The Feed tab — or, with `flags.v3Home` on, a door to People's Posts
+ * segment, which is this same screen under People's header. The route stays
+ * so every link, push and "back to the feed" that names it still lands
+ * somewhere that shows the feed.
+ */
+export default function FeedRoute() {
+  const v3Home = useV3Home()
+  if (v3Home) {
+    return <Redirect href={{ pathname: '/(app)/(tabs)/discover', params: { segment: 'posts' } }} />
+  }
+  return <FeedScreen />
+}
+
+/**
+ * Exported for People's Posts segment (`discover.tsx`), which passes
+ * `people` — the People | Posts control. The title then reads "People" and
+ * the control sits under it, so the two segments share one header.
+ */
+export function FeedScreen({ people }: { people?: ReactNode } = {}) {
   useScreenInteractive()
   /*
    * The third list to take two panes, after the chat list and Discover. Which
@@ -402,7 +422,7 @@ export default function FeedScreen() {
       >
         <View style={styles.header}>
           <View style={styles.titleRow}>
-            <Text style={styles.title}>{t('feed.title')}</Text>
+            <Text style={styles.title}>{people ? t('tabs.people') : t('feed.title')}</Text>
             {/*
               One way in. The two section buttons each opened the composer
               pre-set to their own question; asking is now two optional chips
@@ -416,6 +436,7 @@ export default function FeedScreen() {
               <Text style={styles.ask}>{t('feed.newPost')}</Text>
             </Pressable>
           </View>
+          {people ? <View style={styles.segments}>{people}</View> : null}
         </View>
 
         {/* Above the list rather than inside it: a hint that scrolls away is
@@ -788,6 +809,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // while the screen's fonts load.
   titleRow: { alignItems: 'center', flexDirection: 'row', gap: 14, minHeight: 48 },
   title: { ...font.title, color: colors.text, flex: 1, fontSize: 34 },
+  // Where Discover puts the same control, so switching segments moves nothing.
+  segments: { marginTop: spacing.md },
   // A text button that only shows its pill while pressed.
   askButton: {
     alignItems: 'center',

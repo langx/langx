@@ -5,6 +5,8 @@ import { SplashFill } from '../src/components/AppSplash'
 import { LoadFailed } from '../src/components/LoadFailed'
 import { Screen } from '../src/components/ui/Screen'
 import { useSignalAppReady } from '../src/hooks/useAppReady'
+import { useAppConfig } from '../src/hooks/useAppConfig'
+import { appConfigSettled, useV3Home } from '../src/hooks/useV3Home'
 import { useMe } from '../src/api/queries'
 import { getDraft, hydrateDraft, isDraftHydrated } from '../src/hooks/useOnboardingDraft'
 import { authClient } from '../src/lib/auth-client'
@@ -43,6 +45,14 @@ export default function Index() {
   // reads "no profile" off a 404, which a signed-out request never gets to.
   const { data: profile, isPending, error, refetch, fetchStatus } = useMe(signedIn)
   const [draftReady, setDraftReady] = useState(isDraftHydrated)
+  /*
+   * Which tab a signed-in launch lands on is `flags.v3Home`'s to say, so the
+   * splash also waits for the config — one attempt of it, which runs beside
+   * the profile request rather than after it. Landing first and asking second
+   * would put the bar through a rearrangement a moment after launch.
+   */
+  const configSettled = appConfigSettled(useAppConfig())
+  const v3Home = useV3Home()
 
   // Reading the stored draft is asynchronous, and redirecting before it lands
   // would send someone who was three screens in back to screen one — the exact
@@ -64,7 +74,7 @@ export default function Index() {
    * screen anyone wanted. Saying so here is what lets the opening animation
    * cover the whole redirect chain instead of ending a beat too early.
    */
-  useSignalAppReady(signedIn ? !isPending && draftReady : true)
+  useSignalAppReady(signedIn ? !isPending && draftReady && configSettled : true)
 
   /*
    * Here because every way into an existing account ends on this screen —
@@ -91,7 +101,8 @@ export default function Index() {
    * this that is a splash with no spinner to end and no button to press — the
    * exact screen the retry below exists to replace.
    */
-  if ((isPending && fetchStatus !== 'paused') || !draftReady) return <SplashFill />
+  if ((isPending && fetchStatus !== 'paused') || !draftReady || !configSettled)
+    return <SplashFill />
 
   /*
    * Before the onboarding branch, because a suspended account has no profile
@@ -140,5 +151,5 @@ export default function Index() {
     return <Redirect href="/(onboarding)/welcome-back" />
   }
 
-  return <Redirect href="/(app)/(tabs)/discover" />
+  return <Redirect href={v3Home ? '/(app)/(tabs)/home' : '/(app)/(tabs)/discover'} />
 }

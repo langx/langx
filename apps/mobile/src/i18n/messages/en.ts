@@ -60,6 +60,52 @@ export const en = {
     echo: 'Echo',
     feed: 'Feed',
     me: 'Me',
+    home: 'Home',
+    people: 'People',
+    posts: 'Posts',
+  },
+
+  /**
+   * Home, the redesign’s first tab, behind `flags.v3Home`. Its Pro card
+   * and invite card reuse `me.proBody`, `me.inviteBody` and `me.invite`, so
+   * the two places that describe Pro and invites cannot drift apart.
+   */
+  home: {
+    greetingMorning: 'Good morning, {name}',
+    greetingAfternoon: 'Good afternoon, {name}',
+    greetingEvening: 'Good evening, {name}',
+    subtitle: 'One thing first, then the rest of today.',
+    waitingTitle: '{name} is waiting',
+    yourTurn: 'Your turn',
+    replyTo: 'Reply to {name}',
+    sessionTitle: 'Your call with {name}',
+    sessionAt: 'At {time}',
+    sessionOpen: 'Open the chat',
+    streakTitle: { one: 'Keep your {count}-day streak', other: 'Keep your {count}-day streak' },
+    streakBody: 'Today has not counted yet.',
+    streakEcho: 'Review your cards',
+    streakChats: 'Write to someone',
+    echoTitle: { one: '{count} card ready', other: '{count} cards ready' },
+    echoBody: 'A few minutes in Echo keeps them fresh.',
+    echoStart: 'Start a review',
+    todayTitle: 'Today’s three',
+    todayCount: '{done} of {total} done',
+    todayCorrect: 'Help with a sentence',
+    todayNotYet: 'Not yet',
+    streakDays: { one: '{count}-day streak', other: '{count}-day streak' },
+    streakNext: {
+      one: '{count} day to your {day}-day reward',
+      other: '{count} days to your {day}-day reward',
+    },
+    peopleTitle: 'Today’s people',
+    seeAll: 'See all',
+    sayHello: 'Say hello',
+    proTitle: 'Go further with Pro',
+    proButton: 'See what Pro adds',
+    inviteTitle: 'Learn with a friend',
+    guestTitle: 'Make LangX yours',
+    guestBody:
+      'With an account you can write to people, keep a streak and save what you learn in Echo.',
   },
 
   composer: {

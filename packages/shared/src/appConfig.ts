@@ -74,6 +74,18 @@ export const appConfigSchema = z.object({
      * `docs/decisions.md` → _Turnstile on the password forms_.
      */
     captchaRequired: z.boolean(),
+    /**
+     * The redesign's Home tab and the bar that leads with it — Home · Chats ·
+     * Echo · People · Me — instead of today's five. Starts off, like
+     * `captchaRequired`, because it is a rollout stage rather than a kill
+     * switch: merging the code changes nothing until an operator turns it on.
+     *
+     * Read by the client once per launch (`useV3Home`), so turning it on or
+     * off reaches a running app at its next cold start rather than
+     * rearranging the bar under somebody's thumb. A build older than the flag
+     * never reads it and keeps today's tabs whatever it says.
+     */
+    v3Home: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -94,6 +106,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     signupsEnabled: true,
     callsEnabled: true,
     captchaRequired: false,
+    v3Home: false,
   },
 }
 
