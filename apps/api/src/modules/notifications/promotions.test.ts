@@ -12,7 +12,7 @@ import { invalidateAppConfigCache, updateAppConfig } from '../appConfig/appConfi
 import { LoggingPushSender } from '../push/devices'
 import { claimCampaignRecipients } from './campaign'
 import { runNewsletterPass } from './newsletter'
-import { runPromotionsPass } from './promotions'
+import { promotionsInOrder, runPromotionsPass } from './promotions'
 
 const SECRET = 'p'.repeat(40)
 const DAY = 24 * 60 * 60 * 1000
@@ -473,5 +473,197 @@ describe('the nudges that need permission', () => {
     await runPromotionsPass(handle.db, senders, NOW)
     expect(email.messages).toHaveLength(1)
     expect(push.sent).toHaveLength(0)
+  })
+
+  describe('with nudgeNoSilentDrops, nothing an eligible person is owed vanishes', () => {
+    async function setNoSilentDrops(on: boolean): Promise<void> {
+      await updateAppConfig(handle.db, {
+        flags: { ...DEFAULT_APP_CONFIG.flags, nudgeNoSilentDrops: on },
+      })
+      invalidateAppConfigCache()
+    }
+
+    /**
+     * A ledger row from some days back. `claimOnce` would stamp it with the
+     * real clock, which is after this file's `NOW` and so reads as marketing
+     * sent inside the gap.
+     */
+    async function saidBefore(
+      job: string,
+      userId: string,
+      periodKey: string,
+      daysAgo: number,
+    ): Promise<void> {
+      await handle.db.collection(COLLECTIONS.notificationLedger).insertOne({
+        _id: `${job}:${userId}:${periodKey}`,
+        sentOn: new Date(NOW.getTime() - daysAgo * DAY),
+      } as never)
+    }
+
+    function capture() {
+      const lines: { obj: object; msg: string }[] = []
+      return { lines, logger: { info: (obj: object, msg: string) => lines.push({ obj, msg }) } }
+    }
+
+    async function forgetAllBut(keep: string): Promise<void> {
+      email.messages.length = 0
+      await handle.db
+        .collection<{ _id: string }>(COLLECTIONS.notificationLedger)
+        .deleteMany({ _id: { $ne: keep } })
+    }
+
+    /**
+     * The order is the priority, and both are written down here so that a
+     * reordering is a test change somebody has to mean.
+     */
+    it('walks money before idle tokens with the switch on, and the old order off', () => {
+      const before = [
+        'promo.photo',
+        'promo.streakRepair',
+        'promo.away7',
+        'promo.away30',
+        'promo.idleTokens',
+        'promo.trialEnding',
+        'promo.winBack',
+        'promo.quotaHit',
+        'promo.invite',
+      ]
+      const after = [
+        'promo.photo',
+        'promo.streakRepair',
+        'promo.away7',
+        'promo.away30',
+        'promo.trialEnding',
+        'promo.winBack',
+        'promo.quotaHit',
+        'promo.idleTokens',
+        'promo.invite',
+      ]
+      expect(promotionsInOrder(false).map((promotion) => promotion.job)).toEqual(before)
+      expect(promotionsInOrder(true).map((promotion) => promotion.job)).toEqual(after)
+    })
+
+    /**
+     * The worst of them. A nudge already said that stays true — no photo yet
+     * — claimed the evening's slot, sent nothing, and the claim restarted the
+     * week's gap, so nothing below it in the table was ever said either.
+     */
+    it('lets the next nudge have the evening when the first was already said', async () => {
+      const userId = await newProfile()
+      const photo = `promo.photo:${userId}:once`
+      await saidBefore('promo.photo', userId, 'once', 10)
+
+      const off = capture()
+      expect(await runPromotionsPass(handle.db, senders, NOW, off.logger)).toEqual({ sent: 0 })
+      expect(off.lines.map((line) => line.obj)).toEqual([
+        { pass: 'promotions', held: { 'promo.photo:said': 1 } },
+      ])
+      const slots = await handle.db
+        .collection(COLLECTIONS.notificationLedger)
+        .countDocuments({ _id: { $regex: '^promo\\.slot:' } } as never)
+      expect(slots).toBe(1)
+
+      await forgetAllBut(photo)
+      await setNoSilentDrops(true)
+      const on = capture()
+      expect(await runPromotionsPass(handle.db, senders, NOW, on.logger)).toEqual({ sent: 1 })
+      expect(subjects()).toEqual(['Practising is better with someone you know'])
+      expect(on.lines).toHaveLength(0)
+    })
+
+    /**
+     * "Away seven days" was true for one evening. Marketed three days before
+     * it, the evening fell inside the gap and the nudge was gone by the time
+     * the gap ended.
+     */
+    it('waits out the gap for a nudge whose day came inside it', async () => {
+      const userId = await newProfile({ avatar: true, invited: true, activeDaysAgo: 7.5 })
+      await saidBefore('promo.idleTokens', userId, '2026-09', 3)
+
+      const tonight = capture()
+      expect(await runPromotionsPass(handle.db, senders, NOW, tonight.logger)).toEqual({
+        sent: 0,
+      })
+      expect(tonight.lines[0]?.obj).toEqual({
+        pass: 'promotions',
+        held: { 'promo.away7:gap': 1 },
+      })
+      // A count by nudge and reason, and nobody in it.
+      expect(JSON.stringify(tonight.lines)).not.toContain(userId)
+
+      // Five evenings on, the gap is over and the absence twelve days old.
+      const later = new Date(NOW.getTime() + 5 * DAY)
+      expect(await runPromotionsPass(handle.db, senders, later)).toEqual({ sent: 0 })
+      await setNoSilentDrops(true)
+      expect(await runPromotionsPass(handle.db, senders, later)).toEqual({ sent: 1 })
+      expect(subjects()).toEqual(['People are still practising without you'])
+
+      // Said once for the absence, however long the window stays open.
+      const next = new Date(later.getTime() + DAY)
+      expect(await runPromotionsPass(handle.db, senders, next)).toEqual({ sent: 0 })
+    })
+
+    it('gives the month away and the win-back the same wait', async () => {
+      await setNoSilentDrops(true)
+      await newProfile({ avatar: true, invited: true, activeDaysAgo: 33 })
+      await newProfile({
+        avatar: true,
+        invited: true,
+        activeDaysAgo: 1,
+        churnedFrom: { tier: 'pro', at: new Date(NOW.getTime() - 12 * DAY) },
+      })
+      // Past the widened window: a month and a half away is not "a month".
+      await newProfile({ avatar: true, invited: true, activeDaysAgo: 45 })
+
+      expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 2 })
+      expect(subjects().sort()).toEqual(
+        ['We will stop writing after this', 'Your plan ended a week ago'].sort(),
+      )
+    })
+
+    /**
+     * Idle tokens stays true for weeks; the win-back for its window. Above
+     * it, tokens took the slot and the gap closed the win-back's window.
+     */
+    it('puts a plan that ended above tokens waiting', async () => {
+      const churned = {
+        avatar: true,
+        invited: true,
+        earned: 900,
+        churnedFrom: { tier: 'pro', at: new Date(NOW.getTime() - 7.5 * DAY) },
+      }
+      await newProfile(churned)
+      expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+      expect(subjects()).toEqual(['You have 900 tokens waiting'])
+
+      email.messages.length = 0
+      await handle.db.collection(COLLECTIONS.notificationLedger).deleteMany({})
+      await handle.db.collection(COLLECTIONS.profiles).deleteMany({})
+      await setNoSilentDrops(true)
+      await newProfile(churned)
+      expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+      expect(subjects()).toEqual(['Your plan ended a week ago'])
+    })
+
+    /** Consent, the gap, the hour and the evening letter decide, as before. */
+    it('widens no audience', async () => {
+      await setNoSilentDrops(true)
+      const marketed = await newProfile({ avatar: true, invited: true, activeDaysAgo: 10 })
+      await saidBefore('promo.idleTokens', marketed, '2026-09', 2)
+      await newProfile({
+        avatar: true,
+        invited: true,
+        activeDaysAgo: 10,
+        notifications: { promotions: { push: true, email: false } },
+      })
+      await newProfile({
+        avatar: true,
+        invited: true,
+        activeDaysAgo: 10,
+        timezone: 'America/Anchorage',
+      })
+      expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+      expect(push.sent).toHaveLength(0)
+    })
   })
 })

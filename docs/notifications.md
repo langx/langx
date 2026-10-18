@@ -377,10 +377,15 @@ every one claims a row in `notificationLedger` before it sends.
 | **A correction, answer or comment on your post** | `social`        | on the reply       | one per post per **hour**                         |
 | **A reply to your comment**                      | `social`        | on the reply       | one per **thread** per hour                       |
 | **Somebody wrote a review on your profile**      | `social`        | on the first write | one per author, **ever**; an edit never           |
-| **Your posts' likes**                            | `social`        | daily batch        | UTC day, and not if the bell's rows are read      |
+| **Your posts' likes**                            | `social`        | daily batch¹       | UTC day¹, and not if the bell's rows are read     |
 | **Yesterday's pool paid you N tokens**           | `wallet`        | 09:00 local        | pool day, and not if the bell's row is read       |
 | **Your hourly gift is ready**                    | `wallet`        | waking hours       | UTC day, and only if they have taken one before   |
 | **Cards are due in Echo**                        | `echo`          | 19:00 local        | local day, and only if nothing was reviewed today |
+
+¹ With `flags.nudgeNoSilentDrops` on, at 15:00 on the author's own clock
+(`LIKES_ROUND_UP_LOCAL_HOUR`, three hours from the visits and three from the
+badges) and claimed under their local day. Off, at the first tick that finds a
+like in the last day — just after midnight UTC, the small hours east of it.
 
 **The two streak pushes.** The reminder says what keeps a streak: opening the
 app, which checks the day in — "Open LangX today to keep it going." It used to
@@ -506,7 +511,9 @@ badge push was for the people who had already come back.
   thread's `commentId` beside `postId`; every build opens the post from the
   second.
 - **Likes are a daily batch, never an event.** A like is the cheapest thing
-  anybody can do here.
+  anybody can do here. With `flags.nudgeNoSilentDrops` on the batch also keeps
+  to one afternoon hour on the author's clock, rather than whenever the day's
+  first like was found.
 - **One follow notice per follower, ever.** Unfollowing and following again
   is not news.
 - **One review notice per author, ever.** Only the first write of a review
@@ -538,10 +545,10 @@ and leave the evening's real news with nowhere to go.
 | --- | --------------------------------------- | ----------------------------------------------------- | ---------- |
 | 1   | Add a photo, and people will find you   | no `avatarUrl`, account > 48 h                        | promotions |
 | 2   | Your streak broke — repair it           | `streakRepairDay`: broke **yesterday**, repairable    | **streak** |
-| 3   | People are still practising without you | `lastActiveAt` 7–8 days ago                           | promotions |
-| 4   | We will stop writing after this         | `lastActiveAt` 30–31 days ago                         | promotions |
+| 3   | People are still practising without you | `lastActiveAt` 7–8 days ago (7–15 with the switch)    | promotions |
+| 4   | We will stop writing after this         | `lastActiveAt` 30–31 days ago (30–38)                 | promotions |
 | 5   | Your free week ends in two days         | `periodType: trial`, not renewing, ends within 2 days | promotions |
-| 6   | Your plan ended a week ago              | `churnedFrom` 7–8 days ago, still on free             | promotions |
+| 6   | Your plan ended a week ago              | `churnedFrom` 7–8 days ago (7–15), still on free      | promotions |
 | 7   | You are running into the free limits    | refused 3 times in 3 days, still on free              | promotions |
 | 8   | You have N tokens waiting               | balance ≥ 200, nothing spent in a fortnight           | promotions |
 | 9   | Invite a friend                         | 14 days old, active, has invited nobody               | promotions |
@@ -554,6 +561,42 @@ Nudge 5 matches nobody while `flags.trialEndingReminder` is on. Everybody it
 could match is in a trial and so holds Pro, and nothing is sold to a person who
 holds it; what they are owed is the billing reminder above, which says when and
 how to cancel. With the switch off it runs as before.
+
+**The order above is the order with `flags.nudgeNoSilentDrops` on.** Off, the
+code still walks _You have N tokens waiting_ fifth, between the month away and
+the trial — which is the first of four ways a nudge somebody qualified for
+could vanish without a trace, all four of which the switch closes:
+
+- **A nudge already said held the evening.** The pass claimed the day's
+  marketing slot before the nudge's own key, so a nudge that stays true after
+  it is sent — no photo yet, tokens still unspent this month — took the slot,
+  found its key spent, sent nothing, and the slot restarted the week's gap.
+  Everything below it in the table waited for as long as it stayed true. With
+  the switch on a nudge already said this period is passed over, and the next
+  one has the evening.
+- **One-day windows inside a seven-day gap.** Nudges 3, 4 and 6 were true for a
+  single evening, and a nudge whose evening fell inside the gap, or on a night
+  the digest went, had closed before it could be said. With the switch on they
+  stay open for `MARKETING_MIN_GAP_DAYS` and a day more, so they are said late
+  rather than never — still once, under the same period keys.
+- **Idle tokens above money.** It is true for weeks; the win-back for its
+  window and the trial for two days. Above them it took the slot and the gap
+  outlasted them. With the switch on the money nudges come first, as listed.
+  `promotions.test.ts` pins both orders.
+- **The likes batch at any hour.** See _Your posts' likes_ above: with the
+  switch on it waits for 15:00 on the author's clock.
+
+Who may be told does not change: promotions consent, the gap, the 20:00 hour
+and the evening letter decide exactly as before, and nobody under eighteen is
+treated differently from today (the table has never had an age rule; the
+streak repair push does). What changes is that more of what consenting people
+already qualify for reaches them, which is why it starts off.
+
+**Held back, counted.** Whatever stops somebody's first eligible nudge on the
+evening is logged once per pass as a count per nudge and reason — `digest`,
+`gap`, `slot`, or `said` — with no id or address in it: `promotions held back`,
+`{ held: { 'promo.away7:gap': 3 } }`. A nudge that keeps being held shows up as
+a number instead of as nothing. The count is taken with the switch off too.
 
 The streak repair sits under the **streak** switch, not promotions: it is
 about the streak, and hiding it behind the marketing switch would hide it

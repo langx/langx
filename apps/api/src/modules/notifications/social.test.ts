@@ -1,8 +1,10 @@
+import { DEFAULT_APP_CONFIG } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
+import { invalidateAppConfigCache, updateAppConfig } from '../appConfig/appConfig'
 import { LoggingPushSender } from '../push/devices'
 import { notifyFollowed, notifyPostReply, notifyTestimonial, runLikesRoundUpPass } from './social'
 
@@ -35,22 +37,25 @@ describe('the feed reacting to somebody', () => {
       COLLECTIONS.likes,
       COLLECTIONS.posts,
       COLLECTIONS.postCorrections,
+      COLLECTIONS.appConfig,
     ]) {
       await handle.db.collection(name).deleteMany({})
     }
+    invalidateAppConfigCache()
     errors.length = 0
     push = new LoggingPushSender()
     senders = { push, logger: { error: (obj) => errors.push(obj) } }
   })
 
   async function newProfile(
-    opts: { name?: string; notifications?: unknown; device?: boolean } = {},
+    opts: { name?: string; notifications?: unknown; device?: boolean; timezone?: string } = {},
   ): Promise<string> {
     const userId = new ObjectId().toHexString()
     await handle.db.collection(COLLECTIONS.profiles).insertOne({
       _id: userId,
       handle: `h${userId.slice(-10)}`,
       displayName: opts.name ?? 'Sofia R.',
+      ...(opts.timezone ? { timezone: opts.timezone } : {}),
       settings: { discoverable: true, notifications: opts.notifications ?? {} },
       nativeLanguages: [{ code: 'en' }],
     } as never)
@@ -250,6 +255,57 @@ describe('the feed reacting to somebody', () => {
 
       expect(await runLikesRoundUpPass(handle.db, push, NOW)).toEqual({ sent: 0 })
       expect(push.sent).toHaveLength(0)
+    })
+
+    async function likedPost(author: string): Promise<ObjectId> {
+      const postId = new ObjectId()
+      await handle.db
+        .collection(COLLECTIONS.posts)
+        .insertOne({ _id: postId, authorId: author, body: 'hi', language: 'en' })
+      await likePost(postId, 3)
+      return postId
+    }
+
+    async function setNoSilentDrops(on: boolean): Promise<void> {
+      await updateAppConfig(handle.db, {
+        flags: { ...DEFAULT_APP_CONFIG.flags, nudgeNoSilentDrops: on },
+      })
+      invalidateAppConfigCache()
+    }
+
+    /**
+     * Unfenced, the batch went at the first tick that found a like — for an
+     * author in Istanbul, that tick just after midnight UTC is three in the
+     * morning. With the switch on it waits for the author's own afternoon.
+     */
+    it('keeps to the author’s own afternoon once the switch is on', async () => {
+      await setNoSilentDrops(true)
+      // 12:00 UTC is 15:00 in Istanbul and 08:00 in Toronto.
+      const istanbul = await newProfile({ timezone: 'Europe/Istanbul' })
+      const toronto = await newProfile({ timezone: 'America/Toronto' })
+      await likedPost(istanbul)
+      await likedPost(toronto)
+
+      expect(await runLikesRoundUpPass(handle.db, push, NOW)).toEqual({ sent: 1 })
+      expect(push.sent).toHaveLength(1)
+
+      // 15:00 in Toronto is 19:00 UTC; the likes are still inside the day.
+      const torontoAfternoon = new Date(NOW.getTime() + 7 * 60 * 60 * 1000)
+      expect(await runLikesRoundUpPass(handle.db, push, torontoAfternoon)).toEqual({ sent: 1 })
+      const claims = await handle.db
+        .collection(COLLECTIONS.notificationLedger)
+        .find({}, { projection: { _id: 1 } })
+        .toArray()
+      expect(claims.map((row) => row._id).sort()).toEqual(
+        [`social.likes:${istanbul}:2026-09-14`, `social.likes:${toronto}:2026-09-14`].sort(),
+      )
+    })
+
+    it('goes at any hour while the switch is off, as it always did', async () => {
+      const toronto = await newProfile({ timezone: 'America/Toronto' })
+      await likedPost(toronto)
+      // 08:00 in Toronto.
+      expect(await runLikesRoundUpPass(handle.db, push, NOW)).toEqual({ sent: 1 })
     })
 
     it('still buzzes when one of them has not been seen', async () => {
