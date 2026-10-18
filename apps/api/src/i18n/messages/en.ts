@@ -131,6 +131,13 @@ export const en = {
     billingEndedTitle: 'Your plan has ended',
     billingBody: 'Tap to check your plan.',
     /**
+     * Two days before a free trial becomes a charge (`billing/trialEnding.ts`).
+     * Information only — the date, and the tap lands on the plan screen with
+     * its "Manage or cancel" row. Nothing here may sell: rule 22's Billing class.
+     */
+    billingTrialEndingTitle: 'Your free trial ends on {date}',
+    billingTrialEndingBody: 'Tap to see your plan and how to cancel.',
+    /**
      * The v1 loyalty gift. Ungated like the two above and for the same
      * reason — it is a receipt, not a nudge — but it is sent as a `message`
      * push, so the tap opens the @langx thread the news is written in rather
@@ -480,6 +487,25 @@ export const en = {
         'Your subscription has ended and your account is back on the free plan. Everything you made is still there.',
 
       planEndedButton: 'See the plans',
+      /**
+       * The trial-ending reminder. No amount: RevenueCat reports a trial's
+       * start at a price of zero and no record we hold carries what the store
+       * will charge, so the body points at the price the store showed rather
+       * than inventing one. One cancel line per store, chosen by
+       * `entitlement.store`, each in that store's own words.
+       */
+      trialEndingTitle: 'Your LangX Pro trial ends on {date}',
+      trialEndingBody:
+        'If you keep it, the store you subscribed in will charge for the plan you chose on {date}, at the price it showed you, and renew it until you cancel. Cancel before then and you pay nothing; Pro stays until {date}.',
+      trialEndingCancelAppStore:
+        'To cancel on iPhone or iPad: Settings → your name → Subscriptions → LangX → Cancel Subscription. Apple needs this at least a day before the trial ends.',
+      trialEndingCancelPlayStore:
+        'To cancel on Android: Google Play → your profile picture → Payments & subscriptions → Subscriptions → LangX → Cancel subscription.',
+      trialEndingCancelWeb:
+        'To cancel: LangX on the web → Settings → Subscription → Manage or cancel.',
+      trialEndingCancelOther:
+        'To cancel, open the subscriptions page of the store you subscribed in.',
+      trialEndingButton: 'See my plan',
     },
 
     /**

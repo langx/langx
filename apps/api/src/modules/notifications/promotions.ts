@@ -8,6 +8,7 @@ import { profilesInLocalHour } from '../profiles/localHour'
 import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
 import { QUOTA_REFUSAL_WINDOW_MS } from '../../lib/quota'
+import { getAppConfig } from '../appConfig/appConfig'
 import { alreadyClaimed, claimOnce } from './ledger'
 import { MARKETING_SLOT_JOB, recentlyMarketed } from './marketing'
 import { readAggregates } from '../tokens/ledger'
@@ -178,14 +179,22 @@ export const PROMOTIONS: Promotion[] = [
      * `willRenew: false` narrows it further: a trial that converts on its own
      * needs no letter, and telling somebody their card is about to be charged
      * is the store's job.
+     *
+     * **Retired while `flags.trialEndingReminder` is on** (D7). Somebody in a
+     * trial already holds Pro, and nothing is sold to a person who holds it;
+     * what a trialist is owed is the billing reminder in
+     * `billing/trialEnding.ts`, which states the date and how to cancel and
+     * argues for nothing. Every person this nudge can match is in a trial,
+     * so with the switch on it matches nobody. Off, it is what it was.
      */
     job: 'promo.trialEnding',
     scenario: 'trialEnding',
     type: 'promotions',
     periodKey: ({ profile }) => profile.entitlement?.expiresAt?.toISOString() ?? 'none',
-    eligible: ({ profile, now }) => {
+    eligible: async ({ profile, now, db }) => {
       const { entitlement } = profile
       if (entitlement?.periodType !== 'trial') return false
+      if ((await getAppConfig(db)).flags.trialEndingReminder) return false
       if (entitlement.willRenew !== false) return false
       const endsIn = entitlement.expiresAt
         ? (new Date(entitlement.expiresAt).getTime() - now.getTime()) / DAY_MS

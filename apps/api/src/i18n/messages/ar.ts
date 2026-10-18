@@ -120,6 +120,8 @@ export const ar: Localized<ServerMessages> = {
     billingFailedTitle: 'لم تتم عملية الدفع',
     billingEndedTitle: 'انتهت خطتك',
     billingBody: 'انقر للاطلاع على خطتك.',
+    billingTrialEndingTitle: 'تنتهي فترتك التجريبية المجانية في {date}',
+    billingTrialEndingBody: 'انقر للاطلاع على خطتك وطريقة الإلغاء.',
     lifetimeGiftTitle: '{plan}، مدى الحياة 🎉',
     lifetimeGiftBody: {
       zero: 'رموزك من v1 هي التي أهّلتك.',
@@ -450,6 +452,16 @@ export const ar: Localized<ServerMessages> = {
       planEndedBody: 'انتهى اشتراكك وعاد حسابك إلى الخطة المجانية. كل ما أنشأته ما زال موجوداً.',
 
       planEndedButton: 'اطّلع على الخطط',
+      trialEndingTitle: 'تنتهي فترة LangX Pro التجريبية في {date}',
+      trialEndingBody:
+        'إذا أبقيت عليها، فسيحصّل المتجر الذي اشتركت منه في {date} قيمة الخطة التي اخترتها بالسعر الذي عرضه عليك، وسيجددها حتى تلغيها. ألغِ قبل ذلك ولن تدفع شيئًا، ويبقى Pro حتى {date}.',
+      trialEndingCancelAppStore:
+        'للإلغاء على iPhone أو iPad: الإعدادات ← اسمك ← الاشتراكات ← LangX ← إلغاء الاشتراك. تطلب Apple ذلك قبل انتهاء الفترة التجريبية بيوم على الأقل.',
+      trialEndingCancelPlayStore:
+        'للإلغاء على Android: Google Play ← صورة ملفك الشخصي ← الدفعات والاشتراكات ← الاشتراكات ← LangX ← إلغاء الاشتراك.',
+      trialEndingCancelWeb: 'للإلغاء: LangX على الويب ← الإعدادات ← الاشتراك ← إدارة أو إلغاء.',
+      trialEndingCancelOther: 'للإلغاء، افتح صفحة الاشتراكات في المتجر الذي اشتركت منه.',
+      trialEndingButton: 'اطّلع على خطتي',
     },
 
     /**

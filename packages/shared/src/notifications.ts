@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { feedAuthorSchema } from './feed'
+import { localDayKey, shiftDayKey } from './periods'
 
 /**
  * What the app may send.
@@ -407,6 +408,27 @@ export const UNREAD_DIGEST_MAX_SENDERS = 3
  * fired the moment the condition is met.
  */
 export const NOTIFICATION_EMAIL_LOCAL_HOURS = { earliest: 9, latest: 21 } as const
+
+/**
+ * How many days before a free trial turns into a charge the reminder is due,
+ * counted on the reader's own calendar.
+ *
+ * Two, which leaves a whole day to act even where the store takes the payment
+ * a day early, as Apple may. A calendar day rather than forty-eight hours, so
+ * that the paywall can promise a date and the reminder keeps it: a trial
+ * ending on the 25th is reminded on the 23rd, in waking hours, wherever in the
+ * day the 25th's charge falls.
+ */
+export const TRIAL_REMINDER_DAYS_BEFORE = 2
+
+/**
+ * The local day the trial-ending reminder goes out, `YYYY-MM-DD` — the day
+ * the trial ends on the reader's calendar, less `TRIAL_REMINDER_DAYS_BEFORE`.
+ * The server sends on it and the paywall names it, so the two cannot drift.
+ */
+export function trialReminderDay(trialEndsAt: Date, timeZone: string): string {
+  return shiftDayKey(localDayKey(trialEndsAt, timeZone), -TRIAL_REMINDER_DAYS_BEFORE)
+}
 
 /**
  * When the one notification email of the day goes out, on the reader's clock.

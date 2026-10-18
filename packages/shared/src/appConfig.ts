@@ -84,6 +84,14 @@ export const appConfigSchema = z.object({
      * `modules/notifications/streakRepair.ts`.
      */
     streakRepairPush: z.boolean(),
+    /**
+     * The reminder two days before a free trial turns into a charge — a
+     * billing notice, so no switch gates it (`modules/billing/trialEnding.ts`).
+     * Starts off because it is new mail and push to people who never had it,
+     * and because on, it also retires the promotional "free week ends" nudge
+     * for everybody in a trial. Off, both behave exactly as before.
+     */
+    trialEndingReminder: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -105,6 +113,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     callsEnabled: true,
     captchaRequired: false,
     streakRepairPush: false,
+    trialEndingReminder: false,
   },
 }
 

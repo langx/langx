@@ -4,6 +4,7 @@ import type { PushSender } from '../push/devices'
 import { runBroadcastQueuePass } from '../admin/broadcastQueue'
 import { runPlanEndedPass } from '../billing/planEnded'
 import { runProGiftPass, type ProGiftDeps } from '../billing/proGifts'
+import { runTrialEndingPass } from '../billing/trialEnding'
 import { withJobHealth } from '../admin/jobHealth'
 import { runSuspensionEndedPass } from '../moderation/suspensionEnded'
 import type { OfficialDelivery } from '../official/deliver'
@@ -131,6 +132,18 @@ export function startNotificationScheduler(
         () =>
           run('billing plan ended', () =>
             runPlanEndedPass(db, { email: senders.email.sender, push: senders.push, logger }, now),
+          ),
+        /*
+         * Its sibling ahead of the money rather than behind it: two days
+         * before a free trial becomes a charge. Off until its flag is on.
+         */
+        () =>
+          run('billing trial ending', () =>
+            runTrialEndingPass(
+              db,
+              { email: senders.email.sender, push: senders.push, logger },
+              now,
+            ),
           ),
         /*
          * The other clock-triggered transactional note. A suspension is one

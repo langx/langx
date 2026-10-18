@@ -401,8 +401,11 @@ export async function grantProGiftNow(
 
 // ── what the recipient is told ─────────────────────────────────────────────
 
-/** The end, in the reader's language and on their own calendar. */
-function formatGiftDate(at: Date, locale: Locale, timezone: string | undefined): string {
+/**
+ * The end, in the reader's language and on their own calendar. Exported for
+ * the trial reminder, which names its date the same way.
+ */
+export function formatGiftDate(at: Date, locale: Locale, timezone: string | undefined): string {
   try {
     return at.toLocaleDateString(locale, {
       day: 'numeric',

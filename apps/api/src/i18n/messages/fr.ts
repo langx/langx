@@ -115,6 +115,8 @@ export const fr: Localized<ServerMessages> = {
     billingFailedTitle: 'Votre paiement n’a pas abouti',
     billingEndedTitle: 'Votre formule a pris fin',
     billingBody: 'Touchez pour vérifier votre formule.',
+    billingTrialEndingTitle: 'Votre essai gratuit se termine le {date}',
+    billingTrialEndingBody: 'Touchez pour voir votre formule et comment résilier.',
     lifetimeGiftTitle: '{plan}, à vie 🎉',
     lifetimeGiftBody: {
       one: 'Ton {total} jeton de v1 te l’a valu.',
@@ -455,6 +457,18 @@ export const fr: Localized<ServerMessages> = {
         'Votre abonnement a pris fin et votre compte est revenu à la formule gratuite. Tout ce que vous avez créé est toujours là.',
 
       planEndedButton: 'Voir les formules',
+      trialEndingTitle: 'Votre essai de LangX Pro se termine le {date}',
+      trialEndingBody:
+        'Si vous le gardez, la boutique où vous vous êtes abonné facturera le {date} la formule choisie, au prix qu’elle vous a indiqué, puis la renouvellera jusqu’à résiliation. Résiliez avant et vous ne payez rien ; Pro reste actif jusqu’au {date}.',
+      trialEndingCancelAppStore:
+        'Pour résilier sur iPhone ou iPad : Réglages → votre nom → Abonnements → LangX → Annuler l’abonnement. Apple le demande au moins un jour avant la fin de l’essai.',
+      trialEndingCancelPlayStore:
+        'Pour résilier sur Android : Google Play → votre photo de profil → Paiements et abonnements → Abonnements → LangX → Résilier l’abonnement.',
+      trialEndingCancelWeb:
+        'Pour résilier : LangX sur le web → Réglages → Abonnement → Gérer ou résilier.',
+      trialEndingCancelOther:
+        'Pour résilier, ouvrez la page des abonnements de la boutique où vous vous êtes abonné.',
+      trialEndingButton: 'Voir ma formule',
     },
 
     /**
