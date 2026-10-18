@@ -1,4 +1,5 @@
 import {
+  DISCOVERY_REPLY_SIGNAL_WINDOW_MS,
   ERROR_CODES,
   MAX_PINNED_CONVERSATIONS,
   REPLY_PREVIEW_MAX_LENGTH,
@@ -41,6 +42,7 @@ import { isSuspended } from '../moderation/suspension'
 import { acceptsMessages, isOfficialId, unwritableOfficialIds } from '../official/accounts'
 import { awardForSend } from '../tokens/awards'
 import { assertConversationAccess, assertMediaUnlocked } from './access'
+import { captureReceivedCorrection } from '../echo/correctionCapture'
 import { readEchoedMessageIds } from '../echo/echoed'
 import { mirrorPhraseToEcho } from '../echo/phraseMirror'
 import { toMessageView, type MessageView } from './messageView'
@@ -258,7 +260,12 @@ export async function recordMessage(
    * where it belongs rather than an extra write. The round trip is paid at
    * most once per conversation, and never again on the hot path: the guard in
    * front of it is false for every message after the second speaker's first.
+   *
+   * The same claim is the first reply, so `firstReplyAt` rides it — only on a
+   * thread that was counted as received when it opened (`null`), which is
+   * what keeps answered from ever outgrowing received.
    */
+  const countsReply = conversation.firstReplyAt === null
   const becameMutual =
     !conversation.bothSpoke &&
     message.senderId !== conversation.firstMessageBy &&
@@ -266,10 +273,25 @@ export async function recordMessage(
       await conversations.updateOne(
         { _id: conversation._id, bothSpoke: { $ne: true } },
         {
-          $set: { bothSpoke: true },
+          $set: { bothSpoke: true, ...(countsReply ? { firstReplyAt: message.createdAt } : {}) },
         },
       )
     ).modifiedCount === 1
+
+  if (becameMutual && countsReply) {
+    const withinDay =
+      message.createdAt.getTime() - conversation.firstMessageAt.getTime() <=
+      DISCOVERY_REPLY_SIGNAL_WINDOW_MS
+    await db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+      { _id: message.senderId },
+      {
+        $inc: {
+          'stats.openersAnswered': 1,
+          ...(withinDay ? { 'stats.openersAnsweredWithinDay': 1 } : {}),
+        },
+      },
+    )
+  }
 
   const updated = await conversations.findOneAndUpdate(
     { _id: conversation._id },
@@ -923,6 +945,17 @@ export async function sendCorrection(
     conversation,
     message,
   )
+
+  /*
+   * Fired, not awaited — unlike the phrase mirror. That one is one insert;
+   * this is the whole capture (an access check, two profiles, the quota), and
+   * the corrector's ack should not wait on a card for somebody else. It
+   * cannot reject, and does nothing while `flags.echoFromCorrections` is off.
+   * Here rather than in the socket handler so every way of sending a
+   * correction gets it.
+   */
+  void captureReceivedCorrection(db, updatedConversation, message)
+
   return { message, conversation: updatedConversation, award }
 }
 

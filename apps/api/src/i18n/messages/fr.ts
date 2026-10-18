@@ -4,7 +4,9 @@ import type { ServerMessages } from './en'
 export const fr: Localized<ServerMessages> = {
   push: {
     streakTitle: { one: 'Série de {count} jour ! 🔥', other: 'Série de {count} jours ! 🔥' },
-    streakBody: 'Envoyez un message aujourd’hui pour la conserver.',
+    streakBody: 'Ouvrez LangX aujourd’hui pour la conserver.',
+    streakRepairTitle: 'Reprenez votre série',
+    streakRepairBody: 'Une réparation comble la journée d’hier, et votre série continue.',
     echoTitle: {
       one: '1 carte est prête',
       other: '{count} cartes sont prêtes',
@@ -39,11 +41,6 @@ export const fr: Localized<ServerMessages> = {
     promo: {
       addPhotoTitle: 'Ajoutez une photo',
       addPhotoBody: 'Les profils avec un visage reçoivent plus de réponses.',
-      streakBrokeTitle: {
-        one: 'Votre série de {count} jour est rompue',
-        other: 'Votre série de {count} jours est rompue',
-      },
-      streakBrokeBody: 'Une réparation remet hier.',
       awayTitle: 'Les gens sont toujours là',
       awayBody: 'De nouvelles personnes pour pratiquer.',
       awayLongTitle: 'Nous serons là quand vous voudrez',

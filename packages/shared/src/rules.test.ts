@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { MINIMUM_AGE, birthDateSchema, meetsMinimumAge } from './age'
+import {
+  ADULT_AGE,
+  MINIMUM_AGE,
+  adultBornOnOrBefore,
+  birthDateSchema,
+  isAdult,
+  meetsMinimumAge,
+} from './age'
 import { LANGUAGE_LEVELS, levelRank } from './level'
 import {
   getLanguage,
@@ -49,6 +56,20 @@ describe('age gate', () => {
   it('accepts someone turning 16 this year and rejects 15', () => {
     expect(meetsMinimumAge('2010-12-31', NOW)).toBe(true) // turns 16 in 2026
     expect(meetsMinimumAge('2011-01-01', NOW)).toBe(false)
+  })
+
+  // The opposite choice to the one above, on purpose: a safety gate is exact.
+  it('draws the adult line on the birthday itself, not on the year', () => {
+    expect(ADULT_AGE).toBe(18)
+    expect(adultBornOnOrBefore(NOW)).toBe('2008-08-26')
+    expect(isAdult('2008-08-26', NOW)).toBe(true)
+    expect(isAdult('2008-08-27', NOW)).toBe(false)
+    expect(isAdult('2008-12-31', NOW)).toBe(false) // turns 18 this year, not yet
+  })
+
+  it('reads a 29 February birthday as 1 March in a year without one', () => {
+    expect(isAdult('2008-02-29', new Date('2026-02-28T12:00:00Z'))).toBe(false)
+    expect(isAdult('2008-02-29', new Date('2026-03-01T00:00:00Z'))).toBe(true)
   })
 
   it('rejects an underage birth date through the schema', () => {

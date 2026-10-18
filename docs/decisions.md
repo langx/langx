@@ -4438,6 +4438,8 @@ a bad minute must not turn that into an error page.
 
 ## Six nudges, one pass, one at a time
 
+> **Amended 18 October 2026 — see _The streak repair push leaves the table, and both streak pushes say the rule_ below.**
+
 The remarketing scenarios could each have been a pass, the way the digest and
 the visit round-up are. They are not, and the reason is arithmetic: the
 candidates are the same people every time — everybody with `promotions.email`
@@ -4464,6 +4466,59 @@ and what makes "we miss you" one letter rather than a daily one.
 The push half is not a fallback for the mail and not gated on it. Somebody
 with the app installed and promotions on asked for both, and the mail is
 often the one that is never opened.
+
+## The streak repair push leaves the table, and both streak pushes say the rule
+
+_18 October 2026._ This changes the entry above for one row of its table.
+
+**The repair's push is a pass of its own** (`modules/notifications/
+streakRepair.ts`). The entry above says the push half is not gated on the
+mail; in the code it was. The push was sent from inside the table's loop, so
+it went out only after the mail's own checks had passed: `streak.email` on, no
+digest that evening, no marketing in the last week. Somebody who kept the
+streak push and turned streak mail off never heard about a repair at all. A
+streak push that names no plan, price or purchase is a streak notification,
+not a promotion, so the marketing slot and the week's gap were never its
+rules. It now answers to the push half of the streak switch alone, at the
+reminder's hour, and claims its own row in `notificationLedger`. The mail stays
+in the table, where its slot and its gap belong.
+
+**Who is told changed, on both channels.** The row counted hours from noon UTC
+on the last qualified day and fired between one and two days later. West of
+about UTC+8 that was the evening the streak was still alive, and the same
+evening's reminder said "keep it going". Both now ask one function,
+`streakRepairDay`: the last day was the day before yesterday on the reader's
+calendar, no freeze is banked, the run was at least
+`STREAK_REPAIR_NUDGE_MIN_STREAK` long, and a repair is left this month and
+affordable. An offer that ends on "you have used both" or "not enough tokens"
+is a loss with nothing to do about it.
+
+**It is sent as `wallet`, not a kind of its own.** An unknown kind routes
+nowhere on an installed build, and most phones learn a new one only from a
+store release. `wallet` already opens the wallet on every build since it
+existed; a `repairDay` field lets a newer build open the store instead and
+keep the push in the shade as a reminder. The cost is analytics:
+`notification_opened` counts a tapped repair as `wallet`.
+
+**Both pushes word the rule as it is.** "Send one message today to keep it
+going" was the rule before _Opening the app holds the streak_, and opening
+the app is what keeps it now, the tap on the push included. The reminder
+says so, and so do the intro slide, How it works and @copilot's notes. The
+repair says "Pick your streak back up", never "buy". The Streak reminder
+row's description in Settings now names the evening after a streak broke,
+which this switch has gated since September without saying so, and stops
+saying that everything under it comes by email only without a phone: that was
+true of the reminder and never of the repair mail.
+
+**It ships off.** The new pass reaches people the old repair push never did —
+the streak push on and the streak mail off — so it is a widening of what this
+switch sends, and that is a consent decision rather than a merge's.
+`flags.streakRepairPush` starts false, like `captchaRequired`; while it is,
+nobody gets a repair push of either kind, and the mail goes on as before.
+Switched on, it skips readers under eighteen (`STREAK_REPAIR_PUSH_MIN_AGE`,
+by `ageFromBirthDate`) and readers with no birth date, the default the EU's
+guidance on minors asks for streak pushes. Placeholder birth dates read as
+adults, which is a limit of the data rather than of the rule.
 
 ## The newsletter is monthly, and its editorial half is a pull request
 
@@ -5154,6 +5209,8 @@ first rather than handing somebody work that is already done.
 
 ## Discovery accepts a one-sided match while the app is this small — temporarily
 
+> **Amended 18 October 2026 — see _Discovery puts the people who answer first, behind a switch_ below.**
+
 Mutual fit is the honest rule and the whole point of the product: their native
 is something I am learning **and** their learning is something I speak. With
 the number of profiles there are today that conjunction returns nothing for
@@ -5204,6 +5261,93 @@ two halves with `$and` instead, and a test pins it.
 Reverting is the constant, the tests named `cross-match fallback`, and the
 second case in the index-usage test. Do it once there are enough profiles for
 the honest rule to fill a page.
+
+## Discovery puts the people who answer first, behind a switch
+
+**18 October 2026.** Bold move S2, built on the server and switched off:
+`flags.discoveryReplyFirst` in `appConfig`, default false, thrown by Behic with
+`scripts/maintenance.ts flag discoveryReplyFirst true`. Off, `/discovery`
+builds exactly the pipeline it built before and `/discovery/new` is empty. On,
+it changes the claim in the entry above that ranking needed no rule.
+
+The default list is where a first message gets written, and a first message
+nobody answers is the worst first evening the app can give somebody. Today's
+order says how well a person fits and whether they are online. It says nothing
+about whether they will answer, or whether they have been here this month.
+
+**Four changes, all to `recommended`:**
+
+- **People you already talk to are left out** — any thread, whoever opened it.
+  They are a tap away in Chats, and a list that keeps proposing them spends its
+  first rows on people already found. Only the default sort: `active` and
+  `nearby` answer "who is here" and "who is close", and a partner is a true
+  answer to both. The boosted strip is untouched; a placement somebody paid for
+  is not this list's to thin.
+- **Profiles idle past `DISCOVERY_DORMANT_DAYS` sort after everybody else**,
+  after online-first and before the score. A bucket, not a filter: they still
+  come back, at the end. This is what amends the entry above. A mutual fit now
+  leads a one-sided one only among people seen in the last two weeks; an
+  English native learning Turkish who left a month ago sorts after an English
+  native learning French who was here this morning. The line is measured from
+  page one's moment, read off the pinned online cutoff, so it does not move
+  mid-scroll.
+- **A responsiveness term**, `(answered + 1) / (received + 2)` times
+  `DISCOVERY_RESPONSIVENESS_WEIGHT`. The prior is the point. An account nobody
+  has written to — every account, the day this ships — sits at one half, which
+  is where everybody sat before the term existed, so nobody is ranked down for
+  being new or for predating the counters. The whole spread is less than one
+  language side, so inside a bucket a mutual fit still always leads a
+  one-sided one: the entry above's claim survives there.
+- **"Usually replies within a day"**, a `repliesWithinDay: true` on the card:
+  only past `DISCOVERY_REPLY_SIGNAL_MIN_SAMPLE` first messages, only at
+  `DISCOVERY_REPLY_SIGNAL_MIN_RATE` or better, never for somebody who hides
+  their online status (it says when they are around), and never a number. The
+  rate stays on the server.
+
+**The counters.** The recipient's `stats.openersReceived` goes up when a person
+opens a thread with them; `openersAnswered` and `openersAnsweredWithinDay` on
+their first reply, and the thread gets `firstReplyAt`. The reply rides the
+conditional write that already claims `bothSpoke` — exactly one writer can win
+it, which is why the reciprocity bonus pays once — so a reply counts once
+however the sends race. A thread opened since the counters exist starts at
+`firstReplyAt: null`, and only a `null` thread's reply counts: one from before
+has no field and counts for nobody, so answered cannot outgrow received (and
+the term clamps it anyway). Threads with our own accounts count on neither
+side. The counters are written whatever the switch says, so a sample exists
+the day it is thrown; nothing reads them while it is off. They are in the
+account export with the rest of the profile, and in
+`docs/store/privacy-data-safety.md`.
+
+One weakness, named so it is not rediscovered: an opener counts as received
+whoever sent it, so being written to by somebody you rightly ignore lowers
+your term a little, and a block does not refund it. The prior and the weight
+bound it — ten ignored openers move a score by less than one language side. If
+it shows in practice, count only openers from accounts the recipient has not
+blocked.
+
+**"New on LangX"** is `GET /discovery/new`: accounts made in the last
+`DISCOVERY_NEW_DAYS`, newest first, at most `DISCOVERY_NEW_LIMIT`, inside the
+list's own scope — blocks, "Show me in Discover", suspensions, the language
+fit, every filter — less the people already talked to. Its own route, never a
+mode of `/discovery/boosted`: every installed build labels that endpoint's
+items "Boosted", so a newcomer sent through it would be called a paying member
+on every old phone. **Adults only, at both ends**, by the exact birthday
+(`adultBornOnOrBefore`) rather than the year arithmetic the age on a card
+uses: a new account is the one strangers write to first, so a 16- or
+17-year-old is never on the strip, and a viewer under 18 gets an empty one.
+`joined` (`{ createdAt: -1 }`) already served the range; no index was added.
+
+**"Show me in Discover" off still means off everywhere.** Every change here
+narrows or reorders inside `resolveDiscoveryScope`'s match, which keeps
+`settings.discoverable: true`, and the new strip uses the same match.
+
+**What old builds see once it is on:** the list in the new order without their
+partners. No line on the card — they drop a field they do not know — and no
+strip, because they never ask for one. Nothing breaks.
+
+Reverting is the switch. Deleting it is the flag, the reply-first branches in
+`discoverProfiles`, `newProfiles` and its route, and `replyFirst.test.ts`; the
+counters can stay.
 
 ## The operator panel, and why the mailbox stays
 
@@ -5470,6 +5614,8 @@ are measured against, and nothing more.
 
 ## A card is a copy, the cap is not a price, and a phrase card is mirrored
 
+> **Amended 18 October 2026 — see _A correction you receive is kept in Echo by itself, behind a switch_ below.**
+
 [`echo.md`](./echo.md) is the design. Four things about the first phase are
 decisions rather than details, and each one has an obvious-looking alternative
 that is wrong for a reason worth writing down.
@@ -5648,6 +5794,64 @@ because Google read that exact sentence rather than guessing at it.
 The price is a floor: below twelve characters, or with fewer than two languages
 to choose between, there is no button. "ok" does not get read aloud, and that is
 the right way round.
+
+## A correction you receive is kept in Echo by itself, behind a switch
+
+**18 October 2026.** Bold move S4, the server half, built and switched off:
+`flags.echoFromCorrections` in `appConfig`, default false. It reverses _The
+Add echo gesture_ in [`echo.md`](./echo.md) — a card is made only when somebody
+taps — for one source: a correction somebody else wrote to you. The reversal
+takes effect the day the switch is thrown, and that waits for the app's half
+(Phase 5): a "Saved to your Echo · Undo" toast and a "Save corrections to
+Echo" setting, on by default. Until then nothing anybody sees changes. It is
+one of the rules the redesign's direction (_The redesign is v3_, above) said
+would be overturned in the pull request that builds it.
+
+The reason is that a correction is the sentence a learner most needs to keep:
+written by a person, about their own mistake, in a thread they chose. Today it
+is kept only if they remember to long-press it, and the ones that matter most
+are the ones that arrive mid-conversation, when nobody stops to file anything.
+
+**The same capture the tap runs.** After `sendCorrection` has stored the
+message, `captureReceivedCorrection` calls `captureFromMessage` for the other
+participant — the person whose sentence it was — so the access check, the
+corrected text on the front, the language and the daily ceiling are one
+definition, not two. Fired rather than awaited, unlike the phrase mirror: that
+one is one insert, this is a whole capture, and the corrector's ack should not
+wait on a card for somebody else. In `sendCorrection` rather than the socket
+handler, so every way of sending a correction gets it. It never throws.
+
+**The source key is the idempotence.** The card is filed under
+`msg:<correctionId>`, the key the tap writes, so `card_source_unique` makes a
+later tap spend nothing and write no second card, and the thread draws the
+message as already kept. Removing it is the existing "Remove from Echo", which
+is what the toast's Undo will call.
+
+**It never asks Google.** The tap translates a missing back at capture time;
+this does not. The privacy declaration says the text sent for translation is
+"the text you asked to translate", and nobody asked — and it would bill a
+sentence for every correction, to an account that may never open the card. A
+translation already on the message, or already in the shared cache, is copied:
+neither costs anything or sends anything anywhere. Otherwise the card is kept
+with an empty back, the state `backFor` already returns when no key is
+configured. A later "Add echo" tap on the same correction fills that empty
+back, once — the tap is a person asking, and the card already spent its
+capture. Translating it when the person opens or reviews the card is the app's
+half, and is a person asking too.
+
+**The ceiling still counts, and a full one is silent.** Each card spends one
+`echoCapturesPerDay`, like a tap: the ceiling bounds how many cards a day can
+make as well as what they cost, and a later translation of this card is a bill
+too. Two hundred and fifty is far beyond a day of corrections. When it is
+full, the capture is skipped without a word — no alert, never the paywall:
+the person did nothing they need telling about.
+
+**What old builds will see once it is on**, which is why the switch waits:
+the card appears in their Echo and the correction shows as kept, with no toast
+saying so and no setting to stop it. Nothing breaks; it is simply unexplained.
+
+Reverting is the switch. Deleting it is the flag, `correctionCapture.ts`, its
+one call in `sendCorrection`, and its tests.
 
 ## The opening is a ripple, because the old one looked like a fault
 
