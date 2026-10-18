@@ -16,7 +16,12 @@ import { updateAppConfig } from '../appConfig/appConfig'
 import { startConversation, type Conversation } from '../chat/conversations'
 import { sendTextMessage } from '../chat/messages'
 import type { Profile } from '../profiles/profiles'
-import { discoverProfiles, newProfiles } from './discovery'
+import {
+  discoverProfiles,
+  newProfiles,
+  newProfilesPipeline,
+  resolveDiscoveryScope,
+} from './discovery'
 
 const DAY = 24 * 60 * 60 * 1000
 
@@ -64,12 +69,20 @@ function stats(fields: Partial<Profile['stats']>): Pick<Profile, 'stats'> {
   }
 }
 
-/** `YYYY-MM-DD` for `years` ago today, plus `extraDays`, counted on the calendar. */
+/**
+ * `YYYY-MM-DD` for `years` ago today (UTC), plus `extraDays`, counted on the
+ * calendar. A 29 February today becomes the 28th in a year without one —
+ * the latest day that year somebody can have been born and be `years` old
+ * now — rather than rolling into March, which would make "eighteen today"
+ * seventeen for one day every four years.
+ */
 function bornYearsAgo(years: number, extraDays = 0): string {
-  const date = new Date()
-  date.setUTCFullYear(date.getUTCFullYear() - years)
-  date.setUTCDate(date.getUTCDate() + extraDays)
-  return date.toISOString().slice(0, 10)
+  const today = new Date()
+  const year = today.getUTCFullYear() - years
+  const month = today.getUTCMonth()
+  const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate()
+  const day = Math.min(today.getUTCDate(), lastDayOfMonth)
+  return new Date(Date.UTC(year, month, day + extraDays)).toISOString().slice(0, 10)
 }
 
 describe('reply-first discovery', () => {
@@ -418,6 +431,16 @@ describe('reply-first discovery', () => {
       expect(await strip()).toEqual([])
     })
 
+    // A guest's birth date is the `1900-01-01` placeholder `createGuestProfile`
+    // writes, which the age check alone would read as somebody very old.
+    it('is empty for a guest, whose age nobody has asked', async () => {
+      await seed(person('newcomer', joined(1)))
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: 'viewer' }, { $set: { guest: true, birthDate: '1900-01-01' } })
+      expect(await strip()).toEqual([])
+    })
+
     it('is empty with the switch off', async () => {
       await seed(person('newcomer', joined(1)))
       await setFlag(false)
@@ -425,33 +448,17 @@ describe('reply-first discovery', () => {
     })
 
     it('is served by an index, not a collection scan', async () => {
-      await seed(person('newcomer', joined(1)))
+      await seed(person('newcomer', joined(1)), person('partner', joined(1)))
+      // The pipeline `newProfiles` runs, built from the scope it resolves —
+      // not a copy written out here that could drift from it.
+      const { match } = await resolveDiscoveryScope(
+        handle.db,
+        'viewer',
+        discoveryQuerySchema.parse({}),
+      )
       const explain = await handle.db
         .collection(COLLECTIONS.profiles)
-        .aggregate([
-          {
-            $match: {
-              $and: [
-                {
-                  _id: { $nin: ['viewer'] },
-                  'settings.discoverable': true,
-                  deletedAt: { $exists: false },
-                  $or: [
-                    { 'nativeLanguages.code': { $in: ['en'] } },
-                    { 'learning.code': { $in: ['tr'] } },
-                  ],
-                },
-                {
-                  _id: { $nin: [] },
-                  createdAt: { $gte: new Date(Date.now() - DISCOVERY_NEW_DAYS * DAY) },
-                  birthDate: { $lte: bornYearsAgo(18) },
-                },
-              ],
-            },
-          },
-          { $sort: { createdAt: -1, _id: 1 } },
-          { $limit: 12 },
-        ])
+        .aggregate(newProfilesPipeline(match, ['partner'], new Date()))
         .explain('executionStats')
       const serialized = JSON.stringify(explain, (key: string, value: unknown) =>
         key === 'rejectedPlans' ? undefined : value,

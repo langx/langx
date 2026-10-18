@@ -5768,9 +5768,9 @@ handler, so every way of sending a correction gets it. It never throws.
 
 **The source key is the idempotence.** The card is filed under
 `msg:<correctionId>`, the key the tap writes, so `card_source_unique` makes a
-later tap a no-op that spends nothing, and the thread draws the message as
-already kept. Removing it is the existing "Remove from Echo", which is what the
-toast's Undo will call.
+later tap spend nothing and write no second card, and the thread draws the
+message as already kept. Removing it is the existing "Remove from Echo", which
+is what the toast's Undo will call.
 
 **It never asks Google.** The tap translates a missing back at capture time;
 this does not. The privacy declaration says the text sent for translation is
@@ -5779,8 +5779,10 @@ sentence for every correction, to an account that may never open the card. A
 translation already on the message, or already in the shared cache, is copied:
 neither costs anything or sends anything anywhere. Otherwise the card is kept
 with an empty back, the state `backFor` already returns when no key is
-configured. Translating it when the person opens or reviews the card is the
-app's half, and is a person asking again.
+configured. A later "Add echo" tap on the same correction fills that empty
+back, once — the tap is a person asking, and the card already spent its
+capture. Translating it when the person opens or reviews the card is the app's
+half, and is a person asking too.
 
 **The ceiling still counts, and a full one is silent.** Each card spends one
 `echoCapturesPerDay`, like a tap: the ceiling bounds how many cards a day can

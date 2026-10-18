@@ -864,31 +864,45 @@ export async function newProfiles(
 
   const { viewer, match } = await resolveDiscoveryScope(db, viewerId, query)
   const now = new Date()
-  if (!isAdult(viewer.birthDate, now)) return { items: [] }
+  // A guest's `1900-01-01` is a placeholder, not an age: nobody has asked
+  // them one yet, so they are not known to be an adult and get the empty strip.
+  if (viewer.guest === true || !isAdult(viewer.birthDate, now)) return { items: [] }
 
   const partnerIds = await conversationPartnerIds(db, viewerId)
 
   const docs = await db
     .collection<Profile>(COLLECTIONS.profiles)
-    .aggregate<Profile>([
-      {
-        $match: {
-          // `$and`, for `boostedProfiles`' reason: the scope carries an `_id`
-          // and, under an age filter, a `birthDate` of its own.
-          $and: [
-            match,
-            {
-              _id: { $nin: partnerIds },
-              createdAt: { $gte: new Date(now.getTime() - DISCOVERY_NEW_DAYS * DAY_MS) },
-              birthDate: { $lte: adultBornOnOrBefore(now) },
-            },
-          ],
-        },
-      },
-      { $sort: { createdAt: -1, _id: 1 } },
-      { $limit: DISCOVERY_NEW_LIMIT },
-    ])
+    .aggregate<Profile>(newProfilesPipeline(match, partnerIds, now))
     .toArray()
 
   return { items: docs.map((doc) => toDiscoveryItem(doc, now, true)) }
+}
+
+/**
+ * The strip's pipeline, exported so the index test explains the one that
+ * runs rather than a copy of it that could drift.
+ */
+export function newProfilesPipeline(
+  match: Document,
+  partnerIds: readonly string[],
+  now: Date,
+): Document[] {
+  return [
+    {
+      $match: {
+        // `$and`, for `boostedProfiles`' reason: the scope carries an `_id`
+        // and, under an age filter, a `birthDate` of its own.
+        $and: [
+          match,
+          {
+            _id: { $nin: [...partnerIds] },
+            createdAt: { $gte: new Date(now.getTime() - DISCOVERY_NEW_DAYS * DAY_MS) },
+            birthDate: { $lte: adultBornOnOrBefore(now) },
+          },
+        ],
+      },
+    },
+    { $sort: { createdAt: -1, _id: 1 } },
+    { $limit: DISCOVERY_NEW_LIMIT },
+  ]
 }

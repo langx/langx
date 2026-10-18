@@ -35,8 +35,10 @@ const NO_PROVIDER: TranslationProvider = {
  * The same `captureFromMessage` the "Add echo" tap runs, for the person whose
  * sentence was corrected — the other participant — so the access check, the
  * front (the corrected text), the language and the daily ceiling are one
- * definition. `card_source_unique` makes a later tap on the same correction a
- * no-op, and makes a second run of this one too.
+ * definition. `card_source_unique` makes a second run of this one a no-op,
+ * and a later tap on the same correction writes no second card and spends
+ * nothing — it only fills the back this left empty, the tap being a person
+ * asking (see `upsertCard`).
  *
  * Behind `flags.echoFromCorrections`, which stays off until the app ships the
  * "Saved to your Echo · Undo" toast and the setting beside it.

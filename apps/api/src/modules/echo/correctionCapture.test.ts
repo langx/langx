@@ -172,22 +172,48 @@ describe('a received correction becomes an Echo card', () => {
       expect((await cards())[0]?.back).toBe('Eve gittim')
     })
 
-    it('makes a second run and a later "Add echo" tap no-ops, and spends one capture in all', async () => {
+    it('makes a second run a no-op, and a later "Add echo" tap fill the empty back once', async () => {
       const { conversation, correction } = await corrected()
       expect(await captureReceivedCorrection(handle.db, conversation, correction)).toBe('created')
       expect(await captureReceivedCorrection(handle.db, conversation, correction)).toBe('kept')
+
+      const translate = vi
+        .fn<TranslationProvider['translate']>()
+        .mockResolvedValue({ translatedText: 'Eve gittim', sourceLang: 'en' })
+      const tap = () =>
+        captureFromMessage(handle.db, { translation: { translate } }, 'ada', {
+          conversationId: conversation._id.toHexString(),
+          messageId: correction._id.toHexString(),
+        })
+
+      const tapped = await tap()
+      expect(tapped.created).toBe(false)
+      expect(tapped.card.back).toBe('Eve gittim')
+      // A filled back is never asked for again.
+      expect((await tap()).card.back).toBe('Eve gittim')
+      expect(translate).toHaveBeenCalledTimes(1)
+
+      const all = await cards()
+      expect(all).toHaveLength(1)
+      expect(all[0]?.back).toBe('Eve gittim')
+      // The card spent its capture when it was made; the taps spent nothing.
+      const ada = await handle.db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: 'ada' })
+      expect(ada?.quota.echoCaptures).toHaveLength(1)
+    })
+
+    it('fills the back from a translation the tap brings, without asking the provider', async () => {
+      const { conversation, correction } = await corrected()
+      await captureReceivedCorrection(handle.db, conversation, correction)
 
       const translate = vi.fn<TranslationProvider['translate']>()
       const tapped = await captureFromMessage(handle.db, { translation: { translate } }, 'ada', {
         conversationId: conversation._id.toHexString(),
         messageId: correction._id.toHexString(),
+        translation: 'Eve gittim',
+        translationLang: 'tr',
       })
-      expect(tapped.created).toBe(false)
+      expect(tapped.card.back).toBe('Eve gittim')
       expect(translate).not.toHaveBeenCalled()
-      expect(await cards()).toHaveLength(1)
-
-      const ada = await handle.db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: 'ada' })
-      expect(ada?.quota.echoCaptures).toHaveLength(1)
     })
 
     it('skips silently when the daily capture ceiling is full', async () => {
