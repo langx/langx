@@ -48,21 +48,31 @@ export function HeroTile({ tone, value, unit, detail, accessibilityLabel, action
 
   return (
     <View style={[styles.tile, { backgroundColor: ground }]}>
-      <View
-        style={styles.figure}
-        {...(accessibilityLabel ? { accessible: true, accessibilityLabel } : {})}
-      >
+      <View style={styles.figure}>
         <Text
           style={[styles.value, { color }]}
           // A figure in a fixed block, not reading text: at the largest text
           // sizes three digits would leave it. The unit beside it still
           // scales in full.
           maxFontSizeMultiplier={1.4}
+          {...(accessibilityLabel ? { accessibilityLabel } : {})}
         >
           {value}
         </Text>
         <View style={styles.words}>
-          <Text style={[styles.unit, { color }]}>{unit}</Text>
+          {/* The label is on the figure and already says the unit. Not on the
+              whole group, which would leave the detail unread. */}
+          <Text
+            style={[styles.unit, { color }]}
+            {...(accessibilityLabel
+              ? {
+                  accessibilityElementsHidden: true,
+                  importantForAccessibility: 'no-hide-descendants' as const,
+                }
+              : {})}
+          >
+            {unit}
+          </Text>
           {detail ? <Text style={[styles.detail, { color }]}>{detail}</Text> : null}
         </View>
       </View>

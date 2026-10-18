@@ -137,6 +137,9 @@ export function CelebrationSheet({
    * effect from claiming twice and finding the event already celebrated.
    */
   useEffect(() => {
+    // Closed mid-rain (Android's back skips the touch that would have stopped
+    // it): what was left of the shower must not play again on reopening.
+    if (!visible) setRaining(false)
     if (!visible || decided.current === eventId) return
     decided.current = eventId
     const first = claimCelebration(eventId)
