@@ -547,6 +547,16 @@ export const tr: Localized<ServerMessages> = {
       other:
         '🎉 Davet ettiğin {friends} arkadaşın LangX’te konuşmaya başladı. {count} ay Pro senin!',
     },
+    introReferralWeeks: {
+      one: '🎉 Davet ettiğin biri LangX’te konuşmaya başladı. {count} hafta Pro senin, ona da Pro var!',
+      other:
+        '🎉 Davet ettiğin biri LangX’te konuşmaya başladı. {count} hafta Pro senin, ona da Pro var!',
+    },
+    introInvitedWeeks: {
+      one: '🎉 LangX’teki ilk gerçek sohbetin! Bir davetle geldin, bu yüzden {count} hafta Pro senin.',
+      other:
+        '🎉 LangX’teki ilk gerçek sohbetin! Bir davetle geldin, bu yüzden {count} hafta Pro senin.',
+    },
     introStreak: {
       one: '🔥 {days} gün üst üste, inanılmazsın! Bu emeğe teşekkür olarak {count} ay Pro bizden.',
       other:

@@ -295,7 +295,14 @@ The letter is three short paragraphs. The first line says who gave it — an
 operator ("🎁 N months of LangX Pro, on us. Thanks for being here!"), a
 7/100/365-day streak, three invitees who became real users, or a gift code
 ("🎟️ Code {CODE} worked: N months of LangX Pro are yours.", the code in
-capitals as it is stored) — and doubles as the push preview. Then four things
+capitals as it is stored) — and doubles as the push preview. While
+`flags.giveAWeek` is on, an invite pays a week to each side instead of a month
+for three, and both sides get the letter: the inviter's says a friend they
+invited is talking and the week is theirs (`introReferralWeeks`), and the
+friend's says their first real conversation earned them a week because they
+came with an invite (`introInvitedWeeks`). Both are `source: 'referral'` rows,
+told apart by `invitee`; see `docs/decisions.md` → _Give a week, get a week,
+behind a switch_. Then four things
 Pro opens, one emoji-led line each, with "…and more." under them, and the end
 date. A code's gift is granted the moment it is redeemed, from
 `POST /me/gift-code`, not on the next pass. Somebody with a running store

@@ -1727,6 +1727,8 @@ nothing, and a rule nobody knows about deters nobody.
 
 ## Referrals — the handle is the code, and the award waits for a real message
 
+> **Amended 18 October 2026 — see _Give a week, get a week, behind a switch_ below.**
+
 _Amended 5 September 2026: the invitee is now paid too — see the end of this
 entry._
 
@@ -1885,6 +1887,104 @@ account; recovering it would mean matching the two browsers to each other,
 which is fingerprinting, and is not done. If the sign-up itself happened in the
 in-app browser, the note covers it. The invite code field at onboarding remains
 the path that always works.
+
+## Give a week, get a week, behind a switch
+
+_18 October 2026. Changes the referral reward recorded above — a month of Pro
+for every three invitees who become real users — for activations that happen
+while `flags.giveAWeek` is on. The switch starts off, and off is exactly the
+rule above._
+
+A month for three was a reward almost nobody could reach: it asks for three
+friends who each sign up and each have a real conversation, in an app small
+enough that one is already a lot. And the friend who took the link got tokens,
+which say nothing about what Pro is. While the switch is on, every invitee who
+becomes a real user earns the inviter a week of Pro and gives the invitee a
+week of their own, both through the gift path every other door already uses —
+a `proGifts` row, a RevenueCat promotional grant, ends stacked on whatever gift
+is already running. The lengths and the cap are `PRO_GIFT_RULES.giveAWeek`.
+Behic authorised building it on 18 October 2026, behind a switch he turns on.
+
+**Activation is unchanged**, and so is everything the referral entry above
+says about it: a two-way conversation with somebody other than the inviter,
+verified and onboarded, never a guest or a frozen account, and no payout across
+a shared network or device. The tokens are unchanged too; the week replaces the
+month, not the award. Each side's week follows the rule its tokens already
+follow:
+
+| The activation                            | Inviter's week | Invitee's week |
+| ----------------------------------------- | -------------- | -------------- |
+| Paid normally                             | yes            | yes            |
+| Inviter frozen                            | no             | yes            |
+| Inviter past the monthly limit            | no             | yes            |
+| Inviter's year already full               | no             | yes            |
+| Shared network or device                  | no             | no             |
+| Inviter deleted, or invitee not activated | no             | no             |
+
+**The yearly cap is the key space, not a count.** `maxReferrerWeeksPerYear`
+(12 weeks, proposed and waiting for Behic's word), counted per calendar year in
+UTC like the month it replaces. The inviter's weeks are keyed
+`referralWeek:<user>:<year>:<slot>` with slots from one to the cap, so two
+activations settling at the same moment cannot both take the last week: one
+wins the slot's `_id` and the other finds none. A slot does not name the
+activation that took it, so the row carries `invitee`, and
+`proGifts.user_invitee_unique` refuses a second week for the same activation
+in any slot — which is what makes a settle that runs twice, before or after its
+latch, the same week instead of the next one. The invitee's own week is
+`invitedWeek:<user>`: a person is somebody's invitee once in their life.
+
+**An activation keeps the rule it started under.** The rule is written on the
+referral row (`proReward: 'week'`) before any gift it decides, and read back
+from there on every later settle, so a settle that crashed under the switch and
+runs again after it was turned off still finishes the week rather than
+starting a month. `queueReferralGifts` leaves a `week` activation out of its
+count of three for the same reason: it has had its gift. Nothing already given
+is taken back. One or two activations already counted towards a month when the
+switch goes on stay where they are; turning them into weeks would be giving
+away Pro, which is Behic's to decide, and is not done here.
+
+**No new gift source.** Both weeks are `source: 'referral'`. The "You're Pro
+now" screen, the operator panel and every installed build already know that
+source; a week has `months: 0`, so the welcome falls back to its title without
+a length, as it does for the streak's week. The letter tells the two weeks
+apart by `invitee` — on the friend's own row it is the friend — and has a first
+line for each: `introReferralWeeks` names no number for the friend, whose
+length is config of its own, and `introInvitedWeeks` tells the friend why.
+The rest of the letter, the reminders and the goodbye are the ones every gift
+sends (`docs/notifications.md` → _Gifts of Pro_): what was given and until
+when, never an offer, so no promotions consent is asked.
+
+**Somebody who already has Pro.** On a gift that ends, the week goes on the
+end of it. On a store subscription it cannot: a promotional grant runs beside
+the subscription and neither pauses nor extends the store's billing, so the
+week starts the day it is granted and shows only if the subscription lapses
+inside it — the letter says the subscription carries on as usual. On a
+lifetime there is nothing to add to, and the row is skipped as every gift on a
+lifetime is (it still takes its slot). So the invite screen promises a
+subscriber or a lifetime nothing for themselves: it offers the friend's week,
+and sells nothing.
+
+**16–17.** The referral rules have no age rule: an inviter or invitee of 16 or
+17 earns exactly what an adult earns, and the weeks follow them. The letter is
+the gift letter that already reaches 16–17-year-olds for a streak or a code — a
+record of something given, under the message switch — so the proposal for
+Behic is to leave it as it is.
+
+**The invite screen** leads with "Give a week of Pro, get a week" while the
+switch is on: the deal as the title, the length on a block, and the block's
+one yellow button, which is the share; the inviter's cap under it. A guest sees
+the deal and a button that makes the account an invite link needs. Off, the
+screen is exactly what it was.
+
+**Not in this change.** The 7-day streak share card saying "I earned a week of
+Pro by practising 7 days": the app cannot tell whether that week was actually
+granted — a lifetime holder's is skipped, and `proGiftStreaks` is not on
+`/profiles/me` — so it needs a field of its own first. Partner codes, the
+other half of the bold move, are separate. The published copies of the rule —
+the Terms (§5), the website's plans page and FAQ, the GitBook pages on free Pro
+and on invites, and `docs/store/listing.md` — say three for a month, and stay
+true while the switch is off; their changes are drafted to merge when it is
+turned on.
 
 ## Countries are a compile-time table, like languages
 

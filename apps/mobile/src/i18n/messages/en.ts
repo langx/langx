@@ -2471,6 +2471,36 @@ export const en = {
       one: 'Invites earn you tokens for up to {count} friend a month.',
       other: 'Invites earn you tokens for up to {count} friends a month.',
     },
+    /**
+     * "Give a week, get a week" (`flags.giveAWeek`): the hero the screen
+     * leads with while the switch is on. `count` is the weeks each side gets
+     * (`PRO_GIFT_RULES.giveAWeek`, one length for both) everywhere but
+     * `weekCap`, where it is the inviter's yearly cap. The `Give` pair is
+     * what a subscriber or a lifetime sees: the friend's week, and no promise
+     * of Pro they already have. `weekUnit` follows the figure on the tile.
+     */
+    weekTitle: {
+      one: 'Give a week of Pro, get a week',
+      other: 'Give {count} weeks of Pro, get {count} weeks',
+    },
+    weekTitleGive: {
+      one: 'Give a friend a week of Pro',
+      other: 'Give a friend {count} weeks of Pro',
+    },
+    weekUnit: {
+      one: 'week of Pro each',
+      other: 'weeks of Pro each',
+    },
+    weekUnitGive: {
+      one: 'week of Pro for your friend',
+      other: 'weeks of Pro for your friend',
+    },
+    weekWhen: 'When a friend you invite has a real conversation with someone',
+    weekCap: {
+      one: 'You can earn up to {count} week a year.',
+      other: 'You can earn up to {count} weeks a year.',
+    },
+    weekAddsOn: 'Yours is added to the end of the Pro you have now.',
   },
 
   tokenKind: {

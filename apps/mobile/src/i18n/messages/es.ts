@@ -2265,6 +2265,28 @@ export const es: Localized<EnMessages> = {
       one: 'Las invitaciones te dan tokens por hasta {count} persona al mes.',
       other: 'Las invitaciones te dan tokens por hasta {count} personas al mes.',
     },
+    weekTitle: {
+      one: 'Regala una semana de Pro y llévate otra',
+      other: 'Regala {count} semanas de Pro y llévate otras {count}',
+    },
+    weekTitleGive: {
+      one: 'Regala una semana de Pro a alguien',
+      other: 'Regala {count} semanas de Pro a alguien',
+    },
+    weekUnit: {
+      one: 'semana de Pro para cada uno',
+      other: 'semanas de Pro para cada uno',
+    },
+    weekUnitGive: {
+      one: 'semana de Pro para quien invites',
+      other: 'semanas de Pro para quien invites',
+    },
+    weekWhen: 'Cuando alguien a quien invites tenga una conversación de verdad con alguien',
+    weekCap: {
+      one: 'Puedes ganar hasta {count} semana al año.',
+      other: 'Puedes ganar hasta {count} semanas al año.',
+    },
+    weekAddsOn: 'La tuya se suma al final del Pro que ya tienes.',
   },
 
   tokenKind: {

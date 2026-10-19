@@ -1,9 +1,14 @@
-import { PRO_GIFT_RULES, referralGiftSlots, streakGiftsOwed } from '@langx/shared'
+import {
+  PRO_GIFT_RULES,
+  referralGiftSlots,
+  referralWeekSlotsPerYear,
+  streakGiftsOwed,
+} from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import type { Referral } from '../referrals/referrals'
-import { proGiftKey, queueProGift } from './proGifts'
+import { isDuplicateOf, proGiftKey, queueProGift, type ProGift } from './proGifts'
 
 /**
  * The two gifts of Pro that are earned rather than given: a streak crossing a
@@ -81,6 +86,10 @@ export async function queueReferralGifts(
         // An activation the referrer was not paid for — past the monthly
         // limit, or a shared network or device — is not progress either.
         unpaidReason: { $exists: false },
+        // Nor one that earned a week instead (`giveAWeek`): it has had its
+        // gift, and counting it here as well would pay it twice the day the
+        // switch goes back off.
+        proReward: { $ne: 'week' },
       },
       { _id: inviteeId, activatedAt: { $exists: false } },
     ],
@@ -99,4 +108,89 @@ export async function queueReferralGifts(
     )
   }
   return slots
+}
+
+/**
+ * "Give a week, get a week": the referrer's week for one invitee's
+ * activation, if this year still has room for it.
+ *
+ * The year's weeks are numbered slots — `referralWeek:<referrer>:<year>:<n>`
+ * for n up to `referralWeekSlotsPerYear()` — so the cap is the key space and
+ * two activations settling at the same moment cannot both take the last
+ * week: one wins the slot's `_id`, the other moves to the next slot or finds
+ * none. The slot does not say which activation took it; the row's `invitee`
+ * does, and `user_invitee_unique` refuses a second week for the same one,
+ * which is what makes a settle that runs twice — before or after its latch —
+ * the same week rather than the next slot.
+ *
+ * `capped` when the year is full. The cap is the referrer's alone: their
+ * friend's week (`queueInvitedWeek`) is given either way.
+ */
+export async function queueReferralWeek(
+  db: Db,
+  referrerId: string,
+  inviteeId: string,
+  at: Date,
+): Promise<'queued' | 'already' | 'capped'> {
+  const gifts = db.collection<ProGift>(COLLECTIONS.proGifts)
+  // The settle that already did this, read straight back. The index below is
+  // what guarantees it; this only saves a walk through the slots.
+  if (await gifts.findOne({ userId: referrerId, invitee: inviteeId }, { projection: { _id: 1 } })) {
+    return 'already'
+  }
+
+  const year = at.getUTCFullYear()
+  const slots = referralWeekSlotsPerYear()
+  // A range on `_id` rather than a regex: the slots of one person's year
+  // share a prefix, and the primary key answers the count by itself.
+  const prefix = proGiftKey.referralWeek(referrerId, year, 0).slice(0, -1)
+  const taken = await gifts.countDocuments({ _id: { $gt: prefix, $lt: `${prefix}\uffff` } })
+
+  for (let slot = taken + 1; slot <= slots; slot++) {
+    try {
+      const { gift } = await queueProGift(
+        db,
+        {
+          _id: proGiftKey.referralWeek(referrerId, year, slot),
+          userId: referrerId,
+          months: 0,
+          weeks: PRO_GIFT_RULES.giveAWeek.referrerWeeks,
+          source: 'referral',
+          invitee: inviteeId,
+        },
+        at,
+      )
+      // Ours, or another activation's that got to this slot first.
+      if (gift.invitee === inviteeId) return 'queued'
+    } catch (error) {
+      if (isDuplicateOf(error, 'invitee')) return 'already'
+      throw error
+    }
+  }
+  return 'capped'
+}
+
+/**
+ * The invitee's own week, once in their life — the other half of "give a
+ * week, get a week", granted at the same activation moment as the referrer's.
+ */
+export async function queueInvitedWeek(db: Db, inviteeId: string, at: Date): Promise<void> {
+  try {
+    await queueProGift(
+      db,
+      {
+        _id: proGiftKey.invitedWeek(inviteeId),
+        userId: inviteeId,
+        months: 0,
+        weeks: PRO_GIFT_RULES.giveAWeek.inviteeWeeks,
+        source: 'referral',
+        invitee: inviteeId,
+      },
+      at,
+    )
+  } catch (error) {
+    // Only reachable if a row for this activation exists under another key,
+    // which no code writes; it is still the same week, not a new one.
+    if (!isDuplicateOf(error, 'invitee')) throw error
+  }
 }
