@@ -1,6 +1,6 @@
 import type { ReactNode, RefObject } from 'react'
 import { Pressable, Text, View } from 'react-native'
-import type { PublicProfileDto } from '../../api/queries'
+import type { PublicProfileDto } from '../../api/types'
 import { useLocale, useT } from '../../i18n'
 import type { CallAvailability } from '../../lib/calls/callGate'
 import { makeStyles, useTheme } from '../../lib/theme'

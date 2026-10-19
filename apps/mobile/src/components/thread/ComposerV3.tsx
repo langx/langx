@@ -189,7 +189,8 @@ export function ComposerV3({
       icon: 'calendar',
       label: t('composer.trayTime'),
       accessibilityLabel: t('chat.sendMeeting'),
-      onPress: () => router.push({ pathname: '/(app)/propose-time', params: { id: conversationId } }),
+      onPress: () =>
+        router.push({ pathname: '/(app)/propose-time', params: { id: conversationId } }),
     },
     {
       key: 'quiz',
@@ -541,7 +542,11 @@ const useStyles = makeStyles(({ v3 }) => ({
   chipHero: { backgroundColor: 'transparent', borderColor: v3.colors.fg },
   // The same border, clear, so the hero and the rest are one height.
   chipSoft: { backgroundColor: v3.colors.surface, borderColor: 'transparent' },
-  chipLabelHero: { ...v3.type.buttonSmall, color: v3.colors.fg, fontFamily: v3.type.title.fontFamily },
+  chipLabelHero: {
+    ...v3.type.buttonSmall,
+    color: v3.colors.fg,
+    fontFamily: v3.type.title.fontFamily,
+  },
   chipLabel: { ...v3.type.buttonSmall, color: v3.colors.fg },
   topicRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8] },
   chipList: { gap: v3.space[8] },

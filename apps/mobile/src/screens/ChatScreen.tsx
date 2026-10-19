@@ -191,6 +191,10 @@ import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useWebFileDrop } from '../hooks/useWebFileDrop'
 import { OfficialMark } from '../components/OfficialMark'
 import { WebTitle } from '../components/WebTitle'
+import { ComposerV3, type LatestActions } from '../components/thread/ComposerV3'
+import { ThreadHeaderV3 } from '../components/thread/ThreadHeaderV3'
+import { useV3Home } from '../hooks/useV3Home'
+import { latestToActOn } from '../lib/latestToActOn'
 
 export interface ChatScreenProps {
   conversationId: string
@@ -238,7 +242,13 @@ export function ChatScreen({
    * that already marked itself interactive when the list drew.
    */
   useScreenInteractive(!embedded)
-  const { colors } = useTheme()
+  const { colors, v3 } = useTheme()
+  /**
+   * The redesign's header band and composer, behind `flags.v3Home` like the
+   * rest of v3 and read once per launch with it. Slice 1 of the thread: the
+   * messages, the corrections and the list itself keep the current look.
+   */
+  const v3Thread = useV3Home()
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()
@@ -2831,14 +2841,58 @@ export function ChatScreen({
     (state === 'empty' || state === 'content') &&
     startersDue(threadItems[0]?.createdAt, Date.now())
 
+  /*
+   * The v3 composer's Correct, Translate and Echo: the long-press menu's own
+   * three rows, for the other person's newest message. Not in a window opened
+   * on an old message, whose "newest" is only the newest loaded. The composer
+   * decides when to draw them; this decides what they would do.
+   */
+  const theirLatest = useMemo(() => latestToActOn(items, viewerId), [items, viewerId])
+  const latestActions: LatestActions | null =
+    v3Thread && !readOnly && jumpAnchor === null && theirLatest
+      ? {
+          // The menu's Correct, exactly: the whole message into the field.
+          correct: () => {
+            setPart(null)
+            setCorrecting(theirLatest)
+            setDraft(theirLatest.body)
+          },
+          translate:
+            translateTarget && translations[theirLatest._id] === undefined
+              ? () => void translate(theirLatest, false)
+              : undefined,
+          translating: translating === theirLatest._id,
+          echo: theirLatest.echoed === true ? undefined : () => void addEcho(theirLatest),
+        }
+      : null
+  /** One sentence for both composers: what the field says before anything is typed. */
+  const composerPlaceholder = correcting
+    ? t('chat.writeCorrection')
+    : // `state`, not `items.length`: a thread that failed to load
+      // also has no rows, and inviting somebody to say hello to a
+      // person they have been talking to for months is the same
+      // wrong answer the list above used to give.
+      state === 'empty' && partner
+      ? t('chat.sayHello', { name: partner.displayName })
+      : t('chat.writeMessage')
+
   return (
     /*
      * `tabbed` only in a panel: there the tab bar is below this, already
      * paying the bottom inset, and paying it twice leaves a band of bare
      * background above the tab line. Pushed, this screen covers the bar and
      * owes the inset itself.
+     *
+     * v3's ground under v3's header and composer: the dark scheme's is a step
+     * deeper than the current look's, and the composer's grey field would
+     * nearly vanish against the current one.
      */
-    <Screen fluid tabbed={embedded} style={styles.screen}>
+    <Screen
+      fluid
+      tabbed={embedded}
+      style={styles.screen}
+      {...(v3Thread ? { ground: v3.colors.bg } : {})}
+    >
       {focused && partner ? <WebTitle page={partner.displayName} /> : null}
       {/*
         The whole screen pads for the keyboard, by the keyboard's own reported
@@ -2846,93 +2900,109 @@ export function ChatScreen({
         do this job here, around the composer or around the screen.
       */}
       <Animated.View style={[styles.avoid, { paddingBottom: keyboardInset }]}>
-        <View style={styles.header}>
-          {embedded ? null : (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('common.backPlain')}
-              onPress={() => goBackTo('/(app)/(tabs)/chats')}
-              hitSlop={12}
-              style={styles.back}
-            >
-              <Feather name="arrow-left" size={22} color={colors.text} />
-            </Pressable>
-          )}
-          <Pressable
-            style={styles.headerUser}
-            onPress={() => partner && openProfile(partner.handle, `/(app)/chat/${conversationId}`)}
-          >
-            {partnerLoading ? (
-              <Skeleton width={40} height={40} radius={20} />
-            ) : (
-              <Avatar
-                url={partner?.avatarUrl}
-                name={partner?.displayName ?? '?'}
-                seed={partner?._id}
-                size={40}
-                online={partner?.isOnline ?? false}
-              />
+        {v3Thread ? (
+          <ThreadHeaderV3
+            partner={partner}
+            loading={partnerLoading}
+            typing={partnerTyping}
+            onBack={embedded ? undefined : () => goBackTo('/(app)/(tabs)/chats')}
+            onOpenProfile={() =>
+              partner && openProfile(partner.handle, `/(app)/chat/${conversationId}`)
+            }
+            call={{ gate: callGate, anchor: callButton, onPress: openCallMenu }}
+            onMore={() => void openThreadMenu()}
+          />
+        ) : (
+          <View style={styles.header}>
+            {embedded ? null : (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('common.backPlain')}
+                onPress={() => goBackTo('/(app)/(tabs)/chats')}
+                hitSlop={12}
+                style={styles.back}
+              >
+                <Feather name="arrow-left" size={22} color={colors.text} />
+              </Pressable>
             )}
-            <View style={styles.headerText}>
+            <Pressable
+              style={styles.headerUser}
+              onPress={() =>
+                partner && openProfile(partner.handle, `/(app)/chat/${conversationId}`)
+              }
+            >
               {partnerLoading ? (
-                <>
-                  <Skeleton width={120} height={14} />
-                  <Skeleton width={80} height={12} style={styles.headerSkeletonGap} />
-                </>
+                <Skeleton width={40} height={40} radius={20} />
               ) : (
-                <View style={styles.headerNameRow}>
-                  <Text style={styles.headerName} numberOfLines={1}>
-                    {partner?.displayName ?? t('chat.title')}
-                  </Text>
-                  {partner?.official ? <OfficialMark size={14} /> : null}
-                </View>
+                <Avatar
+                  url={partner?.avatarUrl}
+                  name={partner?.displayName ?? '?'}
+                  seed={partner?._id}
+                  size={40}
+                  online={partner?.isOnline ?? false}
+                />
               )}
-              {/*
+              <View style={styles.headerText}>
+                {partnerLoading ? (
+                  <>
+                    <Skeleton width={120} height={14} />
+                    <Skeleton width={80} height={12} style={styles.headerSkeletonGap} />
+                  </>
+                ) : (
+                  <View style={styles.headerNameRow}>
+                    <Text style={styles.headerName} numberOfLines={1}>
+                      {partner?.displayName ?? t('chat.title')}
+                    </Text>
+                    {partner?.official ? <OfficialMark size={14} /> : null}
+                  </View>
+                )}
+                {/*
               One line that is either presence or typing, never both stacked —
               the header is 40px tall and a third line pushes the avatar out of
               alignment with the name. `PresenceLine` keeps that true: online
               and last-seen are mutually exclusive states of one line, not two.
             */}
-              {partnerLoading ? null : partnerTyping ? (
-                <Text style={styles.typing}>{t('chat.typing')}</Text>
-              ) : (
-                <PresenceLine lastActiveAt={partner?.lastActiveAt} timezone={partner?.timezone} />
-              )}
-            </View>
-          </Pressable>
-          {/*
+                {partnerLoading ? null : partnerTyping ? (
+                  <Text style={styles.typing}>{t('chat.typing')}</Text>
+                ) : (
+                  <PresenceLine lastActiveAt={partner?.lastActiveAt} timezone={partner?.timezone} />
+                )}
+              </View>
+            </Pressable>
+            {/*
             Drawn faint while the consent gate is closed, and still pressable:
             the press is what says how many more messages it takes. Not drawn
             at all where a call could never happen — see `callAvailability`.
           */}
-          <View style={styles.headerActions}>
-            {callGate !== 'hidden' ? (
+            <View style={styles.headerActions}>
+              {callGate !== 'hidden' ? (
+                <Pressable
+                  ref={callButton}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('calls.call')}
+                  hitSlop={6}
+                  onPress={openCallMenu}
+                  style={styles.more}
+                >
+                  <Feather
+                    name="phone"
+                    size={20}
+                    color={callGate === 'locked' ? colors.textFaint : colors.text}
+                  />
+                </Pressable>
+              ) : null}
               <Pressable
-                ref={callButton}
                 accessibilityRole="button"
-                accessibilityLabel={t('calls.call')}
-                hitSlop={6}
-                onPress={openCallMenu}
+                accessibilityLabel={t('messageMenu.more')}
+                hitSlop={8}
+                onPress={() => void openThreadMenu()}
                 style={styles.more}
               >
-                <Feather
-                  name="phone"
-                  size={20}
-                  color={callGate === 'locked' ? colors.textFaint : colors.text}
-                />
+                <Feather name="more-horizontal" size={22} color={colors.text} />
               </Pressable>
-            ) : null}
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('messageMenu.more')}
-              hitSlop={8}
-              onPress={() => void openThreadMenu()}
-              style={styles.more}
-            >
-              <Feather name="more-horizontal" size={22} color={colors.text} />
-            </Pressable>
+            </View>
           </View>
-        </View>
+        )}
 
         {/*
         Above the thread rather than floating over it: a pin is a standing fact
@@ -3336,21 +3406,52 @@ export function ChatScreen({
                 {t(suspended ? 'chat.suspendedOnly' : 'chat.channelOnly')}
               </Text>
             </View>
+          ) : v3Thread ? (
+            <ComposerV3
+              value={draft}
+              onChangeText={onChangeDraft}
+              placeholder={composerPlaceholder}
+              onSend={() => void send()}
+              {...(canSchedule ? { onSendLongPress: () => void openScheduleMenu() } : {})}
+              hasAttachment={pendingMedia.length > 0}
+              busy={sendingMedia}
+              mode={mode}
+              attachments={
+                <AttachmentPreviewRow
+                  pending={pendingMedia}
+                  onRemove={(index) =>
+                    setPendingMedia((items) => items.filter((_, at) => at !== index))
+                  }
+                />
+              }
+              topicSeed={offerTopics ? conversationId : undefined}
+              topicInterests={partner?.interests}
+              recording={
+                recorder.isRecording
+                  ? { seconds: recorder.seconds, cancel: () => void recorder.cancel() }
+                  : null
+              }
+              onMic={() => void toggleRecording()}
+              conversationId={conversationId}
+              onCamera={openCamera}
+              cameraDisabled={sendingMedia}
+              onAttach={() => void openAttachMenu()}
+              // The current "+"'s own rule, for the same sheet.
+              attachDisabled={
+                sendingMedia ||
+                locating ||
+                pendingMedia.length >= MAX_ATTACHMENTS ||
+                pendingMedia.some((item) => item.kind === 'audio')
+              }
+              locating={locating}
+              latest={latestActions}
+              partnerName={partner?.displayName ?? t('chat.them')}
+            />
           ) : (
             <ChatComposer
               value={draft}
               onChangeText={onChangeDraft}
-              placeholder={
-                correcting
-                  ? t('chat.writeCorrection')
-                  : // `state`, not `items.length`: a thread that failed to load
-                    // also has no rows, and inviting somebody to say hello to a
-                    // person they have been talking to for months is the same
-                    // wrong answer the list above used to give.
-                    state === 'empty' && partner
-                    ? t('chat.sayHello', { name: partner.displayName })
-                    : t('chat.writeMessage')
-              }
+              placeholder={composerPlaceholder}
               onSend={() => void send()}
               topicSeed={offerTopics ? conversationId : undefined}
               topicInterests={partner?.interests}
