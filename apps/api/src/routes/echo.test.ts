@@ -556,14 +556,19 @@ describe('echo', () => {
 
     const summary = (cookie: string) =>
       app.inject({ method: 'GET', url: '/echo/summary', headers: { cookie } })
-    const own = (await summary(b.cookie)).json<{ due: number; partners: unknown[] }>()
+    const own = (await summary(b.cookie)).json<{
+      due: number
+      partners: { partnerId: string; due: number; front: string; back: string }[]
+    }>()
     expect(own.due).toBe(3)
     // Most due first, and the line is the oldest due card's — the one a
-    // review of that partner opens on.
-    expect(own.partners).toEqual([
-      { partnerId: a.userId, due: 2, front: 'On y va demain ?', back: expect.any(String) },
-      { partnerId: c.userId, due: 1, front: 'Я тоже так думаю.', back: expect.any(String) },
+    // review of that partner opens on. The meaning is whatever the
+    // unconfigured translator left, which is no translation at all.
+    expect(own.partners.map(({ partnerId, due, front }) => ({ partnerId, due, front }))).toEqual([
+      { partnerId: a.userId, due: 2, front: 'On y va demain ?' },
+      { partnerId: c.userId, due: 1, front: 'Я тоже так думаю.' },
     ])
+    expect(own.partners.every((row) => typeof row.back === 'string')).toBe(true)
     // Nobody kept anything from b's messages.
     expect((await summary(a.cookie)).json()).toMatchObject({ partners: [] })
 
