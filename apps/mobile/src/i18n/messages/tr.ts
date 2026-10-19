@@ -504,6 +504,33 @@ export const tr: Localized<EnMessages> = {
     aboutClose: 'Anladım',
     audioFull: 'Bu kart tutabileceği kadar kayıt tutuyor.',
     postToFeed: 'Akışa gönder',
+    subtitle: 'Sohbetlerindeki cümleler, tam unutmak üzereyken geri gelir.',
+    dueUnit: { one: 'kart bekliyor', other: 'kart bekliyor' },
+    aboutMinutes: { one: 'yaklaşık {count} dakika', other: 'yaklaşık {count} dakika' },
+    byPartner: 'Partnere göre',
+    fromPartner: 'Kimden: {name}',
+    partnerDue: { one: '{count} bekliyor', other: '{count} bekliyor' },
+    andMore: { one: 've {count} tane daha', other: 've {count} tane daha' },
+    reviewFrom: {
+      one: '{count} kartı tekrarla · {name}',
+      other: '{count} kartı tekrarla · {name}',
+    },
+    cardsKept: { one: 'kart saklandı', other: 'kart saklandı' },
+    reviewedWeek: { one: 'bu hafta tekrarlandı', other: 'bu hafta tekrarlandı' },
+    emptyLine: 'Henüz kart yok. Bir sohbette mesaja basılı tut ve Echo’ya ekle’yi seç.',
+    rememberedCount: { one: '{count} hatırlandı', other: '{count} hatırlandı' },
+    tokensEarned: { one: '+{count} token', other: '+{count} token' },
+    streakKept: 'Seri korundu · {day}. gün',
+    sessionOf: 'Bugünkü oturum: {done} / {total}',
+    sessionsAllDone: {
+      one: 'Bugünkü oturum tamam',
+      other: 'Bugünkü {count} oturumun hepsi tamam',
+    },
+    sessionsEarn: {
+      one: 'Her gün ilk oturumun token kazandırır.',
+      other: 'Her gün ilk {count} oturumun token kazandırır.',
+    },
+    oneMore: 'Bir oturum daha',
   },
 
   conversationPicker: {
@@ -1048,6 +1075,15 @@ export const tr: Localized<EnMessages> = {
     emptyTitle: 'Henüz kimse yok',
     emptyBody:
       'Dilleri seninkiyle çift yönlü eşleşen kişiler burada çıkar. Filtreleri gevşetmeyi dene.',
+    chatsLeft: {
+      one: 'Bugün kalan yeni sohbet: {count}/{total}',
+      other: 'Bugün kalan yeni sohbet: {count}/{total}',
+    },
+    chatsLeftNote: 'Yanıtlar hiç sayılmaz.',
+    newOnLangx: 'LangX’te yeni',
+    helloNewcomer: '{name} kişisine merhaba de — LangX’te yeni',
+    repliesWithinDay: 'Genellikle bir gün içinde yanıt verir',
+    changeFilters: 'Filtreleri değiştir',
   },
 
   filters: {
@@ -1660,6 +1696,11 @@ export const tr: Localized<EnMessages> = {
     postedCorrection: 'Paylaşıldı. Birisi düzeltecektir.',
     askCorrectionHint:
       'Anadili olan biri düzeltir — genellikle bir saat içinde. Düzeltmeler her planda sınırsız.',
+    askChip: 'Soru',
+    momentChip: 'An',
+    askNatural: 'Bu doğal mı?',
+    askPronounce: 'Bu nasıl telaffuz edilir?',
+    helpName: '{name} adlı kişiye yardım et',
   },
 
   profile: {
@@ -1982,6 +2023,32 @@ export const tr: Localized<EnMessages> = {
     emptyBody: 'Bir mesaj gönder ya da bir düzeltme yaz; bugün ilk günün olsun.',
     legendMissed: 'Kaçırıldı · doldurmak için dokun',
     daysTogether: { one: '{count} gündür birlikte', other: '{count} gündür birlikte' },
+    heroUnit: { one: 'günlük seri', other: 'günlük seri' },
+    heroLongest: { one: 'En uzun {count}', other: 'En uzun {count}' },
+    weekA11y: { one: 'Bu hafta: {count} gün tamam', other: 'Bu hafta: {count} gün tamam' },
+    freezes: 'Dondurma: {banked}/{max}',
+    freezeBody: 'Dondurma, kaçıracağın ilk günü karşılar.',
+    freezesFull: 'Bankan dolu. Bir dahaki kaçırdığın günde biri kullanılır.',
+    protect: { one: 'Koru · {count} jeton', other: 'Koru · {count} jeton' },
+    protectA11y: {
+      one: 'Seri dondurma al · {count} jeton',
+      other: 'Seri dondurma al · {count} jeton',
+    },
+    freezeShort: { one: '{count} jetonun var.', other: '{count} jetonun var.' },
+    repairTitle: '{day} · Kaçırıldı',
+    repairBody: {
+      one: 'Geri al, serin yeniden {count} gün olsun.',
+      other: 'Geri al, serin yeniden {count} gün olsun.',
+    },
+    repairButton: { one: 'Günü geri al · {count} jeton', other: 'Günü geri al · {count} jeton' },
+    milestones: 'Kilometre taşları',
+    rungTokens: '+{amount}',
+    rungWeeksOfPro: { one: '+{amount} ve bir hafta Pro', other: '+{amount} ve {count} hafta Pro' },
+    rungMonthsOfPro: { one: '+{amount} ve bir ay Pro', other: '+{amount} ve {count} ay Pro' },
+    rungToGo: { one: '{count} kaldı', other: '{count} kaldı' },
+    rungProgress: { one: '{done}/{count} gün', other: '{done}/{count} gün' },
+    noStreakTitle: 'Henüz serin yok',
+    noStreakBody: 'LangX’i açtığın ya da pratik yaptığın her gün sayılır. Bugün ilk gün olabilir.',
   },
   settings: {
     scanBody: 'Bilgisayarda giriş yap ya da bir arkadaşının profilini aç',

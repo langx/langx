@@ -81,6 +81,7 @@ import {
 } from '@langx/shared'
 import type {
   BoostedProfilesPage,
+  NewProfilesPage,
   SuspensionStatus,
   HandleSearchPage,
   DiscoveryResult,
@@ -185,6 +186,8 @@ export const keys = {
    * location change — refresh the strip with it.
    */
   discoveryBoosted: (filters: string) => ['discovery', 'boosted', filters] as const,
+  /** The "New on LangX" strip, under the same prefix for the same reason. */
+  discoveryNew: (filters: string) => ['discovery', 'new', filters] as const,
   handleSearch: (term: string) => ['handleSearch', term] as const,
   /** Deliberately outside every other prefix: it is the one query that still
    *  answers while the rest of the app is refused. */
@@ -233,7 +236,8 @@ export const keys = {
    */
   echo: ['echo'] as const,
   echoSummary: ['echo', 'summary'] as const,
-  echoQueue: (lang: string) => ['echo', 'queue', lang] as const,
+  echoQueue: (lang: string, partner?: string) =>
+    partner ? (['echo', 'queue', lang, partner] as const) : (['echo', 'queue', lang] as const),
   echoCards: (lang: string, q: string, archived: boolean) =>
     ['echo', 'cards', lang, q, archived] as const,
   echoPacks: ['echo', 'packs'] as const,
@@ -932,6 +936,23 @@ export function useBoostedProfiles(params: Record<string, string>) {
     queryFn: () => api.get<BoostedProfilesPage>(`/discovery/boosted?${search}`),
     // Same reason as `useDiscovery`: a filter tap must not blank the strip
     // while the next answer is in flight.
+    placeholderData: keepPreviousData,
+  })
+}
+
+/**
+ * The "New on LangX" strip — accounts from the last `DISCOVERY_NEW_DAYS`,
+ * inside the list's own scope. The server answers an empty strip while
+ * `flags.discoveryReplyFirst` is off, so the switch is its to throw; an API
+ * older than the route answers 404, which the strip reads as empty too (the
+ * client's default already refuses to retry a 4xx).
+ */
+export function useNewProfiles(params: Record<string, string>, { enabled = true } = {}) {
+  const search = new URLSearchParams(params).toString()
+  return useQuery({
+    queryKey: keys.discoveryNew(search),
+    queryFn: () => api.get<NewProfilesPage>(`/discovery/new?${search}`),
+    enabled,
     placeholderData: keepPreviousData,
   })
 }
@@ -4039,11 +4060,23 @@ export function useEchoSummary(enabled = true) {
   })
 }
 
-export function useEchoQueue(lang?: string) {
+/**
+ * `partner` narrows the deck to the cards kept from one person's messages —
+ * the Echo tab's "From Anna" group, opened. Its own key, so a partner's deck
+ * and a language's are never handed to each other's session.
+ */
+export function useEchoQueue(lang?: string, partner?: string) {
   return useQuery({
-    queryKey: keys.echoQueue(lang ?? 'all'),
-    queryFn: () =>
-      api.get<EchoQueue>(`/echo/queue${lang ? `?lang=${encodeURIComponent(lang)}` : ''}`),
+    queryKey: keys.echoQueue(lang ?? 'all', partner),
+    queryFn: () => {
+      // Built from an object, as the other queries here are: React Native's
+      // `URLSearchParams` has not always implemented `set`.
+      const search = new URLSearchParams({
+        ...(lang ? { lang } : {}),
+        ...(partner ? { partner } : {}),
+      }).toString()
+      return api.get<EchoQueue>(`/echo/queue${search ? `?${search}` : ''}`)
+    },
     // The deck a session is about to draw from must be what the server has
     // now, not what it had when the tab was last opened.
     staleTime: 0,

@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { captureEchoSchema, ECHO_SOURCE_KINDS, sourceKeyOf, updateEchoCardSchema } from './echo'
+import {
+  captureEchoSchema,
+  ECHO_SOURCE_KINDS,
+  echoSecondsPerCard,
+  sourceKeyOf,
+  updateEchoCardSchema,
+} from './echo'
+import { SRS_RULES } from './srs'
 
 describe('sourceKeyOf', () => {
   it('names what each card was made from', () => {
@@ -97,5 +104,28 @@ describe('updateEchoCardSchema, the two files', () => {
       audio: { ...picture, contentType: 'audio/m4a', origin: 'chat' },
     })
     expect(parsed.audio).not.toHaveProperty('origin')
+  })
+})
+
+describe('echoSecondsPerCard, how long a card takes', () => {
+  const session = (ms: number) => Array.from({ length: SRS_RULES.sessionSize }, () => ms)
+
+  it('says nothing before a session has been answered', () => {
+    expect(echoSecondsPerCard([])).toBeNull()
+    expect(echoSecondsPerCard(session(8000).slice(1))).toBeNull()
+  })
+
+  it('takes the median, so one card left on screen does not move it', () => {
+    const answers = [...session(6000).slice(1), 9 * 60 * 1000]
+    expect(echoSecondsPerCard(answers)).toBe(6)
+  })
+
+  it('averages the middle two of an even count, in whole seconds', () => {
+    const answers = [...session(4000).slice(0, 5), ...session(7000).slice(0, 5)]
+    expect(echoSecondsPerCard(answers)).toBe(6)
+  })
+
+  it('is never zero', () => {
+    expect(echoSecondsPerCard(session(120))).toBe(1)
   })
 })

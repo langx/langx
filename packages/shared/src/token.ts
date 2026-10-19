@@ -640,6 +640,20 @@ export const tokenSummarySchema = z.object({
     lastQualifiedDay: z.string().nullable(),
     /** True when today has already been credited — drives the "send 1 message" nudge. */
     qualifiedToday: z.boolean(),
+    /**
+     * The milestones whose gift of Pro this account would still be given
+     * (`PRO_GIFT_RULES.streak`), by day count.
+     *
+     * The streak screen's ladder names the Pro beside a rung only when it is
+     * listed here. The tokens of a milestone are paid every time a run reaches
+     * it; its Pro is given once in an account's life, and never to a lifetime
+     * plan (`grantProGift` skips those). Without this the ladder would promise a
+     * second week of Pro to everybody who reached seven days once before.
+     *
+     * Optional because an older API sends none, which the app reads as no Pro
+     * on any rung — the understatement, never the false promise.
+     */
+    proGiftRungs: z.array(z.number().int()).optional(),
   }),
   tokens: z.object({
     all: z.number().int(),

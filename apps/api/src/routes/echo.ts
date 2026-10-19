@@ -215,7 +215,15 @@ export const echoRoutes: FastifyPluginAsyncZod = async (app) => {
     '/echo/queue',
     { preHandler: requireAuth, schema: { querystring: echoQueueQuerySchema } },
     async (request, reply) => {
-      return reply.send(await dueQueue(app.mongo.db, request.userId, request.query.lang))
+      return reply.send(
+        await dueQueue(
+          app.mongo.db,
+          request.userId,
+          request.query.lang,
+          new Date(),
+          request.query.partner,
+        ),
+      )
     },
   )
 

@@ -57,6 +57,36 @@ export const ECHO_ARCHIVE_BATCH_MAX = 100
  */
 export const ECHO_REVIEW_BATCH_MAX = 10 * SRS_RULES.sessionSize
 
+/**
+ * How many of a person's latest answers the summary reads to say how long a
+ * card takes them — `echoSecondsPerCard`. Five sessions: enough that one
+ * slow evening does not move it, few enough that it follows somebody who has
+ * got faster.
+ */
+export const ECHO_PACE_SAMPLE = 5 * SRS_RULES.sessionSize
+
+/** How many partners the summary groups due cards under, most due first. */
+export const ECHO_SUMMARY_PARTNERS = 3
+
+/**
+ * How long one card takes this person, in whole seconds, from how long their
+ * latest cards were on screen — or null when there is not yet a session's
+ * worth of answers to say.
+ *
+ * The median rather than the mean: `durationMs` runs from the card appearing
+ * to the grade, so a phone put down mid-session records minutes for one card,
+ * and a mean would let that one card say the next session takes a quarter of
+ * an hour. Never under a second, so an estimate built on it is never zero.
+ */
+export function echoSecondsPerCard(durationsMs: readonly number[]): number | null {
+  if (durationsMs.length < SRS_RULES.sessionSize) return null
+  const sorted = [...durationsMs].sort((a, b) => a - b)
+  const middle = Math.floor(sorted.length / 2)
+  const median =
+    sorted.length % 2 === 1 ? sorted[middle]! : (sorted[middle - 1]! + sorted[middle]!) / 2
+  return Math.max(1, Math.round(median / 1000))
+}
+
 /** Where a card came from. The string form is `sourceKey`; see below. */
 export const ECHO_SOURCE_KINDS = ['chat', 'post', 'phrase', 'pack', 'manual'] as const
 export type EchoSourceKind = (typeof ECHO_SOURCE_KINDS)[number]
@@ -285,6 +315,20 @@ export const echoLanguageSummarySchema = z.object({
   due: z.number().int().nonnegative(),
 })
 
+export const echoPartnerDueSchema = z.object({
+  partnerId: z.string(),
+  /**
+   * The one language this group's cards are in — of this partner's due
+   * cards, the language with most of them. The queue's `partner` is opened
+   * with it, because a review never mixes languages.
+   */
+  lang: z.string(),
+  due: z.number().int().positive(),
+  front: z.string(),
+  back: z.string(),
+})
+export type EchoPartnerDue = z.infer<typeof echoPartnerDueSchema>
+
 export const echoSummarySchema = z.object({
   due: z.number().int().nonnegative(),
   total: z.number().int().nonnegative(),
@@ -312,6 +356,20 @@ export const echoSummarySchema = z.object({
    * less when the field is absent instead of failing to parse the summary.
    */
   nextDue: z.string().nullable().optional(),
+  /**
+   * How long a card takes this person, in seconds — `echoSecondsPerCard` over
+   * their latest `ECHO_PACE_SAMPLE` answers. Null until they have answered a
+   * session's worth, and absent from an API older than the field; either way
+   * the tab says how many cards are due and not how long they will take.
+   */
+  secondsPerCard: z.number().int().positive().nullable().optional(),
+  /**
+   * Due cards kept from chats, grouped by the person who wrote them — at most
+   * `ECHO_SUMMARY_PARTNERS`, most due first, each in one language. `front`
+   * and `back` are the oldest due card's, the one a review of that partner
+   * would open on. Absent from an API older than the field.
+   */
+  partners: z.array(echoPartnerDueSchema).optional(),
 })
 export type EchoSummary = z.infer<typeof echoSummarySchema>
 
@@ -594,6 +652,12 @@ export type ListEchoCardsQuery = z.infer<typeof listEchoCardsQuerySchema>
 
 export const echoQueueQuerySchema = z.object({
   lang: languageCodeSchema.optional(),
+  /**
+   * Only the cards kept from this person's messages — the summary's
+   * `partners` group, opened. An API older than the field ignores it and
+   * draws the whole queue, which is still a review of due cards.
+   */
+  partner: z.string().trim().min(1).max(64).optional(),
 })
 export type EchoQueueQuery = z.infer<typeof echoQueueQuerySchema>
 

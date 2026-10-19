@@ -600,6 +600,39 @@ export const en = {
     aboutClose: 'Got it',
     audioFull: 'This card already holds as many recordings as it can keep.',
     postToFeed: 'Post to the feed',
+    /*
+     * The redesign's tab and done screen, behind `flags.v3Home`. The words
+     * beside a figure are plurals with no `{count}` in them: the figure is
+     * drawn apart from the word, and the word still has to agree with it.
+     */
+    subtitle: 'Lines from your chats come back just before you’d forget them.',
+    dueUnit: { one: 'card due', other: 'cards due' },
+    aboutMinutes: { one: 'about {count} minute', other: 'about {count} minutes' },
+    byPartner: 'By partner',
+    fromPartner: 'From {name}',
+    partnerDue: { one: '{count} due', other: '{count} due' },
+    andMore: { one: 'and {count} more', other: 'and {count} more' },
+    reviewFrom: {
+      one: 'Review {count} card from {name}',
+      other: 'Review {count} cards from {name}',
+    },
+    cardsKept: { one: 'card kept', other: 'cards kept' },
+    reviewedWeek: { one: 'reviewed this week', other: 'reviewed this week' },
+    emptyLine: 'No cards yet. Hold a message in a chat and choose Add to Echo.',
+    rememberedCount: { one: '{count} remembered', other: '{count} remembered' },
+    tokensEarned: { one: '+{count} token', other: '+{count} tokens' },
+    streakKept: 'Streak kept · day {day}',
+    /** `{total}` is `TOKEN_RULES.caps.echoSessionsPerDay`, the sessions a day that pay. */
+    sessionOf: 'Session {done} of {total} today',
+    sessionsAllDone: {
+      one: 'Today’s session is done',
+      other: 'All {count} of today’s sessions are done',
+    },
+    sessionsEarn: {
+      one: 'Your first session each day earns tokens.',
+      other: 'Your first {count} sessions each day earn tokens.',
+    },
+    oneMore: 'One more session',
   },
 
   conversationPicker: {
@@ -1196,6 +1229,17 @@ export const en = {
     emptyTitle: 'Nobody here yet',
     emptyBody:
       'People whose languages match yours in both directions show up here. Try loosening the filters.',
+    /** People's allowance line (`flags.v3Home`): both numbers come from `/me/quota`. */
+    chatsLeft: {
+      one: 'New chats left today: {count} of {total}',
+      other: 'New chats left today: {count} of {total}',
+    },
+    chatsLeftNote: 'Replies never count.',
+    newOnLangx: 'New on LangX',
+    helloNewcomer: 'Say hello to {name}, new on LangX',
+    /** Only where the card carries `repliesWithinDay`: never a rate or a count. */
+    repliesWithinDay: 'Usually replies within a day',
+    changeFilters: 'Change filters',
   },
 
   filters: {
@@ -1868,6 +1912,13 @@ export const en = {
     postedCorrection: 'Posted. Somebody will correct it.',
     askCorrectionHint:
       'Somebody native will fix it — usually within the hour. Corrections are unlimited on every plan.',
+    /** v3's Posts cards (`flags.v3Home`): the chip saying which of the two a card is. */
+    askChip: 'Ask',
+    momentChip: 'Moment',
+    askNatural: 'Is this natural?',
+    askPronounce: 'How do you pronounce this?',
+    /** An ask's one big button: the correction box, or the post when it asks for a recording. */
+    helpName: 'Help {name}',
   },
 
   profile: {
@@ -2225,6 +2276,47 @@ export const en = {
     legendMissed: 'Missed · tap to fill in',
     /** Two partners who have both written, day after day: the pair flame's words. */
     daysTogether: { one: '{count} day together', other: '{count} days together' },
+    /*
+     * The redesign's streak screen, behind `flags.v3Home`. Its rows reuse
+     * `tokens.history`, `leaderboard.streakTitle` and the two bodies above, a
+     * rung's title is `format.days`, and a reached rung says `common.done`.
+     * The number itself is drawn beside `heroUnit`, so the unit is a plural.
+     */
+    heroUnit: { one: 'day streak', other: 'day streak' },
+    heroLongest: { one: 'Longest {count}', other: 'Longest {count}' },
+    weekA11y: { one: 'This week: {count} day done', other: 'This week: {count} days done' },
+    freezes: 'Freezes: {banked} of {max}',
+    freezeBody: 'A freeze covers the next day you miss.',
+    freezesFull: 'Your bank is full. One is used the next time you miss a day.',
+    protect: { one: 'Protect · {count} token', other: 'Protect · {count} tokens' },
+    protectA11y: {
+      one: 'Buy a streak freeze for {count} token',
+      other: 'Buy a streak freeze for {count} tokens',
+    },
+    freezeShort: { one: 'You have {count} token.', other: 'You have {count} tokens.' },
+    repairTitle: '{day} · Missed',
+    repairBody: {
+      one: 'Buy it back and your streak is {count} day again.',
+      other: 'Buy it back and your streak is {count} days again.',
+    },
+    repairButton: {
+      one: 'Buy a day back · {count} token',
+      other: 'Buy a day back · {count} tokens',
+    },
+    milestones: 'Milestones',
+    rungTokens: '+{amount}',
+    rungWeeksOfPro: {
+      one: '+{amount} and a week of Pro',
+      other: '+{amount} and {count} weeks of Pro',
+    },
+    rungMonthsOfPro: {
+      one: '+{amount} and a month of Pro',
+      other: '+{amount} and {count} months of Pro',
+    },
+    rungToGo: { one: '{count} to go', other: '{count} to go' },
+    rungProgress: { one: '{done} of {count} day', other: '{done} of {count} days' },
+    noStreakTitle: 'No streak yet',
+    noStreakBody: 'A day counts when you open LangX or practise. Today can be day one.',
   },
   settings: {
     scanBody: 'Sign in on a computer, or open a friend’s profile',

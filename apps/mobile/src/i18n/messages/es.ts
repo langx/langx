@@ -509,6 +509,33 @@ export const es: Localized<EnMessages> = {
     aboutClose: 'Entendido',
     audioFull: 'Esta tarjeta ya tiene todas las grabaciones que puede guardar.',
     postToFeed: 'Publicar en el muro',
+    subtitle: 'Las frases de tus chats vuelven justo antes de que las olvides.',
+    dueUnit: { one: 'tarjeta pendiente', other: 'tarjetas pendientes' },
+    aboutMinutes: { one: 'alrededor de {count} minuto', other: 'alrededor de {count} minutos' },
+    byPartner: 'Por compañero',
+    fromPartner: 'De {name}',
+    partnerDue: { one: '{count} pendiente', other: '{count} pendientes' },
+    andMore: { one: 'y {count} más', other: 'y {count} más' },
+    reviewFrom: {
+      one: 'Repasar {count} tarjeta de {name}',
+      other: 'Repasar {count} tarjetas de {name}',
+    },
+    cardsKept: { one: 'tarjeta guardada', other: 'tarjetas guardadas' },
+    reviewedWeek: { one: 'repasada esta semana', other: 'repasadas esta semana' },
+    emptyLine: 'Aún no hay tarjetas. Mantén pulsado un mensaje en un chat y elige Añadir a Echo.',
+    rememberedCount: { one: '{count} recordada', other: '{count} recordadas' },
+    tokensEarned: { one: '+{count} token', other: '+{count} tokens' },
+    streakKept: 'Racha mantenida · día {day}',
+    sessionOf: 'Sesión {done} de {total} hoy',
+    sessionsAllDone: {
+      one: 'La sesión de hoy está hecha',
+      other: 'Las {count} sesiones de hoy están hechas',
+    },
+    sessionsEarn: {
+      one: 'Tu primera sesión de cada día da tokens.',
+      other: 'Tus primeras {count} sesiones de cada día dan tokens.',
+    },
+    oneMore: 'Una sesión más',
   },
 
   conversationPicker: {
@@ -1064,6 +1091,15 @@ export const es: Localized<EnMessages> = {
     emptyTitle: 'Aún no hay nadie',
     emptyBody:
       'Aquí aparece gente cuyos idiomas encajan con los tuyos en ambos sentidos. Prueba a relajar los filtros.',
+    chatsLeft: {
+      one: 'Te queda {count} de {total} chats nuevos hoy',
+      other: 'Te quedan {count} de {total} chats nuevos hoy',
+    },
+    chatsLeftNote: 'Las respuestas nunca cuentan.',
+    newOnLangx: 'Nuevos en LangX',
+    helloNewcomer: 'Saluda a {name}, que acaba de llegar a LangX',
+    repliesWithinDay: 'Suele responder en menos de un día',
+    changeFilters: 'Cambiar filtros',
   },
 
   filters: {
@@ -1678,6 +1714,11 @@ export const es: Localized<EnMessages> = {
     postedCorrection: 'Publicado. Alguien lo corregirá.',
     askCorrectionHint:
       'Alguien nativo la corregirá, normalmente en menos de una hora. Las correcciones son ilimitadas en todos los planes.',
+    askChip: 'Pregunta',
+    momentChip: 'Momento',
+    askNatural: '¿Suena natural?',
+    askPronounce: '¿Cómo se pronuncia esto?',
+    helpName: 'Ayudar a {name}',
   },
 
   profile: {
@@ -2005,6 +2046,41 @@ export const es: Localized<EnMessages> = {
     emptyBody: 'Envía un mensaje o escribe una corrección y hoy será tu primer día.',
     legendMissed: 'Perdido · toca para rellenarlo',
     daysTogether: { one: '{count} día juntos', other: '{count} días juntos' },
+    heroUnit: { one: 'día de racha', other: 'días de racha' },
+    heroLongest: { one: 'Récord: {count}', other: 'Récord: {count}' },
+    weekA11y: { one: 'Esta semana: {count} día hecho', other: 'Esta semana: {count} días hechos' },
+    freezes: 'Congelaciones: {banked} de {max}',
+    freezeBody: 'Una congelación cubre el próximo día que falles.',
+    freezesFull: 'Ya tienes el máximo guardado. Se usa una la próxima vez que falles un día.',
+    protect: { one: 'Proteger · {count} ficha', other: 'Proteger · {count} fichas' },
+    protectA11y: {
+      one: 'Comprar una congelación de racha por {count} ficha',
+      other: 'Comprar una congelación de racha por {count} fichas',
+    },
+    freezeShort: { one: 'Tienes {count} ficha.', other: 'Tienes {count} fichas.' },
+    repairTitle: '{day} · Perdido',
+    repairBody: {
+      one: 'Recupéralo y tu racha vuelve a ser de {count} día.',
+      other: 'Recupéralo y tu racha vuelve a ser de {count} días.',
+    },
+    repairButton: {
+      one: 'Recuperar el día · {count} ficha',
+      other: 'Recuperar el día · {count} fichas',
+    },
+    milestones: 'Metas',
+    rungTokens: '+{amount}',
+    rungWeeksOfPro: {
+      one: '+{amount} y una semana de Pro',
+      other: '+{amount} y {count} semanas de Pro',
+    },
+    rungMonthsOfPro: {
+      one: '+{amount} y un mes de Pro',
+      other: '+{amount} y {count} meses de Pro',
+    },
+    rungToGo: { one: 'falta {count}', other: 'faltan {count}' },
+    rungProgress: { one: '{done} de {count} día', other: '{done} de {count} días' },
+    noStreakTitle: 'Aún no tienes racha',
+    noStreakBody: 'Un día cuenta cuando abres LangX o practicas. Hoy puede ser el primero.',
   },
   settings: {
     scanBody: 'Inicia sesión en un ordenador o abre el perfil de un amigo',

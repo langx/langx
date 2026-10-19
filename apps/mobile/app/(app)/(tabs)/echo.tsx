@@ -19,12 +19,34 @@ import { useLocale } from '../../../src/i18n/I18nProvider'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { useEchoOffline } from '../../../src/hooks/useEchoOffline'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
 import { chooseAlert } from '../../../src/lib/alert'
 import { authClient } from '../../../src/lib/auth-client'
 import { compactCount, dueInCompact } from '../../../src/lib/format'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { requireAccount } from '../../../src/lib/requireAccount'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { EchoV3Screen } from '../../../src/screens/EchoV3Screen'
+
+/**
+ * Echo, or — with `flags.v3Home` on — the redesign's (`src/screens/EchoV3Screen.tsx`).
+ *
+ * Waits for the flag rather than drawing this screen meanwhile and swapping
+ * it, as Home and Chats do. A launch through `app/index.tsx` has already
+ * waited, so only a start straight into the tab — a web page load, a link —
+ * sees the bare ground, for at most `V3_HOME_WAIT_MS`.
+ */
+export default function EchoRoute() {
+  const v3Home = useV3HomeDecision()
+  const { v3 } = useTheme()
+  if (v3Home === undefined)
+    return (
+      <Screen fluid tabbed ground={v3.colors.bg}>
+        {null}
+      </Screen>
+    )
+  return v3Home ? <EchoV3Screen /> : <EchoScreen />
+}
 
 /**
  * The review tab: one thing in the middle, and everything else a tap away.
@@ -37,7 +59,7 @@ import { makeStyles, useTheme } from '../../../src/lib/theme'
  * bottom. Nothing was removed, it moved — with one exception, which is why
  * `echo/card/[id].tsx` now carries the row back to the chat a card came from.
  */
-export default function EchoScreen() {
+function EchoScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const { colors } = useTheme()
