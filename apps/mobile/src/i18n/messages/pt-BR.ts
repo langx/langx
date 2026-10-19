@@ -1133,6 +1133,12 @@ export const ptBR: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Horário local {time}.',
   },
   chat: {
+    firstReplyTitle: '{name} respondeu',
+    firstReplyBody: {
+      one: 'Respostas continuam grátis em todos os planos. O {plan} tira o limite de {count} conversa nova por dia.',
+      other:
+        'Respostas continuam grátis em todos os planos. O {plan} tira o limite de {count} conversas novas por dia.',
+    },
     channelOnly: 'Esta conta publica novidades e avisos. Não dá para responder aqui.',
     suspendedOnly: 'Esta conta está suspensa. Não dá para enviar mensagens para ela.',
     sendingAttachment: 'Enviando…',
@@ -1655,6 +1661,8 @@ export const ptBR: Localized<EnMessages> = {
 
   profile: {
     proBadge: 'Membro Pro',
+    proSheetTitle: 'O que é o {plan}?',
+    proSheetBody: '{name} tem o {plan}. Veja o que ele acrescenta ao plano gratuito:',
     official: 'Conta oficial',
     suspendedTag: 'Suspensa',
     deletedTag: 'Conta excluída',
