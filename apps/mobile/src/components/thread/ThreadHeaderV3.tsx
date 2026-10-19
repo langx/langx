@@ -119,11 +119,14 @@ export function ThreadHeaderV3({
         </View>
       </View>
 
+      {/*
+        No label of its own: the name and the line under it are the label, so
+        a screen reader hears "Online" or "typing…" with the name, as it does
+        in the current header. A label here would be read instead of both.
+      */}
       <Pressable
         accessibilityRole="button"
-        {...(partner
-          ? { accessibilityLabel: partner.displayName, accessibilityHint: t('chat.viewProfile') }
-          : {})}
+        {...(partner ? { accessibilityHint: t('chat.viewProfile') } : {})}
         onPress={() => partner && onOpenProfile()}
         style={styles.who}
       >
