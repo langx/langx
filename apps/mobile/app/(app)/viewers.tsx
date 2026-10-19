@@ -14,6 +14,7 @@ import { useViewers, type ViewerPageDto } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { PersonRowSkeleton } from '../../src/components/skeletons/PersonRowSkeleton'
 import { EmptyState } from '../../src/components/ui/EmptyState'
+import { ProWeekTag } from '../../src/components/ProWeekTag'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo, openProfile } from '../../src/lib/navigation'
@@ -121,6 +122,8 @@ export default function ViewersScreen() {
                   {t('viewers.weekSummary', { count: weekVisits })}
                 </Text>
               ) : null}
+              {/* Who looked is Pro's half; during the Pro Week, say until when. */}
+              {locked ? null : <ProWeekTag style={styles.weekTag} />}
               {locked ? (
                 <Pressable
                   accessibilityRole="button"
@@ -221,6 +224,7 @@ const useStyles = makeStyles(({ colors, font, layout, radius, spacing }) => ({
   footer: { paddingVertical: spacing.lg },
   list: { paddingBottom: spacing.xxl },
   summary: { color: colors.textMuted, fontSize: 15, lineHeight: 22, paddingBottom: spacing.sm },
+  weekTag: { marginBottom: spacing.md },
   // Radius 20: between `lg` and `xl`, and the design's own number for this card.
   unlock: {
     alignItems: 'center',
