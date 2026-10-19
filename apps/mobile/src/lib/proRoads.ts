@@ -93,22 +93,45 @@ export function badgeSheetEnd(
  * that arrives with it stands between somebody and their answer; one that
  * waits until they have answered is read in the pause after.
  *
+ * And only while that answer is recent (`FIRST_REPLY_FRESH_MS`). Nothing else
+ * dates the moment: an account that had one short exchange in the summer and
+ * opens it again after this build is long past its first reply, and a card
+ * telling it somebody "wrote back" would be news months old.
+ *
  * Only on a whole thread (`hasOlder` false): with older pages unloaded the
  * opener may be among them, and nothing about who spoke first is known.
  * `messages` are newest first, as the thread draws them.
  */
 export function isAnsweredFirstReply(thread: {
   viewerId: string
-  messages: readonly { senderId: string }[]
+  messages: readonly { senderId: string; createdAt: string }[]
   hasOlder: boolean
+  /** Epoch ms. */
+  now: number
 }): boolean {
   if (thread.hasOlder || thread.messages.length === 0) return false
   const oldestFirst = [...thread.messages].reverse()
   if (oldestFirst[0]?.senderId !== thread.viewerId) return false
   const reply = oldestFirst.findIndex((message) => message.senderId !== thread.viewerId)
   if (reply === -1) return false
-  return oldestFirst.slice(reply + 1).some((message) => message.senderId === thread.viewerId)
+  const answer = oldestFirst
+    .slice(reply + 1)
+    .find((message) => message.senderId === thread.viewerId)
+  if (!answer) return false
+  // An unreadable date compares false, so it is not a recent one. A phone
+  // clock behind the server's makes the age negative, which still is.
+  return thread.now - Date.parse(answer.createdAt) <= FIRST_REPLY_FRESH_MS
 }
+
+/**
+ * How long after the viewer's answer the `first_reply` card may still be
+ * drawn. It is normally drawn the moment the answer lands; the window is for
+ * coming back to the thread later that day — and it is what keeps the card off
+ * every old thread when the build that carries it arrives, and bounds how long
+ * a reinstall or a second phone, which hold no copy of the device flag, could
+ * draw it again about the same reply.
+ */
+export const FIRST_REPLY_FRESH_MS = 24 * 60 * 60 * 1000
 
 /**
  * Whether no thread other than `conversationId` already has both people in it,

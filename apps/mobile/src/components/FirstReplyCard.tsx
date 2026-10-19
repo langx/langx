@@ -96,7 +96,8 @@ export function FirstReplyCard({
   }, [viewerId])
 
   const answered = useMemo(
-    () => (viewerId ? isAnsweredFirstReply({ viewerId, messages, hasOlder }) : false),
+    () =>
+      viewerId ? isAnsweredFirstReply({ viewerId, messages, hasOlder, now: Date.now() }) : false,
     [viewerId, messages, hasOlder],
   )
 

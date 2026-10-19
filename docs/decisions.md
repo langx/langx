@@ -7327,6 +7327,11 @@ removes the daily limit on new chats. The ✕ closes it in one tap.
   second device can therefore only ever show it about the same reply. A flag on
   the server would make it strictly once; a write on the send path for one
   card was not worth it.
+- **Only for a day after the answer** (`FIRST_REPLY_FRESH_MS`). Nothing else
+  dates the moment, and the build that carries the card reaches accounts whose
+  one short exchange happened months ago: opening that thread again is not a
+  first reply, and "wrote back" would be old news. The same day bounds a
+  reinstall or a second phone, which can draw the card again only within it.
 - **Read, never fetched.** Whether another thread is two-way comes from the
   chat list's cache. A list that is not loaded, or not loaded to its end,
   leaves the card out — a road missed costs less than a sale to somebody it was

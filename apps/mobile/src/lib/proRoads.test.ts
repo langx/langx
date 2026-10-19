@@ -8,6 +8,7 @@ import { PAYWALL_SOURCES } from './analyticsEvents'
 import type { ConversationPageDto } from './conversationCache'
 import { BENEFIT_COPY } from './paywallBenefits'
 import {
+  FIRST_REPLY_FRESH_MS,
   appIconTap,
   badgeSheetBenefits,
   badgeSheetEnd,
@@ -98,11 +99,20 @@ describe('Pro is never sold to', () => {
   })
 })
 
-/** A thread, oldest message first: `m` is the viewer, `p` the partner. */
-function thread(spoken: string, hasOlder = false) {
-  const messages = [...spoken].map((who) => ({ senderId: who === 'm' ? 'me' : 'them' }))
+const NOW = Date.parse('2026-10-18T12:00:00Z')
+const MINUTE = 60_000
+
+/**
+ * A thread, oldest message first: `m` is the viewer, `p` the partner, a
+ * minute apart, the last of them `endedAgo` before now.
+ */
+function thread(spoken: string, { hasOlder = false, endedAgo = 0 } = {}) {
+  const messages = [...spoken].map((who, i) => ({
+    senderId: who === 'm' ? 'me' : 'them',
+    createdAt: new Date(NOW - endedAgo - (spoken.length - 1 - i) * MINUTE).toISOString(),
+  }))
   // The screen hands them over newest first.
-  return { viewerId: 'me', messages: messages.reverse(), hasOlder }
+  return { viewerId: 'me', messages: messages.reverse(), hasOlder, now: NOW }
 }
 
 describe('the first reply', () => {
@@ -124,7 +134,36 @@ describe('the first reply', () => {
   })
 
   it('says nothing about a thread whose start is not loaded', () => {
-    expect(isAnsweredFirstReply(thread('mpm', true))).toBe(false)
+    expect(isAnsweredFirstReply(thread('mpm', { hasOlder: true }))).toBe(false)
+  })
+
+  it('is news for a day after the answer', () => {
+    const lately = FIRST_REPLY_FRESH_MS - MINUTE
+    expect(isAnsweredFirstReply(thread('mpm', { endedAgo: lately }))).toBe(true)
+  })
+
+  /*
+   * The build that carries the card reaches accounts whose one short exchange
+   * happened long ago. Opening that thread again is not their first reply.
+   */
+  it('is not an old exchange opened again', () => {
+    const long = FIRST_REPLY_FRESH_MS + MINUTE
+    expect(isAnsweredFirstReply(thread('mpm', { endedAgo: long }))).toBe(false)
+  })
+
+  it('is dated by the first answer, not by whatever was said after it', () => {
+    const earlier = thread('mpm', { endedAgo: 2 * FIRST_REPLY_FRESH_MS })
+    const since = thread('pm')
+    const messages = [...since.messages, ...earlier.messages]
+    expect(isAnsweredFirstReply({ ...since, messages })).toBe(false)
+  })
+
+  it('reads an answer it cannot date as not recent', () => {
+    const answered = thread('mpm')
+    const messages = answered.messages.map((message, i) =>
+      i === 0 ? { ...message, createdAt: 'not a date' } : message,
+    )
+    expect(isAnsweredFirstReply({ ...answered, messages })).toBe(false)
   })
 })
 
