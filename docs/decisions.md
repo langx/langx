@@ -7129,6 +7129,8 @@ more.
 
 ## One plan: Pro
 
+> **Amended 18 October 2026 — see _The welcome pack waits for a purchase or a store's free week_ below.**
+
 Two paid plans confused people: Fluent (`pro`) and Polyglot (`pro_plus`) read
 as two products to choose between, and every large competitor sells one. On
 28 September 2026 they became one plan, **Pro**, holding everything Polyglot
@@ -7209,6 +7211,32 @@ This supersedes _A third tier, and the four things two tiers were hiding_,
 _Pro+ products grant the `pro` entitlement too_, _The plans are Fluent and
 Polyglot, and three things moved_ and _Fluent to Polyglot: the store swaps the
 plan, the paywall says what will happen_.
+
+## The welcome pack waits for a purchase or a store's free week
+
+**18 October 2026.** The pack — the frames, the title and two streak freezes —
+was handed over by `refreshEntitlement` to any tier but free. Every gift of
+Pro passes through that refresh, so a streak's week, an operator's month, a
+gift code, three invitees' month and the v1 lifetime gift each came with the
+pack as well. Nobody decided that; it fell out of "Pro is Pro". It mattered
+the moment a gift could reach every new account (_The Pro Week_, behind its
+switch): two freezes are a thing tokens buy, and a week of Pro that also
+stocked the wallet would have been a second gift, and a shortcut on the
+streak the Pro Week's second week is earned by.
+
+Now the pack goes with an entitlement bought in a store — a subscription, a
+lifetime, or a store's free week — and never with a grant (`earnsWelcomePack`).
+The test is the store, not `periodType`: RevenueCat labels a lifetime purchase
+with no period at all, and every store row is either paid or a free week. A
+free week counts because starting one is a purchase decision with a card
+behind it; the pack is still never taken back, so a trial cancelled on day six
+keeps it, as before. `isPayingStore` is the one list of stores, shared with the
+referral top-up, so the two cannot come to disagree about what a store is.
+
+**What changes for people on a gift today:** nothing they already have — the
+pack is never taken back. Somebody whose first Pro is a gift no longer gets
+the pack with it; they get it if they later start a subscription or a free
+week, once, as anybody does.
 
 ## The paywall sells the free week
 

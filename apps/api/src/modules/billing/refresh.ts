@@ -3,7 +3,7 @@ import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import type { RevenueCatClient, SubscriberEntitlement } from './revenueCatClient'
 import { creditReferrerForSubscription, isPaidPurchase } from '../referrals/settle'
-import { grantWelcomePack } from './welcomePack'
+import { earnsWelcomePack, grantWelcomePack } from './welcomePack'
 import { welcomeIfBecamePro } from './proWelcome'
 
 /**
@@ -69,8 +69,8 @@ async function applyEntitlement(
   /*
    * The pre-image, because the two things below are functions of an *event*
    * — the referral top-up and the Pro welcome — and this write is the only
-   * edge in this file. `grantWelcomePack` below is a function of the tier and
-   * is safely re-run on every refresh; paying or welcoming somebody again on
+   * edge in this file. `grantWelcomePack` below is a function of the
+   * entitlement and is safely re-run on every refresh; paying or welcoming somebody again on
    * every refresh would not be.
    */
   const before = await db
@@ -123,8 +123,11 @@ async function applyEntitlement(
    * losing a cosmetic to a transient write is not worth failing the refresh
    * that RevenueCat is waiting on. The next refresh picks it up, because the
    * latch is only written on success.
+   *
+   * A store's purchase or free week only — never a grant. See
+   * `earnsWelcomePack`.
    */
-  if (next.tier !== 'free') {
+  if (earnsWelcomePack(next)) {
     try {
       await grantWelcomePack(db, userId, 'pro')
     } catch {
