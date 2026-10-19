@@ -1,3 +1,5 @@
+import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
+import { useFonts } from 'expo-font'
 import type { ReactNode, RefObject } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import type { PublicProfileDto } from '../../api/types'
@@ -65,6 +67,9 @@ export function ThreadHeaderV3({
   const { isRtl } = useLocale()
   const styles = useStyles()
   const { v3 } = useTheme()
+  // The name is Nunito Black, which the root does not load yet
+  // (`DISPLAY_FONT_BLACK`). Nothing waits on it, as on Invite.
+  useFonts({ Nunito_900Black })
   const onHue = partner !== undefined
   const ground = onHue ? v3.hues[partnerHueFor(partner._id)] : v3.colors.surface
   const ink = onHue ? v3.colors.ink : v3.colors.fg

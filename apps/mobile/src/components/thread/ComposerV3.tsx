@@ -1,6 +1,8 @@
 import Feather from '@expo/vector-icons/Feather'
+import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
 import { applyEmoticon, emoticonAt } from '@langx/shared'
 import * as Device from 'expo-device'
+import { useFonts } from 'expo-font'
 import { router } from 'expo-router'
 import { useRef, useState, type ReactNode } from 'react'
 import {
@@ -116,6 +118,8 @@ export function ComposerV3({
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
+  // Correct's label is Nunito Black, which the root does not load yet.
+  useFonts({ Nunito_900Black })
   const input = useRef<TextInput>(null)
   const [selection, setSelection] = useState<{ start: number; end: number } | null>(null)
   const [topicRound, setTopicRound] = useState(0)
@@ -394,6 +398,9 @@ export function ComposerV3({
             multiline
             {...(Platform.OS === 'web'
               ? {
+                  // One row, so the box rests at the mic's height: a textarea
+                  // with no `rows` is two, and react-native-web sets none.
+                  rows: 1,
                   onKeyPress: (event: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
                     const { key, shiftKey } = event.nativeEvent as TextInputKeyPressEventData & {
                       shiftKey?: boolean
