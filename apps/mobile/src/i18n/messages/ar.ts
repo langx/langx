@@ -1144,6 +1144,19 @@ export const ar: Localized<EnMessages> = {
     nearbyUnavailableBody: 'لم يصل أي موقع الآن. حاول بعد قليل.',
     emptyTitle: 'لا أحد هنا بعد',
     emptyBody: 'يظهر هنا من تتطابق لغاتهم مع لغاتك في الاتجاهين. جرّب تخفيف عوامل التصفية.',
+    chatsLeft: {
+      zero: 'المحادثات الجديدة المتبقية اليوم: {count} من {total}',
+      one: 'المحادثات الجديدة المتبقية اليوم: {count} من {total}',
+      two: 'المحادثات الجديدة المتبقية اليوم: {count} من {total}',
+      few: 'المحادثات الجديدة المتبقية اليوم: {count} من {total}',
+      many: 'المحادثات الجديدة المتبقية اليوم: {count} من {total}',
+      other: 'المحادثات الجديدة المتبقية اليوم: {count} من {total}',
+    },
+    chatsLeftNote: 'الردود لا تُحسب أبدًا.',
+    newOnLangx: 'جدد على LangX',
+    helloNewcomer: 'ألقِ التحية على {name} — حساب جديد على LangX',
+    repliesWithinDay: 'يرد عادةً خلال يوم',
+    changeFilters: 'غيّر عوامل التصفية',
   },
 
   filters: {
@@ -1883,6 +1896,11 @@ export const ar: Localized<EnMessages> = {
     postLanguageRequired: 'أضف إلى ملفك لغة تتحدّثها أو تتعلّمها لتتمكّن من النشر بها.',
     postedCorrection: 'نُشرت. سيصحّحها أحدهم.',
     askCorrectionHint: 'سيصححها متحدث أصلي — عادةً خلال ساعة. التصحيحات بلا حدود في كل الخطط.',
+    askChip: 'سؤال',
+    momentChip: 'لحظة',
+    askNatural: 'هل هذا طبيعي؟',
+    askPronounce: 'كيف يُنطق هذا؟',
+    helpName: 'ساعد {name}',
   },
 
   profile: {
