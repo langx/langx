@@ -57,3 +57,31 @@ export async function countCorrectionsWritten(db: Db, userId: string): Promise<n
   ])
   return posts + chat + recordings
 }
+
+/**
+ * Whether anybody has ever corrected this person: a sentence of theirs in a
+ * thread, or one of their posts. The first week's "Get your first correction"
+ * is ticked from it.
+ *
+ * Both halves read a stamp the correction already leaves behind, so nothing
+ * is written for this: `sendCorrection` sets `correctedAt` on the message it
+ * corrects, and `correctPost` raises the post's `correctionCount`.
+ *
+ * Neither filter is the leading field of an index — `sender_created` and
+ * `author` carry the person and then the date — so each read walks that
+ * person's own messages or posts until it finds one. That is why the summary
+ * asks only during the first week, when there are few of either; a long-lived
+ * account would make this a scan of everything it ever sent, on a request the
+ * app makes on every visit to Me.
+ */
+export async function hasBeenCorrected(db: Db, userId: string): Promise<boolean> {
+  const [chat, post] = await Promise.all([
+    db
+      .collection(COLLECTIONS.messages)
+      .findOne({ senderId: userId, correctedAt: { $exists: true } }, { projection: { _id: 1 } }),
+    db
+      .collection(COLLECTIONS.posts)
+      .findOne({ authorId: userId, correctionCount: { $gt: 0 } }, { projection: { _id: 1 } }),
+  ])
+  return chat !== null || post !== null
+}

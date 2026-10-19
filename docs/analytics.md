@@ -95,9 +95,9 @@ reached a screen of ours.
 | `tour_step_viewed`          | `step`, `index`                                                                                                                                                                            | One tour step was drawn against a measured element                                               |
 | `tour_skipped`              | `step`, `index`                                                                                                                                                                            | The tour was left part-way, by Skip or the back button                                           |
 | `tour_completed`            | `is_guest`                                                                                                                                                                                 | The tour's last step was passed                                                                  |
-| `tip_shown`                 | `tip` (its id), `slot` (chat, chats, discover, feed, echo, me, composer). Never the sentence                                                                                               | A tip was put on screen: its slot's cursor advanced. Once per mount of the screen                |
+| `tip_shown`                 | `tip` (its id), `slot` (chat, chats, chatsCoach, discover, feed, echo, me, composer). Never the sentence                                                                                   | A tip was put on screen: its slot's cursor advanced. Once per mount of the screen                |
 | `tip_dismissed`             | `tip`, `slot`                                                                                                                                                                              | The tip's own close button was tapped. Switching tips off in Settings is not this                |
-| `tip_action`                | `tip`, `slot`                                                                                                                                                                              | The button on a tip was tapped. Nothing sends this yet: no tip has a button                      |
+| `tip_action`                | `tip`, `slot`                                                                                                                                                                              | The button on a tip was tapped. Only the Chats coach card has one: Show me                       |
 | `echo_card_captured`        | `source` (chat, post, phrase, manual)                                                                                                                                                      | A sentence was kept as a card. Only one that was created                                         |
 | `echo_session_started`      | `cards`, `offline`                                                                                                                                                                         | A review deck was opened and had cards in it                                                     |
 | `echo_card_graded`          | `grade` (again, hard, good, easy), `producing`, `seconds`                                                                                                                                  | One card was answered. Never the card's text                                                     |
@@ -183,8 +183,11 @@ Some of these carry a number that needs a caveat rather than a footnote:
   card on the redesign's Home tab), `settings` (Settings → Subscription → "See
   the plans"), `app_icon` (a tile in the app-icon picker) and `pro_badge` (the
   "What's Pro?" sheet behind the PRO badge on somebody's profile). Builds before
-  the last three counted Settings and the app-icon picker as `me`, so read `me`
-  split by app version.
+  those three counted Settings and the app-icon picker as `me`, so read `me`
+  split by app version. `gift_end` is "Keep Pro" on the Pro Week's last-day
+  recap, behind `flags.proWeek`: an account that had a week never sees the
+  `onboarding` paywall, so read the two together — `gift_end` is the reverse
+  trial's conversion.
 - **The Boosted strip's three** need reading together. `boosted_strip_shown`
   means the strip was in the list on that visit, not that pixels reached an
   eye — there is deliberately no viewability maths on a horizontal scroller of
@@ -260,9 +263,10 @@ Some of these carry a number that needs a caveat rather than a footnote:
   already treats a tip as shown — so it is once per mount of the screen that
   holds it, not once per look. The `composer` slot is the half-row under the
   chat composer and `chat` the line that opens a short thread; neither has a
-  close button, so both send only `tip_shown`. `tip_action`
-  is in the union and sent by nothing: no tip has a button today, and the first
-  that does will be measured from its first day.
+  close button, so both send only `tip_shown`. `chatsCoach` is the
+  redesign's first-week coach card on the Chats tab, the first tip with a
+  button: its Show me sends `tip_action`, and the card is once per mount like
+  the others, though its slot holds one card and its cursor never moves.
 - **`invite_shared` and `profile_shared`** with `via: sheet` count the share
   sheet being opened. The sheet does not say whether it was used and a cancelled
   one looks the same, so these are intent and not delivery; `copy` is the link

@@ -42,6 +42,7 @@ import { MongoServerError, type Db, type ObjectId, type UpdateFilter } from 'mon
 import { COLLECTIONS } from '../../db/collections'
 import { nearestCity } from '../cities/cities'
 import { effectiveTier } from './entitlement'
+import { languagePausePaths } from './languagePause'
 import { hiddenModePaths, type HiddenModeChoices } from './hiddenMode'
 import { nameTokens } from './nameTokens'
 import { ApiError } from '../../lib/ApiError'
@@ -185,6 +186,18 @@ export interface Profile {
   locationUpdatedAt?: Date
   nativeLanguages: { code: string }[]
   learning: { code: string; level: string; priority: number }[]
+  /**
+   * Codes from either list above that were added while this account's Pro
+   * was a gift. Written only by `updateProfile`; absent on everybody who never
+   * added a language during one. See `modules/profiles/languagePause.ts`.
+   */
+  giftLanguages?: string[]
+  /**
+   * Those of `giftLanguages` that do not count for matching on the plan held
+   * now — stored so discovery can ask it of every candidate in the query.
+   * Absent while there are none. See `modules/profiles/languagePause.ts`.
+   */
+  pausedLanguages?: string[]
   interests: string[]
   settings: {
     discoverable: boolean
@@ -277,6 +290,15 @@ export interface Profile {
    * makes each one once in a lifetime.
    */
   proGiftStreaks?: number[]
+  /**
+   * The Pro Week, for the app that shows it: when it began, when the Pro it
+   * gave ends, whether the second week was earned, and whether the recap has
+   * been seen. Absent on every account that never had one — everybody, while
+   * `flags.proWeek` is off. The `proGifts` rows are the record; this is what
+   * the owner's own profile carries so every screen can read it without a
+   * second request. Written only by `modules/billing/proWeek.ts`.
+   */
+  proWeek?: { startedAt: Date; endsAt?: Date; extended?: true; recapSeenAt?: Date }
   /**
    * `echoCaptures` is optional where the other three are not: it arrived after
    * every existing profile was written, and `consumeQuota` reads the array
@@ -1161,6 +1183,17 @@ export async function updateProfile(
     PLAN_LIMITS[tier].maxNativeLanguages,
   )
 
+  /*
+   * Which languages were added during a gift, and which of them are paused —
+   * in the same write as the lists they describe, so discovery never reads a
+   * list and a pause that disagree. Only when a list was sent: a request about
+   * a bio leaves both markers as they are.
+   */
+  const languagePause =
+    input.nativeLanguages !== undefined || input.learning !== undefined
+      ? languagePausePaths(current, { nativeLanguages: nextNative, learning: nextLearning }, tier)
+      : { set: {}, unset: {} }
+
   // zod's `.partial()` types every field as `T | undefined`, but an absent
   // key and a key explicitly set to `undefined` mean different things to
   // Mongo's `$set` (and to exactOptionalPropertyTypes) — filter before
@@ -1366,10 +1399,14 @@ export async function updateProfile(
         ...hiddenModePaths(current, { privacy, discoverable: settings?.discoverable }),
         ...equippedPaths,
         ...(timezoneUpdatedAt ? { timezoneUpdatedAt } : {}),
+        ...languagePause.set,
         updatedAt: now,
       },
-      ...(Object.keys(equippedUnset).length + Object.keys(settingsUnset).length > 0
-        ? { $unset: { ...equippedUnset, ...settingsUnset } }
+      ...(Object.keys(equippedUnset).length +
+        Object.keys(settingsUnset).length +
+        Object.keys(languagePause.unset).length >
+      0
+        ? { $unset: { ...equippedUnset, ...settingsUnset, ...languagePause.unset } }
         : {}),
     },
     { returnDocument: 'after' },

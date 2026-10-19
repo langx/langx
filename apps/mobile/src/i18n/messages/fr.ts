@@ -156,6 +156,7 @@ export const fr: Localized<EnMessages> = {
     playFailed: 'Cette vidéo ne peut pas être lue sur cet appareil.',
   },
   tips: {
+    chatsCoachCorrect: 'Appuie longuement sur un message, puis sur Corriger.',
     composerCorrect: 'Appui long pour corriger',
     composerReply: 'Glissez un message pour répondre',
     composerStar: 'Appui long pour épingler ou traduire',
@@ -1134,6 +1135,14 @@ export const fr: Localized<EnMessages> = {
     goToDiscover: 'Aller à Découvrir',
     youPrefix: 'Toi :',
     starredMessages: 'Messages favoris',
+    coachCorrectTitle: 'Corrige une phrase',
+    coachShowMe: 'Montre-moi',
+    waitingTitle: 'En attente de ta réponse',
+    othersTitle: 'Autres discussions',
+    emptyLine: 'Aucune discussion pour l’instant. Trouve quelqu’un dans Personnes et dis bonjour.',
+    findSomeone: 'Trouver quelqu’un',
+    archivedChats: 'Discussions archivées',
+    backToChats: 'Retour aux discussions',
   },
 
   presence: {
@@ -1745,6 +1754,30 @@ export const fr: Localized<EnMessages> = {
     followsTitle: 'Abonnés et abonnements',
     nextBadge: 'Prochain : {label}',
     hiddenFromOthers: 'Masqué aux autres',
+    languagesLine: '{speaks} · apprend {learns}',
+    newHere: 'Premiers pas',
+    correctionsGiven: { one: 'Correction faite', other: 'Corrections faites' },
+    posts: { one: 'Publication', other: 'Publications' },
+    cardsReviewed: { one: 'Carte révisée', other: 'Cartes révisées' },
+    streakTitle: 'Ta série',
+    streakLongest: {
+      one: 'La plus longue : {count} jour',
+      other: 'La plus longue : {count} jours',
+    },
+    freezesBanked: { one: '{count} gel en réserve', other: '{count} gels en réserve' },
+    nextBadgeKicker: 'Prochain badge',
+    nextBadgeProgress: '{current} sur {total}',
+    firstWeekTitle: 'Ta première semaine',
+    firstWeekBody: { one: 'Encore {count} petite étape', other: 'Encore {count} petites étapes' },
+    firstWeekRing: '{done}/{total}',
+    firstHello: 'Dis bonjour à quelqu’un',
+    firstHelloBody: 'Trouve quelqu’un dans Personnes',
+    firstHelloDone: 'Fait · tu as dit bonjour à {name}',
+    firstCorrection: 'Reçois ta première correction',
+    firstCorrectionBody: 'Touche + dans une discussion et demande une correction',
+    firstEcho: 'Ajoute une carte Echo',
+    firstEchoBody: 'Garde une phrase de n’importe quelle discussion',
+    firstWeekFoot: 'Ta série, tes chiffres et tes badges s’afficheront ici dès qu’ils commencent.',
   },
   howItWorks: {
     title: 'Comment fonctionne LangX',
@@ -1897,6 +1930,7 @@ export const fr: Localized<EnMessages> = {
     capOverGrandfathered:
       'Tu en as déjà plus que ton offre n’en contient. Tu peux les changer ou les retirer, mais pas en ajouter.',
     changeHint: 'Touche une langue pour la changer.',
+    pausedNote: 'En pause dans Découvrir avec le forfait gratuit. Elle compte à nouveau avec Pro.',
     saveFailed: 'Ça n’a pas été enregistré. Rien n’a changé.',
   },
 
@@ -2858,6 +2892,38 @@ export const fr: Localized<EnMessages> = {
       'Quel que soit celui que tu avais, tu as maintenant tout. Quelques idées pour commencer :',
     andMore: 'et bien plus',
     start: 'Commencer à explorer',
+  },
+
+  proWeek: {
+    startsTitle: 'Ta semaine Pro commence maintenant',
+    startsBody: {
+      one: 'Pro est à toi jusqu’au {date}. Pratique {count} jour d’affilée et il reste une deuxième semaine.',
+      other:
+        'Pro est à toi jusqu’au {date}. Pratique {count} jours d’affilée et il reste une deuxième semaine.',
+    },
+    yoursUntil: 'Pro · à toi jusqu’au {date}',
+    recapEnds: 'Ta semaine Pro se termine le {date}',
+    recapEnded: 'Ta semaine Pro est terminée',
+    recapLead: 'Ce que tu as fait avec Pro et que le forfait gratuit ne propose pas :',
+    recapChats: {
+      one: '{count} nouvelle discussion au-delà de la limite quotidienne gratuite',
+      other: '{count} nouvelles discussions au-delà de la limite quotidienne gratuite',
+    },
+    recapTranslated: {
+      one: '{count} message envoyé avec une traduction',
+      other: '{count} messages envoyés avec une traduction',
+    },
+    recapLanguages: {
+      one: '{count} langue de plus dans Découvrir — elle est en pause avec le forfait gratuit',
+      other: '{count} langues de plus dans Découvrir — elles sont en pause avec le forfait gratuit',
+    },
+    recapExtended: {
+      one: '{count} jour d’affilée t’a valu une semaine de Pro en plus.',
+      other: '{count} jours d’affilée t’ont valu une semaine de Pro en plus.',
+    },
+    recapQuiet: 'Tout ce que Pro a ouvert reste ouvert si tu le gardes.',
+    keep: 'Garder Pro',
+    storeFreeWeek: 'Tu peux encore lancer la semaine gratuite du store.',
   },
 
   giftCode: {

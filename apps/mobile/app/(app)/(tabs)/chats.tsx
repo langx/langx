@@ -35,6 +35,8 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useTwoPane } from '../../../src/hooks/useTwoPane'
 import { TwoPane } from '../../../src/components/TwoPane'
 import { ChatScreen } from '../../../src/screens/ChatScreen'
+import { ChatsV3Screen } from '../../../src/screens/ChatsV3Screen'
+import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
 import { OfficialMark } from '../../../src/components/OfficialMark'
 import { acceptsSends } from '../../../src/lib/conversationPicker'
 import { callRowIcon, callRowLabel } from '../../../src/lib/calls/callLabels'
@@ -49,7 +51,32 @@ const EMPTY_COPY: Record<ConversationFilter, { title: MessageKey; body: MessageK
   archived: { title: 'chats.archivedEmptyTitle', body: 'chats.archivedEmptyBody' },
 }
 
-export default function ChatsScreen() {
+/**
+ * Today's chat list, or — with `flags.v3Home` on — the redesign's, which
+ * leads with the people waiting on you (`src/screens/ChatsV3Screen`). Read
+ * once per launch like the rest of that flag; with it off, this is the screen
+ * it was.
+ *
+ * Bare until the config has said which, as Home's route is. A launch through
+ * `app/index.tsx` has already waited for it, so this is only ever seen on a
+ * start straight into the tab — a web page load at `/chats`, a link — and for
+ * at most `V3_HOME_WAIT_MS`. Drawing today's list meanwhile would swap it for
+ * the other one under the reader, and would have spent today's tip on a
+ * screen nobody read.
+ */
+export default function ChatsRoute() {
+  const v3Home = useV3HomeDecision()
+  if (v3Home === undefined) {
+    return (
+      <Screen fluid tabbed>
+        {null}
+      </Screen>
+    )
+  }
+  return v3Home ? <ChatsV3Screen /> : <ChatsScreen />
+}
+
+function ChatsScreen() {
   useScreenInteractive()
   /*
    * Wide enough for both halves, asked of the window rather than the device —

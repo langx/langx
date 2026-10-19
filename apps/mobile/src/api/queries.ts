@@ -18,6 +18,8 @@ import {
   type PlanTier,
   type StoredPaidPlanTier,
   type ProWelcomeSource,
+  type ProWeekRecapResponse,
+  type ProWeekWire,
   type StoredPlanTier,
   type CheckInResult,
   type MediaKind,
@@ -623,6 +625,14 @@ export interface MeProfile {
   photos?: { url: string }[]
   nativeLanguages: { code: string }[]
   learning: { code: string; level: LanguageLevel; priority: number }[]
+  /**
+   * Codes from the two lists above that Discover does not search with: added
+   * during a gift of Pro that has ended, beyond the free plan's allowance.
+   * They stay listed; `searchLanguages` leaves them out of what a search is
+   * said to be made with. Absent while there are none, and from an API that
+   * predates the pause.
+   */
+  pausedLanguages?: string[]
   interests: string[]
   /**
    * Whatever shape the server has stored, verbatim — three of them are live at
@@ -725,6 +735,20 @@ export interface MeProfile {
    * falls back rather than trusting it.
    */
   proWelcome?: { at: string; source: ProWelcomeSource; months?: number }
+  /**
+   * The Pro Week, when this account had one — see `src/lib/proWeek.ts` for
+   * what the app does with it. Absent from an API that predates it and on
+   * every account given none, which is every account while `flags.proWeek`
+   * is off.
+   */
+  proWeek?: ProWeekWire
+  /**
+   * When the welcome pack was handed over, by the tier it was handed over
+   * for. On the wire since the pack shipped and modelled now because the plan
+   * page ticks the pack only for somebody who has it: it comes with a
+   * purchase or a store's free week, never with a gift of Pro.
+   */
+  welcomePackAt?: Partial<Record<StoredPaidPlanTier, string>>
 }
 
 /**
@@ -801,6 +825,41 @@ export function useAckProWelcome() {
         const { proWelcome: _shown, ...rest } = current
         return rest
       })
+    },
+  })
+}
+
+/**
+ * The Pro Week's recap, asked for only once the app can see it is due
+ * (`proWeekRecapDue`) — the server answers `null` for every other reason it
+ * should not show, a subscription bought on another device among them.
+ * Never retried: a recap that fails to load is a recap not shown.
+ */
+export function useProWeekRecap(enabled: boolean) {
+  return useQuery({
+    queryKey: ['pro-week-recap'],
+    queryFn: () => api.get<ProWeekRecapResponse>('/me/pro-week'),
+    enabled,
+    retry: false,
+    staleTime: Infinity,
+  })
+}
+
+/**
+ * The recap was seen. The cached profile is marked first, so it cannot open
+ * again while the request is in flight; a failed request leaves the server's
+ * copy unmarked, and the next launch may show it once more.
+ */
+export function useAckProWeekRecap() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: () => api.post('/me/pro-week/recap/ack', {}),
+    onMutate: () => {
+      queryClient.setQueryData<MeProfile>(keys.me, (current) =>
+        current?.proWeek
+          ? { ...current, proWeek: { ...current.proWeek, recapSeenAt: new Date().toISOString() } }
+          : current,
+      )
     },
   })
 }
@@ -949,7 +1008,7 @@ export interface ConversationPartnerDto {
   accountStatus: 'active' | 'suspended' | 'deleted'
 }
 
-export function useConversations(filter: ConversationFilter = 'all') {
+export function useConversations(filter: ConversationFilter = 'all', enabled = true) {
   return useInfiniteQuery({
     queryKey: keys.conversations(filter),
     queryFn: ({ pageParam }) =>
@@ -958,6 +1017,8 @@ export function useConversations(filter: ConversationFilter = 'all') {
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
+    // The Me tab reads the list only during the first week, for its hello step.
+    enabled,
   })
 }
 
@@ -2108,10 +2169,12 @@ export function useBadges(enabled = true) {
  * `REFERRAL_LIST_LIMIT` and counts the totals over the whole group, so there
  * is nothing to page and the number stays right past the cap.
  */
-export function useReferrals() {
+export function useReferrals(enabled = true) {
   return useQuery({
     queryKey: keys.referrals,
     queryFn: () => api.get<ReferralStatus>('/me/referrals'),
+    // The Me tab asks only during the first week, for its "Invite a friend".
+    enabled,
   })
 }
 

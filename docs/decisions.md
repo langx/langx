@@ -866,6 +866,8 @@ allowlist.
 
 ## Home leads the bar, and People holds Discover and the Feed — behind a flag
 
+> **Amended 19 October 2026 — see _Chats leads with the people waiting on you — behind the same flag_ below.**
+
 **18 October 2026.** The first restructured surface (D4, D5, move S1), and the
 first change to the app's structure rather than its look. Two rules go, and
 neither had an entry of its own — they lived in `app/index.tsx`, which sent
@@ -920,6 +922,60 @@ tour plays; under the flag the tour's Feed step finds no Feed tab and is
 skipped, as any step with nothing to point at is. The streak row draws a
 plain disc where `StreakFlame` could go. The screens behind the tabs keep the
 current look, and the web tab title for `/discover` still says Discover.
+
+## Chats leads with the people waiting on you — behind the same flag
+
+**19 October 2026.** The second surface behind `flags.v3Home`, and the first
+of Phase 5's core loop. With the flag off the Chats tab is exactly what it
+was; with it on, `app/(app)/(tabs)/chats.tsx` draws
+`src/screens/ChatsV3Screen.tsx` instead, so the entry above's "the screens
+behind the tabs keep the current look" no longer holds for this one. Like
+Home's route, the tab waits for the flag's answer rather than drawing today's
+list meanwhile and swapping it; a launch through `app/index.tsx` has already
+waited, so only a start straight into the tab — a web page load, a link —
+sees the bare ground, for at most `V3_HOME_WAIT_MS`.
+
+- **Waiting first.** A thread whose other person wrote last — Home's
+  `waitingThreads`: not archived, and a person who can read a reply — is a
+  colour block in that person's hue (`partnerHueFor`) with "Your turn", their
+  last words and a Reply button. The newest is the big block and holds the
+  screen's one yellow; the others reply in ink. Everyone else is a row.
+- **Read off the first page only.** Pinned threads count as first-page ones,
+  since every page carries them. A waiting thread further down stays a row
+  with its reply arrow, as it always had: searching every loaded page would
+  move it from the bottom of the list to the top the moment its page arrived,
+  under a thumb that was scrolling. The first page is also what Home's next
+  step reads, so the two tabs lead with the same person.
+- **Today's three tabs are two places.** Unreplied is the blocks. The archive
+  is a header button beside the starred messages and opens in place of the
+  list, with a way back.
+- **Every swipe action is a button too.** The ⋯ at a row's end and a long
+  press open the same four as the drawer — pin, archive, mute, delete — and so
+  does the ⋯ on a block, which does not swipe. Every target is 44pt on iOS and
+  48dp on Android.
+- **No pair flame.** The streak two partners share (H1 under D8) is not built,
+  and a count with nothing behind it would be a claim. Its place is beside the
+  name on a row, left empty.
+- **A first-week coach card.** "Correct a sentence — Long-press any message,
+  then Correct", with Show me opening the newest thread the other person has
+  written in. Only in the account's first `FIRST_WEEK_DAYS` (`packages/shared`),
+  never for a restored v1 account — the same first week as Me's checklist —
+  and only while such a thread exists. It is stored as a tip, in a slot of its
+  own (`chatsCoach`), so dismissing it is for good, Show me spends it too, and
+  turning tips off in Settings turns it off. Its button is the first
+  `tip_action`.
+- **No rotating tip line.** The current look's `chats` slot teaches the
+  Unreplied and Archived tabs, which this list does not have; the coach card
+  is the list's one hint.
+- **A guest** gets the empty list's line and Find someone, which goes to
+  People, where a hello asks for the account.
+
+The rows and blocks are memoised and given handlers that never change, keyed
+by kind and id, and nothing in the list animates in or out (rule 13), so a
+new message re-renders the thread it changed and opening a drawer re-renders
+the two rows whose state flipped. It is the same `FlatList` on the same pages
+as before. Nothing on the server changed: `unreplied`, `partner` and
+`lastMessage` were already on every row.
 
 ## Buttons are flat pills in sentence case, and still press on `Animated`
 
@@ -2682,6 +2738,7 @@ the purge only began sweeping `posts/{userId}/` on 27 September 2026.)_
 > record of the two-plan design.
 
 > **Amended 17 October 2026 — see _Pro's translations are unlimited, under a fair-use ceiling_ below.**
+> **Amended 18 October 2026 — see _Languages added during a gift pause for matching when it ends_ below.**
 
 `pro` and `pro_plus` are what the code calls them and what RevenueCat calls
 them; **Fluent** and **Polyglot** are what a person sees. The two are separate
@@ -2748,6 +2805,58 @@ None of this introduced a `tier > 'free'` comparison. `hasFeature`,
 `tierUnlocking` and `effectivePlanTier` read the real table and were not
 touched — which is the property that let two capabilities change tier without a
 single call site moving with them.
+
+## Languages added during a gift pause for matching when it ends
+
+**18 October 2026.** _The cap is checked at write time only_, above, made the
+language ladder a limit on growing the list and nothing else: "nothing is ever
+stripped, and discovery keeps matching on whatever is stored". That is right
+for the case it was written for — a v1 account that arrived with five
+languages — and wrong for a gift. A week of Pro let somebody add four
+languages, and once it ended they were matched on all five for good, on the
+free plan. Matching on more than one language a side is part of what Pro is;
+a gift that leaves it behind is a gift that never ends.
+
+**Marked on the way in, paused on the way out.** A code added to either list
+while the account's Pro is a gift (`entitlement.store: 'gift'`) is recorded in
+`giftLanguages`. When the plan is free again, the marked ones beyond the free
+allowance are listed in `pausedLanguages`, and discovery neither searches with
+them (the viewer's side) nor finds anybody by them (every candidate's side,
+in the query). They stay on the profile, its owner still sees them, and they
+count again the moment the account holds Pro — any Pro, bought or given.
+
+**Never below the free allowance.** Somebody who swapped the language they
+joined with for one they added during the gift keeps that one: gift languages
+fill whatever room the unmarked ones leave, in the order the person set, and
+only the rest pause (`pausedLanguageCodes`). Unmarked languages never pause,
+however many there are, so the v1 grandfathering above stands as it was, and so
+does anything added under a subscription — somebody who paid for a month and
+added a language is not the leak.
+
+**Stored, because a candidate has to be asked in the query.** "Lists French and
+French is not paused for them" is two conditions on one code, so the language
+fit is now one clause per code (at most five a side) rather than one `$in`,
+each still led by the indexed field. `pausedLanguages` changes at two moments
+only — a language edit, and an entitlement write — and both recompute it:
+`updateProfile`, and `refreshEntitlement`, which every gift's end passes
+through. Between a gift's end and the half-hourly pass that refreshes it the
+languages still match, which is the same half hour the gift's own reminders
+live with.
+
+**Said, not found out.** A pause nobody is told about reads as Discover going
+quiet. The gift's reminder says the languages added during it will pause, and
+its goodbye says they now are — only to somebody for whom one does — in the
+same @langx notes every installed build already reads (_Gifts of Pro_ in
+`docs/notifications.md`). Neither says Pro brings them back: that would be a
+reason to buy, in a note sent without a consent. The app says it where the
+list is: the languages screen marks a paused language ("Paused in Discover on
+the free plan"), and Discover's header and its scope chips leave it out, since
+a search is not made with it. The plan page's "What you have" ticks the
+welcome pack only for somebody who was handed it.
+
+**What changes for people on a gift today:** a language added _after this
+deploys_, while a gift runs, pauses when that gift ends. Nothing already on
+anybody's profile is marked, so nobody's current languages pause.
 
 ## Pro's translations are unlimited, under a fair-use ceiling
 
@@ -6444,6 +6553,7 @@ about each other.
 ## The Me tab is the public profile, plus what only its owner can use
 
 > **Amended 18 October 2026 — see _Home holds the day; Me goes back to being the profile — behind a flag_ below.**
+> **Amended 19 October 2026 — see _Me on its own colour, and a first week instead of zeros — behind a flag_ below.**
 
 **22 September 2026.** The owner's tab had grown into its own arrangement: an
 80px avatar where every other profile draws 96, the photos under the upgrade
@@ -6480,6 +6590,8 @@ alone.
 
 ## Home holds the day; Me goes back to being the profile — behind a flag
 
+> **Amended 19 October 2026 — see _Me on its own colour, and a first week instead of zeros — behind a flag_ below.**
+
 **18 October 2026.** The entry above made the Me tab the public profile plus
 the rows only its owner can use, and the owner's day — the streak, the next
 badge, the Pro card — rode along on it because there was nowhere else to put
@@ -6493,6 +6605,67 @@ in both bars — taking a block off Me is a change somebody without the flag
 would see, so it waits for the Me pull request, which takes off what Home now
 shows and keeps the bell, the wallet, the viewers, follows and preview. The
 rules about what the owner sees of their own profile do not change.
+
+## Me on its own colour, and a first week instead of zeros — behind a flag
+
+**19 October 2026.** The Me pull request the entry above was waiting for.
+**None of it takes effect until `flags.v3Home` is on**, read once per launch
+like the bar it sits in; with it off, Me is the screen the two entries above
+describe, line for line. `app/(app)/(tabs)/me.tsx` picks the screen at its
+top and the redesign's is `src/screens/MeScreenV3.tsx`, so today's screen
+moved by one function name.
+
+With the flag on, Me is drawn from the canvas's `V-Me`:
+
+- **The person, on their own colour.** The hero is the hue everybody else
+  sees them in (`partnerHueFor` on their own id): the face with a camera on
+  its shoulder that changes it — the long press it replaces was never
+  announced — the name, `@handle · city`, their languages, the PRO chip, and
+  the streak as an ink pill into the streak screen. The bell and Settings
+  are `IconButton`s at the hero's end, ink in both schemes (the `hue` look).
+- **Then what has added up.** Three numbers — corrections given, posts and
+  cards reviewed; corrections and the feed stay two numbers — the streak with
+  its longest run and banked freezes, the Pro block for a free account only,
+  the badges with the next one as a big card that says what it pays and,
+  where a press brings it closer, the button that does, and the owner's rows.
+  Invite and Share come back from Settings → Share & invite as the two big
+  buttons; Settings keeps them too.
+
+**What it reverses.** First, _the Me tab is the public profile_: under the
+flag Me no longer repeats the public profile's order — photos, the language
+columns, the week's chart, bio and interests. "Preview my profile" is how the
+owner sees that page, and the Languages and Edit profile rows lead to where
+it is changed. The rule about the owner's own data stands: the city is drawn
+with "Hidden from others" when the switch hides it. Second, the entry above
+said this pull request would take off Me what Home now shows. The drawing
+keeps a streak card and the Pro block, and so does the screen: Home is what
+to do now, Me is where you stand, and the two do not compete for one block.
+Gifted, lifetime and paid Pro are Pro to `useEffectiveTier`, so the Pro block
+reaches nobody who has Pro by any road (rule 10); it opens the paywall with
+source `me`.
+
+**A new account never sees a page of zeros.** For its first
+`FIRST_WEEK_DAYS` (`packages/shared`), Me shows `V-MeNew`'s checklist under a
+ring instead of numbers it does not have yet: say hello, get a first
+correction, add an Echo card, invite a friend, each a button to the place it
+is done. Three are read off responses the app already makes — the chat list,
+Echo's summary, the referrals — and the fourth off the one field this added:
+`/me/tokens` sends `firstWeek: { corrected }` only inside the week, and never
+for a restored v1 account. It reads the `correctedAt` stamp a chat correction
+leaves on its target and a post's `correctionCount`, through indexes that lead
+with the person rather than the stamp, which is cheap only while an account
+has written little; that is why it is a first-week field and not a lifetime
+one. The server says when the week is over, so every phone agrees. The list
+goes when the week ends or all four are done (`planFirstWeek` in
+`src/lib/mePlan.ts`). Past it, a block with nothing to say is not drawn: no
+row of three zeros, no streak of nothing, no "0 of 25 earned", no "0
+followers · 0 following".
+
+**What it leaves out.** The `me` tip slot is not on the redesign's Me — tips
+are Phase 7's to redo. The Pro block is the drawing's, a title and the
+viewers teaser, not Phase 4's trial line and benefit chips, and a subscriber
+gets no status card. There is no partners or shared-days number: nothing the
+app fetches counts them, and pair streaks are not built.
 
 ## A number that has not arrived is a skeleton, not a zero
 
@@ -7270,6 +7443,8 @@ more.
 
 ## One plan: Pro
 
+> **Amended 18 October 2026 — see _The welcome pack waits for a purchase or a store's free week_ below.**
+
 Two paid plans confused people: Fluent (`pro`) and Polyglot (`pro_plus`) read
 as two products to choose between, and every large competitor sells one. On
 28 September 2026 they became one plan, **Pro**, holding everything Polyglot
@@ -7350,6 +7525,32 @@ This supersedes _A third tier, and the four things two tiers were hiding_,
 _Pro+ products grant the `pro` entitlement too_, _The plans are Fluent and
 Polyglot, and three things moved_ and _Fluent to Polyglot: the store swaps the
 plan, the paywall says what will happen_.
+
+## The welcome pack waits for a purchase or a store's free week
+
+**18 October 2026.** The pack — the frames, the title and two streak freezes —
+was handed over by `refreshEntitlement` to any tier but free. Every gift of
+Pro passes through that refresh, so a streak's week, an operator's month, a
+gift code, three invitees' month and the v1 lifetime gift each came with the
+pack as well. Nobody decided that; it fell out of "Pro is Pro". It mattered
+the moment a gift could reach every new account (_The Pro Week: a week of Pro
+at sign-up, behind a switch_): two freezes are a thing tokens buy, and a week
+of Pro that also stocked the wallet would have been a second gift, and a
+shortcut on the streak the Pro Week's second week is earned by.
+
+Now the pack goes with an entitlement bought in a store — a subscription, a
+lifetime, or a store's free week — and never with a grant (`earnsWelcomePack`).
+The test is the store, not `periodType`: RevenueCat labels a lifetime purchase
+with no period at all, and every store row is either paid or a free week. A
+free week counts because starting one is a purchase decision with a card
+behind it; the pack is still never taken back, so a trial cancelled on day six
+keeps it, as before. `isPayingStore` is the one list of stores, shared with the
+referral top-up, so the two cannot come to disagree about what a store is.
+
+**What changes for people on a gift today:** nothing they already have — the
+pack is never taken back. Somebody whose first Pro is a gift no longer gets
+the pack with it; they get it if they later start a subscription or a free
+week, once, as anybody does.
 
 ## The paywall sells the free week
 
@@ -8221,6 +8422,8 @@ number.
 
 ## The streak's first gift of Pro is a week, at seven days
 
+> **Amended 18 October 2026 — see _The Pro Week: a week of Pro at sign-up, behind a switch_ below.**
+
 The streak rungs were 100 days for a month and 365 for three. Few people reach
 100, so the gift that is meant to show what Pro is like reached almost nobody.
 A rung at seven days now gives a week — the length of the store's free trial,
@@ -8244,6 +8447,94 @@ gift's own length is no longer than its window; the day-before one still goes.
 is already past seven days — including those already given the 100-day month —
 is owed the week on their next real action. That is one wave of grants after
 the deploy, drained by the scheduler fifty per pass, not a standing cost.
+
+## The Pro Week: a week of Pro at sign-up, behind a switch
+
+**18 October 2026.** Behic said yes to D12 (b) of the redesign brief: every new
+account starts with seven days of Pro, a reverse trial, and a seven-day streak
+inside them keeps Pro a second week. It is built behind `flags.proWeek`, which
+starts off. Off, a new account starts free and onboarding ends exactly as it
+did; weeks already given run to their end whatever the switch says.
+
+**Through the gift path, not a new one.** The week is a `proGifts` row with
+`source: 'welcome'` (`welcome:1:<user>`), granted the moment the profile exists
+— `POST /profiles` awaits the grant, so the end of onboarding can say the week
+has started. RevenueCat's promotional grant is what makes it Pro everywhere,
+so it stacks, ends, reminds and is shown in the operator's money timeline like
+every other gift — a week from a friend's invite (_Give a week, get a week,
+behind a switch_) lands after it rather than inside it. Without billing configured there is no week, because a gift
+is a row nothing would ever grant. It is never called a free trial: that is the
+store's, it is a purchase, and it is still there afterwards, untouched.
+
+**Only to an app that says it can show it.** The 2.8 and 2.9 builds open the
+end-of-onboarding paywall without asking the tier, so a week given to them
+would be sold to on its first screen — and nothing is sold to gifted Pro. The
+app declares it (`supportsProWeek` on the onboarding body) and the server still
+decides. A declaration rides the JavaScript that sends it, so an over-the-air
+update is what turns it on for an installed binary, and an old one never sends
+it.
+
+**Who.** A new adult account on the free plan. Never a guest (no account to
+hold it), never a returning v1 account (`cameFromV1`: the account is years old
+and gets the welcome back it gets today), never somebody already on Pro, and
+never a 16- or 17-year-old. The gift path itself has no age rule — a minor is
+given a streak's week, a code's month or an operator's gift like anybody — and
+this one is different because it reaches every new account unasked and ends in
+a "Keep Pro". A minor's onboarding ends as it does today. A refused sign-up has
+no profile to give it to.
+
+**Once per person, as an index.** The key is the account, and `welcome_once` —
+unique on `{userId, welcome}` over the rows that carry `welcome` — refuses a
+second week-one or week-two row under any key. "Person" is the account: the
+rows are purged with it, so a deleted account that signs up again is new.
+Keeping a mark past deletion would be keeping data the privacy policy says
+goes, and that is not a choice made here.
+
+**It says nothing.** No @langx letter, no push, no mail, and no "You're Pro
+now" (`GIFT_WELCOME_SOURCE.welcome` is `null`). A letter listing what Pro opens,
+sent to everybody who signs up, is a sales letter, and those need a consent
+these never ask for (rule 22 of the brief); the app's own first screen is the
+announcement. The end follows _Gifts of Pro_ in `docs/notifications.md`: the
+end date and where the plan screen is, nothing that sells — in the week's own
+words (`proGift.reminderDayWelcome` and friends), because the existing day
+note named only the date, and a week is usually only long enough for the
+day's note.
+
+**The second week is earned by practice, not by the streak counter.** Seven
+local days in a row from the day the week began, each with a qualifying action
+on the streak calendar (`isPracticeDay`). A day only opened, a day bridged by
+a freeze, and a day bought back count for nothing: freezes and repairs are
+bought with tokens, and tokens never unlock Pro. It is the streak's own first
+rung under a stricter count, so it can never be a third week: while the Pro
+Week runs, `queueStreakGifts` holds the seven-day rung back; earned, the second
+week is that rung's and it is marked given; not earned, the rung is owed as it
+always was, on the first real action after the week. The second week's end is
+stacked on the first's, as every gift's is. The amendment to the entry above
+is only that hold.
+
+**What the app shows** — the end of onboarding's "Your Pro week starts now" in
+place of the paywall, "Pro · yours until {date}" on Pro features during it, and
+on the last day a recap with "Keep Pro" and "Continue free" — reads
+`profile.proWeek`, which the gift path keeps (`startedAt`, the end, whether the
+second week was earned, whether the recap was seen). The recap is
+`GET /me/pro-week`: from a day before the end to a week after it, once, never
+to a subscriber (a store's free week included) or a lifetime, and not while a
+later gift carries Pro past the week. It counts only what the free plan does
+not do — chats opened beyond the free daily allowance, replayed against it;
+messages sent with a translation; languages that pause on the free plan — and
+never a reply, a correction or a call.
+
+**Two leaks closed first**, each its own entry: _The welcome pack waits for a
+purchase or a store's free week_, and _Languages added during a gift pause for
+matching when it ends_.
+
+**When the switch is turned on**, three copies need the week added before it
+goes: the GitBook's _Getting Pro Free_ page (`library/free-pro.md`, and the
+line in its README that lists the ways), whose "When free Pro ends" also says
+every gift is announced a week before it ends, which a one-week gift is not;
+and the "Or get Pro for free" paragraph of `docs/store/listing.md`. The
+website's plans page names only the store's free trial and stays true. None of
+them is false while the switch is off, so none changes here.
 
 ## The leaderboard counts every reward
 

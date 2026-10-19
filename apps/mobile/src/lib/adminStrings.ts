@@ -576,6 +576,7 @@ export const ADMIN = {
         streak: 'for a streak',
         referral: 'for invitations',
         code: 'from a gift code',
+        welcome: 'the Pro Week',
       },
       statuses: {
         pending: 'waiting to be granted',

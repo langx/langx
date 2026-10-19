@@ -381,8 +381,17 @@ export interface HeldEntitlement {
 export function isPaidPurchase(entitlement: HeldEntitlement | null | undefined): boolean {
   if (!entitlement) return false
   if (effectivePlanTier(entitlement.tier, entitlement.expiresAt) === 'free') return false
-  if (!PAYING_STORES.has((entitlement.store ?? '').toLowerCase())) return false
+  if (!isPayingStore(entitlement.store)) return false
   return entitlement.periodType === 'normal'
+}
+
+/**
+ * Whether a store is one somebody buys in, rather than the name of a grant.
+ * `PAYING_STORES` is the list; this is the one way to ask it, so the welcome
+ * pack and the referral top-up cannot come to disagree about what a store is.
+ */
+export function isPayingStore(store: string | null | undefined): boolean {
+  return PAYING_STORES.has((store ?? '').toLowerCase())
 }
 
 /**

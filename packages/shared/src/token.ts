@@ -736,6 +736,19 @@ export const tokenSummarySchema = z.object({
       }),
     )
     .length(7),
+  /**
+   * Present only while the account is in its first week (`isInFirstWeek`),
+   * and the one thing the Me tab's first-week checklist cannot read off
+   * anything else it fetches: whether anybody has corrected this person yet —
+   * a sentence of theirs in a thread, or one of their posts. Every other step
+   * on that list is already in a response the app makes.
+   *
+   * Only asked inside the week, which is what keeps it cheap: a week-old
+   * account has written little, so the lookup is bounded by how little.
+   * Optional, so a client newer than its API keeps parsing the summary — the
+   * checklist simply does not show — and an older client ignores it.
+   */
+  firstWeek: z.object({ corrected: z.boolean() }).optional(),
 })
 export type TokenSummary = z.infer<typeof tokenSummarySchema>
 

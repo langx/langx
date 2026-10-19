@@ -156,6 +156,7 @@ export const de: Localized<EnMessages> = {
     playFailed: 'Dieses Video kann auf diesem Gerät nicht abgespielt werden.',
   },
   tips: {
+    chatsCoachCorrect: 'Drück lange auf eine Nachricht, dann auf Korrigieren.',
     composerCorrect: 'Gedrückt halten zum Korrigieren',
     composerReply: 'Wischen, um zu antworten',
     composerStar: 'Gedrückt halten zum Markieren oder Übersetzen',
@@ -1136,6 +1137,14 @@ export const de: Localized<EnMessages> = {
     goToDiscover: 'Zu Entdecken',
     youPrefix: 'Du:',
     starredMessages: 'Markierte Nachrichten',
+    coachCorrectTitle: 'Korrigiere einen Satz',
+    coachShowMe: 'Zeig’s mir',
+    waitingTitle: 'Warten auf dich',
+    othersTitle: 'Weitere Chats',
+    emptyLine: 'Noch keine Chats. Finde jemanden unter Leute und sag Hallo.',
+    findSomeone: 'Jemanden finden',
+    archivedChats: 'Archivierte Chats',
+    backToChats: 'Zurück zu den Chats',
   },
 
   presence: {
@@ -1767,6 +1776,27 @@ export const de: Localized<EnMessages> = {
     followsTitle: 'Follower und wem du folgst',
     nextBadge: 'Als Nächstes: {label}',
     hiddenFromOthers: 'Für andere verborgen',
+    languagesLine: '{speaks} · lernt {learns}',
+    newHere: 'Neu hier',
+    correctionsGiven: { one: 'Korrektur gegeben', other: 'Korrekturen gegeben' },
+    posts: { one: 'Beitrag', other: 'Beiträge' },
+    cardsReviewed: { one: 'Karte wiederholt', other: 'Karten wiederholt' },
+    streakTitle: 'Deine Serie',
+    streakLongest: { one: 'Längste: {count} Tag', other: 'Längste: {count} Tage' },
+    freezesBanked: { one: '{count} Freeze auf Lager', other: '{count} Freezes auf Lager' },
+    nextBadgeKicker: 'Nächstes Abzeichen',
+    nextBadgeProgress: '{current} von {total}',
+    firstWeekTitle: 'Deine erste Woche',
+    firstWeekBody: { one: 'Noch {count} kleiner Schritt', other: 'Noch {count} kleine Schritte' },
+    firstWeekRing: '{done}/{total}',
+    firstHello: 'Sag jemandem Hallo',
+    firstHelloBody: 'Finde unter „Leute“ einen Partner',
+    firstHelloDone: 'Erledigt · du hast {name} Hallo gesagt',
+    firstCorrection: 'Hol dir deine erste Korrektur',
+    firstCorrectionBody: 'Tippe im Chat auf + und bitte um eine Korrektur',
+    firstEcho: 'Leg eine Echo-Karte an',
+    firstEchoBody: 'Behalte einen Satz aus einem Chat',
+    firstWeekFoot: 'Deine Serie, deine Zahlen und Abzeichen erscheinen hier, sobald es losgeht.',
   },
   howItWorks: {
     title: 'So funktioniert LangX',
@@ -1917,6 +1947,7 @@ export const de: Localized<EnMessages> = {
     capOverGrandfathered:
       'Du hast bereits mehr, als dein Tarif fasst. Du kannst sie ändern oder entfernen, aber keine weitere hinzufügen.',
     changeHint: 'Tippe eine Sprache an, um sie zu ändern.',
+    pausedNote: 'Im kostenlosen Tarif in Entdecken pausiert. Mit Pro zählt sie wieder.',
     saveFailed: 'Das wurde nicht gespeichert. Es hat sich nichts geändert.',
   },
 
@@ -2880,6 +2911,38 @@ export const de: Localized<EnMessages> = {
     bodyMerge: 'Egal, welchen du hattest – jetzt hast du alles. Probier zuerst das hier:',
     andMore: 'und vieles mehr',
     start: 'Jetzt entdecken',
+  },
+
+  proWeek: {
+    startsTitle: 'Deine Pro-Woche beginnt jetzt',
+    startsBody: {
+      one: 'Pro gehört dir bis zum {date}. Übe {count} Tag in Folge, und es bleibt eine zweite Woche.',
+      other:
+        'Pro gehört dir bis zum {date}. Übe {count} Tage in Folge, und es bleibt eine zweite Woche.',
+    },
+    yoursUntil: 'Pro · deins bis zum {date}',
+    recapEnds: 'Deine Pro-Woche endet am {date}',
+    recapEnded: 'Deine Pro-Woche ist vorbei',
+    recapLead: 'Was du mit Pro gemacht hast, das der kostenlose Tarif nicht bietet:',
+    recapChats: {
+      one: '{count} neuer Chat über das tägliche Gratis-Limit hinaus',
+      other: '{count} neue Chats über das tägliche Gratis-Limit hinaus',
+    },
+    recapTranslated: {
+      one: '{count} Nachricht mit Übersetzung gesendet',
+      other: '{count} Nachrichten mit Übersetzung gesendet',
+    },
+    recapLanguages: {
+      one: '{count} weitere Sprache in Entdecken – im kostenlosen Tarif pausiert sie',
+      other: '{count} weitere Sprachen in Entdecken – im kostenlosen Tarif pausieren sie',
+    },
+    recapExtended: {
+      one: '{count} Tag in Folge hat Pro um eine Woche verlängert.',
+      other: '{count} Tage in Folge haben Pro um eine Woche verlängert.',
+    },
+    recapQuiet: 'Alles, was Pro geöffnet hat, bleibt offen, wenn du es behältst.',
+    keep: 'Pro behalten',
+    storeFreeWeek: 'Die kostenlose Woche des Stores kannst du noch starten.',
   },
 
   giftCode: {

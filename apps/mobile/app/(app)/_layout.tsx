@@ -3,6 +3,7 @@ import { View } from 'react-native'
 import { DeletionBanner } from '../../src/components/DeletionBanner'
 import { OfflineBanner } from '../../src/components/OfflineBanner'
 import { ProWelcomeHost } from '../../src/components/ProWelcomeHost'
+import { ProWeekRecapHost } from '../../src/components/ProWeekRecapHost'
 import { UpdateBanner } from '../../src/components/UpdateBanner'
 import { useTheme } from '../../src/lib/theme'
 import { useNotificationRouting } from '../../src/hooks/useNotificationRouting'
@@ -162,6 +163,8 @@ export default function AppLayout() {
         says nothing about what it paints over.
       */}
       <ProWelcomeHost enabled={!isGuest} />
+      {/* The Pro Week's last-day recap, beside it for the same reason. */}
+      <ProWeekRecapHost enabled={!isGuest} />
     </View>
   )
 }

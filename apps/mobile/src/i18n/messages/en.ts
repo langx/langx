@@ -190,6 +190,7 @@ export const en = {
     playFailed: 'This video can’t be played on this device.',
   },
   tips: {
+    chatsCoachCorrect: 'Long-press any message, then Correct.',
     composerCorrect: 'Hold a message to correct it',
     composerReply: 'Swipe a message to reply',
     composerStar: 'Hold to star or translate',
@@ -1257,6 +1258,18 @@ export const en = {
     goToDiscover: 'Go to Discover',
     youPrefix: 'You:',
     starredMessages: 'Starred messages',
+    /** The redesign's first-week coach card; its line is `tips.chatsCoachCorrect`. */
+    coachCorrectTitle: 'Correct a sentence',
+    coachShowMe: 'Show me',
+    /** The redesign's list: the colour blocks of people who wrote last, then `othersTitle`. */
+    waitingTitle: 'Waiting on you',
+    othersTitle: 'Other chats',
+    /** The redesign's empty list: one line, and `findSomeone` goes to People. */
+    emptyLine: 'No chats yet. Find someone in People and say hello.',
+    findSomeone: 'Find someone',
+    /** The redesign's header button into the archive, and the archive's own title. */
+    archivedChats: 'Archived chats',
+    backToChats: 'Back to chats',
   },
 
   presence: {
@@ -1923,6 +1936,33 @@ export const en = {
     followsTitle: 'Followers and following',
     nextBadge: 'Next: {label}',
     hiddenFromOthers: 'Hidden from others',
+    /*
+     * The redesign's Me tab, behind `flags.v3Home`. The labels under its three
+     * numbers are plurals with no `{count}` in them: the figure is drawn above
+     * the word, and the word still has to agree with it.
+     */
+    languagesLine: '{speaks} · learning {learns}',
+    newHere: 'New here',
+    correctionsGiven: { one: 'Correction given', other: 'Corrections given' },
+    posts: { one: 'Post', other: 'Posts' },
+    cardsReviewed: { one: 'Card reviewed', other: 'Cards reviewed' },
+    streakTitle: 'Your streak',
+    streakLongest: { one: 'Longest {count} day', other: 'Longest {count} days' },
+    freezesBanked: { one: '{count} freeze banked', other: '{count} freezes banked' },
+    nextBadgeKicker: 'Next badge',
+    nextBadgeProgress: '{current} of {total}',
+    /** A new account's checklist, in place of numbers it does not have yet. */
+    firstWeekTitle: 'Your first week',
+    firstWeekBody: { one: '{count} small step to go', other: '{count} small steps to go' },
+    firstWeekRing: '{done}/{total}',
+    firstHello: 'Say hello to someone',
+    firstHelloBody: 'Find a partner in People',
+    firstHelloDone: 'Done · you said hello to {name}',
+    firstCorrection: 'Get your first correction',
+    firstCorrectionBody: 'Tap + in a chat and ask to be corrected',
+    firstEcho: 'Add an Echo card',
+    firstEchoBody: 'Keep a line from any chat',
+    firstWeekFoot: 'Your streak, numbers and badges show up here as they start.',
   },
 
   /**
@@ -2079,6 +2119,11 @@ export const en = {
     capOverGrandfathered:
       'You already have more than your plan holds. You can change these or remove them, but not add another.',
     changeHint: 'Tap a language to change it.',
+    /**
+     * Under a language added during a gift of Pro that has ended: still on the
+     * profile, not searched with in Discover until Pro is back.
+     */
+    pausedNote: 'Paused in Discover on the free plan. It counts again with Pro.',
     saveFailed: 'That did not save. Nothing changed.',
   },
 
@@ -3073,6 +3118,46 @@ export const en = {
     bodyMerge: 'Whichever you had, you now have all of it. A few things to try first:',
     andMore: 'and more',
     start: 'Start exploring',
+  },
+
+  /**
+   * The Pro Week, behind `flags.proWeek`: seven days of Pro at sign-up, the
+   * moment that replaces the end-of-onboarding paywall, the line Pro features
+   * wear during it, and the recap on its last day. Never "free trial" — that
+   * is the store's, and a purchase. `{date}` is a day and a month in the
+   * reader's language; `{count}` in `startsBody` and `recapExtended` is the
+   * streak that earns the second week, from `PRO_WEEK_RULES`.
+   */
+  proWeek: {
+    startsTitle: 'Your Pro week starts now',
+    startsBody: {
+      one: 'Pro is yours until {date}. Practise {count} day in a row and it stays a second week.',
+      other:
+        'Pro is yours until {date}. Practise {count} days in a row and it stays a second week.',
+    },
+    yoursUntil: 'Pro · yours until {date}',
+    recapEnds: 'Your Pro week ends {date}',
+    recapEnded: 'Your Pro week has ended',
+    recapLead: 'What you did with Pro that the free plan doesn’t do:',
+    recapChats: {
+      one: '{count} new chat past the free daily limit',
+      other: '{count} new chats past the free daily limit',
+    },
+    recapTranslated: {
+      one: '{count} message sent with a translation',
+      other: '{count} messages sent with a translation',
+    },
+    recapLanguages: {
+      one: 'Matched on {count} more language — it pauses on the free plan',
+      other: 'Matched on {count} more languages — they pause on the free plan',
+    },
+    recapExtended: {
+      one: '{count} day in a row kept Pro a second week.',
+      other: '{count} days in a row kept Pro a second week.',
+    },
+    recapQuiet: 'Everything Pro opened stays open if you keep it.',
+    keep: 'Keep Pro',
+    storeFreeWeek: 'The store’s free week is still yours to start.',
   },
 
   /**
