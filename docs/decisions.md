@@ -958,7 +958,8 @@ sees the bare ground, for at most `V3_HOME_WAIT_MS`.
   name on a row, left empty.
 - **A first-week coach card.** "Correct a sentence — Long-press any message,
   then Correct", with Show me opening the newest thread the other person has
-  written in. Only in the account's first `FIRST_WEEK_DAYS` (`packages/shared`)
+  written in. Only in the account's first `FIRST_WEEK_DAYS` (`packages/shared`),
+  never for a restored v1 account — the same first week as Me's checklist —
   and only while such a thread exists. It is stored as a tip, in a slot of its
   own (`chatsCoach`), so dismissing it is for good, Show me spends it too, and
   turning tips off in Settings turns it off. Its button is the first

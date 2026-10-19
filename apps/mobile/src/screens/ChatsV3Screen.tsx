@@ -230,9 +230,14 @@ function MemberChats() {
    * with a button that does it. Stored with the tips (`chatsCoach`), so it is
    * gone once dismissed, and so is it when tips are off in Settings. Only on
    * the live list, and only when Show me has a thread to open.
+   *
+   * The first week is the one Me's checklist reads (`/me/tokens`'s
+   * `firstWeek`): never a restored v1 account, which is new to this build
+   * and not to correcting anybody.
    */
   const tips = useTips()
-  const firstWeek = me.data ? isInFirstWeek(new Date(me.data.createdAt)) : false
+  const firstWeek =
+    me.data !== undefined && !me.data.restoredFromV1 && isInFirstWeek(new Date(me.data.createdAt))
   const coachOn = shelf === 'all' && firstWeek && tips.settled && tips.pick('chatsCoach') === COACH
   const coachTarget = coachOn ? coachThread(items) : undefined
 
