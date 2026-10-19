@@ -595,6 +595,12 @@ export const ptBR: Localized<ServerMessages> = {
       '⏳ Aviso: seu presente Pro termina em {date}. As opções de plano estão em Configurações → Assinatura.',
     reminderDay: '⏳ Seu presente Pro termina amanhã, {date}.',
     ended: 'Seu presente Pro terminou. Obrigado por praticar com a gente — até mais nos chats! 💛',
+    reminderWeekWelcome:
+      '⏳ Aviso: sua semana Pro termina em {date}. As opções de plano estão em Configurações → Assinatura.',
+    reminderDayWelcome:
+      '⏳ Sua semana Pro termina amanhã, {date}. As opções de plano estão em Configurações → Assinatura.',
+    endedWelcome:
+      'Sua semana Pro terminou. Obrigado por praticar com a gente — até mais nos chats! 💛',
   },
   reportReason: {
     spam: 'Spam',

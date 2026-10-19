@@ -134,6 +134,18 @@ export const appConfigSchema = z.object({
      * `docs/decisions.md` → _Give a week, get a week, behind a switch_.
      */
     giveAWeek: z.boolean(),
+    /**
+     * The Pro Week: seven days of Pro for every new adult account whose app
+     * declares it can show them, through the gift path, and a second week for
+     * a seven-day streak inside it. Starts off, like `captchaRequired`, and
+     * for a stronger reason: it gives away the thing the app sells, which is
+     * a money decision, made by switching this on rather than by a merge.
+     * Off, a new account starts free and the end of onboarding is exactly
+     * what it was. Weeks already given run to their end whatever this says.
+     * See `docs/decisions.md` → _The Pro Week: a week of Pro at sign-up,
+     * behind a switch_.
+     */
+    proWeek: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -160,6 +172,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     discoveryReplyFirst: false,
     echoFromCorrections: false,
     giveAWeek: false,
+    proWeek: false,
   },
 }
 

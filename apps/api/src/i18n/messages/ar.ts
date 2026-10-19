@@ -638,6 +638,10 @@ export const ar: Localized<ServerMessages> = {
     reminderWeek: '⏳ للعلم: تنتهي هدية Pro في {date}. خيارات خطتك في الإعدادات ← الاشتراك.',
     reminderDay: '⏳ تنتهي هدية Pro غدًا، في {date}.',
     ended: 'انتهت هدية Pro. شكرًا لتدرّبك معنا، نراك في المحادثات! 💛',
+    reminderWeekWelcome:
+      '⏳ للعلم: ينتهي أسبوع Pro في {date}. خيارات خطتك في الإعدادات ← الاشتراك.',
+    reminderDayWelcome: '⏳ ينتهي أسبوع Pro غدًا، في {date}. خيارات خطتك في الإعدادات ← الاشتراك.',
+    endedWelcome: 'انتهى أسبوع Pro. شكرًا لتدرّبك معنا، نراك في المحادثات! 💛',
   },
   reportReason: {
     spam: 'رسائل مزعجة',

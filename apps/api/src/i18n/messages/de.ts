@@ -600,6 +600,12 @@ export const de: Localized<ServerMessages> = {
     reminderDay: '⏳ Dein Pro-Geschenk endet morgen, am {date}.',
     ended:
       'Dein Pro-Geschenk ist abgelaufen. Danke fürs Üben mit uns – wir sehen uns in den Chats! 💛',
+    reminderWeekWelcome:
+      '⏳ Kurzer Hinweis: Deine Pro-Woche endet am {date}. Deine Tarifoptionen findest du unter Einstellungen → Abo.',
+    reminderDayWelcome:
+      '⏳ Deine Pro-Woche endet morgen, am {date}. Deine Tarifoptionen findest du unter Einstellungen → Abo.',
+    endedWelcome:
+      'Deine Pro-Woche ist vorbei. Danke fürs Üben mit uns – wir sehen uns in den Chats! 💛',
   },
   reportReason: {
     spam: 'Spam',

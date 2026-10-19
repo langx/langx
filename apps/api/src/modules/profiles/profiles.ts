@@ -291,6 +291,15 @@ export interface Profile {
    */
   proGiftStreaks?: number[]
   /**
+   * The Pro Week, for the app that shows it: when it began, when the Pro it
+   * gave ends, whether the second week was earned, and whether the recap has
+   * been seen. Absent on every account that never had one — everybody, while
+   * `flags.proWeek` is off. The `proGifts` rows are the record; this is what
+   * the owner's own profile carries so every screen can read it without a
+   * second request. Written only by `modules/billing/proWeek.ts`.
+   */
+  proWeek?: { startedAt: Date; endsAt?: Date; extended?: true; recapSeenAt?: Date }
+  /**
    * `echoCaptures` is optional where the other three are not: it arrived after
    * every existing profile was written, and `consumeQuota` reads the array
    * through `$ifNull` rather than a migration filling it in.

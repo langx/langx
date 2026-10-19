@@ -92,7 +92,7 @@ export async function welcomeFor(
   db: Db,
   userId: string,
   entitlement: EntitlementForEdge,
-): Promise<ProWelcomeDetails> {
+): Promise<ProWelcomeDetails | null> {
   const store = entitlement.store?.toLowerCase()
   if (store === 'gift' || store === 'promotional') return giftWelcomeFor(db, userId)
   if (entitlement.periodType === 'trial') return { source: 'trial' }
@@ -107,9 +107,10 @@ export async function welcomeFor(
  * to `granted` before it refreshes the entitlement, so the edge that refresh
  * crosses already finds the gift that caused it. A grant with no row (the v1
  * lifetime gift, or one given by hand in RevenueCat) is a plain `gift` with
- * no length.
+ * no length. `null` for a gift that is announced by its own screen instead —
+ * the Pro Week.
  */
-export async function giftWelcomeFor(db: Db, userId: string): Promise<ProWelcomeDetails> {
+export async function giftWelcomeFor(db: Db, userId: string): Promise<ProWelcomeDetails | null> {
   const latest = await db
     .collection<ProGift>(COLLECTIONS.proGifts)
     .find({ userId, status: 'granted' }, { projection: { source: 1, months: 1 } })
@@ -117,19 +118,27 @@ export async function giftWelcomeFor(db: Db, userId: string): Promise<ProWelcome
     .limit(1)
     .next()
   if (!latest) return { source: 'gift' }
-  return { source: GIFT_WELCOME_SOURCE[latest.source], months: latest.months }
+  const source = GIFT_WELCOME_SOURCE[latest.source]
+  return source ? { source, months: latest.months } : null
 }
 
 /**
  * How each kind of gift titles its welcome. A `Record` over every source, so
  * a new way to be given Pro cannot ship without deciding what it says.
+ *
+ * `null` is "no 'You're Pro now' at all". The Pro Week is announced by the
+ * end of onboarding itself ("Your Pro week starts now"), on the screen the
+ * person is already looking at; a second celebration over it a moment later
+ * would be the same news twice. Its second week moves a date the app already
+ * shows, and is not news of a new plan either.
  */
-export const GIFT_WELCOME_SOURCE: Record<ProGiftSource, ProWelcomeSource> = {
+export const GIFT_WELCOME_SOURCE: Record<ProGiftSource, ProWelcomeSource | null> = {
   admin: 'gift',
   referral: 'referral',
   streak: 'streak',
   // Somebody else's generosity, like the operator's: the gift title.
   code: 'gift',
+  welcome: null,
 }
 
 /**
@@ -171,7 +180,9 @@ export async function welcomeIfBecamePro(
   now: Date = new Date(),
 ): Promise<boolean> {
   if (!becamePro(before, after, now)) return false
-  await markProWelcome(db, userId, await welcomeFor(db, userId, after), now)
+  const details = await welcomeFor(db, userId, after)
+  if (!details) return false
+  await markProWelcome(db, userId, details, now)
   return true
 }
 

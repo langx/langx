@@ -759,6 +759,19 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { userId: 1, endsAt: -1 }, name: 'user_ends' },
     // Granted gifts about to end, or ended: the reminders and the goodbye.
     { key: { status: 1, endsAt: 1 }, name: 'status_ends' },
+    /*
+     * An invariant rather than a read, like `user_invitee_unique`: the Pro
+     * Week is once per person, each of its two weeks once. The `_id` says the
+     * same today (`welcome:<week>:<user>`), and this is what keeps saying it if
+     * that key ever changes shape. Partial, so it constrains only the rows
+     * that carry `welcome` — every other gift has none.
+     */
+    {
+      key: { userId: 1, welcome: 1 },
+      name: 'welcome_once',
+      unique: true,
+      partialFilterExpression: { welcome: { $exists: true } },
+    },
   ],
 
   [COLLECTIONS.giftCodes]: [

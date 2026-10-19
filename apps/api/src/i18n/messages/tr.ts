@@ -582,6 +582,12 @@ export const tr: Localized<ServerMessages> = {
     reminderDay: '⏳ Pro hediyen yarın, {date} tarihinde bitiyor.',
     ended:
       'Pro hediyen sona erdi. Bizimle pratik yaptığın için teşekkürler, sohbetlerde görüşmek üzere! 💛',
+    reminderWeekWelcome:
+      '⏳ Hatırlatma: Pro haftan {date} tarihinde bitiyor. Plan seçeneklerin Ayarlar → Abonelik’te.',
+    reminderDayWelcome:
+      '⏳ Pro haftan yarın, {date} tarihinde bitiyor. Plan seçeneklerin Ayarlar → Abonelik’te.',
+    endedWelcome:
+      'Pro haftan sona erdi. Bizimle pratik yaptığın için teşekkürler, sohbetlerde görüşmek üzere! 💛',
   },
   reportReason: {
     spam: 'Spam',

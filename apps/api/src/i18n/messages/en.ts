@@ -701,6 +701,18 @@ export const en = {
       '⏳ Heads-up: your Pro gift ends on {date}. Your plan options are in Settings → Subscription.',
     reminderDay: '⏳ Your Pro gift ends tomorrow, {date}.',
     ended: 'Your Pro gift has ended. Thanks for practising with us — see you in the chats! 💛',
+    /**
+     * The Pro Week's own reminders and goodbye — the same information as the
+     * three above, naming the week rather than "your Pro gift", and saying
+     * where the plan screen is in the day's note too, since a week is usually
+     * only long enough for that one. No offer, for the reason above.
+     */
+    reminderWeekWelcome:
+      '⏳ Heads-up: your Pro week ends on {date}. Your plan options are in Settings → Subscription.',
+    reminderDayWelcome:
+      '⏳ Your Pro week ends tomorrow, {date}. Your plan options are in Settings → Subscription.',
+    endedWelcome:
+      'Your Pro week has ended. Thanks for practising with us — see you in the chats! 💛',
   },
 
   /**

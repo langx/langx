@@ -7261,10 +7261,10 @@ was handed over by `refreshEntitlement` to any tier but free. Every gift of
 Pro passes through that refresh, so a streak's week, an operator's month, a
 gift code, three invitees' month and the v1 lifetime gift each came with the
 pack as well. Nobody decided that; it fell out of "Pro is Pro". It mattered
-the moment a gift could reach every new account (_The Pro Week_, behind its
-switch): two freezes are a thing tokens buy, and a week of Pro that also
-stocked the wallet would have been a second gift, and a shortcut on the
-streak the Pro Week's second week is earned by.
+the moment a gift could reach every new account (_The Pro Week: a week of Pro
+at sign-up, behind a switch_): two freezes are a thing tokens buy, and a week
+of Pro that also stocked the wallet would have been a second gift, and a
+shortcut on the streak the Pro Week's second week is earned by.
 
 Now the pack goes with an entitlement bought in a store — a subscription, a
 lifetime, or a store's free week — and never with a grant (`earnsWelcomePack`).
@@ -8031,6 +8031,8 @@ number.
 
 ## The streak's first gift of Pro is a week, at seven days
 
+> **Amended 18 October 2026 — see _The Pro Week: a week of Pro at sign-up, behind a switch_ below.**
+
 The streak rungs were 100 days for a month and 365 for three. Few people reach
 100, so the gift that is meant to show what Pro is like reached almost nobody.
 A rung at seven days now gives a week — the length of the store's free trial,
@@ -8054,6 +8056,93 @@ gift's own length is no longer than its window; the day-before one still goes.
 is already past seven days — including those already given the 100-day month —
 is owed the week on their next real action. That is one wave of grants after
 the deploy, drained by the scheduler fifty per pass, not a standing cost.
+
+## The Pro Week: a week of Pro at sign-up, behind a switch
+
+**18 October 2026.** Behic said yes to D12 (b) of the redesign brief: every new
+account starts with seven days of Pro, a reverse trial, and a seven-day streak
+inside them keeps Pro a second week. It is built behind `flags.proWeek`, which
+starts off. Off, a new account starts free and onboarding ends exactly as it
+did; weeks already given run to their end whatever the switch says.
+
+**Through the gift path, not a new one.** The week is a `proGifts` row with
+`source: 'welcome'` (`welcome:1:<user>`), granted the moment the profile exists
+— `POST /profiles` awaits the grant, so the end of onboarding can say the week
+has started. RevenueCat's promotional grant is what makes it Pro everywhere,
+so it stacks, ends, reminds and is shown in the operator's money timeline like
+every other gift. Without billing configured there is no week, because a gift
+is a row nothing would ever grant. It is never called a free trial: that is the
+store's, it is a purchase, and it is still there afterwards, untouched.
+
+**Only to an app that says it can show it.** The 2.8 and 2.9 builds open the
+end-of-onboarding paywall without asking the tier, so a week given to them
+would be sold to on its first screen — and nothing is sold to gifted Pro. The
+app declares it (`supportsProWeek` on the onboarding body) and the server still
+decides. A declaration rides the JavaScript that sends it, so an over-the-air
+update is what turns it on for an installed binary, and an old one never sends
+it.
+
+**Who.** A new adult account on the free plan. Never a guest (no account to
+hold it), never a returning v1 account (`cameFromV1`: the account is years old
+and gets the welcome back it gets today), never somebody already on Pro, and
+never a 16- or 17-year-old. The gift path itself has no age rule — a minor is
+given a streak's week, a code's month or an operator's gift like anybody — and
+this one is different because it reaches every new account unasked and ends in
+a "Keep Pro". A minor's onboarding ends as it does today. A refused sign-up has
+no profile to give it to.
+
+**Once per person, as an index.** The key is the account, and `welcome_once` —
+unique on `{userId, welcome}` over the rows that carry `welcome` — refuses a
+second week-one or week-two row under any key. "Person" is the account: the
+rows are purged with it, so a deleted account that signs up again is new.
+Keeping a mark past deletion would be keeping data the privacy policy says
+goes, and that is not a choice made here.
+
+**It says nothing.** No @langx letter, no push, no mail, and no "You're Pro
+now" (`GIFT_WELCOME_SOURCE.welcome` is `null`). A letter listing what Pro opens,
+sent to everybody who signs up, is a sales letter, and those need a consent
+these never ask for (rule 22 of the brief); the app's own first screen is the
+announcement. The end follows _Gifts of Pro_ in `docs/notifications.md`: the
+end date and where the plan screen is, nothing that sells — in the week's own
+words (`proGift.reminderDayWelcome` and friends), because the existing day
+note named only the date, and a week is usually only long enough for the
+day's note.
+
+**The second week is earned by practice, not by the streak counter.** Seven
+local days in a row from the day the week began, each with a qualifying action
+on the streak calendar (`isPracticeDay`). A day only opened, a day bridged by
+a freeze, and a day bought back count for nothing: freezes and repairs are
+bought with tokens, and tokens never unlock Pro. It is the streak's own first
+rung under a stricter count, so it can never be a third week: while the Pro
+Week runs, `queueStreakGifts` holds the seven-day rung back; earned, the second
+week is that rung's and it is marked given; not earned, the rung is owed as it
+always was, on the first real action after the week. The second week's end is
+stacked on the first's, as every gift's is. The amendment to the entry above
+is only that hold.
+
+**What the app shows** — the end of onboarding's "Your Pro week starts now" in
+place of the paywall, "Pro · yours until {date}" on Pro features during it, and
+on the last day a recap with "Keep Pro" and "Continue free" — reads
+`profile.proWeek`, which the gift path keeps (`startedAt`, the end, whether the
+second week was earned, whether the recap was seen). The recap is
+`GET /me/pro-week`: from a day before the end to a week after it, once, never
+to a subscriber (a store's free week included) or a lifetime, and not while a
+later gift carries Pro past the week. It counts only what the free plan does
+not do — chats opened beyond the free daily allowance, replayed against it;
+messages sent with a translation; languages that pause on the free plan — and
+never a reply, a correction or a call.
+
+**Two leaks closed first**, each its own entry: _The welcome pack waits for a
+purchase or a store's free week_, and _Languages added during a gift pause for
+matching when it ends_.
+
+**When the switch is turned on**, three copies need the week added before it
+goes: the GitBook's _Getting Pro Free_ page (`library/free-pro.md`, and the
+line in its README that lists the ways), whose "When free Pro ends" also says
+every gift is announced a week before it ends, which a one-week gift is not;
+and the "Or get Pro for free" paragraph of `docs/store/listing.md`. The
+website's plans page names only the store's free trial and stays true. None of
+them is false while the switch is off, so none changes here.
 
 ## The leaderboard counts every reward
 
