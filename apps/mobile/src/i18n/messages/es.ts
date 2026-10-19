@@ -2810,8 +2810,8 @@ export const es: Localized<EnMessages> = {
       other: '{count} mensajes enviados con traducción',
     },
     recapLanguages: {
-      one: 'Te encontraron por {count} idioma más: en el plan gratuito queda en pausa',
-      other: 'Te encontraron por {count} idiomas más: en el plan gratuito quedan en pausa',
+      one: '{count} idioma más en Descubrir: en el plan gratuito queda en pausa',
+      other: '{count} idiomas más en Descubrir: en el plan gratuito quedan en pausa',
     },
     recapExtended: {
       one: '{count} día seguido te dio una semana más de Pro.',

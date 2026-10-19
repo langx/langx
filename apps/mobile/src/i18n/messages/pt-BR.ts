@@ -2806,8 +2806,8 @@ export const ptBR: Localized<EnMessages> = {
       other: '{count} mensagens enviadas com tradução',
     },
     recapLanguages: {
-      one: 'Encontrado por mais {count} idioma — no plano gratuito ele fica em pausa',
-      other: 'Encontrado por mais {count} idiomas — no plano gratuito eles ficam em pausa',
+      one: 'Mais {count} idioma em Descobrir — no plano gratuito ele fica em pausa',
+      other: 'Mais {count} idiomas em Descobrir — no plano gratuito eles ficam em pausa',
     },
     recapExtended: {
       one: '{count} dia seguido rendeu mais uma semana de Pro.',

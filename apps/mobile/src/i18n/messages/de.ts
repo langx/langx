@@ -2854,7 +2854,7 @@ export const de: Localized<EnMessages> = {
     yoursUntil: 'Pro · deins bis zum {date}',
     recapEnds: 'Deine Pro-Woche endet am {date}',
     recapEnded: 'Deine Pro-Woche ist vorbei',
-    recapLead: 'Was du mit Pro gemacht hast, das der kostenlose Plan nicht bietet:',
+    recapLead: 'Was du mit Pro gemacht hast, das der kostenlose Tarif nicht bietet:',
     recapChats: {
       one: '{count} neuer Chat über das tägliche Gratis-Limit hinaus',
       other: '{count} neue Chats über das tägliche Gratis-Limit hinaus',
@@ -2864,8 +2864,8 @@ export const de: Localized<EnMessages> = {
       other: '{count} Nachrichten mit Übersetzung gesendet',
     },
     recapLanguages: {
-      one: 'Gefunden über {count} weitere Sprache – im kostenlosen Plan pausiert sie',
-      other: 'Gefunden über {count} weitere Sprachen – im kostenlosen Plan pausieren sie',
+      one: '{count} weitere Sprache in Entdecken – im kostenlosen Tarif pausiert sie',
+      other: '{count} weitere Sprachen in Entdecken – im kostenlosen Tarif pausieren sie',
     },
     recapExtended: {
       one: '{count} Tag in Folge hat Pro um eine Woche verlängert.',
