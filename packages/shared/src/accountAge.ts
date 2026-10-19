@@ -65,7 +65,8 @@ export function accountAge(createdAt: Date, now: Date = new Date()): AccountAge 
 
 /**
  * How long an account is new: the days the Me tab shows its first week's
- * checklist instead of the numbers it does not have yet.
+ * checklist instead of the numbers it does not have yet, and the Chats tab
+ * its "Correct a sentence" coach card.
  *
  * Seven, because the checklist is called the first week and says so. The
  * server decides it (`/me/tokens` sends `firstWeek` only inside it), so a

@@ -156,6 +156,7 @@ export const ptBR: Localized<EnMessages> = {
     playFailed: 'Este vídeo não pode ser reproduzido neste dispositivo.',
   },
   tips: {
+    chatsCoachCorrect: 'Toque e segure qualquer mensagem e depois em Corrigir.',
     composerCorrect: 'Segure para corrigir',
     composerReply: 'Arraste para responder',
     composerStar: 'Segure para destacar ou traduzir',
@@ -1128,6 +1129,14 @@ export const ptBR: Localized<EnMessages> = {
     goToDiscover: 'Ir para Descobrir',
     youPrefix: 'Você:',
     starredMessages: 'Mensagens favoritas',
+    coachCorrectTitle: 'Corrija uma frase',
+    coachShowMe: 'Me mostre',
+    waitingTitle: 'Esperando por você',
+    othersTitle: 'Outras conversas',
+    emptyLine: 'Ainda não há conversas. Encontre alguém em Pessoas e diga oi.',
+    findSomeone: 'Encontrar alguém',
+    archivedChats: 'Conversas arquivadas',
+    backToChats: 'Voltar às conversas',
   },
 
   presence: {

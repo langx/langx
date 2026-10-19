@@ -55,6 +55,13 @@ export const TIP_SLOTS = {
     'chatsArchived',
     'chatsOnlyKnown',
   ],
+  /**
+   * The redesign's Chats tab, in an account's first week: one coach card with
+   * a button that does the thing, rather than a rotating line. A slot of its
+   * own so the card's dismissal is stored with every other tip's, and so the
+   * Settings switch that turns tips off turns it off too.
+   */
+  chatsCoach: ['chatsCoachCorrect'],
   discover: [
     'discoverFilters',
     'discoverSearch',

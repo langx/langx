@@ -44,6 +44,12 @@ interface SwipeableRowProps {
   /** The list owns this, so opening one row closes any other. */
   open: boolean
   onOpenChange: (open: boolean) => void
+  /**
+   * What the row and its drawer stand on, when it is not the current look's
+   * `bg` — the redesign's list passes `v3.colors.bg`, whose dark value is a
+   * step deeper, so a row at rest is not a band of another grey.
+   */
+  ground?: string
   children: ReactNode
 }
 
@@ -87,7 +93,14 @@ interface SwipeableRowProps {
  * through `accessibilityActions` and through whatever menu the row itself
  * offers, which on a desktop they always were.
  */
-export function SwipeableRow({ right, left, open, onOpenChange, children }: SwipeableRowProps) {
+export function SwipeableRow({
+  right,
+  left,
+  open,
+  onOpenChange,
+  ground,
+  children,
+}: SwipeableRowProps) {
   const styles = useStyles()
   /** Where the row is now, and where it is resting between gestures. */
   const translateX = useSharedValue(0)
@@ -158,7 +171,7 @@ export function SwipeableRow({ right, left, open, onOpenChange, children }: Swip
   if (!enabled) return <>{children}</>
 
   return (
-    <View style={styles.wrap}>
+    <View style={[styles.wrap, ground !== undefined && { backgroundColor: ground }]}>
       <View style={styles.behind}>
         <View style={styles.drawer}>
           {right.map((action) => (
@@ -182,7 +195,7 @@ export function SwipeableRow({ right, left, open, onOpenChange, children }: Swip
         <Animated.View
           accessibilityActions={all.map((action) => ({ name: action.id, label: action.label }))}
           onAccessibilityAction={onAccessibilityAction}
-          style={[styles.moving, movingStyle]}
+          style={[styles.moving, ground !== undefined && { backgroundColor: ground }, movingStyle]}
         >
           {children}
         </Animated.View>

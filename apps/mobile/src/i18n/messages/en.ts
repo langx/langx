@@ -190,6 +190,7 @@ export const en = {
     playFailed: 'This video can’t be played on this device.',
   },
   tips: {
+    chatsCoachCorrect: 'Long-press any message, then Correct.',
     composerCorrect: 'Hold a message to correct it',
     composerReply: 'Swipe a message to reply',
     composerStar: 'Hold to star or translate',
@@ -1268,6 +1269,18 @@ export const en = {
     goToDiscover: 'Go to Discover',
     youPrefix: 'You:',
     starredMessages: 'Starred messages',
+    /** The redesign's first-week coach card; its line is `tips.chatsCoachCorrect`. */
+    coachCorrectTitle: 'Correct a sentence',
+    coachShowMe: 'Show me',
+    /** The redesign's list: the colour blocks of people who wrote last, then `othersTitle`. */
+    waitingTitle: 'Waiting on you',
+    othersTitle: 'Other chats',
+    /** The redesign's empty list: one line, and `findSomeone` goes to People. */
+    emptyLine: 'No chats yet. Find someone in People and say hello.',
+    findSomeone: 'Find someone',
+    /** The redesign's header button into the archive, and the archive's own title. */
+    archivedChats: 'Archived chats',
+    backToChats: 'Back to chats',
   },
 
   presence: {

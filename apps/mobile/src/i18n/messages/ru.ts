@@ -178,6 +178,7 @@ export const ru: Localized<EnMessages> = {
     playFailed: 'Это видео нельзя воспроизвести на этом устройстве.',
   },
   tips: {
+    chatsCoachCorrect: 'Удерживай любое сообщение, затем нажми «Исправить».',
     composerCorrect: 'Удерживайте, чтобы исправить',
     composerReply: 'Проведите, чтобы ответить',
     composerStar: 'Удерживайте, чтобы отметить или перевести',
@@ -1214,6 +1215,14 @@ export const ru: Localized<EnMessages> = {
     goToDiscover: 'Перейти к Поиску',
     youPrefix: 'Ты:',
     starredMessages: 'Избранные сообщения',
+    coachCorrectTitle: 'Исправь предложение',
+    coachShowMe: 'Покажи',
+    waitingTitle: 'Ждут твоего ответа',
+    othersTitle: 'Другие чаты',
+    emptyLine: 'Чатов пока нет. Найди кого-нибудь в разделе «Люди» и поздоровайся.',
+    findSomeone: 'Найти собеседника',
+    archivedChats: 'Архивные чаты',
+    backToChats: 'Назад к чатам',
   },
 
   presence: {

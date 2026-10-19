@@ -866,6 +866,8 @@ allowlist.
 
 ## Home leads the bar, and People holds Discover and the Feed — behind a flag
 
+> **Amended 19 October 2026 — see _Chats leads with the people waiting on you — behind the same flag_ below.**
+
 **18 October 2026.** The first restructured surface (D4, D5, move S1), and the
 first change to the app's structure rather than its look. Two rules go, and
 neither had an entry of its own — they lived in `app/index.tsx`, which sent
@@ -920,6 +922,60 @@ tour plays; under the flag the tour's Feed step finds no Feed tab and is
 skipped, as any step with nothing to point at is. The streak row draws a
 plain disc where `StreakFlame` could go. The screens behind the tabs keep the
 current look, and the web tab title for `/discover` still says Discover.
+
+## Chats leads with the people waiting on you — behind the same flag
+
+**19 October 2026.** The second surface behind `flags.v3Home`, and the first
+of Phase 5's core loop. With the flag off the Chats tab is exactly what it
+was; with it on, `app/(app)/(tabs)/chats.tsx` draws
+`src/screens/ChatsV3Screen.tsx` instead, so the entry above's "the screens
+behind the tabs keep the current look" no longer holds for this one. Like
+Home's route, the tab waits for the flag's answer rather than drawing today's
+list meanwhile and swapping it; a launch through `app/index.tsx` has already
+waited, so only a start straight into the tab — a web page load, a link —
+sees the bare ground, for at most `V3_HOME_WAIT_MS`.
+
+- **Waiting first.** A thread whose other person wrote last — Home's
+  `waitingThreads`: not archived, and a person who can read a reply — is a
+  colour block in that person's hue (`partnerHueFor`) with "Your turn", their
+  last words and a Reply button. The newest is the big block and holds the
+  screen's one yellow; the others reply in ink. Everyone else is a row.
+- **Read off the first page only.** Pinned threads count as first-page ones,
+  since every page carries them. A waiting thread further down stays a row
+  with its reply arrow, as it always had: searching every loaded page would
+  move it from the bottom of the list to the top the moment its page arrived,
+  under a thumb that was scrolling. The first page is also what Home's next
+  step reads, so the two tabs lead with the same person.
+- **Today's three tabs are two places.** Unreplied is the blocks. The archive
+  is a header button beside the starred messages and opens in place of the
+  list, with a way back.
+- **Every swipe action is a button too.** The ⋯ at a row's end and a long
+  press open the same four as the drawer — pin, archive, mute, delete — and so
+  does the ⋯ on a block, which does not swipe. Every target is 44pt on iOS and
+  48dp on Android.
+- **No pair flame.** The streak two partners share (H1 under D8) is not built,
+  and a count with nothing behind it would be a claim. Its place is beside the
+  name on a row, left empty.
+- **A first-week coach card.** "Correct a sentence — Long-press any message,
+  then Correct", with Show me opening the newest thread the other person has
+  written in. Only in the account's first `FIRST_WEEK_DAYS` (`packages/shared`),
+  never for a restored v1 account — the same first week as Me's checklist —
+  and only while such a thread exists. It is stored as a tip, in a slot of its
+  own (`chatsCoach`), so dismissing it is for good, Show me spends it too, and
+  turning tips off in Settings turns it off. Its button is the first
+  `tip_action`.
+- **No rotating tip line.** The current look's `chats` slot teaches the
+  Unreplied and Archived tabs, which this list does not have; the coach card
+  is the list's one hint.
+- **A guest** gets the empty list's line and Find someone, which goes to
+  People, where a hello asks for the account.
+
+The rows and blocks are memoised and given handlers that never change, keyed
+by kind and id, and nothing in the list animates in or out (rule 13), so a
+new message re-renders the thread it changed and opening a drawer re-renders
+the two rows whose state flipped. It is the same `FlatList` on the same pages
+as before. Nothing on the server changed: `unreplied`, `partner` and
+`lastMessage` were already on every row.
 
 ## People's two segments in v3: a card per person, a card per post
 
