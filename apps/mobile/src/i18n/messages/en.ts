@@ -1276,6 +1276,13 @@ export const en = {
     withTheirTimeAccessibility: '{presence}. Local time {time}.',
   },
   chat: {
+    /** The card at the foot of the thread in which somebody first wrote back. */
+    firstReplyTitle: '{name} wrote back',
+    firstReplyBody: {
+      one: 'Replies stay free on every plan. {plan} removes the limit of {count} new chat a day.',
+      other:
+        'Replies stay free on every plan. {plan} removes the limit of {count} new chats a day.',
+    },
     /** Shown where the composer would be, on an account that takes no messages. */
     channelOnly: 'This account posts news and announcements. You can’t reply to it.',
     /** In place of the composer, when the other person's account is suspended. */
@@ -1437,6 +1444,8 @@ export const en = {
     wordTranslationFailed: 'Could not translate that word right now.',
     wordSeePlans: 'See the plans',
     sayHello: 'Say hello to {name}…',
+    /** Above a first message's composer when the profile says this hello is free (`freeHello`). */
+    newcomerHelloFree: 'New on LangX — this hello won’t count toward your new chats.',
     /** The conversation-starter chips above an empty or quiet thread's composer. */
     topicsShuffle: 'Other topics',
     topicChip: 'Conversation starter: {topic}',
@@ -1839,6 +1848,9 @@ export const en = {
 
   profile: {
     proBadge: 'Pro member',
+    /** The sheet behind the PRO badge on somebody's profile. */
+    proSheetTitle: 'What’s {plan}?',
+    proSheetBody: '{name} has {plan}. Here’s what it adds to the free plan:',
     /** Screen-reader label for the tick beside @langx and @copilot. */
     official: 'Official account',
     suspendedTag: 'Suspended',

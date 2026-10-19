@@ -152,6 +152,16 @@ export const appConfigSchema = z.object({
      * `docs/decisions.md` → _Give a week, get a week, behind a switch_.
      */
     giveAWeek: z.boolean(),
+    /**
+     * The newcomer hello: the first message somebody sends to an account in
+     * its first `NEWCOMER_HELLO_RULES.newForDays` does not count against
+     * their new chats, at most `perSenderPer24h` a day, adults only at both
+     * ends. Off, every first message counts exactly as it did. Starts off
+     * because what is free is Behic's to decide, and a switch is how he
+     * decides it — see `docs/decisions.md` → _A hello to a newcomer is free,
+     * behind a switch_.
+     */
+    newcomerHello: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -180,6 +190,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     trialEndingReminder: false,
     nudgeNoSilentDrops: false,
     giveAWeek: false,
+    newcomerHello: false,
   },
 }
 

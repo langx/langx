@@ -165,11 +165,84 @@ requests: exactly `limit` of them come back `consumed: true`.
 
 ## Phase 4 — `CONVERSATION_EXISTS` has two layers
 
+> **Amended 18 October 2026 — see _A hello to a newcomer is free, behind a switch_ below.**
+
 `POST /conversations` first does a cheap `pairKey` pre-check, so a client
 retrying against an existing conversation is refused without spending quota,
 then relies on the real unique index for the genuine race (both sides sending a
 first message at the same instant). The loser of that rare race does not get
 their quota slot refunded — not worth an extra round-trip on every request.
+
+## A hello to a newcomer is free, behind a switch
+
+**18 October 2026.** Bold move M3's newcomer hello (D12f), which Behic agreed
+to on 18 October, built switched off: `flags.newcomerHello` in `appConfig`,
+default false, thrown with `scripts/maintenance.ts flag newcomerHello true`.
+Off, every first message counts exactly as the two entries above say. On, it
+changes what they count: not every first message is one of the five new
+chats.
+
+A newcomer's first week is decided by whether anybody writes to them, and the
+person most likely to write to a stranger is the one who has already spent
+the day's allowance doing it. So the first message somebody sends to an
+account in its first `NEWCOMER_HELLO_RULES.newForDays` (7) does not count
+against their `initiationsPer24h`.
+
+**What has to be true, all of it:**
+
+- **Once per recipient, per sender.** The conversation's `pairKey` already
+  allows one, and the claim below checks it again on its own record.
+- **At most `NEWCOMER_HELLO_RULES.perSenderPer24h` (3) a rolling day.** An
+  abuse ceiling, not an allowance: past it a hello to a newcomer counts like
+  any other first message, so the ceiling never refuses anything by itself.
+- **Adults at both ends**, by the exact birthday (`isAdult`), the rule the
+  "New on LangX" strip keeps: never for a 16- or 17-year-old recipient, never
+  from one. A minor's first messages count exactly as they always have.
+- **Never a guest**, at either end.
+- **The recipient is findable**: discoverable today, not suspended, not
+  deleting, not taking only people they already talk to. Every refusal
+  `startConversation` makes — a block either way, a suspension, a thread that
+  exists, "only people I talk to" — is made before the hello is asked, so it
+  only ever decides which bucket pays for a start that was already allowed.
+- **A finite allowance.** Pro's `initiationsPer24h` is null; there is nothing
+  to spare there and nothing is written.
+
+**One conditional write, in the function that charges today.**
+`profiles.newcomerHellos` holds `{ to, at }` per hello, and a single
+`findOneAndUpdate` on the sender's profile appends one only if its filter
+still sees room under the ceiling and no entry for this recipient — the
+decrement entry above, with two conditions instead of one. The same write
+prunes what is older than a newcomer can be, so the array holds at most a
+week of the ceiling. No collection, no index. It lives in `startConversation`,
+which is the only way a conversation starts: there is no socket path, and the
+official accounts' `deliverOfficialMessage` never comes through it.
+
+**A failed start gives the hello back**, the exact entry by recipient and
+instant. That is the one thing this changes about the entry above: the
+new-chat slot a lost race spends stays spent, as before, but a free hello does
+not, because the ceiling is small enough that one lost is a real share of it.
+What stays as it was: two starts racing to the same newcomer give the hello to
+one, and the other pays a new chat and then loses the pair race — the cost
+the entry above already accepts.
+
+**The app is told, not asked.** `GET /profiles/:id` carries `freeHello: true`
+when a first message from this viewer would be one, computed by the same pure
+check the charge uses, and the "say hello" screen draws one line above the
+composer: "New on LangX — this hello won’t count toward your new chats." A
+refusal still opens the paywall, so a stale hint costs nothing but the line.
+Old builds drop the field; their hello simply goes through where it would have
+opened the paywall.
+
+**The website stays true.** "5 new conversations a day" is what the free plan
+gives, and with the switch on it still gives that; a sentence that calls 5 a
+cap becomes inexact the day the switch is thrown, and the PR that built this
+lists them. One of them is the Terms (§5 lists "starting new conversations: 5
+per rolling 24 hours" as a free-plan limit), so throwing the switch is also a
+decision about that sentence.
+
+Reverting is the switch. Deleting it is the flag, `chat/newcomerHello.ts` and
+its call in `startConversation`, the profile route's `freeHello` and the line
+on `chat/new`; `newcomerHellos` can be unset.
 
 ## Phase 5 — one room per user, not per conversation
 
@@ -7510,6 +7583,66 @@ the trial's terms in one line directly above it, the charge set strong; yearly
 picked on open; the dated timeline; the X closes in one tap and nothing
 intercepts back or the swipe; nothing is sold to a paid or lifetime plan; every
 event in _The paywall counts every way out_.
+
+## The roads to Pro that are not a gate
+
+**18 October 2026.** Four ways into the paywall that no refusal opens, each
+with its own `source` in `PAYWALL_SOURCES` and one rule in `proRoads.ts`, whose
+test walks every plan through every road: nothing is sold to an account that
+already holds Pro, and nothing is sold before the viewer's own profile has
+loaded, because until then every account reads as free.
+
+**Settings and the app-icon picker get their own sources.** "See the plans" in
+Settings → Subscription is `settings` and a tile in the app-icon picker is
+`app_icon`; both were sent as `me`, so the Me card's numbers included them. The
+row keeps its rule: the free plan's and a gift's, never a paid or lifetime
+plan's — a gift ends on a date, and subscribing on top is how Pro carries on
+after it, from a paywall the holder opens themselves. A search for the row from
+Pro lands on the plan page, never on the paywall. An icon tile does nothing
+until the profile has loaded, so a subscriber's tap never lands on a sale.
+
+**The PRO badge on a profile opens "What's Pro?"** It was a mark nobody could
+ask about. The sheet lists the paywall's comparison lead with its numbers from
+`PLAN_LIMITS`, through the paywall's own copy so the two cannot describe Pro
+differently, and the paywall's promise that replies and corrections stay free,
+because a badge beside a name must not read as the price of talking to that
+person. Only the end differs: a free account gets one button (`pro_badge`); an
+account holding Pro — paid, gifted or lifetime — is told "Everything in Pro is
+yours"; a guest, and an owner on their own page, get neither.
+
+**The first reply waits until it has been answered.** `first_reply` was
+declared and never sent. It is now a card at the foot of the thread — inline,
+not a sheet, a toast or anything that takes focus — in a thread the viewer
+opened, after the partner wrote back _and the viewer has answered them_. A
+reply after a first hello is the moment this app exists for, and a card that
+arrived with it would stand between somebody and their answer; one that waits
+is read in the pause after. It says first that replies stay free, then that Pro
+removes the daily limit on new chats. The ✕ closes it in one tap.
+
+- **Once per account.** Written to the device when it is first drawn, keyed
+  by account, so it does not come back whether it was closed, tapped or
+  ignored. A second phone holds no copy of that flag, so the card is also tied
+  to the account's first two-way thread: it shows only when no other thread in
+  the chat list has both people in it, threads with official accounts aside. A
+  second device can therefore only ever show it about the same reply. A flag on
+  the server would make it strictly once; a write on the send path for one
+  card was not worth it.
+- **Only for a day after the answer** (`FIRST_REPLY_FRESH_MS`). Nothing else
+  dates the moment, and the build that carries the card reaches accounts whose
+  one short exchange happened months ago: opening that thread again is not a
+  first reply, and "wrote back" would be old news. The same day bounds a
+  reinstall or a second phone, which can draw the card again only within it.
+- **Read, never fetched.** Whether another thread is two-way comes from the
+  chat list's cache. A list that is not loaded, or not loaded to its end,
+  leaves the card out — a road missed costs less than a sale to somebody it was
+  never for. The thread's own history must be loaded to its start for the same
+  reason.
+- **Never for Pro, gifted Pro or a guest**, never with an official account or
+  one that can no longer be written to.
+
+The card has no event of its own; `paywall_viewed` with `first_reply` counts
+its taps. What old builds see: nothing — the sources exist only in this JS, and
+a link naming one reaches an older paywall as `gate`.
 
 ## Gift codes give time, not discounts
 
