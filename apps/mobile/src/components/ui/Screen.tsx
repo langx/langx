@@ -21,6 +21,13 @@ interface ScreenProps {
    * build never showed it.
    */
   tabbed?: boolean
+  /**
+   * The ground behind everything, when it is not the current look's `bg` —
+   * a screen already drawn on the redesign's tokens passes `v3.colors.bg`,
+   * whose dark value is a step deeper, so its blocks sit on the ground they
+   * were drawn for.
+   */
+  ground?: string
   style?: ViewStyle
 }
 
@@ -36,6 +43,7 @@ export function Screen({
   onRefresh,
   refreshing = false,
   tabbed = false,
+  ground,
   style,
 }: ScreenProps) {
   const styles = useStyles()
@@ -44,6 +52,7 @@ export function Screen({
   const padding = {
     paddingTop: insets.top,
     paddingBottom: tabbed ? 0 : insets.bottom,
+    ...(ground ? { backgroundColor: ground } : {}),
   }
 
   const inner = <View style={[styles.column, fluid && styles.fluid, style]}>{children}</View>

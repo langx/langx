@@ -167,6 +167,28 @@ export interface PlanLimits {
    */
   transcriptsPerDay: Limit
   /**
+   * Copilot answers — a Check, a set of Reply ideas or an Explain — per
+   * rolling 24 hours. One unit per answer the model actually writes: an answer
+   * served from `copilotCache` costs nothing, and one the model declined or
+   * failed to write is given back.
+   *
+   * **Finite on both tiers, and it must stay that way.** Every unit is a paid
+   * model call, so "unlimited" is a promise made against somebody else's
+   * meter. Free gets a taste; Pro gets a ceiling sized so that one person
+   * using every unit every day for a month still costs less than the yearly
+   * plan brings in a month after the store's commission ($83.99 / 12 × 0.85,
+   * about $5.95). At Sonnet 5's rates ($2 per million in, $10 out) and with
+   * `COPILOT_RULES`' bounds in force, an answer costs at most about 1.3 cents
+   * — roughly 1,300 tokens in, of which the worst is a thread in Arabic, and
+   * at most `maxOutputTokens` out — so twelve a day is about $4.70 a month at
+   * worst, and three is about $1.20. A cheaper model buys a higher ceiling;
+   * a dearer one needs a lower one. Re-do this sum before changing either.
+   *
+   * `COPILOT_RULES.globalCallsPerDay` bounds everybody together; this bounds
+   * one person.
+   */
+  copilotPer24h: Limit
+  /**
    * Gender, "only my gender" and city in discovery — the exact set is
    * `DISCOVERY_PRO_FILTER_KEYS`.
    *
@@ -264,9 +286,11 @@ export interface PlanLimits {
    * The AI language copilot — the one paid feature v1 ever promised publicly
    * (`architecture.md:425`).
    *
-   * Paid: unlike nearby, a copilot call has a real per-request cost. **Still unimplemented** — the
-   * flag exists so the entitlement, the paywall copy and the eventual guard
-   * read one definition instead of three.
+   * Paid: unlike nearby, a copilot call has a real per-request cost. **Not
+   * shipped** — the server side exists and ships dark behind
+   * `flags.copilotEnabled`, and what it meters is `copilotPer24h`, which gives
+   * the free tier a small taste. This flag is what the paywall copy reads, and
+   * it keeps saying "coming soon" until Copilot is live on every platform.
    */
   copilot: boolean
   /**
@@ -314,6 +338,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     echoVoicesPerDay: 50,
     chatVoicesPerDay: 100,
     transcriptsPerDay: 50,
+    copilotPer24h: 3,
     advancedFilters: false,
     boostedProfile: false,
     sendTranslation: false,
@@ -344,6 +369,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     echoVoicesPerDay: 500,
     chatVoicesPerDay: 1000,
     transcriptsPerDay: 400,
+    copilotPer24h: 12,
     advancedFilters: true,
     boostedProfile: true,
     sendTranslation: true,
@@ -399,6 +425,7 @@ export const QUOTA_KINDS = [
   'echoVoices',
   'chatVoices',
   'transcripts',
+  'copilot',
 ] as const
 export type QuotaKind = (typeof QUOTA_KINDS)[number]
 
@@ -413,6 +440,7 @@ const QUOTA_LIMIT_KEY = {
   echoVoices: 'echoVoicesPerDay',
   chatVoices: 'chatVoicesPerDay',
   transcripts: 'transcriptsPerDay',
+  copilot: 'copilotPer24h',
 } as const satisfies Record<QuotaKind, keyof PlanLimits>
 
 export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {

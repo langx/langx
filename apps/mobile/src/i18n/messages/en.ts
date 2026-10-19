@@ -61,6 +61,52 @@ export const en = {
     echo: 'Echo',
     feed: 'Feed',
     me: 'Me',
+    home: 'Home',
+    people: 'People',
+    posts: 'Posts',
+  },
+
+  /**
+   * Home, the redesign’s first tab, behind `flags.v3Home`. Its Pro card
+   * and invite card reuse `me.proBody`, `me.inviteBody` and `me.invite`, so
+   * the two places that describe Pro and invites cannot drift apart.
+   */
+  home: {
+    greetingMorning: 'Good morning, {name}',
+    greetingAfternoon: 'Good afternoon, {name}',
+    greetingEvening: 'Good evening, {name}',
+    subtitle: 'One thing first, then the rest of today.',
+    waitingTitle: '{name} is waiting',
+    yourTurn: 'Your turn',
+    replyTo: 'Reply to {name}',
+    sessionTitle: 'Your call with {name}',
+    sessionAt: 'At {time}',
+    sessionOpen: 'Open the chat',
+    streakTitle: { one: 'Keep your {count}-day streak', other: 'Keep your {count}-day streak' },
+    streakBody: 'Today has not counted yet.',
+    streakEcho: 'Review your cards',
+    streakChats: 'Write to someone',
+    echoTitle: { one: '{count} card ready', other: '{count} cards ready' },
+    echoBody: 'A few minutes in Echo keeps them fresh.',
+    echoStart: 'Start a review',
+    todayTitle: 'Today’s three',
+    todayCount: '{done} of {total} done',
+    todayCorrect: 'Help with a sentence',
+    todayNotYet: 'Not yet',
+    streakDays: { one: '{count}-day streak', other: '{count}-day streak' },
+    streakNext: {
+      one: '{count} day to your {day}-day reward',
+      other: '{count} days to your {day}-day reward',
+    },
+    peopleTitle: 'Today’s people',
+    seeAll: 'See all',
+    sayHello: 'Say hello',
+    proTitle: 'Go further with Pro',
+    proButton: 'See what Pro adds',
+    inviteTitle: 'Learn with a friend',
+    guestTitle: 'Make LangX yours',
+    guestBody:
+      'With an account you can write to people, keep a streak and save what you learn in Echo.',
   },
 
   composer: {
@@ -2788,7 +2834,6 @@ export const en = {
   paywall: {
     screenTitle: 'Plans',
     restorePurchases: 'Restore purchases',
-    partOf: 'is part of',
     unlimitedChats: 'Unlimited new chats',
     unlimitedChatsBody: '{count} a day on the free plan.',
     welcomePack: 'A welcome pack',
@@ -2850,8 +2895,6 @@ export const en = {
     yearly: 'Yearly',
     lifetime: 'One-off',
     headline: 'Go further with {plan}',
-    headlineBody:
-      'Corrections and replies stay unlimited on every plan. Paying removes the other limits.',
     savePercent: 'Save {percent}%',
     freeMonths: {
       one: '{count} month free',
@@ -2883,7 +2926,6 @@ export const en = {
      * `perYear` or `perLifetime`.
      */
     pricePerPeriod: '{price} {period}',
-    billedMonthly: 'Billed monthly',
     lifetimeDetail: 'One payment, nothing renews',
     timelineTitle: 'How your free trial works',
     timelineToday: 'Today: full access',
@@ -2897,6 +2939,36 @@ export const en = {
     subscribe: 'Subscribe',
     startFreeTrial: 'Start your free trial',
     eula: 'Terms of Use (EULA)',
+    planMark: 'LangX {plan}',
+    heroChats: 'Meet as many {language} speakers as you like',
+    heroChatsAny: 'Start as many new chats as you like',
+    heroViewers: 'See who viewed your profile',
+    heroFilters: 'Find exactly who you’re looking for',
+    heroNearby: 'Find partners near you',
+    chatLimitToday: {
+      one: 'You’ve started {count} new chat in the last day. The next one opens at {time}.',
+      other: 'You’ve started {count} new chats in the last day. The next one opens at {time}.',
+    },
+    chatLimitTomorrow: {
+      one: 'You’ve started {count} new chat in the last day. The next one opens tomorrow at {time}.',
+      other:
+        'You’ve started {count} new chats in the last day. The next one opens tomorrow at {time}.',
+    },
+    viewersWeek: {
+      one: '{count} person viewed your profile in the last week.',
+      other: '{count} people viewed your profile in the last week.',
+    },
+    featurePartOf: '{feature} is part of {plan}.',
+    freePromise: 'Replies and corrections stay free on every plan.',
+    compareHeading: 'Compare',
+    compareNewChats: 'New chats a day',
+    compareTranslations: 'Translations a day',
+    compareLanguages: 'Languages you learn',
+    compareUnlimited: 'Unlimited',
+    compareSoon: 'Soon',
+    compareIncluded: 'Included',
+    compareNotIncluded: 'Not included',
+    yearlyBadge: '{perMonth} · {saving}',
   },
 
   proWelcome: {
@@ -3147,6 +3219,27 @@ export const en = {
         other: 'tokens earned',
       },
     },
+  },
+  /**
+   * Copilot, the AI helper in a chat. Only the consent sheet and the words
+   * for "off" are drawn so far; the actions arrive with their screens.
+   */
+  copilot: {
+    /** On every Copilot answer and on its consent sheet. Blue, never green: green is a person's correction. */
+    label: 'AI · may be wrong',
+    /** Copilot cannot answer here at all — switched off, or not for this account. */
+    off: 'Copilot is off.',
+    consentTitle: 'Before you use Copilot',
+    consentBody:
+      'Copilot is an AI helper. It can check a sentence before you send it, suggest replies, and explain a correction somebody gave you.',
+    /** Names the provider: App Review asks who receives the data, not just that someone does. */
+    consentSends:
+      'When you ask, the text you asked about goes to Anthropic, the company that runs the AI model, with your languages and levels. For reply ideas, that includes the last few messages in the chat.',
+    consentNever: 'Your name, email, photos and voice notes are never sent.',
+    consentWrong:
+      'AI can be wrong. Its answers are marked AI, and nothing reaches the other person unless you send it yourself.',
+    consentAccept: 'Turn on Copilot',
+    consentDecline: 'Not now',
   },
 } as const
 
