@@ -607,7 +607,7 @@ export const en = {
     },
     cardsKept: { one: 'card kept', other: 'cards kept' },
     reviewedWeek: { one: 'reviewed this week', other: 'reviewed this week' },
-    emptyLine: 'No cards yet. Hold a message in a chat and choose Add echo.',
+    emptyLine: 'No cards yet. Hold a message in a chat and choose Add to Echo.',
     rememberedCount: { one: '{count} remembered', other: '{count} remembered' },
     tokensEarned: { one: '+{count} token', other: '+{count} tokens' },
     streakKept: 'Streak kept · day {day}',
