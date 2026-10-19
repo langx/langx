@@ -152,10 +152,8 @@ export default [
   'apps/mobile/src/components/ScheduledMessages.tsx',
   'apps/mobile/src/components/ShareCardSheet.tsx',
   'apps/mobile/src/components/SignInProgressHost.tsx',
-  'apps/mobile/src/components/StepProgress.tsx',
   'apps/mobile/src/components/SwipeableRow.tsx',
   'apps/mobile/src/components/Tip.tsx',
-  'apps/mobile/src/components/ToastHost.tsx',
   'apps/mobile/src/components/TourHost.tsx',
   'apps/mobile/src/components/UploadRing.tsx',
   'apps/mobile/src/components/WeekBars.tsx',
@@ -182,5 +180,4 @@ export default [
   'apps/mobile/src/components/ui/FormField.tsx',
   'apps/mobile/src/components/ui/ListRow.tsx',
   'apps/mobile/src/components/ui/ScreenHeader.tsx',
-  'apps/mobile/src/components/ui/SegmentedControl.tsx',
 ]

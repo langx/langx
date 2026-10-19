@@ -3007,4 +3007,18 @@ export const fr: Localized<EnMessages> = {
       },
     },
   },
+  copilot: {
+    label: 'IA · peut se tromper',
+    off: 'Copilot est désactivé.',
+    consentTitle: 'Avant d’utiliser Copilot',
+    consentBody:
+      'Copilot est un assistant IA. Il peut vérifier une phrase avant que tu l’envoies, proposer des réponses et t’expliquer une correction qu’on t’a faite.',
+    consentSends:
+      'Quand tu lui demandes, le texte concerné est envoyé à Anthropic, l’entreprise qui fait tourner le modèle d’IA, avec tes langues et tes niveaux. Pour les idées de réponse, cela inclut les derniers messages de la conversation.',
+    consentNever: 'Ton nom, ton e-mail, tes photos et tes messages vocaux ne sont jamais envoyés.',
+    consentWrong:
+      'L’IA peut se tromper. Ses réponses sont marquées IA, et rien n’arrive à l’autre personne sans que tu l’envoies toi-même.',
+    consentAccept: 'Activer Copilot',
+    consentDecline: 'Pas maintenant',
+  },
 }

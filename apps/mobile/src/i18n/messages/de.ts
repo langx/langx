@@ -3030,4 +3030,19 @@ export const de: Localized<EnMessages> = {
       },
     },
   },
+  copilot: {
+    label: 'KI · kann sich irren',
+    off: 'Copilot ist ausgeschaltet.',
+    consentTitle: 'Bevor du Copilot nutzt',
+    consentBody:
+      'Copilot ist ein KI-Helfer. Er kann einen Satz prüfen, bevor du ihn sendest, Antworten vorschlagen und dir eine Korrektur erklären, die dir jemand gegeben hat.',
+    consentSends:
+      'Wenn du fragst, geht der Text, um den es geht, zusammen mit deinen Sprachen und Niveaus an Anthropic, das Unternehmen, das das KI-Modell betreibt. Bei Antwortideen gehören die letzten Nachrichten im Chat dazu.',
+    consentNever:
+      'Dein Name, deine E-Mail-Adresse, Fotos und Sprachnachrichten werden nie gesendet.',
+    consentWrong:
+      'KI kann sich irren. Ihre Antworten sind als KI gekennzeichnet, und bei der anderen Person kommt nichts an, solange du es nicht selbst sendest.',
+    consentAccept: 'Copilot einschalten',
+    consentDecline: 'Jetzt nicht',
+  },
 }

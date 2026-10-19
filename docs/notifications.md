@@ -900,6 +900,15 @@ deliverability ramp like `campaignDayBudget` — an in-app message has no domain
 reputation to warm up; it bounds the Expo relay, the write rate, and how much
 of a broadcast is already gone by the time somebody presses stop.
 
+The UTC window keeps the push out of the night only for the half of the world
+it was drawn around — 07:00 UTC is 3am in Toronto. A broadcast written with
+`--local-hour 19` ignores it: each tick sends to whoever is in that hour on
+their own clock (`profilesInLocalHour`, the helper the scheduled passes use)
+and has no copy yet, so it takes a day to go round and closes 25 hours after
+it starts. Only accounts that existed when it was written are in it — a
+sign-up during that day was not counted, and has just had the welcome. While
+it runs, it is the broadcast the queue is working on; another one waits.
+
 The notes to one person — the user screen's, a report's warning and the
 reply to a bug report or idea — put
 the same words in the person's inbox as well, to a verified

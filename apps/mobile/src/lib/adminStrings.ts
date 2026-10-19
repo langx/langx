@@ -509,6 +509,7 @@ export const ADMIN = {
         echoVoices: 'Echo card read aloud',
         chatVoices: 'Message read aloud',
         transcripts: 'Voice note transcripts',
+        copilot: 'Copilot answers',
         unknown: 'Unknown',
       },
     },
@@ -816,6 +817,25 @@ export const ADMIN = {
       iconEnd: 'icon at the end',
       wraps: 'a long label wraps rather than truncating',
     },
+    controls: {
+      title: 'Controls',
+      hint: 'The switch, the segmented control, the progress bar and the toast. All of them move; under reduce motion each is simply in its new state. A switch or a segment ticks once, on a change that a press caused.',
+      toggles: 'Switch',
+      toggleStates: 'waiting on the server, on and off · disabled, on and off',
+      segmented: 'Segmented control',
+      twoWay: 'two segments · 16pt',
+      fourWay: 'four segments · the label step',
+      band: 'more than one chosen: each its own pill',
+      progress: 'Progress bar',
+      progressHint: 'Tap to move it on a fifth.',
+      steps:
+        'Onboarding steps: drawn in StepProgress, not this bar — the launch path stays off Reanimated.',
+      toast: 'Toast',
+      toastHint:
+        'Raises a real toast at the foot of the screen. Tap it, or wait, to watch it leave.',
+      raise: 'Raise a toast',
+      raiseWithAction: 'Raise one with an action',
+    },
     game: {
       title: 'Gamification',
       hint: 'The v3 primitives, in every state. No shipped screen uses them yet. Copy is real catalogue copy.',
@@ -848,6 +868,45 @@ export const ADMIN = {
       empty: 'EmptyStateV3',
       emptyStates: 'chats · cards (secondary action) · people',
     },
+  },
+
+  /**
+   * The Copilot lab: an operator trying Copilot on their own account, against
+   * their own chats — the only way into it in the app until its screens
+   * exist. What it asks is real: the consent sheet, the allowance, the cache.
+   */
+  copilot: {
+    entryRow: 'Copilot lab',
+    title: 'Copilot lab',
+    hint: 'Copilot on your own account, in your own chats. Every answer the model writes is a real call: it spends one of your units and one of the day’s calls for everybody. An answer from the cache spends neither.',
+    switchNote:
+      'Turning it on for everybody is not on this screen. It is `scripts/maintenance.ts flag copilotEnabled true`, and only after the privacy policy and both store forms name the provider and a spend limit is set on the key.',
+    service: 'Service',
+    serviceOn: 'On — a key, and flags.copilotEnabled',
+    serviceOff: 'Off — no key, or flags.copilotEnabled is off',
+    access: 'Your account',
+    accessOk: 'Can use it',
+    accessAge: 'Off — under Copilot’s minimum age',
+    accessOff: 'Off',
+    consent: 'Consent',
+    consentGiven: 'Given',
+    consentMissing: 'Not given',
+    left: 'Left today',
+    leftValue: (remaining: number | null, limit: number | null) =>
+      remaining === null || limit === null ? 'No limit' : `${remaining} of ${limit}`,
+    showSheet: 'Show the consent sheet',
+    withdraw: 'Withdraw consent',
+    pick: 'Pick a chat',
+    pickTitle: 'Try Copilot in',
+    picked: (name: string) => `In the chat with ${name}`,
+    sentence: 'Sentence to check',
+    check: 'Check',
+    replyIdeas: 'Reply ideas',
+    explain: 'Explain the newest correction',
+    noCorrection: 'No correction among the newest messages of this chat.',
+    cached: 'From the cache — nothing spent',
+    fresh: 'Written now',
+    refused: (code: string, reason?: string) => `Refused: ${code}${reason ? ` (${reason})` : ''}`,
   },
 
   common: {

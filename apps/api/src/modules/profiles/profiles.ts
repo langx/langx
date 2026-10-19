@@ -293,6 +293,8 @@ export interface Profile {
     echoVoices?: Date[]
     chatVoices?: Date[]
     transcripts?: Date[]
+    /** Optional for `echoCaptures`' reason; added with Copilot. */
+    copilot?: Date[]
   }
   /**
    * When this account was last told it had run out — a rolling window, kept
@@ -320,6 +322,14 @@ export interface Profile {
    * stay. Read by nothing; it exists so the question has an answer later.
    */
   promotionsConsent?: { source: string; at: Date }
+  /**
+   * The person agreed to the Copilot consent sheet: which version of it, and
+   * when. Its presence on the current `COPILOT_RULES.consentVersion` is the
+   * only thing that lets their text reach the model; withdrawing removes it.
+   * Written only by `modules/copilot/consent.ts`, from the person's own tap.
+   * On the profile so the export carries it and the purge removes it.
+   */
+  copilotConsent?: { version: number; at: Date }
   streak: {
     current: number
     longest: number

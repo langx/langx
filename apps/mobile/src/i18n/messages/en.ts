@@ -3248,6 +3248,27 @@ export const en = {
       },
     },
   },
+  /**
+   * Copilot, the AI helper in a chat. Only the consent sheet and the words
+   * for "off" are drawn so far; the actions arrive with their screens.
+   */
+  copilot: {
+    /** On every Copilot answer and on its consent sheet. Blue, never green: green is a person's correction. */
+    label: 'AI · may be wrong',
+    /** Copilot cannot answer here at all — switched off, or not for this account. */
+    off: 'Copilot is off.',
+    consentTitle: 'Before you use Copilot',
+    consentBody:
+      'Copilot is an AI helper. It can check a sentence before you send it, suggest replies, and explain a correction somebody gave you.',
+    /** Names the provider: App Review asks who receives the data, not just that someone does. */
+    consentSends:
+      'When you ask, the text you asked about goes to Anthropic, the company that runs the AI model, with your languages and levels. For reply ideas, that includes the last few messages in the chat.',
+    consentNever: 'Your name, email, photos and voice notes are never sent.',
+    consentWrong:
+      'AI can be wrong. Its answers are marked AI, and nothing reaches the other person unless you send it yourself.',
+    consentAccept: 'Turn on Copilot',
+    consentDecline: 'Not now',
+  },
 } as const
 
 export type EnMessages = typeof en

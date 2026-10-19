@@ -892,6 +892,47 @@ press collapsed, with an upper-case, letter-spaced label. Both rules lived in
   here; the back arrows in `ScreenHeader` and `StepProgress` change the height
   of every header, and move with the screens that own them.
 
+## Switches, segments, bars and toasts move, and two of them on Reanimated
+
+**18 October 2026.** The second part of the kit D4 swaps in place: `Toggle`,
+`SegmentedControl`, `ProgressBar` and `ToastHost` take v3's look on every
+screen at once. All four now move, and none of them did before except the
+toast's way in.
+
+- **Which engine is a question of where it is drawn.** `Toggle` and
+  `ProgressBar` run on Reanimated: the switch lives in the settings and the
+  filters, the bar in Echo, Me and the operator panel, none of them on the
+  launch path. `SegmentedControl` stays on React Native's `Animated` with the
+  native driver, because the onboarding steps draw it, and so does
+  `ToastHost`, which is mounted at the root. The onboarding steps also drew a
+  `ProgressBar`; `StepProgress` now draws its own bars — one per step, as v3
+  does — so that importing a step does not import Reanimated. Each step is a
+  new screen, so nothing in it needed to move.
+- **One tick, on a change a press caused.** A switch or a segment gives a
+  selection haptic when its value changes within a moment of a press on it —
+  not on the press, which a screen may refuse (Nearby asks for the location
+  and may open the paywall; push waits on the phone's permission), and not on
+  a change nobody pressed for (filters reset, a refetch).
+  `src/lib/changeHaptic.ts` holds the window and the reason.
+- **The segment's pill slides, and the labels cross over with it.** Ink pill
+  and white label, ink label on grey: a label that changed colour at the tap
+  would be white on grey until the pill arrived, so the pill carries a white
+  copy of the labels, moved against it and clipped to its shape: a label is
+  white exactly where the pill covers it, mid-slide too. Where more than one
+  segment is chosen (the filters' level band) each is its own pill, as drawn.
+  Four segments or more set their labels a step smaller, and on iOS and
+  Android a label shrinks to fit before it truncates.
+- **The toast leaves the way it came**, a little quicker, before the next one
+  takes its place. The swap waits on a timer of the same length rather than
+  on the animation's end, for the reason the entry on root overlays gives.
+- **Reduce motion** means no motion in all four: each is simply in its new
+  state.
+- **In the meantime.** v3's `surface` grey is a shade from the current look's
+  dark ground, so on a screen that has not moved yet a segmented control's
+  track nearly disappears after dark; the pill still carries the choice. The
+  bar's track and the steps ahead are v3's `track`, the grey the progress
+  rings use.
+
 ## Client — one socket, opened in the tab layout
 
 The server already puts every client in a single per-user room, so a socket per
@@ -4807,6 +4848,79 @@ call the profile menu makes, and `submit_feedback` is the call `POST /feedback`
 makes, lifted out of the route unchanged. The reporter is always the person
 writing — not a rule the model is asked to honour, but the only id the call can
 be given.
+
+## Copilot ships dark, behind two switches and a consent
+
+_18 October 2026._ Copilot is three one-tap helps in a chat — **Check** a
+sentence before sending it, **Reply ideas** for the thread, **Explain** a
+person's correction — written by the same provider as the assistant above. Its
+server side, its consent sheet and its allowance shipped before any screen
+offers it, and before the switch that would let one. Behic approved the
+direction (Copilot as the reason Pro exists); this entry is what the first PR
+decided about the plumbing.
+
+**Two switches, and both must be on.** A key (`ANTHROPIC_API_KEY`) and the
+operator's `flags.copilotEnabled`, which starts off. The key alone must never
+be enough, because it is shared with the assistant and because turning Copilot
+on is not a credentials question: it sends people's text to a third party, so
+it waits until the published privacy policy and both store forms name that
+party and a spend limit is set on the key. The flag is a database write
+(`scripts/maintenance.ts flag copilotEnabled true`), read per request, so it
+goes on and off without a deploy. `/app-config` says `copilotService` — both
+switches — and the app treats a missing answer as off.
+
+**Nothing reaches the model without recorded consent.** A one-time sheet names
+the provider, what is sent (the text asked about, with the person's languages
+and levels; for Reply ideas, the last few lines of the thread) and what never
+is (names, email, photos, voice notes), and the agreement is stored on the
+profile against `COPILOT_RULES.consentVersion`. The server refuses with
+`COPILOT_CONSENT_REQUIRED` before anything is read for the model; raising the
+version asks everybody again; withdrawing is one call and takes effect on the
+next request. On the profile, so the export carries it and the purge removes
+it.
+
+**Off for 16- and 17-year-olds by default**, with an exact birthday check
+rather than the year arithmetic profiles print, because that one would let a
+17-year-old in for up to a year. Off covers their words as well as their
+button: Reply ideas and Explain refuse a chat whose other person is under the
+age (`partner_age`), because both send that person's lines, and otherwise any
+adult they talk to would send them for them. Check sends only the asker's own
+sentence and still works there. `COPILOT_RULES.minimumAge` is the one number
+to change if Behic decides otherwise; it moves both.
+
+**Finite on both tiers.** `copilotPer24h` is a small free taste and a Pro
+ceiling sized so that one person spending every unit every day for a month
+costs less than the yearly plan brings in a month after the store's
+commission; `COPILOT_RULES.globalCallsPerDay` bounds everybody, as the
+assistant's counter does, in its own collection so neither can spend the
+other's day. The arithmetic is on `copilotPer24h`, at the assistant's model's
+price, and has to be redone before changing the model (`COPILOT_MODEL`). This
+changes what `architecture.md` planned — "Pro: unlimited within fair use" — to
+a stated number: every unit is a paid call, and "unlimited" would be a promise
+made against somebody else's meter. A unit is spent only when the model writes
+an answer: a cached answer is free, and a declined or failed one is refunded.
+
+**Cached by a hash of the question**, not of the person: the prompt's version,
+the model, the action and the exact user turn. Two people asking the same
+thing share an answer and the row names neither. A week, not translation's
+month, because a Reply ideas answer is derived from a private thread.
+
+**The person's text is never in the system prompt.** It arrives as the user
+turn, as JSON, so the system prompts are the same bytes for everybody and a
+sentence cannot close a tag and start giving instructions. Structured output
+means an answer arrives in the schema's shape or not at all, and Check's
+"changed" is decided by comparing the two strings, not taken on the model's
+word. Explain explains the person's correction as given and is told never to
+offer its own — a correction from a person stays the thing that leads, is
+green, and pays; Copilot is blue and labelled "AI · may be wrong".
+
+**`sendsEffort` was re-checked** against the current model list while the
+structured provider was added beside it. It withheld effort from every Haiku,
+written when Haiku 4.5 was the only one; Haiku 5.5 takes it, so the rule now
+names the models that reject it — Haiku 4.5, Sonnet 4.5 and everything older —
+and a move to the cheap model is sent `low` rather than left at its `medium`
+default. The models that offer a server-side refusal fallback get it on
+Copilot's calls; the assistant keeps its own reasoning for not sending one.
 
 ## The feed and the wallet get switches of their own
 
