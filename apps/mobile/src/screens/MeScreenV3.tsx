@@ -702,6 +702,12 @@ function GuestMe() {
           button={t('welcome.createAccount')}
           onPress={() => void requireAccount(session?.user, { action: 'other' })}
         />
+        <MeActions
+          guide={{
+            label: t('howItWorks.title'),
+            onPress: () => router.push('/(app)/how-it-works'),
+          }}
+        />
       </View>
     </Screen>
   )

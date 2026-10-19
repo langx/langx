@@ -196,7 +196,8 @@ export function MeHero({ view }: { view: MeHeroView }) {
             <Pressable
               accessibilityRole="button"
               onPress={view.hidden.onPress}
-              hitSlop={8}
+              // A caption's 20pt line, padded out to the 44pt minimum.
+              hitSlop={HIDDEN_SLOP}
               style={({ pressed }) => [styles.hidden, pressed && styles.pressed]}
             >
               <Feather name="eye-off" size={v3.icon.xs} color={v3.colors.ink} />
@@ -488,7 +489,9 @@ export function MeRows({ rows }: { rows: readonly MeRow[] }) {
 
 /**
  * Invite and Share as the two big buttons, and the quiet guide under them.
- * No invite in the first week, whose checklist already has it as a step.
+ * No invite in the first week, whose checklist already has it as a step, and
+ * neither button for a guest, who has nobody to invite and no profile to
+ * share — only the guide, which today's Me gives everybody.
  */
 export function MeActions({
   invite,
@@ -496,7 +499,7 @@ export function MeActions({
   guide,
 }: {
   invite?: { label: string; onPress: () => void } | undefined
-  share: { label: string; onPress: () => void }
+  share?: { label: string; onPress: () => void } | undefined
   guide: { label: string; onPress: () => void }
 }) {
   const styles = useStyles()
@@ -507,7 +510,9 @@ export function MeActions({
       {invite ? (
         <Button label={invite.label} icon="user-plus" variant="blue" onPress={invite.onPress} />
       ) : null}
-      <Button label={share.label} icon="share" variant="secondary" onPress={share.onPress} />
+      {share ? (
+        <Button label={share.label} icon="share" variant="secondary" onPress={share.onPress} />
+      ) : null}
       <Pressable
         accessibilityRole="link"
         onPress={guide.onPress}
@@ -609,6 +614,9 @@ const AVATAR = 88
 
 /** The camera's disc, a touch target in its own right. */
 const CAMERA = 44
+
+/** Around the "Hidden from others" mark: its caption line is 20pt tall. */
+const HIDDEN_SLOP = { top: 12, bottom: 12, left: 8, right: 8 }
 
 const useStyles = makeStyles(({ v3 }) => ({
   pressed: { opacity: 0.7 },
@@ -740,7 +748,8 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   proHead: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8], minHeight: 44 },
   proTitle: { ...v3.type.headline, color: v3.colors.fg, flex: 1 },
-  proLine: { justifyContent: 'center', minHeight: 32 },
+  // The platform's minimum, as every target here is: the line is a way in.
+  proLine: { justifyContent: 'center', minHeight: 44 },
 
   sectionHead: {
     alignItems: 'center',
