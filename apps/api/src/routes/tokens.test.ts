@@ -1,4 +1,5 @@
 import {
+  PRO_GIFT_RULES,
   TOKEN_GRANT_KINDS,
   TOKEN_RULES,
   aggregateId,
@@ -691,6 +692,42 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       const result = await checkIn(user)
       expect(result.current).toBe(1)
       expect(result.freezeUsed).toBe(false)
+    })
+  })
+
+  describe('the Pro a milestone would still give', () => {
+    const everyRung = PRO_GIFT_RULES.streak.map((rung) => rung.days)
+
+    it('lists every Pro rung for an account that has had none', async () => {
+      const user = await newUser('pro-rungs-new@example.com')
+      expect((await summary(user)).streak.proGiftRungs).toEqual(everyRung)
+    })
+
+    it('leaves out a rung whose gift was already given, whatever the streak is now', async () => {
+      // The tokens come back with every run that reaches the rung; the Pro
+      // does not, so a second run must not be promised it.
+      const user = await newUser('pro-rungs-given@example.com')
+      const first = everyRung[0]!
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { proGiftStreaks: [first] } })
+      await setStreak(user.userId, 2, localDayKey(new Date(), 'UTC'))
+
+      expect((await summary(user)).streak.proGiftRungs).toEqual(
+        everyRung.filter((days) => days !== first),
+      )
+    })
+
+    it('lists none for a lifetime plan, whose gifts are skipped', async () => {
+      const user = await newUser('pro-rungs-lifetime@example.com')
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: user.userId },
+          { $set: { entitlement: { tier: 'pro', updatedAt: new Date() } } },
+        )
+
+      expect((await summary(user)).streak.proGiftRungs).toEqual([])
     })
   })
 
