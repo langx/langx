@@ -175,6 +175,21 @@ export function highlightsFor(refused: PlanFeature | null): readonly ProBenefit[
 }
 
 /**
+ * What the plan page's "What you have" ticks for somebody on Pro: every
+ * benefit, less the welcome pack unless it was handed over. The pack comes
+ * with a purchase or a store's free week and never with a gift of Pro (the
+ * API's `earnsWelcomePack`), so a gift's plan page would otherwise tick a
+ * pack that is not in the wallet. `welcomePackAt` is the profile's own record
+ * of the hand-over.
+ */
+export function benefitsHeld(
+  welcomePackAt: Readonly<Record<string, string | undefined>> | undefined,
+): readonly ProBenefit[] {
+  const given = Object.values(welcomePackAt ?? {}).some((at) => at !== undefined)
+  return given ? PRO_BENEFITS : PRO_BENEFITS.filter((benefit) => benefit !== 'welcomePack')
+}
+
+/**
  * The refused capability the paywall may name as part of Pro, or `null`.
  *
  * Only a shipped one. Nothing in the app opens the paywall over a feature that

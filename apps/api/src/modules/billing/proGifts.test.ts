@@ -11,6 +11,7 @@ import type { Message } from '../chat/conversations'
 import { suppressEmail } from '../notifications/suppressions'
 import { ensureOfficialAccounts } from '../official/accounts'
 import type { OfficialDelivery } from '../official/deliver'
+import { localeFor } from '../profiles/localeFor'
 import type { Profile } from '../profiles/profiles'
 import { createFakeRevenueCat } from './fakeRevenueCat'
 import { giftWelcomeFor } from './proWelcome'
@@ -504,6 +505,62 @@ describe('gifts of Pro', () => {
       expect(await messagesTo(`proGiftEnded:${row._id}`)).toHaveLength(1)
       expect((await profile(userId))?.entitlement.tier).toBe('free')
       expect((await gift(row._id))?.endedNotifiedAt).toBeDefined()
+    })
+
+    /** A second learning language added during the gift: beyond the free plan's one. */
+    async function addedDuringGift(userId: string): Promise<void> {
+      await db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: userId },
+        {
+          $set: {
+            learning: [
+              { code: 'en', level: 'intermediate', priority: 1 },
+              { code: 'fr', level: 'beginner', priority: 2 },
+            ],
+            giftLanguages: ['fr'],
+          },
+        },
+      )
+    }
+
+    it('says before the end that languages added during the gift will pause, only when some will', async () => {
+      const now = new Date()
+      const endsAt = new Date(now.getTime() + 20 * 60 * 60 * 1000)
+      const pausing = await person({ entitlement: giftEntitlement(endsAt) })
+      await addedDuringGift(pausing)
+      const plain = await person({ entitlement: giftEntitlement(endsAt) })
+      const pausingRow = await granted(pausing, endsAt)
+      const plainRow = await granted(plain, endsAt)
+
+      await runProGiftPass(db, deps, now)
+
+      const line = translator(await localeFor(db, pausing))('proGift.languagesPauseSoon')
+      const [withLine] = await messagesTo(`proGiftReminder:day:${pausingRow._id}`)
+      const [withoutLine] = await messagesTo(`proGiftReminder:day:${plainRow._id}`)
+      expect(withLine?.body).toContain(line)
+      expect(withoutLine?.body).toBeDefined()
+      expect(withoutLine?.body).not.toContain(line)
+    })
+
+    it('says at the end that those languages are paused, and they are', async () => {
+      const now = new Date()
+      const endsAt = new Date(now.getTime() - 60_000)
+      const pausing = await person({ entitlement: giftEntitlement(endsAt) })
+      await addedDuringGift(pausing)
+      const plain = await person({ entitlement: giftEntitlement(endsAt) })
+      const reminded = { remindedAt: { week: new Date(), day: new Date() } }
+      const pausingRow = await granted(pausing, endsAt, reminded)
+      const plainRow = await granted(plain, endsAt, reminded)
+
+      await runProGiftPass(db, deps, now)
+
+      const line = translator(await localeFor(db, pausing))('proGift.languagesPaused')
+      const [withLine] = await messagesTo(`proGiftEnded:${pausingRow._id}`)
+      const [withoutLine] = await messagesTo(`proGiftEnded:${plainRow._id}`)
+      expect(withLine?.body).toContain(line)
+      expect(withoutLine?.body).toBeDefined()
+      expect(withoutLine?.body).not.toContain(line)
+      expect((await profile(pausing))?.pausedLanguages).toEqual(['fr'])
     })
 
     it('does not say "ended" while Pro carries on', async () => {

@@ -2130,6 +2130,11 @@ export const en = {
     capOverGrandfathered:
       'You already have more than your plan holds. You can change these or remove them, but not add another.',
     changeHint: 'Tap a language to change it.',
+    /**
+     * Under a language added during a gift of Pro that has ended: still on the
+     * profile, not searched with in Discover until Pro is back.
+     */
+    pausedNote: 'Paused in Discover on the free plan. It counts again with Pro.',
     saveFailed: 'That did not save. Nothing changed.',
   },
 
@@ -3083,6 +3088,46 @@ export const en = {
     bodyMerge: 'Whichever you had, you now have all of it. A few things to try first:',
     andMore: 'and more',
     start: 'Start exploring',
+  },
+
+  /**
+   * The Pro Week, behind `flags.proWeek`: seven days of Pro at sign-up, the
+   * moment that replaces the end-of-onboarding paywall, the line Pro features
+   * wear during it, and the recap on its last day. Never "free trial" — that
+   * is the store's, and a purchase. `{date}` is a day and a month in the
+   * reader's language; `{count}` in `startsBody` and `recapExtended` is the
+   * streak that earns the second week, from `PRO_WEEK_RULES`.
+   */
+  proWeek: {
+    startsTitle: 'Your Pro week starts now',
+    startsBody: {
+      one: 'Pro is yours until {date}. Practise {count} day in a row and it stays a second week.',
+      other:
+        'Pro is yours until {date}. Practise {count} days in a row and it stays a second week.',
+    },
+    yoursUntil: 'Pro · yours until {date}',
+    recapEnds: 'Your Pro week ends {date}',
+    recapEnded: 'Your Pro week has ended',
+    recapLead: 'What you did with Pro that the free plan doesn’t do:',
+    recapChats: {
+      one: '{count} new chat past the free daily limit',
+      other: '{count} new chats past the free daily limit',
+    },
+    recapTranslated: {
+      one: '{count} message sent with a translation',
+      other: '{count} messages sent with a translation',
+    },
+    recapLanguages: {
+      one: 'Matched on {count} more language — it pauses on the free plan',
+      other: 'Matched on {count} more languages — they pause on the free plan',
+    },
+    recapExtended: {
+      one: '{count} day in a row kept Pro a second week.',
+      other: '{count} days in a row kept Pro a second week.',
+    },
+    recapQuiet: 'Everything Pro opened stays open if you keep it.',
+    keep: 'Keep Pro',
+    storeFreeWeek: 'The store’s free week is still yours to start.',
   },
 
   /**

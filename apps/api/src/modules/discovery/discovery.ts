@@ -145,8 +145,10 @@ function scopedTo(
   own: readonly string[],
   requested: readonly string[] | undefined,
   field: 'learningLanguages' | 'nativeLanguages',
+  paused: ReadonlySet<string>,
 ): string[] {
-  if (!requested) return [...own]
+  const active = own.filter((code) => !paused.has(code))
+  if (!requested) return active
   const unknown = requested.filter((code) => !own.includes(code))
   if (unknown.length > 0) {
     throw new ApiError(
@@ -154,7 +156,31 @@ function scopedTo(
       `${field} must be among your own languages (not: ${unknown.join(', ')})`,
     )
   }
-  return [...requested]
+  // A paused language is still the viewer's own — an app that lists every
+  // language as a chip may name it — so it is dropped rather than refused.
+  return requested.filter((code) => !paused.has(code))
+}
+
+/**
+ * Candidates who list one of `codes` in `field`, counted only where that
+ * language is not paused for them (`modules/profiles/languagePause.ts`).
+ *
+ * One clause per code rather than one `$in`, because the pause is per person
+ * and per language: "lists French and French is not paused" is a pair of
+ * conditions on the same code, which a single `$in` beside a `$nin` cannot
+ * say. Each clause still leads with the indexed field, so the split indexes
+ * serve every branch; a viewer has at most five codes a side. No codes at all
+ * matches nobody, which is what the `$in: []` it replaces did.
+ */
+function unpausedFit(field: 'nativeLanguages' | 'learning', codes: readonly string[]): Document[] {
+  return codes.map((code) => ({ [`${field}.code`]: code, pausedLanguages: { $ne: code } }))
+}
+
+const MATCHES_NOBODY: Document = { _id: { $in: [] } }
+
+/** `$or` over clauses, or a match for nobody when there are none — `$or: []` is an error. */
+function anyOf(clauses: Document[]): Document {
+  return clauses.length > 0 ? { $or: clauses } : MATCHES_NOBODY
 }
 
 /**
@@ -204,15 +230,21 @@ export async function resolveDiscoveryScope(
   // unless the request narrowed a side, and a request can only narrow to
   // languages the viewer actually has. Their native must be something I'm
   // learning; their learning must be something I speak.
+  //
+  // A language of theirs that is paused — added during a gift that has ended
+  // — is not searched with, the same way it is not searched for below.
+  const paused = new Set(viewer.pausedLanguages ?? [])
   const myNativeCodes = scopedTo(
     viewer.nativeLanguages.map((l) => l.code),
     query.nativeLanguages,
     'nativeLanguages',
+    paused,
   )
   const myLearningCodes = scopedTo(
     viewer.learning.map((l) => l.code),
     query.learningLanguages,
     'learningLanguages',
+    paused,
   )
   const wantTheirNative = myLearningCodes
 
@@ -234,12 +266,15 @@ export async function resolveDiscoveryScope(
    */
   const namedLanguageScope =
     query.learningLanguages !== undefined || query.nativeLanguages !== undefined
-  const theirNativeFits = { 'nativeLanguages.code': { $in: wantTheirNative } }
-  const theirLearningFits = { 'learning.code': { $in: myNativeCodes } }
-  const languageFit: Document =
+  const theirNativeFits = unpausedFit('nativeLanguages', wantTheirNative)
+  const theirLearningFits = unpausedFit('learning', myNativeCodes)
+  // One flat `$or` for the fallback, and both sides for the strict rule. Each
+  // side is an `$or` of its own now, so they sit in the match's `$and` rather
+  // than as keys: two `$or` keys in one object would leave only the second.
+  const languageFit: Document[] =
     DISCOVERY_CROSS_MATCH_FALLBACK && !namedLanguageScope
-      ? { $or: [theirNativeFits, theirLearningFits] }
-      : { ...theirNativeFits, ...theirLearningFits }
+      ? [anyOf([...theirNativeFits, ...theirLearningFits])]
+      : [anyOf(theirNativeFits), anyOf(theirLearningFits)]
 
   const match: Document = {
     _id: { $nin: excludedIds },
@@ -254,7 +289,7 @@ export async function resolveDiscoveryScope(
     // profile still opens for somebody who has the link — see
     // `accountStatus` on `toPublicProfile` — but nothing proposes them.
     ...notSuspended(),
-    ...languageFit,
+    $and: languageFit,
   }
 
   if (query.gender) match.gender = query.gender
@@ -279,12 +314,18 @@ export async function resolveDiscoveryScope(
     // How well *they* speak *my* native language — the language they're
     // learning from me, not the one I'm learning from them (native speakers
     // have no level to filter on).
-    match.learning = {
-      $elemMatch: {
-        code: { $in: myNativeCodes },
-        level: { $in: levelsInBand(query.minLevel, query.maxLevel) },
-      },
-    }
+    //
+    // Per code, for `unpausedFit`'s reason: the level that counts is on a
+    // language that is not paused for them. Under `$and` beside the fit, whose
+    // own key it would otherwise share.
+    const levels = levelsInBand(query.minLevel, query.maxLevel)
+    const levelled = anyOf(
+      myNativeCodes.map((code) => ({
+        learning: { $elemMatch: { code, level: { $in: levels } } },
+        pausedLanguages: { $ne: code },
+      })),
+    )
+    match.$and = [...(match.$and as Document[]), levelled]
   }
   if (query.ageMin !== undefined || query.ageMax !== undefined) {
     const currentYear = new Date().getUTCFullYear()
@@ -335,6 +376,14 @@ async function conversationPartnerIds(db: Db, viewerId: string): Promise<string[
  * `$min` because answered can only outgrow received if the two writes that
  * keep them were ever split by a failure, and a rate above one is not one.
  */
+/**
+ * A candidate's codes from one list, less the ones paused for them — so the
+ * score counts the languages they are actually matched on.
+ */
+function unpausedCodes(codes: string): Document {
+  return { $setDifference: [codes, { $ifNull: ['$pausedLanguages', []] }] }
+}
+
 const RESPONSIVENESS: Document = {
   $let: {
     vars: {
@@ -603,8 +652,8 @@ export async function discoverProfiles(
     // score with $setIntersection per candidate rather than needing a
     // separate scoring pass.
     const scoreTerms: Document[] = [
-      { $size: { $setIntersection: ['$learning.code', myNativeCodes] } },
-      { $size: { $setIntersection: ['$nativeLanguages.code', myLearningCodes] } },
+      { $size: { $setIntersection: [unpausedCodes('$learning.code'), myNativeCodes] } },
+      { $size: { $setIntersection: [unpausedCodes('$nativeLanguages.code'), myLearningCodes] } },
       {
         $multiply: [0.5, { $size: { $setIntersection: ['$interests', viewer.interests] } }],
       },

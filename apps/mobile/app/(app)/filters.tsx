@@ -15,6 +15,7 @@ import { useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { useCitySearch, useHasFeature, useMe } from '../../src/api/queries'
 import { CountryPicker } from '../../src/components/CountryPicker'
+import { ProWeekTag } from '../../src/components/ProWeekTag'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { RangeSlider } from '../../src/components/ui/RangeSlider'
@@ -30,6 +31,7 @@ import {
   activeCount,
   parseFilters,
   scopeOf,
+  searchLanguages,
   toParams,
 } from '../../src/lib/discoveryFilters'
 import { makeStyles, useTheme } from '../../src/lib/theme'
@@ -57,6 +59,8 @@ function SectionTitle({ title, locked }: { title: string; locked?: boolean }) {
     <View style={styles.sectionHead}>
       <Text style={styles.sectionTitle}>{title}</Text>
       {locked && badge ? <Text style={styles.proTag}>{badge}</Text> : null}
+      {/* Open, on a gated section, during the Pro Week: until when. */}
+      {locked === false ? <ProWeekTag /> : null}
     </View>
   )
 }
@@ -82,9 +86,11 @@ export default function FiltersScreen() {
 
   const [filters, setFilters] = useState<DiscoveryFilters>(() => parseFilters(params))
 
-  const learning = me.data?.learning ?? []
+  // Less the paused ones, which the server leaves out of every search: a chip
+  // for one would scope the list to a language it is not found with.
+  const learning = searchLanguages(me.data?.learning, me.data?.pausedLanguages)
   const learningCodes = learning.map((l) => l.code)
-  const native = me.data?.nativeLanguages ?? []
+  const native = searchLanguages(me.data?.nativeLanguages, me.data?.pausedLanguages)
   const nativeCodes = native.map((l) => l.code)
 
   /**
@@ -527,7 +533,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   last: { borderBottomWidth: 0, paddingBottom: spacing.xxl },
   gapMd: { gap: spacing.md },
   gapLg: { gap: 14 },
-  sectionHead: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
+  sectionHead: { alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   sectionTitle: { ...font.heading, color: colors.text, fontSize: 17 },
   // Ringed in `pro` at 35%, as the prototype has it. `pro` is a six-digit hex
   // in both schemes, so the alpha byte can be appended rather than parsed in.

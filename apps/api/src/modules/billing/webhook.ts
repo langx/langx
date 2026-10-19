@@ -12,6 +12,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { creditReferrerForSubscription } from '../referrals/settle'
 import type { Profile } from '../profiles/profiles'
 import { refreshEntitlement, refreshEntitlementIfHeld } from './refresh'
+import { reconcilePausedLanguages } from '../profiles/languagePause'
 import { welcomeIfBecamePro } from './proWelcome'
 import type { RevenueCatClient } from './revenueCatClient'
 import { notifyBilling, type BillingNotifier } from './notify'
@@ -210,6 +211,13 @@ export async function processRevenueCatWebhook(
         updatedAt: now,
       }
       await profiles.updateOne({ _id: userId }, { $set: { entitlement, updatedAt: now } })
+      // The fallback skips `refreshEntitlement`, which is where the pause is
+      // otherwise worked out; the fall to free is exactly when it changes.
+      try {
+        await reconcilePausedLanguages(db, userId)
+      } catch (error) {
+        console.error('[billing] language pause failed', { userId, error })
+      }
     }
     /*
      * What was lost, and when — written only on the fall, and never cleared

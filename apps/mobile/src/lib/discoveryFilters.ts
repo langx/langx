@@ -97,6 +97,21 @@ export function scopeOf(picked: readonly string[], all: readonly string[]): stri
   return kept
 }
 
+/**
+ * The viewer's languages a search can be made with: their own, less the
+ * paused ones — added during a gift of Pro that has ended, which the server
+ * drops from every search (`pausedLanguages` on the profile). A header or a
+ * scope chip naming one would say the list was found with a language it was
+ * not, and a chip picked on its own would search with nothing at all.
+ */
+export function searchLanguages<T extends { code: string }>(
+  languages: readonly T[] | undefined,
+  paused: readonly string[] | undefined,
+): T[] {
+  const skip = new Set(paused ?? [])
+  return (languages ?? []).filter((language) => !skip.has(language.code))
+}
+
 export function parseFilters(
   params: Record<string, string | string[] | undefined>,
 ): DiscoveryFilters {

@@ -4,6 +4,7 @@ import {
   BENEFIT_COPY,
   COMPARE_LEAD,
   HIGHLIGHT_COUNT,
+  benefitsHeld,
   compareRows,
   highlightsFor,
   sellableFeature,
@@ -109,5 +110,16 @@ describe('sellableFeature', () => {
 
   it('passes no gate through as none', () => {
     expect(sellableFeature(null)).toBeNull()
+  })
+})
+
+describe('benefitsHeld', () => {
+  it('ticks the welcome pack only for somebody who was handed it', () => {
+    expect(benefitsHeld({ pro: '2026-10-01T00:00:00.000Z' })).toEqual(PRO_BENEFITS)
+    expect(benefitsHeld({ pro_plus: '2026-09-01T00:00:00.000Z' })).toEqual(PRO_BENEFITS)
+    const gift = benefitsHeld(undefined)
+    expect(gift).not.toContain('welcomePack')
+    expect(gift).toHaveLength(PRO_BENEFITS.length - 1)
+    expect(benefitsHeld({})).toEqual(gift)
   })
 })

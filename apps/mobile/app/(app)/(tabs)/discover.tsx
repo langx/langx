@@ -23,6 +23,7 @@ import {
   activeCount,
   hasProFilters,
   parseFilters,
+  searchLanguages,
   toQuery,
   withoutProFilters,
 } from '../../../src/lib/discoveryFilters'
@@ -168,9 +169,16 @@ function DiscoverScreen({ people }: { people?: ReactNode } = {}) {
    * *first* of each and call it the match direction, while the server matched
    * on every language on both sides; now the label says what the search is
    * made with, and tapping it opens the filters, where the scope chips live.
+   * A paused language is not one of them (`searchLanguages`).
    */
-  const nativeCodes = useMemo(() => me.data?.nativeLanguages.map((l) => l.code) ?? [], [me.data])
-  const learningCodes = useMemo(() => me.data?.learning.map((l) => l.code) ?? [], [me.data])
+  const nativeCodes = useMemo(
+    () => searchLanguages(me.data?.nativeLanguages, me.data?.pausedLanguages).map((l) => l.code),
+    [me.data],
+  )
+  const learningCodes = useMemo(
+    () => searchLanguages(me.data?.learning, me.data?.pausedLanguages).map((l) => l.code),
+    [me.data],
+  )
   const speaks = (filters.nativeLanguages ?? nativeCodes).map((code) => names.language(code))
   const learns = (filters.learningLanguages ?? learningCodes).map((code) => names.language(code))
   // `↔` where the rows say `→`: a row is one person's direction, this is the
