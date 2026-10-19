@@ -1331,6 +1331,7 @@ export const de: Localized<EnMessages> = {
     wordTranslationFailed: 'Dieses Wort konnte gerade nicht übersetzt werden.',
     wordSeePlans: 'Tarife ansehen',
     sayHello: 'Sag {name} Hallo…',
+    newcomerHelloFree: 'Neu bei LangX – dieses Hallo zählt nicht zu deinen neuen Chats.',
     topicsShuffle: 'Andere Themen',
     topicChip: 'Gesprächsidee: {topic}',
     topics: {

@@ -1410,6 +1410,7 @@ export const ru: Localized<EnMessages> = {
     wordTranslationFailed: 'Сейчас не удалось перевести это слово.',
     wordSeePlans: 'Посмотреть тарифы',
     sayHello: 'Поздоровайся с {name}…',
+    newcomerHelloFree: 'Недавно в LangX — это приветствие не засчитывается в твои новые чаты.',
     topicsShuffle: 'Другие темы',
     topicChip: 'Тема для разговора: {topic}',
     topics: {

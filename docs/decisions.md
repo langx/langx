@@ -165,11 +165,84 @@ requests: exactly `limit` of them come back `consumed: true`.
 
 ## Phase 4 — `CONVERSATION_EXISTS` has two layers
 
+> **Amended 18 October 2026 — see _A hello to a newcomer is free, behind a switch_ below.**
+
 `POST /conversations` first does a cheap `pairKey` pre-check, so a client
 retrying against an existing conversation is refused without spending quota,
 then relies on the real unique index for the genuine race (both sides sending a
 first message at the same instant). The loser of that rare race does not get
 their quota slot refunded — not worth an extra round-trip on every request.
+
+## A hello to a newcomer is free, behind a switch
+
+**18 October 2026.** Bold move M3's newcomer hello (D12f), which Behic agreed
+to on 18 October, built switched off: `flags.newcomerHello` in `appConfig`,
+default false, thrown with `scripts/maintenance.ts flag newcomerHello true`.
+Off, every first message counts exactly as the two entries above say. On, it
+changes what they count: not every first message is one of the five new
+chats.
+
+A newcomer's first week is decided by whether anybody writes to them, and the
+person most likely to write to a stranger is the one who has already spent
+the day's allowance doing it. So the first message somebody sends to an
+account in its first `NEWCOMER_HELLO_RULES.newForDays` (7) does not count
+against their `initiationsPer24h`.
+
+**What has to be true, all of it:**
+
+- **Once per recipient, per sender.** The conversation's `pairKey` already
+  allows one, and the claim below checks it again on its own record.
+- **At most `NEWCOMER_HELLO_RULES.perSenderPer24h` (3) a rolling day.** An
+  abuse ceiling, not an allowance: past it a hello to a newcomer counts like
+  any other first message, so the ceiling never refuses anything by itself.
+- **Adults at both ends**, by the exact birthday (`isAdult`), the rule the
+  "New on LangX" strip keeps: never for a 16- or 17-year-old recipient, never
+  from one. A minor's first messages count exactly as they always have.
+- **Never a guest**, at either end.
+- **The recipient is findable**: discoverable today, not suspended, not
+  deleting, not taking only people they already talk to. Every refusal
+  `startConversation` makes — a block either way, a suspension, a thread that
+  exists, "only people I talk to" — is made before the hello is asked, so it
+  only ever decides which bucket pays for a start that was already allowed.
+- **A finite allowance.** Pro's `initiationsPer24h` is null; there is nothing
+  to spare there and nothing is written.
+
+**One conditional write, in the function that charges today.**
+`profiles.newcomerHellos` holds `{ to, at }` per hello, and a single
+`findOneAndUpdate` on the sender's profile appends one only if its filter
+still sees room under the ceiling and no entry for this recipient — the
+decrement entry above, with two conditions instead of one. The same write
+prunes what is older than a newcomer can be, so the array holds at most a
+week of the ceiling. No collection, no index. It lives in `startConversation`,
+which is the only way a conversation starts: there is no socket path, and the
+official accounts' `deliverOfficialMessage` never comes through it.
+
+**A failed start gives the hello back**, the exact entry by recipient and
+instant. That is the one thing this changes about the entry above: the
+new-chat slot a lost race spends stays spent, as before, but a free hello does
+not, because the ceiling is small enough that one lost is a real share of it.
+What stays as it was: two starts racing to the same newcomer give the hello to
+one, and the other pays a new chat and then loses the pair race — the cost
+the entry above already accepts.
+
+**The app is told, not asked.** `GET /profiles/:id` carries `freeHello: true`
+when a first message from this viewer would be one, computed by the same pure
+check the charge uses, and the "say hello" screen draws one line above the
+composer: "New on LangX — this hello won’t count toward your new chats." A
+refusal still opens the paywall, so a stale hint costs nothing but the line.
+Old builds drop the field; their hello simply goes through where it would have
+opened the paywall.
+
+**The website stays true.** "5 new conversations a day" is what the free plan
+gives, and with the switch on it still gives that; a sentence that calls 5 a
+cap becomes inexact the day the switch is thrown, and the PR that built this
+lists them. One of them is the Terms (§5 lists "starting new conversations: 5
+per rolling 24 hours" as a free-plan limit), so throwing the switch is also a
+decision about that sentence.
+
+Reverting is the switch. Deleting it is the flag, `chat/newcomerHello.ts` and
+its call in `startConversation`, the profile route's `freeHello` and the line
+on `chat/new`; `newcomerHellos` can be unset.
 
 ## Phase 5 — one room per user, not per conversation
 

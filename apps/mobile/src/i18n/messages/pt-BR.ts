@@ -1294,6 +1294,7 @@ export const ptBR: Localized<EnMessages> = {
     wordTranslationFailed: 'Não deu para traduzir essa palavra agora.',
     wordSeePlans: 'Ver os planos',
     sayHello: 'Dê um oi para {name}…',
+    newcomerHelloFree: 'Acabou de chegar ao LangX — este oi não conta nas suas conversas novas.',
     topicsShuffle: 'Outros assuntos',
     topicChip: 'Ideia de conversa: {topic}',
     topics: {

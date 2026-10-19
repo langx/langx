@@ -1300,6 +1300,7 @@ export const es: Localized<EnMessages> = {
     wordTranslationFailed: 'No se pudo traducir esa palabra ahora mismo.',
     wordSeePlans: 'Ver los planes',
     sayHello: 'Saluda a {name}…',
+    newcomerHelloFree: 'Acaba de llegar a LangX: este saludo no cuenta para tus chats nuevos.',
     topicsShuffle: 'Otros temas',
     topicChip: 'Tema para conversar: {topic}',
     topics: {

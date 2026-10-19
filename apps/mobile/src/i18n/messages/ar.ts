@@ -1429,6 +1429,7 @@ export const ar: Localized<EnMessages> = {
     wordTranslationFailed: 'تعذّرت ترجمة هذه الكلمة الآن.',
     wordSeePlans: 'شاهد الخطط',
     sayHello: 'ألقِ التحية على {name}…',
+    newcomerHelloFree: 'حساب جديد على LangX — هذه التحية لا تُحسب من محادثاتك الجديدة.',
     topicsShuffle: 'مواضيع أخرى',
     topicChip: 'فكرة للحديث: {topic}',
     topics: {

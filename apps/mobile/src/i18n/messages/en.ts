@@ -1444,6 +1444,8 @@ export const en = {
     wordTranslationFailed: 'Could not translate that word right now.',
     wordSeePlans: 'See the plans',
     sayHello: 'Say hello to {name}…',
+    /** Above a first message's composer when the profile says this hello is free (`freeHello`). */
+    newcomerHelloFree: 'New on LangX — this hello won’t count toward your new chats.',
     /** The conversation-starter chips above an empty or quiet thread's composer. */
     topicsShuffle: 'Other topics',
     topicChip: 'Conversation starter: {topic}',
