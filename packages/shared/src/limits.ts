@@ -538,6 +538,26 @@ export function isPaidTier(tier: PlanTier): boolean {
 export const QUOTA_WINDOW_MS = 24 * 60 * 60 * 1000
 
 /**
+ * The newcomer hello: a first message to an account in its first days does
+ * not count against the sender's `initiationsPer24h`. Behind
+ * `flags.newcomerHello`, which starts off; see `docs/decisions.md` → _A hello
+ * to a newcomer is free, behind a switch_.
+ *
+ * Beside `PLAN_LIMITS` rather than in it: it is not something a plan sells.
+ * Pro has no allowance to spare, so the rule only ever reaches a finite one.
+ */
+export const NEWCOMER_HELLO_RULES = {
+  /** How long an account counts as new for this, from its profile's creation. */
+  newForDays: 7,
+  /**
+   * Free hellos one sender may make in any rolling 24 hours — the abuse
+   * ceiling. Past it a hello to a newcomer counts like any other first
+   * message, so this never refuses anything by itself.
+   */
+  perSenderPer24h: 3,
+} as const
+
+/**
  * How many accounts one network may open in a rolling day. Guest sessions are
  * not accounts and are not counted. See `docs/decisions.md` → _Sign-up refuses
  * throwaway addresses and caps accounts per network_.

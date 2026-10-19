@@ -251,6 +251,16 @@ export const FLAG_KEYS = {
    */
   testimonialCardsDismissed: 'testimonialCardsDismissed',
   /**
+   * JSON: the account ids this device has shown the first-reply card to.
+   *
+   * Written when the card is first drawn, not when it is closed, so it
+   * appears once whatever is done with it — the same rule as
+   * `onboardingPaywallShown`. Keyed by account rather than a plain `1`,
+   * because the card is about an account's first reply, and a second account
+   * on the same phone has one of its own. `proRoads.ts` reads and bounds it.
+   */
+  firstReplyCardShown: 'firstReplyCardShown',
+  /**
    * The chat camera's send mode last picked here: `once`, `replay` or `keep`.
    *
    * Device-level like the reaction row: it is a habit of whoever holds this

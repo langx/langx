@@ -456,6 +456,14 @@ conditionally appends a new one. If the array did not grow, the quota is spent
 three tiers. `GET /me/quota` returns
 what is left and when the next slot opens.
 
+**The newcomer hello** (`flags.newcomerHello`, off by default) exempts one
+kind of first message: to an account in its first
+`NEWCOMER_HELLO_RULES.newForDays`, once per recipient, adults only at both
+ends, never a guest, and at most `perSenderPer24h` a day. It is a second
+conditional write of the same shape, on `profiles.newcomerHellos`, tried
+before `consumeQuota` in `startConversation`; a start that fails gives it back.
+`decisions.md` → _A hello to a newcomer is free, behind a switch_.
+
 ### Paywall rules (store compliance)
 
 - Prices are read **dynamically** from the store / Web Billing; trial terms,
