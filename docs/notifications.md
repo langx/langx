@@ -603,6 +603,13 @@ treated differently from today (the table has never had an age rule; the
 streak repair push does). What changes is that more of what consenting people
 already qualify for reaches them, which is why it starts off.
 
+One thing the switch takes away rather than adds: past thirty days away,
+nudge 4 is the only one left. It promises "this is the last we will say about
+it", and with the win-back's window eight days wide and a spent photo nudge no
+longer holding the evening, a plan that ended while somebody was away would
+otherwise be sold to them after it. The match suggestions stop at the same
+point for the same reason.
+
 **Held back, counted.** Whatever stops somebody's first eligible nudge on the
 evening is logged once per pass as a count per nudge and reason — `digest`,
 `gap`, `slot`, or `said` — with no id or address in it: `promotions held back`,

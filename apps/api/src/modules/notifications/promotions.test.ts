@@ -622,6 +622,27 @@ describe('the nudges that need permission', () => {
     })
 
     /**
+     * The month away ends "this is the last we will say about it". With the
+     * windows wider and a photo already asked for no longer holding the
+     * evening, a plan that ended while somebody was away would otherwise be
+     * sold to them once the gap after that letter ran out.
+     */
+    it('says nothing more after the farewell while the absence lasts', async () => {
+      await setNoSilentDrops(true)
+      const churnedFrom = { tier: 'pro', at: new Date(NOW.getTime() - 10 * DAY) }
+      const away = await newProfile({ invited: true, activeDaysAgo: 37.5, churnedFrom })
+      const lastActiveAt = new Date(NOW.getTime() - 37.5 * DAY).toISOString()
+      await saidBefore('promo.away30', away, `away30:${lastActiveAt}`, 7.5)
+      await saidBefore('promo.photo', away, 'once', 20)
+      // Somebody who is still around was promised nothing; the win-back is theirs.
+      await newProfile({ avatar: true, invited: true, activeDaysAgo: 2, churnedFrom })
+
+      expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+      expect(subjects()).toEqual(['Your plan ended a week ago'])
+      expect(email.messages[0]?.to).not.toBe(`${away}@example.com`)
+    })
+
+    /**
      * Idle tokens stays true for weeks; the win-back for its window. Above
      * it, tokens took the slot and the gap closed the win-back's window.
      */

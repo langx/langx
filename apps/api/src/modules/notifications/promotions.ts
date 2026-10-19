@@ -109,6 +109,26 @@ function daysAgo(date: Date | undefined, now: Date): number {
   return date ? (now.getTime() - new Date(date).getTime()) / DAY_MS : Number.POSITIVE_INFINITY
 }
 
+/**
+ * Whether `flags.nudgeNoSilentDrops` keeps this nudge from somebody a month
+ * away: past `AWAY_LONG_DAYS` the farewell is the only one left.
+ *
+ * `promo.away30` ends "this is the last we will say about it", and
+ * `MATCH_SUGGESTIONS.maxAwayDays` stops the suggestions at the same point so
+ * that it stays true. Off, a later nudge could follow it only by landing on a
+ * one-day window; on, the win-back's window is eight days and a photo already
+ * asked for no longer holds the evening, so a plan that ended while somebody
+ * was away would be sold to them after the letter that promised silence.
+ *
+ * Somebody with no `lastActiveAt` was never told the farewell — it cannot
+ * match them — so nothing is held back from them here.
+ */
+function pastTheFarewell(promotion: Promotion, candidate: PromotionCandidate): boolean {
+  if (!candidate.noSilentDrops || promotion.job === 'promo.away30') return false
+  const lastActiveAt = candidate.profile.stats?.lastActiveAt
+  return lastActiveAt !== undefined && daysAgo(lastActiveAt, candidate.now) >= AWAY_LONG_DAYS
+}
+
 export const PROMOTIONS: Promotion[] = [
   {
     /*
@@ -396,6 +416,7 @@ export async function runPromotionsPass(
     const candidate: PromotionCandidate = { profile, now, db, noSilentDrops }
     for (const promotion of table) {
       if (!notificationsAllowed(profile.settings?.notifications, promotion.type, 'email')) continue
+      if (pastTheFarewell(promotion, candidate)) continue
       if (!(await promotion.eligible(candidate))) continue
       const periodKey = promotion.periodKey(candidate)
       // Already said for this period: true, but not news. With the flag on

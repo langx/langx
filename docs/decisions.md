@@ -4669,6 +4669,15 @@ gated on the mail". Making them one would widen the audience, which is a
 consent decision. And the quota nudge still needs three refusals in the last
 three days, because `quotaRefusals` keeps no more than that.
 
+**Past the month away, only the farewell.** `promo.away30` says "this is the
+last we will say about it", and before the switch nothing else could follow
+it except by landing on a one-day window. With the win-back open for eight
+days and a spent photo nudge no longer holding the evening, a plan that ended
+while somebody was away would be sold to them after that letter. So with the
+switch on, somebody whose last visit was thirty days ago or more is offered
+nothing but the farewell, as `MATCH_SUGGESTIONS.maxAwayDays` already stops the
+suggestions there.
+
 **Held back, counted.** Whatever stops somebody's first eligible nudge on the
 evening — the digest, the gap, a lost slot, a nudge already said — is logged
 once per pass as a count per nudge and reason, with no id or address in it.
