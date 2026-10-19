@@ -1185,6 +1185,17 @@ export const en = {
     emptyTitle: 'Nobody here yet',
     emptyBody:
       'People whose languages match yours in both directions show up here. Try loosening the filters.',
+    /** People's allowance line (`flags.v3Home`): both numbers come from `/me/quota`. */
+    chatsLeft: {
+      one: 'New chats left today: {count} of {total}',
+      other: 'New chats left today: {count} of {total}',
+    },
+    chatsLeftNote: 'Replies never count.',
+    newOnLangx: 'New on LangX',
+    helloNewcomer: 'Say hello to {name}, new on LangX',
+    /** Only where the card carries `repliesWithinDay`: never a rate or a count. */
+    repliesWithinDay: 'Usually replies within a day',
+    changeFilters: 'Change filters',
   },
 
   filters: {
@@ -1857,6 +1868,13 @@ export const en = {
     postedCorrection: 'Posted. Somebody will correct it.',
     askCorrectionHint:
       'Somebody native will fix it — usually within the hour. Corrections are unlimited on every plan.',
+    /** v3's Posts cards (`flags.v3Home`): the chip saying which of the two a card is. */
+    askChip: 'Ask',
+    momentChip: 'Moment',
+    askNatural: 'Is this natural?',
+    askPronounce: 'How do you pronounce this?',
+    /** An ask's one big button: the correction box, or the post when it asks for a recording. */
+    helpName: 'Help {name}',
   },
 
   profile: {

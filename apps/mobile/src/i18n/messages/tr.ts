@@ -1042,6 +1042,15 @@ export const tr: Localized<EnMessages> = {
     emptyTitle: 'Henüz kimse yok',
     emptyBody:
       'Dilleri seninkiyle çift yönlü eşleşen kişiler burada çıkar. Filtreleri gevşetmeyi dene.',
+    chatsLeft: {
+      one: 'Bugün kalan yeni sohbet: {count}/{total}',
+      other: 'Bugün kalan yeni sohbet: {count}/{total}',
+    },
+    chatsLeftNote: 'Yanıtlar hiç sayılmaz.',
+    newOnLangx: 'LangX’te yeni',
+    helloNewcomer: '{name} kişisine merhaba de — LangX’te yeni',
+    repliesWithinDay: 'Genellikle bir gün içinde yanıt verir',
+    changeFilters: 'Filtreleri değiştir',
   },
 
   filters: {
@@ -1654,6 +1663,11 @@ export const tr: Localized<EnMessages> = {
     postedCorrection: 'Paylaşıldı. Birisi düzeltecektir.',
     askCorrectionHint:
       'Anadili olan biri düzeltir — genellikle bir saat içinde. Düzeltmeler her planda sınırsız.',
+    askChip: 'Soru',
+    momentChip: 'An',
+    askNatural: 'Bu doğal mı?',
+    askPronounce: 'Bu nasıl telaffuz edilir?',
+    helpName: '{name} adlı kişiye yardım et',
   },
 
   profile: {

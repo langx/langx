@@ -15,7 +15,7 @@ import { makeStyles, useTheme, type V3Colors } from '../../lib/theme'
 import { CURVE, DURATION } from '../../lib/theme/motionValues'
 import { PressableScaleBase } from './PressableScale'
 
-type Variant = 'primary' | 'blue' | 'secondary' | 'neutral' | 'ink' | 'danger'
+type Variant = 'primary' | 'blue' | 'secondary' | 'neutral' | 'ink' | 'hue' | 'danger'
 type Size = 'default' | 'medium' | 'small'
 type Glyph = keyof typeof Feather.glyphMap
 
@@ -36,6 +36,9 @@ interface ButtonProps {
    * Next on the intro. `secondary` is the outline in the text colour, for
    * everything beside them: Create an account, Cancel, Continue with Google.
    * `ink` is the dark pill that buys or copies — Copy, Scan, "150 tokens".
+   * `hue` is the dark pill on a partner's colour: ink in both schemes, as
+   * everything on a hue is, where `ink` inverts with the ground and would go
+   * pale after dark (`IconButton`'s `hue` look, as a pill).
    * `danger` is the red outline on the action that cannot be undone, and is
    * never yellow.
    *
@@ -240,6 +243,9 @@ function lookFor(colors: V3Colors, variant: Variant) {
       return { face: 'transparent', label: colors.fg, border: colors.fg }
     case 'ink':
       return { face: colors.pill, label: colors.pillText, border: colors.pill }
+    case 'hue':
+      // `onBlue`: the palette's one white that stays white after dark.
+      return { face: colors.ink, label: colors.onBlue, border: colors.ink }
     case 'danger':
       return { face: 'transparent', label: colors.danger, border: colors.danger }
   }
