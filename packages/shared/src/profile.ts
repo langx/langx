@@ -236,6 +236,16 @@ export const onboardingProfileSchema = z
      * way to point a profile at any host on the internet.
      */
     avatarUrl: z.url().optional(),
+    /**
+     * This app can show the Pro Week — its first moment, "yours until" and
+     * the recap — instead of the end-of-onboarding paywall. Without it no week
+     * is given: the 2.8 and 2.9 builds open that paywall without asking the
+     * tier, and would sell Pro to somebody who had just been given it. A
+     * declaration, not a request: the server still decides, by
+     * `flags.proWeek` and the account. `.catch` so a malformed value from some
+     * future client means "not declared", never a failed sign-up.
+     */
+    supportsProWeek: z.literal(true).optional().catch(undefined),
   })
   .refine(learningDoesNotOverlapNative, {
     message: 'A learning language cannot also be listed as native',

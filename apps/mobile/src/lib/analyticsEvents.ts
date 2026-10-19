@@ -54,6 +54,10 @@ export type GiftCodeOutcome =
  * own, so `me` before that build includes them. `pro_badge` is the button in
  * the "What's Pro?" sheet behind the PRO badge on somebody's profile, and
  * `first_reply` the card in a thread once a partner has written back.
+ *
+ * `gift_end` is "Keep Pro" on the Pro Week's last-day recap — the one paywall
+ * a person on a gift is offered, and a separate bucket because it is the
+ * reverse trial's conversion, not a gate's.
  */
 export const PAYWALL_SOURCES = [
   'onboarding',
@@ -67,6 +71,7 @@ export const PAYWALL_SOURCES = [
   'settings',
   'app_icon',
   'pro_badge',
+  'gift_end',
 ] as const
 export type PaywallSource = (typeof PAYWALL_SOURCES)[number]
 

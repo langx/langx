@@ -1,10 +1,15 @@
 import Feather from '@expo/vector-icons/Feather'
+import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
+import { useFonts } from 'expo-font'
 import { router } from 'expo-router'
 import { useEffect, useRef, useState } from 'react'
 import { Animated, ScrollView, Text, View } from 'react-native'
+import { PRO_WEEK_RULES } from '@langx/shared'
 import { useMe } from '../../src/api/queries'
 import { NotificationPriming } from '../../src/components/NotificationPriming'
+import { ProMark } from '../../src/components/ProMark'
 import { Button } from '../../src/components/ui/Button'
+import { CelebrationSheet } from '../../src/components/ui/CelebrationSheet'
 import { Screen } from '../../src/components/ui/Screen'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { useReduceMotion } from '../../src/hooks/useReduceMotion'
@@ -12,10 +17,11 @@ import { authClient } from '../../src/lib/auth-client'
 import { shouldGateGuest } from '../../src/lib/guestGate'
 import { FLAG_KEYS, readBoolFlag, setBoolFlag } from '../../src/lib/localFlags'
 import { openPaywall } from '../../src/lib/paywall'
+import { proWeekStarted, proWeekUntil } from '../../src/lib/proWeek'
 import { takePendingIntent, type PendingIntent } from '../../src/lib/pendingIntent'
 import { getOffers } from '../../src/lib/purchases'
 import { makeStyles, useTheme } from '../../src/lib/theme'
-import { useT } from '../../src/i18n'
+import { useLocale, useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 
 /**
@@ -44,12 +50,23 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * A screen between this one and the first hello costs exactly the thing the
  * paywall is measured against, and the quota gate will make the offer again
  * to somebody who is actually using the app by then.
+ *
+ * **With a Pro Week there is no paywall at all.** The server gave this
+ * account a week of Pro when the profile was made (behind `flags.proWeek`,
+ * and only because this build says it can show it), so the paywall's moment
+ * becomes the week's: the button opens "Your Pro week starts now", whose own
+ * button then goes where this one would have — the hello first, else
+ * Discover. That sheet is the only announcement the week gets: no letter, no
+ * push, no mail. Selling Pro to somebody who has just been given it is the
+ * one thing this screen must not do, which is why the 2.8 and 2.9 builds,
+ * which open the paywall without asking, are never given a week.
  */
 export default function DoneStep() {
   useScreenInteractive()
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
+  const { locale } = useLocale()
 
   const me = useMe()
   const handle = me.data?.handle
@@ -79,9 +96,12 @@ export default function DoneStep() {
    * device flag. And never with no trial to offer: a first-session paywall
    * without one is a price tag on an empty room.
    */
+  const proWeek = proWeekStarted(me.data)
   const [paywall, setPaywall] = useState(false)
   useEffect(() => {
     if (session === undefined || shouldGateGuest(session?.user)) return
+    // The week is Pro already; there is nothing to offer.
+    if (proWeek) return
     let cancelled = false
     void (async () => {
       if (await readBoolFlag(FLAG_KEYS.onboardingPaywallShown)) return
@@ -91,14 +111,28 @@ export default function DoneStep() {
     return () => {
       cancelled = true
     }
-  }, [session])
+  }, [session, proWeek])
+
+  // The week's moment, opened by the button in the paywall's place — once:
+  // closed with its ✕, the button goes on to where it leads.
+  const [moment, setMoment] = useState(false)
+  const [momentSeen, setMomentSeen] = useState(false)
 
   function finish(): void {
+    if (proWeek && !momentSeen) {
+      setMomentSeen(true)
+      setMoment(true)
+      return
+    }
+    leave()
+  }
+
+  function leave(): void {
     if (hello) {
       router.replace(`/(app)/chat/new?to=${hello.id}`)
       return
     }
-    if (paywall) {
+    if (paywall && !proWeek) {
       // Written on the way in, not on the way out: a cold start in the middle
       // of the paywall must not earn a second showing.
       void setBoolFlag(FLAG_KEYS.onboardingPaywallShown, true)
@@ -121,6 +155,16 @@ export default function DoneStep() {
     animation.start()
     return () => animation.stop()
   }, [pop, reduceMotion])
+
+  const nextLabel = hello
+    ? t('onboarding.sayHelloTo', { name: hello.name })
+    : t('onboarding.findSomeone')
+  /*
+   * The end of Pro as the server holds it, or — while RevenueCat has not
+   * answered yet — the week's own length from when it began, which is what
+   * the grant will say once it lands.
+   */
+  const weekEnd = proWeekUntil(me.data) ?? weekFrom(me.data?.proWeek?.startedAt)
 
   return (
     <Screen fluid>
@@ -153,14 +197,20 @@ export default function DoneStep() {
 
         <NotificationPriming />
 
-        <Button
-          label={
-            hello ? t('onboarding.sayHelloTo', { name: hello.name }) : t('onboarding.findSomeone')
-          }
-          onPress={finish}
-          style={styles.cta}
-        />
+        <Button label={nextLabel} onPress={finish} style={styles.cta} />
       </ScrollView>
+      {proWeek ? (
+        <ProWeekMoment
+          visible={moment}
+          eventId={`proWeek:${me.data?.proWeek?.startedAt ?? ''}`}
+          body={t('proWeek.startsBody', {
+            count: PRO_WEEK_RULES.extensionStreakDays,
+            date: weekEnd.toLocaleDateString(locale, { day: 'numeric', month: 'long' }),
+          })}
+          next={{ label: nextLabel, onPress: leave }}
+          onClose={() => setMoment(false)}
+        />
+      ) : null}
     </Screen>
   )
 }
@@ -188,4 +238,47 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   sectionTitle: { ...font.heading, color: colors.text, fontSize: 18 },
   sectionBody: { color: colors.textMuted, fontSize: 16, lineHeight: 25 },
   cta: { marginTop: spacing.lg },
+  mark: { alignSelf: 'flex-start' },
 }))
+
+/** A week after `startedAt`, or a week from now when there is none to read. */
+function weekFrom(startedAt: string | undefined): Date {
+  const from = startedAt ? Date.parse(startedAt) : Date.now()
+  return new Date(from + PRO_WEEK_RULES.weeks * 7 * 24 * 60 * 60 * 1000)
+}
+
+/**
+ * "Your Pro week starts now", in the celebration's block. Its own component
+ * so the Black face its title is set in is fetched only for somebody who has
+ * a week — the root does not load it (see the paywall) — and the sheet waits
+ * for it rather than arriving in the platform face and swapping.
+ */
+function ProWeekMoment({
+  visible,
+  eventId,
+  body,
+  next,
+  onClose,
+}: {
+  visible: boolean
+  eventId: string
+  body: string
+  next: { label: string; onPress: () => void }
+  onClose: () => void
+}) {
+  const t = useT()
+  const styles = useStyles()
+  const [fontLoaded, fontError] = useFonts({ Nunito_900Black })
+  return (
+    <CelebrationSheet
+      visible={visible && (fontLoaded || fontError !== null)}
+      eventId={eventId}
+      hue="lilac"
+      art={<ProMark style={styles.mark} />}
+      title={t('proWeek.startsTitle')}
+      body={body}
+      next={next}
+      onClose={onClose}
+    />
+  )
+}

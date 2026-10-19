@@ -1958,6 +1958,7 @@ export const fr: Localized<EnMessages> = {
     capOverGrandfathered:
       'Tu en as déjà plus que ton offre n’en contient. Tu peux les changer ou les retirer, mais pas en ajouter.',
     changeHint: 'Touche une langue pour la changer.',
+    pausedNote: 'En pause dans Découvrir avec le forfait gratuit. Elle compte à nouveau avec Pro.',
     saveFailed: 'Ça n’a pas été enregistré. Rien n’a changé.',
   },
 
@@ -2879,6 +2880,38 @@ export const fr: Localized<EnMessages> = {
       'Quel que soit celui que tu avais, tu as maintenant tout. Quelques idées pour commencer :',
     andMore: 'et bien plus',
     start: 'Commencer à explorer',
+  },
+
+  proWeek: {
+    startsTitle: 'Ta semaine Pro commence maintenant',
+    startsBody: {
+      one: 'Pro est à toi jusqu’au {date}. Pratique {count} jour d’affilée et il reste une deuxième semaine.',
+      other:
+        'Pro est à toi jusqu’au {date}. Pratique {count} jours d’affilée et il reste une deuxième semaine.',
+    },
+    yoursUntil: 'Pro · à toi jusqu’au {date}',
+    recapEnds: 'Ta semaine Pro se termine le {date}',
+    recapEnded: 'Ta semaine Pro est terminée',
+    recapLead: 'Ce que tu as fait avec Pro et que le forfait gratuit ne propose pas :',
+    recapChats: {
+      one: '{count} nouvelle discussion au-delà de la limite quotidienne gratuite',
+      other: '{count} nouvelles discussions au-delà de la limite quotidienne gratuite',
+    },
+    recapTranslated: {
+      one: '{count} message envoyé avec une traduction',
+      other: '{count} messages envoyés avec une traduction',
+    },
+    recapLanguages: {
+      one: '{count} langue de plus dans Découvrir — elle est en pause avec le forfait gratuit',
+      other: '{count} langues de plus dans Découvrir — elles sont en pause avec le forfait gratuit',
+    },
+    recapExtended: {
+      one: '{count} jour d’affilée t’a valu une semaine de Pro en plus.',
+      other: '{count} jours d’affilée t’ont valu une semaine de Pro en plus.',
+    },
+    recapQuiet: 'Tout ce que Pro a ouvert reste ouvert si tu le gardes.',
+    keep: 'Garder Pro',
+    storeFreeWeek: 'Tu peux encore lancer la semaine gratuite du store.',
   },
 
   giftCode: {

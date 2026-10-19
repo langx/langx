@@ -91,6 +91,8 @@ export default function LanguagesScreen() {
   // Priority order, not stored order: the two are separate statements about
   // the same list and only the first is the one the reader arranged.
   const learning = [...profile.learning].sort((a, b) => a.priority - b.priority)
+  // Added during a gift of Pro that has ended: still listed, not searched with.
+  const paused = new Set(profile.pausedLanguages ?? [])
 
   async function remove(kind: 'native' | 'learning', code: string): Promise<void> {
     const edit =
@@ -140,6 +142,7 @@ export default function LanguagesScreen() {
             <LanguageRow
               key={entry.code}
               name={names.language(entry.code)}
+              paused={paused.has(entry.code)}
               onChange={() => openLanguagePicker('native', entry.code)}
               onRemove={() => void remove('native', entry.code)}
             />
@@ -161,6 +164,7 @@ export default function LanguagesScreen() {
             renderRow={(entry, handle) => (
               <LanguageRow
                 name={names.language(entry.code)}
+                paused={paused.has(entry.code)}
                 level={entry.level}
                 onLevel={(level) => apply({ kind: 'setLevel', code: entry.code, level })}
                 onChange={() => openLanguagePicker('learning', entry.code)}
@@ -399,6 +403,7 @@ function DraggableRow({
  */
 function LanguageRow({
   name,
+  paused = false,
   level,
   onLevel,
   onChange,
@@ -406,6 +411,12 @@ function LanguageRow({
   handle,
 }: {
   name: string
+  /**
+   * Not searched with in Discover: added during a gift of Pro that has ended,
+   * beyond the free plan's allowance. Said here, where the list is, so a
+   * language that went quiet in Discover has a reason next to it.
+   */
+  paused?: boolean
   level?: LanguageLevel
   onLevel?: (level: LanguageLevel) => void
   onChange: () => void
@@ -432,6 +443,7 @@ function LanguageRow({
         </Pressable>
         <IconButton icon="x" label={`${t('common.remove')} · ${name}`} onPress={onRemove} />
       </View>
+      {paused ? <Text style={styles.paused}>{t('languages.pausedNote')}</Text> : null}
       {level && onLevel ? (
         <View style={styles.levels}>
           {LANGUAGE_LEVELS.map((option) => (
@@ -504,6 +516,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // `hitSlop` here would not reach the drag.
   handle: { alignItems: 'center', height: 36, justifyContent: 'center', width: 28 },
   name: { color: colors.text, fontSize: 17, fontWeight: '600' },
+  paused: { color: colors.textMuted, fontSize: 14, lineHeight: 20 },
   levels: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   pressed: { opacity: 0.6 },
   // A circle the height of a chip, so an icon on a row of text has a real target.

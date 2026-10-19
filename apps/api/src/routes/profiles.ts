@@ -44,6 +44,9 @@ import { isEmailVerified } from '../modules/profiles/emailVerified'
 import { getSharedProfile } from '../modules/profiles/sharedProfile'
 import { toOwnProfileWire } from '../modules/profiles/ownProfileWire'
 import { acknowledgeProWelcome } from '../modules/billing/proWelcome'
+import { startProWeek } from '../modules/billing/proWeek'
+import { getAppConfig } from '../modules/appConfig/appConfig'
+import { fanOutMessage } from '../ws/fanOut'
 import { readFollowState } from '../modules/social/follows'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
@@ -56,7 +59,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
         ? hashLegacyEmail(request.userEmail, app.env.LEGACY_EMAIL_HASH_SALT)
         : null
 
-      const profile = await createProfile(
+      let profile = await createProfile(
         app.mongo.db,
         request.userId,
         legacyEmailHash,
@@ -67,6 +70,42 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
         // and is the reason the form no longer asks.
         countryFromHeaders(request.headers, app.env.EDGE_SECRET),
       )
+      /*
+       * The Pro Week, before the answer, so the end of onboarding can say it
+       * has started. Three gates here and the account's own in
+       * `startProWeek`: the switch, an app that declared it can show the week
+       * (2.8 and 2.9 would sell Pro to somebody who had just been given it),
+       * and billing configured — without RevenueCat a gift is a row nothing
+       * ever grants. Awaited but never fatal: the profile is written and
+       * onboarding has succeeded, so a failure here costs the week, not the
+       * sign-up.
+       */
+      if (
+        request.body.supportsProWeek === true &&
+        (app.env.REVENUECAT_SECRET_API_KEY || app.env.REVENUECAT_FAKE_STORE) &&
+        (await getAppConfig(app.mongo.db)).flags.proWeek
+      ) {
+        try {
+          const started = await startProWeek(
+            app.mongo.db,
+            {
+              revenueCat: app.revenueCat,
+              email: app.email,
+              // Never used for the week, which says nothing at all; the gift
+              // path asks for it all the same.
+              fanOut: (delivery, { push }) =>
+                fanOutMessage(app, app.io, delivery.conversation, delivery.message, {
+                  pushWhenAway: push,
+                }),
+              warn: (error, message) => request.log.warn({ err: error }, message),
+            },
+            profile,
+          )
+          if (started) profile = (await getProfile(app.mongo.db, request.userId)) ?? profile
+        } catch (error) {
+          request.log.error({ err: error }, 'pro week failed')
+        }
+      }
       /*
        * One mail, once in an account's life, and never awaited into the
        * response: onboarding has already succeeded by the time this runs, and
