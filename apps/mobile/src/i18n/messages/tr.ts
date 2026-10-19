@@ -50,6 +50,47 @@ export const tr: Localized<EnMessages> = {
     echo: 'Echo',
     feed: 'Akış',
     me: 'Ben',
+    home: 'Ana sayfa',
+    people: 'Kişiler',
+    posts: 'Gönderiler',
+  },
+
+  home: {
+    greetingMorning: 'Günaydın, {name}',
+    greetingAfternoon: 'İyi günler, {name}',
+    greetingEvening: 'İyi akşamlar, {name}',
+    subtitle: 'Önce tek bir şey, sonra günün geri kalanı.',
+    waitingTitle: '{name} seni bekliyor',
+    yourTurn: 'Sıra sende',
+    replyTo: '{name} adlı kişiye yanıt ver',
+    sessionTitle: '{name} ile görüşmen',
+    sessionAt: 'Saat {time}',
+    sessionOpen: 'Sohbeti aç',
+    streakTitle: { one: '{count} günlük serini sürdür', other: '{count} günlük serini sürdür' },
+    streakBody: 'Bugün henüz sayılmadı.',
+    streakEcho: 'Kartlarını tekrar et',
+    streakChats: 'Birine yaz',
+    echoTitle: { one: '{count} kart hazır', other: '{count} kart hazır' },
+    echoBody: 'Echo’da birkaç dakika onları taze tutar.',
+    echoStart: 'Tekrara başla',
+    todayTitle: 'Bugünün üçü',
+    todayCount: '{done}/{total} tamam',
+    todayCorrect: 'Bir cümleye yardım et',
+    todayNotYet: 'Henüz değil',
+    streakDays: { one: '{count} günlük seri', other: '{count} günlük seri' },
+    streakNext: {
+      one: '{day}. gün ödülüne {count} gün kaldı',
+      other: '{day}. gün ödülüne {count} gün kaldı',
+    },
+    peopleTitle: 'Bugünün kişileri',
+    seeAll: 'Tümünü gör',
+    sayHello: 'Merhaba de',
+    proTitle: 'Pro ile daha ileri git',
+    proButton: 'Pro’nun kattıklarını gör',
+    inviteTitle: 'Bir arkadaşınla öğren',
+    guestTitle: 'LangX’i kendine göre kur',
+    guestBody:
+      'Bir hesapla insanlara yazabilir, serini sürdürebilir ve öğrendiklerini Echo’ya kaydedebilirsin.',
   },
 
   composer: {
@@ -2895,5 +2936,19 @@ export const tr: Localized<EnMessages> = {
         other: 'token kazanıldı',
       },
     },
+  },
+  copilot: {
+    label: 'Yapay zekâ · yanılabilir',
+    off: 'Copilot kapalı.',
+    consentTitle: 'Copilot: başlamadan önce',
+    consentBody:
+      'Copilot bir yapay zekâ yardımcısı. Göndermeden önce bir cümleni kontrol edebilir, yanıt önerebilir ve birinin yaptığı bir düzeltmeyi açıklayabilir.',
+    consentSends:
+      'Bir şey sorduğunda, sorduğun metin dillerin ve seviyelerinle birlikte yapay zekâ modelini çalıştıran şirkete gönderilir: Anthropic. Yanıt önerilerinde buna sohbetteki son birkaç mesaj da dahildir.',
+    consentNever: 'Adın, e-posta adresin, fotoğrafların ve sesli mesajların asla gönderilmez.',
+    consentWrong:
+      'Yapay zekâ yanılabilir. Yanıtları yapay zekâ olarak işaretlenir ve sen kendin göndermedikçe karşı tarafa hiçbir şey ulaşmaz.',
+    consentAccept: 'Kabul et ve aç',
+    consentDecline: 'Şimdi değil',
   },
 }

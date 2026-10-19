@@ -38,7 +38,57 @@ export const es: Localized<EnMessages> = {
     notLoaded: 'No se pudo cargar',
   },
 
-  tabs: { discover: 'Descubrir', chats: 'Chats', echo: 'Echo', feed: 'Muro', me: 'Yo' },
+  tabs: {
+    discover: 'Descubrir',
+    chats: 'Chats',
+    echo: 'Echo',
+    feed: 'Muro',
+    me: 'Yo',
+    home: 'Inicio',
+    people: 'Personas',
+    posts: 'Publicaciones',
+  },
+
+  home: {
+    greetingMorning: 'Buenos días, {name}',
+    greetingAfternoon: 'Buenas tardes, {name}',
+    greetingEvening: 'Buenas noches, {name}',
+    subtitle: 'Primero una cosa, luego el resto del día.',
+    waitingTitle: '{name} te está esperando',
+    yourTurn: 'Te toca',
+    replyTo: 'Responder a {name}',
+    sessionTitle: 'Tu llamada con {name}',
+    sessionAt: 'A las {time}',
+    sessionOpen: 'Abrir el chat',
+    streakTitle: {
+      one: 'Mantén tu racha de {count} día',
+      other: 'Mantén tu racha de {count} días',
+    },
+    streakBody: 'Hoy todavía no cuenta.',
+    streakEcho: 'Repasar tus tarjetas',
+    streakChats: 'Escribir a alguien',
+    echoTitle: { one: '{count} tarjeta lista', other: '{count} tarjetas listas' },
+    echoBody: 'Unos minutos en Echo las mantienen frescas.',
+    echoStart: 'Empezar un repaso',
+    todayTitle: 'Las tres de hoy',
+    todayCount: '{done} de {total} hechas',
+    todayCorrect: 'Ayudar con una frase',
+    todayNotYet: 'Todavía no',
+    streakDays: { one: 'Racha de {count} día', other: 'Racha de {count} días' },
+    streakNext: {
+      one: 'Falta {count} día para tu recompensa de {day} días',
+      other: 'Faltan {count} días para tu recompensa de {day} días',
+    },
+    peopleTitle: 'Gente de hoy',
+    seeAll: 'Ver todo',
+    sayHello: 'Saludar',
+    proTitle: 'Llega más lejos con Pro',
+    proButton: 'Ver qué añade Pro',
+    inviteTitle: 'Aprende con un amigo',
+    guestTitle: 'Haz tuyo LangX',
+    guestBody:
+      'Con una cuenta puedes escribir a la gente, mantener una racha y guardar lo que aprendes en Echo.',
+  },
 
   composer: {
     removeAttachment: 'Quitar el archivo adjunto',
@@ -2910,5 +2960,19 @@ export const es: Localized<EnMessages> = {
         other: 'tokens ganados',
       },
     },
+  },
+  copilot: {
+    label: 'IA · puede equivocarse',
+    off: 'Copilot está desactivado.',
+    consentTitle: 'Antes de usar Copilot',
+    consentBody:
+      'Copilot es un asistente con IA. Puede revisar una frase antes de que la envíes, sugerir respuestas y explicarte una corrección que alguien te hizo.',
+    consentSends:
+      'Cuando se lo pides, el texto sobre el que preguntas se envía a Anthropic, la empresa que gestiona el modelo de IA, junto con tus idiomas y niveles. Para las ideas de respuesta, eso incluye los últimos mensajes del chat.',
+    consentNever: 'Tu nombre, tu correo, tus fotos y tus notas de voz nunca se envían.',
+    consentWrong:
+      'La IA puede equivocarse. Sus respuestas van marcadas como IA, y nada le llega a la otra persona a menos que lo envíes tú.',
+    consentAccept: 'Activar Copilot',
+    consentDecline: 'Ahora no',
   },
 }

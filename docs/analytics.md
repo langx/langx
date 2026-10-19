@@ -64,7 +64,7 @@ reached a screen of ours.
 | `onboarding_step_completed` | `step`, `guest`, `resumed`                                                                                                                                                                 | One wizard step was finished — what `$screen` cannot say                                         |
 | `onboarding_completed`      | `referred`, `native_languages`, `learning_languages`, `method`, `from_guest`, `seconds_since_install`                                                                                      | The profile is created                                                                           |
 | `message_sent`              | `kind` (text, correction, image, audio, video), `reply`                                                                                                                                    | The server acknowledged a send. Never the body                                                   |
-| `paywall_viewed`            | `feature` (what sent them), `tier` (the viewer's own plan), `source` (the road that opened it; each one is named in the notes below), `gift` (over a gift of months), `offers` (see below) | The paywall is first shown — up to a second after it opens — or left before then                 |
+| `paywall_viewed`            | `feature` (what sent them), `tier` (the viewer's plan), `source` (the road that opened it; every one is named in the notes further on), `gift` (over a gift of N months), `offers` (below) | The paywall is first shown — up to a second after it opens — or left before then                 |
 | `paywall_dismissed`         | `source`, `seconds_open`, `exit` (close, back, gesture, other)                                                                                                                             | It was left without a plan gained: the X, "Continue free", back or a swipe. Once                 |
 | `plan_selected`             | `source`, `period` (monthly, yearly, lifetime)                                                                                                                                             | A plan card was picked that was not already the picked one                                       |
 | `benefits_expanded`         | `source`                                                                                                                                                                                   | "And N more" was opened. Opening only                                                            |
@@ -179,11 +179,12 @@ Some of these carry a number that needs a caveat rather than a footnote:
   in `PAYWALL_SOURCES` and held to this list by `proRoads.test.ts`:
   `onboarding`, `gate`, `me` (the Me tab's Pro card), `deeplink`,
   `first_reply` (the card in a thread once a partner has written back),
-  `langx` (a card under an `@langx` broadcast), `gift_code`, `settings`
-  (Settings → Subscription → "See the plans"), `app_icon` (a tile in the
-  app-icon picker) and `pro_badge` (the "What's Pro?" sheet behind the PRO badge
-  on somebody's profile). Builds before the last three counted Settings and the
-  app-icon picker as `me`, so read `me` split by app version.
+  `langx` (a card under an `@langx` broadcast), `gift_code`, `home` (the Pro
+  card on the redesign's Home tab), `settings` (Settings → Subscription → "See
+  the plans"), `app_icon` (a tile in the app-icon picker) and `pro_badge` (the
+  "What's Pro?" sheet behind the PRO badge on somebody's profile). Builds before
+  the last three counted Settings and the app-icon picker as `me`, so read `me`
+  split by app version.
 - **The Boosted strip's three** need reading together. `boosted_strip_shown`
   means the strip was in the list on that visit, not that pixels reached an
   eye — there is deliberately no viewability maths on a horizontal scroller of

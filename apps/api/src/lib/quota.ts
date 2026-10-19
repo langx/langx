@@ -45,6 +45,11 @@ export type TrackedQuotaKind =
    * and only for whoever asks first — the words are then kept on the note.
    */
   | 'transcripts'
+  /**
+   * A Copilot answer the model wrote. Refunded when it declined or failed,
+   * and never spent on an answer served from the cache.
+   */
+  | 'copilot'
 
 export interface QuotaStatus {
   limit: number | null

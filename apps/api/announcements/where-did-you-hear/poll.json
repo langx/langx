@@ -1,18 +1,44 @@
 {
   "kind": "poll",
-  "pollId": "2026-10-heard-from",
+  "pollId": "heard-about",
   "options": [
     {
-      "id": "store-search",
+      "id": "store",
       "labels": {
-        "en": "App store search",
-        "tr": "Mağaza araması",
-        "es": "Búsqueda en la tienda",
-        "ru": "Поиск в магазине",
-        "ar": "البحث في المتجر",
-        "fr": "Recherche dans le store",
-        "de": "Suche im App Store",
-        "pt-BR": "Busca na loja"
+        "en": "App Store or Google Play",
+        "tr": "App Store ya da Google Play",
+        "es": "App Store o Google Play",
+        "ru": "App Store или Google Play",
+        "ar": "App Store أو Google Play",
+        "fr": "App Store ou Google Play",
+        "de": "App Store oder Google Play",
+        "pt-BR": "App Store ou Google Play"
+      }
+    },
+    {
+      "id": "search",
+      "labels": {
+        "en": "Google or another search engine",
+        "tr": "Google ya da başka bir arama motoru",
+        "es": "Google u otro buscador",
+        "ru": "Google или другой поисковик",
+        "ar": "Google أو محرك بحث آخر",
+        "fr": "Google ou un autre moteur de recherche",
+        "de": "Google oder eine andere Suchmaschine",
+        "pt-BR": "Google ou outro buscador"
+      }
+    },
+    {
+      "id": "ai",
+      "labels": {
+        "en": "ChatGPT or another AI",
+        "tr": "ChatGPT ya da başka bir yapay zekâ",
+        "es": "ChatGPT u otra IA",
+        "ru": "ChatGPT или другой ИИ",
+        "ar": "ChatGPT أو ذكاء اصطناعي آخر",
+        "fr": "ChatGPT ou une autre IA",
+        "de": "ChatGPT oder eine andere KI",
+        "pt-BR": "ChatGPT ou outra IA"
       }
     },
     {
@@ -20,38 +46,25 @@
       "labels": {
         "en": "A friend",
         "tr": "Bir arkadaş",
-        "es": "Un amigo",
-        "ru": "Друг",
-        "ar": "صديق",
-        "fr": "Un ami",
-        "de": "Freunde",
-        "pt-BR": "Um amigo"
+        "es": "Por un amigo o una amiga",
+        "ru": "От друзей",
+        "ar": "من صديق",
+        "fr": "Par un proche",
+        "de": "Durch Freunde",
+        "pt-BR": "Por um amigo ou amiga"
       }
     },
     {
-      "id": "instagram",
+      "id": "tiktok-instagram",
       "labels": {
-        "en": "Instagram",
-        "tr": "Instagram",
-        "es": "Instagram",
-        "ru": "Instagram",
-        "ar": "Instagram",
-        "fr": "Instagram",
-        "de": "Instagram",
-        "pt-BR": "Instagram"
-      }
-    },
-    {
-      "id": "tiktok",
-      "labels": {
-        "en": "TikTok",
-        "tr": "TikTok",
-        "es": "TikTok",
-        "ru": "TikTok",
-        "ar": "TikTok",
-        "fr": "TikTok",
-        "de": "TikTok",
-        "pt-BR": "TikTok"
+        "en": "TikTok or Instagram",
+        "tr": "TikTok ya da Instagram",
+        "es": "TikTok o Instagram",
+        "ru": "TikTok или Instagram",
+        "ar": "TikTok أو Instagram",
+        "fr": "TikTok ou Instagram",
+        "de": "TikTok oder Instagram",
+        "pt-BR": "TikTok ou Instagram"
       }
     },
     {
@@ -68,42 +81,29 @@
       }
     },
     {
-      "id": "reddit",
+      "id": "app-list",
       "labels": {
-        "en": "Reddit",
-        "tr": "Reddit",
-        "es": "Reddit",
-        "ru": "Reddit",
-        "ar": "Reddit",
-        "fr": "Reddit",
-        "de": "Reddit",
-        "pt-BR": "Reddit"
-      }
-    },
-    {
-      "id": "google",
-      "labels": {
-        "en": "Google",
-        "tr": "Google",
-        "es": "Google",
-        "ru": "Google",
-        "ar": "Google",
-        "fr": "Google",
-        "de": "Google",
-        "pt-BR": "Google"
+        "en": "An app list or review site",
+        "tr": "Bir uygulama listesi ya da inceleme sitesi",
+        "es": "Una lista de apps o una web de reseñas",
+        "ru": "Подборка приложений или сайт с отзывами",
+        "ar": "قائمة تطبيقات أو موقع مراجعات",
+        "fr": "Une liste d’applis ou un site d’avis",
+        "de": "Eine App-Liste oder Bewertungsseite",
+        "pt-BR": "Uma lista de apps ou site de avaliações"
       }
     },
     {
       "id": "other",
       "labels": {
         "en": "Somewhere else",
-        "tr": "Diğer",
-        "es": "Otro",
-        "ru": "Другое",
+        "tr": "Başka bir yer",
+        "es": "En otro sitio",
+        "ru": "Где-то ещё",
         "ar": "مكان آخر",
-        "fr": "Autre",
+        "fr": "Ailleurs",
         "de": "Woanders",
-        "pt-BR": "Outro"
+        "pt-BR": "Outro lugar"
       }
     }
   ]

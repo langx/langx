@@ -48,6 +48,18 @@ export interface BroadcastJob {
    * from `poll.json` / `card.json`; the panel has no editor for it.
    */
   interactive?: BroadcastInteractive
+  /**
+   * Send to each person at this hour on their own clock, 0-23, rather than
+   * as fast as the UTC window allows.
+   *
+   * The UTC window keeps a push out of the night only for the half of the
+   * world it was drawn around: 07:00 UTC is 3am in Toronto. With this set the
+   * window is not consulted at all — every tick asks who is in this hour now
+   * (`profilesInLocalHour`) and writes to whoever of them has no copy yet, so
+   * a broadcast takes a full day to go round. The cursor is not used: people
+   * come due in timezone order, not `_id` order.
+   */
+  localHour?: number
   pushTitle: string
   status: BroadcastStatus
   createdAt: Date
@@ -121,6 +133,7 @@ export async function createBroadcast(
     bodies: Record<string, string>
     images?: Record<string, MessageMedia>
     interactive?: BroadcastInteractive
+    localHour?: number
     pushTitle: string
     createdBy: string
   },
@@ -131,6 +144,7 @@ export async function createBroadcast(
     bodies: input.bodies,
     ...(input.images && Object.keys(input.images).length > 0 ? { images: input.images } : {}),
     ...(input.interactive ? { interactive: input.interactive } : {}),
+    ...(input.localHour !== undefined ? { localHour: input.localHour } : {}),
     pushTitle: input.pushTitle,
     // A draft sends nothing. Starting it is a second, separate request — which
     // is the only reason a back button or a double tap cannot broadcast.

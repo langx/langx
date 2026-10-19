@@ -86,6 +86,19 @@ export default function AdminHomeScreen() {
          * A developer's page rather than an operator's, so it only exists
          * where the other debug surfaces do: a dev build with the flag set.
          */}
+        {/*
+         * Copilot's only way in until its screens exist. An operator's page,
+         * not a developer's: it is how Copilot is tried on a real build before
+         * anybody else can reach it, so it is not behind the debug flag.
+         */}
+        <View style={styles.group}>
+          <ListRow
+            title={ADMIN.copilot.entryRow}
+            onPress={() => router.push('/(app)/admin/copilot')}
+            last
+          />
+        </View>
+
         {isDebugPanelEnabled() ? (
           <View style={styles.group}>
             <ListRow

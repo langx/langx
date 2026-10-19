@@ -261,6 +261,19 @@ export const COLLECTIONS = {
    * messages.
    */
   assistantUsage: 'assistantUsage',
+  /**
+   * Copilot's twin of `assistantUsage`: one document per UTC day counting the
+   * answers the model wrote for everybody — the global spend ceiling. Its own
+   * collection so neither feature can spend the other's day.
+   */
+  copilotUsage: 'copilotUsage',
+  /**
+   * Copilot answers, keyed by a hash of everything that went into the
+   * question — the action, the model, the prompt's version, the reader's
+   * language and the text. Linked to no account, and gone after
+   * `COPILOT_RULES.cacheDays`. See `modules/copilot/cache.ts`.
+   */
+  copilotCache: 'copilotCache',
   tokenLedger: 'tokenLedger',
   tokenAggregates: 'tokenAggregates',
   dailyActivity: 'dailyActivity',

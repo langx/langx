@@ -35,7 +35,57 @@ export const ptBR: Localized<EnMessages> = {
     notLoaded: 'Não foi possível carregar',
   },
 
-  tabs: { discover: 'Descobrir', chats: 'Conversas', echo: 'Echo', feed: 'Feed', me: 'Eu' },
+  tabs: {
+    discover: 'Descobrir',
+    chats: 'Conversas',
+    echo: 'Echo',
+    feed: 'Feed',
+    me: 'Eu',
+    home: 'Início',
+    people: 'Pessoas',
+    posts: 'Publicações',
+  },
+
+  home: {
+    greetingMorning: 'Bom dia, {name}',
+    greetingAfternoon: 'Boa tarde, {name}',
+    greetingEvening: 'Boa noite, {name}',
+    subtitle: 'Uma coisa primeiro, depois o resto do dia.',
+    waitingTitle: '{name} está esperando',
+    yourTurn: 'Sua vez',
+    replyTo: 'Responder a {name}',
+    sessionTitle: 'Sua chamada com {name}',
+    sessionAt: 'Às {time}',
+    sessionOpen: 'Abrir a conversa',
+    streakTitle: {
+      one: 'Mantenha sua sequência de {count} dia',
+      other: 'Mantenha sua sequência de {count} dias',
+    },
+    streakBody: 'Hoje ainda não contou.',
+    streakEcho: 'Revisar seus cartões',
+    streakChats: 'Escrever para alguém',
+    echoTitle: { one: '{count} cartão pronto', other: '{count} cartões prontos' },
+    echoBody: 'Alguns minutos no Echo mantêm tudo fresco.',
+    echoStart: 'Começar uma revisão',
+    todayTitle: 'As três de hoje',
+    todayCount: '{done} de {total} feitas',
+    todayCorrect: 'Ajudar com uma frase',
+    todayNotYet: 'Ainda não',
+    streakDays: { one: 'Sequência de {count} dia', other: 'Sequência de {count} dias' },
+    streakNext: {
+      one: 'Falta {count} dia para sua recompensa de {day} dias',
+      other: 'Faltam {count} dias para sua recompensa de {day} dias',
+    },
+    peopleTitle: 'Pessoas de hoje',
+    seeAll: 'Ver tudo',
+    sayHello: 'Dizer oi',
+    proTitle: 'Vá além com o Pro',
+    proButton: 'Ver o que o Pro oferece',
+    inviteTitle: 'Aprenda com um amigo',
+    guestTitle: 'Deixe o LangX com a sua cara',
+    guestBody:
+      'Com uma conta, você pode escrever para as pessoas, manter uma sequência e salvar o que aprende no Echo.',
+  },
 
   composer: {
     removeAttachment: 'Remover anexo',
@@ -2907,5 +2957,19 @@ export const ptBR: Localized<EnMessages> = {
         other: 'tokens ganhos',
       },
     },
+  },
+  copilot: {
+    label: 'IA · pode errar',
+    off: 'O Copilot está desativado.',
+    consentTitle: 'Antes de usar o Copilot',
+    consentBody:
+      'O Copilot é um assistente com IA. Ele pode revisar uma frase antes de você enviar, sugerir respostas e explicar uma correção que alguém fez para você.',
+    consentSends:
+      'Quando você pede, o texto em questão é enviado à Anthropic, a empresa que opera o modelo de IA, junto com seus idiomas e níveis. Nas ideias de resposta, isso inclui as últimas mensagens da conversa.',
+    consentNever: 'Seu nome, e-mail, fotos e mensagens de voz nunca são enviados.',
+    consentWrong:
+      'A IA pode errar. As respostas dela são marcadas como IA, e nada chega à outra pessoa a menos que você mesmo envie.',
+    consentAccept: 'Ativar o Copilot',
+    consentDecline: 'Agora não',
   },
 }

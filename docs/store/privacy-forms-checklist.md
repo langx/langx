@@ -158,6 +158,43 @@ be redeemed, and the outcome is a free grant rather than a wager — so Apple's
 questionnaire (gambling, loot boxes bought with money) stays as it is. The
 messaging rules that keep it that way are in `docs/token-messaging-brief.md`.
 
+## 7. Copilot — only on the day it is switched on
+
+**Untick nothing and tick nothing here until then.** Copilot's server side
+ships dark (`privacy-data-safety.md` → _Copilot_); while `flags.copilotEnabled`
+is off no text reaches the provider, and a form that names one would be ahead
+of the app. Behic does each step himself, in this order, and the flag is last:
+
+- [ ] **Privacy policy (langx.io), first.** Name Anthropic as the processor
+      for Copilot. Say what it receives — the text asked about with the
+      person's languages and levels and app language; for Reply ideas the last
+      six text lines of that chat, both people's, each cut to 200 characters
+      and labelled only "me" or "them"; for Explain the original, the fix and
+      the corrector's note — and what it never receives: names, handles, ids,
+      email, photos, voice notes, view-once messages. Say it happens only after
+      the in-app consent, which can be withdrawn; that our cache keeps an
+      answer for 7 days linked to no account; that it is not available to
+      16- and 17-year-olds and their messages are not sent; and the provider's
+      own retention and training terms as it publishes them.
+- [ ] **Play Data Safety → Messages → Other in-app messages.** Stays
+      collected, **not shared** — a service provider processing for us is not
+      sharing on Play's definition — purpose **App functionality**. Read the
+      form's help text on service providers before relying on that sentence.
+      No new data type.
+- [ ] **Apple App Privacy → User Content** (Emails or Text Messages / Other
+      User Content). Confirm it is declared, linked to the user, purpose **App
+      Functionality**; tracking stays **no**. Apple counts what a processor
+      receives as collected by the app, which it already is.
+- [ ] **App Review notes**, with the build whose screens offer Copilot:
+      describe it and its consent sheet (guideline 5.1.2(i)).
+- [ ] **Before the flag, in the app:** a Settings control to withdraw consent
+      (the server's `DELETE /copilot/consent` exists; the lab has the only
+      button today), and a way to report an AI answer (Play's AI-generated
+      content policy). Both belong to the PR that ships Copilot's screens.
+- [ ] **A spend limit** on the key's workspace with the provider —
+      `COPILOT_RULES.globalCallsPerDay` is our ceiling; that one is theirs.
+- [ ] **Then the flag:** `scripts/maintenance.ts flag copilotEnabled true`.
+
 ## Reference — the rest of the Play form
 
 Unchanged by this pass; listed so a full re-verification does not need a second

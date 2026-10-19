@@ -61,6 +61,52 @@ export const en = {
     echo: 'Echo',
     feed: 'Feed',
     me: 'Me',
+    home: 'Home',
+    people: 'People',
+    posts: 'Posts',
+  },
+
+  /**
+   * Home, the redesign’s first tab, behind `flags.v3Home`. Its Pro card
+   * and invite card reuse `me.proBody`, `me.inviteBody` and `me.invite`, so
+   * the two places that describe Pro and invites cannot drift apart.
+   */
+  home: {
+    greetingMorning: 'Good morning, {name}',
+    greetingAfternoon: 'Good afternoon, {name}',
+    greetingEvening: 'Good evening, {name}',
+    subtitle: 'One thing first, then the rest of today.',
+    waitingTitle: '{name} is waiting',
+    yourTurn: 'Your turn',
+    replyTo: 'Reply to {name}',
+    sessionTitle: 'Your call with {name}',
+    sessionAt: 'At {time}',
+    sessionOpen: 'Open the chat',
+    streakTitle: { one: 'Keep your {count}-day streak', other: 'Keep your {count}-day streak' },
+    streakBody: 'Today has not counted yet.',
+    streakEcho: 'Review your cards',
+    streakChats: 'Write to someone',
+    echoTitle: { one: '{count} card ready', other: '{count} cards ready' },
+    echoBody: 'A few minutes in Echo keeps them fresh.',
+    echoStart: 'Start a review',
+    todayTitle: 'Today’s three',
+    todayCount: '{done} of {total} done',
+    todayCorrect: 'Help with a sentence',
+    todayNotYet: 'Not yet',
+    streakDays: { one: '{count}-day streak', other: '{count}-day streak' },
+    streakNext: {
+      one: '{count} day to your {day}-day reward',
+      other: '{count} days to your {day}-day reward',
+    },
+    peopleTitle: 'Today’s people',
+    seeAll: 'See all',
+    sayHello: 'Say hello',
+    proTitle: 'Go further with Pro',
+    proButton: 'See what Pro adds',
+    inviteTitle: 'Learn with a friend',
+    guestTitle: 'Make LangX yours',
+    guestBody:
+      'With an account you can write to people, keep a streak and save what you learn in Echo.',
   },
 
   composer: {
@@ -3181,6 +3227,27 @@ export const en = {
         other: 'tokens earned',
       },
     },
+  },
+  /**
+   * Copilot, the AI helper in a chat. Only the consent sheet and the words
+   * for "off" are drawn so far; the actions arrive with their screens.
+   */
+  copilot: {
+    /** On every Copilot answer and on its consent sheet. Blue, never green: green is a person's correction. */
+    label: 'AI · may be wrong',
+    /** Copilot cannot answer here at all — switched off, or not for this account. */
+    off: 'Copilot is off.',
+    consentTitle: 'Before you use Copilot',
+    consentBody:
+      'Copilot is an AI helper. It can check a sentence before you send it, suggest replies, and explain a correction somebody gave you.',
+    /** Names the provider: App Review asks who receives the data, not just that someone does. */
+    consentSends:
+      'When you ask, the text you asked about goes to Anthropic, the company that runs the AI model, with your languages and levels. For reply ideas, that includes the last few messages in the chat.',
+    consentNever: 'Your name, email, photos and voice notes are never sent.',
+    consentWrong:
+      'AI can be wrong. Its answers are marked AI, and nothing reaches the other person unless you send it yourself.',
+    consentAccept: 'Turn on Copilot',
+    consentDecline: 'Not now',
   },
 } as const
 

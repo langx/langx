@@ -35,7 +35,57 @@ export const de: Localized<EnMessages> = {
     notLoaded: 'Nicht geladen',
   },
 
-  tabs: { discover: 'Entdecken', chats: 'Chats', echo: 'Echo', feed: 'Feed', me: 'Ich' },
+  tabs: {
+    discover: 'Entdecken',
+    chats: 'Chats',
+    echo: 'Echo',
+    feed: 'Feed',
+    me: 'Ich',
+    home: 'Start',
+    people: 'Leute',
+    posts: 'Beiträge',
+  },
+
+  home: {
+    greetingMorning: 'Guten Morgen, {name}',
+    greetingAfternoon: 'Guten Tag, {name}',
+    greetingEvening: 'Guten Abend, {name}',
+    subtitle: 'Erst eine Sache, dann der Rest des Tages.',
+    waitingTitle: '{name} wartet auf dich',
+    yourTurn: 'Du bist dran',
+    replyTo: '{name} antworten',
+    sessionTitle: 'Dein Anruf mit {name}',
+    sessionAt: 'Um {time}',
+    sessionOpen: 'Chat öffnen',
+    streakTitle: {
+      one: 'Halte deine Serie von {count} Tag',
+      other: 'Halte deine Serie von {count} Tagen',
+    },
+    streakBody: 'Der heutige Tag zählt noch nicht.',
+    streakEcho: 'Karten wiederholen',
+    streakChats: 'Jemandem schreiben',
+    echoTitle: { one: '{count} Karte bereit', other: '{count} Karten bereit' },
+    echoBody: 'Ein paar Minuten in Echo halten sie frisch.',
+    echoStart: 'Wiederholung starten',
+    todayTitle: 'Drei für heute',
+    todayCount: '{done} von {total} erledigt',
+    todayCorrect: 'Bei einem Satz helfen',
+    todayNotYet: 'Noch nicht',
+    streakDays: { one: '{count} Tag in Folge', other: '{count} Tage in Folge' },
+    streakNext: {
+      one: 'Noch {count} Tag bis zur Belohnung für {day} Tage',
+      other: 'Noch {count} Tage bis zur Belohnung für {day} Tage',
+    },
+    peopleTitle: 'Leute von heute',
+    seeAll: 'Alle ansehen',
+    sayHello: 'Hallo sagen',
+    proTitle: 'Mehr mit Pro',
+    proButton: 'Ansehen, was Pro bietet',
+    inviteTitle: 'Mit Freunden lernen',
+    guestTitle: 'Mach LangX zu deinem',
+    guestBody:
+      'Mit einem Konto kannst du Leuten schreiben, eine Serie halten und Gelerntes in Echo speichern.',
+  },
 
   composer: {
     removeAttachment: 'Anhang entfernen',
@@ -2965,5 +3015,20 @@ export const de: Localized<EnMessages> = {
         other: 'Token verdient',
       },
     },
+  },
+  copilot: {
+    label: 'KI · kann sich irren',
+    off: 'Copilot ist ausgeschaltet.',
+    consentTitle: 'Bevor du Copilot nutzt',
+    consentBody:
+      'Copilot ist ein KI-Helfer. Er kann einen Satz prüfen, bevor du ihn sendest, Antworten vorschlagen und dir eine Korrektur erklären, die dir jemand gegeben hat.',
+    consentSends:
+      'Wenn du fragst, geht der Text, um den es geht, zusammen mit deinen Sprachen und Niveaus an Anthropic, das Unternehmen, das das KI-Modell betreibt. Bei Antwortideen gehören die letzten Nachrichten im Chat dazu.',
+    consentNever:
+      'Dein Name, deine E-Mail-Adresse, Fotos und Sprachnachrichten werden nie gesendet.',
+    consentWrong:
+      'KI kann sich irren. Ihre Antworten sind als KI gekennzeichnet, und bei der anderen Person kommt nichts an, solange du es nicht selbst sendest.',
+    consentAccept: 'Copilot einschalten',
+    consentDecline: 'Jetzt nicht',
   },
 }
