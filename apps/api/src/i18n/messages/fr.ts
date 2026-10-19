@@ -586,6 +586,16 @@ export const fr: Localized<ServerMessages> = {
       other:
         '🎉 {friends} amis que tu as invités discutent sur LangX. {count} mois de Pro pour toi !',
     },
+    introReferralWeeks: {
+      one: '🎉 Une personne que tu as invitée discute sur LangX. {count} semaine de Pro pour toi, et du Pro pour elle aussi !',
+      other:
+        '🎉 Une personne que tu as invitée discute sur LangX. {count} semaines de Pro pour toi, et du Pro pour elle aussi !',
+    },
+    introInvitedWeeks: {
+      one: '🎉 Ta première vraie conversation sur LangX ! Tu as rejoint LangX grâce à une invitation, alors {count} semaine de Pro est pour toi.',
+      other:
+        '🎉 Ta première vraie conversation sur LangX ! Tu as rejoint LangX grâce à une invitation, alors {count} semaines de Pro sont pour toi.',
+    },
     introStreak: {
       one: '🔥 {days} jours d’affilée, chapeau ! Pour te remercier, on t’offre {count} mois de Pro.',
       other:

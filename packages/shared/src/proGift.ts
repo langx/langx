@@ -5,7 +5,8 @@ import { z } from 'zod'
  *
  * Four doors, one mechanism. An operator gives one from the panel; a streak
  * crossing a milestone earns one; every few invitees who become real users
- * earn their referrer one; and a gift code typed into the paywall redeems
+ * earn their referrer one (or, under `giveAWeek`, every one earns a week for
+ * both sides); and a gift code typed into the paywall redeems
  * one (`giftCode.ts`). Each writes a `proGifts` row and the
  * scheduler turns the row into a RevenueCat promotional grant — so the rules
  * of *who* gets *what* are here, and the API only carries them out.
@@ -49,6 +50,17 @@ export const PRO_GIFT_RULES = {
    * anybody can read off a calendar: it opens again on 1 January.
    */
   referral: { activationsPerGift: 3, monthsPerGift: 1, maxGiftsPerYear: 3 },
+  /**
+   * "Give a week, get a week" — what replaces `referral` above while
+   * `flags.giveAWeek` is on. Every invitee who becomes a real user earns the
+   * referrer `referrerWeeks` and gives the invitee `inviteeWeeks`, once each.
+   *
+   * `maxReferrerWeeksPerYear` caps the referrer's side, counted per calendar
+   * year in UTC like `referral`; the invitee's side has no cap of its own,
+   * because a person is somebody's invitee once in their life. The value is a
+   * proposal until Behic confirms it.
+   */
+  giveAWeek: { referrerWeeks: 1, inviteeWeeks: 1, maxReferrerWeeksPerYear: 12 },
   /**
    * The two reminders before a gift runs out, nearest first. Informational,
    * never a sales letter — a nudge to buy is marketing, and marketing needs a
@@ -94,6 +106,16 @@ export function streakGiftsOwed(
   return PRO_GIFT_RULES.streak.filter(
     (rung) => current >= rung.days && !alreadyGiven.includes(rung.days),
   )
+}
+
+/**
+ * How many referrer weeks fit in one calendar year: the cap is written in
+ * weeks, and each activation is one grant of `referrerWeeks`. A grant never
+ * goes over the cap, so a remainder is left unused rather than paid short.
+ */
+export function referralWeekSlotsPerYear(): number {
+  const { referrerWeeks, maxReferrerWeeksPerYear } = PRO_GIFT_RULES.giveAWeek
+  return Math.floor(maxReferrerWeeksPerYear / referrerWeeks)
 }
 
 /** How many referral gifts `activations` in one calendar year have earned, capped. */

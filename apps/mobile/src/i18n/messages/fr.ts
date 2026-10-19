@@ -2290,6 +2290,28 @@ export const fr: Localized<EnMessages> = {
       one: 'Les invitations te rapportent des tokens pour {count} personne maximum par mois.',
       other: 'Les invitations te rapportent des tokens pour {count} personnes maximum par mois.',
     },
+    weekTitle: {
+      one: 'Offre une semaine de Pro, reçois-en une',
+      other: 'Offre {count} semaines de Pro, reçois-en {count}',
+    },
+    weekTitleGive: {
+      one: 'Offre une semaine de Pro à quelqu’un',
+      other: 'Offre {count} semaines de Pro à quelqu’un',
+    },
+    weekUnit: {
+      one: 'semaine de Pro chacun',
+      other: 'semaines de Pro chacun',
+    },
+    weekUnitGive: {
+      one: 'semaine de Pro pour la personne invitée',
+      other: 'semaines de Pro pour la personne invitée',
+    },
+    weekWhen: 'Dès qu’une personne que tu invites a une vraie conversation avec quelqu’un',
+    weekCap: {
+      one: 'Tu peux gagner jusqu’à {count} semaine par an.',
+      other: 'Tu peux gagner jusqu’à {count} semaines par an.',
+    },
+    weekAddsOn: 'La tienne s’ajoute à la fin de ton Pro actuel.',
   },
 
   tokenKind: {
