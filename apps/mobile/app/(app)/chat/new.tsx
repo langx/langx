@@ -91,6 +91,13 @@ export default function NewChatScreen() {
    * being no conversation id to seed them by.
    */
   const offerTopics = !suspended && !refused && !sending && partnerId !== ''
+  /**
+   * They are new, so this hello will not count against the day's new chats —
+   * said before it is written, because it is the reason to write it now. Only
+   * the server knows (the switch, the ceiling, both ages), so only its word
+   * draws the line; a refusal after all still opens the paywall below.
+   */
+  const freeHello = partner?.freeHello === true && !sending
 
   /*
    * A conversation these two already have makes this the wrong screen: the
@@ -333,18 +340,21 @@ export default function NewChatScreen() {
             </Text>
           </View>
         ) : (
-          <ChatComposer
-            value={draft}
-            onChangeText={setDraft}
-            placeholder={
-              partner ? t('chat.sayHello', { name: partner.displayName }) : t('chat.writeMessage')
-            }
-            onSend={() => void send()}
-            topicSeed={offerTopics ? partnerId : undefined}
-            topicInterests={partner?.interests}
-            busy={startConversation.isPending}
-            autoFocus
-          />
+          <>
+            {freeHello ? <Text style={styles.freeHello}>{t('chat.newcomerHelloFree')}</Text> : null}
+            <ChatComposer
+              value={draft}
+              onChangeText={setDraft}
+              placeholder={
+                partner ? t('chat.sayHello', { name: partner.displayName }) : t('chat.writeMessage')
+              }
+              onSend={() => void send()}
+              topicSeed={offerTopics ? partnerId : undefined}
+              topicInterests={partner?.interests}
+              busy={startConversation.isPending}
+              autoFocus
+            />
+          </>
         )}
       </Animated.View>
     </Screen>
@@ -391,6 +401,14 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   // The thread's `channelNote`, so the two lines read as one rule.
   suspendedNote: { paddingHorizontal: spacing.lg, paddingVertical: spacing.lg },
   suspendedNoteText: { ...font.caption, color: colors.textFaint, textAlign: 'center' },
+  // The same caption, a step darker: it is good news rather than a closed door.
+  freeHello: {
+    ...font.caption,
+    color: colors.textMuted,
+    paddingBottom: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    textAlign: 'center',
+  },
   threadTip: {
     ...font.caption,
     alignSelf: 'center',

@@ -4,6 +4,7 @@ import type { PushSender } from '../push/devices'
 import { runBroadcastQueuePass } from '../admin/broadcastQueue'
 import { runPlanEndedPass } from '../billing/planEnded'
 import { runProGiftPass, type ProGiftDeps } from '../billing/proGifts'
+import { runTrialEndingPass } from '../billing/trialEnding'
 import { withJobHealth } from '../admin/jobHealth'
 import { runSuspensionEndedPass } from '../moderation/suspensionEnded'
 import type { OfficialDelivery } from '../official/deliver'
@@ -133,6 +134,18 @@ export function startNotificationScheduler(
             runPlanEndedPass(db, { email: senders.email.sender, push: senders.push, logger }, now),
           ),
         /*
+         * Its sibling ahead of the money rather than behind it: two days
+         * before a free trial becomes a charge. Off until its flag is on.
+         */
+        () =>
+          run('billing trial ending', () =>
+            runTrialEndingPass(
+              db,
+              { email: senders.email.sender, push: senders.push, logger },
+              now,
+            ),
+          ),
+        /*
          * The other clock-triggered transactional note. A suspension is one
          * date and one comparison, so nothing fires when the date passes —
          * an end, like an absence, is something only the clock can notice.
@@ -181,7 +194,7 @@ export function startNotificationScheduler(
             runDailyDigestPass(db, senders.email, now, options.storagePublicBaseUrl, logger),
           ),
         () => run('newsletter', () => runNewsletterPass(db, senders.email, now)),
-        () => run('promotions', () => runPromotionsPass(db, senders, now)),
+        () => run('promotions', () => runPromotionsPass(db, senders, now, logger)),
         () =>
           run('campaign queue', () =>
             runCampaignQueuePass(db, senders.email, now, {

@@ -228,3 +228,14 @@ export const PROFILE_VISITS_EMAIL_MAX_NAMES = 5
  * a better note to end on than telling them at breakfast about yesterday.
  */
 export const BADGE_ROUND_UP_LOCAL_HOUR = 18
+
+/**
+ * When the day's "your post got N likes" push goes out, once
+ * `flags.nudgeNoSilentDrops` is on.
+ *
+ * Three in the afternoon: three hours from the visits round-up at noon and
+ * three from the badges at six, so no two of the day's batched pushes land
+ * together. Before it had an hour, the batch went at the first tick after the
+ * day's first like anywhere — midnight UTC, which is somebody's 3am.
+ */
+export const LIKES_ROUND_UP_LOCAL_HOUR = 15

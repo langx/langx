@@ -153,6 +153,7 @@ import {
 import { ScheduleTimeSheet } from '../components/ScheduleTimeSheet'
 import { TestimonialSheet } from '../components/testimonials/TestimonialSheet'
 import { ThreadTestimonialCard } from '../components/testimonials/ThreadTestimonialCard'
+import { FirstReplyCard } from '../components/FirstReplyCard'
 import { DiscardUnsentButton } from '../components/DiscardUnsentButton'
 import {
   addPending,
@@ -3128,6 +3129,26 @@ export function ChatScreen({
                     the newest thing in it.
                   */}
                     {partnerTyping ? <TypingIndicator /> : null}
+                    {/*
+                      Nearest the composer, and not a message: the first time
+                      somebody wrote back, once it has been answered. A jump
+                      into the history is a slice, and says nothing about who
+                      spoke first.
+                    */}
+                    {partner ? (
+                      <FirstReplyCard
+                        conversationId={conversationId}
+                        partnerId={partnerId}
+                        partnerName={partner.displayName}
+                        partnerIsPerson={
+                          partner.official !== true &&
+                          !readOnly &&
+                          partner.accountStatus !== 'deleted'
+                        }
+                        messages={items}
+                        hasOlder={jumpAnchor !== null || messages.hasNextPage}
+                      />
+                    ) : null}
                     {/* Last of all, nearest the composer — and not a message. */}
                     {reviewOpen && (!testimonial.written || reviewedHere) ? (
                       <ThreadTestimonialCard
