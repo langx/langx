@@ -739,6 +739,15 @@ export const en = {
       '⏳ Your Pro week ends tomorrow, {date}. Your plan options are in Settings → Subscription.',
     endedWelcome:
       'Your Pro week has ended. Thanks for practising with us — see you in the chats! 💛',
+    /**
+     * Added to a gift's reminder and to its goodbye when languages added
+     * during it pause on the free plan (`languagesPauseOnFree`). What changes
+     * and that nothing is removed; never a reason to buy, for the reason above.
+     */
+    languagesPauseSoon:
+      '🌍 The languages you added during it pause in Discover once you’re back on the free plan. They stay on your profile.',
+    languagesPaused:
+      '🌍 The languages you added during it are paused in Discover now that you’re on the free plan. They stay on your profile.',
   },
 
   /**

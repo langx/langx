@@ -364,7 +364,12 @@ later the reminders are the first they hear of it.
 
 The reminders are **information, not an offer**: when it ends and where the
 plan screen is. A "subscribe now" would be marketing and would need the consent
-these never ask for. None is sent when a later gift has moved the end, or when
+these never ask for. When languages added during the gift will pause in
+Discover on the free plan (`languagesPauseOnFree`), the reminder says so and
+the goodbye says they now are (`proGift.languagesPauseSoon`,
+`proGift.languagesPaused`): what changes and that they stay on the profile,
+never that Pro brings them back. Installed builds draw a paused language like
+any other, so these notes are where every build hears of it. None is sent when a later gift has moved the end, or when
 a subscription or a lifetime carries Pro past it anyway. The pushes go through
 `fanOutMessage`, so a muted @langx thread and the message switch silence them;
 the mails go only to a verified address that `isUserSuppressed` does not list.

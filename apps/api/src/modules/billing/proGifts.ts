@@ -19,6 +19,7 @@ import { deliverOfficialMessage, type OfficialDelivery } from '../official/deliv
 import { emailFor } from '../profiles/emailFor'
 import { localeFor } from '../profiles/localeFor'
 import type { Profile } from '../profiles/profiles'
+import { languagesPauseOnFree } from '../profiles/languagePause'
 import { GIFT_WELCOME_SOURCE, markProWelcome } from './proWelcome'
 import { recordProWeekEnd } from './proWeek'
 import { refreshEntitlement } from './refresh'
@@ -717,6 +718,7 @@ async function runReminders(db: Db, deps: ProGiftDeps, now: Date): Promise<numbe
       // The Pro Week's own words, which name it and say where the plan screen
       // is in both — its week is usually only long enough for the day's note.
       const welcome = gift.source === 'welcome'
+      const pausing = await pausesLanguages(db, deps, gift.userId)
       const told = await sayFromLangx(
         db,
         deps,
@@ -727,6 +729,7 @@ async function runReminders(db: Db, deps: ProGiftDeps, now: Date): Promise<numbe
             week
               ? t(welcome ? 'proGift.reminderWeekWelcome' : 'proGift.reminderWeek', { date })
               : t(welcome ? 'proGift.reminderDayWelcome' : 'proGift.reminderDay', { date }),
+            ...(pausing ? [t('proGift.languagesPauseSoon')] : []),
           ],
           // A week out it is a note to read when convenient; the day before is
           // worth a knock.
@@ -747,6 +750,21 @@ async function runReminders(db: Db, deps: ProGiftDeps, now: Date): Promise<numbe
     }
   }
   return sent
+}
+
+/**
+ * Whether a gift's last notes should say that languages added during it pause
+ * in Discover on the free plan (`languagesPauseOnFree`). Information, like the
+ * date: it says what changes and that nothing is removed, and names no reason
+ * to buy. A failed read leaves the line out rather than the note.
+ */
+async function pausesLanguages(db: Db, deps: ProGiftDeps, userId: string): Promise<boolean> {
+  try {
+    return await languagesPauseOnFree(db, userId)
+  } catch (error) {
+    deps.warn(error, 'pro gift language pause read failed')
+    return false
+  }
 }
 
 /**
@@ -789,6 +807,8 @@ async function runEndings(db: Db, deps: ProGiftDeps, now: Date): Promise<number>
       continue
     }
 
+    const t = translator(locale)
+    const paused = await pausesLanguages(db, deps, gift.userId)
     const told = await sayFromLangx(
       db,
       deps,
@@ -796,7 +816,8 @@ async function runEndings(db: Db, deps: ProGiftDeps, now: Date): Promise<number>
       {
         clientId: `proGiftEnded:${gift._id}`,
         paragraphs: [
-          translator(locale)(gift.source === 'welcome' ? 'proGift.endedWelcome' : 'proGift.ended'),
+          t(gift.source === 'welcome' ? 'proGift.endedWelcome' : 'proGift.ended'),
+          ...(paused ? [t('proGift.languagesPaused')] : []),
         ],
         push: false,
       },

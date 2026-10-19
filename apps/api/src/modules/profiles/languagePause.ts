@@ -51,6 +51,23 @@ export function languagePausePaths(
 }
 
 /**
+ * Whether the free plan pauses any of this person's languages — asked by a
+ * gift's reminders and its goodbye, so the pause is said before it happens
+ * and when it does, rather than found as a quieter Discover. Installed builds
+ * draw a paused language like any other, so these notes are the one place
+ * every build hears of it.
+ */
+export async function languagesPauseOnFree(db: Db, userId: string): Promise<boolean> {
+  const profile = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne(
+      { _id: userId, 'giftLanguages.0': { $exists: true } },
+      { projection: { nativeLanguages: 1, learning: 1, giftLanguages: 1 } },
+    )
+  return profile !== null && pausedLanguageCodes(profile, 'free').length > 0
+}
+
+/**
  * Brings `pausedLanguages` in line with the plan held now. Run after every
  * entitlement write, so a gift that ends pauses its languages and a purchase
  * that follows brings them back. A no-op for everybody without gift languages,

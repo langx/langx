@@ -621,6 +621,10 @@ export const es: Localized<ServerMessages> = {
       '⏳ Tu semana Pro termina mañana, el {date}. Tus opciones de plan están en Ajustes → Suscripción.',
     endedWelcome:
       'Tu semana Pro ha terminado. Gracias por practicar con nosotros. ¡Nos vemos en los chats! 💛',
+    languagesPauseSoon:
+      '🌍 Los idiomas que añadiste durante este tiempo se pausarán en Descubrir cuando vuelvas al plan gratuito. Seguirán en tu perfil.',
+    languagesPaused:
+      '🌍 Los idiomas que añadiste durante este tiempo están en pausa en Descubrir ahora que estás en el plan gratuito. Siguen en tu perfil.',
   },
   reportReason: {
     spam: 'Spam',
