@@ -1,4 +1,4 @@
-import { utcDayKey, type TokenSummary } from '@langx/shared'
+import { isInFirstWeek, utcDayKey, type TokenSummary } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { ERROR_CODES } from '@langx/shared'
 import { COLLECTIONS } from '../../db/collections'
@@ -11,7 +11,7 @@ import {
   readActivityWeek,
   scoreOf,
 } from './dailyActivity'
-import { countCorrectionsWritten } from './corrections'
+import { countCorrectionsWritten, hasBeenCorrected } from './corrections'
 import { countPostsByAuthor } from '../feed/feed'
 import { readAggregates } from './ledger'
 import { readLastPoolPayout } from './pool'
@@ -31,17 +31,27 @@ export async function getTokenSummary(
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
 
-  const [tokens, activity, week, corrections, posts, activeToday, lastPayout] = await Promise.all([
-    readAggregates(db, userId, at),
-    readActivity(db, userId, at),
-    // The subject's zone, not the reader's: the chart is a statement about
-    // their week, so its day letters have to match the days they lived.
-    readActivityWeek(db, userId, at, profile.timezone ?? 'UTC'),
-    countCorrectionsWritten(db, userId),
-    countPostsByAuthor(db, userId),
-    countActiveToday(db, at),
-    readLastPoolPayout(db, userId),
-  ])
+  /*
+   * The first week is the server's to say, not the phone's, so a clock that
+   * is a day out cannot show somebody a checklist the API has stopped
+   * answering for. A restored v1 account is not new however recent its
+   * profile row is: it brought its history with it.
+   */
+  const firstWeek = !profile.restoredFromV1 && isInFirstWeek(profile.createdAt, at)
+
+  const [tokens, activity, week, corrections, posts, activeToday, lastPayout, corrected] =
+    await Promise.all([
+      readAggregates(db, userId, at),
+      readActivity(db, userId, at),
+      // The subject's zone, not the reader's: the chart is a statement about
+      // their week, so its day letters have to match the days they lived.
+      readActivityWeek(db, userId, at, profile.timezone ?? 'UTC'),
+      countCorrectionsWritten(db, userId),
+      countPostsByAuthor(db, userId),
+      countActiveToday(db, at),
+      readLastPoolPayout(db, userId),
+      firstWeek ? hasBeenCorrected(db, userId) : undefined,
+    ])
   const counters = countersOf(activity)
 
   return {
@@ -64,5 +74,6 @@ export async function getTokenSummary(
     pool: { activeToday, lastPayout },
     lifetime: { corrections, posts },
     week,
+    ...(corrected === undefined ? {} : { firstWeek: { corrected } }),
   }
 }
