@@ -12,6 +12,7 @@ import { ensureOfficialAccounts } from '../official/accounts'
 import type { OfficialDelivery } from '../official/deliver'
 import type { Profile } from '../profiles/profiles'
 import type { StreakDay } from '../tokens/streakDays'
+import { getTokenSummary } from '../tokens/summary'
 import { createFakeRevenueCat } from './fakeRevenueCat'
 import { queueStreakGifts } from './proGiftRewards'
 import {
@@ -207,6 +208,18 @@ describe('the Pro Week', () => {
 
       expect(await queueProWeekExtension(db, sofia, new Date())).toBe(true)
       expect((await read(sofia._id))?.proGiftStreaks).toContain(PRO_WEEK_RULES.extensionStreakDays)
+    })
+
+    it("takes the seven-day rung's Pro off the streak ladder once the second week is given", async () => {
+      // The streak screen names Pro beside a rung only while the summary owes
+      // it; the second week is that rung's week, so it must stop being owed.
+      const sofia = await weekStartedDaysAgo(6)
+      for (let ago = 6; ago >= 0; ago--) await square(sofia._id, ago)
+      const owed = async () => (await getTokenSummary(db, sofia._id)).streak.proGiftRungs
+
+      expect(await owed()).toContain(PRO_WEEK_RULES.extensionStreakDays)
+      expect(await queueProWeekExtension(db, sofia, new Date())).toBe(true)
+      expect(await owed()).not.toContain(PRO_WEEK_RULES.extensionStreakDays)
     })
 
     it('counts no day that was only opened, bought back, or bridged by a freeze', async () => {
