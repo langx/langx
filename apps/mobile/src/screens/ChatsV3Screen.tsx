@@ -2,9 +2,17 @@ import Feather from '@expo/vector-icons/Feather'
 import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
 import { inFirstWeek } from '@langx/shared'
 import { useFonts } from 'expo-font'
-import { router, useLocalSearchParams } from 'expo-router'
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
+import {
+  ActivityIndicator,
+  AppState,
+  FlatList,
+  Pressable,
+  RefreshControl,
+  Text,
+  View,
+} from 'react-native'
 import {
   useConversationFlags,
   useConversations,
@@ -53,6 +61,9 @@ const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f']
 
 const COACH = 'chatsCoachCorrect' as const
 
+/** The finest step a row's time moves in: "now", then minutes. */
+const CLOCK_STEP_MS = 60_000
+
 /**
  * The redesign's Chats tab, behind `flags.v3Home`: the people waiting on you
  * first, as blocks in their own colours, then everyone else as rows. Drawn
@@ -96,11 +107,38 @@ function MemberChats() {
     router.push(`/(app)/chat/${selected}`)
   }, [twoPane, selected])
 
+  /*
+   * The clock the rows' times are read against. The rows are memoised, so one
+   * whose thread has not changed is not drawn again, and its "2m" from last
+   * night would still say "2m" the next morning — today's list redrew every
+   * row on any change at all, which is what kept its times right. So the
+   * clock moves when the tab comes into view, when the app comes back to the
+   * foreground and on a pull: each redraws every row once, and nothing a
+   * message or a presence update does moves it. Under a minute it stays put,
+   * since no time on a row is finer than that — so the focus that comes with
+   * the first mount, or a quick look at another tab, redraws nothing.
+   */
+  const [now, setNow] = useState(Date.now)
+  const tick = useCallback(
+    () => setNow((prev) => (Date.now() - prev < CLOCK_STEP_MS ? prev : Date.now())),
+    [],
+  )
+  useFocusEffect(tick)
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (next) => {
+      if (next === 'active') tick()
+    })
+    return () => subscription.remove()
+  }, [tick])
+
   const me = useMe()
   const meId = me.data?._id
   const [shelf, setShelf] = useState<Shelf>('all')
   const conversations = useConversations(shelf)
-  const pull = usePullToRefresh(() => conversations.refetch())
+  const pull = usePullToRefresh(() => {
+    setNow(Date.now())
+    return conversations.refetch()
+  })
   const flags = useConversationFlags()
   const removeConversation = useDeleteConversation()
   /** One drawer at a time: two open is two sets of buttons and no telling them apart. */
@@ -216,6 +254,7 @@ function MemberChats() {
             partner={thread.partner}
             lead={item.lead}
             selected={isSelected}
+            now={now}
             handlers={handlers}
           />
         )
@@ -228,11 +267,12 @@ function MemberChats() {
           meId={meId}
           open={openRow === thread._id}
           selected={isSelected}
+          now={now}
           handlers={handlers}
         />
       )
     },
-    [t, twoPane, selected, handlers, meId, partners, openRow],
+    [t, twoPane, selected, now, handlers, meId, partners, openRow],
   )
 
   const archived = shelf === 'archived'

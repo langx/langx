@@ -62,6 +62,8 @@ interface WaitingBlockProps {
   lead: boolean
   /** Its thread is the one in the panel, on a wide window. */
   selected: boolean
+  /** The screen's clock, in ms, that the time is read against. */
+  now: number
   handlers: ChatHandlers
 }
 
@@ -79,6 +81,7 @@ export const WaitingBlock = memo(function WaitingBlock({
   partner,
   lead,
   selected,
+  now,
   handlers,
 }: WaitingBlockProps) {
   const t = useT()
@@ -117,7 +120,7 @@ export const WaitingBlock = memo(function WaitingBlock({
             {name}
           </Text>
           <Text style={styles.blockMeta} numberOfLines={1}>
-            {relativeTimeCompact(thread.lastMessage.createdAt, { t, locale })}
+            {relativeTimeCompact(thread.lastMessage.createdAt, { t, locale, now: new Date(now) })}
           </Text>
         </View>
         <View style={styles.chip}>
@@ -203,6 +206,8 @@ interface ChatRowProps {
   /** This row's drawer is the open one. */
   open: boolean
   selected: boolean
+  /** The screen's clock, in ms, that the time is read against. */
+  now: number
   handlers: ChatHandlers
 }
 
@@ -220,6 +225,7 @@ export const ChatRowV3 = memo(function ChatRowV3({
   meId,
   open,
   selected,
+  now,
   handlers,
 }: ChatRowProps) {
   const t = useT()
@@ -336,7 +342,11 @@ export const ChatRowV3 = memo(function ChatRowV3({
                 />
               ) : null}
               <Text style={styles.time}>
-                {relativeTimeCompact(thread.lastMessage.createdAt, { t, locale })}
+                {relativeTimeCompact(thread.lastMessage.createdAt, {
+                  t,
+                  locale,
+                  now: new Date(now),
+                })}
               </Text>
             </View>
             <View style={styles.rowBottom}>
