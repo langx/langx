@@ -1090,8 +1090,14 @@ export async function summary(
       // Due cards kept from chats, by who wrote them. `owner_due` narrows to
       // what is due; the oldest card of each group is the one a review of that
       // partner would open on, so it is the line the tab shows.
+      //
+      // One language per partner — the one with most of their cards due — so
+      // the block opens a deck in one language. A review never mixes them (see
+      // docs/echo.md → "Review asks which language"), and somebody who keeps
+      // lines in two languages from one person would otherwise get exactly
+      // the French-then-Russian deck that rule removed.
       cards
-        .aggregate<{ _id: string; due: number; front: string; back: string }>([
+        .aggregate<{ _id: string; lang: string; due: number; front: string; back: string }>([
           {
             $match: {
               userId,
@@ -1103,8 +1109,18 @@ export async function summary(
           { $sort: { 'srs.due': 1 } },
           {
             $group: {
-              _id: '$source.partnerId',
+              _id: { partnerId: '$source.partnerId', lang: '$lang' },
               due: { $sum: 1 },
+              front: { $first: '$front' },
+              back: { $first: '$back' },
+            },
+          },
+          { $sort: { due: -1, '_id.lang': 1 } },
+          {
+            $group: {
+              _id: '$_id.partnerId',
+              lang: { $first: '$_id.lang' },
+              due: { $first: '$due' },
               front: { $first: '$front' },
               back: { $first: '$back' },
             },
@@ -1127,6 +1143,7 @@ export async function summary(
     secondsPerCard: echoSecondsPerCard(recent.map((row) => row.durationMs)),
     partners: partners.map((row): EchoPartnerDue => ({
       partnerId: row._id,
+      lang: row.lang,
       due: row.due,
       front: row.front,
       back: row.back,

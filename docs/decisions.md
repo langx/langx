@@ -996,11 +996,14 @@ for Echo. The tab waits for the flag's answer, as Home's route does.
   long. Under it, the due cards kept from chats, grouped by who wrote them
   (the summary's new `partners`, at most `ECHO_SUMMARY_PARTNERS`), each in
   that person's hue and each a review of just their cards (the queue's new
-  `partner`). The groups show under All only: a partner's count spans
-  languages, and beside a language chip it would be a second answer to "how
-  many are due". Nothing due is a grey block that says when the next card is
-  back; no cards at all is `EmptyStateV3`. The rotating tip line is not drawn;
-  Phase 7 replaces tips with coach cards.
+  `partner`). A group is one language, the one with most of that person's
+  cards due, and opens with it: _Review asks which language_ in
+  `docs/echo.md` removed the mixed deck, and a partner's lines kept in two
+  languages would have brought it back. The groups show under All only: they
+  are the ones with most due across every language, so beside a language
+  chip they would be a partial list. Nothing due is a grey block that says
+  when the next card is back; no cards at all is `EmptyStateV3`. The
+  rotating tip line is not drawn; Phase 7 replaces tips with coach cards.
 - **The done screen.** The tokens are the batch's `award` as the server
   answered it, and nothing is said about tokens when it paid none. "Streak
   kept · day N" only when that award carries the streak. "Session X of N

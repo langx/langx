@@ -75,10 +75,11 @@ export function EchoV3Screen() {
   const loading = summary.isPending && !counts
 
   /*
-   * By partner, under All only: a partner's cards are counted across every
-   * language, so beside a French chip they would be a second, different
-   * answer to "how many are due". Somebody learning one language — almost
-   * everybody — has no chips and always sees them.
+   * By partner, under All only: the server picks the groups with most due
+   * across every language, so beside a French chip they would be a partial
+   * list that reads as the whole. Each group is one language, and opens in
+   * it. Somebody learning one language — almost everybody — has no chips and
+   * always sees them.
    */
   const partners: EchoPartnerDue[] = lang ? [] : (counts?.partners ?? [])
   const partnerIds = partners.map((row) => row.partnerId)
@@ -118,9 +119,10 @@ export function EchoV3Screen() {
     if (picked) open({ lang: picked })
   }
 
-  function reviewPartner(partner: string): void {
+  /** The group's own language too: a review never mixes them, as `startSession` says. */
+  function reviewPartner(row: EchoPartnerDue): void {
     if (!requireAccount(session?.user, { action: 'echo' })) return
-    open({ partner })
+    open({ partner: row.partnerId, lang: row.lang })
   }
 
   function hero() {
@@ -277,7 +279,7 @@ export function EchoV3Screen() {
                       line={row.front}
                       more={more.join(' · ')}
                       accessibilityLabel={t('echo.reviewFrom', { count: row.due, name })}
-                      onPress={() => reviewPartner(row.partnerId)}
+                      onPress={() => reviewPartner(row)}
                     />
                   )
                 })}

@@ -317,6 +317,12 @@ export const echoLanguageSummarySchema = z.object({
 
 export const echoPartnerDueSchema = z.object({
   partnerId: z.string(),
+  /**
+   * The one language this group's cards are in — of this partner's due
+   * cards, the language with most of them. The queue's `partner` is opened
+   * with it, because a review never mixes languages.
+   */
+  lang: z.string(),
   due: z.number().int().positive(),
   front: z.string(),
   back: z.string(),
@@ -359,9 +365,9 @@ export const echoSummarySchema = z.object({
   secondsPerCard: z.number().int().positive().nullable().optional(),
   /**
    * Due cards kept from chats, grouped by the person who wrote them — at most
-   * `ECHO_SUMMARY_PARTNERS`, most due first. `front` and `back` are the
-   * oldest due card's, the one a review of that partner would open on.
-   * Absent from an API older than the field.
+   * `ECHO_SUMMARY_PARTNERS`, most due first, each in one language. `front`
+   * and `back` are the oldest due card's, the one a review of that partner
+   * would open on. Absent from an API older than the field.
    */
   partners: z.array(echoPartnerDueSchema).optional(),
 })

@@ -588,6 +588,57 @@ describe('echo', () => {
     expect((await queue(b.userId)).dueCount).toBe(0)
   })
 
+  it("keeps a partner's group to one language, so the deck it opens is one", async () => {
+    const [a, b] = await newPair('partnerlang')
+    const conversation = await startConversation(a, b.userId, 'On y va demain ?')
+    for (const body of ['À demain alors.', 'Bonne soirée !']) {
+      const sent = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversation._id}/messages`,
+        headers: { cookie: a.cookie },
+        payload: { body },
+      })
+      expect(sent.statusCode).toBeLessThan(300)
+    }
+    const messages = await handle.db
+      .collection(COLLECTIONS.messages)
+      .find({ conversationId: new ObjectId(conversation._id) }, { sort: { createdAt: 1 } })
+      .toArray()
+    const kept: { _id: string; lang: string }[] = []
+    for (const message of messages) {
+      const response = await captureMessage(b, conversation._id, message._id.toHexString())
+      kept.push(response.json<{ card: { _id: string; lang: string } }>().card)
+    }
+    expect(kept).toHaveLength(3)
+
+    // The newest line kept in a second language, as somebody learning two
+    // with the same person would.
+    const lang = kept[0]!.lang
+    const other = lang === 'ru' ? 'es' : 'ru'
+    await handle.db
+      .collection(COLLECTIONS.echoCards)
+      .updateOne({ _id: new ObjectId(kept[2]!._id) }, { $set: { lang: other } })
+
+    const own = (
+      await app.inject({ method: 'GET', url: '/echo/summary', headers: { cookie: b.cookie } })
+    ).json<{ due: number; partners: { partnerId: string; lang: string; due: number }[] }>()
+    expect(own.due).toBe(3)
+    // The language with most of that person's cards due, and only its count.
+    expect(own.partners.map(({ partnerId, lang, due }) => ({ partnerId, lang, due }))).toEqual([
+      { partnerId: a.userId, lang, due: 2 },
+    ])
+
+    const deck = (
+      await app.inject({
+        method: 'GET',
+        url: `/echo/queue?partner=${a.userId}&lang=${lang}`,
+        headers: { cookie: b.cookie },
+      })
+    ).json<{ cards: { lang: string }[]; dueCount: number }>()
+    expect(deck.dueCount).toBe(2)
+    expect(deck.cards.map((card) => card.lang)).toEqual([lang, lang])
+  })
+
   it('says how long a card takes once a session has been answered', async () => {
     const [a, b] = await newPair('pace')
     const conversation = await startConversation(a, b.userId)
