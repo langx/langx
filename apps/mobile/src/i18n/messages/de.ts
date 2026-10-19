@@ -2288,6 +2288,12 @@ export const de: Localized<EnMessages> = {
     leaderboardBody: 'Wer diese Woche, diesen Monat und dieses Jahr am meisten verdient hat',
     poolBody: 'Wie der nächtliche Anteil berechnet wird',
     storeBody: 'Serien-Schutz, verpasste Tage und Kosmetik',
+    tokensUnit: { one: 'Token', other: 'Token' },
+    nextRung: { one: '{title}: noch {amount} Token', other: '{title}: noch {amount} Token' },
+    nextRungReady: '{title}: genug Token',
+    countOf: '{current} von {total}',
+    giftOpen: 'Öffnen',
+    price: { one: '{amount} Token', other: '{amount} Token' },
     disclaimer:
       'Token sind In-App-Punkte. Sie lassen sich nicht kaufen, handeln, auszahlen oder gegen einen bezahlten Tarif eintauschen — nur Serien-Freezes, verpasste Tage und Kosmetik. Es gibt keine Chain, keinen Vertrag und keinen Markt.',
   },

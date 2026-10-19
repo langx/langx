@@ -2476,6 +2476,22 @@ export const ru: Localized<EnMessages> = {
     leaderboardBody: 'Кто заработал больше всех за неделю, месяц и год',
     poolBody: 'Как считается ночная доля',
     storeBody: 'Заморозки серии, пропущенные дни и косметика',
+    tokensUnit: { one: 'жетон', few: 'жетона', many: 'жетонов', other: 'жетона' },
+    nextRung: {
+      one: '{title}: ещё {amount} жетон',
+      few: '{title}: ещё {amount} жетона',
+      many: '{title}: ещё {amount} жетонов',
+      other: '{title}: ещё {amount} жетона',
+    },
+    nextRungReady: '{title}: жетонов хватает',
+    countOf: '{current} из {total}',
+    giftOpen: 'Открыть',
+    price: {
+      one: '{amount} жетон',
+      few: '{amount} жетона',
+      many: '{amount} жетонов',
+      other: '{amount} жетона',
+    },
     disclaimer:
       'Жетоны — это внутренние баллы. Их нельзя купить, обменять, вывести или разблокировать ими платный тариф — только заморозки серии, пропущенные дни и косметика. Нет ни цепочки, ни контракта, ни рынка.',
   },
