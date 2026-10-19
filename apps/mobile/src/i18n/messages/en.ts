@@ -588,6 +588,39 @@ export const en = {
     aboutClose: 'Got it',
     audioFull: 'This card already holds as many recordings as it can keep.',
     postToFeed: 'Post to the feed',
+    /*
+     * The redesign's tab and done screen, behind `flags.v3Home`. The words
+     * beside a figure are plurals with no `{count}` in them: the figure is
+     * drawn apart from the word, and the word still has to agree with it.
+     */
+    subtitle: 'Lines from your chats come back just before you’d forget them.',
+    dueUnit: { one: 'card due', other: 'cards due' },
+    aboutMinutes: { one: 'about {count} minute', other: 'about {count} minutes' },
+    byPartner: 'By partner',
+    fromPartner: 'From {name}',
+    partnerDue: { one: '{count} due', other: '{count} due' },
+    andMore: { one: 'and {count} more', other: 'and {count} more' },
+    reviewFrom: {
+      one: 'Review {count} card from {name}',
+      other: 'Review {count} cards from {name}',
+    },
+    cardsKept: { one: 'card kept', other: 'cards kept' },
+    reviewedWeek: { one: 'reviewed this week', other: 'reviewed this week' },
+    emptyLine: 'No cards yet. Hold a message in a chat and choose Add echo.',
+    rememberedCount: { one: '{count} remembered', other: '{count} remembered' },
+    tokensEarned: { one: '+{count} token', other: '+{count} tokens' },
+    streakKept: 'Streak kept · day {day}',
+    /** `{total}` is `TOKEN_RULES.caps.echoSessionsPerDay`, the sessions a day that pay. */
+    sessionOf: 'Session {done} of {total} today',
+    sessionsAllDone: {
+      one: 'Today’s session is done',
+      other: 'All {count} of today’s sessions are done',
+    },
+    sessionsEarn: {
+      one: 'Your first session each day earns tokens.',
+      other: 'Your first {count} sessions each day earn tokens.',
+    },
+    oneMore: 'One more session',
   },
 
   conversationPicker: {
