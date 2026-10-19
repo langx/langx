@@ -189,6 +189,7 @@ export const ar: Localized<EnMessages> = {
     playFailed: 'لا يمكن تشغيل هذا الفيديو على هذا الجهاز.',
   },
   tips: {
+    chatsCoachCorrect: 'اضغط مطولًا على أي رسالة، ثم اختر «تصحيح».',
     composerCorrect: 'اضغط مطوّلًا للتصحيح',
     composerReply: 'اسحب الرسالة للرد',
     composerStar: 'اضغط مطوّلًا للتمييز أو الترجمة',
@@ -1206,6 +1207,14 @@ export const ar: Localized<EnMessages> = {
     goToDiscover: 'الذهاب إلى الاستكشاف',
     youPrefix: 'أنت:',
     starredMessages: 'الرسائل المميزة',
+    coachCorrectTitle: 'صحّح جملة',
+    coachShowMe: 'أرني',
+    waitingTitle: 'بانتظار ردك',
+    othersTitle: 'محادثات أخرى',
+    emptyLine: 'لا محادثات بعد. اعثر على شخص في «الأشخاص» وألقِ التحية.',
+    findSomeone: 'اعثر على شخص',
+    archivedChats: 'المحادثات المؤرشفة',
+    backToChats: 'العودة إلى المحادثات',
   },
 
   presence: {

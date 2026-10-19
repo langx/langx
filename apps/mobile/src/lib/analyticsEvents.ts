@@ -529,9 +529,9 @@ export type AnalyticsEvent =
     }
   | {
       /**
-       * The button on a tip was tapped. No tip has a button today, so nothing
-       * sends this yet; it is here so the first one that does is measured from
-       * its first day.
+       * The button on a tip was tapped. The first with a button is the
+       * redesign's Chats coach card (`chatsCoach`), whose Show me opens a
+       * thread to correct in.
        */
       name: 'tip_action'
       properties: { tip: TipId; slot: TipSlot }

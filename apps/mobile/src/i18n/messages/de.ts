@@ -156,6 +156,7 @@ export const de: Localized<EnMessages> = {
     playFailed: 'Dieses Video kann auf diesem Gerät nicht abgespielt werden.',
   },
   tips: {
+    chatsCoachCorrect: 'Drück lange auf eine Nachricht, dann auf Korrigieren.',
     composerCorrect: 'Gedrückt halten zum Korrigieren',
     composerReply: 'Wischen, um zu antworten',
     composerStar: 'Gedrückt halten zum Markieren oder Übersetzen',
@@ -1136,6 +1137,14 @@ export const de: Localized<EnMessages> = {
     goToDiscover: 'Zu Entdecken',
     youPrefix: 'Du:',
     starredMessages: 'Markierte Nachrichten',
+    coachCorrectTitle: 'Korrigiere einen Satz',
+    coachShowMe: 'Zeig’s mir',
+    waitingTitle: 'Warten auf dich',
+    othersTitle: 'Weitere Chats',
+    emptyLine: 'Noch keine Chats. Finde jemanden unter Leute und sag Hallo.',
+    findSomeone: 'Jemanden finden',
+    archivedChats: 'Archivierte Chats',
+    backToChats: 'Zurück zu den Chats',
   },
 
   presence: {

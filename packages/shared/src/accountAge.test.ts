@@ -54,4 +54,8 @@ describe('isInFirstWeek', () => {
   it('counts an account from the future as new', () => {
     expect(isInFirstWeek(new Date(NOW.getTime() + 60_000), NOW)).toBe(true)
   })
+
+  it('does not call an unparseable date new', () => {
+    expect(isInFirstWeek(new Date('not a date'), NOW)).toBe(false)
+  })
 })
