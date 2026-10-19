@@ -2062,6 +2062,46 @@ export const fr: Localized<EnMessages> = {
     emptyBody: 'Envoie un message ou écris une correction, et aujourd’hui sera ton premier jour.',
     legendMissed: 'Manqué · touche pour le rattraper',
     daysTogether: { one: '{count} jour ensemble', other: '{count} jours ensemble' },
+    heroUnit: { one: 'jour de série', other: 'jours de série' },
+    heroLongest: { one: 'Record : {count}', other: 'Record : {count}' },
+    weekA11y: {
+      one: 'Cette semaine : {count} jour fait',
+      other: 'Cette semaine : {count} jours faits',
+    },
+    freezes: 'Gels : {banked} sur {max}',
+    freezeBody: 'Un gel couvre le prochain jour que tu manques.',
+    freezesFull:
+      'Ta réserve est pleine. Un gel sera utilisé la prochaine fois que tu manqueras un jour.',
+    protect: { one: 'Protéger · {count} jeton', other: 'Protéger · {count} jetons' },
+    protectA11y: {
+      one: 'Acheter un gel de série pour {count} jeton',
+      other: 'Acheter un gel de série pour {count} jetons',
+    },
+    freezeShort: { one: 'Tu as {count} jeton.', other: 'Tu as {count} jetons.' },
+    repairTitle: '{day} · Manqué',
+    repairBody: {
+      one: 'Rachète-le et ta série revient à {count} jour.',
+      other: 'Rachète-le et ta série revient à {count} jours.',
+    },
+    repairButton: {
+      one: 'Racheter le jour · {count} jeton',
+      other: 'Racheter le jour · {count} jetons',
+    },
+    milestones: 'Paliers',
+    rungTokens: '+{amount}',
+    rungWeeksOfPro: {
+      one: '+{amount} et une semaine de Pro',
+      other: '+{amount} et {count} semaines de Pro',
+    },
+    rungMonthsOfPro: {
+      one: '+{amount} et un mois de Pro',
+      other: '+{amount} et {count} mois de Pro',
+    },
+    rungToGo: { one: 'encore {count}', other: 'encore {count}' },
+    rungProgress: { one: '{done} sur {count} jour', other: '{done} sur {count} jours' },
+    noStreakTitle: 'Pas encore de série',
+    noStreakBody:
+      'Un jour compte quand tu ouvres LangX ou que tu pratiques. Aujourd’hui peut être le premier.',
   },
   settings: {
     scanBody: 'Se connecter sur un ordinateur ou ouvrir le profil d’un ami',

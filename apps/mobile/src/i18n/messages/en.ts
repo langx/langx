@@ -2265,6 +2265,47 @@ export const en = {
     legendMissed: 'Missed · tap to fill in',
     /** Two partners who have both written, day after day: the pair flame's words. */
     daysTogether: { one: '{count} day together', other: '{count} days together' },
+    /*
+     * The redesign's streak screen, behind `flags.v3Home`. Its rows reuse
+     * `tokens.history`, `leaderboard.streakTitle` and the two bodies above, a
+     * rung's title is `format.days`, and a reached rung says `common.done`.
+     * The number itself is drawn beside `heroUnit`, so the unit is a plural.
+     */
+    heroUnit: { one: 'day streak', other: 'day streak' },
+    heroLongest: { one: 'Longest {count}', other: 'Longest {count}' },
+    weekA11y: { one: 'This week: {count} day done', other: 'This week: {count} days done' },
+    freezes: 'Freezes: {banked} of {max}',
+    freezeBody: 'A freeze covers the next day you miss.',
+    freezesFull: 'Your bank is full. One is used the next time you miss a day.',
+    protect: { one: 'Protect · {count} token', other: 'Protect · {count} tokens' },
+    protectA11y: {
+      one: 'Buy a streak freeze for {count} token',
+      other: 'Buy a streak freeze for {count} tokens',
+    },
+    freezeShort: { one: 'You have {count} token.', other: 'You have {count} tokens.' },
+    repairTitle: '{day} · Missed',
+    repairBody: {
+      one: 'Buy it back and your streak is {count} day again.',
+      other: 'Buy it back and your streak is {count} days again.',
+    },
+    repairButton: {
+      one: 'Buy a day back · {count} token',
+      other: 'Buy a day back · {count} tokens',
+    },
+    milestones: 'Milestones',
+    rungTokens: '+{amount}',
+    rungWeeksOfPro: {
+      one: '+{amount} and a week of Pro',
+      other: '+{amount} and {count} weeks of Pro',
+    },
+    rungMonthsOfPro: {
+      one: '+{amount} and a month of Pro',
+      other: '+{amount} and {count} months of Pro',
+    },
+    rungToGo: { one: '{count} to go', other: '{count} to go' },
+    rungProgress: { one: '{done} of {count} day', other: '{done} of {count} days' },
+    noStreakTitle: 'No streak yet',
+    noStreakBody: 'A day counts when you open LangX or practise. Today can be day one.',
   },
   settings: {
     scanBody: 'Sign in on a computer, or open a friend’s profile',
