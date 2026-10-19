@@ -6444,6 +6444,7 @@ about each other.
 ## The Me tab is the public profile, plus what only its owner can use
 
 > **Amended 18 October 2026 — see _Home holds the day; Me goes back to being the profile — behind a flag_ below.**
+> **Amended 19 October 2026 — see _Me on its own colour, and a first week instead of zeros — behind a flag_ below.**
 
 **22 September 2026.** The owner's tab had grown into its own arrangement: an
 80px avatar where every other profile draws 96, the photos under the upgrade
@@ -6480,6 +6481,8 @@ alone.
 
 ## Home holds the day; Me goes back to being the profile — behind a flag
 
+> **Amended 19 October 2026 — see _Me on its own colour, and a first week instead of zeros — behind a flag_ below.**
+
 **18 October 2026.** The entry above made the Me tab the public profile plus
 the rows only its owner can use, and the owner's day — the streak, the next
 badge, the Pro card — rode along on it because there was nowhere else to put
@@ -6493,6 +6496,67 @@ in both bars — taking a block off Me is a change somebody without the flag
 would see, so it waits for the Me pull request, which takes off what Home now
 shows and keeps the bell, the wallet, the viewers, follows and preview. The
 rules about what the owner sees of their own profile do not change.
+
+## Me on its own colour, and a first week instead of zeros — behind a flag
+
+**19 October 2026.** The Me pull request the entry above was waiting for.
+**None of it takes effect until `flags.v3Home` is on**, read once per launch
+like the bar it sits in; with it off, Me is the screen the two entries above
+describe, line for line. `app/(app)/(tabs)/me.tsx` picks the screen at its
+top and the redesign's is `src/screens/MeScreenV3.tsx`, so today's screen
+moved by one function name.
+
+With the flag on, Me is drawn from the canvas's `V-Me`:
+
+- **The person, on their own colour.** The hero is the hue everybody else
+  sees them in (`partnerHueFor` on their own id): the face with a camera on
+  its shoulder that changes it — the long press it replaces was never
+  announced — the name, `@handle · city`, their languages, the PRO chip, and
+  the streak as an ink pill into the streak screen. The bell and Settings
+  are `IconButton`s at the hero's end, ink in both schemes (the `hue` look).
+- **Then what has added up.** Three numbers — corrections given, posts and
+  cards reviewed; corrections and the feed stay two numbers — the streak with
+  its longest run and banked freezes, the Pro block for a free account only,
+  the badges with the next one as a big card that says what it pays and,
+  where a press brings it closer, the button that does, and the owner's rows.
+  Invite and Share come back from Settings → Share & invite as the two big
+  buttons; Settings keeps them too.
+
+**What it reverses.** First, _the Me tab is the public profile_: under the
+flag Me no longer repeats the public profile's order — photos, the language
+columns, the week's chart, bio and interests. "Preview my profile" is how the
+owner sees that page, and the Languages and Edit profile rows lead to where
+it is changed. The rule about the owner's own data stands: the city is drawn
+with "Hidden from others" when the switch hides it. Second, the entry above
+said this pull request would take off Me what Home now shows. The drawing
+keeps a streak card and the Pro block, and so does the screen: Home is what
+to do now, Me is where you stand, and the two do not compete for one block.
+Gifted, lifetime and paid Pro are Pro to `useEffectiveTier`, so the Pro block
+reaches nobody who has Pro by any road (rule 10); it opens the paywall with
+source `me`.
+
+**A new account never sees a page of zeros.** For its first
+`FIRST_WEEK_DAYS` (`packages/shared`), Me shows `V-MeNew`'s checklist under a
+ring instead of numbers it does not have yet: say hello, get a first
+correction, add an Echo card, invite a friend, each a button to the place it
+is done. Three are read off responses the app already makes — the chat list,
+Echo's summary, the referrals — and the fourth off the one field this added:
+`/me/tokens` sends `firstWeek: { corrected }` only inside the week, and never
+for a restored v1 account. It reads the `correctedAt` stamp a chat correction
+leaves on its target and a post's `correctionCount`, through indexes that lead
+with the person rather than the stamp, which is cheap only while an account
+has written little; that is why it is a first-week field and not a lifetime
+one. The server says when the week is over, so every phone agrees. The list
+goes when the week ends or all four are done (`planFirstWeek` in
+`src/lib/mePlan.ts`). Past it, a block with nothing to say is not drawn: no
+row of three zeros, no streak of nothing, no "0 of 25 earned", no "0
+followers · 0 following".
+
+**What it leaves out.** The `me` tip slot is not on the redesign's Me — tips
+are Phase 7's to redo. The Pro block is the drawing's, a title and the
+viewers teaser, not Phase 4's trial line and benefit chips, and a subscriber
+gets no status card. There is no partners or shared-days number: nothing the
+app fetches counts them, and pair streaks are not built.
 
 ## A number that has not arrived is a skeleton, not a zero
 

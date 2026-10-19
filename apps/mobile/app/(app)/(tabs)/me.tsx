@@ -50,6 +50,18 @@ import { unreadBadge } from '../../../src/lib/unreadBadge'
 import { useChangeAvatar } from '../../../src/hooks/useChangeAvatar'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { MeScreenV3 } from '../../../src/screens/MeScreenV3'
+
+/**
+ * The Me tab — or, with `flags.v3Home` on, the redesign's (`MeScreenV3`).
+ * Read once per launch, like the bar it sits in, so the tab does not change
+ * under somebody's thumb when the flag does.
+ */
+export default function MeRoute() {
+  const v3Home = useV3Home()
+  return v3Home ? <MeScreenV3 /> : <MeScreen />
+}
 
 /**
  * Your own tab: the public profile's skeleton, with the owner's extras.
@@ -62,7 +74,7 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
  * the owner can use follows: the rows into the wallet, the viewers and the
  * follow lists, the upgrade card, the edit button.
  */
-export default function MeScreen() {
+function MeScreen() {
   useScreenInteractive()
   const { colors } = useTheme()
   // Above the early return, where hooks have to be.

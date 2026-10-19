@@ -62,3 +62,25 @@ export function accountAge(createdAt: Date, now: Date = new Date()): AccountAge 
   }
   return { unit: 'year', count: Math.floor(days / DAYS_IN_YEAR) }
 }
+
+/**
+ * How long an account is new: the days the Me tab shows its first week's
+ * checklist instead of the numbers it does not have yet.
+ *
+ * Seven, because the checklist is called the first week and says so. The
+ * server decides it (`/me/tokens` sends `firstWeek` only inside it), so a
+ * phone whose clock is a day out does not get a different Me from the API.
+ */
+export const FIRST_WEEK_DAYS = 7
+
+/**
+ * Whether an account made at `createdAt` is still in its first week at `now`.
+ *
+ * Elapsed time, not calendar days: "the first seven days" from the minute the
+ * account was made, whatever timezone it lives in. A `createdAt` in the future
+ * — a clock running ahead — counts as new, which is what an account made a
+ * moment ago is.
+ */
+export function isInFirstWeek(createdAt: Date, now: Date = new Date()): boolean {
+  return now.getTime() - createdAt.getTime() < FIRST_WEEK_DAYS * MS_PER_DAY
+}
