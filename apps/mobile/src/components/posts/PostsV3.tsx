@@ -108,7 +108,14 @@ export function PostsV3(props: PostsV3Props) {
       },
       openAuthor: (post) => openProfile(post.author.handle, FROM),
       more: (post) => latest.current.onMore(post),
-      correct: (post) => latest.current.correction.start(post),
+      /*
+       * Not while a correction is on its way: its success closes the box and
+       * clears the text, which would be this one's by then. The current card
+       * disables its Correct this for the same reason.
+       */
+      correct: (post) => {
+        if (!latest.current.correction.busy) latest.current.correction.start(post)
+      },
       openMedia: (items, index) => latest.current.onViewingChange({ items, index }),
     }),
     [],

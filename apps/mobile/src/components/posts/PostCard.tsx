@@ -135,6 +135,13 @@ export const PostCard = memo(function PostCard({
           accessibilityRole="button"
           accessibilityLabel={name}
           onPress={() => handlers.openAuthor(post)}
+          /*
+           * The post's menu (Echo, Report) on every card. The words carry it
+           * too, but a photo or a video with no caption has none, and the
+           * current card's "View post" row that held it there is this card's
+           * big button, which takes no long press.
+           */
+          onLongPress={() => handlers.more(post)}
           style={({ pressed }) => [styles.head, pressed && styles.pressed]}
         >
           <Avatar url={post.author.avatarUrl} name={name} seed={post.author._id} size={40} />
@@ -251,7 +258,7 @@ export const PostCard = memo(function PostCard({
             label={label}
             icon={ACTION_ICONS[action]}
             iconPosition={action === 'view' ? 'end' : 'start'}
-            variant={ask ? 'ink' : 'secondary'}
+            variant={ask ? 'hue' : 'secondary'}
             onPress={() =>
               action === 'correct' ? handlers.correct(post) : handlers.open(post, index)
             }
