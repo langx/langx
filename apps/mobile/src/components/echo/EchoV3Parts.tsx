@@ -1,4 +1,3 @@
-import Feather from '@expo/vector-icons/Feather'
 import { Text, View } from 'react-native'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { PressableScale } from '../ui/PressableScale'
@@ -102,47 +101,6 @@ export function EchoStatTile({
   )
 }
 
-export interface EchoRow {
-  key: string
-  icon: keyof typeof Feather.glyphMap
-  /** The leading square's fill and its glyph. */
-  tint: string
-  glyph: string
-  title: string
-  sub: string
-  onPress: () => void
-}
-
-/** Packs, All cards, Leaderboard: one grey block, a hairline between rows. */
-export function EchoRows({ rows }: { rows: readonly EchoRow[] }) {
-  const styles = useStyles()
-  const { v3 } = useTheme()
-  return (
-    <View style={styles.rows}>
-      {rows.map((row, index) => (
-        <PressableScale
-          key={row.key}
-          accessibilityRole="button"
-          accessibilityLabel={`${row.title}. ${row.sub}`}
-          onPress={row.onPress}
-          style={[styles.row, index > 0 && styles.rowDivided]}
-        >
-          <View style={[styles.rowIcon, { backgroundColor: row.tint }]}>
-            <Feather name={row.icon} size={v3.icon.lg} color={row.glyph} />
-          </View>
-          <View style={styles.rowText}>
-            <Text style={styles.rowTitle}>{row.title}</Text>
-            <Text style={styles.rowSub} numberOfLines={2}>
-              {row.sub}
-            </Text>
-          </View>
-          <Feather name="chevron-right" size={v3.icon.md} color={v3.colors.muted} />
-        </PressableScale>
-      ))}
-    </View>
-  )
-}
-
 /**
  * The tab before its summary: the hero, two partner blocks and the two
  * numbers, at their own heights, so nothing under them jumps when they land.
@@ -213,27 +171,6 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   statValue: { ...v3.type.headline, color: v3.colors.fg },
   statLabel: { ...v3.type.caption, color: v3.colors.muted },
-
-  rows: { backgroundColor: v3.colors.surface, borderRadius: v3.radius.tile, overflow: 'hidden' },
-  row: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: v3.space[12],
-    minHeight: 62,
-    paddingHorizontal: v3.space[12],
-    paddingVertical: v3.space[10],
-  },
-  rowDivided: { borderTopColor: v3.colors.line, borderTopWidth: 1 },
-  rowIcon: {
-    alignItems: 'center',
-    borderRadius: v3.radius.icon,
-    height: 40,
-    justifyContent: 'center',
-    width: 40,
-  },
-  rowText: { flex: 1, gap: v3.space[2], minWidth: 0 },
-  rowTitle: { ...v3.type.buttonSmall, color: v3.colors.fg },
-  rowSub: { ...v3.type.caption, color: v3.colors.muted },
 
   skeleton: { gap: v3.space[10] },
 }))

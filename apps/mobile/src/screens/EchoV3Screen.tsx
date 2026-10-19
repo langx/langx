@@ -7,13 +7,8 @@ import { useState } from 'react'
 import { Pressable, RefreshControl, ScrollView, Text, View } from 'react-native'
 import { useEchoPacks, useEchoSummary } from '../api/queries'
 import { EchoAboutSheet } from '../components/EchoAboutSheet'
-import {
-  EchoPartnerTile,
-  EchoRows,
-  EchoStatTile,
-  EchoV3Skeleton,
-  type EchoRow,
-} from '../components/echo/EchoV3Parts'
+import { EchoPartnerTile, EchoStatTile, EchoV3Skeleton } from '../components/echo/EchoV3Parts'
+import { MeRows, type MeRow } from '../components/me/MeBlocks'
 import { LoadFailed } from '../components/LoadFailed'
 import { BUTTON_FACE, Button } from '../components/ui/Button'
 import { Chip } from '../components/ui/Chip'
@@ -181,32 +176,30 @@ export function EchoV3Screen() {
     )
   }
 
-  const rows: EchoRow[] = [
+  // Me's row block, so the two tabs draw a list of places the same way.
+  const rows: MeRow[] = [
     {
       key: 'packs',
       icon: 'layers',
-      tint: v3.hues.lilac,
-      glyph: v3.colors.ink,
+      hue: v3.hues.lilac,
       title: t('echo.packs'),
-      sub: t(packRows.length > 0 ? 'echo.packsSub' : 'echo.packsEmptyTitle'),
+      subtitle: t(packRows.length > 0 ? 'echo.packsSub' : 'echo.packsEmptyTitle'),
       onPress: () => router.push('/(app)/echo/packs'),
     },
     {
       key: 'cards',
       icon: 'copy',
-      tint: v3.colors.echoTint,
-      glyph: v3.colors.echoText,
+      hue: v3.hues.sky,
       title: t('echo.allCards'),
-      sub: t('echo.allCardsSub'),
+      subtitle: t('echo.allCardsSub'),
       onPress: () => router.push('/(app)/echo/cards'),
     },
     {
       key: 'board',
       icon: 'award',
-      tint: v3.hues.tangerine,
-      glyph: v3.colors.ink,
+      hue: v3.hues.tangerine,
       title: t('echo.leaderboard'),
-      sub: t('echo.leaderboardSub'),
+      subtitle: t('echo.leaderboardSub'),
       onPress: () => router.push('/(app)/echo/leaderboard'),
     },
   ]
@@ -308,7 +301,7 @@ export function EchoV3Screen() {
           </View>
         </CrossFade>
 
-        <EchoRows rows={rows} />
+        <MeRows rows={rows} />
 
         <Button
           variant="secondary"
