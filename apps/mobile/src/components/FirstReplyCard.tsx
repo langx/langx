@@ -165,10 +165,14 @@ export function FirstReplyCard({
 const TILE = 40
 
 const useStyles = makeStyles(({ v3 }) => ({
+  // The line as well as the fill: the thread around it is still the current
+  // look, whose dark ground is within a shade of v3's grey block.
   card: {
     alignItems: 'flex-start',
     backgroundColor: v3.colors.surface,
+    borderColor: v3.colors.line,
     borderRadius: v3.radius.card,
+    borderWidth: 1,
     flexDirection: 'row',
     gap: v3.space[12],
     marginVertical: v3.space[12],
