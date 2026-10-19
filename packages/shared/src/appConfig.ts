@@ -124,6 +124,16 @@ export const appConfigSchema = z.object({
      * correction you receive is kept in Echo by itself, behind a switch_.
      */
     echoFromCorrections: z.boolean(),
+    /**
+     * "Give a week, get a week": each invitee who becomes a real user earns
+     * the inviter a week of Pro and gives the invitee one, in place of a month
+     * for every three. Starts off because it gives away the thing the app
+     * sells, which is a decision made by switching this on rather than by a
+     * merge. Off, referrals reward exactly as they did. An activation is
+     * judged by the rule in force when it happens and keeps it — see
+     * `docs/decisions.md` → _Give a week, get a week, behind a switch_.
+     */
+    giveAWeek: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -149,6 +159,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     streakRepairPush: false,
     discoveryReplyFirst: false,
     echoFromCorrections: false,
+    giveAWeek: false,
   },
 }
 
