@@ -2006,6 +2006,45 @@ export const de: Localized<EnMessages> = {
     emptyBody: 'Schreib eine Nachricht oder eine Korrektur — heute wird dein erster Tag.',
     legendMissed: 'Verpasst · zum Nachholen antippen',
     daysTogether: { one: '{count} Tag zusammen', other: '{count} Tage zusammen' },
+    heroUnit: { one: 'Tag in Folge', other: 'Tage in Folge' },
+    heroLongest: { one: 'Rekord: {count}', other: 'Rekord: {count}' },
+    weekA11y: {
+      one: 'Diese Woche: {count} Tag geschafft',
+      other: 'Diese Woche: {count} Tage geschafft',
+    },
+    freezes: 'Serienschutz: {banked} von {max}',
+    freezeBody: 'Ein Serienschutz deckt den nächsten Tag, den du verpasst.',
+    freezesFull:
+      'Dein Vorrat ist voll. Einer wird verbraucht, wenn du das nächste Mal einen Tag verpasst.',
+    protect: { one: 'Schützen · {count} Token', other: 'Schützen · {count} Token' },
+    protectA11y: {
+      one: 'Serienschutz für {count} Token kaufen',
+      other: 'Serienschutz für {count} Token kaufen',
+    },
+    freezeShort: { one: 'Du hast {count} Token.', other: 'Du hast {count} Token.' },
+    repairTitle: '{day} · Verpasst',
+    repairBody: {
+      one: 'Kauf ihn zurück, dann steht deine Serie wieder bei {count} Tag.',
+      other: 'Kauf ihn zurück, dann steht deine Serie wieder bei {count} Tagen.',
+    },
+    repairButton: {
+      one: 'Tag zurückkaufen · {count} Token',
+      other: 'Tag zurückkaufen · {count} Token',
+    },
+    milestones: 'Meilensteine',
+    rungTokens: '+{amount}',
+    rungWeeksOfPro: {
+      one: '+{amount} und eine Woche Pro',
+      other: '+{amount} und {count} Wochen Pro',
+    },
+    rungMonthsOfPro: {
+      one: '+{amount} und ein Monat Pro',
+      other: '+{amount} und {count} Monate Pro',
+    },
+    rungToGo: { one: 'noch {count}', other: 'noch {count}' },
+    rungProgress: { one: '{done} von {count} Tag', other: '{done} von {count} Tagen' },
+    noStreakTitle: 'Noch keine Serie',
+    noStreakBody: 'Ein Tag zählt, wenn du LangX öffnest oder übst. Heute kann Tag eins sein.',
   },
   settings: {
     scanBody: 'Am Computer anmelden oder das Profil eines Freundes öffnen',
