@@ -236,7 +236,9 @@ opened the paywall.
 **The website stays true.** "5 new conversations a day" is what the free plan
 gives, and with the switch on it still gives that; a sentence that calls 5 a
 cap becomes inexact the day the switch is thrown, and the PR that built this
-lists them.
+lists them. One of them is the Terms (§5 lists "starting new conversations: 5
+per rolling 24 hours" as a free-plan limit), so throwing the switch is also a
+decision about that sentence.
 
 Reverting is the switch. Deleting it is the flag, `chat/newcomerHello.ts` and
 its call in `startConversation`, the profile route's `freeHello` and the line
