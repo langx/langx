@@ -15,7 +15,7 @@ import {
   type EchoRow,
 } from '../components/echo/EchoV3Parts'
 import { LoadFailed } from '../components/LoadFailed'
-import { Button } from '../components/ui/Button'
+import { BUTTON_FACE, Button } from '../components/ui/Button'
 import { Chip } from '../components/ui/Chip'
 import { CrossFade } from '../components/ui/CrossFade'
 import { EmptyStateV3 } from '../components/ui/EmptyStateV3'
@@ -342,7 +342,8 @@ const useStyles = makeStyles(({ v3 }) => ({
     borderRadius: v3.radius.pill,
     flexDirection: 'row',
     gap: v3.space[6],
-    minHeight: 44,
+    // 44pt on iOS and 48dp on Android, as a row-end button is.
+    minHeight: BUTTON_FACE.small,
     paddingEnd: v3.space[16],
     paddingStart: v3.space[12],
   },
