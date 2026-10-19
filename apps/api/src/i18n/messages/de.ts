@@ -627,6 +627,18 @@ export const de: Localized<ServerMessages> = {
       'Es hat sich viel getan. Korrekturen sind inzwischen eine eigene Sache, für das Helfen bekommst du Tokens, und Entdecken sucht jemanden, der deine Sprache lernt und die spricht, die du willst. Dieselbe Idee, diesmal mit Platz, sie richtig umzusetzen — schau dich in Ruhe um.',
     welcomeBackClosing:
       'Hier landen die Neuigkeiten zu LangX, es lohnt sich also, ab und zu reinzuschauen. Wenn etwas fehlt oder kaputt ist: Einstellungen → Info → Feedback kommt direkt bei uns an. Schön, dich wieder hier zu haben. 💛',
+    heardAbout: {
+      question:
+        'Kurze Frage, dann lasse ich dich in Ruhe: Wie bist du auf LangX gestoßen? Tipp auf das, was passt — so wissen wir, wo wir mehr Leute wie dich finden.',
+      store: 'App Store oder Google Play',
+      search: 'Google oder eine andere Suchmaschine',
+      ai: 'ChatGPT oder eine andere KI',
+      friend: 'Durch Freunde',
+      tiktokInstagram: 'TikTok oder Instagram',
+      youtube: 'YouTube',
+      appList: 'Eine App-Liste oder Bewertungsseite',
+      other: 'Woanders',
+    },
     reportReward: {
       one: 'Danke für deine Meldung. Wir haben sie uns angesehen und dir {count} Token gutgeschrieben, weil du hilfst, LangX zu einem guten Ort zum Lernen zu machen. Die gemeldete Person erfährt nie, wer sie gemeldet hat.',
       other:

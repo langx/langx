@@ -72,6 +72,7 @@ import {
   type AdminBulkSuspendResponse,
   type AdminLinkedAccounts,
   type AdminMeasure,
+  type HeardAboutView,
   type AdminMoneyTimeline,
   CONVERSATION_SEARCH_MIN_LENGTH,
   MEDIA_LIMITS,
@@ -348,6 +349,7 @@ export const keys = {
   adminUser: (q: string) => ['admin', 'user', q] as const,
   adminLinked: (userId: string) => ['admin', 'linked', userId] as const,
   adminMeasure: (weeks: number) => ['admin', 'measure', weeks] as const,
+  adminHeardAbout: () => ['admin', 'heard-about'] as const,
   adminMoney: (userId: string) => ['admin', 'money', userId] as const,
   adminMembers: (tier: string) => ['admin', 'members', tier] as const,
 }
@@ -3546,6 +3548,15 @@ export function useAdminMeasure(weeks: number) {
     queryKey: keys.adminMeasure(weeks),
     queryFn: () => api.get<AdminMeasure>(`/admin/measure?weeks=${weeks}`),
     staleTime: 5 * 60 * 1000,
+  })
+}
+
+/** The heard-about poll's counts and latest answers, for the measure screen. */
+export function useAdminHeardAbout() {
+  return useQuery({
+    queryKey: keys.adminHeardAbout(),
+    queryFn: () => api.get<HeardAboutView>('/admin/heard-about'),
+    staleTime: 60 * 1000,
   })
 }
 

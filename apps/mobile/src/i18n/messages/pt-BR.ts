@@ -35,7 +35,57 @@ export const ptBR: Localized<EnMessages> = {
     notLoaded: 'Não foi possível carregar',
   },
 
-  tabs: { discover: 'Descobrir', chats: 'Conversas', echo: 'Echo', feed: 'Feed', me: 'Eu' },
+  tabs: {
+    discover: 'Descobrir',
+    chats: 'Conversas',
+    echo: 'Echo',
+    feed: 'Feed',
+    me: 'Eu',
+    home: 'Início',
+    people: 'Pessoas',
+    posts: 'Publicações',
+  },
+
+  home: {
+    greetingMorning: 'Bom dia, {name}',
+    greetingAfternoon: 'Boa tarde, {name}',
+    greetingEvening: 'Boa noite, {name}',
+    subtitle: 'Uma coisa primeiro, depois o resto do dia.',
+    waitingTitle: '{name} está esperando',
+    yourTurn: 'Sua vez',
+    replyTo: 'Responder a {name}',
+    sessionTitle: 'Sua chamada com {name}',
+    sessionAt: 'Às {time}',
+    sessionOpen: 'Abrir a conversa',
+    streakTitle: {
+      one: 'Mantenha sua sequência de {count} dia',
+      other: 'Mantenha sua sequência de {count} dias',
+    },
+    streakBody: 'Hoje ainda não contou.',
+    streakEcho: 'Revisar seus cartões',
+    streakChats: 'Escrever para alguém',
+    echoTitle: { one: '{count} cartão pronto', other: '{count} cartões prontos' },
+    echoBody: 'Alguns minutos no Echo mantêm tudo fresco.',
+    echoStart: 'Começar uma revisão',
+    todayTitle: 'As três de hoje',
+    todayCount: '{done} de {total} feitas',
+    todayCorrect: 'Ajudar com uma frase',
+    todayNotYet: 'Ainda não',
+    streakDays: { one: 'Sequência de {count} dia', other: 'Sequência de {count} dias' },
+    streakNext: {
+      one: 'Falta {count} dia para sua recompensa de {day} dias',
+      other: 'Faltam {count} dias para sua recompensa de {day} dias',
+    },
+    peopleTitle: 'Pessoas de hoje',
+    seeAll: 'Ver tudo',
+    sayHello: 'Dizer oi',
+    proTitle: 'Vá além com o Pro',
+    proButton: 'Ver o que o Pro oferece',
+    inviteTitle: 'Aprenda com um amigo',
+    guestTitle: 'Deixe o LangX com a sua cara',
+    guestBody:
+      'Com uma conta, você pode escrever para as pessoas, manter uma sequência e salvar o que aprende no Echo.',
+  },
 
   composer: {
     removeAttachment: 'Remover anexo',
@@ -2550,7 +2600,6 @@ export const ptBR: Localized<EnMessages> = {
   paywall: {
     screenTitle: 'Planos',
     restorePurchases: 'Restaurar compras',
-    partOf: 'faz parte do',
     unlimitedChats: 'Conversas novas ilimitadas',
     unlimitedChatsBody: '{count} por dia no plano gratuito.',
     welcomePack: 'Um pacote de boas-vindas',
@@ -2612,8 +2661,6 @@ export const ptBR: Localized<EnMessages> = {
     yearly: 'Anual',
     lifetime: 'Pagamento único',
     headline: 'Vá mais longe com o {plan}',
-    headlineBody:
-      'Correções e respostas continuam ilimitadas em todos os planos. Pagar remove os outros limites.',
     savePercent: 'Economize {percent}%',
     freeMonths: {
       one: '{count} mês grátis',
@@ -2640,7 +2687,6 @@ export const ptBR: Localized<EnMessages> = {
     },
     showLess: 'Mostrar menos',
     pricePerPeriod: '{price} {period}',
-    billedMonthly: 'Cobrado todo mês',
     lifetimeDetail: 'Um pagamento só, sem renovação',
     timelineTitle: 'Como funciona seu teste grátis',
     timelineToday: 'Hoje: acesso completo',
@@ -2654,6 +2700,35 @@ export const ptBR: Localized<EnMessages> = {
     subscribe: 'Assinar',
     startFreeTrial: 'Começar o teste grátis',
     eula: 'Termos de uso (EULA)',
+    planMark: 'LangX {plan}',
+    heroChats: 'Conheça quantas pessoas que falam {language} você quiser',
+    heroChatsAny: 'Comece quantas conversas novas você quiser',
+    heroViewers: 'Veja quem viu seu perfil',
+    heroFilters: 'Encontre exatamente quem você procura',
+    heroNearby: 'Encontre pessoas perto de você',
+    chatLimitToday: {
+      one: 'Você começou {count} conversa nova no último dia. A próxima abre às {time}.',
+      other: 'Você começou {count} conversas novas no último dia. A próxima abre às {time}.',
+    },
+    chatLimitTomorrow: {
+      one: 'Você começou {count} conversa nova no último dia. A próxima abre amanhã às {time}.',
+      other: 'Você começou {count} conversas novas no último dia. A próxima abre amanhã às {time}.',
+    },
+    viewersWeek: {
+      one: '{count} pessoa viu seu perfil na última semana.',
+      other: '{count} pessoas viram seu perfil na última semana.',
+    },
+    featurePartOf: '{feature} faz parte do {plan}.',
+    freePromise: 'Respostas e correções continuam grátis em todos os planos.',
+    compareHeading: 'Comparar',
+    compareNewChats: 'Conversas novas por dia',
+    compareTranslations: 'Traduções por dia',
+    compareLanguages: 'Idiomas que você aprende',
+    compareUnlimited: 'Sem limite',
+    compareSoon: 'Em breve',
+    compareIncluded: 'Incluído',
+    compareNotIncluded: 'Não incluído',
+    yearlyBadge: '{perMonth} · {saving}',
   },
 
   proWelcome: {
@@ -2874,5 +2949,19 @@ export const ptBR: Localized<EnMessages> = {
         other: 'tokens ganhos',
       },
     },
+  },
+  copilot: {
+    label: 'IA · pode errar',
+    off: 'O Copilot está desativado.',
+    consentTitle: 'Antes de usar o Copilot',
+    consentBody:
+      'O Copilot é um assistente com IA. Ele pode revisar uma frase antes de você enviar, sugerir respostas e explicar uma correção que alguém fez para você.',
+    consentSends:
+      'Quando você pede, o texto em questão é enviado à Anthropic, a empresa que opera o modelo de IA, junto com seus idiomas e níveis. Nas ideias de resposta, isso inclui as últimas mensagens da conversa.',
+    consentNever: 'Seu nome, e-mail, fotos e mensagens de voz nunca são enviados.',
+    consentWrong:
+      'A IA pode errar. As respostas dela são marcadas como IA, e nada chega à outra pessoa a menos que você mesmo envie.',
+    consentAccept: 'Ativar o Copilot',
+    consentDecline: 'Agora não',
   },
 }

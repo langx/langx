@@ -20,6 +20,8 @@ error, no RevenueCat means everyone stays on the free tier, no push credentials
 means notifications are logged instead of sent, no `ANTHROPIC_API_KEY` means the
 @langx assistant is off — the account still greets new users and carries
 announcements, it just answers a direct message with a line saying it cannot —
+and Copilot is off whatever the key: it answers only once `flags.copilotEnabled`
+is switched on as well, and the app says it is off until then —
 no ffmpeg on the host means
 a voice note recorded in a browser is stored as recorded — WebM, which iPhones
 cannot play, and which the app then says it cannot play — and every voice note
