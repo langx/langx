@@ -28,6 +28,8 @@ const IS_DESKTOP = Device.deviceType === Device.DeviceType.DESKTOP
 
 /** The mic, the send and the field's resting height: the drawing's 56. */
 const BIG = 56
+/** How tall the field grows before its text scrolls: about four lines. */
+const FIELD_MAX = 140
 
 /**
  * What Correct, Translate and Echo do to the other person's newest message
@@ -123,6 +125,13 @@ export function ComposerV3({
   const input = useRef<TextInput>(null)
   const [selection, setSelection] = useState<{ start: number; end: number } | null>(null)
   const [topicRound, setTopicRound] = useState(0)
+  /*
+   * The text's height on the web, where a textarea does not grow with what is
+   * typed the way the native field does. react-native-web reports it; the box
+   * follows up to the native field's ceiling, and goes back to one row the
+   * moment the field empties — a send, or the last letter deleted.
+   */
+  const [webHeight, setWebHeight] = useState<number | null>(null)
   const canSend = value.trim().length > 0 || hasAttachment
   const cursor = Math.min(selection?.end ?? value.length, value.length)
   const emoticon = selection && selection.start !== selection.end ? null : emoticonAt(value, cursor)
@@ -394,13 +403,22 @@ export function ComposerV3({
             onSelectionChange={(event) => setSelection(event.nativeEvent.selection)}
             placeholder={placeholder}
             placeholderTextColor={v3.colors.muted}
-            style={[styles.field, value === '' && Platform.OS === 'ios' && styles.fieldEmpty]}
+            style={[
+              styles.field,
+              value === '' && Platform.OS === 'ios' && styles.fieldEmpty,
+              Platform.OS === 'web' && value !== '' && webHeight !== null
+                ? { height: Math.min(Math.max(webHeight, BIG), FIELD_MAX) }
+                : null,
+            ]}
             multiline
             {...(Platform.OS === 'web'
               ? {
                   // One row, so the box rests at the mic's height: a textarea
                   // with no `rows` is two, and react-native-web sets none.
                   rows: 1,
+                  onContentSizeChange: (event: {
+                    nativeEvent: { contentSize: { height: number } }
+                  }) => setWebHeight(event.nativeEvent.contentSize.height),
                   onKeyPress: (event: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
                     const { key, shiftKey } = event.nativeEvent as TextInputKeyPressEventData & {
                       shiftKey?: boolean
@@ -442,12 +460,14 @@ export function ComposerV3({
           onPress={onSend}
           {...(onSendLongPress ? { onLongPress: onSendLongPress } : {})}
           disabled={!sendLive}
-          style={[styles.big, styles.send, !sendLive && styles.disabled]}
+          // Grey until there is something to send: a faded yellow reads as a
+          // stain in the dark scheme, and the yellow is the committing action's.
+          style={[styles.big, canSend ? styles.send : styles.sendIdle, busy && styles.disabled]}
         >
           <Feather
             name={busy ? 'more-horizontal' : 'arrow-up'}
             size={v3.icon.xxl}
-            color={v3.colors.onYellow}
+            color={canSend ? v3.colors.onYellow : v3.colors.muted}
           />
         </PressableScale>
       </View>
@@ -589,7 +609,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     borderRadius: v3.radius.block,
     color: v3.colors.fg,
     flex: 1,
-    maxHeight: 140,
+    maxHeight: FIELD_MAX,
     minHeight: BIG,
     paddingHorizontal: v3.space[20],
     paddingVertical: v3.space[16],
@@ -626,4 +646,5 @@ const useStyles = makeStyles(({ v3 }) => ({
   // Ink, not yellow: the yellow is the send's, once a screen.
   mic: { backgroundColor: v3.colors.pill },
   send: { backgroundColor: v3.colors.yellow },
+  sendIdle: { backgroundColor: v3.colors.surface },
 }))
