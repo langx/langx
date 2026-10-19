@@ -1,9 +1,10 @@
 import type Feather from '@expo/vector-icons/Feather'
 import { attachmentsOf, type Media } from '@langx/shared'
-import { memo, type ReactNode } from 'react'
+import { memo, useMemo, type ReactNode } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import type { FeedPost } from '../../api/types'
 import { useDisplayNames, useLocale, useT } from '../../i18n'
+import { foldCorrection } from '../../lib/feedCache'
 import { relativeTime } from '../../lib/format'
 import { asksOf } from '../../lib/postAsks'
 import { postCardAction, postCardKind, type PostCardAction } from '../../lib/postCard'
@@ -197,6 +198,24 @@ export const PostCard = memo(function PostCard({
           />
         ) : null}
 
+        {/*
+          The card's one correction — the oldest — as the current card shows
+          it (_The feed's one visible correction needed somewhere to lead_):
+          the help that already came, on the ground, opening the post.
+        */}
+        {asks.includes('correction') && post.topCorrection ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => handlers.open(post, index)}
+            style={({ pressed }) => [styles.top, pressed && styles.pressed]}
+          >
+            <Text style={styles.topLabel}>
+              {t('feed.topCorrection')} {post.topCorrection.author.displayName}
+            </Text>
+            <CorrectedLine original={post.body} corrected={post.topCorrection.corrected} />
+          </Pressable>
+        ) : null}
+
         {ask ? (
           helped.length > 0 || done.length > 0 ? (
             <View style={styles.counts}>
@@ -244,6 +263,26 @@ export const PostCard = memo(function PostCard({
   )
 })
 
+/** The corrected sentence as one line, only the changed parts in colour — see `foldCorrection`. */
+function CorrectedLine({ original, corrected }: { original: string; corrected: string }) {
+  const styles = useStyles()
+  const runs = useMemo(() => foldCorrection(original, corrected), [original, corrected])
+  return (
+    <Text style={styles.corrected}>
+      {runs.map((run, at) => (
+        <Text
+          key={at}
+          style={
+            run.kind === 'removed' ? styles.removed : run.kind === 'added' ? styles.added : null
+          }
+        >
+          {run.text}
+        </Text>
+      ))}
+    </Text>
+  )
+}
+
 const useStyles = makeStyles(({ v3 }) => ({
   row: { gap: v3.space[10] },
   card: {
@@ -284,6 +323,18 @@ const useStyles = makeStyles(({ v3 }) => ({
   bigFallback: { fontFamily: DISPLAY_FONT },
   sentence: { ...v3.type.headline },
   body: { ...v3.type.body },
+  // On the ground rather than the hue, so the correction's green reads in both schemes.
+  top: {
+    backgroundColor: v3.colors.bg,
+    borderRadius: v3.radius.row,
+    gap: v3.space[4],
+    paddingHorizontal: v3.space[14],
+    paddingVertical: v3.space[10],
+  },
+  topLabel: { ...v3.type.label, color: v3.colors.correction },
+  corrected: { ...v3.type.callout, color: v3.colors.fg },
+  removed: { color: v3.colors.muted, textDecorationLine: 'line-through' },
+  added: { color: v3.colors.correction, fontWeight: '800' },
   counts: { gap: v3.space[2] },
   count: { ...v3.type.caption, fontWeight: '600' },
   social: { alignItems: 'center', flexDirection: 'row', gap: v3.space[16] },

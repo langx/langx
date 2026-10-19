@@ -149,7 +149,7 @@ export function PostsV3(props: PostsV3Props) {
             onPress={() => {
               if (correction.postId) correction.submit(correction.postId)
             }}
-            style={styles.grow}
+            style={styles.send}
           />
           <Button
             label={t('common.cancel')}
@@ -281,5 +281,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   gap: { height: v3.space[10] },
   compose: { gap: v3.space[12], paddingHorizontal: v3.space[4] },
   composeActions: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8] },
+  // Twice Cancel's share, so "Send correction" stays on one line on a phone.
+  send: { flex: 2, width: 'auto' },
   grow: { flex: 1, width: 'auto' },
 }))

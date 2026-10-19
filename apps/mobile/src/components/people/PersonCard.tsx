@@ -198,9 +198,13 @@ const useStyles = makeStyles(({ v3 }) => ({
   name: { ...v3.type.title, color: v3.colors.ink },
   nameFallback: { fontFamily: DISPLAY_FONT },
   place: { ...v3.type.caption, color: v3.colors.ink, fontWeight: '700' },
+  // Wrapping rather than truncating: two long language names ("русский,
+  // украинский → английский") move the second chip down a line instead of
+  // cutting both to a few letters.
   pair: {
     alignItems: 'center',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: v3.space[6],
     marginTop: v3.space[2],
   },
