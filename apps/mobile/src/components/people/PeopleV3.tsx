@@ -21,7 +21,9 @@ import { LoadFailed } from '../LoadFailed'
 import { PeopleSearch, PeopleSearchResults } from '../PeopleSearch'
 import { Tip } from '../Tip'
 import { TourTarget } from '../TourTarget'
+import { BUTTON_FACE } from '../ui/Button'
 import { EmptyStateV3 } from '../ui/EmptyStateV3'
+import { ICON_BUTTON_TARGET } from '../ui/IconButton'
 import { Screen } from '../ui/Screen'
 import { Skeleton } from '../ui/Skeleton'
 import { NEWCOMER_TILE_WIDTH, NewcomerTile, PersonCard } from './PersonCard'
@@ -385,13 +387,14 @@ const useStyles = makeStyles(({ v3 }) => ({
   title: { ...v3.type.title, color: v3.colors.fg, flex: 1, paddingStart: v3.space[6] },
   // ExtraBold at Black's size until Black has loaded: the line thickens, never reflows.
   titleFallback: { fontFamily: DISPLAY_FONT },
+  // The kit's targets: 44pt on iOS, 48dp on Android.
   round: {
     alignItems: 'center',
     backgroundColor: v3.colors.surface,
     borderRadius: v3.radius.pill,
-    height: 44,
+    height: ICON_BUTTON_TARGET,
     justifyContent: 'center',
-    width: 44,
+    width: ICON_BUTTON_TARGET,
   },
   badge: {
     ...v3.type.label,
@@ -415,7 +418,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     borderWidth: 2,
     flexDirection: 'row',
     gap: v3.space[6],
-    minHeight: 44,
+    minHeight: BUTTON_FACE.small,
     paddingEnd: v3.space[12],
     paddingStart: v3.space[16],
   },
@@ -428,7 +431,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     borderRadius: v3.radius.pill,
     flexDirection: 'row',
     gap: v3.space[6],
-    minHeight: 44,
+    minHeight: BUTTON_FACE.small,
     paddingHorizontal: v3.space[16],
   },
   sortOn: { backgroundColor: v3.colors.pill },

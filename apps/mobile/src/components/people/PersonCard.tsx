@@ -59,6 +59,20 @@ export const PersonCard = memo(function PersonCard({
   ]
     .filter(Boolean)
     .join(' · ')
+  /*
+   * What the card shows, for a screen reader: the open target wraps it all,
+   * so a label of the name alone left the pair, the place and the bio out of
+   * reach — the very things a hello is decided on.
+   */
+  const openLabel = [
+    person.displayName,
+    place,
+    learns ? t('me.languagesLine', { speaks, learns }) : speaks,
+    person.bio,
+    person.repliesWithinDay ? t('discover.repliesWithinDay') : null,
+  ]
+    .filter(Boolean)
+    .join(', ')
 
   return (
     <View style={[styles.card, { backgroundColor: hue }, selected && styles.selected]}>
@@ -68,7 +82,7 @@ export const PersonCard = memo(function PersonCard({
       */}
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={person.displayName}
+        accessibilityLabel={openLabel}
         onPress={() => onOpen(person, index)}
         style={({ pressed }) => [styles.open, pressed && styles.pressed]}
       >
@@ -122,7 +136,7 @@ export const PersonCard = memo(function PersonCard({
       <Button
         label={t('onboarding.sayHelloTo', { name: person.displayName })}
         icon="message-circle"
-        variant="ink"
+        variant="hue"
         onPress={() => onHello(person)}
       />
     </View>
