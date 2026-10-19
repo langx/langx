@@ -1,6 +1,6 @@
 # Redesign v3 — tracker
 
-**Status (18 October 2026):** Every round-1 PR is merged. Phase 2 is under way: the v3 foundations (#1792) and Button v2 with IconButton (#1794) are merged; gamification primitives (#1795) and the streak push rewrite (#1796) are in progress. Phase 1 stays as recorded: direction chosen (A's structure, B's look); every screen drawn.
+**Status (19 October 2026):** Phase 2's kit and Phase 3's paywall are merged and live. Home (#1799) is merged behind `v3Home`, and the screen moves — Me, Chats, the thread, People and Echo — follow behind the same flag. The money and promise items Behic approved overnight on 18 October are merged behind flags that start off. Everything ships together as app 3.0; until then nobody sees a half-done screen.
 
 This is the one page that says where the v3 redesign stands. Any session that
 continues the work reads it right after CLAUDE.md. Only the session that
@@ -36,38 +36,38 @@ The paywall is urgent although it is seventh, because there have been no sales.
 
 ## Gates
 
-| Work                         | Can start when                                                                                                             | Status           |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| Phase 0, lanes A–D           | now                                                                                                                        | in progress      |
-| Lane E (AI)                  | D12a or D12g approved                                                                                                      | waiting          |
-| Phase 1                      | D3 answered                                                                                                                | direction chosen |
-| Phase 2                      | Phase 1 recorded                                                                                                           | in progress      |
-| Phase 3                      | Phase 2 Button/sheet PRs merged (or Behic's OK to stack); D12 for its money items                                          | waiting          |
-| Phase 4                      | Phase 2 merged; Phase 3's subscriber status card, or build it here                                                         | waiting          |
-| Phase 5                      | Phase 2 merged; lane C merged for reward chips and Echo session-done numbers                                               | waiting          |
-| Phase 6                      | Phase 2 and lane C reward ack merged; D12 (incl. h) for anything that gives Pro time or changes the Terms; minors defaults | waiting          |
-| Phase 7                      | Phase 2 merged; D11 for the campaign; D12 for Copilot or Pro Week claims; D12h for store-listing claims                    | waiting          |
-| Phase 8                      | D6c and minors defaults for any new push category; Phase 2 merged for its screens                                          | waiting          |
-| Phase 9 (native batch ships) | D2                                                                                                                         | waiting          |
+| Work                         | Can start when                                                                                                             | Status                                    |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Phase 0, lanes A–D           | now                                                                                                                        | in progress                               |
+| Lane E (AI)                  | D12a or D12g approved                                                                                                      | plumbing merged dark (#1802)              |
+| Phase 1                      | D3 answered                                                                                                                | direction chosen                          |
+| Phase 2                      | Phase 1 recorded                                                                                                           | kit merged                                |
+| Phase 3                      | Phase 2 Button/sheet PRs merged (or Behic's OK to stack); D12 for its money items                                          | paywall and in-app roads merged           |
+| Phase 4                      | Phase 2 merged; Phase 3's subscriber status card, or build it here                                                         | Home merged behind `v3Home`; Me in review |
+| Phase 5                      | Phase 2 merged; lane C merged for reward chips and Echo session-done numbers                                               | in progress behind `v3Home`               |
+| Phase 6                      | Phase 2 and lane C reward ack merged; D12 (incl. h) for anything that gives Pro time or changes the Terms; minors defaults | waiting                                   |
+| Phase 7                      | Phase 2 merged; D11 for the campaign; D12 for Copilot or Pro Week claims; D12h for store-listing claims                    | waiting                                   |
+| Phase 8                      | D6c and minors defaults for any new push category; Phase 2 merged for its screens                                          | waiting                                   |
+| Phase 9 (native batch ships) | D2                                                                                                                         | waiting                                   |
 
 ## Phase 0 and the lanes
 
-| Item                                       | PR    | State                                                             |
-| ------------------------------------------ | ----- | ----------------------------------------------------------------- |
-| Tracker (this page)                        | #1783 | merged                                                            |
-| 0.1 Baseline screenshots, "before" set     | —     | published                                                         |
-| 0.2 Instrumentation                        | #1785 | merged                                                            |
-| Lane A — skeletons on Me and the Echo tab  | #1786 | merged                                                            |
-| Lane B — D0 price hierarchy                | #1788 | merged                                                            |
-| Lane B — honesty fixes in copy             | #1789 | merged                                                            |
-| H6 — measurement in the operator panel     | #1790 | merged                                                            |
-| Lane C — return the send award in the ack  | #1784 | merged                                                            |
-| Lane D — `.value` to `.get()/.set()`       | #1787 | merged                                                            |
-| Phase 2 — v3 foundations                   | #1792 | merged                                                            |
-| Phase 2 — Pro translations unlimited       | #1793 | merged; companions langx/website#267 and langx/docs#49 merged     |
-| Phase 2 — Button v2 with IconButton        | #1794 | merged; branding companions langx/branding#24 and #25 still draft |
-| Phase 2 — gamification primitives          | #1795 | in progress                                                       |
-| Lane C — streak push truth and repair push | #1796 | in progress                                                       |
+| Item                                       | PR    | State                                                  |
+| ------------------------------------------ | ----- | ------------------------------------------------------ |
+| Tracker (this page)                        | #1783 | merged                                                 |
+| 0.1 Baseline screenshots, "before" set     | —     | published                                              |
+| 0.2 Instrumentation                        | #1785 | merged                                                 |
+| Lane A — skeletons on Me and the Echo tab  | #1786 | merged                                                 |
+| Lane B — D0 price hierarchy                | #1788 | merged                                                 |
+| Lane B — honesty fixes in copy             | #1789 | merged                                                 |
+| H6 — measurement in the operator panel     | #1790 | merged                                                 |
+| Lane C — return the send award in the ack  | #1784 | merged                                                 |
+| Lane D — `.value` to `.get()/.set()`       | #1787 | merged                                                 |
+| Phase 2 — v3 foundations                   | #1792 | kit merged                                             |
+| Phase 2 — Pro translations unlimited       | #1793 | kit merged                                             |
+| Phase 2 — Button v2 with IconButton        | #1794 | kit merged                                             |
+| Phase 2 — gamification primitives          | #1795 | kit merged                                             |
+| Lane C — streak push truth and repair push | #1796 | merged; the repair push sits behind `streakRepairPush` |
 
 Merge order that applied: #1784 before any client PR that reads the award;
 #1785 before #1788. The App Review question in rule 26 was answered on 17 Oct
@@ -113,6 +113,33 @@ Merge order that applied: #1784 before any client PR that reads the award;
   `expo-glass-effect`; then the remaining compiler blockers, file by file.
 - **After Phase 0:** H6 measurement in the operator panel is the first PR of
   the next turn.
+
+## Round 2 (18–19 October)
+
+Behic's overnight authority on 18 October covered building, reviewing and
+merging reviewed, CI-green PRs, with every money or promise change behind a
+flag that starts off. Each flag below is off in production; Behic switches
+them.
+
+| Item                                                  | PR           | State                                                            |
+| ----------------------------------------------------- | ------------ | ---------------------------------------------------------------- |
+| S2 reply-first ranking and S4 corrections into Echo   | #1798        | merged; `discoveryReplyFirst`, `echoFromCorrections`             |
+| Phase 4 — Home tab, tabs Home · Chats · Echo · People | #1799        | Home merged behind `v3Home`; Me in review                        |
+| Phase 3 — paywall v3, a reason per road               | #1800        | paywall and in-app roads merged                                  |
+| Phase 2 — switch, segmented control, progress, toast  | #1801        | kit merged                                                       |
+| M1 — Copilot plumbing, consent and allowance (dark)   | #1802        | merged; `copilotService`, no provider key                        |
+| D7 — trial-ending reminder                            | #1804        | merged; `trialEndingReminder`                                    |
+| Lane C — no silent drops in the nudge engine          | #1805        | merged; `nudgeNoSilentDrops`                                     |
+| M4 — give a week, get a week                          | #1806        | merged; `giveAWeek`; companions langx/website#268, langx/docs#50 |
+| Lane B — in-app roads to Pro                          | #1807        | merged, live                                                     |
+| M3 — the newcomer hello                               | #1808        | merged; `newcomerHello`                                          |
+| M2 — Pro Week, server and app                         | #1810, #1811 | in review; `proWeek`                                             |
+| Phase 4 — Me tab                                      | #1812        | Home merged behind `v3Home`; Me in review                        |
+| Phase 5 — Chats list                                  | #1813        | in progress behind `v3Home`                                      |
+| Phase 5 — thread (slice 1), People and Posts, Echo    | —            | in progress behind `v3Home`                                      |
+
+The values these flags carry (allowances, caps, windows) wait for Behic's
+confirmation in each PR body before the flag goes on.
 
 ## Phase 1 — the concepts and the chosen direction
 
@@ -167,6 +194,10 @@ PR.
 | 17 Oct 2026 | Merges               | Behic asked the coordinator to merge in order; the auto-mode classifier allowed #1784 only, so the rest are his clicks                                                                                                                                                                                 |
 | 17 Oct 2026 | Fair use             | Pro translations stay "unlimited" in all copy, with a fair-use guard of 1,000 per 24 hours, disclosed in Terms §5 (merged with langx/website#267)                                                                                                                                                      |
 | 17 Oct 2026 | Merges               | The coordinator merges reviewed, CI-green PRs in order (Behic added the permission)                                                                                                                                                                                                                    |
+| 18 Oct 2026 | Overnight authority  | Build, review and merge reviewed, CI-green PRs; D12's yes-items (a, b, c, f) only behind flags that start off; never production keys, flag switches, store consoles, campaigns or production scripts                                                                                                   |
+| 18 Oct 2026 | Merges               | Merge each PR as soon as its review fixes are in and CI is green                                                                                                                                                                                                                                       |
+| 18 Oct 2026 | Scope of 3.0         | Every screen moves to the v3 look; the flagged features join; all of it ships together as mobile 3.0                                                                                                                                                                                                   |
+| 19 Oct 2026 | Visuals              | After the code work: the branding repository's visuals and the App Store and Play screenshots are redone in the v3 look, from the finished screens                                                                                                                                                     |
 
 ## Open questions
 
@@ -198,6 +229,16 @@ langx/docs#49.
   Behic operates the store consoles; the repo records follow
   (`planSaving.test.ts`, `docs/release-runbook.md`, `docs/decisions.md`).
 - Bump the app to 3.0 in the same round.
+- Hand Behic the list of v3 flags to switch on together (`v3Home` and the
+  feature flags in _Round 2_), each with the values its PR asked him to
+  confirm.
+- **After the code work, the visuals.** Redo the branding repository's visuals
+  in the v3 look, folding in the open drafts langx/branding#24–#27, and shoot
+  new App Store and Play screenshots from the finished v3 screens. The images
+  are prepared in the repositories; Behic uploads them in the consoles.
+- Update the store listing copy (`docs/store/listing.md`, the metadata file)
+  where the flagged features change what it says: invites, Pro Week, the
+  newcomer hello.
 
 ## Native-batch candidates
 
