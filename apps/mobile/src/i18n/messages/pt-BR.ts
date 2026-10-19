@@ -1053,6 +1053,15 @@ export const ptBR: Localized<EnMessages> = {
     emptyTitle: 'Ainda não tem ninguém',
     emptyBody:
       'Aqui aparecem pessoas cujos idiomas combinam com os seus nos dois sentidos. Tente afrouxar os filtros.',
+    chatsLeft: {
+      one: 'Resta {count} de {total} conversas novas hoje',
+      other: 'Restam {count} de {total} conversas novas hoje',
+    },
+    chatsLeftNote: 'Respostas nunca contam.',
+    newOnLangx: 'Novos no LangX',
+    helloNewcomer: 'Dê um oi para {name}, que acabou de chegar ao LangX',
+    repliesWithinDay: 'Costuma responder em até um dia',
+    changeFilters: 'Mudar filtros',
   },
 
   filters: {
@@ -1657,6 +1666,11 @@ export const ptBR: Localized<EnMessages> = {
     postedCorrection: 'Publicado. Alguém vai corrigir.',
     askCorrectionHint:
       'Alguém nativo vai corrigir, geralmente em menos de uma hora. As correções são ilimitadas em todos os planos.',
+    askChip: 'Pergunta',
+    momentChip: 'Momento',
+    askNatural: 'Isso soa natural?',
+    askPronounce: 'Como se pronuncia isso?',
+    helpName: 'Ajudar {name}',
   },
 
   profile: {

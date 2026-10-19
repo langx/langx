@@ -1068,6 +1068,15 @@ export const fr: Localized<EnMessages> = {
     emptyTitle: 'Personne pour l’instant',
     emptyBody:
       'On affiche ici les gens dont les langues correspondent aux tiennes dans les deux sens. Essaie d’assouplir les filtres.',
+    chatsLeft: {
+      one: 'Il te reste {count} nouvelle discussion sur {total} aujourd’hui',
+      other: 'Il te reste {count} nouvelles discussions sur {total} aujourd’hui',
+    },
+    chatsLeftNote: 'Les réponses ne comptent jamais.',
+    newOnLangx: 'Nouveaux sur LangX',
+    helloNewcomer: 'Dis bonjour à {name}, qui vient d’arriver sur LangX',
+    repliesWithinDay: 'Répond en général dans la journée',
+    changeFilters: 'Modifier les filtres',
   },
 
   filters: {
@@ -1677,6 +1686,11 @@ export const fr: Localized<EnMessages> = {
     postedCorrection: 'Publié. Quelqu’un la corrigera.',
     askCorrectionHint:
       'Quelqu’un de natif la corrigera, en général dans l’heure. Les corrections sont illimitées sur tous les forfaits.',
+    askChip: 'Question',
+    momentChip: 'Moment',
+    askNatural: 'Est-ce que ça sonne naturel ?',
+    askPronounce: 'Comment ça se prononce ?',
+    helpName: 'Aider {name}',
   },
 
   profile: {

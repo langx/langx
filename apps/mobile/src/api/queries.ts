@@ -79,6 +79,7 @@ import {
 } from '@langx/shared'
 import type {
   BoostedProfilesPage,
+  NewProfilesPage,
   SuspensionStatus,
   HandleSearchPage,
   DiscoveryResult,
@@ -183,6 +184,8 @@ export const keys = {
    * location change — refresh the strip with it.
    */
   discoveryBoosted: (filters: string) => ['discovery', 'boosted', filters] as const,
+  /** The "New on LangX" strip, under the same prefix for the same reason. */
+  discoveryNew: (filters: string) => ['discovery', 'new', filters] as const,
   handleSearch: (term: string) => ['handleSearch', term] as const,
   /** Deliberately outside every other prefix: it is the one query that still
    *  answers while the rest of the app is refused. */
@@ -873,6 +876,23 @@ export function useBoostedProfiles(params: Record<string, string>) {
     queryFn: () => api.get<BoostedProfilesPage>(`/discovery/boosted?${search}`),
     // Same reason as `useDiscovery`: a filter tap must not blank the strip
     // while the next answer is in flight.
+    placeholderData: keepPreviousData,
+  })
+}
+
+/**
+ * The "New on LangX" strip — accounts from the last `DISCOVERY_NEW_DAYS`,
+ * inside the list's own scope. The server answers an empty strip while
+ * `flags.discoveryReplyFirst` is off, so the switch is its to throw; an API
+ * older than the route answers 404, which the strip reads as empty too (the
+ * client's default already refuses to retry a 4xx).
+ */
+export function useNewProfiles(params: Record<string, string>, { enabled = true } = {}) {
+  const search = new URLSearchParams(params).toString()
+  return useQuery({
+    queryKey: keys.discoveryNew(search),
+    queryFn: () => api.get<NewProfilesPage>(`/discovery/new?${search}`),
+    enabled,
     placeholderData: keepPreviousData,
   })
 }
