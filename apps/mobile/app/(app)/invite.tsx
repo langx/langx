@@ -152,7 +152,8 @@ export default function InviteScreen() {
         </View>
       ) : null}
 
-      {invitees && invitees.length === 0 ? (
+      {/* "Share your link" would be the one place a guest is told they have one. */}
+      {invitees && invitees.length === 0 && hero !== 'guest' ? (
         <EmptyState icon="user-plus" title={t('invite.emptyTitle')} body={t('invite.emptyBody')} />
       ) : null}
 
