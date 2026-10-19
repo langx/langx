@@ -102,6 +102,12 @@ export const es: Localized<EnMessages> = {
     attachLibrary: 'Foto o vídeo',
     attachCamera: 'Hacer una foto',
     attachVoice: 'Nota de voz',
+    trayCamera: 'Cámara',
+    trayTime: 'Hora',
+    trayQuiz: 'Quiz',
+    trayPhrases: 'Expresiones',
+    trayStarred: 'Destacados',
+    onLatest: 'Sobre el último mensaje de {name}',
   },
 
   media: {

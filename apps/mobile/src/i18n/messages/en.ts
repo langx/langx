@@ -128,6 +128,17 @@ export const en = {
     attachLibrary: 'Photo or video',
     attachCamera: 'Take a photo',
     attachVoice: 'Voice note',
+    /**
+     * The v3 thread's tray: the short word under each glyph. A screen reader
+     * hears the row's long name instead (`attachCamera`, `chat.sendMeeting`…).
+     */
+    trayCamera: 'Camera',
+    trayTime: 'Time',
+    trayQuiz: 'Quiz',
+    trayPhrases: 'Phrases',
+    trayStarred: 'Starred',
+    /** After Correct, Translate and Echo over the field: whose message they take. */
+    onLatest: "On {name}'s last message",
   },
 
   media: {

@@ -105,6 +105,12 @@ export const tr: Localized<EnMessages> = {
     attachLibrary: 'Fotoğraf veya video',
     attachCamera: 'Fotoğraf çek',
     attachVoice: 'Sesli not',
+    trayCamera: 'Kamera',
+    trayTime: 'Saat',
+    trayQuiz: 'Soru',
+    trayPhrases: 'İfadeler',
+    trayStarred: 'Yıldızlı',
+    onLatest: '{name} kişisinden gelen son mesaj için',
   },
 
   media: {
