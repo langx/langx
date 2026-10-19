@@ -66,7 +66,7 @@ export function EchoPartnerTile({
           {line}
         </Text>
         {more ? (
-          <Text style={styles.partnerMore} numberOfLines={1}>
+          <Text style={styles.partnerMore} numberOfLines={2}>
             {more}
           </Text>
         ) : null}
@@ -91,6 +91,9 @@ export function EchoStatTile({
       accessibilityRole="button"
       accessibilityLabel={`${value} ${label}`}
       onPress={onPress}
+      // The two share the row equally: the touch area takes the half, and
+      // the face fills it.
+      touchStyle={styles.statSlot}
       style={styles.stat}
     >
       <Text style={styles.statValue}>{value}</Text>
@@ -203,7 +206,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   stat: {
     backgroundColor: v3.colors.surface,
     borderRadius: v3.radius.card,
-    flex: 1,
+    flexGrow: 1,
     minHeight: 58,
     paddingHorizontal: v3.space[14],
     paddingVertical: v3.space[10],
