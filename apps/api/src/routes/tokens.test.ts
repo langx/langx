@@ -1536,4 +1536,77 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       expect(response.statusCode).toBe(400)
     })
   })
+
+  /**
+   * The Me tab's first-week checklist reads every step but one off responses
+   * it already has; "Get your first correction" is the one it reads here.
+   */
+  describe('the first week', () => {
+    const NATIVE_EN = {
+      nativeLanguages: [{ code: 'en' }],
+      learning: [{ code: 'tr', level: 'intermediate', priority: 1 }],
+    }
+
+    it('says nobody has corrected a new account, then that somebody has', async () => {
+      const learner = await newUser('first-week-learner@example.com')
+      const teacher = await newUser('first-week-teacher@example.com', NATIVE_EN)
+      expect((await summary(learner)).firstWeek).toEqual({ corrected: false })
+
+      const conversationId = await startConversation(teacher, learner.userId, 'hello')
+      const { message } = await reply(learner.userId, conversationId, 'I has an apple')
+      await correct(teacher.userId, conversationId, String(message._id))
+
+      expect((await summary(learner)).firstWeek).toEqual({ corrected: true })
+      // Writing a correction is not receiving one.
+      expect((await summary(teacher)).firstWeek).toEqual({ corrected: false })
+    })
+
+    it('counts a correction on a post', async () => {
+      const learner = await newUser('first-week-poster@example.com')
+      const teacher = await newUser('first-week-post-teacher@example.com', NATIVE_EN)
+      const posted = await app.inject({
+        method: 'POST',
+        url: '/posts',
+        headers: { cookie: learner.cookie },
+        payload: { body: 'Yesterday I go to the market', language: 'en' },
+      })
+      expect(posted.statusCode, posted.body).toBe(201)
+      const corrected = await app.inject({
+        method: 'POST',
+        url: `/posts/${posted.json<{ _id: string }>()._id}/corrections`,
+        headers: { cookie: teacher.cookie },
+        payload: { corrected: 'Yesterday I went to the market' },
+      })
+      expect(corrected.statusCode, corrected.body).toBe(201)
+
+      expect((await summary(learner)).firstWeek).toEqual({ corrected: true })
+    })
+
+    it('is absent once the week is over, and for a restored v1 account', async () => {
+      const old = await newUser('first-week-over@example.com')
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: old.userId },
+          { $set: { createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000) } },
+        )
+      expect((await summary(old)).firstWeek).toBeUndefined()
+
+      const restored = await newUser('first-week-restored@example.com')
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: restored.userId },
+        {
+          $set: {
+            restoredFromV1: {
+              at: new Date(),
+              tokensCredited: 0,
+              frozenStreak: 0,
+              conversationsImported: 0,
+            },
+          },
+        },
+      )
+      expect((await summary(restored)).firstWeek).toBeUndefined()
+    })
+  })
 })
