@@ -509,6 +509,34 @@ export const de: Localized<EnMessages> = {
     aboutClose: 'Verstanden',
     audioFull: 'Diese Karte hat schon so viele Aufnahmen, wie sie behalten kann.',
     postToFeed: 'Im Feed posten',
+    subtitle: 'Sätze aus deinen Chats kommen zurück, kurz bevor du sie vergessen würdest.',
+    dueUnit: { one: 'Karte fällig', other: 'Karten fällig' },
+    aboutMinutes: { one: 'etwa {count} Minute', other: 'etwa {count} Minuten' },
+    byPartner: 'Nach Partner',
+    fromPartner: 'Von {name}',
+    partnerDue: { one: '{count} fällig', other: '{count} fällig' },
+    andMore: { one: 'und {count} weitere', other: 'und {count} weitere' },
+    reviewFrom: {
+      one: '{count} Karte von {name} wiederholen',
+      other: '{count} Karten von {name} wiederholen',
+    },
+    cardsKept: { one: 'Karte behalten', other: 'Karten behalten' },
+    reviewedWeek: { one: 'diese Woche wiederholt', other: 'diese Woche wiederholt' },
+    emptyLine:
+      'Noch keine Karten. Halte eine Nachricht im Chat gedrückt und wähle „Zu Echo hinzufügen“.',
+    rememberedCount: { one: '{count} gewusst', other: '{count} gewusst' },
+    tokensEarned: { one: '+{count} Token', other: '+{count} Token' },
+    streakKept: 'Serie gehalten · Tag {day}',
+    sessionOf: 'Einheit {done} von {total} heute',
+    sessionsAllDone: {
+      one: 'Die Einheit von heute ist geschafft',
+      other: 'Alle {count} Einheiten von heute sind geschafft',
+    },
+    sessionsEarn: {
+      one: 'Deine erste Einheit am Tag bringt Token.',
+      other: 'Deine ersten {count} Einheiten am Tag bringen Token.',
+    },
+    oneMore: 'Noch eine Einheit',
   },
 
   conversationPicker: {

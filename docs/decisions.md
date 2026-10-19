@@ -867,6 +867,7 @@ allowlist.
 ## Home leads the bar, and People holds Discover and the Feed — behind a flag
 
 > **Amended 19 October 2026 — see _Chats leads with the people waiting on you — behind the same flag_ below.**
+> **Amended 19 October 2026 — see _Echo leads with what is due, and the done screen says what it earned — behind the same flag_ below.**
 
 **18 October 2026.** The first restructured surface (D4, D5, move S1), and the
 first change to the app's structure rather than its look. Two rules go, and
@@ -1011,6 +1012,58 @@ Discover and Feed.
   optional, and only asked-for help can be given_ stands, and the server
   would refuse it. Likes stay on moments and on every post's page; an ask's
   card is about help.
+
+## Echo leads with what is due, and the done screen says what it earned — behind the same flag
+
+**19 October 2026.** The Echo tab and the end of a review, behind
+`flags.v3Home` (Phase 5). With the flag off both are what they were. With it
+on, `app/(app)/(tabs)/echo.tsx` draws `src/screens/EchoV3Screen.tsx` and
+`echo/session.tsx` ends on `src/components/echo/EchoDoneV3.tsx`, so the entry
+above's "the screens behind the tabs keep the current look" no longer holds
+for Echo. The tab waits for the flag's answer, as Home's route does.
+
+- **The tab.** A `HeroTile` with the due count and the screen's one yellow,
+  which asks for a language exactly as the current tab does. Beside the count,
+  "about M minutes": the summary's new `secondsPerCard` — the median time a
+  card was on screen over the latest `ECHO_PACE_SAMPLE` answers, the median so
+  that one card left on screen does not move it — times what is due. Until a
+  person has answered a session's worth, the hero says how many and not how
+  long. Under it, the due cards kept from chats, grouped by who wrote them
+  (the summary's new `partners`, at most `ECHO_SUMMARY_PARTNERS`), each in
+  that person's hue and each a review of just their cards (the queue's new
+  `partner`). A group is one language, the one with most of that person's
+  cards due, and opens with it: _Review asks which language_ in
+  `docs/echo.md` removed the mixed deck, and a partner's lines kept in two
+  languages would have brought it back. The groups show under All only: they
+  are the ones with most due across every language, so beside a language
+  chip they would be a partial list. Nothing due is a grey block that says
+  when the next card is back; no cards at all is `EmptyStateV3`. The
+  rotating tip line is not drawn; Phase 7 replaces tips with coach cards.
+- **The done screen.** The tokens are the batch's `award` as the server
+  answered it, and nothing is said about tokens when it paid none. "Streak
+  kept · day N" only when that award carries the streak. "Session X of N
+  today" is `completedEchoSessions` over a summary fetched after the batch
+  landed, with N from `TOKEN_RULES.caps.echoSessionsPerDay`; a batch past the
+  cap says all of today's are done instead, and a short one that completed no
+  session says nothing about sessions. One more session is the yellow while a
+  paid session is left today and the same deck still has cards, and opens a
+  fresh one; otherwise Done is. A batch that paid gets the success haptic, and
+  the confetti only when motion is allowed.
+
+**Which day the count uses: the rolling twenty-four hours.** `settleSessions`
+counts sessions as `completedEchoSessions` over the reviews of the last
+twenty-four hours and keys each payment on the **local** day
+(`echo:<localDay>:<n>`). The screen runs the same function over the summary's
+`reviewedToday`, which is the same window, so the line always agrees with what
+was paid — including where the two clocks disagree. Just after local midnight
+last evening's sessions still count, and the first batch of the new day is
+paid again for each of them under the new day's keys, up to the cap; the done
+screen then reports that as earned, because it was. This is the inconsistency
+the redesign brief asks Phase 6 to fix first. It is written down here and not
+fixed.
+
+**What old builds will see.** Nothing: two summary fields they do not read,
+and a queue parameter they never send.
 
 ## Buttons are flat pills in sentence case, and still press on `Animated`
 

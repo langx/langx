@@ -503,6 +503,33 @@ export const es: Localized<EnMessages> = {
     aboutClose: 'Entendido',
     audioFull: 'Esta tarjeta ya tiene todas las grabaciones que puede guardar.',
     postToFeed: 'Publicar en el muro',
+    subtitle: 'Las frases de tus chats vuelven justo antes de que las olvides.',
+    dueUnit: { one: 'tarjeta pendiente', other: 'tarjetas pendientes' },
+    aboutMinutes: { one: 'alrededor de {count} minuto', other: 'alrededor de {count} minutos' },
+    byPartner: 'Por compañero',
+    fromPartner: 'De {name}',
+    partnerDue: { one: '{count} pendiente', other: '{count} pendientes' },
+    andMore: { one: 'y {count} más', other: 'y {count} más' },
+    reviewFrom: {
+      one: 'Repasar {count} tarjeta de {name}',
+      other: 'Repasar {count} tarjetas de {name}',
+    },
+    cardsKept: { one: 'tarjeta guardada', other: 'tarjetas guardadas' },
+    reviewedWeek: { one: 'repasada esta semana', other: 'repasadas esta semana' },
+    emptyLine: 'Aún no hay tarjetas. Mantén pulsado un mensaje en un chat y elige Añadir a Echo.',
+    rememberedCount: { one: '{count} recordada', other: '{count} recordadas' },
+    tokensEarned: { one: '+{count} token', other: '+{count} tokens' },
+    streakKept: 'Racha mantenida · día {day}',
+    sessionOf: 'Sesión {done} de {total} hoy',
+    sessionsAllDone: {
+      one: 'La sesión de hoy está hecha',
+      other: 'Las {count} sesiones de hoy están hechas',
+    },
+    sessionsEarn: {
+      one: 'Tu primera sesión de cada día da tokens.',
+      other: 'Tus primeras {count} sesiones de cada día dan tokens.',
+    },
+    oneMore: 'Una sesión más',
   },
 
   conversationPicker: {

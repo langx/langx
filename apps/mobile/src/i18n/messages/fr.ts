@@ -509,6 +509,34 @@ export const fr: Localized<EnMessages> = {
     aboutClose: 'J’ai compris',
     audioFull: 'Cette carte contient déjà autant d’enregistrements qu’elle peut en garder.',
     postToFeed: 'Publier dans le fil',
+    subtitle: 'Les phrases de tes discussions reviennent juste avant que tu les oublies.',
+    dueUnit: { one: 'carte à revoir', other: 'cartes à revoir' },
+    aboutMinutes: { one: 'environ {count} minute', other: 'environ {count} minutes' },
+    byPartner: 'Par partenaire',
+    fromPartner: 'De la part de {name}',
+    partnerDue: { one: '{count} à revoir', other: '{count} à revoir' },
+    andMore: { one: 'et {count} autre', other: 'et {count} autres' },
+    reviewFrom: {
+      one: 'Revoir {count} carte de la part de {name}',
+      other: 'Revoir {count} cartes de la part de {name}',
+    },
+    cardsKept: { one: 'carte gardée', other: 'cartes gardées' },
+    reviewedWeek: { one: 'revue cette semaine', other: 'revues cette semaine' },
+    emptyLine:
+      'Pas encore de cartes. Appuie longuement sur un message dans une discussion et choisis Ajouter à Echo.',
+    rememberedCount: { one: '{count} retenue', other: '{count} retenues' },
+    tokensEarned: { one: '+{count} token', other: '+{count} tokens' },
+    streakKept: 'Série tenue · jour {day}',
+    sessionOf: 'Séance {done} sur {total} aujourd’hui',
+    sessionsAllDone: {
+      one: 'La séance du jour est faite',
+      other: 'Les {count} séances du jour sont faites',
+    },
+    sessionsEarn: {
+      one: 'Ta première séance de chaque jour rapporte des tokens.',
+      other: 'Tes {count} premières séances de chaque jour rapportent des tokens.',
+    },
+    oneMore: 'Encore une séance',
   },
 
   conversationPicker: {

@@ -236,7 +236,8 @@ export const keys = {
    */
   echo: ['echo'] as const,
   echoSummary: ['echo', 'summary'] as const,
-  echoQueue: (lang: string) => ['echo', 'queue', lang] as const,
+  echoQueue: (lang: string, partner?: string) =>
+    partner ? (['echo', 'queue', lang, partner] as const) : (['echo', 'queue', lang] as const),
   echoCards: (lang: string, q: string, archived: boolean) =>
     ['echo', 'cards', lang, q, archived] as const,
   echoPacks: ['echo', 'packs'] as const,
@@ -4059,11 +4060,23 @@ export function useEchoSummary(enabled = true) {
   })
 }
 
-export function useEchoQueue(lang?: string) {
+/**
+ * `partner` narrows the deck to the cards kept from one person's messages —
+ * the Echo tab's "From Anna" group, opened. Its own key, so a partner's deck
+ * and a language's are never handed to each other's session.
+ */
+export function useEchoQueue(lang?: string, partner?: string) {
   return useQuery({
-    queryKey: keys.echoQueue(lang ?? 'all'),
-    queryFn: () =>
-      api.get<EchoQueue>(`/echo/queue${lang ? `?lang=${encodeURIComponent(lang)}` : ''}`),
+    queryKey: keys.echoQueue(lang ?? 'all', partner),
+    queryFn: () => {
+      // Built from an object, as the other queries here are: React Native's
+      // `URLSearchParams` has not always implemented `set`.
+      const search = new URLSearchParams({
+        ...(lang ? { lang } : {}),
+        ...(partner ? { partner } : {}),
+      }).toString()
+      return api.get<EchoQueue>(`/echo/queue${search ? `?${search}` : ''}`)
+    },
     // The deck a session is about to draw from must be what the server has
     // now, not what it had when the tab was last opened.
     staleTime: 0,

@@ -28,8 +28,10 @@ import {
   PlayAgainProvider,
   useTakePlay,
 } from '../../../src/components/echo/PlayAgain'
+import { EchoDoneV3 } from '../../../src/components/echo/EchoDoneV3'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { useKeyboardClearance } from '../../../src/hooks/useKeyboardClearance'
+import { useV3Home } from '../../../src/hooks/useV3Home'
 import { useT } from '../../../src/i18n'
 import { voiceLabel } from '../../../src/i18n/labels'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
@@ -104,8 +106,10 @@ export default function EchoSessionScreen() {
   const { colors } = useTheme()
   const t = useT()
   const names = useDisplayNames()
-  const { lang } = useLocalSearchParams<{ lang?: string }>()
-  const queue = useEchoQueue(lang)
+  // `partner` is the redesign's "From Anna" group, opened; see `useEchoQueue`.
+  const { lang, partner } = useLocalSearchParams<{ lang?: string; partner?: string }>()
+  const queue = useEchoQueue(lang, partner)
+  const v3Home = useV3Home()
   const submit = useSubmitEchoReviews()
   const me = useMe()
   // The languages a post may be written in, which is what decides whether a
@@ -389,6 +393,19 @@ export default function EchoSessionScreen() {
   }
 
   // Past the last card: what happened, and whether it was kept.
+  if (!card && v3Home) {
+    return (
+      <EchoDoneV3
+        graded={graded}
+        queue={queue}
+        submit={submit}
+        saved={saved}
+        saveFailed={saveFailed}
+        onRetry={() => void flush(graded)}
+        scope={{ lang, partner }}
+      />
+    )
+  }
   if (!card) {
     const remembered = graded.filter((entry) => entry.grade !== 'again').length
     return (

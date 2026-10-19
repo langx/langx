@@ -498,6 +498,33 @@ export const tr: Localized<EnMessages> = {
     aboutClose: 'Anladım',
     audioFull: 'Bu kart tutabileceği kadar kayıt tutuyor.',
     postToFeed: 'Akışa gönder',
+    subtitle: 'Sohbetlerindeki cümleler, tam unutmak üzereyken geri gelir.',
+    dueUnit: { one: 'kart bekliyor', other: 'kart bekliyor' },
+    aboutMinutes: { one: 'yaklaşık {count} dakika', other: 'yaklaşık {count} dakika' },
+    byPartner: 'Partnere göre',
+    fromPartner: 'Kimden: {name}',
+    partnerDue: { one: '{count} bekliyor', other: '{count} bekliyor' },
+    andMore: { one: 've {count} tane daha', other: 've {count} tane daha' },
+    reviewFrom: {
+      one: '{count} kartı tekrarla · {name}',
+      other: '{count} kartı tekrarla · {name}',
+    },
+    cardsKept: { one: 'kart saklandı', other: 'kart saklandı' },
+    reviewedWeek: { one: 'bu hafta tekrarlandı', other: 'bu hafta tekrarlandı' },
+    emptyLine: 'Henüz kart yok. Bir sohbette mesaja basılı tut ve Echo’ya ekle’yi seç.',
+    rememberedCount: { one: '{count} hatırlandı', other: '{count} hatırlandı' },
+    tokensEarned: { one: '+{count} token', other: '+{count} token' },
+    streakKept: 'Seri korundu · {day}. gün',
+    sessionOf: 'Bugünkü oturum: {done} / {total}',
+    sessionsAllDone: {
+      one: 'Bugünkü oturum tamam',
+      other: 'Bugünkü {count} oturumun hepsi tamam',
+    },
+    sessionsEarn: {
+      one: 'Her gün ilk oturumun token kazandırır.',
+      other: 'Her gün ilk {count} oturumun token kazandırır.',
+    },
+    oneMore: 'Bir oturum daha',
   },
 
   conversationPicker: {

@@ -501,6 +501,34 @@ export const ptBR: Localized<EnMessages> = {
     aboutClose: 'Entendi',
     audioFull: 'Este cartão já tem todas as gravações que pode guardar.',
     postToFeed: 'Publicar no feed',
+    subtitle: 'As frases das suas conversas voltam logo antes de você esquecê-las.',
+    dueUnit: { one: 'cartão pendente', other: 'cartões pendentes' },
+    aboutMinutes: { one: 'cerca de {count} minuto', other: 'cerca de {count} minutos' },
+    byPartner: 'Por parceiro',
+    fromPartner: 'De {name}',
+    partnerDue: { one: '{count} pendente', other: '{count} pendentes' },
+    andMore: { one: 'e mais {count}', other: 'e mais {count}' },
+    reviewFrom: {
+      one: 'Revisar {count} cartão de {name}',
+      other: 'Revisar {count} cartões de {name}',
+    },
+    cardsKept: { one: 'cartão guardado', other: 'cartões guardados' },
+    reviewedWeek: { one: 'revisado esta semana', other: 'revisados esta semana' },
+    emptyLine:
+      'Nenhum cartão ainda. Segure uma mensagem em uma conversa e escolha Adicionar ao Echo.',
+    rememberedCount: { one: '{count} lembrado', other: '{count} lembrados' },
+    tokensEarned: { one: '+{count} token', other: '+{count} tokens' },
+    streakKept: 'Sequência mantida · dia {day}',
+    sessionOf: 'Sessão {done} de {total} hoje',
+    sessionsAllDone: {
+      one: 'A sessão de hoje está feita',
+      other: 'As {count} sessões de hoje estão feitas',
+    },
+    sessionsEarn: {
+      one: 'Sua primeira sessão de cada dia rende tokens.',
+      other: 'Suas primeiras {count} sessões de cada dia rendem tokens.',
+    },
+    oneMore: 'Mais uma sessão',
   },
 
   conversationPicker: {

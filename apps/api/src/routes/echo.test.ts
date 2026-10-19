@@ -531,6 +531,147 @@ describe('echo', () => {
     expect((await summary(a.cookie)).json()).toMatchObject({ reviewedAllTime: 0 })
   })
 
+  it('groups the due cards kept from chats by who wrote them, and opens one group', async () => {
+    const [a, b] = await newPair('bypartner')
+    const c = await newUser('bypartner-c@example.com')
+    const withA = await startConversation(a, b.userId, 'On y va demain ?')
+    const withC = await startConversation(c, b.userId, 'Я тоже так думаю.')
+    const second = await app.inject({
+      method: 'POST',
+      url: `/conversations/${withA._id}/messages`,
+      headers: { cookie: a.cookie },
+      payload: { body: 'À demain alors.' },
+    })
+    expect(second.statusCode).toBeLessThan(300)
+
+    const fromA = await handle.db
+      .collection(COLLECTIONS.messages)
+      .find({ conversationId: new ObjectId(withA._id) }, { sort: { createdAt: 1 } })
+      .toArray()
+    expect(fromA).toHaveLength(2)
+    for (const message of fromA) {
+      await captureMessage(b, withA._id, message._id.toHexString())
+    }
+    await captureMessage(b, withC._id, await firstMessageId(withC._id))
+
+    const summary = (cookie: string) =>
+      app.inject({ method: 'GET', url: '/echo/summary', headers: { cookie } })
+    const own = (await summary(b.cookie)).json<{
+      due: number
+      partners: { partnerId: string; due: number; front: string; back: string }[]
+    }>()
+    expect(own.due).toBe(3)
+    // Most due first, and the line is the oldest due card's — the one a
+    // review of that partner opens on. The meaning is whatever the
+    // unconfigured translator left, which is no translation at all.
+    expect(own.partners.map(({ partnerId, due, front }) => ({ partnerId, due, front }))).toEqual([
+      { partnerId: a.userId, due: 2, front: 'On y va demain ?' },
+      { partnerId: c.userId, due: 1, front: 'Я тоже так думаю.' },
+    ])
+    expect(own.partners.every((row) => typeof row.back === 'string')).toBe(true)
+    // Nobody kept anything from b's messages.
+    expect((await summary(a.cookie)).json()).toMatchObject({ partners: [] })
+
+    const queue = async (partner: string) =>
+      (
+        await app.inject({
+          method: 'GET',
+          url: `/echo/queue?partner=${partner}`,
+          headers: { cookie: b.cookie },
+        })
+      ).json<{ cards: { source: { partnerId?: string } }[]; dueCount: number }>()
+    const ofA = await queue(a.userId)
+    expect(ofA.dueCount).toBe(2)
+    expect(ofA.cards.map((card) => card.source.partnerId)).toEqual([a.userId, a.userId])
+    expect((await queue(c.userId)).dueCount).toBe(1)
+    // Somebody nobody kept a line from draws nothing.
+    expect((await queue(b.userId)).dueCount).toBe(0)
+  })
+
+  it("keeps a partner's group to one language, so the deck it opens is one", async () => {
+    const [a, b] = await newPair('partnerlang')
+    const conversation = await startConversation(a, b.userId, 'On y va demain ?')
+    for (const body of ['À demain alors.', 'Bonne soirée !']) {
+      const sent = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversation._id}/messages`,
+        headers: { cookie: a.cookie },
+        payload: { body },
+      })
+      expect(sent.statusCode).toBeLessThan(300)
+    }
+    const messages = await handle.db
+      .collection(COLLECTIONS.messages)
+      .find({ conversationId: new ObjectId(conversation._id) }, { sort: { createdAt: 1 } })
+      .toArray()
+    const kept: { _id: string; lang: string }[] = []
+    for (const message of messages) {
+      const response = await captureMessage(b, conversation._id, message._id.toHexString())
+      kept.push(response.json<{ card: { _id: string; lang: string } }>().card)
+    }
+    expect(kept).toHaveLength(3)
+
+    // The newest line kept in a second language, as somebody learning two
+    // with the same person would.
+    const lang = kept[0]!.lang
+    const other = lang === 'ru' ? 'es' : 'ru'
+    await handle.db
+      .collection(COLLECTIONS.echoCards)
+      .updateOne({ _id: new ObjectId(kept[2]!._id) }, { $set: { lang: other } })
+
+    const own = (
+      await app.inject({ method: 'GET', url: '/echo/summary', headers: { cookie: b.cookie } })
+    ).json<{ due: number; partners: { partnerId: string; lang: string; due: number }[] }>()
+    expect(own.due).toBe(3)
+    // The language with most of that person's cards due, and only its count.
+    expect(own.partners.map(({ partnerId, lang, due }) => ({ partnerId, lang, due }))).toEqual([
+      { partnerId: a.userId, lang, due: 2 },
+    ])
+
+    const deck = (
+      await app.inject({
+        method: 'GET',
+        url: `/echo/queue?partner=${a.userId}&lang=${lang}`,
+        headers: { cookie: b.cookie },
+      })
+    ).json<{ cards: { lang: string }[]; dueCount: number }>()
+    expect(deck.dueCount).toBe(2)
+    expect(deck.cards.map((card) => card.lang)).toEqual([lang, lang])
+  })
+
+  it('says how long a card takes once a session has been answered', async () => {
+    const [a, b] = await newPair('pace')
+    const conversation = await startConversation(a, b.userId)
+    const cardId = (
+      await captureMessage(b, conversation._id, await firstMessageId(conversation._id))
+    ).json<{ card: { _id: string } }>().card._id
+
+    const summary = async () =>
+      (
+        await app.inject({ method: 'GET', url: '/echo/summary', headers: { cookie: b.cookie } })
+      ).json<{ secondsPerCard: number | null }>()
+    expect((await summary()).secondsPerCard).toBeNull()
+
+    // A session, one card of which sat on screen for nine minutes: the
+    // estimate is what a card usually takes, not the average with that one.
+    const durations = [...Array.from({ length: 9 }, () => 6000), 9 * 60 * 1000]
+    const response = await app.inject({
+      method: 'POST',
+      url: '/echo/reviews',
+      headers: { cookie: b.cookie },
+      payload: {
+        reviews: durations.map((durationMs, index) => ({
+          reviewId: `r-pace-${index}`,
+          cardId,
+          grade: 'good',
+          durationMs,
+        })),
+      },
+    })
+    expect(response.statusCode).toBe(200)
+    expect((await summary()).secondsPerCard).toBe(6)
+  })
+
   it('refuses a message type with no sentence on it', async () => {
     const [a, b] = await newPair('type')
     const conversation = await startConversation(a, b.userId)
