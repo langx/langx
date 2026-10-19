@@ -46,6 +46,7 @@ import { useTwoPane } from '../../../src/hooks/useTwoPane'
 import { TwoPane } from '../../../src/components/TwoPane'
 import { ProfileScreen } from '../../../src/screens/ProfileScreen'
 import { PeopleSegments } from '../../../src/components/PeopleSegments'
+import { PeopleV3 } from '../../../src/components/people/PeopleV3'
 import { useV3Home } from '../../../src/hooks/useV3Home'
 import { FeedScreen } from './feed'
 
@@ -392,7 +393,76 @@ function DiscoverScreen({ people }: { people?: ReactNode } = {}) {
   const locationRevoked =
     query.error instanceof ApiRequestError && query.error.code === 'LOCATION_REQUIRED'
 
-  const list = (
+  /*
+   * Under the redesign's tabs, the same answers drawn in v3's look. Only the
+   * drawing moves: the sort, the filters, Nearby's checks and search all stay
+   * above, so both looks ask the server exactly the same questions.
+   */
+  const list = people ? (
+    <PeopleV3
+      segments={people}
+      searching={searching}
+      onSearchingChange={setSearching}
+      filterCount={count}
+      filterLabel={
+        count > 0
+          ? t('discover.filtersWithCount', { count })
+          : isPro
+            ? t('filters.title')
+            : t('discover.filters')
+      }
+      onOpenFilters={() => router.push({ pathname: '/(app)/filters', params })}
+      pair={pair}
+      sorts={SORTS.map((option) => ({
+        value: option.key,
+        label: t(option.label),
+        pro: option.key === 'nearby' && !canUseNearby,
+      }))}
+      sort={sort}
+      onSort={(key) => (key === 'nearby' ? void chooseNearby() : setSort(key))}
+      showTip={!searching && !touring}
+      nearby={
+        nearbyStuck && nearbyBlocked !== null
+          ? {
+              line: t(NEARBY_BLOCKED_COPY[nearbyBlocked].title),
+              action:
+                nearbyBlocked === 'unavailable' ? t('common.tryAgain') : t('location.guide.howTo'),
+              onAction: () =>
+                nearbyBlocked === 'unavailable'
+                  ? void enableSharing({ fresh: true })
+                  : router.push({
+                      pathname: '/(app)/settings/location',
+                      params: { from: '/(app)/(tabs)/discover' },
+                    }),
+            }
+          : null
+      }
+      locationOff={
+        locationRevoked
+          ? {
+              line: t('discover.locationOffTitle'),
+              action: shareLocation.isPending ? t('discover.turningOn') : t('discover.turnOn'),
+              onAction: () => void enableSharing(),
+            }
+          : null
+      }
+      state={state}
+      onRetry={() => void query.refetch()}
+      people={items}
+      pull={pull}
+      onEndReached={() => {
+        if (query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()
+      }}
+      loadingMore={query.isFetchingNextPage}
+      boostedParams={boostedParams}
+      // The newcomers are For you's: Active and Nearby answer other questions.
+      newParams={sort === 'recommended' ? filterParams : null}
+      radiusKm={radiusKm}
+      twoPane={twoPane}
+      selected={selected}
+      onSelect={setSelected}
+    />
+  ) : (
     <Screen fluid tabbed>
       <View style={styles.header}>
         {/*

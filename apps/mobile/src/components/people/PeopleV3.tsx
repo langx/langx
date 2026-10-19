@@ -178,9 +178,7 @@ export function PeopleV3(props: PeopleV3Props) {
               style={({ pressed }) => [styles.round, pressed && styles.pressed]}
             >
               <Feather name="sliders" size={v3.icon.lg} color={v3.colors.fg} />
-              {props.filterCount > 0 ? (
-                <Text style={styles.badge}>{props.filterCount}</Text>
-              ) : null}
+              {props.filterCount > 0 ? <Text style={styles.badge}>{props.filterCount}</Text> : null}
             </Pressable>
           )}
         </View>
@@ -241,7 +239,7 @@ export function PeopleV3(props: PeopleV3Props) {
       {props.nearby && !props.searching ? (
         <Panel panel={props.nearby} />
       ) : props.state === 'skeleton' ? (
-        <View style={styles.list}>
+        <View style={[styles.list, styles.skeletons]}>
           {SKELETON_CARDS.map((key) => (
             <Skeleton key={key} height={232} radius={v3.radius.block} />
           ))}
@@ -263,7 +261,9 @@ export function PeopleV3(props: PeopleV3Props) {
           ListHeaderComponent={
             <View style={styles.listHead}>
               {guest ? null : <ChatsLeftLine />}
-              {props.newParams ? <NewcomerStrip params={props.newParams} onHello={onHello} /> : null}
+              {props.newParams ? (
+                <NewcomerStrip params={props.newParams} onHello={onHello} />
+              ) : null}
               {/* The paid strip, as today: it draws nothing when nobody qualifies. */}
               <BoostedProfiles params={props.boostedParams} />
             </View>
@@ -444,7 +444,8 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingVertical: v3.space[2],
   },
   proOn: { backgroundColor: v3.colors.pillText, color: v3.colors.pill },
-  list: { gap: GAP, paddingBottom: v3.space[32], paddingTop: v3.space[4] },
+  list: { paddingBottom: v3.space[32], paddingTop: v3.space[4] },
+  skeletons: { gap: GAP },
   listHead: { gap: v3.space[12], paddingBottom: GAP },
   footer: { paddingVertical: v3.space[16] },
   gap: { height: GAP, width: GAP },
