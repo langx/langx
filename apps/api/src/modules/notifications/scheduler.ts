@@ -194,7 +194,7 @@ export function startNotificationScheduler(
             runDailyDigestPass(db, senders.email, now, options.storagePublicBaseUrl, logger),
           ),
         () => run('newsletter', () => runNewsletterPass(db, senders.email, now)),
-        () => run('promotions', () => runPromotionsPass(db, senders, now)),
+        () => run('promotions', () => runPromotionsPass(db, senders, now, logger)),
         () =>
           run('campaign queue', () =>
             runCampaignQueuePass(db, senders.email, now, {

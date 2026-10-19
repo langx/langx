@@ -133,6 +133,16 @@ export const appConfigSchema = z.object({
      */
     trialEndingReminder: z.boolean(),
     /**
+     * The promotional nudges stop vanishing: a nudge already said this period
+     * no longer holds the evening's slot, the one-day windows wait out the
+     * week's gap, the money nudges outrank idle tokens, and the likes batch
+     * keeps to a local hour (`promotions.ts`, `social.ts`). Nobody new
+     * becomes eligible — consent, the gap and waking hours still decide — but
+     * more of what consenting people qualify for reaches them, so it starts
+     * off and is switched on as a decision rather than by a merge.
+     */
+    nudgeNoSilentDrops: z.boolean(),
+    /**
      * "Give a week, get a week": each invitee who becomes a real user earns
      * the inviter a week of Pro and gives the invitee one, in place of a month
      * for every three. Starts off because it gives away the thing the app
@@ -178,6 +188,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     discoveryReplyFirst: false,
     echoFromCorrections: false,
     trialEndingReminder: false,
+    nudgeNoSilentDrops: false,
     giveAWeek: false,
     newcomerHello: false,
   },

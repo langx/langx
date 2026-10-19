@@ -4712,6 +4712,7 @@ a bad minute must not turn that into an error page.
 ## Six nudges, one pass, one at a time
 
 > **Amended 18 October 2026 — see _The streak repair push leaves the table, and both streak pushes say the rule_ below.**
+> **Amended 18 October 2026 — see _The nudge table stops dropping what it owes, behind a switch_ below.**
 
 The remarketing scenarios could each have been a pass, the way the digest and
 the visit round-up are. They are not, and the reason is arithmetic: the
@@ -4792,6 +4793,73 @@ Switched on, it skips readers under eighteen (`STREAK_REPAIR_PUSH_MIN_AGE`,
 by `ageFromBirthDate`) and readers with no birth date, the default the EU's
 guidance on minors asks for streak pushes. Placeholder birth dates read as
 adults, which is a limit of the data rather than of the rule.
+
+## The nudge table stops dropping what it owes, behind a switch
+
+_18 October 2026._ This changes the entry two above, _Six nudges, one pass,
+one at a time_, in one claim: "somebody who qualifies for three hears one, and
+hears the second only if it is still true next week". In the code, the second
+often never came, and nothing recorded that it had been owed. Four ways, all
+closed by `flags.nudgeNoSilentDrops`:
+
+**A nudge already said held the evening.** The pass claims the day's
+marketing slot before the nudge's own key, which is right for the race it was
+written against. But a nudge that stays true after it is sent — no photo yet,
+tokens still unspent this month — matched again every week, took the slot,
+found its own key spent and sent nothing, and the slot, being a `promo.` row,
+restarted the week's gap. Everything below it in the table waited for as long
+as it stayed true. With the switch on, a nudge already said this period is
+passed over and the next one has the evening.
+
+**One-day windows inside a seven-day gap.** "Away seven days", "away thirty
+days" and "a plan that ended a week ago" were each true for one evening. If
+that evening fell inside the gap, or the digest went that night, the window
+had closed before the nudge could be said. They now stay open for
+`MARKETING_MIN_GAP_DAYS` and a day more: said late rather than never, and
+still once, because the period keys are unchanged.
+
+**Idle tokens above money.** The table walked "you have N tokens waiting"
+fifth — the catalogue in `notifications.md` already listed it eighth. It is
+true for weeks, while the win-back is true for its window and the trial for
+two days. Above them it took the slot and the gap outlasted them. The money
+nudges now come first, and `promotions.test.ts` pins both orders, so a
+reordering is a test change somebody has to mean.
+
+**The likes batch at any hour.** It went at the first tick that found a like
+in the last day, which is just after midnight UTC — three in the morning in
+Istanbul. It now waits for `LIKES_ROUND_UP_LOCAL_HOUR`, 15:00 on the author's
+clock: three hours from the visits round-up and three from the badges. It
+claims the author's local day, which has the same shape as the UTC day it
+replaces, so the day the switch is thrown sends no batch twice.
+
+**Who may be told is unchanged.** Promotions consent, the week's gap, the
+20:00 hour and the evening letter decide exactly as before. Nobody under
+eighteen is treated differently: the table has never had an age rule, and
+this adds none and removes none. Two things a reader might expect here are
+deliberately not changed. A person with promotions push on and mail off is
+still never a candidate, although the entry two above says the push "is not
+gated on the mail". Making them one would widen the audience, which is a
+consent decision. And the quota nudge still needs three refusals in the last
+three days, because `quotaRefusals` keeps no more than that.
+
+**Past the month away, only the farewell.** `promo.away30` says "this is the
+last we will say about it", and before the switch nothing else could follow
+it except by landing on a one-day window. With the win-back open for eight
+days and a spent photo nudge no longer holding the evening, a plan that ended
+while somebody was away would be sold to them after that letter. So with the
+switch on, somebody whose last visit was thirty days ago or more is offered
+nothing but the farewell, as `MATCH_SUGGESTIONS.maxAwayDays` already stops the
+suggestions there.
+
+**Held back, counted.** Whatever stops somebody's first eligible nudge on the
+evening — the digest, the gap, a lost slot, a nudge already said — is logged
+once per pass as a count per nudge and reason, with no id or address in it.
+That holds with the switch off too, so the size of what the switch would
+release can be read before it is thrown.
+
+**It ships off.** On, more of what consenting people already qualify for
+reaches them. That is more marketing mail and push, so it is a decision rather
+than a merge.
 
 ## The newsletter is monthly, and its editorial half is a pull request
 

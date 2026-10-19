@@ -1,4 +1,9 @@
-import { PROMOTION_LOCAL_HOUR, localDayKey, notificationsAllowed } from '@langx/shared'
+import {
+  MARKETING_MIN_GAP_DAYS,
+  PROMOTION_LOCAL_HOUR,
+  localDayKey,
+  notificationsAllowed,
+} from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { sendNotificationEmail, type NotificationEmailContext } from '../../email/notify'
@@ -41,6 +46,8 @@ export interface PromotionCandidate {
   profile: Profile
   now: Date
   db: Db
+  /** `flags.nudgeNoSilentDrops`, read once per pass — see `windowDays`. */
+  noSilentDrops: boolean
 }
 
 interface Promotion {
@@ -78,8 +85,48 @@ const WIN_BACK_DAYS = 7
  */
 const QUOTA_REFUSALS_BEFORE_NUDGE = 3
 
+/**
+ * How long a nudge with a one-day trigger stays worth sending, once
+ * `flags.nudgeNoSilentDrops` is on: the week's gap and a day more.
+ *
+ * "Away seven days", "away thirty days" and "a plan that ended a week ago"
+ * used to be true for exactly one day. The pass runs at one evening hour and
+ * skips anybody marketed to in the last `MARKETING_MIN_GAP_DAYS`, or whose
+ * digest went out that evening — so a nudge that came due inside the gap, or
+ * on a digest night, had closed again before it could be said, and nothing
+ * recorded that it had ever been owed. Wide enough to wait out the longest
+ * gap, plus the one evening a digest can take, it is said late instead of
+ * never. The period keys are unchanged, so it is still said once.
+ */
+const NUDGE_WINDOW_DAYS = MARKETING_MIN_GAP_DAYS + 1
+
+/** The width of a one-day trigger's window for this pass. */
+function windowDays({ noSilentDrops }: PromotionCandidate): number {
+  return noSilentDrops ? NUDGE_WINDOW_DAYS : 1
+}
+
 function daysAgo(date: Date | undefined, now: Date): number {
   return date ? (now.getTime() - new Date(date).getTime()) / DAY_MS : Number.POSITIVE_INFINITY
+}
+
+/**
+ * Whether `flags.nudgeNoSilentDrops` keeps this nudge from somebody a month
+ * away: past `AWAY_LONG_DAYS` the farewell is the only one left.
+ *
+ * `promo.away30` ends "this is the last we will say about it", and
+ * `MATCH_SUGGESTIONS.maxAwayDays` stops the suggestions at the same point so
+ * that it stays true. Off, a later nudge could follow it only by landing on a
+ * one-day window; on, the win-back's window is eight days and a photo already
+ * asked for no longer holds the evening, so a plan that ended while somebody
+ * was away would be sold to them after the letter that promised silence.
+ *
+ * Somebody with no `lastActiveAt` was never told the farewell — it cannot
+ * match them — so nothing is held back from them here.
+ */
+function pastTheFarewell(promotion: Promotion, candidate: PromotionCandidate): boolean {
+  if (!candidate.noSilentDrops || promotion.job === 'promo.away30') return false
+  const lastActiveAt = candidate.profile.stats?.lastActiveAt
+  return lastActiveAt !== undefined && daysAgo(lastActiveAt, candidate.now) >= AWAY_LONG_DAYS
 }
 
 export const PROMOTIONS: Promotion[] = [
@@ -125,9 +172,9 @@ export const PROMOTIONS: Promotion[] = [
     // `lastActiveAt` does not move while somebody is away, so this key is one
     // absence — the same trick the unread digest uses to stay a single mail.
     periodKey: ({ profile }) => `away:${profile.stats?.lastActiveAt?.toISOString() ?? 'never'}`,
-    eligible: ({ profile, now }) => {
-      const away = daysAgo(profile.stats?.lastActiveAt, now)
-      return away >= AWAY_SHORT_DAYS && away < AWAY_SHORT_DAYS + 1
+    eligible: (candidate) => {
+      const away = daysAgo(candidate.profile.stats?.lastActiveAt, candidate.now)
+      return away >= AWAY_SHORT_DAYS && away < AWAY_SHORT_DAYS + windowDays(candidate)
     },
   },
   {
@@ -136,9 +183,9 @@ export const PROMOTIONS: Promotion[] = [
     scenario: 'awayLong',
     type: 'promotions',
     periodKey: ({ profile }) => `away30:${profile.stats?.lastActiveAt?.toISOString() ?? 'never'}`,
-    eligible: ({ profile, now }) => {
-      const away = daysAgo(profile.stats?.lastActiveAt, now)
-      return away >= AWAY_LONG_DAYS && away < AWAY_LONG_DAYS + 1
+    eligible: (candidate) => {
+      const away = daysAgo(candidate.profile.stats?.lastActiveAt, candidate.now)
+      return away >= AWAY_LONG_DAYS && away < AWAY_LONG_DAYS + windowDays(candidate)
     },
   },
   {
@@ -218,12 +265,13 @@ export const PROMOTIONS: Promotion[] = [
     scenario: 'winBack',
     type: 'promotions',
     periodKey: ({ profile }) => profile.churnedFrom?.at.toISOString() ?? 'none',
-    eligible: ({ profile, now }) => {
+    eligible: (candidate) => {
+      const { profile, now } = candidate
       if (!profile.churnedFrom) return false
       // Still free: somebody who resubscribed has answered already.
       if ((profile.entitlement?.tier ?? 'free') !== 'free') return false
       const since = daysAgo(profile.churnedFrom.at, now)
-      return since >= WIN_BACK_DAYS && since < WIN_BACK_DAYS + 1
+      return since >= WIN_BACK_DAYS && since < WIN_BACK_DAYS + windowDays(candidate)
     },
   },
   {
@@ -270,6 +318,55 @@ export const PROMOTIONS: Promotion[] = [
 ]
 
 /**
+ * The table's order with `flags.nudgeNoSilentDrops` on: the three nudges
+ * about money — a trial ending, a plan that ended, a plan that no longer fits
+ * — ahead of idle tokens.
+ *
+ * Idle tokens is true for weeks at a time (a fortnight unspent, keyed by the
+ * month), while the win-back is true for one window and the trial for two
+ * days. Above them, the standing nudge took the evening's slot, the gap then
+ * kept the next one a week off, and the short one had closed by the time it
+ * came round. Below them it loses nothing: it is still true next week.
+ * `promotions.test.ts` pins both orders.
+ */
+const MONEY_BEFORE_TOKENS: readonly Promotion['job'][] = [
+  'promo.photo',
+  'promo.streakRepair',
+  'promo.away7',
+  'promo.away30',
+  'promo.trialEnding',
+  'promo.winBack',
+  'promo.quotaHit',
+  'promo.idleTokens',
+  'promo.invite',
+]
+
+const byJob = new Map(PROMOTIONS.map((promotion) => [promotion.job, promotion]))
+const MONEY_FIRST: readonly Promotion[] = MONEY_BEFORE_TOKENS.flatMap((job) => byJob.get(job) ?? [])
+
+/** The order the table is walked in for this pass. */
+export function promotionsInOrder(noSilentDrops: boolean): readonly Promotion[] {
+  return noSilentDrops ? MONEY_FIRST : PROMOTIONS
+}
+
+/**
+ * Why somebody's first eligible nudge was not sent this evening. Counted per
+ * nudge and logged per pass, with no person in it, so a nudge that keeps
+ * being held back shows up as a number instead of as nothing.
+ *
+ * - `digest` — the evening letter already went; marketing stands down.
+ * - `gap` — something promotional went out inside `MARKETING_MIN_GAP_DAYS`.
+ * - `slot` — another sender took today's marketing slot first.
+ * - `said` — this nudge was already sent for this period. Before
+ *   `flags.nudgeNoSilentDrops` that ended the evening: the slot was claimed,
+ *   nothing was sent, and the claim restarted the week's gap — so a nudge that
+ *   stays true, like the photo, held every nudge below it back for as long
+ *   as it stayed true. With the flag on it is passed over and the next one
+ *   gets the turn, and this reason is left for a race between two machines.
+ */
+export type PromotionHoldReason = 'digest' | 'gap' | 'slot' | 'said'
+
+/**
  * One tick: everybody eligible for something hears the first thing they are
  * eligible for — if the evening has not already spoken for them.
  *
@@ -279,12 +376,20 @@ export const PROMOTIONS: Promotion[] = [
  * the day's one slot and leave the evening's real news with nowhere to go. At
  * twenty hundred the question is already settled: if a digest went out, this
  * is not the day for marketing.
+ *
+ * Who may be told is unchanged by `flags.nudgeNoSilentDrops`: promotions
+ * consent, the week's gap, the evening hour and the digest still decide. What
+ * the flag changes is whether a nudge somebody qualifies for can vanish — see
+ * `windowDays`, `promotionsInOrder` and the `said` reason above.
  */
 export async function runPromotionsPass(
   db: Db,
   senders: { email: NotificationEmailContext; push: PushSender },
   now: Date = new Date(),
+  logger?: { info: (obj: object, msg: string) => void },
 ): Promise<{ sent: number }> {
+  const noSilentDrops = (await getAppConfig(db)).flags.nudgeNoSilentDrops
+  const table = promotionsInOrder(noSilentDrops)
   const readers = await profilesInLocalHour(db, PROMOTION_LOCAL_HOUR, now, {
     deletedAt: { $exists: false },
     guest: { $exists: false },
@@ -294,20 +399,46 @@ export async function runPromotionsPass(
   })
 
   let sent = 0
+  const held = new Map<string, number>()
+  const hold = (promotion: Promotion, reason: PromotionHoldReason): void => {
+    const key = `${promotion.job}:${reason}`
+    held.set(key, (held.get(key) ?? 0) + 1)
+  }
+
   for (const profile of readers) {
     const day = localDayKey(now, profile.timezone ?? 'UTC')
-    if (await alreadyClaimed(db, 'dailyDigest', profile._id, day)) continue
-    if (await recentlyMarketed(db, profile._id, now)) continue
+    // Asked first and acted on later: a held evening is still walked as far
+    // as the first nudge that would have gone, so that it can be counted.
+    let holdBack: PromotionHoldReason | null = null
+    if (await alreadyClaimed(db, 'dailyDigest', profile._id, day)) holdBack = 'digest'
+    else if (await recentlyMarketed(db, profile._id, now)) holdBack = 'gap'
 
-    const candidate: PromotionCandidate = { profile, now, db }
-    for (const promotion of PROMOTIONS) {
+    const candidate: PromotionCandidate = { profile, now, db, noSilentDrops }
+    for (const promotion of table) {
       if (!notificationsAllowed(profile.settings?.notifications, promotion.type, 'email')) continue
+      if (pastTheFarewell(promotion, candidate)) continue
       if (!(await promotion.eligible(candidate))) continue
+      const periodKey = promotion.periodKey(candidate)
+      // Already said for this period: true, but not news. With the flag on
+      // the next nudge gets the evening rather than nobody.
+      if (noSilentDrops && (await alreadyClaimed(db, promotion.job, profile._id, periodKey))) {
+        continue
+      }
+      if (holdBack) {
+        hold(promotion, holdBack)
+        break
+      }
       // Taken here: after eligibility, so nothing is burnt on a person with
       // no nudge to send, and before the promotion's own key, so a lost race
       // costs today rather than a `once` that would never come round again.
-      if (!(await claimOnce(db, MARKETING_SLOT_JOB, profile._id, day))) break
-      if (!(await claimOnce(db, promotion.job, profile._id, promotion.periodKey(candidate)))) break
+      if (!(await claimOnce(db, MARKETING_SLOT_JOB, profile._id, day))) {
+        hold(promotion, 'slot')
+        break
+      }
+      if (!(await claimOnce(db, promotion.job, profile._id, periodKey))) {
+        hold(promotion, 'said')
+        break
+      }
 
       const detail = promotion.detail ? await promotion.detail(candidate) : {}
       const outcome = await sendNotificationEmail(db, senders.email, {
@@ -323,6 +454,10 @@ export async function runPromotionsPass(
     }
   }
 
+  if (held.size > 0) {
+    // Counts by nudge and reason, and nothing else: no id, no address.
+    logger?.info({ pass: 'promotions', held: Object.fromEntries(held) }, 'promotions held back')
+  }
   return { sent }
 }
 
