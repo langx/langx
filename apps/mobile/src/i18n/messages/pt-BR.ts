@@ -2263,6 +2263,28 @@ export const ptBR: Localized<EnMessages> = {
       one: 'Os convites rendem tokens para até {count} pessoa por mês.',
       other: 'Os convites rendem tokens para até {count} pessoas por mês.',
     },
+    weekTitle: {
+      one: 'Dê uma semana de Pro, ganhe uma semana',
+      other: 'Dê {count} semanas de Pro, ganhe {count} semanas',
+    },
+    weekTitleGive: {
+      one: 'Dê uma semana de Pro para alguém',
+      other: 'Dê {count} semanas de Pro para alguém',
+    },
+    weekUnit: {
+      one: 'semana de Pro para cada um',
+      other: 'semanas de Pro para cada um',
+    },
+    weekUnitGive: {
+      one: 'semana de Pro para quem você convidar',
+      other: 'semanas de Pro para quem você convidar',
+    },
+    weekWhen: 'Quando alguém que você convidar tiver uma conversa de verdade com alguém',
+    weekCap: {
+      one: 'Você pode ganhar até {count} semana por ano.',
+      other: 'Você pode ganhar até {count} semanas por ano.',
+    },
+    weekAddsOn: 'A sua entra no fim do Pro que você já tem.',
   },
 
   tokenKind: {

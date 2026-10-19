@@ -731,10 +731,25 @@ export const INDEXES: Partial<IndexSpec> = {
 
   [COLLECTIONS.proGifts]: [
     /*
-     * No unique index: the key that says what a gift is for is the `_id`,
-     * so "one gift per milestone, per referral slot, per operator click" is
-     * the primary key and cannot be dropped. These are the three reads.
+     * The key that says what a gift is for is the `_id`, so "one gift per
+     * milestone, per referral slot, per operator click" is the primary key
+     * and cannot be dropped.
      *
+     * One thing the `_id` cannot say: a "give a week" referrer week is keyed
+     * by its slot in the year (`referralWeek:<user>:<year>:<slot>`), which is
+     * what makes the yearly cap a fact about the key space rather than a
+     * count that two activations can race past — and a slot does not name the
+     * activation that took it. This does: one week per person per invitee's
+     * activation, whichever slot it landed in. Partial, so every row from
+     * before it (and every other door's) is outside it.
+     */
+    {
+      key: { userId: 1, invitee: 1 },
+      name: 'user_invitee_unique',
+      unique: true,
+      partialFilterExpression: { invitee: { $exists: true } },
+    },
+    /*
      * The lease: "the oldest pending row nobody holds", asked every tick by
      * both machines.
      */

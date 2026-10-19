@@ -72,6 +72,14 @@ export interface ProGift {
    * letter names it back to the person who typed it.
    */
   code?: string
+  /**
+   * A "give a week" referral week: the invitee whose activation earned it.
+   * On the referrer's week it is the friend; on the friend's own week it is
+   * the friend again, which is how the letter tells the two apart. Absent on
+   * every other gift, the three-for-a-month referral one included.
+   * `user_invitee_unique` holds it to one week per person per activation.
+   */
+  invitee?: string
   status: ProGiftStatus
   /** `null` until the first attempt decides it; fixed from then on. */
   endsAt: Date | null
@@ -102,6 +110,15 @@ export const proGiftKey = {
   streak: (days: number, userId: string): string => `streak:${days}:${userId}`,
   referral: (userId: string, year: number, slot: number): string =>
     `referral:${userId}:${year}:${slot}`,
+  /**
+   * A referrer's week, by its slot in the calendar year: the slots run from
+   * 1 to `referralWeekSlotsPerYear()`, so the yearly cap is the key space.
+   * `invitee` on the row says which activation took the slot.
+   */
+  referralWeek: (userId: string, year: number, slot: number): string =>
+    `referralWeek:${userId}:${year}:${slot}`,
+  /** The invitee's own week. A person is somebody's invitee once, so once in a life. */
+  invitedWeek: (userId: string): string => `invitedWeek:${userId}`,
   /** One per person per code; the redemption's own unique index says the same. */
   code: (codeId: string, userId: string): string => `code:${codeId}:${userId}`,
 }
@@ -154,7 +171,7 @@ export async function queueProGift(
   db: Db,
   input: Pick<
     ProGift,
-    '_id' | 'userId' | 'months' | 'weeks' | 'source' | 'grantedBy' | 'note' | 'code'
+    '_id' | 'userId' | 'months' | 'weeks' | 'source' | 'grantedBy' | 'note' | 'code' | 'invitee'
   >,
   now: Date = new Date(),
 ): Promise<{ gift: ProGift; created: boolean }> {
@@ -167,6 +184,7 @@ export async function queueProGift(
     ...(input.grantedBy ? { grantedBy: input.grantedBy } : {}),
     ...(input.note ? { note: input.note } : {}),
     ...(input.code ? { code: input.code } : {}),
+    ...(input.invitee ? { invitee: input.invitee } : {}),
     status: 'pending',
     endsAt: null,
     lockedUntil: now,
@@ -183,12 +201,28 @@ export async function queueProGift(
     created = result.upsertedCount === 1
   } catch (error) {
     // Two upserts of the same key racing: the loser's is a duplicate `_id`,
-    // which is the answer rather than a failure.
-    if (!(error instanceof MongoServerError && error.code === 11000)) throw error
+    // which is the answer rather than a failure. A duplicate on
+    // `user_invitee_unique` is not: that row has a different `_id`, so there
+    // is nothing here to read back, and the caller is the one who knows what
+    // it means.
+    if (!isDuplicateOf(error, '_id')) throw error
   }
   const gift = await gifts(db).findOne({ _id: row._id })
   if (!gift) throw new Error(`pro gift ${row._id} vanished after its write`)
   return { gift, created }
+}
+
+/**
+ * Whether a write failed on the unique index over `field`. The driver names
+ * the offending key in `keyPattern`; an error without one is read as an
+ * `_id` clash, which is what every duplicate here was before `invitee`
+ * existed.
+ */
+export function isDuplicateOf(error: unknown, field: '_id' | 'invitee'): boolean {
+  if (!(error instanceof MongoServerError && error.code === 11000)) return false
+  const pattern: unknown = error.keyPattern
+  if (typeof pattern !== 'object' || pattern === null) return field === '_id'
+  return field in pattern
 }
 
 /** A person's gifts, newest first — the operator panel's list. */
@@ -538,6 +572,13 @@ function introFor(gift: ProGift, t: ReturnType<typeof translator>, count: number
     case 'admin':
       return t('proGift.introAdmin', { count })
     case 'referral':
+      // A "give a week" week names one friend and counts weeks; the
+      // three-for-a-month gift names three friends and counts months.
+      if (gift.invitee) {
+        return gift.invitee === gift.userId
+          ? t('proGift.introInvitedWeeks', { count: gift.weeks ?? 0 })
+          : t('proGift.introReferralWeeks', { count: gift.weeks ?? 0 })
+      }
       return t('proGift.introReferral', {
         count,
         friends: PRO_GIFT_RULES.referral.activationsPerGift,

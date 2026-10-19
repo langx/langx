@@ -125,6 +125,16 @@ export const appConfigSchema = z.object({
      */
     echoFromCorrections: z.boolean(),
     /**
+     * "Give a week, get a week": each invitee who becomes a real user earns
+     * the inviter a week of Pro and gives the invitee one, in place of a month
+     * for every three. Starts off because it gives away the thing the app
+     * sells, which is a decision made by switching this on rather than by a
+     * merge. Off, referrals reward exactly as they did. An activation is
+     * judged by the rule in force when it happens and keeps it — see
+     * `docs/decisions.md` → _Give a week, get a week, behind a switch_.
+     */
+    giveAWeek: z.boolean(),
+    /**
      * The newcomer hello: the first message somebody sends to an account in
      * its first `NEWCOMER_HELLO_RULES.newForDays` does not count against
      * their new chats, at most `perSenderPer24h` a day, adults only at both
@@ -159,6 +169,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     streakRepairPush: false,
     discoveryReplyFirst: false,
     echoFromCorrections: false,
+    giveAWeek: false,
     newcomerHello: false,
   },
 }

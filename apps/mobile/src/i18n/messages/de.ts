@@ -2314,6 +2314,28 @@ export const de: Localized<EnMessages> = {
       one: 'Einladungen bringen dir Token für bis zu {count} Person im Monat.',
       other: 'Einladungen bringen dir Token für bis zu {count} Personen im Monat.',
     },
+    weekTitle: {
+      one: 'Schenk eine Woche Pro, bekomm eine Woche',
+      other: 'Schenk {count} Wochen Pro, bekomm {count} Wochen',
+    },
+    weekTitleGive: {
+      one: 'Schenk jemandem eine Woche Pro',
+      other: 'Schenk jemandem {count} Wochen Pro',
+    },
+    weekUnit: {
+      one: 'Woche Pro für jeden von euch',
+      other: 'Wochen Pro für jeden von euch',
+    },
+    weekUnitGive: {
+      one: 'Woche Pro für die Person, die du einlädst',
+      other: 'Wochen Pro für die Person, die du einlädst',
+    },
+    weekWhen: 'Sobald jemand, den du einlädst, ein echtes Gespräch mit jemandem führt',
+    weekCap: {
+      one: 'Du kannst bis zu {count} Woche im Jahr bekommen.',
+      other: 'Du kannst bis zu {count} Wochen im Jahr bekommen.',
+    },
+    weekAddsOn: 'Deine Woche kommt ans Ende deines jetzigen Pro.',
   },
 
   tokenKind: {
