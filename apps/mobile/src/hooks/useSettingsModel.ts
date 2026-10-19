@@ -35,6 +35,7 @@ import { pushSwitchIsOn } from '../lib/pushPermission'
 import { manageSubscriptionUrl } from '../lib/manageSubscription'
 import { storeManagementUrl } from '../lib/purchases'
 import { openPaywall } from '../lib/paywall'
+import { appIconTap } from '../lib/proRoads'
 import { useThemePreference } from '../lib/theme'
 import { syncIconBadge } from '../lib/iconBadge'
 import { settleWithin } from '../lib/settleWithin'
@@ -239,10 +240,16 @@ export function useSettingsModel() {
    * the device, so there is no request for the server to refuse. That makes
    * this a lock somebody could pick by editing the app — which is the same
    * bargain as every other purely local cosmetic, and not worth a round trip.
+   *
+   * The free plan's tap is its own road (`app_icon`); before the profile has
+   * loaded a tap does nothing, so a subscriber is never shown the paywall for
+   * an icon they already own.
    */
   async function chooseIcon(next: AppIcon): Promise<void> {
-    if (!isPro) {
-      openPaywall(undefined, undefined, 'me')
+    const tap = appIconTap({ loaded: profile !== undefined, tier })
+    if (tap === 'wait') return
+    if (tap === 'paywall') {
+      openPaywall(undefined, undefined, 'app_icon')
       return
     }
     if (next === appIcon) return

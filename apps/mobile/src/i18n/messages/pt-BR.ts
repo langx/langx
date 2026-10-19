@@ -1133,6 +1133,12 @@ export const ptBR: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Horário local {time}.',
   },
   chat: {
+    firstReplyTitle: '{name} respondeu',
+    firstReplyBody: {
+      one: 'Respostas continuam grátis em todos os planos. O {plan} tira o limite de {count} conversa nova por dia.',
+      other:
+        'Respostas continuam grátis em todos os planos. O {plan} tira o limite de {count} conversas novas por dia.',
+    },
     channelOnly: 'Esta conta publica novidades e avisos. Não dá para responder aqui.',
     suspendedOnly: 'Esta conta está suspensa. Não dá para enviar mensagens para ela.',
     sendingAttachment: 'Enviando…',
@@ -1288,6 +1294,7 @@ export const ptBR: Localized<EnMessages> = {
     wordTranslationFailed: 'Não deu para traduzir essa palavra agora.',
     wordSeePlans: 'Ver os planos',
     sayHello: 'Dê um oi para {name}…',
+    newcomerHelloFree: 'Acabou de chegar ao LangX — este oi não conta nas suas conversas novas.',
     topicsShuffle: 'Outros assuntos',
     topicChip: 'Ideia de conversa: {topic}',
     topics: {
@@ -1654,6 +1661,8 @@ export const ptBR: Localized<EnMessages> = {
 
   profile: {
     proBadge: 'Membro Pro',
+    proSheetTitle: 'O que é o {plan}?',
+    proSheetBody: '{name} tem o {plan}. Veja o que ele acrescenta ao plano gratuito:',
     official: 'Conta oficial',
     suspendedTag: 'Suspensa',
     deletedTag: 'Conta excluída',
@@ -2287,6 +2296,28 @@ export const ptBR: Localized<EnMessages> = {
       one: 'Os convites rendem tokens para até {count} pessoa por mês.',
       other: 'Os convites rendem tokens para até {count} pessoas por mês.',
     },
+    weekTitle: {
+      one: 'Dê uma semana de Pro, ganhe uma semana',
+      other: 'Dê {count} semanas de Pro, ganhe {count} semanas',
+    },
+    weekTitleGive: {
+      one: 'Dê uma semana de Pro para alguém',
+      other: 'Dê {count} semanas de Pro para alguém',
+    },
+    weekUnit: {
+      one: 'semana de Pro para cada um',
+      other: 'semanas de Pro para cada um',
+    },
+    weekUnitGive: {
+      one: 'semana de Pro para quem você convidar',
+      other: 'semanas de Pro para quem você convidar',
+    },
+    weekWhen: 'Quando alguém que você convidar tiver uma conversa de verdade com alguém',
+    weekCap: {
+      one: 'Você pode ganhar até {count} semana por ano.',
+      other: 'Você pode ganhar até {count} semanas por ano.',
+    },
+    weekAddsOn: 'A sua entra no fim do Pro que você já tem.',
   },
 
   tokenKind: {

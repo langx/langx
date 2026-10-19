@@ -1165,6 +1165,12 @@ export const de: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Ortszeit {time}.',
   },
   chat: {
+    firstReplyTitle: '{name} hat geantwortet',
+    firstReplyBody: {
+      one: 'Antworten bleiben in jedem Tarif kostenlos. {plan} hebt die Grenze von {count} neuen Chat am Tag auf.',
+      other:
+        'Antworten bleiben in jedem Tarif kostenlos. {plan} hebt die Grenze von {count} neuen Chats am Tag auf.',
+    },
     channelOnly:
       'Dieses Konto postet Neuigkeiten und Ankündigungen. Antworten ist hier nicht möglich.',
     suspendedOnly: 'Dieses Konto ist gesperrt. Du kannst ihm keine Nachrichten schicken.',
@@ -1325,6 +1331,7 @@ export const de: Localized<EnMessages> = {
     wordTranslationFailed: 'Dieses Wort konnte gerade nicht übersetzt werden.',
     wordSeePlans: 'Tarife ansehen',
     sayHello: 'Sag {name} Hallo…',
+    newcomerHelloFree: 'Neu bei LangX – dieses Hallo zählt nicht zu deinen neuen Chats.',
     topicsShuffle: 'Andere Themen',
     topicChip: 'Gesprächsidee: {topic}',
     topics: {
@@ -1696,6 +1703,8 @@ export const de: Localized<EnMessages> = {
 
   profile: {
     proBadge: 'Pro-Mitglied',
+    proSheetTitle: 'Was ist {plan}?',
+    proSheetBody: '{name} hat {plan}. Das kommt zum kostenlosen Tarif dazu:',
     official: 'Offizielles Konto',
     suspendedTag: 'Gesperrt',
     deletedTag: 'Konto gelöscht',
@@ -2334,6 +2343,28 @@ export const de: Localized<EnMessages> = {
       one: 'Einladungen bringen dir Token für bis zu {count} Person im Monat.',
       other: 'Einladungen bringen dir Token für bis zu {count} Personen im Monat.',
     },
+    weekTitle: {
+      one: 'Schenk eine Woche Pro, bekomm eine Woche',
+      other: 'Schenk {count} Wochen Pro, bekomm {count} Wochen',
+    },
+    weekTitleGive: {
+      one: 'Schenk jemandem eine Woche Pro',
+      other: 'Schenk jemandem {count} Wochen Pro',
+    },
+    weekUnit: {
+      one: 'Woche Pro für jeden von euch',
+      other: 'Wochen Pro für jeden von euch',
+    },
+    weekUnitGive: {
+      one: 'Woche Pro für die Person, die du einlädst',
+      other: 'Wochen Pro für die Person, die du einlädst',
+    },
+    weekWhen: 'Sobald jemand, den du einlädst, ein echtes Gespräch mit jemandem führt',
+    weekCap: {
+      one: 'Du kannst bis zu {count} Woche im Jahr bekommen.',
+      other: 'Du kannst bis zu {count} Wochen im Jahr bekommen.',
+    },
+    weekAddsOn: 'Deine Woche kommt ans Ende deines jetzigen Pro.',
   },
 
   tokenKind: {

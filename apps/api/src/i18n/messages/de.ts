@@ -109,6 +109,8 @@ export const de: Localized<ServerMessages> = {
     billingFailedTitle: 'Deine Zahlung ist fehlgeschlagen',
     billingEndedTitle: 'Dein Tarif ist beendet',
     billingBody: 'Tippe, um deinen Tarif zu prüfen.',
+    billingTrialEndingTitle: 'Dein kostenloser Test endet am {date}',
+    billingTrialEndingBody: 'Tippe, um deinen Tarif zu sehen und wie du kündigst.',
     lifetimeGiftTitle: '{plan}, auf Lebenszeit 🎉',
     lifetimeGiftBody: {
       one: 'Dein {total} Token aus v1 hat es verdient.',
@@ -448,6 +450,18 @@ export const de: Localized<ServerMessages> = {
         'Dein Abo ist beendet und dein Konto ist zurück im kostenlosen Tarif. Alles, was du erstellt hast, ist noch da.',
 
       planEndedButton: 'Tarife ansehen',
+      trialEndingTitle: 'Dein LangX-Pro-Test endet am {date}',
+      trialEndingBody:
+        'Wenn du ihn behältst, berechnet der Store, in dem du abonniert hast, am {date} den gewählten Tarif zu dem Preis, den er dir angezeigt hat, und verlängert ihn, bis du kündigst. Kündigst du vorher, zahlst du nichts; Pro bleibt bis zum {date}.',
+      trialEndingCancelAppStore:
+        'Kündigen auf iPhone oder iPad: Einstellungen → dein Name → Abonnements → LangX → Abo kündigen. Apple verlangt das mindestens einen Tag vor Ende des Tests.',
+      trialEndingCancelPlayStore:
+        'Kündigen auf Android: Google Play → dein Profilbild → Zahlungen & Abos → Abos → LangX → Kündigen.',
+      trialEndingCancelWeb:
+        'Kündigen: LangX im Web → Einstellungen → Abo → Verwalten oder kündigen.',
+      trialEndingCancelOther:
+        'Zum Kündigen öffne die Abo-Seite des Stores, in dem du abonniert hast.',
+      trialEndingButton: 'Meinen Tarif ansehen',
     },
 
     /**
@@ -564,6 +578,16 @@ export const de: Localized<ServerMessages> = {
       one: '🎉 {friends} Freunde, die du eingeladen hast, unterhalten sich jetzt auf LangX. {count} Monat Pro gehört dir!',
       other:
         '🎉 {friends} Freunde, die du eingeladen hast, unterhalten sich jetzt auf LangX. {count} Monate Pro gehören dir!',
+    },
+    introReferralWeeks: {
+      one: '🎉 Jemand, den du eingeladen hast, unterhält sich jetzt auf LangX. {count} Woche Pro gehört dir – und Pro gibt es für euch beide!',
+      other:
+        '🎉 Jemand, den du eingeladen hast, unterhält sich jetzt auf LangX. {count} Wochen Pro gehören dir – und Pro gibt es für euch beide!',
+    },
+    introInvitedWeeks: {
+      one: '🎉 Dein erstes echtes Gespräch auf LangX! Du bist über eine Einladung gekommen, deshalb gehört dir {count} Woche Pro.',
+      other:
+        '🎉 Dein erstes echtes Gespräch auf LangX! Du bist über eine Einladung gekommen, deshalb gehören dir {count} Wochen Pro.',
     },
     introStreak: {
       one: '🔥 {days} Tage am Stück, unglaublich! Als Dankeschön schenken wir dir {count} Monat Pro.',

@@ -1255,6 +1255,15 @@ export const ar: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. {time} بالتوقيت المحلي.',
   },
   chat: {
+    firstReplyTitle: 'وصلك رد من {name}',
+    firstReplyBody: {
+      zero: 'الردود مجانية في كل الخطط. يزيل {plan} الحدّ اليومي للمحادثات الجديدة.',
+      one: 'الردود مجانية في كل الخطط. يزيل {plan} حدّ محادثة جديدة واحدة يوميًا.',
+      two: 'الردود مجانية في كل الخطط. يزيل {plan} حدّ محادثتين جديدتين يوميًا.',
+      few: 'الردود مجانية في كل الخطط. يزيل {plan} حدّ {count} محادثات جديدة يوميًا.',
+      many: 'الردود مجانية في كل الخطط. يزيل {plan} حدّ {count} محادثة جديدة يوميًا.',
+      other: 'الردود مجانية في كل الخطط. يزيل {plan} حدّ {count} محادثة جديدة يوميًا.',
+    },
     channelOnly: 'ينشر هذا الحساب الأخبار والإعلانات. لا يمكنك الرد هنا.',
     suspendedOnly: 'هذا الحساب معلّق. لا يمكنك إرسال رسائل إليه.',
     sendingAttachment: 'جارٍ الإرسال…',
@@ -1420,6 +1429,7 @@ export const ar: Localized<EnMessages> = {
     wordTranslationFailed: 'تعذّرت ترجمة هذه الكلمة الآن.',
     wordSeePlans: 'شاهد الخطط',
     sayHello: 'ألقِ التحية على {name}…',
+    newcomerHelloFree: 'حساب جديد على LangX — هذه التحية لا تُحسب من محادثاتك الجديدة.',
     topicsShuffle: 'مواضيع أخرى',
     topicChip: 'فكرة للحديث: {topic}',
     topics: {
@@ -1868,6 +1878,8 @@ export const ar: Localized<EnMessages> = {
 
   profile: {
     proBadge: 'عضو Pro',
+    proSheetTitle: 'ما هو {plan}؟',
+    proSheetBody: 'لدى {name} اشتراك {plan}. إليك ما يضيفه إلى الخطة المجانية:',
     official: 'حساب رسمي',
     suspendedTag: 'معلّق',
     deletedTag: 'حساب محذوف',
@@ -2647,6 +2659,48 @@ export const ar: Localized<EnMessages> = {
       many: 'تكسبك الدعوات توكنات عن {count} شخصًا كحد أقصى في الشهر.',
       other: 'تكسبك الدعوات توكنات عن {count} شخص كحد أقصى في الشهر.',
     },
+    weekTitle: {
+      zero: 'أهدِ {count} أسبوع من Pro، واحصل على مثلها',
+      one: 'أهدِ أسبوعًا من Pro، واحصل على أسبوع',
+      two: 'أهدِ أسبوعين من Pro، واحصل على أسبوعين',
+      few: 'أهدِ {count} أسابيع من Pro، واحصل على مثلها',
+      many: 'أهدِ {count} أسبوعًا من Pro، واحصل على مثلها',
+      other: 'أهدِ {count} أسبوع من Pro، واحصل على مثلها',
+    },
+    weekTitleGive: {
+      zero: 'أهدِ صديقًا {count} أسبوع من Pro',
+      one: 'أهدِ صديقًا أسبوعًا من Pro',
+      two: 'أهدِ صديقًا أسبوعين من Pro',
+      few: 'أهدِ صديقًا {count} أسابيع من Pro',
+      many: 'أهدِ صديقًا {count} أسبوعًا من Pro',
+      other: 'أهدِ صديقًا {count} أسبوع من Pro',
+    },
+    weekUnit: {
+      zero: 'أسبوع من Pro لكلٍّ منكما',
+      one: 'أسبوع من Pro لكلٍّ منكما',
+      two: 'أسبوعان من Pro لكلٍّ منكما',
+      few: 'أسابيع من Pro لكلٍّ منكما',
+      many: 'أسبوعًا من Pro لكلٍّ منكما',
+      other: 'أسبوع من Pro لكلٍّ منكما',
+    },
+    weekUnitGive: {
+      zero: 'أسبوع من Pro لمن تدعوه',
+      one: 'أسبوع من Pro لمن تدعوه',
+      two: 'أسبوعان من Pro لمن تدعوه',
+      few: 'أسابيع من Pro لمن تدعوه',
+      many: 'أسبوعًا من Pro لمن تدعوه',
+      other: 'أسبوع من Pro لمن تدعوه',
+    },
+    weekWhen: 'عندما يجري من تدعوه محادثة حقيقية مع أحدهم',
+    weekCap: {
+      zero: 'يمكنك أن تكسب حتى {count} أسبوع في السنة.',
+      one: 'يمكنك أن تكسب حتى أسبوع واحد في السنة.',
+      two: 'يمكنك أن تكسب حتى أسبوعين في السنة.',
+      few: 'يمكنك أن تكسب حتى {count} أسابيع في السنة.',
+      many: 'يمكنك أن تكسب حتى {count} أسبوعًا في السنة.',
+      other: 'يمكنك أن تكسب حتى {count} أسبوع في السنة.',
+    },
+    weekAddsOn: 'يُضاف أسبوعك إلى نهاية Pro الذي لديك الآن.',
   },
 
   tokenKind: {

@@ -14,6 +14,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
 import { findConversationBetween } from '../modules/chat/conversations'
+import { newcomerHelloIsFree } from '../modules/chat/newcomerHello'
 import { countryFromHeaders } from '../lib/requestCountry'
 import { requireAuth, requireMember, requireVerifiedEmail } from '../middleware/requireAuth'
 import { hashLegacyEmail } from '../modules/handles/legacyEmailHash'
@@ -286,6 +287,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
       // Read after the block check, not with it: an unverified-email lookup
       // for a profile this viewer is not allowed to see is a query we should
       // never run.
+      const now = new Date()
       const [emailVerified, follow, conversation] = await Promise.all([
         isEmailVerified(app.mongo.db, target._id),
         readFollowState(app.mongo.db, request.userId, target._id),
@@ -296,9 +298,25 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
           ? Promise.resolve(null)
           : findConversationBetween(app.mongo.db, request.userId, target._id),
       ])
-      return reply.send(
-        toPublicProfile(target, emailVerified, follow, new Date(), conversation?._id.toHexString()),
+      const body = toPublicProfile(
+        target,
+        emailVerified,
+        follow,
+        now,
+        conversation?._id.toHexString(),
       )
+      // Only where a first message is still to be written: not on your own
+      // profile, and not for somebody you already talk to. The block check
+      // above has already answered 404 for a pair with a block either way.
+      if (
+        viewer &&
+        target._id !== request.userId &&
+        !conversation &&
+        (await newcomerHelloIsFree(app.mongo.db, viewer, target, now))
+      ) {
+        body.freeHello = true
+      }
+      return reply.send(body)
     },
   )
 

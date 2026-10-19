@@ -1242,6 +1242,14 @@ export const ru: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Местное время {time}.',
   },
   chat: {
+    firstReplyTitle: 'Ответ от {name}',
+    firstReplyBody: {
+      one: 'Ответы бесплатны на любом тарифе. {plan} снимает ограничение в {count} новый чат в день.',
+      few: 'Ответы бесплатны на любом тарифе. {plan} снимает ограничение в {count} новых чата в день.',
+      many: 'Ответы бесплатны на любом тарифе. {plan} снимает ограничение в {count} новых чатов в день.',
+      other:
+        'Ответы бесплатны на любом тарифе. {plan} снимает ограничение в {count} новых чата в день.',
+    },
     channelOnly: 'Этот аккаунт публикует новости и объявления. Ответить сюда нельзя.',
     suspendedOnly: 'Этот аккаунт заблокирован. Отправить ему сообщение нельзя.',
     sendingAttachment: 'Отправка…',
@@ -1402,6 +1410,7 @@ export const ru: Localized<EnMessages> = {
     wordTranslationFailed: 'Сейчас не удалось перевести это слово.',
     wordSeePlans: 'Посмотреть тарифы',
     sayHello: 'Поздоровайся с {name}…',
+    newcomerHelloFree: 'Недавно в LangX — это приветствие не засчитывается в твои новые чаты.',
     topicsShuffle: 'Другие темы',
     topicChip: 'Тема для разговора: {topic}',
     topics: {
@@ -1817,6 +1826,8 @@ export const ru: Localized<EnMessages> = {
 
   profile: {
     proBadge: 'Участник Pro',
+    proSheetTitle: 'Что такое {plan}?',
+    proSheetBody: '{name} пользуется {plan}. Вот что он добавляет к бесплатному тарифу:',
     official: 'Официальный аккаунт',
     suspendedTag: 'Заблокирован',
     deletedTag: 'Аккаунт удалён',
@@ -2541,6 +2552,38 @@ export const ru: Localized<EnMessages> = {
       many: 'В месяц токены приносят не более {count} приглашений.',
       other: 'В месяц токены приносят не более {count} приглашения.',
     },
+    weekTitle: {
+      one: 'Подарите неделю Pro — получите неделю',
+      few: 'Подарите {count} недели Pro — получите {count} недели',
+      many: 'Подарите {count} недель Pro — получите {count} недель',
+      other: 'Подарите {count} недели Pro — получите {count} недели',
+    },
+    weekTitleGive: {
+      one: 'Подарите другу неделю Pro',
+      few: 'Подарите другу {count} недели Pro',
+      many: 'Подарите другу {count} недель Pro',
+      other: 'Подарите другу {count} недели Pro',
+    },
+    weekUnit: {
+      one: 'неделя Pro каждому',
+      few: 'недели Pro каждому',
+      many: 'недель Pro каждому',
+      other: 'недели Pro каждому',
+    },
+    weekUnitGive: {
+      one: 'неделя Pro для приглашённого',
+      few: 'недели Pro для приглашённого',
+      many: 'недель Pro для приглашённого',
+      other: 'недели Pro для приглашённого',
+    },
+    weekWhen: 'Когда приглашённый вами человек по-настоящему с кем-то пообщается',
+    weekCap: {
+      one: 'В год можно получить до {count} недели.',
+      few: 'В год можно получить до {count} недель.',
+      many: 'В год можно получить до {count} недель.',
+      other: 'В год можно получить до {count} недели.',
+    },
+    weekAddsOn: 'Ваша неделя добавится к концу вашего текущего Pro.',
   },
 
   tokenKind: {

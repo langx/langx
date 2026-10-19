@@ -10,7 +10,7 @@ import {
   type Media,
   type ReportReason,
 } from '@langx/shared'
-import { translator } from '../i18n'
+import { translator, type ServerMessageKey } from '../i18n'
 import { facesRow, type AvatarFace } from './avatars'
 import type { InlineAsset } from './inlineAssets'
 import { inlineSrc, LOGO_SRC } from './logo'
@@ -545,6 +545,59 @@ export function billingEmail(
        <p style="margin:24px 0 0;">${button(url, t(`email.billing.${event}Button` as never))}</p>`,
     ),
     text: [title, '', t(`email.billing.${event}Body` as never), '', url].join('\n'),
+  }
+}
+
+/** Which store's words the cancel line uses — see `trialEndingEmail`. */
+export type CancelPath = 'appStore' | 'playStore' | 'web' | 'other'
+
+const CANCEL_LINE: Record<CancelPath, ServerMessageKey> = {
+  appStore: 'email.billing.trialEndingCancelAppStore',
+  playStore: 'email.billing.trialEndingCancelPlayStore',
+  web: 'email.billing.trialEndingCancelWeb',
+  other: 'email.billing.trialEndingCancelOther',
+}
+
+/**
+ * The reminder two days before a free trial becomes a charge — the third
+ * billing letter, and transactional like the other two: `wrap`, no
+ * unsubscribe footer, because there is no switch behind it.
+ *
+ * Information only, by rule: when, the plan, and how to cancel in the store
+ * that sold it. The button goes to the plan screen, never to the paywall, and
+ * nothing in it argues for keeping the plan — somebody in a trial already
+ * holds Pro, and this letter exists so that a charge is never a surprise.
+ */
+export function trialEndingEmail(
+  locale: Locale,
+  input: { date: string; tier: string; cancel: CancelPath },
+): Email {
+  const t = translator(locale)
+  const url = webUrl('/settings/plan')
+  const date = escapeHtml(input.date)
+  const title = t('email.billing.trialEndingTitle', { date })
+  const body = t('email.billing.trialEndingBody', { date })
+  const cancel = t(CANCEL_LINE[input.cancel])
+  return {
+    subject: t('email.billing.trialEndingTitle', { date: input.date }),
+    html: wrap(
+      locale,
+      body,
+      `<p><strong style="font-family:${TITLE_FONT}; font-size:20px; line-height:26px;">${title}</strong></p>
+       <p>${body}</p>
+       <p>${cancel}</p>
+       <p style="color:#62676d;">${t('email.billingPlan', { tier: escapeHtml(input.tier) })}</p>
+       <p style="margin:24px 0 0;">${button(url, t('email.billing.trialEndingButton'))}</p>`,
+    ),
+    text: [
+      t('email.billing.trialEndingTitle', { date: input.date }),
+      '',
+      t('email.billing.trialEndingBody', { date: input.date }),
+      '',
+      cancel,
+      '',
+      url,
+    ].join('\n'),
   }
 }
 

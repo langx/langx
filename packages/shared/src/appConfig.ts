@@ -124,6 +124,44 @@ export const appConfigSchema = z.object({
      * correction you receive is kept in Echo by itself, behind a switch_.
      */
     echoFromCorrections: z.boolean(),
+    /**
+     * The reminder two days before a free trial turns into a charge — a
+     * billing notice, so no switch gates it (`modules/billing/trialEnding.ts`).
+     * Starts off because it is new mail and push to people who never had it,
+     * and because on, it also retires the promotional "free week ends" nudge
+     * for everybody in a trial. Off, both behave exactly as before.
+     */
+    trialEndingReminder: z.boolean(),
+    /**
+     * The promotional nudges stop vanishing: a nudge already said this period
+     * no longer holds the evening's slot, the one-day windows wait out the
+     * week's gap, the money nudges outrank idle tokens, and the likes batch
+     * keeps to a local hour (`promotions.ts`, `social.ts`). Nobody new
+     * becomes eligible — consent, the gap and waking hours still decide — but
+     * more of what consenting people qualify for reaches them, so it starts
+     * off and is switched on as a decision rather than by a merge.
+     */
+    nudgeNoSilentDrops: z.boolean(),
+    /**
+     * "Give a week, get a week": each invitee who becomes a real user earns
+     * the inviter a week of Pro and gives the invitee one, in place of a month
+     * for every three. Starts off because it gives away the thing the app
+     * sells, which is a decision made by switching this on rather than by a
+     * merge. Off, referrals reward exactly as they did. An activation is
+     * judged by the rule in force when it happens and keeps it — see
+     * `docs/decisions.md` → _Give a week, get a week, behind a switch_.
+     */
+    giveAWeek: z.boolean(),
+    /**
+     * The newcomer hello: the first message somebody sends to an account in
+     * its first `NEWCOMER_HELLO_RULES.newForDays` does not count against
+     * their new chats, at most `perSenderPer24h` a day, adults only at both
+     * ends. Off, every first message counts exactly as it did. Starts off
+     * because what is free is Behic's to decide, and a switch is how he
+     * decides it — see `docs/decisions.md` → _A hello to a newcomer is free,
+     * behind a switch_.
+     */
+    newcomerHello: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -149,6 +187,10 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     streakRepairPush: false,
     discoveryReplyFirst: false,
     echoFromCorrections: false,
+    trialEndingReminder: false,
+    nudgeNoSilentDrops: false,
+    giveAWeek: false,
+    newcomerHello: false,
   },
 }
 

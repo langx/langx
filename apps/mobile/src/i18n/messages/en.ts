@@ -1276,6 +1276,13 @@ export const en = {
     withTheirTimeAccessibility: '{presence}. Local time {time}.',
   },
   chat: {
+    /** The card at the foot of the thread in which somebody first wrote back. */
+    firstReplyTitle: '{name} wrote back',
+    firstReplyBody: {
+      one: 'Replies stay free on every plan. {plan} removes the limit of {count} new chat a day.',
+      other:
+        'Replies stay free on every plan. {plan} removes the limit of {count} new chats a day.',
+    },
     /** Shown where the composer would be, on an account that takes no messages. */
     channelOnly: 'This account posts news and announcements. You can’t reply to it.',
     /** In place of the composer, when the other person's account is suspended. */
@@ -1437,6 +1444,8 @@ export const en = {
     wordTranslationFailed: 'Could not translate that word right now.',
     wordSeePlans: 'See the plans',
     sayHello: 'Say hello to {name}…',
+    /** Above a first message's composer when the profile says this hello is free (`freeHello`). */
+    newcomerHelloFree: 'New on LangX — this hello won’t count toward your new chats.',
     /** The conversation-starter chips above an empty or quiet thread's composer. */
     topicsShuffle: 'Other topics',
     topicChip: 'Conversation starter: {topic}',
@@ -1839,6 +1848,9 @@ export const en = {
 
   profile: {
     proBadge: 'Pro member',
+    /** The sheet behind the PRO badge on somebody's profile. */
+    proSheetTitle: 'What’s {plan}?',
+    proSheetBody: '{name} has {plan}. Here’s what it adds to the free plan:',
     /** Screen-reader label for the tick beside @langx and @copilot. */
     official: 'Official account',
     suspendedTag: 'Suspended',
@@ -2498,6 +2510,36 @@ export const en = {
       one: 'Invites earn you tokens for up to {count} friend a month.',
       other: 'Invites earn you tokens for up to {count} friends a month.',
     },
+    /**
+     * "Give a week, get a week" (`flags.giveAWeek`): the hero the screen
+     * leads with while the switch is on. `count` is the weeks each side gets
+     * (`PRO_GIFT_RULES.giveAWeek`, one length for both) everywhere but
+     * `weekCap`, where it is the inviter's yearly cap. The `Give` pair is
+     * what a subscriber or a lifetime sees: the friend's week, and no promise
+     * of Pro they already have. `weekUnit` follows the figure on the tile.
+     */
+    weekTitle: {
+      one: 'Give a week of Pro, get a week',
+      other: 'Give {count} weeks of Pro, get {count} weeks',
+    },
+    weekTitleGive: {
+      one: 'Give a friend a week of Pro',
+      other: 'Give a friend {count} weeks of Pro',
+    },
+    weekUnit: {
+      one: 'week of Pro each',
+      other: 'weeks of Pro each',
+    },
+    weekUnitGive: {
+      one: 'week of Pro for your friend',
+      other: 'weeks of Pro for your friend',
+    },
+    weekWhen: 'When a friend you invite has a real conversation with someone',
+    weekCap: {
+      one: 'You can earn up to {count} week a year.',
+      other: 'You can earn up to {count} weeks a year.',
+    },
+    weekAddsOn: 'Yours is added to the end of the Pro you have now.',
   },
 
   tokenKind: {

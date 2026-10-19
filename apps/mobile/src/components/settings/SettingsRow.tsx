@@ -24,6 +24,7 @@ import { type MessageKey, useDisplayNames, useLocale, useT } from '../../i18n'
 import { relativeTime } from '../../lib/format'
 import { openExternal } from '../../lib/openExternal'
 import { openPaywall } from '../../lib/paywall'
+import { showsSeePlans } from '../../lib/proRoads'
 import { openStoreListing } from '../../lib/storeListing'
 import { makeStyles, THEME_PREFERENCES, type ThemePreference, useTheme } from '../../lib/theme'
 import { ListRow } from '../ui/ListRow'
@@ -191,14 +192,19 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
     case 'plan.upgrade':
       // "See the plans" is the free tier's row. A subscriber holds the one
       // paid plan and has nothing left to be sold — but a gift runs out, and
-      // subscribing on top of one is how Pro carries on after it.
-      return model.tier !== 'free' && !model.gift ? null : (
+      // subscribing on top of one is how Pro carries on after it. Its own
+      // source: it was counted as the Me card's until it had one.
+      return showsSeePlans({
+        loaded: profile !== undefined,
+        tier: model.tier,
+        gift: model.gift,
+      }) ? (
         <ListRow
           title={t('settings.upgrade')}
           last={last}
-          onPress={() => openPaywall(undefined, '/(app)/settings', 'me')}
+          onPress={() => openPaywall(undefined, '/(app)/settings', 'settings')}
         />
-      )
+      ) : null
     case 'plan.manage':
       return model.manageUrl ? (
         <ExternalRow

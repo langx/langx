@@ -103,6 +103,8 @@ export const tr: Localized<ServerMessages> = {
     billingFailedTitle: 'Ödemen alınamadı',
     billingEndedTitle: 'Planın sona erdi',
     billingBody: 'Planını kontrol etmek için dokun.',
+    billingTrialEndingTitle: 'Ücretsiz deneme süren {date} tarihinde bitiyor',
+    billingTrialEndingBody: 'Planını ve nasıl iptal edeceğini görmek için dokun.',
     lifetimeGiftTitle: '{plan}, ömür boyu 🎉',
     lifetimeGiftBody: {
       one: 'v1’deki {total} jetonun kazandırdı.',
@@ -430,6 +432,17 @@ export const tr: Localized<ServerMessages> = {
         'Aboneliğin sona erdi ve hesabın ücretsiz plana döndü. Oluşturduğun her şey duruyor.',
 
       planEndedButton: 'Planlara bak',
+      trialEndingTitle: 'LangX Pro deneme süren {date} tarihinde bitiyor',
+      trialEndingBody:
+        'Devam edersen, abone olduğun mağaza {date} tarihinde seçtiğin plan için sana gösterdiği fiyattan ücret alır ve sen iptal edene kadar yeniler. Bu tarihten önce iptal edersen hiçbir şey ödemezsin; Pro {date} tarihine kadar sürer.',
+      trialEndingCancelAppStore:
+        'iPhone veya iPad üzerinde iptal etmek için: Ayarlar → adın → Abonelikler → LangX → Aboneliği İptal Et. Apple bunu deneme bitmeden en az bir gün önce ister.',
+      trialEndingCancelPlayStore:
+        'Android cihazda iptal etmek için: Google Play → profil resmin → Ödemeler ve abonelikler → Abonelikler → LangX → Aboneliği iptal et.',
+      trialEndingCancelWeb:
+        'İptal etmek için: web üzerinde LangX → Ayarlar → Abonelik → Yönet veya iptal et.',
+      trialEndingCancelOther: 'İptal etmek için abone olduğun mağazanın abonelikler sayfasını aç.',
+      trialEndingButton: 'Planımı gör',
     },
 
     /**
@@ -546,6 +559,16 @@ export const tr: Localized<ServerMessages> = {
       one: '🎉 Davet ettiğin {friends} arkadaşın LangX’te konuşmaya başladı. {count} ay Pro senin!',
       other:
         '🎉 Davet ettiğin {friends} arkadaşın LangX’te konuşmaya başladı. {count} ay Pro senin!',
+    },
+    introReferralWeeks: {
+      one: '🎉 Davet ettiğin biri LangX’te konuşmaya başladı. {count} hafta Pro senin, ona da Pro var!',
+      other:
+        '🎉 Davet ettiğin biri LangX’te konuşmaya başladı. {count} hafta Pro senin, ona da Pro var!',
+    },
+    introInvitedWeeks: {
+      one: '🎉 LangX’teki ilk gerçek sohbetin! Bir davetle geldin, bu yüzden {count} hafta Pro senin.',
+      other:
+        '🎉 LangX’teki ilk gerçek sohbetin! Bir davetle geldin, bu yüzden {count} hafta Pro senin.',
     },
     introStreak: {
       one: '🔥 {days} gün üst üste, inanılmazsın! Bu emeğe teşekkür olarak {count} ay Pro bizden.',
