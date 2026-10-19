@@ -2810,6 +2810,38 @@ export const fr: Localized<EnMessages> = {
     start: 'Commencer à explorer',
   },
 
+  proWeek: {
+    startsTitle: 'Ta semaine Pro commence maintenant',
+    startsBody: {
+      one: 'Pro est à toi jusqu’au {date}. Pratique {count} jour d’affilée et il reste une deuxième semaine.',
+      other:
+        'Pro est à toi jusqu’au {date}. Pratique {count} jours d’affilée et il reste une deuxième semaine.',
+    },
+    yoursUntil: 'Pro · à toi jusqu’au {date}',
+    recapEnds: 'Ta semaine Pro se termine le {date}',
+    recapEnded: 'Ta semaine Pro est terminée',
+    recapLead: 'Ce que tu as fait avec Pro et que l’offre gratuite ne propose pas :',
+    recapChats: {
+      one: '{count} nouvelle discussion au-delà de la limite quotidienne gratuite',
+      other: '{count} nouvelles discussions au-delà de la limite quotidienne gratuite',
+    },
+    recapTranslated: {
+      one: '{count} message envoyé avec une traduction',
+      other: '{count} messages envoyés avec une traduction',
+    },
+    recapLanguages: {
+      one: 'Trouvé grâce à {count} langue de plus — elle est en pause avec l’offre gratuite',
+      other: 'Trouvé grâce à {count} langues de plus — elles sont en pause avec l’offre gratuite',
+    },
+    recapExtended: {
+      one: '{count} jour d’affilée t’a valu une semaine de Pro en plus.',
+      other: '{count} jours d’affilée t’ont valu une semaine de Pro en plus.',
+    },
+    recapQuiet: 'Tout ce que Pro a ouvert reste ouvert si tu le gardes.',
+    keep: 'Garder Pro',
+    storeFreeWeek: 'Tu peux encore lancer la semaine gratuite du store.',
+  },
+
   giftCode: {
     link: 'Tu as un code cadeau ?',
     title: 'Utiliser un code cadeau',

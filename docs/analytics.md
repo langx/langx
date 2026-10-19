@@ -124,6 +124,11 @@ reached a screen of ours.
 
 Some of these carry a number that needs a caveat rather than a footnote:
 
+- **`paywall_viewed.source` also takes `gift_end`**: "Keep Pro" on the Pro
+  Week's last-day recap, behind `flags.proWeek`. An account that had a week
+  never sees the `onboarding` paywall, so the two are read together, never
+  one without the other: `gift_end` is the reverse trial's conversion.
+
 - **`post_created` and `feed_card_opened`** are sent only by builds that have
   the one-timeline feed. Installed builds from before it post and open cards
   without a word, so adoption counts undercount the old-build population until

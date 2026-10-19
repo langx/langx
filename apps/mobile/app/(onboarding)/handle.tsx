@@ -121,6 +121,10 @@ export default function HandleStep() {
         // question with one correct answer the app can read itself. It drives
         // the streak's notion of "today".
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        // This build ends onboarding with the Pro Week's moment rather than
+        // the paywall when the server gives one — see `done.tsx`. The server
+        // gives one only to a build that says so, and only behind its switch.
+        supportsProWeek: true,
       })
       track({
         name: 'onboarding_step_completed',

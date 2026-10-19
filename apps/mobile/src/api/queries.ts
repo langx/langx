@@ -18,6 +18,8 @@ import {
   type PlanTier,
   type StoredPaidPlanTier,
   type ProWelcomeSource,
+  type ProWeekRecapResponse,
+  type ProWeekWire,
   type StoredPlanTier,
   type CheckInResult,
   type MediaKind,
@@ -725,6 +727,13 @@ export interface MeProfile {
    * falls back rather than trusting it.
    */
   proWelcome?: { at: string; source: ProWelcomeSource; months?: number }
+  /**
+   * The Pro Week, when this account had one — see `src/lib/proWeek.ts` for
+   * what the app does with it. Absent from an API that predates it and on
+   * every account given none, which is every account while `flags.proWeek`
+   * is off.
+   */
+  proWeek?: ProWeekWire
 }
 
 /**
@@ -801,6 +810,41 @@ export function useAckProWelcome() {
         const { proWelcome: _shown, ...rest } = current
         return rest
       })
+    },
+  })
+}
+
+/**
+ * The Pro Week's recap, asked for only once the app can see it is due
+ * (`proWeekRecapDue`) — the server answers `null` for every other reason it
+ * should not show, a subscription bought on another device among them.
+ * Never retried: a recap that fails to load is a recap not shown.
+ */
+export function useProWeekRecap(enabled: boolean) {
+  return useQuery({
+    queryKey: ['pro-week-recap'],
+    queryFn: () => api.get<ProWeekRecapResponse>('/me/pro-week'),
+    enabled,
+    retry: false,
+    staleTime: Infinity,
+  })
+}
+
+/**
+ * The recap was seen. The cached profile is marked first, so it cannot open
+ * again while the request is in flight; a failed request leaves the server's
+ * copy unmarked, and the next launch may show it once more.
+ */
+export function useAckProWeekRecap() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: () => api.post('/me/pro-week/recap/ack', {}),
+    onMutate: () => {
+      queryClient.setQueryData<MeProfile>(keys.me, (current) =>
+        current?.proWeek
+          ? { ...current, proWeek: { ...current.proWeek, recapSeenAt: new Date().toISOString() } }
+          : current,
+      )
     },
   })
 }

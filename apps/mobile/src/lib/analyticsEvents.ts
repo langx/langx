@@ -41,7 +41,10 @@ export type GiftCodeOutcome =
  * quota or a locked feature, the only moment the pitch answers a question the
  * person just asked. Keeping them apart is the whole point — mixed together,
  * a conversion rate says nothing about either. `home` is the Pro card on the
- * redesign's Home tab, `me`'s twin on the screen that now leads.
+ * redesign's Home tab, `me`'s twin on the screen that now leads. `gift_end`
+ * is "Keep Pro" on the Pro Week's last-day recap — the one paywall a person
+ * on a gift is offered, and a separate bucket because it is the reverse
+ * trial's conversion, not a gate's.
  */
 export const PAYWALL_SOURCES = [
   'onboarding',
@@ -52,6 +55,7 @@ export const PAYWALL_SOURCES = [
   'langx',
   'gift_code',
   'home',
+  'gift_end',
 ] as const
 export type PaywallSource = (typeof PAYWALL_SOURCES)[number]
 
