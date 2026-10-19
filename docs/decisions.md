@@ -2792,7 +2792,11 @@ quiet. The gift's reminder says the languages added during it will pause, and
 its goodbye says they now are — only to somebody for whom one does — in the
 same @langx notes every installed build already reads (_Gifts of Pro_ in
 `docs/notifications.md`). Neither says Pro brings them back: that would be a
-reason to buy, in a note sent without a consent.
+reason to buy, in a note sent without a consent. The app says it where the
+list is: the languages screen marks a paused language ("Paused in Discover on
+the free plan"), and Discover's header and its scope chips leave it out, since
+a search is not made with it. The plan page's "What you have" ticks the
+welcome pack only for somebody who was handed it.
 
 **What changes for people on a gift today:** a language added _after this
 deploys_, while a gift runs, pauses when that gift ends. Nothing already on

@@ -31,6 +31,7 @@ import {
   activeCount,
   parseFilters,
   scopeOf,
+  searchLanguages,
   toParams,
 } from '../../src/lib/discoveryFilters'
 import { makeStyles, useTheme } from '../../src/lib/theme'
@@ -85,9 +86,11 @@ export default function FiltersScreen() {
 
   const [filters, setFilters] = useState<DiscoveryFilters>(() => parseFilters(params))
 
-  const learning = me.data?.learning ?? []
+  // Less the paused ones, which the server leaves out of every search: a chip
+  // for one would scope the list to a language it is not found with.
+  const learning = searchLanguages(me.data?.learning, me.data?.pausedLanguages)
   const learningCodes = learning.map((l) => l.code)
-  const native = me.data?.nativeLanguages ?? []
+  const native = searchLanguages(me.data?.nativeLanguages, me.data?.pausedLanguages)
   const nativeCodes = native.map((l) => l.code)
 
   /**
