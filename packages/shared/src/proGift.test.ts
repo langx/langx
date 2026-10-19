@@ -4,6 +4,7 @@ import {
   adminGiftProSchema,
   addMonthsUtc,
   referralGiftSlots,
+  referralWeekSlotsPerYear,
   streakGiftsOwed,
 } from './proGift'
 
@@ -62,6 +63,24 @@ describe('referralGiftSlots', () => {
 
   it('never passes the yearly cap', () => {
     expect(referralGiftSlots(activationsPerGift * 50)).toBe(maxGiftsPerYear)
+  })
+})
+
+describe('giveAWeek', () => {
+  const { referrerWeeks, inviteeWeeks, maxReferrerWeeksPerYear } = PRO_GIFT_RULES.giveAWeek
+
+  it('gives both sides a positive whole number of weeks', () => {
+    for (const weeks of [referrerWeeks, inviteeWeeks]) {
+      expect(Number.isInteger(weeks)).toBe(true)
+      expect(weeks).toBeGreaterThan(0)
+    }
+  })
+
+  /** A cap below one grant would be a reward nobody can ever be paid. */
+  it('fits at least one grant a year, and never more weeks than the cap', () => {
+    const slots = referralWeekSlotsPerYear()
+    expect(slots).toBeGreaterThanOrEqual(1)
+    expect(slots * referrerWeeks).toBeLessThanOrEqual(maxReferrerWeeksPerYear)
   })
 })
 

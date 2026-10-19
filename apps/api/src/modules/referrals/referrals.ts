@@ -66,6 +66,16 @@ export interface Referral {
    *   address or an installation. Neither side is paid, top-up included.
    */
   unpaidReason?: ReferralUnpaidReason
+  /**
+   * Which gift of Pro this activation earns, decided once, when it is first
+   * settled while `flags.giveAWeek` is on, and kept like `unpaidReason`.
+   * Absent is the month for every three (`PRO_GIFT_RULES.referral`); `week`
+   * is "give a week, get a week". Written before the gifts it decides, so a
+   * settle that crashes and runs again after the flag has moved still follows
+   * the rule it started under, and `queueReferralGifts` leaves a `week`
+   * activation out of its count of three.
+   */
+  proReward?: 'week'
 
   subscribedAt?: Date
   subscriptionAward?: number
