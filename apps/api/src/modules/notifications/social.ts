@@ -1,7 +1,13 @@
-import { notificationsAllowed } from '@langx/shared'
+import {
+  LIKES_ROUND_UP_LOCAL_HOUR,
+  localDayKey,
+  localHour,
+  notificationsAllowed,
+} from '@langx/shared'
 import type { Db, ObjectId } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { translator } from '../../i18n'
+import { getAppConfig } from '../appConfig/appConfig'
 import type { Profile } from '../profiles/profiles'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
 import { alreadySeenInApp } from './inbox'
@@ -204,8 +210,17 @@ interface LikeRow {
  * the number in the message is the day's total and there is one of them.
  *
  * The window is the last twenty-four hours rather than the local day, because
- * the pass has no reason to care where the reader is — the count is the
- * count, and waiting for a local midnight would delay it for no gain.
+ * the count is the count, and waiting for a local midnight would delay it for
+ * no gain.
+ *
+ * **When it is sent is the reader's business, though.** Without an hour the
+ * batch went at the first tick that found a like anywhere in the last day —
+ * just after midnight UTC, which is the small hours east of it — and a push
+ * at 3am is the one that gets every switch turned off. With
+ * `flags.nudgeNoSilentDrops` on it waits for `LIKES_ROUND_UP_LOCAL_HOUR` on
+ * each author's own clock and claims their local day; the twenty-four hours
+ * before that hour are exactly what was liked since the last one. Off, it runs
+ * as it always did.
  */
 export async function runLikesRoundUpPass(
   db: Db,
@@ -249,9 +264,17 @@ export async function runLikesRoundUpPass(
     }
   }
 
-  const day = now.toISOString().slice(0, 10)
+  const fenced = (await getAppConfig(db)).flags.nudgeNoSilentDrops
+  const zones = fenced ? await zonesOf(db, [...perAuthor.keys()]) : new Map<string, string>()
+
+  const utcDay = now.toISOString().slice(0, 10)
   let sent = 0
   for (const [authorId, { count, postId }] of perAuthor) {
+    const zone = zones.get(authorId) ?? 'UTC'
+    if (fenced && localHour(now, zone) !== LIKES_ROUND_UP_LOCAL_HOUR) continue
+    // The same `YYYY-MM-DD` shape either way, so the day the switch is thrown
+    // a batch already claimed under the UTC day is not sent a second time.
+    const day = fenced ? localDayKey(now, zone) : utcDay
     /*
      * Each of these likes wrote its inbox row the moment it was tapped, hours
      * before this batch. Somebody who opened the bell and read them has seen
@@ -277,4 +300,15 @@ export async function runLikesRoundUpPass(
     sent++
   }
   return { sent }
+}
+
+/** The authors' zones, in one read; an author with none is on UTC. */
+async function zonesOf(db: Db, userIds: string[]): Promise<Map<string, string>> {
+  const rows = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .find({ _id: { $in: userIds } }, { projection: { timezone: 1 } })
+    .toArray()
+  const zones = new Map<string, string>()
+  for (const row of rows) if (row.timezone) zones.set(row._id, row.timezone)
+  return zones
 }

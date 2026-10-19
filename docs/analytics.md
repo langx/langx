@@ -64,7 +64,7 @@ reached a screen of ours.
 | `onboarding_step_completed` | `step`, `guest`, `resumed`                                                                                                                                                                 | One wizard step was finished — what `$screen` cannot say                                         |
 | `onboarding_completed`      | `referred`, `native_languages`, `learning_languages`, `method`, `from_guest`, `seconds_since_install`                                                                                      | The profile is created                                                                           |
 | `message_sent`              | `kind` (text, correction, image, audio, video), `reply`                                                                                                                                    | The server acknowledged a send. Never the body                                                   |
-| `paywall_viewed`            | `feature` (what sent them), `tier` (the viewer's plan), `source` (onboarding, gate, me, deeplink, first_reply, langx, gift_code, home), `gift` (over a gift of N months), `offers` (below) | The paywall is first shown — up to a second after it opens — or left before then                 |
+| `paywall_viewed`            | `feature` (what sent them), `tier` (the viewer's plan), `source` (the road that opened it; every one is named in the notes further on), `gift` (over a gift of N months), `offers` (below) | The paywall is first shown — up to a second after it opens — or left before then                 |
 | `paywall_dismissed`         | `source`, `seconds_open`, `exit` (close, back, gesture, other)                                                                                                                             | It was left without a plan gained: the X, "Continue free", back or a swipe. Once                 |
 | `plan_selected`             | `source`, `period` (monthly, yearly, lifetime)                                                                                                                                             | A plan card was picked that was not already the picked one                                       |
 | `benefits_expanded`         | `source`                                                                                                                                                                                   | "And N more" was opened. Opening only                                                            |
@@ -124,11 +124,6 @@ reached a screen of ours.
 
 Some of these carry a number that needs a caveat rather than a footnote:
 
-- **`paywall_viewed.source` also takes `gift_end`**: "Keep Pro" on the Pro
-  Week's last-day recap, behind `flags.proWeek`. An account that had a week
-  never sees the `onboarding` paywall, so the two are read together, never
-  one without the other: `gift_end` is the reverse trial's conversion.
-
 - **`post_created` and `feed_card_opened`** are sent only by builds that have
   the one-timeline feed. Installed builds from before it post and open cards
   without a word, so adoption counts undercount the old-build population until
@@ -180,7 +175,19 @@ Some of these carry a number that needs a caveat rather than a footnote:
   change is expected to add values to `result`.
 - **`source`** on the paywall separates the once-only exposure at the end of
   onboarding from the quota and locked-feature gates. Mixed together, a
-  conversion rate describes neither.
+  conversion rate describes neither. Each road has its own value, declared once
+  in `PAYWALL_SOURCES` and held to this list by `proRoads.test.ts`:
+  `onboarding`, `gate`, `me` (the Me tab's Pro card), `deeplink`,
+  `first_reply` (the card in a thread once a partner has written back),
+  `langx` (a card under an `@langx` broadcast), `gift_code`, `home` (the Pro
+  card on the redesign's Home tab), `settings` (Settings → Subscription → "See
+  the plans"), `app_icon` (a tile in the app-icon picker) and `pro_badge` (the
+  "What's Pro?" sheet behind the PRO badge on somebody's profile). Builds before
+  those three counted Settings and the app-icon picker as `me`, so read `me`
+  split by app version. `gift_end` is "Keep Pro" on the Pro Week's last-day
+  recap, behind `flags.proWeek`: an account that had a week never sees the
+  `onboarding` paywall, so read the two together — `gift_end` is the reverse
+  trial's conversion.
 - **The Boosted strip's three** need reading together. `boosted_strip_shown`
   means the strip was in the list on that visit, not that pixels reached an
   eye — there is deliberately no viewability maths on a horizontal scroller of

@@ -1,12 +1,16 @@
 import Feather from '@expo/vector-icons/Feather'
-import { profileUrl, TIER_BADGES, wornCosmetic } from '@langx/shared'
+import { profileUrl, TIER_BADGES, TIER_NAMES, wornCosmetic } from '@langx/shared'
 import { router, useIsFocused } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { authClient } from '../lib/auth-client'
+import { shouldGateGuest } from '../lib/guestGate'
+import { openPaywall } from '../lib/paywall'
+import { badgeSheetEnd } from '../lib/proRoads'
 import { requireAccount } from '../lib/requireAccount'
 import {
   useBlockUser,
+  useEffectiveTier,
   useMe,
   useProfile,
   usePublicSummary,
@@ -28,6 +32,7 @@ import { PhotoViewer } from '../components/PhotoViewer'
 import { PresenceLine } from '../components/PresenceLine'
 import { ProfileTestimonials } from '../components/testimonials/ProfileTestimonials'
 import { ProMark } from '../components/ProMark'
+import { WhatsProSheet } from '../components/WhatsProSheet'
 import { WeeklyChart } from '../components/WeeklyChart'
 import { BadgeStrip } from '../components/BadgeStrip'
 import { StatTile } from '../components/ui/StatTile'
@@ -77,6 +82,11 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
   const block = useBlockUser()
 
   const [avatarOpen, setAvatarOpen] = useState(false)
+  /** "What's Pro?", behind the PRO badge. */
+  const [proSheetOpen, setProSheetOpen] = useState(false)
+  // The viewer's own plan, which decides how that sheet ends — never the
+  // profile's, which is whose badge it is.
+  const viewerTier = useEffectiveTier()
   /** Choosing the thread this profile is about to be sent into. */
   const [sending, setSending] = useState(false)
   /*
@@ -295,14 +305,23 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
             verification. `tier` is already the effective one — a lapsed plan
             shows nothing.
           */}
+          {/*
+            Tappable: "What's Pro?" says what the badge means. The row lets
+            every other touch through to the avatar under it; only the chip
+            answers, its target grown to the platform minimum.
+          */}
           {badge ? (
-            <View
-              pointerEvents="none"
-              style={styles.proBadgeRow}
-              accessible
-              accessibilityLabel={t('profile.proBadge')}
-            >
-              <ProMark style={styles.proBadge} />
+            <View pointerEvents="box-none" style={styles.proBadgeRow}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('profile.proBadge')}
+                accessibilityHint={t('profile.proSheetTitle', { plan: TIER_NAMES.pro })}
+                hitSlop={10}
+                onPress={() => setProSheetOpen(true)}
+                style={({ pressed }) => pressed && styles.iconPressed}
+              >
+                <ProMark style={styles.proBadge} />
+              </Pressable>
             </View>
           ) : null}
         </View>
@@ -409,6 +428,23 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
           photos={[{ url: user.avatarUrl }]}
           index={avatarOpen ? 0 : null}
           onClose={() => setAvatarOpen(false)}
+        />
+      ) : null}
+      {badge ? (
+        <WhatsProSheet
+          visible={proSheetOpen}
+          name={user.displayName}
+          end={badgeSheetEnd({
+            loaded: me.data !== undefined,
+            tier: viewerTier,
+            guest: shouldGateGuest(session?.user),
+            own: isSelf,
+          })}
+          onSeePlans={() => {
+            setProSheetOpen(false)
+            openPaywall(undefined, here, 'pro_badge')
+          }}
+          onClose={() => setProSheetOpen(false)}
         />
       ) : null}
       {/* Mounted only while open: a profile has no business reading the chat
