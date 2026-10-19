@@ -950,7 +950,7 @@ export interface ConversationPartnerDto {
   accountStatus: 'active' | 'suspended' | 'deleted'
 }
 
-export function useConversations(filter: ConversationFilter = 'all') {
+export function useConversations(filter: ConversationFilter = 'all', enabled = true) {
   return useInfiniteQuery({
     queryKey: keys.conversations(filter),
     queryFn: ({ pageParam }) =>
@@ -959,6 +959,8 @@ export function useConversations(filter: ConversationFilter = 'all') {
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
+    // The Me tab reads the list only during the first week, for its hello step.
+    enabled,
   })
 }
 
@@ -2109,10 +2111,12 @@ export function useBadges(enabled = true) {
  * `REFERRAL_LIST_LIMIT` and counts the totals over the whole group, so there
  * is nothing to page and the number stays right past the cap.
  */
-export function useReferrals() {
+export function useReferrals(enabled = true) {
   return useQuery({
     queryKey: keys.referrals,
     queryFn: () => api.get<ReferralStatus>('/me/referrals'),
+    // The Me tab asks only during the first week, for its "Invite a friend".
+    enabled,
   })
 }
 

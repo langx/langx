@@ -866,6 +866,7 @@ allowlist.
 
 ## Home leads the bar, and People holds Discover and the Feed — behind a flag
 
+> **Amended 19 October 2026 — see _Chats leads with the people waiting on you — behind the same flag_ below.**
 > **Amended 19 October 2026 — see _Echo leads with what is due, and the done screen says what it earned — behind the same flag_ below.**
 
 **18 October 2026.** The first restructured surface (D4, D5, move S1), and the
@@ -922,6 +923,60 @@ tour plays; under the flag the tour's Feed step finds no Feed tab and is
 skipped, as any step with nothing to point at is. The streak row draws a
 plain disc where `StreakFlame` could go. The screens behind the tabs keep the
 current look, and the web tab title for `/discover` still says Discover.
+
+## Chats leads with the people waiting on you — behind the same flag
+
+**19 October 2026.** The second surface behind `flags.v3Home`, and the first
+of Phase 5's core loop. With the flag off the Chats tab is exactly what it
+was; with it on, `app/(app)/(tabs)/chats.tsx` draws
+`src/screens/ChatsV3Screen.tsx` instead, so the entry above's "the screens
+behind the tabs keep the current look" no longer holds for this one. Like
+Home's route, the tab waits for the flag's answer rather than drawing today's
+list meanwhile and swapping it; a launch through `app/index.tsx` has already
+waited, so only a start straight into the tab — a web page load, a link —
+sees the bare ground, for at most `V3_HOME_WAIT_MS`.
+
+- **Waiting first.** A thread whose other person wrote last — Home's
+  `waitingThreads`: not archived, and a person who can read a reply — is a
+  colour block in that person's hue (`partnerHueFor`) with "Your turn", their
+  last words and a Reply button. The newest is the big block and holds the
+  screen's one yellow; the others reply in ink. Everyone else is a row.
+- **Read off the first page only.** Pinned threads count as first-page ones,
+  since every page carries them. A waiting thread further down stays a row
+  with its reply arrow, as it always had: searching every loaded page would
+  move it from the bottom of the list to the top the moment its page arrived,
+  under a thumb that was scrolling. The first page is also what Home's next
+  step reads, so the two tabs lead with the same person.
+- **Today's three tabs are two places.** Unreplied is the blocks. The archive
+  is a header button beside the starred messages and opens in place of the
+  list, with a way back.
+- **Every swipe action is a button too.** The ⋯ at a row's end and a long
+  press open the same four as the drawer — pin, archive, mute, delete — and so
+  does the ⋯ on a block, which does not swipe. Every target is 44pt on iOS and
+  48dp on Android.
+- **No pair flame.** The streak two partners share (H1 under D8) is not built,
+  and a count with nothing behind it would be a claim. Its place is beside the
+  name on a row, left empty.
+- **A first-week coach card.** "Correct a sentence — Long-press any message,
+  then Correct", with Show me opening the newest thread the other person has
+  written in. Only in the account's first `FIRST_WEEK_DAYS` (`packages/shared`),
+  never for a restored v1 account — the same first week as Me's checklist —
+  and only while such a thread exists. It is stored as a tip, in a slot of its
+  own (`chatsCoach`), so dismissing it is for good, Show me spends it too, and
+  turning tips off in Settings turns it off. Its button is the first
+  `tip_action`.
+- **No rotating tip line.** The current look's `chats` slot teaches the
+  Unreplied and Archived tabs, which this list does not have; the coach card
+  is the list's one hint.
+- **A guest** gets the empty list's line and Find someone, which goes to
+  People, where a hello asks for the account.
+
+The rows and blocks are memoised and given handlers that never change, keyed
+by kind and id, and nothing in the list animates in or out (rule 13), so a
+new message re-renders the thread it changed and opening a drawer re-renders
+the two rows whose state flipped. It is the same `FlatList` on the same pages
+as before. Nothing on the server changed: `unreplied`, `partner` and
+`lastMessage` were already on every row.
 
 ## Echo leads with what is due, and the done screen says what it earned — behind the same flag
 
@@ -6495,6 +6550,7 @@ about each other.
 ## The Me tab is the public profile, plus what only its owner can use
 
 > **Amended 18 October 2026 — see _Home holds the day; Me goes back to being the profile — behind a flag_ below.**
+> **Amended 19 October 2026 — see _Me on its own colour, and a first week instead of zeros — behind a flag_ below.**
 
 **22 September 2026.** The owner's tab had grown into its own arrangement: an
 80px avatar where every other profile draws 96, the photos under the upgrade
@@ -6531,6 +6587,8 @@ alone.
 
 ## Home holds the day; Me goes back to being the profile — behind a flag
 
+> **Amended 19 October 2026 — see _Me on its own colour, and a first week instead of zeros — behind a flag_ below.**
+
 **18 October 2026.** The entry above made the Me tab the public profile plus
 the rows only its owner can use, and the owner's day — the streak, the next
 badge, the Pro card — rode along on it because there was nowhere else to put
@@ -6544,6 +6602,67 @@ in both bars — taking a block off Me is a change somebody without the flag
 would see, so it waits for the Me pull request, which takes off what Home now
 shows and keeps the bell, the wallet, the viewers, follows and preview. The
 rules about what the owner sees of their own profile do not change.
+
+## Me on its own colour, and a first week instead of zeros — behind a flag
+
+**19 October 2026.** The Me pull request the entry above was waiting for.
+**None of it takes effect until `flags.v3Home` is on**, read once per launch
+like the bar it sits in; with it off, Me is the screen the two entries above
+describe, line for line. `app/(app)/(tabs)/me.tsx` picks the screen at its
+top and the redesign's is `src/screens/MeScreenV3.tsx`, so today's screen
+moved by one function name.
+
+With the flag on, Me is drawn from the canvas's `V-Me`:
+
+- **The person, on their own colour.** The hero is the hue everybody else
+  sees them in (`partnerHueFor` on their own id): the face with a camera on
+  its shoulder that changes it — the long press it replaces was never
+  announced — the name, `@handle · city`, their languages, the PRO chip, and
+  the streak as an ink pill into the streak screen. The bell and Settings
+  are `IconButton`s at the hero's end, ink in both schemes (the `hue` look).
+- **Then what has added up.** Three numbers — corrections given, posts and
+  cards reviewed; corrections and the feed stay two numbers — the streak with
+  its longest run and banked freezes, the Pro block for a free account only,
+  the badges with the next one as a big card that says what it pays and,
+  where a press brings it closer, the button that does, and the owner's rows.
+  Invite and Share come back from Settings → Share & invite as the two big
+  buttons; Settings keeps them too.
+
+**What it reverses.** First, _the Me tab is the public profile_: under the
+flag Me no longer repeats the public profile's order — photos, the language
+columns, the week's chart, bio and interests. "Preview my profile" is how the
+owner sees that page, and the Languages and Edit profile rows lead to where
+it is changed. The rule about the owner's own data stands: the city is drawn
+with "Hidden from others" when the switch hides it. Second, the entry above
+said this pull request would take off Me what Home now shows. The drawing
+keeps a streak card and the Pro block, and so does the screen: Home is what
+to do now, Me is where you stand, and the two do not compete for one block.
+Gifted, lifetime and paid Pro are Pro to `useEffectiveTier`, so the Pro block
+reaches nobody who has Pro by any road (rule 10); it opens the paywall with
+source `me`.
+
+**A new account never sees a page of zeros.** For its first
+`FIRST_WEEK_DAYS` (`packages/shared`), Me shows `V-MeNew`'s checklist under a
+ring instead of numbers it does not have yet: say hello, get a first
+correction, add an Echo card, invite a friend, each a button to the place it
+is done. Three are read off responses the app already makes — the chat list,
+Echo's summary, the referrals — and the fourth off the one field this added:
+`/me/tokens` sends `firstWeek: { corrected }` only inside the week, and never
+for a restored v1 account. It reads the `correctedAt` stamp a chat correction
+leaves on its target and a post's `correctionCount`, through indexes that lead
+with the person rather than the stamp, which is cheap only while an account
+has written little; that is why it is a first-week field and not a lifetime
+one. The server says when the week is over, so every phone agrees. The list
+goes when the week ends or all four are done (`planFirstWeek` in
+`src/lib/mePlan.ts`). Past it, a block with nothing to say is not drawn: no
+row of three zeros, no streak of nothing, no "0 of 25 earned", no "0
+followers · 0 following".
+
+**What it leaves out.** The `me` tip slot is not on the redesign's Me — tips
+are Phase 7's to redo. The Pro block is the drawing's, a title and the
+viewers teaser, not Phase 4's trial line and benefit chips, and a subscriber
+gets no status card. There is no partners or shared-days number: nothing the
+app fetches counts them, and pair streaks are not built.
 
 ## A number that has not arrived is a skeleton, not a zero
 
