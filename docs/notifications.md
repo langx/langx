@@ -336,6 +336,7 @@ gift reminds eleven months after the ledger would have forgotten it.
 | Message                       | Fires on                                                   | Channels                        | Once because                           |
 | ----------------------------- | ---------------------------------------------------------- | ------------------------------- | -------------------------------------- |
 | **A gift of Pro**             | a gift is granted (operator, streak, referrals, gift code) | @langx message + push + email   | `sender_client_id_unique` + row status |
+| _(the Pro Week)_              | a week is granted at sign-up, or its second week           | **nothing**                     | —                                      |
 | **Your Pro gift ends {date}** | 7 days before the end, if the gift is longer than a week   | @langx message + email, no push | `remindedAt.week` on the row           |
 | **…ends tomorrow**            | 1 day before the end                                       | @langx message + push           | `remindedAt.day` on the row            |
 | **Your Pro gift has ended**   | the end, if the refresh leaves the account free            | @langx message, no push         | `endedNotifiedAt` on the row           |
@@ -363,10 +364,30 @@ later the reminders are the first they hear of it.
 
 The reminders are **information, not an offer**: when it ends and where the
 plan screen is. A "subscribe now" would be marketing and would need the consent
-these never ask for. None is sent when a later gift has moved the end, or when
+these never ask for. When languages added during the gift will pause in
+Discover on the free plan (`languagesPauseOnFree`), the reminder says so and
+the goodbye says they now are (`proGift.languagesPauseSoon`,
+`proGift.languagesPaused`): what changes and that they stay on the profile,
+never that Pro brings them back. Installed builds draw a paused language like
+any other, so these notes are where every build hears of it. None is sent when a later gift has moved the end, or when
 a subscription or a lifetime carries Pro past it anyway. The pushes go through
 `fanOutMessage`, so a muted @langx thread and the message switch silence them;
 the mails go only to a verified address that `isUserSuppressed` does not list.
+
+**The Pro Week** (`source: 'welcome'`, behind `flags.proWeek`, off by default)
+is granted without a word: no letter, no push, no mail, and no "You're Pro
+now". A letter listing what Pro opens, sent to everybody who signs up, would be
+a sales letter, and the end of onboarding — "Your Pro week starts now", on the
+screen the person is already looking at — is the announcement. Its second
+week, earned by a seven-day streak inside the first, is just as silent: the
+app's "yours until" date moves. Its reminders and goodbye are the three rows
+above, on the same rules, in the week's own words: "Your Pro week ends
+tomorrow, {date}", which also says where the plan screen is
+(`proGift.reminderDayWelcome`), "Your Pro week ends on {date}" when the second
+week makes it long enough for the week's note (`reminderWeekWelcome`), and
+"Your Pro week has ended" (`endedWelcome`). None of them sells, and none needs
+a consent for that reason. The recap with "Keep Pro" is a screen the app opens
+on the last day, not a message.
 
 The EXPIRATION RevenueCat sends for a promotional grant (`store: PROMOTIONAL`)
 writes no `churnedFrom`, so neither "your plan has ended" nor the win-back

@@ -1947,6 +1947,7 @@ export const de: Localized<EnMessages> = {
     capOverGrandfathered:
       'Du hast bereits mehr, als dein Tarif fasst. Du kannst sie ändern oder entfernen, aber keine weitere hinzufügen.',
     changeHint: 'Tippe eine Sprache an, um sie zu ändern.',
+    pausedNote: 'Im kostenlosen Tarif in Entdecken pausiert. Mit Pro zählt sie wieder.',
     saveFailed: 'Das wurde nicht gespeichert. Es hat sich nichts geändert.',
   },
 

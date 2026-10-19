@@ -4,7 +4,6 @@ import {
   HANDLE_CHANGE_COOLDOWN_DAYS,
   LOCALE_NAMES,
   NOTIFICATION_CHANNELS,
-  PRO_BENEFITS,
   profileUrl,
   translateTargetFor,
   translateTargetOptions,
@@ -24,6 +23,7 @@ import { type MessageKey, useDisplayNames, useLocale, useT } from '../../i18n'
 import { relativeTime } from '../../lib/format'
 import { openExternal } from '../../lib/openExternal'
 import { openPaywall } from '../../lib/paywall'
+import { benefitsHeld } from '../../lib/paywallBenefits'
 import { showsSeePlans } from '../../lib/proRoads'
 import { openStoreListing } from '../../lib/storeListing'
 import { makeStyles, THEME_PREFERENCES, type ThemePreference, useTheme } from '../../lib/theme'
@@ -162,9 +162,10 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
       ) : null
     case 'plan.features': {
       // The same lists the paywall sells from. Free has no list in `shared`
-      // — nothing was bought, so there is nothing to itemise.
+      // — nothing was bought, so there is nothing to itemise. The welcome
+      // pack only for somebody who has it: a gift of Pro does not bring it.
       if (model.tier === 'free') return null
-      const benefits = PRO_BENEFITS
+      const benefits = benefitsHeld(profile?.welcomePackAt)
       return (
         <View style={[styles.features, !last && styles.divided]}>
           <Text style={styles.featuresKicker}>{t('settings.whatYouHave')}</Text>

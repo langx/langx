@@ -3,6 +3,7 @@ import {
   activeCount,
   scopeOf,
   hasProFilters,
+  searchLanguages,
   parseFilters,
   toParams,
   toQuery,
@@ -144,6 +145,13 @@ describe('the language scope', () => {
 
   it('counts as one active filter however many sides narrow it', () => {
     expect(activeCount({ learningLanguages: ['en'], nativeLanguages: ['tr'] })).toBe(1)
+  })
+
+  it('is made with the viewer own languages less the paused ones, in their order', () => {
+    const learning = [{ code: 'en' }, { code: 'fr' }, { code: 'it' }]
+    expect(searchLanguages(learning, ['fr']).map((l) => l.code)).toEqual(['en', 'it'])
+    expect(searchLanguages(learning, undefined)).toEqual(learning)
+    expect(searchLanguages(undefined, ['fr'])).toEqual([])
   })
 })
 

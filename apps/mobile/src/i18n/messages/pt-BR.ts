@@ -1904,6 +1904,7 @@ export const ptBR: Localized<EnMessages> = {
     capOverGrandfathered:
       'Você já tem mais do que o seu plano comporta. Dá para trocar ou remover, mas não adicionar outro.',
     changeHint: 'Toque em um idioma para trocá-lo.',
+    pausedNote: 'Pausado em Descobrir no plano gratuito. Volta a contar com o Pro.',
     saveFailed: 'Não salvou. Nada mudou.',
   },
 

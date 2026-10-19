@@ -623,6 +623,14 @@ export interface MeProfile {
   photos?: { url: string }[]
   nativeLanguages: { code: string }[]
   learning: { code: string; level: LanguageLevel; priority: number }[]
+  /**
+   * Codes from the two lists above that Discover does not search with: added
+   * during a gift of Pro that has ended, beyond the free plan's allowance.
+   * They stay listed; `searchLanguages` leaves them out of what a search is
+   * said to be made with. Absent while there are none, and from an API that
+   * predates the pause.
+   */
+  pausedLanguages?: string[]
   interests: string[]
   /**
    * Whatever shape the server has stored, verbatim — three of them are live at
@@ -725,6 +733,13 @@ export interface MeProfile {
    * falls back rather than trusting it.
    */
   proWelcome?: { at: string; source: ProWelcomeSource; months?: number }
+  /**
+   * When the welcome pack was handed over, by the tier it was handed over
+   * for. On the wire since the pack shipped and modelled now because the plan
+   * page ticks the pack only for somebody who has it: it comes with a
+   * purchase or a store's free week, never with a gift of Pro.
+   */
+  welcomePackAt?: Partial<Record<StoredPaidPlanTier, string>>
 }
 
 /**

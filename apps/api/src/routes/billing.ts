@@ -3,6 +3,7 @@ import {
   giftCodeRedeemSchema,
   revenueCatWebhookBodySchema,
   type GiftCodeRedeemResult,
+  type ProWeekRecapResponse,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
@@ -11,6 +12,7 @@ import { requireMember } from '../middleware/requireAuth'
 import { asFakeRevenueCat } from '../modules/billing/fakeRevenueCat'
 import { redeemGiftCode } from '../modules/billing/giftCodes'
 import { grantProGiftNow } from '../modules/billing/proGifts'
+import { acknowledgeProWeekRecap, readProWeekRecap } from '../modules/billing/proWeek'
 import { refreshEntitlement } from '../modules/billing/refresh'
 import { processRevenueCatWebhook } from '../modules/billing/webhook'
 import { getProfile } from '../modules/profiles/profiles'
@@ -126,6 +128,25 @@ export const billingRoutes: FastifyPluginAsyncZod = async (app) => {
       return reply.send(result)
     },
   )
+
+  /**
+   * The Pro Week's recap, when it is due — see `readProWeekRecap` for when it
+   * is and is not. `{ recap: null }` rather than a 404: "nothing to show" is
+   * the answer nearly every account gets, and an error would read as a fault.
+   */
+  app.get('/me/pro-week', { preHandler: requireMember }, async (request, reply) => {
+    const profile = await getProfile(app.mongo.db, request.userId)
+    const result: ProWeekRecapResponse = {
+      recap: profile ? await readProWeekRecap(app.mongo.db, profile) : null,
+    }
+    return reply.send(result)
+  })
+
+  /** The recap was seen. Idempotent; the first device to get there settles it for all. */
+  app.post('/me/pro-week/recap/ack', { preHandler: requireMember }, async (request, reply) => {
+    await acknowledgeProWeekRecap(app.mongo.db, request.userId)
+    return reply.code(204).send()
+  })
 
   if (app.env.REVENUECAT_FAKE_STORE) registerTestStoreRoute(app)
 }

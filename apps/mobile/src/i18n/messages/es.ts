@@ -1910,6 +1910,7 @@ export const es: Localized<EnMessages> = {
     capOverGrandfathered:
       'Ya tienes más de los que admite tu plan. Puedes cambiarlos o quitarlos, pero no añadir otro.',
     changeHint: 'Toca un idioma para cambiarlo.',
+    pausedNote: 'En pausa en Descubrir con el plan gratuito. Vuelve a contar con Pro.',
     saveFailed: 'No se guardó. No cambió nada.',
   },
 
