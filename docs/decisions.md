@@ -2787,6 +2787,13 @@ through. Between a gift's end and the half-hourly pass that refreshes it the
 languages still match, which is the same half hour the gift's own reminders
 live with.
 
+**Said, not found out.** A pause nobody is told about reads as Discover going
+quiet. The gift's reminder says the languages added during it will pause, and
+its goodbye says they now are — only to somebody for whom one does — in the
+same @langx notes every installed build already reads (_Gifts of Pro_ in
+`docs/notifications.md`). Neither says Pro brings them back: that would be a
+reason to buy, in a note sent without a consent.
+
 **What changes for people on a gift today:** a language added _after this
 deploys_, while a gift runs, pauses when that gift ends. Nothing already on
 anybody's profile is marked, so nobody's current languages pause.

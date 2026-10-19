@@ -620,6 +620,10 @@ export const de: Localized<ServerMessages> = {
       '⏳ Deine Pro-Woche endet morgen, am {date}. Deine Tarifoptionen findest du unter Einstellungen → Abo.',
     endedWelcome:
       'Deine Pro-Woche ist vorbei. Danke fürs Üben mit uns – wir sehen uns in den Chats! 💛',
+    languagesPauseSoon:
+      '🌍 Die Sprachen, die du in dieser Zeit hinzugefügt hast, pausieren in Entdecken, sobald du wieder im kostenlosen Tarif bist. Sie bleiben in deinem Profil.',
+    languagesPaused:
+      '🌍 Die Sprachen, die du in dieser Zeit hinzugefügt hast, pausieren jetzt in Entdecken, weil du wieder im kostenlosen Tarif bist. Sie bleiben in deinem Profil.',
   },
   reportReason: {
     spam: 'Spam',

@@ -627,6 +627,10 @@ export const fr: Localized<ServerMessages> = {
       '⏳ Ta semaine Pro se termine demain, le {date}. Tes options de formule sont dans Réglages → Abonnement.',
     endedWelcome:
       'Ta semaine Pro est terminée. Merci d’avoir pratiqué avec nous — à bientôt dans les discussions ! 💛',
+    languagesPauseSoon:
+      '🌍 Les langues ajoutées pendant cette période seront mises en pause dans Découvrir quand tu repasseras au forfait gratuit. Elles restent sur ton profil.',
+    languagesPaused:
+      '🌍 Les langues ajoutées pendant cette période sont en pause dans Découvrir maintenant que tu es au forfait gratuit. Elles restent sur ton profil.',
   },
   reportReason: {
     spam: 'Spam',
