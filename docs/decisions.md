@@ -8070,7 +8070,8 @@ did; weeks already given run to their end whatever the switch says.
 — `POST /profiles` awaits the grant, so the end of onboarding can say the week
 has started. RevenueCat's promotional grant is what makes it Pro everywhere,
 so it stacks, ends, reminds and is shown in the operator's money timeline like
-every other gift. Without billing configured there is no week, because a gift
+every other gift — a week from a friend's invite (_Give a week, get a week,
+behind a switch_) lands after it rather than inside it. Without billing configured there is no week, because a gift
 is a row nothing would ever grant. It is never called a free trial: that is the
 store's, it is a purchase, and it is still there afterwards, untouched.
 
