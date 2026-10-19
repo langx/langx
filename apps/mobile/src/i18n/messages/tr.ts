@@ -1900,6 +1900,7 @@ export const tr: Localized<EnMessages> = {
     capOverGrandfathered:
       'Zaten planının tuttuğundan fazlası var. Bunları değiştirebilir ya da kaldırabilirsin ama yenisini ekleyemezsin.',
     changeHint: 'Değiştirmek için bir dile dokun.',
+    pausedNote: 'Ücretsiz planda Keşfet’te duraklatıldı. Pro ile yeniden sayılır.',
     saveFailed: 'Kaydedilemedi. Hiçbir şey değişmedi.',
   },
 
@@ -2807,6 +2808,38 @@ export const tr: Localized<EnMessages> = {
     bodyMerge: 'Hangisi sende olursa olsun, artık hepsi sende. Önce bunları dene:',
     andMore: 've daha fazlası',
     start: 'Keşfetmeye başla',
+  },
+
+  proWeek: {
+    startsTitle: 'Pro haftan şimdi başlıyor',
+    startsBody: {
+      one: 'Pro {date} tarihine kadar senin. Üst üste {count} gün pratik yaparsan bir hafta daha sürer.',
+      other:
+        'Pro {date} tarihine kadar senin. Üst üste {count} gün pratik yaparsan bir hafta daha sürer.',
+    },
+    yoursUntil: 'Pro · {date} tarihine kadar senin',
+    recapEnds: 'Pro haftan {date} tarihinde bitiyor',
+    recapEnded: 'Pro haftan sona erdi',
+    recapLead: 'Pro ile yaptıkların, ücretsiz planın sunmadıkları:',
+    recapChats: {
+      one: 'Ücretsiz günlük sınırın üstünde {count} yeni sohbet',
+      other: 'Ücretsiz günlük sınırın üstünde {count} yeni sohbet',
+    },
+    recapTranslated: {
+      one: 'Çevirisiyle gönderilen {count} mesaj',
+      other: 'Çevirisiyle gönderilen {count} mesaj',
+    },
+    recapLanguages: {
+      one: 'Eşleşmede {count} dil daha — ücretsiz planda duraklatılır',
+      other: 'Eşleşmede {count} dil daha — ücretsiz planda duraklatılır',
+    },
+    recapExtended: {
+      one: 'Üst üste {count} gün pratik, Pro’yu bir hafta uzattı.',
+      other: 'Üst üste {count} gün pratik, Pro’yu bir hafta uzattı.',
+    },
+    recapQuiet: 'Pro’nun açtığı her şey, Pro’da kalırsan açık kalır.',
+    keep: 'Pro’da kal',
+    storeFreeWeek: 'Mağazanın ücretsiz haftasını hâlâ başlatabilirsin.',
   },
 
   giftCode: {

@@ -153,6 +153,18 @@ export const appConfigSchema = z.object({
      */
     giveAWeek: z.boolean(),
     /**
+     * The Pro Week: seven days of Pro for every new adult account whose app
+     * declares it can show them, through the gift path, and a second week for
+     * a seven-day streak inside it. Starts off, like `captchaRequired`, and
+     * for a stronger reason: it gives away the thing the app sells, which is
+     * a money decision, made by switching this on rather than by a merge.
+     * Off, a new account starts free and the end of onboarding is exactly
+     * what it was. Weeks already given run to their end whatever this says.
+     * See `docs/decisions.md` → _The Pro Week: a week of Pro at sign-up,
+     * behind a switch_.
+     */
+    proWeek: z.boolean(),
+    /**
      * The newcomer hello: the first message somebody sends to an account in
      * its first `NEWCOMER_HELLO_RULES.newForDays` does not count against
      * their new chats, at most `perSenderPer24h` a day, adults only at both
@@ -190,6 +202,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     trialEndingReminder: false,
     nudgeNoSilentDrops: false,
     giveAWeek: false,
+    proWeek: false,
     newcomerHello: false,
   },
 }

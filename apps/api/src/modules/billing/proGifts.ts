@@ -19,7 +19,9 @@ import { deliverOfficialMessage, type OfficialDelivery } from '../official/deliv
 import { emailFor } from '../profiles/emailFor'
 import { localeFor } from '../profiles/localeFor'
 import type { Profile } from '../profiles/profiles'
+import { languagesPauseOnFree } from '../profiles/languagePause'
 import { GIFT_WELCOME_SOURCE, markProWelcome } from './proWelcome'
+import { recordProWeekEnd } from './proWeek'
 import { refreshEntitlement } from './refresh'
 import type { RevenueCatClient } from './revenueCatClient'
 
@@ -80,6 +82,13 @@ export interface ProGift {
    * `user_invitee_unique` holds it to one week per person per activation.
    */
   invitee?: string
+  /**
+   * Which week of the Pro Week this is — the first, given at sign-up, or the
+   * second, earned by the streak inside it. Only on `source: 'welcome'` rows,
+   * and the one field `welcome_once` is unique over: once per person each,
+   * whatever the `_id` says.
+   */
+  welcome?: 1 | 2
   status: ProGiftStatus
   /** `null` until the first attempt decides it; fixed from then on. */
   endsAt: Date | null
@@ -121,6 +130,8 @@ export const proGiftKey = {
   invitedWeek: (userId: string): string => `invitedWeek:${userId}`,
   /** One per person per code; the redemption's own unique index says the same. */
   code: (codeId: string, userId: string): string => `code:${codeId}:${userId}`,
+  /** The Pro Week's two weeks; `welcome_once` holds the same line on `{userId, welcome}`. */
+  welcome: (week: 1 | 2, userId: string): string => `welcome:${week}:${userId}`,
 }
 
 /** The one entitlement Pro is granted under. */
@@ -171,7 +182,16 @@ export async function queueProGift(
   db: Db,
   input: Pick<
     ProGift,
-    '_id' | 'userId' | 'months' | 'weeks' | 'source' | 'grantedBy' | 'note' | 'code' | 'invitee'
+    | '_id'
+    | 'userId'
+    | 'months'
+    | 'weeks'
+    | 'source'
+    | 'grantedBy'
+    | 'note'
+    | 'code'
+    | 'invitee'
+    | 'welcome'
   >,
   now: Date = new Date(),
 ): Promise<{ gift: ProGift; created: boolean }> {
@@ -185,6 +205,7 @@ export async function queueProGift(
     ...(input.note ? { note: input.note } : {}),
     ...(input.code ? { code: input.code } : {}),
     ...(input.invitee ? { invitee: input.invitee } : {}),
+    ...(input.welcome ? { welcome: input.welcome } : {}),
     status: 'pending',
     endsAt: null,
     lockedUntil: now,
@@ -399,16 +420,28 @@ async function grantProGift(db: Db, deps: ProGiftDeps, gift: ProGift, now: Date)
    * friends invited — and that is owed a reply.
    */
   if (gift.source === 'streak' && carriesOn(profile.entitlement, endsAt)) return 'granted'
+  /*
+   * The Pro Week says nothing at all: no letter, no push, no mail, no "You're
+   * Pro now". A letter listing what Pro opens, sent to everybody who signs
+   * up, would be a sales letter without the consent one needs; the end of
+   * onboarding is the announcement, and the date it shows comes from here.
+   */
+  if (gift.source === 'welcome') {
+    try {
+      await recordProWeekEnd(db, gift.userId, endsAt, gift.welcome === 2)
+    } catch (error) {
+      deps.warn(error, 'pro week end failed')
+    }
+    return 'granted'
+  }
+  const welcomeSource = GIFT_WELCOME_SOURCE[gift.source]
   try {
     const after = await db
       .collection<Profile>(COLLECTIONS.profiles)
       .findOne({ _id: gift.userId }, { projection: { proWelcome: 1 } })
     const welcomed = after?.proWelcome && after.proWelcome.at >= refreshedAt
-    if (!welcomed) {
-      await markProWelcome(db, gift.userId, {
-        source: GIFT_WELCOME_SOURCE[gift.source],
-        months: gift.months,
-      })
+    if (!welcomed && welcomeSource) {
+      await markProWelcome(db, gift.userId, { source: welcomeSource, months: gift.months })
     }
   } catch (error) {
     deps.warn(error, 'pro gift welcome failed')
@@ -592,6 +625,9 @@ function introFor(gift: ProGift, t: ReturnType<typeof translator>, count: number
         : t('proGift.introStreak', { count, days: streakDaysOf(gift._id) })
     case 'code':
       return t('proGift.introCode', { count, code: gift.code ?? '' })
+    case 'welcome':
+      // `grantProGift` returns before any letter for the Pro Week.
+      throw new Error('the Pro Week has no letter')
   }
 }
 
@@ -679,6 +715,10 @@ async function runReminders(db: Db, deps: ProGiftDeps, now: Date): Promise<numbe
       const t = translator(reader.locale)
       const date = formatGiftDate(gift.endsAt, reader.locale, reader.timezone)
       const week = reminder.key === 'week'
+      // The Pro Week's own words, which name it and say where the plan screen
+      // is in both — its week is usually only long enough for the day's note.
+      const welcome = gift.source === 'welcome'
+      const pausing = await pausesLanguages(db, deps, gift.userId)
       const told = await sayFromLangx(
         db,
         deps,
@@ -686,7 +726,10 @@ async function runReminders(db: Db, deps: ProGiftDeps, now: Date): Promise<numbe
         {
           clientId: `proGiftReminder:${reminder.key}:${gift._id}`,
           paragraphs: [
-            week ? t('proGift.reminderWeek', { date }) : t('proGift.reminderDay', { date }),
+            week
+              ? t(welcome ? 'proGift.reminderWeekWelcome' : 'proGift.reminderWeek', { date })
+              : t(welcome ? 'proGift.reminderDayWelcome' : 'proGift.reminderDay', { date }),
+            ...(pausing ? [t('proGift.languagesPauseSoon')] : []),
           ],
           // A week out it is a note to read when convenient; the day before is
           // worth a knock.
@@ -707,6 +750,21 @@ async function runReminders(db: Db, deps: ProGiftDeps, now: Date): Promise<numbe
     }
   }
   return sent
+}
+
+/**
+ * Whether a gift's last notes should say that languages added during it pause
+ * in Discover on the free plan (`languagesPauseOnFree`). Information, like the
+ * date: it says what changes and that nothing is removed, and names no reason
+ * to buy. A failed read leaves the line out rather than the note.
+ */
+async function pausesLanguages(db: Db, deps: ProGiftDeps, userId: string): Promise<boolean> {
+  try {
+    return await languagesPauseOnFree(db, userId)
+  } catch (error) {
+    deps.warn(error, 'pro gift language pause read failed')
+    return false
+  }
 }
 
 /**
@@ -749,13 +807,18 @@ async function runEndings(db: Db, deps: ProGiftDeps, now: Date): Promise<number>
       continue
     }
 
+    const t = translator(locale)
+    const paused = await pausesLanguages(db, deps, gift.userId)
     const told = await sayFromLangx(
       db,
       deps,
       gift.userId,
       {
         clientId: `proGiftEnded:${gift._id}`,
-        paragraphs: [translator(locale)('proGift.ended')],
+        paragraphs: [
+          t(gift.source === 'welcome' ? 'proGift.endedWelcome' : 'proGift.ended'),
+          ...(paused ? [t('proGift.languagesPaused')] : []),
+        ],
         push: false,
       },
       locale,

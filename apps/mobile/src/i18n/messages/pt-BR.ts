@@ -1918,6 +1918,7 @@ export const ptBR: Localized<EnMessages> = {
     capOverGrandfathered:
       'Você já tem mais do que o seu plano comporta. Dá para trocar ou remover, mas não adicionar outro.',
     changeHint: 'Toque em um idioma para trocá-lo.',
+    pausedNote: 'Pausado em Descobrir no plano gratuito. Volta a contar com o Pro.',
     saveFailed: 'Não salvou. Nada mudou.',
   },
 
@@ -2832,6 +2833,37 @@ export const ptBR: Localized<EnMessages> = {
       'Qualquer que fosse o seu, agora você tem tudo. Algumas coisas para experimentar primeiro:',
     andMore: 'e muito mais',
     start: 'Começar a explorar',
+  },
+
+  proWeek: {
+    startsTitle: 'Sua semana Pro começa agora',
+    startsBody: {
+      one: 'O Pro é seu até {date}. Pratique {count} dia seguido e ele fica mais uma semana.',
+      other: 'O Pro é seu até {date}. Pratique {count} dias seguidos e ele fica mais uma semana.',
+    },
+    yoursUntil: 'Pro · seu até {date}',
+    recapEnds: 'Sua semana Pro termina em {date}',
+    recapEnded: 'Sua semana Pro terminou',
+    recapLead: 'O que você fez com o Pro e o plano gratuito não oferece:',
+    recapChats: {
+      one: '{count} conversa nova além do limite diário gratuito',
+      other: '{count} conversas novas além do limite diário gratuito',
+    },
+    recapTranslated: {
+      one: '{count} mensagem enviada com tradução',
+      other: '{count} mensagens enviadas com tradução',
+    },
+    recapLanguages: {
+      one: 'Mais {count} idioma em Descobrir — no plano gratuito ele fica em pausa',
+      other: 'Mais {count} idiomas em Descobrir — no plano gratuito eles ficam em pausa',
+    },
+    recapExtended: {
+      one: '{count} dia seguido rendeu mais uma semana de Pro.',
+      other: '{count} dias seguidos renderam mais uma semana de Pro.',
+    },
+    recapQuiet: 'Tudo o que o Pro abriu continua aberto se você ficar com ele.',
+    keep: 'Ficar com o Pro',
+    storeFreeWeek: 'Você ainda pode começar a semana grátis da loja.',
   },
 
   giftCode: {

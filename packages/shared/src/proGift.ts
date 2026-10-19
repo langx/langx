@@ -3,11 +3,12 @@ import { z } from 'zod'
 /**
  * Gifts of Pro: months of the paid plan given rather than bought.
  *
- * Four doors, one mechanism. An operator gives one from the panel; a streak
+ * Five doors, one mechanism. An operator gives one from the panel; a streak
  * crossing a milestone earns one; every few invitees who become real users
  * earn their referrer one (or, under `giveAWeek`, every one earns a week for
- * both sides); and a gift code typed into the paywall redeems
- * one (`giftCode.ts`). Each writes a `proGifts` row and the
+ * both sides); a gift code typed into the paywall redeems one
+ * (`giftCode.ts`); and, behind its switch, a new account starts with the Pro
+ * Week (`proWeek.ts`). Each writes a `proGifts` row and the
  * scheduler turns the row into a RevenueCat promotional grant — so the rules
  * of *who* gets *what* are here, and the API only carries them out.
  *
@@ -21,7 +22,12 @@ import { z } from 'zod'
 export const PRO_GIFT_MONTHS = [1, 3, 6, 12] as const
 export type ProGiftMonths = (typeof PRO_GIFT_MONTHS)[number]
 
-export const PRO_GIFT_SOURCES = ['admin', 'referral', 'streak', 'code'] as const
+/**
+ * `welcome` is the Pro Week (`proWeek.ts`): one week to every new account
+ * whose app can show it, and a second for a seven-day streak inside it. It is
+ * the one source with no letter — the app's own first moment is the news.
+ */
+export const PRO_GIFT_SOURCES = ['admin', 'referral', 'streak', 'code', 'welcome'] as const
 export type ProGiftSource = (typeof PRO_GIFT_SOURCES)[number]
 
 export const PRO_GIFT_RULES = {

@@ -4,7 +4,9 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
-import { grantWelcomePack } from './welcomePack'
+import { refreshEntitlement } from './refresh'
+import type { RevenueCatClient, SubscriberEntitlement } from './revenueCatClient'
+import { earnsWelcomePack, grantWelcomePack } from './welcomePack'
 
 function minimalProfile(id: string): Profile {
   const now = new Date()
@@ -128,5 +130,135 @@ describe('grantWelcomePack', () => {
       await handle.db.collection(COLLECTIONS.tokenAggregates).countDocuments({ userId: id }),
     ).toBe(0)
     expect((await read(id))?.tokenSpent ?? 0).toBe(0)
+  })
+})
+
+describe('earnsWelcomePack', () => {
+  const inAWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+
+  it('is a store purchase or a store free week', () => {
+    for (const periodType of ['normal', 'trial', 'intro'] as const) {
+      expect(
+        earnsWelcomePack({ tier: 'pro', store: 'app_store', periodType, expiresAt: inAWeek }),
+        periodType,
+      ).toBe(true)
+    }
+    // A lifetime bought in a store: no period, no end.
+    expect(earnsWelcomePack({ tier: 'pro', store: 'play_store', periodType: null })).toBe(true)
+  })
+
+  it('is never a grant nobody paid for', () => {
+    for (const store of ['gift', 'promotional', 'manual', 'unknown', undefined]) {
+      expect(earnsWelcomePack({ tier: 'pro', store, expiresAt: inAWeek }), String(store)).toBe(
+        false,
+      )
+    }
+  })
+
+  it('is never free, nor a purchase that has already ended', () => {
+    expect(earnsWelcomePack({ tier: 'free', store: 'app_store' })).toBe(false)
+    expect(
+      earnsWelcomePack({
+        tier: 'pro',
+        store: 'app_store',
+        periodType: 'normal',
+        expiresAt: new Date(Date.now() - 1000),
+      }),
+    ).toBe(false)
+  })
+})
+
+/**
+ * The leak itself, through the funnel that had it: `refreshEntitlement` runs
+ * for every gift of Pro, and it used to hand the pack to any tier but free.
+ */
+describe('refreshEntitlement and the welcome pack', () => {
+  let server: MongoMemoryServer
+  let handle: DbHandle
+  let seq = 0
+
+  beforeAll(async () => {
+    server = await MongoMemoryServer.create()
+    handle = await connectToDatabase(server.getUri(), 'welcome-pack-refresh-test')
+  })
+
+  afterAll(async () => {
+    await handle.close()
+    await server.stop()
+  })
+
+  function holding(entitlement: SubscriberEntitlement | null): RevenueCatClient {
+    return {
+      getEntitlement: () => Promise.resolve(entitlement),
+      grantLifetimeEntitlement: () => Promise.resolve(),
+      grantPromotionalEntitlement: () => Promise.resolve(),
+    }
+  }
+
+  async function seed(): Promise<string> {
+    seq++
+    const id = `refreshpack${seq}`
+    await handle.db.collection<Profile>(COLLECTIONS.profiles).insertOne(minimalProfile(id))
+    return id
+  }
+
+  const inAWeek = () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+
+  it('gives no pack for a gift of Pro', async () => {
+    const id = await seed()
+    await refreshEntitlement(
+      handle.db,
+      holding({
+        tier: 'pro',
+        expiresAt: inAWeek(),
+        productId: 'rc_promo_pro_custom',
+        store: 'gift',
+        periodType: null,
+        willRenew: false,
+      }),
+      id,
+    )
+    const profile = await handle.db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: id })
+    expect(profile?.entitlement.tier).toBe('pro')
+    expect(profile?.welcomePackAt).toBeUndefined()
+    expect(profile?.streakFreezes ?? 0).toBe(0)
+    expect(profile?.cosmetics ?? []).toEqual([])
+  })
+
+  it('gives no pack for a lifetime grant either', async () => {
+    const id = await seed()
+    await refreshEntitlement(
+      handle.db,
+      holding({
+        tier: 'pro',
+        expiresAt: null,
+        productId: 'rc_promo_pro_lifetime',
+        store: 'promotional',
+        periodType: null,
+        willRenew: false,
+      }),
+      id,
+    )
+    const profile = await handle.db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: id })
+    expect(profile?.welcomePackAt).toBeUndefined()
+  })
+
+  it('gives the pack when a store free week starts', async () => {
+    const id = await seed()
+    await refreshEntitlement(
+      handle.db,
+      holding({
+        tier: 'pro',
+        expiresAt: inAWeek(),
+        productId: 'langx_pro_yearly',
+        store: 'app_store',
+        periodType: 'trial',
+        willRenew: true,
+      }),
+      id,
+    )
+    const profile = await handle.db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: id })
+    expect(profile?.welcomePackAt?.pro).toBeInstanceOf(Date)
+    expect(profile?.streakFreezes).toBe(PRO_WELCOME_PACKS.pro.streakFreezes)
   })
 })

@@ -1,5 +1,6 @@
 import {
   PRO_GIFT_RULES,
+  PRO_WEEK_RULES,
   referralGiftSlots,
   referralWeekSlotsPerYear,
   streakGiftsOwed,
@@ -9,6 +10,7 @@ import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import type { Referral } from '../referrals/referrals'
 import { isDuplicateOf, proGiftKey, queueProGift, type ProGift } from './proGifts'
+import { queueProWeekExtension, runningProWeek } from './proWeek'
 
 /**
  * The two gifts of Pro that are earned rather than given: a streak crossing a
@@ -31,10 +33,26 @@ import { isDuplicateOf, proGiftKey, queueProGift, type ProGift } from './proGift
  */
 export async function queueStreakGifts(
   db: Db,
-  profile: Pick<Profile, '_id' | 'streak' | 'proGiftStreaks'>,
+  profile: Pick<Profile, '_id' | 'streak' | 'proGiftStreaks' | 'timezone'>,
   at: Date,
 ): Promise<number> {
-  const owed = streakGiftsOwed(profile.streak.current, profile.proGiftStreaks ?? [])
+  let owed = streakGiftsOwed(profile.streak.current, profile.proGiftStreaks ?? [])
+  /*
+   * Inside the Pro Week the first rung is the week's to give, under its own
+   * count — seven days of real practice, none of them bridged, bought back or
+   * only opened (`queueProWeekExtension`). The streak's rule counts all three,
+   * and two of them are bought with tokens; tokens never unlock Pro. So while
+   * the week runs the rung waits here: earned by the stricter count, it is
+   * the second week and marked given; not earned, it is owed as always, on
+   * the first real action after the week has ended.
+   */
+  const firstRung = PRO_WEEK_RULES.extensionStreakDays
+  if (!(profile.proGiftStreaks ?? []).includes(firstRung)) {
+    if (await runningProWeek(db, profile._id, at)) {
+      await queueProWeekExtension(db, profile, at)
+      owed = owed.filter((rung) => rung.days !== firstRung)
+    }
+  }
   for (const rung of owed) {
     await queueProGift(
       db,

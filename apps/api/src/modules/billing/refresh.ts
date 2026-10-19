@@ -3,8 +3,9 @@ import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import type { RevenueCatClient, SubscriberEntitlement } from './revenueCatClient'
 import { creditReferrerForSubscription, isPaidPurchase } from '../referrals/settle'
-import { grantWelcomePack } from './welcomePack'
+import { earnsWelcomePack, grantWelcomePack } from './welcomePack'
 import { welcomeIfBecamePro } from './proWelcome'
+import { reconcilePausedLanguages } from '../profiles/languagePause'
 
 /**
  * The client-triggered fallback for a webhook that's late or never arrives
@@ -69,8 +70,8 @@ async function applyEntitlement(
   /*
    * The pre-image, because the two things below are functions of an *event*
    * — the referral top-up and the Pro welcome — and this write is the only
-   * edge in this file. `grantWelcomePack` below is a function of the tier and
-   * is safely re-run on every refresh; paying or welcoming somebody again on
+   * edge in this file. `grantWelcomePack` below is a function of the
+   * entitlement and is safely re-run on every refresh; paying or welcoming somebody again on
    * every refresh would not be.
    */
   const before = await db
@@ -123,13 +124,30 @@ async function applyEntitlement(
    * losing a cosmetic to a transient write is not worth failing the refresh
    * that RevenueCat is waiting on. The next refresh picks it up, because the
    * latch is only written on success.
+   *
+   * A store's purchase or free week only — never a grant. See
+   * `earnsWelcomePack`.
    */
-  if (next.tier !== 'free') {
+  if (earnsWelcomePack(next)) {
     try {
       await grantWelcomePack(db, userId, 'pro')
     } catch {
       // Intentionally ignored; see above.
     }
+  }
+
+  /*
+   * A gift that has just ended pauses the languages added during it, and a
+   * purchase that follows brings them back — a function of the tier written
+   * above, so safe on every refresh like the pack. Swallowed for the same
+   * reason: the entitlement is the thing that matters and it is written. A
+   * failure leaves the previous answer standing until the next refresh or
+   * language edit, which both recompute it.
+   */
+  try {
+    await reconcilePausedLanguages(db, userId)
+  } catch {
+    // Intentionally ignored; see above.
   }
 
   return next

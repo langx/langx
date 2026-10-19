@@ -183,8 +183,11 @@ Some of these carry a number that needs a caveat rather than a footnote:
   card on the redesign's Home tab), `settings` (Settings → Subscription → "See
   the plans"), `app_icon` (a tile in the app-icon picker) and `pro_badge` (the
   "What's Pro?" sheet behind the PRO badge on somebody's profile). Builds before
-  the last three counted Settings and the app-icon picker as `me`, so read `me`
-  split by app version.
+  those three counted Settings and the app-icon picker as `me`, so read `me`
+  split by app version. `gift_end` is "Keep Pro" on the Pro Week's last-day
+  recap, behind `flags.proWeek`: an account that had a week never sees the
+  `onboarding` paywall, so read the two together — `gift_end` is the reverse
+  trial's conversion.
 - **The Boosted strip's three** need reading together. `boosted_strip_shown`
   means the strip was in the list on that visit, not that pixels reached an
   eye — there is deliberately no viewability maths on a horizontal scroller of
