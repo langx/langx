@@ -5,6 +5,7 @@ import type { RevenueCatClient, SubscriberEntitlement } from './revenueCatClient
 import { creditReferrerForSubscription, isPaidPurchase } from '../referrals/settle'
 import { earnsWelcomePack, grantWelcomePack } from './welcomePack'
 import { welcomeIfBecamePro } from './proWelcome'
+import { reconcilePausedLanguages } from '../profiles/languagePause'
 
 /**
  * The client-triggered fallback for a webhook that's late or never arrives
@@ -133,6 +134,20 @@ async function applyEntitlement(
     } catch {
       // Intentionally ignored; see above.
     }
+  }
+
+  /*
+   * A gift that has just ended pauses the languages added during it, and a
+   * purchase that follows brings them back — a function of the tier written
+   * above, so safe on every refresh like the pack. Swallowed for the same
+   * reason: the entitlement is the thing that matters and it is written. A
+   * failure leaves the previous answer standing until the next refresh or
+   * language edit, which both recompute it.
+   */
+  try {
+    await reconcilePausedLanguages(db, userId)
+  } catch {
+    // Intentionally ignored; see above.
   }
 
   return next

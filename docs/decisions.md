@@ -2609,6 +2609,7 @@ the purge only began sweeping `posts/{userId}/` on 27 September 2026.)_
 > record of the two-plan design.
 
 > **Amended 17 October 2026 — see _Pro's translations are unlimited, under a fair-use ceiling_ below.**
+> **Amended 18 October 2026 — see _Languages added during a gift pause for matching when it ends_ below.**
 
 `pro` and `pro_plus` are what the code calls them and what RevenueCat calls
 them; **Fluent** and **Polyglot** are what a person sees. The two are separate
@@ -2675,6 +2676,47 @@ None of this introduced a `tier > 'free'` comparison. `hasFeature`,
 `tierUnlocking` and `effectivePlanTier` read the real table and were not
 touched — which is the property that let two capabilities change tier without a
 single call site moving with them.
+
+## Languages added during a gift pause for matching when it ends
+
+**18 October 2026.** _The cap is checked at write time only_, above, made the
+language ladder a limit on growing the list and nothing else: "nothing is ever
+stripped, and discovery keeps matching on whatever is stored". That is right
+for the case it was written for — a v1 account that arrived with five
+languages — and wrong for a gift. A week of Pro let somebody add four
+languages, and once it ended they were matched on all five for good, on the
+free plan. Matching on more than one language a side is part of what Pro is;
+a gift that leaves it behind is a gift that never ends.
+
+**Marked on the way in, paused on the way out.** A code added to either list
+while the account's Pro is a gift (`entitlement.store: 'gift'`) is recorded in
+`giftLanguages`. When the plan is free again, the marked ones beyond the free
+allowance are listed in `pausedLanguages`, and discovery neither searches with
+them (the viewer's side) nor finds anybody by them (every candidate's side,
+in the query). They stay on the profile, its owner still sees them, and they
+count again the moment the account holds Pro — any Pro, bought or given.
+
+**Never below the free allowance.** Somebody who swapped the language they
+joined with for one they added during the gift keeps that one: gift languages
+fill whatever room the unmarked ones leave, in the order the person set, and
+only the rest pause (`pausedLanguageCodes`). Unmarked languages never pause,
+however many there are, so the v1 grandfathering above stands as it was, and so
+does anything added under a subscription — somebody who paid for a month and
+added a language is not the leak.
+
+**Stored, because a candidate has to be asked in the query.** "Lists French and
+French is not paused for them" is two conditions on one code, so the language
+fit is now one clause per code (at most five a side) rather than one `$in`,
+each still led by the indexed field. `pausedLanguages` changes at two moments
+only — a language edit, and an entitlement write — and both recompute it:
+`updateProfile`, and `refreshEntitlement`, which every gift's end passes
+through. Between a gift's end and the half-hourly pass that refreshes it the
+languages still match, which is the same half hour the gift's own reminders
+live with.
+
+**What changes for people on a gift today:** a language added _after this
+deploys_, while a gift runs, pauses when that gift ends. Nothing already on
+anybody's profile is marked, so nobody's current languages pause.
 
 ## Pro's translations are unlimited, under a fair-use ceiling
 
