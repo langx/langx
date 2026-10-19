@@ -208,12 +208,61 @@ account is noise.
 
 `modules/billing/notify.ts`, fired from the RevenueCat webhook.
 
-| Message                             | Fires on                                                                   | Note                                                                      |
-| ----------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| **Your payment did not go through** | `BILLING_ISSUE`, unless the period is already over                         | Access is untouched; the store will retry                                 |
-| **Your plan has ended**             | Half an hour after the fall, if the account is still free — `planEnded.ts` | An expiry under a gift or a second subscription that runs on ends nothing |
+| Message                             | Fires on                                                                        | Note                                                                      |
+| ----------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Your payment did not go through** | `BILLING_ISSUE`, unless the period is already over                              | Access is untouched; the store will retry                                 |
+| **Your plan has ended**             | Half an hour after the fall, if the account is still free — `planEnded.ts`      | An expiry under a gift or a second subscription that runs on ends nothing |
+| **Your free trial ends on {date}**  | Two days before a renewing trial's last day, in waking hours — `trialEnding.ts` | Once per trial; off until `flags.trialEndingReminder` is on               |
 
 A renewal that succeeds says nothing — the store already mails a receipt.
+
+**The trial reminder** is the one billing notice that goes out _ahead_ of the
+money rather than after it, so a free week never ends in a charge nobody saw
+coming. It is information and nothing else: the date the trial ends, the
+plan, and how to cancel in the store that sold it — the App Store's steps,
+Google Play's, the web's Settings → Subscription → Manage or cancel, or a
+general line for any other store — with one button, to `/settings/plan`, and
+a `billing` push that every build opens there. No line in it argues for
+keeping the plan (`trialEnding.test.ts` checks the words in all eight
+languages): somebody in a trial already holds Pro.
+
+It states **no amount**, because nothing the server holds has one: RevenueCat
+reports the start of a free trial at a price of zero, and its customer record
+carries no price at all. So the body says the store will charge for the plan
+they chose at the price it showed them, and the store's subscription page —
+the same place the cancel steps lead — shows the figure. Printing it would
+need the app to send the store's price string at purchase.
+
+Who and when:
+
+- **A trial that will renew.** `periodType: 'trial'` (a positive answer only)
+  and `willRenew` not false. Somebody who already cancelled has no charge
+  coming; the plan-ended letter is theirs. A sandbox or TestFlight purchase is
+  skipped, by the latest `subscriptions` row, as the webhook skips them.
+- **On the reader's calendar.** `trialReminderDay` in `packages/shared` — the
+  trial's last day where they live, less `TRIAL_REMINDER_DAYS_BEFORE` (2) — at
+  the first tick inside `NOTIFICATION_EMAIL_LOCAL_HOURS`. The paywall can name
+  that date because it computes it the same way. A trial first seen later (a
+  short one, or the switch turned on mid-trial) is told at the next waking
+  tick; nothing goes once it has ended.
+- **No switch, no age rule.** No preference is read and the marketing gap,
+  the digest and a suspension do not hold it back. A sixteen-year-old is told
+  as anybody is: the store charges their subscription like any other.
+- **Both channels that work.** The mail to a verified address
+  `emailSuppressions` does not list; the push to every device not silenced on
+  the phone. Somebody with neither is not claimed, so a phone signed in the
+  next day still gets it.
+- **Once.** `billing.trialEnding:<userId>:<UTC day the trial ends>`. A day
+  rather than the instant, because the webhook and a refresh write the same
+  expiry to different precision.
+
+**The paywall's "We'll remind you" step** may be drawn only when the reminder
+can actually reach the reader. `GET /me/quota` answers that as
+`trialReminder`: true when the switch is on and there is a granted, unsilenced
+push device or a verified, unsuppressed address (`trialReminderReaches`).
+
+Switching it on also **retires promotion nudge 5** for everybody in a trial —
+see the table below.
 
 Two things this deliberately does not do, both learned on 12 September 2026,
 when an account was told twice that it had lost a subscription it still had:
@@ -519,6 +568,11 @@ and leave the evening's real news with nowhere to go.
 **cannot be backfilled** — so nudges 5 and 6 reach only people whose trial
 began, or whose plan ended, after that deploy.
 
+Nudge 5 matches nobody while `flags.trialEndingReminder` is on. Everybody it
+could match is in a trial and so holds Pro, and nothing is sold to a person who
+holds it; what they are owed is the billing reminder above, which says when and
+how to cancel. With the switch off it runs as before.
+
 The streak repair sits under the **streak** switch, not promotions: it is
 about the streak, and hiding it behind the marketing switch would hide it
 from the people it is for. This row is the **mail**; its push is the repair
@@ -598,7 +652,8 @@ Four mechanisms, and each is in the database rather than in a caller's care.
 - **The marketing cap.** `MARKETING_MIN_GAP_DAYS` across campaigns and every
   `promo.*` pass, both channels.
 - **Quiet hours.** `NOTIFICATION_EMAIL_LOCAL_HOURS` (09–21) on the reader's
-  own clock, for everything promotional.
+  own clock, for everything promotional, and for the trial reminder — the one
+  billing notice that goes out ahead of the money, and so can wait for morning.
 - **An unverified address.** Nothing is ever sent to one — it may belong to
   somebody else.
 - **A suspension in force.** The evening letter skips the account: every

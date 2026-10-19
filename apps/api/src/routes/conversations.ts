@@ -8,6 +8,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
 import { getQuotaStatus } from '../lib/quota'
 import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
+import { trialReminderReaches } from '../modules/billing/trialEnding'
 import { assertConversationAccess } from '../modules/chat/access'
 import { listAllPhraseCards, listPhraseCards } from '../modules/chat/phraseCards'
 import { startConversation } from '../modules/chat/conversations'
@@ -70,12 +71,21 @@ export const conversationRoutes: FastifyPluginAsyncZod = async (app) => {
     // action was refused. `media` was missing here while being consumed on
     // the socket path, which left the chat screen with no way to say which
     // limit it had hit.
-    const [initiations, translations, media] = await Promise.all([
+    const [initiations, translations, media, trialReminder] = await Promise.all([
       getQuotaStatus(app.mongo.db, request.userId, tier, 'initiations'),
       getQuotaStatus(app.mongo.db, request.userId, tier, 'translations'),
       getQuotaStatus(app.mongo.db, request.userId, tier, 'media'),
+      trialReminderReaches(app.mongo.db, request.userId),
     ])
-    return reply.send({ initiations, translations, media })
+    /*
+     * `trialReminder` rides here because the paywall already reads this
+     * response, and the question is the paywall's: may its timeline say
+     * "we'll remind you"? True only when the trial reminder is switched on
+     * and something we send can reach this person — see
+     * `trialReminderReaches`. Additive; a build that does not read it draws
+     * no reminder step, which is what every build does today.
+     */
+    return reply.send({ initiations, translations, media, trialReminder })
   })
 
   /**

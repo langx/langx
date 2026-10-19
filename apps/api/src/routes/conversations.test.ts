@@ -529,6 +529,21 @@ describe('Faz 4 — starting a conversation', () => {
   })
 
   describe('GET /me/quota', () => {
+    /**
+     * The paywall's "we'll remind you" step reads this. It ships switched off,
+     * so every account answers false until the trial reminder is on — the
+     * cases with the switch on are in `billing/trialEnding.test.ts`.
+     */
+    it('says the trial reminder cannot reach anybody while it is off', async () => {
+      const viewer = await newUser('quota-trial-reminder@example.com')
+      const response = await app.inject({
+        method: 'GET',
+        url: '/me/quota',
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.json()).toMatchObject({ trialReminder: false })
+    })
+
     it('reports unlimited for Pro', async () => {
       const viewer = await newUser('quota-status-pro@example.com')
       await makePro(viewer.userId)
@@ -592,7 +607,13 @@ describe('Faz 4 — starting a conversation', () => {
         .inject({ method: 'GET', url: '/me/quota', headers: { cookie: free.cookie } })
         .then((r) => r.json<Record<string, { limit: number | null }>>())
 
-      expect(Object.keys(freeBody).sort()).toEqual(['initiations', 'media', 'translations'])
+      // The three kinds, and the paywall's one boolean beside them.
+      expect(Object.keys(freeBody).sort()).toEqual([
+        'initiations',
+        'media',
+        'translations',
+        'trialReminder',
+      ])
       expect(freeBody.media).toMatchObject({
         limit: PLAN_LIMITS.free.mediaPer24h,
         remaining: PLAN_LIMITS.free.mediaPer24h,

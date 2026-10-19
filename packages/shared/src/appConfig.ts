@@ -125,6 +125,14 @@ export const appConfigSchema = z.object({
      */
     echoFromCorrections: z.boolean(),
     /**
+     * The reminder two days before a free trial turns into a charge — a
+     * billing notice, so no switch gates it (`modules/billing/trialEnding.ts`).
+     * Starts off because it is new mail and push to people who never had it,
+     * and because on, it also retires the promotional "free week ends" nudge
+     * for everybody in a trial. Off, both behave exactly as before.
+     */
+    trialEndingReminder: z.boolean(),
+    /**
      * "Give a week, get a week": each invitee who becomes a real user earns
      * the inviter a week of Pro and gives the invitee one, in place of a month
      * for every three. Starts off because it gives away the thing the app
@@ -169,6 +177,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     streakRepairPush: false,
     discoveryReplyFirst: false,
     echoFromCorrections: false,
+    trialEndingReminder: false,
     giveAWeek: false,
     newcomerHello: false,
   },

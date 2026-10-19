@@ -112,6 +112,8 @@ export const ptBR: Localized<ServerMessages> = {
     billingFailedTitle: 'Seu pagamento não foi concluído',
     billingEndedTitle: 'Seu plano terminou',
     billingBody: 'Toque para ver seu plano.',
+    billingTrialEndingTitle: 'Seu teste grátis termina em {date}',
+    billingTrialEndingBody: 'Toque para ver seu plano e como cancelar.',
     lifetimeGiftTitle: '{plan}, para sempre 🎉',
     lifetimeGiftBody: {
       one: 'Sua {total} ficha do v1 garantiu isso.',
@@ -445,6 +447,18 @@ export const ptBR: Localized<ServerMessages> = {
         'Sua assinatura terminou e sua conta voltou ao plano gratuito. Tudo o que você criou continua lá.',
 
       planEndedButton: 'Ver os planos',
+      trialEndingTitle: 'Seu teste do LangX Pro termina em {date}',
+      trialEndingBody:
+        'Se você mantiver, a loja onde você assinou vai cobrar em {date} o plano que você escolheu, pelo preço que ela mostrou, e renová-lo até você cancelar. Cancele antes e você não paga nada; o Pro continua até {date}.',
+      trialEndingCancelAppStore:
+        'Para cancelar no iPhone ou iPad: Ajustes → seu nome → Assinaturas → LangX → Cancelar Assinatura. A Apple pede isso pelo menos um dia antes de o teste acabar.',
+      trialEndingCancelPlayStore:
+        'Para cancelar no Android: Google Play → sua foto do perfil → Pagamentos e assinaturas → Assinaturas → LangX → Cancelar assinatura.',
+      trialEndingCancelWeb:
+        'Para cancelar: LangX na web → Configurações → Assinatura → Gerenciar ou cancelar.',
+      trialEndingCancelOther:
+        'Para cancelar, abra a página de assinaturas da loja onde você assinou.',
+      trialEndingButton: 'Ver meu plano',
     },
 
     /**

@@ -1,3 +1,4 @@
+import { DEFAULT_APP_CONFIG } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
@@ -7,6 +8,7 @@ import { ensureIndexes } from '../../db/indexes'
 import type { NotificationEmailContext } from '../../email/notify'
 import { authId } from '../../lib/authId'
 import { CapturingEmailSender } from '../../testSupport/authFlow'
+import { invalidateAppConfigCache, updateAppConfig } from '../appConfig/appConfig'
 import { LoggingPushSender } from '../push/devices'
 import { claimCampaignRecipients } from './campaign'
 import { runNewsletterPass } from './newsletter'
@@ -45,9 +47,11 @@ describe('the nudges that need permission', () => {
       COLLECTIONS.referrals,
       COLLECTIONS.tokenLedger,
       COLLECTIONS.tokenAggregates,
+      COLLECTIONS.appConfig,
     ]) {
       await handle.db.collection(name).deleteMany({})
     }
+    invalidateAppConfigCache()
     email = new CapturingEmailSender()
     push = new LoggingPushSender()
     senders = {
@@ -331,6 +335,39 @@ describe('the nudges that need permission', () => {
       },
     })
     expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+  })
+
+  /**
+   * D7. With the billing reminder switched on, somebody in a trial is told the
+   * date and how to cancel by `billing/trialEnding.ts`, and is not marketed
+   * to about it: a trialist already holds Pro. Every person this nudge could
+   * match is in a trial, so it matches nobody — and the next nudge in the
+   * table still gets its turn.
+   */
+  it('markets nothing to a trialist once the trial reminder is on', async () => {
+    await updateAppConfig(handle.db, {
+      flags: { ...DEFAULT_APP_CONFIG.flags, trialEndingReminder: true },
+    })
+    invalidateAppConfigCache()
+    const trial = {
+      tier: 'pro',
+      periodType: 'trial',
+      willRenew: false,
+      expiresAt: new Date(NOW.getTime() + 1.5 * DAY),
+      updatedAt: NOW,
+    }
+    await newProfile({ avatar: true, invited: true, entitlement: trial })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+    expect(
+      await handle.db
+        .collection(COLLECTIONS.notificationLedger)
+        .countDocuments({ _id: { $regex: '^promo\\.trialEnding:' } } as never),
+    ).toBe(0)
+
+    // Somebody further down the table is still asked for what is theirs.
+    await newProfile({ avatar: true, entitlement: trial })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+    expect(subjects()[0]).toContain('Practising')
   })
 
   it('asks somebody back a week after their plan ended, once', async () => {

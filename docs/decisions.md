@@ -7285,6 +7285,7 @@ plan, the paywall says what will happen_.
 
 ## The paywall sells the free week
 
+> **Amended 18 October 2026 — see _The trial reminder is a billing notice, not a nudge_ below.**
 > **Amended 16 October 2026 — see _The paywall leads with what it charges_ below.**
 > **Amended 18 October 2026 — see _The paywall in v3: a reason per road, then the table_ below.**
 
@@ -7333,6 +7334,64 @@ never arrives with one headline and swaps to another. The picked card's radio
 dot springs, with a selection haptic; nothing else moves, and with reduced
 motion nothing moves at all. No native module was added, so it ships over the
 air.
+
+## The trial reminder is a billing notice, not a nudge
+
+_18 October 2026._ Decided on 16 October as D7 of the redesign. The entry above
+gave the timeline no reminder step because "the only reminder this app sends
+is promotion nudge 5", which reached people who had switched marketing mail on
+_and_ already cancelled, and said a transactional reminder would earn the step
+back. This is that reminder (`modules/billing/trialEnding.ts`), and it changes
+who hears what about a trial ending.
+
+**It is the third billing notice, so it has no switch.** Beside "your payment
+did not go through" and "your plan has ended", and on the same terms: it is
+about somebody's money, so no preference is read, the marketing week and the
+evening digest do not hold it back, and a sixteen-year-old is told exactly as
+an adult is — those two letters have no age rule either, because the store
+charges a minor's subscription like anybody's. What it may say is what rule 22
+allows the Billing class: the date, the plan, and how to cancel in the store
+that sold it, with one button to the plan screen and nothing that sells.
+
+**It names no amount.** The brief asked for the store's billed amount and
+period, from data the server already holds, and there is none: RevenueCat
+reports the start of a free trial at a price of zero (checked against its
+webhook and customer-record reference), and no field of ours keeps a price.
+Inventing one, or writing the price list into the copy, would be the one false
+sentence in a letter whose job is to prevent a surprise. So it says the store
+will charge for the plan they chose at the price it showed them, and points at
+the store's subscription page, which shows the figure. The way to print it is
+for the app to send the store's price string with the purchase; that is a
+client change after the paywall work in flight lands, and Behic's call.
+
+**Two days ahead, on the reader's calendar.** `TRIAL_REMINDER_DAYS_BEFORE` and
+`trialReminderDay` live in `packages/shared` so the paywall and the pass
+compute the same date: the trial's last day where the reader lives, less two,
+at the first tick in waking hours. Two days leaves a whole day to act where
+Apple takes the payment a day early. A calendar day rather than forty-eight
+hours, because a promise the paywall prints as a date has to be kept as a
+date. A trial seen late is told at the next waking tick; one that has ended is
+not told at all. It claims `billing.trialEnding` on the UTC day the trial ends,
+once per trial.
+
+**Promotion nudge 5 stops writing to trialists.** Everybody it could match is
+in a trial, holds Pro, and per rule 10 is sold nothing; its "Keep my plan"
+button was a sale to somebody who already has the plan. With the reminder on,
+the nudge matches nobody, and somebody who cancelled during the trial hears
+nothing until the plan-ended letter, then the win-back a week later under
+their promotions consent.
+
+**The paywall may say "We'll remind you" only to somebody it can reach.**
+`GET /me/quota` carries `trialReminder`: the switch is on, and there is a push
+device that registered with permission and was not silenced on the phone, or
+a verified address `emailSuppressions` does not list. Additive, so a build
+that does not read it draws what it draws today. The step itself is drawn by
+the paywall, after the paywall PR in flight merges.
+
+**It ships off.** `flags.trialEndingReminder` starts false: on, it sends mail
+and a push to people who never had either, and it retires a nudge, so turning
+it on is a decision rather than a side effect of a merge. Off, nothing about a
+trial changes.
 
 ## The paywall leads with what it charges
 
