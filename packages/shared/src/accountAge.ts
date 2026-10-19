@@ -64,20 +64,24 @@ export function accountAge(createdAt: Date, now: Date = new Date()): AccountAge 
 }
 
 /**
- * How long an account counts as new for the first-week coaching — the
- * redesign's "Correct a sentence" card on the Chats tab. Days from the
- * profile's creation.
+ * How long an account is new: the days the Me tab shows its first week's
+ * checklist instead of the numbers it does not have yet, and the Chats tab
+ * its "Correct a sentence" coach card.
+ *
+ * Seven, because the checklist is called the first week and says so. The
+ * server decides it (`/me/tokens` sends `firstWeek` only inside it), so a
+ * phone whose clock is a day out does not get a different Me from the API.
  */
 export const FIRST_WEEK_DAYS = 7
 
 /**
- * Whether an account is still in its first week.
+ * Whether an account made at `createdAt` is still in its first week at `now`.
  *
- * A future `createdAt` — a phone whose clock is fast — is new, the same
- * reading `accountAge` gives it. An unparseable one is not: every comparison
- * with `NaN` is false, and a coach card shown to somebody of unknown age is
- * the wrong way to be wrong for a two-year-old account.
+ * Elapsed time, not calendar days: "the first seven days" from the minute the
+ * account was made, whatever timezone it lives in. A `createdAt` in the future
+ * — a clock running ahead — counts as new, which is what an account made a
+ * moment ago is.
  */
-export function inFirstWeek(createdAt: Date, now: Date = new Date()): boolean {
+export function isInFirstWeek(createdAt: Date, now: Date = new Date()): boolean {
   return now.getTime() - createdAt.getTime() < FIRST_WEEK_DAYS * MS_PER_DAY
 }

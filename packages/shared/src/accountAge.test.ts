@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { FIRST_WEEK_DAYS, accountAge, inFirstWeek } from './accountAge'
+import { FIRST_WEEK_DAYS, accountAge, isInFirstWeek } from './accountAge'
 
 const NOW = new Date('2026-08-28T12:00:00Z')
 
@@ -43,19 +43,19 @@ describe('accountAge', () => {
   })
 })
 
-describe('inFirstWeek', () => {
-  it('holds for the whole first week and ends on its last minute', () => {
-    expect(inFirstWeek(NOW, NOW)).toBe(true)
-    expect(inFirstWeek(ago(FIRST_WEEK_DAYS - 1, 23), NOW)).toBe(true)
-    expect(inFirstWeek(ago(FIRST_WEEK_DAYS), NOW)).toBe(false)
-    expect(inFirstWeek(ago(400), NOW)).toBe(false)
+describe('isInFirstWeek', () => {
+  it('is new for the first seven days and not a minute after', () => {
+    expect(isInFirstWeek(NOW, NOW)).toBe(true)
+    expect(isInFirstWeek(ago(6, 23), NOW)).toBe(true)
+    expect(isInFirstWeek(ago(FIRST_WEEK_DAYS), NOW)).toBe(false)
+    expect(isInFirstWeek(ago(30), NOW)).toBe(false)
   })
 
-  it('reads a future date as new, as accountAge does', () => {
-    expect(inFirstWeek(new Date(NOW.getTime() + 60_000), NOW)).toBe(true)
+  it('counts an account from the future as new', () => {
+    expect(isInFirstWeek(new Date(NOW.getTime() + 60_000), NOW)).toBe(true)
   })
 
   it('does not call an unparseable date new', () => {
-    expect(inFirstWeek(new Date('not a date'), NOW)).toBe(false)
+    expect(isInFirstWeek(new Date('not a date'), NOW)).toBe(false)
   })
 })

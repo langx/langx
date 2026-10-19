@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
-import { inFirstWeek } from '@langx/shared'
+import { isInFirstWeek } from '@langx/shared'
 import { useFonts } from 'expo-font'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -232,7 +232,7 @@ function MemberChats() {
    * the live list, and only when Show me has a thread to open.
    */
   const tips = useTips()
-  const firstWeek = me.data ? inFirstWeek(new Date(me.data.createdAt)) : false
+  const firstWeek = me.data ? isInFirstWeek(new Date(me.data.createdAt)) : false
   const coachOn = shelf === 'all' && firstWeek && tips.settled && tips.pick('chatsCoach') === COACH
   const coachTarget = coachOn ? coachThread(items) : undefined
 
