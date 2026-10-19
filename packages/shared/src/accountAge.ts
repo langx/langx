@@ -62,3 +62,22 @@ export function accountAge(createdAt: Date, now: Date = new Date()): AccountAge 
   }
   return { unit: 'year', count: Math.floor(days / DAYS_IN_YEAR) }
 }
+
+/**
+ * How long an account counts as new for the first-week coaching — the
+ * redesign's "Correct a sentence" card on the Chats tab. Days from the
+ * profile's creation.
+ */
+export const FIRST_WEEK_DAYS = 7
+
+/**
+ * Whether an account is still in its first week.
+ *
+ * A future `createdAt` — a phone whose clock is fast — is new, the same
+ * reading `accountAge` gives it. An unparseable one is not: every comparison
+ * with `NaN` is false, and a coach card shown to somebody of unknown age is
+ * the wrong way to be wrong for a two-year-old account.
+ */
+export function inFirstWeek(createdAt: Date, now: Date = new Date()): boolean {
+  return now.getTime() - createdAt.getTime() < FIRST_WEEK_DAYS * MS_PER_DAY
+}

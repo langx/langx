@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { accountAge } from './accountAge'
+import { FIRST_WEEK_DAYS, accountAge, inFirstWeek } from './accountAge'
 
 const NOW = new Date('2026-08-28T12:00:00Z')
 
@@ -40,5 +40,22 @@ describe('accountAge', () => {
   it('widens to years, singular at one', () => {
     expect(accountAge(ago(365), NOW)).toEqual({ unit: 'year', count: 1 })
     expect(accountAge(ago(900), NOW)).toEqual({ unit: 'year', count: 2 })
+  })
+})
+
+describe('inFirstWeek', () => {
+  it('holds for the whole first week and ends on its last minute', () => {
+    expect(inFirstWeek(NOW, NOW)).toBe(true)
+    expect(inFirstWeek(ago(FIRST_WEEK_DAYS - 1, 23), NOW)).toBe(true)
+    expect(inFirstWeek(ago(FIRST_WEEK_DAYS), NOW)).toBe(false)
+    expect(inFirstWeek(ago(400), NOW)).toBe(false)
+  })
+
+  it('reads a future date as new, as accountAge does', () => {
+    expect(inFirstWeek(new Date(NOW.getTime() + 60_000), NOW)).toBe(true)
+  })
+
+  it('does not call an unparseable date new', () => {
+    expect(inFirstWeek(new Date('not a date'), NOW)).toBe(false)
   })
 })

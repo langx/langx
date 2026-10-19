@@ -162,6 +162,7 @@ export const tr: Localized<EnMessages> = {
     playFailed: 'Bu video bu cihazda oynatılamıyor.',
   },
   tips: {
+    chatsCoachCorrect: 'Herhangi bir mesaja basılı tut, sonra Düzelt’e dokun.',
     composerCorrect: 'Düzeltmek için mesaja basılı tut',
     composerReply: 'Yanıtlamak için mesajı kaydır',
     composerStar: 'Yıldızlamak veya çevirmek için basılı tut',
@@ -1106,6 +1107,14 @@ export const tr: Localized<EnMessages> = {
     goToDiscover: 'Keşfet’e git',
     youPrefix: 'Sen:',
     starredMessages: 'Yıldızlı mesajlar',
+    coachCorrectTitle: 'Bir cümleyi düzelt',
+    coachShowMe: 'Göster',
+    waitingTitle: 'Seni bekleyenler',
+    othersTitle: 'Diğer sohbetler',
+    emptyLine: 'Henüz sohbet yok. Kişiler sekmesinde birini bul ve merhaba de.',
+    findSomeone: 'Birini bul',
+    archivedChats: 'Arşivlenen sohbetler',
+    backToChats: 'Sohbetlere dön',
   },
 
   presence: {
