@@ -1251,6 +1251,14 @@ export const ru: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Местное время {time}.',
   },
   chat: {
+    firstReplyTitle: 'Ответ от {name}',
+    firstReplyBody: {
+      one: 'Ответы бесплатны на любом тарифе. {plan} снимает ограничение в {count} новый чат в день.',
+      few: 'Ответы бесплатны на любом тарифе. {plan} снимает ограничение в {count} новых чата в день.',
+      many: 'Ответы бесплатны на любом тарифе. {plan} снимает ограничение в {count} новых чатов в день.',
+      other:
+        'Ответы бесплатны на любом тарифе. {plan} снимает ограничение в {count} новых чата в день.',
+    },
     channelOnly: 'Этот аккаунт публикует новости и объявления. Ответить сюда нельзя.',
     suspendedOnly: 'Этот аккаунт заблокирован. Отправить ему сообщение нельзя.',
     sendingAttachment: 'Отправка…',
@@ -1411,6 +1419,7 @@ export const ru: Localized<EnMessages> = {
     wordTranslationFailed: 'Сейчас не удалось перевести это слово.',
     wordSeePlans: 'Посмотреть тарифы',
     sayHello: 'Поздоровайся с {name}…',
+    newcomerHelloFree: 'Недавно в LangX — это приветствие не засчитывается в твои новые чаты.',
     topicsShuffle: 'Другие темы',
     topicChip: 'Тема для разговора: {topic}',
     topics: {
@@ -1826,6 +1835,8 @@ export const ru: Localized<EnMessages> = {
 
   profile: {
     proBadge: 'Участник Pro',
+    proSheetTitle: 'Что такое {plan}?',
+    proSheetBody: '{name} пользуется {plan}. Вот что он добавляет к бесплатному тарифу:',
     official: 'Официальный аккаунт',
     suspendedTag: 'Заблокирован',
     deletedTag: 'Аккаунт удалён',

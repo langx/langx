@@ -208,12 +208,61 @@ account is noise.
 
 `modules/billing/notify.ts`, fired from the RevenueCat webhook.
 
-| Message                             | Fires on                                                                   | Note                                                                      |
-| ----------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| **Your payment did not go through** | `BILLING_ISSUE`, unless the period is already over                         | Access is untouched; the store will retry                                 |
-| **Your plan has ended**             | Half an hour after the fall, if the account is still free — `planEnded.ts` | An expiry under a gift or a second subscription that runs on ends nothing |
+| Message                             | Fires on                                                                        | Note                                                                      |
+| ----------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Your payment did not go through** | `BILLING_ISSUE`, unless the period is already over                              | Access is untouched; the store will retry                                 |
+| **Your plan has ended**             | Half an hour after the fall, if the account is still free — `planEnded.ts`      | An expiry under a gift or a second subscription that runs on ends nothing |
+| **Your free trial ends on {date}**  | Two days before a renewing trial's last day, in waking hours — `trialEnding.ts` | Once per trial; off until `flags.trialEndingReminder` is on               |
 
 A renewal that succeeds says nothing — the store already mails a receipt.
+
+**The trial reminder** is the one billing notice that goes out _ahead_ of the
+money rather than after it, so a free week never ends in a charge nobody saw
+coming. It is information and nothing else: the date the trial ends, the
+plan, and how to cancel in the store that sold it — the App Store's steps,
+Google Play's, the web's Settings → Subscription → Manage or cancel, or a
+general line for any other store — with one button, to `/settings/plan`, and
+a `billing` push that every build opens there. No line in it argues for
+keeping the plan (`trialEnding.test.ts` checks the words in all eight
+languages): somebody in a trial already holds Pro.
+
+It states **no amount**, because nothing the server holds has one: RevenueCat
+reports the start of a free trial at a price of zero, and its customer record
+carries no price at all. So the body says the store will charge for the plan
+they chose at the price it showed them, and the store's subscription page —
+the same place the cancel steps lead — shows the figure. Printing it would
+need the app to send the store's price string at purchase.
+
+Who and when:
+
+- **A trial that will renew.** `periodType: 'trial'` (a positive answer only)
+  and `willRenew` not false. Somebody who already cancelled has no charge
+  coming; the plan-ended letter is theirs. A sandbox or TestFlight purchase is
+  skipped, by the latest `subscriptions` row, as the webhook skips them.
+- **On the reader's calendar.** `trialReminderDay` in `packages/shared` — the
+  trial's last day where they live, less `TRIAL_REMINDER_DAYS_BEFORE` (2) — at
+  the first tick inside `NOTIFICATION_EMAIL_LOCAL_HOURS`. The paywall can name
+  that date because it computes it the same way. A trial first seen later (a
+  short one, or the switch turned on mid-trial) is told at the next waking
+  tick; nothing goes once it has ended.
+- **No switch, no age rule.** No preference is read and the marketing gap,
+  the digest and a suspension do not hold it back. A sixteen-year-old is told
+  as anybody is: the store charges their subscription like any other.
+- **Both channels that work.** The mail to a verified address
+  `emailSuppressions` does not list; the push to every device not silenced on
+  the phone. Somebody with neither is not claimed, so a phone signed in the
+  next day still gets it.
+- **Once.** `billing.trialEnding:<userId>:<UTC day the trial ends>`. A day
+  rather than the instant, because the webhook and a refresh write the same
+  expiry to different precision.
+
+**The paywall's "We'll remind you" step** may be drawn only when the reminder
+can actually reach the reader. `GET /me/quota` answers that as
+`trialReminder`: true when the switch is on and there is a granted, unsilenced
+push device or a verified, unsuppressed address (`trialReminderReaches`).
+
+Switching it on also **retires promotion nudge 5** for everybody in a trial —
+see the table below.
 
 Two things this deliberately does not do, both learned on 12 September 2026,
 when an account was told twice that it had lost a subscription it still had:
@@ -346,10 +395,15 @@ every one claims a row in `notificationLedger` before it sends.
 | **A correction, answer or comment on your post** | `social`        | on the reply       | one per post per **hour**                         |
 | **A reply to your comment**                      | `social`        | on the reply       | one per **thread** per hour                       |
 | **Somebody wrote a review on your profile**      | `social`        | on the first write | one per author, **ever**; an edit never           |
-| **Your posts' likes**                            | `social`        | daily batch        | UTC day, and not if the bell's rows are read      |
+| **Your posts' likes**                            | `social`        | daily batch¹       | UTC day¹, and not if the bell's rows are read     |
 | **Yesterday's pool paid you N tokens**           | `wallet`        | 09:00 local        | pool day, and not if the bell's row is read       |
 | **Your hourly gift is ready**                    | `wallet`        | waking hours       | UTC day, and only if they have taken one before   |
 | **Cards are due in Echo**                        | `echo`          | 19:00 local        | local day, and only if nothing was reviewed today |
+
+¹ With `flags.nudgeNoSilentDrops` on, at 15:00 on the author's own clock
+(`LIKES_ROUND_UP_LOCAL_HOUR`, three hours from the visits and three from the
+badges) and claimed under their local day. Off, at the first tick that finds a
+like in the last day — just after midnight UTC, the small hours east of it.
 
 **The two streak pushes.** The reminder says what keeps a streak: opening the
 app, which checks the day in — "Open LangX today to keep it going." It used to
@@ -475,7 +529,9 @@ badge push was for the people who had already come back.
   thread's `commentId` beside `postId`; every build opens the post from the
   second.
 - **Likes are a daily batch, never an event.** A like is the cheapest thing
-  anybody can do here.
+  anybody can do here. With `flags.nudgeNoSilentDrops` on the batch also keeps
+  to one afternoon hour on the author's clock, rather than whenever the day's
+  first like was found.
 - **One follow notice per follower, ever.** Unfollowing and following again
   is not news.
 - **One review notice per author, ever.** Only the first write of a review
@@ -507,10 +563,10 @@ and leave the evening's real news with nowhere to go.
 | --- | --------------------------------------- | ----------------------------------------------------- | ---------- |
 | 1   | Add a photo, and people will find you   | no `avatarUrl`, account > 48 h                        | promotions |
 | 2   | Your streak broke — repair it           | `streakRepairDay`: broke **yesterday**, repairable    | **streak** |
-| 3   | People are still practising without you | `lastActiveAt` 7–8 days ago                           | promotions |
-| 4   | We will stop writing after this         | `lastActiveAt` 30–31 days ago                         | promotions |
+| 3   | People are still practising without you | `lastActiveAt` 7–8 days ago (7–15 with the switch)    | promotions |
+| 4   | We will stop writing after this         | `lastActiveAt` 30–31 days ago (30–38)                 | promotions |
 | 5   | Your free week ends in two days         | `periodType: trial`, not renewing, ends within 2 days | promotions |
-| 6   | Your plan ended a week ago              | `churnedFrom` 7–8 days ago, still on free             | promotions |
+| 6   | Your plan ended a week ago              | `churnedFrom` 7–8 days ago (7–15), still on free      | promotions |
 | 7   | You are running into the free limits    | refused 3 times in 3 days, still on free              | promotions |
 | 8   | You have N tokens waiting               | balance ≥ 200, nothing spent in a fortnight           | promotions |
 | 9   | Invite a friend                         | 14 days old, active, has invited nobody               | promotions |
@@ -518,6 +574,54 @@ and leave the evening's real news with nowhere to go.
 `periodType` and `churnedFrom` are written from 10 September 2026 onward and
 **cannot be backfilled** — so nudges 5 and 6 reach only people whose trial
 began, or whose plan ended, after that deploy.
+
+Nudge 5 matches nobody while `flags.trialEndingReminder` is on. Everybody it
+could match is in a trial and so holds Pro, and nothing is sold to a person who
+holds it; what they are owed is the billing reminder above, which says when and
+how to cancel. With the switch off it runs as before.
+
+**The order above is the order with `flags.nudgeNoSilentDrops` on.** Off, the
+code still walks _You have N tokens waiting_ fifth, between the month away and
+the trial — which is the first of four ways a nudge somebody qualified for
+could vanish without a trace, all four of which the switch closes:
+
+- **A nudge already said held the evening.** The pass claimed the day's
+  marketing slot before the nudge's own key, so a nudge that stays true after
+  it is sent — no photo yet, tokens still unspent this month — took the slot,
+  found its key spent, sent nothing, and the slot restarted the week's gap.
+  Everything below it in the table waited for as long as it stayed true. With
+  the switch on a nudge already said this period is passed over, and the next
+  one has the evening.
+- **One-day windows inside a seven-day gap.** Nudges 3, 4 and 6 were true for a
+  single evening, and a nudge whose evening fell inside the gap, or on a night
+  the digest went, had closed before it could be said. With the switch on they
+  stay open for `MARKETING_MIN_GAP_DAYS` and a day more, so they are said late
+  rather than never — still once, under the same period keys.
+- **Idle tokens above money.** It is true for weeks; the win-back for its
+  window and the trial for two days. Above them it took the slot and the gap
+  outlasted them. With the switch on the money nudges come first, as listed.
+  `promotions.test.ts` pins both orders.
+- **The likes batch at any hour.** See _Your posts' likes_ above: with the
+  switch on it waits for 15:00 on the author's clock.
+
+Who may be told does not change: promotions consent, the gap, the 20:00 hour
+and the evening letter decide exactly as before, and nobody under eighteen is
+treated differently from today (the table has never had an age rule; the
+streak repair push does). What changes is that more of what consenting people
+already qualify for reaches them, which is why it starts off.
+
+One thing the switch takes away rather than adds: past thirty days away,
+nudge 4 is the only one left. It promises "this is the last we will say about
+it", and with the win-back's window eight days wide and a spent photo nudge no
+longer holding the evening, a plan that ended while somebody was away would
+otherwise be sold to them after it. The match suggestions stop at the same
+point for the same reason.
+
+**Held back, counted.** Whatever stops somebody's first eligible nudge on the
+evening is logged once per pass as a count per nudge and reason — `digest`,
+`gap`, `slot`, or `said` — with no id or address in it: `promotions held back`,
+`{ held: { 'promo.away7:gap': 3 } }`. A nudge that keeps being held shows up as
+a number instead of as nothing. The count is taken with the switch off too.
 
 The streak repair sits under the **streak** switch, not promotions: it is
 about the streak, and hiding it behind the marketing switch would hide it
@@ -598,7 +702,8 @@ Four mechanisms, and each is in the database rather than in a caller's care.
 - **The marketing cap.** `MARKETING_MIN_GAP_DAYS` across campaigns and every
   `promo.*` pass, both channels.
 - **Quiet hours.** `NOTIFICATION_EMAIL_LOCAL_HOURS` (09–21) on the reader's
-  own clock, for everything promotional.
+  own clock, for everything promotional, and for the trial reminder — the one
+  billing notice that goes out ahead of the money, and so can wait for morning.
 - **An unverified address.** Nothing is ever sent to one — it may belong to
   somebody else.
 - **A suspension in force.** The evening letter skips the account: every

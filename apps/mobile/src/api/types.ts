@@ -124,6 +124,13 @@ export interface PublicProfileDto {
    */
   acceptsNewChats?: false
   /**
+   * Present, and true, when a first message from you to them would not count
+   * against your new chats — they are new on LangX. About you as well as
+   * them, like `conversationId`. A hint for the line over the first
+   * message's composer; the server decides again when it is sent.
+   */
+  freeHello?: true
+  /**
    * Whether this account is still one. `suspended` and `deleted` open as a
    * profile with a tag rather than a 404, so somebody arriving from an old
    * conversation is told what happened — see `toPublicProfile`. Optional

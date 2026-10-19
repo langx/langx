@@ -141,6 +141,17 @@ export const INDEXES: Partial<IndexSpec> = {
       partialFilterExpression: { quotaRefusals: { $exists: true } },
     },
     /*
+     * "Whose free trial ends in the next few days?" — the trial reminder's
+     * half-hourly question (`billing/trialEnding.ts`). Partial on the trial,
+     * so it holds the handful of people in one rather than an entry per
+     * subscriber, and the range over `expiresAt` is then a short walk.
+     */
+    {
+      key: { 'entitlement.expiresAt': 1 },
+      name: 'trial_expires',
+      partialFilterExpression: { 'entitlement.periodType': 'trial' },
+    },
+    /*
      * "How many people joined today?" — the number the operator dashboard is
      * opened for, and until this existed the only way to answer it was a
      * collection scan. Nothing in `profiles` led with `createdAt`: the text

@@ -63,6 +63,8 @@ export type NotificationJob =
   | 'suspensionEnded'
   /** Once per fall, keyed by `churnedFrom.at` rather than by a day. */
   | 'billing.planEnded'
+  /** Once per trial, keyed by the UTC day the trial ends. */
+  | 'billing.trialEnding'
   /** A promotional pass. The prefix is what `recentlyMarketed` scans for. */
   | `promo.${string}`
 

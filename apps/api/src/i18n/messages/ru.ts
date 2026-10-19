@@ -125,6 +125,8 @@ export const ru: Localized<ServerMessages> = {
     billingFailedTitle: 'Платёж не прошёл',
     billingEndedTitle: 'Ваш тариф закончился',
     billingBody: 'Нажмите, чтобы проверить тариф.',
+    billingTrialEndingTitle: 'Бесплатный пробный период закончится {date}',
+    billingTrialEndingBody: 'Нажмите, чтобы посмотреть тариф и как отменить подписку.',
     lifetimeGiftTitle: '{plan} — навсегда 🎉',
     lifetimeGiftBody: {
       one: 'Это заслужил ваш {total} токен из v1.',
@@ -459,6 +461,18 @@ export const ru: Localized<ServerMessages> = {
         'Подписка закончилась, и аккаунт вернулся на бесплатный тариф. Всё, что вы создали, на месте.',
 
       planEndedButton: 'Посмотреть тарифы',
+      trialEndingTitle: 'Пробный период LangX Pro закончится {date}',
+      trialEndingBody:
+        'Если вы его не отмените, магазин, в котором вы оформили подписку, {date} спишет оплату за выбранный тариф по цене, которую он вам показал, и будет продлевать подписку, пока вы её не отмените. Отмените раньше — и ничего не заплатите; Pro останется до {date}.',
+      trialEndingCancelAppStore:
+        'Чтобы отменить на iPhone или iPad: Настройки → ваше имя → Подписки → LangX → Отменить подписку. Apple просит сделать это минимум за день до конца пробного периода.',
+      trialEndingCancelPlayStore:
+        'Чтобы отменить на Android: Google Play → значок профиля → Платежи и подписки → Подписки → LangX → Отменить подписку.',
+      trialEndingCancelWeb:
+        'Чтобы отменить: LangX в браузере → Настройки → Подписка → Управлять или отменить.',
+      trialEndingCancelOther:
+        'Чтобы отменить, откройте страницу подписок в магазине, где вы её оформили.',
+      trialEndingButton: 'Посмотреть тариф',
     },
 
     /**

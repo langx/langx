@@ -1157,6 +1157,12 @@ export const fr: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Heure locale {time}.',
   },
   chat: {
+    firstReplyTitle: '{name} t’a répondu',
+    firstReplyBody: {
+      one: 'Les réponses restent gratuites avec tous les forfaits. {plan} supprime la limite de {count} nouvelle discussion par jour.',
+      other:
+        'Les réponses restent gratuites avec tous les forfaits. {plan} supprime la limite de {count} nouvelles discussions par jour.',
+    },
     channelOnly: 'Ce compte publie des nouveautés et des annonces. Tu ne peux pas y répondre.',
     suspendedOnly: 'Ce compte est suspendu. Tu ne peux pas lui envoyer de messages.',
     sendingAttachment: 'Envoi…',
@@ -1313,6 +1319,8 @@ export const fr: Localized<EnMessages> = {
     wordTranslationFailed: 'Impossible de traduire ce mot pour le moment.',
     wordSeePlans: 'Voir les formules',
     sayHello: 'Dis bonjour à {name}…',
+    newcomerHelloFree:
+      'Vient d’arriver sur LangX : ce bonjour ne compte pas dans tes nouvelles discussions.',
     topicsShuffle: 'Autres sujets',
     topicChip: 'Idée de conversation : {topic}',
     topics: {
@@ -1682,6 +1690,8 @@ export const fr: Localized<EnMessages> = {
 
   profile: {
     proBadge: 'Membre Pro',
+    proSheetTitle: 'Qu’est-ce que {plan} ?',
+    proSheetBody: '{name} a {plan}. Voici ce que ça ajoute au forfait gratuit :',
     official: 'Compte officiel',
     suspendedTag: 'Suspendu',
     deletedTag: 'Compte supprimé',

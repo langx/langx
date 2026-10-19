@@ -165,11 +165,84 @@ requests: exactly `limit` of them come back `consumed: true`.
 
 ## Phase 4 — `CONVERSATION_EXISTS` has two layers
 
+> **Amended 18 October 2026 — see _A hello to a newcomer is free, behind a switch_ below.**
+
 `POST /conversations` first does a cheap `pairKey` pre-check, so a client
 retrying against an existing conversation is refused without spending quota,
 then relies on the real unique index for the genuine race (both sides sending a
 first message at the same instant). The loser of that rare race does not get
 their quota slot refunded — not worth an extra round-trip on every request.
+
+## A hello to a newcomer is free, behind a switch
+
+**18 October 2026.** Bold move M3's newcomer hello (D12f), which Behic agreed
+to on 18 October, built switched off: `flags.newcomerHello` in `appConfig`,
+default false, thrown with `scripts/maintenance.ts flag newcomerHello true`.
+Off, every first message counts exactly as the two entries above say. On, it
+changes what they count: not every first message is one of the five new
+chats.
+
+A newcomer's first week is decided by whether anybody writes to them, and the
+person most likely to write to a stranger is the one who has already spent
+the day's allowance doing it. So the first message somebody sends to an
+account in its first `NEWCOMER_HELLO_RULES.newForDays` (7) does not count
+against their `initiationsPer24h`.
+
+**What has to be true, all of it:**
+
+- **Once per recipient, per sender.** The conversation's `pairKey` already
+  allows one, and the claim below checks it again on its own record.
+- **At most `NEWCOMER_HELLO_RULES.perSenderPer24h` (3) a rolling day.** An
+  abuse ceiling, not an allowance: past it a hello to a newcomer counts like
+  any other first message, so the ceiling never refuses anything by itself.
+- **Adults at both ends**, by the exact birthday (`isAdult`), the rule the
+  "New on LangX" strip keeps: never for a 16- or 17-year-old recipient, never
+  from one. A minor's first messages count exactly as they always have.
+- **Never a guest**, at either end.
+- **The recipient is findable**: discoverable today, not suspended, not
+  deleting, not taking only people they already talk to. Every refusal
+  `startConversation` makes — a block either way, a suspension, a thread that
+  exists, "only people I talk to" — is made before the hello is asked, so it
+  only ever decides which bucket pays for a start that was already allowed.
+- **A finite allowance.** Pro's `initiationsPer24h` is null; there is nothing
+  to spare there and nothing is written.
+
+**One conditional write, in the function that charges today.**
+`profiles.newcomerHellos` holds `{ to, at }` per hello, and a single
+`findOneAndUpdate` on the sender's profile appends one only if its filter
+still sees room under the ceiling and no entry for this recipient — the
+decrement entry above, with two conditions instead of one. The same write
+prunes what is older than a newcomer can be, so the array holds at most a
+week of the ceiling. No collection, no index. It lives in `startConversation`,
+which is the only way a conversation starts: there is no socket path, and the
+official accounts' `deliverOfficialMessage` never comes through it.
+
+**A failed start gives the hello back**, the exact entry by recipient and
+instant. That is the one thing this changes about the entry above: the
+new-chat slot a lost race spends stays spent, as before, but a free hello does
+not, because the ceiling is small enough that one lost is a real share of it.
+What stays as it was: two starts racing to the same newcomer give the hello to
+one, and the other pays a new chat and then loses the pair race — the cost
+the entry above already accepts.
+
+**The app is told, not asked.** `GET /profiles/:id` carries `freeHello: true`
+when a first message from this viewer would be one, computed by the same pure
+check the charge uses, and the "say hello" screen draws one line above the
+composer: "New on LangX — this hello won’t count toward your new chats." A
+refusal still opens the paywall, so a stale hint costs nothing but the line.
+Old builds drop the field; their hello simply goes through where it would have
+opened the paywall.
+
+**The website stays true.** "5 new conversations a day" is what the free plan
+gives, and with the switch on it still gives that; a sentence that calls 5 a
+cap becomes inexact the day the switch is thrown, and the PR that built this
+lists them. One of them is the Terms (§5 lists "starting new conversations: 5
+per rolling 24 hours" as a free-plan limit), so throwing the switch is also a
+decision about that sentence.
+
+Reverting is the switch. Deleting it is the flag, `chat/newcomerHello.ts` and
+its call in `startConversation`, the profile route's `freeHello` and the line
+on `chat/new`; `newcomerHellos` can be unset.
 
 ## Phase 5 — one room per user, not per conversation
 
@@ -4694,6 +4767,7 @@ a bad minute must not turn that into an error page.
 ## Six nudges, one pass, one at a time
 
 > **Amended 18 October 2026 — see _The streak repair push leaves the table, and both streak pushes say the rule_ below.**
+> **Amended 18 October 2026 — see _The nudge table stops dropping what it owes, behind a switch_ below.**
 
 The remarketing scenarios could each have been a pass, the way the digest and
 the visit round-up are. They are not, and the reason is arithmetic: the
@@ -4774,6 +4848,73 @@ Switched on, it skips readers under eighteen (`STREAK_REPAIR_PUSH_MIN_AGE`,
 by `ageFromBirthDate`) and readers with no birth date, the default the EU's
 guidance on minors asks for streak pushes. Placeholder birth dates read as
 adults, which is a limit of the data rather than of the rule.
+
+## The nudge table stops dropping what it owes, behind a switch
+
+_18 October 2026._ This changes the entry two above, _Six nudges, one pass,
+one at a time_, in one claim: "somebody who qualifies for three hears one, and
+hears the second only if it is still true next week". In the code, the second
+often never came, and nothing recorded that it had been owed. Four ways, all
+closed by `flags.nudgeNoSilentDrops`:
+
+**A nudge already said held the evening.** The pass claims the day's
+marketing slot before the nudge's own key, which is right for the race it was
+written against. But a nudge that stays true after it is sent — no photo yet,
+tokens still unspent this month — matched again every week, took the slot,
+found its own key spent and sent nothing, and the slot, being a `promo.` row,
+restarted the week's gap. Everything below it in the table waited for as long
+as it stayed true. With the switch on, a nudge already said this period is
+passed over and the next one has the evening.
+
+**One-day windows inside a seven-day gap.** "Away seven days", "away thirty
+days" and "a plan that ended a week ago" were each true for one evening. If
+that evening fell inside the gap, or the digest went that night, the window
+had closed before the nudge could be said. They now stay open for
+`MARKETING_MIN_GAP_DAYS` and a day more: said late rather than never, and
+still once, because the period keys are unchanged.
+
+**Idle tokens above money.** The table walked "you have N tokens waiting"
+fifth — the catalogue in `notifications.md` already listed it eighth. It is
+true for weeks, while the win-back is true for its window and the trial for
+two days. Above them it took the slot and the gap outlasted them. The money
+nudges now come first, and `promotions.test.ts` pins both orders, so a
+reordering is a test change somebody has to mean.
+
+**The likes batch at any hour.** It went at the first tick that found a like
+in the last day, which is just after midnight UTC — three in the morning in
+Istanbul. It now waits for `LIKES_ROUND_UP_LOCAL_HOUR`, 15:00 on the author's
+clock: three hours from the visits round-up and three from the badges. It
+claims the author's local day, which has the same shape as the UTC day it
+replaces, so the day the switch is thrown sends no batch twice.
+
+**Who may be told is unchanged.** Promotions consent, the week's gap, the
+20:00 hour and the evening letter decide exactly as before. Nobody under
+eighteen is treated differently: the table has never had an age rule, and
+this adds none and removes none. Two things a reader might expect here are
+deliberately not changed. A person with promotions push on and mail off is
+still never a candidate, although the entry two above says the push "is not
+gated on the mail". Making them one would widen the audience, which is a
+consent decision. And the quota nudge still needs three refusals in the last
+three days, because `quotaRefusals` keeps no more than that.
+
+**Past the month away, only the farewell.** `promo.away30` says "this is the
+last we will say about it", and before the switch nothing else could follow
+it except by landing on a one-day window. With the win-back open for eight
+days and a spent photo nudge no longer holding the evening, a plan that ended
+while somebody was away would be sold to them after that letter. So with the
+switch on, somebody whose last visit was thirty days ago or more is offered
+nothing but the farewell, as `MATCH_SUGGESTIONS.maxAwayDays` already stops the
+suggestions there.
+
+**Held back, counted.** Whatever stops somebody's first eligible nudge on the
+evening — the digest, the gap, a lost slot, a nudge already said — is logged
+once per pass as a count per nudge and reason, with no id or address in it.
+That holds with the switch off too, so the size of what the switch would
+release can be read before it is thrown.
+
+**It ships off.** On, more of what consenting people already qualify for
+reaches them. That is more marketing mail and push, so it is a decision rather
+than a merge.
 
 ## The newsletter is monthly, and its editorial half is a pull request
 
@@ -7267,6 +7408,7 @@ plan, the paywall says what will happen_.
 
 ## The paywall sells the free week
 
+> **Amended 18 October 2026 — see _The trial reminder is a billing notice, not a nudge_ below.**
 > **Amended 16 October 2026 — see _The paywall leads with what it charges_ below.**
 > **Amended 18 October 2026 — see _The paywall in v3: a reason per road, then the table_ below.**
 
@@ -7315,6 +7457,64 @@ never arrives with one headline and swaps to another. The picked card's radio
 dot springs, with a selection haptic; nothing else moves, and with reduced
 motion nothing moves at all. No native module was added, so it ships over the
 air.
+
+## The trial reminder is a billing notice, not a nudge
+
+_18 October 2026._ Decided on 16 October as D7 of the redesign. The entry above
+gave the timeline no reminder step because "the only reminder this app sends
+is promotion nudge 5", which reached people who had switched marketing mail on
+_and_ already cancelled, and said a transactional reminder would earn the step
+back. This is that reminder (`modules/billing/trialEnding.ts`), and it changes
+who hears what about a trial ending.
+
+**It is the third billing notice, so it has no switch.** Beside "your payment
+did not go through" and "your plan has ended", and on the same terms: it is
+about somebody's money, so no preference is read, the marketing week and the
+evening digest do not hold it back, and a sixteen-year-old is told exactly as
+an adult is — those two letters have no age rule either, because the store
+charges a minor's subscription like anybody's. What it may say is what rule 22
+allows the Billing class: the date, the plan, and how to cancel in the store
+that sold it, with one button to the plan screen and nothing that sells.
+
+**It names no amount.** The brief asked for the store's billed amount and
+period, from data the server already holds, and there is none: RevenueCat
+reports the start of a free trial at a price of zero (checked against its
+webhook and customer-record reference), and no field of ours keeps a price.
+Inventing one, or writing the price list into the copy, would be the one false
+sentence in a letter whose job is to prevent a surprise. So it says the store
+will charge for the plan they chose at the price it showed them, and points at
+the store's subscription page, which shows the figure. The way to print it is
+for the app to send the store's price string with the purchase; that is a
+client change after the paywall work in flight lands, and Behic's call.
+
+**Two days ahead, on the reader's calendar.** `TRIAL_REMINDER_DAYS_BEFORE` and
+`trialReminderDay` live in `packages/shared` so the paywall and the pass
+compute the same date: the trial's last day where the reader lives, less two,
+at the first tick in waking hours. Two days leaves a whole day to act where
+Apple takes the payment a day early. A calendar day rather than forty-eight
+hours, because a promise the paywall prints as a date has to be kept as a
+date. A trial seen late is told at the next waking tick; one that has ended is
+not told at all. It claims `billing.trialEnding` on the UTC day the trial ends,
+once per trial.
+
+**Promotion nudge 5 stops writing to trialists.** Everybody it could match is
+in a trial, holds Pro, and per rule 10 is sold nothing; its "Keep my plan"
+button was a sale to somebody who already has the plan. With the reminder on,
+the nudge matches nobody, and somebody who cancelled during the trial hears
+nothing until the plan-ended letter, then the win-back a week later under
+their promotions consent.
+
+**The paywall may say "We'll remind you" only to somebody it can reach.**
+`GET /me/quota` carries `trialReminder`: the switch is on, and there is a push
+device that registered with permission and was not silenced on the phone, or
+a verified address `emailSuppressions` does not list. Additive, so a build
+that does not read it draws what it draws today. The step itself is drawn by
+the paywall, after the paywall PR in flight merges.
+
+**It ships off.** `flags.trialEndingReminder` starts false: on, it sends mail
+and a push to people who never had either, and it retires a nudge, so turning
+it on is a decision rather than a side effect of a merge. Off, nothing about a
+trial changes.
 
 ## The paywall leads with what it charges
 
@@ -7438,6 +7638,66 @@ the trial's terms in one line directly above it, the charge set strong; yearly
 picked on open; the dated timeline; the X closes in one tap and nothing
 intercepts back or the swipe; nothing is sold to a paid or lifetime plan; every
 event in _The paywall counts every way out_.
+
+## The roads to Pro that are not a gate
+
+**18 October 2026.** Four ways into the paywall that no refusal opens, each
+with its own `source` in `PAYWALL_SOURCES` and one rule in `proRoads.ts`, whose
+test walks every plan through every road: nothing is sold to an account that
+already holds Pro, and nothing is sold before the viewer's own profile has
+loaded, because until then every account reads as free.
+
+**Settings and the app-icon picker get their own sources.** "See the plans" in
+Settings → Subscription is `settings` and a tile in the app-icon picker is
+`app_icon`; both were sent as `me`, so the Me card's numbers included them. The
+row keeps its rule: the free plan's and a gift's, never a paid or lifetime
+plan's — a gift ends on a date, and subscribing on top is how Pro carries on
+after it, from a paywall the holder opens themselves. A search for the row from
+Pro lands on the plan page, never on the paywall. An icon tile does nothing
+until the profile has loaded, so a subscriber's tap never lands on a sale.
+
+**The PRO badge on a profile opens "What's Pro?"** It was a mark nobody could
+ask about. The sheet lists the paywall's comparison lead with its numbers from
+`PLAN_LIMITS`, through the paywall's own copy so the two cannot describe Pro
+differently, and the paywall's promise that replies and corrections stay free,
+because a badge beside a name must not read as the price of talking to that
+person. Only the end differs: a free account gets one button (`pro_badge`); an
+account holding Pro — paid, gifted or lifetime — is told "Everything in Pro is
+yours"; a guest, and an owner on their own page, get neither.
+
+**The first reply waits until it has been answered.** `first_reply` was
+declared and never sent. It is now a card at the foot of the thread — inline,
+not a sheet, a toast or anything that takes focus — in a thread the viewer
+opened, after the partner wrote back _and the viewer has answered them_. A
+reply after a first hello is the moment this app exists for, and a card that
+arrived with it would stand between somebody and their answer; one that waits
+is read in the pause after. It says first that replies stay free, then that Pro
+removes the daily limit on new chats. The ✕ closes it in one tap.
+
+- **Once per account.** Written to the device when it is first drawn, keyed
+  by account, so it does not come back whether it was closed, tapped or
+  ignored. A second phone holds no copy of that flag, so the card is also tied
+  to the account's first two-way thread: it shows only when no other thread in
+  the chat list has both people in it, threads with official accounts aside. A
+  second device can therefore only ever show it about the same reply. A flag on
+  the server would make it strictly once; a write on the send path for one
+  card was not worth it.
+- **Only for a day after the answer** (`FIRST_REPLY_FRESH_MS`). Nothing else
+  dates the moment, and the build that carries the card reaches accounts whose
+  one short exchange happened months ago: opening that thread again is not a
+  first reply, and "wrote back" would be old news. The same day bounds a
+  reinstall or a second phone, which can draw the card again only within it.
+- **Read, never fetched.** Whether another thread is two-way comes from the
+  chat list's cache. A list that is not loaded, or not loaded to its end,
+  leaves the card out — a road missed costs less than a sale to somebody it was
+  never for. The thread's own history must be loaded to its start for the same
+  reason.
+- **Never for Pro, gifted Pro or a guest**, never with an official account or
+  one that can no longer be written to.
+
+The card has no event of its own; `paywall_viewed` with `first_reply` counts
+its taps. What old builds see: nothing — the sources exist only in this JS, and
+a link naming one reaches an older paywall as `gate`.
 
 ## Gift codes give time, not discounts
 

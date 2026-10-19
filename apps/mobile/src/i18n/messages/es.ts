@@ -1148,6 +1148,12 @@ export const es: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Hora local {time}.',
   },
   chat: {
+    firstReplyTitle: '{name} te ha respondido',
+    firstReplyBody: {
+      one: 'Las respuestas siguen siendo gratis en todos los planes. {plan} quita el límite de {count} chat nuevo al día.',
+      other:
+        'Las respuestas siguen siendo gratis en todos los planes. {plan} quita el límite de {count} chats nuevos al día.',
+    },
     channelOnly: 'Esta cuenta publica novedades y anuncios. No puedes responder aquí.',
     suspendedOnly: 'Esta cuenta está suspendida. No puedes enviarle mensajes.',
     sendingAttachment: 'Enviando…',
@@ -1303,6 +1309,7 @@ export const es: Localized<EnMessages> = {
     wordTranslationFailed: 'No se pudo traducir esa palabra ahora mismo.',
     wordSeePlans: 'Ver los planes',
     sayHello: 'Saluda a {name}…',
+    newcomerHelloFree: 'Acaba de llegar a LangX: este saludo no cuenta para tus chats nuevos.',
     topicsShuffle: 'Otros temas',
     topicChip: 'Tema para conversar: {topic}',
     topics: {
@@ -1669,6 +1676,8 @@ export const es: Localized<EnMessages> = {
 
   profile: {
     proBadge: 'Miembro Pro',
+    proSheetTitle: '¿Qué es {plan}?',
+    proSheetBody: '{name} tiene {plan}. Esto es lo que añade al plan gratuito:',
     official: 'Cuenta oficial',
     suspendedTag: 'Suspendida',
     deletedTag: 'Cuenta eliminada',
