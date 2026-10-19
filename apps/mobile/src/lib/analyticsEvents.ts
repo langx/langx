@@ -40,7 +40,8 @@ export type GiftCodeOutcome =
  * `onboarding` is the one shown once at the end of the wizard; `gate` is a
  * quota or a locked feature, the only moment the pitch answers a question the
  * person just asked. Keeping them apart is the whole point — mixed together,
- * a conversion rate says nothing about either.
+ * a conversion rate says nothing about either. `home` is the Pro card on the
+ * redesign's Home tab, `me`'s twin on the screen that now leads.
  */
 export const PAYWALL_SOURCES = [
   'onboarding',
@@ -50,6 +51,7 @@ export const PAYWALL_SOURCES = [
   'first_reply',
   'langx',
   'gift_code',
+  'home',
 ] as const
 export type PaywallSource = (typeof PAYWALL_SOURCES)[number]
 

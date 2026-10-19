@@ -1087,6 +1087,16 @@ export const INDEXES: Partial<IndexSpec> = {
   [COLLECTIONS.assistantUsage]: [
     { key: { createdAt: 1 }, name: 'ttl_30d', expireAfterSeconds: 30 * 24 * 60 * 60 },
   ],
+  // `assistantUsage`'s shape and reason: the `_id` is the UTC day.
+  [COLLECTIONS.copilotUsage]: [
+    { key: { createdAt: 1 }, name: 'ttl_30d', expireAfterSeconds: 30 * 24 * 60 * 60 },
+  ],
+  /*
+   * The lookup is the `_id`, which is the question's hash — so two people
+   * asking the same thing at once write one row, not two. This only lets
+   * Mongo drop an answer once `expiresAt` passes.
+   */
+  [COLLECTIONS.copilotCache]: [{ key: { expiresAt: 1 }, name: 'ttl', expireAfterSeconds: 0 }],
   [COLLECTIONS.dailyActivity]: [{ key: { day: 1 }, name: 'day' }],
 
   [COLLECTIONS.streakReminders]: [
@@ -1202,6 +1212,12 @@ export const INDEXES: Partial<IndexSpec> = {
      * panel's per-option count, which filters on `pollId` first.
      */
     { key: { pollId: 1, userId: 1 }, name: 'poll_user_unique', unique: true },
+    /*
+     * The panel's newest-first list of one poll's answers. The heard-about
+     * poll goes to every new account and never closes, so this is the one
+     * poll whose answers keep growing.
+     */
+    { key: { pollId: 1, createdAt: -1 }, name: 'poll_recent' },
     // The account purge.
     { key: { userId: 1 }, name: 'poll_answer_owner' },
   ],

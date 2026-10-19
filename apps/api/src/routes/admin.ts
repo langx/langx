@@ -20,6 +20,9 @@ import {
   broadcastImageSchema,
   broadcastUpdateSchema,
   compareVersions,
+  HEARD_ABOUT_OPTIONS,
+  HEARD_ABOUT_POLL_ID,
+  type HeardAboutView,
   reviewDecisionSchema,
   versionForPlatform,
   withPlatformVersion,
@@ -58,7 +61,7 @@ import {
   updateBroadcastBodies,
 } from '../modules/admin/broadcast'
 import { sendBroadcastTest } from '../modules/admin/broadcastQueue'
-import { pollResults } from '../modules/chat/polls'
+import { pollResults, recentPollAnswers } from '../modules/chat/polls'
 import { getReport, listAppeals, listReports, toObjectId } from '../modules/admin/reports'
 import { FUNNEL_WINDOWS, readFunnel } from '../modules/admin/funnel'
 import { readAdminMeasure } from '../modules/admin/measure'
@@ -201,6 +204,20 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       return reply.send(await readAdminMeasure(app.mongo.db, request.query.weeks))
     },
   )
+
+  /**
+   * Where new accounts say they heard of us — the poll under the welcome.
+   * Every option is in the counts, at 0 if nobody picked it, beside the latest
+   * answers with who gave them. Private, like `/admin/measure`.
+   */
+  app.get('/admin/heard-about', { preHandler: requireAdmin }, async (_request, reply) => {
+    const [results, recent] = await Promise.all([
+      pollResults(app.mongo.db, HEARD_ABOUT_POLL_ID, HEARD_ABOUT_OPTIONS),
+      recentPollAnswers(app.mongo.db, HEARD_ABOUT_POLL_ID, 50),
+    ])
+    const view: HeardAboutView = { results, recent }
+    return reply.send(view)
+  })
 
   /**
    * Telling everyone on an older build that a new one is in the stores.

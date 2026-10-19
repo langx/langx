@@ -75,6 +75,28 @@ export const appConfigSchema = z.object({
      */
     captchaRequired: z.boolean(),
     /**
+     * Copilot, for everybody at once. Starts **off**, like `captchaRequired`
+     * and for a stronger reason: it is not a kill switch but a consent the
+     * operator gives for the whole service — that the privacy policy and both
+     * store forms name the AI provider, and that a spend limit is set where
+     * the key lives. A key alone never turns Copilot on; this does, and only
+     * with a key beside it (`copilotService` below). See `docs/decisions.md`
+     * → _Copilot ships dark, behind two switches and a consent_.
+     */
+    copilotEnabled: z.boolean(),
+    /**
+     * The redesign's Home tab and the bar that leads with it — Home · Chats ·
+     * Echo · People · Me — instead of today's five. Starts off, like
+     * `captchaRequired`, because it is a rollout stage rather than a kill
+     * switch: merging the code changes nothing until an operator turns it on.
+     *
+     * Read by the client once per launch (`useV3Home`), so turning it on or
+     * off reaches a running app at its next cold start rather than
+     * rearranging the bar under somebody's thumb. A build older than the flag
+     * never reads it and keeps today's tabs whatever it says.
+     */
+    v3Home: z.boolean(),
+    /**
      * The streak repair push, "Pick your streak back up". Starts off, like
      * `captchaRequired`, and for a different reason: it reaches people the
      * old repair push never did — anyone with the streak push on, whatever
@@ -140,6 +162,8 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     signupsEnabled: true,
     callsEnabled: true,
     captchaRequired: false,
+    copilotEnabled: false,
+    v3Home: false,
     streakRepairPush: false,
     discoveryReplyFirst: false,
     echoFromCorrections: false,
@@ -204,6 +228,15 @@ export const appConfigResponseSchema = appConfigSchema.extend({
    * not be drawn, and the app does not need to know which half said no.
    */
   callService: z.boolean(),
+  /**
+   * Whether Copilot answers here at all — a model key is configured **and**
+   * `flags.copilotEnabled` is on. One answer for `callService`'s reason.
+   *
+   * Read as `=== true` on the client, so an API that predates the field reads
+   * as off. Whether *this person* may use it — age, consent, today's
+   * allowance — is `GET /copilot`'s answer, not this one.
+   */
+  copilotService: z.boolean(),
 })
 export type AppConfigResponse = z.infer<typeof appConfigResponseSchema>
 

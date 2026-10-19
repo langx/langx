@@ -1,7 +1,7 @@
 import { ADMIN_MEASURE_WEEKS_DEFAULT, type AdminMeasure } from '@langx/shared'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
-import { useAdminMeasure } from '../../../src/api/queries'
+import { useAdminHeardAbout, useAdminMeasure } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
 import { BarList, type BarListRow } from '../../../src/components/admin/BarList'
 import { StatTable } from '../../../src/components/admin/StatTable'
@@ -92,6 +92,7 @@ export default function AdminMeasureScreen() {
             <Cohorts data={measure.data} />
             <FirstMessages data={measure.data} />
             <Refusals data={measure.data} barColor={colors.accent} />
+            <HeardAbout barColor={colors.accent} />
 
             <Text style={[styles.muted, styles.footnote]}>{ADMIN.measure.notHere}</Text>
             <Text style={styles.muted}>
@@ -216,6 +217,50 @@ function Refusals({ data, barColor }: { data: AdminMeasure; barColor: string }) 
       <Text style={styles.heading}>{words.title}</Text>
       <Text style={styles.hint}>{words.hint(windowDays)}</Text>
       <BarList rows={rows} color={barColor} empty={words.none(windowDays)} />
+    </>
+  )
+}
+
+/**
+ * The heard-about poll. Its own request rather than a field of the measure
+ * response: it has no window of weeks, and the measure read is cached for five
+ * minutes where a fresh answer here should show within one.
+ */
+function HeardAbout({ barColor }: { barColor: string }) {
+  const styles = useStyles()
+  const words = ADMIN.measure.heardAbout
+  const heard = useAdminHeardAbout()
+
+  if (heard.isPending) return <Skeleton height={160} />
+  if (heard.isError || !heard.data) {
+    return (
+      <Callout tone="error">
+        <Text style={styles.calloutBody}>{words.failedToLoad}</Text>
+      </Callout>
+    )
+  }
+
+  const { results, recent } = heard.data
+  const labelOf = (id: string) => words.options[id] ?? id
+  const rows: BarListRow[] = Object.entries(results.counts).map(([id, count]) => ({
+    key: id,
+    label: labelOf(id),
+    value: count,
+  }))
+
+  return (
+    <>
+      <Text style={styles.heading}>{words.title}</Text>
+      <Text style={styles.hint}>{words.hint(results.total)}</Text>
+      {results.total === 0 ? <Text style={styles.muted}>{words.none}</Text> : null}
+      {/* Every option is a row, zeros included, so `empty` never shows. */}
+      <BarList rows={rows} color={barColor} empty={words.none} />
+      {recent.length > 0 ? <Text style={styles.heading}>{words.recent}</Text> : null}
+      {recent.map((row) => (
+        <Text key={row.userId} style={styles.muted}>
+          {`${row.handle ? `@${row.handle}` : '—'}${row.country ? ` (${row.country})` : ''} → ${labelOf(row.optionId)} · ${utcStamp(row.createdAt)}`}
+        </Text>
+      ))}
     </>
   )
 }
