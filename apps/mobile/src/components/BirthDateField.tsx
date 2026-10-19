@@ -1,8 +1,9 @@
+import Feather from '@expo/vector-icons/Feather'
 import DateTimePicker, { type DateTimePickerEvent } from '@react-native-community/datetimepicker'
 import { EARLIEST_BIRTH_YEAR } from '@langx/shared'
 import { useState } from 'react'
 import { Platform, Pressable, Text, View } from 'react-native'
-import { makeStyles } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 import { formatDayKey, parseDayKey } from '../lib/birthDate'
 import { useT } from '../i18n'
 
@@ -12,6 +13,14 @@ export interface BirthDateFieldProps {
   value: string
   onChange: (next: string) => void
   error?: string | undefined
+  /**
+   * The redesign's field (`flags.v3Home`): the same picker behind a grey pill
+   * with a calendar glyph, and a line under it that is there before anything
+   * is wrong.
+   */
+  look?: 'v3' | undefined
+  /** That line, in the redesign's look only. `error` takes its place. */
+  hint?: string | undefined
 }
 
 /**
@@ -24,8 +33,12 @@ export interface BirthDateFieldProps {
  * The web has no equivalent here — the package ships no web implementation —
  * so `BirthDateField.web.tsx` sits beside this file and Metro picks it there.
  */
-export function BirthDateField({ label, value, onChange, error }: BirthDateFieldProps) {
-  const styles = useStyles()
+export function BirthDateField({ label, value, onChange, error, look, hint }: BirthDateFieldProps) {
+  const today = useStyles()
+  const redesign = useV3Styles()
+  const v3 = look === 'v3'
+  const styles = v3 ? redesign : today
+  const { v3: tokens } = useTheme()
   const t = useT()
   const [open, setOpen] = useState(false)
 
@@ -51,9 +64,13 @@ export function BirthDateField({ label, value, onChange, error }: BirthDateField
         onPress={() => setOpen(true)}
         style={[styles.input, error ? styles.inputError : null]}
       >
+        {v3 ? <Feather name="calendar" size={tokens.icon.lg} color={tokens.colors.fg} /> : null}
         <Text style={value ? styles.value : styles.placeholder}>
           {value ? formatShown(value) : t('onboarding.birthDatePlaceholder')}
         </Text>
+        {v3 ? (
+          <Feather name="chevron-down" size={tokens.icon.lg} color={tokens.colors.muted} />
+        ) : null}
       </Pressable>
 
       {open ? (
@@ -78,7 +95,11 @@ export function BirthDateField({ label, value, onChange, error }: BirthDateField
         </View>
       ) : null}
 
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+      {error ? (
+        <Text style={styles.error}>{error}</Text>
+      ) : v3 && hint ? (
+        <Text style={redesign.hint}>{hint}</Text>
+      ) : null}
     </View>
   )
 }
@@ -114,4 +135,31 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   done: { paddingVertical: spacing.sm },
   doneText: { ...font.label, color: colors.accent },
   error: { color: colors.danger, fontSize: 14, paddingHorizontal: 20 },
+}))
+
+const useV3Styles = makeStyles(({ v3 }) => ({
+  container: { gap: v3.space[6], width: '100%' },
+  label: { ...v3.type.buttonSmall, color: v3.colors.fg, paddingHorizontal: v3.space[4] },
+  // The redesign's field: the grey pill, its edge drawn in its own colour at
+  // rest so that gaining a red one moves nothing.
+  input: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.surface,
+    borderColor: v3.colors.surface,
+    borderRadius: v3.radius.pill,
+    borderWidth: 3,
+    flexDirection: 'row',
+    gap: v3.space[12],
+    minHeight: 58,
+    paddingEnd: v3.space[16],
+    paddingStart: v3.space[20],
+  },
+  inputError: { borderColor: v3.colors.danger },
+  value: { ...v3.type.body, color: v3.colors.fg, flex: 1, fontWeight: '600' },
+  placeholder: { ...v3.type.body, color: v3.colors.muted, flex: 1 },
+  picker: { alignItems: 'center' },
+  done: { minHeight: 44, justifyContent: 'center' },
+  doneText: { ...v3.type.button, color: v3.colors.echoText },
+  error: { ...v3.type.caption, color: v3.colors.danger, paddingHorizontal: v3.space[4] },
+  hint: { ...v3.type.caption, color: v3.colors.muted, paddingHorizontal: v3.space[4] },
 }))

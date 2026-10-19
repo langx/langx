@@ -1,7 +1,9 @@
 import { router } from 'expo-router'
 import { IntroCarousel } from '../../src/components/IntroCarousel'
+import { IntroCarouselV3 } from '../../src/components/onboarding/IntroV3'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
 
 /**
  * Settings' "Show intro again", as a screen inside the signed-in group.
@@ -23,7 +25,17 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 export default function IntroReplayScreen() {
   useScreenInteractive()
   const t = useT()
+  // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
 
+  if (v3) {
+    return (
+      <IntroCarouselV3
+        onDone={() => router.replace('/(app)/settings')}
+        doneLabel={t('intro.done')}
+      />
+    )
+  }
   return (
     <IntroCarousel onDone={() => router.replace('/(app)/settings')} doneLabel={t('intro.done')} />
   )

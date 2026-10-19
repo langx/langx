@@ -864,6 +864,7 @@ export const fr: Localized<EnMessages> = {
     cannotBeBoth: 'Une langue ne peut pas être les deux',
     aboutYouTitle: 'À propos de toi',
     displayName: 'Nom affiché',
+    nameFromSignUp: 'Repris de ton inscription. Change-le si tu veux.',
     aboutYouOptional: 'À propos de toi (facultatif)',
     tooYoung: 'LangX est réservé aux personnes de {age} ans et plus.',
     photoTitle: 'Mets un visage dessus',
@@ -895,6 +896,8 @@ export const fr: Localized<EnMessages> = {
     whatNext: 'La suite',
     whatNextBody:
       'Découvrir te montre des gens qui parlent ce que tu apprends. Dis bonjour à l’un d’eux.',
+    whatNextBodyPeople:
+      'L’onglet Personnes te montre qui parle ce que tu apprends. Dis bonjour à l’un d’eux.',
     findSomeone: 'Trouver quelqu’un à qui parler',
     sayHelloTo: 'Dis bonjour à {name}',
     inviteCodeToggle: 'Tu as un code d’invitation ?',

@@ -9,11 +9,13 @@ import { queryFailed } from '../../src/lib/listState'
 import { api } from '../../src/api/client'
 import { keys, useMe } from '../../src/api/queries'
 import { NotificationPriming } from '../../src/components/NotificationPriming'
+import { WelcomeBackV3 } from '../../src/components/onboarding/WelcomeBackV3'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
 
 function Line({
   icon,
@@ -73,6 +75,8 @@ export default function WelcomeBackScreen() {
   const [busy, setBusy] = useState(false)
 
   const restored = me.data?.restoredFromV1
+  // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
 
   async function acknowledge(next: Href = '/(app)/(tabs)/discover'): Promise<void> {
     setBusy(true)
@@ -116,6 +120,24 @@ export default function WelcomeBackScreen() {
   // restore lands on, means it was changed from another device.
   const canClaim = me.data ? !handleChangeFreeAt(me.data) : false
   const { tokensCredited, conversationsImported, frozenStreak, lifetimeGranted } = restored
+
+  if (v3) {
+    return (
+      <WelcomeBackV3
+        handle={handle}
+        canClaim={canClaim}
+        onClaim={() =>
+          void acknowledge({
+            pathname: '/(app)/settings/username',
+            params: { from: '/(app)/(tabs)/discover' },
+          })
+        }
+        restored={restored}
+        busy={busy}
+        onStart={() => void acknowledge()}
+      />
+    )
+  }
 
   return (
     <Screen fluid>

@@ -449,16 +449,17 @@ const v3Hues: Record<ColorScheme, Readonly<Record<PartnerHue, string>>> = {
 /**
  * The heaviest Nunito, for v3's Numeral, Display and Title.
  *
- * **Not loaded at the root yet.** The root layout's `useFonts` holds the
- * splash until every font in it arrives, and no screen on the launch path uses
- * this one, so loading it there would make every cold web start wait for a
- * font most launches never show. A screen off that path loads it for itself:
- * the design gallery does, and the paywall waits for it under the second it
- * already waits for the store (_The paywall in v3_ in `docs/decisions.md`).
- * The first launch-path screen that moves onto Numeral, Display or Title adds
- * `Nunito_900Black` to the root `useFonts` in `app/_layout.tsx` in the same PR
- * — a family named but not loaded falls back to the platform face without a
- * word, so a migrated screen would look finished and be in the wrong font.
+ * **Not loaded at the root.** The root layout's `useFonts` holds the splash
+ * until every font in it arrives, so loading it there would make every cold
+ * start wait for a font most launches never show — with `flags.v3Home` off,
+ * all of them. A screen that draws it loads it for itself: the design gallery
+ * does, and the paywall waits for it under the second it already waits for
+ * the store (_The paywall in v3_ in `docs/decisions.md`). The redesign's
+ * launch path — welcome, intro, onboarding — asks for it through
+ * `useBlackFont` and waits for nothing, setting its titles in `DISPLAY_FONT`
+ * until it lands, as Home and Chats do: a family named but not loaded falls
+ * back to the platform face without a word, so a title has to name its
+ * fallback rather than trust the face to be there.
  */
 export const DISPLAY_FONT_BLACK = 'Nunito_900Black'
 

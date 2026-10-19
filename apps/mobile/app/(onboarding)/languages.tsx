@@ -3,6 +3,7 @@ import { router } from 'expo-router'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
 import { LanguagePicker } from '../../src/components/LanguagePicker'
+import { LanguagesV3 } from '../../src/components/onboarding/LanguagesV3'
 import { StepProgress } from '../../src/components/StepProgress'
 import { authClient } from '../../src/lib/auth-client'
 import { shouldGateGuest } from '../../src/lib/guestGate'
@@ -15,6 +16,7 @@ import { track } from '../../src/lib/analytics'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
 
 type LanguageTab = 'native' | 'learning'
 
@@ -84,6 +86,25 @@ export default function LanguagesStep() {
       properties: { step: 'languages', guest: isGuest, resumed },
     })
     router.push('/(onboarding)/levels')
+  }
+
+  // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
+  if (v3) {
+    return (
+      <LanguagesV3
+        steps={isGuest ? GUEST_ONBOARDING_STEPS : undefined}
+        tab={tab}
+        onTab={setTab}
+        nativeLanguages={draft.nativeLanguages}
+        learning={learningCodes}
+        onToggleNative={toggleNative}
+        onToggleLearning={toggleLearning}
+        max={max}
+        canContinue={onNative ? draft.nativeLanguages.length > 0 : draft.learning.length > 0}
+        onContinue={onContinue}
+      />
+    )
   }
 
   return (
