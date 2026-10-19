@@ -4,7 +4,7 @@ import { Platform, type PressableProps, type StyleProp, type ViewStyle } from 'r
 import { makeStyles, useTheme } from '../../lib/theme'
 import { PressableScale } from './PressableScale'
 
-type Look = 'plain' | 'surface' | 'ink'
+type Look = 'plain' | 'surface' | 'ink' | 'hue'
 
 interface IconButtonProps {
   icon: keyof typeof Feather.glyphMap
@@ -17,7 +17,9 @@ interface IconButtonProps {
   /**
    * `plain` is the bare glyph on the ground — back, close, the corner
    * controls. `surface` sits it in the grey disc, `ink` in the dark one, for
-   * a glyph that has to read as a control on a busy block.
+   * a glyph that has to read as a control on a busy block. `hue` is the dark
+   * disc on a partner's colour — ink in both schemes, as everything on a hue
+   * is, where `ink` inverts with the ground and would go pale after dark.
    */
   look?: Look
   /** The glyph. Header chrome's 26 unless the drawing says otherwise. */
@@ -68,9 +70,12 @@ export function IconButton({
   const glyphColor =
     look === 'ink'
       ? v3.colors.pillText
-      : look === 'surface'
-        ? v3.colors.fg
-        : (color ?? v3.colors.fg)
+      : look === 'hue'
+        ? // The palette's one white that stays white after dark.
+          v3.colors.onBlue
+        : look === 'surface'
+          ? v3.colors.fg
+          : (color ?? v3.colors.fg)
 
   return (
     <PressableScale
@@ -87,6 +92,7 @@ export function IconButton({
         styles.target,
         look === 'surface' && styles.surface,
         look === 'ink' && styles.ink,
+        look === 'hue' && styles.hue,
         disabled && styles.disabled,
       ]}
     >
@@ -106,5 +112,6 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   surface: { backgroundColor: v3.colors.surface },
   ink: { backgroundColor: v3.colors.pill },
+  hue: { backgroundColor: v3.colors.ink },
   disabled: { opacity: 0.4 },
 }))
