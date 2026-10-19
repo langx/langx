@@ -70,6 +70,7 @@ import { useV3Home } from '../../../src/hooks/useV3Home'
 import { useTwoPane } from '../../../src/hooks/useTwoPane'
 import { TwoPane } from '../../../src/components/TwoPane'
 import { PostScreen } from '../../../src/screens/PostScreen'
+import { PostsV3 } from '../../../src/components/posts/PostsV3'
 import { useReviewPrompt } from '../../../src/hooks/useReviewPrompt'
 
 /** 60% of a post on screen before its video is allowed to run. */
@@ -414,7 +415,54 @@ export function FeedScreen({ people }: { people?: ReactNode } = {}) {
     )
   }
 
-  const list = (
+  /*
+   * Under the redesign's tabs, the same feed drawn in v3's look. The query,
+   * the correction box and its upload, the long-press menu and the video
+   * visibility all stay above, so both looks behave the same.
+   */
+  const list = people ? (
+    <PostsV3
+      segments={people}
+      posts={items}
+      state={state}
+      onRetry={() => void feed.refetch()}
+      pull={pull}
+      onEndReached={() => {
+        if (feed.hasNextPage && !feed.isFetchingNextPage) void feed.fetchNextPage()
+      }}
+      loadingMore={feed.isFetchingNextPage}
+      meId={me.data?._id}
+      twoPane={twoPane}
+      selected={selected}
+      onSelect={setSelected}
+      keyboard={keyboard}
+      listRef={listRef}
+      viewabilityConfig={VIEWABILITY}
+      onViewableItemsChanged={onViewableItemsChanged.current}
+      playing={playingPosts}
+      correction={{
+        postId: correctingId,
+        text: correction,
+        onChangeText: setCorrection,
+        media: correctionMedia,
+        onPick: (picked) => setCorrectionMedia((current) => [...current, ...picked]),
+        onRemove: (index) =>
+          setCorrectionMedia((current) => current.filter((_, at) => at !== index)),
+        progress: uploadProgress,
+        busy: correctPost.isPending || uploading,
+        boxRef: correctionBox,
+        start: startCorrecting,
+        submit: (postId) => void submitCorrection(postId),
+        cancel: () => {
+          setCorrectingId(null)
+          setCorrectionMedia([])
+        },
+      }}
+      onMore={(post) => void openMore(post)}
+      viewing={viewing}
+      onViewingChange={setViewing}
+    />
+  ) : (
     <Screen fluid tabbed>
       <Animated.View
         ref={keyboard.frameRef}

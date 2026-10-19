@@ -1211,6 +1211,17 @@ export const ru: Localized<EnMessages> = {
     emptyTitle: 'Здесь пока никого',
     emptyBody:
       'Здесь появляются люди, чьи языки совпадают с твоими в обе стороны. Попробуй ослабить фильтры.',
+    chatsLeft: {
+      one: 'Осталось новых чатов на сегодня: {count} из {total}',
+      few: 'Осталось новых чатов на сегодня: {count} из {total}',
+      many: 'Осталось новых чатов на сегодня: {count} из {total}',
+      other: 'Осталось новых чатов на сегодня: {count} из {total}',
+    },
+    chatsLeftNote: 'Ответы не считаются.',
+    newOnLangx: 'Новые в LangX',
+    helloNewcomer: 'Поздоровайся с {name} — недавно в LangX',
+    repliesWithinDay: 'Обычно отвечает в течение дня',
+    changeFilters: 'Изменить фильтры',
   },
 
   filters: {
@@ -1904,6 +1915,11 @@ export const ru: Localized<EnMessages> = {
     postedCorrection: 'Опубликовано. Кто-нибудь исправит.',
     askCorrectionHint:
       'Носитель языка исправит — обычно в течение часа. Исправления без ограничений на любом тарифе.',
+    askChip: 'Вопрос',
+    momentChip: 'Момент',
+    askNatural: 'Это звучит естественно?',
+    askPronounce: 'Как это произносится?',
+    helpName: 'Помочь: {name}',
   },
 
   profile: {

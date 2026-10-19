@@ -978,6 +978,41 @@ the two rows whose state flipped. It is the same `FlatList` on the same pages
 as before. Nothing on the server changed: `unreplied`, `partner` and
 `lastMessage` were already on every row.
 
+## People's two segments in v3: a card per person, a card per post
+
+**19 October 2026.** Phase 5's People and Posts, drawn from `V-People` and
+`V-Posts`, behind the same `flags.v3Home`. Only the drawing changes: the
+sort, the filters, Nearby, search, the feed's ranking and its correction box
+are the screens they were, and with the flag off both segments are today's
+Discover and Feed.
+
+- **A person is a card in their partner colour**, face first, with the pair
+  of languages and one Say hello that opens the new-chat screen — the same
+  door Home's hello uses, so the allowance, the newcomer hello and the
+  paywall on refusal are decided where they always were. No swipe and no
+  age in the headline (rule 20): the card is an invitation to an exchange
+  of languages, and the pair says which. Level, streak and age stay on the
+  profile and in the filters.
+- **"New chats left today: 3 of 5"** heads the list for an account with an
+  allowance. Both numbers are `/me/quota`'s, so the total is the reader's own
+  plan; Pro and gifted Pro (no `limit`) and guests see no line.
+- **"New on LangX"** is the `/discovery/new` strip from _Discovery puts the
+  people who answer first, behind a switch_, on For you only. The client adds
+  no condition of its own: the server's empty answer — switch off, a minor,
+  a guest, an older API — draws nothing. A tile says hello, as the drawing
+  has it. **"Usually replies within a day"** appears only where the card
+  carries `repliesWithinDay`; the drawing's "within an hour" is not built,
+  because S2 defines no such line.
+- **An ask and a moment are two cards.** An ask is its author's colour with
+  what it asks in words ("Is this natural?"), the sentence big, its top
+  correction as the current card shows it, and one Help button: the feed's
+  own correction box for a correction, the post (where the recorder lives)
+  for a recording. A moment is a grey card with its likes and one Comment
+  button. The drawing's "Correct" on a moment is not built — _Asks are
+  optional, and only asked-for help can be given_ stands, and the server
+  would refuse it. Likes stay on moments and on every post's page; an ask's
+  card is about help.
+
 ## Echo leads with what is due, and the done screen says what it earned — behind the same flag
 
 **19 October 2026.** The Echo tab and the end of a review, behind
