@@ -7,6 +7,7 @@ import { Animated, ScrollView, Text, View } from 'react-native'
 import { PRO_WEEK_RULES } from '@langx/shared'
 import { useMe } from '../../src/api/queries'
 import { NotificationPriming } from '../../src/components/NotificationPriming'
+import { DoneV3 } from '../../src/components/onboarding/DoneV3'
 import { ProMark } from '../../src/components/ProMark'
 import { Button } from '../../src/components/ui/Button'
 import { CelebrationSheet } from '../../src/components/ui/CelebrationSheet'
@@ -23,6 +24,7 @@ import { getOffers } from '../../src/lib/purchases'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useLocale, useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
 
 /**
  * The end of the wizard, and three things at once: the moment of arrival, the
@@ -166,6 +168,31 @@ export default function DoneStep() {
    */
   const weekEnd = proWeekUntil(me.data) ?? weekFrom(me.data?.proWeek?.startedAt)
 
+  const weekMoment = proWeek ? (
+    <ProWeekMoment
+      visible={moment}
+      eventId={`proWeek:${me.data?.proWeek?.startedAt ?? ''}`}
+      body={t('proWeek.startsBody', {
+        count: PRO_WEEK_RULES.extensionStreakDays,
+        date: weekEnd.toLocaleDateString(locale, { day: 'numeric', month: 'long' }),
+      })}
+      next={{ label: nextLabel, onPress: leave }}
+      onClose={() => setMoment(false)}
+    />
+  ) : null
+
+  // The redesign's look behind `flags.v3Home` (see `latchV3LaunchLook`), and
+  // only the look: the button's label, its press and the week's sheet are
+  // this screen's, exactly as below.
+  const v3 = useV3LaunchLook()
+  if (v3) {
+    return (
+      <DoneV3 handle={handle} nextLabel={nextLabel} onNext={finish}>
+        {weekMoment}
+      </DoneV3>
+    )
+  }
+
   return (
     <Screen fluid>
       {/* Centred in the height when it fits; scrolls when the notification panel makes it not. */}
@@ -199,18 +226,7 @@ export default function DoneStep() {
 
         <Button label={nextLabel} onPress={finish} style={styles.cta} />
       </ScrollView>
-      {proWeek ? (
-        <ProWeekMoment
-          visible={moment}
-          eventId={`proWeek:${me.data?.proWeek?.startedAt ?? ''}`}
-          body={t('proWeek.startsBody', {
-            count: PRO_WEEK_RULES.extensionStreakDays,
-            date: weekEnd.toLocaleDateString(locale, { day: 'numeric', month: 'long' }),
-          })}
-          next={{ label: nextLabel, onPress: leave }}
-          onClose={() => setMoment(false)}
-        />
-      ) : null}
+      {weekMoment}
     </Screen>
   )
 }

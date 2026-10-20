@@ -13,9 +13,13 @@ import { useT } from '../i18n'
  * three labelled boxes are unambiguous in every locale. They are also what a
  * keyboard is good at, which is the input this variant actually runs on.
  */
-export function BirthDateField({ label, value, onChange, error }: BirthDateFieldProps) {
-  const styles = useStyles()
-  const { colors } = useTheme()
+export function BirthDateField({ label, value, onChange, error, look, hint }: BirthDateFieldProps) {
+  const today = useStyles()
+  const redesign = useV3Styles()
+  const v3 = look === 'v3'
+  const styles = v3 ? redesign : today
+  const theme = useTheme()
+  const faint = v3 ? theme.v3.colors.muted : theme.colors.textFaint
   const t = useT()
 
   const [year = '', month = '', day = ''] = value ? value.split('-') : []
@@ -44,7 +48,7 @@ export function BirthDateField({ label, value, onChange, error }: BirthDateField
           value={day}
           onChangeText={(text) => update({ day: text })}
           placeholder={t('onboarding.day')}
-          placeholderTextColor={colors.textFaint}
+          placeholderTextColor={faint}
           keyboardType="number-pad"
           maxLength={2}
           accessibilityLabel={t('onboarding.day')}
@@ -54,7 +58,7 @@ export function BirthDateField({ label, value, onChange, error }: BirthDateField
           value={month}
           onChangeText={(text) => update({ month: text })}
           placeholder={t('onboarding.month')}
-          placeholderTextColor={colors.textFaint}
+          placeholderTextColor={faint}
           keyboardType="number-pad"
           maxLength={2}
           accessibilityLabel={t('onboarding.month')}
@@ -64,13 +68,17 @@ export function BirthDateField({ label, value, onChange, error }: BirthDateField
           value={year}
           onChangeText={(text) => update({ year: text })}
           placeholder={String(EARLIEST_BIRTH_YEAR + 95)}
-          placeholderTextColor={colors.textFaint}
+          placeholderTextColor={faint}
           keyboardType="number-pad"
           maxLength={4}
           accessibilityLabel={t('onboarding.year')}
         />
       </View>
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+      {error ? (
+        <Text style={styles.error}>{error}</Text>
+      ) : v3 && hint ? (
+        <Text style={redesign.hint}>{hint}</Text>
+      ) : null}
     </View>
   )
 }
@@ -96,4 +104,28 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   year: { width: 104 },
   inputError: { borderColor: colors.danger },
   error: { color: colors.danger, fontSize: 14, paddingHorizontal: 20 },
+}))
+
+/** The redesign's boxes: `BirthDateField`'s grey pill, three times. */
+const useV3Styles = makeStyles(({ v3 }) => ({
+  container: { gap: v3.space[6], width: '100%' },
+  label: { ...v3.type.buttonSmall, color: v3.colors.fg, paddingHorizontal: v3.space[4] },
+  row: { flexDirection: 'row', gap: v3.space[8] },
+  input: {
+    ...v3.type.body,
+    backgroundColor: v3.colors.surface,
+    borderColor: v3.colors.surface,
+    borderRadius: v3.radius.pill,
+    borderWidth: 3,
+    color: v3.colors.fg,
+    fontWeight: '600',
+    height: 58,
+    paddingHorizontal: v3.space[16],
+    textAlign: 'center',
+  },
+  small: { width: 84 },
+  year: { width: 112 },
+  inputError: { borderColor: v3.colors.danger },
+  error: { ...v3.type.caption, color: v3.colors.danger, paddingHorizontal: v3.space[4] },
+  hint: { ...v3.type.caption, color: v3.colors.muted, paddingHorizontal: v3.space[4] },
 }))

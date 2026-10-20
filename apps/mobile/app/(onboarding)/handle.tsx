@@ -6,6 +6,7 @@ import { Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 import { api, ApiRequestError } from '../../src/api/client'
 import { keys } from '../../src/api/queries'
 import { StepProgress } from '../../src/components/StepProgress'
+import { HandleV3 } from '../../src/components/onboarding/HandleV3'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
@@ -26,6 +27,7 @@ import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useHandleAvailability, useHandleStatus } from '../../src/hooks/useHandleAvailability'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
 
 /**
  * The step that creates the profile: pick a handle, claim it, and the photo
@@ -181,6 +183,53 @@ export default function HandleStep() {
 
   const status = useHandleStatus(draft.handle, availability, t('onboarding.handleBody'))
 
+  function setHandle(handle: string): void {
+    updateDraft({ handle: handle.toLowerCase().replace(/[^a-z0-9_]/g, '') })
+  }
+
+  function setInviteCode(value: string): void {
+    const referredByHandle = normalizeInviteCode(value) ?? value.trim()
+    updateDraft({
+      referredByHandle,
+      // Typed over, so it is no longer whatever the link said.
+      referredBySource: 'manual',
+      referralDeclined: referredByHandle === '',
+    })
+  }
+
+  // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
+  if (v3) {
+    return (
+      <HandleV3
+        onBack={() => goBackTo('/(onboarding)/about-you')}
+        reserved={reserved}
+        handle={draft.handle}
+        onHandle={setHandle}
+        status={status}
+        onRetry={availability.refetch}
+        submitError={submitError}
+        inviteOpen={inviteOpen}
+        onOpenInvite={() => setInviteOpenedByHand(true)}
+        inviteCode={draft.referredByHandle}
+        onInviteCode={setInviteCode}
+        inviter={
+          draft.referredByHandle
+            ? inviter.data
+              ? {
+                  found: true,
+                  text: t('onboarding.inviteCodeFound', { name: inviter.data.displayName }),
+                }
+              : { found: false, text: t('onboarding.inviteCodeUnknown') }
+            : undefined
+        }
+        canSubmit={canSubmit}
+        submitting={submitting}
+        onSubmit={() => void submit()}
+      />
+    )
+  }
+
   return (
     <Screen fluid>
       {/*
@@ -218,9 +267,7 @@ export default function HandleStep() {
             accessibilityLabel={t('onboarding.username')}
             autoCapitalize="none"
             autoCorrect={false}
-            onChangeText={(handle) =>
-              updateDraft({ handle: handle.toLowerCase().replace(/[^a-z0-9_]/g, '') })
-            }
+            onChangeText={setHandle}
             placeholder={t('onboarding.handlePlaceholder')}
             placeholderTextColor={colors.textFaint}
             style={styles.input}
@@ -257,15 +304,7 @@ export default function HandleStep() {
           <>
             <FormField
               value={draft.referredByHandle}
-              onChangeText={(value) => {
-                const referredByHandle = normalizeInviteCode(value) ?? value.trim()
-                updateDraft({
-                  referredByHandle,
-                  // Typed over, so it is no longer whatever the link said.
-                  referredBySource: 'manual',
-                  referralDeclined: referredByHandle === '',
-                })
-              }}
+              onChangeText={setInviteCode}
               placeholder={t('onboarding.inviteCodePlaceholder')}
               accessibilityLabel={t('onboarding.inviteCodeLabel')}
               autoCapitalize="none"

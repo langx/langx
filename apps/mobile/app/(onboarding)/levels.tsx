@@ -6,6 +6,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { api } from '../../src/api/client'
 import { keys } from '../../src/api/queries'
 import { StepProgress } from '../../src/components/StepProgress'
+import { LevelsV3 } from '../../src/components/onboarding/LevelsV3'
 import { showAlert } from '../../src/lib/alert'
 import { authClient } from '../../src/lib/auth-client'
 import { shouldGateGuest } from '../../src/lib/guestGate'
@@ -19,6 +20,7 @@ import { track } from '../../src/lib/analytics'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { levelLabel, useDisplayNames, useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
 
 /**
  * Step 2 of 5: how far along you are in each learning language.
@@ -85,6 +87,23 @@ export default function LevelsStep() {
     updateDraft({
       learning: draft.learning.map((entry) => (entry.code === code ? { ...entry, level } : entry)),
     })
+  }
+
+  // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
+  if (v3) {
+    return (
+      <LevelsV3
+        steps={isGuest ? GUEST_ONBOARDING_STEPS : undefined}
+        onBack={() => goBackTo('/(onboarding)/languages')}
+        learning={draft.learning}
+        onSetLevel={setLevel}
+        canContinue={complete}
+        submitting={submitting}
+        continueLabel={isGuest ? t('welcome.browse') : t('common.continue')}
+        onContinue={() => void onContinue()}
+      />
+    )
   }
 
   return (

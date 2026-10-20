@@ -898,6 +898,7 @@ export const de: Localized<EnMessages> = {
     cannotBeBoth: 'Eine Sprache kann nicht beides sein',
     aboutYouTitle: 'Über dich',
     displayName: 'Anzeigename',
+    nameFromSignUp: 'Aus deiner Anmeldung. Ändere ihn, wenn du magst.',
     aboutYouOptional: 'Über dich (optional)',
     tooYoung: 'LangX ist für Menschen ab {age} Jahren.',
     photoTitle: 'Gib dem Ganzen ein Gesicht',
@@ -930,6 +931,8 @@ export const de: Localized<EnMessages> = {
     whatNext: 'Wie es weitergeht',
     whatNextBody:
       'Entdecken zeigt dir Leute, die sprechen, was du lernst. Sag einem von ihnen Hallo.',
+    whatNextBodyPeople:
+      'Unter Leute siehst du, wer spricht, was du lernst. Sag einem von ihnen Hallo.',
     findSomeone: 'Jemanden zum Reden finden',
     sayHelloTo: 'Sag {name} Hallo',
     inviteCodeToggle: 'Hast du einen Einladungscode?',
@@ -2375,6 +2378,12 @@ export const de: Localized<EnMessages> = {
     leaderboardBody: 'Wer diese Woche, diesen Monat und dieses Jahr am meisten verdient hat',
     poolBody: 'Wie der nächtliche Anteil berechnet wird',
     storeBody: 'Serien-Schutz, verpasste Tage und Kosmetik',
+    tokensUnit: { one: 'Token', other: 'Token' },
+    nextRung: { one: '{title}: noch {amount} Token', other: '{title}: noch {amount} Token' },
+    nextRungReady: '{title}: genug Token',
+    countOf: '{current} von {total}',
+    giftOpen: 'Öffnen',
+    price: { one: '{amount} Token', other: '{amount} Token' },
     disclaimer:
       'Token sind In-App-Punkte. Sie lassen sich nicht kaufen, handeln, auszahlen oder gegen einen bezahlten Tarif eintauschen — nur Serien-Freezes, verpasste Tage und Kosmetik. Es gibt keine Chain, keinen Vertrag und keinen Markt.',
   },
