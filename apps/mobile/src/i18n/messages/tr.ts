@@ -2249,6 +2249,10 @@ export const tr: Localized<EnMessages> = {
   store: {
     streakFreeze: 'Seri dondurma',
     streakFreezeBody: 'Kaçıracağın ilk günü karşılar · {banked}/{max} bankada',
+    streakFreezeBodyCount: {
+      one: 'Kaçıracağın ilk günü karşılar · bankada {count} dondurma',
+      other: 'Kaçıracağın ilk günü karşılar · bankada {count} dondurma',
+    },
     ownedAccessibility: '{title}, sende var',
     locked: 'Kilitli',
     lockedAccessibility: '{title}, kilitli',

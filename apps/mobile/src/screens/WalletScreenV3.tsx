@@ -29,7 +29,7 @@ import { goBackTo } from '../lib/navigation'
 import { clearFromTray } from '../lib/notifications'
 import { requireAccount } from '../lib/requireAccount'
 import { makeStyles, useTheme } from '../lib/theme'
-import { nextRung } from '../lib/walletV3'
+import { freezeBankValue, nextRung } from '../lib/walletV3'
 
 const ME = '/(app)/(tabs)/me'
 const STORE = '/(app)/wallet/store'
@@ -126,10 +126,7 @@ function MemberWallet() {
     : undefined
 
   const maxFreezes = TOKEN_RULES.sinks.maxBankedStreakFreezes
-  const freezes = t('wallet.countOf', {
-    current: data.streakFreezes.toLocaleString(locale),
-    total: maxFreezes.toLocaleString(locale),
-  })
+  const freezes = freezeBankValue(data.streakFreezes, maxFreezes, { t, locale })
   const items = t('wallet.countOf', {
     current: data.owned.length.toLocaleString(locale),
     total: COSMETICS.length.toLocaleString(locale),

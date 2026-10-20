@@ -10,11 +10,13 @@ import { partnerHueFor } from '../../lib/theme/partnerHue'
 import { OfficialMark } from '../OfficialMark'
 import { PresenceLine } from '../PresenceLine'
 import { Avatar } from '../ui/Avatar'
-import { IconButton } from '../ui/IconButton'
+import { ICON_BUTTON_TARGET, IconButton } from '../ui/IconButton'
 import { Skeleton } from '../ui/Skeleton'
 
 /** The drawing's face: big enough to be the band's subject, not a list row's. */
 const AVATAR = 54
+/** The folded band's face, as tall as the controls beside it leave room for. */
+const AVATAR_COMPACT = 36
 
 interface ThreadHeaderV3Props {
   /** Undefined while the profile loads, and for an account that is gone. */
@@ -37,6 +39,12 @@ interface ThreadHeaderV3Props {
    * would be a number the app made up.
    */
   flame?: ReactNode
+  /**
+   * A soft keyboard is up: the band folds to one row — back, the face and the
+   * name, the controls — so a small phone keeps some of the thread above the
+   * keyboard. Every control stays; only the band's second row goes.
+   */
+  compact?: boolean
 }
 
 /**
@@ -62,6 +70,7 @@ export function ThreadHeaderV3({
   call,
   onMore,
   flame,
+  compact = false,
 }: ThreadHeaderV3Props) {
   const t = useT()
   const { isRtl } = useLocale()
@@ -74,8 +83,69 @@ export function ThreadHeaderV3({
   const ground = onHue ? v3.hues[partnerHueFor(partner._id)] : v3.colors.surface
   const ink = onHue ? v3.colors.ink : v3.colors.fg
 
+  const face = compact ? AVATAR_COMPACT : AVATAR
+  /*
+    No label of its own: the name and the line under it are the label, so
+    a screen reader hears "Online" or "typing…" with the name, as it does
+    in the current header. A label here would be read instead of both.
+  */
+  const who = (
+    <Pressable
+      accessibilityRole="button"
+      {...(partner ? { accessibilityHint: t('chat.viewProfile') } : {})}
+      onPress={() => partner && onOpenProfile()}
+      style={[styles.who, compact && styles.whoCompact]}
+    >
+      {loading ? (
+        <Skeleton width={face} height={face} radius={face / 2} />
+      ) : (
+        <Avatar
+          url={partner?.avatarUrl}
+          name={partner?.displayName ?? '?'}
+          seed={partner?._id}
+          size={face}
+        />
+      )}
+      <View style={[styles.names, compact && styles.namesCompact]}>
+        {loading ? (
+          <>
+            <Skeleton width={compact ? 110 : 140} height={compact ? 18 : 24} />
+            {compact ? null : <Skeleton width={90} height={14} />}
+          </>
+        ) : (
+          <View style={styles.nameRow}>
+            <Text
+              style={[styles.name, compact && styles.nameCompact, { color: ink }]}
+              numberOfLines={1}
+            >
+              {partner?.displayName ?? t('chat.title')}
+            </Text>
+            {partner?.official ? <OfficialMark size={v3.icon.md} /> : null}
+          </View>
+        )}
+        {/*
+          One line that is either presence or typing, never both — the
+          current header's rule, for the same reason: they are two states
+          of one line, and stacking them would make the band jump.
+        */}
+        {loading ? null : typing ? (
+          <Text style={[styles.typing, { color: ink }]} numberOfLines={1}>
+            {t('chat.typing')}
+          </Text>
+        ) : (
+          <PresenceLine
+            lastActiveAt={partner?.lastActiveAt}
+            timezone={partner?.timezone}
+            onHue={onHue}
+          />
+        )}
+        {compact ? null : flame}
+      </View>
+    </Pressable>
+  )
+
   return (
-    <View style={[styles.band, { backgroundColor: ground }]}>
+    <View style={[styles.band, compact && styles.bandCompact, { backgroundColor: ground }]}>
       <View style={styles.bar}>
         {onBack ? (
           <IconButton
@@ -85,9 +155,10 @@ export function ThreadHeaderV3({
             accessibilityLabel={t('common.backPlain')}
             onPress={onBack}
           />
-        ) : (
+        ) : compact ? null : (
           <View />
         )}
+        {compact ? who : null}
         <View style={styles.actions}>
           {/*
             Faint while the consent gate is closed, and still pressable: the
@@ -119,60 +190,7 @@ export function ThreadHeaderV3({
         </View>
       </View>
 
-      {/*
-        No label of its own: the name and the line under it are the label, so
-        a screen reader hears "Online" or "typing…" with the name, as it does
-        in the current header. A label here would be read instead of both.
-      */}
-      <Pressable
-        accessibilityRole="button"
-        {...(partner ? { accessibilityHint: t('chat.viewProfile') } : {})}
-        onPress={() => partner && onOpenProfile()}
-        style={styles.who}
-      >
-        {loading ? (
-          <Skeleton width={AVATAR} height={AVATAR} radius={AVATAR / 2} />
-        ) : (
-          <Avatar
-            url={partner?.avatarUrl}
-            name={partner?.displayName ?? '?'}
-            seed={partner?._id}
-            size={AVATAR}
-          />
-        )}
-        <View style={styles.names}>
-          {loading ? (
-            <>
-              <Skeleton width={140} height={24} />
-              <Skeleton width={90} height={14} />
-            </>
-          ) : (
-            <View style={styles.nameRow}>
-              <Text style={[styles.name, { color: ink }]} numberOfLines={1}>
-                {partner?.displayName ?? t('chat.title')}
-              </Text>
-              {partner?.official ? <OfficialMark size={v3.icon.md} /> : null}
-            </View>
-          )}
-          {/*
-            One line that is either presence or typing, never both — the
-            current header's rule, for the same reason: they are two states
-            of one line, and stacking them would make the band jump.
-          */}
-          {loading ? null : typing ? (
-            <Text style={[styles.typing, { color: ink }]} numberOfLines={1}>
-              {t('chat.typing')}
-            </Text>
-          ) : (
-            <PresenceLine
-              lastActiveAt={partner?.lastActiveAt}
-              timezone={partner?.timezone}
-              onHue={onHue}
-            />
-          )}
-          {flame}
-        </View>
-      </Pressable>
+      {compact ? null : who}
     </View>
   )
 }
@@ -186,6 +204,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[10],
     paddingTop: v3.space[8],
   },
+  bandCompact: { paddingBottom: v3.space[6], paddingTop: v3.space[4] },
   bar: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
   actions: { alignItems: 'center', flexDirection: 'row', gap: v3.space[4] },
   locked: { opacity: 0.45 },
@@ -195,8 +214,19 @@ const useStyles = makeStyles(({ v3 }) => ({
     gap: v3.space[12],
     paddingHorizontal: v3.space[8],
   },
+  // Between the back and the controls, taking whatever they leave. The
+  // folded face is smaller than a finger, so the row keeps a button's height.
+  whoCompact: {
+    flex: 1,
+    gap: v3.space[10],
+    minHeight: ICON_BUTTON_TARGET,
+    minWidth: 0,
+    paddingHorizontal: 0,
+  },
   names: { flex: 1, gap: v3.space[4], minWidth: 0 },
+  namesCompact: { gap: 0 },
   nameRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[6] },
   name: { ...v3.type.title, flexShrink: 1 },
+  nameCompact: v3.type.headline,
   typing: { ...v3.type.caption, fontFamily: v3.type.label.fontFamily },
 }))

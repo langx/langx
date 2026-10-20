@@ -1,4 +1,9 @@
-import { completedEchoSessions, TOKEN_RULES, type EchoAward } from '@langx/shared'
+import {
+  clampEchoDurationMs,
+  TOKEN_RULES,
+  type EchoAward,
+  type SubmitEchoReviewsInput,
+} from '@langx/shared'
 
 /**
  * The redesign's Echo tab and done screen, as decisions rather than drawing:
@@ -22,13 +27,13 @@ export interface EchoDoneInput {
   /** What the batch paid, as the server answered it; absent from an older API. */
   award: EchoAward | undefined
   /**
-   * The summary's `reviewedToday`, read off a summary fetched after the batch
-   * landed — undefined while there is none. A rolling twenty-four hours, the
-   * same window `settleSessions` counts sessions over (see `docs/decisions.md`
-   * → _Echo leads with what is due, and the done screen says what it earned
-   * — behind the same flag_ for the day that window is not).
+   * The summary's `sessionsToday`, read off a summary fetched after the batch
+   * landed — undefined while there is none, and from an API older than the
+   * field. The server's own count, on the UTC day it keys payouts on, already
+   * capped: the number drawn is the number paid by (see `docs/decisions.md` →
+   * _Echo counts and pays sessions on one day, the UTC one_).
    */
-  reviewedToday: number | undefined
+  sessionsToday: number | undefined
   /** Cards still due in this session's language or partner, fetched after the batch. */
   dueNext: number | undefined
 }
@@ -48,13 +53,11 @@ export interface EchoDonePlan {
   more: boolean
 }
 
-export function planEchoDone({ award, reviewedToday, dueNext }: EchoDoneInput): EchoDonePlan {
+export function planEchoDone({ award, sessionsToday, dueNext }: EchoDoneInput): EchoDonePlan {
   const tokens = award && award.tokens > 0 ? award.tokens : null
   const streakDay = award?.streak && award.streak.current > 0 ? award.streak.current : null
   const cap = TOKEN_RULES.caps.echoSessionsPerDay
-  // The function the server pays by, on the window it counts over, so the
-  // number drawn and the sessions paid are one computation.
-  const done = reviewedToday === undefined ? undefined : completedEchoSessions(reviewedToday)
+  const done = sessionsToday
 
   let sessions: EchoDonePlan['sessions'] = null
   if (done !== undefined) {
@@ -64,4 +67,21 @@ export function planEchoDone({ award, reviewedToday, dueNext }: EchoDoneInput): 
 
   const more = done !== undefined && dueNext !== undefined && done < cap && dueNext > 0
   return { tokens, streakDay, sessions, more }
+}
+
+/**
+ * A batch as it is sent: every card's `durationMs` held to the server's
+ * ceiling. A card left on screen used to make the server refuse the whole
+ * batch, and the batch is the session. The server clamps too now, for builds
+ * without this; clamping here as well keeps a batch sent to an API older than
+ * that from being lost. Applied at the one place batches leave, so the grades
+ * queued offline before this build are covered as well.
+ */
+export function boundedEchoReviews(input: SubmitEchoReviewsInput): SubmitEchoReviewsInput {
+  return {
+    reviews: input.reviews.map((review) => ({
+      ...review,
+      durationMs: clampEchoDurationMs(review.durationMs),
+    })),
+  }
 }

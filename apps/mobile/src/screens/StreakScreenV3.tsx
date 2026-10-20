@@ -268,7 +268,12 @@ function MemberStreak() {
         */}
         {freeze && (current > 0 || banked > 0) ? (
           <StreakFreezes
-            title={t('streak.freezes', { banked, max: maxFreezes })}
+            title={
+              // Past the cap (the Pro welcome pack) "4 of 2" reads as a fault.
+              banked > maxFreezes
+                ? t('me.freezesBanked', { count: banked })
+                : t('streak.freezes', { banked, max: maxFreezes })
+            }
             body={t('streak.freezeBody')}
             banked={banked}
             max={maxFreezes}
