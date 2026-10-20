@@ -227,9 +227,7 @@ export function EchoCardsScreenV3() {
       <EchoHeaderV3
         title={t('echo.cards')}
         onBack={() => goBackTo('/(app)/(tabs)/echo')}
-        {...(shownTotal && !selected
-          ? { meta: t('echo.cardCount', { count: shownTotal }) }
-          : {})}
+        {...(shownTotal && !selected ? { meta: t('echo.cardCount', { count: shownTotal }) } : {})}
         trailing={
           selected ? (
             <Button
