@@ -198,6 +198,7 @@ PR.
 | 18 Oct 2026 | Merges               | Merge each PR as soon as its review fixes are in and CI is green                                                                                                                                                                                                                                       |
 | 18 Oct 2026 | Scope of 3.0         | Every screen moves to the v3 look; the flagged features join; all of it ships together as mobile 3.0                                                                                                                                                                                                   |
 | 19 Oct 2026 | Visuals              | After the code work: the branding repository's visuals and the App Store and Play screenshots are redone in the v3 look, from the finished screens                                                                                                                                                     |
+| 19 Oct 2026 | Token store          | The store, sticker packs, profile frames and titles look too plain: redesign them as a real store, with frames that are artistic and original, not only a colour                                                                                                                                       |
 
 ## Open questions
 
@@ -215,6 +216,80 @@ PR.
 Enabled on Behic's account and confirmed on 16 Oct 2026: Expo skills,
 frontend-design, mobile-app-design and design. The Expo and UXKIN MCP servers
 need sign-in and are not used; the skills work without them.
+
+## Token store v3 (designed 19 October)
+
+Behic asked for the store, the sticker packs, the profile frames and the titles
+to read as a real store, with frames that are art rather than a coloured ring.
+Three art directions were drawn and judged on the design canvas (page
+"Mağaza — sanat yönleri"): scripts and ink, living places, and crafted
+objects. Crafted objects won, with grafts from the other two. The final boards
+are on the page "Mağaza v3": the store home, the frames collection, a
+Legendary frame's detail sheet, titles, a sticker pack, and the master frame
+sheet at 96, 40 and 28 px in both schemes.
+
+**Why crafted objects.** The ladder rises by material — paper, felt, reed,
+glaze, lacquer, glass — not by country, so no culture is ranked cheaper than
+another. Its small cuts still read at 28 px. Places as a ladder put cities on a
+price scale and used sacred sites as decoration, and was dropped.
+
+**The frames.** Today a frame is a solid ring whose colour comes from its
+`tone`. Every existing id keeps its tone as its main colour, so an older client
+still draws a sensible ring.
+
+| Rarity    | Frames (tokens)                                                                         |
+| --------- | --------------------------------------------------------------------------------------- |
+| Common    | Papel Picado 1,000 · Running Stitch 2,500 · Woven Reed 4,000                            |
+| Rare      | Origami Fold 6,000 · Enamel Pin 9,000 · Iznik Tile 13,000                               |
+| Epic      | Khokhloma 18,000 · Qalam 25,000 · Night Hoop 35,000                                     |
+| Legendary | Aurora Glass 50,000, gated as today, with a ring of "hello" in nine languages at 64 px+ |
+
+The master sheet also draws six new frames between those rungs (Washi Tape,
+Linocut, Indigo Dye, Mosaic, Seal and Fret, Marquetry). They are a decision,
+not part of the plan yet: see the open questions below.
+
+Rules the boards follow: outline 2 px and detail 1–1.5 px at 96 px; at 40 px at
+most six shapes and no text; at 28 px a silhouette and one accent; no white
+grounds in dark mode; 3:1 against the surface. Aurora Glass is the only frame
+that moves — a six-second light sweep at most every 20 seconds, on your own
+profile and in the store preview only, still under reduce motion.
+
+**Titles** become styled badges with a motif in each end cap, shown under the
+name on the profile and, in a compact cut, in the chat header. **Sticker
+packs** get a cover and a pack page; the boards draw a new pack, Paper Talk
+(greetings paired with everyday objects), and a proofreading-marks pack that
+fits corrections. Every price is in tokens with one token glyph, never a
+currency.
+
+**How it ships.** All of it is JavaScript and bundled assets, so it ships by
+OTA: frames as `react-native-svg` components (already in the binary), the
+sweep in Reanimated, stickers as bundled SVG like today. No new native module.
+
+Implementation, in order, each behind `v3Home`:
+
+1. An unknown-tone fallback in `Avatar` (a plain ink ring), shipped first, so
+   no client ever draws a ring with no colour.
+2. `FrameArt` components for the ten existing ids, drawn at the three cuts,
+   with a test that every frame id in `COSMETICS` has art. `Avatar` draws the
+   art where the flag is on and the ring where it is off.
+3. Frames where other people look: chat thread header, conversation list and
+   Discover cards (today they show only on Me, profile and the leaderboard).
+4. The store home and the frames collection, replacing the v3 store's grey
+   groups; the frame detail sheet with the one yellow Buy.
+5. Title badges on the profile and the chat header.
+6. The sticker pack page, and new packs as their own PRs (assets, licence
+   notes, `stickerAssets.test.ts`).
+
+Open questions for Behic:
+
+- **Six more frames?** Inserting rungs into the ladder changes who may buy
+  what — someone who owns Woven Reed today would be locked out of a new
+  Linocut below it. Either append new frames above the current top, make them a
+  side collection outside the ladder, or keep ten.
+- **Sticker pack price.** The boards show Paper Talk at 1,500; today every
+  pack but pixel is 1,000.
+- **Frame names** replace today's colour names (Slate, Bronze…) in all eight
+  locales; the ids stay.
 
 ## Decided, not yet built
 
