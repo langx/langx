@@ -13,6 +13,8 @@ import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { LikesScreenV3 } from '../../src/screens/people/LikesScreenV3'
 
 /**
  * Who liked one post or one correction.
@@ -24,7 +26,12 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * block must hide. Echoing the card's number here would put a visible
  * contradiction on screen; the rows speak for themselves.
  */
-export default function LikesScreen() {
+export default function LikesRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <LikesScreenV3 /> : <LikesScreen />
+}
+
+function LikesScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

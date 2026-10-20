@@ -16,6 +16,7 @@ import { makeStyles, spacing } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 import { IconButton } from '../../src/components/ui/IconButton'
 import { useV3Home } from '../../src/hooks/useV3Home'
+import { ScanScreenV3 } from '../../src/screens/people/ScanScreenV3'
 
 /*
  * Literal colours, on purpose. A camera view is dark whichever scheme the app
@@ -40,7 +41,12 @@ const ON_STAGE_BORDER = 'rgba(255, 255, 255, 0.25)'
  * sign-in QR is *shown* there, and a browser scanning a profile QR is not a
  * thing anybody does.
  */
-export default function ScanScreen() {
+export default function ScanRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <ScanScreenV3 /> : <ScanScreen />
+}
+
+function ScanScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()
