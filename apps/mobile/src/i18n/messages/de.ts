@@ -1224,6 +1224,8 @@ export const de: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Ortszeit {time}.',
   },
   chat: {
+    newChatStarts: 'Dieser Chat beginnt mit deiner ersten Nachricht.',
+    pickFirstLine: 'Wähle einen ersten Satz',
     meetingLede:
       'Die andere Person kann annehmen oder ablehnen. Ihr seht die Zeit jeweils in eurer eigenen Zeitzone.',
     meetingDay: 'Tag',

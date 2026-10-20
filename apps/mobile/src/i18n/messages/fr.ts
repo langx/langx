@@ -1207,6 +1207,8 @@ export const fr: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Heure locale {time}.',
   },
   chat: {
+    newChatStarts: 'Cette discussion commence avec ton premier message.',
+    pickFirstLine: 'Choisis une première phrase',
     meetingLede: 'L’autre personne peut accepter ou refuser. Chacun le voit à sa propre heure.',
     meetingDay: 'Jour',
     meetingTime: 'Heure',

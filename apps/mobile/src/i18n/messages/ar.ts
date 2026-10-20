@@ -1384,6 +1384,8 @@ export const ar: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. {time} بالتوقيت المحلي.',
   },
   chat: {
+    newChatStarts: 'تبدأ هذه المحادثة برسالتك الأولى.',
+    pickFirstLine: 'اختر جملة أولى',
     meetingLede: 'يمكن للطرف الآخر القبول أو الرفض. يرى كل منكما الموعد بتوقيته.',
     meetingDay: 'اليوم',
     meetingTime: 'الوقت',

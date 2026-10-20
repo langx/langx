@@ -14,22 +14,30 @@ import { en } from '../i18n/messages/en'
  * accessibility role but `button` the current screen uses must be used by its
  * twin too. The v3 file may add, not drop.
  *
- * `replaced` is the one escape, and it is spelled out per key: where the
- * board says two of today's lines as one (an empty state's title and body
- * become one sentence), the new key must say the same thing in every locale
- * and the pair is named here, so the swap is a decision and not a drift.
+ * `via` is the one escape, spelled out per key: a word the current page
+ * writes itself and its twin reaches through a v3 kit component it draws —
+ * the thread's band names the partner `chat.title` until their profile
+ * arrives. The test then reads that component for the key and the v3 page
+ * for the component, so the word still cannot go missing unnoticed.
  */
 const APP = path.resolve(__dirname, '../../app/(app)')
 const SCREENS = path.resolve(__dirname, '../screens/chat')
+const SRC = path.resolve(__dirname, '..')
 
 const PAIRS: readonly {
   current: string
   v3: string
-  replaced?: Readonly<Record<string, string>>
+  /** Key → the kit file under `src/` that says it for the v3 page. */
+  via?: Readonly<Record<string, string>>
 }[] = [
   { current: 'starred.tsx', v3: 'StarredScreenV3.tsx' },
   { current: 'corrections.tsx', v3: 'CorrectionsScreenV3.tsx' },
   { current: 'propose-time.tsx', v3: 'ProposeTimeScreenV3.tsx' },
+  {
+    current: 'chat/new.tsx',
+    v3: 'NewChatScreenV3.tsx',
+    via: { 'chat.title': 'components/thread/ThreadHeaderV3.tsx' },
+  },
 ]
 
 function isMessageKey(value: string): boolean {
@@ -97,6 +105,10 @@ function uses(file: string): Uses {
     }
     // The kit's row says `link` for itself when it leaves the app.
     if (ts.isJsxAttribute(node) && node.name.getText(source) === 'external') found.roles.add('link')
+    // A header handed `onBack` draws the back button, named `common.backPlain`.
+    if (ts.isJsxAttribute(node) && node.name.getText(source) === 'onBack') {
+      found.keys.add('common.backPlain')
+    }
     // …and calls `goBackTo` for the page that hands it `back`.
     if (ts.isJsxAttribute(node) && node.name.getText(source) === 'back') found.calls.add('goBackTo')
     if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
@@ -117,13 +129,21 @@ function uses(file: string): Uses {
 }
 
 describe('v3 chat pages keep the current pages’ words and requests', () => {
-  for (const { current, v3, replaced = {} } of PAIRS) {
+  for (const { current, v3, via = {} } of PAIRS) {
     it(`${v3} uses everything ${current} does`, () => {
       const before = uses(path.join(APP, current))
       const after = uses(path.join(SCREENS, v3))
+      const v3Source = readFileSync(path.join(SCREENS, v3), 'utf8')
       expect(before.keys.size, `${current} has no keys — is the reader broken?`).toBeGreaterThan(0)
-      for (const key of before.keys)
-        expect(after.keys, `key ${key}`).toContain(replaced[key] ?? key)
+      for (const key of before.keys) {
+        const kit = via[key]
+        if (kit) {
+          expect(uses(path.join(SRC, kit)).keys, `key ${key} in ${kit}`).toContain(key)
+          expect(v3Source, `${v3} draws ${kit}`).toContain(path.basename(kit, '.tsx'))
+        } else {
+          expect(after.keys, `key ${key}`).toContain(key)
+        }
+      }
       for (const api of before.paths) expect(after.paths, `request ${api}`).toContain(api)
       for (const call of before.calls) expect(after.calls, `call ${call}`).toContain(call)
       for (const role of before.roles) {

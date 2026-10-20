@@ -1352,6 +1352,8 @@ export const en = {
     withTheirTimeAccessibility: '{presence}. Local time {time}.',
   },
   chat: {
+    newChatStarts: 'This chat starts with your first message.',
+    pickFirstLine: 'Pick a first line',
     meetingLede: 'They can accept or decline. Each of you sees it in your own time.',
     meetingDay: 'Day',
     meetingTime: 'Time',

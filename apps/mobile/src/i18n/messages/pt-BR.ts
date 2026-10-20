@@ -1191,6 +1191,8 @@ export const ptBR: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Horário local {time}.',
   },
   chat: {
+    newChatStarts: 'Esta conversa começa com a sua primeira mensagem.',
+    pickFirstLine: 'Escolha uma primeira frase',
     meetingLede: 'A outra pessoa pode aceitar ou recusar. Cada um vê no próprio horário.',
     meetingDay: 'Dia',
     meetingTime: 'Horário',

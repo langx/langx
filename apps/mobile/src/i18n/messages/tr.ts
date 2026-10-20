@@ -1180,6 +1180,8 @@ export const tr: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Yerel saat {time}.',
   },
   chat: {
+    newChatStarts: 'Bu sohbet senin ilk mesajınla başlar.',
+    pickFirstLine: 'İlk cümleyi seç',
     meetingLede:
       'Karşı taraf kabul edebilir ya da reddedebilir. İkiniz de kendi saatinizde görürsünüz.',
     meetingDay: 'Gün',

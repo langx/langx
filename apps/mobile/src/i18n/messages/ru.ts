@@ -1348,6 +1348,8 @@ export const ru: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Местное время {time}.',
   },
   chat: {
+    newChatStarts: 'Этот чат начнётся с твоего первого сообщения.',
+    pickFirstLine: 'Выбери первую фразу',
     meetingLede:
       'Собеседник может принять или отклонить. Каждый видит время в своём часовом поясе.',
     meetingDay: 'День',
