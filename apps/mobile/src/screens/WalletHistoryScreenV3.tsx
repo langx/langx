@@ -17,7 +17,7 @@ import { listState } from '../lib/listState'
 import { goBackTo } from '../lib/navigation'
 import { makeStyles, useTheme, type PartnerHue } from '../lib/theme'
 import { buildTokenHistory } from '../lib/tokenHistory'
-import { historyItems, ledgerNow, type HistoryItem } from '../lib/walletV3'
+import { historyItems, ledgerDayHeading, type HistoryItem } from '../lib/walletV3'
 
 type Glyph = keyof typeof Feather.glyphMap
 
@@ -73,12 +73,7 @@ export function WalletHistoryScreenV3() {
   const items = useMemo(
     () =>
       historyItems(
-        buildTokenHistory({
-          days: days?.flatMap((page) => page.days) ?? [],
-          t,
-          locale,
-          now: ledgerNow(),
-        }),
+        buildTokenHistory({ days: days?.flatMap((page) => page.days) ?? [], t, locale }),
       ),
     [days, t, locale],
   )
@@ -89,17 +84,11 @@ export function WalletHistoryScreenV3() {
     isPaused: history.fetchStatus === 'paused',
   })
 
-  // The date beside "Today" and "Yesterday", which do not say it; a heading
-  // that is already the date needs nothing more.
-  const today = t('day.today')
-  const yesterday = t('day.yesterday')
   const renderItem = useCallback(
     ({ item }: { item: HistoryItem }) => {
       if (item.kind === 'heading') {
-        const word = item.label === today || item.label === yesterday
-        return (
-          <HistoryHeading label={item.label} date={word ? longDate(item.day, locale) : undefined} />
-        )
+        // The UTC day's date rather than `item.label`: see `ledgerDayHeading`.
+        return <HistoryHeading label={ledgerDayHeading(item.day, locale)} />
       }
       const look = KIND_LOOK[item.entry.kind]
       const amount = item.entry.amount
@@ -119,7 +108,7 @@ export function WalletHistoryScreenV3() {
         />
       )
     },
-    [t, locale, today, yesterday, v3],
+    [t, locale, v3],
   )
 
   const header = (
@@ -183,12 +172,6 @@ export function WalletHistoryScreenV3() {
 }
 
 /** "Friday 16 October", for a day key, in the reader's language. */
-function longDate(day: string, locale: string): string | undefined {
-  const at = new Date(`${day}T00:00:00`)
-  if (Number.isNaN(at.getTime())) return undefined
-  return at.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })
-}
-
 const useStyles = makeStyles(({ v3 }) => ({
   list: { paddingBottom: v3.space[32] },
   skeleton: { gap: v3.space[10], paddingTop: v3.space[14] },

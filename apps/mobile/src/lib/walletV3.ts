@@ -26,17 +26,30 @@ export function freezeBankValue(
 }
 
 /**
- * The "now" the history's headings are named against: the device's clock
- * moved onto the UTC day, as noon of that date on the device.
+ * A v3 history block's heading: the date of its UTC day ("Monday, October
+ * 19"), with the year when it is not this UTC year, and never "Today" or
+ * "Yesterday".
  *
  * The ledger's days are UTC keys (decisions: token caps run on the UTC day),
- * and `dayLabel` names a key "Today" by the device's day. In a Toronto
- * evening those differ, and an "October 20" block sat above "Today" for
- * October 19. Named against the UTC day, "Today" is the newest block a token
- * can land in, and the labels run in order. The keys themselves are untouched.
+ * and west of UTC in the evening the device is still on the day before. A
+ * relative word is then wrong either way: named by the device's day, a dated
+ * block sits above "Today"; named by the UTC day, "Today" carries tomorrow's
+ * date. A date says which day the ledger means and claims nothing about the
+ * reader's. Behic's choice, 19 October 2026.
+ *
+ * The key is read as noon on the device, so the date printed is the key's in
+ * every zone.
  */
-export function ledgerNow(now: Date = new Date()): Date {
-  return new Date(`${now.toISOString().slice(0, 10)}T12:00:00`)
+export function ledgerDayHeading(day: string, locale: Locale, now: Date = new Date()): string {
+  const at = new Date(`${day}T12:00:00`)
+  if (Number.isNaN(at.getTime())) return day
+  const sameYear = day.slice(0, 4) === String(now.getUTCFullYear())
+  return at.toLocaleDateString(locale, {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    ...(sameYear ? {} : { year: 'numeric' }),
+  })
 }
 
 /** The rung the wallet's bar measures, and how far the balance is from it. */
