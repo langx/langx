@@ -129,6 +129,7 @@ export const fr: Localized<EnMessages> = {
       'LangX a besoin de l’autorisation d’ajouter des photos et des vidéos à ta photothèque. Tu peux l’accorder dans les Réglages.',
   },
   viewOnce: {
+    tapToClose: 'Touche n’importe où pour fermer',
     photo: 'Photo',
     video: 'Vidéo',
     tapToView: 'Touche pour voir',

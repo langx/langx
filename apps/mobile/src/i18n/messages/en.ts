@@ -168,6 +168,7 @@ export const en = {
    * person it was sent to, and what has been done for the person who sent it.
    */
   viewOnce: {
+    tapToClose: 'Tap anywhere to close',
     photo: 'Photo',
     video: 'Video',
     tapToView: 'Tap to view',

@@ -135,6 +135,7 @@ export const tr: Localized<EnMessages> = {
       'Kaydetmek için LangX’in fotoğraf ve video ekleme iznine ihtiyacı var. Bu izni Ayarlar’dan verebilirsin.',
   },
   viewOnce: {
+    tapToClose: 'Kapatmak için herhangi bir yere dokun',
     photo: 'Fotoğraf',
     video: 'Video',
     tapToView: 'Görmek için dokun',

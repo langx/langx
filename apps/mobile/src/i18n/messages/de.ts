@@ -129,6 +129,7 @@ export const de: Localized<EnMessages> = {
       'LangX braucht die Erlaubnis, Fotos und Videos zu deiner Mediathek hinzuzufügen. Du kannst sie in den Einstellungen erteilen.',
   },
   viewOnce: {
+    tapToClose: 'Tippe irgendwo, um zu schließen',
     photo: 'Foto',
     video: 'Video',
     tapToView: 'Zum Ansehen tippen',

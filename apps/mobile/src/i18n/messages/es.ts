@@ -132,6 +132,7 @@ export const es: Localized<EnMessages> = {
       'LangX necesita permiso para añadir fotos y vídeos a tu galería. Puedes darlo en Ajustes.',
   },
   viewOnce: {
+    tapToClose: 'Toca en cualquier sitio para cerrar',
     photo: 'Foto',
     video: 'Vídeo',
     tapToView: 'Toca para ver',
