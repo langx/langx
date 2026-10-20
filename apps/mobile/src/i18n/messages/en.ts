@@ -2735,6 +2735,7 @@ export const en = {
   },
 
   cosmetics: {
+    stickersPaper: 'Paper Talk',
     stickersPixel: 'Pixel stickers',
     stickersPractice: 'Practice stickers',
     stickersStarter: 'Starter stickers',

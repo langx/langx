@@ -3043,6 +3043,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPaper: 'حديث الورق',
     stickersPixel: 'ملصقات بكسل',
     stickersPractice: 'ملصقات التدريب',
     stickersStarter: 'ملصقات البداية',

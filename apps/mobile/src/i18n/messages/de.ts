@@ -2518,6 +2518,7 @@ export const de: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPaper: 'Papiergeplauder',
     stickersPixel: 'Pixel-Sticker',
     stickersPractice: 'Übungs-Sticker',
     stickersStarter: 'Starter-Sticker',

@@ -10,6 +10,18 @@
  * no entry here and an entry with no id in the catalogue are both invisible to
  * the compiler.
  */
+import paperBook from '../../assets/stickers/paper/book.svg'
+import cafe from '../../assets/stickers/paper/cafe.svg'
+import cay from '../../assets/stickers/paper/cay.svg'
+import crane from '../../assets/stickers/paper/crane.svg'
+import fixed from '../../assets/stickers/paper/fixed.svg'
+import gotit from '../../assets/stickers/paper/gotit.svg'
+import hola from '../../assets/stickers/paper/hola.svg'
+import merci from '../../assets/stickers/paper/merci.svg'
+import nice from '../../assets/stickers/paper/nice.svg'
+import night from '../../assets/stickers/paper/night.svg'
+import onesec from '../../assets/stickers/paper/onesec.svg'
+import sent from '../../assets/stickers/paper/sent.svg'
 import checkpoint from '../../assets/stickers/pixel/checkpoint.svg'
 import coin from '../../assets/stickers/pixel/coin.svg'
 import controller from '../../assets/stickers/pixel/controller.svg'
@@ -48,6 +60,21 @@ import thinking from '../../assets/stickers/starter/thinking.svg'
 import wave from '../../assets/stickers/starter/wave.svg'
 
 export const STICKER_ASSETS: Record<string, Record<string, number>> = {
+  'stickers.paper': {
+    // Renamed on import only, as `thinking` is below: `starter` has a `book`.
+    book: paperBook,
+    cafe,
+    cay,
+    crane,
+    fixed,
+    gotit,
+    hola,
+    merci,
+    nice,
+    night,
+    onesec,
+    sent,
+  },
   'stickers.pixel': {
     checkpoint,
     coin,

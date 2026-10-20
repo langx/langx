@@ -2470,6 +2470,7 @@ export const es: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPaper: 'Charla de papel',
     stickersPixel: 'Stickers pixel art',
     stickersPractice: 'Stickers de práctica',
     stickersStarter: 'Stickers iniciales',

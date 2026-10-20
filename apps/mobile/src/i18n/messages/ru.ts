@@ -2847,6 +2847,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPaper: 'Бумажные фразы',
     stickersPixel: 'Пиксельные стикеры',
     stickersPractice: 'Стикеры для практики',
     stickersStarter: 'Стартовые стикеры',

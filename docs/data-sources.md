@@ -49,6 +49,13 @@ Fluent has no variant of, so all twelve are ours — generated from
 characters rather than a path. Edit the grid and re-run it; the SVGs are
 committed output.
 
+`paper` (Paper Talk) takes nothing either. All twelve were drawn for this app
+on the v3 store's design board and carry no licence but ours. Its lettering is
+Nunito Black, converted to outlines, so the files hold paths and no font; Nunito
+is under the SIL Open Font License (see `apps/api/assets/fonts/`), which allows
+glyph outlines in artwork. The SVGs are the source: to change a word, redraw it
+on the board and outline it again rather than editing the path data.
+
 |             |                                                                                                                                                                                                           |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Source      | <https://github.com/microsoft/fluentui-emoji>                                                                                                                                                             |
@@ -67,6 +74,16 @@ Three rules every pack follows, all of which outlive this particular art:
 not obliged to read English, and this app speaks eight languages. It is the
 same rule as `t('some.key')`, applied to a picture. It also sidesteps SVG
 `<text>`, whose font is not ours to rely on.
+
+> **Amended 20 October 2026 — Paper Talk is lettered on purpose.** The v3
+> store's design, which Behic chose, draws a pack whose point is the words:
+> "¡Hola!", "Merci", "Çay?", "Café?" are the kind of word a language exchange
+> trades in, and "Nice!" or "Fixed it" are the replies learners actually send.
+> The rule still holds for every other pack. Paper Talk keeps the second half
+> of it: there is no `<text>` in any file, every word is outlined into paths.
+> Its screen-reader names are translated (`stickerName.*` in the app's
+> messages), so the words on the picture are never the only way to know what
+> it says.
 
 **No filters and no gradients.** `expo-image` decodes SVG through `androidsvg`
 on Android, which supports neither. Anything richer draws on iOS and the web

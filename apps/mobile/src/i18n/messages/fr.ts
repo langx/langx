@@ -2503,6 +2503,7 @@ export const fr: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPaper: 'Papier bavard',
     stickersPixel: 'Stickers pixel art',
     stickersPractice: 'Stickers d’entraînement',
     stickersStarter: 'Stickers de départ',

@@ -2466,6 +2466,7 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   cosmetics: {
+    stickersPaper: 'Papo de papel',
     stickersPixel: 'Stickers pixel art',
     stickersPractice: 'Stickers de prática',
     stickersStarter: 'Stickers iniciais',
