@@ -155,6 +155,25 @@ describe('notification centre', () => {
     throw new Error(`inbox never reached ${String(expected)} rows`)
   }
 
+  /**
+   * Waits until the user holds `expected` notification documents.
+   *
+   * The routes answer before the inbox rows are written (`tellTheAuthor` is
+   * fire-and-forget on purpose), so a count over several writes cannot be
+   * read off the first row `inbox` sees: that row exists while the others are
+   * still in flight.
+   */
+  async function documentsWritten(user: SignedUpUser, expected: number): Promise<void> {
+    for (let attempt = 0; attempt < 40; attempt++) {
+      const held = await handle.db
+        .collection(COLLECTIONS.notifications)
+        .countDocuments({ userId: user.userId })
+      if (held >= expected) return
+      await new Promise((resolve) => setTimeout(resolve, 50))
+    }
+    throw new Error(`notifications never reached ${String(expected)} documents`)
+  }
+
   function unread(user: SignedUpUser) {
     return app.inject({
       method: 'GET',
@@ -460,6 +479,8 @@ describe('notification centre', () => {
     await comment(a, postId, 'One.')
     await comment(b, postId, 'Two.')
     await comment(a, postId, 'Three.')
+    // All three writes, not the first row: the group's count is what is asserted.
+    await documentsWritten(author, 3)
     const rows = await inbox(author, 1)
 
     expect(rows).toHaveLength(1)
