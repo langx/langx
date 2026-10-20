@@ -122,9 +122,7 @@ export function ThreadCelebrationV3({
               {t('tokens.shareAmount', { count: amount })}
             </Text>
           </View>
-          <Text style={styles.rewardNote}>
-            {t('chat.celebrateStreakNote', { count: amount })}
-          </Text>
+          <Text style={styles.rewardNote}>{t('chat.celebrateStreakNote', { count: amount })}</Text>
           {share ? (
             <Button
               variant="hue"
