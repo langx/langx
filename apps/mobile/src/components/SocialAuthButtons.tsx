@@ -32,19 +32,32 @@ export interface SocialAuthButtonsProps {
    * Where the "or" rule is drawn. `below` is for sign-up, where the providers
    * come first — they are the only paths with no trip to an inbox — and the
    * rule then separates them from the email form underneath rather than
-   * hanging above the screen's first choice.
+   * hanging above the screen's first choice. `none` is for v3's sign-in,
+   * whose "or" sits above the sign-in link, and the providers follow it.
    */
-  divider?: 'above' | 'below'
+  divider?: 'above' | 'below' | 'none'
   /**
    * Called when a provider button is pressed, before the flow leaves the app.
    * Sign-up passes the counter; sign-in passes nothing, because signing in is
    * not a sign-up and must not arrive in the funnel as one.
    */
   onStart?: (method: 'google' | 'apple' | 'facebook' | 'discord') => void
+  /**
+   * The redesign's drawing, behind `flags.v3Home`: the 52pt provider pills
+   * and v3's rule. Only the drawing — the providers, their order and every
+   * handler are the ones above, so the two looks cannot offer different doors.
+   */
+  look?: 'current' | 'v3'
 }
 
-export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButtonsProps = {}) {
+export function SocialAuthButtons({
+  divider = 'above',
+  onStart,
+  look = 'current',
+}: SocialAuthButtonsProps = {}) {
   const styles = useStyles()
+  const v3 = look === 'v3'
+  const size = v3 ? 'medium' : 'default'
   const t = useT()
 
   /**
@@ -156,10 +169,10 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
   }
 
   const rule = (
-    <View style={styles.divider}>
-      <View style={styles.dividerLine} />
-      <Text style={styles.dividerText}>{t('auth.or')}</Text>
-      <View style={styles.dividerLine} />
+    <View style={[styles.divider, v3 && styles.dividerV3]}>
+      <View style={[styles.dividerLine, v3 && styles.dividerLineV3]} />
+      <Text style={[styles.dividerText, v3 && styles.dividerTextV3]}>{t('auth.or')}</Text>
+      <View style={[styles.dividerLine, v3 && styles.dividerLineV3]} />
     </View>
   )
 
@@ -167,7 +180,9 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
     <>
       {divider === 'above' ? rule : null}
 
-      {socialError ? <Text style={styles.socialError}>{socialError}</Text> : null}
+      {socialError ? (
+        <Text style={[styles.socialError, v3 && styles.socialErrorV3]}>{socialError}</Text>
+      ) : null}
 
       {/*
         `neutral` and `secondary` draw the same; a provider's button is a
@@ -178,6 +193,7 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
           label={t('auth.continueWithGoogle')}
           onPress={() => void onGoogle()}
           variant="neutral"
+          size={size}
           icon={<ProviderMark provider="google" />}
         />
       ) : null}
@@ -186,6 +202,7 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
           label={t('auth.continueWithApple')}
           onPress={() => void onApple()}
           variant="neutral"
+          size={size}
           icon={<ProviderMark provider="apple" />}
         />
       ) : null}
@@ -194,6 +211,7 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
           label={t('auth.continueWithFacebook')}
           onPress={() => void onFacebook()}
           variant="neutral"
+          size={size}
           icon={<ProviderMark provider="facebook" />}
         />
       ) : null}
@@ -202,6 +220,7 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
           label={t('auth.continueWithDiscord')}
           onPress={() => void onDiscord()}
           variant="neutral"
+          size={size}
           icon={<ProviderMark provider="discord" />}
         />
       ) : null}
@@ -210,7 +229,7 @@ export function SocialAuthButtons({ divider = 'above', onStart }: SocialAuthButt
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
+const useStyles = makeStyles(({ colors, font, spacing, v3 }) => ({
   divider: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -220,4 +239,8 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   dividerLine: { backgroundColor: colors.border, flex: 1, height: StyleSheet.hairlineWidth },
   dividerText: { ...font.label, color: colors.textFaint, fontWeight: '400' },
   socialError: { ...font.body, color: colors.danger },
+  dividerV3: { gap: v3.space[12], marginVertical: 0 },
+  dividerLineV3: { backgroundColor: v3.colors.line, height: 2 },
+  dividerTextV3: { ...v3.type.caption, color: v3.colors.muted },
+  socialErrorV3: { ...v3.type.callout, color: v3.colors.danger },
 }))

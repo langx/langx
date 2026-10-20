@@ -25,6 +25,8 @@ import { PASSWORD_MIN_LENGTH, passwordIssueKey } from '../../src/lib/passwordFor
 import { nameFromEmail } from '../../src/lib/seedDisplayName'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
+import { SignUpV3 } from '../../src/components/auth/SignUpV3'
 
 /**
  * Pulled from the same table Settings renders, so a URL that moves moves here
@@ -50,6 +52,8 @@ export default function SignUp() {
   const { data: session } = authClient.useSession()
   const fromGuest = shouldGateGuest(session?.user)
   const captcha = useCaptcha()
+  // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
 
   async function onSubmit() {
     setError(undefined)
@@ -106,6 +110,29 @@ export default function SignUp() {
   // form the button refuses — nor fire twice while one is in flight.
   const filled = !!email && !passwordTooShort(password) && accepted
   const canSubmit = !loading && filled && !captcha.checking
+
+  if (v3) {
+    return (
+      <SignUpV3
+        email={email}
+        onChangeEmail={setEmail}
+        password={password}
+        onChangePassword={setPassword}
+        passwordError={issue ? t(issue, { min: PASSWORD_MIN_LENGTH }) : error}
+        accepted={accepted}
+        onChangeAccepted={setAccepted}
+        termsUrl={TERMS_LINK.url}
+        privacyUrl={PRIVACY_LINK.url}
+        loading={loading}
+        canSubmit={canSubmit}
+        onSubmit={onSubmit}
+        captchaWidget={captcha.widget}
+        captchaChecking={filled && captcha.checking}
+        onSocialStart={(method) => recordSignupSubmitted(method, fromGuest)}
+        onBrowse={() => void browse()}
+      />
+    )
+  }
 
   return (
     <Screen scroll style={styles.form}>
