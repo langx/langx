@@ -56,6 +56,7 @@ import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
 import { lookupTranslation, rememberTranslation } from '../translation/translate'
 import { toEchoCard, type EchoAggregate, type EchoCardDoc, type EchoReviewDoc } from './documents'
+import { echoSessionsToday } from './reviews'
 
 /**
  * What a capture needs from outside the database.
@@ -1041,7 +1042,7 @@ export async function summary(
   // wrong, and the Monday reset would be the half nobody expects.
   const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
 
-  const [byLanguage, reviewedToday, reviewedThisWeek, next, allTime, recent, partners] =
+  const [byLanguage, reviewedToday, reviewedThisWeek, next, allTime, recent, partners, paid] =
     await Promise.all([
       cards
         .aggregate<{ _id: string; total: number; due: number }>([
@@ -1129,6 +1130,10 @@ export async function summary(
           { $limit: ECHO_SUMMARY_PARTNERS },
         ])
         .toArray(),
+      // The count sessions are paid by, which is the UTC day and not the
+      // rolling one above: the done screen's "Session X of N" has to be the
+      // number the ledger was keyed with.
+      echoSessionsToday(db, userId, now),
     ])
 
   const languages = byLanguage.map((row) => ({ lang: row._id, total: row.total, due: row.due }))
@@ -1148,5 +1153,6 @@ export async function summary(
       front: row.front,
       back: row.back,
     })),
+    sessionsToday: paid.sessions,
   }
 }
