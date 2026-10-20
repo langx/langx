@@ -2,20 +2,19 @@ import type { ReactNode } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import Svg, { Circle, Path, Rect } from 'react-native-svg'
 import { cosmeticLabel, useLocale, useT } from '../../i18n'
-import { DISPLAY_FONT, useTheme } from '../../lib/theme'
+import { useTheme } from '../../lib/theme'
 import { TITLE_ART, titleArtKey, type TitleKey } from '../../lib/titleArt'
 
 /** The profile's and v3 Me's cut, and the thread band's. */
 export type TitleBadgeSize = 'full' | 'compact'
 
 const HEIGHT: Record<TitleBadgeSize, number> = { full: 32, compact: 24 }
-const FONT: Record<
-  TitleBadgeSize,
-  { fontSize: number; lineHeight: number; letterSpacing: number }
-> = {
-  full: { fontSize: 13, lineHeight: 16, letterSpacing: 1.2 },
-  compact: { fontSize: 11, lineHeight: 14, letterSpacing: 0.7 },
-}
+/**
+ * The word is v3's label step at both cuts — the ramp's smallest — and the
+ * compact cut only tracks it tighter, so a title reads the same size in the
+ * thread band as under the name on the profile.
+ */
+const TRACKING: Record<TitleBadgeSize, number> = { full: 1.2, compact: 0.6 }
 
 /**
  * An end cap: a motif drawn in the board's own units, so its paths are the
@@ -26,8 +25,6 @@ interface Cap {
   box: readonly [number, number, number, number]
   art: ReactNode
 }
-
-const DIAMOND = 'M4 0 L8 5 L4 10 L0 5 Z'
 
 /*
  * The motifs, start and end, from the titles board. Each is its own small
@@ -327,7 +324,7 @@ export function TitleBadge({
 }) {
   const t = useT()
   const { locale, isRtl } = useLocale()
-  const { scheme } = useTheme()
+  const { scheme, v3 } = useTheme()
   // Every title the catalogue sells has art (`titleArt.test.ts`), and the
   // worn one comes from `wornCosmetic`, which knows only that catalogue.
   const key = titleArtKey(id)
@@ -342,7 +339,7 @@ export function TitleBadge({
   const end = !compact && art.end ? caps.end : undefined
   // Letter-spacing pulls Arabic's joined letters apart, so the RTL script
   // gets none; capitals mean nothing there either.
-  const font = { ...FONT[size], ...(isRtl ? { letterSpacing: 0 } : {}) }
+  const font = { ...v3.type.label, letterSpacing: isRtl ? 0 : TRACKING[size] }
 
   return (
     <View
@@ -426,5 +423,5 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   word: { flexShrink: 1, justifyContent: 'center', paddingHorizontal: 6 },
-  text: { fontFamily: DISPLAY_FONT, textAlign: 'center' },
+  text: { textAlign: 'center' },
 })
