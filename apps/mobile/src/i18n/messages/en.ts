@@ -2934,6 +2934,8 @@ export const en = {
      */
     emptyTitle: 'No badges yet',
     emptyBody: '@{handle} has not earned one yet. They are given for showing up and for helping.',
+    /** The empty shelf's way back to the profile it was opened from. */
+    emptyBack: 'Back to @{handle}',
   },
 
   shared: {
@@ -3205,6 +3207,13 @@ export const en = {
     writtenEmptyBody:
       'Had a great practice partner? A short review on their profile helps others find them.',
     meRowBody: 'What partners say about you, and what you wrote',
+    /** The empty lists' one button: the people who could write one are in Chats. */
+    emptyAction: 'Go to Chats',
+    /**
+     * The chip under the title on somebody's full list: whose reviews these
+     * are, and how many. `amount` is `count` formatted for the locale.
+     */
+    onProfile: { one: 'On {name}’s profile · {amount}', other: 'On {name}’s profile · {amount}' },
   },
 
   blocked: {

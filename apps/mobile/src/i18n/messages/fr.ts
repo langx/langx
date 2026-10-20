@@ -2686,6 +2686,7 @@ export const fr: Localized<EnMessages> = {
     earnedOf: '{earned} sur {total} obtenus',
     emptyTitle: 'Pas encore de badges',
     emptyBody: '@{handle} n’en a encore gagné aucun. Ils récompensent la présence et l’entraide.',
+    emptyBack: 'Retour à @{handle}',
   },
 
   shared: {
@@ -2945,6 +2946,11 @@ export const fr: Localized<EnMessages> = {
     writtenEmptyBody:
       'Un super partenaire de pratique ? Un petit avis sur son profil aide les autres à le trouver.',
     meRowBody: 'Ce que tes partenaires disent de toi, et ce que tu as écrit',
+    emptyAction: 'Aller aux discussions',
+    onProfile: {
+      one: 'Sur le profil de {name} · {amount}',
+      other: 'Sur le profil de {name} · {amount}',
+    },
   },
 
   blocked: {

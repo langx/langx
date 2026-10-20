@@ -14,6 +14,13 @@ import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { BadgesScreenV3 } from '../../src/screens/me/BadgesScreenV3'
+
+/** Badges, or with `flags.v3Home` on the redesign's (`BadgesScreenV3`). */
+export default function BadgesScreenRoute() {
+  return useV3Home() ? <BadgesScreenV3 /> : <BadgesScreen />
+}
 
 /**
  * Badges, and how far the next one is.
@@ -38,7 +45,7 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * badges, so no row can offer to share a badge that is not yours, and `next`
  * is absent, so no row draws a fraction of somebody else's token balance.
  */
-export default function BadgesScreen() {
+function BadgesScreen() {
   useScreenInteractive()
   const [card, setCard] = useState<ShareCardRequest | null>(null)
   const styles = useStyles()

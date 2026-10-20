@@ -23,10 +23,17 @@ import { reportActionError } from '../../src/lib/reportActionError'
 import { makeStyles } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { TestimonialsScreenV3 } from '../../src/screens/me/TestimonialsScreenV3'
 
 type Tab = 'received' | 'written'
 
 const HERE = '/(app)/testimonials'
+
+/** Your reviews, or with `flags.v3Home` on the redesign's (`TestimonialsScreenV3`). */
+export default function MyTestimonialsScreenRoute() {
+  return useV3Home() ? <TestimonialsScreenV3 /> : <MyTestimonialsScreen />
+}
 
 /**
  * Your reviews: the ones on your profile, and the ones you wrote.
@@ -36,7 +43,7 @@ const HERE = '/(app)/testimonials'
  * it is yours to choose. The author is never told; their row reads the same
  * to them either way.
  */
-export default function MyTestimonialsScreen() {
+function MyTestimonialsScreen() {
   useScreenInteractive()
   const t = useT()
   const [tab, setTab] = useState<Tab>('received')

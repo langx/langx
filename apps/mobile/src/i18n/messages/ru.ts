@@ -3114,6 +3114,7 @@ export const ru: Localized<EnMessages> = {
     earnedOf: 'Получено {earned} из {total}',
     emptyTitle: 'Значков пока нет',
     emptyBody: '@{handle} пока не заработал(а) ни одного. Их дают за постоянство и за помощь.',
+    emptyBack: 'Назад к @{handle}',
   },
 
   shared: {
@@ -3392,6 +3393,13 @@ export const ru: Localized<EnMessages> = {
     writtenEmptyBody:
       'Попался отличный собеседник? Короткий отзыв в профиле поможет другим его найти.',
     meRowBody: 'Что о тебе пишут собеседники и что написал ты',
+    emptyAction: 'К чатам',
+    onProfile: {
+      one: 'В профиле {name} · {amount}',
+      few: 'В профиле {name} · {amount}',
+      many: 'В профиле {name} · {amount}',
+      other: 'В профиле {name} · {amount}',
+    },
   },
 
   blocked: {

@@ -2652,6 +2652,7 @@ export const es: Localized<EnMessages> = {
     earnedOf: '{earned} de {total} conseguidas',
     emptyTitle: 'Aún no hay insignias',
     emptyBody: '@{handle} todavía no ha ganado ninguna. Se dan por aparecer y por ayudar.',
+    emptyBack: 'Volver a @{handle}',
   },
 
   shared: {
@@ -2908,6 +2909,11 @@ export const es: Localized<EnMessages> = {
     writtenEmptyBody:
       '¿Tienes un gran compañero de práctica? Una reseña breve en su perfil ayuda a que otros lo encuentren.',
     meRowBody: 'Lo que dicen de ti y lo que has escrito tú',
+    emptyAction: 'Ir a Chats',
+    onProfile: {
+      one: 'En el perfil de {name} · {amount}',
+      other: 'En el perfil de {name} · {amount}',
+    },
   },
 
   blocked: {
