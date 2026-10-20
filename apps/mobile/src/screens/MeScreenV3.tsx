@@ -1,5 +1,11 @@
 import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
-import { TIER_BADGES, TIER_NAMES, badgeStripMarks, wornCosmetic } from '@langx/shared'
+import {
+  TIER_BADGES,
+  TIER_NAMES,
+  badgeStripMarks,
+  wornCosmetic,
+  wornFrameTone,
+} from '@langx/shared'
 import { useFonts } from 'expo-font'
 import { router } from 'expo-router'
 import { useState } from 'react'
@@ -165,7 +171,7 @@ function MemberMe() {
 
   const profile = me.data
   const owned = wallet.data?.owned ?? []
-  const wornFrame = wornCosmetic(wallet.data?.equipped, owned, 'frame')
+  const wornFrame = wornFrameTone(wallet.data?.equipped, owned)
   const wornTitle = wornCosmetic(wallet.data?.equipped, owned, 'title')
   const ownHue = partnerHueFor(profile._id)
   const hue = v3.hues[ownHue]
@@ -207,7 +213,7 @@ function MemberMe() {
       url: profile.avatarUrl,
       name: profile.displayName,
       seed: profile._id,
-      frame: wornFrame?.tone,
+      frame: wornFrame,
     },
     onOpenAvatar: profile.avatarUrl ? () => setAvatarOpen(true) : undefined,
     openAvatarLabel: t('photo.open'),

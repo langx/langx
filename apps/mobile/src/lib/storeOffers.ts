@@ -1,6 +1,7 @@
 import {
   COSMETICS,
   meetsRequirement,
+  ladderOpen,
   previousCosmetic,
   type CosmeticKind,
   type CosmeticTone,
@@ -240,7 +241,7 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
      * missing.
      */
     const previous = previousCosmetic(item)
-    if (previous && !offer.owned && !input.owned.includes(previous.id)) {
+    if (previous && !offer.owned && !ladderOpen(item, input.owned)) {
       offer.locked = true
       offer.affordable = false
       offer.needs = t(cosmeticKey(previous.id))
