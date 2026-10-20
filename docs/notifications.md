@@ -592,6 +592,26 @@ and leave the evening's real news with nowhere to go.
 | 8   | You have N tokens waiting               | balance ≥ 200, nothing spent in a fortnight           | promotions |
 | 9   | Invite a friend                         | 14 days old, active, has invited nobody               | promotions |
 
+**Where each one's button lands** is `PROMOTION_DESTINATIONS` in
+`email/templates.ts`, beside the copy: the photo nudge on Edit profile, the
+streak and the tokens on the wallet, the two absences on Discover, the invite
+on Settings → Share, and the three about the plans — 5, 6 and 7 — on Settings →
+Subscription (`/settings/plan`). Every push of the table is a `promotion` push,
+which opens Discover.
+
+**With `flags.promoPaywallLinks` on** (off by default), nudges 6 and 7 open
+the paywall instead, each with a road of its own: the mail's button points at
+`/paywall?source=nudge_win_back` or `/paywall?source=nudge_limits` on the web
+host — the app opens it where it is installed — and the push carries
+`paywallSource` beside its kind. Both say "See the plans", and the Subscription
+page answers that for a free account with a button to the paywall: one screen
+more, counted as `settings`. Nudge 5 stays on `/settings/plan` whatever the
+switch says: everybody it reaches is in a trial and holds Pro, and the paywall
+is not shown to sell Pro to a person who has it. The switch changes where a tap
+lands and nothing else — consent, the gap, the hour and the digest decide who
+is told exactly as before, and no new mail or push is sent. A build that
+predates the field opens Discover for the push, as it always has.
+
 `periodType` and `churnedFrom` are written from 10 September 2026 onward and
 **cannot be backfilled** — so nudges 5 and 6 reach only people whose trial
 began, or whose plan ended, after that deploy.
@@ -896,20 +916,21 @@ appears at noon the next day.
 
 `apps/mobile/src/lib/notificationRoute.ts`.
 
-| Kind                         | Opens                                                   |
-| ---------------------------- | ------------------------------------------------------- |
-| `message`, `meetingReminder` | the conversation, or `/chats`                           |
-| `call`                       | the conversation, or `/chats`                           |
-| `streakReminder`             | `/chats`                                                |
-| `badgeEarned`                | `/me`                                                   |
-| `profileVisits`              | `/viewers`                                              |
-| `social`                     | the post, the person, your reviews, or `/notifications` |
-| `wallet`, `bountyPaid`       | `/wallet`                                               |
-| `wallet` with `repairDay`    | `/wallet/store`; `/wallet` on a build that predates it  |
-| `billing`                    | `/settings/plan`                                        |
-| `security`                   | `/settings/password`                                    |
-| `echo`                       | `/echo`                                                 |
-| `promotion`                  | `/discover`                                             |
+| Kind                             | Opens                                                        |
+| -------------------------------- | ------------------------------------------------------------ |
+| `message`, `meetingReminder`     | the conversation, or `/chats`                                |
+| `call`                           | the conversation, or `/chats`                                |
+| `streakReminder`                 | `/chats`                                                     |
+| `badgeEarned`                    | `/me`                                                        |
+| `profileVisits`                  | `/viewers`                                                   |
+| `social`                         | the post, the person, your reviews, or `/notifications`      |
+| `wallet`, `bountyPaid`           | `/wallet`                                                    |
+| `wallet` with `repairDay`        | `/wallet/store`; `/wallet` on a build that predates it       |
+| `billing`                        | `/settings/plan`                                             |
+| `security`                       | `/settings/password`                                         |
+| `echo`                           | `/echo`                                                      |
+| `promotion`                      | `/discover`                                                  |
+| `promotion` with `paywallSource` | `/paywall?source=…`; `/discover` on a build that predates it |
 
 **A kind is routing, not consent.** The streak repair is a streak notification
 sent as `wallet`, because an unknown kind routes nowhere: `notificationRoute`

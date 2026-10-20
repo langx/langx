@@ -7,6 +7,7 @@ import {
   streakSavable,
   utcDayKey,
   type Locale,
+  type PromotionPaywallSource,
   type PushKind,
   type PushPlatform,
   type CallCancelData,
@@ -162,6 +163,12 @@ export interface PushMessage {
      * reads it opens the store, and one that does not opens the wallet.
      */
     repairDay?: string
+    /**
+     * A promotional nudge about the plans, once `flags.promoPaywallLinks` is
+     * on: the paywall road to open. A build that reads it opens the paywall,
+     * and one that does not opens Discover, as for every `promotion` push.
+     */
+    paywallSource?: PromotionPaywallSource
   }
   /**
    * The number to put on the app icon — the recipient's unread total, from

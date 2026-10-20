@@ -174,6 +174,16 @@ export const appConfigSchema = z.object({
      * behind a switch_.
      */
     newcomerHello: z.boolean(),
+    /**
+     * The promotional nudges about the plans — "running into the free
+     * limits" and "your plan ended a week ago" — open the paywall with a
+     * source of their own (`PROMOTION_PAYWALL_SOURCES`), by mail and by push,
+     * instead of Settings → Subscription and Discover. Nobody new is told
+     * anything and nothing is sent at another time; only where the tap lands
+     * changes. Starts off because it is promotion, and promotion moves when
+     * Behic switches it rather than when a pull request merges.
+     */
+    promoPaywallLinks: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -204,6 +214,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     giveAWeek: false,
     proWeek: false,
     newcomerHello: false,
+    promoPaywallLinks: false,
   },
 }
 

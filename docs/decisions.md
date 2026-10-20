@@ -8780,3 +8780,36 @@ already follows inserts on the collections it announces, holds a read-only
 database user, and runs on exactly one machine; the unique
 `{pollId, userId}` index means an insert happens once per person, so "only
 the first answer" needs no code at all.
+
+## A promotional nudge about the plans opens the paywall, behind a switch
+
+Two of the nine nudges are about the plans — "You are running into the free
+limits" and "Your plan ended a week ago" — and both end on "See the plans".
+Their mail opened Settings → Subscription, which for the free accounts these
+reach lists nothing held and offers a button to the paywall; their push opened
+Discover, like every `promotion` push. One answered the sentence a screen late,
+the other not at all, and the paywall that eventually opened could not tell
+either from the Settings row (`settings`) or from nothing.
+
+With `flags.promoPaywallLinks` on, both open the paywall directly, each with
+its own road: `nudge_limits` and `nudge_win_back`. The mail's button is
+`/paywall?source=…` on the web host, which the app claims, so it opens the
+app's paywall where LangX is installed and the web build's anywhere else. The
+push carries `paywallSource` beside `kind: 'promotion'` rather than a new kind,
+so a build that does not read it opens Discover as it always did.
+
+- **One list, in `@langx/shared`.** `PROMOTION_PAYWALL_SOURCES` is what the
+  server may write and what the app's `PAYWALL_SOURCES` spreads in. A road the
+  API names and the app does not know would be read as `gate` — the bucket of
+  people refused by a quota a moment ago, whose rate this would distort most —
+  so the app's push routing checks the field against the same list and opens
+  Discover for anything else.
+- **One source per message, not per channel.** The mail and the push are the
+  same sentence on the same evening; `notification_opened` already counts the
+  tapped pushes.
+- **Not the trial nudge.** Everybody it reaches is in a trial and holds Pro;
+  its link stays on the plan they hold.
+- **Only the landing moves.** Who is told, when, and under which consent is
+  decided exactly as with the switch off; nothing is sent that was not sent
+  before. It starts off because it is promotion, and promotion moves when
+  Behic switches it rather than when a pull request merges.

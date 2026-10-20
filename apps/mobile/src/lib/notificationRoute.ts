@@ -1,4 +1,4 @@
-import { PUSH_KINDS, type PushKind } from '@langx/shared'
+import { PUSH_KINDS, isPromotionPaywallSource, paywallPath, type PushKind } from '@langx/shared'
 import type { Href } from 'expo-router'
 
 /**
@@ -17,7 +17,16 @@ import type { Href } from 'expo-router'
  */
 export function notificationRoute(data: unknown): Href | null {
   if (typeof data !== 'object' || data === null) return null
-  const { kind, conversationId, postId, handle, commentId, testimonialId, repairDay } = data as {
+  const {
+    kind,
+    conversationId,
+    postId,
+    handle,
+    commentId,
+    testimonialId,
+    repairDay,
+    paywallSource,
+  } = data as {
     kind?: unknown
     conversationId?: unknown
     postId?: unknown
@@ -28,6 +37,8 @@ export function notificationRoute(data: unknown): Href | null {
     testimonialId?: unknown
     /** The streak repair, sent as a `wallet` push: the day it would fill in. */
     repairDay?: unknown
+    /** A promotional nudge about the plans: the paywall road it opens. */
+    paywallSource?: unknown
   }
   if (typeof kind !== 'string' || !(PUSH_KINDS as readonly string[]).includes(kind)) return null
 
@@ -100,9 +111,15 @@ export function notificationRoute(data: unknown): Href | null {
       // Tokens arrived. The wallet is where they are counted.
       return '/wallet'
     case 'promotion':
-      // Every nudge that is not about the streak points at the same place:
-      // people to talk to. The mail carries the specific destination; a push
-      // that lands days later should not.
+      // A nudge about the plans names its paywall road, once the server's
+      // `promoPaywallLinks` switch is on: its sentence is "a plan lifts
+      // them", and Discover is no answer to that. Checked against the shared
+      // list, so a road this build does not know falls back rather than
+      // opening a paywall that would count it as a gate.
+      if (isPromotionPaywallSource(paywallSource)) return paywallPath(paywallSource) as Href
+      // Every other nudge points at the same place: people to talk to. The
+      // mail carries the specific destination; a push that lands days later
+      // should not.
       return '/discover'
     case 'billing':
       // A failed payment and an ended plan are both fixed in one place.
