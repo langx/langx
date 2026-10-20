@@ -19,6 +19,8 @@ import { confirmAlert } from '../../../src/lib/alert'
 import { queryFailed } from '../../../src/lib/listState'
 import { goBackTo, openLanguagePicker } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { LanguagesScreenV3 } from '../../../src/screens/settings/LanguagesScreenV3'
 
 /**
  * Your languages, on their own screen, saving on every tap.
@@ -50,7 +52,12 @@ import { makeStyles, useTheme } from '../../../src/lib/theme'
  * and because the way back to a profile should not be only the arrow in the
  * corner. It goes exactly where that arrow goes.
  */
-export default function LanguagesScreen() {
+export default function LanguagesScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <LanguagesScreenV3 /> : <LanguagesScreen />
+}
+
+function LanguagesScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

@@ -18,7 +18,8 @@ import { levelShortLabel, useDisplayNames, useLocale, useT } from '../../i18n'
 import { confirmAlert } from '../../lib/alert'
 import { queryFailed } from '../../lib/listState'
 import { goBackTo, openLanguagePicker } from '../../lib/navigation'
-import { makeStyles, partnerHueFor, useTheme } from '../../lib/theme'
+import { makeStyles, useTheme } from '../../lib/theme'
+import { partnerHueFor } from '../../lib/theme/partnerHue'
 
 /**
  * Your languages in the redesign's look (`V-Languages`), behind
