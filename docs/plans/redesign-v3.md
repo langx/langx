@@ -141,6 +141,49 @@ them.
 The values these flags carry (allowances, caps, windows) wait for Behic's
 confirmation in each PR body before the flag goes on.
 
+## Round 3 (19–20 October)
+
+Behic allowed the night to run the plan's usage to the limit. Every screen PR
+below is behind `v3Home`; the fixes marked live change behaviour on merge.
+
+| Item                                                        | PR                                    | State                                                    |
+| ----------------------------------------------------------- | ------------------------------------- | -------------------------------------------------------- |
+| Echo — sessions and payouts on the UTC day, 10-min clamp    | #1821                                 | merged, live                                             |
+| Settings — landing and seven categories                     | #1822                                 | merged                                                   |
+| Settings — the thirteen standalone screens                  | #1827, #1830                          | merged                                                   |
+| Thread — bubbles and corrections (slice 2)                  | #1823                                 | merged                                                   |
+| Thread — reward chips from the send's award (slice 3)       | #1828                                 | merged                                                   |
+| Thread — the streak milestone celebration (slice 4)         | #1833                                 | merged                                                   |
+| Thread — call menu and call rows (slice 5)                  | #1835                                 | merged                                                   |
+| Polish — hue buttons, freezes past the cap, UTC dates       | #1824                                 | merged                                                   |
+| Streak history — the activity map                           | #1829                                 | merged                                                   |
+| Day repair — not before the account; cap by the day's month | #1834                                 | merged, live                                             |
+| Store — unknown-tone fallback                               | #1826                                 | merged                                                   |
+| Store — sixteen art frames and the widened ladder           | #1831                                 | merged, live (catalogue and ladder)                      |
+| Store — frames in chats, the thread and People              | #1836                                 | merging                                                  |
+| Store — home, frames collection, frame sheet                | #1837                                 | merged                                                   |
+| Store — title badges                                        | #1839                                 | in review                                                |
+| Store — Paper Talk and the pack page                        | #1838                                 | reviewed; waits for Behic (lettering)                    |
+| Lane B2 — promotional links open the paywall                | #1832                                 | reviewed; waits for Behic (rule 26); `promoPaywallLinks` |
+| Frame copy on the docs and the token site                   | langx/docs#52, langx/token-website#31 | merged                                                   |
+| Flaky notification-count test                               | #1840                                 | in review                                                |
+
+Open for Behic from this round:
+
+- **#1838 lettering.** Seven of Paper Talk's eleven lettered stickers are in
+  English; the rule in `docs/data-sources.md` says stickers carry no words.
+  Accept an English-leaning pack, or redraw with words that cross languages.
+- **#1832 before its flag goes on.** Whether a build is in App Review (rule 26),
+  and narrowing the limits nudge, which also fires after refusals Pro does not
+  lift (media, the translation fair-use ceiling).
+- **Streak milestones on frozen accounts.** The server pays the milestone to an
+  account whose tokens are frozen; the #1833 review found it predates the PR.
+- **The widened ladder rule** shipped in #1831 under "sixteen frames, place them
+  where you like"; it only helps holders with gaps (older welcome packs).
+- Smaller calls: Aurora's "Tokens can't open this one" line (#1837); the v3
+  Feedback field drops its character counter (#1827); Turkish frame names Kalem
+  and Meander (#1831).
+
 ## Phase 1 — the concepts and the chosen direction
 
 Three product concepts were drawn on 16 October 2026 (A "Today": a Home tab with
