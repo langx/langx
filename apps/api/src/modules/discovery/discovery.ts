@@ -23,6 +23,7 @@ import {
   DISCOVERY_CURSOR_MAX_AGE_MS,
   ONLINE_WINDOW_MS,
   isOnlineAt,
+  wornFrameTone,
   type LanguageLevel,
   type BoostedProfile,
   type BoostedProfilesPage,
@@ -445,6 +446,15 @@ function toDiscoveryItem(
   // reporting the real one would give away.
   if (doc.distanceMeters !== undefined) item.distanceKm = bucketDistanceKm(doc.distanceMeters)
   if (replyFirst && repliesWithinDay(doc)) item.repliesWithinDay = true
+  /*
+   * The worn frame's tone, resolved here as the leaderboards do, so a card
+   * costs one short string rather than everything the person owns. Not behind
+   * `incognito` or `hideOnlineStatus`: a frame says nothing about when anybody
+   * is around, and `toPublicProfile` has always shown it to anyone who opens
+   * the profile this card links to — the same exposure, one tap earlier.
+   */
+  const frame = wornFrameTone(doc.equipped, doc.cosmetics ?? [])
+  if (frame) item.frame = frame
   return item
 }
 

@@ -1066,6 +1066,51 @@ describe('Faz 5 — conversation/message history REST', () => {
     )
   })
 
+  /*
+   * The frame a row draws is the one the profile draws: the explicit choice,
+   * else the dearest owned. One tone, never the collection behind it, and
+   * none on an account that is gone.
+   */
+  it("sends each partner's worn frame as a tone, and none for a deleted account", async () => {
+    const viewer = await newUser('frame-viewer@example.com')
+    const chose = await newUser('frame-chose@example.com')
+    const owns = await newUser('frame-owns@example.com')
+    const gone = await newUser('frame-gone@example.com')
+    await startConversation(viewer, chose.userId, 'hello chose')
+    await startConversation(viewer, owns.userId, 'hello owns')
+    await startConversation(viewer, gone.userId, 'hello gone')
+    const profiles = handle.db.collection<{ _id: string }>(COLLECTIONS.profiles)
+    await profiles.updateOne(
+      { _id: chose.userId },
+      { $set: { cosmetics: ['frame.slate', 'frame.gold'], equipped: { frame: 'frame.slate' } } },
+    )
+    await profiles.updateOne(
+      { _id: owns.userId },
+      { $set: { cosmetics: ['frame.slate', 'frame.gold', 'title.tutor'] } },
+    )
+    await profiles.updateOne(
+      { _id: gone.userId },
+      { $set: { cosmetics: ['frame.gold'], deletedAt: new Date() } },
+    )
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/conversations',
+      headers: { cookie: viewer.cookie },
+    })
+    expect(response.statusCode, response.body).toBe(200)
+    const items = response.json<{
+      items: { participants: string[]; partner?: Record<string, unknown> }[]
+    }>().items
+    const partnerOf = (id: string) => items.find((c) => c.participants.includes(id))?.partner
+
+    expect(partnerOf(chose.userId)?.frame).toBe('slate')
+    expect(partnerOf(owns.userId)?.frame).toBe('gold')
+    expect(partnerOf(gone.userId)).not.toHaveProperty('frame')
+    expect(partnerOf(owns.userId)).not.toHaveProperty('cosmetics')
+    expect(partnerOf(owns.userId)).not.toHaveProperty('equipped')
+  })
+
   describe('the calls you have agreed to', () => {
     async function upcoming(viewer: SignedUpUser) {
       const response = await app.inject({
