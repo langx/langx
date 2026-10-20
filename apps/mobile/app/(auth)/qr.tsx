@@ -10,6 +10,8 @@ import { authClient } from '../../src/lib/auth-client'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
+import { QrSignInV3 } from '../../src/components/auth/QrSignInV3'
 
 /**
  * How long, after the phone has approved, to wait for the session store to
@@ -54,6 +56,8 @@ export default function QrSignInScreen() {
   const deviceCode = useRef<string | null>(null)
   const pollMs = useRef(2000)
   const { data: session } = authClient.useSession()
+  // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
 
   const start = useCallback(async () => {
     setState('starting')
@@ -154,6 +158,18 @@ export default function QrSignInScreen() {
     const timer = setTimeout(() => setState('error'), SESSION_SETTLE_MS)
     return () => clearTimeout(timer)
   }, [state, session])
+
+  if (v3) {
+    return (
+      <QrSignInV3
+        state={state}
+        userCode={userCode}
+        qrUri={userCode ? deviceLinkQrUrl(API_URL, userCode) : undefined}
+        time={countdown(secondsLeft)}
+        onNewCode={() => void start()}
+      />
+    )
+  }
 
   const [pathBefore = '', pathAfter = ''] = t('qrSignIn.bodyScan', { path: PATH_MARK }).split(
     PATH_MARK,
