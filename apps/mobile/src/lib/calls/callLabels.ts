@@ -103,8 +103,9 @@ export function formatCallDuration(totalSeconds: number): string {
  * A call's length as a screen reader should say it — "3 minutes, 12
  * seconds" — where the row shows `3:12` and a screen reader reads the digits.
  *
- * Two units at most, the larger two that are not zero: "1 hour, 2 minutes"
- * for `1:02:45`. The seconds of an hour-long call are noise to the ear in a
+ * Two units at most: the largest that is not zero and, when it is not zero,
+ * the one just below it — "1 hour, 2 minutes" for `1:02:45`, and "1 hour"
+ * for `1:00:45`, never "1 hour, 45 seconds". The seconds of an hour-long call are noise to the ear in a
  * way they are not to an eye scanning a timer. Each unit is a plural entry
  * (Russian and Arabic do not split at one), and the pair is an entry of its
  * own so a language can order and punctuate the two parts its own way.

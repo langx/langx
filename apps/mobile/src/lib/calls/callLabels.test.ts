@@ -111,6 +111,15 @@ describe('spokenCallLength', () => {
     expect(spokenCallLength(7200, en)).toBe('2 hours')
   })
 
+  it('holds at the edges of each unit', () => {
+    expect(spokenCallLength(0, en)).toBe('0 seconds')
+    expect(spokenCallLength(59, en)).toBe('59 seconds')
+    expect(spokenCallLength(3599, en)).toBe('59 minutes, 59 seconds')
+    expect(spokenCallLength(3600, en)).toBe('1 hour')
+    // Minutes are zero, so the seconds are not reached for.
+    expect(spokenCallLength(3645, en)).toBe('1 hour')
+  })
+
   it('never says a negative or a fractional second', () => {
     expect(spokenCallLength(-5, en)).toBe('0 seconds')
     expect(spokenCallLength(1.9, en)).toBe('1 second')
@@ -122,8 +131,15 @@ describe('spokenCallLength', () => {
     expect(spokenCallLength(1, ru)).toBe('1 секунда')
     expect(spokenCallLength(3, ru)).toBe('3 секунды')
     expect(spokenCallLength(5 * 60 + 21, ru)).toBe('5 минут 21 секунда')
+    expect(spokenCallLength(0, ru)).toBe('0 секунд')
+    expect(spokenCallLength(11, ru)).toBe('11 секунд')
+    expect(spokenCallLength(22, ru)).toBe('22 секунды')
+    expect(spokenCallLength(36000, ru)).toBe('10 часов')
     const ar = createTranslate('ar')
     expect(spokenCallLength(120, ar)).toBe('دقيقتان')
+    expect(spokenCallLength(3, ar)).toBe('3 ثوانٍ')
+    expect(spokenCallLength(59, ar)).toBe('59 ثانية')
+    expect(spokenCallLength(7322, ar)).toBe('ساعتان ودقيقتان')
   })
 
   it('has every unit in every language', () => {
