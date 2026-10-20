@@ -3,8 +3,11 @@ import { Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { Button } from './Button'
 
-/** What the empty list would hold: conversations, Echo cards, people. */
-export type EmptyArtKind = 'chats' | 'cards' | 'people'
+/**
+ * What the empty list would hold: conversations, Echo cards, people; starred
+ * messages, corrections, posts.
+ */
+export type EmptyArtKind = 'chats' | 'cards' | 'people' | 'starred' | 'corrections' | 'posts'
 
 /**
  * The picture over an empty list, drawn from the same flat blocks as the
@@ -18,6 +21,7 @@ export type EmptyArtKind = 'chats' | 'cards' | 'people'
  */
 export function EmptyArt({ kind }: { kind: EmptyArtKind }) {
   const styles = useStyles()
+  const { v3 } = useTheme()
   return (
     <View
       style={styles.art}
@@ -40,6 +44,39 @@ export function EmptyArt({ kind }: { kind: EmptyArtKind }) {
           <View style={[styles.card, styles.cardFront]}>
             <View style={[styles.bar, styles.barShort]} />
             <View style={[styles.bar, styles.barTiny]} />
+          </View>
+        </>
+      ) : kind === 'starred' ? (
+        // An outline star over a speech bubble: a kept message.
+        <>
+          <View style={[styles.bubble, styles.bubbleWide]}>
+            <View style={[styles.bar, styles.barLong]} />
+            <View style={[styles.bar, styles.barShort]} />
+          </View>
+          <View style={[styles.disc, styles.discStar]}>
+            <Feather name="star" size={v3.icon.xxl} color={v3.colors.ink} />
+          </View>
+        </>
+      ) : kind === 'corrections' ? (
+        // A pencil over a sentence line.
+        <>
+          <View style={styles.sentence}>
+            <View style={[styles.bar, styles.barLong]} />
+            <View style={[styles.bar, styles.barShort]} />
+          </View>
+          <View style={[styles.disc, styles.discPencil]}>
+            <Feather name="edit-2" size={v3.icon.xxl} color={v3.colors.ink} />
+          </View>
+        </>
+      ) : kind === 'posts' ? (
+        // A photo and a speech bubble: the two things a post is made of.
+        <>
+          <View style={[styles.card, styles.photo]}>
+            <View style={styles.sun} />
+            <View style={styles.hill} />
+          </View>
+          <View style={[styles.bubble, styles.bubbleTheirs]}>
+            <View style={[styles.bar, styles.barShort]} />
           </View>
         </>
       ) : (
@@ -67,10 +104,19 @@ interface EmptyStateV3Props {
   art: EmptyArtKind
   /** One sentence: what is missing, and what would fill it. */
   line: string
+  /**
+   * A second, quieter sentence under the line, for the boards that draw one:
+   * how to fill the list, where the line only says that it is empty.
+   */
+  body?: string | undefined
   actionLabel: string
   onAction: () => void
-  /** The yellow by default; `secondary` where the action is an offer rather than the screen's job. */
-  actionVariant?: 'primary' | 'secondary'
+  /**
+   * The yellow by default; `blue` where the action leads somewhere else
+   * rather than committing; `secondary` where it is an offer rather than the
+   * screen's job.
+   */
+  actionVariant?: 'primary' | 'blue' | 'secondary'
 }
 
 /**
@@ -84,6 +130,7 @@ interface EmptyStateV3Props {
 export function EmptyStateV3({
   art,
   line,
+  body,
   actionLabel,
   onAction,
   actionVariant = 'primary',
@@ -93,6 +140,7 @@ export function EmptyStateV3({
     <View style={styles.root}>
       <EmptyArt kind={art} />
       <Text style={styles.line}>{line}</Text>
+      {body ? <Text style={styles.body}>{body}</Text> : null}
       <Button
         label={actionLabel}
         onPress={onAction}
@@ -160,6 +208,12 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingVertical: v3.space[32] + v3.space[16],
   },
   line: { ...v3.type.headline, color: v3.colors.fg, textAlign: 'center' },
+  body: {
+    ...v3.type.callout,
+    color: v3.colors.muted,
+    marginTop: -v3.space[8],
+    textAlign: 'center',
+  },
   action: { minWidth: 200, width: 'auto' },
 
   art: { height: 104, width: 136 },
@@ -196,6 +250,66 @@ const useStyles = makeStyles(({ v3 }) => ({
     height: 52,
     position: 'absolute',
     width: 80,
+  },
+
+  bubbleWide: {
+    backgroundColor: v3.hues.sky,
+    borderBottomEndRadius: v3.radius.badge,
+    borderBottomStartRadius: v3.space[8],
+    borderTopEndRadius: v3.radius.badge,
+    borderTopStartRadius: v3.radius.badge,
+    bottom: 6,
+    height: 60,
+    position: 'absolute',
+    start: 4,
+    width: 104,
+  },
+  sentence: {
+    backgroundColor: v3.hues.mint,
+    borderRadius: v3.radius.row,
+    bottom: 10,
+    gap: v3.space[6],
+    height: 52,
+    justifyContent: 'center',
+    paddingHorizontal: v3.space[14],
+    position: 'absolute',
+    start: 4,
+    width: 112,
+  },
+  // A glyph on its own hue, ringed in the ground so it reads over the block.
+  disc: {
+    alignItems: 'center',
+    borderColor: v3.colors.bg,
+    borderRadius: v3.radius.pill,
+    borderWidth: 4,
+    end: 4,
+    height: 60,
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    width: 60,
+  },
+  discStar: { backgroundColor: v3.hues.lilac },
+  discPencil: { backgroundColor: v3.hues.tangerine },
+  photo: { backgroundColor: v3.hues.sky, overflow: 'hidden', start: 8, top: 6 },
+  sun: {
+    backgroundColor: v3.hues.lime,
+    borderRadius: v3.radius.pill,
+    end: 10,
+    height: 16,
+    position: 'absolute',
+    top: 10,
+    width: 16,
+  },
+  hill: {
+    backgroundColor: v3.hues.mint,
+    borderTopEndRadius: v3.radius.badge,
+    borderTopStartRadius: v3.radius.badge,
+    bottom: 0,
+    height: 26,
+    position: 'absolute',
+    start: -6,
+    width: 60,
   },
 
   card: { borderRadius: v3.radius.row, height: 68, position: 'absolute', width: 68 },

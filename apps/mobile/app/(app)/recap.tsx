@@ -16,7 +16,8 @@ import { monthName, recapMonthParam, recapYearParam } from '../../src/lib/recapM
 import { isQuietRecap, recapCardInput, type RecapSlide } from '../../src/lib/recapStory'
 import { shareLink } from '../../src/lib/share'
 import { recapShareText } from '../../src/lib/shareText'
-import { DISPLAY_FONT, palettes } from '../../src/lib/theme'
+import { DISPLAY_FONT, palettes, useTheme } from '../../src/lib/theme'
+import { partnerHueFor } from '../../src/lib/theme/partnerHue'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { IconButton } from '../../src/components/ui/IconButton'
 import { useV3Home } from '../../src/hooks/useV3Home'
@@ -65,6 +66,11 @@ export default function RecapScreen() {
       : ''
   const year = !yearKey && month ? headlineYear(month) : ''
   const close = (): void => goBackTo('/(app)/(tabs)/me')
+  // v3 (`V-Recap`) tells the story on the reader's own colour rather than the
+  // brand's; until the profile has arrived, the first slide's yellow stands in.
+  const v3Look = useV3Home()
+  const { v3 } = useTheme()
+  const hue = v3Look && me.data ? v3.hues[partnerHueFor(me.data._id)] : undefined
 
   const profile = me.data
   const native = profile?.nativeLanguages[0]?.code
@@ -77,21 +83,21 @@ export default function RecapScreen() {
   const data = recap.data
   if (recap.isPending) {
     return (
-      <Plain>
+      <Plain ground={hue}>
         <ActivityIndicator color={palettes.light.colors.primaryText} />
       </Plain>
     )
   }
   if (!data) {
     return (
-      <Plain onClose={close} closeLabel={t('recap.story.close')}>
+      <Plain ground={hue} onClose={close} closeLabel={t('recap.story.close')}>
         <Text style={plainText}>{t('recap.failed')}</Text>
       </Plain>
     )
   }
   if (isQuietRecap(data)) {
     return (
-      <Plain onClose={close} closeLabel={t('recap.story.close')}>
+      <Plain ground={hue} onClose={close} closeLabel={t('recap.story.close')}>
         <Text style={[plainText, { fontSize: 44, lineHeight: 48 }]}>{name}</Text>
         <Text style={plainText}>{yearKey ? t('recap.year.quiet') : t('recap.quiet')}</Text>
       </Plain>
@@ -129,6 +135,7 @@ export default function RecapScreen() {
         me={profile}
         {...(languages ? { languages: t('recap.card.languages', languages) } : {})}
         {...(blackLoaded ? { blackFont: 'Nunito_900Black' } : {})}
+        hue={hue}
         onClose={close}
         onShare={() => share()}
         onShareSlide={share}
@@ -169,10 +176,13 @@ function Plain({
   children,
   onClose,
   closeLabel,
+  ground,
 }: {
   children: ReactNode
   onClose?: () => void
   closeLabel?: string
+  /** v3's ground, the reader's colour; today's yellow when left out. */
+  ground?: string | undefined
 }) {
   const insets = useSafeAreaInsets()
   const v3Look = useV3Home()
@@ -180,7 +190,7 @@ function Plain({
   return (
     <View
       style={{
-        backgroundColor: palettes.light.colors.primary,
+        backgroundColor: ground ?? palettes.light.colors.primary,
         flex: 1,
         gap: 16,
         justifyContent: 'center',

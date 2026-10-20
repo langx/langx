@@ -7,6 +7,7 @@ import { captureLocation, reportLocationFailure } from '../lib/location'
 import { makeStyles, useTheme } from '../lib/theme'
 import { showToast } from '../lib/toast'
 import { useDisplayNames, useT } from '../i18n'
+import { ICON_BUTTON_TARGET } from './ui/IconButton'
 
 /**
  * Where you are, and the one way to change it.
@@ -107,7 +108,8 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
     alignSelf: 'flex-start',
     flexDirection: 'row',
     gap: spacing.sm,
-    height: 40,
+    // The platform's minimum target, not 40: a text link is still a control.
+    height: ICON_BUTTON_TARGET,
   },
   pressed: { opacity: 0.6 },
   linkText: { color: colors.accent, fontSize: 15, fontWeight: '600' },

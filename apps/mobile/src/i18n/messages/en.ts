@@ -633,6 +633,10 @@ export const en = {
       other: 'Your first {count} sessions each day earn tokens.',
     },
     oneMore: 'One more session',
+    sourceOpensChat: 'Opens your chat at this message',
+    sourceOpensPost: 'Opens the post',
+    newNote:
+      'It joins the same schedule as the cards you keep from chats. Add a picture or say it yourself from Edit, once it is saved.',
   },
 
   conversationPicker: {
@@ -1165,6 +1169,10 @@ export const en = {
   },
 
   corrections: {
+    findSentence: 'Find a sentence to correct',
+    listCaption: 'In chats and on posts, newest first',
+    openChatHint: 'Opens the chat at this message',
+    openPostHint: 'Opens the post',
     emptyTitle: 'No corrections yet',
     emptyBody:
       'Hold a message in a chat and choose Correct, or fix a sentence someone posted in the feed — it is the most useful thing you can do here.',
@@ -1348,6 +1356,15 @@ export const en = {
     withTheirTimeAccessibility: '{presence}. Local time {time}.',
   },
   chat: {
+    newChatStarts: 'This chat starts with your first message.',
+    pickFirstLine: 'Pick a first line',
+    meetingLede: 'They can accept or decline. Each of you sees it in your own time.',
+    meetingDay: 'Day',
+    meetingTime: 'Time',
+    meetingNoteHint: {
+      one: 'They see this on the card. Up to {count} character.',
+      other: 'They see this on the card. Up to {count} characters.',
+    },
     /** The card at the foot of the thread in which somebody first wrote back. */
     firstReplyTitle: '{name} wrote back',
     firstReplyBody: {
@@ -1688,6 +1705,9 @@ export const en = {
   },
 
   starred: {
+    lede: 'Only you see your stars. Tap one to open it in its chat.',
+    goToChats: 'Go to Chats',
+    rowLabel: '{name}: {what}. Open in chat',
     title: 'Starred',
     emptyTitle: 'Nothing starred yet',
     emptyBody: 'Hold a message and choose Star to keep it here.',
@@ -2914,6 +2934,8 @@ export const en = {
      */
     emptyTitle: 'No badges yet',
     emptyBody: '@{handle} has not earned one yet. They are given for showing up and for helping.',
+    /** The empty shelf's way back to the profile it was opened from. */
+    emptyBack: 'Back to @{handle}',
   },
 
   shared: {
@@ -3185,6 +3207,13 @@ export const en = {
     writtenEmptyBody:
       'Had a great practice partner? A short review on their profile helps others find them.',
     meRowBody: 'What partners say about you, and what you wrote',
+    /** The empty lists' one button: the people who could write one are in Chats. */
+    emptyAction: 'Go to Chats',
+    /**
+     * The chip under the title on somebody's full list: whose reviews these
+     * are, and how many. `amount` is `count` formatted for the locale.
+     */
+    onProfile: { one: 'On {name}’s profile · {amount}', other: 'On {name}’s profile · {amount}' },
   },
 
   blocked: {

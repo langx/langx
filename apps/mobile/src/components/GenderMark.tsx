@@ -20,7 +20,16 @@ const ICONS = {
  * colour scheme they were sorted into. Labelled for the reason `OfficialMark`
  * is: an unlabelled symbol reads to a screen reader as nothing at all.
  */
-export function GenderMark({ gender, size = 18 }: { gender: Gender; size?: number }) {
+export function GenderMark({
+  gender,
+  size = 18,
+  color,
+}: {
+  gender: Gender
+  size?: number
+  /** Ink on a partner's hue, where the muted grey would not read. */
+  color?: string
+}) {
   const { colors } = useTheme()
   const t = useT()
   if (gender === 'undisclosed') return null
@@ -28,7 +37,7 @@ export function GenderMark({ gender, size = 18 }: { gender: Gender; size?: numbe
     <MaterialCommunityIcons
       name={ICONS[gender]}
       size={size}
-      color={colors.textMuted}
+      color={color ?? colors.textMuted}
       accessibilityLabel={genderLabel(t, gender)}
     />
   )

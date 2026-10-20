@@ -17,6 +17,13 @@ import { makeStyles, radius } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { ShareProfileScreenV3 } from '../../src/screens/me/ShareProfileScreenV3'
+
+/** The profile code, or with `flags.v3Home` on the redesign's (`ShareProfileScreenV3`). */
+export default function ShareProfileScreenRoute() {
+  return useV3Home() ? <ShareProfileScreenV3 /> : <ShareProfileScreen />
+}
 
 /**
  * The link, big enough to point a camera at.
@@ -31,7 +38,7 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * and therefore `react-native-svg`: a native module, so a new binary and no
  * OTA update, for a picture.
  */
-export default function ShareProfileScreen() {
+function ShareProfileScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

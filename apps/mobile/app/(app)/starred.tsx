@@ -20,6 +20,8 @@ import { stickerAsset } from '../../src/lib/stickerAssets'
 import { coordinatesText } from '../../src/lib/sharedLocation'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { StarredScreenV3 } from '../../src/screens/chat/StarredScreenV3'
 
 /**
  * Every starred message, newest first, across every conversation.
@@ -35,7 +37,12 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * card, whose `body` is empty by construction, was the most wrong of them.
  * Starring worked; it just did not look like it had.
  */
-export default function StarredScreen() {
+export default function StarredScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <StarredScreenV3 /> : <StarredScreen />
+}
+
+function StarredScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const starred = useStarred()

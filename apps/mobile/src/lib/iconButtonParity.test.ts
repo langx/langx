@@ -22,7 +22,6 @@ const MOBILE = path.resolve(__dirname, '../..')
 
 const SITES: Readonly<Record<string, number>> = {
   'src/components/ui/ScreenHeader.tsx': 1,
-  'app/(app)/chat/new.tsx': 1,
   'app/(app)/filters.tsx': 1,
   // compose.tsx is not listed: its flag-on header lives in ComposeScreenV3, so the
   // file has no IconButton left to pair with a Pressable twin.

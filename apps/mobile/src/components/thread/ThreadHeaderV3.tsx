@@ -32,10 +32,11 @@ interface ThreadHeaderV3Props {
   /**
    * The call entry exactly as the thread decides it — `callAvailability`'s
    * answer, the button the menu drops down from, and what a press does.
-   * Nothing about the gate is decided here.
+   * Nothing about the gate is decided here. Absent, like `onMore`, on the
+   * screen that starts a conversation: both need one to exist.
    */
-  call: { gate: CallAvailability; anchor: RefObject<View | null>; onPress: () => void }
-  onMore: () => void
+  call?: { gate: CallAvailability; anchor: RefObject<View | null>; onPress: () => void }
+  onMore?: () => void
   /**
    * Where the pair flame goes — "9 days together" — once exchange streaks
    * exist. Nothing passes it yet: there is no count to show, and a drawn one
@@ -205,7 +206,7 @@ export function ThreadHeaderV3({
             all where a call could never happen. The same rule as the current
             header's, read from the same `callAvailability`.
           */}
-          {call.gate !== 'hidden' ? (
+          {call && call.gate !== 'hidden' ? (
             // A plain view for the ref: the call menu measures this to drop
             // down under it, and `IconButton` hands no ref through.
             <View ref={call.anchor} collapsable={false}>
@@ -219,13 +220,15 @@ export function ThreadHeaderV3({
               />
             </View>
           ) : null}
-          <IconButton
-            icon="more-horizontal"
-            iconSize={v3.icon.xl}
-            color={ink}
-            accessibilityLabel={t('messageMenu.more')}
-            onPress={onMore}
-          />
+          {onMore ? (
+            <IconButton
+              icon="more-horizontal"
+              iconSize={v3.icon.xl}
+              color={ink}
+              accessibilityLabel={t('messageMenu.more')}
+              onPress={onMore}
+            />
+          ) : null}
         </View>
       </View>
 

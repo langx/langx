@@ -16,6 +16,13 @@ import { listState } from '../../src/lib/listState'
 import { goBackTo, openProfile, openTestimonialReport } from '../../src/lib/navigation'
 import { makeStyles } from '../../src/lib/theme'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { ProfileTestimonialsScreenV3 } from '../../src/screens/me/ProfileTestimonialsScreenV3'
+
+/** Somebody's reviews, or with `flags.v3Home` on the redesign's (`ProfileTestimonialsScreenV3`). */
+export default function ProfileTestimonialsScreenRoute() {
+  return useV3Home() ? <ProfileTestimonialsScreenV3 /> : <ProfileTestimonialsScreen />
+}
 
 /**
  * Every review on somebody's profile, newest first — what "See all" opens.
@@ -25,7 +32,7 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * when there is something to read, and a deep link to a profile with none
  * gets the header and nothing under it, which is the truth.
  */
-export default function ProfileTestimonialsScreen() {
+function ProfileTestimonialsScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()
