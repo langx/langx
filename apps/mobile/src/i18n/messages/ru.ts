@@ -1163,6 +1163,10 @@ export const ru: Localized<EnMessages> = {
   },
 
   corrections: {
+    findSentence: 'Найти фразу для исправления',
+    listCaption: 'В чатах и под постами, сначала новые',
+    openChatHint: 'Открывает чат на этом сообщении',
+    openPostHint: 'Открывает пост',
     emptyTitle: 'Исправлений пока нет',
     emptyBody:
       'Задержи палец на сообщении и выбери «Исправить» или исправь фразу из ленты — это самое полезное, что тут можно сделать.',
@@ -1348,6 +1352,18 @@ export const ru: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Местное время {time}.',
   },
   chat: {
+    newChatStarts: 'Этот чат начнётся с твоего первого сообщения.',
+    pickFirstLine: 'Выбери первую фразу',
+    meetingLede:
+      'Собеседник может принять или отклонить. Каждый видит время в своём часовом поясе.',
+    meetingDay: 'День',
+    meetingTime: 'Время',
+    meetingNoteHint: {
+      one: 'Это видно на карточке. До {count} символа.',
+      few: 'Это видно на карточке. До {count} символов.',
+      many: 'Это видно на карточке. До {count} символов.',
+      other: 'Это видно на карточке. До {count} символа.',
+    },
     firstReplyTitle: 'Ответ от {name}',
     firstReplyBody: {
       one: 'Ответы бесплатны на любом тарифе. {plan} снимает ограничение в {count} новый чат в день.',
@@ -1718,6 +1734,9 @@ export const ru: Localized<EnMessages> = {
   day: { today: 'Сегодня', yesterday: 'Вчера' },
 
   starred: {
+    lede: 'Избранное видишь только ты. Нажми на сообщение, чтобы открыть его в чате.',
+    goToChats: 'К чатам',
+    rowLabel: '{name}: {what}. Открыть в чате',
     title: 'Избранное',
     emptyTitle: 'В избранном пока пусто',
     emptyBody: 'Удерживай сообщение и выбери «В избранное», чтобы оно осталось здесь.',
@@ -3113,6 +3132,7 @@ export const ru: Localized<EnMessages> = {
     earnedOf: 'Получено {earned} из {total}',
     emptyTitle: 'Значков пока нет',
     emptyBody: '@{handle} пока не заработал(а) ни одного. Их дают за постоянство и за помощь.',
+    emptyBack: 'Назад к @{handle}',
   },
 
   shared: {
@@ -3391,6 +3411,13 @@ export const ru: Localized<EnMessages> = {
     writtenEmptyBody:
       'Попался отличный собеседник? Короткий отзыв в профиле поможет другим его найти.',
     meRowBody: 'Что о тебе пишут собеседники и что написал ты',
+    emptyAction: 'К чатам',
+    onProfile: {
+      one: 'В профиле {name} · {amount}',
+      few: 'В профиле {name} · {amount}',
+      many: 'В профиле {name} · {amount}',
+      other: 'В профиле {name} · {amount}',
+    },
   },
 
   blocked: {

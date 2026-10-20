@@ -1022,6 +1022,10 @@ export const tr: Localized<EnMessages> = {
   },
 
   corrections: {
+    findSentence: 'Düzeltecek bir cümle bul',
+    listCaption: 'Sohbetlerde ve gönderilerde, en yenisi önce',
+    openChatHint: 'Sohbeti bu mesajda açar',
+    openPostHint: 'Gönderiyi açar',
     emptyTitle: 'Henüz düzeltme yok',
     emptyBody:
       'Bir sohbette mesaja basılı tutup Düzelt’i seç ya da akışta paylaşılan bir cümleyi düzelt — burada yapabileceğin en faydalı şey bu.',
@@ -1180,6 +1184,16 @@ export const tr: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Yerel saat {time}.',
   },
   chat: {
+    newChatStarts: 'Bu sohbet senin ilk mesajınla başlar.',
+    pickFirstLine: 'İlk cümleyi seç',
+    meetingLede:
+      'Karşı taraf kabul edebilir ya da reddedebilir. İkiniz de kendi saatinizde görürsünüz.',
+    meetingDay: 'Gün',
+    meetingTime: 'Saat',
+    meetingNoteHint: {
+      one: 'Bunu kartta görür. En fazla {count} karakter.',
+      other: 'Bunu kartta görür. En fazla {count} karakter.',
+    },
     firstReplyTitle: '{name} cevap yazdı',
     firstReplyBody: {
       one: 'Yanıtlar her planda ücretsiz. {plan}, günde {count} yeni sohbet sınırını kaldırır.',
@@ -1509,6 +1523,9 @@ export const tr: Localized<EnMessages> = {
   },
 
   starred: {
+    lede: 'Yıldızlarını yalnızca sen görürsün. Birine dokun, kendi sohbetinde açılsın.',
+    goToChats: 'Sohbetlere git',
+    rowLabel: '{name}: {what}. Sohbette aç',
     title: 'Yıldızlı',
     emptyTitle: 'Henüz yıldızlı bir şey yok',
     emptyBody: 'Bir mesaja basılı tutup Yıldızla’yı seç, burada dursun.',
@@ -2616,6 +2633,7 @@ export const tr: Localized<EnMessages> = {
     emptyTitle: 'Henüz rozet yok',
     emptyBody:
       '@{handle} henüz rozet kazanmadı. Rozetler düzenli gelmek ve yardım etmek için verilir.',
+    emptyBack: '@{handle} profiline dön',
   },
 
   shared: {
@@ -2867,6 +2885,8 @@ export const tr: Localized<EnMessages> = {
     writtenEmptyBody:
       'Harika bir pratik partnerin mi var? Profiline bırakacağın kısa bir yorum, başkalarının da onu bulmasına yardım eder.',
     meRowBody: 'Partnerlerinin senin için yazdıkları ve senin yazdıkların',
+    emptyAction: 'Sohbetlere git',
+    onProfile: { one: '{name} profilinde · {amount}', other: '{name} profilinde · {amount}' },
   },
 
   blocked: {

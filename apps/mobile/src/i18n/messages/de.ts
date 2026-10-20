@@ -1050,6 +1050,10 @@ export const de: Localized<EnMessages> = {
   },
 
   corrections: {
+    findSentence: 'Einen Satz zum Korrigieren finden',
+    listCaption: 'In Chats und unter Beiträgen, neueste zuerst',
+    openChatHint: 'Öffnet den Chat bei dieser Nachricht',
+    openPostHint: 'Öffnet den Beitrag',
     emptyTitle: 'Noch keine Korrekturen',
     emptyBody:
       'Halte eine Nachricht gedrückt und wähle Korrigieren, oder korrigiere einen Satz aus dem Feed — das Nützlichste, was du hier tun kannst.',
@@ -1224,6 +1228,16 @@ export const de: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Ortszeit {time}.',
   },
   chat: {
+    newChatStarts: 'Dieser Chat beginnt mit deiner ersten Nachricht.',
+    pickFirstLine: 'Wähle einen ersten Satz',
+    meetingLede:
+      'Die andere Person kann annehmen oder ablehnen. Ihr seht die Zeit jeweils in eurer eigenen Zeitzone.',
+    meetingDay: 'Tag',
+    meetingTime: 'Uhrzeit',
+    meetingNoteHint: {
+      one: 'Das steht auf der Karte. Bis zu {count} Zeichen.',
+      other: 'Das steht auf der Karte. Bis zu {count} Zeichen.',
+    },
     firstReplyTitle: '{name} hat geantwortet',
     firstReplyBody: {
       one: 'Antworten bleiben in jedem Tarif kostenlos. {plan} hebt die Grenze von {count} neuen Chat am Tag auf.',
@@ -1566,6 +1580,9 @@ export const de: Localized<EnMessages> = {
   day: { today: 'Heute', yesterday: 'Gestern' },
 
   starred: {
+    lede: 'Nur du siehst deine Markierungen. Tippe auf eine, um sie in ihrem Chat zu öffnen.',
+    goToChats: 'Zu den Chats',
+    rowLabel: '{name}: {what}. Im Chat öffnen',
     title: 'Markiert',
     emptyTitle: 'Noch nichts markiert',
     emptyBody: 'Halte eine Nachricht gedrückt und wähle Markieren, um sie hier zu behalten.',
@@ -2696,6 +2713,7 @@ export const de: Localized<EnMessages> = {
     earnedOf: '{earned} von {total} verdient',
     emptyTitle: 'Noch keine Abzeichen',
     emptyBody: '@{handle} hat noch keins verdient. Es gibt sie fürs Dabeisein und fürs Helfen.',
+    emptyBack: 'Zurück zu @{handle}',
   },
 
   shared: {
@@ -2958,6 +2976,11 @@ export const de: Localized<EnMessages> = {
     writtenEmptyBody:
       'Tolle Übungspartnerin oder toller Übungspartner? Eine kurze Bewertung im Profil hilft anderen, sie zu finden.',
     meRowBody: 'Was andere über dich schreiben und was du geschrieben hast',
+    emptyAction: 'Zu den Chats',
+    onProfile: {
+      one: 'Auf dem Profil von {name} · {amount}',
+      other: 'Auf dem Profil von {name} · {amount}',
+    },
   },
 
   blocked: {
