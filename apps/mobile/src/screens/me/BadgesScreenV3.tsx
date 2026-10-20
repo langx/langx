@@ -240,7 +240,7 @@ function NearestRow({
   const content = (
     <>
       <View style={styles.nearestHead}>
-        <View style={[styles.disc, styles.discInk]}>
+        <View style={[styles.disc, styles.discVeil]}>
           <BadgeMark id={badge.id} size={MARK} locked />
         </View>
         <View style={styles.rowText}>
@@ -353,7 +353,9 @@ const useStyles = makeStyles(({ v3 }) => ({
     justifyContent: 'center',
     width: 44,
   },
-  discInk: { backgroundColor: v3.colors.ink },
+  // A pale veil of the mint, not ink: the locked picture is drawn faint, and
+  // faint on ink does not read.
+  discVeil: { backgroundColor: 'rgba(255, 255, 255, 0.55)' },
   lock: {
     alignItems: 'center',
     backgroundColor: v3.colors.muted,
