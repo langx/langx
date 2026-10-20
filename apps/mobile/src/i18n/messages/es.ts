@@ -1297,6 +1297,16 @@ export const es: Localized<EnMessages> = {
     writeCorrection: 'Escribe la corrección…',
     yourCorrection: 'Tu corrección',
     correctionFrom: 'Corrección de {name}',
+    rewardChip: '{amount} · {reason}',
+    rewardCorrected: 'corregiste a {name}',
+    rewardBothWrote: 'los dos escribieron',
+    rewardBothAmount: { one: '+{count} para los dos', other: '+{count} para los dos' },
+    rewardStreak: { one: 'Racha de {count} día', other: 'Racha de {count} días' },
+    rewardLabel: { one: '{count} token: {reason}', other: '{count} tokens: {reason}' },
+    rewardBothLabel: {
+      one: '{count} token para ti y otro para {name}: los dos escribieron',
+      other: '{count} tokens para ti y otros tantos para {name}: los dos escribieron',
+    },
     them: 'la otra persona',
     tokensPerMessage: {
       one: '+{count} token / mensaje',

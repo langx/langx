@@ -24,10 +24,10 @@ interface CorrectionCardV3Props {
  * kept in Echo. The outline and the gestures around it are `MessageBubble`'s.
  *
  * The drawing's "+10" is not here, on purpose. A send's award comes back in
- * its ack and is never stored on the message, and this client does not read
- * it yet; a number drawn from `TOKEN_RULES` instead would be wrong whenever a
- * cap applied, and for every correction the other person wrote. The reward
- * chips slice is where the real figure arrives.
+ * its ack and is never stored on the message, so the real figure is drawn by
+ * `RewardChipV3` under the card, for the sender and only after their own
+ * send; a number drawn from `TOKEN_RULES` here instead would be wrong whenever
+ * a cap applied, and for every correction the other person wrote.
  *
  * The struck words are muted rather than red, as the drawing has them: the
  * green is the news, and the strike and the weight carry the same news for
