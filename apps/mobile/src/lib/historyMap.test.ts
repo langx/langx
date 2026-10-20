@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { historyMap } from './historyMap'
+import { historyMap, historyRepairOffer } from './historyMap'
 
 // Friday 16 October 2026, the board's own today.
 const TODAY = '2026-10-16'
@@ -85,5 +85,50 @@ describe('historyMap', () => {
     expect(tight.columns[0]?.[0]?.day).toBe('2026-08-24')
     expect(tight.monthOf[0]).toBeNull()
     expect(tight.monthOf[1]).toBe('2026-09-01')
+  })
+})
+
+describe('historyRepairOffer', () => {
+  type Days = Parameters<typeof historyMap>[0]['days']
+  const offer = (today: string, days: Days, usedThisMonth = 0) =>
+    historyRepairOffer({
+      map: historyMap({ today, weeks: 9, days }),
+      today,
+      days,
+      usedThisMonth,
+      perMonth: 2,
+    })
+
+  it('offers the newest missed day, with the month’s repairs left', () => {
+    const days: Days = [
+      { day: '2026-10-10', actions: 2, source: 'activity' },
+      { day: '2026-10-15', actions: 2, source: 'activity' },
+    ]
+    expect(offer(TODAY, days, 1)).toEqual({ day: '2026-10-14', left: 1 })
+  })
+
+  it('offers nothing before the first day on record', () => {
+    expect(offer(TODAY, [{ day: '2026-10-16', actions: 1, source: 'activity' }])).toBeNull()
+  })
+
+  it('offers nothing once this month’s repairs are spent', () => {
+    expect(offer(TODAY, [{ day: '2026-10-10', actions: 2, source: 'activity' }], 2)).toBeNull()
+  })
+
+  /** The server counts the cap in the repaired day's month, not today's. */
+  it('offers nothing when the missed day sits in a month whose repairs are spent', () => {
+    const around: Days = [
+      { day: '2026-09-20', actions: 2, source: 'activity' },
+      { day: '2026-10-01', actions: 2, source: 'activity' },
+      { day: '2026-10-02', actions: 2, source: 'activity' },
+    ]
+    const bought = (day: string): Days[number] => ({ day, actions: 0, source: 'purchase' })
+    // 3 October: the newest miss is 30 September, and September's two are used.
+    expect(offer('2026-10-03', [...around, bought('2026-09-25'), bought('2026-09-26')])).toBeNull()
+    // With one of September's left, it is offered and says one is left.
+    expect(offer('2026-10-03', [...around, bought('2026-09-26')])).toEqual({
+      day: '2026-09-30',
+      left: 1,
+    })
   })
 })

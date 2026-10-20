@@ -20,12 +20,11 @@ import { Skeleton } from '../components/ui/Skeleton'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useLocale, useT } from '../i18n'
-import { historyMap, type HistoryMapState } from '../lib/historyMap'
+import { historyMap, historyRepairOffer, type HistoryMapState } from '../lib/historyMap'
 import { queryFailed } from '../lib/listState'
 import { dayLabel } from '../lib/messageGroups'
 import { goBackTo } from '../lib/navigation'
 import { confirmAndRepair } from '../lib/repairFlow'
-import { newestRepairDay } from '../lib/storeOffers'
 import { streakDayDetail, streakHistory, type StreakDayKind } from '../lib/streakHistory'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../lib/theme'
 
@@ -64,7 +63,12 @@ export function StreakHistoryScreenV3() {
   const { v3 } = useTheme()
   const [blackLoaded] = useFonts({ Nunito_900Black })
 
-  const to = new Date().toISOString().slice(0, 10)
+  // A day past UTC's date. `today` is the profile's day, and east of UTC it
+  // is already tomorrow there before UTC midnight; ending the range on the
+  // UTC date left today's row out, so a day already checked in read as
+  // missed. No zone is more than a day ahead, and the two streak pages ask
+  // for the same range, so they still share one cache entry.
+  const to = shiftDayKey(new Date().toISOString().slice(0, 10), 1)
   const activity = useActivity(shiftDayKey(to, -(ACTIVITY_WEEKS + 1) * 7), to)
   const wallet = useWallet()
   const repairDay = useRepairDay()
@@ -125,22 +129,15 @@ export function StreakHistoryScreenV3() {
 
   const now = new Date(`${data.today}T12:00:00`)
   const filled = new Set(data.days.map((day) => day.day))
-  const left = Math.max(0, data.repair.perMonth - data.repair.usedThisMonth)
-  // The store's own choice of day, so the page and the store never offer two
-  // — and only one the map above calls missed: the store does not know when
-  // the account began, and a day before it is not a miss to buy back.
-  const offered = newestRepairDay({
+  const offer = historyRepairOffer({
+    map,
     today: data.today,
-    filled,
+    days: data.days,
     usedThisMonth: data.repair.usedThisMonth,
+    perMonth: data.repair.perMonth,
   })
-  const repairable = map.columns
-    .flat()
-    .some((cell) => cell.day === offered && cell.state === 'missed')
-    ? offered
-    : null
 
-  function buyBack(day: string): void {
+  function buyBack(day: string, left: number): void {
     if (!data) return
     void confirmAndRepair({
       day,
@@ -183,13 +180,13 @@ export function StreakHistoryScreenV3() {
           accessibilityLabel={t('streak.mapA11y', { count: map.elapsed })}
         />
 
-        {repairable ? (
+        {offer ? (
           <StreakRepairCard
-            title={t('streak.repairTitle', { day: dayLabel(repairable, { t, locale, now }) })}
-            body={t('store.repairDayBody', { left })}
+            title={t('streak.repairTitle', { day: dayLabel(offer.day, { t, locale, now }) })}
+            body={t('store.repairDayBody', { left: offer.left })}
             button={t('streak.repairButton', { count: data.repair.price })}
             pending={repairDay.isPending}
-            onPress={() => buyBack(repairable)}
+            onPress={() => buyBack(offer.day, offer.left)}
           />
         ) : null}
 

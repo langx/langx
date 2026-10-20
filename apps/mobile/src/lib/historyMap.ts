@@ -1,4 +1,5 @@
 import { activityGrid } from './activityMap'
+import { newestRepairDay } from './storeOffers'
 
 /**
  * What one square of the redesign's history map says (`V-StreakHistory`).
@@ -113,6 +114,50 @@ function stateOf(
   // Today is still being earned: an empty today is not a miss yet.
   if (cell.day === today || oldest === null || cell.day < oldest) return 'none'
   return 'missed'
+}
+
+/**
+ * The missed day the page's "Buy a day back" card offers, with the repairs
+ * left for it — or null when there is no day the repair endpoint would take.
+ *
+ * The store's own choice of day (`newestRepairDay`), so the two never offer
+ * different ones, narrowed twice:
+ *
+ * - Only a day the map above calls missed. The store does not know when the
+ *   account began, and a day before it is not a miss to buy back.
+ * - Only while the *day's* month has a repair left. The server counts the cap
+ *   in the month of the day being repaired, while `usedThisMonth` is today's
+ *   month: early in a month the newest missed day can sit in the last one,
+ *   whose two repairs may already be spent, and a card offering it would end
+ *   in a refusal. The bought days in `days` say how many — the range the
+ *   page asks for reaches well past the start of that month.
+ */
+export function historyRepairOffer(input: {
+  map: HistoryMap
+  today: string
+  days: readonly HistoryDay[]
+  usedThisMonth: number
+  perMonth: number
+}): { day: string; left: number } | null {
+  const { map, today, days, usedThisMonth, perMonth } = input
+  const day = newestRepairDay({
+    today,
+    filled: new Set(days.map((entry) => entry.day)),
+    usedThisMonth,
+  })
+  if (!day) return null
+  const missed = map.columns.some((column) =>
+    column.some((cell) => cell.day === day && cell.state === 'missed'),
+  )
+  if (!missed) return null
+  const month = day.slice(0, 7)
+  // Today's month is the server's own count; an earlier one is read off the rows.
+  const used =
+    month === today.slice(0, 7)
+      ? usedThisMonth
+      : days.filter((entry) => entry.source === 'purchase' && entry.day.startsWith(month)).length
+  const left = perMonth - used
+  return left > 0 ? { day, left } : null
 }
 
 /**
