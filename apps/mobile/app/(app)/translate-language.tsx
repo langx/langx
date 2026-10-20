@@ -9,6 +9,8 @@ import { useDisplayNames, useT } from '../../src/i18n'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
+import { useV3HomeDecision } from '../../src/hooks/useV3Home'
+import { TranslateLanguageScreenV3 } from '../../src/screens/settings/TranslateLanguageScreenV3'
 
 /**
  * Which of your native languages a translated message is shown in.
@@ -19,7 +21,17 @@ import { showToast } from '../../src/lib/toast'
  * exists for the bilingual, who read one of their languages faster than the
  * other. An account setting, so it follows the person to every device.
  */
-export default function TranslateLanguageScreen() {
+/**
+ * Which language translations are shown in — or, with `flags.v3Home` on, the redesign's. Bare until the config
+ * has said which, so a deep link never draws one look and then the other.
+ */
+export default function TranslateLanguageRoute() {
+  const v3Home = useV3HomeDecision()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <TranslateLanguageScreenV3 /> : <TranslateLanguageScreen />
+}
+
+function TranslateLanguageScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

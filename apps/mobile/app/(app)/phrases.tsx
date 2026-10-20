@@ -13,6 +13,8 @@ import { goBackTo } from '../../src/lib/navigation'
 import { openPaywall } from '../../src/lib/paywall'
 import { saveTextFile } from '../../src/lib/saveFile'
 import { makeStyles } from '../../src/lib/theme'
+import { useV3HomeDecision } from '../../src/hooks/useV3Home'
+import { PhrasesScreenV3 } from '../../src/screens/phrases/PhrasesScreenV3'
 
 /**
  * What a conversation has decided is worth keeping.
@@ -21,7 +23,18 @@ import { makeStyles } from '../../src/lib/theme'
  * phrase and a pair with more than a screenful has a list worth scrolling
  * rather than paging.
  */
-export default function PhrasesScreen() {
+/**
+ * A conversation's saved phrases — or, with `flags.v3Home` on, the redesign's. Bare until the config
+ * has said which, so a deep link never draws one look and then the other.
+ */
+export default function PhrasesRoute() {
+  const v3Home = useV3HomeDecision()
+  const { id } = useLocalSearchParams<{ id: string }>()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <PhrasesScreenV3 conversationId={id} /> : <PhrasesScreen />
+}
+
+function PhrasesScreen() {
   const styles = useStyles()
   const t = useT()
   const { id: conversationId } = useLocalSearchParams<{ id: string }>()

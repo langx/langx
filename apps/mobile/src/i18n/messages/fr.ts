@@ -1288,6 +1288,16 @@ export const fr: Localized<EnMessages> = {
     phraseDeckEmpty: 'Rien d’enregistré ici pour l’instant.',
     deckExport: 'Exporter',
     deckExportFailed: 'Impossible d’enregistrer ce fichier d’ici.',
+    deckExportCount: {
+      one: 'Exporter {count} expression',
+      other: 'Exporter {count} expressions',
+    },
+    deckExportNote: 'Un fichier avec toutes les cartes de cette liste. Il s’ouvre dans Anki.',
+    allPhrasesSub: 'De toutes les conversations, dans une liste',
+    phraseSendNote:
+      'Elle est envoyée dans ta discussion, l’autre personne la voit donc aussi, et elle rejoint tes expressions enregistrées.',
+    phraseTermHint: 'Le mot ou l’expression que tu veux garder.',
+    phraseMeaningHint: 'Avec tes propres mots. C’est ce qui la fait rester.',
     meetingNote: 'Note (facultatif)',
     meetingWhenLabel: 'Quand',
     meetingLength: 'Combien de temps',
@@ -2654,6 +2664,10 @@ export const fr: Localized<EnMessages> = {
     streakEmptyBody: 'Viens deux jours de suite et tu figureras dans ce classement.',
     echoEmptyTitle: 'Aucune révision sur cette période',
     echoEmptyBody: 'Réponds à quelques cartes et tu figureras dans ce classement pour la période.',
+    cardsUnit: {
+      one: 'carte',
+      other: 'cartes',
+    },
   },
 
   badges: {

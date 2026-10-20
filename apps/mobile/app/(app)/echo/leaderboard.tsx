@@ -8,6 +8,8 @@ import { useLocale, useT, type MessageKey } from '../../../src/i18n'
 import { goBackTo } from '../../../src/lib/navigation'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
+import { EchoLeaderboardScreenV3 } from '../../../src/screens/echo/EchoLeaderboardScreenV3'
 
 /** The token board's tabs, over the same three periods and the same words. */
 const PERIOD_TABS: readonly { value: PeriodType; labelKey: MessageKey }[] = [
@@ -25,7 +27,17 @@ const PERIOD_TABS: readonly { value: PeriodType; labelKey: MessageKey }[] = [
  * one picker. The periods are the token board's, down to the UTC week, so the
  * two are at least asking about the same seven days.
  */
-export default function EchoLeaderboardScreen() {
+/**
+ * The Echo board — or, with `flags.v3Home` on, the redesign's. Bare until the config
+ * has said which, so a deep link never draws one look and then the other.
+ */
+export default function EchoLeaderboardRoute() {
+  const v3Home = useV3HomeDecision()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <EchoLeaderboardScreenV3 /> : <EchoLeaderboardScreen />
+}
+
+function EchoLeaderboardScreen() {
   useScreenInteractive()
   const t = useT()
   const { locale } = useLocale()

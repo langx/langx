@@ -57,7 +57,7 @@ export function EchoLeaderboardScreenV3() {
     return (
       <View style={styles.value}>
         <Text style={[styles.valueNumber, mine && styles.onHue]}>
-          {count.toLocaleString(locale)}
+          {Number(count).toLocaleString(locale)}
         </Text>
         <Text style={[styles.valueUnit, mine && styles.onHue]}>
           {t('leaderboard.cardsUnit', { count })}

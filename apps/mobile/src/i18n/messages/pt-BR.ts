@@ -1272,6 +1272,16 @@ export const ptBR: Localized<EnMessages> = {
     phraseDeckEmpty: 'Nada salvo aqui ainda.',
     deckExport: 'Exportar',
     deckExportFailed: 'Não foi possível salvar esse arquivo daqui.',
+    deckExportCount: {
+      one: 'Exportar {count} frase',
+      other: 'Exportar {count} frases',
+    },
+    deckExportNote: 'Um arquivo com todos os cartões desta lista. Ele abre no Anki.',
+    allPhrasesSub: 'De todas as conversas, em uma lista',
+    phraseSendNote:
+      'Ela é enviada para a sua conversa, então a outra pessoa também vê, e entra nas suas frases salvas.',
+    phraseTermHint: 'A palavra ou frase que você quer guardar.',
+    phraseMeaningHint: 'Com suas próprias palavras. É isso que faz ela ficar.',
     meetingNote: 'Observação (opcional)',
     meetingWhenLabel: 'Quando',
     meetingLength: 'Duração',
@@ -2617,6 +2627,10 @@ export const ptBR: Localized<EnMessages> = {
     streakEmptyBody: 'Apareça dois dias seguidos e você entra nesta classificação.',
     echoEmptyTitle: 'Sem revisões neste período',
     echoEmptyBody: 'Responda alguns cartões e você entra na classificação deste período.',
+    cardsUnit: {
+      one: 'cartão',
+      other: 'cartões',
+    },
   },
 
   badges: {

@@ -36,6 +36,7 @@ const PAIRS: readonly { current: string; v3: string }[] = [
   { current: 'languages/pick.tsx', v3: 'LanguagePickScreenV3.tsx' },
   { current: 'blocked.tsx', v3: 'BlockedScreenV3.tsx' },
   { current: 'link-device.tsx', v3: 'LinkDeviceScreenV3.tsx' },
+  { current: 'translate-language.tsx', v3: 'TranslateLanguageScreenV3.tsx' },
 ]
 
 function isMessageKey(value: string): boolean {
@@ -71,6 +72,7 @@ const DRAWING_CALLS = new Set([
   'useRef',
   'makeStyles',
   'useV3Home',
+  'useV3HomeDecision',
   'useLocale',
   'useT',
   't',

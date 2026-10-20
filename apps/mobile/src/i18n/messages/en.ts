@@ -1436,6 +1436,16 @@ export const en = {
     phraseDeckEmpty: 'Nothing saved here yet.',
     deckExport: 'Export',
     deckExportFailed: 'Could not save that file from here.',
+    deckExportCount: {
+      one: 'Export {count} phrase',
+      other: 'Export {count} phrases',
+    },
+    deckExportNote: 'One file with every card in this list. It opens in Anki.',
+    allPhrasesSub: 'From every conversation, in one list',
+    phraseSendNote:
+      'It is sent to your chat, so the other person sees it too, and it joins your saved phrases.',
+    phraseTermHint: 'The word or phrase you want to keep.',
+    phraseMeaningHint: 'In your own words. This is what makes it stick.',
     meetingNote: 'Note (optional)',
     meetingWhenLabel: 'When',
     meetingLength: 'How long',
@@ -2890,6 +2900,10 @@ export const en = {
     streakEmptyBody: 'Show up on two days in a row and you are on this board.',
     echoEmptyTitle: 'No reviews this period',
     echoEmptyBody: 'Answer a few cards and you are on this board for the period.',
+    cardsUnit: {
+      one: 'card',
+      other: 'cards',
+    },
   },
 
   badges: {

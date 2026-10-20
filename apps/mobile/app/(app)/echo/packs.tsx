@@ -14,6 +14,8 @@ import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { packLabel } from '../../../src/i18n/labels'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
+import { EchoPacksScreenV3 } from '../../../src/screens/echo/EchoPacksScreenV3'
 
 /**
  * Every pack for the languages you are learning, a heading per language.
@@ -23,7 +25,17 @@ import { makeStyles, useTheme } from '../../../src/lib/theme'
  * flat, every row of the same language read the same and was told apart only
  * by a count — which is the bug the level label fixed once already.
  */
-export default function EchoPacksScreen() {
+/**
+ * The packs — or, with `flags.v3Home` on, the redesign's. Bare until the config
+ * has said which, so a deep link never draws one look and then the other.
+ */
+export default function EchoPacksRoute() {
+  const v3Home = useV3HomeDecision()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <EchoPacksScreenV3 /> : <EchoPacksScreen />
+}
+
+function EchoPacksScreen() {
   const styles = useStyles()
   const t = useT()
   const packs = useEchoPacks()

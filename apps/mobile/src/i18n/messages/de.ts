@@ -1308,6 +1308,16 @@ export const de: Localized<EnMessages> = {
     phraseDeckEmpty: 'Hier ist noch nichts.',
     deckExport: 'Exportieren',
     deckExportFailed: 'Die Datei ließ sich von hier aus nicht speichern.',
+    deckExportCount: {
+      one: '{count} Ausdruck exportieren',
+      other: '{count} Ausdrücke exportieren',
+    },
+    deckExportNote: 'Eine Datei mit jeder Karte dieser Liste. Sie lässt sich in Anki öffnen.',
+    allPhrasesSub: 'Aus allen Unterhaltungen, in einer Liste',
+    phraseSendNote:
+      'Er wird in deinen Chat gesendet, die andere Person sieht ihn also auch, und landet in deinen gespeicherten Ausdrücken.',
+    phraseTermHint: 'Das Wort oder der Ausdruck, den du behalten willst.',
+    phraseMeaningHint: 'In deinen eigenen Worten. So bleibt es hängen.',
     meetingNote: 'Notiz (optional)',
     meetingWhenLabel: 'Wann',
     meetingLength: 'Wie lange',
@@ -2666,6 +2676,10 @@ export const de: Localized<EnMessages> = {
     streakEmptyBody: 'Sei an zwei Tagen hintereinander da, dann stehst du in dieser Liste.',
     echoEmptyTitle: 'Keine Wiederholungen in diesem Zeitraum',
     echoEmptyBody: 'Beantworte ein paar Karten, dann stehst du in diesem Zeitraum in dieser Liste.',
+    cardsUnit: {
+      one: 'Karte',
+      other: 'Karten',
+    },
   },
 
   badges: {

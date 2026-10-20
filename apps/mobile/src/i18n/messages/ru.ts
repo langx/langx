@@ -1431,6 +1431,18 @@ export const ru: Localized<EnMessages> = {
     phraseDeckEmpty: 'Здесь пока пусто.',
     deckExport: 'Экспорт',
     deckExportFailed: 'Отсюда не удалось сохранить файл.',
+    deckExportCount: {
+      one: 'Экспортировать {count} фразу',
+      few: 'Экспортировать {count} фразы',
+      many: 'Экспортировать {count} фраз',
+      other: 'Экспортировать {count} фразы',
+    },
+    deckExportNote: 'Один файл со всеми карточками из этого списка. Он открывается в Anki.',
+    allPhrasesSub: 'Из всех разговоров, одним списком',
+    phraseSendNote:
+      'Она отправится в твой чат, так что собеседник тоже её увидит, и попадёт в твои сохранённые фразы.',
+    phraseTermHint: 'Слово или фраза, которую ты хочешь сохранить.',
+    phraseMeaningHint: 'Своими словами. Так она лучше запомнится.',
     meetingNote: 'Заметка (необязательно)',
     meetingWhenLabel: 'Когда',
     meetingLength: 'Сколько',
@@ -3054,6 +3066,12 @@ export const ru: Localized<EnMessages> = {
     streakEmptyBody: 'Заходи два дня подряд — и попадёшь в эту таблицу.',
     echoEmptyTitle: 'В этом периоде повторений нет',
     echoEmptyBody: 'Ответь на несколько карточек — и попадёшь в таблицу за этот период.',
+    cardsUnit: {
+      one: 'карточка',
+      few: 'карточки',
+      many: 'карточек',
+      other: 'карточки',
+    },
   },
 
   badges: {
