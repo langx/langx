@@ -79,6 +79,9 @@ same rule as `t('some.key')`, applied to a picture. It also sidesteps SVG
 > store's design, which Behic chose, draws a pack whose point is the words:
 > "¡Hola!", "Merci", "Çay?", "Café?" are the kind of word a language exchange
 > trades in, and "Nice!" or "Fixed it" are the replies learners actually send.
+> Most of the words are English all the same — "Nice!", "Got it", "Sent!",
+> "One sec", "Fixed it", "Night!", "new!" — so this pack accepts exactly the
+> cost the rule names, for a pack someone chooses to buy and send.
 > The rule still holds for every other pack. Paper Talk keeps the second half
 > of it: there is no `<text>` in any file, every word is outlined into paths.
 > Its screen-reader names are translated (`stickerName.*` in the app's
