@@ -57,6 +57,7 @@ import { impact } from '../lib/haptics'
 import { viewOnceBubbleLabel } from '../lib/viewOnce'
 import { useBubbleStylesV3 } from './thread/bubbleLookV3'
 import { CallRowV3 } from './thread/CallRowV3'
+import { Button } from './ui/Button'
 import { CorrectionCardV3 } from './thread/CorrectionCardV3'
 
 /**
@@ -629,7 +630,19 @@ export const MessageBubble = memo(function MessageBubble({
                 </Pressable>
               ) : null}
               {/* The time has come: the card that arranged the call can start it. */}
-              {onMeetingCall ? (
+              {/*
+                v3 makes it a pill at the in-row size, as the call row's Call
+                back is: it places a call, and a 13pt link was its whole target.
+              */}
+              {onMeetingCall && v3 ? (
+                <Button
+                  label={t('calls.callNow')}
+                  onPress={() => onMeetingCall(message)}
+                  variant="secondary"
+                  size="small"
+                  icon="phone"
+                />
+              ) : onMeetingCall ? (
                 <Pressable
                   accessibilityRole="button"
                   hitSlop={8}
