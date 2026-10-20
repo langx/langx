@@ -69,6 +69,17 @@ describe('withinReach', () => {
     // Washi Tape (1,750) is the next frame rung; Pixel (1,500) is cheaper.
     expect(pick?.id).toBe('stickers.pixel')
   })
+
+  it('never offers Aurora Glass while a gate is unmet, whatever the balance', () => {
+    // Every other cosmetic owned, so Aurora is the only thing left to pick.
+    const owned = COSMETICS.filter((c) => c.id !== 'frame.aurora').map((c) => c.id)
+    expect(withinReach(offers({ balance: 1_000_000, owned, longestStreak: 364 }))).toBeUndefined()
+    expect(
+      withinReach(
+        offers({ balance: 1_000_000, owned, longestStreak: 365, lifetimeCorrections: 5_000 }),
+      )?.id,
+    ).toBe('frame.aurora')
+  })
 })
 
 describe('upNext', () => {

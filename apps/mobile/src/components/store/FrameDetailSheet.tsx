@@ -20,7 +20,7 @@ function aboutKey(id: string): MessageKey {
 
 /**
  * A frame up close, from `V-ShopFrameDetail`: the art at the full cut on your
- * own face — with Aurora Glass's sweep, the second of the two places it runs —
+ * own face — with Aurora Glass's sweep, which runs only on your own face —
  * where else people see it, its gates in your real counts, and what you can
  * do about it.
  *
