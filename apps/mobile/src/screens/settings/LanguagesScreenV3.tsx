@@ -2,7 +2,11 @@ import Feather from '@expo/vector-icons/Feather'
 import { LANGUAGE_LEVELS, type LanguageLevel } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
 import type { ReactNode } from 'react'
-import { Pressable, ScrollView, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
+// gesture-handler's, as `languages/index.tsx` has: the drag handle is a
+// gesture-handler pan, and React Native's own scroll view does not take part
+// in its arbitration, so a long-press drag and a scroll could both win.
+import { ScrollView } from 'react-native-gesture-handler'
 import { useMe } from '../../api/queries'
 import { LearningList } from '../../components/languages/LearningList'
 import { LoadFailed } from '../../components/LoadFailed'
