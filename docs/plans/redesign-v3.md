@@ -287,9 +287,7 @@ Behic's answers (19 October):
 - **Sixteen frames.** The six new frames go where the master sheet draws them,
   between today's rungs (few accounts are far up the ladder yet). Two rules
   keep that fair: owning any frame above a new rung counts as owning the rung
-  below it, so nobody who owns Woven Reed is locked out of Linocut; and the Pro
-  welcome pack names its four frames by id (Slate, Bronze, Sky, Silver) rather
-  than "the first four", so inserting rungs does not change what it grants.
+  below it, so nobody who owns Woven Reed is locked out of Linocut; and the Pro welcome pack already names its four frames by id (Slate, Bronze, Sky, Silver), so inserting rungs does not change what it grants.
   New ids get new tones, and the unknown-tone fallback ships by OTA before the
   API sends any of them.
 - **Paper Talk costs 1,500.** Its price is set per pack, as pixel's already is.
