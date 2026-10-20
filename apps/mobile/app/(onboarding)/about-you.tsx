@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import { ScrollView, Text, View } from 'react-native'
 import { BirthDateField } from '../../src/components/BirthDateField'
 import { StepProgress } from '../../src/components/StepProgress'
+import { AboutYouV3 } from '../../src/components/onboarding/AboutYouV3'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
@@ -21,6 +22,7 @@ import { displayNameToSeed } from '../../src/lib/seedDisplayName'
 import { makeStyles } from '../../src/lib/theme'
 import { genderShortLabel, useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
 
 export default function AboutYouStep() {
   useScreenInteractive()
@@ -84,6 +86,35 @@ export default function AboutYouStep() {
     value: gender,
     label: gender === 'undisclosed' ? notSaying : genderShortLabel(t, gender),
   }))
+
+  // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
+  if (v3) {
+    return (
+      <AboutYouV3
+        onBack={() => goBackTo('/(onboarding)/levels')}
+        displayName={draft.displayName}
+        onDisplayName={(displayName) => updateDraft({ displayName })}
+        nameFromAccount={accountName.length > 0 && draft.displayName.trim() === accountName}
+        birthDate={draft.birthDate}
+        onBirthDate={(birthDate) => updateDraft({ birthDate })}
+        ageHint={t('onboarding.tooYoung', { age: MINIMUM_AGE })}
+        ageError={ageError}
+        gender={draft.gender}
+        genderOptions={genderOptions}
+        onGender={(gender) => updateDraft({ gender })}
+        genderNote={t('onboarding.genderNote', { option: notSaying })}
+        canContinue={canContinue}
+        onContinue={() => {
+          track({
+            name: 'onboarding_step_completed',
+            properties: { step: 'about-you', guest: false, resumed },
+          })
+          router.push('/(onboarding)/handle')
+        }}
+      />
+    )
+  }
 
   return (
     <Screen fluid>

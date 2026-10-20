@@ -898,6 +898,7 @@ export const fr: Localized<EnMessages> = {
     cannotBeBoth: 'Une langue ne peut pas être les deux',
     aboutYouTitle: 'À propos de toi',
     displayName: 'Nom affiché',
+    nameFromSignUp: 'Repris de ton inscription. Change-le si tu veux.',
     aboutYouOptional: 'À propos de toi (facultatif)',
     tooYoung: 'LangX est réservé aux personnes de {age} ans et plus.',
     photoTitle: 'Mets un visage dessus',
@@ -929,6 +930,8 @@ export const fr: Localized<EnMessages> = {
     whatNext: 'La suite',
     whatNextBody:
       'Découvrir te montre des gens qui parlent ce que tu apprends. Dis bonjour à l’un d’eux.',
+    whatNextBodyPeople:
+      'L’onglet Personnes te montre qui parle ce que tu apprends. Dis bonjour à l’un d’eux.',
     findSomeone: 'Trouver quelqu’un à qui parler',
     sayHelloTo: 'Dis bonjour à {name}',
     inviteCodeToggle: 'Tu as un code d’invitation ?',
@@ -2362,6 +2365,15 @@ export const fr: Localized<EnMessages> = {
     leaderboardBody: 'Qui a gagné le plus cette semaine, ce mois et cette année',
     poolBody: 'Comment la part de la nuit est calculée',
     storeBody: 'Gels de série, jours manqués et cosmétiques',
+    tokensUnit: { one: 'jeton', other: 'jetons' },
+    nextRung: {
+      one: '{title} : encore {amount} jeton',
+      other: '{title} : encore {amount} jetons',
+    },
+    nextRungReady: '{title} : assez de jetons',
+    countOf: '{current} sur {total}',
+    giftOpen: 'Ouvrir',
+    price: { one: '{amount} jeton', other: '{amount} jetons' },
     disclaimer:
       'Les jetons sont des points internes à l’app. Ils ne peuvent être achetés, échangés, retirés ni servir à débloquer une formule payante — seulement des gels de série, des jours manqués et des cosmétiques. Pas de chaîne, pas de contrat, pas de marché.',
   },

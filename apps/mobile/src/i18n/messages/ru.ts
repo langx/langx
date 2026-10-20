@@ -1000,6 +1000,7 @@ export const ru: Localized<EnMessages> = {
     cannotBeBoth: 'Язык не может быть и тем и другим',
     aboutYouTitle: 'О тебе',
     displayName: 'Отображаемое имя',
+    nameFromSignUp: 'Из твоей регистрации. Измени, если хочешь.',
     aboutYouOptional: 'О тебе (необязательно)',
     tooYoung: 'LangX — для людей от {age} лет.',
     photoTitle: 'Добавь лицо',
@@ -1031,6 +1032,8 @@ export const ru: Localized<EnMessages> = {
     whatNext: 'Что дальше',
     whatNextBody:
       'В Поиске появляются люди, которые говорят на том, что ты учишь. Поздоровайся с кем-нибудь.',
+    whatNextBodyPeople:
+      'В разделе «Люди» — те, кто говорит на том, что ты учишь. Поздоровайся с кем-нибудь.',
     findSomeone: 'Найти собеседника',
     sayHelloTo: 'Поздоровайся с {name}',
     inviteCodeToggle: 'Есть код приглашения?',
@@ -2646,6 +2649,22 @@ export const ru: Localized<EnMessages> = {
     leaderboardBody: 'Кто заработал больше всех за неделю, месяц и год',
     poolBody: 'Как считается ночная доля',
     storeBody: 'Заморозки серии, пропущенные дни и косметика',
+    tokensUnit: { one: 'жетон', few: 'жетона', many: 'жетонов', other: 'жетона' },
+    nextRung: {
+      one: '{title}: ещё {amount} жетон',
+      few: '{title}: ещё {amount} жетона',
+      many: '{title}: ещё {amount} жетонов',
+      other: '{title}: ещё {amount} жетона',
+    },
+    nextRungReady: '{title}: жетонов хватает',
+    countOf: '{current} из {total}',
+    giftOpen: 'Открыть',
+    price: {
+      one: '{amount} жетон',
+      few: '{amount} жетона',
+      many: '{amount} жетонов',
+      other: '{amount} жетона',
+    },
     disclaimer:
       'Жетоны — это внутренние баллы. Их нельзя купить, обменять, вывести или разблокировать ими платный тариф — только заморозки серии, пропущенные дни и косметика. Нет ни цепочки, ни контракта, ни рынка.',
   },
