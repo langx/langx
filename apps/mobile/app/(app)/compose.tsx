@@ -28,6 +28,8 @@ import { reportWriteError } from '../../src/lib/reportWriteError'
 import { requireAccount } from '../../src/lib/requireAccount'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
+import { IconButton } from '../../src/components/ui/IconButton'
+import { useV3Home } from '../../src/hooks/useV3Home'
 
 /** Past this many languages the segmented row stops fitting a phone. */
 const SEGMENTED_MAX = 3
@@ -64,6 +66,7 @@ export default function ComposeScreen() {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
+  const v3Look = useV3Home()
   const names = useDisplayNames()
   const { data: session } = authClient.useSession()
 
@@ -231,15 +234,25 @@ export default function ComposeScreen() {
           back with an arrow — you are leaving a draft, not a place.
         */}
         <View style={styles.header}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('common.cancel')}
-            hitSlop={12}
-            onPress={() => goBackTo('/(app)/(tabs)/feed')}
-            style={({ pressed }) => [styles.close, pressed && styles.pressed]}
-          >
-            <Feather name="x" size={22} color={colors.text} />
-          </Pressable>
+          {v3Look ? (
+            <IconButton
+              icon="x"
+              iconSize={22}
+              accessibilityLabel={t('common.cancel')}
+              hitSlop={12}
+              onPress={() => goBackTo('/(app)/(tabs)/feed')}
+            />
+          ) : (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('common.cancel')}
+              hitSlop={12}
+              onPress={() => goBackTo('/(app)/(tabs)/feed')}
+              style={({ pressed }) => [styles.close, pressed && styles.pressed]}
+            >
+              <Feather name="x" size={22} color={colors.text} />
+            </Pressable>
+          )}
           <Text style={styles.title} numberOfLines={2}>
             {t('feed.composeTitle')}
           </Text>

@@ -48,10 +48,11 @@ import { shareLink } from '../lib/share'
 import { profileShareText } from '../lib/shareText'
 import { showToast } from '../lib/toast'
 import { makeStyles, useTheme } from '../lib/theme'
-import { interestLabel, useDisplayNames, useT } from '../i18n'
+import { interestLabel, useDisplayNames, useLocale, useT } from '../i18n'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useV3Home } from '../hooks/useV3Home'
+import { IconButton } from '../components/ui/IconButton'
 
 export interface ProfileScreenProps {
   handle: string
@@ -74,6 +75,7 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
   const t = useT()
   const names = useDisplayNames()
   const v3Home = useV3Home()
+  const { isRtl } = useLocale()
   // For the browser tab's title — see the same gate in `ChatScreen`.
   const focused = useIsFocused()
 
@@ -107,7 +109,14 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
    * page jumps by its height when it does. Absent in a panel: the list it
    * would go back to is beside it, and picking somebody else replaces this.
    */
-  const backButton = embedded ? null : (
+  const backButton = embedded ? null : v3Home ? (
+    <IconButton
+      icon={isRtl ? 'chevron-right' : 'chevron-left'}
+      accessibilityLabel={t('common.backPlain')}
+      onPress={() => goBackTo('/(app)/(tabs)/discover', from)}
+      hitSlop={12}
+    />
+  ) : (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={t('common.backPlain')}
@@ -253,7 +262,15 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
         ) : (
           <View style={styles.spacer} />
         )}
-        {isSelf ? null : (
+        {isSelf ? null : v3Home ? (
+          <IconButton
+            icon="more-horizontal"
+            iconSize={22}
+            accessibilityLabel={`${t('share.profile')} · ${t('share.sendInChat')} · ${t('common.report')} · ${t('common.block')}`}
+            onPress={() => void openActions()}
+            hitSlop={8}
+          />
+        ) : (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={`${t('share.profile')} · ${t('share.sendInChat')} · ${t('common.report')} · ${t('common.block')}`}

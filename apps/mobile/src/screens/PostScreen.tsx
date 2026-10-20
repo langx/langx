@@ -80,6 +80,8 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { advanceUpload, percentOf, UPLOAD_START, type UploadProgress } from '../lib/uploadProgress'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useReviewPrompt } from '../hooks/useReviewPrompt'
+import { IconButton } from '../components/ui/IconButton'
+import { useV3Home } from '../hooks/useV3Home'
 
 /** The folded diff line — same drawing as the feed's top-correction panel. */
 function CorrectedLine({ original, corrected }: { original: string; corrected: string }) {
@@ -166,6 +168,7 @@ export function PostScreen({
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
+  const v3Look = useV3Home()
   const names = useDisplayNames()
   const { locale } = useLocale()
   const id = postId
@@ -718,7 +721,15 @@ export function PostScreen({
           title={t('feed.post')}
           {...(embedded ? {} : { onBack: () => goBackTo('/(app)/(tabs)/feed', from) })}
           trailing={
-            post ? (
+            post && v3Look ? (
+              <IconButton
+                icon="more-horizontal"
+                iconSize={22}
+                accessibilityLabel={mine ? t('feed.deletePost') : t('share.action')}
+                hitSlop={12}
+                onPress={() => void openMore()}
+              />
+            ) : post ? (
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={mine ? t('feed.deletePost') : t('share.action')}

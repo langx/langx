@@ -7,6 +7,8 @@ import type { MessageKey } from '../i18n/runtime'
 import { track } from '../lib/analytics'
 import { makeStyles, useTheme } from '../lib/theme'
 import type { TipId, TipSlot } from '../lib/tips'
+import { IconButton } from './ui/IconButton'
+import { useV3Home } from '../hooks/useV3Home'
 
 interface TipProps {
   slot: TipSlot
@@ -37,6 +39,7 @@ interface TipProps {
  */
 export function Tip({ slot, spaced = true }: TipProps) {
   const t = useT()
+  const v3Look = useV3Home()
   const tips = useTips()
   const styles = useStyles()
   const { colors } = useTheme()
@@ -74,19 +77,34 @@ export function Tip({ slot, spaced = true }: TipProps) {
   return (
     <View style={[styles.root, spaced && styles.spaced]}>
       <Text style={styles.body}>{t(body)}</Text>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={t('tips.dismiss')}
-        onPress={() => {
-          setSentAway(true)
-          tips.dismiss(id)
-          track({ name: 'tip_dismissed', properties: { tip: id, slot } })
-        }}
-        hitSlop={12}
-        style={({ pressed }) => [styles.close, pressed && styles.pressed]}
-      >
-        <Feather name="x" size={16} color={colors.accent} />
-      </Pressable>
+      {v3Look ? (
+        <IconButton
+          icon="x"
+          iconSize={16}
+          color={colors.accent}
+          accessibilityLabel={t('tips.dismiss')}
+          onPress={() => {
+            setSentAway(true)
+            tips.dismiss(id)
+            track({ name: 'tip_dismissed', properties: { tip: id, slot } })
+          }}
+          hitSlop={12}
+        />
+      ) : (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('tips.dismiss')}
+          onPress={() => {
+            setSentAway(true)
+            tips.dismiss(id)
+            track({ name: 'tip_dismissed', properties: { tip: id, slot } })
+          }}
+          hitSlop={12}
+          style={({ pressed }) => [styles.close, pressed && styles.pressed]}
+        >
+          <Feather name="x" size={16} color={colors.accent} />
+        </Pressable>
+      )}
     </View>
   )
 }
