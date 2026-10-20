@@ -161,7 +161,8 @@ describe('notification centre', () => {
    * The routes answer before the inbox rows are written (`tellTheAuthor` is
    * fire-and-forget on purpose), so a count over several writes cannot be
    * read off the first row `inbox` sees: that row exists while the others are
-   * still in flight.
+   * still in flight. Anything that asserts a group's count or a read total
+   * over several writes calls this first.
    */
   async function documentsWritten(user: SignedUpUser, expected: number): Promise<void> {
     for (let attempt = 0; attempt < 40; attempt++) {
@@ -287,6 +288,7 @@ describe('notification centre', () => {
     await comment(b, postId, 'Agreed.')
     await correct(a, postId, 'Ich habe gestern ein Buch gelesen!')
 
+    await documentsWritten(author, 3)
     const rows = await inbox(author, 2)
     expect(rows).toHaveLength(2)
     expect(rows.map((row) => row.kind).sort()).toEqual(['postComment', 'postCorrection'])
@@ -511,6 +513,7 @@ describe('notification centre', () => {
     await comment(a, postId, 'One.')
     await comment(b, postId, 'Two.')
     await follow(a, author.userId)
+    await documentsWritten(author, 3)
     const before = await inbox(author, 2)
     expect((await unread(author)).json<{ total: number }>().total).toBe(2)
 
