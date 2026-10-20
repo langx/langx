@@ -3333,6 +3333,31 @@ export const ar: Localized<EnMessages> = {
       noAnswer: 'لا يوجد رد',
       declined: 'مرفوضة',
       failed: 'تعذّر الاتصال',
+      spoken: '{title}، {detail}',
+    },
+    length: {
+      hours: {
+        one: 'ساعة واحدة',
+        two: 'ساعتان',
+        few: '{count} ساعات',
+        many: '{count} ساعة',
+        other: '{count} ساعة',
+      },
+      minutes: {
+        one: 'دقيقة واحدة',
+        two: 'دقيقتان',
+        few: '{count} دقائق',
+        many: '{count} دقيقة',
+        other: '{count} دقيقة',
+      },
+      seconds: {
+        one: 'ثانية واحدة',
+        two: 'ثانيتان',
+        few: '{count} ثوانٍ',
+        many: '{count} ثانية',
+        other: '{count} ثانية',
+      },
+      pair: '{first} و{second}',
     },
   },
 

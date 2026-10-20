@@ -56,6 +56,7 @@ import { callRowIcon, callRowLabel, formatCallDuration } from '../lib/calls/call
 import { impact } from '../lib/haptics'
 import { viewOnceBubbleLabel } from '../lib/viewOnce'
 import { useBubbleStylesV3 } from './thread/bubbleLookV3'
+import { CallRowV3 } from './thread/CallRowV3'
 import { CorrectionCardV3 } from './thread/CorrectionCardV3'
 
 /**
@@ -811,6 +812,20 @@ export const MessageBubble = memo(function MessageBubble({
    * whoever placed the call, and the words are chosen for whoever is reading:
    * see `callRowLabel`.
    */
+  if (message.type === 'call' && message.call && v3) {
+    return shell(
+      <CallRowV3
+        call={message.call}
+        mine={mine}
+        box={box}
+        column={column}
+        flash={flash}
+        meta={<MessageMeta message={message} mine={false} />}
+        onLongPress={press}
+        onCallBack={onCallBack ? () => onCallBack(message) : undefined}
+      />,
+    )
+  }
   if (message.type === 'call' && message.call) {
     const call = message.call
     const label = callRowLabel(call, mine)

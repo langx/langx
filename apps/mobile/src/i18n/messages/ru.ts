@@ -3124,6 +3124,28 @@ export const ru: Localized<EnMessages> = {
       noAnswer: 'Нет ответа',
       declined: 'Отклонён',
       failed: 'Не удалось соединиться',
+      spoken: '{title}, {detail}',
+    },
+    length: {
+      hours: {
+        one: '{count} час',
+        few: '{count} часа',
+        many: '{count} часов',
+        other: '{count} часа',
+      },
+      minutes: {
+        one: '{count} минута',
+        few: '{count} минуты',
+        many: '{count} минут',
+        other: '{count} минуты',
+      },
+      seconds: {
+        one: '{count} секунда',
+        few: '{count} секунды',
+        many: '{count} секунд',
+        other: '{count} секунды',
+      },
+      pair: '{first} {second}',
     },
   },
 

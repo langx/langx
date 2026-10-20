@@ -2711,6 +2711,22 @@ export const es: Localized<EnMessages> = {
       noAnswer: 'Sin respuesta',
       declined: 'Rechazada',
       failed: 'No se pudo conectar',
+      spoken: '{title}, {detail}',
+    },
+    length: {
+      hours: {
+        one: '{count} hora',
+        other: '{count} horas',
+      },
+      minutes: {
+        one: '{count} minuto',
+        other: '{count} minutos',
+      },
+      seconds: {
+        one: '{count} segundo',
+        other: '{count} segundos',
+      },
+      pair: '{first} y {second}',
     },
   },
 

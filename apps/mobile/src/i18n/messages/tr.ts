@@ -2677,6 +2677,22 @@ export const tr: Localized<EnMessages> = {
       noAnswer: 'Cevap yok',
       declined: 'Reddedildi',
       failed: 'Bağlanamadı',
+      spoken: '{title}, {detail}',
+    },
+    length: {
+      hours: {
+        one: '{count} saat',
+        other: '{count} saat',
+      },
+      minutes: {
+        one: '{count} dakika',
+        other: '{count} dakika',
+      },
+      seconds: {
+        one: '{count} saniye',
+        other: '{count} saniye',
+      },
+      pair: '{first} {second}',
     },
   },
 

@@ -2708,6 +2708,22 @@ export const ptBR: Localized<EnMessages> = {
       noAnswer: 'Sem resposta',
       declined: 'Recusada',
       failed: 'Não conectou',
+      spoken: '{title}, {detail}',
+    },
+    length: {
+      hours: {
+        one: '{count} hora',
+        other: '{count} horas',
+      },
+      minutes: {
+        one: '{count} minuto',
+        other: '{count} minutos',
+      },
+      seconds: {
+        one: '{count} segundo',
+        other: '{count} segundos',
+      },
+      pair: '{first} e {second}',
     },
   },
 
