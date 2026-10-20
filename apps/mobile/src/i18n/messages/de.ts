@@ -1552,6 +1552,11 @@ export const de: Localized<EnMessages> = {
   day: { today: 'Heute', yesterday: 'Gestern' },
 
   starred: {
+    lede: 'Nur du siehst deine Markierungen. Tippe auf eine, um sie in ihrem Chat zu öffnen.',
+    emptyLine:
+      'Noch nichts markiert. Halte eine Nachricht gedrückt und wähle Markieren, um sie hier zu behalten.',
+    goToChats: 'Zu den Chats',
+    rowLabel: '{name}: {what}. Im Chat öffnen',
     title: 'Markiert',
     emptyTitle: 'Noch nichts markiert',
     emptyBody: 'Halte eine Nachricht gedrückt und wähle Markieren, um sie hier zu behalten.',

@@ -1496,6 +1496,11 @@ export const tr: Localized<EnMessages> = {
   },
 
   starred: {
+    lede: 'Yıldızlarını yalnızca sen görürsün. Birine dokun, kendi sohbetinde açılsın.',
+    emptyLine:
+      'Henüz yıldızlı bir şey yok. Bir mesaja basılı tutup Yıldızla’yı seç, burada dursun.',
+    goToChats: 'Sohbetlere git',
+    rowLabel: '{name}: {what}. Sohbette aç',
     title: 'Yıldızlı',
     emptyTitle: 'Henüz yıldızlı bir şey yok',
     emptyBody: 'Bir mesaja basılı tutup Yıldızla’yı seç, burada dursun.',

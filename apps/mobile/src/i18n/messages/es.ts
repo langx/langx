@@ -1518,6 +1518,11 @@ export const es: Localized<EnMessages> = {
   day: { today: 'Hoy', yesterday: 'Ayer' },
 
   starred: {
+    lede: 'Solo tú ves tus destacados. Toca uno para abrirlo en su chat.',
+    emptyLine:
+      'Aún no hay nada destacado. Mantén pulsado un mensaje y elige Destacar para guardarlo aquí.',
+    goToChats: 'Ir a Chats',
+    rowLabel: '{name}: {what}. Abrir en el chat',
     title: 'Destacados',
     emptyTitle: 'Aún no hay nada destacado',
     emptyBody: 'Mantén pulsado un mensaje y elige Destacar para guardarlo aquí.',

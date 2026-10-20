@@ -1513,6 +1513,11 @@ export const ptBR: Localized<EnMessages> = {
   day: { today: 'Hoje', yesterday: 'Ontem' },
 
   starred: {
+    lede: 'Só você vê suas favoritas. Toque em uma para abri-la na conversa.',
+    emptyLine:
+      'Nada favoritado ainda. Segure uma mensagem e escolha Favoritar para guardá-la aqui.',
+    goToChats: 'Ir para Conversas',
+    rowLabel: '{name}: {what}. Abrir na conversa',
     title: 'Favoritas',
     emptyTitle: 'Nada favoritado ainda',
     emptyBody: 'Segure uma mensagem e escolha Favoritar para guardá-la aqui.',

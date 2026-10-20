@@ -1688,6 +1688,10 @@ export const en = {
   },
 
   starred: {
+    lede: 'Only you see your stars. Tap one to open it in its chat.',
+    emptyLine: 'Nothing starred yet. Hold a message and choose Star to keep it here.',
+    goToChats: 'Go to Chats',
+    rowLabel: '{name}: {what}. Open in chat',
     title: 'Starred',
     emptyTitle: 'Nothing starred yet',
     emptyBody: 'Hold a message and choose Star to keep it here.',

@@ -1532,6 +1532,11 @@ export const fr: Localized<EnMessages> = {
   day: { today: 'Aujourd’hui', yesterday: 'Hier' },
 
   starred: {
+    lede: 'Toi seul vois tes favoris. Touches-en un pour l’ouvrir dans sa discussion.',
+    emptyLine:
+      'Aucun favori pour l’instant. Appuie longuement sur un message et choisis Favori pour le garder ici.',
+    goToChats: 'Aller aux discussions',
+    rowLabel: '{name} : {what}. Ouvrir dans la discussion',
     title: 'Favoris',
     emptyTitle: 'Aucun favori pour l’instant',
     emptyBody: 'Appuie longuement sur un message et choisis Favori pour le garder ici.',
