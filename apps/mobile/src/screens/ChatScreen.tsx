@@ -194,7 +194,10 @@ import { WebTitle } from '../components/WebTitle'
 import { ComposerV3, type LatestActions } from '../components/thread/ComposerV3'
 import { ThreadHeaderV3 } from '../components/thread/ThreadHeaderV3'
 import { useV3Home } from '../hooks/useV3Home'
+import { useKeyboardUp } from '../hooks/useKeyboardUp'
+import { partnerHueFor } from '../lib/theme/partnerHue'
 import { latestToActOn } from '../lib/latestToActOn'
+import { keepIdentity } from '../lib/stableMessages'
 
 export interface ChatScreenProps {
   conversationId: string
@@ -249,6 +252,13 @@ export function ChatScreen({
    * messages, the corrections and the list itself keep the current look.
    */
   const v3Thread = useV3Home()
+  /**
+   * The v3 thread folds its band and its chips while a soft keyboard is up
+   * — on a small phone they left a sliver of the thread above it. The field's
+   * focus is what tells a phone browser the keyboard is there.
+   */
+  const [fieldFocused, setFieldFocused] = useState(false)
+  const keyboardUp = useKeyboardUp(v3Thread, fieldFocused)
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()
@@ -500,7 +510,19 @@ export function ChatScreen({
   // tail describes a different slice of the thread than the live query does.
   const thread = jumpAnchor ? windowed : messages
 
-  const items = useMemo(() => messagesNewestFirst(thread.data), [thread.data])
+  /*
+   * In the v3 thread each message stays the same object until it changes
+   * (`keepIdentity`), so a refetch after a message lands renders that one
+   * row rather than every bubble on screen.
+   */
+  const lastById = useRef<ReadonlyMap<string, MessageDto>>(new Map())
+  const items = useMemo(() => {
+    const fresh = messagesNewestFirst(thread.data)
+    if (!v3Thread) return fresh
+    const kept = keepIdentity(lastById.current, fresh)
+    lastById.current = kept.byId
+    return kept.items
+  }, [thread.data, v3Thread])
   /*
    * Your own sends, drawn before the server has answered. Newest first like
    * `items`, and ahead of them: the inverted list puts index 0 nearest the
@@ -2865,6 +2887,11 @@ export function ChatScreen({
           echo: theirLatest.echoed === true ? undefined : () => void addEcho(theirLatest),
         }
       : null
+  /**
+   * Their bubbles' fill in the v3 look: the hue the band above is drawn in.
+   * A string, so the bubbles' memo compares it by value.
+   */
+  const partnerHue = v3Thread && partner ? v3.hues[partnerHueFor(partner._id)] : undefined
   /** One sentence for both composers: what the field says before anything is typed. */
   const composerPlaceholder = correcting
     ? t('chat.writeCorrection')
@@ -2911,6 +2938,7 @@ export function ChatScreen({
             }
             call={{ gate: callGate, anchor: callButton, onPress: openCallMenu }}
             onMore={() => void openThreadMenu()}
+            compact={keyboardUp}
           />
         ) : (
           <View style={styles.header}>
@@ -3348,6 +3376,8 @@ export function ChatScreen({
                       onJumpTo={onJumpTo}
                       onOpenMedia={onOpenMedia}
                       onOpenViewOnce={onOpenViewOnce}
+                      v3={v3Thread}
+                      partnerHue={partnerHue}
                     />
                   )
                 }
@@ -3446,6 +3476,8 @@ export function ChatScreen({
               locating={locating}
               latest={latestActions}
               partnerName={partner?.displayName ?? t('chat.them')}
+              compact={keyboardUp}
+              onFocusChange={setFieldFocused}
             />
           ) : (
             <ChatComposer
