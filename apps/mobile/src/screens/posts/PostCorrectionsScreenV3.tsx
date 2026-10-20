@@ -230,7 +230,6 @@ const useStyles = makeStyles(({ v3 }) => ({
   original: {
     ...v3.type.caption,
     color: v3.colors.muted,
-    fontSize: 15,
     textDecorationLine: 'line-through',
   },
   corrected: { ...v3.type.body, color: v3.colors.fg, fontWeight: '600' },

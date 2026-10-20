@@ -29,7 +29,7 @@ export const usePostStylesV3 = makeStyles(({ v3 }) => ({
     paddingTop: v3.space[8],
   },
   whoText: { flex: 1, minWidth: 0 },
-  name: { ...v3.type.button, color: v3.colors.fg, fontSize: 18 },
+  name: { ...v3.type.button, color: v3.colors.fg },
   // The post's Top mark: an outlined pill, as the drawing has it, so the
   // correction row's filled Top below stays the louder of the two.
   topPost: {
@@ -78,8 +78,6 @@ export const usePostStylesV3 = makeStyles(({ v3 }) => ({
   sectionTitle: {
     ...v3.type.headline,
     color: v3.colors.fg,
-    fontSize: 20,
-    lineHeight: 24,
     paddingBottom: v3.space[8],
     paddingHorizontal: v3.space[4],
     paddingTop: v3.space[24],
@@ -111,10 +109,10 @@ export const usePostStylesV3 = makeStyles(({ v3 }) => ({
   topPillLabel: { ...v3.type.label, color: v3.colors.pillText },
   // On the block's own grey: the green of the changed words carries the fix.
   card: { gap: v3.space[6] },
-  corrected: { ...v3.type.body, color: v3.colors.fg, fontSize: 18, lineHeight: 25 },
+  corrected: { ...v3.type.body, color: v3.colors.fg },
   removed: { color: v3.colors.muted, fontWeight: '400', textDecorationLine: 'line-through' },
   added: { color: v3.colors.correction, fontWeight: '800' },
-  note: { ...v3.type.caption, color: v3.colors.muted, fontSize: 15 },
+  note: { ...v3.type.caption, color: v3.colors.muted },
   takes: { gap: v3.space[10], paddingVertical: v3.space[8] },
   takeLabel: { ...v3.type.label, color: v3.colors.muted },
   likeRow: {
@@ -147,7 +145,7 @@ export const usePostStylesV3 = makeStyles(({ v3 }) => ({
     justifyContent: 'space-between',
     paddingStart: v3.space[4],
   },
-  composeTitle: { ...v3.type.headline, color: v3.colors.fg, fontSize: 19, lineHeight: 24 },
+  composeTitle: { ...v3.type.headline, color: v3.colors.fg },
   accentAction: { ...v3.type.caption, color: v3.colors.echoText, fontWeight: '800' },
   reward: {
     ...v3.type.caption,
