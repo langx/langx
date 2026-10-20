@@ -28,8 +28,8 @@ import { reportWriteError } from '../../src/lib/reportWriteError'
 import { requireAccount } from '../../src/lib/requireAccount'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
-import { IconButton } from '../../src/components/ui/IconButton'
 import { useV3Home } from '../../src/hooks/useV3Home'
+import { ComposeScreenV3 } from '../../src/screens/posts/ComposeScreenV3'
 
 /** Past this many languages the segmented row stops fitting a phone. */
 const SEGMENTED_MAX = 3
@@ -62,11 +62,15 @@ const ASK_COPY = {
  * A pushed route rather than a modal because that is what this app does —
  * `Screen` + `goBackTo`, with no `presentation: 'modal'` anywhere in it.
  */
-export default function ComposeScreen() {
+export default function ComposeRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <ComposeScreenV3 /> : <ComposeScreen />
+}
+
+function ComposeScreen() {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
-  const v3Look = useV3Home()
   const names = useDisplayNames()
   const { data: session } = authClient.useSession()
 
@@ -234,25 +238,15 @@ export default function ComposeScreen() {
           back with an arrow — you are leaving a draft, not a place.
         */}
         <View style={styles.header}>
-          {v3Look ? (
-            <IconButton
-              icon="x"
-              iconSize={22}
-              accessibilityLabel={t('common.cancel')}
-              hitSlop={12}
-              onPress={() => goBackTo('/(app)/(tabs)/feed')}
-            />
-          ) : (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('common.cancel')}
-              hitSlop={12}
-              onPress={() => goBackTo('/(app)/(tabs)/feed')}
-              style={({ pressed }) => [styles.close, pressed && styles.pressed]}
-            >
-              <Feather name="x" size={22} color={colors.text} />
-            </Pressable>
-          )}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('common.cancel')}
+            hitSlop={12}
+            onPress={() => goBackTo('/(app)/(tabs)/feed')}
+            style={({ pressed }) => [styles.close, pressed && styles.pressed]}
+          >
+            <Feather name="x" size={22} color={colors.text} />
+          </Pressable>
           <Text style={styles.title} numberOfLines={2}>
             {t('feed.composeTitle')}
           </Text>

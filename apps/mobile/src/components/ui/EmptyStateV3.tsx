@@ -151,7 +151,54 @@ export function EmptyStateV3({
   )
 }
 
+/**
+ * The empty list on a page whose current look says it in a title and a body
+ * under a glyph — likes, followers, notifications — moved to v3's faces
+ * with the same words. `EmptyStateV3`'s one line and one button need copy and
+ * an action those pages do not have yet; this keeps what they say today.
+ */
+export function EmptyNoteV3({
+  icon,
+  title,
+  body,
+  actionLabel,
+  onAction,
+}: {
+  icon: keyof typeof Feather.glyphMap
+  title: string
+  body: string
+  actionLabel?: string | undefined
+  onAction?: (() => void) | undefined
+}) {
+  const styles = useStyles()
+  const { v3 } = useTheme()
+  return (
+    <View style={styles.root}>
+      <View style={styles.glyph}>
+        <Feather name={icon} size={v3.icon.xxl} color={v3.colors.fg} />
+      </View>
+      <View style={styles.words}>
+        <Text style={styles.line}>{title}</Text>
+        <Text style={styles.body}>{body}</Text>
+      </View>
+      {actionLabel && onAction ? (
+        <Button label={actionLabel} onPress={onAction} variant="secondary" style={styles.action} />
+      ) : null}
+    </View>
+  )
+}
+
 const useStyles = makeStyles(({ v3 }) => ({
+  glyph: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.pill,
+    height: 72,
+    justifyContent: 'center',
+    width: 72,
+  },
+  words: { alignItems: 'center', gap: v3.space[6] },
+  body: { ...v3.type.callout, color: v3.colors.muted, textAlign: 'center' },
   // Tall on purpose, like `EmptyState`: an empty list has nothing to push
   // against, and a line hugging the header reads as an error.
   root: {
