@@ -1,11 +1,14 @@
 import { generatedAvatarUrl } from '@langx/shared'
 import { Image } from 'expo-image'
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Text, View } from 'react-native'
+import { useV3Home } from '../../hooks/useV3Home'
 import { API_URL } from '../../lib/apiUrl'
+import { artForTone } from '../../lib/frameArt/palettes'
 // `layout` stays a direct import: it is scheme-independent, and a default
 // parameter value is evaluated before any hook could have run.
 import { frameColor, layout, makeStyles, useTheme, type ThemeColors } from '../../lib/theme'
+import { FrameArt, frameArtBox, type FrameSweepComponent } from './FrameArt'
 
 interface AvatarProps {
   url?: string | undefined
@@ -24,6 +27,12 @@ interface AvatarProps {
    * draws an ink ring — see `frameColor`.
    */
   frame?: string | undefined
+  /**
+   * Aurora Glass's light sweep (`FrameSweep`), passed only by your own profile
+   * and the store's preview. Ignored by every other frame, at the small cuts
+   * and with the flag off.
+   */
+  sweep?: FrameSweepComponent | undefined
 }
 
 /**
@@ -70,8 +79,9 @@ export function Avatar({
   size = layout.avatar,
   online = false,
   frame,
+  sweep,
 }: AvatarProps) {
-  const { colors, scheme } = useTheme()
+  const { colors } = useTheme()
   const styles = useStyles()
   const [failed, setFailed] = useState(false)
   const dimension = { borderRadius: size / 2, height: size, width: size }
@@ -84,19 +94,6 @@ export function Avatar({
    */
   const source = url ?? (seed ? generatedAvatarUrl(API_URL, seed) : undefined)
 
-  /*
-   * The ring is a *wrapper*, not a border on the avatar itself.
-   *
-   * A `borderWidth` here would shrink the photo inside the same box and push
-   * the online dot — which is positioned against this view at `bottom/end: 0` —
-   * inwards by the ring's width. Wrapping keeps the inner view exactly `size`,
-   * so every one of the fourteen call sites keeps the avatar it asked for and
-   * the dot stays on the edge of the face rather than of the jewellery.
-   *
-   * Width scales with the avatar, floored at 2: leaderboard rows draw at 36px,
-   * where a proportional ring would be a hairline nobody could name.
-   */
-  const ringWidth = frame ? Math.max(2, Math.round(size * 0.055)) : 0
   const inner = (
     // Sized rather than left to stretch: the online dot is positioned
     // absolutely against this view, and a parent with no dimensions of its own
@@ -129,6 +126,59 @@ export function Avatar({
 
   if (!frame) return inner
   return (
+    <Framed frame={frame} size={size} sweep={sweep}>
+      {inner}
+    </Framed>
+  )
+}
+
+/**
+ * The face inside its frame: art from the master sheet under `flags.v3Home`,
+ * today's ring otherwise — and the ring, too, for a tone this build has no art
+ * for, which `frameColor` then draws in ink.
+ *
+ * Its own component so that only a framed avatar reads the flag. Most avatars
+ * wear nothing, and a list of them should not each subscribe to the config.
+ */
+function Framed({
+  frame,
+  size,
+  sweep,
+  children,
+}: {
+  frame: string
+  size: number
+  sweep: FrameSweepComponent | undefined
+  children: ReactNode
+}) {
+  const { scheme } = useTheme()
+  const v3Home = useV3Home()
+  const art = v3Home ? artForTone(frame) : undefined
+
+  if (art) {
+    const box = frameArtBox(size)
+    return (
+      <View style={{ alignItems: 'center', height: box, justifyContent: 'center', width: box }}>
+        <FrameArt art={art} size={size} scheme={scheme} sweep={sweep} />
+        {children}
+      </View>
+    )
+  }
+
+  /*
+   * The ring is a *wrapper*, not a border on the avatar itself.
+   *
+   * A `borderWidth` here would shrink the photo inside the same box and push
+   * the online dot — which is positioned against this view at `bottom/end: 0` —
+   * inwards by the ring's width. Wrapping keeps the inner view exactly `size`,
+   * so every one of the fourteen call sites keeps the avatar it asked for and
+   * the dot stays on the edge of the face rather than of the jewellery.
+   *
+   * Width scales with the avatar, floored at 2: leaderboard rows draw at 36px,
+   * where a proportional ring would be a hairline nobody could name.
+   */
+  const ringWidth = Math.max(2, Math.round(size * 0.055))
+  return (
     <View
       style={{
         alignItems: 'center',
@@ -140,7 +190,7 @@ export function Avatar({
         width: size + ringWidth * 4,
       }}
     >
-      {inner}
+      {children}
     </View>
   )
 }

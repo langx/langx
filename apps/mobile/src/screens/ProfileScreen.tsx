@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { profileUrl, TIER_BADGES, TIER_NAMES, wornCosmetic } from '@langx/shared'
+import { profileUrl, TIER_BADGES, TIER_NAMES, wornFrameTone } from '@langx/shared'
 import { router, useIsFocused } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
@@ -21,6 +21,7 @@ import { ActivityMap } from '../components/ActivityMap'
 import { ConversationPicker } from '../components/ConversationPicker'
 import { WebTitle } from '../components/WebTitle'
 import { Avatar } from '../components/ui/Avatar'
+import { FrameSweep } from '../components/ui/FrameSweep'
 import { placeLabel } from '../lib/placeLabel'
 import { Button } from '../components/ui/Button'
 import { Callout } from '../components/ui/Callout'
@@ -283,7 +284,8 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
                 name={user.displayName}
                 seed={user._id}
                 size={96}
-                frame={wornCosmetic(user.equipped, user.cosmetics ?? [], 'frame')?.tone}
+                frame={wornFrameTone(user.equipped, user.cosmetics ?? [])}
+                sweep={isSelf ? FrameSweep : undefined}
                 online={user.isOnline}
               />
             </Pressable>
@@ -293,7 +295,8 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
               name={user.displayName}
               seed={user._id}
               size={96}
-              frame={wornCosmetic(user.equipped, user.cosmetics ?? [], 'frame')?.tone}
+              frame={wornFrameTone(user.equipped, user.cosmetics ?? [])}
+              sweep={isSelf ? FrameSweep : undefined}
               online={user.isOnline}
             />
           )}
