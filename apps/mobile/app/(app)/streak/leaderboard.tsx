@@ -8,8 +8,15 @@ import { useT } from '../../../src/i18n'
 import { goBackTo } from '../../../src/lib/navigation'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { StreakLeaderboardScreenV3 } from '../../../src/screens/me/StreakLeaderboardScreenV3'
 
 const STREAK_TABS: readonly StreakMetric[] = STREAK_METRICS
+
+/** The streak board, or with `flags.v3Home` on the redesign's (`StreakLeaderboardScreenV3`). */
+export default function StreakLeaderboardScreenRoute() {
+  return useV3Home() ? <StreakLeaderboardScreenV3 /> : <StreakLeaderboardScreen />
+}
 
 /**
  * The streak board, on its own page.
@@ -18,7 +25,7 @@ const STREAK_TABS: readonly StreakMetric[] = STREAK_METRICS
  * history is what the streak page gets opened for, and the board is the
  * second question. A page of its own is how a second question gets asked.
  */
-export default function StreakLeaderboardScreen() {
+function StreakLeaderboardScreen() {
   useScreenInteractive()
   const t = useT()
   const me = useMe()

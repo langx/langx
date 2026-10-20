@@ -2479,6 +2479,10 @@ export const es: Localized<EnMessages> = {
     poolParticipants: { one: '{n} activo ese día', other: '{n} activos ese día' },
     poolShareOfPool: '{percent} del bote diario',
     poolActiveToday: { one: '{n} activo hoy', other: '{n} activos hoy' },
+    todayMessages: { one: 'mensaje', other: 'mensajes' },
+    todayCorrections: { one: 'corrección', other: 'correcciones' },
+    todayPeople: { one: 'persona', other: 'personas' },
+    seeHistory: 'Ver tu historial',
   },
 
   invite: {
@@ -2616,6 +2620,18 @@ export const es: Localized<EnMessages> = {
     streakEmptyBody: 'Aparece dos días seguidos y estarás en esta clasificación.',
     echoEmptyTitle: 'Sin repasos en este periodo',
     echoEmptyBody: 'Responde algunas tarjetas y estarás en la clasificación de este periodo.',
+    columnWeek: 'Esta semana',
+    columnMonth: 'Este mes',
+    columnYear: 'Este año',
+    columnTokens: 'Fichas ganadas',
+    columnNow: 'Ahora mismo',
+    columnEver: 'La más larga',
+    columnDays: 'Días seguidos',
+    rowTokens: { one: '{rank}. {name}, {amount} ficha', other: '{rank}. {name}, {amount} fichas' },
+    rowDays: {
+      one: '{rank}. {name}, {amount} día seguido',
+      other: '{rank}. {name}, {amount} días seguidos',
+    },
   },
 
   badges: {

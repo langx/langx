@@ -8,6 +8,8 @@ import { goBackTo } from '../../../src/lib/navigation'
 import { useLocale, useT, type MessageKey } from '../../../src/i18n'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { WalletLeaderboardScreenV3 } from '../../../src/screens/me/WalletLeaderboardScreenV3'
 
 /**
  * Three tabs, the ones the wallet's own row promises ("this week, month and
@@ -19,6 +21,11 @@ const PERIOD_TABS: readonly { value: PeriodType; labelKey: MessageKey }[] = [
   { value: 'year', labelKey: 'leaderboard.year' },
 ]
 
+/** The token board, or with `flags.v3Home` on the redesign's (`WalletLeaderboardScreenV3`). */
+export default function LeaderboardScreenRoute() {
+  return useV3Home() ? <WalletLeaderboardScreenV3 /> : <LeaderboardScreen />
+}
+
 /**
  * The token board, on its own page.
  *
@@ -27,7 +34,7 @@ const PERIOD_TABS: readonly { value: PeriodType; labelKey: MessageKey }[] = [
  * where its four tabs sat between the balance and the shop. A board is a
  * thing you open to look at, not a thing you scroll past.
  */
-export default function LeaderboardScreen() {
+function LeaderboardScreen() {
   useScreenInteractive()
   const t = useT()
   const { locale } = useLocale()
