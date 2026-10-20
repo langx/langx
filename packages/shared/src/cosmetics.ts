@@ -30,6 +30,15 @@ export const COSMETIC_TONES = [
   'violet',
   'midnight',
   'aurora',
+  // The six rungs the v3 art drew between today's. Appended rather than
+  // interleaved: this list is a set of roles, not the ladder, and the order
+  // here means nothing.
+  'blush',
+  'moss',
+  'indigo',
+  'plum',
+  'vermilion',
+  'walnut',
 ] as const
 export type CosmeticTone = (typeof COSMETIC_TONES)[number]
 
@@ -72,31 +81,48 @@ export interface Cosmetic {
  * Prices were raised across the board when this grew. The old six totalled
  * 21,000 — about thirty days for somebody earning well — so a committed user
  * bought the shop out in a month and token stopped having anywhere to go. The
- * ladder below totals about 393,000, roughly 560 days at the same rate:
- * aspirational without being decorative.
+ * ladder below totalled about 393,000, roughly 560 days at the same rate, and
+ * about 470,000 once the six art frames were inserted: aspirational without
+ * being decorative.
  *
  * It fixes a v1 problem on the way. The largest v1 balance converts to 22,800
  * token; at the old prices a returning user cleared almost the whole
  * catalogue on their first day.
  *
  * **The order of this array is a rule, not a layout.** Each item can only be
- * bought once the one before it in the same `kind` is owned — see
- * `previousCosmetic` — so inserting a row in the middle inserts a rung, and
+ * bought once the one before it in the same `kind` is owned, or any rung above
+ * that one — see `ladderOpen` — so inserting a row in the middle inserts a rung, and
  * reordering two rows swaps what has to be earned first. It used to be free to
  * shuffle these; it is not any more. `rules.test.ts` asserts each kind is
  * strictly ascending in price, which is what keeps the ladder and the prices
  * from telling different stories.
  */
 export const COSMETICS: readonly Cosmetic[] = [
-  { id: 'frame.slate', kind: 'frame', label: 'Slate frame', price: 1000, tone: 'slate' },
-  { id: 'frame.bronze', kind: 'frame', label: 'Bronze frame', price: 2500, tone: 'bronze' },
-  { id: 'frame.sky', kind: 'frame', label: 'Sky frame', price: 4000, tone: 'sky' },
-  { id: 'frame.silver', kind: 'frame', label: 'Silver frame', price: 6000, tone: 'silver' },
-  { id: 'frame.mint', kind: 'frame', label: 'Mint frame', price: 9000, tone: 'mint' },
-  { id: 'frame.ember', kind: 'frame', label: 'Ember frame', price: 13_000, tone: 'ember' },
-  { id: 'frame.gold', kind: 'frame', label: 'Gold frame', price: 18_000, tone: 'gold' },
-  { id: 'frame.violet', kind: 'frame', label: 'Violet frame', price: 25_000, tone: 'violet' },
-  { id: 'frame.midnight', kind: 'frame', label: 'Midnight frame', price: 35_000, tone: 'midnight' },
+  /*
+   * The labels are the art's names. The ids and tones are not renamed, and
+   * must not be: an id is what `profiles.cosmetics` stores, and a tone is what
+   * an older client draws when it has no art for a frame — so `frame.slate`
+   * stays slate even though it is drawn as cut paper.
+   *
+   * The six rungs added with the art (washi, lino, indigo, mosaic, seal,
+   * marquetry) sit between the old ones by price, which is where the art
+   * sheet draws them. See `ladderOpen` for why inserting them strands nobody.
+   */
+  { id: 'frame.slate', kind: 'frame', label: 'Papel Picado', price: 1000, tone: 'slate' },
+  { id: 'frame.washi', kind: 'frame', label: 'Washi Tape', price: 1750, tone: 'blush' },
+  { id: 'frame.bronze', kind: 'frame', label: 'Running Stitch', price: 2500, tone: 'bronze' },
+  { id: 'frame.lino', kind: 'frame', label: 'Linocut', price: 3250, tone: 'moss' },
+  { id: 'frame.sky', kind: 'frame', label: 'Woven Reed', price: 4000, tone: 'sky' },
+  { id: 'frame.silver', kind: 'frame', label: 'Origami Fold', price: 6000, tone: 'silver' },
+  { id: 'frame.indigo', kind: 'frame', label: 'Indigo Dye', price: 7500, tone: 'indigo' },
+  { id: 'frame.mint', kind: 'frame', label: 'Enamel Pin', price: 9000, tone: 'mint' },
+  { id: 'frame.mosaic', kind: 'frame', label: 'Mosaic', price: 11_000, tone: 'plum' },
+  { id: 'frame.ember', kind: 'frame', label: 'Iznik Tile', price: 13_000, tone: 'ember' },
+  { id: 'frame.gold', kind: 'frame', label: 'Khokhloma', price: 18_000, tone: 'gold' },
+  { id: 'frame.seal', kind: 'frame', label: 'Seal and Fret', price: 21_500, tone: 'vermilion' },
+  { id: 'frame.violet', kind: 'frame', label: 'Qalam', price: 25_000, tone: 'violet' },
+  { id: 'frame.marquetry', kind: 'frame', label: 'Marquetry', price: 30_000, tone: 'walnut' },
+  { id: 'frame.midnight', kind: 'frame', label: 'Night Hoop', price: 35_000, tone: 'midnight' },
   /**
    * The one nobody can simply save up for.
    *
@@ -112,7 +138,7 @@ export const COSMETICS: readonly Cosmetic[] = [
   {
     id: 'frame.aurora',
     kind: 'frame',
-    label: 'Aurora frame',
+    label: 'Aurora Glass',
     price: 50_000,
     tone: 'aurora',
     requires: { longestStreak: 365, corrections: 5000 },
@@ -308,6 +334,41 @@ export function previousCosmetic(cosmetic: Cosmetic): Cosmetic | undefined {
 }
 
 /**
+ * The ids any one of which opens this rung: the rung below it, and every rung
+ * above that one except this one itself. Empty when nothing is below.
+ *
+ * **Owning any frame above a rung counts as owning that rung.** The rule
+ * arrived with six rungs inserted between existing ones: without it,
+ * somebody who already owns Woven Reed would find Linocut, the new rung under
+ * it, locked behind the Running Stitch they never bought. Owning something
+ * dearer is proof enough of having climbed that far, and nothing above it is
+ * reachable for less than the rung costs — so the rule hands nobody a
+ * shortcut, it only stops an insertion from stranding people.
+ *
+ * It also means a gift above a rung (the Pro welcome pack names its frames by
+ * id) keeps opening the rungs around it, however many are inserted later.
+ *
+ * A list rather than a yes/no so the server can put it in its atomic filter
+ * as `$in` — the read and the write ask the same question.
+ */
+export function ladderOpeners(cosmetic: Cosmetic): readonly string[] {
+  const previous = previousCosmetic(cosmetic)
+  if (!previous) return []
+  const ladder = COSMETICS.filter((c) => c.kind === cosmetic.kind)
+  const from = ladder.findIndex((c) => c.id === previous.id)
+  return ladder
+    .slice(from)
+    .filter((c) => c.id !== cosmetic.id)
+    .map((c) => c.id)
+}
+
+/** Whether the ladder lets `owned` buy this rung (see `ladderOpeners`). */
+export function ladderOpen(cosmetic: Cosmetic, owned: readonly string[]): boolean {
+  const openers = ladderOpeners(cosmetic)
+  return openers.length === 0 || openers.some((id) => owned.includes(id))
+}
+
+/**
  * What subscribing includes, once, per tier.
  *
  * **Items, not token.** Granting token for money is the one thing every public
@@ -342,6 +403,12 @@ export interface WelcomePack {
  * Starting at the bottom makes the two possible readings of the gate — "own
  * the one below" and "own everything below" — the same rule, by induction.
  * There is only one sentence to explain: you buy them in order.
+ *
+ * Since the art frames were inserted between rungs, these four are no longer
+ * the first four: Washi Tape and Linocut sit between them. The ids were kept
+ * on purpose — the pack is named by id so that inserting rungs does not change
+ * what it grants — and `ladderOpen` keeps every rung up to and just past the
+ * pack's top open to whoever holds it.
  *
  * Existing subscribers keep what they were given; `welcomePackAt` latches per
  * tier and is never re-run. They are the reason the gate is written as *own
@@ -427,6 +494,33 @@ export function wornCosmetic(
   const id = chosen && owned.includes(chosen) ? chosen : defaultEquipped(owned, kind)
   return id ? findCosmetic(id) : undefined
 }
+
+/**
+ * The tone to draw around somebody's face: the worn frame's, or — when what
+ * they wear or own is a frame this build's catalogue has never heard of — a
+ * string no tone matches, which the app draws as a plain ink ring.
+ *
+ * The catalogue reaches a client by OTA and the purchases by the API, and the
+ * API deploys first: an account can wear a frame bought on a newer build
+ * before this one knows its id. `wornCosmetic` finds nothing for that id and
+ * would draw no frame at all, which reads as having lost something paid for.
+ * A ring in ink still says "this person wears a frame".
+ */
+export function wornFrameTone(
+  equipped: Equipped | undefined,
+  owned: readonly string[],
+): string | undefined {
+  const worn = wornCosmetic(equipped, owned, 'frame')
+  if (worn?.tone) return worn.tone
+  const chosen = equipped?.frame
+  const unknown =
+    (chosen && owned.includes(chosen) && !findCosmetic(chosen)) ||
+    owned.some((id) => id.startsWith('frame.') && !findCosmetic(id))
+  return unknown ? UNKNOWN_FRAME_TONE : undefined
+}
+
+/** Not a tone, on purpose: see `wornFrameTone`. */
+export const UNKNOWN_FRAME_TONE = 'unknown'
 
 export const walletSchema = z.object({
   /** All-time token earned. Never decreases — it is what the leaderboard ranks. */

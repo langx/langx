@@ -1897,6 +1897,8 @@ you least want a stranger's page to get wrong is how to address you.
 
 ## The shop is two ladders, and its order is the rule
 
+> **Amended 19 October 2026 — see _Owning a rung above counts as owning the one below_ below.**
+
 The catalogue was priced as a progression from the day it grew — 1,000 to
 50,000 for frames, 1,500 to 100,000 for titles — and then sold as a shelf.
 Anyone with 100,000 token could buy `title.legend` and ignore the nine rungs
@@ -1938,6 +1940,30 @@ is the one that counts. Both cosmetic conditions live under a single
 `cosmetics` key there — a second key of the same name in that object literal
 would have replaced the first rather than added to it, and the one that lost
 would have been the guard against paying twice for the same item.
+
+## Owning a rung above counts as owning the one below
+
+_19 October 2026._ The v3 store draws frames as art, and the art sheet has six
+frames that sit between today's rungs by price: Washi Tape, Linocut, Indigo
+Dye, Mosaic, Seal and Fret, and Marquetry. Inserting them under the gate above
+would have stranded people. Somebody who already owns Woven Reed (`frame.sky`)
+would find Linocut, the new rung just under it, locked behind a Running Stitch
+they never bought.
+
+So the gate widens by one clause: **owning the rung below, or any rung above
+it, opens a rung.** `ladderOpeners` lists those ids and `purchase` puts them in
+its atomic filter as `$in`, where the old rule had `$all: [previous]` — the read
+and the write still ask the same question. On a catalogue nobody has skipped
+rungs in, this is the old rule; it differs only for people holding something
+higher, and owning something dearer is evidence enough of the climb. Nothing
+above a rung costs less than the rung, so it is not a shortcut.
+
+The Pro welcome pack keeps naming its frames by id — Papel Picado, Running
+Stitch, Woven Reed and Origami Fold (`frame.slate`, `frame.bronze`,
+`frame.sky`, `frame.silver`). They are no longer the first four rungs, and that
+is fine under the wider gate: every rung up to and just past the pack's top is
+open to a pack holder. `cosmetics.test.ts` now asserts that, rather than that
+the pack is a prefix of the ladder.
 
 ## A voice note plays at half speed, rather than being recorded twice
 

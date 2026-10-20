@@ -8,10 +8,14 @@ import {
   PRO_WELCOME_PACKS,
   findCosmetic,
   isLadderKind,
+  ladderOpen,
+  ladderOpeners,
   meetsRequirement,
   previousCosmetic,
   welcomePackDelta,
+  UNKNOWN_FRAME_TONE,
   wornCosmetic,
+  wornFrameTone,
 } from './cosmetics'
 
 describe('the catalogue', () => {
@@ -130,6 +134,43 @@ describe('previousCosmetic', () => {
   })
 })
 
+describe('ladderOpen', () => {
+  const frames = COSMETICS.filter((c) => c.kind === 'frame')
+  const frame = (id: string) => findCosmetic(id)!
+
+  it('opens the bottom rung with nothing owned', () => {
+    expect(ladderOpeners(frames[0]!)).toEqual([])
+    expect(ladderOpen(frames[0]!, [])).toBe(true)
+  })
+
+  it('opens a rung with the one below it', () => {
+    expect(ladderOpen(frame('frame.bronze'), ['frame.washi'])).toBe(true)
+  })
+
+  /** The case the rule was written for: Woven Reed owned, Linocut inserted under it. */
+  it('opens an inserted rung for somebody who owns a rung above it', () => {
+    expect(ladderOpen(frame('frame.lino'), ['frame.slate', 'frame.sky'])).toBe(true)
+    expect(ladderOpen(frame('frame.lino'), ['frame.midnight'])).toBe(true)
+  })
+
+  it('keeps a rung shut when only rungs further down are owned', () => {
+    expect(ladderOpen(frame('frame.bronze'), ['frame.slate'])).toBe(false)
+    expect(ladderOpen(frame('frame.gold'), ['frame.slate', 'frame.washi'])).toBe(false)
+  })
+
+  it('never counts the rung itself, or the other ladder', () => {
+    expect(ladderOpeners(frame('frame.lino'))).not.toContain('frame.lino')
+    expect(ladderOpen(frame('frame.bronze'), ['frame.bronze'])).toBe(false)
+    expect(ladderOpen(frame('frame.bronze'), ['title.legend'])).toBe(false)
+  })
+
+  it('puts no sticker pack behind anything', () => {
+    for (const pack of COSMETICS.filter((c) => c.kind === 'stickers')) {
+      expect(ladderOpen(pack, []), pack.id).toBe(true)
+    }
+  })
+})
+
 describe('meetsRequirement', () => {
   const met = { longestStreak: 365, corrections: 5000 }
 
@@ -176,6 +217,29 @@ describe('wornCosmetic', () => {
   })
 })
 
+describe('wornFrameTone', () => {
+  it("is the worn frame's tone", () => {
+    expect(wornFrameTone({ frame: 'frame.washi' }, ['frame.slate', 'frame.washi'])).toBe('blush')
+    expect(wornFrameTone(undefined, ['frame.slate'])).toBe('slate')
+  })
+
+  it('is nothing for somebody with no frame', () => {
+    expect(wornFrameTone(undefined, [])).toBeUndefined()
+    expect(wornFrameTone(undefined, ['title.tutor'])).toBeUndefined()
+  })
+
+  /**
+   * A frame bought on a newer build, worn on an older one. Its id is not in
+   * this catalogue; the face still wears a ring rather than nothing.
+   */
+  it('is a tone nothing matches for a frame this build does not know', () => {
+    const tone = wornFrameTone({ frame: 'frame.future' }, ['frame.slate', 'frame.future'])
+    expect(tone).toBe(UNKNOWN_FRAME_TONE)
+    expect(COSMETIC_TONES as readonly string[]).not.toContain(tone)
+    expect(wornFrameTone(undefined, ['frame.future'])).toBe(UNKNOWN_FRAME_TONE)
+  })
+})
+
 describe('PRO_WELCOME_PACKS', () => {
   it('hands out only things that exist in the catalogue', () => {
     for (const tier of PAID_PLAN_TIERS) {
@@ -207,23 +271,34 @@ describe('PRO_WELCOME_PACKS', () => {
   /**
    * A gift bypasses the ladder — `grantWelcomePack` writes with `$addToSet`
    * and never goes through `purchase` — so the packs are the one place that
-   * can hand somebody a rung above one they do not own. Starting at the bottom
-   * is what keeps "own the one below" and "own everything below" the same
-   * rule, which is what makes the shop explainable in one sentence.
+   * can hand somebody a rung above one they do not own. The pack used to be
+   * the bottom of each ladder; since rungs were inserted it names four frames
+   * that are not contiguous any more. What has to hold is that a holder is
+   * never stuck: every rung from the bottom to one past the pack's top opens
+   * with what the pack gave.
    */
-  it('grants the bottom of each ladder, contiguously, never a rung from up it', () => {
+  it('leaves every rung up to and just past the gift open to whoever holds it', () => {
     for (const tier of PAID_PLAN_TIERS) {
-      const granted = new Set(PRO_WELCOME_PACKS[tier].cosmetics)
-      for (const kind of COSMETIC_KINDS) {
+      const granted = PRO_WELCOME_PACKS[tier].cosmetics
+      for (const kind of COSMETIC_KINDS.filter(isLadderKind)) {
         const ladder = COSMETICS.filter((c) => c.kind === kind)
-        const count = ladder.filter((c) => granted.has(c.id)).length
-        // Whatever many it gives of a kind, they are the first that many.
-        expect(
-          ladder.slice(0, count).map((c) => c.id),
-          `${tier}/${kind}`,
-        ).toEqual(ladder.filter((c) => granted.has(c.id)).map((c) => c.id))
+        const top = Math.max(...ladder.map((c, i) => (granted.includes(c.id) ? i : -1)))
+        if (top < 0) continue
+        for (const rung of ladder.slice(0, top + 2)) {
+          expect(ladderOpen(rung, granted), `${tier}/${rung.id}`).toBe(true)
+        }
       }
     }
+  })
+
+  /** Behic's call when the art frames were inserted: the pack is named by id. */
+  it('still grants the four frames it always named', () => {
+    expect(PRO_WELCOME_PACKS.pro.cosmetics.filter((id) => id.startsWith('frame.'))).toEqual([
+      'frame.slate',
+      'frame.bronze',
+      'frame.sky',
+      'frame.silver',
+    ])
   })
 
   it('never gifts an item that also has to be earned', () => {

@@ -4,6 +4,8 @@ import {
   TOKEN_RULES,
   findCosmetic,
   giftReadyAt,
+  ladderOpen,
+  ladderOpeners,
   previousCosmetic,
   meetsRequirement,
   localDayKey,
@@ -124,8 +126,13 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
    * `$addToSet` and never comes through here. The packs start at the bottom of
    * each ladder so that nothing is handed out above a rung nobody owns.
    */
+  /*
+   * Owning any rung above the one below counts as owning it (`ladderOpen`), so
+   * a rung inserted under something already owned is open at once.
+   */
   const previous = cosmetic ? previousCosmetic(cosmetic) : undefined
-  if (previous && !(profile.cosmetics ?? []).includes(previous.id)) {
+  const openers = cosmetic ? ladderOpeners(cosmetic) : []
+  if (previous && cosmetic && !ladderOpen(cosmetic, profile.cosmetics ?? [])) {
     throw new ApiError(
       ERROR_CODES.VALIDATION_FAILED,
       `${previous.id} has to be bought before ${sku}`,
@@ -163,13 +170,14 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
              * `$nin`: two concurrent buys of the same cosmetic would otherwise
              * both pass the read-time check and charge twice for one item.
              *
-             * `$all`: the ladder, re-checked where it counts. Two buys of
-             * adjacent rungs fired together would otherwise both pass the read
-             * above — the second one reading a profile that does not own the
-             * first yet — and land out of order, which is the whole thing this
-             * gate exists to prevent.
+             * `$in`: the ladder, re-checked where it counts — any one of the
+             * rungs that open this one (`ladderOpeners`). Two buys of adjacent
+             * rungs fired together would otherwise both pass the read above —
+             * the second one reading a profile that does not own the first
+             * yet — and land out of order, which is the whole thing this gate
+             * exists to prevent.
              */
-            cosmetics: { $nin: [sku], ...(previous ? { $all: [previous.id] } : {}) },
+            cosmetics: { $nin: [sku], ...(openers.length > 0 ? { $in: [...openers] } : {}) },
           }),
       // The half of the gate that is a field on this document, re-checked
       // where it counts. The correction count is not one, so it stays a
