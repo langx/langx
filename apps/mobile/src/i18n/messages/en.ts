@@ -2329,6 +2329,11 @@ export const en = {
     shareBody: 'Your profile link, QR code and referral invite',
     privacyBody: 'Who can find you, and what they see',
     notificationsBody: 'What reaches you, by push and by email',
+    /** Headings over the groups on the v3 Privacy and Notifications pages (`flags.v3Home`). */
+    findYouHeading: 'Who can find you',
+    whatTheySeeHeading: 'What they see',
+    callsLocationHeading: 'Calls and location',
+    whatReachesYouHeading: 'What reaches you',
     appearanceSection: 'Appearance',
     appearanceBody: 'Theme, app icon, language and tips',
     accountBody: 'How you sign in, devices, blocked people, your data',
