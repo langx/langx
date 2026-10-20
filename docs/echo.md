@@ -875,7 +875,8 @@ unique `{ userId, reviewId }` is what makes double payment impossible.
 count is the reviews since UTC midnight, and each payment's ledger key is
 `echo:<utcDay>:<n>`, which `user_kind_ref_unique` takes once. The summary's
 `sessionsToday` is that same count, and the done screen's "Session X of N"
-reads it. The streak square a session fills is still the local day. The
+reads it. The streak square a session fills is still the local day, and a
+session past the UTC day's cap still fills it though it pays nothing. The
 summary's `reviewedToday` stays a rolling twenty-four hours for the tab's own
 figure; it is not what pays. See `docs/decisions.md` → _Echo counts and pays
 sessions on one day, the UTC one_.

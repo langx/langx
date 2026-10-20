@@ -900,6 +900,80 @@ describe('echo', () => {
       expect((await summary(handle.db, user.userId, after)).sessionsToday).toBe(1)
     })
 
+    // Two batches either side of UTC midnight, the earlier one counting after
+    // the later one has landed: each day's count must hold only its own rows.
+    it('does not count the next day’s rows on the day before', async () => {
+      const user = await newUser('pay-midnight-race@example.com')
+      const cards = await giveCards(user.userId, 2 * SRS_RULES.sessionSize)
+      const session = (from: number, tag: string) =>
+        cards.slice(from, from + SRS_RULES.sessionSize).map((cardId, index) => ({
+          reviewId: `rv-race-${tag}-${index}-0000`,
+          cardId,
+          grade: 'good' as const,
+          durationMs: 900,
+        }))
+
+      await submitReviews(
+        handle.db,
+        user.userId,
+        { reviews: session(SRS_RULES.sessionSize, 'late') },
+        new Date('2026-10-21T00:00:01Z'),
+      )
+      await submitReviews(
+        handle.db,
+        user.userId,
+        { reviews: session(0, 'early') },
+        new Date('2026-10-20T23:59:59Z'),
+      )
+
+      expect(await balanceOf(user.userId)).toBe(2 * TOKEN_RULES.award.echoSession)
+    })
+
+    // West of UTC the cap resets at UTC midnight and the square at local
+    // midnight; five evening sessions must not lock Echo out of the next
+    // local day's streak.
+    it('fills the next local day’s square with a session past the UTC cap', async () => {
+      const user = await newUser('pay-cap-streak@example.com')
+      await handle.db
+        .collection(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId as never }, { $set: { timezone: 'America/Toronto' } })
+      const cap = TOKEN_RULES.caps.echoSessionsPerDay
+      const cards = await giveCards(user.userId, (cap + 1) * SRS_RULES.sessionSize)
+      const session = (n: number) =>
+        cards
+          .slice(n * SRS_RULES.sessionSize, (n + 1) * SRS_RULES.sessionSize)
+          .map((cardId, index) => ({
+            reviewId: `rv-cap-${n}-${index}-0000`,
+            cardId,
+            grade: 'good' as const,
+            durationMs: 900,
+          }))
+
+      // 21:00 to 21:40 in Toronto on the 20th: all on the UTC 21st.
+      for (let n = 0; n < cap; n += 1) {
+        await submitReviews(
+          handle.db,
+          user.userId,
+          { reviews: session(n) },
+          new Date(Date.UTC(2026, 9, 21, 1, n * 10)),
+        )
+      }
+      // 09:00 in Toronto on the 21st, still the UTC 21st: past the cap.
+      const morning = await submitReviews(
+        handle.db,
+        user.userId,
+        { reviews: session(cap) },
+        new Date('2026-10-21T13:00:00Z'),
+      )
+
+      expect(await balanceOf(user.userId)).toBe(cap * TOKEN_RULES.award.echoSession)
+      const profile = await handle.db
+        .collection<{ streak: { lastQualifiedDay: string | null } }>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId as never })
+      expect(profile?.streak.lastQualifiedDay).toBe('2026-10-21')
+      expect(echoAwardSchema.parse(morning.award).streak?.advanced).toBe(true)
+    })
+
     // A card left on screen used to be a 400 for the whole batch, and every
     // grade in it was lost. Builds without the client clamp still send these.
     it('saves a batch with a card left on screen, and pays it like any other', async () => {

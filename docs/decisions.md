@@ -1015,6 +1015,8 @@ Discover and Feed.
 
 ## Echo leads with what is due, and the done screen says what it earned — behind the same flag
 
+> **Amended 19 October 2026 — see _Echo counts and pays sessions on one day, the UTC one_ below.**
+
 **19 October 2026.** The Echo tab and the end of a review, behind
 `flags.v3Home` (Phase 5). With the flag off both are what they were. With it
 on, `app/(app)/(tabs)/echo.tsx` draws `src/screens/EchoV3Screen.tsx` and
@@ -1090,13 +1092,25 @@ and rule 5 wins.
   pays by, already capped, and "Session X of N today" draws it. The summary's
   `reviewedToday` stays the rolling day the Echo tab and Home show. It never
   decided a payout, and moving it would move those two screens for no gain.
-- **Left as it was.** A session past the day's cap pays nothing and so fills
-  no streak square. The rolling window had the same gap.
+- **A session past the cap still fills the square.** It pays nothing, but a
+  batch whose own rows complete a session calls `recordQualifyingAction` even
+  when the UTC day's cap is spent. The cap resets at UTC midnight and the
+  square at local midnight, so without this somebody west of UTC who did five
+  sessions in the evening after UTC midnight could not count Echo toward the
+  next local day's streak until the following UTC midnight. The rolling
+  window hid that only because it paid those sessions again.
+- **The count is bounded on both sides.** Reviews in `[UTC midnight, next
+UTC midnight)`, so a batch stamped just before midnight that counts after
+  one stamped just after cannot take the later batch's rows as its own.
 - **The day it ships.** Keys already written on a local day are compared with
   UTC days from then on, once. East of UTC that can find a morning's key
-  already taken and pay that session nothing. West of UTC, sessions paid
-  under local keys in the evening before it shipped can be counted once more
-  under the UTC day's keys. Both are bounded by the cap and happen only once.
+  already taken and pay nothing for as many sessions as were paid under it.
+  West of UTC, sessions paid under local keys in the evening before it
+  shipped can be paid once more under the UTC day's keys. Either way the
+  bound is one day's cap of sessions per person —
+  `caps.echoSessionsPerDay × award.echoSession` tokens — once, on the day it
+  ships. Avoiding it would mean a second idempotency rule beside the ledger
+  key, kept forever for one day, so it is accepted instead.
 
 **What old builds will see.** The same payout rule as everyone, because it is
 the server's. A build that draws "Session X of N" from `reviewedToday` can be

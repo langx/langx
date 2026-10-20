@@ -4,6 +4,7 @@ import {
   echoSessionRefId,
   periodKeys,
   schedule,
+  SRS_RULES,
   TOKEN_RULES,
   type EchoAward,
   type PeriodType,
@@ -144,7 +145,7 @@ export async function submitReviews(
     )
   }
 
-  const award = await settleSessions(db, userId, now)
+  const award = await settleSessions(db, userId, now, inserted)
   return { results, award }
 }
 
@@ -176,14 +177,19 @@ export async function submitReviews(
  * and the rows the ledger holds cannot disagree: a resent batch finds every
  * session already paid and reports nothing.
  */
-async function settleSessions(db: Db, userId: string, now: Date): Promise<EchoAward> {
+async function settleSessions(
+  db: Db,
+  userId: string,
+  now: Date,
+  inserted: number,
+): Promise<EchoAward> {
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   if (!profile) return { tokens: 0, streak: null }
 
   let tokens = 0
   let streak: StreakAward | null = null
 
-  const { day, sessions } = await echoSessionsToday(db, userId, now)
+  const { day, sessions, reviewed } = await echoSessionsToday(db, userId, now)
   for (let session = 1; session <= sessions; session += 1) {
     const paid = await awardTokens(db, {
       userId,
@@ -209,6 +215,23 @@ async function settleSessions(db: Db, userId: string, now: Date): Promise<EchoAw
       streak ??= credit
     }
   }
+  /*
+   * A session past the UTC day's cap still fills the local square. The cap
+   * resets at UTC midnight and the square at local midnight, so west of UTC
+   * five evening sessions after UTC midnight would otherwise leave the whole
+   * next local day with no Echo session able to count for the streak. Only a
+   * batch whose own rows completed a session does this — a resent batch
+   * inserts nothing — and the response names the streak only if this call
+   * moved it or paid its milestone, since the session itself paid nothing.
+   */
+  if (!streak && inserted > 0) {
+    const size = SRS_RULES.sessionSize
+    if (Math.floor(reviewed / size) > Math.floor((reviewed - inserted) / size)) {
+      const credit = await recordQualifyingAction(db, profile, now)
+      tokens += credit.milestoneXp
+      if (credit.advanced || credit.milestoneXp > 0) streak = credit
+    }
+  }
   return { tokens, streak }
 }
 
@@ -224,10 +247,15 @@ export async function echoSessionsToday(
   db: Db,
   userId: string,
   now: Date,
-): Promise<{ day: string; sessions: number }> {
+): Promise<{ day: string; sessions: number; reviewed: number }> {
   const day = utcDayKey(now)
+  const start = new Date(`${day}T00:00:00.000Z`)
+  // Bounded above as well: a batch stamped 23:59:59 that counts after one
+  // stamped 00:00:01 has landed must not count that batch's rows as its own
+  // day's, or the same reviews would pay a session on both days.
+  const end = new Date(start.getTime() + 24 * 60 * 60 * 1000)
   const reviewed = await db
     .collection<EchoReviewDoc>(COLLECTIONS.echoReviews)
-    .countDocuments({ userId, at: { $gte: new Date(`${day}T00:00:00.000Z`) } })
-  return { day, sessions: completedEchoSessions(reviewed) }
+    .countDocuments({ userId, at: { $gte: start, $lt: end } })
+  return { day, sessions: completedEchoSessions(reviewed), reviewed }
 }
