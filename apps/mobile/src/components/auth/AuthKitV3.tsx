@@ -2,6 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { Image } from 'expo-image'
 import { useState, type ReactNode } from 'react'
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -169,6 +170,18 @@ export function AuthNoticeV3({
       <AuthHeroV3 hue={hue} icon={icon} />
       <AuthTitleV3 title={title} body={body} />
     </AuthScreenV3>
+  )
+}
+
+/** A spinner and what it is waiting for, on the redesign's ground. */
+export function AuthWaitV3({ label }: { label: string }) {
+  const styles = useStyles()
+  const { v3 } = useTheme()
+  return (
+    <Screen fluid ground={v3.colors.bg} style={styles.wait}>
+      <ActivityIndicator color={v3.colors.fg} />
+      <Text style={styles.waitText}>{label}</Text>
+    </Screen>
   )
 }
 
@@ -383,6 +396,8 @@ const useStyles = makeStyles(({ v3 }) => ({
   footerPillText: { ...v3.type.buttonSmall, color: v3.colors.fg },
 
   note: { ...v3.type.caption, color: v3.colors.muted, textAlign: 'center' },
+  wait: { alignItems: 'center', gap: v3.space[12], justifyContent: 'center' },
+  waitText: { ...v3.type.body, color: v3.colors.muted, textAlign: 'center' },
 
   reveal: {
     alignItems: 'center',
