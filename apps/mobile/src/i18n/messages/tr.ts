@@ -1280,6 +1280,15 @@ export const tr: Localized<EnMessages> = {
     writeCorrection: 'Düzeltmeyi yaz…',
     yourCorrection: 'Senin düzeltmen',
     correctionFrom: '{name} adlı kişiden düzeltme',
+    rewardChip: '{amount} · {reason}',
+    rewardCorrected: '{name} adlı kişiyi düzelttin',
+    rewardBothWrote: 'ikiniz de yazdınız',
+    rewardBothAmount: { other: 'ikinize de +{count}' },
+    rewardStreak: { other: '{count} günlük seri' },
+    rewardLabel: { other: '{count} token: {reason}' },
+    rewardBothLabel: {
+      other: 'Sana {count}, {name} adlı kişiye {count} token: ikiniz de yazdınız',
+    },
     them: 'karşı taraf',
     tokensPerMessage: {
       other: '+{count} token / mesaj',
@@ -2051,6 +2060,12 @@ export const tr: Localized<EnMessages> = {
     rungProgress: { one: '{done}/{count} gün', other: '{done}/{count} gün' },
     noStreakTitle: 'Henüz serin yok',
     noStreakBody: 'LangX’i açtığın ya da pratik yaptığın her gün sayılır. Bugün ilk gün olabilir.',
+    dayByDay: 'Gün gün',
+    mapA11y: {
+      one: 'Etkinlik haritası, son {count} gün',
+      other: 'Etkinlik haritası, son {count} gün',
+    },
+    legendA11y: '{state}: {days}',
   },
   settings: {
     scanBody: 'Bilgisayarda giriş yap ya da bir arkadaşının profilini aç',

@@ -1328,6 +1328,16 @@ export const de: Localized<EnMessages> = {
     writeCorrection: 'Schreib die Korrektur…',
     yourCorrection: 'Deine Korrektur',
     correctionFrom: 'Korrektur von {name}',
+    rewardChip: '{amount} · {reason}',
+    rewardCorrected: 'du hast {name} korrigiert',
+    rewardBothWrote: 'ihr habt beide geschrieben',
+    rewardBothAmount: { one: '+{count} für beide', other: '+{count} für beide' },
+    rewardStreak: { one: '{count} Tag in Folge', other: '{count} Tage in Folge' },
+    rewardLabel: { one: '{count} Token: {reason}', other: '{count} Token: {reason}' },
+    rewardBothLabel: {
+      one: 'Je {count} Token für dich und {name}: ihr habt beide geschrieben',
+      other: 'Je {count} Token für dich und {name}: ihr habt beide geschrieben',
+    },
     them: 'der anderen Person',
     tokensPerMessage: {
       one: '+{count} Token / Nachricht',
@@ -2127,6 +2137,12 @@ export const de: Localized<EnMessages> = {
     rungProgress: { one: '{done} von {count} Tag', other: '{done} von {count} Tagen' },
     noStreakTitle: 'Noch keine Serie',
     noStreakBody: 'Ein Tag zählt, wenn du LangX öffnest oder übst. Heute kann Tag eins sein.',
+    dayByDay: 'Tag für Tag',
+    mapA11y: {
+      one: 'Aktivitätskarte, der letzte {count} Tag',
+      other: 'Aktivitätskarte, die letzten {count} Tage',
+    },
+    legendA11y: '{state}: {days}',
   },
   settings: {
     scanBody: 'Am Computer anmelden oder das Profil eines Freundes öffnen',

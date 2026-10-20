@@ -95,6 +95,26 @@ export interface StoreInput {
 }
 
 /**
+ * The missed day a repair would fill in: the newest one still in reach, or
+ * null when there is none or this month's repairs are used up. Shared with
+ * the redesign's streak history, so the page and the store always offer the
+ * same day.
+ */
+export function newestRepairDay(repair: {
+  today: string
+  filled: ReadonlySet<string>
+  usedThisMonth: number
+}): string | null {
+  if (repair.usedThisMonth >= TOKEN_RULES.sinks.dayRepairPerMonth) return null
+  for (let back = 1; back <= TOKEN_RULES.sinks.dayRepairMaxAgeDays; back++) {
+    const candidate = shiftDayKey(repair.today, -back)
+    if (!isRepairable(candidate, repair.today)) break
+    if (!repair.filled.has(candidate)) return candidate
+  }
+  return null
+}
+
+/**
  * `frame.gold` → `cosmetics.frameGold`. The catalogue keys cannot be the SKUs
  * themselves: a dot in a key is how `translate` walks into a group.
  */
@@ -178,16 +198,8 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
    * which is the one repairing it actually rescues.
    */
   const repair = input.repair
-  if (repair && repair.usedThisMonth < TOKEN_RULES.sinks.dayRepairPerMonth) {
-    let day: string | null = null
-    for (let back = 1; back <= TOKEN_RULES.sinks.dayRepairMaxAgeDays; back++) {
-      const candidate = shiftDayKey(repair.today, -back)
-      if (!isRepairable(candidate, repair.today)) break
-      if (!repair.filled.has(candidate)) {
-        day = candidate
-        break
-      }
-    }
+  if (repair) {
+    const day = newestRepairDay(repair)
     if (day) {
       offers.push({
         ...priced(

@@ -7,6 +7,7 @@ import {
 } from '@langx/shared'
 import { Platform } from 'react-native'
 import { io, type Socket } from 'socket.io-client'
+import { ACK_TIMEOUT, readAck, type Acked, type AckResponse } from './ack'
 import { API_URL } from './apiUrl'
 import { versionAuth } from './appVersion'
 import { authClient } from './auth-client'
@@ -138,8 +139,15 @@ export function restartSocket(): void {
   socket.connect()
 }
 
+/** Promise wrapper over socket.io's ack callback, with the API's error shape. */
+export function emitWithAck<T>(s: Socket, event: string, payload: unknown): Promise<T> {
+  return emitWithAward<T>(s, event, payload).then(({ data }) => data)
+}
+
 /**
- * Promise wrapper over socket.io's ack callback, with the API's error shape.
+ * `emitWithAck`, keeping what the send earned: every send event's ack carries
+ * the server's `award` beside `data`, and only a caller that draws a reward
+ * should ask for it. The reading, and why it is parsed, is `readAck`'s.
  *
  * `.timeout()` is not optional decoration. Without it socket.io registers the
  * ack with no timer, and `_clearAcks` on close only invokes handlers that were
@@ -148,32 +156,23 @@ export function restartSocket(): void {
  * `finally` never ran, `sending` stayed true, and the send button was disabled
  * until the reader left the screen.
  */
-export function emitWithAck<T>(s: Socket, event: string, payload: unknown): Promise<T> {
+export function emitWithAward<T>(s: Socket, event: string, payload: unknown): Promise<Acked<T>> {
   return new Promise((resolve, reject) => {
     s.timeout(SOCKET_ACK_TIMEOUT_MS).emit(
       event,
       payload,
-      (
-        timeout: Error | null,
-        response?: { ok: boolean; data?: T; error?: { code: string; message: string } },
-      ) => {
-        if (timeout || !response) {
-          reject(Object.assign(new Error('ack timed out'), { code: ACK_TIMEOUT }))
-          return
+      (timeout: Error | null, response?: AckResponse) => {
+        try {
+          resolve(readAck<T>(timeout, response))
+        } catch (error) {
+          // `readAck` only ever throws an `Error` carrying `.code`.
+          reject(error instanceof Error ? error : new Error(String(error)))
         }
-        if (response.ok) resolve(response.data as T)
-        else
-          reject(
-            Object.assign(new Error(response.error?.message ?? 'failed'), {
-              code: response.error?.code,
-            }),
-          )
       },
     )
   })
 }
 
-/** The code an ack timeout rejects with, so callers can word it as "not sent". */
-export const ACK_TIMEOUT = 'ACK_TIMEOUT'
+export { ACK_TIMEOUT }
 
 export { APP_SCHEME }

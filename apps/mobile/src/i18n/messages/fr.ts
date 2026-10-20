@@ -1308,6 +1308,16 @@ export const fr: Localized<EnMessages> = {
     writeCorrection: 'Écris la correction…',
     yourCorrection: 'Ta correction',
     correctionFrom: 'Correction de {name}',
+    rewardChip: '{amount} · {reason}',
+    rewardCorrected: 'tu as corrigé {name}',
+    rewardBothWrote: 'vous avez écrit tous les deux',
+    rewardBothAmount: { one: '+{count} chacun', other: '+{count} chacun' },
+    rewardStreak: { one: 'Série de {count} jour', other: 'Série de {count} jours' },
+    rewardLabel: { one: '{count} jeton : {reason}', other: '{count} jetons : {reason}' },
+    rewardBothLabel: {
+      one: '{count} jeton chacun pour toi et {name} : vous avez écrit tous les deux',
+      other: '{count} jetons chacun pour toi et {name} : vous avez écrit tous les deux',
+    },
     them: 'l’autre personne',
     tokensPerMessage: {
       one: '+{count} jeton / message',
@@ -2111,6 +2121,12 @@ export const fr: Localized<EnMessages> = {
     noStreakTitle: 'Pas encore de série',
     noStreakBody:
       'Un jour compte quand tu ouvres LangX ou que tu pratiques. Aujourd’hui peut être le premier.',
+    dayByDay: 'Jour par jour',
+    mapA11y: {
+      one: 'Carte d’activité, le dernier {count} jour',
+      other: 'Carte d’activité, les {count} derniers jours',
+    },
+    legendA11y: '{state} : {days}',
   },
   settings: {
     scanBody: 'Se connecter sur un ordinateur ou ouvrir le profil d’un ami',

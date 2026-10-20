@@ -22,6 +22,7 @@ import {
   type CallMedia,
   type MessageAsk,
   type MessageTranslation,
+  type SendAward,
   TYPING_IDLE_MS,
   ERROR_CODES,
   MAX_SCHEDULED_PER_CONVERSATION,
@@ -94,7 +95,8 @@ import { useProfileCache, useProfileCacheStatus } from '../hooks/useProfileCache
 import { useReviewPrompt } from '../hooks/useReviewPrompt'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
 import { chooseAlert, confirmAlert, showAlert } from '../lib/alert'
-import { emitWithAck, getSocket, onSocket } from '../lib/socket'
+import { emitWithAck, emitWithAward, getSocket, onSocket } from '../lib/socket'
+import { threadRewards, type ThreadReward } from '../lib/threadRewards'
 import { typingIndicator } from '../lib/typingIndicator'
 import {
   addUnsent,
@@ -192,6 +194,7 @@ import { useWebFileDrop } from '../hooks/useWebFileDrop'
 import { OfficialMark } from '../components/OfficialMark'
 import { WebTitle } from '../components/WebTitle'
 import { ComposerV3, type LatestActions } from '../components/thread/ComposerV3'
+import { WithRewardChips } from '../components/thread/RewardChipV3'
 import { ThreadHeaderV3 } from '../components/thread/ThreadHeaderV3'
 import { useV3Home } from '../hooks/useV3Home'
 import { useKeyboardUp } from '../hooks/useKeyboardUp'
@@ -259,6 +262,24 @@ export function ChatScreen({
    */
   const [fieldFocused, setFieldFocused] = useState(false)
   const keyboardUp = useKeyboardUp(v3Thread, fieldFocused)
+  /**
+   * The v3 thread's reward chips, by the id of the message that earned them:
+   * what the server's ack said this screen's own sends paid, kept for as long
+   * as the screen is open and never anywhere else (see `RewardChipV3`).
+   */
+  const [rewards, setRewards] = useState<
+    Readonly<Record<string, { chips: ThreadReward[]; at: number }>>
+  >({})
+  function noteAward(
+    messageId: string,
+    award: SendAward | undefined,
+    kind: 'message' | 'correction',
+  ): void {
+    if (!v3Thread) return
+    const chips = threadRewards(award, kind)
+    if (chips.length === 0) return
+    setRewards((all) => ({ ...all, [messageId]: { chips, at: Date.now() } }))
+  }
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()
@@ -1572,7 +1593,7 @@ export function ChatScreen({
         throw Object.assign(new Error('offline'), { code: 'OFFLINE' })
       }
       const socket = await getSocket()
-      const saved = await emitWithAck<MessageDto>(socket, 'message:send', {
+      const { data: saved, award } = await emitWithAward<MessageDto>(socket, 'message:send', {
         conversationId,
         body,
         clientId,
@@ -1585,6 +1606,7 @@ export function ChatScreen({
       // batch as it, so the row is never gone from the thread.
       landed(saved)
       setUnsent((list) => removeUnsent(list, clientId))
+      noteAward(saved._id, award, 'message')
       track({
         name: 'message_sent',
         properties: { kind: 'text', reply: replyToMessageId !== undefined },
@@ -1865,12 +1887,17 @@ export function ChatScreen({
   ): Promise<void> {
     try {
       const socket = await getSocket()
-      await emitWithAck(socket, 'message:correct', {
-        conversationId,
-        targetMessageId: target._id,
-        corrected,
-        ...(original ? { original } : {}),
-      })
+      const { data: saved, award } = await emitWithAward<{ _id: string }>(
+        socket,
+        'message:correct',
+        {
+          conversationId,
+          targetMessageId: target._id,
+          corrected,
+          ...(original ? { original } : {}),
+        },
+      )
+      noteAward(saved._id, award, 'correction')
       track({ name: 'message_sent', properties: { kind: 'correction', reply: false } })
       review.request({ kind: 'correction' })
     } catch {
@@ -3320,65 +3347,71 @@ export function ChatScreen({
                     // A stand-in has no server id yet, so a menu or a reply on it
                     // would have nothing to act on until the server's copy
                     // arrives.
-                    <MessageBubble
-                      message={row.message}
-                      mine={isMine(row.message)}
-                      endsGroup={row.endsGroup}
+                    <WithRewardChips
+                      rewards={v3Thread ? rewards[row.message._id] : undefined}
                       partnerName={partner?.displayName ?? t('chat.them')}
-                      translation={translations[row.message._id]}
-                      translating={translating === row.message._id}
-                      romanization={romanizations[row.message._id]}
-                      romanizing={romanizing === row.message._id}
-                      speaking={speaking === row.message._id}
-                      hasReading={speech[row.message._id] !== undefined}
-                      onReplayReading={onReplayReading}
-                      transcript={transcripts[row.message._id]}
-                      transcribing={transcribing === row.message._id}
-                      {...(transcriptService && !isOutgoingId(row.message._id)
-                        ? { onShowText }
-                        : {})}
-                      highlighted={highlighted === row.message._id}
-                      askAnswered={answeredAsks.has(row.message._id)}
-                      onAnswerAsk={onAnswerAsk}
-                      onRespondMeeting={onRespondMeeting}
-                      onAnswerQuiz={onAnswerQuiz}
-                      onAnswerPoll={onAnswerPoll}
-                      onCardAction={onCardAction}
-                      onAddToCalendar={onAddToCalendar}
-                      meetingWhen={meetingWhenFor(row.message)}
-                      meetingLength={meetingLengthFor(row.message)}
-                      meetingTheirWhen={meetingTheirWhenFor(row.message)}
-                      pending={isOutgoingId(row.message._id)}
-                      onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
-                      onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
-                      onReply={isOutgoingId(row.message._id) ? ignore : onReply}
-                      canReply={!readOnly}
-                      onReact={isOutgoingId(row.message._id) ? ignore : onReact}
-                      /*
-                       * The same pair the menu's emoji strip is hidden for, and
-                       * for the same reason: the server refuses a reaction to a
-                       * withdrawn message and to an official channel, so offering
-                       * the gesture there would end in an alert.
-                       */
-                      canReact={!readOnly && !row.message.deleted && row.message.type !== 'call'}
-                      // Only on the newest call, and not where a call cannot be
-                      // placed from here at all: then a row is only a record.
-                      onCallBack={
-                        callGate !== 'hidden' && row.message._id === newestCallId
-                          ? onCallBack
-                          : undefined
-                      }
-                      onMeetingCall={
-                        callGate !== 'hidden' && meetingCallOpen(row.message.meeting, meetingNow)
-                          ? onMeetingCall
-                          : undefined
-                      }
-                      onJumpTo={onJumpTo}
-                      onOpenMedia={onOpenMedia}
-                      onOpenViewOnce={onOpenViewOnce}
-                      v3={v3Thread}
-                      partnerHue={partnerHue}
-                    />
+                      hue={partnerHue}
+                    >
+                      <MessageBubble
+                        message={row.message}
+                        mine={isMine(row.message)}
+                        endsGroup={row.endsGroup}
+                        partnerName={partner?.displayName ?? t('chat.them')}
+                        translation={translations[row.message._id]}
+                        translating={translating === row.message._id}
+                        romanization={romanizations[row.message._id]}
+                        romanizing={romanizing === row.message._id}
+                        speaking={speaking === row.message._id}
+                        hasReading={speech[row.message._id] !== undefined}
+                        onReplayReading={onReplayReading}
+                        transcript={transcripts[row.message._id]}
+                        transcribing={transcribing === row.message._id}
+                        {...(transcriptService && !isOutgoingId(row.message._id)
+                          ? { onShowText }
+                          : {})}
+                        highlighted={highlighted === row.message._id}
+                        askAnswered={answeredAsks.has(row.message._id)}
+                        onAnswerAsk={onAnswerAsk}
+                        onRespondMeeting={onRespondMeeting}
+                        onAnswerQuiz={onAnswerQuiz}
+                        onAnswerPoll={onAnswerPoll}
+                        onCardAction={onCardAction}
+                        onAddToCalendar={onAddToCalendar}
+                        meetingWhen={meetingWhenFor(row.message)}
+                        meetingLength={meetingLengthFor(row.message)}
+                        meetingTheirWhen={meetingTheirWhenFor(row.message)}
+                        pending={isOutgoingId(row.message._id)}
+                        onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
+                        onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
+                        onReply={isOutgoingId(row.message._id) ? ignore : onReply}
+                        canReply={!readOnly}
+                        onReact={isOutgoingId(row.message._id) ? ignore : onReact}
+                        /*
+                         * The same pair the menu's emoji strip is hidden for, and
+                         * for the same reason: the server refuses a reaction to a
+                         * withdrawn message and to an official channel, so offering
+                         * the gesture there would end in an alert.
+                         */
+                        canReact={!readOnly && !row.message.deleted && row.message.type !== 'call'}
+                        // Only on the newest call, and not where a call cannot be
+                        // placed from here at all: then a row is only a record.
+                        onCallBack={
+                          callGate !== 'hidden' && row.message._id === newestCallId
+                            ? onCallBack
+                            : undefined
+                        }
+                        onMeetingCall={
+                          callGate !== 'hidden' && meetingCallOpen(row.message.meeting, meetingNow)
+                            ? onMeetingCall
+                            : undefined
+                        }
+                        onJumpTo={onJumpTo}
+                        onOpenMedia={onOpenMedia}
+                        onOpenViewOnce={onOpenViewOnce}
+                        v3={v3Thread}
+                        partnerHue={partnerHue}
+                      />
+                    </WithRewardChips>
                   )
                 }
               />

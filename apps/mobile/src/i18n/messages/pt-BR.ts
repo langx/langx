@@ -1292,6 +1292,16 @@ export const ptBR: Localized<EnMessages> = {
     writeCorrection: 'Escreva a correção…',
     yourCorrection: 'Sua correção',
     correctionFrom: 'Correção de {name}',
+    rewardChip: '{amount} · {reason}',
+    rewardCorrected: 'você corrigiu {name}',
+    rewardBothWrote: 'vocês dois escreveram',
+    rewardBothAmount: { one: '+{count} para os dois', other: '+{count} para os dois' },
+    rewardStreak: { one: 'Sequência de {count} dia', other: 'Sequência de {count} dias' },
+    rewardLabel: { one: '{count} token: {reason}', other: '{count} tokens: {reason}' },
+    rewardBothLabel: {
+      one: '{count} token para você e {count} para {name}: vocês dois escreveram',
+      other: '{count} tokens para você e {count} para {name}: vocês dois escreveram',
+    },
     them: 'a outra pessoa',
     tokensPerMessage: {
       one: '+{count} token / mensagem',
@@ -2079,6 +2089,12 @@ export const ptBR: Localized<EnMessages> = {
     rungProgress: { one: '{done} de {count} dia', other: '{done} de {count} dias' },
     noStreakTitle: 'Ainda sem sequência',
     noStreakBody: 'Um dia conta quando você abre o LangX ou pratica. Hoje pode ser o primeiro.',
+    dayByDay: 'Dia a dia',
+    mapA11y: {
+      one: 'Mapa de atividade, o último {count} dia',
+      other: 'Mapa de atividade, os últimos {count} dias',
+    },
+    legendA11y: '{state}: {days}',
   },
   settings: {
     scanBody: 'Entre em um computador ou abra o perfil de um amigo',
