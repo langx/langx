@@ -851,10 +851,21 @@ export const repairDaySchema = z.object({
  * because everything else about a streak is keyed on that same day string. The
  * extra arguments were a second way to compute the same answer, which is a
  * second way to get it wrong.
+ *
+ * `firstDay` is the account's creation day, keyed in the same zone as
+ * `today` — `localDayKey(createdAt, timezone)`.
  */
-export function isRepairable(day: string, today: string): boolean {
+export function isRepairable(day: string, today: string, firstDay?: string | null): boolean {
   // Today is earned rather than bought, and tomorrow has not happened.
   if (day >= today) return false
+  /*
+   * Nor the days before the account existed. A repair buys back a day that
+   * could have been kept, and nobody could have kept a day they had no
+   * account on — without this, a week-old account was sold the fortnight
+   * window whole. Optional so a caller with no creation day refuses nothing
+   * more than it did; the server always passes it.
+   */
+  if (firstDay && day < firstDay) return false
   return day >= shiftDayKey(today, -TOKEN_RULES.sinks.dayRepairMaxAgeDays)
 }
 

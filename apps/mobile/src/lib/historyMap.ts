@@ -137,13 +137,20 @@ export function historyRepairOffer(input: {
   today: string
   days: readonly HistoryDay[]
   usedThisMonth: number
+  /**
+   * The server's count per `YYYY-MM`, when it sends one. Passed to the store's
+   * own choice so the two still offer the same day once today's month is
+   * spent and last month's is not.
+   */
+  usedByMonth?: Readonly<Record<string, number>> | undefined
   perMonth: number
 }): { day: string; left: number } | null {
-  const { map, today, days, usedThisMonth, perMonth } = input
+  const { map, today, days, usedThisMonth, usedByMonth, perMonth } = input
   const day = newestRepairDay({
     today,
     filled: new Set(days.map((entry) => entry.day)),
     usedThisMonth,
+    usedByMonth,
   })
   if (!day) return null
   const missed = map.columns.some((column) =>
@@ -152,8 +159,9 @@ export function historyRepairOffer(input: {
   if (!missed) return null
   const month = day.slice(0, 7)
   // Today's month is the server's own count; an earlier one is read off the rows.
-  const used =
-    month === today.slice(0, 7)
+  const used = usedByMonth
+    ? (usedByMonth[month] ?? 0)
+    : month === today.slice(0, 7)
       ? usedThisMonth
       : days.filter((entry) => entry.source === 'purchase' && entry.day.startsWith(month)).length
   const left = perMonth - used

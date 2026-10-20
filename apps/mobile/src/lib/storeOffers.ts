@@ -86,6 +86,10 @@ export interface StoreInput {
     filled: ReadonlySet<string>
     price: number
     usedThisMonth: number
+    /** Repairs used per `YYYY-MM`, when the server sends them. */
+    usedByMonth?: Readonly<Record<string, number>> | undefined
+    /** The account's first day; nothing before it is offered. */
+    firstDay?: string
   }
   /**
    * Passed in rather than reached for, so this stays a pure function the tests
@@ -96,21 +100,43 @@ export interface StoreInput {
 }
 
 /**
+ * Repairs already used in the month `day` falls in — the month the server
+ * counts the cap against, which is not always today's.
+ *
+ * Without `usedByMonth` (a server older than the field) every month is taken
+ * to have used what this month has, which is what the client assumed before.
+ */
+export function repairsUsedFor(
+  day: string,
+  repair: { usedThisMonth: number; usedByMonth?: Readonly<Record<string, number>> | undefined },
+): number {
+  if (!repair.usedByMonth) return repair.usedThisMonth
+  return repair.usedByMonth[day.slice(0, 7)] ?? 0
+}
+
+/**
  * The missed day a repair would fill in: the newest one still in reach, or
- * null when there is none or this month's repairs are used up. Shared with
+ * null when there is none or its month's repairs are used up. Shared with
  * the redesign's streak history, so the page and the store always offer the
  * same day.
+ *
+ * `firstDay` and `usedByMonth` are optional: without them a day before the
+ * account and a capped earlier month are not known here, and the answer is
+ * what it was before either field existed.
  */
 export function newestRepairDay(repair: {
   today: string
   filled: ReadonlySet<string>
   usedThisMonth: number
+  usedByMonth?: Readonly<Record<string, number>> | undefined
+  firstDay?: string | undefined
 }): string | null {
-  if (repair.usedThisMonth >= TOKEN_RULES.sinks.dayRepairPerMonth) return null
+  const cap = TOKEN_RULES.sinks.dayRepairPerMonth
   for (let back = 1; back <= TOKEN_RULES.sinks.dayRepairMaxAgeDays; back++) {
     const candidate = shiftDayKey(repair.today, -back)
-    if (!isRepairable(candidate, repair.today)) break
-    if (!repair.filled.has(candidate)) return candidate
+    if (!isRepairable(candidate, repair.today, repair.firstDay)) break
+    // A day whose month has used both repairs is one the server refuses.
+    if (!repair.filled.has(candidate) && repairsUsedFor(candidate, repair) < cap) return candidate
   }
   return null
 }
@@ -207,7 +233,7 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
           `dayRepair:${day}`,
           t('store.repairDay'),
           t('store.repairDayBody', {
-            left: TOKEN_RULES.sinks.dayRepairPerMonth - repair.usedThisMonth,
+            left: TOKEN_RULES.sinks.dayRepairPerMonth - repairsUsedFor(day, repair),
           }),
           repair.price,
         ),

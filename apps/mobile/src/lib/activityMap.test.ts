@@ -73,6 +73,12 @@ describe('activityGrid', () => {
     expect(cell(columns, '2026-08-14')?.state).toBe('empty')
   })
 
+  it('never offers a day before the account was created', () => {
+    const columns = grid({ firstDay: '2026-08-25' })
+    expect(cell(columns, '2026-08-25')?.state).toBe('repairable')
+    expect(cell(columns, '2026-08-24')?.state).toBe('empty')
+  })
+
   /** Today is earned, not bought — even though it is empty and in the window. */
   it('never offers today', () => {
     expect(cell(grid(), TODAY)?.state).toBe('empty')
