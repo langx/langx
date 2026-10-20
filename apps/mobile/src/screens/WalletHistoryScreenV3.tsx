@@ -17,7 +17,7 @@ import { listState } from '../lib/listState'
 import { goBackTo } from '../lib/navigation'
 import { makeStyles, useTheme, type PartnerHue } from '../lib/theme'
 import { buildTokenHistory } from '../lib/tokenHistory'
-import { historyItems, type HistoryItem } from '../lib/walletV3'
+import { historyItems, ledgerNow, type HistoryItem } from '../lib/walletV3'
 
 type Glyph = keyof typeof Feather.glyphMap
 
@@ -73,7 +73,12 @@ export function WalletHistoryScreenV3() {
   const items = useMemo(
     () =>
       historyItems(
-        buildTokenHistory({ days: days?.flatMap((page) => page.days) ?? [], t, locale }),
+        buildTokenHistory({
+          days: days?.flatMap((page) => page.days) ?? [],
+          t,
+          locale,
+          now: ledgerNow(),
+        }),
       ),
     [days, t, locale],
   )

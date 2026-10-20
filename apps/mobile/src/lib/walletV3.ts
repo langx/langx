@@ -25,6 +25,20 @@ export function freezeBankValue(
   })
 }
 
+/**
+ * The "now" the history's headings are named against: the device's clock
+ * moved onto the UTC day, as noon of that date on the device.
+ *
+ * The ledger's days are UTC keys (decisions: token caps run on the UTC day),
+ * and `dayLabel` names a key "Today" by the device's day. In a Toronto
+ * evening those differ, and an "October 20" block sat above "Today" for
+ * October 19. Named against the UTC day, "Today" is the newest block a token
+ * can land in, and the labels run in order. The keys themselves are untouched.
+ */
+export function ledgerNow(now: Date = new Date()): Date {
+  return new Date(`${now.toISOString().slice(0, 10)}T12:00:00`)
+}
+
 /** The rung the wallet's bar measures, and how far the balance is from it. */
 export interface NextRung {
   cosmetic: Cosmetic

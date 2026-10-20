@@ -1,8 +1,8 @@
 import { COSMETICS, isLadderKind } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
-import type { HistoryRow } from './tokenHistory'
 import { createTranslate } from '../i18n/runtime'
-import { freezeBankValue, historyItems, nextRung } from './walletV3'
+import { buildTokenHistory, type HistoryRow } from './tokenHistory'
+import { freezeBankValue, historyItems, ledgerNow, nextRung } from './walletV3'
 
 const ladder = (kind: 'frame' | 'title') => COSMETICS.filter((item) => item.kind === kind)
 const frames = ladder('frame')
@@ -93,6 +93,41 @@ describe('historyItems', () => {
 
   it('draws no heading over a day with nothing in it', () => {
     expect(historyItems([day('2026-10-19', [])])).toEqual([])
+  })
+})
+
+describe('ledgerNow', () => {
+  /*
+   * The test's own zone is whatever the machine runs in, so these hold in
+   * any of them: what matters is that the result's device-local date is the
+   * UTC date of the instant passed in.
+   */
+  const localKey = (at: Date) =>
+    `${at.getFullYear()}-${String(at.getMonth() + 1).padStart(2, '0')}-${String(at.getDate()).padStart(2, '0')}`
+
+  it('puts a Toronto evening on the next UTC day', () => {
+    // 21:30 on 19 October in Toronto (EDT) is 01:30 on 20 October in UTC.
+    expect(localKey(ledgerNow(new Date('2026-10-20T01:30:00Z')))).toBe('2026-10-20')
+  })
+
+  it('keeps a UTC day that the device shares', () => {
+    expect(localKey(ledgerNow(new Date('2026-10-19T15:00:00Z')))).toBe('2026-10-19')
+  })
+
+  it('names the newest UTC block "Today" and the one before "Yesterday"', () => {
+    const t = createTranslate('en')
+    const now = ledgerNow(new Date('2026-10-20T01:30:00Z'))
+    const labels = buildTokenHistory({
+      days: [
+        { day: '2026-10-20', earned: 5, spent: 0, breakdown: [] },
+        { day: '2026-10-19', earned: 5, spent: 0, breakdown: [] },
+        { day: '2026-10-18', earned: 5, spent: 0, breakdown: [] },
+      ],
+      t,
+      locale: 'en',
+      now,
+    }).map((row) => row.label)
+    expect(labels).toEqual(['Today', 'Yesterday', 'October 18'])
   })
 })
 
