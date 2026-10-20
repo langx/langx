@@ -28,8 +28,8 @@ interface AvatarProps {
    */
   frame?: string | undefined
   /**
-   * Aurora Glass's light sweep (`FrameSweep`), passed only by your own profile
-   * and the store's preview. Ignored by every other frame, at the small cuts
+   * Aurora Glass's light sweep (`FrameSweep`), passed only where you look at
+   * your own profile (the Me hero, and the profile screen as yourself). Ignored by every other frame, at the small cuts
    * and with the flag off.
    */
   sweep?: FrameSweepComponent | undefined

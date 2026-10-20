@@ -1945,10 +1945,14 @@ would have been the guard against paying twice for the same item.
 
 _19 October 2026._ The v3 store draws frames as art, and the art sheet has six
 frames that sit between today's rungs by price: Washi Tape, Linocut, Indigo
-Dye, Mosaic, Seal and Fret, and Marquetry. Inserting them under the gate above
-would have stranded people. Somebody who already owns Woven Reed (`frame.sky`)
-would find Linocut, the new rung just under it, locked behind a Running Stitch
-they never bought.
+Dye, Mosaic, Seal and Fret, and Marquetry. Somebody who climbed the ladder in
+order owns the rung under each inserted one, so the gate above opens those for
+them as it is. It does not for anybody holding rungs with gaps between them —
+frames bought while the shop was still a shelf, or the older welcome packs,
+which handed out Running Stitch, Origami Fold and Khokhloma without the rungs
+under them. Somebody holding Woven Reed (`frame.sky`) without Running Stitch
+would find Linocut, a rung under a frame they already wear, locked behind one
+they never wanted.
 
 So the gate widens by one clause: **owning the rung below, or any rung above
 it, opens a rung.** `ladderOpeners` lists those ids and `purchase` puts them in

@@ -169,6 +169,33 @@ describe('ladderOpen', () => {
       expect(ladderOpen(pack, []), pack.id).toBe(true)
     }
   })
+  /**
+   * The whole ladder, one owned rung at a time: owning rung `i` opens every
+   * rung up to `i + 1` and nothing past it. The rule hands out no shortcut —
+   * the highest rung anybody can buy is still one above the highest they own.
+   */
+  it('opens at most one rung past the highest owned, on either ladder', () => {
+    for (const kind of ['frame', 'title'] as const) {
+      const ladder = COSMETICS.filter((c) => c.kind === kind)
+      ladder.forEach((owned, i) => {
+        ladder.forEach((rung, j) => {
+          if (j === i) return
+          expect(ladderOpen(rung, [owned.id]), `${owned.id} -> ${rung.id}`).toBe(j <= i + 1)
+        })
+      })
+    }
+  })
+
+  it('keeps Aurora Glass behind Night Hoop, whatever else is owned', () => {
+    const below = COSMETICS.filter((c) => c.kind === 'frame' && c.id !== 'frame.midnight')
+    expect(ladderOpeners(frame('frame.aurora'))).toEqual(['frame.midnight'])
+    expect(
+      ladderOpen(
+        frame('frame.aurora'),
+        below.map((c) => c.id),
+      ),
+    ).toBe(false)
+  })
 })
 
 describe('meetsRequirement', () => {

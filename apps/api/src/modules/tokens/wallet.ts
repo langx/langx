@@ -123,8 +123,8 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
    * can never close again.
    *
    * A gift skips it, which is deliberate: `grantWelcomePack` writes with
-   * `$addToSet` and never comes through here. The packs start at the bottom of
-   * each ladder so that nothing is handed out above a rung nobody owns.
+   * `$addToSet` and never comes through here. The pack names its rungs by id,
+   * and `ladderOpen` keeps every rung up to one past its top open to a holder.
    */
   /*
    * Owning any rung above the one below counts as owning it (`ladderOpen`), so
