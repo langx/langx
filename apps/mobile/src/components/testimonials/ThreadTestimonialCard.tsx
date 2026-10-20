@@ -5,6 +5,8 @@ import { useT } from '../../i18n'
 import { FLAG_KEYS, readJsonFlag, writeJsonFlag } from '../../lib/localFlags'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { Button } from '../ui/Button'
+import { IconButton } from '../ui/IconButton'
+import { useV3Home } from '../../hooks/useV3Home'
 
 /** Enough threads that nobody reaches the end; the oldest closes fall off first. */
 const MAX_REMEMBERED = 200
@@ -54,6 +56,7 @@ export function ThreadTestimonialCard({
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
+  const v3Look = useV3Home()
   // `null` while the device is still being asked, so a closed card does not
   // flash up for a frame first.
   const [dismissed, setDismissed] = useState<boolean | null>(null)
@@ -97,18 +100,32 @@ export function ThreadTestimonialCard({
           style={styles.button}
         />
       </View>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={t('testimonials.cardDismiss')}
-        hitSlop={10}
-        onPress={() => {
-          setDismissed(true)
-          void rememberDismissed(conversationId)
-        }}
-        style={({ pressed }) => [styles.close, pressed && styles.pressed]}
-      >
-        <Feather name="x" size={18} color={colors.textFaint} />
-      </Pressable>
+      {v3Look ? (
+        <IconButton
+          icon="x"
+          iconSize={18}
+          color={colors.textFaint}
+          accessibilityLabel={t('testimonials.cardDismiss')}
+          hitSlop={10}
+          onPress={() => {
+            setDismissed(true)
+            void rememberDismissed(conversationId)
+          }}
+        />
+      ) : (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('testimonials.cardDismiss')}
+          hitSlop={10}
+          onPress={() => {
+            setDismissed(true)
+            void rememberDismissed(conversationId)
+          }}
+          style={({ pressed }) => [styles.close, pressed && styles.pressed]}
+        >
+          <Feather name="x" size={18} color={colors.textFaint} />
+        </Pressable>
+      )}
     </View>
   )
 }

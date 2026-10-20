@@ -8,6 +8,8 @@ import { openProfile } from '../lib/navigation'
 import { makeStyles, useTheme } from '../lib/theme'
 import { Avatar } from './ui/Avatar'
 import { OfficialMark } from './OfficialMark'
+import { IconButton } from './ui/IconButton'
+import { useV3Home } from '../hooks/useV3Home'
 
 type SearchHost = '/(app)/(tabs)/discover' | '/(app)/(tabs)/chats'
 
@@ -65,6 +67,7 @@ function useTerm(): string {
  */
 export function PeopleSearch({ onSearchingChange }: PeopleSearchProps) {
   const t = useT()
+  const v3Look = useV3Home()
   const styles = useStyles()
   const { colors } = useTheme()
   const [searching, setSearching] = useState(false)
@@ -74,6 +77,17 @@ export function PeopleSearch({ onSearchingChange }: PeopleSearchProps) {
     setSearching(next)
     if (!next) setTerm('')
     onSearchingChange?.(next)
+  }
+
+  if (!searching && v3Look) {
+    return (
+      <IconButton
+        icon="search"
+        accessibilityLabel={t('discover.searchHandles')}
+        onPress={() => open(true)}
+        hitSlop={8}
+      />
+    )
   }
 
   if (!searching) {

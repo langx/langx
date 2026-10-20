@@ -42,6 +42,8 @@ import {
   viewOnceForMode,
   type SnapMode,
 } from '../../src/lib/viewOnce'
+import { IconButton } from '../../src/components/ui/IconButton'
+import { useV3Home } from '../../src/hooks/useV3Home'
 
 /*
  * Literal colours, as in `scan.tsx`: a camera is dark whichever scheme the app
@@ -207,6 +209,7 @@ function SnapCamera({
   onClose: () => void
 }) {
   const t = useT()
+  const v3Look = useV3Home()
   const styles = useStyles()
   const [permission, requestPermission, getPermission] = useCameraPermissions()
   const [microphone, requestMicrophone] = useMicrophonePermissions()
@@ -465,20 +468,33 @@ function SnapCamera({
       <View style={[styles.bottom, { paddingBottom: spacing.xl + bottomInset }]}>
         {recording ? null : <Text style={styles.hint}>{t('viewOnce.hint')}</Text>}
         <View style={styles.shutterRow}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('viewOnce.gallery')}
-            onPress={onLibrary}
-            disabled={recording}
-            hitSlop={10}
-            style={({ pressed }) => [
-              styles.roundIcon,
-              recording && styles.hidden,
-              pressed && styles.pressed,
-            ]}
-          >
-            <Feather name="image" size={22} color={ON_STAGE} />
-          </Pressable>
+          {v3Look ? (
+            <IconButton
+              icon="image"
+              iconSize={22}
+              look="hue"
+              accessibilityLabel={t('viewOnce.gallery')}
+              onPress={onLibrary}
+              disabled={recording}
+              hitSlop={10}
+              style={recording && styles.hidden}
+            />
+          ) : (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('viewOnce.gallery')}
+              onPress={onLibrary}
+              disabled={recording}
+              hitSlop={10}
+              style={({ pressed }) => [
+                styles.roundIcon,
+                recording && styles.hidden,
+                pressed && styles.pressed,
+              ]}
+            >
+              <Feather name="image" size={22} color={ON_STAGE} />
+            </Pressable>
+          )}
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('viewOnce.shutter')}
@@ -489,20 +505,33 @@ function SnapCamera({
           >
             <View style={[styles.shutterCore, recording && styles.shutterCoreRecording]} />
           </Pressable>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('viewOnce.flip')}
-            onPress={() => setFacing((side) => (side === 'back' ? 'front' : 'back'))}
-            disabled={recording}
-            hitSlop={10}
-            style={({ pressed }) => [
-              styles.roundIcon,
-              recording && styles.hidden,
-              pressed && styles.pressed,
-            ]}
-          >
-            <Feather name="refresh-cw" size={20} color={ON_STAGE} />
-          </Pressable>
+          {v3Look ? (
+            <IconButton
+              icon="refresh-cw"
+              iconSize={20}
+              look="hue"
+              accessibilityLabel={t('viewOnce.flip')}
+              onPress={() => setFacing((side) => (side === 'back' ? 'front' : 'back'))}
+              disabled={recording}
+              hitSlop={10}
+              style={recording && styles.hidden}
+            />
+          ) : (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('viewOnce.flip')}
+              onPress={() => setFacing((side) => (side === 'back' ? 'front' : 'back'))}
+              disabled={recording}
+              hitSlop={10}
+              style={({ pressed }) => [
+                styles.roundIcon,
+                recording && styles.hidden,
+                pressed && styles.pressed,
+              ]}
+            >
+              <Feather name="refresh-cw" size={20} color={ON_STAGE} />
+            </Pressable>
+          )}
         </View>
       </View>
     </>
@@ -634,10 +663,20 @@ function TopBar({
   children?: React.ReactNode
 }) {
   const t = useT()
+  const v3Look = useV3Home()
   const styles = useStyles()
   return (
     <View style={styles.topBar} pointerEvents="box-none">
-      {onClose ? (
+      {onClose && v3Look ? (
+        <IconButton
+          icon="x"
+          iconSize={22}
+          look="hue"
+          accessibilityLabel={closeLabel ?? t('viewOnce.close')}
+          onPress={onClose}
+          hitSlop={10}
+        />
+      ) : onClose ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={closeLabel ?? t('viewOnce.close')}

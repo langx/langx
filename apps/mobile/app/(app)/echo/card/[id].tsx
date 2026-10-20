@@ -44,6 +44,8 @@ import { dueInCompact } from '../../../../src/lib/format'
 import { goBackTo } from '../../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../../src/lib/theme'
 import { showToast } from '../../../../src/lib/toast'
+import { IconButton } from '../../../../src/components/ui/IconButton'
+import { useV3Home } from '../../../../src/hooks/useV3Home'
 
 /** As on the session card, and for the same reason: never crop the picture. */
 const PICTURE_MAX_HEIGHT = 240
@@ -62,6 +64,7 @@ const PICTURE_MAX_HEIGHT = 240
 export default function EchoCardScreen() {
   const styles = useStyles()
   const t = useT()
+  const v3Look = useV3Home()
   const { colors } = useTheme()
   const params = useLocalSearchParams<{ id: string }>()
   const card = useEchoCard(params.id)
@@ -73,17 +76,29 @@ export default function EchoCardScreen() {
         onBack={() => goBackTo('/(app)/echo/cards')}
         trailing={
           card.data ? (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('common.edit')}
-              hitSlop={12}
-              onPress={() =>
-                router.push({ pathname: '/(app)/echo/edit', params: { id: params.id } })
-              }
-              style={({ pressed }) => (pressed ? styles.pressed : null)}
-            >
-              <Feather name="edit-2" size={20} color={colors.text} />
-            </Pressable>
+            v3Look ? (
+              <IconButton
+                icon="edit-2"
+                iconSize={20}
+                accessibilityLabel={t('common.edit')}
+                hitSlop={12}
+                onPress={() =>
+                  router.push({ pathname: '/(app)/echo/edit', params: { id: params.id } })
+                }
+              />
+            ) : (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('common.edit')}
+                hitSlop={12}
+                onPress={() =>
+                  router.push({ pathname: '/(app)/echo/edit', params: { id: params.id } })
+                }
+                style={({ pressed }) => (pressed ? styles.pressed : null)}
+              >
+                <Feather name="edit-2" size={20} color={colors.text} />
+              </Pressable>
+            )
           ) : undefined
         }
       />

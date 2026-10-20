@@ -11,6 +11,8 @@ import { openStoreListing } from '../lib/storeListing'
 import { makeStyles, spacing, useTheme } from '../lib/theme'
 import { shouldShowUpdateNotice } from '../lib/updateNotice'
 import { useT } from '../i18n'
+import { IconButton } from './ui/IconButton'
+import { useV3Home } from '../hooks/useV3Home'
 
 /**
  * Says that a newer build than this one has been published, and offers to go
@@ -35,6 +37,7 @@ export function UpdateBanner() {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
+  const v3Look = useV3Home()
   const config = useAppConfig()
   const me = useMe()
   const insets = useSafeAreaInsets()
@@ -109,17 +112,31 @@ export function UpdateBanner() {
       <Pressable onPress={() => void update()} hitSlop={8}>
         <Text style={styles.action}>{t('common.update')}</Text>
       </Pressable>
-      <Pressable
-        accessibilityLabel={t('update.dismiss')}
-        accessibilityRole="button"
-        hitSlop={8}
-        onPress={() => {
-          setDismissed(latest)
-          void writeFlag(FLAG_KEYS.updateNoticeDismissed, latest)
-        }}
-      >
-        <Feather name="x" size={18} color={colors.textMuted} />
-      </Pressable>
+      {v3Look ? (
+        <IconButton
+          icon="x"
+          iconSize={18}
+          color={colors.textMuted}
+          accessibilityLabel={t('update.dismiss')}
+          hitSlop={8}
+          onPress={() => {
+            setDismissed(latest)
+            void writeFlag(FLAG_KEYS.updateNoticeDismissed, latest)
+          }}
+        />
+      ) : (
+        <Pressable
+          accessibilityLabel={t('update.dismiss')}
+          accessibilityRole="button"
+          hitSlop={8}
+          onPress={() => {
+            setDismissed(latest)
+            void writeFlag(FLAG_KEYS.updateNoticeDismissed, latest)
+          }}
+        >
+          <Feather name="x" size={18} color={colors.textMuted} />
+        </Pressable>
+      )}
     </View>
   )
 }

@@ -23,6 +23,8 @@ import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles, spacing } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 import { withoutViewOnceFallback } from '../../src/lib/viewOnce'
+import { IconButton } from '../../src/components/ui/IconButton'
+import { useV3Home } from '../../src/hooks/useV3Home'
 
 /* Literal colours: the viewer is black in both schemes, like `chat-camera.tsx`. */
 const STAGE_BG = '#000000'
@@ -48,6 +50,7 @@ const STALL_MS = 15_000
 export default function ViewOnceScreen() {
   useScreenInteractive()
   const t = useT()
+  const v3Look = useV3Home()
   const styles = useStyles()
   const insets = useSafeAreaInsets()
   const queryClient = useQueryClient()
@@ -156,24 +159,50 @@ export default function ViewOnceScreen() {
         </Pressable>
       )}
       <View style={[styles.topBar, { top: insets.top + spacing.lg }]} pointerEvents="box-none">
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('viewOnce.report')}
-          onPress={report}
-          hitSlop={10}
-          style={({ pressed }) => [styles.roundIcon, pressed && styles.pressed]}
-        >
-          <Feather name="flag" size={18} color={ON_STAGE} />
-        </Pressable>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('viewOnce.close')}
-          onPress={close}
-          hitSlop={10}
-          style={({ pressed }) => [styles.roundIcon, pressed && styles.pressed]}
-        >
-          <Feather name="x" size={22} color={ON_STAGE} />
-        </Pressable>
+        {/*
+          On the photo, the kit's dark disc that stays dark in both schemes —
+          the `hue` look — where the current look draws a 40pt scrim.
+        */}
+        {v3Look ? (
+          <IconButton
+            icon="flag"
+            iconSize={18}
+            look="hue"
+            accessibilityLabel={t('viewOnce.report')}
+            onPress={report}
+            hitSlop={10}
+          />
+        ) : (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('viewOnce.report')}
+            onPress={report}
+            hitSlop={10}
+            style={({ pressed }) => [styles.roundIcon, pressed && styles.pressed]}
+          >
+            <Feather name="flag" size={18} color={ON_STAGE} />
+          </Pressable>
+        )}
+        {v3Look ? (
+          <IconButton
+            icon="x"
+            iconSize={22}
+            look="hue"
+            accessibilityLabel={t('viewOnce.close')}
+            onPress={close}
+            hitSlop={10}
+          />
+        ) : (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('viewOnce.close')}
+            onPress={close}
+            hitSlop={10}
+            style={({ pressed }) => [styles.roundIcon, pressed && styles.pressed]}
+          >
+            <Feather name="x" size={22} color={ON_STAGE} />
+          </Pressable>
+        )}
       </View>
     </View>
   )

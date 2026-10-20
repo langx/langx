@@ -6,6 +6,8 @@ import { useLocale, useT } from '../../i18n'
 import { relativeTime } from '../../lib/format'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { Avatar } from '../ui/Avatar'
+import { IconButton } from '../ui/IconButton'
+import { useV3Home } from '../../hooks/useV3Home'
 
 export interface TestimonialCardProps {
   /** The author on a profile and on "Received"; the subject on "Written". */
@@ -46,6 +48,7 @@ export function TestimonialCard({
   const { colors } = useTheme()
   const t = useT()
   const { locale } = useLocale()
+  const v3Look = useV3Home()
 
   return (
     <View style={[styles.card, last ? null : styles.divided]}>
@@ -84,7 +87,16 @@ export function TestimonialCard({
             </View>
           </View>
         </Pressable>
-        {onMore ? (
+        {onMore && v3Look ? (
+          <IconButton
+            icon="more-horizontal"
+            iconSize={20}
+            color={colors.textMuted}
+            accessibilityLabel={t('testimonials.more')}
+            hitSlop={10}
+            onPress={onMore}
+          />
+        ) : onMore ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('testimonials.more')}
