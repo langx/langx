@@ -129,15 +129,19 @@ export function WithRewardChips({
 }) {
   return (
     <>
-      {[...(rewards?.chips ?? [])].reverse().map((reward) => (
-        <RewardChipV3
-          key={reward.kind}
-          reward={reward}
-          partnerName={partnerName}
-          hue={hue}
-          at={rewards.at}
-        />
-      ))}
+      {rewards
+        ? [...rewards.chips]
+            .reverse()
+            .map((reward) => (
+              <RewardChipV3
+                key={reward.kind}
+                reward={reward}
+                partnerName={partnerName}
+                hue={hue}
+                at={rewards.at}
+              />
+            ))
+        : null}
       {children}
     </>
   )
