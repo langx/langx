@@ -150,7 +150,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   qr: { height: 200, width: 200 },
   who: { alignItems: 'center', flexDirection: 'row', gap: v3.space[12], maxWidth: '100%' },
   whoText: { flexShrink: 1 },
-  name: { ...v3.type.title, color: v3.colors.ink, fontSize: 26, lineHeight: 30 },
+  name: { ...v3.type.headline, color: v3.colors.ink },
   nameFallback: { fontFamily: v3.type.headline.fontFamily },
   url: { ...v3.type.callout, color: v3.colors.ink, fontWeight: '700' },
   body: { ...v3.type.body, color: v3.colors.muted, marginHorizontal: v3.space[6] },
