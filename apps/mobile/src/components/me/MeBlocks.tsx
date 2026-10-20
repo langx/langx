@@ -1,11 +1,11 @@
 import Feather from '@expo/vector-icons/Feather'
-import type { CosmeticTone } from '@langx/shared'
 import type { ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { useLocale } from '../../i18n'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
 import { ProMark } from '../ProMark'
 import { Avatar } from '../ui/Avatar'
+import { FrameSweep } from '../ui/FrameSweep'
 import { Button } from '../ui/Button'
 import { IconButton } from '../ui/IconButton'
 import { PressableScale } from '../ui/PressableScale'
@@ -47,7 +47,8 @@ export interface MeHeroView {
     url?: string | undefined
     name: string
     seed: string
-    frame?: CosmeticTone | undefined
+    /** A tone, or one this build does not know (drawn as an ink ring). */
+    frame?: string | undefined
   }
   /** Opens the photo full screen. Only when there is a photo to open. */
   onOpenAvatar?: (() => void) | undefined
@@ -139,6 +140,8 @@ export function MeHero({ view }: { view: MeHeroView }) {
               seed={view.avatar.seed}
               size={AVATAR}
               frame={view.avatar.frame}
+              // Your own profile: one of the two places Aurora Glass moves.
+              sweep={FrameSweep}
             />
           </Pressable>
           {view.camera ? (
