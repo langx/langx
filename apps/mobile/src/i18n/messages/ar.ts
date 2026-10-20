@@ -2567,6 +2567,16 @@ export const ar: Localized<EnMessages> = {
     },
     noStreakTitle: 'لا سلسلة بعد',
     noStreakBody: 'يُحتسب اليوم حين تفتح LangX أو تتمرّن. يمكن أن يكون اليوم أول أيامك.',
+    dayByDay: 'يومًا بيوم',
+    mapA11y: {
+      zero: 'خريطة النشاط، آخر {count} يوم',
+      one: 'خريطة النشاط، آخر يوم',
+      two: 'خريطة النشاط، آخر يومين',
+      few: 'خريطة النشاط، آخر {count} أيام',
+      many: 'خريطة النشاط، آخر {count} يومًا',
+      other: 'خريطة النشاط، آخر {count} يوم',
+    },
+    legendA11y: '{state}: {days}',
   },
   settings: {
     scanBody: 'سجّل الدخول على حاسوب أو افتح ملف صديق',

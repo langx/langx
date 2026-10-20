@@ -2089,6 +2089,12 @@ export const ptBR: Localized<EnMessages> = {
     rungProgress: { one: '{done} de {count} dia', other: '{done} de {count} dias' },
     noStreakTitle: 'Ainda sem sequência',
     noStreakBody: 'Um dia conta quando você abre o LangX ou pratica. Hoje pode ser o primeiro.',
+    dayByDay: 'Dia a dia',
+    mapA11y: {
+      one: 'Mapa de atividade, o último {count} dia',
+      other: 'Mapa de atividade, os últimos {count} dias',
+    },
+    legendA11y: '{state}: {days}',
   },
   settings: {
     scanBody: 'Entre em um computador ou abra o perfil de um amigo',

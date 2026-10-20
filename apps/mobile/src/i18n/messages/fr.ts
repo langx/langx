@@ -2121,6 +2121,12 @@ export const fr: Localized<EnMessages> = {
     noStreakTitle: 'Pas encore de série',
     noStreakBody:
       'Un jour compte quand tu ouvres LangX ou que tu pratiques. Aujourd’hui peut être le premier.',
+    dayByDay: 'Jour par jour',
+    mapA11y: {
+      one: 'Carte d’activité, le dernier {count} jour',
+      other: 'Carte d’activité, les {count} derniers jours',
+    },
+    legendA11y: '{state} : {days}',
   },
   settings: {
     scanBody: 'Se connecter sur un ordinateur ou ouvrir le profil d’un ami',

@@ -2093,6 +2093,12 @@ export const es: Localized<EnMessages> = {
     rungProgress: { one: '{done} de {count} día', other: '{done} de {count} días' },
     noStreakTitle: 'Aún no tienes racha',
     noStreakBody: 'Un día cuenta cuando abres LangX o practicas. Hoy puede ser el primero.',
+    dayByDay: 'Día a día',
+    mapA11y: {
+      one: 'Mapa de actividad, el último {count} día',
+      other: 'Mapa de actividad, los últimos {count} días',
+    },
+    legendA11y: '{state}: {days}',
   },
   settings: {
     scanBody: 'Inicia sesión en un ordenador o abre el perfil de un amigo',

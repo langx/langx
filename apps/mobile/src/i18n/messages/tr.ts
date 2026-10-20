@@ -2060,6 +2060,12 @@ export const tr: Localized<EnMessages> = {
     rungProgress: { one: '{done}/{count} gün', other: '{done}/{count} gün' },
     noStreakTitle: 'Henüz serin yok',
     noStreakBody: 'LangX’i açtığın ya da pratik yaptığın her gün sayılır. Bugün ilk gün olabilir.',
+    dayByDay: 'Gün gün',
+    mapA11y: {
+      one: 'Etkinlik haritası, son {count} gün',
+      other: 'Etkinlik haritası, son {count} gün',
+    },
+    legendA11y: '{state}: {days}',
   },
   settings: {
     scanBody: 'Bilgisayarda giriş yap ya da bir arkadaşının profilini aç',
