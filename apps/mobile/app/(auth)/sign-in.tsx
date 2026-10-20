@@ -16,6 +16,8 @@ import { goBackTo } from '../../src/lib/navigation'
 import { withSignInProgress } from '../../src/lib/signInProgress'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
+import { SignInV3 } from '../../src/components/auth/SignInV3'
 
 export default function SignIn() {
   useScreenInteractive()
@@ -30,6 +32,10 @@ export default function SignIn() {
   // said "Sign in failed" to somebody whose request never left the phone.
   const online = useIsOnline()
   const captcha = useCaptcha()
+  // The redesign's look behind `flags.v3Home`, never waited for: this screen
+  // is a tap from the welcome screen, so it follows the welcome screen's
+  // answer for the launch. See `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
   /**
    * Only Better Auth's own sign-in. A v1 password cannot be checked here — the
    * hash is one-way and from another system — and the bridge that once asked
@@ -87,6 +93,24 @@ export default function SignIn() {
   // The same condition the button uses, so Enter can never submit a
   // form the button refuses — nor fire twice while one is in flight.
   const canSubmit = !loading && !!email && !!password && !captcha.checking
+
+  if (v3) {
+    return (
+      <SignInV3
+        email={email}
+        onChangeEmail={setEmail}
+        password={password}
+        onChangePassword={setPassword}
+        error={error}
+        loading={loading}
+        disabled={!email || !password || captcha.checking}
+        canSubmit={canSubmit}
+        onSubmit={onSubmit}
+        captchaWidget={captcha.widget}
+        captchaChecking={!!email && !!password && captcha.checking}
+      />
+    )
+  }
 
   return (
     <Screen scroll style={styles.form}>
