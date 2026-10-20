@@ -641,6 +641,10 @@ export const ar: Localized<EnMessages> = {
       other: 'أول {count} جلسة كل يوم تمنح توكنات.',
     },
     oneMore: 'جلسة أخرى',
+    sourceOpensChat: 'يفتح محادثتك عند هذه الرسالة',
+    sourceOpensPost: 'يفتح المنشور',
+    newNote:
+      'تنضم إلى الجدول نفسه الذي تتبعه البطاقات التي تحفظها من المحادثات. بعد حفظها، أضف صورة أو سجّلها بصوتك من «تعديل».',
   },
 
   conversationPicker: {
@@ -1192,6 +1196,10 @@ export const ar: Localized<EnMessages> = {
   },
 
   corrections: {
+    findSentence: 'ابحث عن جملة لتصحيحها',
+    listCaption: 'في المحادثات وعلى المنشورات، الأحدث أولًا',
+    openChatHint: 'يفتح المحادثة عند هذه الرسالة',
+    openPostHint: 'يفتح المنشور',
     emptyTitle: 'لا تصحيحات بعد',
     emptyBody:
       'اضغط مطولًا على رسالة واختر «صحّح»، أو صحّح جملة منشورة في الخلاصة — أنفع ما يمكنك فعله هنا.',
@@ -1380,6 +1388,19 @@ export const ar: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. {time} بالتوقيت المحلي.',
   },
   chat: {
+    newChatStarts: 'تبدأ هذه المحادثة برسالتك الأولى.',
+    pickFirstLine: 'اختر جملة أولى',
+    meetingLede: 'يمكن للطرف الآخر القبول أو الرفض. يرى كل منكما الموعد بتوقيته.',
+    meetingDay: 'اليوم',
+    meetingTime: 'الوقت',
+    meetingNoteHint: {
+      zero: 'يظهر هذا على البطاقة. حتى {count} حرف.',
+      one: 'يظهر هذا على البطاقة. حتى حرف واحد.',
+      two: 'يظهر هذا على البطاقة. حتى حرفين.',
+      few: 'يظهر هذا على البطاقة. حتى {count} أحرف.',
+      many: 'يظهر هذا على البطاقة. حتى {count} حرفًا.',
+      other: 'يظهر هذا على البطاقة. حتى {count} حرف.',
+    },
     firstReplyTitle: 'وصلك رد من {name}',
     firstReplyBody: {
       zero: 'الردود مجانية في كل الخطط. يزيل {plan} الحدّ اليومي للمحادثات الجديدة.',
@@ -1758,6 +1779,9 @@ export const ar: Localized<EnMessages> = {
   day: { today: 'اليوم', yesterday: 'أمس' },
 
   starred: {
+    lede: 'لا يرى المميزة غيرك. اضغط على واحدة لفتحها في محادثتها.',
+    goToChats: 'الذهاب إلى المحادثات',
+    rowLabel: '{name}: {what}. فتح في المحادثة',
     title: 'المميزة',
     emptyTitle: 'لا شيء مميز بعد',
     emptyBody: 'اضغط مطوّلًا على رسالة واختر «إضافة إلى المميزة» لتبقى هنا.',

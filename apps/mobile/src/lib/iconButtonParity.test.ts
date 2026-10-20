@@ -22,7 +22,6 @@ const MOBILE = path.resolve(__dirname, '../..')
 
 const SITES: Readonly<Record<string, number>> = {
   'src/components/ui/ScreenHeader.tsx': 1,
-  'app/(app)/chat/new.tsx': 1,
   'app/(app)/filters.tsx': 1,
   'app/(app)/compose.tsx': 1,
   'app/(app)/scan.tsx': 1,

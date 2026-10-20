@@ -78,6 +78,14 @@ export function useTakePlay(player: AudioPlayer): () => Promise<void> {
   }, [played, start])
 }
 
+/**
+ * The take to repeat, for a page that draws its own button — the redesign's
+ * card page draws it as a pill. The same function `PlayAgainButton` calls.
+ */
+export function usePlayAgain(): (() => Promise<void>) | undefined {
+  return useContext(PlayAgainContext)?.last
+}
+
 /** The button. Absent until something has played, because until then it would do nothing. */
 export function PlayAgainButton() {
   const styles = useStyles()

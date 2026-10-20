@@ -18,6 +18,8 @@ import { requireAccount } from '../../../src/lib/requireAccount'
 import { makeStyles } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
 import { newClientId } from '../../../src/lib/unsentMessages'
+import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
+import { EchoNewScreenV3 } from '../../../src/screens/echo/EchoNewScreenV3'
 
 /**
  * A card written by hand.
@@ -32,7 +34,13 @@ import { newClientId } from '../../../src/lib/unsentMessages'
  * the message. Here it is a choice, which is also why the edit screen now lets
  * it be corrected.
  */
-export default function NewEchoCardScreen() {
+export default function NewEchoCardRoute() {
+  const v3Home = useV3HomeDecision()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <EchoNewScreenV3 /> : <NewEchoCardScreen />
+}
+
+function NewEchoCardScreen() {
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()

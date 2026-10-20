@@ -37,6 +37,8 @@ import {
   uploadSent,
   UPLOAD_START,
 } from '../../../src/lib/uploadProgress'
+import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
+import { EchoEditScreenV3 } from '../../../src/screens/echo/EchoEditScreenV3'
 
 /**
  * Fixing what a card says.
@@ -64,7 +66,14 @@ import {
  * those takes nothing away from whatever the copy came from. The server
  * decides which objects are safe to delete; see `updateCard`.
  */
-export default function EchoCardEditScreen() {
+export default function EchoCardEditRoute() {
+  const v3Home = useV3HomeDecision()
+  const { id } = useLocalSearchParams<{ id: string }>()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <EchoEditScreenV3 id={id} /> : <EchoCardEditScreen />
+}
+
+function EchoCardEditScreen() {
   const styles = useStyles()
   const t = useT()
   const params = useLocalSearchParams<{ id: string }>()
