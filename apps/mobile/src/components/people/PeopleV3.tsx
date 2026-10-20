@@ -16,7 +16,6 @@ import type { ListState } from '../../lib/listState'
 import { openProfile } from '../../lib/navigation'
 import { requireAccount } from '../../lib/requireAccount'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
-import { BoostedProfiles } from '../BoostedProfiles'
 import { LoadFailed } from '../LoadFailed'
 import { PeopleSearch, PeopleSearchResults } from '../PeopleSearch'
 import { Tip } from '../Tip'
@@ -26,6 +25,7 @@ import { EmptyStateV3 } from '../ui/EmptyStateV3'
 import { ICON_BUTTON_TARGET } from '../ui/IconButton'
 import { Screen } from '../ui/Screen'
 import { Skeleton } from '../ui/Skeleton'
+import { BoostedStripV3 } from './BoostedStripV3'
 import { NEWCOMER_TILE_WIDTH, NewcomerTile, PersonCard } from './PersonCard'
 
 const FROM = '/(app)/(tabs)/discover'
@@ -266,8 +266,8 @@ export function PeopleV3(props: PeopleV3Props) {
               {props.newParams ? (
                 <NewcomerStrip params={props.newParams} onHello={onHello} />
               ) : null}
-              {/* The paid strip, as today: it draws nothing when nobody qualifies. */}
-              <BoostedProfiles params={props.boostedParams} />
+              {/* The paid strip, today's data in the v3 look: nothing when nobody qualifies. */}
+              <BoostedStripV3 params={props.boostedParams} />
             </View>
           }
           onEndReachedThreshold={0.6}
