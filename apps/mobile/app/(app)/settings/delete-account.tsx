@@ -26,6 +26,8 @@ import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { DeleteAccountScreenV3 } from '../../../src/screens/settings/DeleteAccountScreenV3'
 
 /**
  * The front door to deleting an account, which used to be one tap behind a
@@ -51,7 +53,12 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
  * under "Continue" — an answer given to get past a form is worth less than
  * none.
  */
-export default function DeleteAccountScreen() {
+export default function DeleteAccountScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <DeleteAccountScreenV3 /> : <DeleteAccountScreen />
+}
+
+function DeleteAccountScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

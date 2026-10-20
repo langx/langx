@@ -209,7 +209,7 @@ describe('buildStoreOffers', () => {
       // The label used to come from `COSMETICS`, which is shared with the API
       // and can only ever be English.
       const tr = { t: createTranslate('tr') }
-      expect(byId(tr, gold.id)?.title).toBe('Altın çerçeve')
+      expect(byId(tr, gold.id)?.title).toBe('Hohloma')
       expect(byId(tr, 'title.tutor')?.title).toBe('Eğitmen')
     })
   })
@@ -242,7 +242,7 @@ describe('buildStoreOffers', () => {
       expect(byId(rich, 'frame.gold')).toMatchObject({
         locked: true,
         affordable: false,
-        needs: 'Ember frame',
+        needs: 'Iznik Tile',
       })
     })
 
@@ -251,6 +251,17 @@ describe('buildStoreOffers', () => {
       expect(offer?.affordable).toBe(true)
       expect(offer?.locked).toBeUndefined()
       expect(offer?.needs).toBeUndefined()
+    })
+
+    /** A rung inserted under one already owned is open: see `ladderOpen`. */
+    it('opens an inserted rung for somebody who owns a rung above it', () => {
+      const offer = byId({ ...rich, owned: ['frame.slate', 'frame.sky'] }, 'frame.lino')
+      expect(offer?.locked).toBeUndefined()
+      expect(offer?.affordable).toBe(true)
+      expect(byId({ ...rich, owned: ['frame.slate'] }, 'frame.bronze')).toMatchObject({
+        locked: true,
+        needs: 'Washi Tape',
+      })
     })
 
     it('does not let a frame gate a title', () => {
@@ -266,7 +277,7 @@ describe('buildStoreOffers', () => {
     it('shows the missing rung rather than the earned gate when both are unmet', () => {
       expect(byId(rich, 'frame.aurora')).toMatchObject({
         locked: true,
-        needs: 'Midnight frame',
+        needs: 'Night Hoop',
       })
       expect(byId(rich, 'frame.aurora')?.requirement).toBeUndefined()
     })

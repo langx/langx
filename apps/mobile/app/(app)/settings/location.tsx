@@ -14,6 +14,8 @@ import {
 } from '../../../src/lib/locationPermission'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles } from '../../../src/lib/theme'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { LocationGuideScreenV3 } from '../../../src/screens/settings/LocationGuideScreenV3'
 
 /**
  * The one place that explains location permission, and the only screen in the
@@ -40,7 +42,12 @@ const ANDROID_STEPS: readonly MessageKey[] = [
   'location.guide.androidStep4',
 ]
 
-export default function LocationPermissionScreen() {
+export default function LocationPermissionScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <LocationGuideScreenV3 /> : <LocationPermissionScreen />
+}
+
+function LocationPermissionScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

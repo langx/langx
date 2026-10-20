@@ -24,6 +24,8 @@ import { confirmAlert } from '../../../src/lib/alert'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { UsernameScreenV3 } from '../../../src/screens/settings/UsernameScreenV3'
 
 const BACK_TO = '/(app)/settings/account' as const
 
@@ -37,7 +39,12 @@ const BACK_TO = '/(app)/settings/account' as const
  * survives it (every link already shared) is the part people need before
  * they type, not after.
  */
-export default function UsernameScreen() {
+export default function UsernameScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <UsernameScreenV3 /> : <UsernameScreen />
+}
+
+function UsernameScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

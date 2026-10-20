@@ -11,6 +11,8 @@ import { enablePushOnThisDevice } from '../../../src/hooks/usePushRegistration'
 import { readPushGuideStatus, type PushGuideStatus } from '../../../src/lib/pushPermission'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles } from '../../../src/lib/theme'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { PushGuideScreenV3 } from '../../../src/screens/settings/PushGuideScreenV3'
 
 /**
  * The one place that explains notification permission, and the sibling of
@@ -37,7 +39,12 @@ const ANDROID_STEPS: readonly MessageKey[] = [
   'notifications.guide.androidStep4',
 ]
 
-export default function PushPermissionScreen() {
+export default function PushPermissionScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <PushGuideScreenV3 /> : <PushPermissionScreen />
+}
+
+function PushPermissionScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()
