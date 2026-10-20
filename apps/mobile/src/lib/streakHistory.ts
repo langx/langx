@@ -1,4 +1,5 @@
 import { shiftDayKey } from '@langx/shared'
+import type { TranslateFn } from '../i18n/runtime'
 
 /**
  * What happened on one day, as the history reads it.
@@ -71,4 +72,24 @@ export function streakHistory(input: {
     })
   }
   return rows
+}
+
+/**
+ * The one line beside each date.
+ *
+ * A bought day says so and shows no time, because it has none — stamping one
+ * would be the screen inventing a check-in that never happened. A day recorded
+ * before the field existed says the time is unknown for the same reason.
+ */
+export function streakDayDetail(t: TranslateFn, locale: string, row: StreakHistoryRow): string {
+  if (row.kind === 'missed') return t('streak.missed')
+  if (row.kind === 'bought') return t('streak.bought')
+  if (row.kind === 'openedOnly') return t('streak.openedOnly')
+  if (!row.firstAt) return t('streak.checkedInUnknownTime')
+  const at = new Date(row.firstAt)
+  if (Number.isNaN(at.getTime())) return t('streak.checkedInUnknownTime')
+  return t('streak.checkedInAt', {
+    time: at.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }),
+    count: row.actions,
+  })
 }
