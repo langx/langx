@@ -157,7 +157,9 @@ export function SignInMethodsScreenV3() {
                       <ProviderMark provider={provider} />
                     </View>
                     <View style={styles.providerText}>
-                      <Text style={styles.rowTitle}>{PROVIDER_NAMES[provider]}</Text>
+                      <Text style={styles.rowTitle} numberOfLines={1}>
+                        {PROVIDER_NAMES[provider]}
+                      </Text>
                       <Text style={styles.meta}>
                         {account
                           ? lastWayIn
@@ -174,6 +176,7 @@ export function SignInMethodsScreenV3() {
                           label={t('settings.signInDisconnect')}
                           variant="danger"
                           size="small"
+                          style={styles.action}
                           disabled={busy}
                           onPress={() => void disconnect(provider, account.id)}
                         />
@@ -184,6 +187,7 @@ export function SignInMethodsScreenV3() {
                         variant="secondary"
                         size="small"
                         icon="plus"
+                        style={styles.action}
                         disabled={busy}
                         onPress={() => void connect(provider)}
                       />
@@ -273,6 +277,8 @@ const useStyles = makeStyles(({ v3 }) => ({
     justifyContent: 'center',
     width: 40,
   },
+  // The kit's Button spans its parent by default, which in a row leaves the name no room.
+  action: { flexShrink: 0, width: 'auto' },
   providerText: { flex: 1, gap: v3.space[2], minWidth: 0 },
   meta: { ...v3.type.caption, color: v3.colors.muted },
 }))
