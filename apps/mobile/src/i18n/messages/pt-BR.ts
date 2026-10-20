@@ -1292,6 +1292,16 @@ export const ptBR: Localized<EnMessages> = {
     writeCorrection: 'Escreva a correção…',
     yourCorrection: 'Sua correção',
     correctionFrom: 'Correção de {name}',
+    rewardChip: '{amount} · {reason}',
+    rewardCorrected: 'você corrigiu {name}',
+    rewardBothWrote: 'vocês dois escreveram',
+    rewardBothAmount: { one: '+{count} para os dois', other: '+{count} para os dois' },
+    rewardStreak: { one: 'Sequência de {count} dia', other: 'Sequência de {count} dias' },
+    rewardLabel: { one: '{count} token: {reason}', other: '{count} tokens: {reason}' },
+    rewardBothLabel: {
+      one: '{count} token para você e para {name}: vocês dois escreveram',
+      other: '{count} tokens para você e para {name}: vocês dois escreveram',
+    },
     them: 'a outra pessoa',
     tokensPerMessage: {
       one: '+{count} token / mensagem',

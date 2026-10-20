@@ -1280,6 +1280,13 @@ export const tr: Localized<EnMessages> = {
     writeCorrection: 'Düzeltmeyi yaz…',
     yourCorrection: 'Senin düzeltmen',
     correctionFrom: '{name} adlı kişiden düzeltme',
+    rewardChip: '{amount} · {reason}',
+    rewardCorrected: '{name} adlı kişiyi düzelttin',
+    rewardBothWrote: 'ikiniz de yazdınız',
+    rewardBothAmount: { other: 'ikinize de +{count}' },
+    rewardStreak: { other: '{count} günlük seri' },
+    rewardLabel: { other: '{count} token: {reason}' },
+    rewardBothLabel: { other: 'Sana ve {name} adlı kişiye {count}’er token: ikiniz de yazdınız' },
     them: 'karşı taraf',
     tokensPerMessage: {
       other: '+{count} token / mesaj',

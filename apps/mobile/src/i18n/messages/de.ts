@@ -1328,6 +1328,16 @@ export const de: Localized<EnMessages> = {
     writeCorrection: 'Schreib die Korrektur…',
     yourCorrection: 'Deine Korrektur',
     correctionFrom: 'Korrektur von {name}',
+    rewardChip: '{amount} · {reason}',
+    rewardCorrected: 'du hast {name} korrigiert',
+    rewardBothWrote: 'ihr habt beide geschrieben',
+    rewardBothAmount: { one: '+{count} für beide', other: '+{count} für beide' },
+    rewardStreak: { one: '{count} Tag in Folge', other: '{count} Tage in Folge' },
+    rewardLabel: { one: '{count} Token: {reason}', other: '{count} Token: {reason}' },
+    rewardBothLabel: {
+      one: '{count} Token für dich und {name}: ihr habt beide geschrieben',
+      other: 'Je {count} Token für dich und {name}: ihr habt beide geschrieben',
+    },
     them: 'der anderen Person',
     tokensPerMessage: {
       one: '+{count} Token / Nachricht',

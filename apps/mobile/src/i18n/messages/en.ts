@@ -1457,6 +1457,16 @@ export const en = {
     writeCorrection: 'Write the correction…',
     yourCorrection: 'Your correction',
     correctionFrom: 'Correction from {name}',
+    rewardChip: '{amount} · {reason}',
+    rewardCorrected: 'you corrected {name}',
+    rewardBothWrote: 'you both wrote',
+    rewardBothAmount: { one: '+{count} for both', other: '+{count} for both' },
+    rewardStreak: { one: '{count}-day streak', other: '{count}-day streak' },
+    rewardLabel: { one: '{count} token: {reason}', other: '{count} tokens: {reason}' },
+    rewardBothLabel: {
+      one: '{count} token each for you and {name}: you both wrote',
+      other: '{count} tokens each for you and {name}: you both wrote',
+    },
     them: 'them',
     tokensPerMessage: {
       one: '+{count} token / message',

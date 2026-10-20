@@ -1453,6 +1453,33 @@ export const ru: Localized<EnMessages> = {
     writeCorrection: 'Напиши исправление…',
     yourCorrection: 'Твоё исправление',
     correctionFrom: 'Исправление от {name}',
+    rewardChip: '{amount} · {reason}',
+    rewardCorrected: 'ты исправил(а) {name}',
+    rewardBothWrote: 'вы оба написали',
+    rewardBothAmount: {
+      one: '+{count} обоим',
+      few: '+{count} обоим',
+      many: '+{count} обоим',
+      other: '+{count} обоим',
+    },
+    rewardStreak: {
+      one: 'Серия: {count} день',
+      few: 'Серия: {count} дня',
+      many: 'Серия: {count} дней',
+      other: 'Серия: {count} дня',
+    },
+    rewardLabel: {
+      one: '{count} токен: {reason}',
+      few: '{count} токена: {reason}',
+      many: '{count} токенов: {reason}',
+      other: '{count} токена: {reason}',
+    },
+    rewardBothLabel: {
+      one: 'По {count} токену тебе и {name}: вы оба написали',
+      few: 'По {count} токена тебе и {name}: вы оба написали',
+      many: 'По {count} токенов тебе и {name}: вы оба написали',
+      other: 'По {count} токена тебе и {name}: вы оба написали',
+    },
     them: 'собеседнику',
     tokensPerMessage: {
       one: '+{count} токен / сообщение',
