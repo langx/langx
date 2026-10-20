@@ -132,6 +132,11 @@ export const es: Localized<EnMessages> = {
       'LangX necesita permiso para añadir fotos y vídeos a tu galería. Puedes darlo en Ajustes.',
   },
   viewOnce: {
+    modeHeading: 'Cómo lo ve la otra persona',
+    modeOnceBody: 'Desaparece en cuanto lo abre.',
+    modeReplayBody: 'Puede abrirlo una vez más.',
+    modeKeepBody: 'Se queda en el chat como cualquier foto.',
+    tapToClose: 'Toca en cualquier sitio para cerrar',
     photo: 'Foto',
     video: 'Vídeo',
     tapToView: 'Toca para ver',
@@ -2509,6 +2514,10 @@ export const es: Localized<EnMessages> = {
     poolParticipants: { one: '{n} activo ese día', other: '{n} activos ese día' },
     poolShareOfPool: '{percent} del bote diario',
     poolActiveToday: { one: '{n} activo hoy', other: '{n} activos hoy' },
+    todayMessages: { one: 'mensaje', other: 'mensajes' },
+    todayCorrections: { one: 'corrección', other: 'correcciones' },
+    todayPeople: { one: 'persona', other: 'personas' },
+    seeHistory: 'Ver tu historial',
   },
 
   invite: {
@@ -2649,6 +2658,18 @@ export const es: Localized<EnMessages> = {
     cardsUnit: {
       one: 'tarjeta',
       other: 'tarjetas',
+    },
+    columnWeek: 'Esta semana',
+    columnMonth: 'Este mes',
+    columnYear: 'Este año',
+    columnTokens: 'Fichas ganadas',
+    columnNow: 'Ahora mismo',
+    columnEver: 'La más larga',
+    columnDays: 'Días seguidos',
+    rowTokens: { one: '{rank}. {name}, {amount} ficha', other: '{rank}. {name}, {amount} fichas' },
+    rowDays: {
+      one: '{rank}. {name}, {amount} día seguido',
+      other: '{rank}. {name}, {amount} días seguidos',
     },
   },
 

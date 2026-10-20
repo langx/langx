@@ -135,6 +135,11 @@ export const tr: Localized<EnMessages> = {
       'Kaydetmek için LangX’in fotoğraf ve video ekleme iznine ihtiyacı var. Bu izni Ayarlar’dan verebilirsin.',
   },
   viewOnce: {
+    modeHeading: 'Karşı taraf nasıl görsün',
+    modeOnceBody: 'Açtığı anda kaybolur.',
+    modeReplayBody: 'Bir kez daha açabilir.',
+    modeKeepBody: 'Her fotoğraf gibi sohbette kalır.',
+    tapToClose: 'Kapatmak için herhangi bir yere dokun',
     photo: 'Fotoğraf',
     video: 'Video',
     tapToView: 'Görmek için dokun',
@@ -2476,6 +2481,10 @@ export const tr: Localized<EnMessages> = {
     poolParticipants: { one: 'O gün {n} kişi aktifti', other: 'O gün {n} kişi aktifti' },
     poolShareOfPool: 'Günlük havuzun {percent} kadarı',
     poolActiveToday: { one: 'Bugün {n} kişi aktif', other: 'Bugün {n} kişi aktif' },
+    todayMessages: { one: 'mesaj', other: 'mesaj' },
+    todayCorrections: { one: 'düzeltme', other: 'düzeltme' },
+    todayPeople: { one: 'kişi', other: 'kişi' },
+    seeHistory: 'Geçmişini gör',
   },
 
   invite: {
@@ -2615,6 +2624,18 @@ export const tr: Localized<EnMessages> = {
     cardsUnit: {
       one: 'kart',
       other: 'kart',
+    },
+    columnWeek: 'Bu hafta',
+    columnMonth: 'Bu ay',
+    columnYear: 'Bu yıl',
+    columnTokens: 'Kazanılan jeton',
+    columnNow: 'Şu anda',
+    columnEver: 'En uzun',
+    columnDays: 'Art arda gün',
+    rowTokens: { one: '{rank}. {name}, {amount} jeton', other: '{rank}. {name}, {amount} jeton' },
+    rowDays: {
+      one: '{rank}. {name}, art arda {amount} gün',
+      other: '{rank}. {name}, art arda {amount} gün',
     },
   },
 

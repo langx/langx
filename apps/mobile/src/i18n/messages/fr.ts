@@ -129,6 +129,11 @@ export const fr: Localized<EnMessages> = {
       'LangX a besoin de l’autorisation d’ajouter des photos et des vidéos à ta photothèque. Tu peux l’accorder dans les Réglages.',
   },
   viewOnce: {
+    modeHeading: 'Comment l’autre personne le voit',
+    modeOnceBody: 'Disparaît dès qu’elle l’ouvre.',
+    modeReplayBody: 'Elle peut l’ouvrir une fois de plus.',
+    modeKeepBody: 'Reste dans la discussion comme n’importe quelle photo.',
+    tapToClose: 'Touche n’importe où pour fermer',
     photo: 'Photo',
     video: 'Vidéo',
     tapToView: 'Touche pour voir',
@@ -2542,6 +2547,10 @@ export const fr: Localized<EnMessages> = {
     poolParticipants: { one: '{n} actif ce jour-là', other: '{n} actifs ce jour-là' },
     poolShareOfPool: '{percent} de la cagnotte du jour',
     poolActiveToday: { one: '{n} actif aujourd’hui', other: '{n} actifs aujourd’hui' },
+    todayMessages: { one: 'message', other: 'messages' },
+    todayCorrections: { one: 'correction', other: 'corrections' },
+    todayPeople: { one: 'personne', other: 'personnes' },
+    seeHistory: 'Voir ton historique',
   },
 
   invite: {
@@ -2683,6 +2692,18 @@ export const fr: Localized<EnMessages> = {
     cardsUnit: {
       one: 'carte',
       other: 'cartes',
+    },
+    columnWeek: 'Cette semaine',
+    columnMonth: 'Ce mois-ci',
+    columnYear: 'Cette année',
+    columnTokens: 'Jetons gagnés',
+    columnNow: 'En ce moment',
+    columnEver: 'Record',
+    columnDays: 'Jours d’affilée',
+    rowTokens: { one: '{rank}. {name}, {amount} jeton', other: '{rank}. {name}, {amount} jetons' },
+    rowDays: {
+      one: '{rank}. {name}, {amount} jour d’affilée',
+      other: '{rank}. {name}, {amount} jours d’affilée',
     },
   },
 

@@ -152,6 +152,11 @@ export const ru: Localized<EnMessages> = {
       'LangX нужно разрешение на добавление фото и видео в галерею. Его можно дать в Настройках.',
   },
   viewOnce: {
+    modeHeading: 'Как это увидит собеседник',
+    modeOnceBody: 'Исчезнет, как только собеседник откроет.',
+    modeReplayBody: 'Собеседник сможет открыть ещё раз.',
+    modeKeepBody: 'Останется в чате, как любое фото.',
+    tapToClose: 'Нажми в любом месте, чтобы закрыть',
     photo: 'Фото',
     video: 'Видео',
     tapToView: 'Нажмите, чтобы открыть',
@@ -2926,6 +2931,20 @@ export const ru: Localized<EnMessages> = {
       many: '{n} активных сегодня',
       other: '{n} активных сегодня',
     },
+    todayMessages: { one: 'сообщение', few: 'сообщения', many: 'сообщений', other: 'сообщения' },
+    todayCorrections: {
+      one: 'исправление',
+      few: 'исправления',
+      many: 'исправлений',
+      other: 'исправления',
+    },
+    todayPeople: {
+      one: 'собеседник',
+      few: 'собеседника',
+      many: 'собеседников',
+      other: 'собеседника',
+    },
+    seeHistory: 'Открыть историю',
   },
 
   invite: {
@@ -3090,6 +3109,25 @@ export const ru: Localized<EnMessages> = {
       few: 'карточки',
       many: 'карточек',
       other: 'карточки',
+    },
+    columnWeek: 'На этой неделе',
+    columnMonth: 'В этом месяце',
+    columnYear: 'В этом году',
+    columnTokens: 'Заработано токенов',
+    columnNow: 'Сейчас',
+    columnEver: 'Рекорд',
+    columnDays: 'Дней подряд',
+    rowTokens: {
+      one: '{rank}. {name}, {amount} токен',
+      few: '{rank}. {name}, {amount} токена',
+      many: '{rank}. {name}, {amount} токенов',
+      other: '{rank}. {name}, {amount} токенов',
+    },
+    rowDays: {
+      one: '{rank}. {name}, {amount} день подряд',
+      few: '{rank}. {name}, {amount} дня подряд',
+      many: '{rank}. {name}, {amount} дней подряд',
+      other: '{rank}. {name}, {amount} дня подряд',
     },
   },
 

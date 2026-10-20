@@ -48,20 +48,46 @@ export function SettingsScreenV3({
 /**
  * The back button over the big title, on its own for the pages that are not
  * one scroll of blocks: a form whose button sits at the foot
- * (`SettingsFormScreenV3`).
+ * (`SettingsFormScreenV3`). The posts and people pages outside Settings
+ * draw the same header, some with a cross or a control beside the back.
  */
-export function SettingsHeaderV3({ title, onBack }: { title: string; onBack: () => void }) {
+export function SettingsHeaderV3({
+  title,
+  onBack,
+  close = false,
+  backLabel,
+  trailing,
+}: {
+  title: string
+  /** Left out where there is nowhere to go back to: the feed's side panel. */
+  onBack?: (() => void) | undefined
+  /** A cross for the chevron, on a page you leave rather than go back from: a draft. */
+  close?: boolean
+  /** The button's spoken name, when it is not "Back". */
+  backLabel?: string | undefined
+  /** At the far end of the back button's row: Mark all read, a post's ···. */
+  trailing?: ReactNode
+}) {
   const t = useT()
   const { isRtl } = useLocale()
   const styles = useStyles()
   const [blackLoaded] = useFonts({ Nunito_900Black })
   return (
     <View style={styles.header}>
-      <IconButton
-        icon={isRtl ? 'chevron-right' : 'chevron-left'}
-        accessibilityLabel={t('common.backPlain')}
-        onPress={onBack}
-      />
+      {onBack || trailing ? (
+        <View style={styles.headerRow}>
+          {onBack ? (
+            <IconButton
+              icon={close ? 'x' : isRtl ? 'chevron-right' : 'chevron-left'}
+              accessibilityLabel={backLabel ?? t('common.backPlain')}
+              onPress={onBack}
+            />
+          ) : (
+            <View />
+          )}
+          {trailing}
+        </View>
+      ) : null}
       <Text accessibilityRole="header" style={[styles.title, !blackLoaded && styles.titleFallback]}>
         {title}
       </Text>
@@ -189,6 +215,12 @@ export function ProTagV3({ label }: { label: string }) {
 
 const useStyles = makeStyles(({ v3 }) => ({
   header: { gap: v3.space[2], marginStart: -v3.space[10], paddingBottom: v3.space[6] },
+  headerRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: v3.space[8],
+    justifyContent: 'space-between',
+  },
   title: { ...v3.type.title, color: v3.colors.fg, paddingStart: v3.space[10] },
   // ExtraBold at Black's size until Black has loaded, so the title only
   // thickens when the face arrives instead of reflowing.
