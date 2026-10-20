@@ -135,6 +135,11 @@ export const tr: Localized<EnMessages> = {
       'Kaydetmek için LangX’in fotoğraf ve video ekleme iznine ihtiyacı var. Bu izni Ayarlar’dan verebilirsin.',
   },
   viewOnce: {
+    modeHeading: 'Karşı taraf nasıl görsün',
+    modeOnceBody: 'Açtığı anda kaybolur.',
+    modeReplayBody: 'Bir kez daha açabilir.',
+    modeKeepBody: 'Her fotoğraf gibi sohbette kalır.',
+    tapToClose: 'Kapatmak için herhangi bir yere dokun',
     photo: 'Fotoğraf',
     video: 'Video',
     tapToView: 'Görmek için dokun',
@@ -531,6 +536,10 @@ export const tr: Localized<EnMessages> = {
       other: 'Her gün ilk {count} oturumun token kazandırır.',
     },
     oneMore: 'Bir oturum daha',
+    sourceOpensChat: 'Sohbetini bu mesajda açar',
+    sourceOpensPost: 'Gönderiyi açar',
+    newNote:
+      'Sohbetlerden sakladığın kartlarla aynı programa girer. Kaydettikten sonra Düzenle’den bir resim ekleyebilir ya da kendin seslendirebilirsin.',
   },
 
   conversationPicker: {
@@ -2463,6 +2472,10 @@ export const tr: Localized<EnMessages> = {
     poolParticipants: { one: 'O gün {n} kişi aktifti', other: 'O gün {n} kişi aktifti' },
     poolShareOfPool: 'Günlük havuzun {percent} kadarı',
     poolActiveToday: { one: 'Bugün {n} kişi aktif', other: 'Bugün {n} kişi aktif' },
+    todayMessages: { one: 'mesaj', other: 'mesaj' },
+    todayCorrections: { one: 'düzeltme', other: 'düzeltme' },
+    todayPeople: { one: 'kişi', other: 'kişi' },
+    seeHistory: 'Geçmişini gör',
   },
 
   invite: {
@@ -2599,6 +2612,18 @@ export const tr: Localized<EnMessages> = {
     streakEmptyBody: 'Üst üste iki gün uğra, bu tabloya girersin.',
     echoEmptyTitle: 'Bu dönemde tekrar yok',
     echoEmptyBody: 'Birkaç kart yanıtla, bu dönemin tablosuna girersin.',
+    columnWeek: 'Bu hafta',
+    columnMonth: 'Bu ay',
+    columnYear: 'Bu yıl',
+    columnTokens: 'Kazanılan jeton',
+    columnNow: 'Şu anda',
+    columnEver: 'En uzun',
+    columnDays: 'Art arda gün',
+    rowTokens: { one: '{rank}. {name}, {amount} jeton', other: '{rank}. {name}, {amount} jeton' },
+    rowDays: {
+      one: '{rank}. {name}, art arda {amount} gün',
+      other: '{rank}. {name}, art arda {amount} gün',
+    },
   },
 
   badges: {
@@ -2616,6 +2641,7 @@ export const tr: Localized<EnMessages> = {
     emptyTitle: 'Henüz rozet yok',
     emptyBody:
       '@{handle} henüz rozet kazanmadı. Rozetler düzenli gelmek ve yardım etmek için verilir.',
+    emptyBack: '@{handle} profiline dön',
   },
 
   shared: {
@@ -2867,6 +2893,8 @@ export const tr: Localized<EnMessages> = {
     writtenEmptyBody:
       'Harika bir pratik partnerin mi var? Profiline bırakacağın kısa bir yorum, başkalarının da onu bulmasına yardım eder.',
     meRowBody: 'Partnerlerinin senin için yazdıkları ve senin yazdıkların',
+    emptyAction: 'Sohbetlere git',
+    onProfile: { one: '{name} profilinde · {amount}', other: '{name} profilinde · {amount}' },
   },
 
   blocked: {

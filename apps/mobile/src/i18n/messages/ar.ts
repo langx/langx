@@ -163,6 +163,11 @@ export const ar: Localized<EnMessages> = {
       'يحتاج LangX إلى إذن لإضافة الصور ومقاطع الفيديو إلى مكتبتك. يمكنك منحه من الإعدادات.',
   },
   viewOnce: {
+    modeHeading: 'كيف يراها الطرف الآخر',
+    modeOnceBody: 'يختفي بمجرد أن يفتحه.',
+    modeReplayBody: 'يمكنه فتحه مرة أخرى.',
+    modeKeepBody: 'يبقى في المحادثة مثل أي صورة.',
+    tapToClose: 'اضغط في أي مكان للإغلاق',
     photo: 'صورة',
     video: 'فيديو',
     tapToView: 'اضغط للعرض',
@@ -641,6 +646,10 @@ export const ar: Localized<EnMessages> = {
       other: 'أول {count} جلسة كل يوم تمنح توكنات.',
     },
     oneMore: 'جلسة أخرى',
+    sourceOpensChat: 'يفتح محادثتك عند هذه الرسالة',
+    sourceOpensPost: 'يفتح المنشور',
+    newNote:
+      'تنضم إلى الجدول نفسه الذي تتبعه البطاقات التي تحفظها من المحادثات. بعد حفظها، أضف صورة أو سجّلها بصوتك من «تعديل».',
   },
 
   conversationPicker: {
@@ -3128,6 +3137,31 @@ export const ar: Localized<EnMessages> = {
       many: '{n} شخصًا نشطون اليوم',
       other: '{n} شخص نشطون اليوم',
     },
+    todayMessages: {
+      zero: 'رسالة',
+      one: 'رسالة',
+      two: 'رسالتان',
+      few: 'رسائل',
+      many: 'رسالة',
+      other: 'رسالة',
+    },
+    todayCorrections: {
+      zero: 'تصحيح',
+      one: 'تصحيح',
+      two: 'تصحيحان',
+      few: 'تصحيحات',
+      many: 'تصحيحًا',
+      other: 'تصحيح',
+    },
+    todayPeople: {
+      zero: 'شخص',
+      one: 'شخص',
+      two: 'شخصان',
+      few: 'أشخاص',
+      many: 'شخصًا',
+      other: 'شخص',
+    },
+    seeHistory: 'عرض سجلّك',
   },
 
   invite: {
@@ -3303,6 +3337,29 @@ export const ar: Localized<EnMessages> = {
     streakEmptyBody: 'احضر يومين متتاليين وستظهر في هذه اللوحة.',
     echoEmptyTitle: 'لا مراجعات في هذه الفترة',
     echoEmptyBody: 'أجب عن بضع بطاقات لتظهر في لوحة هذه الفترة.',
+    columnWeek: 'هذا الأسبوع',
+    columnMonth: 'هذا الشهر',
+    columnYear: 'هذا العام',
+    columnTokens: 'التوكنات المكتسبة',
+    columnNow: 'الآن',
+    columnEver: 'الأطول على الإطلاق',
+    columnDays: 'أيام متتالية',
+    rowTokens: {
+      zero: '{rank}. {name}، {amount} توكن',
+      one: '{rank}. {name}، {amount} توكن',
+      two: '{rank}. {name}، {amount} توكن',
+      few: '{rank}. {name}، {amount} توكنات',
+      many: '{rank}. {name}، {amount} توكنًا',
+      other: '{rank}. {name}، {amount} توكن',
+    },
+    rowDays: {
+      zero: '{rank}. {name}، {amount} يوم متتالٍ',
+      one: '{rank}. {name}، {amount} يوم متتالٍ',
+      two: '{rank}. {name}، {amount} يومان متتاليان',
+      few: '{rank}. {name}، {amount} أيام متتالية',
+      many: '{rank}. {name}، {amount} يومًا متتاليًا',
+      other: '{rank}. {name}، {amount} يوم متتالٍ',
+    },
   },
 
   badges: {
@@ -3354,6 +3411,7 @@ export const ar: Localized<EnMessages> = {
     earnedOf: 'حصلت على {earned} من {total}',
     emptyTitle: 'لا شارات بعد',
     emptyBody: 'لم يحصل @{handle} على أي شارة بعد. تُمنح الشارات على المواظبة وعلى المساعدة.',
+    emptyBack: 'العودة إلى @{handle}',
   },
 
   shared: {
@@ -3642,6 +3700,15 @@ export const ar: Localized<EnMessages> = {
     writtenEmptyTitle: 'قل شكرًا بالكلمات',
     writtenEmptyBody: 'لديك شريك ممارسة رائع؟ مراجعة قصيرة في ملفه تساعد الآخرين على إيجاده.',
     meRowBody: 'ما يقوله شركاؤك عنك، وما كتبته أنت',
+    emptyAction: 'الذهاب إلى المحادثات',
+    onProfile: {
+      zero: 'في ملف {name} · {amount}',
+      one: 'في ملف {name} · {amount}',
+      two: 'في ملف {name} · {amount}',
+      few: 'في ملف {name} · {amount}',
+      many: 'في ملف {name} · {amount}',
+      other: 'في ملف {name} · {amount}',
+    },
   },
 
   blocked: {

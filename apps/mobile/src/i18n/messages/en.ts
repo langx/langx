@@ -168,6 +168,11 @@ export const en = {
    * person it was sent to, and what has been done for the person who sent it.
    */
   viewOnce: {
+    modeHeading: 'How they see it',
+    modeOnceBody: 'Gone once they open it.',
+    modeReplayBody: 'They can open it one more time.',
+    modeKeepBody: 'Stays in the chat like any photo.',
+    tapToClose: 'Tap anywhere to close',
     photo: 'Photo',
     video: 'Video',
     tapToView: 'Tap to view',
@@ -633,6 +638,10 @@ export const en = {
       other: 'Your first {count} sessions each day earn tokens.',
     },
     oneMore: 'One more session',
+    sourceOpensChat: 'Opens your chat at this message',
+    sourceOpensPost: 'Opens the post',
+    newNote:
+      'It joins the same schedule as the cards you keep from chats. Add a picture or say it yourself from Edit, once it is saved.',
   },
 
   conversationPicker: {
@@ -2756,6 +2765,11 @@ export const en = {
     poolParticipants: { one: '{n} active that day', other: '{n} active that day' },
     poolShareOfPool: '{percent} of the daily pool',
     poolActiveToday: { one: '{n} active today', other: '{n} active today' },
+    /** The v3 pool's three tiles under today's counts, and its way to the ledger. */
+    todayMessages: { one: 'message', other: 'messages' },
+    todayCorrections: { one: 'correction', other: 'corrections' },
+    todayPeople: { one: 'person', other: 'people' },
+    seeHistory: 'See your history',
   },
 
   /** One per `TOKEN_KINDS`; `kindKey()` builds the key from the kind itself. */
@@ -2902,6 +2916,20 @@ export const en = {
     streakEmptyBody: 'Show up on two days in a row and you are on this board.',
     echoEmptyTitle: 'No reviews this period',
     echoEmptyBody: 'Answer a few cards and you are on this board for the period.',
+    /** Over the v3 board: which period it ranks, and what the number at the end is. */
+    columnWeek: 'This week',
+    columnMonth: 'This month',
+    columnYear: 'This year',
+    columnTokens: 'Tokens earned',
+    columnNow: 'Right now',
+    columnEver: 'Longest ever',
+    columnDays: 'Days in a row',
+    /** A row, read aloud. `amount` is `count` formatted for the locale; `name` may be "You". */
+    rowTokens: { one: '{rank}. {name}, {amount} token', other: '{rank}. {name}, {amount} tokens' },
+    rowDays: {
+      one: '{rank}. {name}, {amount} day in a row',
+      other: '{rank}. {name}, {amount} days in a row',
+    },
   },
 
   badges: {
@@ -2930,6 +2958,8 @@ export const en = {
      */
     emptyTitle: 'No badges yet',
     emptyBody: '@{handle} has not earned one yet. They are given for showing up and for helping.',
+    /** The empty shelf's way back to the profile it was opened from. */
+    emptyBack: 'Back to @{handle}',
   },
 
   shared: {
@@ -3201,6 +3231,13 @@ export const en = {
     writtenEmptyBody:
       'Had a great practice partner? A short review on their profile helps others find them.',
     meRowBody: 'What partners say about you, and what you wrote',
+    /** The empty lists' one button: the people who could write one are in Chats. */
+    emptyAction: 'Go to Chats',
+    /**
+     * The chip under the title on somebody's full list: whose reviews these
+     * are, and how many. `amount` is `count` formatted for the locale.
+     */
+    onProfile: { one: 'On {name}’s profile · {amount}', other: 'On {name}’s profile · {amount}' },
   },
 
   blocked: {

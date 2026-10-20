@@ -23,11 +23,16 @@ import { SettingsHeaderV3 } from './SettingsKitV3'
 export function SettingsFormScreenV3({
   title,
   onBack,
+  close = false,
+  backLabel,
   children,
   footer,
 }: {
   title: string
   onBack: () => void
+  /** The header's cross in place of its chevron — see `SettingsHeaderV3`. */
+  close?: boolean
+  backLabel?: string | undefined
   children?: ReactNode
   /** The button, or buttons, at the foot. */
   footer?: ReactNode
@@ -40,7 +45,7 @@ export function SettingsFormScreenV3({
         style={styles.fill}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <SettingsHeaderV3 title={title} onBack={onBack} />
+        <SettingsHeaderV3 title={title} onBack={onBack} close={close} backLabel={backLabel} />
         <ScrollView
           style={styles.fill}
           contentContainerStyle={styles.form}

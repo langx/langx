@@ -59,6 +59,8 @@ import {
   useT,
 } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { EditProfileScreenV3 } from '../../src/screens/me/EditProfileScreenV3'
 
 /**
  * Splitting the form out of the loading state is not cosmetic.
@@ -73,7 +75,12 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 /** One number for the stored tiles and the pending ones, so they cannot drift. */
 const PHOTO_TILE = 58
 
-export default function EditProfileScreen() {
+/** Edit profile, or with `flags.v3Home` on the redesign's (`EditProfileScreenV3`). */
+export default function EditProfileScreenRoute() {
+  return useV3Home() ? <EditProfileScreenV3 /> : <EditProfileScreen />
+}
+
+function EditProfileScreen() {
   useScreenInteractive()
   const styles = useStyles()
 

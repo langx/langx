@@ -35,9 +35,22 @@ import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
 import { IconButton } from '../../../src/components/ui/IconButton'
 import { useV3Home } from '../../../src/hooks/useV3Home'
+import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
+import { EchoCardsScreenV3 } from '../../../src/screens/echo/EchoCardsScreenV3'
+
+/**
+ * The cards — or, with `flags.v3Home` on, the redesign's
+ * (`EchoCardsScreenV3`). Bare until the config has said which, so a deep
+ * link never draws one look and then swaps to the other.
+ */
+export default function EchoCardsRoute() {
+  const v3Home = useV3HomeDecision()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <EchoCardsScreenV3 /> : <EchoCardsScreen />
+}
 
 /** Everything kept, and the two things this screen is for: fixing a card, and taking it back. */
-export default function EchoCardsScreen() {
+function EchoCardsScreen() {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()

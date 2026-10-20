@@ -129,6 +129,11 @@ export const ptBR: Localized<EnMessages> = {
       'O LangX precisa de permissão para adicionar fotos e vídeos à sua galeria. Você pode permitir nas Configurações.',
   },
   viewOnce: {
+    modeHeading: 'Como a outra pessoa vê',
+    modeOnceBody: 'Some assim que a pessoa abrir.',
+    modeReplayBody: 'A pessoa pode abrir mais uma vez.',
+    modeKeepBody: 'Fica na conversa como qualquer foto.',
+    tapToClose: 'Toque em qualquer lugar para fechar',
     photo: 'Foto',
     video: 'Vídeo',
     tapToView: 'Toque para ver',
@@ -535,6 +540,10 @@ export const ptBR: Localized<EnMessages> = {
       other: 'Suas primeiras {count} sessões de cada dia rendem tokens.',
     },
     oneMore: 'Mais uma sessão',
+    sourceOpensChat: 'Abre sua conversa nesta mensagem',
+    sourceOpensPost: 'Abre a publicação',
+    newNote:
+      'Ele entra no mesmo cronograma dos cartões que você guarda das conversas. Depois de salvo, adicione uma imagem ou grave você mesmo em Editar.',
   },
 
   conversationPicker: {
@@ -2491,6 +2500,10 @@ export const ptBR: Localized<EnMessages> = {
     poolParticipants: { one: '{n} ativo naquele dia', other: '{n} ativos naquele dia' },
     poolShareOfPool: '{percent} do bolo diário',
     poolActiveToday: { one: '{n} ativo hoje', other: '{n} ativos hoje' },
+    todayMessages: { one: 'mensagem', other: 'mensagens' },
+    todayCorrections: { one: 'correção', other: 'correções' },
+    todayPeople: { one: 'pessoa', other: 'pessoas' },
+    seeHistory: 'Ver seu histórico',
   },
 
   invite: {
@@ -2629,6 +2642,18 @@ export const ptBR: Localized<EnMessages> = {
     streakEmptyBody: 'Apareça dois dias seguidos e você entra nesta classificação.',
     echoEmptyTitle: 'Sem revisões neste período',
     echoEmptyBody: 'Responda alguns cartões e você entra na classificação deste período.',
+    columnWeek: 'Esta semana',
+    columnMonth: 'Este mês',
+    columnYear: 'Este ano',
+    columnTokens: 'Fichas ganhas',
+    columnNow: 'Agora',
+    columnEver: 'A mais longa',
+    columnDays: 'Dias seguidos',
+    rowTokens: { one: '{rank}. {name}, {amount} ficha', other: '{rank}. {name}, {amount} fichas' },
+    rowDays: {
+      one: '{rank}. {name}, {amount} dia seguido',
+      other: '{rank}. {name}, {amount} dias seguidos',
+    },
   },
 
   badges: {
@@ -2645,6 +2670,7 @@ export const ptBR: Localized<EnMessages> = {
     earnedOf: '{earned} de {total} conquistadas',
     emptyTitle: 'Ainda sem emblemas',
     emptyBody: '@{handle} ainda não ganhou nenhum. Eles são dados por aparecer e por ajudar.',
+    emptyBack: 'Voltar para @{handle}',
   },
 
   shared: {
@@ -2901,6 +2927,8 @@ export const ptBR: Localized<EnMessages> = {
     writtenEmptyBody:
       'Tem um ótimo parceiro de prática? Uma avaliação curta no perfil ajuda outras pessoas a encontrá-lo.',
     meRowBody: 'O que dizem sobre você e o que você escreveu',
+    emptyAction: 'Ir para as conversas',
+    onProfile: { one: 'No perfil de {name} · {amount}', other: 'No perfil de {name} · {amount}' },
   },
 
   blocked: {

@@ -129,6 +129,11 @@ export const de: Localized<EnMessages> = {
       'LangX braucht die Erlaubnis, Fotos und Videos zu deiner Mediathek hinzuzufügen. Du kannst sie in den Einstellungen erteilen.',
   },
   viewOnce: {
+    modeHeading: 'Wie die andere Person es sieht',
+    modeOnceBody: 'Weg, sobald sie es öffnet.',
+    modeReplayBody: 'Sie kann es noch einmal öffnen.',
+    modeKeepBody: 'Bleibt im Chat wie jedes Foto.',
+    tapToClose: 'Tippe irgendwo, um zu schließen',
     photo: 'Foto',
     video: 'Video',
     tapToView: 'Zum Ansehen tippen',
@@ -543,6 +548,10 @@ export const de: Localized<EnMessages> = {
       other: 'Deine ersten {count} Einheiten am Tag bringen Token.',
     },
     oneMore: 'Noch eine Einheit',
+    sourceOpensChat: 'Öffnet deinen Chat bei dieser Nachricht',
+    sourceOpensPost: 'Öffnet den Beitrag',
+    newNote:
+      'Sie kommt in denselben Plan wie die Karten, die du aus Chats behältst. Ein Bild oder deine eigene Aufnahme fügst du nach dem Speichern unter Bearbeiten hinzu.',
   },
 
   conversationPicker: {
@@ -2541,6 +2550,10 @@ export const de: Localized<EnMessages> = {
     poolParticipants: { one: '{n} aktiv an dem Tag', other: '{n} aktiv an dem Tag' },
     poolShareOfPool: '{percent} des täglichen Pools',
     poolActiveToday: { one: '{n} heute aktiv', other: '{n} heute aktiv' },
+    todayMessages: { one: 'Nachricht', other: 'Nachrichten' },
+    todayCorrections: { one: 'Korrektur', other: 'Korrekturen' },
+    todayPeople: { one: 'Person', other: 'Personen' },
+    seeHistory: 'Deinen Verlauf ansehen',
   },
 
   invite: {
@@ -2679,6 +2692,18 @@ export const de: Localized<EnMessages> = {
     streakEmptyBody: 'Sei an zwei Tagen hintereinander da, dann stehst du in dieser Liste.',
     echoEmptyTitle: 'Keine Wiederholungen in diesem Zeitraum',
     echoEmptyBody: 'Beantworte ein paar Karten, dann stehst du in diesem Zeitraum in dieser Liste.',
+    columnWeek: 'Diese Woche',
+    columnMonth: 'Diesen Monat',
+    columnYear: 'Dieses Jahr',
+    columnTokens: 'Verdiente Token',
+    columnNow: 'Gerade jetzt',
+    columnEver: 'Längste je',
+    columnDays: 'Tage am Stück',
+    rowTokens: { one: '{rank}. {name}, {amount} Token', other: '{rank}. {name}, {amount} Token' },
+    rowDays: {
+      one: '{rank}. {name}, {amount} Tag am Stück',
+      other: '{rank}. {name}, {amount} Tage am Stück',
+    },
   },
 
   badges: {
@@ -2695,6 +2720,7 @@ export const de: Localized<EnMessages> = {
     earnedOf: '{earned} von {total} verdient',
     emptyTitle: 'Noch keine Abzeichen',
     emptyBody: '@{handle} hat noch keins verdient. Es gibt sie fürs Dabeisein und fürs Helfen.',
+    emptyBack: 'Zurück zu @{handle}',
   },
 
   shared: {
@@ -2957,6 +2983,11 @@ export const de: Localized<EnMessages> = {
     writtenEmptyBody:
       'Tolle Übungspartnerin oder toller Übungspartner? Eine kurze Bewertung im Profil hilft anderen, sie zu finden.',
     meRowBody: 'Was andere über dich schreiben und was du geschrieben hast',
+    emptyAction: 'Zu den Chats',
+    onProfile: {
+      one: 'Auf dem Profil von {name} · {amount}',
+      other: 'Auf dem Profil von {name} · {amount}',
+    },
   },
 
   blocked: {

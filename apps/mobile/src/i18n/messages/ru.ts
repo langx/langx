@@ -152,6 +152,11 @@ export const ru: Localized<EnMessages> = {
       'LangX нужно разрешение на добавление фото и видео в галерею. Его можно дать в Настройках.',
   },
   viewOnce: {
+    modeHeading: 'Как это увидит собеседник',
+    modeOnceBody: 'Исчезнет, как только собеседник откроет.',
+    modeReplayBody: 'Собеседник сможет открыть ещё раз.',
+    modeKeepBody: 'Останется в чате, как любое фото.',
+    tapToClose: 'Нажми в любом месте, чтобы закрыть',
     photo: 'Фото',
     video: 'Видео',
     tapToView: 'Нажмите, чтобы открыть',
@@ -621,6 +626,10 @@ export const ru: Localized<EnMessages> = {
       other: 'Первые {count} занятия каждого дня приносят токены.',
     },
     oneMore: 'Ещё одно занятие',
+    sourceOpensChat: 'Открывает твой чат на этом сообщении',
+    sourceOpensPost: 'Открывает публикацию',
+    newNote:
+      'Она попадает в то же расписание, что и карточки из чатов. После сохранения добавь картинку или запиши её сам в разделе «Изменить».',
   },
 
   conversationPicker: {
@@ -2910,6 +2919,20 @@ export const ru: Localized<EnMessages> = {
       many: '{n} активных сегодня',
       other: '{n} активных сегодня',
     },
+    todayMessages: { one: 'сообщение', few: 'сообщения', many: 'сообщений', other: 'сообщения' },
+    todayCorrections: {
+      one: 'исправление',
+      few: 'исправления',
+      many: 'исправлений',
+      other: 'исправления',
+    },
+    todayPeople: {
+      one: 'собеседник',
+      few: 'собеседника',
+      many: 'собеседников',
+      other: 'собеседника',
+    },
+    seeHistory: 'Открыть историю',
   },
 
   invite: {
@@ -3069,6 +3092,25 @@ export const ru: Localized<EnMessages> = {
     streakEmptyBody: 'Заходи два дня подряд — и попадёшь в эту таблицу.',
     echoEmptyTitle: 'В этом периоде повторений нет',
     echoEmptyBody: 'Ответь на несколько карточек — и попадёшь в таблицу за этот период.',
+    columnWeek: 'На этой неделе',
+    columnMonth: 'В этом месяце',
+    columnYear: 'В этом году',
+    columnTokens: 'Заработано токенов',
+    columnNow: 'Сейчас',
+    columnEver: 'Рекорд',
+    columnDays: 'Дней подряд',
+    rowTokens: {
+      one: '{rank}. {name}, {amount} токен',
+      few: '{rank}. {name}, {amount} токена',
+      many: '{rank}. {name}, {amount} токенов',
+      other: '{rank}. {name}, {amount} токенов',
+    },
+    rowDays: {
+      one: '{rank}. {name}, {amount} день подряд',
+      few: '{rank}. {name}, {amount} дня подряд',
+      many: '{rank}. {name}, {amount} дней подряд',
+      other: '{rank}. {name}, {amount} дня подряд',
+    },
   },
 
   badges: {
@@ -3110,6 +3152,7 @@ export const ru: Localized<EnMessages> = {
     earnedOf: 'Получено {earned} из {total}',
     emptyTitle: 'Значков пока нет',
     emptyBody: '@{handle} пока не заработал(а) ни одного. Их дают за постоянство и за помощь.',
+    emptyBack: 'Назад к @{handle}',
   },
 
   shared: {
@@ -3388,6 +3431,13 @@ export const ru: Localized<EnMessages> = {
     writtenEmptyBody:
       'Попался отличный собеседник? Короткий отзыв в профиле поможет другим его найти.',
     meRowBody: 'Что о тебе пишут собеседники и что написал ты',
+    emptyAction: 'К чатам',
+    onProfile: {
+      one: 'В профиле {name} · {amount}',
+      few: 'В профиле {name} · {amount}',
+      many: 'В профиле {name} · {amount}',
+      other: 'В профиле {name} · {amount}',
+    },
   },
 
   blocked: {

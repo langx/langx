@@ -44,6 +44,7 @@ import {
 } from '../../src/lib/viewOnce'
 import { IconButton } from '../../src/components/ui/IconButton'
 import { useV3Home } from '../../src/hooks/useV3Home'
+import { SnapPreviewV3 } from '../../src/screens/chat/SnapPreviewV3'
 
 /*
  * Literal colours, as in `scan.tsx`: a camera is dark whichever scheme the app
@@ -101,6 +102,7 @@ export default function SnapScreen() {
   const window = useWindowDimensions()
   const { id } = useLocalSearchParams<{ id: string }>()
   const conversationId = id ?? ''
+  const v3Look = useV3Home()
   const [captured, setCaptured] = useState<PickedMedia | null>(null)
   const [mode, setMode] = useState<SnapMode>(DEFAULT_SNAP_MODE)
   // The stored choice arrives after the first render; a tap made before it
@@ -173,7 +175,17 @@ export default function SnapScreen() {
           },
         ]}
       >
-        {captured ? (
+        {captured && v3Look ? (
+          // The redesign's drawing of this step only; every handler is this screen's.
+          <SnapPreviewV3
+            picture={<Captured item={captured} />}
+            mode={mode}
+            bottomInset={rounded ? 0 : insets.bottom}
+            onMode={pickMode}
+            onRetake={() => setCaptured(null)}
+            onSend={send}
+          />
+        ) : captured ? (
           <SnapPreview
             item={captured}
             mode={mode}
@@ -563,11 +575,7 @@ function SnapPreview({
 
   return (
     <>
-      {item.kind === 'video' ? (
-        <PreviewVideo uri={item.uri} />
-      ) : (
-        <Image source={{ uri: item.uri }} style={StyleSheet.absoluteFill} contentFit="contain" />
-      )}
+      <Captured item={item} />
       <TopBar onClose={onRetake} closeLabel={t('viewOnce.retake')} />
       <View style={[styles.bottom, { paddingBottom: spacing.xl + bottomInset }]}>
         {/* All three at once, tapped to pick, rather than one pill tapped to
@@ -614,6 +622,15 @@ function SnapPreview({
         </Pressable>
       </View>
     </>
+  )
+}
+
+/** What was shot, filling the frame: the photo, or the clip on a loop. */
+function Captured({ item }: { item: PickedMedia }) {
+  return item.kind === 'video' ? (
+    <PreviewVideo uri={item.uri} />
+  ) : (
+    <Image source={{ uri: item.uri }} style={StyleSheet.absoluteFill} contentFit="contain" />
   )
 }
 
