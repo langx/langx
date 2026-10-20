@@ -3334,6 +3334,7 @@ export const ar: Localized<EnMessages> = {
     earnedOf: 'حصلت على {earned} من {total}',
     emptyTitle: 'لا شارات بعد',
     emptyBody: 'لم يحصل @{handle} على أي شارة بعد. تُمنح الشارات على المواظبة وعلى المساعدة.',
+    emptyBack: 'العودة إلى @{handle}',
   },
 
   shared: {
@@ -3622,6 +3623,15 @@ export const ar: Localized<EnMessages> = {
     writtenEmptyTitle: 'قل شكرًا بالكلمات',
     writtenEmptyBody: 'لديك شريك ممارسة رائع؟ مراجعة قصيرة في ملفه تساعد الآخرين على إيجاده.',
     meRowBody: 'ما يقوله شركاؤك عنك، وما كتبته أنت',
+    emptyAction: 'الذهاب إلى المحادثات',
+    onProfile: {
+      zero: 'في ملف {name} · {amount}',
+      one: 'في ملف {name} · {amount}',
+      two: 'في ملف {name} · {amount}',
+      few: 'في ملف {name} · {amount}',
+      many: 'في ملف {name} · {amount}',
+      other: 'في ملف {name} · {amount}',
+    },
   },
 
   blocked: {

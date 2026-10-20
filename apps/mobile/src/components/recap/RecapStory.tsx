@@ -38,7 +38,7 @@ import {
 import { DISPLAY_FONT, useTheme } from '../../lib/theme'
 import { Button } from '../ui/Button'
 import { RISE_DELAYS, Rise } from './motion'
-import { Slide, slideLook } from './RecapSlides'
+import { Slide, hueLook, slideLook } from './RecapSlides'
 
 /**
  * How long a slide holds before the next one. The design says about three
@@ -73,6 +73,12 @@ export interface RecapStoryProps {
   onJustLink: () => void
   /** Once, as the story goes away: how far it got. */
   onViewed: (seen: { slides: number; completed: boolean }) => void
+  /**
+   * With `flags.v3Home` on: the reader's own colour, which every slide is
+   * then drawn on (`hueLook`), with the redesign's 44pt corner buttons and
+   * ink pills. Left out, the story is today's.
+   */
+  hue?: string | undefined
 }
 
 /**
@@ -107,7 +113,8 @@ export function RecapStory(props: RecapStoryProps) {
   const slide = slides[index] ?? 'summary'
   const last = index === slides.length - 1
   const autoplay = !reduce && !screenReader
-  const look = slideLook(slide, scheme)
+  const look = props.hue ? hueLook(props.hue) : slideLook(slide, scheme)
+  const v3Look = props.hue !== undefined
 
   const width = Math.min(window.width, MAX_WIDTH)
   // The design was drawn at 390×844. Smaller phones scale down to fit the
@@ -378,9 +385,16 @@ export function RecapStory(props: RecapStoryProps) {
                 icon="share"
                 label={t('recap.story.shareSlide')}
                 look={look}
+                large={v3Look}
                 onPress={() => props.onShareSlide(slide)}
               />
-              <ChromeButton icon="x" label={t('recap.story.close')} look={look} onPress={onClose} />
+              <ChromeButton
+                icon="x"
+                label={t('recap.story.close')}
+                look={look}
+                large={v3Look}
+                onPress={onClose}
+              />
             </View>
           </View>
         </View>
@@ -399,6 +413,7 @@ export function RecapStory(props: RecapStoryProps) {
             <Rise delay={RISE_DELAYS[3]} reduce={reduce} style={{ gap: 10 }}>
               <Button
                 label={isYearRecap(recap) ? t('recap.year.share') : t('recap.share')}
+                {...(v3Look ? { variant: 'hue' as const, icon: 'share' as const } : {})}
                 onPress={props.onShare}
               />
               <Pressable
@@ -406,9 +421,12 @@ export function RecapStory(props: RecapStoryProps) {
                 onPress={props.onJustLink}
                 style={({ pressed }) => ({
                   alignItems: 'center',
-                  height: 48,
                   justifyContent: 'center',
                   transform: [{ scale: pressed ? 0.97 : 1 }],
+                  // v3 draws the second action as an ink outline, 52 tall.
+                  ...(v3Look
+                    ? { borderColor: look.ink, borderRadius: 999, borderWidth: 2, minHeight: 52 }
+                    : { height: 48 }),
                 })}
               >
                 <Text style={{ color: look.ink, fontFamily: DISPLAY_FONT, fontSize: 15 }}>
@@ -457,13 +475,17 @@ function ChromeButton({
   icon,
   label,
   look,
+  large = false,
   onPress,
 }: {
   icon: 'x' | 'share'
   label: string
   look: { chrome: string; ink: string }
+  /** v3's 44pt disc, the target size, rather than today's 36 with a slop. */
+  large?: boolean
   onPress: () => void
 }) {
+  const side = large ? 44 : 36
   return (
     <Pressable
       accessibilityRole="button"
@@ -473,14 +495,14 @@ function ChromeButton({
       style={({ pressed }) => ({
         alignItems: 'center',
         backgroundColor: look.chrome,
-        borderRadius: 18,
-        height: 36,
+        borderRadius: side / 2,
+        height: side,
         justifyContent: 'center',
         transform: [{ scale: pressed ? 0.94 : 1 }],
-        width: 36,
+        width: side,
       })}
     >
-      <Feather name={icon} size={icon === 'x' ? 18 : 16} color={look.ink} />
+      <Feather name={icon} size={(icon === 'x' ? 18 : 16) + (large ? 4 : 0)} color={look.ink} />
     </Pressable>
   )
 }

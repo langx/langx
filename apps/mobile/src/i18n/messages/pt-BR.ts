@@ -2629,6 +2629,7 @@ export const ptBR: Localized<EnMessages> = {
     earnedOf: '{earned} de {total} conquistadas',
     emptyTitle: 'Ainda sem emblemas',
     emptyBody: '@{handle} ainda não ganhou nenhum. Eles são dados por aparecer e por ajudar.',
+    emptyBack: 'Voltar para @{handle}',
   },
 
   shared: {
@@ -2885,6 +2886,8 @@ export const ptBR: Localized<EnMessages> = {
     writtenEmptyBody:
       'Tem um ótimo parceiro de prática? Uma avaliação curta no perfil ajuda outras pessoas a encontrá-lo.',
     meRowBody: 'O que dizem sobre você e o que você escreveu',
+    emptyAction: 'Ir para as conversas',
+    onProfile: { one: 'No perfil de {name} · {amount}', other: 'No perfil de {name} · {amount}' },
   },
 
   blocked: {

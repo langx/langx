@@ -2678,6 +2678,7 @@ export const de: Localized<EnMessages> = {
     earnedOf: '{earned} von {total} verdient',
     emptyTitle: 'Noch keine Abzeichen',
     emptyBody: '@{handle} hat noch keins verdient. Es gibt sie fürs Dabeisein und fürs Helfen.',
+    emptyBack: 'Zurück zu @{handle}',
   },
 
   shared: {
@@ -2940,6 +2941,11 @@ export const de: Localized<EnMessages> = {
     writtenEmptyBody:
       'Tolle Übungspartnerin oder toller Übungspartner? Eine kurze Bewertung im Profil hilft anderen, sie zu finden.',
     meRowBody: 'Was andere über dich schreiben und was du geschrieben hast',
+    emptyAction: 'Zu den Chats',
+    onProfile: {
+      one: 'Auf dem Profil von {name} · {amount}',
+      other: 'Auf dem Profil von {name} · {amount}',
+    },
   },
 
   blocked: {

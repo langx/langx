@@ -2599,6 +2599,7 @@ export const tr: Localized<EnMessages> = {
     emptyTitle: 'Henüz rozet yok',
     emptyBody:
       '@{handle} henüz rozet kazanmadı. Rozetler düzenli gelmek ve yardım etmek için verilir.',
+    emptyBack: '@{handle} profiline dön',
   },
 
   shared: {
@@ -2850,6 +2851,8 @@ export const tr: Localized<EnMessages> = {
     writtenEmptyBody:
       'Harika bir pratik partnerin mi var? Profiline bırakacağın kısa bir yorum, başkalarının da onu bulmasına yardım eder.',
     meRowBody: 'Partnerlerinin senin için yazdıkları ve senin yazdıkların',
+    emptyAction: 'Sohbetlere git',
+    onProfile: { one: '{name} profilinde · {amount}', other: '{name} profilinde · {amount}' },
   },
 
   blocked: {
