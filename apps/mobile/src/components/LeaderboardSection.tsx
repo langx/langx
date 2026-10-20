@@ -1,4 +1,3 @@
-import type { CosmeticTone } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { Pressable, Text, View } from 'react-native'
 import { Avatar } from './ui/Avatar'
@@ -123,7 +122,7 @@ export function LeaderboardSection<Option extends string>({
                 name={item.displayName}
                 seed={item.userId}
                 size={40}
-                frame={item.frame as CosmeticTone | undefined}
+                frame={item.frame}
               />
               {/* Your own row says "You" where the others say a name: the
                   tint marks it, the word is what a screen reader gets. */}
