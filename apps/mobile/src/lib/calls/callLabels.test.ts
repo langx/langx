@@ -7,6 +7,7 @@ import {
   callStatusKey,
   closingLine,
   formatCallDuration,
+  spokenCallLength,
 } from './callLabels'
 
 describe('callRowLabel', () => {
@@ -95,6 +96,59 @@ describe('formatCallDuration', () => {
   it('does not draw a negative or a fractional second', () => {
     expect(formatCallDuration(-5)).toBe('0:00')
     expect(formatCallDuration(59.9)).toBe('0:59')
+  })
+})
+
+describe('spokenCallLength', () => {
+  const en = createTranslate('en')
+
+  it('says the two largest units that are not zero', () => {
+    expect(spokenCallLength(7, en)).toBe('7 seconds')
+    expect(spokenCallLength(1, en)).toBe('1 second')
+    expect(spokenCallLength(60, en)).toBe('1 minute')
+    expect(spokenCallLength(192, en)).toBe('3 minutes, 12 seconds')
+    expect(spokenCallLength(3765, en)).toBe('1 hour, 2 minutes')
+    expect(spokenCallLength(7200, en)).toBe('2 hours')
+  })
+
+  it('holds at the edges of each unit', () => {
+    expect(spokenCallLength(0, en)).toBe('0 seconds')
+    expect(spokenCallLength(59, en)).toBe('59 seconds')
+    expect(spokenCallLength(3599, en)).toBe('59 minutes, 59 seconds')
+    expect(spokenCallLength(3600, en)).toBe('1 hour')
+    // Minutes are zero, so the seconds are not reached for.
+    expect(spokenCallLength(3645, en)).toBe('1 hour')
+  })
+
+  it('never says a negative or a fractional second', () => {
+    expect(spokenCallLength(-5, en)).toBe('0 seconds')
+    expect(spokenCallLength(1.9, en)).toBe('1 second')
+  })
+
+  /** Russian splits at 1, 2–4 and 5+; a `count === 1` test would get two of the three wrong. */
+  it('takes each language’s own plural forms', () => {
+    const ru = createTranslate('ru')
+    expect(spokenCallLength(1, ru)).toBe('1 секунда')
+    expect(spokenCallLength(3, ru)).toBe('3 секунды')
+    expect(spokenCallLength(5 * 60 + 21, ru)).toBe('5 минут 21 секунда')
+    expect(spokenCallLength(0, ru)).toBe('0 секунд')
+    expect(spokenCallLength(11, ru)).toBe('11 секунд')
+    expect(spokenCallLength(22, ru)).toBe('22 секунды')
+    expect(spokenCallLength(36000, ru)).toBe('10 часов')
+    const ar = createTranslate('ar')
+    expect(spokenCallLength(120, ar)).toBe('دقيقتان')
+    expect(spokenCallLength(3, ar)).toBe('3 ثوانٍ')
+    expect(spokenCallLength(59, ar)).toBe('59 ثانية')
+    expect(spokenCallLength(7322, ar)).toBe('ساعتان ودقيقتان')
+  })
+
+  it('has every unit in every language', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const t = createTranslate(locale)
+      for (const seconds of [1, 2, 5, 11, 61, 3600 + 120]) {
+        expect(spokenCallLength(seconds, t), `${locale} ${seconds}`).not.toMatch(/calls\.|\{/)
+      }
+    }
   })
 })
 

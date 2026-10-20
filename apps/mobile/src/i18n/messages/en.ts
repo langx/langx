@@ -3020,6 +3020,24 @@ export const en = {
       noAnswer: 'No answer',
       declined: 'Declined',
       failed: 'Couldn’t connect',
+      /** The row read aloud: its title, then its detail or its spoken length. */
+      spoken: '{title}, {detail}',
+    },
+    /** A call’s length as a screen reader says it — see `spokenCallLength`. */
+    length: {
+      hours: {
+        one: '{count} hour',
+        other: '{count} hours',
+      },
+      minutes: {
+        one: '{count} minute',
+        other: '{count} minutes',
+      },
+      seconds: {
+        one: '{count} second',
+        other: '{count} seconds',
+      },
+      pair: '{first}, {second}',
     },
   },
 
