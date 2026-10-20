@@ -1029,6 +1029,10 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   corrections: {
+    findSentence: 'Encontrar uma frase para corrigir',
+    listCaption: 'Em conversas e em publicações, as mais recentes primeiro',
+    openChatHint: 'Abre a conversa nesta mensagem',
+    openPostHint: 'Abre a publicação',
     emptyTitle: 'Ainda sem correções',
     emptyBody:
       'Segure uma mensagem e escolha Corrigir, ou corrija uma frase publicada no feed — é a coisa mais útil que você pode fazer aqui.',
@@ -1514,8 +1518,6 @@ export const ptBR: Localized<EnMessages> = {
 
   starred: {
     lede: 'Só você vê suas favoritas. Toque em uma para abri-la na conversa.',
-    emptyLine:
-      'Nada favoritado ainda. Segure uma mensagem e escolha Favoritar para guardá-la aqui.',
     goToChats: 'Ir para Conversas',
     rowLabel: '{name}: {what}. Abrir na conversa',
     title: 'Favoritas',

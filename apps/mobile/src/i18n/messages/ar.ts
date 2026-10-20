@@ -1192,6 +1192,10 @@ export const ar: Localized<EnMessages> = {
   },
 
   corrections: {
+    findSentence: 'ابحث عن جملة لتصحيحها',
+    listCaption: 'في المحادثات وعلى المنشورات، الأحدث أولًا',
+    openChatHint: 'يفتح المحادثة عند هذه الرسالة',
+    openPostHint: 'يفتح المنشور',
     emptyTitle: 'لا تصحيحات بعد',
     emptyBody:
       'اضغط مطولًا على رسالة واختر «صحّح»، أو صحّح جملة منشورة في الخلاصة — أنفع ما يمكنك فعله هنا.',
@@ -1759,7 +1763,6 @@ export const ar: Localized<EnMessages> = {
 
   starred: {
     lede: 'لا يرى المميزة غيرك. اضغط على واحدة لفتحها في محادثتها.',
-    emptyLine: 'لا شيء مميز بعد. اضغط مطوّلًا على رسالة واختر «إضافة إلى المميزة» لتبقى هنا.',
     goToChats: 'الذهاب إلى المحادثات',
     rowLabel: '{name}: {what}. فتح في المحادثة',
     title: 'المميزة',

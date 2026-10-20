@@ -27,14 +27,8 @@ const PAIRS: readonly {
   v3: string
   replaced?: Readonly<Record<string, string>>
 }[] = [
-  {
-    current: 'starred.tsx',
-    v3: 'StarredScreenV3.tsx',
-    replaced: {
-      'starred.emptyTitle': 'starred.emptyLine',
-      'starred.emptyBody': 'starred.emptyLine',
-    },
-  },
+  { current: 'starred.tsx', v3: 'StarredScreenV3.tsx' },
+  { current: 'corrections.tsx', v3: 'CorrectionsScreenV3.tsx' },
 ]
 
 function isMessageKey(value: string): boolean {

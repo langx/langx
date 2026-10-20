@@ -1032,6 +1032,10 @@ export const es: Localized<EnMessages> = {
   },
 
   corrections: {
+    findSentence: 'Buscar una frase para corregir',
+    listCaption: 'En chats y en publicaciones, las más recientes primero',
+    openChatHint: 'Abre el chat en este mensaje',
+    openPostHint: 'Abre la publicación',
     emptyTitle: 'Aún no hay correcciones',
     emptyBody:
       'Mantén pulsado un mensaje y elige Corregir, o corrige una frase publicada en el feed: es lo más útil que puedes hacer aquí.',
@@ -1519,8 +1523,6 @@ export const es: Localized<EnMessages> = {
 
   starred: {
     lede: 'Solo tú ves tus destacados. Toca uno para abrirlo en su chat.',
-    emptyLine:
-      'Aún no hay nada destacado. Mantén pulsado un mensaje y elige Destacar para guardarlo aquí.',
     goToChats: 'Ir a Chats',
     rowLabel: '{name}: {what}. Abrir en el chat',
     title: 'Destacados',

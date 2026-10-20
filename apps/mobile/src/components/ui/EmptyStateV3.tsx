@@ -104,6 +104,11 @@ interface EmptyStateV3Props {
   art: EmptyArtKind
   /** One sentence: what is missing, and what would fill it. */
   line: string
+  /**
+   * A second, quieter sentence under the line, for the boards that draw one:
+   * how to fill the list, where the line only says that it is empty.
+   */
+  body?: string | undefined
   actionLabel: string
   onAction: () => void
   /**
@@ -125,6 +130,7 @@ interface EmptyStateV3Props {
 export function EmptyStateV3({
   art,
   line,
+  body,
   actionLabel,
   onAction,
   actionVariant = 'primary',
@@ -134,6 +140,7 @@ export function EmptyStateV3({
     <View style={styles.root}>
       <EmptyArt kind={art} />
       <Text style={styles.line}>{line}</Text>
+      {body ? <Text style={styles.body}>{body}</Text> : null}
       <Button
         label={actionLabel}
         onPress={onAction}
@@ -154,6 +161,12 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingVertical: v3.space[32] + v3.space[16],
   },
   line: { ...v3.type.headline, color: v3.colors.fg, textAlign: 'center' },
+  body: {
+    ...v3.type.callout,
+    color: v3.colors.muted,
+    marginTop: -v3.space[8],
+    textAlign: 'center',
+  },
   action: { minWidth: 200, width: 'auto' },
 
   art: { height: 104, width: 136 },

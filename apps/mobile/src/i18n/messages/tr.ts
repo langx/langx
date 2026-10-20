@@ -1018,6 +1018,10 @@ export const tr: Localized<EnMessages> = {
   },
 
   corrections: {
+    findSentence: 'Düzeltecek bir cümle bul',
+    listCaption: 'Sohbetlerde ve gönderilerde, en yenisi önce',
+    openChatHint: 'Sohbeti bu mesajda açar',
+    openPostHint: 'Gönderiyi açar',
     emptyTitle: 'Henüz düzeltme yok',
     emptyBody:
       'Bir sohbette mesaja basılı tutup Düzelt’i seç ya da akışta paylaşılan bir cümleyi düzelt — burada yapabileceğin en faydalı şey bu.',
@@ -1497,8 +1501,6 @@ export const tr: Localized<EnMessages> = {
 
   starred: {
     lede: 'Yıldızlarını yalnızca sen görürsün. Birine dokun, kendi sohbetinde açılsın.',
-    emptyLine:
-      'Henüz yıldızlı bir şey yok. Bir mesaja basılı tutup Yıldızla’yı seç, burada dursun.',
     goToChats: 'Sohbetlere git',
     rowLabel: '{name}: {what}. Sohbette aç',
     title: 'Yıldızlı',

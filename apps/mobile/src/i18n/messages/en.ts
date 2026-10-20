@@ -1165,6 +1165,10 @@ export const en = {
   },
 
   corrections: {
+    findSentence: 'Find a sentence to correct',
+    listCaption: 'In chats and on posts, newest first',
+    openChatHint: 'Opens the chat at this message',
+    openPostHint: 'Opens the post',
     emptyTitle: 'No corrections yet',
     emptyBody:
       'Hold a message in a chat and choose Correct, or fix a sentence someone posted in the feed — it is the most useful thing you can do here.',
@@ -1689,7 +1693,6 @@ export const en = {
 
   starred: {
     lede: 'Only you see your stars. Tap one to open it in its chat.',
-    emptyLine: 'Nothing starred yet. Hold a message and choose Star to keep it here.',
     goToChats: 'Go to Chats',
     rowLabel: '{name}: {what}. Open in chat',
     title: 'Starred',

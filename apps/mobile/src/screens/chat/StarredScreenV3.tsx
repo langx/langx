@@ -98,7 +98,8 @@ export function StarredScreenV3() {
           ListEmptyComponent={
             <EmptyStateV3
               art="starred"
-              line={t('starred.emptyLine')}
+              line={t('starred.emptyTitle')}
+              body={t('starred.emptyBody')}
               actionLabel={t('starred.goToChats')}
               actionVariant="blue"
               onAction={() => goBackTo('/(app)/(tabs)/chats')}

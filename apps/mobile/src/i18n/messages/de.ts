@@ -1046,6 +1046,10 @@ export const de: Localized<EnMessages> = {
   },
 
   corrections: {
+    findSentence: 'Einen Satz zum Korrigieren finden',
+    listCaption: 'In Chats und unter Beiträgen, neueste zuerst',
+    openChatHint: 'Öffnet den Chat bei dieser Nachricht',
+    openPostHint: 'Öffnet den Beitrag',
     emptyTitle: 'Noch keine Korrekturen',
     emptyBody:
       'Halte eine Nachricht gedrückt und wähle Korrigieren, oder korrigiere einen Satz aus dem Feed — das Nützlichste, was du hier tun kannst.',
@@ -1553,8 +1557,6 @@ export const de: Localized<EnMessages> = {
 
   starred: {
     lede: 'Nur du siehst deine Markierungen. Tippe auf eine, um sie in ihrem Chat zu öffnen.',
-    emptyLine:
-      'Noch nichts markiert. Halte eine Nachricht gedrückt und wähle Markieren, um sie hier zu behalten.',
     goToChats: 'Zu den Chats',
     rowLabel: '{name}: {what}. Im Chat öffnen',
     title: 'Markiert',
