@@ -1297,6 +1297,12 @@ export const ptBR: Localized<EnMessages> = {
     rewardBothWrote: 'vocês dois escreveram',
     rewardBothAmount: { one: '+{count} para os dois', other: '+{count} para os dois' },
     rewardStreak: { one: 'Sequência de {count} dia', other: 'Sequência de {count} dias' },
+    celebrateStreakBody: {
+      one: 'Você praticou no LangX {count} dia seguido.',
+      other: 'Você praticou no LangX {count} dias seguidos.',
+    },
+    celebrateStreakNote: { one: 'token por chegar aqui', other: 'tokens por chegar aqui' },
+    rewardAnnounceJoin: '{said}. {next}',
     rewardLabel: { one: '{count} token: {reason}', other: '{count} tokens: {reason}' },
     rewardBothLabel: {
       one: '{count} token para você e {count} para {name}: vocês dois escreveram',
@@ -2721,6 +2727,22 @@ export const ptBR: Localized<EnMessages> = {
       noAnswer: 'Sem resposta',
       declined: 'Recusada',
       failed: 'Não conectou',
+      spoken: '{title}, {detail}',
+    },
+    length: {
+      hours: {
+        one: '{count} hora',
+        other: '{count} horas',
+      },
+      minutes: {
+        one: '{count} minuto',
+        other: '{count} minutos',
+      },
+      seconds: {
+        one: '{count} segundo',
+        other: '{count} segundos',
+      },
+      pair: '{first} e {second}',
     },
   },
 

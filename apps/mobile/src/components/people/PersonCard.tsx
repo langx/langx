@@ -186,13 +186,21 @@ export const NewcomerTile = memo(function NewcomerTile({
         pressed && styles.pressed,
       ]}
     >
-      <Avatar
-        url={person.avatarUrl}
-        name={person.displayName}
-        seed={person._id}
-        size={44}
-        frame={person.frame}
-      />
+      {/*
+        A framed face is the 40 cut inside the bare face's 44 slot, its frame
+        spilling into the tile's padding, so a framed tile is as tall as its
+        neighbours and the names along the strip stay on one line.
+      */}
+      <View style={styles.tileFace}>
+        <Avatar
+          url={person.avatarUrl}
+          name={person.displayName}
+          seed={person._id}
+          size={person.frame ? TILE_FRAMED_AVATAR : TILE_AVATAR}
+          frame={person.frame}
+          frameOverflow="all"
+        />
+      </View>
       <Text style={styles.tileName} numberOfLines={1}>
         {person.displayName}
       </Text>
@@ -214,6 +222,10 @@ const CARD_AVATAR = 76
 const CARD_FRAMED_AVATAR = 64
 /** How far a frame's art reaches past the framed face on each side. */
 const CARD_FRAME_SPILL = (frameArtBox(CARD_FRAMED_AVATAR) - CARD_FRAMED_AVATAR) / 2
+
+/** The tile's face, and its framed face (the list cut). */
+const TILE_AVATAR = 44
+const TILE_FRAMED_AVATAR = 40
 
 /** The strip's tile: four fit across a 390pt phone, and the rest scroll. */
 export const NEWCOMER_TILE_WIDTH = 84
@@ -286,6 +298,12 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[4],
     paddingTop: v3.space[10],
     width: NEWCOMER_TILE_WIDTH,
+  },
+  tileFace: {
+    alignItems: 'center',
+    height: TILE_AVATAR,
+    justifyContent: 'center',
+    width: TILE_AVATAR,
   },
   tileName: { ...v3.type.buttonSmall, color: v3.colors.ink, maxWidth: '100%' },
   tileLine: { ...v3.type.label, color: v3.colors.ink, maxWidth: '100%' },

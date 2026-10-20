@@ -53,6 +53,46 @@ describe('buildStoreOffers', () => {
       expect(repairOffer({ balance: 5_000, repair: repairs({ filled }) })).toBeUndefined()
     })
 
+    /** A day before the account existed was never a day anybody could keep. */
+    it('offers nothing before the account was created', () => {
+      // Created yesterday, active yesterday: every missed day is older.
+      const firstDay = shiftDayKey(today, -1)
+      const filled = new Set([firstDay])
+      expect(repairOffer({ balance: 5_000, repair: repairs({ filled, firstDay }) })).toBeUndefined()
+    })
+
+    it("offers the account's first day when that is the missed one", () => {
+      const firstDay = shiftDayKey(today, -3)
+      const filled = new Set([shiftDayKey(today, -1), shiftDayKey(today, -2)])
+      const offer = repairOffer({ balance: 5_000, repair: repairs({ filled, firstDay }) })
+      expect(offer?.repairDay).toBe(firstDay)
+    })
+
+    /*
+     * The cap is counted in the month of the repaired day. Early in September
+     * the newest missed day can be in August, and August's repairs are not
+     * September's.
+     */
+    it('skips a day whose month has used both repairs', () => {
+      const cap = TOKEN_RULES.sinks.dayRepairPerMonth
+      const filled = new Set([shiftDayKey(today, -1), shiftDayKey(today, -2)])
+      const usedByMonth = { '2026-09': 0, '2026-08': cap }
+      expect(
+        repairOffer({ balance: 5_000, repair: repairs({ filled, usedByMonth }) }),
+      ).toBeUndefined()
+    })
+
+    it("offers last month's day when only this month is used up", () => {
+      const cap = TOKEN_RULES.sinks.dayRepairPerMonth
+      const filled = new Set([shiftDayKey(today, -1), shiftDayKey(today, -2)])
+      const usedByMonth = { '2026-09': cap, '2026-08': 0 }
+      const offer = repairOffer({
+        balance: 5_000,
+        repair: repairs({ filled, usedThisMonth: cap, usedByMonth }),
+      })
+      expect(offer?.repairDay).toBe('2026-08-31')
+    })
+
     it('offers nothing at the monthly cap', () => {
       expect(
         repairOffer({

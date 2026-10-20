@@ -26,6 +26,12 @@ export function activityGrid(input: {
   days: Map<string, number>
   maxAgeDays: number
   /**
+   * The account's first day. A square before it is drawn empty, not
+   * repairable: nobody could have kept a day they had no account on, and the
+   * server refuses to sell one.
+   */
+  firstDay?: string | undefined
+  /**
    * The streak the profile claims, used to fill days the collection cannot
    * account for.
    *
@@ -39,7 +45,9 @@ export function activityGrid(input: {
 }): ActivityCell[][] {
   const { today, weeks, days, maxAgeDays } = input
   const streakDays = impliedStreakDays(input.streak)
-  const oldestRepairable = shiftDayKey(today, -maxAgeDays)
+  const windowStart = shiftDayKey(today, -maxAgeDays)
+  const oldestRepairable =
+    input.firstDay && input.firstDay > windowStart ? input.firstDay : windowStart
 
   // Wind forward to the Sunday that closes today's week, so the last column is
   // a whole week and today sits on its own weekday row.

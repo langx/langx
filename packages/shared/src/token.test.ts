@@ -68,4 +68,13 @@ describe('isRepairable', () => {
   it('refuses one day past the window', () => {
     expect(isRepairable('2026-08-14', today)).toBe(false)
   })
+
+  it('refuses a day before the account existed, and allows its first day', () => {
+    expect(isRepairable('2026-08-24', today, '2026-08-25')).toBe(false)
+    expect(isRepairable('2026-08-25', today, '2026-08-25')).toBe(true)
+  })
+
+  it('leaves the window alone when no creation day is known', () => {
+    expect(isRepairable('2026-08-15', today, null)).toBe(true)
+  })
 })

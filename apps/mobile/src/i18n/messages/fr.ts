@@ -1313,6 +1313,12 @@ export const fr: Localized<EnMessages> = {
     rewardBothWrote: 'vous avez écrit tous les deux',
     rewardBothAmount: { one: '+{count} chacun', other: '+{count} chacun' },
     rewardStreak: { one: 'Série de {count} jour', other: 'Série de {count} jours' },
+    celebrateStreakBody: {
+      one: 'Tu as pratiqué sur LangX {count} jour d’affilée.',
+      other: 'Tu as pratiqué sur LangX {count} jours d’affilée.',
+    },
+    celebrateStreakNote: { one: 'jeton pour ce cap', other: 'jetons pour ce cap' },
+    rewardAnnounceJoin: '{said}. {next}',
     rewardLabel: { one: '{count} jeton : {reason}', other: '{count} jetons : {reason}' },
     rewardBothLabel: {
       one: '{count} jeton chacun pour toi et {name} : vous avez écrit tous les deux',
@@ -2761,6 +2767,22 @@ export const fr: Localized<EnMessages> = {
       noAnswer: 'Pas de réponse',
       declined: 'Refusé',
       failed: 'Échec de la connexion',
+      spoken: '{title}, {detail}',
+    },
+    length: {
+      hours: {
+        one: '{count} heure',
+        other: '{count} heures',
+      },
+      minutes: {
+        one: '{count} minute',
+        other: '{count} minutes',
+      },
+      seconds: {
+        one: '{count} seconde',
+        other: '{count} secondes',
+      },
+      pair: '{first} et {second}',
     },
   },
 

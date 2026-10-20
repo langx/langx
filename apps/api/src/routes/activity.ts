@@ -49,6 +49,22 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
       const start = from < oldest ? oldest : from
       const days = await listStreakDays(app.mongo.db, request.userId, start, to)
 
+      /*
+       * Repairs used per month, for every month the window touches. The cap is
+       * counted in the month of the *repaired* day, not today's, so early in a
+       * month the newest missed day can sit in last month — whose repairs may
+       * be used up while this month's are not. The client fetches only the
+       * window's rows and cannot count that month itself.
+       */
+      const windowMonths = new Set([
+        shiftDayKey(today, -TOKEN_RULES.sinks.dayRepairMaxAgeDays).slice(0, 7),
+        today.slice(0, 7),
+      ])
+      const usedByMonth: Record<string, number> = {}
+      for (const month of windowMonths) {
+        usedByMonth[month] = await repairsInMonth(app.mongo.db, request.userId, `${month}-01`)
+      }
+
       return reply.send({
         today,
         /**
@@ -79,7 +95,14 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
           price: TOKEN_RULES.sinks.dayRepair,
           maxAgeDays: TOKEN_RULES.sinks.dayRepairMaxAgeDays,
           perMonth: TOKEN_RULES.sinks.dayRepairPerMonth,
-          usedThisMonth: await repairsInMonth(app.mongo.db, request.userId, today),
+          usedThisMonth: usedByMonth[today.slice(0, 7)] ?? 0,
+          usedByMonth,
+          /**
+           * The account's first day, in the same zone as `today`. Nothing
+           * before it can be repaired, and the client has to know that to
+           * stop offering those days — the server refuses them either way.
+           */
+          firstDay: localDayKey(profile.createdAt, profile.timezone ?? 'UTC'),
         },
       })
     },

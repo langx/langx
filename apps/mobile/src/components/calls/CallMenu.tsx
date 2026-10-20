@@ -1,6 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
 import type { CallMedia } from '@langx/shared'
 import { Modal, Pressable, Text, View, useWindowDimensions } from 'react-native'
+import { useV3Home } from '../../hooks/useV3Home'
 import { useT } from '../../i18n'
 import type { AnchorRect } from '../../lib/messageMenu'
 import { makeStyles, useTheme } from '../../lib/theme'
@@ -31,8 +32,11 @@ export function CallMenu({
   onClose: () => void
 }) {
   const t = useT()
-  const styles = useStyles()
-  const { colors } = useTheme()
+  const current = useStyles()
+  const redesigned = useStylesV3()
+  const v3Look = useV3Home()
+  const styles = v3Look ? redesigned : current
+  const { colors, v3 } = useTheme()
   const window = useWindowDimensions()
   if (!anchor) return null
 
@@ -51,7 +55,11 @@ export function CallMenu({
       }}
       style={({ pressed }) => [styles.row, pressed && styles.pressed]}
     >
-      <Feather name={icon} size={18} color={colors.text} />
+      <Feather
+        name={icon}
+        size={v3Look ? v3.icon.md : 18}
+        color={v3Look ? v3.colors.fg : colors.text}
+      />
       <Text style={styles.label}>{label}</Text>
     </Pressable>
   )
@@ -95,4 +103,33 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   pressed: { backgroundColor: colors.fill },
   label: { ...font.body, color: colors.text },
   divider: { backgroundColor: colors.border, height: 1 },
+}))
+
+/**
+ * v3's look for the same menu, behind `flags.v3Home` with the rest of the
+ * thread: flat, so an outline in the line colour instead of the shadow, and
+ * rows at v3's list height. Where it opens, what it offers and what a pick
+ * does are the menu's own, in both looks.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  backdrop: { bottom: 0, left: 0, position: 'absolute', right: 0, top: 0 },
+  card: {
+    backgroundColor: v3.colors.bg,
+    borderColor: v3.colors.line,
+    borderRadius: v3.radius.row,
+    borderWidth: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    width: WIDTH,
+  },
+  row: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: v3.space[12],
+    minHeight: 52,
+    paddingHorizontal: v3.space[16],
+  },
+  pressed: { backgroundColor: v3.colors.surface },
+  label: { ...v3.type.body, color: v3.colors.fg },
+  divider: { backgroundColor: v3.colors.line, height: 1 },
 }))

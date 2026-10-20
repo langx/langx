@@ -7,6 +7,8 @@ import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles } from '../../src/lib/theme'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { AppLanguageScreenV3 } from '../../src/screens/settings/AppLanguageScreenV3'
 
 /**
  * `auto` leads because it is what almost everyone wants and what nobody has to
@@ -27,7 +29,12 @@ const LOCALE_OPTIONS = ['auto', ...SUPPORTED_LOCALES] as const
  * Still a device preference, not an account one — a shared tablet should not
  * change language when somebody else signs in. See `I18nProvider`.
  */
-export default function AppLanguageScreen() {
+export default function AppLanguageScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <AppLanguageScreenV3 /> : <AppLanguageScreen />
+}
+
+function AppLanguageScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

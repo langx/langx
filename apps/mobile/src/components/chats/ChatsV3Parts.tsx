@@ -399,7 +399,6 @@ export const ChatRowV3 = memo(function ChatRowV3({
   )
 })
 
-/** A row's shape while the first page is on its way. */
 /**
  * A face in a fixed slot of `slot` points: bare, it fills the slot; framed,
  * it is `FRAMED_FACE` and its frame spills a few points past the slot's edge,
@@ -424,6 +423,7 @@ function FaceSlot({
   )
 }
 
+/** A row's shape while the first page is on its way. */
 export function ChatRowSkeletonV3() {
   const styles = useStyles()
   return (
@@ -437,7 +437,6 @@ export function ChatRowSkeletonV3() {
   )
 }
 
-/** The drawing's faces: 48 on the lead block and on a row, 44 on a smaller block. */
 /**
  * A framed face in the list, smaller than the slot it sits in: the face and
  * its frame together then take about the room a bare face does, so a framed
@@ -445,6 +444,7 @@ export function ChatRowSkeletonV3() {
  * 40 px cut, the master sheet's cut for list faces.
  */
 const FRAMED_FACE = 40
+/** The drawing's faces: 48 on the lead block and on a row, 44 on a smaller block. */
 const LEAD_AVATAR = 48
 const BLOCK_AVATAR = 44
 const ROW_AVATAR = 48

@@ -279,6 +279,24 @@ export async function repairDay(db: Db, userId: string, day: string): Promise<Re
     )
   }
 
+  /*
+   * Not a day before the account existed — those were never days that could
+   * have been kept, and the window alone sold a new account the whole
+   * fortnight. Keyed in the same zone as `today`, so the first day is the one
+   * the streak itself would have credited.
+   *
+   * A read rather than a filter on a write, and still race-free: `createdAt`
+   * never changes, so nothing can make this answer stale between here and the
+   * charge. It runs before the insert, so a refusal writes nothing at all.
+   */
+  const firstDay = localDayKey(profile.createdAt, timeZone)
+  if (!isRepairable(day, today, firstDay)) {
+    throw new ApiError(
+      ERROR_CODES.REPAIR_BEFORE_ACCOUNT,
+      `Your account started on ${firstDay} — a day before that cannot be repaired`,
+    )
+  }
+
   const price = TOKEN_RULES.sinks.dayRepair
   const days = db.collection<StreakDay>(COLLECTIONS.streakDays)
   try {
