@@ -1462,6 +1462,12 @@ export const en = {
     rewardBothWrote: 'you both wrote',
     rewardBothAmount: { one: '+{count} for both', other: '+{count} for both' },
     rewardStreak: { one: '{count}-day streak', other: '{count}-day streak' },
+    celebrateStreakBody: {
+      one: 'You have practised on LangX {count} day in a row.',
+      other: 'You have practised on LangX {count} days in a row.',
+    },
+    celebrateStreakNote: { one: 'token for reaching it', other: 'tokens for reaching it' },
+    rewardAnnounceJoin: '{said}. {next}',
     rewardLabel: { one: '{count} token: {reason}', other: '{count} tokens: {reason}' },
     rewardBothLabel: {
       one: '{count} token each for you and {name}: you both wrote',
