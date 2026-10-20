@@ -183,7 +183,7 @@ export function EmptyNoteV3({
       </View>
       <View style={styles.words}>
         <Text style={styles.line}>{title}</Text>
-        <Text style={styles.body}>{body}</Text>
+        <Text style={styles.noteBody}>{body}</Text>
       </View>
       {actionLabel && onAction ? (
         <Button label={actionLabel} onPress={onAction} variant="secondary" style={styles.action} />
@@ -202,7 +202,12 @@ const useStyles = makeStyles(({ v3 }) => ({
     width: 72,
   },
   words: { alignItems: 'center', gap: v3.space[6] },
-  body: { ...v3.type.callout, color: v3.colors.muted, textAlign: 'center' },
+  body: {
+    ...v3.type.callout,
+    color: v3.colors.muted,
+    marginTop: -v3.space[8],
+    textAlign: 'center',
+  },
   // Tall on purpose, like `EmptyState`: an empty list has nothing to push
   // against, and a line hugging the header reads as an error.
   root: {
@@ -212,12 +217,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingVertical: v3.space[32] + v3.space[16],
   },
   line: { ...v3.type.headline, color: v3.colors.fg, textAlign: 'center' },
-  body: {
-    ...v3.type.callout,
-    color: v3.colors.muted,
-    marginTop: -v3.space[8],
-    textAlign: 'center',
-  },
+  noteBody: { ...v3.type.callout, color: v3.colors.muted, textAlign: 'center' },
   action: { minWidth: 200, width: 'auto' },
 
   art: { height: 104, width: 136 },
