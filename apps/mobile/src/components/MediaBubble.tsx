@@ -41,7 +41,21 @@ export function formatSeconds(total: number): string {
  * second player for the feed would have re-derived the "one `useAudioPlayer`
  * per bubble, deliberately" decision this file exists to record.
  */
-export function AudioBubble({ media, mine = false }: { media: Media; mine?: boolean }) {
+export function AudioBubble({
+  media,
+  mine = false,
+  ink,
+}: {
+  media: Media
+  mine?: boolean
+  /**
+   * One colour for every glyph, on a coloured fill — the v3 bubbles, white on
+   * your blue and ink on their hue — where the current look's accent and
+   * greys would sink into the fill. The faint parts take it at a lower
+   * opacity. Absent: the current look, unchanged.
+   */
+  ink?: string | undefined
+}) {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
@@ -80,7 +94,10 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
   const { total, elapsed, fraction, canReplay, state } = audioProgress(media, status, Platform.OS)
   // Both v3 bubbles are light tints, so the glyphs read in plain `text`; the
   // accent on your own progress is the only mark of whose note it is.
-  const tint = mine ? colors.accent : colors.text
+  const tint = ink ?? (mine ? colors.accent : colors.text)
+  const strong = ink ?? colors.text
+  const faint = ink ?? colors.textFaint
+  const faded = ink !== undefined ? styles.inkFaint : null
   // `unsupported` is a type this platform will not decode; `error` is a load
   // that failed. Both leave nothing to press, and both used to be a button
   // that did nothing at all.
@@ -130,13 +147,13 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
           void toggle()
         }}
       >
-        <Text style={[styles.playIcon, { color: broken ? colors.textFaint : colors.text }]}>
+        <Text style={[styles.playIcon, { color: broken ? faint : strong }, broken && faded]}>
           {loading ? '⋯' : status.playing ? '❚❚' : '▶'}
         </Text>
       </Pressable>
 
       {broken ? (
-        <Text style={[styles.unavailable, { color: colors.textFaint }]} numberOfLines={2}>
+        <Text style={[styles.unavailable, { color: faint }, faded]} numberOfLines={2}>
           {/* A load that failed is a file that is not there — most often a
               forward whose original was withdrawn. "Will not play on this
               device" is for the codec, and would send them looking at their
@@ -164,7 +181,7 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
             }
           />
 
-          <Text style={[styles.duration, { color: colors.textFaint }]}>
+          <Text style={[styles.duration, { color: faint }, faded]}>
             {formatSeconds(status.playing || elapsed > 0 ? elapsed : total)}
           </Text>
         </>
@@ -201,7 +218,8 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
           <Text
             style={[
               styles.rate,
-              { color: rate === NORMAL_PLAYBACK_RATE ? colors.textFaint : tint },
+              { color: rate === NORMAL_PLAYBACK_RATE ? faint : tint },
+              rate === NORMAL_PLAYBACK_RATE && faded,
             ]}
           >
             {t('chat.playbackRate', { rate: rateLabel })}
@@ -420,6 +438,8 @@ const GALLERY_GAP = 2
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   audioRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, minWidth: 180 },
   playIcon: { fontSize: 16 },
+  /** The faint parts of a note drawn in one `ink`: the same colour, quieter. */
+  inkFaint: { opacity: 0.75 },
   // `space-between` hands the few pixels left after the last whole bar out
   // between the gaps, so the bars span the row and a touch at either end is
   // the start or the end of the note.
@@ -699,9 +719,12 @@ export function MediaGallery({
   videoMode = 'controls',
   videoPlaying = false,
   fill = false,
+  ink,
 }: {
   items: readonly Media[]
   mine?: boolean
+  /** A voice note's glyph colour on a coloured bubble — see `AudioBubble`. */
+  ink?: string | undefined
   onOpen?: (index: number) => void
   /** The feed asks for `'preview'`; chat keeps the thread's controls. */
   videoMode?: 'controls' | 'preview'
@@ -751,6 +774,7 @@ export function MediaGallery({
     <GalleryBody
       items={items}
       {...(mine !== undefined ? { mine } : {})}
+      ink={ink}
       {...(onOpen ? { onOpen } : {})}
       videoMode={videoMode}
       videoPlaying={videoPlaying}
@@ -762,6 +786,7 @@ export function MediaGallery({
 function GalleryBody({
   items,
   mine,
+  ink,
   onOpen,
   videoMode,
   videoPlaying,
@@ -769,6 +794,7 @@ function GalleryBody({
 }: {
   items: readonly Media[]
   mine?: boolean
+  ink?: string | undefined
   onOpen?: (index: number) => void
   videoMode: 'controls' | 'preview'
   videoPlaying: boolean
@@ -807,7 +833,7 @@ function GalleryBody({
         />
       )
     }
-    return <AudioBubble media={first} {...(mine !== undefined ? { mine } : {})} />
+    return <AudioBubble media={first} {...(mine !== undefined ? { mine } : {})} ink={ink} />
   }
 
   // Two columns up to four, three beyond it, so a tile never falls below a
