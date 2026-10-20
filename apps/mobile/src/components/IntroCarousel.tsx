@@ -30,7 +30,7 @@ interface Slide {
  * after a language change, on the one screen that is somebody's first
  * impression of the app.
  */
-const SLIDES = [
+export const SLIDES = [
   { title: 'intro.slide1Title', body: 'intro.slide1Body' },
   { title: 'intro.slide2Title', body: 'intro.slide2Body' },
   { title: 'intro.slide3Title', body: 'intro.slide3Body' },
@@ -41,9 +41,9 @@ const SLIDES = [
  * the rules rather than typed here, so the slide keeps showing a streak the
  * app actually rewards.
  */
-const FIRST_MILESTONE = Math.min(...Object.keys(TOKEN_RULES.streakMilestones).map(Number))
+export const FIRST_MILESTONE = Math.min(...Object.keys(TOKEN_RULES.streakMilestones).map(Number))
 
-interface IntroCarouselProps {
+export interface IntroCarouselProps {
   /** Called when the last slide is passed, or Skip is pressed. */
   onDone: () => void
   /** What the final button says. The two callers leave for different places. */

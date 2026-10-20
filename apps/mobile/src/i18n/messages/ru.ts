@@ -1000,6 +1000,7 @@ export const ru: Localized<EnMessages> = {
     cannotBeBoth: 'Язык не может быть и тем и другим',
     aboutYouTitle: 'О тебе',
     displayName: 'Отображаемое имя',
+    nameFromSignUp: 'Из твоей регистрации. Измени, если хочешь.',
     aboutYouOptional: 'О тебе (необязательно)',
     tooYoung: 'LangX — для людей от {age} лет.',
     photoTitle: 'Добавь лицо',
@@ -1031,6 +1032,8 @@ export const ru: Localized<EnMessages> = {
     whatNext: 'Что дальше',
     whatNextBody:
       'В Поиске появляются люди, которые говорят на том, что ты учишь. Поздоровайся с кем-нибудь.',
+    whatNextBodyPeople:
+      'В разделе «Люди» — те, кто говорит на том, что ты учишь. Поздоровайся с кем-нибудь.',
     findSomeone: 'Найти собеседника',
     sayHelloTo: 'Поздоровайся с {name}',
     inviteCodeToggle: 'Есть код приглашения?',

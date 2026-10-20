@@ -52,6 +52,13 @@ export function useHandleAvailability(handle: string) {
 }
 
 /**
+ * What the line says, apart from its colour — so a screen drawn on the
+ * redesign's palette (`theme.v3`) can colour it from there, and draw the
+ * check beside a name that is free.
+ */
+export type HandleTone = 'quiet' | 'good' | 'bad'
+
+/**
  * The one line under the field, carrying every state and coloured by what it
  * says — from the plain rule while nobody has finished typing, through the
  * schema's own complaint, to the answer.
@@ -69,23 +76,33 @@ export function useHandleStatus(
   handle: string,
   availability: ReturnType<typeof useHandleAvailability>,
   hint: string,
-): { text: string; color: string; retry?: true } {
+): { text: string; color: string; tone: HandleTone; retry?: true } {
   const t = useT()
   const { colors } = useTheme()
   const { parsed, available, checking, checkFailed } = availability
 
-  if (handle.length < HANDLE_MIN_LENGTH) return { text: hint, color: colors.textMuted }
+  if (handle.length < HANDLE_MIN_LENGTH)
+    return { text: hint, color: colors.textMuted, tone: 'quiet' }
   if (!parsed.success) {
-    return { text: parsed.error.issues[0]?.message ?? hint, color: colors.danger }
+    return { text: parsed.error.issues[0]?.message ?? hint, color: colors.danger, tone: 'bad' }
   }
-  if (checking) return { text: t('common.checking'), color: colors.textMuted }
+  if (checking) return { text: t('common.checking'), color: colors.textMuted, tone: 'quiet' }
   if (available === true) {
-    return { text: t('onboarding.handleAvailable', { handle }), color: colors.success }
+    return {
+      text: t('onboarding.handleAvailable', { handle }),
+      color: colors.success,
+      tone: 'good',
+    }
   }
   if (available === false) {
-    return { text: t('onboarding.handleTaken', { handle }), color: colors.danger }
+    return { text: t('onboarding.handleTaken', { handle }), color: colors.danger, tone: 'bad' }
   }
   if (checkFailed)
-    return { text: t('onboarding.handleCheckFailed'), color: colors.danger, retry: true }
-  return { text: hint, color: colors.textMuted }
+    return {
+      text: t('onboarding.handleCheckFailed'),
+      color: colors.danger,
+      tone: 'bad',
+      retry: true,
+    }
+  return { text: hint, color: colors.textMuted, tone: 'quiet' }
 }

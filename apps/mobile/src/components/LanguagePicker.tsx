@@ -44,49 +44,11 @@ export function LanguagePicker({
   const names = useDisplayNames()
   const styles = useStyles()
 
-  const [query, setQuery] = useState('')
-
-  const results = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    const pool = q
-      ? LANGUAGES.filter(
-          (l) =>
-            // The localized name first: a Turkish reader looking for German
-            // types "Almanca", and matching only `l.name` would tell them the
-            // language they can see in the list does not exist.
-            names.language(l.code).toLowerCase().includes(q) ||
-            l.name.toLowerCase().includes(q) ||
-            l.nativeName.toLowerCase().includes(q) ||
-            l.code === q,
-        )
-      : LANGUAGES
-    // Chosen languages stay visible at the top even when the query excludes
-    // them, so deselecting never requires clearing the search first. Below
-    // them, the pinned interface languages; the long tail after that.
-    const chosen = LANGUAGES.filter((l) => selected.includes(l.code))
-    const rest = pool.filter((l) => !selected.includes(l.code))
-    const pinned = rest.filter((l) => PINNED_CODES.includes(l.code))
-    const tail = rest.filter((l) => !PINNED_CODES.includes(l.code))
-    return [...chosen, ...pinned, ...tail].slice(0, 60)
-  }, [query, selected, names])
-
-  const atLimit = max !== undefined && selected.length >= max
-
-  /**
-   * Adding clears the search; removing does not.
-   *
-   * The asymmetry is the point. After picking a language the query has done
-   * its job, and leaving it behind meant the next pick started against a list
-   * still filtered by the last one — with the keyboard up, hiding the field
-   * that would have explained why. Removing is the case the pinning above was
-   * built for: chosen rows stay visible through any query, so deselecting from
-   * a filtered list is deliberate and must not throw the query away.
-   */
-  function toggle(code: string): void {
-    const adding = !selected.includes(code)
-    onToggle(code)
-    if (adding) setQuery('')
-  }
+  const { query, setQuery, results, atLimit, toggle } = useLanguageSearch({
+    selected,
+    onToggle,
+    max,
+  })
 
   return (
     <View style={styles.root}>
@@ -169,3 +131,65 @@ const useStyles = makeStyles(({ colors, spacing, radius }) => ({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, paddingVertical: spacing.xs },
   disabled: { opacity: 0.45 },
 }))
+
+/**
+ * The search behind both pickers — today's chips and the redesign's rows
+ * (`LanguagePickerV3`) — so the two cannot disagree about what a query finds,
+ * what stays pinned, or when the query is cleared.
+ */
+export function useLanguageSearch({
+  selected,
+  onToggle,
+  max,
+}: {
+  selected: string[]
+  onToggle: (code: string) => void
+  max?: number | undefined
+}) {
+  const names = useDisplayNames()
+  const [query, setQuery] = useState('')
+
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    const pool = q
+      ? LANGUAGES.filter(
+          (l) =>
+            // The localized name first: a Turkish reader looking for German
+            // types "Almanca", and matching only `l.name` would tell them the
+            // language they can see in the list does not exist.
+            names.language(l.code).toLowerCase().includes(q) ||
+            l.name.toLowerCase().includes(q) ||
+            l.nativeName.toLowerCase().includes(q) ||
+            l.code === q,
+        )
+      : LANGUAGES
+    // Chosen languages stay visible at the top even when the query excludes
+    // them, so deselecting never requires clearing the search first. Below
+    // them, the pinned interface languages; the long tail after that.
+    const chosen = LANGUAGES.filter((l) => selected.includes(l.code))
+    const rest = pool.filter((l) => !selected.includes(l.code))
+    const pinned = rest.filter((l) => PINNED_CODES.includes(l.code))
+    const tail = rest.filter((l) => !PINNED_CODES.includes(l.code))
+    return [...chosen, ...pinned, ...tail].slice(0, 60)
+  }, [query, selected, names])
+
+  const atLimit = max !== undefined && selected.length >= max
+
+  /**
+   * Adding clears the search; removing does not.
+   *
+   * The asymmetry is the point. After picking a language the query has done
+   * its job, and leaving it behind meant the next pick started against a list
+   * still filtered by the last one — with the keyboard up, hiding the field
+   * that would have explained why. Removing is the case the pinning above was
+   * built for: chosen rows stay visible through any query, so deselecting from
+   * a filtered list is deliberate and must not throw the query away.
+   */
+  function toggle(code: string): void {
+    const adding = !selected.includes(code)
+    onToggle(code)
+    if (adding) setQuery('')
+  }
+
+  return { query, setQuery, results, atLimit, toggle }
+}
