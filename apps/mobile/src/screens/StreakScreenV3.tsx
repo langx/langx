@@ -35,7 +35,7 @@ import { goBackTo } from '../lib/navigation'
 import { confirmAndRepair } from '../lib/repairFlow'
 import { requireAccount } from '../lib/requireAccount'
 import { streakShareText } from '../lib/shareText'
-import { buildStoreOffers } from '../lib/storeOffers'
+import { buildStoreOffers, repairsUsedFor } from '../lib/storeOffers'
 import { brokenStreakRepair, streakLadder, type StreakRung } from '../lib/streakV3'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../lib/theme'
 import { showToast } from '../lib/toast'
@@ -160,6 +160,10 @@ function MemberStreak() {
                 filled,
                 price: activity.data.repair.price,
                 usedThisMonth: activity.data.repair.usedThisMonth,
+                usedByMonth: activity.data.repair.usedByMonth,
+                ...(activity.data.repair.firstDay
+                  ? { firstDay: activity.data.repair.firstDay }
+                  : {}),
               },
             }
           : {}),
@@ -194,7 +198,7 @@ function MemberStreak() {
       filled,
       price: data.repair.price,
       balance,
-      left: Math.max(0, data.repair.perMonth - data.repair.usedThisMonth),
+      left: Math.max(0, data.repair.perMonth - repairsUsedFor(day, data.repair)),
       perMonth: data.repair.perMonth,
       t,
       locale,

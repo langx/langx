@@ -14,13 +14,20 @@ import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { BlockedScreenV3 } from '../../src/screens/settings/BlockedScreenV3'
 
 /**
  * Blocking is one tap from a profile; unblocking has to live somewhere, and it
  * cannot be that profile — the whole point is that you can no longer reach it.
  * Without this screen a block is irreversible in practice.
  */
-export default function BlockedScreen() {
+export default function BlockedScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <BlockedScreenV3 /> : <BlockedScreen />
+}
+
+function BlockedScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const { colors } = useTheme()

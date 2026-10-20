@@ -286,6 +286,16 @@ export const ERROR_CODES = {
    */
   GIFT_CODE_REJECTED: 'GIFT_CODE_REJECTED',
 
+  // tokens
+  /**
+   * A day repair for a day before the account was created, in the profile's
+   * zone. Its own code rather than `VALIDATION_FAILED` because the day is
+   * well-formed and inside the window — the conflict is with the account's
+   * age, and no retry of the same day will ever succeed. 409, like the other
+   * "the request is fine, the state says no" codes.
+   */
+  REPAIR_BEFORE_ACCOUNT: 'REPAIR_BEFORE_ACCOUNT',
+
   // generic
   NOT_FOUND: 'NOT_FOUND',
   VALIDATION_FAILED: 'VALIDATION_FAILED',
@@ -367,6 +377,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   GENDER_CHANGE_TOO_SOON: 409,
   LOCATION_REQUIRED: 409,
   GIFT_CODE_REJECTED: 409,
+  REPAIR_BEFORE_ACCOUNT: 409,
   CALLS_LOCKED: 409,
   CALLS_REFUSED: 403,
   CALL_BUSY: 409,

@@ -131,4 +131,25 @@ describe('historyRepairOffer', () => {
       left: 1,
     })
   })
+
+  /** The store's choice, given the server's per-month count, so the two agree. */
+  it('offers last month’s day when only this month’s repairs are spent', () => {
+    const days: Days = [
+      { day: '2026-09-20', actions: 2, source: 'activity' },
+      { day: '2026-10-01', actions: 0, source: 'purchase' },
+      { day: '2026-10-02', actions: 0, source: 'purchase' },
+    ]
+    const args = {
+      map: historyMap({ today: '2026-10-03', weeks: 9, days }),
+      today: '2026-10-03',
+      days,
+      usedThisMonth: 2,
+      perMonth: 2,
+    }
+    expect(historyRepairOffer(args)).toBeNull()
+    expect(historyRepairOffer({ ...args, usedByMonth: { '2026-09': 0, '2026-10': 2 } })).toEqual({
+      day: '2026-09-30',
+      left: 2,
+    })
+  })
 })

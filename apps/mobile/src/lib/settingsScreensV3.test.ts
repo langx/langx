@@ -31,6 +31,11 @@ const PAIRS: readonly { current: string; v3: string }[] = [
   { current: 'settings/location.tsx', v3: 'LocationGuideScreenV3.tsx' },
   { current: 'settings/push.tsx', v3: 'PushGuideScreenV3.tsx' },
   { current: 'settings/voices.tsx', v3: 'VoiceCreditsScreenV3.tsx' },
+  { current: 'app-language.tsx', v3: 'AppLanguageScreenV3.tsx' },
+  { current: 'languages/index.tsx', v3: 'LanguagesScreenV3.tsx' },
+  { current: 'languages/pick.tsx', v3: 'LanguagePickScreenV3.tsx' },
+  { current: 'blocked.tsx', v3: 'BlockedScreenV3.tsx' },
+  { current: 'link-device.tsx', v3: 'LinkDeviceScreenV3.tsx' },
 ]
 
 function isMessageKey(value: string): boolean {

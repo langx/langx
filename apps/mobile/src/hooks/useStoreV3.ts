@@ -12,7 +12,7 @@ import { useLocale, useT } from '../i18n'
 import { showAlert } from '../lib/alert'
 import { track } from '../lib/analytics'
 import { confirmAndRepair } from '../lib/repairFlow'
-import { buildStoreOffers, type StoreOffer } from '../lib/storeOffers'
+import { buildStoreOffers, repairsUsedFor, type StoreOffer } from '../lib/storeOffers'
 import { showToast } from '../lib/toast'
 import { usePullToRefresh } from './usePullToRefresh'
 
@@ -59,6 +59,10 @@ export function useStoreV3() {
                 filled: new Set(activity.data.days.map((day) => day.day)),
                 price: activity.data.repair.price,
                 usedThisMonth: activity.data.repair.usedThisMonth,
+                usedByMonth: activity.data.repair.usedByMonth,
+                ...(activity.data.repair.firstDay
+                  ? { firstDay: activity.data.repair.firstDay }
+                  : {}),
               },
             }
           : {}),
@@ -76,7 +80,10 @@ export function useStoreV3() {
         filled: new Set(activity.data.days.map((day) => day.day)),
         price: activity.data.repair.price,
         balance,
-        left: Math.max(0, activity.data.repair.perMonth - activity.data.repair.usedThisMonth),
+        left: Math.max(
+          0,
+          activity.data.repair.perMonth - repairsUsedFor(offer.repairDay, activity.data.repair),
+        ),
         perMonth: activity.data.repair.perMonth,
         t,
         locale,
