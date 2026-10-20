@@ -3,6 +3,7 @@ import { wornCosmetic, wornFrameTone } from '@langx/shared'
 import { useFonts } from 'expo-font'
 import type { ReactNode, RefObject } from 'react'
 import { Pressable, Text, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import type { PublicProfileDto } from '../../api/types'
 import { useLocale, useT } from '../../i18n'
 import type { CallAvailability } from '../../lib/calls/callGate'
@@ -47,6 +48,8 @@ interface ThreadHeaderV3Props {
    * keyboard. Every control stays; only the band's second row goes.
    */
   compact?: boolean
+  /** The band starts at the top edge and pads for the status bar itself. */
+  underStatusBar?: boolean
 }
 
 /**
@@ -59,9 +62,12 @@ interface ThreadHeaderV3Props {
  * grey and its glyphs take the text colour — ink on the dark scheme's surface
  * would be black on near-black.
  *
- * Below the status bar rather than under it, as Home's blocks are: the band
- * running up behind the clock would need the bar's own glyphs re-coloured per
- * hue and per scheme, for a strip nobody reads.
+ * Pushed full screen, the band runs up behind the status bar to the top edge
+ * of the phone and pays the top inset as its own padding (`underStatusBar`,
+ * with `Screen`'s of the same name): a strip of ground above a coloured band
+ * read as a gap on a phone. Every hue is light in both schemes, so the bar's
+ * glyphs over it are dark ones, set by the thread while it is focused. In a
+ * panel the band stays below the bar, beside a list that does too.
  */
 export function ThreadHeaderV3({
   partner,
@@ -73,11 +79,13 @@ export function ThreadHeaderV3({
   onMore,
   flame,
   compact = false,
+  underStatusBar = false,
 }: ThreadHeaderV3Props) {
   const t = useT()
   const { isRtl } = useLocale()
   const styles = useStyles()
   const { v3 } = useTheme()
+  const insets = useSafeAreaInsets()
   // The name is Nunito Black, which the root does not load yet
   // (`DISPLAY_FONT_BLACK`). Nothing waits on it, as on Invite.
   useFonts({ Nunito_900Black })
@@ -166,7 +174,17 @@ export function ThreadHeaderV3({
   )
 
   return (
-    <View style={[styles.band, compact && styles.bandCompact, { backgroundColor: ground }]}>
+    <View
+      style={[
+        styles.band,
+        compact && styles.bandCompact,
+        { backgroundColor: ground },
+        // Added to the band's own top padding, inside the colour.
+        underStatusBar && {
+          paddingTop: (compact ? v3.space[4] : v3.space[8]) + insets.top,
+        },
+      ]}
+    >
       <View style={styles.bar}>
         {onBack ? (
           <IconButton

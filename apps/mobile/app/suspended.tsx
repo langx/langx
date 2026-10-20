@@ -10,6 +10,8 @@ import { FormField } from '../src/components/ui/FormField'
 import { Screen } from '../src/components/ui/Screen'
 import { useSignalAppReady } from '../src/hooks/useAppReady'
 import { useScreenInteractive } from '../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../src/hooks/useV3LaunchLook'
+import { SuspendedV3 } from '../src/components/auth/SuspendedV3'
 import { reportReasonLabel, useLocale, useT } from '../src/i18n'
 import { authClient } from '../src/lib/auth-client'
 import { authLandingHref } from '../src/lib/authLanding'
@@ -39,6 +41,10 @@ export default function SuspendedScreen() {
   const status = useSuspension()
   const appeal = useSubmitAppeal()
   const [draft, setDraft] = useState('')
+  // The redesign's look behind `flags.v3Home`. A suspension can be met on a
+  // cold start, and the latch settles it without a wait, as on the welcome
+  // screen; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
 
   // The same reason `AppGate` signals: nothing downstream of a screen that
   // replaces the app will ever say the opening animation is over.
@@ -71,6 +77,28 @@ export default function SuspendedScreen() {
         )
       },
     })
+  }
+
+  if (v3) {
+    return (
+      <SuspendedV3
+        data={data}
+        draft={draft}
+        onChangeDraft={setDraft}
+        ready={ready}
+        sent={sent}
+        sending={appeal.isPending}
+        supportAddress={SUPPORT_ADDRESS}
+        onSend={send}
+        onCheckAgain={() => {
+          void status.refetch().then((result) => {
+            // The one way out that is not a sign-out, as below.
+            if (result.data && !result.data.suspended) router.replace('/')
+          })
+        }}
+        onSignOut={() => void signOut()}
+      />
+    )
   }
 
   return (

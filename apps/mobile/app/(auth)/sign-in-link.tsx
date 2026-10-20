@@ -7,6 +7,8 @@ import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
+import { SignInLinkV3 } from '../../src/components/auth/SignInLinkV3'
 import { useT } from '../../src/i18n'
 import { authClient } from '../../src/lib/auth-client'
 import { goBackTo } from '../../src/lib/navigation'
@@ -34,6 +36,8 @@ export default function SignInLink() {
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState<string>()
+  // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
 
   async function onSubmit() {
     setLoading(true)
@@ -54,6 +58,20 @@ export default function SignInLink() {
       return
     }
     setSent(true)
+  }
+
+  if (v3) {
+    return (
+      <SignInLinkV3
+        email={email}
+        onChangeEmail={setEmail}
+        error={error}
+        loading={loading}
+        canSubmit={!loading && !!email.trim()}
+        sent={sent}
+        onSubmit={onSubmit}
+      />
+    )
   }
 
   if (sent) {

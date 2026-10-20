@@ -125,11 +125,10 @@ const useStyles = makeStyles(({ cardShadow, colors, radius }) => ({
  * Me, drawn from the design canvas's tab bar.
  *
  * The tab you are on sits in a grey pill; the rest are the muted glyph alone.
- * Echo is set apart by its tint, never by size — the pill is always there, in
- * Echo's blue, focused or not, for the reason the raised disc was (a habit
- * that only announces itself once you are looking at it announces nothing).
- * It is not raised because a raised disc cannot be drawn by the platform's
- * own tab bar, and the native batch is to move this bar onto it.
+ * Echo included: an always-on blue pill under Echo read on a phone as a
+ * second selected tab, so Echo is told apart by its due-count badge and its
+ * centre place, never by a layer of its own (_The Echo tab drops its
+ * standing tint_ in `docs/decisions.md`).
  *
  * The pill is 56 by 32, so the icon slot is widened to hold it rather than
  * the glyph spilling out of the 31 by 28 the bar lays out by default.
@@ -164,18 +163,6 @@ function V3TabIcon({
   )
 }
 
-function V3EchoTabIcon() {
-  const styles = useV3Styles()
-  const { v3 } = useTheme()
-  return (
-    <TourTarget id="tabEcho" pad={4} radius={v3.radius.pill}>
-      <View style={[styles.pill, styles.pillEcho]}>
-        <Feather name="repeat" size={v3.icon.xl} color={v3.colors.echoText} />
-      </View>
-    </TourTarget>
-  )
-}
-
 const useV3Styles = makeStyles(({ v3 }) => ({
   pill: {
     alignItems: 'center',
@@ -185,7 +172,6 @@ const useV3Styles = makeStyles(({ v3 }) => ({
     width: V3_PILL.width,
   },
   pillOn: { backgroundColor: v3.colors.tabOn },
-  pillEcho: { backgroundColor: v3.colors.echoTint },
 }))
 
 /**
@@ -318,7 +304,9 @@ export default function TabsLayout() {
           name="echo"
           options={{
             title: t('tabs.echo'),
-            tabBarIcon: () => <V3EchoTabIcon />,
+            tabBarIcon: ({ focused }) => (
+              <V3TabIcon name="repeat" focused={focused} tour="tabEcho" />
+            ),
             ...v3Badge(echoBadge, 'pill'),
           }}
         />
