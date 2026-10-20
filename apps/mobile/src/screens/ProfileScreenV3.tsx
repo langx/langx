@@ -440,11 +440,11 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
                   <GenderMark gender={user.gender} color={v3.colors.ink} />
                 </View>
                 {title ? <TitleBadge id={title.id} /> : null}
-                <Text style={styles.handle} numberOfLines={1}>
+                <Text style={[styles.handle, styles.hugStart]} numberOfLines={1}>
                   {handleLine}
                 </Text>
                 {user.pronouns ? (
-                  <Text style={styles.pronouns} numberOfLines={1}>
+                  <Text style={[styles.pronouns, styles.hugStart]} numberOfLines={1}>
                     {user.pronouns}
                   </Text>
                 ) : null}
@@ -566,25 +566,30 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
                       { backgroundColor: stat.tint ? v3.hues.mint : v3.colors.surface },
                     ]}
                   >
-                    <Text
-                      style={[
-                        styles.statValue,
-                        !blackLoaded && styles.nameFallback,
-                        stat.tint && styles.onHue,
-                      ]}
-                      maxFontSizeMultiplier={1.4}
-                      numberOfLines={1}
-                    >
-                      {stat.value}
-                    </Text>
+                    {/* The figure and the chevron on one line, the word under them:
+                        "100%" beside "This week" left the word a column too
+                        narrow to hold it, in English already. */}
+                    <View style={styles.statHead}>
+                      <Text
+                        style={[
+                          styles.statValue,
+                          !blackLoaded && styles.nameFallback,
+                          stat.tint && styles.onHue,
+                        ]}
+                        maxFontSizeMultiplier={1.4}
+                        numberOfLines={1}
+                      >
+                        {stat.value}
+                      </Text>
+                      <Feather
+                        name={chevron}
+                        size={v3.icon.sm}
+                        color={stat.tint ? v3.colors.ink : v3.colors.fg}
+                      />
+                    </View>
                     <Text style={[styles.statLabel, stat.tint && styles.onHue]} numberOfLines={2}>
                       {stat.label}
                     </Text>
-                    <Feather
-                      name={chevron}
-                      size={v3.icon.sm}
-                      color={stat.tint ? v3.colors.ink : v3.colors.fg}
-                    />
                   </PressableScale>
                 ))}
               </View>
@@ -637,14 +642,14 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
             />
 
             {user.official ? null : (
-              <View style={styles.card}>
+              <View style={styles.history}>
                 <ActivityMap handle={user.handle} />
               </View>
             )}
 
             {/* Only if it is offered: the server sends no `week` otherwise. */}
             {summary.data?.week && !user.official ? (
-              <View style={styles.card}>
+              <View style={styles.history}>
                 <WeeklyChart week={summary.data.week} />
               </View>
             ) : null}
@@ -759,6 +764,12 @@ const useStyles = makeStyles(({ v3 }) => ({
   nameFallback: { fontFamily: DISPLAY_FONT },
   age: { ...v3.type.headline, color: v3.colors.ink },
   handle: { ...v3.type.callout, color: v3.colors.ink, fontWeight: '700' },
+  /*
+   * Sized to its words and set at the start edge. A handle is Latin, and a
+   * full-width Latin line aligns itself left even in Arabic; forcing the
+   * paragraph right-to-left instead moves the "@" to the far end.
+   */
+  hugStart: { alignSelf: 'flex-start', maxWidth: '100%' },
   pronouns: { ...v3.type.caption, color: v3.colors.ink, fontWeight: '600' },
   statusTag: {
     alignSelf: 'flex-start',
@@ -826,17 +837,16 @@ const useStyles = makeStyles(({ v3 }) => ({
   stats: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
   statTouch: { flexBasis: '45%', flexGrow: 1 },
   stat: {
-    alignItems: 'center',
     borderRadius: v3.radius.tile,
-    flexDirection: 'row',
-    gap: v3.space[10],
+    gap: v3.space[2],
     minHeight: 64,
     paddingEnd: v3.space[12],
     paddingStart: v3.space[14],
-    paddingVertical: v3.space[8],
+    paddingVertical: v3.space[10],
   },
-  statValue: { ...v3.type.title, color: v3.colors.fg },
-  statLabel: { ...v3.type.callout, color: v3.colors.fg, flex: 1, fontWeight: '700', minWidth: 0 },
+  statHead: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8] },
+  statValue: { ...v3.type.title, color: v3.colors.fg, flex: 1 },
+  statLabel: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '700' },
 
   badges: {
     alignItems: 'center',
@@ -868,11 +878,12 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   tagLabel: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '700' },
 
-  card: {
-    backgroundColor: v3.colors.surface,
-    borderRadius: v3.radius.tile,
-    paddingHorizontal: v3.space[14],
-  },
+  /*
+   * On the ground, not on the board's grey card: the map's empty days are the
+   * current look's `fill`, which all but vanishes on `surface`. The card
+   * comes with a map drawn on v3's own track colour.
+   */
+  history: { paddingHorizontal: v3.space[4] },
 
   footer: {
     alignItems: 'center',
