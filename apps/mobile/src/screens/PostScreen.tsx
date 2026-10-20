@@ -82,10 +82,15 @@ import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useReviewPrompt } from '../hooks/useReviewPrompt'
 import { IconButton } from '../components/ui/IconButton'
 import { useV3Home } from '../hooks/useV3Home'
+import { FieldV3 } from '../components/onboarding/WizardV3'
+import { SettingsHeaderV3 } from '../components/settings/v3/SettingsKitV3'
+import { usePostStylesV3 } from './PostScreenV3.styles'
 
 /** The folded diff line — same drawing as the feed's top-correction panel. */
 function CorrectedLine({ original, corrected }: { original: string; corrected: string }) {
-  const styles = useStyles()
+  const legacyStyles = useStyles()
+  const v3Styles = usePostStylesV3()
+  const styles = useV3Home() ? v3Styles : legacyStyles
   const runs = useMemo(() => foldCorrection(original, corrected), [original, corrected])
   return (
     <Text style={styles.corrected}>
@@ -165,10 +170,26 @@ export function PostScreen({
   focusCommentId,
 }: PostScreenProps) {
   useScreenInteractive(!embedded)
-  const styles = useStyles()
-  const { colors } = useTheme()
-  const t = useT()
   const v3Look = useV3Home()
+  // The redesign's sheet under `flags.v3Home` — same names, same screen; see
+  // `PostScreenV3.styles.ts` for why it is not a second one.
+  const legacyStyles = useStyles()
+  const v3Styles = usePostStylesV3()
+  const styles = v3Look ? v3Styles : legacyStyles
+  const theme = useTheme()
+  // The few glyphs drawn in a colour of their own, from the same palette.
+  const colors = v3Look
+    ? {
+        text: theme.v3.colors.fg,
+        textFaint: theme.v3.colors.muted,
+        textMuted: theme.v3.colors.muted,
+        accent: theme.v3.colors.echoText,
+        success: theme.v3.colors.correction,
+      }
+    : theme.colors
+  // The two text fields, in the look's own face; the props are the same.
+  const Field = v3Look ? FieldV3 : FormField
+  const t = useT()
   const names = useDisplayNames()
   const { locale } = useLocale()
   const id = postId
@@ -711,37 +732,48 @@ export function PostScreen({
     )
   }
 
+  const more =
+    post && v3Look ? (
+      <IconButton
+        icon="more-horizontal"
+        iconSize={22}
+        look="surface"
+        accessibilityLabel={mine ? t('feed.deletePost') : t('share.action')}
+        hitSlop={12}
+        onPress={() => void openMore()}
+      />
+    ) : post ? (
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={mine ? t('feed.deletePost') : t('share.action')}
+        hitSlop={12}
+        onPress={() => void openMore()}
+        style={({ pressed }) => [styles.more, pressed && styles.pressed]}
+      >
+        <Feather name="more-horizontal" size={22} color={colors.text} />
+      </Pressable>
+    ) : null
+
   return (
-    <Screen fluid>
+    <Screen fluid {...(v3Look ? { ground: theme.v3.colors.bg } : {})}>
       <Animated.View
         ref={keyboard.frameRef}
         style={[styles.avoid, { paddingBottom: keyboard.pad }]}
       >
-        <ScreenHeader
-          title={t('feed.post')}
-          {...(embedded ? {} : { onBack: () => goBackTo('/(app)/(tabs)/feed', from) })}
-          trailing={
-            post && v3Look ? (
-              <IconButton
-                icon="more-horizontal"
-                iconSize={22}
-                accessibilityLabel={mine ? t('feed.deletePost') : t('share.action')}
-                hitSlop={12}
-                onPress={() => void openMore()}
-              />
-            ) : post ? (
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={mine ? t('feed.deletePost') : t('share.action')}
-                hitSlop={12}
-                onPress={() => void openMore()}
-                style={({ pressed }) => [styles.more, pressed && styles.pressed]}
-              >
-                <Feather name="more-horizontal" size={22} color={colors.text} />
-              </Pressable>
-            ) : null
-          }
-        />
+        {v3Look ? (
+          // The v3 page header: back and ··· on one row, the big title under.
+          <SettingsHeaderV3
+            title={t('feed.post')}
+            onBack={embedded ? undefined : () => goBackTo('/(app)/(tabs)/feed', from)}
+            trailing={more}
+          />
+        ) : (
+          <ScreenHeader
+            title={t('feed.post')}
+            {...(embedded ? {} : { onBack: () => goBackTo('/(app)/(tabs)/feed', from) })}
+            trailing={more}
+          />
+        )}
 
         {query.isError && !post ? (
           /*
@@ -835,7 +867,7 @@ export function PostScreen({
                     accessibilityRole="button"
                     hitSlop={8}
                     onPress={() => openLikers('post', post._id, here)}
-                    style={({ pressed }) => (pressed ? styles.pressed : null)}
+                    style={({ pressed }) => [styles.likedBy, pressed && styles.pressed]}
                   >
                     <Text style={styles.actionMuted}>{t('feed.likedBy')}</Text>
                   </Pressable>
@@ -1085,7 +1117,7 @@ export function PostScreen({
                           <Text style={styles.accentAction}>{t('feed.startFromOriginal')}</Text>
                         </Pressable>
                       </View>
-                      <FormField
+                      <Field
                         value={correction}
                         onChangeText={setCorrection}
                         {...keyboard.fieldProps(correctionBox)}
@@ -1167,7 +1199,7 @@ export function PostScreen({
                       </Pressable>
                     </View>
                   ) : null}
-                  <FormField
+                  <Field
                     label={t('feed.addComment')}
                     value={commentDraft}
                     onChangeText={setCommentDraft}
@@ -1318,6 +1350,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     gap: 20,
     paddingBottom: 20,
   },
+  // Nothing here: the v3 sheet draws "Liked by" as a pill.
+  likedBy: {},
   actionMuted: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
   actionEnd: { marginStart: 'auto' },
   echoRow: { alignItems: 'center', flexDirection: 'row', gap: 6, paddingVertical: 10 },

@@ -17,6 +17,8 @@ import { goBackTo, openPost } from '../../src/lib/navigation'
 import { listState } from '../../src/lib/listState'
 import { makeStyles } from '../../src/lib/theme'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { PostCorrectionsScreenV3 } from '../../src/screens/posts/PostCorrectionsScreenV3'
 
 /**
  * What opens from the Corrections and Feed tiles on somebody's profile: the
@@ -37,7 +39,12 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * here is yours and every row goes to a post, so the two share rows and
  * nothing else.
  */
-export default function PostCorrectionsScreen() {
+export default function PostCorrectionsRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <PostCorrectionsScreenV3 /> : <PostCorrectionsScreen />
+}
+
+function PostCorrectionsScreen() {
   useScreenInteractive()
   const t = useT()
   const styles = useStyles()
