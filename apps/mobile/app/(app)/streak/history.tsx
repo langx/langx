@@ -7,16 +7,28 @@ import { Screen } from '../../../src/components/ui/Screen'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { useLocale, useT } from '../../../src/i18n'
-import type { TranslateFn } from '../../../src/i18n/runtime'
 import { dayLabel } from '../../../src/lib/messageGroups'
 import { goBackTo } from '../../../src/lib/navigation'
-import { streakHistory, type StreakHistoryRow } from '../../../src/lib/streakHistory'
+import { streakDayDetail, streakHistory } from '../../../src/lib/streakHistory'
 import { makeStyles } from '../../../src/lib/theme'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
+import { StreakHistoryScreenV3 } from '../../../src/screens/StreakHistoryScreenV3'
 
 /** Enough to read as a history without becoming a year of scrolling. */
 const DAYS = 60
+
+/**
+ * The streak's history — or, with `flags.v3Home` on, the redesign's
+ * (`StreakHistoryScreenV3`), which brings the activity map back. Bare until
+ * the config has said which, as the wallet's history is.
+ */
+export default function StreakHistoryRoute() {
+  const v3Home = useV3HomeDecision()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <StreakHistoryScreenV3 /> : <StreakHistoryScreen />
+}
 
 /**
  * The days behind the number on the profile.
@@ -26,7 +38,7 @@ const DAYS = 60
  * check-in happened, and which of them were bought. Same endpoint, same data —
  * a calendar and a list are not substitutes for one another.
  */
-export default function StreakHistoryScreen() {
+function StreakHistoryScreen() {
   useScreenInteractive()
   const t = useT()
   const { locale } = useLocale()
@@ -98,7 +110,7 @@ export default function StreakHistoryScreen() {
                       : null,
                 ]}
               >
-                {detail(t, locale, row)}
+                {streakDayDetail(t, locale, row)}
               </Text>
             </View>
           ))}
@@ -106,26 +118,6 @@ export default function StreakHistoryScreen() {
       )}
     </Screen>
   )
-}
-
-/**
- * The one line beside each date.
- *
- * A bought day says so and shows no time, because it has none — stamping one
- * would be the screen inventing a check-in that never happened. A day recorded
- * before the field existed says the time is unknown for the same reason.
- */
-function detail(t: TranslateFn, locale: string, row: StreakHistoryRow): string {
-  if (row.kind === 'missed') return t('streak.missed')
-  if (row.kind === 'bought') return t('streak.bought')
-  if (row.kind === 'openedOnly') return t('streak.openedOnly')
-  if (!row.firstAt) return t('streak.checkedInUnknownTime')
-  const at = new Date(row.firstAt)
-  if (Number.isNaN(at.getTime())) return t('streak.checkedInUnknownTime')
-  return t('streak.checkedInAt', {
-    time: at.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }),
-    count: row.actions,
-  })
 }
 
 const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f']
