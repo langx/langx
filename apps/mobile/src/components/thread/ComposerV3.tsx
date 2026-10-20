@@ -75,6 +75,15 @@ interface ComposerV3Props {
   /** Null when the other person's newest message is nothing these can act on. */
   latest: LatestActions | null
   partnerName: string
+  /**
+   * A soft keyboard is up (`useKeyboardUp`). The chips give their row back to
+   * the thread: on a small phone the band, the tray, the chips and the field
+   * left only a sliver of the conversation above the keyboard. Correct is
+   * still in the message's own menu, and the chips return with the keyboard.
+   */
+  compact?: boolean
+  /** The field took or lost focus — what tells a phone browser the keyboard is up. */
+  onFocusChange?: (focused: boolean) => void
 }
 
 /**
@@ -116,6 +125,8 @@ export function ComposerV3({
   locating,
   latest,
   partnerName,
+  compact = false,
+  onFocusChange,
 }: ComposerV3Props) {
   const styles = useStyles()
   const { v3 } = useTheme()
@@ -147,6 +158,7 @@ export function ComposerV3({
    * gone quiet is asking for a new topic, not a correction of a stale line.
    */
   const showLatest =
+    !compact &&
     latest !== null &&
     value === '' &&
     mode === null &&
@@ -401,6 +413,9 @@ export function ComposerV3({
             value={value}
             onChangeText={onChangeText}
             onSelectionChange={(event) => setSelection(event.nativeEvent.selection)}
+            {...(onFocusChange
+              ? { onFocus: () => onFocusChange(true), onBlur: () => onFocusChange(false) }
+              : {})}
             placeholder={placeholder}
             placeholderTextColor={v3.colors.muted}
             style={[
