@@ -135,6 +135,11 @@ export const tr: Localized<EnMessages> = {
       'Kaydetmek için LangX’in fotoğraf ve video ekleme iznine ihtiyacı var. Bu izni Ayarlar’dan verebilirsin.',
   },
   viewOnce: {
+    modeHeading: 'Karşı taraf nasıl görsün',
+    modeOnceBody: 'Açtığı anda kaybolur.',
+    modeReplayBody: 'Bir kez daha açabilir.',
+    modeKeepBody: 'Her fotoğraf gibi sohbette kalır.',
+    tapToClose: 'Kapatmak için herhangi bir yere dokun',
     photo: 'Fotoğraf',
     video: 'Video',
     tapToView: 'Görmek için dokun',

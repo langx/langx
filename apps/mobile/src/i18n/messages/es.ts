@@ -132,6 +132,11 @@ export const es: Localized<EnMessages> = {
       'LangX necesita permiso para añadir fotos y vídeos a tu galería. Puedes darlo en Ajustes.',
   },
   viewOnce: {
+    modeHeading: 'Cómo lo ve la otra persona',
+    modeOnceBody: 'Desaparece en cuanto lo abre.',
+    modeReplayBody: 'Puede abrirlo una vez más.',
+    modeKeepBody: 'Se queda en el chat como cualquier foto.',
+    tapToClose: 'Toca en cualquier sitio para cerrar',
     photo: 'Foto',
     video: 'Vídeo',
     tapToView: 'Toca para ver',

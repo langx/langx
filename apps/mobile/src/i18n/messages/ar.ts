@@ -163,6 +163,11 @@ export const ar: Localized<EnMessages> = {
       'يحتاج LangX إلى إذن لإضافة الصور ومقاطع الفيديو إلى مكتبتك. يمكنك منحه من الإعدادات.',
   },
   viewOnce: {
+    modeHeading: 'كيف يراها الطرف الآخر',
+    modeOnceBody: 'يختفي بمجرد أن يفتحه.',
+    modeReplayBody: 'يمكنه فتحه مرة أخرى.',
+    modeKeepBody: 'يبقى في المحادثة مثل أي صورة.',
+    tapToClose: 'اضغط في أي مكان للإغلاق',
     photo: 'صورة',
     video: 'فيديو',
     tapToView: 'اضغط للعرض',
