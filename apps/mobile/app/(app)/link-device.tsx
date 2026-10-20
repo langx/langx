@@ -16,6 +16,8 @@ import { makeStyles, useTheme } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 import { useLocale, useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { LinkDeviceScreenV3 } from '../../src/screens/settings/LinkDeviceScreenV3'
 
 /**
  * Approve a sign-in somewhere else.
@@ -30,7 +32,12 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * That is the whole security argument for the flow, so it is a screen with a
  * button rather than a silent redirect after a scan.
  */
-export default function LinkDeviceScreen() {
+export default function LinkDeviceScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <LinkDeviceScreenV3 /> : <LinkDeviceScreen />
+}
+
+function LinkDeviceScreen() {
   useScreenInteractive()
   /*
    * Two names for one thing, and both are read. Better Auth's own

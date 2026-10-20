@@ -8,6 +8,8 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useDisplayNames, useT } from '../../../src/i18n'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles } from '../../../src/lib/theme'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { LanguagePickScreenV3 } from '../../../src/screens/settings/LanguagePickScreenV3'
 
 /**
  * Pick one language: the language this row becomes, or the one being added.
@@ -25,7 +27,12 @@ import { makeStyles } from '../../../src/lib/theme'
  * name — which the old screen never passed, so a language that could not be
  * picked simply looked broken.
  */
-export default function PickLanguageScreen() {
+export default function PickLanguageScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <LanguagePickScreenV3 /> : <PickLanguageScreen />
+}
+
+function PickLanguageScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()
