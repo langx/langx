@@ -2125,6 +2125,10 @@ export const fr: Localized<EnMessages> = {
     shareBody: 'Le lien de ton profil, ton QR code et l’invitation',
     privacyBody: 'Qui peut te trouver, et ce qui est visible',
     notificationsBody: 'Ce qui te parvient, par notification et par e-mail',
+    findYouHeading: 'Qui peut te trouver',
+    whatTheySeeHeading: 'Ce que les autres voient',
+    callsLocationHeading: 'Appels et position',
+    whatReachesYouHeading: 'Ce qui te parvient',
     appearanceSection: 'Apparence',
     appearanceBody: 'Thème, icône de l’app, langue et astuces',
     accountBody: 'Comment vous vous connectez, appareils, bloqués, vos données',
@@ -2314,6 +2318,10 @@ export const fr: Localized<EnMessages> = {
   store: {
     streakFreeze: 'Gel de série',
     streakFreezeBody: 'Couvre le prochain jour manqué · {banked}/{max} en réserve',
+    streakFreezeBodyCount: {
+      one: 'Couvre le prochain jour manqué · {count} gel en réserve',
+      other: 'Couvre le prochain jour manqué · {count} gels en réserve',
+    },
     ownedAccessibility: '{title}, déjà acquis',
     locked: 'Verrouillé',
     lockedAccessibility: '{title}, verrouillé',

@@ -2065,6 +2065,10 @@ export const tr: Localized<EnMessages> = {
     shareBody: 'Profil bağlantın, QR kodun ve davet bağlantın',
     privacyBody: 'Seni kim bulabilir, neyi görebilir',
     notificationsBody: 'Sana ne ulaşır — bildirimle ve e-postayla',
+    findYouHeading: 'Seni kimler bulabilir',
+    whatTheySeeHeading: 'Başkaları ne görür',
+    callsLocationHeading: 'Aramalar ve konum',
+    whatReachesYouHeading: 'Sana ne ulaşır',
     appearanceSection: 'Görünüm',
     appearanceBody: 'Tema, uygulama simgesi, dil ve ipuçları',
     accountBody: 'Nasıl giriyorsun, cihazlar, engellenenler, verilerin',
@@ -2251,6 +2255,10 @@ export const tr: Localized<EnMessages> = {
   store: {
     streakFreeze: 'Seri dondurma',
     streakFreezeBody: 'Kaçıracağın ilk günü karşılar · {banked}/{max} bankada',
+    streakFreezeBodyCount: {
+      one: 'Kaçıracağın ilk günü karşılar · bankada {count} dondurma',
+      other: 'Kaçıracağın ilk günü karşılar · bankada {count} dondurma',
+    },
     ownedAccessibility: '{title}, sende var',
     locked: 'Kilitli',
     lockedAccessibility: '{title}, kilitli',

@@ -2097,6 +2097,10 @@ export const es: Localized<EnMessages> = {
     shareBody: 'El enlace a tu perfil, tu código QR y la invitación',
     privacyBody: 'Quién puede encontrarte y qué ve',
     notificationsBody: 'Qué te llega, por notificación y por correo',
+    findYouHeading: 'Quién puede encontrarte',
+    whatTheySeeHeading: 'Lo que ven',
+    callsLocationHeading: 'Llamadas y ubicación',
+    whatReachesYouHeading: 'Qué te llega',
     appearanceSection: 'Apariencia',
     appearanceBody: 'Tema, icono de la app, idioma y consejos',
     accountBody: 'Cómo entras, dispositivos, bloqueados, tus datos',
@@ -2283,6 +2287,10 @@ export const es: Localized<EnMessages> = {
   store: {
     streakFreeze: 'Congelar racha',
     streakFreezeBody: 'Cubre el próximo día que falles · {banked}/{max} guardados',
+    streakFreezeBodyCount: {
+      one: 'Cubre el próximo día que falles · {count} congelación guardada',
+      other: 'Cubre el próximo día que falles · {count} congelaciones guardadas',
+    },
     ownedAccessibility: '{title}, ya lo tienes',
     locked: 'Bloqueado',
     lockedAccessibility: '{title}, bloqueado',

@@ -2405,6 +2405,10 @@ export const ru: Localized<EnMessages> = {
     shareBody: 'Ссылка на профиль, QR-код и приглашение',
     privacyBody: 'Кто может вас найти и что видит',
     notificationsBody: 'Что до вас доходит — пушем и по почте',
+    findYouHeading: 'Кто может вас найти',
+    whatTheySeeHeading: 'Что видят другие',
+    callsLocationHeading: 'Звонки и местоположение',
+    whatReachesYouHeading: 'Что до вас доходит',
     appearanceSection: 'Оформление',
     appearanceBody: 'Тема, значок приложения, язык и подсказки',
     accountBody: 'Как вы входите, устройства, заблокированные, ваши данные',
@@ -2595,6 +2599,12 @@ export const ru: Localized<EnMessages> = {
   store: {
     streakFreeze: 'Заморозка серии',
     streakFreezeBody: 'Покроет следующий пропущенный день · {banked}/{max} в запасе',
+    streakFreezeBodyCount: {
+      one: 'Покроет следующий пропущенный день · {count} заморозка в запасе',
+      few: 'Покроет следующий пропущенный день · {count} заморозки в запасе',
+      many: 'Покроет следующий пропущенный день · {count} заморозок в запасе',
+      other: 'Покроет следующий пропущенный день · {count} заморозки в запасе',
+    },
     ownedAccessibility: '{title}, уже есть',
     locked: 'Закрыто',
     lockedAccessibility: '{title}, закрыто',
