@@ -1299,8 +1299,8 @@ export const ptBR: Localized<EnMessages> = {
     rewardStreak: { one: 'Sequência de {count} dia', other: 'Sequência de {count} dias' },
     rewardLabel: { one: '{count} token: {reason}', other: '{count} tokens: {reason}' },
     rewardBothLabel: {
-      one: '{count} token para você e para {name}: vocês dois escreveram',
-      other: '{count} tokens para você e para {name}: vocês dois escreveram',
+      one: '{count} token para você e {count} para {name}: vocês dois escreveram',
+      other: '{count} tokens para você e {count} para {name}: vocês dois escreveram',
     },
     them: 'a outra pessoa',
     tokensPerMessage: {

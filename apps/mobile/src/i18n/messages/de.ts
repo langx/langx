@@ -1335,7 +1335,7 @@ export const de: Localized<EnMessages> = {
     rewardStreak: { one: '{count} Tag in Folge', other: '{count} Tage in Folge' },
     rewardLabel: { one: '{count} Token: {reason}', other: '{count} Token: {reason}' },
     rewardBothLabel: {
-      one: '{count} Token für dich und {name}: ihr habt beide geschrieben',
+      one: 'Je {count} Token für dich und {name}: ihr habt beide geschrieben',
       other: 'Je {count} Token für dich und {name}: ihr habt beide geschrieben',
     },
     them: 'der anderen Person',

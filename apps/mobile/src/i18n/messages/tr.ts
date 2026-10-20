@@ -1286,7 +1286,9 @@ export const tr: Localized<EnMessages> = {
     rewardBothAmount: { other: 'ikinize de +{count}' },
     rewardStreak: { other: '{count} günlük seri' },
     rewardLabel: { other: '{count} token: {reason}' },
-    rewardBothLabel: { other: 'Sana ve {name} adlı kişiye {count}’er token: ikiniz de yazdınız' },
+    rewardBothLabel: {
+      other: 'Sana {count}, {name} adlı kişiye {count} token: ikiniz de yazdınız',
+    },
     them: 'karşı taraf',
     tokensPerMessage: {
       other: '+{count} token / mesaj',
