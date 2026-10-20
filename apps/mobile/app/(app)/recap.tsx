@@ -18,6 +18,8 @@ import { shareLink } from '../../src/lib/share'
 import { recapShareText } from '../../src/lib/shareText'
 import { DISPLAY_FONT, palettes } from '../../src/lib/theme'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { IconButton } from '../../src/components/ui/IconButton'
+import { useV3Home } from '../../src/hooks/useV3Home'
 
 /**
  * A finished month, told as a story: "Your Month" — or, with `?year=`, the
@@ -173,6 +175,7 @@ function Plain({
   closeLabel?: string
 }) {
   const insets = useSafeAreaInsets()
+  const v3Look = useV3Home()
   const ink = palettes.light.colors.primaryText
   return (
     <View
@@ -187,7 +190,19 @@ function Plain({
       }}
     >
       <StatusBar style="dark" />
-      {onClose ? (
+      {onClose && closeLabel && v3Look ? (
+        // The bare glyph on the yellow, as the kit draws a corner control,
+        // where the current look sits a smaller cross in a 36pt tint.
+        <IconButton
+          icon="x"
+          iconSize={22}
+          color={ink}
+          accessibilityLabel={closeLabel}
+          hitSlop={8}
+          onPress={onClose}
+          style={{ end: 20, position: 'absolute', top: insets.top + 20 }}
+        />
+      ) : onClose ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={closeLabel}

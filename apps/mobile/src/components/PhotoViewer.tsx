@@ -45,6 +45,8 @@ import {
 import { messagePreviewKey } from '../lib/messagePreview'
 import { saveMediaToDevice } from '../lib/saveMedia'
 import { makeStyles, spacing, useTheme } from '../lib/theme'
+import { IconButton } from './ui/IconButton'
+import { useV3Home } from '../hooks/useV3Home'
 
 /**
  * The browser's own pinch-zoom and scroll would fight ours, and unlike
@@ -138,6 +140,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
+  const v3Look = useV3Home()
   /*
    * A `Modal` is outside every `SafeAreaView` and every `Screen`, so the
    * chrome has to ask for the insets itself. The close button used to sit at
@@ -596,20 +599,34 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
           starts on a disc never reaches the stage's gestures at all.
         */}
         <View style={styles.chrome} pointerEvents="box-none">
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('photo.close')}
-            style={({ pressed }) => [
-              styles.disc,
-              styles.close,
-              { top: insets.top + spacing.sm },
-              pressed && styles.discPressed,
-            ]}
-            onPress={onClose}
-            hitSlop={DISC_HIT_SLOP}
-          >
-            <Text style={styles.closeText}>✕</Text>
-          </Pressable>
+          {v3Look ? (
+            // The kit's dark disc, dark in both schemes as the scrim is: the
+            // platform's minimum target in place of a 36pt disc and its slop.
+            <IconButton
+              icon="x"
+              iconSize={22}
+              look="hue"
+              accessibilityLabel={t('photo.close')}
+              onPress={onClose}
+              hitSlop={DISC_HIT_SLOP}
+              style={[styles.discV3, styles.close, { top: insets.top + spacing.sm }]}
+            />
+          ) : (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('photo.close')}
+              style={({ pressed }) => [
+                styles.disc,
+                styles.close,
+                { top: insets.top + spacing.sm },
+                pressed && styles.discPressed,
+              ]}
+              onPress={onClose}
+              hitSlop={DISC_HIT_SLOP}
+            >
+              <Text style={styles.closeText}>✕</Text>
+            </Pressable>
+          )}
 
           {/*
             Whatever is open, photo or video, goes to the phone's gallery — or
@@ -648,25 +665,45 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
               style={[styles.pager, { paddingBottom: insets.bottom + spacing.lg }]}
               pointerEvents="box-none"
             >
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t('photo.previous')}
-                onPress={() => turn(-1)}
-                hitSlop={12}
-              >
-                <Text style={styles.pagerArrow}>‹</Text>
-              </Pressable>
+              {v3Look ? (
+                <IconButton
+                  icon="chevron-left"
+                  color={colors.onScrim}
+                  accessibilityLabel={t('photo.previous')}
+                  onPress={() => turn(-1)}
+                  hitSlop={12}
+                />
+              ) : (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t('photo.previous')}
+                  onPress={() => turn(-1)}
+                  hitSlop={12}
+                >
+                  <Text style={styles.pagerArrow}>‹</Text>
+                </Pressable>
+              )}
               <Text style={styles.pagerCount}>
                 {t('photo.counter', { index: index + 1, total: photos.length })}
               </Text>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t('photo.next')}
-                onPress={() => turn(1)}
-                hitSlop={12}
-              >
-                <Text style={styles.pagerArrow}>›</Text>
-              </Pressable>
+              {v3Look ? (
+                <IconButton
+                  icon="chevron-right"
+                  color={colors.onScrim}
+                  accessibilityLabel={t('photo.next')}
+                  onPress={() => turn(1)}
+                  hitSlop={12}
+                />
+              ) : (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t('photo.next')}
+                  onPress={() => turn(1)}
+                  hitSlop={12}
+                >
+                  <Text style={styles.pagerArrow}>›</Text>
+                </Pressable>
+              )}
             </View>
           ) : null}
         </View>
@@ -724,6 +761,8 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     width: DISC_SIZE,
   },
   discPressed: { opacity: 0.7 },
+  // Only the placing: the kit's target draws its own disc.
+  discV3: { position: 'absolute' },
   close: { end: spacing.lg },
   save: { start: spacing.lg },
   closeText: { color: colors.onScrim, fontSize: 18, fontWeight: '600' },
