@@ -22,7 +22,7 @@ import { track } from '../../../src/lib/analytics'
 import { goBackTo } from '../../../src/lib/navigation'
 import { confirmAndRepair } from '../../../src/lib/repairFlow'
 import { showToast } from '../../../src/lib/toast'
-import { buildStoreOffers } from '../../../src/lib/storeOffers'
+import { buildStoreOffers, repairsUsedFor } from '../../../src/lib/storeOffers'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useLocale, useT } from '../../../src/i18n'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
@@ -112,6 +112,8 @@ function StoreScreen() {
             filled: new Set(activity.data.days.map((day) => day.day)),
             price: activity.data.repair.price,
             usedThisMonth: activity.data.repair.usedThisMonth,
+            usedByMonth: activity.data.repair.usedByMonth,
+            ...(activity.data.repair.firstDay ? { firstDay: activity.data.repair.firstDay } : {}),
           },
         }
       : {}),
@@ -151,7 +153,10 @@ function StoreScreen() {
         filled: new Set(activity.data.days.map((day) => day.day)),
         price: activity.data.repair.price,
         balance,
-        left: Math.max(0, activity.data.repair.perMonth - activity.data.repair.usedThisMonth),
+        left: Math.max(
+          0,
+          activity.data.repair.perMonth - repairsUsedFor(offer.repairDay, activity.data.repair),
+        ),
         perMonth: activity.data.repair.perMonth,
         t,
         locale,

@@ -2783,6 +2783,22 @@ export const de: Localized<EnMessages> = {
       noAnswer: 'Keine Antwort',
       declined: 'Abgelehnt',
       failed: 'Keine Verbindung',
+      spoken: '{title}, {detail}',
+    },
+    length: {
+      hours: {
+        one: '{count} Stunde',
+        other: '{count} Stunden',
+      },
+      minutes: {
+        one: '{count} Minute',
+        other: '{count} Minuten',
+      },
+      seconds: {
+        one: '{count} Sekunde',
+        other: '{count} Sekunden',
+      },
+      pair: '{first} und {second}',
     },
   },
 

@@ -32,7 +32,7 @@ import { queryFailed } from '../lib/listState'
 import { goBackTo } from '../lib/navigation'
 import { confirmAndRepair } from '../lib/repairFlow'
 import { requireAccount } from '../lib/requireAccount'
-import { buildStoreOffers, type StoreOffer } from '../lib/storeOffers'
+import { buildStoreOffers, repairsUsedFor, type StoreOffer } from '../lib/storeOffers'
 import { makeStyles, useTheme, type PartnerHue } from '../lib/theme'
 import { showToast } from '../lib/toast'
 
@@ -139,6 +139,8 @@ function MemberStore() {
             filled: new Set(activity.data.days.map((day) => day.day)),
             price: activity.data.repair.price,
             usedThisMonth: activity.data.repair.usedThisMonth,
+            usedByMonth: activity.data.repair.usedByMonth,
+            ...(activity.data.repair.firstDay ? { firstDay: activity.data.repair.firstDay } : {}),
           },
         }
       : {}),
@@ -159,7 +161,10 @@ function MemberStore() {
         filled: new Set(activity.data.days.map((day) => day.day)),
         price: activity.data.repair.price,
         balance,
-        left: Math.max(0, activity.data.repair.perMonth - activity.data.repair.usedThisMonth),
+        left: Math.max(
+          0,
+          activity.data.repair.perMonth - repairsUsedFor(offer.repairDay, activity.data.repair),
+        ),
         perMonth: activity.data.repair.perMonth,
         t,
         locale,
