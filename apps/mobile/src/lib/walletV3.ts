@@ -1,10 +1,4 @@
-import {
-  COSMETICS,
-  isLadderKind,
-  previousCosmetic,
-  type Cosmetic,
-  type Locale,
-} from '@langx/shared'
+import { COSMETICS, isLadderKind, ladderOpen, type Cosmetic, type Locale } from '@langx/shared'
 import type { TranslateFn } from '../i18n/runtime'
 import type { HistoryEntry, HistoryRow } from './tokenHistory'
 
@@ -64,7 +58,7 @@ export interface NextRung {
 /**
  * The nearest frame or title the balance is saving towards: the cheapest rung
  * on either ladder that could be bought next — not owned, and with the one
- * below it owned (`previousCosmetic`, the shop's own gate).
+ * below it, or one above that, owned (`ladderOpen`, the shop's own gate).
  *
  * Both ladders rather than one: they are climbed side by side, and the nearer
  * rung is the honest answer to "what is this balance for". Sticker packs are
@@ -82,8 +76,7 @@ export function nextRung(owned: readonly string[], balance: number): NextRung | 
   const have = new Set(owned)
   const next = COSMETICS.filter((item) => {
     if (!isLadderKind(item.kind) || have.has(item.id) || item.requires) return false
-    const below = previousCosmetic(item)
-    return !below || have.has(below.id)
+    return ladderOpen(item, owned)
   }).sort((a, b) => a.price - b.price)[0]
   if (!next) return null
   const spendable = Math.max(0, balance)

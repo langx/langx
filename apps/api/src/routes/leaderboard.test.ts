@@ -1,5 +1,6 @@
 import {
   COSMETICS,
+  PRO_WELCOME_PACKS,
   STREAK_FREEZE_SKU,
   TOKEN_RULES,
   activityScore,
@@ -1431,6 +1432,43 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
         expect((await buy(user, 'frame.gold')).statusCode).toBe(200)
       })
 
+      async function own(userId: string, ids: string[]) {
+        await handle.db
+          .collection<Profile>(COLLECTIONS.profiles)
+          .updateOne({ _id: userId }, { $set: { cosmetics: ids } })
+      }
+
+      /**
+       * The rung inserted under one already owned: Woven Reed (`frame.sky`)
+       * held, Linocut added beneath it, the Running Stitch between them never
+       * bought. Owning a rung above opens the one below it, in the read and in
+       * the atomic filter alike.
+       */
+      it('opens an inserted rung for somebody who owns a rung above it', async () => {
+        const user = await rich('frame.lino')
+        await own(user.userId, ['frame.slate', 'frame.sky'])
+        const response = await buy(user, 'frame.lino')
+        expect(response.statusCode, response.body).toBe(200)
+      })
+
+      it('still refuses a rung when only rungs further down are owned', async () => {
+        const user = await rich('frame.bronze')
+        await own(user.userId, ['frame.slate'])
+        const response = await buy(user, 'frame.bronze')
+        expect(response.statusCode, response.body).toBe(400)
+        expect(response.json<{ message: string }>().message).toContain('frame.washi')
+      })
+
+      /** The Pro welcome pack's four frames, as `grantWelcomePack` writes them. */
+      it('lets a welcome-pack holder buy each inserted rung around the gift', async () => {
+        const user = await rich('frame.washi')
+        await own(user.userId, [...PRO_WELCOME_PACKS.pro.cosmetics])
+        for (const sku of ['frame.washi', 'frame.lino', 'frame.indigo']) {
+          const response = await buy(user, sku)
+          expect(response.statusCode, `${sku}: ${response.body}`).toBe(200)
+        }
+      })
+
       it('keeps frames and titles as two ladders, not one queue', async () => {
         const user = await rich('title.beginner')
         // No frames owned at all, and the first title is still buyable.
@@ -1453,12 +1491,10 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
        * is the thing the filter exists to make impossible.
        */
       it('never lands a rung above one that is not owned, however they interleave', async () => {
-        const user = await rich('frame.bronze')
+        const ladder = COSMETICS.filter((c) => c.kind === 'frame').map((c) => c.id)
+        const user = await rich(ladder[1]!)
 
-        const [slate, bronze] = await Promise.all([
-          buy(user, 'frame.slate'),
-          buy(user, 'frame.bronze'),
-        ])
+        const [slate, bronze] = await Promise.all([buy(user, ladder[0]!), buy(user, ladder[1]!)])
         // Slate has no predecessor, so it is always allowed.
         expect(slate.statusCode, slate.body).toBe(200)
         expect([200, 400]).toContain(bronze.statusCode)
@@ -1467,7 +1503,6 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
           .collection<Profile>(COLLECTIONS.profiles)
           .findOne({ _id: user.userId })
         const owned = profile?.cosmetics ?? []
-        const ladder = COSMETICS.filter((c) => c.kind === 'frame').map((c) => c.id)
         expect(owned.length).toBeGreaterThan(0)
         expect([...owned].sort()).toEqual(ladder.slice(0, owned.length).sort())
 

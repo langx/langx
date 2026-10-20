@@ -19,6 +19,8 @@ import { goBackTo } from '../../../src/lib/navigation'
 import { passwordPairReady } from '../../../src/lib/passwordForm'
 import { makeStyles } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { PasswordScreenV3 } from '../../../src/screens/settings/PasswordScreenV3'
 
 const BACK_TO = '/(app)/settings/sign-in-methods' as const
 
@@ -39,7 +41,12 @@ const BACK_TO = '/(app)/settings/sign-in-methods' as const
  * Auth's own endpoint and asks for the current one. A live session is enough
  * to gain a fallback, not enough to take one over.
  */
-export default function PasswordScreen() {
+export default function PasswordScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <PasswordScreenV3 /> : <PasswordScreen />
+}
+
+function PasswordScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

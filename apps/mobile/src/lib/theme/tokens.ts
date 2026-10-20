@@ -281,6 +281,15 @@ export const frameColors = {
     violet: '#7a5af8',
     midnight: '#2b3350',
     aurora: '#12b5a8',
+    // The six rungs added with the frame art. Each is its frame's outer edge
+    // on the art sheet, which holds 3:1 on both schemes' grounds — measured in
+    // `frameColor.test.ts`. The older ten predate that rule.
+    blush: '#b84a68',
+    moss: '#5d8a3a',
+    indigo: '#3349a8',
+    plum: '#9b3f7a',
+    vermilion: '#d0381f',
+    walnut: '#7a4a2a',
   },
   dark: {
     slate: '#9aa1a9',
@@ -293,6 +302,12 @@ export const frameColors = {
     violet: '#9b83ff',
     midnight: '#7d8ac4',
     aurora: '#42d8c8',
+    blush: '#f290aa',
+    moss: '#84b85c',
+    indigo: '#6f84e0',
+    plum: '#d070ae',
+    vermilion: '#ff6b4f',
+    walnut: '#c08a5e',
   },
 } as const
 

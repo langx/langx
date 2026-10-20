@@ -21,6 +21,8 @@ import { confirmAlert } from '../../../src/lib/alert'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { SignInMethodsScreenV3 } from '../../../src/screens/settings/SignInMethodsScreenV3'
 
 /** Providers keep their own names — none of them is translated. */
 const PROVIDER_NAMES: Record<LinkedProvider, string> = {
@@ -51,7 +53,12 @@ const PROVIDER_NAMES: Record<LinkedProvider, string> = {
  * way in: the server would say no (`allowUnlinkingAll` is off), but a button
  * that can only fail is worse than a line that says why it is not there.
  */
-export default function SignInMethodsScreen() {
+export default function SignInMethodsScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <SignInMethodsScreenV3 /> : <SignInMethodsScreen />
+}
+
+function SignInMethodsScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const { colors } = useTheme()
