@@ -17,6 +17,8 @@ import { goBackTo, openNotification } from '../../src/lib/navigation'
 import { drawableRows, notificationCopy, notificationHref } from '../../src/lib/notificationInbox'
 import { clearFromTray } from '../../src/lib/notifications'
 import { makeStyles, useTheme } from '../../src/lib/theme'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { NotificationsScreenV3 } from '../../src/screens/people/NotificationsScreenV3'
 
 const HERE = '/(app)/notifications'
 
@@ -56,7 +58,12 @@ const KIND_ICONS: Record<InAppNotificationKind, keyof typeof Feather.glyphMap> =
  * list nobody can read. The server groups them and the row says how many, so
  * nothing is lost and the screen stays scannable. See `listNotifications`.
  */
-export default function NotificationsScreen() {
+export default function NotificationsRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <NotificationsScreenV3 /> : <NotificationsScreen />
+}
+
+function NotificationsScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

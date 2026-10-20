@@ -25,7 +25,7 @@ const SITES: Readonly<Record<string, number>> = {
   'app/(app)/filters.tsx': 1,
   // compose.tsx is not listed: its flag-on header lives in ComposeScreenV3, so the
   // file has no IconButton left to pair with a Pressable twin.
-  'app/(app)/scan.tsx': 1,
+  // scan.tsx is not listed either: its flag-on header lives in ScanScreenV3.
   'app/(app)/echo/cards.tsx': 2,
   'app/(app)/echo/card/[id].tsx': 1,
   'app/(app)/view-once.tsx': 2,

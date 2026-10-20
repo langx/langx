@@ -9,6 +9,13 @@ import { goBackTo } from '../../src/lib/navigation'
 import { openExternal } from '../../src/lib/openExternal'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { LegalScreenV3 } from '../../src/screens/settings/LegalScreenV3'
+
+/** The legal links, or with `flags.v3Home` on the redesign's (`LegalScreenV3`). */
+export default function LegalScreenRoute() {
+  return useV3Home() ? <LegalScreenV3 /> : <LegalScreen />
+}
 
 /**
  * The legal links, on their own screen.
@@ -17,7 +24,7 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * have to be reachable — two stores require it — but they do not have to be in
  * the way, and one row that says what is behind it is as findable as five.
  */
-export default function LegalScreen() {
+function LegalScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const { colors } = useTheme()

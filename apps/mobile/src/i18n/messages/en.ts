@@ -2251,6 +2251,8 @@ export const en = {
     cookies: 'Cookie policy',
     dataDeletion: 'Delete my data',
     security: 'Security',
+    /** Under the v3 list: every row leaves the app. */
+    opensInBrowser: 'Each one opens in the browser.',
   },
   feedback: {
     bugTitle: 'Report a bug',
@@ -2722,6 +2724,10 @@ export const en = {
     openAccessibility: 'Open the hourly gift',
     tokensUnit: { one: 'token', other: 'tokens' },
     anotherInAnHour: 'Another one in an hour.',
+    /** The word on the v3 box itself, under the gift glyph. */
+    openLabel: 'Open',
+    /** Under the v3 stage: the plain truth about what is inside. */
+    someEmpty: 'Some gifts are empty. Another one in an hour.',
   },
 
   wallet: {
@@ -2852,6 +2858,8 @@ export const en = {
       other: 'You can earn up to {count} weeks a year.',
     },
     weekAddsOn: 'Yours is added to the end of the Pro you have now.',
+    /** The v3 page's heading over the people the link brought in. */
+    peopleTitle: 'People you invited',
   },
 
   tokenKind: {

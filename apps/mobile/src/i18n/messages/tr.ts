@@ -1993,6 +1993,7 @@ export const tr: Localized<EnMessages> = {
     cookies: 'Çerez politikası',
     dataDeletion: 'Verilerimi sil',
     security: 'Güvenlik',
+    opensInBrowser: 'Her biri tarayıcıda açılır.',
   },
   feedback: {
     bugTitle: 'Hata bildir',
@@ -2435,6 +2436,8 @@ export const tr: Localized<EnMessages> = {
     openAccessibility: 'Saatlik hediyeyi aç',
     tokensUnit: { one: 'token', other: 'token' },
     anotherInAnHour: 'Bir saat sonra bir tane daha.',
+    openLabel: 'Aç',
+    someEmpty: 'Bazı hediyeler boş çıkar. Bir saat sonra yenisi gelir.',
   },
 
   wallet: {
@@ -2547,6 +2550,7 @@ export const tr: Localized<EnMessages> = {
       other: 'Yılda en fazla {count} hafta kazanabilirsin.',
     },
     weekAddsOn: 'Seninki, şu anki Pro’nun sonuna eklenir.',
+    peopleTitle: 'Davet ettiğin kişiler',
   },
 
   tokenKind: {

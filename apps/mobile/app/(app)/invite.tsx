@@ -23,9 +23,16 @@ import { makeStyles, useTheme } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 import { useAppConfig } from '../../src/hooks/useAppConfig'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { InviteScreenV3 } from '../../src/screens/me/InviteScreenV3'
 
 const RULES = TOKEN_RULES.referral
 const WEEKS = PRO_GIFT_RULES.giveAWeek
+
+/** Your invite link, or with `flags.v3Home` on the redesign's (`InviteScreenV3`). */
+export default function InviteScreenRoute() {
+  return useV3Home() ? <InviteScreenV3 /> : <InviteScreen />
+}
 
 /**
  * Your invite link, what it has earned, and who took it.
@@ -39,7 +46,7 @@ const WEEKS = PRO_GIFT_RULES.giveAWeek
  * reads the pool numbers the same way; shipping them over the wire would be a
  * second copy to keep in step for no gain.
  */
-export default function InviteScreen() {
+function InviteScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const { colors } = useTheme()
