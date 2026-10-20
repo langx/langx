@@ -1207,6 +1207,13 @@ export const fr: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Heure locale {time}.',
   },
   chat: {
+    meetingLede: 'L’autre personne peut accepter ou refuser. Chacun le voit à sa propre heure.',
+    meetingDay: 'Jour',
+    meetingTime: 'Heure',
+    meetingNoteHint: {
+      one: 'Visible sur la carte. Jusqu’à {count} caractère.',
+      other: 'Visible sur la carte. Jusqu’à {count} caractères.',
+    },
     firstReplyTitle: '{name} t’a répondu',
     firstReplyBody: {
       one: 'Les réponses restent gratuites avec tous les forfaits. {plan} supprime la limite de {count} nouvelle discussion par jour.',

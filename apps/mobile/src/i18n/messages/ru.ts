@@ -1348,6 +1348,16 @@ export const ru: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Местное время {time}.',
   },
   chat: {
+    meetingLede:
+      'Собеседник может принять или отклонить. Каждый видит время в своём часовом поясе.',
+    meetingDay: 'День',
+    meetingTime: 'Время',
+    meetingNoteHint: {
+      one: 'Это видно на карточке. До {count} символа.',
+      few: 'Это видно на карточке. До {count} символов.',
+      many: 'Это видно на карточке. До {count} символов.',
+      other: 'Это видно на карточке. До {count} символа.',
+    },
     firstReplyTitle: 'Ответ от {name}',
     firstReplyBody: {
       one: 'Ответы бесплатны на любом тарифе. {plan} снимает ограничение в {count} новый чат в день.',

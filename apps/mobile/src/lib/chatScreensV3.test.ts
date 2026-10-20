@@ -29,6 +29,7 @@ const PAIRS: readonly {
 }[] = [
   { current: 'starred.tsx', v3: 'StarredScreenV3.tsx' },
   { current: 'corrections.tsx', v3: 'CorrectionsScreenV3.tsx' },
+  { current: 'propose-time.tsx', v3: 'ProposeTimeScreenV3.tsx' },
 ]
 
 function isMessageKey(value: string): boolean {

@@ -1180,6 +1180,14 @@ export const tr: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Yerel saat {time}.',
   },
   chat: {
+    meetingLede:
+      'Karşı taraf kabul edebilir ya da reddedebilir. İkiniz de kendi saatinizde görürsünüz.',
+    meetingDay: 'Gün',
+    meetingTime: 'Saat',
+    meetingNoteHint: {
+      one: 'Bunu kartta görür. En fazla {count} karakter.',
+      other: 'Bunu kartta görür. En fazla {count} karakter.',
+    },
     firstReplyTitle: '{name} cevap yazdı',
     firstReplyBody: {
       one: 'Yanıtlar her planda ücretsiz. {plan}, günde {count} yeni sohbet sınırını kaldırır.',

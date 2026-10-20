@@ -12,36 +12,9 @@ import { showAlert } from '../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../src/lib/socket'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles } from '../../src/lib/theme'
-
-/** An hour ahead, rounded up to the next half hour. */
-function defaultStart(): Date {
-  const at = new Date(Date.now() + 60 * 60 * 1000)
-  at.setMinutes(at.getMinutes() > 30 ? 60 : 30, 0, 0)
-  // Late enough at night that the row has no slot for it: the next morning is
-  // the honest answer, and it keeps the chosen chip on a chip that exists.
-  if (at.getHours() < FIRST_HOUR) at.setHours(FIRST_HOUR, 0, 0, 0)
-  return at
-}
-
-/**
- * Half hours from seven in the morning to midnight.
- *
- * Not all forty-eight: nobody proposes a language exchange at 3 a.m., and the
- * ones nobody picks are the ones you scroll past to reach the ones you do.
- */
-const FIRST_HOUR = 7
-const SLOTS = Array.from({ length: (24 - FIRST_HOUR) * 2 }, (_, i) => ({
-  hour: FIRST_HOUR + Math.floor(i / 2),
-  minute: (i % 2) * 30,
-}))
-
-/**
- * Roughly a chip's width plus its gap, used to open the row on the chosen
- * time rather than at seven in the morning. An estimate on purpose — the real
- * width depends on the locale's clock — and being a little off only means the
- * selected chip sits a little off centre, which is what a scroll fixes.
- */
-const SLOT_WIDTH = 78
+import { defaultStart, SLOT_WIDTH, SLOTS } from '../../src/lib/meetingSlots'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { ProposeTimeScreenV3 } from '../../src/screens/chat/ProposeTimeScreenV3'
 
 /**
  * Proposing a time to talk.
@@ -57,7 +30,12 @@ const SLOT_WIDTH = 78
  * zone, which is the arithmetic this exists to save two people in different
  * countries from doing in their heads.
  */
-export default function ProposeTimeScreen() {
+export default function ProposeTimeRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <ProposeTimeScreenV3 /> : <ProposeTimeScreen />
+}
+
+function ProposeTimeScreen() {
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()

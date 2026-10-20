@@ -1352,6 +1352,13 @@ export const en = {
     withTheirTimeAccessibility: '{presence}. Local time {time}.',
   },
   chat: {
+    meetingLede: 'They can accept or decline. Each of you sees it in your own time.',
+    meetingDay: 'Day',
+    meetingTime: 'Time',
+    meetingNoteHint: {
+      one: 'They see this on the card. Up to {count} character.',
+      other: 'They see this on the card. Up to {count} characters.',
+    },
     /** The card at the foot of the thread in which somebody first wrote back. */
     firstReplyTitle: '{name} wrote back',
     firstReplyBody: {

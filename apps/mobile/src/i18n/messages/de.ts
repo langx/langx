@@ -1224,6 +1224,14 @@ export const de: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Ortszeit {time}.',
   },
   chat: {
+    meetingLede:
+      'Die andere Person kann annehmen oder ablehnen. Ihr seht die Zeit jeweils in eurer eigenen Zeitzone.',
+    meetingDay: 'Tag',
+    meetingTime: 'Uhrzeit',
+    meetingNoteHint: {
+      one: 'Das steht auf der Karte. Bis zu {count} Zeichen.',
+      other: 'Das steht auf der Karte. Bis zu {count} Zeichen.',
+    },
     firstReplyTitle: '{name} hat geantwortet',
     firstReplyBody: {
       one: 'Antworten bleiben in jedem Tarif kostenlos. {plan} hebt die Grenze von {count} neuen Chat am Tag auf.',

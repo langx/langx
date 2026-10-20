@@ -1384,6 +1384,17 @@ export const ar: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. {time} بالتوقيت المحلي.',
   },
   chat: {
+    meetingLede: 'يمكن للطرف الآخر القبول أو الرفض. يرى كل منكما الموعد بتوقيته.',
+    meetingDay: 'اليوم',
+    meetingTime: 'الوقت',
+    meetingNoteHint: {
+      zero: 'يظهر هذا على البطاقة. حتى {count} حرف.',
+      one: 'يظهر هذا على البطاقة. حتى حرف واحد.',
+      two: 'يظهر هذا على البطاقة. حتى حرفين.',
+      few: 'يظهر هذا على البطاقة. حتى {count} أحرف.',
+      many: 'يظهر هذا على البطاقة. حتى {count} حرفًا.',
+      other: 'يظهر هذا على البطاقة. حتى {count} حرف.',
+    },
     firstReplyTitle: 'وصلك رد من {name}',
     firstReplyBody: {
       zero: 'الردود مجانية في كل الخطط. يزيل {plan} الحدّ اليومي للمحادثات الجديدة.',
