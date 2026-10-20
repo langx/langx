@@ -22,7 +22,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useT } from '../i18n'
+import { useLocale, useT } from '../i18n'
 import { chooseAlert, showAlert } from '../lib/alert'
 import {
   AXIS_LOCK_PX,
@@ -141,6 +141,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   const { colors } = useTheme()
   const t = useT()
   const v3Look = useV3Home()
+  const { isRtl } = useLocale()
   /*
    * A `Modal` is outside every `SafeAreaView` and every `Screen`, so the
    * chrome has to ask for the insets itself. The close button used to sit at
@@ -667,7 +668,8 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
             >
               {v3Look ? (
                 <IconButton
-                  icon="chevron-left"
+                  // The row reverses under RTL, so "previous" sits on the right.
+                  icon={isRtl ? 'chevron-right' : 'chevron-left'}
                   color={colors.onScrim}
                   accessibilityLabel={t('photo.previous')}
                   onPress={() => turn(-1)}
@@ -688,7 +690,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
               </Text>
               {v3Look ? (
                 <IconButton
-                  icon="chevron-right"
+                  icon={isRtl ? 'chevron-left' : 'chevron-right'}
                   color={colors.onScrim}
                   accessibilityLabel={t('photo.next')}
                   onPress={() => turn(1)}
