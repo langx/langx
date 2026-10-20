@@ -1,5 +1,29 @@
-import { COSMETICS, isLadderKind, previousCosmetic, type Cosmetic } from '@langx/shared'
+import {
+  COSMETICS,
+  isLadderKind,
+  previousCosmetic,
+  type Cosmetic,
+  type Locale,
+} from '@langx/shared'
+import type { TranslateFn } from '../i18n/runtime'
 import type { HistoryEntry, HistoryRow } from './tokenHistory'
+
+/**
+ * The freezes tile's value: "1 of 2" up to the cap, and the count alone past
+ * it. The Pro welcome pack banks freezes a purchase could not, and "4 of 2"
+ * reads as a fault rather than as a gift.
+ */
+export function freezeBankValue(
+  banked: number,
+  max: number,
+  { t, locale }: { t: TranslateFn; locale: Locale },
+): string {
+  if (banked > max) return banked.toLocaleString(locale)
+  return t('wallet.countOf', {
+    current: banked.toLocaleString(locale),
+    total: max.toLocaleString(locale),
+  })
+}
 
 /** The rung the wallet's bar measures, and how far the balance is from it. */
 export interface NextRung {

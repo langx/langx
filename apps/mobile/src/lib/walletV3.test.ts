@@ -1,7 +1,8 @@
 import { COSMETICS, isLadderKind } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import type { HistoryRow } from './tokenHistory'
-import { historyItems, nextRung } from './walletV3'
+import { createTranslate } from '../i18n/runtime'
+import { freezeBankValue, historyItems, nextRung } from './walletV3'
 
 const ladder = (kind: 'frame' | 'title') => COSMETICS.filter((item) => item.kind === kind)
 const frames = ladder('frame')
@@ -92,5 +93,18 @@ describe('historyItems', () => {
 
   it('draws no heading over a day with nothing in it', () => {
     expect(historyItems([day('2026-10-19', [])])).toEqual([])
+  })
+})
+
+describe('freezeBankValue', () => {
+  const opts = { t: createTranslate('en'), locale: 'en' as const }
+
+  it('says "N of M" up to the cap', () => {
+    expect(freezeBankValue(1, 2, opts)).toBe('1 of 2')
+    expect(freezeBankValue(2, 2, opts)).toBe('2 of 2')
+  })
+
+  it('says the count alone past the cap, never "4 of 2"', () => {
+    expect(freezeBankValue(4, 2, opts)).toBe('4')
   })
 })

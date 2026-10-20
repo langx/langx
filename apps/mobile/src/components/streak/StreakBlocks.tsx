@@ -205,7 +205,7 @@ export function StreakFreezes({
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
         >
-          {Array.from({ length: max }, (_, index) => (
+          {Array.from({ length: Math.max(max, banked) }, (_, index) => (
             <View
               key={index}
               style={[
