@@ -14,6 +14,8 @@ import {
 } from '../../src/lib/passwordForm'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
+import { ResetPasswordV3 } from '../../src/components/auth/ResetPasswordV3'
 
 /**
  * Reached via the email link's redirect: the server validates the token
@@ -29,6 +31,8 @@ export default function ResetPassword() {
   const [confirmation, setConfirmation] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>()
+  // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
 
   async function onSubmit() {
     if (!token) return
@@ -43,6 +47,23 @@ export default function ResetPassword() {
     }
     // No `setLoading(false)` on the way out — see `leavingScreenState.test.ts`.
     router.replace('/(auth)/sign-in')
+  }
+
+  if (v3) {
+    const issue = passwordIssueKey(newPassword, confirmation)
+    return (
+      <ResetPasswordV3
+        expired={!token || !!linkError}
+        newPassword={newPassword}
+        onChangeNewPassword={setNewPassword}
+        confirmation={confirmation}
+        onChangeConfirmation={setConfirmation}
+        confirmationError={issue ? t(issue, { min: PASSWORD_MIN_LENGTH }) : error}
+        loading={loading}
+        canSubmit={!loading && passwordPairReady(newPassword, confirmation)}
+        onSubmit={onSubmit}
+      />
+    )
   }
 
   if (!token || linkError) {

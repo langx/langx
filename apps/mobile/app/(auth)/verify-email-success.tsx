@@ -6,6 +6,8 @@ import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
+import { VerifyEmailSuccessV3 } from '../../src/components/auth/VerifyEmailSuccessV3'
 
 /**
  * Where the *old* verification link lands — kept for the mails that were
@@ -28,6 +30,10 @@ export default function VerifyEmailSuccess() {
   const t = useT()
   const { error } = useLocalSearchParams<{ error?: string }>()
   const failed = Boolean(error)
+  // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
+
+  if (v3) return <VerifyEmailSuccessV3 failed={failed} />
 
   return (
     <Screen fluid style={styles.root}>
