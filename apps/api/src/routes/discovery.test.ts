@@ -414,14 +414,12 @@ describe('Faz 3 — discovery aggregation', () => {
         nativeLanguages: [{ code: 'et' }],
         learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
       })
-      await handle.db
-        .collection<Profile>(COLLECTIONS.profiles)
-        .updateOne(
-          { _id: framed.userId },
-          {
-            $set: { cosmetics: ['frame.slate', 'frame.gold'], equipped: { frame: 'frame.slate' } },
-          },
-        )
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: framed.userId },
+        {
+          $set: { cosmetics: ['frame.slate', 'frame.gold'], equipped: { frame: 'frame.slate' } },
+        },
+      )
 
       const response = await discover(viewer, '')
       const items = response.json<{ items: Record<string, unknown>[] }>().items
