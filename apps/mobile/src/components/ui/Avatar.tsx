@@ -34,13 +34,13 @@ interface AvatarProps {
    */
   sweep?: FrameSweepComponent | undefined
   /**
-   * The frame draws outside the face's box rather than growing it, so a framed
-   * avatar takes exactly `size` of the layout, as an unframed one does. For
-   * lists, where a row that grows for a frame would break the column of
-   * names and the rows' even height. The room around the face is the
-   * caller's to keep.
+   * Where a frame may draw outside the face's box instead of growing it.
+   * `vertical` keeps a framed avatar's height at `size`, so a band or a card
+   * is as tall framed as not, while the frame still takes its room beside
+   * the face; `all` keeps the whole layout at `size`, for a slot whose
+   * neighbours leave the room. Omitted, the frame grows the box.
    */
-  frameOutside?: boolean
+  frameOverflow?: 'all' | 'vertical' | undefined
 }
 
 /**
@@ -88,7 +88,7 @@ export function Avatar({
   online = false,
   frame,
   sweep,
-  frameOutside = false,
+  frameOverflow,
 }: AvatarProps) {
   const { colors } = useTheme()
   const styles = useStyles()
@@ -135,7 +135,7 @@ export function Avatar({
 
   if (!frame) return inner
   return (
-    <Framed frame={frame} size={size} sweep={sweep} outside={frameOutside}>
+    <Framed frame={frame} size={size} sweep={sweep} overflow={frameOverflow}>
       {inner}
     </Framed>
   )
@@ -153,13 +153,13 @@ function Framed({
   frame,
   size,
   sweep,
-  outside,
+  overflow,
   children,
 }: {
   frame: string
   size: number
   sweep: FrameSweepComponent | undefined
-  outside: boolean
+  overflow: AvatarProps['frameOverflow']
   children: ReactNode
 }) {
   const { scheme } = useTheme()
@@ -175,7 +175,7 @@ function Framed({
           height: box,
           justifyContent: 'center',
           width: box,
-          ...(outside ? { margin: -(box - size) / 2 } : {}),
+          ...overflowMargin(overflow, (box - size) / 2),
         }}
       >
         <FrameArt art={art} size={size} scheme={scheme} sweep={sweep} />
@@ -207,12 +207,19 @@ function Framed({
         height: size + ringWidth * 4,
         justifyContent: 'center',
         width: size + ringWidth * 4,
-        ...(outside ? { margin: -ringWidth * 2 } : {}),
+        ...overflowMargin(overflow, ringWidth * 2),
       }}
     >
       {children}
     </View>
   )
+}
+
+/** The negative margin that lets a frame of `spill` per side draw past the face's box. */
+function overflowMargin(overflow: AvatarProps['frameOverflow'], spill: number) {
+  if (overflow === 'all') return { margin: -spill }
+  if (overflow === 'vertical') return { marginVertical: -spill }
+  return {}
 }
 
 const useStyles = makeStyles(({ colors, font, radius }) => ({

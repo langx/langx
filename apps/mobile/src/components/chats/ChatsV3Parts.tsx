@@ -109,13 +109,12 @@ export const WaitingBlock = memo(function WaitingBlock({
       ]}
     >
       <View style={styles.blockHead}>
-        <Avatar
+        <FaceSlot
           url={partner.avatarUrl}
           name={name}
           seed={partner._id}
-          size={lead ? LEAD_AVATAR : BLOCK_AVATAR}
+          slot={lead ? LEAD_AVATAR : BLOCK_AVATAR}
           frame={partner.frame}
-          frameOutside
         />
         <View style={styles.blockNames}>
           <Text style={styles.blockName} numberOfLines={1} accessibilityRole="header">
@@ -302,16 +301,13 @@ export const ChatRowV3 = memo(function ChatRowV3({
           style={({ pressed }) => [styles.row, (pressed || selected) && styles.rowFill]}
         >
           {partner ? (
-            <Avatar
+            <FaceSlot
               url={partner.avatarUrl}
               name={partner.displayName}
               seed={partner._id}
               online={partner.isOnline}
-              size={ROW_AVATAR}
-              // Outside the face's box, so a framed row keeps the list's
-              // height and its column of names: see `frameOutside`.
+              slot={ROW_AVATAR}
               frame={partner.frame}
-              frameOutside
             />
           ) : (
             <Skeleton width={ROW_AVATAR} height={ROW_AVATAR} radius={ROW_AVATAR / 2} />
@@ -404,6 +400,30 @@ export const ChatRowV3 = memo(function ChatRowV3({
 })
 
 /** A row's shape while the first page is on its way. */
+/**
+ * A face in a fixed slot of `slot` points: bare, it fills the slot; framed,
+ * it is `FRAMED_FACE` and its frame spills a few points past the slot's edge,
+ * into the row's own padding rather than its layout.
+ */
+function FaceSlot({
+  slot,
+  frame,
+  ...face
+}: {
+  url: string | undefined
+  name: string
+  seed: string
+  online?: boolean
+  slot: number
+  frame: string | undefined
+}) {
+  return (
+    <View style={{ alignItems: 'center', height: slot, justifyContent: 'center', width: slot }}>
+      <Avatar {...face} size={frame ? FRAMED_FACE : slot} frame={frame} frameOverflow="all" />
+    </View>
+  )
+}
+
 export function ChatRowSkeletonV3() {
   const styles = useStyles()
   return (
@@ -418,6 +438,13 @@ export function ChatRowSkeletonV3() {
 }
 
 /** The drawing's faces: 48 on the lead block and on a row, 44 on a smaller block. */
+/**
+ * A framed face in the list, smaller than the slot it sits in: the face and
+ * its frame together then take about the room a bare face does, so a framed
+ * row is as tall as the others and its name stays in the column. Still the
+ * 40 px cut, the master sheet's cut for list faces.
+ */
+const FRAMED_FACE = 40
 const LEAD_AVATAR = 48
 const BLOCK_AVATAR = 44
 const ROW_AVATAR = 48

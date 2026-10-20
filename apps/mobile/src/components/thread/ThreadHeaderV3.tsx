@@ -106,9 +106,9 @@ export function ThreadHeaderV3({
           seed={partner?._id}
           size={face}
           frame={partner ? wornFrameTone(partner.equipped, partner.cosmetics) : undefined}
-          // Outside the face's box, so the band is the same height framed or
-          // not, and does not jump when it folds.
-          frameOutside
+          // Past the face's box vertically, so the band is as tall framed as
+          // not; beside the face the frame keeps its room from the name.
+          frameOverflow="vertical"
         />
       )}
       <View style={[styles.names, compact && styles.namesCompact]}>
