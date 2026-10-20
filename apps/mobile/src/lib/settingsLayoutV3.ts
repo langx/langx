@@ -94,8 +94,78 @@ export const SETTINGS_V3_LAYOUT: Record<SettingsSectionId, readonly SettingsGrou
 }
 
 /**
+ * The rows `SettingsRowV3` draws, one case each. Its switch is exhaustive
+ * over this list, so an id here without a case does not compile — and the
+ * test holds this list, the blocks below and the registry to each other, so a
+ * row placed above cannot fall through to a `default` that draws nothing.
+ */
+export const V3_ROW_IDS = [
+  'privacy.hiddenMode',
+  'privacy.boost',
+  'privacy.activityMap',
+  'privacy.weekChart',
+  'privacy.hideCity',
+  'privacy.allowCalls',
+  'privacy.shareLocation',
+  'privacy.updateLocation',
+  'privacy.locationPermission',
+  'privacy.analytics',
+  'notifications.thisDevice',
+  'notifications.permission',
+  'appearance.language',
+  'appearance.translateTo',
+  'appearance.tips',
+  'account.username',
+  'account.signIn',
+  'account.password',
+  'account.devices',
+  'account.blocked',
+  'account.allPhrases',
+  'account.export',
+  'about.legal',
+  'about.voices',
+  'about.reportBug',
+  'about.requestFeature',
+  'about.community',
+  'about.rate',
+  'about.intro',
+  'about.tour',
+] as const
+export type V3RowId = (typeof V3_ROW_IDS)[number]
+
+export function isV3RowId(id: string): id is V3RowId {
+  return (V3_ROW_IDS as readonly string[]).includes(id)
+}
+
+/**
+ * Rows a page draws as a block of its own rather than through
+ * `SettingsRowV3`: the plan and share pages whole, and the three groups
+ * `SettingsSectionPageV3` recognises by their one id.
+ */
+export const V3_BLOCK_IDS: ReadonlySet<string> = new Set([
+  'plan.current',
+  'plan.renewal',
+  'plan.manage',
+  'plan.features',
+  'plan.upgrade',
+  'share.profile',
+  'share.invite',
+  'appearance.theme',
+  'appearance.appIcon',
+  'account.delete',
+])
+
+/** The groups `SettingsSectionPageV3` swaps for a block, by their one id. */
+export const V3_SOLO_BLOCK_IDS: ReadonlySet<string> = new Set([
+  'appearance.theme',
+  'appearance.appIcon',
+  'account.delete',
+])
+
+/**
  * The privacy rows drawn inside hidden mode's own block, under its switch,
- * greyed out while it is off — today's indented rows.
+ * greyed out while it is off — today's indented rows. `HiddenModeNestV3`
+ * draws these four by name, so the test pins the set to them.
  */
 export const HIDDEN_MODE_CHILDREN: ReadonlySet<string> = new Set([
   'privacy.discoverable',

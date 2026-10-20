@@ -12,6 +12,7 @@ import type { SettingsModel } from '../../../hooks/useSettingsModel'
 import { useDisplayNames, useLocale } from '../../../i18n'
 import { relativeTime } from '../../../lib/format'
 import { openPaywall } from '../../../lib/paywall'
+import { isV3RowId, type V3RowId } from '../../../lib/settingsLayoutV3'
 import { openStoreListing } from '../../../lib/storeListing'
 import { makeStyles, type PartnerHue } from '../../../lib/theme'
 import { Toggle } from '../../ui/Toggle'
@@ -31,9 +32,8 @@ export function SettingsRowV3({ id, model }: { id: string; model: SettingsModel 
   const names = useDisplayNames()
   const { t, profile, update, setPrivacy } = model
   const { busyValue, hidden } = privacyState(model)
-  const look = ROW_LOOK[id]
-  const icon: Glyph = look?.icon ?? 'circle'
-  const hue = look?.hue
+  if (!isV3RowId(id)) return null
+  const { icon, hue } = ROW_LOOK[id]
 
   switch (id) {
     case 'privacy.hiddenMode':
@@ -441,8 +441,12 @@ export function SettingsRowV3({ id, model }: { id: string; model: SettingsModel 
           onPress={() => void openStoreListing()}
         />
       )
-    default:
-      return null
+    default: {
+      // Exhaustive over `V3_ROW_IDS`: an id listed there without a case here
+      // does not compile, rather than drawing nothing with the flag on.
+      const unhandled: never = id
+      return unhandled
+    }
   }
 }
 
@@ -630,7 +634,7 @@ function privacyState(model: SettingsModel) {
  * hues mark kinds of thing, not importance: who finds you, what reaches you,
  * how you get in.
  */
-const ROW_LOOK: Record<string, { icon: Glyph; hue?: PartnerHue }> = {
+const ROW_LOOK: Record<V3RowId, { icon: Glyph; hue?: PartnerHue }> = {
   'privacy.hiddenMode': { icon: 'eye-off', hue: 'lilac' },
   'privacy.boost': { icon: 'trending-up', hue: 'tangerine' },
   'privacy.activityMap': { icon: 'grid', hue: 'mint' },
