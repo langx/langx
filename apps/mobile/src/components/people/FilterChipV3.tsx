@@ -8,7 +8,8 @@ import { makeStyles, useTheme } from '../../lib/theme'
  * tick says it in the shape as well as the colour.
  *
  * The props are `Chip`'s that page passes, so the page hands either the same
- * values; like the chips it replaces there, it names no role.
+ * values; it names the checkbox role so a screen reader hears each as on or off,
+ * which the tick alone does not say.
  */
 export function FilterChipV3({
   label,
@@ -23,6 +24,8 @@ export function FilterChipV3({
   const { v3 } = useTheme()
   return (
     <Pressable
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked: selected }}
       onPress={onPress}
       style={({ pressed }) => [styles.chip, selected && styles.on, pressed && styles.pressed]}
     >
