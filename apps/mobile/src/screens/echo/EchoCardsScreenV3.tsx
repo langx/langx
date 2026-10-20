@@ -91,7 +91,8 @@ export function EchoCardsScreenV3() {
   /*
    * How many cards are in rotation, beside the title — only where the
    * summary answers the question the list is showing: the rotation, not the
-   * archive (archived cards count nowhere in it) and not a search.
+   * archive (archived cards count nowhere in it) and not a search. None at
+   * all says nothing: the empty state under it already does.
    */
   const shownTotal =
     archived || term || !summary.data
@@ -226,7 +227,7 @@ export function EchoCardsScreenV3() {
       <EchoHeaderV3
         title={t('echo.cards')}
         onBack={() => goBackTo('/(app)/(tabs)/echo')}
-        {...(shownTotal !== null && !selected
+        {...(shownTotal && !selected
           ? { meta: t('echo.cardCount', { count: shownTotal }) }
           : {})}
         trailing={

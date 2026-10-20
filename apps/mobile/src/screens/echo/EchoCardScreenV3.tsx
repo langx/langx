@@ -160,7 +160,8 @@ function Stat({ label, value }: { label: string; value: string }) {
   const styles = useStyles()
   return (
     <View style={styles.stat}>
-      <Text style={styles.statValue} numberOfLines={1}>
+      {/* Two lines, not one: "Due now" is the value a third of a phone wide. */}
+      <Text style={styles.statValue} numberOfLines={2}>
         {value}
       </Text>
       <Text style={styles.statLabel}>{label}</Text>
