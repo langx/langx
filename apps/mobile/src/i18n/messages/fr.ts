@@ -2532,6 +2532,10 @@ export const fr: Localized<EnMessages> = {
     poolParticipants: { one: '{n} actif ce jour-là', other: '{n} actifs ce jour-là' },
     poolShareOfPool: '{percent} de la cagnotte du jour',
     poolActiveToday: { one: '{n} actif aujourd’hui', other: '{n} actifs aujourd’hui' },
+    todayMessages: { one: 'message', other: 'messages' },
+    todayCorrections: { one: 'correction', other: 'corrections' },
+    todayPeople: { one: 'personne', other: 'personnes' },
+    seeHistory: 'Voir ton historique',
   },
 
   invite: {
@@ -2670,6 +2674,18 @@ export const fr: Localized<EnMessages> = {
     streakEmptyBody: 'Viens deux jours de suite et tu figureras dans ce classement.',
     echoEmptyTitle: 'Aucune révision sur cette période',
     echoEmptyBody: 'Réponds à quelques cartes et tu figureras dans ce classement pour la période.',
+    columnWeek: 'Cette semaine',
+    columnMonth: 'Ce mois-ci',
+    columnYear: 'Cette année',
+    columnTokens: 'Jetons gagnés',
+    columnNow: 'En ce moment',
+    columnEver: 'Record',
+    columnDays: 'Jours d’affilée',
+    rowTokens: { one: '{rank}. {name}, {amount} jeton', other: '{rank}. {name}, {amount} jetons' },
+    rowDays: {
+      one: '{rank}. {name}, {amount} jour d’affilée',
+      other: '{rank}. {name}, {amount} jours d’affilée',
+    },
   },
 
   badges: {

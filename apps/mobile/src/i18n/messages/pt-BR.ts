@@ -2495,6 +2495,10 @@ export const ptBR: Localized<EnMessages> = {
     poolParticipants: { one: '{n} ativo naquele dia', other: '{n} ativos naquele dia' },
     poolShareOfPool: '{percent} do bolo diário',
     poolActiveToday: { one: '{n} ativo hoje', other: '{n} ativos hoje' },
+    todayMessages: { one: 'mensagem', other: 'mensagens' },
+    todayCorrections: { one: 'correção', other: 'correções' },
+    todayPeople: { one: 'pessoa', other: 'pessoas' },
+    seeHistory: 'Ver seu histórico',
   },
 
   invite: {
@@ -2633,6 +2637,18 @@ export const ptBR: Localized<EnMessages> = {
     streakEmptyBody: 'Apareça dois dias seguidos e você entra nesta classificação.',
     echoEmptyTitle: 'Sem revisões neste período',
     echoEmptyBody: 'Responda alguns cartões e você entra na classificação deste período.',
+    columnWeek: 'Esta semana',
+    columnMonth: 'Este mês',
+    columnYear: 'Este ano',
+    columnTokens: 'Fichas ganhas',
+    columnNow: 'Agora',
+    columnEver: 'A mais longa',
+    columnDays: 'Dias seguidos',
+    rowTokens: { one: '{rank}. {name}, {amount} ficha', other: '{rank}. {name}, {amount} fichas' },
+    rowDays: {
+      one: '{rank}. {name}, {amount} dia seguido',
+      other: '{rank}. {name}, {amount} dias seguidos',
+    },
   },
 
   badges: {

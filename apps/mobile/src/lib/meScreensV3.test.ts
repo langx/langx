@@ -20,6 +20,14 @@ const PAIRS: readonly { current: string; v3: string; except?: readonly string[] 
   { current: 'testimonials.tsx', v3: 'me/TestimonialsScreenV3.tsx' },
   { current: 'profile-testimonials.tsx', v3: 'me/ProfileTestimonialsScreenV3.tsx' },
   { current: 'edit-profile.tsx', v3: 'me/EditProfileScreenV3.tsx' },
+  // The day counts are formatted for the locale (`toLocaleString`), not `String`ed.
+  {
+    current: 'streak/leaderboard.tsx',
+    v3: 'me/StreakLeaderboardScreenV3.tsx',
+    except: ['String'],
+  },
+  { current: 'wallet/leaderboard.tsx', v3: 'me/WalletLeaderboardScreenV3.tsx' },
+  { current: 'wallet/pool.tsx', v3: 'me/PoolScreenV3.tsx' },
 ]
 
 describe('v3 profile and growth pages keep the current pages’ words and requests', () => {

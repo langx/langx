@@ -2760,6 +2760,11 @@ export const en = {
     poolParticipants: { one: '{n} active that day', other: '{n} active that day' },
     poolShareOfPool: '{percent} of the daily pool',
     poolActiveToday: { one: '{n} active today', other: '{n} active today' },
+    /** The v3 pool's three tiles under today's counts, and its way to the ledger. */
+    todayMessages: { one: 'message', other: 'messages' },
+    todayCorrections: { one: 'correction', other: 'corrections' },
+    todayPeople: { one: 'person', other: 'people' },
+    seeHistory: 'See your history',
   },
 
   /** One per `TOKEN_KINDS`; `kindKey()` builds the key from the kind itself. */
@@ -2906,6 +2911,20 @@ export const en = {
     streakEmptyBody: 'Show up on two days in a row and you are on this board.',
     echoEmptyTitle: 'No reviews this period',
     echoEmptyBody: 'Answer a few cards and you are on this board for the period.',
+    /** Over the v3 board: which period it ranks, and what the number at the end is. */
+    columnWeek: 'This week',
+    columnMonth: 'This month',
+    columnYear: 'This year',
+    columnTokens: 'Tokens earned',
+    columnNow: 'Right now',
+    columnEver: 'Longest ever',
+    columnDays: 'Days in a row',
+    /** A row, read aloud. `amount` is `count` formatted for the locale; `name` may be "You". */
+    rowTokens: { one: '{rank}. {name}, {amount} token', other: '{rank}. {name}, {amount} tokens' },
+    rowDays: {
+      one: '{rank}. {name}, {amount} day in a row',
+      other: '{rank}. {name}, {amount} days in a row',
+    },
   },
 
   badges: {
