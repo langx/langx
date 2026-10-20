@@ -1,4 +1,6 @@
+import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
 import Feather from '@expo/vector-icons/Feather'
+import { useFonts } from 'expo-font'
 import type { ReactNode } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { Button } from '../../components/ui/Button'
@@ -55,6 +57,8 @@ export function SnapPreviewV3({
   const t = useT()
   const styles = useStyles()
   const { v3 } = useTheme()
+  // The heading and the options' titles are Nunito Black, which the root does not load yet.
+  useFonts({ Nunito_900Black })
   const labels: Record<SnapMode, { title: string; body: string }> = {
     once: { title: t('viewOnce.modeOnce'), body: t('viewOnce.modeOnceBody') },
     replay: { title: t('viewOnce.modeReplay'), body: t('viewOnce.modeReplayBody') },
