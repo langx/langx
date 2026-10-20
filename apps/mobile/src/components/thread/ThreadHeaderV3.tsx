@@ -10,7 +10,7 @@ import { partnerHueFor } from '../../lib/theme/partnerHue'
 import { OfficialMark } from '../OfficialMark'
 import { PresenceLine } from '../PresenceLine'
 import { Avatar } from '../ui/Avatar'
-import { IconButton } from '../ui/IconButton'
+import { ICON_BUTTON_TARGET, IconButton } from '../ui/IconButton'
 import { Skeleton } from '../ui/Skeleton'
 
 /** The drawing's face: big enough to be the band's subject, not a list row's. */
@@ -214,8 +214,15 @@ const useStyles = makeStyles(({ v3 }) => ({
     gap: v3.space[12],
     paddingHorizontal: v3.space[8],
   },
-  // Between the back and the controls, taking whatever they leave.
-  whoCompact: { flex: 1, gap: v3.space[10], minWidth: 0, paddingHorizontal: 0 },
+  // Between the back and the controls, taking whatever they leave. The
+  // folded face is smaller than a finger, so the row keeps a button's height.
+  whoCompact: {
+    flex: 1,
+    gap: v3.space[10],
+    minHeight: ICON_BUTTON_TARGET,
+    minWidth: 0,
+    paddingHorizontal: 0,
+  },
   names: { flex: 1, gap: v3.space[4], minWidth: 0 },
   namesCompact: { gap: 0 },
   nameRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[6] },

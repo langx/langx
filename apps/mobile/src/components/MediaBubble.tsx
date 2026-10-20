@@ -51,8 +51,10 @@ export function AudioBubble({
   /**
    * One colour for every glyph, on a coloured fill — the v3 bubbles, white on
    * your blue and ink on their hue — where the current look's accent and
-   * greys would sink into the fill. The faint parts take it at a lower
-   * opacity. Absent: the current look, unchanged.
+   * greys would sink into the fill. The faint parts take it at full
+   * strength too: white on the blue clears 4.5:1 by a few hundredths, so any
+   * fading drops the duration and the speed under it. Absent: the current
+   * look, unchanged.
    */
   ink?: string | undefined
 }) {
@@ -97,7 +99,6 @@ export function AudioBubble({
   const tint = ink ?? (mine ? colors.accent : colors.text)
   const strong = ink ?? colors.text
   const faint = ink ?? colors.textFaint
-  const faded = ink !== undefined ? styles.inkFaint : null
   // `unsupported` is a type this platform will not decode; `error` is a load
   // that failed. Both leave nothing to press, and both used to be a button
   // that did nothing at all.
@@ -147,13 +148,13 @@ export function AudioBubble({
           void toggle()
         }}
       >
-        <Text style={[styles.playIcon, { color: broken ? faint : strong }, broken && faded]}>
+        <Text style={[styles.playIcon, { color: broken ? faint : strong }]}>
           {loading ? '⋯' : status.playing ? '❚❚' : '▶'}
         </Text>
       </Pressable>
 
       {broken ? (
-        <Text style={[styles.unavailable, { color: faint }, faded]} numberOfLines={2}>
+        <Text style={[styles.unavailable, { color: faint }]} numberOfLines={2}>
           {/* A load that failed is a file that is not there — most often a
               forward whose original was withdrawn. "Will not play on this
               device" is for the codec, and would send them looking at their
@@ -181,7 +182,7 @@ export function AudioBubble({
             }
           />
 
-          <Text style={[styles.duration, { color: faint }, faded]}>
+          <Text style={[styles.duration, { color: faint }]}>
             {formatSeconds(status.playing || elapsed > 0 ? elapsed : total)}
           </Text>
         </>
@@ -215,13 +216,7 @@ export function AudioBubble({
             player.setPlaybackRate(next, 'high')
           }}
         >
-          <Text
-            style={[
-              styles.rate,
-              { color: rate === NORMAL_PLAYBACK_RATE ? faint : tint },
-              rate === NORMAL_PLAYBACK_RATE && faded,
-            ]}
-          >
+          <Text style={[styles.rate, { color: rate === NORMAL_PLAYBACK_RATE ? faint : tint }]}>
             {t('chat.playbackRate', { rate: rateLabel })}
           </Text>
         </Pressable>
@@ -438,8 +433,6 @@ const GALLERY_GAP = 2
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   audioRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, minWidth: 180 },
   playIcon: { fontSize: 16 },
-  /** The faint parts of a note drawn in one `ink`: the same colour, quieter. */
-  inkFaint: { opacity: 0.75 },
   // `space-between` hands the few pixels left after the last whole bar out
   // between the gaps, so the bars span the row and a touch at either end is
   // the start or the end of the note.
