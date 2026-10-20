@@ -2614,6 +2614,12 @@ export const ru: Localized<EnMessages> = {
   store: {
     streakFreeze: 'Заморозка серии',
     streakFreezeBody: 'Покроет следующий пропущенный день · {banked}/{max} в запасе',
+    streakFreezeBodyCount: {
+      one: 'Покроет следующий пропущенный день · {count} заморозка в запасе',
+      few: 'Покроет следующий пропущенный день · {count} заморозки в запасе',
+      many: 'Покроет следующий пропущенный день · {count} заморозок в запасе',
+      other: 'Покроет следующий пропущенный день · {count} заморозки в запасе',
+    },
     ownedAccessibility: '{title}, уже есть',
     locked: 'Закрыто',
     lockedAccessibility: '{title}, закрыто',

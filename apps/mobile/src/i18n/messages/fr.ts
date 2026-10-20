@@ -2318,6 +2318,10 @@ export const fr: Localized<EnMessages> = {
   store: {
     streakFreeze: 'Gel de série',
     streakFreezeBody: 'Couvre le prochain jour manqué · {banked}/{max} en réserve',
+    streakFreezeBodyCount: {
+      one: 'Couvre le prochain jour manqué · {count} gel en réserve',
+      other: 'Couvre le prochain jour manqué · {count} gels en réserve',
+    },
     ownedAccessibility: '{title}, déjà acquis',
     locked: 'Verrouillé',
     lockedAccessibility: '{title}, verrouillé',

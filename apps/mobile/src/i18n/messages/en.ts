@@ -2526,6 +2526,10 @@ export const en = {
   store: {
     streakFreeze: 'Streak freeze',
     streakFreezeBody: 'Covers the next day you miss · {banked}/{max} banked',
+    streakFreezeBodyCount: {
+      one: 'Covers the next day you miss · {count} freeze banked',
+      other: 'Covers the next day you miss · {count} freezes banked',
+    },
     ownedAccessibility: '{title}, owned',
     locked: 'Locked',
     lockedAccessibility: '{title}, locked',
