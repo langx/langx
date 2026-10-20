@@ -23,8 +23,9 @@ const PERIOD_MS = 20_000
  * the outer glass, then rests where it started until twenty seconds have
  * passed. The only frame that moves.
  *
- * Passed to `Avatar` as `sweep` by the two places it runs — the Me hero and
- * the profile screen when it is your own — and nowhere else, so a list of
+ * Passed to `Avatar` as `sweep` by the places it runs — the Me hero, the
+ * profile screen when it is your own, and a frame's sheet in the redesign's
+ * store (`FrameDetailSheet`) — and nowhere else, so a list of
  * other people never animates. Under reduce motion it does not move at all: the highlight rests
  * at 30°, which is the still drawing. It pauses while its screen is not
  * focused or the app is in the background, and starts again from rest.
