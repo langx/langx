@@ -296,6 +296,24 @@ export const frameColors = {
   },
 } as const
 
+/**
+ * The ring colour for a tone, or the scheme's ink when the tone is unknown.
+ *
+ * A tone can arrive from the API — the leaderboard ships it as a bare string —
+ * and the catalogue grows by OTA and server deploy at different times, so an
+ * older client will be handed tones it has never heard of. Indexing
+ * `frameColors` directly gave those `undefined`: a ring with a width and no
+ * colour. A plain ink ring still says "this person wears a frame" without
+ * guessing at one. An own-property check rather than `??` alone, because a tone
+ * such as `constructor` would otherwise resolve to a function off the prototype.
+ */
+export function frameColor(scheme: ColorScheme, tone: string): string {
+  const tones: Record<string, string> = frameColors[scheme]
+  return Object.prototype.hasOwnProperty.call(tones, tone)
+    ? (tones[tone] as string)
+    : palettes[scheme].colors.ink
+}
+
 export const layout = {
   maxWidth: 720,
   avatar: 48,

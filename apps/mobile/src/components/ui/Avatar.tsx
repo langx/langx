@@ -5,8 +5,7 @@ import { Text, View } from 'react-native'
 import { API_URL } from '../../lib/apiUrl'
 // `layout` stays a direct import: it is scheme-independent, and a default
 // parameter value is evaluated before any hook could have run.
-import { frameColors, layout, makeStyles, useTheme, type ThemeColors } from '../../lib/theme'
-import type { CosmeticTone } from '@langx/shared'
+import { frameColor, layout, makeStyles, useTheme, type ThemeColors } from '../../lib/theme'
 
 interface AvatarProps {
   url?: string | undefined
@@ -19,8 +18,12 @@ interface AvatarProps {
   seed?: string | undefined
   size?: number
   online?: boolean
-  /** A cosmetic tone from `COSMETICS`. Omitted means no frame. */
-  frame?: CosmeticTone | undefined
+  /**
+   * A cosmetic tone from `COSMETICS`. Omitted means no frame. A plain string
+   * because a tone can come from the API, and one this build does not know
+   * draws an ink ring — see `frameColor`.
+   */
+  frame?: string | undefined
 }
 
 /**
@@ -129,7 +132,7 @@ export function Avatar({
     <View
       style={{
         alignItems: 'center',
-        borderColor: frameColors[scheme][frame],
+        borderColor: frameColor(scheme, frame),
         borderRadius: (size + ringWidth * 4) / 2,
         borderWidth: ringWidth,
         height: size + ringWidth * 4,
