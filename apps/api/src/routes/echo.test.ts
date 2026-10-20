@@ -9,6 +9,8 @@ import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
+import { summary } from '../modules/echo/cards'
+import { submitReviews } from '../modules/echo/reviews'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
@@ -17,6 +19,7 @@ import {
   weekKey,
   ECHO_ARCHIVE_BATCH_MAX,
   ECHO_AUDIO_MAX,
+  ECHO_REVIEW_DURATION_MAX_MS,
   echoAwardSchema,
   newCardSrs,
   PLAN_LIMITS,
@@ -817,6 +820,109 @@ describe('echo', () => {
       expect(
         await handle.db.collection(COLLECTIONS.echoReviews).countDocuments({ userId: user.userId }),
       ).toBe(SRS_RULES.sessionSize)
+    })
+
+    /*
+     * The count and the key used to be on different days: sessions counted
+     * over a rolling twenty-four hours, payments keyed on the local day. Just
+     * after local midnight last evening's sessions were still counted under
+     * new keys, and the first batch of the day was paid for all of them again.
+     */
+    it('pays each session once across local midnight', async () => {
+      const user = await newUser('pay-midnight@example.com')
+      await handle.db
+        .collection(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId as never }, { $set: { timezone: 'America/Toronto' } })
+      const cards = await giveCards(user.userId, 3 * SRS_RULES.sessionSize)
+      const session = (from: number, tag: string) =>
+        cards.slice(from, from + SRS_RULES.sessionSize).map((cardId, index) => ({
+          reviewId: `rv-midnight-${tag}-${index}-0000`,
+          cardId,
+          grade: 'good' as const,
+          durationMs: 900,
+        }))
+
+      // 22:30 and 23:00 in Toronto on the 18th, then 00:30 on the 19th — all
+      // three inside the same UTC day.
+      await submitReviews(
+        handle.db,
+        user.userId,
+        { reviews: session(0, 'a') },
+        new Date('2026-10-19T02:30:00Z'),
+      )
+      await submitReviews(
+        handle.db,
+        user.userId,
+        { reviews: session(SRS_RULES.sessionSize, 'b') },
+        new Date('2026-10-19T03:00:00Z'),
+      )
+      const after = new Date('2026-10-19T04:30:00Z')
+      const third = await submitReviews(
+        handle.db,
+        user.userId,
+        { reviews: session(2 * SRS_RULES.sessionSize, 'c') },
+        after,
+      )
+
+      const award = echoAwardSchema.parse(third.award)
+      expect(award.tokens - (award.streak?.milestoneXp ?? 0)).toBe(TOKEN_RULES.award.echoSession)
+      expect(await balanceOf(user.userId)).toBe(3 * TOKEN_RULES.award.echoSession)
+      // The done screen's "Session X of N" reads this, so it says three too.
+      expect((await summary(handle.db, user.userId, after)).sessionsToday).toBe(3)
+    })
+
+    it('starts the count again at UTC midnight', async () => {
+      const user = await newUser('pay-utc-midnight@example.com')
+      const cards = await giveCards(user.userId, 2 * SRS_RULES.sessionSize)
+      const session = (from: number, tag: string) =>
+        cards.slice(from, from + SRS_RULES.sessionSize).map((cardId, index) => ({
+          reviewId: `rv-utc-${tag}-${index}-0000`,
+          cardId,
+          grade: 'good' as const,
+          durationMs: 900,
+        }))
+
+      await submitReviews(
+        handle.db,
+        user.userId,
+        { reviews: session(0, 'a') },
+        new Date('2026-10-19T23:30:00Z'),
+      )
+      const after = new Date('2026-10-20T00:30:00Z')
+      await submitReviews(
+        handle.db,
+        user.userId,
+        { reviews: session(SRS_RULES.sessionSize, 'b') },
+        after,
+      )
+
+      expect(await balanceOf(user.userId)).toBe(2 * TOKEN_RULES.award.echoSession)
+      expect((await summary(handle.db, user.userId, after)).sessionsToday).toBe(1)
+    })
+
+    // A card left on screen used to be a 400 for the whole batch, and every
+    // grade in it was lost. Builds without the client clamp still send these.
+    it('saves a batch with a card left on screen, and pays it like any other', async () => {
+      const user = await newUser('pay-long-card@example.com')
+      const cards = await giveCards(user.userId, SRS_RULES.sessionSize)
+      const response = await grade(
+        user,
+        cards.map((cardId, index) => ({
+          reviewId: `rv-long-${index}-0000`,
+          cardId,
+          grade: 'good',
+          durationMs: index === 0 ? 60 * 60 * 1000 : 900,
+        })),
+      )
+      expect(response.statusCode, response.body).toBe(200)
+      expect(await balanceOf(user.userId)).toBe(TOKEN_RULES.award.echoSession)
+      const longest = await handle.db
+        .collection<{ durationMs: number }>(COLLECTIONS.echoReviews)
+        .find({ userId: user.userId })
+        .sort({ durationMs: -1 })
+        .limit(1)
+        .next()
+      expect(longest?.durationMs).toBe(ECHO_REVIEW_DURATION_MAX_MS)
     })
 
     describe('and says so in the response', () => {

@@ -58,6 +58,23 @@ export const ECHO_ARCHIVE_BATCH_MAX = 100
 export const ECHO_REVIEW_BATCH_MAX = 10 * SRS_RULES.sessionSize
 
 /**
+ * The longest a card counts as having been on screen, in milliseconds.
+ *
+ * A ceiling, not a validity rule. `durationMs` runs from the card appearing to
+ * the grade, so a phone put down mid-card honestly records an hour. That used
+ * to be a 400 for the whole batch, and the batch was the session: every grade
+ * in it was lost. Both ends clamp to this instead — the app before it sends,
+ * the server for builds that do not — so the duration that reaches
+ * `echoSecondsPerCard` is bounded and the grades always land.
+ */
+export const ECHO_REVIEW_DURATION_MAX_MS = 10 * 60 * 1000
+
+/** `durationMs` held to `ECHO_REVIEW_DURATION_MAX_MS`. */
+export function clampEchoDurationMs(durationMs: number): number {
+  return Math.min(durationMs, ECHO_REVIEW_DURATION_MAX_MS)
+}
+
+/**
  * How many of a person's latest answers the summary reads to say how long a
  * card takes them — `echoSecondsPerCard`. Five sessions: enough that one
  * slow evening does not move it, few enough that it follows somebody who has
@@ -370,6 +387,14 @@ export const echoSummarySchema = z.object({
    * would open on. Absent from an API older than the field.
    */
   partners: z.array(echoPartnerDueSchema).optional(),
+  /**
+   * Sessions completed today, by the count `submitReviews` pays by: the
+   * current **UTC** day's reviews through `completedEchoSessions`, so already
+   * capped. Not `reviewedToday`, which is a rolling twenty-four hours for the
+   * tab's figure and would disagree with the payout just after midnight.
+   * Absent from an API older than the field.
+   */
+  sessionsToday: z.number().int().nonnegative().optional(),
 })
 export type EchoSummary = z.infer<typeof echoSummarySchema>
 
@@ -575,12 +600,13 @@ export const submitEchoReviewsSchema = z.object({
         reviewId: echoReviewIdSchema,
         cardId: z.string().trim().min(1),
         grade: z.enum(ECHO_GRADES),
-        /** How long the card was on screen. Recorded, not yet used. */
-        durationMs: z
-          .number()
-          .int()
-          .nonnegative()
-          .max(10 * 60 * 1000),
+        /**
+         * How long the card was on screen, for the summary's pace. Clamped to
+         * `ECHO_REVIEW_DURATION_MAX_MS` rather than refused: one card left on
+         * screen must not cost the grades beside it. Duration pays nothing, so
+         * a clamped card earns exactly what any other card does.
+         */
+        durationMs: z.number().int().nonnegative().transform(clampEchoDurationMs),
       }),
     )
     .min(1)
@@ -662,7 +688,7 @@ export const echoQueueQuerySchema = z.object({
 export type EchoQueueQuery = z.infer<typeof echoQueueQuerySchema>
 
 /**
- * The ledger key for the nth completed session of one local day.
+ * The ledger key for the nth completed session of one UTC day.
  *
  * A session is counted rather than recorded: there is no session row, only
  * graded cards, so "the third session of the 14th" is the honest identity for
@@ -670,8 +696,8 @@ export type EchoQueueQuery = z.infer<typeof echoQueueQuerySchema>
  * which is what lets `submitReviews` recompute from scratch on every batch
  * without remembering what it already paid.
  */
-export function echoSessionRefId(localDay: string, sessionNumber: number): string {
-  return `echo:${localDay}:${sessionNumber}`
+export function echoSessionRefId(utcDay: string, sessionNumber: number): string {
+  return `echo:${utcDay}:${sessionNumber}`
 }
 
 /**

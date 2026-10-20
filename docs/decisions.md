@@ -1065,6 +1065,44 @@ fixed.
 **What old builds will see.** Nothing: two summary fields they do not read,
 and a queue parameter they never send.
 
+## Echo counts and pays sessions on one day, the UTC one
+
+**19 October 2026.** **Amended:** _Echo leads with what is due, and the done
+screen says what it earned_ above, its paragraph _Which day the count uses_.
+That paragraph recorded a rolling twenty-four-hour count beside local-day
+payout keys and left the gap open; rule 5 of the redesign brief says caps and
+payout keys use the UTC day, with only the streak local. The two disagreed,
+and rule 5 wins.
+
+- **One day for both.** `settleSessions` counts the reviews since UTC
+  midnight and keys each payment `echo:<utcDay>:<n>`. With the count and the
+  key on the same day, last evening's sessions can no longer be paid again
+  under the new day's keys. UTC rather than local because a local key can be
+  re-earned by changing the profile's timezone. Every other payout key is UTC
+  too. `user_kind_ref_unique` on the ledger is still what makes a session
+  payable once; no index changes.
+- **The streak stays local.** A paid session still fills today's local square
+  through `recordQualifyingAction`. Somebody west of UTC whose evening crosses
+  UTC midnight starts a fresh count of five then, the same as the message
+  caps.
+- **The done screen reads the server's count.** The summary gains
+  `sessionsToday`, from the same `echoSessionsToday` that `settleSessions`
+  pays by, already capped, and "Session X of N today" draws it. The summary's
+  `reviewedToday` stays the rolling day the Echo tab and Home show. It never
+  decided a payout, and moving it would move those two screens for no gain.
+- **Left as it was.** A session past the day's cap pays nothing and so fills
+  no streak square. The rolling window had the same gap.
+- **The day it ships.** Keys already written on a local day are compared with
+  UTC days from then on, once. East of UTC that can find a morning's key
+  already taken and pay that session nothing. West of UTC, sessions paid
+  under local keys in the evening before it shipped can be counted once more
+  under the UTC day's keys. Both are bounded by the cap and happen only once.
+
+**What old builds will see.** The same payout rule as everyone, because it is
+the server's. A build that draws "Session X of N" from `reviewedToday` can be
+off by the old gap near midnight until it updates. A summary field they do
+not read.
+
 ## Buttons are flat pills in sentence case, and still press on `Animated`
 
 **17 October 2026.** The first piece of the current look that v3 replaces,

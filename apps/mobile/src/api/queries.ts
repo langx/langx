@@ -148,6 +148,7 @@ import { showToast } from '../lib/toast'
 import { currentTranslate } from '../i18n/runtime'
 import { applyLanguageEdit, sameLanguageLists, type LanguageEdit } from '../lib/profileLanguages'
 import { isAllowedAudioType } from '../lib/recordingFormat'
+import { boundedEchoReviews } from '../lib/echoV3'
 import {
   applyAnswer,
   applyCommentCount,
@@ -4455,7 +4456,7 @@ export function useSubmitEchoReviews() {
   const client = useQueryClient()
   return useMutation({
     mutationFn: (input: SubmitEchoReviewsInput) =>
-      api.post<SubmitEchoReviewsResult>('/echo/reviews', input),
+      api.post<SubmitEchoReviewsResult>('/echo/reviews', boundedEchoReviews(input)),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.echo })
     },
