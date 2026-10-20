@@ -35,6 +35,8 @@ import { listState } from '../../src/lib/listState'
 import { dayLabel } from '../../src/lib/messageGroups'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../src/lib/theme'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { ChatMediaScreenV3 } from '../../src/screens/chat/ChatMediaScreenV3'
 
 const COLUMNS = 3
 const GRID_GAP = 2
@@ -89,7 +91,12 @@ function tilesOf(messages: MessageDto[]): Tile[] {
  * `numColumns` going from 3 to 1 on a live list is a hard render error, not a
  * warning. The `key` is what makes them two components instead of one.
  */
-export default function ChatMediaScreen() {
+export default function ChatMediaRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <ChatMediaScreenV3 /> : <ChatMediaScreen />
+}
+
+function ChatMediaScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

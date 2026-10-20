@@ -168,6 +168,11 @@ export const en = {
    * person it was sent to, and what has been done for the person who sent it.
    */
   viewOnce: {
+    modeHeading: 'How they see it',
+    modeOnceBody: 'Gone once they open it.',
+    modeReplayBody: 'They can open it one more time.',
+    modeKeepBody: 'Stays in the chat like any photo.',
+    tapToClose: 'Tap anywhere to close',
     photo: 'Photo',
     video: 'Video',
     tapToView: 'Tap to view',
