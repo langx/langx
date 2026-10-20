@@ -867,6 +867,7 @@ allowlist.
 ## Home leads the bar, and People holds Discover and the Feed — behind a flag
 
 > **Amended 19 October 2026 — see _Chats leads with the people waiting on you — behind the same flag_ below.**
+> **Amended 19 October 2026 — see _Echo leads with what is due, and the done screen says what it earned — behind the same flag_ below.**
 
 **18 October 2026.** The first restructured surface (D4, D5, move S1), and the
 first change to the app's structure rather than its look. Two rules go, and
@@ -976,6 +977,93 @@ new message re-renders the thread it changed and opening a drawer re-renders
 the two rows whose state flipped. It is the same `FlatList` on the same pages
 as before. Nothing on the server changed: `unreplied`, `partner` and
 `lastMessage` were already on every row.
+
+## People's two segments in v3: a card per person, a card per post
+
+**19 October 2026.** Phase 5's People and Posts, drawn from `V-People` and
+`V-Posts`, behind the same `flags.v3Home`. Only the drawing changes: the
+sort, the filters, Nearby, search, the feed's ranking and its correction box
+are the screens they were, and with the flag off both segments are today's
+Discover and Feed.
+
+- **A person is a card in their partner colour**, face first, with the pair
+  of languages and one Say hello that opens the new-chat screen — the same
+  door Home's hello uses, so the allowance, the newcomer hello and the
+  paywall on refusal are decided where they always were. No swipe and no
+  age in the headline (rule 20): the card is an invitation to an exchange
+  of languages, and the pair says which. Level, streak and age stay on the
+  profile and in the filters.
+- **"New chats left today: 3 of 5"** heads the list for an account with an
+  allowance. Both numbers are `/me/quota`'s, so the total is the reader's own
+  plan; Pro and gifted Pro (no `limit`) and guests see no line.
+- **"New on LangX"** is the `/discovery/new` strip from _Discovery puts the
+  people who answer first, behind a switch_, on For you only. The client adds
+  no condition of its own: the server's empty answer — switch off, a minor,
+  a guest, an older API — draws nothing. A tile says hello, as the drawing
+  has it. **"Usually replies within a day"** appears only where the card
+  carries `repliesWithinDay`; the drawing's "within an hour" is not built,
+  because S2 defines no such line.
+- **An ask and a moment are two cards.** An ask is its author's colour with
+  what it asks in words ("Is this natural?"), the sentence big, its top
+  correction as the current card shows it, and one Help button: the feed's
+  own correction box for a correction, the post (where the recorder lives)
+  for a recording. A moment is a grey card with its likes and one Comment
+  button. The drawing's "Correct" on a moment is not built — _Asks are
+  optional, and only asked-for help can be given_ stands, and the server
+  would refuse it. Likes stay on moments and on every post's page; an ask's
+  card is about help.
+
+## Echo leads with what is due, and the done screen says what it earned — behind the same flag
+
+**19 October 2026.** The Echo tab and the end of a review, behind
+`flags.v3Home` (Phase 5). With the flag off both are what they were. With it
+on, `app/(app)/(tabs)/echo.tsx` draws `src/screens/EchoV3Screen.tsx` and
+`echo/session.tsx` ends on `src/components/echo/EchoDoneV3.tsx`, so the entry
+above's "the screens behind the tabs keep the current look" no longer holds
+for Echo. The tab waits for the flag's answer, as Home's route does.
+
+- **The tab.** A `HeroTile` with the due count and the screen's one yellow,
+  which asks for a language exactly as the current tab does. Beside the count,
+  "about M minutes": the summary's new `secondsPerCard` — the median time a
+  card was on screen over the latest `ECHO_PACE_SAMPLE` answers, the median so
+  that one card left on screen does not move it — times what is due. Until a
+  person has answered a session's worth, the hero says how many and not how
+  long. Under it, the due cards kept from chats, grouped by who wrote them
+  (the summary's new `partners`, at most `ECHO_SUMMARY_PARTNERS`), each in
+  that person's hue and each a review of just their cards (the queue's new
+  `partner`). A group is one language, the one with most of that person's
+  cards due, and opens with it: _Review asks which language_ in
+  `docs/echo.md` removed the mixed deck, and a partner's lines kept in two
+  languages would have brought it back. The groups show under All only: they
+  are the ones with most due across every language, so beside a language
+  chip they would be a partial list. Nothing due is a grey block that says
+  when the next card is back; no cards at all is `EmptyStateV3`. The
+  rotating tip line is not drawn; Phase 7 replaces tips with coach cards.
+- **The done screen.** The tokens are the batch's `award` as the server
+  answered it, and nothing is said about tokens when it paid none. "Streak
+  kept · day N" only when that award carries the streak. "Session X of N
+  today" is `completedEchoSessions` over a summary fetched after the batch
+  landed, with N from `TOKEN_RULES.caps.echoSessionsPerDay`; a batch past the
+  cap says all of today's are done instead, and a short one that completed no
+  session says nothing about sessions. One more session is the yellow while a
+  paid session is left today and the same deck still has cards, and opens a
+  fresh one; otherwise Done is. A batch that paid gets the success haptic, and
+  the confetti only when motion is allowed.
+
+**Which day the count uses: the rolling twenty-four hours.** `settleSessions`
+counts sessions as `completedEchoSessions` over the reviews of the last
+twenty-four hours and keys each payment on the **local** day
+(`echo:<localDay>:<n>`). The screen runs the same function over the summary's
+`reviewedToday`, which is the same window, so the line always agrees with what
+was paid — including where the two clocks disagree. Just after local midnight
+last evening's sessions still count, and the first batch of the new day is
+paid again for each of them under the new day's keys, up to the cap; the done
+screen then reports that as earned, because it was. This is the inconsistency
+the redesign brief asks Phase 6 to fix first. It is written down here and not
+fixed.
+
+**What old builds will see.** Nothing: two summary fields they do not read,
+and a queue parameter they never send.
 
 ## Buttons are flat pills in sentence case, and still press on `Animated`
 

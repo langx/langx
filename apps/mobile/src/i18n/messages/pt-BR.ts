@@ -99,6 +99,12 @@ export const ptBR: Localized<EnMessages> = {
     attachLibrary: 'Foto ou vídeo',
     attachCamera: 'Tirar uma foto',
     attachVoice: 'Nota de voz',
+    trayCamera: 'Câmera',
+    trayTime: 'Horário',
+    trayQuiz: 'Quiz',
+    trayPhrases: 'Expressões',
+    trayStarred: 'Favoritas',
+    onLatest: 'Na última mensagem de {name}',
   },
 
   media: {
@@ -501,6 +507,34 @@ export const ptBR: Localized<EnMessages> = {
     aboutClose: 'Entendi',
     audioFull: 'Este cartão já tem todas as gravações que pode guardar.',
     postToFeed: 'Publicar no feed',
+    subtitle: 'As frases das suas conversas voltam logo antes de você esquecê-las.',
+    dueUnit: { one: 'cartão pendente', other: 'cartões pendentes' },
+    aboutMinutes: { one: 'cerca de {count} minuto', other: 'cerca de {count} minutos' },
+    byPartner: 'Por parceiro',
+    fromPartner: 'De {name}',
+    partnerDue: { one: '{count} pendente', other: '{count} pendentes' },
+    andMore: { one: 'e mais {count}', other: 'e mais {count}' },
+    reviewFrom: {
+      one: 'Revisar {count} cartão de {name}',
+      other: 'Revisar {count} cartões de {name}',
+    },
+    cardsKept: { one: 'cartão guardado', other: 'cartões guardados' },
+    reviewedWeek: { one: 'revisado esta semana', other: 'revisados esta semana' },
+    emptyLine:
+      'Nenhum cartão ainda. Segure uma mensagem em uma conversa e escolha Adicionar ao Echo.',
+    rememberedCount: { one: '{count} lembrado', other: '{count} lembrados' },
+    tokensEarned: { one: '+{count} token', other: '+{count} tokens' },
+    streakKept: 'Sequência mantida · dia {day}',
+    sessionOf: 'Sessão {done} de {total} hoje',
+    sessionsAllDone: {
+      one: 'A sessão de hoje está feita',
+      other: 'As {count} sessões de hoje estão feitas',
+    },
+    sessionsEarn: {
+      one: 'Sua primeira sessão de cada dia rende tokens.',
+      other: 'Suas primeiras {count} sessões de cada dia rendem tokens.',
+    },
+    oneMore: 'Mais uma sessão',
   },
 
   conversationPicker: {
@@ -1054,6 +1088,15 @@ export const ptBR: Localized<EnMessages> = {
     emptyTitle: 'Ainda não tem ninguém',
     emptyBody:
       'Aqui aparecem pessoas cujos idiomas combinam com os seus nos dois sentidos. Tente afrouxar os filtros.',
+    chatsLeft: {
+      one: 'Resta {count} de {total} conversas novas hoje',
+      other: 'Restam {count} de {total} conversas novas hoje',
+    },
+    chatsLeftNote: 'Respostas nunca contam.',
+    newOnLangx: 'Novos no LangX',
+    helloNewcomer: 'Dê um oi para {name}, que acabou de chegar ao LangX',
+    repliesWithinDay: 'Costuma responder em até um dia',
+    changeFilters: 'Mudar filtros',
   },
 
   filters: {
@@ -1666,6 +1709,11 @@ export const ptBR: Localized<EnMessages> = {
     postedCorrection: 'Publicado. Alguém vai corrigir.',
     askCorrectionHint:
       'Alguém nativo vai corrigir, geralmente em menos de uma hora. As correções são ilimitadas em todos os planos.',
+    askChip: 'Pergunta',
+    momentChip: 'Momento',
+    askNatural: 'Isso soa natural?',
+    askPronounce: 'Como se pronuncia isso?',
+    helpName: 'Ajudar {name}',
   },
 
   profile: {
@@ -1994,6 +2042,41 @@ export const ptBR: Localized<EnMessages> = {
     emptyBody: 'Mande uma mensagem ou escreva uma correção, e hoje vira seu primeiro dia.',
     legendMissed: 'Perdido · toque para preencher',
     daysTogether: { one: '{count} dia juntos', other: '{count} dias juntos' },
+    heroUnit: { one: 'dia de sequência', other: 'dias de sequência' },
+    heroLongest: { one: 'Recorde: {count}', other: 'Recorde: {count}' },
+    weekA11y: { one: 'Esta semana: {count} dia feito', other: 'Esta semana: {count} dias feitos' },
+    freezes: 'Congelamentos: {banked} de {max}',
+    freezeBody: 'Um congelamento cobre o próximo dia que você perder.',
+    freezesFull: 'Seu estoque está cheio. Um é usado na próxima vez que você perder um dia.',
+    protect: { one: 'Proteger · {count} ficha', other: 'Proteger · {count} fichas' },
+    protectA11y: {
+      one: 'Comprar um congelamento de sequência por {count} ficha',
+      other: 'Comprar um congelamento de sequência por {count} fichas',
+    },
+    freezeShort: { one: 'Você tem {count} ficha.', other: 'Você tem {count} fichas.' },
+    repairTitle: '{day} · Perdido',
+    repairBody: {
+      one: 'Recupere e sua sequência volta a {count} dia.',
+      other: 'Recupere e sua sequência volta a {count} dias.',
+    },
+    repairButton: {
+      one: 'Recuperar o dia · {count} ficha',
+      other: 'Recuperar o dia · {count} fichas',
+    },
+    milestones: 'Marcos',
+    rungTokens: '+{amount}',
+    rungWeeksOfPro: {
+      one: '+{amount} e uma semana de Pro',
+      other: '+{amount} e {count} semanas de Pro',
+    },
+    rungMonthsOfPro: {
+      one: '+{amount} e um mês de Pro',
+      other: '+{amount} e {count} meses de Pro',
+    },
+    rungToGo: { one: 'falta {count}', other: 'faltam {count}' },
+    rungProgress: { one: '{done} de {count} dia', other: '{done} de {count} dias' },
+    noStreakTitle: 'Ainda sem sequência',
+    noStreakBody: 'Um dia conta quando você abre o LangX ou pratica. Hoje pode ser o primeiro.',
   },
   settings: {
     scanBody: 'Entre em um computador ou abra o perfil de um amigo',

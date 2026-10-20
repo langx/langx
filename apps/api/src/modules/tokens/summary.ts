@@ -1,8 +1,9 @@
-import { isInFirstWeek, utcDayKey, type TokenSummary } from '@langx/shared'
+import { PRO_GIFT_RULES, isInFirstWeek, utcDayKey, type TokenSummary } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { ERROR_CODES } from '@langx/shared'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
+import { holdsLifetime } from '../billing/proGifts'
 import type { Profile } from '../profiles/profiles'
 import {
   countActiveToday,
@@ -60,6 +61,7 @@ export async function getTokenSummary(
       longest: profile.streak.longest,
       lastQualifiedDay: profile.streak.lastQualifiedDay,
       qualifiedToday: profile.streak.lastQualifiedDay === streakDay(profile, at),
+      proGiftRungs: proGiftRungsOwed(profile),
     },
     tokens,
     wallet: walletOf(profile, tokens.all),
@@ -76,4 +78,17 @@ export async function getTokenSummary(
     week,
     ...(corrected === undefined ? {} : { firstWeek: { corrected } }),
   }
+}
+
+/**
+ * The streak milestones whose gift of Pro this profile would still be given,
+ * read the way `queueStreakGifts` and `grantProGift` decide it: a rung already
+ * on `proGiftStreaks` has had its gift, and a lifetime plan's gifts are
+ * skipped, so it is owed none. Whatever the streak is now — the ladder shows
+ * the rungs ahead of it as well as the one it is on.
+ */
+function proGiftRungsOwed(profile: Pick<Profile, 'entitlement' | 'proGiftStreaks'>): number[] {
+  if (holdsLifetime(profile.entitlement)) return []
+  const given = profile.proGiftStreaks ?? []
+  return PRO_GIFT_RULES.streak.filter((rung) => !given.includes(rung.days)).map((rung) => rung.days)
 }

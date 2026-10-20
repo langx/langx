@@ -99,6 +99,12 @@ export const fr: Localized<EnMessages> = {
     attachLibrary: 'Photo ou vidéo',
     attachCamera: 'Prendre une photo',
     attachVoice: 'Note vocale',
+    trayCamera: 'Caméra',
+    trayTime: 'Créneau',
+    trayQuiz: 'Quiz',
+    trayPhrases: 'Expressions',
+    trayStarred: 'Favoris',
+    onLatest: 'Sur le dernier message de {name}',
   },
 
   media: {
@@ -509,6 +515,34 @@ export const fr: Localized<EnMessages> = {
     aboutClose: 'J’ai compris',
     audioFull: 'Cette carte contient déjà autant d’enregistrements qu’elle peut en garder.',
     postToFeed: 'Publier dans le fil',
+    subtitle: 'Les phrases de tes discussions reviennent juste avant que tu les oublies.',
+    dueUnit: { one: 'carte à revoir', other: 'cartes à revoir' },
+    aboutMinutes: { one: 'environ {count} minute', other: 'environ {count} minutes' },
+    byPartner: 'Par partenaire',
+    fromPartner: 'De la part de {name}',
+    partnerDue: { one: '{count} à revoir', other: '{count} à revoir' },
+    andMore: { one: 'et {count} autre', other: 'et {count} autres' },
+    reviewFrom: {
+      one: 'Revoir {count} carte de la part de {name}',
+      other: 'Revoir {count} cartes de la part de {name}',
+    },
+    cardsKept: { one: 'carte gardée', other: 'cartes gardées' },
+    reviewedWeek: { one: 'revue cette semaine', other: 'revues cette semaine' },
+    emptyLine:
+      'Pas encore de cartes. Appuie longuement sur un message dans une discussion et choisis Ajouter à Echo.',
+    rememberedCount: { one: '{count} retenue', other: '{count} retenues' },
+    tokensEarned: { one: '+{count} token', other: '+{count} tokens' },
+    streakKept: 'Série tenue · jour {day}',
+    sessionOf: 'Séance {done} sur {total} aujourd’hui',
+    sessionsAllDone: {
+      one: 'La séance du jour est faite',
+      other: 'Les {count} séances du jour sont faites',
+    },
+    sessionsEarn: {
+      one: 'Ta première séance de chaque jour rapporte des tokens.',
+      other: 'Tes {count} premières séances de chaque jour rapportent des tokens.',
+    },
+    oneMore: 'Encore une séance',
   },
 
   conversationPicker: {
@@ -1069,6 +1103,15 @@ export const fr: Localized<EnMessages> = {
     emptyTitle: 'Personne pour l’instant',
     emptyBody:
       'On affiche ici les gens dont les langues correspondent aux tiennes dans les deux sens. Essaie d’assouplir les filtres.',
+    chatsLeft: {
+      one: 'Il te reste {count} nouvelle discussion sur {total} aujourd’hui',
+      other: 'Il te reste {count} nouvelles discussions sur {total} aujourd’hui',
+    },
+    chatsLeftNote: 'Les réponses ne comptent jamais.',
+    newOnLangx: 'Nouveaux sur LangX',
+    helloNewcomer: 'Dis bonjour à {name}, qui vient d’arriver sur LangX',
+    repliesWithinDay: 'Répond en général dans la journée',
+    changeFilters: 'Modifier les filtres',
   },
 
   filters: {
@@ -1686,6 +1729,11 @@ export const fr: Localized<EnMessages> = {
     postedCorrection: 'Publié. Quelqu’un la corrigera.',
     askCorrectionHint:
       'Quelqu’un de natif la corrigera, en général dans l’heure. Les corrections sont illimitées sur tous les forfaits.',
+    askChip: 'Question',
+    momentChip: 'Moment',
+    askNatural: 'Est-ce que ça sonne naturel ?',
+    askPronounce: 'Comment ça se prononce ?',
+    helpName: 'Aider {name}',
   },
 
   profile: {
@@ -2020,6 +2068,46 @@ export const fr: Localized<EnMessages> = {
     emptyBody: 'Envoie un message ou écris une correction, et aujourd’hui sera ton premier jour.',
     legendMissed: 'Manqué · touche pour le rattraper',
     daysTogether: { one: '{count} jour ensemble', other: '{count} jours ensemble' },
+    heroUnit: { one: 'jour de série', other: 'jours de série' },
+    heroLongest: { one: 'Record : {count}', other: 'Record : {count}' },
+    weekA11y: {
+      one: 'Cette semaine : {count} jour fait',
+      other: 'Cette semaine : {count} jours faits',
+    },
+    freezes: 'Gels : {banked} sur {max}',
+    freezeBody: 'Un gel couvre le prochain jour que tu manques.',
+    freezesFull:
+      'Ta réserve est pleine. Un gel sera utilisé la prochaine fois que tu manqueras un jour.',
+    protect: { one: 'Protéger · {count} jeton', other: 'Protéger · {count} jetons' },
+    protectA11y: {
+      one: 'Acheter un gel de série pour {count} jeton',
+      other: 'Acheter un gel de série pour {count} jetons',
+    },
+    freezeShort: { one: 'Tu as {count} jeton.', other: 'Tu as {count} jetons.' },
+    repairTitle: '{day} · Manqué',
+    repairBody: {
+      one: 'Rachète-le et ta série revient à {count} jour.',
+      other: 'Rachète-le et ta série revient à {count} jours.',
+    },
+    repairButton: {
+      one: 'Racheter le jour · {count} jeton',
+      other: 'Racheter le jour · {count} jetons',
+    },
+    milestones: 'Paliers',
+    rungTokens: '+{amount}',
+    rungWeeksOfPro: {
+      one: '+{amount} et une semaine de Pro',
+      other: '+{amount} et {count} semaines de Pro',
+    },
+    rungMonthsOfPro: {
+      one: '+{amount} et un mois de Pro',
+      other: '+{amount} et {count} mois de Pro',
+    },
+    rungToGo: { one: 'encore {count}', other: 'encore {count}' },
+    rungProgress: { one: '{done} sur {count} jour', other: '{done} sur {count} jours' },
+    noStreakTitle: 'Pas encore de série',
+    noStreakBody:
+      'Un jour compte quand tu ouvres LangX ou que tu pratiques. Aujourd’hui peut être le premier.',
   },
   settings: {
     scanBody: 'Se connecter sur un ordinateur ou ouvrir le profil d’un ami',
