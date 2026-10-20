@@ -15,6 +15,8 @@ import { goBackTo } from '../../../src/lib/navigation'
 import { matchSettings, SETTINGS_SECTIONS } from '../../../src/lib/settingsRegistry'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { SettingsScreenV3 } from '../../../src/screens/SettingsScreenV3'
 
 /**
  * Settings, as categories.
@@ -28,7 +30,12 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
  * view. Sign out stays at the foot, outside any category: it is the one thing
  * somebody comes here to do in a hurry.
  */
-export default function SettingsScreen() {
+export default function SettingsRoute() {
+  // Read once per launch, like the redesign's tabs (`useV3Home`).
+  return useV3Home() ? <SettingsScreenV3 /> : <SettingsScreen />
+}
+
+function SettingsScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()
