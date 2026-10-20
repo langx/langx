@@ -1013,6 +1013,8 @@ export const en = {
     aboutYouBody: 'Just the basics — you can change all of this later.',
     aboutYouTitle: 'About you',
     displayName: 'Display name',
+    /** Under the display name while it still holds the one the account was made with. */
+    nameFromSignUp: 'From your sign-up. Change it if you like.',
     aboutYouOptional: 'About you (optional)',
     tooYoung: 'LangX is for people aged {age} and over.',
     photoTitle: 'Put a face to it',
@@ -1045,6 +1047,8 @@ export const en = {
     whatNext: 'What happens next',
     whatNextBody:
       'Discover shows people who speak what you are learning. Say hello to one of them.',
+    /** `whatNextBody` in the redesign, where Discover is the People tab (`flags.v3Home`). */
+    whatNextBodyPeople: 'People shows who speaks what you are learning. Say hello to one of them.',
     findSomeone: 'Find someone to talk to',
     sayHelloTo: 'Say hello to {name}',
     inviteCodeToggle: 'Have an invite code?',

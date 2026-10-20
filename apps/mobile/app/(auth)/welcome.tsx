@@ -3,11 +3,13 @@ import logo from '../../assets/brand/logo-rounded.png'
 import { router } from 'expo-router'
 import { useEffect, useMemo, useRef } from 'react'
 import { Animated, Text, View } from 'react-native'
+import { WelcomeV3 } from '../../src/components/onboarding/WelcomeV3'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { useGuestBrowse } from '../../src/hooks/useGuestBrowse'
 import { useReduceMotion } from '../../src/hooks/useReduceMotion'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
 import { useLocale, useT } from '../../src/i18n'
 import { track } from '../../src/lib/analytics'
 import { welcomePairs, type LanguagePair } from '../../src/lib/welcomePairs'
@@ -43,6 +45,23 @@ export default function WelcomeScreen() {
   const { start: browse, starting } = useGuestBrowse()
 
   const pairs = useMemo(() => welcomePairs(locale), [locale])
+
+  // The redesign's look behind `flags.v3Home`, never waited for: this screen
+  // is drawn before the flag can answer, as today's. See `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
+  if (v3) {
+    return (
+      <WelcomeV3
+        pairs={pairs}
+        starting={starting}
+        onChoose={(choice) => {
+          track({ name: 'welcome_chosen', properties: { choice } })
+          if (choice === 'browse') void browse()
+          else router.push(choice === 'create' ? '/(auth)/sign-up' : '/(auth)/sign-in')
+        }}
+      />
+    )
+  }
 
   return (
     <Screen style={styles.screen}>

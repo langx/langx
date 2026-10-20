@@ -6,6 +6,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native'
 import { ApiRequestError } from '../../src/api/client'
 import { useMe, useUpdateProfile, useUploadAvatar } from '../../src/api/queries'
 import { StepProgress } from '../../src/components/StepProgress'
+import { PhotoV3 } from '../../src/components/onboarding/PhotoV3'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
@@ -16,6 +17,7 @@ import { pickImageAsset } from '../../src/lib/pickMediaAsset'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
 
 /**
  * The last step, and both halves of it are skippable.
@@ -110,6 +112,25 @@ export default function PhotoStep() {
     : avatarUrl
       ? t('onboarding.changePhoto')
       : t('onboarding.addPhoto')
+
+  // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
+  if (v3) {
+    return (
+      <PhotoV3
+        avatarUrl={avatarUrl}
+        displayName={me.data?.displayName ?? ''}
+        seed={me.data?._id}
+        uploading={uploading}
+        photoLabel={photoLabel}
+        onPickPhoto={() => void pickPhoto()}
+        bio={bio}
+        onBio={setBio}
+        saving={saving}
+        onFinish={(save) => void finish(save)}
+      />
+    )
+  }
 
   return (
     <Screen fluid>

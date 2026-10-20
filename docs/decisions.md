@@ -1246,6 +1246,50 @@ whatever it left there rather than a flag this version cleaned up.
 Measured before/after rather than as an experiment: at this volume two arms
 would report a coin toss. See `docs/plans/onboarding-first-minute.md`.
 
+## Client — the welcome screen and the wizard take v3's look without waiting for the flag
+
+**19 October 2026.** The launch path moves to v3 behind `flags.v3Home`: the
+welcome screen, the five onboarding steps, the finish screen, the
+welcome-back screen and Settings' intro. Each route keeps every rule,
+request and handler it had and, with the flag on, hands them to a view in
+`src/components/onboarding/` instead of drawing today's screen. With the
+flag off nothing changes. The order is the one above — welcome first, no
+intro in front of it.
+
+- **Nothing waits for the flag.** A signed-in launch already holds the splash
+  for it (_Home leads the bar_). A signed-out launch does not, and this does
+  not make it: the welcome screen is drawn under the splash before
+  `/app-config` can answer, and it starts as today's. `latchV3LaunchLook`
+  lets the look follow the flag while the splash still covers the screen,
+  then fixes it for the launch the moment the splash goes, so nobody sees a
+  screen change look in front of them and no wizard changes look halfway
+  through. With motion on, the launch film (2.7 s) outlasts the flag's own
+  ceiling (`V3_HOME_WAIT_MS`), so the answer is nearly always in. With
+  reduce motion the splash can lift at its 0.8 s floor, and a slower answer
+  means today's look on every launch-path screen until the next launch.
+- **Still on `Animated`.** None of the new views imports Reanimated, directly
+  or through a component. The pairs deal in and the finish screen's check
+  pops on React Native's `Animated`, as they did. The finish screen's route already imports `CelebrationSheet`
+  for the Pro Week's moment, which is after the wizard is over.
+- **Nunito Black is the screens' own.** Adding it to the root's `useFonts`
+  would hold every cold start for it, flag off included; each view asks for
+  it and sets its title in ExtraBold until it lands, as Home does.
+- **The minimum age is said before it is enforced.** Under the date of birth
+  the rule is a plain line from the start, and becomes the error, in red,
+  only once a whole date is too young — the same schema and the same 16 as
+  before. Today's screen kept it hidden until then, so as not to accuse a
+  half-typed year; a sentence that states the rule to everyone accuses
+  nobody.
+- **One yellow, on the committing action.** Welcome's "Look around first"
+  stays the yellow, as it asks for nothing; the intro's Next is the blue,
+  since moving a slide commits nothing; the notification prompt's Enable is
+  the blue beside the finish screen's yellow. Skipping the photo is a
+  full-size outline button, not a link.
+- **The finish screen changes look only.** Where its button leads — the
+  hello a guest came for, the Pro Week's moment, the paywall, People — is
+  decided by `done.tsx` exactly as before; the view is handed the label and
+  the press. Its "what happens next" names People, the tab the flag shows.
+
 ## Client — the onboarding draft lives outside React
 
 expo-router remounts a screen when it is navigated back to, so component state
