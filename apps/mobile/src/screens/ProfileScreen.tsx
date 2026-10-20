@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { profileUrl, TIER_BADGES, TIER_NAMES, wornFrameTone } from '@langx/shared'
+import { profileUrl, TIER_BADGES, TIER_NAMES, wornCosmetic, wornFrameTone } from '@langx/shared'
 import { router, useIsFocused } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
@@ -22,6 +22,7 @@ import { ConversationPicker } from '../components/ConversationPicker'
 import { WebTitle } from '../components/WebTitle'
 import { Avatar } from '../components/ui/Avatar'
 import { FrameSweep } from '../components/ui/FrameSweep'
+import { TitleBadge } from '../components/ui/TitleBadge'
 import { placeLabel } from '../lib/placeLabel'
 import { Button } from '../components/ui/Button'
 import { Callout } from '../components/ui/Callout'
@@ -50,6 +51,7 @@ import { makeStyles, useTheme } from '../lib/theme'
 import { interestLabel, useDisplayNames, useT } from '../i18n'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
+import { useV3Home } from '../hooks/useV3Home'
 
 export interface ProfileScreenProps {
   handle: string
@@ -71,6 +73,7 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()
+  const v3Home = useV3Home()
   // For the browser tab's title — see the same gate in `ChatScreen`.
   const focused = useIsFocused()
 
@@ -154,6 +157,14 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
    * field existed.
    */
   const active = (user.accountStatus ?? 'active') === 'active'
+  /*
+   * The worn title, as a badge under the name — the redesign's only; the
+   * current profile has never drawn one. Not on an account that is gone or
+   * suspended, as the chat list leaves its frame off: a title beside
+   * "Account deleted" reads as somebody still there.
+   */
+  const title =
+    v3Home && active ? wornCosmetic(user.equipped, user.cosmetics ?? [], 'title') : undefined
 
   // One line under the name — the handle, then where they are. The city and
   // the country used to be separate entries and wrapped on most phones; see
@@ -346,6 +357,7 @@ export function ProfileScreen({ handle, from, embedded = false, onClose }: Profi
             )}
             <GenderMark gender={user.gender} />
           </View>
+          {title ? <TitleBadge id={title.id} /> : null}
           <Text style={styles.handle} numberOfLines={1}>
             {handleLine}
           </Text>

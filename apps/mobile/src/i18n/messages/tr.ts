@@ -2560,6 +2560,7 @@ export const tr: Localized<EnMessages> = {
     titleScholar: 'Bilgin',
     titleMaster: 'Usta',
     titleLegend: 'Efsane',
+    titleBadgeLabel: 'Unvan: {title}',
   },
 
   leaderboard: {

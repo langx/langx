@@ -3254,6 +3254,7 @@ export const ar: Localized<EnMessages> = {
     titleScholar: 'باحث',
     titleMaster: 'أستاذ',
     titleLegend: 'أسطورة',
+    titleBadgeLabel: 'اللقب: {title}',
   },
 
   leaderboard: {
