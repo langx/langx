@@ -301,7 +301,7 @@ export function StickerPackScreenV3({ pack }: { pack: Cosmetic }) {
         {mine && theirs ? (
           <View style={styles.section}>
             <Text
-              style={[styles.sectionTitle, !black && styles.blackFallback]}
+              style={[styles.sectionTitle, styles.inset, !black && styles.blackFallback]}
               accessibilityRole="header"
             >
               {t('stickerPack.inAChat')}
@@ -332,7 +332,7 @@ export function StickerPackScreenV3({ pack }: { pack: Cosmetic }) {
                 />
               </View>
             </View>
-            <Text style={[styles.muted, styles.note]}>{t('stickerPack.chatNote')}</Text>
+            <Text style={[styles.muted, styles.inset]}>{t('stickerPack.chatNote')}</Text>
           </View>
         ) : null}
       </ScrollView>
@@ -497,10 +497,9 @@ const useStyles = makeStyles(({ scheme, v3 }) => {
       fontFamily: 'Nunito_900Black',
       fontSize: 20,
       lineHeight: 24,
-      paddingHorizontal: v3.space[4],
     },
     muted: { ...v3.type.caption, color: v3.colors.muted },
-    note: { paddingHorizontal: v3.space[4] },
+    inset: { paddingHorizontal: v3.space[4] },
     grid: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[12] },
     tile: {
       alignItems: 'center',
