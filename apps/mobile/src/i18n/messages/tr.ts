@@ -531,6 +531,10 @@ export const tr: Localized<EnMessages> = {
       other: 'Her gün ilk {count} oturumun token kazandırır.',
     },
     oneMore: 'Bir oturum daha',
+    sourceOpensChat: 'Sohbetini bu mesajda açar',
+    sourceOpensPost: 'Gönderiyi açar',
+    newNote:
+      'Sohbetlerden sakladığın kartlarla aynı programa girer. Kaydettikten sonra Düzenle’den bir resim ekleyebilir ya da kendin seslendirebilirsin.',
   },
 
   conversationPicker: {

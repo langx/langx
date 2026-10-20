@@ -543,6 +543,10 @@ export const de: Localized<EnMessages> = {
       other: 'Deine ersten {count} Einheiten am Tag bringen Token.',
     },
     oneMore: 'Noch eine Einheit',
+    sourceOpensChat: 'Öffnet deinen Chat bei dieser Nachricht',
+    sourceOpensPost: 'Öffnet den Beitrag',
+    newNote:
+      'Sie kommt in denselben Plan wie die Karten, die du aus Chats behältst. Ein Bild oder deine eigene Aufnahme fügst du nach dem Speichern unter Bearbeiten hinzu.',
   },
 
   conversationPicker: {
