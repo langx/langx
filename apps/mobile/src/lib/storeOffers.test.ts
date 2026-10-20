@@ -111,6 +111,21 @@ describe('buildStoreOffers', () => {
       )
       expect(offer?.affordable).toBe(true)
     })
+
+    it('says "N of M" up to the cap', () => {
+      const max = TOKEN_RULES.sinks.maxBankedStreakFreezes
+      const offer = byId({ streakFreezes: max }, STREAK_FREEZE_SKU)
+      expect(offer?.subtitle).toContain(`${max}/${max}`)
+    })
+
+    /** The Pro welcome pack can bank more than the cap; "4/2" reads as a fault. */
+    it('says the count alone past the cap', () => {
+      const count = TOKEN_RULES.sinks.maxBankedStreakFreezes + 2
+      const offer = byId({ streakFreezes: count }, STREAK_FREEZE_SKU)
+      expect(offer?.subtitle).toContain(`${count} freezes banked`)
+      expect(offer?.subtitle).not.toContain('/')
+      expect(offer?.affordable).toBe(false)
+    })
   })
 
   describe('cosmetics', () => {

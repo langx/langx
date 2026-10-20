@@ -1,5 +1,50 @@
-import { COSMETICS, isLadderKind, ladderOpen, type Cosmetic } from '@langx/shared'
+import { COSMETICS, isLadderKind, ladderOpen, type Cosmetic, type Locale } from '@langx/shared'
+import type { TranslateFn } from '../i18n/runtime'
 import type { HistoryEntry, HistoryRow } from './tokenHistory'
+
+/**
+ * The freezes tile's value: "1 of 2" up to the cap, and the count alone past
+ * it. The Pro welcome pack banks freezes a purchase could not, and "4 of 2"
+ * reads as a fault rather than as a gift.
+ */
+export function freezeBankValue(
+  banked: number,
+  max: number,
+  { t, locale }: { t: TranslateFn; locale: Locale },
+): string {
+  if (banked > max) return banked.toLocaleString(locale)
+  return t('wallet.countOf', {
+    current: banked.toLocaleString(locale),
+    total: max.toLocaleString(locale),
+  })
+}
+
+/**
+ * A v3 history block's heading: the date of its UTC day ("Monday, October
+ * 19"), with the year when it is not this UTC year, and never "Today" or
+ * "Yesterday".
+ *
+ * The ledger's days are UTC keys (decisions: token caps run on the UTC day),
+ * and west of UTC in the evening the device is still on the day before. A
+ * relative word is then wrong either way: named by the device's day, a dated
+ * block sits above "Today"; named by the UTC day, "Today" carries tomorrow's
+ * date. A date says which day the ledger means and claims nothing about the
+ * reader's. Behic's choice, 19 October 2026.
+ *
+ * The key is read as noon on the device, so the date printed is the key's in
+ * every zone.
+ */
+export function ledgerDayHeading(day: string, locale: Locale, now: Date = new Date()): string {
+  const at = new Date(`${day}T12:00:00`)
+  if (Number.isNaN(at.getTime())) return day
+  const sameYear = day.slice(0, 4) === String(now.getUTCFullYear())
+  return at.toLocaleDateString(locale, {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    ...(sameYear ? {} : { year: 'numeric' }),
+  })
+}
 
 /** The rung the wallet's bar measures, and how far the balance is from it. */
 export interface NextRung {

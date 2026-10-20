@@ -268,19 +268,12 @@ export function WalletCountTile({
   )
 }
 
-/** A day over its block: "Today", with the date beside it when the word is not one. */
-export const HistoryHeading = memo(function HistoryHeading({
-  label,
-  date,
-}: {
-  label: string
-  date?: string | undefined
-}) {
+/** A day over its block: its UTC date, "Monday, October 19". */
+export const HistoryHeading = memo(function HistoryHeading({ label }: { label: string }) {
   const styles = useStyles()
   return (
     <View style={styles.dayHead} accessibilityRole="header">
       <Text style={styles.dayLabel}>{label}</Text>
-      {date ? <Text style={styles.dayDate}>{date}</Text> : null}
     </View>
   )
 })
@@ -646,7 +639,6 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingTop: v3.space[14],
   },
   dayLabel: { ...v3.type.headline, color: v3.colors.fg },
-  dayDate: { ...v3.type.caption, color: v3.colors.muted, fontWeight: '500' },
   entry: {
     alignItems: 'center',
     backgroundColor: v3.colors.surface,
