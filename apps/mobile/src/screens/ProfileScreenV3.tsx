@@ -77,7 +77,9 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
   const t = useT()
   const names = useDisplayNames()
   const { isRtl } = useLocale()
-  const insets = useSafeAreaInsets()
+  const safe = useSafeAreaInsets()
+  // A panel sits below the screen's own header, not under the status bar.
+  const insets = embedded ? { ...safe, top: 0 } : safe
   const [blackLoaded] = useFonts({ Nunito_900Black })
   // For the browser tab's title — see the same gate in `ChatScreen`.
   const focused = useIsFocused()
