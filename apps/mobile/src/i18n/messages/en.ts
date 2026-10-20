@@ -1457,6 +1457,16 @@ export const en = {
     writeCorrection: 'Write the correction…',
     yourCorrection: 'Your correction',
     correctionFrom: 'Correction from {name}',
+    rewardChip: '{amount} · {reason}',
+    rewardCorrected: 'you corrected {name}',
+    rewardBothWrote: 'you both wrote',
+    rewardBothAmount: { one: '+{count} for both', other: '+{count} for both' },
+    rewardStreak: { one: '{count}-day streak', other: '{count}-day streak' },
+    rewardLabel: { one: '{count} token: {reason}', other: '{count} tokens: {reason}' },
+    rewardBothLabel: {
+      one: '{count} token each for you and {name}: you both wrote',
+      other: '{count} tokens each for you and {name}: you both wrote',
+    },
     them: 'them',
     tokensPerMessage: {
       one: '+{count} token / message',
@@ -2321,6 +2331,18 @@ export const en = {
     rungProgress: { one: '{done} of {count} day', other: '{done} of {count} days' },
     noStreakTitle: 'No streak yet',
     noStreakBody: 'A day counts when you open LangX or practise. Today can be day one.',
+    /*
+     * The redesign's streak history (`StreakHistoryScreenV3`). Its legend
+     * reuses `checkedInUnknownTime`, `openedOnly`, `bought` and `missed`, so a
+     * square and the row under it say the same words. A screen reader hears
+     * the map as its four legend lines with their counts, not square by square.
+     */
+    dayByDay: 'Day by day',
+    mapA11y: {
+      one: 'Activity map, the last {count} day',
+      other: 'Activity map, the last {count} days',
+    },
+    legendA11y: '{state}: {days}',
   },
   settings: {
     scanBody: 'Sign in on a computer, or open a friend’s profile',

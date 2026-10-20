@@ -114,6 +114,33 @@ export function repairsUsedFor(
 }
 
 /**
+ * The missed day a repair would fill in: the newest one still in reach, or
+ * null when there is none or its month's repairs are used up. Shared with
+ * the redesign's streak history, so the page and the store always offer the
+ * same day.
+ *
+ * `firstDay` and `usedByMonth` are optional: without them a day before the
+ * account and a capped earlier month are not known here, and the answer is
+ * what it was before either field existed.
+ */
+export function newestRepairDay(repair: {
+  today: string
+  filled: ReadonlySet<string>
+  usedThisMonth: number
+  usedByMonth?: Readonly<Record<string, number>> | undefined
+  firstDay?: string | undefined
+}): string | null {
+  const cap = TOKEN_RULES.sinks.dayRepairPerMonth
+  for (let back = 1; back <= TOKEN_RULES.sinks.dayRepairMaxAgeDays; back++) {
+    const candidate = shiftDayKey(repair.today, -back)
+    if (!isRepairable(candidate, repair.today, repair.firstDay)) break
+    // A day whose month has used both repairs is one the server refuses.
+    if (!repair.filled.has(candidate) && repairsUsedFor(candidate, repair) < cap) return candidate
+  }
+  return null
+}
+
+/**
  * `frame.gold` → `cosmetics.frameGold`. The catalogue keys cannot be the SKUs
  * themselves: a dot in a key is how `translate` walks into a group.
  */
@@ -198,24 +225,14 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
    */
   const repair = input.repair
   if (repair) {
-    const cap = TOKEN_RULES.sinks.dayRepairPerMonth
-    let day: string | null = null
-    for (let back = 1; back <= TOKEN_RULES.sinks.dayRepairMaxAgeDays; back++) {
-      const candidate = shiftDayKey(repair.today, -back)
-      if (!isRepairable(candidate, repair.today, repair.firstDay)) break
-      // A day whose month has used both repairs is one the server refuses.
-      if (!repair.filled.has(candidate) && repairsUsedFor(candidate, repair) < cap) {
-        day = candidate
-        break
-      }
-    }
+    const day = newestRepairDay(repair)
     if (day) {
       offers.push({
         ...priced(
           `dayRepair:${day}`,
           t('store.repairDay'),
           t('store.repairDayBody', {
-            left: cap - repairsUsedFor(day, repair),
+            left: TOKEN_RULES.sinks.dayRepairPerMonth - repairsUsedFor(day, repair),
           }),
           repair.price,
         ),

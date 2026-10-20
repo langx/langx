@@ -84,7 +84,12 @@ function MemberStreak() {
   const tokens = useTokens()
   const wallet = useWallet()
   const me = useMe()
-  const to = new Date().toISOString().slice(0, 10)
+  // A day past UTC's date. `today` is the profile's day, and east of UTC it
+  // is already tomorrow there before UTC midnight; ending the range on the
+  // UTC date left today's row out, so a day already checked in read as
+  // missed. No zone is more than a day ahead, and the two streak pages ask
+  // for the same range, so they still share one cache entry.
+  const to = shiftDayKey(new Date().toISOString().slice(0, 10), 1)
   const activity = useActivity(shiftDayKey(to, -(ACTIVITY_WEEKS + 1) * 7), to)
   const purchase = usePurchase()
   const repairDay = useRepairDay()
