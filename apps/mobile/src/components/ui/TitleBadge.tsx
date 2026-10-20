@@ -279,12 +279,17 @@ function Quatrefoil({ cx }: { cx: number }) {
   )
 }
 
-function CapArt({ cap, height }: { cap: Cap; height: number }) {
+function CapArt({ cap, height, mirror }: { cap: Cap; height: number; mirror: boolean }) {
   const [x, y, w, h] = cap.box
   return (
-    <Svg width={(height * w) / h} height={height} viewBox={`${x} ${y} ${w} ${h}`}>
-      {cap.art}
-    </Svg>
+    // Under RTL the row puts the start cap on the right, but a drawing does
+    // not turn round with it: the ribbon's tail and the glass's slant would
+    // point into the word. Mirrored, each cap faces outward as on the board.
+    <View style={mirror ? styles.mirror : undefined}>
+      <Svg width={(height * w) / h} height={height} viewBox={`${x} ${y} ${w} ${h}`}>
+        {cap.art}
+      </Svg>
+    </View>
   )
 }
 
@@ -385,7 +390,7 @@ export function TitleBadge({
           ]}
         />
       ) : null}
-      <CapArt cap={caps.start} height={height - edgeWidth * 2} />
+      <CapArt cap={caps.start} height={height - edgeWidth * 2} mirror={isRtl} />
       <View
         style={[
           styles.word,
@@ -409,7 +414,7 @@ export function TitleBadge({
           {capitals(label, locale)}
         </Text>
       </View>
-      {end ? <CapArt cap={end} height={height - edgeWidth * 2} /> : null}
+      {end ? <CapArt cap={end} height={height - edgeWidth * 2} mirror={isRtl} /> : null}
     </View>
   )
 }
@@ -424,4 +429,5 @@ const styles = StyleSheet.create({
   },
   word: { flexShrink: 1, justifyContent: 'center', paddingHorizontal: 6 },
   text: { textAlign: 'center' },
+  mirror: { transform: [{ scaleX: -1 }] },
 })
