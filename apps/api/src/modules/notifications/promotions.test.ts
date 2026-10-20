@@ -475,6 +475,89 @@ describe('the nudges that need permission', () => {
     expect(push.sent).toHaveLength(0)
   })
 
+  describe('with promoPaywallLinks, the plans nudges open the paywall', () => {
+    async function setPaywallLinks(on: boolean): Promise<void> {
+      await updateAppConfig(handle.db, {
+        flags: { ...DEFAULT_APP_CONFIG.flags, promoPaywallLinks: on },
+      })
+      invalidateAppConfigCache()
+    }
+
+    const refusals = () => [
+      new Date(NOW.getTime() - 2 * DAY),
+      new Date(NOW.getTime() - DAY),
+      new Date(NOW.getTime() - 3600_000),
+    ]
+    const churnedFrom = () => ({ tier: 'pro', at: new Date(NOW.getTime() - 7.5 * DAY) })
+
+    it.each([
+      ['the free limits', 'nudge_limits', { refusals: refusals() }],
+      ['a plan that ended', 'nudge_win_back', { churnedFrom: churnedFrom() }],
+    ] as const)('%s: mail and push name %s', async (_name, source, state) => {
+      await setPaywallLinks(true)
+      await newProfile({ avatar: true, invited: true, device: true, ...state })
+      expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+      expect(email.messages[0]?.text).toContain(`https://app.langx.io/paywall?source=${source}`)
+      expect(push.sent).toHaveLength(1)
+      expect(push.sent[0]?.data).toEqual({ kind: 'promotion', paywallSource: source })
+    })
+
+    it('leaves every link as it was with the switch off', async () => {
+      await setPaywallLinks(false)
+      await newProfile({ avatar: true, invited: true, device: true, refusals: refusals() })
+      await newProfile({ avatar: true, invited: true, device: true, churnedFrom: churnedFrom() })
+      expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 2 })
+      for (const message of email.messages) {
+        expect(message.text).toContain('https://app.langx.io/settings/plan')
+        expect(message.text).not.toContain('/paywall')
+      }
+      expect(push.sent.map((sent) => sent.data)).toEqual([
+        { kind: 'promotion' },
+        { kind: 'promotion' },
+      ])
+    })
+
+    it('moves no nudge that is not about the plans', async () => {
+      await setPaywallLinks(true)
+      await newProfile({ createdDaysAgo: 3, device: true })
+      expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+      expect(email.messages[0]?.text).toContain('https://app.langx.io/me/edit')
+      expect(push.sent[0]?.data).toEqual({ kind: 'promotion' })
+    })
+
+    /*
+     * Only the landing moves. The same people, on the same evening, under the
+     * same consent: somebody who has Pro, has promotions off, or is outside
+     * the hour hears nothing on either side of the switch.
+     */
+    it('widens no audience', async () => {
+      await setPaywallLinks(true)
+      await newProfile({
+        avatar: true,
+        invited: true,
+        device: true,
+        refusals: refusals(),
+        entitlement: { tier: 'pro', willRenew: true, updatedAt: NOW },
+      })
+      await newProfile({
+        avatar: true,
+        invited: true,
+        device: true,
+        refusals: refusals(),
+        notifications: { promotions: { push: true, email: false } },
+      })
+      await newProfile({
+        avatar: true,
+        invited: true,
+        device: true,
+        churnedFrom: churnedFrom(),
+        timezone: 'America/Anchorage',
+      })
+      expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+      expect(push.sent).toHaveLength(0)
+    })
+  })
+
   describe('with nudgeNoSilentDrops, nothing an eligible person is owed vanishes', () => {
     async function setNoSilentDrops(on: boolean): Promise<void> {
       await updateAppConfig(handle.db, {
