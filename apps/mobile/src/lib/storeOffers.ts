@@ -85,6 +85,8 @@ export interface StoreInput {
     filled: ReadonlySet<string>
     price: number
     usedThisMonth: number
+    /** The account's first day; nothing before it is offered. */
+    firstDay?: string
   }
   /**
    * Passed in rather than reached for, so this stays a pure function the tests
@@ -182,7 +184,7 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
     let day: string | null = null
     for (let back = 1; back <= TOKEN_RULES.sinks.dayRepairMaxAgeDays; back++) {
       const candidate = shiftDayKey(repair.today, -back)
-      if (!isRepairable(candidate, repair.today)) break
+      if (!isRepairable(candidate, repair.today, repair.firstDay)) break
       if (!repair.filled.has(candidate)) {
         day = candidate
         break

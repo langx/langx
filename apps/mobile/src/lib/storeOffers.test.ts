@@ -53,6 +53,21 @@ describe('buildStoreOffers', () => {
       expect(repairOffer({ balance: 5_000, repair: repairs({ filled }) })).toBeUndefined()
     })
 
+    /** A day before the account existed was never a day anybody could keep. */
+    it('offers nothing before the account was created', () => {
+      // Created yesterday, active yesterday: every missed day is older.
+      const firstDay = shiftDayKey(today, -1)
+      const filled = new Set([firstDay])
+      expect(repairOffer({ balance: 5_000, repair: repairs({ filled, firstDay }) })).toBeUndefined()
+    })
+
+    it("offers the account's first day when that is the missed one", () => {
+      const firstDay = shiftDayKey(today, -3)
+      const filled = new Set([shiftDayKey(today, -1), shiftDayKey(today, -2)])
+      const offer = repairOffer({ balance: 5_000, repair: repairs({ filled, firstDay }) })
+      expect(offer?.repairDay).toBe(firstDay)
+    })
+
     it('offers nothing at the monthly cap', () => {
       expect(
         repairOffer({

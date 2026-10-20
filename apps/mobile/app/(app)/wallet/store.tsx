@@ -112,6 +112,7 @@ function StoreScreen() {
             filled: new Set(activity.data.days.map((day) => day.day)),
             price: activity.data.repair.price,
             usedThisMonth: activity.data.repair.usedThisMonth,
+            ...(activity.data.repair.firstDay ? { firstDay: activity.data.repair.firstDay } : {}),
           },
         }
       : {}),

@@ -155,6 +155,9 @@ function MemberStreak() {
                 filled,
                 price: activity.data.repair.price,
                 usedThisMonth: activity.data.repair.usedThisMonth,
+                ...(activity.data.repair.firstDay
+                  ? { firstDay: activity.data.repair.firstDay }
+                  : {}),
               },
             }
           : {}),

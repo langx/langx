@@ -1,4 +1,5 @@
 import {
+  ERROR_CODES,
   PRO_GIFT_RULES,
   TOKEN_GRANT_KINDS,
   TOKEN_RULES,
@@ -803,9 +804,19 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
   })
 
   describe('the activity map and buying back a day', () => {
-    /** Enough earned token to afford repairs, without going through sends. */
-    async function funded(email: string, tokens: number) {
+    /**
+     * Enough earned token to afford repairs, without going through sends —
+     * and an account old enough that the whole repair window is after its
+     * first day, so these tests are about the window and not about the age.
+     */
+    async function funded(email: string, tokens: number, ageDays = 60) {
       const user = await newUser(email)
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: user.userId },
+          { $set: { createdAt: new Date(Date.now() - ageDays * 86_400_000) } },
+        )
       await awardTokens(handle.db, {
         userId: user.userId,
         kind: 'adjustment',
@@ -1080,6 +1091,52 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
         payload: { day: dayKey(1) },
       })
       expect(again.statusCode).toBe(400)
+    })
+
+    /**
+     * A day before the account existed was never a day anybody could have
+     * kept. The window alone sold a three-day-old account eleven of them.
+     */
+    it('refuses a day before the account was created, and charges nothing', async () => {
+      const user = await funded('repair-before-account@example.com', 5000, 3)
+
+      const activity = await app.inject({
+        method: 'GET',
+        url: `/me/activity?from=${dayKey(7)}&to=${dayKey(0)}`,
+        headers: { cookie: user.cookie },
+      })
+      expect(activity.json<{ repair: { firstDay: string } }>().repair.firstDay).toBe(dayKey(3))
+
+      const before = await app.inject({
+        method: 'POST',
+        url: '/me/activity/repair',
+        headers: { cookie: user.cookie },
+        payload: { day: dayKey(4) },
+      })
+      expect(before.statusCode).toBe(409)
+      expect(before.json()).toMatchObject({ code: ERROR_CODES.REPAIR_BEFORE_ACCOUNT })
+
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(profile?.tokenSpent ?? 0).toBe(0)
+      const row = await handle.db
+        .collection<StreakDay>(COLLECTIONS.streakDays)
+        .findOne({ _id: `${user.userId}:${dayKey(4)}` })
+      expect(row).toBeNull()
+    })
+
+    it('accepts the first day of the account', async () => {
+      const user = await funded('repair-first-day@example.com', 5000, 3)
+
+      const first = await app.inject({
+        method: 'POST',
+        url: '/me/activity/repair',
+        headers: { cookie: user.cookie },
+        payload: { day: dayKey(3) },
+      })
+      expect(first.statusCode, first.body).toBe(200)
+      expect(first.json<{ day: string }>().day).toBe(dayKey(3))
     })
 
     /** The cap, not the price, is what stops a balance buying a streak. */

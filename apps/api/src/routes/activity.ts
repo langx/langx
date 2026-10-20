@@ -80,6 +80,12 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
           maxAgeDays: TOKEN_RULES.sinks.dayRepairMaxAgeDays,
           perMonth: TOKEN_RULES.sinks.dayRepairPerMonth,
           usedThisMonth: await repairsInMonth(app.mongo.db, request.userId, today),
+          /**
+           * The account's first day, in the same zone as `today`. Nothing
+           * before it can be repaired, and the client has to know that to
+           * stop offering those days — the server refuses them either way.
+           */
+          firstDay: localDayKey(profile.createdAt, profile.timezone ?? 'UTC'),
         },
       })
     },

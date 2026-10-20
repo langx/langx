@@ -70,6 +70,7 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
       weeks: WEEKS,
       days,
       maxAgeDays: own.data?.repair.maxAgeDays ?? 0,
+      firstDay: own.data?.repair.firstDay,
       streak: (handle ? theirs.data?.streak : own.data?.streak) ?? undefined,
     })
   }, [handle, own.data, theirs.data])
