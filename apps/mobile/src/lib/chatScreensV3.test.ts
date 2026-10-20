@@ -38,6 +38,7 @@ const PAIRS: readonly {
     v3: 'NewChatScreenV3.tsx',
     via: { 'chat.title': 'components/thread/ThreadHeaderV3.tsx' },
   },
+  { current: 'chat-media.tsx', v3: 'ChatMediaScreenV3.tsx' },
 ]
 
 function isMessageKey(value: string): boolean {

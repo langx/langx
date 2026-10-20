@@ -109,8 +109,9 @@ interface EmptyStateV3Props {
    * how to fill the list, where the line only says that it is empty.
    */
   body?: string | undefined
-  actionLabel: string
-  onAction: () => void
+  /** Absent where the board draws no way out — the list fills by itself. */
+  actionLabel?: string | undefined
+  onAction?: (() => void) | undefined
   /**
    * The yellow by default; `blue` where the action leads somewhere else
    * rather than committing; `secondary` where it is an offer rather than the
@@ -124,8 +125,9 @@ interface EmptyStateV3Props {
  *
  * Beside `EmptyState`, which keeps the current look's glyph, title and body
  * until each screen migrates; when the last one has, this takes its name.
- * One line rather than a title and a body, because the drawings never need
- * two — the picture already says which list this is.
+ * One line is the rule, because the picture already says which list this
+ * is; a quieter `body` under it and the button are there only where a board
+ * draws them — how to fill the list, and a way to go and do it.
  */
 export function EmptyStateV3({
   art,
@@ -141,12 +143,14 @@ export function EmptyStateV3({
       <EmptyArt kind={art} />
       <Text style={styles.line}>{line}</Text>
       {body ? <Text style={styles.body}>{body}</Text> : null}
-      <Button
-        label={actionLabel}
-        onPress={onAction}
-        variant={actionVariant}
-        style={styles.action}
-      />
+      {actionLabel && onAction ? (
+        <Button
+          label={actionLabel}
+          onPress={onAction}
+          variant={actionVariant}
+          style={styles.action}
+        />
+      ) : null}
     </View>
   )
 }
