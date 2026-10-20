@@ -116,7 +116,7 @@ export function notificationRoute(data: unknown): Href | null {
       // them", and Discover is no answer to that. Checked against the shared
       // list, so a road this build does not know falls back rather than
       // opening a paywall that would count it as a gate.
-      if (isPromotionPaywallSource(paywallSource)) return paywallPath(paywallSource) as Href
+      if (isPromotionPaywallSource(paywallSource)) return paywallPath(paywallSource)
       // Every other nudge points at the same place: people to talk to. The
       // mail carries the specific destination; a push that lands days later
       // should not.
