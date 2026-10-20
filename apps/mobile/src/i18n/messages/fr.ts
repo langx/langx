@@ -2361,6 +2361,15 @@ export const fr: Localized<EnMessages> = {
     leaderboardBody: 'Qui a gagné le plus cette semaine, ce mois et cette année',
     poolBody: 'Comment la part de la nuit est calculée',
     storeBody: 'Gels de série, jours manqués et cosmétiques',
+    tokensUnit: { one: 'jeton', other: 'jetons' },
+    nextRung: {
+      one: '{title} : encore {amount} jeton',
+      other: '{title} : encore {amount} jetons',
+    },
+    nextRungReady: '{title} : assez de jetons',
+    countOf: '{current} sur {total}',
+    giftOpen: 'Ouvrir',
+    price: { one: '{amount} jeton', other: '{amount} jetons' },
     disclaimer:
       'Les jetons sont des points internes à l’app. Ils ne peuvent être achetés, échangés, retirés ni servir à débloquer une formule payante — seulement des gels de série, des jours manqués et des cosmétiques. Pas de chaîne, pas de contrat, pas de marché.',
   },

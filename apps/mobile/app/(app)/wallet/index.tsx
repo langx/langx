@@ -18,6 +18,8 @@ import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useLocale, useT, type MessageKey } from '../../../src/i18n'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
+import { WalletScreenV3 } from '../../../src/screens/WalletScreenV3'
 
 /**
  * The wallet, as categories.
@@ -61,7 +63,19 @@ const SECTIONS: readonly { id: string; titleKey: MessageKey; bodyKey: MessageKey
     },
   ]
 
-export default function WalletScreen() {
+/**
+ * The wallet — or, with `flags.v3Home` on, the redesign's (`WalletScreenV3`).
+ * Read once per launch, like the rest of that flag, and bare until the config
+ * has said which, as the Chats tab is: a web page load straight onto this
+ * route would otherwise draw today's wallet and swap it under the reader.
+ */
+export default function WalletRoute() {
+  const v3Home = useV3HomeDecision()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <WalletScreenV3 /> : <WalletScreen />
+}
+
+function WalletScreen() {
   useScreenInteractive()
   const { colors } = useTheme()
   const styles = useStyles()

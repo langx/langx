@@ -9,6 +9,19 @@ import { makeStyles } from '../../../src/lib/theme'
 import { useLocale, useT } from '../../../src/i18n'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
+import { WalletHistoryScreenV3 } from '../../../src/screens/WalletHistoryScreenV3'
+
+/**
+ * The history — or, with `flags.v3Home` on, the redesign's
+ * (`WalletHistoryScreenV3`). Bare until the config has said which, as the
+ * wallet is.
+ */
+export default function HistoryRoute() {
+  const v3Home = useV3HomeDecision()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <WalletHistoryScreenV3 /> : <HistoryScreen />
+}
 
 /**
  * Where the tokens came from: the ledger, a line at a time.
@@ -18,7 +31,7 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
  * "what did I earn" and "how does the pool work" are different questions and
  * the second one's card pushed the ledger below the fold.
  */
-export default function HistoryScreen() {
+function HistoryScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

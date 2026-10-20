@@ -2330,6 +2330,12 @@ export const es: Localized<EnMessages> = {
     leaderboardBody: 'Quién ganó más esta semana, este mes y este año',
     poolBody: 'Cómo se calcula el reparto nocturno',
     storeBody: 'Protectores de racha, días perdidos y cosméticos',
+    tokensUnit: { one: 'ficha', other: 'fichas' },
+    nextRung: { one: '{title}: falta {amount} ficha', other: '{title}: faltan {amount} fichas' },
+    nextRungReady: '{title}: ya te alcanza',
+    countOf: '{current} de {total}',
+    giftOpen: 'Abrir',
+    price: { one: '{amount} ficha', other: '{amount} fichas' },
     disclaimer:
       'Las fichas son puntos dentro de la app. No se pueden comprar, intercambiar, retirar ni usar para desbloquear un plan de pago: solo congelaciones de racha, días perdidos y cosméticos. No hay cadena, ni contrato, ni mercado.',
   },

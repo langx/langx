@@ -27,6 +27,19 @@ import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useLocale, useT } from '../../../src/i18n'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
+import { WalletStoreScreenV3 } from '../../../src/screens/WalletStoreScreenV3'
+
+/**
+ * The store — or, with `flags.v3Home` on, the redesign's
+ * (`WalletStoreScreenV3`). Bare until the config has said which, as the
+ * wallet is.
+ */
+export default function StoreRoute() {
+  const v3Home = useV3HomeDecision()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <WalletStoreScreenV3 /> : <StoreScreen />
+}
 
 /**
  * The store: what the balance buys, and what you already own.
@@ -38,7 +51,7 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
  * price of the rung above, which is the answer to "why buy another". The hourly gift is
  * not here — it is not for sale, so it stays on the wallet's landing page.
  */
-export default function StoreScreen() {
+function StoreScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const { colors } = useTheme()
