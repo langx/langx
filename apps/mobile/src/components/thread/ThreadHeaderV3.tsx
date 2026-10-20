@@ -1,4 +1,5 @@
 import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
+import { wornFrameTone } from '@langx/shared'
 import { useFonts } from 'expo-font'
 import type { ReactNode, RefObject } from 'react'
 import { Pressable, Text, View } from 'react-native'
@@ -104,6 +105,10 @@ export function ThreadHeaderV3({
           name={partner?.displayName ?? '?'}
           seed={partner?._id}
           size={face}
+          frame={partner ? wornFrameTone(partner.equipped, partner.cosmetics) : undefined}
+          // Outside the face's box, so the band is the same height framed or
+          // not, and does not jump when it folds.
+          frameOutside
         />
       )}
       <View style={[styles.names, compact && styles.namesCompact]}>

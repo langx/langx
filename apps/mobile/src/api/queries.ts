@@ -1028,6 +1028,11 @@ export interface ConversationPartnerDto {
   isOnline: boolean
   official?: true
   accountStatus: 'active' | 'suspended' | 'deleted'
+  /**
+   * The worn frame's tone, absent for no frame and from an API that predates
+   * it. Drawn only under the redesign (`flags.v3Home`).
+   */
+  frame?: string
 }
 
 export function useConversations(filter: ConversationFilter = 'all', enabled = true) {

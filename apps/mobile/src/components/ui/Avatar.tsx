@@ -33,6 +33,14 @@ interface AvatarProps {
    * and with the flag off.
    */
   sweep?: FrameSweepComponent | undefined
+  /**
+   * The frame draws outside the face's box rather than growing it, so a framed
+   * avatar takes exactly `size` of the layout, as an unframed one does. For
+   * lists, where a row that grows for a frame would break the column of
+   * names and the rows' even height. The room around the face is the
+   * caller's to keep.
+   */
+  frameOutside?: boolean
 }
 
 /**
@@ -80,6 +88,7 @@ export function Avatar({
   online = false,
   frame,
   sweep,
+  frameOutside = false,
 }: AvatarProps) {
   const { colors } = useTheme()
   const styles = useStyles()
@@ -126,7 +135,7 @@ export function Avatar({
 
   if (!frame) return inner
   return (
-    <Framed frame={frame} size={size} sweep={sweep}>
+    <Framed frame={frame} size={size} sweep={sweep} outside={frameOutside}>
       {inner}
     </Framed>
   )
@@ -144,11 +153,13 @@ function Framed({
   frame,
   size,
   sweep,
+  outside,
   children,
 }: {
   frame: string
   size: number
   sweep: FrameSweepComponent | undefined
+  outside: boolean
   children: ReactNode
 }) {
   const { scheme } = useTheme()
@@ -158,7 +169,15 @@ function Framed({
   if (art) {
     const box = frameArtBox(size)
     return (
-      <View style={{ alignItems: 'center', height: box, justifyContent: 'center', width: box }}>
+      <View
+        style={{
+          alignItems: 'center',
+          height: box,
+          justifyContent: 'center',
+          width: box,
+          ...(outside ? { margin: -(box - size) / 2 } : {}),
+        }}
+      >
         <FrameArt art={art} size={size} scheme={scheme} sweep={sweep} />
         {children}
       </View>
@@ -188,6 +207,7 @@ function Framed({
         height: size + ringWidth * 4,
         justifyContent: 'center',
         width: size + ringWidth * 4,
+        ...(outside ? { margin: -ringWidth * 2 } : {}),
       }}
     >
       {children}

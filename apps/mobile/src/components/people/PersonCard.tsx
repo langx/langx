@@ -88,7 +88,14 @@ export const PersonCard = memo(function PersonCard({
       >
         <View style={styles.head}>
           <View>
-            <Avatar url={person.avatarUrl} name={person.displayName} seed={person._id} size={76} />
+            <Avatar
+              url={person.avatarUrl}
+              name={person.displayName}
+              seed={person._id}
+              size={CARD_AVATAR}
+              frame={person.frame}
+              frameOutside
+            />
             {/* Ringed in the card's hue rather than the ground's: it sits on the card. */}
             {person.isOnline ? (
               <View style={[styles.dot, { backgroundColor: colors.success, borderColor: hue }]} />
@@ -170,7 +177,14 @@ export const NewcomerTile = memo(function NewcomerTile({
         pressed && styles.pressed,
       ]}
     >
-      <Avatar url={person.avatarUrl} name={person.displayName} seed={person._id} size={44} />
+      <Avatar
+        url={person.avatarUrl}
+        name={person.displayName}
+        seed={person._id}
+        size={44}
+        frame={person.frame}
+        frameOutside
+      />
       <Text style={styles.tileName} numberOfLines={1}>
         {person.displayName}
       </Text>
@@ -182,6 +196,9 @@ export const NewcomerTile = memo(function NewcomerTile({
     </Pressable>
   )
 })
+
+/** The card's face. */
+const CARD_AVATAR = 76
 
 /** The strip's tile: four fit across a 390pt phone, and the rest scroll. */
 export const NEWCOMER_TILE_WIDTH = 84

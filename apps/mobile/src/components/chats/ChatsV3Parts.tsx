@@ -114,6 +114,8 @@ export const WaitingBlock = memo(function WaitingBlock({
           name={name}
           seed={partner._id}
           size={lead ? LEAD_AVATAR : BLOCK_AVATAR}
+          frame={partner.frame}
+          frameOutside
         />
         <View style={styles.blockNames}>
           <Text style={styles.blockName} numberOfLines={1} accessibilityRole="header">
@@ -306,6 +308,10 @@ export const ChatRowV3 = memo(function ChatRowV3({
               seed={partner._id}
               online={partner.isOnline}
               size={ROW_AVATAR}
+              // Outside the face's box, so a framed row keeps the list's
+              // height and its column of names: see `frameOutside`.
+              frame={partner.frame}
+              frameOutside
             />
           ) : (
             <Skeleton width={ROW_AVATAR} height={ROW_AVATAR} radius={ROW_AVATAR / 2} />
