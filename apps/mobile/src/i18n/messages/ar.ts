@@ -1510,6 +1510,23 @@ export const ar: Localized<EnMessages> = {
       many: 'سلسلة {count} يومًا',
       other: 'سلسلة {count} يوم',
     },
+    celebrateStreakBody: {
+      zero: 'تدرّبت على LangX {count} يوم على التوالي.',
+      one: 'تدرّبت على LangX يومًا واحدًا على التوالي.',
+      two: 'تدرّبت على LangX يومين على التوالي.',
+      few: 'تدرّبت على LangX {count} أيام على التوالي.',
+      many: 'تدرّبت على LangX {count} يومًا على التوالي.',
+      other: 'تدرّبت على LangX {count} يوم على التوالي.',
+    },
+    celebrateStreakNote: {
+      zero: 'توكن لهذه السلسلة',
+      one: 'توكن لهذه السلسلة',
+      two: 'توكنان لهذه السلسلة',
+      few: 'توكنات لهذه السلسلة',
+      many: 'توكنًا لهذه السلسلة',
+      other: 'توكن لهذه السلسلة',
+    },
+    rewardAnnounceJoin: '{said}. {next}',
     rewardLabel: {
       zero: '{count} توكن: {reason}',
       one: 'توكن واحد: {reason}',

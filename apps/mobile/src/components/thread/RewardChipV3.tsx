@@ -4,10 +4,17 @@ import { AccessibilityInfo, Text, View } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useT } from '../../i18n'
+import type { ShareContent } from '../../lib/shareText'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { SPRING, unlessReduced } from '../../lib/theme/motion'
-import type { ThreadReward } from '../../lib/threadRewards'
+import {
+  rewardLabel,
+  rewardReason,
+  rewardsAnnouncement,
+  type ThreadReward,
+} from '../../lib/threadRewards'
 import { FlameGlyph } from '../ui/StreakFlame'
+import { ThreadCelebrationV3 } from './ThreadCelebrationV3'
 
 /**
  * How long after the send a chip still counts as news. A row the list
@@ -26,7 +33,8 @@ const FRESH_MS = 1500
  *
  * A status, not a control — there is nothing to do with it, so it takes no
  * press and needs no target size. It rises in with one bounce when it is
- * news and is simply there under reduced motion; it is announced once, then.
+ * news and is simply there under reduced motion. Its row announces it, with
+ * whatever else the same send earned (`WithRewardChips`).
  *
  * The correction's chip is the correction's green, as the drawing has it;
  * the others sit on the partner's hue, with ink on it as every hue-lettered
@@ -57,16 +65,7 @@ export function RewardChipV3({
     reward.kind === 'bothWrote'
       ? t('chat.rewardBothAmount', { count: reward.amount })
       : t('tokens.shareAmount', { count: reward.amount })
-  const reason =
-    reward.kind === 'corrected'
-      ? t('chat.rewardCorrected', { name: partnerName })
-      : reward.kind === 'bothWrote'
-        ? t('chat.rewardBothWrote')
-        : t('chat.rewardStreak', { count: reward.days })
-  const label =
-    reward.kind === 'bothWrote'
-      ? t('chat.rewardBothLabel', { count: reward.amount, name: partnerName })
-      : t('chat.rewardLabel', { count: reward.amount, reason })
+  const label = rewardLabel(t, reward, partnerName)
   const ground = corrected ? v3.colors.correctionTint : (hue ?? v3.hues.lilac)
   const ink = corrected ? v3.colors.correction : v3.colors.ink
 
@@ -75,11 +74,6 @@ export function RewardChipV3({
     // Keyed on `reduce` alone: its answer can arrive after the first render,
     // and a chip already in place has nothing to replay.
   }, [reduce])
-
-  useEffect(() => {
-    if (fresh) AccessibilityInfo.announceForAccessibility(label)
-    // Once, on arrival; a remount of an old chip is not news.
-  }, [])
 
   const motion = useAnimatedStyle(() => ({
     opacity: Math.min(1, shown.get() * 1.5),
@@ -100,17 +94,32 @@ export function RewardChipV3({
           <FlameGlyph size={16} color={ink} />
         )}
         <Text style={[styles.text, { color: ink }]} numberOfLines={2}>
-          {t('chat.rewardChip', { amount, reason })}
+          {t('chat.rewardChip', { amount, reason: rewardReason(t, reward, partnerName) })}
         </Text>
       </View>
     </Animated.View>
   )
 }
 
+/** The streak milestone the thread is celebrating, and how to share and close it. */
+export interface RowCelebration {
+  share: ShareContent | undefined
+  compact: boolean
+  onClose: () => void
+}
+
 /**
  * A message row with the chips its send earned under it. Always the same
  * shape, chips or none, so a chip arriving never remounts the bubble above
  * it; with no chips (and always with the flag off) it draws the row alone.
+ *
+ * With `celebration`, a streak milestone among the chips is drawn as the
+ * thread's celebration instead of its chip (`ThreadCelebrationV3`); closed,
+ * it is the chip again. The screen hands it to one row at a time.
+ *
+ * Everything the send earned is announced here, in one sentence, rather than
+ * by each chip: iOS drops an announcement still being read when the next one
+ * arrives, so two chips announced back to back left only the second heard.
  *
  * The chips come first, and in reverse, because the thread is an inverted
  * list: every cell is drawn flipped, so what is first inside a row is drawn
@@ -120,17 +129,44 @@ export function WithRewardChips({
   rewards,
   partnerName,
   hue,
+  celebration,
   children,
 }: {
   rewards: { chips: ThreadReward[]; at: number } | undefined
   partnerName: string
   hue: string | undefined
+  celebration?: RowCelebration | undefined
   children: ReactNode
 }) {
+  const t = useT()
+  const at = rewards?.at
+
+  useEffect(() => {
+    if (!rewards || Date.now() - rewards.at >= FRESH_MS) return
+    AccessibilityInfo.announceForAccessibility(rewardsAnnouncement(t, rewards.chips, partnerName))
+    // Once, on arrival; a remount of an old row is not news.
+  }, [at])
+
+  const milestone = celebration
+    ? rewards?.chips.find((reward) => reward.kind === 'streak')
+    : undefined
+  const chips = rewards?.chips.filter((reward) => reward !== milestone) ?? []
+
   return (
     <>
+      {milestone?.kind === 'streak' && celebration ? (
+        <ThreadCelebrationV3
+          eventId={`streak:${milestone.day}`}
+          days={milestone.days}
+          amount={milestone.amount}
+          hue={hue}
+          share={celebration.share}
+          compact={celebration.compact}
+          onClose={celebration.onClose}
+        />
+      ) : null}
       {rewards
-        ? [...rewards.chips]
+        ? [...chips]
             .reverse()
             .map((reward) => (
               <RewardChipV3
