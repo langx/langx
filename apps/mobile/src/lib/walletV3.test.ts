@@ -41,6 +41,11 @@ describe('nextRung', () => {
     expect(nextRung(everythingBelow, 1_000_000)).toBeNull()
   })
 
+  it('draws nothing once every frame and title is owned, the gated one too', () => {
+    const all = COSMETICS.filter((item) => isLadderKind(item.kind)).map((item) => item.id)
+    expect(nextRung(all, 1_000_000)).toBeNull()
+  })
+
   it('says how far, and is full once the balance covers it', () => {
     const first = nextRung([], 0)!.cosmetic
     const half = Math.floor(first.price / 2)
