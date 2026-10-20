@@ -38,6 +38,7 @@ import {
   useNavigation,
 } from 'expo-router'
 import { useAudioPlayer } from 'expo-audio'
+import { StatusBar } from 'expo-status-bar'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ActivityIndicator,
@@ -2967,8 +2968,18 @@ export function ChatScreen({
       tabbed={embedded}
       style={styles.screen}
       {...(v3Thread ? { ground: v3.colors.bg } : {})}
+      underStatusBar={v3Thread && !embedded}
     >
       {focused && partner ? <WebTitle page={partner.displayName} /> : null}
+      {/*
+        The v3 band runs behind the status bar, and every partner hue is light
+        in both schemes, so the bar's glyphs go dark over it. Only while this
+        screen is focused: unmounting hands the bar back to the root's style,
+        so the profile pushed on top, or the list it goes back to, is not left
+        with dark glyphs on a dark ground. Before the partner is known the
+        band is the surface grey and the root's style already fits it.
+      */}
+      {v3Thread && !embedded && focused && partner ? <StatusBar style="dark" /> : null}
       {/*
         The whole screen pads for the keyboard, by the keyboard's own reported
         height — see `useKeyboardInset` for why `KeyboardAvoidingView` did not
@@ -2987,6 +2998,7 @@ export function ChatScreen({
             call={{ gate: callGate, anchor: callButton, onPress: openCallMenu }}
             onMore={() => void openThreadMenu()}
             compact={keyboardUp}
+            underStatusBar={!embedded}
           />
         ) : (
           <View style={styles.header}>

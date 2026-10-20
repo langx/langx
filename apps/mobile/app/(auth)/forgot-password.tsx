@@ -14,6 +14,8 @@ import { useCaptcha } from '../../src/hooks/useCaptcha'
 import { goBackTo } from '../../src/lib/navigation'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
+import { ForgotPasswordV3 } from '../../src/components/auth/ForgotPasswordV3'
 
 export default function ForgotPassword() {
   useScreenInteractive()
@@ -25,6 +27,8 @@ export default function ForgotPassword() {
   const [sent, setSent] = useState(false)
   const [error, setError] = useState<string>()
   const captcha = useCaptcha()
+  // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
 
   async function onSubmit() {
     setError(undefined)
@@ -51,6 +55,23 @@ export default function ForgotPassword() {
       return
     }
     setSent(true)
+  }
+
+  if (v3) {
+    return (
+      <ForgotPasswordV3
+        email={email}
+        onChangeEmail={setEmail}
+        error={error}
+        loading={loading}
+        disabled={!email || captcha.checking}
+        canSubmit={!loading && !!email && !captcha.checking}
+        sent={sent}
+        onSubmit={onSubmit}
+        captchaWidget={captcha.widget}
+        captchaChecking={!!email && captcha.checking}
+      />
+    )
   }
 
   if (sent) {
