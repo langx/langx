@@ -8,6 +8,8 @@ import { useT } from '../../../src/i18n'
 import { goBackTo } from '../../../src/lib/navigation'
 import { openExternal } from '../../../src/lib/openExternal'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { VoiceCreditsScreenV3 } from '../../../src/screens/settings/VoiceCreditsScreenV3'
 
 /**
  * Who recorded the voices that read messages aloud.
@@ -26,7 +28,12 @@ import { makeStyles, useTheme } from '../../../src/lib/theme'
  * and the address of a dataset; translating a licence name is how an
  * attribution stops being one. The two sentences around them are.
  */
-export default function VoiceCreditsScreen() {
+export default function VoiceCreditsScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <VoiceCreditsScreenV3 /> : <VoiceCreditsScreen />
+}
+
+function VoiceCreditsScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const { colors } = useTheme()

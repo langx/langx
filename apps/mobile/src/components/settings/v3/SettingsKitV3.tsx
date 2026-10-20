@@ -25,35 +25,47 @@ export type Glyph = keyof typeof Feather.glyphMap
 export function SettingsScreenV3({
   title,
   back,
+  onBack,
   children,
 }: {
   title: string
   /** Where back goes when there is no history to go back through. */
   back: Href
+  /** In place of `goBackTo(back)`, for a page that also honours `?from=`. */
+  onBack?: (() => void) | undefined
   children: ReactNode
 }) {
+  const { v3 } = useTheme()
+  const styles = useStyles()
+  return (
+    <Screen scroll ground={v3.colors.bg}>
+      <SettingsHeaderV3 title={title} onBack={onBack ?? (() => goBackTo(back))} />
+      <View style={styles.stack}>{children}</View>
+    </Screen>
+  )
+}
+
+/**
+ * The back button over the big title, on its own for the pages that are not
+ * one scroll of blocks: a form whose button sits at the foot
+ * (`SettingsFormScreenV3`).
+ */
+export function SettingsHeaderV3({ title, onBack }: { title: string; onBack: () => void }) {
   const t = useT()
   const { isRtl } = useLocale()
   const styles = useStyles()
-  const { v3 } = useTheme()
   const [blackLoaded] = useFonts({ Nunito_900Black })
   return (
-    <Screen scroll ground={v3.colors.bg}>
-      <View style={styles.header}>
-        <IconButton
-          icon={isRtl ? 'chevron-right' : 'chevron-left'}
-          accessibilityLabel={t('common.backPlain')}
-          onPress={() => goBackTo(back)}
-        />
-        <Text
-          accessibilityRole="header"
-          style={[styles.title, !blackLoaded && styles.titleFallback]}
-        >
-          {title}
-        </Text>
-      </View>
-      <View style={styles.stack}>{children}</View>
-    </Screen>
+    <View style={styles.header}>
+      <IconButton
+        icon={isRtl ? 'chevron-right' : 'chevron-left'}
+        accessibilityLabel={t('common.backPlain')}
+        onPress={onBack}
+      />
+      <Text accessibilityRole="header" style={[styles.title, !blackLoaded && styles.titleFallback]}>
+        {title}
+      </Text>
+    </View>
   )
 }
 

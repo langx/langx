@@ -22,6 +22,8 @@ import { goBackTo } from '../../../src/lib/navigation'
 import { requireAccount } from '../../../src/lib/requireAccount'
 import { makeStyles } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { FeedbackScreenV3 } from '../../../src/screens/settings/FeedbackScreenV3'
 
 const BACK_TO = '/(app)/settings/about' as const
 
@@ -45,7 +47,12 @@ function isFeedbackKind(value: string | undefined): value is FeedbackKind {
  * something nobody can price in advance, and the first report worth less than
  * the number would read as us going back on it.
  */
-export default function FeedbackScreen() {
+export default function FeedbackScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <FeedbackScreenV3 /> : <FeedbackScreen />
+}
+
+function FeedbackScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()
