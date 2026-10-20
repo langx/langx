@@ -25,8 +25,11 @@
  */
 let latched: boolean | undefined
 
-export function latchV3Home(answer: { settled: boolean; on: boolean }): boolean | undefined {
-  if (latched === undefined && answer.settled) latched = answer.on
+// The 3.0 TestFlight build: the redesign is the app, so the server's
+// `flags.v3Home` is ignored and every launch takes v3 from the first render.
+// This branch is not merged to main; production builds still follow the flag.
+export function latchV3Home(_answer: { settled: boolean; on: boolean }): boolean | undefined {
+  latched = true
   return latched
 }
 
