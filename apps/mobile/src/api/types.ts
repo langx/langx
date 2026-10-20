@@ -164,6 +164,11 @@ export interface DiscoveryItem {
    * is on and past the sample the server requires — never a rate or a count.
    */
   repliesWithinDay?: true
+  /**
+   * The worn frame's tone (`wornFrameTone` on the server), absent for no
+   * frame and from an API that predates it.
+   */
+  frame?: string
 }
 
 export interface DiscoveryResult {

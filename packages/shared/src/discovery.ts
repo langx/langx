@@ -322,6 +322,12 @@ export const discoveryItemSchema = z.object({
    * around. A flag on purpose: the rate behind it does not leave the server.
    */
   repliesWithinDay: z.literal(true).optional(),
+  /**
+   * The worn frame's tone (`wornFrameTone`), absent for somebody who wears
+   * none. A tone rather than `cosmetics` and `equipped`: a card needs the one
+   * decision, not the whole collection behind it.
+   */
+  frame: z.string().optional(),
 })
 export type DiscoveryItem = z.infer<typeof discoveryItemSchema>
 

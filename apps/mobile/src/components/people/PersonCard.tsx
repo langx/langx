@@ -7,6 +7,7 @@ import { useDisplayNames, useLocale, useT } from '../../i18n'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
 import { partnerHueFor } from '../../lib/theme/partnerHue'
 import { Avatar } from '../ui/Avatar'
+import { frameArtBox } from '../ui/FrameArt'
 import { Button } from '../ui/Button'
 
 /**
@@ -87,12 +88,27 @@ export const PersonCard = memo(function PersonCard({
         style={({ pressed }) => [styles.open, pressed && styles.pressed]}
       >
         <View style={styles.head}>
-          <View>
-            <Avatar url={person.avatarUrl} name={person.displayName} seed={person._id} size={76} />
-            {/* Ringed in the card's hue rather than the ground's: it sits on the card. */}
-            {person.isOnline ? (
-              <View style={[styles.dot, { backgroundColor: colors.success, borderColor: hue }]} />
-            ) : null}
+          {/*
+            The frame spills past the face above and below, so the card is as
+            tall framed as not; beside the face it keeps its room from the
+            name. The inner view stays the face's size, which is what keeps
+            the dot on the face's edge rather than the frame's.
+          */}
+          <View style={person.frame ? { paddingHorizontal: CARD_FRAME_SPILL } : null}>
+            <View>
+              <Avatar
+                url={person.avatarUrl}
+                name={person.displayName}
+                seed={person._id}
+                size={person.frame ? CARD_FRAMED_AVATAR : CARD_AVATAR}
+                frame={person.frame}
+                frameOverflow="all"
+              />
+              {/* Ringed in the card's hue rather than the ground's: it sits on the card. */}
+              {person.isOnline ? (
+                <View style={[styles.dot, { backgroundColor: colors.success, borderColor: hue }]} />
+              ) : null}
+            </View>
           </View>
           <View style={styles.headText}>
             <Text style={[styles.name, !black && styles.nameFallback]} numberOfLines={1}>
@@ -170,7 +186,21 @@ export const NewcomerTile = memo(function NewcomerTile({
         pressed && styles.pressed,
       ]}
     >
-      <Avatar url={person.avatarUrl} name={person.displayName} seed={person._id} size={44} />
+      {/*
+        A framed face is the 40 cut inside the bare face's 44 slot, its frame
+        spilling into the tile's padding, so a framed tile is as tall as its
+        neighbours and the names along the strip stay on one line.
+      */}
+      <View style={styles.tileFace}>
+        <Avatar
+          url={person.avatarUrl}
+          name={person.displayName}
+          seed={person._id}
+          size={person.frame ? TILE_FRAMED_AVATAR : TILE_AVATAR}
+          frame={person.frame}
+          frameOverflow="all"
+        />
+      </View>
       <Text style={styles.tileName} numberOfLines={1}>
         {person.displayName}
       </Text>
@@ -182,6 +212,20 @@ export const NewcomerTile = memo(function NewcomerTile({
     </Pressable>
   )
 })
+
+/** The card's face. */
+const CARD_AVATAR = 76
+/**
+ * A framed card's face: smaller, so face and frame together take about the
+ * width a bare face does and the name keeps its room. Still the full cut.
+ */
+const CARD_FRAMED_AVATAR = 64
+/** How far a frame's art reaches past the framed face on each side. */
+const CARD_FRAME_SPILL = (frameArtBox(CARD_FRAMED_AVATAR) - CARD_FRAMED_AVATAR) / 2
+
+/** The tile's face, and its framed face (the list cut). */
+const TILE_AVATAR = 44
+const TILE_FRAMED_AVATAR = 40
 
 /** The strip's tile: four fit across a 390pt phone, and the rest scroll. */
 export const NEWCOMER_TILE_WIDTH = 84
@@ -254,6 +298,12 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[4],
     paddingTop: v3.space[10],
     width: NEWCOMER_TILE_WIDTH,
+  },
+  tileFace: {
+    alignItems: 'center',
+    height: TILE_AVATAR,
+    justifyContent: 'center',
+    width: TILE_AVATAR,
   },
   tileName: { ...v3.type.buttonSmall, color: v3.colors.ink, maxWidth: '100%' },
   tileLine: { ...v3.type.label, color: v3.colors.ink, maxWidth: '100%' },

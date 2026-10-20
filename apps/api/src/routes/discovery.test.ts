@@ -400,6 +400,36 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(items.find((i) => i.handle === hidden.handle)?.isOnline).toBe(false)
     })
 
+    // One tone per card, as the leaderboards send it; never the collection.
+    it("carries each person's worn frame as a tone, and nothing for somebody with none", async () => {
+      const viewer = await newUser('frame-card-viewer@example.com', {
+        nativeLanguages: [{ code: 'fi' }],
+        learning: [{ code: 'et', level: 'intermediate', priority: 1 }],
+      })
+      const framed = await newUser('frame-card-framed@example.com', {
+        nativeLanguages: [{ code: 'et' }],
+        learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
+      })
+      const plain = await newUser('frame-card-plain@example.com', {
+        nativeLanguages: [{ code: 'et' }],
+        learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
+      })
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: framed.userId },
+        {
+          $set: { cosmetics: ['frame.slate', 'frame.gold'], equipped: { frame: 'frame.slate' } },
+        },
+      )
+
+      const response = await discover(viewer, '')
+      const items = response.json<{ items: Record<string, unknown>[] }>().items
+      const card = items.find((i) => i.handle === framed.handle)
+      expect(card?.frame).toBe('slate')
+      expect(card).not.toHaveProperty('cosmetics')
+      expect(card).not.toHaveProperty('equipped')
+      expect(items.find((i) => i.handle === plain.handle)).not.toHaveProperty('frame')
+    })
+
     it('orders online-first ahead of the recommended score, always', async () => {
       const viewer = await newUser('bucket-order-viewer@example.com', {
         nativeLanguages: [{ code: 'hu' }],

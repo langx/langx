@@ -14,6 +14,7 @@ import {
   effectivePlanTier,
   isOnlineAt,
   findCosmetic,
+  wornFrameTone,
   languageCapAllows,
   MINIMUM_AGE,
   meetsMinimumAge,
@@ -1812,6 +1813,12 @@ export interface ConversationPartner {
   isOnline: boolean
   official?: true
   accountStatus: 'active' | 'suspended' | 'deleted'
+  /**
+   * The worn frame's tone (`wornFrameTone`), as the leaderboards send it.
+   * The profile has always shown the frame to anyone who can open it, and
+   * blocked partners never reach this list, so a row shows nothing new.
+   */
+  frame?: string
 }
 
 export function toConversationPartner(
@@ -1832,6 +1839,13 @@ export function toConversationPartner(
   }
   if (profile.avatarUrl !== undefined) partner.avatarUrl = profile.avatarUrl
   if (profile.official) partner.official = true
+  // Not on an account that is gone or suspended: its row says so, and a
+  // frame beside "Account deleted" would read as somebody still there.
+  const frame =
+    partner.accountStatus === 'active'
+      ? wornFrameTone(profile.equipped, profile.cosmetics ?? [])
+      : undefined
+  if (frame) partner.frame = frame
   return partner
 }
 
@@ -1857,6 +1871,8 @@ export async function conversationPartners(
           'stats.lastActiveAt': 1,
           deletedAt: 1,
           suspension: 1,
+          cosmetics: 1,
+          equipped: 1,
         },
       },
     )
