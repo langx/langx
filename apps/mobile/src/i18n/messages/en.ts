@@ -2337,6 +2337,18 @@ export const en = {
     rungProgress: { one: '{done} of {count} day', other: '{done} of {count} days' },
     noStreakTitle: 'No streak yet',
     noStreakBody: 'A day counts when you open LangX or practise. Today can be day one.',
+    /*
+     * The redesign's streak history (`StreakHistoryScreenV3`). Its legend
+     * reuses `checkedInUnknownTime`, `openedOnly`, `bought` and `missed`, so a
+     * square and the row under it say the same words. A screen reader hears
+     * the map as its four legend lines with their counts, not square by square.
+     */
+    dayByDay: 'Day by day',
+    mapA11y: {
+      one: 'Activity map, the last {count} day',
+      other: 'Activity map, the last {count} days',
+    },
+    legendA11y: '{state}: {days}',
   },
   settings: {
     scanBody: 'Sign in on a computer, or open a friend’s profile',
