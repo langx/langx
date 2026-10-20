@@ -96,6 +96,7 @@ import { useReviewPrompt } from '../hooks/useReviewPrompt'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
 import { chooseAlert, confirmAlert, showAlert } from '../lib/alert'
 import { emitWithAck, emitWithAward, getSocket, onSocket } from '../lib/socket'
+import { streakShareText } from '../lib/shareText'
 import { threadRewards, type ThreadReward } from '../lib/threadRewards'
 import { typingIndicator } from '../lib/typingIndicator'
 import {
@@ -270,6 +271,12 @@ export function ChatScreen({
   const [rewards, setRewards] = useState<
     Readonly<Record<string, { chips: ThreadReward[]; at: number }>>
   >({})
+  /**
+   * The message whose streak milestone the thread is celebrating, if any —
+   * one at a time: a newer milestone takes over, an older one folds back
+   * into its chip, and ✕ folds it too (see `ThreadCelebrationV3`).
+   */
+  const [celebrating, setCelebrating] = useState<string | null>(null)
   function noteAward(
     messageId: string,
     award: SendAward | undefined,
@@ -279,6 +286,7 @@ export function ChatScreen({
     const chips = threadRewards(award, kind)
     if (chips.length === 0) return
     setRewards((all) => ({ ...all, [messageId]: { chips, at: Date.now() } }))
+    if (chips.some((chip) => chip.kind === 'streak')) setCelebrating(messageId)
   }
   const styles = useStyles()
   const t = useT()
@@ -2919,6 +2927,19 @@ export function ChatScreen({
    * A string, so the bubbles' memo compares it by value.
    */
   const partnerHue = v3Thread && partner ? v3.hues[partnerHueFor(partner._id)] : undefined
+  /** What the celebrating row draws: Share carries the days and the invite, never tokens. */
+  const myHandle = me.data?.handle
+  const celebrated = celebrating
+    ? rewards[celebrating]?.chips.find((chip) => chip.kind === 'streak')
+    : undefined
+  const rowCelebration = {
+    share:
+      celebrated?.kind === 'streak' && myHandle
+        ? streakShareText(t, { count: celebrated.days, handle: myHandle })
+        : undefined,
+    compact: keyboardUp,
+    onClose: () => setCelebrating(null),
+  }
   /** One sentence for both composers: what the field says before anything is typed. */
   const composerPlaceholder = correcting
     ? t('chat.writeCorrection')
@@ -3351,6 +3372,9 @@ export function ChatScreen({
                       rewards={v3Thread ? rewards[row.message._id] : undefined}
                       partnerName={partner?.displayName ?? t('chat.them')}
                       hue={partnerHue}
+                      celebration={
+                        v3Thread && celebrating === row.message._id ? rowCelebration : undefined
+                      }
                     >
                       <MessageBubble
                         message={row.message}

@@ -1,4 +1,5 @@
 import { TOKEN_RULES, type SendAward } from '@langx/shared'
+import type { TranslateFn } from '../i18n/runtime'
 
 /**
  * One chip under a sent message: "+10 · you corrected Anna".
@@ -6,12 +7,14 @@ import { TOKEN_RULES, type SendAward } from '@langx/shared'
  *   - `corrected`: the correction's own pay.
  *   - `bothWrote`: the reciprocity bonus, paid once per conversation, the
  *     first time both people have written.
- *   - `streak`: a streak milestone this send crossed; `days` is the streak.
+ *   - `streak`: a streak milestone this send crossed; `days` is the streak,
+ *     `day` the streak day the send credited — the milestone's identity, so
+ *     the thread's celebration of it plays once (`claimCelebration`).
  */
 export type ThreadReward =
   | { kind: 'corrected'; amount: number }
   | { kind: 'bothWrote'; amount: number }
-  | { kind: 'streak'; amount: number; days: number }
+  | { kind: 'streak'; amount: number; days: number; day: string }
 
 /**
  * The chips a send's award is drawn as, in the order they sit under it.
@@ -49,7 +52,44 @@ export function threadRewards(
   if (kind === 'correction' && own > 0) chips.push({ kind: 'corrected', amount: own })
   if (both > 0) chips.push({ kind: 'bothWrote', amount: both })
   if (milestone > 0 && award.streak) {
-    chips.push({ kind: 'streak', amount: milestone, days: award.streak.current })
+    chips.push({
+      kind: 'streak',
+      amount: milestone,
+      days: award.streak.current,
+      day: award.streak.lastQualifiedDay,
+    })
   }
   return chips
+}
+
+/** What a chip says after its amount: "you corrected Anna". */
+export function rewardReason(t: TranslateFn, reward: ThreadReward, partnerName: string): string {
+  return reward.kind === 'corrected'
+    ? t('chat.rewardCorrected', { name: partnerName })
+    : reward.kind === 'bothWrote'
+      ? t('chat.rewardBothWrote')
+      : t('chat.rewardStreak', { count: reward.days })
+}
+
+/** A chip's full spoken label: "10 tokens: you corrected Anna". */
+export function rewardLabel(t: TranslateFn, reward: ThreadReward, partnerName: string): string {
+  return reward.kind === 'bothWrote'
+    ? t('chat.rewardBothLabel', { count: reward.amount, name: partnerName })
+    : t('chat.rewardLabel', { count: reward.amount, reason: rewardReason(t, reward, partnerName) })
+}
+
+/**
+ * Everything one send earned, as the one sentence a screen reader is told:
+ * each chip's label, joined the locale's way. One announcement rather than
+ * one per chip, because iOS drops an announcement still being read when the
+ * next arrives.
+ */
+export function rewardsAnnouncement(
+  t: TranslateFn,
+  chips: readonly ThreadReward[],
+  partnerName: string,
+): string {
+  const labels = chips.map((reward) => rewardLabel(t, reward, partnerName))
+  const [first = '', ...rest] = labels
+  return rest.reduce((said, next) => t('chat.rewardAnnounceJoin', { said, next }), first)
 }

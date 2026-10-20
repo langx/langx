@@ -134,6 +134,7 @@ export function StreakHistoryScreenV3() {
     today: data.today,
     days: data.days,
     usedThisMonth: data.repair.usedThisMonth,
+    usedByMonth: data.repair.usedByMonth,
     perMonth: data.repair.perMonth,
   })
 

@@ -1183,7 +1183,24 @@ export interface ActivityDto {
   /** Fills the days an account older than `streakDays` has no rows for. */
   streak: { current: number; lastQualifiedDay: string | null }
   days: ActivityDayDto[]
-  repair: { price: number; maxAgeDays: number; perMonth: number; usedThisMonth: number }
+  repair: {
+    price: number
+    maxAgeDays: number
+    perMonth: number
+    usedThisMonth: number
+    /**
+     * Repairs used in each month the window touches, keyed `YYYY-MM`. The cap
+     * is per month of the repaired day, not of today. Optional because a
+     * server older than the field sends none.
+     */
+    usedByMonth?: Record<string, number>
+    /**
+     * The account's first day, in the same zone as `today`. Nothing before it
+     * can be repaired. Optional because a server older than the field sends
+     * none, and then the window is all the client can go on.
+     */
+    firstDay?: string
+  }
 }
 
 /**

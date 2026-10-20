@@ -1,5 +1,5 @@
 import type { CallEndReason, CallMedia, CallOutcome, MessageCall } from '@langx/shared'
-import type { MessageKey } from '../../i18n/runtime'
+import type { MessageKey, TranslateFn } from '../../i18n/runtime'
 import type { CallClosing, CallState } from './machine'
 
 /**
@@ -97,6 +97,36 @@ export function formatCallDuration(totalSeconds: number): string {
   const rest = String(seconds % 60).padStart(2, '0')
   if (hours === 0) return `${minutes}:${rest}`
   return `${hours}:${String(minutes).padStart(2, '0')}:${rest}`
+}
+
+/**
+ * A call's length as a screen reader should say it — "3 minutes, 12
+ * seconds" — where the row shows `3:12` and a screen reader reads the digits.
+ *
+ * Two units at most: the largest that is not zero and, when it is not zero,
+ * the one just below it — "1 hour, 2 minutes" for `1:02:45`, and "1 hour"
+ * for `1:00:45`, never "1 hour, 45 seconds". The seconds of an hour-long call are noise to the ear in a
+ * way they are not to an eye scanning a timer. Each unit is a plural entry
+ * (Russian and Arabic do not split at one), and the pair is an entry of its
+ * own so a language can order and punctuate the two parts its own way.
+ */
+export function spokenCallLength(totalSeconds: number, t: TranslateFn): string {
+  const seconds = Math.max(0, Math.floor(totalSeconds))
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const rest = seconds % 60
+  let first: string
+  let second: string | null = null
+  if (hours > 0) {
+    first = t('calls.length.hours', { count: hours })
+    if (minutes > 0) second = t('calls.length.minutes', { count: minutes })
+  } else if (minutes > 0) {
+    first = t('calls.length.minutes', { count: minutes })
+    if (rest > 0) second = t('calls.length.seconds', { count: rest })
+  } else {
+    first = t('calls.length.seconds', { count: rest })
+  }
+  return second === null ? first : t('calls.length.pair', { first, second })
 }
 
 const END_LINES: Record<CallEndReason, MessageKey> = {

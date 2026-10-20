@@ -1468,6 +1468,19 @@ export const ru: Localized<EnMessages> = {
       many: 'Серия: {count} дней',
       other: 'Серия: {count} дня',
     },
+    celebrateStreakBody: {
+      one: 'Ты занимаешься в LangX {count} день подряд.',
+      few: 'Ты занимаешься в LangX {count} дня подряд.',
+      many: 'Ты занимаешься в LangX {count} дней подряд.',
+      other: 'Ты занимаешься в LangX {count} дня подряд.',
+    },
+    celebrateStreakNote: {
+      one: 'токен за эту серию',
+      few: 'токена за эту серию',
+      many: 'токенов за эту серию',
+      other: 'токена за эту серию',
+    },
+    rewardAnnounceJoin: '{said}. {next}',
     rewardLabel: {
       one: '{count} токен: {reason}',
       few: '{count} токена: {reason}',
@@ -3225,6 +3238,28 @@ export const ru: Localized<EnMessages> = {
       noAnswer: 'Нет ответа',
       declined: 'Отклонён',
       failed: 'Не удалось соединиться',
+      spoken: '{title}, {detail}',
+    },
+    length: {
+      hours: {
+        one: '{count} час',
+        few: '{count} часа',
+        many: '{count} часов',
+        other: '{count} часа',
+      },
+      minutes: {
+        one: '{count} минута',
+        few: '{count} минуты',
+        many: '{count} минут',
+        other: '{count} минуты',
+      },
+      seconds: {
+        one: '{count} секунда',
+        few: '{count} секунды',
+        many: '{count} секунд',
+        other: '{count} секунды',
+      },
+      pair: '{first} {second}',
     },
   },
 
