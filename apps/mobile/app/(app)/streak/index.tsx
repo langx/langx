@@ -22,6 +22,8 @@ import { showToast } from '../../../src/lib/toast'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { StreakScreenV3 } from '../../../src/screens/StreakScreenV3'
 
 /**
  * The streak, as categories.
@@ -55,7 +57,17 @@ const SECTIONS: readonly { id: string; titleKey: MessageKey; bodyKey: MessageKey
     },
   ]
 
-export default function StreakScreen() {
+/**
+ * The streak screen — or, with `flags.v3Home` on, the redesign's
+ * (`StreakScreenV3`). Read once per launch, like the bar the redesign's Home
+ * sits in, so the page does not change under somebody when the flag does.
+ */
+export default function StreakRoute() {
+  const v3Home = useV3Home()
+  return v3Home ? <StreakScreenV3 /> : <StreakScreen />
+}
+
+function StreakScreen() {
   useScreenInteractive()
   const t = useT()
   const styles = useStyles()

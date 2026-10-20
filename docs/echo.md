@@ -539,6 +539,10 @@ With `flags.v3Home` on the bar is **Home · Chats · Echo · People · Me**: Ech
 stays in the middle, in a tinted pill that is always on rather than a raised
 disc (`docs/decisions.md` → _Home leads the bar, and People holds Discover
 and the Feed — behind a flag_).
+With the flag on, the tab and the end of a session are also the redesign's:
+the due count with how long it takes, the due cards grouped by partner, and a
+done screen that names what the batch earned (_Echo leads with what is due,
+and the done screen says what it earned — behind the same flag_).
 
 | Route                  | Screen                                                                                                                                     |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |

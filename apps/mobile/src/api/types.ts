@@ -159,6 +159,11 @@ export interface DiscoveryItem {
    * `formatDistance`, which words it as the bound it actually is.
    */
   distanceKm?: number
+  /**
+   * "Usually replies within a day". Sent only while `flags.discoveryReplyFirst`
+   * is on and past the sample the server requires — never a rate or a count.
+   */
+  repliesWithinDay?: true
 }
 
 export interface DiscoveryResult {
@@ -179,6 +184,15 @@ export type BoostedProfile = DiscoveryItem
 
 export interface BoostedProfilesPage {
   items: BoostedProfile[]
+}
+
+/**
+ * `GET /discovery/new` — the "New on LangX" strip. Empty while
+ * `flags.discoveryReplyFirst` is off, for a viewer under 18, and for a guest;
+ * no cursor, capped server-side at `DISCOVERY_NEW_LIMIT`.
+ */
+export interface NewProfilesPage {
+  items: DiscoveryItem[]
 }
 
 /** `GET /discovery/handles` — a jump-to, so no cursor and no counts. */

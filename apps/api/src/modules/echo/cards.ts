@@ -4,6 +4,9 @@ import {
   attachmentsOf,
   ECHO_AUDIO_MAX,
   ECHO_FRONT_MAX_LENGTH,
+  ECHO_PACE_SAMPLE,
+  ECHO_SUMMARY_PARTNERS,
+  echoSecondsPerCard,
   ERROR_CODES,
   type CaptureEchoInput,
   type CaptureEchoResult,
@@ -12,6 +15,7 @@ import {
   type EchoCardPage,
   type EchoImage,
   type Media,
+  type EchoPartnerDue,
   type EchoQueue,
   type EchoSource,
   type EchoSummary,
@@ -51,7 +55,7 @@ import { blockedUserIds } from '../moderation/blocks'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
 import { lookupTranslation, rememberTranslation } from '../translation/translate'
-import { toEchoCard, type EchoAggregate, type EchoCardDoc } from './documents'
+import { toEchoCard, type EchoAggregate, type EchoCardDoc, type EchoReviewDoc } from './documents'
 
 /**
  * What a capture needs from outside the database.
@@ -1001,12 +1005,17 @@ export async function dueQueue(
   userId: string,
   lang?: string,
   now: Date = new Date(),
+  partner?: string,
 ): Promise<EchoQueue> {
   const cards = db.collection<EchoCardDoc>(COLLECTIONS.echoCards)
   const filter: Filter<EchoCardDoc> = {
     userId,
     'srs.due': { $lte: now },
     ...(lang ? { lang } : {}),
+    // The summary's `partners` group, opened: the cards kept from what this
+    // one person wrote. Scoped to the owner like everything above, so naming
+    // somebody else's partner draws nothing.
+    ...(partner ? { 'source.kind': 'chat' as const, 'source.partnerId': partner } : {}),
     // The whole point of archiving: never asked again. The schedule is left
     // alone, so a card taken back out simply becomes due again.
     archivedAt: { $exists: false },
@@ -1032,43 +1041,95 @@ export async function summary(
   // wrong, and the Monday reset would be the half nobody expects.
   const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
 
-  const [byLanguage, reviewedToday, reviewedThisWeek, next, allTime] = await Promise.all([
-    cards
-      .aggregate<{ _id: string; total: number; due: number }>([
-        // Archived cards count nowhere: the badge on the tab and the totals
-        // beside each language both describe what is still being learned.
-        { $match: { userId, archivedAt: { $exists: false } } },
-        {
-          $group: {
-            _id: '$lang',
-            total: { $sum: 1 },
-            due: { $sum: { $cond: [{ $lte: ['$srs.due', now] }, 1, 0] } },
+  const [byLanguage, reviewedToday, reviewedThisWeek, next, allTime, recent, partners] =
+    await Promise.all([
+      cards
+        .aggregate<{ _id: string; total: number; due: number }>([
+          // Archived cards count nowhere: the badge on the tab and the totals
+          // beside each language both describe what is still being learned.
+          { $match: { userId, archivedAt: { $exists: false } } },
+          {
+            $group: {
+              _id: '$lang',
+              total: { $sum: 1 },
+              due: { $sum: { $cond: [{ $lte: ['$srs.due', now] }, 1, 0] } },
+            },
           },
-        },
-        { $sort: { total: -1, _id: 1 } },
-      ])
-      .toArray(),
-    db.collection(COLLECTIONS.echoReviews).countDocuments({ userId, at: { $gte: startOfDay } }),
-    db.collection(COLLECTIONS.echoReviews).countDocuments({ userId, at: { $gte: startOfWeek } }),
-    // The soonest card still waiting, for a tab with nothing due to say when
-    // there will be. `owner_due` sorts it, so this is a seek rather than a
-    // scan — and archived cards are excluded here for the same reason they are
-    // excluded above: they are not coming back.
-    cards.findOne(
-      { userId, archivedAt: { $exists: false }, 'srs.due': { $gt: now } },
-      { sort: { 'srs.due': 1 }, projection: { 'srs.due': 1 } },
-    ),
-    // Every card ever answered, off the review board's `all` counter — one
-    // read by `_id` — rather than a count of this person's `echoReviews`,
-    // which only ever grows. The same number the board's "All time" tab
-    // ranks by, so the two cannot disagree.
-    db
-      .collection<EchoAggregate>(COLLECTIONS.echoAggregates)
-      .findOne(
-        { _id: aggregateId(userId, 'all', periodKeys(now).all) },
-        { projection: { reviews: 1 } },
+          { $sort: { total: -1, _id: 1 } },
+        ])
+        .toArray(),
+      db.collection(COLLECTIONS.echoReviews).countDocuments({ userId, at: { $gte: startOfDay } }),
+      db.collection(COLLECTIONS.echoReviews).countDocuments({ userId, at: { $gte: startOfWeek } }),
+      // The soonest card still waiting, for a tab with nothing due to say when
+      // there will be. `owner_due` sorts it, so this is a seek rather than a
+      // scan — and archived cards are excluded here for the same reason they are
+      // excluded above: they are not coming back.
+      cards.findOne(
+        { userId, archivedAt: { $exists: false }, 'srs.due': { $gt: now } },
+        { sort: { 'srs.due': 1 }, projection: { 'srs.due': 1 } },
       ),
-  ])
+      // Every card ever answered, off the review board's `all` counter — one
+      // read by `_id` — rather than a count of this person's `echoReviews`,
+      // which only ever grows. The same number the board's "All time" tab
+      // ranks by, so the two cannot disagree.
+      db
+        .collection<EchoAggregate>(COLLECTIONS.echoAggregates)
+        .findOne(
+          { _id: aggregateId(userId, 'all', periodKeys(now).all) },
+          { projection: { reviews: 1 } },
+        ),
+      // How long the latest answers were on screen, for the tab's "about four
+      // minutes". `owner_recent` walks them newest first and stops at the
+      // sample, so this costs the same for a year of reviews as for a week.
+      db
+        .collection<EchoReviewDoc>(COLLECTIONS.echoReviews)
+        .find({ userId }, { projection: { durationMs: 1 } })
+        .sort({ at: -1 })
+        .limit(ECHO_PACE_SAMPLE)
+        .toArray(),
+      // Due cards kept from chats, by who wrote them. `owner_due` narrows to
+      // what is due; the oldest card of each group is the one a review of that
+      // partner would open on, so it is the line the tab shows.
+      //
+      // One language per partner — the one with most of their cards due — so
+      // the block opens a deck in one language. A review never mixes them (see
+      // docs/echo.md → "Review asks which language"), and somebody who keeps
+      // lines in two languages from one person would otherwise get exactly
+      // the French-then-Russian deck that rule removed.
+      cards
+        .aggregate<{ _id: string; lang: string; due: number; front: string; back: string }>([
+          {
+            $match: {
+              userId,
+              archivedAt: { $exists: false },
+              'srs.due': { $lte: now },
+              'source.kind': 'chat',
+            },
+          },
+          { $sort: { 'srs.due': 1 } },
+          {
+            $group: {
+              _id: { partnerId: '$source.partnerId', lang: '$lang' },
+              due: { $sum: 1 },
+              front: { $first: '$front' },
+              back: { $first: '$back' },
+            },
+          },
+          { $sort: { due: -1, '_id.lang': 1 } },
+          {
+            $group: {
+              _id: '$_id.partnerId',
+              lang: { $first: '$_id.lang' },
+              due: { $first: '$due' },
+              front: { $first: '$front' },
+              back: { $first: '$back' },
+            },
+          },
+          { $sort: { due: -1, _id: 1 } },
+          { $limit: ECHO_SUMMARY_PARTNERS },
+        ])
+        .toArray(),
+    ])
 
   const languages = byLanguage.map((row) => ({ lang: row._id, total: row.total, due: row.due }))
   return {
@@ -1079,5 +1140,13 @@ export async function summary(
     reviewedThisWeek,
     reviewedAllTime: allTime?.reviews ?? 0,
     nextDue: next ? next.srs.due.toISOString() : null,
+    secondsPerCard: echoSecondsPerCard(recent.map((row) => row.durationMs)),
+    partners: partners.map((row): EchoPartnerDue => ({
+      partnerId: row._id,
+      lang: row.lang,
+      due: row.due,
+      front: row.front,
+      back: row.back,
+    })),
   }
 }

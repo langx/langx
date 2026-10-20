@@ -55,14 +55,14 @@ export function PeopleSegments({
   )
 }
 
-const useStyles = makeStyles(({ colors, v3 }) => ({
+const useStyles = makeStyles(({ v3 }) => ({
   /*
-   * The current look's `fill`, not v3's `surface`: the control sits on
-   * Discover's and the Feed's ground, which is the current look's until those
-   * screens move, and in dark v3's surface is all but the same colour as it.
+   * v3's `surface`, now that both segments are drawn on v3's ground. It was
+   * the current look's `fill` while they still sat on the current look's,
+   * where v3's surface in dark is all but the ground's own colour.
    */
   track: {
-    backgroundColor: colors.fill,
+    backgroundColor: v3.colors.surface,
     borderRadius: v3.radius.pill,
     flexDirection: 'row',
     gap: v3.space[4],
@@ -79,7 +79,7 @@ const useStyles = makeStyles(({ colors, v3 }) => ({
     paddingHorizontal: v3.space[12],
   },
   selected: { backgroundColor: v3.colors.pill },
-  pressed: { backgroundColor: colors.border },
+  pressed: { backgroundColor: v3.colors.line },
   label: { ...v3.type.button, color: v3.colors.fg },
   labelSelected: { color: v3.colors.pillText },
 }))
