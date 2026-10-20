@@ -85,6 +85,8 @@ export interface StoreInput {
     filled: ReadonlySet<string>
     price: number
     usedThisMonth: number
+    /** Repairs used per `YYYY-MM`, when the server sends them. */
+    usedByMonth?: Readonly<Record<string, number>> | undefined
     /** The account's first day; nothing before it is offered. */
     firstDay?: string
   }
@@ -94,6 +96,21 @@ export interface StoreInput {
    * by the reader's locale rather than by the module's import time.
    */
   t: TranslateFn
+}
+
+/**
+ * Repairs already used in the month `day` falls in — the month the server
+ * counts the cap against, which is not always today's.
+ *
+ * Without `usedByMonth` (a server older than the field) every month is taken
+ * to have used what this month has, which is what the client assumed before.
+ */
+export function repairsUsedFor(
+  day: string,
+  repair: { usedThisMonth: number; usedByMonth?: Readonly<Record<string, number>> | undefined },
+): number {
+  if (!repair.usedByMonth) return repair.usedThisMonth
+  return repair.usedByMonth[day.slice(0, 7)] ?? 0
 }
 
 /**
@@ -180,12 +197,14 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
    * which is the one repairing it actually rescues.
    */
   const repair = input.repair
-  if (repair && repair.usedThisMonth < TOKEN_RULES.sinks.dayRepairPerMonth) {
+  if (repair) {
+    const cap = TOKEN_RULES.sinks.dayRepairPerMonth
     let day: string | null = null
     for (let back = 1; back <= TOKEN_RULES.sinks.dayRepairMaxAgeDays; back++) {
       const candidate = shiftDayKey(repair.today, -back)
       if (!isRepairable(candidate, repair.today, repair.firstDay)) break
-      if (!repair.filled.has(candidate)) {
+      // A day whose month has used both repairs is one the server refuses.
+      if (!repair.filled.has(candidate) && repairsUsedFor(candidate, repair) < cap) {
         day = candidate
         break
       }
@@ -196,7 +215,7 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
           `dayRepair:${day}`,
           t('store.repairDay'),
           t('store.repairDayBody', {
-            left: TOKEN_RULES.sinks.dayRepairPerMonth - repair.usedThisMonth,
+            left: cap - repairsUsedFor(day, repair),
           }),
           repair.price,
         ),

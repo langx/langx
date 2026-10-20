@@ -10,6 +10,7 @@ import {
 } from '../lib/activityMap'
 import { Skeleton } from './ui/Skeleton'
 import { confirmAndRepair } from '../lib/repairFlow'
+import { repairsUsedFor } from '../lib/storeOffers'
 import { makeStyles } from '../lib/theme'
 import { useLocale, useT } from '../i18n'
 
@@ -92,10 +93,11 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
   const today = (handle ? theirs.data?.today : own.data?.today) ?? ''
   const days = handle ? [] : (own.data?.days ?? [])
   const filled = new Set(days.map((d) => d.day))
-  const left = Math.max(0, rules.perMonth - rules.usedThisMonth)
 
   async function onPressDay(cell: ActivityCell): Promise<void> {
     if (handle || cell.state !== 'repairable') return
+    // The cap is counted in the month of the day being repaired, not today's.
+    const left = Math.max(0, rules.perMonth - repairsUsedFor(cell.day, rules))
     await confirmAndRepair({
       day: cell.day,
       today,

@@ -1189,6 +1189,12 @@ export interface ActivityDto {
     perMonth: number
     usedThisMonth: number
     /**
+     * Repairs used in each month the window touches, keyed `YYYY-MM`. The cap
+     * is per month of the repaired day, not of today. Optional because a
+     * server older than the field sends none.
+     */
+    usedByMonth?: Record<string, number>
+    /**
      * The account's first day, in the same zone as `today`. Nothing before it
      * can be repaired. Optional because a server older than the field sends
      * none, and then the window is all the client can go on.

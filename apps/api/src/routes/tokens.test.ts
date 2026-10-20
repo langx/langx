@@ -1126,6 +1126,34 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       expect(row).toBeNull()
     })
 
+    /** The cap is per month of the repaired day, so the map reports each month. */
+    it('reports the repairs used in each month the window touches', async () => {
+      const user = await funded('repair-by-month@example.com', 5000)
+      const repaired = await app.inject({
+        method: 'POST',
+        url: '/me/activity/repair',
+        headers: { cookie: user.cookie },
+        payload: { day: dayKey(1) },
+      })
+      expect(repaired.statusCode, repaired.body).toBe(200)
+
+      const activity = await app.inject({
+        method: 'GET',
+        url: `/me/activity?from=${dayKey(7)}&to=${dayKey(0)}`,
+        headers: { cookie: user.cookie },
+      })
+      const { repair } = activity.json<{
+        repair: { usedThisMonth: number; usedByMonth: Record<string, number> }
+      }>()
+      const months = new Set([
+        dayKey(TOKEN_RULES.sinks.dayRepairMaxAgeDays).slice(0, 7),
+        dayKey(0).slice(0, 7),
+      ])
+      expect(Object.keys(repair.usedByMonth).sort()).toEqual([...months].sort())
+      expect(repair.usedByMonth[dayKey(1).slice(0, 7)]).toBe(1)
+      expect(repair.usedThisMonth).toBe(repair.usedByMonth[dayKey(0).slice(0, 7)])
+    })
+
     it('accepts the first day of the account', async () => {
       const user = await funded('repair-first-day@example.com', 5000, 3)
 
