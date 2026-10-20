@@ -518,9 +518,16 @@ export const v3Type = {
    * because it is a figure, not words: two or three digits, never a line
    * that has to wrap. Tracked tight, as the drawings do, so "12" reads as
    * one shape.
+   *
+   * Numeral and Display run a line height well above their size, unlike the
+   * drawings' solid 76/76. Nunito's ascent and descent add up to about 1.36em,
+   * and when the line box is shorter than that, iOS and Android both keep the
+   * descent and cut the box from the top — so at 76/76 the top of every digit
+   * was clipped on a phone while the web build, which only overflows, looked
+   * right. `typeRamp.test.ts` holds the ratio.
    */
-  numeral: { fontFamily: DISPLAY_FONT_BLACK, fontSize: 76, lineHeight: 76, letterSpacing: -2 },
-  display: { fontFamily: DISPLAY_FONT_BLACK, fontSize: 44, lineHeight: 46, letterSpacing: -0.5 },
+  numeral: { fontFamily: DISPLAY_FONT_BLACK, fontSize: 76, lineHeight: 88, letterSpacing: -2 },
+  display: { fontFamily: DISPLAY_FONT_BLACK, fontSize: 44, lineHeight: 52, letterSpacing: -0.5 },
   title: { fontFamily: DISPLAY_FONT_BLACK, fontSize: 32, lineHeight: 36 },
   headline: { fontFamily: DISPLAY_FONT, fontSize: 22, lineHeight: 28 },
   body: { fontSize: 17, lineHeight: 24, fontWeight: '400' },

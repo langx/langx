@@ -866,6 +866,7 @@ allowlist.
 
 ## Home leads the bar, and People holds Discover and the Feed — behind a flag
 
+> **Amended 20 October 2026 — see _The Echo tab drops its standing tint_ below.**
 > **Amended 19 October 2026 — see _Chats leads with the people waiting on you — behind the same flag_ below.**
 > **Amended 19 October 2026 — see _Echo leads with what is due, and the done screen says what it earned — behind the same flag_ below.**
 
@@ -923,6 +924,16 @@ tour plays; under the flag the tour's Feed step finds no Feed tab and is
 skipped, as any step with nothing to point at is. The streak row draws a
 plain disc where `StreakFlame` could go. The screens behind the tabs keep the
 current look, and the web tab title for `/discover` still says Discover.
+
+## The Echo tab drops its standing tint
+
+**20 October 2026.** Changes one line of the entry above: under `flags.v3Home`
+the Echo tab no longer sits in an always-on blue pill. On a phone that pill
+read as a second selected tab — whichever tab you were on, two pills were lit.
+Echo now draws like the other four: the grey pill only when it is the tab you
+are on, the muted glyph otherwise. It stays centred, and its due-count badge
+stays, which is what says there is something to do. With the flag off the bar
+is unchanged.
 
 ## Chats leads with the people waiting on you — behind the same flag
 
