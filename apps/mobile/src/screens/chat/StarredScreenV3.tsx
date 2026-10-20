@@ -333,12 +333,8 @@ function Preview({ message, zone }: { message: MessageDto; zone: string | undefi
 }
 
 const useStyles = makeStyles(({ v3 }) => ({
-  lede: {
-    ...v3.type.callout,
-    color: v3.colors.muted,
-    paddingBottom: v3.space[8],
-    paddingHorizontal: v3.space[10],
-  },
+  // Under the title, on the same start edge.
+  lede: { ...v3.type.callout, color: v3.colors.muted, paddingBottom: v3.space[8] },
   list: { flexGrow: 1, paddingBottom: v3.space[32] },
   day: {
     ...v3.type.headline,
