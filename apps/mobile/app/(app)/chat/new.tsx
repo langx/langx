@@ -11,12 +11,14 @@ import { ComposerHint } from '../../../src/components/ComposerHint'
 import { MessageBubble } from '../../../src/components/MessageBubble'
 import { PresenceLine } from '../../../src/components/PresenceLine'
 import { Avatar } from '../../../src/components/ui/Avatar'
+import { IconButton } from '../../../src/components/ui/IconButton'
 import { Screen } from '../../../src/components/ui/Screen'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useKeyboardInset } from '../../../src/hooks/useKeyboardInset'
 import { useProfileCache, useProfileCacheStatus } from '../../../src/hooks/useProfileCache'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
-import { useT } from '../../../src/i18n'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { useLocale, useT } from '../../../src/i18n'
 import { authClient } from '../../../src/lib/auth-client'
 import { goBackTo, openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
@@ -45,6 +47,8 @@ export default function NewChatScreen() {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
+  const { isRtl } = useLocale()
+  const v3Look = useV3Home()
   const { to, from } = useLocalSearchParams<{ to: string; from?: string }>()
   const partnerId = to ?? ''
   const here = `/(app)/chat/new?to=${partnerId}`
@@ -228,15 +232,24 @@ export default function NewChatScreen() {
       {/* Padded for the keyboard the same way the thread is — see `useKeyboardInset`. */}
       <Animated.View style={[styles.avoid, { paddingBottom: keyboardInset }]}>
         <View style={styles.header}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t('common.backPlain')}
-            onPress={() => goBackTo('/(app)/(tabs)/discover', from)}
-            hitSlop={12}
-            style={styles.back}
-          >
-            <Feather name="arrow-left" size={22} color={colors.text} />
-          </Pressable>
+          {v3Look ? (
+            <IconButton
+              icon={isRtl ? 'chevron-right' : 'chevron-left'}
+              accessibilityLabel={t('common.backPlain')}
+              onPress={() => goBackTo('/(app)/(tabs)/discover', from)}
+              hitSlop={12}
+            />
+          ) : (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('common.backPlain')}
+              onPress={() => goBackTo('/(app)/(tabs)/discover', from)}
+              hitSlop={12}
+              style={styles.back}
+            >
+              <Feather name="arrow-left" size={22} color={colors.text} />
+            </Pressable>
+          )}
           <Pressable
             style={styles.headerUser}
             onPress={() => partner && openProfile(partner.handle, here)}

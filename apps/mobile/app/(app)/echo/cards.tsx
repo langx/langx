@@ -33,12 +33,15 @@ import { listState } from '../../../src/lib/listState'
 import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
+import { IconButton } from '../../../src/components/ui/IconButton'
+import { useV3Home } from '../../../src/hooks/useV3Home'
 
 /** Everything kept, and the two things this screen is for: fixing a card, and taking it back. */
 export default function EchoCardsScreen() {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
+  const v3Look = useV3Home()
   const names = useDisplayNames()
 
   const summary = useEchoSummary()
@@ -200,25 +203,45 @@ export default function EchoCardsScreen() {
           ) : (
             <View style={styles.headerActions}>
               {items.length > 0 ? (
+                v3Look ? (
+                  <IconButton
+                    icon="check-square"
+                    iconSize={20}
+                    accessibilityLabel={t('echo.selectCards')}
+                    hitSlop={12}
+                    onPress={() => setSelected(new Set())}
+                  />
+                ) : (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t('echo.selectCards')}
+                    hitSlop={12}
+                    onPress={() => setSelected(new Set())}
+                    style={({ pressed }) => (pressed ? styles.pressed : null)}
+                  >
+                    <Feather name="check-square" size={20} color={colors.text} />
+                  </Pressable>
+                )
+              ) : null}
+              {v3Look ? (
+                <IconButton
+                  icon="plus"
+                  iconSize={22}
+                  accessibilityLabel={t('echo.newTitle')}
+                  hitSlop={12}
+                  onPress={() => router.push('/(app)/echo/new')}
+                />
+              ) : (
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel={t('echo.selectCards')}
+                  accessibilityLabel={t('echo.newTitle')}
                   hitSlop={12}
-                  onPress={() => setSelected(new Set())}
+                  onPress={() => router.push('/(app)/echo/new')}
                   style={({ pressed }) => (pressed ? styles.pressed : null)}
                 >
-                  <Feather name="check-square" size={20} color={colors.text} />
+                  <Feather name="plus" size={22} color={colors.text} />
                 </Pressable>
-              ) : null}
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t('echo.newTitle')}
-                hitSlop={12}
-                onPress={() => router.push('/(app)/echo/new')}
-                style={({ pressed }) => (pressed ? styles.pressed : null)}
-              >
-                <Feather name="plus" size={22} color={colors.text} />
-              </Pressable>
+              )}
             </View>
           )
         }

@@ -37,6 +37,8 @@ import {
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { genderLabel, genderShortLabel, useDisplayNames, useLocale, useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { IconButton } from '../../src/components/ui/IconButton'
+import { useV3Home } from '../../src/hooks/useV3Home'
 
 /** Explicit `undefined` means "clear this filter" — see `set` below. */
 type FilterPatch = { [K in keyof DiscoveryFilters]?: DiscoveryFilters[K] | undefined }
@@ -70,6 +72,7 @@ export default function FiltersScreen() {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
+  const v3Look = useV3Home()
   const { locale } = useLocale()
   const names = useDisplayNames()
 
@@ -250,15 +253,25 @@ export default function FiltersScreen() {
   return (
     <Screen fluid style={styles.screen}>
       <View style={styles.header}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('common.backPlain')}
-          hitSlop={12}
-          onPress={() => goBackTo('/(app)/(tabs)/discover')}
-          style={({ pressed }) => [styles.close, pressed && styles.pressed]}
-        >
-          <Feather name="x" size={22} color={colors.text} />
-        </Pressable>
+        {v3Look ? (
+          <IconButton
+            icon="x"
+            iconSize={22}
+            accessibilityLabel={t('common.backPlain')}
+            hitSlop={12}
+            onPress={() => goBackTo('/(app)/(tabs)/discover')}
+          />
+        ) : (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('common.backPlain')}
+            hitSlop={12}
+            onPress={() => goBackTo('/(app)/(tabs)/discover')}
+            style={({ pressed }) => [styles.close, pressed && styles.pressed]}
+          >
+            <Feather name="x" size={22} color={colors.text} />
+          </Pressable>
+        )}
         <Text style={styles.title} numberOfLines={1}>
           {t('filters.title')}
         </Text>
