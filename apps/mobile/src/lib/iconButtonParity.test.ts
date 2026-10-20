@@ -33,7 +33,8 @@ const SITES: Readonly<Record<string, number>> = {
   'app/(app)/recap.tsx': 1,
   'src/components/PhotoViewer.tsx': 3,
   'src/components/PeopleSearch.tsx': 1,
-  'src/components/Tip.tsx': 1,
+  // Tip.tsx is not listed: its flag-on look is TipV3, which draws the kit's
+  // CoachCard, so the file keeps only the flag-off Pressable.
   'src/components/UpdateBanner.tsx': 1,
   'src/components/testimonials/TestimonialCard.tsx': 1,
   'src/components/testimonials/ThreadTestimonialCard.tsx': 1,
