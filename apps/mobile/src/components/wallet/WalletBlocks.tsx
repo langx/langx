@@ -8,6 +8,7 @@ import type { StoreOffer } from '../../lib/storeOffers'
 import { stickerAsset } from '../../lib/stickerAssets'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
 import { Avatar } from '../ui/Avatar'
+import { TokenGlyph } from '../store/StoreV3Blocks'
 import { Button } from '../ui/Button'
 import { ICON_BUTTON_TARGET, IconButton } from '../ui/IconButton'
 
@@ -470,6 +471,8 @@ export function StoreRowV3({
       }
       variant="secondary"
       size="medium"
+      // The token mark beside every price, as the v3 store's own blocks draw it.
+      icon={<TokenGlyph size={v3.icon.md} color={v3.colors.blue} />}
       disabled={!buyable}
       onPress={() => onBuy(offer)}
       style={styles.buy}
