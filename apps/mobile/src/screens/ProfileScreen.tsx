@@ -53,6 +53,7 @@ import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useV3Home } from '../hooks/useV3Home'
 import { IconButton } from '../components/ui/IconButton'
+import { ProfileScreenV3 } from './ProfileScreenV3'
 
 export interface ProfileScreenProps {
   handle: string
@@ -68,7 +69,15 @@ export interface ProfileScreenProps {
   onClose?: () => void
 }
 
-export function ProfileScreen({ handle, from, embedded = false, onClose }: ProfileScreenProps) {
+/**
+ * The redesign's drawing behind `flags.v3Home`, read once per launch, so the
+ * hooks below never change order mid-life; today's otherwise.
+ */
+export function ProfileScreen(props: ProfileScreenProps) {
+  return useV3Home() ? <ProfileScreenV3 {...props} /> : <ProfileScreenCurrent {...props} />
+}
+
+function ProfileScreenCurrent({ handle, from, embedded = false, onClose }: ProfileScreenProps) {
   useScreenInteractive(!embedded)
   const { colors } = useTheme()
   const styles = useStyles()
