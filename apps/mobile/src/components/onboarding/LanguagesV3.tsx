@@ -6,6 +6,7 @@ import type { OnboardingStep } from '../../lib/onboardingStep'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { useLanguageSearch } from '../LanguagePicker'
 import { Button } from '../ui/Button'
+import { ICON_BUTTON_TARGET } from '../ui/IconButton'
 import { Screen } from '../ui/Screen'
 import { SegmentedControl } from '../ui/SegmentedControl'
 import { ChoiceRowV3, WizardHeaderV3, WizardTitle, useWizardStyles } from './WizardV3'
@@ -155,8 +156,8 @@ function LanguagePickerV3({
           <Pressable
             accessibilityLabel={t('common.clear')}
             accessibilityRole="button"
-            hitSlop={12}
             onPress={() => setQuery('')}
+            style={styles.clear}
           >
             <Feather name="x" size={v3.icon.md} color={v3.colors.muted} />
           </Pressable>
@@ -207,6 +208,13 @@ const useStyles = makeStyles(({ v3 }) => ({
   // `paddingVertical: 0`: Android's own TextInput padding would push the
   // words off the glyph beside them.
   searchInput: { ...v3.type.body, color: v3.colors.fg, flex: 1, paddingVertical: 0 },
+  // The platform's minimum target around a 20pt glyph.
+  clear: {
+    alignItems: 'center',
+    height: ICON_BUTTON_TARGET,
+    justifyContent: 'center',
+    width: ICON_BUTTON_TARGET,
+  },
   list: { flex: 1 },
   rows: { gap: v3.space[8], paddingBottom: v3.space[8] },
 }))

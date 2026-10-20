@@ -4,6 +4,7 @@ import type { HandleTone } from '../../hooks/useHandleAvailability'
 import { useLocale, useT } from '../../i18n'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { Button } from '../ui/Button'
+import { ICON_BUTTON_TARGET } from '../ui/IconButton'
 import { Screen } from '../ui/Screen'
 import { FieldV3, WizardHeaderV3, WizardTitle, useWizardStyles } from './WizardV3'
 
@@ -107,9 +108,8 @@ export function HandleV3({
           {status.retry ? (
             <Pressable
               accessibilityRole="button"
-              hitSlop={12}
               onPress={onRetry}
-              style={({ pressed }) => pressed && styles.pressed}
+              style={({ pressed }) => [styles.retry, pressed && styles.pressed]}
             >
               <Text style={statusStyle}>{status.text}</Text>
             </Pressable>
@@ -194,6 +194,8 @@ const useStyles = makeStyles(({ v3 }) => ({
   statusQuiet: { ...v3.type.caption, paddingHorizontal: v3.space[4] },
   error: { ...v3.type.caption, color: v3.colors.danger, paddingHorizontal: v3.space[4] },
   pressed: { opacity: 0.6 },
+  // A one-line target, so its height is the platform's minimum rather than the line's.
+  retry: { justifyContent: 'center', minHeight: ICON_BUTTON_TARGET },
   invite: { gap: v3.space[6] },
   found: { ...v3.type.caption, color: v3.colors.correction, paddingHorizontal: v3.space[4] },
   inviteRow: {

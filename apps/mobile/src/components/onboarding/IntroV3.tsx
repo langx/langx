@@ -7,6 +7,7 @@ import { CURVE, DURATION } from '../../lib/theme/motionValues'
 import { welcomePairs } from '../../lib/welcomePairs'
 import { FIRST_MILESTONE, SLIDES, type IntroCarouselProps } from '../IntroCarousel'
 import { Button } from '../ui/Button'
+import { ICON_BUTTON_TARGET } from '../ui/IconButton'
 import { Screen } from '../ui/Screen'
 import { FlameGlyph } from '../ui/StreakFlame'
 import { ExchangeGlyph, useBlackFont } from './WizardV3'
@@ -210,7 +211,13 @@ const useStyles = makeStyles(({ v3 }) => ({
   fallback: { fontFamily: DISPLAY_FONT },
   body: { ...v3.type.body, color: v3.colors.muted },
   dots: { alignItems: 'center', flexDirection: 'row', marginStart: -v3.space[12] },
-  dotTarget: { alignItems: 'center', height: 44, justifyContent: 'center', minWidth: 44 },
+  // The platform's minimum target, 48dp on Android rather than iOS's 44.
+  dotTarget: {
+    alignItems: 'center',
+    height: ICON_BUTTON_TARGET,
+    justifyContent: 'center',
+    minWidth: ICON_BUTTON_TARGET,
+  },
   dot: { backgroundColor: v3.colors.track, borderRadius: v3.radius.pill, height: 10, width: 10 },
   dotOn: { backgroundColor: v3.colors.fg, width: 28 },
 
