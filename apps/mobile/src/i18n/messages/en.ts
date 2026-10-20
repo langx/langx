@@ -2864,6 +2864,7 @@ export const en = {
     titleScholar: 'Scholar',
     titleMaster: 'Master',
     titleLegend: 'Legend',
+    titleBadgeLabel: 'Title: {title}',
   },
 
   leaderboard: {

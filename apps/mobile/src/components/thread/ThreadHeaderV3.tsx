@@ -1,5 +1,5 @@
 import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
-import { wornFrameTone } from '@langx/shared'
+import { wornCosmetic, wornFrameTone } from '@langx/shared'
 import { useFonts } from 'expo-font'
 import type { ReactNode, RefObject } from 'react'
 import { Pressable, Text, View } from 'react-native'
@@ -13,6 +13,7 @@ import { PresenceLine } from '../PresenceLine'
 import { Avatar } from '../ui/Avatar'
 import { ICON_BUTTON_TARGET, IconButton } from '../ui/IconButton'
 import { Skeleton } from '../ui/Skeleton'
+import { TitleBadge } from '../ui/TitleBadge'
 
 /** The drawing's face: big enough to be the band's subject, not a list row's. */
 const AVATAR = 54
@@ -86,6 +87,16 @@ export function ThreadHeaderV3({
 
   const face = compact ? AVATAR_COMPACT : AVATAR
   /*
+   * The partner's worn title, in the badge's compact cut, beside the name:
+   * there and not under it, so the band is as tall with a title as without,
+   * as it is with a frame. Not in the folded band, which has no room, and
+   * not on a suspended account, whose profile leaves it off too.
+   */
+  const title =
+    partner && !compact && (partner.accountStatus ?? 'active') === 'active'
+      ? wornCosmetic(partner.equipped, partner.cosmetics, 'title')
+      : undefined
+  /*
     No label of its own: the name and the line under it are the label, so
     a screen reader hears "Online" or "typing…" with the name, as it does
     in the current header. A label here would be read instead of both.
@@ -126,6 +137,11 @@ export function ThreadHeaderV3({
               {partner?.displayName ?? t('chat.title')}
             </Text>
             {partner?.official ? <OfficialMark size={v3.icon.md} /> : null}
+            {title ? (
+              <View style={styles.title}>
+                <TitleBadge id={title.id} size="compact" />
+              </View>
+            ) : null}
           </View>
         )}
         {/*
@@ -232,6 +248,9 @@ const useStyles = makeStyles(({ v3 }) => ({
   namesCompact: { gap: 0 },
   nameRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[6] },
   name: { ...v3.type.title, flexShrink: 1 },
+  // The name gives way first — it is who this is — and the badge takes at
+  // most half the row, its word cut short past that.
+  title: { flexShrink: 0, maxWidth: '50%' },
   nameCompact: v3.type.headline,
   typing: { ...v3.type.caption, fontFamily: v3.type.label.fontFamily },
 }))

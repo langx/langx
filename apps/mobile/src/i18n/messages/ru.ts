@@ -3023,6 +3023,7 @@ export const ru: Localized<EnMessages> = {
     titleScholar: 'Учёный',
     titleMaster: 'Мастер',
     titleLegend: 'Легенда',
+    titleBadgeLabel: 'Титул: {title}',
   },
 
   leaderboard: {
