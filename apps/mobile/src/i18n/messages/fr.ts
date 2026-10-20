@@ -1044,6 +1044,10 @@ export const fr: Localized<EnMessages> = {
   },
 
   corrections: {
+    findSentence: 'Trouver une phrase à corriger',
+    listCaption: 'Dans les discussions et sous les publications, les plus récentes d’abord',
+    openChatHint: 'Ouvre la discussion à ce message',
+    openPostHint: 'Ouvre la publication',
     emptyTitle: 'Pas encore de corrections',
     emptyBody:
       'Appuie longuement sur un message et choisis Corriger, ou corrige une phrase publiée dans le fil — c’est le plus utile ici.',
@@ -1203,6 +1207,15 @@ export const fr: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Heure locale {time}.',
   },
   chat: {
+    newChatStarts: 'Cette discussion commence avec ton premier message.',
+    pickFirstLine: 'Choisis une première phrase',
+    meetingLede: 'L’autre personne peut accepter ou refuser. Chacun le voit à sa propre heure.',
+    meetingDay: 'Jour',
+    meetingTime: 'Heure',
+    meetingNoteHint: {
+      one: 'Visible sur la carte. Jusqu’à {count} caractère.',
+      other: 'Visible sur la carte. Jusqu’à {count} caractères.',
+    },
     firstReplyTitle: '{name} t’a répondu',
     firstReplyBody: {
       one: 'Les réponses restent gratuites avec tous les forfaits. {plan} supprime la limite de {count} nouvelle discussion par jour.',
@@ -1532,6 +1545,9 @@ export const fr: Localized<EnMessages> = {
   day: { today: 'Aujourd’hui', yesterday: 'Hier' },
 
   starred: {
+    lede: 'Toi seul vois tes favoris. Touches-en un pour l’ouvrir dans sa discussion.',
+    goToChats: 'Aller aux discussions',
+    rowLabel: '{name} : {what}. Ouvrir dans la discussion',
     title: 'Favoris',
     emptyTitle: 'Aucun favori pour l’instant',
     emptyBody: 'Appuie longuement sur un message et choisis Favori pour le garder ici.',

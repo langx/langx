@@ -43,24 +43,19 @@ export interface LatestActions {
   echo?: (() => void) | undefined
 }
 
-interface ComposerV3Props {
-  value: string
-  onChangeText: (text: string) => void
-  placeholder: string
-  onSend: () => void
-  /** "Send later". Absent while the composer holds anything that cannot be scheduled. */
-  onSendLongPress?: () => void
+/**
+ * Everything that needs a conversation to exist: the tray, the mic, the
+ * banner and the actions on their newest message. Absent on the screen that
+ * starts one (`chat/new`), which draws the field and the send alone — the
+ * thread has the rest the moment the first send creates it.
+ */
+interface ConversationParts {
   /** A picked file or a voice draft is waiting, so the send is live with an empty field. */
   hasAttachment: boolean
-  /** Media on its way up; the next send waits for it. */
-  busy: boolean
   /** The reply / edit / correct banner, as the thread works it out. */
   mode: { label: string; preview: string; clear: () => void } | null
   /** The picked files, above the field they will be sent with. */
   attachments: ReactNode
-  /** As `ChatComposer`'s: set when the thread has nothing to answer, and the seed to shuffle from. */
-  topicSeed?: string | undefined
-  topicInterests?: readonly string[] | undefined
   /** A voice note being recorded, or null. The field gives way to its clock while it runs. */
   recording: { seconds: number; cancel: () => void } | null
   onMic: () => void
@@ -74,6 +69,23 @@ interface ComposerV3Props {
   locating: boolean
   /** Null when the other person's newest message is nothing these can act on. */
   latest: LatestActions | null
+}
+
+type ComposerV3Props = ComposerV3Common &
+  (ConversationParts | { [K in keyof ConversationParts]?: never })
+
+interface ComposerV3Common {
+  value: string
+  onChangeText: (text: string) => void
+  placeholder: string
+  onSend: () => void
+  /** "Send later". Absent while the composer holds anything that cannot be scheduled. */
+  onSendLongPress?: () => void
+  /** Media on its way up; the next send waits for it. */
+  busy: boolean
+  /** As `ChatComposer`'s: set when the thread has nothing to answer, and the seed to shuffle from. */
+  topicSeed?: string | undefined
+  topicInterests?: readonly string[] | undefined
   partnerName: string
   /**
    * A soft keyboard is up (`useKeyboardUp`). The chips give their row back to
@@ -84,6 +96,8 @@ interface ComposerV3Props {
   compact?: boolean
   /** The field took or lost focus — what tells a phone browser the keyboard is up. */
   onFocusChange?: (focused: boolean) => void
+  /** The field takes the keyboard on mount — the screen that starts a conversation. */
+  autoFocus?: boolean
 }
 
 /**
@@ -109,24 +123,25 @@ export function ComposerV3({
   placeholder,
   onSend,
   onSendLongPress,
-  hasAttachment,
+  hasAttachment = false,
   busy,
-  mode,
+  mode = null,
   attachments,
   topicSeed,
   topicInterests,
-  recording,
+  recording = null,
   onMic,
   conversationId,
   onCamera,
-  cameraDisabled,
+  cameraDisabled = false,
   onAttach,
-  attachDisabled,
-  locating,
-  latest,
+  attachDisabled = false,
+  locating = false,
+  latest = null,
   partnerName,
   compact = false,
   onFocusChange,
+  autoFocus = false,
 }: ComposerV3Props) {
   const styles = useStyles()
   const { v3 } = useTheme()
@@ -191,61 +206,66 @@ export function ComposerV3({
    * reach for most. Each keeps its long name for a screen reader; the word
    * under the glyph is the short one.
    */
-  const tray: TrayItem[] = [
-    {
-      key: 'camera',
-      icon: 'camera',
-      label: t('composer.trayCamera'),
-      accessibilityLabel: t('composer.attachCamera'),
-      onPress: onCamera,
-      disabled: cameraDisabled,
-    },
-    {
-      key: 'attach',
-      icon: 'plus',
-      label: t('composer.attachMenu'),
-      accessibilityLabel: t('composer.attachMenu'),
-      onPress: onAttach,
-      disabled: attachDisabled,
-      busy: locating,
-    },
-    {
-      key: 'time',
-      icon: 'calendar',
-      label: t('composer.trayTime'),
-      accessibilityLabel: t('chat.sendMeeting'),
-      onPress: () =>
-        router.push({ pathname: '/(app)/propose-time', params: { id: conversationId } }),
-    },
-    {
-      key: 'quiz',
-      icon: 'help-circle',
-      label: t('composer.trayQuiz'),
-      accessibilityLabel: t('chat.sendQuiz'),
-      onPress: () => router.push({ pathname: '/(app)/quiz', params: { id: conversationId } }),
-    },
-    {
-      key: 'stickers',
-      icon: 'smile',
-      label: t('chat.stickers'),
-      accessibilityLabel: t('chat.stickers'),
-      onPress: () => router.push({ pathname: '/(app)/stickers', params: { id: conversationId } }),
-    },
-    {
-      key: 'phrases',
-      icon: 'bookmark',
-      label: t('composer.trayPhrases'),
-      accessibilityLabel: t('chat.phraseDeck'),
-      onPress: () => router.push({ pathname: '/(app)/phrases', params: { id: conversationId } }),
-    },
-    {
-      key: 'starred',
-      icon: 'star',
-      label: t('composer.trayStarred'),
-      accessibilityLabel: t('chats.starredMessages'),
-      onPress: () => router.push('/(app)/starred'),
-    },
-  ]
+  const tray: TrayItem[] =
+    conversationId === undefined || !onCamera || !onAttach
+      ? []
+      : [
+          {
+            key: 'camera',
+            icon: 'camera',
+            label: t('composer.trayCamera'),
+            accessibilityLabel: t('composer.attachCamera'),
+            onPress: onCamera,
+            disabled: cameraDisabled,
+          },
+          {
+            key: 'attach',
+            icon: 'plus',
+            label: t('composer.attachMenu'),
+            accessibilityLabel: t('composer.attachMenu'),
+            onPress: onAttach,
+            disabled: attachDisabled,
+            busy: locating,
+          },
+          {
+            key: 'time',
+            icon: 'calendar',
+            label: t('composer.trayTime'),
+            accessibilityLabel: t('chat.sendMeeting'),
+            onPress: () =>
+              router.push({ pathname: '/(app)/propose-time', params: { id: conversationId } }),
+          },
+          {
+            key: 'quiz',
+            icon: 'help-circle',
+            label: t('composer.trayQuiz'),
+            accessibilityLabel: t('chat.sendQuiz'),
+            onPress: () => router.push({ pathname: '/(app)/quiz', params: { id: conversationId } }),
+          },
+          {
+            key: 'stickers',
+            icon: 'smile',
+            label: t('chat.stickers'),
+            accessibilityLabel: t('chat.stickers'),
+            onPress: () =>
+              router.push({ pathname: '/(app)/stickers', params: { id: conversationId } }),
+          },
+          {
+            key: 'phrases',
+            icon: 'bookmark',
+            label: t('composer.trayPhrases'),
+            accessibilityLabel: t('chat.phraseDeck'),
+            onPress: () =>
+              router.push({ pathname: '/(app)/phrases', params: { id: conversationId } }),
+          },
+          {
+            key: 'starred',
+            icon: 'star',
+            label: t('composer.trayStarred'),
+            accessibilityLabel: t('chats.starredMessages'),
+            onPress: () => router.push('/(app)/starred'),
+          },
+        ]
   const latestHint = t('composer.onLatest', { name: partnerName })
 
   return (
@@ -255,35 +275,37 @@ export function ComposerV3({
         phone in English, and a language whose words run longer scrolls
         rather than cutting them off.
       */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={styles.tray}
-      >
-        {tray.map((item) => (
-          <PressableScale
-            key={item.key}
-            accessibilityRole="button"
-            accessibilityLabel={item.accessibilityLabel}
-            accessibilityState={{ disabled: item.disabled === true, busy: item.busy === true }}
-            onPress={item.onPress}
-            disabled={item.disabled === true || item.busy === true}
-            style={[styles.trayItem, item.disabled && styles.disabled]}
-          >
-            <View style={styles.trayDisc}>
-              {item.busy ? (
-                <ActivityIndicator size="small" color={v3.colors.muted} />
-              ) : (
-                <Feather name={item.icon} size={v3.icon.md} color={v3.colors.fg} />
-              )}
-            </View>
-            <Text style={styles.trayLabel} numberOfLines={1}>
-              {item.label}
-            </Text>
-          </PressableScale>
-        ))}
-      </ScrollView>
+      {tray.length > 0 ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.tray}
+        >
+          {tray.map((item) => (
+            <PressableScale
+              key={item.key}
+              accessibilityRole="button"
+              accessibilityLabel={item.accessibilityLabel}
+              accessibilityState={{ disabled: item.disabled === true, busy: item.busy === true }}
+              onPress={item.onPress}
+              disabled={item.disabled === true || item.busy === true}
+              style={[styles.trayItem, item.disabled && styles.disabled]}
+            >
+              <View style={styles.trayDisc}>
+                {item.busy ? (
+                  <ActivityIndicator size="small" color={v3.colors.muted} />
+                ) : (
+                  <Feather name={item.icon} size={v3.icon.md} color={v3.colors.fg} />
+                )}
+              </View>
+              <Text style={styles.trayLabel} numberOfLines={1}>
+                {item.label}
+              </Text>
+            </PressableScale>
+          ))}
+        </ScrollView>
+      ) : null}
 
       {showLatest && latest ? (
         <View style={styles.chips}>
@@ -418,6 +440,7 @@ export function ComposerV3({
               : {})}
             placeholder={placeholder}
             placeholderTextColor={v3.colors.muted}
+            autoFocus={autoFocus}
             style={[
               styles.field,
               value === '' && Platform.OS === 'ios' && styles.fieldEmpty,
@@ -454,20 +477,22 @@ export function ComposerV3({
           other wakes, so the thumb learns two places instead of one that
           changes what it does.
         */}
-        <PressableScale
-          accessibilityRole="button"
-          accessibilityLabel={t('chat.voiceMessage')}
-          accessibilityState={{ disabled: !micLive }}
-          onPress={onMic}
-          disabled={!micLive}
-          style={[styles.big, styles.mic, !micLive && styles.disabled]}
-        >
-          <Feather
-            name={recording ? 'square' : 'mic'}
-            size={v3.icon.xxl}
-            color={v3.colors.pillText}
-          />
-        </PressableScale>
+        {onMic ? (
+          <PressableScale
+            accessibilityRole="button"
+            accessibilityLabel={t('chat.voiceMessage')}
+            accessibilityState={{ disabled: !micLive }}
+            onPress={onMic}
+            disabled={!micLive}
+            style={[styles.big, styles.mic, !micLive && styles.disabled]}
+          >
+            <Feather
+              name={recording ? 'square' : 'mic'}
+              size={v3.icon.xxl}
+              color={v3.colors.pillText}
+            />
+          </PressableScale>
+        ) : null}
         <PressableScale
           accessibilityRole="button"
           accessibilityLabel={t('common.send')}

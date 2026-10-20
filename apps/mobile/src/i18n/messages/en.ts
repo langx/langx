@@ -1165,6 +1165,10 @@ export const en = {
   },
 
   corrections: {
+    findSentence: 'Find a sentence to correct',
+    listCaption: 'In chats and on posts, newest first',
+    openChatHint: 'Opens the chat at this message',
+    openPostHint: 'Opens the post',
     emptyTitle: 'No corrections yet',
     emptyBody:
       'Hold a message in a chat and choose Correct, or fix a sentence someone posted in the feed — it is the most useful thing you can do here.',
@@ -1348,6 +1352,15 @@ export const en = {
     withTheirTimeAccessibility: '{presence}. Local time {time}.',
   },
   chat: {
+    newChatStarts: 'This chat starts with your first message.',
+    pickFirstLine: 'Pick a first line',
+    meetingLede: 'They can accept or decline. Each of you sees it in your own time.',
+    meetingDay: 'Day',
+    meetingTime: 'Time',
+    meetingNoteHint: {
+      one: 'They see this on the card. Up to {count} character.',
+      other: 'They see this on the card. Up to {count} characters.',
+    },
     /** The card at the foot of the thread in which somebody first wrote back. */
     firstReplyTitle: '{name} wrote back',
     firstReplyBody: {
@@ -1688,6 +1701,9 @@ export const en = {
   },
 
   starred: {
+    lede: 'Only you see your stars. Tap one to open it in its chat.',
+    goToChats: 'Go to Chats',
+    rowLabel: '{name}: {what}. Open in chat',
     title: 'Starred',
     emptyTitle: 'Nothing starred yet',
     emptyBody: 'Hold a message and choose Star to keep it here.',

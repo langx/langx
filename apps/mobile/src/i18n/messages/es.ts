@@ -1032,6 +1032,10 @@ export const es: Localized<EnMessages> = {
   },
 
   corrections: {
+    findSentence: 'Buscar una frase para corregir',
+    listCaption: 'En chats y en publicaciones, las más recientes primero',
+    openChatHint: 'Abre el chat en este mensaje',
+    openPostHint: 'Abre la publicación',
     emptyTitle: 'Aún no hay correcciones',
     emptyBody:
       'Mantén pulsado un mensaje y elige Corregir, o corrige una frase publicada en el feed: es lo más útil que puedes hacer aquí.',
@@ -1192,6 +1196,15 @@ export const es: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Hora local {time}.',
   },
   chat: {
+    newChatStarts: 'Este chat empieza con tu primer mensaje.',
+    pickFirstLine: 'Elige una primera frase',
+    meetingLede: 'La otra persona puede aceptar o rechazar. Cada uno lo ve en su propia hora.',
+    meetingDay: 'Día',
+    meetingTime: 'Hora',
+    meetingNoteHint: {
+      one: 'Lo verá en la tarjeta. Hasta {count} carácter.',
+      other: 'Lo verá en la tarjeta. Hasta {count} caracteres.',
+    },
     firstReplyTitle: '{name} te ha respondido',
     firstReplyBody: {
       one: 'Las respuestas siguen siendo gratis en todos los planes. {plan} quita el límite de {count} chat nuevo al día.',
@@ -1518,6 +1531,9 @@ export const es: Localized<EnMessages> = {
   day: { today: 'Hoy', yesterday: 'Ayer' },
 
   starred: {
+    lede: 'Solo tú ves tus destacados. Toca uno para abrirlo en su chat.',
+    goToChats: 'Ir a Chats',
+    rowLabel: '{name}: {what}. Abrir en el chat',
     title: 'Destacados',
     emptyTitle: 'Aún no hay nada destacado',
     emptyBody: 'Mantén pulsado un mensaje y elige Destacar para guardarlo aquí.',

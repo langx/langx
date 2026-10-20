@@ -1159,6 +1159,10 @@ export const ru: Localized<EnMessages> = {
   },
 
   corrections: {
+    findSentence: 'Найти фразу для исправления',
+    listCaption: 'В чатах и под постами, сначала новые',
+    openChatHint: 'Открывает чат на этом сообщении',
+    openPostHint: 'Открывает пост',
     emptyTitle: 'Исправлений пока нет',
     emptyBody:
       'Задержи палец на сообщении и выбери «Исправить» или исправь фразу из ленты — это самое полезное, что тут можно сделать.',
@@ -1344,6 +1348,18 @@ export const ru: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Местное время {time}.',
   },
   chat: {
+    newChatStarts: 'Этот чат начнётся с твоего первого сообщения.',
+    pickFirstLine: 'Выбери первую фразу',
+    meetingLede:
+      'Собеседник может принять или отклонить. Каждый видит время в своём часовом поясе.',
+    meetingDay: 'День',
+    meetingTime: 'Время',
+    meetingNoteHint: {
+      one: 'Это видно на карточке. До {count} символа.',
+      few: 'Это видно на карточке. До {count} символов.',
+      many: 'Это видно на карточке. До {count} символов.',
+      other: 'Это видно на карточке. До {count} символа.',
+    },
     firstReplyTitle: 'Ответ от {name}',
     firstReplyBody: {
       one: 'Ответы бесплатны на любом тарифе. {plan} снимает ограничение в {count} новый чат в день.',
@@ -1702,6 +1718,9 @@ export const ru: Localized<EnMessages> = {
   day: { today: 'Сегодня', yesterday: 'Вчера' },
 
   starred: {
+    lede: 'Избранное видишь только ты. Нажми на сообщение, чтобы открыть его в чате.',
+    goToChats: 'К чатам',
+    rowLabel: '{name}: {what}. Открыть в чате',
     title: 'Избранное',
     emptyTitle: 'В избранном пока пусто',
     emptyBody: 'Удерживай сообщение и выбери «В избранное», чтобы оно осталось здесь.',

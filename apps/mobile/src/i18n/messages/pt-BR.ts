@@ -1029,6 +1029,10 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   corrections: {
+    findSentence: 'Encontrar uma frase para corrigir',
+    listCaption: 'Em conversas e em publicações, as mais recentes primeiro',
+    openChatHint: 'Abre a conversa nesta mensagem',
+    openPostHint: 'Abre a publicação',
     emptyTitle: 'Ainda sem correções',
     emptyBody:
       'Segure uma mensagem e escolha Corrigir, ou corrija uma frase publicada no feed — é a coisa mais útil que você pode fazer aqui.',
@@ -1187,6 +1191,15 @@ export const ptBR: Localized<EnMessages> = {
     withTheirTimeAccessibility: '{presence}. Horário local {time}.',
   },
   chat: {
+    newChatStarts: 'Esta conversa começa com a sua primeira mensagem.',
+    pickFirstLine: 'Escolha uma primeira frase',
+    meetingLede: 'A outra pessoa pode aceitar ou recusar. Cada um vê no próprio horário.',
+    meetingDay: 'Dia',
+    meetingTime: 'Horário',
+    meetingNoteHint: {
+      one: 'Aparece no cartão. Até {count} caractere.',
+      other: 'Aparece no cartão. Até {count} caracteres.',
+    },
     firstReplyTitle: '{name} respondeu',
     firstReplyBody: {
       one: 'Respostas continuam grátis em todos os planos. O {plan} tira o limite de {count} conversa nova por dia.',
@@ -1513,6 +1526,9 @@ export const ptBR: Localized<EnMessages> = {
   day: { today: 'Hoje', yesterday: 'Ontem' },
 
   starred: {
+    lede: 'Só você vê suas favoritas. Toque em uma para abri-la na conversa.',
+    goToChats: 'Ir para Conversas',
+    rowLabel: '{name}: {what}. Abrir na conversa',
     title: 'Favoritas',
     emptyTitle: 'Nada favoritado ainda',
     emptyBody: 'Segure uma mensagem e escolha Favoritar para guardá-la aqui.',
