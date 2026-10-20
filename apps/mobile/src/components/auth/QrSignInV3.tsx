@@ -3,7 +3,8 @@ import { Image } from 'expo-image'
 import { router } from 'expo-router'
 import { ActivityIndicator, Platform, Text, View } from 'react-native'
 import { useT } from '../../i18n'
-import { makeStyles, useTheme } from '../../lib/theme'
+import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
+import { useBlackFont } from '../onboarding/WizardV3'
 import { Button } from '../ui/Button'
 import { AuthScreenV3, AuthTitleV3 } from './AuthKitV3'
 
@@ -39,6 +40,7 @@ export function QrSignInV3({
   const styles = useStyles()
   const t = useT()
   const { v3 } = useTheme()
+  const black = useBlackFont()
   const [pathBefore = '', pathAfter = ''] = t('qrSignIn.bodyScan', { path: PATH_MARK }).split(
     PATH_MARK,
   )
@@ -108,7 +110,7 @@ export function QrSignInV3({
             >
               {userCode.split('').map((character, index) => (
                 <View key={`${index}-${character}`} style={styles.tile}>
-                  <Text style={styles.tileText}>{character}</Text>
+                  <Text style={[styles.tileText, !black && styles.fallback]}>{character}</Text>
                 </View>
               ))}
             </View>
@@ -160,8 +162,8 @@ const useStyles = makeStyles(({ v3 }) => ({
     justifyContent: 'center',
     minHeight: 64,
   },
-  // ExtraBold, which the root loads, rather than the Black the titles wait for.
-  tileText: { ...v3.type.headline, color: v3.colors.fg, fontSize: 34, lineHeight: 40 },
+  tileText: { ...v3.type.title, color: v3.colors.fg },
+  fallback: { fontFamily: DISPLAY_FONT },
   expires: { alignItems: 'center', flexDirection: 'row', gap: v3.space[6] },
   expiresText: { ...v3.type.caption, color: v3.colors.muted },
   hint: { ...v3.type.caption, color: v3.colors.muted, textAlign: 'center' },

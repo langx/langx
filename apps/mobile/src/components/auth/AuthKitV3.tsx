@@ -344,7 +344,7 @@ const useStyles = makeStyles(({ v3 }) => ({
 
   brand: { alignItems: 'center', flexDirection: 'row', gap: v3.space[12] },
   logo: { borderRadius: v3.radius.icon, height: 44, width: 44 },
-  wordmark: { ...v3.type.headline, color: v3.colors.fg, fontSize: 26, lineHeight: 30 },
+  wordmark: { ...v3.type.headline, color: v3.colors.fg },
 
   divider: { alignItems: 'center', flexDirection: 'row', gap: v3.space[12] },
   dividerLine: { backgroundColor: v3.colors.line, flex: 1, height: 2 },
