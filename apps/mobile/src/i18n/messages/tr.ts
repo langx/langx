@@ -1285,6 +1285,9 @@ export const tr: Localized<EnMessages> = {
     rewardBothWrote: 'ikiniz de yazdınız',
     rewardBothAmount: { other: 'ikinize de +{count}' },
     rewardStreak: { other: '{count} günlük seri' },
+    celebrateStreakBody: { other: 'LangX’te {count} gün üst üste pratik yaptın.' },
+    celebrateStreakNote: { other: 'token, bu seri için' },
+    rewardAnnounceJoin: '{said}. {next}',
     rewardLabel: { other: '{count} token: {reason}' },
     rewardBothLabel: {
       other: 'Sana {count}, {name} adlı kişiye {count} token: ikiniz de yazdınız',

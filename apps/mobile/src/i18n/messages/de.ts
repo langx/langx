@@ -1333,6 +1333,12 @@ export const de: Localized<EnMessages> = {
     rewardBothWrote: 'ihr habt beide geschrieben',
     rewardBothAmount: { one: '+{count} für beide', other: '+{count} für beide' },
     rewardStreak: { one: '{count} Tag in Folge', other: '{count} Tage in Folge' },
+    celebrateStreakBody: {
+      one: 'Du hast {count} Tag in Folge auf LangX geübt.',
+      other: 'Du hast {count} Tage in Folge auf LangX geübt.',
+    },
+    celebrateStreakNote: { one: 'Token dafür', other: 'Token dafür' },
+    rewardAnnounceJoin: '{said}. {next}',
     rewardLabel: { one: '{count} Token: {reason}', other: '{count} Token: {reason}' },
     rewardBothLabel: {
       one: 'Je {count} Token für dich und {name}: ihr habt beide geschrieben',
