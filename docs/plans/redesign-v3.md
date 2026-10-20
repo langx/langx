@@ -199,6 +199,7 @@ PR.
 | 18 Oct 2026 | Scope of 3.0         | Every screen moves to the v3 look; the flagged features join; all of it ships together as mobile 3.0                                                                                                                                                                                                   |
 | 19 Oct 2026 | Visuals              | After the code work: the branding repository's visuals and the App Store and Play screenshots are redone in the v3 look, from the finished screens                                                                                                                                                     |
 | 19 Oct 2026 | Token store          | The store, sticker packs, profile frames and titles look too plain: redesign them as a real store, with frames that are artistic and original, not only a colour                                                                                                                                       |
+| 19 Oct 2026 | Store details        | Sixteen frames, the new ones placed between the rungs; Paper Talk at 1,500; frames take their art names                                                                                                                                                                                                |
 
 ## Open questions
 
@@ -244,9 +245,9 @@ still draws a sensible ring.
 | Epic      | Khokhloma 18,000 · Qalam 25,000 · Night Hoop 35,000                                     |
 | Legendary | Aurora Glass 50,000, gated as today, with a ring of "hello" in nine languages at 64 px+ |
 
-The master sheet also draws six new frames between those rungs (Washi Tape,
-Linocut, Indigo Dye, Mosaic, Seal and Fret, Marquetry). They are a decision,
-not part of the plan yet: see the open questions below.
+The master sheet also draws six new frames between those rungs: Washi Tape
+1,750, Linocut 3,250, Indigo Dye 7,500, Mosaic 11,000, Seal and Fret 21,500
+and Marquetry 30,000 — sixteen in all.
 
 Rules the boards follow: outline 2 px and detail 1–1.5 px at 96 px; at 40 px at
 most six shapes and no text; at 28 px a silhouette and one accent; no white
@@ -269,7 +270,8 @@ Implementation, in order, each behind `v3Home`:
 
 1. An unknown-tone fallback in `Avatar` (a plain ink ring), shipped first, so
    no client ever draws a ring with no colour.
-2. `FrameArt` components for the ten existing ids, drawn at the three cuts,
+2. `FrameArt` components for all sixteen frames (the six new ids and the
+   ladder rule above land in the same PR), drawn at the three cuts,
    with a test that every frame id in `COSMETICS` has art. `Avatar` draws the
    art where the flag is on and the ring where it is off.
 3. Frames where other people look: chat thread header, conversation list and
@@ -280,16 +282,19 @@ Implementation, in order, each behind `v3Home`:
 6. The sticker pack page, and new packs as their own PRs (assets, licence
    notes, `stickerAssets.test.ts`).
 
-Open questions for Behic:
+Behic's answers (19 October):
 
-- **Six more frames?** Inserting rungs into the ladder changes who may buy
-  what — someone who owns Woven Reed today would be locked out of a new
-  Linocut below it. Either append new frames above the current top, make them a
-  side collection outside the ladder, or keep ten.
-- **Sticker pack price.** The boards show Paper Talk at 1,500; today every
-  pack but pixel is 1,000.
-- **Frame names** replace today's colour names (Slate, Bronze…) in all eight
-  locales; the ids stay.
+- **Sixteen frames.** The six new frames go where the master sheet draws them,
+  between today's rungs (few accounts are far up the ladder yet). Two rules
+  keep that fair: owning any frame above a new rung counts as owning the rung
+  below it, so nobody who owns Woven Reed is locked out of Linocut; and the Pro
+  welcome pack names its four frames by id (Slate, Bronze, Sky, Silver) rather
+  than "the first four", so inserting rungs does not change what it grants.
+  New ids get new tones, and the unknown-tone fallback ships by OTA before the
+  API sends any of them.
+- **Paper Talk costs 1,500.** Its price is set per pack, as pixel's already is.
+- **Frames take their art names** (Papel Picado, Running Stitch…) in all eight
+  locales. The ids stay.
 
 ## Decided, not yet built
 
