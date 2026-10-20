@@ -6,7 +6,11 @@ const body = { profile: { username: 'sofia' }, messages: [{ body: 'hola' }] }
 describe('exportMyData', () => {
   it('saves what the authenticated fetch returned, as readable JSON', async () => {
     const save = vi.fn().mockResolvedValue(true)
-    const outcome = await exportMyData({ fetchExport: async () => body, save, web: false })
+    const outcome = await exportMyData({
+      fetchExport: () => Promise.resolve(body),
+      save,
+      web: false,
+    })
     expect(outcome).toBe('shared')
     expect(save).toHaveBeenCalledWith(
       JSON.stringify(body, null, 2),
@@ -18,7 +22,7 @@ describe('exportMyData', () => {
 
   it('reports a browser download on the web', async () => {
     const save = vi.fn().mockResolvedValue(true)
-    expect(await exportMyData({ fetchExport: async () => body, save, web: true })).toBe(
+    expect(await exportMyData({ fetchExport: () => Promise.resolve(body), save, web: true })).toBe(
       'downloaded',
     )
   })
@@ -32,7 +36,9 @@ describe('exportMyData', () => {
 
   it('fails when no share sheet or download could be opened', async () => {
     const save = vi.fn().mockResolvedValue(false)
-    expect(await exportMyData({ fetchExport: async () => body, save, web: false })).toBe('failed')
+    expect(await exportMyData({ fetchExport: () => Promise.resolve(body), save, web: false })).toBe(
+      'failed',
+    )
   })
 
   it('names the file the way the route does', () => {
