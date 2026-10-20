@@ -99,6 +99,12 @@ export const ptBR: Localized<EnMessages> = {
     attachLibrary: 'Foto ou vídeo',
     attachCamera: 'Tirar uma foto',
     attachVoice: 'Nota de voz',
+    trayCamera: 'Câmera',
+    trayTime: 'Horário',
+    trayQuiz: 'Quiz',
+    trayPhrases: 'Expressões',
+    trayStarred: 'Favoritas',
+    onLatest: 'Na última mensagem de {name}',
   },
 
   media: {

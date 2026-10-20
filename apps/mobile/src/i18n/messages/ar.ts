@@ -133,6 +133,12 @@ export const ar: Localized<EnMessages> = {
     attachLibrary: 'صورة أو فيديو',
     attachCamera: 'التقاط صورة',
     attachVoice: 'رسالة صوتية',
+    trayCamera: 'كاميرا',
+    trayTime: 'وقت',
+    trayQuiz: 'سؤال',
+    trayPhrases: 'عبارات',
+    trayStarred: 'المميزة',
+    onLatest: 'على آخر رسالة من {name}',
   },
 
   media: {

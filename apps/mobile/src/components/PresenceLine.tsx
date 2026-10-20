@@ -23,6 +23,12 @@ interface PresenceLineProps {
    * server withholds the timezone with the city, so nothing here decides it.
    */
   timezone?: string | undefined
+  /**
+   * Drawn on a partner's hue — the v3 thread's header band. Both halves in
+   * ink, because the accent and the faint grey are each too close to the
+   * light hues to read, and "Online" is told apart by weight instead.
+   */
+  onHue?: boolean
 }
 
 /** For callers that pass no zone: nothing to tick for, so no timer at all. */
@@ -48,7 +54,7 @@ const neverTicks = () => () => {}
  * are separate switches. One line still, cut from the end: the header is
  * narrow, and presence is the half worth keeping when something has to go.
  */
-export function PresenceLine({ lastActiveAt, timezone }: PresenceLineProps) {
+export function PresenceLine({ lastActiveAt, timezone, onHue = false }: PresenceLineProps) {
   const t = useT()
   const styles = useStyles()
   const { locale } = useLocale()
@@ -79,7 +85,7 @@ export function PresenceLine({ lastActiveAt, timezone }: PresenceLineProps) {
   const clock = theirTime === null ? null : t('presence.theirTime', { time: theirTime })
   return (
     <Text
-      style={styles.lastSeen}
+      style={onHue ? styles.onHue : styles.lastSeen}
       numberOfLines={1}
       // Read as a sentence: the dot between the halves is punctuation for the
       // eye, and a screen reader says it out loud as a symbol.
@@ -90,7 +96,9 @@ export function PresenceLine({ lastActiveAt, timezone }: PresenceLineProps) {
       }
     >
       {presence !== null ? (
-        <Text style={online ? styles.online : undefined}>{presence}</Text>
+        <Text style={online ? (onHue ? styles.onHueOnline : styles.online) : undefined}>
+          {presence}
+        </Text>
       ) : null}
       {presence !== null && clock !== null ? ' · ' : null}
       {clock}
@@ -98,9 +106,12 @@ export function PresenceLine({ lastActiveAt, timezone }: PresenceLineProps) {
   )
 }
 
-const useStyles = makeStyles(({ colors, font }) => ({
+const useStyles = makeStyles(({ colors, font, v3 }) => ({
   // v3 drops the green dot: the colour of the word is the whole signal —
   // accent while they are here, faint once they are not.
   online: { ...font.caption, color: colors.accent, fontSize: 13 },
   lastSeen: { ...font.caption, color: colors.textFaint, fontSize: 13 },
+  onHue: { ...v3.type.caption, color: v3.colors.ink },
+  // Nested, so it keeps the line's size and only swaps the face.
+  onHueOnline: { fontFamily: v3.type.label.fontFamily },
 }))

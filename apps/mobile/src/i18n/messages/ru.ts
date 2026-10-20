@@ -122,6 +122,12 @@ export const ru: Localized<EnMessages> = {
     attachLibrary: 'Фото или видео',
     attachCamera: 'Сделать фото',
     attachVoice: 'Голосовое',
+    trayCamera: 'Камера',
+    trayTime: 'Время',
+    trayQuiz: 'Вопрос',
+    trayPhrases: 'Выражения',
+    trayStarred: 'Избранное',
+    onLatest: 'Последнее сообщение собеседника: {name}',
   },
 
   media: {
