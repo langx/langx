@@ -179,7 +179,7 @@ export function EmptyNoteV3({
       </View>
       <View style={styles.words}>
         <Text style={styles.line}>{title}</Text>
-        <Text style={styles.body}>{body}</Text>
+        <Text style={styles.noteBody}>{body}</Text>
       </View>
       {actionLabel && onAction ? (
         <Button label={actionLabel} onPress={onAction} variant="secondary" style={styles.action} />
@@ -208,7 +208,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingVertical: v3.space[32] + v3.space[16],
   },
   line: { ...v3.type.headline, color: v3.colors.fg, textAlign: 'center' },
-  body: {
+  noteBody: {
     ...v3.type.callout,
     color: v3.colors.muted,
     marginTop: -v3.space[8],
