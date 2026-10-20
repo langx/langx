@@ -129,6 +129,11 @@ export const de: Localized<EnMessages> = {
       'LangX braucht die Erlaubnis, Fotos und Videos zu deiner Mediathek hinzuzufügen. Du kannst sie in den Einstellungen erteilen.',
   },
   viewOnce: {
+    modeHeading: 'Wie die andere Person es sieht',
+    modeOnceBody: 'Weg, sobald sie es öffnet.',
+    modeReplayBody: 'Sie kann es noch einmal öffnen.',
+    modeKeepBody: 'Bleibt im Chat wie jedes Foto.',
+    tapToClose: 'Tippe irgendwo, um zu schließen',
     photo: 'Foto',
     video: 'Video',
     tapToView: 'Zum Ansehen tippen',
@@ -2545,6 +2550,10 @@ export const de: Localized<EnMessages> = {
     poolParticipants: { one: '{n} aktiv an dem Tag', other: '{n} aktiv an dem Tag' },
     poolShareOfPool: '{percent} des täglichen Pools',
     poolActiveToday: { one: '{n} heute aktiv', other: '{n} heute aktiv' },
+    todayMessages: { one: 'Nachricht', other: 'Nachrichten' },
+    todayCorrections: { one: 'Korrektur', other: 'Korrekturen' },
+    todayPeople: { one: 'Person', other: 'Personen' },
+    seeHistory: 'Deinen Verlauf ansehen',
   },
 
   invite: {
@@ -2683,6 +2692,18 @@ export const de: Localized<EnMessages> = {
     streakEmptyBody: 'Sei an zwei Tagen hintereinander da, dann stehst du in dieser Liste.',
     echoEmptyTitle: 'Keine Wiederholungen in diesem Zeitraum',
     echoEmptyBody: 'Beantworte ein paar Karten, dann stehst du in diesem Zeitraum in dieser Liste.',
+    columnWeek: 'Diese Woche',
+    columnMonth: 'Diesen Monat',
+    columnYear: 'Dieses Jahr',
+    columnTokens: 'Verdiente Token',
+    columnNow: 'Gerade jetzt',
+    columnEver: 'Längste je',
+    columnDays: 'Tage am Stück',
+    rowTokens: { one: '{rank}. {name}, {amount} Token', other: '{rank}. {name}, {amount} Token' },
+    rowDays: {
+      one: '{rank}. {name}, {amount} Tag am Stück',
+      other: '{rank}. {name}, {amount} Tage am Stück',
+    },
   },
 
   badges: {

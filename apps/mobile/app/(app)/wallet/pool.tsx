@@ -10,6 +10,13 @@ import { makeStyles } from '../../../src/lib/theme'
 import { useLocale, useT } from '../../../src/i18n'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../../src/hooks/useV3Home'
+import { PoolScreenV3 } from '../../../src/screens/me/PoolScreenV3'
+
+/** The daily pool, or with `flags.v3Home` on the redesign's (`PoolScreenV3`). */
+export default function PoolScreenRoute() {
+  return useV3Home() ? <PoolScreenV3 /> : <PoolScreen />
+}
 
 /**
  * The daily pool: the share it last paid you, and how busy today is.
@@ -27,7 +34,7 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
  * is on the token share, so a fraction of one over the other would draw a
  * progress that does not exist.
  */
-export default function PoolScreen() {
+function PoolScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

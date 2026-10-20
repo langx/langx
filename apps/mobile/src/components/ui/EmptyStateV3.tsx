@@ -109,8 +109,9 @@ interface EmptyStateV3Props {
    * how to fill the list, where the line only says that it is empty.
    */
   body?: string | undefined
-  actionLabel: string
-  onAction: () => void
+  /** Absent where the board draws no way out — the list fills by itself. */
+  actionLabel?: string | undefined
+  onAction?: (() => void) | undefined
   /**
    * The yellow by default; `blue` where the action leads somewhere else
    * rather than committing; `secondary` where it is an offer rather than the
@@ -124,8 +125,9 @@ interface EmptyStateV3Props {
  *
  * Beside `EmptyState`, which keeps the current look's glyph, title and body
  * until each screen migrates; when the last one has, this takes its name.
- * One line rather than a title and a body, because the drawings never need
- * two — the picture already says which list this is.
+ * One line is the rule, because the picture already says which list this
+ * is; a quieter `body` under it and the button are there only where a board
+ * draws them — how to fill the list, and a way to go and do it.
  */
 export function EmptyStateV3({
   art,
@@ -141,12 +143,14 @@ export function EmptyStateV3({
       <EmptyArt kind={art} />
       <Text style={styles.line}>{line}</Text>
       {body ? <Text style={styles.body}>{body}</Text> : null}
-      <Button
-        label={actionLabel}
-        onPress={onAction}
-        variant={actionVariant}
-        style={styles.action}
-      />
+      {actionLabel && onAction ? (
+        <Button
+          label={actionLabel}
+          onPress={onAction}
+          variant={actionVariant}
+          style={styles.action}
+        />
+      ) : null}
     </View>
   )
 }
@@ -179,7 +183,7 @@ export function EmptyNoteV3({
       </View>
       <View style={styles.words}>
         <Text style={styles.line}>{title}</Text>
-        <Text style={styles.body}>{body}</Text>
+        <Text style={styles.noteBody}>{body}</Text>
       </View>
       {actionLabel && onAction ? (
         <Button label={actionLabel} onPress={onAction} variant="secondary" style={styles.action} />
@@ -198,7 +202,12 @@ const useStyles = makeStyles(({ v3 }) => ({
     width: 72,
   },
   words: { alignItems: 'center', gap: v3.space[6] },
-  body: { ...v3.type.callout, color: v3.colors.muted, textAlign: 'center' },
+  body: {
+    ...v3.type.callout,
+    color: v3.colors.muted,
+    marginTop: -v3.space[8],
+    textAlign: 'center',
+  },
   // Tall on purpose, like `EmptyState`: an empty list has nothing to push
   // against, and a line hugging the header reads as an error.
   root: {
@@ -208,12 +217,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingVertical: v3.space[32] + v3.space[16],
   },
   line: { ...v3.type.headline, color: v3.colors.fg, textAlign: 'center' },
-  body: {
-    ...v3.type.callout,
-    color: v3.colors.muted,
-    marginTop: -v3.space[8],
-    textAlign: 'center',
-  },
+  noteBody: { ...v3.type.callout, color: v3.colors.muted, textAlign: 'center' },
   action: { minWidth: 200, width: 'auto' },
 
   art: { height: 104, width: 136 },
