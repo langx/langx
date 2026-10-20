@@ -28,6 +28,13 @@ interface ScreenProps {
    * were drawn for.
    */
   ground?: string
+  /**
+   * The screen's first block runs up behind the status bar and pays the top
+   * inset inside itself, so its colour reaches the top edge of the phone —
+   * the v3 thread's partner band. Without it the inset is a strip of `ground`
+   * above the block.
+   */
+  underStatusBar?: boolean
   style?: ViewStyle
 }
 
@@ -44,13 +51,14 @@ export function Screen({
   refreshing = false,
   tabbed = false,
   ground,
+  underStatusBar = false,
   style,
 }: ScreenProps) {
   const styles = useStyles()
 
   const insets = useSafeAreaInsets()
   const padding = {
-    paddingTop: insets.top,
+    paddingTop: underStatusBar ? 0 : insets.top,
     paddingBottom: tabbed ? 0 : insets.bottom,
     ...(ground ? { backgroundColor: ground } : {}),
   }

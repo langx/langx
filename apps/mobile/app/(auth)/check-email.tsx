@@ -8,6 +8,8 @@ import { Screen } from '../../src/components/ui/Screen'
 import { authClient } from '../../src/lib/auth-client'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
+import { CheckEmailV3 } from '../../src/components/auth/CheckEmailV3'
 
 /**
  * Stands in for the address while the body is translated, then marks where to
@@ -24,6 +26,8 @@ export default function CheckEmail() {
   const { email } = useLocalSearchParams<{ email: string }>()
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
+  // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
 
   async function onResend() {
     if (!email) return
@@ -34,6 +38,8 @@ export default function CheckEmail() {
     setLoading(false)
     setSent(true)
   }
+
+  if (v3) return <CheckEmailV3 email={email} sent={sent} loading={loading} onResend={onResend} />
 
   const [before = '', after = ''] = t('auth.checkEmailBody', { email: EMAIL_MARK }).split(
     EMAIL_MARK,

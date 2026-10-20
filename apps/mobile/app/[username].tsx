@@ -28,6 +28,8 @@ import { useDisplayNames, useLocale, useT } from '../src/i18n'
 import { usePullToRefresh } from '../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../src/hooks/useScreenInteractive'
 import { OfficialMark } from '../src/components/OfficialMark'
+import { SharedProfileV3 } from '../src/components/SharedProfileV3'
+import { useV3LaunchLook } from '../src/hooks/useV3LaunchLook'
 
 /**
  * `/<handle>` — the address somebody shares for their own profile.
@@ -88,6 +90,35 @@ export default function SharedProfileScreen() {
   // Above the early returns, where hooks have to be. One query on this
   // screen, so the pull is done when it is.
   const pull = usePullToRefresh(() => profile.refetch())
+  // The redesign's look behind `flags.v3Home`, never waited for: this page is
+  // somebody's first sight of the app, from a link. See `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
+
+  // Before the session settles too, so the wait is drawn in the same look;
+  // a member still lands on the redirect below.
+  if (v3 && !session) {
+    return (
+      <SharedProfileV3
+        view={
+          sessionPending || profile.isPending ? 'loading' : profile.data ? 'profile' : 'missing'
+        }
+        handle={handle}
+        user={profile.data}
+        invited={invited}
+        avatarOpen={avatarOpen}
+        onOpenAvatar={() => setAvatarOpen(true)}
+        onCloseAvatar={() => setAvatarOpen(false)}
+        onJoin={() => {
+          // As the button below: the intent is the profile, never an official one.
+          if (profile.data && !profile.data.official) {
+            void writePendingMessageIntent(profile.data._id)
+          }
+          router.push(authLandingHref())
+        }}
+        {...pull}
+      />
+    )
+  }
 
   // Nothing renders until the session is known, or a signed-in user sees the
   // signed-out card flash before being redirected off it.

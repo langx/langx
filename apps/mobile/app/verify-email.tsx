@@ -6,6 +6,8 @@ import { ActivityIndicator, Linking, Platform, Pressable, Text, View } from 'rea
 import { Button } from '../src/components/ui/Button'
 import { Screen } from '../src/components/ui/Screen'
 import { useScreenInteractive } from '../src/hooks/useScreenInteractive'
+import { useV3LaunchLook } from '../src/hooks/useV3LaunchLook'
+import { VerifyEmailV3 } from '../src/components/auth/VerifyEmailV3'
 import { useT } from '../src/i18n'
 import { track } from '../src/lib/analytics'
 import { authClient } from '../src/lib/auth-client'
@@ -43,6 +45,10 @@ export default function VerifyEmailScreen() {
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const fired = useRef(false)
+  // The redesign's look behind `flags.v3Home`, never waited for: a mailed
+  // link can open the app cold, before the flag can answer. See
+  // `latchV3LaunchLook`.
+  const v3 = useV3LaunchLook()
 
   const signedIn = Boolean(session) && !shouldGateGuest(session?.user)
 
@@ -88,6 +94,20 @@ export default function VerifyEmailScreen() {
     // `verify` is deliberately not a dependency: it reads only refs and state
     // it sets itself, and the `fired` guard is what keeps this to one call.
   }, [isPending, signedIn, token])
+
+  if (v3) {
+    return (
+      <VerifyEmailV3
+        view={!token || error ? 'failed' : Platform.OS === 'web' ? 'web' : 'native'}
+        error={error}
+        busy={busy}
+        onVerify={verify}
+        onOpenInApp={() => {
+          if (token) void Linking.openURL(appLinkForVerifyToken(token))
+        }}
+      />
+    )
+  }
 
   if (!token || error) {
     return (
