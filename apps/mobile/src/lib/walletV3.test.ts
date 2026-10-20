@@ -1,7 +1,8 @@
 import { COSMETICS, isLadderKind } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
+import { createTranslate } from '../i18n/runtime'
 import type { HistoryRow } from './tokenHistory'
-import { historyItems, nextRung } from './walletV3'
+import { freezeBankValue, historyItems, ledgerDayHeading, nextRung } from './walletV3'
 
 const ladder = (kind: 'frame' | 'title') => COSMETICS.filter((item) => item.kind === kind)
 const frames = ladder('frame')
@@ -92,5 +93,44 @@ describe('historyItems', () => {
 
   it('draws no heading over a day with nothing in it', () => {
     expect(historyItems([day('2026-10-19', [])])).toEqual([])
+  })
+})
+
+describe('ledgerDayHeading', () => {
+  /*
+   * The test's own zone is whatever the machine runs in (checked under
+   * Toronto, UTC, Tokyo, UTC+14 and UTC-11): the heading is the key's date in
+   * all of them.
+   */
+  const now = new Date('2026-10-20T01:30:00Z') // 21:30 on 19 October in Toronto
+
+  it('names the UTC day by its date, never "Today" or "Yesterday"', () => {
+    expect(ledgerDayHeading('2026-10-20', 'en', now)).toBe('Tuesday, October 20')
+    expect(ledgerDayHeading('2026-10-19', 'en', now)).toBe('Monday, October 19')
+  })
+
+  it('adds the year outside the current UTC year', () => {
+    expect(ledgerDayHeading('2025-12-31', 'en', now)).toBe('Wednesday, December 31, 2025')
+  })
+
+  it("speaks the app's language", () => {
+    expect(ledgerDayHeading('2026-10-19', 'de', now)).toBe('Montag, 19. Oktober')
+  })
+
+  it('leaves a key it cannot read as it is', () => {
+    expect(ledgerDayHeading('not-a-day', 'en', now)).toBe('not-a-day')
+  })
+})
+
+describe('freezeBankValue', () => {
+  const opts = { t: createTranslate('en'), locale: 'en' as const }
+
+  it('says "N of M" up to the cap', () => {
+    expect(freezeBankValue(1, 2, opts)).toBe('1 of 2')
+    expect(freezeBankValue(2, 2, opts)).toBe('2 of 2')
+  })
+
+  it('says the count alone past the cap, never "4 of 2"', () => {
+    expect(freezeBankValue(4, 2, opts)).toBe('4')
   })
 })

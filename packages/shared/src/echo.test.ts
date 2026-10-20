@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
   captureEchoSchema,
+  clampEchoDurationMs,
+  ECHO_REVIEW_DURATION_MAX_MS,
   ECHO_SOURCE_KINDS,
   echoSecondsPerCard,
+  submitEchoReviewsSchema,
   sourceKeyOf,
   updateEchoCardSchema,
 } from './echo'
@@ -127,5 +130,27 @@ describe('echoSecondsPerCard, how long a card takes', () => {
 
   it('is never zero', () => {
     expect(echoSecondsPerCard(session(120))).toBe(1)
+  })
+})
+
+describe('a card left on screen', () => {
+  const batch = (durationMs: number) => ({
+    reviews: [{ reviewId: 'rv-long-0000', cardId: 'c', grade: 'good', durationMs }],
+  })
+
+  it('holds a long duration to the ceiling, and leaves a normal one alone', () => {
+    expect(clampEchoDurationMs(ECHO_REVIEW_DURATION_MAX_MS + 1)).toBe(ECHO_REVIEW_DURATION_MAX_MS)
+    expect(clampEchoDurationMs(4000)).toBe(4000)
+  })
+
+  // The batch is the session: refusing it for one card lost every grade in it.
+  it('accepts the batch and clamps the card, rather than refusing the batch', () => {
+    const parsed = submitEchoReviewsSchema.safeParse(batch(60 * 60 * 1000))
+    expect(parsed.success).toBe(true)
+    expect(parsed.data?.reviews[0]?.durationMs).toBe(ECHO_REVIEW_DURATION_MAX_MS)
+  })
+
+  it('still refuses a negative duration', () => {
+    expect(submitEchoReviewsSchema.safeParse(batch(-1)).success).toBe(false)
   })
 })

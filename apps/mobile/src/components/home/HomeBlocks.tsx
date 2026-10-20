@@ -208,7 +208,7 @@ export function HomePeople({
             <Button
               label={person.helloLabel}
               accessibilityLabel={person.helloA11y}
-              variant="ink"
+              variant="hue"
               size="small"
               onPress={person.onHello}
             />
@@ -280,7 +280,7 @@ export function HomeColourCard({
         {title}
       </Text>
       <Text style={styles.colourBody}>{body}</Text>
-      <Button label={button} icon={icon} variant="ink" size="medium" onPress={onPress} />
+      <Button label={button} icon={icon} variant="hue" size="medium" onPress={onPress} />
     </View>
   )
 }

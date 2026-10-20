@@ -49,10 +49,10 @@ interface EchoDoneV3Props {
  * fill.
  *
  * Every number is the server's. Tokens are the batch's `award`, and nothing
- * is said about tokens when it paid none. The session count is
- * `completedEchoSessions` over a summary fetched after the batch landed, the
- * function and the window the server pays by; until that fetch is in, the
- * screen says what was answered and holds the button's place.
+ * is said about tokens when it paid none. The session count is the
+ * summary's `sessionsToday`, fetched after the batch landed — the server's own
+ * count on the UTC day it pays by; until that fetch is in, the screen says
+ * what was answered and holds the button's place.
  */
 export function EchoDoneV3({
   graded,
@@ -81,9 +81,9 @@ export function EchoDoneV3({
   const since = submit.submittedAt
   const plan = planEchoDone({
     award: submit.data?.award,
-    reviewedToday:
+    sessionsToday:
       settled && summary.data && summary.dataUpdatedAt > since
-        ? summary.data.reviewedToday
+        ? summary.data.sessionsToday
         : undefined,
     dueNext: settled && queue.data && queue.dataUpdatedAt > since ? queue.data.dueCount : undefined,
   })

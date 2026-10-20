@@ -871,6 +871,21 @@ repeatable action would dilute the people it exists to reward. Instead a new
 so it can never outpay talking to a person. Awarded on the review batch, so the
 unique `{ userId, reviewId }` is what makes double payment impossible.
 
+**Which day.** Sessions are counted and paid on the **UTC** day, both: the
+count is the reviews since UTC midnight, and each payment's ledger key is
+`echo:<utcDay>:<n>`, which `user_kind_ref_unique` takes once. The summary's
+`sessionsToday` is that same count, and the done screen's "Session X of N"
+reads it. The streak square a session fills is still the local day, and a
+session past the UTC day's cap still fills it though it pays nothing. The
+summary's `reviewedToday` stays a rolling twenty-four hours for the tab's own
+figure; it is not what pays. See `docs/decisions.md` → _Echo counts and pays
+sessions on one day, the UTC one_.
+
+**How long a card was on screen.** `durationMs` is held to
+`ECHO_REVIEW_DURATION_MAX_MS` (ten minutes), by the app before it sends and by
+the server's request schema, which clamps rather than refusing. It feeds the
+summary's pace and pays nothing, so a clamped card earns what any card does.
+
 **Streak.** Opening the app already holds the streak (`POST /me/check-in`);
 what a meaningful action does is pay the milestone. **A completed session is a
 meaningful action.** The milestone tokens do not come from the pool, so nobody

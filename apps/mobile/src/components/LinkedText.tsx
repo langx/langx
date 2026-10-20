@@ -22,6 +22,13 @@ interface LinkedTextProps {
    * trap `MessageBubble` describes for a card's buttons.
    */
   onLongPress?: () => void
+  /**
+   * Links and mentions in this colour rather than the accent — the text's
+   * own, on a coloured fill (the v3 bubbles), where the accent blue would
+   * vanish into a blue bubble and read poorly on a partner's hue. The
+   * underline and the weight still say which words are links.
+   */
+  linkColor?: string | undefined
 }
 
 /**
@@ -52,7 +59,7 @@ function follow(target: { href: string } | { handle: string }, from: string): vo
  * an outside address opens the in-app browser (a new tab on the web) — the
  * chat stays where it was underneath.
  */
-export function LinkedText({ children, style, from, onLongPress }: LinkedTextProps) {
+export function LinkedText({ children, style, from, onLongPress, linkColor }: LinkedTextProps) {
   const parts = useMemo(() => linkedParts(children), [children])
 
   if (!parts) return <Text style={style}>{children}</Text>
@@ -60,9 +67,21 @@ export function LinkedText({ children, style, from, onLongPress }: LinkedTextPro
     <Text style={style}>
       {parts.map((part) =>
         'spoiler' in part ? (
-          <Spoiler key={part.at} runs={part.spoiler} from={from} onLongPress={onLongPress} />
+          <Spoiler
+            key={part.at}
+            runs={part.spoiler}
+            from={from}
+            onLongPress={onLongPress}
+            linkColor={linkColor}
+          />
         ) : (
-          <Run key={part.at} run={part} from={from} onLongPress={onLongPress} />
+          <Run
+            key={part.at}
+            run={part}
+            from={from}
+            onLongPress={onLongPress}
+            linkColor={linkColor}
+          />
         ),
       )}
     </Text>
@@ -73,16 +92,21 @@ interface RunProps {
   run: LinkedRun
   from: string
   onLongPress: (() => void) | undefined
+  linkColor: string | undefined
 }
 
-function Run({ run, from, onLongPress }: RunProps) {
+function Run({ run, from, onLongPress, linkColor }: RunProps) {
   const styles = useStyles()
   const emphasis = run.style ? styles[run.style] : undefined
   if ('href' in run || 'handle' in run) {
     return (
       <Text
         accessibilityRole="link"
-        style={['handle' in run ? styles.mention : styles.link, emphasis]}
+        style={[
+          'handle' in run ? styles.mention : styles.link,
+          linkColor !== undefined && { color: linkColor },
+          emphasis,
+        ]}
         onPress={() => follow(run, from)}
         {...(onLongPress ? { onLongPress } : {})}
       >
@@ -103,7 +127,12 @@ function Run({ run, from, onLongPress }: RunProps) {
  * for. A link inside does nothing while covered — the tap opens the spoiler,
  * not the address nobody has read yet.
  */
-function Spoiler({ runs, from, onLongPress }: Omit<RunProps, 'run'> & { runs: LinkedRun[] }) {
+function Spoiler({
+  runs,
+  from,
+  onLongPress,
+  linkColor,
+}: Omit<RunProps, 'run'> & { runs: LinkedRun[] }) {
   const styles = useStyles()
   const t = useT()
   const [open, setOpen] = useState(false)
@@ -112,7 +141,7 @@ function Spoiler({ runs, from, onLongPress }: Omit<RunProps, 'run'> & { runs: Li
     return (
       <Text>
         {runs.map((run) => (
-          <Run key={run.at} run={run} from={from} onLongPress={onLongPress} />
+          <Run key={run.at} run={run} from={from} onLongPress={onLongPress} linkColor={linkColor} />
         ))}
       </Text>
     )
