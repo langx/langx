@@ -54,9 +54,9 @@ export function HistoryMapBlock({
           {columns.map((column, index) => (
             <View key={column[0]?.day ?? index} style={styles.monthSlot}>
               {months[index] ? (
-                <Text style={styles.month} numberOfLines={1}>
-                  {months[index]}
-                </Text>
+                // No `numberOfLines`: on the web it caps the text at its 18pt
+                // slot, which is the overflow the slot exists to allow.
+                <Text style={styles.month}>{months[index]}</Text>
               ) : null}
             </View>
           ))}
@@ -205,7 +205,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     start: 0,
     top: 0,
   },
-  legend: { flexBasis: 120, flexGrow: 1, gap: v3.space[8], minWidth: 120 },
+  legend: { flexBasis: 100, flexGrow: 1, gap: v3.space[8], minWidth: 100 },
   legendItem: { alignItems: 'flex-start', flexDirection: 'row', gap: v3.space[8] },
   swatch: {
     borderRadius: 4,

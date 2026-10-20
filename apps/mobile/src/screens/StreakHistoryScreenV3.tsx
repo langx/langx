@@ -126,12 +126,19 @@ export function StreakHistoryScreenV3() {
   const now = new Date(`${data.today}T12:00:00`)
   const filled = new Set(data.days.map((day) => day.day))
   const left = Math.max(0, data.repair.perMonth - data.repair.usedThisMonth)
-  // The store's own choice of day, so the page and the store never offer two.
-  const repairable = newestRepairDay({
+  // The store's own choice of day, so the page and the store never offer two
+  // — and only one the map above calls missed: the store does not know when
+  // the account began, and a day before it is not a miss to buy back.
+  const offered = newestRepairDay({
     today: data.today,
     filled,
     usedThisMonth: data.repair.usedThisMonth,
   })
+  const repairable = map.columns
+    .flat()
+    .some((cell) => cell.day === offered && cell.state === 'missed')
+    ? offered
+    : null
 
   function buyBack(day: string): void {
     if (!data) return
