@@ -25,6 +25,8 @@ import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useLocale, useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { ViewersScreenV3 } from '../../src/screens/people/ViewersScreenV3'
 
 type ViewerRow = ViewerPageDto['viewers'][number] & { _id: string }
 
@@ -40,7 +42,12 @@ type ViewerRow = ViewerPageDto['viewers'][number] & { _id: string }
  * visits: a count, so it is said to the free tier too, above the rows that
  * hide the names.
  */
-export default function ViewersScreen() {
+export default function ViewersRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <ViewersScreenV3 /> : <ViewersScreen />
+}
+
+function ViewersScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const { colors, scheme } = useTheme()

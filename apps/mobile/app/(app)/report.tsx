@@ -14,6 +14,8 @@ import { goBackTo } from '../../src/lib/navigation'
 import { showToast } from '../../src/lib/toast'
 import { makeStyles } from '../../src/lib/theme'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { ReportScreenV3 } from '../../src/screens/people/ReportScreenV3'
 
 /**
  * Reporting, as a screen.
@@ -31,7 +33,12 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * report is filed against, and the optional ids say where it happened. A report
  * from a profile has neither.
  */
-export default function ReportScreen() {
+export default function ReportRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <ReportScreenV3 /> : <ReportScreen />
+}
+
+function ReportScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()
