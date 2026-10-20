@@ -56,6 +56,10 @@ export function kindKey(kind: TokenKind): MessageKey {
  * mismatch is deliberate: the token was earned on a UTC day, but "Today" is a
  * word about the reader, and a row headed "Yesterday" for something they did
  * an hour ago would be the more confusing of the two errors.
+ *
+ * The v3 history makes the other trade: it passes `ledgerNow()` as `now`, so
+ * "Today" is the UTC day and no dated block can sit above it. The old screen
+ * passes nothing and keeps the device's day.
  */
 export function buildTokenHistory({ days, t, locale, now }: TokenHistoryInput): HistoryRow[] {
   return days.map((day) => {
