@@ -50,6 +50,11 @@ export function openProfile(handle: string, from: string): void {
   push(profileHref(handle, from))
 }
 
+/** Open a sticker pack's page (v3): `stickers.paper` → `/wallet/stickers/paper`. */
+export function openStickerPack(packId: string): void {
+  push(`/(app)/wallet/stickers/${packId.split('.')[1] ?? ''}`)
+}
+
 /** Open the thread on a post — the sentence and every correction of it. */
 export function openPost(postId: string, from: string): void {
   push(`/(app)/post/${postId}?from=${encodeURIComponent(from)}`)

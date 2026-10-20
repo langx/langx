@@ -7,11 +7,12 @@ import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../src/components/ui/Skeleton'
+import { useV3Home } from '../../src/hooks/useV3Home'
 import { useT } from '../../src/i18n'
 import { showAlert } from '../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../src/lib/socket'
-import { goBackTo } from '../../src/lib/navigation'
-import { stickerAsset } from '../../src/lib/stickerAssets'
+import { goBackTo, openStickerPack } from '../../src/lib/navigation'
+import { stickerAsset, stickerNameKey } from '../../src/lib/stickerAssets'
 import { cosmeticKey } from '../../src/lib/storeOffers'
 import { makeStyles } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
@@ -35,6 +36,7 @@ export default function StickersScreen() {
   const { id: conversationId } = useLocalSearchParams<{ id: string }>()
   const wallet = useWallet()
   const purchase = usePurchase()
+  const v3Home = useV3Home()
   const owned = wallet.data?.owned ?? []
   const balance = wallet.data?.balance ?? 0
 
@@ -91,7 +93,26 @@ export default function StickersScreen() {
           const unlocked = owned.includes(pack.id)
           return (
             <View key={pack.id} style={styles.pack}>
-              <Text style={styles.packName}>{t(cosmeticKey(pack.id))}</Text>
+              {v3Home ? (
+                // v3 only: the pack's own page, where wanting one can see all
+                // twelve big before buying. Today's keyboard is unchanged.
+                <View style={styles.packHead}>
+                  <Text style={[styles.packName, styles.packNameFlex]}>
+                    {t(cosmeticKey(pack.id))}
+                  </Text>
+                  <Pressable
+                    accessibilityRole="link"
+                    accessibilityLabel={`${t('stickerPack.seePack')}: ${t(cosmeticKey(pack.id))}`}
+                    hitSlop={8}
+                    onPress={() => openStickerPack(pack.id)}
+                    style={({ pressed }) => [styles.seePack, pressed && styles.pressed]}
+                  >
+                    <Text style={styles.seePackLabel}>{t('stickerPack.seePack')}</Text>
+                  </Pressable>
+                </View>
+              ) : (
+                <Text style={styles.packName}>{t(cosmeticKey(pack.id))}</Text>
+              )}
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.grid}>
                   {(pack.stickers ?? []).map((stickerId) => {
@@ -101,7 +122,7 @@ export default function StickersScreen() {
                       <Pressable
                         key={stickerId}
                         accessibilityRole="button"
-                        accessibilityLabel={stickerId}
+                        accessibilityLabel={t(stickerNameKey(pack.id, stickerId))}
                         disabled={!unlocked}
                         onPress={() => void send(pack.id, stickerId)}
                         style={({ pressed }) => [
@@ -136,6 +157,10 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
   loading: { padding: spacing.lg },
   pack: { gap: spacing.sm, paddingTop: spacing.lg },
   packName: { color: colors.text, fontSize: 17, fontWeight: '700' },
+  packHead: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
+  packNameFlex: { flex: 1 },
+  seePack: { justifyContent: 'center', minHeight: 44 },
+  seePackLabel: { color: colors.accent, fontSize: 15, fontWeight: '700' },
   grid: { flexDirection: 'row', gap: spacing.sm },
   tile: { alignItems: 'center', justifyContent: 'center', padding: 4 },
   picture: { height: 64, width: 64 },
