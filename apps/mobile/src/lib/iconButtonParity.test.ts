@@ -38,6 +38,7 @@ const SITES: Readonly<Record<string, number>> = {
   'src/components/testimonials/TestimonialCard.tsx': 1,
   'src/components/testimonials/ThreadTestimonialCard.tsx': 1,
   'src/screens/PostScreen.tsx': 1,
+  'src/screens/ProfileScreen.tsx': 2,
 }
 
 /** What a press does and what a screen reader hears. Looks are free to differ. */
