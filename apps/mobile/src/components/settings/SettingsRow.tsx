@@ -32,7 +32,7 @@ import { Radio } from '../ui/Radio'
 import { Toggle } from '../ui/Toggle'
 
 /** Keys, not words: a module constant is fixed at import time. */
-const THEME_LABELS: Record<ThemePreference, MessageKey> = {
+export const THEME_LABELS: Record<ThemePreference, MessageKey> = {
   auto: 'theme.autoSystem',
   light: 'theme.light',
   dark: 'theme.dark',
@@ -44,7 +44,7 @@ const THEME_LABELS: Record<ThemePreference, MessageKey> = {
  * enforcement the paywall uses. The keys are the paywall's own, so the plan
  * page cannot call a benefit one thing and the paywall another.
  */
-const BENEFIT_TITLE: Record<ProBenefit, MessageKey> = {
+export const BENEFIT_TITLE: Record<ProBenefit, MessageKey> = {
   unlimitedInitiations: 'paywall.unlimitedChats',
   advancedFilters: 'paywall.advancedFilters',
   boostedProfile: 'paywall.boostedProfile',
@@ -66,13 +66,13 @@ const BENEFIT_TITLE: Record<ProBenefit, MessageKey> = {
  * mis-sell that flag exists to prevent. One table for both screens is the
  * fix; until then the two must be changed together.
  */
-const PENDING_BENEFITS: ReadonlySet<ProBenefit> = new Set(['copilot'])
+export const PENDING_BENEFITS: ReadonlySet<ProBenefit> = new Set(['copilot'])
 
 /**
  * Imported statically, because Metro resolves an image at build time: a path
  * assembled at runtime resolves to nothing.
  */
-const ICON_PREVIEWS = {
+export const ICON_PREVIEWS = {
   default: defaultIcon,
   dark: darkIcon,
   split: splitIcon,
