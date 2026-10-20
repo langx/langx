@@ -2565,6 +2565,22 @@ export const en = {
     leaderboardBody: 'Who earned the most this week, month and year',
     poolBody: 'How the nightly share is worked out',
     storeBody: 'Streak freezes, missed days and cosmetics',
+    /**
+     * The redesign's wallet (`WalletScreenV3`). The unit beside the balance
+     * is the store's own word for a token, as `store.price` spells it.
+     */
+    tokensUnit: { one: 'token', other: 'tokens' },
+    /** The hero's bar: the nearest frame or title the balance is saving for. */
+    nextRung: { one: '{amount} token to {title}', other: '{amount} tokens to {title}' },
+    nextRungReady: 'Enough for {title}',
+    /** "1 of 2" freezes banked, "2 of 23" items owned. */
+    countOf: '{current} of {total}',
+    giftOpen: 'Open',
+    /**
+     * A price on the redesign's store, with its digits grouped for the
+     * reader ("1,000 tokens") — `store.price` prints the bare count.
+     */
+    price: { one: '{amount} token', other: '{amount} tokens' },
     disclaimer:
       'Tokens are in-app points. They cannot be bought, traded, withdrawn or used to unlock a paid plan — only streak freezes, missed days and cosmetics. There is no chain, no contract and no market.',
   },

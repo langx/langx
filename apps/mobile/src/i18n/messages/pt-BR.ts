@@ -2324,6 +2324,12 @@ export const ptBR: Localized<EnMessages> = {
     leaderboardBody: 'Quem ganhou mais nesta semana, neste mês e neste ano',
     poolBody: 'Como a parte da noite é calculada',
     storeBody: 'Congelamentos de sequência, dias perdidos e cosméticos',
+    tokensUnit: { one: 'ficha', other: 'fichas' },
+    nextRung: { one: '{title}: falta {amount} ficha', other: '{title}: faltam {amount} fichas' },
+    nextRungReady: '{title}: já dá para comprar',
+    countOf: '{current} de {total}',
+    giftOpen: 'Abrir',
+    price: { one: '{amount} ficha', other: '{amount} fichas' },
     disclaimer:
       'As fichas são pontos dentro do app. Não podem ser compradas, trocadas, sacadas nem usadas para desbloquear um plano pago — apenas congelamentos de sequência, dias perdidos e cosméticos. Não há cadeia, contrato nem mercado.',
   },

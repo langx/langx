@@ -2296,6 +2296,15 @@ export const tr: Localized<EnMessages> = {
     leaderboardBody: 'Bu hafta, ay ve yıl en çok kazananlar',
     poolBody: 'Gecelik payın nasıl hesaplandığı',
     storeBody: 'Seri dondurma, kaçırılan günler ve kozmetikler',
+    tokensUnit: { one: 'jeton', other: 'jeton' },
+    nextRung: {
+      one: '{title} için {amount} jeton kaldı',
+      other: '{title} için {amount} jeton kaldı',
+    },
+    nextRungReady: '{title} için jeton yeterli',
+    countOf: '{current}/{total}',
+    giftOpen: 'Aç',
+    price: { one: '{amount} jeton', other: '{amount} jeton' },
     disclaimer:
       'Jetonlar uygulama içi puandır. Satın alınamaz, takas edilemez, çekilemez ve ücretli bir planı açamaz — yalnızca seri dondurma, kaçırılan günler ve kozmetikler. Zincir yok, sözleşme yok, piyasa yok.',
   },
