@@ -2006,6 +2006,7 @@ export const ptBR: Localized<EnMessages> = {
     cookies: 'Política de cookies',
     dataDeletion: 'Excluir meus dados',
     security: 'Segurança',
+    opensInBrowser: 'Cada um abre no navegador.',
   },
   feedback: {
     bugTitle: 'Relatar um erro',
@@ -2457,6 +2458,8 @@ export const ptBR: Localized<EnMessages> = {
     openAccessibility: 'Abrir o presente de cada hora',
     tokensUnit: { one: 'token', other: 'tokens' },
     anotherInAnHour: 'Outro daqui a uma hora.',
+    openLabel: 'Abrir',
+    someEmpty: 'Alguns presentes vêm vazios. Outro chega em uma hora.',
   },
 
   wallet: {
@@ -2567,6 +2570,7 @@ export const ptBR: Localized<EnMessages> = {
       other: 'Você pode ganhar até {count} semanas por ano.',
     },
     weekAddsOn: 'A sua entra no fim do Pro que você já tem.',
+    peopleTitle: 'Pessoas que você convidou',
   },
 
   tokenKind: {
