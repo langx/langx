@@ -2270,6 +2270,7 @@ export const ru: Localized<EnMessages> = {
     cookies: 'Политика cookie',
     dataDeletion: 'Удалить мои данные',
     security: 'Безопасность',
+    opensInBrowser: 'Каждая ссылка откроется в браузере.',
   },
   feedback: {
     bugTitle: 'Сообщить об ошибке',
@@ -2824,6 +2825,8 @@ export const ru: Localized<EnMessages> = {
     openAccessibility: 'Открыть ежечасный подарок',
     tokensUnit: { one: 'токен', few: 'токена', many: 'токенов', other: 'токенов' },
     anotherInAnHour: 'Следующий — через час.',
+    openLabel: 'Открыть',
+    someEmpty: 'Некоторые подарки пустые. Следующий — через час.',
   },
 
   wallet: {
@@ -2985,6 +2988,7 @@ export const ru: Localized<EnMessages> = {
       other: 'В год можно получить до {count} недели.',
     },
     weekAddsOn: 'Ваша неделя добавится к концу вашего текущего Pro.',
+    peopleTitle: 'Кого вы пригласили',
   },
 
   tokenKind: {

@@ -2025,6 +2025,7 @@ export const de: Localized<EnMessages> = {
     cookies: 'Cookie-Richtlinie',
     dataDeletion: 'Meine Daten löschen',
     security: 'Sicherheit',
+    opensInBrowser: 'Jeder Link öffnet sich im Browser.',
   },
   feedback: {
     bugTitle: 'Fehler melden',
@@ -2481,6 +2482,8 @@ export const de: Localized<EnMessages> = {
     openAccessibility: 'Stündliches Geschenk öffnen',
     tokensUnit: { one: 'Token', other: 'Token' },
     anotherInAnHour: 'In einer Stunde gibt es das nächste.',
+    openLabel: 'Öffnen',
+    someEmpty: 'Manche Geschenke sind leer. In einer Stunde gibt es das nächste.',
   },
 
   wallet: {
@@ -2591,6 +2594,7 @@ export const de: Localized<EnMessages> = {
       other: 'Du kannst bis zu {count} Wochen im Jahr bekommen.',
     },
     weekAddsOn: 'Deine Woche kommt ans Ende deines jetzigen Pro.',
+    peopleTitle: 'Von dir eingeladen',
   },
 
   tokenKind: {

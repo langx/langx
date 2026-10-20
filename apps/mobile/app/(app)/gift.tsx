@@ -16,8 +16,15 @@ import { useLocale, useT } from '../../src/i18n'
 import { useReduceMotion } from '../../src/hooks/useReduceMotion'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useShake } from '../../src/hooks/useShake'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { GiftScreenV3 } from '../../src/screens/me/GiftScreenV3'
 
 type Phase = 'waiting' | 'opening' | 'revealed'
+
+/** The hourly gift, or with `flags.v3Home` on the redesign's (`GiftScreenV3`). */
+export default function GiftScreenRoute() {
+  return useV3Home() ? <GiftScreenV3 /> : <GiftScreen />
+}
 
 /**
  * Opening the hourly gift.
@@ -36,7 +43,7 @@ type Phase = 'waiting' | 'opening' | 'revealed'
  * countdown ticks on the minute, as the wallet's card does — a second hand on
  * a box that will not open for forty minutes is a nag.
  */
-export default function GiftScreen() {
+function GiftScreen() {
   useScreenInteractive()
   const t = useT()
   const { locale } = useLocale()

@@ -28,6 +28,11 @@ const PAIRS: readonly { current: string; v3: string; except?: readonly string[] 
   },
   { current: 'wallet/leaderboard.tsx', v3: 'me/WalletLeaderboardScreenV3.tsx' },
   { current: 'wallet/pool.tsx', v3: 'me/PoolScreenV3.tsx' },
+  { current: 'invite.tsx', v3: 'me/InviteScreenV3.tsx' },
+  { current: 'gift.tsx', v3: 'me/GiftScreenV3.tsx' },
+  { current: 'how-it-works.tsx', v3: 'me/HowItWorksScreenV3.tsx' },
+  // Every link still drawn: the first in a group of its own, the rest `.map`ped under it.
+  { current: 'legal.tsx', v3: 'settings/LegalScreenV3.tsx', except: ['LEGAL_LINKS.map'] },
 ]
 
 describe('v3 profile and growth pages keep the current pages’ words and requests', () => {

@@ -2387,6 +2387,7 @@ export const ar: Localized<EnMessages> = {
     cookies: 'سياسة ملفات تعريف الارتباط',
     dataDeletion: 'حذف بياناتي',
     security: 'الأمان',
+    opensInBrowser: 'يُفتح كل رابط في المتصفح.',
   },
   feedback: {
     bugTitle: 'الإبلاغ عن خلل',
@@ -3024,6 +3025,8 @@ export const ar: Localized<EnMessages> = {
       other: 'توكن',
     },
     anotherInAnHour: 'واحد آخر بعد ساعة.',
+    openLabel: 'افتح',
+    someEmpty: 'بعض الهدايا فارغة. هدية أخرى بعد ساعة.',
   },
 
   wallet: {
@@ -3227,6 +3230,7 @@ export const ar: Localized<EnMessages> = {
       other: 'يمكنك أن تكسب حتى {count} أسبوع في السنة.',
     },
     weekAddsOn: 'يُضاف أسبوعك إلى نهاية Pro الذي لديك الآن.',
+    peopleTitle: 'الأشخاص الذين دعوتهم',
   },
 
   tokenKind: {
