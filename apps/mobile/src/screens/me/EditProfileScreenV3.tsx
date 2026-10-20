@@ -496,7 +496,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   pressed: { opacity: 0.7 },
   block: { gap: v3.space[6] },
   blockHead: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
-  label: { ...v3.type.label, color: v3.colors.fg, fontSize: 15, lineHeight: 20 },
+  label: { ...v3.type.buttonSmall, color: v3.colors.fg },
   readOnly: {
     alignItems: 'center',
     backgroundColor: v3.colors.surface,
@@ -522,7 +522,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[16],
     paddingVertical: v3.space[8],
   },
-  languageName: { ...v3.type.headline, color: v3.colors.fg, flex: 1, fontSize: 17, lineHeight: 22 },
+  languageName: { ...v3.type.button, color: v3.colors.fg, flex: 1 },
   languageLevel: { ...v3.type.callout, color: v3.colors.muted },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
   error: { ...v3.type.caption, color: v3.colors.danger, paddingBottom: v3.space[8] },

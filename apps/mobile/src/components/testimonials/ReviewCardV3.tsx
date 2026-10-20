@@ -124,7 +124,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   pressed: { opacity: 0.7 },
   whoText: { flex: 1, minWidth: 0 },
   label: { ...v3.type.label, color: v3.colors.echoText },
-  name: { ...v3.type.headline, color: v3.colors.fg, fontSize: 18, lineHeight: 22 },
+  name: { ...v3.type.button, color: v3.colors.fg },
   meta: { ...v3.type.caption, color: v3.colors.muted, lineHeight: 18 },
   tag: {
     alignItems: 'center',

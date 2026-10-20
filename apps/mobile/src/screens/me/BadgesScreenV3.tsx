@@ -46,7 +46,7 @@ export function BadgesScreenV3() {
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
-  const { locale, isRtl } = useLocale()
+  const { isRtl } = useLocale()
   const black = useV3Fonts()
 
   const { handle: of, from } = useLocalSearchParams<{ handle?: string; from?: string }>()
@@ -332,8 +332,6 @@ const useStyles = makeStyles(({ v3 }) => ({
   heading: {
     ...v3.type.headline,
     color: v3.colors.fg,
-    fontSize: 18,
-    lineHeight: 22,
     marginHorizontal: v3.space[6],
   },
   headingLater: { marginTop: v3.space[8] },
@@ -370,7 +368,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     width: 20,
   },
   rowText: { flex: 1, minWidth: 0 },
-  name: { ...v3.type.headline, color: v3.colors.fg, fontSize: 17, lineHeight: 22 },
+  name: { ...v3.type.button, color: v3.colors.fg },
   whenRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[4] },
   muted: { ...v3.type.caption, color: v3.colors.muted, lineHeight: 18 },
   share: { width: 'auto' },
@@ -382,9 +380,9 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   pressed: { opacity: 0.85 },
   nearestHead: { alignItems: 'center', flexDirection: 'row', gap: v3.space[12] },
-  nearestName: { ...v3.type.headline, color: v3.colors.ink, fontSize: 18, lineHeight: 22 },
+  nearestName: { ...v3.type.button, color: v3.colors.ink },
   onHue: { ...v3.type.caption, color: v3.colors.ink, fontWeight: '600', lineHeight: 18 },
-  nearestFraction: { ...v3.type.headline, color: v3.colors.ink, fontSize: 17 },
+  nearestFraction: { ...v3.type.button, color: v3.colors.ink },
   bar: { borderRadius: v3.radius.pill, height: 10, overflow: 'hidden' },
   barTrack: { backgroundColor: v3.colors.ink, opacity: 0.18 },
   barFill: { backgroundColor: v3.colors.ink, borderRadius: v3.radius.pill, height: 10 },

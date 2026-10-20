@@ -161,7 +161,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingEnd: v3.space[14],
     paddingStart: v3.space[4],
   },
-  whoseText: { ...v3.type.label, color: v3.colors.ink, flexShrink: 1, fontSize: 15 },
+  whoseText: { ...v3.type.buttonSmall, color: v3.colors.ink, flexShrink: 1 },
   list: { gap: v3.space[10], paddingBottom: v3.space[24], paddingTop: v3.space[10] },
   footer: { paddingVertical: v3.space[16] },
   write: { marginBottom: v3.space[4] },
