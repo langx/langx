@@ -111,6 +111,10 @@ export function RewardChipV3({
  * A message row with the chips its send earned under it. Always the same
  * shape, chips or none, so a chip arriving never remounts the bubble above
  * it; with no chips (and always with the flag off) it draws the row alone.
+ *
+ * The chips come first, and in reverse, because the thread is an inverted
+ * list: every cell is drawn flipped, so what is first inside a row is drawn
+ * last, under the bubble.
  */
 export function WithRewardChips({
   rewards,
@@ -125,8 +129,7 @@ export function WithRewardChips({
 }) {
   return (
     <>
-      {children}
-      {rewards?.chips.map((reward) => (
+      {[...(rewards?.chips ?? [])].reverse().map((reward) => (
         <RewardChipV3
           key={reward.kind}
           reward={reward}
@@ -135,6 +138,7 @@ export function WithRewardChips({
           at={rewards.at}
         />
       ))}
+      {children}
     </>
   )
 }
