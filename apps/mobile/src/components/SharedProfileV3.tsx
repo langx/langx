@@ -271,7 +271,9 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingTop: v3.space[16],
   },
   ctaRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[12] },
-  pair: { flexDirection: 'row' },
+  // Side by side, not overlapped: tucked under the dashed circle, the
+  // person's initial lost its right half.
+  pair: { flexDirection: 'row', gap: v3.space[4] },
   pairDot: {
     alignItems: 'center',
     borderColor: v3.colors.surface,
@@ -285,7 +287,6 @@ const useStyles = makeStyles(({ v3 }) => ({
     backgroundColor: v3.colors.surface,
     borderColor: v3.colors.muted,
     borderStyle: 'dashed',
-    marginStart: -14,
   },
   pairInitial: { ...v3.type.headline, color: v3.colors.ink },
   ctaBody: { ...v3.type.callout, color: v3.colors.fg, flex: 1, fontWeight: '700' },
