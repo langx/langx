@@ -193,6 +193,30 @@ describe('where a nudge about the plans lands', () => {
     expect(promotionEmail('en', scenario, { unsubscribe })).toEqual(off)
   })
 
+  // Pinned to the links main sent before the switch existed, so "off" is
+  // checked against today's mail rather than against the new code's own idea of it.
+  it('the switch off sends every button where it pointed before the switch', () => {
+    const before: Record<PromotionScenario, string> = {
+      addPhoto: '/me/edit',
+      streakBroke: '/wallet',
+      away: '/discover',
+      awayLong: '/discover',
+      trialEnding: '/settings/plan',
+      limitReached: '/settings/plan',
+      winBack: '/settings/plan',
+      tokensWaiting: '/wallet',
+      inviteFriend: '/settings/share',
+    }
+    for (const scenario of SCENARIOS) {
+      const url = `https://app.langx.io${before[scenario]}`
+      expect(promotionDestination(scenario, false)).toBe(url)
+      const off = promotionEmail('en', scenario, { unsubscribe, paywallLinks: false })
+      expect(off.text).toContain(url)
+      expect(off.html).toContain(url)
+      expect(off.html).not.toContain('/paywall')
+    }
+  })
+
   it('opens the paywall with each nudge its own source when the switch is on', () => {
     expect(promotionDestination('limitReached', true)).toBe(
       'https://app.langx.io/paywall?source=nudge_limits',
