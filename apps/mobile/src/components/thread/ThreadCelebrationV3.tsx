@@ -128,6 +128,7 @@ export function ThreadCelebrationV3({
               variant="hue"
               size="small"
               icon="share"
+              style={styles.share}
               label={t('share.action')}
               onPress={() => void shareLink(share)}
             />
@@ -164,6 +165,8 @@ const useStyles = makeStyles(({ v3 }) => ({
   title: { ...v3.type.title, color: v3.colors.ink },
   body: { ...v3.type.body, color: v3.colors.ink, fontWeight: '500' },
   foot: { alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[10] },
+  // The kit's Button is full width by default, which would take the whole line.
+  share: { width: 'auto' },
   rewardChip: {
     backgroundColor: v3.colors.ink,
     borderRadius: v3.radius.pill,
