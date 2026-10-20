@@ -543,6 +543,10 @@ export const fr: Localized<EnMessages> = {
       other: 'Tes {count} premières séances de chaque jour rapportent des tokens.',
     },
     oneMore: 'Encore une séance',
+    sourceOpensChat: 'Ouvre ta discussion à ce message',
+    sourceOpensPost: 'Ouvre la publication',
+    newNote:
+      'Elle rejoint le même calendrier que les cartes que tu gardes de tes discussions. Une fois enregistrée, ajoute une image ou enregistre-la toi-même depuis Modifier.',
   },
 
   conversationPicker: {

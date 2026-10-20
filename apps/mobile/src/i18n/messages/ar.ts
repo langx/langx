@@ -641,6 +641,10 @@ export const ar: Localized<EnMessages> = {
       other: 'أول {count} جلسة كل يوم تمنح توكنات.',
     },
     oneMore: 'جلسة أخرى',
+    sourceOpensChat: 'يفتح محادثتك عند هذه الرسالة',
+    sourceOpensPost: 'يفتح المنشور',
+    newNote:
+      'تنضم إلى الجدول نفسه الذي تتبعه البطاقات التي تحفظها من المحادثات. بعد حفظها، أضف صورة أو سجّلها بصوتك من «تعديل».',
   },
 
   conversationPicker: {

@@ -535,6 +535,10 @@ export const ptBR: Localized<EnMessages> = {
       other: 'Suas primeiras {count} sessões de cada dia rendem tokens.',
     },
     oneMore: 'Mais uma sessão',
+    sourceOpensChat: 'Abre sua conversa nesta mensagem',
+    sourceOpensPost: 'Abre a publicação',
+    newNote:
+      'Ele entra no mesmo cronograma dos cartões que você guarda das conversas. Depois de salvo, adicione uma imagem ou grave você mesmo em Editar.',
   },
 
   conversationPicker: {

@@ -633,6 +633,10 @@ export const en = {
       other: 'Your first {count} sessions each day earn tokens.',
     },
     oneMore: 'One more session',
+    sourceOpensChat: 'Opens your chat at this message',
+    sourceOpensPost: 'Opens the post',
+    newNote:
+      'It joins the same schedule as the cards you keep from chats. Add a picture or say it yourself from Edit, once it is saved.',
   },
 
   conversationPicker: {

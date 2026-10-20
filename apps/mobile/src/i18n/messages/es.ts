@@ -536,6 +536,10 @@ export const es: Localized<EnMessages> = {
       other: 'Tus primeras {count} sesiones de cada día dan tokens.',
     },
     oneMore: 'Una sesión más',
+    sourceOpensChat: 'Abre tu chat en este mensaje',
+    sourceOpensPost: 'Abre la publicación',
+    newNote:
+      'Se une al mismo calendario que las tarjetas que guardas de los chats. Cuando esté guardada, añade una imagen o grábala tú desde Editar.',
   },
 
   conversationPicker: {
