@@ -131,7 +131,12 @@ function ChangeForm({ profile, onDone }: { profile: MeProfile; onDone: () => voi
       {status.tone === 'good' ? (
         <Feather name="check-circle" size={v3.icon.xs} color={toneColor} />
       ) : null}
-      <Text style={[styles.status, { color: toneColor }]}>{status.text}</Text>
+      <Text
+        // The rule itself is quiet; only an answer about the name is bold.
+        style={[status.tone === 'quiet' ? styles.statusQuiet : styles.status, { color: toneColor }]}
+      >
+        {status.text}
+      </Text>
     </View>
   )
 
@@ -202,6 +207,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[20],
   },
   status: { ...v3.type.callout, flexShrink: 1, fontWeight: '700' },
+  statusQuiet: { ...v3.type.caption, flexShrink: 1 },
   retry: { justifyContent: 'center', minHeight: ICON_BUTTON_TARGET },
   error: { ...v3.type.caption, color: v3.colors.danger, paddingHorizontal: v3.space[20] },
   pressed: { opacity: 0.6 },
