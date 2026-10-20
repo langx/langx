@@ -75,9 +75,9 @@ export interface EchoCardDoc {
  * One graded card, written before the card is advanced.
  *
  * `reviewId` is the client's, and `user_review_unique` is what makes a
- * retried session incapable of paying twice. `durationMs` is recorded and not
- * yet read by anything — it is the only signal that would say whether a card
- * is too long to be a card, and it cannot be recovered later.
+ * retried session incapable of paying twice. `durationMs` feeds the summary's
+ * pace (`echoSecondsPerCard`) and is held to `ECHO_REVIEW_DURATION_MAX_MS` by
+ * the request schema, so a row never says a card took longer than that.
  */
 export interface EchoReviewDoc {
   _id: ObjectId
