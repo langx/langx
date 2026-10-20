@@ -33,7 +33,8 @@ const FRESH_MS = 1500
  *
  * A status, not a control — there is nothing to do with it, so it takes no
  * press and needs no target size. It rises in with one bounce when it is
- * news and is simply there under reduced motion; it is announced once, then.
+ * news and is simply there under reduced motion. Its row announces it, with
+ * whatever else the same send earned (`WithRewardChips`).
  *
  * The correction's chip is the correction's green, as the drawing has it;
  * the others sit on the partner's hue, with ink on it as every hue-lettered
