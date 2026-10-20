@@ -374,7 +374,8 @@ const useStyles = makeStyles(({ v3 }) => ({
   details: { alignSelf: 'flex-start', width: 'auto' },
   group: { gap: v3.space[8] },
   row: { flexDirection: 'row', gap: v3.space[8] },
-  hole: { flex: 1 },
+  // Padded and bordered as a tile is, so the web's flex basis gives it a tile's width.
+  hole: { borderColor: 'transparent', borderWidth: 2, flex: 1, paddingHorizontal: v3.space[4] },
   footer: {
     borderTopColor: v3.colors.line,
     borderTopWidth: 1,

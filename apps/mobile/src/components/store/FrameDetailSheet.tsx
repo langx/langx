@@ -181,20 +181,19 @@ function SheetBody({
             </View>
           </View>
 
-          {gates.length > 0 ? (
-            <View style={styles.gates}>
-              {gates.map((gate) => (
-                <Gate key={gate.kind} gate={gate} />
-              ))}
-            </View>
-          ) : null}
-
           {action === 'ladder' && offer.needs ? (
             <View style={styles.ladder}>
               <Feather name="lock" size={v3.icon.sm} color={v3.colors.muted} />
               <Text style={styles.ladderText}>
                 {t('storeHome.opensAfter', { title: offer.needs })}
               </Text>
+            </View>
+          ) : null}
+          {gates.length > 0 ? (
+            <View style={styles.gates}>
+              {gates.map((gate) => (
+                <Gate key={gate.kind} gate={gate} />
+              ))}
             </View>
           ) : null}
         </ScrollView>
