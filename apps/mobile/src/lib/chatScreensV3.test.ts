@@ -129,6 +129,34 @@ function uses(file: string): Uses {
   return found
 }
 
+/**
+ * The two pages whose v3 look is one step drawn again rather than a whole
+ * page: the route keeps every handler and hands them over, so only the words
+ * of that step are checked — the three ways a snap is sent, Retake and Send.
+ * View once adds a drawing and takes nothing away, so it has no entry.
+ */
+const PARTS: readonly { v3: string; keys: readonly string[] }[] = [
+  {
+    v3: 'SnapPreviewV3.tsx',
+    keys: [
+      'viewOnce.modeOnce',
+      'viewOnce.modeReplay',
+      'viewOnce.modeKeep',
+      'viewOnce.retake',
+      'viewOnce.send',
+    ],
+  },
+]
+
+describe('v3 chat steps keep the current step’s words', () => {
+  for (const { v3, keys } of PARTS) {
+    it(`${v3} says what the current step says`, () => {
+      const found = uses(path.join(SCREENS, v3))
+      for (const key of keys) expect(found.keys, `key ${key}`).toContain(key)
+    })
+  }
+})
+
 describe('v3 chat pages keep the current pages’ words and requests', () => {
   for (const { current, v3, via = {} } of PAIRS) {
     it(`${v3} uses everything ${current} does`, () => {

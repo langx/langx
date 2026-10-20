@@ -129,6 +129,10 @@ export const de: Localized<EnMessages> = {
       'LangX braucht die Erlaubnis, Fotos und Videos zu deiner Mediathek hinzuzufügen. Du kannst sie in den Einstellungen erteilen.',
   },
   viewOnce: {
+    modeHeading: 'Wie die andere Person es sieht',
+    modeOnceBody: 'Weg, sobald sie es öffnet.',
+    modeReplayBody: 'Sie kann es noch einmal öffnen.',
+    modeKeepBody: 'Bleibt im Chat wie jedes Foto.',
     tapToClose: 'Tippe irgendwo, um zu schließen',
     photo: 'Foto',
     video: 'Video',

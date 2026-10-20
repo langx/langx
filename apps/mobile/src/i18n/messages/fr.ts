@@ -129,6 +129,10 @@ export const fr: Localized<EnMessages> = {
       'LangX a besoin de l’autorisation d’ajouter des photos et des vidéos à ta photothèque. Tu peux l’accorder dans les Réglages.',
   },
   viewOnce: {
+    modeHeading: 'Comment l’autre personne le voit',
+    modeOnceBody: 'Disparaît dès qu’elle l’ouvre.',
+    modeReplayBody: 'Elle peut l’ouvrir une fois de plus.',
+    modeKeepBody: 'Reste dans la discussion comme n’importe quelle photo.',
     tapToClose: 'Touche n’importe où pour fermer',
     photo: 'Photo',
     video: 'Vidéo',
