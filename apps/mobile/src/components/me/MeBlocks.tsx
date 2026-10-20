@@ -11,6 +11,7 @@ import { IconButton } from '../ui/IconButton'
 import { PressableScale } from '../ui/PressableScale'
 import { ProgressRing } from '../ui/ProgressRing'
 import { Skeleton } from '../ui/Skeleton'
+import { TitleBadge } from '../ui/TitleBadge'
 import { FlameGlyph } from '../ui/StreakFlame'
 
 type Glyph = keyof typeof Feather.glyphMap
@@ -39,8 +40,8 @@ export interface MeHeroView {
   languagesLine?: string | undefined
   pronouns?: string | undefined
   pro: boolean
-  /** A bought title, already worded. */
-  title?: string | undefined
+  /** The worn title's id, drawn as its badge. */
+  titleId?: string | undefined
   /** "Hide my city" is on: the mark under the name, and the setting behind it. */
   hidden?: { label: string; onPress: () => void } | undefined
   avatar: {
@@ -183,16 +184,10 @@ export function MeHero({ view }: { view: MeHeroView }) {
             </Text>
           ) : null}
           {/* On a line of their own, so a long handle and city keep theirs. */}
-          {view.pro || view.title ? (
+          {view.pro || view.titleId ? (
             <View style={styles.chips}>
               {view.pro ? <ProMark /> : null}
-              {view.title ? (
-                <View style={styles.titleChip}>
-                  <Text style={styles.titleLabel} numberOfLines={1}>
-                    {view.title}
-                  </Text>
-                </View>
-              ) : null}
+              {view.titleId ? <TitleBadge id={view.titleId} /> : null}
             </View>
           ) : null}
           {view.hidden ? (
@@ -690,14 +685,6 @@ const useStyles = makeStyles(({ v3 }) => ({
     gap: v3.space[6],
     marginTop: v3.space[4],
   },
-  titleChip: {
-    borderColor: v3.colors.ink,
-    borderRadius: v3.radius.pill,
-    borderWidth: 1.5,
-    paddingHorizontal: v3.space[8],
-    paddingVertical: v3.space[2],
-  },
-  titleLabel: { ...v3.type.label, color: v3.colors.ink },
   hidden: {
     alignItems: 'center',
     alignSelf: 'flex-start',

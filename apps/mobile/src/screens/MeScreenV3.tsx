@@ -50,7 +50,7 @@ import { Skeleton } from '../components/ui/Skeleton'
 import { useChangeAvatar } from '../hooks/useChangeAvatar'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
-import { badgeLabel, cosmeticLabel, useDisplayNames, useLocale, useT } from '../i18n'
+import { badgeLabel, useDisplayNames, useLocale, useT } from '../i18n'
 import { authClient } from '../lib/auth-client'
 import { compactCount } from '../lib/format'
 import { shouldGateGuest } from '../lib/guestGate'
@@ -201,7 +201,7 @@ function MemberMe() {
     languagesLine: languages,
     pronouns: profile.pronouns,
     pro: Boolean(TIER_BADGES[tier]),
-    title: wornTitle ? cosmeticLabel(t, wornTitle.id) : undefined,
+    titleId: wornTitle?.id,
     hidden:
       profile.privacy.hideCity && profile.cityName
         ? {

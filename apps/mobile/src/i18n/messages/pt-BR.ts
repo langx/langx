@@ -2495,6 +2495,7 @@ export const ptBR: Localized<EnMessages> = {
     titleScholar: 'Erudito',
     titleMaster: 'Mestre',
     titleLegend: 'Lenda',
+    titleBadgeLabel: 'Título: {title}',
   },
 
   leaderboard: {

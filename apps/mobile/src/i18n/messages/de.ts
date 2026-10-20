@@ -2547,6 +2547,7 @@ export const de: Localized<EnMessages> = {
     titleScholar: 'Gelehrter',
     titleMaster: 'Meister',
     titleLegend: 'Legende',
+    titleBadgeLabel: 'Titel: {title}',
   },
 
   leaderboard: {
