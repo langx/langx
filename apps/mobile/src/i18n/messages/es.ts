@@ -2281,6 +2281,10 @@ export const es: Localized<EnMessages> = {
   store: {
     streakFreeze: 'Congelar racha',
     streakFreezeBody: 'Cubre el próximo día que falles · {banked}/{max} guardados',
+    streakFreezeBodyCount: {
+      one: 'Cubre el próximo día que falles · {count} congelación guardada',
+      other: 'Cubre el próximo día que falles · {count} congelaciones guardadas',
+    },
     ownedAccessibility: '{title}, ya lo tienes',
     locked: 'Bloqueado',
     lockedAccessibility: '{title}, bloqueado',

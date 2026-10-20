@@ -1015,6 +1015,8 @@ Discover and Feed.
 
 ## Echo leads with what is due, and the done screen says what it earned — behind the same flag
 
+> **Amended 19 October 2026 — see _Echo counts and pays sessions on one day, the UTC one_ below.**
+
 **19 October 2026.** The Echo tab and the end of a review, behind
 `flags.v3Home` (Phase 5). With the flag off both are what they were. With it
 on, `app/(app)/(tabs)/echo.tsx` draws `src/screens/EchoV3Screen.tsx` and
@@ -1064,6 +1066,56 @@ fixed.
 
 **What old builds will see.** Nothing: two summary fields they do not read,
 and a queue parameter they never send.
+
+## Echo counts and pays sessions on one day, the UTC one
+
+**19 October 2026.** **Amended:** _Echo leads with what is due, and the done
+screen says what it earned_ above, its paragraph _Which day the count uses_.
+That paragraph recorded a rolling twenty-four-hour count beside local-day
+payout keys and left the gap open; rule 5 of the redesign brief says caps and
+payout keys use the UTC day, with only the streak local. The two disagreed,
+and rule 5 wins.
+
+- **One day for both.** `settleSessions` counts the reviews since UTC
+  midnight and keys each payment `echo:<utcDay>:<n>`. With the count and the
+  key on the same day, last evening's sessions can no longer be paid again
+  under the new day's keys. UTC rather than local because a local key can be
+  re-earned by changing the profile's timezone. Every other payout key is UTC
+  too. `user_kind_ref_unique` on the ledger is still what makes a session
+  payable once; no index changes.
+- **The streak stays local.** A paid session still fills today's local square
+  through `recordQualifyingAction`. Somebody west of UTC whose evening crosses
+  UTC midnight starts a fresh count of five then, the same as the message
+  caps.
+- **The done screen reads the server's count.** The summary gains
+  `sessionsToday`, from the same `echoSessionsToday` that `settleSessions`
+  pays by, already capped, and "Session X of N today" draws it. The summary's
+  `reviewedToday` stays the rolling day the Echo tab and Home show. It never
+  decided a payout, and moving it would move those two screens for no gain.
+- **A session past the cap still fills the square.** It pays nothing, but a
+  batch whose own rows complete a session calls `recordQualifyingAction` even
+  when the UTC day's cap is spent. The cap resets at UTC midnight and the
+  square at local midnight, so without this somebody west of UTC who did five
+  sessions in the evening after UTC midnight could not count Echo toward the
+  next local day's streak until the following UTC midnight. The rolling
+  window hid that only because it paid those sessions again.
+- **The count is bounded on both sides.** Reviews in `[UTC midnight, next
+UTC midnight)`, so a batch stamped just before midnight that counts after
+  one stamped just after cannot take the later batch's rows as its own.
+- **The day it ships.** Keys already written on a local day are compared with
+  UTC days from then on, once. East of UTC that can find a morning's key
+  already taken and pay nothing for as many sessions as were paid under it.
+  West of UTC, sessions paid under local keys in the evening before it
+  shipped can be paid once more under the UTC day's keys. Either way the
+  bound is one day's cap of sessions per person —
+  `caps.echoSessionsPerDay × award.echoSession` tokens — once, on the day it
+  ships. Avoiding it would mean a second idempotency rule beside the ledger
+  key, kept forever for one day, so it is accepted instead.
+
+**What old builds will see.** The same payout rule as everyone, because it is
+the server's. A build that draws "Session X of N" from `reviewedToday` can be
+off by the old gap near midnight until it updates. A summary field they do
+not read.
 
 ## Buttons are flat pills in sentence case, and still press on `Animated`
 

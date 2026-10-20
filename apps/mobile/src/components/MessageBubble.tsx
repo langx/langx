@@ -55,6 +55,8 @@ import { createDoubleTap, doubleTapToReactEnabled } from '../lib/doubleTapToReac
 import { callRowIcon, callRowLabel, formatCallDuration } from '../lib/calls/callLabels'
 import { impact } from '../lib/haptics'
 import { viewOnceBubbleLabel } from '../lib/viewOnce'
+import { useBubbleStylesV3 } from './thread/bubbleLookV3'
+import { CorrectionCardV3 } from './thread/CorrectionCardV3'
 
 /**
  * Whether this device has a finger. Read once, at module scope: it cannot
@@ -168,6 +170,17 @@ export interface MessageBubbleProps {
    * only it holds the viewer.
    */
   onOpenViewOnce: (message: MessageDto) => void
+  /**
+   * The redesign's look (`bubbleLookV3`), which the thread picks behind
+   * `flags.v3Home`. Only the drawing changes: every branch, gesture and
+   * handler below is the same in both looks.
+   */
+  v3?: boolean
+  /**
+   * Their side's fill in the v3 look: the partner's hue, as a colour.
+   * Absent until the partner is known, and then their side is the surface grey.
+   */
+  partnerHue?: string | undefined
 }
 
 /**
@@ -247,9 +260,27 @@ export const MessageBubble = memo(function MessageBubble({
   onJumpTo,
   onOpenMedia,
   onOpenViewOnce,
+  v3 = false,
+  partnerHue,
 }: MessageBubbleProps) {
-  const { colors } = useTheme()
-  const styles = useStyles()
+  const { colors, v3: tokens } = useTheme()
+  const current = useStyles()
+  const redesigned = useBubbleStylesV3(current)
+  const styles = v3 ? redesigned : current
+  /**
+   * What is drawn on a v3 bubble's fill — white on your blue, ink on their
+   * hue, the ground's text on the grey a partner not yet known gets — and
+   * that fill. Undefined in the current look, whose sheet already has both.
+   */
+  const onFill = v3
+    ? mine
+      ? tokens.colors.onBlue
+      : partnerHue !== undefined
+        ? tokens.colors.ink
+        : tokens.colors.fg
+    : undefined
+  const fill = v3 && !mine && partnerHue !== undefined ? { backgroundColor: partnerHue } : null
+  const textOnFill = onFill !== undefined ? { color: onFill } : null
   const t = useT()
   /**
    * The bubble reports where it is, so the menu can be drawn against it rather
@@ -493,26 +524,45 @@ export const MessageBubble = memo(function MessageBubble({
 
   if (message.type === 'correction') {
     return shell(
-      <Pressable ref={box} onPress={tap} onLongPress={press} style={[styles.correction, flash]}>
+      <Pressable
+        ref={box}
+        onPress={tap}
+        onLongPress={press}
+        style={[styles.correction, v3 && mine && AT_END, flash]}
+      >
+        {v3 ? (
+          <CorrectionCardV3
+            mine={mine}
+            partnerName={partnerName}
+            body={message.body}
+            original={correction?.original}
+            note={correction?.note}
+            echoed={message.echoed === true}
+          />
+        ) : null}
         {/*
           The success pair, and only ever the success pair. A correction is
           another person changing your sentence; the info pair belongs to
           Copilot, which proposes one you have not sent. The two must never be
           confusable — see `Callout`.
         */}
-        <Text style={styles.correctionLabel}>
-          {mine ? t('chat.yourCorrection') : t('chat.correctionFrom', { name: partnerName })}
-        </Text>
+        {v3 ? null : (
+          <Text style={styles.correctionLabel}>
+            {mine ? t('chat.yourCorrection') : t('chat.correctionFrom', { name: partnerName })}
+          </Text>
+        )}
         {/*
           Colour marks what changed, and the strike and the weight carry the
           same news for anyone who cannot tell the red from the green.
         */}
-        {correction ? (
+        {v3 ? null : correction ? (
           <CorrectionLines original={correction.original} corrected={message.body} />
         ) : (
           <Text style={styles.correctionText}>{message.body}</Text>
         )}
-        {correction?.note ? <Text style={styles.correctionNote}>{correction.note}</Text> : null}
+        {!v3 && correction?.note ? (
+          <Text style={styles.correctionNote}>{correction.note}</Text>
+        ) : null}
         {badge}
         <View style={styles.correctionMeta}>{meta}</View>
       </Pressable>,
@@ -829,7 +879,7 @@ export const MessageBubble = memo(function MessageBubble({
   }
 
   const tail = endsGroup ? (mine ? styles.tailMine : styles.tailTheirs) : null
-  const bubble = [styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]
+  const bubble = [styles.bubble, mine ? styles.mine : styles.theirs, fill, tail, flash]
   /** Where a profile or a post opened from this bubble's text comes back to. */
   const from = `/(app)/chat/${message.conversationId}`
 
@@ -909,18 +959,24 @@ export const MessageBubble = memo(function MessageBubble({
       >
         {forwarded}
         {quote}
-        <View ref={box} style={bubble}>
+        <View ref={box} style={[bubble, openable && styles.mediaFrame]}>
           {attachments.length > 0 ? (
             <MediaGallery
               items={attachments}
               mine={mine}
+              ink={onFill}
               {...(attachments.length > 1
                 ? { onOpen: (index: number) => onOpenMedia(attachments, index) }
                 : {})}
             />
           ) : null}
           {message.body ? (
-            <LinkedText style={[styles.bubbleText, styles.caption]} from={from} onLongPress={press}>
+            <LinkedText
+              style={[styles.bubbleText, styles.caption, textOnFill]}
+              from={from}
+              onLongPress={press}
+              linkColor={onFill}
+            >
               {message.body}
             </LinkedText>
           ) : null}
@@ -1052,7 +1108,12 @@ export const MessageBubble = memo(function MessageBubble({
       {forwarded}
       {quote}
       <View ref={box} style={bubble}>
-        <LinkedText style={styles.bubbleText} from={from} onLongPress={press}>
+        <LinkedText
+          style={[styles.bubbleText, textOnFill]}
+          from={from}
+          onLongPress={press}
+          linkColor={onFill}
+        >
           {message.body}
         </LinkedText>
         {internal?.kind === 'profile' ? (
@@ -1198,6 +1259,9 @@ export const MessageBubble = memo(function MessageBubble({
  */
 const WEB_PAN_Y = { touchAction: 'pan-y' } as unknown as ViewStyle
 
+/** A v3 correction you wrote sits on your side; the current look's spans the thread. */
+const AT_END: ViewStyle = { alignSelf: 'flex-end' }
+
 const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
   row: { justifyContent: 'center' },
   slider: Platform.OS === 'web' ? WEB_PAN_Y : {},
@@ -1302,6 +1366,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   // 16 on 23: the prototype's 16px/1.45.
   bubbleText: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 23 },
   caption: { marginTop: spacing.xs },
+  /** The v3 look's tighter frame around a picture; nothing in the current one. */
+  mediaFrame: {},
   /**
    * Under the bubble in the accent, the translate glyph leading it: the
    * machine's voice, kept apart from what the person actually wrote.

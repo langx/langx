@@ -2329,6 +2329,10 @@ export const de: Localized<EnMessages> = {
   store: {
     streakFreeze: 'Serienschutz',
     streakFreezeBody: 'Deckt den nächsten verpassten Tag · {banked}/{max} auf Lager',
+    streakFreezeBodyCount: {
+      one: 'Deckt den nächsten verpassten Tag · {count} Freeze auf Lager',
+      other: 'Deckt den nächsten verpassten Tag · {count} Freezes auf Lager',
+    },
     ownedAccessibility: '{title}, bereits vorhanden',
     locked: 'Gesperrt',
     lockedAccessibility: '{title}, gesperrt',

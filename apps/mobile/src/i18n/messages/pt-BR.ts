@@ -2277,6 +2277,10 @@ export const ptBR: Localized<EnMessages> = {
   store: {
     streakFreeze: 'Congelar sequência',
     streakFreezeBody: 'Cobre o próximo dia que você perder · {banked}/{max} guardados',
+    streakFreezeBodyCount: {
+      one: 'Cobre o próximo dia que você perder · {count} congelamento guardado',
+      other: 'Cobre o próximo dia que você perder · {count} congelamentos guardados',
+    },
     ownedAccessibility: '{title}, você já tem',
     locked: 'Bloqueado',
     lockedAccessibility: '{title}, bloqueado',

@@ -150,7 +150,11 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
   const freezeOffer = priced(
     STREAK_FREEZE_SKU,
     t('store.streakFreeze'),
-    t('store.streakFreezeBody', { banked: input.streakFreezes, max: maxFreezes }),
+    // The Pro welcome pack grants freezes past the cap, and "4/2" reads as a
+    // fault, so a bank over the cap says its count alone.
+    input.streakFreezes > maxFreezes
+      ? t('store.streakFreezeBodyCount', { count: input.streakFreezes })
+      : t('store.streakFreezeBody', { banked: input.streakFreezes, max: maxFreezes }),
     TOKEN_RULES.sinks.streakFreeze,
   )
   // A full bank is not "owned" — it is temporarily unbuyable, and it becomes
