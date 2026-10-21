@@ -209,8 +209,9 @@ export const ERROR_CODES = {
   // copilot
   /**
    * Copilot did not answer, and nothing was spent. `reason` is one of
-   * `COPILOT_UNAVAILABLE_REASONS`: `off` (no key, or the operator's switch is
-   * off — `/app-config` says so first), `age` (the account is under
+   * `COPILOT_UNAVAILABLE_REASONS`: `off` (no key, the operator's switch is
+   * off — `/app-config` says so first — or the account is not on the
+   * operator's allow-list), `age` (the account is under
    * `COPILOT_RULES.minimumAge`), `partner_age` (Reply ideas or Explain in a
    * chat with somebody under that age, whose words are not sent), `busy`
    * (today's global ceiling is spent) or

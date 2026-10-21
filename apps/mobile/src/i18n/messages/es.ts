@@ -2010,6 +2010,8 @@ export const es: Localized<EnMessages> = {
     capOverGrandfathered:
       'Ya tienes más de los que admite tu plan. Puedes cambiarlos o quitarlos, pero no añadir otro.',
     changeHint: 'Toca un idioma para cambiarlo.',
+    allLanguages: 'Todos los idiomas, de la A a la Z',
+    levelGroup: 'Tu nivel de {language}',
     pausedNote: 'En pausa en Descubrir con el plan gratuito. Vuelve a contar con Pro.',
     saveFailed: 'No se guardó. No cambió nada.',
   },
@@ -2050,7 +2052,6 @@ export const es: Localized<EnMessages> = {
     title: 'Nuestra cocina',
     intro: 'Donde se hace LangX, y quienes lo hacen.',
     dataCredit: 'Nombres de lugares de GeoNames, con licencia CC BY 4.0.',
-    stickerCredit: 'Algunos stickers son de Microsoft Fluent Emoji, con licencia MIT.',
     footer: 'Hecho en abierto, por quienes lo usan.',
     contributors: 'Colaboradores',
     fundamentals: 'Todos los que han colaborado',
@@ -2612,9 +2613,11 @@ export const es: Localized<EnMessages> = {
 
   stickerPack: {
     taglinePaper: 'Saludos y respuestas rápidas, recortados en papel de colores.',
-    taglineStarter: 'Los de todos los días: hola, te escucho, lo entiendo, bien hecho.',
-    taglinePractice: 'Para la práctica en sí: más despacio, otra vez, lo logramos.',
-    taglinePixel: 'Pequeños sprites para subir de nivel juntos.',
+    taglineStarter:
+      'Pip, una burbujita de diálogo, dice lo de todos los días: hola, te escucho, gracias.',
+    taglinePractice:
+      'Insignias de fieltro para la práctica en sí: más despacio, otra vez, lo logramos.',
+    taglinePixel: 'Sprites de cuentas para planchar, para subir de nivel juntos.',
     count: {
       one: '{count} sticker',
       other: '{count} stickers',
@@ -2679,7 +2682,7 @@ export const es: Localized<EnMessages> = {
     practiceHourglass: 'Reloj de arena',
     practiceBullseye: 'En el blanco',
     pixelLevelup: 'Subir de nivel',
-    pixelCoin: 'Moneda',
+    pixelCoin: 'Vida extra',
     pixelCheckpoint: 'Punto de control',
     pixelFlame: 'Llama',
     pixelKey: 'Llave',
@@ -2756,6 +2759,9 @@ export const es: Localized<EnMessages> = {
     columnNow: 'Ahora mismo',
     columnEver: 'La más larga',
     columnDays: 'Días seguidos',
+    placeWeek: 'Tu puesto esta semana',
+    placeMonth: 'Tu puesto este mes',
+    placeYear: 'Tu puesto este año',
     rowTokens: { one: '{rank}. {name}, {amount} ficha', other: '{rank}. {name}, {amount} fichas' },
     rowDays: {
       one: '{rank}. {name}, {amount} día seguido',
@@ -3071,6 +3077,7 @@ export const es: Localized<EnMessages> = {
     ringing: 'Sonando…',
     connecting: 'Conectando…',
     reconnecting: 'Reconectando…',
+    reconnectingHint: 'Espera un momento. La llamada se reanuda sola.',
     answer: 'Responder',
     answerNoCamera: 'Responder sin cámara',
     decline: 'Rechazar',
@@ -3085,6 +3092,11 @@ export const es: Localized<EnMessages> = {
     returnToCall: 'Volver a la llamada',
     peerMuted: '{name} tiene el micrófono silenciado',
     peerCameraOff: 'Cámara desactivada',
+    howWasIt: '¿Qué tal fue?',
+    tile: {
+      camera: 'Cámara',
+      flip: 'Cambiar',
+    },
     ended: 'Llamada finalizada',
     noAnswer: 'Sin respuesta',
     busy: '{name} no puede atender una llamada ahora',

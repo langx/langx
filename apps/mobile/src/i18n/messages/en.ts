@@ -2236,6 +2236,8 @@ export const en = {
     capOverGrandfathered:
       'You already have more than your plan holds. You can change these or remove them, but not add another.',
     changeHint: 'Tap a language to change it.',
+    allLanguages: 'All languages, A to Z',
+    levelGroup: 'Your {language} level',
     /**
      * Under a language added during a gift of Pro that has ended: still on the
      * profile, not searched with in Discover until Pro is back.
@@ -2282,7 +2284,6 @@ export const en = {
     title: 'Our Kitchen',
     intro: 'Where LangX is made, and everyone who makes it.',
     dataCredit: 'Place names from GeoNames, licensed under CC BY 4.0.',
-    stickerCredit: 'Some stickers from Microsoft Fluent Emoji, licensed under MIT.',
     footer: 'Built in the open, by the people who use it.',
     contributors: 'Contributors',
     fundamentals: 'Everyone who has contributed',
@@ -2887,9 +2888,10 @@ export const en = {
 
   stickerPack: {
     taglinePaper: 'Hellos and quick replies, cut from coloured paper.',
-    taglineStarter: 'The everyday ones: hello, I am listening, I get it, well done.',
-    taglinePractice: 'For the practice itself: slower, again, we got there.',
-    taglinePixel: 'Little sprites for levelling up together.',
+    taglineStarter:
+      'Pip, a little speech bubble, says the everyday ones: hello, I am listening, thank you.',
+    taglinePractice: 'Felt badges for the practice itself: slower, again, we got there.',
+    taglinePixel: 'Fuse-bead sprites for levelling up together.',
     count: {
       one: '{count} sticker',
       other: '{count} stickers',
@@ -2954,7 +2956,7 @@ export const en = {
     practiceHourglass: 'Hourglass',
     practiceBullseye: 'Bullseye',
     pixelLevelup: 'Level up',
-    pixelCoin: 'Coin',
+    pixelCoin: 'Extra life',
     pixelCheckpoint: 'Checkpoint',
     pixelFlame: 'Flame',
     pixelKey: 'Key',
@@ -3032,6 +3034,10 @@ export const en = {
     columnNow: 'Right now',
     columnEver: 'Longest ever',
     columnDays: 'Days in a row',
+    /** Under "You" on the token board's pinned row: the period it ranks. */
+    placeWeek: 'Your place this week',
+    placeMonth: 'Your place this month',
+    placeYear: 'Your place this year',
     /** A row, read aloud. `amount` is `count` formatted for the locale; `name` may be "You". */
     rowTokens: { one: '{rank}. {name}, {amount} token', other: '{rank}. {name}, {amount} tokens' },
     rowDays: {
@@ -3375,6 +3381,7 @@ export const en = {
     ringing: 'Ringing…',
     connecting: 'Connecting…',
     reconnecting: 'Reconnecting…',
+    reconnectingHint: 'Hold on. The call picks up again by itself.',
     answer: 'Answer',
     answerNoCamera: 'Answer without camera',
     decline: 'Decline',
@@ -3389,6 +3396,13 @@ export const en = {
     returnToCall: 'Return to call',
     peerMuted: '{name} is muted',
     peerCameraOff: 'Camera off',
+    /** Over the feedback choices on a call's closing screen, in v3. */
+    howWasIt: 'How was it?',
+    /** The short words under a v3 call tile; the tile is read aloud by the full label. */
+    tile: {
+      camera: 'Camera',
+      flip: 'Switch',
+    },
     ended: 'Call ended',
     noAnswer: 'No answer',
     busy: '{name} can’t take a call right now',

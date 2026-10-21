@@ -421,6 +421,32 @@ const v3LightColors = {
    * would do nothing over a ground that is already near-black.
    */
   scrim: 'rgba(12, 13, 16, 0.55)',
+  /**
+   * The call screen's two signal colours, the same in both schemes and always
+   * filled, with `onSignal` on them. `hangUp` is the red that ends a call —
+   * Hang up, Cancel, Decline — and the one place v3 fills a red, because a
+   * call's way out has to be found without reading. `openLine` is the strip
+   * of a call that was put away: green, as every phone draws a line that is
+   * open, so it is never taken for the app talking about itself.
+   */
+  hangUp: '#c8232c',
+  openLine: '#0b7a3e',
+  onSignal: '#ffffff',
+  /**
+   * Ink washed over a partner hue: the round chips on a voice call's stage
+   * and the rings round a face that is ringing. Not text colours — what reads
+   * on them is `ink`, measured on the hue.
+   */
+  hueWash: 'rgba(20, 22, 27, 0.10)',
+  hueRing: 'rgba(20, 22, 27, 0.38)',
+  hueRingFaint: 'rgba(20, 22, 27, 0.16)',
+  /** Under a caption or a chip laid over somebody's picture on a call. */
+  stageScrim: 'rgba(12, 13, 16, 0.62)',
+  /**
+   * A switch in the dark panel under a video call, with `onSignal` on it. The
+   * panel is `ink` in both schemes, so its tiles are one fixed grey too.
+   */
+  stageTile: '#2a2d33',
 } as const
 
 export type V3Colors = { readonly [K in keyof typeof v3LightColors]: string }
@@ -446,6 +472,16 @@ const v3DarkColors: V3Colors = {
   correctionTint: '#14301f',
   danger: '#ff8a80',
   scrim: 'rgba(0, 0, 0, 0.7)',
+  hangUp: '#c8232c',
+  openLine: '#0b7a3e',
+  onSignal: '#ffffff',
+  // A step heavier: the dark scheme's hues are a step deeper, and the
+  // light wash all but vanishes on them.
+  hueWash: 'rgba(20, 22, 27, 0.16)',
+  hueRing: 'rgba(20, 22, 27, 0.38)',
+  hueRingFaint: 'rgba(20, 22, 27, 0.16)',
+  stageScrim: 'rgba(12, 13, 16, 0.62)',
+  stageTile: '#2a2d33',
 }
 
 /**

@@ -63,10 +63,21 @@ const PAIRS: Pair[] = [
   { text: 'danger', on: 'bg' },
   { text: 'danger', on: 'surface' },
   // A partner's tile carries ink; an ink chip carries the partner's hue.
+  // The ask card's like is in these pairs too: the outline heart, the count
+  // and the liked disc are all ink on the hue.
   ...PARTNER_HUES.flatMap((hue): Pair[] => [
     { text: 'ink', on: hue },
     { text: hue, on: 'ink' },
   ]),
+  // The liked heart on an ask card: the white heart inside the ink disc.
+  { text: 'onBlue', on: 'ink' },
+  // The call screen: Hang up's label on its red, and the put-away call's
+  // strip, read at a glance from across a room.
+  { text: 'onSignal', on: 'hangUp' },
+  { text: 'onSignal', on: 'openLine' },
+  // A video call's switches in the dark panel, off and lit.
+  { text: 'onSignal', on: 'stageTile' },
+  { text: 'ink', on: 'onSignal' },
 ]
 
 function resolve(scheme: ColorScheme, token: Token): string {
@@ -115,8 +126,16 @@ describe('the anchors that do not move with the theme', () => {
     expect(palettes.dark.colors.primaryText).toBe(palettes.light.colors.primaryText)
   })
 
-  it('keeps v3 yellow, blue and their text identical in both schemes', () => {
-    for (const token of ['yellow', 'onYellow', 'blue', 'onBlue'] as const) {
+  it('keeps v3 yellow, blue, the call colours and their text identical in both schemes', () => {
+    for (const token of [
+      'yellow',
+      'onYellow',
+      'blue',
+      'onBlue',
+      'hangUp',
+      'openLine',
+      'onSignal',
+    ] as const) {
       expect(v3.dark.colors[token], token).toBe(v3.light.colors[token])
     }
   })
