@@ -1,5 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Pressable } from 'react-native'
+import { useV3Home } from '../hooks/useV3Home'
 import { useT } from '../i18n'
 import { useTheme } from '../lib/theme'
 
@@ -15,7 +16,8 @@ import { useTheme } from '../lib/theme'
  * there is nothing to withdraw, and the words were only ever on this device.
  */
 export function DiscardUnsentButton({ onPress }: { onPress: () => void }) {
-  const { colors } = useTheme()
+  const { colors, v3 } = useTheme()
+  const v3Look = useV3Home()
   const t = useT()
   return (
     <Pressable
@@ -25,7 +27,12 @@ export function DiscardUnsentButton({ onPress }: { onPress: () => void }) {
       onPress={onPress}
       style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1, padding: 4 })}
     >
-      <Feather name="trash-2" size={18} color={colors.textMuted} />
+      {/* v3: a row's trailing glyph, in v3's muted ink. */}
+      <Feather
+        name="trash-2"
+        size={v3Look ? v3.icon.md : 18}
+        color={v3Look ? v3.colors.muted : colors.textMuted}
+      />
     </Pressable>
   )
 }

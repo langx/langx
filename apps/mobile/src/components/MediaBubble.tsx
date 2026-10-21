@@ -1,3 +1,4 @@
+import Feather from '@expo/vector-icons/Feather'
 import { useEvent } from 'expo'
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import { Image } from 'expo-image'
@@ -18,6 +19,8 @@ import {
 import { ensurePlaybackAudioMode } from '../lib/audioSession'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useLocale, useT } from '../i18n'
+import { useV3Home } from '../hooks/useV3Home'
+import { useMediaStylesV3 } from './MediaBubbleV3.styles'
 import { Skeleton } from './ui/Skeleton'
 import { NORMAL_PLAYBACK_RATE, nextPlaybackRate, type PlaybackRate } from '../lib/playbackRate'
 
@@ -58,8 +61,10 @@ export function AudioBubble({
    */
   ink?: string | undefined
 }) {
-  const { colors } = useTheme()
+  const { colors, v3 } = useTheme()
   const styles = useStyles()
+  const v3Sheet = useMediaStylesV3()
+  const v3Look = useV3Home()
   const t = useT()
   const { locale } = useLocale()
 
@@ -96,9 +101,12 @@ export function AudioBubble({
   const { total, elapsed, fraction, canReplay, state } = audioProgress(media, status, Platform.OS)
   // Both v3 bubbles are light tints, so the glyphs read in plain `text`; the
   // accent on your own progress is the only mark of whose note it is.
-  const tint = ink ?? (mine ? colors.accent : colors.text)
-  const strong = ink ?? colors.text
-  const faint = ink ?? colors.textFaint
+  // Under v3 the same three roles from v3's own palette: your blue on the
+  // bars (a fill, not text), the ground's ink, and its muted grey.
+  const tint =
+    ink ?? (v3Look ? (mine ? v3.colors.blue : v3.colors.fg) : mine ? colors.accent : colors.text)
+  const strong = ink ?? (v3Look ? v3.colors.fg : colors.text)
+  const faint = ink ?? (v3Look ? v3.colors.muted : colors.textFaint)
   // `unsupported` is a type this platform will not decode; `error` is a load
   // that failed. Both leave nothing to press, and both used to be a button
   // that did nothing at all.
@@ -148,9 +156,21 @@ export function AudioBubble({
           void toggle()
         }}
       >
-        <Text style={[styles.playIcon, { color: broken ? faint : strong }]}>
-          {loading ? '⋯' : status.playing ? '❚❚' : '▶'}
-        </Text>
+        {v3Look ? (
+          // An outlined disc in the glyph's own colour: it reads on the
+          // ground, on your blue and on a partner's hue alike.
+          <View style={[v3Sheet.playDisc, { borderColor: broken ? faint : strong }]}>
+            <Feather
+              name={loading ? 'more-horizontal' : status.playing ? 'pause' : 'play'}
+              size={v3.icon.sm}
+              color={broken ? faint : strong}
+            />
+          </View>
+        ) : (
+          <Text style={[styles.playIcon, { color: broken ? faint : strong }]}>
+            {loading ? '⋯' : status.playing ? '❚❚' : '▶'}
+          </Text>
+        )}
       </Pressable>
 
       {broken ? (
@@ -430,7 +450,14 @@ export function ImageBubble({
 const GALLERY_WIDTH = 240
 const GALLERY_GAP = 2
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+/** This file's sheet, or with `flags.v3Home` on the redesign's (`MediaBubbleV3.styles.ts`). */
+function useStyles() {
+  const current = useCurrentStyles()
+  const v3 = useMediaStylesV3()
+  return useV3Home() ? v3 : current
+}
+
+const useCurrentStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   audioRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, minWidth: 180 },
   playIcon: { fontSize: 16 },
   // `space-between` hands the few pixels left after the last whole bar out
@@ -559,6 +586,9 @@ export function VideoBubble({
   fillWidth?: number
 }) {
   const styles = useStyles()
+  const v3Sheet = useMediaStylesV3()
+  const v3Look = useV3Home()
+  const { v3 } = useTheme()
   const t = useT()
   const preview = mode === 'preview'
   const player = useVideoPlayer(media.url, (instance) => {
@@ -639,7 +669,13 @@ export function VideoBubble({
           */}
           {playing ? null : (
             <View style={styles.tilePlay} pointerEvents="none">
-              <Text style={styles.tilePlayGlyph}>▶</Text>
+              {v3Look ? (
+                <View style={v3Sheet.playBadgeLarge}>
+                  <Feather name="play" size={v3.icon.xl} color={v3.colors.onBlue} />
+                </View>
+              ) : (
+                <Text style={styles.tilePlayGlyph}>▶</Text>
+              )}
             </View>
           )}
         </Pressable>
@@ -794,6 +830,9 @@ function GalleryBody({
   width?: number
 }) {
   const styles = useStyles()
+  const v3Sheet = useMediaStylesV3()
+  const v3Look = useV3Home()
+  const { v3 } = useTheme()
   const t = useT()
 
   const first = items[0]
@@ -856,9 +895,16 @@ function GalleryBody({
                  * the tile is tapped, so the decoders stay idle.
                  */}
                 <VideoTile url={item.url} />
-                <View style={styles.tilePlay} pointerEvents="none">
-                  <Text style={styles.tilePlayGlyph}>▶</Text>
-                </View>
+                {v3Look ? (
+                  // The board's corner badge, so the frame itself stays seen.
+                  <View style={v3Sheet.playBadge} pointerEvents="none">
+                    <Feather name="play" size={v3.icon.xs} color={v3.colors.onBlue} />
+                  </View>
+                ) : (
+                  <View style={styles.tilePlay} pointerEvents="none">
+                    <Text style={styles.tilePlayGlyph}>▶</Text>
+                  </View>
+                )}
               </>
             ) : (
               <ImageTile url={item.url} />

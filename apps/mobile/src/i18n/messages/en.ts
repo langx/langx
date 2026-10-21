@@ -692,6 +692,7 @@ export const en = {
     meeting: 'Meeting',
     quiz: 'Quiz',
     call: 'Call',
+    gift: 'Gift',
     correction: 'Correction',
     forwarded: 'Forwarded',
   },
@@ -1309,6 +1310,7 @@ export const en = {
       'How well they already speak what you teach. Higher means an easier conversation, lower means someone who needs you more.',
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
+    ageScaleOpen: '{max}+',
     showResults: 'Show results',
     showResultsWithCount: 'Show results · {count}',
   },
@@ -1434,6 +1436,7 @@ export const en = {
     quizCard: 'Quiz',
     pollThanks: 'Thanks!',
     stickers: 'Stickers',
+    stickersHint: 'Tap a sticker to send it.',
     stickerBuy: 'Unlock for {price} tokens',
     quizAddOption: 'Add an option',
     sendQuiz: 'Ask a quiz',
@@ -2260,6 +2263,8 @@ export const en = {
     capOverGrandfathered:
       'You already have more than your plan holds. You can change these or remove them, but not add another.',
     changeHint: 'Tap a language to change it.',
+    allLanguages: 'All languages, A to Z',
+    levelGroup: 'Your {language} level',
     /**
      * Under a language added during a gift of Pro that has ended: still on the
      * profile, not searched with in Discover until Pro is back.
@@ -2306,7 +2311,6 @@ export const en = {
     title: 'Our Kitchen',
     intro: 'Where LangX is made, and everyone who makes it.',
     dataCredit: 'Place names from GeoNames, licensed under CC BY 4.0.',
-    stickerCredit: 'Some stickers from Microsoft Fluent Emoji, licensed under MIT.',
     footer: 'Built in the open, by the people who use it.',
     contributors: 'Contributors',
     fundamentals: 'Everyone who has contributed',
@@ -2911,9 +2915,10 @@ export const en = {
 
   stickerPack: {
     taglinePaper: 'Hellos and quick replies, cut from coloured paper.',
-    taglineStarter: 'The everyday ones: hello, I am listening, I get it, well done.',
-    taglinePractice: 'For the practice itself: slower, again, we got there.',
-    taglinePixel: 'Little sprites for levelling up together.',
+    taglineStarter:
+      'Pip, a little speech bubble, says the everyday ones: hello, I am listening, thank you.',
+    taglinePractice: 'Felt badges for the practice itself: slower, again, we got there.',
+    taglinePixel: 'Fuse-bead sprites for levelling up together.',
     count: {
       one: '{count} sticker',
       other: '{count} stickers',
@@ -2937,6 +2942,47 @@ export const en = {
     shortBy: '{balance} now · {missing} to go',
     buy: 'Buy {title}',
     owned: 'Yours. Send them from any chat.',
+    seePack: 'See the pack',
+  },
+
+  /**
+   * Giving a sticker pack to a chat partner, behind `flags.stickerGifts`:
+   * the pack page's button, the picker, the confirmation and the row the
+   * gift leaves in the thread. "Give", never "gift" as the verb on a button —
+   * the store's hourly gift box already owns that word.
+   */
+  stickerGift: {
+    give: 'Give this pack',
+    giveAccessibility: 'Give {title} to someone you talk to',
+    pickTitle: 'Who gets {title}?',
+    pickNote: 'Gifts go to people you have been talking to.',
+    sendsLeft: {
+      one: '{count} gift left this week',
+      other: '{count} gifts left this week',
+    },
+    weeklyUsed: 'You have given this week’s gift. You can give another next week.',
+    empty: 'Nobody to give it to yet. Gifts go to people you have been talking to.',
+    stateKeepTalking: 'Keep talking. Gifts open up as you get to know each other.',
+    stateOwns: 'Already has this pack',
+    stateUnavailable: 'Cannot get a gift right now',
+    rowAccessibility: '{name}, {state}',
+    confirmTitle: 'Give {title} to {name}?',
+    honesty:
+      'The pack becomes theirs. A gift cannot be returned, passed on or refunded, and the tokens are not given back.',
+    confirm: 'Give for {price}',
+    sent: '{name} has {title} now',
+    failedTitle: 'The gift did not go through',
+    refusalKeepTalking: 'Keep talking a little longer, then try again.',
+    refusalOwns: 'They already have this pack.',
+    refusalWeekly: 'You have given this week’s gift.',
+    refusalTokens: 'You do not have enough tokens for this pack.',
+    refusalUnavailable: 'This person cannot get a gift right now.',
+    refusalGeneric: 'Something went wrong. Try again in a moment.',
+    cardFromThem: '{name} gave you a sticker pack',
+    cardFromMe: 'You gave {name} a sticker pack',
+    cardYours: 'It is yours. Send them from any chat.',
+    cardTheirs: 'They can send them from any chat now.',
+    cardAccessibility: '{headline}: {title}',
     seePack: 'See the pack',
   },
 
@@ -2978,7 +3024,7 @@ export const en = {
     practiceHourglass: 'Hourglass',
     practiceBullseye: 'Bullseye',
     pixelLevelup: 'Level up',
-    pixelCoin: 'Coin',
+    pixelCoin: 'Extra life',
     pixelCheckpoint: 'Checkpoint',
     pixelFlame: 'Flame',
     pixelKey: 'Key',
@@ -3096,6 +3142,162 @@ export const en = {
     emptyBody: '@{handle} has not earned one yet. They are given for showing up and for helping.',
     /** The empty shelf's way back to the profile it was opened from. */
     emptyBack: 'Back to @{handle}',
+  },
+  badgesV3: {
+    newCount: {
+      one: '{count} new',
+      other: '{count} new',
+    },
+    newChip: 'New',
+    nextKicker: 'Next to earn',
+    of: '{current} of {total}',
+    toGo: '{amount} to go.',
+    streakReward: 'The {days}-day streak milestone adds +{tokens} tokens.',
+    noTokens: 'Badges pay no tokens.',
+    earnedOn: 'Earned {date}',
+    earned: 'Earned',
+    locked: 'Locked',
+    nextOnLadder: 'Next on this ladder',
+    tierTop: '{tier} · top tier',
+    tierLocked: 'Locked · {tier}',
+    tierLine: '{tier} · {amount}',
+    howEarned: "How it's earned",
+    whatsLeft: "What's left",
+    thisLadder: 'This ladder',
+    allEarned: {
+      one: 'All {count} earned',
+      other: 'All {count} earned',
+    },
+    sheetKicker: '{family} · {position} of {total}',
+    share: 'Share badge',
+    newBadge: 'New badge',
+    nextAt: '{name} is next, at {amount}.',
+    ladderDone: 'That is the top of this ladder.',
+    a11yEarned: '{name}, earned. {detail}',
+    a11yEarnedNew: '{name}, earned. {detail}. New',
+    a11yNext: '{name}, next. {detail}',
+    a11yLocked: '{name}, locked. {detail}',
+    progressLabel: '{name} progress',
+    shelfList: '{family} badges',
+    actionCorrect: 'Find a post to correct',
+    actionWrite: 'Open your chats',
+    actionEcho: 'Practise in Echo',
+    unit: {
+      streak: {
+        one: '{formatted} day',
+        other: '{formatted} days',
+      },
+      correction: {
+        one: '{formatted} correction',
+        other: '{formatted} corrections',
+      },
+      messages: {
+        one: '{formatted} message',
+        other: '{formatted} messages',
+      },
+      tokens: {
+        one: '{formatted} token',
+        other: '{formatted} tokens',
+      },
+      veteran: {
+        one: '{formatted} day',
+        other: '{formatted} days',
+      },
+    },
+    goal: {
+      streak: {
+        one: 'Keep a {formatted}-day streak',
+        other: 'Keep a {formatted}-day streak',
+      },
+      correction: {
+        one: 'Write {formatted} correction',
+        other: 'Write {formatted} corrections',
+      },
+      messages: {
+        one: 'Send {formatted} message',
+        other: 'Send {formatted} messages',
+      },
+      tokens: {
+        one: 'Earn {formatted} in all',
+        other: 'Earn {formatted} in all',
+      },
+      veteran: {
+        one: 'Be a member for {formatted} day',
+        other: 'Be a member for {formatted} days',
+      },
+      origin: 'Be on LangX v1',
+    },
+    note: {
+      streak: 'Your longest streak counts, so a missed day never takes a badge back.',
+      correction: 'Post corrections, chat corrections and pronunciation answers all count.',
+      messages: 'Every message you send counts.',
+      tokens: 'Everything you have ever earned counts. Spending never takes one back.',
+      veteran: 'Counted from the day you joined.',
+      origin: 'For the people who were here for LangX v1.',
+    },
+    family: {
+      streak: {
+        title: 'Streak',
+        body: 'Your longest streak counts.',
+      },
+      correction: {
+        title: 'Corrections',
+        body: 'Corrections you write: posts, chat and pronunciation.',
+      },
+      messages: {
+        title: 'Messages',
+        body: 'Messages you send.',
+      },
+      tokens: {
+        title: 'Tokens earned',
+        body: 'All you have earned. Spending never takes one back.',
+      },
+      veteran: {
+        title: 'Member',
+        body: 'Time since you joined.',
+      },
+      origin: {
+        title: 'Early Adopter',
+        body: 'You were on LangX v1.',
+      },
+    },
+    tier: {
+      cotton: 'Cotton',
+      twill: 'Twill',
+      applique: 'Appliqué',
+      satin: 'Satin',
+      silver: 'Silver',
+      gold: 'Gold',
+      bullion: 'Bullion',
+      woven: 'Woven',
+    },
+    name: {
+      streak_7: 'Candle',
+      streak_30: 'Lantern',
+      streak_100: 'Campfire',
+      streak_180: 'Bonfire',
+      streak_365: 'Sunrise',
+      streak_730: 'High Sun',
+      streak_1095: 'Golden Sun',
+      correction_1: 'Pencil',
+      correction_10: 'Ink Nib',
+      correction_100: 'Tick',
+      correction_1000: 'Open Book',
+      correction_5000: 'Owl',
+      correction_10000: 'Reading Owl',
+      correction_25000: 'Wise Owl',
+      messages_100: 'Hello',
+      messages_1000: 'Chatter',
+      messages_10000: 'Long Talk',
+      messages_50000: 'Many Voices',
+      tokens_10000: 'Spool',
+      tokens_50000: 'Two Spools',
+      tokens_250000: 'Golden Spool',
+      veteran_365: 'First Ring',
+      veteran_730: 'Second Ring',
+      veteran_1095: 'Third Ring',
+      origin_v1: 'Early Adopter',
+    },
   },
 
   shared: {
@@ -3247,6 +3449,7 @@ export const en = {
     ringing: 'Ringing…',
     connecting: 'Connecting…',
     reconnecting: 'Reconnecting…',
+    reconnectingHint: 'Hold on. The call picks up again by itself.',
     answer: 'Answer',
     answerNoCamera: 'Answer without camera',
     decline: 'Decline',
@@ -3261,6 +3464,13 @@ export const en = {
     returnToCall: 'Return to call',
     peerMuted: '{name} is muted',
     peerCameraOff: 'Camera off',
+    /** Over the feedback choices on a call's closing screen, in v3. */
+    howWasIt: 'How was it?',
+    /** The short words under a v3 call tile; the tile is read aloud by the full label. */
+    tile: {
+      camera: 'Camera',
+      flip: 'Switch',
+    },
     ended: 'Call ended',
     noAnswer: 'No answer',
     busy: '{name} can’t take a call right now',
@@ -3814,8 +4024,10 @@ export const en = {
     },
   },
   /**
-   * Copilot, the AI helper in a chat. Only the consent sheet and the words
-   * for "off" are drawn so far; the actions arrive with their screens.
+   * Copilot, the AI helper in a v3 chat: Check my sentence and Say it from
+   * the button beside send, Explain from a message's long-press menu. Every
+   * answer is drawn blue under `label`, and nothing it writes is sent unless
+   * the person sends it themselves.
    */
   copilot: {
     /** On every Copilot answer and on its consent sheet. Blue, never green: green is a person's correction. */
@@ -3824,15 +4036,49 @@ export const en = {
     off: 'Copilot is off.',
     consentTitle: 'Before you use Copilot',
     consentBody:
-      'Copilot is an AI helper. It can check a sentence before you send it, suggest replies, and explain a correction somebody gave you.',
-    /** Names the provider: App Review asks who receives the data, not just that someone does. */
+      'Copilot is an AI helper. It can check a sentence before you send it, help you say something in the language you are learning, explain a message or a correction, and suggest replies.',
+    /**
+     * Names the provider: App Review asks who receives the data, not just that
+     * someone does. Version 2 of the sheet: Explain now sends one message the
+     * other person wrote, which version 1 did not mention.
+     */
     consentSends:
-      'When you ask, the text you asked about goes to Anthropic, the company that runs the AI model, with your languages and levels. For reply ideas, that includes the last few messages in the chat.',
+      'When you ask, the text you asked about goes to Anthropic, the company that runs the AI model, with your languages and levels. To explain a message, that is the one message you picked, which the other person wrote. For reply ideas, it includes the last few messages in the chat.',
     consentNever: 'Your name, email, photos and voice notes are never sent.',
     consentWrong:
       'AI can be wrong. Its answers are marked AI, and nothing reaches the other person unless you send it yourself.',
     consentAccept: 'Turn on Copilot',
     consentDecline: 'Not now',
+    /** Screen-reader name of the blue button beside send, which opens the two-row menu. */
+    button: 'Copilot',
+    menuCheck: 'Check my sentence',
+    /** `language` is the one they are learning, named in the app's language. */
+    menuSayIt: 'Say it in {language}',
+    /** Replaces the draft with Copilot's sentence. Nothing is sent. */
+    useThis: 'Use this',
+    keepMine: 'Keep mine',
+    /** Check found nothing to change. */
+    looksGood: 'Looks good.',
+    close: 'Close',
+    /** The row in a message's long-press menu. */
+    explainAction: 'Explain',
+    explainTitle: 'Explained',
+    /** Above the options; tapping one puts it in the message, it does not send. */
+    sayItTitle: 'Ways to say it',
+    /** Screen-reader words while an answer is being written. */
+    loading: 'Copilot is writing…',
+    /** Today's allowance, on the card and the sheet. */
+    left: { one: '{count} left today', other: '{count} left today' },
+    /** At 0 left: when the next answer frees up, as a time of day. */
+    moreAt: 'More at {time}',
+    errQuota: 'You’ve used today’s Copilot answers. More at {time}.',
+    /** The same, when the server did not say when. */
+    errQuotaNoTime: 'You’ve used today’s Copilot answers.',
+    /** The other person is under 18, so their words are not sent. */
+    errPartnerAge: 'Copilot doesn’t read this chat.',
+    errBusy: 'Copilot is busy. Try again later.',
+    errNoAnswer: 'Copilot couldn’t answer that.',
+    errNetwork: 'Couldn’t reach Copilot.',
   },
 } as const
 

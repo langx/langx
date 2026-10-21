@@ -244,6 +244,11 @@ const MICROS_PER_UNIT = 1_000_000
  * A phase with no period is not a trial anyone can be told about, and a claim
  * the paywall cannot state precisely is one it must not make at all — the same
  * judgement the native path applies to a discounted first period.
+ *
+ * Eligibility needs no second call here: `freeTrialPhase` is the default
+ * option's trial, and through `getOfferings` the SDK returns only the options
+ * this customer is entitled to — somebody who has had the free week gets the
+ * product back without one, on the monthly plan as on the yearly.
  */
 function freeTrialDays(phase: PurchasesSdk.PricingPhase | null): number | null {
   if (!phase?.period) return null

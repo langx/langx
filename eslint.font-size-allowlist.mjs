@@ -8,10 +8,7 @@
  * starts on the ramp. When it is empty, delete it and the `ignores` line
  * that reads it. `apps/mobile/src/lib/fontSizeAllowlist.test.ts` fails while
  * a listed file no longer types a size, so a migrated file cannot stay here
- * unguarded. Three of the paths below do not exist on `main` yet; they
- * are the operator panel's measurement screen and its two tables, from a
- * pull request that was open when the rule landed, listed so that whichever
- * of the two merges second does not fail lint.
+ * unguarded.
  *
  * Plain paths from the repository root. The config escapes them before
  * handing them to the matcher, because `[id].tsx` is a character class to a
@@ -24,16 +21,6 @@ export default [
   'apps/mobile/app/(app)/(tabs)/echo.tsx',
   'apps/mobile/app/(app)/(tabs)/feed.tsx',
   'apps/mobile/app/(app)/(tabs)/me.tsx',
-  'apps/mobile/app/(app)/admin/broadcast/[id].tsx',
-  'apps/mobile/app/(app)/admin/broadcast/index.tsx',
-  'apps/mobile/app/(app)/admin/feedback/index.tsx',
-  'apps/mobile/app/(app)/admin/gift-codes/[id].tsx',
-  'apps/mobile/app/(app)/admin/gift-codes/index.tsx',
-  'apps/mobile/app/(app)/admin/index.tsx',
-  'apps/mobile/app/(app)/admin/measure.tsx',
-  'apps/mobile/app/(app)/admin/reports/[id].tsx',
-  'apps/mobile/app/(app)/admin/system.tsx',
-  'apps/mobile/app/(app)/admin/users.tsx',
   'apps/mobile/app/(app)/all-phrases.tsx',
   'apps/mobile/app/(app)/app-language.tsx',
   'apps/mobile/app/(app)/badges.tsx',
@@ -159,11 +146,6 @@ export default [
   'apps/mobile/src/components/WeekBars.tsx',
   'apps/mobile/src/components/WeeklyChart.tsx',
   'apps/mobile/src/components/WordLookup.tsx',
-  'apps/mobile/src/components/admin/BarList.tsx',
-  'apps/mobile/src/components/admin/Columns.tsx',
-  'apps/mobile/src/components/admin/LinkedAccounts.tsx',
-  'apps/mobile/src/components/admin/MoneyTimeline.tsx',
-  'apps/mobile/src/components/admin/StatTable.tsx',
   'apps/mobile/src/components/calls/CallHost.tsx',
   'apps/mobile/src/components/echo/PlayAgain.tsx',
   'apps/mobile/src/components/recap/RecapSlides.tsx',

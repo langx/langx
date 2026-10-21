@@ -97,6 +97,18 @@ describe('previousCosmetic', () => {
     }
   })
 
+  /**
+   * "Twelve stickers" is a promise the store, the token site and the docs all
+   * make in words, and the token site's rule check counts on it; a pack of
+   * eleven or a repeated id would quietly make all of them wrong.
+   */
+  it('puts twelve different stickers in every pack', () => {
+    for (const pack of COSMETICS.filter((c) => c.kind === 'stickers')) {
+      expect(new Set(pack.stickers).size, pack.id).toBe(12)
+      expect(pack.stickers, pack.id).toHaveLength(12)
+    }
+  })
+
   it('has nothing below the first rung of either ladder', () => {
     for (const kind of COSMETIC_KINDS.filter(isLadderKind)) {
       const first = COSMETICS.find((c) => c.kind === kind)!

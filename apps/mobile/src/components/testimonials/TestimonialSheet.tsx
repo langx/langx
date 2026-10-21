@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import { ApiRequestError } from '../../api/client'
 import { useDeleteTestimonial, useUpsertTestimonial } from '../../api/queries'
+import { useV3Home } from '../../hooks/useV3Home'
 import { useT, type MessageKey } from '../../i18n'
 import { confirmAlert } from '../../lib/alert'
 import { isOfflineFailure } from '../../lib/reportActionError'
@@ -20,6 +21,7 @@ import { showToast } from '../../lib/toast'
 import { KeyboardResizeHost } from '../KeyboardResizeHost'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
+import { TestimonialFormV3 } from './TestimonialSheetV3'
 
 /** From here the counter turns the warning colour: twenty characters left. */
 const COUNTER_WARN_AT = TESTIMONIAL_MAX_LENGTH - 20
@@ -86,6 +88,7 @@ function SheetBody({
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
+  const v3Look = useV3Home()
   const upsert = useUpsertTestimonial()
   const remove = useDeleteTestimonial()
   const editing = !!existing
@@ -137,6 +140,38 @@ function SheetBody({
   }
 
   const used = body.length
+  function change(next: string): void {
+    setBody(next)
+    if (error) setError(null)
+  }
+  /*
+   * The same lift as below: the avoiding view for iOS, the measured pad for
+   * Android. Only what sits inside them is drawn differently.
+   */
+  if (v3Look) {
+    return (
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.fill}
+      >
+        <KeyboardResizeHost>
+          <TestimonialFormV3
+            subject={subject}
+            body={body}
+            error={error}
+            editing={editing}
+            busy={busy}
+            publishing={upsert.isPending}
+            counterWarn={used >= COUNTER_WARN_AT}
+            onChangeText={change}
+            onPublish={publish}
+            onDelete={() => void confirmDelete()}
+            onClose={onClose}
+          />
+        </KeyboardResizeHost>
+      </KeyboardAvoidingView>
+    )
+  }
   return (
     /*
      * A text field in a Modal: iOS is lifted by the avoiding view, Android by
@@ -178,10 +213,7 @@ function SheetBody({
               <View style={styles.field}>
                 <TextInput
                   value={body}
-                  onChangeText={(next) => {
-                    setBody(next)
-                    if (error) setError(null)
-                  }}
+                  onChangeText={change}
                   onFocus={() => setFocused(true)}
                   onBlur={() => setFocused(false)}
                   placeholder={t('testimonials.placeholder')}

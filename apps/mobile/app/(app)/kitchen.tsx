@@ -10,6 +10,13 @@ import { openExternal } from '../../src/lib/openExternal'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { KitchenScreenV3 } from '../../src/screens/settings/KitchenScreenV3'
+
+/** Our Kitchen, or with `flags.v3Home` on the redesign's (`KitchenScreenV3`). */
+export default function KitchenScreenRoute() {
+  return useV3Home() ? <KitchenScreenV3 /> : <KitchenScreen />
+}
 
 /**
  * Our Kitchen — where the project is made, and everything around it: the people
@@ -20,7 +27,7 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * repository this whole thing is open about. Every row leaves the app, so
  * every row goes through the in-app browser rather than switching away.
  */
-export default function KitchenScreen() {
+function KitchenScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const { colors } = useTheme()
@@ -91,7 +98,7 @@ export default function KitchenScreen() {
         records the other two places it appears.
       */}
       <Text style={styles.footer}>
-        {t('kitchen.footer')} {t('kitchen.dataCredit')} {t('kitchen.stickerCredit')}
+        {t('kitchen.footer')} {t('kitchen.dataCredit')}
       </Text>
     </Screen>
   )
