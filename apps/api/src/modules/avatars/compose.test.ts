@@ -6,7 +6,15 @@ import { DEFAULT_AVATAR_POOLS } from '@langx/shared'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { composeSvg, findFace } from './compose'
 import { loadAvatarLibrary, partNames, type AvatarLibrary, type Face } from './library'
-import { clearAvatarCache, renderDefaultAvatar, renderLoad } from './raster'
+import {
+  clearAvatarCache,
+  MAX_CONCURRENT_RENDERS,
+  MAX_WAITING_RENDERS,
+  RenderBusyError,
+  renderDefaultAvatar,
+  renderLoad,
+  withRenderSlot,
+} from './raster'
 
 const PARTS_DIR = join(dirname(fileURLToPath(import.meta.url)), '../../../assets/avatars/parts')
 
@@ -168,6 +176,64 @@ describe('renderDefaultAvatar', () => {
       expect(pngs[i * 3 + 1]).toBe(pngs[i * 3])
       expect(pngs[i * 3 + 2]).toBe(pngs[i * 3])
     }
+    expect(renderLoad()).toEqual({ running: 0, waiting: 0, inFlight: 0 })
+  })
+
+  it('hands a finished slot to the next waiter, so a newcomer cannot slip in', async () => {
+    // A newcomer arriving a few microtasks after a render finishes — another
+    // request resuming from an await in the same flush — must queue behind
+    // the waiter the slot was meant for. Tried at several depths, because the
+    // gap it could slip through is a matter of microtask order.
+    for (let depth = 1; depth <= 6; depth++) {
+      let now = 0
+      let peak = 0
+      const releases: (() => void)[] = []
+      const jobs: Promise<void>[] = []
+      const job = (onDone?: () => void): Promise<void> =>
+        withRenderSlot(async () => {
+          now++
+          peak = Math.max(peak, now)
+          await new Promise<void>((resolve) => releases.push(resolve))
+          now--
+          onDone?.()
+        })
+      const later = (left: number, run: () => void): void =>
+        queueMicrotask(() => (left > 1 ? later(left - 1, run) : run()))
+      jobs.push(
+        job(() => later(depth, () => jobs.push(job()))),
+        job(),
+        job(),
+      )
+      await Promise.resolve()
+      expect(renderLoad()).toMatchObject({ running: 2, waiting: 1 })
+      releases.shift()?.()
+      for (let i = 0; i < 20; i++) await Promise.resolve()
+      while (releases.length > 0) {
+        releases.shift()?.()
+        for (let i = 0; i < 20; i++) await Promise.resolve()
+      }
+      await Promise.all(jobs)
+      expect(peak, `depth ${depth}`).toBeLessThanOrEqual(MAX_CONCURRENT_RENDERS)
+      expect(renderLoad()).toMatchObject({ running: 0, waiting: 0 })
+    }
+  })
+
+  it('refuses rather than queueing without end', async () => {
+    clearAvatarCache()
+    const total = MAX_CONCURRENT_RENDERS + MAX_WAITING_RENDERS + 3
+    const asked = Array.from({ length: total }, (_, i) =>
+      renderDefaultAvatar({
+        avatar: { pool: (['W', 'M', 'N'] as const)[i % 3] ?? 'N', index: (i % 48) + 1, ground: 5 },
+        size: 160,
+        cut: 'full',
+      }).then(
+        () => 'ok',
+        (error: unknown) => (error instanceof RenderBusyError ? 'busy' : 'error'),
+      ),
+    )
+    const results = await Promise.all(asked)
+    expect(results.filter((r) => r === 'busy').length).toBeGreaterThan(0)
+    expect(results.filter((r) => r === 'error')).toEqual([])
     expect(renderLoad()).toEqual({ running: 0, waiting: 0, inFlight: 0 })
   })
 
