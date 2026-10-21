@@ -1,6 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList, Modal, Pressable, Text, TextInput, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useConversations, useMe, type ConversationDto } from '../api/queries'
 import { useConversationPartners } from '../hooks/useConversationPartners'
 import { useV3Home } from '../hooks/useV3Home'
@@ -44,6 +45,7 @@ export function ConversationPicker({
   const v3Look = useV3Home()
   const styles = v3Look ? redesigned : current
   const faint = v3Look ? v3.colors.muted : colors.textFaint
+  const insets = useSafeAreaInsets()
   const t = useT()
   const me = useMe()
   const conversations = useConversations('all')
@@ -158,7 +160,13 @@ export function ConversationPicker({
           )}
 
           {/* Outside the scroller, like every sheet's way out. */}
-          <View style={styles.footer}>
+          <View
+            style={[
+              styles.footer,
+              // v3 keeps Cancel clear of the home indicator; the current look is unchanged.
+              v3Look && { paddingBottom: Math.max(v3.space[32], insets.bottom + v3.space[16]) },
+            ]}
+          >
             <Button label={t('common.cancel')} variant="neutral" onPress={close} />
           </View>
         </Pressable>
@@ -249,7 +257,15 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
     height: 52,
     paddingHorizontal: v3.space[16],
   },
-  input: { color: v3.colors.fg, flex: 1, fontSize: v3.type.body.fontSize, padding: 0 },
+  // No browser focus ring on the web: the pill is the only field in the overlay,
+  // and the caret in it already says where typing goes.
+  input: {
+    color: v3.colors.fg,
+    flex: 1,
+    fontSize: v3.type.body.fontSize,
+    outlineWidth: 0,
+    padding: 0,
+  },
   list: { paddingBottom: v3.space[12], paddingHorizontal: v3.space[16] },
   spinner: { marginTop: v3.space[12] },
   row: {

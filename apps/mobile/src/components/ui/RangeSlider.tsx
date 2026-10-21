@@ -16,6 +16,12 @@ interface RangeSliderProps {
    * redesign's look only (V-Filters); the current look has none.
    */
   scaleLabels?: readonly [string, string]
+  /**
+   * A name for each handle — "Youngest age", "Oldest age". The redesign's
+   * look makes each handle its own adjustable control, so a screen reader
+   * moves one end at a time; the current look keeps one control for both.
+   */
+  thumbLabels?: readonly [string, string]
 }
 
 /**
@@ -35,6 +41,7 @@ export function RangeSlider({
   onChange,
   accessibilityLabel,
   scaleLabels,
+  thumbLabels,
 }: RangeSliderProps) {
   const legacyStyles = useStyles()
   const v3Styles = useStylesV3()
@@ -89,6 +96,15 @@ export function RangeSlider({
   const lowResponder = useRef(makeResponder(0)).current
   const highResponder = useRef(makeResponder(1)).current
 
+  /** One step of one handle, kept inside the range and never past the other handle. */
+  function nudge(thumb: number, by: 1 | -1): void {
+    const next: [number, number] =
+      thumb === 0
+        ? [Math.min(values[1], Math.max(min, values[0] + by)), values[1]]
+        : [values[0], Math.max(values[0], Math.min(max, values[1] + by))]
+    if (next[0] !== values[0] || next[1] !== values[1]) onChange(next)
+  }
+
   const span = max - min
   const lowPct = span > 0 ? ((values[0] - min) / span) * 100 : 0
   const highPct = span > 0 ? ((values[1] - min) / span) * 100 : 100
@@ -112,13 +128,12 @@ export function RangeSlider({
      */
     return (
       <View key="v3" style={styles.root}>
-        <View
-          accessible
-          accessibilityRole="adjustable"
-          accessibilityLabel={accessibilityLabel}
-          accessibilityValue={{ min, max, text: `${values[0]}–${values[1]}` }}
-          style={styles.slider}
-        >
+        {/*
+          Each handle is the adjustable control rather than the track: one
+          control for two ends offered no increment or decrement, so a
+          screen reader could not change the range at all.
+        */}
+        <View style={styles.slider}>
           <View style={styles.track} onLayout={(e) => setTrackWidth(e.nativeEvent.layout.width)}>
             <View style={{ flexGrow: lowPct }} />
             <View style={[styles.fill, { flexGrow: highPct - lowPct }]} />
@@ -128,6 +143,15 @@ export function RangeSlider({
             <View key={thumb} style={styles.thumbRow} pointerEvents="box-none">
               <View style={{ flexGrow: pct }} pointerEvents="none" />
               <View
+                accessible
+                accessibilityRole="adjustable"
+                accessibilityLabel={thumbLabels?.[thumb] ?? accessibilityLabel}
+                accessibilityValue={{ min, max, now: thumb === 0 ? values[0] : values[1] }}
+                accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
+                onAccessibilityAction={(event) => {
+                  if (event.nativeEvent.actionName === 'increment') nudge(thumb, 1)
+                  if (event.nativeEvent.actionName === 'decrement') nudge(thumb, -1)
+                }}
                 style={styles.thumb}
                 {...(thumb === 0 ? lowResponder : highResponder).panHandlers}
               >

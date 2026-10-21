@@ -133,9 +133,15 @@ export function PeopleV3(props: PeopleV3Props) {
       )
       /* Only the first card. The tour needs one to point at, and a
          registration per row would mean the last one to mount wins. */
-      return index === 0 ? <TourTarget id="discoverCard">{card}</TourTarget> : card
+      return index === 0 ? (
+        <TourTarget id="discoverCard" radius={v3.radius.block}>
+          {card}
+        </TourTarget>
+      ) : (
+        card
+      )
     },
-    [twoPane, selected, black, onOpen, onHello],
+    [twoPane, selected, black, onOpen, onHello, v3.radius.block],
   )
 
   const empty: PeoplePanel =
@@ -186,7 +192,7 @@ export function PeopleV3(props: PeopleV3Props) {
         </View>
         {props.searching ? null : props.segments}
         {props.pair && !props.searching ? (
-          <TourTarget id="discoverPair" style={styles.pairTarget}>
+          <TourTarget id="discoverPair" radius={v3.radius.pill} style={styles.pairTarget}>
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t('discover.languagesA11y')}
@@ -201,7 +207,7 @@ export function PeopleV3(props: PeopleV3Props) {
           </TourTarget>
         ) : null}
         {props.searching ? null : (
-          <TourTarget id="discoverSorts" style={styles.sortsTarget}>
+          <TourTarget id="discoverSorts" radius={v3.radius.pill} style={styles.sortsTarget}>
             <View
               accessibilityRole="radiogroup"
               accessibilityLabel={t('discover.sortLabel')}

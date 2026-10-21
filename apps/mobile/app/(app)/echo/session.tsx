@@ -309,10 +309,14 @@ export default function EchoSessionScreen() {
   /** The card as a post for the feed, or `null` when it cannot be one. */
   const ask = card ? echoAskParams(card, languages) : null
 
-  /** What the grade buttons say: the same function the server will run. */
+  /** When each grade brings the card back: the same function the server will run. */
+  function delayMinutes(value: EchoGrade): number {
+    return card ? scheduledDelayMinutes({ srs: parseSrs(card) }, value, new Date()) : 0
+  }
+
+  /** What the grade buttons say. */
   function intervalLabel(value: EchoGrade): string {
-    if (!card) return ''
-    return compactDuration(t, scheduledDelayMinutes({ srs: parseSrs(card) }, value, new Date()))
+    return card ? compactDuration(t, delayMinutes(value)) : ''
   }
 
   /**
@@ -478,6 +482,7 @@ export default function EchoSessionScreen() {
         onReveal={reveal}
         onGrade={grade}
         intervalLabel={intervalLabel}
+        delayMinutes={delayMinutes}
         keyboard={keyboard}
         cardRef={cardRef}
       />

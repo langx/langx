@@ -512,6 +512,18 @@ export const tr: Localized<EnMessages> = {
     subtitle: 'Sohbetlerindeki cümleler, tam unutmak üzereyken geri gelir.',
     dueUnit: { one: 'kart bekliyor', other: 'kart bekliyor' },
     aboutMinutes: { one: 'yaklaşık {count} dakika', other: 'yaklaşık {count} dakika' },
+    gradeInMinutes: {
+      one: '{grade}, {count} dakika sonra yeniden',
+      other: '{grade}, {count} dakika sonra yeniden',
+    },
+    gradeInHours: {
+      one: '{grade}, {count} saat sonra yeniden',
+      other: '{grade}, {count} saat sonra yeniden',
+    },
+    gradeInDays: {
+      one: '{grade}, {count} gün sonra yeniden',
+      other: '{grade}, {count} gün sonra yeniden',
+    },
     byPartner: 'Partnere göre',
     fromPartner: 'Kimden: {name}',
     partnerDue: { one: '{count} bekliyor', other: '{count} bekliyor' },
@@ -1128,6 +1140,8 @@ export const tr: Localized<EnMessages> = {
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
     ageScaleOpen: '{max}+',
+    ageYoungest: 'En küçük yaş',
+    ageOldest: 'En büyük yaş',
     showResults: 'Sonuçları göster',
     showResultsWithCount: 'Sonuçları göster · {count}',
   },

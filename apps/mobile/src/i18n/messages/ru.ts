@@ -566,6 +566,24 @@ export const ru: Localized<EnMessages> = {
       many: 'примерно {count} минут',
       other: 'примерно {count} минуты',
     },
+    gradeInMinutes: {
+      one: '{grade}, вернётся через {count} минуту',
+      few: '{grade}, вернётся через {count} минуты',
+      many: '{grade}, вернётся через {count} минут',
+      other: '{grade}, вернётся через {count} минуты',
+    },
+    gradeInHours: {
+      one: '{grade}, вернётся через {count} час',
+      few: '{grade}, вернётся через {count} часа',
+      many: '{grade}, вернётся через {count} часов',
+      other: '{grade}, вернётся через {count} часа',
+    },
+    gradeInDays: {
+      one: '{grade}, вернётся через {count} день',
+      few: '{grade}, вернётся через {count} дня',
+      many: '{grade}, вернётся через {count} дней',
+      other: '{grade}, вернётся через {count} дня',
+    },
     byPartner: 'По собеседникам',
     fromPartner: 'От: {name}',
     partnerDue: {
@@ -1274,6 +1292,8 @@ export const ru: Localized<EnMessages> = {
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
     ageScaleOpen: '{max}+',
+    ageYoungest: 'Минимальный возраст',
+    ageOldest: 'Максимальный возраст',
     showResults: 'Показать результаты',
     showResultsWithCount: 'Показать результаты · {count}',
   },

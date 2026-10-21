@@ -257,6 +257,10 @@ export function MessageMenuHost() {
       ? stickerAsset(request.picture.packId, request.picture.stickerId)
       : undefined
 
+  /** Their hue under v3, with the ink `MessageBubble` writes on it. */
+  const tint = v3Look ? request.tint : undefined
+  const tinted = tint ? { color: v3.colors.ink } : null
+
   const copyText = (
     /*
       A message the thread shows as a hero has to look like one here too —
@@ -267,6 +271,7 @@ export function MessageMenuHost() {
       style={[
         styles.copyText,
         request.mine && styles.copyTextMine,
+        tinted,
         isBigEmoji(request.preview) && styles.copyHero,
       ]}
       numberOfLines={6}
@@ -281,7 +286,12 @@ export function MessageMenuHost() {
         <MediaGallery items={request.picture.items} mine={request.mine} videoMode="preview" />
         {request.caption ? (
           <Text
-            style={[styles.copyText, request.mine && styles.copyTextMine, styles.copyCaption]}
+            style={[
+              styles.copyText,
+              request.mine && styles.copyTextMine,
+              tinted,
+              styles.copyCaption,
+            ]}
             numberOfLines={4}
           >
             {request.caption}
@@ -350,6 +360,7 @@ export function MessageMenuHost() {
             style={[
               bare ? styles.copyBare : styles.copy,
               bare ? null : request.mine ? styles.copyMine : styles.copyTheirs,
+              !bare && tint ? { backgroundColor: tint } : null,
               !bare &&
                 request.tail === true &&
                 (request.mine ? styles.copyTailMine : styles.copyTailTheirs),
@@ -693,8 +704,8 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
     position: 'absolute',
   },
   copyMine: { backgroundColor: v3.colors.blue },
-  // The partner's hue is the thread's, and the menu is not told it: the grey
-  // the thread itself draws until the partner is known.
+  // The grey the thread itself draws until the partner is known; once it is,
+  // the request's `tint` paints their hue over it.
   copyTheirs: { backgroundColor: v3.colors.surface },
   copyTailMine: { borderBottomEndRadius: v3.space[8] },
   copyTailTheirs: { borderBottomStartRadius: v3.space[8] },

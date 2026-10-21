@@ -82,6 +82,16 @@ export function ProWelcomeSheetV3({
     return () => clearTimeout(timer)
   }, [])
 
+  // `CelebrationSheet`'s rule: any touch ends the motion at its rest, and
+  // still reaches what it touched, so the tap that skips can be Start.
+  const skip = (): false => {
+    if (raining) {
+      pop.set(1)
+      setRaining(false)
+    }
+    return false
+  }
+
   const chipStyle = useAnimatedStyle(() => ({
     opacity: Math.min(1, pop.get() * 2),
     transform: [{ scale: 0.4 + 0.6 * pop.get() }],
@@ -95,7 +105,7 @@ export function ProWelcomeSheetV3({
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <View style={styles.root}>
+      <View style={styles.root} onStartShouldSetResponderCapture={skip}>
         {/* The scrim closes too, but the ✕ is the one a screen reader finds. */}
         <Pressable
           style={[StyleSheet.absoluteFill, v3.elevation.overlay]}

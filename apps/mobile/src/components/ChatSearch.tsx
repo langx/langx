@@ -236,7 +236,15 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
     height: 52,
     paddingHorizontal: v3.space[16],
   },
-  input: { color: v3.colors.fg, flex: 1, fontSize: v3.type.body.fontSize, padding: 0 },
+  // No browser focus ring on the web: the pill is the only field in the overlay,
+  // and the caret in it already says where typing goes.
+  input: {
+    color: v3.colors.fg,
+    flex: 1,
+    fontSize: v3.type.body.fontSize,
+    outlineWidth: 0,
+    padding: 0,
+  },
   cancel: { justifyContent: 'center', minHeight: 44, paddingHorizontal: v3.space[4] },
   cancelLabel: { ...v3.type.button, color: v3.colors.fg },
   pressed: { opacity: 0.7 },
