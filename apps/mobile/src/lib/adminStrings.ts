@@ -503,6 +503,7 @@ export const ADMIN = {
       kinds: {
         initiations: 'New conversations',
         translations: 'Translations',
+        translationFairUse: 'Translations — fair-use ceiling',
         media: 'Photos, voice and video',
         echoCaptures: 'Echo cards kept',
         echoNewCards: 'Echo starter cards',
