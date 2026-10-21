@@ -1158,6 +1158,7 @@ export const de: Localized<EnMessages> = {
       'Wie gut sie das schon sprechen, was du beibringst. Höher heißt ein leichteres Gespräch, niedriger heißt jemand, der dich mehr braucht.',
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
+    ageScaleOpen: '{max}+',
     showResults: 'Ergebnisse zeigen',
     showResultsWithCount: 'Ergebnisse zeigen · {count}',
   },

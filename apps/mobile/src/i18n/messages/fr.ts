@@ -1156,6 +1156,7 @@ export const fr: Localized<EnMessages> = {
       'À quel point ils parlent déjà ce que tu enseignes. Plus haut, la conversation est plus facile ; plus bas, la personne a davantage besoin de toi.',
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
+    ageScaleOpen: '{max}+',
     showResults: 'Voir les résultats',
     showResultsWithCount: 'Voir les résultats · {count}',
   },

@@ -1298,6 +1298,7 @@ export const ar: Localized<EnMessages> = {
       'إلى أي مدى يتكلمون ما تعلّمه أنت. الأعلى يعني محادثة أسهل، والأدنى يعني شخصًا يحتاجك أكثر.',
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
+    ageScaleOpen: '{max}+',
     showResults: 'عرض النتائج',
     showResultsWithCount: 'عرض النتائج · {count}',
   },

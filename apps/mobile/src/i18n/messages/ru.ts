@@ -1272,6 +1272,7 @@ export const ru: Localized<EnMessages> = {
       'Насколько хорошо они уже говорят на том, чему ты учишь. Выше — разговор проще, ниже — человеку нужнее твоя помощь.',
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
+    ageScaleOpen: '{max}+',
     showResults: 'Показать результаты',
     showResultsWithCount: 'Показать результаты · {count}',
   },
