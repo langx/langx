@@ -44,9 +44,9 @@ export function RangeSlider({
 
   /*
    * The redesign runs the track from the reading start (V-Filters: "the age
-   * slider runs right to left" in RTL), so its thumbs sit at `start` and a
-   * drag towards the start lowers the value whichever side that is. The
-   * current look stays on `left`, as it always has.
+   * slider runs right to left" in RTL), so a drag towards the start lowers
+   * the value whichever side that is. The current look stays left to right,
+   * as it always has.
    */
   const direction = v3Look && isRtl ? -1 : 1
 
@@ -95,8 +95,23 @@ export function RangeSlider({
 
   if (v3Look) {
     const styles = v3Styles
+    /*
+     * `key`: a web page load draws the current look first and flips to this
+     * one once the config settles. Without a key React reuses the current
+     * look's views by position, so this track lands on the old fill's DOM
+     * node — and react-native-web only starts observing a node's size when
+     * it mounts, so the reused track never reports its width and a drag
+     * moves at the old, wider track's speed.
+     *
+     * The fill and the thumbs are placed by flex rather than by `left` or
+     * `start`: react-native-web turns `start` into `left` whatever the
+     * page's `dir`, so in Arabic on the web the track drew left to right
+     * under a "55+ … 18" scale that runs the other way. A row follows the
+     * reading direction on every platform and needs no measured width to
+     * draw, so the thumbs cannot drift off the ends of the fill either.
+     */
     return (
-      <View style={styles.root}>
+      <View key="v3" style={styles.root}>
         <View
           accessible
           accessibilityRole="adjustable"
@@ -105,24 +120,24 @@ export function RangeSlider({
           style={styles.slider}
         >
           <View style={styles.track} onLayout={(e) => setTrackWidth(e.nativeEvent.layout.width)}>
-            <View style={[styles.fill, { start: `${lowPct}%`, width: `${highPct - lowPct}%` }]} />
+            <View style={{ flexGrow: lowPct }} />
+            <View style={[styles.fill, { flexGrow: highPct - lowPct }]} />
+            <View style={{ flexGrow: 100 - highPct }} />
           </View>
-          <View
-            style={[styles.thumb, { start: (lowPct / 100) * trackWidth }]}
-            {...lowResponder.panHandlers}
-          >
-            <View style={styles.knob}>
-              <View style={styles.knobCore} />
+          {([lowPct, highPct] as const).map((pct, thumb) => (
+            <View key={thumb} style={styles.thumbRow} pointerEvents="box-none">
+              <View style={{ flexGrow: pct }} pointerEvents="none" />
+              <View
+                style={styles.thumb}
+                {...(thumb === 0 ? lowResponder : highResponder).panHandlers}
+              >
+                <View style={styles.knob}>
+                  <View style={styles.knobCore} />
+                </View>
+              </View>
+              <View style={{ flexGrow: 100 - pct }} pointerEvents="none" />
             </View>
-          </View>
-          <View
-            style={[styles.thumb, { start: (highPct / 100) * trackWidth }]}
-            {...highResponder.panHandlers}
-          >
-            <View style={styles.knob}>
-              <View style={styles.knobCore} />
-            </View>
-          </View>
+          ))}
         </View>
         {scaleLabels ? (
           <View style={styles.scale} importantForAccessibility="no-hide-descendants">
@@ -204,31 +219,27 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
   slider: { height: V3_TARGET, justifyContent: 'center' },
   /*
    * The track is inset by half a target at each end — the drawing's
-   * `margin: 0 22px` — and the thumbs are placed in points along it rather
-   * than by percentage of an inset box. A thumb at either end then keeps its
-   * whole 44pt square inside the slider's own frame, which matters because
-   * Android does not hit-test a child outside its parent's bounds.
+   * `margin: 0 22px`. Each thumb gets a full-width row of its own, and the
+   * free width beside its 44pt square is split in the value's proportion, so
+   * the square's centre lands on the inset track's point for that value. At
+   * either end the whole square stays inside the slider's own frame, which
+   * matters because Android does not hit-test a child outside its parent's
+   * bounds.
    */
   track: {
     backgroundColor: v3.colors.line,
     borderRadius: v3.radius.pill,
+    flexDirection: 'row',
     height: 10,
     marginHorizontal: V3_TARGET / 2,
     overflow: 'hidden',
   },
-  fill: {
-    backgroundColor: v3.colors.fg,
-    borderRadius: v3.radius.pill,
-    bottom: 0,
-    position: 'absolute',
-    top: 0,
-  },
+  fill: { backgroundColor: v3.colors.fg, borderRadius: v3.radius.pill },
+  thumbRow: { bottom: 0, flexDirection: 'row', left: 0, position: 'absolute', right: 0, top: 0 },
   thumb: {
     alignItems: 'center',
     height: V3_TARGET,
     justifyContent: 'center',
-    position: 'absolute',
-    top: 0,
     width: V3_TARGET,
   },
   /*

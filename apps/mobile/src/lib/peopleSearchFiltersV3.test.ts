@@ -88,6 +88,22 @@ describe('RangeSlider in v3', () => {
     ).toHaveLength(2)
   })
 
+  // A web load draws the current look first and flips once the config
+  // settles. Without its own key the v3 track reuses an old DOM node that
+  // react-native-web never starts measuring, and the thumbs are placed by
+  // the old track's width — off the ends of the fill.
+  it('mounts the v3 look fresh rather than reusing the current one', () => {
+    expect(source).toMatch(/<View key="v3" style=\{styles\.root\}>/)
+  })
+
+  // react-native-web turns `start` into `left` whatever the page's `dir`, so
+  // a track placed by `start` drew left to right under Arabic's mirrored
+  // scale. The v3 look places its fill and thumbs by flex rows instead.
+  it('places the v3 fill and thumbs by flex, not by an edge offset', () => {
+    expect(source).not.toMatch(/\{ start: /)
+    expect(source).toMatch(/flexGrow: highPct - lowPct/)
+  })
+
   it('is handed its end labels by Filters', () => {
     const filters = text(path.join(APP, '(app)/filters.tsx'))
     expect(filters).toContain("t('filters.ageScaleOpen'")
