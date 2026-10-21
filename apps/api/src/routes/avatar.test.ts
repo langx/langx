@@ -246,6 +246,7 @@ describe('generated avatars', () => {
         expect((await pick(bad)).statusCode, JSON.stringify(bad)).toBe(400)
       }
       expect((await pick({ pool: 'M', index: 49 })).statusCode).toBe(400)
+      expect((await pick({ pool: 'M', index: 4, ground: 6 })).statusCode).toBe(400)
 
       const response = await pick({ pool: 'M', index: 12 })
       expect(response.statusCode, response.body).toBe(200)

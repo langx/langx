@@ -129,8 +129,8 @@ export async function onGenderChange(
 }
 
 /**
- * The person chose a face. Any pool; kept through a gender change. The
- * ground stays whatever it was, so choosing a face does not also repaint it.
+ * The person chose a face. Any pool; kept through a gender change. On the
+ * ground the picker showed it on, or else the one the profile already had.
  */
 export async function pickDefaultAvatar(
   db: Db,
@@ -149,7 +149,7 @@ export async function pickDefaultAvatar(
   const avatar: DefaultAvatar = {
     pool: input.pool,
     index: input.index,
-    ground: current.defaultAvatar?.ground ?? hashGround(profileId),
+    ground: input.ground ?? current.defaultAvatar?.ground ?? hashGround(profileId),
     picked: true,
   }
   await profiles.updateOne(

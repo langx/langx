@@ -136,6 +136,8 @@ describe('pickDefaultAvatar', () => {
     const assigned = await assignDefaultAvatar(handle.db, id)
     const picked = await pickDefaultAvatar(handle.db, id, { pool: 'M', index: 3 })
     expect(picked).toEqual({ pool: 'M', index: 3, ground: assigned?.ground, picked: true })
+    const onGround = await pickDefaultAvatar(handle.db, id, { pool: 'W', index: 9, ground: 5 })
+    expect(onGround).toEqual({ pool: 'W', index: 9, ground: 5, picked: true })
   })
 
   it('refuses an official account', async () => {

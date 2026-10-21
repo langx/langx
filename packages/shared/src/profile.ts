@@ -7,7 +7,7 @@ import { languageLevelSchema } from './level'
 import { referralSourceSchema } from './referral'
 import { handleSchema } from './handle'
 import { LANGUAGES, languageCodeSchema } from './languages'
-import { DEFAULT_AVATAR_POOL_SIZE, DEFAULT_AVATAR_POOLS } from './avatar'
+import { DEFAULT_AVATAR_GROUNDS, DEFAULT_AVATAR_POOL_SIZE, DEFAULT_AVATAR_POOLS } from './avatar'
 import { z } from 'zod'
 
 export const GENDERS = ['female', 'male', 'other', 'undisclosed'] as const
@@ -292,13 +292,21 @@ export type SetGenderInput = z.infer<typeof setGenderSchema>
  * Body of `POST /profiles/me/default-avatar` — choosing one of the drawn
  * faces instead of the one assigned. Any pool: a face from another pool is
  * the person's own choice, and it is kept through a gender change. The
- * ground is not part of the choice; the profile keeps the one it has.
+ * ground is optional: a picker that shows each face on its own ground sends
+ * the one it showed, so the face picked is the face seen; without it the
+ * profile keeps the ground it has.
  *
  * Gender is not here and never is: the server reads it from the profile.
  */
 export const pickDefaultAvatarSchema = z.object({
   pool: z.enum(DEFAULT_AVATAR_POOLS),
   index: z.number().int().min(1).max(DEFAULT_AVATAR_POOL_SIZE),
+  ground: z
+    .number()
+    .int()
+    .min(0)
+    .max(DEFAULT_AVATAR_GROUNDS.length - 1)
+    .optional(),
 })
 export type PickDefaultAvatarInput = z.infer<typeof pickDefaultAvatarSchema>
 
