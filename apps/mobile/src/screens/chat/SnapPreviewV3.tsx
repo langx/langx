@@ -84,6 +84,7 @@ export function SnapPreviewV3({
                 key={option}
                 accessibilityRole="radio"
                 accessibilityState={{ checked: on }}
+                accessibilityLabel={labels[option].title}
                 accessibilityHint={labels[option].body}
                 onPress={() => onMode(option)}
                 style={({ pressed }) => [

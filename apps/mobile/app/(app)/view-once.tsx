@@ -63,6 +63,7 @@ export default function ViewOnceScreen() {
   const conversationId = params.conversationId ?? ''
   const messageId = params.messageId ?? ''
   const [media, setMedia] = useState<ViewOnceOpenDto['media'] | null>(null)
+  const [replay, setReplay] = useState(false)
   const asked = useRef(false)
   const screenshotTold = useRef(false)
 
@@ -86,6 +87,7 @@ export default function ViewOnceScreen() {
     openViewOnce(conversationId, messageId)
       .then((result) => {
         remember(result.message)
+        setReplay(result.message.viewOnce?.replay ?? false)
         setMedia(result.media)
       })
       .catch((error: unknown) => {
@@ -161,7 +163,7 @@ export default function ViewOnceScreen() {
       )}
       {/* The redesign's foot pill, a drawing only — see `ViewOnceHintV3`. */}
       {v3Look && media !== null && !media.contentType.startsWith('video/') ? (
-        <ViewOnceHintV3 bottomInset={insets.bottom} />
+        <ViewOnceHintV3 bottomInset={insets.bottom} replay={replay} />
       ) : null}
       <View style={[styles.topBar, { top: insets.top + spacing.lg }]} pointerEvents="box-none">
         {/*
