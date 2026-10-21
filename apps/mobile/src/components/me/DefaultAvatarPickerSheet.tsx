@@ -6,7 +6,7 @@ import { usePickDefaultAvatar } from '../../api/queries'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useT } from '../../i18n'
 import { showAlert } from '../../lib/alert'
-import { allFaces, sameFace } from '../../lib/defaultAvatar'
+import { allFaces, faceFromKey, faceKey, sameFace } from '../../lib/defaultAvatar'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
@@ -50,13 +50,17 @@ export function DefaultAvatarPickerSheet({
   const insets = useSafeAreaInsets()
   const reduce = useReduceMotion()
   const pick = usePickDefaultAvatar()
-  const [selected, setSelected] = useState<DefaultAvatar>(current)
-  const faces = useMemo(() => allFaces(current), [current])
+  // Keyed by value, not identity: the caller may build `current` afresh on
+  // every render (see `faceKey`), and that must not reset the selection.
+  const currentKey = faceKey(current)
+  const worn = useMemo(() => faceFromKey(currentKey), [currentKey])
+  const [selected, setSelected] = useState<DefaultAvatar>(worn)
+  const faces = useMemo(() => allFaces(worn), [worn])
 
   // Each opening starts from the face worn now.
   useEffect(() => {
-    if (visible) setSelected(current)
-  }, [visible, current])
+    if (visible) setSelected(worn)
+  }, [visible, worn])
 
   async function save(): Promise<void> {
     try {
@@ -133,7 +137,7 @@ export function DefaultAvatarPickerSheet({
             label={t('avatar.default.useThis')}
             icon="check"
             loading={pick.isPending}
-            disabled={sameFace(selected, current)}
+            disabled={sameFace(selected, worn)}
             onPress={() => void save()}
           />
         </View>
