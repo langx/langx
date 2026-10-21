@@ -2849,6 +2849,30 @@ export const tr: Localized<EnMessages> = {
         one: '{formatted} gün',
         other: '{formatted} gün',
       },
+      languages: {
+        one: '{formatted} dil',
+        other: '{formatted} dil',
+      },
+      calls: {
+        one: '{formatted} arama',
+        other: '{formatted} arama',
+      },
+      echo: {
+        one: '{formatted} tekrar',
+        other: '{formatted} tekrar',
+      },
+      testimonials: {
+        one: '{formatted} partner',
+        other: '{formatted} partner',
+      },
+      guide: {
+        one: '{formatted} kişi',
+        other: '{formatted} kişi',
+      },
+      openers: {
+        one: '{formatted} yanıt',
+        other: '{formatted} yanıt',
+      },
     },
     goal: {
       streak: {
@@ -2872,6 +2896,30 @@ export const tr: Localized<EnMessages> = {
         other: '{formatted} gün üye ol',
       },
       origin: 'LangX v1’de bulunmuş ol',
+      languages: {
+        one: '{formatted} dilde pratik yap',
+        other: '{formatted} dilde pratik yap',
+      },
+      calls: {
+        one: '{formatted} arama yap',
+        other: '{formatted} arama yap',
+      },
+      echo: {
+        one: '{formatted} Echo kartı tekrarla',
+        other: '{formatted} Echo kartı tekrarla',
+      },
+      testimonials: {
+        one: '{formatted} partnerden yorum al',
+        other: '{formatted} partnerden yorum al',
+      },
+      guide: {
+        one: '{formatted} kişiyi düzelt',
+        other: '{formatted} kişiyi düzelt',
+      },
+      openers: {
+        one: '{formatted} ilk yanıt ver',
+        other: '{formatted} ilk yanıt ver',
+      },
     },
     note: {
       streak: 'En uzun serin sayılır, yani kaçan bir gün rozeti asla geri almaz.',
@@ -2881,6 +2929,14 @@ export const tr: Localized<EnMessages> = {
       tokens: 'Şimdiye dek kazandığın her şey sayılır. Harcamak hiçbirini geri almaz.',
       veteran: 'Katıldığın günden itibaren sayılır.',
       origin: 'LangX v1’de bulunanlar için.',
+      languages:
+        'Ana dillerin dışında, Echo’da pratik yaptığın ya da gönderi yazdığın diller sayılır.',
+      calls: 'Bir arama 5 dakika ya da daha uzun sürdüğünde sayılır, kimin aradığı fark etmez.',
+      echo: 'Notu ne olursa olsun her tekrar sayılır.',
+      testimonials: 'Hakkında yazan her partner bir kez sayılır. Gizlediğin biri de sayılır.',
+      guide:
+        'Daha önce düzeltmediğin birini düzelt: yazdığı bir gönderiyi, yanıtladığın bir telaffuz gönderisini ya da sana gönderdiği bir mesajı. Aynı kişi bir kez sayılır.',
+      openers: 'Bir gün içinde yanıtladığın her ilk mesaj sayılır.',
     },
     family: {
       streak: {
@@ -2906,6 +2962,30 @@ export const tr: Localized<EnMessages> = {
       origin: {
         title: 'Early Adopter',
         body: 'LangX v1’deydin.',
+      },
+      languages: {
+        title: 'Diller',
+        body: 'Kendi dilin dışında pratik yaptığın diller.',
+      },
+      calls: {
+        title: 'Aramalar',
+        body: '5 dakika ya da daha uzun süren aramalar.',
+      },
+      echo: {
+        title: 'Echo tekrarları',
+        body: 'Tekrarladığın her Echo kartı.',
+      },
+      testimonials: {
+        title: 'Güzel sözler',
+        body: 'Hakkında yazan partnerler.',
+      },
+      guide: {
+        title: 'Yardım ettiğin kişiler',
+        body: 'Düzelttiğin farklı kişiler.',
+      },
+      openers: {
+        title: 'İlk yanıtlar',
+        body: 'Bir gün içinde yanıtladığın ilk mesajlar.',
       },
     },
     tier: {
@@ -2944,6 +3024,24 @@ export const tr: Localized<EnMessages> = {
       veteran_730: 'İkinci halka',
       veteran_1095: 'Üçüncü halka',
       origin_v1: 'Early Adopter',
+      languages_2: 'İki iplik',
+      languages_3: 'Örgü',
+      languages_5: 'Beş tel',
+      calls_1: 'Teneke telefon',
+      calls_10: 'Uzun hat',
+      calls_50: 'Santral',
+      echo_100: 'Halka',
+      echo_1000: 'Dalga',
+      echo_5000: 'Gelgit',
+      testimonials_1: 'Yorgan karesi',
+      testimonials_5: 'Kırkyama',
+      testimonials_20: 'Yorgan',
+      guide_3: 'Örme',
+      guide_10: 'Yama',
+      guide_50: 'Dokumacı',
+      openers_10: 'Açık kapı',
+      openers_50: 'Sundurma ışığı',
+      openers_200: 'Açık ev',
     },
   },
 

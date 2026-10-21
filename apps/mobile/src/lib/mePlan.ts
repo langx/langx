@@ -102,6 +102,17 @@ export function nextBadgeAction(kind: BadgeKind): NextBadgeAction | null {
     case 'veteran':
     case 'origin':
       return null
+    // The v3 kinds: the closest of today's two buttons, or none. Me only sees
+    // them once it asks for the v3 catalogue.
+    case 'guide':
+      return 'correct'
+    case 'calls':
+    case 'openers':
+      return 'write'
+    case 'languages':
+    case 'echo':
+    case 'testimonials':
+      return null
   }
 }
 

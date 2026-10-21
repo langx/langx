@@ -2,7 +2,7 @@ import { streakMilestoneBonus, type BadgeSummary } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { useBadges, useMe, usePublicBadges } from '../../api/queries'
+import { useBadgesV3, useMe, usePublicBadges } from '../../api/queries'
 import { BadgeDetailSheet } from '../../components/badges/BadgeDetailSheet'
 import { BadgeEarnedSheet } from '../../components/badges/BadgeEarnedSheet'
 import { BadgePatch } from '../../components/badges/BadgePatch'
@@ -84,8 +84,8 @@ export function BadgesScreenV3() {
   // Your own handle in the param is still your own page, as today.
   const mine = !of || of === me.data?.handle
 
-  const own = useBadges(mine)
-  const theirs = usePublicBadges(mine ? '' : (of ?? ''))
+  const own = useBadgesV3(mine)
+  const theirs = usePublicBadges(mine ? '' : (of ?? ''), 'v3')
 
   const data = mine ? own.data : theirs.data
   const total = mine ? (own.data?.badges.length ?? 0) : (theirs.data?.total ?? 0)

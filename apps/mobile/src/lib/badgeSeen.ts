@@ -15,14 +15,13 @@
  * families that did not exist before are news. Those arrive marked New, and
  * the one at the top of them is celebrated.
  */
-import type { BadgeKind, EarnedBadge } from '@langx/shared'
+import { V3_BADGE_KINDS, type BadgeKind, type EarnedBadge } from '@langx/shared'
 
 /**
  * Families new with the v3 shelf: counted back through what somebody had
- * already done, so on the first day they are news. Empty until the server
- * sends them.
+ * already done, so on the first day they are news.
  */
-export const ARRIVING_KINDS: ReadonlySet<BadgeKind> = new Set<BadgeKind>([])
+export const ARRIVING_KINDS: ReadonlySet<BadgeKind> = new Set<BadgeKind>(V3_BADGE_KINDS)
 
 export interface SeenRecord {
   userId: string

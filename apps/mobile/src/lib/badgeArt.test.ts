@@ -1,4 +1,4 @@
-import { BADGES } from '@langx/shared'
+import { BADGES, isV3BadgeKind } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { BADGE_ART } from './badgeArt'
 
@@ -11,8 +11,10 @@ describe('badge art', () => {
    * no badge claims is weight in the bundle nobody can see. TypeScript sees
    * neither, because one side is data and the other a `Record<string, number>`.
    */
+  // The classic catalogue: the v3 kinds are drawn only by the v3 shelf, as
+  // patches (`badgePatch/geometry.ts`), and never reach a screen that draws these.
   it('has a picture for every badge in the catalogue', () => {
-    for (const badge of BADGES) {
+    for (const badge of BADGES.filter((b) => !isV3BadgeKind(b.kind))) {
       expect(BADGE_ART[badge.id], `${badge.id} has no picture`).toBeDefined()
     }
   })
