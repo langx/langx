@@ -15,7 +15,8 @@ const APP = path.resolve(__dirname, '../../app/(app)')
 const SCREENS = path.resolve(__dirname, '../screens')
 
 const PAIRS: readonly { current: string; v3: string; except?: readonly string[] }[] = [
-  { current: 'badges.tsx', v3: 'me/BadgesScreenV3.tsx' },
+  // v3 draws every rung of a ladder on its shelf, not the two tips of it.
+  { current: 'badges.tsx', v3: 'me/BadgesScreenV3.tsx', except: ['badgeLadderTips'] },
   { current: 'share-profile.tsx', v3: 'me/ShareProfileScreenV3.tsx' },
   { current: 'testimonials.tsx', v3: 'me/TestimonialsScreenV3.tsx' },
   { current: 'profile-testimonials.tsx', v3: 'me/ProfileTestimonialsScreenV3.tsx' },

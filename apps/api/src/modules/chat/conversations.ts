@@ -3,6 +3,7 @@ import {
   type MeetingStatus,
   type MessageAsk,
   type MessageCall,
+  type MessageGift,
   type MessageInteractive,
   type MessageTranslation,
   type MessageMedia,
@@ -236,6 +237,12 @@ export interface Message {
    * wording is not.
    */
   call?: MessageCall
+  /**
+   * A sticker pack the sender gave the other person. Written once, by
+   * `giveStickerPack`, inside the transaction that charged for it — see
+   * `modules/tokens/stickerGifts.ts`.
+   */
+  gift?: MessageGift
   /**
    * Everything attached to this message, in the order it was picked.
    *

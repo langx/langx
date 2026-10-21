@@ -11,15 +11,21 @@ import {
   useAdminSetBroadcastImage,
 } from '../../../../src/api/queries'
 import { AdminGate } from '../../../../src/components/AdminGate'
+import {
+  AdminActionsV3,
+  AdminBlockV3,
+  AdminFieldV3,
+  AdminHeadingV3,
+  AdminNoteV3,
+  AdminQuoteV3,
+  AdminScreenV3,
+  AdminSplitV3,
+  AdminStatV3,
+  AdminStatsV3,
+} from '../../../../src/components/admin/AdminKitV3'
 import { Button } from '../../../../src/components/ui/Button'
-import { Callout } from '../../../../src/components/ui/Callout'
-import { Card } from '../../../../src/components/ui/Card'
-import { FormField } from '../../../../src/components/ui/FormField'
 import { ProgressBar } from '../../../../src/components/ui/ProgressBar'
-import { Screen } from '../../../../src/components/ui/Screen'
-import { ScreenHeader } from '../../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../../src/components/ui/Skeleton'
-import { StatTile } from '../../../../src/components/ui/StatTile'
 import { useScreenInteractive } from '../../../../src/hooks/useScreenInteractive'
 import { ADMIN } from '../../../../src/lib/adminStrings'
 import { confirmAlert } from '../../../../src/lib/alert'
@@ -156,248 +162,219 @@ export default function AdminBroadcastDetailScreen() {
     }
   }
 
+  const message = data ? (
+    editing === null ? (
+      <AdminBlockV3>
+        {/* Above the words, because that is where the reader will
+            find it: the message is one bubble with a caption. */}
+        {data.images?.en ? (
+          <Image
+            source={{ uri: data.images.en.url }}
+            style={styles.picture}
+            contentFit="cover"
+            accessibilityLabel={ADMIN.broadcast.picture}
+          />
+        ) : null}
+        <AdminQuoteV3>{data.bodies.en ?? ''}</AdminQuoteV3>
+      </AdminBlockV3>
+    ) : (
+      <>
+        <AdminFieldV3
+          label={ADMIN.broadcast.body}
+          value={editing}
+          onChangeText={setEditing}
+          multiline
+          numberOfLines={6}
+          maxLength={4000}
+        />
+        <AdminActionsV3>
+          <Button
+            label={ADMIN.broadcast.save}
+            disabled={editing.trim().length === 0}
+            loading={edit.isPending}
+            onPress={() => onSave(editing)}
+          />
+          <Button label={ADMIN.common.cancel} variant="neutral" onPress={() => setEditing(null)} />
+        </AdminActionsV3>
+      </>
+    )
+  ) : null
+
+  const controls = data ? (
+    <>
+      <AdminStatsV3>
+        <AdminStatV3 value={String(data.total)} label={ADMIN.broadcast.people} />
+        <AdminStatV3 value={String(data.sent)} label={ADMIN.broadcast.sent} />
+        <AdminStatV3 value={ADMIN.broadcast.status[data.status]} label={ADMIN.broadcast.state} />
+      </AdminStatsV3>
+
+      {data.status === 'sending' || data.status === 'done' ? (
+        <ProgressBar
+          value={data.total > 0 ? data.sent / data.total : 0}
+          accessibilityLabel={ADMIN.broadcast.progress(data.sent, data.total)}
+        />
+      ) : null}
+      {data.failed > 0 ? (
+        <AdminNoteV3 tone="danger" icon="alert-circle">
+          {ADMIN.broadcast.failed(data.failed)}
+        </AdminNoteV3>
+      ) : null}
+
+      {/*
+       * The poll's answers, per option, labelled in English — the panel
+       * is read by us. Every option is listed, at 0 if nobody picked it.
+       */}
+      {data.interactive?.kind === 'poll' && data.pollResults ? (
+        <>
+          <AdminHeadingV3 title={ADMIN.broadcast.pollAnswers(data.pollResults.total)} />
+          <AdminBlockV3>
+            {data.interactive.options.map((option) => {
+              const count = data.pollResults?.counts[option.id] ?? 0
+              const total = data.pollResults?.total ?? 0
+              return (
+                <View key={option.id} style={styles.option}>
+                  <Text style={styles.optionLabel}>
+                    {ADMIN.broadcast.pollOption(option.labels.en ?? option.id, count)}
+                  </Text>
+                  <ProgressBar
+                    value={total > 0 ? count / total : 0}
+                    accessibilityLabel={ADMIN.broadcast.progress(count, total)}
+                  />
+                </View>
+              )
+            })}
+          </AdminBlockV3>
+        </>
+      ) : null}
+
+      {data.status === 'draft' && editing === null ? (
+        <>
+          {translated ? (
+            <AdminNoteV3 tone="info" icon="file-text">
+              {ADMIN.broadcast.editTranslated}
+            </AdminNoteV3>
+          ) : null}
+
+          {/*
+           * Both the words and the picture are file-authored on a
+           * translated broadcast — attaching here would write one English
+           * image over the eight the script uploaded, exactly as saving
+           * the body would write over the eight translations.
+           */}
+          {translated ? null : (
+            <>
+              <AdminHeadingV3 title={ADMIN.broadcast.picture} hint={ADMIN.broadcast.pictureHint} />
+              <AdminActionsV3>
+                <Button
+                  label={
+                    data.images?.en ? ADMIN.broadcast.replacePicture : ADMIN.broadcast.addPicture
+                  }
+                  variant="secondary"
+                  icon="image"
+                  loading={uploading}
+                  disabled={uploading}
+                  onPress={() => void attachPicture()}
+                />
+                {data.images?.en ? (
+                  <Button
+                    label={ADMIN.broadcast.removePicture}
+                    variant="neutral"
+                    disabled={uploading}
+                    onPress={() => void removePicture()}
+                  />
+                ) : null}
+              </AdminActionsV3>
+            </>
+          )}
+
+          <AdminActionsV3>
+            {translated ? null : (
+              <Button
+                label={ADMIN.broadcast.edit}
+                variant="neutral"
+                icon="edit-2"
+                onPress={() => setEditing(data.bodies.en ?? '')}
+              />
+            )}
+            <Button
+              label={ADMIN.broadcast.test}
+              variant="secondary"
+              icon="send"
+              onPress={() => run('test')}
+              loading={act.isPending}
+            />
+          </AdminActionsV3>
+
+          <AdminNoteV3
+            tone={data.testedAt ? 'success' : 'warning'}
+            icon={data.testedAt ? 'check' : 'alert-triangle'}
+          >
+            {data.testedAt ? ADMIN.broadcast.tested : ADMIN.broadcast.testFirst}
+          </AdminNoteV3>
+
+          {data.testedAt ? (
+            <>
+              <AdminFieldV3
+                label={ADMIN.broadcast.confirmPrompt(data.total)}
+                hint={ADMIN.broadcast.confirmHint}
+                value={typed}
+                onChangeText={setTyped}
+                keyboardType="number-pad"
+              />
+              <Button
+                label={ADMIN.broadcast.start}
+                variant="danger"
+                disabled={!armed}
+                onPress={() => run('start')}
+              />
+            </>
+          ) : null}
+
+          {/* Red, like every action here that cannot be taken back, and it asks first. */}
+          <Button
+            label={ADMIN.broadcast.deleteDraft}
+            variant="danger"
+            icon="trash-2"
+            loading={remove.isPending}
+            onPress={onDelete}
+          />
+        </>
+      ) : null}
+
+      {data.status === 'queued' || data.status === 'sending' ? (
+        <>
+          <AdminNoteV3 tone="warning">{ADMIN.broadcast.stoppedNote}</AdminNoteV3>
+          <Button label={ADMIN.broadcast.pause} variant="neutral" onPress={() => run('pause')} />
+        </>
+      ) : null}
+
+      {data.status === 'paused' ? (
+        <Button label={ADMIN.broadcast.resume} variant="secondary" onPress={() => run('resume')} />
+      ) : null}
+    </>
+  ) : null
+
   return (
     <AdminGate>
-      <Screen scroll fluid>
-        <ScreenHeader title={id} onBack={() => goBackTo('/(app)/admin/broadcast')} />
-
+      <AdminScreenV3 title={id} back="/(app)/admin/broadcast">
         {job.isPending || !data ? (
           <View style={styles.loading}>
             <Skeleton height={40} />
             <Skeleton height={120} />
           </View>
         ) : (
-          <>
-            {editing === null ? (
-              <Card>
-                {/* Above the words, because that is where the reader will
-                    find it: the message is one bubble with a caption. */}
-                {data.images?.en ? (
-                  <Image
-                    source={{ uri: data.images.en.url }}
-                    style={styles.picture}
-                    contentFit="cover"
-                    accessibilityLabel={ADMIN.broadcast.picture}
-                  />
-                ) : null}
-                <Text style={styles.body}>{data.bodies.en}</Text>
-              </Card>
-            ) : (
-              <>
-                <FormField
-                  label={ADMIN.broadcast.body}
-                  value={editing}
-                  onChangeText={setEditing}
-                  multiline
-                  numberOfLines={6}
-                  maxLength={4000}
-                />
-                <View style={styles.actions}>
-                  <Button
-                    label={ADMIN.broadcast.save}
-                    disabled={editing.trim().length === 0}
-                    loading={edit.isPending}
-                    onPress={() => onSave(editing)}
-                  />
-                  <Button
-                    label={ADMIN.common.cancel}
-                    variant="neutral"
-                    onPress={() => setEditing(null)}
-                  />
-                </View>
-              </>
-            )}
-
-            <View style={styles.tiles}>
-              <StatTile value={String(data.total)} label={ADMIN.broadcast.people} />
-              <StatTile value={String(data.sent)} label={ADMIN.broadcast.sent} />
-              <StatTile
-                value={ADMIN.broadcast.status[data.status]}
-                label={ADMIN.broadcast.state}
-                valueSize={16}
-              />
-            </View>
-
-            {data.status === 'sending' || data.status === 'done' ? (
-              <ProgressBar
-                value={data.total > 0 ? data.sent / data.total : 0}
-                accessibilityLabel={ADMIN.broadcast.progress(data.sent, data.total)}
-              />
-            ) : null}
-            {data.failed > 0 ? (
-              <Callout tone="error">
-                <Text style={styles.calloutBody}>{ADMIN.broadcast.failed(data.failed)}</Text>
-              </Callout>
-            ) : null}
-
-            {/*
-             * The poll's answers, per option, labelled in English — the panel
-             * is read by us. Every option is listed, at 0 if nobody picked it.
-             */}
-            {data.interactive?.kind === 'poll' && data.pollResults ? (
-              <>
-                <Text style={styles.heading}>
-                  {ADMIN.broadcast.pollAnswers(data.pollResults.total)}
-                </Text>
-                {data.interactive.options.map((option) => {
-                  const count = data.pollResults?.counts[option.id] ?? 0
-                  const total = data.pollResults?.total ?? 0
-                  return (
-                    <View key={option.id}>
-                      <Text style={styles.hint}>
-                        {ADMIN.broadcast.pollOption(option.labels.en ?? option.id, count)}
-                      </Text>
-                      <ProgressBar
-                        value={total > 0 ? count / total : 0}
-                        accessibilityLabel={ADMIN.broadcast.progress(count, total)}
-                      />
-                    </View>
-                  )
-                })}
-              </>
-            ) : null}
-
-            {data.status === 'draft' && editing === null ? (
-              <>
-                {translated ? (
-                  <Callout tone="info" icon="file-text" style={styles.testNote}>
-                    <Text style={styles.calloutBody}>{ADMIN.broadcast.editTranslated}</Text>
-                  </Callout>
-                ) : null}
-
-                {/*
-                 * Both the words and the picture are file-authored on a
-                 * translated broadcast — attaching here would write one English
-                 * image over the eight the script uploaded, exactly as saving
-                 * the body would write over the eight translations.
-                 */}
-                {translated ? null : (
-                  <>
-                    <Text style={styles.heading}>{ADMIN.broadcast.picture}</Text>
-                    <Text style={styles.hint}>{ADMIN.broadcast.pictureHint}</Text>
-                    <View style={styles.actions}>
-                      <Button
-                        label={
-                          data.images?.en
-                            ? ADMIN.broadcast.replacePicture
-                            : ADMIN.broadcast.addPicture
-                        }
-                        variant="secondary"
-                        loading={uploading}
-                        disabled={uploading}
-                        onPress={() => void attachPicture()}
-                      />
-                      {data.images?.en ? (
-                        <Button
-                          label={ADMIN.broadcast.removePicture}
-                          variant="neutral"
-                          disabled={uploading}
-                          onPress={() => void removePicture()}
-                        />
-                      ) : null}
-                    </View>
-                  </>
-                )}
-
-                <View style={styles.actions}>
-                  {translated ? null : (
-                    <Button
-                      label={ADMIN.broadcast.edit}
-                      variant="neutral"
-                      onPress={() => setEditing(data.bodies.en ?? '')}
-                    />
-                  )}
-                  <Button
-                    label={ADMIN.broadcast.test}
-                    variant="secondary"
-                    onPress={() => run('test')}
-                    loading={act.isPending}
-                  />
-                </View>
-
-                <Callout
-                  tone={data.testedAt ? 'info' : 'warning'}
-                  icon={data.testedAt ? 'check' : 'alert-triangle'}
-                  style={styles.testNote}
-                >
-                  <Text style={styles.calloutBody}>
-                    {data.testedAt ? ADMIN.broadcast.tested : ADMIN.broadcast.testFirst}
-                  </Text>
-                </Callout>
-
-                {data.testedAt ? (
-                  <>
-                    <FormField
-                      label={ADMIN.broadcast.confirmPrompt(data.total)}
-                      value={typed}
-                      onChangeText={setTyped}
-                      keyboardType="number-pad"
-                    />
-                    <Text style={styles.hint}>{ADMIN.broadcast.confirmHint}</Text>
-                    <Button
-                      label={ADMIN.broadcast.start}
-                      variant="danger"
-                      disabled={!armed}
-                      onPress={() => run('start')}
-                    />
-                  </>
-                ) : null}
-
-                <View style={styles.actions}>
-                  <Button
-                    label={ADMIN.broadcast.deleteDraft}
-                    variant="ink"
-                    loading={remove.isPending}
-                    onPress={onDelete}
-                  />
-                </View>
-              </>
-            ) : null}
-
-            {data.status === 'queued' || data.status === 'sending' ? (
-              <>
-                <Callout tone="warning">
-                  <Text style={styles.calloutBody}>{ADMIN.broadcast.stoppedNote}</Text>
-                </Callout>
-                <Button
-                  label={ADMIN.broadcast.pause}
-                  variant="neutral"
-                  onPress={() => run('pause')}
-                />
-              </>
-            ) : null}
-
-            {data.status === 'paused' ? (
-              <Button
-                label={ADMIN.broadcast.resume}
-                variant="secondary"
-                onPress={() => run('resume')}
-              />
-            ) : null}
-          </>
+          <AdminSplitV3 start={message} end={controls} endWidth={460} />
         )}
-      </Screen>
+      </AdminScreenV3>
     </AdminGate>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  loading: { gap: 12, marginTop: 16 },
-  heading: {
-    marginTop: 24,
-    marginBottom: 8,
-    fontSize: 13,
-    fontWeight: '700',
-    color: theme.colors.textMuted,
-    textTransform: 'uppercase',
-  },
+const useStyles = makeStyles(({ v3 }) => ({
+  loading: { gap: v3.space[12] },
   /* 16:9, the shape the announcement script renders — a picture the panel
      letterboxed would be a lie about what the message looks like. */
-  picture: { aspectRatio: 16 / 9, borderRadius: 8, marginBottom: 12, width: '100%' },
-  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
-  body: { fontSize: 15, color: theme.colors.text, lineHeight: 22 },
-  tiles: { flexDirection: 'row', gap: 24, marginVertical: 20 },
-  actions: { gap: 12, marginVertical: 16 },
-  hint: { fontSize: 13, color: theme.colors.textMuted, marginBottom: 16 },
-  testNote: { marginBottom: 16 },
+  picture: { aspectRatio: 16 / 9, borderRadius: v3.radius.icon, width: '100%' },
+  option: { gap: v3.space[6] },
+  optionLabel: { ...v3.type.callout, color: v3.colors.fg },
 }))

@@ -6,6 +6,7 @@ export const MESSAGE_ACTION_IDS = [
   'replyPart',
   'copy',
   'translate',
+  'explain',
   'speak',
   'correct',
   'correctPart',
@@ -62,6 +63,13 @@ export interface MessageActionContext {
    * `canSpeak` — most messages are in a script that needs none.
    */
   canRomanize?: boolean
+  /**
+   * Copilot is on for this reader: the deployment offers it and the server
+   * said it is available to them (`copilotGate` is not `off`). Hidden by
+   * default, like `canSpeak` — it is an allow-listed trial, and most readers
+   * never see the row.
+   */
+  canExplain?: boolean
   /** Characters the service would be asked to read. The cap is its own. */
   bodyLength: number
   /**
@@ -135,7 +143,7 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
    * message: the row says who rang, not who behaved badly on the call, and
    * the report goes to the other person either way.
    */
-  if (context.type === 'call') {
+  if (context.type === 'call' || context.type === 'gift') {
     return [
       {
         id: 'delete',
@@ -197,6 +205,32 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
       id: 'translate',
       label: t('messageActions.translate'),
       icon: 'language-outline',
+      page: 'primary',
+    })
+  }
+
+  /**
+   * Copilot's Explain: what the other person's message means, or what a
+   * correction changed and why.
+   *
+   * Their text, never your own — explaining what you wrote yourself is
+   * Check's job, before it is sent, and the server refuses it. A correction
+   * from either side, since the one you gave is as worth understanding as the
+   * one you got. Never media, a sticker or anything else without a sentence,
+   * and `hasBody` removes a withdrawn message and a view-once one, whose body
+   * the thread has already emptied. Not in a channel, where the reader is
+   * suspended or the other end is `@langx`.
+   */
+  if (
+    context.canExplain === true &&
+    !context.channel &&
+    context.hasBody &&
+    (context.type === 'correction' || (!context.mine && context.type === 'text'))
+  ) {
+    actions.push({
+      id: 'explain',
+      label: t('copilot.explainAction'),
+      icon: 'hardware-chip-outline',
       page: 'primary',
     })
   }
