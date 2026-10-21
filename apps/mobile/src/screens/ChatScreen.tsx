@@ -46,6 +46,9 @@ import {
   Animated,
   FlatList,
   Linking,
+  type ListRenderItemInfo,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   Platform,
   Pressable,
   StyleSheet,
@@ -966,10 +969,15 @@ export function ChatScreen({
    * rule, and one that is missing teaches nothing.
    */
   /** A proposal's time, in the reader's own zone. */
-  function meetingWhenFor(message: MessageDto): string {
-    if (!message.meeting) return ''
-    return meetingClock(new Date(message.meeting.startsAt), me.data?.timezone, locale)
-  }
+  const myTimezone = me.data?.timezone
+  const partnerTimezone = partner?.timezone
+  const meetingWhenFor = useCallback(
+    (message: MessageDto): string => {
+      if (!message.meeting) return ''
+      return meetingClock(new Date(message.meeting.startsAt), myTimezone, locale)
+    },
+    [myTimezone, locale],
+  )
 
   /**
    * The same instant where the other person is.
@@ -978,30 +986,36 @@ export function ChatScreen({
    * empty when it matches the reader's, because "9 PM, and 9 PM for them" is a
    * line that says nothing twice.
    */
-  function meetingTheirWhenFor(message: MessageDto): string {
-    if (!message.meeting || !partner?.timezone) return ''
-    const at = new Date(message.meeting.startsAt)
-    const theirs = meetingClock(at, partner.timezone, locale)
-    /*
-     * Compared as drawn, not as named.
-     *
-     * Comparing the zone *identifiers* looked equivalent and is not: a reader
-     * whose own profile has no `timezone` falls back to the device, so the
-     * check ran against `undefined` and never matched — and the card drew
-     * "9:00 PM" over "9:00 PM theirs", which is the exact line this feature
-     * exists to avoid. Two zones can also differ by name and agree right now
-     * (`Europe/London` and `Africa/Abidjan` in winter), and that is the same
-     * useless line.
-     */
-    return theirs === meetingClock(at, me.data?.timezone, locale)
-      ? ''
-      : t('chat.meetingTheirTime', { time: theirs })
-  }
+  const meetingTheirWhenFor = useCallback(
+    (message: MessageDto): string => {
+      if (!message.meeting || !partnerTimezone) return ''
+      const at = new Date(message.meeting.startsAt)
+      const theirs = meetingClock(at, partnerTimezone, locale)
+      /*
+       * Compared as drawn, not as named.
+       *
+       * Comparing the zone *identifiers* looked equivalent and is not: a reader
+       * whose own profile has no `timezone` falls back to the device, so the
+       * check ran against `undefined` and never matched — and the card drew
+       * "9:00 PM" over "9:00 PM theirs", which is the exact line this feature
+       * exists to avoid. Two zones can also differ by name and agree right now
+       * (`Europe/London` and `Africa/Abidjan` in winter), and that is the same
+       * useless line.
+       */
+      return theirs === meetingClock(at, myTimezone, locale)
+        ? ''
+        : t('chat.meetingTheirTime', { time: theirs })
+    },
+    [partnerTimezone, myTimezone, locale, t],
+  )
 
-  function meetingLengthFor(message: MessageDto): string {
-    if (!message.meeting) return ''
-    return t('format.minutes', { count: message.meeting.durationMinutes })
-  }
+  const meetingLengthFor = useCallback(
+    (message: MessageDto): string => {
+      if (!message.meeting) return ''
+      return t('format.minutes', { count: message.meeting.durationMinutes })
+    },
+    [t],
+  )
 
   /**
    * Writes an agreed meeting into this person's calendar.
@@ -3034,14 +3048,17 @@ export function ChatScreen({
   const celebrated = celebrating
     ? rewards[celebrating]?.chips.find((chip) => chip.kind === 'streak')
     : undefined
-  const rowCelebration = {
-    share:
-      celebrated?.kind === 'streak' && myHandle
-        ? streakShareText(t, { count: celebrated.days, handle: myHandle })
-        : undefined,
-    compact: keyboardUp,
-    onClose: () => setCelebrating(null),
-  }
+  const rowCelebration = useMemo(
+    () => ({
+      share:
+        celebrated?.kind === 'streak' && myHandle
+          ? streakShareText(t, { count: celebrated.days, handle: myHandle })
+          : undefined,
+      compact: keyboardUp,
+      onClose: () => setCelebrating(null),
+    }),
+    [celebrated, myHandle, t, keyboardUp],
+  )
   /** One sentence for both composers: what the field says before anything is typed. */
   const composerPlaceholder = correcting
     ? t('chat.writeCorrection')
@@ -3052,6 +3069,316 @@ export function ChatScreen({
       state === 'empty' && partner
       ? t('chat.sayHello', { name: partner.displayName })
       : t('chat.writeMessage')
+
+  /*
+   * Every prop the thread's FlatList gets, made stable across a keystroke.
+   *
+   * FlatList is a PureComponent, and it was handed a new renderItem, header,
+   * footer, scroll handler and `maintainVisibleContentPosition` object on
+   * every render of this screen — which typing is, once per character. Each
+   * one re-rendered every mounted cell: the bubbles' own `memo` bailed out,
+   * but the cells, the reward wrappers and the header's cards did not. Now
+   * the list re-renders only when something it draws has changed.
+   */
+  const partnerName = partner?.displayName ?? t('chat.them')
+  /** The header's send paths, read at press time so the header can stay memoised. */
+  const headerActions = useRef({ sendAttachments, retry, openUnsentActions })
+  headerActions.current = { sendAttachments, retry, openUnsentActions }
+  const listHeader = useMemo(
+    () => (
+      <>
+        {pending.length > 0 ? (
+          <View style={styles.unsentBlock}>
+            {pending.map((row) => {
+              const discard = () => setPending((list) => removePending(list, row.clientId))
+              return (
+                <PendingMediaBubble
+                  key={row.clientId}
+                  item={row}
+                  onRetry={() => {
+                    setPending((list) => removePending(list, row.clientId))
+                    void headerActions.current.sendAttachments(
+                      row.files ?? [attachmentOf(row)],
+                      row.body,
+                      row.viewOnce,
+                    )
+                  }}
+                  onDiscard={discard}
+                  onLongPress={() =>
+                    void headerActions.current.openUnsentActions({
+                      body: row.body ?? '',
+                      preview: row.body || t(messagePreviewKey(row.kind)),
+                      discard,
+                    })
+                  }
+                />
+              )
+            })}
+          </View>
+        ) : null}
+        {unsent.length > 0 ? (
+          <View style={styles.unsentBlock}>
+            {unsent.map((message) => {
+              const discard = () => setUnsent((list) => removeUnsent(list, message.clientId))
+              return (
+                <View key={message.clientId} style={styles.unsentRow}>
+                  <DiscardUnsentButton onPress={discard} />
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t('chat.notSentRetry')}
+                    onPress={() => void headerActions.current.retry(message)}
+                    onLongPress={() =>
+                      void headerActions.current.openUnsentActions({
+                        body: message.body,
+                        preview: message.body,
+                        discard,
+                      })
+                    }
+                    style={({ pressed }) => [styles.unsent, pressed && styles.unsentPressed]}
+                  >
+                    <Text style={styles.unsentBody}>{message.body}</Text>
+                    <Text style={styles.unsentNote}>
+                      <Feather name="alert-circle" size={12} /> {t('chat.notSentRetry')}
+                    </Text>
+                  </Pressable>
+                </View>
+              )
+            })}
+          </View>
+        ) : null}
+        {/* Your own words still to come, under everything already sent. */}
+        <ScheduledMessageRows conversationId={conversationId} />
+        {/*
+        Last, so it sits nearest the composer: inverted, this header
+        is the bottom of the thread, and the other person typing is
+        the newest thing in it.
+      */}
+        {partnerTyping ? <TypingIndicator /> : null}
+        {/*
+          Nearest the composer, and not a message: the first time
+          somebody wrote back, once it has been answered. A jump
+          into the history is a slice, and says nothing about who
+          spoke first.
+        */}
+        {partner ? (
+          <FirstReplyCard
+            conversationId={conversationId}
+            partnerId={partnerId}
+            partnerName={partnerName}
+            partnerIsPerson={
+              partner.official !== true && !readOnly && partner.accountStatus !== 'deleted'
+            }
+            messages={items}
+            hasOlder={jumpAnchor !== null || messages.hasNextPage}
+          />
+        ) : null}
+        {/* Last of all, nearest the composer — and not a message. */}
+        {reviewOpen && (!testimonial.written || reviewedHere) ? (
+          <ThreadTestimonialCard
+            conversationId={conversationId}
+            name={partnerName}
+            done={testimonial.written && reviewedHere}
+            onWrite={() => setReviewing(true)}
+            onEdit={() => setReviewing(true)}
+          />
+        ) : null}
+      </>
+    ),
+    [
+      pending,
+      unsent,
+      styles,
+      t,
+      conversationId,
+      partnerTyping,
+      partner,
+      partnerId,
+      partnerName,
+      readOnly,
+      items,
+      jumpAnchor,
+      messages.hasNextPage,
+      reviewOpen,
+      testimonial?.written,
+      reviewedHere,
+    ],
+  )
+  const showThreadTip = items.length < SHORT_THREAD_MESSAGES && !offerTopics
+  const listFooter = useMemo(
+    () => (
+      <>
+        {thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null}
+        {/* One opener at a time: the starters above the composer
+        are the same invitation, and a better one when offered. */}
+        {showThreadTip ? <ComposerHint slot="chat" style={styles.threadTip} /> : null}
+      </>
+    ),
+    [thread.isFetchingNextPage, showThreadTip, styles],
+  )
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = thread
+  const onEndReached = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) void fetchNextPage()
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
+  const onScrollToIndexFailed = useCallback(
+    (info: { index: number; averageItemLength: number }) => {
+      listRef.current?.scrollToOffset({
+        offset: info.averageItemLength * info.index,
+        animated: false,
+      })
+      setTimeout(
+        () =>
+          listRef.current?.scrollToIndex({
+            index: info.index,
+            viewPosition: 0.5,
+            animated: false,
+          }),
+        120,
+      )
+    },
+    [],
+  )
+  const newestId = items[0] ? String(items[0]._id) : null
+  const onScroll = useCallback(
+    ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+      // Nothing to measure against the content height any more: the
+      // bottom of an inverted list is offset 0.
+      if (nativeEvent.contentOffset.y <= BOTTOM_ANCHOR_SLACK) {
+        if (awayFrom !== null) setAwayFrom(null)
+      } else if (awayFrom === null) {
+        setAwayFrom(newestId)
+      }
+    },
+    [awayFrom, newestId],
+  )
+  const renderRow = useCallback(
+    ({ item: row }: ListRenderItemInfo<MessageRow>) =>
+      row.kind === 'day' ? (
+        <View style={styles.dayRow}>
+          <Text style={styles.dayLabel}>{dayLabel(row.day, { t, locale })}</Text>
+        </View>
+      ) : row.kind === 'unread' ? (
+        <View style={styles.unreadRow}>
+          <View style={styles.unreadLine} />
+          <Text style={styles.unreadLabel}>{t('chat.newMessages')}</Text>
+          <View style={styles.unreadLine} />
+        </View>
+      ) : (
+        // A stand-in has no server id yet, so a menu or a reply on it
+        // would have nothing to act on until the server's copy
+        // arrives.
+        <WithRewardChips
+          rewards={v3Thread ? rewards[row.message._id] : undefined}
+          partnerName={partnerName}
+          hue={partnerHue}
+          celebration={v3Thread && celebrating === row.message._id ? rowCelebration : undefined}
+        >
+          <MessageBubble
+            message={row.message}
+            mine={row.message.senderId === viewerId}
+            endsGroup={row.endsGroup}
+            partnerName={partnerName}
+            translation={translations[row.message._id]}
+            translating={translating === row.message._id}
+            romanization={romanizations[row.message._id]}
+            romanizing={romanizing === row.message._id}
+            speaking={speaking === row.message._id}
+            hasReading={speech[row.message._id] !== undefined}
+            onReplayReading={onReplayReading}
+            transcript={transcripts[row.message._id]}
+            transcribing={transcribing === row.message._id}
+            {...(transcriptService && !isOutgoingId(row.message._id) ? { onShowText } : {})}
+            highlighted={highlighted === row.message._id}
+            askAnswered={answeredAsks.has(row.message._id)}
+            onAnswerAsk={onAnswerAsk}
+            onRespondMeeting={onRespondMeeting}
+            onAnswerQuiz={onAnswerQuiz}
+            onAnswerPoll={onAnswerPoll}
+            onCardAction={onCardAction}
+            onAddToCalendar={onAddToCalendar}
+            meetingWhen={meetingWhenFor(row.message)}
+            meetingLength={meetingLengthFor(row.message)}
+            meetingTheirWhen={meetingTheirWhenFor(row.message)}
+            pending={isOutgoingId(row.message._id)}
+            onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
+            onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
+            onReply={isOutgoingId(row.message._id) ? ignore : onReply}
+            canReply={!readOnly}
+            onReact={isOutgoingId(row.message._id) ? ignore : onReact}
+            /*
+             * The same pair the menu's emoji strip is hidden for, and
+             * for the same reason: the server refuses a reaction to a
+             * withdrawn message and to an official channel, so offering
+             * the gesture there would end in an alert.
+             */
+            canReact={!readOnly && !row.message.deleted && !isServerRecord(row.message)}
+            // Only on the newest call, and not where a call cannot be
+            // placed from here at all: then a row is only a record.
+            onCallBack={
+              callGate !== 'hidden' && row.message._id === newestCallId ? onCallBack : undefined
+            }
+            onMeetingCall={
+              callGate !== 'hidden' && meetingCallOpen(row.message.meeting, meetingNow)
+                ? onMeetingCall
+                : undefined
+            }
+            onJumpTo={onJumpTo}
+            onOpenMedia={onOpenMedia}
+            onOpenViewOnce={onOpenViewOnce}
+            {...(v3Thread ? { onBurst: onBurstTap } : {})}
+            v3={v3Thread}
+            partnerHue={partnerHue}
+          />
+        </WithRewardChips>
+      ),
+    [
+      styles,
+      t,
+      locale,
+      v3Thread,
+      rewards,
+      partnerName,
+      partnerHue,
+      celebrating,
+      rowCelebration,
+      viewerId,
+      translations,
+      translating,
+      romanizations,
+      romanizing,
+      speaking,
+      speech,
+      onReplayReading,
+      transcripts,
+      transcribing,
+      transcriptService,
+      onShowText,
+      highlighted,
+      answeredAsks,
+      onAnswerAsk,
+      onRespondMeeting,
+      onAnswerQuiz,
+      onAnswerPoll,
+      onCardAction,
+      onAddToCalendar,
+      meetingWhenFor,
+      meetingLengthFor,
+      meetingTheirWhenFor,
+      onLongPress,
+      onEcho,
+      onReply,
+      readOnly,
+      onReact,
+      callGate,
+      newestCallId,
+      onCallBack,
+      meetingNow,
+      onMeetingCall,
+      onJumpTo,
+      onOpenMedia,
+      onOpenViewOnce,
+      onBurstTap,
+    ],
+  )
 
   return (
     /*
@@ -3258,7 +3585,7 @@ export function ChatScreen({
               <FlatList
                 ref={listRef}
                 data={rows}
-                keyExtractor={(row) => row.key}
+                keyExtractor={rowKey}
                 contentContainerStyle={styles.list}
                 /**
                  * The newest message sits at offset 0, and the list grows upward.
@@ -3294,264 +3621,37 @@ export function ChatScreen({
                  * the inverted list already does, and pinned there it would
                  * arrive out of sight. React Native Web has no such prop.
                  */
-                maintainVisibleContentPosition={
-                  awayFrom !== null ? { minIndexForVisible: 0 } : undefined
-                }
+                maintainVisibleContentPosition={awayFrom !== null ? HOLD_FIRST_VISIBLE : undefined}
                 /**
                  * "End" is the end of the data, and inverted that is the oldest
                  * message — so the same prop that means "load more" everywhere else
                  * in the app means "load older" here. It also sidesteps
                  * `onStartReached`, which react-native-web's FlatList does not have.
                  */
-                onEndReached={() => {
-                  if (thread.hasNextPage && !thread.isFetchingNextPage) {
-                    void thread.fetchNextPage()
-                  }
-                }}
+                onEndReached={onEndReached}
                 onEndReachedThreshold={0.4}
                 /**
                  * Header, not footer: inverted, the header is what sits at the
                  * bottom — under the newest message and directly above the
                  * composer, which is where something that failed to send belongs.
                  */
-                ListHeaderComponent={
-                  <>
-                    {pending.length > 0 ? (
-                      <View style={styles.unsentBlock}>
-                        {pending.map((row) => {
-                          const discard = () =>
-                            setPending((list) => removePending(list, row.clientId))
-                          return (
-                            <PendingMediaBubble
-                              key={row.clientId}
-                              item={row}
-                              onRetry={() => {
-                                setPending((list) => removePending(list, row.clientId))
-                                void sendAttachments(
-                                  row.files ?? [attachmentOf(row)],
-                                  row.body,
-                                  row.viewOnce,
-                                )
-                              }}
-                              onDiscard={discard}
-                              onLongPress={() =>
-                                void openUnsentActions({
-                                  body: row.body ?? '',
-                                  preview: row.body || t(messagePreviewKey(row.kind)),
-                                  discard,
-                                })
-                              }
-                            />
-                          )
-                        })}
-                      </View>
-                    ) : null}
-                    {unsent.length > 0 ? (
-                      <View style={styles.unsentBlock}>
-                        {unsent.map((message) => {
-                          const discard = () =>
-                            setUnsent((list) => removeUnsent(list, message.clientId))
-                          return (
-                            <View key={message.clientId} style={styles.unsentRow}>
-                              <DiscardUnsentButton onPress={discard} />
-                              <Pressable
-                                accessibilityRole="button"
-                                accessibilityLabel={t('chat.notSentRetry')}
-                                onPress={() => void retry(message)}
-                                onLongPress={() =>
-                                  void openUnsentActions({
-                                    body: message.body,
-                                    preview: message.body,
-                                    discard,
-                                  })
-                                }
-                                style={({ pressed }) => [
-                                  styles.unsent,
-                                  pressed && styles.unsentPressed,
-                                ]}
-                              >
-                                <Text style={styles.unsentBody}>{message.body}</Text>
-                                <Text style={styles.unsentNote}>
-                                  <Feather name="alert-circle" size={12} /> {t('chat.notSentRetry')}
-                                </Text>
-                              </Pressable>
-                            </View>
-                          )
-                        })}
-                      </View>
-                    ) : null}
-                    {/* Your own words still to come, under everything already sent. */}
-                    <ScheduledMessageRows conversationId={conversationId} />
-                    {/*
-                    Last, so it sits nearest the composer: inverted, this header
-                    is the bottom of the thread, and the other person typing is
-                    the newest thing in it.
-                  */}
-                    {partnerTyping ? <TypingIndicator /> : null}
-                    {/*
-                      Nearest the composer, and not a message: the first time
-                      somebody wrote back, once it has been answered. A jump
-                      into the history is a slice, and says nothing about who
-                      spoke first.
-                    */}
-                    {partner ? (
-                      <FirstReplyCard
-                        conversationId={conversationId}
-                        partnerId={partnerId}
-                        partnerName={partner.displayName}
-                        partnerIsPerson={
-                          partner.official !== true &&
-                          !readOnly &&
-                          partner.accountStatus !== 'deleted'
-                        }
-                        messages={items}
-                        hasOlder={jumpAnchor !== null || messages.hasNextPage}
-                      />
-                    ) : null}
-                    {/* Last of all, nearest the composer — and not a message. */}
-                    {reviewOpen && (!testimonial.written || reviewedHere) ? (
-                      <ThreadTestimonialCard
-                        conversationId={conversationId}
-                        name={partner.displayName}
-                        done={testimonial.written && reviewedHere}
-                        onWrite={() => setReviewing(true)}
-                        onEdit={() => setReviewing(true)}
-                      />
-                    ) : null}
-                  </>
-                }
+                ListHeaderComponent={listHeader}
                 /**
                  * Footer, not header: inverted, the footer is what sits on top —
                  * the spinner for older pages and, on a thread too short to have
                  * any, the opening tip.
                  */
-                ListFooterComponent={
-                  <>
-                    {thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null}
-                    {/* One opener at a time: the starters above the composer
-                    are the same invitation, and a better one when offered. */}
-                    {items.length < SHORT_THREAD_MESSAGES && !offerTopics ? (
-                      <ComposerHint slot="chat" style={styles.threadTip} />
-                    ) : null}
-                  </>
-                }
+                ListFooterComponent={listFooter}
                 /**
                  * Mandatory, not defensive: bubbles are variable height and there
                  * is no `getItemLayout`, so `scrollToIndex` throws outright on a
                  * row the list has not measured. Nudging to an estimate and asking
                  * again is the documented recovery.
                  */
-                onScrollToIndexFailed={(info) => {
-                  listRef.current?.scrollToOffset({
-                    offset: info.averageItemLength * info.index,
-                    animated: false,
-                  })
-                  setTimeout(
-                    () =>
-                      listRef.current?.scrollToIndex({
-                        index: info.index,
-                        viewPosition: 0.5,
-                        animated: false,
-                      }),
-                    120,
-                  )
-                }}
-                onScroll={({ nativeEvent }) => {
-                  // Nothing to measure against the content height any more: the
-                  // bottom of an inverted list is offset 0.
-                  if (nativeEvent.contentOffset.y <= BOTTOM_ANCHOR_SLACK) {
-                    if (awayFrom !== null) setAwayFrom(null)
-                  } else if (awayFrom === null) {
-                    setAwayFrom(items[0] ? String(items[0]._id) : null)
-                  }
-                }}
+                onScrollToIndexFailed={onScrollToIndexFailed}
+                onScroll={onScroll}
                 scrollEventThrottle={16}
-                renderItem={({ item: row }) =>
-                  row.kind === 'day' ? (
-                    <View style={styles.dayRow}>
-                      <Text style={styles.dayLabel}>{dayLabel(row.day, { t, locale })}</Text>
-                    </View>
-                  ) : row.kind === 'unread' ? (
-                    <View style={styles.unreadRow}>
-                      <View style={styles.unreadLine} />
-                      <Text style={styles.unreadLabel}>{t('chat.newMessages')}</Text>
-                      <View style={styles.unreadLine} />
-                    </View>
-                  ) : (
-                    // A stand-in has no server id yet, so a menu or a reply on it
-                    // would have nothing to act on until the server's copy
-                    // arrives.
-                    <WithRewardChips
-                      rewards={v3Thread ? rewards[row.message._id] : undefined}
-                      partnerName={partner?.displayName ?? t('chat.them')}
-                      hue={partnerHue}
-                      celebration={
-                        v3Thread && celebrating === row.message._id ? rowCelebration : undefined
-                      }
-                    >
-                      <MessageBubble
-                        message={row.message}
-                        mine={isMine(row.message)}
-                        endsGroup={row.endsGroup}
-                        partnerName={partner?.displayName ?? t('chat.them')}
-                        translation={translations[row.message._id]}
-                        translating={translating === row.message._id}
-                        romanization={romanizations[row.message._id]}
-                        romanizing={romanizing === row.message._id}
-                        speaking={speaking === row.message._id}
-                        hasReading={speech[row.message._id] !== undefined}
-                        onReplayReading={onReplayReading}
-                        transcript={transcripts[row.message._id]}
-                        transcribing={transcribing === row.message._id}
-                        {...(transcriptService && !isOutgoingId(row.message._id)
-                          ? { onShowText }
-                          : {})}
-                        highlighted={highlighted === row.message._id}
-                        askAnswered={answeredAsks.has(row.message._id)}
-                        onAnswerAsk={onAnswerAsk}
-                        onRespondMeeting={onRespondMeeting}
-                        onAnswerQuiz={onAnswerQuiz}
-                        onAnswerPoll={onAnswerPoll}
-                        onCardAction={onCardAction}
-                        onAddToCalendar={onAddToCalendar}
-                        meetingWhen={meetingWhenFor(row.message)}
-                        meetingLength={meetingLengthFor(row.message)}
-                        meetingTheirWhen={meetingTheirWhenFor(row.message)}
-                        pending={isOutgoingId(row.message._id)}
-                        onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
-                        onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
-                        onReply={isOutgoingId(row.message._id) ? ignore : onReply}
-                        canReply={!readOnly}
-                        onReact={isOutgoingId(row.message._id) ? ignore : onReact}
-                        /*
-                         * The same pair the menu's emoji strip is hidden for, and
-                         * for the same reason: the server refuses a reaction to a
-                         * withdrawn message and to an official channel, so offering
-                         * the gesture there would end in an alert.
-                         */
-                        canReact={!readOnly && !row.message.deleted && !isServerRecord(row.message)}
-                        // Only on the newest call, and not where a call cannot be
-                        // placed from here at all: then a row is only a record.
-                        onCallBack={
-                          callGate !== 'hidden' && row.message._id === newestCallId
-                            ? onCallBack
-                            : undefined
-                        }
-                        onMeetingCall={
-                          callGate !== 'hidden' && meetingCallOpen(row.message.meeting, meetingNow)
-                            ? onMeetingCall
-                            : undefined
-                        }
-                        onJumpTo={onJumpTo}
-                        onOpenMedia={onOpenMedia}
-                        onOpenViewOnce={onOpenViewOnce}
-                        {...(v3Thread ? { onBurst: onBurstTap } : {})}
-                        v3={v3Thread}
-                        partnerHue={partnerHue}
-                      />
-                    </WithRewardChips>
-                  )
-                }
+                renderItem={renderRow}
               />
             )}
 
@@ -4154,6 +4254,16 @@ const SKELETON_BUBBLES = ['a', 'b', 'c', 'd', 'e', 'f']
 
 /** For a stand-in row: the server has not named it yet, so its actions wait. */
 const ignore = () => undefined
+
+/** Module-level so the FlatList is handed the same function on every render. */
+const rowKey = (row: MessageRow): string => row.key
+
+/**
+ * `maintainVisibleContentPosition` while the reader is away from the bottom.
+ * One object for the life of the app: an inline literal was a new prop on
+ * every render, and FlatList re-rendered every cell for it.
+ */
+const HOLD_FIRST_VISIBLE = { minIndexForVisible: 0 } as const
 
 /**
  * Below this many messages the thread still shows its opening tip. Three is

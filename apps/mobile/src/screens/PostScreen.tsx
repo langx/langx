@@ -1,10 +1,11 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useFocusEffect, useRouter } from 'expo-router'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ActivityIndicator,
   Animated,
   FlatList,
+  type ListRenderItemInfo,
   Pressable,
   RefreshControl,
   Text,
@@ -162,6 +163,176 @@ function topOf(items: readonly (PostCorrection | PronunciationAnswer)[]): string
   )?.id
 }
 
+type PostStyles = ReturnType<typeof useStyles> | ReturnType<typeof usePostStylesV3>
+
+/** Module-level so the list is handed the same function on every render. */
+const rowKey = (row: Row): string => row.key
+
+/** What a reply row asks the screen to do; one stable object for the screen's life. */
+interface ReplyActions {
+  view: (items: Media[], index: number) => void
+  keepOnCard: (answerId: string) => void
+  keepCorrectionOnCard: (correctionId: string) => void
+  removeReply: (reply: PostCorrection | PronunciationAnswer) => void
+}
+
+/**
+ * One correction or recorded answer under the post.
+ *
+ * Its own memoised component so that typing a comment or a correction — a
+ * render of the whole screen per character — stops redrawing every reply. The
+ * list cannot bail out on its own here: the keyboard hook hands it new scroll
+ * props on every render, so FlatList re-renders its cells regardless, and it
+ * is this row's `memo` that stops the work there.
+ */
+const ReplyRow = memo(function ReplyRow({
+  item,
+  styles,
+  postBody,
+  here,
+  top,
+  mine,
+  keepsRecordings,
+  kept,
+  keepsCorrections,
+  attachPending,
+  applyPending,
+  actions,
+}: {
+  item: PostCorrection | PronunciationAnswer
+  styles: PostStyles
+  postBody: string
+  here: string
+  top: boolean
+  mine: boolean
+  keepsRecordings: boolean
+  kept: boolean
+  keepsCorrections: boolean
+  attachPending: boolean
+  applyPending: boolean
+  actions: ReplyActions
+}) {
+  const t = useT()
+  const correctionRow = 'corrected' in item
+  return (
+    <View style={styles.reply}>
+      <Pressable
+        style={styles.replyWho}
+        onPress={() => openProfile(item.author.handle, here)}
+        accessibilityRole="button"
+      >
+        <Avatar
+          url={item.author.avatarUrl}
+          name={item.author.displayName}
+          seed={item.author._id}
+          size={36}
+        />
+        <Text style={styles.replyName} numberOfLines={1}>
+          {item.author.displayName}
+        </Text>
+        {top ? (
+          <View style={styles.topPill}>
+            <Text style={styles.topPillLabel}>{t('feed.topTag')}</Text>
+          </View>
+        ) : null}
+      </Pressable>
+
+      {'corrected' in item ? (
+        <View style={styles.card}>
+          <CorrectedLine original={postBody} corrected={item.corrected} />
+          {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
+        </View>
+      ) : (
+        <View style={styles.takes}>
+          <Text style={styles.takeLabel}>{t('feed.normalTake')}</Text>
+          <AudioBubble media={item.media} />
+          {item.slowMedia ? (
+            <>
+              <Text style={styles.takeLabel}>{t('feed.slowTake')}</Text>
+              <AudioBubble media={item.slowMedia} />
+            </>
+          ) : null}
+          {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
+        </View>
+      )}
+      {'corrected' in item && attachmentsOf(item).length > 0 ? (
+        <MediaGallery
+          items={attachmentsOf(item)}
+          onOpen={(index) => actions.view(attachmentsOf(item), index)}
+          /*
+           * The thread's controls, not the feed's preview: several
+           * clips starting at once in a list of answers is the case
+           * autoplay is wrong for (`docs/decisions.md` → *A thread
+           * doesn't autoplay*). A single video still opens full
+           * screen — from the native controls' own button, since in
+           * this mode the tap belongs to the scrub bar — and a grid
+           * tile still opens the viewer.
+           */
+          videoMode="controls"
+        />
+      ) : null}
+      <View style={styles.likeRow}>
+        <LikeButton
+          targetType={correctionRow ? 'correction' : 'answer'}
+          targetId={item._id}
+          likeCount={item.likeCount}
+          likedByViewer={item.likedByViewer}
+          disabled={mine}
+          from={here}
+          size="small"
+        />
+        {/*
+      The recording, onto the card that asked for it. Drawn only
+      on an answer to a post one of your own cards opened — which
+      is the same condition the server checks, so a button that is
+      here always works.
+    */}
+        {!correctionRow && keepsRecordings ? (
+          kept ? (
+            <Text style={styles.keptLabel}>{t('echo.audioAlreadyKept')}</Text>
+          ) : (
+            <Pressable
+              accessibilityRole="button"
+              hitSlop={8}
+              disabled={attachPending}
+              onPress={() => actions.keepOnCard(item._id)}
+              style={({ pressed }) => (pressed ? styles.pressed : null)}
+            >
+              <Text style={styles.keepAction}>{t('echo.keepOnCard')}</Text>
+            </Pressable>
+          )
+        ) : null}
+        {/* The written answer, onto the same card: it replaces the
+        sentence, because a card whose sentence is wrong teaches
+        the mistake every time it comes back. */}
+        {correctionRow && keepsCorrections ? (
+          <Pressable
+            accessibilityRole="button"
+            hitSlop={8}
+            disabled={applyPending}
+            onPress={() => actions.keepCorrectionOnCard(item._id)}
+            style={({ pressed }) => (pressed ? styles.pressed : null)}
+          >
+            <Text style={styles.keepAction}>{t('echo.keepCorrection')}</Text>
+          </Pressable>
+        ) : null}
+        {mine ? (
+          <Pressable
+            accessibilityRole="button"
+            hitSlop={8}
+            onPress={() => actions.removeReply(item)}
+            style={({ pressed }) => (pressed ? styles.pressed : null)}
+          >
+            <Text style={styles.deleteAction}>
+              {t(correctionRow ? 'feed.deleteCorrection' : 'feed.deleteAnswer')}
+            </Text>
+          </Pressable>
+        ) : null}
+      </View>
+    </View>
+  )
+})
+
 export function PostScreen({
   postId,
   from,
@@ -279,10 +450,14 @@ export function PostScreen({
    * this reason.
    */
   const askedCardId = askedFrom.data?._id
-  const kept = new Set(
-    echoAudiosOf(askedFrom.data ?? {})
-      .map((audio) => audio.answerId)
-      .filter((answerId) => !!answerId),
+  const kept = useMemo(
+    () =>
+      new Set(
+        echoAudiosOf(askedFrom.data ?? {})
+          .map((audio) => audio.answerId)
+          .filter((answerId) => !!answerId),
+      ),
+    [askedFrom.data],
   )
 
   /** The recorder's open/closed state. The correction box is always open. */
@@ -732,6 +907,76 @@ export function PostScreen({
     )
   }
 
+  /*
+   * The list's props, stable across a keystroke in either box. The handlers
+   * are read at press time through the ref, so one object serves every row.
+   */
+  const replyHandlers = useRef({ keepOnCard, keepCorrectionOnCard, removeReply })
+  replyHandlers.current = { keepOnCard, keepCorrectionOnCard, removeReply }
+  const replyActions = useMemo<ReplyActions>(
+    () => ({
+      view: (items, index) => setViewing({ items, index }),
+      keepOnCard: (answerId) => replyHandlers.current.keepOnCard(answerId),
+      keepCorrectionOnCard: (correctionId) =>
+        replyHandlers.current.keepCorrectionOnCard(correctionId),
+      removeReply: (reply) => replyHandlers.current.removeReply(reply),
+    }),
+    [],
+  )
+  const meId = me.data?._id
+  const postBody = post?.body ?? ''
+  const renderRow = useCallback(
+    ({ item: row }: ListRenderItemInfo<Row>) => {
+      if (row.type === 'title') {
+        return <Text style={styles.sectionTitle}>{t(row.label)}</Text>
+      }
+      if (row.type === 'empty') {
+        return (
+          <Text style={styles.empty}>
+            {t(row.title)}. {t(row.body)}
+          </Text>
+        )
+      }
+      const item = row.item
+      const correctionRow = 'corrected' in item
+      return (
+        <ReplyRow
+          item={item}
+          styles={styles}
+          postBody={postBody}
+          here={here}
+          top={item._id === (correctionRow ? topCorrectionId : topAnswerId)}
+          mine={item.author._id === meId}
+          keepsRecordings={keepsRecordings}
+          kept={kept.has(item._id)}
+          keepsCorrections={keepsCorrections}
+          attachPending={attachAudio.isPending}
+          applyPending={applyCorrection.isPending}
+          actions={replyActions}
+        />
+      )
+    },
+    [
+      styles,
+      t,
+      postBody,
+      here,
+      topCorrectionId,
+      topAnswerId,
+      meId,
+      keepsRecordings,
+      kept,
+      keepsCorrections,
+      attachAudio.isPending,
+      applyCorrection.isPending,
+      replyActions,
+    ],
+  )
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = pager
+  const onEndReached = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) void fetchNextPage()
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
+
   const more =
     post && v3Look ? (
       <IconButton
@@ -795,13 +1040,11 @@ export function PostScreen({
             ref={listRef}
             {...keyboard.scrollProps}
             data={rows}
-            keyExtractor={(row) => row.key}
+            keyExtractor={rowKey}
             contentContainerStyle={styles.list}
             refreshControl={<RefreshControl {...pull} />}
             onEndReachedThreshold={0.6}
-            onEndReached={() => {
-              if (pager.hasNextPage && !pager.isFetchingNextPage) void pager.fetchNextPage()
-            }}
+            onEndReached={onEndReached}
             onContentSizeChange={(_width, height) => {
               layout.current.content = height
               tryFocus()
@@ -941,137 +1184,7 @@ export function PostScreen({
                 ) : null}
               </View>
             }
-            renderItem={({ item: row }) => {
-              if (row.type === 'title') {
-                return <Text style={styles.sectionTitle}>{t(row.label)}</Text>
-              }
-              if (row.type === 'empty') {
-                return (
-                  <Text style={styles.empty}>
-                    {t(row.title)}. {t(row.body)}
-                  </Text>
-                )
-              }
-              const item = row.item
-              const correctionRow = 'corrected' in item
-              return (
-                <View style={styles.reply}>
-                  <Pressable
-                    style={styles.replyWho}
-                    onPress={() => openProfile(item.author.handle, here)}
-                    accessibilityRole="button"
-                  >
-                    <Avatar
-                      url={item.author.avatarUrl}
-                      name={item.author.displayName}
-                      seed={item.author._id}
-                      size={36}
-                    />
-                    <Text style={styles.replyName} numberOfLines={1}>
-                      {item.author.displayName}
-                    </Text>
-                    {item._id === (correctionRow ? topCorrectionId : topAnswerId) ? (
-                      <View style={styles.topPill}>
-                        <Text style={styles.topPillLabel}>{t('feed.topTag')}</Text>
-                      </View>
-                    ) : null}
-                  </Pressable>
-
-                  {'corrected' in item ? (
-                    <View style={styles.card}>
-                      <CorrectedLine original={post.body} corrected={item.corrected} />
-                      {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
-                    </View>
-                  ) : (
-                    <View style={styles.takes}>
-                      <Text style={styles.takeLabel}>{t('feed.normalTake')}</Text>
-                      <AudioBubble media={item.media} />
-                      {item.slowMedia ? (
-                        <>
-                          <Text style={styles.takeLabel}>{t('feed.slowTake')}</Text>
-                          <AudioBubble media={item.slowMedia} />
-                        </>
-                      ) : null}
-                      {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
-                    </View>
-                  )}
-                  {'corrected' in item && attachmentsOf(item).length > 0 ? (
-                    <MediaGallery
-                      items={attachmentsOf(item)}
-                      onOpen={(index) => setViewing({ items: attachmentsOf(item), index })}
-                      /*
-                       * The thread's controls, not the feed's preview: several
-                       * clips starting at once in a list of answers is the case
-                       * autoplay is wrong for (`docs/decisions.md` → *A thread
-                       * doesn't autoplay*). A single video still opens full
-                       * screen — from the native controls' own button, since in
-                       * this mode the tap belongs to the scrub bar — and a grid
-                       * tile still opens the viewer.
-                       */
-                      videoMode="controls"
-                    />
-                  ) : null}
-                  <View style={styles.likeRow}>
-                    <LikeButton
-                      targetType={correctionRow ? 'correction' : 'answer'}
-                      targetId={item._id}
-                      likeCount={item.likeCount}
-                      likedByViewer={item.likedByViewer}
-                      disabled={item.author._id === me.data?._id}
-                      from={here}
-                      size="small"
-                    />
-                    {/*
-                  The recording, onto the card that asked for it. Drawn only
-                  on an answer to a post one of your own cards opened — which
-                  is the same condition the server checks, so a button that is
-                  here always works.
-                */}
-                    {!correctionRow && keepsRecordings ? (
-                      kept.has(item._id) ? (
-                        <Text style={styles.keptLabel}>{t('echo.audioAlreadyKept')}</Text>
-                      ) : (
-                        <Pressable
-                          accessibilityRole="button"
-                          hitSlop={8}
-                          disabled={attachAudio.isPending}
-                          onPress={() => keepOnCard(item._id)}
-                          style={({ pressed }) => (pressed ? styles.pressed : null)}
-                        >
-                          <Text style={styles.keepAction}>{t('echo.keepOnCard')}</Text>
-                        </Pressable>
-                      )
-                    ) : null}
-                    {/* The written answer, onto the same card: it replaces the
-                    sentence, because a card whose sentence is wrong teaches
-                    the mistake every time it comes back. */}
-                    {correctionRow && keepsCorrections ? (
-                      <Pressable
-                        accessibilityRole="button"
-                        hitSlop={8}
-                        disabled={applyCorrection.isPending}
-                        onPress={() => keepCorrectionOnCard(item._id)}
-                        style={({ pressed }) => (pressed ? styles.pressed : null)}
-                      >
-                        <Text style={styles.keepAction}>{t('echo.keepCorrection')}</Text>
-                      </Pressable>
-                    ) : null}
-                    {item.author._id === me.data?._id ? (
-                      <Pressable
-                        accessibilityRole="button"
-                        hitSlop={8}
-                        onPress={() => removeReply(item)}
-                        style={({ pressed }) => (pressed ? styles.pressed : null)}
-                      >
-                        <Text style={styles.deleteAction}>
-                          {t(correctionRow ? 'feed.deleteCorrection' : 'feed.deleteAnswer')}
-                        </Text>
-                      </Pressable>
-                    ) : null}
-                  </View>
-                </View>
-              )
-            }}
+            renderItem={renderRow}
             /*
              * Comments live in the footer as a plain `.map`, not a second list.
              * A `FlatList` inside a `FlatList` on the same axis loses its
