@@ -10,7 +10,7 @@ import { ICON_BUTTON_TARGET } from '../../components/ui/IconButton'
 import { Screen } from '../../components/ui/Screen'
 import { useLanguageEditor } from '../../hooks/useLanguageEditor'
 import { useScreenInteractive } from '../../hooks/useScreenInteractive'
-import { useDisplayNames, useT } from '../../i18n'
+import { useDisplayNames, useLocale, useT } from '../../i18n'
 import { goBackTo } from '../../lib/navigation'
 import { makeStyles, useTheme } from '../../lib/theme'
 
@@ -27,6 +27,7 @@ export function LanguagePickScreenV3() {
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
+  const { locale } = useLocale()
   const names = useDisplayNames()
   const { list, replacing } = useLocalSearchParams<{ list?: string; replacing?: string }>()
   const { profile, apply } = useLanguageEditor()
@@ -71,10 +72,18 @@ export function LanguagePickScreenV3() {
   const head = (code: string): boolean =>
     searching || mine.includes(code) || PINNED_CODES.includes(code)
   const top = results.filter((item) => head(item.code))
-  // The catalogue is in English order; the heading says A to Z in the reader's.
-  const tail = results
-    .filter((item) => !head(item.code))
-    .sort((a, b) => names.language(a.code).localeCompare(names.language(b.code)))
+  /*
+   * The tail comes from the whole catalogue, not from `results`: the hook cuts
+   * its list at 60, so under "All languages" a reader saw the first fifty in
+   * English order — Afar to Fijian — and, in any other locale, a re-sorted
+   * handful with gaps where the rest of the alphabet should be. The catalogue
+   * is in English order; the heading says A to Z in the reader's.
+   */
+  const tail = searching
+    ? []
+    : LANGUAGES.filter((item) => !head(item.code)).sort((a, b) =>
+        names.language(a.code).localeCompare(names.language(b.code), locale),
+      )
 
   function chip(item: { code: string }) {
     return (

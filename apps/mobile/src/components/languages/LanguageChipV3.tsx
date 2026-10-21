@@ -57,8 +57,12 @@ const useStyles = makeStyles(({ v3 }) => ({
     borderWidth: 2,
     flexDirection: 'row',
     gap: v3.space[6],
-    height: 46,
+    // A floor, not a height: "Haitian Creole · Learning" in German is wider
+    // than a small phone, and a fixed 46 clipped its second line.
+    maxWidth: '100%',
+    minHeight: 46,
     paddingHorizontal: v3.space[16],
+    paddingVertical: v3.space[2],
   },
   on: {
     backgroundColor: v3.colors.pill,
@@ -68,7 +72,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   // `line`, as the dashed Add rows on Your languages draw it.
   taken: { backgroundColor: 'transparent', borderColor: v3.colors.line, borderStyle: 'dashed' },
   pressed: { opacity: 0.7 },
-  label: { ...v3.type.buttonSmall, color: v3.colors.fg },
+  label: { ...v3.type.buttonSmall, color: v3.colors.fg, flexShrink: 1 },
   labelOn: { color: v3.colors.pillText },
   labelTaken: { color: v3.colors.muted },
 }))
