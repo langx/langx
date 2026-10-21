@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react'
-import { PanResponder, View } from 'react-native'
+import { PanResponder, Text, View } from 'react-native'
+import { useV3Home } from '../../hooks/useV3Home'
+import { useLocale } from '../../i18n'
 import { makeStyles } from '../../lib/theme'
 
 interface RangeSliderProps {
@@ -9,6 +11,11 @@ interface RangeSliderProps {
   values: readonly [number, number]
   onChange: (values: [number, number]) => void
   accessibilityLabel: string
+  /**
+   * The words under each end of the track — "18", "55+". Drawn by the
+   * redesign's look only (V-Filters); the current look has none.
+   */
+  scaleLabels?: readonly [string, string]
 }
 
 /**
@@ -21,13 +28,31 @@ interface RangeSliderProps {
  * starts on the low thumb can never seize the high one — they only meet, never
  * cross: each is clamped at the other's current value.
  */
-export function RangeSlider({ min, max, values, onChange, accessibilityLabel }: RangeSliderProps) {
-  const styles = useStyles()
+export function RangeSlider({
+  min,
+  max,
+  values,
+  onChange,
+  accessibilityLabel,
+  scaleLabels,
+}: RangeSliderProps) {
+  const legacyStyles = useStyles()
+  const v3Styles = useStylesV3()
+  const v3Look = useV3Home()
+  const { isRtl } = useLocale()
   const [trackWidth, setTrackWidth] = useState(0)
 
+  /*
+   * The redesign runs the track from the reading start (V-Filters: "the age
+   * slider runs right to left" in RTL), so a drag towards the start lowers
+   * the value whichever side that is. The current look stays left to right,
+   * as it always has.
+   */
+  const direction = v3Look && isRtl ? -1 : 1
+
   // Refs mirror props so the responders — created once — read current state.
-  const state = useRef({ values, min, max, trackWidth, onChange })
-  state.current = { values, min, max, trackWidth, onChange }
+  const state = useRef({ values, min, max, trackWidth, onChange, direction })
+  state.current = { values, min, max, trackWidth, onChange, direction }
 
   // The value a thumb had when its drag began; deltas apply against this.
   const dragStart = useRef<[number, number]>([values[0], values[1]])
@@ -46,10 +71,11 @@ export function RangeSlider({ min, max, values, onChange, accessibilityLabel }: 
           trackWidth: width,
           values: current,
           onChange: emit,
+          direction: sign,
         } = state.current
         if (width <= 0) return
         const perPixel = (hi - lo) / width
-        const raw = dragStart.current[thumb] + gesture.dx * perPixel
+        const raw = dragStart.current[thumb] + sign * gesture.dx * perPixel
         const stepped = Math.round(Math.min(hi, Math.max(lo, raw)))
         const next: [number, number] =
           thumb === 0
@@ -67,6 +93,63 @@ export function RangeSlider({ min, max, values, onChange, accessibilityLabel }: 
   const lowPct = span > 0 ? ((values[0] - min) / span) * 100 : 0
   const highPct = span > 0 ? ((values[1] - min) / span) * 100 : 100
 
+  if (v3Look) {
+    const styles = v3Styles
+    /*
+     * `key`: a web page load draws the current look first and flips to this
+     * one once the config settles. Without a key React reuses the current
+     * look's views by position, so this track lands on the old fill's DOM
+     * node — and react-native-web only starts observing a node's size when
+     * it mounts, so the reused track never reports its width and a drag
+     * moves at the old, wider track's speed.
+     *
+     * The fill and the thumbs are placed by flex rather than by `left` or
+     * `start`: react-native-web turns `start` into `left` whatever the
+     * page's `dir`, so in Arabic on the web the track drew left to right
+     * under a "55+ … 18" scale that runs the other way. A row follows the
+     * reading direction on every platform and needs no measured width to
+     * draw, so the thumbs cannot drift off the ends of the fill either.
+     */
+    return (
+      <View key="v3" style={styles.root}>
+        <View
+          accessible
+          accessibilityRole="adjustable"
+          accessibilityLabel={accessibilityLabel}
+          accessibilityValue={{ min, max, text: `${values[0]}–${values[1]}` }}
+          style={styles.slider}
+        >
+          <View style={styles.track} onLayout={(e) => setTrackWidth(e.nativeEvent.layout.width)}>
+            <View style={{ flexGrow: lowPct }} />
+            <View style={[styles.fill, { flexGrow: highPct - lowPct }]} />
+            <View style={{ flexGrow: 100 - highPct }} />
+          </View>
+          {([lowPct, highPct] as const).map((pct, thumb) => (
+            <View key={thumb} style={styles.thumbRow} pointerEvents="box-none">
+              <View style={{ flexGrow: pct }} pointerEvents="none" />
+              <View
+                style={styles.thumb}
+                {...(thumb === 0 ? lowResponder : highResponder).panHandlers}
+              >
+                <View style={styles.knob}>
+                  <View style={styles.knobCore} />
+                </View>
+              </View>
+              <View style={{ flexGrow: 100 - pct }} pointerEvents="none" />
+            </View>
+          ))}
+        </View>
+        {scaleLabels ? (
+          <View style={styles.scale} importantForAccessibility="no-hide-descendants">
+            <Text style={styles.scaleLabel}>{scaleLabels[0]}</Text>
+            <Text style={styles.scaleLabel}>{scaleLabels[1]}</Text>
+          </View>
+        ) : null}
+      </View>
+    )
+  }
+
+  const styles = legacyStyles
   return (
     <View
       accessible
@@ -126,4 +209,61 @@ const useStyles = makeStyles(({ colors, radius }) => ({
     top: 9,
     width: 22,
   },
+}))
+
+/** Thumb's touch target: the drawing's 44pt square around a 30pt knob. */
+const V3_TARGET = 44
+
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  root: { gap: v3.space[4] },
+  slider: { height: V3_TARGET, justifyContent: 'center' },
+  /*
+   * The track is inset by half a target at each end — the drawing's
+   * `margin: 0 22px`. Each thumb gets a full-width row of its own, and the
+   * free width beside its 44pt square is split in the value's proportion, so
+   * the square's centre lands on the inset track's point for that value. At
+   * either end the whole square stays inside the slider's own frame, which
+   * matters because Android does not hit-test a child outside its parent's
+   * bounds.
+   */
+  track: {
+    backgroundColor: v3.colors.line,
+    borderRadius: v3.radius.pill,
+    flexDirection: 'row',
+    height: 10,
+    marginHorizontal: V3_TARGET / 2,
+    overflow: 'hidden',
+  },
+  fill: { backgroundColor: v3.colors.fg, borderRadius: v3.radius.pill },
+  thumbRow: { bottom: 0, flexDirection: 'row', left: 0, position: 'absolute', right: 0, top: 0 },
+  thumb: {
+    alignItems: 'center',
+    height: V3_TARGET,
+    justifyContent: 'center',
+    width: V3_TARGET,
+  },
+  /*
+   * The ink knob with a ring of the ground and an ink edge outside it: flat,
+   * no shadow, and it reads on the ink fill as well as on the grey track.
+   * The drawing's 2pt outline is this view's own ink fill showing round the
+   * ring, since `outline` is not drawn on every platform this app runs on.
+   */
+  knob: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.fg,
+    borderRadius: v3.radius.pill,
+    height: 34,
+    justifyContent: 'center',
+    width: 34,
+  },
+  knobCore: {
+    backgroundColor: v3.colors.pill,
+    borderColor: v3.colors.bg,
+    borderRadius: v3.radius.pill,
+    borderWidth: 3,
+    height: 30,
+    width: 30,
+  },
+  scale: { flexDirection: 'row', justifyContent: 'space-between' },
+  scaleLabel: { ...v3.type.caption, color: v3.colors.muted },
 }))

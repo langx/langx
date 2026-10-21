@@ -10,6 +10,7 @@ import { Avatar } from './ui/Avatar'
 import { OfficialMark } from './OfficialMark'
 import { IconButton } from './ui/IconButton'
 import { useV3Home } from '../hooks/useV3Home'
+import { PeopleSearchFieldV3, PeopleSearchResultsV3 } from './PeopleSearchV3'
 
 type SearchHost = '/(app)/(tabs)/discover' | '/(app)/(tabs)/chats'
 
@@ -104,6 +105,12 @@ export function PeopleSearch({ onSearchingChange }: PeopleSearchProps) {
     )
   }
 
+  if (v3Look) {
+    return (
+      <PeopleSearchFieldV3 value={current} onChangeText={setTerm} onClose={() => open(false)} />
+    )
+  }
+
   return (
     <View style={styles.field}>
       <Feather name="search" size={18} color={colors.textFaint} />
@@ -148,12 +155,27 @@ export function PeopleSearch({ onSearchingChange }: PeopleSearchProps) {
  */
 export function PeopleSearchResults({ from }: { from: SearchHost }) {
   const t = useT()
+  const v3Look = useV3Home()
   const styles = useStyles()
   const current = useTerm()
   // The input renders the term and the query follows the settled value, so
   // typing stays responsive and "behic" is one request rather than five.
   const search = useHandleSearch(useDebounced(current))
   const items = search.data?.items ?? []
+  /* Only once a real search has settled: "no matches" under two letters
+     would be answering a question nobody finished asking. */
+  const none = Boolean(search.data) && items.length === 0 && !search.isFetching
+
+  if (v3Look) {
+    return (
+      <PeopleSearchResultsV3
+        items={items}
+        fetching={search.isFetching}
+        none={none}
+        onOpen={(handle) => openProfile(handle, from)}
+      />
+    )
+  }
 
   return (
     <FlatList
@@ -162,13 +184,7 @@ export function PeopleSearchResults({ from }: { from: SearchHost }) {
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.results}
       ListHeaderComponent={search.isFetching ? <ActivityIndicator style={styles.spinner} /> : null}
-      ListEmptyComponent={
-        /* Only once a real search has settled: "no matches" under two letters
-           would be answering a question nobody finished asking. */
-        search.data && items.length === 0 && !search.isFetching ? (
-          <Text style={styles.none}>{t('discover.searchNone')}</Text>
-        ) : null
-      }
+      ListEmptyComponent={none ? <Text style={styles.none}>{t('discover.searchNone')}</Text> : null}
       renderItem={({ item: result }) => (
         <Pressable
           accessibilityRole="button"

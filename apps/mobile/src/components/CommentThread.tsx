@@ -7,6 +7,8 @@ import { hiddenReplyCount, repliesToShow } from '../lib/commentThread'
 import { relativeTime } from '../lib/format'
 import { openProfile } from '../lib/navigation'
 import { makeStyles, useTheme } from '../lib/theme'
+import { useV3Home } from '../hooks/useV3Home'
+import { CommentThreadV3 } from './CommentThreadV3'
 import { Avatar } from './ui/Avatar'
 
 /**
@@ -22,17 +24,7 @@ import { Avatar } from './ui/Avatar'
  * Delete — so the web build renders no button inside a button. The long press
  * on the words opens the same sheet, as it does on a feed card.
  */
-export function CommentThread({
-  root,
-  postId,
-  here,
-  expanded,
-  onExpand,
-  onReply,
-  onMore,
-  highlightId,
-  onLayout,
-}: {
+export interface CommentThreadProps {
   root: PostComment
   postId: string
   /** The route a profile opened from here goes back to. */
@@ -45,7 +37,24 @@ export function CommentThread({
   /** The comment a notification pointed at, drawn tinted. */
   highlightId?: string | undefined
   onLayout?: (event: LayoutChangeEvent) => void
-}) {
+}
+
+/** Today's thread, or with `flags.v3Home` on the redesign's (`CommentThreadV3`). */
+export function CommentThread(props: CommentThreadProps) {
+  return useV3Home() ? <CommentThreadV3 {...props} /> : <CommentThreadCurrent {...props} />
+}
+
+function CommentThreadCurrent({
+  root,
+  postId,
+  here,
+  expanded,
+  onExpand,
+  onReply,
+  onMore,
+  highlightId,
+  onLayout,
+}: CommentThreadProps) {
   const styles = useStyles()
   const t = useT()
   const replies = useCommentReplies(postId, root._id, expanded)

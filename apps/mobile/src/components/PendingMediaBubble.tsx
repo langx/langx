@@ -9,6 +9,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native'
+import { useV3Home } from '../hooks/useV3Home'
 import { useT } from '../i18n'
 import type { PendingMedia } from '../lib/pendingMedia'
 import { DiscardUnsentButton } from './DiscardUnsentButton'
@@ -47,9 +48,14 @@ export function PendingMediaBubble({
   /** Only once it has failed: one still uploading has nothing to offer yet. */
   onLongPress: () => void
 }) {
-  const styles = useStyles()
-  const { colors } = useTheme()
+  const current = useStyles()
+  const redesigned = useStylesV3()
+  const v3Look = useV3Home()
+  const styles = v3Look ? redesigned : current
+  const { colors, v3 } = useTheme()
   const t = useT()
+  const muted = v3Look ? v3.colors.muted : colors.textMuted
+  const fillColor = v3Look ? v3.colors.blue : colors.accent
 
   const failed = item.progress.phase === 'failed'
   const ratio = item.width && item.height ? item.width / item.height : undefined
@@ -78,11 +84,7 @@ export function PendingMediaBubble({
         // A card, not the picture: once it lands the sender's bubble shows
         // no picture either, and the upload is no reason to show one.
         <View style={styles.audioRow}>
-          <Feather
-            name={item.kind === 'video' ? 'video' : 'camera'}
-            size={16}
-            color={colors.textMuted}
-          />
+          <Feather name={item.kind === 'video' ? 'video' : 'camera'} size={16} color={muted} />
           <Text style={styles.viewOnceTitle}>
             {t(item.kind === 'video' ? 'viewOnce.video' : 'viewOnce.photo')}
           </Text>
@@ -90,7 +92,7 @@ export function PendingMediaBubble({
             <View
               style={[
                 styles.trackFill,
-                { backgroundColor: colors.accent, width: `${Math.max(2, percent)}%` },
+                { backgroundColor: fillColor, width: `${Math.max(2, percent)}%` },
               ]}
             />
           </View>
@@ -130,12 +132,12 @@ export function PendingMediaBubble({
         </View>
       ) : (
         <View style={styles.audioRow}>
-          <Feather name="mic" size={16} color={colors.textMuted} />
+          <Feather name="mic" size={16} color={muted} />
           <View style={styles.track}>
             <View
               style={[
                 styles.trackFill,
-                { backgroundColor: colors.accent, width: `${Math.max(2, percent)}%` },
+                { backgroundColor: fillColor, width: `${Math.max(2, percent)}%` },
               ]}
             />
           </View>
@@ -148,12 +150,16 @@ export function PendingMediaBubble({
         <View style={styles.status}>
           {failed ? (
             <>
-              <Feather name="alert-circle" size={12} color={colors.danger} />
+              <Feather
+                name="alert-circle"
+                size={12}
+                color={v3Look ? v3.colors.danger : colors.danger}
+              />
               <Text style={styles.failedLabel}>{t('chat.notSentRetry')}</Text>
             </>
           ) : (
             <>
-              <ActivityIndicator size="small" />
+              <ActivityIndicator size="small" {...(v3Look ? { color: v3.colors.muted } : {})} />
               <Text style={styles.label}>{label}</Text>
             </>
           )}
@@ -236,4 +242,56 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   status: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
   label: { ...font.caption, color: colors.textFaint, fontVariant: ['tabular-nums'] },
   failedLabel: { ...font.caption, color: colors.danger },
+}))
+
+/**
+ * v3's look for the same bubble, behind `flags.v3Home` with the thread
+ * (V-Thread draws your sent bubble, not this one): the sent bubble's shape —
+ * v3's tile corner — still drained to an outline, since the message does not
+ * exist yet, at v3's two-point weight; the picture at the row corner, the
+ * track in v3's ring grey filling in your blue, and v3's type.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  bubble: {
+    alignSelf: 'flex-end',
+    borderRadius: v3.radius.tile,
+    borderWidth: 2,
+    gap: v3.space[4],
+    maxWidth: '78%',
+    padding: v3.space[8],
+  },
+  pending: { borderColor: v3.colors.line },
+  failed: { borderColor: v3.colors.danger, flexShrink: 1 },
+  failedRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: v3.space[8],
+    justifyContent: 'flex-end',
+  },
+  pressed: { opacity: 0.7 },
+  image: {
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.row,
+    overflow: 'hidden',
+    width: 220,
+  },
+  imageUnmeasured: { height: 220 },
+  veil: {
+    ...({ position: 'absolute' } as const),
+    backgroundColor: v3.colors.scrim,
+    borderRadius: v3.radius.row,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    top: 0,
+  },
+  progressOverlay: { alignItems: 'center', justifyContent: 'center' },
+  audioRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8], minWidth: 180 },
+  track: { backgroundColor: v3.colors.track, borderRadius: 2, flex: 1, height: 3 },
+  trackFill: { borderRadius: 2, height: 3 },
+  viewOnceTitle: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '600' },
+  caption: { ...v3.type.body, color: v3.colors.fg, lineHeight: 23 },
+  status: { alignItems: 'center', flexDirection: 'row', gap: v3.space[4] },
+  label: { ...v3.type.caption, color: v3.colors.muted, fontVariant: ['tabular-nums'] },
+  failedLabel: { ...v3.type.caption, color: v3.colors.danger },
 }))
