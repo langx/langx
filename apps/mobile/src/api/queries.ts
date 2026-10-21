@@ -4060,7 +4060,6 @@ export function useAdminBulkSuspend() {
   })
 }
 
-/** The account actions that are not a moderation decision: thaw, sign out, write to. */
 /** Everybody the operator allowed to use Copilot, newest first. */
 export function useAdminCopilotAccess() {
   return useQuery({
@@ -4083,6 +4082,7 @@ export function useSetAdminCopilotAccess() {
   })
 }
 
+/** The account actions that are not a moderation decision: thaw, sign out, write to. */
 export function useAdminUserAction() {
   const client = useQueryClient()
   return useMutation({

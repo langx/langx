@@ -70,6 +70,15 @@ export const COPILOT_RULES = {
    * request to be brief.
    */
   maxOutputTokens: 1024,
+  /**
+   * How long one request to the model may take, and how often a failed one
+   * is tried again. The SDK's own defaults are ten minutes and two retries —
+   * half an hour of a spinner with a unit of the allowance held, for an
+   * answer a person wanted while typing. Past this it is `no_answer`, and the
+   * unit is given back.
+   */
+  requestTimeoutMs: 30_000,
+  requestRetries: 1,
   /** Reply ideas offered at once. */
   replyIdeas: 3,
   /** What a person may ask Say it to put into words: a chat line, not a paragraph. */
