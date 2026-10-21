@@ -8868,6 +8868,15 @@ so a build that does not read it opens Discover as it always did.
   decided exactly as with the switch off; nothing is sent that was not sent
   before. It starts off because it is promotion, and promotion moves when
   Behic switches it rather than when a pull request merges.
+- **The limits nudge counts only limits a plan lifts.** It used to count three
+  refusals of any quota, so somebody refused by the media ceiling or the
+  translation fair-use ceiling — the same on both plans — was told "a plan
+  lifts them" and, with the switch on, sent to a paywall that lifts nothing of
+  the kind. It now counts refusals of a limit the free plan has and Pro does
+  not have at all (`REFUSALS_A_PLAN_LIFTS` in `promotions.ts`, read from
+  `PLAN_LIMITS`): today new conversations and translations, which is what its
+  mail names. This applies with the switch off too; it narrows who is told,
+  and never widens it.
 
 ## An earned gift skips somebody already paying for Pro
 

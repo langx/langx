@@ -581,17 +581,17 @@ It used to run any time between nine and nine, which with a daily mail in the
 picture would have let a nudge at ten in the morning take the day's one slot
 and leave the evening's real news with nowhere to go.
 
-| #   | Nudge                                   | Trigger                                               | Kind       |
-| --- | --------------------------------------- | ----------------------------------------------------- | ---------- |
-| 1   | Add a photo, and people will find you   | no `avatarUrl`, account > 48 h                        | promotions |
-| 2   | Your streak broke — repair it           | `streakRepairDay`: broke **yesterday**, repairable    | **streak** |
-| 3   | People are still practising without you | `lastActiveAt` 7–8 days ago (7–15 with the switch)    | promotions |
-| 4   | We will stop writing after this         | `lastActiveAt` 30–31 days ago (30–38)                 | promotions |
-| 5   | Your free week ends in two days         | `periodType: trial`, not renewing, ends within 2 days | promotions |
-| 6   | Your plan ended a week ago              | `churnedFrom` 7–8 days ago (7–15), still on free      | promotions |
-| 7   | You are running into the free limits    | refused 3 times in 3 days, still on free              | promotions |
-| 8   | You have N tokens waiting               | balance ≥ 200, nothing spent in a fortnight           | promotions |
-| 9   | Invite a friend                         | 14 days old, active, has invited nobody               | promotions |
+| #   | Nudge                                   | Trigger                                                                                   | Kind       |
+| --- | --------------------------------------- | ----------------------------------------------------------------------------------------- | ---------- |
+| 1   | Add a photo, and people will find you   | no `avatarUrl`, account > 48 h                                                            | promotions |
+| 2   | Your streak broke — repair it           | `streakRepairDay`: broke **yesterday**, repairable                                        | **streak** |
+| 3   | People are still practising without you | `lastActiveAt` 7–8 days ago (7–15 with the switch)                                        | promotions |
+| 4   | We will stop writing after this         | `lastActiveAt` 30–31 days ago (30–38)                                                     | promotions |
+| 5   | Your free week ends in two days         | `periodType: trial`, not renewing, ends within 2 days                                     | promotions |
+| 6   | Your plan ended a week ago              | `churnedFrom` 7–8 days ago (7–15), still on free                                          | promotions |
+| 7   | You are running into the free limits    | refused 3 times in 3 days by a limit Pro removes (new chats, translations), still on free | promotions |
+| 8   | You have N tokens waiting               | balance ≥ 200, nothing spent in a fortnight                                               | promotions |
+| 9   | Invite a friend                         | 14 days old, active, has invited nobody                                                   | promotions |
 
 **Where each one's button lands** is `PROMOTION_DESTINATIONS` in
 `email/templates.ts`, beside the copy: the photo nudge on Edit profile, the
