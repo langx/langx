@@ -4,11 +4,13 @@
  *
  * The faces are composed by the same `composeSvg` the route serves, so what
  * the sheet shows is what a client gets; only the grid and labels are added
- * here. 40 and 24 use the small cut and 96 the flat one, as the app would at
- * those display sizes.
+ * here. Each size uses the cut the app would draw at it: 480 and 96 the
+ * textured one, 40 and 24 the small one.
  *
  * Usage:
  *   cd apps/api && pnpm exec tsx scripts/render-avatar-contact-sheet.ts --out <dir>
+ *
+ * Without `--out` it writes to `./avatar-contact-sheet`.
  *
  * Reads nothing but `assets/avatars` and writes only files: no database, no
  * network, no env.
@@ -28,11 +30,9 @@ function argument(name: string): string | undefined {
   return at === -1 ? undefined : process.argv[at + 1]
 }
 
-const out = argument('--out')
-if (!out) {
-  console.error('Usage: tsx scripts/render-avatar-contact-sheet.ts --out <dir>')
-  process.exit(1)
-}
+// A default rather than a refusal: the script only ever writes PNGs into the
+// directory it is pointed at, and there is nothing to guard.
+const out = argument('--out') ?? 'avatar-contact-sheet'
 
 const lib = await loadAvatarLibrary()
 mkdirSync(out, { recursive: true })
