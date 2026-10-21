@@ -1,7 +1,11 @@
 import Feather from '@expo/vector-icons/Feather'
-import { Pressable, ScrollView, Text, View } from 'react-native'
+import { useEffect, useRef } from 'react'
+import { Animated, Pressable, ScrollView, Text, View } from 'react-native'
 import type { HandleTone } from '../../hooks/useHandleAvailability'
+import { useSelectPop } from '../../hooks/useSelectPop'
 import { useLocale, useT } from '../../i18n'
+import { selection } from '../../lib/haptics'
+import { POP_FROM_GLYPH } from '../../lib/selectPop'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { Button } from '../ui/Button'
 import { ICON_BUTTON_TARGET } from '../ui/IconButton'
@@ -67,6 +71,19 @@ export function HandleV3({
   const isRule = status.text === rule
   const statusStyle = [isRule ? styles.statusQuiet : styles.status, { color: toneColor }]
 
+  /*
+   * The name turning out to be free is the step's one answer, so the check
+   * lands with a pop and a tick — once per answer: a name typed on from a
+   * free one goes back to checking, and its own answer ticks again.
+   */
+  const free = status.tone === 'good'
+  const checkPop = useSelectPop(free, POP_FROM_GLYPH)
+  const wasFree = useRef(free)
+  useEffect(() => {
+    if (free && !wasFree.current) void selection()
+    wasFree.current = free
+  }, [free])
+
   return (
     <Screen fluid ground={v3.colors.bg}>
       <ScrollView
@@ -98,10 +115,10 @@ export function HandleV3({
             placeholder={t('onboarding.handlePlaceholder')}
             prefix={<Text style={styles.at}>@</Text>}
             suffix={
-              status.tone === 'good' ? (
-                <View style={styles.check}>
+              free ? (
+                <Animated.View style={[styles.check, { transform: [{ scale: checkPop }] }]}>
                   <Feather name="check" size={v3.icon.md} color={v3.colors.bg} />
-                </View>
+                </Animated.View>
               ) : null
             }
           />
@@ -118,7 +135,18 @@ export function HandleV3({
               {status.text}
             </Text>
           )}
-          {isRule ? null : <Text style={wizard.hint}>{rule}</Text>}
+          {/*
+            Kept in the layout while the line above says the same thing, at
+            opacity 0 and out of the reader's way, so the field's answers
+            arriving and going never move the button under the finger.
+          */}
+          <Text
+            style={[wizard.hint, isRule && styles.hidden]}
+            accessibilityElementsHidden={isRule}
+            importantForAccessibility={isRule ? 'no-hide-descendants' : 'auto'}
+          >
+            {rule}
+          </Text>
           {submitError ? <Text style={styles.error}>{submitError}</Text> : null}
         </View>
 
@@ -194,6 +222,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   statusQuiet: { ...v3.type.caption, paddingHorizontal: v3.space[4] },
   error: { ...v3.type.caption, color: v3.colors.danger, paddingHorizontal: v3.space[4] },
   pressed: { opacity: 0.6 },
+  hidden: { opacity: 0 },
   // A one-line target, so its height is the platform's minimum rather than the line's.
   retry: { justifyContent: 'center', minHeight: ICON_BUTTON_TARGET },
   invite: { gap: v3.space[6] },

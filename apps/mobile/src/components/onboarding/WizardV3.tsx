@@ -1,12 +1,19 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
 import { useFonts } from 'expo-font'
-import { useState, type ReactNode } from 'react'
-import { Pressable, Text, TextInput, View, type TextInputProps } from 'react-native'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { Animated, Pressable, Text, TextInput, View, type TextInputProps } from 'react-native'
 import Svg, { Path } from 'react-native-svg'
+import { useChangeHaptic } from '../../hooks/useChangeHaptic'
+import { useReduceMotion } from '../../hooks/useReduceMotion'
+import { useSelectPop } from '../../hooks/useSelectPop'
 import { useLocale, useT } from '../../i18n'
 import { ONBOARDING_STEPS, type OnboardingStep } from '../../lib/onboardingStep'
+import { POP_FROM_GLYPH } from '../../lib/selectPop'
+import { startEdgeOrigin } from '../../lib/startEdge'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
+import { EASE_OUT } from '../../lib/theme/motionAnimated'
+import { DELAY, DURATION } from '../../lib/theme/motionValues'
 import { IconButton } from '../ui/IconButton'
 
 /*
@@ -106,11 +113,55 @@ export function WizardHeaderV3({
           accessibilityValue={{ min: 1, max: total, now: index + 1 }}
           style={styles.bars}
         >
-          {steps.map((each, at) => (
-            <View key={each} style={[styles.bar, at <= index && styles.barDone]} />
-          ))}
+          {steps.map((each, at) =>
+            at === index ? (
+              <FillingBar key={each} />
+            ) : (
+              <View key={each} style={[styles.bar, at < index && styles.barDone]} />
+            ),
+          )}
         </View>
       </View>
+    </View>
+  )
+}
+
+/**
+ * This step's bar, filling from the start of the line as the step arrives —
+ * after the push has landed, so it is seen rather than played under the
+ * slide. Each step is its own screen, so it fills once per step; going back
+ * reveals a screen whose bar is already full.
+ *
+ * A scale, not a width, on the native driver: nothing is laid out again.
+ */
+function FillingBar() {
+  const styles = useStyles()
+  const { isRtl } = useLocale()
+  const reduceMotion = useReduceMotion()
+  const fill = useRef(new Animated.Value(0)).current
+  useEffect(() => {
+    if (reduceMotion) {
+      fill.setValue(1)
+      return
+    }
+    const animation = Animated.timing(fill, {
+      toValue: 1,
+      duration: DURATION.enter,
+      delay: DELAY.afterPush,
+      easing: EASE_OUT,
+      useNativeDriver: true,
+    })
+    animation.start()
+    return () => animation.stop()
+  }, [fill, reduceMotion])
+  return (
+    <View style={[styles.bar, styles.barTrack]}>
+      <Animated.View
+        style={[
+          styles.barFill,
+          { transformOrigin: startEdgeOrigin(isRtl), transform: [{ scaleX: fill }] },
+        ]}
+      />
     </View>
   )
 }
@@ -149,13 +200,20 @@ export function ChoiceRowV3({
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
+  // The tick lands rather than appears, and the choice ticks once — only on
+  // the row that was pressed, not on the one a radio let go of.
+  const pop = useSelectPop(selected, POP_FROM_GLYPH)
+  const markPress = useChangeHaptic(selected ? 'on' : 'off')
   return (
     <Pressable
       accessibilityRole={role}
       accessibilityState={{ checked: selected, disabled }}
       accessibilityLabel={accessibilityLabel ?? (detail ? `${label}, ${detail}` : label)}
       disabled={disabled}
-      onPress={onPress}
+      onPress={() => {
+        markPress()
+        onPress()
+      }}
       style={({ pressed }) => [
         styles.choice,
         tall && styles.choiceTall,
@@ -174,9 +232,11 @@ export function ChoiceRowV3({
           <Text style={styles.tagText}>{tag}</Text>
         </View>
       ) : (
-        <View style={[styles.ring, selected && styles.ringOn]}>
+        <Animated.View
+          style={[styles.ring, selected && styles.ringOn, { transform: [{ scale: pop }] }]}
+        >
           {selected ? <Feather name="check" size={v3.icon.xs} color={v3.colors.pillText} /> : null}
-        </View>
+        </Animated.View>
       )}
     </Pressable>
   )
@@ -284,6 +344,15 @@ const useStyles = makeStyles(({ v3 }) => ({
   bars: { flexDirection: 'row', gap: v3.space[4] },
   bar: { backgroundColor: v3.colors.track, borderRadius: v3.radius.pill, flex: 1, height: 8 },
   barDone: { backgroundColor: v3.colors.fg },
+  barTrack: { overflow: 'hidden' },
+  barFill: {
+    backgroundColor: v3.colors.fg,
+    bottom: 0,
+    end: 0,
+    position: 'absolute',
+    start: 0,
+    top: 0,
+  },
 
   choice: {
     alignItems: 'center',

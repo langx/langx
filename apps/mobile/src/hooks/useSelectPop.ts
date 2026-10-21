@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { AccessibilityInfo, Animated } from 'react-native'
 import { shouldPop } from '../lib/selectPop'
 import { EASE_POP } from '../lib/theme/motionAnimated'
@@ -43,7 +43,9 @@ export function useSelectPop(selected: boolean, from: number): Animated.Value {
     watchReduceMotion()
   }, [])
 
-  useEffect(() => {
+  // A layout effect, so the shrunk start is set before the frame that first
+  // draws the choice: an effect would paint it full size once, then shrink it.
+  useLayoutEffect(() => {
     const pop = shouldPop(was.current, selected, reduceMotionNow)
     was.current = selected
     if (!pop) return
