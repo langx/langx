@@ -119,16 +119,29 @@ function CommentRowV3({
 
   return (
     <View style={[styles.row, highlighted && styles.highlighted]}>
-      {/* Not a second button to the profile: the name beside it is that one. */}
-      <Avatar
-        url={comment.author.avatarUrl}
-        name={comment.author.displayName}
-        seed={comment.author._id}
-        size={reply ? REPLY_FACE : ROOT_FACE}
-      />
+      {/*
+        The face opens the profile, as it does in today's thread, where it sat
+        inside the name's button. Hidden from a screen reader, which already
+        has the name for that: one stop per person, not two.
+      */}
+      <Pressable
+        accessible={false}
+        importantForAccessibility="no-hide-descendants"
+        onPress={() => openProfile(comment.author.handle, here)}
+        style={({ pressed }) => pressed && styles.pressed}
+      >
+        <Avatar
+          url={comment.author.avatarUrl}
+          name={comment.author.displayName}
+          seed={comment.author._id}
+          size={reply ? REPLY_FACE : ROOT_FACE}
+        />
+      </Pressable>
       <View style={styles.column}>
+        {/* The line is 20 tall; the slop makes the name a target a thumb can find. */}
         <Pressable
           style={styles.who}
+          hitSlop={{ bottom: 4, top: 12 }}
           onPress={() => openProfile(comment.author.handle, here)}
           accessibilityRole="button"
         >
