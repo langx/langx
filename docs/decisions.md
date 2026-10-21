@@ -2095,6 +2095,7 @@ nothing, and a rule nobody knows about deters nobody.
 
 ## Referrals — the handle is the code, and the award waits for a real message
 
+> **Amended 20 October 2026 — see _A sticker pack can be given to a chat partner, behind a switch_ below.**
 > **Amended 18 October 2026 — see _Give a week, get a week, behind a switch_ below.**
 
 _Amended 5 September 2026: the invitee is now paid too — see the end of this
@@ -2375,6 +2376,8 @@ Turks & Caicos Islands and nothing else.
 
 ## A new account starts with tokens, and grants do not rank you
 
+> **Amended 20 October 2026 — see _A sticker pack can be given to a chat partner, behind a switch_ below.**
+
 A brand-new account had a balance of zero, which made the token store inert on
 day one: every row priced out, nothing to try, and no way to find out the
 economy is real. New accounts now start with `TOKEN_RULES.signupBonus`.
@@ -2404,6 +2407,66 @@ record of what someone did in them. `adjustment` is deliberately not a grant —
 it exists to correct a real award, so it has to land where that award did. The
 ledger row still carries every period key, so a recompute can always see where
 an award actually fell.
+
+## A sticker pack can be given to a chat partner, behind a switch
+
+**20 October 2026.** Behic asked whether store items can be gifted; the
+research answered "conditional yes, sticker packs first, and the Terms change
+before anything ships". This is that first step, built switched off:
+`flags.stickerGifts` in `appConfig`, default false, thrown with
+`scripts/maintenance.ts flag stickerGifts true`. Off, the endpoint refuses
+with `disabled`, the pack page draws nothing new, and every sentence in the two
+entries above stays true.
+
+**On, one of them stops being true.** "A second account earns its owner
+nothing they can use on the first" — a gift is the first path by which a
+throwaway account's tokens can reach another account, as an item. What bounds
+it is not the conversation threshold, which two accounts held by one person
+can clear by talking to themselves, but the caps times the price:
+`STICKER_GIFT_RULES.sendsPerWeek` (1) and `receivesPerMonth` (2), on packs
+priced 1,000–1,500, is at most about 3,000 tokens' worth of items a month into
+any one account — a few days of what an active person earns. That is the
+claim the switch trades the old sentence for, and the reason the caps are
+unique indexes rather than counts.
+
+**What a gift is.** The giver buys a new copy for the recipient; nothing the
+giver owns moves. A transfer would let the items a subscription hands out move
+to somebody who never paid, and money would be buying things for other
+people. The recipient's balance is untouched and no leaderboard moves:
+spending is not ranked. The row it leaves in the thread is written by the
+server, like a call's, and is refused everything a call's row is refused
+(`isServerRecord`) — no reply, reaction, correction, star, pin or withdrawal;
+hiding your copy and reporting stay.
+
+**What has to be true, all of it** (`modules/tokens/stickerGifts.ts`):
+
+- **A sticker pack with no condition** (`isGiftableCosmetic`). Frames and
+  titles are ranks and are not given in this step; anything with `requires`
+  describes the holder's own achievement. Streak freezes and day repairs are
+  never giftable: a streak triggers Pro gifts, and another person's tokens
+  protecting it would be tokens buying a piece of Pro.
+- **A chat partner**, through `assertConversationAccess` — participancy and
+  blocks in both directions, live — and never yourself or an official account.
+- **Adults at both ends** (`isAdult`), the newcomer hello's rule. A gift is a
+  known way for an adult to approach a 16- or 17-year-old.
+- **Each side 50 messages and the thread three days old**
+  (`stickerGiftThreadOpen`), the testimonial gate's numbers.
+- **A giver account at least 14 days old**, not frozen, not suspended.
+- **A recipient** not suspended, frozen or deleted, with nobody having
+  reported the other in either direction, under this month's cap, and not
+  sharing a network or an installation with the giver (`sharedOrigin`, the
+  referral's check). All of those read to the giver as `unavailable`, never
+  explained.
+- **They do not own it yet** — refused before anything is charged, and again
+  in the grant's filter.
+
+**One transaction.** Two documents change — the giver's `tokenSpent` and the
+recipient's `cosmetics` — so `purchase`'s single atomic update is not
+available, and `repairDay`'s compensating write would leave a moment where one
+person had paid for a pack the other did not have. The gift's row (whose unique
+indexes hold the idempotency and both caps), the charge, the grant, the
+message, the ledger line and the thread's last line commit together. The
+replica set Better Auth already needs is what makes that possible.
 
 ## Language levels are v1's four, not CEFR's six
 
