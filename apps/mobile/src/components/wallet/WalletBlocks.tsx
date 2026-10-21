@@ -1,16 +1,28 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Image } from 'expo-image'
-import { memo, type ReactNode } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { memo, useEffect, useRef, type ReactNode } from 'react'
+import { Pressable, Text, View } from 'react-native'
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated'
 import Svg, { Path } from 'react-native-svg'
+import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useLocale, useT } from '../../i18n'
 import type { StoreOffer } from '../../lib/storeOffers'
 import { stickerAsset } from '../../lib/stickerAssets'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
+import { DURATION, PRESS_SCALE_CARD, SPRING, TIMING, unlessReduced } from '../../lib/theme/motion'
 import { Avatar } from '../ui/Avatar'
 import { TokenGlyph } from '../store/StoreV3Blocks'
 import { Button } from '../ui/Button'
+import { CountUp } from '../ui/CountUp'
 import { ICON_BUTTON_TARGET, IconButton } from '../ui/IconButton'
+import { PressableScale } from '../ui/PressableScale'
+import { inkTrack, ProgressBar } from '../ui/ProgressBar'
 
 type Glyph = keyof typeof Feather.glyphMap
 
@@ -109,7 +121,12 @@ export interface WalletHeroView {
   /** The block's ground: a partner hue, ink on top in both schemes. */
   ground: string
   kicker: string
-  value: string
+  /**
+   * The balance to show. When it changes the figure rolls from what it showed
+   * to this over `DURATION.rise`, and bumps once if it went up. The screen
+   * decides when to hand a new one over — not while the hero is out of sight.
+   */
+  value: number
   unit: string
   earnedSpent: string
   /** The bar to the nearest frame or title, and the line that names it. */
@@ -127,24 +144,39 @@ export interface WalletHeroView {
  * says so with the History pill in its corner. The pill is drawn, not a second
  * button: two targets inside one would be a block that does two things.
  *
- * The bar is ink on the hue, as Me's next badge draws it, rather than the
- * kit's `ProgressBar`: that one's grey track all but disappears into the hue
- * after dark, where the fill and the track would both read as ink.
+ * The bar is ink on the hue, as Me's next badge draws it: the kit's
+ * `ProgressBar` with an ink track, since its own grey all but disappears into
+ * the hue after dark, where the fill and the track would both read as ink.
  */
 export function WalletHero({ view }: { view: WalletHeroView }) {
   const styles = useStyles()
   const { v3 } = useTheme()
-  const percent = Math.round(Math.min(1, Math.max(0, view.rung?.fraction ?? 0)) * 100)
+  const { locale } = useLocale()
+  const reduce = useReduceMotion()
+
+  // One bump when the balance goes up — the gift landing, a reward — and
+  // nothing when it goes down: a spend is not an event to celebrate.
+  const bump = useSharedValue(1)
+  const last = useRef(view.value)
+  useEffect(() => {
+    const rose = view.value > last.current
+    last.current = view.value
+    if (!rose) return
+    bump.set(
+      unlessReduced(reduce, 1, (to) =>
+        withSequence(withTiming(HERO_BUMP, TIMING.press), withSpring(to, SPRING.bounce)),
+      ),
+    )
+  }, [view.value, reduce, bump])
+  const bumpStyle = useAnimatedStyle(() => ({ transform: [{ scale: bump.get() }] }))
+
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityLabel={view.a11y}
       onPress={view.onPress}
-      style={({ pressed }) => [
-        styles.hero,
-        { backgroundColor: view.ground },
-        pressed && styles.pressed,
-      ]}
+      scaleTo={PRESS_SCALE_CARD}
+      style={[styles.hero, { backgroundColor: view.ground }]}
     >
       {/* The pill shares the kicker's line rather than the totals', so the
           totals and the rung keep the block's whole width in every language. */}
@@ -156,29 +188,41 @@ export function WalletHero({ view }: { view: WalletHeroView }) {
         </View>
       </View>
       <View style={styles.figure}>
-        <Text
-          style={[styles.numeral, !view.black && styles.titleFallback]}
-          // A figure in a fixed block: at the largest text sizes six digits
-          // would leave it. The unit beside it still scales in full.
-          maxFontSizeMultiplier={1.4}
-        >
-          {view.value}
-        </Text>
+        <Animated.View style={[styles.numeralBox, bumpStyle]}>
+          <CountUp
+            value={view.value}
+            from={view.value}
+            locale={locale}
+            reduce={reduce}
+            duration={DURATION.rise}
+            style={[styles.numeral, !view.black && styles.titleFallback]}
+            numberOfLines={0}
+            // A figure in a fixed block: at the largest text sizes six digits
+            // would leave it. The unit beside it still scales in full.
+            maxFontSizeMultiplier={1.4}
+          />
+        </Animated.View>
         <Text style={styles.unit}>{view.unit}</Text>
       </View>
       <Text style={styles.onHueBody}>{view.earnedSpent}</Text>
       {view.rung ? (
         <View style={styles.rung}>
-          <View style={styles.bar}>
-            <View style={[StyleSheet.absoluteFill, styles.barTrack]} />
-            <View style={[styles.barFill, { width: `${percent}%` }]} />
-          </View>
+          <ProgressBar
+            value={view.rung.fraction}
+            height={12}
+            fillColor={v3.colors.ink}
+            trackColor={inkTrack(v3.colors.ink)}
+            accessibilityLabel={view.rung.line}
+          />
           <Text style={styles.onHueBody}>{view.rung.line}</Text>
         </View>
       ) : null}
-    </Pressable>
+    </PressableScale>
   )
 }
+
+/** How far the balance swells on an increase before it lands on `SPRING.bounce`. */
+const HERO_BUMP = 1.06
 
 /**
  * The hourly gift as a big tile. Ready, it is the lilac block that opens it,
@@ -212,15 +256,12 @@ export function WalletGiftTile({
     )
   }
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityLabel={open.a11y}
       onPress={open.onPress}
-      style={({ pressed }) => [
-        styles.gift,
-        { backgroundColor: open.hue },
-        pressed && styles.pressed,
-      ]}
+      scaleTo={PRESS_SCALE_CARD}
+      style={[styles.gift, { backgroundColor: open.hue }]}
     >
       <View style={[styles.giftSquare, { backgroundColor: v3.colors.ink }]}>
         <Feather name="gift" size={v3.icon.xl} color={open.hue} />
@@ -232,7 +273,7 @@ export function WalletGiftTile({
       <View style={styles.inkPill}>
         <Text style={styles.inkPillLabel}>{open.label}</Text>
       </View>
-    </Pressable>
+    </PressableScale>
   )
 }
 
@@ -254,18 +295,20 @@ export function WalletCountTile({
 }) {
   const styles = useStyles()
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityLabel={a11y}
       onPress={onPress}
-      style={({ pressed }) => [styles.count, pressed && styles.countPressed]}
+      scaleTo={PRESS_SCALE_CARD}
+      touchStyle={styles.countTouch}
+      style={styles.count}
     >
       <View style={[styles.square, { backgroundColor: hue }]}>{glyph}</View>
       <View style={styles.flexText}>
         <Text style={styles.tileTitle}>{value}</Text>
         <Text style={styles.muted}>{label}</Text>
       </View>
-    </Pressable>
+    </PressableScale>
   )
 }
 
@@ -571,13 +614,11 @@ const useStyles = makeStyles(({ v3 }) => ({
   onHueBody: { ...v3.type.callout, color: v3.colors.ink, fontWeight: '600' },
   // Wraps, so a long balance pushes the unit under it rather than off the block.
   figure: { alignItems: 'flex-end', flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
+  // The bump scales round the figure's own centre, not the block's.
+  numeralBox: { flexShrink: 1 },
   numeral: { ...v3.type.numeral, color: v3.colors.ink, fontVariant: ['tabular-nums'] },
   unit: { ...v3.type.headline, color: v3.colors.ink, paddingBottom: v3.space[8] },
   rung: { gap: v3.space[6], paddingTop: v3.space[4] },
-  bar: { borderRadius: v3.radius.pill, flexDirection: 'row', height: 12, overflow: 'hidden' },
-  // Ink at a fifth, as Me's next badge has it: a track that reads on every hue.
-  barTrack: { backgroundColor: v3.colors.ink, opacity: 0.18 },
-  barFill: { backgroundColor: v3.colors.ink, borderRadius: v3.radius.pill },
   heroHead: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8] },
   heroHeadText: { flex: 1 },
   // Ink on the hue in both schemes, with the palette's one white that stays
@@ -613,6 +654,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   tileTitle: { ...v3.type.headline, color: v3.colors.fg },
 
+  countTouch: { flex: 1 },
   count: {
     alignItems: 'center',
     backgroundColor: v3.colors.surface,
@@ -623,7 +665,6 @@ const useStyles = makeStyles(({ v3 }) => ({
     minHeight: 64,
     padding: v3.space[12],
   },
-  countPressed: { backgroundColor: v3.colors.line },
   square: {
     alignItems: 'center',
     borderRadius: v3.radius.icon,

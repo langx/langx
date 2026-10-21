@@ -368,7 +368,7 @@ export function StreakLadder({ title, rungs }: { title: string; rungs: readonly 
               <ProgressBar
                 value={rung.progress.value}
                 height={10}
-                color={v3.hues.tangerine}
+                fillColor={v3.hues.tangerine}
                 accessibilityLabel={rung.progress.label}
               />
             ) : null}

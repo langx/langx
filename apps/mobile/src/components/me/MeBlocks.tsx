@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import type { ReactNode } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { useLocale } from '../../i18n'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
 import { Avatar } from '../ui/Avatar'
@@ -11,6 +11,7 @@ import { PressableScale } from '../ui/PressableScale'
 import { ProBadge } from '../ui/ProBadge'
 import { ProgressRing } from '../ui/ProgressRing'
 import { Skeleton } from '../ui/Skeleton'
+import { inkTrack, ProgressBar } from '../ui/ProgressBar'
 import { TitleBadge } from '../ui/TitleBadge'
 import { FlameGlyph } from '../ui/StreakFlame'
 
@@ -384,7 +385,7 @@ export function MeNextBadge({
   action?: { label: string; icon: Glyph; onPress: () => void } | undefined
 }) {
   const styles = useStyles()
-  const percent = Math.round(Math.min(1, Math.max(0, fraction)) * 100)
+  const { v3 } = useTheme()
   return (
     <View style={[styles.badge, { backgroundColor: hue }]}>
       <View style={styles.badgeHead}>
@@ -398,13 +399,14 @@ export function MeNextBadge({
         </View>
       </View>
       {/* The words above already say how far; the bar is the picture of it. */}
-      <View
-        style={styles.bar}
-        accessibilityElementsHidden
-        importantForAccessibility="no-hide-descendants"
-      >
-        <View style={[StyleSheet.absoluteFill, styles.barTrack]} />
-        <View style={[styles.barFill, { width: `${percent}%` }]} />
+      <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+        <ProgressBar
+          value={fraction}
+          height={12}
+          fillColor={v3.colors.ink}
+          trackColor={inkTrack(v3.colors.ink)}
+          accessibilityLabel={progress}
+        />
       </View>
       {action ? (
         <Button
@@ -771,15 +773,6 @@ const useStyles = makeStyles(({ v3 }) => ({
   onHueBody: { ...v3.type.callout, color: v3.colors.ink, fontWeight: '600' },
   onHueRowTitle: { ...v3.type.button, color: v3.colors.ink },
   onHueCaption: { ...v3.type.caption, color: v3.colors.ink, fontWeight: '600' },
-  bar: {
-    borderRadius: v3.radius.pill,
-    flexDirection: 'row',
-    height: 12,
-    overflow: 'hidden',
-  },
-  // Ink at a fifth, as the drawing has it: a track that reads on every hue.
-  barTrack: { backgroundColor: v3.colors.ink, opacity: 0.18 },
-  barFill: { backgroundColor: v3.colors.ink, borderRadius: v3.radius.pill },
   badgeAction: { alignSelf: 'flex-start', width: 'auto' },
 
   group: {
