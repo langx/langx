@@ -9,6 +9,7 @@ import {
   withRecentReaction,
   type PickerEmoji,
 } from '../lib/emojiPicker'
+import { useV3Home } from '../hooks/useV3Home'
 import { FLAG_KEYS, readJsonFlag, writeJsonFlag } from '../lib/localFlags'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
@@ -32,14 +33,29 @@ const TAB_ICONS: Record<Tab, string> = {
 const COLUMNS = 8
 const CELL = 40
 const ROWS = 6
+/**
+ * The picker's emoji, in both looks: a picture in the grid's 40 cell, which
+ * the two looks share, not a line of type.
+ */
+const GLYPH_TEXT = { fontSize: 26, lineHeight: 32 } as const
+/**
+ * Ten tabs leave no room to widen a 32pt tab, so v3 lifts it to the 44pt
+ * target in height only: 6 above and below stays inside the 8 that separate
+ * the row from the search pill and the grid.
+ */
+const TAB_SLOP = { top: 6, bottom: 6 } as const
 
 /**
  * Every emoji, for a reaction the strip does not carry. Opened by the strip's
  * "+" inside the message menu, and answers with one emoji through `onPick`.
  */
 export function ReactionPicker({ onPick }: { onPick: (emoji: string) => void }) {
-  const { colors } = useTheme()
-  const styles = useStyles()
+  const { colors, v3 } = useTheme()
+  const current = useStyles()
+  const redesigned = useStylesV3()
+  const v3Look = useV3Home()
+  const styles = v3Look ? redesigned : current
+  const faint = v3Look ? v3.colors.muted : colors.textFaint
   const t = useT()
   const [query, setQuery] = useState('')
   const [tab, setTab] = useState<Tab>('smileys')
@@ -80,12 +96,12 @@ export function ReactionPicker({ onPick }: { onPick: (emoji: string) => void }) 
   return (
     <View style={styles.root}>
       <View style={styles.searchRow}>
-        <Ionicons name="search" size={17} color={colors.textFaint} />
+        <Ionicons name="search" size={17} color={faint} />
         <TextInput
           value={query}
           onChangeText={setQuery}
           placeholder={t('messageMenu.emojiSearch')}
-          placeholderTextColor={colors.textFaint}
+          placeholderTextColor={faint}
           style={styles.search}
           autoCorrect={false}
           autoCapitalize="none"
@@ -101,6 +117,7 @@ export function ReactionPicker({ onPick }: { onPick: (emoji: string) => void }) 
               accessibilityRole="tab"
               accessibilityLabel={t(`messageMenu.emojiGroups.${id}`)}
               accessibilityState={{ selected: tab === id }}
+              hitSlop={v3Look ? TAB_SLOP : undefined}
               onPress={() => setTab(id)}
               style={[styles.tab, tab === id && styles.tabChosen]}
             >
@@ -108,7 +125,15 @@ export function ReactionPicker({ onPick }: { onPick: (emoji: string) => void }) 
                 // The icon set types its own names; the table above is plain data.
                 name={TAB_ICONS[id] as never}
                 size={18}
-                color={tab === id ? colors.accent : colors.textMuted}
+                color={
+                  v3Look
+                    ? tab === id
+                      ? v3.colors.pillText
+                      : v3.colors.muted
+                    : tab === id
+                      ? colors.accent
+                      : colors.textMuted
+                }
               />
             </Pressable>
           ))}
@@ -176,11 +201,65 @@ const useStyles = makeStyles(({ colors, spacing, radius }) => ({
     width: `${100 / COLUMNS}%`,
   },
   cellPressed: { backgroundColor: colors.fill },
-  glyph: { fontSize: 26, lineHeight: 32 },
+  glyph: GLYPH_TEXT,
   empty: {
     color: colors.textMuted,
     fontSize: 15,
     paddingVertical: spacing.xl,
+    textAlign: 'center',
+  },
+}))
+
+/**
+ * v3's look for the same picker, behind `flags.v3Home` (no board draws it; it
+ * follows the v3 search fields and chips): the grey search pill, the chosen
+ * tab as the ink pill v3 draws every chosen chip in, and v3's type. The grid's
+ * geometry is the current look's, so the list windows the same rows.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  root: { alignSelf: 'center', maxWidth: REACTION_PICKER_WIDTH, width: '100%' },
+  searchRow: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.pill,
+    flexDirection: 'row',
+    gap: v3.space[10],
+    minHeight: 48,
+    paddingHorizontal: v3.space[16],
+  },
+  search: {
+    color: v3.colors.fg,
+    flex: 1,
+    fontSize: v3.type.body.fontSize,
+    paddingVertical: v3.space[12],
+  },
+  tabs: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: v3.space[8],
+  },
+  tab: {
+    alignItems: 'center',
+    borderRadius: v3.radius.pill,
+    height: 32,
+    justifyContent: 'center',
+    width: 32,
+  },
+  tabChosen: { backgroundColor: v3.colors.pill },
+  grid: { height: CELL * ROWS, marginTop: v3.space[8] },
+  cell: {
+    alignItems: 'center',
+    borderRadius: v3.radius.icon,
+    height: CELL,
+    justifyContent: 'center',
+    width: `${100 / COLUMNS}%`,
+  },
+  cellPressed: { backgroundColor: v3.colors.surface },
+  glyph: GLYPH_TEXT,
+  empty: {
+    ...v3.type.callout,
+    color: v3.colors.muted,
+    paddingVertical: v3.space[24],
     textAlign: 'center',
   },
 }))

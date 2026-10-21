@@ -12,22 +12,30 @@ import {
   useAdminDecision,
   useAdminUser,
   useAdminUserAction,
+  useSetAdminCopilotAccess,
   type AdminUserDto,
 } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
+import {
+  AdminBlockV3,
+  AdminCaptionV3,
+  AdminFactsV3,
+  AdminFieldV3,
+  AdminHeadingV3,
+  AdminNoteV3,
+  AdminScreenV3,
+  useAdminWide,
+} from '../../../src/components/admin/AdminKitV3'
 import { LinkedAccounts } from '../../../src/components/admin/LinkedAccounts'
 import { MoneyTimeline } from '../../../src/components/admin/MoneyTimeline'
 import { Button } from '../../../src/components/ui/Button'
-import { Callout } from '../../../src/components/ui/Callout'
-import { Card } from '../../../src/components/ui/Card'
-import { FormField } from '../../../src/components/ui/FormField'
-import { Screen } from '../../../src/components/ui/Screen'
-import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
+import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
+import { Toggle } from '../../../src/components/ui/Toggle'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { ADMIN, WARNINGS } from '../../../src/lib/adminStrings'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
-import { goBackTo } from '../../../src/lib/navigation'
-import { makeStyles } from '../../../src/lib/theme'
+import { makeStyles, useTheme } from '../../../src/lib/theme'
+import { partnerHueFor } from '../../../src/lib/theme/partnerHue'
 import { showToast } from '../../../src/lib/toast'
 
 /**
@@ -41,10 +49,13 @@ import { showToast } from '../../../src/lib/toast'
  * A permanent suspension is deliberately **not** offered here. One should be
  * reached from the report that justifies it, where the evidence is on the same
  * screen; a search box is the wrong place to end somebody's account forever.
+ *
+ * Drawn from `V-Admin`: on a desk what is true about the account sits on the
+ * start side and what can be done on the end side; on a phone it is one
+ * column in the order it always had.
  */
 export default function AdminUsersScreen() {
   useScreenInteractive()
-  const styles = useStyles()
   // A row in the subscribers list lands here with the handle already typed.
   const params = useLocalSearchParams<{ q?: string }>()
   const [query, setQuery] = useState(params.q ?? '')
@@ -65,10 +76,8 @@ export default function AdminUsersScreen() {
 
   return (
     <AdminGate>
-      <Screen scroll fluid>
-        <ScreenHeader title={ADMIN.users.title} onBack={() => goBackTo('/(app)/admin')} />
-
-        <FormField
+      <AdminScreenV3 title={ADMIN.users.title} back="/(app)/admin">
+        <AdminFieldV3
           label={ADMIN.users.search}
           value={query}
           onChangeText={setQuery}
@@ -77,24 +86,23 @@ export default function AdminUsersScreen() {
           returnKeyType="search"
         />
 
-        {found.isError ? (
-          <Callout tone="info">
-            <Text style={styles.calloutBody}>{ADMIN.users.notFound}</Text>
-          </Callout>
-        ) : null}
+        {found.isError ? <AdminNoteV3 tone="info">{ADMIN.users.notFound}</AdminNoteV3> : null}
         {found.isFetching && !found.data ? (
-          <Text style={styles.searching}>{ADMIN.common.loading}</Text>
+          <AdminCaptionV3>{ADMIN.common.loading}</AdminCaptionV3>
         ) : null}
         {found.data ? <Found data={found.data} /> : null}
-      </Screen>
+      </AdminScreenV3>
     </AdminGate>
   )
 }
 
 function Found({ data }: { data: AdminUserDto }) {
   const styles = useStyles()
+  const { v3 } = useTheme()
+  const wide = useAdminWide()
   const action = useAdminUserAction()
   const decide = useAdminDecision()
+  const copilot = useSetAdminCopilotAccess()
   const [message, setMessage] = useState('')
   const [days, setDays] = useState('7')
   const [giftMonths, setGiftMonths] = useState<ProGiftMonths>(1)
@@ -216,6 +224,15 @@ function Found({ data }: { data: AdminUserDto }) {
     }
   }
 
+  async function setCopilot(allowed: boolean) {
+    try {
+      await copilot.mutateAsync({ userId: user.userId, allowed })
+      showToast(allowed ? ADMIN.users.copilot.allowed : ADMIN.users.copilot.revoked)
+    } catch {
+      showToast(ADMIN.common.failed)
+    }
+  }
+
   async function sendMessage() {
     try {
       const result = (await action.mutateAsync({
@@ -230,94 +247,105 @@ function Found({ data }: { data: AdminUserDto }) {
     }
   }
 
-  return (
-    <View style={styles.found}>
-      <Text style={styles.name}>
-        {user.displayName} {who}
-      </Text>
-      <Text style={styles.muted}>
-        {ADMIN.users.plan}: {user.tier} · {ADMIN.users.joined} {user.createdAt.slice(0, 10)} ·{' '}
-        {ADMIN.users.lastSeen} {user.lastActiveAt?.slice(0, 10) ?? ADMIN.users.never}
-      </Text>
-      <Text style={styles.muted}>
-        {ADMIN.users.email}: {user.email ?? '—'}
-        {user.emailVerified ? '' : ` (${ADMIN.users.unverified})`}
-      </Text>
-      {user.build ? (
-        <Text style={styles.muted}>
-          {ADMIN.users.build}: {user.build.platform} {user.build.version}
-        </Text>
-      ) : null}
-      <Text style={styles.muted}>
-        {ADMIN.users.counts}: {user.counts.reportsAgainst} {ADMIN.users.reportsAgainst} ·{' '}
-        {user.counts.reportsFiled} {ADMIN.users.reportsFiled} · {user.counts.blockedBy}{' '}
-        {ADMIN.users.blockedBy}
-      </Text>
+  const identity = (
+    <>
+      <View style={styles.who}>
+        <View style={[styles.mark, { backgroundColor: v3.hues[partnerHueFor(user.userId)] }]}>
+          <Text style={styles.markText}>{user.displayName.slice(0, 2).toUpperCase()}</Text>
+        </View>
+        <View style={styles.whoText}>
+          <Text style={styles.name} selectable>
+            {user.displayName} {who}
+          </Text>
+          <Text style={styles.muted}>
+            {ADMIN.users.plan}: {user.tier} · {ADMIN.users.joined} {user.createdAt.slice(0, 10)} ·{' '}
+            {ADMIN.users.lastSeen} {user.lastActiveAt?.slice(0, 10) ?? ADMIN.users.never}
+          </Text>
+        </View>
+      </View>
 
       {user.suspension ? (
-        <Callout tone="error">
-          <Text style={styles.calloutBody}>{ADMIN.users.suspended}</Text>
-        </Callout>
+        <AdminNoteV3 tone="danger" icon="slash">
+          {ADMIN.users.suspended}
+        </AdminNoteV3>
       ) : null}
       {user.tokenFrozenAt ? (
-        <Callout tone="warning">
-          <Text style={styles.calloutBody}>{ADMIN.users.tokensFrozen}</Text>
-        </Callout>
+        <AdminNoteV3 tone="warning">{ADMIN.users.tokensFrozen}</AdminNoteV3>
       ) : null}
 
+      <AdminFactsV3
+        rows={[
+          {
+            key: 'email',
+            label: ADMIN.users.email,
+            value: `${user.email ?? '—'}${user.emailVerified ? '' : ` (${ADMIN.users.unverified})`}`,
+          },
+          ...(user.build
+            ? [
+                {
+                  key: 'build',
+                  label: ADMIN.users.build,
+                  value: `${user.build.platform} ${user.build.version}`,
+                },
+              ]
+            : []),
+          {
+            key: 'counts',
+            label: ADMIN.users.counts,
+            value: `${user.counts.reportsAgainst} ${ADMIN.users.reportsAgainst} · ${user.counts.reportsFiled} ${ADMIN.users.reportsFiled} · ${user.counts.blockedBy} ${ADMIN.users.blockedBy}`,
+          },
+        ]}
+      />
+    </>
+  )
+
+  const diagnosis = (
+    <>
       {/* ── why Discover looks the way it does ── */}
-      <Text style={styles.heading}>{ADMIN.diagnose.discovery}</Text>
-      <Text style={styles.hint}>{ADMIN.diagnose.discoveryHint}</Text>
-      <Card>
-        {data.discovery.steps.map((step) => (
-          <Text key={step.filter} style={styles.row}>
-            {step.filter} · {step.remaining}
-          </Text>
-        ))}
-      </Card>
+      <AdminHeadingV3 title={ADMIN.diagnose.discovery} hint={ADMIN.diagnose.discoveryHint} />
+      <AdminFactsV3
+        rows={data.discovery.steps.map((step) => ({
+          key: step.filter,
+          label: step.filter,
+          value: String(step.remaining),
+        }))}
+      />
       {data.discovery.discoverable ? null : (
-        <Callout tone="warning">
-          <Text style={styles.calloutBody}>{ADMIN.diagnose.notDiscoverable}</Text>
-        </Callout>
+        <AdminNoteV3 tone="warning">{ADMIN.diagnose.notDiscoverable}</AdminNoteV3>
       )}
-      <Text style={styles.muted}>
+      <AdminCaptionV3>
         {ADMIN.diagnose.languages}: {data.discovery.nativeLanguages.join(', ')} →{' '}
         {data.discovery.learning.join(', ')}
-      </Text>
+      </AdminCaptionV3>
 
       {/* ── why no notification arrives ── */}
-      <Text style={styles.heading}>{ADMIN.diagnose.push}</Text>
+      <AdminHeadingV3 title={ADMIN.diagnose.push} />
       {data.push.devices.length === 0 ? (
-        <Callout tone="warning">
-          <Text style={styles.calloutBody}>{ADMIN.diagnose.noDevices}</Text>
-        </Callout>
+        <AdminNoteV3 tone="warning">{ADMIN.diagnose.noDevices}</AdminNoteV3>
       ) : (
-        <Card>
-          {data.push.devices.map((device, index) => (
-            <Text key={`${device.platform}-${index}`} style={styles.row}>
-              {device.platform} · {device.pushEnabled ? 'on' : ADMIN.diagnose.deviceOff} ·{' '}
-              {device.locale ?? '—'}
-            </Text>
-          ))}
-        </Card>
+        <AdminFactsV3
+          rows={data.push.devices.map((device, index) => ({
+            key: `${device.platform}-${index}`,
+            label: device.platform,
+            value: `${device.pushEnabled ? 'on' : ADMIN.diagnose.deviceOff} · ${device.locale ?? '—'}`,
+          }))}
+        />
       )}
       {data.push.suppression ? (
-        <Callout tone="error">
-          <Text style={styles.calloutBody}>
-            {ADMIN.diagnose.suppressed} ({data.push.suppression.reason})
-          </Text>
-        </Callout>
+        <AdminNoteV3 tone="danger" icon="mail">
+          {`${ADMIN.diagnose.suppressed} (${data.push.suppression.reason})`}
+        </AdminNoteV3>
       ) : null}
-      <Card>
-        {data.push.prefs.map((pref) => (
-          <Text key={pref.type} style={styles.row}>
-            {pref.type} · push {pref.push ? 'on' : 'off'} · email {pref.email ? 'on' : 'off'}
-          </Text>
-        ))}
-      </Card>
+      <AdminFactsV3
+        rows={data.push.prefs.map((pref) => ({
+          key: pref.type,
+          label: pref.type,
+          value: `push ${pref.push ? 'on' : 'off'} · email ${pref.email ? 'on' : 'off'}`,
+        }))}
+      />
 
       {/* ── did their old account come back ── */}
-      <Text style={styles.heading}>{ADMIN.diagnose.legacy}</Text>
+      <AdminHeadingV3 title={ADMIN.diagnose.legacy} />
       <Text style={styles.row}>
         {data.legacy.staged
           ? `${ADMIN.diagnose.staged} · ${
@@ -325,148 +353,214 @@ function Found({ data }: { data: AdminUserDto }) {
             } · ${data.legacy.restored ? ADMIN.diagnose.restored : '—'}`
           : ADMIN.diagnose.nothingStaged}
       </Text>
+    </>
+  )
 
-      {/* ── what can be done ── */}
-      <Text style={styles.heading}>{ADMIN.users.message}</Text>
-      <Text style={styles.hint}>{ADMIN.users.messageHint}</Text>
-      <Text style={styles.hint}>{ADMIN.users.presetsHint}</Text>
-      <View style={styles.months}>
+  /* ── what can be done ── */
+  const messageBlock = (
+    <>
+      <AdminHeadingV3 title={ADMIN.users.message} hint={ADMIN.users.messageHint} />
+      <AdminCaptionV3>{ADMIN.users.presetsHint}</AdminCaptionV3>
+      {/* The chosen preset is the ink pill: the screen's one yellow is Give Pro. */}
+      <View style={styles.presets}>
         {REPORT_REASONS.map((reason) => (
           <Button
             key={reason}
             label={reason.replace(/_/g, ' ')}
             size="small"
-            variant={message === WARNINGS[reason] ? 'primary' : 'secondary'}
+            variant={message === WARNINGS[reason] ? 'ink' : 'secondary'}
             onPress={() => setMessage(WARNINGS[reason])}
+            style={styles.preset}
           />
         ))}
       </View>
-      <FormField value={message} onChangeText={setMessage} multiline numberOfLines={4} />
-      <View style={styles.actions}>
-        <Button
-          label={ADMIN.users.send}
-          variant="secondary"
-          disabled={message.trim().length === 0}
-          onPress={() => sendMessage()}
-        />
-      </View>
+      <AdminFieldV3
+        value={message}
+        onChangeText={setMessage}
+        multiline
+        numberOfLines={4}
+        accessibilityLabel={ADMIN.users.message}
+      />
+      <Button
+        label={ADMIN.users.send}
+        variant="secondary"
+        icon="send"
+        disabled={message.trim().length === 0}
+        onPress={() => sendMessage()}
+      />
+    </>
+  )
 
-      <FormField
+  const moderation = (
+    <>
+      <AdminHeadingV3 title={ADMIN.users.moderation} />
+      <AdminFieldV3
         label={ADMIN.reports.days}
         value={days}
         onChangeText={setDays}
         keyboardType="number-pad"
       />
-      <View style={styles.actions}>
-        <Button label={ADMIN.users.suspend} variant="danger" onPress={suspend} />
-        {user.suspension ? (
-          <Button label={ADMIN.users.lift} variant="secondary" onPress={lift} />
-        ) : null}
-        {user.tokenFrozenAt ? (
-          <Button
-            label={ADMIN.users.unfreeze}
-            variant="secondary"
-            onPress={() => run('unfreeze-tokens')}
-          />
-        ) : null}
-        {user.avatarUrl ? (
-          <Button label={ADMIN.users.removeAvatar} variant="danger" onPress={removeAvatar} />
-        ) : null}
+      <Button label={ADMIN.users.suspend} variant="danger" onPress={suspend} />
+      {user.suspension ? (
+        <Button label={ADMIN.users.lift} variant="secondary" onPress={lift} />
+      ) : null}
+      {user.tokenFrozenAt ? (
         <Button
-          label={ADMIN.users.signOut}
-          variant="neutral"
-          onPress={() => run('sign-out', ADMIN.users.confirmSignOut(who))}
+          label={ADMIN.users.unfreeze}
+          variant="secondary"
+          onPress={() => run('unfreeze-tokens')}
         />
-      </View>
+      ) : null}
+      {user.avatarUrl ? (
+        <Button label={ADMIN.users.removeAvatar} variant="danger" onPress={removeAvatar} />
+      ) : null}
+      <Button
+        label={ADMIN.users.signOut}
+        variant="neutral"
+        onPress={() => run('sign-out', ADMIN.users.confirmSignOut(who))}
+      />
 
-      {/* ── who else this might be ── */}
-      <LinkedAccounts key={user.userId} userId={user.userId} />
+      {/* ── Copilot, per account ── */}
+      <AdminHeadingV3 title={ADMIN.users.copilot.title} />
+      <AdminBlockV3 style={styles.toggleRow}>
+        <Text style={styles.toggleText}>{ADMIN.users.copilot.hint}</Text>
+        <Toggle
+          value={user.copilotAccess}
+          onValueChange={(next) => void setCopilot(next)}
+          busy={copilot.isPending}
+          accessibilityLabel={ADMIN.users.copilot.title}
+        />
+      </AdminBlockV3>
+    </>
+  )
 
-      {/* ── what they have been given and what they have paid ── */}
-      <MoneyTimeline key={user.userId} userId={user.userId} />
-
-      {/* ── Pro as a gift ── */}
-      <Text style={styles.heading}>{ADMIN.users.gift.title}</Text>
+  /* ── Pro as a gift ── */
+  const gift = (
+    <>
+      <AdminHeadingV3 title={ADMIN.users.gift.title} />
       {user.plan.lifetime ? (
-        <Text style={styles.muted}>{ADMIN.users.gift.lifetime}</Text>
+        <AdminCaptionV3>{ADMIN.users.gift.lifetime}</AdminCaptionV3>
       ) : (
         <>
-          <Text style={styles.hint}>{ADMIN.users.gift.hint}</Text>
-          <View style={styles.months}>
-            {PRO_GIFT_MONTHS.map((months) => (
-              <Button
-                key={months}
-                label={ADMIN.users.gift.months(months)}
-                size="small"
-                variant={months === giftMonths ? 'primary' : 'secondary'}
-                onPress={() => setGiftMonths(months)}
-              />
-            ))}
-          </View>
-          <FormField label={ADMIN.users.gift.note} value={giftNote} onChangeText={setGiftNote} />
-          <Text style={styles.muted}>{ADMIN.users.gift.preview(giftEnds)}</Text>
+          <AdminCaptionV3>{ADMIN.users.gift.hint}</AdminCaptionV3>
+          <SegmentedControl
+            options={PRO_GIFT_MONTHS.map((months) => ({
+              value: String(months),
+              label: ADMIN.users.gift.months(months),
+            }))}
+            selected={[String(giftMonths)]}
+            onToggle={(value) => setGiftMonths(Number(value) as ProGiftMonths)}
+            accessibilityLabel={ADMIN.users.gift.title}
+          />
+          <AdminFieldV3 label={ADMIN.users.gift.note} value={giftNote} onChangeText={setGiftNote} />
+          <AdminCaptionV3>{ADMIN.users.gift.preview(giftEnds)}</AdminCaptionV3>
           {user.plan.subscribed ? (
-            <Callout tone="warning">
-              <Text style={styles.calloutBody}>{ADMIN.users.gift.subscribed}</Text>
-            </Callout>
+            <AdminNoteV3 tone="warning">{ADMIN.users.gift.subscribed}</AdminNoteV3>
           ) : null}
-          <Button label={ADMIN.users.gift.give} variant="secondary" onPress={givePro} />
+          {/* The screen's one yellow: the only thing here that gives. */}
+          <Button label={ADMIN.users.gift.give} icon="gift" onPress={givePro} />
         </>
       )}
+    </>
+  )
+
+  const giftsAndHistory = (
+    <>
       {user.gifts.length > 0 ? (
         <>
-          <Text style={styles.hint}>{ADMIN.users.gift.list}</Text>
-          <Card>
-            {user.gifts.map((gift) => (
-              <Text key={gift._id} style={styles.row}>
-                {ADMIN.users.gift.row(
-                  gift.weeks
-                    ? ADMIN.users.gift.weeksShort(gift.weeks)
-                    : ADMIN.users.gift.monthsShort(gift.months),
-                  [
-                    gift.source,
-                    gift.status,
-                    ...(gift.endsAt ? [ADMIN.users.gift.until(gift.endsAt.slice(0, 10))] : []),
-                  ].join(' · '),
-                )}
-              </Text>
-            ))}
-          </Card>
+          <AdminHeadingV3 title={ADMIN.users.gift.list} />
+          <AdminFactsV3
+            rows={user.gifts.map((entry) => ({
+              key: entry._id,
+              label: entry.weeks
+                ? ADMIN.users.gift.weeksShort(entry.weeks)
+                : ADMIN.users.gift.monthsShort(entry.months),
+              value: [
+                entry.source,
+                entry.status,
+                ...(entry.endsAt ? [ADMIN.users.gift.until(entry.endsAt.slice(0, 10))] : []),
+              ].join(' · '),
+            }))}
+          />
         </>
       ) : null}
 
-      <Text style={styles.heading}>{ADMIN.users.history}</Text>
+      <AdminHeadingV3 title={ADMIN.users.history} />
       {user.actions.length === 0 ? (
-        <Text style={styles.muted}>{ADMIN.users.noHistory}</Text>
+        <AdminCaptionV3>{ADMIN.users.noHistory}</AdminCaptionV3>
       ) : (
-        <Card>
-          {user.actions.map((entry) => (
-            <Text key={`${entry.at}-${entry.action}`} style={styles.row}>
-              {entry.at.slice(0, 16).replace('T', ' ')} · {entry.action}
-            </Text>
-          ))}
-        </Card>
+        <AdminFactsV3
+          rows={user.actions.map((entry) => ({
+            key: `${entry.at}-${entry.action}`,
+            label: entry.at.slice(0, 16).replace('T', ' '),
+            value: entry.action,
+          }))}
+        />
       )}
+    </>
+  )
+
+  /* ── who else this might be, and what they have been given and paid ── */
+  const linked = <LinkedAccounts key={`linked-${user.userId}`} userId={user.userId} />
+  const money = <MoneyTimeline key={`money-${user.userId}`} userId={user.userId} />
+
+  if (wide) {
+    return (
+      <View style={styles.split}>
+        <View style={styles.start}>
+          {identity}
+          {diagnosis}
+          {linked}
+          {money}
+          {giftsAndHistory}
+        </View>
+        <View style={styles.end}>
+          {messageBlock}
+          {moderation}
+          {gift}
+        </View>
+      </View>
+    )
+  }
+  return (
+    <View style={styles.column}>
+      {identity}
+      {diagnosis}
+      {messageBlock}
+      {moderation}
+      {linked}
+      {money}
+      {gift}
+      {giftsAndHistory}
     </View>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  found: { gap: 8, paddingBottom: 48 },
-  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
-  searching: { fontSize: 14, color: theme.colors.textMuted, marginTop: 8 },
-  name: { fontSize: 22, fontWeight: '700', color: theme.colors.text, marginTop: 12 },
-  muted: { fontSize: 14, color: theme.colors.textMuted },
-  heading: {
-    marginTop: 24,
-    marginBottom: 4,
-    fontSize: 13,
-    fontWeight: '700',
-    color: theme.colors.textMuted,
-    textTransform: 'uppercase',
+const useStyles = makeStyles(({ v3 }) => ({
+  column: { gap: v3.space[10], paddingBottom: v3.space[32] },
+  split: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: v3.space[24],
+    paddingBottom: v3.space[32],
   },
-  hint: { fontSize: 13, color: theme.colors.textMuted, marginBottom: 8 },
-  row: { fontSize: 14, color: theme.colors.text, lineHeight: 22 },
-  actions: { gap: 12, marginTop: 12 },
-  months: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 },
+  start: { flex: 1, gap: v3.space[10], minWidth: 0 },
+  end: { gap: v3.space[10], width: 460 },
+  who: { alignItems: 'center', flexDirection: 'row', gap: v3.space[14], paddingTop: v3.space[8] },
+  mark: {
+    alignItems: 'center',
+    borderRadius: v3.radius.pill,
+    height: 56,
+    justifyContent: 'center',
+    width: 56,
+  },
+  markText: { ...v3.type.headline, color: v3.colors.ink },
+  whoText: { flex: 1, gap: v3.space[2], minWidth: 0 },
+  name: { ...v3.type.headline, color: v3.colors.fg },
+  muted: { ...v3.type.caption, color: v3.colors.muted },
+  row: { ...v3.type.callout, color: v3.colors.fg, paddingHorizontal: v3.space[4] },
+  presets: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
+  preset: { width: 'auto' },
+  toggleRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[12] },
+  toggleText: { ...v3.type.callout, color: v3.colors.fg, flex: 1 },
 }))

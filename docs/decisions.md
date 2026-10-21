@@ -866,6 +866,7 @@ allowlist.
 
 ## Home leads the bar, and People holds Discover and the Feed — behind a flag
 
+> **Amended 21 October 2026 — see _The operator panel is v3 without the flag_ below.**
 > **Amended 20 October 2026 — see _The Echo tab drops its standing tint_ below.**
 > **Amended 19 October 2026 — see _Chats leads with the people waiting on you — behind the same flag_ below.**
 > **Amended 19 October 2026 — see _Echo leads with what is due, and the done screen says what it earned — behind the same flag_ below.**
@@ -924,6 +925,25 @@ tour plays; under the flag the tour's Feed step finds no Feed tab and is
 skipped, as any step with nothing to point at is. The streak row draws a
 plain disc where `StreakFlame` could go. The screens behind the tabs keep the
 current look, and the web tab title for `/discover` still says Discover.
+
+## The operator panel is v3 without the flag
+
+**21 October 2026.** An exception to the rule above that the redesign waits
+behind `flags.v3Home`: the operator panel (`/admin`) is drawn in v3 for
+everyone who can open it, with no flag and no second copy of its screens.
+
+The flag exists so that the people the app is for never see half a redesign.
+Nobody reads the panel but the operators, who are the ones finishing the
+redesign, so for them the flag would hide nothing worth hiding. Gating it would
+still cost a full copy of every operator screen, each kept in step with every
+fix until the flag goes. The panel changed look in place instead
+(`components/admin/AdminKitV3.tsx`, from the `V-Admin` board). What it does is
+unchanged: every action, confirm and admin check is the one it was, and its
+words are still English, in `adminStrings.ts` and nowhere else.
+
+If a screen in the panel is ever read by someone other than an operator, this
+exception no longer covers it, and that screen goes behind the flag like
+everything else.
 
 ## The Echo tab drops its standing tint
 
@@ -2095,6 +2115,7 @@ nothing, and a rule nobody knows about deters nobody.
 
 ## Referrals — the handle is the code, and the award waits for a real message
 
+> **Amended 20 October 2026 — see _A sticker pack can be given to a chat partner, behind a switch_ below.**
 > **Amended 18 October 2026 — see _Give a week, get a week, behind a switch_ below.**
 
 _Amended 5 September 2026: the invitee is now paid too — see the end of this
@@ -2375,6 +2396,8 @@ Turks & Caicos Islands and nothing else.
 
 ## A new account starts with tokens, and grants do not rank you
 
+> **Amended 20 October 2026 — see _A sticker pack can be given to a chat partner, behind a switch_ below.**
+
 A brand-new account had a balance of zero, which made the token store inert on
 day one: every row priced out, nothing to try, and no way to find out the
 economy is real. New accounts now start with `TOKEN_RULES.signupBonus`.
@@ -2404,6 +2427,66 @@ record of what someone did in them. `adjustment` is deliberately not a grant —
 it exists to correct a real award, so it has to land where that award did. The
 ledger row still carries every period key, so a recompute can always see where
 an award actually fell.
+
+## A sticker pack can be given to a chat partner, behind a switch
+
+**20 October 2026.** Behic asked whether store items can be gifted; the
+research answered "conditional yes, sticker packs first, and the Terms change
+before anything ships". This is that first step, built switched off:
+`flags.stickerGifts` in `appConfig`, default false, thrown with
+`scripts/maintenance.ts flag stickerGifts true`. Off, the endpoint refuses
+with `disabled`, the pack page draws nothing new, and every sentence in the two
+entries above stays true.
+
+**On, one of them stops being true.** "A second account earns its owner
+nothing they can use on the first" — a gift is the first path by which a
+throwaway account's tokens can reach another account, as an item. What bounds
+it is not the conversation threshold, which two accounts held by one person
+can clear by talking to themselves, but the caps times the price:
+`STICKER_GIFT_RULES.sendsPerWeek` (1) and `receivesPerMonth` (2), on packs
+priced 1,000–1,500, is at most about 3,000 tokens' worth of items a month into
+any one account — a few days of what an active person earns. That is the
+claim the switch trades the old sentence for, and the reason the caps are
+unique indexes rather than counts.
+
+**What a gift is.** The giver buys a new copy for the recipient; nothing the
+giver owns moves. A transfer would let the items a subscription hands out move
+to somebody who never paid, and money would be buying things for other
+people. The recipient's balance is untouched and no leaderboard moves:
+spending is not ranked. The row it leaves in the thread is written by the
+server, like a call's, and is refused everything a call's row is refused
+(`isServerRecord`) — no reply, reaction, correction, star, pin or withdrawal;
+hiding your copy and reporting stay.
+
+**What has to be true, all of it** (`modules/tokens/stickerGifts.ts`):
+
+- **A sticker pack with no condition** (`isGiftableCosmetic`). Frames and
+  titles are ranks and are not given in this step; anything with `requires`
+  describes the holder's own achievement. Streak freezes and day repairs are
+  never giftable: a streak triggers Pro gifts, and another person's tokens
+  protecting it would be tokens buying a piece of Pro.
+- **A chat partner**, through `assertConversationAccess` — participancy and
+  blocks in both directions, live — and never yourself or an official account.
+- **Adults at both ends** (`isAdult`), the newcomer hello's rule. A gift is a
+  known way for an adult to approach a 16- or 17-year-old.
+- **Each side 50 messages and the thread three days old**
+  (`stickerGiftThreadOpen`), the testimonial gate's numbers.
+- **A giver account at least 14 days old**, not frozen, not suspended.
+- **A recipient** not suspended, frozen or deleted, with nobody having
+  reported the other in either direction, under this month's cap, and not
+  sharing a network or an installation with the giver (`sharedOrigin`, the
+  referral's check). All of those read to the giver as `unavailable`, never
+  explained.
+- **They do not own it yet** — refused before anything is charged, and again
+  in the grant's filter.
+
+**One transaction.** Two documents change — the giver's `tokenSpent` and the
+recipient's `cosmetics` — so `purchase`'s single atomic update is not
+available, and `repairDay`'s compensating write would leave a moment where one
+person had paid for a pack the other did not have. The gift's row (whose unique
+indexes hold the idempotency and both caps), the charge, the grant, the
+message, the ledger line and the thread's last line commit together. The
+replica set Better Auth already needs is what makes that possible.
 
 ## Language levels are v1's four, not CEFR's six
 
@@ -5340,6 +5423,8 @@ be given.
 
 ## Copilot ships dark, behind two switches and a consent
 
+> **Amended 20 October 2026 — see _Copilot v1: an allow-list per account, Say it, and Explain on a partner's text_ below.**
+
 _18 October 2026._ Copilot is three one-tap helps in a chat — **Check** a
 sentence before sending it, **Reply ideas** for the thread, **Explain** a
 person's correction — written by the same provider as the assistant above. Its
@@ -5410,6 +5495,51 @@ names the models that reject it — Haiku 4.5, Sonnet 4.5 and everything older �
 and a move to the cheap model is sent `low` rather than left at its `medium`
 default. The models that offer a server-side refusal fallback get it on
 Copilot's calls; the assistant keeps its own reasoning for not sending one.
+
+## Copilot v1: an allow-list per account, Say it, and Explain on a partner's text
+
+_20 October 2026._ Behic asked for a simple Copilot first, one he can turn on
+for some people rather than for everybody, connected straight to the Claude
+API. Everything in the entry above still holds: the flag, the key, the exact
+18+ check, the partner-age guard, the consent sheet, `copilotPer24h`, the
+global day, the cache. Three things are added.
+
+**A third switch, per account.** `copilotAccess` on the profile, set from the
+operator panel (Find someone → Copilot access) and listed in the Copilot lab.
+Without it the status says `off` and an ask is refused as `off` before
+anything of the person's is read, so the app hides Copilot exactly as it does
+for the flag. No new reason: the person has nothing different to do about it.
+Being an admin grants nothing. An operator allows themselves like anybody
+else, so the list is the whole answer to "whose text can reach the model". The
+switch opens nothing by itself, since the age floor and the person's own
+consent still apply. Allowing and revoking are audited as `copilot.allow` and
+`copilot.revoke`.
+
+**Say it.** The person writes what they want to say in their own language and
+gets up to three natural ways to say it in a language they are learning, each
+with a short gloss. Only their own line, the language named in English and
+their level are sent. That is the same as Check, so like Check it does not
+look at the partner's age.
+
+**Explain reads a partner's plain text, as well as a correction.** It is the
+question learners ask most in a real chat, and the answer stays on the reader's
+side: the partner sees nothing. It sends that one message's body, clipped, and
+never who sent it, other lines, media, a view-once or a deleted message. The
+partner-age guard runs before the message is even looked at, so a minor's text
+never reaches the model whichever kind it is. Because the sheet's words did not
+mention a partner's message, `consentVersion` goes to 2. Nobody has agreed on
+production yet (the flag is off), so the bump asks nobody again.
+
+**One provider, the Anthropic API, behind the small `StructuredProvider`
+interface it already had.** No key means no provider, which means `off`, and
+the app boots and works. There is no second adapter. Tests hand the module a
+fake that records its prompts. Each ask writes one log line, `copilot answered`,
+with the action, whether it was cached, how it ended, how long it took and the
+model. It carries no message text, message id or user id.
+
+**Reply ideas gets no place in the thread.** It keeps its route and its lab
+button. People who suspect their partner of AI-written replies trust them
+less, and a language exchange is a trust product.
 
 ## The feed and the wallet get switches of their own
 
@@ -8868,3 +8998,40 @@ so a build that does not read it opens Discover as it always did.
   decided exactly as with the switch off; nothing is sent that was not sent
   before. It starts off because it is promotion, and promotion moves when
   Behic switches it rather than when a pull request merges.
+- **The limits nudge counts only limits a plan lifts.** It used to count three
+  refusals of any quota, so somebody refused by the media ceiling or the
+  translation fair-use ceiling — the same on both plans — was told "a plan
+  lifts them" and, with the switch on, sent to a paywall that lifts nothing of
+  the kind. It now counts refusals of a limit the free plan has and Pro does
+  not have at all (`REFUSALS_A_PLAN_LIFTS` in `promotions.ts`, read from
+  `PLAN_LIMITS`): today new conversations and translations, which is what its
+  mail names. This applies with the switch off too; it narrows who is told,
+  and never widens it.
+
+## The monthly plan has the free week too
+
+**20 October 2026.** From 3.0, both subscriptions carry the store's one-week
+free trial, not only the yearly one. Behic configures it in the three stores;
+the app was already reading the trial per package, so nothing in it has to
+know which plan a trial is on, and nothing may.
+
+- **The store decides, per package and per person.** The paywall's trial line,
+  timeline, terms and button follow the selected card's own offer. iOS asks
+  StoreKit for eligibility per product (one introductory offer per
+  subscription group, so a past yearly trial spends the monthly one too);
+  Play is read off the option the purchase actually buys (`defaultOption`'s
+  free phase), which Play returns only to somebody eligible; the web SDK's
+  offerings carry only the options the customer is entitled to. Before this,
+  Play was read off the product-level `introPrice`, which describes an offer on
+  the product rather than the one the tap buys.
+- **Yearly is still picked on open.** It is the one the saving is measured on;
+  the trial no longer decides between the two cards, so it is not a reason to
+  move the default.
+- **The server never knew the product.** The webhook records the store's
+  `period_type`, and the trial-ending reminder reads `periodType: 'trial'`;
+  tests now pin a monthly trial alongside a yearly one.
+- **On iOS, only a confirmed "eligible" is a promise.** A missing answer,
+  `UNKNOWN`, or an eligibility call that throws shows no trial wording
+  (`iosIneligibleForTrial`). It used to show the trial when the call threw; a
+  trial the store then grants unannounced is a pleasant surprise, a promised one
+  it does not grant is a false price.

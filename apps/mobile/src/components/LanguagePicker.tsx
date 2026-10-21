@@ -22,9 +22,10 @@ interface LanguagePickerProps {
  * These are the languages the app was deliberately translated into — which is
  * the closest thing to "where the users are" that ships with the binary — so
  * the picker pins them above the other ~180 rather than burying Turkish under
- * Tsonga. `pt-BR` is a locale, not a language; it pins `pt`.
+ * Tsonga. `pt-BR` is a locale, not a language; it pins `pt`. Exported for the
+ * v3 picker, which heads the long tail after them with a title of its own.
  */
-const PINNED_CODES = SUPPORTED_LOCALES.map((locale) => locale.split('-')[0] as string)
+export const PINNED_CODES = SUPPORTED_LOCALES.map((locale) => locale.split('-')[0] as string)
 
 /**
  * 180-odd languages is too many to scroll and exactly right to search. The

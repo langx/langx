@@ -184,6 +184,16 @@ export const appConfigSchema = z.object({
      * Behic switches it rather than when a pull request merges.
      */
     promoPaywallLinks: z.boolean(),
+    /**
+     * Giving a sticker pack to a chat partner (`stickerGift.ts`). Starts
+     * off, like `captchaRequired`, and for a stronger reason: it spends
+     * tokens on another person's account, which Terms §7 says today cannot
+     * happen ("not transferable"). The legal text changes first, and then
+     * Behic switches this on — a merge never does. Off, the endpoint refuses
+     * with `disabled` and no client draws the button. Gifts already given stay
+     * given whatever this says.
+     */
+    stickerGifts: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -215,6 +225,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     proWeek: false,
     newcomerHello: false,
     promoPaywallLinks: false,
+    stickerGifts: false,
   },
 }
 
