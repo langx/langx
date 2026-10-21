@@ -6,7 +6,7 @@ import { DEFAULT_AVATAR_POOLS } from '@langx/shared'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { composeSvg, findFace } from './compose'
 import { loadAvatarLibrary, partNames, type AvatarLibrary, type Face } from './library'
-import { clearAvatarCache, renderDefaultAvatar } from './raster'
+import { clearAvatarCache, renderDefaultAvatar, renderLoad } from './raster'
 
 const PARTS_DIR = join(dirname(fileURLToPath(import.meta.url)), '../../../assets/avatars/parts')
 
@@ -148,6 +148,27 @@ describe('renderDefaultAvatar', () => {
     const input = { avatar: { pool: 'M', index: 1, ground: 3 }, size: 48, cut: 'small' } as const
     const first = await renderDefaultAvatar(input)
     expect(await renderDefaultAvatar(input)).toBe(first)
+  })
+
+  it('renders a burst once per face, two at a time, off the event loop', async () => {
+    clearAvatarCache()
+    const faces = Array.from({ length: 6 }, (_, i) => ({
+      avatar: { pool: 'W' as const, index: i + 10, ground: 1 },
+      size: 160 as const,
+      cut: 'full' as const,
+    }))
+    // Every face asked for three times at once, as a cold list on three phones.
+    const asked = faces.flatMap((face) => [face, face, face]).map(renderDefaultAvatar)
+    const load = renderLoad()
+    expect(load.inFlight).toBe(6)
+    expect(load.running).toBeLessThanOrEqual(2)
+    const pngs = await Promise.all(asked)
+    // The three asks for one face got the one buffer.
+    for (let i = 0; i < faces.length; i++) {
+      expect(pngs[i * 3 + 1]).toBe(pngs[i * 3])
+      expect(pngs[i * 3 + 2]).toBe(pngs[i * 3])
+    }
+    expect(renderLoad()).toEqual({ running: 0, waiting: 0, inFlight: 0 })
   })
 
   it('refuses a face outside the pool', async () => {

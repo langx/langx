@@ -32,6 +32,17 @@ const COPILOT_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 12
  */
 const CACHE_SECONDS = 604_800
 
+/** 480px faces one address may ask for a minute; see the v3 route. */
+export const LARGE_FACES_PER_MINUTE = 30
+
+/**
+ * Whether a request is for the 480px face. Read off the raw query, because
+ * the limiter runs before validation; a malformed size is refused after it.
+ */
+function isLargeFace(request: { query: unknown }): boolean {
+  return (request.query as { s?: unknown } | undefined)?.s === '480'
+}
+
 /** How long a v3 face is cached. */
 const DAY_SECONDS = 86_400
 
@@ -137,11 +148,24 @@ export const avatarRoutes: FastifyPluginAsyncZod = async (app) => {
         }),
       },
       /*
-       * Five times the Notionists route. A discovery grid or a chat list asks
-       * for thirty faces at once, and unlike that route most of these answers
-       * never touch the database.
+       * Five times the Notionists route for the list sizes: a discovery grid
+       * or a chat list asks for thirty faces at once, and unlike that route
+       * most of these answers never touch the database.
+       *
+       * The 480px face has a bucket of its own and a tenth of that. It is the
+       * one size a client wants a single face of — a profile hero, a ringing
+       * screen — and the one whose renders are both the slowest and the
+       * likeliest to fall out of the cache (864 faces on six grounds in three
+       * cuts), so it is the one a few addresses could keep the renderer busy
+       * with.
        */
-      config: { rateLimit: { max: 300, timeWindow: '1 minute' } },
+      config: {
+        rateLimit: {
+          max: (request) => (isLargeFace(request) ? LARGE_FACES_PER_MINUTE : 300),
+          keyGenerator: (request) => `${request.ip}:${isLargeFace(request) ? 'large' : 'list'}`,
+          timeWindow: '1 minute',
+        },
+      },
     },
     async (request, reply) => {
       const { seed } = request.params
