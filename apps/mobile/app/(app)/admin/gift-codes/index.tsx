@@ -1,20 +1,22 @@
 import { GIFT_CODE_PATTERN, GIFT_CODE_RULES, normalizeGiftCode } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Text, View } from 'react-native'
 import { useAdminCreateGiftCode, useAdminGiftCodes } from '../../../../src/api/queries'
 import { ApiRequestError } from '../../../../src/api/client'
 import { AdminGate } from '../../../../src/components/AdminGate'
+import {
+  AdminCaptionV3,
+  AdminFieldV3,
+  AdminHeadingV3,
+  AdminNoteV3,
+  AdminRowV3,
+  AdminRowsV3,
+  AdminScreenV3,
+  AdminSplitV3,
+} from '../../../../src/components/admin/AdminKitV3'
 import { Button } from '../../../../src/components/ui/Button'
-import { Callout } from '../../../../src/components/ui/Callout'
-import { FormField } from '../../../../src/components/ui/FormField'
-import { ListRow } from '../../../../src/components/ui/ListRow'
-import { Screen } from '../../../../src/components/ui/Screen'
-import { ScreenHeader } from '../../../../src/components/ui/ScreenHeader'
 import { useScreenInteractive } from '../../../../src/hooks/useScreenInteractive'
 import { ADMIN } from '../../../../src/lib/adminStrings'
-import { goBackTo } from '../../../../src/lib/navigation'
-import { makeStyles } from '../../../../src/lib/theme'
 import { showToast } from '../../../../src/lib/toast'
 
 /** `2026-12-31`, or nothing. Anything else is not a date this form takes. */
@@ -29,7 +31,6 @@ const DAY = /^\d{4}-\d{2}-\d{2}$/
  */
 export default function AdminGiftCodesScreen() {
   useScreenInteractive()
-  const styles = useStyles()
   const list = useAdminGiftCodes()
   const create = useAdminCreateGiftCode()
   const [code, setCode] = useState('')
@@ -76,100 +77,97 @@ export default function AdminGiftCodesScreen() {
 
   const items = list.data?.items ?? []
 
+  const form = (
+    <>
+      <AdminHeadingV3 title={ADMIN.giftCodes.newTitle} />
+      <AdminFieldV3
+        label={ADMIN.giftCodes.code}
+        hint={ADMIN.giftCodes.codeHint}
+        value={code}
+        onChangeText={setCode}
+        autoCapitalize="characters"
+        autoCorrect={false}
+        maxLength={32}
+      />
+      <AdminFieldV3
+        label={ADMIN.giftCodes.months}
+        hint={ADMIN.giftCodes.monthsHint}
+        value={months}
+        onChangeText={setMonths}
+        keyboardType="number-pad"
+      />
+      <AdminFieldV3
+        label={ADMIN.giftCodes.maxRedemptions}
+        hint={ADMIN.giftCodes.maxRedemptionsHint}
+        value={max}
+        onChangeText={setMax}
+        keyboardType="number-pad"
+      />
+      <AdminFieldV3
+        label={ADMIN.giftCodes.expiresAt}
+        hint={ADMIN.giftCodes.expiresAtHint}
+        value={lastDay}
+        onChangeText={setLastDay}
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+      <AdminFieldV3 label={ADMIN.giftCodes.note} value={note} onChangeText={setNote} />
+      {/* The screen's one yellow: making a code is what this page commits. */}
+      <Button
+        label={ADMIN.giftCodes.create}
+        icon="gift"
+        onPress={onCreate}
+        disabled={!ready}
+        loading={create.isPending}
+      />
+    </>
+  )
+
+  const codes = (
+    <>
+      <AdminHeadingV3 title={ADMIN.giftCodes.list} />
+      {items.length ? (
+        <AdminRowsV3>
+          {items.map((item) => (
+            <AdminRowV3
+              key={item._id}
+              title={item.code}
+              subtitle={[
+                ADMIN.giftCodes.monthsShort(item.months),
+                ADMIN.giftCodes.used(item.redemptions, item.maxRedemptions),
+                item.expiresAt
+                  ? ADMIN.giftCodes.until(item.expiresAt.slice(0, 10))
+                  : ADMIN.giftCodes.noExpiry,
+              ].join(' · ')}
+              value={ADMIN.giftCodes.state(
+                item.active,
+                item.expiresAt !== null && new Date(item.expiresAt) <= new Date(),
+              )}
+              onPress={() => router.push(`/(app)/admin/gift-codes/${item._id}`)}
+            />
+          ))}
+        </AdminRowsV3>
+      ) : (
+        <AdminCaptionV3>
+          {list.isPending ? ADMIN.common.loading : ADMIN.giftCodes.empty}
+        </AdminCaptionV3>
+      )}
+    </>
+  )
+
   return (
     <AdminGate>
-      <Screen scroll fluid onRefresh={() => void list.refetch()} refreshing={list.isFetching}>
-        <ScreenHeader title={ADMIN.giftCodes.title} onBack={() => goBackTo('/(app)/admin')} />
-
-        <Callout tone="info" icon="gift">
-          <Text style={styles.calloutBody}>{ADMIN.giftCodes.hint}</Text>
-        </Callout>
-
-        <Text style={styles.heading}>{ADMIN.giftCodes.newTitle}</Text>
-        <FormField
-          label={ADMIN.giftCodes.code}
-          value={code}
-          onChangeText={setCode}
-          autoCapitalize="characters"
-          autoCorrect={false}
-          maxLength={32}
-        />
-        <Text style={styles.hint}>{ADMIN.giftCodes.codeHint}</Text>
-        <FormField
-          label={ADMIN.giftCodes.months}
-          value={months}
-          onChangeText={setMonths}
-          keyboardType="number-pad"
-        />
-        <Text style={styles.hint}>{ADMIN.giftCodes.monthsHint}</Text>
-        <FormField
-          label={ADMIN.giftCodes.maxRedemptions}
-          value={max}
-          onChangeText={setMax}
-          keyboardType="number-pad"
-        />
-        <Text style={styles.hint}>{ADMIN.giftCodes.maxRedemptionsHint}</Text>
-        <FormField
-          label={ADMIN.giftCodes.expiresAt}
-          value={lastDay}
-          onChangeText={setLastDay}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        <Text style={styles.hint}>{ADMIN.giftCodes.expiresAtHint}</Text>
-        <FormField label={ADMIN.giftCodes.note} value={note} onChangeText={setNote} />
-        <View style={styles.actions}>
-          <Button
-            label={ADMIN.giftCodes.create}
-            onPress={onCreate}
-            disabled={!ready}
-            loading={create.isPending}
-          />
-        </View>
-
-        <Text style={styles.heading}>{ADMIN.giftCodes.list}</Text>
-        {items.length ? (
-          <View>
-            {items.map((item, index) => (
-              <ListRow
-                key={item._id}
-                title={item.code}
-                subtitle={[
-                  ADMIN.giftCodes.monthsShort(item.months),
-                  ADMIN.giftCodes.used(item.redemptions, item.maxRedemptions),
-                  item.expiresAt
-                    ? ADMIN.giftCodes.until(item.expiresAt.slice(0, 10))
-                    : ADMIN.giftCodes.noExpiry,
-                ].join(' · ')}
-                value={ADMIN.giftCodes.state(
-                  item.active,
-                  item.expiresAt !== null && new Date(item.expiresAt) <= new Date(),
-                )}
-                onPress={() => router.push(`/(app)/admin/gift-codes/${item._id}`)}
-                last={index === items.length - 1}
-              />
-            ))}
-          </View>
-        ) : (
-          <Text style={styles.hint}>
-            {list.isPending ? ADMIN.common.loading : ADMIN.giftCodes.empty}
-          </Text>
-        )}
-      </Screen>
+      <AdminScreenV3
+        title={ADMIN.giftCodes.title}
+        back="/(app)/admin"
+        onRefresh={() => void list.refetch()}
+        refreshing={list.isFetching}
+      >
+        <AdminNoteV3 tone="info" icon="gift">
+          {ADMIN.giftCodes.hint}
+        </AdminNoteV3>
+        <AdminSplitV3 start={form} end={codes} startWidth={440} />
+      </AdminScreenV3>
     </AdminGate>
   )
 }
-
-const useStyles = makeStyles((theme) => ({
-  heading: {
-    marginTop: 24,
-    marginBottom: 8,
-    fontSize: 13,
-    fontWeight: '700',
-    color: theme.colors.textMuted,
-    textTransform: 'uppercase',
-  },
-  hint: { fontSize: 13, color: theme.colors.textMuted, marginBottom: 16 },
-  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
-  actions: { marginTop: 8 },
-}))

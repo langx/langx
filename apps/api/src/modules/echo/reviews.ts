@@ -190,7 +190,17 @@ async function settleSessions(
   let streak: StreakAward | null = null
 
   const { day, sessions, reviewed } = await echoSessionsToday(db, userId, now)
-  for (let session = 1; session <= sessions; session += 1) {
+  /*
+   * A token-frozen account is paid for no session, like every other payout
+   * under a freeze. The streak still counts: the freeze stops the payout, not
+   * the history. Skipping the loop rather than paying 0 is what keeps it —
+   * `awardTokens` writes no row for 0 and reports `awarded: false`, so the
+   * loop would never credit the square. The branch below credits it instead,
+   * on the same "this batch's own rows completed a session" rule, so a resent
+   * batch still moves nothing.
+   */
+  const frozen = Boolean(profile.tokenFrozenAt)
+  for (let session = 1; !frozen && session <= sessions; session += 1) {
     const paid = await awardTokens(db, {
       userId,
       kind: 'echo',

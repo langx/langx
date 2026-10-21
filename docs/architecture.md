@@ -365,9 +365,13 @@ The @langx assistant answers everybody the same number of times a day,
 Every threshold lives in `packages/shared/src/limits.ts` → `PLAN_LIMITS`, never
 hard-coded.
 
-**No tier is unlimited on translation.** It is the one feature with a real
-per-request cost to a third party, so it carries a number on every tier rather
-than a promise the free tier subsidises. `PLAN_LIMITS` holds all three.
+**Pro's translations are unlimited, under a fair-use ceiling** (17 October
+2026). Translation is the one feature with a real per-character cost to a
+third party, so "unlimited" is backed by `translationFairUsePer24h`: 1,000
+uncached translations per rolling 24 hours, the same on every tier, refused as
+fair use and never with the paywall. The free plan keeps its daily allowance.
+See `docs/decisions.md` → _Pro's translations are unlimited, under a fair-use
+ceiling_.
 
 The target language is the reader's own: `settings.translateTo` on the profile,
 which `updateProfile` only accepts when it is one of the profile's native

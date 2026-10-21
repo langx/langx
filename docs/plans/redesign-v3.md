@@ -1,6 +1,6 @@
 # Redesign v3 — tracker
 
-**Status (19 October 2026):** Phase 2's kit and Phase 3's paywall are merged and live. Home (#1799) is merged behind `v3Home`, and the screen moves — Me, Chats, the thread, People and Echo — follow behind the same flag. The money and promise items Behic approved overnight on 18 October are merged behind flags that start off. Everything ships together as app 3.0; until then nobody sees a half-done screen.
+**Status (20 October 2026):** Every route has its v3 screen merged behind `v3Home`, and Behic is testing internal TestFlight builds of 3.0 with the flag forced on. What is left is the old look in shared components (the audit's nine batches), the new art (badges, sticker packs, app icons, default avatars), Copilot v1, the operator panel and the website — see _Round 4_ — and then the 3.0 release round. The money and promise items stay behind flags that start off. Everything ships together as app 3.0; until then nobody sees a half-done screen.
 
 This is the one page that says where the v3 redesign stands. Any session that
 continues the work reads it right after CLAUDE.md. Only the session that
@@ -77,8 +77,10 @@ Merge order that applied: #1784 before any client PR that reads the award;
 
 - The send award leaves out a referral welcome credited in the same send
   (#1784; under-reports only).
-- A frozen account still earns the Echo session and streak milestone payouts
-  (predates #1784).
+- A frozen account still earns the Echo session payout: `settleSessions` in
+  `modules/echo/reviews.ts` pays it through `awardTokens`, and neither checks
+  `tokenFrozenAt` (predates #1784; the streak milestone payout stopped in
+  #1859).
 - Web browser back records a paywall view with no dismissal; a Pro account that
   loads after the paywall opens looks free; leaving right after a gift code or
   restore can count as a dismissal (#1785).
@@ -128,6 +130,7 @@ them.
 | Phase 3 — paywall v3, a reason per road               | #1800        | paywall and in-app roads merged                                  |
 | Phase 2 — switch, segmented control, progress, toast  | #1801        | kit merged                                                       |
 | M1 — Copilot plumbing, consent and allowance (dark)   | #1802        | merged; `copilotService`, no provider key                        |
+| Copilot v1 (PR-A) — server, allow-list, admin (dark)  | —            | in review; `copilotAccess` per account, consent v2               |
 | D7 — trial-ending reminder                            | #1804        | merged; `trialEndingReminder`                                    |
 | Lane C — no silent drops in the nudge engine          | #1805        | merged; `nudgeNoSilentDrops`                                     |
 | M4 — give a week, get a week                          | #1806        | merged; `giveAWeek`; companions langx/website#268, langx/docs#50 |
@@ -183,6 +186,118 @@ Open for Behic from this round:
 - Smaller calls: Aurora's "Tokens can't open this one" line (#1837); the v3
   Feedback field drops its character counter (#1827); Turkish frame names Kalem
   and Meander (#1831).
+
+## Round 4 (20 October)
+
+Behic tested 3.0 on TestFlight during the day and sent what still looked old;
+the fixes below came from that. The TestFlight builds come from a release
+branch that forces `v3Home` on at its one read point and is never merged;
+production keeps the flag off. A TestFlight build has its own runtime, so it
+never takes main's OTA updates — each round of fixes needs a new build.
+
+Decided on 20 October:
+
+- **Paper Talk is accepted as a lettered pack** (#1838, merged). English is
+  fine as the universal language for a sticker's words; whether a new pack
+  carries words is decided pack by pack.
+- **Promotional links to the paywall merged with the flag off** (#1832).
+  `promoPaywallLinks` goes on only after the limits nudge is narrowed so it no
+  longer fires after refusals Pro does not lift.
+- **No streak milestone payouts to an account whose tokens are frozen**
+  (#1859, merged, live).
+- **The widened ladder rule is approved** as shipped in #1831: owning any frame
+  above a rung opens the rung below.
+- **Copilot uses the Claude API only.** No adapter that runs on a personal
+  subscription; the server uses the existing provider, with its key and model
+  set where the API runs.
+- **A one-week free trial on monthly and yearly**, with 3.0. Behic configures
+  the offers in the store consoles; the app reads the trial from the store
+  rather than assuming it, so a plan without one shows none.
+- **New iOS and Android store screenshots in the v3 look gate the 3.0
+  submission.** They are shot from the finished screens after TestFlight;
+  Behic uploads them.
+- **langx.io is redesigned in the v3 look** and ships with 3.0.
+
+| Item                                                                        | PR                                                       | State                                       |
+| --------------------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------------------- |
+| Corner and header icons to IconButton                                       | #1842                                                    | merged                                      |
+| Remaining screens: chat, posts and People, Echo, Me, auth and root          | #1843–#1853                                              | merged; every route has a v3 screen         |
+| Profile — the full board layout                                             | #1854                                                    | merged                                      |
+| Main's typecheck, after two PRs added the same style                        | #1856                                                    | merged                                      |
+| TestFlight round 1 — big numbers, Boosted strip, Echo tab, thread header    | #1855                                                    | merged                                      |
+| TestFlight — count badge digits centred                                     | #1857                                                    | merged                                      |
+| TestFlight — buttons that took the whole row                                | #1858                                                    | merged                                      |
+| TestFlight — Export my data on every platform; tips in the v3 look          | #1860                                                    | merged                                      |
+| TestFlight — new chat in the thread's look                                  | #1861                                                    | merged                                      |
+| TestFlight — a like on every post card                                      | #1862                                                    | merged                                      |
+| TestFlight — someone else's profile and Preview my profile                  | #1864                                                    | merged                                      |
+| Review follow-ups — view-once replay, media tiles, snap radios, token board | #1866                                                    | merged                                      |
+| A test timeout that a full suite outgrew                                    | #1865                                                    | merged                                      |
+| Paper Talk on the docs, the token site and langx.io                         | langx/docs#53, langx/token-website#32, langx/website#271 | merged                                      |
+| Chat camera — viewfinder, shutter, mode switch, still the old look          | —                                                        | in progress                                 |
+| Call screens                                                                | —                                                        | board drawn; building                       |
+| Old-look audit — shared components in nine batches                          | —                                                        | in progress; calls in their own row         |
+| Follow-ups 2 — new-chat quota card, today ring, limits nudge                | —                                                        | in progress                                 |
+| Monthly trial in the app                                                    | —                                                        | in progress                                 |
+| Badges v3                                                                   | —                                                        | designed; building                          |
+| Sticker packs v3                                                            | —                                                        | designed; building                          |
+| App icons v3                                                                | —                                                        | designed; building; ships in the 3.0 binary |
+| Default avatars v3                                                          | —                                                        | designed; building                          |
+| Copilot v1 — server, providers, operator allow-list (dark)                  | #1863                                                    | open; the app PR in progress                |
+| Operator panel v3                                                           | —                                                        | started                                     |
+| langx.io v3                                                                 | —                                                        | design in progress                          |
+| Store items as gifts                                                        | —                                                        | researched; not started                     |
+
+**The old-look audit.** Every route reads `useV3Home`, but a screen counts as
+v3 only when it matches its board; Profile showed the difference (it read the
+flag and kept its old layout until #1854). What still looks old is in shared
+components, split into nine batches: the Echo session, form primitives, the
+edit-profile parts, language pickers, People search and filters, thread
+overlays, shared sheets, the shell hosts, and pages with media. Each batch is
+built and reviewed on its own. Calls (the call host and its bar) are a tenth
+batch; their board is drawn and they are being built.
+
+**Badges.** Embroidered patches won, with grafts from enamel pins and passport
+stamps. The 25 existing badges keep their rules and get new art; six new kinds
+join (languages, calls, Echo, kind words from testimonials, people you helped,
+and one more), none of which pays tokens. Boards: the collection, a badge's
+detail, the earned moment and the art sheet.
+
+**Sticker packs.** Nine packs drawn in the crafted world: Starter, Practice and
+Pixel redrawn from scratch, and six new — Margin Notes (proofreading marks),
+Qalam, Polyglot, Study Desk, Night Owl and Shared Table. Starter and Practice
+stay at 1,000 tokens; the new packs cost 1,500. Pixel's coin becomes a 1-UP
+heart, its id kept. The store's "Up next" row shows at most three packs. Each
+pack ships as bundled SVG with names in all eight locales, a few packs per PR,
+then the sibling copies.
+
+**App icons.** Crafted objects again, so the icons match the frames: eight free
+(the default, Night, Split, Contrast, Paper Cut, Felt Stitch, Woven Reed,
+Linocut) and nine Pro (Iznik Tile, Lacquer Gold, Stained Glass, Night Hoop,
+Indigo Dye, Marquetry, Mosaic, Origami Fold, Enamel Pin). The old Pro and New
+Year icons leave the picker; their native entries stay for one release. When
+Pro lapses, the icon stays and shows as locked in the picker (the builder's
+default; Behic may change it). Alternate icons are native assets, so they move
+the fingerprint and ship only in the 3.0 binary, never by OTA.
+
+**Default avatars.** 144 crafted portraits — 48 in each of three pools, women,
+men and neutral — on six grounds, drawn by the API as images so no binary
+carries them. An account stores which face it has; one with none gets a face
+from a hash of its id, so nothing is backfilled. The pool follows the gender
+the account gives, and undisclosed or other gets the neutral pool, so a face
+never says more about a person than they have shared.
+
+**Store items as gifts.** The research says yes, on conditions: sticker packs
+first and nothing else; only between real partners; a weekly send cap and a
+monthly receive cap; behind a flag that starts off. A gift is a new purchase
+for the recipient, not a transfer, and follows the recipient's ladder; gated
+frames, Aurora Glass and freezes are never giftable. The Terms (section 7) and
+`docs/decisions.md` change first, and a two-account gap in corrections closes
+before it. Behic has the open questions; nothing is built.
+
+**Copilot v1.** A simple first version that the operator turns on for chosen
+accounts from the panel, so a few people test it before anyone else sees it.
+The server PR is open; the app PR follows it.
 
 ## Phase 1 — the concepts and the chosen direction
 
@@ -243,6 +358,11 @@ PR.
 | 19 Oct 2026 | Visuals              | After the code work: the branding repository's visuals and the App Store and Play screenshots are redone in the v3 look, from the finished screens                                                                                                                                                     |
 | 19 Oct 2026 | Token store          | The store, sticker packs, profile frames and titles look too plain: redesign them as a real store, with frames that are artistic and original, not only a colour                                                                                                                                       |
 | 19 Oct 2026 | Store details        | Sixteen frames, the new ones placed between the rungs; Paper Talk at 1,500; frames take their art names                                                                                                                                                                                                |
+| 20 Oct 2026 | Round 3's open calls | Paper Talk accepted as a lettered pack; #1832 merges with its flag off until the limits nudge is narrowed; no streak milestones to frozen accounts; the widened ladder rule approved                                                                                                                   |
+| 20 Oct 2026 | Copilot              | The Claude API only; no adapter on a personal subscription                                                                                                                                                                                                                                             |
+| 20 Oct 2026 | Free trial           | A one-week free trial on monthly and yearly with 3.0; Behic sets the store offers, the app reads the trial from the store                                                                                                                                                                              |
+| 20 Oct 2026 | 3.0 gates            | New iOS and Android store screenshots in the v3 look before the 3.0 submission; langx.io in the v3 look ships with 3.0                                                                                                                                                                                 |
+| 20 Oct 2026 | New work             | Badges, sticker packs (three redrawn, six new), app icons (free and Pro) and default avatars in the v3 look; the operator panel last                                                                                                                                                                   |
 
 ## Open questions
 
@@ -345,14 +465,27 @@ langx/docs#49.
 
 ## Before the 3.0 release
 
-- Round every yearly price to end in .99 in every storefront (App Store,
-  Play, RevenueCat web), now that the yearly total is the headline price.
-  Behic operates the store consoles; the repo records follow
-  (`planSaving.test.ts`, `docs/release-runbook.md`, `docs/decisions.md`).
-- Bump the app to 3.0 in the same round.
-- Hand Behic the list of v3 flags to switch on together (`v3Home` and the
-  feature flags in _Round 2_), each with the values its PR asked him to
-  confirm.
+The 3.0 release round, in one checklist:
+
+- [ ] **Flags to switch on together**, each with the values its PR asked Behic
+      to confirm. All start off in `DEFAULT_APP_CONFIG` in
+      `packages/shared/src/appConfig.ts`: `v3Home`, `streakRepairPush`,
+      `discoveryReplyFirst`, `echoFromCorrections`, `trialEndingReminder`,
+      `nudgeNoSilentDrops`, `giveAWeek`, `proWeek`, `newcomerHello`,
+      `promoPaywallLinks` (only after the limits nudge is narrowed) and
+      `copilotEnabled` (Copilot v1 opens to the operator's allow-list first).
+- [ ] **A one-week free trial on monthly and yearly** in every store console
+      (Behic), and the app reading it from the store; then the sibling copies
+      on langx.io and the docs.
+- [ ] **Yearly prices end in .99** in every storefront (App Store, Play,
+      RevenueCat web), now that the yearly total is the headline price.
+      Behic operates the store consoles; the repo records follow
+      (`planSaving.test.ts`, `docs/release-runbook.md`, `docs/decisions.md`).
+- [ ] **Bump the app to 3.0** in the same round. The binary also carries the
+      new app icons, which cannot ship by OTA.
+- [ ] **New store screenshots** for iOS and Android in the v3 look — a gate
+      for the submission.
+- [ ] **langx.io v3 merges on release day**, with the app.
 - **After the code work, the visuals.** Redo the branding repository's visuals
   in the v3 look, folding in the open drafts langx/branding#24–#27, and shoot
   new App Store and Play screenshots from the finished v3 screens. The images
@@ -360,6 +493,12 @@ langx/docs#49.
 - Update the store listing copy (`docs/store/listing.md`, the metadata file)
   where the flagged features change what it says: invites, Pro Week, the
   newcomer hello.
+- [ ] **Last gate: every screen against its board, on both platforms**
+      (Behic, 20 Oct). Once all the work is merged, an agent opens every
+      screen in Release builds on the iOS simulator and the Android emulator
+      and compares it with its board; no screen in the old look may remain.
+      It is checked by screenshots, not by reading code: the code audit
+      counted half-migrated screens, such as the chat camera, as done.
 
 ## Native-batch candidates
 

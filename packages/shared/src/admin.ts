@@ -229,6 +229,8 @@ export const ADMIN_ACTIONS = [
   'user.removeAvatar',
   'user.message',
   'user.giftPro',
+  'copilot.allow',
+  'copilot.revoke',
   'giftCode.create',
   'giftCode.activate',
   'giftCode.deactivate',

@@ -1,6 +1,6 @@
 import { compareVersions, isVersion, versionForPlatform, type MinVersion } from '@langx/shared'
 import { useState } from 'react'
-import { Text, View } from 'react-native'
+import { Platform, Text, View } from 'react-native'
 import {
   useAdminSetCaptchaRequired,
   useAdminSetLatestVersion,
@@ -8,18 +8,22 @@ import {
   useAdminStats,
 } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
+import {
+  AdminBlockV3,
+  AdminCaptionV3,
+  AdminFactsV3,
+  AdminFieldV3,
+  AdminHeadingV3,
+  AdminNoteV3,
+  AdminScreenV3,
+  AdminSplitV3,
+} from '../../../src/components/admin/AdminKitV3'
 import { Button } from '../../../src/components/ui/Button'
-import { Callout } from '../../../src/components/ui/Callout'
-import { Card } from '../../../src/components/ui/Card'
-import { FormField } from '../../../src/components/ui/FormField'
-import { Screen } from '../../../src/components/ui/Screen'
-import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { ADMIN } from '../../../src/lib/adminStrings'
 import { confirmAlert } from '../../../src/lib/alert'
-import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
 
@@ -148,204 +152,220 @@ export default function AdminSystemScreen() {
     )
   }
 
+  const settings = system ? (
+    <>
+      <AdminHeadingV3 title={ADMIN.system.raiseBanner} />
+      <AdminBlockV3>
+        <AdminCaptionV3>{ADMIN.system.raiseBannerHint}</AdminCaptionV3>
+        <SegmentedControl
+          options={PLATFORMS}
+          selected={[platform]}
+          onToggle={setPlatform}
+          accessibilityLabel={ADMIN.system.raiseBanner}
+        />
+        <AdminFieldV3
+          inBlock
+          value={version}
+          onChangeText={setVersion}
+          placeholder={ADMIN.system.versionPlaceholder}
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="numbers-and-punctuation"
+          accessibilityLabel={ADMIN.system.latestVersion}
+        />
+        {/* The screen's one yellow: the only control here that blocks nobody. */}
+        <Button
+          label={ADMIN.system.set}
+          onPress={submit}
+          disabled={!ready}
+          loading={raise.isPending}
+        />
+      </AdminBlockV3>
+
+      <AdminHeadingV3 title={ADMIN.system.forceUpdate} />
+      <AdminBlockV3>
+        <AdminCaptionV3>{ADMIN.system.forceUpdateHint}</AdminCaptionV3>
+        <SegmentedControl
+          options={PLATFORMS}
+          selected={[minPlatform]}
+          onToggle={setMinPlatform}
+          accessibilityLabel={ADMIN.system.forceUpdate}
+        />
+        <AdminFieldV3
+          inBlock
+          value={minVersion}
+          onChangeText={setMinVersion}
+          placeholder={ADMIN.system.versionPlaceholder}
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="numbers-and-punctuation"
+          accessibilityLabel={ADMIN.system.minVersion}
+        />
+        <Button
+          label={ADMIN.system.set}
+          variant="danger"
+          onPress={() => void submitMin()}
+          disabled={!minReady}
+          loading={force.isPending}
+        />
+      </AdminBlockV3>
+
+      <AdminHeadingV3 title={ADMIN.system.captcha} />
+      <AdminBlockV3>
+        <AdminCaptionV3>{ADMIN.system.captchaHint}</AdminCaptionV3>
+        <Text style={styles.row}>
+          {ADMIN.system.captcha}:{' '}
+          {system.config.flags.captchaRequired ? ADMIN.system.captchaOn : ADMIN.system.captchaOff}
+        </Text>
+        <Button
+          label={
+            system.config.flags.captchaRequired
+              ? ADMIN.system.captchaRelax
+              : ADMIN.system.captchaRequire
+          }
+          variant={system.config.flags.captchaRequired ? 'secondary' : 'danger'}
+          onPress={() => void toggleCaptcha()}
+          loading={captcha.isPending}
+        />
+      </AdminBlockV3>
+
+      <AdminNoteV3 tone="info">{ADMIN.system.readOnly}</AdminNoteV3>
+    </>
+  ) : null
+
+  const health = system ? (
+    <>
+      <AdminHeadingV3 title={ADMIN.system.jobs} />
+      {system.jobs.length === 0 ? (
+        <AdminCaptionV3>{ADMIN.system.jobNever}</AdminCaptionV3>
+      ) : (
+        <AdminFactsV3
+          rows={system.jobs.map((job) => ({
+            key: job._id,
+            label: job._id,
+            value: `${job.lastFinishedAt?.slice(5, 16).replace('T', ' ') ?? '—'} · ${
+              job.lastError ? ADMIN.system.jobFailed : ADMIN.system.runs(job.runs)
+            }`,
+            tone: job.lastError ? 'danger' : undefined,
+          }))}
+        />
+      )}
+
+      <AdminHeadingV3 title={ADMIN.system.suppressions} />
+      <Text style={styles.row}>
+        {system.suppressions.total} · bounced {system.suppressions.bounced} · complained{' '}
+        {system.suppressions.complained} · unsubscribed {system.suppressions.unsubscribed}
+      </Text>
+
+      <AdminHeadingV3 title={ADMIN.system.purge} />
+      <Text style={styles.row}>
+        {system.purge.accounts} {ADMIN.system.purgeAccounts} · {system.purge.analytics}{' '}
+        {ADMIN.system.purgeAnalytics}
+      </Text>
+
+      {/*
+        Counted at the purge, not at the request — a reason from someone
+        who came back is not a departure. So the newest rows are from
+        people who asked a month ago, which the heading says.
+      */}
+      <AdminHeadingV3 title={ADMIN.system.leaving} />
+      {system.leaving.every((row) => row.last90 === 0) ? (
+        <AdminCaptionV3>{ADMIN.system.leavingNone}</AdminCaptionV3>
+      ) : (
+        <AdminFactsV3
+          rows={system.leaving.map((row) => ({
+            key: row.reason,
+            label: row.reason,
+            value: `${row.last30} · ${row.last90}`,
+          }))}
+        />
+      )}
+
+      <AdminHeadingV3 title={ADMIN.system.assistant} />
+      <Text style={styles.row}>{system.assistantCallsToday}</Text>
+
+      <AdminHeadingV3 title={ADMIN.system.campaigns} />
+      {system.campaigns.length === 0 ? (
+        <AdminCaptionV3>—</AdminCaptionV3>
+      ) : (
+        <AdminFactsV3
+          rows={system.campaigns.map((campaign) => ({
+            key: campaign.id,
+            label: campaign.id,
+            value: `${campaign.status} · ${campaign.sent}/${campaign.total}`,
+          }))}
+        />
+      )}
+
+      <AdminHeadingV3 title={ADMIN.system.config} />
+      <AdminFactsV3
+        rows={[
+          {
+            key: 'maintenance',
+            label: ADMIN.system.maintenance,
+            value: system.config.maintenance.enabled
+              ? ADMIN.system.maintenanceOn
+              : ADMIN.system.maintenanceOff,
+            tone: system.config.maintenance.enabled ? 'danger' : undefined,
+          },
+          {
+            key: 'min',
+            label: ADMIN.system.minVersion,
+            value: `ios ${system.config.minVersion.ios} · android ${system.config.minVersion.android} · web ${system.config.minVersion.web}`,
+          },
+          {
+            key: 'latest',
+            label: ADMIN.system.latestVersion,
+            value: `ios ${system.config.latestVersion.ios} · android ${system.config.latestVersion.android} · web ${system.config.latestVersion.web}`,
+          },
+        ]}
+      />
+
+      {/*
+       * One chip per flag, the ink ones on: read at a glance which of them
+       * is lit, where a sentence of nine "name on/off" pairs had to be read
+       * to the end. Read only — the flags are the script's.
+       */}
+      <AdminHeadingV3 title={ADMIN.system.flags} />
+      <View style={styles.flags}>
+        {Object.entries(system.config.flags).map(([name, on]) => (
+          <Text key={name} style={[styles.flag, on && styles.flagOn]}>
+            {`${name} ${on ? 'on' : 'off'}`}
+          </Text>
+        ))}
+      </View>
+    </>
+  ) : null
+
   return (
     <AdminGate>
-      <Screen scroll fluid>
-        <ScreenHeader title={ADMIN.system.title} onBack={() => goBackTo('/(app)/admin')} />
-
+      <AdminScreenV3 title={ADMIN.system.title} back="/(app)/admin">
         {stats.isPending || !system ? (
           <View style={styles.loading}>
             <Skeleton height={120} />
             <Skeleton height={120} />
           </View>
         ) : (
-          <>
-            <Text style={styles.heading}>{ADMIN.system.jobs}</Text>
-            <Card>
-              {system.jobs.length === 0 ? (
-                <Text style={styles.muted}>{ADMIN.system.jobNever}</Text>
-              ) : (
-                system.jobs.map((job) => (
-                  <Text key={job._id} style={job.lastError ? styles.bad : styles.row}>
-                    {job._id} · {job.lastFinishedAt?.slice(5, 16).replace('T', ' ') ?? '—'} ·{' '}
-                    {job.lastError ? ADMIN.system.jobFailed : ADMIN.system.runs(job.runs)}
-                  </Text>
-                ))
-              )}
-            </Card>
-
-            <Text style={styles.heading}>{ADMIN.system.suppressions}</Text>
-            <Text style={styles.row}>
-              {system.suppressions.total} · bounced {system.suppressions.bounced} · complained{' '}
-              {system.suppressions.complained} · unsubscribed {system.suppressions.unsubscribed}
-            </Text>
-
-            <Text style={styles.heading}>{ADMIN.system.purge}</Text>
-            <Text style={styles.row}>
-              {system.purge.accounts} {ADMIN.system.purgeAccounts} · {system.purge.analytics}{' '}
-              {ADMIN.system.purgeAnalytics}
-            </Text>
-
-            {/*
-              Counted at the purge, not at the request — a reason from someone
-              who came back is not a departure. So the newest rows are from
-              people who asked a month ago, which the heading says.
-            */}
-            <Text style={styles.heading}>{ADMIN.system.leaving}</Text>
-            {system.leaving.every((row) => row.last90 === 0) ? (
-              <Text style={styles.muted}>{ADMIN.system.leavingNone}</Text>
-            ) : (
-              <Card>
-                {system.leaving.map((row) => (
-                  <Text key={row.reason} style={styles.row}>
-                    {row.reason} · {row.last30} · {row.last90}
-                  </Text>
-                ))}
-              </Card>
-            )}
-
-            <Text style={styles.heading}>{ADMIN.system.assistant}</Text>
-            <Text style={styles.row}>{system.assistantCallsToday}</Text>
-
-            <Text style={styles.heading}>{ADMIN.system.campaigns}</Text>
-            {system.campaigns.length === 0 ? (
-              <Text style={styles.muted}>—</Text>
-            ) : (
-              <Card>
-                {system.campaigns.map((campaign) => (
-                  <Text key={campaign.id} style={styles.row}>
-                    {campaign.id} · {campaign.status} · {campaign.sent}/{campaign.total}
-                  </Text>
-                ))}
-              </Card>
-            )}
-
-            <Text style={styles.heading}>{ADMIN.system.config}</Text>
-            <Card>
-              <Text style={system.config.maintenance.enabled ? styles.bad : styles.row}>
-                {ADMIN.system.maintenance}:{' '}
-                {system.config.maintenance.enabled
-                  ? ADMIN.system.maintenanceOn
-                  : ADMIN.system.maintenanceOff}
-              </Text>
-              <Text style={styles.row}>
-                {ADMIN.system.minVersion}: ios {system.config.minVersion.ios} · android{' '}
-                {system.config.minVersion.android} · web {system.config.minVersion.web}
-              </Text>
-              <Text style={styles.row}>
-                {ADMIN.system.latestVersion}: ios {system.config.latestVersion.ios} · android{' '}
-                {system.config.latestVersion.android} · web {system.config.latestVersion.web}
-              </Text>
-              <Text style={styles.row}>
-                {ADMIN.system.flags}:{' '}
-                {Object.entries(system.config.flags)
-                  .map(([name, on]) => `${name} ${on ? 'on' : 'off'}`)
-                  .join(' · ')}
-              </Text>
-            </Card>
-            <Text style={styles.heading}>{ADMIN.system.raiseBanner}</Text>
-            <Card>
-              <Text style={styles.muted}>{ADMIN.system.raiseBannerHint}</Text>
-              <View style={styles.editor}>
-                <SegmentedControl
-                  options={PLATFORMS}
-                  selected={[platform]}
-                  onToggle={setPlatform}
-                  accessibilityLabel={ADMIN.system.raiseBanner}
-                />
-                <FormField
-                  value={version}
-                  onChangeText={setVersion}
-                  placeholder={ADMIN.system.versionPlaceholder}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  keyboardType="numbers-and-punctuation"
-                  accessibilityLabel={ADMIN.system.latestVersion}
-                />
-                <Button
-                  label={ADMIN.system.set}
-                  onPress={submit}
-                  disabled={!ready}
-                  loading={raise.isPending}
-                />
-              </View>
-            </Card>
-
-            <Text style={styles.heading}>{ADMIN.system.forceUpdate}</Text>
-            <Card>
-              <Text style={styles.muted}>{ADMIN.system.forceUpdateHint}</Text>
-              <View style={styles.editor}>
-                <SegmentedControl
-                  options={PLATFORMS}
-                  selected={[minPlatform]}
-                  onToggle={setMinPlatform}
-                  accessibilityLabel={ADMIN.system.forceUpdate}
-                />
-                <FormField
-                  value={minVersion}
-                  onChangeText={setMinVersion}
-                  placeholder={ADMIN.system.versionPlaceholder}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  keyboardType="numbers-and-punctuation"
-                  accessibilityLabel={ADMIN.system.minVersion}
-                />
-                <Button
-                  label={ADMIN.system.set}
-                  variant="danger"
-                  onPress={() => void submitMin()}
-                  disabled={!minReady}
-                  loading={force.isPending}
-                />
-              </View>
-            </Card>
-
-            <Text style={styles.heading}>{ADMIN.system.captcha}</Text>
-            <Card>
-              <Text style={styles.muted}>{ADMIN.system.captchaHint}</Text>
-              <View style={styles.editor}>
-                <Text style={styles.row}>
-                  {ADMIN.system.captcha}:{' '}
-                  {system.config.flags.captchaRequired
-                    ? ADMIN.system.captchaOn
-                    : ADMIN.system.captchaOff}
-                </Text>
-                <Button
-                  label={
-                    system.config.flags.captchaRequired
-                      ? ADMIN.system.captchaRelax
-                      : ADMIN.system.captchaRequire
-                  }
-                  variant={system.config.flags.captchaRequired ? 'secondary' : 'danger'}
-                  onPress={() => void toggleCaptcha()}
-                  loading={captcha.isPending}
-                />
-              </View>
-            </Card>
-
-            <Callout tone="info">
-              <Text style={styles.calloutBody}>{ADMIN.system.readOnly}</Text>
-            </Callout>
-          </>
+          <AdminSplitV3 start={health} end={settings} endWidth={480} />
         )}
-      </Screen>
+      </AdminScreenV3>
     </AdminGate>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  loading: { gap: 12, marginTop: 16 },
-  editor: { gap: 12, marginTop: 12 },
-  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
-  heading: {
-    marginTop: 24,
-    marginBottom: 8,
-    fontSize: 13,
-    fontWeight: '700',
-    color: theme.colors.textMuted,
-    textTransform: 'uppercase',
+const useStyles = makeStyles(({ v3 }) => ({
+  loading: { gap: v3.space[12] },
+  row: { ...v3.type.callout, color: v3.colors.fg, paddingHorizontal: v3.space[4] },
+  flags: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
+  flag: {
+    ...v3.type.caption,
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.pill,
+    color: v3.colors.fg,
+    fontFamily: Platform.select({ ios: 'Menlo', android: 'monospace', default: 'monospace' }),
+    overflow: 'hidden',
+    paddingHorizontal: v3.space[14],
+    paddingVertical: v3.space[8],
   },
-  row: { fontSize: 14, color: theme.colors.text, lineHeight: 22 },
-  bad: { fontSize: 14, color: theme.colors.danger, lineHeight: 22, fontWeight: '700' },
-  muted: { fontSize: 14, color: theme.colors.textMuted },
+  flagOn: { backgroundColor: v3.colors.pill, color: v3.colors.pillText },
 }))

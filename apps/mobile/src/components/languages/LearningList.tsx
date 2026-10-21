@@ -28,6 +28,8 @@ export interface LearningListLook {
   ground?: string | undefined
   handle?: ViewStyle | undefined
   handleColor?: string | undefined
+  /** The ≡ glyph's size; the redesign takes it from `theme.v3.icon`. */
+  handleSize?: number | undefined
 }
 
 /** What every learning row reads while one of them is held. */
@@ -210,7 +212,11 @@ function DraggableRow({
           onAccessibilityAction={onAction}
           style={[styles.handle, look?.handle]}
         >
-          <Feather name="menu" size={18} color={look?.handleColor ?? colors.textFaint} />
+          <Feather
+            name="menu"
+            size={look?.handleSize ?? 18}
+            color={look?.handleColor ?? colors.textFaint}
+          />
         </View>
       </GestureDetector>
     ) : null
