@@ -1415,16 +1415,27 @@ The point is that nobody's first news of a version problem should be a screen
 they cannot leave — by the time `minVersion` passes a build, its user has been
 offered the update for weeks and chosen to wait.
 
-It and `minVersion` are the parts of the config the operator panel can write,
-through `POST /admin/app-config/latest-version` and `…/min-version` on the
-system screen; the minimum is refused above `latestVersion` (see
+It and `minVersion` are the version parts of the config the operator panel can
+write, through `POST /admin/app-config/latest-version` and `…/min-version` on
+the system screen; the minimum is refused above `latestVersion` (see
 `docs/decisions.md`). For `latestVersion` the
 exception is about _when_ it is needed rather than convenience: this is set the
 moment a store release goes live, which is the review queue's decision and not
 reliably a moment anybody is at a machine that can reach Mongo. The reason it
 can cross the line the maintenance switch cannot is that it blocks nothing — a
-wrong value here shows a dismissible banner, or shows none. Maintenance and the
-flags stay in the script.
+wrong value here shows a dismissible banner, or shows none. Maintenance stays
+in the script.
+
+The flags are switched on the panel's Flags page (`app/(app)/admin/flags.tsx`),
+through `POST /admin/app-config/flags` with `{ flag, value }`. The name must be
+a key of the flags schema (`adminFlagNameSchema`, every key but
+`captchaRequired`, which keeps its own route on the system screen), the value
+must be a boolean, and the body may carry nothing else. Each switch asks first,
+and each is recorded in the audit log as `appConfig.flag` with the name and the
+value. The two flags whose pull requests asked for a condition first,
+`promoPaywallLinks` and `stickerGifts`, carry it under their row as a caution
+rather than a lock. `scripts/maintenance.ts flag <name> <bool>` still works,
+for the day the API is too unwell to sign anybody in.
 
 Dismissal is stored per version on the device, so saying no to 2.2.0 says
 nothing about 2.3.0. Both defaults are `0.0.0`, which means a fresh or

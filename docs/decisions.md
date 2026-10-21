@@ -1423,6 +1423,8 @@ to a point where the app still works and the answer can be "not now".
 
 ## The panel may raise the banner, and may not touch anything else
 
+> **Amended 21 October 2026 — see _The flags are switched from the panel, and every switch is audited_ below.**
+
 `scripts/maintenance.ts` is a script rather than an admin endpoint on purpose,
 and that reasoning holds for everything in it but one field. `latestVersion`
 now also has a control on the operator panel's system screen, through
@@ -9199,3 +9201,31 @@ skipped is a broken promise.
 
 The decision is made once, when the row's end is decided. A row that already
 has an end may already be at RevenueCat, so it finishes the way it started.
+
+## The flags are switched from the panel, and every switch is audited
+
+**21 October 2026.** `appConfig.flags` has a page on the operator panel, and
+`POST /admin/app-config/flags` behind it. This amends _The panel may raise the
+banner, and may not touch anything else_. That entry kept the flags in
+`scripts/maintenance.ts` because they can refuse somebody service. Since then
+they have become mostly rollout stages and consents rather than kill switches:
+`v3Home`, `proWeek`, `copilotEnabled`, `promoPaywallLinks` and the rest start
+off and go on when Behic decides. A decision that needs a machine that can
+reach Mongo is one that waits for that machine.
+
+**Maintenance stays in the script.** The panel is 503 while maintenance is on,
+so it cannot be the switch that turns it off, and that reasoning is unchanged.
+The script's `flag` command stays too, for the day the API is too unwell to
+sign anybody in.
+
+**Every switch is audited.** Each one is an `appConfig.flag` row with the name
+and the value, like every other panel action. A flag that went on and nobody
+remembers turning on is a mystery a week later.
+
+**Only a known name, only a boolean.** The name is checked against the flags
+schema's own keys, the body is strict, and the write sets a key taken from that
+list rather than one read off the request. `captchaRequired` keeps its own route
+beside the minimum version, because it is thrown in step with it. Conditions a
+pull request asked for (`promoPaywallLinks`, `stickerGifts`) are shown as a
+caution, not a lock. Whether they are met is the operator's call, and the app
+cannot see it.
