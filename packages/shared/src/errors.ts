@@ -285,6 +285,13 @@ export const ERROR_CODES = {
    * is with the code's state or the account's.
    */
   GIFT_CODE_REJECTED: 'GIFT_CODE_REJECTED',
+  /**
+   * A sticker pack gift that could not be given. One code with a `reason`
+   * from `STICKER_GIFT_REFUSALS`, for `GIFT_CODE_REJECTED`'s reason: the
+   * client's answer is one sentence, and only the sentence differs. 409: the
+   * request was well-formed; the conflict is with somebody's state.
+   */
+  STICKER_GIFT_REFUSED: 'STICKER_GIFT_REFUSED',
 
   // tokens
   /**
@@ -377,6 +384,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   GENDER_CHANGE_TOO_SOON: 409,
   LOCATION_REQUIRED: 409,
   GIFT_CODE_REJECTED: 409,
+  STICKER_GIFT_REFUSED: 409,
   REPAIR_BEFORE_ACCOUNT: 409,
   CALLS_LOCKED: 409,
   CALLS_REFUSED: 403,
