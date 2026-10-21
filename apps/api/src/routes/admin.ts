@@ -5,6 +5,7 @@ import {
   adminMeasureQuerySchema,
   adminMinVersionSchema,
   adminCaptchaRequiredSchema,
+  adminFlagSchema,
   adminCopilotAccessRequestSchema,
   adminMemberListQuerySchema,
   adminMessageSchema,
@@ -72,7 +73,7 @@ import { forgetAdminStats, readAdminStats } from '../modules/admin/stats'
 import { findAdminUser, getAdminUser, listMembers } from '../modules/admin/users'
 import { suspendMany } from '../modules/admin/bulkSuspend'
 import { findLinkedAccounts } from '../modules/admin/linked'
-import { getAppConfig, updateAppConfig } from '../modules/appConfig/appConfig'
+import { getAppConfig, setAppConfigFlag, updateAppConfig } from '../modules/appConfig/appConfig'
 import { payBounty } from '../modules/feedback/awardBounty'
 import {
   getFeedback,
@@ -348,6 +349,41 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         adminId: request.userId,
         action: 'appConfig.captchaRequired',
         payload: { required },
+      })
+      return reply.send(config)
+    },
+  )
+
+  /**
+   * Switching one of the other flags, from the panel's Flags page.
+   *
+   * The captcha route's shape: the name is checked against the flags
+   * schema's keys by `adminFlagSchema` before this runs, and every switch
+   * lands in the audit log with the name and the value. The write differs on
+   * purpose. It sets one dotted path rather than writing the flags whole from
+   * a cached read, so two switches made close together on two machines cannot
+   * undo each other (`setAppConfigFlag`). Maintenance is
+   * not here and never will be — the panel is 503 while it is on, so it
+   * cannot be the switch; that stays `scripts/maintenance.ts`. See
+   * `docs/decisions.md` → _The flags are switched from the panel, and every
+   * switch is audited_.
+   */
+  app.post(
+    '/admin/app-config/flags',
+    {
+      preHandler: requireAdmin,
+      schema: { body: adminFlagSchema },
+      config: { rateLimit: limit(20, '1 minute') },
+    },
+    async (request, reply) => {
+      const { flag, value } = request.body
+      const config = await setAppConfigFlag(app.mongo.db, flag, value)
+      forgetAdminStats()
+
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'appConfig.flag',
+        payload: { flag, value },
       })
       return reply.send(config)
     },

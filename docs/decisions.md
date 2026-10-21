@@ -1423,6 +1423,8 @@ to a point where the app still works and the answer can be "not now".
 
 ## The panel may raise the banner, and may not touch anything else
 
+> **Amended 21 October 2026 — see _The flags are switched from the panel, and every switch is audited_ below.**
+
 `scripts/maintenance.ts` is a script rather than an admin endpoint on purpose,
 and that reasoning holds for everything in it but one field. `latestVersion`
 now also has a control on the operator panel's system screen, through
@@ -2487,6 +2489,25 @@ person had paid for a pack the other did not have. The gift's row (whose unique
 indexes hold the idempotency and both caps), the charge, the grant, the
 message, the ledger line and the thread's last line commit together. The
 replica set Better Auth already needs is what makes that possible.
+
+**The Terms changed first, 21 October 2026.** §7 on langx.io now names gifts
+between users as the one exception to "not transferable", and §6 says a gift
+moves no tokens (langx/website#288, which also adds the sentence to langx.io's
+tokens page); the GitBook token page carries it too (langx/docs#57). Two
+phrases moved from the draft to match the code: "within the limits shown in
+the App" became "within the limits the App sets", because the monthly receive
+cap and every `unavailable` reason are never shown; and "for another user"
+became "for someone you have a conversation with", because only a chat partner
+can receive one. The draft in `docs/drafts/` is deleted; the Terms are the
+text now. `stickerGift.honesty` already says what the new paragraph says.
+
+Still owed before the switch goes on: the "not transferable" line on
+token.langx.io (eight locales, still true of tokens as it stands), the
+per-partner correction-farming cap, and the App Review note — "Gifts are
+bought with earned in-app points that cannot be purchased." That note holds
+only while tokens cannot be bought: nothing in Apple 3.1.1 or Google Play's
+payments policy stands against it today, and if tokens or items are ever sold
+for money, gifting falls under in-app purchase rules.
 
 ## Language levels are v1's four, not CEFR's six
 
@@ -9214,3 +9235,36 @@ skipped is a broken promise.
 
 The decision is made once, when the row's end is decided. A row that already
 has an end may already be at RevenueCat, so it finishes the way it started.
+
+## The flags are switched from the panel, and every switch is audited
+
+**21 October 2026.** `appConfig.flags` has a page on the operator panel, and
+`POST /admin/app-config/flags` behind it. This amends _The panel may raise the
+banner, and may not touch anything else_. That entry kept the flags in
+`scripts/maintenance.ts` because they can refuse somebody service. Since then
+they have become mostly rollout stages and consents rather than kill switches:
+`v3Home`, `proWeek`, `copilotEnabled`, `promoPaywallLinks` and the rest start
+off and go on when Behic decides. A decision that needs a machine that can
+reach Mongo is one that waits for that machine.
+
+**Maintenance stays in the script.** The panel is 503 while maintenance is on,
+so it cannot be the switch that turns it off, and that reasoning is unchanged.
+The script's `flag` command stays too, for the day the API is too unwell to
+sign anybody in.
+
+**Every switch is audited.** Each one is an `appConfig.flag` row with the name
+and the value, like every other panel action. A flag that went on and nobody
+remembers turning on is a mystery a week later.
+
+**Only a known name, only a boolean.** The name is checked against the flags
+schema's own keys, and the body is strict. The write sets one dotted path,
+`flags.<name>`, with the name taken from that list rather than read off the
+request. It does not write the flags whole from a cached read. The cache is per
+machine, so two switches made seconds apart on two machines would undo each
+other, and the audit log would still say both had stuck. The audit row is
+best-effort like every panel action's: a failed audit insert is logged and does
+not undo the switch. `captchaRequired` keeps its own route
+beside the minimum version, because it is thrown in step with it. Conditions a
+pull request asked for (`promoPaywallLinks`, `stickerGifts`) are shown as a
+caution, not a lock. Whether they are met is the operator's call, and the app
+cannot see it.

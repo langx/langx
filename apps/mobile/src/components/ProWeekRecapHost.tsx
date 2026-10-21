@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useAckProWeekRecap, useMe, useProWeekRecap } from '../api/queries'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useTourOpen } from '../hooks/useTour'
+import { useV3Home } from '../hooks/useV3Home'
 import { useLocale, useT } from '../i18n'
 import { isLaunchOver, subscribeToLaunchOver } from '../lib/launchOver'
 import { openPaywall } from '../lib/paywall'
@@ -17,6 +18,7 @@ import { getOffers } from '../lib/purchases'
 import { makeStyles, useTheme } from '../lib/theme'
 import { Button } from './ui/Button'
 import { IconButton } from './ui/IconButton'
+import { ProBadge } from './ui/ProBadge'
 import { ProMark } from './ProMark'
 
 /**
@@ -84,6 +86,7 @@ function RecapSheet({
   const { locale } = useLocale()
   const styles = useStyles()
   const { colors, v3 } = useTheme()
+  const v3Look = useV3Home()
   const insets = useSafeAreaInsets()
   const reduce = useReduceMotion()
   // The title's Black face is not loaded at the root (see the paywall); the
@@ -139,7 +142,7 @@ function RecapSheet({
         >
           <IconButton icon="x" accessibilityLabel={t('common.close')} onPress={onClose} />
           <ScrollView contentContainerStyle={styles.content} bounces={false}>
-            <ProMark />
+            {v3Look ? <ProBadge fontSize={v3.type.title.fontSize} /> : <ProMark />}
             <Text accessibilityRole="header" style={styles.title}>
               {recap.ended ? t('proWeek.recapEnded') : t('proWeek.recapEnds', { date })}
             </Text>

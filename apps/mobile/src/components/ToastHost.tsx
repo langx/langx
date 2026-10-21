@@ -1,6 +1,6 @@
 import { useSegments } from 'expo-router'
 import { useEffect, useRef, useState } from 'react'
-import { Animated, Easing, Platform, Pressable, Text, View } from 'react-native'
+import { Animated, Platform, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useAppReady } from '../hooks/useAppReady'
 import { useReduceMotion } from '../hooks/useReduceMotion'
@@ -14,10 +14,8 @@ import {
 } from '../lib/toast'
 import { OVERLAY_LAYER } from '../lib/overlayLayers'
 import { makeStyles } from '../lib/theme'
-import { CURVE, DURATION } from '../lib/theme/motionValues'
-
-/** `motion.ts`'s `EASE_OUT`, on React Native's `Easing`. */
-const EASE_OUT = Easing.bezier(...CURVE.out)
+import { EASE_OUT } from '../lib/theme/motionAnimated'
+import { DURATION } from '../lib/theme/motionValues'
 
 /** How far the pill travels in and out, towards the edge it sits on. */
 const DRIFT = 10

@@ -7,6 +7,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { useMe } from '../../../src/api/queries'
 import { LearningList } from '../../../src/components/languages/LearningList'
 import { LoadFailed } from '../../../src/components/LoadFailed'
+import { NotDuringOnboarding } from '../../../src/components/NotDuringOnboarding'
 import { Button } from '../../../src/components/ui/Button'
 import { Chip } from '../../../src/components/ui/Chip'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -54,7 +55,10 @@ import { LanguagesScreenV3 } from '../../../src/screens/settings/LanguagesScreen
  */
 export default function LanguagesScreenRoute() {
   // The redesign's page under `flags.v3Home`, read once per launch.
-  return useV3Home() ? <LanguagesScreenV3 /> : <LanguagesScreen />
+  const v3 = useV3Home()
+  return (
+    <NotDuringOnboarding>{v3 ? <LanguagesScreenV3 /> : <LanguagesScreen />}</NotDuringOnboarding>
+  )
 }
 
 function LanguagesScreen() {

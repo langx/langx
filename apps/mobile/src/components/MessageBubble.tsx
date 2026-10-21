@@ -175,6 +175,11 @@ export interface MessageBubbleProps {
    */
   onOpenViewOnce: (message: MessageDto) => void
   /**
+   * A tap on a lone big emoji, which replays the v3 thread's burst. Only the
+   * v3 thread passes it; the screen decides whether it plays.
+   */
+  onBurst?: ((message: MessageDto) => void) | undefined
+  /**
    * The redesign's look (`bubbleLookV3`), which the thread picks behind
    * `flags.v3Home`. Only the drawing changes: every branch, gesture and
    * handler below is the same in both looks.
@@ -264,6 +269,7 @@ export const MessageBubble = memo(function MessageBubble({
   onJumpTo,
   onOpenMedia,
   onOpenViewOnce,
+  onBurst,
   v3 = false,
   partnerHue,
 }: MessageBubbleProps) {
@@ -1112,6 +1118,7 @@ export const MessageBubble = memo(function MessageBubble({
       <Pressable
         onPress={() => {
           replay()
+          onBurst?.(message)
           tap?.()
         }}
         onLongPress={press}

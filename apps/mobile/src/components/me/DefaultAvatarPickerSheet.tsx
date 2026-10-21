@@ -110,7 +110,16 @@ export function DefaultAvatarPickerSheet({
             style={styles.grid}
             columnWrapperStyle={styles.gridRow}
             contentContainerStyle={styles.gridContent}
-            initialNumToRender={16}
+            /*
+             * Counted in rows, not faces: with four columns each "item" the
+             * list renders is a row of four. Eight rows is the first screen
+             * of faces; past that, rows four at a time and only as scrolling
+             * brings them near. The list's default window is 21 screens,
+             * which for this grid was all 144 faces the moment it opened.
+             */
+            initialNumToRender={8}
+            maxToRenderPerBatch={4}
+            windowSize={3}
             renderItem={({ item }) => {
               const on = sameFace(item, selected)
               return (
