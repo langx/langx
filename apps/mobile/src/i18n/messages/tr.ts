@@ -1982,6 +1982,8 @@ export const tr: Localized<EnMessages> = {
     capOverGrandfathered:
       'Zaten planının tuttuğundan fazlası var. Bunları değiştirebilir ya da kaldırabilirsin ama yenisini ekleyemezsin.',
     changeHint: 'Değiştirmek için bir dile dokun.',
+    allLanguages: 'Tüm diller, A’dan Z’ye',
+    levelGroup: '{language} seviyen',
     pausedNote: 'Ücretsiz planda Keşfet’te duraklatıldı. Pro ile yeniden sayılır.',
     saveFailed: 'Kaydedilemedi. Hiçbir şey değişmedi.',
   },

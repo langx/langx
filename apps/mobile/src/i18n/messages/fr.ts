@@ -2032,6 +2032,8 @@ export const fr: Localized<EnMessages> = {
     capOverGrandfathered:
       'Tu en as déjà plus que ton offre n’en contient. Tu peux les changer ou les retirer, mais pas en ajouter.',
     changeHint: 'Touche une langue pour la changer.',
+    allLanguages: 'Toutes les langues, de A à Z',
+    levelGroup: 'Ton niveau en {language}',
     pausedNote: 'En pause dans Découvrir avec le forfait gratuit. Elle compte à nouveau avec Pro.',
     saveFailed: 'Ça n’a pas été enregistré. Rien n’a changé.',
   },

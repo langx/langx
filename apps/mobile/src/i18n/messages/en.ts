@@ -2236,6 +2236,8 @@ export const en = {
     capOverGrandfathered:
       'You already have more than your plan holds. You can change these or remove them, but not add another.',
     changeHint: 'Tap a language to change it.',
+    allLanguages: 'All languages, A to Z',
+    levelGroup: 'Your {language} level',
     /**
      * Under a language added during a gift of Pro that has ended: still on the
      * profile, not searched with in Discover until Pro is back.

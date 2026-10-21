@@ -2299,6 +2299,8 @@ export const ru: Localized<EnMessages> = {
     capOverGrandfathered:
       'У тебя уже больше, чем вмещает тариф. Их можно менять и убирать, но не добавлять новые.',
     changeHint: 'Нажми на язык, чтобы заменить его.',
+    allLanguages: 'Все языки, от А до Я',
+    levelGroup: 'Твой уровень: {language}',
     pausedNote: 'На паузе в «Поиске» на бесплатном тарифе. С Pro снова учитывается.',
     saveFailed: 'Не сохранилось. Ничего не изменилось.',
   },

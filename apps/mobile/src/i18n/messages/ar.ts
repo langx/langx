@@ -2418,6 +2418,8 @@ export const ar: Localized<EnMessages> = {
     capOverGrandfathered:
       'لديك بالفعل أكثر مما تتّسع له خطتك. يمكنك تغييرها أو إزالتها، لكن لا يمكنك إضافة أخرى.',
     changeHint: 'اضغط على لغة لتغييرها.',
+    allLanguages: 'كل اللغات، من الألف إلى الياء',
+    levelGroup: 'مستواك في {language}',
     pausedNote: 'متوقفة مؤقتًا في «استكشاف» على الخطة المجانية. تُحتسب من جديد مع Pro.',
     saveFailed: 'لم يُحفظ. لم يتغيّر شيء.',
   },
