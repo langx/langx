@@ -1,12 +1,16 @@
 import Feather from '@expo/vector-icons/Feather'
-import { ActivityIndicator, Pressable, Text, View } from 'react-native'
+import { useEffect, useRef } from 'react'
+import { ActivityIndicator, Animated, Pressable, Text, View } from 'react-native'
 import { useCommentReplies } from '../api/queries'
 import type { PostCommentReply } from '../api/types'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useLocale, useT } from '../i18n'
 import { hiddenReplyCount, repliesToShow } from '../lib/commentThread'
 import { relativeTime } from '../lib/format'
 import { openProfile } from '../lib/navigation'
 import { makeStyles, useTheme } from '../lib/theme'
+import { EASE_OUT } from '../lib/theme/motionAnimated'
+import { DELAY, DURATION } from '../lib/theme/motionValues'
 import type { CommentThreadProps } from './CommentThread'
 import { Avatar } from './ui/Avatar'
 import { IconButton } from './ui/IconButton'
@@ -112,6 +116,7 @@ function CommentRowV3({
   if (comment.deleted) {
     return (
       <View style={[styles.row, highlighted && styles.highlighted]}>
+        {highlighted ? <HighlightTint /> : null}
         <Text style={styles.removed}>{t('feed.commentRemoved')}</Text>
       </View>
     )
@@ -119,6 +124,7 @@ function CommentRowV3({
 
   return (
     <View style={[styles.row, highlighted && styles.highlighted]}>
+      {highlighted ? <HighlightTint /> : null}
       {/*
         The face opens the profile, as it does in today's thread, where it sat
         inside the name's button. Hidden from a screen reader, which already
@@ -176,6 +182,43 @@ function CommentRowV3({
   )
 }
 
+/** How long the pointed-at comment keeps its tint once the screen has arrived. */
+const TINT_HOLD = 600
+
+/**
+ * The tint behind the comment a notification pointed at. It used to stay for
+ * as long as the screen was open, so the one comment somebody came for went
+ * on looking selected after they had read it. Now it holds long enough to be
+ * found — the push's own slide, then `TINT_HOLD` — and fades. A layer under
+ * the row rather than the row's own background, and the room round the words
+ * stays, so the fade moves nothing. With reduce motion on it goes at once
+ * when the hold ends.
+ */
+function HighlightTint() {
+  const styles = useStyles()
+  const reduceMotion = useReduceMotion()
+  const opacity = useRef(new Animated.Value(1)).current
+  useEffect(() => {
+    const hold = DELAY.afterPush + TINT_HOLD
+    if (reduceMotion) {
+      const timer = setTimeout(() => opacity.setValue(0), hold)
+      return () => clearTimeout(timer)
+    }
+    const fade = Animated.sequence([
+      Animated.delay(hold),
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: DURATION.roll,
+        easing: EASE_OUT,
+        useNativeDriver: true,
+      }),
+    ])
+    fade.start()
+    return () => fade.stop()
+  }, [opacity, reduceMotion])
+  return <Animated.View pointerEvents="none" style={[styles.tint, { opacity }]} />
+}
+
 const useStyles = makeStyles(({ v3 }) => ({
   thread: { gap: v3.space[4], paddingVertical: v3.space[6] },
   // The root's face plus the row's gap: a reply's face lines up under the
@@ -185,9 +228,17 @@ const useStyles = makeStyles(({ v3 }) => ({
   // The comment a notification pointed at: Echo's tint, the board's one
   // "look here" colour, with room so the words do not touch its edge.
   highlighted: {
-    backgroundColor: v3.colors.echoTint,
     paddingHorizontal: v3.space[8],
     paddingVertical: v3.space[8],
+  },
+  tint: {
+    backgroundColor: v3.colors.echoTint,
+    borderRadius: v3.radius.row,
+    bottom: 0,
+    end: 0,
+    position: 'absolute',
+    start: 0,
+    top: 0,
   },
   column: { flex: 1, gap: v3.space[4], minWidth: 0 },
   who: { alignItems: 'baseline', flexDirection: 'row', gap: v3.space[4] },
