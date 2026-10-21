@@ -2722,6 +2722,9 @@ export const tr: Localized<EnMessages> = {
     columnNow: 'Şu anda',
     columnEver: 'En uzun',
     columnDays: 'Art arda gün',
+    placeWeek: 'Bu haftaki yerin',
+    placeMonth: 'Bu ayki yerin',
+    placeYear: 'Bu yılki yerin',
     rowTokens: { one: '{rank}. {name}, {amount} jeton', other: '{rank}. {name}, {amount} jeton' },
     rowDays: {
       one: '{rank}. {name}, art arda {amount} gün',
