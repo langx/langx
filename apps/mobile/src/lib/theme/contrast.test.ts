@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { disabledButtonLook } from './buttonDisabledLook'
 import {
   PARTNER_HUES,
   palettes,
@@ -40,6 +41,7 @@ const PAIRS: Pair[] = [
   { text: 'fg', on: 'line' },
   { text: 'fg', on: 'echoTint' },
   { text: 'muted', on: 'bg' },
+  // Also a filled button that cannot be pressed yet (`disabledButtonLook`).
   { text: 'muted', on: 'surface' },
   { text: 'muted', on: 'tabOn' },
   { text: 'echoText', on: 'echoTint' },
@@ -143,4 +145,23 @@ describe('the anchors that do not move with the theme', () => {
   it('puts the same ink on every hue in both schemes', () => {
     expect(v3.dark.colors.ink).toBe(v3.light.colors.ink)
   })
+})
+
+describe('a filled button that cannot be pressed yet', () => {
+  for (const scheme of SCHEMES) {
+    const colors = v3[scheme].colors
+    const look = disabledButtonLook(colors)
+
+    it(`${scheme}: keeps its label readable`, () => {
+      expect(contrast(look.label, look.face)).toBeGreaterThanOrEqual(4.5)
+    })
+
+    // Half the yellow over the dark ground was olive: a colour of its own,
+    // read as another button rather than this one asleep.
+    it(`${scheme}: is not any variant's own fill`, () => {
+      for (const fill of [colors.yellow, colors.blue, colors.pill, colors.ink]) {
+        expect(look.face).not.toBe(fill)
+      }
+    })
+  }
 })
