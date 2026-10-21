@@ -3465,6 +3465,9 @@ export const ar: Localized<EnMessages> = {
     columnNow: 'الآن',
     columnEver: 'الأطول على الإطلاق',
     columnDays: 'أيام متتالية',
+    placeWeek: 'مكانك هذا الأسبوع',
+    placeMonth: 'مكانك هذا الشهر',
+    placeYear: 'مكانك هذا العام',
     rowTokens: {
       zero: '{rank}. {name}، {amount} توكن',
       one: '{rank}. {name}، {amount} توكن',

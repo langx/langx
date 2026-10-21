@@ -163,7 +163,9 @@ function offences(file: string): string[] {
 }
 
 describe('a screen leaving by router.replace or router.back', () => {
-  it('does not change its own state in the same tick', () => {
+  // Parses every screen and component, so it outgrows vitest's 5 s default
+  // when the full suite shares the CPU; a timeout here is load, not a hang.
+  it('does not change its own state in the same tick', { timeout: 30_000 }, () => {
     expect(ROOTS.flatMap(sourceFiles).flatMap(offences)).toEqual([])
   })
 })

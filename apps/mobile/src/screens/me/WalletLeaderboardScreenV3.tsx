@@ -13,10 +13,30 @@ import { partnerHueFor } from '../../lib/theme/partnerHue'
 import { useV3Fonts } from './useV3Fonts'
 
 /** The three tabs today's board has; the API still answers `all`, unasked. */
-const PERIOD_TABS: readonly { value: PeriodType; labelKey: MessageKey; columnKey: MessageKey }[] = [
-  { value: 'week', labelKey: 'leaderboard.week', columnKey: 'leaderboard.columnWeek' },
-  { value: 'month', labelKey: 'leaderboard.month', columnKey: 'leaderboard.columnMonth' },
-  { value: 'year', labelKey: 'leaderboard.year', columnKey: 'leaderboard.columnYear' },
+const PERIOD_TABS: readonly {
+  value: PeriodType
+  labelKey: MessageKey
+  columnKey: MessageKey
+  placeKey: MessageKey
+}[] = [
+  {
+    value: 'week',
+    labelKey: 'leaderboard.week',
+    columnKey: 'leaderboard.columnWeek',
+    placeKey: 'leaderboard.placeWeek',
+  },
+  {
+    value: 'month',
+    labelKey: 'leaderboard.month',
+    columnKey: 'leaderboard.columnMonth',
+    placeKey: 'leaderboard.placeMonth',
+  },
+  {
+    value: 'year',
+    labelKey: 'leaderboard.year',
+    columnKey: 'leaderboard.columnYear',
+    placeKey: 'leaderboard.placeYear',
+  },
 ]
 
 /**
@@ -66,6 +86,7 @@ export function WalletLeaderboardScreenV3() {
             : undefined
         }
         viewerHue={me.data ? v3.hues[partnerHueFor(me.data._id)] : undefined}
+        viewerSub={t(tab.placeKey)}
         loading={board.isPending}
         emptyTitle={t('leaderboard.emptyTitle')}
         emptyBody={t('leaderboard.emptyBody')}
