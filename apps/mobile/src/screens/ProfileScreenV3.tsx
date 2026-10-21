@@ -16,7 +16,7 @@ import {
   useSetFollow,
   type ConversationDto,
 } from '../api/queries'
-import { ActivityMap } from '../components/ActivityMap'
+import { ActivityMapV3 } from '../components/ActivityMapV3'
 import { BadgeMark } from '../components/BadgeMark'
 import { ConversationPicker } from '../components/ConversationPicker'
 import { GenderMark } from '../components/GenderMark'
@@ -25,9 +25,9 @@ import { PhotoViewer } from '../components/PhotoViewer'
 import { PresenceLine } from '../components/PresenceLine'
 import { ProMark } from '../components/ProMark'
 import { ProfileSkeleton } from '../components/skeletons/ProfileSkeleton'
-import { ProfileTestimonials } from '../components/testimonials/ProfileTestimonials'
+import { ProfileTestimonialsV3 } from '../components/testimonials/ProfileTestimonialsV3'
 import { WebTitle } from '../components/WebTitle'
-import { WeeklyChart } from '../components/WeeklyChart'
+import { WeeklyChartV3 } from '../components/WeeklyChartV3'
 import { WhatsProSheet } from '../components/WhatsProSheet'
 import { Avatar } from '../components/ui/Avatar'
 import { Button } from '../components/ui/Button'
@@ -637,23 +637,17 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
               </View>
             ) : null}
 
-            <ProfileTestimonials
+            <ProfileTestimonialsV3
               handle={user.handle}
               subject={{ _id: user._id, displayName: user.displayName, avatarUrl: user.avatarUrl }}
               here={here}
             />
 
-            {user.official ? null : (
-              <View style={styles.history}>
-                <ActivityMap handle={user.handle} />
-              </View>
-            )}
+            {user.official ? null : <ActivityMapV3 handle={user.handle} hue={hue} />}
 
             {/* Only if it is offered: the server sends no `week` otherwise. */}
             {summary.data?.week && !user.official ? (
-              <View style={styles.history}>
-                <WeeklyChart week={summary.data.week} />
-              </View>
+              <WeeklyChartV3 week={summary.data.week} hue={hue} />
             ) : null}
           </View>
         </View>
@@ -879,13 +873,6 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingVertical: v3.space[6],
   },
   tagLabel: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '700' },
-
-  /*
-   * On the ground, not on the board's grey card: the map's empty days are the
-   * current look's `fill`, which all but vanishes on `surface`. The card
-   * comes with a map drawn on v3's own track colour.
-   */
-  history: { paddingHorizontal: v3.space[4] },
 
   footer: {
     alignItems: 'center',

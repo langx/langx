@@ -181,3 +181,65 @@ describe('v3 chat pages keep the current pages’ words and requests', () => {
     })
   }
 })
+
+/** The attribute names each `<tag …>` in the file is given, one set per element. */
+function jsxAttributes(file: string, tag: string): Set<string>[] {
+  const source = ts.createSourceFile(
+    file,
+    readFileSync(file, 'utf8'),
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TSX,
+  )
+  const found: Set<string>[] = []
+  const visit = (node: ts.Node): void => {
+    if (
+      (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) &&
+      node.tagName.getText(source) === tag
+    ) {
+      found.push(
+        new Set(
+          node.attributes.properties.flatMap((attribute) =>
+            ts.isJsxAttribute(attribute) ? [attribute.name.getText(source)] : [],
+          ),
+        ),
+      )
+    }
+    ts.forEachChild(node, visit)
+  }
+  visit(source)
+  return found
+}
+
+/*
+ * A first message is written on `chat/new`, not in a thread: the conversation
+ * does not exist until it is sent. That page is replaced by the thread on the
+ * send, so under the flag it must be drawn in the thread's v3 chrome — the
+ * band behind the status bar, the v3 composer — or the person sees the
+ * current look until the first send, and the band drops into place after it.
+ */
+describe('a conversation not started yet opens in the v3 thread look', () => {
+  const route = path.join(APP, 'chat/new.tsx')
+  const twin = path.join(SCREENS, 'NewChatScreenV3.tsx')
+  const thread = path.join(SRC, 'screens/ChatScreen.tsx')
+
+  it('chat/new switches to NewChatScreenV3 under flags.v3Home', () => {
+    expect(readFileSync(route, 'utf8')).toMatch(/useV3Home\(\)\s*\?\s*<NewChatScreenV3\s*\/>/)
+  })
+
+  it('draws the thread’s v3 band and composer, not the current ones', () => {
+    const source = readFileSync(twin, 'utf8')
+    expect(jsxAttributes(twin, 'ThreadHeaderV3')).toHaveLength(1)
+    expect(jsxAttributes(twin, 'ComposerV3')).toHaveLength(1)
+    expect(source).not.toMatch(/<ChatComposer\b/)
+    expect(source).not.toMatch(/<PresenceLine\b/)
+  })
+
+  it('runs the band behind the status bar, as the thread it becomes does', () => {
+    // The thread's own v3 band does; if that ever stops, so may this.
+    expect(jsxAttributes(thread, 'ThreadHeaderV3')[0]).toContain('underStatusBar')
+    expect(jsxAttributes(twin, 'ThreadHeaderV3')[0]).toContain('underStatusBar')
+    expect(jsxAttributes(twin, 'Screen')[0]).toContain('underStatusBar')
+    expect(jsxAttributes(twin, 'StatusBar')).toHaveLength(1)
+  })
+})

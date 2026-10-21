@@ -18,7 +18,7 @@ import { useLocale, useT } from '../i18n'
  * Twenty weeks: what fits across a phone at the 3px gutter without the map
  * having to scroll, and the number the legend's "weeks ago" reads from.
  */
-const WEEKS = 20
+export const WEEKS = 20
 
 /**
  * Every day this person showed up, and the ones they can still buy back.
@@ -177,7 +177,7 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
  * count in each bucket is enough to reproduce the same shade, and is the only
  * thing the grid needs from it.
  */
-const INTENSITY_ACTIONS: Record<number, number> = { 1: 1, 2: 3, 3: 10, 4: 30 }
+export const INTENSITY_ACTIONS: Record<number, number> = { 1: 1, 2: 3, 3: 10, 4: 30 }
 
 const useStyles = makeStyles(({ colors, spacing }) => ({
   loading: { paddingVertical: spacing.lg },
