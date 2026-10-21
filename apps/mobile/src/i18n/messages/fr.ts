@@ -542,6 +542,18 @@ export const fr: Localized<EnMessages> = {
     subtitle: 'Les phrases de tes discussions reviennent juste avant que tu les oublies.',
     dueUnit: { one: 'carte à revoir', other: 'cartes à revoir' },
     aboutMinutes: { one: 'environ {count} minute', other: 'environ {count} minutes' },
+    gradeInMinutes: {
+      one: '{grade}, revient dans {count} minute',
+      other: '{grade}, revient dans {count} minutes',
+    },
+    gradeInHours: {
+      one: '{grade}, revient dans {count} heure',
+      other: '{grade}, revient dans {count} heures',
+    },
+    gradeInDays: {
+      one: '{grade}, revient dans {count} jour',
+      other: '{grade}, revient dans {count} jours',
+    },
     byPartner: 'Par partenaire',
     fromPartner: 'De la part de {name}',
     partnerDue: { one: '{count} à revoir', other: '{count} à revoir' },
@@ -1180,6 +1192,8 @@ export const fr: Localized<EnMessages> = {
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
     ageScaleOpen: '{max}+',
+    ageYoungest: 'Âge minimum',
+    ageOldest: 'Âge maximum',
     showResults: 'Voir les résultats',
     showResultsWithCount: 'Voir les résultats · {count}',
   },

@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Button } from './ui/Button'
 import { useV3Home } from '../hooks/useV3Home'
 import { useT } from '../i18n'
-import { makeStyles } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 
 /**
  * A message cut into pieces, one tap to choose a piece.
@@ -40,7 +41,10 @@ export function MessagePartsSheet({
 }) {
   const current = useStyles()
   const redesigned = useStylesV3()
-  const styles = useV3Home() ? redesigned : current
+  const v3Look = useV3Home()
+  const styles = v3Look ? redesigned : current
+  const { v3 } = useTheme()
+  const insets = useSafeAreaInsets()
   const t = useT()
 
   return (
@@ -82,7 +86,13 @@ export function MessagePartsSheet({
           {detail ? <View style={styles.detail}>{detail}</View> : null}
 
           {/* Outside the scroller, like every sheet's way out. */}
-          <View style={styles.footer}>
+          <View
+            style={[
+              styles.footer,
+              // v3 keeps Cancel clear of the home indicator; the current look is unchanged.
+              v3Look && { paddingBottom: Math.max(v3.space[32], insets.bottom + v3.space[16]) },
+            ]}
+          >
             <Button label={t('common.cancel')} variant="neutral" onPress={onClose} />
           </View>
         </Pressable>

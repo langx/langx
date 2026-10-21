@@ -78,14 +78,18 @@ describe('CountryPicker in v3', () => {
 describe('RangeSlider in v3', () => {
   const source = text(file('ui/RangeSlider.tsx'))
 
-  it('draws both looks as one adjustable control with the same name and value', () => {
+  // The current look keeps one control for the range; v3 makes each handle
+  // its own, named and stepped (V-Filters' "Youngest age" / "Oldest age"),
+  // because one control for two ends could not be adjusted at all.
+  it('keeps the current look one adjustable control, and gives v3 one per handle', () => {
     expect(source.match(/accessibilityRole="adjustable"/g)).toHaveLength(2)
-    expect(source.match(/accessibilityLabel=\{accessibilityLabel\}/g)).toHaveLength(2)
+    expect(source.match(/accessibilityLabel=\{accessibilityLabel\}/g)).toHaveLength(1)
     expect(
       source.match(
         /accessibilityValue=\{\{ min, max, text: `\$\{values\[0\]\}–\$\{values\[1\]\}` \}\}/g,
       ),
-    ).toHaveLength(2)
+    ).toHaveLength(1)
+    expect(source).toContain('accessibilityLabel={thumbLabels?.[thumb] ?? accessibilityLabel}')
   })
 
   // A web load draws the current look first and flips once the config

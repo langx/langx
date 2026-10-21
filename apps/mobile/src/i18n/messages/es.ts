@@ -535,6 +535,18 @@ export const es: Localized<EnMessages> = {
     subtitle: 'Las frases de tus chats vuelven justo antes de que las olvides.',
     dueUnit: { one: 'tarjeta pendiente', other: 'tarjetas pendientes' },
     aboutMinutes: { one: 'alrededor de {count} minuto', other: 'alrededor de {count} minutos' },
+    gradeInMinutes: {
+      one: '{grade}, vuelve en {count} minuto',
+      other: '{grade}, vuelve en {count} minutos',
+    },
+    gradeInHours: {
+      one: '{grade}, vuelve en {count} hora',
+      other: '{grade}, vuelve en {count} horas',
+    },
+    gradeInDays: {
+      one: '{grade}, vuelve en {count} día',
+      other: '{grade}, vuelve en {count} días',
+    },
     byPartner: 'Por compañero',
     fromPartner: 'De {name}',
     partnerDue: { one: '{count} pendiente', other: '{count} pendientes' },
@@ -1165,6 +1177,8 @@ export const es: Localized<EnMessages> = {
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
     ageScaleOpen: '{max}+',
+    ageYoungest: 'Edad mínima',
+    ageOldest: 'Edad máxima',
     showResults: 'Ver resultados',
     showResultsWithCount: 'Ver resultados · {count}',
   },

@@ -520,7 +520,9 @@ const useStyles = makeStyles(({ v3 }) => ({
   pressed: { opacity: 0.7 },
   block: { gap: v3.space[6] },
   blockHead: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
-  label: { ...v3.type.buttonSmall, color: v3.colors.fg },
+  // Inset by `FieldV3`'s own 4, so these labels and notes line up with the
+  // Display name, Pronouns and About you labels between them.
+  label: { ...v3.type.buttonSmall, color: v3.colors.fg, paddingHorizontal: v3.space[4] },
   readOnly: {
     alignItems: 'center',
     backgroundColor: v3.colors.surface,
@@ -535,7 +537,12 @@ const useStyles = makeStyles(({ v3 }) => ({
   // Today's dimmed field while a cooldown runs, with the lock where the action was.
   locked: { opacity: 0.6, paddingEnd: v3.space[16] },
   readOnlyValue: { ...v3.type.body, color: v3.colors.fg, flex: 1, fontWeight: '600' },
-  note: { ...v3.type.caption, color: v3.colors.muted, lineHeight: 18 },
+  note: {
+    ...v3.type.caption,
+    color: v3.colors.muted,
+    lineHeight: 18,
+    paddingHorizontal: v3.space[4],
+  },
   group: { backgroundColor: v3.colors.surface, borderRadius: v3.radius.tile, overflow: 'hidden' },
   divided: { borderTopColor: v3.colors.line, borderTopWidth: 1 },
   languageRow: {

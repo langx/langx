@@ -542,6 +542,18 @@ export const de: Localized<EnMessages> = {
     subtitle: 'Sätze aus deinen Chats kommen zurück, kurz bevor du sie vergessen würdest.',
     dueUnit: { one: 'Karte fällig', other: 'Karten fällig' },
     aboutMinutes: { one: 'etwa {count} Minute', other: 'etwa {count} Minuten' },
+    gradeInMinutes: {
+      one: '{grade}, wieder in {count} Minute',
+      other: '{grade}, wieder in {count} Minuten',
+    },
+    gradeInHours: {
+      one: '{grade}, wieder in {count} Stunde',
+      other: '{grade}, wieder in {count} Stunden',
+    },
+    gradeInDays: {
+      one: '{grade}, wieder in {count} Tag',
+      other: '{grade}, wieder in {count} Tagen',
+    },
     byPartner: 'Nach Partner',
     fromPartner: 'Von {name}',
     partnerDue: { one: '{count} fällig', other: '{count} fällig' },
@@ -1185,6 +1197,8 @@ export const de: Localized<EnMessages> = {
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
     ageScaleOpen: '{max}+',
+    ageYoungest: 'Mindestalter',
+    ageOldest: 'Höchstalter',
     showResults: 'Ergebnisse zeigen',
     showResultsWithCount: 'Ergebnisse zeigen · {count}',
   },

@@ -634,6 +634,13 @@ export const en = {
     subtitle: 'Lines from your chats come back just before you’d forget them.',
     dueUnit: { one: 'card due', other: 'cards due' },
     aboutMinutes: { one: 'about {count} minute', other: 'about {count} minutes' },
+    /** A grade tile read aloud: its word and, in full, when the card comes back. */
+    gradeInMinutes: {
+      one: '{grade}, back in {count} minute',
+      other: '{grade}, back in {count} minutes',
+    },
+    gradeInHours: { one: '{grade}, back in {count} hour', other: '{grade}, back in {count} hours' },
+    gradeInDays: { one: '{grade}, back in {count} day', other: '{grade}, back in {count} days' },
     byPartner: 'By partner',
     fromPartner: 'From {name}',
     partnerDue: { one: '{count} due', other: '{count} due' },
@@ -1311,6 +1318,9 @@ export const en = {
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
     ageScaleOpen: '{max}+',
+    /** The age slider's two handles, each its own control for a screen reader. */
+    ageYoungest: 'Youngest age',
+    ageOldest: 'Oldest age',
     showResults: 'Show results',
     showResultsWithCount: 'Show results · {count}',
   },
