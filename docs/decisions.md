@@ -991,6 +991,8 @@ as before. Nothing on the server changed: `unreplied`, `partner` and
 
 ## People's two segments in v3: a card per person, a card per post
 
+> **Amended 20 October 2026 — see _An ask's card carries the like too_ below.**
+
 **19 October 2026.** Phase 5's People and Posts, drawn from `V-People` and
 `V-Posts`, behind the same `flags.v3Home`. Only the drawing changes: the
 sort, the filters, Nearby, search, the feed's ranking and its correction box
@@ -1023,6 +1025,18 @@ Discover and Feed.
   optional, and only asked-for help can be given_ stands, and the server
   would refuse it. Likes stay on moments and on every post's page; an ask's
   card is about help.
+
+## An ask's card carries the like too
+
+**20 October 2026.** Amends the entry above. Testing the v3 build, the heart
+showed on some posts and not on others, and that read as a bug rather than a
+rule: nothing on the card says why a question cannot be liked, and the server
+takes a like on any post that is not your own. So every v3 card draws the
+post's like in the same place, above its one big button; on an ask's hue the
+heart takes the ink, as the card's words do. The ask is still about help —
+its Help button, its counts and its top correction are unchanged, and a like
+still pays and ranks nothing. The post's page already drew the like on every
+post. `src/lib/postLikeEveryKind.test.ts` holds both to it.
 
 ## Echo leads with what is due, and the done screen says what it earned — behind the same flag
 
@@ -8854,3 +8868,12 @@ so a build that does not read it opens Discover as it always did.
   decided exactly as with the switch off; nothing is sent that was not sent
   before. It starts off because it is promotion, and promotion moves when
   Behic switches it rather than when a pull request merges.
+- **The limits nudge counts only limits a plan lifts.** It used to count three
+  refusals of any quota, so somebody refused by the media ceiling or the
+  translation fair-use ceiling — the same on both plans — was told "a plan
+  lifts them" and, with the switch on, sent to a paywall that lifts nothing of
+  the kind. It now counts refusals of a limit the free plan has and Pro does
+  not have at all (`REFUSALS_A_PLAN_LIFTS` in `promotions.ts`, read from
+  `PLAN_LIMITS`): today new conversations and translations, which is what its
+  mail names. This applies with the switch off too; it narrows who is told,
+  and never widens it.
