@@ -730,6 +730,26 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
 
       expect((await summary(user)).streak.proGiftRungs).toEqual([])
     })
+
+    it('lists none for a subscriber, whose gifts are skipped while the plan runs', async () => {
+      const user = await newUser('pro-rungs-subscriber@example.com')
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: user.userId },
+        {
+          $set: {
+            entitlement: {
+              tier: 'pro',
+              store: 'app_store',
+              willRenew: true,
+              expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+              updatedAt: new Date(),
+            },
+          },
+        },
+      )
+
+      expect((await summary(user)).streak.proGiftRungs).toEqual([])
+    })
   })
 
   describe('timezone changes are rate limited', () => {

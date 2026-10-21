@@ -24,6 +24,7 @@ import {
 } from '../../components/echo/PlayAgain'
 import { Button } from '../../components/ui/Button'
 import { EmptyStateV3 } from '../../components/ui/EmptyStateV3'
+import { FitText } from '../../components/ui/FitText'
 import { ProgressBar } from '../../components/ui/ProgressBar'
 import { Screen } from '../../components/ui/Screen'
 import { Skeleton } from '../../components/ui/Skeleton'
@@ -33,6 +34,7 @@ import { useT } from '../../i18n'
 import { useDisplayNames } from '../../i18n/displayNames'
 import { voiceLabel } from '../../i18n/labels'
 import type { EchoAskParams } from '../../lib/echoAsk'
+import { spokenGrade } from '../../lib/format'
 import { goBackTo } from '../../lib/navigation'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
 
@@ -59,6 +61,8 @@ export interface EchoSessionV3Props {
   onReveal: () => void
   onGrade: (grade: EchoGrade) => void
   intervalLabel: (grade: EchoGrade) => string
+  /** The minutes until the card comes back for each grade, for the spoken label. */
+  delayMinutes: (grade: EchoGrade) => number
   keyboard: ReturnType<typeof useKeyboardClearance>
   cardRef: RefObject<ScrollView | null>
 }
@@ -136,6 +140,7 @@ export function EchoSessionScreenV3(props: EchoSessionV3Props) {
                   key={value}
                   value={value}
                   interval={props.intervalLabel(value)}
+                  minutes={props.delayMinutes(value)}
                   onPress={() => props.onGrade(value)}
                 />
               ))}
@@ -217,14 +222,9 @@ function AutoplaySwitch({ on, onToggle }: { on: boolean; onToggle: () => void })
         than the room beside the chevron on a 390pt phone, and a wrapped pill
         pushes the title down every time autoplay is switched.
       */}
-      <Text
-        style={[styles.autoplayText, !on && styles.autoplayTextOff]}
-        numberOfLines={1}
-        adjustsFontSizeToFit
-        minimumFontScale={0.75}
-      >
+      <FitText style={[styles.autoplayText, !on && styles.autoplayTextOff]} minimumFontScale={0.75}>
         {label}
-      </Text>
+      </FitText>
     </Pressable>
   )
 }
@@ -338,7 +338,9 @@ function Source({
   const name = partnerId ? profiles[partnerId]?.displayName : undefined
   const language = names.language(card.lang)
   // The cards list's words: "From a post", "Written by you", "From Anna" once
-  // the name is in; otherwise just the language, said once.
+  // the name is in. Until then — and offline, where it may never come — "From
+  // your chats", which is true of every chat card and does not repeat the
+  // language beside it.
   const label =
     card.source.kind === 'post'
       ? t('echo.fromAPost')
@@ -346,17 +348,22 @@ function Source({
         ? t('echo.fromYourself')
         : name
           ? t('echo.fromPartner', { name })
-          : language
+          : card.source.kind === 'chat'
+            ? t('echo.fromYourChats')
+            : language
 
   return (
     <View style={styles.source}>
       <View style={[styles.lead, { backgroundColor: ink }]}>
         {glyph ? (
           <Feather name={glyph} size={v3.icon.xs} color={fill} />
-        ) : (
+        ) : name?.trim() ? (
           <Text style={[styles.leadText, { color: fill }]}>
-            {name?.trim().charAt(0).toUpperCase() || '·'}
+            {name.trim().charAt(0).toUpperCase()}
           </Text>
+        ) : (
+          // No initial yet: the chat bubble says where the card came from, where "·" said nothing.
+          <Feather name="message-circle" size={v3.icon.xs} color={fill} />
         )}
       </View>
       <Text style={[styles.sourceLabel, { color: ink }]} numberOfLines={1}>
@@ -512,10 +519,12 @@ function PostToFeed({
 function GradeTile({
   value,
   interval,
+  minutes,
   onPress,
 }: {
   value: EchoGrade
   interval: string
+  minutes: number
   onPress: () => void
 }) {
   const styles = useStyles()
@@ -524,6 +533,7 @@ function GradeTile({
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={spokenGrade(t, t(`echo.${value}`), minutes)}
       onPress={onPress}
       style={({ pressed }) => [styles.grade, good && styles.gradeGood, pressed && styles.pressed]}
     >
@@ -532,14 +542,9 @@ function GradeTile({
         70pt for "Difficile" or "Хорошо", and an ellipsis on a grade hides
         which grade it is.
       */}
-      <Text
-        style={[styles.gradeLabel, good && styles.gradeOnYellow]}
-        numberOfLines={1}
-        adjustsFontSizeToFit
-        minimumFontScale={0.7}
-      >
+      <FitText style={[styles.gradeLabel, good && styles.gradeOnYellow]} minimumFontScale={0.7}>
         {t(`echo.${value}`)}
-      </Text>
+      </FitText>
       <Text style={[styles.gradeInterval, good && styles.gradeOnYellow]} numberOfLines={1}>
         {interval}
       </Text>

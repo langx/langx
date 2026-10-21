@@ -45,6 +45,7 @@ export function BadgeDetailSheet({
   onClose,
   onShare,
   onAction,
+  pin,
 }: {
   shelf: Shelf | null
   rung: Rung | null
@@ -52,6 +53,8 @@ export function BadgeDetailSheet({
   onClose: () => void
   onShare: (name: string) => void
   onAction: (action: NonNullable<ReturnType<typeof badgeAction>>) => void
+  /** Your own earned badge: whether it is pinned, and how to change that. */
+  pin?: { pinned: boolean; onToggle: () => void } | undefined
 }) {
   const reduce = useReduceMotion()
   const styles = useStyles()
@@ -78,7 +81,7 @@ export function BadgeDetailSheet({
             badge.kind === 'streak' &&
             !badge.earned &&
             badge.threshold in TOKEN_RULES.streakMilestones
-              ? t('badgesV3.streakReward', {
+              ? t('badgesV3.milestonePays', {
                   days: badge.threshold.toLocaleString(locale),
                   tokens: streakMilestoneBonus(badge.threshold).toLocaleString(locale),
                 })
@@ -203,6 +206,14 @@ export function BadgeDetailSheet({
                 </View>
               ) : null}
 
+              {mine && rung.state === 'earned' && pin ? (
+                <Button
+                  variant="secondary"
+                  icon="map-pin"
+                  label={pin.pinned ? t('badgesV3.unpin') : t('badgesV3.pin')}
+                  onPress={pin.onToggle}
+                />
+              ) : null}
               {mine && rung.state === 'earned' && badge.kind !== 'tokens' ? (
                 <Button
                   variant="blue"

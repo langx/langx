@@ -1,6 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useMemo, useState } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useV3Home } from '../hooks/useV3Home'
 import { useLocale, useT } from '../i18n'
 import { defaultScheduleTime, scheduleDays, scheduleSlots } from '../lib/scheduleTime'
@@ -56,6 +57,8 @@ function SheetBody({
   const redesigned = useStylesV3()
   const v3Look = useV3Home()
   const styles = v3Look ? redesigned : current
+  const { v3 } = useTheme()
+  const insets = useSafeAreaInsets()
   const t = useT()
   const { locale } = useLocale()
   /** v3 draws its choices as its own pills; the current look keeps `Chip`. */
@@ -81,7 +84,13 @@ function SheetBody({
     <Pressable style={styles.backdrop} accessibilityLabel={t('common.cancel')} onPress={onClose}>
       {/* Swallows the press so tapping the sheet does not close it. */}
       <Pressable style={styles.sheet} onPress={() => undefined}>
-        <View style={styles.content}>
+        <View
+          style={[
+            styles.content,
+            // v3 keeps Cancel clear of the home indicator; the current look is unchanged.
+            v3Look && { paddingBottom: Math.max(v3.space[24], insets.bottom + v3.space[16]) },
+          ]}
+        >
           <Text style={styles.title}>{t('chat.scheduleTitle')}</Text>
           {/* The choice in words, for the reason `propose-time` gives: the
             selected chip can sit off-screen on the web. */}

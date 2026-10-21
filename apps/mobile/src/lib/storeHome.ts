@@ -83,9 +83,21 @@ export function withinReach(offers: readonly StoreOffer[]): StoreOffer | undefin
 const RUNGS_AHEAD = 2
 
 /**
+ * How many unowned sticker packs "Up next" shows. With ten packs in the
+ * catalogue, "every pack" would bury the two ladders under stickers; the
+ * rest are a tap away in the stickers collection.
+ */
+const PACKS_AHEAD = 3
+
+/**
  * What the home's "Up next" row shows: on each ladder the next two rungs not
  * yet owned — so the second, still locked, says which rung opens it — and
- * every sticker pack not yet owned. Without what "Within reach" already shows.
+ * three sticker packs not yet owned, cheapest first and then in catalogue
+ * order. Without what "Within reach" already shows.
+ *
+ * Cheapest first because the catalogue order is the store's, not a price
+ * order: by it alone, both 1,000 entry packs would not be in a new account's
+ * three, and they are the ones it can reach first.
  *
  * This replaced the drawing's "New this week". Nothing in the catalogue says
  * when an item arrived, and a row that called every item new would be a
@@ -93,14 +105,15 @@ const RUNGS_AHEAD = 2
  * every account, and is the question the row is there to answer.
  */
 export function upNext(offers: readonly StoreOffer[], skip?: string): StoreOffer[] {
-  const pick = (kind: CosmeticKind, count: number) =>
-    offers
-      .filter((offer) => offer.kind === kind && !offer.owned && offer.id !== skip)
-      .slice(0, count)
+  const open = (kind: CosmeticKind) =>
+    offers.filter((offer) => offer.kind === kind && !offer.owned && offer.id !== skip)
   return [
-    ...pick('frame', RUNGS_AHEAD),
-    ...pick('title', RUNGS_AHEAD),
-    ...pick('stickers', Number.POSITIVE_INFINITY),
+    ...open('frame').slice(0, RUNGS_AHEAD),
+    ...open('title').slice(0, RUNGS_AHEAD),
+    // `sort` is stable, so equal prices keep catalogue order.
+    ...open('stickers')
+      .sort((a, b) => a.price - b.price)
+      .slice(0, PACKS_AHEAD),
   ]
 }
 

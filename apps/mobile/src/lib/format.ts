@@ -110,6 +110,16 @@ export function compactDuration(t: TranslateFn, minutes: number): string {
 }
 
 /**
+ * A grade button read aloud — "Good, back in 8 days" — in `compactDuration`'s
+ * steps, said in full: "8d" read aloud is a letter, not a time.
+ */
+export function spokenGrade(t: TranslateFn, grade: string, minutes: number): string {
+  if (minutes < 60) return t('echo.gradeInMinutes', { count: Math.max(1, minutes), grade })
+  if (minutes < 60 * 24) return t('echo.gradeInHours', { count: Math.round(minutes / 60), grade })
+  return t('echo.gradeInDays', { count: Math.round(minutes / (60 * 24)), grade })
+}
+
+/**
  * A count that has to fit in a tile: `845`, `1.1k`, `19k`, `2.3M`.
  *
  * Below a thousand it is the number, grouped for the locale. From a thousand

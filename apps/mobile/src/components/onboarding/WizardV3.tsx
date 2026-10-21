@@ -357,13 +357,16 @@ const useStyles = makeStyles(({ v3 }) => ({
   inputLtr: { textAlign: 'left', writingDirection: 'ltr' },
   fieldError: { borderColor: v3.colors.danger },
   // `paddingVertical: 0`: Android gives a TextInput padding of its own, which
-  // would push the text off the prefix beside it.
+  // would push the text off the prefix beside it. `outlineWidth: 0`: on the
+  // web the browser drew its own blue focus ring inside the pill, under the
+  // ink edge that already says the field is being typed in.
   input: {
     ...v3.type.body,
     color: v3.colors.fg,
     flex: 1,
     fontWeight: '600',
     minHeight: 48,
+    outlineWidth: 0,
     paddingVertical: 0,
   },
   // The Nunito steps carry no weight of their own; see `v3Type`.

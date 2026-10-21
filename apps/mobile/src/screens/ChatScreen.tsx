@@ -2187,6 +2187,9 @@ export function ChatScreen({
           t(callRowLabel(message.call, isMine(message)).title)
         : stripFormatting(message.body) || t(messagePreviewKey(message.type)),
       mine: isMine(message),
+      // Their bubble's hue, so the lifted copy is the bubble under the finger.
+      // Not a call's or a gift's row, which is not drawn as their bubble.
+      ...(partnerHue && !isMine(message) && !isServerRecord(message) ? { tint: partnerHue } : {}),
       // So the menu lifts the picture out of the thread rather than the word
       // "Photo". Audio is left out on purpose: see `MessageMenuRequest`.
       ...(picture ? { picture, caption: message.body } : {}),

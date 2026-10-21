@@ -56,6 +56,7 @@ export function ChatSearch({
   // A `Modal` is outside every `SafeAreaView`; see `PhotoViewer`.
   const insets = useSafeAreaInsets()
   const [term, setTerm] = useState('')
+  const [focused, setFocused] = useState(false)
 
   const settled = useDebounced(term.trim())
   const ready = settled.length >= CONVERSATION_SEARCH_MIN_LENGTH
@@ -76,9 +77,11 @@ export function ChatSearch({
     <Modal visible animationType="slide" onRequestClose={onClose}>
       <View style={[styles.root, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
         <View style={styles.bar}>
-          <View style={styles.field}>
+          <View style={[styles.field, v3Look && focused && { borderColor: v3.colors.fg }]}>
             <Feather name="search" size={v3Look ? v3.icon.md : 18} color={faint} />
             <TextInput
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
               value={term}
               onChangeText={setTerm}
               placeholder={t('chatSearch.placeholder')}
@@ -233,10 +236,21 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
     flex: 1,
     flexDirection: 'row',
     gap: v3.space[10],
+    // FieldV3's edge: drawn in the fill's colour at rest and in ink while the
+    // field has focus, so gaining it does not move the text.
+    borderColor: v3.colors.surface,
+    borderWidth: 3,
     height: 52,
     paddingHorizontal: v3.space[16],
   },
-  input: { color: v3.colors.fg, flex: 1, fontSize: v3.type.body.fontSize, padding: 0 },
+  // No browser focus ring on the web: the ink edge on the pill shows focus.
+  input: {
+    color: v3.colors.fg,
+    flex: 1,
+    fontSize: v3.type.body.fontSize,
+    outlineWidth: 0,
+    padding: 0,
+  },
   cancel: { justifyContent: 'center', minHeight: 44, paddingHorizontal: v3.space[4] },
   cancelLabel: { ...v3.type.button, color: v3.colors.fg },
   pressed: { opacity: 0.7 },
