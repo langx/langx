@@ -3038,6 +3038,7 @@ export const ptBR: Localized<EnMessages> = {
       openers_50: 'Luz da varanda',
       openers_200: 'Casa aberta',
     },
+    profilePinned: 'Insígnias fixadas',
     pin: 'Fixar no perfil',
     unpin: 'Desafixar',
     change: 'Trocar',

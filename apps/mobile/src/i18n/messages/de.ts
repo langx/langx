@@ -3089,6 +3089,7 @@ export const de: Localized<EnMessages> = {
       openers_50: 'Verandalicht',
       openers_200: 'Offenes Haus',
     },
+    profilePinned: 'Angeheftete Abzeichen',
     pin: 'Ans Profil heften',
     unpin: 'Lösen',
     change: 'Ändern',

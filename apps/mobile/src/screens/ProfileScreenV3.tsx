@@ -168,6 +168,11 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
   // What the row wears: their pins, or the newest of each family. The label
   // counts the same list it draws.
   const worn = showNumbers ? (showNumbers.pinnedBadges ?? showNumbers.topBadges) : []
+  // Pins are a choice, not a count of what was earned, so they are named as
+  // pins rather than as "3 badges earned".
+  const wornLabel = showNumbers?.pinnedBadges
+    ? t('badgesV3.profilePinned')
+    : t('profile.badgeStrip', { count: worn.length })
   const study = [...user.learning].sort((a, b) => a.priority - b.priority)
 
   async function confirmBlock(): Promise<void> {
@@ -604,9 +609,7 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
             {worn.length > 0 ? (
               <PressableScale
                 accessibilityRole="button"
-                accessibilityLabel={t('profile.badgeStrip', {
-                  count: worn.length,
-                })}
+                accessibilityLabel={wornLabel}
                 onPress={() => openBadges(user.handle, here)}
                 style={styles.badges}
               >
@@ -617,9 +620,7 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
                     </View>
                   ))}
                 </View>
-                <Text style={styles.badgesLabel}>
-                  {t('profile.badgeStrip', { count: worn.length })}
-                </Text>
+                <Text style={styles.badgesLabel}>{wornLabel}</Text>
                 <Feather name={chevron} size={v3.icon.md} color={v3.colors.muted} />
               </PressableScale>
             ) : null}

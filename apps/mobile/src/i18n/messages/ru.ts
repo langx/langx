@@ -3576,6 +3576,7 @@ export const ru: Localized<EnMessages> = {
       openers_50: 'Свет на крыльце',
       openers_200: 'Открытый дом',
     },
+    profilePinned: 'Закреплённые значки',
     pin: 'Закрепить в профиле',
     unpin: 'Открепить',
     change: 'Изменить',

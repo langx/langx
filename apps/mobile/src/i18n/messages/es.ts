@@ -3043,6 +3043,7 @@ export const es: Localized<EnMessages> = {
       openers_50: 'Luz del porche',
       openers_200: 'Casa abierta',
     },
+    profilePinned: 'Insignias fijadas',
     pin: 'Fijar en el perfil',
     unpin: 'Quitar',
     change: 'Cambiar',

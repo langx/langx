@@ -3008,6 +3008,7 @@ export const tr: Localized<EnMessages> = {
       openers_50: 'Sundurma ışığı',
       openers_200: 'Açık ev',
     },
+    profilePinned: 'İğnelenmiş rozetler',
     pin: 'Profile iğnele',
     unpin: 'Kaldır',
     change: 'Değiştir',

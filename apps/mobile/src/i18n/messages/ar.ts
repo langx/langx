@@ -3886,6 +3886,7 @@ export const ar: Localized<EnMessages> = {
       openers_50: 'ضوء الشرفة',
       openers_200: 'بيت مفتوح',
     },
+    profilePinned: 'الشارات المثبّتة',
     pin: 'ثبّتها في الملف الشخصي',
     unpin: 'إلغاء التثبيت',
     change: 'تغيير',

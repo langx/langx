@@ -3077,6 +3077,7 @@ export const fr: Localized<EnMessages> = {
       openers_50: 'Lampe du perron',
       openers_200: 'Maison ouverte',
     },
+    profilePinned: 'Badges épinglés',
     pin: 'Épingler au profil',
     unpin: 'Retirer',
     change: 'Modifier',
