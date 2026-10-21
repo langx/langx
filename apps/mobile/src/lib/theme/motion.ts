@@ -31,7 +31,19 @@ import { CURVE, DURATION } from './motionValues'
  * here, and a Reanimated screen reads them from this file.
  */
 
-export { CURVE, DURATION, PRESS_SCALE, STAGGER } from './motionValues'
+export {
+  CURVE,
+  DELAY,
+  DURATION,
+  LOOP,
+  PRESS_OPACITY,
+  PRESS_SCALE,
+  PRESS_SCALE_CARD,
+  PRESS_SCALE_GLYPH,
+  SHEET,
+  STAGGER,
+  STAGGER_TIGHT,
+} from './motionValues'
 
 /** A strong ease-out: the movement is at its fastest when the eye arrives. */
 export const EASE_OUT = Easing.bezier(...CURVE.out)
@@ -46,6 +58,12 @@ export const TIMING = {
   enter: { duration: DURATION.enter, easing: EASE_OUT },
   rise: { duration: DURATION.rise, easing: EASE_RISE },
   pop: { duration: DURATION.pop, easing: EASE_POP },
+  exit: { duration: DURATION.exit, easing: EASE_OUT },
+  fade: { duration: DURATION.fade, easing: EASE_OUT },
+  fill: { duration: DURATION.fill, easing: EASE_OUT },
+  crossfade: { duration: DURATION.crossfade, easing: EASE_OUT },
+  roll: { duration: DURATION.roll, easing: EASE_OUT },
+  reorder: { duration: DURATION.reorder, easing: EASE_OUT },
 } as const satisfies Record<string, WithTimingConfig>
 
 /**
@@ -53,6 +71,10 @@ export const TIMING = {
  * values the paywall's plan card, the recap's drag and the swipe row already
  * use. A duration-based spring's `duration` is perceptual in Reanimated 4 —
  * it settles in about one and a half times that.
+ *
+ * A gesture that ends hands its speed on, so the settle starts at the
+ * finger's pace instead of from rest: `withSpring(to, { ...SPRING.snap,
+ * velocity })`, with `velocity` from the gesture's end event.
  */
 export const SPRING = {
   /** A choice landing: a little overshoot, because the tap carried the intent. */
@@ -69,6 +91,8 @@ export const SPRING = {
    * reads as wobbling rather than as landing.
    */
   bounce: { duration: 500, dampingRatio: 0.5 },
+  /** A big panel arriving or going home: no overshoot anyone would see on that much surface. */
+  sheet: { duration: 350, dampingRatio: 0.9 },
 } as const satisfies Record<string, WithSpringConfig>
 
 /**
