@@ -1,6 +1,6 @@
 import { COPILOT_RULES, type CopilotResponse } from '@langx/shared'
 import { router } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
 import {
   useAskCopilot,
@@ -11,7 +11,9 @@ import {
 import { ApiRequestError } from '../../../src/api/client'
 import {
   useAdminCopilotAccess,
+  useAdminUser,
   useMe,
+  useSetAdminCopilotAccess,
   useMessages,
   type ConversationDto,
 } from '../../../src/api/queries'
@@ -36,6 +38,7 @@ import { useAppConfig } from '../../../src/hooks/useAppConfig'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { ADMIN } from '../../../src/lib/adminStrings'
 import { makeStyles } from '../../../src/lib/theme'
+import { showToast } from '../../../src/lib/toast'
 
 const L = ADMIN.copilot
 
@@ -88,6 +91,30 @@ export default function AdminCopilotScreen() {
   const me = useMe()
   const allowed = useAdminCopilotAccess()
   const allowedUsers = allowed.data?.users ?? []
+  const setAccess = useSetAdminCopilotAccess()
+  const meAllowed = allowedUsers.some((row) => row.userId === me.data?._id)
+
+  // Adding from here, not only from Find someone: the switch at the foot of a
+  // user's page was the only way in, and it was not found. Typed, then looked
+  // up after a pause — Find someone's reason: submit does not fire on web.
+  const [handle, setHandle] = useState('')
+  const [lookup, setLookup] = useState('')
+  const found = useAdminUser(lookup)
+  useEffect(() => {
+    const timer = setTimeout(() => setLookup(handle.trim().replace(/^@/, '')), 400)
+    return () => clearTimeout(timer)
+  }, [handle])
+
+  const allow = (userId: string, next: boolean): void => {
+    setAccess.mutate(
+      { userId, allowed: next },
+      {
+        onSuccess: () =>
+          showToast(next ? ADMIN.users.copilot.allowed : ADMIN.users.copilot.revoked),
+        onError: () => showToast(ADMIN.common.failed),
+      },
+    )
+  }
 
   const [sheet, setSheet] = useState(false)
   const [picking, setPicking] = useState(false)
@@ -216,12 +243,50 @@ export default function AdminCopilotScreen() {
             value:
               !allowed.data || !me.data
                 ? ADMIN.common.loading
-                : allowedUsers.some((row) => row.userId === me.data?._id)
+                : meAllowed
                   ? L.youAllowed
                   : L.youNotAllowed,
           },
         ]}
       />
+      {allowed.data && me.data && !meAllowed ? (
+        <Button
+          label={L.allowMe}
+          loading={setAccess.isPending}
+          onPress={() => me.data && allow(me.data._id, true)}
+        />
+      ) : null}
+      <AdminFieldV3
+        label={L.addLabel}
+        placeholder={L.addPlaceholder}
+        value={handle}
+        onChangeText={setHandle}
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+      {lookup.length >= 2 ? (
+        found.data ? (
+          <AdminRowsV3>
+            <AdminRowV3
+              title={`${found.data.user.displayName} @${found.data.user.handle}`}
+              subtitle={found.data.user.copilotAccess ? L.youAllowed : L.notAllowed}
+              mark={{ id: found.data.user.userId, label: found.data.user.displayName }}
+            />
+          </AdminRowsV3>
+        ) : (
+          <AdminCaptionV3>{found.isLoading ? ADMIN.common.loading : L.addNone}</AdminCaptionV3>
+        )
+      ) : null}
+      {found.data && lookup.length >= 2 ? (
+        <Button
+          label={found.data.user.copilotAccess ? L.remove : L.allow}
+          variant={found.data.user.copilotAccess ? 'secondary' : 'primary'}
+          loading={setAccess.isPending}
+          onPress={() =>
+            found.data && allow(found.data.user.userId, !found.data.user.copilotAccess)
+          }
+        />
+      ) : null}
       {allowed.data && allowedUsers.length === 0 ? (
         <AdminCaptionV3>{L.allowedEmpty}</AdminCaptionV3>
       ) : allowedUsers.length > 0 ? (
