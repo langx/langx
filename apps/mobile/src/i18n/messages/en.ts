@@ -3179,6 +3179,30 @@ export const en = {
         one: '{formatted} day',
         other: '{formatted} days',
       },
+      languages: {
+        one: '{formatted} language',
+        other: '{formatted} languages',
+      },
+      calls: {
+        one: '{formatted} call',
+        other: '{formatted} calls',
+      },
+      echo: {
+        one: '{formatted} review',
+        other: '{formatted} reviews',
+      },
+      testimonials: {
+        one: '{formatted} partner',
+        other: '{formatted} partners',
+      },
+      guide: {
+        one: '{formatted} person',
+        other: '{formatted} people',
+      },
+      openers: {
+        one: '{formatted} reply',
+        other: '{formatted} replies',
+      },
     },
     goal: {
       streak: {
@@ -3202,6 +3226,30 @@ export const en = {
         other: 'Be a member for {formatted} days',
       },
       origin: 'Be on LangX v1',
+      languages: {
+        one: 'Practise {formatted} language',
+        other: 'Practise {formatted} languages',
+      },
+      calls: {
+        one: 'Have {formatted} call',
+        other: 'Have {formatted} calls',
+      },
+      echo: {
+        one: 'Review {formatted} Echo card',
+        other: 'Review {formatted} Echo cards',
+      },
+      testimonials: {
+        one: 'Hear from {formatted} partner',
+        other: 'Hear from {formatted} partners',
+      },
+      guide: {
+        one: 'Correct {formatted} person',
+        other: 'Correct {formatted} people',
+      },
+      openers: {
+        one: 'Give {formatted} first reply',
+        other: 'Give {formatted} first replies',
+      },
     },
     note: {
       streak: 'Your longest streak counts, so a missed day never takes a badge back.',
@@ -3210,6 +3258,14 @@ export const en = {
       tokens: 'Everything you have ever earned counts. Spending never takes one back.',
       veteran: 'Counted from the day you joined.',
       origin: 'For the people who were here for LangX v1.',
+      languages:
+        'Languages you practise in Echo or write posts in count, besides the ones you speak natively.',
+      calls: 'A call counts once it lasts 5 minutes or more, whoever placed it.',
+      echo: 'Each review counts, whatever the grade.',
+      testimonials: 'A partner who wrote about you counts once. One you hid still counts.',
+      guide:
+        'Correct someone you have not corrected before: a post they wrote, a pronunciation post you answer, or a message they sent you. The same person twice counts once.',
+      openers: 'A first message you answered within a day counts.',
     },
     family: {
       streak: {
@@ -3235,6 +3291,30 @@ export const en = {
       origin: {
         title: 'Early Adopter',
         body: 'You were on LangX v1.',
+      },
+      languages: {
+        title: 'Languages',
+        body: 'Languages you practise, besides your own.',
+      },
+      calls: {
+        title: 'Calls',
+        body: 'Calls that last 5 minutes or more.',
+      },
+      echo: {
+        title: 'Echo reviews',
+        body: 'Every Echo card you review.',
+      },
+      testimonials: {
+        title: 'Kind words',
+        body: 'Partners who wrote about you.',
+      },
+      guide: {
+        title: 'People you helped',
+        body: 'Different people you corrected.',
+      },
+      openers: {
+        title: 'First replies',
+        body: 'First messages you answered within a day.',
       },
     },
     tier: {
@@ -3273,6 +3353,24 @@ export const en = {
       veteran_730: 'Second Ring',
       veteran_1095: 'Third Ring',
       origin_v1: 'Early Adopter',
+      languages_2: 'Two Threads',
+      languages_3: 'Braid',
+      languages_5: 'Five Strands',
+      calls_1: 'Tin-Can Line',
+      calls_10: 'Long Line',
+      calls_50: 'Switchboard',
+      echo_100: 'Ripple',
+      echo_1000: 'Wave',
+      echo_5000: 'Tide',
+      testimonials_1: 'Quilt Square',
+      testimonials_5: 'Patchwork',
+      testimonials_20: 'Quilt',
+      guide_3: 'Darning',
+      guide_10: 'Mending',
+      guide_50: 'Weaver',
+      openers_10: 'Open Door',
+      openers_50: 'Porch Light',
+      openers_200: 'Open House',
     },
   },
 

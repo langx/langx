@@ -3386,6 +3386,42 @@ export const ru: Localized<EnMessages> = {
         many: '{formatted} дней',
         other: '{formatted} дня',
       },
+      languages: {
+        one: '{formatted} язык',
+        few: '{formatted} языка',
+        many: '{formatted} языков',
+        other: '{formatted} языка',
+      },
+      calls: {
+        one: '{formatted} звонок',
+        few: '{formatted} звонка',
+        many: '{formatted} звонков',
+        other: '{formatted} звонка',
+      },
+      echo: {
+        one: '{formatted} повторение',
+        few: '{formatted} повторения',
+        many: '{formatted} повторений',
+        other: '{formatted} повторения',
+      },
+      testimonials: {
+        one: '{formatted} партнёр',
+        few: '{formatted} партнёра',
+        many: '{formatted} партнёров',
+        other: '{formatted} партнёра',
+      },
+      guide: {
+        one: '{formatted} человек',
+        few: '{formatted} человека',
+        many: '{formatted} человек',
+        other: '{formatted} человека',
+      },
+      openers: {
+        one: '{formatted} ответ',
+        few: '{formatted} ответа',
+        many: '{formatted} ответов',
+        other: '{formatted} ответа',
+      },
     },
     goal: {
       streak: {
@@ -3419,6 +3455,42 @@ export const ru: Localized<EnMessages> = {
         other: 'Будьте с нами {formatted} дня',
       },
       origin: 'Быть в LangX v1',
+      languages: {
+        one: 'Практикуйте {formatted} язык',
+        few: 'Практикуйте {formatted} языка',
+        many: 'Практикуйте {formatted} языков',
+        other: 'Практикуйте {formatted} языка',
+      },
+      calls: {
+        one: 'Проведите {formatted} звонок',
+        few: 'Проведите {formatted} звонка',
+        many: 'Проведите {formatted} звонков',
+        other: 'Проведите {formatted} звонка',
+      },
+      echo: {
+        one: 'Повторите {formatted} карточку Echo',
+        few: 'Повторите {formatted} карточки Echo',
+        many: 'Повторите {formatted} карточек Echo',
+        other: 'Повторите {formatted} карточки Echo',
+      },
+      testimonials: {
+        one: 'Получите отзыв от {formatted} партнёра',
+        few: 'Получите отзывы от {formatted} партнёров',
+        many: 'Получите отзывы от {formatted} партнёров',
+        other: 'Получите отзывы от {formatted} партнёра',
+      },
+      guide: {
+        one: 'Исправьте {formatted} человека',
+        few: 'Исправьте {formatted} человек',
+        many: 'Исправьте {formatted} человек',
+        other: 'Исправьте {formatted} человека',
+      },
+      openers: {
+        one: 'Дайте {formatted} первый ответ',
+        few: 'Дайте {formatted} первых ответа',
+        many: 'Дайте {formatted} первых ответов',
+        other: 'Дайте {formatted} первого ответа',
+      },
     },
     note: {
       streak: 'Считается самая длинная серия, так что пропущенный день не отнимет значок.',
@@ -3428,6 +3500,15 @@ export const ru: Localized<EnMessages> = {
       tokens: 'Считается всё, что вы заработали. Траты ничего не отнимают.',
       veteran: 'Считается со дня, когда вы присоединились.',
       origin: 'Для тех, кто был в LangX v1.',
+      languages:
+        'Считаются языки, которые вы практикуете в Echo или на которых пишете посты, кроме родных.',
+      calls: 'Звонок считается, если он длится 5 минут или дольше, кто бы ни позвонил.',
+      echo: 'Считается каждое повторение, какой бы ни была оценка.',
+      testimonials:
+        'Каждый партнёр, написавший о вас, считается один раз. Даже тот, кого вы скрыли.',
+      guide:
+        'Исправьте того, кого ещё не исправляли: его пост, запрос о произношении, на который вы ответили, или сообщение, которое он вам прислал. Один и тот же человек считается один раз.',
+      openers: 'Считается каждое первое сообщение, на которое вы ответили в течение суток.',
     },
     family: {
       streak: {
@@ -3453,6 +3534,30 @@ export const ru: Localized<EnMessages> = {
       origin: {
         title: 'Early Adopter',
         body: 'Вы были в LangX v1.',
+      },
+      languages: {
+        title: 'Языки',
+        body: 'Языки, которые вы практикуете, кроме родного.',
+      },
+      calls: {
+        title: 'Звонки',
+        body: 'Звонки длиной от 5 минут.',
+      },
+      echo: {
+        title: 'Повторения в Echo',
+        body: 'Каждая карточка Echo, которую вы повторили.',
+      },
+      testimonials: {
+        title: 'Добрые слова',
+        body: 'Партнёры, которые написали о вас.',
+      },
+      guide: {
+        title: 'Кому вы помогли',
+        body: 'Разные люди, которых вы исправили.',
+      },
+      openers: {
+        title: 'Первые ответы',
+        body: 'Первые сообщения, на которые вы ответили в течение суток.',
       },
     },
     tier: {
@@ -3491,6 +3596,24 @@ export const ru: Localized<EnMessages> = {
       veteran_730: 'Второе кольцо',
       veteran_1095: 'Третье кольцо',
       origin_v1: 'Early Adopter',
+      languages_2: 'Две нити',
+      languages_3: 'Коса',
+      languages_5: 'Пять прядей',
+      calls_1: 'Телефон из банок',
+      calls_10: 'Длинная линия',
+      calls_50: 'Коммутатор',
+      echo_100: 'Рябь',
+      echo_1000: 'Волна',
+      echo_5000: 'Прилив',
+      testimonials_1: 'Лоскут',
+      testimonials_5: 'Пэчворк',
+      testimonials_20: 'Лоскутное одеяло',
+      guide_3: 'Штопка',
+      guide_10: 'Починка',
+      guide_50: 'Ткач',
+      openers_10: 'Открытая дверь',
+      openers_50: 'Свет на крыльце',
+      openers_200: 'Открытый дом',
     },
   },
 
