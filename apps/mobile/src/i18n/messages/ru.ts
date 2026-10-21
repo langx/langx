@@ -3216,7 +3216,7 @@ export const ru: Localized<EnMessages> = {
     tableBaklava: 'Пахлава',
     tableMochi: 'Моти',
     tablePaella: 'Паэлья',
-    tableCheers: 'Чокнемся',
+    tableCheers: 'Чайку?',
   },
 
   cosmetics: {

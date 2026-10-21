@@ -2764,7 +2764,7 @@ export const ptBR: Localized<EnMessages> = {
     tableBaklava: 'Baklava',
     tableMochi: 'Mochi',
     tablePaella: 'Paella',
-    tableCheers: 'Saúde',
+    tableCheers: 'Hora do chá',
   },
 
   cosmetics: {

@@ -2803,7 +2803,7 @@ export const fr: Localized<EnMessages> = {
     tableBaklava: 'Baklava',
     tableMochi: 'Mochi',
     tablePaella: 'Paella',
-    tableCheers: 'Santé',
+    tableCheers: 'Un petit thé',
   },
 
   cosmetics: {

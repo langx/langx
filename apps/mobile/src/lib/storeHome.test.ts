@@ -84,7 +84,7 @@ describe('withinReach', () => {
 })
 
 describe('upNext', () => {
-  it('shows the next two rungs of each ladder and the first three packs not owned', () => {
+  it('shows the next two rungs of each ladder and three packs not owned, cheapest first', () => {
     const ids = upNext(offers({ owned: ['frame.slate'] })).map((o) => o.id)
     expect(ids).toEqual([
       'frame.washi',
@@ -92,8 +92,8 @@ describe('upNext', () => {
       'title.beginner',
       'title.learner',
       'stickers.starter',
+      'stickers.practice',
       'stickers.paper',
-      'stickers.margin',
     ])
   })
 
@@ -102,11 +102,29 @@ describe('upNext', () => {
    * the next three once those are owned: the cap moves along the catalogue.
    */
   it('caps the packs at three, skipping the ones owned', () => {
-    const owned = ['stickers.starter', 'stickers.paper', 'stickers.margin']
+    const owned = ['stickers.starter', 'stickers.practice', 'stickers.paper']
     const packs = upNext(offers({ owned }))
       .filter((o) => o.kind === 'stickers')
       .map((o) => o.id)
-    expect(packs).toEqual(['stickers.polyglot', 'stickers.practice', 'stickers.pixel'])
+    expect(packs).toEqual(['stickers.margin', 'stickers.polyglot', 'stickers.pixel'])
+  })
+
+  /**
+   * Practice sits fifth in the catalogue, behind three 1,500 packs; by
+   * catalogue order alone a new account would not see both packs it can
+   * afford first.
+   */
+  it('puts the cheaper packs first, then catalogue order', () => {
+    const packs = (owned: string[]) =>
+      upNext(offers({ owned }))
+        .filter((o) => o.kind === 'stickers')
+        .map((o) => o.id)
+    expect(packs([])).toEqual(['stickers.starter', 'stickers.practice', 'stickers.paper'])
+    expect(packs(['stickers.starter'])).toEqual([
+      'stickers.practice',
+      'stickers.paper',
+      'stickers.margin',
+    ])
   })
 
   it('leaves out what "Within reach" already shows', () => {

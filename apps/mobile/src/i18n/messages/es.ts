@@ -2721,7 +2721,7 @@ export const es: Localized<EnMessages> = {
     polyglotKalimera: 'Kaliméra (buenos días en griego)',
     polyglotSuerte: '¡Suerte!',
     polyglotBonnechance: 'Bonne chance (buena suerte en francés)',
-    polyglotKolaygelsin: 'Kolay gelsin (en turco, que te sea leve)',
+    polyglotKolaygelsin: 'Kolay gelsin (en turco, ¡ánimo con el trabajo!)',
     deskFlashcard: 'Tarjeta de estudio',
     deskHighlighter: 'Subrayador',
     deskSticky: 'Nota adhesiva',
@@ -2769,7 +2769,7 @@ export const es: Localized<EnMessages> = {
     tableBaklava: 'Baklava',
     tableMochi: 'Mochi',
     tablePaella: 'Paella',
-    tableCheers: 'Salud',
+    tableCheers: 'Hora del té',
   },
 
   cosmetics: {

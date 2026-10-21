@@ -430,7 +430,7 @@ export const COSMETICS: readonly Cosmetic[] = [
   /**
    * Shared Table: twelve dishes you would describe to a partner from
    * somewhere else, each drawn the way it is served. No alcohol and no flags:
-   * the cheers is two tea cups.
+   * the `cheers` sticker is two tea cups.
    */
   {
     id: 'stickers.table',

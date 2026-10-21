@@ -2814,7 +2814,7 @@ export const de: Localized<EnMessages> = {
     tableBaklava: 'Baklava',
     tableMochi: 'Mochi',
     tablePaella: 'Paella',
-    tableCheers: 'Prost',
+    tableCheers: 'Teepause',
   },
 
   cosmetics: {

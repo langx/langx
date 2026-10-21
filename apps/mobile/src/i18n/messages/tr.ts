@@ -2734,7 +2734,7 @@ export const tr: Localized<EnMessages> = {
     tableBaklava: 'Baklava',
     tableMochi: 'Moçi',
     tablePaella: 'Paella',
-    tableCheers: 'Şerefe',
+    tableCheers: 'Çaylar tazelendi',
   },
 
   cosmetics: {

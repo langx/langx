@@ -3042,7 +3042,7 @@ export const en = {
     tableBaklava: 'Baklava',
     tableMochi: 'Mochi',
     tablePaella: 'Paella',
-    tableCheers: 'Cheers',
+    tableCheers: "Tea's up",
   },
 
   cosmetics: {

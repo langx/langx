@@ -3414,7 +3414,7 @@ export const ar: Localized<EnMessages> = {
     polyglotKalimera: 'كاليميرا (صباح الخير باليونانية)',
     polyglotSuerte: 'سويرتي! (حظًا سعيدًا بالإسبانية)',
     polyglotBonnechance: 'بون شانس (حظًا سعيدًا بالفرنسية)',
-    polyglotKolaygelsin: 'كولاي غلسين (بالتركية: أعانك الله)',
+    polyglotKolaygelsin: 'كولاي غلسين (بالتركية: يعطيك العافية)',
     deskFlashcard: 'بطاقة تعليمية',
     deskHighlighter: 'قلم تظليل',
     deskSticky: 'ورقة لاصقة',
@@ -3462,7 +3462,7 @@ export const ar: Localized<EnMessages> = {
     tableBaklava: 'بقلاوة',
     tableMochi: 'موتشي',
     tablePaella: 'باييلا',
-    tableCheers: 'في صحتك',
+    tableCheers: 'تفضّل الشاي',
   },
 
   cosmetics: {
