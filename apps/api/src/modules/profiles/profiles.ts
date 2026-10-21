@@ -1839,6 +1839,8 @@ export interface ConversationPartner {
   handle: string
   displayName: string
   avatarUrl?: string
+  /** The drawn face when there is no `avatarUrl`; see `defaultAvatarRevFor`. */
+  defaultAvatarRev?: string
   isOnline: boolean
   official?: true
   accountStatus: 'active' | 'suspended' | 'deleted'
@@ -1867,6 +1869,8 @@ export function toConversationPartner(
         : 'active',
   }
   if (profile.avatarUrl !== undefined) partner.avatarUrl = profile.avatarUrl
+  const defaultAvatarRev = defaultAvatarRevFor(profile)
+  if (defaultAvatarRev) partner.defaultAvatarRev = defaultAvatarRev
   if (profile.official) partner.official = true
   // Not on an account that is gone or suspended: its row says so, and a
   // frame beside "Account deleted" would read as somebody still there.
@@ -1894,6 +1898,9 @@ export async function conversationPartners(
           handle: 1,
           displayName: 1,
           avatarUrl: 1,
+          // `defaultAvatarRevFor` reads these two; neither leaves on its own.
+          defaultAvatar: 1,
+          gender: 1,
           official: 1,
           privacy: 1,
           createdAt: 1,
