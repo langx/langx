@@ -508,6 +508,37 @@ export function AdminFieldV3({
   )
 }
 
+/**
+ * A small label on a row — how two accounts are linked, a plan. The panel's
+ * own rather than `Chip`, whose toned chips keep the current look: three
+ * chips side by side in two looks was the mixed row this replaces. A hue for
+ * a kind, the grey for the plain one, and the red outline for a state that is
+ * already wrong.
+ */
+export function AdminTagV3({
+  label,
+  hue,
+  danger = false,
+}: {
+  label: string
+  hue?: PartnerHue | undefined
+  danger?: boolean
+}) {
+  const styles = useStyles()
+  const { v3 } = useTheme()
+  return (
+    <Text
+      style={[
+        styles.tag,
+        hue ? { backgroundColor: v3.hues[hue], color: v3.colors.ink } : null,
+        danger && styles.tagDanger,
+      ]}
+    >
+      {label}
+    </Text>
+  )
+}
+
 /** Buttons side by side on a wide window, stacked full width on a phone. */
 export function AdminActionsV3({ children }: { children: ReactNode }) {
   const styles = useStyles()
@@ -676,6 +707,22 @@ const useStyles = makeStyles(({ v3 }) => ({
   inputSingle: { height: 52 },
   inputMultiline: { minHeight: 112, paddingVertical: v3.space[14] },
 
+  tag: {
+    ...v3.type.label,
+    backgroundColor: v3.colors.line,
+    borderColor: 'transparent',
+    borderRadius: v3.radius.pill,
+    borderWidth: 1.5,
+    color: v3.colors.fg,
+    overflow: 'hidden',
+    paddingHorizontal: v3.space[10],
+    paddingVertical: v3.space[4],
+  },
+  tagDanger: {
+    backgroundColor: 'transparent',
+    borderColor: v3.colors.danger,
+    color: v3.colors.danger,
+  },
   actions: { gap: v3.space[10] },
   actionsWide: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[10] },
   actionWide: { flexBasis: 220, flexGrow: 1 },

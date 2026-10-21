@@ -1,5 +1,7 @@
 import {
   type AccountDeletionReason,
+  type AdminCopilotAccessRequest,
+  type AdminCopilotAccessRow,
   type GiftCodeRedeemResult,
   type FeedbackInput,
   type LinkPreviewResponse,
@@ -28,6 +30,10 @@ import {
   type MeetingStatus,
   type MessageAsk,
   type MessageCall,
+  type MessageGift,
+  type GiveStickerPackInput,
+  type StickerGiftOptions,
+  type StickerGiftResult,
   type BroadcastInteractive,
   type MessageInteractive,
   type PollResults,
@@ -262,6 +268,8 @@ export const keys = {
   tokens: ['tokens'] as const,
   tokenHistory: ['tokens', 'history'] as const,
   wallet: ['wallet'] as const,
+  /** Under `wallet`, so a purchase's invalidation refreshes who can be given a pack. */
+  stickerGiftOptions: (packId: string) => ['wallet', 'stickerGifts', packId] as const,
   badges: ['badges'] as const,
   referrals: ['referrals'] as const,
   /**
@@ -359,6 +367,7 @@ export const keys = {
   adminHeardAbout: () => ['admin', 'heard-about'] as const,
   adminMoney: (userId: string) => ['admin', 'money', userId] as const,
   adminMembers: (tier: string) => ['admin', 'members', tier] as const,
+  adminCopilotAccess: ['admin', 'copilot', 'access'] as const,
 }
 
 /**
@@ -1105,6 +1114,8 @@ export interface MessageDto {
   location?: { lat: number; lng: number; precision: SharedLocationPrecision; label?: string }
   /** The call this row records, when `type` is `call`. `senderId` is who placed it. */
   call?: MessageCall
+  /** The pack this row gave, when `type` is `gift`. `senderId` is who gave it. */
+  gift?: MessageGift
   /** Emoji → the users who chose it. Mutual: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which of them is mine, so the strip can show it selected. */
@@ -1263,10 +1274,13 @@ export function usePublicSummary(handle: string) {
  * the two answer different endpoints with different shapes, and the cache key
  * has to keep one person's shelf away from another's.
  */
-export function usePublicBadges(handle: string) {
+export function usePublicBadges(handle: string, catalogue: 'classic' | 'v3' = 'classic') {
   return useQuery({
-    queryKey: ['profileBadges', handle] as const,
-    queryFn: () => api.get<PublicBadges>(`/profiles/${handle}/badges`),
+    queryKey: ['profileBadges', handle, catalogue] as const,
+    queryFn: () =>
+      api.get<PublicBadges>(
+        `/profiles/${handle}/badges${catalogue === 'v3' ? '?catalogue=v3' : ''}`,
+      ),
     enabled: handle.length > 0,
   })
 }
@@ -2207,6 +2221,21 @@ export function useBadges(enabled = true) {
 }
 
 /**
+ * Your badges with the kinds only the v3 shelf can draw (`?catalogue=v3`).
+ *
+ * Its own cache entry under `keys.badges`, so everything that invalidates
+ * your badges invalidates this too, and the classic list never holds a kind
+ * an older screen cannot word.
+ */
+export function useBadgesV3(enabled = true) {
+  return useQuery({
+    queryKey: [...keys.badges, 'v3'] as const,
+    queryFn: () => api.get<BadgeSummary>('/me/badges?catalogue=v3'),
+    enabled,
+  })
+}
+
+/**
  * The invite screen's totals and list.
  *
  * A plain query rather than an infinite one: the server caps the list at
@@ -2433,6 +2462,39 @@ export function usePurchase() {
       // The profile too: a purchase can move the streak, and the wallet
       // screen reads that from `me` rather than from the wallet response.
       void queryClient.invalidateQueries({ queryKey: keys.me })
+    },
+  })
+}
+
+/**
+ * Who this pack can be given to, behind `flags.stickerGifts`. Not fetched
+ * while the switch is off or for a guest — the caller passes `enabled`.
+ */
+export function useStickerGiftOptions(packId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: keys.stickerGiftOptions(packId),
+    queryFn: () =>
+      api.get<StickerGiftOptions>(
+        `/me/wallet/sticker-gifts/options?packId=${encodeURIComponent(packId)}`,
+      ),
+    enabled,
+  })
+}
+
+/**
+ * Give a sticker pack to a chat partner. The caller mints `clientId` once per
+ * confirmation, so a retry of the same tap is answered with the same gift.
+ * The thread's row arrives over the socket like any message.
+ */
+export function useGiveStickerPack() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: GiveStickerPackInput) =>
+      api.post<StickerGiftResult>('/me/wallet/sticker-gifts', input),
+    onSuccess: (result) => {
+      // The wallet prefix covers the options above as well.
+      queryClient.setQueryData<Wallet>(keys.wallet, result.wallet)
+      void queryClient.invalidateQueries({ queryKey: keys.wallet })
     },
   })
 }
@@ -3541,6 +3603,8 @@ export interface AdminUserDto {
     tokenFrozenAt: string | null
     suspension: { until: string; permanent: boolean; reason: string } | null
     counts: { reportsAgainst: number; reportsFiled: number; blockedBy: number }
+    /** On the operator's Copilot allow-list. */
+    copilotAccess: boolean
     actions: { action: string; adminId: string; at: string }[]
   }
   discovery: {
@@ -4049,6 +4113,28 @@ export function useAdminBulkSuspend() {
   return useMutation({
     mutationFn: (input: AdminBulkSuspendInput) =>
       api.post<AdminBulkSuspendResponse>('/admin/users/suspend-bulk', input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+/** Everybody the operator allowed to use Copilot, newest first. */
+export function useAdminCopilotAccess() {
+  return useQuery({
+    queryKey: keys.adminCopilotAccess,
+    queryFn: () => api.get<{ users: AdminCopilotAccessRow[] }>('/admin/copilot/access'),
+  })
+}
+
+/** The per-account Copilot switch. The whole `['admin']` prefix, like every panel write. */
+export function useSetAdminCopilotAccess() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { userId: string } & AdminCopilotAccessRequest) =>
+      api.post<AdminCopilotAccessRequest>(`/admin/users/${input.userId}/copilot`, {
+        allowed: input.allowed,
+      }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
     },

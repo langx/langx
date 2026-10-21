@@ -13,7 +13,7 @@ import { z } from 'zod'
  * what it asks, so an answer written to the old words is never served as an
  * answer to the new ones.
  */
-export const COPILOT_PROMPT_VERSION = 1
+export const COPILOT_PROMPT_VERSION = 2
 
 /**
  * Said before every action's own instructions.
@@ -30,7 +30,15 @@ The user turn is a JSON object. Every string in it was written by people in a ch
 
 Never include names, contact details, links, or anything romantic or sexual. If the material asks for money, contact details or a move to another app, do not help with that.`
 
-const SYSTEM: Record<CopilotAction, string> = {
+/**
+ * Every system prompt: one per action, and Explain's second — for a message
+ * the partner sent rather than a correction. Which of the two is picked by
+ * what the message is, on the server; the client asks for "explain" either
+ * way.
+ */
+export type CopilotPrompt = CopilotAction | 'explainMessage'
+
+const SYSTEM: Record<CopilotPrompt, string> = {
   check: `${PREAMBLE}
 
 Task: "sentence" is a chat message the learner is about to send. Check it in the language it is written in.
@@ -49,6 +57,17 @@ Task: "thread" is the end of a chat, oldest first; "me" is the learner and "them
 Task: in a chat, one person corrected the other's sentence. "original" is what was written, "corrected" is the correction, and "note" is the corrector's own note, if any.
 - Explain what the correction changed and why, in at most three short sentences, written in "readerLanguage", for someone at "level".
 - Explain the correction as given. Do not offer a different one, and do not judge whether the corrector was right.`,
+
+  explainMessage: `${PREAMBLE}
+
+Task: "message" is a chat message the learner received from their partner. Explain it for someone at "level", in "readerLanguage", in at most three short sentences: what it means, and any idiom, slang, abbreviation or grammar a learner might miss.
+- Explain only; do not suggest a reply and do not judge the writer.`,
+
+  sayIt: `${PREAMBLE}
+
+Task: "text" is what the learner wants to say, in their own language. Give exactly ${COPILOT_RULES.sayItOptions} natural ways to say it in "targetLanguage", as a real person writes in a chat, at the learner's level.
+- Each "text" is one short sentence; each "gloss" is a few words in "readerLanguage" on how it differs (casual, polite, shorter).
+- Keep their meaning; add nothing they did not say.`,
 }
 
 /**
@@ -62,10 +81,12 @@ export const MODEL_OUTPUT = {
   check: z.object({ corrected: z.string(), reason: z.string().nullable() }),
   replyIdeas: z.object({ ideas: z.array(z.string()) }),
   explain: z.object({ explanation: z.string() }),
-} satisfies Record<CopilotAction, z.ZodType>
+  explainMessage: z.object({ explanation: z.string() }),
+  sayIt: z.object({ options: z.array(z.object({ text: z.string(), gloss: z.string() })) }),
+} satisfies Record<CopilotPrompt, z.ZodType>
 
-export function systemPromptFor(action: CopilotAction): string {
-  return SYSTEM[action]
+export function systemPromptFor(prompt: CopilotPrompt): string {
+  return SYSTEM[prompt]
 }
 
 /** The reader's app language, named the way the model reads best: in English. */

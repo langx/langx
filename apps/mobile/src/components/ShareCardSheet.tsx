@@ -3,12 +3,14 @@ import { File, Paths } from 'expo-file-system'
 import { useState } from 'react'
 import { ActivityIndicator, Modal, Platform, Pressable, Text } from 'react-native'
 import { useCreateShareCard } from '../api/queries'
+import { useV3Home } from '../hooks/useV3Home'
 import { useT, type MessageKey } from '../i18n'
 import { track } from '../lib/analytics'
 import { shareImage, shareLink } from '../lib/share'
 import type { ShareContent } from '../lib/shareText'
 import { makeStyles } from '../lib/theme'
 import { showToast } from '../lib/toast'
+import { ShareCardChoicesV3 } from './ShareCardSheetV3'
 
 /** One label per shape, named for where the picture is going rather than for
  *  its ratio: nobody thinks in 9:16, everybody thinks in "story". */
@@ -75,6 +77,7 @@ export function ShareCardSheet({
 }) {
   const styles = useStyles()
   const t = useT()
+  const v3Look = useV3Home()
   const createCard = useCreateShareCard()
   const [busy, setBusy] = useState<CardShape | null>(null)
   const [pending, setPending] = useState<PendingShare | null>(null)
@@ -147,6 +150,16 @@ export function ShareCardSheet({
     }
   }
 
+  function linkOnly(): void {
+    if (!request) return onClose()
+    track({
+      name: 'share_card_created',
+      properties: { kind: request.kind, shape: null, link_only: true, failed: false },
+    })
+    const fallback = request.fallback
+    shareAfterClose(() => shareLink(fallback))
+  }
+
   return (
     <Modal
       visible={request !== null}
@@ -161,43 +174,49 @@ export function ShareCardSheet({
       }}
       accessibilityViewIsModal
     >
-      <Pressable style={styles.backdrop} accessibilityLabel={t('common.cancel')} onPress={onClose}>
-        {/* Swallows the press so tapping the sheet does not close it. */}
-        <Pressable style={styles.sheet} onPress={() => undefined}>
-          <Text style={styles.title}>{t('share.cardTitle')}</Text>
-          <Text style={styles.body}>{t('share.cardBody')}</Text>
+      {v3Look ? (
+        <ShareCardChoicesV3
+          busy={busy}
+          labels={SHAPE_LABELS}
+          onPick={(shape) => void pick(shape)}
+          onLinkOnly={linkOnly}
+          onClose={onClose}
+        />
+      ) : (
+        <Pressable
+          style={styles.backdrop}
+          accessibilityLabel={t('common.cancel')}
+          onPress={onClose}
+        >
+          {/* Swallows the press so tapping the sheet does not close it. */}
+          <Pressable style={styles.sheet} onPress={() => undefined}>
+            <Text style={styles.title}>{t('share.cardTitle')}</Text>
+            <Text style={styles.body}>{t('share.cardBody')}</Text>
 
-          {CARD_SHAPES.map((shape) => (
+            {CARD_SHAPES.map((shape) => (
+              <Pressable
+                key={shape}
+                accessibilityRole="button"
+                disabled={busy !== null}
+                onPress={() => void pick(shape)}
+                style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+              >
+                <Text style={styles.rowLabel}>{t(SHAPE_LABELS[shape])}</Text>
+                {busy === shape ? <ActivityIndicator /> : null}
+              </Pressable>
+            ))}
+
             <Pressable
-              key={shape}
               accessibilityRole="button"
               disabled={busy !== null}
-              onPress={() => void pick(shape)}
+              onPress={linkOnly}
               style={({ pressed }) => [styles.row, pressed && styles.pressed]}
             >
-              <Text style={styles.rowLabel}>{t(SHAPE_LABELS[shape])}</Text>
-              {busy === shape ? <ActivityIndicator /> : null}
+              <Text style={styles.rowLabelMuted}>{t('share.justTheLink')}</Text>
             </Pressable>
-          ))}
-
-          <Pressable
-            accessibilityRole="button"
-            disabled={busy !== null}
-            onPress={() => {
-              if (!request) return onClose()
-              track({
-                name: 'share_card_created',
-                properties: { kind: request.kind, shape: null, link_only: true, failed: false },
-              })
-              const fallback = request.fallback
-              shareAfterClose(() => shareLink(fallback))
-            }}
-            style={({ pressed }) => [styles.row, pressed && styles.pressed]}
-          >
-            <Text style={styles.rowLabelMuted}>{t('share.justTheLink')}</Text>
           </Pressable>
         </Pressable>
-      </Pressable>
+      )}
     </Modal>
   )
 }

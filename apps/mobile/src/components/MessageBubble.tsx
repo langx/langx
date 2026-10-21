@@ -21,6 +21,7 @@ import Reanimated, {
 } from 'react-native-reanimated'
 import type { MessageDto } from '../api/queries'
 import {
+  isServerRecord,
   attachmentsOf,
   findLinks,
   type Media,
@@ -57,6 +58,7 @@ import { impact } from '../lib/haptics'
 import { viewOnceBubbleLabel } from '../lib/viewOnce'
 import { useBubbleStylesV3 } from './thread/bubbleLookV3'
 import { CallRowV3 } from './thread/CallRowV3'
+import { GiftRowV3 } from './thread/GiftRowV3'
 import { Button } from './ui/Button'
 import { CorrectionCardV3 } from './thread/CorrectionCardV3'
 
@@ -355,9 +357,9 @@ export const MessageBubble = memo(function MessageBubble({
 
   const translateX = useSharedValue(0)
   const pan = Gesture.Pan()
-    // Not on the row a call leaves: the server refuses a reply to one, and a
-    // swipe that springs back to an error is worse than one that is not there.
-    .enabled(canReply && message.type !== 'call' && swipeToReplyEnabled(Platform.OS, HAS_TOUCH))
+    // Not on the row a call or a gift leaves: the server refuses a reply to
+    // one, and a swipe that springs back to an error is worse than none.
+    .enabled(canReply && !isServerRecord(message) && swipeToReplyEnabled(Platform.OS, HAS_TOUCH))
     /*
      * The same two thresholds `shouldCaptureSwipe` applied, now decided
      * natively — which is what stops the drag from competing with the list's
@@ -883,6 +885,22 @@ export const MessageBubble = memo(function MessageBubble({
           <MessageMeta message={message} mine={false} />
         </View>
       </Pressable>,
+    )
+  }
+
+  // A sticker pack one of them gave the other. See `GiftRowV3`.
+  if (message.type === 'gift' && message.gift) {
+    return shell(
+      <GiftRowV3
+        gift={message.gift}
+        mine={mine}
+        partnerName={partnerName}
+        box={box}
+        column={column}
+        flash={flash}
+        meta={<MessageMeta message={message} mine={false} />}
+        onLongPress={press}
+      />,
     )
   }
 
