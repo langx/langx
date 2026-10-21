@@ -1061,8 +1061,9 @@ describe('Faz 5 — conversation/message history REST', () => {
       accountStatus: 'deleted',
     })
     // Nothing a row does not draw: the list is not a second profile endpoint.
+    // `defaultAvatarRev` is the drawn face the row shows in place of a photo.
     expect(Object.keys(partnerOf(shy.userId) ?? {}).sort()).toEqual(
-      ['_id', 'accountStatus', 'displayName', 'handle', 'isOnline'].sort(),
+      ['_id', 'accountStatus', 'defaultAvatarRev', 'displayName', 'handle', 'isOnline'].sort(),
     )
   })
 

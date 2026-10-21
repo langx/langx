@@ -3,7 +3,7 @@ import type { Db } from 'mongodb'
 import { ERROR_CODES } from '@langx/shared'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
-import { holdsLifetime } from '../billing/proGifts'
+import { holdsLifetime, holdsStoreSubscription } from '../billing/proGifts'
 import type { Profile } from '../profiles/profiles'
 import {
   countActiveToday,
@@ -86,9 +86,14 @@ export async function getTokenSummary(
  * on `proGiftStreaks` has had its gift, and a lifetime plan's gifts are
  * skipped, so it is owed none. Whatever the streak is now — the ladder shows
  * the rungs ahead of it as well as the one it is on.
+ *
+ * A subscriber is promised none either. Their gift is skipped whenever the
+ * subscription runs past it, and which side of that a rung will land on is
+ * not known until the day it is reached; a gift that arrives unpromised after
+ * a cancellation is a surprise, one promised and skipped is a broken promise.
  */
 function proGiftRungsOwed(profile: Pick<Profile, 'entitlement' | 'proGiftStreaks'>): number[] {
-  if (holdsLifetime(profile.entitlement)) return []
+  if (holdsLifetime(profile.entitlement) || holdsStoreSubscription(profile.entitlement)) return []
   const given = profile.proGiftStreaks ?? []
   return PRO_GIFT_RULES.streak.filter((rung) => !given.includes(rung.days)).map((rung) => rung.days)
 }

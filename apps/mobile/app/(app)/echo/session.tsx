@@ -12,7 +12,7 @@ import {
   type EchoImage,
   type EchoSrs,
 } from '@langx/shared'
-import { useAudioPlayer, useAudioPlayerStatus, type AudioPlayer } from 'expo-audio'
+import { useAudioPlayer } from 'expo-audio'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -26,6 +26,7 @@ import { Skeleton } from '../../../src/components/ui/Skeleton'
 import {
   PlayAgainButton,
   PlayAgainProvider,
+  useAutoplay,
   useTakePlay,
 } from '../../../src/components/echo/PlayAgain'
 import { EchoDoneV3 } from '../../../src/components/echo/EchoDoneV3'
@@ -35,7 +36,6 @@ import { useV3Home } from '../../../src/hooks/useV3Home'
 import { useT } from '../../../src/i18n'
 import { voiceLabel } from '../../../src/i18n/labels'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
-import { ensurePlaybackAudioMode } from '../../../src/lib/audioSession'
 import { track } from '../../../src/lib/analytics'
 import { echoAskParams, type EchoAskParams } from '../../../src/lib/echoAsk'
 import { compactDuration } from '../../../src/lib/format'
@@ -51,6 +51,11 @@ import {
   rememberPendingReviews,
 } from '../../../src/lib/echoStore'
 import { newClientId } from '../../../src/lib/unsentMessages'
+import {
+  EchoSessionEmptyV3,
+  EchoSessionLoadingV3,
+  EchoSessionScreenV3,
+} from '../../../src/screens/echo/EchoSessionScreenV3'
 
 /**
  * How long after the answer appears a grade is ignored. Long enough to absorb
@@ -304,10 +309,14 @@ export default function EchoSessionScreen() {
   /** The card as a post for the feed, or `null` when it cannot be one. */
   const ask = card ? echoAskParams(card, languages) : null
 
-  /** What the grade buttons say: the same function the server will run. */
+  /** When each grade brings the card back: the same function the server will run. */
+  function delayMinutes(value: EchoGrade): number {
+    return card ? scheduledDelayMinutes({ srs: parseSrs(card) }, value, new Date()) : 0
+  }
+
+  /** What the grade buttons say. */
   function intervalLabel(value: EchoGrade): string {
-    if (!card) return ''
-    return compactDuration(t, scheduledDelayMinutes({ srs: parseSrs(card) }, value, new Date()))
+    return card ? compactDuration(t, delayMinutes(value)) : ''
   }
 
   /**
@@ -368,6 +377,7 @@ export default function EchoSessionScreen() {
     />
   )
 
+  if ((queue.isPending || deck === null) && v3Home) return <EchoSessionLoadingV3 />
   if (queue.isPending || deck === null) {
     return (
       <Screen fluid>
@@ -379,6 +389,7 @@ export default function EchoSessionScreen() {
     )
   }
 
+  if (deck.length === 0 && v3Home) return <EchoSessionEmptyV3 />
   if (deck.length === 0) {
     return (
       <Screen fluid>
@@ -449,6 +460,32 @@ export default function EchoSessionScreen() {
           )}
         </View>
       </Screen>
+    )
+  }
+
+  if (v3Home) {
+    return (
+      <EchoSessionScreenV3
+        deck={deck}
+        index={index}
+        card={card}
+        producing={producing}
+        revealed={revealed}
+        typed={typed}
+        onType={setTyped}
+        verdict={verdict}
+        autoplay={autoplay}
+        onToggleAutoplay={toggleAutoplay}
+        offline={offline}
+        ask={ask}
+        onPostToFeed={postToFeed}
+        onReveal={reveal}
+        onGrade={grade}
+        intervalLabel={intervalLabel}
+        delayMinutes={delayMinutes}
+        keyboard={keyboard}
+        cardRef={cardRef}
+      />
     )
   }
 
@@ -722,28 +759,6 @@ function Reading({ take, autoplay = false }: { take: EchoVoice; autoplay?: boole
       <Text style={styles.voiceLabel}>{voiceLabel(t, take.voice)}</Text>
     </Pressable>
   )
-}
-
-/**
- * Plays the take once, as soon as it can, when the card asked for it.
- *
- * Waits for `isLoaded` rather than calling `play()` from a mount effect: the
- * player starts fetching on creation, and a play asked of a source still on
- * its way is not something every platform underneath promises to remember.
- * The first card of a session is exactly the one that has not loaded yet.
- * Once, by ref, so a status tick after the take ends does not start it again.
- */
-function useAutoplay(player: AudioPlayer, wanted: boolean): void {
-  const status = useAudioPlayerStatus(player)
-  const played = useRef(false)
-  useEffect(() => {
-    if (!wanted || played.current || !status.isLoaded) return
-    played.current = true
-    void ensurePlaybackAudioMode().then(() => {
-      void player.seekTo(0)
-      player.play()
-    })
-  }, [wanted, status.isLoaded, player])
 }
 
 function Count({ label, value }: { label: string; value: number }) {

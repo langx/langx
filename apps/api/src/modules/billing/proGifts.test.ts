@@ -295,28 +295,60 @@ describe('gifts of Pro', () => {
       expect((await profile(userId))?.proWelcome).toMatchObject({ source: 'gift', months: 1 })
     })
 
-    it('grants a streak gift quietly under a subscription that outlasts it', async () => {
+    it.each([
+      ['renews', { willRenew: true, expiresAt: new Date(Date.now() + 3 * DAY) }],
+      [
+        'has been cancelled but outlasts it',
+        { willRenew: false, expiresAt: new Date(Date.now() + 30 * DAY) },
+      ],
+    ])('gives no earned gift to a subscriber whose plan %s', async (_case, plan) => {
+      const userId = await person({ entitlement: { tier: 'pro', store: 'app_store', ...plan } })
+      const earned = [
+        { _id: proGiftKey.streak(7, userId), months: 0, weeks: 1, source: 'streak' as const },
+        { _id: proGiftKey.invitedWeek(userId), months: 0, weeks: 1, source: 'referral' as const },
+        {
+          _id: proGiftKey.welcome(2, userId),
+          months: 0,
+          weeks: 1,
+          source: 'welcome' as const,
+          welcome: 2 as const,
+        },
+      ]
+      for (const row of earned) await queueProGift(db, { ...row, userId }, new Date())
+
+      const result = await runProGiftPass(db, deps)
+      expect(result.skipped).toBe(earned.length)
+      for (const row of earned) {
+        expect(await gift(row._id)).toMatchObject({
+          status: 'skipped',
+          skippedReason: 'subscribed',
+          endsAt: null,
+        })
+      }
+      expect(grants).toHaveLength(0)
+      expect(await messagesTo('proGift:')).toHaveLength(0)
+      expect(email.messages).toHaveLength(0)
+      expect((await profile(userId))?.proWelcome).toBeUndefined()
+    })
+
+    it('still gives a gift code’s gift to a subscriber', async () => {
       const userId = await person({
         entitlement: {
           tier: 'pro',
-          store: 'app_store',
+          store: 'play_store',
           willRenew: true,
           expiresAt: new Date(Date.now() + 10 * DAY),
         },
       })
       const { gift: row } = await queueProGift(
         db,
-        { _id: proGiftKey.streak(7, userId), userId, months: 0, weeks: 1, source: 'streak' },
+        { _id: proGiftKey.code('c1', userId), userId, months: 1, source: 'code', code: 'HELLO' },
         new Date(),
       )
       await grantProGiftNow(db, deps, row._id)
 
-      expect(grants).toHaveLength(1)
       expect(await gift(row._id)).toMatchObject({ status: 'granted' })
-      expect(await messagesTo(`proGift:${row._id}`)).toHaveLength(0)
-      expect(fanned).toHaveLength(0)
-      expect(email.messages).toHaveLength(0)
-      expect((await profile(userId))?.proWelcome).toBeUndefined()
+      expect(await messagesTo(`proGift:${row._id}`)).toHaveLength(1)
     })
 
     it('still announces a streak gift to a subscriber who has cancelled', async () => {

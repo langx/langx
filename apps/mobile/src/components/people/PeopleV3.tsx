@@ -3,7 +3,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { TIER_BADGES, type DiscoverySort } from '@langx/shared'
 import { useFonts } from 'expo-font'
 import { router } from 'expo-router'
-import { useCallback, useRef, type ReactNode } from 'react'
+import { useCallback, useMemo, useRef, type ReactNode } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useNewProfiles, useQuota } from '../../api/queries'
 import type { DiscoveryItem } from '../../api/types'
@@ -26,6 +26,7 @@ import { ICON_BUTTON_TARGET } from '../ui/IconButton'
 import { Screen } from '../ui/Screen'
 import { Skeleton } from '../ui/Skeleton'
 import { BoostedStripV3 } from './BoostedStripV3'
+import { dedupeGrounds } from '../../lib/avatarViewport'
 import { NEWCOMER_TILE_WIDTH, NewcomerTile, PersonCard } from './PersonCard'
 
 const FROM = '/(app)/(tabs)/discover'
@@ -91,6 +92,8 @@ export function PeopleV3(props: PeopleV3Props) {
   const [black] = useFonts({ Nunito_900Black })
   const { data: session } = authClient.useSession()
   const guest = shouldGateGuest(session?.user)
+  // Two cards that drew the same face sit on different grounds.
+  const people = useMemo(() => dedupeGrounds(props.people), [props.people])
 
   /*
    * The latest of everything a row's handler reads, so the handlers can stay
@@ -133,9 +136,15 @@ export function PeopleV3(props: PeopleV3Props) {
       )
       /* Only the first card. The tour needs one to point at, and a
          registration per row would mean the last one to mount wins. */
-      return index === 0 ? <TourTarget id="discoverCard">{card}</TourTarget> : card
+      return index === 0 ? (
+        <TourTarget id="discoverCard" radius={v3.radius.block}>
+          {card}
+        </TourTarget>
+      ) : (
+        card
+      )
     },
-    [twoPane, selected, black, onOpen, onHello],
+    [twoPane, selected, black, onOpen, onHello, v3.radius.block],
   )
 
   const empty: PeoplePanel =
@@ -186,7 +195,7 @@ export function PeopleV3(props: PeopleV3Props) {
         </View>
         {props.searching ? null : props.segments}
         {props.pair && !props.searching ? (
-          <TourTarget id="discoverPair" style={styles.pairTarget}>
+          <TourTarget id="discoverPair" radius={v3.radius.pill} style={styles.pairTarget}>
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t('discover.languagesA11y')}
@@ -201,7 +210,7 @@ export function PeopleV3(props: PeopleV3Props) {
           </TourTarget>
         ) : null}
         {props.searching ? null : (
-          <TourTarget id="discoverSorts" style={styles.sortsTarget}>
+          <TourTarget id="discoverSorts" radius={v3.radius.pill} style={styles.sortsTarget}>
             <View
               accessibilityRole="radiogroup"
               accessibilityLabel={t('discover.sortLabel')}
@@ -254,7 +263,7 @@ export function PeopleV3(props: PeopleV3Props) {
         <LoadFailed onRetry={props.onRetry} />
       ) : (
         <FlatList
-          data={props.people}
+          data={people}
           keyExtractor={keyOf}
           renderItem={renderItem}
           ItemSeparatorComponent={Gap}
@@ -349,7 +358,7 @@ function NewcomerStrip({
   const styles = useStyles()
   const t = useT()
   const query = useNewProfiles(params)
-  const items = query.data?.items ?? []
+  const items = useMemo(() => dedupeGrounds(query.data?.items ?? []), [query.data])
   if (items.length === 0) return null
   return (
     <View style={styles.strip}>

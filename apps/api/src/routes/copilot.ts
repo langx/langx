@@ -3,6 +3,7 @@ import {
   copilotConsentRequestSchema,
   copilotExplainRequestSchema,
   copilotReplyIdeasRequestSchema,
+  copilotSayItRequestSchema,
 } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
@@ -79,6 +80,20 @@ export const copilotRoutes: FastifyPluginAsyncZod = async (app) => {
         request.userId,
         localeFromHeader(request.headers['accept-language']),
         { action: 'replyIdeas', ...request.body },
+      )
+      return reply.send(result)
+    },
+  )
+
+  app.post(
+    '/copilot/say-it',
+    { preHandler: requireVerifiedEmail, schema: { body: copilotSayItRequestSchema } },
+    async (request, reply) => {
+      const result = await askCopilot(
+        await depsFor(app),
+        request.userId,
+        localeFromHeader(request.headers['accept-language']),
+        { action: 'sayIt', ...request.body },
       )
       return reply.send(result)
     },

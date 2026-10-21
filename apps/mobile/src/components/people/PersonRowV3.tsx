@@ -20,7 +20,13 @@ export function PersonRowV3({
   last,
   onPress,
 }: {
-  person: { _id: string; handle: string; displayName: string; avatarUrl?: string | undefined }
+  person: {
+    _id: string
+    handle: string
+    displayName: string
+    avatarUrl?: string | undefined
+    defaultAvatarRev?: string | undefined
+  }
   first: boolean
   last: boolean
   onPress: () => void
@@ -40,7 +46,13 @@ export function PersonRowV3({
         pressed && styles.pressed,
       ]}
     >
-      <Avatar url={person.avatarUrl} name={person.displayName} seed={person._id} size={48} />
+      <Avatar
+        url={person.avatarUrl}
+        name={person.displayName}
+        seed={person._id}
+        defaultAvatarRev={person.defaultAvatarRev}
+        size={48}
+      />
       <View style={styles.body}>
         <Text style={styles.name} numberOfLines={1}>
           {person.displayName}

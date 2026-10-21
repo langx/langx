@@ -9,20 +9,27 @@ import {
   type AdminStatsDto,
 } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
+import {
+  AdminBlockV3,
+  AdminCaptionV3,
+  AdminHeadingV3,
+  AdminNavRowV3,
+  AdminNoteV3,
+  AdminRowsV3,
+  AdminScreenV3,
+  AdminStatV3,
+  AdminStatsV3,
+  AdminSubheadingV3,
+  useAdminWide,
+} from '../../../src/components/admin/AdminKitV3'
 import { BarList, type BarListRow } from '../../../src/components/admin/BarList'
 import { Columns, type ColumnPoint } from '../../../src/components/admin/Columns'
-import { Callout } from '../../../src/components/ui/Callout'
-import { ListRow } from '../../../src/components/ui/ListRow'
 import { ProgressBar } from '../../../src/components/ui/ProgressBar'
-import { Screen } from '../../../src/components/ui/Screen'
-import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
-import { StatTile } from '../../../src/components/ui/StatTile'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { ADMIN, adminPercent } from '../../../src/lib/adminStrings'
 import { isDebugPanelEnabled } from '../../../src/lib/debugPanel'
-import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 
 /**
@@ -43,11 +50,16 @@ import { makeStyles, useTheme } from '../../../src/lib/theme'
  * first — messages outnumber new members by three orders of magnitude, and a
  * shared scale would flatten the series that matters into the baseline. So
  * they are separate charts under their own headings instead.
+ *
+ * Drawn from `V-Admin`: on a desk the queues and the doors sit in a column
+ * beside the live card and the numbers; on a phone it is one column, the live
+ * card first.
  */
 export default function AdminHomeScreen() {
   useScreenInteractive()
   const styles = useStyles()
-  const { colors } = useTheme()
+  const { v3 } = useTheme()
+  const wide = useAdminWide()
 
   const stats = useAdminStats()
   const pulse = useAdminPulse()
@@ -66,236 +78,276 @@ export default function AdminHomeScreen() {
     void pulse.refetch()
   }
 
+  /*
+   * Copilot's only way in until its screens exist. An operator's page, not a
+   * developer's: it is how Copilot is tried on a real build before anybody
+   * else can reach it, so it is not behind the debug flag. The gallery is a
+   * developer's page rather than an operator's, so it only exists where the
+   * other debug surfaces do: a dev build with the flag set.
+   */
+  const extras = (
+    <AdminRowsV3>
+      <AdminNavRowV3
+        icon="star"
+        title={ADMIN.copilot.entryRow}
+        onPress={() => router.push('/(app)/admin/copilot')}
+      />
+      {isDebugPanelEnabled() ? (
+        <AdminNavRowV3
+          icon="layout"
+          title={ADMIN.gallery.entryRow}
+          onPress={() => router.push('/(app)/admin/gallery')}
+        />
+      ) : null}
+    </AdminRowsV3>
+  )
+
+  /*
+   * The queues and the doors, inside the dashboard's loading branch as they
+   * always were: the counts beside the queues are `/admin/stats`'s.
+   */
+  const doors = stats.isPending ? (
+    <Skeleton height={190} />
+  ) : stats.isError ? null : (
+    <>
+      {/*
+       * Tinted only when there is something in it. A zero beside "Reports" is
+       * the normal state of this panel, and a queue that always looks urgent
+       * is one nobody reads.
+       */}
+      <AdminRowsV3>
+        <AdminNavRowV3
+          icon="flag"
+          hue="tangerine"
+          title={ADMIN.home.reports}
+          count={queue?.reports ?? 0}
+          onPress={() => router.push('/(app)/admin/reports')}
+        />
+        <AdminNavRowV3
+          icon="life-buoy"
+          hue="lilac"
+          title={ADMIN.home.appeals}
+          count={queue?.appeals ?? 0}
+          onPress={() => router.push('/(app)/admin/reports?tab=appeals')}
+        />
+        <AdminNavRowV3
+          icon="inbox"
+          hue="sky"
+          title={ADMIN.home.feedback}
+          count={queue?.feedback ?? 0}
+          onPress={() => router.push('/(app)/admin/feedback')}
+        />
+      </AdminRowsV3>
+      <AdminRowsV3>
+        <AdminNavRowV3
+          icon="send"
+          title={ADMIN.home.broadcast}
+          onPress={() => router.push('/(app)/admin/broadcast')}
+        />
+        <AdminNavRowV3
+          icon="search"
+          title={ADMIN.home.users}
+          onPress={() => router.push('/(app)/admin/users')}
+        />
+        <AdminNavRowV3
+          icon="gift"
+          title={ADMIN.home.giftCodes}
+          onPress={() => router.push('/(app)/admin/gift-codes')}
+        />
+        <AdminNavRowV3
+          icon="bar-chart-2"
+          title={ADMIN.home.measure}
+          onPress={() => router.push('/(app)/admin/measure')}
+        />
+        <AdminNavRowV3
+          icon="cpu"
+          title={ADMIN.home.system}
+          onPress={() => router.push('/(app)/admin/system')}
+        />
+      </AdminRowsV3>
+    </>
+  )
+
+  const dashboard = stats.isPending ? (
+    <View style={styles.loading}>
+      <Skeleton height={80} />
+      <Skeleton height={200} />
+    </View>
+  ) : stats.isError ? (
+    <AdminNoteV3 tone="danger" icon="alert-circle">
+      {ADMIN.home.failedToLoad}
+    </AdminNoteV3>
+  ) : (
+    <>
+      {/* Where the days on this screen turn over. One line, once. */}
+      <AdminHeadingV3 title={ADMIN.home.sections.audience} hint={ADMIN.home.allUtc} />
+      <AdminStatsV3>
+        <AdminStatV3 value={count(audience?.joinedToday)} label={ADMIN.home.joinedToday} />
+        <AdminStatV3 value={count(audience?.joinedLastMonth)} label={ADMIN.home.joinedMonth} />
+        <AdminStatV3 value={count(audience?.activeToday)} label={ADMIN.home.activeToday} />
+        <AdminStatV3 value={count(audience?.seenLastMonth)} label={ADMIN.home.seenMonth} />
+      </AdminStatsV3>
+
+      <Chart
+        title={ADMIN.home.charts.activeDaily}
+        caption={ADMIN.home.charts.lastDays(audience?.activeDaily.length || 30)}
+        points={(audience?.activeDaily ?? []).map(dayPoint)}
+      />
+      <Chart
+        title={ADMIN.home.charts.newMembers}
+        caption={ADMIN.home.charts.lastDays(daily.length || 30)}
+        points={daily.map((day) => ({ key: day.day, value: day.members }))}
+      />
+
+      <AdminHeadingV3 title={ADMIN.home.sections.talking} />
+      <AdminStatsV3>
+        <AdminStatV3 value={count(audience?.profiles)} label={ADMIN.home.profiles} />
+        <AdminStatV3 value={count(audience?.messages)} label={ADMIN.home.messages} />
+        <AdminStatV3 value={count(shared?.totals.corrections)} label={ADMIN.home.corrections} />
+        <AdminStatV3 value={count(shared?.totals.languages)} label={ADMIN.home.languageCount} />
+      </AdminStatsV3>
+
+      <Chart
+        title={ADMIN.home.charts.messagesDaily}
+        caption={ADMIN.home.charts.lastDays(daily.length || 30)}
+        points={daily.map((day) => ({ key: day.day, value: day.messages }))}
+      />
+      {/*
+       * Green, because a correction is always the green pair in this app — see
+       * the palette's note. It is a separate chart rather than a second series
+       * over the messages above it for the reason at the top of this file.
+       */}
+      <Chart
+        title={ADMIN.home.charts.correctionsDaily}
+        caption={ADMIN.home.charts.lastDays(daily.length || 30)}
+        color={v3.colors.correction}
+        points={daily.map((day) => ({ key: day.day, value: day.corrections }))}
+      />
+
+      <AdminStatsV3>
+        <AdminStatV3 value={count(shared?.streaks.longest)} label={ADMIN.home.streaks.longest} />
+        <AdminStatV3 value={count(shared?.streaks.active)} label={ADMIN.home.streaks.active} />
+      </AdminStatsV3>
+
+      <AdminHeadingV3 title={ADMIN.home.sections.languages} />
+      <AdminBlockV3>
+        <AdminSubheadingV3>{ADMIN.home.languages.learning}</AdminSubheadingV3>
+        <BarList
+          rows={(shared?.learning ?? []).slice(0, TOP_LANGUAGES).map(languageRow)}
+          empty={ADMIN.home.languages.none}
+        />
+      </AdminBlockV3>
+      <AdminBlockV3>
+        <AdminSubheadingV3>{ADMIN.home.languages.native}</AdminSubheadingV3>
+        <BarList
+          rows={(shared?.native ?? []).slice(0, TOP_LANGUAGES).map(languageRow)}
+          color={v3.hues.lilac}
+          empty={ADMIN.home.languages.none}
+        />
+      </AdminBlockV3>
+
+      <AdminHeadingV3 title={ADMIN.home.sections.funnel} />
+      <SegmentedControl
+        options={FUNNEL_WINDOWS}
+        selected={[funnelWindow]}
+        onToggle={setFunnelWindow}
+        accessibilityLabel={ADMIN.home.sections.funnel}
+      />
+      <AdminBlockV3>
+        <Funnel window={funnelWindow} />
+      </AdminBlockV3>
+
+      <AdminHeadingV3 title={ADMIN.home.sections.money} />
+      <AdminStatsV3>
+        <AdminStatV3
+          value={count(money?.tiers.pro)}
+          label={ADMIN.home.pro}
+          onPress={() => router.push('/(app)/admin/members?tier=pro')}
+        />
+        <AdminStatV3
+          value={count(money ? money.tiers.pro - money.tiers.gifted : undefined)}
+          label={ADMIN.home.paid}
+        />
+        <AdminStatV3 value={count(money?.tiers.gifted)} label={ADMIN.home.gifted} />
+        <AdminStatV3 value={count(money?.tiers.free)} label={ADMIN.home.free} />
+        <AdminStatV3 value={count(money?.tiers.total)} label={ADMIN.home.totalMembers} />
+      </AdminStatsV3>
+      {money ? <PaidShare tiers={money.tiers} /> : null}
+
+      <Chart
+        title={ADMIN.home.charts.tokensDaily}
+        caption={ADMIN.home.charts.lastDays(money?.tokensDaily.length || 30)}
+        points={(money?.tokensDaily ?? []).map(dayPoint)}
+      />
+
+      <AdminHeadingV3 title={ADMIN.home.poolYesterday} />
+      {money?.pool ? (
+        <Text style={styles.line}>
+          {money.pool.paid} {ADMIN.home.poolPaid} · {money.pool.distributed}{' '}
+          {ADMIN.home.poolDistributed}
+        </Text>
+      ) : (
+        <AdminCaptionV3>{ADMIN.home.poolNone}</AdminCaptionV3>
+      )}
+
+      {audience?.builds.length ? (
+        <>
+          <AdminHeadingV3 title={ADMIN.home.builds} />
+          <AdminBlockV3>
+            <BarList
+              rows={audience.builds.slice(0, TOP_BUILDS).map((build) => ({
+                key: `${build.platform}-${build.version}`,
+                label: build.version,
+                hint: build.platform,
+                value: build.count,
+              }))}
+              color={v3.colors.muted}
+              empty={ADMIN.home.languages.none}
+            />
+          </AdminBlockV3>
+        </>
+      ) : null}
+    </>
+  )
+
   return (
     <AdminGate>
-      <Screen scroll fluid onRefresh={refresh} refreshing={stats.isFetching}>
-        <ScreenHeader title={ADMIN.home.title} onBack={() => goBackTo('/(app)/settings')} />
-
-        <Callout tone="warning" icon="shield">
-          <Text style={styles.calloutBody}>{ADMIN.warning}</Text>
-        </Callout>
-
-        {/*
-         * Above the queue, and outside the dashboard's own loading branch: it
-         * is on its own request and its own clock, so a slow `/admin/stats`
-         * must not hold back the one number on this screen that is about now.
-         */}
-        <LiveCard />
+      <AdminScreenV3
+        title={ADMIN.home.title}
+        back="/(app)/settings"
+        onRefresh={refresh}
+        refreshing={stats.isFetching}
+      >
+        <AdminNoteV3 tone="warning" icon="shield">
+          {ADMIN.warning}
+        </AdminNoteV3>
 
         {/*
-         * A developer's page rather than an operator's, so it only exists
-         * where the other debug surfaces do: a dev build with the flag set.
+         * The live card is outside the dashboard's own loading branch on both
+         * layouts: it is on its own request and its own clock, so a slow
+         * `/admin/stats` must not hold back the one number on this screen
+         * that is about now.
          */}
-        {/*
-         * Copilot's only way in until its screens exist. An operator's page,
-         * not a developer's: it is how Copilot is tried on a real build before
-         * anybody else can reach it, so it is not behind the debug flag.
-         */}
-        <View style={styles.group}>
-          <ListRow
-            title={ADMIN.copilot.entryRow}
-            onPress={() => router.push('/(app)/admin/copilot')}
-            last
-          />
-        </View>
-
-        {isDebugPanelEnabled() ? (
-          <View style={styles.group}>
-            <ListRow
-              title={ADMIN.gallery.entryRow}
-              onPress={() => router.push('/(app)/admin/gallery')}
-              last
-            />
+        {wide ? (
+          <View style={styles.split}>
+            <View style={styles.side}>
+              {doors}
+              {extras}
+            </View>
+            <View style={styles.main}>
+              <LiveCard />
+              {dashboard}
+            </View>
           </View>
-        ) : null}
-
-        {stats.isPending ? (
-          <View style={styles.loading}>
-            <Skeleton height={80} />
-            <Skeleton height={200} />
-          </View>
-        ) : stats.isError ? (
-          <Callout tone="error">
-            <Text style={styles.calloutBody}>{ADMIN.home.failedToLoad}</Text>
-          </Callout>
         ) : (
           <>
-            <View style={styles.group}>
-              {/*
-               * Tinted only when there is something in it. A zero beside
-               * "Reports" is the normal state of this panel, and a queue that
-               * always looks urgent is one nobody reads.
-               */}
-              <ListRow
-                title={ADMIN.home.reports}
-                accessory={<QueueCount count={queue?.reports ?? 0} />}
-                onPress={() => router.push('/(app)/admin/reports')}
-              />
-              <ListRow
-                title={ADMIN.home.appeals}
-                accessory={<QueueCount count={queue?.appeals ?? 0} />}
-                onPress={() => router.push('/(app)/admin/reports?tab=appeals')}
-              />
-              <ListRow
-                title={ADMIN.home.feedback}
-                accessory={<QueueCount count={queue?.feedback ?? 0} />}
-                onPress={() => router.push('/(app)/admin/feedback')}
-              />
-              <ListRow
-                title={ADMIN.home.broadcast}
-                onPress={() => router.push('/(app)/admin/broadcast')}
-              />
-              <ListRow title={ADMIN.home.users} onPress={() => router.push('/(app)/admin/users')} />
-              <ListRow
-                title={ADMIN.home.giftCodes}
-                onPress={() => router.push('/(app)/admin/gift-codes')}
-              />
-              <ListRow
-                title={ADMIN.home.measure}
-                onPress={() => router.push('/(app)/admin/measure')}
-              />
-              <ListRow
-                title={ADMIN.home.system}
-                onPress={() => router.push('/(app)/admin/system')}
-                last
-              />
-            </View>
-
-            <Heading>{ADMIN.home.sections.audience}</Heading>
-            {/* Where the days on this screen turn over. One line, once. */}
-            <Text style={styles.muted}>{ADMIN.home.allUtc}</Text>
-            <View style={styles.tiles}>
-              <StatTile value={count(audience?.joinedToday)} label={ADMIN.home.joinedToday} />
-              <StatTile value={count(audience?.joinedLastMonth)} label={ADMIN.home.joinedMonth} />
-              <StatTile value={count(audience?.activeToday)} label={ADMIN.home.activeToday} />
-              <StatTile value={count(audience?.seenLastMonth)} label={ADMIN.home.seenMonth} />
-            </View>
-
-            <Chart
-              title={ADMIN.home.charts.activeDaily}
-              caption={ADMIN.home.charts.lastDays(audience?.activeDaily.length || 30)}
-              points={(audience?.activeDaily ?? []).map(dayPoint)}
-            />
-            <Chart
-              title={ADMIN.home.charts.newMembers}
-              caption={ADMIN.home.charts.lastDays(daily.length || 30)}
-              points={daily.map((day) => ({ key: day.day, value: day.members }))}
-            />
-
-            <Heading>{ADMIN.home.sections.talking}</Heading>
-            <View style={styles.tiles}>
-              <StatTile value={count(audience?.profiles)} label={ADMIN.home.profiles} />
-              <StatTile value={count(audience?.messages)} label={ADMIN.home.messages} />
-              <StatTile
-                value={count(shared?.totals.corrections)}
-                label={ADMIN.home.corrections}
-                tone="success"
-              />
-              <StatTile value={count(shared?.totals.languages)} label={ADMIN.home.languageCount} />
-            </View>
-
-            <Chart
-              title={ADMIN.home.charts.messagesDaily}
-              caption={ADMIN.home.charts.lastDays(daily.length || 30)}
-              points={daily.map((day) => ({ key: day.day, value: day.messages }))}
-            />
-            {/*
-             * Green, because a correction is always the green pair in this app
-             * — see the palette's note. It is a separate chart rather than a
-             * second series over the messages above it for the reason at the
-             * top of this file.
-             */}
-            <Chart
-              title={ADMIN.home.charts.correctionsDaily}
-              caption={ADMIN.home.charts.lastDays(daily.length || 30)}
-              color={colors.success}
-              points={daily.map((day) => ({ key: day.day, value: day.corrections }))}
-            />
-
-            <View style={styles.tiles}>
-              <StatTile
-                value={count(shared?.streaks.longest)}
-                label={ADMIN.home.streaks.longest}
-                icon="zap"
-                iconColor={colors.streak}
-              />
-              <StatTile value={count(shared?.streaks.active)} label={ADMIN.home.streaks.active} />
-            </View>
-
-            <Heading>{ADMIN.home.sections.languages}</Heading>
-            <Text style={styles.subheading}>{ADMIN.home.languages.learning}</Text>
-            <BarList
-              rows={(shared?.learning ?? []).slice(0, TOP_LANGUAGES).map(languageRow)}
-              empty={ADMIN.home.languages.none}
-            />
-            <Text style={styles.subheading}>{ADMIN.home.languages.native}</Text>
-            <BarList
-              rows={(shared?.native ?? []).slice(0, TOP_LANGUAGES).map(languageRow)}
-              color={colors.pro}
-              empty={ADMIN.home.languages.none}
-            />
-
-            <Heading>{ADMIN.home.sections.funnel}</Heading>
-            <SegmentedControl
-              options={FUNNEL_WINDOWS}
-              selected={[funnelWindow]}
-              onToggle={setFunnelWindow}
-              accessibilityLabel={ADMIN.home.sections.funnel}
-            />
-            <Funnel window={funnelWindow} />
-
-            <Heading>{ADMIN.home.sections.money}</Heading>
-            <View style={styles.tiles}>
-              <StatTile
-                value={count(money?.tiers.pro)}
-                label={ADMIN.home.pro}
-                onPress={() => router.push('/(app)/admin/members?tier=pro')}
-              />
-              <StatTile
-                value={count(money ? money.tiers.pro - money.tiers.gifted : undefined)}
-                label={ADMIN.home.paid}
-              />
-              <StatTile value={count(money?.tiers.gifted)} label={ADMIN.home.gifted} />
-              <StatTile value={count(money?.tiers.free)} label={ADMIN.home.free} />
-              <StatTile value={count(money?.tiers.total)} label={ADMIN.home.totalMembers} />
-            </View>
-            {money ? <PaidShare tiers={money.tiers} /> : null}
-
-            <Chart
-              title={ADMIN.home.charts.tokensDaily}
-              caption={ADMIN.home.charts.lastDays(money?.tokensDaily.length || 30)}
-              color={colors.primary}
-              points={(money?.tokensDaily ?? []).map(dayPoint)}
-            />
-
-            <Heading>{ADMIN.home.poolYesterday}</Heading>
-            {money?.pool ? (
-              <Text style={styles.line}>
-                {money.pool.paid} {ADMIN.home.poolPaid} · {money.pool.distributed}{' '}
-                {ADMIN.home.poolDistributed}
-              </Text>
-            ) : (
-              <Text style={styles.muted}>{ADMIN.home.poolNone}</Text>
-            )}
-
-            {audience?.builds.length ? (
-              <>
-                <Heading>{ADMIN.home.builds}</Heading>
-                <BarList
-                  rows={audience.builds.slice(0, TOP_BUILDS).map((build) => ({
-                    key: `${build.platform}-${build.version}`,
-                    label: build.version,
-                    hint: build.platform,
-                    value: build.count,
-                  }))}
-                  color={colors.textMuted}
-                  empty={ADMIN.home.languages.none}
-                />
-              </>
-            ) : null}
+            <LiveCard />
+            {doors}
+            {extras}
+            {dashboard}
           </>
         )}
-      </Screen>
+      </AdminScreenV3>
     </AdminGate>
   )
 }
@@ -320,13 +372,17 @@ const FUNNEL_WINDOWS: readonly { value: AdminFunnelWindow; label: string }[] = [
  * The whole card is the target rather than the chart alone: the number, the
  * chart and the window under it are three views of one set of people, so any
  * of them is a reasonable place to press to go and read their names.
+ *
+ * The one hue block on the screen, because it is the only thing here that
+ * changes while you look at it. Ink on the hue in both schemes, as everything
+ * on a hue is.
  */
 function LiveCard() {
   const styles = useStyles()
-  const { colors } = useTheme()
+  const { v3 } = useTheme()
   const pulse = useAdminPulse()
 
-  if (!pulse.data) return <Skeleton height={148} />
+  if (!pulse.data) return <Skeleton height={168} />
 
   const { online, history, windowMs } = pulse.data
   const recorded = history.filter((point) => point.online !== null)
@@ -334,18 +390,18 @@ function LiveCard() {
 
   return (
     <Pressable
-      style={styles.live}
+      style={({ pressed }) => [styles.live, pressed && styles.livePressed]}
       onPress={() => router.push('/(app)/admin/online')}
       accessibilityRole="button"
       accessibilityLabel={`${online} ${ADMIN.home.live.online}, ${ADMIN.home.live.seeWho}`}
     >
       <View style={styles.liveTop}>
         <View style={styles.badge}>
-          <View style={[styles.dot, { backgroundColor: colors.success }]} />
+          <View style={styles.dot} />
           <Text style={styles.badgeText}>{ADMIN.home.live.badge}</Text>
         </View>
         {recorded.length > 0 ? (
-          <Text style={styles.muted}>{ADMIN.home.live.peak(peak)}</Text>
+          <Text style={styles.liveCaption}>{ADMIN.home.live.peak(peak)}</Text>
         ) : null}
       </View>
 
@@ -353,18 +409,18 @@ function LiveCard() {
         <Text style={styles.hero}>{online.toLocaleString('en')}</Text>
         <Text style={styles.heroLabel}>{ADMIN.home.live.online}</Text>
       </View>
-      <Text style={styles.muted}>
+      <Text style={styles.liveCaption}>
         {ADMIN.home.live.window(Math.round(windowMs / 60000))} · {ADMIN.home.live.seeWho}
       </Text>
 
       <View style={styles.liveChart}>
         {recorded.length === 0 ? (
-          <Text style={styles.muted}>{ADMIN.home.live.warmingUp}</Text>
+          <Text style={styles.liveCaption}>{ADMIN.home.live.warmingUp}</Text>
         ) : (
           <>
             <Columns
               points={history.map((point) => ({ key: point.at, value: point.online }))}
-              color={colors.success}
+              color={v3.colors.ink}
               height={56}
               gap={1}
               accessibilityLabel={`${ADMIN.home.live.online}, ${ADMIN.home.live.peak(peak)}`}
@@ -422,25 +478,24 @@ function Funnel({ window }: { window: AdminFunnelWindow }) {
  * Pro that nobody pays for, so it is taken out.
  */
 function PaidShare({ tiers }: { tiers: AdminStatsDto['money']['tiers'] }) {
-  const styles = useStyles()
   const paid = tiers.pro - tiers.gifted
   const fraction = tiers.total > 0 ? paid / tiers.total : 0
   const label = ADMIN.home.paidShare(paid, tiers.total)
 
   return (
-    <View style={styles.meter}>
+    <AdminBlockV3>
       {/*
        * A meter rather than a stacked bar. Free is most of the ground here,
        * so the paid segment would be a sliver — and the question this answers
        * is one number.
        */}
       <ProgressBar value={fraction} height={6} accessibilityLabel={label} />
-      <Text style={styles.muted}>{label}</Text>
-    </View>
+      <AdminCaptionV3>{label}</AdminCaptionV3>
+    </AdminBlockV3>
   )
 }
 
-/** A chart and the two lines that say what it plots. */
+/** A chart and the two lines that say what it plots, on its own grey block. */
 function Chart({
   title,
   caption,
@@ -459,29 +514,18 @@ function Chart({
    * thirty columns a date under each is unreadable at any size.
    */
   return (
-    <View style={styles.chart}>
+    <AdminBlockV3>
       <View style={styles.chartHead}>
         <Text style={styles.chartTitle}>{title}</Text>
-        <Text style={styles.axisLabel}>{caption}</Text>
+        <Text style={styles.muted}>{caption}</Text>
       </View>
       <Columns
         points={points}
         {...(color ? { color } : {})}
         accessibilityLabel={`${title}, ${caption}`}
       />
-    </View>
+    </AdminBlockV3>
   )
-}
-
-function Heading({ children }: { children: string }) {
-  const styles = useStyles()
-  return <Text style={styles.heading}>{children}</Text>
-}
-
-/** The number beside a queue row, in ink only when there is something in it. */
-function QueueCount({ count: n }: { count: number }) {
-  const styles = useStyles()
-  return <Text style={[styles.queueCount, n > 0 && styles.queueCountOpen]}>{n}</Text>
 }
 
 /** A day key as one column. */
@@ -498,67 +542,40 @@ function count(value: number | undefined): string {
   return (value ?? 0).toLocaleString('en')
 }
 
-const useStyles = makeStyles((theme) => ({
-  loading: { gap: 12, marginTop: 16 },
-  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
-  group: { marginTop: 16 },
-  heading: {
-    marginTop: 28,
-    marginBottom: 10,
-    fontSize: 13,
-    fontWeight: '700',
-    color: theme.colors.textMuted,
-    textTransform: 'uppercase',
-  },
-  subheading: {
-    marginTop: 16,
-    marginBottom: 8,
-    fontSize: 13,
-    fontWeight: '600',
-    color: theme.colors.textMuted,
-  },
-  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: 20 },
-  line: { fontSize: 15, color: theme.colors.text, marginBottom: 4 },
-  muted: { fontSize: 13, color: theme.colors.textMuted },
+const useStyles = makeStyles(({ v3 }) => ({
+  loading: { gap: v3.space[12] },
+  split: { alignItems: 'flex-start', flexDirection: 'row', gap: v3.space[24] },
+  side: { gap: v3.space[10], width: 400 },
+  main: { flex: 1, gap: v3.space[10], minWidth: 0 },
+  line: { ...v3.type.callout, color: v3.colors.fg, paddingHorizontal: v3.space[4] },
+  muted: { ...v3.type.caption, color: v3.colors.muted },
 
-  // The one panel on this screen that is a surface. Everything else sits on
-  // the ground with dividers between, which is v3's rule; the live card is
-  // lifted because it is the only thing here that changes while you look at it.
   live: {
-    backgroundColor: theme.colors.fill,
-    borderRadius: theme.radius.lg,
-    gap: 4,
-    marginTop: 16,
-    padding: 16,
+    backgroundColor: v3.hues.mint,
+    borderRadius: v3.radius.block,
+    gap: v3.space[4],
+    paddingHorizontal: v3.space[20],
+    paddingVertical: v3.space[16],
   },
+  livePressed: { opacity: 0.85 },
   liveTop: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
-  badge: { alignItems: 'center', flexDirection: 'row', gap: 6 },
-  dot: { borderRadius: 4, height: 8, width: 8 },
-  badgeText: {
-    color: theme.colors.textMuted,
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 0.6,
-  },
-  liveValue: { alignItems: 'baseline', flexDirection: 'row', gap: 8 },
+  badge: { alignItems: 'center', flexDirection: 'row', gap: v3.space[6] },
+  dot: { backgroundColor: v3.colors.ink, borderRadius: 4, height: 8, width: 8 },
+  badgeText: { ...v3.type.label, color: v3.colors.ink, letterSpacing: 0.6 },
+  liveValue: { alignItems: 'baseline', flexDirection: 'row', gap: v3.space[8] },
   // The one hero figure on the screen, and the only number drawn this big.
-  hero: { ...theme.font.title, color: theme.colors.text, fontSize: 44, lineHeight: 52 },
-  heroLabel: { color: theme.colors.textMuted, fontSize: 15, fontWeight: '600' },
-  liveChart: { marginTop: 12 },
-  axis: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 },
-  axisLabel: { color: theme.colors.textFaint, fontSize: 11 },
+  hero: { ...v3.type.display, color: v3.colors.ink },
+  heroLabel: { ...v3.type.button, color: v3.colors.ink },
+  liveCaption: { ...v3.type.caption, color: v3.colors.ink },
+  liveChart: { marginTop: v3.space[10] },
+  axis: { flexDirection: 'row', justifyContent: 'space-between', marginTop: v3.space[6] },
+  axisLabel: { ...v3.type.label, color: v3.colors.ink },
 
-  chart: { marginTop: 18 },
   chartHead: {
     alignItems: 'baseline',
     flexDirection: 'row',
+    gap: v3.space[8],
     justifyContent: 'space-between',
-    marginBottom: 10,
   },
-  chartTitle: { color: theme.colors.text, fontSize: 14, fontWeight: '700' },
-
-  meter: { gap: 8, marginTop: 16 },
-
-  queueCount: { color: theme.colors.textFaint, fontSize: 15, fontVariant: ['tabular-nums'] },
-  queueCountOpen: { color: theme.colors.text, fontWeight: '700' },
+  chartTitle: { ...v3.type.button, color: v3.colors.fg, flexShrink: 1 },
 }))

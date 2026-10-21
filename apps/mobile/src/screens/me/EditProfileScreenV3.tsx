@@ -40,6 +40,8 @@ import { LevelBars } from '../../components/ui/LevelBars'
 import { Screen } from '../../components/ui/Screen'
 import { Skeleton } from '../../components/ui/Skeleton'
 import { useChangeAvatar } from '../../hooks/useChangeAvatar'
+import { DefaultAvatarPickerSheet } from '../../components/me/DefaultAvatarPickerSheet'
+import { ownDefaultAvatar, ownDefaultAvatarRev } from '../../lib/defaultAvatar'
 import { useProfilePhotoUploads } from '../../hooks/useProfilePhotoUploads'
 import { useScreenInteractive } from '../../hooks/useScreenInteractive'
 import {
@@ -124,6 +126,7 @@ function EditProfileFormV3({ profile }: { profile: MeProfile }) {
   const removePhoto = useRemovePhoto()
   const reorderPhotos = useReorderPhotos()
   const uploads = useProfilePhotoUploads(onUploadError)
+  const [facePicker, setFacePicker] = useState(false)
 
   const [displayName, setDisplayName] = useState(profile.displayName ?? '')
   const [bio, setBio] = useState(profile?.bio ?? '')
@@ -232,6 +235,7 @@ function EditProfileFormV3({ profile }: { profile: MeProfile }) {
               url={profile.avatarUrl}
               name={profile.displayName}
               seed={profile._id}
+              defaultAvatarRev={ownDefaultAvatarRev(profile)}
               size={84}
             />
             <View style={styles.avatarText}>
@@ -244,9 +248,29 @@ function EditProfileFormV3({ profile }: { profile: MeProfile }) {
                 style={styles.auto}
                 onPress={() => void avatar.change()}
               />
+              {/* Only while the drawn face is the one on show. */}
+              {profile.avatarUrl ? null : (
+                <Button
+                  label={t('avatar.default.changeFace')}
+                  icon="user"
+                  variant="secondary"
+                  size="small"
+                  style={styles.auto}
+                  onPress={() => setFacePicker(true)}
+                />
+              )}
               <Text style={styles.onHue}>{t('editProfile.holdPhotoHint')}</Text>
             </View>
           </View>
+          {profile.avatarUrl ? null : (
+            <DefaultAvatarPickerSheet
+              visible={facePicker}
+              seed={profile._id}
+              name={profile.displayName}
+              current={ownDefaultAvatar(profile)}
+              onClose={() => setFacePicker(false)}
+            />
+          )}
 
           <View style={styles.gallery}>
             <DraggablePhotos
@@ -496,7 +520,9 @@ const useStyles = makeStyles(({ v3 }) => ({
   pressed: { opacity: 0.7 },
   block: { gap: v3.space[6] },
   blockHead: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
-  label: { ...v3.type.buttonSmall, color: v3.colors.fg },
+  // Inset by `FieldV3`'s own 4, so these labels and notes line up with the
+  // Display name, Pronouns and About you labels between them.
+  label: { ...v3.type.buttonSmall, color: v3.colors.fg, paddingHorizontal: v3.space[4] },
   readOnly: {
     alignItems: 'center',
     backgroundColor: v3.colors.surface,
@@ -511,7 +537,12 @@ const useStyles = makeStyles(({ v3 }) => ({
   // Today's dimmed field while a cooldown runs, with the lock where the action was.
   locked: { opacity: 0.6, paddingEnd: v3.space[16] },
   readOnlyValue: { ...v3.type.body, color: v3.colors.fg, flex: 1, fontWeight: '600' },
-  note: { ...v3.type.caption, color: v3.colors.muted, lineHeight: 18 },
+  note: {
+    ...v3.type.caption,
+    color: v3.colors.muted,
+    lineHeight: 18,
+    paddingHorizontal: v3.space[4],
+  },
   group: { backgroundColor: v3.colors.surface, borderRadius: v3.radius.tile, overflow: 'hidden' },
   divided: { borderTopColor: v3.colors.line, borderTopWidth: 1 },
   languageRow: {

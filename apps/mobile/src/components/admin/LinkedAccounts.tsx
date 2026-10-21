@@ -13,11 +13,15 @@ import { chooseAlert, confirmAlert } from '../../lib/alert'
 import { makeStyles } from '../../lib/theme'
 import { showToast } from '../../lib/toast'
 import { Button } from '../ui/Button'
-import { Callout } from '../ui/Callout'
-import { Card } from '../ui/Card'
 import { Checkbox } from '../ui/Checkbox'
-import { Chip } from '../ui/Chip'
-import { FormField } from '../ui/FormField'
+import {
+  AdminCaptionV3,
+  AdminFieldV3,
+  AdminHeadingV3,
+  AdminNoteV3,
+  AdminRowsV3,
+  AdminTagV3,
+} from './AdminKitV3'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -80,17 +84,19 @@ export function LinkedAccounts({ userId }: { userId: string }) {
 
   return (
     <>
-      <Text style={styles.heading}>{ADMIN.linked.title}</Text>
-      <Text style={styles.hint}>{ADMIN.linked.hint(ADMIN_LINK_NETWORK_DAYS)}</Text>
+      <AdminHeadingV3
+        title={ADMIN.linked.title}
+        hint={ADMIN.linked.hint(ADMIN_LINK_NETWORK_DAYS)}
+      />
 
-      {linked.isPending ? <Text style={styles.muted}>{ADMIN.common.loading}</Text> : null}
+      {linked.isPending ? <AdminCaptionV3>{ADMIN.common.loading}</AdminCaptionV3> : null}
       {linked.isError ? (
-        <Callout tone="error">
-          <Text style={styles.calloutBody}>{ADMIN.common.failed}</Text>
-        </Callout>
+        <AdminNoteV3 tone="danger" icon="alert-circle">
+          {ADMIN.common.failed}
+        </AdminNoteV3>
       ) : null}
       {linked.data && items.length === 0 ? (
-        <Text style={styles.muted}>{ADMIN.linked.empty}</Text>
+        <AdminCaptionV3>{ADMIN.linked.empty}</AdminCaptionV3>
       ) : null}
 
       {items.length > 0 ? (
@@ -104,7 +110,7 @@ export function LinkedAccounts({ userId }: { userId: string }) {
               <Text style={styles.row}>{ADMIN.linked.selectAll}</Text>
             </Checkbox>
           ) : null}
-          <Card>
+          <AdminRowsV3>
             {items.map((item) => (
               <LinkedRow
                 key={item.userId}
@@ -113,14 +119,14 @@ export function LinkedAccounts({ userId }: { userId: string }) {
                 onToggle={(on) => toggle(item.userId, on)}
               />
             ))}
-          </Card>
+          </AdminRowsV3>
           {linked.data?.truncated ? (
-            <Text style={styles.muted}>{ADMIN.linked.truncated(items.length)}</Text>
+            <AdminCaptionV3>{ADMIN.linked.truncated(items.length)}</AdminCaptionV3>
           ) : null}
 
           {selectable.length > 0 ? (
             <>
-              <FormField
+              <AdminFieldV3
                 label={ADMIN.reports.days}
                 value={days}
                 onChangeText={setDays}
@@ -172,35 +178,38 @@ function LinkedRow({
         onPress={() => router.push(`/(app)/admin/users?q=${encodeURIComponent(item.handle)}`)}
         style={({ pressed }) => [styles.linkedBody, pressed && styles.pressed]}
       >
-        <Text style={styles.row}>
+        <Text style={styles.name}>
           {item.displayName} @{item.handle}
         </Text>
         <Text style={styles.muted}>{details.join(' · ')}</Text>
+        {/* A shared device is the strong link, so it is the one with a hue;
+            a network is a lead, in the grey; a suspension is already wrong. */}
         <View style={styles.chips}>
-          {item.via.includes('device') ? <Chip label={ADMIN.linked.device} tone="accent" /> : null}
-          {item.via.includes('network') ? <Chip label={ADMIN.linked.network} /> : null}
-          {item.suspended ? <Chip label={ADMIN.linked.suspended} tone="streak" /> : null}
+          {item.via.includes('device') ? (
+            <AdminTagV3 label={ADMIN.linked.device} hue="tangerine" />
+          ) : null}
+          {item.via.includes('network') ? <AdminTagV3 label={ADMIN.linked.network} /> : null}
+          {item.suspended ? <AdminTagV3 label={ADMIN.linked.suspended} danger /> : null}
         </View>
       </Pressable>
     </View>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  heading: {
-    marginTop: 24,
-    marginBottom: 4,
-    fontSize: 13,
-    fontWeight: '700',
-    color: theme.colors.textMuted,
-    textTransform: 'uppercase',
+const useStyles = makeStyles(({ v3 }) => ({
+  muted: { ...v3.type.caption, color: v3.colors.muted },
+  row: { ...v3.type.callout, color: v3.colors.fg },
+  name: { ...v3.type.button, color: v3.colors.fg },
+  linkedRow: {
+    alignItems: 'flex-start',
+    borderTopColor: v3.colors.line,
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    gap: v3.space[12],
+    paddingHorizontal: v3.space[14],
+    paddingVertical: v3.space[12],
   },
-  hint: { fontSize: 13, color: theme.colors.textMuted, marginBottom: 8 },
-  muted: { fontSize: 14, color: theme.colors.textMuted },
-  row: { fontSize: 14, color: theme.colors.text, lineHeight: 22 },
-  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
-  linkedRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 12, paddingVertical: 8 },
-  linkedBody: { flex: 1, gap: 4 },
+  linkedBody: { flex: 1, gap: v3.space[4] },
   pressed: { opacity: 0.6 },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[6] },
 }))

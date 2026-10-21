@@ -362,6 +362,12 @@ export default function FiltersScreen() {
             values={[ageLow, ageHigh]}
             onChange={(next) => setAges(next)}
             accessibilityLabel={t('filters.age')}
+            // Drawn by the redesign's slider only; the current one ignores it.
+            scaleLabels={[
+              String(AGE_SLIDER.min),
+              t('filters.ageScaleOpen', { max: AGE_SLIDER.max }),
+            ]}
+            thumbLabels={[t('filters.ageYoungest'), t('filters.ageOldest')]}
           />
         </View>
 

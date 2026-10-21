@@ -1,9 +1,10 @@
-import { generatedAvatarUrl } from '@langx/shared'
 import { Image } from 'expo-image'
-import { useState, type ReactNode } from 'react'
-import { Text, View } from 'react-native'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { PixelRatio, Text, View } from 'react-native'
 import { useV3Home } from '../../hooks/useV3Home'
 import { API_URL } from '../../lib/apiUrl'
+import { avatarSource, drawnFaceRetryIn } from '../../lib/defaultAvatar'
+import { v3HomeLatched } from '../../lib/v3Home'
 import { artForTone } from '../../lib/frameArt/palettes'
 // `layout` stays a direct import: it is scheme-independent, and a default
 // parameter value is evaluated before any hook could have run.
@@ -19,6 +20,15 @@ interface AvatarProps {
    * screen, because it is generated from this and nothing else.
    */
   seed?: string | undefined
+  /**
+   * Names the drawn face (`defaultAvatarRev` on the DTOs), so the v3 picture
+   * is cached for good and a list can keep two equal faces apart — see
+   * `dedupeGrounds`. Without it the server looks the face up from `seed`.
+   * Ignored with the flag off and whenever there is a photo.
+   */
+  defaultAvatarRev?: string | undefined
+  /** Caps the drawn face's pixels; see `avatarSource`. For grids of many faces. */
+  maxPixels?: number | undefined
   size?: number
   online?: boolean
   /**
@@ -78,12 +88,15 @@ function initialsOf(name: string): string {
  * letters — is kept for exactly those cases.
  *
  * `expo-image` rather than react-native's `Image`, because the generated face
- * is an SVG and RN's own cannot draw one on iOS or Android.
+ * is an SVG and RN's own cannot draw one on iOS or Android. (The v3 face is a
+ * PNG, which either could; expo-image stays for its disk cache.)
  */
 export function Avatar({
   url,
   name,
   seed,
+  defaultAvatarRev,
+  maxPixels,
   size = layout.avatar,
   online = false,
   frame,
@@ -93,6 +106,11 @@ export function Avatar({
   const { colors } = useTheme()
   const styles = useStyles()
   const [failed, setFailed] = useState(false)
+  // A drawn face that failed gets one more try (`drawnFaceRetryIn`); the
+  // attempt is the Image's key, so the retry is a fresh load.
+  const [attempt, setAttempt] = useState(0)
+  const retry = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  useEffect(() => () => clearTimeout(retry.current), [])
   const dimension = { borderRadius: size / 2, height: size, width: size }
   const fill = avatarFill(colors, name)
 
@@ -100,8 +118,21 @@ export function Avatar({
    * The uploaded photo wins. Below it the generated face, and only if both are
    * missing — or the image never arrived, which is what `failed` records — the
    * initials.
+   *
+   * Under `flags.v3Home` the face is v3's drawn portrait, a PNG sized for this
+   * screen. The flag is read from the launch latch, not `useV3Home`: a hook
+   * here would be a config subscription per face in every list.
    */
-  const source = url ?? (seed ? generatedAvatarUrl(API_URL, seed) : undefined)
+  const source = avatarSource({
+    url,
+    seed,
+    size,
+    rev: defaultAvatarRev,
+    v3: v3HomeLatched(),
+    pixelRatio: PixelRatio.get(),
+    apiBase: API_URL,
+    maxPixels,
+  })
 
   const inner = (
     // Sized rather than left to stretch: the online dot is positioned
@@ -113,7 +144,16 @@ export function Avatar({
           source={{ uri: source }}
           style={[styles.image, dimension]}
           contentFit="cover"
-          onError={() => setFailed(true)}
+          key={attempt}
+          onError={() => {
+            const wait = drawnFaceRetryIn(source, attempt)
+            if (wait === null) {
+              setFailed(true)
+              return
+            }
+            clearTimeout(retry.current)
+            retry.current = setTimeout(() => setAttempt((n) => n + 1), wait)
+          }}
         />
       ) : (
         <View style={[styles.fallback, dimension, { backgroundColor: fill }]}>

@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useReduceMotion } from '../hooks/useReduceMotion'
+import { useV3Home } from '../hooks/useV3Home'
 import { useT, type MessageKey } from '../i18n'
 import { track } from '../lib/analytics'
 import { makeStyles } from '../lib/theme'
@@ -80,7 +81,10 @@ const ROUND_AWAY = {
  * are the catalogue — this file is the paint.
  */
 export function TourHost() {
-  const styles = useStyles()
+  const v3Look = useV3Home()
+  const currentStyles = useStyles()
+  const v3Styles = useStylesV3()
+  const styles = v3Look ? v3Styles : currentStyles
   const t = useT()
   const screen = useWindowDimensions()
   const insets = useSafeAreaInsets()
@@ -327,6 +331,9 @@ export function TourHost() {
                 <Button
                   label={last ? t('tour.done') : t('tour.next')}
                   onPress={goNext}
+                  // v3's blue: the main action that is not a commitment, as
+                  // Next is on the intro. The yellow stays the screen's below.
+                  variant={v3Look ? 'blue' : 'primary'}
                   size="small"
                   // `Button` spans its column by default, which is wrong in a
                   // row — its own doc comment says to pass this here.
@@ -364,6 +371,36 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
     marginTop: spacing.sm,
   },
   skip: { color: colors.textMuted, fontSize: 15, fontWeight: '600' },
+  next: { width: 'auto' },
+  pressed: { opacity: 0.6 },
+}))
+
+/*
+ * No board draws the tour. The bubble is v3's coach card lifted onto the
+ * scrim — the ground colour rather than the grey block, because it stands on
+ * the dim and not on a screen — with the counter in the label face, the
+ * title in Headline and the sentence in Callout. The ring is the blue, the
+ * colour v3 gives "look here, nothing is decided yet".
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  dim: { backgroundColor: v3.colors.scrim, position: 'absolute' },
+  ring: { borderColor: v3.colors.blue, borderWidth: 2, position: 'absolute' },
+  bubble: {
+    backgroundColor: v3.colors.bg,
+    borderRadius: v3.radius.badge,
+    position: 'absolute',
+  },
+  bubbleInner: { gap: v3.space[8], padding: v3.space[16] },
+  counter: { ...v3.type.label, color: v3.colors.muted },
+  title: { ...v3.type.headline, color: v3.colors.fg },
+  body: { ...v3.type.callout, color: v3.colors.fg },
+  actions: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: v3.space[8],
+  },
+  skip: { ...v3.type.buttonSmall, color: v3.colors.muted },
   next: { width: 'auto' },
   pressed: { opacity: 0.6 },
 }))

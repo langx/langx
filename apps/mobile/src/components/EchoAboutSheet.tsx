@@ -8,7 +8,7 @@ import { makeStyles, useTheme } from '../lib/theme'
 /** One column per drawn point, across the week the chart covers. */
 const COLUMNS = 40
 const DAYS = 7
-const CHART_HEIGHT = 46
+export const CHART_HEIGHT = 46
 
 /**
  * What is still remembered at `day`, given the days it was reviewed on and how
@@ -32,12 +32,12 @@ function curve(reviews: number[], stability: number[]): number[] {
 }
 
 /** Met once and never again: gone before the week is out. */
-const WITHOUT = curve([0], [0.55])
+export const WITHOUT = curve([0], [0.55])
 /** The same word, reviewed on the first, second and fourth day. */
-const WITH = curve([0, 1, 3], [0.55, 2, 12])
+export const WITH = curve([0, 1, 3], [0.55, 2, 12])
 
 /** The real ladder a card climbs on Good, from `SRS_RULES`. */
-const STEPS: MessageKey[] = [
+export const STEPS: MessageKey[] = [
   'echo.aboutStep10m',
   'echo.aboutStep1d',
   'echo.aboutStep3d',
@@ -46,7 +46,7 @@ const STEPS: MessageKey[] = [
 ]
 
 /** The three sentences that say why this works, each with its own tick. */
-const REASONS: MessageKey[] = ['echo.aboutRecall', 'echo.aboutLittle', 'echo.aboutYours']
+export const REASONS: MessageKey[] = ['echo.aboutRecall', 'echo.aboutLittle', 'echo.aboutYours']
 
 function Curve({ points, color }: { points: number[]; color: string }) {
   const styles = useStyles()
