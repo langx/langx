@@ -7,7 +7,7 @@ import type { MessageKey } from '../i18n/runtime'
 import { track } from '../lib/analytics'
 import { makeStyles, useTheme } from '../lib/theme'
 import type { TipId, TipSlot } from '../lib/tips'
-import { IconButton } from './ui/IconButton'
+import { TipV3 } from './TipV3'
 import { useV3Home } from '../hooks/useV3Home'
 
 interface TipProps {
@@ -73,38 +73,28 @@ export function Tip({ slot, spaced = true }: TipProps) {
   // next one into its place, which would read as the dismissal having failed.
   if (!id || sentAway) return null
   const body = `tips.${id}` as MessageKey
+  const tipId = id
+
+  function dismiss(): void {
+    setSentAway(true)
+    tips.dismiss(tipId)
+    track({ name: 'tip_dismissed', properties: { tip: tipId, slot } })
+  }
+
+  if (v3Look) return <TipV3 body={t(body)} spaced={spaced} onDismiss={dismiss} />
 
   return (
     <View style={[styles.root, spaced && styles.spaced]}>
       <Text style={styles.body}>{t(body)}</Text>
-      {v3Look ? (
-        <IconButton
-          icon="x"
-          iconSize={16}
-          color={colors.accent}
-          accessibilityLabel={t('tips.dismiss')}
-          onPress={() => {
-            setSentAway(true)
-            tips.dismiss(id)
-            track({ name: 'tip_dismissed', properties: { tip: id, slot } })
-          }}
-          hitSlop={12}
-        />
-      ) : (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('tips.dismiss')}
-          onPress={() => {
-            setSentAway(true)
-            tips.dismiss(id)
-            track({ name: 'tip_dismissed', properties: { tip: id, slot } })
-          }}
-          hitSlop={12}
-          style={({ pressed }) => [styles.close, pressed && styles.pressed]}
-        >
-          <Feather name="x" size={16} color={colors.accent} />
-        </Pressable>
-      )}
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t('tips.dismiss')}
+        onPress={dismiss}
+        hitSlop={12}
+        style={({ pressed }) => [styles.close, pressed && styles.pressed]}
+      >
+        <Feather name="x" size={16} color={colors.accent} />
+      </Pressable>
     </View>
   )
 }

@@ -1,4 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
+import { useIsFocused } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
 import { useState } from 'react'
 import { Animated, ScrollView, Text, View } from 'react-native'
 import { ComposerHint } from '../../components/ComposerHint'
@@ -33,6 +35,7 @@ export function NewChatScreenV3() {
   const { v3 } = useTheme()
   const t = useT()
   const keyboardInset = useKeyboardInset()
+  const focused = useIsFocused()
   const {
     partnerId,
     from,
@@ -56,7 +59,16 @@ export function NewChatScreenV3() {
       : []
 
   return (
-    <Screen fluid style={styles.screen} ground={v3.colors.bg}>
+    /*
+     * The band runs up behind the status bar, as the thread's does since it
+     * learned to (`underStatusBar` on both): this screen is replaced by that
+     * thread on the first send, and a band that starts a status bar lower
+     * here would drop into place at the hand-over. This route is always
+     * pushed full screen — no panel draws it — so there is no `embedded` case.
+     */
+    <Screen fluid style={styles.screen} ground={v3.colors.bg} underStatusBar>
+      {/* Dark glyphs over the light hue while focused, as on the thread; see there. */}
+      {focused && partner ? <StatusBar style="dark" /> : null}
       {/* Padded for the keyboard the same way the thread is — see `useKeyboardInset`. */}
       <Animated.View style={[styles.avoid, { paddingBottom: keyboardInset }]}>
         <ThreadHeaderV3
@@ -65,6 +77,7 @@ export function NewChatScreenV3() {
           typing={false}
           onBack={() => goBackTo('/(app)/(tabs)/discover', from)}
           onOpenProfile={() => partner && openProfile(partner.handle, here)}
+          underStatusBar
         />
 
         <ScrollView

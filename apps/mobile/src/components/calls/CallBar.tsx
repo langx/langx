@@ -1,10 +1,12 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Pressable, Text, View } from 'react-native'
 import { useCallClock, useCallState } from '../../hooks/useCalls'
+import { useV3Home } from '../../hooks/useV3Home'
 import { useT } from '../../i18n'
 import { callStatusKey } from '../../lib/calls/callLabels'
 import { setCallMinimized } from '../../lib/calls/session'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { CallBarV3 } from './CallBarV3'
 
 /**
  * The call, put away.
@@ -31,11 +33,13 @@ export function CallBar() {
   const t = useT()
   const styles = useStyles()
   const { colors } = useTheme()
+  const v3Look = useV3Home()
 
   if (!call || !call.minimized) return null
 
   const statusKey = callStatusKey(call)
   const status = statusKey ? t(statusKey, { name: call.peer.displayName }) : (clock ?? '')
+  if (v3Look) return <CallBarV3 call={call} status={status} />
 
   return (
     <Pressable

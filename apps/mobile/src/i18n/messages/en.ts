@@ -2511,6 +2511,9 @@ export const en = {
     showTourBody: 'Walk through the Discovery screen again, one step at a time.',
     rateApp: 'Rate LangX',
     exportData: 'Export my data',
+    exportDataPreparing: 'Preparing your file…',
+    exportDataFailed: 'Couldn’t export your data',
+    exportDataSaved: 'Saved your data as {file}',
     deleteAccount: 'Delete account',
     deleteAccountBody: 'Signing back in within {days} days cancels it.',
     deleteConfirmTitle: 'Delete your account',
@@ -3029,6 +3032,10 @@ export const en = {
     columnNow: 'Right now',
     columnEver: 'Longest ever',
     columnDays: 'Days in a row',
+    /** Under "You" on the token board's pinned row: the period it ranks. */
+    placeWeek: 'Your place this week',
+    placeMonth: 'Your place this month',
+    placeYear: 'Your place this year',
     /** A row, read aloud. `amount` is `count` formatted for the locale; `name` may be "You". */
     rowTokens: { one: '{rank}. {name}, {amount} token', other: '{rank}. {name}, {amount} tokens' },
     rowDays: {
@@ -3216,6 +3223,7 @@ export const en = {
     ringing: 'Ringing…',
     connecting: 'Connecting…',
     reconnecting: 'Reconnecting…',
+    reconnectingHint: 'Hold on. The call picks up again by itself.',
     answer: 'Answer',
     answerNoCamera: 'Answer without camera',
     decline: 'Decline',
@@ -3230,6 +3238,13 @@ export const en = {
     returnToCall: 'Return to call',
     peerMuted: '{name} is muted',
     peerCameraOff: 'Camera off',
+    /** Over the feedback choices on a call's closing screen, in v3. */
+    howWasIt: 'How was it?',
+    /** The short words under a v3 call tile; the tile is read aloud by the full label. */
+    tile: {
+      camera: 'Camera',
+      flip: 'Switch',
+    },
     ended: 'Call ended',
     noAnswer: 'No answer',
     busy: '{name} can’t take a call right now',
