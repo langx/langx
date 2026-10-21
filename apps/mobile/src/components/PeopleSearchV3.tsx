@@ -1,4 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
+import { useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, Text, TextInput, View } from 'react-native'
 import type { HandleSearchResult } from '@langx/shared'
 import { useLocale, useT } from '../i18n'
@@ -6,6 +7,7 @@ import { makeStyles, useTheme } from '../lib/theme'
 import { OfficialMark } from './OfficialMark'
 import { Avatar } from './ui/Avatar'
 import { ICON_BUTTON_TARGET } from './ui/IconButton'
+import { PressableScale } from './ui/PressableScale'
 
 /**
  * The open half of `PeopleSearch` in the redesign's look, behind
@@ -24,18 +26,32 @@ export function PeopleSearchFieldV3({
   value,
   onChangeText,
   onClose,
+  fetching,
 }: {
   value: string
   onChangeText: (next: string) => void
   onClose: () => void
+  /** A search is out: the spinner takes the glyph's place, so nothing moves. */
+  fetching: boolean
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
+  // The ink edge while typing, as `FieldV3` draws it: always there, in the
+  // fill's own colour at rest, so gaining it moves nothing.
+  const [focused, setFocused] = useState(false)
   return (
-    <View style={styles.field}>
-      <Feather name="search" size={v3.icon.md} color={v3.colors.muted} />
+    <View style={[styles.field, focused && styles.fieldFocused]}>
+      <View style={styles.glyph}>
+        {fetching ? (
+          <ActivityIndicator size="small" color={v3.colors.muted} />
+        ) : (
+          <Feather name="search" size={v3.icon.md} color={v3.colors.muted} />
+        )}
+      </View>
       <TextInput
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
         value={value}
         onChangeText={onChangeText}
         placeholder={t('discover.searchPlaceholder')}
@@ -46,27 +62,25 @@ export function PeopleSearchFieldV3({
         returnKeyType="search"
         style={styles.input}
       />
-      <Pressable
+      <PressableScale
         accessibilityRole="button"
         accessibilityLabel={t('common.cancel')}
         onPress={onClose}
         hitSlop={8}
-        style={({ pressed }) => [styles.close, pressed && styles.pressed]}
+        style={styles.close}
       >
         <Feather name="x" size={v3.icon.lg} color={v3.colors.fg} />
-      </Pressable>
+      </PressableScale>
     </View>
   )
 }
 
 export function PeopleSearchResultsV3({
   items,
-  fetching,
   none,
   onOpen,
 }: {
   items: readonly HandleSearchResult[]
-  fetching: boolean
   /** Whether a settled search found nobody — `PeopleSearch` decides. */
   none: boolean
   onOpen: (handle: string) => void
@@ -81,9 +95,6 @@ export function PeopleSearchResultsV3({
       keyExtractor={(result) => result._id}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.results}
-      ListHeaderComponent={
-        fetching ? <ActivityIndicator color={v3.colors.muted} style={styles.spinner} /> : null
-      }
       ListEmptyComponent={none ? <Text style={styles.none}>{t('discover.searchNone')}</Text> : null}
       renderItem={({ item: result, index }) => (
         <Pressable
@@ -126,7 +137,9 @@ const useStyles = makeStyles(({ v3 }) => ({
   field: {
     alignItems: 'center',
     backgroundColor: v3.colors.surface,
+    borderColor: v3.colors.surface,
     borderRadius: v3.radius.pill,
+    borderWidth: 2,
     flex: 1,
     flexDirection: 'row',
     gap: v3.space[10],
@@ -134,9 +147,13 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingEnd: v3.space[4],
     paddingStart: v3.space[16],
   },
+  fieldFocused: { borderColor: v3.colors.fg },
+  // The glyph's box, so the spinner that stands in for it takes the same room.
+  glyph: { alignItems: 'center', height: v3.icon.md, justifyContent: 'center', width: v3.icon.md },
   // `paddingVertical: 0`: Android's own TextInput padding would push the
-  // words off the glyph beside them.
-  input: { ...v3.type.body, color: v3.colors.fg, flex: 1, paddingVertical: 0 },
+  // words off the glyph beside them. `outlineWidth: 0`: on the web the
+  // browser drew its own focus ring inside the pill, over the edge above.
+  input: { ...v3.type.body, color: v3.colors.fg, flex: 1, outlineWidth: 0, paddingVertical: 0 },
   close: {
     alignItems: 'center',
     borderRadius: v3.radius.pill,
@@ -144,9 +161,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     justifyContent: 'center',
     width: ICON_BUTTON_TARGET,
   },
-  pressed: { opacity: 0.7 },
   results: { paddingBottom: v3.space[16], paddingTop: v3.space[4] },
-  spinner: { marginVertical: v3.space[16] },
   row: {
     alignItems: 'center',
     backgroundColor: v3.colors.surface,
