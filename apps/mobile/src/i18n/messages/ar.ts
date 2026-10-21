@@ -2418,6 +2418,8 @@ export const ar: Localized<EnMessages> = {
     capOverGrandfathered:
       'لديك بالفعل أكثر مما تتّسع له خطتك. يمكنك تغييرها أو إزالتها، لكن لا يمكنك إضافة أخرى.',
     changeHint: 'اضغط على لغة لتغييرها.',
+    allLanguages: 'كل اللغات، من الألف إلى الياء',
+    levelGroup: 'مستواك في {language}',
     pausedNote: 'متوقفة مؤقتًا في «استكشاف» على الخطة المجانية. تُحتسب من جديد مع Pro.',
     saveFailed: 'لم يُحفظ. لم يتغيّر شيء.',
   },
@@ -2458,7 +2460,6 @@ export const ar: Localized<EnMessages> = {
     title: 'مطبخنا',
     intro: 'حيث يُصنع LangX، وكل من يصنعه.',
     dataCredit: 'أسماء الأماكن من GeoNames، بترخيص CC BY 4.0.',
-    stickerCredit: 'بعض الملصقات من Microsoft Fluent Emoji بترخيص MIT.',
     footer: 'مبني في العلن، ممن يستخدمونه.',
     contributors: 'المساهمون',
     fundamentals: 'كل من ساهم',
@@ -3300,9 +3301,9 @@ export const ar: Localized<EnMessages> = {
 
   stickerPack: {
     taglinePaper: 'تحيات وردود سريعة، مقصوصة من ورق ملوّن.',
-    taglineStarter: 'لكل يوم: مرحبًا، أنا أسمعك، فهمت، أحسنت.',
-    taglinePractice: 'للتدريب نفسه: أبطأ، مرة أخرى، لقد نجحنا.',
-    taglinePixel: 'رسوم صغيرة للارتقاء معًا مستوى بعد مستوى.',
+    taglineStarter: 'بيب، فقاعة كلام صغيرة، تقول ما نقوله كل يوم: مرحبًا، أنا أسمعك، شكرًا.',
+    taglinePractice: 'شارات من اللبّاد للتدريب نفسه: أبطأ، مرة أخرى، لقد نجحنا.',
+    taglinePixel: 'رسوم من الخرز الملوّن للارتقاء معًا مستوى بعد مستوى.',
     count: {
       zero: '{count} ملصق',
       one: 'ملصق واحد',
@@ -3375,7 +3376,7 @@ export const ar: Localized<EnMessages> = {
     practiceHourglass: 'ساعة رملية',
     practiceBullseye: 'إصابة الهدف',
     pixelLevelup: 'مستوى جديد',
-    pixelCoin: 'عملة',
+    pixelCoin: 'حياة إضافية',
     pixelCheckpoint: 'نقطة تفتيش',
     pixelFlame: 'لهب',
     pixelKey: 'مفتاح',
@@ -3463,6 +3464,9 @@ export const ar: Localized<EnMessages> = {
     columnNow: 'الآن',
     columnEver: 'الأطول على الإطلاق',
     columnDays: 'أيام متتالية',
+    placeWeek: 'مكانك هذا الأسبوع',
+    placeMonth: 'مكانك هذا الشهر',
+    placeYear: 'مكانك هذا العام',
     rowTokens: {
       zero: '{rank}. {name}، {amount} توكن',
       one: '{rank}. {name}، {amount} توكن',
@@ -4026,6 +4030,7 @@ export const ar: Localized<EnMessages> = {
     ringing: 'يرنّ…',
     connecting: 'جارٍ التوصيل…',
     reconnecting: 'جارٍ إعادة الاتصال…',
+    reconnectingHint: 'انتظر قليلًا. ستُستأنف المكالمة تلقائيًا.',
     answer: 'ردّ',
     answerNoCamera: 'ردّ بدون كاميرا',
     decline: 'رفض',
@@ -4040,6 +4045,11 @@ export const ar: Localized<EnMessages> = {
     returnToCall: 'العودة إلى المكالمة',
     peerMuted: 'ميكروفون {name} مكتوم',
     peerCameraOff: 'الكاميرا متوقفة',
+    howWasIt: 'كيف كانت؟',
+    tile: {
+      camera: 'الكاميرا',
+      flip: 'تبديل',
+    },
     ended: 'انتهت المكالمة',
     noAnswer: 'لا يوجد رد',
     busy: 'لا يمكن لـ {name} استقبال مكالمة الآن',

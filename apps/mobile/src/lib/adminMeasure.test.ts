@@ -62,6 +62,8 @@ describe('replyTime', () => {
 describe('refusalKindLabel', () => {
   it('words a limit it knows and shows one it does not as it was recorded', () => {
     expect(refusalKindLabel('initiations')).toBe('New conversations')
+    // #1793's ceiling on scripts, which used to show as its raw key.
+    expect(refusalKindLabel('translationFairUse')).toBe('Translations — fair-use ceiling')
     expect(refusalKindLabel('unknown')).toBe('Unknown')
     expect(refusalKindLabel('somethingNew')).toBe('somethingNew')
   })
