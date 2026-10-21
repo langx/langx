@@ -1,13 +1,17 @@
 import { z } from 'zod'
 
 /**
- * Copilot: three one-tap helps inside a chat, written by a model.
+ * Copilot: four one-tap helps inside a chat, written by a model.
  *
  * - **Check** — your sentence, corrected if it needs it, with one reason.
  * - **Reply ideas** — a few short replies to the thread, at your level, for
  *   you to edit. Never sent by themselves.
- * - **Explain** — what a person's correction changed, and why. It explains
- *   the human's change; it never offers one of its own.
+ * - **Explain** — what a text your partner sent means, or what a person's
+ *   correction changed and why. It explains the human's change; it never
+ *   offers one of its own.
+ * - **Say it** — what you want to say, written in your own language, as a
+ *   few natural ways to say it in the language you are learning. A tap puts
+ *   one in your draft; nothing is sent.
  *
  * Here is only what both sides must agree on: the actions, the shapes, and
  * the numbers that bound the bill. How an answer looks — blue, labelled
@@ -15,7 +19,7 @@ import { z } from 'zod'
  * client's. See `docs/decisions.md` → _Copilot ships dark, behind two
  * switches and a consent_.
  */
-export const COPILOT_ACTIONS = ['check', 'replyIdeas', 'explain'] as const
+export const COPILOT_ACTIONS = ['check', 'replyIdeas', 'explain', 'sayIt'] as const
 export type CopilotAction = (typeof COPILOT_ACTIONS)[number]
 
 export const COPILOT_RULES = {
@@ -23,8 +27,11 @@ export const COPILOT_RULES = {
    * The consent sheet the person agreed to. Raise it when the sheet's words
    * change what they agree to — what is sent, or to whom — and everybody is
    * asked again: a consent recorded against other words is not this one.
+   *
+   * 2 since Explain reads a plain message the partner sent, which version
+   * 1's words did not mention.
    */
-  consentVersion: 1,
+  consentVersion: 2,
   /**
    * Off for 16- and 17-year-olds by default — a default for minors is a
    * product owner's decision, and the EU's DSA Art. 28 guidance leans the
@@ -51,7 +58,10 @@ export const COPILOT_RULES = {
    */
   contextMessages: 6,
   contextCharsPerMessage: 200,
-  /** The original and the fix that Explain is shown, each cut to this. */
+  /**
+   * What Explain is shown, cut to this: a partner's message, or a
+   * correction's original and fix, each.
+   */
   maxExplainChars: 500,
   /**
    * The hard stop on what the model may write, thinking included. Output is
@@ -62,6 +72,10 @@ export const COPILOT_RULES = {
   maxOutputTokens: 1024,
   /** Reply ideas offered at once. */
   replyIdeas: 3,
+  /** What a person may ask Say it to put into words: a chat line, not a paragraph. */
+  maxSayItChars: 200,
+  /** Ways to say it offered at once — at most; fewer when the model gives fewer. */
+  sayItOptions: 3,
   /**
    * How long an answer is kept for whoever asks the same question next.
    * Short: an answer to a private thread is kept under a hash, linked to no
@@ -111,12 +125,27 @@ export type CopilotCheckRequest = z.infer<typeof copilotCheckRequestSchema>
 export const copilotReplyIdeasRequestSchema = z.object({ conversationId })
 export type CopilotReplyIdeasRequest = z.infer<typeof copilotReplyIdeasRequestSchema>
 
-/** `messageId` is a correction in that thread — the one to explain. */
+/**
+ * `messageId` is the one to explain, in that thread: a correction either of
+ * them wrote, or a text message the partner sent.
+ */
 export const copilotExplainRequestSchema = z.object({
   conversationId,
   messageId: z.string().trim().min(1),
 })
 export type CopilotExplainRequest = z.infer<typeof copilotExplainRequestSchema>
+
+/**
+ * `text` is what the person wants to say, in their own language;
+ * `targetLanguage` is a `LANGUAGES` code — the client picks it, and the
+ * server refuses one it does not know.
+ */
+export const copilotSayItRequestSchema = z.object({
+  conversationId,
+  text: z.string().trim().min(1).max(COPILOT_RULES.maxSayItChars),
+  targetLanguage: z.string().trim().min(2).max(10),
+})
+export type CopilotSayItRequest = z.infer<typeof copilotSayItRequestSchema>
 
 /**
  * The version of the sheet the person saw. Only the current one is accepted,
@@ -142,6 +171,11 @@ export const copilotResultSchema = z.discriminatedUnion('action', [
     action: z.literal('explain'),
     explanation: z.string(),
   }),
+  z.object({
+    action: z.literal('sayIt'),
+    /** At most `sayItOptions`, each with a few words in the reader's language on how it differs. */
+    options: z.array(z.object({ text: z.string(), gloss: z.string() })),
+  }),
 ])
 export type CopilotResult = z.infer<typeof copilotResultSchema>
 
@@ -162,7 +196,11 @@ export type CopilotResponse = z.infer<typeof copilotResponseSchema>
 export const copilotStatusSchema = z.object({
   /** True when an answer could be asked for right now, consent aside. */
   available: z.boolean(),
-  /** Why not, when not: the operator's switch or no key, or the person's age. */
+  /**
+   * Why not, when not: `off` for the operator's switch, no key, or an
+   * account the operator has not allowed — the app hides Copilot for all
+   * three alike — or `age` for the person's age.
+   */
   reason: z.enum(['off', 'age']).nullable(),
   /** Agreed to the current version of the consent sheet. */
   consented: z.boolean(),
@@ -175,3 +213,20 @@ export const copilotStatusSchema = z.object({
   }),
 })
 export type CopilotStatus = z.infer<typeof copilotStatusSchema>
+
+/**
+ * Allowing one account to use Copilot, or taking it back — the operator
+ * panel's per-account switch. It opens nothing by itself: the flag, a key,
+ * the age floor and the person's own consent all still apply.
+ */
+export const adminCopilotAccessRequestSchema = z.object({ allowed: z.boolean() })
+export type AdminCopilotAccessRequest = z.infer<typeof adminCopilotAccessRequestSchema>
+
+/** One allowed account, as `GET /admin/copilot/access` lists it. */
+export interface AdminCopilotAccessRow {
+  userId: string
+  username: string
+  displayName: string
+  /** When access was given, as an ISO string. */
+  at: string
+}
