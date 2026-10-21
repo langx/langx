@@ -14,6 +14,7 @@ import {
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useKeyboardInset } from '../hooks/useKeyboardInset'
+import { useV3Home } from '../hooks/useV3Home'
 import { paginateActions, type MessageActionPage } from '../lib/messageActions'
 import {
   resolveMessageMenu,
@@ -45,8 +46,13 @@ import { useLocale, useT } from '../i18n'
  * and would sit under the tab bar if it were ever mounted before the navigator.
  */
 export function MessageMenuHost() {
-  const { colors, spacing } = useTheme()
-  const styles = useStyles()
+  const { colors, spacing, v3 } = useTheme()
+  const current = useStyles()
+  const redesigned = useStylesV3()
+  const v3Look = useV3Home()
+  const styles = v3Look ? redesigned : current
+  /** The rows' glyphs: muted in both looks, from each look's own palette. */
+  const glyph = v3Look ? v3.colors.muted : colors.textMuted
   const t = useT()
   const { isRtl } = useLocale()
 
@@ -109,7 +115,7 @@ export function MessageMenuHost() {
             pressed && pressedStyle,
           ]}
         >
-          <Ionicons name="chevron-back" size={20} color={colors.textMuted} />
+          <Ionicons name="chevron-back" size={20} color={glyph} />
           <Text style={[labelStyle, styles.muted]}>{t('common.backPlain')}</Text>
         </Pressable>
       ) : null}
@@ -132,7 +138,7 @@ export function MessageMenuHost() {
             // and does not import them.
             name={action.icon as never}
             size={20}
-            color={colors.textMuted}
+            color={glyph}
           />
           {/*
             One line in the popover: `ROW_HEIGHT` is derived rather than
@@ -155,7 +161,7 @@ export function MessageMenuHost() {
           onPress={() => setPage('more')}
           style={({ pressed }) => [rowStyle, pressed && pressedStyle]}
         >
-          <Ionicons name="ellipsis-horizontal" size={20} color={colors.textMuted} />
+          <Ionicons name="ellipsis-horizontal" size={20} color={glyph} />
           <Text style={[labelStyle, styles.muted]}>{t('messageMenu.more')}</Text>
         </Pressable>
       ) : null}
@@ -179,6 +185,7 @@ export function MessageMenuHost() {
             key={emoji}
             accessibilityRole="button"
             accessibilityLabel={t('messageMenu.reactWith', { emoji })}
+            hitSlop={v3Look ? EMOJI_SLOP : undefined}
             onPress={() => resolveMessageMenu(request.id, { kind: 'reaction', emoji })}
             style={[styles.emoji, request.myReaction === emoji && styles.emojiChosen]}
           >
@@ -189,10 +196,11 @@ export function MessageMenuHost() {
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={t('messageMenu.moreReactions')}
+        hitSlop={v3Look ? EMOJI_SLOP : undefined}
         onPress={() => setPicking(true)}
         style={[styles.emoji, styles.stripPlus]}
       >
-        <Ionicons name="add" size={24} color={colors.textMuted} />
+        <Ionicons name="add" size={24} color={glyph} />
       </Pressable>
     </View>
   ) : null
@@ -217,7 +225,9 @@ export function MessageMenuHost() {
             <Pressable
               style={[
                 styles.sheet,
-                wide ? styles.sheetCard : { paddingBottom: insets.bottom + spacing.lg },
+                wide
+                  ? styles.sheetCard
+                  : { paddingBottom: insets.bottom + (v3Look ? v3.space[16] : spacing.lg) },
               ]}
               onPress={() => {}}
             >
@@ -270,7 +280,10 @@ export function MessageMenuHost() {
       <>
         <MediaGallery items={request.picture.items} mine={request.mine} videoMode="preview" />
         {request.caption ? (
-          <Text style={[styles.copyText, styles.copyCaption]} numberOfLines={4}>
+          <Text
+            style={[styles.copyText, request.mine && styles.copyTextMine, styles.copyCaption]}
+            numberOfLines={4}
+          >
             {request.caption}
           </Text>
         ) : null}
@@ -290,6 +303,7 @@ export function MessageMenuHost() {
      * that has to feel immediate, so the flip is decided before first paint.
      */
     const menuHeight = rowCount * ROW_HEIGHT + MENU_CHROME
+    const menuWidth = v3Look ? MENU_WIDTH_V3 : MENU_WIDTH
     /**
      * The strip is as wide as the emoji it holds and no wider — a fixed width
      * left a tail of empty pill after the last one. The screen still caps it,
@@ -303,7 +317,7 @@ export function MessageMenuHost() {
       anchor: request.anchor,
       screen: { width: screen.width, height: screen.height },
       insets: { top: insets.top, bottom: insets.bottom },
-      menu: { width: MENU_WIDTH, height: menuHeight },
+      menu: { width: menuWidth, height: menuHeight },
       strip: { width: stripWidth, height: request.reactions ? STRIP_HEIGHT : 0 },
       mine: request.mine,
       rtl: isRtl,
@@ -352,7 +366,7 @@ export function MessageMenuHost() {
           <View
             style={[
               styles.menu,
-              { top: layout.menu.top, left: layout.menu.left, width: MENU_WIDTH },
+              { top: layout.menu.top, left: layout.menu.left, width: menuWidth },
             ]}
           >
             {rows}
@@ -372,7 +386,9 @@ export function MessageMenuHost() {
         <Pressable
           style={[
             styles.sheet,
-            wide ? styles.sheetCard : { paddingBottom: insets.bottom + spacing.xl },
+            wide
+              ? styles.sheetCard
+              : { paddingBottom: insets.bottom + (v3Look ? v3.space[20] : spacing.xl) },
           ]}
           onPress={() => {}}
         >
@@ -402,6 +418,8 @@ const ROW_HEIGHT = 46
 const MENU_CHROME = 18
 /** Fits the longest label at 15 — Russian's "remove from starred", German's. */
 const MENU_WIDTH = 264
+/** The same labels a point larger, at v3's callout: 264 × 16 / 15, rounded up. */
+const MENU_WIDTH_V3 = 282
 /**
  * `emoji` and `stripInner`'s own numbers: a 38 cell, 1 between, 6 of padding
  * and an outline each side. The "+" is one more cell, counted in — and the
@@ -415,6 +433,27 @@ const STRIP_HEIGHT = EMOJI_CELL + STRIP_CHROME
 
 const stripWidthFor = (count: number): number =>
   count * EMOJI_CELL + (count - 1) * EMOJI_GAP + STRIP_CHROME
+
+/**
+ * `MessageBubble`'s hero glyph, in both looks: v3 does not restyle the thread's
+ * hero (`bubbleLookV3`), and the lifted copy has to be the size of the one
+ * under the finger.
+ */
+const HERO_TEXT = { fontSize: 48, lineHeight: 58 } as const
+
+/**
+ * The strip's emoji, in both looks. An emoji is a picture set in a 38 cell
+ * the two looks share, not a line of type: v3's nearest step (headline, 22)
+ * shrank it inside an unchanged cell.
+ */
+const EMOJI_TEXT = { fontSize: 24, lineHeight: 30 } as const
+
+/**
+ * Lifts a 38 cell to v3's 44pt target without moving it: 3 above and below
+ * stays inside the strip's 6 of padding, so a press never lands outside the
+ * scroll that holds the cell (Android drops those).
+ */
+const EMOJI_SLOP = { top: 3, bottom: 3 } as const
 
 const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
   action: {
@@ -441,7 +480,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
    * 46px row. `lineHeight` is pinned because `ROW_HEIGHT` is derived from it.
    */
   label: { color: colors.text, flex: 1, fontSize: 15, fontWeight: '600', lineHeight: 22 },
-  copyHero: { fontSize: 48, lineHeight: 58 },
+  copyHero: HERO_TEXT,
   title: { ...font.heading, color: colors.text, marginBottom: 6 },
   // v3's sheet, as `AlertHost` draws it: the roundest corners in the app,
   // 24 at the sides, 10 above the handle.
@@ -515,7 +554,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   },
   // Blue carries everything chosen in v3; a grey fill would read as disabled.
   emojiChosen: { backgroundColor: colors.accentBg },
-  emojiGlyph: { fontSize: 24, lineHeight: 30 },
+  emojiGlyph: EMOJI_TEXT,
   copy: {
     borderRadius: 20,
     paddingHorizontal: 16,
@@ -545,6 +584,131 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     borderRadius: radius.xl,
     borderWidth: 1,
     paddingVertical: spacing.sm,
+    position: 'absolute',
+  },
+}))
+
+/**
+ * v3's look for the same menu, behind `flags.v3Home` with the rest of the
+ * thread (no board draws it, so it follows `CallMenu` and `WhatsProSheet`):
+ * flat — an outline in the line colour where the current look lifts with a
+ * shadow — the lifted copy in v3's bubble colours (`bubbleLookV3`), and the
+ * chosen emoji on the selected-tab pill. Every number `ROW_HEIGHT`,
+ * `MENU_CHROME` and `stripWidthFor` count with is the current look's, so the
+ * derived layout holds in both looks. What opens, what it offers and what a
+ * press does are the host's own.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  // Square: a row runs edge to edge under its rule, and a rounded row bends
+  // the rule up at both ends.
+  action: {
+    alignItems: 'center',
+    borderRadius: 0,
+    flexDirection: 'row',
+    gap: v3.space[12],
+    paddingHorizontal: v3.space[12],
+    paddingVertical: v3.space[12],
+  },
+  actionPressed: { backgroundColor: v3.colors.surface },
+  sheetPressed: { opacity: 0.6 },
+  actionDisabled: { opacity: 0.45 },
+  rowDivider: { borderBottomColor: v3.colors.line, borderBottomWidth: 1 },
+  muted: { color: v3.colors.muted },
+  backdrop: { backgroundColor: v3.colors.scrim, flex: 1 },
+  backdropBottom: { justifyContent: 'flex-end' },
+  backdropCentred: { alignItems: 'center', justifyContent: 'center' },
+  anchoredBackdrop: { backgroundColor: v3.colors.scrim, flex: 1 },
+  destructive: { color: v3.colors.danger },
+  // Callout on the current look's pinned 22, which `ROW_HEIGHT` is derived from.
+  label: { ...v3.type.callout, color: v3.colors.fg, flex: 1, fontWeight: '600', lineHeight: 22 },
+  copyHero: HERO_TEXT,
+  title: { ...v3.type.headline, color: v3.colors.fg, marginBottom: v3.space[6] },
+  sheet: {
+    backgroundColor: v3.colors.bg,
+    borderTopLeftRadius: v3.radius.block,
+    borderTopRightRadius: v3.radius.block,
+    paddingHorizontal: v3.space[16],
+    paddingTop: v3.space[10],
+  },
+  sheetCard: {
+    borderBottomLeftRadius: v3.radius.block,
+    borderBottomRightRadius: v3.radius.block,
+    maxWidth: 360,
+    paddingBottom: v3.space[20],
+    width: '100%',
+  },
+  handle: {
+    alignSelf: 'center',
+    backgroundColor: v3.colors.line,
+    borderRadius: v3.radius.pill,
+    height: 4,
+    marginBottom: v3.space[16],
+    width: 38,
+  },
+  // A 56pt row: 16 above and below a 24 line.
+  sheetRow: {
+    alignItems: 'center',
+    borderBottomColor: v3.colors.line,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    gap: v3.space[14],
+    paddingVertical: v3.space[16],
+  },
+  sheetLabel: { ...v3.type.body, color: v3.colors.fg, flex: 1, fontWeight: '600' },
+  foot: { marginTop: v3.space[16] },
+  stripHolder: { position: 'absolute' },
+  strip: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.bg,
+    borderColor: v3.colors.line,
+    borderRadius: v3.radius.pill,
+    borderWidth: 1,
+    flexDirection: 'row',
+  },
+  stripScroll: { flexGrow: 0, flexShrink: 1 },
+  stripInner: {
+    alignItems: 'center',
+    gap: EMOJI_GAP,
+    paddingStart: 6,
+    paddingEnd: EMOJI_GAP,
+    paddingVertical: 6,
+  },
+  stripPlus: { marginEnd: 6 },
+  pickerHolder: { width: '100%' },
+  pickerHolderWide: { alignItems: 'center' },
+  emoji: {
+    alignItems: 'center',
+    borderRadius: v3.radius.pill,
+    height: EMOJI_CELL,
+    justifyContent: 'center',
+    width: EMOJI_CELL,
+  },
+  // A pill behind a glyph rather than the ink one: an emoji on ink is a hole.
+  emojiChosen: { backgroundColor: v3.colors.tabOn },
+  emojiGlyph: EMOJI_TEXT,
+  copy: {
+    borderRadius: v3.radius.tile,
+    paddingHorizontal: v3.space[14],
+    paddingVertical: v3.space[10],
+    position: 'absolute',
+  },
+  copyMine: { backgroundColor: v3.colors.blue },
+  // The partner's hue is the thread's, and the menu is not told it: the grey
+  // the thread itself draws until the partner is known.
+  copyTheirs: { backgroundColor: v3.colors.surface },
+  copyTailMine: { borderBottomEndRadius: v3.space[8] },
+  copyTailTheirs: { borderBottomStartRadius: v3.space[8] },
+  copyText: { ...v3.type.body, color: v3.colors.fg, lineHeight: 23 },
+  copyTextMine: { color: v3.colors.onBlue },
+  copyCaption: { marginTop: v3.space[4] },
+  copyBare: { position: 'absolute' },
+  copySticker: { height: 112, width: 112 },
+  menu: {
+    backgroundColor: v3.colors.bg,
+    borderColor: v3.colors.line,
+    borderRadius: v3.radius.row,
+    borderWidth: 1,
+    paddingVertical: v3.space[8],
     position: 'absolute',
   },
 }))

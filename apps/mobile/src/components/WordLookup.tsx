@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, Text, View } from 'react-native'
 import { useCaptureEcho, useTranslate } from '../api/queries'
 import { Button } from './ui/Button'
+import { useV3Home } from '../hooks/useV3Home'
 import { useT } from '../i18n'
 import { track } from '../lib/analytics'
 import { errorCodeOf } from '../lib/errors'
@@ -48,8 +49,11 @@ export function WordLookup({
   /** Absent for a Pro account: nothing to sell it. */
   onSeePlans: (() => void) | undefined
 }) {
-  const styles = useStyles()
-  const { colors } = useTheme()
+  const current = useStyles()
+  const redesigned = useStylesV3()
+  const v3Look = useV3Home()
+  const styles = v3Look ? redesigned : current
+  const { colors, v3 } = useTheme()
   const t = useT()
   const { mutateAsync: translate } = useTranslate()
   const capture = useCaptureEcho()
@@ -113,7 +117,7 @@ export function WordLookup({
 
       {translation.status === 'loading' ? (
         <View style={styles.row}>
-          <ActivityIndicator size="small" color={colors.textMuted} />
+          <ActivityIndicator size="small" color={v3Look ? v3.colors.muted : colors.textMuted} />
           <Text style={styles.muted}>{t('chat.translating')}</Text>
         </View>
       ) : translation.status === 'quota' ? (
@@ -165,4 +169,18 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   translation: { ...font.body, color: colors.text, fontSize: 17, lineHeight: 24 },
   muted: { ...font.body, color: colors.textMuted },
   done: { ...font.label, color: colors.success },
+}))
+
+/**
+ * v3's look for the same card, behind `flags.v3Home` with the sheet it is
+ * drawn in: v3's type, the translation at reading size and the "added" line in
+ * the correction's green, which v3 uses for what you have learned.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  root: { gap: v3.space[8] },
+  row: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8] },
+  word: { ...v3.type.label, color: v3.colors.muted },
+  translation: { ...v3.type.body, color: v3.colors.fg },
+  muted: { ...v3.type.callout, color: v3.colors.muted },
+  done: { ...v3.type.label, color: v3.colors.correction },
 }))
