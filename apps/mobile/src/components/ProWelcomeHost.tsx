@@ -12,6 +12,7 @@ import Animated, {
 import { useAckProWelcome, useMe, type MeProfile } from '../api/queries'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useTourOpen } from '../hooks/useTour'
+import { useV3Home } from '../hooks/useV3Home'
 import { useT } from '../i18n'
 import { track } from '../lib/analytics'
 import { RAIN } from '../lib/celebration'
@@ -19,6 +20,8 @@ import { notification } from '../lib/haptics'
 import { isLaunchOver, subscribeToLaunchOver } from '../lib/launchOver'
 import { PRO_WELCOME_HIGHLIGHTS, proWelcomeCopy, setProWelcomeOpen } from '../lib/proWelcome'
 import { makeStyles, useTheme } from '../lib/theme'
+import { partnerHueFor } from '../lib/theme/partnerHue'
+import { ProWelcomeSheetV3 } from './ProWelcomeSheetV3'
 import { Button } from './ui/Button'
 import { Confetti } from './ui/Confetti'
 
@@ -50,6 +53,7 @@ export function ProWelcomeHost({ enabled }: { enabled: boolean }) {
   const { mutate: acknowledge } = useAckProWelcome()
   const launchOver = useSyncExternalStore(subscribeToLaunchOver, isLaunchOver, isLaunchOver)
   const tourOpen = useTourOpen()
+  const v3Look = useV3Home()
   const [shown, setShown] = useState<Welcome | null>(null)
   // The `at` already dealt with in this session, so a failed dismissal does
   // not reopen the screen until the next launch.
@@ -106,6 +110,19 @@ export function ProWelcomeHost({ enabled }: { enabled: boolean }) {
     setShown(null)
     setProWelcomeOpen(false)
     if (explore) router.navigate('/(app)/(tabs)/discover')
+  }
+
+  if (v3Look) {
+    return (
+      <ProWelcomeSheetV3
+        welcome={shown}
+        // The person's own hue, as Me draws their block. The sheet is only
+        // ever open off a fetched `me`, so the id is there.
+        hue={partnerHueFor(me.data?._id ?? '')}
+        onStart={() => close(true)}
+        onClose={() => close(false)}
+      />
+    )
   }
 
   return <WelcomeSheet welcome={shown} onStart={() => close(true)} onClose={() => close(false)} />
