@@ -5,6 +5,7 @@ import { ActivityIndicator, FlatList, Modal, Pressable, Text, TextInput, View } 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useConversationSearch } from '../api/queries'
 import { useDebounced } from '../hooks/useDebounced'
+import { useV3Home } from '../hooks/useV3Home'
 import { useLocale, useT } from '../i18n'
 import { dayKeyOf, dayLabel } from '../lib/messageGroups'
 import { listState } from '../lib/listState'
@@ -46,8 +47,12 @@ export function ChatSearch({
 }: ChatSearchProps) {
   const t = useT()
   const { locale } = useLocale()
-  const styles = useStyles()
-  const { colors } = useTheme()
+  const current = useStyles()
+  const redesigned = useStylesV3()
+  const v3Look = useV3Home()
+  const styles = v3Look ? redesigned : current
+  const { colors, v3 } = useTheme()
+  const faint = v3Look ? v3.colors.muted : colors.textFaint
   // A `Modal` is outside every `SafeAreaView`; see `PhotoViewer`.
   const insets = useSafeAreaInsets()
   const [term, setTerm] = useState('')
@@ -72,12 +77,12 @@ export function ChatSearch({
       <View style={[styles.root, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
         <View style={styles.bar}>
           <View style={styles.field}>
-            <Feather name="search" size={18} color={colors.textFaint} />
+            <Feather name="search" size={v3Look ? v3.icon.md : 18} color={faint} />
             <TextInput
               value={term}
               onChangeText={setTerm}
               placeholder={t('chatSearch.placeholder')}
-              placeholderTextColor={colors.textFaint}
+              placeholderTextColor={faint}
               autoCapitalize="none"
               autoCorrect={false}
               autoFocus
@@ -202,4 +207,58 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   date: { ...font.caption, color: colors.textMuted },
   snippet: { ...font.body, color: colors.textMuted },
   match: { backgroundColor: colors.warningBg, color: colors.text, fontWeight: '600' },
+}))
+
+/**
+ * v3's look for the same search, behind `flags.v3Home` with the rest of the
+ * thread. No board draws it; it follows the v3 search fields (V-EchoCards,
+ * V-Filters): a 52pt grey pill, body type, and rows on the ground divided by
+ * the line colour. Cancel is a word in the text colour — blue is the one main
+ * action, and leaving is not it — and a match is set off by weight on the
+ * selected-tab grey, since yellow belongs to the committing action.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  root: { backgroundColor: v3.colors.bg, flex: 1 },
+  bar: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: v3.space[8],
+    paddingHorizontal: v3.space[16],
+    paddingVertical: v3.space[8],
+  },
+  field: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.pill,
+    flex: 1,
+    flexDirection: 'row',
+    gap: v3.space[10],
+    height: 52,
+    paddingHorizontal: v3.space[16],
+  },
+  input: { color: v3.colors.fg, flex: 1, fontSize: v3.type.body.fontSize, padding: 0 },
+  cancel: { justifyContent: 'center', minHeight: 44, paddingHorizontal: v3.space[4] },
+  cancelLabel: { ...v3.type.button, color: v3.colors.fg },
+  pressed: { opacity: 0.7 },
+  spinner: { marginTop: v3.space[16] },
+  note: {
+    ...v3.type.callout,
+    color: v3.colors.muted,
+    marginTop: v3.space[16],
+    paddingHorizontal: v3.space[24],
+    textAlign: 'center',
+  },
+  list: { paddingBottom: v3.space[24] },
+  row: {
+    borderBottomColor: v3.colors.line,
+    borderBottomWidth: 1,
+    gap: v3.space[4],
+    paddingHorizontal: v3.space[16],
+    paddingVertical: v3.space[12],
+  },
+  meta: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8] },
+  sender: { ...v3.type.caption, color: v3.colors.fg, flex: 1, fontWeight: '700' },
+  date: { ...v3.type.caption, color: v3.colors.muted },
+  snippet: { ...v3.type.callout, color: v3.colors.muted },
+  match: { backgroundColor: v3.colors.tabOn, color: v3.colors.fg, fontWeight: '700' },
 }))
