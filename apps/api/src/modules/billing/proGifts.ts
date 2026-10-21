@@ -98,8 +98,12 @@ export interface ProGift {
   lockedBy?: string
   attempts: number
   lastError?: string
-  /** Why a row was not granted: the account is gone, or already holds Pro for life. */
-  skippedReason?: 'gone' | 'lifetime'
+  /**
+   * Why a row was not granted: the account is gone, already holds Pro for
+   * life, or — for an earned gift (`isEarned`) — holds a subscription that
+   * runs past the gift's end anyway.
+   */
+  skippedReason?: 'gone' | 'lifetime' | 'subscribed'
   createdAt: Date
   grantedAt?: Date
   /**
@@ -357,6 +361,18 @@ async function grantProGift(db: Db, deps: ProGiftDeps, gift: ProGift, now: Date)
       addMonthsUtc(await giftBaseline(db, gift.userId, gift._id, now), gift.months).getTime() +
         (gift.weeks ?? 0) * 7 * DAY_MS,
     )
+    /*
+     * An earned gift is not given to somebody already paying for Pro past its
+     * end. A promotional grant runs beside a subscription rather than after
+     * it, so it would change nothing they could notice. The rung or the slot
+     * is spent all the same — it is not owed again if they cancel later.
+     * Only here, before the end is decided: a row that has one may already be
+     * at RevenueCat, and it finishes the way it started.
+     */
+    if (isEarned(gift.source) && carriesOn(profile.entitlement, decided)) {
+      await release({ status: 'skipped', skippedReason: 'subscribed' })
+      return 'skipped'
+    }
     // Conditional, so a row that somehow has one keeps it — the end is
     // decided once, whoever gets there.
     const written = await gifts(db).findOneAndUpdate(
@@ -412,12 +428,10 @@ async function grantProGift(db: Db, deps: ProGiftDeps, gift: ProGift, now: Date)
     deps.warn(error, 'pro gift refresh failed')
   }
   /*
-   * A streak gift to somebody whose subscription runs past it anyway changes
-   * nothing they could notice, and a letter about it would only say so. The
-   * gift still lands, quietly: if they cancel, it is what keeps them on Pro,
-   * and the reminders speak up then. Only the streak's: the others answer
-   * something a person did on purpose — an operator's button, a typed code,
-   * friends invited — and that is owed a reply.
+   * Reached only by a retry: a streak gift whose end was decided before a
+   * subscription began, so it was not skipped above. It lands quietly — a
+   * letter could only say it changes nothing — and if they cancel, the
+   * reminders speak up then.
    */
   if (gift.source === 'streak' && carriesOn(profile.entitlement, endsAt)) return 'granted'
   /*
@@ -655,6 +669,25 @@ async function isLastGift(db: Db, gift: ProGift): Promise<boolean> {
     { projection: { _id: 1 } },
   )
   return later === null
+}
+
+/**
+ * Whether a gift was earned — a streak, invitees, the Pro Week — rather than
+ * given on purpose by an operator's button or a typed code. Only an earned
+ * gift is skipped for a subscriber: the other two answer something somebody
+ * chose to do, and that is owed the gift and its letter. A switch with no
+ * default, so a new `ProGiftSource` does not compile until it says which.
+ */
+function isEarned(source: ProGiftSource): boolean {
+  switch (source) {
+    case 'streak':
+    case 'referral':
+    case 'welcome':
+      return true
+    case 'admin':
+    case 'code':
+      return false
+  }
 }
 
 /**

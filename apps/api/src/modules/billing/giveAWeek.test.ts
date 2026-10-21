@@ -515,11 +515,11 @@ describe('give a week, get a week', () => {
     })
 
     /**
-     * A promotional grant runs beside a store subscription: it cannot pause
-     * or extend the store's billing, so the week starts now and only shows if
-     * the subscription lapses inside it. The letter says so.
+     * A promotional grant runs beside a store subscription rather than after
+     * it, so a subscriber's week would change nothing: it is skipped, and
+     * still takes its slot. Their friend's week is the friend's, and is given.
      */
-    it('runs a subscriber’s week beside the subscription, and says so', async () => {
+    it('skips a subscriber’s week and still gives their friend one', async () => {
       const referrer = await person({
         entitlement: {
           tier: 'pro',
@@ -529,15 +529,14 @@ describe('give a week, get a week', () => {
           updatedAt: now,
         },
       })
-      await settleReferral(db, await readyInvitee(referrer._id), now)
+      const inviteeId = await readyInvitee(referrer._id)
+      await settleReferral(db, inviteeId, now)
       await runProGiftPass(db, deps, now)
 
-      const [week] = (await giftsOf(referrer._id)).filter((g) => g.invitee)
-      expect(week).toMatchObject({ status: 'granted' })
-      expect(week?.endsAt?.getTime()).toBe(now.getTime() + WEEK)
-      const [, , until] = await letter(week?._id ?? '')
-      const [before] = translator('es')('proGift.untilPaying', { date: '§' }).split('§')
-      expect(until?.startsWith(before ?? '§')).toBe(true)
+      expect(await giftsOf(referrer._id)).toMatchObject([
+        { status: 'skipped', skippedReason: 'subscribed' },
+      ])
+      expect(await giftsOf(inviteeId)).toMatchObject([{ status: 'granted' }])
     })
 
     it('skips a lifetime referrer’s week and still gives their friend one', async () => {
