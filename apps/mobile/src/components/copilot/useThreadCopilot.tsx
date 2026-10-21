@@ -116,9 +116,19 @@ export function useThreadCopilot({
     setExplained(null)
   }, [gate])
 
-  // A send empties the draft, and the card about it has nothing left to say.
+  /** The draft the card's question was asked about, trimmed as it was sent. */
+  const cardAsked = useRef<string | null>(null)
+  /*
+   * The card answers one draft. A send empties it, and typing on changes it:
+   * either way the card has nothing left to say — and "Use this" on a
+   * sentence that has grown since would throw away what was typed after the
+   * question went.
+   */
   useEffect(() => {
-    if (draft.trim() === '') setCard((open) => (open?.kind === 'loading' ? open : null))
+    if (cardAsked.current === null || draft.trim() === cardAsked.current) return
+    cardAsked.current = null
+    turn.current.card += 1
+    setCard(null)
   }, [draft])
 
   const target = copilotTargetLanguage(learning, partnerNative)
@@ -135,6 +145,7 @@ export function useThreadCopilot({
 
   async function run(question: CopilotAsk, surface: 'card' | 'sheet'): Promise<void> {
     const show = surface === 'card' ? setCard : setExplained
+    if (surface === 'card') cardAsked.current = 'text' in question ? question.text : null
     turn.current[surface] += 1
     const mine = turn.current[surface]
     const current = () => turn.current[surface] === mine
@@ -182,6 +193,7 @@ export function useThreadCopilot({
   }
 
   const closeCard = (): void => {
+    cardAsked.current = null
     turn.current.card += 1
     setCard(null)
   }
