@@ -3801,8 +3801,10 @@ export const en = {
     },
   },
   /**
-   * Copilot, the AI helper in a chat. Only the consent sheet and the words
-   * for "off" are drawn so far; the actions arrive with their screens.
+   * Copilot, the AI helper in a v3 chat: Check my sentence and Say it from
+   * the button beside send, Explain from a message's long-press menu. Every
+   * answer is drawn blue under `label`, and nothing it writes is sent unless
+   * the person sends it themselves.
    */
   copilot: {
     /** On every Copilot answer and on its consent sheet. Blue, never green: green is a person's correction. */
@@ -3811,15 +3813,49 @@ export const en = {
     off: 'Copilot is off.',
     consentTitle: 'Before you use Copilot',
     consentBody:
-      'Copilot is an AI helper. It can check a sentence before you send it, suggest replies, and explain a correction somebody gave you.',
-    /** Names the provider: App Review asks who receives the data, not just that someone does. */
+      'Copilot is an AI helper. It can check a sentence before you send it, help you say something in the language you are learning, explain a message or a correction, and suggest replies.',
+    /**
+     * Names the provider: App Review asks who receives the data, not just that
+     * someone does. Version 2 of the sheet: Explain now sends one message the
+     * other person wrote, which version 1 did not mention.
+     */
     consentSends:
-      'When you ask, the text you asked about goes to Anthropic, the company that runs the AI model, with your languages and levels. For reply ideas, that includes the last few messages in the chat.',
+      'When you ask, the text you asked about goes to Anthropic, the company that runs the AI model, with your languages and levels. To explain a message, that is the one message you picked, which the other person wrote. For reply ideas, it includes the last few messages in the chat.',
     consentNever: 'Your name, email, photos and voice notes are never sent.',
     consentWrong:
       'AI can be wrong. Its answers are marked AI, and nothing reaches the other person unless you send it yourself.',
     consentAccept: 'Turn on Copilot',
     consentDecline: 'Not now',
+    /** Screen-reader name of the blue button beside send, which opens the two-row menu. */
+    button: 'Copilot',
+    menuCheck: 'Check my sentence',
+    /** `language` is the one they are learning, named in the app's language. */
+    menuSayIt: 'Say it in {language}',
+    /** Replaces the draft with Copilot's sentence. Nothing is sent. */
+    useThis: 'Use this',
+    keepMine: 'Keep mine',
+    /** Check found nothing to change. */
+    looksGood: 'Looks good.',
+    close: 'Close',
+    /** The row in a message's long-press menu. */
+    explainAction: 'Explain',
+    explainTitle: 'Explained',
+    /** Above the options; tapping one puts it in the message, it does not send. */
+    sayItTitle: 'Ways to say it',
+    /** Screen-reader words while an answer is being written. */
+    loading: 'Copilot is writing…',
+    /** Today's allowance, on the card and the sheet. */
+    left: { one: '{count} left today', other: '{count} left today' },
+    /** At 0 left: when the next answer frees up, as a time of day. */
+    moreAt: 'More at {time}',
+    errQuota: 'You’ve used today’s Copilot answers. More at {time}.',
+    /** The same, when the server did not say when. */
+    errQuotaNoTime: 'You’ve used today’s Copilot answers.',
+    /** The other person is under 18, so their words are not sent. */
+    errPartnerAge: 'Copilot doesn’t read this chat.',
+    errBusy: 'Copilot is busy. Try again later.',
+    errNoAnswer: 'Copilot couldn’t answer that.',
+    errNetwork: 'Couldn’t reach Copilot.',
   },
 } as const
 
