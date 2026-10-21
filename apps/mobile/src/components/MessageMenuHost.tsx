@@ -583,9 +583,11 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
  * press does are the host's own.
  */
 const useStylesV3 = makeStyles(({ v3 }) => ({
+  // Square: a row runs edge to edge under its rule, and a rounded row bends
+  // the rule up at both ends.
   action: {
     alignItems: 'center',
-    borderRadius: v3.radius.icon,
+    borderRadius: 0,
     flexDirection: 'row',
     gap: v3.space[12],
     paddingHorizontal: v3.space[12],
