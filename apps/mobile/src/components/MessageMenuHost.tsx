@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
 import { isBigEmoji } from '../lib/singleEmoji'
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   Animated,
   Modal,
@@ -14,16 +14,23 @@ import {
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useKeyboardInset } from '../hooks/useKeyboardInset'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
+import { impact, selection } from '../lib/haptics'
 import { paginateActions, type MessageActionPage } from '../lib/messageActions'
 import {
+  MENU_MOTION,
+  emojiDelay,
+  menuOrigin,
   resolveMessageMenu,
   subscribeToMessageMenu,
   type MessageMenuRequest,
+  type MessageMenuResult,
 } from '../lib/messageMenu'
 import { messageMenuLayout } from '../lib/messageMenuLayout'
 import { stickerAsset } from '../lib/stickerAssets'
 import { makeStyles, useTheme } from '../lib/theme'
+import { EASE_OUT } from '../lib/theme/motionAnimated'
 import { MediaGallery } from './MediaBubble'
 import { ReactionPicker } from './ReactionPicker'
 import { Button } from './ui/Button'
@@ -76,9 +83,78 @@ export function MessageMenuHost() {
     [],
   )
 
+  /*
+   * The v3 anchored menu lifts out of the bubble (`MENU_MOTION`) instead of
+   * the whole Modal fading in: the scrim and the copy together, then the menu
+   * and the strip growing from the bubble's side, the emoji one by one. RN
+   * `Animated` on the native driver, since this host is mounted at the root.
+   * The sheet, the picker and the current look keep the Modal's own fade.
+   */
+  const reduce = useReduceMotion()
+  const lifts = v3Look && request?.anchor !== undefined && !picking
+  const motion = useRef({
+    scrim: new Animated.Value(0),
+    lift: new Animated.Value(0),
+    menu: new Animated.Value(0),
+    emoji: [] as Animated.Value[],
+  }).current
+  // One value per emoji, made the first time a strip that long is drawn.
+  while (motion.emoji.length < (request?.reactions?.length ?? 0)) {
+    motion.emoji.push(new Animated.Value(0))
+  }
+  /** Set once a pick or a dismissal is on its way out, so a second tap does nothing. */
+  const closing = useRef(false)
+
+  const requestId = request?.id
+  // Before the first paint, so the menu is never drawn once at full size and
+  // then snapped back to the start of its entrance.
+  useLayoutEffect(() => {
+    if (requestId === undefined) return
+    closing.current = false
+    // A long-press menu opening: the haptics policy's `medium`.
+    void impact('medium')
+    if (!lifts) return
+    const values = [motion.scrim, motion.lift, motion.menu, ...motion.emoji]
+    if (reduce) {
+      values.forEach((value) => value.setValue(1))
+      return
+    }
+    values.forEach((value) => value.setValue(0))
+    Animated.parallel([
+      fadeTo(motion.scrim, 1, MENU_MOTION.scrim),
+      fadeTo(motion.lift, 1, MENU_MOTION.lift),
+      fadeTo(motion.menu, 1, MENU_MOTION.menu),
+      ...motion.emoji.map((value, index) => fadeTo(value, 1, MENU_MOTION.emoji, emojiDelay(index))),
+    ]).start()
+    // Once per menu: `lifts` and `reduce` are read at the moment it opens.
+  }, [requestId])
+
   if (!request) return null
-  const dismiss = (): void => resolveMessageMenu(request.id, null)
+
+  /**
+   * Every way out of the menu. A lifted menu plays its short exit first and
+   * answers once it has gone — answering first would start the reply or the
+   * delete under a menu still on screen.
+   */
+  const finish = (value: MessageMenuResult | null): void => {
+    if (closing.current) return
+    closing.current = true
+    if (value?.kind === 'reaction') void selection()
+    const id = request.id
+    if (!lifts || reduce) {
+      resolveMessageMenu(id, value)
+      return
+    }
+    Animated.parallel([
+      fadeTo(motion.scrim, 0, MENU_MOTION.close),
+      fadeTo(motion.lift, 0, MENU_MOTION.close),
+      fadeTo(motion.menu, 0, MENU_MOTION.close),
+    ]).start(() => resolveMessageMenu(id, value))
+  }
+  const dismiss = (): void => finish(null)
   const wide = Platform.OS === 'web'
+  /** The Modal's own fade, where the menu does not lift; none at all for reduced motion. */
+  const modalFade = reduce ? 'none' : 'fade'
 
   const { actions, hasMore } = paginateActions(request.actions, page)
 
@@ -125,7 +201,7 @@ export function MessageMenuHost() {
           key={action.id}
           accessibilityRole="button"
           disabled={action.disabled === true}
-          onPress={() => resolveMessageMenu(request.id, { kind: 'action', id: action.id })}
+          onPress={() => finish({ kind: 'action', id: action.id })}
           style={({ pressed }) => [
             rowStyle,
             anchored && rowOffset + index < rowCount - 1 && styles.rowDivider,
@@ -180,16 +256,19 @@ export function MessageMenuHost() {
         contentContainerStyle={styles.stripInner}
         style={styles.stripScroll}
       >
-        {request.reactions.map((emoji) => (
+        {request.reactions.map((emoji, index) => (
           <Pressable
             key={emoji}
             accessibilityRole="button"
             accessibilityLabel={t('messageMenu.reactWith', { emoji })}
             hitSlop={v3Look ? EMOJI_SLOP : undefined}
-            onPress={() => resolveMessageMenu(request.id, { kind: 'reaction', emoji })}
+            onPress={() => finish({ kind: 'reaction', emoji })}
             style={[styles.emoji, request.myReaction === emoji && styles.emojiChosen]}
           >
-            <Text style={styles.emojiGlyph}>{emoji}</Text>
+            {/* The glyph arrives, not its cell: the strip's width never moves. */}
+            <Animated.View style={lifts ? grow(motion.emoji[index], MENU_MOTION.emojiFrom) : null}>
+              <Text style={styles.emojiGlyph}>{emoji}</Text>
+            </Animated.View>
           </Pressable>
         ))}
       </ScrollView>
@@ -210,7 +289,7 @@ export function MessageMenuHost() {
     // popover does not have. Android's back button returns to the menu; the
     // scrim closes everything, as it does for the menu itself.
     return (
-      <Modal transparent animationType="fade" visible onRequestClose={() => setPicking(false)}>
+      <Modal transparent animationType={modalFade} visible onRequestClose={() => setPicking(false)}>
         <Pressable
           style={[styles.backdrop, wide ? styles.backdropCentred : styles.backdropBottom]}
           onPress={dismiss}
@@ -232,9 +311,7 @@ export function MessageMenuHost() {
               onPress={() => {}}
             >
               {wide ? null : <View style={styles.handle} />}
-              <ReactionPicker
-                onPick={(emoji) => resolveMessageMenu(request.id, { kind: 'reaction', emoji })}
-              />
+              <ReactionPicker onPick={(emoji) => finish({ kind: 'reaction', emoji })} />
             </Pressable>
           </Animated.View>
         </Pressable>
@@ -332,19 +409,35 @@ export function MessageMenuHost() {
       mine: request.mine,
       rtl: isRtl,
     })
+    /** `messageMenuLayout`'s own rule for which edge of the bubble the menu hangs from. */
+    const trailing = request.mine !== isRtl
 
     return (
-      <Modal transparent animationType="fade" visible onRequestClose={dismiss}>
+      <Modal
+        transparent
+        animationType={lifts ? 'none' : modalFade}
+        visible
+        onRequestClose={dismiss}
+      >
         <Pressable style={styles.anchoredBackdrop} onPress={dismiss}>
+          {lifts ? (
+            <Animated.View pointerEvents="none" style={[styles.scrim, { opacity: motion.scrim }]} />
+          ) : null}
           {strip ? (
-            <View
+            <Animated.View
               style={[
                 styles.stripHolder,
                 { top: layout.strip.top, left: layout.strip.left, width: stripWidth },
+                lifts
+                  ? [
+                      grow(motion.menu, MENU_MOTION.menuFrom),
+                      { transformOrigin: menuOrigin(layout.placement, 'strip', trailing) },
+                    ]
+                  : null,
               ]}
             >
               {strip}
-            </View>
+            </Animated.View>
           ) : null}
 
           {/*
@@ -356,7 +449,12 @@ export function MessageMenuHost() {
             one: chrome around a sticker is what makes it look like a picture
             somebody attached rather than a thing they said.
           */}
-          <View
+          {/*
+            Under v3 the copy fades with the scrim: it lands exactly over the
+            real bubble, so as the thread dims the bubble seems to stay lit
+            rather than a second one appearing. Then it lifts by 3%.
+          */}
+          <Animated.View
             style={[
               bare ? styles.copyBare : styles.copy,
               bare ? null : request.mine ? styles.copyMine : styles.copyTheirs,
@@ -369,26 +467,45 @@ export function MessageMenuHost() {
                 left: layout.bubble.left,
                 maxWidth: Math.max(120, request.anchor.width),
               },
+              lifts
+                ? {
+                    opacity: motion.scrim,
+                    transform: [
+                      {
+                        scale: motion.lift.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [1, MENU_MOTION.liftScale],
+                        }),
+                      },
+                    ],
+                  }
+                : null,
             ]}
           >
             {copy}
-          </View>
+          </Animated.View>
 
-          <View
+          <Animated.View
             style={[
               styles.menu,
               { top: layout.menu.top, left: layout.menu.left, width: menuWidth },
+              lifts
+                ? [
+                    grow(motion.menu, MENU_MOTION.menuFrom),
+                    { transformOrigin: menuOrigin(layout.placement, 'menu', trailing) },
+                  ]
+                : null,
             ]}
           >
             {rows}
-          </View>
+          </Animated.View>
         </Pressable>
       </Modal>
     )
   }
 
   return (
-    <Modal transparent animationType="fade" visible onRequestClose={dismiss}>
+    <Modal transparent animationType={modalFade} visible onRequestClose={dismiss}>
       <Pressable
         style={[styles.backdrop, wide ? styles.backdropCentred : styles.backdropBottom]}
         onPress={dismiss}
@@ -421,6 +538,31 @@ export function MessageMenuHost() {
       </Pressable>
     </Modal>
   )
+}
+
+/** One leg of the lift, on the native driver: `CURVE.out`, as everything else here. */
+function fadeTo(
+  value: Animated.Value,
+  toValue: number,
+  duration: number,
+  delay = 0,
+): Animated.CompositeAnimation {
+  return Animated.timing(value, {
+    toValue,
+    duration,
+    delay,
+    easing: EASE_OUT,
+    useNativeDriver: true,
+  })
+}
+
+/** Fades in while growing from `from` to full size, as `value` runs 0 → 1. */
+function grow(value: Animated.Value | undefined, from: number) {
+  if (!value) return null
+  return {
+    opacity: value,
+    transform: [{ scale: value.interpolate({ inputRange: [0, 1], outputRange: [from, 1] }) }],
+  }
 }
 
 /** `action`'s padding plus its tallest content — the label's pinned 22. The layout needs it up front. */
@@ -485,6 +627,15 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   backdropBottom: { justifyContent: 'flex-end' },
   backdropCentred: { alignItems: 'center', justifyContent: 'center' },
   anchoredBackdrop: { backgroundColor: colors.scrim, flex: 1 },
+  /** v3's faded scrim; the current look's is the backdrop above, under the Modal's fade. */
+  scrim: {
+    backgroundColor: colors.scrim,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
   destructive: { color: colors.danger },
   /**
    * v3's row type at the popover's scale: the sheet's 17 leaves no air in a
@@ -628,7 +779,16 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
   backdrop: { backgroundColor: v3.colors.scrim, flex: 1 },
   backdropBottom: { justifyContent: 'flex-end' },
   backdropCentred: { alignItems: 'center', justifyContent: 'center' },
-  anchoredBackdrop: { backgroundColor: v3.colors.scrim, flex: 1 },
+  // Clear: the anchored menu lifts, and its scrim fades in on its own (`scrim`).
+  anchoredBackdrop: { flex: 1 },
+  scrim: {
+    backgroundColor: v3.colors.scrim,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
   destructive: { color: v3.colors.danger },
   // Callout on the current look's pinned 22, which `ROW_HEIGHT` is derived from.
   label: { ...v3.type.callout, color: v3.colors.fg, flex: 1, fontWeight: '600', lineHeight: 22 },
