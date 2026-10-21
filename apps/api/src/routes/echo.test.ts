@@ -1081,6 +1081,44 @@ describe('echo', () => {
         expect(await balanceOf(user.userId)).toBe(TOKEN_RULES.award.echoSession)
       })
 
+      // The freeze stops the payout, not the history: the session still fills
+      // the square, exactly as it would for an account in good standing.
+      it('pays a token-frozen account nothing, and still counts its streak', async () => {
+        const user = await newUser('award-frozen@example.com')
+        await handle.db
+          .collection(COLLECTIONS.profiles)
+          .updateOne({ _id: user.userId as never }, { $set: { tokenFrozenAt: new Date() } })
+        const reviews = await fullSession(user, 'award-frozen')
+
+        const first = await grade(user, reviews)
+        expect(first.statusCode, first.body).toBe(200)
+        expect(awardOf(first)).toEqual({
+          tokens: 0,
+          streak: expect.objectContaining({
+            current: 1,
+            advanced: true,
+            milestoneXp: 0,
+          }) as unknown,
+        })
+        expect(
+          await handle.db
+            .collection(COLLECTIONS.tokenLedger)
+            .countDocuments({ userId: user.userId, kind: 'echo' }),
+        ).toBe(0)
+
+        const resent = await grade(user, reviews)
+        expect(awardOf(resent)).toEqual({ tokens: 0, streak: null })
+        const profile = await handle.db
+          .collection<{ streak?: { current: number } }>(COLLECTIONS.profiles)
+          .findOne({ _id: user.userId as never })
+        expect(profile?.streak?.current).toBe(1)
+        expect(
+          await handle.db
+            .collection(COLLECTIONS.tokenLedger)
+            .countDocuments({ userId: user.userId, kind: { $in: ['echo', 'streak'] } }),
+        ).toBe(0)
+      })
+
       it('says a banked freeze bridged the missed day', async () => {
         const user = await newUser('award-freeze@example.com')
         await rewindStreak(user.userId, 5, 2, 1)

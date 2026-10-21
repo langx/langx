@@ -35,7 +35,7 @@ interface BarListProps {
  * illegible at the light end of any palette.
  */
 export function BarList({ rows, color, scale, empty }: BarListProps) {
-  const { colors } = useTheme()
+  const { v3 } = useTheme()
   const styles = useStyles()
 
   const top = scale ?? Math.max(...rows.map((row) => row.value), 0)
@@ -55,7 +55,7 @@ export function BarList({ rows, color, scale, empty }: BarListProps) {
             style={[
               styles.fill,
               {
-                backgroundColor: color ?? colors.accent,
+                backgroundColor: color ?? v3.colors.blue,
                 // A row that counted nothing draws no fill at all rather than a
                 // sliver, which would read as a small number instead of none.
                 width: top > 0 ? `${(row.value / top) * 100}%` : '0%',
@@ -75,27 +75,32 @@ export function BarList({ rows, color, scale, empty }: BarListProps) {
   )
 }
 
-const useStyles = makeStyles(({ colors, radius }) => ({
-  list: { gap: 4 },
+const useStyles = makeStyles(({ v3 }) => ({
+  list: { gap: v3.space[4] },
   row: {
     alignItems: 'center',
-    borderRadius: radius.sm,
+    borderRadius: v3.radius.icon,
     flexDirection: 'row',
-    gap: 12,
+    gap: v3.space[12],
     overflow: 'hidden',
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+    paddingHorizontal: v3.space[10],
+    paddingVertical: v3.space[8],
   },
   /*
    * The hue at a wash rather than a tint token: `accentBg` is one fixed colour
    * and these rows have to take whichever hue the section is drawn in. Opacity
    * on the fill is what makes one colour work behind text in both schemes.
    */
-  fill: { bottom: 0, left: 0, opacity: 0.16, position: 'absolute', top: 0 },
-  text: { flex: 1, gap: 1 },
-  label: { color: colors.text, fontSize: 14, fontWeight: '600' },
-  hint: { color: colors.textMuted, fontSize: 12 },
+  fill: { bottom: 0, opacity: 0.22, position: 'absolute', start: 0, top: 0 },
+  text: { flex: 1, gap: v3.space[2] },
+  label: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '600' },
+  hint: { ...v3.type.caption, color: v3.colors.muted },
   // Tabular: these are a column of numbers, and they have to line up.
-  value: { color: colors.text, fontSize: 14, fontVariant: ['tabular-nums'], fontWeight: '700' },
-  empty: { color: colors.textMuted, fontSize: 14 },
+  value: {
+    ...v3.type.callout,
+    color: v3.colors.fg,
+    fontVariant: ['tabular-nums'],
+    fontWeight: '700',
+  },
+  empty: { ...v3.type.caption, color: v3.colors.muted },
 }))

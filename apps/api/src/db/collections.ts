@@ -229,6 +229,13 @@ export const COLLECTIONS = {
    */
   proGifts: 'proGifts',
   /**
+   * Sticker packs one person gave another, one row per gift. The row is the
+   * gift's idempotency and its caps: the unique indexes on it make a second
+   * charge for one tap, a second gift in a week and a third in a month
+   * physically impossible. See `modules/tokens/stickerGifts.ts`.
+   */
+  stickerGifts: 'stickerGifts',
+  /**
    * Codes an operator hands out, each worth months of Pro to anybody who
    * types it once. `code` is stored upper case and unique; `redemptions` is
    * the running count the cap is checked against. See
