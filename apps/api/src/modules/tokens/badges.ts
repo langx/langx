@@ -189,7 +189,19 @@ export async function getBadgeSummary(
       }
     : null
 
-  return { badges, earnedCount: badges.filter((badge) => badge.earned).length, next }
+  // Counting kinds only: a cohort is a fact, and a fraction of one is not a
+  // sentence anybody can act on.
+  const progressByKind: Record<string, number> = {}
+  for (const kind of Object.keys(progress) as BadgeKind[]) {
+    if (!isCohortBadge(kind)) progressByKind[kind] = progress[kind]
+  }
+
+  return {
+    badges,
+    earnedCount: badges.filter((badge) => badge.earned).length,
+    next,
+    progress: progressByKind,
+  }
 }
 
 /**
