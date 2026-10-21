@@ -6,7 +6,7 @@ import { getBadgeSummary } from './badges'
 import { countCorrectionsWritten } from './corrections'
 import { countPostsByAuthor } from '../feed/feed'
 import { readAggregates, type TokenAggregate } from './ledger'
-import { badgeStripMarks, periodKeys, type ProfileBadge } from '@langx/shared'
+import { badgeStripMarks, findBadge, periodKeys, type ProfileBadge } from '@langx/shared'
 
 /**
  * What a profile shows about how somebody uses the app: the streak, how many
@@ -50,6 +50,12 @@ export interface PublicSummary {
    * tips of the same ladders, so the difference is always zero.
    */
   topBadges: ProfileBadge[]
+  /**
+   * The badges the owner pinned, in their order, when they pinned any. The
+   * v3 profile wears these instead of `topBadges`; older builds never read
+   * the field, and could not draw a v3 kind if they did.
+   */
+  pinnedBadges?: ProfileBadge[]
   tokens: number
   /**
    * Where they stand on this week's token board, as a top-N%, or `null` when
@@ -116,6 +122,7 @@ export async function getPublicSummary(
       kind: badge.kind,
       icon: badge.icon,
     })),
+    ...pinnedOf(profile.pinnedBadgeIds),
     // The all-time total, which is what the owner's own profile shows too —
     // not the balance, which moves when they spend and is nobody else's
     // business.
@@ -158,4 +165,13 @@ async function weekPercentile(
 
   // `total` includes this user, so it is at least 1 and the division is safe.
   return { percentile: Math.min(100, Math.max(1, Math.ceil(((above + 1) / total) * 100))) }
+}
+
+/** The pinned ids as strip marks, skipping any id the catalogue no longer has. */
+function pinnedOf(ids: readonly string[] | undefined): { pinnedBadges?: ProfileBadge[] } {
+  const marks = (ids ?? []).flatMap((id) => {
+    const badge = findBadge(id)
+    return badge ? [{ id: badge.id, kind: badge.kind, icon: badge.icon }] : []
+  })
+  return marks.length > 0 ? { pinnedBadges: marks } : {}
 }

@@ -11,7 +11,8 @@ import {
   countPeopleHelped,
   countTestimonialsAbout,
 } from './badgeCounts'
-import { getBadgeSummary, getPublicBadges } from './badges'
+import { getBadgeSummary, getPublicBadges, pinBadges } from './badges'
+import { getPublicSummary } from './publicSummary'
 
 describe('the v3 badge counts', () => {
   let mongo: MongoMemoryServer
@@ -193,6 +194,29 @@ describe('the v3 badge counts', () => {
       const second = await getBadgeSummary(handle.db, me, new Date(), 'v3')
       expect(second.earnedCount).toBe(first.earnedCount)
       expect(await handle.db.collection(COLLECTIONS.tokenLedger).countDocuments({})).toBe(0)
+    })
+  })
+
+  describe('pinned to the profile', () => {
+    it('pins earned badges in order, at most three, and shows them on the profile', async () => {
+      const me = id()
+      await profile(me, { stats: { openersAnsweredWithinDay: 60 }, timezone: 'UTC' })
+      const result = await pinBadges(handle.db, me, ['openers.50', 'openers.10', 'openers.50'])
+      expect(result.pinned).toEqual(['openers.50', 'openers.10'])
+
+      const summary = await getBadgeSummary(handle.db, me, new Date(), 'v3')
+      expect(summary.pinned).toEqual(['openers.50', 'openers.10'])
+      const shown = await getPublicSummary(handle.db, me)
+      expect(shown?.pinnedBadges?.map((badge) => badge.id)).toEqual(['openers.50', 'openers.10'])
+    })
+
+    it('refuses a badge not earned, and unpins with an empty list', async () => {
+      const me = id()
+      await profile(me, { stats: { openersAnsweredWithinDay: 10 }, timezone: 'UTC' })
+      await expect(pinBadges(handle.db, me, ['openers.200'])).rejects.toThrow()
+      await pinBadges(handle.db, me, ['openers.10'])
+      await pinBadges(handle.db, me, [])
+      expect((await getPublicSummary(handle.db, me))?.pinnedBadges).toBeUndefined()
     })
   })
 })

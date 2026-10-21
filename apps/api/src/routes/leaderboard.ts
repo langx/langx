@@ -1,12 +1,13 @@
 import {
   badgeCatalogueQuerySchema,
+  pinBadgesSchema,
   leaderboardQuerySchema,
   purchaseSchema,
   streakLeaderboardQuerySchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { requireAuth } from '../middleware/requireAuth'
-import { getBadgeSummary } from '../modules/tokens/badges'
+import { getBadgeSummary, pinBadges } from '../modules/tokens/badges'
 import { getLeaderboard } from '../modules/tokens/leaderboard'
 import { getStreakLeaderboard } from '../modules/tokens/streakLeaderboard'
 import { claimGift } from '../modules/tokens/gift'
@@ -51,6 +52,15 @@ export const leaderboardRoutes: FastifyPluginAsyncZod = async (app) => {
       return reply.send(
         await getBadgeSummary(app.mongo.db, request.userId, new Date(), request.query.catalogue),
       )
+    },
+  )
+
+  // The badges worn on your profile, chosen on the v3 shelf.
+  app.post(
+    '/me/badges/pinned',
+    { preHandler: requireAuth, schema: { body: pinBadgesSchema } },
+    async (request, reply) => {
+      return reply.send(await pinBadges(app.mongo.db, request.userId, request.body.ids))
     },
   )
 

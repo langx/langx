@@ -376,6 +376,8 @@ export const badgeSummarySchema = z.object({
    * still parses, and a client with nothing here draws no progress.
    */
   progress: z.record(z.string(), z.number().int()).optional(),
+  /** The ids pinned to the profile, in order. Your own summary only. */
+  pinned: z.array(z.string()).optional(),
 })
 export type BadgeSummary = z.infer<typeof badgeSummarySchema>
 
@@ -400,6 +402,19 @@ export const publicBadgesSchema = z.object({
   total: z.number().int(),
 })
 export type PublicBadges = z.infer<typeof publicBadgesSchema>
+
+/** How many badges somebody can pin to their profile. */
+export const PINNED_BADGES_MAX = 3
+
+/**
+ * `POST /me/badges/pinned` — the whole list, in order, replacing the last.
+ * Empty unpins everything, and the profile goes back to the newest badge of
+ * each family.
+ */
+export const pinBadgesSchema = z.object({
+  ids: z.array(z.string().min(1).max(64)).max(PINNED_BADGES_MAX),
+})
+export type PinBadgesInput = z.infer<typeof pinBadgesSchema>
 
 /** One mark on the profile's badge strip: enough to draw it, and nothing else. */
 export const profileBadgeSchema = z.object({
