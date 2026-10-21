@@ -166,6 +166,7 @@ import { FirstReplyCard } from '../components/FirstReplyCard'
 import { DiscardUnsentButton } from '../components/DiscardUnsentButton'
 import {
   addPending,
+  advancePending,
   expirePending,
   newPendingId,
   removePending,
@@ -1568,17 +1569,8 @@ export function ChatScreen({
              */
             onProgress: (loaded, total) =>
               setPending((list) =>
-                list.map((row) =>
-                  row.clientId === clientId
-                    ? {
-                        ...row,
-                        progress: advanceUpload(
-                          row.progress,
-                          index + (total > 0 ? loaded / total : 0),
-                          items.length,
-                        ),
-                      }
-                    : row,
+                advancePending(list, clientId, (progress) =>
+                  advanceUpload(progress, index + (total > 0 ? loaded / total : 0), items.length),
                 ),
               ),
           }),
