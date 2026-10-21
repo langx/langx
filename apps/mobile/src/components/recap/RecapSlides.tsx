@@ -47,6 +47,12 @@ export interface SlideLook {
    * near-black — where the arcs' own black or white half would vanish.
    */
   mark: 'arcs' | 'tile'
+  /**
+   * The summary's tiles, where the look sets them: v3's poster leads with an
+   * ink tile and puts the rest on a pale veil of the ground. Left out, the
+   * tiles are today's yellow lead and white rest.
+   */
+  tiles?: { lead: string; leadText: string; rest: string; restText: string }
 }
 
 // Derived from the ink rather than tokens of their own: a track and a chip
@@ -64,6 +70,26 @@ const ON_LIGHT = {
   bar: 'dark',
   mark: 'arcs',
 } as const
+
+/**
+ * v3's story (`V-Recap`): every slide on the reader's own colour, ink on top
+ * in both schemes — a poster, as today's grounds are, so dark mode only takes
+ * the hue's deeper step. `ground` is that hue, already picked for the scheme.
+ */
+export function hueLook(ground: string): SlideLook {
+  const ink = '#14161b'
+  return {
+    ground,
+    ink,
+    muted: 'rgba(20, 22, 27, 0.72)',
+    numeral: ink,
+    track: 'rgba(20, 22, 27, 0.18)',
+    chrome: 'rgba(20, 22, 27, 0.10)',
+    bar: 'dark',
+    mark: 'arcs',
+    tiles: { lead: ink, leadText: '#ffffff', rest: 'rgba(255, 255, 255, 0.42)', restText: ink },
+  }
+}
 
 export function slideLook(slide: RecapSlide, scheme: ColorScheme): SlideLook {
   switch (slide) {
@@ -522,11 +548,16 @@ function SummarySlide(
       >
         {stats.map((stat, index) => {
           const yellow = index === 0
-          const numeral = yellow
-            ? light.primaryText
-            : stat === 'currentStreak'
-              ? light.streak
-              : light.accent
+          const tiles = props.look.tiles
+          const numeral = tiles
+            ? yellow
+              ? tiles.leadText
+              : tiles.restText
+            : yellow
+              ? light.primaryText
+              : stat === 'currentStreak'
+                ? light.streak
+                : light.accent
           const value = recap[stat].toLocaleString(props.locale)
           const width = stats.length === 3 && index === 0 ? props.width : tileWidth
           const tileNumber = numeralSize(value, width - 32 * k, 54 * k)
@@ -534,7 +565,13 @@ function SummarySlide(
             <View
               key={stat}
               style={{
-                backgroundColor: yellow ? light.primary : light.bg,
+                backgroundColor: tiles
+                  ? yellow
+                    ? tiles.lead
+                    : tiles.rest
+                  : yellow
+                    ? light.primary
+                    : light.bg,
                 borderRadius: 22 * k,
                 gap: 6 * k,
                 justifyContent: 'space-between',
@@ -562,7 +599,13 @@ function SummarySlide(
               </Text>
               <Text
                 style={{
-                  color: yellow ? light.primaryText : light.text,
+                  color: tiles
+                    ? yellow
+                      ? tiles.leadText
+                      : tiles.restText
+                    : yellow
+                      ? light.primaryText
+                      : light.text,
                   fontFamily: props.display,
                   fontSize: 14 * k,
                   lineHeight: 16 * k,

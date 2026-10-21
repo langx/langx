@@ -1,6 +1,7 @@
 import {
   isImageContentType,
   isVideoContentType,
+  paywallPath,
   postUrl,
   profileUrl,
   REPORTS_TO_FREEZE_XP,
@@ -8,6 +9,7 @@ import {
   type FeedbackKind,
   type Locale,
   type Media,
+  type PromotionPaywallSource,
   type ReportReason,
 } from '@langx/shared'
 import { translator, type ServerMessageKey } from '../i18n'
@@ -817,14 +819,19 @@ export type PromotionScenario =
 export function promotionEmail(
   locale: Locale,
   scenario: PromotionScenario,
-  input: { count?: number; unsubscribe: string },
+  input: {
+    count?: number
+    unsubscribe: string
+    /** `flags.promoPaywallLinks`: a nudge about the plans opens the paywall. */
+    paywallLinks?: boolean
+  },
 ): Email {
   const t = translator(locale)
   const params = input.count === undefined ? {} : { count: input.count }
   const subject = t(`email.promo.${scenario}Subject` as never, params)
   const body = t(`email.promo.${scenario}Body` as never, params)
   const cta = {
-    url: PROMOTION_DESTINATIONS[scenario],
+    url: promotionDestination(scenario, input.paywallLinks === true),
     label: t(`email.promo.${scenario}Button` as never),
   }
   return {
@@ -855,6 +862,29 @@ const PROMOTION_DESTINATIONS: Record<PromotionScenario, string> = {
   winBack: webUrl('/settings/plan'),
   tokensWaiting: webUrl('/wallet'),
   inviteFriend: webUrl('/settings/share'),
+}
+
+/**
+ * The nudges whose sentence is about the plans, and the paywall road each
+ * opens once `flags.promoPaywallLinks` is on. Both say "See the plans", and
+ * Settings → Subscription answers that with a list of what somebody holds —
+ * nothing, for the free accounts these two reach — and a button to the
+ * paywall: one screen more, and a paywall that counted the visit as `settings`.
+ *
+ * Not the trial nudge. Everybody it reaches is in a trial and holds Pro, and
+ * the paywall is not shown to sell Pro to somebody who has it; their link
+ * stays on the plan they hold.
+ */
+export const PROMOTION_PAYWALL_SOURCE: Partial<Record<PromotionScenario, PromotionPaywallSource>> =
+  {
+    limitReached: 'nudge_limits',
+    winBack: 'nudge_win_back',
+  }
+
+/** Where a nudge's button points, with the switch as the pass read it. */
+export function promotionDestination(scenario: PromotionScenario, paywallLinks: boolean): string {
+  const source = paywallLinks ? PROMOTION_PAYWALL_SOURCE[scenario] : undefined
+  return source ? webUrl(paywallPath(source)) : PROMOTION_DESTINATIONS[scenario]
 }
 
 /** The four things this app tells somebody about their own account. */

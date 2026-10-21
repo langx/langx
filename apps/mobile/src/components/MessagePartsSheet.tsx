@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Button } from './ui/Button'
+import { useV3Home } from '../hooks/useV3Home'
 import { useT } from '../i18n'
-import { makeStyles } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 
 /**
  * A message cut into pieces, one tap to choose a piece.
@@ -37,7 +39,12 @@ export function MessagePartsSheet({
   selected?: string | null
   detail?: ReactNode
 }) {
-  const styles = useStyles()
+  const current = useStyles()
+  const redesigned = useStylesV3()
+  const v3Look = useV3Home()
+  const styles = v3Look ? redesigned : current
+  const { v3 } = useTheme()
+  const insets = useSafeAreaInsets()
   const t = useT()
 
   return (
@@ -79,7 +86,13 @@ export function MessagePartsSheet({
           {detail ? <View style={styles.detail}>{detail}</View> : null}
 
           {/* Outside the scroller, like every sheet's way out. */}
-          <View style={styles.footer}>
+          <View
+            style={[
+              styles.footer,
+              // v3 keeps Cancel clear of the home indicator; the current look is unchanged.
+              v3Look && { paddingBottom: Math.max(v3.space[32], insets.bottom + v3.space[16]) },
+            ]}
+          >
             <Button label={t('common.cancel')} variant="neutral" onPress={onClose} />
           </View>
         </Pressable>
@@ -138,5 +151,64 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     paddingBottom: spacing.xxl,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
+  },
+}))
+
+/**
+ * v3's look for the same sheet, behind `flags.v3Home` with the rest of the
+ * thread. No board draws it; it follows `WhatsProSheet` for the sheet and
+ * V-Corrections for the pieces: grey blocks on the ground, no outlines, and
+ * the chosen piece as the ink pill v3 draws every chosen chip in. A word is a
+ * pill at the 44pt target; a sentence keeps the block's corner so it can wrap.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  backdrop: { backgroundColor: v3.colors.scrim, flex: 1, justifyContent: 'flex-end' },
+  sheet: {
+    alignSelf: 'center',
+    backgroundColor: v3.colors.bg,
+    borderTopLeftRadius: v3.radius.block,
+    borderTopRightRadius: v3.radius.block,
+    maxHeight: '80%',
+    maxWidth: 480,
+    width: '100%',
+  },
+  content: {
+    gap: v3.space[8],
+    paddingBottom: v3.space[16],
+    paddingHorizontal: v3.space[16],
+    paddingTop: v3.space[24],
+  },
+  title: { ...v3.type.headline, color: v3.colors.fg, paddingBottom: v3.space[4] },
+  sentences: { gap: v3.space[8] },
+  words: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
+  part: {
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.row,
+    paddingHorizontal: v3.space[16],
+    paddingVertical: v3.space[14],
+  },
+  word: {
+    borderRadius: v3.radius.pill,
+    justifyContent: 'center',
+    minHeight: 44,
+    paddingHorizontal: v3.space[16],
+    paddingVertical: v3.space[8],
+  },
+  pressed: { backgroundColor: v3.colors.tabOn },
+  selected: { backgroundColor: v3.colors.pill },
+  partText: { ...v3.type.body, color: v3.colors.fg, lineHeight: 23 },
+  selectedText: { color: v3.colors.pillText },
+  detail: {
+    borderTopColor: v3.colors.line,
+    borderTopWidth: 1,
+    paddingHorizontal: v3.space[16],
+    paddingVertical: v3.space[12],
+  },
+  footer: {
+    borderTopColor: v3.colors.line,
+    borderTopWidth: 1,
+    paddingBottom: v3.space[32],
+    paddingHorizontal: v3.space[16],
+    paddingTop: v3.space[12],
   },
 }))

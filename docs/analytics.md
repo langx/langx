@@ -187,7 +187,14 @@ Some of these carry a number that needs a caveat rather than a footnote:
   split by app version. `gift_end` is "Keep Pro" on the Pro Week's last-day
   recap, behind `flags.proWeek`: an account that had a week never sees the
   `onboarding` paywall, so read the two together — `gift_end` is the reverse
-  trial's conversion.
+  trial's conversion. `nudge_limits` ("You are running into the free limits")
+  and `nudge_win_back` ("Your plan ended a week ago") are the two promotional
+  nudges about the plans, by mail and by push, behind `flags.promoPaywallLinks`;
+  off, those links open Settings → Subscription and Discover and arrive as
+  `settings` or not at all. One value per message, both channels:
+  `notification_opened` with `kind: promotion` counts the tapped pushes. They
+  are declared in `@langx/shared` (`PROMOTION_PAYWALL_SOURCES`), since the
+  server writes them into the links.
 - **The Boosted strip's three** need reading together. `boosted_strip_shown`
   means the strip was in the list on that visit, not that pixels reached an
   eye — there is deliberately no viewability maths on a horizontal scroller of

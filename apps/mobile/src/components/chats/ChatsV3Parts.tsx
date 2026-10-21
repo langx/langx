@@ -6,6 +6,7 @@ import type { RowPartner } from '../../hooks/useConversationPartners'
 import { useLocale, useT } from '../../i18n'
 import { callRowIcon, callRowLabel } from '../../lib/calls/callLabels'
 import { acceptsSends } from '../../lib/conversationPicker'
+import { ROW_BADGE_SIZE, countBadgeText } from '../../lib/countBadge'
 import { relativeTimeCompact } from '../../lib/format'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { partnerHueFor } from '../../lib/theme/partnerHue'
@@ -113,6 +114,7 @@ export const WaitingBlock = memo(function WaitingBlock({
           url={partner.avatarUrl}
           name={name}
           seed={partner._id}
+          defaultAvatarRev={partner.defaultAvatarRev}
           slot={lead ? LEAD_AVATAR : BLOCK_AVATAR}
           frame={partner.frame}
         />
@@ -305,6 +307,7 @@ export const ChatRowV3 = memo(function ChatRowV3({
               url={partner.avatarUrl}
               name={partner.displayName}
               seed={partner._id}
+              defaultAvatarRev={partner.defaultAvatarRev}
               online={partner.isOnline}
               slot={ROW_AVATAR}
               frame={partner.frame}
@@ -412,6 +415,7 @@ function FaceSlot({
   url: string | undefined
   name: string
   seed: string
+  defaultAvatarRev?: string | undefined
   online?: boolean
   slot: number
   frame: string | undefined
@@ -539,10 +543,11 @@ const useStyles = makeStyles(({ v3 }) => ({
     alignItems: 'center',
     backgroundColor: v3.colors.blue,
     borderRadius: v3.radius.pill,
+    height: ROW_BADGE_SIZE,
+    justifyContent: 'center',
     minWidth: 22,
     paddingHorizontal: v3.space[6],
-    paddingVertical: v3.space[2],
   },
-  badgeText: { ...v3.type.label, color: v3.colors.onBlue },
+  badgeText: { ...v3.type.label, ...countBadgeText(ROW_BADGE_SIZE), color: v3.colors.onBlue },
   grow: { flex: 1 },
 }))

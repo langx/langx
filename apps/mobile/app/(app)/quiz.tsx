@@ -17,6 +17,8 @@ import { showAlert } from '../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../src/lib/socket'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../src/lib/theme'
+import { useV3HomeDecision } from '../../src/hooks/useV3Home'
+import { QuizScreenV3 } from '../../src/screens/phrases/QuizScreenV3'
 
 /**
  * Writing a question with one right answer.
@@ -27,7 +29,18 @@ import { makeStyles, useTheme } from '../../src/lib/theme'
  * right" is the same question as "which one am I marking", and asking it twice
  * is how the two end up disagreeing.
  */
-export default function QuizScreen() {
+/**
+ * Writing a quiz — or, with `flags.v3Home` on, the redesign's. Bare until the config
+ * has said which, so a deep link never draws one look and then the other.
+ */
+export default function QuizRoute() {
+  const v3Home = useV3HomeDecision()
+  const { id } = useLocalSearchParams<{ id: string }>()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <QuizScreenV3 conversationId={id} /> : <QuizScreen />
+}
+
+function QuizScreen() {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()

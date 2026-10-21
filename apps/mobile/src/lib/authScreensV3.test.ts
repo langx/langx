@@ -57,6 +57,20 @@ const PAIRS: readonly Pair[] = [
   },
   { route: '(auth)/verify-email-success.tsx', view: 'VerifyEmailSuccessV3.tsx' },
   { route: '(auth)/qr.tsx', view: 'QrSignInV3.tsx' },
+  // The root screens a mailed link, a shared link or a suspension opens.
+  { route: 'magic-link.tsx', view: 'MagicLinkV3.tsx', handlerOnly: ['errors.invalidToken', '/'] },
+  {
+    route: 'verify-email.tsx',
+    view: 'VerifyEmailV3.tsx',
+    handlerOnly: ['errors.invalidToken', '/'],
+  },
+  // `/` is where a lifted suspension goes, from the check both looks share.
+  {
+    route: 'suspended.tsx',
+    view: 'SuspendedV3.tsx',
+    handlerOnly: ['suspended.alreadyAppealed', 'suspended.failed', '/'],
+  },
+  { route: '[username].tsx', view: '../SharedProfileV3.tsx' },
 ]
 
 /** Components whose presence, and whose arguments, are behaviour rather than drawing. */
@@ -130,7 +144,7 @@ function uses(file: string): Uses {
   return found
 }
 
-describe('v3 sign-in screens keep the current screens’ words, doors and requests', () => {
+describe('v3 sign-in and link screens keep the current screens’ words, doors and requests', () => {
   for (const { route, view, handlerOnly = [] } of PAIRS) {
     it(`${view} draws everything ${route} does`, () => {
       const before = uses(path.join(APP, route))
@@ -153,7 +167,18 @@ describe('v3 sign-in screens keep the current screens’ words, doors and reques
           expect(after.elements.get(element), `${element} ${prop}`).toContain(prop)
       }
       // Only drawing: no request, no captcha and no analytics of its own.
-      for (const forbidden of ['authClient', 'useCaptcha', 'track', 'recordSignupSubmitted']) {
+      for (const forbidden of [
+        'authClient',
+        'useCaptcha',
+        'track',
+        'recordSignupSubmitted',
+        'useSubmitAppeal',
+        'useSuspension',
+        'useQuery',
+        'api',
+        'writeFlag',
+        'writePendingMessageIntent',
+      ]) {
         expect(after.identifiers.has(forbidden), `${view} calls ${forbidden}`).toBe(false)
       }
       // Every handled-only exemption must still be in the route, or it is a stale excuse.

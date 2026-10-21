@@ -21,7 +21,7 @@
  *
  * If you are here to "finish the translations": this is finished.
  */
-import type { ReportReason } from '@langx/shared'
+import { COPILOT_RULES, type ReportReason } from '@langx/shared'
 
 /**
  * One decimal, and an em dash rather than a `0%` when there is nothing to take
@@ -378,11 +378,18 @@ export const ADMIN = {
     lift: 'Lift suspension',
     reason: 'Reason',
     counts: 'Reports & blocks',
+    moderation: 'Moderation',
     reportsAgainst: 'against',
     reportsFiled: 'filed',
     blockedBy: 'blocked by',
     history: 'What we have done',
     noHistory: 'Nothing yet.',
+    copilot: {
+      title: 'Copilot access',
+      hint: `Uses Copilot when the switch is on, they are ${COPILOT_RULES.minimumAge}+, and they agree.`,
+      allowed: 'Copilot allowed',
+      revoked: 'Copilot access removed',
+    },
     gift: {
       title: 'Give Pro',
       hint: 'A RevenueCat grant with an end date. They get a message from @langx, a push and a mail in their language.',
@@ -399,7 +406,6 @@ export const ADMIN = {
       pending: 'Saved — RevenueCat did not answer, so the scheduler will retry it.',
       already: 'That gift was already given today.',
       list: 'Gifts',
-      row: (span: string, detail: string) => `${span} · ${detail}`,
       monthsShort: (n: number) => `${n} mo`,
       /** The streak's first rung is a week rather than months. */
       weeksShort: (n: number) => `${n} wk`,
@@ -503,6 +509,7 @@ export const ADMIN = {
       kinds: {
         initiations: 'New conversations',
         translations: 'Translations',
+        translationFairUse: 'Translations — fair-use ceiling',
         media: 'Photos, voice and video',
         echoCaptures: 'Echo cards kept',
         echoNewCards: 'Echo starter cards',
@@ -650,6 +657,9 @@ export const ADMIN = {
     jobFailed: 'last run failed',
     runs: (n: number) => `${n} runs`,
     suppressions: 'Addresses no mail may go to',
+    bounced: 'bounced',
+    complained: 'complained',
+    unsubscribed: 'unsubscribed',
     purge: 'Waiting to be purged',
     purgeAccounts: 'accounts',
     purgeAnalytics: 'analytics rows',
@@ -908,6 +918,22 @@ export const ADMIN = {
     cached: 'From the cache — nothing spent',
     fresh: 'Written now',
     refused: (code: string, reason?: string) => `Refused: ${code}${reason ? ` (${reason})` : ''}`,
+    allowedTitle: 'Allowed accounts',
+    allowedEmpty: 'Nobody yet. Allow an account from Find someone.',
+    allowedSince: (date: string) => `Since ${date}`,
+    you: 'You',
+    youAllowed: 'On the list',
+    youNotAllowed:
+      'Not on the list. Being an admin does not count: allow yourself in Find someone.',
+    whoTitle: 'Who sees Copilot',
+    whoRules: [
+      'flags.copilotEnabled is on',
+      'the API has a key',
+      'the account is on the list above',
+      `they are ${COPILOT_RULES.minimumAge} or older, by the exact birthday`,
+      'they agreed to the current consent sheet, asked on their first tap',
+    ],
+    whoPartner: `On top of that, Explain and Reply ideas refuse a chat whose partner is under ${COPILOT_RULES.minimumAge}, so their words never reach the model.`,
   },
 
   common: {

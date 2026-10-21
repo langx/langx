@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, Modal, Text, View } from 'react-native'
+import { useV3Home } from '../hooks/useV3Home'
 import { subscribeToSignInProgress, type SignInStage } from '../lib/signInProgress'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
@@ -18,8 +19,11 @@ import { useT } from '../i18n'
  * host there would be a fourth thing to reason about on every launch.
  */
 export function SignInProgressHost() {
-  const styles = useStyles()
-  const { colors } = useTheme()
+  const v3Look = useV3Home()
+  const currentStyles = useStyles()
+  const v3Styles = useStylesV3()
+  const styles = v3Look ? v3Styles : currentStyles
+  const { colors, v3 } = useTheme()
   const t = useT()
   const [stage, setStage] = useState<SignInStage>('idle')
 
@@ -29,7 +33,7 @@ export function SignInProgressHost() {
     <Modal visible={stage !== 'idle'} transparent animationType="fade">
       <View style={styles.backdrop}>
         <View style={styles.card}>
-          <ActivityIndicator color={colors.accent} size="large" />
+          <ActivityIndicator color={v3Look ? v3.colors.blue : colors.accent} size="large" />
           <Text style={styles.title}>
             {t(stage === 'restoring' ? 'welcomeBack.restoringTitle' : 'auth.signingIn')}
           </Text>
@@ -67,4 +71,31 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   },
   title: { ...font.heading, color: colors.text, fontSize: 17, textAlign: 'center' },
   body: { ...font.body, color: colors.textMuted, lineHeight: 21, textAlign: 'center' },
+}))
+
+/*
+ * No board draws this card. It is the v3 dialog: the one scrim, the ground
+ * colour on a block-rounded card, the title in Headline. The spinner is the
+ * blue: v3's colour for the main thing that is not a commitment.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  backdrop: {
+    ...v3.elevation.overlay,
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    padding: v3.space[24],
+  },
+  card: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.bg,
+    borderRadius: v3.radius.block,
+    gap: v3.space[12],
+    maxWidth: 320,
+    paddingHorizontal: v3.space[24],
+    paddingVertical: v3.space[32],
+    width: '100%',
+  },
+  title: { ...v3.type.headline, color: v3.colors.fg, textAlign: 'center' },
+  body: { ...v3.type.callout, color: v3.colors.muted, textAlign: 'center' },
 }))

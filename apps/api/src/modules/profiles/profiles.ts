@@ -38,6 +38,7 @@ import {
   type StoredPaidPlanTier,
   type StoredPlanTier,
   type UpdateProfileInput,
+  type DefaultAvatar,
 } from '@langx/shared'
 import { MongoServerError, type Db, type ObjectId, type UpdateFilter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -59,10 +60,17 @@ import { restoreByHash } from '../handles/legacyRestore'
 import { isSuspended } from '../moderation/suspension'
 import { attachReferral, readSignUpReferrer } from '../referrals/referrals'
 import { grantSignupBonus } from '../tokens/signupBonus'
+import { assignDefaultAvatar, defaultAvatarRevFor, onGenderChange } from './defaultAvatar'
 import { streakDaysInZone } from '../tokens/streak'
 
 export interface Profile {
   _id: string
+  /**
+   * Up to `PINNED_BADGES_MAX` earned badge ids the owner chose to wear on
+   * their profile, in their order. Written by `pinBadges`, which checks each
+   * is earned; badges only accumulate, so a pin stays true once made.
+   */
+  pinnedBadgeIds?: string[]
   /**
    * A browsing session with no account behind it.
    *
@@ -137,6 +145,12 @@ export interface Profile {
    */
   nameTokens?: string[]
   avatarUrl?: string
+  /**
+   * The drawn face worn while there is no `avatarUrl` — see
+   * `defaultAvatar.ts`. Written at creation and by the backfill; absent on a
+   * profile neither reached, which then wears `hashFallback`'s face.
+   */
+  defaultAvatar?: DefaultAvatar
   bio?: string
   /** Free text, `PRONOUNS_MAX_LENGTH` at most. Absent until somebody fills it in. */
   pronouns?: string
@@ -321,7 +335,7 @@ export interface Profile {
   }
   /**
    * When this account was last told it had run out — a rolling window, kept
-   * by `consumeQuota` and read by nothing but the upsell nudge.
+   * by `consumeQuota` and counted by the operator panel.
    *
    * Separate from `quota` because it is the opposite measurement: those
    * arrays are what somebody *used*, this is what they were refused. Absent
@@ -330,9 +344,10 @@ export interface Profile {
   quotaRefusals?: Date[]
   /**
    * Which limit each of those refusals was, kept beside them for the operator
-   * panel. A second array rather than a changed element type so the nudge
-   * that reads `quotaRefusals` — and an API instance from before this field —
-   * keeps working untouched. Same window, pruned by the same write. A refusal
+   * panel and for the plans nudge, which counts only the limits a plan lifts.
+   * A second array rather than a changed element type so whatever reads
+   * `quotaRefusals` — and an API instance from before this field — keeps
+   * working untouched. Same window, pruned by the same write. A refusal
    * with no entry here predates the field and reads as "unknown".
    */
   quotaRefusalKinds?: { at: Date; kind: string }[]
@@ -366,6 +381,14 @@ export interface Profile {
    * On the profile so the export carries it and the purge removes it.
    */
   copilotConsent?: { version: number; at: Date }
+  /**
+   * The operator allowed this account to use Copilot, and when. The
+   * per-account switch on top of the flag and the key — it opens nothing by
+   * itself, since the age floor and the person's own consent still apply.
+   * Written only by `modules/copilot/access.ts`, from the operator panel, and
+   * never part of a public profile.
+   */
+  copilotAccess?: { at: Date }
   streak: {
     current: number
     longest: number
@@ -756,6 +779,18 @@ export async function createProfile(
   await grantSignupBonus(db, userId, now)
 
   /*
+   * The drawn face, stored now so it is the same face from the first screen
+   * on. Wrapped like the referral below: the profile is written, and a
+   * failure here only means the hash face stands in until the backfill.
+   */
+  try {
+    const avatar = await assignDefaultAvatar(db, userId)
+    if (avatar) profile.defaultAvatar = avatar
+  } catch (error) {
+    console.error('[avatar] assign failed', { userId, error })
+  }
+
+  /*
    * Who invited them, if anybody said so. Wrapped the way `auth.ts` wraps the
    * legacy restore, and for the same reason: the account is real and the
    * profile is already written, so a failure here must not fail onboarding.
@@ -882,7 +917,20 @@ export async function setGender(
     { $set: { gender, genderChangedAt: now, updatedAt: now } },
     { returnDocument: 'after' },
   )
-  if (updated) return updated
+  if (updated) {
+    // An assigned face follows the gender into its pool; a picked one stays.
+    // After the gender is saved and never able to undo it: if the face does
+    // not move, the person keeps the old pool's face until they pick one,
+    // which is a cosmetic slip, and a 500 here would report a change that
+    // went through as one that failed.
+    try {
+      const avatar = await onGenderChange(db, userId, gender)
+      if (avatar) updated.defaultAvatar = avatar
+    } catch (error) {
+      console.error('[avatar] gender move failed', { userId, error })
+    }
+    return updated
+  }
 
   // The filter matched nothing, which is two different situations. Separating
   // them costs one read on a path that only runs when the write already
@@ -1585,6 +1633,8 @@ export interface PublicProfile {
   handle: string
   displayName: string
   avatarUrl?: string
+  /** Names the drawn face when there is no `avatarUrl`; see `defaultAvatarRevFor`. */
+  defaultAvatarRev?: string
   photos: { url: string }[]
   bio?: string
   pronouns?: string
@@ -1764,6 +1814,8 @@ export function toPublicProfile(
   if (profile.privacy?.refuseNewChats === true) result.acceptsNewChats = false
   if (!hidden) result.lastActiveAt = new Date(lastActiveAt)
   if (profile.avatarUrl !== undefined) result.avatarUrl = profile.avatarUrl
+  const defaultAvatarRev = defaultAvatarRevFor(profile)
+  if (defaultAvatarRev) result.defaultAvatarRev = defaultAvatarRev
   if (profile.bio !== undefined) result.bio = profile.bio
   if (profile.pronouns) result.pronouns = profile.pronouns
   if (profile.country !== undefined) result.country = profile.country
@@ -1810,6 +1862,8 @@ export interface ConversationPartner {
   handle: string
   displayName: string
   avatarUrl?: string
+  /** The drawn face when there is no `avatarUrl`; see `defaultAvatarRevFor`. */
+  defaultAvatarRev?: string
   isOnline: boolean
   official?: true
   accountStatus: 'active' | 'suspended' | 'deleted'
@@ -1838,6 +1892,8 @@ export function toConversationPartner(
         : 'active',
   }
   if (profile.avatarUrl !== undefined) partner.avatarUrl = profile.avatarUrl
+  const defaultAvatarRev = defaultAvatarRevFor(profile)
+  if (defaultAvatarRev) partner.defaultAvatarRev = defaultAvatarRev
   if (profile.official) partner.official = true
   // Not on an account that is gone or suspended: its row says so, and a
   // frame beside "Account deleted" would read as somebody still there.
@@ -1865,6 +1921,9 @@ export async function conversationPartners(
           handle: 1,
           displayName: 1,
           avatarUrl: 1,
+          // `defaultAvatarRevFor` reads these two; neither leaves on its own.
+          defaultAvatar: 1,
+          gender: 1,
           official: 1,
           privacy: 1,
           createdAt: 1,

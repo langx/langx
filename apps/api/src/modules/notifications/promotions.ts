@@ -1,13 +1,20 @@
 import {
   MARKETING_MIN_GAP_DAYS,
   PROMOTION_LOCAL_HOUR,
+  QUOTA_KINDS,
   localDayKey,
   notificationsAllowed,
+  quotaLimit,
+  type QuotaKind,
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { sendNotificationEmail, type NotificationEmailContext } from '../../email/notify'
-import { promotionEmail, type PromotionScenario } from '../../email/templates'
+import {
+  PROMOTION_PAYWALL_SOURCE,
+  promotionEmail,
+  type PromotionScenario,
+} from '../../email/templates'
 import { translator } from '../../i18n'
 import { profilesInLocalHour } from '../profiles/localHour'
 import type { Profile } from '../profiles/profiles'
@@ -84,6 +91,25 @@ const WIN_BACK_DAYS = 7
  * a plan that no longer fits.
  */
 const QUOTA_REFUSALS_BEFORE_NUDGE = 3
+
+/**
+ * The refusals the plans nudge may count: limits the free plan has and Pro
+ * does not have at all. Today that is new conversations and translations,
+ * which is exactly what the nudge's mail names.
+ *
+ * Read from `PLAN_LIMITS` rather than listed, so a limit that changes on
+ * either row moves this with it. Every other refusal is left out on purpose:
+ * media, the translation fair-use ceiling and the Echo captures are the same
+ * on both plans, and the voices, transcripts and Copilot are only raised —
+ * "a plan lifts them" would be false for somebody refused by any of those,
+ * and with `flags.promoPaywallLinks` on it would send them to a paywall that
+ * does not lift what refused them (#1789, #1832).
+ */
+export const REFUSALS_A_PLAN_LIFTS: ReadonlySet<string> = new Set<QuotaKind>(
+  QUOTA_KINDS.filter(
+    (kind) => quotaLimit('free', kind) !== null && quotaLimit('pro', kind) === null,
+  ),
+)
 
 /**
  * How long a nudge with a one-day trigger stays worth sending, once
@@ -285,6 +311,12 @@ export const PROMOTIONS: Promotion[] = [
      * Free accounts only. A paid tier has no limit to hit, so the array can
      * only be stale — somebody who upgraded yesterday must not be sold the
      * thing they just bought.
+     *
+     * And only refusals a plan actually lifts — `REFUSALS_A_PLAN_LIFTS`. It
+     * reads `quotaRefusalKinds`, not the bare `quotaRefusals`: a refusal
+     * recorded before the kind was kept cannot be shown to be one of them,
+     * so it does not count, and the window is three days, so nobody is left
+     * waiting on that for long.
      */
     job: 'promo.quotaHit',
     scenario: 'limitReached',
@@ -293,7 +325,9 @@ export const PROMOTIONS: Promotion[] = [
     eligible: ({ profile, now }) => {
       if ((profile.entitlement?.tier ?? 'free') !== 'free') return false
       const since = now.getTime() - QUOTA_REFUSAL_WINDOW_MS
-      const recent = (profile.quotaRefusals ?? []).filter((at) => new Date(at).getTime() >= since)
+      const recent = (profile.quotaRefusalKinds ?? []).filter(
+        ({ at, kind }) => REFUSALS_A_PLAN_LIFTS.has(kind) && new Date(at).getTime() >= since,
+      )
       return recent.length >= QUOTA_REFUSALS_BEFORE_NUDGE
     },
   },
@@ -388,7 +422,11 @@ export async function runPromotionsPass(
   now: Date = new Date(),
   logger?: { info: (obj: object, msg: string) => void },
 ): Promise<{ sent: number }> {
-  const noSilentDrops = (await getAppConfig(db)).flags.nudgeNoSilentDrops
+  const { flags } = await getAppConfig(db)
+  const noSilentDrops = flags.nudgeNoSilentDrops
+  // Where the plans nudges land, and nothing else: who is told, and when,
+  // is decided below exactly as with the switch off.
+  const paywallLinks = flags.promoPaywallLinks
   const table = promotionsInOrder(noSilentDrops)
   const readers = await profilesInLocalHour(db, PROMOTION_LOCAL_HOUR, now, {
     deletedAt: { $exists: false },
@@ -445,10 +483,10 @@ export async function runPromotionsPass(
         userId: profile._id,
         type: promotion.type,
         build: (locale, unsubscribe) =>
-          promotionEmail(locale, promotion.scenario, { ...detail, unsubscribe }),
+          promotionEmail(locale, promotion.scenario, { ...detail, unsubscribe, paywallLinks }),
       })
       if (outcome === 'sent') sent++
-      await pushIt(db, senders.push, profile, promotion, detail)
+      await pushIt(db, senders.push, profile, promotion, detail, paywallLinks)
       // One thing at a time. The cap keeps the next one a week away.
       break
     }
@@ -476,8 +514,13 @@ async function pushIt(
   profile: Profile,
   promotion: Promotion,
   detail: Record<string, number>,
+  paywallLinks: boolean,
 ): Promise<void> {
   if (promotion.type === 'streak') return
+  // A field beside the kind rather than a kind of its own: every installed
+  // build knows `promotion` and opens Discover for it, and only a build that
+  // reads `paywallSource` opens the paywall instead.
+  const paywallSource = paywallLinks ? PROMOTION_PAYWALL_SOURCE[promotion.scenario] : undefined
   if (!notificationsAllowed(profile.settings?.notifications, promotion.type, 'push')) return
   for (const [locale, tokens] of await tokensByLocale(db, profile._id)) {
     if (tokens.length === 0) continue
@@ -486,7 +529,7 @@ async function pushIt(
       to: tokens,
       title: t(`push.promo.${promotion.scenario}Title` as never, detail),
       body: t(`push.promo.${promotion.scenario}Body` as never, detail),
-      data: { kind: 'promotion' },
+      data: { kind: 'promotion', ...(paywallSource ? { paywallSource } : {}) },
     })
   }
 }

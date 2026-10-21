@@ -7,16 +7,23 @@ import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../src/components/ui/Skeleton'
+import { useV3Home } from '../../src/hooks/useV3Home'
 import { useT } from '../../src/i18n'
 import { showAlert } from '../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../src/lib/socket'
 import { goBackTo } from '../../src/lib/navigation'
-import { stickerAsset } from '../../src/lib/stickerAssets'
+import { stickerAsset, stickerNameKey } from '../../src/lib/stickerAssets'
 import { cosmeticKey } from '../../src/lib/storeOffers'
 import { makeStyles } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
+import { StickersScreenV3 } from '../../src/screens/chat/StickersScreenV3'
 
 const PACKS = COSMETICS.filter((cosmetic) => cosmetic.kind === 'stickers')
+
+/** The sticker keyboard, or with `flags.v3Home` on the redesign's (`StickersScreenV3`). */
+export default function StickersScreenRoute() {
+  return useV3Home() ? <StickersScreenV3 /> : <StickersScreen />
+}
 
 /**
  * The keyboard: every pack you own, and the ones you do not, greyed with
@@ -29,7 +36,7 @@ const PACKS = COSMETICS.filter((cosmetic) => cosmetic.kind === 'stickers')
  * happens, and a keyboard that answers "go and look in the wallet" is a
  * keyboard nobody comes back to.
  */
-export default function StickersScreen() {
+function StickersScreen() {
   const styles = useStyles()
   const t = useT()
   const { id: conversationId } = useLocalSearchParams<{ id: string }>()
@@ -101,7 +108,7 @@ export default function StickersScreen() {
                       <Pressable
                         key={stickerId}
                         accessibilityRole="button"
-                        accessibilityLabel={stickerId}
+                        accessibilityLabel={t(stickerNameKey(pack.id, stickerId))}
                         disabled={!unlocked}
                         onPress={() => void send(pack.id, stickerId)}
                         style={({ pressed }) => [

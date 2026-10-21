@@ -42,8 +42,13 @@ import {
   viewOnceForMode,
   type SnapMode,
 } from '../../src/lib/viewOnce'
-import { IconButton } from '../../src/components/ui/IconButton'
 import { useV3Home } from '../../src/hooks/useV3Home'
+import {
+  CameraPermissionV3,
+  LibraryOnlyV3,
+  SnapViewfinderV3,
+} from '../../src/screens/chat/SnapCameraV3'
+import { SnapPreviewV3 } from '../../src/screens/chat/SnapPreviewV3'
 
 /*
  * Literal colours, as in `scan.tsx`: a camera is dark whichever scheme the app
@@ -101,6 +106,7 @@ export default function SnapScreen() {
   const window = useWindowDimensions()
   const { id } = useLocalSearchParams<{ id: string }>()
   const conversationId = id ?? ''
+  const v3Look = useV3Home()
   const [captured, setCaptured] = useState<PickedMedia | null>(null)
   const [mode, setMode] = useState<SnapMode>(DEFAULT_SNAP_MODE)
   // The stored choice arrives after the first render; a tap made before it
@@ -173,7 +179,17 @@ export default function SnapScreen() {
           },
         ]}
       >
-        {captured ? (
+        {captured && v3Look ? (
+          // The redesign's drawing of this step only; every handler is this screen's.
+          <SnapPreviewV3
+            picture={<Captured item={captured} />}
+            mode={mode}
+            bottomInset={rounded ? 0 : insets.bottom}
+            onMode={pickMode}
+            onRetake={() => setCaptured(null)}
+            onSend={send}
+          />
+        ) : captured ? (
           <SnapPreview
             item={captured}
             mode={mode}
@@ -181,6 +197,12 @@ export default function SnapScreen() {
             onMode={pickMode}
             onRetake={() => setCaptured(null)}
             onSend={send}
+          />
+        ) : Platform.OS === 'web' && v3Look ? (
+          <LibraryOnlyV3
+            bottomInset={rounded ? 0 : insets.bottom}
+            onLibrary={() => void pickFromLibrary()}
+            onClose={close}
           />
         ) : Platform.OS === 'web' ? (
           <LibraryOnly onLibrary={() => void pickFromLibrary()} onClose={close} />
@@ -390,6 +412,23 @@ function SnapCamera({
     )
   }
 
+  function allowCamera(): void {
+    if (permission?.canAskAgain === false) void Linking.openSettings()
+    else void requestPermission().then(() => getPermission())
+  }
+
+  if (!permission.granted && v3Look) {
+    return (
+      <CameraPermissionV3
+        canAskAgain={permission.canAskAgain !== false}
+        bottomInset={bottomInset}
+        onAllow={allowCamera}
+        onLibrary={onLibrary}
+        onClose={onClose}
+      />
+    )
+  }
+
   if (!permission.granted) {
     return (
       <View style={styles.centre}>
@@ -399,10 +438,7 @@ function SnapCamera({
         <Text style={styles.permissionBody}>{t('viewOnce.cameraPermission')}</Text>
         <Pressable
           accessibilityRole="button"
-          onPress={() => {
-            if (permission.canAskAgain === false) void Linking.openSettings()
-            else void requestPermission().then(() => getPermission())
-          }}
+          onPress={allowCamera}
           style={({ pressed }) => [styles.pillButton, pressed && styles.pressed]}
         >
           <Text style={styles.pillButtonLabel}>
@@ -422,26 +458,48 @@ function SnapCamera({
 
   const pictureSize = pictureSizes[facing]
 
+  const cameraView = (
+    <CameraView
+      ref={camera}
+      style={StyleSheet.absoluteFill}
+      facing={facing}
+      mode={cameraMode}
+      flash={flash}
+      enableTorch={recording && flash === 'on'}
+      mirror={facing === 'front'}
+      mute={muted}
+      videoQuality="1080p"
+      videoBitrate={VIDEO_BITRATE}
+      // Android fits a 16:9 preview into the 9:16 frame; iOS fills the frame
+      // and takes the 16:9 still from `pictureSize`.
+      {...(Platform.OS === 'android' ? { ratio: '16:9' as const } : {})}
+      {...(pictureSize ? { pictureSize } : {})}
+      onCameraReady={onCameraReady}
+      onMountError={() => showToast(t('viewOnce.captureFailed'))}
+    />
+  )
+
+  if (v3Look) {
+    return (
+      <SnapViewfinderV3
+        camera={cameraView}
+        recording={recording}
+        elapsed={elapsed}
+        flashOn={flash === 'on'}
+        bottomInset={bottomInset}
+        onClose={onClose}
+        onFlash={() => setFlash((on) => (on === 'on' ? 'off' : 'on'))}
+        onLibrary={onLibrary}
+        onFlip={() => setFacing((side) => (side === 'back' ? 'front' : 'back'))}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
+      />
+    )
+  }
+
   return (
     <>
-      <CameraView
-        ref={camera}
-        style={StyleSheet.absoluteFill}
-        facing={facing}
-        mode={cameraMode}
-        flash={flash}
-        enableTorch={recording && flash === 'on'}
-        mirror={facing === 'front'}
-        mute={muted}
-        videoQuality="1080p"
-        videoBitrate={VIDEO_BITRATE}
-        // Android fits a 16:9 preview into the 9:16 frame; iOS fills the frame
-        // and takes the 16:9 still from `pictureSize`.
-        {...(Platform.OS === 'android' ? { ratio: '16:9' as const } : {})}
-        {...(pictureSize ? { pictureSize } : {})}
-        onCameraReady={onCameraReady}
-        onMountError={() => showToast(t('viewOnce.captureFailed'))}
-      />
+      {cameraView}
 
       <TopBar onClose={recording ? undefined : onClose}>
         {recording ? (
@@ -468,33 +526,20 @@ function SnapCamera({
       <View style={[styles.bottom, { paddingBottom: spacing.xl + bottomInset }]}>
         {recording ? null : <Text style={styles.hint}>{t('viewOnce.hint')}</Text>}
         <View style={styles.shutterRow}>
-          {v3Look ? (
-            <IconButton
-              icon="image"
-              iconSize={22}
-              look="hue"
-              accessibilityLabel={t('viewOnce.gallery')}
-              onPress={onLibrary}
-              disabled={recording}
-              hitSlop={10}
-              style={recording && styles.hidden}
-            />
-          ) : (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('viewOnce.gallery')}
-              onPress={onLibrary}
-              disabled={recording}
-              hitSlop={10}
-              style={({ pressed }) => [
-                styles.roundIcon,
-                recording && styles.hidden,
-                pressed && styles.pressed,
-              ]}
-            >
-              <Feather name="image" size={22} color={ON_STAGE} />
-            </Pressable>
-          )}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('viewOnce.gallery')}
+            onPress={onLibrary}
+            disabled={recording}
+            hitSlop={10}
+            style={({ pressed }) => [
+              styles.roundIcon,
+              recording && styles.hidden,
+              pressed && styles.pressed,
+            ]}
+          >
+            <Feather name="image" size={22} color={ON_STAGE} />
+          </Pressable>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('viewOnce.shutter')}
@@ -505,33 +550,20 @@ function SnapCamera({
           >
             <View style={[styles.shutterCore, recording && styles.shutterCoreRecording]} />
           </Pressable>
-          {v3Look ? (
-            <IconButton
-              icon="refresh-cw"
-              iconSize={20}
-              look="hue"
-              accessibilityLabel={t('viewOnce.flip')}
-              onPress={() => setFacing((side) => (side === 'back' ? 'front' : 'back'))}
-              disabled={recording}
-              hitSlop={10}
-              style={recording && styles.hidden}
-            />
-          ) : (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('viewOnce.flip')}
-              onPress={() => setFacing((side) => (side === 'back' ? 'front' : 'back'))}
-              disabled={recording}
-              hitSlop={10}
-              style={({ pressed }) => [
-                styles.roundIcon,
-                recording && styles.hidden,
-                pressed && styles.pressed,
-              ]}
-            >
-              <Feather name="refresh-cw" size={20} color={ON_STAGE} />
-            </Pressable>
-          )}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('viewOnce.flip')}
+            onPress={() => setFacing((side) => (side === 'back' ? 'front' : 'back'))}
+            disabled={recording}
+            hitSlop={10}
+            style={({ pressed }) => [
+              styles.roundIcon,
+              recording && styles.hidden,
+              pressed && styles.pressed,
+            ]}
+          >
+            <Feather name="refresh-cw" size={20} color={ON_STAGE} />
+          </Pressable>
         </View>
       </View>
     </>
@@ -563,11 +595,7 @@ function SnapPreview({
 
   return (
     <>
-      {item.kind === 'video' ? (
-        <PreviewVideo uri={item.uri} />
-      ) : (
-        <Image source={{ uri: item.uri }} style={StyleSheet.absoluteFill} contentFit="contain" />
-      )}
+      <Captured item={item} />
       <TopBar onClose={onRetake} closeLabel={t('viewOnce.retake')} />
       <View style={[styles.bottom, { paddingBottom: spacing.xl + bottomInset }]}>
         {/* All three at once, tapped to pick, rather than one pill tapped to
@@ -617,6 +645,15 @@ function SnapPreview({
   )
 }
 
+/** What was shot, filling the frame: the photo, or the clip on a loop. */
+function Captured({ item }: { item: PickedMedia }) {
+  return item.kind === 'video' ? (
+    <PreviewVideo uri={item.uri} />
+  ) : (
+    <Image source={{ uri: item.uri }} style={StyleSheet.absoluteFill} contentFit="contain" />
+  )
+}
+
 function PreviewVideo({ uri }: { uri: string }) {
   const player = useVideoPlayer(uri, (instance) => {
     instance.loop = true
@@ -663,20 +700,10 @@ function TopBar({
   children?: React.ReactNode
 }) {
   const t = useT()
-  const v3Look = useV3Home()
   const styles = useStyles()
   return (
     <View style={styles.topBar} pointerEvents="box-none">
-      {onClose && v3Look ? (
-        <IconButton
-          icon="x"
-          iconSize={22}
-          look="hue"
-          accessibilityLabel={closeLabel ?? t('viewOnce.close')}
-          onPress={onClose}
-          hitSlop={10}
-        />
-      ) : onClose ? (
+      {onClose ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={closeLabel ?? t('viewOnce.close')}

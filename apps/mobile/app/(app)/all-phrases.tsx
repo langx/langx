@@ -16,6 +16,8 @@ import { goBackTo } from '../../src/lib/navigation'
 import { openPaywall } from '../../src/lib/paywall'
 import { saveTextFile } from '../../src/lib/saveFile'
 import { makeStyles } from '../../src/lib/theme'
+import { useV3HomeDecision } from '../../src/hooks/useV3Home'
+import { AllPhrasesScreenV3 } from '../../src/screens/phrases/AllPhrasesScreenV3'
 
 /**
  * Every saved phrase, from every conversation, in one place.
@@ -31,7 +33,17 @@ import { makeStyles } from '../../src/lib/theme'
  * link, a subscription that lapsed while the screen was open — gets the
  * paywall rather than an error.
  */
-export default function AllPhrasesScreen() {
+/**
+ * Every saved phrase — or, with `flags.v3Home` on, the redesign's. Bare until the config
+ * has said which, so a deep link never draws one look and then the other.
+ */
+export default function AllPhrasesRoute() {
+  const v3Home = useV3HomeDecision()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <AllPhrasesScreenV3 /> : <AllPhrasesScreen />
+}
+
+function AllPhrasesScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

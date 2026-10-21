@@ -174,6 +174,26 @@ export const appConfigSchema = z.object({
      * behind a switch_.
      */
     newcomerHello: z.boolean(),
+    /**
+     * The promotional nudges about the plans — "running into the free
+     * limits" and "your plan ended a week ago" — open the paywall with a
+     * source of their own (`PROMOTION_PAYWALL_SOURCES`), by mail and by push,
+     * instead of Settings → Subscription and Discover. Nobody new is told
+     * anything and nothing is sent at another time; only where the tap lands
+     * changes. Starts off because it is promotion, and promotion moves when
+     * Behic switches it rather than when a pull request merges.
+     */
+    promoPaywallLinks: z.boolean(),
+    /**
+     * Giving a sticker pack to a chat partner (`stickerGift.ts`). Starts
+     * off, like `captchaRequired`, and for a stronger reason: it spends
+     * tokens on another person's account, which Terms §7 says today cannot
+     * happen ("not transferable"). The legal text changes first, and then
+     * Behic switches this on — a merge never does. Off, the endpoint refuses
+     * with `disabled` and no client draws the button. Gifts already given stay
+     * given whatever this says.
+     */
+    stickerGifts: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -204,6 +224,8 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     giveAWeek: false,
     proWeek: false,
     newcomerHello: false,
+    promoPaywallLinks: false,
+    stickerGifts: false,
   },
 }
 

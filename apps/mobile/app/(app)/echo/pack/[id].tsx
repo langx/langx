@@ -15,6 +15,8 @@ import { track } from '../../../../src/lib/analytics'
 import { goBackTo } from '../../../../src/lib/navigation'
 import { makeStyles } from '../../../../src/lib/theme'
 import { showToast } from '../../../../src/lib/toast'
+import { useV3HomeDecision } from '../../../../src/hooks/useV3Home'
+import { EchoPackScreenV3 } from '../../../../src/screens/echo/EchoPackScreenV3'
 
 /**
  * One pack: how far in, one button, and what the button would give you.
@@ -29,7 +31,18 @@ import { showToast } from '../../../../src/lib/toast'
  * a book nobody reads front to back. The question here is what the press
  * does, and the answer is ten rows.
  */
-export default function EchoPackScreen() {
+/**
+ * One pack — or, with `flags.v3Home` on, the redesign's. Bare until the config
+ * has said which, so a deep link never draws one look and then the other.
+ */
+export default function EchoPackRoute() {
+  const v3Home = useV3HomeDecision()
+  const { id } = useLocalSearchParams<{ id: string }>()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <EchoPackScreenV3 id={id} /> : <EchoPackScreen />
+}
+
+function EchoPackScreen() {
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()

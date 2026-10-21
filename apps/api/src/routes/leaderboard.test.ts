@@ -1096,6 +1096,21 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       expect(earned.has('tokens.10000')).toBe(false)
     })
 
+    it('sends where the user stands on every counting kind, and nothing for the cohort', async () => {
+      const user = await newUser()
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: user.userId },
+          { $set: { 'streak.longest': 212, 'stats.messagesSent': 2300 } },
+        )
+
+      const summary = await badgesOf(user)
+
+      expect(summary.progress).toMatchObject({ streak: 212, messages: 2300, correction: 0 })
+      expect(summary.progress).not.toHaveProperty('origin')
+    })
+
     it('counts token earned, not the balance left after spending', async () => {
       const user = await newUser()
       await awardTokens(handle.db, {

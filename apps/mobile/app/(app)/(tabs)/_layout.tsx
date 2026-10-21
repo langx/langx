@@ -11,6 +11,7 @@ import { useT } from '../../../src/i18n'
 import { authClient } from '../../../src/lib/auth-client'
 import { shouldGateGuest } from '../../../src/lib/guestGate'
 import { syncIconBadge } from '../../../src/lib/iconBadge'
+import { v3TabBadgeStyle } from '../../../src/lib/countBadge'
 import { unreadBadge } from '../../../src/lib/unreadBadge'
 import { useV3Home } from '../../../src/hooks/useV3Home'
 
@@ -250,11 +251,11 @@ export default function TabsLayout() {
     count
       ? {
           tabBarBadge: count,
-          tabBarBadgeStyle: {
-            backgroundColor: look === 'blue' ? v3.colors.blue : v3.colors.pill,
-            color: look === 'blue' ? v3.colors.onBlue : v3.colors.pillText,
-            ...v3.type.label,
-          },
+          tabBarBadgeStyle: v3TabBadgeStyle(
+            v3.type.label,
+            look === 'blue' ? v3.colors.blue : v3.colors.pill,
+            look === 'blue' ? v3.colors.onBlue : v3.colors.pillText,
+          ),
         }
       : {}
 

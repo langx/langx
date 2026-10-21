@@ -1,7 +1,9 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Text, View } from 'react-native'
+import { useV3Home } from '../../hooks/useV3Home'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { Button } from './Button'
+import { EmptyNoteV3 } from './EmptyStateV3'
 
 interface EmptyStateProps {
   /** A Feather glyph, matching the tab bar. See the note in `(app)/_layout`. */
@@ -24,6 +26,26 @@ export function EmptyState({
 }: EmptyStateProps) {
   const { colors } = useTheme()
   const styles = useStyles()
+  const v3Look = useV3Home()
+
+  /*
+   * Under `flags.v3Home`, `EmptyNoteV3`: the same glyph, title, body and
+   * action in v3's faces. That is the note written for exactly this case —
+   * a page whose copy is a title and a body, not `EmptyStateV3`'s one line
+   * under a drawing — so nothing a caller says is lost in the move.
+   */
+  if (v3Look) {
+    return (
+      <EmptyNoteV3
+        icon={icon}
+        title={title}
+        body={body}
+        actionLabel={actionLabel}
+        onAction={onAction}
+        actionVariant={actionVariant}
+      />
+    )
+  }
 
   return (
     <View style={styles.root}>

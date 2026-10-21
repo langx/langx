@@ -150,6 +150,27 @@ export const en = {
     cameraTitle: 'Camera',
     cameraPermission: 'LangX needs permission to use your camera.',
   },
+  /** v3's drawn faces, worn until a photo replaces them. */
+  avatar: {
+    default: {
+      /** A face in the picker, to a screen reader. */
+      tile: 'Drawn face {index}',
+      pickTitle: 'Pick a drawn face',
+      pickBody:
+        'It stands in until you add a photo. Everyone who sees your profile sees this face.',
+      useThis: 'Use this face',
+      pickFailed: 'That face didn’t save. Try again.',
+      seeAll: { one: 'See all {count} face', other: 'See all {count} faces' },
+      changeFace: 'Change drawn face',
+      nudgeTitle: 'Add a photo of you',
+      nudgeBody:
+        'We drew this face so your profile isn’t blank. It’s a stand-in: a photo shows people who they’re talking to.',
+      nudgeAdd: 'Add your photo',
+      nudgePick: 'Pick another drawn face',
+      nudgeDismiss: 'Not now',
+      othersSee: 'What others see on your profile',
+    },
+  },
   photo: {
     open: 'Open photo',
     close: 'Close photo',
@@ -168,6 +189,11 @@ export const en = {
    * person it was sent to, and what has been done for the person who sent it.
    */
   viewOnce: {
+    modeHeading: 'How they see it',
+    modeOnceBody: 'Gone once they open it.',
+    modeReplayBody: 'They can open it one more time.',
+    modeKeepBody: 'Stays in the chat like any photo.',
+    tapToClose: 'Tap anywhere to close',
     photo: 'Photo',
     video: 'Video',
     tapToView: 'Tap to view',
@@ -608,6 +634,13 @@ export const en = {
     subtitle: 'Lines from your chats come back just before you’d forget them.',
     dueUnit: { one: 'card due', other: 'cards due' },
     aboutMinutes: { one: 'about {count} minute', other: 'about {count} minutes' },
+    /** A grade tile read aloud: its word and, in full, when the card comes back. */
+    gradeInMinutes: {
+      one: '{grade}, back in {count} minute',
+      other: '{grade}, back in {count} minutes',
+    },
+    gradeInHours: { one: '{grade}, back in {count} hour', other: '{grade}, back in {count} hours' },
+    gradeInDays: { one: '{grade}, back in {count} day', other: '{grade}, back in {count} days' },
     byPartner: 'By partner',
     fromPartner: 'From {name}',
     partnerDue: { one: '{count} due', other: '{count} due' },
@@ -633,6 +666,10 @@ export const en = {
       other: 'Your first {count} sessions each day earn tokens.',
     },
     oneMore: 'One more session',
+    sourceOpensChat: 'Opens your chat at this message',
+    sourceOpensPost: 'Opens the post',
+    newNote:
+      'It joins the same schedule as the cards you keep from chats. Add a picture or say it yourself from Edit, once it is saved.',
   },
 
   conversationPicker: {
@@ -662,6 +699,7 @@ export const en = {
     meeting: 'Meeting',
     quiz: 'Quiz',
     call: 'Call',
+    gift: 'Gift',
     correction: 'Correction',
     forwarded: 'Forwarded',
   },
@@ -1017,6 +1055,9 @@ export const en = {
     nameFromSignUp: 'From your sign-up. Change it if you like.',
     aboutYouOptional: 'About you (optional)',
     tooYoung: 'LangX is for people aged {age} and over.',
+    photo: {
+      picker: { title: 'Or pick another drawn face', keep: 'Keep this face' },
+    },
     photoTitle: 'Put a face to it',
     photoBody:
       'We drew you a face. A real photo makes people far more likely to say hello — and the bio is optional too.',
@@ -1165,6 +1206,10 @@ export const en = {
   },
 
   corrections: {
+    findSentence: 'Find a sentence to correct',
+    listCaption: 'In chats and on posts, newest first',
+    openChatHint: 'Opens the chat at this message',
+    openPostHint: 'Opens the post',
     emptyTitle: 'No corrections yet',
     emptyBody:
       'Hold a message in a chat and choose Correct, or fix a sentence someone posted in the feed — it is the most useful thing you can do here.',
@@ -1272,6 +1317,10 @@ export const en = {
       'How well they already speak what you teach. Higher means an easier conversation, lower means someone who needs you more.',
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
+    ageScaleOpen: '{max}+',
+    /** The age slider's two handles, each its own control for a screen reader. */
+    ageYoungest: 'Youngest age',
+    ageOldest: 'Oldest age',
     showResults: 'Show results',
     showResultsWithCount: 'Show results · {count}',
   },
@@ -1348,6 +1397,15 @@ export const en = {
     withTheirTimeAccessibility: '{presence}. Local time {time}.',
   },
   chat: {
+    newChatStarts: 'This chat starts with your first message.',
+    pickFirstLine: 'Pick a first line',
+    meetingLede: 'They can accept or decline. Each of you sees it in your own time.',
+    meetingDay: 'Day',
+    meetingTime: 'Time',
+    meetingNoteHint: {
+      one: 'They see this on the card. Up to {count} character.',
+      other: 'They see this on the card. Up to {count} characters.',
+    },
     /** The card at the foot of the thread in which somebody first wrote back. */
     firstReplyTitle: '{name} wrote back',
     firstReplyBody: {
@@ -1388,6 +1446,7 @@ export const en = {
     quizCard: 'Quiz',
     pollThanks: 'Thanks!',
     stickers: 'Stickers',
+    stickersHint: 'Tap a sticker to send it.',
     stickerBuy: 'Unlock for {price} tokens',
     quizAddOption: 'Add an option',
     sendQuiz: 'Ask a quiz',
@@ -1432,6 +1491,16 @@ export const en = {
     phraseDeckEmpty: 'Nothing saved here yet.',
     deckExport: 'Export',
     deckExportFailed: 'Could not save that file from here.',
+    deckExportCount: {
+      one: 'Export {count} phrase',
+      other: 'Export {count} phrases',
+    },
+    deckExportNote: 'One file with every card in this list. It opens in Anki.',
+    allPhrasesSub: 'From every conversation, in one list',
+    phraseSendNote:
+      'It is sent to your chat, so the other person sees it too, and it joins your saved phrases.',
+    phraseTermHint: 'The word or phrase you want to keep.',
+    phraseMeaningHint: 'In your own words. This is what makes it stick.',
     meetingNote: 'Note (optional)',
     meetingWhenLabel: 'When',
     meetingLength: 'How long',
@@ -1688,6 +1757,9 @@ export const en = {
   },
 
   starred: {
+    lede: 'Only you see your stars. Tap one to open it in its chat.',
+    goToChats: 'Go to Chats',
+    rowLabel: '{name}: {what}. Open in chat',
     title: 'Starred',
     emptyTitle: 'Nothing starred yet',
     emptyBody: 'Hold a message and choose Star to keep it here.',
@@ -2201,6 +2273,8 @@ export const en = {
     capOverGrandfathered:
       'You already have more than your plan holds. You can change these or remove them, but not add another.',
     changeHint: 'Tap a language to change it.',
+    allLanguages: 'All languages, A to Z',
+    levelGroup: 'Your {language} level',
     /**
      * Under a language added during a gift of Pro that has ended: still on the
      * profile, not searched with in Discover until Pro is back.
@@ -2216,6 +2290,8 @@ export const en = {
     cookies: 'Cookie policy',
     dataDeletion: 'Delete my data',
     security: 'Security',
+    /** Under the v3 list: every row leaves the app. */
+    opensInBrowser: 'Each one opens in the browser.',
   },
   feedback: {
     bugTitle: 'Report a bug',
@@ -2245,7 +2321,6 @@ export const en = {
     title: 'Our Kitchen',
     intro: 'Where LangX is made, and everyone who makes it.',
     dataCredit: 'Place names from GeoNames, licensed under CC BY 4.0.',
-    stickerCredit: 'Some stickers from Microsoft Fluent Emoji, licensed under MIT.',
     footer: 'Built in the open, by the people who use it.',
     contributors: 'Contributors',
     fundamentals: 'Everyone who has contributed',
@@ -2474,6 +2549,9 @@ export const en = {
     showTourBody: 'Walk through the Discovery screen again, one step at a time.',
     rateApp: 'Rate LangX',
     exportData: 'Export my data',
+    exportDataPreparing: 'Preparing your file…',
+    exportDataFailed: 'Couldn’t export your data',
+    exportDataSaved: 'Saved your data as {file}',
     deleteAccount: 'Delete account',
     deleteAccountBody: 'Signing back in within {days} days cancels it.',
     deleteConfirmTitle: 'Delete your account',
@@ -2687,6 +2765,10 @@ export const en = {
     openAccessibility: 'Open the hourly gift',
     tokensUnit: { one: 'token', other: 'tokens' },
     anotherInAnHour: 'Another one in an hour.',
+    /** The word on the v3 box itself, under the gift glyph. */
+    openLabel: 'Open',
+    /** Under the v3 stage: the plain truth about what is inside. */
+    someEmpty: 'Some gifts are empty. Another one in an hour.',
   },
 
   wallet: {
@@ -2740,6 +2822,11 @@ export const en = {
     poolParticipants: { one: '{n} active that day', other: '{n} active that day' },
     poolShareOfPool: '{percent} of the daily pool',
     poolActiveToday: { one: '{n} active today', other: '{n} active today' },
+    /** The v3 pool's three tiles under today's counts, and its way to the ledger. */
+    todayMessages: { one: 'message', other: 'messages' },
+    todayCorrections: { one: 'correction', other: 'corrections' },
+    todayPeople: { one: 'person', other: 'people' },
+    seeHistory: 'See your history',
   },
 
   /** One per `TOKEN_KINDS`; `kindKey()` builds the key from the kind itself. */
@@ -2812,6 +2899,8 @@ export const en = {
       other: 'You can earn up to {count} weeks a year.',
     },
     weekAddsOn: 'Yours is added to the end of the Pro you have now.',
+    /** The v3 page's heading over the people the link brought in. */
+    peopleTitle: 'People you invited',
   },
 
   tokenKind: {
@@ -2834,7 +2923,132 @@ export const en = {
     echo: 'Echo session',
   },
 
+  stickerPack: {
+    taglinePaper: 'Hellos and quick replies, cut from coloured paper.',
+    taglineStarter:
+      'Pip, a little speech bubble, says the everyday ones: hello, I am listening, thank you.',
+    taglinePractice: 'Felt badges for the practice itself: slower, again, we got there.',
+    taglinePixel: 'Fuse-bead sprites for levelling up together.',
+    count: {
+      one: '{count} sticker',
+      other: '{count} stickers',
+    },
+    everyChat: 'Works in every chat',
+    yoursToKeep: 'Yours to keep',
+    inThePack: 'In the pack',
+    tapToPreview: 'Tap one to see it big',
+    previewAccessibility: 'Preview the {name} sticker',
+    inAChat: 'In a chat',
+    chatTheirs: 'I passed my speaking test today!',
+    chatMine: 'So proud of you. Tell me everything!',
+    chatNote: 'Whoever you send one to sees it, even if they do not have the pack.',
+    sentByYou: 'You sent the {name} sticker',
+    sentByThem: 'Your partner sent the {name} sticker',
+    tokenUnit: {
+      one: 'token',
+      other: 'tokens',
+    },
+    afterBuying: '{balance} now · {after} after',
+    shortBy: '{balance} now · {missing} to go',
+    buy: 'Buy {title}',
+    owned: 'Yours. Send them from any chat.',
+    seePack: 'See the pack',
+  },
+
+  /**
+   * Giving a sticker pack to a chat partner, behind `flags.stickerGifts`:
+   * the pack page's button, the picker, the confirmation and the row the
+   * gift leaves in the thread. "Give", never "gift" as the verb on a button —
+   * the store's hourly gift box already owns that word.
+   */
+  stickerGift: {
+    give: 'Give this pack',
+    giveAccessibility: 'Give {title} to someone you talk to',
+    pickTitle: 'Who gets {title}?',
+    pickNote: 'Gifts go to people you have been talking to.',
+    sendsLeft: {
+      one: '{count} gift left this week',
+      other: '{count} gifts left this week',
+    },
+    weeklyUsed: 'You have given this week’s gift. You can give another next week.',
+    empty: 'Nobody to give it to yet. Gifts go to people you have been talking to.',
+    stateKeepTalking: 'Keep talking. Gifts open up as you get to know each other.',
+    stateOwns: 'Already has this pack',
+    stateUnavailable: 'Cannot get a gift right now',
+    rowAccessibility: '{name}, {state}',
+    confirmTitle: 'Give {title} to {name}?',
+    honesty:
+      'The pack becomes theirs. A gift cannot be returned, passed on or refunded, and the tokens are not given back.',
+    confirm: 'Give for {price}',
+    sent: '{name} has {title} now',
+    failedTitle: 'The gift did not go through',
+    refusalKeepTalking: 'Keep talking a little longer, then try again.',
+    refusalOwns: 'They already have this pack.',
+    refusalWeekly: 'You have given this week’s gift.',
+    refusalTokens: 'You do not have enough tokens for this pack.',
+    refusalUnavailable: 'This person cannot get a gift right now.',
+    refusalGeneric: 'Something went wrong. Try again in a moment.',
+    cardFromThem: '{name} gave you a sticker pack',
+    cardFromMe: 'You gave {name} a sticker pack',
+    cardYours: 'It is yours. Send them from any chat.',
+    cardTheirs: 'They can send them from any chat now.',
+    cardAccessibility: '{headline}: {title}',
+    seePack: 'See the pack',
+  },
+
+  stickerName: {
+    paperHola: '¡Hola!',
+    paperCrane: 'Paper crane',
+    paperNice: 'Nice!',
+    paperGotit: 'Got it',
+    paperCafe: 'Café?',
+    paperCay: 'Çay?',
+    paperSent: 'Sent!',
+    paperMerci: 'Merci',
+    paperOnesec: 'One sec',
+    paperBook: 'New word',
+    paperFixed: 'Fixed it',
+    paperNight: 'Good night',
+    starterWave: 'Wave',
+    starterListen: 'Listening',
+    starterThinking: 'Thinking',
+    starterCorrect: 'Correct',
+    starterPronounce: 'Say it',
+    starterConfused: 'Confused',
+    starterBook: 'Book',
+    starterBulb: 'Light bulb',
+    starterClock: 'Clock',
+    starterHeart: 'Heart',
+    starterParty: 'Party',
+    starterSparkles: 'Sparkles',
+    practiceSlower: 'Slower, please',
+    practiceAgain: 'Again',
+    practiceSwap: 'Switch languages',
+    practiceSprout: 'Sprout',
+    practiceSteps: 'Step by step',
+    practiceSummit: 'Summit',
+    practiceRocket: 'Rocket',
+    practiceTrophy: 'Trophy',
+    practiceStar: 'Star',
+    practiceThinking: 'Thinking',
+    practiceHourglass: 'Hourglass',
+    practiceBullseye: 'Bullseye',
+    pixelLevelup: 'Level up',
+    pixelCoin: 'Extra life',
+    pixelCheckpoint: 'Checkpoint',
+    pixelFlame: 'Flame',
+    pixelKey: 'Key',
+    pixelSave: 'Save',
+    pixelPotion: 'Potion',
+    pixelShield: 'Shield',
+    pixelThumb: 'Thumbs up',
+    pixelController: 'Controller',
+    pixelSlime: 'Slime',
+    pixelGhost: 'Ghost',
+  },
+
   cosmetics: {
+    stickersPaper: 'Paper Talk',
     stickersPixel: 'Pixel stickers',
     stickersPractice: 'Practice stickers',
     stickersStarter: 'Starter stickers',
@@ -2886,6 +3100,28 @@ export const en = {
     streakEmptyBody: 'Show up on two days in a row and you are on this board.',
     echoEmptyTitle: 'No reviews this period',
     echoEmptyBody: 'Answer a few cards and you are on this board for the period.',
+    cardsUnit: {
+      one: 'card',
+      other: 'cards',
+    },
+    /** Over the v3 board: which period it ranks, and what the number at the end is. */
+    columnWeek: 'This week',
+    columnMonth: 'This month',
+    columnYear: 'This year',
+    columnTokens: 'Tokens earned',
+    columnNow: 'Right now',
+    columnEver: 'Longest ever',
+    columnDays: 'Days in a row',
+    /** Under "You" on the token board's pinned row: the period it ranks. */
+    placeWeek: 'Your place this week',
+    placeMonth: 'Your place this month',
+    placeYear: 'Your place this year',
+    /** A row, read aloud. `amount` is `count` formatted for the locale; `name` may be "You". */
+    rowTokens: { one: '{rank}. {name}, {amount} token', other: '{rank}. {name}, {amount} tokens' },
+    rowDays: {
+      one: '{rank}. {name}, {amount} day in a row',
+      other: '{rank}. {name}, {amount} days in a row',
+    },
   },
 
   badges: {
@@ -2914,6 +3150,270 @@ export const en = {
      */
     emptyTitle: 'No badges yet',
     emptyBody: '@{handle} has not earned one yet. They are given for showing up and for helping.',
+    /** The empty shelf's way back to the profile it was opened from. */
+    emptyBack: 'Back to @{handle}',
+  },
+  badgesV3: {
+    newCount: {
+      one: '{count} new',
+      other: '{count} new',
+    },
+    newChip: 'New',
+    nextKicker: 'Next to earn',
+    of: '{current} of {total}',
+    toGo: '{amount} to go.',
+    streakReward: 'The {days}-day streak milestone adds +{tokens} tokens.',
+    noTokens: 'The badge itself pays no tokens.',
+    milestonePays:
+      'The badge itself pays nothing; the {days}-day streak milestone adds +{tokens} tokens.',
+    earnedOn: 'Earned {date}',
+    earned: 'Earned',
+    locked: 'Locked',
+    nextOnLadder: 'Next on this ladder',
+    tierTop: '{tier} · top tier',
+    tierLocked: 'Locked · {tier}',
+    tierLine: '{tier} · {amount}',
+    howEarned: "How it's earned",
+    whatsLeft: "What's left",
+    thisLadder: 'This ladder',
+    allEarned: {
+      one: 'All {count} earned',
+      other: 'All {count} earned',
+    },
+    sheetKicker: '{family} · {position} of {total}',
+    share: 'Share badge',
+    newBadge: 'New badge',
+    nextAt: '{name} is next, at {amount}.',
+    ladderDone: 'That is the top of this ladder.',
+    a11yEarned: '{name}, earned. {detail}',
+    a11yEarnedNew: '{name}, earned. {detail}. New',
+    a11yNext: '{name}, next. {detail}',
+    a11yLocked: '{name}, locked. {detail}',
+    progressLabel: '{name} progress',
+    shelfList: '{family} badges',
+    actionCorrect: 'Find a post to correct',
+    actionWrite: 'Open your chats',
+    actionEcho: 'Practise in Echo',
+    unit: {
+      streak: {
+        one: '{formatted} day',
+        other: '{formatted} days',
+      },
+      correction: {
+        one: '{formatted} correction',
+        other: '{formatted} corrections',
+      },
+      messages: {
+        one: '{formatted} message',
+        other: '{formatted} messages',
+      },
+      tokens: {
+        one: '{formatted} token',
+        other: '{formatted} tokens',
+      },
+      veteran: {
+        one: '{formatted} day',
+        other: '{formatted} days',
+      },
+      languages: {
+        one: '{formatted} language',
+        other: '{formatted} languages',
+      },
+      calls: {
+        one: '{formatted} call',
+        other: '{formatted} calls',
+      },
+      echo: {
+        one: '{formatted} review',
+        other: '{formatted} reviews',
+      },
+      testimonials: {
+        one: '{formatted} partner',
+        other: '{formatted} partners',
+      },
+      guide: {
+        one: '{formatted} person',
+        other: '{formatted} people',
+      },
+      openers: {
+        one: '{formatted} reply',
+        other: '{formatted} replies',
+      },
+    },
+    goal: {
+      streak: {
+        one: 'Keep a {formatted}-day streak',
+        other: 'Keep a {formatted}-day streak',
+      },
+      correction: {
+        one: 'Write {formatted} correction',
+        other: 'Write {formatted} corrections',
+      },
+      messages: {
+        one: 'Send {formatted} message',
+        other: 'Send {formatted} messages',
+      },
+      tokens: {
+        one: 'Earn {formatted} in all',
+        other: 'Earn {formatted} in all',
+      },
+      veteran: {
+        one: 'Be a member for {formatted} day',
+        other: 'Be a member for {formatted} days',
+      },
+      origin: 'Be on LangX v1',
+      languages: {
+        one: 'Practise {formatted} language',
+        other: 'Practise {formatted} languages',
+      },
+      calls: {
+        one: 'Have {formatted} call',
+        other: 'Have {formatted} calls',
+      },
+      echo: {
+        one: 'Review {formatted} Echo card',
+        other: 'Review {formatted} Echo cards',
+      },
+      testimonials: {
+        one: 'Hear from {formatted} partner',
+        other: 'Hear from {formatted} partners',
+      },
+      guide: {
+        one: 'Correct {formatted} person',
+        other: 'Correct {formatted} people',
+      },
+      openers: {
+        one: 'Give {formatted} first reply',
+        other: 'Give {formatted} first replies',
+      },
+    },
+    note: {
+      streak: 'Your longest streak counts, so a missed day never takes a badge back.',
+      correction: 'Post corrections, chat corrections and pronunciation answers all count.',
+      messages: 'Every message you send counts.',
+      tokens: 'Everything you have ever earned counts. Spending never takes one back.',
+      veteran: 'Counted from the day you joined.',
+      origin: 'For the people who were here for LangX v1.',
+      languages:
+        'Languages you practise in Echo or write posts in count, besides the ones you speak natively.',
+      calls: 'A call counts once it lasts 5 minutes or more, whoever placed it.',
+      echo: 'Each review counts, whatever the grade.',
+      testimonials: 'A partner who wrote about you counts once. One you hid still counts.',
+      guide:
+        'Correct someone you have not corrected before: a post they wrote, a pronunciation post you answer, or a message they sent you. The same person twice counts once.',
+      openers: 'A first message you answered within a day counts.',
+    },
+    family: {
+      streak: {
+        title: 'Streak',
+        body: 'Your longest streak counts.',
+      },
+      correction: {
+        title: 'Corrections',
+        body: 'Corrections you write: posts, chat and pronunciation.',
+      },
+      messages: {
+        title: 'Messages',
+        body: 'Messages you send.',
+      },
+      tokens: {
+        title: 'Tokens earned',
+        body: 'All you have earned. Spending never takes one back.',
+      },
+      veteran: {
+        title: 'Member',
+        body: 'Time since you joined.',
+      },
+      origin: {
+        title: 'Early Adopter',
+        body: 'You were on LangX v1.',
+      },
+      languages: {
+        title: 'Languages',
+        body: 'Languages you practise, besides your own.',
+      },
+      calls: {
+        title: 'Calls',
+        body: 'Calls that last 5 minutes or more.',
+      },
+      echo: {
+        title: 'Echo reviews',
+        body: 'Every Echo card you review.',
+      },
+      testimonials: {
+        title: 'Kind words',
+        body: 'Partners who wrote about you.',
+      },
+      guide: {
+        title: 'People you helped',
+        body: 'Different people you corrected.',
+      },
+      openers: {
+        title: 'First replies',
+        body: 'First messages you answered within a day.',
+      },
+    },
+    tier: {
+      cotton: 'Cotton',
+      twill: 'Twill',
+      applique: 'Appliqué',
+      satin: 'Satin',
+      silver: 'Silver',
+      gold: 'Gold',
+      bullion: 'Bullion',
+      woven: 'Woven',
+    },
+    name: {
+      streak_7: 'Candle',
+      streak_30: 'Lantern',
+      streak_100: 'Campfire',
+      streak_180: 'Bonfire',
+      streak_365: 'Sunrise',
+      streak_730: 'High Sun',
+      streak_1095: 'Golden Sun',
+      correction_1: 'Pencil',
+      correction_10: 'Ink Nib',
+      correction_100: 'Tick',
+      correction_1000: 'Open Book',
+      correction_5000: 'Owl',
+      correction_10000: 'Reading Owl',
+      correction_25000: 'Wise Owl',
+      messages_100: 'Hello',
+      messages_1000: 'Chatter',
+      messages_10000: 'Long Talk',
+      messages_50000: 'Many Voices',
+      tokens_10000: 'Spool',
+      tokens_50000: 'Two Spools',
+      tokens_250000: 'Golden Spool',
+      veteran_365: 'First Ring',
+      veteran_730: 'Second Ring',
+      veteran_1095: 'Third Ring',
+      origin_v1: 'Early Adopter',
+      languages_2: 'Two Threads',
+      languages_3: 'Braid',
+      languages_5: 'Five Strands',
+      calls_1: 'Tin-Can Line',
+      calls_10: 'Long Line',
+      calls_50: 'Switchboard',
+      echo_100: 'Ripple',
+      echo_1000: 'Wave',
+      echo_5000: 'Tide',
+      testimonials_1: 'Quilt Square',
+      testimonials_5: 'Patchwork',
+      testimonials_20: 'Quilt',
+      guide_3: 'Darning',
+      guide_10: 'Mending',
+      guide_50: 'Weaver',
+      openers_10: 'Open Door',
+      openers_50: 'Porch Light',
+      openers_200: 'Open House',
+    },
+    profilePinned: 'Pinned badges',
+    pin: 'Pin to profile',
+    unpin: 'Unpin',
+    change: 'Change',
+    pinnedRow: 'Your badges on your profile',
+    pinFull: 'Pinning this replaces {name}.',
   },
 
   shared: {
@@ -3065,6 +3565,7 @@ export const en = {
     ringing: 'Ringing…',
     connecting: 'Connecting…',
     reconnecting: 'Reconnecting…',
+    reconnectingHint: 'Hold on. The call picks up again by itself.',
     answer: 'Answer',
     answerNoCamera: 'Answer without camera',
     decline: 'Decline',
@@ -3079,6 +3580,13 @@ export const en = {
     returnToCall: 'Return to call',
     peerMuted: '{name} is muted',
     peerCameraOff: 'Camera off',
+    /** Over the feedback choices on a call's closing screen, in v3. */
+    howWasIt: 'How was it?',
+    /** The short words under a v3 call tile; the tile is read aloud by the full label. */
+    tile: {
+      camera: 'Camera',
+      flip: 'Switch',
+    },
     ended: 'Call ended',
     noAnswer: 'No answer',
     busy: '{name} can’t take a call right now',
@@ -3185,6 +3693,13 @@ export const en = {
     writtenEmptyBody:
       'Had a great practice partner? A short review on their profile helps others find them.',
     meRowBody: 'What partners say about you, and what you wrote',
+    /** The empty lists' one button: the people who could write one are in Chats. */
+    emptyAction: 'Go to Chats',
+    /**
+     * The chip under the title on somebody's full list: whose reviews these
+     * are, and how many. `amount` is `count` formatted for the locale.
+     */
+    onProfile: { one: 'On {name}’s profile · {amount}', other: 'On {name}’s profile · {amount}' },
   },
 
   blocked: {
@@ -3625,8 +4140,10 @@ export const en = {
     },
   },
   /**
-   * Copilot, the AI helper in a chat. Only the consent sheet and the words
-   * for "off" are drawn so far; the actions arrive with their screens.
+   * Copilot, the AI helper in a v3 chat: Check my sentence and Say it from
+   * the button beside send, Explain from a message's long-press menu. Every
+   * answer is drawn blue under `label`, and nothing it writes is sent unless
+   * the person sends it themselves.
    */
   copilot: {
     /** On every Copilot answer and on its consent sheet. Blue, never green: green is a person's correction. */
@@ -3635,15 +4152,49 @@ export const en = {
     off: 'Copilot is off.',
     consentTitle: 'Before you use Copilot',
     consentBody:
-      'Copilot is an AI helper. It can check a sentence before you send it, suggest replies, and explain a correction somebody gave you.',
-    /** Names the provider: App Review asks who receives the data, not just that someone does. */
+      'Copilot is an AI helper. It can check a sentence before you send it, help you say something in the language you are learning, explain a message or a correction, and suggest replies.',
+    /**
+     * Names the provider: App Review asks who receives the data, not just that
+     * someone does. Version 2 of the sheet: Explain now sends one message the
+     * other person wrote, which version 1 did not mention.
+     */
     consentSends:
-      'When you ask, the text you asked about goes to Anthropic, the company that runs the AI model, with your languages and levels. For reply ideas, that includes the last few messages in the chat.',
+      'When you ask, the text you asked about goes to Anthropic, the company that runs the AI model, with your languages and levels. To explain a message, that is the one message you picked, which the other person wrote. For reply ideas, it includes the last few messages in the chat.',
     consentNever: 'Your name, email, photos and voice notes are never sent.',
     consentWrong:
       'AI can be wrong. Its answers are marked AI, and nothing reaches the other person unless you send it yourself.',
     consentAccept: 'Turn on Copilot',
     consentDecline: 'Not now',
+    /** Screen-reader name of the blue button beside send, which opens the two-row menu. */
+    button: 'Copilot',
+    menuCheck: 'Check my sentence',
+    /** `language` is the one they are learning, named in the app's language. */
+    menuSayIt: 'Say it in {language}',
+    /** Replaces the draft with Copilot's sentence. Nothing is sent. */
+    useThis: 'Use this',
+    keepMine: 'Keep mine',
+    /** Check found nothing to change. */
+    looksGood: 'Looks good.',
+    close: 'Close',
+    /** The row in a message's long-press menu. */
+    explainAction: 'Explain',
+    explainTitle: 'Explained',
+    /** Above the options; tapping one puts it in the message, it does not send. */
+    sayItTitle: 'Ways to say it',
+    /** Screen-reader words while an answer is being written. */
+    loading: 'Copilot is writing…',
+    /** Today's allowance, on the card and the sheet. */
+    left: { one: '{count} left today', other: '{count} left today' },
+    /** At 0 left: when the next answer frees up, as a time of day. */
+    moreAt: 'More at {time}',
+    errQuota: 'You’ve used today’s Copilot answers. More at {time}.',
+    /** The same, when the server did not say when. */
+    errQuotaNoTime: 'You’ve used today’s Copilot answers.',
+    /** The other person is under 18, so their words are not sent. */
+    errPartnerAge: 'Copilot doesn’t read this chat.',
+    errBusy: 'Copilot is busy. Try again later.',
+    errNoAnswer: 'Copilot couldn’t answer that.',
+    errNetwork: 'Couldn’t reach Copilot.',
   },
 } as const
 

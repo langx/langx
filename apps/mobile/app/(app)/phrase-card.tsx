@@ -16,6 +16,8 @@ import { emitWithAck, getSocket } from '../../src/lib/socket'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
+import { useV3HomeDecision } from '../../src/hooks/useV3Home'
+import { PhraseCardScreenV3 } from '../../src/screens/phrases/PhraseCardScreenV3'
 
 /**
  * Saving a word the conversation turned up.
@@ -28,7 +30,26 @@ import { showToast } from '../../src/lib/toast'
  * That is the point of it being a message at all: a vocabulary list nobody
  * sees being written is a list nobody writes.
  */
-export default function PhraseCardScreen() {
+/**
+ * Saving a phrase — or, with `flags.v3Home` on, the redesign's. Bare until the config
+ * has said which, so a deep link never draws one look and then the other.
+ */
+export default function PhraseCardRoute() {
+  const v3Home = useV3HomeDecision()
+  const { id, lang, example } = useLocalSearchParams<{
+    id: string
+    lang?: string
+    example?: string
+  }>()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? (
+    <PhraseCardScreenV3 conversationId={id} lang={lang} quoted={example} />
+  ) : (
+    <PhraseCardScreen />
+  )
+}
+
+function PhraseCardScreen() {
   const styles = useStyles()
   const t = useT()
   const {

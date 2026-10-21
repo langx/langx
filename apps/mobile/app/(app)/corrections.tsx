@@ -26,6 +26,8 @@ import { listState } from '../../src/lib/listState'
 import { makeStyles } from '../../src/lib/theme'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { CorrectionsScreenV3 } from '../../src/screens/chat/CorrectionsScreenV3'
 
 /**
  * What you have written: your corrections, and your own posts.
@@ -47,7 +49,12 @@ import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
  * tile that opens it counts both, so somebody whose only correction was on a
  * post arrived at "No corrections yet" under a tile that said 1.
  */
-export default function WritingScreen() {
+export default function WritingScreenRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <CorrectionsScreenV3 /> : <WritingScreen />
+}
+
+function WritingScreen() {
   useScreenInteractive()
   const t = useT()
   const { locale } = useLocale()

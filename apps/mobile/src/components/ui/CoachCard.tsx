@@ -17,8 +17,11 @@ interface CoachCardProps {
   illustration?: ReactNode
   title?: string
   body: string
-  /** The one thing the card suggests: "Show me". */
-  action: { label: string; onPress: () => void; icon?: Glyph }
+  /**
+   * The one thing the card suggests: "Show me". Left out for a plain tip —
+   * `Tip` under v3 — which has a sentence to read and nothing to open.
+   */
+  action?: { label: string; onPress: () => void; icon?: Glyph }
   /**
    * Sends the card away. Always a button — the ✕ in the corner — and never a
    * swipe alone: a gesture is invisible until somebody already knows it, and
@@ -74,14 +77,16 @@ export function CoachCard({
           onPress={onDismiss}
         />
       </View>
-      <Button
-        variant="ink"
-        size="small"
-        label={action.label}
-        {...(action.icon ? { icon: action.icon } : {})}
-        onPress={action.onPress}
-        style={styles.action}
-      />
+      {action ? (
+        <Button
+          variant="ink"
+          size="small"
+          label={action.label}
+          {...(action.icon ? { icon: action.icon } : {})}
+          onPress={action.onPress}
+          style={styles.action}
+        />
+      ) : null}
     </View>
   )
 }

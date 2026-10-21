@@ -93,6 +93,7 @@ describe('upNext', () => {
       'stickers.practice',
       'stickers.starter',
       'stickers.pixel',
+      'stickers.paper',
     ])
   })
 

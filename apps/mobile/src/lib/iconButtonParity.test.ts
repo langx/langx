@@ -22,18 +22,20 @@ const MOBILE = path.resolve(__dirname, '../..')
 
 const SITES: Readonly<Record<string, number>> = {
   'src/components/ui/ScreenHeader.tsx': 1,
-  'app/(app)/chat/new.tsx': 1,
   'app/(app)/filters.tsx': 1,
-  'app/(app)/compose.tsx': 1,
-  'app/(app)/scan.tsx': 1,
+  // compose.tsx is not listed: its flag-on header lives in ComposeScreenV3, so the
+  // file has no IconButton left to pair with a Pressable twin.
+  // scan.tsx is not listed either: its flag-on header lives in ScanScreenV3.
   'app/(app)/echo/cards.tsx': 2,
   'app/(app)/echo/card/[id].tsx': 1,
   'app/(app)/view-once.tsx': 2,
-  'app/(app)/chat-camera.tsx': 3,
+  // chat-camera.tsx is not listed: its flag-on viewfinder lives in SnapCameraV3,
+  // held to the route by chatCameraV3.test.ts.
   'app/(app)/recap.tsx': 1,
   'src/components/PhotoViewer.tsx': 3,
   'src/components/PeopleSearch.tsx': 1,
-  'src/components/Tip.tsx': 1,
+  // Tip.tsx is not listed: its flag-on look is TipV3, which draws the kit's
+  // CoachCard, so the file keeps only the flag-off Pressable.
   'src/components/UpdateBanner.tsx': 1,
   'src/components/testimonials/TestimonialCard.tsx': 1,
   'src/components/testimonials/ThreadTestimonialCard.tsx': 1,

@@ -1,10 +1,4 @@
-import {
-  attachmentsOf,
-  isVideoContentType,
-  type Media,
-  MEDIA_TABS,
-  type MediaTab,
-} from '@langx/shared'
+import { attachmentsOf, isVideoContentType, MEDIA_TABS, type MediaTab } from '@langx/shared'
 import { Feather } from '@expo/vector-icons'
 import { Image } from 'expo-image'
 import { useLocalSearchParams } from 'expo-router'
@@ -18,7 +12,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native'
-import { useConversationMedia, useMe, type MessageDto } from '../../src/api/queries'
+import { useConversationMedia, useMe } from '../../src/api/queries'
 import { AudioBubble, VideoTile } from '../../src/components/MediaBubble'
 import { PhotoViewer } from '../../src/components/PhotoViewer'
 import { LoadFailed } from '../../src/components/LoadFailed'
@@ -30,46 +24,16 @@ import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useLocale, useT } from '../../src/i18n'
-import { dedupeById } from '../../src/lib/dedupeById'
 import { listState } from '../../src/lib/listState'
 import { dayLabel } from '../../src/lib/messageGroups'
+import { tilesOf } from '../../src/lib/mediaTiles'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../src/lib/theme'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { ChatMediaScreenV3 } from '../../src/screens/chat/ChatMediaScreenV3'
 
 const COLUMNS = 3
 const GRID_GAP = 2
-
-/**
- * One tile is one attachment, not one message.
- *
- * A message carries up to `MAX_ATTACHMENTS` files and its `type` is the kind
- * of the *first* one — so a `type: 'image'` message can hold a video and the
- * reverse. Flattening here is what makes the grid draw all six of a gallery
- * rather than one square per send, and it lets each tile ask
- * `isVideoContentType` about its own file.
- */
-interface Tile {
-  /** `${messageId}:${index}` — one string for `keyExtractor` and `dedupeById`. */
-  _id: string
-  media: Media
-  senderId: string
-  createdAt: string
-}
-
-function tilesOf(messages: MessageDto[]): Tile[] {
-  return dedupeById(
-    messages.flatMap((message) =>
-      // Always through `attachmentsOf`: a v1-imported message carries `media`
-      // and no `attachments`, and the two have to look the same here.
-      attachmentsOf(message).map((media, index) => ({
-        _id: `${message._id}:${index}`,
-        media,
-        senderId: message.senderId,
-        createdAt: message.createdAt,
-      })),
-    ),
-  )
-}
 
 /**
  * Everything this conversation has attached, away from the words.
@@ -89,7 +53,12 @@ function tilesOf(messages: MessageDto[]): Tile[] {
  * `numColumns` going from 3 to 1 on a live list is a hard render error, not a
  * warning. The `key` is what makes them two components instead of one.
  */
-export default function ChatMediaScreen() {
+export default function ChatMediaRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <ChatMediaScreenV3 /> : <ChatMediaScreen />
+}
+
+function ChatMediaScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const t = useT()

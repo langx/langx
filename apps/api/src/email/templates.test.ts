@@ -1,7 +1,19 @@
-import { PLAN_LIMITS, SUPPORTED_LOCALES, type Locale } from '@langx/shared'
+import {
+  PLAN_LIMITS,
+  PROMOTION_PAYWALL_SOURCES,
+  SUPPORTED_LOCALES,
+  type Locale,
+} from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { translator } from '../i18n'
-import { feedbackEmail, lifetimeGiftEmail, promotionEmail } from './templates'
+import {
+  feedbackEmail,
+  lifetimeGiftEmail,
+  PROMOTION_PAYWALL_SOURCE,
+  promotionDestination,
+  promotionEmail,
+  type PromotionScenario,
+} from './templates'
 
 describe('feedbackEmail', () => {
   const sender = { userId: 'user-1', handle: 'bugfinder', email: 'finder@example.com' }
@@ -158,5 +170,77 @@ describe('promotionEmail: limitReached', () => {
       'more conversations and more translations',
     )
     expect(mail('en').text).toContain('more conversations and more translations')
+  })
+})
+
+describe('where a nudge about the plans lands', () => {
+  const SCENARIOS: PromotionScenario[] = [
+    'addPhoto',
+    'streakBroke',
+    'away',
+    'awayLong',
+    'trialEnding',
+    'limitReached',
+    'winBack',
+    'tokensWaiting',
+    'inviteFriend',
+  ]
+  const unsubscribe = 'https://app.langx.io/unsubscribe'
+
+  it.each(SCENARIOS)('%s: the switch off leaves the link exactly as it was', (scenario) => {
+    expect(promotionDestination(scenario, false)).not.toContain('/paywall')
+    const off = promotionEmail('en', scenario, { unsubscribe, paywallLinks: false })
+    expect(promotionEmail('en', scenario, { unsubscribe })).toEqual(off)
+  })
+
+  // Pinned to the links main sent before the switch existed, so "off" is
+  // checked against today's mail rather than against the new code's own idea of it.
+  it('the switch off sends every button where it pointed before the switch', () => {
+    const before: Record<PromotionScenario, string> = {
+      addPhoto: '/me/edit',
+      streakBroke: '/wallet',
+      away: '/discover',
+      awayLong: '/discover',
+      trialEnding: '/settings/plan',
+      limitReached: '/settings/plan',
+      winBack: '/settings/plan',
+      tokensWaiting: '/wallet',
+      inviteFriend: '/settings/share',
+    }
+    for (const scenario of SCENARIOS) {
+      const url = `https://app.langx.io${before[scenario]}`
+      expect(promotionDestination(scenario, false)).toBe(url)
+      const off = promotionEmail('en', scenario, { unsubscribe, paywallLinks: false })
+      expect(off.text).toContain(url)
+      expect(off.html).toContain(url)
+      expect(off.html).not.toContain('/paywall')
+    }
+  })
+
+  it('opens the paywall with each nudge its own source when the switch is on', () => {
+    expect(promotionDestination('limitReached', true)).toBe(
+      'https://app.langx.io/paywall?source=nudge_limits',
+    )
+    expect(promotionDestination('winBack', true)).toBe(
+      'https://app.langx.io/paywall?source=nudge_win_back',
+    )
+    const built = promotionEmail('en', 'winBack', { unsubscribe, paywallLinks: true })
+    expect(built.text).toContain('https://app.langx.io/paywall?source=nudge_win_back')
+    expect(built.html).toContain('https://app.langx.io/paywall?source=nudge_win_back')
+    expect(built.text).not.toContain('/settings/plan')
+  })
+
+  it('moves no other nudge, and never the trial, whose reader holds Pro', () => {
+    for (const scenario of SCENARIOS) {
+      if (scenario === 'limitReached' || scenario === 'winBack') continue
+      expect(promotionDestination(scenario, true)).toBe(promotionDestination(scenario, false))
+    }
+    expect(promotionDestination('trialEnding', true)).toBe('https://app.langx.io/settings/plan')
+  })
+
+  it('names only roads the app declares, one per message', () => {
+    const named = Object.values(PROMOTION_PAYWALL_SOURCE)
+    expect(new Set(named).size).toBe(named.length)
+    for (const source of named) expect(PROMOTION_PAYWALL_SOURCES).toContain(source)
   })
 })

@@ -80,6 +80,32 @@ describe('notificationRoute', () => {
     expect(notificationRoute({ kind: 'callRing', conversationId: 'abc123' })).toBeNull()
     expect(notificationRoute({ kind: 'callCancel' })).toBeNull()
   })
+
+  it('opens Discover for a nudge, as every build does', () => {
+    expect(notificationRoute({ kind: 'promotion' })).toBe('/discover')
+  })
+
+  it('opens the paywall, naming the road, for a nudge about the plans', () => {
+    // The server adds the field only once `promoPaywallLinks` is on.
+    expect(notificationRoute({ kind: 'promotion', paywallSource: 'nudge_limits' })).toBe(
+      '/paywall?source=nudge_limits',
+    )
+    expect(notificationRoute({ kind: 'promotion', paywallSource: 'nudge_win_back' })).toBe(
+      '/paywall?source=nudge_win_back',
+    )
+  })
+
+  it('falls back to Discover for a road this build does not know', () => {
+    // An app road, a typo, or one a later server adds: the paywall would read
+    // any of them as a gate, which is the one bucket a nudge must not land in.
+    for (const paywallSource of ['gate', 'me', 'nudge_later', '', 7, null]) {
+      expect(notificationRoute({ kind: 'promotion', paywallSource })).toBe('/discover')
+    }
+  })
+
+  it('ignores the field on any other kind', () => {
+    expect(notificationRoute({ kind: 'wallet', paywallSource: 'nudge_limits' })).toBe('/wallet')
+  })
 })
 
 describe('createTapGate', () => {

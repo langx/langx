@@ -39,6 +39,8 @@ import { genderLabel, genderShortLabel, useDisplayNames, useLocale, useT } from 
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { IconButton } from '../../src/components/ui/IconButton'
 import { useV3Home } from '../../src/hooks/useV3Home'
+import { FilterChipV3 } from '../../src/components/people/FilterChipV3'
+import { useFiltersStylesV3 } from '../../src/screens/people/FiltersV3.styles'
 
 /** Explicit `undefined` means "clear this filter" — see `set` below. */
 type FilterPatch = { [K in keyof DiscoveryFilters]?: DiscoveryFilters[K] | undefined }
@@ -53,7 +55,9 @@ type GenderChoice = 'any' | Gender
  * and hiding it makes the paywall feel like a surprise rather than an offer.
  */
 function SectionTitle({ title, locked }: { title: string; locked?: boolean }) {
-  const styles = useStyles()
+  const legacyStyles = useStyles()
+  const v3Styles = useFiltersStylesV3()
+  const styles = useV3Home() ? v3Styles : legacyStyles
   // The one paid plan's mark, from the shared table rather than a typed word.
   const badge = TIER_BADGES.pro
 
@@ -69,10 +73,19 @@ function SectionTitle({ title, locked }: { title: string; locked?: boolean }) {
 
 export default function FiltersScreen() {
   useScreenInteractive()
-  const { colors } = useTheme()
-  const styles = useStyles()
-  const t = useT()
   const v3Look = useV3Home()
+  // The redesign's sheet under `flags.v3Home` — same names, same page; see
+  // `FiltersV3.styles.ts` for why it is not a second one.
+  const legacyStyles = useStyles()
+  const v3Styles = useFiltersStylesV3()
+  const styles = v3Look ? v3Styles : legacyStyles
+  const theme = useTheme()
+  const colors = v3Look
+    ? { text: theme.v3.colors.fg, textFaint: theme.v3.colors.muted }
+    : theme.colors
+  // The language chips, in the look's own drawing; the props are the same.
+  const LanguageChip = v3Look ? FilterChipV3 : Chip
+  const t = useT()
   const { locale } = useLocale()
   const names = useDisplayNames()
 
@@ -251,7 +264,7 @@ export default function FiltersScreen() {
   const count = activeCount(filters)
 
   return (
-    <Screen fluid style={styles.screen}>
+    <Screen fluid style={styles.screen} {...(v3Look ? { ground: theme.v3.colors.bg } : {})}>
       <View style={styles.header}>
         {v3Look ? (
           <IconButton
@@ -281,6 +294,7 @@ export default function FiltersScreen() {
           hitSlop={8}
           style={styles.resetButton}
         >
+          {v3Look ? <Feather name="rotate-ccw" size={18} color={colors.text} /> : null}
           <Text style={styles.reset}>{t('common.reset')}</Text>
         </Pressable>
       </View>
@@ -298,7 +312,7 @@ export default function FiltersScreen() {
           <Text style={styles.hint}>{t('filters.practiseBody')}</Text>
           <View style={styles.row}>
             {learning.map((language) => (
-              <Chip
+              <LanguageChip
                 key={language.code}
                 label={names.language(language.code)}
                 selected={(filters.learningLanguages ?? learningCodes).includes(language.code)}
@@ -313,7 +327,7 @@ export default function FiltersScreen() {
           <Text style={styles.hint}>{t('filters.learnsBody')}</Text>
           <View style={styles.row}>
             {native.map((language) => (
-              <Chip
+              <LanguageChip
                 key={language.code}
                 label={names.language(language.code)}
                 selected={(filters.nativeLanguages ?? nativeCodes).includes(language.code)}
@@ -348,6 +362,12 @@ export default function FiltersScreen() {
             values={[ageLow, ageHigh]}
             onChange={(next) => setAges(next)}
             accessibilityLabel={t('filters.age')}
+            // Drawn by the redesign's slider only; the current one ignores it.
+            scaleLabels={[
+              String(AGE_SLIDER.min),
+              t('filters.ageScaleOpen', { max: AGE_SLIDER.max }),
+            ]}
+            thumbLabels={[t('filters.ageYoungest'), t('filters.ageOldest')]}
           />
         </View>
 

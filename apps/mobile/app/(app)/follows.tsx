@@ -16,6 +16,8 @@ import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
+import { useV3Home } from '../../src/hooks/useV3Home'
+import { FollowsScreenV3 } from '../../src/screens/people/FollowsScreenV3'
 
 type Tab = 'followers' | 'following'
 
@@ -26,7 +28,12 @@ type Tab = 'followers' | 'following'
  * existing profile screen to `index.tsx` and editing its `Tabs.Screen` entry,
  * for a URL nobody types.
  */
-export default function FollowsScreen() {
+export default function FollowsRoute() {
+  // The redesign's page under `flags.v3Home`, read once per launch.
+  return useV3Home() ? <FollowsScreenV3 /> : <FollowsScreen />
+}
+
+function FollowsScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const { colors } = useTheme()

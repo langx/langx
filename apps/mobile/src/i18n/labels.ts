@@ -129,6 +129,14 @@ export function badgeLabel(
     // The one kind with no number in it: a cohort is a fact, not a count, so
     // `threshold` and `formatted` go unused here on purpose.
     origin: () => t('badges.earlyAdopter'),
+    // The v3 kinds reach only the v3 shelf, which names them itself; this is
+    // the fallback a name falls back to, in the family's own unit.
+    languages: () => t('badgesV3.unit.languages', { count: threshold, formatted }),
+    calls: () => t('badgesV3.unit.calls', { count: threshold, formatted }),
+    echo: () => t('badgesV3.unit.echo', { count: threshold, formatted }),
+    testimonials: () => t('badgesV3.unit.testimonials', { count: threshold, formatted }),
+    guide: () => t('badgesV3.unit.guide', { count: threshold, formatted }),
+    openers: () => t('badgesV3.unit.openers', { count: threshold, formatted }),
   }
   return wording[kind]()
 }

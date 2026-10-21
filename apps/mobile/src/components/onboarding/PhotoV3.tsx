@@ -1,6 +1,12 @@
 import Feather from '@expo/vector-icons/Feather'
-import { BIO_MAX_LENGTH } from '@langx/shared'
+import {
+  BIO_MAX_LENGTH,
+  DEFAULT_AVATAR_POOL_SIZE,
+  defaultAvatarRev,
+  type DefaultAvatar,
+} from '@langx/shared'
 import { Pressable, ScrollView, Text, View } from 'react-native'
+import { sameFace } from '../../lib/defaultAvatar'
 import { useT } from '../../i18n'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { Avatar } from '../ui/Avatar'
@@ -11,6 +17,11 @@ import { FieldV3, WizardHeaderV3, WizardTitle, useWizardStyles } from './WizardV
 /** The face's size, as drawn. */
 const FACE = 128
 
+/** A face in the "pick another" row: four to a line on a phone. */
+const PICK = 64
+/** Enough for 64pt on any screen; see `avatarSource`'s `maxPixels`. */
+const PICK_PIXELS = 160
+
 /**
  * Step 5 in the redesign's look: the face drawn for this account, large, with
  * the way to replace it beside it twice — the camera on the face, and a
@@ -19,11 +30,18 @@ const FACE = 128
  * this step has to make as easy as "yes".
  *
  * No way back, as today: the username behind this screen is claimed.
+ *
+ * Under the face, while it is still the drawn one, a row of others from the
+ * same pool to choose from, and "See all" for every face in every pool. A
+ * tap here only selects — the big face shows it — and the yellow button,
+ * which reads "Keep this face" until a photo arrives, is what saves it.
  */
 export function PhotoV3({
   avatarUrl,
   displayName,
   seed,
+  defaultAvatarRev: faceRev,
+  picker,
   uploading,
   photoLabel,
   onPickPhoto,
@@ -35,6 +53,17 @@ export function PhotoV3({
   avatarUrl: string | undefined
   displayName: string
   seed: string | undefined
+  /** Names the face shown large: the one selected below, else the one assigned. */
+  defaultAvatarRev: string | undefined
+  /** Absent once there is a photo: a photo speaks for itself. */
+  picker:
+    | {
+        faces: DefaultAvatar[]
+        selected: DefaultAvatar
+        onSelect: (face: DefaultAvatar) => void
+        onSeeAll: () => void
+      }
+    | undefined
   uploading: boolean
   /** "Add a photo", "Change photo" or "Uploading…" — the route decides which. */
   photoLabel: string
@@ -63,7 +92,13 @@ export function PhotoV3({
         <View style={styles.faceRow}>
           <View style={styles.face}>
             {/* `Avatar` already walks photo → drawn face → initials. */}
-            <Avatar url={avatarUrl} name={displayName} seed={seed} size={FACE} />
+            <Avatar
+              url={avatarUrl}
+              name={displayName}
+              seed={seed}
+              defaultAvatarRev={faceRev}
+              size={FACE}
+            />
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={photoLabel}
@@ -79,7 +114,7 @@ export function PhotoV3({
             {/* Only while it is the face on screen; a photo speaks for itself. */}
             {avatarUrl ? null : <Text style={styles.drawn}>{t('onboarding.drawnFace')}</Text>}
             <Button
-              variant="ink"
+              variant="blue"
               size="small"
               icon="image"
               label={photoLabel}
@@ -89,6 +124,45 @@ export function PhotoV3({
             />
           </View>
         </View>
+
+        {picker && seed && !avatarUrl ? (
+          <View style={styles.picker}>
+            <Text style={styles.pickerTitle} accessibilityRole="header">
+              {t('onboarding.photo.picker.title')}
+            </Text>
+            <View style={styles.pickerGrid}>
+              {picker.faces.slice(1).map((face) => {
+                const on = sameFace(face, picker.selected)
+                return (
+                  <Pressable
+                    key={`${face.pool}${face.index}`}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('avatar.default.tile', { index: face.index })}
+                    accessibilityState={{ selected: on }}
+                    onPress={() => picker.onSelect(on ? (picker.faces[0] ?? face) : face)}
+                    style={[styles.pick, on && styles.pickOn]}
+                  >
+                    <Avatar
+                      seed={seed}
+                      name={displayName}
+                      defaultAvatarRev={defaultAvatarRev(face)}
+                      size={PICK}
+                      maxPixels={PICK_PIXELS}
+                    />
+                  </Pressable>
+                )
+              })}
+            </View>
+            <Button
+              variant="secondary"
+              size="small"
+              icon="grid"
+              label={t('avatar.default.seeAll', { count: DEFAULT_AVATAR_POOL_SIZE * 3 })}
+              onPress={picker.onSeeAll}
+              style={styles.seeAll}
+            />
+          </View>
+        ) : null}
 
         <View style={styles.bio}>
           <FieldV3
@@ -104,7 +178,9 @@ export function PhotoV3({
 
         <View style={wizard.footer}>
           <Button
-            label={t('onboarding.startUsing')}
+            label={
+              picker && !avatarUrl ? t('onboarding.photo.picker.keep') : t('onboarding.startUsing')
+            }
             icon="check"
             loading={saving}
             disabled={uploading}
@@ -145,5 +221,17 @@ const useStyles = makeStyles(({ v3 }) => ({
   faceSide: { alignItems: 'flex-start', flex: 1, gap: v3.space[12] },
   drawn: { ...v3.type.caption, color: v3.colors.muted },
   addPhoto: { width: 'auto' },
+  picker: { gap: v3.space[12], marginTop: v3.space[16] },
+  pickerTitle: { ...v3.type.button, color: v3.colors.fg },
+  pickerGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
+  // The ring is a border of constant width, so selecting does not shift the row.
+  pick: {
+    borderColor: 'transparent',
+    borderRadius: v3.radius.pill,
+    borderWidth: 3,
+    padding: 2,
+  },
+  pickOn: { borderColor: v3.colors.blue },
+  seeAll: { alignSelf: 'flex-start', width: 'auto' },
   bio: { marginTop: v3.space[12] },
 }))

@@ -1,8 +1,10 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList, Modal, Pressable, Text, TextInput, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useConversations, useMe, type ConversationDto } from '../api/queries'
 import { useConversationPartners } from '../hooks/useConversationPartners'
+import { useV3Home } from '../hooks/useV3Home'
 import { useT } from '../i18n'
 import { dedupeById } from '../lib/dedupeById'
 import { pickableConversations } from '../lib/conversationPicker'
@@ -37,12 +39,18 @@ export function ConversationPicker({
   onPick: (conversation: ConversationDto) => void
   onClose: () => void
 }) {
-  const { colors } = useTheme()
-  const styles = useStyles()
+  const { colors, v3 } = useTheme()
+  const current = useStyles()
+  const redesigned = useStylesV3()
+  const v3Look = useV3Home()
+  const styles = v3Look ? redesigned : current
+  const faint = v3Look ? v3.colors.muted : colors.textFaint
+  const insets = useSafeAreaInsets()
   const t = useT()
   const me = useMe()
   const conversations = useConversations('all')
   const [query, setQuery] = useState('')
+  const [focused, setFocused] = useState(false)
 
   const items = useMemo(() => {
     const pinned = conversations.data?.pages[0]?.pinned ?? []
@@ -78,13 +86,15 @@ export function ConversationPicker({
         <Pressable style={styles.sheet} onPress={() => undefined}>
           <View style={styles.header}>
             <Text style={styles.title}>{title}</Text>
-            <View style={styles.field}>
-              <Feather name="search" size={18} color={colors.textFaint} />
+            <View style={[styles.field, v3Look && focused && { borderColor: v3.colors.fg }]}>
+              <Feather name="search" size={v3Look ? v3.icon.md : 18} color={faint} />
               <TextInput
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
                 value={query}
                 onChangeText={setQuery}
                 placeholder={t('conversationPicker.searchPlaceholder')}
-                placeholderTextColor={colors.textFaint}
+                placeholderTextColor={faint}
                 autoCapitalize="none"
                 autoCorrect={false}
                 returnKeyType="search"
@@ -153,7 +163,13 @@ export function ConversationPicker({
           )}
 
           {/* Outside the scroller, like every sheet's way out. */}
-          <View style={styles.footer}>
+          <View
+            style={[
+              styles.footer,
+              // v3 keeps Cancel clear of the home indicator; the current look is unchanged.
+              v3Look && { paddingBottom: Math.max(v3.space[32], insets.bottom + v3.space[16]) },
+            ]}
+          >
             <Button label={t('common.cancel')} variant="neutral" onPress={close} />
           </View>
         </Pressable>
@@ -207,5 +223,80 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     paddingBottom: spacing.xxl,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
+  },
+}))
+
+/**
+ * v3's look for the same picker, behind `flags.v3Home` (the thread's Forward
+ * and Profile's Send profile both open it). No board draws it; it follows
+ * `WhatsProSheet` for the sheet and the v3 search fields for the pill, with
+ * rows at v3's list height and the name in v3's button type, as a person row
+ * names someone.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  backdrop: { backgroundColor: v3.colors.scrim, flex: 1, justifyContent: 'flex-end' },
+  sheet: {
+    alignSelf: 'center',
+    backgroundColor: v3.colors.bg,
+    borderTopLeftRadius: v3.radius.block,
+    borderTopRightRadius: v3.radius.block,
+    height: '80%',
+    maxWidth: 480,
+    width: '100%',
+  },
+  header: {
+    gap: v3.space[12],
+    paddingBottom: v3.space[8],
+    paddingHorizontal: v3.space[16],
+    paddingTop: v3.space[24],
+  },
+  title: { ...v3.type.headline, color: v3.colors.fg },
+  field: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.pill,
+    flexDirection: 'row',
+    gap: v3.space[10],
+    // FieldV3's edge: drawn in the fill's colour at rest and in ink while the
+    // field has focus, so gaining it does not move the text.
+    borderColor: v3.colors.surface,
+    borderWidth: 3,
+    height: 52,
+    paddingHorizontal: v3.space[16],
+  },
+  // No browser focus ring on the web: the ink edge on the pill shows focus.
+  input: {
+    color: v3.colors.fg,
+    flex: 1,
+    fontSize: v3.type.body.fontSize,
+    outlineWidth: 0,
+    padding: 0,
+  },
+  list: { paddingBottom: v3.space[12], paddingHorizontal: v3.space[16] },
+  spinner: { marginTop: v3.space[12] },
+  row: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: v3.space[12],
+    minHeight: 60,
+    paddingVertical: v3.space[10],
+  },
+  pressed: { opacity: 0.7 },
+  text: { flex: 1, gap: v3.space[2], minWidth: 0 },
+  nameRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[6] },
+  name: { ...v3.type.button, color: v3.colors.fg, flexShrink: 1 },
+  handle: { ...v3.type.caption, color: v3.colors.muted },
+  none: {
+    ...v3.type.callout,
+    color: v3.colors.muted,
+    marginTop: v3.space[12],
+    textAlign: 'center',
+  },
+  footer: {
+    borderTopColor: v3.colors.line,
+    borderTopWidth: 1,
+    paddingBottom: v3.space[32],
+    paddingHorizontal: v3.space[16],
+    paddingTop: v3.space[12],
   },
 }))

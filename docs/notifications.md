@@ -407,6 +407,7 @@ every one claims a row in `notificationLedger` before it sends.
 | ------------------------------------------------ | --------------- | ------------------ | ------------------------------------------------- |
 | A message arrived                                | `messages`      | on the message     | — (fan-out)                                       |
 | **A call you missed**                            | `messages`      | when it ends       | the call — `messages.call_id_unique`              |
+| **A sticker pack somebody gave you** — flag      | `messages`      | on the gift        | the gift — `stickerGifts.giver_client_unique`     |
 | Streak reminder — only while still savable today | `streak`        | 20:00 local        | local day                                         |
 | **Pick your streak back up** — after it broke    | `streak`        | 20:00 local, flag  | the missed day                                    |
 | Badge round-up                                   | `badges`        | 18:00 local        | badge ids                                         |
@@ -489,6 +490,13 @@ holding a socket, obeys the thread's mute and the `messages` switch, and counts
 in the unread total. Only `missed` and `busy` do this: a call both people took
 and a call somebody declined were both seen happening. A call ended by a
 block or a suspension leaves its row and sends nothing.
+
+A sticker pack given to somebody (`flags.stickerGifts`, off by default) is a
+row in the thread as well, written by the server, and it pushes the way a
+call's row does — "🎁 Sticker pack gift" under the giver's name, through the
+same fan-out, under `messages`, counting in the unread total. Once per gift: a
+retry of the same tap is answered with the first gift and announces nothing.
+There is no new kind and no mail.
 
 A message scheduled with "Send later" is a message: it pushes when it goes
 out, through the same fan-out as one typed at that moment, under `messages`.
@@ -580,17 +588,37 @@ It used to run any time between nine and nine, which with a daily mail in the
 picture would have let a nudge at ten in the morning take the day's one slot
 and leave the evening's real news with nowhere to go.
 
-| #   | Nudge                                   | Trigger                                               | Kind       |
-| --- | --------------------------------------- | ----------------------------------------------------- | ---------- |
-| 1   | Add a photo, and people will find you   | no `avatarUrl`, account > 48 h                        | promotions |
-| 2   | Your streak broke — repair it           | `streakRepairDay`: broke **yesterday**, repairable    | **streak** |
-| 3   | People are still practising without you | `lastActiveAt` 7–8 days ago (7–15 with the switch)    | promotions |
-| 4   | We will stop writing after this         | `lastActiveAt` 30–31 days ago (30–38)                 | promotions |
-| 5   | Your free week ends in two days         | `periodType: trial`, not renewing, ends within 2 days | promotions |
-| 6   | Your plan ended a week ago              | `churnedFrom` 7–8 days ago (7–15), still on free      | promotions |
-| 7   | You are running into the free limits    | refused 3 times in 3 days, still on free              | promotions |
-| 8   | You have N tokens waiting               | balance ≥ 200, nothing spent in a fortnight           | promotions |
-| 9   | Invite a friend                         | 14 days old, active, has invited nobody               | promotions |
+| #   | Nudge                                   | Trigger                                                                                   | Kind       |
+| --- | --------------------------------------- | ----------------------------------------------------------------------------------------- | ---------- |
+| 1   | Add a photo, and people will find you   | no `avatarUrl`, account > 48 h                                                            | promotions |
+| 2   | Your streak broke — repair it           | `streakRepairDay`: broke **yesterday**, repairable                                        | **streak** |
+| 3   | People are still practising without you | `lastActiveAt` 7–8 days ago (7–15 with the switch)                                        | promotions |
+| 4   | We will stop writing after this         | `lastActiveAt` 30–31 days ago (30–38)                                                     | promotions |
+| 5   | Your free week ends in two days         | `periodType: trial`, not renewing, ends within 2 days                                     | promotions |
+| 6   | Your plan ended a week ago              | `churnedFrom` 7–8 days ago (7–15), still on free                                          | promotions |
+| 7   | You are running into the free limits    | refused 3 times in 3 days by a limit Pro removes (new chats, translations), still on free | promotions |
+| 8   | You have N tokens waiting               | balance ≥ 200, nothing spent in a fortnight                                               | promotions |
+| 9   | Invite a friend                         | 14 days old, active, has invited nobody                                                   | promotions |
+
+**Where each one's button lands** is `PROMOTION_DESTINATIONS` in
+`email/templates.ts`, beside the copy: the photo nudge on Edit profile, the
+streak and the tokens on the wallet, the two absences on Discover, the invite
+on Settings → Share, and the three about the plans — 5, 6 and 7 — on Settings →
+Subscription (`/settings/plan`). Every push of the table is a `promotion` push,
+which opens Discover.
+
+**With `flags.promoPaywallLinks` on** (off by default), nudges 6 and 7 open
+the paywall instead, each with a road of its own: the mail's button points at
+`/paywall?source=nudge_win_back` or `/paywall?source=nudge_limits` on the web
+host — the app opens it where it is installed — and the push carries
+`paywallSource` beside its kind. Both say "See the plans", and the Subscription
+page answers that for a free account with a button to the paywall: one screen
+more, counted as `settings`. Nudge 5 stays on `/settings/plan` whatever the
+switch says: everybody it reaches is in a trial and holds Pro, and the paywall
+is not shown to sell Pro to a person who has it. The switch changes where a tap
+lands and nothing else — consent, the gap, the hour and the digest decide who
+is told exactly as before, and no new mail or push is sent. A build that
+predates the field opens Discover for the push, as it always has.
 
 `periodType` and `churnedFrom` are written from 10 September 2026 onward and
 **cannot be backfilled** — so nudges 5 and 6 reach only people whose trial
@@ -896,20 +924,21 @@ appears at noon the next day.
 
 `apps/mobile/src/lib/notificationRoute.ts`.
 
-| Kind                         | Opens                                                   |
-| ---------------------------- | ------------------------------------------------------- |
-| `message`, `meetingReminder` | the conversation, or `/chats`                           |
-| `call`                       | the conversation, or `/chats`                           |
-| `streakReminder`             | `/chats`                                                |
-| `badgeEarned`                | `/me`                                                   |
-| `profileVisits`              | `/viewers`                                              |
-| `social`                     | the post, the person, your reviews, or `/notifications` |
-| `wallet`, `bountyPaid`       | `/wallet`                                               |
-| `wallet` with `repairDay`    | `/wallet/store`; `/wallet` on a build that predates it  |
-| `billing`                    | `/settings/plan`                                        |
-| `security`                   | `/settings/password`                                    |
-| `echo`                       | `/echo`                                                 |
-| `promotion`                  | `/discover`                                             |
+| Kind                             | Opens                                                        |
+| -------------------------------- | ------------------------------------------------------------ |
+| `message`, `meetingReminder`     | the conversation, or `/chats`                                |
+| `call`                           | the conversation, or `/chats`                                |
+| `streakReminder`                 | `/chats`                                                     |
+| `badgeEarned`                    | `/me`                                                        |
+| `profileVisits`                  | `/viewers`                                                   |
+| `social`                         | the post, the person, your reviews, or `/notifications`      |
+| `wallet`, `bountyPaid`           | `/wallet`                                                    |
+| `wallet` with `repairDay`        | `/wallet/store`; `/wallet` on a build that predates it       |
+| `billing`                        | `/settings/plan`                                             |
+| `security`                       | `/settings/password`                                         |
+| `echo`                           | `/echo`                                                      |
+| `promotion`                      | `/discover`                                                  |
+| `promotion` with `paywallSource` | `/paywall?source=…`; `/discover` on a build that predates it |
 
 **A kind is routing, not consent.** The streak repair is a streak notification
 sent as `wallet`, because an unknown kind routes nowhere: `notificationRoute`

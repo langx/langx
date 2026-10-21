@@ -23,7 +23,7 @@ import {
   stripFormatting,
   type SendTextMessageInput,
   type ForwardMessageInput,
-  isCallRecord,
+  isServerRecord,
   isForwardableType,
   type MessageCall,
   type ThreadTestimonialState,
@@ -123,8 +123,8 @@ async function resolveReplyTo(
   if (!target) {
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Reply target not found in this conversation')
   }
-  // There is no sentence in a call's row to answer. See `isCallRecord`.
-  if (isCallRecord(target)) {
+  // There is no sentence in a call's or a gift's row to answer. See `isServerRecord`.
+  if (isServerRecord(target)) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'A call cannot be replied to')
   }
 
@@ -898,7 +898,7 @@ export async function sendCorrection(
    * would let through. A correction pays, once per target, so without this
    * every call somebody placed would be ten tokens for whoever received it.
    */
-  if (isCallRecord(target)) {
+  if (isServerRecord(target)) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'A call cannot be corrected')
   }
 

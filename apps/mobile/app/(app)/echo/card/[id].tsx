@@ -46,6 +46,8 @@ import { makeStyles, useTheme } from '../../../../src/lib/theme'
 import { showToast } from '../../../../src/lib/toast'
 import { IconButton } from '../../../../src/components/ui/IconButton'
 import { useV3Home } from '../../../../src/hooks/useV3Home'
+import { useV3HomeDecision } from '../../../../src/hooks/useV3Home'
+import { EchoCardScreenV3 } from '../../../../src/screens/echo/EchoCardScreenV3'
 
 /** As on the session card, and for the same reason: never crop the picture. */
 const PICTURE_MAX_HEIGHT = 240
@@ -61,7 +63,14 @@ const PICTURE_MAX_HEIGHT = 240
  * nothing else could open it. Editing is a button away rather than the only
  * way to look at a card.
  */
-export default function EchoCardScreen() {
+export default function EchoCardRoute() {
+  const v3Home = useV3HomeDecision()
+  const { id } = useLocalSearchParams<{ id: string }>()
+  if (v3Home === undefined) return <Screen>{null}</Screen>
+  return v3Home ? <EchoCardScreenV3 id={id} /> : <EchoCardScreen />
+}
+
+function EchoCardScreen() {
   const styles = useStyles()
   const t = useT()
   const v3Look = useV3Home()

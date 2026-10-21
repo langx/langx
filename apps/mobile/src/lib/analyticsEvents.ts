@@ -1,3 +1,4 @@
+import { PROMOTION_PAYWALL_SOURCES } from '@langx/shared'
 import type {
   BillingPeriod,
   CallMedia,
@@ -58,6 +59,12 @@ export type GiftCodeOutcome =
  * `gift_end` is "Keep Pro" on the Pro Week's last-day recap — the one paywall
  * a person on a gift is offered, and a separate bucket because it is the
  * reverse trial's conversion, not a gate's.
+ *
+ * `nudge_limits` and `nudge_win_back` are the two promotional nudges about the
+ * plans, by mail and by push, once `flags.promoPaywallLinks` is on. They are
+ * declared in `@langx/shared` and spread in here, because the server writes
+ * them into the links: one list, so the API cannot name a road this file does
+ * not know.
  */
 export const PAYWALL_SOURCES = [
   'onboarding',
@@ -72,6 +79,7 @@ export const PAYWALL_SOURCES = [
   'app_icon',
   'pro_badge',
   'gift_end',
+  ...PROMOTION_PAYWALL_SOURCES,
 ] as const
 export type PaywallSource = (typeof PAYWALL_SOURCES)[number]
 

@@ -48,6 +48,8 @@ export interface MeHeroView {
     url?: string | undefined
     name: string
     seed: string
+    /** Names the drawn face while there is no photo; see `Avatar`. */
+    defaultAvatarRev?: string | undefined
     /** A tone, or one this build does not know (drawn as an ink ring). */
     frame?: string | undefined
   }
@@ -139,6 +141,7 @@ export function MeHero({ view }: { view: MeHeroView }) {
               url={view.avatar.url}
               name={view.avatar.name}
               seed={view.avatar.seed}
+              defaultAvatarRev={view.avatar.defaultAvatarRev}
               size={AVATAR}
               frame={view.avatar.frame}
               // Your own profile: one of the two places Aurora Glass moves.

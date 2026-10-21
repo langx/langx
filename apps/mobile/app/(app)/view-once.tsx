@@ -25,6 +25,7 @@ import { showToast } from '../../src/lib/toast'
 import { withoutViewOnceFallback } from '../../src/lib/viewOnce'
 import { IconButton } from '../../src/components/ui/IconButton'
 import { useV3Home } from '../../src/hooks/useV3Home'
+import { ViewOnceHintV3 } from '../../src/screens/chat/ViewOnceHintV3'
 
 /* Literal colours: the viewer is black in both schemes, like `chat-camera.tsx`. */
 const STAGE_BG = '#000000'
@@ -62,6 +63,7 @@ export default function ViewOnceScreen() {
   const conversationId = params.conversationId ?? ''
   const messageId = params.messageId ?? ''
   const [media, setMedia] = useState<ViewOnceOpenDto['media'] | null>(null)
+  const [replay, setReplay] = useState(false)
   const asked = useRef(false)
   const screenshotTold = useRef(false)
 
@@ -85,6 +87,7 @@ export default function ViewOnceScreen() {
     openViewOnce(conversationId, messageId)
       .then((result) => {
         remember(result.message)
+        setReplay(result.message.viewOnce?.replay ?? false)
         setMedia(result.media)
       })
       .catch((error: unknown) => {
@@ -158,6 +161,10 @@ export default function ViewOnceScreen() {
           />
         </Pressable>
       )}
+      {/* The redesign's foot pill, a drawing only — see `ViewOnceHintV3`. */}
+      {v3Look && media !== null && !media.contentType.startsWith('video/') ? (
+        <ViewOnceHintV3 bottomInset={insets.bottom} replay={replay} />
+      ) : null}
       <View style={[styles.topBar, { top: insets.top + spacing.lg }]} pointerEvents="box-none">
         {/*
           On the photo, the kit's dark disc that stays dark in both schemes —

@@ -1,4 +1,4 @@
-import { DEFAULT_APP_CONFIG } from '@langx/shared'
+import { DEFAULT_APP_CONFIG, quotaLimit, type QuotaKind } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
@@ -12,7 +12,7 @@ import { invalidateAppConfigCache, updateAppConfig } from '../appConfig/appConfi
 import { LoggingPushSender } from '../push/devices'
 import { claimCampaignRecipients } from './campaign'
 import { runNewsletterPass } from './newsletter'
-import { promotionsInOrder, runPromotionsPass } from './promotions'
+import { REFUSALS_A_PLAN_LIFTS, promotionsInOrder, runPromotionsPass } from './promotions'
 
 const SECRET = 'p'.repeat(40)
 const DAY = 24 * 60 * 60 * 1000
@@ -73,6 +73,8 @@ describe('the nudges that need permission', () => {
       device?: boolean
       entitlement?: Record<string, unknown>
       refusals?: Date[]
+      /** Which limit refused them; `initiations`, one a plan lifts, unless said. */
+      refusalKind?: string | null
       churnedFrom?: { tier: string; at: Date }
       /** Kills the invite nudge, which every long-standing account qualifies for. */
       invited?: boolean
@@ -98,6 +100,15 @@ describe('the nudges that need permission', () => {
       ...(opts.spent ? { tokenSpent: opts.spent } : {}),
       ...(opts.entitlement ? { entitlement: opts.entitlement } : {}),
       ...(opts.refusals ? { quotaRefusals: opts.refusals } : {}),
+      // `null` is a refusal from before the kind was kept: an instant, no kind.
+      ...(opts.refusals && opts.refusalKind !== null
+        ? {
+            quotaRefusalKinds: opts.refusals.map((at) => ({
+              at,
+              kind: opts.refusalKind ?? 'initiations',
+            })),
+          }
+        : {}),
       ...(opts.churnedFrom ? { churnedFrom: opts.churnedFrom } : {}),
       createdAt: new Date(NOW.getTime() - (opts.createdDaysAgo ?? 40) * DAY),
     } as never)
@@ -425,6 +436,41 @@ describe('the nudges that need permission', () => {
     expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
   })
 
+  /**
+   * "A plan lifts them" has to be true of what refused them. Media, the
+   * translation fair-use ceiling and Echo captures are the same on both plans;
+   * the voices, transcripts and Copilot are only raised. None of those count,
+   * and neither does a refusal recorded before its kind was.
+   */
+  it('counts only the limits a plan lifts', async () => {
+    expect([...REFUSALS_A_PLAN_LIFTS].sort()).toEqual(['initiations', 'translations'])
+    for (const kind of REFUSALS_A_PLAN_LIFTS) {
+      expect(quotaLimit('free', kind as QuotaKind)).not.toBeNull()
+      expect(quotaLimit('pro', kind as QuotaKind)).toBeNull()
+    }
+
+    const recent = [
+      new Date(NOW.getTime() - 2 * DAY),
+      new Date(NOW.getTime() - DAY),
+      new Date(NOW.getTime() - 3600_000),
+    ]
+    for (const refusalKind of ['media', 'translationFairUse', 'echoVoices', 'copilot', null]) {
+      await newProfile({ avatar: true, invited: true, refusals: recent, refusalKind })
+    }
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+
+    // Two lifted and one not is still two.
+    const mixed = await newProfile({ avatar: true, invited: true, refusals: recent })
+    await handle.db.collection(COLLECTIONS.profiles).updateOne({ _id: mixed } as never, {
+      $set: { 'quotaRefusalKinds.0.kind': 'media' },
+    })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+
+    await newProfile({ avatar: true, invited: true, refusals: recent, refusalKind: 'translations' })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+    expect(subjects()[0]).toContain('free limits')
+  })
+
   it('never sells a plan to somebody who already has one', async () => {
     await newProfile({
       avatar: true,
@@ -473,6 +519,89 @@ describe('the nudges that need permission', () => {
     await runPromotionsPass(handle.db, senders, NOW)
     expect(email.messages).toHaveLength(1)
     expect(push.sent).toHaveLength(0)
+  })
+
+  describe('with promoPaywallLinks, the plans nudges open the paywall', () => {
+    async function setPaywallLinks(on: boolean): Promise<void> {
+      await updateAppConfig(handle.db, {
+        flags: { ...DEFAULT_APP_CONFIG.flags, promoPaywallLinks: on },
+      })
+      invalidateAppConfigCache()
+    }
+
+    const refusals = () => [
+      new Date(NOW.getTime() - 2 * DAY),
+      new Date(NOW.getTime() - DAY),
+      new Date(NOW.getTime() - 3600_000),
+    ]
+    const churnedFrom = () => ({ tier: 'pro', at: new Date(NOW.getTime() - 7.5 * DAY) })
+
+    it.each([
+      ['the free limits', 'nudge_limits', { refusals: refusals() }],
+      ['a plan that ended', 'nudge_win_back', { churnedFrom: churnedFrom() }],
+    ] as const)('%s: mail and push name %s', async (_name, source, state) => {
+      await setPaywallLinks(true)
+      await newProfile({ avatar: true, invited: true, device: true, ...state })
+      expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+      expect(email.messages[0]?.text).toContain(`https://app.langx.io/paywall?source=${source}`)
+      expect(push.sent).toHaveLength(1)
+      expect(push.sent[0]?.data).toEqual({ kind: 'promotion', paywallSource: source })
+    })
+
+    it('leaves every link as it was with the switch off', async () => {
+      await setPaywallLinks(false)
+      await newProfile({ avatar: true, invited: true, device: true, refusals: refusals() })
+      await newProfile({ avatar: true, invited: true, device: true, churnedFrom: churnedFrom() })
+      expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 2 })
+      for (const message of email.messages) {
+        expect(message.text).toContain('https://app.langx.io/settings/plan')
+        expect(message.text).not.toContain('/paywall')
+      }
+      expect(push.sent.map((sent) => sent.data)).toEqual([
+        { kind: 'promotion' },
+        { kind: 'promotion' },
+      ])
+    })
+
+    it('moves no nudge that is not about the plans', async () => {
+      await setPaywallLinks(true)
+      await newProfile({ createdDaysAgo: 3, device: true })
+      expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+      expect(email.messages[0]?.text).toContain('https://app.langx.io/me/edit')
+      expect(push.sent[0]?.data).toEqual({ kind: 'promotion' })
+    })
+
+    /*
+     * Only the landing moves. The same people, on the same evening, under the
+     * same consent: somebody who has Pro, has promotions off, or is outside
+     * the hour hears nothing on either side of the switch.
+     */
+    it('widens no audience', async () => {
+      await setPaywallLinks(true)
+      await newProfile({
+        avatar: true,
+        invited: true,
+        device: true,
+        refusals: refusals(),
+        entitlement: { tier: 'pro', willRenew: true, updatedAt: NOW },
+      })
+      await newProfile({
+        avatar: true,
+        invited: true,
+        device: true,
+        refusals: refusals(),
+        notifications: { promotions: { push: true, email: false } },
+      })
+      await newProfile({
+        avatar: true,
+        invited: true,
+        device: true,
+        churnedFrom: churnedFrom(),
+        timezone: 'America/Anchorage',
+      })
+      expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+      expect(push.sent).toHaveLength(0)
+    })
   })
 
   describe('with nudgeNoSilentDrops, nothing an eligible person is owed vanishes', () => {

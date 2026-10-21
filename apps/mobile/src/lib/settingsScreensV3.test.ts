@@ -1,8 +1,6 @@
-import { readFileSync } from 'node:fs'
 import path from 'node:path'
-import ts from 'typescript'
 import { describe, expect, it } from 'vitest'
-import { en } from '../i18n/messages/en'
+import { uses } from './v3ScreenParity'
 
 /**
  * The standalone Settings pages each have a second drawing under
@@ -36,91 +34,8 @@ const PAIRS: readonly { current: string; v3: string }[] = [
   { current: 'languages/pick.tsx', v3: 'LanguagePickScreenV3.tsx' },
   { current: 'blocked.tsx', v3: 'BlockedScreenV3.tsx' },
   { current: 'link-device.tsx', v3: 'LinkDeviceScreenV3.tsx' },
+  { current: 'translate-language.tsx', v3: 'TranslateLanguageScreenV3.tsx' },
 ]
-
-function isMessageKey(value: string): boolean {
-  let node: unknown = en
-  for (const part of value.split('.')) {
-    if (typeof node !== 'object' || node === null || !(part in node)) return false
-    node = (node as Record<string, unknown>)[part]
-  }
-  return node !== undefined && value.includes('.')
-}
-
-interface Uses {
-  keys: Set<string>
-  paths: Set<string>
-  roles: Set<string>
-  calls: Set<string>
-}
-
-/**
- * Calls that are about drawing, not doing: the hooks every page uses for its
- * own state and styles, and the route's flag switch. Everything else the
- * current page calls — a request, a sign-out, a confirmation, an
- * invalidation, a permission prompt — must be called by its twin too, so a
- * handler that drops a step fails here, not on a device.
- */
-const DRAWING_CALLS = new Set([
-  'useStyles',
-  'useTheme',
-  'useState',
-  'useCallback',
-  'useEffect',
-  'useMemo',
-  'useRef',
-  'makeStyles',
-  'useV3Home',
-  'useLocale',
-  'useT',
-  't',
-])
-
-/** `api.post(…)` → `api.post`, `confirmAlert(…)` → `confirmAlert`. */
-function calleeName(expression: ts.Expression, source: ts.SourceFile): string | undefined {
-  if (ts.isIdentifier(expression)) return expression.text
-  if (ts.isPropertyAccessExpression(expression)) {
-    const target = expression.expression
-    if (ts.isIdentifier(target)) return `${target.text}.${expression.name.text}`
-    return expression.name.getText(source)
-  }
-  return undefined
-}
-
-function uses(file: string): Uses {
-  const source = ts.createSourceFile(
-    file,
-    readFileSync(file, 'utf8'),
-    ts.ScriptTarget.Latest,
-    true,
-    ts.ScriptKind.TSX,
-  )
-  const found: Uses = { keys: new Set(), paths: new Set(), roles: new Set(), calls: new Set() }
-  const visit = (node: ts.Node): void => {
-    if (ts.isCallExpression(node)) {
-      const name = calleeName(node.expression, source)
-      if (name && !DRAWING_CALLS.has(name)) found.calls.add(name)
-    }
-    // The kit's row says `link` for itself when it leaves the app.
-    if (ts.isJsxAttribute(node) && node.name.getText(source) === 'external') found.roles.add('link')
-    // …and calls `goBackTo` for the page that hands it `back`.
-    if (ts.isJsxAttribute(node) && node.name.getText(source) === 'back') found.calls.add('goBackTo')
-    if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
-      const text = node.text
-      const parent = node.parent
-      if (ts.isJsxAttribute(parent) && parent.name.getText(source) === 'accessibilityRole') {
-        found.roles.add(text)
-      } else if (isMessageKey(text)) {
-        found.keys.add(text)
-      } else if (/^\/[a-z]/.test(text) && !text.startsWith('/(')) {
-        found.paths.add(text)
-      }
-    }
-    ts.forEachChild(node, visit)
-  }
-  visit(source)
-  return found
-}
 
 describe('v3 Settings pages keep the current pages’ words and requests', () => {
   for (const { current, v3 } of PAIRS) {

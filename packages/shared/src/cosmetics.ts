@@ -154,15 +154,16 @@ export const COSMETICS: readonly Cosmetic[] = [
   { id: 'title.master', kind: 'title', label: 'Master', price: 50_000 },
   { id: 'title.legend', kind: 'title', label: 'Legend', price: 100_000 },
   /**
-   * The starter pack, and for now the only one.
+   * The starter pack: Pip, a speech bubble with a face, saying the everyday
+   * things — hello, I am listening, I get it, thank you.
    *
    * Priced at the bottom of the frame ladder rather than beside it: a pack is
    * something you use in every conversation, and pricing the first one out of
    * a new account's reach would mean nobody ever finds out stickers exist.
    *
-   * Six of these are drawn for this app; six are Microsoft's Fluent Emoji,
-   * MIT, unmodified — see `docs/data-sources.md`, which is a licence condition
-   * and not a courtesy.
+   * Redrawn for v3, so all twelve are ours. Until then half of this pack and
+   * half of `practice` were Microsoft's Fluent Emoji; the ids are unchanged, so
+   * a message sent before the redraw shows the new picture.
    */
   /**
    * The second pack, and the one that proves packs are not a ladder: it is
@@ -170,9 +171,14 @@ export const COSMETICS: readonly Cosmetic[] = [
    * and somebody who wants this one should not have to buy that one first.
    *
    * Where `starter` is what you say *in* a conversation, these are about the
-   * practice itself — slow down, again, let us switch languages, we got there.
-   * Six drawn here and six from Fluent Emoji, the same split and the same
-   * rules: no lettering, no filters, no skin tones.
+   * practice itself — slow down, again, let us switch languages, we got there —
+   * drawn as embroidered felt merit badges.
+   *
+   * **1,000, though it is now all our own art.** Every pack drawn whole was
+   * priced at 1,500, and the v3 redraw made this one of them. It stays at
+   * 1,000 because `starter` and `practice` are the two entry packs: the price
+   * somebody new can reach first, in either flavour. Changing it would also
+   * change what the token site and the docs promise.
    */
   {
     id: 'stickers.practice',
@@ -215,30 +221,21 @@ export const COSMETICS: readonly Cosmetic[] = [
     ],
   },
   /**
-   * The third pack, and the first drawn in a different language.
+   * The third pack, and the first drawn in a different language: twelve
+   * symbols in an 8-bit game's vocabulary — an extra life, a checkpoint, a
+   * save, a level up — on sixteen-by-sixteen grids, drawn as fuse beads.
    *
-   * The other two are the same flat, rounded, ink-outlined art — half of each
-   * is Fluent Emoji, and the six we drew were drawn to sit beside it. Somebody
-   * who owns both is choosing between two shades of one style. This one is
-   * 16x16 pixel art, which reads as a deliberate second voice rather than as
-   * more of the first, and its twelve symbols speak an 8-bit game's language:
-   * a coin, a checkpoint, a save, a level up.
-   *
-   * **All twelve are ours.** Fluent has no pixel variant, so there was nothing
-   * to take even if we had wanted to — which is why this pack adds no entry to
-   * `docs/data-sources.md`'s licence table. The art itself is generated from
+   * **All twelve are ours.** The art is generated from
    * `tools/pixel-stickers/build-stickers.mjs`, where each sticker is a grid of
-   * characters; edit that and re-run it rather than editing the SVGs.
+   * characters; edit that and re-run it rather than editing the SVGs. The
+   * sticker `coin` is drawn as a heart since the v3 redraw and keeps its id,
+   * because sent messages store it.
    *
-   * **Dearer than the other two, and still not a rung above them.** Those are
-   * half Fluent Emoji, which cost us six drawings each; this one cost twelve,
-   * because there was no pixel variant to take. That is the whole of the
-   * difference — it is a price, not a gate. `isLadderKind` leaves stickers
-   * out, so `previousCosmetic` returns nothing for every pack and this one can
-   * be bought first, alone, or never. A reader who finds 1,000/1,000/1,500 in
-   * the shop and reads a ladder into it is reading something that is not
-   * there; levelling the price back would not fix that and would only stop
-   * saying what the pack cost to make.
+   * **Dearer than the two entry packs, and still not a rung above them.**
+   * `isLadderKind` leaves stickers out, so `previousCosmetic` returns nothing
+   * for every pack and this one can be bought first, alone, or never. A reader
+   * who finds 1,000/1,000/1,500 in the shop and reads a ladder into it is
+   * reading something that is not there.
    */
   {
     id: 'stickers.pixel',
@@ -258,6 +255,38 @@ export const COSMETICS: readonly Cosmetic[] = [
       'controller',
       'slime',
       'ghost',
+    ],
+  },
+  /**
+   * The fourth pack, and the first with words on it: greetings and quick
+   * replies paired with everyday things, cut from coloured paper — "¡Hola!"
+   * on a speech bubble, "Çay?" on a tea glass, "Fixed it" on a pencil.
+   *
+   * Drawn for the v3 store (the board "Sticker pack"), so all twelve are ours
+   * and the pack adds no licence. The lettering is outlined into paths, not
+   * set as SVG `<text>`, so no device needs Nunito to draw it.
+   *
+   * 1,500, as pixel is; 1,000 is kept for the two entry packs. Still not a
+   * rung — `isLadderKind` leaves stickers out.
+   */
+  {
+    id: 'stickers.paper',
+    kind: 'stickers',
+    label: 'Paper Talk',
+    price: 1500,
+    stickers: [
+      'hola',
+      'crane',
+      'nice',
+      'gotit',
+      'cafe',
+      'cay',
+      'sent',
+      'merci',
+      'onesec',
+      'book',
+      'fixed',
+      'night',
     ],
   },
 ]
