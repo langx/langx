@@ -139,6 +139,30 @@ export function hashFallback(id: string, gender: unknown): DefaultAvatar {
 }
 
 /**
+ * The face a new profile is given: the least used in its pool among recent
+ * sign-ups, so a wave of people joining together do not wear the same face.
+ *
+ * `counts[i]` is how many recent profiles in the pool wear face `i + 1`.
+ * Ties go to the face nearest after the id's own hash, so with no history at
+ * all the answer is exactly the hash, and two sign-ups racing on the same
+ * counts still usually differ. Returns a 1-based index.
+ */
+export function pickLeastUsed(counts: readonly number[], id: string): number {
+  const start = (fnv1a(`face:${id}`) % DEFAULT_AVATAR_POOL_SIZE) + 1
+  let best = start
+  let fewest = Infinity
+  for (let step = 0; step < DEFAULT_AVATAR_POOL_SIZE; step++) {
+    const index = ((start - 1 + step) % DEFAULT_AVATAR_POOL_SIZE) + 1
+    const count = counts[index - 1] ?? 0
+    if (count < fewest) {
+      fewest = count
+      best = index
+    }
+  }
+  return best
+}
+
+/**
  * Bumped when the art itself changes, so every `v=` the clients hold stops
  * matching and the immutable cache entries behind them are bypassed.
  */

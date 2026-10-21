@@ -4154,6 +4154,8 @@ cannot be opened and this whole path is lost — see the runbook.
 
 ## An account without a photo gets a drawn face, not its initials
 
+> **Amended 20 October 2026 — see _v3 default faces: 144 drawn faces, stored, in three pools_ below.**
+
 Two initials on one of three fills is what a photoless account used to look
 like. In a discovery list that is a column of coloured squares with letters on
 them, and most accounts in a fresh install have no photo — so the wall of
@@ -4202,6 +4204,107 @@ letter on a flat circle — the one screen whose whole question is "a photo, or
 the face we made you" was the one screen answering it with something nobody
 would ever see again. Skipping is now a visible choice of avatar rather than an
 empty slot left behind.
+
+## v3 default faces: 144 drawn faces, stored, in three pools
+
+_20 October 2026._ For the redesign, an account without a photo wears one of
+144 faces drawn for LangX instead of a Notionists face. There are three pools
+of 48: W for `female`, M for `male`, and N for everybody else. Every face is
+built from shared parts: 29 hair shapes, coverings, accessories, beards, six
+skin tones, six grounds and four soft shapes. The master sheet and the plan
+live with the design work, not in the repo.
+
+**Served as PNG by the API, as the Notionists faces were.** Three things in
+the earlier entry still hold: the API serves the picture, no native module is
+added, and no third party sits between the device and a picture of our users.
+What changes is the format. The faces are rendered by the resvg the share
+cards already use, so an email, a recap card and a push can carry the same
+face, and none of them draws SVG. The route is
+`/public/avatar/v3/:seed?s=&c=&v=`. It renders four sizes and three cuts:
+
+- textured at 96pt and up;
+- flat from 64pt;
+- flat with the figure 15% larger below 64pt.
+
+The cut follows the size the face is _shown_ at, not the pixels asked for,
+because a 40pt row on a 3x phone asks for 160px and still wants the small
+cut.
+
+**Stored, not only derived.** A new profile is given
+`profiles.defaultAvatar = { pool, index, ground }` once, at sign-up or on a
+v1 restore. The face is the least used in its pool among the last 500
+profiles, and the ground comes from the hash of the id. A hash alone bunches
+the way any 48-way hash of a few thousand ids does, so a wave of sign-ups
+would meet each other wearing the same face. The 500 are read by walking the
+`_id` index backwards, so the field gets no index of its own. A profile with
+nothing stored wears the pure hash of its id, so nothing is ever blank, and
+`scripts/backfill-default-avatars.ts` evens out the profiles that existed
+before this (a dry run first, then `--apply`).
+
+**The URL can name the face.** `?v=1-W07-3` (art revision, pool and index,
+ground) makes the PNG a pure function of the URL, so it is cached as
+immutable. The DTOs that feed an avatar carry it as `defaultAvatarRev`: the
+public profile, the discovery item, the shared profile, the chat partner and
+the call peer. It names nothing a viewer is not already shown. Without `v`,
+the server looks the face up and the answer is cached for a day. This
+replaces the earlier entry's week-long cache and its reason: the gender now
+changes the stored face, and the stored face changes the `v`.
+
+**A weak existence signal, accepted.** Without `v`, an account answers with
+its stored face and an id nobody holds answers with the neutral hash. Someone
+who computes the hash can therefore tell some real ids from unused ones. This
+is not fixed by answering every request without `v` from the hash, because
+several DTOs carry no `defaultAvatarRev`: feed authors, leaderboards, likes,
+the profile header. Those screens would draw the hash while the lists draw
+the stored face, and one person would wear two faces. The Notionists route
+made the same trade, since it read the gender. An id discloses no name, handle
+or photo, and the route is rate-limited.
+
+**Rendering is bounded.** resvg runs off the event loop
+(`renderAsync`), at most two renders at once. Concurrent asks for one face
+share a render, and the PNGs sit in a byte-bounded in-process cache. The
+480px face is the slowest to draw and the likeliest to miss the cache, so it
+has its own rate-limit bucket at a tenth of the list sizes'. Grids of many
+small faces, such as the picker, cap their fetch at 160px.
+
+**Gender, as before, is read and never sent.** A gender change moves an
+assigned face to the new pool and keeps its index and ground, so the person
+still looks like themselves, drawn from the other set. A face the person
+picked (`POST /profiles/me/default-avatar`, any pool) stays through a gender
+change. That choice is theirs.
+
+**`other` draws from the neutral pool, with `undisclosed`.** If declining to
+say drew a different face from never being asked, the picture would disclose
+what was declined. This sits beside `GenderMark`, which does show a symbol
+for `other` and none for `undisclosed`. The two do not contradict each other.
+The mark is the person's own stated answer, shown where they chose to state
+it; the face adds no fourth signal. Someone who wants no hint at all answers
+`undisclosed` and gets neither. The W and M faces show the gender already
+public on the profile, and a face picked from another pool is the person's
+own choice.
+
+**Honest about being a default.** `avatarUrl` stays empty, so "has a photo"
+keeps one meaning. A drawn face never opens full screen and never counts as a
+photo. The owner alone sees a nudge on Me to add one. It is put away for a
+week when closed, carries no counts, and never blocks anything. Viewers see
+the face like any other.
+
+**Two switches.** The app draws v3 faces only under `flags.v3Home`, read from
+the launch latch. The server's own surfaces follow the shared constant
+`DEFAULT_AVATAR_STYLE`, which arrives with the 3.0 launch and not before:
+until then, 2.9 builds keep their Notionists faces. With it at `'v3'`, the
+digest and match emails inline the face as a PNG, the recap card draws it,
+the ring push gains
+`callerDefaultAvatarUrl`, and the old `/public/avatar/:seed` sends a 302 to
+the v3 face, so builds from before v3 show it within their cache. Setting the
+constant back to `'notionists'` undoes all four. `@dicebear/*` and
+`avatarOptionsFor` go one release after the switch, once no build depends on
+the redirect's other side.
+
+**Covering and nationality.** No named persona, in copy, fixtures or store
+art, is tied to a head covering. The faces with coverings are spread across
+skin tones, and that spread is for the reviewer of the master sheet to
+confirm.
 
 ## Sign in with an emailed link: the link opens the app, and the app spends the token
 

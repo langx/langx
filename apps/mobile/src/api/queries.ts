@@ -11,6 +11,7 @@ import {
   type Equipped,
   type NotificationPrefs,
   type StoredNotificationPrefs,
+  type DefaultAvatar,
   effectivePlanTier,
   hasFeature,
   isPaidTier,
@@ -614,6 +615,11 @@ export interface MeProfile {
   handleChangedAt?: string
   displayName: string
   avatarUrl?: string
+  /**
+   * The drawn face stored for this account — see `ownDefaultAvatar`, which
+   * falls back on the server's hash when there is none yet.
+   */
+  defaultAvatar?: DefaultAvatar
   bio?: string
   pronouns?: string
   birthDate: string
@@ -1034,6 +1040,8 @@ export interface ConversationPartnerDto {
   handle: string
   displayName: string
   avatarUrl?: string
+  /** Names the drawn face when there is no photo; see `Avatar`. */
+  defaultAvatarRev?: string
   isOnline: boolean
   official?: true
   accountStatus: 'active' | 'suspended' | 'deleted'
@@ -3275,6 +3283,30 @@ export function useSetGender() {
       // The filter row reads `me.gender` to decide whether `onlyMyGender` does
       // anything, and discovery results change the moment it does.
       void queryClient.invalidateQueries({ queryKey: ['discovery'] })
+    },
+  })
+}
+
+/**
+ * Choosing one of the drawn faces (`POST /profiles/me/default-avatar`). The
+ * body names a face and the ground it was shown on — never a gender.
+ *
+ * Written straight into the `me` cache, so the Me hero and the picker agree
+ * at once; other people's screens pick the new face up from their next read
+ * of this profile, whose `defaultAvatarRev` is the new face's URL.
+ */
+export function usePickDefaultAvatar() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (face: DefaultAvatar) =>
+      api.post<{ defaultAvatar: DefaultAvatar; defaultAvatarRev: string }>(
+        '/profiles/me/default-avatar',
+        { pool: face.pool, index: face.index, ground: face.ground },
+      ),
+    onSuccess: ({ defaultAvatar }) => {
+      queryClient.setQueryData<MeProfile>(keys.me, (me) => (me ? { ...me, defaultAvatar } : me))
+      const me = queryClient.getQueryData<MeProfile>(keys.me)
+      if (me) invalidateOwnPublicViews(queryClient, me)
     },
   })
 }

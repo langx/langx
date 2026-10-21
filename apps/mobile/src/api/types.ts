@@ -73,6 +73,8 @@ export interface PublicProfileDto {
   handle: string
   displayName: string
   avatarUrl?: string
+  /** Names the drawn face when there is no photo; see `Avatar`. */
+  defaultAvatarRev?: string
   photos: { url: string }[]
   bio?: string
   pronouns?: string
@@ -144,6 +146,8 @@ export interface DiscoveryItem {
   handle: string
   displayName: string
   avatarUrl?: string
+  /** Names the drawn face when there is no photo; see `Avatar`. */
+  defaultAvatarRev?: string
   bio?: string
   age: number
   gender: string

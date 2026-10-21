@@ -1,3 +1,4 @@
+import { defaultAvatarRev, hashFallback, type DefaultAvatar } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -25,6 +26,7 @@ describe('generated avatars', () => {
   let app: FastifyInstance
   let emailSender: CapturingEmailSender
   let userId: string
+  let cookie: string
 
   function draw(seed: string, headers: Record<string, string> = {}) {
     return app.inject({ method: 'GET', url: `/public/avatar/${seed}`, headers })
@@ -76,6 +78,7 @@ describe('generated avatars', () => {
       name: 'Face Haver',
     })
     userId = user.userId
+    cookie = user.cookie
     const created = await app.inject({
       method: 'POST',
       url: '/profiles',
@@ -235,6 +238,51 @@ describe('generated avatars', () => {
       for (const size of [48, 96, 160, 480]) {
         expect((await drawV3(userId, `s=${size}&c=small`)).statusCode).toBe(200)
       }
+    })
+
+    it('answers an id nobody holds with the neutral hash, the trade the route accepts', async () => {
+      const unknown = await drawV3(UNKNOWN, 's=48')
+      const hashed = await drawV3(
+        UNKNOWN,
+        `s=48&v=${defaultAvatarRev(hashFallback(UNKNOWN, null))}`,
+      )
+      expect(unknown.rawPayload).toEqual(hashed.rawPayload)
+    })
+
+    it('draws the face stored at sign-up, the same one its v names', async () => {
+      const row = await handle.db
+        .collection<{ _id: string; defaultAvatar?: DefaultAvatar }>(COLLECTIONS.profiles)
+        .findOne({ _id: userId })
+      // Created with gender `undisclosed`, so the neutral pool.
+      expect(row?.defaultAvatar?.pool).toBe('N')
+      const rev = defaultAvatarRev(row?.defaultAvatar ?? { pool: 'N', index: 1, ground: 0 })
+      const looked = await drawV3(userId, 's=96')
+      expect(looked.rawPayload).toEqual((await drawV3(UNKNOWN, `s=96&v=${rev}`)).rawPayload)
+    })
+
+    it('lets the owner pick a face, from any pool, and serves it at once', async () => {
+      const pick = (
+        payload: Record<string, unknown>,
+        headers: Record<string, string> = { cookie },
+      ) => app.inject({ method: 'POST', url: '/profiles/me/default-avatar', headers, payload })
+
+      expect((await pick({ pool: 'W', index: 3 }, {})).statusCode).toBe(401)
+      for (const bad of [{}, { pool: 'W' }, { pool: 'X', index: 3 }, { pool: 'M', index: 0 }]) {
+        expect((await pick(bad)).statusCode, JSON.stringify(bad)).toBe(400)
+      }
+      expect((await pick({ pool: 'M', index: 49 })).statusCode).toBe(400)
+      expect((await pick({ pool: 'M', index: 4, ground: 6 })).statusCode).toBe(400)
+
+      const response = await pick({ pool: 'M', index: 12 })
+      expect(response.statusCode, response.body).toBe(200)
+      const body = response.json<{ defaultAvatar: DefaultAvatar; defaultAvatarRev: string }>()
+      expect(body.defaultAvatar).toMatchObject({ pool: 'M', index: 12, picked: true })
+      expect(body.defaultAvatarRev).toMatch(/^1-M12-\d$/)
+
+      const served = await drawV3(userId, 's=48')
+      expect(served.rawPayload).toEqual(
+        (await drawV3(UNKNOWN, `s=48&v=${body.defaultAvatarRev}`)).rawPayload,
+      )
     })
 
     it('leaves the Notionists route as it was', async () => {

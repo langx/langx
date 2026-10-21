@@ -116,6 +116,25 @@ export const fr: Localized<EnMessages> = {
     cameraTitle: 'Appareil photo',
     cameraPermission: 'LangX a besoin de votre autorisation pour utiliser l’appareil photo.',
   },
+  avatar: {
+    default: {
+      tile: 'Visage dessiné {index}',
+      pickTitle: 'Choisis un visage dessiné',
+      pickBody:
+        'Il te représente jusqu’à ce que tu ajoutes une photo. Toute personne qui voit ton profil voit ce visage.',
+      useThis: 'Prendre ce visage',
+      pickFailed: 'Ce visage n’a pas été enregistré. Réessaie.',
+      seeAll: { one: 'Voir {count} visage', other: 'Voir les {count} visages' },
+      changeFace: 'Changer de visage dessiné',
+      nudgeTitle: 'Ajoute une photo de toi',
+      nudgeBody:
+        'Nous avons dessiné ce visage pour que ton profil ne soit pas vide. C’est provisoire : une photo montre aux gens à qui ils parlent.',
+      nudgeAdd: 'Ajouter ta photo',
+      nudgePick: 'Choisir un autre visage dessiné',
+      nudgeDismiss: 'Pas maintenant',
+      othersSee: 'Ce que les autres voient sur ton profil',
+    },
+  },
   photo: {
     open: 'Ouvrir la photo',
     close: 'Fermer la photo',
@@ -911,6 +930,9 @@ export const fr: Localized<EnMessages> = {
     nameFromSignUp: 'Repris de ton inscription. Change-le si tu veux.',
     aboutYouOptional: 'À propos de toi (facultatif)',
     tooYoung: 'LangX est réservé aux personnes de {age} ans et plus.',
+    photo: {
+      picker: { title: 'Ou choisis un autre visage dessiné', keep: 'Garder ce visage' },
+    },
     photoTitle: 'Mets un visage dessus',
     photoBody:
       'On t’a dessiné un visage. Une vraie photo augmente beaucoup les chances qu’on te dise bonjour — et la bio est facultative aussi.',

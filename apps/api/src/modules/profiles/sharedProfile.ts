@@ -3,6 +3,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { notSuspended } from '../moderation/suspension'
+import { defaultAvatarRevFor } from './defaultAvatar'
 import type { Profile } from './profiles'
 
 /**
@@ -64,6 +65,9 @@ export async function getSharedProfile(db: Db, handle: string): Promise<SharedPr
         handle: 1,
         displayName: 1,
         avatarUrl: 1,
+        // For `defaultAvatarRev` only; neither leaves on its own.
+        defaultAvatar: 1,
+        gender: 1,
         bio: 1,
         pronouns: 1,
         birthDate: 1,
@@ -81,12 +85,20 @@ export async function getSharedProfile(db: Db, handle: string): Promise<SharedPr
    * not the same as opting out of a link you handed somebody yourself.
    */
   if (!profile) throw new ApiError('NOT_FOUND', 'Profile not found')
+  const defaultAvatarRev = defaultAvatarRevFor(profile)
 
   return {
     _id: profile._id,
     handle: profile.handle,
     displayName: profile.displayName ?? profile.handle,
     ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
+    // The face the picture already shows, named so the page can cache it.
+    // It names the pool, and so whether the account said female, male or
+    // neither — which looks like a leak on a DTO that leaves `gender` out on
+    // purpose, and is not one: the picture on the page is that face, and
+    // W and M faces are drawn to read as their pool. Naming it tells a
+    // stranger nothing the image did not.
+    ...(defaultAvatarRev ? { defaultAvatarRev } : {}),
     ...(profile.bio ? { bio: profile.bio } : {}),
     // Here although `gender` is not — see `sharedProfileSchema`. This page
     // goes to strangers, which makes it the worst one to get wrong.

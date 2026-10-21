@@ -150,6 +150,31 @@ export const ar: Localized<EnMessages> = {
     cameraTitle: 'الكاميرا',
     cameraPermission: 'يحتاج LangX إذنًا لاستخدام الكاميرا.',
   },
+  avatar: {
+    default: {
+      tile: 'وجه مرسوم {index}',
+      pickTitle: 'اختر وجهًا مرسومًا',
+      pickBody: 'يظهر مكان صورتك إلى أن تضيف صورة. كل من يرى ملفك الشخصي يرى هذا الوجه.',
+      useThis: 'استخدم هذا الوجه',
+      pickFailed: 'لم يُحفظ هذا الوجه. حاول مرة أخرى.',
+      seeAll: {
+        zero: 'لا توجد وجوه',
+        one: 'عرض وجه واحد',
+        two: 'عرض الوجهين',
+        few: 'عرض الوجوه الـ{count}',
+        many: 'عرض الوجوه الـ{count}',
+        other: 'عرض الوجوه الـ{count}',
+      },
+      changeFace: 'تغيير الوجه المرسوم',
+      nudgeTitle: 'أضف صورة لك',
+      nudgeBody:
+        'رسمنا هذا الوجه حتى لا يبقى ملفك الشخصي فارغًا. إنه بديل مؤقت: الصورة تُري الناس مع من يتحدثون.',
+      nudgeAdd: 'أضف صورتك',
+      nudgePick: 'اختر وجهًا مرسومًا آخر',
+      nudgeDismiss: 'ليس الآن',
+      othersSee: 'ما يراه الآخرون في ملفك الشخصي',
+    },
+  },
   photo: {
     open: 'فتح الصورة',
     close: 'إغلاق الصورة',
@@ -1045,6 +1070,9 @@ export const ar: Localized<EnMessages> = {
     nameFromSignUp: 'من تسجيلك. غيّره إن أردت.',
     aboutYouOptional: 'عنك (اختياري)',
     tooYoung: 'LangX مخصص لمن أعمارهم {age} عامًا فأكثر.',
+    photo: {
+      picker: { title: 'أو اختر وجهًا مرسومًا آخر', keep: 'احتفظ بهذا الوجه' },
+    },
     photoTitle: 'ضع صورة لك',
     photoBody:
       'رسمنا لك وجهًا. الصورة الحقيقية تزيد كثيرًا من احتمال أن يبادرك أحدهم بالتحية — والنبذة اختيارية أيضًا.',

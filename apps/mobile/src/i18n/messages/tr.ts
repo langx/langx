@@ -122,6 +122,24 @@ export const tr: Localized<EnMessages> = {
     cameraTitle: 'Kamera',
     cameraPermission: 'LangX kameranı kullanmak için izin istiyor.',
   },
+  avatar: {
+    default: {
+      tile: 'Çizilmiş yüz {index}',
+      pickTitle: 'Çizilmiş bir yüz seç',
+      pickBody: 'Fotoğraf ekleyene kadar seni temsil eder. Profilini gören herkes bu yüzü görür.',
+      useThis: 'Bu yüzü kullan',
+      pickFailed: 'Bu yüz kaydedilemedi. Tekrar dene.',
+      seeAll: { one: '{count} yüzün hepsini gör', other: '{count} yüzün hepsini gör' },
+      changeFace: 'Çizilmiş yüzü değiştir',
+      nudgeTitle: 'Kendi fotoğrafını ekle',
+      nudgeBody:
+        'Profilin boş kalmasın diye bu yüzü çizdik. Geçici bir yüz: fotoğraf, insanlara kiminle konuştuklarını gösterir.',
+      nudgeAdd: 'Fotoğrafını ekle',
+      nudgePick: 'Başka bir çizilmiş yüz seç',
+      nudgeDismiss: 'Şimdi değil',
+      othersSee: 'Başkaları profilinde ne görüyor',
+    },
+  },
   photo: {
     open: 'Fotoğrafı aç',
     close: 'Fotoğrafı kapat',
@@ -893,6 +911,9 @@ export const tr: Localized<EnMessages> = {
     nameFromSignUp: 'Kayıt olurken verdiğin ad. İstersen değiştir.',
     aboutYouOptional: 'Senin hakkında (isteğe bağlı)',
     tooYoung: 'LangX {age} yaş ve üzeri içindir.',
+    photo: {
+      picker: { title: 'Ya da başka bir çizilmiş yüz seç', keep: 'Bu yüzle devam et' },
+    },
     photoTitle: 'Bir de yüzünü koy',
     photoBody:
       'Sana bir yüz çizdik. Gerçek bir fotoğraf, merhaba deme ihtimalini çok artırıyor — biyografi de isteğe bağlı.',

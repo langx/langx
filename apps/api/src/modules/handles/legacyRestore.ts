@@ -13,6 +13,7 @@ import type { RevenueCatClient } from '../billing/revenueCatClient'
 import { awardTokens } from '../tokens/ledger'
 import { streakDay } from '../tokens/streak'
 import { grantSignupBonus } from '../tokens/signupBonus'
+import { assignDefaultAvatar } from '../profiles/defaultAvatar'
 import type { Profile } from '../profiles/profiles'
 import { nameTokens } from '../profiles/nameTokens'
 import { markReservationClaimed, reservationVerdict } from './handleReservations'
@@ -128,6 +129,11 @@ export async function restoreByHash(
     // never sees the onboarding form, so the starting grant has to happen here
     // too. Idempotent, so the overlap with `createProfile` costs nothing.
     await grantSignupBonus(db, userId, now)
+    // The same face assignment `createProfile` makes, for the same reason.
+    // Never fatal: without it the hash face stands in.
+    await assignDefaultAvatar(db, userId).catch((error: unknown) => {
+      console.error('[avatar] assign failed', { userId, error })
+    })
   } else {
     // They onboarded first and are only now proving the email. Restore what
     // they did not fill in themselves — each field only where the form left
