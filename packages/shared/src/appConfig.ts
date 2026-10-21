@@ -187,11 +187,11 @@ export const appConfigSchema = z.object({
     /**
      * Giving a sticker pack to a chat partner (`stickerGift.ts`). Starts
      * off, like `captchaRequired`, and for a stronger reason: it spends
-     * tokens on another person's account, which Terms §7 says today cannot
-     * happen ("not transferable"). The legal text changes first, and then
-     * Behic switches this on — a merge never does. Off, the endpoint refuses
-     * with `disabled` and no client draws the button. Gifts already given stay
-     * given whatever this says.
+     * tokens on another person's account, which Terms §7 said could not
+     * happen ("not transferable") until its "Gifts between users" paragraph
+     * went live on 21 October 2026. Behic switches this on — a merge never
+     * does. Off, the endpoint refuses with `disabled` and no client draws
+     * the button. Gifts already given stay given whatever this says.
      */
     stickerGifts: z.boolean(),
   }),

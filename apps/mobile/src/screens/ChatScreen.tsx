@@ -199,6 +199,8 @@ import { OfficialMark } from '../components/OfficialMark'
 import { WebTitle } from '../components/WebTitle'
 import { ComposerV3, type LatestActions } from '../components/thread/ComposerV3'
 import { WithRewardChips } from '../components/thread/RewardChipV3'
+import { EmojiBurstV3, type Burst } from '../components/thread/EmojiBurstV3'
+import { drawsAsHero, loneEmoji, shouldPlayBurst, type BurstTrigger } from '../lib/emojiBurst'
 import { ThreadHeaderV3 } from '../components/thread/ThreadHeaderV3'
 import { useV3Home } from '../hooks/useV3Home'
 import { useKeyboardUp } from '../hooks/useKeyboardUp'
@@ -812,6 +814,54 @@ export function ChatScreen({
     }, [conversationId, queryClient]),
   )
 
+  /**
+   * The v3 thread's emoji burst: a message that is one emoji showers copies
+   * of itself over the screen (`EmojiBurstV3`). Played by events — this
+   * screen's send, the partner's message pushed over the socket, a tap on the
+   * big emoji — and never by the list drawing a row, which is what keeps it
+   * from replaying as history loads, scrolls or re-renders. The rules are in
+   * `shouldPlayBurst`; the refs let the socket listener read them now rather
+   * than as they were when it was attached.
+   */
+  const myIdRef = useRef(me.data?._id)
+  myIdRef.current = me.data?._id
+  const reduceMotion = useReduceMotion()
+  const [burst, setBurst] = useState<Burst | null>(null)
+  const burstPlaying = useRef(false)
+  const burstPlayed = useRef(new Set<string>())
+  const playBurst = useRef<
+    (
+      trigger: BurstTrigger,
+      message: { body: string; hero: boolean; id?: string; ageMs?: number },
+    ) => void
+  >(() => undefined)
+  playBurst.current = (trigger, { body, hero, id, ageMs }) => {
+    const play = shouldPlayBurst({
+      trigger,
+      body,
+      hero,
+      v3: v3Thread,
+      reduceMotion,
+      focused,
+      playing: burstPlaying.current,
+      played: id !== undefined && burstPlayed.current.has(id),
+      ...(ageMs !== undefined ? { ageMs } : {}),
+    })
+    const emoji = loneEmoji(body)
+    if (!play || emoji === null) return
+    if (id !== undefined) burstPlayed.current.add(id)
+    burstPlaying.current = true
+    setBurst({ emoji, key: Date.now() })
+  }
+  const endBurst = useCallback(() => {
+    burstPlaying.current = false
+    setBurst(null)
+  }, [])
+  // Stable, so the memoised bubbles do not all re-render for it.
+  const onBurstTap = useCallback((message: MessageDto) => {
+    playBurst.current('tap', { body: message.body, hero: true })
+  }, [])
+
   useEffect(() => {
     const indicator = typingIndicator(setPartnerTyping)
     let typist: string | undefined
@@ -825,6 +875,20 @@ export function ChatScreen({
     const onMessage = (message: MessageDto) => {
       if (message.conversationId === conversationId && message.senderId === typist) {
         indicator.set(false)
+      }
+      // Theirs only: this screen bursts its own sends as they leave, and a
+      // copy of one coming back over the socket is not news. While `me` is
+      // still loading nobody can tell whose it is, so nothing plays.
+      const myId = myIdRef.current
+      if (message.conversationId === conversationId && myId && message.senderId !== myId) {
+        playBurst.current('live', {
+          body: message.body,
+          // The hero bubble's own condition, so a photo captioned with one
+          // emoji does not burst with nothing on screen to explain it.
+          hero: drawsAsHero(message),
+          id: message._id,
+          ageMs: Date.now() - Date.parse(message.createdAt),
+        })
       }
     }
     const stop = onSocket((socket) => {
@@ -1811,6 +1875,7 @@ export function ChatScreen({
       )
       // `deliver` never rejects — a failure becomes an unsent row.
       void deliverTranslated(body, clientId, reply?._id, ask ?? undefined, quote)
+      playBurst.current('sent', { body, hero: true, id: clientId })
     }
     // Sending is a statement about the live conversation, so it ends a
     // detour into the history rather than posting into the middle of it.
@@ -3467,6 +3532,7 @@ export function ChatScreen({
                         onJumpTo={onJumpTo}
                         onOpenMedia={onOpenMedia}
                         onOpenViewOnce={onOpenViewOnce}
+                        {...(v3Thread ? { onBurst: onBurstTap } : {})}
                         v3={v3Thread}
                         partnerHue={partnerHue}
                       />
@@ -3810,6 +3876,7 @@ export function ChatScreen({
         onPick={(media) => void startCall(media, 'header')}
         onClose={() => setCallMenu(null)}
       />
+      {burst ? <EmojiBurstV3 key={burst.key} burst={burst} onDone={endBurst} /> : null}
     </Screen>
   )
 }

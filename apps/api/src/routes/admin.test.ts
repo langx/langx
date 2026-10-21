@@ -1071,6 +1071,27 @@ describe('the operator panel', () => {
         target.userId,
       )
     })
+
+    it('finds a handle or an address typed with capitals, an @ and spaces', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const target = await newUser()
+      const { handle } = (await get(admin, `/admin/users/${target.userId}`)).json<{
+        user: { handle: string }
+      }>().user
+
+      for (const typed of [
+        handle.toUpperCase(),
+        ` @${handle.toUpperCase()} `,
+        `@${handle}`,
+        target.email.toUpperCase(),
+      ]) {
+        const found = await get(admin, `/admin/users?q=${encodeURIComponent(typed)}`)
+        expect(found.statusCode, typed).toBe(200)
+        expect(found.json<{ user: { userId: string } }>().user.userId).toBe(target.userId)
+      }
+      expect((await get(admin, '/admin/users?q=nobody_here')).statusCode).toBe(404)
+    })
   })
 
   describe('Copilot access', () => {
@@ -2039,6 +2060,111 @@ describe('the operator panel', () => {
     it('is not something an ordinary member can do', async () => {
       const member = await newUser()
       const response = await post(member, '/admin/app-config/captcha-required', { required: true })
+      expect(response.statusCode).toBe(403)
+    })
+  })
+
+  describe('POST /admin/app-config/flags', () => {
+    it('switches one flag, leaving the others as they were, and reads back', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+
+      const on = await post(admin, '/admin/app-config/flags', { flag: 'v3Home', value: true })
+      expect(on.statusCode).toBe(200)
+      expect(on.json<AppConfig>().flags.v3Home).toBe(true)
+      const flags = (await get(admin, '/admin/stats')).json<AdminStats>().system.config.flags
+      expect(flags).toEqual({ ...DEFAULT_APP_CONFIG.flags, v3Home: true })
+
+      const off = await post(admin, '/admin/app-config/flags', { flag: 'v3Home', value: false })
+      expect(off.json<AppConfig>().flags).toEqual(DEFAULT_APP_CONFIG.flags)
+    })
+
+    it('records every switch with the flag and the value', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      await post(admin, '/admin/app-config/flags', { flag: 'proWeek', value: true })
+      await post(admin, '/admin/app-config/flags', { flag: 'proWeek', value: false })
+
+      const rows = await handle.db
+        .collection<{ payload: unknown }>(COLLECTIONS.adminActions)
+        .find({ action: 'appConfig.flag', adminId: admin.userId })
+        .toArray()
+      expect(rows.map((row) => row.payload)).toEqual(
+        expect.arrayContaining([
+          { flag: 'proWeek', value: true },
+          { flag: 'proWeek', value: false },
+        ]),
+      )
+    })
+
+    it('refuses a flag the schema does not know, and writes nothing', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const before = (await get(admin, '/admin/stats')).json<AdminStats>().system.config.flags
+
+      for (const flag of ['notAFlag', '__proto__', 'constructor', 'captchaRequired']) {
+        const response = await post(admin, '/admin/app-config/flags', { flag, value: true })
+        expect(response.statusCode, flag).toBe(400)
+      }
+
+      const after = (await get(admin, '/admin/stats')).json<AdminStats>().system.config.flags
+      expect(after).toEqual(before)
+      const rows = await handle.db
+        .collection(COLLECTIONS.adminActions)
+        .countDocuments({ action: 'appConfig.flag', adminId: admin.userId })
+      expect(rows).toBe(0)
+    })
+
+    it('refuses a value that is not a boolean, and any key beside the two', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+
+      for (const body of [
+        { flag: 'v3Home', value: 'true' },
+        { flag: 'v3Home', value: 1 },
+        { flag: 'v3Home' },
+        { flag: 'v3Home', value: true, maintenance: { enabled: true } },
+      ]) {
+        const response = await post(admin, '/admin/app-config/flags', body)
+        expect(response.statusCode, JSON.stringify(body)).toBe(400)
+      }
+    })
+
+    it('keeps a switch made a moment earlier, however stale the cache is', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      // Warm this process's cache, then write behind its back, as another
+      // machine would.
+      await get(admin, '/admin/stats')
+      await handle.db
+        .collection(COLLECTIONS.appConfig)
+        .updateOne({ _id: 'current' as never }, { $set: { 'flags.callsEnabled': false } })
+
+      const response = await post(admin, '/admin/app-config/flags', {
+        flag: 'proWeek',
+        value: true,
+      })
+      expect(response.json<AppConfig>().flags).toMatchObject({ callsEnabled: false, proWeek: true })
+
+      await post(admin, '/admin/app-config/flags', { flag: 'callsEnabled', value: true })
+      await post(admin, '/admin/app-config/flags', { flag: 'proWeek', value: false })
+    })
+
+    it('needs a session', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/app-config/flags',
+        payload: { flag: 'v3Home', value: true },
+      })
+      expect(response.statusCode).toBe(401)
+    })
+
+    it('is not something an ordinary member can do', async () => {
+      const member = await newUser()
+      const response = await post(member, '/admin/app-config/flags', {
+        flag: 'v3Home',
+        value: true,
+      })
       expect(response.statusCode).toBe(403)
     })
   })

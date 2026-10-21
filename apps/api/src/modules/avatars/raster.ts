@@ -126,7 +126,17 @@ export async function renderDefaultAvatar({ avatar, size, cut }: RenderInput): P
     // Off the event loop: a 480px face is tens of milliseconds of rasterising,
     // and done synchronously it stalls every other request on the process.
     const rendered = await withRenderSlot(() =>
-      renderAsync(svg, { fitTo: { mode: 'width', value: size } }),
+      renderAsync(svg, {
+        fitTo: { mode: 'width', value: size },
+        /*
+         * A face is paths and fills, no text, so it needs no fonts — and by
+         * default resvg scans every system font on every render. That scan
+         * was nearly the whole cost: ~600ms a face on a Mac against ~2ms
+         * without it, which is what made a cold picker of 144 faces take
+         * seconds to fill through two render slots.
+         */
+        font: { loadSystemFonts: false },
+      }),
     )
     const png = Buffer.from(rendered.asPng())
     remember(key, png)

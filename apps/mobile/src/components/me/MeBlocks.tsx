@@ -3,12 +3,12 @@ import type { ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { useLocale } from '../../i18n'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
-import { ProMark } from '../ProMark'
 import { Avatar } from '../ui/Avatar'
 import { FrameSweep } from '../ui/FrameSweep'
 import { Button } from '../ui/Button'
 import { IconButton } from '../ui/IconButton'
 import { PressableScale } from '../ui/PressableScale'
+import { ProBadge } from '../ui/ProBadge'
 import { ProgressRing } from '../ui/ProgressRing'
 import { Skeleton } from '../ui/Skeleton'
 import { TitleBadge } from '../ui/TitleBadge'
@@ -166,13 +166,17 @@ export function MeHero({ view }: { view: MeHeroView }) {
         </View>
 
         <View style={styles.heroText}>
-          <Text
-            style={[styles.name, !view.black && styles.nameFallback]}
-            accessibilityRole="header"
-            numberOfLines={2}
-          >
-            {view.name}
-          </Text>
+          {/* The plan on the name's line at the name's size, as on the profile. */}
+          <View style={styles.nameRow}>
+            <Text
+              style={[styles.name, !view.black && styles.nameFallback]}
+              accessibilityRole="header"
+              numberOfLines={2}
+            >
+              {view.name}
+            </Text>
+            {view.pro ? <ProBadge fontSize={v3.type.title.fontSize} on="hue" /> : null}
+          </View>
           <Text style={styles.handle} numberOfLines={2}>
             {view.handleLine}
           </Text>
@@ -187,10 +191,9 @@ export function MeHero({ view }: { view: MeHeroView }) {
             </Text>
           ) : null}
           {/* On a line of their own, so a long handle and city keep theirs. */}
-          {view.pro || view.titleId ? (
+          {view.titleId ? (
             <View style={styles.chips}>
-              {view.pro ? <ProMark /> : null}
-              {view.titleId ? <TitleBadge id={view.titleId} /> : null}
+              <TitleBadge id={view.titleId} />
             </View>
           ) : null}
           {view.hidden ? (
@@ -317,7 +320,7 @@ export function MeProBlock({
         onPress={onPress}
         style={({ pressed }) => [styles.proHead, pressed && styles.pressed]}
       >
-        <ProMark />
+        <ProBadge fontSize={v3.type.headline.fontSize} />
         <Text style={styles.proTitle}>{title}</Text>
         <Chevron color={v3.colors.fg} />
       </Pressable>
@@ -675,7 +678,8 @@ const useStyles = makeStyles(({ v3 }) => ({
     width: CAMERA,
   },
   heroText: { flex: 1, gap: v3.space[2], minWidth: 0 },
-  name: { ...v3.type.title, color: v3.colors.ink },
+  nameRow: { alignItems: 'baseline', flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
+  name: { ...v3.type.title, color: v3.colors.ink, flexShrink: 1 },
   // ExtraBold at Black's size until Black has loaded, so the line does not
   // reflow when the face arrives — only thickens.
   nameFallback: { fontFamily: DISPLAY_FONT },
