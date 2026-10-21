@@ -132,7 +132,7 @@ export function KitchenScreenV3() {
 
       {/* A licence condition, not a courtesy — see `kitchen.tsx`. */}
       <Text style={styles.footer}>
-        {t('kitchen.footer')} {t('kitchen.dataCredit')} {t('kitchen.stickerCredit')}
+        {t('kitchen.footer')} {t('kitchen.dataCredit')}
       </Text>
     </SettingsScreenV3>
   )
