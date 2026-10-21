@@ -51,6 +51,29 @@ export function avatarSource({
 }
 
 /**
+ * How long to wait before asking for a drawn face again, matching the
+ * `Retry-After` the faces route sends with a 503 when its render queue is
+ * full. expo-image reports only that a load failed, not the headers, so the
+ * number is the route's own.
+ */
+export const DRAWN_FACE_RETRY_MS = 1000
+
+/**
+ * Whether a failed load is worth one more try, and after how long; `null`
+ * means show the initials now.
+ *
+ * Only for a drawn face, and only once. A cold cache meeting a grid of 144
+ * faces is the one failure that is about the server being busy rather than
+ * the picture being gone, and it passes in a second; expo-image does not
+ * retry by itself, so without this those tiles would sit on initials for as
+ * long as the screen is open. A photo that failed is left alone, as before.
+ */
+export function drawnFaceRetryIn(source: string | undefined, attempt: number): number | null {
+  if (!source || attempt > 0 || !source.includes('/public/avatar/v3/')) return null
+  return DRAWN_FACE_RETRY_MS
+}
+
+/**
  * The face the signed-in person wears: what the server stored, or — before
  * anything was stored — the same hash the server falls back on, so the Me
  * screen and everybody else's screens agree.
