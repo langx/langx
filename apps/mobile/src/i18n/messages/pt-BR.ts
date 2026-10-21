@@ -3030,6 +3030,11 @@ export const ptBR: Localized<EnMessages> = {
       openers_50: 'Luz da varanda',
       openers_200: 'Casa aberta',
     },
+    pin: 'Fixar no perfil',
+    unpin: 'Desafixar',
+    change: 'Trocar',
+    pinnedRow: 'Suas insígnias no seu perfil',
+    pinFull: 'Fixar esta substitui {name}.',
   },
 
   shared: {

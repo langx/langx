@@ -3322,6 +3322,11 @@ export const en = {
       openers_50: 'Porch Light',
       openers_200: 'Open House',
     },
+    pin: 'Pin to profile',
+    unpin: 'Unpin',
+    change: 'Change',
+    pinnedRow: 'Your badges on your profile',
+    pinFull: 'Pinning this replaces {name}.',
   },
 
   shared: {

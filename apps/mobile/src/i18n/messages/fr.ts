@@ -3068,6 +3068,11 @@ export const fr: Localized<EnMessages> = {
       openers_50: 'Lampe du perron',
       openers_200: 'Maison ouverte',
     },
+    pin: 'Épingler au profil',
+    unpin: 'Retirer',
+    change: 'Modifier',
+    pinnedRow: 'Tes badges sur ton profil',
+    pinFull: 'L’épingler remplace {name}.',
   },
 
   shared: {

@@ -3034,6 +3034,11 @@ export const es: Localized<EnMessages> = {
       openers_50: 'Luz del porche',
       openers_200: 'Casa abierta',
     },
+    pin: 'Fijar en el perfil',
+    unpin: 'Quitar',
+    change: 'Cambiar',
+    pinnedRow: 'Tus insignias en tu perfil',
+    pinFull: 'Fijarla sustituye a {name}.',
   },
 
   shared: {

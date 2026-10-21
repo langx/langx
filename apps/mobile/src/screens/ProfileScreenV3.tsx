@@ -17,7 +17,7 @@ import {
   type ConversationDto,
 } from '../api/queries'
 import { ActivityMap } from '../components/ActivityMap'
-import { BadgeMark } from '../components/BadgeMark'
+import { BadgePatch } from '../components/badges/BadgePatch'
 import { ConversationPicker } from '../components/ConversationPicker'
 import { GenderMark } from '../components/GenderMark'
 import { OfficialMark } from '../components/OfficialMark'
@@ -608,11 +608,13 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
                 style={styles.badges}
               >
                 <View style={styles.badgeMarks}>
-                  {showNumbers.topBadges.slice(0, 3).map((b, index) => (
-                    <View key={b.id} style={[styles.badgeMark, index > 0 && styles.badgeOverlap]}>
-                      <BadgeMark id={b.id} size={BADGE} />
-                    </View>
-                  ))}
+                  {(showNumbers.pinnedBadges ?? showNumbers.topBadges)
+                    .slice(0, 3)
+                    .map((b, index) => (
+                      <View key={b.id} style={[styles.badgeMark, index > 0 && styles.badgeOverlap]}>
+                        <BadgePatch id={b.id} size={BADGE} />
+                      </View>
+                    ))}
                 </View>
                 <Text style={styles.badgesLabel}>
                   {t('profile.badgeStrip', { count: showNumbers.topBadges.length })}

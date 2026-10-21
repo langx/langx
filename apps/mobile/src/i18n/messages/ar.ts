@@ -3880,6 +3880,11 @@ export const ar: Localized<EnMessages> = {
       openers_50: 'ضوء الشرفة',
       openers_200: 'بيت مفتوح',
     },
+    pin: 'ثبّتها في الملف الشخصي',
+    unpin: 'إلغاء التثبيت',
+    change: 'تغيير',
+    pinnedRow: 'شاراتك في ملفك الشخصي',
+    pinFull: 'تثبيتها يحلّ محلّ {name}.',
   },
 
   shared: {

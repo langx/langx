@@ -1234,6 +1234,8 @@ export interface PublicSummaryDto {
   posts?: number
   /** The newest badge of each kind, for the strip above the bio. */
   topBadges: ProfileBadge[]
+  /** The badges the owner pinned, when they pinned any; the v3 profile wears these. */
+  pinnedBadges?: ProfileBadge[]
   tokens: number
   /** Where they stand on this week's token board, or `null` when they are off it. */
   rank: { percentile: number } | null
@@ -2206,6 +2208,22 @@ export function useBadges(enabled = true) {
     queryFn: () => api.get<BadgeSummary>('/me/badges'),
     // The badges screen reads either yours or somebody else's, never both.
     enabled,
+  })
+}
+
+/**
+ * Pins badges to your profile: the whole list, in order. Your badges and your
+ * profile's summary both say which, so both are refetched.
+ */
+export function usePinBadges() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (ids: readonly string[]) =>
+      api.post<{ pinned: string[] }>('/me/badges/pinned', { ids }),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.badges })
+      void client.invalidateQueries({ queryKey: ['profileSummary'] })
+    },
   })
 }
 

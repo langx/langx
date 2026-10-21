@@ -3569,6 +3569,11 @@ export const ru: Localized<EnMessages> = {
       openers_50: 'Свет на крыльце',
       openers_200: 'Открытый дом',
     },
+    pin: 'Закрепить в профиле',
+    unpin: 'Открепить',
+    change: 'Изменить',
+    pinnedRow: 'Ваши значки в профиле',
+    pinFull: 'Он заменит значок «{name}».',
   },
 
   shared: {
