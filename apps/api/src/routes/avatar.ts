@@ -32,6 +32,17 @@ const COPILOT_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 12
  */
 const CACHE_SECONDS = 604_800
 
+/** 480px faces one address may ask for a minute; see the v3 route. */
+export const LARGE_FACES_PER_MINUTE = 30
+
+/**
+ * Whether a request is for the 480px face. Read off the raw query, because
+ * the limiter runs before validation; a malformed size is refused after it.
+ */
+function isLargeFace(request: { query: unknown }): boolean {
+  return (request.query as { s?: unknown } | undefined)?.s === '480'
+}
+
 /** How long a v3 face is cached. */
 const DAY_SECONDS = 86_400
 
@@ -137,11 +148,24 @@ export const avatarRoutes: FastifyPluginAsyncZod = async (app) => {
         }),
       },
       /*
-       * Five times the Notionists route. A discovery grid or a chat list asks
-       * for thirty faces at once, and unlike that route most of these answers
-       * never touch the database.
+       * Five times the Notionists route for the list sizes: a discovery grid
+       * or a chat list asks for thirty faces at once, and unlike that route
+       * most of these answers never touch the database.
+       *
+       * The 480px face has a bucket of its own and a tenth of that. It is the
+       * one size a client wants a single face of — a profile hero, a ringing
+       * screen — and the one whose renders are both the slowest and the
+       * likeliest to fall out of the cache (864 faces on six grounds in three
+       * cuts), so it is the one a few addresses could keep the renderer busy
+       * with.
        */
-      config: { rateLimit: { max: 300, timeWindow: '1 minute' } },
+      config: {
+        rateLimit: {
+          max: (request) => (isLargeFace(request) ? LARGE_FACES_PER_MINUTE : 300),
+          keyGenerator: (request) => `${request.ip}:${isLargeFace(request) ? 'large' : 'list'}`,
+          timeWindow: '1 minute',
+        },
+      },
     },
     async (request, reply) => {
       const { seed } = request.params
@@ -151,6 +175,19 @@ export const avatarRoutes: FastifyPluginAsyncZod = async (app) => {
        * 200 for an id nobody holds, as above: a 404 would answer "does this
        * account exist", one id at a time. With no profile the hash draws from
        * the neutral pool, exactly as for a profile that never said.
+       *
+       * Accepted, not fixed: without `v` the answer still depends on the
+       * account. An existing account wears its stored face, and an id nobody
+       * holds wears the neutral hash, so someone who computes the hash can
+       * tell some real ids from unused ones. Answering every request without
+       * `v` from the hash would close that, but at the cost of faces that
+       * disagree. The screens whose DTOs carry no `defaultAvatarRev` — feed
+       * authors, leaderboards, likes, the profile header — would draw the hash
+       * while the lists that carry one draw the stored face, and one person
+       * would wear two faces. The Notionists route this replaces made the same
+       * trade: it read the gender, and a stated gender drew a different face
+       * from an unknown id. An id discloses no name, handle or photo, and the
+       * route is rate-limited. See `docs/decisions.md` → _v3 default faces_.
        */
       const avatar = named ?? (await getDefaultAvatarFor(app.mongo.db, seed))
       const png = await renderDefaultAvatar({ avatar, size, cut: c ?? defaultAvatarCutFor(size) })
