@@ -277,7 +277,7 @@ export default function AdminCopilotScreen() {
           <AdminCaptionV3>{found.isLoading ? ADMIN.common.loading : L.addNone}</AdminCaptionV3>
         )
       ) : null}
-      {found.data && lookup.length >= 2 ? (
+      {found.data && lookup.length >= 2 && handle.trim().replace(/^@/, '') === lookup ? (
         <Button
           label={found.data.user.copilotAccess ? L.remove : L.allow}
           variant={found.data.user.copilotAccess ? 'secondary' : 'primary'}

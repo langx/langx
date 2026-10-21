@@ -919,7 +919,7 @@ export const ADMIN = {
     fresh: 'Written now',
     refused: (code: string, reason?: string) => `Refused: ${code}${reason ? ` (${reason})` : ''}`,
     allowedTitle: 'Allowed accounts',
-    allowedEmpty: 'Nobody yet. Allow yourself or add an account below.',
+    allowedEmpty: 'Nobody yet. Allow yourself or add an account above.',
     allowMe: 'Allow me',
     addLabel: 'Add an account',
     addPlaceholder: '@handle',
@@ -930,7 +930,7 @@ export const ADMIN = {
     allowedSince: (date: string) => `Since ${date}`,
     you: 'You',
     youAllowed: 'On the list',
-    youNotAllowed: 'Not on the list. Being an admin does not count: allow yourself below.',
+    youNotAllowed: 'Not on the list. Being an admin does not count: use Allow me.',
     whoTitle: 'Who sees Copilot',
     whoRules: [
       'flags.copilotEnabled is on',
