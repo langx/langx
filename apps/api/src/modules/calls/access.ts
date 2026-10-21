@@ -12,6 +12,7 @@ import { messagesReceivedFrom } from '../chat/access'
 import type { Conversation, Message } from '../chat/conversations'
 import { isSuspended } from '../moderation/suspension'
 import { isOfficialId } from '../official/accounts'
+import { drawnFaceRev, FACE_OWNER_FIELDS } from '../avatars/surfaces'
 import type { Profile } from '../profiles/profiles'
 import { callsBetweenSince, countStartedSince, outcomeOf } from './calls'
 
@@ -21,6 +22,8 @@ type CallProfile = Pick<
   | 'handle'
   | 'displayName'
   | 'avatarUrl'
+  | 'gender'
+  | 'defaultAvatar'
   | 'official'
   | 'guest'
   | 'suspension'
@@ -32,6 +35,8 @@ const CALL_PROFILE_FIELDS = {
   handle: 1,
   displayName: 1,
   avatarUrl: 1,
+  gender: 1,
+  defaultAvatar: 1,
   official: 1,
   guest: 1,
   suspension: 1,
@@ -43,20 +48,29 @@ const HOUR_MS = 60 * 60 * 1000
 const DAY_MS = 24 * HOUR_MS
 
 /** As much of somebody as a ringing screen draws. */
-export function toCallPeer(profile: Pick<Profile, '_id' | 'handle' | 'displayName' | 'avatarUrl'>) {
+export function toCallPeer(
+  profile: Pick<Profile, '_id' | 'handle' | 'displayName' | 'avatarUrl'> &
+    Partial<Pick<Profile, 'gender' | 'defaultAvatar' | 'official'>>,
+) {
   const peer: CallPeer = {
     _id: profile._id,
     handle: profile.handle,
     displayName: profile.displayName ?? profile.handle,
   }
   if (profile.avatarUrl !== undefined) peer.avatarUrl = profile.avatarUrl
+  // Only with the gender read: without it the face would be the neutral
+  // hash, which is a different face from the one every screen shows.
+  if (profile.gender !== undefined) {
+    const rev = drawnFaceRev({ ...profile, gender: profile.gender })
+    if (rev) peer.defaultAvatarRev = rev
+  }
   return peer
 }
 
 export async function callPeer(db: Db, userId: string): Promise<CallPeer | null> {
   const profile = await db
     .collection<Profile>(COLLECTIONS.profiles)
-    .findOne({ _id: userId }, { projection: { handle: 1, displayName: 1, avatarUrl: 1 } })
+    .findOne({ _id: userId }, { projection: { handle: 1, displayName: 1, ...FACE_OWNER_FIELDS } })
   return profile ? toCallPeer(profile) : null
 }
 
