@@ -6,7 +6,13 @@ import { getBadgeSummary } from './badges'
 import { countCorrectionsWritten } from './corrections'
 import { countPostsByAuthor } from '../feed/feed'
 import { readAggregates, type TokenAggregate } from './ledger'
-import { badgeStripMarks, findBadge, periodKeys, type ProfileBadge } from '@langx/shared'
+import {
+  badgeStripMarks,
+  findBadge,
+  isV3BadgeKind,
+  periodKeys,
+  type ProfileBadge,
+} from '@langx/shared'
 
 /**
  * What a profile shows about how somebody uses the app: the streak, how many
@@ -90,13 +96,26 @@ export async function getPublicSummary(
 
   // The week is read only when it will be sent: it is its own query, and a
   // switched-off chart should not cost the page a lookup that is thrown away.
-  const [tokens, corrections, posts, badges, week] = await Promise.all([
+  // A pin is shown only while its badge is still earned: most counts only
+  // grow, but kind words and people helped are read from rows that can go.
+  // A pinned v3 kind needs the v3 summary to say so, which costs its five
+  // extra reads, so it is asked for only when one is pinned.
+  const pins = profile.pinnedBadgeIds ?? []
+  const pinsNeedV3 = pins.some((id) => {
+    const badge = findBadge(id)
+    return badge !== undefined && isV3BadgeKind(badge.kind)
+  })
+  const [tokens, corrections, posts, badges, week, v3Badges] = await Promise.all([
     readAggregates(db, userId, at),
     countCorrectionsWritten(db, userId),
     countPostsByAuthor(db, userId),
     getBadgeSummary(db, userId, at),
     chart ? readActivityWeek(db, userId, at, profile.timezone ?? 'UTC') : undefined,
+    pinsNeedV3 ? getBadgeSummary(db, userId, at, 'v3') : undefined,
   ])
+  const earnedIds = new Set(
+    (v3Badges ?? badges).badges.filter((badge) => badge.earned).map((badge) => badge.id),
+  )
 
   return {
     streak: { current: profile.streak.current, longest: profile.streak.longest },
@@ -122,7 +141,7 @@ export async function getPublicSummary(
       kind: badge.kind,
       icon: badge.icon,
     })),
-    ...pinnedOf(profile.pinnedBadgeIds),
+    ...pinnedOf(pins, earnedIds),
     // The all-time total, which is what the owner's own profile shows too —
     // not the balance, which moves when they spend and is nobody else's
     // business.
@@ -167,11 +186,17 @@ async function weekPercentile(
   return { percentile: Math.min(100, Math.max(1, Math.ceil(((above + 1) / total) * 100))) }
 }
 
-/** The pinned ids as strip marks, skipping any id the catalogue no longer has. */
-function pinnedOf(ids: readonly string[] | undefined): { pinnedBadges?: ProfileBadge[] } {
-  const marks = (ids ?? []).flatMap((id) => {
+/**
+ * The pinned ids as strip marks, skipping any id the catalogue no longer has
+ * and any badge no longer earned.
+ */
+function pinnedOf(
+  ids: readonly string[],
+  earned: ReadonlySet<string>,
+): { pinnedBadges?: ProfileBadge[] } {
+  const marks = ids.flatMap((id) => {
     const badge = findBadge(id)
-    return badge ? [{ id: badge.id, kind: badge.kind, icon: badge.icon }] : []
+    return badge && earned.has(id) ? [{ id: badge.id, kind: badge.kind, icon: badge.icon }] : []
   })
   return marks.length > 0 ? { pinnedBadges: marks } : {}
 }

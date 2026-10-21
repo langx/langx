@@ -210,6 +210,26 @@ describe('the v3 badge counts', () => {
       expect(shown?.pinnedBadges?.map((badge) => badge.id)).toEqual(['openers.50', 'openers.10'])
     })
 
+    it('stops showing a pin whose badge is no longer earned', async () => {
+      const me = id()
+      await profile(me, { stats: { openersAnsweredWithinDay: 10 }, timezone: 'UTC' })
+      const author = id()
+      await handle.db.collection(COLLECTIONS.testimonials).insertOne({
+        authorId: author,
+        subjectId: me,
+        conversationId: new ObjectId(),
+        body: 'x',
+        createdAt: new Date(),
+      })
+      await pinBadges(handle.db, me, ['testimonials.1', 'openers.10'])
+      // A moderator takes the one kind word down.
+      await handle.db
+        .collection(COLLECTIONS.testimonials)
+        .updateOne({ authorId: author }, { $set: { moderatorHiddenAt: new Date() } })
+      const shown = await getPublicSummary(handle.db, me)
+      expect(shown?.pinnedBadges?.map((badge) => badge.id)).toEqual(['openers.10'])
+    })
+
     it('refuses a badge not earned, and unpins with an empty list', async () => {
       const me = id()
       await profile(me, { stats: { openersAnsweredWithinDay: 10 }, timezone: 'UTC' })

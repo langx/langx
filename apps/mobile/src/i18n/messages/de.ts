@@ -2842,7 +2842,9 @@ export const de: Localized<EnMessages> = {
     of: '{current} von {total}',
     toGo: 'Noch {amount}.',
     streakReward: 'Der Meilenstein für {days} Tage Serie bringt +{tokens} Token.',
-    noTokens: 'Abzeichen bringen keine Token.',
+    noTokens: 'Das Abzeichen selbst bringt keine Token.',
+    milestonePays:
+      'Das Abzeichen selbst bringt nichts; der Meilenstein für {days} Tage Serie bringt +{tokens} Token.',
     earnedOn: 'Verdient am {date}',
     earned: 'Verdient',
     locked: 'Gesperrt',

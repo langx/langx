@@ -3086,7 +3086,9 @@ export const en = {
     of: '{current} of {total}',
     toGo: '{amount} to go.',
     streakReward: 'The {days}-day streak milestone adds +{tokens} tokens.',
-    noTokens: 'Badges pay no tokens.',
+    noTokens: 'The badge itself pays no tokens.',
+    milestonePays:
+      'The badge itself pays nothing; the {days}-day streak milestone adds +{tokens} tokens.',
     earnedOn: 'Earned {date}',
     earned: 'Earned',
     locked: 'Locked',

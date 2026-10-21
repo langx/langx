@@ -2762,7 +2762,9 @@ export const tr: Localized<EnMessages> = {
     of: '{current}/{total}',
     toGo: '{amount} kaldı.',
     streakReward: '{days} günlük seri dönüm noktası +{tokens} token ekler.',
-    noTokens: 'Rozetler token kazandırmaz.',
+    noTokens: 'Rozetin kendisi token kazandırmaz.',
+    milestonePays:
+      'Rozetin kendisi bir şey kazandırmaz; {days} günlük seri dönüm noktası +{tokens} token ekler.',
     earnedOn: '{date} tarihinde kazanıldı',
     earned: 'Kazanıldı',
     locked: 'Kilitli',

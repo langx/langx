@@ -81,7 +81,7 @@ export function BadgeDetailSheet({
             badge.kind === 'streak' &&
             !badge.earned &&
             badge.threshold in TOKEN_RULES.streakMilestones
-              ? t('badgesV3.streakReward', {
+              ? t('badgesV3.milestonePays', {
                   days: badge.threshold.toLocaleString(locale),
                   tokens: streakMilestoneBonus(badge.threshold).toLocaleString(locale),
                 })

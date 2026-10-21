@@ -165,6 +165,9 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
     .filter(Boolean)
     .join(' · ')
   const showNumbers = summary.data && !user.official ? summary.data : undefined
+  // What the row wears: their pins, or the newest of each family. The label
+  // counts the same list it draws.
+  const worn = showNumbers ? (showNumbers.pinnedBadges ?? showNumbers.topBadges) : []
   const study = [...user.learning].sort((a, b) => a.priority - b.priority)
 
   async function confirmBlock(): Promise<void> {
@@ -598,26 +601,24 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
             ) : null}
 
             {/* One button for the whole shelf, and nothing for nobody's badges. */}
-            {showNumbers && showNumbers.topBadges.length > 0 ? (
+            {worn.length > 0 ? (
               <PressableScale
                 accessibilityRole="button"
                 accessibilityLabel={t('profile.badgeStrip', {
-                  count: showNumbers.topBadges.length,
+                  count: worn.length,
                 })}
                 onPress={() => openBadges(user.handle, here)}
                 style={styles.badges}
               >
                 <View style={styles.badgeMarks}>
-                  {(showNumbers.pinnedBadges ?? showNumbers.topBadges)
-                    .slice(0, 3)
-                    .map((b, index) => (
-                      <View key={b.id} style={[styles.badgeMark, index > 0 && styles.badgeOverlap]}>
-                        <BadgePatch id={b.id} size={BADGE} />
-                      </View>
-                    ))}
+                  {worn.slice(0, 3).map((b, index) => (
+                    <View key={b.id} style={[styles.badgeMark, index > 0 && styles.badgeOverlap]}>
+                      <BadgePatch id={b.id} size={BADGE} />
+                    </View>
+                  ))}
                 </View>
                 <Text style={styles.badgesLabel}>
-                  {t('profile.badgeStrip', { count: showNumbers.topBadges.length })}
+                  {t('profile.badgeStrip', { count: worn.length })}
                 </Text>
                 <Feather name={chevron} size={v3.icon.md} color={v3.colors.muted} />
               </PressableScale>

@@ -2796,7 +2796,9 @@ export const es: Localized<EnMessages> = {
     of: '{current} de {total}',
     toGo: 'Faltan {amount}.',
     streakReward: 'El hito de {days} días de racha suma +{tokens} fichas.',
-    noTokens: 'Las insignias no dan fichas.',
+    noTokens: 'La insignia en sí no da fichas.',
+    milestonePays:
+      'La insignia en sí no da nada; el hito de {days} días de racha suma +{tokens} fichas.',
     earnedOn: 'Conseguida el {date}',
     earned: 'Conseguida',
     locked: 'Bloqueada',
