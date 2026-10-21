@@ -604,7 +604,15 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { blockerId: 1, createdAt: -1 }, name: 'blocker_recent' },
   ],
 
-  [COLLECTIONS.reports]: [{ key: { status: 1, createdAt: -1 }, name: 'status_created' }],
+  [COLLECTIONS.reports]: [
+    { key: { status: 1, createdAt: -1 }, name: 'status_created' },
+    /*
+     * "Has either of these two reported the other?" — asked before a sticker
+     * pack gift, which is refused between two people with a report between
+     * them. Without it that question is a scan of every report ever filed.
+     */
+    { key: { reporterId: 1, reportedId: 1 }, name: 'reporter_reported' },
+  ],
 
   [COLLECTIONS.devices]: [
     { key: { pushToken: 1 }, name: 'push_token_unique', unique: true },
@@ -738,6 +746,33 @@ export const INDEXES: Partial<IndexSpec> = {
     // RevenueCat redelivers webhooks; this is what makes handling idempotent.
     { key: { eventId: 1 }, name: 'event_id_unique', unique: true },
     { key: { userId: 1, createdAt: -1 }, name: 'user_created' },
+  ],
+
+  [COLLECTIONS.stickerGifts]: [
+    /*
+     * One tap on Give is one gift: a retry with the same client id finds the
+     * first attempt's row instead of charging again.
+     */
+    { key: { giverId: 1, clientId: 1 }, name: 'giver_client_unique', unique: true },
+    /*
+     * The caps as key space rather than as counts two requests can race past
+     * — the `proGifts` slot pattern. `sendSlot` is `<giver>:<isoWeek>:<n>`
+     * and `receiveSlot` is `<recipient>:<month>:<n>`, with `n` below
+     * `STICKER_GIFT_RULES.sendsPerWeek` / `receivesPerMonth`; the gift that
+     * would take a slot already taken fails on this index, inside the
+     * transaction, before anything is charged.
+     */
+    { key: { sendSlot: 1 }, name: 'send_slot_unique', unique: true },
+    { key: { receiveSlot: 1 }, name: 'receive_slot_unique', unique: true },
+    /*
+     * Nobody can own a pack twice, so nobody can be given one twice. Said
+     * here as well as in the grant's filter so the row and the profile can
+     * never tell different stories.
+     */
+    { key: { recipientId: 1, packId: 1 }, name: 'recipient_pack_unique', unique: true },
+    // The counts that pick the next slot, and what a deleted account's purge reads.
+    { key: { giverId: 1, week: 1 }, name: 'giver_week' },
+    { key: { recipientId: 1, month: 1 }, name: 'recipient_month' },
   ],
 
   [COLLECTIONS.proGifts]: [

@@ -4,13 +4,15 @@ import { Image } from 'expo-image'
 import { useState } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
 import Svg, { Circle, Path } from 'react-native-svg'
-import { useMe, usePurchase, useWallet } from '../api/queries'
+import { useMe, usePurchase, useStickerGiftOptions, useWallet } from '../api/queries'
 import { LoadFailed } from '../components/LoadFailed'
+import { StickerGiftSheet } from '../components/StickerGiftSheet'
 import { useBlackFont } from '../components/onboarding/WizardV3'
 import { Button } from '../components/ui/Button'
 import { IconButton } from '../components/ui/IconButton'
 import { Screen } from '../components/ui/Screen'
 import { Skeleton } from '../components/ui/Skeleton'
+import { useAppConfig } from '../hooks/useAppConfig'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useLocale, useT } from '../i18n'
@@ -113,6 +115,20 @@ export function StickerPackScreenV3({ pack }: { pack: Cosmetic }) {
   const wallet = useWallet()
   const purchase = usePurchase()
   const [focused, setFocused] = useState<string | null>(null)
+  /*
+   * Giving the pack to a chat partner, behind `flags.stickerGifts`. Off, or
+   * for a guest, nothing is fetched and nothing is drawn — the page is
+   * exactly what it was. The server decides everything again on the tap.
+   */
+  const giftsOn = useAppConfig().data?.flags.stickerGifts === true
+  const giftOptions = useStickerGiftOptions(pack.id, giftsOn && !guest)
+  const giftRefusal = giftOptions.data?.refusal
+  const canOfferGift =
+    giftsOn &&
+    !guest &&
+    giftOptions.data !== undefined &&
+    (giftRefusal === null || giftRefusal === 'weeklyLimit' || giftRefusal === 'notEnoughTokens')
+  const [giving, setGiving] = useState(false)
 
   const title = t(cosmeticKey(pack.id))
   const stickers = pack.stickers ?? []
@@ -337,7 +353,29 @@ export function StickerPackScreenV3({ pack }: { pack: Cosmetic }) {
         ) : null}
       </ScrollView>
 
-      <View style={styles.footer}>{footer}</View>
+      <View style={styles.footer}>
+        {footer}
+        {canOfferGift && wallet.data ? (
+          <Button
+            variant="secondary"
+            icon="gift"
+            label={t('stickerGift.give')}
+            accessibilityLabel={t('stickerGift.giveAccessibility', { title })}
+            onPress={() => setGiving(true)}
+          />
+        ) : null}
+      </View>
+
+      {canOfferGift ? (
+        <StickerGiftSheet
+          visible={giving}
+          pack={pack}
+          title={title}
+          balance={balance}
+          options={giftOptions.data}
+          onClose={() => setGiving(false)}
+        />
+      ) : null}
 
       <Modal
         visible={focused !== null}

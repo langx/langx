@@ -253,8 +253,9 @@ export default function AdminSystemScreen() {
 
       <AdminHeadingV3 title={ADMIN.system.suppressions} />
       <Text style={styles.row}>
-        {system.suppressions.total} · bounced {system.suppressions.bounced} · complained{' '}
-        {system.suppressions.complained} · unsubscribed {system.suppressions.unsubscribed}
+        {system.suppressions.total} · {ADMIN.system.bounced} {system.suppressions.bounced} ·{' '}
+        {ADMIN.system.complained} {system.suppressions.complained} · {ADMIN.system.unsubscribed}{' '}
+        {system.suppressions.unsubscribed}
       </Text>
 
       <AdminHeadingV3 title={ADMIN.system.purge} />
