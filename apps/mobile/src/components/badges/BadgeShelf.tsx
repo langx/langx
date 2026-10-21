@@ -145,7 +145,7 @@ function BadgeTile({ rung, onPress }: { rung: Rung; onPress: () => void }) {
             size={v3.icon.xs - 3}
             color={rung.state === 'earned' ? v3.colors.correction : v3.colors.muted}
           />
-          <Text style={styles.line} numberOfLines={2}>
+          <Text style={styles.line} numberOfLines={3}>
             {line}
           </Text>
         </View>
