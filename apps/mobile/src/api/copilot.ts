@@ -4,10 +4,14 @@ import {
   type CopilotExplainRequest,
   type CopilotReplyIdeasRequest,
   type CopilotResponse,
+  type CopilotSayItRequest,
   type CopilotStatus,
 } from '@langx/shared'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
+
+/** Pure, so vitest can reach it: an error from any of the asks below, as one line or a step. */
+export { copilotErrorKey, copilotRetryAt, type CopilotErrorKey } from '../lib/copilotErrors'
 
 export const COPILOT_STATUS_KEY = ['copilot'] as const
 
@@ -54,11 +58,13 @@ export type CopilotAsk =
   | ({ action: 'check' } & CopilotCheckRequest)
   | ({ action: 'replyIdeas' } & CopilotReplyIdeasRequest)
   | ({ action: 'explain' } & CopilotExplainRequest)
+  | ({ action: 'sayIt' } & CopilotSayItRequest)
 
 const PATHS: Record<CopilotAsk['action'], string> = {
   check: '/copilot/check',
   replyIdeas: '/copilot/reply-ideas',
   explain: '/copilot/explain',
+  sayIt: '/copilot/say-it',
 }
 
 /** One Copilot answer. A cached one cost no allowance, so only a fresh one refreshes the count. */

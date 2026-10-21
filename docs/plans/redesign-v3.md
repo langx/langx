@@ -130,6 +130,7 @@ them.
 | Phase 3 — paywall v3, a reason per road               | #1800        | paywall and in-app roads merged                                  |
 | Phase 2 — switch, segmented control, progress, toast  | #1801        | kit merged                                                       |
 | M1 — Copilot plumbing, consent and allowance (dark)   | #1802        | merged; `copilotService`, no provider key                        |
+| Copilot v1 (PR-A) — server, allow-list, admin (dark)  | —            | in review; `copilotAccess` per account, consent v2               |
 | D7 — trial-ending reminder                            | #1804        | merged; `trialEndingReminder`                                    |
 | Lane C — no silent drops in the nudge engine          | #1805        | merged; `nudgeNoSilentDrops`                                     |
 | M4 — give a week, get a week                          | #1806        | merged; `giveAWeek`; companions langx/website#268, langx/docs#50 |

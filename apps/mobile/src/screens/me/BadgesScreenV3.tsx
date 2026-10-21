@@ -1,48 +1,78 @@
-import Feather from '@expo/vector-icons/Feather'
-import type { BadgeSummary, EarnedBadge, Locale } from '@langx/shared'
+import { streakMilestoneBonus, type BadgeSummary } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useMemo, useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { useEffect, useMemo, useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 import { useBadges, useMe, usePublicBadges } from '../../api/queries'
-import { BadgeMark } from '../../components/BadgeMark'
+import { BadgeDetailSheet } from '../../components/badges/BadgeDetailSheet'
+import { BadgeEarnedSheet } from '../../components/badges/BadgeEarnedSheet'
+import { BadgePatch } from '../../components/badges/BadgePatch'
+import { BadgeShelf } from '../../components/badges/BadgeShelf'
 import { ShareCardSheet, type ShareCardRequest } from '../../components/ShareCardSheet'
 import { Button } from '../../components/ui/Button'
 import { EmptyArt } from '../../components/ui/EmptyStateV3'
 import { IconButton } from '../../components/ui/IconButton'
 import { Screen } from '../../components/ui/Screen'
+import { useNewBadges } from '../../hooks/useNewBadges'
 import { usePullToRefresh } from '../../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../hooks/useScreenInteractive'
-import { badgeLabel, useLocale, useT } from '../../i18n'
-import { badgeLadderTips } from '../../lib/badgeOrder'
-import { nextBadgeAction } from '../../lib/mePlan'
+import { badgeAmount, badgeName } from '../../i18n/badgeWords'
+import { useLocale, useT } from '../../i18n'
+import { celebrated } from '../../lib/badgeSeen'
+import {
+  badgeAction,
+  badgeShelves,
+  rungOf,
+  type BadgeAction,
+  type Rung,
+} from '../../lib/badgeShelves'
 import { goBackTo } from '../../lib/navigation'
 import { badgeShareText } from '../../lib/shareText'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { useV3Fonts } from './useV3Fonts'
 
-/** "Apr 2026" — a badge is dated to the month, as `BadgeGrid` dates it. */
-function earnedMonth(iso: string, locale: Locale): string {
-  const at = new Date(iso)
-  if (Number.isNaN(at.getTime())) return ''
-  return at.toLocaleDateString(locale, { month: 'short', year: 'numeric' })
+const ACTION_LABEL = {
+  correct: 'badgesV3.actionCorrect',
+  write: 'badgesV3.actionWrite',
+  echo: 'badgesV3.actionEcho',
+} as const
+const ACTION_ICON = { correct: 'edit-2', write: 'message-circle', echo: 'copy' } as const
+
+function go(action: BadgeAction): void {
+  if (action === 'correct') {
+    router.navigate({ pathname: '/(app)/(tabs)/discover', params: { segment: 'posts' } })
+  } else if (action === 'write') router.navigate('/(app)/(tabs)/chats')
+  else router.navigate('/(app)/(tabs)/echo')
 }
 
-const EARNED_HUES = ['aqua', 'sky', 'tangerine', 'lilac', 'mint', 'lime'] as const
-
 /**
- * Badges in the redesign's look (`V-Badges`), behind `flags.v3Home`. The
- * same two requests, the same two rows per kind (`badgeLadderTips`) and the
- * same share sheet as `badges.tsx`; v3 splits the one list into Earned and
- * Locked and draws the nearest badge as a colour block with its progress,
- * pressing through to where it is earned when there is such a place
- * (`nextBadgeAction`, the rule Me's next-badge card uses).
+ * Badges in the v3 look (`V-BadgesV3`): every family a shelf of embroidered
+ * patches, its whole ladder in a row — earned, the next one stitched as far
+ * as you have got, and the rest as a pencil pattern on paper. Behind
+ * `flags.v3Home`; the route switches at its top, as before.
  *
- * Changed for v3: the token badge has no Share. A share card must never carry
+ * The same two requests as `badges.tsx` and the same share sheet. What v3
+ * adds on top of them:
+ *
+ * - **The nearest badge leads**, as a card: the API's single `next`, the
+ *   highest fraction across every kind. The only reward line on the page is
+ *   there, and only for a streak milestone, which is what pays — a badge
+ *   itself never does.
+ * - **New**: earned and not yet seen on this device (`useNewBadges`). The
+ *   first one is celebrated once, as a sheet; the rest keep their mark until
+ *   opened.
+ * - **A detail sheet** for every patch, with its ladder.
+ *
+ * Changed for v3: a tokens badge has no Share. A share card must never carry
  * a token amount, and that badge's name is one.
+ *
+ * Somebody else's shelf is their earned patches only — no progress, no New,
+ * nothing to work towards — as their endpoint already sends it.
  */
 export function BadgesScreenV3() {
   useScreenInteractive()
   const [card, setCard] = useState<ShareCardRequest | null>(null)
+  const [openId, setOpenId] = useState<string | null>(null)
+  const [moment, setMoment] = useState<string | null>(null)
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
@@ -61,26 +91,49 @@ export function BadgesScreenV3() {
   const total = mine ? (own.data?.badges.length ?? 0) : (theirs.data?.total ?? 0)
   const next = mine ? own.data?.next : null
 
-  const rows = useMemo(() => badgeLadderTips(data?.badges ?? []), [data])
-  const earned = rows.filter((badge) => badge.earned)
-  const locked = rows.filter((badge) => !badge.earned)
-  const nearest = next ? locked.find((badge) => badge.id === next.id) : undefined
-  const restLocked = locked.filter((badge) => badge !== nearest)
+  const { fresh, markSeen } = useNewBadges(
+    mine ? me.data?._id : undefined,
+    mine ? own.data?.badges : undefined,
+  )
+  const shelves = useMemo(
+    () => badgeShelves(data?.badges ?? [], mine ? own.data?.progress : undefined, fresh),
+    [data, mine, own.data?.progress, fresh],
+  )
+
+  // The earned moment: the first time this device sees a new badge.
+  useEffect(() => {
+    if (moment || !mine || fresh.size === 0) return
+    const top = celebrated(own.data?.badges ?? [], [...fresh])
+    if (top) setMoment(top.id)
+  }, [fresh, mine, moment, own.data?.badges])
 
   const pull = usePullToRefresh(() => (mine ? own.refetch() : theirs.refetch()))
   const handle = me.data?.handle
   const back = () => goBackTo('/(app)/(tabs)/me', from)
 
-  const share =
-    mine && handle
-      ? (label: string) =>
-          setCard({
-            kind: 'badge',
-            headline: label,
-            caption: t('share.cardBadgeCaption'),
-            fallback: badgeShareText(t, { label, handle }),
-          })
-      : undefined
+  const share = (label: string) => {
+    if (!handle) return
+    setOpenId(null)
+    setMoment(null)
+    setCard({
+      kind: 'badge',
+      headline: label,
+      caption: t('share.cardBadgeCaption'),
+      fallback: badgeShareText(t, { label, handle }),
+    })
+  }
+
+  const open = (rung: Rung) => {
+    setOpenId(rung.badge.id)
+    if (rung.isNew) markSeen([rung.badge.id])
+  }
+
+  const opened = openId ? rungOf(shelves, openId) : null
+  const shown = moment ? rungOf(shelves, moment) : null
+  const closeMoment = () => {
+    if (moment) markSeen([moment])
+    setMoment(null)
+  }
 
   return (
     <Screen scroll ground={v3.colors.bg} {...pull}>
@@ -95,15 +148,24 @@ export function BadgesScreenV3() {
             {t('leaderboard.badges')}
           </Text>
           {data ? (
-            <Text style={styles.count}>
-              {t('badges.earnedOf', { earned: data.earnedCount, total })}
-            </Text>
+            <View style={styles.counts}>
+              <Text style={styles.count}>
+                {t('badges.earnedOf', { earned: data.earnedCount, total })}
+              </Text>
+              {fresh.size > 0 ? (
+                <View style={styles.newPill}>
+                  <Text style={styles.newText}>
+                    {t('badgesV3.newCount', { count: fresh.size })}
+                  </Text>
+                </View>
+              ) : null}
+            </View>
           ) : null}
         </View>
       </View>
 
       {data && data.badges.length === 0 ? (
-        // Their page only — yours is the whole catalogue and never empty.
+        // Their page only: yours is the whole catalogue and never empty.
         <View style={styles.empty}>
           <EmptyArt kind="people" />
           <Text style={styles.emptyTitle} accessibilityRole="header">
@@ -119,206 +181,100 @@ export function BadgesScreenV3() {
         </View>
       ) : data ? (
         <View style={styles.stack}>
-          {earned.length > 0 ? (
-            <>
-              <Text style={styles.heading} accessibilityRole="header">
-                {t('badges.earnedLabel')}
-              </Text>
-              <View style={styles.group}>
-                {earned.map((badge, index) => (
-                  <EarnedRow
-                    key={badge.id}
-                    badge={badge}
-                    hue={v3.hues[EARNED_HUES[index % EARNED_HUES.length]!]}
-                    divided={index > 0}
-                    // The token badge's name is an amount: never on a card.
-                    onShare={badge.kind === 'tokens' ? undefined : share}
-                  />
-                ))}
-              </View>
-            </>
-          ) : null}
-
-          {locked.length > 0 ? (
-            <>
-              <Text style={[styles.heading, styles.headingLater]} accessibilityRole="header">
-                {t('badges.locked')}
-              </Text>
-              <View style={styles.group}>
-                {nearest && next ? <NearestRow badge={nearest} next={next} /> : null}
-                {restLocked.map((badge, index) => (
-                  <LockedRow key={badge.id} badge={badge} divided={index > 0 || !!nearest} />
-                ))}
-              </View>
-            </>
-          ) : null}
+          {next ? <NextCard next={next} /> : null}
+          {shelves.map((shelf) => (
+            <BadgeShelf key={shelf.kind} shelf={shelf} onOpen={open} />
+          ))}
         </View>
       ) : null}
 
+      <BadgeDetailSheet
+        shelf={opened?.shelf ?? null}
+        rung={opened?.rung ?? null}
+        mine={mine}
+        onClose={() => setOpenId(null)}
+        onShare={share}
+        onAction={(action) => {
+          setOpenId(null)
+          go(action)
+        }}
+      />
+      <BadgeEarnedSheet
+        shelf={shown?.shelf ?? null}
+        rung={shown?.rung ?? null}
+        onClose={closeMoment}
+        onShare={shown && shown.rung.badge.kind !== 'tokens' ? share : undefined}
+      />
       <ShareCardSheet request={card} onClose={() => setCard(null)} />
     </Screen>
   )
 }
 
-function EarnedRow({
-  badge,
-  hue,
-  divided,
-  onShare,
-}: {
-  badge: EarnedBadge
-  hue: string
-  divided: boolean
-  onShare?: ((label: string) => void) | undefined
-}) {
+/** The API's nearest badge, with its fraction and, for a streak, what the milestone pays. */
+function NextCard({ next: n }: { next: NonNullable<BadgeSummary['next']> }) {
   const styles = useStyles()
-  const { v3 } = useTheme()
   const t = useT()
   const { locale } = useLocale()
-  const label = badgeLabel({ t, locale }, badge.kind, badge.threshold)
-  const when = badge.earnedAt
-    ? t('badges.earned', { month: earnedMonth(badge.earnedAt, locale) })
-    : t('badges.earnedLabel')
+  const words = { t, locale }
+  const name = badgeName(words, n)
+  const done = Math.max(0, Math.min(1, n.current / Math.max(1, n.threshold)))
+  const fraction = t('badgesV3.of', {
+    current: n.current.toLocaleString(locale),
+    total: badgeAmount(words, n.kind, n.threshold),
+  })
+  const left = t('badgesV3.toGo', {
+    amount: badgeAmount(words, n.kind, Math.max(0, n.threshold - n.current)),
+  })
+  const reward =
+    n.kind === 'streak' && n.reward > 0
+      ? t('badgesV3.streakReward', {
+          days: n.threshold.toLocaleString(locale),
+          tokens: streakMilestoneBonus(n.threshold).toLocaleString(locale),
+        })
+      : null
+  const action = badgeAction(n.kind)
   return (
-    <View style={[styles.row, divided && styles.divided]}>
-      <View style={[styles.disc, { backgroundColor: hue }]}>
-        <BadgeMark id={badge.id} size={MARK} />
-      </View>
-      <View style={styles.rowText}>
-        <Text style={styles.name} numberOfLines={2}>
-          {label}
-        </Text>
-        <View style={styles.whenRow}>
-          <Feather name="check" size={14} color={v3.colors.correction} />
-          <Text style={styles.muted}>{when}</Text>
+    <View style={styles.next}>
+      <View style={styles.nextHead}>
+        <BadgePatch id={n.id} size={NEXT_ART} state={{ kind: 'next', progress: done }} />
+        <View style={styles.nextText}>
+          <Text style={styles.nextKicker}>{t('badgesV3.nextKicker')}</Text>
+          <Text style={styles.nextName} accessibilityRole="header">
+            {name}
+          </Text>
+          <Text style={styles.nextFraction}>{fraction}</Text>
+          <View
+            accessible
+            accessibilityRole="progressbar"
+            accessibilityLabel={t('badgesV3.progressLabel', { name })}
+            accessibilityValue={{ min: 0, max: n.threshold, now: n.current }}
+            style={styles.bar}
+          >
+            <View style={[StyleSheet.absoluteFill, styles.barTrack]} />
+            <View style={[styles.barFill, { width: `${Math.round(done * 100)}%` }]} />
+          </View>
         </View>
       </View>
-      {onShare ? (
+      <Text style={styles.nextBody}>{reward ? `${left} ${reward}` : left}</Text>
+      {action ? (
         <Button
-          label={t('share.action')}
-          icon="share"
-          variant="secondary"
-          size="small"
-          accessibilityLabel={t('share.badge', { label })}
-          style={styles.share}
-          onPress={() => onShare(label)}
+          variant="blue"
+          icon={ACTION_ICON[action]}
+          label={t(ACTION_LABEL[action])}
+          onPress={() => go(action)}
         />
       ) : null}
     </View>
   )
 }
 
-/** The nearest badge as a colour block, its fraction and its bar, pressing through where it can. */
-function NearestRow({
-  badge,
-  next,
-}: {
-  badge: EarnedBadge
-  next: NonNullable<BadgeSummary['next']>
-}) {
-  const styles = useStyles()
-  const { v3 } = useTheme()
-  const t = useT()
-  const { locale } = useLocale()
-  const label = badgeLabel({ t, locale }, badge.kind, badge.threshold)
-  const fraction = `${next.current.toLocaleString(locale)} / ${next.threshold.toLocaleString(locale)}`
-  const percent = Math.round(Math.min(1, Math.max(0, next.current / next.threshold)) * 100)
-  const action = nextBadgeAction(badge.kind)
-  const go =
-    action === 'correct'
-      ? () => router.navigate({ pathname: '/(app)/(tabs)/discover', params: { segment: 'posts' } })
-      : action === 'write'
-        ? () => router.navigate('/(app)/(tabs)/chats')
-        : undefined
-  const hint =
-    action === 'correct'
-      ? t('home.todayCorrect')
-      : action === 'write'
-        ? t('home.streakChats')
-        : undefined
-
-  const content = (
-    <>
-      <View style={styles.nearestHead}>
-        <View style={[styles.disc, styles.discVeil]}>
-          <BadgeMark id={badge.id} size={MARK} locked />
-        </View>
-        <View style={styles.rowText}>
-          <Text style={styles.nearestName} numberOfLines={2}>
-            {label}
-          </Text>
-          <Text style={styles.onHue}>{t('badges.locked')}</Text>
-        </View>
-        <Text style={styles.nearestFraction}>{fraction}</Text>
-      </View>
-      <View
-        style={styles.bar}
-        accessibilityElementsHidden
-        importantForAccessibility="no-hide-descendants"
-      >
-        <View style={[StyleSheet.absoluteFill, styles.barTrack]} />
-        <View style={[styles.barFill, { width: `${percent}%` }]} />
-      </View>
-    </>
-  )
-  const a11y = [`${label}: ${fraction}`, hint].filter(Boolean).join('. ')
-  if (!go) {
-    return (
-      <View
-        accessible
-        accessibilityLabel={a11y}
-        style={[styles.nearest, { backgroundColor: v3.hues.mint }]}
-      >
-        {content}
-      </View>
-    )
-  }
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={a11y}
-      onPress={go}
-      style={({ pressed }) => [
-        styles.nearest,
-        { backgroundColor: v3.hues.mint },
-        pressed && styles.pressed,
-      ]}
-    >
-      {content}
-    </Pressable>
-  )
-}
-
-function LockedRow({ badge, divided }: { badge: EarnedBadge; divided: boolean }) {
-  const styles = useStyles()
-  const { v3 } = useTheme()
-  const t = useT()
-  const { locale } = useLocale()
-  return (
-    <View style={[styles.row, divided && styles.divided]}>
-      <View style={[styles.disc, { backgroundColor: v3.colors.line }]}>
-        <BadgeMark id={badge.id} size={MARK} locked />
-        <View style={styles.lock}>
-          <Feather name="lock" size={10} color={v3.colors.surface} />
-        </View>
-      </View>
-      <View style={styles.rowText}>
-        <Text style={styles.name} numberOfLines={2}>
-          {badgeLabel({ t, locale }, badge.kind, badge.threshold)}
-        </Text>
-        <Text style={styles.muted}>{t('badges.locked')}</Text>
-      </View>
-    </View>
-  )
-}
-
-/** The badge's own picture inside its 44pt disc. */
-const MARK = 32
+/** The nearest badge's patch on its card. */
+const NEXT_ART = 96
 
 const useStyles = makeStyles(({ v3 }) => ({
   header: { gap: v3.space[2], paddingBottom: v3.space[6], paddingTop: v3.space[6] },
   titleRow: {
-    alignItems: 'baseline',
+    alignItems: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: v3.space[10],
@@ -327,67 +283,36 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   title: { ...v3.type.title, color: v3.colors.fg, letterSpacing: -0.5 },
   titleFallback: { fontFamily: v3.type.headline.fontFamily },
+  counts: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8] },
   count: { ...v3.type.callout, color: v3.colors.muted, fontWeight: '700' },
-  stack: { gap: v3.space[10], paddingBottom: v3.space[20], paddingTop: v3.space[8] },
-  heading: {
-    ...v3.type.headline,
+  newPill: {
+    backgroundColor: v3.colors.blue,
+    borderRadius: v3.radius.pill,
+    paddingHorizontal: v3.space[10],
+    paddingVertical: v3.space[2],
+  },
+  newText: { ...v3.type.label, color: v3.colors.onBlue },
+  stack: { gap: v3.space[24], paddingBottom: v3.space[24], paddingTop: v3.space[8] },
+  next: {
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.block,
+    gap: v3.space[14],
+    padding: v3.space[16],
+  },
+  nextHead: { alignItems: 'center', flexDirection: 'row', gap: v3.space[14] },
+  nextText: { flex: 1, gap: v3.space[4], minWidth: 0 },
+  nextKicker: {
+    ...v3.type.label,
     color: v3.colors.fg,
-    marginHorizontal: v3.space[6],
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
-  headingLater: { marginTop: v3.space[8] },
-  group: { backgroundColor: v3.colors.surface, borderRadius: v3.radius.tile, overflow: 'hidden' },
-  row: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: v3.space[12],
-    minHeight: 68,
-    paddingEnd: v3.space[10],
-    paddingStart: v3.space[12],
-    paddingVertical: v3.space[10],
-  },
-  divided: { borderTopColor: v3.colors.line, borderTopWidth: 1 },
-  disc: {
-    alignItems: 'center',
-    borderRadius: v3.radius.pill,
-    height: 44,
-    justifyContent: 'center',
-    width: 44,
-  },
-  // A pale veil of the mint, not ink: the locked picture is drawn faint, and
-  // faint on ink does not read.
-  discVeil: { backgroundColor: 'rgba(255, 255, 255, 0.55)' },
-  lock: {
-    alignItems: 'center',
-    backgroundColor: v3.colors.muted,
-    borderColor: v3.colors.surface,
-    borderRadius: v3.radius.pill,
-    borderWidth: 2,
-    bottom: -3,
-    end: -3,
-    height: 20,
-    justifyContent: 'center',
-    position: 'absolute',
-    width: 20,
-  },
-  rowText: { flex: 1, minWidth: 0 },
-  name: { ...v3.type.button, color: v3.colors.fg },
-  whenRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[4] },
-  muted: { ...v3.type.caption, color: v3.colors.muted, lineHeight: 18 },
-  share: { width: 'auto' },
-  nearest: {
-    gap: v3.space[10],
-    paddingBottom: v3.space[14],
-    paddingHorizontal: v3.space[12],
-    paddingTop: v3.space[12],
-  },
-  pressed: { opacity: 0.85 },
-  nearestHead: { alignItems: 'center', flexDirection: 'row', gap: v3.space[12] },
-  nearestName: { ...v3.type.button, color: v3.colors.ink },
-  onHue: { ...v3.type.caption, color: v3.colors.ink, fontWeight: '600', lineHeight: 18 },
-  nearestFraction: { ...v3.type.button, color: v3.colors.ink },
-  bar: { borderRadius: v3.radius.pill, height: 10, overflow: 'hidden' },
-  barTrack: { backgroundColor: v3.colors.ink, opacity: 0.18 },
-  barFill: { backgroundColor: v3.colors.ink, borderRadius: v3.radius.pill, height: 10 },
+  nextName: { ...v3.type.headline, color: v3.colors.fg },
+  nextFraction: { ...v3.type.button, color: v3.colors.fg },
+  nextBody: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '500' },
+  bar: { borderRadius: v3.radius.pill, height: 10, marginTop: v3.space[2], overflow: 'hidden' },
+  barTrack: { backgroundColor: v3.colors.track },
+  barFill: { backgroundColor: v3.colors.fg, borderRadius: v3.radius.pill, height: 10 },
   empty: {
     alignItems: 'center',
     gap: v3.space[12],

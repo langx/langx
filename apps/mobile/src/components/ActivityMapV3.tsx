@@ -4,13 +4,13 @@ import { ScrollView, Text, View } from 'react-native'
 import { usePublicActivity } from '../api/queries'
 import { useT } from '../i18n'
 import { ACTIVITY_CELL_GAP, activityCellSize, activityGrid } from '../lib/activityMap'
-import { makeStyles, useTheme } from '../lib/theme'
+import { makeStyles } from '../lib/theme'
 import { INTENSITY_ACTIONS, WEEKS } from './ActivityMap'
 import { Skeleton } from './ui/Skeleton'
 
 /**
  * Somebody else's twenty weeks in the redesign (`V-Profile`): a grey card,
- * the days they showed up in their own colour on v3's track, today ringed.
+ * the days they showed up in their own colour on v3's track, today marked with a dot.
  *
  * Read-only, as `ActivityMap` is for a `handle`: the same endpoint, the same
  * grid and the same silence when the person turned the map off. Only the
@@ -18,7 +18,6 @@ import { Skeleton } from './ui/Skeleton'
  */
 export function ActivityMapV3({ handle, hue }: { handle: string; hue: string }) {
   const styles = useStyles()
-  const { v3 } = useTheme()
   const t = useT()
 
   const to = new Date().toISOString().slice(0, 10)
@@ -75,9 +74,22 @@ export function ActivityMapV3({ handle, hue }: { handle: string; hue: string }) 
                   // empty whatever the hue; `profileChartColours.test.ts`
                   // measures the ring against the card.
                   square.intensity === 1 && [styles.quiet, { borderColor: hue }],
-                  square.day === today && { borderColor: v3.colors.fg, borderWidth: 2 },
                 ]}
-              />
+              >
+                {/*
+                 * Today is a dot in `fg` on top of whatever the day is, rather
+                 * than a ring of its own: an `fg` ring over a quiet day's hue
+                 * ring left a quiet today looking like an outlined empty
+                 * square. The dot keeps the day's own fill, ring or grey
+                 * underneath, and `profileChartColours.test.ts` measures `fg`
+                 * against all three.
+                 */}
+                {square.day === today ? (
+                  <View
+                    style={[styles.today, { height: cell * TODAY_DOT, width: cell * TODAY_DOT }]}
+                  />
+                ) : null}
+              </View>
             ))}
           </View>
         ))}
@@ -89,6 +101,9 @@ export function ActivityMapV3({ handle, hue }: { handle: string; hue: string }) 
     </View>
   )
 }
+
+/** Today's dot, as a share of the square: big enough to find, small enough to show the day under it. */
+const TODAY_DOT = 0.4
 
 const useStyles = makeStyles(({ v3 }) => ({
   card: {
@@ -106,9 +121,15 @@ const useStyles = makeStyles(({ v3 }) => ({
     justifyContent: 'space-between',
   },
   column: { gap: ACTIVITY_CELL_GAP },
-  cell: { backgroundColor: v3.colors.track, borderRadius: 3 },
+  cell: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.track,
+    borderRadius: 3,
+    justifyContent: 'center',
+  },
   future: { backgroundColor: 'transparent' },
   quiet: { backgroundColor: v3.colors.surface, borderWidth: 2 },
+  today: { backgroundColor: v3.colors.fg, borderRadius: v3.radius.pill },
   legend: { flexDirection: 'row', justifyContent: 'space-between' },
   legendText: { ...v3.type.caption, color: v3.colors.muted },
 }))
