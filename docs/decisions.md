@@ -866,6 +866,7 @@ allowlist.
 
 ## Home leads the bar, and People holds Discover and the Feed — behind a flag
 
+> **Amended 21 October 2026 — see _The operator panel is v3 without the flag_ below.**
 > **Amended 20 October 2026 — see _The Echo tab drops its standing tint_ below.**
 > **Amended 19 October 2026 — see _Chats leads with the people waiting on you — behind the same flag_ below.**
 > **Amended 19 October 2026 — see _Echo leads with what is due, and the done screen says what it earned — behind the same flag_ below.**
@@ -924,6 +925,25 @@ tour plays; under the flag the tour's Feed step finds no Feed tab and is
 skipped, as any step with nothing to point at is. The streak row draws a
 plain disc where `StreakFlame` could go. The screens behind the tabs keep the
 current look, and the web tab title for `/discover` still says Discover.
+
+## The operator panel is v3 without the flag
+
+**21 October 2026.** An exception to the rule above that the redesign waits
+behind `flags.v3Home`: the operator panel (`/admin`) is drawn in v3 for
+everyone who can open it, with no flag and no second copy of its screens.
+
+The flag exists so that the people the app is for never see half a redesign.
+Nobody reads the panel but the operators, who are the ones finishing the
+redesign, so for them the flag would hide nothing worth hiding. Gating it would
+still cost a full copy of every operator screen, each kept in step with every
+fix until the flag goes. The panel changed look in place instead
+(`components/admin/AdminKitV3.tsx`, from the `V-Admin` board). What it does is
+unchanged: every action, confirm and admin check is the one it was, and its
+words are still English, in `adminStrings.ts` and nowhere else.
+
+If a screen in the panel is ever read by someone other than an operator, this
+exception no longer covers it, and that screen goes behind the flag like
+everything else.
 
 ## The Echo tab drops its standing tint
 
@@ -2095,6 +2115,7 @@ nothing, and a rule nobody knows about deters nobody.
 
 ## Referrals — the handle is the code, and the award waits for a real message
 
+> **Amended 20 October 2026 — see _A sticker pack can be given to a chat partner, behind a switch_ below.**
 > **Amended 18 October 2026 — see _Give a week, get a week, behind a switch_ below.**
 
 _Amended 5 September 2026: the invitee is now paid too — see the end of this
@@ -2324,11 +2345,11 @@ when, never an offer, so no promotions consent is asked.
 
 **Somebody who already has Pro.** On a gift that ends, the week goes on the
 end of it. On a store subscription it cannot: a promotional grant runs beside
-the subscription and neither pauses nor extends the store's billing, so the
-week starts the day it is granted and shows only if the subscription lapses
-inside it — the letter says the subscription carries on as usual. On a
+the subscription and neither pauses nor extends the store's billing. Since 20
+October 2026 the week is then skipped whenever the subscription runs past it —
+see _An earned gift skips somebody already paying for Pro_ below. On a
 lifetime there is nothing to add to, and the row is skipped as every gift on a
-lifetime is (it still takes its slot). So the invite screen promises a
+lifetime is. Either way it still takes its slot. So the invite screen promises a
 subscriber or a lifetime nothing for themselves: it offers the friend's week,
 and sells nothing.
 
@@ -2375,6 +2396,8 @@ Turks & Caicos Islands and nothing else.
 
 ## A new account starts with tokens, and grants do not rank you
 
+> **Amended 20 October 2026 — see _A sticker pack can be given to a chat partner, behind a switch_ below.**
+
 A brand-new account had a balance of zero, which made the token store inert on
 day one: every row priced out, nothing to try, and no way to find out the
 economy is real. New accounts now start with `TOKEN_RULES.signupBonus`.
@@ -2404,6 +2427,66 @@ record of what someone did in them. `adjustment` is deliberately not a grant —
 it exists to correct a real award, so it has to land where that award did. The
 ledger row still carries every period key, so a recompute can always see where
 an award actually fell.
+
+## A sticker pack can be given to a chat partner, behind a switch
+
+**20 October 2026.** Behic asked whether store items can be gifted; the
+research answered "conditional yes, sticker packs first, and the Terms change
+before anything ships". This is that first step, built switched off:
+`flags.stickerGifts` in `appConfig`, default false, thrown with
+`scripts/maintenance.ts flag stickerGifts true`. Off, the endpoint refuses
+with `disabled`, the pack page draws nothing new, and every sentence in the two
+entries above stays true.
+
+**On, one of them stops being true.** "A second account earns its owner
+nothing they can use on the first" — a gift is the first path by which a
+throwaway account's tokens can reach another account, as an item. What bounds
+it is not the conversation threshold, which two accounts held by one person
+can clear by talking to themselves, but the caps times the price:
+`STICKER_GIFT_RULES.sendsPerWeek` (1) and `receivesPerMonth` (2), on packs
+priced 1,000–1,500, is at most about 3,000 tokens' worth of items a month into
+any one account — a few days of what an active person earns. That is the
+claim the switch trades the old sentence for, and the reason the caps are
+unique indexes rather than counts.
+
+**What a gift is.** The giver buys a new copy for the recipient; nothing the
+giver owns moves. A transfer would let the items a subscription hands out move
+to somebody who never paid, and money would be buying things for other
+people. The recipient's balance is untouched and no leaderboard moves:
+spending is not ranked. The row it leaves in the thread is written by the
+server, like a call's, and is refused everything a call's row is refused
+(`isServerRecord`) — no reply, reaction, correction, star, pin or withdrawal;
+hiding your copy and reporting stay.
+
+**What has to be true, all of it** (`modules/tokens/stickerGifts.ts`):
+
+- **A sticker pack with no condition** (`isGiftableCosmetic`). Frames and
+  titles are ranks and are not given in this step; anything with `requires`
+  describes the holder's own achievement. Streak freezes and day repairs are
+  never giftable: a streak triggers Pro gifts, and another person's tokens
+  protecting it would be tokens buying a piece of Pro.
+- **A chat partner**, through `assertConversationAccess` — participancy and
+  blocks in both directions, live — and never yourself or an official account.
+- **Adults at both ends** (`isAdult`), the newcomer hello's rule. A gift is a
+  known way for an adult to approach a 16- or 17-year-old.
+- **Each side 50 messages and the thread three days old**
+  (`stickerGiftThreadOpen`), the testimonial gate's numbers.
+- **A giver account at least 14 days old**, not frozen, not suspended.
+- **A recipient** not suspended, frozen or deleted, with nobody having
+  reported the other in either direction, under this month's cap, and not
+  sharing a network or an installation with the giver (`sharedOrigin`, the
+  referral's check). All of those read to the giver as `unavailable`, never
+  explained.
+- **They do not own it yet** — refused before anything is charged, and again
+  in the grant's filter.
+
+**One transaction.** Two documents change — the giver's `tokenSpent` and the
+recipient's `cosmetics` — so `purchase`'s single atomic update is not
+available, and `repairDay`'s compensating write would leave a moment where one
+person had paid for a pack the other did not have. The gift's row (whose unique
+indexes hold the idempotency and both caps), the charge, the grant, the
+message, the ledger line and the thread's last line commit together. The
+replica set Better Auth already needs is what makes that possible.
 
 ## Language levels are v1's four, not CEFR's six
 
@@ -4071,6 +4154,8 @@ cannot be opened and this whole path is lost — see the runbook.
 
 ## An account without a photo gets a drawn face, not its initials
 
+> **Amended 20 October 2026 — see _v3 default faces: 144 drawn faces, stored, in three pools_ below.**
+
 Two initials on one of three fills is what a photoless account used to look
 like. In a discovery list that is a column of coloured squares with letters on
 them, and most accounts in a fresh install have no photo — so the wall of
@@ -4119,6 +4204,107 @@ letter on a flat circle — the one screen whose whole question is "a photo, or
 the face we made you" was the one screen answering it with something nobody
 would ever see again. Skipping is now a visible choice of avatar rather than an
 empty slot left behind.
+
+## v3 default faces: 144 drawn faces, stored, in three pools
+
+_20 October 2026._ For the redesign, an account without a photo wears one of
+144 faces drawn for LangX instead of a Notionists face. There are three pools
+of 48: W for `female`, M for `male`, and N for everybody else. Every face is
+built from shared parts: 29 hair shapes, coverings, accessories, beards, six
+skin tones, six grounds and four soft shapes. The master sheet and the plan
+live with the design work, not in the repo.
+
+**Served as PNG by the API, as the Notionists faces were.** Three things in
+the earlier entry still hold: the API serves the picture, no native module is
+added, and no third party sits between the device and a picture of our users.
+What changes is the format. The faces are rendered by the resvg the share
+cards already use, so an email, a recap card and a push can carry the same
+face, and none of them draws SVG. The route is
+`/public/avatar/v3/:seed?s=&c=&v=`. It renders four sizes and three cuts:
+
+- textured at 96pt and up;
+- flat from 64pt;
+- flat with the figure 15% larger below 64pt.
+
+The cut follows the size the face is _shown_ at, not the pixels asked for,
+because a 40pt row on a 3x phone asks for 160px and still wants the small
+cut.
+
+**Stored, not only derived.** A new profile is given
+`profiles.defaultAvatar = { pool, index, ground }` once, at sign-up or on a
+v1 restore. The face is the least used in its pool among the last 500
+profiles, and the ground comes from the hash of the id. A hash alone bunches
+the way any 48-way hash of a few thousand ids does, so a wave of sign-ups
+would meet each other wearing the same face. The 500 are read by walking the
+`_id` index backwards, so the field gets no index of its own. A profile with
+nothing stored wears the pure hash of its id, so nothing is ever blank, and
+`scripts/backfill-default-avatars.ts` evens out the profiles that existed
+before this (a dry run first, then `--apply`).
+
+**The URL can name the face.** `?v=1-W07-3` (art revision, pool and index,
+ground) makes the PNG a pure function of the URL, so it is cached as
+immutable. The DTOs that feed an avatar carry it as `defaultAvatarRev`: the
+public profile, the discovery item, the shared profile, the chat partner and
+the call peer. It names nothing a viewer is not already shown. Without `v`,
+the server looks the face up and the answer is cached for a day. This
+replaces the earlier entry's week-long cache and its reason: the gender now
+changes the stored face, and the stored face changes the `v`.
+
+**A weak existence signal, accepted.** Without `v`, an account answers with
+its stored face and an id nobody holds answers with the neutral hash. Someone
+who computes the hash can therefore tell some real ids from unused ones. This
+is not fixed by answering every request without `v` from the hash, because
+several DTOs carry no `defaultAvatarRev`: feed authors, leaderboards, likes,
+the profile header. Those screens would draw the hash while the lists draw
+the stored face, and one person would wear two faces. The Notionists route
+made the same trade, since it read the gender. An id discloses no name, handle
+or photo, and the route is rate-limited.
+
+**Rendering is bounded.** resvg runs off the event loop
+(`renderAsync`), at most two renders at once. Concurrent asks for one face
+share a render, and the PNGs sit in a byte-bounded in-process cache. The
+480px face is the slowest to draw and the likeliest to miss the cache, so it
+has its own rate-limit bucket at a tenth of the list sizes'. Grids of many
+small faces, such as the picker, cap their fetch at 160px.
+
+**Gender, as before, is read and never sent.** A gender change moves an
+assigned face to the new pool and keeps its index and ground, so the person
+still looks like themselves, drawn from the other set. A face the person
+picked (`POST /profiles/me/default-avatar`, any pool) stays through a gender
+change. That choice is theirs.
+
+**`other` draws from the neutral pool, with `undisclosed`.** If declining to
+say drew a different face from never being asked, the picture would disclose
+what was declined. This sits beside `GenderMark`, which does show a symbol
+for `other` and none for `undisclosed`. The two do not contradict each other.
+The mark is the person's own stated answer, shown where they chose to state
+it; the face adds no fourth signal. Someone who wants no hint at all answers
+`undisclosed` and gets neither. The W and M faces show the gender already
+public on the profile, and a face picked from another pool is the person's
+own choice.
+
+**Honest about being a default.** `avatarUrl` stays empty, so "has a photo"
+keeps one meaning. A drawn face never opens full screen and never counts as a
+photo. The owner alone sees a nudge on Me to add one. It is put away for a
+week when closed, carries no counts, and never blocks anything. Viewers see
+the face like any other.
+
+**Two switches.** The app draws v3 faces only under `flags.v3Home`, read from
+the launch latch. The server's own surfaces follow the shared constant
+`DEFAULT_AVATAR_STYLE`, which arrives with the 3.0 launch and not before:
+until then, 2.9 builds keep their Notionists faces. With it at `'v3'`, the
+digest and match emails inline the face as a PNG, the recap card draws it,
+the ring push gains
+`callerDefaultAvatarUrl`, and the old `/public/avatar/:seed` sends a 302 to
+the v3 face, so builds from before v3 show it within their cache. Setting the
+constant back to `'notionists'` undoes all four. `@dicebear/*` and
+`avatarOptionsFor` go one release after the switch, once no build depends on
+the redirect's other side.
+
+**Covering and nationality.** No named persona, in copy, fixtures or store
+art, is tied to a head covering. The faces with coverings are spread across
+skin tones, and that spread is for the reviewer of the master sheet to
+confirm.
 
 ## Sign in with an emailed link: the link opens the app, and the app spends the token
 
@@ -5340,6 +5526,8 @@ be given.
 
 ## Copilot ships dark, behind two switches and a consent
 
+> **Amended 20 October 2026 — see _Copilot v1: an allow-list per account, Say it, and Explain on a partner's text_ below.**
+
 _18 October 2026._ Copilot is three one-tap helps in a chat — **Check** a
 sentence before sending it, **Reply ideas** for the thread, **Explain** a
 person's correction — written by the same provider as the assistant above. Its
@@ -5410,6 +5598,51 @@ names the models that reject it — Haiku 4.5, Sonnet 4.5 and everything older �
 and a move to the cheap model is sent `low` rather than left at its `medium`
 default. The models that offer a server-side refusal fallback get it on
 Copilot's calls; the assistant keeps its own reasoning for not sending one.
+
+## Copilot v1: an allow-list per account, Say it, and Explain on a partner's text
+
+_20 October 2026._ Behic asked for a simple Copilot first, one he can turn on
+for some people rather than for everybody, connected straight to the Claude
+API. Everything in the entry above still holds: the flag, the key, the exact
+18+ check, the partner-age guard, the consent sheet, `copilotPer24h`, the
+global day, the cache. Three things are added.
+
+**A third switch, per account.** `copilotAccess` on the profile, set from the
+operator panel (Find someone → Copilot access) and listed in the Copilot lab.
+Without it the status says `off` and an ask is refused as `off` before
+anything of the person's is read, so the app hides Copilot exactly as it does
+for the flag. No new reason: the person has nothing different to do about it.
+Being an admin grants nothing. An operator allows themselves like anybody
+else, so the list is the whole answer to "whose text can reach the model". The
+switch opens nothing by itself, since the age floor and the person's own
+consent still apply. Allowing and revoking are audited as `copilot.allow` and
+`copilot.revoke`.
+
+**Say it.** The person writes what they want to say in their own language and
+gets up to three natural ways to say it in a language they are learning, each
+with a short gloss. Only their own line, the language named in English and
+their level are sent. That is the same as Check, so like Check it does not
+look at the partner's age.
+
+**Explain reads a partner's plain text, as well as a correction.** It is the
+question learners ask most in a real chat, and the answer stays on the reader's
+side: the partner sees nothing. It sends that one message's body, clipped, and
+never who sent it, other lines, media, a view-once or a deleted message. The
+partner-age guard runs before the message is even looked at, so a minor's text
+never reaches the model whichever kind it is. Because the sheet's words did not
+mention a partner's message, `consentVersion` goes to 2. Nobody has agreed on
+production yet (the flag is off), so the bump asks nobody again.
+
+**One provider, the Anthropic API, behind the small `StructuredProvider`
+interface it already had.** No key means no provider, which means `off`, and
+the app boots and works. There is no second adapter. Tests hand the module a
+fake that records its prompts. Each ask writes one log line, `copilot answered`,
+with the action, whether it was cached, how it ended, how long it took and the
+model. It carries no message text, message id or user id.
+
+**Reply ideas gets no place in the thread.** It keeps its route and its lab
+button. People who suspect their partner of AI-written replies trust them
+less, and a language exchange is a trust product.
 
 ## The feed and the wallet get switches of their own
 
@@ -8868,3 +9101,101 @@ so a build that does not read it opens Discover as it always did.
   decided exactly as with the switch off; nothing is sent that was not sent
   before. It starts off because it is promotion, and promotion moves when
   Behic switches it rather than when a pull request merges.
+- **The limits nudge counts only limits a plan lifts.** It used to count three
+  refusals of any quota, so somebody refused by the media ceiling or the
+  translation fair-use ceiling — the same on both plans — was told "a plan
+  lifts them" and, with the switch on, sent to a paywall that lifts nothing of
+  the kind. It now counts refusals of a limit the free plan has and Pro does
+  not have at all (`REFUSALS_A_PLAN_LIFTS` in `promotions.ts`, read from
+  `PLAN_LIMITS`): today new conversations and translations, which is what its
+  mail names. This applies with the switch off too; it narrows who is told,
+  and never widens it.
+
+## The monthly plan has the free week too
+
+**20 October 2026.** From 3.0, both subscriptions carry the store's one-week
+free trial, not only the yearly one. Behic configures it in the three stores;
+the app was already reading the trial per package, so nothing in it has to
+know which plan a trial is on, and nothing may.
+
+- **The store decides, per package and per person.** The paywall's trial line,
+  timeline, terms and button follow the selected card's own offer. iOS asks
+  StoreKit for eligibility per product (one introductory offer per
+  subscription group, so a past yearly trial spends the monthly one too);
+  Play is read off the option the purchase actually buys (`defaultOption`'s
+  free phase), which Play returns only to somebody eligible; the web SDK's
+  offerings carry only the options the customer is entitled to. Before this,
+  Play was read off the product-level `introPrice`, which describes an offer on
+  the product rather than the one the tap buys.
+- **Yearly is still picked on open.** It is the one the saving is measured on;
+  the trial no longer decides between the two cards, so it is not a reason to
+  move the default.
+- **The server never knew the product.** The webhook records the store's
+  `period_type`, and the trial-ending reminder reads `periodType: 'trial'`;
+  tests now pin a monthly trial alongside a yearly one.
+- **On iOS, only a confirmed "eligible" is a promise.** A missing answer,
+  `UNKNOWN`, or an eligibility call that throws shows no trial wording
+  (`iosIneligibleForTrial`). It used to show the trial when the call threw; a
+  trial the store then grants unannounced is a pleasant surprise, a promised one
+  it does not grant is a false price.
+
+## Six more badge kinds, and only the v3 shelf is sent them
+
+The v3 badge shelf adds six kinds to the twenty-five badges: languages
+practised (2, 3, 5), calls of five minutes or more (1, 10, 50), Echo reviews
+(100, 1,000, 5,000), partners who wrote about you (1, 5, 20), different people
+you corrected (3, 10, 50) and first messages answered within a day (10, 50,
+200). The thresholds are in `packages/shared/src/badges.ts`, next to the rest.
+
+- **Still derived, never stored.** Each is a count of what the database
+  already records (`badgeCounts.ts`), so there is nothing to award, nothing to
+  award twice. Each runs on every open of Me and of the shelf, so each reads
+  indexes rather than rows; the one index added for them is
+  `posts.author_language`, so the languages somebody posted in are a skip
+  through an index. Every count is retroactive: it counts what
+  was done before the badge existed. Calls are read from the call rows in the
+  threads, because `calls` keeps a call for only thirty days.
+- **None pays.** A badge never does; the streak milestones pay, as before.
+- **Sent only on request.** An installed build words a badge by looking its
+  kind up in a table, and a kind it has never heard of finds no row. So both
+  badge reads answer with the `classic` catalogue unless asked for
+  `?catalogue=v3`, which only the v3 shelf asks for. The evening round-up
+  stays on `classic` (`BADGE_ROUND_UP_CATALOGUE`) until the shelf ships, and
+  `scripts/seed-v3-badge-notices.ts --apply` runs right before it moves, so
+  the first evening does not announce every retroactive badge at once.
+- **New is the device's.** The shelf marks a badge New until it is opened on
+  this device, and the first reading treats what is already earned as seen,
+  except for the six new families, which are news on their first day.
+
+## An earned gift skips somebody already paying for Pro
+
+**20 October 2026.** The streak's gifts, the invite gifts and the Pro Week's
+second week are skipped (`skippedReason: 'subscribed'`) for somebody whose
+store subscription runs past the gift's end: one that renews, or one that has
+been cancelled but still ends later than the gift would. A promotional grant
+runs beside a subscription rather than after it, so the gift changed nothing
+they could notice. It was granted quietly for a streak and with a letter about
+billing for an invite.
+
+**Spent, not owed.** The streak rung stays on `proGiftStreaks` and the invite
+slot stays taken, as on a lifetime. Holding the gift until the subscription
+ends was weighed and turned down: a row that waits for a plan to stop is a
+second scheduler for a case nobody has been in yet. A subscription that
+cancels and ends _before_ the gift does is not "already Pro" for this rule.
+The gift adds real days after the plan stops, and is given and announced as
+before.
+
+**Only the earned ones.** An operator's gift and a gift code still go through
+to a subscriber, with the letter that says their billing carries on. Both
+answer something somebody did on purpose, and `isEarned` is a switch with no
+default, so a new source has to say which side it is on. A gift on top of a
+running gift is unchanged: it goes on the end, so it is never wasted.
+
+**What the app shows.** The streak ladder promises a subscriber no Pro rungs
+(`proGiftRungs` is empty for one, as for a lifetime). Which side of their plan's
+end a rung will land on is not known until the day it is reached. A gift that
+arrives unpromised after a cancellation is a surprise. One promised and then
+skipped is a broken promise.
+
+The decision is made once, when the row's end is decided. A row that already
+has an end may already be at RevenueCat, so it finishes the way it started.

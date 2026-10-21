@@ -4,6 +4,7 @@ import { Animated, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useT, type MessageKey } from '../i18n'
 import { useProfileCache } from '../hooks/useProfileCache'
+import { useV3Home } from '../hooks/useV3Home'
 import {
   dismissMessageBanner,
   MESSAGE_BANNER_DURATION_MS,
@@ -29,7 +30,10 @@ import { Avatar } from './ui/Avatar'
  */
 export function MessageBannerHost() {
   const { spacing } = useTheme()
-  const styles = useStyles()
+  const v3Look = useV3Home()
+  const currentStyles = useStyles()
+  const v3Styles = useStylesV3()
+  const styles = v3Look ? v3Styles : currentStyles
   const t = useT()
   const insets = useSafeAreaInsets()
 
@@ -95,7 +99,12 @@ export function MessageBannerHost() {
         }}
         style={styles.card}
       >
-        <Avatar url={sender?.avatarUrl} name={name} seed={banner.senderId} size={36} />
+        <Avatar
+          url={sender?.avatarUrl}
+          name={name}
+          seed={banner.senderId}
+          size={v3Look ? 44 : 36}
+        />
         <View style={styles.text}>
           <Text style={styles.name} numberOfLines={1}>
             {name}
@@ -143,4 +152,42 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   text: { flex: 1 },
   name: { ...font.body, color: colors.text, fontWeight: '600' },
   preview: { ...font.caption, color: colors.textMuted },
+}))
+
+/*
+ * No board draws the banner. It is a v3 row lifted off the screen: the grey
+ * block at a row's corner, a 44pt face (the chat list's block size), the name
+ * in the label weight over a muted preview. The hairline stays — a flat grey
+ * block over a screen that is itself grey blocks would otherwise have no edge
+ * at all, and this one floats over whatever is up.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  layer: {
+    alignItems: 'center',
+    // The same layer as the current look's, for the same reason.
+    elevation: OVERLAY_LAYER.messageBanner,
+    left: 0,
+    paddingHorizontal: v3.space[16],
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    zIndex: OVERLAY_LAYER.messageBanner,
+  },
+  card: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.surface,
+    borderColor: v3.colors.line,
+    borderRadius: v3.radius.row,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: v3.space[12],
+    maxWidth: 420,
+    minHeight: 64,
+    paddingHorizontal: v3.space[14],
+    paddingVertical: v3.space[10],
+    width: '100%',
+  },
+  text: { flex: 1 },
+  name: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '700' },
+  preview: { ...v3.type.caption, color: v3.colors.muted },
 }))

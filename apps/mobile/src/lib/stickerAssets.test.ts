@@ -1,3 +1,6 @@
+import { readdirSync, readFileSync, statSync } from 'node:fs'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { COSMETICS } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { en } from '../i18n/messages/en'
@@ -41,5 +44,51 @@ describe('sticker assets', () => {
         )
       }
     }
+  })
+})
+
+/**
+ * What a sticker file may contain, because the two decoders that draw them on
+ * a phone are narrower than a browser and fail without an error:
+ *
+ * - an arc command (`A`/`a` in a path) draws wrongly through `expo-image` on
+ *   iOS — round shapes are `<circle>`/`<ellipse>`, curves are `C`/`Q`;
+ * - `androidsvg` drops filters and gradients, and masks with them;
+ * - `<text>` needs a font the phone may not have, so lettering is outlined;
+ * - `<image>` and `<style>` are a second file and a second parser;
+ * - `<use>` and `<clipPath>` are references a decoder may not follow, so
+ *   the exporter inlines them.
+ *
+ * And none over 12 KB: a sticker is drawn in every chat that sends one, and
+ * twelve of them ship in the bundle.
+ */
+describe('sticker files', () => {
+  const root = fileURLToPath(new URL('../../assets/stickers/', import.meta.url))
+  const files = readdirSync(root)
+    .filter((dir) => statSync(join(root, dir)).isDirectory())
+    .flatMap((dir) =>
+      readdirSync(join(root, dir))
+        .filter((file) => file.endsWith('.svg'))
+        .map((file) => `${dir}/${file}`),
+    )
+
+  it('finds every pack on disk', () => {
+    expect(files.length).toBe(
+      COSMETICS.filter((c) => c.kind === 'stickers').reduce(
+        (n, pack) => n + (pack.stickers?.length ?? 0),
+        0,
+      ),
+    )
+  })
+
+  it.each(files)('%s draws on every platform', (file) => {
+    const svg = readFileSync(join(root, file), 'utf8')
+    expect(Buffer.byteLength(svg), 'over 12 KB').toBeLessThanOrEqual(12 * 1024)
+    for (const [, , d] of svg.matchAll(/\sd=(["'])(.*?)\1/g)) {
+      expect(d, 'arc command in a path').not.toMatch(/[Aa]/)
+    }
+    expect(svg).not.toMatch(
+      /<(text|filter|linearGradient|radialGradient|mask|clipPath|use|image|style|foreignObject)\b/i,
+    )
   })
 })

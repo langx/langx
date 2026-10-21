@@ -557,6 +557,12 @@ export async function purgeExpiredAccounts(
       // Gifts of Pro, with the operator's note about why. A gift still
       // pending for a deleted account would only ever be skipped.
       db.collection(COLLECTIONS.proGifts).deleteMany({ userId }),
+      // Who gave whom which sticker pack. The packs themselves stay where
+      // they are — a pack given is the recipient's — and only the record of
+      // the exchange goes, from either end.
+      db
+        .collection(COLLECTIONS.stickerGifts)
+        .deleteMany({ $or: [{ giverId: userId }, { recipientId: userId }] }),
       // Which gift codes they redeemed and how often they tried. The codes'
       // own counts stay: they count what was given, not who is still here.
       db.collection(COLLECTIONS.giftCodeRedemptions).deleteMany({ userId }),

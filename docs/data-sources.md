@@ -36,64 +36,46 @@ list it came from.
 **Attribution is a licence condition, not a courtesy.** Removing it from any of
 the three places above is a licence breach, and the repo is public.
 
-## Stickers — part Microsoft, part ours
+## Stickers — all ours
 
-Each sticker pack is twelve flat SVGs. In `starter` and `practice` they are
-split down the middle: six are drawn for this app and carry no licence but
-ours, and six are lifted unmodified from Microsoft's Fluent Emoji, whose flat
-variant is the closest match to what v3 draws.
+Each sticker pack is twelve flat SVGs, and since the v3 redraw every one of
+them was drawn for this app and carries no licence but ours. Until then half of
+`starter` and half of `practice` were Microsoft's Fluent Emoji (MIT); the
+redraw replaced those files under the same ids, so the notice that travelled
+with them went with them.
 
-`pixel` is the exception and takes nothing. It is 16x16 pixel art, a style
-Fluent has no variant of, so all twelve are ours — generated from
-`tools/pixel-stickers/build-stickers.mjs`, where each sticker is a grid of
-characters rather than a path. Edit the grid and re-run it; the SVGs are
-committed output.
+`pixel` is generated from `tools/pixel-stickers/build-stickers.mjs`, where each
+sticker is a grid of characters rather than a path. Edit the grid and re-run
+it; the SVGs are committed output. Every other pack was drawn on the v3 store's
+design boards, and the SVGs are the source.
 
-`paper` (Paper Talk) takes nothing either. All twelve were drawn for this app
-on the v3 store's design board and carry no licence but ours. Its lettering is
-Nunito Black, converted to outlines, so the files hold paths and no font; Nunito
-is under the SIL Open Font License (see `apps/api/assets/fonts/`), which allows
-glyph outlines in artwork. The SVGs are the source: to change a word, redraw it
-on the board and outline it again rather than editing the path data.
+|         |                                                   |
+| ------- | ------------------------------------------------- |
+| Licence | ours; lettering outlined from Nunito / Noto (OFL) |
 
-|             |                                                                                                                                                                                                           |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Source      | <https://github.com/microsoft/fluentui-emoji>                                                                                                                                                             |
-| Licence     | MIT                                                                                                                                                                                                       |
-| Files       | `apps/mobile/assets/stickers/starter/` — `book`, `bulb`, `clock`, `heart`, `party`, `sparkles`; `apps/mobile/assets/stickers/practice/` — `rocket`, `trophy`, `star`, `thinking`, `hourglass`, `bullseye` |
-| Notice      | `apps/mobile/assets/stickers/LICENSE-fluentui-emoji`                                                                                                                                                      |
-| Credited in | this file, `README.md`, and the app's "Our Kitchen" screen                                                                                                                                                |
+Some packs carry words — "¡Hola!" on a speech bubble, "안녕" on a stamp. The
+words are glyph outlines converted to paths, never SVG `<text>`, so the files
+hold no font and no device needs one installed. The SIL Open Font License,
+which covers Nunito (see `apps/api/assets/fonts/`) and Noto, allows glyph
+outlines in artwork. To change a word, redraw it on the board and outline it
+again rather than editing the path data; a script with an Arabic or Devanagari
+word must be shaped (HarfBuzz) before it is outlined, or its letters do not
+join. The words on a picture are never the only way to know what it says:
+every sticker has a translated screen-reader name (`stickerName.*` in the
+app's messages).
 
-MIT asks for one thing: the copyright notice travels with the files. It is in
-the directory beside them, which is why that file is there and must not be
-tidied away.
+Three rules every file follows, all of which outlive this particular art. The
+first two are checked by `apps/mobile/src/lib/stickerAssets.test.ts`:
 
-Three rules every pack follows, all of which outlive this particular art:
+**No filters, no gradients, no arcs.** `expo-image` decodes SVG through
+`androidsvg` on Android, which supports neither filters nor gradients, and
+draws arc commands (`A` in a path) wrongly on iOS. Anything richer draws in a
+browser and silently flattens or vanishes on a phone. Round shapes are
+`<circle>` and `<ellipse>`; curves are `C` and `Q`.
 
-**No lettering.** A sticker saying "Nice!" reads as English to somebody who is
-not obliged to read English, and this app speaks eight languages. It is the
-same rule as `t('some.key')`, applied to a picture. It also sidesteps SVG
-`<text>`, whose font is not ours to rely on.
+**Twelve kilobytes at most.** A sticker is drawn in every chat that sends one.
 
-> **Amended 20 October 2026 — Paper Talk is lettered on purpose.** The v3
-> store's design, which Behic chose, draws a pack whose point is the words:
-> "¡Hola!", "Merci", "Çay?", "Café?" are the kind of word a language exchange
-> trades in, and "Nice!" or "Fixed it" are the replies learners actually send.
-> Most of the words are English all the same — "Nice!", "Got it", "Sent!",
-> "One sec", "Fixed it", "Night!", "new!" — so this pack accepts exactly the
-> cost the rule names, for a pack someone chooses to buy and send.
-> The rule still holds for every other pack. Paper Talk keeps the second half
-> of it: there is no `<text>` in any file, every word is outlined into paths.
-> Its screen-reader names are translated (`stickerName.*` in the app's
-> messages), so the words on the picture are never the only way to know what
-> it says.
-
-**No filters and no gradients.** `expo-image` decodes SVG through `androidsvg`
-on Android, which supports neither. Anything richer draws on iOS and the web
-and silently flattens or vanishes on a phone.
-
-**A skin tone is a choice we are not making.** Fluent's thumbs-up ships in six
-tones and no neutral one; picking a default for a global language exchange is
-a decision with no right answer, so the pack uses `sparkles` instead. The hands
-we drew are white with an ink outline, which reads as a glyph rather than as
+**A skin tone is a choice we are not making.** Picking one default for a
+global language exchange is a decision with no right answer, so the hands we
+draw are white with an ink outline, which reads as a glyph rather than as
 anybody's skin.

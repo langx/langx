@@ -5,7 +5,7 @@ import { useProfileCache } from './useProfileCache'
 /** What a chat row draws of the person on the other side. */
 export type RowPartner = Pick<
   ConversationPartnerDto,
-  '_id' | 'displayName' | 'avatarUrl' | 'isOnline' | 'official' | 'frame'
+  '_id' | 'displayName' | 'avatarUrl' | 'defaultAvatarRev' | 'isOnline' | 'official' | 'frame'
 >
 
 /**

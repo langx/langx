@@ -11,13 +11,19 @@ import { useV3Home } from '../../src/hooks/useV3Home'
 import { useT } from '../../src/i18n'
 import { showAlert } from '../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../src/lib/socket'
-import { goBackTo, openStickerPack } from '../../src/lib/navigation'
+import { goBackTo } from '../../src/lib/navigation'
 import { stickerAsset, stickerNameKey } from '../../src/lib/stickerAssets'
 import { cosmeticKey } from '../../src/lib/storeOffers'
 import { makeStyles } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
+import { StickersScreenV3 } from '../../src/screens/chat/StickersScreenV3'
 
 const PACKS = COSMETICS.filter((cosmetic) => cosmetic.kind === 'stickers')
+
+/** The sticker keyboard, or with `flags.v3Home` on the redesign's (`StickersScreenV3`). */
+export default function StickersScreenRoute() {
+  return useV3Home() ? <StickersScreenV3 /> : <StickersScreen />
+}
 
 /**
  * The keyboard: every pack you own, and the ones you do not, greyed with
@@ -30,13 +36,12 @@ const PACKS = COSMETICS.filter((cosmetic) => cosmetic.kind === 'stickers')
  * happens, and a keyboard that answers "go and look in the wallet" is a
  * keyboard nobody comes back to.
  */
-export default function StickersScreen() {
+function StickersScreen() {
   const styles = useStyles()
   const t = useT()
   const { id: conversationId } = useLocalSearchParams<{ id: string }>()
   const wallet = useWallet()
   const purchase = usePurchase()
-  const v3Home = useV3Home()
   const owned = wallet.data?.owned ?? []
   const balance = wallet.data?.balance ?? 0
 
@@ -93,26 +98,7 @@ export default function StickersScreen() {
           const unlocked = owned.includes(pack.id)
           return (
             <View key={pack.id} style={styles.pack}>
-              {v3Home ? (
-                // v3 only: the pack's own page, where wanting one can see all
-                // twelve big before buying. Today's keyboard is unchanged.
-                <View style={styles.packHead}>
-                  <Text style={[styles.packName, styles.packNameFlex]}>
-                    {t(cosmeticKey(pack.id))}
-                  </Text>
-                  <Pressable
-                    accessibilityRole="link"
-                    accessibilityLabel={`${t('stickerPack.seePack')}: ${t(cosmeticKey(pack.id))}`}
-                    hitSlop={8}
-                    onPress={() => openStickerPack(pack.id)}
-                    style={({ pressed }) => [styles.seePack, pressed && styles.pressed]}
-                  >
-                    <Text style={styles.seePackLabel}>{t('stickerPack.seePack')}</Text>
-                  </Pressable>
-                </View>
-              ) : (
-                <Text style={styles.packName}>{t(cosmeticKey(pack.id))}</Text>
-              )}
+              <Text style={styles.packName}>{t(cosmeticKey(pack.id))}</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.grid}>
                   {(pack.stickers ?? []).map((stickerId) => {
@@ -157,10 +143,6 @@ const useStyles = makeStyles(({ colors, spacing }) => ({
   loading: { padding: spacing.lg },
   pack: { gap: spacing.sm, paddingTop: spacing.lg },
   packName: { color: colors.text, fontSize: 17, fontWeight: '700' },
-  packHead: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
-  packNameFlex: { flex: 1 },
-  seePack: { justifyContent: 'center', minHeight: 44 },
-  seePackLabel: { color: colors.accent, fontSize: 15, fontWeight: '700' },
   grid: { flexDirection: 'row', gap: spacing.sm },
   tile: { alignItems: 'center', justifyContent: 'center', padding: 4 },
   picture: { height: 64, width: 64 },

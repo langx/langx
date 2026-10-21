@@ -40,6 +40,7 @@ import type { Conversation } from '../chat/conversations'
 import { blockedUserIds } from '../moderation/blocks'
 import { notSuspended } from '../moderation/suspension'
 import { hidesOnlineStatus } from '../profiles/presenceVisibility'
+import { defaultAvatarRevFor } from '../profiles/defaultAvatar'
 import { ApiError } from '../../lib/ApiError'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
@@ -440,6 +441,8 @@ function toDiscoveryItem(
     streak: { current: doc.streak.current },
   }
   if (doc.avatarUrl !== undefined) item.avatarUrl = doc.avatarUrl
+  const defaultAvatarRev = defaultAvatarRevFor(doc)
+  if (defaultAvatarRev) item.defaultAvatarRev = defaultAvatarRev
   if (doc.bio !== undefined) item.bio = doc.bio
   if (doc.country !== undefined) item.country = doc.country
   // Bucketed, never the measured value — `bucketDistanceKm` explains what

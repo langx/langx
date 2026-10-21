@@ -2,11 +2,13 @@ import { countryFlag, getCountry } from '@langx/shared'
 import * as Location from 'expo-location'
 import { ActivityIndicator, Platform, Pressable, Text, View } from 'react-native'
 import { useSetCountryFromLocation } from '../api/queries'
+import { useV3Home } from '../hooks/useV3Home'
 import { showAlert } from '../lib/alert'
 import { captureLocation, reportLocationFailure } from '../lib/location'
 import { makeStyles, useTheme } from '../lib/theme'
 import { showToast } from '../lib/toast'
 import { useDisplayNames, useT } from '../i18n'
+import { CountryFromLocationV3 } from './CountryFromLocationV3'
 import { ICON_BUTTON_TARGET } from './ui/IconButton'
 
 /**
@@ -29,6 +31,14 @@ import { ICON_BUTTON_TARGET } from './ui/IconButton'
  * Save, and most people never need it.
  */
 export function CountryFromLocation({ country }: { country: string | undefined }) {
+  return useV3Home() ? (
+    <CountryFromLocationV3 country={country} />
+  ) : (
+    <CountryFromLocationCurrent country={country} />
+  )
+}
+
+function CountryFromLocationCurrent({ country }: { country: string | undefined }) {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()

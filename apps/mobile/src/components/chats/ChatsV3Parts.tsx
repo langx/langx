@@ -114,6 +114,7 @@ export const WaitingBlock = memo(function WaitingBlock({
           url={partner.avatarUrl}
           name={name}
           seed={partner._id}
+          defaultAvatarRev={partner.defaultAvatarRev}
           slot={lead ? LEAD_AVATAR : BLOCK_AVATAR}
           frame={partner.frame}
         />
@@ -306,6 +307,7 @@ export const ChatRowV3 = memo(function ChatRowV3({
               url={partner.avatarUrl}
               name={partner.displayName}
               seed={partner._id}
+              defaultAvatarRev={partner.defaultAvatarRev}
               online={partner.isOnline}
               slot={ROW_AVATAR}
               frame={partner.frame}
@@ -413,6 +415,7 @@ function FaceSlot({
   url: string | undefined
   name: string
   seed: string
+  defaultAvatarRev?: string | undefined
   online?: boolean
   slot: number
   frame: string | undefined

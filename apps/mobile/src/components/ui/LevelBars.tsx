@@ -1,5 +1,6 @@
 import { LANGUAGE_LEVELS, levelRank, type LanguageLevel } from '@langx/shared'
 import { View } from 'react-native'
+import { useV3Home } from '../../hooks/useV3Home'
 import { makeStyles, useTheme } from '../../lib/theme'
 
 interface LevelBarsProps {
@@ -9,9 +10,9 @@ interface LevelBarsProps {
    * bars, and "teaches" on a profile draws one more to say this is home turf.
    */
   native?: boolean
-  /** Bar colour for the filled steps; defaults to `accent`. */
+  /** Bar colour for the filled steps; defaults to `accent` (v3: `fg`). */
   color?: string
-  /** Colour for the unfilled steps; defaults to `border`. */
+  /** Colour for the unfilled steps; defaults to `border` (v3: `track`). */
   restColor?: string
   size?: number
 }
@@ -22,13 +23,17 @@ interface LevelBarsProps {
  * any locale, and the words stay available where there is room for them.
  */
 export function LevelBars({ level, native = false, color, restColor, size = 14 }: LevelBarsProps) {
-  const { colors } = useTheme()
+  const { colors, v3 } = useTheme()
   const styles = useStyles()
+  const v3Look = useV3Home()
 
   const bars = native ? 5 : 4
   const filled = native ? 5 : levelRank(level)
-  const on = color ?? colors.accent
-  const off = restColor ?? colors.border
+  // The redesign draws the bars in ink on a quiet track (V-EditProfile):
+  // blue is held to one use a screen there, and a row of level
+  // glyphs would spend it on decoration. Callers that pass a colour keep it.
+  const on = color ?? (v3Look ? v3.colors.fg : colors.accent)
+  const off = restColor ?? (v3Look ? v3.colors.track : colors.border)
 
   // Heights ascend 5→size in even steps, matching the design's 5/8/11/14(/17).
   const step = (size - 5) / (bars - 1)

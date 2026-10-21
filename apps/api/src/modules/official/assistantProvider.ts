@@ -195,6 +195,8 @@ export function createStructuredProvider(
   apiKey: string | undefined,
   model: string,
   maxTokens: number,
+  /** Per request; the SDK's defaults (ten minutes, two retries) when absent. */
+  limits: { timeoutMs?: number; maxRetries?: number } = {},
 ): StructuredProvider | null {
   if (!apiKey) return null
   const client = new Anthropic({ apiKey })
@@ -210,14 +212,20 @@ export function createStructuredProvider(
     async ask({ system, prompt, schema }) {
       let message
       try {
-        message = await client.beta.messages.parse({
-          model,
-          max_tokens: maxTokens,
-          system,
-          messages: [{ role: 'user', content: prompt }],
-          output_config: { ...effort, format: betaZodOutputFormat(schema) },
-          ...fallback,
-        })
+        message = await client.beta.messages.parse(
+          {
+            model,
+            max_tokens: maxTokens,
+            system,
+            messages: [{ role: 'user', content: prompt }],
+            output_config: { ...effort, format: betaZodOutputFormat(schema) },
+            ...fallback,
+          },
+          {
+            ...(limits.timeoutMs !== undefined ? { timeout: limits.timeoutMs } : {}),
+            ...(limits.maxRetries !== undefined ? { maxRetries: limits.maxRetries } : {}),
+          },
+        )
       } catch (error) {
         /*
          * A refused or cut-off answer is not JSON the schema accepts, and the

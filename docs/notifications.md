@@ -356,11 +356,12 @@ behind a switch_. Then four things
 Pro opens, one emoji-led line each, with "…and more." under them, and the end
 date. A code's gift is granted the moment it is redeemed, from
 `POST /me/gift-code`, not on the next pass. Somebody with a running store
-subscription is told it carries on as usual, and that Pro stays until the
-gift's end if it ever stops. A **streak** gift to somebody whose subscription
-already runs past its end is granted without a word: no letter, no push, no
-mail, no welcome. It changes nothing they would notice, and if they cancel
-later the reminders are the first they hear of it.
+subscription who is given an operator's gift or a code's is told it carries
+on as usual, and that Pro stays until the gift's end if it ever stops. An
+**earned** gift (a streak, an invite or the Pro Week's second week) to
+somebody whose subscription already runs past its end is not given at all.
+The row is skipped and nothing is sent; see `docs/decisions.md` → _An earned
+gift skips somebody already paying for Pro_.
 
 The reminders are **information, not an offer**: when it ends and where the
 plan screen is. A "subscribe now" would be marketing and would need the consent
@@ -407,6 +408,7 @@ every one claims a row in `notificationLedger` before it sends.
 | ------------------------------------------------ | --------------- | ------------------ | ------------------------------------------------- |
 | A message arrived                                | `messages`      | on the message     | — (fan-out)                                       |
 | **A call you missed**                            | `messages`      | when it ends       | the call — `messages.call_id_unique`              |
+| **A sticker pack somebody gave you** — flag      | `messages`      | on the gift        | the gift — `stickerGifts.giver_client_unique`     |
 | Streak reminder — only while still savable today | `streak`        | 20:00 local        | local day                                         |
 | **Pick your streak back up** — after it broke    | `streak`        | 20:00 local, flag  | the missed day                                    |
 | Badge round-up                                   | `badges`        | 18:00 local        | badge ids                                         |
@@ -489,6 +491,13 @@ holding a socket, obeys the thread's mute and the `messages` switch, and counts
 in the unread total. Only `missed` and `busy` do this: a call both people took
 and a call somebody declined were both seen happening. A call ended by a
 block or a suspension leaves its row and sends nothing.
+
+A sticker pack given to somebody (`flags.stickerGifts`, off by default) is a
+row in the thread as well, written by the server, and it pushes the way a
+call's row does — "🎁 Sticker pack gift" under the giver's name, through the
+same fan-out, under `messages`, counting in the unread total. Once per gift: a
+retry of the same tap is answered with the first gift and announces nothing.
+There is no new kind and no mail.
 
 A message scheduled with "Send later" is a message: it pushes when it goes
 out, through the same fan-out as one typed at that moment, under `messages`.
@@ -580,17 +589,17 @@ It used to run any time between nine and nine, which with a daily mail in the
 picture would have let a nudge at ten in the morning take the day's one slot
 and leave the evening's real news with nowhere to go.
 
-| #   | Nudge                                   | Trigger                                               | Kind       |
-| --- | --------------------------------------- | ----------------------------------------------------- | ---------- |
-| 1   | Add a photo, and people will find you   | no `avatarUrl`, account > 48 h                        | promotions |
-| 2   | Your streak broke — repair it           | `streakRepairDay`: broke **yesterday**, repairable    | **streak** |
-| 3   | People are still practising without you | `lastActiveAt` 7–8 days ago (7–15 with the switch)    | promotions |
-| 4   | We will stop writing after this         | `lastActiveAt` 30–31 days ago (30–38)                 | promotions |
-| 5   | Your free week ends in two days         | `periodType: trial`, not renewing, ends within 2 days | promotions |
-| 6   | Your plan ended a week ago              | `churnedFrom` 7–8 days ago (7–15), still on free      | promotions |
-| 7   | You are running into the free limits    | refused 3 times in 3 days, still on free              | promotions |
-| 8   | You have N tokens waiting               | balance ≥ 200, nothing spent in a fortnight           | promotions |
-| 9   | Invite a friend                         | 14 days old, active, has invited nobody               | promotions |
+| #   | Nudge                                   | Trigger                                                                                   | Kind       |
+| --- | --------------------------------------- | ----------------------------------------------------------------------------------------- | ---------- |
+| 1   | Add a photo, and people will find you   | no `avatarUrl`, account > 48 h                                                            | promotions |
+| 2   | Your streak broke — repair it           | `streakRepairDay`: broke **yesterday**, repairable                                        | **streak** |
+| 3   | People are still practising without you | `lastActiveAt` 7–8 days ago (7–15 with the switch)                                        | promotions |
+| 4   | We will stop writing after this         | `lastActiveAt` 30–31 days ago (30–38)                                                     | promotions |
+| 5   | Your free week ends in two days         | `periodType: trial`, not renewing, ends within 2 days                                     | promotions |
+| 6   | Your plan ended a week ago              | `churnedFrom` 7–8 days ago (7–15), still on free                                          | promotions |
+| 7   | You are running into the free limits    | refused 3 times in 3 days by a limit Pro removes (new chats, translations), still on free | promotions |
+| 8   | You have N tokens waiting               | balance ≥ 200, nothing spent in a fortnight                                               | promotions |
+| 9   | Invite a friend                         | 14 days old, active, has invited nobody                                                   | promotions |
 
 **Where each one's button lands** is `PROMOTION_DESTINATIONS` in
 `email/templates.ts`, beside the copy: the photo nudge on Edit profile, the

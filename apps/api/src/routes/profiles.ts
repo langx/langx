@@ -1,4 +1,6 @@
 import {
+  defaultAvatarRev,
+  pickDefaultAvatarSchema,
   changeHandleSchema,
   countryFromLocationSchema,
   setGenderSchema,
@@ -35,6 +37,7 @@ import {
   updateProfile,
 } from '../modules/profiles/profiles'
 import { deleteGuest } from '../modules/profiles/purgeGuests'
+import { pickDefaultAvatar } from '../modules/profiles/defaultAvatar'
 import { cameFromV1 } from '../modules/handles/legacyPrecreate'
 import { sendWelcomeMessage } from '../modules/official/welcome'
 import { sendWelcomeBackMessage } from '../modules/official/welcomeBack'
@@ -217,6 +220,21 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const profile = await setGender(app.mongo.db, request.userId, request.body.gender)
       return reply.send(toOwnProfileWire(profile))
+    },
+  )
+
+  /**
+   * Choosing one of the drawn faces instead of the one assigned. The body
+   * names a face and nothing else — never a gender; the pool is whatever the
+   * person tapped. Answers with the face and its `v` token, so the client can
+   * swap the picture without refetching the profile.
+   */
+  app.post(
+    '/profiles/me/default-avatar',
+    { preHandler: requireMember, schema: { body: pickDefaultAvatarSchema } },
+    async (request, reply) => {
+      const avatar = await pickDefaultAvatar(app.mongo.db, request.userId, request.body)
+      return reply.send({ defaultAvatar: avatar, defaultAvatarRev: defaultAvatarRev(avatar) })
     },
   )
 
