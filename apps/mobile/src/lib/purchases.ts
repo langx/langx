@@ -1,7 +1,7 @@
 import { packageDefinition, type BillingPeriod, type PaidPlanTier } from '@langx/shared'
 import { Platform } from 'react-native'
 import { fakeOffers, fakePurchase, isFakePurchasesEnabled } from './fakePurchases'
-import { trialDays } from './trialDays'
+import { nativeFreeTrialDays } from './trialDays'
 /*
  * The web store, behind a two-file module Metro resolves per platform: this
  * import is the real RevenueCat Web Billing SDK in a browser build and an
@@ -119,24 +119,6 @@ export interface PurchaseOffer {
    * this package has no trial.
    */
   freeTrialDays: number | null
-}
-
-/**
- * The free-trial length of an introductory offer, or `null` when there is none.
- *
- * `introPrice` describes *any* introductory offer — pay-as-you-go and
- * pay-up-front discounts included — so the zero price is the whole test. A
- * discounted first period is a real thing the stores can sell and this app
- * currently does not, and calling one a free trial would be a false claim
- * rather than a missing feature.
- *
- * The unit-to-days conversion moved to `./trialDays` when the web store
- * arrived: the two SDKs do not spell `MONTH` the same way, and the paywall's
- * "30 days free" has to mean the same thing whichever one answered.
- */
-function freeTrialDays(intro: PurchasesSdk.PurchasesIntroPrice | null): number | null {
-  if (intro === null || intro.price !== 0) return null
-  return trialDays(intro.periodUnit, intro.periodNumberOfUnits)
 }
 
 /**
@@ -297,7 +279,7 @@ export async function getOffers(): Promise<PurchaseOffer[]> {
         price: pkg.product.price,
         freeTrialDays: ineligible.has(pkg.product.identifier)
           ? null
-          : freeTrialDays(pkg.product.introPrice),
+          : nativeFreeTrialDays(pkg.product),
       })
     }
     return offers

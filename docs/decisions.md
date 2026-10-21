@@ -8868,3 +8868,26 @@ so a build that does not read it opens Discover as it always did.
   decided exactly as with the switch off; nothing is sent that was not sent
   before. It starts off because it is promotion, and promotion moves when
   Behic switches it rather than when a pull request merges.
+
+## The monthly plan has the free week too
+
+**20 October 2026.** From 3.0, both subscriptions carry the store's one-week
+free trial, not only the yearly one. Behic configures it in the three stores;
+the app was already reading the trial per package, so nothing in it has to
+know which plan a trial is on, and nothing may.
+
+- **The store decides, per package and per person.** The paywall's trial line,
+  timeline, terms and button follow the selected card's own offer. iOS asks
+  StoreKit for eligibility per product (one introductory offer per
+  subscription group, so a past yearly trial spends the monthly one too);
+  Play is read off the option the purchase actually buys (`defaultOption`'s
+  free phase), which Play returns only to somebody eligible; the web SDK's
+  offerings carry only the options the customer is entitled to. Before this,
+  Play was read off the product-level `introPrice`, which describes an offer on
+  the product rather than the one the tap buys.
+- **Yearly is still picked on open.** It is the one the saving is measured on;
+  the trial no longer decides between the two cards, so it is not a reason to
+  move the default.
+- **The server never knew the product.** The webhook records the store's
+  `period_type`, and the trial-ending reminder reads `periodType: 'trial'`;
+  tests now pin a monthly trial alongside a yearly one.

@@ -24,3 +24,52 @@ export function trialDays(unit: string, count: number): number | null {
   if (days === undefined || count <= 0) return null
   return days * count
 }
+
+/** The parts of a native `PurchasesStoreProduct` the trial is read from. */
+export interface NativeTrialProduct {
+  introPrice: { price: number; periodUnit: string; periodNumberOfUnits: number } | null
+  /** Google Play only; `null` (or absent) on the App Store. */
+  defaultOption?: {
+    freePhase: {
+      billingPeriod: { unit: string; value: number }
+      billingCycleCount: number | null
+    } | null
+  } | null
+}
+
+/**
+ * The free trial a native product would start, read from the offer the
+ * purchase will actually use.
+ *
+ * **Google Play: `defaultOption`.** A Play subscription can carry several base
+ * plans and offers, and `purchasePackage` buys the product's `defaultOption` —
+ * the one with the longest free phase, else the base plan. So the trial the
+ * paywall states is that option's free phase and nothing else: reading the
+ * product-level `introPrice` instead would describe *some* offer on the
+ * product, which is not a promise about the one the tap buys. Play returns an
+ * offer only to somebody its eligibility rule admits, so a monthly plan
+ * somebody has had the trial on simply comes back without one.
+ *
+ * **App Store: `introPrice`**, whose zero price is the whole test — a
+ * discounted first period is a real thing the stores can sell and this app
+ * does not, and calling one a free trial would be a false claim. It describes
+ * the product, not the customer; `ineligibleForTrial` in `purchases.ts` takes
+ * it away from somebody the group's one introductory offer was already spent
+ * on.
+ *
+ * Product-agnostic on purpose: since 3.0 the monthly plan carries the same
+ * free week the yearly one does, and nothing here may assume which of them a
+ * store configured it on.
+ */
+export function nativeFreeTrialDays(product: NativeTrialProduct): number | null {
+  const option = product.defaultOption
+  if (option) {
+    const phase = option.freePhase
+    if (!phase) return null
+    const cycles = phase.billingCycleCount ?? 1
+    return trialDays(phase.billingPeriod.unit, phase.billingPeriod.value * cycles)
+  }
+  const intro = product.introPrice
+  if (intro === null || intro.price !== 0) return null
+  return trialDays(intro.periodUnit, intro.periodNumberOfUnits)
+}
