@@ -2046,7 +2046,6 @@ export const ptBR: Localized<EnMessages> = {
     title: 'Nossa cozinha',
     intro: 'Onde o LangX é feito, e quem o faz.',
     dataCredit: 'Nomes de lugares do GeoNames, sob licença CC BY 4.0.',
-    stickerCredit: 'Alguns stickers são do Microsoft Fluent Emoji, com licença MIT.',
     footer: 'Feito às claras, por quem usa.',
     contributors: 'Colaboradores',
     fundamentals: 'Todo mundo que já contribuiu',
@@ -2608,9 +2607,10 @@ export const ptBR: Localized<EnMessages> = {
 
   stickerPack: {
     taglinePaper: 'Saudações e respostas rápidas, recortadas em papel colorido.',
-    taglineStarter: 'Os do dia a dia: oi, estou ouvindo, entendi, muito bem.',
-    taglinePractice: 'Para a prática em si: mais devagar, de novo, conseguimos.',
-    taglinePixel: 'Pequenos sprites para subir de nível juntos.',
+    taglineStarter: 'Pip, um balãozinho de fala, diz os do dia a dia: oi, estou ouvindo, valeu.',
+    taglinePractice:
+      'Distintivos de feltro para a prática em si: mais devagar, de novo, conseguimos.',
+    taglinePixel: 'Sprites de miçangas de passar a ferro para subir de nível juntos.',
     count: {
       one: '{count} sticker',
       other: '{count} stickers',
@@ -2675,7 +2675,7 @@ export const ptBR: Localized<EnMessages> = {
     practiceHourglass: 'Ampulheta',
     practiceBullseye: 'Na mosca',
     pixelLevelup: 'Subiu de nível',
-    pixelCoin: 'Moeda',
+    pixelCoin: 'Vida extra',
     pixelCheckpoint: 'Checkpoint',
     pixelFlame: 'Chama',
     pixelKey: 'Chave',
@@ -2914,6 +2914,7 @@ export const ptBR: Localized<EnMessages> = {
     ringing: 'Tocando…',
     connecting: 'Conectando…',
     reconnecting: 'Reconectando…',
+    reconnectingHint: 'Aguarde. A chamada volta sozinha.',
     answer: 'Atender',
     answerNoCamera: 'Atender sem câmera',
     decline: 'Recusar',
@@ -2928,6 +2929,11 @@ export const ptBR: Localized<EnMessages> = {
     returnToCall: 'Voltar à chamada',
     peerMuted: '{name} está com o microfone desligado',
     peerCameraOff: 'Câmera desligada',
+    howWasIt: 'Como foi?',
+    tile: {
+      camera: 'Câmera',
+      flip: 'Trocar',
+    },
     ended: 'Chamada encerrada',
     noAnswer: 'Sem resposta',
     busy: '{name} não pode atender agora',

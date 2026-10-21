@@ -2282,7 +2282,6 @@ export const en = {
     title: 'Our Kitchen',
     intro: 'Where LangX is made, and everyone who makes it.',
     dataCredit: 'Place names from GeoNames, licensed under CC BY 4.0.',
-    stickerCredit: 'Some stickers from Microsoft Fluent Emoji, licensed under MIT.',
     footer: 'Built in the open, by the people who use it.',
     contributors: 'Contributors',
     fundamentals: 'Everyone who has contributed',
@@ -2887,9 +2886,10 @@ export const en = {
 
   stickerPack: {
     taglinePaper: 'Hellos and quick replies, cut from coloured paper.',
-    taglineStarter: 'The everyday ones: hello, I am listening, I get it, well done.',
-    taglinePractice: 'For the practice itself: slower, again, we got there.',
-    taglinePixel: 'Little sprites for levelling up together.',
+    taglineStarter:
+      'Pip, a little speech bubble, says the everyday ones: hello, I am listening, thank you.',
+    taglinePractice: 'Felt badges for the practice itself: slower, again, we got there.',
+    taglinePixel: 'Fuse-bead sprites for levelling up together.',
     count: {
       one: '{count} sticker',
       other: '{count} stickers',
@@ -2954,7 +2954,7 @@ export const en = {
     practiceHourglass: 'Hourglass',
     practiceBullseye: 'Bullseye',
     pixelLevelup: 'Level up',
-    pixelCoin: 'Coin',
+    pixelCoin: 'Extra life',
     pixelCheckpoint: 'Checkpoint',
     pixelFlame: 'Flame',
     pixelKey: 'Key',
@@ -3223,6 +3223,7 @@ export const en = {
     ringing: 'Ringing…',
     connecting: 'Connecting…',
     reconnecting: 'Reconnecting…',
+    reconnectingHint: 'Hold on. The call picks up again by itself.',
     answer: 'Answer',
     answerNoCamera: 'Answer without camera',
     decline: 'Decline',
@@ -3237,6 +3238,13 @@ export const en = {
     returnToCall: 'Return to call',
     peerMuted: '{name} is muted',
     peerCameraOff: 'Camera off',
+    /** Over the feedback choices on a call's closing screen, in v3. */
+    howWasIt: 'How was it?',
+    /** The short words under a v3 call tile; the tile is read aloud by the full label. */
+    tile: {
+      camera: 'Camera',
+      flip: 'Switch',
+    },
     ended: 'Call ended',
     noAnswer: 'No answer',
     busy: '{name} can’t take a call right now',

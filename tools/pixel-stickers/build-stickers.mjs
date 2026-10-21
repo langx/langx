@@ -8,20 +8,20 @@
  * file rather than in a path's control points. Writing the same art as hand
  * authored `<rect>` elements would be several hundred lines nobody can read.
  *
- * **Sixteen by sixteen, into a 32-unit viewBox** — two units per pixel, which
- * is what keeps pixel art looking like pixel art. `expo-image` draws a sticker
- * at 112px in a message and 64px in the keyboard; against a 32-unit box those
- * are 3.5x and 2x, so a two-unit pixel lands on exactly 7px and 4px and every
- * edge falls on a device pixel. A 32x32 grid would put each pixel on 3.5px at
- * the size that matters most, and every edge would be a soft grey line.
+ * **Drawn as fuse beads** (the v3 redraw). Every cell is one `<circle>`: its
+ * fill is the bead's hole and a stroke around it is the bead, so a bead and
+ * its hole cost one element. Under the beads sits a die-cut paper edge — one
+ * stroked `<rect>` per row run, in `#f6f0e2` — and under that the same shape
+ * in ink at a low opacity, offset down and right, as the drop shadow every
+ * other pack has. Round strokes and circles only: no arc commands, which
+ * `expo-image` on iOS draws wrongly, and no filters or gradients, which
+ * `androidsvg` drops.
  *
- * `shape-rendering="crispEdges"` would be the obvious belt-and-braces and is
- * deliberately not here: the grid already lands square, and Android decodes
- * these through `androidsvg`, whose support for it is not something
- * `docs/data-sources.md` lets us assume.
+ * **Two units per cell, in a 38-unit viewBox** (`-3 -3 38 38`): the grid
+ * still spans 0–32, and the three units round it are room for the paper edge
+ * and the shadow.
  *
- * Output is committed, like the other two packs. Nothing runs this at build
- * time.
+ * Output is committed, like the other packs. Nothing runs this at build time.
  *
  * Usage:
  *   node tools/pixel-stickers/build-stickers.mjs
@@ -40,57 +40,82 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT_DIR = join(HERE, '..', '..', 'apps', 'mobile', 'assets', 'stickers', 'pixel')
 
 /**
- * The ink, and the app's own colours.
+ * Bead colours, one per letter of the grids.
  *
- * Taken from `apps/mobile/src/lib/theme/tokens.ts` and from what the other two
- * packs already use — `#17191c` is the ink every sticker we drew is outlined
- * in. A sticker sits on the chat background with no bubble behind it, so each
- * one is given a coloured body rather than relying on the outline: in dark
- * mode the ink is very nearly the background, and a shape drawn only in
- * outline would disappear.
+ * Bead primaries rather than the app's tokens, because they are meant to read
+ * as plastic. A sticker sits on the chat background with no bubble behind it;
+ * the paper edge is what keeps the ink beads visible in dark mode.
  */
-const INK = '#17191c'
 const PALETTE = {
-  k: INK,
+  k: '#1d1b22',
   w: '#ffffff',
-  s: '#9aa1a7',
-  y: '#ffc409',
-  o: '#e0ac08',
-  f: '#f79009',
-  b: '#3b6cf6',
-  l: '#7c9cf9',
-  g: '#009f70',
-  m: '#34c796',
-  r: '#e5484d',
-  p: '#7a5af8',
+  s: '#a9aeb5',
+  y: '#ffc93c',
+  o: '#e9a21b',
+  f: '#ff7b22',
+  b: '#2b67e0',
+  l: '#86adf7',
+  g: '#169c5b',
+  m: '#58d197',
+  r: '#e63c3c',
+  p: '#8b5bd9',
 }
+
+/** A colour moved `t` of the way towards black. */
+function darker(hex, t) {
+  const channel = (i) => Math.round(parseInt(hex.slice(i, i + 2), 16) * (1 - t))
+  return '#' + [1, 3, 5].map((i) => channel(i).toString(16).padStart(2, '0')).join('')
+}
+
+/**
+ * Each bead's hole: a third darker than the bead. Ink has nothing darker, so
+ * an ink bead's hole is a lifted grey, and white's is a warm grey.
+ */
+const HOLE = Object.fromEntries(
+  Object.entries(PALETTE).map(([char, hex]) => [
+    char,
+    char === 'k' ? '#4a4752' : char === 'w' ? '#d8d3c8' : darker(hex, 0.32),
+  ]),
+)
+
+const EDGE = '#f6f0e2'
+const SHADOW = '#0c0d10'
+/** The same shadow every other pack bakes in: one opacity on the whole group. */
+const SHADOW_OPACITY = '0.24'
 
 /**
  * The pack: twelve symbols in the language of an 8-bit game.
  *
- * None of them repeats a meaning the other two packs already carry, and none
- * of them says anything in words — the rule in `docs/data-sources.md`, which
- * is why a level-up is an arrow and not the two words.
+ * None of them repeats a meaning the other packs already carry, and none of
+ * them says anything in words: at sixteen cells a word does not fit, which is
+ * why a level-up is an arrow and not the two words.
  */
 const STICKERS = {
-  /** A coin: "that was good", a small reward. */
+  /**
+   * An extra life: "that was good", a small reward.
+   *
+   * The id is still `coin`, because messages already sent store
+   * `{packId, stickerId}` and must keep finding a picture. It was a gold coin
+   * until the v3 redraw; a heart with a plus says "reward" without drawing
+   * money in an app whose tokens are points.
+   */
   coin: [
-    '.....kkkkkk.....',
-    '...kkyyyyyykk...',
-    '..kyyyyyyyyyyk..',
-    '.kyyyyyyyyyyyyk.',
-    '.kyyyyyyyyyyyyk.',
-    'kyyyyyooooyyyyyk',
-    'kyyyyoyyyyoyyyyk',
-    'kyyyyoyyyyoyyyyk',
-    'kyyyyoyyyyoyyyyk',
-    'kyyyyoyyyyoyyyyk',
-    'kyyyyyooooyyyyyk',
-    '.kyyyyyyyyyyyyk.',
-    '.kooooooooooook.',
-    '..kooooooooook..',
-    '...kkooooookk...',
-    '.....kkkkkk.....',
+    '................',
+    '.............g..',
+    '............ggg.',
+    '.............g..',
+    '.kkk.....kkk....',
+    'krrrk...krrrk...',
+    'kwwrrrkrrrrrk...',
+    'kwrrrrrrrrrrk...',
+    'krrrrrrrrrrrk...',
+    'krrrrrrrrrrrk...',
+    '.krrrrrrrrrk....',
+    '..krrrrrrrk.....',
+    '...krrrrrk......',
+    '....krrrk.......',
+    '.....krk........',
+    '......k.........',
   ],
   /** A shield: "no harm done", said about somebody else's mistake. */
   shield: [
@@ -286,9 +311,9 @@ const STICKERS = {
    * A thumb up.
    *
    * White with an ink outline, for the reason `docs/data-sources.md` gives:
-   * Fluent's thumb ships in six skin tones and no neutral one, and picking a
-   * default for a global language exchange is a decision with no right
-   * answer. Drawn this way it reads as a glyph rather than as anybody's hand.
+   * any one skin tone is a default picked for a global language exchange, a
+   * decision with no right answer. Drawn this way it reads as a glyph rather
+   * than as anybody's hand.
    */
   thumb: [
     '................',
@@ -326,32 +351,57 @@ function check(id, rows) {
 }
 
 /**
- * One `<rect>` per run of same-coloured pixels along a row.
- *
- * A rect per pixel would be 256 of them and about 14KB; the other packs are
- * 4-5KB each and a sticker is not worth three times a hand-drawn one. Runs
- * get it back: most rows are a handful of spans.
+ * The die-cut silhouette: one `<rect>` per run of filled cells along a row,
+ * stroked with a round join so the runs melt into one paper shape.
  */
-function toSvg(rows) {
+function silhouette(rows) {
   const rects = []
   rows.forEach((row, y) => {
     let x = 0
     while (x < GRID) {
-      const char = row[x]
-      let end = x
-      while (end + 1 < GRID && row[end + 1] === char) end++
-      const run = end - x + 1
-      if (char !== '.') {
-        rects.push(
-          `<rect x="${x * UNIT}" y="${y * UNIT}" width="${run * UNIT}" height="${UNIT}" fill="${PALETTE[char]}"/>`,
-        )
+      if (row[x] === '.') {
+        x++
+        continue
       }
+      let end = x
+      while (end + 1 < GRID && row[end + 1] !== '.') end++
+      rects.push(
+        `<rect x="${x * UNIT}" y="${y * UNIT}" width="${(end - x + 1) * UNIT}" height="${UNIT}"/>`,
+      )
       x = end + 1
     }
   })
+  return rects.join('')
+}
+
+/**
+ * One `<circle>` per cell, grouped by colour: the group's fill is the hole and
+ * its stroke is the bead (outer radius 0.96, hole 0.38 of a two-unit cell).
+ */
+function beads(rows) {
+  const byColour = {}
+  rows.forEach((row, y) =>
+    [...row].forEach((char, x) => {
+      if (char !== '.') (byColour[char] ||= []).push([x * UNIT + 1, y * UNIT + 1])
+    }),
+  )
+  return Object.entries(byColour)
+    .map(
+      ([char, cells]) =>
+        `  <g fill="${HOLE[char]}" stroke="${PALETTE[char]}" stroke-width=".58">` +
+        cells.map(([cx, cy]) => `<circle cx="${cx}" cy="${cy}" r=".67"/>`).join('') +
+        `</g>`,
+    )
+    .join('\n')
+}
+
+function toSvg(rows) {
+  const shape = silhouette(rows)
   return (
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">\n` +
-    rects.map((rect) => `  ${rect}`).join('\n') +
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 38 38">\n` +
+    `  <g transform="translate(.5 1)" fill="${SHADOW}" stroke="${SHADOW}" stroke-width="3.4" stroke-linejoin="round" opacity="${SHADOW_OPACITY}">${shape}</g>\n` +
+    `  <g fill="${EDGE}" stroke="${EDGE}" stroke-width="3.4" stroke-linejoin="round">${shape}</g>\n` +
+    beads(rows) +
     `\n</svg>\n`
   )
 }
