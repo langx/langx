@@ -53,7 +53,7 @@ design boards, and the SVGs are the source.
 | ------- | ------------------------------------------------- |
 | Licence | ours; lettering outlined from Nunito / Noto (OFL) |
 
-Some packs carry words — "¡Hola!" on a speech bubble, "Merci" on a card. The
+Some packs carry words — "¡Hola!" on a speech bubble, "안녕" on a stamp. The
 words are glyph outlines converted to paths, never SVG `<text>`, so the files
 hold no font and no device needs one installed. The SIL Open Font License,
 which covers Nunito (see `apps/api/assets/fonts/`) and Noto, allows glyph
