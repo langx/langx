@@ -22,6 +22,7 @@ import { Button } from '../ui/Button'
 import { CountUp } from '../ui/CountUp'
 import { ICON_BUTTON_TARGET, IconButton } from '../ui/IconButton'
 import { PressableScale } from '../ui/PressableScale'
+import { FlameGlyph } from '../ui/StreakFlame'
 import { inkTrack, ProgressBar } from '../ui/ProgressBar'
 
 type Glyph = keyof typeof Feather.glyphMap
@@ -337,7 +338,8 @@ export const HistoryEntryRow = memo(function HistoryEntryRow({
   first,
   last,
 }: {
-  icon: Glyph
+  /** A Feather glyph, or `flame`: the streak's own drawing, which Feather has no glyph for. */
+  icon: Glyph | 'flame'
   /** A partner hue for the square; the neutral grey when left out. */
   hue?: string | undefined
   label: string
@@ -360,7 +362,11 @@ export const HistoryEntryRow = memo(function HistoryEntryRow({
       accessibilityLabel={`${label}, ${amount}`}
     >
       <View style={[styles.entrySquare, { backgroundColor: hue ?? v3.colors.line }]}>
-        <Feather name={icon} size={v3.icon.md} color={hue ? v3.colors.ink : v3.colors.fg} />
+        {icon === 'flame' ? (
+          <FlameGlyph size={v3.icon.md} color={hue ? v3.colors.ink : v3.colors.fg} />
+        ) : (
+          <Feather name={icon} size={v3.icon.md} color={hue ? v3.colors.ink : v3.colors.fg} />
+        )}
       </View>
       <Text style={styles.entryLabel}>{label}</Text>
       <Text style={[styles.entryAmount, spend && styles.entrySpend]}>{amount}</Text>
