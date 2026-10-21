@@ -314,4 +314,25 @@ export default tseslint.config(
       },
     },
   },
+  {
+    /*
+     * The store screenshots: Node scripts, plus a seed run by tsx that is in
+     * no package's tsconfig — it imports the API's modules by path — so it is
+     * linted without type information, like the scripts beside it.
+     */
+    files: ['tools/store-shots/*.mjs', 'tools/store-shots/*.mts'],
+    extends: [tseslint.configs.disableTypeChecked],
+    languageOptions: {
+      sourceType: 'module',
+      globals: {
+        Buffer: 'readonly',
+        console: 'readonly',
+        process: 'readonly',
+        fetch: 'readonly',
+        setTimeout: 'readonly',
+        URL: 'readonly',
+        WebSocket: 'readonly',
+      },
+    },
+  },
 )
