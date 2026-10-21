@@ -268,6 +268,11 @@ export const FLAG_KEYS = {
    * into the default, so a lost or stale value costs one extra tap.
    */
   snapMode: 'snapMode',
+  /**
+   * JSON `{ userId, ids }`: the earned badges this device has already shown,
+   * so each is New and celebrated once. Per account — see `badgeSeen.ts`.
+   */
+  badgesSeen: 'badgesSeen',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]
