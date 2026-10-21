@@ -91,7 +91,12 @@ export function ThreadTestimonialCard({
           <Feather name="check-circle" size={v3.icon.xs} color={v3.colors.correction} />
           <Text style={redesigned.doneText}>{t('testimonials.cardDone')}</Text>
           <Text style={redesigned.doneText}>·</Text>
-          <Pressable accessibilityRole="button" hitSlop={12} onPress={onEdit}>
+          <Pressable
+            accessibilityRole="button"
+            hitSlop={{ left: 12, right: 12 }}
+            onPress={onEdit}
+            style={redesigned.linkTarget}
+          >
             <Text style={redesigned.link}>{t('common.edit')}</Text>
           </Pressable>
         </View>
@@ -248,5 +253,7 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
     minHeight: 44,
   },
   doneText: { ...v3.type.caption, color: v3.colors.muted },
+  // A 44pt row of its own: a caption-sized word with a 12pt slop is 40.
+  linkTarget: { justifyContent: 'center', minHeight: 44 },
   link: { ...v3.type.label, color: v3.colors.echoText },
 }))

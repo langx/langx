@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { CARD_SHAPES, type CardShape } from '@langx/shared'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useT, type MessageKey } from '../i18n'
+import { useLocale, useT, type MessageKey } from '../i18n'
 import { makeStyles, useTheme } from '../lib/theme'
 import { Button } from './ui/Button'
 import { IconButton } from './ui/IconButton'
@@ -45,6 +45,7 @@ export function ShareCardChoicesV3({
   const styles = useStyles()
   const { v3 } = useTheme()
   const insets = useSafeAreaInsets()
+  const { isRtl } = useLocale()
 
   return (
     <Pressable style={styles.backdrop} accessibilityLabel={t('common.cancel')} onPress={onClose}>
@@ -82,7 +83,11 @@ export function ShareCardChoicesV3({
               {busy === shape ? (
                 <ActivityIndicator color={v3.colors.fg} />
               ) : (
-                <Feather name="chevron-right" size={v3.icon.md} color={v3.colors.muted} />
+                <Feather
+                  name={isRtl ? 'chevron-left' : 'chevron-right'}
+                  size={v3.icon.md}
+                  color={v3.colors.muted}
+                />
               )}
             </Pressable>
           ))}

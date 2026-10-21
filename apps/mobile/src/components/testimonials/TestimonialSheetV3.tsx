@@ -1,5 +1,6 @@
 import { TESTIMONIAL_MAX_LENGTH, TESTIMONIAL_MIN_LENGTH } from '@langx/shared'
-import { Pressable, ScrollView, Text, View } from 'react-native'
+import { useEffect } from 'react'
+import { AccessibilityInfo, Pressable, ScrollView, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useT } from '../../i18n'
 import { makeStyles, useTheme } from '../../lib/theme'
@@ -48,6 +49,11 @@ export function TestimonialFormV3({
   const { v3 } = useTheme()
   const t = useT()
   const insets = useSafeAreaInsets()
+  // The current look reads a refusal out through a live region on its own
+  // error line; `FieldV3`'s error line has none, so it is said here.
+  useEffect(() => {
+    if (error) AccessibilityInfo.announceForAccessibility(error)
+  }, [error])
 
   return (
     <Pressable style={styles.backdrop} accessibilityLabel={t('common.cancel')} onPress={onClose}>
