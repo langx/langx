@@ -3212,6 +3212,9 @@ export const ru: Localized<EnMessages> = {
     columnNow: 'Сейчас',
     columnEver: 'Рекорд',
     columnDays: 'Дней подряд',
+    placeWeek: 'Твоё место на этой неделе',
+    placeMonth: 'Твоё место в этом месяце',
+    placeYear: 'Твоё место в этом году',
     rowTokens: {
       one: '{rank}. {name}, {amount} токен',
       few: '{rank}. {name}, {amount} токена',

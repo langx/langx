@@ -2791,6 +2791,9 @@ export const fr: Localized<EnMessages> = {
     columnNow: 'En ce moment',
     columnEver: 'Record',
     columnDays: 'Jours d’affilée',
+    placeWeek: 'Ta place cette semaine',
+    placeMonth: 'Ta place ce mois-ci',
+    placeYear: 'Ta place cette année',
     rowTokens: { one: '{rank}. {name}, {amount} jeton', other: '{rank}. {name}, {amount} jetons' },
     rowDays: {
       one: '{rank}. {name}, {amount} jour d’affilée',

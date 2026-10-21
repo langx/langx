@@ -2757,6 +2757,9 @@ export const es: Localized<EnMessages> = {
     columnNow: 'Ahora mismo',
     columnEver: 'La más larga',
     columnDays: 'Días seguidos',
+    placeWeek: 'Tu puesto esta semana',
+    placeMonth: 'Tu puesto este mes',
+    placeYear: 'Tu puesto este año',
     rowTokens: { one: '{rank}. {name}, {amount} ficha', other: '{rank}. {name}, {amount} fichas' },
     rowDays: {
       one: '{rank}. {name}, {amount} día seguido',

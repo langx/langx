@@ -21,22 +21,36 @@ const SCRIM = 'rgba(12, 13, 16, 0.62)'
  * in the kit's discs, plus this, laid over the photo. It takes no touches:
  * a tap on it is a tap on the photo, which closes it.
  */
-export function ViewOnceHintV3({ bottomInset }: { bottomInset: number }) {
+export function ViewOnceHintV3({
+  bottomInset,
+  replay,
+}: {
+  bottomInset: number
+  /** Sent as "allow replay" rather than "view once" — the message's own `viewOnce.replay`. */
+  replay: boolean
+}) {
   const styles = useStyles()
   const t = useT()
+  // The sender's choice, in the words the bubble uses for it.
+  const title = t(replay ? 'viewOnce.sentReplay' : 'viewOnce.modeOnce')
   return (
     <View style={[styles.foot, { bottom: bottomInset + 36 }]} pointerEvents="none">
-      {/* Hidden from a screen reader: the photo's own label already says "close". */}
+      {/*
+        One stop for a screen reader, so the mode is heard as well as seen;
+        the lines inside it are not read again on their own.
+      */}
       <View
         style={styles.pill}
-        accessibilityElementsHidden
-        importantForAccessibility="no-hide-descendants"
+        accessible
+        accessibilityRole="text"
+        accessibilityLabel={title}
+        accessibilityHint={t('viewOnce.tapToClose')}
       >
         <View style={styles.mark}>
-          <Feather name="eye" size={16} color={STAGE} />
+          <Feather name={replay ? 'rotate-ccw' : 'eye'} size={16} color={STAGE} />
         </View>
         <View>
-          <Text style={styles.title}>{t('viewOnce.modeOnce')}</Text>
+          <Text style={styles.title}>{title}</Text>
           <Text style={styles.line}>{t('viewOnce.tapToClose')}</Text>
         </View>
       </View>

@@ -211,7 +211,8 @@ describe('handleEvents', () => {
 
     // The ask after the last one gives up and moves on.
     await handleEvents([tap(COMMENT_TO_DM_PAYLOADS.followed, next())], d)
-    await handleEvents([tap(COMMENT_TO_DM_PAYLOADS.android, next())], d)
+    // The answer to the platform question that gave-up ask led to.
+    await handleEvents([tap(COMMENT_TO_DM_PAYLOADS.android, await afterTheQuestion())], d)
 
     expect(calls.at(-1)).toContain(DELIVERY)
   })
@@ -222,7 +223,7 @@ describe('handleEvents', () => {
     const next = clock()
 
     await handleEvents([tap(COMMENT_TO_DM_PAYLOADS.followed, next())], d)
-    await handleEvents([tap(COMMENT_TO_DM_PAYLOADS.ios, next())], d)
+    await handleEvents([tap(COMMENT_TO_DM_PAYLOADS.ios, await afterTheQuestion())], d)
     await handleEvents([tap('thanks!', next())], d)
 
     expect(calls.filter((c) => c.includes(DELIVERY))).toHaveLength(1)

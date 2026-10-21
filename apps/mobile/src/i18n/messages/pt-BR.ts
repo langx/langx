@@ -2754,6 +2754,9 @@ export const ptBR: Localized<EnMessages> = {
     columnNow: 'Agora',
     columnEver: 'A mais longa',
     columnDays: 'Dias seguidos',
+    placeWeek: 'Sua posição nesta semana',
+    placeMonth: 'Sua posição neste mês',
+    placeYear: 'Sua posição neste ano',
     rowTokens: { one: '{rank}. {name}, {amount} ficha', other: '{rank}. {name}, {amount} fichas' },
     rowDays: {
       one: '{rank}. {name}, {amount} dia seguido',
