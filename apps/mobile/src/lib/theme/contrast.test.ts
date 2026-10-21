@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { disabledButtonLook } from './buttonDisabledLook'
+import { BUTTON_GROUNDS, disabledButtonLook } from './buttonDisabledLook'
 import {
   PARTNER_HUES,
   palettes,
@@ -41,7 +41,6 @@ const PAIRS: Pair[] = [
   { text: 'fg', on: 'line' },
   { text: 'fg', on: 'echoTint' },
   { text: 'muted', on: 'bg' },
-  // Also a filled button that cannot be pressed yet (`disabledButtonLook`).
   { text: 'muted', on: 'surface' },
   { text: 'muted', on: 'tabOn' },
   { text: 'echoText', on: 'echoTint' },
@@ -152,15 +151,26 @@ describe('a filled button that cannot be pressed yet', () => {
     const colors = v3[scheme].colors
     const look = disabledButtonLook(colors)
 
-    it(`${scheme}: keeps its label readable`, () => {
-      expect(contrast(look.label, look.face)).toBeGreaterThanOrEqual(4.5)
-    })
+    // See-through, so it is measured on each ground it is drawn on: the page,
+    // and the grey block of a settings group, a sheet's card or an admin panel.
+    for (const ground of BUTTON_GROUNDS) {
+      it(`${scheme}: keeps its label readable on ${ground}`, () => {
+        expect(look.face).toBe('transparent')
+        expect(contrast(look.label, colors[ground])).toBeGreaterThanOrEqual(4.5)
+      })
+
+      // 3:1, WCAG's floor for a control's edge: a grey border on a grey
+      // block, the first version of this look, all but vanished.
+      it(`${scheme}: keeps its edge visible on ${ground}`, () => {
+        expect(contrast(look.border, colors[ground])).toBeGreaterThanOrEqual(3)
+      })
+    }
 
     // Half the yellow over the dark ground was olive: a colour of its own,
     // read as another button rather than this one asleep.
-    it(`${scheme}: is not any variant's own fill`, () => {
+    it(`${scheme}: is not any variant's own colour`, () => {
       for (const fill of [colors.yellow, colors.blue, colors.pill, colors.ink]) {
-        expect(look.face).not.toBe(fill)
+        expect(look.border).not.toBe(fill)
       }
     })
   }

@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { readdirSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { DEFAULT_AVATAR_POOLS } from '@langx/shared'
@@ -244,6 +244,14 @@ describe('renderDefaultAvatar', () => {
    * Faces carry no text (the manifest test above keeps them flat), so the
    * renderer skips the scan, and the grid is milliseconds.
    */
+  // Structural, so it holds on any machine: the timing below only bites
+  // where the system has many fonts to scan.
+  it('tells resvg not to scan system fonts', () => {
+    const source = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'raster.ts'), 'utf8')
+    const call = /renderAsync\(svg, \{[\s\S]*?\n {6}\}\)/.exec(source)?.[0] ?? ''
+    expect(call, 'the renderAsync call in raster.ts').toMatch(/font: \{ loadSystemFonts: false \}/)
+  })
+
   it('fills a cold picker grid quickly, because a face needs no fonts', async () => {
     for (const [name, svg] of lib.parts) expect(svg, name).not.toMatch(/<text\b|font-family/)
     clearAvatarCache()

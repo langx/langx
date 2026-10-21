@@ -86,8 +86,13 @@ export default function SuspendedScreen() {
    * that lands on it was shown the appeal form for a suspension it does not
    * have. Home is where "Check again" sends them once it ends; this is the
    * same way out, taken without being asked.
+   *
+   * Only on an answer fetched since this screen opened. A cached "not
+   * suspended" from before the 403 that sent them here is stale by
+   * definition, and redirecting on it would bounce a suspended account to
+   * Home and straight back.
    */
-  if (data && !data.suspended) return <Redirect href="/" />
+  if (status.isFetchedAfterMount && data && !data.suspended) return <Redirect href="/" />
 
   if (v3) {
     return (
