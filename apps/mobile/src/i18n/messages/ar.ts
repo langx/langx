@@ -3592,7 +3592,8 @@ export const ar: Localized<EnMessages> = {
     of: '{current} من {total}',
     toGo: 'بقي {amount}.',
     streakReward: 'محطة السلسلة عند {days} يومًا تضيف +{tokens} رمز.',
-    noTokens: 'الشارات لا تمنح رموزًا.',
+    noTokens: 'الشارة نفسها لا تمنح رموزًا.',
+    milestonePays: 'الشارة نفسها لا تمنح شيئًا؛ محطة السلسلة عند {days} يومًا تضيف +{tokens} رمز.',
     earnedOn: 'حُصّلت في {date}',
     earned: 'محصّلة',
     locked: 'مقفلة',
@@ -3926,6 +3927,12 @@ export const ar: Localized<EnMessages> = {
       openers_50: 'ضوء الشرفة',
       openers_200: 'بيت مفتوح',
     },
+    profilePinned: 'الشارات المثبّتة',
+    pin: 'ثبّتها في الملف الشخصي',
+    unpin: 'إلغاء التثبيت',
+    change: 'تغيير',
+    pinnedRow: 'شاراتك في ملفك الشخصي',
+    pinFull: 'تثبيتها يحلّ محلّ {name}.',
   },
 
   shared: {

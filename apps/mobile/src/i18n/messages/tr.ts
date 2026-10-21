@@ -2799,7 +2799,9 @@ export const tr: Localized<EnMessages> = {
     of: '{current}/{total}',
     toGo: '{amount} kaldı.',
     streakReward: '{days} günlük seri dönüm noktası +{tokens} token ekler.',
-    noTokens: 'Rozetler token kazandırmaz.',
+    noTokens: 'Rozetin kendisi token kazandırmaz.',
+    milestonePays:
+      'Rozetin kendisi bir şey kazandırmaz; {days} günlük seri dönüm noktası +{tokens} token ekler.',
     earnedOn: '{date} tarihinde kazanıldı',
     earned: 'Kazanıldı',
     locked: 'Kilitli',
@@ -3043,6 +3045,12 @@ export const tr: Localized<EnMessages> = {
       openers_50: 'Sundurma ışığı',
       openers_200: 'Açık ev',
     },
+    profilePinned: 'İğnelenmiş rozetler',
+    pin: 'Profile iğnele',
+    unpin: 'Kaldır',
+    change: 'Değiştir',
+    pinnedRow: 'Profilindeki rozetlerin',
+    pinFull: 'Bunu iğnelemek {name} rozetinin yerini alır.',
   },
 
   shared: {

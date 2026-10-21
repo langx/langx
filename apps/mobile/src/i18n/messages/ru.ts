@@ -3324,7 +3324,8 @@ export const ru: Localized<EnMessages> = {
     of: '{current} из {total}',
     toGo: 'Осталось: {amount}.',
     streakReward: 'Рубеж серии в {days} дней даёт +{tokens} жетонов.',
-    noTokens: 'Значки не дают жетонов.',
+    noTokens: 'Сам значок не даёт жетонов.',
+    milestonePays: 'Сам значок ничего не даёт; рубеж серии в {days} дней даёт +{tokens} жетонов.',
     earnedOn: 'Получен {date}',
     earned: 'Получен',
     locked: 'Закрыт',
@@ -3615,6 +3616,12 @@ export const ru: Localized<EnMessages> = {
       openers_50: 'Свет на крыльце',
       openers_200: 'Открытый дом',
     },
+    profilePinned: 'Закреплённые значки',
+    pin: 'Закрепить в профиле',
+    unpin: 'Открепить',
+    change: 'Изменить',
+    pinnedRow: 'Ваши значки в профиле',
+    pinFull: 'Он заменит значок «{name}».',
   },
 
   shared: {

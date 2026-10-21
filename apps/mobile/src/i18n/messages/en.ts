@@ -3129,7 +3129,9 @@ export const en = {
     of: '{current} of {total}',
     toGo: '{amount} to go.',
     streakReward: 'The {days}-day streak milestone adds +{tokens} tokens.',
-    noTokens: 'Badges pay no tokens.',
+    noTokens: 'The badge itself pays no tokens.',
+    milestonePays:
+      'The badge itself pays nothing; the {days}-day streak milestone adds +{tokens} tokens.',
     earnedOn: 'Earned {date}',
     earned: 'Earned',
     locked: 'Locked',
@@ -3372,6 +3374,12 @@ export const en = {
       openers_50: 'Porch Light',
       openers_200: 'Open House',
     },
+    profilePinned: 'Pinned badges',
+    pin: 'Pin to profile',
+    unpin: 'Unpin',
+    change: 'Change',
+    pinnedRow: 'Your badges on your profile',
+    pinFull: 'Pinning this replaces {name}.',
   },
 
   shared: {

@@ -3,6 +3,7 @@ import {
   TOKEN_RULES,
   isCohortBadge,
   isV3BadgeKind,
+  PINNED_BADGES_MAX,
   type BadgeCatalogue,
   streakMilestoneBonus,
   type BadgeKind,
@@ -251,7 +252,33 @@ export async function getBadgeSummary(
     earnedCount: badges.filter((badge) => badge.earned).length,
     next,
     progress: progressByKind,
+    pinned: profile.pinnedBadgeIds ?? [],
   }
+}
+
+/**
+ * Pins up to `PINNED_BADGES_MAX` badges to the profile, replacing the last
+ * choice. Every id must be a badge this account has earned — checked against
+ * the v3 catalogue, the only screen that pins — and a repeat is dropped.
+ * Pinning grants nothing and costs nothing.
+ */
+export async function pinBadges(
+  db: Db,
+  userId: string,
+  ids: readonly string[],
+): Promise<{ pinned: string[] }> {
+  const unique = [...new Set(ids)].slice(0, PINNED_BADGES_MAX)
+  if (unique.length > 0) {
+    const summary = await getBadgeSummary(db, userId, new Date(), 'v3')
+    const earned = new Set(summary.badges.filter((badge) => badge.earned).map((b) => b.id))
+    const stranger = unique.find((id) => !earned.has(id))
+    if (stranger)
+      throw new ApiError('VALIDATION_FAILED', 'Only a badge you have earned can be pinned')
+  }
+  await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .updateOne({ _id: userId }, { $set: { pinnedBadgeIds: unique } })
+  return { pinned: unique }
 }
 
 /**

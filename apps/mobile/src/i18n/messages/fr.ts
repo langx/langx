@@ -2869,7 +2869,9 @@ export const fr: Localized<EnMessages> = {
     of: '{current} sur {total}',
     toGo: 'Encore {amount}.',
     streakReward: 'Le palier de {days} jours de série rapporte +{tokens} jetons.',
-    noTokens: 'Les badges ne rapportent pas de jetons.',
+    noTokens: 'Le badge lui-même ne rapporte pas de jetons.',
+    milestonePays:
+      'Le badge lui-même ne rapporte rien ; le palier de {days} jours de série rapporte +{tokens} jetons.',
     earnedOn: 'Gagné le {date}',
     earned: 'Gagné',
     locked: 'Verrouillé',
@@ -3114,6 +3116,12 @@ export const fr: Localized<EnMessages> = {
       openers_50: 'Lampe du perron',
       openers_200: 'Maison ouverte',
     },
+    profilePinned: 'Badges épinglés',
+    pin: 'Épingler au profil',
+    unpin: 'Retirer',
+    change: 'Modifier',
+    pinnedRow: 'Tes badges sur ton profil',
+    pinFull: 'L’épingler remplace {name}.',
   },
 
   shared: {
