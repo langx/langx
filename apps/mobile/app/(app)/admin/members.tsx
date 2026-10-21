@@ -2,14 +2,11 @@ import { router } from 'expo-router'
 import { FlatList, View } from 'react-native'
 import { useAdminMembers, type AdminMemberDto } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
-import { EmptyState } from '../../../src/components/ui/EmptyState'
-import { ListRow } from '../../../src/components/ui/ListRow'
-import { Screen } from '../../../src/components/ui/Screen'
-import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
+import { AdminRowV3, AdminScreenV3, AdminSliceV3 } from '../../../src/components/admin/AdminKitV3'
+import { EmptyNoteV3 } from '../../../src/components/ui/EmptyStateV3'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { ADMIN } from '../../../src/lib/adminStrings'
-import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles } from '../../../src/lib/theme'
 
 /**
@@ -27,12 +24,11 @@ export default function AdminMembersScreen() {
   useScreenInteractive()
   const styles = useStyles()
   const members = useAdminMembers('pro')
+  const items = members.data?.items ?? []
 
   return (
     <AdminGate>
-      <Screen fluid>
-        <ScreenHeader title={ADMIN.members.title} onBack={() => goBackTo('/(app)/admin')} />
-
+      <AdminScreenV3 title={ADMIN.members.title} back="/(app)/admin" scroll={false}>
         {members.isPending ? (
           <View style={styles.loading}>
             <Skeleton height={64} />
@@ -40,23 +36,27 @@ export default function AdminMembersScreen() {
           </View>
         ) : (
           <FlatList
-            data={members.data?.items ?? []}
+            data={items}
             keyExtractor={(item) => item.userId}
-            ListEmptyComponent={<EmptyState icon="star" title={ADMIN.members.empty} body="" />}
+            style={styles.list}
+            contentContainerStyle={styles.listContent}
+            ListEmptyComponent={<EmptyNoteV3 icon="star" title={ADMIN.members.empty} body="" />}
             renderItem={({ item, index }) => (
-              <ListRow
-                title={`${item.displayName} @${item.handle}`}
-                subtitle={subtitle(item)}
-                value={item.store ?? undefined}
-                onPress={() =>
-                  router.push(`/(app)/admin/users?q=${encodeURIComponent(item.handle)}`)
-                }
-                last={index === (members.data?.items.length ?? 0) - 1}
-              />
+              <AdminSliceV3 index={index} count={items.length}>
+                <AdminRowV3
+                  title={`${item.displayName} @${item.handle}`}
+                  subtitle={subtitle(item)}
+                  value={item.store ?? undefined}
+                  mark={{ id: item.userId, label: item.displayName }}
+                  onPress={() =>
+                    router.push(`/(app)/admin/users?q=${encodeURIComponent(item.handle)}`)
+                  }
+                />
+              </AdminSliceV3>
             )}
           />
         )}
-      </Screen>
+      </AdminScreenV3>
     </AdminGate>
   )
 }
@@ -75,6 +75,8 @@ function subtitle(row: AdminMemberDto): string {
   return parts.join(' · ')
 }
 
-const useStyles = makeStyles(() => ({
-  loading: { gap: 12, marginTop: 12 },
+const useStyles = makeStyles(({ v3 }) => ({
+  loading: { gap: v3.space[12] },
+  list: { flex: 1 },
+  listContent: { paddingBottom: v3.space[32] },
 }))
