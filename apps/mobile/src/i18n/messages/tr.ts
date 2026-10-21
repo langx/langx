@@ -2025,7 +2025,6 @@ export const tr: Localized<EnMessages> = {
     title: 'Mutfağımız',
     intro: 'LangX burada pişiyor, pişirenler de burada.',
     dataCredit: 'Yer adları GeoNames’ten, CC BY 4.0 lisansıyla.',
-    stickerCredit: 'Bazı sticker’lar Microsoft Fluent Emoji’den, MIT lisansıyla.',
     footer: 'Açık kaynak; kullananlar yapıyor.',
     contributors: 'Katkıda bulunanlar',
     fundamentals: 'Katkıda bulunan herkes',
@@ -2580,9 +2579,10 @@ export const tr: Localized<EnMessages> = {
 
   stickerPack: {
     taglinePaper: 'Renkli kâğıttan kesilmiş selamlar ve hızlı cevaplar.',
-    taglineStarter: 'Her günün stickerları: merhaba, dinliyorum, anladım, aferin.',
-    taglinePractice: 'Pratiğin kendisi için: daha yavaş, bir daha, başardık.',
-    taglinePixel: 'Birlikte seviye atlamak için küçük pikseller.',
+    taglineStarter:
+      'Küçük bir konuşma balonu olan Pip, her günün sözlerini söylüyor: merhaba, dinliyorum, teşekkürler.',
+    taglinePractice: 'Pratiğin kendisi için keçe rozetler: daha yavaş, bir daha, başardık.',
+    taglinePixel: 'Birlikte seviye atlamak için boncuktan pikseller.',
     count: {
       one: '{count} sticker',
       other: '{count} sticker',
@@ -2647,7 +2647,7 @@ export const tr: Localized<EnMessages> = {
     practiceHourglass: 'Kum saati',
     practiceBullseye: 'Tam isabet',
     pixelLevelup: 'Seviye atladın',
-    pixelCoin: 'Altın',
+    pixelCoin: 'Ekstra can',
     pixelCheckpoint: 'Kontrol noktası',
     pixelFlame: 'Alev',
     pixelKey: 'Anahtar',
@@ -2883,6 +2883,7 @@ export const tr: Localized<EnMessages> = {
     ringing: 'Çalıyor…',
     connecting: 'Bağlanıyor…',
     reconnecting: 'Yeniden bağlanıyor…',
+    reconnectingHint: 'Biraz bekle. Arama kendiliğinden yeniden bağlanacak.',
     answer: 'Cevapla',
     answerNoCamera: 'Kamerasız cevapla',
     decline: 'Reddet',
@@ -2897,6 +2898,11 @@ export const tr: Localized<EnMessages> = {
     returnToCall: 'Aramaya dön',
     peerMuted: '{name} sessizde',
     peerCameraOff: 'Kamera kapalı',
+    howWasIt: 'Nasıldı?',
+    tile: {
+      camera: 'Kamera',
+      flip: 'Çevir',
+    },
     ended: 'Arama bitti',
     noAnswer: 'Cevap yok',
     busy: '{name} şu an arama alamıyor',

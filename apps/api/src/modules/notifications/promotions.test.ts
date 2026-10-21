@@ -1,4 +1,4 @@
-import { DEFAULT_APP_CONFIG } from '@langx/shared'
+import { DEFAULT_APP_CONFIG, quotaLimit, type QuotaKind } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
@@ -12,7 +12,7 @@ import { invalidateAppConfigCache, updateAppConfig } from '../appConfig/appConfi
 import { LoggingPushSender } from '../push/devices'
 import { claimCampaignRecipients } from './campaign'
 import { runNewsletterPass } from './newsletter'
-import { promotionsInOrder, runPromotionsPass } from './promotions'
+import { REFUSALS_A_PLAN_LIFTS, promotionsInOrder, runPromotionsPass } from './promotions'
 
 const SECRET = 'p'.repeat(40)
 const DAY = 24 * 60 * 60 * 1000
@@ -73,6 +73,8 @@ describe('the nudges that need permission', () => {
       device?: boolean
       entitlement?: Record<string, unknown>
       refusals?: Date[]
+      /** Which limit refused them; `initiations`, one a plan lifts, unless said. */
+      refusalKind?: string | null
       churnedFrom?: { tier: string; at: Date }
       /** Kills the invite nudge, which every long-standing account qualifies for. */
       invited?: boolean
@@ -98,6 +100,15 @@ describe('the nudges that need permission', () => {
       ...(opts.spent ? { tokenSpent: opts.spent } : {}),
       ...(opts.entitlement ? { entitlement: opts.entitlement } : {}),
       ...(opts.refusals ? { quotaRefusals: opts.refusals } : {}),
+      // `null` is a refusal from before the kind was kept: an instant, no kind.
+      ...(opts.refusals && opts.refusalKind !== null
+        ? {
+            quotaRefusalKinds: opts.refusals.map((at) => ({
+              at,
+              kind: opts.refusalKind ?? 'initiations',
+            })),
+          }
+        : {}),
       ...(opts.churnedFrom ? { churnedFrom: opts.churnedFrom } : {}),
       createdAt: new Date(NOW.getTime() - (opts.createdDaysAgo ?? 40) * DAY),
     } as never)
@@ -423,6 +434,41 @@ describe('the nudges that need permission', () => {
       refusals: recent.map((at) => new Date(at.getTime() - 14 * DAY)),
     })
     expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+  })
+
+  /**
+   * "A plan lifts them" has to be true of what refused them. Media, the
+   * translation fair-use ceiling and Echo captures are the same on both plans;
+   * the voices, transcripts and Copilot are only raised. None of those count,
+   * and neither does a refusal recorded before its kind was.
+   */
+  it('counts only the limits a plan lifts', async () => {
+    expect([...REFUSALS_A_PLAN_LIFTS].sort()).toEqual(['initiations', 'translations'])
+    for (const kind of REFUSALS_A_PLAN_LIFTS) {
+      expect(quotaLimit('free', kind as QuotaKind)).not.toBeNull()
+      expect(quotaLimit('pro', kind as QuotaKind)).toBeNull()
+    }
+
+    const recent = [
+      new Date(NOW.getTime() - 2 * DAY),
+      new Date(NOW.getTime() - DAY),
+      new Date(NOW.getTime() - 3600_000),
+    ]
+    for (const refusalKind of ['media', 'translationFairUse', 'echoVoices', 'copilot', null]) {
+      await newProfile({ avatar: true, invited: true, refusals: recent, refusalKind })
+    }
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+
+    // Two lifted and one not is still two.
+    const mixed = await newProfile({ avatar: true, invited: true, refusals: recent })
+    await handle.db.collection(COLLECTIONS.profiles).updateOne({ _id: mixed } as never, {
+      $set: { 'quotaRefusalKinds.0.kind': 'media' },
+    })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
+
+    await newProfile({ avatar: true, invited: true, refusals: recent, refusalKind: 'translations' })
+    expect(await runPromotionsPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+    expect(subjects()[0]).toContain('free limits')
   })
 
   it('never sells a plan to somebody who already has one', async () => {

@@ -2093,7 +2093,6 @@ export const de: Localized<EnMessages> = {
     title: 'Unsere Küche',
     intro: 'Wo LangX entsteht – und alle, die daran bauen.',
     dataCredit: 'Ortsnamen von GeoNames, lizenziert unter CC BY 4.0.',
-    stickerCredit: 'Einige Sticker stammen aus Microsoft Fluent Emoji, MIT-lizenziert.',
     footer: 'Offen entwickelt, von den Leuten, die es benutzen.',
     contributors: 'Mitwirkende',
     fundamentals: 'Alle Mitwirkenden',
@@ -2660,9 +2659,10 @@ export const de: Localized<EnMessages> = {
 
   stickerPack: {
     taglinePaper: 'Grüße und schnelle Antworten, aus Buntpapier geschnitten.',
-    taglineStarter: 'Die alltäglichen: Hallo, ich höre zu, verstanden, gut gemacht.',
-    taglinePractice: 'Fürs Üben selbst: langsamer, noch mal, geschafft.',
-    taglinePixel: 'Kleine Sprites, um gemeinsam aufzuleveln.',
+    taglineStarter:
+      'Pip, eine kleine Sprechblase, sagt das Alltägliche: Hallo, ich höre zu, danke.',
+    taglinePractice: 'Filzabzeichen fürs Üben selbst: langsamer, noch mal, geschafft.',
+    taglinePixel: 'Sprites aus Bügelperlen, um gemeinsam aufzuleveln.',
     count: {
       one: '{count} Sticker',
       other: '{count} Sticker',
@@ -2727,7 +2727,7 @@ export const de: Localized<EnMessages> = {
     practiceHourglass: 'Sanduhr',
     practiceBullseye: 'Volltreffer',
     pixelLevelup: 'Level up',
-    pixelCoin: 'Münze',
+    pixelCoin: 'Extraleben',
     pixelCheckpoint: 'Checkpoint',
     pixelFlame: 'Flamme',
     pixelKey: 'Schlüssel',
@@ -2967,6 +2967,7 @@ export const de: Localized<EnMessages> = {
     ringing: 'Es klingelt…',
     connecting: 'Verbindung wird aufgebaut…',
     reconnecting: 'Verbindung wird wiederhergestellt…',
+    reconnectingHint: 'Einen Moment. Der Anruf verbindet sich von selbst wieder.',
     answer: 'Annehmen',
     answerNoCamera: 'Ohne Kamera annehmen',
     decline: 'Ablehnen',
@@ -2981,6 +2982,11 @@ export const de: Localized<EnMessages> = {
     returnToCall: 'Zurück zum Anruf',
     peerMuted: '{name} ist stumm geschaltet',
     peerCameraOff: 'Kamera aus',
+    howWasIt: 'Wie war’s?',
+    tile: {
+      camera: 'Kamera',
+      flip: 'Wechseln',
+    },
     ended: 'Anruf beendet',
     noAnswer: 'Keine Antwort',
     busy: '{name} kann gerade keinen Anruf annehmen',
