@@ -3,6 +3,8 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { Animated, ScrollView, Text, View } from 'react-native'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useT } from '../../i18n'
+import { claimCelebration } from '../../lib/celebration'
+import { notification } from '../../lib/haptics'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
 import { EASE_POP } from '../../lib/theme/motionAnimated'
 import { NotificationPriming } from '../NotificationPriming'
@@ -57,6 +59,12 @@ export function DoneV3({
     animation.start()
     return () => animation.stop()
   }, [pop, reduceMotion])
+
+  // Arriving is the wizard's one celebration: a single success buzz with the
+  // check, and not again if the screen mounts a second time.
+  useEffect(() => {
+    if (claimCelebration('onboardingDone')) void notification('success')
+  }, [])
 
   return (
     <Screen fluid ground={v3.colors.bg}>

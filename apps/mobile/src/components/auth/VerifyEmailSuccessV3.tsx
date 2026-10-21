@@ -1,5 +1,8 @@
 import { router } from 'expo-router'
+import { useEffect } from 'react'
 import { useT } from '../../i18n'
+import { claimCelebration } from '../../lib/celebration'
+import { notification } from '../../lib/haptics'
 import { Button } from '../ui/Button'
 import { AuthNoticeV3 } from './AuthKitV3'
 
@@ -10,6 +13,10 @@ import { AuthNoticeV3 } from './AuthKitV3'
  */
 export function VerifyEmailSuccessV3({ failed }: { failed: boolean }) {
   const t = useT()
+  // The address is confirmed: one success buzz, once per run of the app.
+  useEffect(() => {
+    if (!failed && claimCelebration('emailVerified')) void notification('success')
+  }, [failed])
   return (
     <AuthNoticeV3
       hue={failed ? 'tangerine' : 'mint'}
