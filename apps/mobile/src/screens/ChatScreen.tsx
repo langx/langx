@@ -25,6 +25,7 @@ import {
   type MessageTranslation,
   type SendAward,
   TYPING_IDLE_MS,
+  TYPING_TTL_MS,
   ERROR_CODES,
   MAX_SCHEDULED_PER_CONVERSATION,
   THEIR_MORNING_HOUR,
@@ -180,6 +181,7 @@ import {
   uploadSent,
   type UploadProgress,
 } from '../lib/uploadProgress'
+import { nextTypingSignal, TYPING_IDLE } from '../lib/typingSignal'
 import { saveMediaToDevice } from '../lib/saveMedia'
 import { shareLink } from '../lib/share'
 import { addMeetingToCalendar } from '../lib/addToCalendar'
@@ -923,12 +925,26 @@ export function ChatScreen({
     }
   }, [conversationId])
 
+  /** What the other side has been told; see `nextTypingSignal`. */
+  const typingSignal = useRef(TYPING_IDLE)
   const notifyTyping = useCallback(
-    (isTyping: boolean) => {
+    (typing: boolean) => {
+      const next = nextTypingSignal(typingSignal.current, {
+        typing,
+        now: Date.now(),
+        ttlMs: TYPING_TTL_MS,
+      })
+      typingSignal.current = next.state
+      const isTyping = next.emit
+      if (isTyping === null) return
       void getSocket().then((socket) => socket.emit('typing', { conversationId, isTyping }))
     },
     [conversationId],
   )
+  // Another thread is another audience: it has been told nothing yet.
+  useEffect(() => {
+    typingSignal.current = TYPING_IDLE
+  }, [conversationId])
 
   function onChangeDraft(text: string): void {
     setDraft(text)
