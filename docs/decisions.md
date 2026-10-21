@@ -2489,18 +2489,23 @@ message, the ledger line and the thread's last line commit together. The
 replica set Better Auth already needs is what makes that possible.
 
 **The Terms changed first, 21 October 2026.** §7 on langx.io now names gifts
-as the one exception to "not transferable", and §6 says a gift moves no tokens
-(langx/website#288); the GitBook token page carries the same sentence
-(langx/docs#56). Two phrases moved from the draft to match the code: "within
-the limits shown in the App" became "within the limits the App sets", because
-the monthly receive cap and every `unavailable` reason are never shown; and
-"for another user" became "for someone you have a conversation with", because
-only a chat partner can receive one. The draft in `docs/drafts/` is deleted;
-the Terms are the text now. `stickerGift.honesty` already says what the new
-paragraph says. Still owed before the switch goes on: the "not transferable"
-line on token.langx.io (eight locales, still true of tokens as it stands), the
-per-partner correction-farming cap, and the App Review note — "Gifts are bought
-with earned in-app points that cannot be purchased."
+between users as the one exception to "not transferable", and §6 says a gift
+moves no tokens (langx/website#288, which also adds the sentence to langx.io's
+tokens page); the GitBook token page carries it too (langx/docs#57). Two
+phrases moved from the draft to match the code: "within the limits shown in
+the App" became "within the limits the App sets", because the monthly receive
+cap and every `unavailable` reason are never shown; and "for another user"
+became "for someone you have a conversation with", because only a chat partner
+can receive one. The draft in `docs/drafts/` is deleted; the Terms are the
+text now. `stickerGift.honesty` already says what the new paragraph says.
+
+Still owed before the switch goes on: the "not transferable" line on
+token.langx.io (eight locales, still true of tokens as it stands), the
+per-partner correction-farming cap, and the App Review note — "Gifts are
+bought with earned in-app points that cannot be purchased." That note holds
+only while tokens cannot be bought: nothing in Apple 3.1.1 or Google Play's
+payments policy stands against it today, and if tokens or items are ever sold
+for money, gifting falls under in-app purchase rules.
 
 ## Language levels are v1's four, not CEFR's six
 
