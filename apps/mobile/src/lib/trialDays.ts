@@ -73,3 +73,27 @@ export function nativeFreeTrialDays(product: NativeTrialProduct): number | null 
   if (intro === null || intro.price !== 0) return null
   return trialDays(intro.periodUnit, intro.periodNumberOfUnits)
 }
+
+/**
+ * The App Store products this person would *not* get a trial on, from
+ * StoreKit's eligibility answer (`checkTrialOrIntroductoryPriceEligibility`).
+ *
+ * Only an explicit "eligible" keeps the trial. A missing answer, `UNKNOWN`,
+ * `INELIGIBLE` and a call that throws all take it away. The asymmetry is the
+ * point: a trial the store then grants unannounced is a pleasant surprise,
+ * while a free week the paywall promised and the store did not give is a
+ * false price, which is what App Review 3.1.2 asks to be accurate.
+ */
+export async function iosIneligibleForTrial(
+  productIds: readonly string[],
+  check: (ids: string[]) => Promise<Record<string, { status: unknown } | undefined>>,
+  eligibleStatus: unknown,
+): Promise<ReadonlySet<string>> {
+  if (productIds.length === 0) return new Set()
+  try {
+    const eligibility = await check([...productIds])
+    return new Set(productIds.filter((id) => eligibility[id]?.status !== eligibleStatus))
+  } catch {
+    return new Set(productIds)
+  }
+}

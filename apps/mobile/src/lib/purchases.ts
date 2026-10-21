@@ -1,7 +1,7 @@
 import { packageDefinition, type BillingPeriod, type PaidPlanTier } from '@langx/shared'
 import { Platform } from 'react-native'
 import { fakeOffers, fakePurchase, isFakePurchasesEnabled } from './fakePurchases'
-import { nativeFreeTrialDays } from './trialDays'
+import { iosIneligibleForTrial, nativeFreeTrialDays } from './trialDays'
 /*
  * The web store, behind a two-file module Metro resolves per platform: this
  * import is the real RevenueCat Web Billing SDK in a browser build and an
@@ -137,22 +137,20 @@ export interface PurchaseOffer {
  * already the answer. On iOS, `UNKNOWN` *does* mean hide — the SDK's own
  * advice is to show non-intro pricing rather than risk the misleading one.
  *
- * A failed call hides nothing. Losing a trial somebody is entitled to is a
- * worse outcome than showing one the store then declines to give, and the
- * store's own sheet is the last word on the charge either way.
+ * A failed call, or no answer for a product, hides the trial too (see
+ * `iosIneligibleForTrial`). The purchase may still start one; the paywall just
+ * does not promise what it could not confirm.
  */
 async function ineligibleForTrial(
   sdk: PurchasesModule,
   productIds: readonly string[],
 ): Promise<ReadonlySet<string>> {
-  if (Platform.OS !== 'ios' || productIds.length === 0) return new Set()
-  try {
-    const eligibility = await sdk.default.checkTrialOrIntroductoryPriceEligibility([...productIds])
-    const eligible = sdk.INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE
-    return new Set(productIds.filter((id) => eligibility[id]?.status !== eligible))
-  } catch {
-    return new Set()
-  }
+  if (Platform.OS !== 'ios') return new Set()
+  return iosIneligibleForTrial(
+    productIds,
+    (ids) => sdk.default.checkTrialOrIntroductoryPriceEligibility(ids),
+    sdk.INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE,
+  )
 }
 
 export type PurchaseOutcome = 'purchased' | 'cancelled' | 'unavailable' | 'failed'

@@ -1,5 +1,10 @@
-import { describe, expect, it } from 'vitest'
-import { nativeFreeTrialDays, trialDays, type NativeTrialProduct } from './trialDays'
+import { describe, expect, it, vi } from 'vitest'
+import {
+  iosIneligibleForTrial,
+  nativeFreeTrialDays,
+  trialDays,
+  type NativeTrialProduct,
+} from './trialDays'
 
 describe('trialDays', () => {
   it('counts a month as 30 days and a year as 365', () => {
@@ -66,5 +71,34 @@ describe('nativeFreeTrialDays', () => {
 
   it('has no trial without an offer', () => {
     expect(nativeFreeTrialDays({ introPrice: null })).toBeNull()
+  })
+})
+
+describe('iosIneligibleForTrial', () => {
+  const ELIGIBLE = 'ELIGIBLE'
+  const ids = ['pro_monthly', 'pro_yearly']
+
+  it('keeps the trial only where StoreKit says eligible', async () => {
+    const check = () =>
+      Promise.resolve({ pro_monthly: { status: ELIGIBLE }, pro_yearly: { status: 'INELIGIBLE' } })
+    expect([...(await iosIneligibleForTrial(ids, check, ELIGIBLE))]).toEqual(['pro_yearly'])
+  })
+
+  it('hides the trial on a product with no answer, or UNKNOWN', async () => {
+    const check = () => Promise.resolve({ pro_monthly: { status: 'UNKNOWN' } })
+    expect([...(await iosIneligibleForTrial(ids, check, ELIGIBLE))]).toEqual(ids)
+  })
+
+  // A promised trial that does not happen is a false price; an unannounced
+  // one is a pleasant surprise. So a failed call promises nothing.
+  it('hides every trial when the eligibility call throws', async () => {
+    const check = () => Promise.reject(new Error('StoreKit unavailable'))
+    expect([...(await iosIneligibleForTrial(ids, check, ELIGIBLE))]).toEqual(ids)
+  })
+
+  it('asks nothing for no products', async () => {
+    const check = vi.fn(() => Promise.resolve({}))
+    expect((await iosIneligibleForTrial([], check, ELIGIBLE)).size).toBe(0)
+    expect(check).not.toHaveBeenCalled()
   })
 })
