@@ -6,6 +6,7 @@ import {
   defaultAvatarUrl,
   generatedAvatarUrl,
   hashFallback,
+  parseDefaultAvatarRev,
   type DefaultAvatar,
 } from '@langx/shared'
 
@@ -104,6 +105,22 @@ export function allFaces(current: DefaultAvatar): DefaultAvatar[] {
         : onGround(pool, i + 1, i + p),
     ),
   )
+}
+
+/**
+ * A face as a string that is equal whenever the face is: what a hook depends
+ * on instead of the object. `ownDefaultAvatar` builds a new object on every
+ * render when nothing is stored, so an effect keyed on the object would run
+ * on every render — and the picker's "start from the worn face" effect would
+ * keep throwing the person's selection away while the sheet is open.
+ */
+export function faceKey(face: DefaultAvatar): string {
+  return defaultAvatarRev(face)
+}
+
+/** The face a `faceKey` names; the key is always one this module wrote. */
+export function faceFromKey(key: string): DefaultAvatar {
+  return parseDefaultAvatarRev(key) ?? { pool: 'N', index: 1, ground: 0 }
 }
 
 /** Same face on the same ground. */
