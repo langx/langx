@@ -4,6 +4,8 @@ import { dedupeGrounds } from './avatarViewport'
 import {
   allFaces,
   avatarSource,
+  faceFromKey,
+  faceKey,
   ownDefaultAvatar,
   ownDefaultAvatarRev,
   pickerFaces,
@@ -90,6 +92,19 @@ describe('the picker', () => {
     expect(faces).toHaveLength(144)
     expect(faces[0]?.pool).toBe('N')
     expect(new Set(faces.map((face) => `${face.pool}${face.index}`)).size).toBe(144)
+  })
+
+  it('keys the worn face by value, so a rebuilt object does not reset the picker', () => {
+    const me = { _id: SEED, gender: 'male' }
+    // Nothing stored: each call builds a new object for the same face.
+    const first = ownDefaultAvatar(me)
+    const again = ownDefaultAvatar(me)
+    expect(again).not.toBe(first)
+    expect(faceKey(again)).toBe(faceKey(first))
+    expect(faceFromKey(faceKey(first))).toEqual(first)
+    // A picked face keys the same as its look; `picked` is not part of it.
+    expect(faceKey({ ...first, picked: true })).toBe(faceKey(first))
+    expect(faceKey({ ...first, ground: (first.ground + 1) % 6 })).not.toBe(faceKey(first))
   })
 
   it('tells one face on one ground from another', () => {

@@ -4208,8 +4208,10 @@ the face like any other.
 
 **Two switches.** The app draws v3 faces only under `flags.v3Home`, read from
 the launch latch. The server's own surfaces follow the shared constant
-`DEFAULT_AVATAR_STYLE`. With it at `'v3'`, the digest and match emails inline
-the face as a PNG, the recap card draws it, the ring push gains
+`DEFAULT_AVATAR_STYLE`, which arrives with the 3.0 launch and not before:
+until then, 2.9 builds keep their Notionists faces. With it at `'v3'`, the
+digest and match emails inline the face as a PNG, the recap card draws it,
+the ring push gains
 `callerDefaultAvatarUrl`, and the old `/public/avatar/:seed` sends a 302 to
 the v3 face, so builds from before v3 show it within their cache. Setting the
 constant back to `'notionists'` undoes all four. `@dicebear/*` and
