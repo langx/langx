@@ -11,14 +11,29 @@ import {
 } from '@langx/shared'
 import { router } from 'expo-router'
 import type { ReactNode } from 'react'
-import { Image, Platform, Pressable, Text, View } from 'react-native'
-import darkIcon from '../../../assets/icons/dark.png'
-import defaultIcon from '../../../assets/icons/default.png'
-import newYearIcon from '../../../assets/icons/new-year.png'
-import proIcon from '../../../assets/icons/pro.png'
-import splitIcon from '../../../assets/icons/split.png'
+import { Image, type ImageSourcePropType, Platform, Pressable, Text, View } from 'react-native'
+import contrastIcon from '../../../assets/icons/previews/contrast.png'
+import darkIcon from '../../../assets/icons/previews/dark.png'
+import defaultIcon from '../../../assets/icons/previews/default.png'
+import enamelPinIcon from '../../../assets/icons/previews/enamel-pin.png'
+import feltStitchIcon from '../../../assets/icons/previews/felt-stitch.png'
+import indigoDyeIcon from '../../../assets/icons/previews/indigo-dye.png'
+import iznikTileIcon from '../../../assets/icons/previews/iznik-tile.png'
+import lacquerGoldIcon from '../../../assets/icons/previews/lacquer-gold.png'
+import linocutIcon from '../../../assets/icons/previews/linocut.png'
+import marquetryIcon from '../../../assets/icons/previews/marquetry.png'
+import mosaicIcon from '../../../assets/icons/previews/mosaic.png'
+import newYearIcon from '../../../assets/icons/previews/new-year.png'
+import nightHoopIcon from '../../../assets/icons/previews/night-hoop.png'
+import origamiFoldIcon from '../../../assets/icons/previews/origami-fold.png'
+import paperCutIcon from '../../../assets/icons/previews/paper-cut.png'
+import proIcon from '../../../assets/icons/previews/pro.png'
+import splitIcon from '../../../assets/icons/previews/split.png'
+import stainedGlassIcon from '../../../assets/icons/previews/stained-glass.png'
+import wovenReedIcon from '../../../assets/icons/previews/woven-reed.png'
 import { useBlocks } from '../../api/queries'
 import type { SettingsModel } from '../../hooks/useSettingsModel'
+import type { AppIcon } from '../../lib/appIconList'
 import { type MessageKey, useDisplayNames, useLocale, useT } from '../../i18n'
 import { relativeTime } from '../../lib/format'
 import { openExternal } from '../../lib/openExternal'
@@ -70,12 +85,28 @@ export const PENDING_BENEFITS: ReadonlySet<ProBenefit> = new Set(['copilot'])
 
 /**
  * Imported statically, because Metro resolves an image at build time: a path
- * assembled at runtime resolves to nothing.
+ * assembled at runtime resolves to nothing. 240 px copies of the native
+ * icons, not the 1024 px masters: the picker draws seventeen at once, and
+ * seventeen decoded 1024 squares is 70 MB for tiles 60 points wide.
  */
-export const ICON_PREVIEWS = {
+export const ICON_PREVIEWS: Record<AppIcon, ImageSourcePropType> = {
   default: defaultIcon,
   dark: darkIcon,
   split: splitIcon,
+  contrast: contrastIcon,
+  paperCut: paperCutIcon,
+  feltStitch: feltStitchIcon,
+  wovenReed: wovenReedIcon,
+  linocut: linocutIcon,
+  iznikTile: iznikTileIcon,
+  lacquerGold: lacquerGoldIcon,
+  stainedGlass: stainedGlassIcon,
+  nightHoop: nightHoopIcon,
+  indigoDye: indigoDyeIcon,
+  marquetry: marquetryIcon,
+  mosaic: mosaicIcon,
+  origamiFold: origamiFoldIcon,
+  enamelPin: enamelPinIcon,
   pro: proIcon,
   newYear: newYearIcon,
 }

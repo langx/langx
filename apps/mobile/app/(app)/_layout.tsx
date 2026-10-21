@@ -16,6 +16,7 @@ import { useCompanionSnapshot } from '../../src/hooks/useCompanionSnapshot'
 import { useWatchLink } from '../../src/hooks/useWatchLink'
 import { useExchangeActivity } from '../../src/hooks/useExchangeActivity'
 import { usePendingRoute } from '../../src/hooks/usePendingRoute'
+import { useAppIconPlanGuard } from '../../src/hooks/useAppIconPlanGuard'
 import { authClient } from '../../src/lib/auth-client'
 import { shouldGateGuest } from '../../src/lib/guestGate'
 import { useCalls } from '../../src/hooks/useCalls'
@@ -72,6 +73,7 @@ export default function AppLayout() {
   useWatchLink({ enabled: !isGuest })
   useExchangeActivity({ enabled: !isGuest })
   usePendingRoute({ enabled: !isGuest })
+  useAppIconPlanGuard({ enabled: !isGuest })
 
   return (
     /*
