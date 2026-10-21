@@ -846,6 +846,7 @@ write to them directly and never change their shape.
 ```ts
 {
   _id: userId, handle (unique), displayName, avatarUrl,
+  defaultAvatar?: { pool, index, ground, picked? },  ← the v3 drawn face; no index; absent = hash of _id
   previousHandle?,                    ← unique, sparse; the name left at the last change, still resolvable
   handleChangedAt?,                   ← the cooldown clock for the next change; absent = never changed
   official?: true,                    ← @langx or @copilot; created at boot, never by a form
@@ -1082,8 +1083,10 @@ The photo and the bio are not a new idea of a good profile: `promotions.ts`
 already nudges an account with no `avatarUrl` on the grounds that a faceless
 one is scrolled past, and onboarding calls the avatar and the bio the two
 things that make a first impression. `avatarUrl` is only ever an uploaded file
-— `assertOwnBucket` refuses anything else and the drawn fallback is generated
-client-side from the id, never stored — so its presence _is_ the test. Nobody
+— `assertOwnBucket` refuses anything else, and the drawn fallback is rendered
+by the API from the id and lives in its own field (`defaultAvatar`, see
+`decisions.md` → _v3 default faces_), never in this one — so its presence _is_
+the test. Nobody
 is excluded for failing any of this: they paid, so they are in the strip
 either way; they just do not lead it, and the explainer on the screen says so.
 
