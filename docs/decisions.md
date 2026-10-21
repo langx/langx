@@ -8963,7 +8963,10 @@ you corrected (3, 10, 50) and first messages answered within a day (10, 50,
 
 - **Still derived, never stored.** Each is a count of what the database
   already records (`badgeCounts.ts`), so there is nothing to award, nothing to
-  award twice and no index to add. Every count is retroactive: it counts what
+  award twice. Each runs on every open of Me and of the shelf, so each reads
+  indexes rather than rows; the one index added for them is
+  `posts.author_language`, so the languages somebody posted in are a skip
+  through an index. Every count is retroactive: it counts what
   was done before the badge existed. Calls are read from the call rows in the
   threads, because `calls` keeps a call for only thirty days.
 - **None pays.** A badge never does; the streak milestones pay, as before.

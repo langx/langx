@@ -112,27 +112,44 @@ export async function countPeopleHelped(db: Db, userId: string): Promise<number>
  * Languages you practise besides your native ones: those of the Echo cards
  * you have reviewed at least once, and those of the posts you wrote.
  *
- * `owner_lang_recent` on `echoCards` and `author` on `posts`.
+ * Read as a handful of index lookups, never as the person's cards or posts:
+ * this runs on every open of Me and of the v3 shelf, and a heavy Echo user
+ * holds thousands of cards.
+ *
+ * - The languages each side holds are a `distinct` over an index that leads
+ *   with the person and then the language (`owner_lang_recent` on
+ *   `echoCards`, `author_language` on `posts`), which MongoDB answers by
+ *   skipping from one language to the next in the index, not by reading rows.
+ * - Whether a card language has been *reviewed* is one bounded existence
+ *   check per language (`limit: 1` on the same index), and only for the
+ *   languages that would change the answer: not native, not already counted
+ *   from a post.
  */
 export async function countLanguagesPractised(
   db: Db,
   userId: string,
   nativeCodes: readonly string[],
 ): Promise<number> {
-  const [cards, posts] = await Promise.all([
-    db
-      .collection<{ userId: string; lang: string }>(COLLECTIONS.echoCards)
-      .distinct('lang', { userId, 'srs.reps': { $gt: 0 } }),
+  const cards = db.collection<{ userId: string; lang: string }>(COLLECTIONS.echoCards)
+  const [cardLangs, postLangs] = await Promise.all([
+    cards.distinct('lang', { userId }),
     db
       .collection<{ authorId: string; language: string }>(COLLECTIONS.posts)
       .distinct('language', { authorId: userId }),
   ])
   const natives = new Set(nativeCodes.map((code) => code.toLowerCase()))
-  const practised = new Set<string>()
-  for (const code of [...cards, ...posts]) {
-    if (typeof code !== 'string' || code === '') continue
-    const lower = code.toLowerCase()
-    if (!natives.has(lower)) practised.add(lower)
-  }
+  const keep = (code: unknown): code is string =>
+    typeof code === 'string' && code !== '' && !natives.has(code.toLowerCase())
+
+  const practised = new Set(postLangs.filter(keep).map((code) => code.toLowerCase()))
+  const unsure = cardLangs.filter((code) => keep(code) && !practised.has(code.toLowerCase()))
+  const reviewed = await Promise.all(
+    unsure.map((lang) =>
+      cards.countDocuments({ userId, lang, 'srs.reps': { $gt: 0 } }, { limit: 1 }),
+    ),
+  )
+  unsure.forEach((lang, i) => {
+    if (reviewed[i]! > 0) practised.add(lang.toLowerCase())
+  })
   return practised.size
 }
