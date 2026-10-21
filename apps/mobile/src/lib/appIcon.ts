@@ -1,7 +1,9 @@
 import { Platform } from 'react-native'
+import { NATIVE_ICONS, type AppIcon } from './appIconList'
 
 /**
- * The home-screen icon, which is a Pro cosmetic and an OS call.
+ * The home-screen icon: an OS call, and for nine of the seventeen a Pro
+ * cosmetic (`appIconList.ts` says which).
  *
  * Two things make this unlike every other preference in the app. It cannot
  * travel in an over-the-air update — the alternates are declared at build time
@@ -14,8 +16,7 @@ import { Platform } from 'react-native'
  * docs/decisions.md): a native module resolved at module scope is evaluated on
  * web too, where it has nothing to bind to.
  */
-export const APP_ICONS = ['default', 'dark', 'split', 'pro', 'newYear'] as const
-export type AppIcon = (typeof APP_ICONS)[number]
+export { APP_ICONS, type AppIcon } from './appIconList'
 
 /**
  * The config plugin PascalCases every icon name it writes into the native
@@ -38,7 +39,7 @@ function toNativeName(icon: AppIcon): string {
 function fromNativeName(name: string | null): AppIcon {
   if (!name) return 'default'
   const lower = name.charAt(0).toLowerCase() + name.slice(1)
-  return (APP_ICONS as readonly string[]).includes(lower) ? (lower as AppIcon) : 'default'
+  return (NATIVE_ICONS as readonly string[]).includes(lower) ? (lower as AppIcon) : 'default'
 }
 
 export function isSupported(): boolean {

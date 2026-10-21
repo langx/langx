@@ -71,6 +71,30 @@ const PHOTOS_PERMISSION =
  */
 const GOOGLE_MAPS_ANDROID_API_KEY = process.env.GOOGLE_MAPS_ANDROID_API_KEY || undefined
 
+/**
+ * One alternate home-screen icon, exported from the v3 master art. iOS takes
+ * the full-bleed 1024 square; Android takes the material and the arcs as two
+ * adaptive layers (the arcs inside the 66dp safe zone) plus the shared
+ * monochrome arcs for themed icons. `backgroundColor` is the material's own
+ * ground, for the moment before the background layer is drawn.
+ *
+ * expo-alternate-app-icons 8 also accepts an iOS `{ light, dark, tinted }`
+ * per alternate. Only two of the masters have drawn dark and tinted versions,
+ * so the alternates ship light only and iOS darkens them itself.
+ */
+function layeredIcon(name: string, file: string, ground: string) {
+  return {
+    name,
+    ios: `./assets/icons/${file}.png`,
+    android: {
+      foregroundImage: `./assets/icons/android/${file}-foreground.png`,
+      backgroundImage: `./assets/icons/android/${file}-background.png`,
+      backgroundColor: ground,
+      monochromeImage: './assets/icons/android/monochrome.png',
+    },
+  }
+}
+
 const config: ExpoConfig = {
   name: 'LangX',
   slug: 'langx',
@@ -93,6 +117,19 @@ const config: ExpoConfig = {
      * receipt — and the repository is public by design.
      */
     appleTeamId: APPLE_TEAM_ID,
+    /*
+     * The primary icon in iOS 18's three appearances. `light` is the top-level
+     * `icon`, unchanged. `dark` has a transparent ground on purpose — iOS draws
+     * its own dark gradient behind it — and the ink arc turns yellow so the
+     * mark still reads as two colours; `tinted` is one opaque greyscale layer
+     * the system tints. All three share the light icon's arcs, exported from
+     * the same master, so the mark does not jump when the appearance changes.
+     */
+    icon: {
+      light: './assets/icons/default.png',
+      dark: './assets/icons/default-dark.png',
+      tinted: './assets/icons/default-tinted.png',
+    },
     /*
      * The one container the app, the widgets and the notification service
      * extension share. The targets mirror this array rather than declaring
@@ -129,6 +166,19 @@ const config: ExpoConfig = {
 
   android: {
     package: ANDROID_PACKAGE,
+    /*
+     * The primary icon as real adaptive layers. Without them Expo used the
+     * whole square as the foreground, and launchers cropped into it. The arcs
+     * sit inside the central 66dp safe zone, the material is its own layer,
+     * and `monochromeImage` is the arcs alone for Android 13+ themed icons.
+     * Every alternate below is built the same way (`layeredIcon`).
+     */
+    adaptiveIcon: {
+      foregroundImage: './assets/icons/android/default-foreground.png',
+      backgroundImage: './assets/icons/android/default-background.png',
+      backgroundColor: '#ffc409',
+      monochromeImage: './assets/icons/android/monochrome.png',
+    },
     /**
      * Android 13+'s predictive back: the system previews where back leads
      * before the gesture commits. `react-native-screens` drives the stack's
@@ -450,41 +500,40 @@ const config: ExpoConfig = {
       },
     ],
     /**
-     * The alternate home-screen icons, for Pro. Native only and **native only
-     * in the strong sense**: switching icons is an OS call, it cannot travel in
-     * an over-the-air update, and neither the web build nor Expo Go has
-     * anywhere to put it. The settings row hides itself where `isSupported` is
-     * false. Adding one here is a native change: an existing install only sees
-     * it after a store build, so `APP_ICONS` in `src/lib/appIcon.ts` has to be
-     * kept in step with this list by hand.
+     * The alternate home-screen icons: eight free, counting the default, and
+     * nine with Pro. Which are Pro is `PRO_ICONS` in `src/lib/appIcon.ts`, not
+     * this list. Native only and **native only in the strong sense**:
+     * switching icons is an OS call, it cannot travel in an over-the-air
+     * update, and neither the web build nor Expo Go has anywhere to put it.
+     * The settings row hides itself where `isSupported` is false. Adding one
+     * here is a native change that an existing install only sees after a store
+     * build. `appIcon.test.ts` checks this list against `APP_ICONS`.
      *
-     * Each `backgroundColor` is the artwork's own ground, because on Android
-     * the whole square becomes the *foreground* layer of an adaptive icon and
-     * this colour is what shows in the mask bleed. `split` is two grounds, so
-     * it takes the ink one — its yellow half is the corner a round mask cuts
-     * anyway. Only `dark` is declared against a value its artwork does not use
-     * (`#141519` against a `#121318` ground); that seam predates this list and
-     * BRAND.md records it.
+     * `pro` and `newYear` have left the picker but keep their entries, in the
+     * old single-layer form, for one more release. A phone set to one keeps
+     * it; an alias removed from under it would drop the app back to the
+     * default icon with a system notice nobody asked for. Remove both, with
+     * their PNGs, in the release after 3.0.
      */
     [
       'expo-alternate-app-icons',
       [
-        {
-          name: 'dark',
-          ios: './assets/icons/dark.png',
-          android: {
-            foregroundImage: './assets/icons/dark.png',
-            backgroundColor: '#141519',
-          },
-        },
-        {
-          name: 'split',
-          ios: './assets/icons/split.png',
-          android: {
-            foregroundImage: './assets/icons/split.png',
-            backgroundColor: '#121318',
-          },
-        },
+        layeredIcon('dark', 'dark', '#14161b'),
+        layeredIcon('split', 'split', '#14161b'),
+        layeredIcon('contrast', 'contrast', '#000000'),
+        layeredIcon('paperCut', 'paper-cut', '#f7c62f'),
+        layeredIcon('feltStitch', 'felt-stitch', '#2f6e66'),
+        layeredIcon('wovenReed', 'woven-reed', '#a87a3a'),
+        layeredIcon('linocut', 'linocut', '#c8361f'),
+        layeredIcon('iznikTile', 'iznik-tile', '#f6f2e8'),
+        layeredIcon('lacquerGold', 'lacquer-gold', '#160f0e'),
+        layeredIcon('stainedGlass', 'stained-glass', '#15161a'),
+        layeredIcon('nightHoop', 'night-hoop', '#0b1126'),
+        layeredIcon('indigoDye', 'indigo-dye', '#1b2d66'),
+        layeredIcon('marquetry', 'marquetry', '#6e4527'),
+        layeredIcon('mosaic', 'mosaic', '#9c7400'),
+        layeredIcon('origamiFold', 'origami-fold', '#f6f6f3'),
+        layeredIcon('enamelPin', 'enamel-pin', '#12332d'),
         {
           name: 'pro',
           ios: './assets/icons/pro.png',
