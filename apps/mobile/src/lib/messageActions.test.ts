@@ -54,6 +54,48 @@ describe('messageActionsFor', () => {
     ])
   })
 
+  describe('Copilot explain', () => {
+    const ready: Partial<MessageActionContext> = { canExplain: true }
+
+    it('is never offered unless Copilot is on for this reader', () => {
+      expect(ids()).not.toContain('explain')
+      expect(ids({ type: 'correction' })).not.toContain('explain')
+      expect(ids({ canExplain: false })).not.toContain('explain')
+    })
+
+    it('explains the other person’s text, beside Translate', () => {
+      const list = ids(ready)
+      expect(list.indexOf('explain')).toBe(list.indexOf('translate') + 1)
+      expect(find(ready, 'explain')?.page).toBe('primary')
+    })
+
+    it('explains a correction from either side', () => {
+      expect(ids({ ...ready, type: 'correction' })).toContain('explain')
+      expect(ids({ ...ready, type: 'correction', mine: true })).toContain('explain')
+    })
+
+    it('never explains your own text, which is what Check is for', () => {
+      expect(ids({ ...ready, mine: true })).not.toContain('explain')
+    })
+
+    it.each(['image', 'audio', 'video', 'sticker', 'phrase'] as const)(
+      'has nothing to explain in a %s message',
+      (type) => {
+        expect(ids({ ...ready, type })).not.toContain('explain')
+      },
+    )
+
+    it('has nothing to explain once the words are gone', () => {
+      // A withdrawn message and a view-once one both arrive without a body.
+      expect(ids({ ...ready, hasBody: false })).not.toContain('explain')
+      expect(ids({ ...ready, type: 'correction', hasBody: false })).not.toContain('explain')
+    })
+
+    it('is off in a channel', () => {
+      expect(ids({ ...ready, channel: true })).not.toContain('explain')
+    })
+  })
+
   describe('read aloud', () => {
     /*
      * Hidden unless it is known to work, where translate is shown unless it is

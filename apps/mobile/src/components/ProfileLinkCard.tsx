@@ -1,5 +1,6 @@
 import { Pressable, Text, View } from 'react-native'
 import { useSharedProfile } from '../api/queries'
+import { useV3Home } from '../hooks/useV3Home'
 import { useDisplayNames } from '../i18n'
 import { openProfile } from '../lib/navigation'
 import { makeStyles } from '../lib/theme'
@@ -26,7 +27,9 @@ interface ProfileLinkCardProps {
  * profile screen and its "not found".
  */
 export function ProfileLinkCard({ handle, from, onLongPress }: ProfileLinkCardProps) {
-  const styles = useStyles()
+  const current = useStyles()
+  const redesigned = useStylesV3()
+  const styles = useV3Home() ? redesigned : current
   const names = useDisplayNames()
   const { data: profile } = useSharedProfile(handle)
   if (!profile) return null
@@ -85,4 +88,25 @@ const useStyles = makeStyles(({ colors, font }) => ({
   nameRow: { alignItems: 'center', flexDirection: 'row', gap: 4 },
   name: { ...font.label, color: colors.text, flexShrink: 1, fontSize: 14, lineHeight: 19 },
   detail: { ...font.caption, color: colors.textMuted, lineHeight: 17 },
+}))
+
+/** `LinkPreviewCard`'s v3 frame, behind `flags.v3Home`, so the two still read as one kind of thing. */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  card: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.bg,
+    borderRadius: v3.radius.icon,
+    flexDirection: 'row',
+    gap: v3.space[10],
+    marginTop: v3.space[10],
+    maxWidth: '100%',
+    paddingHorizontal: v3.space[12],
+    paddingVertical: v3.space[10],
+    width: 260,
+  },
+  pressed: { opacity: 0.85 },
+  body: { flex: 1, gap: v3.space[2] },
+  nameRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[4] },
+  name: { ...v3.type.callout, color: v3.colors.fg, flexShrink: 1, fontWeight: '700' },
+  detail: { ...v3.type.caption, color: v3.colors.muted },
 }))

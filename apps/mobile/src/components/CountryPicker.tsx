@@ -4,6 +4,8 @@ import { Text, TextInput, View } from 'react-native'
 import { Chip } from './ui/Chip'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useDisplayNames, useT } from '../i18n'
+import { useV3Home } from '../hooks/useV3Home'
+import { CountryPickerV3 } from './CountryPickerV3'
 
 interface CountryPickerProps {
   /** ISO 3166-1 alpha-2, or empty for "not set". */
@@ -30,6 +32,7 @@ export function CountryPicker({ value, onChange, label, onLocked }: CountryPicke
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()
+  const v3Look = useV3Home()
 
   const [term, setTerm] = useState('')
   /**
@@ -61,6 +64,28 @@ export function CountryPicker({ value, onChange, label, onLocked }: CountryPicke
     }
     onChange(code)
     setTerm('')
+  }
+
+  if (v3Look) {
+    const option = (code: string) => ({
+      code,
+      label: `${countryFlag(code)} ${names.country(code)}`,
+    })
+    return (
+      <CountryPickerV3
+        label={label}
+        selected={selected ? option(selected.code) : undefined}
+        term={term}
+        onChangeTerm={setTerm}
+        matches={matches.map((country) => option(country.code))}
+        noMatch={
+          matches.length === 0 && term.trim()
+            ? t('pickers.noCountryMatch', { query: term.trim() })
+            : undefined
+        }
+        onChoose={choose}
+      />
+    )
   }
 
   return (
