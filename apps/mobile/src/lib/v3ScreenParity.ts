@@ -42,6 +42,7 @@ export const DRAWING_CALLS = new Set([
   'useRef',
   'makeStyles',
   'useV3Home',
+  'useV3HomeDecision',
   'useLocale',
   'useT',
   't',

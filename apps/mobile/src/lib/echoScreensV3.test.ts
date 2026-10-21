@@ -45,6 +45,28 @@ const PAIRS: readonly Pair[] = [
   },
   { current: 'app/(app)/echo/edit.tsx', v3: ['src/screens/echo/EchoEditScreenV3.tsx'] },
   { current: 'app/(app)/echo/new.tsx', v3: ['src/screens/echo/EchoNewScreenV3.tsx'] },
+  {
+    current: 'app/(app)/echo/packs.tsx',
+    v3: ['src/screens/echo/EchoPacksScreenV3.tsx'],
+    // One line over Add a language: the body says what to do, the title only that there are none.
+    dropped: { 'echo.packsEmptyTitle': 'one-line empty state' },
+  },
+  { current: 'app/(app)/echo/pack/[id].tsx', v3: ['src/screens/echo/EchoPackScreenV3.tsx'] },
+  {
+    current: 'app/(app)/echo/leaderboard.tsx',
+    v3: ['src/screens/echo/EchoLeaderboardScreenV3.tsx'],
+  },
+  // The chat's phrase and quiz pages: the same promise, from the thread's side.
+  {
+    current: 'app/(app)/all-phrases.tsx',
+    v3: ['src/screens/phrases/AllPhrasesScreenV3.tsx', 'src/screens/phrases/PhrasesV3Parts.tsx'],
+  },
+  {
+    current: 'app/(app)/phrases.tsx',
+    v3: ['src/screens/phrases/PhrasesScreenV3.tsx', 'src/screens/phrases/PhrasesV3Parts.tsx'],
+  },
+  { current: 'app/(app)/phrase-card.tsx', v3: ['src/screens/phrases/PhraseCardScreenV3.tsx'] },
+  { current: 'app/(app)/quiz.tsx', v3: ['src/screens/phrases/QuizScreenV3.tsx'] },
 ]
 
 /**

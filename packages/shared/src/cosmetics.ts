@@ -260,6 +260,39 @@ export const COSMETICS: readonly Cosmetic[] = [
       'ghost',
     ],
   },
+  /**
+   * The fourth pack, and the first with words on it: greetings and quick
+   * replies paired with everyday things, cut from coloured paper — "¡Hola!"
+   * on a speech bubble, "Çay?" on a tea glass, "Fixed it" on a pencil.
+   *
+   * Drawn for the v3 store (the board "Sticker pack"), so all twelve are ours
+   * and the pack adds no licence. The lettering is outlined into paths, not
+   * set as SVG `<text>`, so no device needs Nunito to draw it; why this pack
+   * is allowed lettering at all is in `docs/data-sources.md`.
+   *
+   * 1,500, as pixel is, and for pixel's reason: twelve drawings, none taken.
+   * Still not a rung — `isLadderKind` leaves stickers out.
+   */
+  {
+    id: 'stickers.paper',
+    kind: 'stickers',
+    label: 'Paper Talk',
+    price: 1500,
+    stickers: [
+      'hola',
+      'crane',
+      'nice',
+      'gotit',
+      'cafe',
+      'cay',
+      'sent',
+      'merci',
+      'onesec',
+      'book',
+      'fixed',
+      'night',
+    ],
+  },
 ]
 
 /** Progress against a gate: what the client draws and the server checks. */

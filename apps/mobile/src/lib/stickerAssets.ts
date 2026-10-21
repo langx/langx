@@ -10,6 +10,19 @@
  * no entry here and an entry with no id in the catalogue are both invisible to
  * the compiler.
  */
+import type { MessageKey } from '../i18n/runtime'
+import paperBook from '../../assets/stickers/paper/book.svg'
+import cafe from '../../assets/stickers/paper/cafe.svg'
+import cay from '../../assets/stickers/paper/cay.svg'
+import crane from '../../assets/stickers/paper/crane.svg'
+import fixed from '../../assets/stickers/paper/fixed.svg'
+import gotit from '../../assets/stickers/paper/gotit.svg'
+import hola from '../../assets/stickers/paper/hola.svg'
+import merci from '../../assets/stickers/paper/merci.svg'
+import nice from '../../assets/stickers/paper/nice.svg'
+import night from '../../assets/stickers/paper/night.svg'
+import onesec from '../../assets/stickers/paper/onesec.svg'
+import sent from '../../assets/stickers/paper/sent.svg'
 import checkpoint from '../../assets/stickers/pixel/checkpoint.svg'
 import coin from '../../assets/stickers/pixel/coin.svg'
 import controller from '../../assets/stickers/pixel/controller.svg'
@@ -48,6 +61,21 @@ import thinking from '../../assets/stickers/starter/thinking.svg'
 import wave from '../../assets/stickers/starter/wave.svg'
 
 export const STICKER_ASSETS: Record<string, Record<string, number>> = {
+  'stickers.paper': {
+    // Renamed on import only, as `thinking` is below: `starter` has a `book`.
+    book: paperBook,
+    cafe,
+    cay,
+    crane,
+    fixed,
+    gotit,
+    hola,
+    merci,
+    nice,
+    night,
+    onesec,
+    sent,
+  },
   'stickers.pixel': {
     checkpoint,
     coin,
@@ -96,4 +124,26 @@ export const STICKER_ASSETS: Record<string, Record<string, number>> = {
 
 export function stickerAsset(packId: string, stickerId: string): number | undefined {
   return STICKER_ASSETS[packId]?.[stickerId]
+}
+
+/** `stickers.paper` → `Paper`: the pack's half of its message keys. */
+function packTier(packId: string): string {
+  const tier = packId.split('.')[1] ?? ''
+  return tier.charAt(0).toUpperCase() + tier.slice(1)
+}
+
+/**
+ * A sticker's name, for a screen reader and the pack page: `stickerName.paperHola`.
+ *
+ * Built, not listed, so `stickerAssets.test.ts` checks every id in the
+ * catalogue has one — a missing key would otherwise read the key aloud.
+ */
+export function stickerNameKey(packId: string, stickerId: string): MessageKey {
+  const tier = packTier(packId)
+  return `stickerName.${tier.charAt(0).toLowerCase()}${tier.slice(1)}${stickerId.charAt(0).toUpperCase()}${stickerId.slice(1)}` as MessageKey
+}
+
+/** The line under a pack's name on its page: `stickerPack.taglinePaper`. */
+export function packTaglineKey(packId: string): MessageKey {
+  return `stickerPack.tagline${packTier(packId)}` as MessageKey
 }

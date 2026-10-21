@@ -641,6 +641,7 @@ export const MessageBubble = memo(function MessageBubble({
                   variant="secondary"
                   size="small"
                   icon="phone"
+                  style={styles.meetingCallNow}
                 />
               ) : onMeetingCall ? (
                 <Pressable
@@ -1463,6 +1464,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   quizWrong: { borderColor: colors.danger, borderWidth: 1 },
   quizPressed: { opacity: 0.6 },
   meetingTheirs: { color: colors.textMuted, fontSize: 13 },
+  // The kit's Button is full width by default; this sits in a row.
+  meetingCallNow: { width: 'auto' },
   meetingActions: { flexDirection: 'row', gap: 18, marginTop: 8 },
   meetingAnswered: {
     alignItems: 'center',
