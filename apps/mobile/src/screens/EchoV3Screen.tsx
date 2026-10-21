@@ -6,7 +6,7 @@ import { router } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, RefreshControl, ScrollView, Text, View } from 'react-native'
 import { useEchoPacks, useEchoSummary } from '../api/queries'
-import { EchoAboutSheet } from '../components/EchoAboutSheet'
+import { EchoAboutSheetV3 } from '../components/echo/EchoAboutSheetV3'
 import { EchoPartnerTile, EchoStatTile, EchoV3Skeleton } from '../components/echo/EchoV3Parts'
 import { MeRows, type MeRow } from '../components/me/MeBlocks'
 import { LoadFailed } from '../components/LoadFailed'
@@ -313,7 +313,7 @@ export function EchoV3Screen() {
         />
       </ScrollView>
 
-      <EchoAboutSheet visible={about} onClose={() => setAbout(false)} />
+      <EchoAboutSheetV3 visible={about} onClose={() => setAbout(false)} />
     </Screen>
   )
 }

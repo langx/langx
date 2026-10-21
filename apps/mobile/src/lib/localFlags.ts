@@ -269,6 +269,11 @@ export const FLAG_KEYS = {
    */
   snapMode: 'snapMode',
   /**
+   * JSON `{ userId, ids }`: the earned badges this device has already shown,
+   * so each is New and celebrated once. Per account — see `badgeSeen.ts`.
+   */
+  badgesSeen: 'badgesSeen',
+  /**
    * JSON: `{ [accountId]: ISO date }`, when the Me screen's "Add a photo of
    * you" card was last closed by each account on this device.
    *

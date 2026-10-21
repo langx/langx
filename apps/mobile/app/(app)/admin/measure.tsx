@@ -3,11 +3,15 @@ import { useState } from 'react'
 import { Text, View } from 'react-native'
 import { useAdminHeardAbout, useAdminMeasure } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
+import {
+  AdminBlockV3,
+  AdminCaptionV3,
+  AdminHeadingV3,
+  AdminNoteV3,
+  AdminScreenV3,
+} from '../../../src/components/admin/AdminKitV3'
 import { BarList, type BarListRow } from '../../../src/components/admin/BarList'
 import { StatTable } from '../../../src/components/admin/StatTable'
-import { Callout } from '../../../src/components/ui/Callout'
-import { Screen } from '../../../src/components/ui/Screen'
-import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
@@ -21,7 +25,6 @@ import {
   weekLabel,
 } from '../../../src/lib/adminMeasure'
 import { ADMIN } from '../../../src/lib/adminStrings'
-import { goBackTo } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 
 /**
@@ -49,17 +52,15 @@ const WEEK_CHOICES = [4, ADMIN_MEASURE_WEEKS_DEFAULT, 26] as const
 export default function AdminMeasureScreen() {
   useScreenInteractive()
   const styles = useStyles()
-  const { colors } = useTheme()
+  const { v3 } = useTheme()
   const [weeks, setWeeks] = useState<number>(ADMIN_MEASURE_WEEKS_DEFAULT)
   const measure = useAdminMeasure(weeks)
 
   return (
     <AdminGate>
-      <Screen scroll fluid>
-        <ScreenHeader title={ADMIN.measure.title} onBack={() => goBackTo('/(app)/admin')} />
-
-        <Text style={styles.muted}>{ADMIN.measure.intro}</Text>
-        <Text style={styles.muted}>{ADMIN.measure.clocks}</Text>
+      <AdminScreenV3 title={ADMIN.measure.title} back="/(app)/admin">
+        <AdminCaptionV3>{ADMIN.measure.intro}</AdminCaptionV3>
+        <AdminCaptionV3>{ADMIN.measure.clocks}</AdminCaptionV3>
 
         <View style={styles.control}>
           <SegmentedControl
@@ -79,34 +80,31 @@ export default function AdminMeasureScreen() {
             <Skeleton height={160} />
           </View>
         ) : measure.isError || !measure.data ? (
-          <Callout tone="error">
-            <Text style={styles.calloutBody}>{ADMIN.measure.failedToLoad}</Text>
-          </Callout>
+          <AdminNoteV3 tone="danger" icon="alert-circle">
+            {ADMIN.measure.failedToLoad}
+          </AdminNoteV3>
         ) : (
           <>
             {measure.data.truncated ? (
-              <Callout tone="warning">
-                <Text style={styles.calloutBody}>{ADMIN.measure.truncated}</Text>
-              </Callout>
+              <AdminNoteV3 tone="warning">{ADMIN.measure.truncated}</AdminNoteV3>
             ) : null}
             <Cohorts data={measure.data} />
             <FirstMessages data={measure.data} />
-            <Refusals data={measure.data} barColor={colors.accent} />
-            <HeardAbout barColor={colors.accent} />
+            <Refusals data={measure.data} barColor={v3.colors.blue} />
+            <HeardAbout barColor={v3.colors.blue} />
 
-            <Text style={[styles.muted, styles.footnote]}>{ADMIN.measure.notHere}</Text>
-            <Text style={styles.muted}>
+            <AdminCaptionV3 style={styles.footnote}>{ADMIN.measure.notHere}</AdminCaptionV3>
+            <AdminCaptionV3>
               {ADMIN.measure.generated(utcStamp(measure.data.generatedAt))}
-            </Text>
+            </AdminCaptionV3>
           </>
         )}
-      </Screen>
+      </AdminScreenV3>
     </AdminGate>
   )
 }
 
 function Cohorts({ data }: { data: AdminMeasure }) {
-  const styles = useStyles()
   const words = ADMIN.measure.cohorts
 
   const rowOf = (row: AdminMeasure['cohorts'][number]) => ({
@@ -123,43 +121,42 @@ function Cohorts({ data }: { data: AdminMeasure }) {
 
   return (
     <>
-      <Text style={styles.heading}>{words.title}</Text>
-      <Text style={styles.hint}>
-        {words.hint(data.rules.activationWindowHours, data.rules.activationConversations)}
-      </Text>
-      {data.cohortTotals.signedUp === 0 ? <Text style={styles.muted}>{words.nobody}</Text> : null}
-      <StatTable
-        accessibilityLabel={words.title}
-        columns={[
-          { title: words.week, flex: 1.1 },
-          { title: words.joined, flex: 0.9 },
-          { title: words.day1 },
-          { title: words.day7 },
-          { title: words.day30 },
-          { title: words.activated, flex: 1.1 },
-        ]}
-        rows={data.cohorts.map(rowOf)}
-        total={{
-          key: 'total',
-          cells: [
-            { main: words.total },
-            countCell(data.cohortTotals.signedUp),
-            rateCell(data.cohortTotals.returned.d1),
-            rateCell(data.cohortTotals.returned.d7),
-            rateCell(data.cohortTotals.returned.d30),
-            rateCell(data.cohortTotals.activated),
-          ],
-        }}
+      <AdminHeadingV3
+        title={words.title}
+        hint={words.hint(data.rules.activationWindowHours, data.rules.activationConversations)}
       />
-      <Text style={styles.muted}>
-        {words.returnSource(dayLabel(data.rules.returnRecordedFrom))}
-      </Text>
+      {data.cohortTotals.signedUp === 0 ? <AdminCaptionV3>{words.nobody}</AdminCaptionV3> : null}
+      <AdminBlockV3>
+        <StatTable
+          accessibilityLabel={words.title}
+          columns={[
+            { title: words.week, flex: 1.1 },
+            { title: words.joined, flex: 0.9 },
+            { title: words.day1 },
+            { title: words.day7 },
+            { title: words.day30 },
+            { title: words.activated, flex: 1.1 },
+          ]}
+          rows={data.cohorts.map(rowOf)}
+          total={{
+            key: 'total',
+            cells: [
+              { main: words.total },
+              countCell(data.cohortTotals.signedUp),
+              rateCell(data.cohortTotals.returned.d1),
+              rateCell(data.cohortTotals.returned.d7),
+              rateCell(data.cohortTotals.returned.d30),
+              rateCell(data.cohortTotals.activated),
+            ],
+          }}
+        />
+      </AdminBlockV3>
+      <AdminCaptionV3>{words.returnSource(dayLabel(data.rules.returnRecordedFrom))}</AdminCaptionV3>
     </>
   )
 }
 
 function FirstMessages({ data }: { data: AdminMeasure }) {
-  const styles = useStyles()
   const words = ADMIN.measure.firstMessages
 
   const rowOf = (key: string, label: string, row: AdminMeasure['firstMessageTotals']) => ({
@@ -178,30 +175,30 @@ function FirstMessages({ data }: { data: AdminMeasure }) {
 
   return (
     <>
-      <Text style={styles.heading}>{words.title}</Text>
-      <Text style={styles.hint}>{words.hint(data.rules.unansweredAfterHours)}</Text>
-      {data.firstMessageTotals.started === 0 ? (
-        <Text style={styles.muted}>{words.none}</Text>
-      ) : null}
-      <StatTable
-        accessibilityLabel={words.title}
-        columns={[
-          { title: words.week, flex: 1.1 },
-          { title: words.opened, flex: 0.9 },
-          { title: words.unanswered(data.rules.unansweredAfterHours), flex: 1.1 },
-          { title: words.never },
-          { title: words.median, flex: 1.3 },
-        ]}
-        rows={data.firstMessages.map((row) => rowOf(row.weekStart, weekLabel(row.weekStart), row))}
-        total={rowOf('total', words.total, data.firstMessageTotals)}
-      />
-      <Text style={styles.muted}>{words.medianNote}</Text>
+      <AdminHeadingV3 title={words.title} hint={words.hint(data.rules.unansweredAfterHours)} />
+      {data.firstMessageTotals.started === 0 ? <AdminCaptionV3>{words.none}</AdminCaptionV3> : null}
+      <AdminBlockV3>
+        <StatTable
+          accessibilityLabel={words.title}
+          columns={[
+            { title: words.week, flex: 1.1 },
+            { title: words.opened, flex: 0.9 },
+            { title: words.unanswered(data.rules.unansweredAfterHours), flex: 1.1 },
+            { title: words.never },
+            { title: words.median, flex: 1.3 },
+          ]}
+          rows={data.firstMessages.map((row) =>
+            rowOf(row.weekStart, weekLabel(row.weekStart), row),
+          )}
+          total={rowOf('total', words.total, data.firstMessageTotals)}
+        />
+      </AdminBlockV3>
+      <AdminCaptionV3>{words.medianNote}</AdminCaptionV3>
     </>
   )
 }
 
 function Refusals({ data, barColor }: { data: AdminMeasure; barColor: string }) {
-  const styles = useStyles()
   const words = ADMIN.measure.refusals
   const { windowDays, kinds } = data.refusals
 
@@ -214,9 +211,10 @@ function Refusals({ data, barColor }: { data: AdminMeasure; barColor: string }) 
 
   return (
     <>
-      <Text style={styles.heading}>{words.title}</Text>
-      <Text style={styles.hint}>{words.hint(windowDays)}</Text>
-      <BarList rows={rows} color={barColor} empty={words.none(windowDays)} />
+      <AdminHeadingV3 title={words.title} hint={words.hint(windowDays)} />
+      <AdminBlockV3>
+        <BarList rows={rows} color={barColor} empty={words.none(windowDays)} />
+      </AdminBlockV3>
     </>
   )
 }
@@ -234,9 +232,9 @@ function HeardAbout({ barColor }: { barColor: string }) {
   if (heard.isPending) return <Skeleton height={160} />
   if (heard.isError || !heard.data) {
     return (
-      <Callout tone="error">
-        <Text style={styles.calloutBody}>{words.failedToLoad}</Text>
-      </Callout>
+      <AdminNoteV3 tone="danger" icon="alert-circle">
+        {words.failedToLoad}
+      </AdminNoteV3>
     )
   }
 
@@ -250,14 +248,15 @@ function HeardAbout({ barColor }: { barColor: string }) {
 
   return (
     <>
-      <Text style={styles.heading}>{words.title}</Text>
-      <Text style={styles.hint}>{words.hint(results.total)}</Text>
-      {results.total === 0 ? <Text style={styles.muted}>{words.none}</Text> : null}
+      <AdminHeadingV3 title={words.title} hint={words.hint(results.total)} />
+      {results.total === 0 ? <AdminCaptionV3>{words.none}</AdminCaptionV3> : null}
       {/* Every option is a row, zeros included, so `empty` never shows. */}
-      <BarList rows={rows} color={barColor} empty={words.none} />
-      {recent.length > 0 ? <Text style={styles.heading}>{words.recent}</Text> : null}
+      <AdminBlockV3>
+        <BarList rows={rows} color={barColor} empty={words.none} />
+      </AdminBlockV3>
+      {recent.length > 0 ? <AdminHeadingV3 title={words.recent} /> : null}
       {recent.map((row) => (
-        <Text key={row.userId} style={styles.muted}>
+        <Text key={row.userId} style={styles.recent}>
           {`${row.handle ? `@${row.handle}` : '—'}${row.country ? ` (${row.country})` : ''} → ${labelOf(row.optionId)} · ${utcStamp(row.createdAt)}`}
         </Text>
       ))}
@@ -265,19 +264,9 @@ function HeardAbout({ barColor }: { barColor: string }) {
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  loading: { gap: 12, marginTop: 16 },
-  control: { marginTop: 16, marginBottom: 8 },
-  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
-  heading: {
-    marginTop: 28,
-    marginBottom: 6,
-    fontSize: 13,
-    fontWeight: '700',
-    color: theme.colors.textMuted,
-    textTransform: 'uppercase',
-  },
-  hint: { fontSize: 13, color: theme.colors.textMuted, lineHeight: 18, marginBottom: 12 },
-  muted: { fontSize: 13, color: theme.colors.textMuted, lineHeight: 18, marginTop: 8 },
-  footnote: { marginTop: 28 },
+const useStyles = makeStyles(({ v3 }) => ({
+  loading: { gap: v3.space[12] },
+  control: { marginTop: v3.space[6] },
+  recent: { ...v3.type.caption, color: v3.colors.muted, paddingHorizontal: v3.space[4] },
+  footnote: { marginTop: v3.space[16] },
 }))

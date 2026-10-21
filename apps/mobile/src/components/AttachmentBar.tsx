@@ -3,11 +3,13 @@ import { MAX_ATTACHMENTS, MAX_VIDEO_SECONDS } from '@langx/shared'
 import { useEffect } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { useT } from '../i18n'
+import { useV3Home } from '../hooks/useV3Home'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
 import { pickMediaAssets } from '../lib/pickMediaAsset'
 import { showToast } from '../lib/toast'
 import { makeStyles, useTheme } from '../lib/theme'
 import { AttachmentPreviewRow, type PendingAttachment } from './AttachmentPreview'
+import { useAttachmentStylesV3 } from './AttachmentBarV3.styles'
 
 export type { PendingAttachment }
 export { AttachmentPreviewRow }
@@ -54,7 +56,10 @@ export function AttachmentBar({
   mediaLabel,
 }: AttachmentBarProps) {
   const styles = useStyles()
-  const { colors } = useTheme()
+  const { colors, v3 } = useTheme()
+  const v3Look = useV3Home()
+  // The glyphs' colour: the ink on the pills, and on the stop's ink disc its own text colour.
+  const glyph = v3Look ? v3.colors.fg : colors.text
   const t = useT()
   const recorder = useVoiceRecorder()
 
@@ -124,8 +129,15 @@ export function AttachmentBar({
         <Text style={styles.recording}>
           {Math.floor(recorder.seconds / 60)}:{String(recorder.seconds % 60).padStart(2, '0')}
         </Text>
-        <Pressable onPress={() => void toggleRecording()} hitSlop={8} style={styles.button}>
-          <Feather name="square" size={18} color={colors.text} />
+        <Pressable
+          onPress={() => void toggleRecording()}
+          hitSlop={8}
+          style={styles.button}
+          {...(v3Look
+            ? { accessibilityRole: 'button' as const, accessibilityLabel: t('feed.stopRecording') }
+            : {})}
+        >
+          <Feather name="square" size={18} color={v3Look ? v3.colors.pillText : colors.text} />
         </Pressable>
         <Pressable onPress={() => void recorder.cancel()} hitSlop={8}>
           <Text style={styles.cancel}>{t('common.cancel')}</Text>
@@ -156,7 +168,7 @@ export function AttachmentBar({
           pressed && styles.pressed,
         ]}
       >
-        <Feather name="image" size={18} color={colors.text} />
+        <Feather name="image" size={18} color={glyph} />
         <Text style={styles.chipLabel}>{mediaLabel ?? t('composer.attachLibrary')}</Text>
       </Pressable>
       {voiceNote ? (
@@ -172,7 +184,7 @@ export function AttachmentBar({
             pressed && styles.pressed,
           ]}
         >
-          <Feather name="mic" size={18} color={colors.text} />
+          <Feather name="mic" size={18} color={glyph} />
           <Text style={styles.chipLabel}>{t('feed.voiceNote')}</Text>
         </Pressable>
       ) : null}
@@ -180,7 +192,14 @@ export function AttachmentBar({
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
+/** This file's sheet, or with `flags.v3Home` on the redesign's (`AttachmentBarV3.styles.ts`). */
+function useStyles() {
+  const current = useCurrentStyles()
+  const v3 = useAttachmentStylesV3()
+  return useV3Home() ? v3 : current
+}
+
+const useCurrentStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // `flexShrink` so this can never starve the submit button beside it: a row
   // whose child asks for `flex: 1` measures at the full width offered to it,
   // and React Native does not shrink a flex item unless it is told to.

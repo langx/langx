@@ -228,13 +228,13 @@ export async function assertCallLimits(
       ),
     // Bounded by `conversation_created` to what was sent in this one thread
     // since then — a few messages at most, never the thread's history. A
-    // call's own row is not them writing.
+    // call's own row is not them writing, and nor is a gift's.
     db.collection<Message>(COLLECTIONS.messages).findOne(
       {
         conversationId: conversation._id,
         createdAt: { $gt: since },
         senderId: calleeId,
-        type: { $ne: 'call' },
+        type: { $nin: ['call', 'gift'] },
       },
       { projection: { _id: 1 } },
     ),

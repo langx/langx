@@ -919,6 +919,33 @@ storefront.
       looked. `src/lib/planSaving.test.ts` and the types cover the numbers.
       Check the native paywall in the next build
 
+### 3.0: the monthly plan has the free week too
+
+Decided 20 October 2026: from 3.0 the monthly subscription carries the same
+one-week free trial as the yearly one. The app needs no switch for it — the
+paywall reads the trial per package from the store, so the monthly card starts
+saying "1 week free" on the day the store starts offering it, and not before.
+Until the consoles below are done, nothing claims a monthly trial.
+
+- [ ] **App Store Connect:** an introductory offer — Free, 1 week, all
+      storefronts, no end date — on the monthly Pro subscription, in the same
+      group as the yearly one. Apple allows one introductory offer per
+      subscription group per Apple ID, so somebody who had the yearly free
+      week is not eligible for the monthly one; `ineligibleForTrial` asks
+      StoreKit per product and the paywall then says "Subscribe"
+- [ ] **Play Console:** a free-trial offer on the monthly base plan that
+      mirrors the yearly one — 1 week free, eligibility "new customers who
+      never had a subscription". Play only returns the offer to somebody
+      eligible, and the app reads the trial off the option `purchasePackage`
+      buys (`defaultOption`), so no tag is needed
+- [ ] **RevenueCat Web Billing:** a 1-week trial on the monthly web product,
+      with the same eligibility as the yearly one. Web products cannot always
+      be edited after creation; if this one cannot, create a new monthly
+      product with the trial and put it in the offering's monthly slot
+- [ ] Check on a device: an account that never subscribed sees "1 week free"
+      on both cards and the dated timeline under each; an account that had the
+      trial sees no trial wording on either
+
 ### The yearly price is chosen backwards from the monthly one
 
 The paywall leads a yearly plan with what it costs a month, so that figure is

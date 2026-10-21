@@ -1,7 +1,7 @@
 import { packageDefinition, type BillingPeriod, type PaidPlanTier } from '@langx/shared'
 import { Platform } from 'react-native'
 import { fakeOffers, fakePurchase, isFakePurchasesEnabled } from './fakePurchases'
-import { trialDays } from './trialDays'
+import { iosIneligibleForTrial, nativeFreeTrialDays } from './trialDays'
 /*
  * The web store, behind a two-file module Metro resolves per platform: this
  * import is the real RevenueCat Web Billing SDK in a browser build and an
@@ -122,24 +122,6 @@ export interface PurchaseOffer {
 }
 
 /**
- * The free-trial length of an introductory offer, or `null` when there is none.
- *
- * `introPrice` describes *any* introductory offer — pay-as-you-go and
- * pay-up-front discounts included — so the zero price is the whole test. A
- * discounted first period is a real thing the stores can sell and this app
- * currently does not, and calling one a free trial would be a false claim
- * rather than a missing feature.
- *
- * The unit-to-days conversion moved to `./trialDays` when the web store
- * arrived: the two SDKs do not spell `MONTH` the same way, and the paywall's
- * "30 days free" has to mean the same thing whichever one answered.
- */
-function freeTrialDays(intro: PurchasesSdk.PurchasesIntroPrice | null): number | null {
-  if (intro === null || intro.price !== 0) return null
-  return trialDays(intro.periodUnit, intro.periodNumberOfUnits)
-}
-
-/**
  * Which of these products this *person* would actually get a trial on.
  *
  * `introPrice` above describes the **product**, not the customer, and the App
@@ -155,22 +137,20 @@ function freeTrialDays(intro: PurchasesSdk.PurchasesIntroPrice | null): number |
  * already the answer. On iOS, `UNKNOWN` *does* mean hide — the SDK's own
  * advice is to show non-intro pricing rather than risk the misleading one.
  *
- * A failed call hides nothing. Losing a trial somebody is entitled to is a
- * worse outcome than showing one the store then declines to give, and the
- * store's own sheet is the last word on the charge either way.
+ * A failed call, or no answer for a product, hides the trial too (see
+ * `iosIneligibleForTrial`). The purchase may still start one; the paywall just
+ * does not promise what it could not confirm.
  */
 async function ineligibleForTrial(
   sdk: PurchasesModule,
   productIds: readonly string[],
 ): Promise<ReadonlySet<string>> {
-  if (Platform.OS !== 'ios' || productIds.length === 0) return new Set()
-  try {
-    const eligibility = await sdk.default.checkTrialOrIntroductoryPriceEligibility([...productIds])
-    const eligible = sdk.INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE
-    return new Set(productIds.filter((id) => eligibility[id]?.status !== eligible))
-  } catch {
-    return new Set()
-  }
+  if (Platform.OS !== 'ios') return new Set()
+  return iosIneligibleForTrial(
+    productIds,
+    (ids) => sdk.default.checkTrialOrIntroductoryPriceEligibility(ids),
+    sdk.INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE,
+  )
 }
 
 export type PurchaseOutcome = 'purchased' | 'cancelled' | 'unavailable' | 'failed'
@@ -297,7 +277,7 @@ export async function getOffers(): Promise<PurchaseOffer[]> {
         price: pkg.product.price,
         freeTrialDays: ineligible.has(pkg.product.identifier)
           ? null
-          : freeTrialDays(pkg.product.introPrice),
+          : nativeFreeTrialDays(pkg.product),
       })
     }
     return offers

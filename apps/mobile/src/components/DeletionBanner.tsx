@@ -5,8 +5,10 @@ import { Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { api } from '../api/client'
 import { keys, useMe } from '../api/queries'
+import { useV3Home } from '../hooks/useV3Home'
 import { makeStyles, spacing } from '../lib/theme'
 import { useT } from '../i18n'
+import { Button } from './ui/Button'
 
 function daysLeft(deletedAt: string): number {
   const purgeAt = new Date(deletedAt).getTime() + ACCOUNT_DELETION_GRACE_DAYS * 86_400_000
@@ -28,7 +30,10 @@ function daysLeft(deletedAt: string): number {
  * tabs, so it is on every screen and cannot be walked past.
  */
 export function DeletionBanner() {
-  const styles = useStyles()
+  const v3Look = useV3Home()
+  const currentStyles = useStyles()
+  const v3Styles = useStylesV3()
+  const styles = v3Look ? v3Styles : currentStyles
   const t = useT()
 
   const me = useMe()
@@ -69,9 +74,25 @@ export function DeletionBanner() {
         </Text>
         <Text style={styles.body}>{t('deletion.untilThen')}</Text>
       </View>
-      <Pressable onPress={() => void keepAccount()} disabled={busy} hitSlop={8}>
-        <Text style={styles.action}>{busy ? t('deletion.keeping') : t('deletion.keepIt')}</Text>
-      </Pressable>
+      {v3Look ? (
+        // The kit's small ink pill, as a coach card's action: a real target
+        // rather than an underlined word, and not yellow — the banner is on
+        // every screen, and each of those already has its one yellow.
+        <Button
+          variant="ink"
+          size="small"
+          label={busy ? t('deletion.keeping') : t('deletion.keepIt')}
+          disabled={busy}
+          onPress={() => void keepAccount()}
+          style={v3Styles.keep}
+        />
+      ) : (
+        <Pressable onPress={() => void keepAccount()} disabled={busy} hitSlop={8}>
+          <Text style={currentStyles.action}>
+            {busy ? t('deletion.keeping') : t('deletion.keepIt')}
+          </Text>
+        </Pressable>
+      )}
     </View>
   )
 }
@@ -94,4 +115,25 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     fontWeight: '700',
     textDecorationLine: 'underline',
   },
+}))
+
+/*
+ * v3 draws red as a line and a label, never as a fill (`danger` in
+ * `tokens.ts`): the strip is the grey block, and the deadline is what is
+ * red. No board draws this banner; it follows Delete account's own page,
+ * where the countdown sits in a block and the red is reserved for the words.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  root: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.surface,
+    flexDirection: 'row',
+    gap: v3.space[12],
+    paddingHorizontal: v3.space[16],
+    paddingVertical: v3.space[8],
+  },
+  text: { flex: 1 },
+  title: { ...v3.type.caption, color: v3.colors.danger, fontWeight: '700' },
+  body: { ...v3.type.caption, color: v3.colors.muted },
+  keep: { width: 'auto' },
 }))

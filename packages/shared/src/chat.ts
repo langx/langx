@@ -113,6 +113,12 @@ export const MESSAGE_TYPES = [
    * type here with no `send*Schema` beside it.
    */
   'call',
+  /**
+   * A sticker pack one person gave the other — see `stickerGift.ts`. Written
+   * by the server inside the gift's transaction and never sent by a client,
+   * like `call`.
+   */
+  'gift',
 ] as const
 export type MessageType = (typeof MESSAGE_TYPES)[number]
 
@@ -131,6 +137,18 @@ export type MessageType = (typeof MESSAGE_TYPES)[number]
  */
 export function isCallRecord(message: { type: string }): boolean {
   return message.type === 'call'
+}
+
+/**
+ * A row the server wrote about something that happened — a call, or a gift —
+ * rather than something either person said. Refused everything a call's row
+ * is refused, for its reasons: there is no sentence in a gift to reply to,
+ * correct, react to, star or pin, and the giver cannot withdraw from the
+ * other person's thread a pack that is already theirs. Hiding your own copy
+ * and reporting are what is left.
+ */
+export function isServerRecord(message: { type: string }): boolean {
+  return message.type === 'call' || message.type === 'gift'
 }
 
 /**
@@ -664,7 +682,7 @@ export function canDeleteForEveryone(
   if (message.deletedAt) return false
   // The caller is the row's `senderId`, and that does not make it theirs to
   // take out of somebody else's thread.
-  if (message.type === 'call') return false
+  if (message.type === 'call' || message.type === 'gift') return false
   const sent = new Date(message.createdAt).getTime()
   if (Number.isNaN(sent)) return false
   return now.getTime() - sent <= MESSAGE_DELETE_WINDOW_MS

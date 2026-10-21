@@ -3,7 +3,7 @@ import {
   MAX_PINNED_CONVERSATIONS,
   canEditMessage,
   ERROR_CODES,
-  isCallRecord,
+  isServerRecord,
   type DeleteMessageInput,
   type EditMessageInput,
   type PinMessageInput,
@@ -69,14 +69,14 @@ export async function loadMutableMessage(
 
 /**
  * Refuses the things a call's row cannot have done to it — a reaction, a star,
- * a pin. `isCallRecord` says why; the menu in the app reads the same function,
+ * a pin — or to a gift's row. `isServerRecord` says why; the menu in the app reads the same function,
  * so this is for the client that predates it and the one that is not ours.
  *
  * Not in `loadMutableMessage`, because one mutation is still allowed: hiding
  * the row from your own copy of the thread.
  */
 function assertNotCallRecord(message: Message): void {
-  if (isCallRecord(message)) {
+  if (isServerRecord(message)) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That cannot be done to a call')
   }
 }

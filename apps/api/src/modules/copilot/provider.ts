@@ -14,5 +14,8 @@ export function createCopilotProvider(env: Env): StructuredProvider | null {
     env.ANTHROPIC_API_KEY,
     env.COPILOT_MODEL ?? env.ANTHROPIC_MODEL,
     COPILOT_RULES.maxOutputTokens,
+    // A timeout is an `APIError`, so it is thrown, and `askCopilot` words it
+    // as `no_answer` and gives the unit back.
+    { timeoutMs: COPILOT_RULES.requestTimeoutMs, maxRetries: COPILOT_RULES.requestRetries },
   )
 }
