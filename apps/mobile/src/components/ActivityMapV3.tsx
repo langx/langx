@@ -68,10 +68,13 @@ export function ActivityMapV3({ handle, hue }: { handle: string; hue: string }) 
                   styles.cell,
                   { height: cell, width: cell },
                   square.state === 'future' && styles.future,
-                  square.intensity > 0 && { backgroundColor: hue },
-                  // A quiet day in the same colour, thinner: the public map
-                  // sends a bucket, and one step is all a square this size holds.
-                  square.intensity === 1 && styles.quiet,
+                  square.intensity > 1 && { backgroundColor: hue },
+                  // A quiet day is a ring of the hue around the card's own
+                  // colour: a thinned fill all but vanished into the grey of
+                  // an empty day on the pale hues. The shape tells it from
+                  // empty whatever the hue; `profileChartColours.test.ts`
+                  // measures the ring against the card.
+                  square.intensity === 1 && [styles.quiet, { borderColor: hue }],
                   square.day === today && { borderColor: v3.colors.fg, borderWidth: 2 },
                 ]}
               />
@@ -105,7 +108,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   column: { gap: ACTIVITY_CELL_GAP },
   cell: { backgroundColor: v3.colors.track, borderRadius: 3 },
   future: { backgroundColor: 'transparent' },
-  quiet: { opacity: 0.55 },
+  quiet: { backgroundColor: v3.colors.surface, borderWidth: 2 },
   legend: { flexDirection: 'row', justifyContent: 'space-between' },
   legendText: { ...v3.type.caption, color: v3.colors.muted },
 }))

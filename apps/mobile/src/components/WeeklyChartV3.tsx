@@ -13,9 +13,15 @@ const EMPTY_BAR = 2
 
 /**
  * Somebody's week in the redesign (`V-Profile`): a grey card of seven days,
- * messages in the person's colour beside corrections in green, and the legend
- * under it — the same numbers and the same words as `WeeklyChart`, side by
- * side rather than stacked, because the board draws them so.
+ * messages in the person's colour beside corrections, and the legend under it
+ * — the same numbers and the same words as `WeeklyChart`, side by side rather
+ * than stacked, because the board draws them so.
+ *
+ * Corrections in `fg`, not the board's green: the hue is any of six, and after
+ * dark the mint and aqua hues are the correction green's near twins, so the two
+ * series and their swatches read as one. Ink (light) and near-white (dark) sit
+ * far from every hue — `profileChartColours.test.ts` measures all twelve — and
+ * the corrections bar is also always the second of the pair.
  */
 export function WeeklyChartV3({ week, hue }: { week: TokenSummary['week']; hue: string }) {
   const styles = useStyles()
@@ -47,7 +53,7 @@ export function WeeklyChartV3({ week, hue }: { week: TokenSummary['week']; hue: 
               <View
                 style={[
                   styles.bar,
-                  { backgroundColor: v3.colors.correction, height: height(day.corrections) },
+                  { backgroundColor: v3.colors.fg, height: height(day.corrections) },
                 ]}
               />
             </View>
@@ -64,7 +70,7 @@ export function WeeklyChartV3({ week, hue }: { week: TokenSummary['week']; hue: 
           <Text style={styles.legendLabel}>{t('weekly.messages')}</Text>
         </View>
         <View style={styles.legendItem}>
-          <View style={[styles.swatch, { backgroundColor: v3.colors.correction }]} />
+          <View style={[styles.swatch, { backgroundColor: v3.colors.fg }]} />
           <Text style={styles.legendLabel}>{t('me.corrections')}</Text>
         </View>
       </View>
