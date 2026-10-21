@@ -251,6 +251,17 @@ export const badgeSummarySchema = z.object({
       reward: z.number().int(),
     })
     .nullable(),
+  /**
+   * Where the user stands on every counting kind's own scale, by kind: days
+   * of longest streak, corrections written, and so on — the number `next`
+   * carries for one badge, for all of them. The v3 shelf draws each ladder's
+   * next rung stitched as far as this says.
+   *
+   * Your own summary only; `publicBadgesSchema` never carries it, for the
+   * reason it carries no `next`. Optional so a summary from an older server
+   * still parses, and a client with nothing here draws no progress.
+   */
+  progress: z.record(z.string(), z.number().int()).optional(),
 })
 export type BadgeSummary = z.infer<typeof badgeSummarySchema>
 

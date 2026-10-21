@@ -2,6 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { useEffect, useState } from 'react'
 import { Modal, Platform, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useV3Home } from '../hooks/useV3Home'
 import { dismissValue, resolveAlert, subscribeToAlerts } from '../lib/alert'
 import {
   NO_ALERT,
@@ -32,8 +33,11 @@ import { Button } from './ui/Button'
  * is a long way from the pointer.
  */
 export function AlertHost() {
-  const styles = useStyles()
-  const { colors } = useTheme()
+  const current = useStyles()
+  const redesigned = useStylesV3()
+  const v3Look = useV3Home()
+  const styles = v3Look ? redesigned : current
+  const { colors, v3 } = useTheme()
   const insets = useSafeAreaInsets()
 
   const [presentation, setPresentation] = useState<AlertPresentation>(NO_ALERT)
@@ -72,6 +76,43 @@ export function AlertHost() {
     request.buttons.find((button) => button.style === 'cancel') ??
     (request.buttons.length === 1 ? request.buttons[0] : undefined)
   const rows = request.buttons.filter((button) => button !== foot)
+  const choices = rows.map((button, index) => (
+    <Pressable
+      key={button.label}
+      accessibilityRole="button"
+      onPress={() => resolveAlert(request.id, button.value)}
+      style={({ pressed }) => [
+        styles.row,
+        // The last row's rule would double the button's border under it. In
+        // v3's block the rule goes between rows instead, over all but the first.
+        (v3Look ? index > 0 : index < rows.length - 1) && styles.rowDivided,
+        pressed && styles.rowPressed,
+      ]}
+    >
+      {/*
+        A glyph turns the same row into a menu item — see `AlertButton`.
+        Muted whatever the label says, the way the message menu's sheet
+        draws its icons.
+      */}
+      {button.icon ? (
+        <Feather
+          name={button.icon as never}
+          size={v3Look ? v3.icon.md : 20}
+          color={v3Look ? v3.colors.muted : colors.textMuted}
+        />
+      ) : null}
+      <Text style={[styles.rowLabel, button.style === 'destructive' && styles.destructive]}>
+        {button.label}
+      </Text>
+      {button.locked ? (
+        <Feather
+          name="lock"
+          size={v3Look ? v3.icon.xs : 16}
+          color={v3Look ? v3.colors.muted : colors.textFaint}
+        />
+      ) : null}
+    </Pressable>
+  ))
 
   return (
     <Modal
@@ -90,42 +131,27 @@ export function AlertHost() {
         <Pressable
           style={[
             wide ? styles.card : styles.sheet,
-            wide ? null : { paddingBottom: insets.bottom + 24 },
+            wide ? null : { paddingBottom: insets.bottom + (v3Look ? v3.space[16] : 24) },
           ]}
           onPress={() => {}}
         >
           {wide ? null : <View style={styles.handle} />}
           <Text style={styles.title}>{request.title}</Text>
           {request.message ? <Text style={styles.message}>{request.message}</Text> : null}
-          {rows.map((button, index) => (
-            <Pressable
-              key={button.label}
-              accessibilityRole="button"
-              onPress={() => resolveAlert(request.id, button.value)}
-              style={({ pressed }) => [
-                styles.row,
-                // The last row's rule would double the button's border under it.
-                index < rows.length - 1 && styles.rowDivided,
-                pressed && styles.rowPressed,
-              ]}
-            >
-              {/*
-                A glyph turns the same row into a menu item — see `AlertButton`.
-                Muted whatever the label says, the way the message menu's sheet
-                draws its icons.
-              */}
-              {button.icon ? (
-                <Feather name={button.icon as never} size={20} color={colors.textMuted} />
-              ) : null}
-              <Text style={[styles.rowLabel, button.style === 'destructive' && styles.destructive]}>
-                {button.label}
-              </Text>
-              {button.locked ? <Feather name="lock" size={16} color={colors.textFaint} /> : null}
-            </Pressable>
-          ))}
+          {/*
+            v3 sets the choices in one grey block, the way its report reasons
+            and its blocked list group their rows; today's look draws them loose.
+          */}
+          {v3Look ? (
+            rows.length > 0 ? (
+              <View style={redesigned.group}>{choices}</View>
+            ) : null
+          ) : (
+            choices
+          )}
           {foot ? (
             <Button
-              variant="neutral"
+              variant={v3Look ? 'secondary' : 'neutral'}
               label={foot.label}
               onPress={() => resolveAlert(request.id, foot.value)}
               style={styles.foot}
@@ -185,4 +211,66 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   rowLabel: { color: colors.text, flex: 1, fontSize: 17, fontWeight: '600' },
   destructive: { color: colors.danger },
   foot: { marginTop: 18 },
+}))
+
+/**
+ * v3's look for the same dialog, behind `flags.v3Home`. Flat: the scrim is
+ * the one depth, so neither the sheet nor the web card keeps a shadow. The
+ * question in the headline face, the choices as rows of one grey block — the
+ * report screen's reasons and the blocked list are drawn the same way — and
+ * Cancel as the outlined pill under them. What is queued, what each choice
+ * resolves to and what closes the dialog are the host's own, in both looks.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  backdrop: { ...v3.elevation.overlay, flex: 1 },
+  backdropBottom: { justifyContent: 'flex-end' },
+  backdropCentred: { alignItems: 'center', justifyContent: 'center', padding: v3.space[16] },
+  // A phone-width column even on a wide window, like the kit's other sheets.
+  sheet: {
+    alignSelf: 'center',
+    backgroundColor: v3.colors.bg,
+    borderTopEndRadius: v3.radius.block,
+    borderTopStartRadius: v3.radius.block,
+    maxWidth: 560,
+    paddingHorizontal: v3.space[16],
+    paddingTop: v3.space[8],
+    width: '100%',
+  },
+  card: {
+    backgroundColor: v3.colors.bg,
+    borderRadius: v3.radius.block,
+    maxWidth: 420,
+    padding: v3.space[20],
+    width: '100%',
+  },
+  handle: {
+    alignSelf: 'center',
+    backgroundColor: v3.colors.line,
+    borderRadius: v3.radius.pill,
+    height: 5,
+    marginBottom: v3.space[16],
+    width: 40,
+  },
+  title: { ...v3.type.headline, color: v3.colors.fg, marginBottom: v3.space[4] },
+  message: { ...v3.type.callout, color: v3.colors.muted, marginBottom: v3.space[8] },
+  group: {
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.tile,
+    marginTop: v3.space[12],
+    overflow: 'hidden',
+  },
+  row: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: v3.space[12],
+    minHeight: 56,
+    paddingEnd: v3.space[14],
+    paddingStart: v3.space[16],
+    paddingVertical: v3.space[6],
+  },
+  rowDivided: { borderTopColor: v3.colors.line, borderTopWidth: 1 },
+  rowPressed: { backgroundColor: v3.colors.tabOn },
+  rowLabel: { ...v3.type.button, color: v3.colors.fg, flex: 1 },
+  destructive: { color: v3.colors.danger },
+  foot: { marginTop: v3.space[16] },
 }))
