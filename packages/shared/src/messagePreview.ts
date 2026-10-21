@@ -41,6 +41,9 @@ export function previewFor(
   if (type === 'meeting') return '📅 Meeting'
   if (type === 'quiz') return '❓ Quiz'
   if (type === 'sticker') return '🩷 Sticker'
+  // Neutral for `call`'s reason: one line on the conversation, read by both
+  // the person who gave and the person who was given.
+  if (type === 'gift') return '🎁 Sticker pack gift'
   // Never the place name: this line is the chat list row and the push body,
   // and a lock screen is not where somebody's whereabouts should be read out.
   if (type === 'location') return '📍 Location'

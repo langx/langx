@@ -11,14 +11,23 @@ import {
   type AdminAppealDto,
 } from '../../../../src/api/queries'
 import { AdminGate } from '../../../../src/components/AdminGate'
+import {
+  AdminActionsV3,
+  AdminBlockV3,
+  AdminCaptionV3,
+  AdminFieldV3,
+  AdminHeadingV3,
+  AdminNoteTextV3,
+  AdminNoteV3,
+  AdminQuoteV3,
+  AdminRowsV3,
+  AdminScreenV3,
+  AdminSplitV3,
+  AdminSubheadingV3,
+} from '../../../../src/components/admin/AdminKitV3'
 import { MediaGallery } from '../../../../src/components/MediaBubble'
 import { PhotoViewer } from '../../../../src/components/PhotoViewer'
 import { Button } from '../../../../src/components/ui/Button'
-import { Callout } from '../../../../src/components/ui/Callout'
-import { Card } from '../../../../src/components/ui/Card'
-import { FormField } from '../../../../src/components/ui/FormField'
-import { Screen } from '../../../../src/components/ui/Screen'
-import { ScreenHeader } from '../../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../../src/components/ui/Skeleton'
 import { useScreenInteractive } from '../../../../src/hooks/useScreenInteractive'
 import { ADMIN, WARNINGS } from '../../../../src/lib/adminStrings'
@@ -149,14 +158,321 @@ export default function AdminCaseScreen() {
     ? `@${onProfileOf.handle}`
     : (onProfileOf?.userId ?? '')
 
+  const data = report.data
+
+  /*
+   * What the report is about, in the order the emailed page shows it. On a
+   * desk this is the start half and the decisions sit beside it; on a phone
+   * the decisions follow it, so they are still read after the evidence.
+   */
+  const evidence = data ? (
+    <>
+      {data.otherOpenReports ? (
+        <AdminNoteV3 tone="warning">
+          {ADMIN.reports.otherReports(data.otherOpenReports)}
+        </AdminNoteV3>
+      ) : null}
+      {data.suspension ? <AdminNoteV3 tone="warning">{ADMIN.reports.inForce}</AdminNoteV3> : null}
+      {data.earlierWarnings?.length ? (
+        <AdminNoteV3 tone="warning">
+          <AdminNoteTextV3>
+            {ADMIN.reports.warnedBefore(data.earlierWarnings.length)}
+          </AdminNoteTextV3>
+          {data.earlierWarnings.map((earlier) => (
+            <AdminNoteTextV3 key={earlier.at}>
+              {ADMIN.reports.warnedRow(earlier.at.slice(0, 10), earlier.reason.replace(/_/g, ' '))}
+            </AdminNoteTextV3>
+          ))}
+        </AdminNoteV3>
+      ) : null}
+
+      <AdminHeadingV3 title={ADMIN.reports.details} />
+      <AdminBlockV3>
+        <AdminQuoteV3>{data.details ?? ADMIN.reports.noDetails}</AdminQuoteV3>
+      </AdminBlockV3>
+
+      {data.post ? (
+        <>
+          <AdminHeadingV3 title={ADMIN.reports.post} />
+          <AdminBlockV3>
+            {/* A photo posted without words has nothing to quote, and an
+                empty card reads as a failed load. */}
+            {data.post.body.trim() ? (
+              <AdminQuoteV3>{data.post.body}</AdminQuoteV3>
+            ) : (
+              <AdminQuoteV3 muted>{ADMIN.reports.noCaption}</AdminQuoteV3>
+            )}
+            {/* The picture is usually what was reported, so it is drawn
+                here rather than counted — the same call the emailed
+                review page makes. */}
+            {data.post.attachments?.length ? (
+              <MediaGallery items={data.post.attachments} onOpen={(index) => setViewing(index)} />
+            ) : null}
+          </AdminBlockV3>
+          {data.post.hiddenAt ? (
+            <AdminNoteV3 tone="warning" icon="eye-off">
+              {ADMIN.reports.postHidden}
+            </AdminNoteV3>
+          ) : null}
+          <Button
+            label={data.post.hiddenAt ? ADMIN.reports.unhide : ADMIN.reports.hide}
+            variant="secondary"
+            onPress={() =>
+              run(report.data?.post?.hiddenAt ? 'unhide_post' : 'hide_post', {
+                confirm: report.data?.post?.hiddenAt ? ADMIN.reports.unhide : ADMIN.reports.hide,
+              })
+            }
+          />
+        </>
+      ) : null}
+
+      {/* A comment report never names a post as well (the server keeps
+          them apart), so this sits where the post would have. The post
+          it was said under is context, with no button of its own. */}
+      {data.comment ? (
+        <>
+          <AdminHeadingV3
+            title={data.comment.isReply ? ADMIN.reports.commentReply : ADMIN.reports.comment}
+          />
+          {data.comment.postBody !== null ? (
+            <Text style={styles.context} numberOfLines={2}>
+              {ADMIN.reports.commentUnder(data.comment.postBody)}
+            </Text>
+          ) : null}
+          <AdminBlockV3>
+            <AdminQuoteV3>{data.comment.body ?? ADMIN.reports.commentRemoved}</AdminQuoteV3>
+          </AdminBlockV3>
+          {data.comment.hiddenAt ? (
+            <AdminNoteV3 tone="warning" icon="eye-off">
+              {ADMIN.reports.commentHidden}
+            </AdminNoteV3>
+          ) : null}
+          <Button
+            label={data.comment.hiddenAt ? ADMIN.reports.unhide : ADMIN.reports.hideComment}
+            variant="secondary"
+            onPress={() =>
+              run(report.data?.comment?.hiddenAt ? 'unhide_comment' : 'hide_comment', {
+                confirm: report.data?.comment?.hiddenAt
+                  ? ADMIN.reports.unhide
+                  : ADMIN.reports.hideComment,
+              })
+            }
+          />
+        </>
+      ) : null}
+
+      {/* A message report names no post, so it too sits where the post
+          would have. Its files are drawn, view-once ones included —
+          the app stops showing those to the person who received them,
+          and the server keeps them for exactly this screen. */}
+      {data.message ? (
+        <>
+          <AdminHeadingV3 title={ADMIN.reports.message} />
+          <AdminBlockV3>
+            {data.message.body.trim() ? (
+              <AdminQuoteV3>{data.message.body}</AdminQuoteV3>
+            ) : data.message.attachments.length === 0 ? (
+              <AdminQuoteV3 muted>{ADMIN.reports.noMessageText}</AdminQuoteV3>
+            ) : null}
+            {data.message.attachments.length ? (
+              <MediaGallery
+                items={data.message.attachments}
+                onOpen={(index) => setViewing(index)}
+              />
+            ) : null}
+          </AdminBlockV3>
+          {data.message.viewOnce ? (
+            <AdminNoteV3 tone="info" icon="eye">
+              {`${ADMIN.reports.viewOnce(data.message.viewOnce.replay, data.message.viewOnce.opens)}${
+                data.message.viewOnce.screenshotAt ? ` ${ADMIN.reports.viewOnceScreenshot}` : ''
+              }`}
+            </AdminNoteV3>
+          ) : null}
+          {data.message.deletedAt ? (
+            <AdminNoteV3 tone="warning" icon="trash-2">
+              {ADMIN.reports.messageDeleted}
+            </AdminNoteV3>
+          ) : null}
+        </>
+      ) : null}
+
+      {/* Whatever the report was raised from, if the two of them talked:
+          a message is rarely the case on its own, and a profile report
+          about somebody who wrote to you is about what they wrote. */}
+      {data.thread?.messages.length ? (
+        <>
+          <AdminHeadingV3 title={ADMIN.reports.thread} hint={ADMIN.reports.threadHint} />
+          <AdminRowsV3>
+            {data.thread.messages.map((line) => (
+              <View
+                key={line.id}
+                style={[styles.line, line.id === data.message?.id && styles.flagged]}
+              >
+                <Text style={styles.lineMeta}>
+                  {[
+                    line.senderId === reporter?.userId ? reporterShown : shown,
+                    line.createdAt.slice(0, 16).replace('T', ' '),
+                    ...(line.id === data.message?.id ? [ADMIN.reports.threadReported] : []),
+                  ].join(' · ')}
+                </Text>
+                <Text style={line.deleted ? styles.lineMuted : styles.lineBody}>
+                  {line.deleted
+                    ? ADMIN.reports.threadDeleted
+                    : [
+                        line.body.trim(),
+                        line.attachments || line.type !== 'text'
+                          ? ADMIN.reports.threadFiles(line.type, line.attachments)
+                          : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                </Text>
+              </View>
+            ))}
+          </AdminRowsV3>
+        </>
+      ) : null}
+
+      {/* A review report names neither a post nor a comment, so it too
+          sits where the post would have. Its author is the reported
+          account; whose profile it is on is said in the heading. The
+          owner's own hide is shown but is not this screen's to undo. */}
+      {data.testimonial ? (
+        <>
+          <AdminHeadingV3 title={ADMIN.reports.testimonial(onProfileOfShown)} />
+          <AdminBlockV3>
+            <AdminQuoteV3>{data.testimonial.body}</AdminQuoteV3>
+          </AdminBlockV3>
+          {data.testimonial.moderatorHiddenAt ? (
+            <AdminNoteV3 tone="warning" icon="eye-off">
+              {ADMIN.reports.testimonialRemoved}
+            </AdminNoteV3>
+          ) : data.testimonial.ownerHiddenAt ? (
+            <AdminCaptionV3>
+              {ADMIN.reports.testimonialOwnerHidden(onProfileOfShown)}
+            </AdminCaptionV3>
+          ) : null}
+          <Button
+            label={
+              data.testimonial.moderatorHiddenAt
+                ? ADMIN.reports.unhide
+                : ADMIN.reports.hideTestimonial
+            }
+            variant="secondary"
+            onPress={() =>
+              run(
+                report.data?.testimonial?.moderatorHiddenAt
+                  ? 'unhide_testimonial'
+                  : 'hide_testimonial',
+                {
+                  confirm: report.data?.testimonial?.moderatorHiddenAt
+                    ? ADMIN.reports.unhide
+                    : ADMIN.reports.hideTestimonial,
+                },
+              )
+            }
+          />
+        </>
+      ) : null}
+    </>
+  ) : null
+
+  const decisions = data ? (
+    <>
+      {/* Whoever filed it, and the thanks they can be given. Above the
+          account's buttons rather than among them: it is not part of the
+          decision, and deciding sends this screen back to the list. */}
+      <AdminHeadingV3 title={ADMIN.reports.reporter} />
+      <AdminBlockV3>
+        <Text style={styles.lineBody}>{reporterShown}</Text>
+        {data.reward ? (
+          <Text style={styles.rewarded}>{ADMIN.reports.rewarded(data.reward.amount)}</Text>
+        ) : (
+          <>
+            <AdminFieldV3
+              inBlock
+              label={ADMIN.reports.rewardAmount}
+              value={amount}
+              onChangeText={setAmount}
+              keyboardType="number-pad"
+            />
+            <Button
+              label={ADMIN.reports.reward(tokens)}
+              variant="secondary"
+              loading={reward.isPending}
+              onPress={() => void onReward(reporterShown)}
+            />
+          </>
+        )}
+      </AdminBlockV3>
+
+      {/* The account, and the heading is what keeps it from reading as
+          more of the post's buttons. */}
+      <AdminHeadingV3 title={ADMIN.reports.account} />
+      <AdminBlockV3>
+        <AdminSubheadingV3>{ADMIN.reports.warn}</AdminSubheadingV3>
+        {data.warning ? (
+          <AdminNoteV3 tone="info" icon="check">
+            {ADMIN.reports.warned(data.warning.at.slice(0, 10))}
+          </AdminNoteV3>
+        ) : (
+          <>
+            <AdminCaptionV3>{ADMIN.reports.warnHint}</AdminCaptionV3>
+            <AdminFieldV3
+              inBlock
+              value={warning}
+              onChangeText={setWarning}
+              multiline
+              numberOfLines={6}
+              accessibilityLabel={ADMIN.reports.warn}
+            />
+            <Button
+              label={ADMIN.reports.sendWarning}
+              variant="secondary"
+              disabled={warning.trim().length === 0}
+              loading={warn.isPending}
+              onPress={() => void onWarn(shown)}
+            />
+          </>
+        )}
+      </AdminBlockV3>
+      <AdminFieldV3
+        label={ADMIN.reports.days}
+        value={days}
+        onChangeText={setDays}
+        keyboardType="number-pad"
+      />
+      {/* Red for the two that cannot be taken back by this screen; every
+          one of the three asks before it acts. */}
+      <Button
+        label={ADMIN.reports.suspendDays}
+        variant="secondary"
+        onPress={() =>
+          run('suspend', {
+            confirm: ADMIN.reports.confirmSuspend(shown, numberOfDays),
+            days: numberOfDays,
+          })
+        }
+      />
+      <Button
+        label={ADMIN.reports.suspendPermanent}
+        variant="danger"
+        onPress={() => run('permanent', { confirm: ADMIN.reports.confirmPermanent(shown) })}
+      />
+      <Button
+        label={ADMIN.reports.dismiss}
+        variant="neutral"
+        onPress={() => run('dismiss', { confirm: ADMIN.reports.confirmDismiss })}
+      />
+    </>
+  ) : null
+
   return (
     <AdminGate>
-      <Screen scroll fluid>
-        <ScreenHeader
-          title={isAppeal ? ADMIN.appeals.title : ADMIN.reports.title}
-          onBack={() => goBackTo('/(app)/admin/reports')}
-        />
-
+      <AdminScreenV3
+        title={isAppeal ? ADMIN.appeals.title : ADMIN.reports.title}
+        back="/(app)/admin/reports"
+      >
         {(isAppeal ? appeals.isPending : report.isPending) ? (
           <View style={styles.loading}>
             <Skeleton height={40} />
@@ -166,26 +482,24 @@ export default function AdminCaseScreen() {
           appeal ? (
             <>
               <Text style={styles.subject}>{shown}</Text>
-              <Callout tone="warning">
-                <Text style={styles.calloutBody}>
-                  {appeal.permanent
-                    ? `${ADMIN.reports.inForce} (∞, ${appeal.reason})`
-                    : `${ADMIN.reports.inForce} (${appeal.until ?? ''}, ${appeal.reason})`}
-                </Text>
-              </Callout>
+              <AdminNoteV3 tone="warning">
+                {appeal.permanent
+                  ? `${ADMIN.reports.inForce} (∞, ${appeal.reason})`
+                  : `${ADMIN.reports.inForce} (${appeal.until ?? ''}, ${appeal.reason})`}
+              </AdminNoteV3>
 
-              <Text style={styles.heading}>{ADMIN.appeals.said}</Text>
-              <Card>
-                <Text style={styles.quote}>{appeal.text}</Text>
-              </Card>
+              <AdminHeadingV3 title={ADMIN.appeals.said} />
+              <AdminBlockV3>
+                <AdminQuoteV3>{appeal.text}</AdminQuoteV3>
+              </AdminBlockV3>
 
-              <FormField
+              <AdminFieldV3
                 label={ADMIN.reports.days}
                 value={days}
                 onChangeText={setDays}
                 keyboardType="number-pad"
               />
-              <View style={styles.actions}>
+              <AdminActionsV3>
                 <Button
                   label={ADMIN.appeals.shorten}
                   variant="secondary"
@@ -206,355 +520,23 @@ export default function AdminCaseScreen() {
                   variant="neutral"
                   onPress={() => run('keep', { confirm: ADMIN.appeals.confirmKeep })}
                 />
-              </View>
+              </AdminActionsV3>
             </>
           ) : (
-            <Callout tone="info">
-              <Text style={styles.calloutBody}>{ADMIN.appeals.empty}</Text>
-            </Callout>
+            <AdminNoteV3 tone="info">{ADMIN.appeals.empty}</AdminNoteV3>
           )
-        ) : report.data ? (
+        ) : data ? (
           <>
-            <Text style={styles.subject}>{shown}</Text>
-            <Text style={styles.muted}>{report.data.reason.replace(/_/g, ' ')}</Text>
-
-            {report.data.otherOpenReports ? (
-              <Callout tone="warning">
-                <Text style={styles.calloutBody}>
-                  {ADMIN.reports.otherReports(report.data.otherOpenReports)}
-                </Text>
-              </Callout>
-            ) : null}
-            {report.data.suspension ? (
-              <Callout tone="warning">
-                <Text style={styles.calloutBody}>{ADMIN.reports.inForce}</Text>
-              </Callout>
-            ) : null}
-            {report.data.earlierWarnings?.length ? (
-              <Callout tone="warning">
-                <Text style={styles.calloutBody}>
-                  {ADMIN.reports.warnedBefore(report.data.earlierWarnings.length)}
-                </Text>
-                {report.data.earlierWarnings.map((earlier) => (
-                  <Text key={earlier.at} style={styles.calloutBody}>
-                    {ADMIN.reports.warnedRow(
-                      earlier.at.slice(0, 10),
-                      earlier.reason.replace(/_/g, ' '),
-                    )}
-                  </Text>
-                ))}
-              </Callout>
-            ) : null}
-
-            <Text style={styles.heading}>{ADMIN.reports.details}</Text>
-            <Card>
-              <Text style={styles.quote}>{report.data.details ?? ADMIN.reports.noDetails}</Text>
-            </Card>
-
-            {report.data.post ? (
-              <>
-                <Text style={styles.heading}>{ADMIN.reports.post}</Text>
-                <Card>
-                  {/* A photo posted without words has nothing to quote, and an
-                      empty card reads as a failed load. */}
-                  {report.data.post.body.trim() ? (
-                    <Text style={styles.quote}>{report.data.post.body}</Text>
-                  ) : (
-                    <Text style={styles.muted}>{ADMIN.reports.noCaption}</Text>
-                  )}
-                  {/* The picture is usually what was reported, so it is drawn
-                      here rather than counted — the same call the emailed
-                      review page makes. */}
-                  {report.data.post.attachments?.length ? (
-                    <View style={styles.media}>
-                      <MediaGallery
-                        items={report.data.post.attachments}
-                        onOpen={(index) => setViewing(index)}
-                      />
-                    </View>
-                  ) : null}
-                </Card>
-                {report.data.post.hiddenAt ? (
-                  <Callout tone="warning">
-                    <Text style={styles.calloutBody}>{ADMIN.reports.postHidden}</Text>
-                  </Callout>
-                ) : null}
-                <View style={styles.actions}>
-                  <Button
-                    label={report.data.post.hiddenAt ? ADMIN.reports.unhide : ADMIN.reports.hide}
-                    variant="secondary"
-                    onPress={() =>
-                      run(report.data?.post?.hiddenAt ? 'unhide_post' : 'hide_post', {
-                        confirm: report.data?.post?.hiddenAt
-                          ? ADMIN.reports.unhide
-                          : ADMIN.reports.hide,
-                      })
-                    }
-                  />
-                </View>
-              </>
-            ) : null}
-
-            {/* A comment report never names a post as well (the server keeps
-                them apart), so this sits where the post would have. The post
-                it was said under is context, with no button of its own. */}
-            {report.data.comment ? (
-              <>
-                <Text style={styles.heading}>
-                  {report.data.comment.isReply ? ADMIN.reports.commentReply : ADMIN.reports.comment}
-                </Text>
-                {report.data.comment.postBody !== null ? (
-                  <Text style={styles.muted} numberOfLines={2}>
-                    {ADMIN.reports.commentUnder(report.data.comment.postBody)}
-                  </Text>
-                ) : null}
-                <Card>
-                  <Text style={styles.quote}>
-                    {report.data.comment.body ?? ADMIN.reports.commentRemoved}
-                  </Text>
-                </Card>
-                {report.data.comment.hiddenAt ? (
-                  <Callout tone="warning">
-                    <Text style={styles.calloutBody}>{ADMIN.reports.commentHidden}</Text>
-                  </Callout>
-                ) : null}
-                <View style={styles.actions}>
-                  <Button
-                    label={
-                      report.data.comment.hiddenAt
-                        ? ADMIN.reports.unhide
-                        : ADMIN.reports.hideComment
-                    }
-                    variant="secondary"
-                    onPress={() =>
-                      run(report.data?.comment?.hiddenAt ? 'unhide_comment' : 'hide_comment', {
-                        confirm: report.data?.comment?.hiddenAt
-                          ? ADMIN.reports.unhide
-                          : ADMIN.reports.hideComment,
-                      })
-                    }
-                  />
-                </View>
-              </>
-            ) : null}
-
-            {/* A message report names no post, so it too sits where the post
-                would have. Its files are drawn, view-once ones included —
-                the app stops showing those to the person who received them,
-                and the server keeps them for exactly this screen. */}
-            {report.data.message ? (
-              <>
-                <Text style={styles.heading}>{ADMIN.reports.message}</Text>
-                <Card>
-                  {report.data.message.body.trim() ? (
-                    <Text style={styles.quote}>{report.data.message.body}</Text>
-                  ) : report.data.message.attachments.length === 0 ? (
-                    <Text style={styles.muted}>{ADMIN.reports.noMessageText}</Text>
-                  ) : null}
-                  {report.data.message.attachments.length ? (
-                    <View style={styles.media}>
-                      <MediaGallery
-                        items={report.data.message.attachments}
-                        onOpen={(index) => setViewing(index)}
-                      />
-                    </View>
-                  ) : null}
-                </Card>
-                {report.data.message.viewOnce ? (
-                  <Callout tone="info">
-                    <Text style={styles.calloutBody}>
-                      {ADMIN.reports.viewOnce(
-                        report.data.message.viewOnce.replay,
-                        report.data.message.viewOnce.opens,
-                      )}
-                      {report.data.message.viewOnce.screenshotAt
-                        ? ` ${ADMIN.reports.viewOnceScreenshot}`
-                        : ''}
-                    </Text>
-                  </Callout>
-                ) : null}
-                {report.data.message.deletedAt ? (
-                  <Callout tone="warning">
-                    <Text style={styles.calloutBody}>{ADMIN.reports.messageDeleted}</Text>
-                  </Callout>
-                ) : null}
-              </>
-            ) : null}
-
-            {/* Whatever the report was raised from, if the two of them talked:
-                a message is rarely the case on its own, and a profile report
-                about somebody who wrote to you is about what they wrote. */}
-            {report.data.thread?.messages.length ? (
-              <>
-                <Text style={styles.heading}>{ADMIN.reports.thread}</Text>
-                <Text style={styles.hint}>{ADMIN.reports.threadHint}</Text>
-                <Card>
-                  <View style={styles.thread}>
-                    {report.data.thread.messages.map((line) => (
-                      <View
-                        key={line.id}
-                        style={line.id === report.data?.message?.id ? styles.flagged : undefined}
-                      >
-                        <Text style={styles.threadMeta}>
-                          {[
-                            line.senderId === reporter?.userId ? reporterShown : shown,
-                            line.createdAt.slice(0, 16).replace('T', ' '),
-                            ...(line.id === report.data?.message?.id
-                              ? [ADMIN.reports.threadReported]
-                              : []),
-                          ].join(' · ')}
-                        </Text>
-                        <Text style={line.deleted ? styles.muted : styles.quote}>
-                          {line.deleted
-                            ? ADMIN.reports.threadDeleted
-                            : [
-                                line.body.trim(),
-                                line.attachments || line.type !== 'text'
-                                  ? ADMIN.reports.threadFiles(line.type, line.attachments)
-                                  : '',
-                              ]
-                                .filter(Boolean)
-                                .join(' ')}
-                        </Text>
-                      </View>
-                    ))}
-                  </View>
-                </Card>
-              </>
-            ) : null}
-
-            {/* A review report names neither a post nor a comment, so it too
-                sits where the post would have. Its author is the reported
-                account; whose profile it is on is said in the heading. The
-                owner's own hide is shown but is not this screen's to undo. */}
-            {report.data.testimonial ? (
-              <>
-                <Text style={styles.heading}>{ADMIN.reports.testimonial(onProfileOfShown)}</Text>
-                <Card>
-                  <Text style={styles.quote}>{report.data.testimonial.body}</Text>
-                </Card>
-                {report.data.testimonial.moderatorHiddenAt ? (
-                  <Callout tone="warning">
-                    <Text style={styles.calloutBody}>{ADMIN.reports.testimonialRemoved}</Text>
-                  </Callout>
-                ) : report.data.testimonial.ownerHiddenAt ? (
-                  <Text style={styles.muted}>
-                    {ADMIN.reports.testimonialOwnerHidden(onProfileOfShown)}
-                  </Text>
-                ) : null}
-                <View style={styles.actions}>
-                  <Button
-                    label={
-                      report.data.testimonial.moderatorHiddenAt
-                        ? ADMIN.reports.unhide
-                        : ADMIN.reports.hideTestimonial
-                    }
-                    variant="secondary"
-                    onPress={() =>
-                      run(
-                        report.data?.testimonial?.moderatorHiddenAt
-                          ? 'unhide_testimonial'
-                          : 'hide_testimonial',
-                        {
-                          confirm: report.data?.testimonial?.moderatorHiddenAt
-                            ? ADMIN.reports.unhide
-                            : ADMIN.reports.hideTestimonial,
-                        },
-                      )
-                    }
-                  />
-                </View>
-              </>
-            ) : null}
-
-            {/* Whoever filed it, and the thanks they can be given. Above the
-                account's buttons rather than among them: it is not part of the
-                decision, and deciding sends this screen back to the list. */}
-            <Text style={styles.heading}>{ADMIN.reports.reporter}</Text>
-            <Text style={styles.muted}>{reporterShown}</Text>
-            {report.data.reward ? (
-              <Text style={styles.rewarded}>
-                {ADMIN.reports.rewarded(report.data.reward.amount)}
-              </Text>
-            ) : (
-              <>
-                <FormField
-                  label={ADMIN.reports.rewardAmount}
-                  value={amount}
-                  onChangeText={setAmount}
-                  keyboardType="number-pad"
-                />
-                <View style={styles.actions}>
-                  <Button
-                    label={ADMIN.reports.reward(tokens)}
-                    variant="secondary"
-                    loading={reward.isPending}
-                    onPress={() => void onReward(reporterShown)}
-                  />
-                </View>
-              </>
-            )}
-
-            {/* The account, and the heading is what keeps it from reading as
-                more of the post's buttons. */}
-            <Text style={styles.heading}>{ADMIN.reports.account}</Text>
-            <Text style={styles.subheading}>{ADMIN.reports.warn}</Text>
-            {report.data.warning ? (
-              <Callout tone="info">
-                <Text style={styles.calloutBody}>
-                  {ADMIN.reports.warned(report.data.warning.at.slice(0, 10))}
-                </Text>
-              </Callout>
-            ) : (
-              <>
-                <Text style={styles.hint}>{ADMIN.reports.warnHint}</Text>
-                <FormField value={warning} onChangeText={setWarning} multiline numberOfLines={6} />
-                <View style={styles.actions}>
-                  <Button
-                    label={ADMIN.reports.sendWarning}
-                    variant="secondary"
-                    disabled={warning.trim().length === 0}
-                    loading={warn.isPending}
-                    onPress={() => void onWarn(shown)}
-                  />
-                </View>
-              </>
-            )}
-            <FormField
-              label={ADMIN.reports.days}
-              value={days}
-              onChangeText={setDays}
-              keyboardType="number-pad"
-            />
-            <View style={styles.actions}>
-              <Button
-                label={ADMIN.reports.suspendDays}
-                variant="secondary"
-                onPress={() =>
-                  run('suspend', {
-                    confirm: ADMIN.reports.confirmSuspend(shown, numberOfDays),
-                    days: numberOfDays,
-                  })
-                }
-              />
-              <Button
-                label={ADMIN.reports.suspendPermanent}
-                variant="danger"
-                onPress={() => run('permanent', { confirm: ADMIN.reports.confirmPermanent(shown) })}
-              />
-              <Button
-                label={ADMIN.reports.dismiss}
-                variant="neutral"
-                onPress={() => run('dismiss', { confirm: ADMIN.reports.confirmDismiss })}
-              />
+            <View style={styles.subjectBlock}>
+              <Text style={styles.subject}>{shown}</Text>
+              <Text style={styles.reason}>{data.reason.replace(/_/g, ' ')}</Text>
             </View>
+            <AdminSplitV3 start={evidence} end={decisions} endWidth={440} />
           </>
         ) : (
-          <Callout tone="info">
-            <Text style={styles.calloutBody}>{ADMIN.reports.empty}</Text>
-          </Callout>
+          <AdminNoteV3 tone="info">{ADMIN.reports.empty}</AdminNoteV3>
         )}
-      </Screen>
+      </AdminScreenV3>
       <PhotoViewer
         // A report names a post or a message, never both.
         photos={report.data?.post?.attachments ?? report.data?.message?.attachments ?? []}
@@ -566,26 +548,23 @@ export default function AdminCaseScreen() {
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  loading: { gap: 12, marginTop: 16 },
-  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
-  subject: { fontSize: 22, fontWeight: '700', color: theme.colors.text, marginTop: 12 },
-  muted: { fontSize: 15, color: theme.colors.textMuted, marginBottom: 8 },
-  heading: {
-    marginTop: 24,
-    marginBottom: 8,
-    fontSize: 13,
-    fontWeight: '700',
-    color: theme.colors.textMuted,
-    textTransform: 'uppercase',
+const useStyles = makeStyles(({ v3 }) => ({
+  loading: { gap: v3.space[12] },
+  subjectBlock: { gap: v3.space[2] },
+  subject: { ...v3.type.headline, color: v3.colors.fg, paddingHorizontal: v3.space[4] },
+  reason: { ...v3.type.callout, color: v3.colors.muted, paddingHorizontal: v3.space[4] },
+  context: { ...v3.type.caption, color: v3.colors.muted, paddingHorizontal: v3.space[4] },
+  rewarded: { ...v3.type.button, color: v3.colors.fg },
+  line: {
+    borderTopColor: v3.colors.line,
+    borderTopWidth: 1,
+    gap: v3.space[2],
+    paddingHorizontal: v3.space[16],
+    paddingVertical: v3.space[10],
   },
-  quote: { fontSize: 15, color: theme.colors.text, lineHeight: 22 },
-  subheading: { fontSize: 15, fontWeight: '700', color: theme.colors.text, marginBottom: 4 },
-  hint: { fontSize: 13, color: theme.colors.textMuted, marginBottom: 8 },
-  rewarded: { fontSize: 15, fontWeight: '700', color: theme.colors.text },
-  actions: { gap: 12, marginTop: 16 },
-  media: { marginTop: 12 },
-  thread: { gap: 12 },
-  threadMeta: { fontSize: 12, color: theme.colors.textMuted, marginBottom: 2 },
-  flagged: { borderLeftWidth: 3, borderLeftColor: theme.colors.danger, paddingLeft: 8 },
+  lineMeta: { ...v3.type.label, color: v3.colors.muted },
+  lineBody: { ...v3.type.callout, color: v3.colors.fg },
+  lineMuted: { ...v3.type.callout, color: v3.colors.muted },
+  // The reported line, marked in the red the decisions wear.
+  flagged: { borderStartColor: v3.colors.danger, borderStartWidth: 4 },
 }))

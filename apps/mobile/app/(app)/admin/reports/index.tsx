@@ -3,15 +3,16 @@ import { useState } from 'react'
 import { FlatList, View } from 'react-native'
 import { useAdminAppeals, useAdminReports } from '../../../../src/api/queries'
 import { AdminGate } from '../../../../src/components/AdminGate'
-import { EmptyState } from '../../../../src/components/ui/EmptyState'
-import { ListRow } from '../../../../src/components/ui/ListRow'
-import { Screen } from '../../../../src/components/ui/Screen'
-import { ScreenHeader } from '../../../../src/components/ui/ScreenHeader'
+import {
+  AdminRowV3,
+  AdminScreenV3,
+  AdminSliceV3,
+} from '../../../../src/components/admin/AdminKitV3'
+import { EmptyNoteV3 } from '../../../../src/components/ui/EmptyStateV3'
 import { SegmentedControl } from '../../../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../../../src/components/ui/Skeleton'
 import { useScreenInteractive } from '../../../../src/hooks/useScreenInteractive'
 import { ADMIN } from '../../../../src/lib/adminStrings'
-import { goBackTo } from '../../../../src/lib/navigation'
 import { makeStyles } from '../../../../src/lib/theme'
 
 type Tab = 'open' | 'reviewing' | 'actioned' | 'dismissed' | 'appeals'
@@ -34,6 +35,9 @@ function who(handle: string | null, userId: string): string {
  * They are separate collections and separate decisions, but they are the same
  * job done in the same sitting, and two screens would have meant two places to
  * remember to look.
+ *
+ * Each row carries the reported account's initials on its partner hue, so the
+ * same name further down the queue is seen before it is read.
  */
 export default function AdminReportsScreen() {
   useScreenInteractive()
@@ -48,17 +52,13 @@ export default function AdminReportsScreen() {
 
   return (
     <AdminGate>
-      <Screen fluid>
-        <ScreenHeader title={ADMIN.reports.title} onBack={() => goBackTo('/(app)/admin')} />
-
-        <View style={styles.tabs}>
-          <SegmentedControl
-            options={TABS}
-            selected={[tab]}
-            onToggle={setTab}
-            accessibilityLabel={ADMIN.reports.title}
-          />
-        </View>
+      <AdminScreenV3 title={ADMIN.reports.title} back="/(app)/admin" scroll={false}>
+        <SegmentedControl
+          options={TABS}
+          selected={[tab]}
+          onToggle={setTab}
+          accessibilityLabel={ADMIN.reports.title}
+        />
 
         {pending ? (
           <View style={styles.loading}>
@@ -69,52 +69,64 @@ export default function AdminReportsScreen() {
           <FlatList
             data={appeals.data?.items ?? []}
             keyExtractor={(item) => item.userId}
-            ListEmptyComponent={<EmptyState icon="shield" title={ADMIN.appeals.empty} body="" />}
+            style={styles.list}
+            contentContainerStyle={styles.listContent}
+            ListEmptyComponent={<EmptyNoteV3 icon="shield" title={ADMIN.appeals.empty} body="" />}
             renderItem={({ item, index }) => (
-              <ListRow
-                title={who(item.handle, item.userId)}
-                subtitle={item.text.slice(0, 90)}
-                value={item.permanent ? '∞' : undefined}
-                onPress={() => router.push(`/(app)/admin/reports/appeal:${item.userId}`)}
-                last={index === (appeals.data?.items.length ?? 0) - 1}
-              />
+              <AdminSliceV3 index={index} count={appeals.data?.items.length ?? 0}>
+                <AdminRowV3
+                  title={who(item.handle, item.userId)}
+                  subtitle={item.text.slice(0, 90)}
+                  value={item.permanent ? '∞' : undefined}
+                  mark={{ id: item.userId, label: who(item.handle, item.userId) }}
+                  onPress={() => router.push(`/(app)/admin/reports/appeal:${item.userId}`)}
+                />
+              </AdminSliceV3>
             )}
           />
         ) : (
           <FlatList
             data={reports.data?.items ?? []}
             keyExtractor={(item) => item.id}
-            ListEmptyComponent={<EmptyState icon="shield" title={ADMIN.reports.empty} body="" />}
+            style={styles.list}
+            contentContainerStyle={styles.listContent}
+            ListEmptyComponent={<EmptyNoteV3 icon="shield" title={ADMIN.reports.empty} body="" />}
             renderItem={({ item, index }) => (
-              <ListRow
-                title={who(item.reported.handle, item.reported.userId)}
-                subtitle={`${item.reason.replace(/_/g, ' ')} · ${ADMIN.reports.reportedBy} ${who(
-                  item.reporter.handle,
-                  item.reporter.userId,
-                )}`}
-                value={
-                  item.warned
-                    ? ADMIN.reports.warnedTag
-                    : item.aboutPost
-                      ? ADMIN.reports.aboutPost
-                      : item.aboutComment
-                        ? ADMIN.reports.aboutComment
-                        : item.aboutTestimonial
-                          ? ADMIN.reports.aboutTestimonial
-                          : undefined
-                }
-                onPress={() => router.push(`/(app)/admin/reports/${item.id}`)}
-                last={index === (reports.data?.items.length ?? 0) - 1}
-              />
+              <AdminSliceV3 index={index} count={reports.data?.items.length ?? 0}>
+                <AdminRowV3
+                  title={who(item.reported.handle, item.reported.userId)}
+                  subtitle={`${item.reason.replace(/_/g, ' ')} · ${ADMIN.reports.reportedBy} ${who(
+                    item.reporter.handle,
+                    item.reporter.userId,
+                  )}`}
+                  value={
+                    item.warned
+                      ? ADMIN.reports.warnedTag
+                      : item.aboutPost
+                        ? ADMIN.reports.aboutPost
+                        : item.aboutComment
+                          ? ADMIN.reports.aboutComment
+                          : item.aboutTestimonial
+                            ? ADMIN.reports.aboutTestimonial
+                            : undefined
+                  }
+                  mark={{
+                    id: item.reported.userId,
+                    label: who(item.reported.handle, item.reported.userId),
+                  }}
+                  onPress={() => router.push(`/(app)/admin/reports/${item.id}`)}
+                />
+              </AdminSliceV3>
             )}
           />
         )}
-      </Screen>
+      </AdminScreenV3>
     </AdminGate>
   )
 }
 
-const useStyles = makeStyles(() => ({
-  tabs: { marginVertical: 12 },
-  loading: { gap: 12 },
+const useStyles = makeStyles(({ v3 }) => ({
+  loading: { gap: v3.space[12] },
+  list: { flex: 1 },
+  listContent: { paddingBottom: v3.space[32] },
 }))

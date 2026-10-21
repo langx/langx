@@ -7,6 +7,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
 import type { ApiError } from '../../lib/ApiError'
 import type { StructuredProvider, StructuredRequest } from '../official/assistantProvider'
+import { setCopilotAccess } from './access'
 import { claimCopilotCall } from './budget'
 import { recordCopilotConsent, withdrawCopilotConsent } from './consent'
 import { askCopilot, getCopilotStatus, type CopilotDeps, type CopilotQuestion } from './copilot'
@@ -26,6 +27,20 @@ class FakeModel implements StructuredProvider {
     }
     if (request.system === systemPromptFor('replyIdeas')) {
       return { ideas: [' Sounds good! ', 'What time?', '', 'See you then.', 'One too many.'] }
+    }
+    if (request.system === systemPromptFor('sayIt')) {
+      return {
+        options: [
+          { text: ' See you tomorrow? ', gloss: ' casual ' },
+          { text: '   ', gloss: 'empty' },
+          { text: 'Shall we meet tomorrow?', gloss: 'polite' },
+          { text: 'Tomorrow?', gloss: 'shorter' },
+          { text: 'One too many.', gloss: 'extra' },
+        ],
+      }
+    }
+    if (request.system === systemPromptFor('explainMessage')) {
+      return { explanation: '"brb" means "be right back".' }
     }
     return { explanation: '"an" comes before a vowel sound.' }
   }
@@ -54,10 +69,16 @@ describe('Copilot', () => {
   let partner: string
   let stranger: string
   let conversationId: string
+  let logged: object[]
 
   async function seedProfile(
     id: string,
-    overrides: { birthDate?: string; tier?: 'free' | 'pro'; consent?: number } = {},
+    overrides: {
+      birthDate?: string
+      tier?: 'free' | 'pro'
+      consent?: number
+      access?: boolean
+    } = {},
   ) {
     await handle.db.collection(COLLECTIONS.profiles).insertOne({
       _id: id as never,
@@ -71,6 +92,7 @@ describe('Copilot', () => {
       ...(overrides.consent !== undefined
         ? { copilotConsent: { version: overrides.consent, at: NOW } }
         : {}),
+      ...(overrides.access === false ? {} : { copilotAccess: { at: NOW } }),
     })
   }
 
@@ -131,7 +153,13 @@ describe('Copilot', () => {
       await handle.db.collection(name).deleteMany({})
     }
     model = new FakeModel()
-    deps = { db: handle.db, provider: model, enabled: true, log: { error: () => undefined } }
+    logged = []
+    deps = {
+      db: handle.db,
+      provider: model,
+      enabled: true,
+      log: { info: (fields) => logged.push(fields), error: () => undefined },
+    }
     me = 'me-user'
     partner = 'partner-user'
     stranger = 'stranger-user'
@@ -164,6 +192,43 @@ describe('Copilot', () => {
       const status = await getCopilotStatus({ ...deps, enabled: false }, me, NOW)
       expect(status).toMatchObject({ available: false, reason: 'off', consented: true })
       expect(status.quota.limit).toBe(PLAN_LIMITS.free.copilotPer24h)
+    })
+  })
+
+  describe('the allow-list', () => {
+    it('is off for an account the operator has not allowed, and asks nothing', async () => {
+      await setCopilotAccess(handle.db, me, false)
+      const error = await refusal(askCopilot(deps, me, 'en', check(), NOW))
+      expect(error.code).toBe('COPILOT_UNAVAILABLE')
+      expect(error.reason).toBe('off')
+      expect(model.asked).toHaveLength(0)
+      expect(await quotaUsed(me)).toBe(0)
+      expect(await getCopilotStatus(deps, me, NOW)).toMatchObject({
+        available: false,
+        reason: 'off',
+      })
+    })
+
+    it('is not granted by being an admin', async () => {
+      await setCopilotAccess(handle.db, me, false)
+      await handle.db
+        .collection(COLLECTIONS.profiles)
+        .updateOne({ _id: me as never }, { $set: { admin: true } })
+      expect((await refusal(askCopilot(deps, me, 'en', check(), NOW))).reason).toBe('off')
+    })
+
+    it('opens when allowed, and keeps the first date when allowed twice', async () => {
+      await setCopilotAccess(handle.db, me, false)
+      expect(await setCopilotAccess(handle.db, me, true, NOW)).toBe(true)
+      expect(await setCopilotAccess(handle.db, me, true, new Date('2026-10-19T00:00:00Z'))).toBe(
+        true,
+      )
+      const row = await handle.db
+        .collection<{ copilotAccess?: { at: Date } }>(COLLECTIONS.profiles)
+        .findOne({ _id: me as never })
+      expect(row?.copilotAccess?.at).toEqual(NOW)
+      expect((await askCopilot(deps, me, 'en', check(), NOW)).source).toBe('ai')
+      expect(await setCopilotAccess(handle.db, 'nobody', true, NOW)).toBe(false)
     })
   })
 
@@ -268,6 +333,141 @@ describe('Copilot', () => {
 
       // Check sends only the asker's own sentence.
       expect((await askCopilot(deps, me, 'en', check(), NOW)).source).toBe('ai')
+    })
+  })
+
+  describe('Explain on a message', () => {
+    function explain(messageId: string): CopilotQuestion {
+      return { action: 'explain', conversationId, messageId }
+    }
+
+    it("explains a partner's text, sending its body and nothing about who wrote it", async () => {
+      const id = await addMessage({ senderId: partner, body: 'brb, dinner' })
+      const answer = await askCopilot(deps, me, 'tr', explain(id), NOW)
+      expect(answer.result).toEqual({
+        action: 'explain',
+        explanation: '"brb" means "be right back".',
+      })
+      const request = model.asked[0]
+      expect(request?.system).toBe(systemPromptFor('explainMessage'))
+      expect(JSON.parse(request?.prompt ?? '{}')).toEqual({
+        level: 'Beginner',
+        readerLanguage: 'Turkish',
+        message: 'brb, dinner',
+      })
+      for (const leak of [me, partner, 'Name of', id]) expect(request?.prompt).not.toContain(leak)
+    })
+
+    it('clips a long message', async () => {
+      const id = await addMessage({ senderId: partner, body: 'a'.repeat(900) })
+      await askCopilot(deps, me, 'en', explain(id), NOW)
+      const turn = JSON.parse(model.asked[0]?.prompt ?? '{}') as { message: string }
+      expect(Array.from(turn.message)).toHaveLength(COPILOT_RULES.maxExplainChars + 1)
+    })
+
+    it('refuses your own text, a voice note, a view-once and a deleted message', async () => {
+      const ids = [
+        await addMessage({ senderId: me, body: 'my own words' }),
+        await addMessage({ senderId: partner, type: 'audio', body: '' }),
+        await addMessage({ senderId: partner, body: 'once', viewOnce: { opens: [] } }),
+        await addMessage({ senderId: partner, body: 'gone', deletedAt: NOW }),
+        await addMessage({ senderId: partner, body: 'hidden', hiddenFor: [me] }),
+      ]
+      for (const id of ids) {
+        const error = await refusal(askCopilot(deps, me, 'en', explain(id), NOW))
+        expect(error.code).toBe('VALIDATION_FAILED')
+      }
+      expect(model.asked).toHaveLength(0)
+      expect(await quotaUsed(me)).toBe(0)
+    })
+
+    it("never sends a 17-year-old partner's text", async () => {
+      await handle.db
+        .collection(COLLECTIONS.profiles)
+        .updateOne({ _id: partner as never }, { $set: { birthDate: SEVENTEEN } })
+      const id = await addMessage({ senderId: partner, body: 'brb' })
+      const error = await refusal(askCopilot(deps, me, 'en', explain(id), NOW))
+      expect(error.reason).toBe('partner_age')
+      expect(model.asked).toHaveLength(0)
+      expect(await quotaUsed(me)).toBe(0)
+    })
+  })
+
+  describe('Say it', () => {
+    function sayIt(text = 'Yarın görüşelim mi?', targetLanguage = 'en'): CopilotQuestion {
+      return { action: 'sayIt', conversationId, text, targetLanguage }
+    }
+
+    it("sends only the asker's own text, and offers at most the set number", async () => {
+      await addMessage({ senderId: partner, body: 'a line of the thread' })
+      const answer = await askCopilot(deps, me, 'tr', sayIt(), NOW)
+      expect(answer.result).toEqual({
+        action: 'sayIt',
+        options: [
+          { text: 'See you tomorrow?', gloss: 'casual' },
+          { text: 'Shall we meet tomorrow?', gloss: 'polite' },
+          { text: 'Tomorrow?', gloss: 'shorter' },
+        ],
+      })
+      const sent = model.asked[0]?.prompt ?? ''
+      expect(JSON.parse(sent)).toEqual({
+        text: 'Yarın görüşelim mi?',
+        targetLanguage: 'English',
+        level: 'Beginner',
+        readerLanguage: 'Turkish',
+      })
+      for (const leak of [me, partner, 'Name of', 'a line of the thread'])
+        expect(sent).not.toContain(leak)
+    })
+
+    it('does not ask about the partner, since none of their words are sent', async () => {
+      await handle.db
+        .collection(COLLECTIONS.profiles)
+        .updateOne({ _id: partner as never }, { $set: { birthDate: SEVENTEEN } })
+      expect((await askCopilot(deps, me, 'en', sayIt(), NOW)).source).toBe('ai')
+    })
+
+    it('refuses a language it does not know, before asking', async () => {
+      const error = await refusal(askCopilot(deps, me, 'en', sayIt('merhaba', 'xx'), NOW))
+      expect(error.code).toBe('VALIDATION_FAILED')
+      expect(model.asked).toHaveLength(0)
+    })
+
+    it('is no answer, and refunded, when every option is empty', async () => {
+      model.answer = () => ({ options: [{ text: ' ', gloss: 'x' }] })
+      const error = await refusal(askCopilot(deps, me, 'en', sayIt(), NOW))
+      expect(error.reason).toBe('no_answer')
+      expect(await quotaUsed(me)).toBe(0)
+    })
+  })
+
+  describe('the log line', () => {
+    it('says how each ask went, and never the text or an id', async () => {
+      const id = await addMessage({ senderId: partner, body: 'brb, dinner' })
+      await askCopilot(deps, me, 'en', check(), NOW)
+      await askCopilot(deps, me, 'en', check(), NOW)
+      await askCopilot(deps, me, 'en', { action: 'explain', conversationId, messageId: id }, NOW)
+      model.answer = () => {
+        throw new Error('timeout')
+      }
+      await refusal(askCopilot(deps, me, 'en', check('another'), NOW))
+
+      const line = (action: string, cached: boolean, outcome: string) => ({
+        action,
+        cached,
+        outcome,
+        ms: expect.any(Number) as unknown,
+        model: 'fake-model',
+      })
+      expect(logged).toEqual([
+        line('check', false, 'ok'),
+        line('check', true, 'ok'),
+        line('explain', false, 'ok'),
+        line('check', false, 'no_answer'),
+      ])
+      const text = JSON.stringify(logged)
+      for (const leak of [me, partner, id, conversationId, 'apple', 'brb', 'another'])
+        expect(text).not.toContain(leak)
     })
   })
 
@@ -468,7 +668,8 @@ describe('Copilot', () => {
       const wrong = await refusal(
         askCopilot(deps, me, 'en', { action: 'explain', conversationId, messageId: text }, NOW),
       )
-      expect(wrong.reason).toBe('not_a_correction')
+      expect(wrong.code).toBe('VALIDATION_FAILED')
+      expect(wrong.reason).toBe('not_explainable')
 
       const answer = await askCopilot(
         deps,

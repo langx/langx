@@ -1,7 +1,11 @@
+import Feather from '@expo/vector-icons/Feather'
 import { useState, type ReactNode } from 'react'
 import { Pressable, Text, TextInput, type TextInputProps, View } from 'react-native'
+import { useV3Home } from '../../hooks/useV3Home'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { useT } from '../../i18n'
+import { FieldV3 } from '../onboarding/WizardV3'
+import { ICON_BUTTON_TARGET } from './IconButton'
 
 interface FormFieldProps extends TextInputProps {
   /**
@@ -29,9 +33,10 @@ export function FormField({
   onBlur,
   ...inputProps
 }: FormFieldProps) {
-  const { colors } = useTheme()
+  const { colors, v3 } = useTheme()
   const styles = useStyles()
   const t = useT()
+  const v3Look = useV3Home()
   const used = typeof inputProps.value === 'string' ? inputProps.value.length : 0
   // Quiet until it matters. A counter on an empty field is noise; one at 90%
   // is a warning.
@@ -54,6 +59,62 @@ export function FormField({
    * state, and the two handlers wrapped so a caller's own still run.
    */
   const [focused, setFocused] = useState(false)
+
+  /*
+   * Under `flags.v3Home` the field is `FieldV3` — the grey pill with an ink
+   * edge while typed in — so the v3 screens still built on this one (Edit
+   * profile, Propose a time, a post's reply) stop drawing today's blue ring.
+   * The label row stays this component's own: `FieldV3` takes a string label
+   * and has no counter, and a caller's node label (the composer's language
+   * menu) and the `used / max` count both have to survive the move. The
+   * reveal is `PasswordFieldV3`'s eye, so the two v3 password fields agree.
+   */
+  if (v3Look) {
+    return (
+      <View style={styles.v3Container}>
+        {label || showCount ? (
+          <View style={styles.v3LabelRow}>
+            {typeof label === 'string' ? <Text style={styles.v3Label}>{label}</Text> : label}
+            {showCount ? (
+              <Text style={[styles.v3Count, used > maxLength ? styles.v3CountOver : null]}>
+                {used} / {maxLength}
+              </Text>
+            ) : null}
+          </View>
+        ) : null}
+        <FieldV3
+          autoCapitalize="none"
+          {...(typeof label === 'string' && !inputProps.accessibilityLabel
+            ? { accessibilityLabel: label }
+            : {})}
+          {...(maxLength !== undefined ? { maxLength } : {})}
+          {...inputProps}
+          error={error}
+          style={style}
+          {...(onFocus ? { onFocus } : {})}
+          {...(onBlur ? { onBlur } : {})}
+          secureTextEntry={secure && !revealed}
+          suffix={
+            secure ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t(revealed ? 'common.hidePassword' : 'common.showPassword')}
+                accessibilityState={{ selected: revealed }}
+                onPress={() => setRevealed((shown) => !shown)}
+                style={({ pressed }) => [styles.v3Reveal, pressed && styles.v3Pressed]}
+              >
+                <Feather
+                  name={revealed ? 'eye-off' : 'eye'}
+                  size={v3.icon.md}
+                  color={v3.colors.muted}
+                />
+              </Pressable>
+            ) : undefined
+          }
+        />
+      </View>
+    )
+  }
 
   return (
     <View style={styles.container}>
@@ -114,7 +175,7 @@ export function FormField({
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius }) => ({
+const useStyles = makeStyles(({ colors, font, radius, v3 }) => ({
   container: { gap: 8, width: '100%' },
   labelRow: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
   label: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
@@ -159,4 +220,23 @@ const useStyles = makeStyles(({ colors, font, radius }) => ({
   },
   revealText: { color: colors.accent, fontSize: 14, fontWeight: '600' },
   error: { ...font.caption, color: colors.danger, paddingHorizontal: 20 },
+
+  // `FieldV3`'s own label and spacing, with the count beside it.
+  v3Container: { gap: v3.space[6], width: '100%' },
+  v3LabelRow: {
+    alignItems: 'baseline',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: v3.space[4],
+  },
+  v3Label: { ...v3.type.buttonSmall, color: v3.colors.fg },
+  v3Count: { ...v3.type.caption, color: v3.colors.muted },
+  v3CountOver: { color: v3.colors.danger },
+  v3Reveal: {
+    alignItems: 'center',
+    height: ICON_BUTTON_TARGET,
+    justifyContent: 'center',
+    width: ICON_BUTTON_TARGET,
+  },
+  v3Pressed: { opacity: 0.6 },
 }))
