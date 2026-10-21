@@ -3219,6 +3219,7 @@ export const en = {
     ringing: 'Ringing…',
     connecting: 'Connecting…',
     reconnecting: 'Reconnecting…',
+    reconnectingHint: 'Hold on. The call picks up again by itself.',
     answer: 'Answer',
     answerNoCamera: 'Answer without camera',
     decline: 'Decline',
@@ -3233,6 +3234,13 @@ export const en = {
     returnToCall: 'Return to call',
     peerMuted: '{name} is muted',
     peerCameraOff: 'Camera off',
+    /** Over the feedback choices on a call's closing screen, in v3. */
+    howWasIt: 'How was it?',
+    /** The short words under a v3 call tile; the tile is read aloud by the full label. */
+    tile: {
+      camera: 'Camera',
+      flip: 'Switch',
+    },
     ended: 'Call ended',
     noAnswer: 'No answer',
     busy: '{name} can’t take a call right now',
