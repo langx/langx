@@ -11,7 +11,7 @@ import { router } from 'expo-router'
 import { useState } from 'react'
 import { View } from 'react-native'
 import {
-  useBadges,
+  useBadgesV3,
   useConversations,
   useEchoSummary,
   useEffectiveTier,
@@ -124,7 +124,8 @@ function MemberMe() {
   const me = useMe()
   const tokens = useTokens()
   const wallet = useWallet()
-  const badges = useBadges()
+  // The v3 catalogue, so this page counts what the v3 shelf it opens counts.
+  const badges = useBadgesV3()
   const echo = useEchoSummary()
   const viewers = useViewers()
   // The number on the bell: the tab badge's own cache entry, so the two agree.
@@ -399,7 +400,7 @@ interface ActiveBodyProps {
   black: boolean
   tokens: ReturnType<typeof useTokens>
   wallet: ReturnType<typeof useWallet>
-  badges: ReturnType<typeof useBadges>
+  badges: ReturnType<typeof useBadgesV3>
   echo: ReturnType<typeof useEchoSummary>
   viewers: ReturnType<typeof useViewers>
   ownProfile: ReturnType<typeof useProfile>
