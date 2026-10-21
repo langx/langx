@@ -36,6 +36,7 @@ import { CopilotLabel } from '../../../src/components/CopilotLabel'
 import { Button } from '../../../src/components/ui/Button'
 import { useAppConfig } from '../../../src/hooks/useAppConfig'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
+import { adminLookupKey, adminLookupState } from '../../../src/lib/adminLookup'
 import { ADMIN } from '../../../src/lib/adminStrings'
 import { makeStyles } from '../../../src/lib/theme'
 import { showToast } from '../../../src/lib/toast'
@@ -101,9 +102,18 @@ export default function AdminCopilotScreen() {
   const [lookup, setLookup] = useState('')
   const found = useAdminUser(lookup)
   useEffect(() => {
-    const timer = setTimeout(() => setLookup(handle.trim().replace(/^@/, '')), 400)
+    const timer = setTimeout(() => setLookup(adminLookupKey(handle)), 400)
     return () => clearTimeout(timer)
   }, [handle])
+  const lookupState = adminLookupState({
+    typed: handle,
+    lookup,
+    hasData: found.data !== undefined,
+    isFetching: found.isFetching,
+    error: found.error,
+  })
+  // Which account a button is pressing for, so only that one spins.
+  const pendingId = setAccess.isPending ? setAccess.variables?.userId : undefined
 
   const allow = (userId: string, next: boolean): void => {
     setAccess.mutate(
@@ -252,7 +262,7 @@ export default function AdminCopilotScreen() {
       {allowed.data && me.data && !meAllowed ? (
         <Button
           label={L.allowMe}
-          loading={setAccess.isPending}
+          loading={pendingId === me.data._id}
           onPress={() => me.data && allow(me.data._id, true)}
         />
       ) : null}
@@ -264,8 +274,8 @@ export default function AdminCopilotScreen() {
         autoCapitalize="none"
         autoCorrect={false}
       />
-      {lookup.length >= 2 ? (
-        found.data ? (
+      {lookupState === 'found' && found.data ? (
+        <>
           <AdminRowsV3>
             <AdminRowV3
               title={`${found.data.user.displayName} @${found.data.user.handle}`}
@@ -273,19 +283,26 @@ export default function AdminCopilotScreen() {
               mark={{ id: found.data.user.userId, label: found.data.user.displayName }}
             />
           </AdminRowsV3>
-        ) : (
-          <AdminCaptionV3>{found.isLoading ? ADMIN.common.loading : L.addNone}</AdminCaptionV3>
-        )
-      ) : null}
-      {found.data && lookup.length >= 2 && handle.trim().replace(/^@/, '') === lookup ? (
-        <Button
-          label={found.data.user.copilotAccess ? L.remove : L.allow}
-          variant={found.data.user.copilotAccess ? 'secondary' : 'primary'}
-          loading={setAccess.isPending}
-          onPress={() =>
-            found.data && allow(found.data.user.userId, !found.data.user.copilotAccess)
-          }
-        />
+          <Button
+            label={found.data.user.copilotAccess ? L.remove : L.allow}
+            variant={found.data.user.copilotAccess ? 'secondary' : 'primary'}
+            loading={pendingId === found.data.user.userId}
+            onPress={() =>
+              found.data && allow(found.data.user.userId, !found.data.user.copilotAccess)
+            }
+          />
+        </>
+      ) : lookupState === 'searching' ? (
+        <AdminCaptionV3>{L.addSearching}</AdminCaptionV3>
+      ) : lookupState === 'notFound' ? (
+        <AdminCaptionV3>{L.addNone}</AdminCaptionV3>
+      ) : lookupState === 'error' ? (
+        <>
+          <AdminNoteV3 tone="danger" icon="alert-triangle">
+            {L.addFailed}
+          </AdminNoteV3>
+          <Button label={L.addRetry} variant="secondary" onPress={() => void found.refetch()} />
+        </>
       ) : null}
       {allowed.data && allowedUsers.length === 0 ? (
         <AdminCaptionV3>{L.allowedEmpty}</AdminCaptionV3>
@@ -299,6 +316,16 @@ export default function AdminCopilotScreen() {
               mark={{ id: row.userId, label: row.displayName }}
               onPress={() =>
                 router.push(`/(app)/admin/users?q=${encodeURIComponent(row.username)}`)
+              }
+              action={
+                <Button
+                  label={L.removeShort}
+                  variant="secondary"
+                  size="small"
+                  style={{ width: 'auto' }}
+                  loading={pendingId === row.userId}
+                  onPress={() => allow(row.userId, false)}
+                />
               }
             />
           ))}

@@ -227,6 +227,7 @@ export function AdminRowV3({
   value,
   mark,
   onPress,
+  action,
   selected = false,
 }: {
   title: string
@@ -235,6 +236,8 @@ export function AdminRowV3({
   value?: string | undefined
   mark?: { id: string; label: string } | undefined
   onPress?: (() => void) | undefined
+  /** A small button at the row's end — the one thing done to this row without opening it. */
+  action?: ReactNode
   selected?: boolean
 }) {
   const styles = useStyles()
@@ -256,6 +259,7 @@ export function AdminRowV3({
           {value}
         </Text>
       ) : null}
+      {action}
       {onPress ? <Feather name={chevron} size={v3.icon.md} color={v3.colors.muted} /> : null}
     </>
   )

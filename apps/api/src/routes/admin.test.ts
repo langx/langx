@@ -1071,6 +1071,22 @@ describe('the operator panel', () => {
         target.userId,
       )
     })
+
+    it('finds a handle typed with capitals, an @ and spaces', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const target = await newUser()
+      const { handle } = (await get(admin, `/admin/users/${target.userId}`)).json<{
+        user: { handle: string }
+      }>().user
+
+      for (const typed of [handle.toUpperCase(), ` @${handle.toUpperCase()} `, `@${handle}`]) {
+        const found = await get(admin, `/admin/users?q=${encodeURIComponent(typed)}`)
+        expect(found.statusCode, typed).toBe(200)
+        expect(found.json<{ user: { userId: string } }>().user.userId).toBe(target.userId)
+      }
+      expect((await get(admin, '/admin/users?q=nobody_here')).statusCode).toBe(404)
+    })
   })
 
   describe('Copilot access', () => {

@@ -195,12 +195,21 @@ export async function listMembers(
 
 /** Handle, previous handle, user id, or the email address a support thread came from. */
 export async function findAdminUser(db: Db, q: string): Promise<Profile | null> {
-  const direct = await findProfileByHandleOrId(db, q, { includeDeleted: true })
+  const key = q.trim()
+  const direct = await findProfileByHandleOrId(db, key, { includeDeleted: true })
   if (direct) return direct
+  // Handles are stored lower case (`handleSchema`), but an operator types
+  // "@Sofia" the way the name is shown. The exact form goes first because an
+  // id is matched as typed.
+  const lower = key.toLowerCase()
+  if (lower !== key) {
+    const folded = await findProfileByHandleOrId(db, lower, { includeDeleted: true })
+    if (folded) return folded
+  }
 
   const user = await db
     .collection<{ _id: unknown; email: string }>(COLLECTIONS.user)
-    .findOne({ email: q.trim().toLowerCase() })
+    .findOne({ email: lower })
   if (!user) return null
   return db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: String(user._id) })
 }
