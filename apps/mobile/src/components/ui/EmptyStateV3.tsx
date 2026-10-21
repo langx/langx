@@ -167,12 +167,15 @@ export function EmptyNoteV3({
   body,
   actionLabel,
   onAction,
+  actionVariant = 'secondary',
 }: {
   icon: keyof typeof Feather.glyphMap
   title: string
   body: string
   actionLabel?: string | undefined
   onAction?: (() => void) | undefined
+  /** `primary` for `EmptyState`'s callers that make the action the page's job. */
+  actionVariant?: 'primary' | 'secondary'
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
@@ -186,7 +189,12 @@ export function EmptyNoteV3({
         <Text style={styles.noteBody}>{body}</Text>
       </View>
       {actionLabel && onAction ? (
-        <Button label={actionLabel} onPress={onAction} variant="secondary" style={styles.action} />
+        <Button
+          label={actionLabel}
+          onPress={onAction}
+          variant={actionVariant}
+          style={styles.action}
+        />
       ) : null}
     </View>
   )

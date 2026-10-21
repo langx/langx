@@ -1,5 +1,7 @@
 import {
   type AccountDeletionReason,
+  type AdminCopilotAccessRequest,
+  type AdminCopilotAccessRow,
   type GiftCodeRedeemResult,
   type FeedbackInput,
   type LinkPreviewResponse,
@@ -29,6 +31,10 @@ import {
   type MeetingStatus,
   type MessageAsk,
   type MessageCall,
+  type MessageGift,
+  type GiveStickerPackInput,
+  type StickerGiftOptions,
+  type StickerGiftResult,
   type BroadcastInteractive,
   type MessageInteractive,
   type PollResults,
@@ -263,6 +269,8 @@ export const keys = {
   tokens: ['tokens'] as const,
   tokenHistory: ['tokens', 'history'] as const,
   wallet: ['wallet'] as const,
+  /** Under `wallet`, so a purchase's invalidation refreshes who can be given a pack. */
+  stickerGiftOptions: (packId: string) => ['wallet', 'stickerGifts', packId] as const,
   badges: ['badges'] as const,
   referrals: ['referrals'] as const,
   /**
@@ -360,6 +368,7 @@ export const keys = {
   adminHeardAbout: () => ['admin', 'heard-about'] as const,
   adminMoney: (userId: string) => ['admin', 'money', userId] as const,
   adminMembers: (tier: string) => ['admin', 'members', tier] as const,
+  adminCopilotAccess: ['admin', 'copilot', 'access'] as const,
 }
 
 /**
@@ -1113,6 +1122,8 @@ export interface MessageDto {
   location?: { lat: number; lng: number; precision: SharedLocationPrecision; label?: string }
   /** The call this row records, when `type` is `call`. `senderId` is who placed it. */
   call?: MessageCall
+  /** The pack this row gave, when `type` is `gift`. `senderId` is who gave it. */
+  gift?: MessageGift
   /** Emoji → the users who chose it. Mutual: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which of them is mine, so the strip can show it selected. */
@@ -2446,6 +2457,39 @@ export function usePurchase() {
 }
 
 /**
+ * Who this pack can be given to, behind `flags.stickerGifts`. Not fetched
+ * while the switch is off or for a guest — the caller passes `enabled`.
+ */
+export function useStickerGiftOptions(packId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: keys.stickerGiftOptions(packId),
+    queryFn: () =>
+      api.get<StickerGiftOptions>(
+        `/me/wallet/sticker-gifts/options?packId=${encodeURIComponent(packId)}`,
+      ),
+    enabled,
+  })
+}
+
+/**
+ * Give a sticker pack to a chat partner. The caller mints `clientId` once per
+ * confirmation, so a retry of the same tap is answered with the same gift.
+ * The thread's row arrives over the socket like any message.
+ */
+export function useGiveStickerPack() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: GiveStickerPackInput) =>
+      api.post<StickerGiftResult>('/me/wallet/sticker-gifts', input),
+    onSuccess: (result) => {
+      // The wallet prefix covers the options above as well.
+      queryClient.setQueryData<Wallet>(keys.wallet, result.wallet)
+      void queryClient.invalidateQueries({ queryKey: keys.wallet })
+    },
+  })
+}
+
+/**
  * Wear an owned frame or title, or take it off (`null`).
  *
  * A profile write — `equipped` lives on the profile document — but the
@@ -3573,6 +3617,8 @@ export interface AdminUserDto {
     tokenFrozenAt: string | null
     suspension: { until: string; permanent: boolean; reason: string } | null
     counts: { reportsAgainst: number; reportsFiled: number; blockedBy: number }
+    /** On the operator's Copilot allow-list. */
+    copilotAccess: boolean
     actions: { action: string; adminId: string; at: string }[]
   }
   discovery: {
@@ -4081,6 +4127,28 @@ export function useAdminBulkSuspend() {
   return useMutation({
     mutationFn: (input: AdminBulkSuspendInput) =>
       api.post<AdminBulkSuspendResponse>('/admin/users/suspend-bulk', input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+/** Everybody the operator allowed to use Copilot, newest first. */
+export function useAdminCopilotAccess() {
+  return useQuery({
+    queryKey: keys.adminCopilotAccess,
+    queryFn: () => api.get<{ users: AdminCopilotAccessRow[] }>('/admin/copilot/access'),
+  })
+}
+
+/** The per-account Copilot switch. The whole `['admin']` prefix, like every panel write. */
+export function useSetAdminCopilotAccess() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { userId: string } & AdminCopilotAccessRequest) =>
+      api.post<AdminCopilotAccessRequest>(`/admin/users/${input.userId}/copilot`, {
+        allowed: input.allowed,
+      }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
     },

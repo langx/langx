@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { MINIMUM_AGE } from './age'
-import { copilotAgeAllows, COPILOT_RULES } from './copilot'
+import {
+  adminCopilotAccessRequestSchema,
+  copilotAgeAllows,
+  copilotResultSchema,
+  COPILOT_RULES,
+  copilotSayItRequestSchema,
+} from './copilot'
 import { DEFAULT_APP_CONFIG } from './appConfig'
 import { PLAN_LIMITS } from './limits'
 
@@ -44,5 +50,42 @@ describe("Copilot's switches and ceilings", () => {
     expect(pro).not.toBeNull()
     expect(pro ?? 0).toBeGreaterThan(free ?? 0)
     expect(COPILOT_RULES.globalCallsPerDay).toBeGreaterThan(pro ?? 0)
+  })
+})
+
+describe('Say it', () => {
+  const base = { conversationId: 'c1', text: 'Yarın görüşelim mi?', targetLanguage: 'en' }
+
+  it('takes a short line and a language code', () => {
+    expect(copilotSayItRequestSchema.parse({ ...base, text: '  hi  ' }).text).toBe('hi')
+    expect(copilotSayItRequestSchema.safeParse(base).success).toBe(true)
+  })
+
+  it('refuses an empty line, a paragraph, or no language', () => {
+    expect(copilotSayItRequestSchema.safeParse({ ...base, text: '   ' }).success).toBe(false)
+    expect(
+      copilotSayItRequestSchema.safeParse({
+        ...base,
+        text: 'a'.repeat(COPILOT_RULES.maxSayItChars + 1),
+      }).success,
+    ).toBe(false)
+    expect(copilotSayItRequestSchema.safeParse({ ...base, targetLanguage: 'e' }).success).toBe(
+      false,
+    )
+  })
+
+  it('answers with options, each with a gloss', () => {
+    const result = { action: 'sayIt', options: [{ text: 'See you tomorrow?', gloss: 'casual' }] }
+    expect(copilotResultSchema.safeParse(result).success).toBe(true)
+    expect(
+      copilotResultSchema.safeParse({ action: 'sayIt', options: [{ text: 'x' }] }).success,
+    ).toBe(false)
+  })
+})
+
+describe('the operator allow-list', () => {
+  it('takes a yes or a no, and nothing else', () => {
+    expect(adminCopilotAccessRequestSchema.safeParse({ allowed: true }).success).toBe(true)
+    expect(adminCopilotAccessRequestSchema.safeParse({ allowed: 'yes' }).success).toBe(false)
   })
 })

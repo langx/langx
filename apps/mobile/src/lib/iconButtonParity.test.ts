@@ -29,7 +29,8 @@ const SITES: Readonly<Record<string, number>> = {
   'app/(app)/echo/cards.tsx': 2,
   'app/(app)/echo/card/[id].tsx': 1,
   'app/(app)/view-once.tsx': 2,
-  'app/(app)/chat-camera.tsx': 3,
+  // chat-camera.tsx is not listed: its flag-on viewfinder lives in SnapCameraV3,
+  // held to the route by chatCameraV3.test.ts.
   'app/(app)/recap.tsx': 1,
   'src/components/PhotoViewer.tsx': 3,
   'src/components/PeopleSearch.tsx': 1,

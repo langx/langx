@@ -1,11 +1,19 @@
-import { leaderboardQuerySchema, purchaseSchema, streakLeaderboardQuerySchema } from '@langx/shared'
+import {
+  giveStickerPackSchema,
+  leaderboardQuerySchema,
+  purchaseSchema,
+  stickerGiftOptionsQuerySchema,
+  streakLeaderboardQuerySchema,
+} from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
-import { requireAuth } from '../middleware/requireAuth'
+import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
 import { getBadgeSummary } from '../modules/tokens/badges'
 import { getLeaderboard } from '../modules/tokens/leaderboard'
 import { getStreakLeaderboard } from '../modules/tokens/streakLeaderboard'
 import { claimGift } from '../modules/tokens/gift'
+import { getStickerGiftOptions, giveStickerPack } from '../modules/tokens/stickerGifts'
 import { getWallet, purchase } from '../modules/tokens/wallet'
+import { fanOutMessage } from '../ws/fanOut'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const leaderboardRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -52,6 +60,40 @@ export const leaderboardRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const result = await purchase(app.mongo.db, request.userId, request.body.sku)
       return reply.send(result)
+    },
+  )
+
+  /*
+   * Giving a sticker pack to a chat partner, behind `flags.stickerGifts`.
+   * Everything is decided in the repository functions — the switch included —
+   * so a client that draws the button by mistake still gets a refusal.
+   */
+  app.get(
+    '/me/wallet/sticker-gifts/options',
+    { preHandler: requireVerifiedEmail, schema: { querystring: stickerGiftOptionsQuerySchema } },
+    async (request, reply) => {
+      return reply.send(
+        await getStickerGiftOptions(app.mongo.db, request.userId, request.query.packId),
+      )
+    },
+  )
+
+  app.post(
+    '/me/wallet/sticker-gifts',
+    {
+      preHandler: requireVerifiedEmail,
+      schema: { body: giveStickerPackSchema },
+      config: { rateLimit: { max: 10, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const given = await giveStickerPack(app.mongo.db, request.userId, request.body)
+      // The gift's row reaches both of them live and knocks if the recipient
+      // is away — the one funnel every message takes. Only once: a retry
+      // answered from its client id was announced by the first attempt.
+      if (given.created) {
+        void fanOutMessage(app, app.io, given.conversation, given.message, { pushWhenAway: true })
+      }
+      return reply.send(given.result)
     },
   )
 

@@ -193,10 +193,6 @@ If you find a security vulnerability, please email
 This work is based on data from [GeoNames](https://www.geonames.org/), licensed
 under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
-Half of the starter sticker pack is from
-[Fluent Emoji](https://github.com/microsoft/fluentui-emoji), © Microsoft
-Corporation, licensed under MIT.
-
 See [`docs/data-sources.md`](docs/data-sources.md).
 
 ## License

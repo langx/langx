@@ -8,6 +8,7 @@ import Animated, {
   withTiming,
   type SharedValue,
 } from 'react-native-reanimated'
+import { useV3Home } from '../hooks/useV3Home'
 import { useT } from '../i18n'
 import { LIFT_AFTER_MS } from '../lib/dragReorder'
 import { nearestSlot, offsetTo, shiftedIndex, type Slot } from '../lib/gridReorder'
@@ -128,7 +129,9 @@ function DraggablePhoto({
   onHold: (index: number) => void
   onMove: (from: number, to: number) => void
 }) {
-  const styles = useStyles()
+  const current = useStyles()
+  const redesigned = useStylesV3()
+  const styles = useV3Home() ? redesigned : current
   const t = useT()
 
   const lift = (): void => void impact('light')
@@ -239,4 +242,12 @@ function DraggablePhoto({
 
 const useStyles = makeStyles(({ colors }) => ({
   photo: { backgroundColor: colors.fill, borderRadius: 14 },
+}))
+
+/**
+ * V-EditProfile's tile: the 16pt corner the "+" beside it already has, and
+ * the redesign's surface behind a picture that has not decoded yet.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  photo: { backgroundColor: v3.colors.surface, borderRadius: 16 },
 }))

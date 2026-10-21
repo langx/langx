@@ -9,6 +9,7 @@ import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { invalidateAppConfigCache, updateAppConfig } from '../modules/appConfig/appConfig'
+import { setCopilotAccess } from '../modules/copilot/access'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { StructuredProvider, StructuredRequest } from '../modules/official/assistantProvider'
 import { createStorageProvider } from '../storage/createStorageProvider'
@@ -34,6 +35,7 @@ describe('Copilot over HTTP', () => {
   let emailSender: CapturingEmailSender
   let model: FakeModel
   let cookie: string
+  let userId: string
   let conversationId: string
 
   async function setFlag(copilotEnabled: boolean) {
@@ -94,6 +96,7 @@ describe('Copilot over HTTP', () => {
       name: 'Copilot',
     })
     cookie = user.cookie
+    userId = user.userId
     const profile = await app.inject({
       method: 'POST',
       url: '/profiles',
@@ -114,6 +117,7 @@ describe('Copilot over HTTP', () => {
       createdAt: new Date(),
     })
     conversationId = conversation.insertedId.toHexString()
+    await setCopilotAccess(handle.db, user.userId, true)
   }, 120_000)
 
   afterEach(async () => {
@@ -152,6 +156,36 @@ describe('Copilot over HTTP', () => {
     const response = await check()
     expect(response.statusCode).toBe(503)
     expect(response.json()).toMatchObject({ code: 'COPILOT_UNAVAILABLE', reason: 'off' })
+    expect(model.asked).toHaveLength(0)
+  })
+
+  it('is off for an account not on the allow-list, with the switch on', async () => {
+    await setFlag(true)
+    await setCopilotAccess(handle.db, userId, false)
+    try {
+      const status = await app.inject({ method: 'GET', url: '/copilot', headers: { cookie } })
+      expect(status.json()).toMatchObject({ available: false, reason: 'off' })
+      const response = await check()
+      expect(response.statusCode).toBe(503)
+      expect(response.json()).toMatchObject({ code: 'COPILOT_UNAVAILABLE', reason: 'off' })
+      expect(model.asked).toHaveLength(0)
+    } finally {
+      await setCopilotAccess(handle.db, userId, true)
+    }
+  })
+
+  it('validates Say it before anything else', async () => {
+    await setFlag(true)
+    const sayIt = (payload: Record<string, unknown>) =>
+      app.inject({ method: 'POST', url: '/copilot/say-it', headers: { cookie }, payload })
+    const long = await sayIt({
+      conversationId,
+      text: 'a'.repeat(COPILOT_RULES.maxSayItChars + 1),
+      targetLanguage: 'en',
+    })
+    expect(long.statusCode).toBe(400)
+    const noLanguage = await sayIt({ conversationId, text: 'merhaba' })
+    expect(noLanguage.statusCode).toBe(400)
     expect(model.asked).toHaveLength(0)
   })
 
