@@ -20,8 +20,8 @@
  * new card gets: `session.tsx` keys the provider by card.
  */
 import Feather from '@expo/vector-icons/Feather'
-import type { AudioPlayer } from 'expo-audio'
-import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { useAudioPlayerStatus, type AudioPlayer } from 'expo-audio'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Pressable, Text } from 'react-native'
 import { useT } from '../../i18n'
@@ -107,8 +107,75 @@ export function PlayAgainButton() {
   )
 }
 
-const useStyles = makeStyles(({ colors }) => ({
+/**
+ * The same button in the redesign's look (`V-EchoSession`): a pill on the
+ * card's block. On a partner's hue it is ink on a soft ink wash, as
+ * everything on a hue is; on a plain block it is the text colour on `line`.
+ */
+export function PlayAgainButtonV3({ onHue }: { onHue: boolean }) {
+  const styles = useStyles()
+  const { v3 } = useTheme()
+  const t = useT()
+  const last = useContext(PlayAgainContext)?.last
+  if (!last) return null
+  const ink = onHue ? v3.colors.ink : v3.colors.fg
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={t('echo.playAgain')}
+      onPress={() => void last()}
+      style={({ pressed }) => [
+        styles.pillV3,
+        onHue ? styles.pillV3OnHue : styles.pillV3Plain,
+        pressed && styles.pressed,
+      ]}
+    >
+      <Feather name="rotate-ccw" size={v3.icon.md} color={ink} />
+      <Text style={[styles.labelV3, { color: ink }]}>{t('echo.playAgain')}</Text>
+    </Pressable>
+  )
+}
+
+/**
+ * Plays the take once, as soon as it can, when the card asked for it.
+ *
+ * Waits for `isLoaded` rather than calling `play()` from a mount effect: the
+ * player starts fetching on creation, and a play asked of a source still on
+ * its way is not something every platform underneath promises to remember.
+ * The first card of a session is exactly the one that has not loaded yet.
+ * Once, by ref, so a status tick after the take ends does not start it again.
+ *
+ * Here rather than in `session.tsx` so that the session's two drawings —
+ * today's and the redesign's — share the one definition.
+ */
+export function useAutoplay(player: AudioPlayer, wanted: boolean): void {
+  const status = useAudioPlayerStatus(player)
+  const played = useRef(false)
+  useEffect(() => {
+    if (!wanted || played.current || !status.isLoaded) return
+    played.current = true
+    void ensurePlaybackAudioMode().then(() => {
+      void player.seekTo(0)
+      player.play()
+    })
+  }, [wanted, status.isLoaded, player])
+}
+
+const useStyles = makeStyles(({ colors, v3 }) => ({
   button: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   label: { color: colors.accent, fontSize: 13, fontWeight: '600' },
   pressed: { opacity: 0.6 },
+  pillV3: {
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    borderRadius: v3.radius.pill,
+    flexDirection: 'row',
+    gap: v3.space[8],
+    minHeight: 44,
+    paddingEnd: v3.space[16],
+    paddingStart: v3.space[12],
+  },
+  pillV3OnHue: { backgroundColor: 'rgba(20, 22, 27, 0.12)' },
+  pillV3Plain: { backgroundColor: v3.colors.line },
+  labelV3: { ...v3.type.buttonSmall },
 }))
