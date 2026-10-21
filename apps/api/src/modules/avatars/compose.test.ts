@@ -237,6 +237,32 @@ describe('renderDefaultAvatar', () => {
     expect(renderLoad()).toEqual({ running: 0, waiting: 0, inFlight: 0 })
   })
 
+  /*
+   * The picker's whole grid, cold. resvg scans every system font on each
+   * render unless told not to, and that scan was ~600ms a face on a Mac: a
+   * fresh process took most of a minute to fill this grid through two slots.
+   * Faces carry no text (the manifest test above keeps them flat), so the
+   * renderer skips the scan, and the grid is milliseconds.
+   */
+  it('fills a cold picker grid quickly, because a face needs no fonts', async () => {
+    for (const [name, svg] of lib.parts) expect(svg, name).not.toMatch(/<text\b|font-family/)
+    clearAvatarCache()
+    const started = performance.now()
+    for (const pool of DEFAULT_AVATAR_POOLS) {
+      await Promise.all(
+        Array.from({ length: 16 }, (_, i) =>
+          renderDefaultAvatar({
+            avatar: { pool, index: i + 1, ground: i % 6 },
+            size: 160,
+            cut: 'flat',
+          }),
+        ),
+      )
+    }
+    // 48 faces. With the font scan this was well over ten seconds on a Mac.
+    expect(performance.now() - started).toBeLessThan(3000)
+  })
+
   it('refuses a face outside the pool', async () => {
     await expect(
       renderDefaultAvatar({ avatar: { pool: 'N', index: 49, ground: 0 }, size: 48, cut: 'small' }),
