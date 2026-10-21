@@ -185,6 +185,7 @@ export function MessageMenuHost() {
             key={emoji}
             accessibilityRole="button"
             accessibilityLabel={t('messageMenu.reactWith', { emoji })}
+            hitSlop={v3Look ? EMOJI_SLOP : undefined}
             onPress={() => resolveMessageMenu(request.id, { kind: 'reaction', emoji })}
             style={[styles.emoji, request.myReaction === emoji && styles.emojiChosen]}
           >
@@ -195,6 +196,7 @@ export function MessageMenuHost() {
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={t('messageMenu.moreReactions')}
+        hitSlop={v3Look ? EMOJI_SLOP : undefined}
         onPress={() => setPicking(true)}
         style={[styles.emoji, styles.stripPlus]}
       >
@@ -439,6 +441,20 @@ const stripWidthFor = (count: number): number =>
  */
 const HERO_TEXT = { fontSize: 48, lineHeight: 58 } as const
 
+/**
+ * The strip's emoji, in both looks. An emoji is a picture set in a 38 cell
+ * the two looks share, not a line of type: v3's nearest step (headline, 22)
+ * shrank it inside an unchanged cell.
+ */
+const EMOJI_TEXT = { fontSize: 24, lineHeight: 30 } as const
+
+/**
+ * Lifts a 38 cell to v3's 44pt target without moving it: 3 above and below
+ * stays inside the strip's 6 of padding, so a press never lands outside the
+ * scroll that holds the cell (Android drops those).
+ */
+const EMOJI_SLOP = { top: 3, bottom: 3 } as const
+
 const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
   action: {
     alignItems: 'center',
@@ -538,7 +554,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   },
   // Blue carries everything chosen in v3; a grey fill would read as disabled.
   emojiChosen: { backgroundColor: colors.accentBg },
-  emojiGlyph: { fontSize: 24, lineHeight: 30 },
+  emojiGlyph: EMOJI_TEXT,
   copy: {
     borderRadius: 20,
     paddingHorizontal: 16,
@@ -669,7 +685,7 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
   },
   // A pill behind a glyph rather than the ink one: an emoji on ink is a hole.
   emojiChosen: { backgroundColor: v3.colors.tabOn },
-  emojiGlyph: { fontSize: v3.type.headline.fontSize, lineHeight: 30 },
+  emojiGlyph: EMOJI_TEXT,
   copy: {
     borderRadius: v3.radius.tile,
     paddingHorizontal: v3.space[14],

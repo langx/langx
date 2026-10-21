@@ -33,6 +33,17 @@ const TAB_ICONS: Record<Tab, string> = {
 const COLUMNS = 8
 const CELL = 40
 const ROWS = 6
+/**
+ * The picker's emoji, in both looks: a picture in the grid's 40 cell, which
+ * the two looks share, not a line of type.
+ */
+const GLYPH_TEXT = { fontSize: 26, lineHeight: 32 } as const
+/**
+ * Ten tabs leave no room to widen a 32pt tab, so v3 lifts it to the 44pt
+ * target in height only: 6 above and below stays inside the 8 that separate
+ * the row from the search pill and the grid.
+ */
+const TAB_SLOP = { top: 6, bottom: 6 } as const
 
 /**
  * Every emoji, for a reaction the strip does not carry. Opened by the strip's
@@ -106,6 +117,7 @@ export function ReactionPicker({ onPick }: { onPick: (emoji: string) => void }) 
               accessibilityRole="tab"
               accessibilityLabel={t(`messageMenu.emojiGroups.${id}`)}
               accessibilityState={{ selected: tab === id }}
+              hitSlop={v3Look ? TAB_SLOP : undefined}
               onPress={() => setTab(id)}
               style={[styles.tab, tab === id && styles.tabChosen]}
             >
@@ -189,7 +201,7 @@ const useStyles = makeStyles(({ colors, spacing, radius }) => ({
     width: `${100 / COLUMNS}%`,
   },
   cellPressed: { backgroundColor: colors.fill },
-  glyph: { fontSize: 26, lineHeight: 32 },
+  glyph: GLYPH_TEXT,
   empty: {
     color: colors.textMuted,
     fontSize: 15,
@@ -243,7 +255,7 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
     width: `${100 / COLUMNS}%`,
   },
   cellPressed: { backgroundColor: v3.colors.surface },
-  glyph: { fontSize: v3.type.headline.fontSize, lineHeight: 32 },
+  glyph: GLYPH_TEXT,
   empty: {
     ...v3.type.callout,
     color: v3.colors.muted,
