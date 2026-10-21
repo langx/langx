@@ -100,7 +100,10 @@ import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
 import { chooseAlert, confirmAlert, showAlert } from '../lib/alert'
 import { emitWithAck, emitWithAward, getSocket, onSocket } from '../lib/socket'
 import { streakShareText } from '../lib/shareText'
-import { threadRewards, type ThreadReward } from '../lib/threadRewards'
+import { rewardReason, threadRewards, type ThreadReward } from '../lib/threadRewards'
+import { RewardToast, useRewardQueue } from '../components/ui/RewardToast'
+import { EntranceV3 } from '../proto/EntranceV3'
+import { entranceVariant, rewardVariant } from '../proto/protoVariant'
 import { typingIndicator } from '../lib/typingIndicator'
 import {
   addUnsent,
@@ -288,9 +291,23 @@ export function ChatScreen({
     if (!v3Thread) return
     const chips = threadRewards(award, kind)
     if (chips.length === 0) return
+    // PROTOTYPE: the RewardToast question — toast instead of, or as well as, the chips.
+    if (protoReward !== 'chip') {
+      for (const chip of chips) {
+        rewardQueue.show({
+          amount: chip.amount,
+          reason: rewardReason(t, chip, partner?.displayName ?? t('chat.them')),
+          haptic: true,
+        })
+      }
+      if (protoReward === 'toast') return
+    }
     setRewards((all) => ({ ...all, [messageId]: { chips, at: Date.now() } }))
     if (chips.some((chip) => chip.kind === 'streak')) setCelebrating(messageId)
   }
+  const protoReward = useMemo(rewardVariant, [])
+  const protoEntrance = useMemo(entranceVariant, [])
+  const rewardQueue = useRewardQueue()
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()
@@ -565,17 +582,25 @@ export function ChatScreen({
   const viewerId = me.data?._id
   const threadItems = useMemo<MessageDto[]>(() => {
     if (!viewerId || outgoing.length === 0) return items
-    const standIns: MessageDto[] = outgoing.map((message) => ({
-      _id: outgoingId(message.clientId),
-      conversationId,
-      senderId: viewerId,
-      type: 'text',
-      body: message.body,
-      clientId: message.clientId,
-      createdAt: message.sentAt,
-      ...(message.replyTo ? { replyTo: message.replyTo } : {}),
-      ...(message.ask ? { ask: message.ask } : {}),
-    }))
+    /*
+     * PROTOTYPE: the stand-in is dropped on the render its echo arrives in,
+     * not one effect later, so the sentence is never on screen twice (today:
+     * `retireArrived` runs after the render that already holds both).
+     */
+    const arrived = new Set(items.map((message) => message.clientId).filter(Boolean))
+    const standIns: MessageDto[] = outgoing
+      .filter((message) => !arrived.has(message.clientId))
+      .map((message) => ({
+        _id: outgoingId(message.clientId),
+        conversationId,
+        senderId: viewerId,
+        type: 'text',
+        body: message.body,
+        clientId: message.clientId,
+        createdAt: message.sentAt,
+        ...(message.replyTo ? { replyTo: message.replyTo } : {}),
+        ...(message.ask ? { ask: message.ask } : {}),
+      }))
     return [...standIns, ...items]
   }, [items, outgoing, viewerId, conversationId])
   const unreadMark = useMemo(
@@ -586,6 +611,37 @@ export function ChatScreen({
     [unreadAtOpen, conversationId, viewerId],
   )
   const rows = useMemo(() => messageRows(threadItems, unreadMark), [threadItems, unreadMark])
+  /*
+   * PROTOTYPE: which rows arrived live, and when. The first loaded page is
+   * history; after that only a message newer than the newest one already
+   * seen counts — an older page scrolled into view never does. Keyed by
+   * `clientId` where there is one, so the stand-in and its echo are one
+   * arrival, not two.
+   */
+  const entrance = useRef<{ seen: Set<string>; newest: number; at: Map<string, number> } | null>(
+    null,
+  )
+  useMemo(() => {
+    if (thread.isPending || jumpAnchor) return
+    const keyOf = (m: MessageDto): string => m.clientId ?? String(m._id)
+    if (!entrance.current) {
+      entrance.current = {
+        seen: new Set(threadItems.map(keyOf)),
+        newest: Math.max(0, ...threadItems.map((m) => Date.parse(m.createdAt))),
+        at: new Map(),
+      }
+      return
+    }
+    const state = entrance.current
+    for (const message of threadItems) {
+      const key = keyOf(message)
+      if (state.seen.has(key)) continue
+      state.seen.add(key)
+      const created = Date.parse(message.createdAt)
+      if (created >= state.newest) state.at.set(key, Date.now())
+      state.newest = Math.max(state.newest, created)
+    }
+  }, [threadItems, thread.isPending, jumpAnchor])
   /*
    * The newest call's row, which alone offers to call again. Every row
    * offering it turned a thread of six calls into six identical links, and
@@ -3180,7 +3236,14 @@ export function ChatScreen({
               <FlatList
                 ref={listRef}
                 data={rows}
-                keyExtractor={(row) => row.key}
+                // PROTOTYPE: by `clientId` where there is one, so the echo takes
+                // over the stand-in's cell instead of remounting a second bubble
+                // (today: `messageGroups.ts` keys by `_id`, which changes).
+                keyExtractor={(row) =>
+                  row.kind === 'message' && row.message.clientId
+                    ? `c:${row.message.clientId}`
+                    : row.key
+                }
                 contentContainerStyle={styles.list}
                 /**
                  * The newest message sits at offset 0, and the list grows upward.
@@ -3411,65 +3474,76 @@ export function ChatScreen({
                         v3Thread && celebrating === row.message._id ? rowCelebration : undefined
                       }
                     >
-                      <MessageBubble
-                        message={row.message}
+                      <EntranceV3
+                        variant={v3Thread ? protoEntrance : 'none'}
+                        at={entrance.current?.at.get(
+                          row.message.clientId ?? String(row.message._id),
+                        )}
                         mine={isMine(row.message)}
-                        endsGroup={row.endsGroup}
-                        partnerName={partner?.displayName ?? t('chat.them')}
-                        translation={translations[row.message._id]}
-                        translating={translating === row.message._id}
-                        romanization={romanizations[row.message._id]}
-                        romanizing={romanizing === row.message._id}
-                        speaking={speaking === row.message._id}
-                        hasReading={speech[row.message._id] !== undefined}
-                        onReplayReading={onReplayReading}
-                        transcript={transcripts[row.message._id]}
-                        transcribing={transcribing === row.message._id}
-                        {...(transcriptService && !isOutgoingId(row.message._id)
-                          ? { onShowText }
-                          : {})}
-                        highlighted={highlighted === row.message._id}
-                        askAnswered={answeredAsks.has(row.message._id)}
-                        onAnswerAsk={onAnswerAsk}
-                        onRespondMeeting={onRespondMeeting}
-                        onAnswerQuiz={onAnswerQuiz}
-                        onAnswerPoll={onAnswerPoll}
-                        onCardAction={onCardAction}
-                        onAddToCalendar={onAddToCalendar}
-                        meetingWhen={meetingWhenFor(row.message)}
-                        meetingLength={meetingLengthFor(row.message)}
-                        meetingTheirWhen={meetingTheirWhenFor(row.message)}
-                        pending={isOutgoingId(row.message._id)}
-                        onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
-                        onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
-                        onReply={isOutgoingId(row.message._id) ? ignore : onReply}
-                        canReply={!readOnly}
-                        onReact={isOutgoingId(row.message._id) ? ignore : onReact}
-                        /*
-                         * The same pair the menu's emoji strip is hidden for, and
-                         * for the same reason: the server refuses a reaction to a
-                         * withdrawn message and to an official channel, so offering
-                         * the gesture there would end in an alert.
-                         */
-                        canReact={!readOnly && !row.message.deleted && !isServerRecord(row.message)}
-                        // Only on the newest call, and not where a call cannot be
-                        // placed from here at all: then a row is only a record.
-                        onCallBack={
-                          callGate !== 'hidden' && row.message._id === newestCallId
-                            ? onCallBack
-                            : undefined
-                        }
-                        onMeetingCall={
-                          callGate !== 'hidden' && meetingCallOpen(row.message.meeting, meetingNow)
-                            ? onMeetingCall
-                            : undefined
-                        }
-                        onJumpTo={onJumpTo}
-                        onOpenMedia={onOpenMedia}
-                        onOpenViewOnce={onOpenViewOnce}
-                        v3={v3Thread}
-                        partnerHue={partnerHue}
-                      />
+                      >
+                        <MessageBubble
+                          message={row.message}
+                          mine={isMine(row.message)}
+                          endsGroup={row.endsGroup}
+                          partnerName={partner?.displayName ?? t('chat.them')}
+                          translation={translations[row.message._id]}
+                          translating={translating === row.message._id}
+                          romanization={romanizations[row.message._id]}
+                          romanizing={romanizing === row.message._id}
+                          speaking={speaking === row.message._id}
+                          hasReading={speech[row.message._id] !== undefined}
+                          onReplayReading={onReplayReading}
+                          transcript={transcripts[row.message._id]}
+                          transcribing={transcribing === row.message._id}
+                          {...(transcriptService && !isOutgoingId(row.message._id)
+                            ? { onShowText }
+                            : {})}
+                          highlighted={highlighted === row.message._id}
+                          askAnswered={answeredAsks.has(row.message._id)}
+                          onAnswerAsk={onAnswerAsk}
+                          onRespondMeeting={onRespondMeeting}
+                          onAnswerQuiz={onAnswerQuiz}
+                          onAnswerPoll={onAnswerPoll}
+                          onCardAction={onCardAction}
+                          onAddToCalendar={onAddToCalendar}
+                          meetingWhen={meetingWhenFor(row.message)}
+                          meetingLength={meetingLengthFor(row.message)}
+                          meetingTheirWhen={meetingTheirWhenFor(row.message)}
+                          pending={isOutgoingId(row.message._id)}
+                          onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
+                          onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
+                          onReply={isOutgoingId(row.message._id) ? ignore : onReply}
+                          canReply={!readOnly}
+                          onReact={isOutgoingId(row.message._id) ? ignore : onReact}
+                          /*
+                           * The same pair the menu's emoji strip is hidden for, and
+                           * for the same reason: the server refuses a reaction to a
+                           * withdrawn message and to an official channel, so offering
+                           * the gesture there would end in an alert.
+                           */
+                          canReact={
+                            !readOnly && !row.message.deleted && !isServerRecord(row.message)
+                          }
+                          // Only on the newest call, and not where a call cannot be
+                          // placed from here at all: then a row is only a record.
+                          onCallBack={
+                            callGate !== 'hidden' && row.message._id === newestCallId
+                              ? onCallBack
+                              : undefined
+                          }
+                          onMeetingCall={
+                            callGate !== 'hidden' &&
+                            meetingCallOpen(row.message.meeting, meetingNow)
+                              ? onMeetingCall
+                              : undefined
+                          }
+                          onJumpTo={onJumpTo}
+                          onOpenMedia={onOpenMedia}
+                          onOpenViewOnce={onOpenViewOnce}
+                          v3={v3Thread}
+                          partnerHue={partnerHue}
+                        />
+                      </EntranceV3>
                     </WithRewardChips>
                   )
                 }
@@ -3506,6 +3580,15 @@ export function ChatScreen({
                 <Feather name="arrow-down" size={18} color={colors.textInverse} />
                 {missed > 0 ? <Text style={styles.jumpCount}>{missed}</Text> : null}
               </Pressable>
+            ) : null}
+            {/* PROTOTYPE: RewardToast, mounted over the thread above the composer. */}
+            {protoReward !== 'chip' ? (
+              <View
+                pointerEvents="box-none"
+                style={{ position: 'absolute', left: 16, right: 16, bottom: 16, zIndex: 10 }}
+              >
+                <RewardToast reward={rewardQueue.current} onDone={rewardQueue.done} />
+              </View>
             ) : null}
           </View>
 
