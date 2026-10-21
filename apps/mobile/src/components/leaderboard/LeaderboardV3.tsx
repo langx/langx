@@ -40,6 +40,8 @@ interface LeaderboardV3Props<Option extends string> {
   viewerAvatar?: { url?: string | undefined; name: string; seed: string } | undefined
   /** The viewer's own colour, for their pinned row. */
   viewerHue: string | undefined
+  /** The line under "You" on the pinned row; the period's column heading when not given. */
+  viewerSub?: string
   /** The streak board draws its flame before every number; the token board draws none. */
   flame?: boolean
   loading: boolean
@@ -74,6 +76,7 @@ export function LeaderboardV3<Option extends string>({
   viewerCount,
   viewerAvatar,
   viewerHue,
+  viewerSub,
   flame = false,
   loading,
   emptyTitle,
@@ -199,7 +202,7 @@ export function LeaderboardV3<Option extends string>({
               ) : null}
               <View style={styles.flex}>
                 <Text style={styles.viewerName}>{t('leaderboard.you')}</Text>
-                <Text style={styles.viewerSub}>{columns.start}</Text>
+                <Text style={styles.viewerSub}>{viewerSub ?? columns.start}</Text>
               </View>
               {value(viewerValue, v3.colors.ink, true)}
             </View>
@@ -219,7 +222,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: v3.space[8],
-    paddingTop: v3.space[8],
+    paddingTop: v3.space[4],
   },
   column: { ...v3.type.caption, color: v3.colors.muted, fontWeight: '600', lineHeight: 18 },
   group: { backgroundColor: v3.colors.surface, borderRadius: v3.radius.tile, overflow: 'hidden' },

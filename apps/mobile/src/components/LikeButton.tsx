@@ -17,6 +17,14 @@ interface LikeButtonProps {
   from: string
   /** `small` is the reply rows' size — a 15 heart with a 13 count beside it. */
   size?: 'default' | 'small'
+  /**
+   * Draw on a partner hue (v3's ask card) in this ink. The hues stay light
+   * after dark, and no red reads on all six of them in either scheme (the
+   * best, v3's light `danger`, reaches 2.16:1 on dark lilac), so here a like
+   * is told by shape rather than by colour: the heart in a disc of the ink,
+   * and the count in the ink throughout. Measured in `contrast.test.ts`.
+   */
+  ink?: string
 }
 
 /**
@@ -40,16 +48,18 @@ export function LikeButton({
   disabled,
   from,
   size = 'default',
+  ink,
 }: LikeButtonProps) {
   const styles = useStyles()
-  const { colors } = useTheme()
+  const { colors, v3 } = useTheme()
   const t = useT()
   const { locale } = useLocale()
   const setLike = useSetLike()
   const small = size === 'small'
   // Heart and number take the same colour: red once you have liked it, muted
-  // until then.
-  const tint = likedByViewer ? colors.danger : colors.textMuted
+  // until then. On a hue, the ink for both, and the disc says liked.
+  const tint = ink ?? (likedByViewer ? colors.danger : colors.textMuted)
+  const filled = ink !== undefined && likedByViewer
 
   return (
     <View style={styles.row}>
@@ -60,9 +70,13 @@ export function LikeButton({
         disabled={disabled}
         hitSlop={8}
         onPress={() => setLike.mutate({ targetType, targetId, liked: !likedByViewer })}
-        style={({ pressed }) => [styles.heart, pressed && styles.pressed]}
+        style={({ pressed }) => [
+          styles.heart,
+          filled && [styles.disc, { backgroundColor: ink }],
+          pressed && styles.pressed,
+        ]}
       >
-        <Feather name="heart" size={small ? 15 : 18} color={tint} />
+        <Feather name="heart" size={small ? 15 : 18} color={filled ? v3.colors.onBlue : tint} />
       </Pressable>
 
       <Pressable
@@ -83,6 +97,7 @@ export function LikeButton({
 const useStyles = makeStyles(() => ({
   row: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   heart: { alignItems: 'center', justifyContent: 'center', minHeight: 28, minWidth: 28 },
+  disc: { borderRadius: 14 },
   count: { fontSize: 14, fontWeight: '600' },
   countSmall: { fontSize: 13, fontWeight: '600' },
   pressed: { opacity: 0.6 },
