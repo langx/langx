@@ -1,17 +1,14 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useEffect, useRef, type ReactNode } from 'react'
-import { Animated, Easing, ScrollView, Text, View } from 'react-native'
+import { Animated, ScrollView, Text, View } from 'react-native'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useT } from '../../i18n'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
-import { CURVE } from '../../lib/theme/motionValues'
+import { EASE_POP } from '../../lib/theme/motionAnimated'
 import { NotificationPriming } from '../NotificationPriming'
 import { Button } from '../ui/Button'
 import { Screen } from '../ui/Screen'
 import { useBlackFont } from './WizardV3'
-
-/** `motion.ts`'s `EASE_POP`, on React Native's `Easing`. */
-const EASE_POP = Easing.bezier(...CURVE.pop)
 
 /**
  * The end of the wizard in the redesign's look: arrival as one colour block,
