@@ -77,8 +77,10 @@ Merge order that applied: #1784 before any client PR that reads the award;
 
 - The send award leaves out a referral welcome credited in the same send
   (#1784; under-reports only).
-- A frozen account still earns the Echo session payout (predates #1784; the
-  streak milestone payout stopped in #1859).
+- A frozen account still earns the Echo session payout: `settleSessions` in
+  `modules/echo/reviews.ts` pays it through `awardTokens`, and neither checks
+  `tokenFrozenAt` (predates #1784; the streak milestone payout stopped in
+  #1859).
 - Web browser back records a paywall view with no dismissal; a Pro account that
   loads after the paywall opens looks free; leaving right after a gift code or
   restore can count as a dismissal (#1785).
@@ -231,7 +233,9 @@ Decided on 20 October:
 | Review follow-ups — view-once replay, media tiles, snap radios, token board | #1866                                                    | merged                                      |
 | A test timeout that a full suite outgrew                                    | #1865                                                    | merged                                      |
 | Paper Talk on the docs, the token site and langx.io                         | langx/docs#53, langx/token-website#32, langx/website#271 | merged                                      |
-| Old-look audit — shared components in nine batches                          | —                                                        | in progress; calls wait for a board         |
+| Chat camera — viewfinder, shutter, mode switch, still the old look          | —                                                        | in progress                                 |
+| Call screens                                                                | —                                                        | board drawn; building                       |
+| Old-look audit — shared components in nine batches                          | —                                                        | in progress; calls in their own row         |
 | Follow-ups 2 — new-chat quota card, today ring, limits nudge                | —                                                        | in progress                                 |
 | Monthly trial in the app                                                    | —                                                        | in progress                                 |
 | Badges v3                                                                   | —                                                        | designed; building                          |
@@ -250,7 +254,7 @@ components, split into nine batches: the Echo session, form primitives, the
 edit-profile parts, language pickers, People search and filters, thread
 overlays, shared sheets, the shell hosts, and pages with media. Each batch is
 built and reviewed on its own. Calls (the call host and its bar) are a tenth
-batch and need a board first.
+batch; their board is drawn and they are being built.
 
 **Badges.** Embroidered patches won, with grafts from enamel pins and passport
 stamps. The 25 existing badges keep their rules and get new art; six new kinds
@@ -488,6 +492,12 @@ The 3.0 release round, in one checklist:
 - Update the store listing copy (`docs/store/listing.md`, the metadata file)
   where the flagged features change what it says: invites, Pro Week, the
   newcomer hello.
+- [ ] **Last gate: every screen against its board, on both platforms**
+      (Behic, 20 Oct). Once all the work is merged, an agent opens every
+      screen in Release builds on the iOS simulator and the Android emulator
+      and compares it with its board; no screen in the old look may remain.
+      It is checked by screenshots, not by reading code: the code audit
+      counted half-migrated screens, such as the chat camera, as done.
 
 ## Native-batch candidates
 
