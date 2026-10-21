@@ -175,7 +175,7 @@ const useStyles = makeStyles(({ colors, v3 }) => ({
     paddingEnd: v3.space[16],
     paddingStart: v3.space[12],
   },
-  pillV3OnHue: { backgroundColor: 'rgba(20, 22, 27, 0.12)' },
+  pillV3OnHue: { backgroundColor: v3.colors.hueWash },
   pillV3Plain: { backgroundColor: v3.colors.line },
   labelV3: { ...v3.type.buttonSmall },
 }))

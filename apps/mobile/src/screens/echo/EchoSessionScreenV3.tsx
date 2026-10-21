@@ -212,7 +212,19 @@ function AutoplaySwitch({ on, onToggle }: { on: boolean; onToggle: () => void })
         size={v3.icon.lg}
         color={on ? v3.colors.echoText : v3.colors.muted}
       />
-      <Text style={[styles.autoplayText, !on && styles.autoplayTextOff]}>{label}</Text>
+      {/*
+        One line, shrinking: "Reproducción automática desactivada" is wider
+        than the room beside the chevron on a 390pt phone, and a wrapped pill
+        pushes the title down every time autoplay is switched.
+      */}
+      <Text
+        style={[styles.autoplayText, !on && styles.autoplayTextOff]}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.75}
+      >
+        {label}
+      </Text>
     </Pressable>
   )
 }
@@ -515,7 +527,17 @@ function GradeTile({
       onPress={onPress}
       style={({ pressed }) => [styles.grade, good && styles.gradeGood, pressed && styles.pressed]}
     >
-      <Text style={[styles.gradeLabel, good && styles.gradeOnYellow]} numberOfLines={1}>
+      {/*
+        Shrinks rather than truncates: four tiles on a 375pt phone leave about
+        70pt for "Difficile" or "Хорошо", and an ellipsis on a grade hides
+        which grade it is.
+      */}
+      <Text
+        style={[styles.gradeLabel, good && styles.gradeOnYellow]}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.7}
+      >
         {t(`echo.${value}`)}
       </Text>
       <Text style={[styles.gradeInterval, good && styles.gradeOnYellow]} numberOfLines={1}>
@@ -627,13 +649,14 @@ const useStyles = makeStyles(({ v3 }) => ({
     backgroundColor: v3.colors.echoTint,
     borderRadius: v3.radius.pill,
     flexDirection: 'row',
+    flexShrink: 1,
     gap: v3.space[8],
     minHeight: 44,
     paddingEnd: v3.space[14],
     paddingStart: v3.space[12],
   },
   autoplayOff: { backgroundColor: v3.colors.surface },
-  autoplayText: { ...v3.type.buttonSmall, color: v3.colors.echoText },
+  autoplayText: { ...v3.type.buttonSmall, color: v3.colors.echoText, flexShrink: 1 },
   autoplayTextOff: { color: v3.colors.muted },
   pressed: { opacity: 0.6 },
 }))
