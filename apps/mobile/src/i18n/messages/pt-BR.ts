@@ -2836,6 +2836,30 @@ export const ptBR: Localized<EnMessages> = {
         one: '{formatted} dia',
         other: '{formatted} dias',
       },
+      languages: {
+        one: '{formatted} idioma',
+        other: '{formatted} idiomas',
+      },
+      calls: {
+        one: '{formatted} chamada',
+        other: '{formatted} chamadas',
+      },
+      echo: {
+        one: '{formatted} revisão',
+        other: '{formatted} revisões',
+      },
+      testimonials: {
+        one: '{formatted} parceiro',
+        other: '{formatted} parceiros',
+      },
+      guide: {
+        one: '{formatted} pessoa',
+        other: '{formatted} pessoas',
+      },
+      openers: {
+        one: '{formatted} resposta',
+        other: '{formatted} respostas',
+      },
     },
     goal: {
       streak: {
@@ -2859,6 +2883,30 @@ export const ptBR: Localized<EnMessages> = {
         other: 'Seja membro por {formatted} dias',
       },
       origin: 'Ter estado no LangX v1',
+      languages: {
+        one: 'Pratique {formatted} idioma',
+        other: 'Pratique {formatted} idiomas',
+      },
+      calls: {
+        one: 'Faça {formatted} chamada',
+        other: 'Faça {formatted} chamadas',
+      },
+      echo: {
+        one: 'Revise {formatted} cartão do Echo',
+        other: 'Revise {formatted} cartões do Echo',
+      },
+      testimonials: {
+        one: 'Receba palavras de {formatted} parceiro',
+        other: 'Receba palavras de {formatted} parceiros',
+      },
+      guide: {
+        one: 'Corrija {formatted} pessoa',
+        other: 'Corrija {formatted} pessoas',
+      },
+      openers: {
+        one: 'Dê {formatted} primeira resposta',
+        other: 'Dê {formatted} primeiras respostas',
+      },
     },
     note: {
       streak: 'Conta a sua sequência mais longa, então um dia perdido nunca tira uma insígnia.',
@@ -2867,6 +2915,15 @@ export const ptBR: Localized<EnMessages> = {
       tokens: 'Conta tudo o que você já ganhou. Gastar nunca tira nada.',
       veteran: 'Contado a partir do dia em que você entrou.',
       origin: 'Para quem esteve no LangX v1.',
+      languages:
+        'Contam os idiomas que você pratica no Echo ou em que escreve publicações, além dos seus idiomas nativos.',
+      calls: 'Uma chamada conta quando dura 5 minutos ou mais, não importa quem ligou.',
+      echo: 'Cada revisão conta, qualquer que seja a nota.',
+      testimonials:
+        'Cada parceiro que escreveu sobre você conta uma vez. Mesmo um que você ocultou.',
+      guide:
+        'Corrija alguém que você ainda não corrigiu: uma publicação dele, um pedido de pronúncia que você responde ou uma mensagem que ele te enviou. A mesma pessoa conta uma vez.',
+      openers: 'Conta cada primeira mensagem que você respondeu em menos de um dia.',
     },
     family: {
       streak: {
@@ -2892,6 +2949,30 @@ export const ptBR: Localized<EnMessages> = {
       origin: {
         title: 'Early Adopter',
         body: 'Você esteve no LangX v1.',
+      },
+      languages: {
+        title: 'Idiomas',
+        body: 'Idiomas que você pratica, além do seu.',
+      },
+      calls: {
+        title: 'Chamadas',
+        body: 'Chamadas de 5 minutos ou mais.',
+      },
+      echo: {
+        title: 'Revisões do Echo',
+        body: 'Cada cartão do Echo que você revisa.',
+      },
+      testimonials: {
+        title: 'Palavras gentis',
+        body: 'Parceiros que escreveram sobre você.',
+      },
+      guide: {
+        title: 'Pessoas que você ajudou',
+        body: 'Pessoas diferentes que você corrigiu.',
+      },
+      openers: {
+        title: 'Primeiras respostas',
+        body: 'Primeiras mensagens que você respondeu em menos de um dia.',
       },
     },
     tier: {
@@ -2930,6 +3011,24 @@ export const ptBR: Localized<EnMessages> = {
       veteran_730: 'Segundo anel',
       veteran_1095: 'Terceiro anel',
       origin_v1: 'Early Adopter',
+      languages_2: 'Dois fios',
+      languages_3: 'Trança',
+      languages_5: 'Cinco fios',
+      calls_1: 'Telefone de lata',
+      calls_10: 'Linha longa',
+      calls_50: 'Mesa telefônica',
+      echo_100: 'Ondulação',
+      echo_1000: 'Onda',
+      echo_5000: 'Maré',
+      testimonials_1: 'Quadrado de colcha',
+      testimonials_5: 'Retalhos',
+      testimonials_20: 'Colcha',
+      guide_3: 'Cerzido',
+      guide_10: 'Remendo',
+      guide_50: 'Tecelão',
+      openers_10: 'Porta aberta',
+      openers_50: 'Luz da varanda',
+      openers_200: 'Casa aberta',
     },
   },
 

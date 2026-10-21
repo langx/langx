@@ -117,6 +117,13 @@ export function badgeAction(kind: BadgeKind): BadgeAction | null {
     tokens: 'write',
     veteran: null,
     origin: null,
+    languages: 'echo',
+    calls: 'write',
+    echo: 'echo',
+    // Somebody else writes these; nothing a press does brings one closer.
+    testimonials: null,
+    guide: 'correct',
+    openers: 'write',
   }
   return actions[kind]
 }

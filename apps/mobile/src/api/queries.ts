@@ -1263,10 +1263,13 @@ export function usePublicSummary(handle: string) {
  * the two answer different endpoints with different shapes, and the cache key
  * has to keep one person's shelf away from another's.
  */
-export function usePublicBadges(handle: string) {
+export function usePublicBadges(handle: string, catalogue: 'classic' | 'v3' = 'classic') {
   return useQuery({
-    queryKey: ['profileBadges', handle] as const,
-    queryFn: () => api.get<PublicBadges>(`/profiles/${handle}/badges`),
+    queryKey: ['profileBadges', handle, catalogue] as const,
+    queryFn: () =>
+      api.get<PublicBadges>(
+        `/profiles/${handle}/badges${catalogue === 'v3' ? '?catalogue=v3' : ''}`,
+      ),
     enabled: handle.length > 0,
   })
 }
@@ -2202,6 +2205,21 @@ export function useBadges(enabled = true) {
     queryKey: keys.badges,
     queryFn: () => api.get<BadgeSummary>('/me/badges'),
     // The badges screen reads either yours or somebody else's, never both.
+    enabled,
+  })
+}
+
+/**
+ * Your badges with the kinds only the v3 shelf can draw (`?catalogue=v3`).
+ *
+ * Its own cache entry under `keys.badges`, so everything that invalidates
+ * your badges invalidates this too, and the classic list never holds a kind
+ * an older screen cannot word.
+ */
+export function useBadgesV3(enabled = true) {
+  return useQuery({
+    queryKey: [...keys.badges, 'v3'] as const,
+    queryFn: () => api.get<BadgeSummary>('/me/badges?catalogue=v3'),
     enabled,
   })
 }
