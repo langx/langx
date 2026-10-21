@@ -213,7 +213,6 @@ export function BadgesScreenV3() {
 /** The API's nearest badge, with its fraction and, for a streak, what the milestone pays. */
 function NextCard({ next: n }: { next: NonNullable<BadgeSummary['next']> }) {
   const styles = useStyles()
-  const { v3 } = useTheme()
   const t = useT()
   const { locale } = useLocale()
   const words = { t, locale }
@@ -235,7 +234,7 @@ function NextCard({ next: n }: { next: NonNullable<BadgeSummary['next']> }) {
       : null
   const action = badgeAction(n.kind)
   return (
-    <View style={[styles.next, { backgroundColor: v3.hues.tangerine }]}>
+    <View style={styles.next}>
       <View style={styles.nextHead}>
         <BadgePatch id={n.id} size={NEXT_ART} state={{ kind: 'next', progress: done }} />
         <View style={styles.nextText}>
@@ -294,21 +293,26 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   newText: { ...v3.type.label, color: v3.colors.onBlue },
   stack: { gap: v3.space[24], paddingBottom: v3.space[24], paddingTop: v3.space[8] },
-  next: { borderRadius: v3.radius.block, gap: v3.space[14], padding: v3.space[16] },
+  next: {
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.block,
+    gap: v3.space[14],
+    padding: v3.space[16],
+  },
   nextHead: { alignItems: 'center', flexDirection: 'row', gap: v3.space[14] },
   nextText: { flex: 1, gap: v3.space[4], minWidth: 0 },
   nextKicker: {
     ...v3.type.label,
-    color: v3.colors.ink,
+    color: v3.colors.fg,
     letterSpacing: 1,
     textTransform: 'uppercase',
   },
-  nextName: { ...v3.type.headline, color: v3.colors.ink },
-  nextFraction: { ...v3.type.button, color: v3.colors.ink },
-  nextBody: { ...v3.type.callout, color: v3.colors.ink, fontWeight: '500' },
+  nextName: { ...v3.type.headline, color: v3.colors.fg },
+  nextFraction: { ...v3.type.button, color: v3.colors.fg },
+  nextBody: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '500' },
   bar: { borderRadius: v3.radius.pill, height: 10, marginTop: v3.space[2], overflow: 'hidden' },
-  barTrack: { backgroundColor: v3.colors.ink, opacity: 0.18 },
-  barFill: { backgroundColor: v3.colors.ink, borderRadius: v3.radius.pill, height: 10 },
+  barTrack: { backgroundColor: v3.colors.track },
+  barFill: { backgroundColor: v3.colors.fg, borderRadius: v3.radius.pill, height: 10 },
   empty: {
     alignItems: 'center',
     gap: v3.space[12],

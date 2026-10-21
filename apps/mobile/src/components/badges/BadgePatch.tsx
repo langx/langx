@@ -1,5 +1,5 @@
 import { View } from 'react-native'
-import Svg, { Path } from 'react-native-svg'
+import Svg, { G, Path } from 'react-native-svg'
 import { cutFor, patchNodes, type PatchState } from '../../lib/badgePatch/geometry'
 import { useTheme } from '../../lib/theme'
 
@@ -39,20 +39,31 @@ export function BadgePatch({
       style={{ height: size, width: size }}
     >
       <Svg width={size} height={size} viewBox="0 0 64 64">
-        {nodes.map((node, i) => (
-          <Path
-            key={i}
-            d={node.d}
-            fill={node.fill}
-            stroke={node.stroke}
-            strokeWidth={node.strokeWidth}
-            {...(node.dash ? { strokeDasharray: node.dash } : {})}
-            strokeLinecap={node.cap}
-            strokeLinejoin="round"
-            opacity={node.opacity}
-            {...(node.transform ? { transform: node.transform } : {})}
-          />
-        ))}
+        {nodes.map((node, i) => {
+          const path = (
+            <Path
+              key={i}
+              d={node.d}
+              fill={node.fill}
+              stroke={node.stroke}
+              strokeWidth={node.strokeWidth}
+              {...(node.dash ? { strokeDasharray: node.dash } : {})}
+              strokeLinecap={node.cap}
+              strokeLinejoin="round"
+              opacity={node.opacity}
+            />
+          )
+          // On a group rather than the path: react-native-svg's web build
+          // drops a transform string on a `Path`, and `FrameArt` draws its
+          // transforms the same way.
+          return node.transform ? (
+            <G key={i} transform={node.transform}>
+              {path}
+            </G>
+          ) : (
+            path
+          )
+        })}
       </Svg>
     </View>
   )
