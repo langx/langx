@@ -176,4 +176,54 @@ describe('generated avatars', () => {
     // With no profile at all, the same id draws the same neutral face.
     expect((await draw(steered)).body).toBe(undisclosed)
   })
+  describe('v3 drawn faces', () => {
+    function drawV3(seed: string, query: string) {
+      return app.inject({ method: 'GET', url: `/public/avatar/v3/${seed}?${query}` })
+    }
+
+    it('serves a PNG a browser on another origin may load, cached for a day', async () => {
+      const response = await drawV3(userId, 's=96')
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.headers['content-type']).toBe('image/png')
+      expect(response.headers['cross-origin-resource-policy']).toBe('cross-origin')
+      expect(response.headers['cache-control']).toBe('public, max-age=86400')
+      expect(response.rawPayload.readUInt32BE(16)).toBe(96)
+    })
+
+    it('is immutable when the URL names the face', async () => {
+      const response = await drawV3(userId, 's=48&v=1-W07-3')
+      expect(response.statusCode).toBe(200)
+      expect(response.headers['cache-control']).toBe('public, max-age=86400, immutable')
+      // The named face, not the account's: the URL alone decides the bytes.
+      expect((await drawV3(UNKNOWN, 's=48&v=1-W07-3')).rawPayload).toEqual(response.rawPayload)
+    })
+
+    it('ignores a v it cannot read rather than refusing the picture', async () => {
+      const response = await drawV3(userId, 's=48&v=9-Z99-9')
+      expect(response.statusCode).toBe(200)
+      expect(response.headers['cache-control']).not.toContain('immutable')
+      expect(response.rawPayload).toEqual((await drawV3(userId, 's=48')).rawPayload)
+    })
+
+    it('draws a face for an id nobody holds, rather than a 404', async () => {
+      const response = await drawV3(UNKNOWN, 's=48')
+      expect(response.statusCode).toBe(200)
+      expect(response.headers['content-type']).toBe('image/png')
+    })
+
+    it('renders only the four sizes and the three cuts', async () => {
+      expect((await drawV3(userId, 's=50')).statusCode).toBe(400)
+      expect((await drawV3(userId, '')).statusCode).toBe(400)
+      expect((await drawV3(userId, 's=160&c=huge')).statusCode).toBe(400)
+      expect((await drawV3('not-an-id', 's=48')).statusCode).toBe(400)
+      for (const size of [48, 96, 160, 480]) {
+        expect((await drawV3(userId, `s=${size}&c=small`)).statusCode).toBe(200)
+      }
+    })
+
+    it('leaves the Notionists route as it was', async () => {
+      const response = await draw(userId)
+      expect(response.headers['content-type']).toBe('image/svg+xml')
+    })
+  })
 })
