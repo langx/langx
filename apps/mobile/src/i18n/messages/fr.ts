@@ -1264,6 +1264,7 @@ export const fr: Localized<EnMessages> = {
     quizCard: 'Quiz',
     pollThanks: 'Merci !',
     stickers: 'Stickers',
+    stickersHint: 'Touche un sticker pour l’envoyer.',
     stickerBuy: 'Débloquer pour {price} jetons',
     quizAddOption: 'Ajouter une option',
     sendQuiz: 'Poser une question',

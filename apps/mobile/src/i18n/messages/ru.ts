@@ -1410,6 +1410,7 @@ export const ru: Localized<EnMessages> = {
     quizCard: 'Викторина',
     pollThanks: 'Спасибо!',
     stickers: 'Стикеры',
+    stickersHint: 'Нажми на стикер, чтобы отправить его.',
     stickerBuy: 'Открыть за {price} токенов',
     quizAddOption: 'Добавить вариант',
     sendQuiz: 'Задать вопрос',

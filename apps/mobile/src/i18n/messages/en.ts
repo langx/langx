@@ -1412,6 +1412,7 @@ export const en = {
     quizCard: 'Quiz',
     pollThanks: 'Thanks!',
     stickers: 'Stickers',
+    stickersHint: 'Tap a sticker to send it.',
     stickerBuy: 'Unlock for {price} tokens',
     quizAddOption: 'Add an option',
     sendQuiz: 'Ask a quiz',
