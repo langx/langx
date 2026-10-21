@@ -78,10 +78,16 @@ export async function countLongCalls(db: Db, userId: string): Promise<number> {
  */
 export async function countPeopleHelped(db: Db, userId: string): Promise<number> {
   const [correctedPosts, answeredPosts, threads] = await Promise.all([
-    db.collection(COLLECTIONS.postCorrections).distinct('postId', { authorId: userId }),
-    db.collection(COLLECTIONS.pronunciationAnswers).distinct('postId', { authorId: userId }),
     db
-      .collection(COLLECTIONS.messages)
+      .collection<{ postId: ObjectId; authorId: string }>(COLLECTIONS.postCorrections)
+      .distinct('postId', { authorId: userId }),
+    db
+      .collection<{ postId: ObjectId; authorId: string }>(COLLECTIONS.pronunciationAnswers)
+      .distinct('postId', { authorId: userId }),
+    db
+      .collection<{ conversationId: ObjectId; senderId: string; type: string }>(
+        COLLECTIONS.messages,
+      )
       .distinct('conversationId', { senderId: userId, type: 'correction' }),
   ])
   const postIds = [...correctedPosts, ...answeredPosts]
@@ -114,8 +120,12 @@ export async function countLanguagesPractised(
   nativeCodes: readonly string[],
 ): Promise<number> {
   const [cards, posts] = await Promise.all([
-    db.collection(COLLECTIONS.echoCards).distinct('lang', { userId, 'srs.reps': { $gt: 0 } }),
-    db.collection(COLLECTIONS.posts).distinct('language', { authorId: userId }),
+    db
+      .collection<{ userId: string; lang: string }>(COLLECTIONS.echoCards)
+      .distinct('lang', { userId, 'srs.reps': { $gt: 0 } }),
+    db
+      .collection<{ authorId: string; language: string }>(COLLECTIONS.posts)
+      .distinct('language', { authorId: userId }),
   ])
   const natives = new Set(nativeCodes.map((code) => code.toLowerCase()))
   const practised = new Set<string>()

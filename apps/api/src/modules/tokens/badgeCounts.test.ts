@@ -51,7 +51,7 @@ describe('the v3 badge counts', () => {
     const _id = new ObjectId()
     await handle.db
       .collection(COLLECTIONS.conversations)
-      .insertOne({ _id, participants: [a, b], pairKey: [a, b].sort().join(':') } as never)
+      .insertOne({ _id, participants: [a, b], pairKey: [a, b].sort().join(':') })
     return _id
   }
 
@@ -68,7 +68,7 @@ describe('the v3 badge counts', () => {
         durationSeconds: seconds,
       },
       createdAt: new Date(),
-    } as never)
+    })
   }
 
   it('counts Echo reviews, whatever the grade', async () => {
