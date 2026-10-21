@@ -1,8 +1,8 @@
-import { streakMilestoneBonus, type BadgeSummary } from '@langx/shared'
+import { PINNED_BADGES_MAX, streakMilestoneBonus, type BadgeSummary } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { useBadges, useMe, usePublicBadges } from '../../api/queries'
+import { useBadgesV3, useMe, usePinBadges, usePublicBadges } from '../../api/queries'
 import { BadgeDetailSheet } from '../../components/badges/BadgeDetailSheet'
 import { BadgeEarnedSheet } from '../../components/badges/BadgeEarnedSheet'
 import { BadgePatch } from '../../components/badges/BadgePatch'
@@ -84,8 +84,8 @@ export function BadgesScreenV3() {
   // Your own handle in the param is still your own page, as today.
   const mine = !of || of === me.data?.handle
 
-  const own = useBadges(mine)
-  const theirs = usePublicBadges(mine ? '' : (of ?? ''))
+  const own = useBadgesV3(mine)
+  const theirs = usePublicBadges(mine ? '' : (of ?? ''), 'v3')
 
   const data = mine ? own.data : theirs.data
   const total = mine ? (own.data?.badges.length ?? 0) : (theirs.data?.total ?? 0)
@@ -106,6 +106,22 @@ export function BadgesScreenV3() {
     const top = celebrated(own.data?.badges ?? [], [...fresh])
     if (top) setMoment(top.id)
   }, [fresh, mine, moment, own.data?.badges])
+
+  // Up to three, in order; a fourth pushes out the oldest pin.
+  const pinned = own.data?.pinned ?? []
+  const pinMutation = usePinBadges()
+  const pinFor = (id: string) =>
+    mine && own.data?.badges.some((badge) => badge.id === id && badge.earned)
+      ? {
+          pinned: pinned.includes(id),
+          onToggle: () =>
+            pinMutation.mutate(
+              pinned.includes(id)
+                ? pinned.filter((other) => other !== id)
+                : [...pinned, id].slice(-PINNED_BADGES_MAX),
+            ),
+        }
+      : undefined
 
   const pull = usePullToRefresh(() => (mine ? own.refetch() : theirs.refetch()))
   const handle = me.data?.handle
@@ -198,12 +214,14 @@ export function BadgesScreenV3() {
           setOpenId(null)
           go(action)
         }}
+        pin={openId ? pinFor(openId) : undefined}
       />
       <BadgeEarnedSheet
         shelf={shown?.shelf ?? null}
         rung={shown?.rung ?? null}
         onClose={closeMoment}
         onShare={shown && shown.rung.badge.kind !== 'tokens' ? share : undefined}
+        pin={moment ? pinFor(moment) : undefined}
       />
       <ShareCardSheet request={card} onClose={() => setCard(null)} />
     </Screen>

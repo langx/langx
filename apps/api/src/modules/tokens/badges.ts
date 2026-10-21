@@ -2,6 +2,9 @@ import {
   BADGES,
   TOKEN_RULES,
   isCohortBadge,
+  isV3BadgeKind,
+  PINNED_BADGES_MAX,
+  type BadgeCatalogue,
   streakMilestoneBonus,
   type BadgeKind,
   type BadgeSummary,
@@ -13,6 +16,13 @@ import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import { ApiError } from '../../lib/ApiError'
 import { cameFromV1 } from '../handles/legacyPrecreate'
+import {
+  countEchoReviews,
+  countLanguagesPractised,
+  countLongCalls,
+  countPeopleHelped,
+  countTestimonialsAbout,
+} from './badgeCounts'
 import { countCorrectionsWritten } from './corrections'
 import { readAggregates, type TokenLedgerEntry } from './ledger'
 
@@ -50,25 +60,52 @@ async function streakMilestoneDates(db: Db, userId: string): Promise<Map<number,
   return dates
 }
 
+/** The six v3 counts, read only for a caller that asked for the v3 catalogue. */
+async function readV3Counts(db: Db, userId: string, profile: Profile) {
+  const [echo, testimonials, calls, guide, languages] = await Promise.all([
+    countEchoReviews(db, userId),
+    countTestimonialsAbout(db, userId),
+    countLongCalls(db, userId),
+    countPeopleHelped(db, userId),
+    countLanguagesPractised(
+      db,
+      userId,
+      (profile.nativeLanguages ?? []).map((language) => language.code),
+    ),
+  ])
+  return { echo, testimonials, calls, guide, languages }
+}
+
 /**
  * Every badge, earned or not, computed from what the profile and ledger already
  * say. Nothing here is stored — see the note on `BADGES`.
+ *
+ * `catalogue` decides whether the six kinds added with the v3 shelf are in
+ * it. `classic` — the default, and what every caller but the v3 screen gets —
+ * is the twenty-five badges older builds know: an app that has never heard of
+ * `calls` would label it by indexing a table that has no row for it, so a new
+ * kind reaches only a client that asked for it (`?catalogue=v3`). The evening
+ * round-up stays on `classic` until `BADGE_ROUND_UP_CATALOGUE` says otherwise.
+ * Classic also skips the five extra reads.
  */
 export async function getBadgeSummary(
   db: Db,
   userId: string,
   at: Date = new Date(),
+  catalogueName: BadgeCatalogue = 'classic',
 ): Promise<BadgeSummary> {
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   if (!profile) throw new ApiError('NOT_FOUND', 'Complete onboarding first')
+  const v3 = catalogueName === 'v3'
 
-  const [corrections, milestoneDates, aggregates, fromV1] = await Promise.all([
+  const [corrections, milestoneDates, aggregates, fromV1, more] = await Promise.all([
     countCorrectionsWritten(db, userId),
     streakMilestoneDates(db, userId),
     readAggregates(db, userId),
     // A point read on `user._id`, and inside the same `Promise.all` as the
     // three above so it costs no round-trip. See `progress.origin`.
     cameFromV1(db, userId),
+    v3 ? readV3Counts(db, userId, profile) : null,
   ])
 
   const joinedAt = new Date(profile.createdAt).getTime()
@@ -110,6 +147,18 @@ export async function getBadgeSummary(
      * least to show for having been here.
      */
     origin: fromV1 ? 1 : 0,
+    /*
+     * The v3 kinds. Zero when the catalogue is classic, where they are
+     * dropped below and nobody reads these. `openers` is a profile counter
+     * like `messagesSent`, so it is free either way; it began counting when
+     * the stat did, and is retroactive only that far.
+     */
+    languages: more?.languages ?? 0,
+    calls: more?.calls ?? 0,
+    echo: more?.echo ?? 0,
+    testimonials: more?.testimonials ?? 0,
+    guide: more?.guide ?? 0,
+    openers: v3 ? (profile.stats?.openersAnsweredWithinDay ?? 0) : 0,
   }
 
   /**
@@ -123,7 +172,9 @@ export async function getBadgeSummary(
    * everybody who does have it, and for every counting kind, this is `BADGES`.
    */
   const catalogue = BADGES.filter(
-    (badge) => !isCohortBadge(badge.kind) || progress[badge.kind] >= badge.threshold,
+    (badge) =>
+      (v3 || !isV3BadgeKind(badge.kind)) &&
+      (!isCohortBadge(badge.kind) || progress[badge.kind] >= badge.threshold),
   )
 
   /**
@@ -193,7 +244,7 @@ export async function getBadgeSummary(
   // sentence anybody can act on.
   const progressByKind: Record<string, number> = {}
   for (const kind of Object.keys(progress) as BadgeKind[]) {
-    if (!isCohortBadge(kind)) progressByKind[kind] = progress[kind]
+    if (!isCohortBadge(kind) && (v3 || !isV3BadgeKind(kind))) progressByKind[kind] = progress[kind]
   }
 
   return {
@@ -201,7 +252,33 @@ export async function getBadgeSummary(
     earnedCount: badges.filter((badge) => badge.earned).length,
     next,
     progress: progressByKind,
+    pinned: profile.pinnedBadgeIds ?? [],
   }
+}
+
+/**
+ * Pins up to `PINNED_BADGES_MAX` badges to the profile, replacing the last
+ * choice. Every id must be a badge this account has earned — checked against
+ * the v3 catalogue, the only screen that pins — and a repeat is dropped.
+ * Pinning grants nothing and costs nothing.
+ */
+export async function pinBadges(
+  db: Db,
+  userId: string,
+  ids: readonly string[],
+): Promise<{ pinned: string[] }> {
+  const unique = [...new Set(ids)].slice(0, PINNED_BADGES_MAX)
+  if (unique.length > 0) {
+    const summary = await getBadgeSummary(db, userId, new Date(), 'v3')
+    const earned = new Set(summary.badges.filter((badge) => badge.earned).map((b) => b.id))
+    const stranger = unique.find((id) => !earned.has(id))
+    if (stranger)
+      throw new ApiError('VALIDATION_FAILED', 'Only a badge you have earned can be pinned')
+  }
+  await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .updateOne({ _id: userId }, { $set: { pinnedBadgeIds: unique } })
+  return { pinned: unique }
 }
 
 /**
@@ -212,8 +289,12 @@ export async function getBadgeSummary(
  * earned. What it drops — the locked rows and `next` — is dropped because it
  * is progress rather than achievement; see `publicBadgesSchema`.
  */
-export async function getPublicBadges(db: Db, userId: string): Promise<PublicBadges> {
-  const summary = await getBadgeSummary(db, userId)
+export async function getPublicBadges(
+  db: Db,
+  userId: string,
+  catalogue: BadgeCatalogue = 'classic',
+): Promise<PublicBadges> {
+  const summary = await getBadgeSummary(db, userId, new Date(), catalogue)
   return {
     badges: summary.badges.filter((badge) => badge.earned),
     earnedCount: summary.earnedCount,

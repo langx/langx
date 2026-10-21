@@ -2834,7 +2834,9 @@ export const es: Localized<EnMessages> = {
     of: '{current} de {total}',
     toGo: 'Faltan {amount}.',
     streakReward: 'El hito de {days} días de racha suma +{tokens} fichas.',
-    noTokens: 'Las insignias no dan fichas.',
+    noTokens: 'La insignia en sí no da fichas.',
+    milestonePays:
+      'La insignia en sí no da nada; el hito de {days} días de racha suma +{tokens} fichas.',
     earnedOn: 'Conseguida el {date}',
     earned: 'Conseguida',
     locked: 'Bloqueada',
@@ -2884,6 +2886,30 @@ export const es: Localized<EnMessages> = {
         one: '{formatted} día',
         other: '{formatted} días',
       },
+      languages: {
+        one: '{formatted} idioma',
+        other: '{formatted} idiomas',
+      },
+      calls: {
+        one: '{formatted} llamada',
+        other: '{formatted} llamadas',
+      },
+      echo: {
+        one: '{formatted} repaso',
+        other: '{formatted} repasos',
+      },
+      testimonials: {
+        one: '{formatted} compañero',
+        other: '{formatted} compañeros',
+      },
+      guide: {
+        one: '{formatted} persona',
+        other: '{formatted} personas',
+      },
+      openers: {
+        one: '{formatted} respuesta',
+        other: '{formatted} respuestas',
+      },
     },
     goal: {
       streak: {
@@ -2907,6 +2933,30 @@ export const es: Localized<EnMessages> = {
         other: 'Sé miembro durante {formatted} días',
       },
       origin: 'Haber estado en LangX v1',
+      languages: {
+        one: 'Practica {formatted} idioma',
+        other: 'Practica {formatted} idiomas',
+      },
+      calls: {
+        one: 'Haz {formatted} llamada',
+        other: 'Haz {formatted} llamadas',
+      },
+      echo: {
+        one: 'Repasa {formatted} tarjeta de Echo',
+        other: 'Repasa {formatted} tarjetas de Echo',
+      },
+      testimonials: {
+        one: 'Que {formatted} compañero escriba sobre ti',
+        other: 'Que {formatted} compañeros escriban sobre ti',
+      },
+      guide: {
+        one: 'Corrige a {formatted} persona',
+        other: 'Corrige a {formatted} personas',
+      },
+      openers: {
+        one: 'Da {formatted} primera respuesta',
+        other: 'Da {formatted} primeras respuestas',
+      },
     },
     note: {
       streak: 'Cuenta tu racha más larga, así que un día perdido nunca te quita una insignia.',
@@ -2916,6 +2966,15 @@ export const es: Localized<EnMessages> = {
       tokens: 'Cuenta todo lo que has ganado. Gastar nunca te quita nada.',
       veteran: 'Se cuenta desde el día en que te uniste.',
       origin: 'Para quienes estuvieron en LangX v1.',
+      languages:
+        'Cuentan los idiomas que practicas en Echo o en los que escribes publicaciones, además de tus idiomas nativos.',
+      calls: 'Una llamada cuenta cuando dura 5 minutos o más, la haya hecho quien la haya hecho.',
+      echo: 'Cuenta cada repaso, sea cual sea la nota.',
+      testimonials:
+        'Cada compañero que escribió sobre ti cuenta una vez. También uno que ocultaste.',
+      guide:
+        'Corrige a alguien a quien no hayas corregido antes: una publicación suya, una publicación de pronunciación que respondas o un mensaje que te envió. La misma persona cuenta una vez.',
+      openers: 'Cuenta cada primer mensaje que respondiste en menos de un día.',
     },
     family: {
       streak: {
@@ -2941,6 +3000,30 @@ export const es: Localized<EnMessages> = {
       origin: {
         title: 'Early Adopter',
         body: 'Estuviste en LangX v1.',
+      },
+      languages: {
+        title: 'Idiomas',
+        body: 'Los idiomas que practicas, además del tuyo.',
+      },
+      calls: {
+        title: 'Llamadas',
+        body: 'Llamadas de 5 minutos o más.',
+      },
+      echo: {
+        title: 'Repasos de Echo',
+        body: 'Cada tarjeta de Echo que repasas.',
+      },
+      testimonials: {
+        title: 'Palabras amables',
+        body: 'Compañeros que escribieron sobre ti.',
+      },
+      guide: {
+        title: 'Personas que ayudaste',
+        body: 'Personas distintas a las que corregiste.',
+      },
+      openers: {
+        title: 'Primeras respuestas',
+        body: 'Primeros mensajes que respondiste en menos de un día.',
       },
     },
     tier: {
@@ -2979,7 +3062,31 @@ export const es: Localized<EnMessages> = {
       veteran_730: 'Segundo anillo',
       veteran_1095: 'Tercer anillo',
       origin_v1: 'Early Adopter',
+      languages_2: 'Dos hilos',
+      languages_3: 'Trenza',
+      languages_5: 'Cinco hebras',
+      calls_1: 'Teléfono de latas',
+      calls_10: 'Línea larga',
+      calls_50: 'Centralita',
+      echo_100: 'Onda',
+      echo_1000: 'Ola',
+      echo_5000: 'Marea',
+      testimonials_1: 'Cuadro de colcha',
+      testimonials_5: 'Retazos',
+      testimonials_20: 'Colcha',
+      guide_3: 'Zurcido',
+      guide_10: 'Remiendo',
+      guide_50: 'Tejedor',
+      openers_10: 'Puerta abierta',
+      openers_50: 'Luz del porche',
+      openers_200: 'Casa abierta',
     },
+    profilePinned: 'Insignias fijadas',
+    pin: 'Fijar en el perfil',
+    unpin: 'Quitar',
+    change: 'Cambiar',
+    pinnedRow: 'Tus insignias en tu perfil',
+    pinFull: 'Fijarla sustituye a {name}.',
   },
 
   shared: {

@@ -2880,7 +2880,9 @@ export const de: Localized<EnMessages> = {
     of: '{current} von {total}',
     toGo: 'Noch {amount}.',
     streakReward: 'Der Meilenstein für {days} Tage Serie bringt +{tokens} Token.',
-    noTokens: 'Abzeichen bringen keine Token.',
+    noTokens: 'Das Abzeichen selbst bringt keine Token.',
+    milestonePays:
+      'Das Abzeichen selbst bringt nichts; der Meilenstein für {days} Tage Serie bringt +{tokens} Token.',
     earnedOn: 'Verdient am {date}',
     earned: 'Verdient',
     locked: 'Gesperrt',
@@ -2930,6 +2932,30 @@ export const de: Localized<EnMessages> = {
         one: '{formatted} Tag',
         other: '{formatted} Tage',
       },
+      languages: {
+        one: '{formatted} Sprache',
+        other: '{formatted} Sprachen',
+      },
+      calls: {
+        one: '{formatted} Anruf',
+        other: '{formatted} Anrufe',
+      },
+      echo: {
+        one: '{formatted} Wiederholung',
+        other: '{formatted} Wiederholungen',
+      },
+      testimonials: {
+        one: '{formatted} Partner',
+        other: '{formatted} Partner',
+      },
+      guide: {
+        one: '{formatted} Person',
+        other: '{formatted} Personen',
+      },
+      openers: {
+        one: '{formatted} Antwort',
+        other: '{formatted} Antworten',
+      },
     },
     goal: {
       streak: {
@@ -2953,6 +2979,30 @@ export const de: Localized<EnMessages> = {
         other: 'Sei {formatted} Tage dabei',
       },
       origin: 'Bei LangX v1 dabei gewesen sein',
+      languages: {
+        one: 'Übe {formatted} Sprache',
+        other: 'Übe {formatted} Sprachen',
+      },
+      calls: {
+        one: 'Führe {formatted} Anruf',
+        other: 'Führe {formatted} Anrufe',
+      },
+      echo: {
+        one: 'Wiederhole {formatted} Echo-Karte',
+        other: 'Wiederhole {formatted} Echo-Karten',
+      },
+      testimonials: {
+        one: 'Lass {formatted} Partner über dich schreiben',
+        other: 'Lass {formatted} Partner über dich schreiben',
+      },
+      guide: {
+        one: 'Korrigiere {formatted} Person',
+        other: 'Korrigiere {formatted} Personen',
+      },
+      openers: {
+        one: 'Gib {formatted} erste Antwort',
+        other: 'Gib {formatted} erste Antworten',
+      },
     },
     note: {
       streak: 'Deine längste Serie zählt, also nimmt dir ein verpasster Tag kein Abzeichen weg.',
@@ -2962,6 +3012,15 @@ export const de: Localized<EnMessages> = {
       tokens: 'Alles, was du je verdient hast, zählt. Ausgeben nimmt nichts davon weg.',
       veteran: 'Gezählt ab dem Tag, an dem du beigetreten bist.',
       origin: 'Für alle, die bei LangX v1 dabei waren.',
+      languages:
+        'Es zählen die Sprachen, die du in Echo übst oder in denen du Beiträge schreibst, außer deinen Muttersprachen.',
+      calls: 'Ein Anruf zählt, sobald er 5 Minuten oder länger dauert, egal wer angerufen hat.',
+      echo: 'Jede Wiederholung zählt, egal wie sie ausfällt.',
+      testimonials:
+        'Jeder Partner, der über dich geschrieben hat, zählt einmal. Auch einer, den du ausgeblendet hast.',
+      guide:
+        'Korrigiere jemanden, den du noch nicht korrigiert hast: einen Beitrag, eine Ausspracheanfrage oder eine Nachricht an dich. Dieselbe Person zählt nur einmal.',
+      openers: 'Es zählt jede erste Nachricht, die du innerhalb eines Tages beantwortet hast.',
     },
     family: {
       streak: {
@@ -2987,6 +3046,30 @@ export const de: Localized<EnMessages> = {
       origin: {
         title: 'Early Adopter',
         body: 'Du warst bei LangX v1 dabei.',
+      },
+      languages: {
+        title: 'Sprachen',
+        body: 'Sprachen, die du übst, außer deiner eigenen.',
+      },
+      calls: {
+        title: 'Anrufe',
+        body: 'Anrufe, die 5 Minuten oder länger dauern.',
+      },
+      echo: {
+        title: 'Echo-Wiederholungen',
+        body: 'Jede Echo-Karte, die du wiederholst.',
+      },
+      testimonials: {
+        title: 'Nette Worte',
+        body: 'Partner, die über dich geschrieben haben.',
+      },
+      guide: {
+        title: 'Menschen, denen du geholfen hast',
+        body: 'Verschiedene Menschen, die du korrigiert hast.',
+      },
+      openers: {
+        title: 'Erste Antworten',
+        body: 'Erste Nachrichten, die du innerhalb eines Tages beantwortet hast.',
       },
     },
     tier: {
@@ -3025,7 +3108,31 @@ export const de: Localized<EnMessages> = {
       veteran_730: 'Zweiter Ring',
       veteran_1095: 'Dritter Ring',
       origin_v1: 'Early Adopter',
+      languages_2: 'Zwei Fäden',
+      languages_3: 'Zopf',
+      languages_5: 'Fünf Stränge',
+      calls_1: 'Dosentelefon',
+      calls_10: 'Lange Leitung',
+      calls_50: 'Vermittlung',
+      echo_100: 'Kräuseln',
+      echo_1000: 'Welle',
+      echo_5000: 'Flut',
+      testimonials_1: 'Quiltquadrat',
+      testimonials_5: 'Patchwork',
+      testimonials_20: 'Quilt',
+      guide_3: 'Stopfen',
+      guide_10: 'Flicken',
+      guide_50: 'Weber',
+      openers_10: 'Offene Tür',
+      openers_50: 'Verandalicht',
+      openers_200: 'Offenes Haus',
     },
+    profilePinned: 'Angeheftete Abzeichen',
+    pin: 'Ans Profil heften',
+    unpin: 'Lösen',
+    change: 'Ändern',
+    pinnedRow: 'Deine Abzeichen auf deinem Profil',
+    pinFull: 'Das ersetzt {name}.',
   },
 
   shared: {
