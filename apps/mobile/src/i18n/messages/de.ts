@@ -2803,6 +2803,9 @@ export const de: Localized<EnMessages> = {
     columnNow: 'Gerade jetzt',
     columnEver: 'Längste je',
     columnDays: 'Tage am Stück',
+    placeWeek: 'Dein Platz diese Woche',
+    placeMonth: 'Dein Platz diesen Monat',
+    placeYear: 'Dein Platz dieses Jahr',
     rowTokens: { one: '{rank}. {name}, {amount} Token', other: '{rank}. {name}, {amount} Token' },
     rowDays: {
       one: '{rank}. {name}, {amount} Tag am Stück',

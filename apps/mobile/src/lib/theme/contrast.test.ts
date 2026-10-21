@@ -63,10 +63,14 @@ const PAIRS: Pair[] = [
   { text: 'danger', on: 'bg' },
   { text: 'danger', on: 'surface' },
   // A partner's tile carries ink; an ink chip carries the partner's hue.
+  // The ask card's like is in these pairs too: the outline heart, the count
+  // and the liked disc are all ink on the hue.
   ...PARTNER_HUES.flatMap((hue): Pair[] => [
     { text: 'ink', on: hue },
     { text: hue, on: 'ink' },
   ]),
+  // The liked heart on an ask card: the white heart inside the ink disc.
+  { text: 'onBlue', on: 'ink' },
 ]
 
 function resolve(scheme: ColorScheme, token: Token): string {
