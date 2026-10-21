@@ -119,6 +119,24 @@ export const es: Localized<EnMessages> = {
     cameraTitle: 'Cámara',
     cameraPermission: 'LangX necesita permiso para usar tu cámara.',
   },
+  avatar: {
+    default: {
+      tile: 'Cara dibujada {index}',
+      pickTitle: 'Elige una cara dibujada',
+      pickBody: 'Te representa hasta que añadas una foto. Quien vea tu perfil verá esta cara.',
+      useThis: 'Usar esta cara',
+      pickFailed: 'No se guardó esa cara. Inténtalo de nuevo.',
+      seeAll: { one: 'Ver {count} cara', other: 'Ver las {count} caras' },
+      changeFace: 'Cambiar la cara dibujada',
+      nudgeTitle: 'Añade una foto tuya',
+      nudgeBody:
+        'Dibujamos esta cara para que tu perfil no esté vacío. Es provisional: una foto muestra a la gente con quién habla.',
+      nudgeAdd: 'Añadir tu foto',
+      nudgePick: 'Elegir otra cara dibujada',
+      nudgeDismiss: 'Ahora no',
+      othersSee: 'Lo que otros ven en tu perfil',
+    },
+  },
   photo: {
     open: 'Abrir la foto',
     close: 'Cerrar la foto',
@@ -901,6 +919,9 @@ export const es: Localized<EnMessages> = {
     nameFromSignUp: 'De tu registro. Cámbialo si quieres.',
     aboutYouOptional: 'Sobre ti (opcional)',
     tooYoung: 'LangX es para personas de {age} años o más.',
+    photo: {
+      picker: { title: 'O elige otra cara dibujada', keep: 'Quedarme con esta cara' },
+    },
     photoTitle: 'Ponle cara',
     photoBody:
       'Te hemos dibujado una cara. Una foto real hace mucho más probable que alguien te salude, y la bio también es opcional.',

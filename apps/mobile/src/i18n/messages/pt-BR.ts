@@ -116,6 +116,24 @@ export const ptBR: Localized<EnMessages> = {
     cameraTitle: 'Câmera',
     cameraPermission: 'O LangX precisa de permissão para usar sua câmera.',
   },
+  avatar: {
+    default: {
+      tile: 'Rosto desenhado {index}',
+      pickTitle: 'Escolha um rosto desenhado',
+      pickBody: 'Ele aparece até você adicionar uma foto. Quem vê seu perfil vê este rosto.',
+      useThis: 'Usar este rosto',
+      pickFailed: 'Esse rosto não foi salvo. Tente de novo.',
+      seeAll: { one: 'Ver {count} rosto', other: 'Ver todos os {count} rostos' },
+      changeFace: 'Trocar o rosto desenhado',
+      nudgeTitle: 'Adicione uma foto sua',
+      nudgeBody:
+        'Desenhamos este rosto para seu perfil não ficar vazio. É provisório: uma foto mostra às pessoas com quem elas estão falando.',
+      nudgeAdd: 'Adicionar sua foto',
+      nudgePick: 'Escolher outro rosto desenhado',
+      nudgeDismiss: 'Agora não',
+      othersSee: 'O que os outros veem no seu perfil',
+    },
+  },
   photo: {
     open: 'Abrir a foto',
     close: 'Fechar a foto',
@@ -898,6 +916,9 @@ export const ptBR: Localized<EnMessages> = {
     nameFromSignUp: 'Do seu cadastro. Mude se quiser.',
     aboutYouOptional: 'Sobre você (opcional)',
     tooYoung: 'O LangX é para pessoas de {age} anos ou mais.',
+    photo: {
+      picker: { title: 'Ou escolha outro rosto desenhado', keep: 'Ficar com este rosto' },
+    },
     photoTitle: 'Coloque um rosto nisso',
     photoBody:
       'Desenhamos um rosto para você. Uma foto de verdade aumenta muito a chance de alguém te dar um oi — e a bio também é opcional.',
