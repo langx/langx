@@ -2299,6 +2299,8 @@ export const ru: Localized<EnMessages> = {
     capOverGrandfathered:
       'У тебя уже больше, чем вмещает тариф. Их можно менять и убирать, но не добавлять новые.',
     changeHint: 'Нажми на язык, чтобы заменить его.',
+    allLanguages: 'Все языки, от А до Я',
+    levelGroup: 'Твой уровень: {language}',
     pausedNote: 'На паузе в «Поиске» на бесплатном тарифе. С Pro снова учитывается.',
     saveFailed: 'Не сохранилось. Ничего не изменилось.',
   },
@@ -2340,7 +2342,6 @@ export const ru: Localized<EnMessages> = {
     title: 'Наша кухня',
     intro: 'Где делают LangX — и все, кто его делает.',
     dataCredit: 'Названия мест — GeoNames, лицензия CC BY 4.0.',
-    stickerCredit: 'Часть стикеров — из Microsoft Fluent Emoji, лицензия MIT.',
     footer: 'Делается открыто, теми, кто им пользуется.',
     contributors: 'Участники',
     fundamentals: 'Все, кто внёс вклад',
@@ -3056,9 +3057,10 @@ export const ru: Localized<EnMessages> = {
 
   stickerPack: {
     taglinePaper: 'Приветствия и быстрые ответы, вырезанные из цветной бумаги.',
-    taglineStarter: 'На каждый день: привет, слушаю, понял, молодец.',
-    taglinePractice: 'Для самой практики: помедленнее, ещё раз, у нас получилось.',
-    taglinePixel: 'Маленькие спрайты, чтобы расти вместе.',
+    taglineStarter:
+      'Пип, маленькое облачко с репликой, говорит то, что нужно каждый день: привет, слушаю, спасибо.',
+    taglinePractice: 'Фетровые нашивки для самой практики: помедленнее, ещё раз, у нас получилось.',
+    taglinePixel: 'Спрайты из термомозаики, чтобы расти вместе.',
     count: {
       one: '{count} стикер',
       few: '{count} стикера',
@@ -3127,7 +3129,7 @@ export const ru: Localized<EnMessages> = {
     practiceHourglass: 'Песочные часы',
     practiceBullseye: 'В яблочко',
     pixelLevelup: 'Новый уровень',
-    pixelCoin: 'Монетка',
+    pixelCoin: 'Дополнительная жизнь',
     pixelCheckpoint: 'Чекпоинт',
     pixelFlame: 'Пламя',
     pixelKey: 'Ключ',
@@ -3211,6 +3213,9 @@ export const ru: Localized<EnMessages> = {
     columnNow: 'Сейчас',
     columnEver: 'Рекорд',
     columnDays: 'Дней подряд',
+    placeWeek: 'Твоё место на этой неделе',
+    placeMonth: 'Твоё место в этом месяце',
+    placeYear: 'Твоё место в этом году',
     rowTokens: {
       one: '{rank}. {name}, {amount} токен',
       few: '{rank}. {name}, {amount} токена',
@@ -3716,6 +3721,7 @@ export const ru: Localized<EnMessages> = {
     ringing: 'Идут гудки…',
     connecting: 'Соединение…',
     reconnecting: 'Восстанавливаем соединение…',
+    reconnectingHint: 'Подожди. Звонок восстановится сам.',
     answer: 'Ответить',
     answerNoCamera: 'Ответить без камеры',
     decline: 'Отклонить',
@@ -3730,6 +3736,11 @@ export const ru: Localized<EnMessages> = {
     returnToCall: 'Вернуться к звонку',
     peerMuted: '{name}: микрофон выключен',
     peerCameraOff: 'Камера выключена',
+    howWasIt: 'Как прошло?',
+    tile: {
+      camera: 'Камера',
+      flip: 'Сменить',
+    },
     ended: 'Звонок завершён',
     noAnswer: 'Нет ответа',
     busy: '{name} сейчас не может ответить',
