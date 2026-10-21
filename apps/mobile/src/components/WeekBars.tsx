@@ -9,7 +9,7 @@ import { Skeleton } from './ui/Skeleton'
  * labels are derived from each row's own date rather than assumed — a week that
  * ends on Wednesday starts on Thursday, and a fixed `M T W T F S S` would lie.
  */
-function dayInitial(day: string, locale: Locale): string {
+export function dayInitial(day: string, locale: Locale): string {
   const at = new Date(`${day}T00:00:00Z`)
   if (Number.isNaN(at.getTime())) return ''
   // `narrow` is CLDR's own one-or-two-character weekday — "M" in English, "P"

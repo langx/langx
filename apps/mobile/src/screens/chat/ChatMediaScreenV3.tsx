@@ -1,11 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import {
-  attachmentsOf,
-  isVideoContentType,
-  type Media,
-  MEDIA_TABS,
-  type MediaTab,
-} from '@langx/shared'
+import { attachmentsOf, isVideoContentType, MEDIA_TABS, type MediaTab } from '@langx/shared'
 import { Image } from 'expo-image'
 import { useLocalSearchParams } from 'expo-router'
 import { useMemo, useState } from 'react'
@@ -18,7 +12,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native'
-import { useConversationMedia, useMe, type MessageDto } from '../../api/queries'
+import { useConversationMedia, useMe } from '../../api/queries'
 import { LoadFailed } from '../../components/LoadFailed'
 import { AudioBubble, VideoTile } from '../../components/MediaBubble'
 import { PhotoViewer } from '../../components/PhotoViewer'
@@ -30,35 +24,14 @@ import { useProfileCache } from '../../hooks/useProfileCache'
 import { usePullToRefresh } from '../../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../hooks/useScreenInteractive'
 import { useLocale, useT } from '../../i18n'
-import { dedupeById } from '../../lib/dedupeById'
 import { listState } from '../../lib/listState'
 import { dayLabel } from '../../lib/messageGroups'
+import { tilesOf } from '../../lib/mediaTiles'
 import { goBackTo } from '../../lib/navigation'
 import { makeStyles, useTheme } from '../../lib/theme'
 
 const COLUMNS = 3
 const GRID_GAP = 2
-
-/** One tile per attachment — see `chat-media.tsx` for why not one per message. */
-interface Tile {
-  _id: string
-  media: Media
-  senderId: string
-  createdAt: string
-}
-
-function tilesOf(messages: MessageDto[]): Tile[] {
-  return dedupeById(
-    messages.flatMap((message) =>
-      attachmentsOf(message).map((media, index) => ({
-        _id: `${message._id}:${index}`,
-        media,
-        senderId: message.senderId,
-        createdAt: message.createdAt,
-      })),
-    ),
-  )
-}
 
 /**
  * A conversation's media in the redesign's look (`V-ChatMedia`), behind
