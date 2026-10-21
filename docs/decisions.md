@@ -1921,6 +1921,8 @@ does, and exists for the stale client and the racing tap.
 
 ## Pronouns are free text, and gender is not
 
+> **Amended 21 October 2026 — see _v3 draws no pronouns_ below.**
+
 `pronouns` sits in `updateProfileSchema` beside `bio`, editable as often as
 anybody likes, while `gender` two paragraphs up is rate-limited. The line
 between them is the same one that decides which discovery filters are free:
@@ -9268,3 +9270,23 @@ beside the minimum version, because it is thrown in step with it. Conditions a
 pull request asked for (`promoPaywallLinks`, `stickerGifts`) are shown as a
 caution, not a lock. Whether they are met is the operator's call, and the app
 cannot see it.
+
+## v3 draws no pronouns
+
+**21 October 2026.** The v3 profile, the Me hero and the shared page no longer
+draw `pronouns`, and v3's Edit profile no longer asks for them. On the profile
+the line sat under the handle and repeated the gender mark beside the name —
+"he" under a ♂ — and somebody who keeps their gender to themselves has no mark
+and is left without one, with no word standing in for it.
+
+- **Nothing is deleted.** The field stays in the schemas and in the stored
+  profiles, and the API still returns it. The old look, which is what the app
+  shows with `v3Home` off, still draws and edits it. v3's save leaves the key
+  out of its PATCH, so a value written before is kept, not cleared.
+- **The form goes with the line.** Its hint promised the pronouns were shown on
+  your profile. With nothing in v3 drawing them that promise would be false,
+  and a value nobody can see is better not asked for.
+
+What _Pronouns are free text, and gender is not_ says about the field still
+holds; its reason for being on `sharedProfileSchema` now holds for the old look
+only.
