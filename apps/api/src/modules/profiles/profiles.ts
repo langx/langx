@@ -66,6 +66,12 @@ import { streakDaysInZone } from '../tokens/streak'
 export interface Profile {
   _id: string
   /**
+   * Up to `PINNED_BADGES_MAX` earned badge ids the owner chose to wear on
+   * their profile, in their order. Written by `pinBadges`, which checks each
+   * is earned; badges only accumulate, so a pin stays true once made.
+   */
+  pinnedBadgeIds?: string[]
+  /**
    * A browsing session with no account behind it.
    *
    * The row exists because `discoverProfiles` needs a viewer document — it
