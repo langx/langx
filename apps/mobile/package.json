@@ -27,7 +27,7 @@
     "@langx/shared": "workspace:*",
     "@livekit/react-native-webrtc": "144.2.0",
     "@posthog/react-native-plugin": "^2.12.6",
-    "@react-native-community/datetimepicker": "9.1.0",
+    "@react-native-community/datetimepicker": "9.2.1",
     "@revenuecat/purchases-js": "^1.71.0",
     "@tanstack/query-async-storage-persister": "catalog:",
     "@tanstack/react-query": "catalog:",
