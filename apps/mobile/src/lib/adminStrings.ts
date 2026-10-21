@@ -21,7 +21,7 @@
  *
  * If you are here to "finish the translations": this is finished.
  */
-import type { ReportReason } from '@langx/shared'
+import { COPILOT_RULES, type ReportReason } from '@langx/shared'
 
 /**
  * One decimal, and an em dash rather than a `0%` when there is nothing to take
@@ -383,6 +383,12 @@ export const ADMIN = {
     blockedBy: 'blocked by',
     history: 'What we have done',
     noHistory: 'Nothing yet.',
+    copilot: {
+      title: 'Copilot access',
+      hint: `Uses Copilot when the switch is on, they are ${COPILOT_RULES.minimumAge}+, and they agree.`,
+      allowed: 'Copilot allowed',
+      revoked: 'Copilot access removed',
+    },
     gift: {
       title: 'Give Pro',
       hint: 'A RevenueCat grant with an end date. They get a message from @langx, a push and a mail in their language.',
@@ -909,6 +915,22 @@ export const ADMIN = {
     cached: 'From the cache — nothing spent',
     fresh: 'Written now',
     refused: (code: string, reason?: string) => `Refused: ${code}${reason ? ` (${reason})` : ''}`,
+    allowedTitle: 'Allowed accounts',
+    allowedEmpty: 'Nobody yet. Allow an account from Find someone.',
+    allowedSince: (date: string) => `Since ${date}`,
+    you: 'You',
+    youAllowed: 'On the list',
+    youNotAllowed:
+      'Not on the list. Being an admin does not count: allow yourself in Find someone.',
+    whoTitle: 'Who sees Copilot',
+    whoRules: [
+      'flags.copilotEnabled is on',
+      'the API has a key',
+      'the account is on the list above',
+      `they are ${COPILOT_RULES.minimumAge} or older, by the exact birthday`,
+      'they agreed to the current consent sheet, asked on their first tap',
+    ],
+    whoPartner: `On top of that, Explain and Reply ideas refuse a chat whose partner is under ${COPILOT_RULES.minimumAge}, so their words never reach the model.`,
   },
 
   common: {
