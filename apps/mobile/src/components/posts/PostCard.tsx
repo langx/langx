@@ -49,9 +49,9 @@ const ACTION_ICONS = {
  * Two cards, because a post is one of two things. An **ask** is a block in its
  * author's partner colour with an "Ask" chip, what it asks in words, the
  * sentence set big and one big Help button. A **moment** sits on the grey
- * surface with a "Moment" chip, its words and pictures, its likes, and one
- * big Comment button — a moment never offers a correction, which the server
- * would refuse (see `postCardAction`).
+ * surface with a "Moment" chip, its words and pictures, and one big Comment
+ * button — a moment never offers a correction, which the server would refuse
+ * (see `postCardAction`). Both carry the like, in the same place.
  *
  * Memoised: the list hands every card the same handlers and only the values
  * that are about this card, so a keystroke in another card's correction box
@@ -223,35 +223,38 @@ export const PostCard = memo(function PostCard({
           </Pressable>
         ) : null}
 
-        {ask ? (
-          helped.length > 0 || done.length > 0 ? (
-            <View style={styles.counts}>
-              {[...helped, ...done].map((line) => (
-                <Text key={line} style={[styles.count, { color: ink }]}>
-                  {line}
-                </Text>
-              ))}
-            </View>
-          ) : null
-        ) : (
-          // Likes pay nothing and rank nothing; they live on the moment,
-          // where the card is about the post rather than about help.
-          <View style={styles.social}>
-            <LikeButton
-              targetType="post"
-              targetId={post._id}
-              likeCount={post.likeCount}
-              likedByViewer={post.likedByViewer}
-              disabled={mine}
-              from={FROM}
-            />
-            {post.commentCount > 0 ? (
-              <Text style={styles.commentCount}>
-                {t('feed.comments', { count: post.commentCount })}
+        {ask && (helped.length > 0 || done.length > 0) ? (
+          <View style={styles.counts}>
+            {[...helped, ...done].map((line) => (
+              <Text key={line} style={[styles.count, { color: ink }]}>
+                {line}
               </Text>
-            ) : null}
+            ))}
           </View>
-        )}
+        ) : null}
+
+        {/*
+          The like on every card, in the same place above the big button.
+          Likes pay nothing and rank nothing, but a heart that shows on a
+          moment and is missing on an ask reads as broken, not as a rule. On
+          the hue the heart takes the ink, as the card's words do.
+        */}
+        <View style={styles.social}>
+          <LikeButton
+            targetType="post"
+            targetId={post._id}
+            likeCount={post.likeCount}
+            likedByViewer={post.likedByViewer}
+            disabled={mine}
+            from={FROM}
+            {...(ask ? { tint: ink } : {})}
+          />
+          {!ask && post.commentCount > 0 ? (
+            <Text style={styles.commentCount}>
+              {t('feed.comments', { count: post.commentCount })}
+            </Text>
+          ) : null}
+        </View>
 
         {composing ? null : (
           <Button

@@ -17,6 +17,11 @@ interface LikeButtonProps {
   from: string
   /** `small` is the reply rows' size — a 15 heart with a 13 count beside it. */
   size?: 'default' | 'small'
+  /**
+   * The colour before a like, for a ground the muted text does not read on:
+   * v3's ask card sits on a hue that stays light after dark.
+   */
+  tint?: string
 }
 
 /**
@@ -40,6 +45,7 @@ export function LikeButton({
   disabled,
   from,
   size = 'default',
+  tint: idle,
 }: LikeButtonProps) {
   const styles = useStyles()
   const { colors } = useTheme()
@@ -49,7 +55,7 @@ export function LikeButton({
   const small = size === 'small'
   // Heart and number take the same colour: red once you have liked it, muted
   // until then.
-  const tint = likedByViewer ? colors.danger : colors.textMuted
+  const tint = likedByViewer ? colors.danger : (idle ?? colors.textMuted)
 
   return (
     <View style={styles.row}>
