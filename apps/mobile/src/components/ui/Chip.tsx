@@ -103,7 +103,12 @@ export function Chip({
       {selected ? (
         <Feather name="check" size={v3Look ? v3.icon.sm : 14} color={labelColour} />
       ) : null}
-      <Text style={text}>{label}</Text>
+      {/* One line under v3: the pill is a fixed 48 with its overflow hidden, so a
+          label too wide for the row would wrap into a second line the pill cuts
+          off. Ellipsised, it at least says it is longer. */}
+      <Text style={text} {...(v3Look ? { numberOfLines: 1 } : {})}>
+        {label}
+      </Text>
     </>
   )
 
@@ -168,7 +173,7 @@ const useStyles = makeStyles(({ spacing, radius, v3 }) => ({
     borderColor: v3.colors.pill,
     paddingStart: v3.space[14],
   },
-  v3Label: { ...v3.type.button },
+  v3Label: { ...v3.type.button, flexShrink: 1 },
   pressed: { opacity: 0.7 },
   disabled: { opacity: 0.45 },
 }))
