@@ -1,6 +1,9 @@
 import Feather from '@expo/vector-icons/Feather'
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { Pressable, Text, View } from 'react-native'
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
+import { useReduceMotion } from '../../hooks/useReduceMotion'
+import { SPRING } from '../../lib/theme/motion'
 import { useLocale } from '../../i18n'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
 import { Avatar } from '../ui/Avatar'
@@ -336,27 +339,55 @@ export function MeProBlock({
 export function MeSectionHead({
   title,
   count,
+  fresh,
   onPress,
 }: {
   title: string
   count?: string | undefined
+  /** "New", when the section holds something earned and not yet seen. */
+  fresh?: string | undefined
   onPress: () => void
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
+  const label = [title, fresh, count].filter(Boolean).join(', ')
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={count ? `${title}, ${count}` : title}
+      accessibilityLabel={label}
       onPress={onPress}
       style={({ pressed }) => [styles.sectionHead, pressed && styles.pressed]}
     >
       <Text style={styles.sectionTitle} accessibilityRole="header">
         {title}
       </Text>
+      {fresh ? <FreshChip label={fresh} /> : null}
       {count ? <Text style={styles.sectionCount}>{count}</Text> : null}
       <Chevron color={v3.colors.muted} />
     </Pressable>
+  )
+}
+
+/**
+ * The yellow "New" beside a section's title: a badge was earned somewhere
+ * other than the badges page, and this is where it is waiting. It pops once
+ * on `SPRING.select` when it appears, and is simply there with reduce motion.
+ */
+function FreshChip({ label }: { label: string }) {
+  const styles = useStyles()
+  const reduce = useReduceMotion()
+  const shown = useSharedValue(reduce ? 1 : 0)
+  useEffect(() => {
+    shown.set(reduce ? 1 : withSpring(1, SPRING.select))
+  }, [reduce, shown])
+  const motion = useAnimatedStyle(() => ({
+    opacity: Math.min(1, shown.get() * 2),
+    transform: [{ scale: 0.5 + 0.5 * shown.get() }],
+  }))
+  return (
+    <Animated.View style={[styles.fresh, motion]}>
+      <Text style={styles.freshText}>{label}</Text>
+    </Animated.View>
   )
 }
 
@@ -753,6 +784,13 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   sectionTitle: { ...v3.type.headline, color: v3.colors.fg, flex: 1 },
   sectionCount: { ...v3.type.callout, color: v3.colors.muted, fontWeight: '700' },
+  fresh: {
+    backgroundColor: v3.colors.yellow,
+    borderRadius: v3.radius.pill,
+    paddingHorizontal: v3.space[8],
+    paddingVertical: v3.space[2],
+  },
+  freshText: { ...v3.type.caption, color: v3.colors.onYellow, fontWeight: '800' },
 
   badge: {
     borderRadius: v3.radius.block,
