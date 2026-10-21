@@ -8,7 +8,7 @@ import { SettingsHeaderV3 } from '../../components/settings/v3/SettingsKitV3'
 import { Button } from '../../components/ui/Button'
 import { Screen } from '../../components/ui/Screen'
 import { Skeleton } from '../../components/ui/Skeleton'
-import { useT } from '../../i18n'
+import { useLocale, useT } from '../../i18n'
 import { showAlert } from '../../lib/alert'
 import { goBackTo, openStickerPack } from '../../lib/navigation'
 import { emitWithAck, getSocket } from '../../lib/socket'
@@ -32,6 +32,7 @@ export function StickersScreenV3() {
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
+  const { isRtl } = useLocale()
   const { id: conversationId } = useLocalSearchParams<{ id: string }>()
   const wallet = useWallet()
   const purchase = usePurchase()
@@ -96,7 +97,11 @@ export function StickersScreenV3() {
                     {t(unlocked ? 'store.owned' : 'store.locked')}
                   </Text>
                 </View>
-                {/* The pack's own page, where wanting one can see all twelve big before buying. */}
+                {/*
+                  The pack's own page, where wanting one can see all twelve
+                  big before buying. A chevron rather than the words, so the
+                  pack's name keeps the row; the words are its spoken name.
+                */}
                 <Pressable
                   accessibilityRole="link"
                   accessibilityLabel={`${t('stickerPack.seePack')}: ${name}`}
@@ -104,7 +109,11 @@ export function StickersScreenV3() {
                   onPress={() => openStickerPack(pack.id)}
                   style={({ pressed }) => [styles.seePack, pressed && styles.pressed]}
                 >
-                  <Text style={styles.seePackLabel}>{t('stickerPack.seePack')}</Text>
+                  <Feather
+                    name={isRtl ? 'chevron-left' : 'chevron-right'}
+                    size={v3.icon.xl}
+                    color={v3.colors.fg}
+                  />
                 </Pressable>
               </View>
               <ScrollView
@@ -185,8 +194,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   statusLocked: { backgroundColor: v3.colors.line },
   statusLabel: { ...v3.type.label, color: v3.colors.fg },
   statusLabelOwned: { color: v3.colors.correction },
-  seePack: { justifyContent: 'center', minHeight: 44, paddingHorizontal: v3.space[4] },
-  seePackLabel: { ...v3.type.buttonSmall, color: v3.colors.echoText },
+  seePack: { alignItems: 'center', height: 44, justifyContent: 'center', width: 44 },
   // Edge to edge: the strip scrolls under the page's gutter (`Screen`'s 20), as the board's does.
   strip: { marginHorizontal: -v3.space[20] },
   stripContent: { gap: v3.space[10], paddingHorizontal: v3.space[20] },

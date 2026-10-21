@@ -165,7 +165,8 @@ const useStyles = makeStyles(({ v3 }) => ({
   section: { gap: v3.space[10] },
   tiles: { gap: v3.space[8] },
   tileRow: { flexDirection: 'row', gap: v3.space[8] },
-  tileSpacer: { flex: 1 },
+  // The tile's own padding, so the odd one out is exactly a half.
+  tileSpacer: { flex: 1, paddingEnd: v3.space[12], paddingStart: v3.space[10] },
   tile: {
     alignItems: 'center',
     backgroundColor: v3.colors.surface,

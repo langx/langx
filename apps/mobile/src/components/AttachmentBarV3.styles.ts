@@ -14,7 +14,15 @@ import { makeStyles } from '../lib/theme'
  * of a correction, where a tile would not fit.
  */
 export const useAttachmentStylesV3 = makeStyles(({ v3 }) => ({
-  row: { alignItems: 'center', flexDirection: 'row', flexShrink: 1, gap: v3.space[8] },
+  // Wraps where the current row does not: the board's words are bigger, and
+  // "Add a photo or video" beside "Voice note" no longer fits a phone's width.
+  row: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexShrink: 1,
+    flexWrap: 'wrap',
+    gap: v3.space[8],
+  },
   previewRow: {
     alignItems: 'center',
     flexDirection: 'row',
