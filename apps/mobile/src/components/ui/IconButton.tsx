@@ -2,6 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import type { ReactNode } from 'react'
 import { Platform, type PressableProps, type StyleProp, type ViewStyle } from 'react-native'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { PRESS_SCALE_GLYPH } from '../../lib/theme/motionValues'
 import { PressableScale } from './PressableScale'
 
 type Look = 'plain' | 'surface' | 'ink' | 'hue'
@@ -42,12 +43,6 @@ interface IconButtonProps {
 export const ICON_BUTTON_TARGET = Platform.select({ android: 48, default: 44 })
 
 /**
- * A glyph is small enough that a button's 3% shrink would not show on it, so
- * a glyph shrinks further.
- */
-const GLYPH_PRESS_SCALE = 0.88
-
-/**
  * A control that is only a glyph: back, close, the bell, the ≡. Its target is
  * the platform minimum however small the glyph, and it always has a name for
  * a screen reader — the type will not let it be drawn without one.
@@ -86,7 +81,7 @@ export function IconButton({
       onPress={onPress}
       disabled={disabled}
       {...(hitSlop !== undefined ? { hitSlop } : {})}
-      scaleTo={GLYPH_PRESS_SCALE}
+      scaleTo={PRESS_SCALE_GLYPH}
       touchStyle={style}
       style={[
         styles.target,

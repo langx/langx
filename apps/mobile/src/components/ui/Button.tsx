@@ -1,20 +1,13 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useEffect, useRef, type ReactElement } from 'react'
-import {
-  ActivityIndicator,
-  Animated,
-  Easing,
-  Platform,
-  Text,
-  View,
-  type ViewStyle,
-} from 'react-native'
+import { ActivityIndicator, Animated, Platform, Text, View, type ViewStyle } from 'react-native'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useV3LaunchLook } from '../../hooks/useV3LaunchLook'
 import { impact, notification } from '../../lib/haptics'
 import { makeStyles, useTheme, type V3Colors } from '../../lib/theme'
 import { disabledButtonLook, FILLED_BUTTON_VARIANTS } from '../../lib/theme/buttonDisabledLook'
-import { CURVE, DURATION } from '../../lib/theme/motionValues'
+import { EASE_POP } from '../../lib/theme/motionAnimated'
+import { DURATION } from '../../lib/theme/motionValues'
 import { PressableScaleBase } from './PressableScale'
 
 type Variant = 'primary' | 'blue' | 'secondary' | 'neutral' | 'ink' | 'hue' | 'danger'
@@ -95,9 +88,6 @@ export const BUTTON_FACE = {
  * that stacks buttons moves by a point when this one changes.
  */
 const TOUCH_BAND = 2
-
-/** `motion.ts`'s `EASE_POP`, on React Native's `Easing`. */
-const EASE_POP = Easing.bezier(...CURVE.pop)
 
 /**
  * v3's button: a flat pill, the label in sentence case, and a small shrink

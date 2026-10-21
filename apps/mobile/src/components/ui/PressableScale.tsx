@@ -1,7 +1,26 @@
+/**
+ * Press feedback, app-wide. One answer per kind of surface, so a tap feels
+ * the same wherever it lands:
+ *
+ * 1. Anything that commits or opens — buttons, icon buttons, chips, radios,
+ *    tiles, cards, tabs, banners, toasts — is a `PressableScale`.
+ *    - Scale: `PRESS_SCALE` (0.97) for a button, `PRESS_SCALE_CARD` (0.98)
+ *      for a card or tile, `PRESS_SCALE_GLYPH` (0.88) for a lone glyph.
+ *    - Timing: `DURATION.press` (120 ms) in, `DURATION.release` (150 ms)
+ *      out, on `EASE_OUT`, on the native driver.
+ *    - With reduce motion on: no scale, the face dims to 0.7 while held.
+ * 2. Rows, list cells and text links dim to `PRESS_OPACITY` (0.6) and do
+ *    not shrink: a whole row moving under the thumb reads as the list
+ *    jumping.
+ * 3. Scrims and surfaces that only answer a long press give no feedback at
+ *    all. No `android_ripple` anywhere: it is the one press that would look
+ *    different on one platform.
+ * 4. No opacity literal in a screen. A press dims by `PRESS_OPACITY` or by
+ *    nothing; a sixth value is how there came to be six.
+ */
 import { useRef, type ReactNode } from 'react'
 import {
   Animated,
-  Easing,
   Pressable,
   type PressableProps,
   type StyleProp,
@@ -9,10 +28,8 @@ import {
 } from 'react-native'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { makeStyles } from '../../lib/theme'
-import { CURVE, DURATION, PRESS_SCALE } from '../../lib/theme/motionValues'
-
-/** `motion.ts`'s `EASE_OUT`, built with React Native's `Easing` rather than Reanimated's. */
-const EASE_OUT = Easing.bezier(...CURVE.out)
+import { EASE_OUT } from '../../lib/theme/motionAnimated'
+import { DURATION, PRESS_SCALE } from '../../lib/theme/motionValues'
 
 export interface PressableScaleProps extends Omit<PressableProps, 'style' | 'children'> {
   children: ReactNode
