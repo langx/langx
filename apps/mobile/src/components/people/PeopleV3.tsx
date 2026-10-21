@@ -3,10 +3,13 @@ import Feather from '@expo/vector-icons/Feather'
 import { TIER_BADGES, type DiscoverySort } from '@langx/shared'
 import { useFonts } from 'expo-font'
 import { router } from 'expo-router'
-import { useCallback, useMemo, useRef, type ReactNode } from 'react'
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
-import { useNewProfiles, useQuota } from '../../api/queries'
-import type { DiscoveryItem } from '../../api/types'
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { ActivityIndicator, Animated, FlatList, RefreshControl, Text, View } from 'react-native'
+import { useBoostedProfiles, useNewProfiles, useQuota } from '../../api/queries'
+import type { DiscoveryItem, NewProfilesPage } from '../../api/types'
+import { useChangeHaptic } from '../../hooks/useChangeHaptic'
+import { useReduceMotion } from '../../hooks/useReduceMotion'
+import { useSelectPop } from '../../hooks/useSelectPop'
 import { useT } from '../../i18n'
 import { track } from '../../lib/analytics'
 import { authClient } from '../../lib/auth-client'
@@ -15,7 +18,11 @@ import { shouldGateGuest } from '../../lib/guestGate'
 import type { ListState } from '../../lib/listState'
 import { openProfile } from '../../lib/navigation'
 import { requireAccount } from '../../lib/requireAccount'
+import { POP_FROM_PILL } from '../../lib/selectPop'
+import { holdForStrips, STRIP_HOLD_MS, stripSettled } from '../../lib/stripHold'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
+import { EASE_OUT } from '../../lib/theme/motionAnimated'
+import { DURATION } from '../../lib/theme/motionValues'
 import { LoadFailed } from '../LoadFailed'
 import { PeopleSearch, PeopleSearchResults } from '../PeopleSearch'
 import { Tip } from '../Tip'
@@ -23,9 +30,10 @@ import { TourTarget } from '../TourTarget'
 import { BUTTON_FACE } from '../ui/Button'
 import { EmptyStateV3 } from '../ui/EmptyStateV3'
 import { ICON_BUTTON_TARGET } from '../ui/IconButton'
+import { PressableScale } from '../ui/PressableScale'
 import { Screen } from '../ui/Screen'
 import { Skeleton } from '../ui/Skeleton'
-import { BoostedStripV3 } from './BoostedStripV3'
+import { BoostedStripV3, StripArrival } from './BoostedStripV3'
 import { dedupeGrounds } from '../../lib/avatarViewport'
 import { NEWCOMER_TILE_WIDTH, NewcomerTile, PersonCard } from './PersonCard'
 
@@ -60,6 +68,13 @@ export interface PeopleV3Props {
   state: ListState
   onRetry: () => void
   people: readonly DiscoveryItem[]
+  /**
+   * The rows are the previous sort's or filters' while the new answer is in
+   * flight (`keepPreviousData`), so the list dims until it lands.
+   */
+  stale: boolean
+  /** The list's query; a new one scrolls back to the top. */
+  listKey: string
   pull: { refreshing: boolean; onRefresh: () => void }
   onEndReached: () => void
   loadingMore: boolean
@@ -92,8 +107,88 @@ export function PeopleV3(props: PeopleV3Props) {
   const [black] = useFonts({ Nunito_900Black })
   const { data: session } = authClient.useSession()
   const guest = shouldGateGuest(session?.user)
+  const reduceMotion = useReduceMotion()
   // Two cards that drew the same face sit on different grounds.
   const people = useMemo(() => dedupeGrounds(props.people), [props.people])
+
+  /*
+   * The strips over the list, asked for here — alongside the list — rather
+   * than by the strips themselves, which only mount once the list has left
+   * its skeleton: the cards used to draw and then move down by a strip's
+   * height when it answered. See `lib/stripHold.ts`.
+   */
+  const boosted = useBoostedProfiles(props.boostedParams)
+  const newcomers = useNewProfiles(props.newParams ?? {}, { enabled: props.newParams !== null })
+  // Only where the list itself would draw: search, a failure and the
+  // location panel have nothing under them for a strip to push.
+  const listReady =
+    (props.state === 'content' || props.state === 'empty') && !props.searching && !props.locationOff
+  // Field by field, not spread: a query result tracks which fields are read,
+  // and a spread would read them all and re-render on every one.
+  const stripsSettled =
+    stripSettled({
+      enabled: true,
+      isPending: boosted.isPending,
+      fetchStatus: boosted.fetchStatus,
+    }) &&
+    stripSettled({
+      enabled: props.newParams !== null,
+      isPending: newcomers.isPending,
+      fetchStatus: newcomers.fetchStatus,
+    })
+  const [capped, setCapped] = useState(false)
+  useEffect(() => {
+    if (!listReady) {
+      setCapped(false)
+      return
+    }
+    if (stripsSettled) return
+    const timer = setTimeout(() => setCapped(true), STRIP_HOLD_MS)
+    return () => clearTimeout(timer)
+  }, [listReady, stripsSettled])
+  const holding = holdForStrips({ listReady, stripsSettled, capped })
+  /*
+   * Whether the list was already on screen before this render: a strip that
+   * arrives after that — past the cap, or on a sort it was not on — fades in
+   * rather than shoving the cards down in one frame. One that arrives with
+   * the list is simply there.
+   */
+  const showingList = listReady && !holding
+  const [listShown, setListShown] = useState(false)
+  useEffect(() => setListShown(showingList), [showingList])
+
+  /*
+   * A sort or filter change: the previous answer stays up, dimmed, until the
+   * new one lands, and the list goes back to its top — row 40 of the old
+   * answer is nowhere in particular in the new one. Quick to dim, so the tap
+   * is answered at once; slower to come back, so the new rows settle in.
+   */
+  const listRef = useRef<FlatList<DiscoveryItem>>(null)
+  const dim = useRef(new Animated.Value(props.stale ? STALE_OPACITY : 1)).current
+  useEffect(() => {
+    const to = props.stale ? STALE_OPACITY : 1
+    if (reduceMotion) {
+      dim.setValue(to)
+      return
+    }
+    const animation = Animated.timing(dim, {
+      toValue: to,
+      duration: props.stale ? DURATION.release : DURATION.enter,
+      easing: EASE_OUT,
+      useNativeDriver: true,
+    })
+    animation.start()
+    return () => animation.stop()
+  }, [props.stale, reduceMotion, dim])
+  const shownKey = useRef(props.listKey)
+  useEffect(() => {
+    if (shownKey.current === props.listKey) return
+    shownKey.current = props.listKey
+    listRef.current?.scrollToOffset({ offset: 0, animated: !reduceMotion })
+  }, [props.listKey, reduceMotion])
+
+  // One tick when the sort actually moves — Nearby may ask first, or refuse.
+  const markSortPress = useChangeHaptic(props.sort)
 
   /*
    * The latest of everything a row's handler reads, so the handlers can stay
@@ -182,31 +277,31 @@ export function PeopleV3(props: PeopleV3Props) {
           )}
           <PeopleSearch from={FROM} onSearchingChange={props.onSearchingChange} />
           {props.searching ? null : (
-            <Pressable
+            <PressableScale
               accessibilityRole="button"
               accessibilityLabel={props.filterLabel}
               onPress={props.onOpenFilters}
-              style={({ pressed }) => [styles.round, pressed && styles.pressed]}
+              style={styles.round}
             >
               <Feather name="sliders" size={v3.icon.lg} color={v3.colors.fg} />
               {props.filterCount > 0 ? <Text style={styles.badge}>{props.filterCount}</Text> : null}
-            </Pressable>
+            </PressableScale>
           )}
         </View>
         {props.searching ? null : props.segments}
         {props.pair && !props.searching ? (
           <TourTarget id="discoverPair" radius={v3.radius.pill} style={styles.pairTarget}>
-            <Pressable
+            <PressableScale
               accessibilityRole="button"
               accessibilityLabel={t('discover.languagesA11y')}
               onPress={props.onOpenFilters}
-              style={({ pressed }) => [styles.pair, pressed && styles.pressed]}
+              style={styles.pair}
             >
               <Text style={styles.pairLabel} numberOfLines={1}>
                 {props.pair}
               </Text>
               <Feather name="chevron-down" size={v3.icon.sm} color={v3.colors.fg} />
-            </Pressable>
+            </PressableScale>
           </TourTarget>
         ) : null}
         {props.searching ? null : (
@@ -216,30 +311,18 @@ export function PeopleV3(props: PeopleV3Props) {
               accessibilityLabel={t('discover.sortLabel')}
               style={styles.sorts}
             >
-              {props.sorts.map((option) => {
-                const on = option.value === props.sort
-                return (
-                  <Pressable
-                    key={option.value}
-                    accessibilityRole="radio"
-                    accessibilityState={{ checked: on }}
-                    onPress={() => props.onSort(option.value)}
-                    style={({ pressed }) => [
-                      styles.sort,
-                      on && styles.sortOn,
-                      pressed && !on && styles.pressed,
-                    ]}
-                  >
-                    <Text style={[styles.sortLabel, on && styles.sortLabelOn]} numberOfLines={1}>
-                      {option.label}
-                    </Text>
-                    {/* The plan's own short form, never translated, as on `ProMark`. */}
-                    {option.pro && TIER_BADGES.pro ? (
-                      <Text style={[styles.pro, on && styles.proOn]}>{TIER_BADGES.pro}</Text>
-                    ) : null}
-                  </Pressable>
-                )
-              })}
+              {props.sorts.map((option) => (
+                <SortPill
+                  key={option.value}
+                  label={option.label}
+                  pro={option.pro}
+                  on={option.value === props.sort}
+                  onPress={() => {
+                    markSortPress()
+                    props.onSort(option.value)
+                  }}
+                />
+              ))}
             </View>
           </TourTarget>
         )}
@@ -249,8 +332,9 @@ export function PeopleV3(props: PeopleV3Props) {
 
       {props.nearby && !props.searching ? (
         <Panel panel={props.nearby} />
-      ) : props.state === 'skeleton' ? (
+      ) : props.state === 'skeleton' || holding ? (
         <View style={[styles.list, styles.skeletons]}>
+          <StripSkeleton />
           {SKELETON_CARDS.map((key) => (
             <Skeleton key={key} height={232} radius={v3.radius.block} />
           ))}
@@ -262,30 +346,33 @@ export function PeopleV3(props: PeopleV3Props) {
       ) : props.state === 'failed' ? (
         <LoadFailed onRetry={props.onRetry} />
       ) : (
-        <FlatList
-          data={people}
-          keyExtractor={keyOf}
-          renderItem={renderItem}
-          ItemSeparatorComponent={Gap}
-          contentContainerStyle={styles.list}
-          refreshControl={<RefreshControl {...props.pull} />}
-          ListHeaderComponent={
-            <View style={styles.listHead}>
-              {guest ? null : <ChatsLeftLine />}
-              {props.newParams ? (
-                <NewcomerStrip params={props.newParams} onHello={onHello} />
-              ) : null}
-              {/* The paid strip, today's data in the v3 look: nothing when nobody qualifies. */}
-              <BoostedStripV3 params={props.boostedParams} />
-            </View>
-          }
-          onEndReachedThreshold={0.6}
-          onEndReached={props.onEndReached}
-          ListEmptyComponent={<Panel panel={empty} />}
-          ListFooterComponent={
-            props.loadingMore ? <ActivityIndicator style={styles.footer} /> : null
-          }
-        />
+        <Animated.View style={[styles.fill, { opacity: dim }]}>
+          <FlatList
+            ref={listRef}
+            data={people}
+            keyExtractor={keyOf}
+            renderItem={renderItem}
+            ItemSeparatorComponent={Gap}
+            contentContainerStyle={styles.list}
+            refreshControl={<RefreshControl {...props.pull} />}
+            ListHeaderComponent={
+              <View style={styles.listHead}>
+                {guest ? null : <ChatsLeftLine />}
+                {props.newParams ? (
+                  <NewcomerStrip page={newcomers.data} late={listShown} onHello={onHello} />
+                ) : null}
+                {/* The paid strip, today's data in the v3 look: nothing when nobody qualifies. */}
+                <BoostedStripV3 page={boosted.data} late={listShown} />
+              </View>
+            }
+            onEndReachedThreshold={0.6}
+            onEndReached={props.onEndReached}
+            ListEmptyComponent={<Panel panel={empty} />}
+            ListFooterComponent={
+              props.loadingMore ? <ActivityIndicator style={styles.footer} /> : null
+            }
+          />
+        </Animated.View>
       )}
     </Screen>
   )
@@ -349,19 +436,21 @@ function ChatsLeftLine() {
  * `DISCOVERY_NEW_LIMIT` tiles, so a bounded row rather than a second list.
  */
 function NewcomerStrip({
-  params,
+  page,
+  late,
   onHello,
 }: {
-  params: Record<string, string>
+  page: NewProfilesPage | undefined
+  /** Whether the list was already showing; see `StripArrival`. */
+  late: boolean
   onHello: (person: DiscoveryItem) => void
 }) {
   const styles = useStyles()
   const t = useT()
-  const query = useNewProfiles(params)
-  const items = useMemo(() => dedupeGrounds(query.data?.items ?? []), [query.data])
+  const items = useMemo(() => dedupeGrounds(page?.items ?? []), [page])
   if (items.length === 0) return null
   return (
-    <View style={styles.strip}>
+    <StripArrival late={late} style={styles.strip}>
       <Text style={styles.stripTitle} accessibilityRole="header">
         {t('discover.newOnLangx')}
       </Text>
@@ -378,6 +467,63 @@ function NewcomerStrip({
           index,
         })}
       />
+    </StripArrival>
+  )
+}
+
+/**
+ * One sort. The pill that has just been chosen pops into place, and every one
+ * shrinks under the finger, as every v3 chip does.
+ */
+function SortPill({
+  label,
+  pro,
+  on,
+  onPress,
+}: {
+  label: string
+  pro: boolean
+  on: boolean
+  onPress: () => void
+}) {
+  const styles = useStyles()
+  const pop = useSelectPop(on, POP_FROM_PILL)
+  return (
+    <Animated.View style={{ transform: [{ scale: pop }] }}>
+      <PressableScale
+        accessibilityRole="radio"
+        accessibilityState={{ checked: on }}
+        onPress={onPress}
+        style={[styles.sort, on && styles.sortOn]}
+      >
+        <Text style={[styles.sortLabel, on && styles.sortLabelOn]} numberOfLines={1}>
+          {label}
+        </Text>
+        {/* The plan's own short form, never translated, as on `ProMark`. */}
+        {pro && TIER_BADGES.pro ? (
+          <Text style={[styles.pro, on && styles.proOn]}>{TIER_BADGES.pro}</Text>
+        ) : null}
+      </PressableScale>
+    </Animated.View>
+  )
+}
+
+/**
+ * The strips' place while the skeleton holds: a heading and a row of tiles
+ * the size of the boosted strip's, the taller of the two, so the cards'
+ * rectangles start about where the cards will.
+ */
+function StripSkeleton() {
+  const styles = useStyles()
+  const { v3 } = useTheme()
+  return (
+    <View style={styles.strip}>
+      <Skeleton width={140} height={22} radius={v3.radius.pill} />
+      <View style={styles.stripTiles}>
+        {SKELETON_TILES.map((key) => (
+          <Skeleton key={key} width={160} height={138} radius={v3.radius.tile} />
+        ))}
+      </View>
     </View>
   )
 }
@@ -385,11 +531,17 @@ function NewcomerStrip({
 /** Between cards, and between tiles. */
 const GAP = 10
 
+/** The list's opacity while it still shows the previous query's answer. */
+const STALE_OPACITY = 0.5
+
+/** More than a phone's width of them; the row clips. */
+const SKELETON_TILES = ['a', 'b', 'c']
+
 /** Enough to fill a phone; the list scrolls before it needs more. */
 const SKELETON_CARDS = ['a', 'b', 'c']
 
 const useStyles = makeStyles(({ v3 }) => ({
-  pressed: { opacity: 0.7 },
+  fill: { flex: 1, minHeight: 0 },
   header: { gap: v3.space[10], paddingBottom: v3.space[10], paddingTop: v3.space[8] },
   // `minHeight`, so the row does not jump when the search field replaces the title.
   titleRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8], minHeight: 48 },
@@ -480,5 +632,6 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   pipOn: { backgroundColor: v3.colors.fg, borderColor: v3.colors.fg },
   strip: { gap: v3.space[8] },
+  stripTiles: { flexDirection: 'row', gap: GAP, overflow: 'hidden' },
   stripTitle: { ...v3.type.headline, color: v3.colors.fg, paddingHorizontal: v3.space[6] },
 }))
