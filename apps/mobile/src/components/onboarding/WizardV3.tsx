@@ -435,6 +435,9 @@ const useStyles = makeStyles(({ v3 }) => ({
     flex: 1,
     fontWeight: '600',
     minHeight: 48,
+    // Chrome draws an `auto` focus outline whatever its width; a solid one
+    // of width 0 is nothing.
+    outlineStyle: 'solid',
     outlineWidth: 0,
     paddingVertical: 0,
   },

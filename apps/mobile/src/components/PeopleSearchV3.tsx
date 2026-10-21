@@ -151,9 +151,17 @@ const useStyles = makeStyles(({ v3 }) => ({
   // The glyph's box, so the spinner that stands in for it takes the same room.
   glyph: { alignItems: 'center', height: v3.icon.md, justifyContent: 'center', width: v3.icon.md },
   // `paddingVertical: 0`: Android's own TextInput padding would push the
-  // words off the glyph beside them. `outlineWidth: 0`: on the web the
-  // browser drew its own focus ring inside the pill, over the edge above.
-  input: { ...v3.type.body, color: v3.colors.fg, flex: 1, outlineWidth: 0, paddingVertical: 0 },
+  // words off the glyph beside them. No outline: on the web the browser drew
+  // its own focus ring inside the pill, over the edge above — and Chrome draws
+  // an `auto` outline whatever its width, so it is made a solid one, of 0.
+  input: {
+    ...v3.type.body,
+    color: v3.colors.fg,
+    flex: 1,
+    outlineStyle: 'solid',
+    outlineWidth: 0,
+    paddingVertical: 0,
+  },
   close: {
     alignItems: 'center',
     borderRadius: v3.radius.pill,
