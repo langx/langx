@@ -280,8 +280,11 @@ const UNKNOWN_IPS = new Set(['', '127.0.0.1', '::1'])
  *
  * Installation: any `devices.deviceId` in common, through the `user` index.
  * Rows from builds that predate `deviceId` carry none and match nothing.
+ *
+ * Exported for `tokens/stickerGifts.ts`, which refuses a gift between two
+ * accounts this links — symmetric, so the argument names do not matter there.
  */
-async function sharedOrigin(
+export async function sharedOrigin(
   db: Db,
   inviteeId: string,
   referrerId: string,
