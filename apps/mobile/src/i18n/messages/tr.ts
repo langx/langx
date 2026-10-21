@@ -1235,6 +1235,7 @@ export const tr: Localized<EnMessages> = {
     quizCard: 'Soru',
     pollThanks: 'Teşekkürler!',
     stickers: 'Stickerlar',
+    stickersHint: 'Göndermek için bir stickera dokun.',
     stickerBuy: '{price} token ile aç',
     quizAddOption: 'Seçenek ekle',
     sendQuiz: 'Soru sor',

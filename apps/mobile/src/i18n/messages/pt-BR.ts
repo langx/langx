@@ -1246,6 +1246,7 @@ export const ptBR: Localized<EnMessages> = {
     quizCard: 'Quiz',
     pollThanks: 'Obrigado!',
     stickers: 'Stickers',
+    stickersHint: 'Toque em um sticker para enviá-lo.',
     stickerBuy: 'Desbloquear por {price} tokens',
     quizAddOption: 'Adicionar uma opção',
     sendQuiz: 'Fazer uma pergunta',
