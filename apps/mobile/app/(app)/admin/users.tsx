@@ -12,6 +12,7 @@ import {
   useAdminDecision,
   useAdminUser,
   useAdminUserAction,
+  useSetAdminCopilotAccess,
   type AdminUserDto,
 } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
@@ -22,6 +23,7 @@ import { Callout } from '../../../src/components/ui/Callout'
 import { Card } from '../../../src/components/ui/Card'
 import { FormField } from '../../../src/components/ui/FormField'
 import { Screen } from '../../../src/components/ui/Screen'
+import { Toggle } from '../../../src/components/ui/Toggle'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { ADMIN, WARNINGS } from '../../../src/lib/adminStrings'
@@ -95,6 +97,7 @@ function Found({ data }: { data: AdminUserDto }) {
   const styles = useStyles()
   const action = useAdminUserAction()
   const decide = useAdminDecision()
+  const copilot = useSetAdminCopilotAccess()
   const [message, setMessage] = useState('')
   const [days, setDays] = useState('7')
   const [giftMonths, setGiftMonths] = useState<ProGiftMonths>(1)
@@ -211,6 +214,15 @@ function Found({ data }: { data: AdminUserDto }) {
       showToast(
         name === 'sign-out' ? ADMIN.users.signedOut(result.sessions ?? 0) : ADMIN.users.unfrozen,
       )
+    } catch {
+      showToast(ADMIN.common.failed)
+    }
+  }
+
+  async function setCopilot(allowed: boolean) {
+    try {
+      await copilot.mutateAsync({ userId: user.userId, allowed })
+      showToast(allowed ? ADMIN.users.copilot.allowed : ADMIN.users.copilot.revoked)
     } catch {
       showToast(ADMIN.common.failed)
     }
@@ -379,6 +391,18 @@ function Found({ data }: { data: AdminUserDto }) {
         />
       </View>
 
+      {/* ── Copilot, per account ── */}
+      <Text style={styles.heading}>{ADMIN.users.copilot.title}</Text>
+      <View style={styles.toggleRow}>
+        <Text style={[styles.hint, styles.toggleText]}>{ADMIN.users.copilot.hint}</Text>
+        <Toggle
+          value={user.copilotAccess}
+          onValueChange={(next) => void setCopilot(next)}
+          busy={copilot.isPending}
+          accessibilityLabel={ADMIN.users.copilot.title}
+        />
+      </View>
+
       {/* ── who else this might be ── */}
       <LinkedAccounts key={user.userId} userId={user.userId} />
 
@@ -469,4 +493,6 @@ const useStyles = makeStyles((theme) => ({
   row: { fontSize: 14, color: theme.colors.text, lineHeight: 22 },
   actions: { gap: 12, marginTop: 12 },
   months: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 },
+  toggleRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  toggleText: { flex: 1, marginBottom: 0 },
 }))
