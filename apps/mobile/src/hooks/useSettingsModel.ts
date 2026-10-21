@@ -1,7 +1,7 @@
 import { hasFeature, TIER_BADGES, TIER_NAMES, resolveNotificationPrefs } from '@langx/shared'
 import { router, useFocusEffect } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { Linking, Platform } from 'react-native'
+import { Platform } from 'react-native'
 import {
   type MeProfile,
   useEffectiveTier,
@@ -12,6 +12,7 @@ import {
   useStopSharingLocation,
   useUpdateProfile,
 } from '../api/queries'
+import { request } from '../api/client'
 import { useAnalyticsPreference } from './useAnalyticsPreference'
 import { useAppConfig } from './useAppConfig'
 import { useIsOnline } from './useIsOnline'
@@ -25,10 +26,15 @@ import { forgetTour } from './useTour'
 import { useLocale, useLocalePreference, useT } from '../i18n'
 import { confirmAlert, showAlert } from '../lib/alert'
 import { isAnalyticsAvailable } from '../lib/analytics'
-import { API_URL } from '../lib/apiUrl'
 import { APP_ICONS, currentAppIcon, isSupported, setAppIcon, type AppIcon } from '../lib/appIcon'
 import { authClient } from '../lib/auth-client'
 import { authLandingHref } from '../lib/authLanding'
+import {
+  DATA_EXPORT_FILE_NAME,
+  DATA_EXPORT_PATH,
+  DATA_EXPORT_TIMEOUT_MS,
+  exportMyData,
+} from '../lib/dataExport'
 import { captureLocation, reportLocationFailure } from '../lib/location'
 import { pushEnabledOnThisDevice, setPushEnabledOnThisDevice } from '../lib/devicePush'
 import { pushSwitchIsOn } from '../lib/pushPermission'
@@ -38,6 +44,7 @@ import { openPaywall } from '../lib/paywall'
 import { appIconTap } from '../lib/proRoads'
 import { useThemePreference } from '../lib/theme'
 import { syncIconBadge } from '../lib/iconBadge'
+import { saveTextFile } from '../lib/saveFile'
 import { settleWithin } from '../lib/settleWithin'
 import { showToast } from '../lib/toast'
 
@@ -52,6 +59,18 @@ import { showToast } from '../lib/toast'
  * best-effort either way — see `signOut`.
  */
 const SIGN_OUT_CLEANUP_MS = 4_000
+
+/** `GET /me/export` with the session, on the export's own longer budget. */
+async function fetchDataExport(): Promise<unknown> {
+  // `apiFetch` lets a caller's own signal replace its ten-second default.
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), DATA_EXPORT_TIMEOUT_MS)
+  try {
+    return await request<unknown>(DATA_EXPORT_PATH, { signal: controller.signal })
+  } finally {
+    clearTimeout(timer)
+  }
+}
 
 /**
  * Everything the settings rows read and call, in one hook.
@@ -76,6 +95,7 @@ export function useSettingsModel() {
   const update = useUpdateProfile()
   // The button stays busy for as long as the sign-out does; see `signOut`.
   const [signingOut, setSigningOut] = useState(false)
+  const [exporting, setExporting] = useState(false)
   const iconSupported = isSupported()
   const [appIcon, setAppIcon_] = useState<AppIcon>(() =>
     iconSupported ? currentAppIcon() : 'default',
@@ -308,17 +328,34 @@ export function useSettingsModel() {
   }
 
   /**
-   * Export is a plain authenticated GET that returns a download. On web the
-   * browser can just be pointed at it; on native there is no download folder
-   * to point at, so the URL is opened externally and the OS decides.
+   * "Export my data". Fetched through our own client so the request carries
+   * the session, then handed to the share sheet (native) or the browser's
+   * downloads (web) — see `lib/dataExport.ts` for why opening the URL in a
+   * browser never worked on a phone. Busy while it runs, so a second tap on a
+   * slow export does not start a second one.
    */
   async function exportData(): Promise<void> {
-    const url = `${API_URL}/me/export`
-    if (Platform.OS === 'web') {
-      window.open(url, '_blank')
-      return
+    if (exporting) return
+    setExporting(true)
+    try {
+      const outcome = await exportMyData({
+        fetchExport: fetchDataExport,
+        save: saveTextFile,
+        web: Platform.OS === 'web',
+      })
+      if (outcome === 'failed') {
+        void showAlert(
+          t('settings.exportDataFailed'),
+          online ? t('common.retry') : t('common.offline'),
+        )
+      } else if (outcome === 'downloaded') {
+        // A browser download can land silently; on a phone the share sheet on
+        // screen is its own confirmation.
+        showToast(t('settings.exportDataSaved', { file: DATA_EXPORT_FILE_NAME }))
+      }
+    } finally {
+      setExporting(false)
     }
-    await Linking.openURL(url)
   }
 
   /**
@@ -451,6 +488,7 @@ export function useSettingsModel() {
     locationBusy,
     toggleLocation,
     exportData,
+    exporting,
     signOut,
     signingOut,
     replayIntro,
