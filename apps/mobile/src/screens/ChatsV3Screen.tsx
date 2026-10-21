@@ -19,6 +19,7 @@ import {
   useDeleteConversation,
   useMe,
   type ConversationDto,
+  type ConversationPartnerDto,
 } from '../api/queries'
 import {
   ChatRowSkeletonV3,
@@ -35,6 +36,7 @@ import { EmptyStateV3 } from '../components/ui/EmptyStateV3'
 import { IconButton } from '../components/ui/IconButton'
 import { Screen } from '../components/ui/Screen'
 import { useConversationPartners } from '../hooks/useConversationPartners'
+import { dedupeGrounds } from '../lib/avatarViewport'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { usePushPermissionPrompt } from '../hooks/usePushRegistration'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
@@ -151,6 +153,20 @@ function MemberChats() {
   )
   // The list names its own partners; see `useConversationPartners`.
   const partners = useConversationPartners(threads, meId)
+  /*
+   * The partners as drawn: two rows that drew the same face sit on different
+   * grounds (`dedupeGrounds`). Rows whose face is unique keep the very object
+   * they had, so their memo holds.
+   */
+  const shown = useMemo(() => {
+    const list = threads
+      .map((thread) => {
+        const id = thread.participants.find((participant) => participant !== meId) ?? ''
+        return thread.partner ?? partners[id]
+      })
+      .filter((partner): partner is NonNullable<typeof partner> => partner !== undefined)
+    return new Map(dedupeGrounds(list).map((partner) => [partner._id, partner]))
+  }, [threads, partners, meId])
   const state = listState({
     isPending: conversations.isPending,
     isError: conversations.isError,
@@ -256,7 +272,7 @@ function MemberChats() {
         return (
           <WaitingBlock
             thread={thread}
-            partner={thread.partner}
+            partner={withShownFace(thread.partner, shown.get(thread.partner._id))}
             lead={item.lead}
             selected={isSelected}
             now={now}
@@ -268,7 +284,7 @@ function MemberChats() {
       return (
         <ChatRowV3
           thread={thread}
-          partner={thread.partner ?? partners[partnerId]}
+          partner={shown.get(partnerId) ?? thread.partner ?? partners[partnerId]}
           meId={meId}
           open={openRow === thread._id}
           selected={isSelected}
@@ -277,7 +293,7 @@ function MemberChats() {
         />
       )
     },
-    [t, twoPane, selected, now, handlers, meId, partners, openRow],
+    [t, twoPane, selected, now, handlers, meId, partners, shown, openRow],
   )
 
   const archived = shelf === 'archived'
@@ -408,6 +424,20 @@ function MemberChats() {
       }
     />
   )
+}
+
+/**
+ * A waiting block's partner, with the face it is drawn with on this screen.
+ * The same object unless `dedupeGrounds` moved its ground, so the block's
+ * memo holds for every partner whose face is unique on the list.
+ */
+function withShownFace(
+  partner: ConversationPartnerDto,
+  shown: { defaultAvatarRev?: string | undefined } | undefined,
+): ConversationPartnerDto {
+  const rev = shown?.defaultAvatarRev
+  if (rev === undefined || rev === partner.defaultAvatarRev) return partner
+  return { ...partner, defaultAvatarRev: rev }
 }
 
 /** People: where a new chat starts. The empty list's one next step, and the list's last. */

@@ -54,20 +54,49 @@ const inFlight = new Map<string, Promise<Buffer>>()
  * the others free, so a burst of cold faces slows faces down and nothing
  * else — the event loop never runs a render at all.
  */
-const MAX_CONCURRENT_RENDERS = 2
+export const MAX_CONCURRENT_RENDERS = 2
+
+/**
+ * Renders allowed to queue behind the running ones. Past this the answer is
+ * "busy, try again" rather than a longer queue: a queue that grows without
+ * bound is a stall that has only been moved into memory, and every waiter is
+ * an open request. A list of thirty cold faces fits; a flood does not.
+ */
+export const MAX_WAITING_RENDERS = 32
+
+/** Thrown when the render queue is full; the route answers 503. */
+export class RenderBusyError extends Error {
+  constructor() {
+    super('Avatar renderer is busy')
+    this.name = 'RenderBusyError'
+  }
+}
+
 let running = 0
 const waiting: (() => void)[] = []
 
-async function withRenderSlot<T>(work: () => Promise<T>): Promise<T> {
-  if (running >= MAX_CONCURRENT_RENDERS) {
+/**
+ * Runs `work` in one of the render slots.
+ *
+ * A finishing render hands its slot straight to the next waiter rather than
+ * freeing it: freed, the slot would sit open for the microtask between the
+ * waiter being woken and it running, and a newly arrived render would take it
+ * — three at once where two were meant.
+ */
+export async function withRenderSlot<T>(work: () => Promise<T>): Promise<T> {
+  if (running < MAX_CONCURRENT_RENDERS) {
+    running++
+  } else {
+    if (waiting.length >= MAX_WAITING_RENDERS) throw new RenderBusyError()
+    // Woken holding the slot the finishing render passed on.
     await new Promise<void>((resolve) => waiting.push(resolve))
   }
-  running++
   try {
     return await work()
   } finally {
-    running--
-    waiting.shift()?.()
+    const next = waiting.shift()
+    if (next) next()
+    else running--
   }
 }
 

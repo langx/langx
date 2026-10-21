@@ -1,10 +1,16 @@
-import { BIO_MAX_LENGTH } from '@langx/shared'
+import { BIO_MAX_LENGTH, defaultAvatarRev, type DefaultAvatar } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, ScrollView, Text, View } from 'react-native'
 import { ApiRequestError } from '../../src/api/client'
-import { useMe, useUpdateProfile, useUploadAvatar } from '../../src/api/queries'
+import {
+  useMe,
+  usePickDefaultAvatar,
+  useUpdateProfile,
+  useUploadAvatar,
+} from '../../src/api/queries'
+import { DefaultAvatarPickerSheet } from '../../src/components/me/DefaultAvatarPickerSheet'
 import { StepProgress } from '../../src/components/StepProgress'
 import { PhotoV3 } from '../../src/components/onboarding/PhotoV3'
 import { Avatar } from '../../src/components/ui/Avatar'
@@ -14,6 +20,7 @@ import { Screen } from '../../src/components/ui/Screen'
 import { track } from '../../src/lib/analytics'
 import { showAlert } from '../../src/lib/alert'
 import { pickImageAsset } from '../../src/lib/pickMediaAsset'
+import { ownDefaultAvatar, pickerFaces, sameFace } from '../../src/lib/defaultAvatar'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -46,6 +53,10 @@ export default function PhotoStep() {
   const [bio, setBio] = useState('')
   const [saving, setSaving] = useState(false)
   const uploading = uploadAvatar.isPending
+  // v3's drawn-face picker: what is worn, and what is selected but not yet saved.
+  const pickDefaultAvatar = usePickDefaultAvatar()
+  const [chosen, setChosen] = useState<DefaultAvatar | undefined>(undefined)
+  const [seeAll, setSeeAll] = useState(false)
 
   async function pickPhoto(): Promise<void> {
     const picked = await pickImageAsset({ allowsEditing: true, aspect: [1, 1] })
@@ -82,6 +93,19 @@ export default function PhotoStep() {
    * the profile.
    */
   async function finish(save: boolean): Promise<void> {
+    // A drawn face selected in the row is saved by the yellow button only;
+    // skipping keeps the face that was assigned.
+    const worn = me.data ? ownDefaultAvatar(me.data) : undefined
+    if (save && chosen && worn && !me.data?.avatarUrl && !sameFace(chosen, worn)) {
+      setSaving(true)
+      try {
+        await pickDefaultAvatar.mutateAsync(chosen)
+      } catch {
+        setSaving(false)
+        void showAlert(t('avatar.default.pickFailed'))
+        return
+      }
+    }
     const text = bio.trim()
     if (save && text.length > 0) {
       setSaving(true)
@@ -116,19 +140,47 @@ export default function PhotoStep() {
   // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
   const v3 = useV3LaunchLook()
   if (v3) {
+    const worn = me.data ? ownDefaultAvatar(me.data) : undefined
+    const selected = chosen ?? worn
     return (
-      <PhotoV3
-        avatarUrl={avatarUrl}
-        displayName={me.data?.displayName ?? ''}
-        seed={me.data?._id}
-        uploading={uploading}
-        photoLabel={photoLabel}
-        onPickPhoto={() => void pickPhoto()}
-        bio={bio}
-        onBio={setBio}
-        saving={saving}
-        onFinish={(save) => void finish(save)}
-      />
+      <>
+        <PhotoV3
+          avatarUrl={avatarUrl}
+          displayName={me.data?.displayName ?? ''}
+          seed={me.data?._id}
+          defaultAvatarRev={selected ? defaultAvatarRev(selected) : undefined}
+          picker={
+            worn && selected
+              ? {
+                  faces: pickerFaces(worn),
+                  selected,
+                  onSelect: setChosen,
+                  onSeeAll: () => setSeeAll(true),
+                }
+              : undefined
+          }
+          uploading={uploading}
+          photoLabel={photoLabel}
+          onPickPhoto={() => void pickPhoto()}
+          bio={bio}
+          onBio={setBio}
+          saving={saving}
+          onFinish={(save) => void finish(save)}
+        />
+        {me.data && worn ? (
+          <DefaultAvatarPickerSheet
+            visible={seeAll}
+            seed={me.data._id}
+            name={me.data.displayName}
+            current={worn}
+            // The sheet saves on its own; what it saved is now the face worn.
+            onClose={() => {
+              setSeeAll(false)
+              setChosen(undefined)
+            }}
+          />
+        ) : null}
+      </>
     )
   }
 

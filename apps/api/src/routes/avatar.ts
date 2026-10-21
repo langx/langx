@@ -12,7 +12,7 @@ import { notionists } from '@dicebear/collection'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { loadAsset } from '../lib/assets'
-import { renderDefaultAvatar } from '../modules/avatars/raster'
+import { RenderBusyError, renderDefaultAvatar } from '../modules/avatars/raster'
 import { getDefaultAvatarFor } from '../modules/profiles/defaultAvatar'
 import { getProfileGender } from '../modules/profiles/profiles'
 
@@ -190,7 +190,20 @@ export const avatarRoutes: FastifyPluginAsyncZod = async (app) => {
        * route is rate-limited. See `docs/decisions.md` → _v3 default faces_.
        */
       const avatar = named ?? (await getDefaultAvatarFor(app.mongo.db, seed))
-      const png = await renderDefaultAvatar({ avatar, size, cut: c ?? defaultAvatarCutFor(size) })
+      let png: Buffer
+      try {
+        png = await renderDefaultAvatar({ avatar, size, cut: c ?? defaultAvatarCutFor(size) })
+      } catch (error) {
+        // A full render queue is load, not a fault: say so, briefly, and
+        // let the image be asked for again rather than logging a 500.
+        if (!(error instanceof RenderBusyError)) throw error
+        return reply
+          .code(503)
+          .header('retry-after', '1')
+          .header('cache-control', 'no-store')
+          .headers(EMBEDDABLE)
+          .send({ code: 'RATE_LIMITED', message: 'Busy, try again' })
+      }
 
       return reply
         .header('content-type', 'image/png')

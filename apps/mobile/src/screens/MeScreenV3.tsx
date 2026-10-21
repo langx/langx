@@ -48,6 +48,9 @@ import { IconButton } from '../components/ui/IconButton'
 import { Screen } from '../components/ui/Screen'
 import { Skeleton } from '../components/ui/Skeleton'
 import { useChangeAvatar } from '../hooks/useChangeAvatar'
+import { DefaultAvatarPickerSheet } from '../components/me/DefaultAvatarPickerSheet'
+import { PhotoNudge } from '../components/me/PhotoNudge'
+import { ownDefaultAvatar, ownDefaultAvatarRev } from '../lib/defaultAvatar'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useDisplayNames, useLocale, useT } from '../i18n'
@@ -119,6 +122,7 @@ function MemberMe() {
   const styles = useStyles()
   const [blackLoaded] = useFonts({ Nunito_900Black })
   const [avatarOpen, setAvatarOpen] = useState(false)
+  const [facePicker, setFacePicker] = useState(false)
   const avatar = useChangeAvatar()
 
   const me = useMe()
@@ -215,6 +219,7 @@ function MemberMe() {
       url: profile.avatarUrl,
       name: profile.displayName,
       seed: profile._id,
+      defaultAvatarRev: ownDefaultAvatarRev(profile),
       frame: wornFrame,
     },
     onOpenAvatar: profile.avatarUrl ? () => setAvatarOpen(true) : undefined,
@@ -277,7 +282,28 @@ function MemberMe() {
             index={avatarOpen ? 0 : null}
             onClose={() => setAvatarOpen(false)}
           />
-        ) : null}
+        ) : (
+          // Still the drawn face: the owner's own nudge, and the way to swap it.
+          <>
+            <PhotoNudge
+              accountId={profile._id}
+              name={profile.displayName}
+              detail={languages}
+              seed={profile._id}
+              defaultAvatarRev={ownDefaultAvatarRev(profile)}
+              adding={avatar.isPending}
+              onAddPhoto={() => void avatar.change()}
+              onPickFace={() => setFacePicker(true)}
+            />
+            <DefaultAvatarPickerSheet
+              visible={facePicker}
+              seed={profile._id}
+              name={profile.displayName}
+              current={ownDefaultAvatar(profile)}
+              onClose={() => setFacePicker(false)}
+            />
+          </>
+        )}
 
         {tokensState === 'loading' || plan === undefined ? (
           // Which body this is waits on `/me/tokens`, and a first week on its
