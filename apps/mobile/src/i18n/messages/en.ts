@@ -671,6 +671,7 @@ export const en = {
     meeting: 'Meeting',
     quiz: 'Quiz',
     call: 'Call',
+    gift: 'Gift',
     correction: 'Correction',
     forwarded: 'Forwarded',
   },
@@ -2913,6 +2914,47 @@ export const en = {
     shortBy: '{balance} now · {missing} to go',
     buy: 'Buy {title}',
     owned: 'Yours. Send them from any chat.',
+    seePack: 'See the pack',
+  },
+
+  /**
+   * Giving a sticker pack to a chat partner, behind `flags.stickerGifts`:
+   * the pack page's button, the picker, the confirmation and the row the
+   * gift leaves in the thread. "Give", never "gift" as the verb on a button —
+   * the store's hourly gift box already owns that word.
+   */
+  stickerGift: {
+    give: 'Give this pack',
+    giveAccessibility: 'Give {title} to someone you talk to',
+    pickTitle: 'Who gets {title}?',
+    pickNote: 'Gifts go to people you have been talking to.',
+    sendsLeft: {
+      one: '{count} gift left this week',
+      other: '{count} gifts left this week',
+    },
+    weeklyUsed: 'You have given this week’s gift. You can give another next week.',
+    empty: 'Nobody to give it to yet. Gifts go to people you have been talking to.',
+    stateKeepTalking: 'Keep talking. Gifts open up as you get to know each other.',
+    stateOwns: 'Already has this pack',
+    stateUnavailable: 'Cannot get a gift right now',
+    rowAccessibility: '{name}, {state}',
+    confirmTitle: 'Give {title} to {name}?',
+    honesty:
+      'The pack becomes theirs. A gift cannot be returned, passed on or refunded, and the tokens are not given back.',
+    confirm: 'Give for {price}',
+    sent: '{name} has {title} now',
+    failedTitle: 'The gift did not go through',
+    refusalKeepTalking: 'Keep talking a little longer, then try again.',
+    refusalOwns: 'They already have this pack.',
+    refusalWeekly: 'You have given this week’s gift.',
+    refusalTokens: 'You do not have enough tokens for this pack.',
+    refusalUnavailable: 'This person cannot get a gift right now.',
+    refusalGeneric: 'Something went wrong. Try again in a moment.',
+    cardFromThem: '{name} gave you a sticker pack',
+    cardFromMe: 'You gave {name} a sticker pack',
+    cardYours: 'It is yours. Send them from any chat.',
+    cardTheirs: 'They can send them from any chat now.',
+    cardAccessibility: '{headline}: {title}',
     seePack: 'See the pack',
   },
 

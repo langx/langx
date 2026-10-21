@@ -28,6 +28,10 @@ import {
   type MeetingStatus,
   type MessageAsk,
   type MessageCall,
+  type MessageGift,
+  type GiveStickerPackInput,
+  type StickerGiftOptions,
+  type StickerGiftResult,
   type BroadcastInteractive,
   type MessageInteractive,
   type PollResults,
@@ -262,6 +266,8 @@ export const keys = {
   tokens: ['tokens'] as const,
   tokenHistory: ['tokens', 'history'] as const,
   wallet: ['wallet'] as const,
+  /** Under `wallet`, so a purchase's invalidation refreshes who can be given a pack. */
+  stickerGiftOptions: (packId: string) => ['wallet', 'stickerGifts', packId] as const,
   badges: ['badges'] as const,
   referrals: ['referrals'] as const,
   /**
@@ -1105,6 +1111,8 @@ export interface MessageDto {
   location?: { lat: number; lng: number; precision: SharedLocationPrecision; label?: string }
   /** The call this row records, when `type` is `call`. `senderId` is who placed it. */
   call?: MessageCall
+  /** The pack this row gave, when `type` is `gift`. `senderId` is who gave it. */
+  gift?: MessageGift
   /** Emoji → the users who chose it. Mutual: a reaction is meant to be seen. */
   reactions?: Record<string, string[]>
   /** Which of them is mine, so the strip can show it selected. */
@@ -2433,6 +2441,39 @@ export function usePurchase() {
       // The profile too: a purchase can move the streak, and the wallet
       // screen reads that from `me` rather than from the wallet response.
       void queryClient.invalidateQueries({ queryKey: keys.me })
+    },
+  })
+}
+
+/**
+ * Who this pack can be given to, behind `flags.stickerGifts`. Not fetched
+ * while the switch is off or for a guest — the caller passes `enabled`.
+ */
+export function useStickerGiftOptions(packId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: keys.stickerGiftOptions(packId),
+    queryFn: () =>
+      api.get<StickerGiftOptions>(
+        `/me/wallet/sticker-gifts/options?packId=${encodeURIComponent(packId)}`,
+      ),
+    enabled,
+  })
+}
+
+/**
+ * Give a sticker pack to a chat partner. The caller mints `clientId` once per
+ * confirmation, so a retry of the same tap is answered with the same gift.
+ * The thread's row arrives over the socket like any message.
+ */
+export function useGiveStickerPack() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: GiveStickerPackInput) =>
+      api.post<StickerGiftResult>('/me/wallet/sticker-gifts', input),
+    onSuccess: (result) => {
+      // The wallet prefix covers the options above as well.
+      queryClient.setQueryData<Wallet>(keys.wallet, result.wallet)
+      void queryClient.invalidateQueries({ queryKey: keys.wallet })
     },
   })
 }

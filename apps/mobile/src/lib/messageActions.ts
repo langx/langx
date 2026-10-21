@@ -135,7 +135,7 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
    * message: the row says who rang, not who behaved badly on the call, and
    * the report goes to the other person either way.
    */
-  if (context.type === 'call') {
+  if (context.type === 'call' || context.type === 'gift') {
     return [
       {
         id: 'delete',

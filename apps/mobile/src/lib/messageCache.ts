@@ -1,4 +1,4 @@
-import type { ThreadTestimonialState } from '@langx/shared'
+import { isServerRecord, type ThreadTestimonialState } from '@langx/shared'
 import type { InfiniteData } from '@tanstack/react-query'
 import type { MessageDto } from '../api/queries'
 
@@ -54,7 +54,7 @@ export function appendIncomingMessage(data: Pages, message: MessageDto, viewerId
         // something they said, and three unanswered calls must not open the
         // gate the calls themselves are behind.
         mediaLockedFor:
-          (viewerId !== undefined && message.senderId === viewerId) || message.type === 'call'
+          (viewerId !== undefined && message.senderId === viewerId) || isServerRecord(message)
             ? first.mediaLockedFor
             : Math.max(0, first.mediaLockedFor - 1),
       },

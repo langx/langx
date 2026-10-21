@@ -1,5 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import {
+  isServerRecord,
   canDeleteForEveryone,
   canEditMessage,
   translateTargetFor,
@@ -2184,8 +2185,9 @@ export function ChatScreen({
       // A withdrawn message cannot carry a reaction, so it gets no strip. Nor
       // does anything in a channel: a reaction is addressed to whoever wrote
       // the message, and `@langx` is a process that will never read one.
-      // Nor does the row a call leaves, which is not something anybody said.
-      ...(message.deleted || readOnly || message.type === 'call'
+      // Nor does the row a call or a gift leaves, which is not something
+      // anybody said.
+      ...(message.deleted || readOnly || isServerRecord(message)
         ? {}
         : { reactions: MESSAGE_REACTIONS, myReaction: message.myReaction }),
     })
@@ -3428,7 +3430,7 @@ export function ChatScreen({
                          * withdrawn message and to an official channel, so offering
                          * the gesture there would end in an alert.
                          */
-                        canReact={!readOnly && !row.message.deleted && row.message.type !== 'call'}
+                        canReact={!readOnly && !row.message.deleted && !isServerRecord(row.message)}
                         // Only on the newest call, and not where a call cannot be
                         // placed from here at all: then a row is only a record.
                         onCallBack={
