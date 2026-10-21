@@ -88,7 +88,15 @@ export function PendingPhotoTile({ photo, size, onRetry, onDiscard }: PendingPho
       >
         <Image source={{ uri: photo.uri }} style={styles.picture} contentFit="cover" />
         <View style={[styles.scrim, failed && styles.scrimFailed]} pointerEvents="none">
-          <Text style={styles.label} numberOfLines={1}>
+          <Text
+            style={styles.label}
+            numberOfLines={v3Look ? 2 : 1}
+            // "Reintentar", "Réessayer" or "Tentar de novo" do not fit a 58pt
+            // tile on one line in v3's wider label face: two lines, then a
+            // smaller size, before an ellipsis.
+            adjustsFontSizeToFit={v3Look}
+            minimumFontScale={v3Look ? 0.7 : undefined}
+          >
             {failed
               ? t('editProfile.photoRetryShort')
               : photo.progress.phase === 'reading'
@@ -153,7 +161,13 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
   },
   // Light and dark alike: the red sits over a photo, not over the ground.
   scrimFailed: { backgroundColor: 'rgba(192,40,27,0.82)' },
-  label: { ...v3.type.label, color: '#fff', fontVariant: ['tabular-nums'] },
+  label: {
+    ...v3.type.label,
+    color: '#fff',
+    fontVariant: ['tabular-nums'],
+    paddingHorizontal: v3.space[4],
+    textAlign: 'center',
+  },
   track: { bottom: 0, flexDirection: 'row', height: 3, left: 0, position: 'absolute', right: 0 },
   trackFill: { backgroundColor: '#fff' },
   trackRest: { backgroundColor: 'rgba(255,255,255,0.25)' },

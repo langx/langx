@@ -13,7 +13,7 @@ import { Button } from './ui/Button'
  * `CountryFromLocation` in V-EditProfile's look, behind `flags.v3Home`.
  *
  * The handler is the current one's, copied rather than shared so the current
- * file's diff stays a switch (`countryFromLocationV3.test.ts` holds the two
+ * file's diff stays a switch (`editProfilePartsV3.test.ts` holds the two
  * to the same calls and words). What changes is the drawing: the value sits
  * in the 18pt surface block the username uses above it, and the correction
  * is the kit's small outlined pill with a pin rather than a blue text link —
