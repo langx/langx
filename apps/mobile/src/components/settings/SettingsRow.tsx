@@ -706,6 +706,7 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
       return (
         <ListRow
           title={t('settings.exportData')}
+          subtitle={model.exporting ? t('settings.exportDataPreparing') : undefined}
           last={last}
           onPress={() => void model.exportData()}
         />

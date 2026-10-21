@@ -359,6 +359,7 @@ export function SettingsRowV3({ id, model }: { id: string; model: SettingsModel 
           icon={icon}
           hue={hue}
           title={t('settings.exportData')}
+          subtitle={model.exporting ? t('settings.exportDataPreparing') : undefined}
           onPress={() => void model.exportData()}
         />
       )
