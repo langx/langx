@@ -116,6 +116,25 @@ export const de: Localized<EnMessages> = {
     cameraTitle: 'Kamera',
     cameraPermission: 'LangX braucht die Erlaubnis, deine Kamera zu benutzen.',
   },
+  avatar: {
+    default: {
+      tile: 'Gezeichnetes Gesicht {index}',
+      pickTitle: 'Wähle ein gezeichnetes Gesicht',
+      pickBody:
+        'Es steht für dich da, bis du ein Foto hinzufügst. Wer dein Profil sieht, sieht dieses Gesicht.',
+      useThis: 'Dieses Gesicht nehmen',
+      pickFailed: 'Das Gesicht wurde nicht gespeichert. Versuch es noch einmal.',
+      seeAll: { one: '{count} Gesicht ansehen', other: 'Alle {count} Gesichter ansehen' },
+      changeFace: 'Gezeichnetes Gesicht ändern',
+      nudgeTitle: 'Füge ein Foto von dir hinzu',
+      nudgeBody:
+        'Wir haben dieses Gesicht gezeichnet, damit dein Profil nicht leer ist. Es ist ein Platzhalter: Ein Foto zeigt, mit wem man spricht.',
+      nudgeAdd: 'Dein Foto hinzufügen',
+      nudgePick: 'Anderes gezeichnetes Gesicht wählen',
+      nudgeDismiss: 'Nicht jetzt',
+      othersSee: 'Was andere auf deinem Profil sehen',
+    },
+  },
   photo: {
     open: 'Foto öffnen',
     close: 'Foto schließen',
@@ -911,6 +930,12 @@ export const de: Localized<EnMessages> = {
     nameFromSignUp: 'Aus deiner Anmeldung. Ändere ihn, wenn du magst.',
     aboutYouOptional: 'Über dich (optional)',
     tooYoung: 'LangX ist für Menschen ab {age} Jahren.',
+    photo: {
+      picker: {
+        title: 'Oder wähle ein anderes gezeichnetes Gesicht',
+        keep: 'Dieses Gesicht behalten',
+      },
+    },
     photoTitle: 'Gib dem Ganzen ein Gesicht',
     photoBody:
       'Wir haben dir ein Gesicht gezeichnet. Ein echtes Foto macht es viel wahrscheinlicher, dass dich jemand anschreibt — und die Bio ist auch freiwillig.',

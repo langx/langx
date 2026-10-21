@@ -150,6 +150,27 @@ export const en = {
     cameraTitle: 'Camera',
     cameraPermission: 'LangX needs permission to use your camera.',
   },
+  /** v3's drawn faces, worn until a photo replaces them. */
+  avatar: {
+    default: {
+      /** A face in the picker, to a screen reader. */
+      tile: 'Drawn face {index}',
+      pickTitle: 'Pick a drawn face',
+      pickBody:
+        'It stands in until you add a photo. Everyone who sees your profile sees this face.',
+      useThis: 'Use this face',
+      pickFailed: 'That face didn’t save. Try again.',
+      seeAll: { one: 'See all {count} face', other: 'See all {count} faces' },
+      changeFace: 'Change drawn face',
+      nudgeTitle: 'Add a photo of you',
+      nudgeBody:
+        'We drew this face so your profile isn’t blank. It’s a stand-in: a photo shows people who they’re talking to.',
+      nudgeAdd: 'Add your photo',
+      nudgePick: 'Pick another drawn face',
+      nudgeDismiss: 'Not now',
+      othersSee: 'What others see on your profile',
+    },
+  },
   photo: {
     open: 'Open photo',
     close: 'Close photo',
@@ -1027,6 +1048,9 @@ export const en = {
     nameFromSignUp: 'From your sign-up. Change it if you like.',
     aboutYouOptional: 'About you (optional)',
     tooYoung: 'LangX is for people aged {age} and over.',
+    photo: {
+      picker: { title: 'Or pick another drawn face', keep: 'Keep this face' },
+    },
     photoTitle: 'Put a face to it',
     photoBody:
       'We drew you a face. A real photo makes people far more likely to say hello — and the bio is optional too.',

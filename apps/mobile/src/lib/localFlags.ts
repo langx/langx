@@ -273,6 +273,15 @@ export const FLAG_KEYS = {
    * so each is New and celebrated once. Per account — see `badgeSeen.ts`.
    */
   badgesSeen: 'badgesSeen',
+  /**
+   * JSON: `{ [accountId]: ISO date }`, when the Me screen's "Add a photo of
+   * you" card was last closed by each account on this device.
+   *
+   * Keyed by account for the same reason as `firstReplyCardShown`: a second
+   * account on the same phone has a face of its own. The card comes back a
+   * week after it was closed; `photoNudge.ts` owns the rule and bounds the map.
+   */
+  photoNudgeDismissed: 'photoNudgeDismissed',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]
