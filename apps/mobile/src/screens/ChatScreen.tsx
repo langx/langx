@@ -200,7 +200,7 @@ import { WebTitle } from '../components/WebTitle'
 import { ComposerV3, type LatestActions } from '../components/thread/ComposerV3'
 import { WithRewardChips } from '../components/thread/RewardChipV3'
 import { EmojiBurstV3, type Burst } from '../components/thread/EmojiBurstV3'
-import { loneEmoji, shouldPlayBurst, type BurstTrigger } from '../lib/emojiBurst'
+import { drawsAsHero, loneEmoji, shouldPlayBurst, type BurstTrigger } from '../lib/emojiBurst'
 import { ThreadHeaderV3 } from '../components/thread/ThreadHeaderV3'
 import { useV3Home } from '../hooks/useV3Home'
 import { useKeyboardUp } from '../hooks/useKeyboardUp'
@@ -830,12 +830,16 @@ export function ChatScreen({
   const burstPlaying = useRef(false)
   const burstPlayed = useRef(new Set<string>())
   const playBurst = useRef<
-    (trigger: BurstTrigger, body: string, id?: string, ageMs?: number) => void
+    (
+      trigger: BurstTrigger,
+      message: { body: string; hero: boolean; id?: string; ageMs?: number },
+    ) => void
   >(() => undefined)
-  playBurst.current = (trigger, body, id, ageMs) => {
+  playBurst.current = (trigger, { body, hero, id, ageMs }) => {
     const play = shouldPlayBurst({
       trigger,
       body,
+      hero,
       v3: v3Thread,
       reduceMotion,
       focused,
@@ -855,7 +859,7 @@ export function ChatScreen({
   }, [])
   // Stable, so the memoised bubbles do not all re-render for it.
   const onBurstTap = useCallback((message: MessageDto) => {
-    playBurst.current('tap', message.body)
+    playBurst.current('tap', { body: message.body, hero: true })
   }, [])
 
   useEffect(() => {
@@ -873,16 +877,18 @@ export function ChatScreen({
         indicator.set(false)
       }
       // Theirs only: this screen bursts its own sends as they leave, and a
-      // copy of one coming back over the socket is not news.
-      if (message.conversationId === conversationId && message.senderId !== myIdRef.current) {
-        // Measured against the device clock; a message dated a little in the
-        // future (a clock running slow) is negative, and still counts as now.
-        playBurst.current(
-          'live',
-          message.body,
-          message._id,
-          Date.now() - Date.parse(message.createdAt),
-        )
+      // copy of one coming back over the socket is not news. While `me` is
+      // still loading nobody can tell whose it is, so nothing plays.
+      const myId = myIdRef.current
+      if (message.conversationId === conversationId && myId && message.senderId !== myId) {
+        playBurst.current('live', {
+          body: message.body,
+          // The hero bubble's own condition, so a photo captioned with one
+          // emoji does not burst with nothing on screen to explain it.
+          hero: drawsAsHero(message),
+          id: message._id,
+          ageMs: Date.now() - Date.parse(message.createdAt),
+        })
       }
     }
     const stop = onSocket((socket) => {
@@ -1869,7 +1875,7 @@ export function ChatScreen({
       )
       // `deliver` never rejects — a failure becomes an unsent row.
       void deliverTranslated(body, clientId, reply?._id, ask ?? undefined, quote)
-      playBurst.current('sent', body, clientId)
+      playBurst.current('sent', { body, hero: true, id: clientId })
     }
     // Sending is a statement about the live conversation, so it ends a
     // detour into the history rather than posting into the middle of it.

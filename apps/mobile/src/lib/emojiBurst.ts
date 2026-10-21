@@ -88,10 +88,22 @@ export function loneEmoji(body: string): string | null {
 }
 
 /**
- * How long after it was written a message pushed over the socket still
- * counts as arriving now. A reconnect, or a server redelivering, can hand
- * over a message minutes old, and a burst for that is history replaying.
+ * How far from now, either way, a message pushed over the socket can be
+ * dated and still count as arriving now. A reconnect, or a server
+ * redelivering, can hand over a message minutes old, and a burst for that is
+ * history replaying. The window is two-sided because the age is measured
+ * against the device clock: one running a little slow dates a fresh message
+ * slightly in the future, while one far off is no evidence of anything.
  */
+/**
+ * Whether a message is drawn as the big emoji at all, for a lone emoji: the
+ * condition `MessageBubble` gives its hero, a plain text and not withdrawn.
+ * The caption on a photo, a video or a voice note is not.
+ */
+export function drawsAsHero(message: { type: string; deleted?: boolean | undefined }): boolean {
+  return message.type === 'text' && message.deleted !== true
+}
+
 export const LIVE_WINDOW_MS = 15_000
 
 export type BurstTrigger =
@@ -118,6 +130,12 @@ export interface BurstMoment {
   played: boolean
   /** For `live`: how long ago the message was written. */
   ageMs?: number
+  /**
+   * The message is drawn as the big emoji: plain text, not withdrawn. A
+   * photo or a voice note captioned with one emoji is not, and has no bubble
+   * a tap could replay the burst from.
+   */
+  hero: boolean
 }
 
 /**
@@ -132,7 +150,7 @@ export interface BurstMoment {
  * looks like a glitch.
  */
 export function shouldPlayBurst(moment: BurstMoment): boolean {
-  if (!moment.v3 || moment.reduceMotion || moment.playing) return false
+  if (!moment.v3 || moment.reduceMotion || moment.playing || !moment.hero) return false
   if (loneEmoji(moment.body) === null) return false
   switch (moment.trigger) {
     case 'history':
@@ -147,7 +165,7 @@ export function shouldPlayBurst(moment: BurstMoment): boolean {
         moment.focused &&
         !moment.played &&
         moment.ageMs !== undefined &&
-        moment.ageMs <= LIVE_WINDOW_MS
+        Math.abs(moment.ageMs) <= LIVE_WINDOW_MS
       )
   }
 }

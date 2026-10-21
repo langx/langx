@@ -5,6 +5,7 @@ import {
   burstEndsAt,
   burstKind,
   burstParticles,
+  drawsAsHero,
   loneEmoji,
   shouldPlayBurst,
   type BurstKind,
@@ -62,7 +63,22 @@ const base: BurstMoment = {
   playing: false,
   played: false,
   ageMs: 200,
+  hero: true,
 }
+
+describe('drawsAsHero', () => {
+  it('is a plain text message that has not been withdrawn', () => {
+    expect(drawsAsHero({ type: 'text' })).toBe(true)
+    expect(drawsAsHero({ type: 'text', deleted: false })).toBe(true)
+    expect(drawsAsHero({ type: 'text', deleted: true })).toBe(false)
+  })
+
+  it('is not a photo, a video or a voice note, whatever its caption', () => {
+    for (const type of ['image', 'video', 'audio', 'sticker']) {
+      expect(drawsAsHero({ type })).toBe(false)
+    }
+  })
+})
 
 describe('shouldPlayBurst', () => {
   it('plays a lone emoji sent from here, or arriving live while the thread is open', () => {
@@ -89,8 +105,18 @@ describe('shouldPlayBurst', () => {
     expect(shouldPlayBurst(undated)).toBe(false)
   })
 
-  it('still plays when the device clock runs a little slow', () => {
+  it('still plays when the device clock runs a little slow, but not a lot', () => {
     expect(shouldPlayBurst({ ...base, ageMs: -3_000 })).toBe(true)
+    expect(shouldPlayBurst({ ...base, ageMs: -LIVE_WINDOW_MS })).toBe(true)
+    expect(shouldPlayBurst({ ...base, ageMs: -LIVE_WINDOW_MS - 1 })).toBe(false)
+  })
+
+  it('never plays for a lone emoji that is not drawn as the big emoji', () => {
+    // A photo, a video or a voice note captioned with one emoji, or a
+    // withdrawn message: no hero bubble, so no burst and nothing to replay.
+    for (const trigger of ['sent', 'live', 'tap'] as const) {
+      expect(shouldPlayBurst({ ...base, trigger, hero: false })).toBe(false)
+    }
   })
 
   it('does not play live into a thread that is not in front', () => {
