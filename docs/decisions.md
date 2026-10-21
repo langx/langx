@@ -866,6 +866,7 @@ allowlist.
 
 ## Home leads the bar, and People holds Discover and the Feed — behind a flag
 
+> **Amended 21 October 2026 — see _The operator panel is v3 without the flag_ below.**
 > **Amended 20 October 2026 — see _The Echo tab drops its standing tint_ below.**
 > **Amended 19 October 2026 — see _Chats leads with the people waiting on you — behind the same flag_ below.**
 > **Amended 19 October 2026 — see _Echo leads with what is due, and the done screen says what it earned — behind the same flag_ below.**
@@ -924,6 +925,25 @@ tour plays; under the flag the tour's Feed step finds no Feed tab and is
 skipped, as any step with nothing to point at is. The streak row draws a
 plain disc where `StreakFlame` could go. The screens behind the tabs keep the
 current look, and the web tab title for `/discover` still says Discover.
+
+## The operator panel is v3 without the flag
+
+**21 October 2026.** An exception to the rule above that the redesign waits
+behind `flags.v3Home`: the operator panel (`/admin`) is drawn in v3 for
+everyone who can open it, with no flag and no second copy of its screens.
+
+The flag exists so that the people the app is for never see half a redesign.
+Nobody reads the panel but the operators, who are the ones finishing the
+redesign, so for them the flag would hide nothing worth hiding. Gating it would
+still cost a full copy of every operator screen, each kept in step with every
+fix until the flag goes. The panel changed look in place instead
+(`components/admin/AdminKitV3.tsx`, from the `V-Admin` board). What it does is
+unchanged: every action, confirm and admin check is the one it was, and its
+words are still English, in `adminStrings.ts` and nowhere else.
+
+If a screen in the panel is ever read by someone other than an operator, this
+exception no longer covers it, and that screen goes behind the flag like
+everything else.
 
 ## The Echo tab drops its standing tint
 

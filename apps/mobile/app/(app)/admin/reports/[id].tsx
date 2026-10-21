@@ -442,11 +442,11 @@ export default function AdminCaseScreen() {
         onChangeText={setDays}
         keyboardType="number-pad"
       />
-      {/* Red for the two that cannot be taken back by this screen; every
-          one of the three asks before it acts. */}
+      {/* Both suspensions in red, as on the account's own page; every one
+          of the three asks before it acts. */}
       <Button
         label={ADMIN.reports.suspendDays}
-        variant="secondary"
+        variant="danger"
         onPress={() =>
           run('suspend', {
             confirm: ADMIN.reports.confirmSuspend(shown, numberOfDays),
