@@ -2109,6 +2109,35 @@ describe('the operator panel', () => {
       }
     })
 
+    it('keeps a switch made a moment earlier, however stale the cache is', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      // Warm this process's cache, then write behind its back, as another
+      // machine would.
+      await get(admin, '/admin/stats')
+      await handle.db
+        .collection(COLLECTIONS.appConfig)
+        .updateOne({ _id: 'current' as never }, { $set: { 'flags.callsEnabled': false } })
+
+      const response = await post(admin, '/admin/app-config/flags', {
+        flag: 'proWeek',
+        value: true,
+      })
+      expect(response.json<AppConfig>().flags).toMatchObject({ callsEnabled: false, proWeek: true })
+
+      await post(admin, '/admin/app-config/flags', { flag: 'callsEnabled', value: true })
+      await post(admin, '/admin/app-config/flags', { flag: 'proWeek', value: false })
+    })
+
+    it('needs a session', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/app-config/flags',
+        payload: { flag: 'v3Home', value: true },
+      })
+      expect(response.statusCode).toBe(401)
+    })
+
     it('is not something an ordinary member can do', async () => {
       const member = await newUser()
       const response = await post(member, '/admin/app-config/flags', {

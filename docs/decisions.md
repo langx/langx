@@ -9223,8 +9223,13 @@ and the value, like every other panel action. A flag that went on and nobody
 remembers turning on is a mystery a week later.
 
 **Only a known name, only a boolean.** The name is checked against the flags
-schema's own keys, the body is strict, and the write sets a key taken from that
-list rather than one read off the request. `captchaRequired` keeps its own route
+schema's own keys, and the body is strict. The write sets one dotted path,
+`flags.<name>`, with the name taken from that list rather than read off the
+request. It does not write the flags whole from a cached read. The cache is per
+machine, so two switches made seconds apart on two machines would undo each
+other, and the audit log would still say both had stuck. The audit row is
+best-effort like every panel action's: a failed audit insert is logged and does
+not undo the switch. `captchaRequired` keeps its own route
 beside the minimum version, because it is thrown in step with it. Conditions a
 pull request asked for (`promoPaywallLinks`, `stickerGifts`) are shown as a
 caution, not a lock. Whether they are met is the operator's call, and the app
