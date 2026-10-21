@@ -1,8 +1,10 @@
+import Feather from '@expo/vector-icons/Feather'
 import { useMemo, useState } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
+import { useV3Home } from '../hooks/useV3Home'
 import { useLocale, useT } from '../i18n'
 import { defaultScheduleTime, scheduleDays, scheduleSlots } from '../lib/scheduleTime'
-import { makeStyles } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 import { Button } from './ui/Button'
 import { Chip } from './ui/Chip'
 
@@ -50,9 +52,14 @@ function SheetBody({
   onClose: () => void
   onConfirm: (at: Date) => void
 }) {
-  const styles = useStyles()
+  const current = useStyles()
+  const redesigned = useStylesV3()
+  const v3Look = useV3Home()
+  const styles = v3Look ? redesigned : current
   const t = useT()
   const { locale } = useLocale()
+  /** v3 draws its choices as its own pills; the current look keeps `Chip`. */
+  const Choice = v3Look ? ChoiceV3 : Chip
   const [now] = useState(() => new Date())
   const [at, setAt] = useState(() => defaultScheduleTime(now))
 
@@ -91,7 +98,7 @@ function SheetBody({
             <View style={styles.chips}>
               {days.map((d) =>
                 scheduleSlots(d, now).length > 0 ? (
-                  <Chip
+                  <Choice
                     key={d.toISOString()}
                     label={new Intl.DateTimeFormat(locale, {
                       weekday: 'short',
@@ -107,7 +114,7 @@ function SheetBody({
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.chips}>
               {slots.map((slot) => (
-                <Chip
+                <Choice
                   key={slot.toISOString()}
                   label={new Intl.DateTimeFormat(locale, {
                     hour: 'numeric',
@@ -142,4 +149,85 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   title: { ...font.heading, color: colors.text, fontSize: 20 },
   chosen: { color: colors.text, fontSize: 17, fontWeight: '700' },
   chips: { flexDirection: 'row', gap: spacing.sm },
+}))
+
+/**
+ * One day or one half hour in v3's look: the grey pill at the 48pt target,
+ * the ink pill with a tick when chosen — as `FilterChipV3` and the v3
+ * propose-time page draw a choice — and a radio to a screen reader, since a
+ * row of them picks one.
+ */
+function ChoiceV3({
+  label,
+  selected,
+  onPress,
+}: {
+  label: string
+  selected: boolean
+  onPress: () => void
+}) {
+  const styles = useChoiceStylesV3()
+  const { v3 } = useTheme()
+  return (
+    <Pressable
+      accessibilityRole="radio"
+      accessibilityState={{ checked: selected }}
+      onPress={onPress}
+      style={({ pressed }) => [styles.pill, selected && styles.on, pressed && styles.pressed]}
+    >
+      {selected ? <Feather name="check" size={v3.icon.sm} color={v3.colors.pillText} /> : null}
+      <Text style={[styles.label, selected && styles.labelOn]}>{label}</Text>
+    </Pressable>
+  )
+}
+
+/**
+ * v3's look for the same sheet, behind `flags.v3Home` with the thread. No
+ * board draws it; it follows `WhatsProSheet` for the sheet and the v3
+ * propose-time page for the choice, which it says in words on the blue tint.
+ * The yellow is Schedule's, the sheet's one committing action.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  backdrop: { backgroundColor: v3.colors.scrim, flex: 1, justifyContent: 'flex-end' },
+  sheet: {
+    alignSelf: 'center',
+    backgroundColor: v3.colors.bg,
+    borderTopLeftRadius: v3.radius.block,
+    borderTopRightRadius: v3.radius.block,
+    maxWidth: 480,
+    width: '100%',
+  },
+  content: {
+    gap: v3.space[12],
+    paddingBottom: v3.space[24],
+    paddingHorizontal: v3.space[16],
+    paddingTop: v3.space[24],
+  },
+  title: { ...v3.type.headline, color: v3.colors.fg },
+  chosen: {
+    ...v3.type.button,
+    backgroundColor: v3.colors.echoTint,
+    borderRadius: v3.radius.row,
+    color: v3.colors.fg,
+    overflow: 'hidden',
+    paddingHorizontal: v3.space[16],
+    paddingVertical: v3.space[12],
+  },
+  chips: { flexDirection: 'row', gap: v3.space[8] },
+}))
+
+const useChoiceStylesV3 = makeStyles(({ v3 }) => ({
+  pill: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.pill,
+    flexDirection: 'row',
+    gap: v3.space[6],
+    height: 48,
+    paddingHorizontal: v3.space[16],
+  },
+  on: { backgroundColor: v3.colors.pill, paddingStart: v3.space[12] },
+  pressed: { opacity: 0.7 },
+  label: { ...v3.type.buttonSmall, color: v3.colors.fg },
+  labelOn: { color: v3.colors.pillText },
 }))

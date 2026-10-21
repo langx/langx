@@ -2,10 +2,14 @@ import {
   copilotAgeAllows,
   COPILOT_RULES,
   ERROR_CODES,
+  getLanguage,
+  LEVEL_LABELS,
+  type LanguageLevel,
   type CopilotCheckRequest,
   type CopilotExplainRequest,
   type CopilotReplyIdeasRequest,
   type CopilotResponse,
+  type CopilotSayItRequest,
   type CopilotResult,
   type CopilotStatus,
   type CopilotUnavailableReason,
@@ -22,6 +26,7 @@ import { loadMutableMessage } from '../chat/mutations'
 import type { StructuredProvider } from '../official/assistantProvider'
 import { effectiveTier } from '../profiles/entitlement'
 import { getProfile, type Profile } from '../profiles/profiles'
+import { hasCopilotAccess } from './access'
 import { claimCopilotCall } from './budget'
 import { copilotCacheKey, lookupCopilotResult, rememberCopilotResult } from './cache'
 import { hasCopilotConsent } from './consent'
@@ -36,20 +41,27 @@ import {
 
 /**
  * What Copilot needs from the process: the two switches, and somewhere to say
- * that a call failed.
+ * what happened.
  *
  * **Two switches, and both must be on.** `provider` is there when a key is
  * configured; `enabled` is the operator's `flags.copilotEnabled`, which starts
  * off. The key is shared with the @langx assistant, so a key alone must never
  * be what turns Copilot on — that is a decision about the privacy policy and
- * the store forms, not about credentials.
+ * the store forms, not about credentials. On top of both, each account needs
+ * the operator's `copilotAccess` (`./access.ts`).
  */
 export interface CopilotDeps {
   db: Db
   provider: StructuredProvider | null
   enabled: boolean
-  /** Never handed the person's text — only the action and the error. */
-  log: { error: (fields: object, message: string) => void }
+  /**
+   * Never handed the person's text, a message id or a user id — only the
+   * action, how it went, and the error.
+   */
+  log: {
+    info: (fields: object, message: string) => void
+    error: (fields: object, message: string) => void
+  }
 }
 
 function unavailable(reason: CopilotUnavailableReason, message: string): ApiError {
@@ -69,7 +81,9 @@ export async function getCopilotStatus(
   now: Date = new Date(),
 ): Promise<CopilotStatus> {
   const profile = await loadProfile(deps.db, userId)
-  const on = deps.enabled && deps.provider !== null
+  // No access reads exactly like the switch being off: the app hides
+  // Copilot either way, and has nothing different to say to the person.
+  const on = deps.enabled && deps.provider !== null && hasCopilotAccess(profile)
   const oldEnough = copilotAgeAllows(profile.birthDate, now)
   const quota = await getQuotaStatus(deps.db, userId, effectiveTier(profile), 'copilot')
   return {
@@ -89,6 +103,23 @@ export type CopilotQuestion =
   | ({ action: 'check' } & CopilotCheckRequest)
   | ({ action: 'replyIdeas' } & CopilotReplyIdeasRequest)
   | ({ action: 'explain' } & CopilotExplainRequest)
+  | ({ action: 'sayIt' } & CopilotSayItRequest)
+
+/**
+ * The learner's level in `code` when they are learning it, else in the first
+ * language they learn — Say it writes at the level they would read it.
+ */
+function levelIn(profile: Profile, code: string): string {
+  const learning = profile.learning.find((language) => language.code === code)
+  if (!learning) return firstLevel(profile)
+  return LEVEL_LABELS[learning.level as LanguageLevel] ?? learning.level
+}
+
+function notExplainable(): ApiError {
+  return new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That message cannot be explained', {
+    reason: 'not_explainable',
+  })
+}
 
 /** A question, read and checked, ready to be asked of the model or found in the cache. */
 interface Job {
@@ -137,9 +168,9 @@ async function recentLines(
 
 /**
  * Refuses a thread whose other person is under Copilot's age, for the two
- * actions that send their words: Reply ideas reads their lines, and Explain a
- * correction one of them wrote or received. Check sends only the asker's own
- * sentence, so it does not ask.
+ * actions that send their words: Reply ideas reads their lines, and Explain
+ * one of their messages, or a correction one of them wrote or received.
+ * Check and Say it send only the asker's own words, so they do not ask.
  *
  * "Off for 16- and 17-year-olds" has to mean their text never reaches the
  * provider, not only that they cannot press the button — otherwise any adult
@@ -227,24 +258,78 @@ async function prepare(
     }
   }
 
+  if (question.action === 'sayIt') {
+    await assertConversationAccess(db, question.conversationId, userId)
+    const language = getLanguage(question.targetLanguage.trim())
+    if (!language) {
+      throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Unknown language', {
+        reason: 'unknown_language',
+      })
+    }
+    // Only the asker's own words, the language named in English, and their
+    // level — never the thread, and nothing about the partner.
+    const userTurn = JSON.stringify({
+      text: question.text.trim(),
+      targetLanguage: language.name,
+      level: levelIn(profile, language.code),
+      readerLanguage: readerLanguage(locale),
+    })
+    return {
+      userTurn,
+      run: async (provider) => {
+        const output = await provider.ask({
+          system: systemPromptFor('sayIt'),
+          prompt: userTurn,
+          schema: MODEL_OUTPUT.sayIt,
+        })
+        const options = (output?.options ?? [])
+          .map((option) => ({ text: option.text.trim(), gloss: option.gloss.trim() }))
+          .filter((option) => option.text.length > 0)
+          .slice(0, COPILOT_RULES.sayItOptions)
+        return options.length > 0 ? { action: 'sayIt', options } : null
+      },
+    }
+  }
+
   const { conversation, message } = await loadMutableMessage(
     db,
     userId,
     question.conversationId,
     question.messageId,
   )
+  // Before the message is even looked at: a minor's words never reach the
+  // model, whether they wrote the message or the correction.
   await assertPartnerOldEnough(db, conversation, userId, now)
-  const correction = message.correction
-  if (
-    message.type !== 'correction' ||
-    !correction ||
-    message.deletedAt ||
-    message.hiddenFor?.includes(userId)
-  ) {
-    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That message is not a correction', {
-      reason: 'not_a_correction',
-    })
+  if (message.deletedAt || message.hiddenFor?.includes(userId) || message.viewOnce) {
+    throw notExplainable()
   }
+
+  if (message.type === 'text') {
+    const body = message.body.trim()
+    // The partner's text only: your own lines are Check's, and an empty
+    // body has nothing to explain.
+    if (message.senderId === userId || body.length === 0) throw notExplainable()
+    const userTurn = JSON.stringify({
+      level: firstLevel(profile),
+      readerLanguage: readerLanguage(locale),
+      message: clip(body, COPILOT_RULES.maxExplainChars),
+    })
+    return {
+      userTurn,
+      run: async (provider) => {
+        const output = await provider.ask({
+          system: systemPromptFor('explainMessage'),
+          prompt: userTurn,
+          schema: MODEL_OUTPUT.explainMessage,
+        })
+        const explanation = output?.explanation.trim()
+        return explanation ? { action: 'explain', explanation } : null
+      },
+    }
+  }
+
+  const correction = message.correction
+  if (message.type !== 'correction' || !correction) throw notExplainable()
   const userTurn = JSON.stringify({
     level: firstLevel(profile),
     readerLanguage: readerLanguage(locale),
@@ -273,8 +358,9 @@ async function prepare(
  * reaching the next:
  *
  * 1. **The service** — the operator's switch and a key. Off, nothing is read.
- * 2. **The person** — old enough, and agreed to the current consent sheet.
- *    Nothing of theirs is read for the model, let alone sent, before both.
+ * 2. **The person** — on the operator's allow-list, old enough, and agreed
+ *    to the current consent sheet. Nothing of theirs is read for the model,
+ *    let alone sent, before all three.
  * 3. **The question** — through the chat's own access checks, and for the
  *    actions that send the other person's words, their age as well.
  * 4. **The cache** — an answer somebody already paid for costs nothing.
@@ -284,6 +370,10 @@ async function prepare(
  * 6. **The model** — and if it declines or fails, the unit is given back:
  *    telling somebody it did not work while charging them is the unfairness
  *    `refundQuota` exists for.
+ *
+ * One log line per ask, `copilot answered`, with the action, whether it was
+ * cached, how it ended, how long it took and the model — and never the text,
+ * a message id or a user id.
  */
 export async function askCopilot(
   deps: CopilotDeps,
@@ -292,10 +382,47 @@ export async function askCopilot(
   question: CopilotQuestion,
   now: Date = new Date(),
 ): Promise<CopilotResponse> {
+  const started = Date.now()
+  const line = (cached: boolean, outcome: string): void => {
+    deps.log.info(
+      {
+        action: question.action,
+        cached,
+        outcome,
+        ms: Date.now() - started,
+        model: deps.provider?.model ?? null,
+      },
+      'copilot answered',
+    )
+  }
+  try {
+    const response = await answer(deps, userId, locale, question, now)
+    line(response.cached, 'ok')
+    return response
+  } catch (error) {
+    line(false, outcomeOf(error))
+    throw error
+  }
+}
+
+/** How a refused ask ended, for the log line: a reason or a code, never a message. */
+function outcomeOf(error: unknown): string {
+  if (!(error instanceof ApiError)) return 'error'
+  return error.reason ?? error.code
+}
+
+async function answer(
+  deps: CopilotDeps,
+  userId: string,
+  locale: Locale,
+  question: CopilotQuestion,
+  now: Date,
+): Promise<CopilotResponse> {
   const { db, provider } = deps
   if (!deps.enabled || !provider) throw unavailable('off', 'Copilot is off')
 
   const profile = await loadProfile(db, userId)
+  if (!hasCopilotAccess(profile)) throw unavailable('off', 'Copilot is off')
   if (!copilotAgeAllows(profile.birthDate, now)) {
     throw unavailable('age', 'Copilot is not available on this account')
   }

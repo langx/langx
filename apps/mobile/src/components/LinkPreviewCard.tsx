@@ -1,6 +1,7 @@
 import { Image } from 'expo-image'
 import { Pressable, Text, View } from 'react-native'
 import { useLinkPreview } from '../api/queries'
+import { useV3Home } from '../hooks/useV3Home'
 import { openExternal } from '../lib/openExternal'
 import { makeStyles } from '../lib/theme'
 
@@ -22,7 +23,9 @@ interface LinkPreviewCardProps {
  * scrolling past this tells no stranger's server who is reading.
  */
 export function LinkPreviewCard({ url, onLongPress }: LinkPreviewCardProps) {
-  const styles = useStyles()
+  const current = useStyles()
+  const redesigned = useStylesV3()
+  const styles = useV3Home() ? redesigned : current
   const { data: preview } = useLinkPreview(url)
   if (!preview) return null
 
@@ -84,4 +87,27 @@ const useStyles = makeStyles(({ colors, font }) => ({
   site: { ...font.caption, color: colors.textMuted },
   title: { ...font.label, color: colors.text, fontSize: 14, lineHeight: 19 },
   description: { ...font.caption, color: colors.textMuted, lineHeight: 17 },
+}))
+
+/**
+ * v3's look for the same card, behind `flags.v3Home` with the bubbles it sits
+ * in. No board draws it: the ground inside the bubble's fill, as the current
+ * look has it, with v3's type and the icon square's corner — the bubble's own
+ * corner less its padding.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  card: {
+    backgroundColor: v3.colors.bg,
+    borderRadius: v3.radius.icon,
+    marginTop: v3.space[10],
+    maxWidth: '100%',
+    overflow: 'hidden',
+    width: 260,
+  },
+  pressed: { opacity: 0.85 },
+  image: { aspectRatio: 1.91, backgroundColor: v3.colors.surface, width: '100%' },
+  body: { gap: v3.space[2], paddingHorizontal: v3.space[12], paddingVertical: v3.space[10] },
+  site: { ...v3.type.label, color: v3.colors.muted },
+  title: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '700' },
+  description: { ...v3.type.caption, color: v3.colors.muted },
 }))

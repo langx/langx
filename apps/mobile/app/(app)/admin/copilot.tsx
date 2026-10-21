@@ -1,4 +1,5 @@
 import { COPILOT_RULES, type CopilotResponse } from '@langx/shared'
+import { router } from 'expo-router'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
 import {
@@ -8,7 +9,12 @@ import {
   type CopilotAsk,
 } from '../../../src/api/copilot'
 import { ApiRequestError } from '../../../src/api/client'
-import { useMessages, type ConversationDto } from '../../../src/api/queries'
+import {
+  useAdminCopilotAccess,
+  useMe,
+  useMessages,
+  type ConversationDto,
+} from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
 import { ConversationPicker } from '../../../src/components/ConversationPicker'
 import { CopilotConsentSheet } from '../../../src/components/CopilotConsentSheet'
@@ -16,6 +22,7 @@ import { CopilotLabel } from '../../../src/components/CopilotLabel'
 import { Button } from '../../../src/components/ui/Button'
 import { Callout } from '../../../src/components/ui/Callout'
 import { FormField } from '../../../src/components/ui/FormField'
+import { ListRow } from '../../../src/components/ui/ListRow'
 import { Screen } from '../../../src/components/ui/Screen'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { useAppConfig } from '../../../src/hooks/useAppConfig'
@@ -72,6 +79,9 @@ export default function AdminCopilotScreen() {
   const status = useCopilotStatus(true)
   const withdraw = useWithdrawCopilotConsent()
   const ask = useAskCopilot()
+  const me = useMe()
+  const allowed = useAdminCopilotAccess()
+  const allowedUsers = allowed.data?.users ?? []
 
   const [sheet, setSheet] = useState(false)
   const [picking, setPicking] = useState(false)
@@ -185,6 +195,43 @@ export default function AdminCopilotScreen() {
           </View>
         ) : null}
 
+        <Text style={styles.heading}>{L.allowedTitle}</Text>
+        <Fact
+          label={L.you}
+          value={
+            !allowed.data || !me.data
+              ? ADMIN.common.loading
+              : allowedUsers.some((row) => row.userId === me.data?._id)
+                ? L.youAllowed
+                : L.youNotAllowed
+          }
+        />
+        {allowed.data && allowedUsers.length === 0 ? (
+          <Text style={styles.muted}>{L.allowedEmpty}</Text>
+        ) : (
+          <View>
+            {allowedUsers.map((row, index) => (
+              <ListRow
+                key={row.userId}
+                title={`${row.displayName} @${row.username}`}
+                subtitle={L.allowedSince(row.at.slice(0, 10))}
+                last={index === allowedUsers.length - 1}
+                onPress={() =>
+                  router.push(`/(app)/admin/users?q=${encodeURIComponent(row.username)}`)
+                }
+              />
+            ))}
+          </View>
+        )}
+
+        <Text style={styles.heading}>{L.whoTitle}</Text>
+        {L.whoRules.map((rule) => (
+          <Text key={rule} style={styles.rule}>
+            {`• ${rule}`}
+          </Text>
+        ))}
+        <Text style={styles.muted}>{L.whoPartner}</Text>
+
         <Text style={styles.muted}>{L.switchNote}</Text>
 
         <CopilotConsentSheet visible={sheet} onClose={() => setSheet(false)} />
@@ -222,6 +269,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   factValue: { ...font.body, color: colors.text, flexShrink: 1 },
   actions: { gap: spacing.sm, marginTop: spacing.xl },
   muted: { ...font.caption, color: colors.textMuted, marginTop: spacing.md },
+  heading: { ...font.label, color: colors.textMuted, marginTop: spacing.xl },
+  rule: { ...font.body, color: colors.text, marginTop: spacing.xs },
   refusal: { ...font.body, color: colors.danger, marginTop: spacing.lg },
   answer: {
     backgroundColor: colors.infoBg,

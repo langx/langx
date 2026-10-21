@@ -4,7 +4,7 @@ import { applyEmoticon, emoticonAt } from '@langx/shared'
 import * as Device from 'expo-device'
 import { useFonts } from 'expo-font'
 import { router } from 'expo-router'
-import { useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import {
   ActivityIndicator,
   Platform,
@@ -17,9 +17,11 @@ import {
   type TextInputKeyPressEventData,
 } from 'react-native'
 import { useT } from '../../i18n'
+import type { CopilotGate } from '../../lib/copilotGate'
 import { pickStarters } from '../../lib/conversationStarters'
 import { enterSendsOnNative, shouldSubmitOnEnter } from '../../lib/submitOnEnter'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { CopilotButton, CopilotMenu } from '../copilot/CopilotButton'
 import { ICON_BUTTON_TARGET, IconButton } from '../ui/IconButton'
 import { PressableScale } from '../ui/PressableScale'
 
@@ -98,6 +100,23 @@ interface ComposerV3Common {
   onFocusChange?: (focused: boolean) => void
   /** The field takes the keyboard on mount — the screen that starts a conversation. */
   autoFocus?: boolean
+  /**
+   * Copilot's button beside send and the menu it opens. Absent, the composer
+   * draws exactly what it drew before Copilot: the thread passes it only on
+   * the v3 path, and only the handlers for the questions this draft can be
+   * asked (`copilotOffers`).
+   */
+  copilot?: ComposerCopilot | undefined
+}
+
+export interface ComposerCopilot {
+  gate: CopilotGate
+  /** The language Say it answers in, in the reader's app language. */
+  targetLanguageName?: string | undefined
+  onCheck?: (() => void) | undefined
+  onSayIt?: (() => void) | undefined
+  /** An answer is on its way: the button waits for it. */
+  loading: boolean
 }
 
 /**
@@ -142,6 +161,7 @@ export function ComposerV3({
   compact = false,
   onFocusChange,
   autoFocus = false,
+  copilot,
 }: ComposerV3Props) {
   const styles = useStyles()
   const { v3 } = useTheme()
@@ -184,6 +204,28 @@ export function ComposerV3({
   // travels alone, so text or a picked file has to go first.
   const micLive = !busy && (recording !== null || !canSend)
   const sendLive = canSend && !busy
+  /*
+   * Only for a typed draft, and only when this person has Copilot at all — an
+   * account off the allow-list, under 18 or on a deployment with no key sees
+   * no trace of it. The menu folds when the draft empties, and when a row is
+   * picked.
+   */
+  const [copilotMenu, setCopilotMenu] = useState(false)
+  const showCopilot =
+    copilot !== undefined &&
+    copilot.gate !== 'off' &&
+    recording === null &&
+    value.trim().length > 0 &&
+    (copilot.onCheck !== undefined || copilot.onSayIt !== undefined)
+  const copilotCheck = copilot?.onCheck
+  const copilotSayIt = copilot?.onSayIt
+  const pickCopilot = (run: () => void) => {
+    setCopilotMenu(false)
+    run()
+  }
+  useEffect(() => {
+    if (!showCopilot) setCopilotMenu(false)
+  }, [showCopilot])
 
   const pickEmoji = (emoji: string) => {
     if (!emoticon) return
@@ -396,6 +438,14 @@ export function ComposerV3({
 
       {attachments}
 
+      {showCopilot && copilotMenu && !copilot.loading ? (
+        <CopilotMenu
+          {...(copilotCheck ? { onCheck: () => pickCopilot(copilotCheck) } : {})}
+          {...(copilotSayIt ? { onSayIt: () => pickCopilot(copilotSayIt) } : {})}
+          targetLanguageName={copilot.targetLanguageName}
+        />
+      ) : null}
+
       {emoticon ? (
         <View style={styles.emojiRow}>
           {emoticon.suggestions.map((item) => (
@@ -492,6 +542,14 @@ export function ComposerV3({
               color={v3.colors.pillText}
             />
           </PressableScale>
+        ) : null}
+        {showCopilot ? (
+          <View style={styles.copilot}>
+            <CopilotButton
+              loading={copilot.loading}
+              onPress={() => setCopilotMenu((open) => !open)}
+            />
+          </View>
         ) : null}
         <PressableScale
           accessibilityRole="button"
@@ -683,6 +741,8 @@ const useStyles = makeStyles(({ v3 }) => ({
     justifyContent: 'center',
     width: BIG,
   },
+  // Centred on the 56 the mic and the send stand at, where the row aligns to its foot.
+  copilot: { height: BIG, justifyContent: 'center' },
   // Ink, not yellow: the yellow is the send's, once a screen.
   mic: { backgroundColor: v3.colors.pill },
   send: { backgroundColor: v3.colors.yellow },

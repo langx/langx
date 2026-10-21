@@ -5403,6 +5403,8 @@ be given.
 
 ## Copilot ships dark, behind two switches and a consent
 
+> **Amended 20 October 2026 — see _Copilot v1: an allow-list per account, Say it, and Explain on a partner's text_ below.**
+
 _18 October 2026._ Copilot is three one-tap helps in a chat — **Check** a
 sentence before sending it, **Reply ideas** for the thread, **Explain** a
 person's correction — written by the same provider as the assistant above. Its
@@ -5473,6 +5475,51 @@ names the models that reject it — Haiku 4.5, Sonnet 4.5 and everything older �
 and a move to the cheap model is sent `low` rather than left at its `medium`
 default. The models that offer a server-side refusal fallback get it on
 Copilot's calls; the assistant keeps its own reasoning for not sending one.
+
+## Copilot v1: an allow-list per account, Say it, and Explain on a partner's text
+
+_20 October 2026._ Behic asked for a simple Copilot first, one he can turn on
+for some people rather than for everybody, connected straight to the Claude
+API. Everything in the entry above still holds: the flag, the key, the exact
+18+ check, the partner-age guard, the consent sheet, `copilotPer24h`, the
+global day, the cache. Three things are added.
+
+**A third switch, per account.** `copilotAccess` on the profile, set from the
+operator panel (Find someone → Copilot access) and listed in the Copilot lab.
+Without it the status says `off` and an ask is refused as `off` before
+anything of the person's is read, so the app hides Copilot exactly as it does
+for the flag. No new reason: the person has nothing different to do about it.
+Being an admin grants nothing. An operator allows themselves like anybody
+else, so the list is the whole answer to "whose text can reach the model". The
+switch opens nothing by itself, since the age floor and the person's own
+consent still apply. Allowing and revoking are audited as `copilot.allow` and
+`copilot.revoke`.
+
+**Say it.** The person writes what they want to say in their own language and
+gets up to three natural ways to say it in a language they are learning, each
+with a short gloss. Only their own line, the language named in English and
+their level are sent. That is the same as Check, so like Check it does not
+look at the partner's age.
+
+**Explain reads a partner's plain text, as well as a correction.** It is the
+question learners ask most in a real chat, and the answer stays on the reader's
+side: the partner sees nothing. It sends that one message's body, clipped, and
+never who sent it, other lines, media, a view-once or a deleted message. The
+partner-age guard runs before the message is even looked at, so a minor's text
+never reaches the model whichever kind it is. Because the sheet's words did not
+mention a partner's message, `consentVersion` goes to 2. Nobody has agreed on
+production yet (the flag is off), so the bump asks nobody again.
+
+**One provider, the Anthropic API, behind the small `StructuredProvider`
+interface it already had.** No key means no provider, which means `off`, and
+the app boots and works. There is no second adapter. Tests hand the module a
+fake that records its prompts. Each ask writes one log line, `copilot answered`,
+with the action, whether it was cached, how it ended, how long it took and the
+model. It carries no message text, message id or user id.
+
+**Reply ideas gets no place in the thread.** It keeps its route and its lab
+button. People who suspect their partner of AI-written replies trust them
+less, and a language exchange is a trust product.
 
 ## The feed and the wallet get switches of their own
 
@@ -8931,3 +8978,40 @@ so a build that does not read it opens Discover as it always did.
   decided exactly as with the switch off; nothing is sent that was not sent
   before. It starts off because it is promotion, and promotion moves when
   Behic switches it rather than when a pull request merges.
+- **The limits nudge counts only limits a plan lifts.** It used to count three
+  refusals of any quota, so somebody refused by the media ceiling or the
+  translation fair-use ceiling — the same on both plans — was told "a plan
+  lifts them" and, with the switch on, sent to a paywall that lifts nothing of
+  the kind. It now counts refusals of a limit the free plan has and Pro does
+  not have at all (`REFUSALS_A_PLAN_LIFTS` in `promotions.ts`, read from
+  `PLAN_LIMITS`): today new conversations and translations, which is what its
+  mail names. This applies with the switch off too; it narrows who is told,
+  and never widens it.
+
+## The monthly plan has the free week too
+
+**20 October 2026.** From 3.0, both subscriptions carry the store's one-week
+free trial, not only the yearly one. Behic configures it in the three stores;
+the app was already reading the trial per package, so nothing in it has to
+know which plan a trial is on, and nothing may.
+
+- **The store decides, per package and per person.** The paywall's trial line,
+  timeline, terms and button follow the selected card's own offer. iOS asks
+  StoreKit for eligibility per product (one introductory offer per
+  subscription group, so a past yearly trial spends the monthly one too);
+  Play is read off the option the purchase actually buys (`defaultOption`'s
+  free phase), which Play returns only to somebody eligible; the web SDK's
+  offerings carry only the options the customer is entitled to. Before this,
+  Play was read off the product-level `introPrice`, which describes an offer on
+  the product rather than the one the tap buys.
+- **Yearly is still picked on open.** It is the one the saving is measured on;
+  the trial no longer decides between the two cards, so it is not a reason to
+  move the default.
+- **The server never knew the product.** The webhook records the store's
+  `period_type`, and the trial-ending reminder reads `periodType: 'trial'`;
+  tests now pin a monthly trial alongside a yearly one.
+- **On iOS, only a confirmed "eligible" is a promise.** A missing answer,
+  `UNKNOWN`, or an eligibility call that throws shows no trial wording
+  (`iosIneligibleForTrial`). It used to show the trial when the call threw; a
+  trial the store then grants unannounced is a pleasant surprise, a promised one
+  it does not grant is a false price.

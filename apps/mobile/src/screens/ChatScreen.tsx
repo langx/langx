@@ -81,6 +81,7 @@ import { useKeyboardInset } from '../hooks/useKeyboardInset'
 import { PresenceLine } from '../components/PresenceLine'
 import { ChatComposer } from '../components/ChatComposer'
 import { ComposerHint } from '../components/ComposerHint'
+import { useThreadCopilot } from '../components/copilot/useThreadCopilot'
 import { LoadFailed } from '../components/LoadFailed'
 import { MessageBubble } from '../components/MessageBubble'
 import { MessagePartsSheet } from '../components/MessagePartsSheet'
@@ -698,6 +699,20 @@ export function ChatScreen({
   const suspended = partner?.accountStatus === 'suspended'
   /** Nothing sent from here would arrive. The one fact the four places below read. */
   const readOnly = channel || suspended
+  /**
+   * Copilot, on the v3 thread only: the button beside send, its card, and
+   * Explain in the long-press menu. Off for everybody the server has not
+   * said yes to, and with `flags.v3Home` off it asks nothing at all.
+   */
+  const copilot = useThreadCopilot({
+    enabled: v3Thread && !readOnly,
+    conversationId,
+    draft,
+    correcting: correcting !== null,
+    learning: me.data?.learning,
+    partnerNative: partner?.nativeLanguages,
+    onUse: onChangeDraft,
+  })
   /**
    * Whether this thread offers a call, and whether pressing the button places
    * one or explains the gate — see `callAvailability`. The gate is the photo
@@ -2138,6 +2153,7 @@ export function ChatScreen({
       canRomanize:
         romanization?.engine === 'rules' ||
         (romanization?.engine === 'service' && voiceService && romanizing === null),
+      canExplain: copilot.canExplain,
       bodyLength: message.body.trim().length,
       sentenceCount: splitSentences(message.body).length,
       wordCount: lookupWords(message.body).length,
@@ -2212,6 +2228,8 @@ export function ChatScreen({
       await shareLink({ message: message.body })
     } else if (picked.id === 'translate') {
       await translate(message, alreadyTranslated)
+    } else if (picked.id === 'explain') {
+      copilot.explain(message)
     } else if (picked.id === 'speak') {
       await speak(message)
     } else if (picked.id === 'romanize') {
@@ -3501,6 +3519,7 @@ export function ChatScreen({
           thread is, rather than leaving the screen ending in nothing. A
           suspended account gets the same, with its own line.
         */}
+          {copilot.card}
           {readOnly ? (
             <View style={styles.channelNote}>
               <Text style={styles.channelNoteText}>
@@ -3549,6 +3568,7 @@ export function ChatScreen({
               partnerName={partner?.displayName ?? t('chat.them')}
               compact={keyboardUp}
               onFocusChange={setFieldFocused}
+              copilot={copilot.composer}
             />
           ) : (
             <ChatComposer
@@ -3683,6 +3703,7 @@ export function ChatScreen({
             />
           )}
         </View>
+        {copilot.sheets}
         <ScheduleTimeSheet
           visible={pickingSendTime}
           busy={scheduleMessage.isPending}
