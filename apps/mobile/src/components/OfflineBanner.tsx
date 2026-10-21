@@ -3,6 +3,7 @@ import { Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useMe } from '../api/queries'
 import { useIsOnline } from '../hooks/useIsOnline'
+import { useV3Home } from '../hooks/useV3Home'
 import { makeStyles, spacing, useTheme } from '../lib/theme'
 import { useT } from '../i18n'
 
@@ -20,8 +21,11 @@ import { useT } from '../i18n'
  * this is not a decision anybody is being asked to make.
  */
 export function OfflineBanner() {
-  const styles = useStyles()
-  const { colors } = useTheme()
+  const v3Look = useV3Home()
+  const currentStyles = useStyles()
+  const v3Styles = useStylesV3()
+  const styles = v3Look ? v3Styles : currentStyles
+  const { colors, v3 } = useTheme()
   const t = useT()
   const insets = useSafeAreaInsets()
   const online = useIsOnline()
@@ -37,7 +41,11 @@ export function OfflineBanner() {
     // above the navigator, outside every `Screen`, and the layout does not
     // inset for it.
     <View style={[styles.root, { paddingTop: insets.top + spacing.sm }]}>
-      <Feather name="wifi-off" size={16} color={colors.warning} />
+      <Feather
+        name="wifi-off"
+        size={v3Look ? v3.icon.xs : 16}
+        color={v3Look ? v3.colors.fg : colors.warning}
+      />
       <Text style={styles.text}>{t('common.offline')}</Text>
     </View>
   )
@@ -58,4 +66,22 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     paddingVertical: spacing.sm,
   },
   text: { ...font.caption, color: colors.text, flex: 1, fontWeight: '700' },
+}))
+
+/*
+ * v3 has no warning tint, and does not need one: the grey block is how it
+ * says "a state, not an alarm" everywhere else, and the strip keeps that
+ * reading with the ink glyph and text on it. No board draws this strip; it
+ * follows the row groups' `surface`.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  root: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.surface,
+    flexDirection: 'row',
+    gap: v3.space[8],
+    paddingHorizontal: v3.space[16],
+    paddingVertical: v3.space[8],
+  },
+  text: { ...v3.type.caption, color: v3.colors.fg, flex: 1, fontWeight: '700' },
 }))
