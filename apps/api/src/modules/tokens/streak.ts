@@ -236,10 +236,15 @@ async function advance(
       // Read from the fresh document, not from `current`: a check-in earlier
       // today may have advanced the streak, and the bonus is owed for where
       // the streak *is*, not for what this call moved it by.
+      //
+      // A token-frozen account earns no milestone, like every other payout
+      // under a freeze. The streak still counts: the freeze stops the payout,
+      // not the history. Read from `claimed`, so a freeze set since `profile`
+      // was read is honoured.
       const award = await awardTokens(db, {
         userId: profile._id,
         kind: 'streak',
-        amount: streakMilestoneBonus(claimed.streak.current),
+        amount: claimed.tokenFrozenAt ? 0 : streakMilestoneBonus(claimed.streak.current),
         refId: today,
         at,
       })
