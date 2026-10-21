@@ -4167,6 +4167,23 @@ the server looks the face up and the answer is cached for a day. This
 replaces the earlier entry's week-long cache and its reason: the gender now
 changes the stored face, and the stored face changes the `v`.
 
+**A weak existence signal, accepted.** Without `v`, an account answers with
+its stored face and an id nobody holds answers with the neutral hash. Someone
+who computes the hash can therefore tell some real ids from unused ones. This
+is not fixed by answering every request without `v` from the hash, because
+several DTOs carry no `defaultAvatarRev`: feed authors, leaderboards, likes,
+the profile header. Those screens would draw the hash while the lists draw
+the stored face, and one person would wear two faces. The Notionists route
+made the same trade, since it read the gender. An id discloses no name, handle
+or photo, and the route is rate-limited.
+
+**Rendering is bounded.** resvg runs off the event loop
+(`renderAsync`), at most two renders at once. Concurrent asks for one face
+share a render, and the PNGs sit in a byte-bounded in-process cache. The
+480px face is the slowest to draw and the likeliest to miss the cache, so it
+has its own rate-limit bucket at a tenth of the list sizes'. Grids of many
+small faces, such as the picker, cap their fetch at 160px.
+
 **Gender, as before, is read and never sent.** A gender change moves an
 assigned face to the new pool and keeps its index and ground, so the person
 still looks like themselves, drawn from the other set. A face the person
