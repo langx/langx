@@ -55,7 +55,9 @@ describe('sticker assets', () => {
  *   iOS — round shapes are `<circle>`/`<ellipse>`, curves are `C`/`Q`;
  * - `androidsvg` drops filters and gradients, and masks with them;
  * - `<text>` needs a font the phone may not have, so lettering is outlined;
- * - `<image>` and `<style>` are a second file and a second parser.
+ * - `<image>` and `<style>` are a second file and a second parser;
+ * - `<use>` and `<clipPath>` are references a decoder may not follow, so
+ *   the exporter inlines them.
  *
  * And none over 12 KB: a sticker is drawn in every chat that sends one, and
  * twelve of them ship in the bundle.
@@ -82,11 +84,11 @@ describe('sticker files', () => {
   it.each(files)('%s draws on every platform', (file) => {
     const svg = readFileSync(join(root, file), 'utf8')
     expect(Buffer.byteLength(svg), 'over 12 KB').toBeLessThanOrEqual(12 * 1024)
-    for (const [, d] of svg.matchAll(/\sd="([^"]*)"/g)) {
+    for (const [, , d] of svg.matchAll(/\sd=(["'])(.*?)\1/g)) {
       expect(d, 'arc command in a path').not.toMatch(/[Aa]/)
     }
     expect(svg).not.toMatch(
-      /<(text|filter|linearGradient|radialGradient|mask|image|style|foreignObject)\b/i,
+      /<(text|filter|linearGradient|radialGradient|mask|clipPath|use|image|style|foreignObject)\b/i,
     )
   })
 })

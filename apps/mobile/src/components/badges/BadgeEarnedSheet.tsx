@@ -32,12 +32,15 @@ export function BadgeEarnedSheet({
   rung,
   onClose,
   onShare,
+  pin,
 }: {
   shelf: Shelf | null
   rung: Rung | null
   onClose: () => void
   /** Left out for a badge that cannot be shared (the token ones). */
   onShare?: ((name: string) => void) | undefined
+  /** Your own earned badge: whether it is pinned, and how to change that. */
+  pin?: { pinned: boolean; onToggle: () => void } | undefined
 }) {
   const reduce = useReduceMotion()
   const styles = useStyles()
@@ -126,6 +129,14 @@ export function BadgeEarnedSheet({
             </View>
           ) : null}
 
+          {pin ? (
+            <Button
+              variant="secondary"
+              icon="map-pin"
+              label={pin.pinned ? t('badgesV3.unpin') : t('badgesV3.pin')}
+              onPress={pin.onToggle}
+            />
+          ) : null}
           {onShare ? (
             <Button
               variant="blue"

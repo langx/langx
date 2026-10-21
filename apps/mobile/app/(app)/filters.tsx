@@ -367,6 +367,7 @@ export default function FiltersScreen() {
               String(AGE_SLIDER.min),
               t('filters.ageScaleOpen', { max: AGE_SLIDER.max }),
             ]}
+            thumbLabels={[t('filters.ageYoungest'), t('filters.ageOldest')]}
           />
         </View>
 

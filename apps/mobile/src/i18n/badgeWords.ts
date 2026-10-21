@@ -23,6 +23,12 @@ const UNIT: Record<BadgeKind, MessageKey | null> = {
   tokens: 'badgesV3.unit.tokens',
   veteran: 'badgesV3.unit.veteran',
   origin: null,
+  languages: 'badgesV3.unit.languages',
+  calls: 'badgesV3.unit.calls',
+  echo: 'badgesV3.unit.echo',
+  testimonials: 'badgesV3.unit.testimonials',
+  guide: 'badgesV3.unit.guide',
+  openers: 'badgesV3.unit.openers',
 }
 
 const FAMILY: Record<BadgeKind, { title: MessageKey; body: MessageKey }> = {
@@ -35,6 +41,15 @@ const FAMILY: Record<BadgeKind, { title: MessageKey; body: MessageKey }> = {
   tokens: { title: 'badgesV3.family.tokens.title', body: 'badgesV3.family.tokens.body' },
   veteran: { title: 'badgesV3.family.veteran.title', body: 'badgesV3.family.veteran.body' },
   origin: { title: 'badgesV3.family.origin.title', body: 'badgesV3.family.origin.body' },
+  languages: { title: 'badgesV3.family.languages.title', body: 'badgesV3.family.languages.body' },
+  calls: { title: 'badgesV3.family.calls.title', body: 'badgesV3.family.calls.body' },
+  echo: { title: 'badgesV3.family.echo.title', body: 'badgesV3.family.echo.body' },
+  testimonials: {
+    title: 'badgesV3.family.testimonials.title',
+    body: 'badgesV3.family.testimonials.body',
+  },
+  guide: { title: 'badgesV3.family.guide.title', body: 'badgesV3.family.guide.body' },
+  openers: { title: 'badgesV3.family.openers.title', body: 'badgesV3.family.openers.body' },
 }
 
 const GOAL: Record<BadgeKind, MessageKey> = {
@@ -44,6 +59,12 @@ const GOAL: Record<BadgeKind, MessageKey> = {
   tokens: 'badgesV3.goal.tokens',
   veteran: 'badgesV3.goal.veteran',
   origin: 'badgesV3.goal.origin',
+  languages: 'badgesV3.goal.languages',
+  calls: 'badgesV3.goal.calls',
+  echo: 'badgesV3.goal.echo',
+  testimonials: 'badgesV3.goal.testimonials',
+  guide: 'badgesV3.goal.guide',
+  openers: 'badgesV3.goal.openers',
 }
 
 const NOTE: Record<BadgeKind, MessageKey> = {
@@ -53,6 +74,12 @@ const NOTE: Record<BadgeKind, MessageKey> = {
   tokens: 'badgesV3.note.tokens',
   veteran: 'badgesV3.note.veteran',
   origin: 'badgesV3.note.origin',
+  languages: 'badgesV3.note.languages',
+  calls: 'badgesV3.note.calls',
+  echo: 'badgesV3.note.echo',
+  testimonials: 'badgesV3.note.testimonials',
+  guide: 'badgesV3.note.guide',
+  openers: 'badgesV3.note.openers',
 }
 
 /** "Candle". A badge this build has no name for falls back to its count. */
