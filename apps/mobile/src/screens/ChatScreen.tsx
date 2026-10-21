@@ -567,7 +567,18 @@ export function ChatScreen({
   const viewerId = me.data?._id
   const threadItems = useMemo<MessageDto[]>(() => {
     if (!viewerId || outgoing.length === 0) return items
-    const standIns: MessageDto[] = outgoing.map((message) => ({
+    /*
+     * A stand-in whose echo is already in `items` is dropped here, in the same
+     * render the echo arrives in. The effect below retires it from state too,
+     * but only after a commit — and for that one frame the thread painted the
+     * sentence twice.
+     */
+    const waiting = retireArrived(
+      outgoing,
+      items.map((message) => message.clientId),
+    )
+    if (waiting.length === 0) return items
+    const standIns: MessageDto[] = waiting.map((message) => ({
       _id: outgoingId(message.clientId),
       conversationId,
       senderId: viewerId,
@@ -2604,7 +2615,9 @@ export function ChatScreen({
       return
     }
     if (centred.current === jumpAnchor) return
-    const index = rows.findIndex((row) => row.kind === 'message' && row.key === jumpAnchor)
+    const index = rows.findIndex(
+      (row) => row.kind === 'message' && String(row.message._id) === jumpAnchor,
+    )
     if (index < 0) return
     centred.current = jumpAnchor
     listRef.current?.scrollToIndex({ index, viewPosition: 0.5, animated: false })
