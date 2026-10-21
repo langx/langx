@@ -26,6 +26,8 @@ import { markAppReady } from '../lib/appReady'
 import { markLaunchOver } from '../lib/launchOver'
 import { forgetAudioMode } from '../lib/audioSession'
 import { SPLASH_TIMING, canExit, msUntilExitAllowed } from '../lib/splashTiming'
+import { exitDelayMs, exitWaitsForFilm } from '../lib/launchFilm'
+import { FLAG_KEYS, readBoolFlag, setBoolFlag } from '../lib/localFlags'
 import { OVERLAY_LAYER } from '../lib/overlayLayers'
 import { makeStyles } from '../lib/theme'
 
@@ -99,6 +101,10 @@ const FILM_ASPECT = 1080 / 1920
  *
  * With reduced motion there is no film: the mark sits still on the yellow and
  * dissolves.
+ *
+ * The film is played to its end on the device's first launch only; every
+ * launch after that leaves as soon as the app is ready, and a tap leaves early
+ * on any launch (`lib/launchFilm.ts`).
  */
 export function AppSplash() {
   const styles = useStyles()
@@ -124,6 +130,9 @@ export function AppSplash() {
   const [nativeGone, setNativeGone] = useState(false)
   const [filmFrame, setFilmFrame] = useState(false)
   const [introDone, setIntroDone] = useState(false)
+  /** The stored "film already shown" flag; `undefined` while it is read. */
+  const [filmSeen, setFilmSeen] = useState<boolean | undefined>(undefined)
+  const [skipped, setSkipped] = useState(false)
   const mountedAt = useRef(Date.now())
   const exitStarted = useRef(false)
 
@@ -146,6 +155,23 @@ export function AppSplash() {
   }, [])
 
   /*
+   * Written as soon as this launch is known to be the first, not when the film
+   * ends: "the very first launch" is the launch, and one closed halfway
+   * through the film has had its hello.
+   */
+  useEffect(() => {
+    let cancelled = false
+    void readBoolFlag(FLAG_KEYS.launchFilmSeen).then((seen) => {
+      if (cancelled) return
+      setFilmSeen(seen)
+      if (!seen) void setBoolFlag(FLAG_KEYS.launchFilmSeen, true)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  /*
    * Both gates resolve to "/" — expo-router strips group segments, so
    * `app/(auth)/index.tsx` is "/" as well. Any other path means both of them
    * are already behind us: a deep link, a notification, a restored route.
@@ -159,7 +185,7 @@ export function AppSplash() {
    * once it has: otherwise the layer could fade off before the OS's own splash
    * is down, and the app would appear from behind a yellow that then vanishes.
    */
-  const filmOver = introDone && nativeGone
+  const filmOver = (introDone || !exitWaitsForFilm({ seen: filmSeen, skipped })) && nativeGone
 
   useEffect(() => {
     if (exitStarted.current || !canExit({ ready, introDone: filmOver, reduceMotion })) return
@@ -215,10 +241,13 @@ export function AppSplash() {
           }),
         ]).start(done)
       },
-      msUntilExitAllowed(mountedAt.current, Date.now()),
+      exitDelayMs({ floorMs: msUntilExitAllowed(mountedAt.current, Date.now()), skipped }),
     )
     return () => clearTimeout(timer)
-  }, [ready, filmOver, reduceMotion, layer, mark])
+  }, [ready, filmOver, reduceMotion, skipped, layer, mark])
+
+  // A tap anywhere on the layer: the opening is somebody's to cut short.
+  const skip = useCallback(() => setSkipped(true), [])
 
   /**
    * The one place the native splash is allowed to go: after this layer has been
@@ -249,6 +278,8 @@ export function AppSplash() {
       testID="app-splash"
       onLayout={onLayout}
       pointerEvents={exiting ? 'none' : 'auto'}
+      onStartShouldSetResponder={() => true}
+      onResponderRelease={skip}
       accessibilityRole="progressbar"
       accessibilityLabel={t('common.oneMoment')}
       style={[StyleSheet.absoluteFill, styles.layer, { opacity: layer }]}

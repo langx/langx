@@ -26,6 +26,12 @@ const isWeb = Platform.OS === 'web'
 export const FLAG_KEYS = {
   /** Same name and same meaning as v1's. */
   introSeen: 'introSeen',
+  /**
+   * The opening film has played on this device, so later launches leave as
+   * soon as the app is ready instead of waiting it out (`lib/launchFilm.ts`).
+   * Not `introSeen`, which is the welcome screens, not the film.
+   */
+  launchFilmSeen: 'launchFilmSeen',
   onboardingDraft: 'onboardingDraft',
   /**
    * The handle of whoever's invite link was opened, held until onboarding can
