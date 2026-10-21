@@ -1,5 +1,5 @@
 import type { DefaultAvatar, DefaultAvatarCut, DefaultAvatarSize } from '@langx/shared'
-import { Resvg } from '@resvg/resvg-js'
+import { renderAsync } from '@resvg/resvg-js'
 import { composeSvg, findFace } from './compose'
 import { loadAvatarLibrary } from './library'
 
@@ -39,6 +39,43 @@ export interface RenderInput {
   cut: DefaultAvatarCut
 }
 
+/**
+ * Renders in flight, by cache key. Two requests for a face that is not
+ * cached yet — a chat list opening on two phones, a CDN miss fanning out —
+ * share one render rather than each paying for it.
+ */
+const inFlight = new Map<string, Promise<Buffer>>()
+
+/**
+ * At most this many renders run at once; the rest wait their turn.
+ *
+ * resvg's async render runs on libuv's thread pool, which is four threads
+ * shared with every file read and DNS lookup the process makes. Two leaves
+ * the others free, so a burst of cold faces slows faces down and nothing
+ * else — the event loop never runs a render at all.
+ */
+const MAX_CONCURRENT_RENDERS = 2
+let running = 0
+const waiting: (() => void)[] = []
+
+async function withRenderSlot<T>(work: () => Promise<T>): Promise<T> {
+  if (running >= MAX_CONCURRENT_RENDERS) {
+    await new Promise<void>((resolve) => waiting.push(resolve))
+  }
+  running++
+  try {
+    return await work()
+  } finally {
+    running--
+    waiting.shift()?.()
+  }
+}
+
+/** For tests: how many renders are running or waiting. */
+export function renderLoad(): { running: number; waiting: number; inFlight: number } {
+  return { running, waiting: waiting.length, inFlight: inFlight.size }
+}
+
 /** One face as a PNG, from the cache when it has been drawn before. */
 export async function renderDefaultAvatar({ avatar, size, cut }: RenderInput): Promise<Buffer> {
   const key = `${avatar.pool}${avatar.index}:${avatar.ground}:${size}:${cut}`
@@ -49,13 +86,23 @@ export async function renderDefaultAvatar({ avatar, size, cut }: RenderInput): P
     cache.set(key, hit)
     return hit
   }
-  const lib = await loadAvatarLibrary()
-  const face = findFace(lib, avatar.pool, avatar.index)
-  if (!face) throw new Error(`Unknown default avatar: ${avatar.pool}${avatar.index}`)
-  const svg = composeSvg(lib, { face, ground: avatar.ground, size, cut })
-  const png = Buffer.from(
-    new Resvg(svg, { fitTo: { mode: 'width', value: size } }).render().asPng(),
-  )
-  remember(key, png)
-  return png
+  const pending = inFlight.get(key)
+  if (pending) return pending
+
+  const render = (async () => {
+    const lib = await loadAvatarLibrary()
+    const face = findFace(lib, avatar.pool, avatar.index)
+    if (!face) throw new Error(`Unknown default avatar: ${avatar.pool}${avatar.index}`)
+    const svg = composeSvg(lib, { face, ground: avatar.ground, size, cut })
+    // Off the event loop: a 480px face is tens of milliseconds of rasterising,
+    // and done synchronously it stalls every other request on the process.
+    const rendered = await withRenderSlot(() =>
+      renderAsync(svg, { fitTo: { mode: 'width', value: size } }),
+    )
+    const png = Buffer.from(rendered.asPng())
+    remember(key, png)
+    return png
+  })().finally(() => inFlight.delete(key))
+  inFlight.set(key, render)
+  return render
 }

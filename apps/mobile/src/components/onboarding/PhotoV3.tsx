@@ -19,6 +19,8 @@ const FACE = 128
 
 /** A face in the "pick another" row: four to a line on a phone. */
 const PICK = 64
+/** Enough for 64pt on any screen; see `avatarSource`'s `maxPixels`. */
+const PICK_PIXELS = 160
 
 /**
  * Step 5 in the redesign's look: the face drawn for this account, large, with
@@ -145,6 +147,7 @@ export function PhotoV3({
                       name={displayName}
                       defaultAvatarRev={defaultAvatarRev(face)}
                       size={PICK}
+                      maxPixels={PICK_PIXELS}
                     />
                   </Pressable>
                 )

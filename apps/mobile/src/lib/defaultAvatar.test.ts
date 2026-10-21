@@ -71,8 +71,22 @@ describe('the picker', () => {
     }
   })
 
+  it('fetches no more than a grid needs when told so', () => {
+    const base = { url: undefined, seed: SEED, rev: undefined, apiBase: API }
+    expect(avatarSource({ ...base, size: 64, pixelRatio: 3, v3: true, maxPixels: 160 })).toBe(
+      `${API}/public/avatar/v3/${SEED}?s=160&c=flat`,
+    )
+    // A cap above what the screen wants changes nothing.
+    expect(avatarSource({ ...base, size: 40, pixelRatio: 1, v3: true, maxPixels: 160 })).toBe(
+      `${API}/public/avatar/v3/${SEED}?s=48&c=small`,
+    )
+  })
+
   it('offers every one of the 144 faces in "See all", the person’s pool first', () => {
-    const faces = allFaces('N')
+    const worn = { pool: 'N' as const, index: 9, ground: 4 }
+    const faces = allFaces(worn)
+    // The worn face on its own ground, so the sheet opens with it selected.
+    expect(faces.filter((face) => sameFace(face, worn))).toHaveLength(1)
     expect(faces).toHaveLength(144)
     expect(faces[0]?.pool).toBe('N')
     expect(new Set(faces.map((face) => `${face.pool}${face.index}`)).size).toBe(144)

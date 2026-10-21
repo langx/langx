@@ -1,8 +1,14 @@
-import { DEFAULT_AVATAR_STYLE, defaultAvatarRev, type DefaultAvatar } from '@langx/shared'
+import {
+  DEFAULT_AVATAR_STYLE,
+  defaultAvatarRev,
+  hashFallback,
+  type DefaultAvatar,
+} from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { buildApp } from '../app'
+import { LARGE_FACES_PER_MINUTE } from './avatar'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
@@ -232,6 +238,21 @@ describe('generated avatars', () => {
       expect(response.rawPayload).toEqual((await drawV3(userId, 's=48')).rawPayload)
     })
 
+    it('gives the 480px face a tighter limit of its own, leaving the list sizes alone', async () => {
+      // Its own address, so the limit is this test's and not the suite's.
+      const from = (query: string) =>
+        app.inject({
+          method: 'GET',
+          url: `/public/avatar/v3/${UNKNOWN}?${query}`,
+          remoteAddress: '203.0.113.7',
+        })
+      for (let i = 0; i < LARGE_FACES_PER_MINUTE; i++) {
+        expect((await from('s=480&v=1-N01-0')).statusCode).toBe(200)
+      }
+      expect((await from('s=480&v=1-N01-0')).statusCode).toBe(429)
+      expect((await from('s=48&v=1-N01-0')).statusCode).toBe(200)
+    })
+
     it('draws a face for an id nobody holds, rather than a 404', async () => {
       const response = await drawV3(UNKNOWN, 's=48')
       expect(response.statusCode).toBe(200)
@@ -246,6 +267,15 @@ describe('generated avatars', () => {
       for (const size of [48, 96, 160, 480]) {
         expect((await drawV3(userId, `s=${size}&c=small`)).statusCode).toBe(200)
       }
+    })
+
+    it('answers an id nobody holds with the neutral hash, the trade the route accepts', async () => {
+      const unknown = await drawV3(UNKNOWN, 's=48')
+      const hashed = await drawV3(
+        UNKNOWN,
+        `s=48&v=${defaultAvatarRev(hashFallback(UNKNOWN, null))}`,
+      )
+      expect(unknown.rawPayload).toEqual(hashed.rawPayload)
     })
 
     it('draws the face stored at sign-up, the same one its v names', async () => {
