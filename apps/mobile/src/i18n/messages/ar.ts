@@ -2458,7 +2458,6 @@ export const ar: Localized<EnMessages> = {
     title: 'مطبخنا',
     intro: 'حيث يُصنع LangX، وكل من يصنعه.',
     dataCredit: 'أسماء الأماكن من GeoNames، بترخيص CC BY 4.0.',
-    stickerCredit: 'بعض الملصقات من Microsoft Fluent Emoji بترخيص MIT.',
     footer: 'مبني في العلن، ممن يستخدمونه.',
     contributors: 'المساهمون',
     fundamentals: 'كل من ساهم',
@@ -3300,9 +3299,9 @@ export const ar: Localized<EnMessages> = {
 
   stickerPack: {
     taglinePaper: 'تحيات وردود سريعة، مقصوصة من ورق ملوّن.',
-    taglineStarter: 'لكل يوم: مرحبًا، أنا أسمعك، فهمت، أحسنت.',
-    taglinePractice: 'للتدريب نفسه: أبطأ، مرة أخرى، لقد نجحنا.',
-    taglinePixel: 'رسوم صغيرة للارتقاء معًا مستوى بعد مستوى.',
+    taglineStarter: 'بيب، فقاعة كلام صغيرة، تقول ما نقوله كل يوم: مرحبًا، أنا أسمعك، شكرًا.',
+    taglinePractice: 'شارات من اللبّاد للتدريب نفسه: أبطأ، مرة أخرى، لقد نجحنا.',
+    taglinePixel: 'رسوم من الخرز الملوّن للارتقاء معًا مستوى بعد مستوى.',
     count: {
       zero: '{count} ملصق',
       one: 'ملصق واحد',
@@ -3375,7 +3374,7 @@ export const ar: Localized<EnMessages> = {
     practiceHourglass: 'ساعة رملية',
     practiceBullseye: 'إصابة الهدف',
     pixelLevelup: 'مستوى جديد',
-    pixelCoin: 'عملة',
+    pixelCoin: 'حياة إضافية',
     pixelCheckpoint: 'نقطة تفتيش',
     pixelFlame: 'لهب',
     pixelKey: 'مفتاح',
