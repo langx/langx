@@ -93,6 +93,11 @@ export async function getSharedProfile(db: Db, handle: string): Promise<SharedPr
     displayName: profile.displayName ?? profile.handle,
     ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
     // The face the picture already shows, named so the page can cache it.
+    // It names the pool, and so whether the account said female, male or
+    // neither — which looks like a leak on a DTO that leaves `gender` out on
+    // purpose, and is not one: the picture on the page is that face, and
+    // W and M faces are drawn to read as their pool. Naming it tells a
+    // stranger nothing the image did not.
     ...(defaultAvatarRev ? { defaultAvatarRev } : {}),
     ...(profile.bio ? { bio: profile.bio } : {}),
     // Here although `gender` is not — see `sharedProfileSchema`. This page

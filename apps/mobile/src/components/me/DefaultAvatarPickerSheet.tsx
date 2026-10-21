@@ -14,6 +14,8 @@ import { IconButton } from '../ui/IconButton'
 
 /** A face in the grid, as drawn: the flat cut at its normal scale. */
 const TILE = 64
+/** 144 of them: 160px each is sharp at 64pt, where the screen's own ratio would fetch 480. */
+const TILE_PIXELS = 160
 const COLUMNS = 4
 
 /**
@@ -49,7 +51,7 @@ export function DefaultAvatarPickerSheet({
   const reduce = useReduceMotion()
   const pick = usePickDefaultAvatar()
   const [selected, setSelected] = useState<DefaultAvatar>(current)
-  const faces = useMemo(() => allFaces(current.pool), [current.pool])
+  const faces = useMemo(() => allFaces(current), [current])
 
   // Each opening starts from the face worn now.
   useEffect(() => {
@@ -120,6 +122,7 @@ export function DefaultAvatarPickerSheet({
                     name={name}
                     defaultAvatarRev={defaultAvatarRev(item)}
                     size={TILE}
+                    maxPixels={TILE_PIXELS}
                   />
                 </Pressable>
               )

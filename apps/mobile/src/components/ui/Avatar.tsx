@@ -27,6 +27,8 @@ interface AvatarProps {
    * Ignored with the flag off and whenever there is a photo.
    */
   defaultAvatarRev?: string | undefined
+  /** Caps the drawn face's pixels; see `avatarSource`. For grids of many faces. */
+  maxPixels?: number | undefined
   size?: number
   online?: boolean
   /**
@@ -94,6 +96,7 @@ export function Avatar({
   name,
   seed,
   defaultAvatarRev,
+  maxPixels,
   size = layout.avatar,
   online = false,
   frame,
@@ -123,6 +126,7 @@ export function Avatar({
     v3: v3HomeLatched(),
     pixelRatio: PixelRatio.get(),
     apiBase: API_URL,
+    maxPixels,
   })
 
   const inner = (
