@@ -8097,7 +8097,7 @@ Pro ends, a Pro icon already on the home screen stays there: switching it back
 would make the OS show a notice the person did not ask for. In the picker it
 is still marked current but locked with its Pro tag, and tapping it opens the
 sheet.
-`KEEP_PRO_ICON_AFTER_PRO_ENDS` in `src/lib/appIcon.ts` flips this.
+`KEEP_PRO_ICON_AFTER_PRO_ENDS` in `src/lib/appIconList.ts` flips this.
 
 ## Gift codes give time, not discounts
 

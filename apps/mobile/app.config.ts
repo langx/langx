@@ -524,7 +524,7 @@ const config: ExpoConfig = {
         layeredIcon('paperCut', 'paper-cut', '#f7c62f'),
         layeredIcon('feltStitch', 'felt-stitch', '#2f6e66'),
         layeredIcon('wovenReed', 'woven-reed', '#a87a3a'),
-        layeredIcon('linocut', 'linocut', '#f2ebdd'),
+        layeredIcon('linocut', 'linocut', '#c8361f'),
         layeredIcon('iznikTile', 'iznik-tile', '#f6f2e8'),
         layeredIcon('lacquerGold', 'lacquer-gold', '#160f0e'),
         layeredIcon('stainedGlass', 'stained-glass', '#15161a'),
