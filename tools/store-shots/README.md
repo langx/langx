@@ -12,21 +12,24 @@ node tools/store-shots/run.mjs --out ../store-shots-3.0 --reuse-web       # skip
 node tools/store-shots/run.mjs --out ../store-shots-3.0 --skip-capture    # recompose only
 ```
 
-Needs Google Chrome (`SHOTS_CHROME` to point elsewhere) and about ten minutes
-for all eight locales. Then **open `<out>/<locale>/contact.html` and look at
+Needs Google Chrome or Chromium in its usual install location (see
+`chrome.mjs`) and about ten minutes for all eight locales. `--out` must be a
+directory of its own outside the repository; `--locales` takes only the eight
+known ones. Then **open `<out>/<locale>/contact.html` and look at
 every tile** — the checks catch a wrong size, not a toast in frame.
 
 ## What it does
 
-| Step    | File               | What                                                                                                                       |
-| ------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| export  | `stack.mjs`        | `expo export --platform web` of this checkout, pointed at the stack's API                                                  |
-| stack   | `stack.mjs`        | in-memory replica set + this checkout's API on its own ports, in a clean environment (no mail, push, store or cloud DB)    |
-| seed    | `seed.mts`         | @sofia's world through the module functions: threads, corrections, Echo cards, a 34-day streak, a balance, badges          |
-| capture | `capture.mjs`      | headless Chrome over CDP, 440×894 pt at 3× (the 6.9″ width, minus the status bar), light mode, per locale                  |
-| compose | `compose.mjs`      | each tile an HTML page photographed at the slot's exact size; hue ground, caption, ink bezel, drawn status bar             |
-| check   | `run.mjs`          | every file's size, PNG without alpha, count per slot; `manifest.json`; a contact sheet per locale                          |
-| words   | `shots.config.mjs` | order, grounds, capture recipes, captions in eight locales, slots — the only file to edit for a change of order or wording |
+| Step    | File               | What                                                                                                                                        |
+| ------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| export  | `stack.mjs`        | `expo export --platform web` of this checkout, pointed at the stack's API                                                                   |
+| stack   | `stack.mjs`        | in-memory replica set + this checkout's API on its own ports, in a clean environment (no mail, push, store or cloud DB)                     |
+| seed    | `seed.mts`         | @sofia's world through the module functions: threads, corrections, Echo cards, a 34-day streak, a balance, badges                           |
+| browser | `chrome.mjs`       | finds and launches headless Chrome (argument array, fresh temp profile); page code gets its values as call arguments, never as built source |
+| capture | `capture.mjs`      | headless Chrome over CDP, 440×894 pt at 3× (the 6.9″ width, minus the status bar), light mode, per locale                                   |
+| compose | `compose.mjs`      | each tile an HTML page photographed at the slot's exact size; hue ground, caption, ink bezel, drawn status bar                              |
+| check   | `run.mjs`          | every file's size, PNG without alpha, count per slot; `manifest.json`; a contact sheet per locale                                           |
+| words   | `shots.config.mjs` | order, grounds, capture recipes, captions in eight locales, slots — the only file to edit for a change of order or wording                  |
 
 Ports are 27170 (mongo), 4870 (API), 8870 (web), 9370–9372 (Chrome);
 `SHOTS_MONGO_PORT`, `SHOTS_API_PORT` and `SHOTS_WEB_PORT` move them. The run
@@ -51,13 +54,12 @@ the board's hue: Anna lilac, George tangerine, Yuki mint.
   <locale>/android/phone/01.png … 08.png   1440 × 2560   (Play locales only)
   <locale>/android/7tablet/…               1080 × 1920
   <locale>/android/10tablet/…              1440 × 2560
-  …/alt/09-no-prices.png                   shot 9 with the plans cut off
 ```
 
 Numbers are store order, zero-padded so a plain sort is the order. Play skips
-`home`, so Play's 06 is `store`. Shot 9 comes twice: `09.png` as captured and
-`alt/09-no-prices.png` with the phone lowered until the plan cards run off the
-tile — whether a store picture shows a price is an open call.
+`home`, so Play's 06 is `store`. Shot 9 (Pro) shows no prices: the phone is
+lowered until the purchase area runs off the tile, so the listing never
+carries one storefront's price into the others.
 
 ## Sizes, and where they come from
 
@@ -84,9 +86,6 @@ Play: up to 8 per device type.
 The captures come from the web export, which is the same code as the apps but
 not the same build:
 
-- **No store prices.** The web paywall says purchasing is not set up there, so
-  `09.png` from a web capture is a placeholder. A priced shot 9 has to come
-  from an iOS Release build with a StoreKit configuration (US storefront).
 - **No real status bar.** The composer draws one (9:41, full battery), iOS or
   Android shapes by slot.
 - **Device-only states** (the native incoming-call screen, CallKit) are the

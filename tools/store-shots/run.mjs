@@ -14,7 +14,8 @@
  * Nothing is uploaded anywhere. See README.md.
  */
 import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { homedir } from 'node:os'
+import { join, parse, resolve, sep } from 'node:path'
 import { parseArgs } from 'node:util'
 import { capture } from './capture.mjs'
 import { composeFeatureGraphic, composeLocale, pngInfo } from './compose.mjs'
@@ -27,7 +28,7 @@ import {
   SLOTS,
   captionsFor,
 } from './shots.config.mjs'
-import { assertPortsFree, exportWeb, serveWeb, startStack } from './stack.mjs'
+import { REPO, assertPortsFree, exportWeb, serveWeb, startStack } from './stack.mjs'
 
 const { values } = parseArgs({
   options: {
@@ -43,11 +44,31 @@ if (!values.out) {
   )
   process.exit(2)
 }
-const out = resolve(values.out)
+/*
+ * The run deletes and rewrites under --out (`.work/web` is replaced on every
+ * export), so --out must be a directory of its own: not a filesystem root,
+ * not the home directory, and outside this repository, which it must never
+ * write into.
+ */
+function outputDir(arg) {
+  const dir = resolve(arg)
+  const inRepo = dir === REPO || dir.startsWith(REPO + sep) || REPO.startsWith(dir + sep)
+  if (dir === parse(dir).root || dir === homedir() || inRepo) {
+    throw new Error(`--out ${dir}: pick a directory of its own, outside the repository`)
+  }
+  return dir
+}
+const out = outputDir(values.out)
+// Only known locales: each one becomes a path segment and a browser flag.
 const locales = values.locales
   .split(',')
   .map((l) => l.trim())
   .filter(Boolean)
+  .map((l) => {
+    const known = LOCALES.find((locale) => locale === l)
+    if (!known) throw new Error(`unknown locale ${l}; known: ${LOCALES.join(', ')}`)
+    return known
+  })
 for (const locale of locales) captionsFor(locale) // refuses a half-translated locale before any work
 const work = join(out, '.work')
 const webDir = join(work, 'web')
@@ -101,15 +122,12 @@ for (const locale of locales) {
     if (slot.store === 'play' && !PLAY_LOCALES.includes(locale)) continue
     const dir = join(out, locale, slot.dir)
     const files = readdirSync(dir).filter((f) => f.endsWith('.png'))
-    const alt = existsSync(join(dir, 'alt'))
-      ? readdirSync(join(dir, 'alt')).map((f) => join('alt', f))
-      : []
     const want = slot.store === 'play' ? ORDER.length - PLAY_SKIPS.length : ORDER.length
     if (files.length !== want)
       problems.push(`${locale}/${slot.dir}: ${files.length} files, want ${want}`)
     if (files.length > (slot.store === 'play' ? 8 : 10))
       problems.push(`${locale}/${slot.dir}: over the store's limit`)
-    for (const f of [...files, ...alt]) {
+    for (const f of files) {
       const info = pngInfo(join(dir, f))
       if (info.w !== slot.w || info.h !== slot.h)
         problems.push(`${locale}/${slot.dir}/${f}: ${info.w}×${info.h}`)

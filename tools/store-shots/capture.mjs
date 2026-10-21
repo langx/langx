@@ -8,16 +8,14 @@
  * Its height leaves out the status bar: the web build has none, and the
  * composer draws one (9:41, full battery) above the capture.
  */
-import { spawn } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { REPO } from './stack.mjs'
-import { ORDER, SHOTS } from './shots.config.mjs'
+import { launchChrome } from './chrome.mjs'
+import { LOCALES, ORDER, SHOTS } from './shots.config.mjs'
 
-const CHROME =
-  process.env.SHOTS_CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 export const VIEWPORT = { width: 440, height: 956 - 62, scale: 3 }
 /**
  * Device flags that keep first-run cards and tips off the screen. A store
@@ -33,6 +31,59 @@ const QUIET = {
   pushAsked: '1',
 }
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+
+/*
+ * What runs in the page. These are never called in Node: `call` sends each
+ * one's source and passes its values as arguments.
+ */
+/* global document, localStorage, getComputedStyle, innerHeight, innerWidth, NodeFilter */
+function setItems(items) {
+  for (const [key, value] of Object.entries(items)) localStorage.setItem(key, value)
+}
+function scrollLists(by) {
+  for (const d of document.querySelectorAll('div')) {
+    if (d.scrollHeight > d.clientHeight + 50 && getComputedStyle(d).overflowY !== 'visible') {
+      d.scrollBy(0, by)
+    }
+  }
+}
+function tapText(text) {
+  const all = [...document.querySelectorAll('div,span')]
+  const el = all.filter((e) => (e.innerText || '').trim() === text).at(-1)
+  if (el) el.click()
+}
+/*
+ * Where shot 9's no-prices variant cuts the screen, as a fraction of its
+ * height: the first price on screen (a currency sign next to a digit), or,
+ * where the build shows none (the web build sells nothing), just under the
+ * compare table — the first tall filled block in the top half.
+ */
+function findCut() {
+  let best = null
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT)
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    if (/[$€£¥₺₽]\s?\d|\d\s?[$€£¥₺₽]/.test(n.textContent)) {
+      const r = n.parentElement.getBoundingClientRect()
+      if (r.height && r.top >= 0 && r.top < innerHeight && (best === null || r.top < best))
+        best = r.top
+    }
+  }
+  if (best !== null) return { at: best / innerHeight, by: 'price' }
+  const block = [...document.querySelectorAll('div')].find((d) => {
+    const r = d.getBoundingClientRect()
+    const c = getComputedStyle(d)
+    return (
+      r.top < innerHeight / 2 &&
+      r.height > innerHeight / 4 &&
+      r.width > innerWidth * 0.8 &&
+      c.backgroundColor !== 'rgba(0, 0, 0, 0)' &&
+      parseFloat(c.borderTopLeftRadius) >= 8
+    )
+  })
+  return block
+    ? { at: (block.getBoundingClientRect().bottom + 12) / innerHeight, by: 'table' }
+    : null
+}
 const mobileRequire = createRequire(join(REPO, 'apps/mobile/package.json'))
 
 async function signIn(apiUrl, webUrl, email, password) {
@@ -87,56 +138,12 @@ async function ring(ctx, media) {
 }
 
 export async function capture(ctx, { locale, outDir, ids = ORDER, cdpPort = 9370 }) {
+  // The locale reaches Chrome's flags and the page, so only a known one does.
+  if (!LOCALES.includes(locale)) throw new Error(`unknown locale ${locale}`)
   mkdirSync(outDir, { recursive: true })
-  const profile = join(outDir, '..', `.chrome-${cdpPort}`)
-  rmSync(profile, { recursive: true, force: true })
-  const chrome = spawn(
-    CHROME,
-    [
-      '--headless=new',
-      `--remote-debugging-port=${cdpPort}`,
-      `--user-data-dir=${profile}`,
-      '--no-first-run',
-      '--hide-scrollbars',
-      `--lang=${locale}`,
-      'about:blank',
-    ],
-    { stdio: 'ignore' },
-  )
+  const browser = await launchChrome(cdpPort, [`--lang=${locale}`])
+  const { send, call } = browser
   try {
-    let target
-    for (let i = 0; i < 60 && !target; i++) {
-      await sleep(250)
-      try {
-        target = (await (await fetch(`http://127.0.0.1:${cdpPort}/json/list`)).json()).find(
-          (t) => t.type === 'page',
-        )
-      } catch {
-        // not listening yet
-      }
-    }
-    if (!target) throw new Error('headless Chrome did not start')
-    const ws = new WebSocket(target.webSocketDebuggerUrl)
-    await new Promise((r) => ws.addEventListener('open', r, { once: true }))
-    let seq = 0
-    const pending = new Map()
-    ws.addEventListener('message', (e) => {
-      const m = JSON.parse(e.data)
-      if (m.id && pending.has(m.id)) {
-        pending.get(m.id)(m)
-        pending.delete(m.id)
-      }
-    })
-    const send = (method, params = {}) =>
-      new Promise((r) => {
-        const id = ++seq
-        pending.set(id, r)
-        ws.send(JSON.stringify({ id, method, params }))
-      })
-    const evaluate = async (expression) =>
-      (await send('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true }))
-        .result?.result?.value
-
     const cookies = await signIn(ctx.apiUrl, ctx.webUrl, ctx.world.email, ctx.world.password)
     await send('Page.enable')
     await send('Network.enable')
@@ -151,14 +158,23 @@ export async function capture(ctx, { locale, outDir, ids = ORDER, cdpPort = 9370
       features: [{ name: 'prefers-color-scheme', value: 'light' }],
     })
     await send('Emulation.setLocaleOverride', { locale })
-    // The app reads the system language; first-run tours would cover the screen.
-    await send('Page.addScriptToEvaluateOnNewDocument', {
-      source: `Object.defineProperty(navigator,'languages',{get:()=>['${locale}']});Object.defineProperty(navigator,'language',{get:()=>'${locale}'});try{for(const [k,v] of Object.entries(${JSON.stringify(QUIET)}))localStorage.setItem(k,v)}catch{}`,
-    })
+    // The app reads the system language: Accept-Language sets navigator.language.
+    const { userAgent } = (await send('Browser.getVersion')).result
+    await send('Network.setUserAgentOverride', { userAgent, acceptLanguage: locale })
+    // First-run cards and tips would cover the screen. Device flags live in
+    // the origin's localStorage, written once from a static file on it.
+    await send('Page.navigate', { url: `${ctx.webUrl}/apple-touch-icon.png` })
+    await sleep(1000)
+    await call(setItems, QUIET)
 
     // Kept across runs, so re-capturing one shot keeps the others' notes.
     const metaFile = join(outDir, 'meta.json')
-    const meta = existsSync(metaFile) ? JSON.parse(readFileSync(metaFile, 'utf8')) : {}
+    let meta = {}
+    try {
+      meta = JSON.parse(readFileSync(metaFile, 'utf8'))
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error
+    }
     for (const id of ids) {
       const shot = SHOTS[id]
       await send('Network.clearBrowserCookies')
@@ -188,50 +204,27 @@ export async function capture(ctx, { locale, outDir, ids = ORDER, cdpPort = 9370
           return value
         })
         const seen = { userId: ctx.world.sofia, ids: earned.filter((b) => b !== shot.newBadge) }
-        await evaluate(
-          `localStorage.setItem('badgesSeen', ${JSON.stringify(JSON.stringify(seen))})`,
-        )
+        await call(setItems, { badgesSeen: JSON.stringify(seen) })
         await send('Page.navigate', { url: ctx.webUrl + path })
         await sleep(shot.wait ?? 7000)
       }
       const cleanups = []
       for (const step of shot.steps ?? []) {
         if (step.ring) cleanups.push(await ring(ctx, step.ring))
-        if (step.scroll) {
-          await evaluate(
-            `[...document.querySelectorAll('div')].filter((d)=>d.scrollHeight>d.clientHeight+50&&getComputedStyle(d).overflowY!=='visible').forEach((d)=>d.scrollBy(0,${step.scroll}))`,
-          )
-        }
-        if (step.tap) {
-          await evaluate(
-            `(()=>{const e=[...document.querySelectorAll('div,span')].filter((e)=>(e.innerText||'').trim()===${JSON.stringify(step.tap)}).at(-1);e&&e.click()})()`,
-          )
-        }
+        if (step.scroll) await call(scrollLists, step.scroll)
+        if (step.tap) await call(tapText, step.tap)
         await sleep(step.wait ?? 2500)
       }
-      /*
-       * Where shot 9's no-prices variant cuts the screen, as a fraction of its
-       * height: the first price on screen (a currency sign next to a digit), or,
-       * where the build shows none (the web build sells nothing), just under the
-       * compare table — the first tall filled block in the top half.
-       */
-      meta[id] = {
-        cut: await evaluate(
-          `(()=>{let best=null;const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while((n=w.nextNode())){if(/[$€£¥₺₽]\\s?\\d|\\d\\s?[$€£¥₺₽]/.test(n.textContent)){const r=n.parentElement.getBoundingClientRect();if(r.height&&r.top>=0&&r.top<innerHeight&&(best===null||r.top<best))best=r.top}}if(best!==null)return {at:best/innerHeight,by:'price'};const block=[...document.querySelectorAll('div')].find((d)=>{const r=d.getBoundingClientRect(),c=getComputedStyle(d);return r.top<innerHeight/2&&r.height>innerHeight/4&&r.width>innerWidth*0.8&&c.backgroundColor!=='rgba(0, 0, 0, 0)'&&parseFloat(c.borderTopLeftRadius)>=8});return block?{at:(block.getBoundingClientRect().bottom+12)/innerHeight,by:'table'}:null})()`,
-        ),
-      }
+      meta[id] = { cut: await call(findCut) }
       const shotPng = await send('Page.captureScreenshot', { format: 'png' })
       writeFileSync(join(outDir, `${id}.png`), Buffer.from(shotPng.result.data, 'base64'))
       for (const done of cleanups) await done()
       console.log(`  captured ${locale}/${id}`)
     }
     writeFileSync(metaFile, JSON.stringify(meta, null, 2))
-    ws.close()
   } finally {
     // Through the handle this process holds — a failed shot must not leave a
     // headless Chrome holding the debugging port for the next run.
-    chrome.kill()
-    await sleep(500)
-    rmSync(profile, { recursive: true, force: true })
+    await browser.close()
   }
 }

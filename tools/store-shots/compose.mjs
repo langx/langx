@@ -12,10 +12,10 @@
  * The output is checked before this returns: exact size, PNG, no alpha
  * channel (both stores refuse alpha). A failed check throws.
  */
-import { spawn } from 'node:child_process'
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
+import { launchChrome } from './chrome.mjs'
 import { REPO } from './stack.mjs'
 import {
   BUDGET,
@@ -23,15 +23,12 @@ import {
   HUES,
   ORDER,
   PLAY_SKIPS,
-  PRO_VARIANTS,
   RTL,
   SHOTS,
   SLOTS,
   captionsFor,
 } from './shots.config.mjs'
 
-const CHROME =
-  process.env.SHOTS_CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const FONTS = join(REPO, 'apps/api/assets/fonts')
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
@@ -43,66 +40,9 @@ export function pngInfo(file) {
   return { w: b.readUInt32BE(16), h: b.readUInt32BE(20), alpha: colorType === 4 || colorType === 6 }
 }
 
-async function openChrome(port) {
-  const profile = join(process.env.TMPDIR ?? '/tmp', `store-shots-compose-${port}`)
-  rmSync(profile, { recursive: true, force: true })
-  const chrome = spawn(
-    CHROME,
-    [
-      '--headless=new',
-      `--remote-debugging-port=${port}`,
-      `--user-data-dir=${profile}`,
-      '--no-first-run',
-      '--hide-scrollbars',
-      '--allow-file-access-from-files',
-      '--force-color-profile=srgb',
-      'about:blank',
-    ],
-    { stdio: 'ignore' },
-  )
-  let target
-  for (let i = 0; i < 60 && !target; i++) {
-    await sleep(250)
-    try {
-      target = (await (await fetch(`http://127.0.0.1:${port}/json/list`)).json()).find(
-        (t) => t.type === 'page',
-      )
-    } catch {
-      // not listening yet
-    }
-  }
-  if (!target) {
-    chrome.kill()
-    throw new Error('headless Chrome did not start')
-  }
-  const ws = new WebSocket(target.webSocketDebuggerUrl)
-  await new Promise((r) => ws.addEventListener('open', r, { once: true }))
-  let seq = 0
-  const pending = new Map()
-  ws.addEventListener('message', (e) => {
-    const m = JSON.parse(e.data)
-    if (m.id && pending.has(m.id)) {
-      pending.get(m.id)(m)
-      pending.delete(m.id)
-    }
-  })
-  const send = (method, params = {}) =>
-    new Promise((r) => {
-      const id = ++seq
-      pending.set(id, r)
-      ws.send(JSON.stringify({ id, method, params }))
-    })
-  await send('Page.enable')
-  return {
-    send,
-    async close() {
-      ws.close()
-      chrome.kill()
-      await sleep(300)
-      rmSync(profile, { recursive: true, force: true })
-    },
-  }
-}
+/** Tiles load their capture and fonts from disk, in sRGB like the stores. */
+const openChrome = (port) =>
+  launchChrome(port, ['--allow-file-access-from-files', '--force-color-profile=srgb'])
 
 /** Renders one HTML file to one PNG of exactly w×h. */
 async function photograph(browser, htmlFile, out, w, h) {
@@ -186,7 +126,8 @@ function tileHtml({ slot, id, locale, caption, capture, cut, store }) {
       ? "'Roboto','Nunito',system-ui,sans-serif"
       : "-apple-system,'SF Pro Text',system-ui,sans-serif"
   const arabic = rtl ? "'Noto Sans Arabic'," : ''
-  // `no-prices`: lower the phone until the cut line meets the tile's bottom.
+  // A shot without prices: the phone is lowered until the cut line meets the
+  // tile's bottom, so the purchase area is off the tile.
   const lowerTo = cut ? statusH + cut * capH : null
   return `<!doctype html><html lang="${locale}" dir="${rtl ? 'rtl' : 'ltr'}"><head><meta charset="utf-8">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=block">
@@ -226,7 +167,15 @@ ${
   const phone = document.getElementById('phone')
   const lowerTo = ${lowerTo === null ? 'null' : lowerTo}
   let top = capBottom + ${0.06 * W}
-  if (lowerTo !== null) top = Math.max(top, ${slot.h} - ${bez} - lowerTo)
+  if (lowerTo !== null) {
+    top = Math.max(top, ${slot.h} - ${bez} - lowerTo)
+    // The lowered phone leaves a band of ground; the caption sits in its
+    // middle rather than leaving the band empty under it.
+    const cap = document.getElementById('cap')
+    const capBox = cap.getBoundingClientRect()
+    const centred = (top - capBox.height) / 2
+    if (centred > capBox.top) cap.style.top = centred + 'px'
+  }
   // fit: 'whole' — the phone shrinks, from its top edge, until all of it
   // fits under the caption.
   if (${shot.fit === 'whole'}) {
@@ -287,37 +236,30 @@ export async function composeLocale({ locale, rawDir, outDir, playLocale, cdpPor
       for (const [index, id] of ids.entries()) {
         const file = join(rawDir, `${id}.png`)
         const info = pngInfo(file)
-        const variants = id === 'pro' ? PRO_VARIANTS : [null]
-        for (const variant of variants) {
-          const nn = String(index + 1).padStart(2, '0')
-          // The first variant is the one in the upload folder; the other goes
-          // under alt/, so dragging the folder's files uploads one set.
-          const name =
-            variant && variant !== PRO_VARIANTS[0] ? `alt/${nn}-${variant}.png` : `${nn}.png`
-          const cut = variant === 'no-prices' ? (meta[id]?.cut?.at ?? null) : null
-          if (variant === 'no-prices' && cut === null)
-            throw new Error(`${locale}/${id}: no cut line for the no-prices variant`)
-          if (name.startsWith('alt/')) mkdirSync(join(dir, 'alt'), { recursive: true })
-          const html = join(work, `${slot.dir.replace('/', '-')}-${name.replace('/', '-')}.html`)
-          writeFileSync(
-            html,
-            tileHtml({
-              slot,
-              id,
-              locale,
-              caption: captions[id],
-              capture: { file, w: info.w, h: info.h },
-              cut,
-              store: slot.store,
-            }),
-          )
-          await photograph(browser, html, join(dir, name), slot.w, slot.h)
-          ;(manifest[slot.dir] ??= {})[name] = {
+        const name = `${String(index + 1).padStart(2, '0')}.png`
+        // A shot that must not show prices is cut where they would begin.
+        const cut = SHOTS[id].noPrices ? (meta[id]?.cut?.at ?? null) : null
+        if (SHOTS[id].noPrices && cut === null) {
+          throw new Error(`${locale}/${id}: no cut line found, so prices could show`)
+        }
+        const html = join(work, `${slot.dir.replace('/', '-')}-${name}.html`)
+        writeFileSync(
+          html,
+          tileHtml({
+            slot,
             id,
-            ...(variant ? { variant } : {}),
-            headline: captions[id][0],
-            support: captions[id][1],
-          }
+            locale,
+            caption: captions[id],
+            capture: { file, w: info.w, h: info.h },
+            cut,
+            store: slot.store,
+          }),
+        )
+        await photograph(browser, html, join(dir, name), slot.w, slot.h)
+        ;(manifest[slot.dir] ??= {})[name] = {
+          id,
+          headline: captions[id][0],
+          support: captions[id][1],
         }
       }
       console.log(`  composed ${locale} ${slot.dir} (${slot.w}×${slot.h})`)

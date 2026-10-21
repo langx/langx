@@ -54,17 +54,14 @@ export const SHOTS = {
   // The new-badge sheet, with its Share button, sits at the foot of the
   // screen: `fit: 'whole'` draws the phone small enough to show all of it.
   badges: { ground: 'lime', path: '/badges', newBadge: 'streak.180', fit: 'whole' },
-  pro: { ground: 'blue', path: '/paywall' },
+  /*
+   * Shot 9 ships without prices (Behic, 21 Oct 2026): a listing is read in
+   * every storefront, and a price on it is one storefront's. `noPrices`
+   * lowers the phone until the purchase area — the first price on screen,
+   * or the end of the compare table where none shows — is off the tile.
+   */
+  pro: { ground: 'blue', path: '/paywall', noPrices: true },
 }
-
-/**
- * Shot 9 shows whatever prices the storefront shows. Whether a store picture
- * should show a price at all is an open call, so both are made: `prices`
- * as captured, and `no-prices`, where the phone is lowered until the plan
- * cards (the first element at or below `cutAt` of the screen that names a
- * price) run off the bottom of the tile.
- */
-export const PRO_VARIANTS = ['prices', 'no-prices']
 
 /**
  * Every slot, at the pixel size its store accepts (verified 21 Oct 2026 —
@@ -96,11 +93,9 @@ export const BUDGET = { headline: 32, support: 75 }
  * on screen it uses that locale's own word for it from
  * `apps/mobile/src/i18n/messages/<locale>.ts` (Echo, Pro, the freeze).
  *
- * `streak` does not say "together": the drawing's pair flames are not in the
- * 3.0 streak screen (see `StreakScreenV3.tsx`), so a caption about keeping a
- * streak with a partner would describe something the app does not do. The
- * board's line, for when they ship: "Keep the streak going, together" /
- * "Write a little every day, and see how long you and a partner keep it up."
+ * `streak` names nothing done with a partner: the 3.0 streak screen has no
+ * pair streaks (see `StreakScreenV3.tsx`), and a caption claims only what the
+ * screen does.
  */
 export const CAPTIONS = {
   en: {
