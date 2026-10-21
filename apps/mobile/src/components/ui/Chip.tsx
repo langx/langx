@@ -1,5 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Pressable, Text, View, type ViewStyle } from 'react-native'
+import { useV3Home } from '../../hooks/useV3Home'
 import { makeStyles, useTheme, type ThemeColors } from '../../lib/theme'
 
 interface ChipProps {
@@ -53,27 +54,43 @@ export function Chip({
   accessibilityRole,
   disabled = false,
 }: ChipProps) {
-  const { colors } = useTheme()
+  const { colors, v3 } = useTheme()
   const styles = useStyles()
+  /*
+   * Under `flags.v3Home` the default chip takes `FilterChipV3`'s look — the
+   * grey surface at rest, the ink pill with a tick when chosen, 48 tall — so
+   * the v3 screens that still build their choices from this chip (Echo's
+   * languages, Edit profile's interests and gender, a language's level, the
+   * language pick) stop drawing the old outline without each forking it.
+   * A toned chip keeps today's look: only the operator panel passes a tone,
+   * and v3 draws no coloured chip to move it to.
+   */
+  const v3Look = useV3Home() && tone === 'default'
 
   const colour = toneColour(colors, tone)
-  const container: ViewStyle[] = selected
-    ? [styles.base, { backgroundColor: colour, borderColor: colour }]
-    : // Unselected chips share one outline — the ground on `border` — so a row
-      // of them reads as one control rather than as five differently-ringed
-      // buttons. The tone survives in the *label*.
-      [styles.base, { backgroundColor: colors.bg, borderColor: colors.border }]
+  const container: ViewStyle[] = v3Look
+    ? [styles.v3, ...(selected ? [styles.v3On] : [])]
+    : selected
+      ? [styles.base, { backgroundColor: colour, borderColor: colour }]
+      : // Unselected chips share one outline — the ground on `border` — so a row
+        // of them reads as one control rather than as five differently-ringed
+        // buttons. The tone survives in the *label*.
+        [styles.base, { backgroundColor: colors.bg, borderColor: colors.border }]
   // The ink fill's contrast partner is the ground itself; every other tone
   // is a saturated accent and takes `textInverse`. Unselected, the default
   // tone is plain `text` — v3 does not grey out a choice for being unmade.
-  const labelColour = selected
-    ? tone === 'default'
-      ? colors.bg
-      : colors.textInverse
-    : tone === 'default'
-      ? colors.text
-      : colour
-  const text = [styles.label, { color: labelColour }]
+  const labelColour = v3Look
+    ? selected
+      ? v3.colors.pillText
+      : v3.colors.fg
+    : selected
+      ? tone === 'default'
+        ? colors.bg
+        : colors.textInverse
+      : tone === 'default'
+        ? colors.text
+        : colour
+  const text = [v3Look ? styles.v3Label : styles.label, { color: labelColour }]
 
   /*
    * A tick before the label when chosen, so a selected chip says so twice —
@@ -83,7 +100,9 @@ export function Chip({
    */
   const body = (
     <>
-      {selected ? <Feather name="check" size={14} color={labelColour} /> : null}
+      {selected ? (
+        <Feather name="check" size={v3Look ? v3.icon.sm : 14} color={labelColour} />
+      ) : null}
       <Text style={text}>{label}</Text>
     </>
   )
@@ -113,7 +132,7 @@ export function Chip({
   )
 }
 
-const useStyles = makeStyles(({ spacing, radius }) => ({
+const useStyles = makeStyles(({ spacing, radius, v3 }) => ({
   base: {
     alignItems: 'center',
     borderRadius: radius.pill,
@@ -125,6 +144,31 @@ const useStyles = makeStyles(({ spacing, radius }) => ({
     paddingVertical: 10,
   },
   label: { fontSize: 14, fontWeight: '600' },
+  /*
+   * `FilterChipV3`'s measures, so a chip here and one on Filters are one chip
+   * — plus a `track` ring, because these chips also sit on grey cards (a
+   * language's levels on Languages), where a bare `surface` chip is the card's
+   * own colour and vanishes. `V-Languages` rings its level chips the same way.
+   */
+  v3: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.surface,
+    borderColor: v3.colors.track,
+    borderRadius: v3.radius.pill,
+    borderWidth: 2,
+    flexDirection: 'row',
+    gap: v3.space[8],
+    height: 48,
+    overflow: 'hidden',
+    paddingEnd: v3.space[20],
+    paddingStart: v3.space[16],
+  },
+  v3On: {
+    backgroundColor: v3.colors.pill,
+    borderColor: v3.colors.pill,
+    paddingStart: v3.space[14],
+  },
+  v3Label: { ...v3.type.button },
   pressed: { opacity: 0.7 },
   disabled: { opacity: 0.45 },
 }))
