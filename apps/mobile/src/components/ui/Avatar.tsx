@@ -1,9 +1,9 @@
 import { Image } from 'expo-image'
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { PixelRatio, Text, View } from 'react-native'
 import { useV3Home } from '../../hooks/useV3Home'
 import { API_URL } from '../../lib/apiUrl'
-import { avatarSource } from '../../lib/defaultAvatar'
+import { avatarSource, drawnFaceRetryIn } from '../../lib/defaultAvatar'
 import { v3HomeLatched } from '../../lib/v3Home'
 import { artForTone } from '../../lib/frameArt/palettes'
 // `layout` stays a direct import: it is scheme-independent, and a default
@@ -106,6 +106,11 @@ export function Avatar({
   const { colors } = useTheme()
   const styles = useStyles()
   const [failed, setFailed] = useState(false)
+  // A drawn face that failed gets one more try (`drawnFaceRetryIn`); the
+  // attempt is the Image's key, so the retry is a fresh load.
+  const [attempt, setAttempt] = useState(0)
+  const retry = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  useEffect(() => () => clearTimeout(retry.current), [])
   const dimension = { borderRadius: size / 2, height: size, width: size }
   const fill = avatarFill(colors, name)
 
@@ -139,7 +144,16 @@ export function Avatar({
           source={{ uri: source }}
           style={[styles.image, dimension]}
           contentFit="cover"
-          onError={() => setFailed(true)}
+          key={attempt}
+          onError={() => {
+            const wait = drawnFaceRetryIn(source, attempt)
+            if (wait === null) {
+              setFailed(true)
+              return
+            }
+            clearTimeout(retry.current)
+            retry.current = setTimeout(() => setAttempt((n) => n + 1), wait)
+          }}
         />
       ) : (
         <View style={[styles.fallback, dimension, { backgroundColor: fill }]}>

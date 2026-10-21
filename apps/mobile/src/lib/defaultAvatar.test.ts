@@ -4,6 +4,8 @@ import { dedupeGrounds } from './avatarViewport'
 import {
   allFaces,
   avatarSource,
+  DRAWN_FACE_RETRY_MS,
+  drawnFaceRetryIn,
   faceFromKey,
   faceKey,
   ownDefaultAvatar,
@@ -43,6 +45,22 @@ describe('avatarSource', () => {
 
   it('has nothing to draw without a photo or an id, so the initials show', () => {
     expect(avatarSource({ ...base, seed: undefined, v3: true })).toBeUndefined()
+  })
+})
+
+describe('retrying a drawn face', () => {
+  const face = `${API}/public/avatar/v3/${SEED}?s=160&c=flat`
+
+  it('tries a drawn face once more after the route’s Retry-After, then gives up', () => {
+    expect(DRAWN_FACE_RETRY_MS).toBe(1000)
+    expect(drawnFaceRetryIn(face, 0)).toBe(1000)
+    expect(drawnFaceRetryIn(face, 1)).toBeNull()
+  })
+
+  it('leaves a failed photo, today’s Notionists face and no source to the initials', () => {
+    expect(drawnFaceRetryIn('https://media.example/a.jpg', 0)).toBeNull()
+    expect(drawnFaceRetryIn(`${API}/public/avatar/${SEED}`, 0)).toBeNull()
+    expect(drawnFaceRetryIn(undefined, 0)).toBeNull()
   })
 })
 
