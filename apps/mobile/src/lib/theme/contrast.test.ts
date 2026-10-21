@@ -79,6 +79,11 @@ const PAIRS: Pair[] = [
   // A video call's switches in the dark panel, off and lit.
   { text: 'onSignal', on: 'stageTile' },
   { text: 'ink', on: 'onSignal' },
+  // The PRO badge: its word on its tablet, on the ground and on a hue (where
+  // the tablet is ink), and the tablet itself against the ground as a shape.
+  { text: 'proWord', on: 'proTablet' },
+  { text: 'proWordOnInk', on: 'ink' },
+  { text: 'proTablet', on: 'bg', large: true },
 ]
 
 function resolve(scheme: ColorScheme, token: Token): string {
