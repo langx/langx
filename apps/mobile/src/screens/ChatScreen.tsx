@@ -164,6 +164,7 @@ import { ScheduleTimeSheet } from '../components/ScheduleTimeSheet'
 import { TestimonialSheet } from '../components/testimonials/TestimonialSheet'
 import { ThreadTestimonialCard } from '../components/testimonials/ThreadTestimonialCard'
 import { FirstReplyCard } from '../components/FirstReplyCard'
+import { ArrivalEntrance } from '../components/thread/ArrivalEntrance'
 import { DiscardUnsentButton } from '../components/DiscardUnsentButton'
 import {
   addPending,
@@ -193,7 +194,8 @@ import {
   messagesNewestFirst,
   type MessagePageDto,
 } from '../lib/messageCache'
-import { dayLabel, messageRows, type MessageRow } from '../lib/messageGroups'
+import { createArrivals } from '../lib/arrivals'
+import { dayLabel, messageRows, rowKeyOf, type MessageRow } from '../lib/messageGroups'
 import { useDisplayNames, useLocale, useT } from '../i18n'
 import { openStoreReview } from '../lib/storeListing'
 import { planJump } from '../lib/messageJump'
@@ -930,6 +932,27 @@ export function ChatScreen({
 
   /** What the other side has been told; see `nextTypingSignal`. */
   const typingSignal = useRef(TYPING_IDLE)
+  /**
+   * The rows that arrived while this screen was open, for their entrance
+   * (`ArrivalEntrance`). Filled by this screen's own sends and by the
+   * socket's `message:new` — never by a page loading, a scroll or a
+   * reconnect's refetch, which is what keeps history from animating.
+   */
+  const [arrivals] = useState(createArrivals)
+  useEffect(() => {
+    if (!v3Thread) return
+    const onArrival = (message: MessageDto) => {
+      if (String(message.conversationId) !== conversationId) return
+      arrivals.note(rowKeyOf(message), Date.now())
+    }
+    return onSocket((socket) => {
+      socket.on('message:new', onArrival)
+      return () => {
+        socket.off('message:new', onArrival)
+      }
+    })
+  }, [arrivals, conversationId, v3Thread])
+
   const notifyTyping = useCallback(
     (typing: boolean) => {
       const next = nextTypingSignal(typingSignal.current, {
@@ -1892,6 +1915,8 @@ export function ChatScreen({
       setReplyingTo(null)
       setAsking(null)
       const clientId = newClientId(Date.now(), Math.random())
+      // Its row mounts under this key, and keeps it through the echo (S18).
+      arrivals.note(rowKeyOf({ _id: '', clientId }), Date.now())
       setOutgoing((list) =>
         addOutgoing(list, {
           clientId,
@@ -3281,73 +3306,77 @@ export function ChatScreen({
         // A stand-in has no server id yet, so a menu or a reply on it
         // would have nothing to act on until the server's copy
         // arrives.
-        <WithRewardChips
-          rewards={v3Thread ? rewards[row.message._id] : undefined}
-          partnerName={partnerName}
-          hue={partnerHue}
-          celebration={v3Thread && celebrating === row.message._id ? rowCelebration : undefined}
-        >
-          <MessageBubble
-            message={row.message}
-            mine={row.message.senderId === viewerId}
-            endsGroup={row.endsGroup}
+        <ArrivalEntrance play={v3Thread && !reduceMotion && arrivals.take(row.key, Date.now())}>
+          <WithRewardChips
+            rewards={v3Thread ? rewards[row.message._id] : undefined}
             partnerName={partnerName}
-            translation={translations[row.message._id]}
-            translating={translating === row.message._id}
-            romanization={romanizations[row.message._id]}
-            romanizing={romanizing === row.message._id}
-            speaking={speaking === row.message._id}
-            hasReading={speech[row.message._id] !== undefined}
-            onReplayReading={onReplayReading}
-            transcript={transcripts[row.message._id]}
-            transcribing={transcribing === row.message._id}
-            {...(transcriptService && !isOutgoingId(row.message._id) ? { onShowText } : {})}
-            highlighted={highlighted === row.message._id}
-            askAnswered={answeredAsks.has(row.message._id)}
-            onAnswerAsk={onAnswerAsk}
-            onRespondMeeting={onRespondMeeting}
-            onAnswerQuiz={onAnswerQuiz}
-            onAnswerPoll={onAnswerPoll}
-            onCardAction={onCardAction}
-            onAddToCalendar={onAddToCalendar}
-            meetingWhen={meetingWhenFor(row.message)}
-            meetingLength={meetingLengthFor(row.message)}
-            meetingTheirWhen={meetingTheirWhenFor(row.message)}
-            pending={isOutgoingId(row.message._id)}
-            onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
-            onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
-            onReply={isOutgoingId(row.message._id) ? ignore : onReply}
-            canReply={!readOnly}
-            onReact={isOutgoingId(row.message._id) ? ignore : onReact}
-            /*
-             * The same pair the menu's emoji strip is hidden for, and
-             * for the same reason: the server refuses a reaction to a
-             * withdrawn message and to an official channel, so offering
-             * the gesture there would end in an alert.
-             */
-            canReact={!readOnly && !row.message.deleted && !isServerRecord(row.message)}
-            // Only on the newest call, and not where a call cannot be
-            // placed from here at all: then a row is only a record.
-            onCallBack={
-              callGate !== 'hidden' && row.message._id === newestCallId ? onCallBack : undefined
-            }
-            onMeetingCall={
-              callGate !== 'hidden' && meetingCallOpen(row.message.meeting, meetingNow)
-                ? onMeetingCall
-                : undefined
-            }
-            onJumpTo={onJumpTo}
-            onOpenMedia={onOpenMedia}
-            onOpenViewOnce={onOpenViewOnce}
-            {...(v3Thread ? { onBurst: onBurstTap } : {})}
-            v3={v3Thread}
-            partnerHue={partnerHue}
-          />
-        </WithRewardChips>
+            hue={partnerHue}
+            celebration={v3Thread && celebrating === row.message._id ? rowCelebration : undefined}
+          >
+            <MessageBubble
+              message={row.message}
+              mine={row.message.senderId === viewerId}
+              endsGroup={row.endsGroup}
+              partnerName={partnerName}
+              translation={translations[row.message._id]}
+              translating={translating === row.message._id}
+              romanization={romanizations[row.message._id]}
+              romanizing={romanizing === row.message._id}
+              speaking={speaking === row.message._id}
+              hasReading={speech[row.message._id] !== undefined}
+              onReplayReading={onReplayReading}
+              transcript={transcripts[row.message._id]}
+              transcribing={transcribing === row.message._id}
+              {...(transcriptService && !isOutgoingId(row.message._id) ? { onShowText } : {})}
+              highlighted={highlighted === row.message._id}
+              askAnswered={answeredAsks.has(row.message._id)}
+              onAnswerAsk={onAnswerAsk}
+              onRespondMeeting={onRespondMeeting}
+              onAnswerQuiz={onAnswerQuiz}
+              onAnswerPoll={onAnswerPoll}
+              onCardAction={onCardAction}
+              onAddToCalendar={onAddToCalendar}
+              meetingWhen={meetingWhenFor(row.message)}
+              meetingLength={meetingLengthFor(row.message)}
+              meetingTheirWhen={meetingTheirWhenFor(row.message)}
+              pending={isOutgoingId(row.message._id)}
+              onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
+              onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
+              onReply={isOutgoingId(row.message._id) ? ignore : onReply}
+              canReply={!readOnly}
+              onReact={isOutgoingId(row.message._id) ? ignore : onReact}
+              /*
+               * The same pair the menu's emoji strip is hidden for, and
+               * for the same reason: the server refuses a reaction to a
+               * withdrawn message and to an official channel, so offering
+               * the gesture there would end in an alert.
+               */
+              canReact={!readOnly && !row.message.deleted && !isServerRecord(row.message)}
+              // Only on the newest call, and not where a call cannot be
+              // placed from here at all: then a row is only a record.
+              onCallBack={
+                callGate !== 'hidden' && row.message._id === newestCallId ? onCallBack : undefined
+              }
+              onMeetingCall={
+                callGate !== 'hidden' && meetingCallOpen(row.message.meeting, meetingNow)
+                  ? onMeetingCall
+                  : undefined
+              }
+              onJumpTo={onJumpTo}
+              onOpenMedia={onOpenMedia}
+              onOpenViewOnce={onOpenViewOnce}
+              {...(v3Thread ? { onBurst: onBurstTap } : {})}
+              v3={v3Thread}
+              partnerHue={partnerHue}
+            />
+          </WithRewardChips>
+        </ArrivalEntrance>
       ),
     [
       styles,
       v3Styles,
+      reduceMotion,
+      arrivals,
       t,
       locale,
       v3Thread,
