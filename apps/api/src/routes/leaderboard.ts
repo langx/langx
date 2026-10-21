@@ -1,4 +1,9 @@
-import { leaderboardQuerySchema, purchaseSchema, streakLeaderboardQuerySchema } from '@langx/shared'
+import {
+  badgeCatalogueQuerySchema,
+  leaderboardQuerySchema,
+  purchaseSchema,
+  streakLeaderboardQuerySchema,
+} from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { requireAuth } from '../middleware/requireAuth'
 import { getBadgeSummary } from '../modules/tokens/badges'
@@ -38,9 +43,16 @@ export const leaderboardRoutes: FastifyPluginAsyncZod = async (app) => {
   // Beside the leaderboard rather than under /me/tokens: the badge screen and
   // the ranking tabs are one screen, and this keeps it to one round trip's
   // worth of routes.
-  app.get('/me/badges', { preHandler: requireAuth }, async (request, reply) => {
-    return reply.send(await getBadgeSummary(app.mongo.db, request.userId))
-  })
+  // `?catalogue=v3` adds the kinds only the v3 shelf can draw; see `getBadgeSummary`.
+  app.get(
+    '/me/badges',
+    { preHandler: requireAuth, schema: { querystring: badgeCatalogueQuerySchema } },
+    async (request, reply) => {
+      return reply.send(
+        await getBadgeSummary(app.mongo.db, request.userId, new Date(), request.query.catalogue),
+      )
+    },
+  )
 
   app.get('/me/wallet', { preHandler: requireAuth }, async (request, reply) => {
     return reply.send(await getWallet(app.mongo.db, request.userId))

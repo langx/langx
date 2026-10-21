@@ -8854,3 +8854,28 @@ so a build that does not read it opens Discover as it always did.
   decided exactly as with the switch off; nothing is sent that was not sent
   before. It starts off because it is promotion, and promotion moves when
   Behic switches it rather than when a pull request merges.
+
+## Six more badge kinds, and only the v3 shelf is sent them
+
+The v3 badge shelf adds six kinds to the twenty-five badges: languages
+practised (2, 3, 5), calls of five minutes or more (1, 10, 50), Echo reviews
+(100, 1,000, 5,000), partners who wrote about you (1, 5, 20), different people
+you corrected (3, 10, 50) and first messages answered within a day (10, 50,
+200). The thresholds are in `packages/shared/src/badges.ts`, next to the rest.
+
+- **Still derived, never stored.** Each is a count of what the database
+  already records (`badgeCounts.ts`), so there is nothing to award, nothing to
+  award twice and no index to add. Every count is retroactive: it counts what
+  was done before the badge existed. Calls are read from the call rows in the
+  threads, because `calls` keeps a call for only thirty days.
+- **None pays.** A badge never does; the streak milestones pay, as before.
+- **Sent only on request.** An installed build words a badge by looking its
+  kind up in a table, and a kind it has never heard of finds no row. So both
+  badge reads answer with the `classic` catalogue unless asked for
+  `?catalogue=v3`, which only the v3 shelf asks for. The evening round-up
+  stays on `classic` (`BADGE_ROUND_UP_CATALOGUE`) until the shelf ships, and
+  `scripts/seed-v3-badge-notices.ts --apply` runs right before it moves, so
+  the first evening does not announce every retroactive badge at once.
+- **New is the device's.** The shelf marks a badge New until it is opened on
+  this device, and the first reading treats what is already earned as seen,
+  except for the six new families, which are news on their first day.

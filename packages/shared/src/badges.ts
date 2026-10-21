@@ -22,6 +22,13 @@ export const BADGE_KINDS = [
   'tokens',
   'veteran',
   'origin',
+  // The six added with the v3 shelf. See `V3_BADGE_KINDS`.
+  'languages',
+  'calls',
+  'echo',
+  'testimonials',
+  'guide',
+  'openers',
 ] as const
 export type BadgeKind = (typeof BADGE_KINDS)[number]
 
@@ -48,7 +55,64 @@ export const BADGE_SHAPES: Record<BadgeKind, 'counter' | 'cohort'> = {
   tokens: 'counter',
   veteran: 'counter',
   origin: 'cohort',
+  languages: 'counter',
+  calls: 'counter',
+  echo: 'counter',
+  testimonials: 'counter',
+  guide: 'counter',
+  openers: 'counter',
 }
+
+/**
+ * The kinds added with the v3 badge shelf: languages practised, calls of five
+ * minutes or more, Echo reviews, partners who wrote about you ("Kind words"),
+ * different people you corrected ("People you helped") and first messages
+ * answered within a day.
+ *
+ * **None of them pays.** A badge never does; only the streak milestones are
+ * paid, and they are paid by the streak.
+ *
+ * **They reach only a client that asks for them.** An installed build words a
+ * badge by looking its kind up in a table, and a kind it has never heard of
+ * finds no row there. So `GET /me/badges` and `GET /profiles/:handle/badges`
+ * send the `classic` catalogue unless asked for `?catalogue=v3`, which only
+ * the v3 shelf asks for, and the evening round-up announces them only once
+ * `BADGE_ROUND_UP_CATALOGUE` says so.
+ */
+export const V3_BADGE_KINDS: readonly BadgeKind[] = [
+  'languages',
+  'calls',
+  'echo',
+  'testimonials',
+  'guide',
+  'openers',
+]
+
+export function isV3BadgeKind(kind: BadgeKind): boolean {
+  return V3_BADGE_KINDS.includes(kind)
+}
+
+export const BADGE_CATALOGUES = ['classic', 'v3'] as const
+export type BadgeCatalogue = (typeof BADGE_CATALOGUES)[number]
+
+/** `?catalogue=v3` on the two badge reads. */
+export const badgeCatalogueQuerySchema = z.object({
+  catalogue: z.enum(BADGE_CATALOGUES).optional(),
+})
+
+/**
+ * Which catalogue the evening round-up diffs against `notifiedBadgeIds`.
+ *
+ * `classic` until the v3 shelf ships. Announcing a badge before there is a
+ * screen to show it on would send people to a page that does not have it. On
+ * the day it moves to `v3`, run `scripts/seed-v3-badge-notices.ts --apply`
+ * first: otherwise the first evening announces every v3 badge anyone has
+ * already earned, retroactively, all at once.
+ */
+export const BADGE_ROUND_UP_CATALOGUE: BadgeCatalogue = 'classic'
+
+/** A call counts towards the calls badges once it lasts this long. */
+export const BADGE_CALL_MIN_SECONDS = 5 * 60
 
 export function isCohortBadge(kind: BadgeKind): boolean {
   return BADGE_SHAPES[kind] === 'cohort'
@@ -128,6 +192,45 @@ const TOKEN_THRESHOLDS = [10_000, 50_000, 250_000] as const
  */
 const VETERAN_THRESHOLDS = [365, 730, 1095] as const
 
+/*
+ * The v3 kinds, three rungs each: twill, silver and bullion on the shelf.
+ * Chosen so the first is a week's ordinary use and the last a long habit.
+ */
+/** Languages practised besides your native ones (Echo cards reviewed, posts written). */
+const LANGUAGE_THRESHOLDS = [2, 3, 5] as const
+/** Calls of `BADGE_CALL_MIN_SECONDS` or more, placed or answered. */
+const CALL_THRESHOLDS = [1, 10, 50] as const
+/** Echo reviews, whatever the grade. */
+const ECHO_THRESHOLDS = [100, 1000, 5000] as const
+/** Partners who wrote about you. */
+const TESTIMONIAL_THRESHOLDS = [1, 5, 20] as const
+/** Different people you corrected. */
+const GUIDE_THRESHOLDS = [3, 10, 50] as const
+/** First messages answered within a day (`stats.openersAnsweredWithinDay`). */
+const OPENER_THRESHOLDS = [10, 50, 200] as const
+
+/**
+ * The v3 kinds' entries. The label is the English one the push copy and the
+ * operator panel read; the shelf words each badge from its own i18n key. The
+ * icon is one of the six frozen names, for the reason `icon` gives — no
+ * build that reads it is ever sent these, but the rule is cheaper kept than
+ * argued.
+ */
+function v3Entries(
+  kind: BadgeKind,
+  thresholds: readonly number[],
+  label: (n: string) => string,
+  icon: string,
+): BadgeDefinition[] {
+  return thresholds.map((count) => ({
+    id: `${kind}.${count}`,
+    kind,
+    threshold: count,
+    label: label(count.toLocaleString('en-US')),
+    icon,
+  }))
+}
+
 function correctionLabel(threshold: number): string {
   return threshold === 1 ? 'First correction' : `${threshold.toLocaleString('en-US')} corrections`
 }
@@ -204,6 +307,17 @@ export const BADGES: readonly BadgeDefinition[] = [
     label: `${days} days a member`,
     icon: 'calendar',
   })),
+  ...v3Entries('languages', LANGUAGE_THRESHOLDS, (n) => `${n} languages`, 'message-square'),
+  ...v3Entries('calls', CALL_THRESHOLDS, (n) => (n === '1' ? 'First call' : `${n} calls`), 'zap'),
+  ...v3Entries('echo', ECHO_THRESHOLDS, (n) => `${n} Echo reviews`, 'check'),
+  ...v3Entries(
+    'testimonials',
+    TESTIMONIAL_THRESHOLDS,
+    (n) => (n === '1' ? 'First kind words' : `Kind words from ${n}`),
+    'message-square',
+  ),
+  ...v3Entries('guide', GUIDE_THRESHOLDS, (n) => `${n} people helped`, 'check'),
+  ...v3Entries('openers', OPENER_THRESHOLDS, (n) => `${n} first replies`, 'message-square'),
 ]
 
 export function findBadge(id: string): BadgeDefinition | undefined {
