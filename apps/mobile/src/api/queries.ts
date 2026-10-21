@@ -178,6 +178,7 @@ import {
 import { FOLLOW_INVALIDATES, TIMELINE_KEY, timelinePath } from '../lib/feedQueryKeys'
 import { isStaleCursor } from '../lib/postRefusal'
 import type { MessagePageDto } from '../lib/messageCache'
+import { clearConversationUnread } from '../lib/readReceipts'
 
 /**
  * Query keys in one place. A typo in an inline key array is invisible — the
@@ -557,7 +558,14 @@ export async function markConversationRead(
       unreadBefore?: number
       lastMessage?: { createdAt: string }
     }>(`/conversations/${conversationId}/read`)
-    await queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    /*
+     * Patched, not invalidated: the read changed one number in the chat list,
+     * and it is known — this thread's count is zero now. Invalidating
+     * refetched every loaded page of the list, and the socket posts a read
+     * for each message landing in an open thread. Only a thread no loaded
+     * page holds still sends the list back to the server.
+     */
+    clearConversationUnread(queryClient, conversationId)
     invalidateUnread(queryClient)
     const count = read.unreadBefore ?? 0
     return count > 0 && read.lastMessage ? { count, until: read.lastMessage.createdAt } : null
