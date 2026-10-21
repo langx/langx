@@ -39,7 +39,7 @@ interface ColumnsProps {
  * says nobody was counted, the other says nobody was there.
  */
 export function Columns({ points, color, height = 72, gap = 2, accessibilityLabel }: ColumnsProps) {
-  const { colors } = useTheme()
+  const { v3 } = useTheme()
   const styles = useStyles()
 
   // `|| 1` rather than a guard: an empty series divides by one and draws its
@@ -55,7 +55,7 @@ export function Columns({ points, color, height = 72, gap = 2, accessibilityLabe
               <View
                 style={[
                   styles.bar,
-                  { backgroundColor: color ?? colors.accent },
+                  { backgroundColor: color ?? v3.colors.blue },
                   point.value > 0
                     ? // MIN_BAR: a slot that counted something never disappears,
                       // however tall the peak beside it.
@@ -87,7 +87,7 @@ export function Columns({ points, color, height = 72, gap = 2, accessibilityLabe
   )
 }
 
-const useStyles = makeStyles(({ colors }) => ({
+const useStyles = makeStyles(({ v3 }) => ({
   // 2px of ground between touching bars, which is what separates them — never
   // a border, which would add ink that is not data.
   plot: { alignItems: 'flex-end', flexDirection: 'row', gap: 2 },
@@ -106,9 +106,9 @@ const useStyles = makeStyles(({ colors }) => ({
    */
   bar: { borderTopLeftRadius: 4, borderTopRightRadius: 4, maxWidth: 24, width: '100%' },
   empty: { height: 2, opacity: 0.3 },
-  baseline: { backgroundColor: colors.border, height: 1, marginTop: 4 },
-  labels: { flexDirection: 'row', gap: 2, marginTop: 6 },
-  label: { color: colors.textFaint, fontSize: 10, fontWeight: '600' },
+  baseline: { backgroundColor: v3.colors.line, height: 1, marginTop: v3.space[4] },
+  labels: { flexDirection: 'row', gap: 2, marginTop: v3.space[6] },
+  label: { ...v3.type.label, color: v3.colors.muted },
   /** The newest slot, in ink: every series here ends at now. */
-  labelLast: { color: colors.text },
+  labelLast: { color: v3.colors.fg },
 }))

@@ -1126,6 +1126,7 @@ export const tr: Localized<EnMessages> = {
       'Öğrettiğin dili ne kadar iyi konuşuyorlar. Yüksek seviye daha rahat bir sohbet, düşük seviye sana daha çok ihtiyacı olan biri demek.',
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
+    ageScaleOpen: '{max}+',
     showResults: 'Sonuçları göster',
     showResultsWithCount: 'Sonuçları göster · {count}',
   },
@@ -1982,6 +1983,8 @@ export const tr: Localized<EnMessages> = {
     capOverGrandfathered:
       'Zaten planının tuttuğundan fazlası var. Bunları değiştirebilir ya da kaldırabilirsin ama yenisini ekleyemezsin.',
     changeHint: 'Değiştirmek için bir dile dokun.',
+    allLanguages: 'Tüm diller, A’dan Z’ye',
+    levelGroup: '{language} seviyen',
     pausedNote: 'Ücretsiz planda Keşfet’te duraklatıldı. Pro ile yeniden sayılır.',
     saveFailed: 'Kaydedilemedi. Hiçbir şey değişmedi.',
   },
@@ -2023,7 +2026,6 @@ export const tr: Localized<EnMessages> = {
     title: 'Mutfağımız',
     intro: 'LangX burada pişiyor, pişirenler de burada.',
     dataCredit: 'Yer adları GeoNames’ten, CC BY 4.0 lisansıyla.',
-    stickerCredit: 'Bazı sticker’lar Microsoft Fluent Emoji’den, MIT lisansıyla.',
     footer: 'Açık kaynak; kullananlar yapıyor.',
     contributors: 'Katkıda bulunanlar',
     fundamentals: 'Katkıda bulunan herkes',
@@ -2578,9 +2580,10 @@ export const tr: Localized<EnMessages> = {
 
   stickerPack: {
     taglinePaper: 'Renkli kâğıttan kesilmiş selamlar ve hızlı cevaplar.',
-    taglineStarter: 'Her günün stickerları: merhaba, dinliyorum, anladım, aferin.',
-    taglinePractice: 'Pratiğin kendisi için: daha yavaş, bir daha, başardık.',
-    taglinePixel: 'Birlikte seviye atlamak için küçük pikseller.',
+    taglineStarter:
+      'Küçük bir konuşma balonu olan Pip, her günün sözlerini söylüyor: merhaba, dinliyorum, teşekkürler.',
+    taglinePractice: 'Pratiğin kendisi için keçe rozetler: daha yavaş, bir daha, başardık.',
+    taglinePixel: 'Birlikte seviye atlamak için boncuktan pikseller.',
     count: {
       one: '{count} sticker',
       other: '{count} sticker',
@@ -2645,7 +2648,7 @@ export const tr: Localized<EnMessages> = {
     practiceHourglass: 'Kum saati',
     practiceBullseye: 'Tam isabet',
     pixelLevelup: 'Seviye atladın',
-    pixelCoin: 'Altın',
+    pixelCoin: 'Ekstra can',
     pixelCheckpoint: 'Kontrol noktası',
     pixelFlame: 'Alev',
     pixelKey: 'Anahtar',

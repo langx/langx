@@ -1,31 +1,33 @@
 import Feather from '@expo/vector-icons/Feather'
 import { LANGUAGES } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
-import { Pressable, ScrollView, TextInput, View } from 'react-native'
-import { useLanguageSearch } from '../../components/LanguagePicker'
+import { Pressable, ScrollView, Text, TextInput, View } from 'react-native'
+import { LanguageChipV3 } from '../../components/languages/LanguageChipV3'
+import { PINNED_CODES, useLanguageSearch } from '../../components/LanguagePicker'
 import { SettingsHeaderV3 } from '../../components/settings/v3/SettingsKitV3'
 import { SettingsLeadV3 } from '../../components/settings/v3/SettingsFormV3'
-import { Chip } from '../../components/ui/Chip'
 import { ICON_BUTTON_TARGET } from '../../components/ui/IconButton'
 import { Screen } from '../../components/ui/Screen'
 import { useLanguageEditor } from '../../hooks/useLanguageEditor'
 import { useScreenInteractive } from '../../hooks/useScreenInteractive'
-import { useDisplayNames, useT } from '../../i18n'
+import { useDisplayNames, useLocale, useT } from '../../i18n'
 import { goBackTo } from '../../lib/navigation'
 import { makeStyles, useTheme } from '../../lib/theme'
 
 /**
  * Picking one language in the redesign's look (`V-LanguagePick`), behind
  * `flags.v3Home`. Which edit a pick sends, and that only a sent edit leaves
- * the screen, are `languages/pick.tsx`'s. The chips are `LanguagePicker`'s
- * own — the same `Chip`, the same search hook, the same dimmed chip that
- * says which list has it — under the redesign's search pill.
+ * the screen, are `languages/pick.tsx`'s. The search is `LanguagePicker`'s
+ * own hook, so what a query finds and what stays pinned cannot differ between
+ * the looks; the chips are the board's, and with no query the long tail
+ * after the pinned languages gets a heading of its own.
  */
 export function LanguagePickScreenV3() {
   useScreenInteractive()
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
+  const { locale } = useLocale()
   const names = useDisplayNames()
   const { list, replacing } = useLocalSearchParams<{ list?: string; replacing?: string }>()
   const { profile, apply } = useLanguageEditor()
@@ -60,6 +62,40 @@ export function LanguagePickScreenV3() {
     selected: mine,
     onToggle: choose,
   })
+
+  /*
+   * With no query, the chosen and pinned languages first and the rest under a
+   * heading, as the board draws it. With one, the matches are one list: a
+   * heading over a filtered handful would promise "all" and show three.
+   */
+  const searching = query.trim() !== ''
+  const head = (code: string): boolean =>
+    searching || mine.includes(code) || PINNED_CODES.includes(code)
+  const top = results.filter((item) => head(item.code))
+  /*
+   * The tail comes from the whole catalogue, not from `results`: the hook cuts
+   * its list at 60, so under "All languages" a reader saw the first fifty in
+   * English order — Afar to Fijian — and, in any other locale, a re-sorted
+   * handful with gaps where the rest of the alphabet should be. The catalogue
+   * is in English order; the heading says A to Z in the reader's.
+   */
+  const tail = searching
+    ? []
+    : LANGUAGES.filter((item) => !head(item.code)).sort((a, b) =>
+        names.language(a.code).localeCompare(names.language(b.code), locale),
+      )
+
+  function chip(item: { code: string }) {
+    return (
+      <LanguageChipV3
+        key={item.code}
+        label={names.language(item.code)}
+        selected={mine.includes(item.code)}
+        takenBy={theirs.includes(item.code) ? disabledLabel : undefined}
+        onPress={() => toggle(item.code)}
+      />
+    )
+  }
 
   return (
     <Screen fluid ground={v3.colors.bg}>
@@ -104,35 +140,18 @@ export function LanguagePickScreenV3() {
       </View>
       <ScrollView
         style={styles.list}
-        contentContainerStyle={styles.chips}
+        contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
       >
-        {results.map((item) => {
-          const isSelected = mine.includes(item.code)
-          const isTaken = theirs.includes(item.code)
-          const label = names.language(item.code)
-          // Drawn as `LanguagePicker` draws it: a plain, dimmed view that says why.
-          if (isTaken) {
-            return (
-              <View
-                key={item.code}
-                accessible
-                accessibilityState={{ disabled: true }}
-                style={styles.disabled}
-              >
-                <Chip label={`${label} · ${disabledLabel}`} />
-              </View>
-            )
-          }
-          return (
-            <Chip
-              key={item.code}
-              label={label}
-              selected={isSelected}
-              onPress={() => toggle(item.code)}
-            />
-          )
-        })}
+        <View style={styles.chips}>{top.map(chip)}</View>
+        {tail.length > 0 ? (
+          <>
+            <Text accessibilityRole="header" style={styles.heading}>
+              {t('languages.allLanguages')}
+            </Text>
+            <View style={styles.chips}>{tail.map(chip)}</View>
+          </>
+        ) : null}
       </ScrollView>
     </Screen>
   )
@@ -160,12 +179,12 @@ const useStyles = makeStyles(({ v3 }) => ({
     width: ICON_BUTTON_TARGET,
   },
   list: { flex: 1 },
-  chips: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: v3.space[8],
-    paddingBottom: v3.space[20],
-    paddingTop: v3.space[4],
+  content: { gap: v3.space[12], paddingBottom: v3.space[20], paddingTop: v3.space[4] },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
+  heading: {
+    ...v3.type.buttonSmall,
+    color: v3.colors.muted,
+    marginTop: v3.space[6],
+    paddingStart: v3.space[4],
   },
-  disabled: { opacity: 0.45 },
 }))

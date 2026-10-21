@@ -86,28 +86,28 @@ export function StatTable({ columns, rows, total, accessibilityLabel }: StatTabl
   )
 }
 
-const useStyles = makeStyles(({ colors }) => ({
+const useStyles = makeStyles(({ v3 }) => ({
   head: {
     flexDirection: 'row',
-    gap: 6,
-    paddingBottom: 6,
+    gap: v3.space[6],
+    paddingBottom: v3.space[6],
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: v3.colors.line,
   },
-  title: { color: colors.textMuted, fontSize: 11, fontWeight: '700' },
+  title: { ...v3.type.label, color: v3.colors.muted },
   row: {
     flexDirection: 'row',
-    gap: 6,
-    paddingVertical: 8,
+    gap: v3.space[6],
+    paddingVertical: v3.space[8],
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: v3.colors.line,
   },
-  total: { borderBottomWidth: 0, borderTopWidth: 1, borderTopColor: colors.text },
+  total: { borderBottomWidth: 0, borderTopWidth: 1, borderTopColor: v3.colors.fg },
   cell: { alignItems: 'flex-end' },
   // The week label reads from the start; every figure aligns to its column's end.
   first: { alignItems: 'flex-start' },
-  main: { color: colors.text, fontSize: 14, fontVariant: ['tabular-nums'] },
+  main: { ...v3.type.caption, color: v3.colors.fg, fontVariant: ['tabular-nums'] },
   label: { fontWeight: '600' },
   bold: { fontWeight: '700' },
-  sub: { color: colors.textFaint, fontSize: 11, fontVariant: ['tabular-nums'] },
+  sub: { ...v3.type.label, color: v3.colors.muted, fontVariant: ['tabular-nums'] },
 }))

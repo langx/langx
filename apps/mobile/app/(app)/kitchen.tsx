@@ -91,7 +91,7 @@ export default function KitchenScreen() {
         records the other two places it appears.
       */}
       <Text style={styles.footer}>
-        {t('kitchen.footer')} {t('kitchen.dataCredit')} {t('kitchen.stickerCredit')}
+        {t('kitchen.footer')} {t('kitchen.dataCredit')}
       </Text>
     </Screen>
   )

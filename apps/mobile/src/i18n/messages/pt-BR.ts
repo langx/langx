@@ -1140,6 +1140,7 @@ export const ptBR: Localized<EnMessages> = {
       'O quanto já falam o que você ensina. Mais alto significa uma conversa mais fácil; mais baixo, alguém que precisa mais de você.',
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
+    ageScaleOpen: '{max}+',
     showResults: 'Ver resultados',
     showResultsWithCount: 'Ver resultados · {count}',
   },
@@ -2005,6 +2006,8 @@ export const ptBR: Localized<EnMessages> = {
     capOverGrandfathered:
       'Você já tem mais do que o seu plano comporta. Dá para trocar ou remover, mas não adicionar outro.',
     changeHint: 'Toque em um idioma para trocá-lo.',
+    allLanguages: 'Todos os idiomas, de A a Z',
+    levelGroup: 'Seu nível de {language}',
     pausedNote: 'Pausado em Descobrir no plano gratuito. Volta a contar com o Pro.',
     saveFailed: 'Não salvou. Nada mudou.',
   },
@@ -2046,7 +2049,6 @@ export const ptBR: Localized<EnMessages> = {
     title: 'Nossa cozinha',
     intro: 'Onde o LangX é feito, e quem o faz.',
     dataCredit: 'Nomes de lugares do GeoNames, sob licença CC BY 4.0.',
-    stickerCredit: 'Alguns stickers são do Microsoft Fluent Emoji, com licença MIT.',
     footer: 'Feito às claras, por quem usa.',
     contributors: 'Colaboradores',
     fundamentals: 'Todo mundo que já contribuiu',
@@ -2608,9 +2610,10 @@ export const ptBR: Localized<EnMessages> = {
 
   stickerPack: {
     taglinePaper: 'Saudações e respostas rápidas, recortadas em papel colorido.',
-    taglineStarter: 'Os do dia a dia: oi, estou ouvindo, entendi, muito bem.',
-    taglinePractice: 'Para a prática em si: mais devagar, de novo, conseguimos.',
-    taglinePixel: 'Pequenos sprites para subir de nível juntos.',
+    taglineStarter: 'Pip, um balãozinho de fala, diz os do dia a dia: oi, estou ouvindo, valeu.',
+    taglinePractice:
+      'Distintivos de feltro para a prática em si: mais devagar, de novo, conseguimos.',
+    taglinePixel: 'Sprites de miçangas de passar a ferro para subir de nível juntos.',
     count: {
       one: '{count} sticker',
       other: '{count} stickers',
@@ -2675,7 +2678,7 @@ export const ptBR: Localized<EnMessages> = {
     practiceHourglass: 'Ampulheta',
     practiceBullseye: 'Na mosca',
     pixelLevelup: 'Subiu de nível',
-    pixelCoin: 'Moeda',
+    pixelCoin: 'Vida extra',
     pixelCheckpoint: 'Checkpoint',
     pixelFlame: 'Chama',
     pixelKey: 'Chave',
