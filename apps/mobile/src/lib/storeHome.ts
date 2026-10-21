@@ -83,9 +83,17 @@ export function withinReach(offers: readonly StoreOffer[]): StoreOffer | undefin
 const RUNGS_AHEAD = 2
 
 /**
+ * How many unowned sticker packs "Up next" shows. With ten packs in the
+ * catalogue, "every pack" would bury the two ladders under stickers; the
+ * rest are a tap away in the stickers collection.
+ */
+const PACKS_AHEAD = 3
+
+/**
  * What the home's "Up next" row shows: on each ladder the next two rungs not
  * yet owned — so the second, still locked, says which rung opens it — and
- * every sticker pack not yet owned. Without what "Within reach" already shows.
+ * the first three sticker packs not yet owned, in catalogue order. Without
+ * what "Within reach" already shows.
  *
  * This replaced the drawing's "New this week". Nothing in the catalogue says
  * when an item arrived, and a row that called every item new would be a
@@ -100,7 +108,7 @@ export function upNext(offers: readonly StoreOffer[], skip?: string): StoreOffer
   return [
     ...pick('frame', RUNGS_AHEAD),
     ...pick('title', RUNGS_AHEAD),
-    ...pick('stickers', Number.POSITIVE_INFINITY),
+    ...pick('stickers', PACKS_AHEAD),
   ]
 }
 

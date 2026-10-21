@@ -66,8 +66,9 @@ describe('withinReach', () => {
   it('skips what is owned and what is locked', () => {
     const owned = ['frame.slate', 'stickers.practice', 'stickers.starter', 'title.beginner']
     const pick = withinReach(offers({ balance: 1_800, owned }))
-    // Washi Tape (1,750) is the next frame rung; Pixel (1,500) is cheaper.
-    expect(pick?.id).toBe('stickers.pixel')
+    // Washi Tape (1,750) is the next frame rung; the 1,500 packs are cheaper,
+    // and Paper Talk is the first of them in catalogue order.
+    expect(pick?.id).toBe('stickers.paper')
   })
 
   it('never offers Aurora Glass while a gate is unmet, whatever the balance', () => {
@@ -83,18 +84,29 @@ describe('withinReach', () => {
 })
 
 describe('upNext', () => {
-  it('shows the next two rungs of each ladder and every pack not owned', () => {
+  it('shows the next two rungs of each ladder and the first three packs not owned', () => {
     const ids = upNext(offers({ owned: ['frame.slate'] })).map((o) => o.id)
     expect(ids).toEqual([
       'frame.washi',
       'frame.bronze',
       'title.beginner',
       'title.learner',
-      'stickers.practice',
       'stickers.starter',
-      'stickers.pixel',
       'stickers.paper',
+      'stickers.margin',
     ])
+  })
+
+  /**
+   * Ten packs would otherwise outnumber both ladders together. Three, and
+   * the next three once those are owned: the cap moves along the catalogue.
+   */
+  it('caps the packs at three, skipping the ones owned', () => {
+    const owned = ['stickers.starter', 'stickers.paper', 'stickers.margin']
+    const packs = upNext(offers({ owned }))
+      .filter((o) => o.kind === 'stickers')
+      .map((o) => o.id)
+    expect(packs).toEqual(['stickers.polyglot', 'stickers.practice', 'stickers.pixel'])
   })
 
   it('leaves out what "Within reach" already shows', () => {

@@ -153,6 +153,12 @@ export const COSMETICS: readonly Cosmetic[] = [
   { id: 'title.scholar', kind: 'title', label: 'Scholar', price: 20_000 },
   { id: 'title.master', kind: 'title', label: 'Master', price: 50_000 },
   { id: 'title.legend', kind: 'title', label: 'Legend', price: 100_000 },
+  /*
+   * The sticker packs, in the order the store and the sticker keyboard show
+   * them. `starter` and `practice` cost 1,000 as the two entry packs and every
+   * other pack 1,500; none is a rung above another — `isLadderKind` leaves
+   * stickers out.
+   */
   /**
    * The starter pack: Pip, a speech bubble with a face, saying the everyday
    * things — hello, I am listening, I get it, thank you.
@@ -165,6 +171,114 @@ export const COSMETICS: readonly Cosmetic[] = [
    * half of `practice` were Microsoft's Fluent Emoji; the ids are unchanged, so
    * a message sent before the redraw shows the new picture.
    */
+  {
+    id: 'stickers.starter',
+    kind: 'stickers',
+    label: 'Starter stickers',
+    price: 1000,
+    stickers: [
+      'wave',
+      'listen',
+      'thinking',
+      'correct',
+      'pronounce',
+      'confused',
+      'book',
+      'bulb',
+      'clock',
+      'heart',
+      'party',
+      'sparkles',
+    ],
+  },
+  /**
+   * The fourth pack, and the first with words on it: greetings and quick
+   * replies paired with everyday things, cut from coloured paper — "¡Hola!"
+   * on a speech bubble, "Çay?" on a tea glass, "Fixed it" on a pencil.
+   *
+   * Drawn for the v3 store (the board "Sticker pack"), so all twelve are ours
+   * and the pack adds no licence. The lettering is outlined into paths, not
+   * set as SVG `<text>`, so no device needs Nunito to draw it.
+   *
+   * 1,500, as pixel is; 1,000 is kept for the two entry packs. Still not a
+   * rung — `isLadderKind` leaves stickers out.
+   */
+  {
+    id: 'stickers.paper',
+    kind: 'stickers',
+    label: 'Paper Talk',
+    price: 1500,
+    stickers: [
+      'hola',
+      'crane',
+      'nice',
+      'gotit',
+      'cafe',
+      'cay',
+      'sent',
+      'merci',
+      'onesec',
+      'book',
+      'fixed',
+      'night',
+    ],
+  },
+  /**
+   * Margin Notes: a teacher's red pen on lined notebook paper — insert,
+   * strike, swap, circle, and a gold star when it lands. LangX is about
+   * corrections, and these are the marks a correction makes. Four are
+   * lettered in English ("sp?", "nice!", "so close!"), outlined from Nunito.
+   */
+  {
+    id: 'stickers.margin',
+    kind: 'stickers',
+    label: 'Margin Notes',
+    price: 1500,
+    stickers: [
+      'caret',
+      'strike',
+      'swap',
+      'circle',
+      'squiggle',
+      'tick',
+      'sp',
+      'nice',
+      'close',
+      'redpen',
+      'tape',
+      'goldstar',
+    ],
+  },
+  /**
+   * Polyglot: a hello, a thank-you or a good-luck in twelve languages and
+   * eight scripts, each on its own postage stamp. The words are outlined from
+   * Nunito and Noto (Arabic and Devanagari shaped first, so their letters
+   * join), and every spelling was checked codepoint by codepoint; redraw a
+   * word on the board rather than editing its path. Each sticker's
+   * screen-reader name says what the word means.
+   *
+   * Labelled "Polyglot stickers" because `title.polyglot` already exists.
+   */
+  {
+    id: 'stickers.polyglot',
+    kind: 'stickers',
+    label: 'Polyglot stickers',
+    price: 1500,
+    stickers: [
+      'annyeong',
+      'namaste',
+      'privet',
+      'konnichiwa',
+      'shukran',
+      'danke',
+      'grazie',
+      'xiexie',
+      'kalimera',
+      'suerte',
+      'bonnechance',
+      'kolaygelsin',
+    ],
+  },
   /**
    * The second pack, and the one that proves packs are not a ladder: it is
    * priced the same as the first because neither is a rung above the other,
@@ -198,26 +312,6 @@ export const COSMETICS: readonly Cosmetic[] = [
       'thinking',
       'hourglass',
       'bullseye',
-    ],
-  },
-  {
-    id: 'stickers.starter',
-    kind: 'stickers',
-    label: 'Starter stickers',
-    price: 1000,
-    stickers: [
-      'wave',
-      'listen',
-      'thinking',
-      'correct',
-      'pronounce',
-      'confused',
-      'book',
-      'bulb',
-      'clock',
-      'heart',
-      'party',
-      'sparkles',
     ],
   },
   /**
@@ -258,35 +352,104 @@ export const COSMETICS: readonly Cosmetic[] = [
     ],
   },
   /**
-   * The fourth pack, and the first with words on it: greetings and quick
-   * replies paired with everyday things, cut from coloured paper — "¡Hola!"
-   * on a speech bubble, "Çay?" on a tea glass, "Fixed it" on a pencil.
-   *
-   * Drawn for the v3 store (the board "Sticker pack"), so all twelve are ours
-   * and the pack adds no licence. The lettering is outlined into paths, not
-   * set as SVG `<text>`, so no device needs Nunito to draw it.
-   *
-   * 1,500, as pixel is; 1,000 is kept for the two entry packs. Still not a
-   * rung — `isLadderKind` leaves stickers out.
+   * Study Desk: the stationery on the desk where homework with a partner
+   * happens — flashcards, a highlighter, a tomato timer, washi tape.
    */
   {
-    id: 'stickers.paper',
+    id: 'stickers.desk',
     kind: 'stickers',
-    label: 'Paper Talk',
+    label: 'Study Desk',
     price: 1500,
     stickers: [
-      'hola',
-      'crane',
-      'nice',
-      'gotit',
-      'cafe',
-      'cay',
-      'sent',
-      'merci',
-      'onesec',
-      'book',
-      'fixed',
-      'night',
+      'flashcard',
+      'highlighter',
+      'sticky',
+      'notebook',
+      'pencil',
+      'headphones',
+      'dictionary',
+      'timer',
+      'coffee',
+      'lamp',
+      'plant',
+      'washi',
+    ],
+  },
+  /**
+   * Night Owl: chatting across time zones, when it is morning for one of you
+   * and midnight for the other. A two-colour linocut; "gm", "gn" and the zzz
+   * are the only letters, outlined to paths.
+   */
+  {
+    id: 'stickers.nightowl',
+    kind: 'stickers',
+    label: 'Night Owl',
+    price: 1500,
+    stickers: [
+      'owl',
+      'moon',
+      'gm',
+      'gn',
+      'twoclocks',
+      'globe',
+      'plane',
+      'latecall',
+      'yawn',
+      'snooze',
+      'candle',
+      'shootingstar',
+    ],
+  },
+  /**
+   * Qalam: ink and the tools of writing across cultures — a reed pen, an
+   * Ottoman pen case, marbled paper, a brush on its ink stone, a quill and a
+   * wax seal. No lettering at all, sacred or otherwise.
+   *
+   * Labelled "Qalam stickers" because `frame.violet` is already called Qalam.
+   */
+  {
+    id: 'stickers.qalam',
+    kind: 'stickers',
+    label: 'Qalam stickers',
+    price: 1500,
+    stickers: [
+      'reed',
+      'divit',
+      'inkpot',
+      'drop',
+      'dots',
+      'ebru',
+      'brush',
+      'seal',
+      'nib',
+      'blot',
+      'quill',
+      'wax',
+    ],
+  },
+  /**
+   * Shared Table: twelve dishes you would describe to a partner from
+   * somewhere else, each drawn the way it is served. No alcohol and no flags:
+   * the cheers is two tea cups.
+   */
+  {
+    id: 'stickers.table',
+    kind: 'stickers',
+    label: 'Shared Table',
+    price: 1500,
+    stickers: [
+      'simit',
+      'dumplings',
+      'tacos',
+      'croissant',
+      'sushi',
+      'samosa',
+      'arepa',
+      'pho',
+      'baklava',
+      'mochi',
+      'paella',
+      'cheers',
     ],
   },
 ]
