@@ -116,7 +116,12 @@ export function GiftScreenV3() {
           <Animated.View style={[styles.reveal, amountStyle]}>
             {amount > 0 ? (
               <>
-                <Text style={styles.amount} numberOfLines={1} adjustsFontSizeToFit>
+                <Text
+                  style={styles.amount}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.5}
+                >
                   +{amount.toLocaleString(locale)}
                 </Text>
                 <Text style={styles.amountUnit}>{t('gift.tokensUnit', { count: amount })}</Text>
@@ -238,7 +243,10 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[14],
   },
   chipText: { ...v3.type.caption, color: v3.colors.ink, fontWeight: '700' },
-  reveal: { alignItems: 'center', gap: v3.space[4] },
+  // Stretched, so the amount has the stage's width to fit into. Centred and
+  // shrink-wrapped, iOS's adjustsFontSizeToFit measured a zero-width line and
+  // drew "+13" at a few points tall on TestFlight 194.
+  reveal: { alignItems: 'center', alignSelf: 'stretch', gap: v3.space[4] },
   amount: { ...v3.type.numeral, color: v3.colors.ink, lineHeight: 84, textAlign: 'center' },
   amountUnit: { ...v3.type.headline, color: v3.colors.ink, textAlign: 'center' },
   note: {

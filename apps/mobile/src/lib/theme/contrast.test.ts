@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { BUTTON_GROUNDS, disabledButtonLook } from './buttonDisabledLook'
 import {
   PARTNER_HUES,
   palettes,
@@ -78,6 +79,11 @@ const PAIRS: Pair[] = [
   // A video call's switches in the dark panel, off and lit.
   { text: 'onSignal', on: 'stageTile' },
   { text: 'ink', on: 'onSignal' },
+  // The PRO badge: its word on its tablet, on the ground and on a hue (where
+  // the tablet is ink), and the tablet itself against the ground as a shape.
+  { text: 'proWord', on: 'proTablet' },
+  { text: 'proWordOnInk', on: 'ink' },
+  { text: 'proTablet', on: 'bg', large: true },
 ]
 
 function resolve(scheme: ColorScheme, token: Token): string {
@@ -143,4 +149,34 @@ describe('the anchors that do not move with the theme', () => {
   it('puts the same ink on every hue in both schemes', () => {
     expect(v3.dark.colors.ink).toBe(v3.light.colors.ink)
   })
+})
+
+describe('a filled button that cannot be pressed yet', () => {
+  for (const scheme of SCHEMES) {
+    const colors = v3[scheme].colors
+    const look = disabledButtonLook(colors)
+
+    // See-through, so it is measured on each ground it is drawn on: the page,
+    // and the grey block of a settings group, a sheet's card or an admin panel.
+    for (const ground of BUTTON_GROUNDS) {
+      it(`${scheme}: keeps its label readable on ${ground}`, () => {
+        expect(look.face).toBe('transparent')
+        expect(contrast(look.label, colors[ground])).toBeGreaterThanOrEqual(4.5)
+      })
+
+      // 3:1, WCAG's floor for a control's edge: a grey border on a grey
+      // block, the first version of this look, all but vanished.
+      it(`${scheme}: keeps its edge visible on ${ground}`, () => {
+        expect(contrast(look.border, colors[ground])).toBeGreaterThanOrEqual(3)
+      })
+    }
+
+    // Half the yellow over the dark ground was olive: a colour of its own,
+    // read as another button rather than this one asleep.
+    it(`${scheme}: is not any variant's own colour`, () => {
+      for (const fill of [colors.yellow, colors.blue, colors.pill, colors.ink]) {
+        expect(look.border).not.toBe(fill)
+      }
+    })
+  }
 })

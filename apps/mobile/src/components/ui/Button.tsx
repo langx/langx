@@ -1,18 +1,13 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useEffect, useRef, type ReactElement } from 'react'
-import {
-  ActivityIndicator,
-  Animated,
-  Easing,
-  Platform,
-  Text,
-  View,
-  type ViewStyle,
-} from 'react-native'
+import { ActivityIndicator, Animated, Platform, Text, View, type ViewStyle } from 'react-native'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
+import { useV3LaunchLook } from '../../hooks/useV3LaunchLook'
 import { impact, notification } from '../../lib/haptics'
 import { makeStyles, useTheme, type V3Colors } from '../../lib/theme'
-import { CURVE, DURATION } from '../../lib/theme/motionValues'
+import { disabledButtonLook, FILLED_BUTTON_VARIANTS } from '../../lib/theme/buttonDisabledLook'
+import { EASE_POP } from '../../lib/theme/motionAnimated'
+import { DURATION } from '../../lib/theme/motionValues'
 import { PressableScaleBase } from './PressableScale'
 
 type Variant = 'primary' | 'blue' | 'secondary' | 'neutral' | 'ink' | 'hue' | 'danger'
@@ -94,9 +89,6 @@ export const BUTTON_FACE = {
  */
 const TOUCH_BAND = 2
 
-/** `motion.ts`'s `EASE_POP`, on React Native's `Easing`. */
-const EASE_POP = Easing.bezier(...CURVE.pop)
-
 /**
  * v3's button: a flat pill, the label in sentence case, and a small shrink
  * under the finger.
@@ -138,7 +130,22 @@ export function Button({
   const styles = useStyles()
   const reduceMotion = useReduceMotion()
   const isDisabled = disabled || loading
-  const look = lookFor(v3.colors, variant)
+  /*
+   * Under `flags.v3Home` a filled button that cannot be pressed is grey
+   * rather than its own colour at half strength (`disabledButtonLook`), and a
+   * loading one keeps its colour: the spinner already says to wait, and the
+   * fade made the yellow olive after dark. `useV3LaunchLook` because this
+   * draws on the launch path too — welcome, sign-in, onboarding — and has to
+   * agree with the screen around it.
+   */
+  const v3Look = useV3LaunchLook()
+  const greyed =
+    v3Look &&
+    disabled &&
+    !loading &&
+    (FILLED_BUTTON_VARIANTS as readonly Variant[]).includes(variant)
+  const faded = v3Look ? disabled && !greyed : isDisabled
+  const look = greyed ? disabledButtonLook(v3.colors) : lookFor(v3.colors, variant)
   const glyphSize = size === 'small' ? v3.icon.sm : size === 'medium' ? v3.icon.md : v3.icon.lg
 
   // The check's pop, and the success haptic, on the change rather than on
@@ -181,7 +188,7 @@ export function Button({
       // as it navigates away (the report screen: pending → done → back) flips
       // it in exactly the commit `PressableScale` describes.
       collapsable={false}
-      style={[styles.wrap, isDisabled && styles.disabled, style]}
+      style={[styles.wrap, faded && styles.disabled, style]}
     >
       <PressableScaleBase
         reduceMotion={reduceMotion}

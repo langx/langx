@@ -17,6 +17,7 @@ import {
   type TextInputKeyPressEventData,
 } from 'react-native'
 import { useT } from '../../i18n'
+import { composerShowsMic } from '../../lib/composerRow'
 import type { CopilotGate } from '../../lib/copilotGate'
 import { pickStarters } from '../../lib/conversationStarters'
 import { enterSendsOnNative, shouldSubmitOnEnter } from '../../lib/submitOnEnter'
@@ -203,6 +204,8 @@ export function ComposerV3({
   // The mic records only from an empty composer, as it always has: a note
   // travels alone, so text or a picked file has to go first.
   const micLive = !busy && (recording !== null || !canSend)
+  // Beside a typed draft the mic could not record anyway; its slot is the field's.
+  const showMic = composerShowsMic({ value, recording: recording !== null })
   const sendLive = canSend && !busy
   /*
    * Only for a typed draft, and only when this person has Copilot at all — an
@@ -522,12 +525,12 @@ export function ComposerV3({
           />
         )}
         {/*
-          Both always drawn, and only one live at a time: the mic while there
-          is nothing to send, the send once there is. Neither moves when the
-          other wakes, so the thumb learns two places instead of one that
-          changes what it does.
+          Only one live at a time: the mic while there is nothing to send, the
+          send once there is. The send never moves, so the thumb learns one
+          place for it; the mic steps aside for a typed draft and the field
+          takes its slot (`composerShowsMic`).
         */}
-        {onMic ? (
+        {onMic && showMic ? (
           <PressableScale
             accessibilityRole="button"
             accessibilityLabel={t('chat.voiceMessage')}
@@ -709,6 +712,9 @@ const useStyles = makeStyles(({ v3 }) => ({
     flex: 1,
     maxHeight: FIELD_MAX,
     minHeight: BIG,
+    // A textarea's intrinsic width is its `cols`; without this a flex item on
+    // the web cannot shrink below it.
+    minWidth: 0,
     paddingHorizontal: v3.space[20],
     paddingVertical: v3.space[16],
   },

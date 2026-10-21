@@ -1,0 +1,311 @@
+<!doctype html>
+<!--
+  The Play feature graphic, 1024×500: the board drawing (V-StoreShots) as
+  drawn. One file for every listing, so nothing on it is in a language but
+  the name. The lockup sits right of centre, clear of the left ~45% (where
+  Play lays the title over a gradient on desktop) and of the centre (the
+  video play button).
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      /*FONTS*/
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1024px;
+        height: 500px;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="
+        position: relative;
+        width: 1024px;
+        height: 500px;
+        overflow: hidden;
+        background: #3b6cf6;
+      "
+    >
+      <!-- colour blocks -->
+      <span
+        aria-hidden="true"
+        style="
+          position: absolute;
+          left: 600px;
+          top: 150px;
+          width: 200px;
+          height: 420px;
+          border-radius: 40px;
+          background: #bba4ff;
+        "
+      ></span>
+      <span
+        aria-hidden="true"
+        style="
+          position: absolute;
+          left: 760px;
+          top: 96px;
+          width: 220px;
+          height: 460px;
+          border-radius: 40px;
+          background: #5fdc98;
+        "
+      ></span>
+      <span
+        aria-hidden="true"
+        style="
+          position: absolute;
+          left: 930px;
+          top: 220px;
+          width: 160px;
+          height: 340px;
+          border-radius: 40px;
+          background: #ff9f52;
+        "
+      ></span>
+      <!-- lockup -->
+      <div
+        style="
+          position: absolute;
+          left: 600px;
+          top: 44px;
+          display: flex;
+          align-items: center;
+          gap: 14px;
+        "
+      >
+        <svg aria-hidden="true" width="56" height="56" viewBox="0 0 1024 1024">
+          <rect width="1024" height="1024" rx="230" fill="#ffc409"></rect>
+          <path
+            fill="#14161b"
+            d="M393.661 591.654A235.3 235.3 0 0 1 462.846 266.161A235.3 235.3 0 0 1 788.339 335.346L718.059 380.987A151.5 151.5 0 0 0 508.487 336.441A151.5 151.5 0 0 0 463.941 546.013Z"
+          ></path>
+          <path
+            fill="#ffffff"
+            d="M630.339 432.346A235.3 235.3 0 0 1 561.154 757.839A235.3 235.3 0 0 1 235.661 688.654L305.941 643.013A151.5 151.5 0 0 0 515.513 687.559A151.5 151.5 0 0 0 560.059 477.987Z"
+          ></path>
+        </svg>
+        <span
+          style="
+            font-family: Nunito, ui-rounded, system-ui, sans-serif;
+            font-weight: 900;
+            font-size: 46px;
+            line-height: 50px;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+          "
+          >LangX</span
+        >
+      </div>
+      <!-- phone A: thread with a correction -->
+      <div
+        style="
+          position: absolute;
+          left: 626px;
+          top: 134px;
+          width: 176px;
+          height: 380px;
+          box-sizing: border-box;
+          padding: 6px;
+          border-radius: 30px;
+          background: #14161b;
+        "
+      >
+        <div
+          style="
+            width: 164px;
+            height: 368px;
+            border-radius: 24px;
+            overflow: hidden;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+          "
+        >
+          <div
+            style="
+              height: 64px;
+              background: #bba4ff;
+              border-radius: 0 0 16px 16px;
+              display: flex;
+              align-items: flex-end;
+              gap: 6px;
+              padding: 0 10px 10px;
+            "
+          >
+            <span
+              style="width: 24px; height: 24px; border-radius: 999px; background: #14161b"
+            ></span
+            ><span
+              style="
+                width: 54px;
+                height: 10px;
+                margin-bottom: 7px;
+                border-radius: 999px;
+                background: #14161b;
+              "
+            ></span>
+          </div>
+          <span
+            style="
+              margin: 0 8px;
+              width: 110px;
+              height: 30px;
+              border-radius: 12px 12px 12px 4px;
+              background: #f2f2ee;
+            "
+          ></span>
+          <div
+            style="
+              align-self: flex-end;
+              margin: 0 8px;
+              width: 124px;
+              box-sizing: border-box;
+              border: 2px solid #0b7a3e;
+              border-radius: 10px;
+              padding: 7px 8px;
+              display: flex;
+              flex-direction: column;
+              gap: 5px;
+            "
+          >
+            <!-- The board wrote a Spanish sentence here; Play shows this one file in every language, so the correction is drawn as bars: struck, then fixed. --><span
+              style="display: flex; align-items: center; gap: 4px"
+              ><span
+                style="width: 22px; height: 6px; border-radius: 3px; background: #c9cbc4"
+              ></span
+              ><span
+                style="
+                  position: relative;
+                  width: 40px;
+                  height: 6px;
+                  border-radius: 3px;
+                  background: #c9cbc4;
+                "
+                ><span
+                  style="
+                    position: absolute;
+                    left: -2px;
+                    right: -2px;
+                    top: 2px;
+                    height: 2px;
+                    background: #5a5f69;
+                  "
+                ></span></span
+              ><span
+                style="width: 26px; height: 6px; border-radius: 3px; background: #c9cbc4"
+              ></span></span
+            ><span style="display: flex; align-items: center; gap: 4px"
+              ><span
+                style="width: 22px; height: 6px; border-radius: 3px; background: #c9cbc4"
+              ></span
+              ><span
+                style="width: 34px; height: 6px; border-radius: 3px; background: #0b7a3e"
+              ></span
+              ><span
+                style="width: 26px; height: 6px; border-radius: 3px; background: #c9cbc4"
+              ></span
+            ></span>
+          </div>
+          <span
+            style="
+              align-self: flex-end;
+              margin: 0 8px;
+              width: 96px;
+              height: 30px;
+              border-radius: 12px 12px 4px 12px;
+              background: #3b6cf6;
+            "
+          ></span>
+          <span
+            style="
+              margin: 0 8px;
+              width: 120px;
+              height: 44px;
+              border-radius: 12px 12px 12px 4px;
+              background: #f2f2ee;
+            "
+          ></span>
+        </div>
+      </div>
+      <!-- phone B: incoming call -->
+      <div
+        style="
+          position: absolute;
+          left: 790px;
+          top: 170px;
+          width: 176px;
+          height: 380px;
+          box-sizing: border-box;
+          padding: 6px;
+          border-radius: 30px;
+          background: #14161b;
+        "
+      >
+        <div
+          style="
+            width: 164px;
+            height: 368px;
+            border-radius: 24px;
+            overflow: hidden;
+            background: #48d3d0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 52px;
+            box-sizing: border-box;
+          "
+        >
+          <span
+            style="
+              width: 66px;
+              height: 66px;
+              border-radius: 999px;
+              background: #14161b;
+              box-shadow: 0 0 0 8px rgba(20, 22, 27, 0.1);
+            "
+          ></span>
+          <span
+            style="
+              margin-top: 22px;
+              width: 64px;
+              height: 12px;
+              border-radius: 999px;
+              background: #14161b;
+            "
+          ></span>
+          <span
+            style="
+              margin-top: 8px;
+              width: 92px;
+              height: 8px;
+              border-radius: 999px;
+              background: rgba(20, 22, 27, 0.45);
+            "
+          ></span>
+          <div style="margin-top: 92px; display: flex; gap: 34px">
+            <span
+              style="width: 36px; height: 36px; border-radius: 999px; background: #c8232c"
+            ></span
+            ><span
+              style="width: 36px; height: 36px; border-radius: 999px; background: #ffc409"
+            ></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.fonts.ready.then(() => {
+        window.__ready = true
+      })
+    </script>
+  </body>
+</html>

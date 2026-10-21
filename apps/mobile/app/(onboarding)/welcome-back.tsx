@@ -5,7 +5,9 @@ import { Redirect, router, type Href } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native'
 import { LoadFailed } from '../../src/components/LoadFailed'
+import { errorStatusOf } from '../../src/lib/errors'
 import { queryFailed } from '../../src/lib/listState'
+import { meState } from '../../src/lib/meState'
 import { api } from '../../src/api/client'
 import { keys, useMe } from '../../src/api/queries'
 import { NotificationPriming } from '../../src/components/NotificationPriming'
@@ -103,6 +105,14 @@ export default function WelcomeBackScreen() {
    * whose whole content is the restore.
    */
   if (!me.data) {
+    /*
+     * No profile at all: an account still in onboarding, which only a typed or
+     * restored URL brings here. "Could not load" would be wrong — nothing
+     * failed — so the gate at `/` sends it to the step it has reached.
+     */
+    if (meState({ hasProfile: false, errorStatus: errorStatusOf(me.error) }) === 'onboarding') {
+      return <Redirect href="/" />
+    }
     return (
       <Screen>
         {queryFailed(me) ? <LoadFailed onRetry={() => void me.refetch()} /> : <ActivityIndicator />}
