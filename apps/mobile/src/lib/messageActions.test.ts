@@ -156,7 +156,8 @@ describe('messageActionsFor', () => {
    * refuses to star it, and the block below says what it offers instead.
    */
   it('offers star on every message type', () => {
-    for (const type of MESSAGE_TYPES.filter((type) => type !== 'call')) {
+    // Not the two server records, a call's row and a gift's, which have their own list below.
+    for (const type of MESSAGE_TYPES.filter((type) => type !== 'call' && type !== 'gift')) {
       const hasBody = type === 'text' || type === 'correction'
       expect(ids({ type, hasBody })).toContain('star')
     }
@@ -167,6 +168,11 @@ describe('messageActionsFor', () => {
    * a call's row. A menu that offered any of them would end in an error, so
    * the whole list is pinned here rather than each absence separately.
    */
+  it('offers the same two on the row a sticker pack gift leaves', () => {
+    expect(ids({ type: 'gift', hasBody: false, mine: false })).toEqual(['delete', 'report'])
+    expect(ids({ type: 'gift', hasBody: false, mine: true })).toEqual(['delete', 'report'])
+  })
+
   describe('on the row a call leaves', () => {
     const call: Partial<MessageActionContext> = { type: 'call', hasBody: false }
 
