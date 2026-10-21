@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { buildApp } from '../app'
+import { LARGE_FACES_PER_MINUTE } from './avatar'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
@@ -203,6 +204,21 @@ describe('generated avatars', () => {
       expect(response.statusCode).toBe(200)
       expect(response.headers['cache-control']).not.toContain('immutable')
       expect(response.rawPayload).toEqual((await drawV3(userId, 's=48')).rawPayload)
+    })
+
+    it('gives the 480px face a tighter limit of its own, leaving the list sizes alone', async () => {
+      // Its own address, so the limit is this test's and not the suite's.
+      const from = (query: string) =>
+        app.inject({
+          method: 'GET',
+          url: `/public/avatar/v3/${UNKNOWN}?${query}`,
+          remoteAddress: '203.0.113.7',
+        })
+      for (let i = 0; i < LARGE_FACES_PER_MINUTE; i++) {
+        expect((await from('s=480&v=1-N01-0')).statusCode).toBe(200)
+      }
+      expect((await from('s=480&v=1-N01-0')).statusCode).toBe(429)
+      expect((await from('s=48&v=1-N01-0')).statusCode).toBe(200)
     })
 
     it('draws a face for an id nobody holds, rather than a 404', async () => {
