@@ -1,5 +1,9 @@
-import { describe, expect, it } from 'vitest'
+import { createServer, type Server } from 'node:http'
+import type { AddressInfo } from 'node:net'
+import { afterEach, describe, expect, it } from 'vitest'
+import { z } from 'zod'
 import { loadEnv } from '../../env'
+import { createStructuredProvider } from '../official/assistantProvider'
 import { createCopilotProvider } from './provider'
 
 const BASE = {
@@ -32,5 +36,37 @@ describe('the Copilot provider', () => {
       }),
     )
     expect(own?.model).toBe('copilot-model')
+  })
+
+  describe('a model that never answers', () => {
+    let server: Server | undefined
+    const savedBaseUrl = process.env.ANTHROPIC_BASE_URL
+
+    afterEach(() => {
+      server?.closeAllConnections()
+      server?.close()
+      if (savedBaseUrl === undefined) delete process.env.ANTHROPIC_BASE_URL
+      else process.env.ANTHROPIC_BASE_URL = savedBaseUrl
+    })
+
+    // A local server that takes the request and never replies: the stall the
+    // SDK's ten-minute default would sit through. The provider must give up
+    // on its own timeout and throw, which `askCopilot` turns into a refund.
+    it('gives up after its timeout instead of the SDK default', async () => {
+      server = createServer(() => {})
+      await new Promise<void>((resolve) => server?.listen(0, '127.0.0.1', resolve))
+      const { port } = server.address() as AddressInfo
+      process.env.ANTHROPIC_BASE_URL = `http://127.0.0.1:${port}`
+
+      const provider = createStructuredProvider('test-key-not-real', 'test-model', 16, {
+        timeoutMs: 200,
+        maxRetries: 0,
+      })
+      const started = Date.now()
+      await expect(
+        provider?.ask({ system: 's', prompt: '{}', schema: z.object({ ok: z.boolean() }) }),
+      ).rejects.toThrow()
+      expect(Date.now() - started).toBeLessThan(5_000)
+    })
   })
 })

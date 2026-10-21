@@ -487,6 +487,35 @@ describe('processRevenueCatWebhook', () => {
       expect((await getProfile('welcome-trial'))?.proWelcome?.source).toBe('trial')
     })
 
+    /*
+     * Since 3.0 the monthly plan carries the free week the yearly one does.
+     * Nothing on the server may know which plan a trial is on: the period
+     * type is the store's word, and the product is only recorded.
+     */
+    it.each([
+      ['langx_fluent_monthly', 'APP_STORE'],
+      ['langx_fluent_yearly', 'APP_STORE'],
+      ['langx_fluent_monthly:monthly', 'PLAY_STORE'],
+      ['langx_fluent_monthly_v2', 'RC_BILLING'],
+    ])('records a free week on %s (%s) as a trial', async (productId, store) => {
+      const userId = `trial-${productId}-${store}`
+      await insertProfile(minimalProfile(userId))
+
+      await processRevenueCatWebhook(handle.db, {
+        id: `evt-${userId}`,
+        type: 'INITIAL_PURCHASE',
+        app_user_id: userId,
+        product_id: productId,
+        store,
+        period_type: 'TRIAL',
+        expiration_at_ms: Date.now() + 7 * 24 * 60 * 60 * 1000,
+      })
+
+      const profile = await getProfile(userId)
+      expect(profile?.entitlement).toMatchObject({ tier: 'pro', periodType: 'trial' })
+      expect(profile?.proWelcome?.source).toBe('trial')
+    })
+
     it('calls a promotional grant a gift, not a purchase', async () => {
       await insertProfile(minimalProfile('welcome-gift'))
 

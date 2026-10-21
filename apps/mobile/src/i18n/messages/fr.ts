@@ -2032,6 +2032,8 @@ export const fr: Localized<EnMessages> = {
     capOverGrandfathered:
       'Tu en as déjà plus que ton offre n’en contient. Tu peux les changer ou les retirer, mais pas en ajouter.',
     changeHint: 'Touche une langue pour la changer.',
+    allLanguages: 'Toutes les langues, de A à Z',
+    levelGroup: 'Ton niveau en {language}',
     pausedNote: 'En pause dans Découvrir avec le forfait gratuit. Elle compte à nouveau avec Pro.',
     saveFailed: 'Ça n’a pas été enregistré. Rien n’a changé.',
   },
@@ -2073,7 +2075,6 @@ export const fr: Localized<EnMessages> = {
     title: 'Notre cuisine',
     intro: 'Là où LangX se fabrique, et ceux qui le font.',
     dataCredit: 'Noms de lieux issus de GeoNames, sous licence CC BY 4.0.',
-    stickerCredit: 'Certains stickers viennent de Microsoft Fluent Emoji, sous licence MIT.',
     footer: 'Construit à ciel ouvert, par ceux qui s’en servent.',
     contributors: 'Contributeurs',
     fundamentals: 'Toutes les contributions',
@@ -2645,9 +2646,11 @@ export const fr: Localized<EnMessages> = {
 
   stickerPack: {
     taglinePaper: 'Des bonjours et des réponses rapides, découpés dans du papier de couleur.',
-    taglineStarter: 'Ceux de tous les jours : salut, je t’écoute, j’ai compris, bravo.',
-    taglinePractice: 'Pour la pratique elle-même : plus lentement, encore, on y est arrivés.',
-    taglinePixel: 'De petits sprites pour monter de niveau ensemble.',
+    taglineStarter:
+      'Pip, une petite bulle, dit ceux de tous les jours : salut, je t’écoute, merci.',
+    taglinePractice:
+      'Des écussons en feutre pour la pratique elle-même : plus lentement, encore, on y est arrivés.',
+    taglinePixel: 'Des sprites en perles à repasser pour monter de niveau ensemble.',
     count: {
       one: '{count} sticker',
       other: '{count} stickers',
@@ -2712,7 +2715,7 @@ export const fr: Localized<EnMessages> = {
     practiceHourglass: 'Sablier',
     practiceBullseye: 'En plein dans le mille',
     pixelLevelup: 'Niveau supérieur',
-    pixelCoin: 'Pièce',
+    pixelCoin: 'Vie bonus',
     pixelCheckpoint: 'Point de passage',
     pixelFlame: 'Flamme',
     pixelKey: 'Clé',

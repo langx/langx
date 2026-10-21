@@ -1,8 +1,11 @@
 import {
   MARKETING_MIN_GAP_DAYS,
   PROMOTION_LOCAL_HOUR,
+  QUOTA_KINDS,
   localDayKey,
   notificationsAllowed,
+  quotaLimit,
+  type QuotaKind,
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -88,6 +91,25 @@ const WIN_BACK_DAYS = 7
  * a plan that no longer fits.
  */
 const QUOTA_REFUSALS_BEFORE_NUDGE = 3
+
+/**
+ * The refusals the plans nudge may count: limits the free plan has and Pro
+ * does not have at all. Today that is new conversations and translations,
+ * which is exactly what the nudge's mail names.
+ *
+ * Read from `PLAN_LIMITS` rather than listed, so a limit that changes on
+ * either row moves this with it. Every other refusal is left out on purpose:
+ * media, the translation fair-use ceiling and the Echo captures are the same
+ * on both plans, and the voices, transcripts and Copilot are only raised —
+ * "a plan lifts them" would be false for somebody refused by any of those,
+ * and with `flags.promoPaywallLinks` on it would send them to a paywall that
+ * does not lift what refused them (#1789, #1832).
+ */
+export const REFUSALS_A_PLAN_LIFTS: ReadonlySet<string> = new Set<QuotaKind>(
+  QUOTA_KINDS.filter(
+    (kind) => quotaLimit('free', kind) !== null && quotaLimit('pro', kind) === null,
+  ),
+)
 
 /**
  * How long a nudge with a one-day trigger stays worth sending, once
@@ -289,6 +311,12 @@ export const PROMOTIONS: Promotion[] = [
      * Free accounts only. A paid tier has no limit to hit, so the array can
      * only be stale — somebody who upgraded yesterday must not be sold the
      * thing they just bought.
+     *
+     * And only refusals a plan actually lifts — `REFUSALS_A_PLAN_LIFTS`. It
+     * reads `quotaRefusalKinds`, not the bare `quotaRefusals`: a refusal
+     * recorded before the kind was kept cannot be shown to be one of them,
+     * so it does not count, and the window is three days, so nobody is left
+     * waiting on that for long.
      */
     job: 'promo.quotaHit',
     scenario: 'limitReached',
@@ -297,7 +325,9 @@ export const PROMOTIONS: Promotion[] = [
     eligible: ({ profile, now }) => {
       if ((profile.entitlement?.tier ?? 'free') !== 'free') return false
       const since = now.getTime() - QUOTA_REFUSAL_WINDOW_MS
-      const recent = (profile.quotaRefusals ?? []).filter((at) => new Date(at).getTime() >= since)
+      const recent = (profile.quotaRefusalKinds ?? []).filter(
+        ({ at, kind }) => REFUSALS_A_PLAN_LIFTS.has(kind) && new Date(at).getTime() >= since,
+      )
       return recent.length >= QUOTA_REFUSALS_BEFORE_NUDGE
     },
   },

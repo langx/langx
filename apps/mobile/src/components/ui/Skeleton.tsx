@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Animated, type ViewStyle } from 'react-native'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
+import { useV3Home } from '../../hooks/useV3Home'
 // `radius` stays a direct import: it is scheme-independent, and `corner`
 // defaults from it before any hook could have run.
 import { makeStyles, radius } from '../../lib/theme'
@@ -31,6 +32,7 @@ export function Skeleton({
 }) {
   const styles = useStyles()
   const reduceMotion = useReduceMotion()
+  const v3Look = useV3Home()
   const opacity = useRef(new Animated.Value(MIN_OPACITY)).current
 
   useEffect(() => {
@@ -58,7 +60,7 @@ export function Skeleton({
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
       style={[
-        styles.block,
+        v3Look ? styles.blockV3 : styles.block,
         { borderRadius: corner, height, opacity },
         width ? { width } : null,
         style,
@@ -70,6 +72,12 @@ export function Skeleton({
 const MIN_OPACITY = 0.35
 const STILL_OPACITY = 0.6
 
-const useStyles = makeStyles(({ colors }) => ({
+const useStyles = makeStyles(({ colors, v3 }) => ({
   block: { backgroundColor: colors.border },
+  /*
+   * Under `flags.v3Home`: the `track` grey, v3's colour for a thing not yet
+   * filled in (the progress bar's empty part). `surface` would vanish on the
+   * grey cards the v3 screens put their placeholders on.
+   */
+  blockV3: { backgroundColor: v3.colors.track },
 }))

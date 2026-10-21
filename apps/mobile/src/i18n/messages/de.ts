@@ -2050,6 +2050,8 @@ export const de: Localized<EnMessages> = {
     capOverGrandfathered:
       'Du hast bereits mehr, als dein Tarif fasst. Du kannst sie ändern oder entfernen, aber keine weitere hinzufügen.',
     changeHint: 'Tippe eine Sprache an, um sie zu ändern.',
+    allLanguages: 'Alle Sprachen, von A bis Z',
+    levelGroup: 'Dein Niveau in {language}',
     pausedNote: 'Im kostenlosen Tarif in Entdecken pausiert. Mit Pro zählt sie wieder.',
     saveFailed: 'Das wurde nicht gespeichert. Es hat sich nichts geändert.',
   },
@@ -2091,7 +2093,6 @@ export const de: Localized<EnMessages> = {
     title: 'Unsere Küche',
     intro: 'Wo LangX entsteht – und alle, die daran bauen.',
     dataCredit: 'Ortsnamen von GeoNames, lizenziert unter CC BY 4.0.',
-    stickerCredit: 'Einige Sticker stammen aus Microsoft Fluent Emoji, MIT-lizenziert.',
     footer: 'Offen entwickelt, von den Leuten, die es benutzen.',
     contributors: 'Mitwirkende',
     fundamentals: 'Alle Mitwirkenden',
@@ -2658,9 +2659,10 @@ export const de: Localized<EnMessages> = {
 
   stickerPack: {
     taglinePaper: 'Grüße und schnelle Antworten, aus Buntpapier geschnitten.',
-    taglineStarter: 'Die alltäglichen: Hallo, ich höre zu, verstanden, gut gemacht.',
-    taglinePractice: 'Fürs Üben selbst: langsamer, noch mal, geschafft.',
-    taglinePixel: 'Kleine Sprites, um gemeinsam aufzuleveln.',
+    taglineStarter:
+      'Pip, eine kleine Sprechblase, sagt das Alltägliche: Hallo, ich höre zu, danke.',
+    taglinePractice: 'Filzabzeichen fürs Üben selbst: langsamer, noch mal, geschafft.',
+    taglinePixel: 'Sprites aus Bügelperlen, um gemeinsam aufzuleveln.',
     count: {
       one: '{count} Sticker',
       other: '{count} Sticker',
@@ -2725,7 +2727,7 @@ export const de: Localized<EnMessages> = {
     practiceHourglass: 'Sanduhr',
     practiceBullseye: 'Volltreffer',
     pixelLevelup: 'Level up',
-    pixelCoin: 'Münze',
+    pixelCoin: 'Extraleben',
     pixelCheckpoint: 'Checkpoint',
     pixelFlame: 'Flamme',
     pixelKey: 'Schlüssel',

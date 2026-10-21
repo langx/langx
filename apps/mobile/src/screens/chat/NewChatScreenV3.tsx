@@ -3,6 +3,7 @@ import { useIsFocused } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { useState } from 'react'
 import { Animated, ScrollView, Text, View } from 'react-native'
+import { useQuota } from '../../api/queries'
 import { ComposerHint } from '../../components/ComposerHint'
 import { MessageBubble } from '../../components/MessageBubble'
 import { ComposerV3 } from '../../components/thread/ComposerV3'
@@ -12,7 +13,10 @@ import { Screen } from '../../components/ui/Screen'
 import { useKeyboardInset } from '../../hooks/useKeyboardInset'
 import { useScreenInteractive } from '../../hooks/useScreenInteractive'
 import { useT } from '../../i18n'
+import { authClient } from '../../lib/auth-client'
+import { chatsLeft } from '../../lib/chatsLeft'
 import { pickStarters } from '../../lib/conversationStarters'
+import { shouldGateGuest } from '../../lib/guestGate'
 import { goBackTo, openProfile } from '../../lib/navigation'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { partnerHueFor } from '../../lib/theme/partnerHue'
@@ -52,6 +56,8 @@ export function NewChatScreenV3() {
     send,
     busy,
   } = useNewChat()
+  const { data: session } = authClient.useSession()
+  const guest = shouldGateGuest(session?.user)
   const [topicRound, setTopicRound] = useState(0)
   const starters =
     offerTopics && draft === ''
@@ -189,6 +195,17 @@ export function NewChatScreenV3() {
               />
             </View>
           ) : null}
+
+          {/*
+           * What this first message costs, at the foot of the empty thread as
+           * the board draws it: People's allowance line, from the same
+           * `/me/quota`. Only where it is true and still to come — not for Pro
+           * (no limit, so `chatsLeft` gives nothing), not for a guest, not
+           * once the message is on its way, not when the composer has given
+           * way to a line, and not for a newcomer hello, whose own line says
+           * it costs nothing.
+           */}
+          {sending || suspended || refused || freeHello || guest ? null : <ChatsLeftCard />}
         </ScrollView>
 
         {suspended ? (
@@ -215,6 +232,41 @@ export function NewChatScreenV3() {
         )}
       </Animated.View>
     </Screen>
+  )
+}
+
+/**
+ * "New chats left today: 3 of 5", in a card of its own. The words and the
+ * numbers are People's (`ChatsLeftLine`): a plain count, said the same way on
+ * both screens, with nothing to buy on it — the paywall comes only from the
+ * cap itself, at the send. Nothing at all for an unlimited plan.
+ */
+function ChatsLeftCard() {
+  const styles = useStyles()
+  const t = useT()
+  const quota = useQuota()
+  const line = chatsLeft(quota.data?.initiations)
+  if (!line) return null
+  return (
+    <View style={styles.chatsLeft}>
+      <View style={styles.chatsLeftHead}>
+        <Text style={styles.chatsLeftTitle}>
+          {t('discover.chatsLeft', { count: line.left, total: line.total })}
+        </Text>
+        {line.pips ? (
+          <View
+            style={styles.pips}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+          >
+            {Array.from({ length: line.total }, (_, at) => (
+              <View key={at} style={[styles.pip, at < line.left && styles.pipOn]} />
+            ))}
+          </View>
+        ) : null}
+      </View>
+      <Text style={styles.chatsLeftNote}>{t('discover.chatsLeftNote')}</Text>
+    </View>
   )
 }
 
@@ -322,6 +374,26 @@ const useStyles = makeStyles(({ v3 }) => ({
     width: 32,
   },
   sending: { marginTop: 'auto' },
+  chatsLeft: {
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.tile,
+    gap: v3.space[2],
+    marginTop: 'auto',
+    paddingHorizontal: v3.space[16],
+    paddingVertical: v3.space[12],
+  },
+  chatsLeftHead: { alignItems: 'center', flexDirection: 'row', gap: v3.space[10] },
+  chatsLeftTitle: { ...v3.type.button, color: v3.colors.fg, flex: 1 },
+  chatsLeftNote: { ...v3.type.caption, color: v3.colors.muted },
+  pips: { flexDirection: 'row', gap: v3.space[4] },
+  pip: {
+    borderColor: v3.colors.muted,
+    borderRadius: v3.radius.pill,
+    borderWidth: 2,
+    height: 12,
+    width: 12,
+  },
+  pipOn: { backgroundColor: v3.colors.fg, borderColor: v3.colors.fg },
   closed: {
     ...v3.type.caption,
     color: v3.colors.muted,

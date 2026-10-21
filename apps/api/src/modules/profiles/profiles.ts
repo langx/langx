@@ -321,7 +321,7 @@ export interface Profile {
   }
   /**
    * When this account was last told it had run out — a rolling window, kept
-   * by `consumeQuota` and read by nothing but the upsell nudge.
+   * by `consumeQuota` and counted by the operator panel.
    *
    * Separate from `quota` because it is the opposite measurement: those
    * arrays are what somebody *used*, this is what they were refused. Absent
@@ -330,9 +330,10 @@ export interface Profile {
   quotaRefusals?: Date[]
   /**
    * Which limit each of those refusals was, kept beside them for the operator
-   * panel. A second array rather than a changed element type so the nudge
-   * that reads `quotaRefusals` — and an API instance from before this field —
-   * keeps working untouched. Same window, pruned by the same write. A refusal
+   * panel and for the plans nudge, which counts only the limits a plan lifts.
+   * A second array rather than a changed element type so whatever reads
+   * `quotaRefusals` — and an API instance from before this field — keeps
+   * working untouched. Same window, pruned by the same write. A refusal
    * with no entry here predates the field and reads as "unknown".
    */
   quotaRefusalKinds?: { at: Date; kind: string }[]
