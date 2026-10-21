@@ -28,6 +28,7 @@ export function avatarSource({
   v3,
   pixelRatio,
   apiBase,
+  maxPixels,
 }: {
   url: string | undefined
   seed: string | undefined
@@ -36,12 +37,16 @@ export function avatarSource({
   v3: boolean
   pixelRatio: number
   apiBase: string
+  /**
+   * The most pixels worth fetching, for a grid that draws many faces small:
+   * 64pt at 3x would otherwise ask for 480 apiece where 160 is plenty.
+   */
+  maxPixels?: number | undefined
 }): string | undefined {
   if (url) return url
   if (!seed) return undefined
-  return v3
-    ? defaultAvatarUrl(apiBase, seed, size, pixelRatio, rev)
-    : generatedAvatarUrl(apiBase, seed)
+  const ratio = maxPixels ? Math.min(pixelRatio, maxPixels / size) : pixelRatio
+  return v3 ? defaultAvatarUrl(apiBase, seed, size, ratio, rev) : generatedAvatarUrl(apiBase, seed)
 }
 
 /**
@@ -85,11 +90,19 @@ export function pickerFaces(current: DefaultAvatar, count = 8): DefaultAvatar[] 
 /**
  * Every face, pool by pool, for "See all". The person's own pool first: it
  * is the likeliest choice, and nothing about the other two is hidden.
+ *
+ * The face worn now is shown on the ground it is worn on, so the sheet opens
+ * with it selected; every other face is spread over the grounds so the grid
+ * is not one colour.
  */
-export function allFaces(first: DefaultAvatar['pool']): DefaultAvatar[] {
-  const pools = [first, ...DEFAULT_AVATAR_POOLS.filter((pool) => pool !== first)]
+export function allFaces(current: DefaultAvatar): DefaultAvatar[] {
+  const pools = [current.pool, ...DEFAULT_AVATAR_POOLS.filter((pool) => pool !== current.pool)]
   return pools.flatMap((pool, p) =>
-    Array.from({ length: DEFAULT_AVATAR_POOL_SIZE }, (_, i) => onGround(pool, i + 1, i + p)),
+    Array.from({ length: DEFAULT_AVATAR_POOL_SIZE }, (_, i) =>
+      pool === current.pool && i + 1 === current.index
+        ? { pool, index: current.index, ground: current.ground }
+        : onGround(pool, i + 1, i + p),
+    ),
   )
 }
 
