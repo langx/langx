@@ -1,13 +1,17 @@
 import { z } from 'zod'
 
 /**
- * Copilot: three one-tap helps inside a chat, written by a model.
+ * Copilot: four one-tap helps inside a chat, written by a model.
  *
  * - **Check** — your sentence, corrected if it needs it, with one reason.
  * - **Reply ideas** — a few short replies to the thread, at your level, for
  *   you to edit. Never sent by themselves.
- * - **Explain** — what a person's correction changed, and why. It explains
- *   the human's change; it never offers one of its own.
+ * - **Explain** — what the other person's message means, or what a person's
+ *   correction changed and why. It explains; it never offers a correction of
+ *   its own.
+ * - **Say it** — what you want to say, written in your own language, as a
+ *   few ways to say it in the language you are learning. Into the draft,
+ *   never sent.
  *
  * Here is only what both sides must agree on: the actions, the shapes, and
  * the numbers that bound the bill. How an answer looks — blue, labelled
@@ -15,7 +19,7 @@ import { z } from 'zod'
  * client's. See `docs/decisions.md` → _Copilot ships dark, behind two
  * switches and a consent_.
  */
-export const COPILOT_ACTIONS = ['check', 'replyIdeas', 'explain'] as const
+export const COPILOT_ACTIONS = ['check', 'replyIdeas', 'explain', 'sayIt'] as const
 export type CopilotAction = (typeof COPILOT_ACTIONS)[number]
 
 export const COPILOT_RULES = {
@@ -24,7 +28,7 @@ export const COPILOT_RULES = {
    * change what they agree to — what is sent, or to whom — and everybody is
    * asked again: a consent recorded against other words is not this one.
    */
-  consentVersion: 1,
+  consentVersion: 2,
   /**
    * Off for 16- and 17-year-olds by default — a default for minors is a
    * product owner's decision, and the EU's DSA Art. 28 guidance leans the
@@ -62,6 +66,10 @@ export const COPILOT_RULES = {
   maxOutputTokens: 1024,
   /** Reply ideas offered at once. */
   replyIdeas: 3,
+  /** What somebody wants to say, for Say it. A phrase, not a paragraph. */
+  maxSayItChars: 200,
+  /** Ways to say it offered at once. */
+  sayItOptions: 3,
   /**
    * How long an answer is kept for whoever asks the same question next.
    * Short: an answer to a private thread is kept under a hash, linked to no
@@ -111,12 +119,26 @@ export type CopilotCheckRequest = z.infer<typeof copilotCheckRequestSchema>
 export const copilotReplyIdeasRequestSchema = z.object({ conversationId })
 export type CopilotReplyIdeasRequest = z.infer<typeof copilotReplyIdeasRequestSchema>
 
-/** `messageId` is a correction in that thread — the one to explain. */
+/** `messageId` is a correction in that thread, or a text the other person sent. */
 export const copilotExplainRequestSchema = z.object({
   conversationId,
   messageId: z.string().trim().min(1),
 })
 export type CopilotExplainRequest = z.infer<typeof copilotExplainRequestSchema>
+
+/**
+ * Say it: the person's own words, in their own language, and the language to
+ * say them in — a `LANGUAGES` code, which the server names in English.
+ */
+export const copilotSayItRequestSchema = z.object({
+  conversationId,
+  text: z.string().trim().min(1).max(COPILOT_RULES.maxSayItChars),
+  targetLanguage: z.string().trim().min(2).max(10),
+})
+export type CopilotSayItRequest = z.infer<typeof copilotSayItRequestSchema>
+
+/** The operator panel's switch for one account's Copilot access. */
+export const adminCopilotAccessRequestSchema = z.object({ allowed: z.boolean() })
 
 /**
  * The version of the sheet the person saw. Only the current one is accepted,
@@ -141,6 +163,11 @@ export const copilotResultSchema = z.discriminatedUnion('action', [
   z.object({
     action: z.literal('explain'),
     explanation: z.string(),
+  }),
+  z.object({
+    action: z.literal('sayIt'),
+    /** At most `sayItOptions`, each with a few words in the reader's language on how it differs. */
+    options: z.array(z.object({ text: z.string(), gloss: z.string() })),
   }),
 ])
 export type CopilotResult = z.infer<typeof copilotResultSchema>
