@@ -184,8 +184,10 @@ export const QUOTA_REFUSAL_WINDOW_MS = 3 * 24 * 60 * 60 * 1000
  * this for free rather than being the one that forgot.
  *
  * **Two arrays, one window.** `quotaRefusals` stays a bare list of instants:
- * the upsell nudge reads it as exactly that, and a running API instance from
- * before this change appends to it as exactly that during a rolling deploy.
+ * the operator panel counts it as exactly that, and a running API instance
+ * from before this change appends to it as exactly that during a rolling
+ * deploy. The upsell nudge reads the kinds, since it counts only the limits a
+ * plan lifts.
  * The kind goes in `quotaRefusalKinds` beside it, pruned by the same cut-off in
  * the same write. A refusal recorded before the kind was kept has an instant
  * and no kind, which is how the panel knows to call it "unknown" rather than

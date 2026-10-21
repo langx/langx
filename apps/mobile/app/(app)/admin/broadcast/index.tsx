@@ -1,18 +1,20 @@
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Text, View } from 'react-native'
 import { useAdminBroadcasts, useAdminCreateBroadcast } from '../../../../src/api/queries'
 import { AdminGate } from '../../../../src/components/AdminGate'
+import {
+  AdminCaptionV3,
+  AdminFieldV3,
+  AdminHeadingV3,
+  AdminNoteV3,
+  AdminRowV3,
+  AdminRowsV3,
+  AdminScreenV3,
+  AdminSplitV3,
+} from '../../../../src/components/admin/AdminKitV3'
 import { Button } from '../../../../src/components/ui/Button'
-import { Callout } from '../../../../src/components/ui/Callout'
-import { FormField } from '../../../../src/components/ui/FormField'
-import { ListRow } from '../../../../src/components/ui/ListRow'
-import { Screen } from '../../../../src/components/ui/Screen'
-import { ScreenHeader } from '../../../../src/components/ui/ScreenHeader'
 import { useScreenInteractive } from '../../../../src/hooks/useScreenInteractive'
 import { ADMIN } from '../../../../src/lib/adminStrings'
-import { goBackTo } from '../../../../src/lib/navigation'
-import { makeStyles } from '../../../../src/lib/theme'
 import { showToast } from '../../../../src/lib/toast'
 
 /**
@@ -24,7 +26,6 @@ import { showToast } from '../../../../src/lib/toast'
  */
 export default function AdminBroadcastScreen() {
   useScreenInteractive()
-  const styles = useStyles()
   const list = useAdminBroadcasts()
   const create = useAdminCreateBroadcast()
   const [slug, setSlug] = useState('')
@@ -43,74 +44,64 @@ export default function AdminBroadcastScreen() {
     }
   }
 
+  const form = (
+    <>
+      <AdminHeadingV3 title={ADMIN.broadcast.newTitle} />
+      <AdminFieldV3
+        label={ADMIN.broadcast.slug}
+        hint={ADMIN.broadcast.slugHint}
+        value={slug}
+        onChangeText={(next) => setSlug(next.toLowerCase().replace(/[^a-z0-9-]/g, '-'))}
+        autoCapitalize="none"
+      />
+      <AdminFieldV3
+        label={ADMIN.broadcast.body}
+        hint={ADMIN.broadcast.bodyHint}
+        value={body}
+        onChangeText={setBody}
+        multiline
+        numberOfLines={6}
+        maxLength={4000}
+      />
+      {/* The screen's one yellow. It makes a draft and nothing more. */}
+      <Button
+        label={ADMIN.broadcast.createDraft}
+        onPress={onCreate}
+        disabled={!ready}
+        loading={create.isPending}
+      />
+    </>
+  )
+
+  const history = (
+    <>
+      <AdminHeadingV3 title={ADMIN.broadcast.history} />
+      {list.data?.items.length ? (
+        <AdminRowsV3>
+          {list.data.items.map((item) => (
+            <AdminRowV3
+              key={item._id}
+              title={item._id}
+              subtitle={ADMIN.broadcast.progress(item.sent, item.total)}
+              value={ADMIN.broadcast.status[item.status]}
+              onPress={() => router.push(`/(app)/admin/broadcast/${item._id}`)}
+            />
+          ))}
+        </AdminRowsV3>
+      ) : (
+        <AdminCaptionV3>{ADMIN.broadcast.empty}</AdminCaptionV3>
+      )}
+    </>
+  )
+
   return (
     <AdminGate>
-      <Screen scroll fluid>
-        <ScreenHeader title={ADMIN.broadcast.title} onBack={() => goBackTo('/(app)/admin')} />
-
-        <Callout tone="warning" icon="users">
-          <Text style={styles.calloutBody}>
-            {ADMIN.broadcast.audience(list.data?.audience ?? 0)}
-          </Text>
-        </Callout>
-
-        <Text style={styles.heading}>{ADMIN.broadcast.newTitle}</Text>
-        <FormField
-          label={ADMIN.broadcast.slug}
-          value={slug}
-          onChangeText={(next) => setSlug(next.toLowerCase().replace(/[^a-z0-9-]/g, '-'))}
-          autoCapitalize="none"
-        />
-        <Text style={styles.hint}>{ADMIN.broadcast.slugHint}</Text>
-
-        <FormField
-          label={ADMIN.broadcast.body}
-          value={body}
-          onChangeText={setBody}
-          multiline
-          numberOfLines={6}
-          maxLength={4000}
-        />
-        <Text style={styles.hint}>{ADMIN.broadcast.bodyHint}</Text>
-
-        <Button
-          label={ADMIN.broadcast.createDraft}
-          onPress={onCreate}
-          disabled={!ready}
-          loading={create.isPending}
-        />
-
-        <Text style={styles.heading}>{ADMIN.broadcast.history}</Text>
-        {list.data?.items.length ? (
-          <View>
-            {list.data.items.map((item, index) => (
-              <ListRow
-                key={item._id}
-                title={item._id}
-                subtitle={ADMIN.broadcast.progress(item.sent, item.total)}
-                value={ADMIN.broadcast.status[item.status]}
-                onPress={() => router.push(`/(app)/admin/broadcast/${item._id}`)}
-                last={index === list.data.items.length - 1}
-              />
-            ))}
-          </View>
-        ) : (
-          <Text style={styles.hint}>{ADMIN.broadcast.empty}</Text>
-        )}
-      </Screen>
+      <AdminScreenV3 title={ADMIN.broadcast.title} back="/(app)/admin">
+        <AdminNoteV3 tone="warning" icon="users">
+          {ADMIN.broadcast.audience(list.data?.audience ?? 0)}
+        </AdminNoteV3>
+        <AdminSplitV3 start={form} end={history} startWidth={520} />
+      </AdminScreenV3>
     </AdminGate>
   )
 }
-
-const useStyles = makeStyles((theme) => ({
-  heading: {
-    marginTop: 24,
-    marginBottom: 8,
-    fontSize: 13,
-    fontWeight: '700',
-    color: theme.colors.textMuted,
-    textTransform: 'uppercase',
-  },
-  hint: { fontSize: 13, color: theme.colors.textMuted, marginBottom: 16 },
-  calloutBody: { fontSize: 14, color: theme.colors.text, lineHeight: 20 },
-}))

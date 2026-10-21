@@ -26,6 +26,12 @@ export interface MessageMenuRequest {
   /** Tints the copy of the bubble the anchored layout draws. */
   mine: boolean
   /**
+   * The fill of the partner's bubble in the v3 look — their hue — so the
+   * lifted copy is drawn in it rather than in grey. Absent for your own
+   * bubbles, in the current look, and while the partner is not yet known.
+   */
+  tint?: string
+  /**
    * Whether the pressed bubble carried the tail corner — the squared one a
    * run of messages gets on its last bubble. The lifted copy keeps it, or it
    * is a different bubble from the one under the finger.

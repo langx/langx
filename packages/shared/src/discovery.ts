@@ -298,6 +298,8 @@ export const discoveryItemSchema = z.object({
   handle: z.string(),
   displayName: z.string(),
   avatarUrl: z.string().optional(),
+  /** The drawn face, when there is no `avatarUrl`; see `defaultAvatarRev`. */
+  defaultAvatarRev: z.string().optional(),
   bio: z.string().optional(),
   country: z.string().optional(),
   gender: genderSchema,

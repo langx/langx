@@ -1,0 +1,27 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`composeSvg > matches the reviewed art 1`] = `
+{
+  "M02 flat": "b9eabed682562812",
+  "M02 full": "e3a359456a827146",
+  "M02 small": "9e53d33761a877d8",
+  "M05 flat": "486cd319b8ea6f69",
+  "M05 full": "da5846eef9990263",
+  "M05 small": "5165408d8e77ea29",
+  "M08 flat": "58c42e6611b6c7c5",
+  "M08 full": "9f0e622193b4cfea",
+  "M08 small": "5a432d16475c4c8a",
+  "N07 flat": "11a8176253d02350",
+  "N07 full": "07fe1098c1ee1a28",
+  "N07 small": "3ab996039b2b81da",
+  "N19 flat": "cde638fdab205095",
+  "N19 full": "4fb57ad45a0d6895",
+  "N19 small": "fa86f64a42f5c0f0",
+  "W01 flat": "d09f11c2a0219eb0",
+  "W01 full": "a6eb926dea305707",
+  "W01 small": "de69e893740b9114",
+  "W03 flat": "c966cba517437652",
+  "W03 full": "10fe0875e342dd47",
+  "W03 small": "96c3fec79e1b7076",
+}
+`;

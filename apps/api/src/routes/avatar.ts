@@ -1,9 +1,19 @@
-import { avatarOptionsFor, GENERATED_AVATAR_BACKGROUNDS, OFFICIAL_HANDLES } from '@langx/shared'
+import {
+  avatarOptionsFor,
+  DEFAULT_AVATAR_CUTS,
+  DEFAULT_AVATAR_SIZES,
+  defaultAvatarCutFor,
+  GENERATED_AVATAR_BACKGROUNDS,
+  OFFICIAL_HANDLES,
+  parseDefaultAvatarRev,
+} from '@langx/shared'
 import { createAvatar } from '@dicebear/core'
 import { notionists } from '@dicebear/collection'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { loadAsset } from '../lib/assets'
+import { RenderBusyError, renderDefaultAvatar } from '../modules/avatars/raster'
+import { getDefaultAvatarFor } from '../modules/profiles/defaultAvatar'
 import { getProfileGender } from '../modules/profiles/profiles'
 
 /**
@@ -21,6 +31,20 @@ const COPILOT_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 12
  * would have to carry the very field this route exists to keep off the wire.
  */
 const CACHE_SECONDS = 604_800
+
+/** 480px faces one address may ask for a minute; see the v3 route. */
+export const LARGE_FACES_PER_MINUTE = 30
+
+/**
+ * Whether a request is for the 480px face. Read off the raw query, because
+ * the limiter runs before validation; a malformed size is refused after it.
+ */
+function isLargeFace(request: { query: unknown }): boolean {
+  return (request.query as { s?: unknown } | undefined)?.s === '480'
+}
+
+/** How long a v3 face is cached. */
+const DAY_SECONDS = 86_400
 
 /** Same reason as the QR route: an API is same-origin, a picture is not. */
 const EMBEDDABLE = { 'cross-origin-resource-policy': 'cross-origin' } as const
@@ -87,6 +111,108 @@ export const avatarRoutes: FastifyPluginAsyncZod = async (app) => {
         .header('cache-control', `public, max-age=${CACHE_SECONDS}`)
         .headers(EMBEDDABLE)
         .send(svg)
+    },
+  )
+
+  /**
+   * The v3 face of an account without a photo: one of 144 drawn faces, as PNG.
+   *
+   * PNG rather than SVG because the same file goes into an email, a push
+   * payload and a satori card, none of which draw SVG, and because the app
+   * then needs no `react-native-svg` — the picture ships over the air. The
+   * parts and the 144 recipes live in `assets/avatars`; resvg, already here
+   * for the share cards, draws them, and an in-process cache keeps a face
+   * from being drawn twice.
+   *
+   * `s` is the pixel size, one of four steps. `c` is the cut for the size the
+   * face is *displayed* at (the texture goes below 96pt, the figure grows
+   * below 64pt); without it the cut follows `s`, which is right at 1x.
+   *
+   * `v`, when present, names the face itself (`1-W07-3`) and the response is
+   * a pure function of the URL, so it is cached as immutable; a changed face
+   * is a changed `v`. Without it the server looks the face up from the
+   * account, and a day is how long a stale one can survive. A `v` this build
+   * cannot read — a later art revision, a hand-edited URL — is ignored
+   * rather than refused, so a client ahead of the server still gets a face.
+   */
+  app.get(
+    '/public/avatar/v3/:seed',
+    {
+      schema: {
+        // Same bound as the route above, for the same reason.
+        params: z.object({ seed: z.string().regex(/^[a-f0-9]{24}$/) }),
+        querystring: z.object({
+          s: z.coerce.number().pipe(z.union(DEFAULT_AVATAR_SIZES.map((size) => z.literal(size)))),
+          c: z.enum(DEFAULT_AVATAR_CUTS).optional(),
+          v: z.string().max(16).optional(),
+        }),
+      },
+      /*
+       * Five times the Notionists route for the list sizes: a discovery grid
+       * or a chat list asks for thirty faces at once, and unlike that route
+       * most of these answers never touch the database.
+       *
+       * The 480px face has a bucket of its own and a tenth of that. It is the
+       * one size a client wants a single face of — a profile hero, a ringing
+       * screen — and the one whose renders are both the slowest and the
+       * likeliest to fall out of the cache (864 faces on six grounds in three
+       * cuts), so it is the one a few addresses could keep the renderer busy
+       * with.
+       */
+      config: {
+        rateLimit: {
+          max: (request) => (isLargeFace(request) ? LARGE_FACES_PER_MINUTE : 300),
+          keyGenerator: (request) => `${request.ip}:${isLargeFace(request) ? 'large' : 'list'}`,
+          timeWindow: '1 minute',
+        },
+      },
+    },
+    async (request, reply) => {
+      const { seed } = request.params
+      const { s: size, c, v } = request.query
+      const named = v ? parseDefaultAvatarRev(v) : null
+      /*
+       * 200 for an id nobody holds, as above: a 404 would answer "does this
+       * account exist", one id at a time. With no profile the hash draws from
+       * the neutral pool, exactly as for a profile that never said.
+       *
+       * Accepted, not fixed: without `v` the answer still depends on the
+       * account. An existing account wears its stored face, and an id nobody
+       * holds wears the neutral hash, so someone who computes the hash can
+       * tell some real ids from unused ones. Answering every request without
+       * `v` from the hash would close that, but at the cost of faces that
+       * disagree. The screens whose DTOs carry no `defaultAvatarRev` — feed
+       * authors, leaderboards, likes, the profile header — would draw the hash
+       * while the lists that carry one draw the stored face, and one person
+       * would wear two faces. The Notionists route this replaces made the same
+       * trade: it read the gender, and a stated gender drew a different face
+       * from an unknown id. An id discloses no name, handle or photo, and the
+       * route is rate-limited. See `docs/decisions.md` → _v3 default faces_.
+       */
+      const avatar = named ?? (await getDefaultAvatarFor(app.mongo.db, seed))
+      let png: Buffer
+      try {
+        png = await renderDefaultAvatar({ avatar, size, cut: c ?? defaultAvatarCutFor(size) })
+      } catch (error) {
+        // A full render queue is load, not a fault: say so, briefly, and
+        // let the image be asked for again rather than logging a 500.
+        if (!(error instanceof RenderBusyError)) throw error
+        return reply
+          .code(503)
+          .header('retry-after', '1')
+          .header('cache-control', 'no-store')
+          .headers(EMBEDDABLE)
+          .send({ code: 'RATE_LIMITED', message: 'Busy, try again' })
+      }
+
+      return reply
+        .header('content-type', 'image/png')
+        .header(
+          'cache-control',
+          named ? `public, max-age=${DAY_SECONDS}, immutable` : `public, max-age=${DAY_SECONDS}`,
+        )
+        .headers(EMBEDDABLE)
+        .send(png)
     },
   )
 

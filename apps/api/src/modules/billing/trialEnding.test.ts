@@ -273,6 +273,27 @@ describe('the trial-ending reminder', () => {
     expect(await runTrialEndingPass(handle.db, senders, NOW)).toEqual({ sent: 0 })
   })
 
+  // Since 3.0 the monthly plan has the free week too; the pass never reads the
+  // product, so a monthly trial is reminded exactly like a yearly one.
+  it.each(['langx_fluent_monthly', 'langx_fluent_yearly'])(
+    'reminds a trial on %s the same way',
+    async (productId) => {
+      const userId = await trialist()
+      await handle.db.collection(COLLECTIONS.subscriptions).insertOne({
+        eventId: `trial-${productId}`,
+        userId,
+        type: 'INITIAL_PURCHASE',
+        store: 'APP_STORE',
+        productId,
+        expiresAt: ENDS,
+        environment: 'PRODUCTION',
+        createdAt: NOW,
+      })
+      expect(await runTrialEndingPass(handle.db, senders, NOW)).toEqual({ sent: 1 })
+      expect(email.messages[0]?.subject).toBe('Your LangX Pro trial ends on October 25, 2026')
+    },
+  )
+
   it('skips a suppressed address but still reaches the phone', async () => {
     const userId = await trialist({ device: true })
     await suppressEmail(handle.db, { email: `${userId}@example.com`, reason: 'bounced' })

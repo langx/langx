@@ -31,6 +31,17 @@ export function latchV3Home(answer: { settled: boolean; on: boolean }): boolean 
 }
 
 /**
+ * The latched answer, read without subscribing to anything — for components
+ * drawn many times over, such as `Avatar`, where a hook per instance would be
+ * a config subscription per face in a list. Everything that draws them sits
+ * behind the launch splash, which waits for the latch, so by then it is set;
+ * before it is set this is off, as everywhere else.
+ */
+export function v3HomeLatched(): boolean {
+  return latched === true
+}
+
+/**
  * The longest a launch waits for the config before deciding without it.
  *
  * The launch splash holds for this answer, so without a ceiling a request

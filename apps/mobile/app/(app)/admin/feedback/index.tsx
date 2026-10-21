@@ -9,18 +9,20 @@ import {
   type AdminFeedbackDto,
 } from '../../../../src/api/queries'
 import { AdminGate } from '../../../../src/components/AdminGate'
+import {
+  AdminActionsV3,
+  AdminBlockV3,
+  AdminFieldV3,
+  AdminQuoteV3,
+  AdminScreenV3,
+} from '../../../../src/components/admin/AdminKitV3'
 import { Button } from '../../../../src/components/ui/Button'
-import { Card } from '../../../../src/components/ui/Card'
-import { EmptyState } from '../../../../src/components/ui/EmptyState'
-import { FormField } from '../../../../src/components/ui/FormField'
-import { Screen } from '../../../../src/components/ui/Screen'
-import { ScreenHeader } from '../../../../src/components/ui/ScreenHeader'
+import { EmptyNoteV3 } from '../../../../src/components/ui/EmptyStateV3'
 import { SegmentedControl } from '../../../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../../../src/components/ui/Skeleton'
 import { useScreenInteractive } from '../../../../src/hooks/useScreenInteractive'
 import { ADMIN } from '../../../../src/lib/adminStrings'
 import { chooseAlert, confirmAlert } from '../../../../src/lib/alert'
-import { goBackTo } from '../../../../src/lib/navigation'
 import { makeStyles } from '../../../../src/lib/theme'
 import { showToast } from '../../../../src/lib/toast'
 
@@ -48,6 +50,10 @@ const CLOSE_REASONS = [
  * The whole report is in the row rather than behind a tap. They are short, the
  * decision is "is this real and what is it worth", and a list of first lines
  * would mean opening every one of them to find that out.
+ *
+ * No yellow here: every row has its own Pay, and a screen of yellow buttons
+ * has no committing action at all. Paying is the ink pill, as buying is in
+ * the token store, and the dialog still names the amount.
  */
 export default function AdminFeedbackScreen() {
   useScreenInteractive()
@@ -57,17 +63,13 @@ export default function AdminFeedbackScreen() {
 
   return (
     <AdminGate>
-      <Screen fluid>
-        <ScreenHeader title={ADMIN.feedback.title} onBack={() => goBackTo('/(app)/admin')} />
-
-        <View style={styles.tabs}>
-          <SegmentedControl
-            options={TABS}
-            selected={[tab]}
-            onToggle={setTab}
-            accessibilityLabel={ADMIN.feedback.title}
-          />
-        </View>
+      <AdminScreenV3 title={ADMIN.feedback.title} back="/(app)/admin" scroll={false}>
+        <SegmentedControl
+          options={TABS}
+          selected={[tab]}
+          onToggle={setTab}
+          accessibilityLabel={ADMIN.feedback.title}
+        />
 
         {feedback.isPending ? (
           <View style={styles.loading}>
@@ -78,15 +80,16 @@ export default function AdminFeedbackScreen() {
           <FlatList
             data={feedback.data?.items ?? []}
             keyExtractor={(item) => item._id}
+            style={styles.fill}
             contentContainerStyle={styles.list}
             // Every row holds an amount box; the ones low on the screen were
             // under the keyboard. iOS only, by design — see `Screen`.
             automaticallyAdjustKeyboardInsets
-            ListEmptyComponent={<EmptyState icon="inbox" title={ADMIN.feedback.empty} body="" />}
+            ListEmptyComponent={<EmptyNoteV3 icon="inbox" title={ADMIN.feedback.empty} body="" />}
             renderItem={({ item }) => <Row row={item} />}
           />
         )}
-      </Screen>
+      </AdminScreenV3>
     </AdminGate>
   )
 }
@@ -148,11 +151,11 @@ function Row({ row }: { row: AdminFeedbackDto }) {
   }
 
   return (
-    <Card style={styles.card}>
+    <AdminBlockV3>
       <Text style={styles.meta}>
         {row.kind} · {ADMIN.feedback.from} {who} · {row.createdAt.slice(0, 10)}
       </Text>
-      <Text style={styles.body}>{row.body}</Text>
+      <AdminQuoteV3>{row.body}</AdminQuoteV3>
 
       {row.attachmentUrls.length > 0 ? (
         <Text style={styles.meta}>
@@ -164,21 +167,27 @@ function Row({ row }: { row: AdminFeedbackDto }) {
         <Text style={styles.paid}>{ADMIN.feedback.paid(row.bounty.amount)}</Text>
       ) : (
         <>
-          <FormField
+          <AdminFieldV3
+            inBlock
             label={ADMIN.feedback.amount}
             value={amount}
             onChangeText={setAmount}
             keyboardType="number-pad"
           />
-          <View style={styles.actions}>
-            <Button label={ADMIN.feedback.pay(tokens)} onPress={onPay} loading={pay.isPending} />
+          <AdminActionsV3>
+            <Button
+              label={ADMIN.feedback.pay(tokens)}
+              variant="ink"
+              onPress={onPay}
+              loading={pay.isPending}
+            />
             <Button
               label={ADMIN.feedback.close}
               variant="neutral"
               onPress={onClose}
               loading={close.isPending}
             />
-          </View>
+          </AdminActionsV3>
         </>
       )}
 
@@ -195,7 +204,8 @@ function Row({ row }: { row: AdminFeedbackDto }) {
         />
       ) : (
         <>
-          <FormField
+          <AdminFieldV3
+            inBlock
             label={ADMIN.feedback.replyLabel}
             value={reply}
             onChangeText={setReply}
@@ -203,6 +213,7 @@ function Row({ row }: { row: AdminFeedbackDto }) {
           />
           <Button
             label={ADMIN.feedback.sendReply}
+            variant="ink"
             onPress={onSendReply}
             loading={sendReply.isPending}
             disabled={!reply.trim()}
@@ -215,20 +226,18 @@ function Row({ row }: { row: AdminFeedbackDto }) {
           label={ADMIN.feedback.openIssue}
           variant="neutral"
           size="small"
+          icon="external-link"
           onPress={() => void Linking.openURL(row.issueUrl ?? '')}
         />
       ) : null}
-    </Card>
+    </AdminBlockV3>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  tabs: { marginVertical: 12 },
-  loading: { gap: 12 },
-  list: { gap: 12, paddingBottom: 32 },
-  card: { gap: 10 },
-  meta: { fontSize: 13, color: theme.colors.textMuted },
-  body: { fontSize: 15, color: theme.colors.text, lineHeight: 22 },
-  paid: { fontSize: 15, fontWeight: '700', color: theme.colors.text },
-  actions: { gap: 10 },
+const useStyles = makeStyles(({ v3 }) => ({
+  loading: { gap: v3.space[12] },
+  fill: { flex: 1 },
+  list: { gap: v3.space[10], paddingBottom: v3.space[32] },
+  meta: { ...v3.type.caption, color: v3.colors.muted },
+  paid: { ...v3.type.button, color: v3.colors.fg },
 }))

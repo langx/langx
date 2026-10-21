@@ -15,7 +15,9 @@ import { PARTNER_HUES, v3, type ColorScheme } from './tokens'
  * - `WeeklyChartV3`: messages in the hue, corrections in `fg`.
  * - `ActivityMapV3`: busy days a solid hue, quiet days a hue outline around
  *   the card's own colour, empty days `track` — so a quiet day differs from
- *   an empty one by its ring, which has to read against the card.
+ *   an empty one by its ring, which has to read against the card. Today is
+ *   an `fg` dot over whichever of the three it is, so the dot has to read on
+ *   the hue, the card and the track alike.
  */
 function lab(hex: string): [number, number, number] {
   const [r, g, b] = [1, 3, 5]
@@ -63,7 +65,14 @@ describe('the profile charts stay readable on every partner hue', () => {
       it(`${scheme} ${hue}: a busy day differs from an empty one`, () => {
         expect(deltaE(hues[hue], colors.track)).toBeGreaterThanOrEqual(DISTINCT_FILL)
       })
+      it(`${scheme} ${hue}: today's dot (fg) reads on a busy day`, () => {
+        expect(deltaE(colors.fg, hues[hue])).toBeGreaterThanOrEqual(DISTINCT)
+      })
     }
+    it(`${scheme}: today's dot (fg) reads on a quiet day and on an empty one`, () => {
+      expect(deltaE(colors.fg, colors.surface)).toBeGreaterThanOrEqual(DISTINCT)
+      expect(deltaE(colors.fg, colors.track)).toBeGreaterThanOrEqual(DISTINCT)
+    })
   }
 
   it('the colour it replaced really was the problem', () => {

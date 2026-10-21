@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useFocusEffect } from 'expo-router'
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import { FlatList, Pressable, Text, View } from 'react-native'
 import { useBoostedProfiles } from '../../api/queries'
 import type { BoostedProfile } from '../../api/types'
@@ -12,6 +12,7 @@ import { openPaywall } from '../../lib/paywall'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { partnerHueFor } from '../../lib/theme/partnerHue'
 import { Avatar } from '../ui/Avatar'
+import { dedupeGrounds } from '../../lib/avatarViewport'
 import { ICON_BUTTON_TARGET } from '../ui/IconButton'
 
 const FROM = '/(app)/(tabs)/discover'
@@ -37,7 +38,7 @@ export function BoostedStripV3({ params }: { params: Record<string, string> }) {
   const { v3 } = useTheme()
   const t = useT()
   const query = useBoostedProfiles(params)
-  const items = query.data?.items ?? []
+  const items = useMemo(() => dedupeGrounds(query.data?.items ?? []), [query.data])
 
   // The count, not the items, for the reason `BoostedProfiles` gives.
   const count = items.length
@@ -129,6 +130,7 @@ const BoostedTile = memo(function BoostedTile({
           url={person.avatarUrl}
           name={person.displayName}
           seed={person._id}
+          defaultAvatarRev={person.defaultAvatarRev}
           size={person.frame ? FRAMED_AVATAR : AVATAR}
           frame={person.frame}
           frameOverflow="all"

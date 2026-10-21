@@ -859,10 +859,20 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
         Record<string, unknown>
       >()
 
+      // `defaultAvatarRev` names the drawn face the page already shows; it is
+      // the picture's name, not a field about the person.
       expect(Object.keys(body).sort()).toEqual(
-        ['_id', 'bio', 'displayName', 'handle', 'learning', 'nativeLanguages'].sort(),
+        [
+          '_id',
+          'bio',
+          'defaultAvatarRev',
+          'displayName',
+          'handle',
+          'learning',
+          'nativeLanguages',
+        ].sort(),
       )
-      for (const absent of ['age', 'photos', 'streak', 'isOnline', 'tier', 'city']) {
+      for (const absent of ['age', 'photos', 'streak', 'isOnline', 'tier', 'city', 'gender']) {
         expect(body[absent], absent).toBeUndefined()
       }
     })
