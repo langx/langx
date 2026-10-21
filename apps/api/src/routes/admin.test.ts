@@ -1072,7 +1072,7 @@ describe('the operator panel', () => {
       )
     })
 
-    it('finds a handle typed with capitals, an @ and spaces', async () => {
+    it('finds a handle or an address typed with capitals, an @ and spaces', async () => {
       const admin = await newUser()
       await makeAdmin(admin)
       const target = await newUser()
@@ -1080,7 +1080,12 @@ describe('the operator panel', () => {
         user: { handle: string }
       }>().user
 
-      for (const typed of [handle.toUpperCase(), ` @${handle.toUpperCase()} `, `@${handle}`]) {
+      for (const typed of [
+        handle.toUpperCase(),
+        ` @${handle.toUpperCase()} `,
+        `@${handle}`,
+        target.email.toUpperCase(),
+      ]) {
         const found = await get(admin, `/admin/users?q=${encodeURIComponent(typed)}`)
         expect(found.statusCode, typed).toBe(200)
         expect(found.json<{ user: { userId: string } }>().user.userId).toBe(target.userId)

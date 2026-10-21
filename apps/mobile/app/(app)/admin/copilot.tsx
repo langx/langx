@@ -112,7 +112,8 @@ export default function AdminCopilotScreen() {
     isFetching: found.isFetching,
     error: found.error,
   })
-  // Which account a button is pressing for, so only that one spins.
+  // Which account a button is pressing for, so only that one spins. Every
+  // other button waits too: `variables` only knows the latest press.
   const pendingId = setAccess.isPending ? setAccess.variables?.userId : undefined
 
   const allow = (userId: string, next: boolean): void => {
@@ -263,6 +264,7 @@ export default function AdminCopilotScreen() {
         <Button
           label={L.allowMe}
           loading={pendingId === me.data._id}
+          disabled={setAccess.isPending}
           onPress={() => me.data && allow(me.data._id, true)}
         />
       ) : null}
@@ -287,6 +289,7 @@ export default function AdminCopilotScreen() {
             label={found.data.user.copilotAccess ? L.remove : L.allow}
             variant={found.data.user.copilotAccess ? 'secondary' : 'primary'}
             loading={pendingId === found.data.user.userId}
+            disabled={setAccess.isPending}
             onPress={() =>
               found.data && allow(found.data.user.userId, !found.data.user.copilotAccess)
             }
@@ -322,8 +325,9 @@ export default function AdminCopilotScreen() {
                   label={L.removeShort}
                   variant="secondary"
                   size="small"
-                  style={{ width: 'auto' }}
+                  style={styles.rowAction}
                   loading={pendingId === row.userId}
+                  disabled={setAccess.isPending}
                   onPress={() => allow(row.userId, false)}
                 />
               }
@@ -374,6 +378,8 @@ export default function AdminCopilotScreen() {
 
 const useStyles = makeStyles(({ v3 }) => ({
   muted: { ...v3.type.caption, color: v3.colors.muted },
+  // In a row, the button is as wide as its word rather than the column.
+  rowAction: { width: 'auto' },
   // Copilot's own blue, as everywhere a suggestion is drawn.
   answer: {
     backgroundColor: v3.colors.echoTint,

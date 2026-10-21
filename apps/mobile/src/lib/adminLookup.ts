@@ -30,6 +30,8 @@ export function adminLookupState(input: {
   const key = adminLookupKey(input.typed)
   if (key.length < 2) return 'idle'
   if (key !== input.lookup) return 'searching'
+  // A refetch that says the account is gone wins over the answer it replaces.
+  if (input.error && isNotFound(input.error)) return 'notFound'
   // A refetch after a toggle keeps the row and its button on screen.
   if (input.hasData) return 'found'
   if (input.isFetching) return 'searching'

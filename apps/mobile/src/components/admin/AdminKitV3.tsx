@@ -259,11 +259,34 @@ export function AdminRowV3({
           {value}
         </Text>
       ) : null}
-      {action}
       {onPress ? <Feather name={chevron} size={v3.icon.md} color={v3.colors.muted} /> : null}
     </>
   )
-  if (!onPress) return <View style={[styles.row, selected && styles.selected]}>{body}</View>
+  if (!onPress) {
+    return (
+      <View style={[styles.row, selected && styles.selected]}>
+        {body}
+        {action}
+      </View>
+    )
+  }
+  // The action beside the pressable row, never inside it: inside, a tap on a
+  // disabled (loading) button fell through to the row and opened it on
+  // native, and VoiceOver read the two as one button.
+  if (action) {
+    return (
+      <View style={[styles.rowWithAction, selected && styles.selected]}>
+        <Pressable
+          accessibilityRole="button"
+          onPress={onPress}
+          style={({ pressed }) => [styles.rowPress, pressed && styles.selected]}
+        >
+          {body}
+        </Pressable>
+        {action}
+      </View>
+    )
+  }
   return (
     <Pressable
       accessibilityRole="button"
@@ -592,6 +615,25 @@ const useStyles = makeStyles(({ v3 }) => ({
     gap: v3.space[12],
     minHeight: 62,
     paddingHorizontal: v3.space[14],
+    paddingVertical: v3.space[10],
+  },
+  rowWithAction: {
+    alignItems: 'center',
+    borderTopColor: v3.colors.line,
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    paddingEnd: v3.space[14],
+  },
+  rowPress: {
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    flex: 1,
+    flexDirection: 'row',
+    gap: v3.space[12],
+    minHeight: 62,
+    minWidth: 0,
+    paddingEnd: v3.space[12],
+    paddingStart: v3.space[14],
     paddingVertical: v3.space[10],
   },
   navRow: { paddingHorizontal: v3.space[12] },

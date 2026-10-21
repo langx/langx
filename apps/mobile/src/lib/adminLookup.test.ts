@@ -34,6 +34,10 @@ describe('adminLookupState', () => {
     )
   })
 
+  it('drops a shown account when its refetch is a 404', () => {
+    expect(adminLookupState({ ...settled, hasData: true, error: { status: 404 } })).toBe('notFound')
+  })
+
   it('says not found only for a 404', () => {
     expect(adminLookupState({ ...settled, error: { status: 404 } })).toBe('notFound')
     expect(adminLookupState({ ...settled, error: { status: 500 } })).toBe('error')
