@@ -1142,6 +1142,7 @@ export const es: Localized<EnMessages> = {
       'Lo bien que ya hablan lo que tú enseñas. Más alto significa una conversación más fácil; más bajo, alguien que te necesita más.',
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
+    ageScaleOpen: '{max}+',
     showResults: 'Ver resultados',
     showResultsWithCount: 'Ver resultados · {count}',
   },

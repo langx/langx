@@ -1140,6 +1140,7 @@ export const ptBR: Localized<EnMessages> = {
       'O quanto já falam o que você ensina. Mais alto significa uma conversa mais fácil; mais baixo, alguém que precisa mais de você.',
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
+    ageScaleOpen: '{max}+',
     showResults: 'Ver resultados',
     showResultsWithCount: 'Ver resultados · {count}',
   },

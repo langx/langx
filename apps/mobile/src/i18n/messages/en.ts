@@ -1285,6 +1285,7 @@ export const en = {
       'How well they already speak what you teach. Higher means an easier conversation, lower means someone who needs you more.',
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
+    ageScaleOpen: '{max}+',
     showResults: 'Show results',
     showResultsWithCount: 'Show results · {count}',
   },

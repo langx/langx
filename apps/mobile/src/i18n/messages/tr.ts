@@ -1126,6 +1126,7 @@ export const tr: Localized<EnMessages> = {
       'Öğrettiğin dili ne kadar iyi konuşuyorlar. Yüksek seviye daha rahat bir sohbet, düşük seviye sana daha çok ihtiyacı olan biri demek.',
     ageRange: '{min} — {max}',
     ageRangeOpen: '{min} — {max}+',
+    ageScaleOpen: '{max}+',
     showResults: 'Sonuçları göster',
     showResultsWithCount: 'Sonuçları göster · {count}',
   },
