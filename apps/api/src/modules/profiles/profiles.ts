@@ -38,6 +38,7 @@ import {
   type StoredPaidPlanTier,
   type StoredPlanTier,
   type UpdateProfileInput,
+  type DefaultAvatar,
 } from '@langx/shared'
 import { MongoServerError, type Db, type ObjectId, type UpdateFilter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -59,6 +60,7 @@ import { restoreByHash } from '../handles/legacyRestore'
 import { isSuspended } from '../moderation/suspension'
 import { attachReferral, readSignUpReferrer } from '../referrals/referrals'
 import { grantSignupBonus } from '../tokens/signupBonus'
+import { assignDefaultAvatar, defaultAvatarRevFor, onGenderChange } from './defaultAvatar'
 import { streakDaysInZone } from '../tokens/streak'
 
 export interface Profile {
@@ -137,6 +139,12 @@ export interface Profile {
    */
   nameTokens?: string[]
   avatarUrl?: string
+  /**
+   * The drawn face worn while there is no `avatarUrl` — see
+   * `defaultAvatar.ts`. Written at creation and by the backfill; absent on a
+   * profile neither reached, which then wears `hashFallback`'s face.
+   */
+  defaultAvatar?: DefaultAvatar
   bio?: string
   /** Free text, `PRONOUNS_MAX_LENGTH` at most. Absent until somebody fills it in. */
   pronouns?: string
@@ -756,6 +764,18 @@ export async function createProfile(
   await grantSignupBonus(db, userId, now)
 
   /*
+   * The drawn face, stored now so it is the same face from the first screen
+   * on. Wrapped like the referral below: the profile is written, and a
+   * failure here only means the hash face stands in until the backfill.
+   */
+  try {
+    const avatar = await assignDefaultAvatar(db, userId)
+    if (avatar) profile.defaultAvatar = avatar
+  } catch (error) {
+    console.error('[avatar] assign failed', { userId, error })
+  }
+
+  /*
    * Who invited them, if anybody said so. Wrapped the way `auth.ts` wraps the
    * legacy restore, and for the same reason: the account is real and the
    * profile is already written, so a failure here must not fail onboarding.
@@ -882,7 +902,12 @@ export async function setGender(
     { $set: { gender, genderChangedAt: now, updatedAt: now } },
     { returnDocument: 'after' },
   )
-  if (updated) return updated
+  if (updated) {
+    // An assigned face follows the gender into its pool; a picked one stays.
+    const avatar = await onGenderChange(db, userId, gender)
+    if (avatar) updated.defaultAvatar = avatar
+    return updated
+  }
 
   // The filter matched nothing, which is two different situations. Separating
   // them costs one read on a path that only runs when the write already
@@ -1585,6 +1610,8 @@ export interface PublicProfile {
   handle: string
   displayName: string
   avatarUrl?: string
+  /** Names the drawn face when there is no `avatarUrl`; see `defaultAvatarRevFor`. */
+  defaultAvatarRev?: string
   photos: { url: string }[]
   bio?: string
   pronouns?: string
@@ -1764,6 +1791,8 @@ export function toPublicProfile(
   if (profile.privacy?.refuseNewChats === true) result.acceptsNewChats = false
   if (!hidden) result.lastActiveAt = new Date(lastActiveAt)
   if (profile.avatarUrl !== undefined) result.avatarUrl = profile.avatarUrl
+  const defaultAvatarRev = defaultAvatarRevFor(profile)
+  if (defaultAvatarRev) result.defaultAvatarRev = defaultAvatarRev
   if (profile.bio !== undefined) result.bio = profile.bio
   if (profile.pronouns) result.pronouns = profile.pronouns
   if (profile.country !== undefined) result.country = profile.country

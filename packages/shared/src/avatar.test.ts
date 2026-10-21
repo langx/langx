@@ -10,6 +10,7 @@ import {
   hashFallback,
   hashGround,
   parseDefaultAvatarRev,
+  pickLeastUsed,
   poolFor,
 } from './avatar'
 
@@ -85,6 +86,24 @@ describe('v3 default faces', () => {
     }
     for (const count of grounds) expect(count).toBeGreaterThan(1400)
     expect(hashGround(id(1))).toBe(hashFallback(id(1), 'male').ground)
+  })
+
+  it('gives a new profile the least used face, falling back to its hash on a tie', () => {
+    const seed = id(42)
+    const hashed = hashFallback(seed, null).index
+    const none = new Array<number>(48).fill(0)
+    // No history: exactly the hash.
+    expect(pickLeastUsed(none, seed)).toBe(hashed)
+    // The hashed face is taken twice and one other face never: least used wins.
+    const busy = new Array<number>(48).fill(2)
+    busy[17] = 0
+    expect(pickLeastUsed(busy, seed)).toBe(18)
+    // A tie among the least used goes to the first after the hash.
+    const tied = new Array<number>(48).fill(1)
+    tied[hashed - 1] = 3
+    expect(pickLeastUsed(tied, seed)).toBe((hashed % 48) + 1)
+    // Deterministic.
+    expect(pickLeastUsed(tied, seed)).toBe(pickLeastUsed(tied, seed))
   })
 
   it('writes and reads back the URL token naming one face', () => {

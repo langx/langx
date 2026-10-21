@@ -4,7 +4,6 @@ import {
   DEFAULT_AVATAR_SIZES,
   defaultAvatarCutFor,
   GENERATED_AVATAR_BACKGROUNDS,
-  hashFallback,
   OFFICIAL_HANDLES,
   parseDefaultAvatarRev,
 } from '@langx/shared'
@@ -14,6 +13,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { loadAsset } from '../lib/assets'
 import { renderDefaultAvatar } from '../modules/avatars/raster'
+import { getDefaultAvatarFor } from '../modules/profiles/defaultAvatar'
 import { getProfileGender } from '../modules/profiles/profiles'
 
 /**
@@ -149,10 +149,10 @@ export const avatarRoutes: FastifyPluginAsyncZod = async (app) => {
       const named = v ? parseDefaultAvatarRev(v) : null
       /*
        * 200 for an id nobody holds, as above: a 404 would answer "does this
-       * account exist", one id at a time. With no profile the gender is null
-       * and the hash draws from the neutral pool.
+       * account exist", one id at a time. With no profile the hash draws from
+       * the neutral pool, exactly as for a profile that never said.
        */
-      const avatar = named ?? hashFallback(seed, await getProfileGender(app.mongo.db, seed))
+      const avatar = named ?? (await getDefaultAvatarFor(app.mongo.db, seed))
       const png = await renderDefaultAvatar({ avatar, size, cut: c ?? defaultAvatarCutFor(size) })
 
       return reply
