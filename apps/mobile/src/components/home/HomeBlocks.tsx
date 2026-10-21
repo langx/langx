@@ -1,10 +1,10 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Pressable, Text, View } from 'react-native'
 import { makeStyles, useTheme } from '../../lib/theme'
-import { ProMark } from '../ProMark'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
 import { PressableScale } from '../ui/PressableScale'
+import { ProBadge } from '../ui/ProBadge'
 import { ProgressRing } from '../ui/ProgressRing'
 
 /*
@@ -237,10 +237,11 @@ export function HomeProCard({
   onPress: () => void
 }) {
   const styles = useStyles()
+  const { v3 } = useTheme()
   return (
     <View style={styles.pro}>
       <View style={styles.proHead}>
-        <ProMark />
+        <ProBadge fontSize={v3.type.headline.fontSize} />
         <Text style={styles.proTitle} accessibilityRole="header">
           {title}
         </Text>

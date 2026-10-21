@@ -1,5 +1,5 @@
 import { APPEAL_MAX_LENGTH, APPEAL_MIN_LENGTH } from '@langx/shared'
-import { router } from 'expo-router'
+import { Redirect, router } from 'expo-router'
 import { useState } from 'react'
 import { ScrollView, Text, View } from 'react-native'
 import { ApiRequestError } from '../src/api/client'
@@ -78,6 +78,21 @@ export default function SuspendedScreen() {
       },
     })
   }
+
+  /*
+   * Only a suspended account belongs here. The transport sends people on a
+   * 403, but the route is a URL too — typed, restored by the web build, or
+   * left open past the end of a suspension — and an account in good standing
+   * that lands on it was shown the appeal form for a suspension it does not
+   * have. Home is where "Check again" sends them once it ends; this is the
+   * same way out, taken without being asked.
+   *
+   * Only on an answer fetched since this screen opened. A cached "not
+   * suspended" from before the 403 that sent them here is stale by
+   * definition, and redirecting on it would bounce a suspended account to
+   * Home and straight back.
+   */
+  if (status.isFetchedAfterMount && data && !data.suspended) return <Redirect href="/" />
 
   if (v3) {
     return (
