@@ -78,4 +78,13 @@ describe('the shell and thread fixes', () => {
     expect(read('screens/ChatScreen.tsx')).toContain('{ tint: partnerHue }')
     expect(read('components/MessageMenuHost.tsx')).toContain('request.tint')
   })
+
+  it('never drops the web focus ring from a search field without an edge of its own', () => {
+    for (const file of ['components/ChatSearch.tsx', 'components/ConversationPicker.tsx']) {
+      const source = read(file)
+      expect(source, file).toContain('outlineWidth: 0')
+      expect(source, file).toContain('v3Look && focused && { borderColor: v3.colors.fg }')
+      expect(source, file).toContain('onFocus={() => setFocused(true)}')
+    }
+  })
 })

@@ -50,6 +50,7 @@ export function ConversationPicker({
   const me = useMe()
   const conversations = useConversations('all')
   const [query, setQuery] = useState('')
+  const [focused, setFocused] = useState(false)
 
   const items = useMemo(() => {
     const pinned = conversations.data?.pages[0]?.pinned ?? []
@@ -85,9 +86,11 @@ export function ConversationPicker({
         <Pressable style={styles.sheet} onPress={() => undefined}>
           <View style={styles.header}>
             <Text style={styles.title}>{title}</Text>
-            <View style={styles.field}>
+            <View style={[styles.field, v3Look && focused && { borderColor: v3.colors.fg }]}>
               <Feather name="search" size={v3Look ? v3.icon.md : 18} color={faint} />
               <TextInput
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
                 value={query}
                 onChangeText={setQuery}
                 placeholder={t('conversationPicker.searchPlaceholder')}
@@ -254,11 +257,14 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
     borderRadius: v3.radius.pill,
     flexDirection: 'row',
     gap: v3.space[10],
+    // FieldV3's edge: drawn in the fill's colour at rest and in ink while the
+    // field has focus, so gaining it does not move the text.
+    borderColor: v3.colors.surface,
+    borderWidth: 3,
     height: 52,
     paddingHorizontal: v3.space[16],
   },
-  // No browser focus ring on the web: the pill is the only field in the overlay,
-  // and the caret in it already says where typing goes.
+  // No browser focus ring on the web: the ink edge on the pill shows focus.
   input: {
     color: v3.colors.fg,
     flex: 1,
