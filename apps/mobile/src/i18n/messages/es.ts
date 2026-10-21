@@ -2834,7 +2834,9 @@ export const es: Localized<EnMessages> = {
     of: '{current} de {total}',
     toGo: 'Faltan {amount}.',
     streakReward: 'El hito de {days} días de racha suma +{tokens} fichas.',
-    noTokens: 'Las insignias no dan fichas.',
+    noTokens: 'La insignia en sí no da fichas.',
+    milestonePays:
+      'La insignia en sí no da nada; el hito de {days} días de racha suma +{tokens} fichas.',
     earnedOn: 'Conseguida el {date}',
     earned: 'Conseguida',
     locked: 'Bloqueada',
@@ -3079,6 +3081,12 @@ export const es: Localized<EnMessages> = {
       openers_50: 'Luz del porche',
       openers_200: 'Casa abierta',
     },
+    profilePinned: 'Insignias fijadas',
+    pin: 'Fijar en el perfil',
+    unpin: 'Quitar',
+    change: 'Cambiar',
+    pinnedRow: 'Tus insignias en tu perfil',
+    pinFull: 'Fijarla sustituye a {name}.',
   },
 
   shared: {

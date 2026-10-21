@@ -11,7 +11,7 @@ import { router } from 'expo-router'
 import { useState } from 'react'
 import { View } from 'react-native'
 import {
-  useBadges,
+  useBadgesV3,
   useConversations,
   useEchoSummary,
   useEffectiveTier,
@@ -24,8 +24,8 @@ import {
   useWallet,
   type MeProfile,
 } from '../api/queries'
-import { BadgeMark } from '../components/BadgeMark'
-import { BadgeStrip } from '../components/BadgeStrip'
+import { BadgePatch } from '../components/badges/BadgePatch'
+import { BadgeRow } from '../components/badges/BadgeRow'
 import { DebugQuotaPanel } from '../components/DebugQuotaPanel'
 import { LoadFailed } from '../components/LoadFailed'
 import { PhotoViewer } from '../components/PhotoViewer'
@@ -50,7 +50,8 @@ import { Skeleton } from '../components/ui/Skeleton'
 import { useChangeAvatar } from '../hooks/useChangeAvatar'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
-import { badgeLabel, useDisplayNames, useLocale, useT } from '../i18n'
+import { useDisplayNames, useLocale, useT } from '../i18n'
+import { badgeName } from '../i18n/badgeWords'
 import { authClient } from '../lib/auth-client'
 import { compactCount } from '../lib/format'
 import { shouldGateGuest } from '../lib/guestGate'
@@ -123,7 +124,8 @@ function MemberMe() {
   const me = useMe()
   const tokens = useTokens()
   const wallet = useWallet()
-  const badges = useBadges()
+  // The v3 catalogue, so this page counts what the v3 shelf it opens counts.
+  const badges = useBadgesV3()
   const echo = useEchoSummary()
   const viewers = useViewers()
   // The number on the bell: the tab badge's own cache entry, so the two agree.
@@ -398,7 +400,7 @@ interface ActiveBodyProps {
   black: boolean
   tokens: ReturnType<typeof useTokens>
   wallet: ReturnType<typeof useWallet>
-  badges: ReturnType<typeof useBadges>
+  badges: ReturnType<typeof useBadgesV3>
   echo: ReturnType<typeof useEchoSummary>
   viewers: ReturnType<typeof useViewers>
   ownProfile: ReturnType<typeof useProfile>
@@ -626,9 +628,15 @@ function ActiveBody({
           {next ? (
             <MeNextBadge
               hue={badgeHue!}
-              art={<BadgeMark id={next.id} size={BADGE_ART} />}
+              art={
+                <BadgePatch
+                  id={next.id}
+                  size={BADGE_ART}
+                  state={{ kind: 'next', progress: next.current / Math.max(1, next.threshold) }}
+                />
+              }
               kicker={t('me.nextBadgeKicker')}
-              title={badgeLabel({ t, locale }, next.kind, next.threshold)}
+              title={badgeName({ t, locale }, next)}
               progress={[
                 t('me.nextBadgeProgress', {
                   current: next.current.toLocaleString(locale),
@@ -665,9 +673,15 @@ function ActiveBody({
               }
             />
           ) : null}
-          <BadgeStrip
-            badges={badgeStripMarks(shelf.badges.filter((badge) => badge.earned))}
+          {/* What you wear: your pins, or the newest of each family. */}
+          <BadgeRow
+            ids={
+              shelf.pinned && shelf.pinned.length > 0
+                ? shelf.pinned
+                : badgeStripMarks(shelf.badges.filter((badge) => badge.earned)).map((b) => b.id)
+            }
             onPress={() => router.push('/(app)/badges')}
+            change={() => router.push('/(app)/badges')}
           />
         </View>
       ) : loadState(badges) === 'loading' ? (

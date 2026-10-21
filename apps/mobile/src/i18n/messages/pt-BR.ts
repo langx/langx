@@ -2830,7 +2830,9 @@ export const ptBR: Localized<EnMessages> = {
     of: '{current} de {total}',
     toGo: 'Faltam {amount}.',
     streakReward: 'O marco de {days} dias de sequência rende +{tokens} fichas.',
-    noTokens: 'Insígnias não rendem fichas.',
+    noTokens: 'A insígnia em si não rende fichas.',
+    milestonePays:
+      'A insígnia em si não rende nada; o marco de {days} dias de sequência rende +{tokens} fichas.',
     earnedOn: 'Conquistada em {date}',
     earned: 'Conquistada',
     locked: 'Bloqueada',
@@ -3074,6 +3076,12 @@ export const ptBR: Localized<EnMessages> = {
       openers_50: 'Luz da varanda',
       openers_200: 'Casa aberta',
     },
+    profilePinned: 'Insígnias fixadas',
+    pin: 'Fixar no perfil',
+    unpin: 'Desafixar',
+    change: 'Trocar',
+    pinnedRow: 'Suas insígnias no seu perfil',
+    pinFull: 'Fixar esta substitui {name}.',
   },
 
   shared: {
