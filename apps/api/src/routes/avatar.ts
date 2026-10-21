@@ -175,6 +175,19 @@ export const avatarRoutes: FastifyPluginAsyncZod = async (app) => {
        * 200 for an id nobody holds, as above: a 404 would answer "does this
        * account exist", one id at a time. With no profile the hash draws from
        * the neutral pool, exactly as for a profile that never said.
+       *
+       * Accepted, not fixed: without `v` the answer still depends on the
+       * account. An existing account wears its stored face, and an id nobody
+       * holds wears the neutral hash, so someone who computes the hash can
+       * tell some real ids from unused ones. Answering every request without
+       * `v` from the hash would close that, but at the cost of faces that
+       * disagree. The screens whose DTOs carry no `defaultAvatarRev` — feed
+       * authors, leaderboards, likes, the profile header — would draw the hash
+       * while the lists that carry one draw the stored face, and one person
+       * would wear two faces. The Notionists route this replaces made the same
+       * trade: it read the gender, and a stated gender drew a different face
+       * from an unknown id. An id discloses no name, handle or photo, and the
+       * route is rate-limited. See `docs/decisions.md` → _v3 default faces_.
        */
       const avatar = named ?? (await getDefaultAvatarFor(app.mongo.db, seed))
       const png = await renderDefaultAvatar({ avatar, size, cut: c ?? defaultAvatarCutFor(size) })

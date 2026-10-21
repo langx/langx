@@ -1,4 +1,4 @@
-import { defaultAvatarRev, type DefaultAvatar } from '@langx/shared'
+import { defaultAvatarRev, hashFallback, type DefaultAvatar } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -238,6 +238,15 @@ describe('generated avatars', () => {
       for (const size of [48, 96, 160, 480]) {
         expect((await drawV3(userId, `s=${size}&c=small`)).statusCode).toBe(200)
       }
+    })
+
+    it('answers an id nobody holds with the neutral hash, the trade the route accepts', async () => {
+      const unknown = await drawV3(UNKNOWN, 's=48')
+      const hashed = await drawV3(
+        UNKNOWN,
+        `s=48&v=${defaultAvatarRev(hashFallback(UNKNOWN, null))}`,
+      )
+      expect(unknown.rawPayload).toEqual(hashed.rawPayload)
     })
 
     it('draws the face stored at sign-up, the same one its v names', async () => {

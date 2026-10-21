@@ -904,8 +904,16 @@ export async function setGender(
   )
   if (updated) {
     // An assigned face follows the gender into its pool; a picked one stays.
-    const avatar = await onGenderChange(db, userId, gender)
-    if (avatar) updated.defaultAvatar = avatar
+    // After the gender is saved and never able to undo it: if the face does
+    // not move, the person keeps the old pool's face until they pick one,
+    // which is a cosmetic slip, and a 500 here would report a change that
+    // went through as one that failed.
+    try {
+      const avatar = await onGenderChange(db, userId, gender)
+      if (avatar) updated.defaultAvatar = avatar
+    } catch (error) {
+      console.error('[avatar] gender move failed', { userId, error })
+    }
     return updated
   }
 
