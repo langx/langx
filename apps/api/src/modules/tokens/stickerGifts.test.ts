@@ -232,10 +232,73 @@ describe('giving a sticker pack', () => {
       give(giver, conversation, clientId),
     ])
 
-    const answered = results.filter((r) => r.status === 'fulfilled')
-    expect(answered.length).toBeGreaterThanOrEqual(1)
+    // Both copies are the same tap, so both report the same success — never
+    // the loser reading its own gift as `weeklyLimit`.
+    expect(results.map((r) => r.status)).toEqual(['fulfilled', 'fulfilled'])
+    const ids = results.map((r) => (r.status === 'fulfilled' ? r.value.result.giftId : null))
+    expect(ids[0]).toBe(ids[1])
     expect((await profiles().findOne({ _id: giver }))?.tokenSpent).toBe(PRICE)
     expect(await gifts().countDocuments({})).toBe(1)
+  })
+
+  it('rolls everything back when the thread goes in the middle of the gift', async () => {
+    const { giver, recipient, conversation } = await pair()
+    // `conversations.findOneAndUpdate` matching nothing: the thread purged
+    // between the access check and the transaction's last write.
+    const vanishing = new Proxy(handle.db, {
+      get(target, prop) {
+        if (prop === 'collection') {
+          return (name: string) => {
+            const collection = target.collection(name)
+            if (name !== COLLECTIONS.conversations) return collection
+            return new Proxy(collection, {
+              get(inner, key) {
+                if (key === 'findOneAndUpdate') return () => Promise.resolve(null)
+                const value: unknown = Reflect.get(inner, key, inner)
+                if (typeof value !== 'function') return value
+                return (value as (...args: unknown[]) => unknown).bind(inner)
+              },
+            })
+          }
+        }
+        const value: unknown = Reflect.get(target, prop, target)
+        if (typeof value !== 'function') return value
+        return (value as (...args: unknown[]) => unknown).bind(target)
+      },
+    })
+    const attempt = giveStickerPack(vanishing, giver, {
+      conversationId: conversation._id.toHexString(),
+      packId: PACK,
+      clientId: id(),
+    })
+    expect(await refusal(attempt)).toBe('NOT_FOUND')
+    await nothingHappened(giver, recipient)
+    expect(
+      await handle.db.collection(COLLECTIONS.tokenLedger).countDocuments({ userId: giver }),
+    ).toBe(0)
+  })
+
+  it('refuses a retry once the switch is off', async () => {
+    const { giver, conversation } = await pair()
+    const clientId = id()
+    await give(giver, conversation, clientId)
+    await setFlag(false)
+    expect(await refusal(give(giver, conversation, clientId))).toBe('disabled')
+  })
+
+  it('says keep talking, not unavailable, while the thread is unopened', async () => {
+    for (const fields of [
+      { birthDate: bornYearsAgo(17) },
+      { suspension: { until: new Date(Date.now() + DAY) } } as Partial<Profile>,
+      { tokenFrozenAt: new Date() },
+    ]) {
+      const { giver, recipient, conversation } = await pair({}, fields, { each: 3 })
+      expect(await refusal(give(giver, conversation))).toBe('keepTalking')
+      await nothingHappened(giver, recipient)
+      const options = await getStickerGiftOptions(handle.db, giver, PACK)
+      expect(options.partners.find((p) => p.userId === recipient)?.state).toBe('keepTalking')
+      await conversations().deleteMany({})
+    }
   })
 
   it('refuses everything while the switch is off', async () => {

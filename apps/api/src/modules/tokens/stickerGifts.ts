@@ -223,15 +223,17 @@ export async function giveStickerPack(
 ): Promise<GiveStickerPackResult> {
   const gifts = db.collection<StickerGift>(COLLECTIONS.stickerGifts)
 
-  // First, before even the switch: a retry of a gift that was given is
-  // answered with that gift whatever has changed since, and charges nothing.
+  // The switch first: off means off, retries included.
+  if (!(await flagOn(db))) refuse('disabled', 'Gifting is not available')
+
+  // A retry of a gift that was given is answered with that gift whatever has
+  // changed since, and charges nothing.
   const already = await gifts.findOne({ giverId, clientId: input.clientId })
   if (already) {
     const answer = await replay(db, already, giverId)
     if (answer) return answer
   }
 
-  if (!(await flagOn(db))) refuse('disabled', 'Gifting is not available')
   const pack = giftablePack(input.packId)
 
   // Participancy and blocks, both directions, live — the gate every
@@ -248,6 +250,24 @@ export async function giveStickerPack(
 
   const giverNo = giverRefusal(giver, now)
   if (giverNo || !giver) refuse(giverNo ?? 'notEligible', 'This account cannot give gifts')
+
+  /*
+   * Before anything about the other person. A thread that has not opened yet
+   * says "keep talking" whoever is at the other end — answering `unavailable`
+   * here would tell a near-stranger that this person is a minor, suspended
+   * or reported, which is exactly what that word exists to hide.
+   */
+  if (
+    !stickerGiftThreadOpen({
+      participants: conversation.participants,
+      messageCountBy: conversation.messageCountBy,
+      firstMessageAt: conversation.firstMessageAt,
+      now,
+    })
+  ) {
+    refuse('keepTalking', 'Talk a little longer before giving a gift')
+  }
+
   if (recipientClosed(recipient, now) || !recipient) {
     refuse('unavailable', 'A gift cannot be given to this person')
   }
@@ -265,17 +285,6 @@ export async function giveStickerPack(
   // Before anything is charged, and again in the grant's filter below.
   if ((recipient.cosmetics ?? []).includes(pack.id)) {
     refuse('recipientOwns', `They already have ${pack.id}`)
-  }
-
-  if (
-    !stickerGiftThreadOpen({
-      participants: conversation.participants,
-      messageCountBy: conversation.messageCountBy,
-      firstMessageAt: conversation.firstMessageAt,
-      now,
-    })
-  ) {
-    refuse('keepTalking', 'Talk a little longer before giving a gift')
   }
 
   const sent = await sentInWeek(db, giverId, week)
@@ -397,16 +406,24 @@ export async function giveStickerPack(
           },
           { session, returnDocument: 'after' },
         )
+      // The thread went between the access check and here. Refused inside the
+      // callback so the charge, the grant and the message roll back with it.
+      if (!updatedConversation) {
+        throw new ApiError(ERROR_CODES.NOT_FOUND, 'Conversation not found')
+      }
     })
   } catch (error) {
     if (error instanceof MongoServerError && error.code === 11000) {
+      /*
+       * Whichever index said no, ask first whether this tap already won. Two
+       * copies of the same tap share the client id *and* the week's slot, and
+       * the loser's error can name either — reporting `weeklyLimit` for a gift
+       * that was given would be a lie about the person's own tap.
+       */
+      const first = await gifts.findOne({ giverId, clientId: input.clientId })
+      const answer = first ? await replay(db, first, giverId) : null
+      if (answer) return answer
       const index = JSON.stringify(error.keyPattern ?? {})
-      if (index.includes('clientId')) {
-        // The same tap, twice at once: the other one won, and this is its answer.
-        const first = await gifts.findOne({ giverId, clientId: input.clientId })
-        const answer = first ? await replay(db, first, giverId) : null
-        if (answer) return answer
-      }
       if (index.includes('sendSlot')) refuse('weeklyLimit', 'You have given this week’s gift')
       if (index.includes('recipientId')) refuse('recipientOwns', `They already have ${pack.id}`)
       refuse('unavailable', 'A gift cannot be given to this person')
@@ -498,16 +515,10 @@ export async function getStickerGiftOptions(
     const person = byId.get(other) ?? null
     // Gone or never onboarded: nothing to draw a row from.
     if (!person || person.deletedAt) continue
+    // `keepTalking` first, for `giveStickerPack`'s reason: an unopened
+    // thread must not reveal anything about the person at the other end.
     let state: StickerGiftPartnerState = 'ready'
     if (
-      recipientClosed(person, now) ||
-      reported.has(other) ||
-      (received.get(other) ?? 0) >= STICKER_GIFT_RULES.receivesPerMonth
-    ) {
-      state = 'unavailable'
-    } else if ((person.cosmetics ?? []).includes(pack.id)) {
-      state = 'recipientOwns'
-    } else if (
       !stickerGiftThreadOpen({
         participants: conversation.participants,
         messageCountBy: conversation.messageCountBy,
@@ -516,6 +527,14 @@ export async function getStickerGiftOptions(
       })
     ) {
       state = 'keepTalking'
+    } else if (
+      recipientClosed(person, now) ||
+      reported.has(other) ||
+      (received.get(other) ?? 0) >= STICKER_GIFT_RULES.receivesPerMonth
+    ) {
+      state = 'unavailable'
+    } else if ((person.cosmetics ?? []).includes(pack.id)) {
+      state = 'recipientOwns'
     }
     partners.push({
       userId: other,
