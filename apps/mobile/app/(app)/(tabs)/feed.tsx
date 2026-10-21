@@ -1,7 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
 import { FEED_TOP_CORRECTIONS, MAX_POST_LENGTH, PLAN_LIMITS } from '@langx/shared'
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query'
-import { Redirect, router, useFocusEffect } from 'expo-router'
+import { Redirect, router, useFocusEffect, useScrollToTop } from 'expo-router'
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
   ActivityIndicator,
@@ -352,6 +352,8 @@ export function FeedScreen({ people }: { people?: ReactNode } = {}) {
     listRef.current?.scrollToOffset({ offset, animated }),
   )
   const listRef = useRef<FlatList<FeedPost>>(null)
+  // A tap on the tab the feed is already showing goes back to the top.
+  useScrollToTop(listRef)
   /*
    * The correction box, not the field inside it: the attachment bar and the
    * send row sit below the field and it is those the keyboard has to clear.

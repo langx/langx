@@ -1,11 +1,29 @@
 import Feather from '@expo/vector-icons/Feather'
 import type { LikeTargetType } from '@langx/shared'
-import { Pressable, Text, View } from 'react-native'
+import { useRef, useState } from 'react'
+import { Animated, Pressable, Text, View } from 'react-native'
 import { useSetLike } from '../api/queries'
+import { useReduceMotion } from '../hooks/useReduceMotion'
+import { useV3Home } from '../hooks/useV3Home'
 import { useLocale, useT } from '../i18n'
 import { compactCount } from '../lib/format'
+import { impact } from '../lib/haptics'
+import {
+  catchUpLike,
+  IDLE_LIKE,
+  settleLike,
+  shownCount,
+  shownLiked,
+  tapLike,
+  type LikeIntent,
+} from '../lib/likeIntent'
 import { openLikers } from '../lib/navigation'
 import { makeStyles, useTheme } from '../lib/theme'
+import { EASE_OUT, EASE_POP } from '../lib/theme/motionAnimated'
+import { DURATION } from '../lib/theme/motionValues'
+
+/** How far the heart swells when it fills. */
+const POP_SCALE = 1.25
 
 interface LikeButtonProps {
   targetType: LikeTargetType
@@ -39,6 +57,11 @@ interface LikeButtonProps {
  * heart, in the heart's colour, and a heart with nothing beside it reads as
  * decoration. The word "likes" survives for screen readers, on the count's
  * label.
+ *
+ * Optimistic: the heart and the count move on the tap, not on the answer —
+ * see `lib/likeIntent`, which also keeps a quick like-unlike to one request
+ * in flight. Under v3 a like (never an unlike) pops the heart once; with
+ * reduce motion on, the state changes and nothing moves.
  */
 export function LikeButton({
   targetType,
@@ -55,39 +78,107 @@ export function LikeButton({
   const t = useT()
   const { locale } = useLocale()
   const setLike = useSetLike()
+  const v3Look = useV3Home()
+  const reduceMotion = useReduceMotion()
   const small = size === 'small'
+
+  /*
+   * In a ref as well as in state: a request's settle runs outside any
+   * render, and has to see the taps that came while it was out.
+   */
+  const [intentState, setIntentState] = useState<LikeIntent>(IDLE_LIKE)
+  const intentRef = useRef(intentState)
+  const commit = (next: LikeIntent): void => {
+    intentRef.current = next
+    setIntentState(next)
+  }
+  // The props caught up with the tap: hand back to them, so a change made
+  // elsewhere later (another screen, a refetch) shows here again.
+  const caughtUp = catchUpLike(intentState, likedByViewer)
+  if (caughtUp !== intentState) commit(caughtUp)
+  const intent = caughtUp
+  const liked = shownLiked(intent, likedByViewer)
+  const count = shownCount(intent, likedByViewer, likeCount)
+
+  function send(next: boolean): void {
+    setLike.mutate(
+      { targetType, targetId, liked: next },
+      {
+        onSettled: (state, error) => {
+          const step = settleLike(intentRef.current, error || !state ? null : state.likedByViewer)
+          commit(step.intent)
+          if (step.send !== null) send(step.send)
+        },
+      },
+    )
+  }
+
+  // Carried from the first render, never gained on the press — see the
+  // Fabric note in `ui/PressableScale`.
+  const scale = useRef(new Animated.Value(1)).current
+  function pop(): void {
+    scale.setValue(1)
+    Animated.sequence([
+      Animated.timing(scale, {
+        toValue: POP_SCALE,
+        duration: DURATION.press,
+        easing: EASE_OUT,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scale, {
+        toValue: 1,
+        duration: DURATION.enter - DURATION.press,
+        easing: EASE_POP,
+        useNativeDriver: true,
+      }),
+    ]).start()
+  }
+
+  function onHeart(): void {
+    const step = tapLike(intentRef.current, likedByViewer)
+    commit(step.intent)
+    if (step.send !== null) send(step.send)
+    if (step.intent.desired) {
+      // A deliberate tap whose server commit has not happened yet.
+      void impact('light')
+      if (v3Look && !reduceMotion) pop()
+    }
+  }
+
   // Heart and number take the same colour: red once you have liked it, muted
   // until then. On a hue, the ink for both, and the disc says liked.
-  const tint = ink ?? (likedByViewer ? colors.danger : colors.textMuted)
-  const filled = ink !== undefined && likedByViewer
+  const tint = ink ?? (liked ? colors.danger : colors.textMuted)
+  const filled = ink !== undefined && liked
 
   return (
     <View style={styles.row}>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={likedByViewer ? t('feed.unlike') : t('feed.like')}
-        accessibilityState={{ selected: likedByViewer, disabled: Boolean(disabled) }}
+        accessibilityLabel={liked ? t('feed.unlike') : t('feed.like')}
+        accessibilityState={{ selected: liked, disabled: Boolean(disabled) }}
         disabled={disabled}
         hitSlop={8}
-        onPress={() => setLike.mutate({ targetType, targetId, liked: !likedByViewer })}
+        onPress={onHeart}
         style={({ pressed }) => [
           styles.heart,
           filled && [styles.disc, { backgroundColor: ink }],
           pressed && styles.pressed,
         ]}
       >
-        <Feather name="heart" size={small ? 15 : 18} color={filled ? v3.colors.onBlue : tint} />
+        <Animated.View collapsable={false} style={{ transform: [{ scale }] }}>
+          <Feather name="heart" size={small ? 15 : 18} color={filled ? v3.colors.onBlue : tint} />
+        </Animated.View>
       </Pressable>
 
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={t('feed.likes', { count: likeCount })}
+        accessibilityLabel={t('feed.likes', { count })}
         hitSlop={8}
         onPress={() => openLikers(targetType, targetId, from)}
         style={({ pressed }) => pressed && styles.pressed}
       >
         <Text style={[small ? styles.countSmall : styles.count, { color: tint }]}>
-          {compactCount(likeCount, locale)}
+          {compactCount(count, locale)}
         </Text>
       </Pressable>
     </View>
