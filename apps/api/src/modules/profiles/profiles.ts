@@ -366,6 +366,14 @@ export interface Profile {
    * On the profile so the export carries it and the purge removes it.
    */
   copilotConsent?: { version: number; at: Date }
+  /**
+   * The operator allowed this account to use Copilot, and when. The
+   * per-account switch on top of the flag and the key — it opens nothing by
+   * itself, since the age floor and the person's own consent still apply.
+   * Written only by `modules/copilot/access.ts`, from the operator panel, and
+   * never part of a public profile.
+   */
+  copilotAccess?: { at: Date }
   streak: {
     current: number
     longest: number

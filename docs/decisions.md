@@ -5340,6 +5340,8 @@ be given.
 
 ## Copilot ships dark, behind two switches and a consent
 
+> **Amended 20 October 2026 — see _Copilot v1: an allow-list per account, Say it, and Explain on a partner's text_ below.**
+
 _18 October 2026._ Copilot is three one-tap helps in a chat — **Check** a
 sentence before sending it, **Reply ideas** for the thread, **Explain** a
 person's correction — written by the same provider as the assistant above. Its
@@ -5410,6 +5412,51 @@ names the models that reject it — Haiku 4.5, Sonnet 4.5 and everything older �
 and a move to the cheap model is sent `low` rather than left at its `medium`
 default. The models that offer a server-side refusal fallback get it on
 Copilot's calls; the assistant keeps its own reasoning for not sending one.
+
+## Copilot v1: an allow-list per account, Say it, and Explain on a partner's text
+
+_20 October 2026._ Behic asked for a simple Copilot first, one he can turn on
+for some people rather than for everybody, connected straight to the Claude
+API. Everything in the entry above still holds: the flag, the key, the exact
+18+ check, the partner-age guard, the consent sheet, `copilotPer24h`, the
+global day, the cache. Three things are added.
+
+**A third switch, per account.** `copilotAccess` on the profile, set from the
+operator panel (Find someone → Copilot access) and listed in the Copilot lab.
+Without it the status says `off` and an ask is refused as `off` before
+anything of the person's is read, so the app hides Copilot exactly as it does
+for the flag. No new reason: the person has nothing different to do about it.
+Being an admin grants nothing. An operator allows themselves like anybody
+else, so the list is the whole answer to "whose text can reach the model". The
+switch opens nothing by itself, since the age floor and the person's own
+consent still apply. Allowing and revoking are audited as `copilot.allow` and
+`copilot.revoke`.
+
+**Say it.** The person writes what they want to say in their own language and
+gets up to three natural ways to say it in a language they are learning, each
+with a short gloss. Only their own line, the language named in English and
+their level are sent. That is the same as Check, so like Check it does not
+look at the partner's age.
+
+**Explain reads a partner's plain text, as well as a correction.** It is the
+question learners ask most in a real chat, and the answer stays on the reader's
+side: the partner sees nothing. It sends that one message's body, clipped, and
+never who sent it, other lines, media, a view-once or a deleted message. The
+partner-age guard runs before the message is even looked at, so a minor's text
+never reaches the model whichever kind it is. Because the sheet's words did not
+mention a partner's message, `consentVersion` goes to 2. Nobody has agreed on
+production yet (the flag is off), so the bump asks nobody again.
+
+**One provider, the Anthropic API, behind the small `StructuredProvider`
+interface it already had.** No key means no provider, which means `off`, and
+the app boots and works. There is no second adapter. Tests hand the module a
+fake that records its prompts. Each ask writes one log line, `copilot answered`,
+with the action, whether it was cached, how it ended, how long it took and the
+model. It carries no message text, message id or user id.
+
+**Reply ideas gets no place in the thread.** It keeps its route and its lab
+button. People who suspect their partner of AI-written replies trust them
+less, and a language exchange is a trust product.
 
 ## The feed and the wallet get switches of their own
 
