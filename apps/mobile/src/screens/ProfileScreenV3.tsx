@@ -23,7 +23,6 @@ import { GenderMark } from '../components/GenderMark'
 import { OfficialMark } from '../components/OfficialMark'
 import { PhotoViewer } from '../components/PhotoViewer'
 import { PresenceLine } from '../components/PresenceLine'
-import { ProMark } from '../components/ProMark'
 import { ProfileSkeleton } from '../components/skeletons/ProfileSkeleton'
 import { ProfileTestimonialsV3 } from '../components/testimonials/ProfileTestimonialsV3'
 import { WebTitle } from '../components/WebTitle'
@@ -35,6 +34,7 @@ import { FrameSweep } from '../components/ui/FrameSweep'
 import { IconButton } from '../components/ui/IconButton'
 import { LevelBars } from '../components/ui/LevelBars'
 import { PressableScale } from '../components/ui/PressableScale'
+import { ProBadge } from '../components/ui/ProBadge'
 import { FlameGlyph } from '../components/ui/StreakFlame'
 import { TitleBadge } from '../components/ui/TitleBadge'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
@@ -415,20 +415,6 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
                 {/* Cut out of the hue, as the board draws it. `isOnline` is
                     false for anybody hiding their status. */}
                 {user.isOnline ? <View style={[styles.onlineDot, { borderColor: hue }]} /> : null}
-                {badge ? (
-                  <View pointerEvents="box-none" style={styles.proBadgeRow}>
-                    <Pressable
-                      accessibilityRole="button"
-                      accessibilityLabel={t('profile.proBadge')}
-                      accessibilityHint={t('profile.proSheetTitle', { plan: TIER_NAMES.pro })}
-                      hitSlop={14}
-                      onPress={() => setProSheetOpen(true)}
-                      style={({ pressed }) => pressed && styles.pressed}
-                    >
-                      <ProMark style={[styles.proBadge, { borderColor: hue }]} />
-                    </Pressable>
-                  </View>
-                ) : null}
               </View>
 
               <View style={styles.heroText}>
@@ -440,6 +426,24 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
                   >
                     {user.displayName}
                   </Text>
+                  {/* On the name's line at the name's size, as a verified tick
+                      is — a chip on the avatar's edge read as one more sticker.
+                      A sibling rather than inside the name's text: inside, a
+                      name that fills two lines truncates the badge away. When
+                      the name wraps it goes down with the age, as one line of
+                      facts about the name. */}
+                  {badge ? (
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel={t('profile.proBadge')}
+                      accessibilityHint={t('profile.proSheetTitle', { plan: TIER_NAMES.pro })}
+                      hitSlop={14}
+                      onPress={() => setProSheetOpen(true)}
+                      style={({ pressed }) => pressed && styles.pressed}
+                    >
+                      <ProBadge fontSize={v3.type.title.fontSize} on="hue" />
+                    </Pressable>
+                  ) : null}
                   {/* An official account has no age, and wears its tick there.
                       Otherwise the server's age, as today — absent means none. */}
                   {user.official ? (
@@ -755,8 +759,6 @@ const useStyles = makeStyles(({ v3 }) => ({
     top: 4,
     width: 22,
   },
-  proBadgeRow: { alignItems: 'center', bottom: 0, end: 0, position: 'absolute', start: 0 },
-  proBadge: { borderWidth: 3 },
   heroText: { flex: 1, gap: v3.space[2], minWidth: 0 },
   nameRow: { alignItems: 'baseline', flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
   name: { ...v3.type.title, color: v3.colors.ink, flexShrink: 1 },
