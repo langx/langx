@@ -21,7 +21,7 @@
  *
  * If you are here to "finish the translations": this is finished.
  */
-import { COPILOT_RULES, type ReportReason } from '@langx/shared'
+import { COPILOT_RULES, type AdminFlagName, type ReportReason } from '@langx/shared'
 
 /**
  * One decimal, and an em dash rather than a `0%` when there is nothing to take
@@ -82,6 +82,7 @@ export const ADMIN = {
     users: 'Find someone',
     giftCodes: 'Gift codes',
     measure: 'Measurement',
+    flags: 'Flags',
     system: 'System',
     waiting: 'waiting',
     sections: {
@@ -672,7 +673,7 @@ export const ADMIN = {
     maintenanceOn: 'ON',
     maintenanceOff: 'off',
     readOnly:
-      'Maintenance and the other flags are read only. The kill switch is scripts/maintenance.ts — a panel served by the API cannot turn the API off.',
+      'Maintenance is read only here. Its switch is scripts/maintenance.ts — a panel served by the API cannot turn the API off. The other flags are on the Flags page.',
     minVersion: 'Minimum version',
     flags: 'Flags',
     latestVersion: 'Latest version',
@@ -700,6 +701,65 @@ export const ADMIN = {
     confirmCaptcha: 'Refuse email sign-up, sign-in and reset from any build that sends no token?',
     captchaDone: (required: boolean) =>
       required ? 'The bot check is now required' : 'The bot check is checked only when sent',
+  },
+
+  /**
+   * The Flags page. One line per flag, taken from the comment on it in
+   * `packages/shared/src/appConfig.ts` — keyed by `AdminFlagName`, so a flag
+   * added there does not compile until it has a line here.
+   */
+  flags: {
+    title: 'Flags',
+    hint: 'Each switch writes appConfig.flags at once and is recorded in the audit log. Clients pick it up within about ten seconds; v3Home waits for the next cold start.',
+    captchaElsewhere: 'captchaRequired is switched on the System screen, beside Minimum version.',
+    on: 'on',
+    off: 'off',
+    turnOn: 'Turn on',
+    turnOff: 'Turn off',
+    confirm: (flag: string, value: boolean) => `Turn ${flag} ${value ? 'on' : 'off'}?`,
+    done: (flag: string, value: boolean) => `${flag} is now ${value ? 'on' : 'off'}`,
+    descriptions: {
+      translationEnabled: 'Kill switch for translating messages. Off, nobody can translate.',
+      discoveryEnabled: 'Kill switch for Discover. Off, nobody can browse for partners.',
+      signupsEnabled: 'Kill switch for new accounts. Off, nobody can sign up.',
+      callsEnabled:
+        'Calling for everybody. Off, no call can start and no client draws the button; running calls finish.',
+      copilotEnabled:
+        'Copilot for everybody (with a model key). A consent: the privacy policy and store forms name the provider and a spend limit is set.',
+      v3Home:
+        'The redesign’s Home tab and bar (Home · Chats · Echo · People · Me). Reaches a running app at its next cold start.',
+      streakRepairPush:
+        'The "Pick your streak back up" push, to anyone with the streak push on. Off, no repair push; the mail is unaffected.',
+      discoveryReplyFirst:
+        'Reply-first Discover: leaves out people you already talk to, sinks idle profiles, weighs reply rate, adds "New on LangX".',
+      echoFromCorrections:
+        'A correction somebody receives becomes an Echo card for them without a tap.',
+      trialEndingReminder:
+        'The reminder two days before a free trial charges. On, it also retires the "free week ends" nudge.',
+      nudgeNoSilentDrops:
+        'Promotional nudges stop vanishing: more of what consenting people qualify for reaches them. Nobody new is eligible.',
+      giveAWeek:
+        '"Give a week, get a week": each invitee who becomes a real user earns both sides a week of Pro.',
+      proWeek:
+        'Seven days of Pro for every new adult account, and a second week for a seven-day streak inside it.',
+      newcomerHello:
+        'A first message to an account in its first days does not count against the sender’s new chats.',
+      promoPaywallLinks:
+        'The "free limits" and "plan ended" nudges open the paywall instead of Settings → Subscription and Discover.',
+      stickerGifts:
+        'Giving a sticker pack to a chat partner — tokens spent on another person’s account.',
+    } satisfies Record<AdminFlagName, string>,
+    /**
+     * Flags whose pull requests asked for a condition before they go on
+     * (`docs/plans/redesign-v3.md`). A caution, not a lock: the page still
+     * switches them, after saying what was asked.
+     */
+    cautions: {
+      promoPaywallLinks:
+        'Asked for first (#1832): narrow the limits nudge so it no longer fires after refusals Pro does not lift.',
+      stickerGifts:
+        'Asked for first: the Terms gifting section. Terms §7 still says tokens are not transferable.',
+    } satisfies Partial<Record<AdminFlagName, string>>,
   },
 
   /**
