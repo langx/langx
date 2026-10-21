@@ -14,14 +14,26 @@ import {
   TextInput,
   View,
   type NativeSyntheticEvent,
+  type StyleProp,
   type TextInputKeyPressEventData,
+  type ViewStyle,
 } from 'react-native'
+import Animated, {
+  cancelAnimation,
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated'
+import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useT } from '../../i18n'
 import { composerShowsMic } from '../../lib/composerRow'
 import type { CopilotGate } from '../../lib/copilotGate'
 import { pickStarters } from '../../lib/conversationStarters'
 import { enterSendsOnNative, shouldSubmitOnEnter } from '../../lib/submitOnEnter'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { EASE_OUT, unlessReduced } from '../../lib/theme/motion'
 import { CopilotButton, CopilotMenu } from '../copilot/CopilotButton'
 import { ICON_BUTTON_TARGET, IconButton } from '../ui/IconButton'
 import { PressableScale } from '../ui/PressableScale'
@@ -420,7 +432,7 @@ export function ComposerV3({
       ) : null}
 
       {mode ? (
-        <View style={styles.mode}>
+        <ModeBanner style={styles.mode}>
           <View style={styles.grow}>
             <Text style={styles.modeLabel} numberOfLines={1}>
               {mode.label}
@@ -436,7 +448,7 @@ export function ComposerV3({
             accessibilityLabel={t('common.cancel')}
             onPress={mode.clear}
           />
-        </View>
+        </ModeBanner>
       ) : null}
 
       {attachments}
@@ -469,7 +481,7 @@ export function ComposerV3({
       <View style={styles.row}>
         {recording ? (
           <View style={styles.recording}>
-            <View style={styles.recordingDot} />
+            <RecordingDot style={styles.recordingDot} />
             <Text style={styles.recordingTime}>
               {Math.floor(recording.seconds / 60)}:{String(recording.seconds % 60).padStart(2, '0')}
             </Text>
@@ -626,6 +638,64 @@ function Chip({
       </Text>
     </PressableScale>
   )
+}
+
+/** How far the reply banner rises as it arrives, in points. */
+const BANNER_RISE = 6
+/** The banner's arrival: quick, because the swipe or the tap that asked for it already landed. */
+const BANNER_IN = { duration: 180, easing: EASE_OUT }
+
+/**
+ * The reply / edit / correct banner, rising a few points into place as it
+ * appears, so the thing the swipe asked for is seen arriving rather than
+ * cut in. Once, on mount: switching from a reply to an edit is the same
+ * banner changing its words. Simply there under reduced motion.
+ */
+function ModeBanner({ style, children }: { style: StyleProp<ViewStyle>; children: ReactNode }) {
+  const reduce = useReduceMotion()
+  const shown = useSharedValue(0)
+  useEffect(() => {
+    shown.set(unlessReduced(reduce, 1, (to) => withTiming(to, BANNER_IN)))
+    // `reduce` can arrive after the first render; a banner already in place
+    // then has nothing to replay.
+  }, [reduce, shown])
+  const motion = useAnimatedStyle(() => ({
+    opacity: shown.get(),
+    transform: [{ translateY: (1 - shown.get()) * BANNER_RISE }],
+  }))
+  return <Animated.View style={[style, motion]}>{children}</Animated.View>
+}
+
+/** A breath, not a blink: symmetric, so the dim and the return read as one motion. */
+const EASE_IN_OUT = Easing.inOut(Easing.sin)
+
+/** Each half of the recording light's swell: dim, then lit again. */
+const RECORDING_PULSE_MS = 600
+/** How far the light dims at the bottom of a pulse. */
+const RECORDING_DIM = 0.35
+
+/**
+ * The recording light, breathing while the microphone is live — the sign
+ * every recorder gives that it is still listening. Steady under reduced
+ * motion: a red dot beside a running clock already says so.
+ */
+function RecordingDot({ style }: { style: StyleProp<ViewStyle> }) {
+  const reduce = useReduceMotion()
+  const lit = useSharedValue(1)
+  useEffect(() => {
+    lit.set(
+      unlessReduced(reduce, 1, () =>
+        withRepeat(
+          withTiming(RECORDING_DIM, { duration: RECORDING_PULSE_MS, easing: EASE_IN_OUT }),
+          -1,
+          true,
+        ),
+      ),
+    )
+    return () => cancelAnimation(lit)
+  }, [reduce, lit])
+  const motion = useAnimatedStyle(() => ({ opacity: lit.get() }))
+  return <Animated.View style={[style, motion]} />
 }
 
 const useStyles = makeStyles(({ v3 }) => ({

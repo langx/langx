@@ -200,6 +200,8 @@ import { planJump } from '../lib/messageJump'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useReduceMotion } from '../hooks/useReduceMotion'
+import { EASE_OUT } from '../lib/theme/motionAnimated'
+import { DURATION } from '../lib/theme/motionValues'
 import { useWebFileDrop } from '../hooks/useWebFileDrop'
 import { OfficialMark } from '../components/OfficialMark'
 import { WebTitle } from '../components/WebTitle'
@@ -300,6 +302,7 @@ export function ChatScreen({
     if (chips.some((chip) => chip.kind === 'streak')) setCelebrating(messageId)
   }
   const styles = useStyles()
+  const v3Styles = useThreadV3Styles()
   const t = useT()
   const names = useDisplayNames()
   const { locale } = useLocale()
@@ -3161,7 +3164,7 @@ export function ChatScreen({
         is the bottom of the thread, and the other person typing is
         the newest thing in it.
       */}
-        {partnerTyping ? <TypingIndicator /> : null}
+        {partnerTyping ? <TypingIndicator v3={v3Thread} hue={partnerHue} /> : null}
         {/*
           Nearest the composer, and not a message: the first time
           somebody wrote back, once it has been answered. A jump
@@ -3199,6 +3202,8 @@ export function ChatScreen({
       t,
       conversationId,
       partnerTyping,
+      v3Thread,
+      partnerHue,
       partner,
       partnerId,
       partnerName,
@@ -3262,7 +3267,9 @@ export function ChatScreen({
     ({ item: row }: ListRenderItemInfo<MessageRow>) =>
       row.kind === 'day' ? (
         <View style={styles.dayRow}>
-          <Text style={styles.dayLabel}>{dayLabel(row.day, { t, locale })}</Text>
+          <Text style={[styles.dayLabel, v3Thread && v3Styles.dayChip]}>
+            {dayLabel(row.day, { t, locale })}
+          </Text>
         </View>
       ) : row.kind === 'unread' ? (
         <View style={styles.unreadRow}>
@@ -3340,6 +3347,7 @@ export function ChatScreen({
       ),
     [
       styles,
+      v3Styles,
       t,
       locale,
       v3Thread,
@@ -3687,20 +3695,15 @@ export function ChatScreen({
             ) : null}
 
             {awayFrom !== null && jumpAnchor === null ? (
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={
-                  missed > 0 ? t('chat.jumpToNew', { count: missed }) : t('chat.jumpToNewest')
-                }
+              <JumpToNewest
+                v3={v3Thread}
+                missed={missed}
+                label={missed > 0 ? t('chat.jumpToNew', { count: missed }) : t('chat.jumpToNewest')}
                 onPress={() => {
                   listRef.current?.scrollToOffset({ offset: 0, animated: true })
                   setAwayFrom(null)
                 }}
-                style={styles.jump}
-              >
-                <Feather name="arrow-down" size={18} color={colors.textInverse} />
-                {missed > 0 ? <Text style={styles.jumpCount}>{missed}</Text> : null}
-              </Pressable>
+              />
             ) : null}
           </View>
 
@@ -4299,8 +4302,9 @@ const TYPING_DIM = 0.3
  * few seconds. Still when the reader has asked for less motion — three dots
  * already say what they mean.
  */
-function TypingIndicator() {
+function TypingIndicator({ v3, hue }: { v3: boolean; hue: string | undefined }) {
   const styles = useStyles()
+  const v3Styles = useThreadV3Styles()
   const t = useT()
   const reduceMotion = useReduceMotion()
   const dots = useRef([0, 1, 2].map(() => new Animated.Value(TYPING_DIM))).current
@@ -4326,13 +4330,181 @@ function TypingIndicator() {
   }, [dots, reduceMotion])
 
   return (
-    <View style={styles.typingBubble} accessibilityLabel={t('chat.typing')}>
+    <View
+      style={[
+        styles.typingBubble,
+        // Their bubble as the v3 thread draws it: the partner's hue with ink
+        // dots, or the surface grey until the partner is known.
+        v3 && v3Styles.typingBubble,
+        v3 && hue !== undefined ? { backgroundColor: hue } : null,
+      ]}
+      accessibilityLabel={t('chat.typing')}
+    >
       {dots.map((dot, index) => (
-        <Animated.View key={index} style={[styles.typingDot, { opacity: dot }]} />
+        <Animated.View
+          key={index}
+          style={[
+            styles.typingDot,
+            v3 && (hue !== undefined ? v3Styles.typingDotOnHue : v3Styles.typingDot),
+            { opacity: dot },
+          ]}
+        />
       ))}
     </View>
   )
 }
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
+
+/** Where the v3 pill starts as it arrives: a little small, so it is seen to appear. */
+const JUMP_FROM_SCALE = 0.86
+/** How far the count swells as it goes up, and back. */
+const JUMP_TICK_SCALE = 1.2
+
+/**
+ * "Back to the newest", floating over the thread while the reader is up in
+ * the history, with how many arrived since they left.
+ *
+ * In the v3 look it is the flat ink pill — no shadow, v3 draws none — that
+ * grows into place when it appears and ticks its count when another message
+ * lands. On the native driver, transform and opacity only; simply there,
+ * with the number changing, under reduced motion. The current look keeps
+ * its blue shadowed button exactly as it was.
+ */
+function JumpToNewest({
+  v3,
+  missed,
+  label,
+  onPress,
+}: {
+  v3: boolean
+  missed: number
+  label: string
+  onPress: () => void
+}) {
+  const styles = useStyles()
+  const v3Styles = useThreadV3Styles()
+  const theme = useTheme()
+  const reduce = useReduceMotion()
+  const shown = useRef(new Animated.Value(v3 ? 0 : 1)).current
+  const tick = useRef(new Animated.Value(1)).current
+  const lastMissed = useRef(missed)
+
+  useEffect(() => {
+    if (!v3) return
+    if (reduce) {
+      shown.setValue(1)
+      return
+    }
+    const arrival = Animated.timing(shown, {
+      toValue: 1,
+      // A fade's length: it is small, and arrives under the reader's eye.
+      duration: DURATION.fade,
+      easing: EASE_OUT,
+      useNativeDriver: true,
+    })
+    arrival.start()
+    return () => arrival.stop()
+  }, [v3, reduce, shown])
+
+  useEffect(() => {
+    const grew = missed > lastMissed.current
+    lastMissed.current = missed
+    if (!v3 || reduce || !grew) return
+    tick.setValue(1)
+    const swell = Animated.sequence([
+      Animated.timing(tick, {
+        toValue: JUMP_TICK_SCALE,
+        duration: DURATION.press,
+        easing: EASE_OUT,
+        useNativeDriver: true,
+      }),
+      Animated.timing(tick, {
+        toValue: 1,
+        duration: DURATION.release,
+        easing: EASE_OUT,
+        useNativeDriver: true,
+      }),
+    ])
+    swell.start()
+    return () => swell.stop()
+  }, [missed, v3, reduce, tick])
+
+  const ink = v3 ? theme.v3.colors.pillText : theme.colors.textInverse
+  return (
+    <AnimatedPressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={onPress}
+      style={[
+        styles.jump,
+        v3 && v3Styles.jump,
+        v3
+          ? {
+              opacity: shown,
+              transform: [
+                {
+                  scale: shown.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [JUMP_FROM_SCALE, 1],
+                  }),
+                },
+              ],
+            }
+          : null,
+      ]}
+    >
+      <Feather name="arrow-down" size={18} color={ink} />
+      {missed > 0 ? (
+        <Animated.Text
+          style={[
+            styles.jumpCount,
+            v3 && v3Styles.jumpCount,
+            v3 ? { transform: [{ scale: tick }] } : null,
+          ]}
+        >
+          {missed}
+        </Animated.Text>
+      ) : null}
+    </AnimatedPressable>
+  )
+}
+
+/**
+ * The v3 thread's overrides for what this file draws itself — the typing
+ * bubble, the day chip and the jump pill. Same keys idea as `bubbleLookV3`:
+ * layered over the current look's sheet, so v2 is untouched.
+ */
+const useThreadV3Styles = makeStyles(({ v3 }) => ({
+  // Their bubble's corners and padding, from `bubbleLookV3`.
+  typingBubble: {
+    backgroundColor: v3.colors.surface,
+    borderBottomStartRadius: v3.space[8],
+    borderRadius: v3.radius.tile,
+    paddingHorizontal: v3.space[16],
+    paddingVertical: v3.space[14],
+  },
+  typingDot: { backgroundColor: v3.colors.muted },
+  // Ink on a partner hue, as every hue-lettered thing has.
+  typingDotOnHue: { backgroundColor: v3.colors.ink },
+  // The date as a quiet grey chip, like the drawing's: the label is the chip.
+  dayChip: {
+    ...v3.type.label,
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.pill,
+    color: v3.colors.muted,
+    overflow: 'hidden',
+    paddingHorizontal: v3.space[10],
+    paddingVertical: v3.space[4],
+  },
+  // Flat: v3 keeps no shadow on a floating control.
+  jump: {
+    backgroundColor: v3.colors.pill,
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  jumpCount: { ...v3.type.label, color: v3.colors.pillText },
+}))
 
 /**
  * What the menu's copy of the bubble should draw, for the messages that draw a
