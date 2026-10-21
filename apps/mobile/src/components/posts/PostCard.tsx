@@ -237,7 +237,8 @@ export const PostCard = memo(function PostCard({
           The like on every card, in the same place above the big button.
           Likes pay nothing and rank nothing, but a heart that shows on a
           moment and is missing on an ask reads as broken, not as a rule. On
-          the hue the heart takes the ink, as the card's words do.
+          the hue the heart and count take the ink, as the card's words do,
+          and a like fills a disc of it — no red reads on every hue.
         */}
         <View style={styles.social}>
           <LikeButton
@@ -247,7 +248,7 @@ export const PostCard = memo(function PostCard({
             likedByViewer={post.likedByViewer}
             disabled={mine}
             from={FROM}
-            {...(ask ? { tint: ink } : {})}
+            {...(ask ? { ink } : {})}
           />
           {!ask && post.commentCount > 0 ? (
             <Text style={styles.commentCount}>
