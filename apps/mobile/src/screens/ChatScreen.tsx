@@ -3659,6 +3659,14 @@ export function ChatScreen({
                 onScrollToIndexFailed={onScrollToIndexFailed}
                 onScroll={onScroll}
                 scrollEventThrottle={16}
+                /*
+                 * Dragging the thread puts the keyboard away, the way every
+                 * messenger does, and a tap on a bubble acts on the first try
+                 * instead of only closing the keyboard. Taps on bare thread
+                 * still dismiss it.
+                 */
+                keyboardDismissMode="on-drag"
+                keyboardShouldPersistTaps="handled"
                 renderItem={renderRow}
               />
             )}
