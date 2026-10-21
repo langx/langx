@@ -196,35 +196,40 @@ function ThemeBlock({ model }: { model: SettingsModel }) {
   )
 }
 
-/** Only where there is a home screen to put an icon on, as today. */
+/**
+ * Only where there is a home screen to put an icon on, as today. Seventeen
+ * icons are a page of their own (`settings/app-icon`, `V-AppIcons`); here is
+ * the one on the home screen now, and the way to the rest.
+ */
 function AppIconBlock({ model }: { model: SettingsModel }) {
   const styles = useStyles()
+  const { v3 } = useTheme()
+  const { isRtl } = useLocale()
   const { t } = model
   if (!model.iconSupported) return null
+  const current = t(`settings.appIcon_${model.appIcon}` as MessageKey)
   return (
     <>
       <SettingsHeadingV3 title={t('settings.appIconSection')} body={t('settings.appIconBody')} />
-      <View style={styles.iconTiles}>
-        {model.appIcons.map((name) => {
-          const chosen = model.appIcon === name
-          const label = t(`settings.appIcon_${name}` as MessageKey)
-          return (
-            <Pressable
-              key={name}
-              accessibilityRole="button"
-              accessibilityLabel={label}
-              accessibilityState={{ selected: chosen }}
-              onPress={() => void model.chooseIcon(name)}
-              style={({ pressed }) => [styles.iconTile, pressed && styles.pressed]}
-            >
-              <View style={[styles.iconRing, chosen && styles.iconRingChosen]}>
-                <Image source={ICON_PREVIEWS[name]} style={styles.iconImage} />
-              </View>
-              <Text style={[styles.iconLabel, !chosen && styles.iconLabelOff]}>{label}</Text>
-            </Pressable>
-          )
-        })}
-      </View>
+      <SettingsGroupV3>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`${t('settings.appIcon')}, ${current}`}
+          onPress={() => router.push('/(app)/settings/app-icon')}
+          style={({ pressed }) => [styles.iconRow, pressed && styles.pressed]}
+        >
+          <Image source={ICON_PREVIEWS[model.appIcon]} style={styles.iconImage} />
+          <View style={styles.iconRowText}>
+            <Text style={styles.iconRowTitle}>{t('settings.appIcon')}</Text>
+            <Text style={styles.iconLabelOff}>{current}</Text>
+          </View>
+          <Feather
+            name={isRtl ? 'chevron-left' : 'chevron-right'}
+            size={v3.icon.md}
+            color={v3.colors.muted}
+          />
+        </Pressable>
+      </SettingsGroupV3>
     </>
   )
 }
@@ -458,18 +463,18 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   kindText: { flex: 1, gap: v3.space[2], minWidth: 0 },
   kindTitle: { ...v3.type.button, color: v3.colors.fg },
-  iconTiles: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[6] },
-  iconTile: { alignItems: 'center', gap: v3.space[4], minWidth: 64 },
-  iconRing: {
-    borderColor: 'transparent',
-    borderRadius: 19,
-    borderWidth: 3,
-    padding: 2,
+  iconRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: v3.space[12],
+    minHeight: 72,
+    paddingHorizontal: v3.space[12],
+    paddingVertical: v3.space[8],
   },
-  iconRingChosen: { borderColor: v3.colors.fg },
   iconImage: { borderRadius: v3.radius.icon + 2, height: 56, width: 56 },
-  iconLabel: { ...v3.type.label, color: v3.colors.fg },
-  iconLabelOff: { color: v3.colors.muted },
+  iconRowText: { flex: 1, gap: v3.space[2], minWidth: 0 },
+  iconRowTitle: { ...v3.type.button, color: v3.colors.fg },
+  iconLabelOff: { ...v3.type.caption, color: v3.colors.muted },
   deleteBlock: { gap: v3.space[8], paddingTop: v3.space[8] },
   planHero: {
     backgroundColor: v3.colors.surface,

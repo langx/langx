@@ -8084,6 +8084,21 @@ The card has no event of its own; `paywall_viewed` with `first_reply` counts
 its taps. What old builds see: nothing — the sources exist only in this JS, and
 a link naming one reaches an older paywall as `gate`.
 
+**Amended 20 October 2026: eight app icons are free, and only a Pro tile is a
+road.** Behic asked for the picker to follow the v3 design with new icons, some
+free and some Pro. There are now seventeen: eight free (Classic, Night, Split,
+Contrast, Paper Cut, Running Stitch, Woven Reed, Linocut) and nine with Pro.
+Contrast is free because an accessibility icon is never paid. `appIconTap` takes
+the icon and checks `PRO_ICONS`: a free tile is chosen on any plan and does not
+wait for the profile, since there is nothing to sell; a Pro tile keeps the
+rules above. On the free plan, the v3 picker first opens a short sheet saying
+what Pro includes, and its "See Pro" opens the paywall with `app_icon`. When
+Pro ends, a Pro icon already on the home screen stays there: switching it back
+would make the OS show a notice the person did not ask for. In the picker it
+is still marked current but locked with its Pro tag, and tapping it opens the
+sheet.
+`KEEP_PRO_ICON_AFTER_PRO_ENDS` in `src/lib/appIcon.ts` flips this.
+
 ## Gift codes give time, not discounts
 
 An operator can hand out a code — `UBER` on a partner's newsletter, a word on
