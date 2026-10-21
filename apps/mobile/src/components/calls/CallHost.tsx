@@ -1,50 +1,26 @@
 import Feather from '@expo/vector-icons/Feather'
-import type { FeedbackKind } from '@langx/shared'
-import { router } from 'expo-router'
-import { useEffect, useRef, useState, type ComponentProps } from 'react'
-import {
-  Animated,
-  Easing,
-  Modal,
-  Platform,
-  Pressable,
-  Text,
-  View,
-  useWindowDimensions,
-} from 'react-native'
+import { useEffect, useRef, type ComponentProps } from 'react'
+import { Animated, Easing, Modal, Platform, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useCallClock, useCallState, useCallStreams } from '../../hooks/useCalls'
+import { useCallState } from '../../hooks/useCalls'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
+import { useV3Home } from '../../hooks/useV3Home'
 import { useT } from '../../i18n'
-import { askAlert, showAlert } from '../../lib/alert'
-import { callStatusKey } from '../../lib/calls/callLabels'
 import type { CallState } from '../../lib/calls/machine'
 import {
-  answerCall,
-  CallRefusal,
   declineCall,
   dismissCall,
-  flipCamera,
   hangUp,
   setCallMinimized,
-  toggleCamera,
   toggleMicrophone,
 } from '../../lib/calls/session'
-import { setSpeakerphone } from '../../../modules/calls'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { Avatar } from '../ui/Avatar'
+import { CallScreenV3 } from './CallScreenV3'
 import { CallVideoView } from './CallVideoView'
+import { askCallFeedback, CAN_FLIP, useCallScreen } from './useCallScreen'
 
 type IconName = ComponentProps<typeof Feather>['name']
-
-/**
- * Whether this device plausibly has a second camera to switch to. A phone
- * does; a laptop asked to "flip" hands back the one it has, after a flicker.
- * Read once — it cannot change for the life of the page, and `navigator` is
- * absent while the web bundle is being exported.
- */
-const CAN_FLIP =
-  Platform.OS !== 'web' || (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0)
 
 /**
  * The call, whenever there is one and it is not put away.
@@ -60,6 +36,7 @@ const CAN_FLIP =
  */
 export function CallHost() {
   const call = useCallState()
+  const v3Look = useV3Home()
   if (!call || call.minimized) return null
 
   return (
@@ -76,7 +53,7 @@ export function CallHost() {
         else if (call.phase === 'connecting' || call.phase === 'active') setCallMinimized(true)
       }}
     >
-      <CallScreen call={call} />
+      {v3Look ? <CallScreenV3 call={call} /> : <CallScreen call={call} />}
     </Modal>
   )
 }
@@ -85,72 +62,25 @@ function CallScreen({ call }: { call: CallState }) {
   const t = useT()
   const styles = useStyles()
   const insets = useSafeAreaInsets()
-  const streams = useCallStreams()
-  const clock = useCallClock(call)
-  /*
-   * Their picture fills a tall window, cropped at the sides, the way every
-   * phone draws a call; a wide one shows all of it with bars, because a laptop
-   * camera's frame cropped to a desktop window loses the face.
-   */
-  const window = useWindowDimensions()
-  const remoteFit = window.height > window.width ? 'cover' : 'contain'
-  /** One answer at a time: the permission prompt can sit open for a while. */
-  const [answering, setAnswering] = useState(false)
-  /** Which way the camera faces. Only the front one is drawn as a mirror. */
-  const [front, setFront] = useState(true)
-  /**
-   * Where the sound comes out, on a phone. A browser has no say — it plays
-   * through whatever the computer is set to — so there is no button there.
-   * Starts where every dialer starts it: the speaker for video, held in front
-   * of the face; the earpiece for voice, held to the ear.
-   */
-  const [speaker, setSpeaker] = useState(call.media === 'video')
-
-  const name = call.peer.displayName
-  const statusKey = callStatusKey(call)
-  const status = statusKey ? t(statusKey, { name }) : (clock ?? '')
-  const up = call.phase === 'connecting' || call.phase === 'active'
-  const video = call.media === 'video'
-
-  /*
-   * What fills the stage. Their picture once the call is up and their camera
-   * is on; before that, on a video call the caller placed, the caller's own —
-   * what they are about to be seen as. Otherwise a face and a name, which is
-   * all a voice call ever is.
-   */
-  const theirs = video && call.phase === 'active' && call.remoteCameraOn && streams.remote !== null
-  const mineOnStage =
-    !theirs &&
-    call.cameraOn &&
-    streams.local !== null &&
-    (call.phase === 'outgoing' || call.phase === 'connecting')
-  const mineInTile = call.phase === 'active' && call.cameraOn && streams.local !== null
-  const picture = theirs || mineOnStage
-
-  async function answer(camera: boolean): Promise<void> {
-    if (answering) return
-    setAnswering(true)
-    try {
-      await answerCall({ camera })
-    } catch (error) {
-      // The call is still ringing: they can allow the device and try again,
-      // or take a video call without the camera.
-      if (error instanceof CallRefusal) {
-        void showAlert(
-          t(video ? 'calls.videoCall' : 'calls.voiceCall'),
-          t(error.code === 'CAMERA_DENIED' ? 'calls.cameraNeeded' : 'calls.micNeeded'),
-        )
-      }
-    } finally {
-      setAnswering(false)
-    }
-  }
-
-  async function camera(): Promise<void> {
-    const wanted = !call.cameraOn
-    const on = await toggleCamera()
-    if (wanted && !on) void showAlert(t('calls.videoCall'), t('calls.cameraBlocked'))
-  }
+  const {
+    streams,
+    remoteFit,
+    answering,
+    front,
+    speaker,
+    name,
+    status,
+    up,
+    video,
+    theirs,
+    mineOnStage,
+    mineInTile,
+    picture,
+    answer,
+    camera,
+    flip,
+    toggleSpeaker,
+  } = useCallScreen(call)
 
   return (
     <View style={styles.backdrop}>
@@ -294,24 +224,14 @@ function CallScreen({ call }: { call: CallState }) {
                 />
               ) : null}
               {video && call.cameraOn && CAN_FLIP ? (
-                <Disc
-                  icon="refresh-cw"
-                  label={t('calls.flipCamera')}
-                  onPress={() => {
-                    setFront((current) => !current)
-                    void flipCamera()
-                  }}
-                />
+                <Disc icon="refresh-cw" label={t('calls.flipCamera')} onPress={flip} />
               ) : null}
               {Platform.OS !== 'web' ? (
                 <Disc
                   icon="volume-2"
                   label={t('calls.speaker')}
                   lit={speaker}
-                  onPress={() => {
-                    setSpeakerphone(!speaker)
-                    setSpeaker(!speaker)
-                  }}
+                  onPress={toggleSpeaker}
                 />
               ) : null}
               <Disc
@@ -405,24 +325,12 @@ function BetaFeedback({ ended }: { ended: boolean }) {
   const styles = useStyles()
   const { colors } = useTheme()
 
-  async function open(): Promise<void> {
-    const kind = await askAlert<FeedbackKind | null>(t('calls.feedback'), t('calls.feedbackBody'), [
-      { label: t('feedback.bugTitle'), value: 'bug', icon: 'alert-circle' },
-      { label: t('feedback.featureTitle'), value: 'feature', icon: 'zap' },
-      { label: t('common.cancel'), value: null, style: 'cancel' },
-    ])
-    if (!kind) return
-    if (ended) dismissCall()
-    else setCallMinimized(true)
-    router.push(`/(app)/settings/feedback?kind=${kind}`)
-  }
-
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={`${t('calls.beta')} · ${t('calls.feedback')}`}
       hitSlop={8}
-      onPress={() => void open()}
+      onPress={() => void askCallFeedback(t, ended)}
       style={({ pressed }) => [styles.beta, pressed && styles.discPressed]}
     >
       <Text style={styles.betaBadge}>{t('calls.beta')}</Text>
