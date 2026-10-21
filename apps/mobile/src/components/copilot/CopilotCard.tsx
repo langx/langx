@@ -67,8 +67,21 @@ export function CopilotCard({
         />
       </View>
       <CopilotAnswerBody state={state} onUse={onUse} onKeep={onClose} />
-      {state.kind === 'loading' ? null : <CopilotAllowance quota={quota} />}
+      {showsAllowance(state) ? <CopilotAllowance quota={quota} /> : null}
     </View>
+  )
+}
+
+/**
+ * Whether the allowance line goes under this state: not while the answer is
+ * being written, and not under the quota's own sentence, which already says
+ * when more come.
+ */
+export function showsAllowance(state: CopilotAnswerState): boolean {
+  if (state.kind === 'loading') return false
+  return !(
+    state.kind === 'error' &&
+    (state.key === 'copilot.errQuota' || state.key === 'copilot.errQuotaNoTime')
   )
 }
 

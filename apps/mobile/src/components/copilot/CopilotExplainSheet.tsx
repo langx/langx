@@ -6,7 +6,7 @@ import { makeStyles } from '../../lib/theme'
 import { CopilotLabel } from '../CopilotLabel'
 import { Button } from '../ui/Button'
 import { CopilotAllowance } from './CopilotAllowance'
-import { CopilotAnswerBody, type CopilotAnswerState } from './CopilotCard'
+import { CopilotAnswerBody, showsAllowance, type CopilotAnswerState } from './CopilotCard'
 
 /**
  * Explain's answer: what one message means, or what a correction changed
@@ -48,7 +48,7 @@ export function CopilotExplainSheet({
               {t('copilot.explainTitle')}
             </Text>
             {state ? <CopilotAnswerBody state={state} /> : null}
-            {state && state.kind !== 'loading' ? <CopilotAllowance quota={quota} /> : null}
+            {state && showsAllowance(state) ? <CopilotAllowance quota={quota} /> : null}
           </ScrollView>
           <View style={styles.footer}>
             <Button label={t('copilot.close')} variant="secondary" onPress={onClose} />
