@@ -8,14 +8,21 @@
  */
 import { Nunito_700Bold } from '@expo-google-fonts/nunito/700Bold'
 import { Nunito_800ExtraBold } from '@expo-google-fonts/nunito/800ExtraBold'
-import { useFonts } from 'expo-font'
+import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
+import { loadAsync, useFonts } from 'expo-font'
 import { ObserveRoot } from 'expo-observe'
 import * as SplashScreen from 'expo-splash-screen'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Stack } from 'expo-router'
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider as NavigationThemeProvider,
+  Stack,
+  type Theme as NavigationTheme,
+} from 'expo-router'
 import Head from 'expo-router/head'
 import { StatusBar } from 'expo-status-bar'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Platform, Text } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
@@ -48,6 +55,8 @@ import { PERSIST_MAX_AGE_MS } from '../src/lib/queryPersistence'
 import { keepUnwatchedThreadsShort } from '../src/lib/queryLifetimes'
 import { forgetPersistedQueries, usePersistedQueries } from '../src/hooks/usePersistedQueries'
 import { useScreenTracking } from '../src/hooks/useScreenTracking'
+import { useAppConfigForegroundRefresh } from '../src/hooks/useAppConfig'
+import { useV3Home, useV3HomeLatch } from '../src/hooks/useV3Home'
 import { isAccountSwitch } from '../src/lib/sessionSwitch'
 import { clearCompanionDirectory, clearCompanionSnapshot } from '../modules/companion-snapshot'
 import { clearWatch } from '../modules/watch-link'
@@ -199,8 +208,22 @@ export default ObserveRoot.wrap(RootLayout)
  * `useTheme()` — the splash background and the status-bar style both have to
  * follow the theme, and a provider cannot consume itself.
  */
+/**
+ * The one subscriber to `/app-config` that decides things for everybody: the
+ * v3 latch every `useV3Home` reads, and the refetch on each return to the
+ * foreground. A component of its own, rendering nothing, so a refetch wakes
+ * this and not the whole shell; inside the query provider, outside the
+ * readiness branch, so it runs from the first frame.
+ */
+function AppConfigWatch() {
+  useAppConfigForegroundRefresh()
+  useV3HomeLatch()
+  return null
+}
+
 function RootShell() {
-  const { colors, scheme } = useTheme()
+  const { colors, scheme, v3 } = useTheme()
+  const v3Home = useV3Home()
   const t = useT()
   const { data: session, isPending, refetch } = authClient.useSession()
   const [queryClient] = useState(createQueryClient)
@@ -356,6 +379,48 @@ function RootShell() {
    * open on a font that is never going to arrive.
    */
   const [fontsLoaded, fontError] = useFonts({ Nunito_700Bold, Nunito_800ExtraBold })
+
+  /*
+   * The redesign's heaviest weight, asked for once here and waited on by
+   * nothing. Each v3 screen loads it for itself (`useFonts`, 34 of them) and
+   * sets its titles in the fallback until it lands — so without this, every
+   * tab's first paint swapped the title's face and reflowed under it. Started
+   * at the root, it is in by the time the splash has gone, and those
+   * `useFonts` read it as already loaded. Only under v3: with the flag off no
+   * launch shows it, and the root must not hold anything for it (see
+   * `DISPLAY_FONT_BLACK`).
+   */
+  useEffect(() => {
+    if (v3Home) void loadAsync({ Nunito_900Black }).catch(() => undefined)
+  }, [v3Home])
+
+  /*
+   * The navigator's own colours. Without them expo-router uses its light
+   * default, whose `#f2f2f2` is what shows behind a screen being swiped away
+   * or a tab's first frame — a grey flash in a dark app. The app's own ground,
+   * edge and ink instead, in the redesign's palette under v3.
+   */
+  const navigationTheme = useMemo<NavigationTheme>(() => {
+    const base = scheme === 'dark' ? DarkTheme : DefaultTheme
+    const own = v3Home
+      ? {
+          background: v3.colors.bg,
+          card: v3.colors.bg,
+          border: v3.colors.line,
+          text: v3.colors.fg,
+          primary: v3.colors.blue,
+          notification: v3.colors.danger,
+        }
+      : {
+          background: colors.bg,
+          card: colors.surface,
+          border: colors.border,
+          text: colors.text,
+          primary: colors.accent,
+          notification: colors.danger,
+        }
+    return { ...base, colors: { ...base.colors, ...own } }
+  }, [scheme, v3Home, v3, colors])
   const showSpinner =
     (isPending && !hasResolvedOnce.current) || (!fontsLoaded && !fontError) || resetting
 
@@ -441,52 +506,66 @@ function RootShell() {
                 away pushes the screens down rather than covering their headers.
               */}
               <CallBar />
-              <Stack screenOptions={{ headerShown: false }}>
-                {/*
+              <NavigationThemeProvider value={navigationTheme}>
+                <Stack
+                  screenOptions={{
+                    headerShown: false,
+                    /*
+                     * Under v3, crossing between the groups — auth, onboarding,
+                     * the app — dissolves rather than slides: it is a change of
+                     * place, not a step forward, and there is no going back
+                     * along it (see `gestureEnabled` below). A fade under
+                     * reduce motion too, which already moves nothing.
+                     */
+                    ...(v3Home ? { animation: 'fade' as const } : {}),
+                  }}
+                >
+                  {/*
                   Outside both guards, because it *is* the guard: `index` is the
                   only screen at `/` in every state, and it reads the session
                   itself. Behind `!!session` it was one of two screens matching
                   the empty path, and which one answered a returning guest was
                   decided by route-file order.
                 */}
-                {/*
+                  {/*
                   No swipe between the groups. They switch by `replace` and
                   `<Redirect>`, so there is nothing to pop to today — this is
                   what keeps a future `push` from ever swiping a signed-in user
                   back onto the sign-in form.
                 */}
-                <Stack.Screen name="index" options={{ gestureEnabled: false }} />
-                {/*
+                  <Stack.Screen name="index" options={{ gestureEnabled: false }} />
+                  {/*
                   Also outside both guards: the emailed sign-in link lands here
                   whoever taps it, and a signed-in member tapping it must not
                   fall through to `[username]` because `(auth)` is unmounted.
                 */}
-                <Stack.Screen name="magic-link" options={{ gestureEnabled: false }} />
-                {/* The verification link, for the same reason. */}
-                <Stack.Screen name="verify-email" options={{ gestureEnabled: false }} />
-                {/*
+                  <Stack.Screen name="magic-link" options={{ gestureEnabled: false }} />
+                  {/* The verification link, for the same reason. */}
+                  <Stack.Screen name="verify-email" options={{ gestureEnabled: false }} />
+                  {/*
                   Outside both guards for the same reason, from the other end: a
                   suspended account still holds a perfectly good session — that
                   is what a suspension is — so the guard has nothing to say about
                   this screen, and the transport `replace`s here from wherever
                   the 403 was met.
                 */}
-                <Stack.Screen name="suspended" options={{ gestureEnabled: false }} />
-                <Stack.Protected guard={!!session}>
-                  <Stack.Screen name="(onboarding)" options={{ gestureEnabled: false }} />
-                  <Stack.Screen name="(app)" options={{ gestureEnabled: false }} />
-                </Stack.Protected>
-                {/*
+                  <Stack.Screen name="suspended" options={{ gestureEnabled: false }} />
+                  <Stack.Protected guard={!!session}>
+                    <Stack.Screen name="(onboarding)" options={{ gestureEnabled: false }} />
+                    <Stack.Screen name="(app)" options={{ gestureEnabled: false }} />
+                  </Stack.Protected>
+                  {/*
                   `!session` alone was right while every session meant an account.
                   A guest holds one, so `(auth)` would unmount and "send them to
                   sign up" would have nowhere to go. Both branches mount for a
                   guest, which is exactly the state they are in: browsing inside
                   `(app)`, one tap away from `(auth)`.
                 */}
-                <Stack.Protected guard={!session || isGuest}>
-                  <Stack.Screen name="(auth)" options={{ gestureEnabled: false }} />
-                </Stack.Protected>
-              </Stack>
+                  <Stack.Protected guard={!session || isGuest}>
+                    <Stack.Screen name="(auth)" options={{ gestureEnabled: false }} />
+                  </Stack.Protected>
+                </Stack>
+              </NavigationThemeProvider>
               {/*
                 After the navigator, not before it: this one is a plain
                 positioned view rather than a Modal, so painting over the screen
@@ -513,6 +592,7 @@ function RootShell() {
           `BOOT_STALL_MS`: the logo gets out of the way first, and the retry
           this branch offers appears under it rather than behind it.
         */}
+        <AppConfigWatch />
         <AppSplash />
       </QueryClientProvider>
     </>

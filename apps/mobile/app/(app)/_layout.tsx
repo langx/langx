@@ -20,6 +20,8 @@ import { authClient } from '../../src/lib/auth-client'
 import { shouldGateGuest } from '../../src/lib/guestGate'
 import { useCalls } from '../../src/hooks/useCalls'
 import { useSocket } from '../../src/hooks/useSocket'
+import { useReduceMotion } from '../../src/hooks/useReduceMotion'
+import { useV3Home } from '../../src/hooks/useV3Home'
 
 /**
  * The signed-in area: a native stack whose first entry is the tab navigator.
@@ -41,6 +43,27 @@ import { useSocket } from '../../src/hooks/useSocket'
 export default function AppLayout() {
   const { colors } = useTheme()
   const { data: session } = authClient.useSession()
+  /*
+   * Both settle before this layout can mount — the launch splash waits for
+   * the v3 latch — and neither changes after, so reading them here costs the
+   * stack no re-render.
+   */
+  const v3Home = useV3Home()
+  const reduceMotion = useReduceMotion()
+  /*
+   * With reduce motion on, every push and every rise from the bottom becomes a
+   * cross-fade, as iOS's own apps do: the content still changes, nothing
+   * travels across the screen to change it.
+   */
+  const slide = reduceMotion ? 'fade' : 'slide_from_right'
+  const rise = reduceMotion ? 'fade' : 'slide_from_bottom'
+  /*
+   * The heavy screens stop rendering while something covers them, under v3
+   * as the tabs do: a thread or a profile under a pushed screen re-rendered
+   * on every socket patch for nobody. Not for anything presented over a
+   * screen that stays visible — there is no such screen in this stack.
+   */
+  const freeze = v3Home ? { freezeOnBlur: true } : {}
   /*
    * None of the five are for a guest, and the first one is not merely pointless
    * — `ws/index.ts` rejects an unverified session outright, and a guest is
@@ -103,7 +126,7 @@ export default function AppLayout() {
            */
           gestureEnabled: true,
           fullScreenGestureEnabled: true,
-          animation: 'slide_from_right',
+          animation: slide,
         }}
       >
         {/* The root of the area: nothing to pop to, so nothing to swipe to. */}
@@ -117,6 +140,7 @@ export default function AppLayout() {
         <Stack.Screen
           name="chat/[id]"
           options={({ route }) => ({
+            ...freeze,
             fullScreenGestureEnabled: false,
             /*
              * No slide when the thread is taking `chat/new`'s place: that
@@ -137,18 +161,33 @@ export default function AppLayout() {
           is how it leaves, and the edge-back gesture is off because a swipe
           across is how its slides step.
         */}
-        <Stack.Screen
-          name="recap"
-          options={{ animation: 'slide_from_bottom', gestureEnabled: false }}
-        />
+        <Stack.Screen name="recap" options={{ animation: rise, gestureEnabled: false }} />
         {/*
           The chat camera rises from the bottom, as a camera does in every
           messaging app, and takes no swipe: a held shutter is a drag waiting
           to happen, and the edge gesture would end a recording.
         */}
+        <Stack.Screen name="chat-camera" options={{ animation: rise, gestureEnabled: false }} />
+        <Stack.Screen name="profile/[handle]" options={freeze} />
+        {/*
+          Under v3, writing a post rises from the bottom like the camera, and
+          takes no swipe: a half-written post is not something a stray drag
+          should be able to throw away. Its own close button is the way out.
+        */}
         <Stack.Screen
-          name="chat-camera"
-          options={{ animation: 'slide_from_bottom', gestureEnabled: false }}
+          name="compose"
+          options={v3Home ? { animation: rise, gestureEnabled: false } : {}}
+        />
+        {/*
+          The filters are a panel over Discover rather than a page after it,
+          so under v3 they rise from the bottom the same way. Still a pushed
+          card, not `presentation: 'modal'`: Apply `replace`s back to the
+          tab, and a native sheet would change what that replace lands on.
+          No swipe, as for compose; the close arrow is there.
+        */}
+        <Stack.Screen
+          name="filters"
+          options={v3Home ? { animation: rise, gestureEnabled: false } : {}}
         />
         {/*
           A view-once photo fades in and out like the photo viewer does, and

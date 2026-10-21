@@ -33,3 +33,16 @@ export function v3TabBadgeStyle<T extends object>(
 ) {
   return { ...label, ...countBadgeText(TAB_BADGE_SIZE), backgroundColor, color }
 }
+
+/**
+ * Whether a tab's count went up — the one change its badge pops for.
+ *
+ * `undefined` on either side is "not known", never zero: the first answer a
+ * launch gets is the count as it already was, and popping every badge on the
+ * bar as the app opens would announce that nothing had happened. Zero is
+ * known, so a badge appearing over a count that was zero does pop.
+ */
+export function badgeGrew(previous: number | undefined, next: number | undefined): boolean {
+  if (previous === undefined || next === undefined) return false
+  return next > previous
+}

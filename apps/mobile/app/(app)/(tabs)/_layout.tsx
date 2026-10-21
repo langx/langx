@@ -1,7 +1,16 @@
 import Feather from '@expo/vector-icons/Feather'
-import { Tabs } from 'expo-router'
-import { useEffect } from 'react'
-import { View, type ColorValue } from 'react-native'
+import { Tabs, useIsFocused } from 'expo-router'
+import { useEffect, useRef, type ReactNode } from 'react'
+import {
+  Animated,
+  Platform,
+  StyleSheet,
+  View,
+  type ColorValue,
+  type PressableProps,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useEchoSummary, useNotificationUnread, useUnreadTotal } from '../../../src/api/queries'
 import { TourTarget } from '../../../src/components/TourTarget'
@@ -11,9 +20,13 @@ import { useT } from '../../../src/i18n'
 import { authClient } from '../../../src/lib/auth-client'
 import { shouldGateGuest } from '../../../src/lib/guestGate'
 import { syncIconBadge } from '../../../src/lib/iconBadge'
-import { v3TabBadgeStyle } from '../../../src/lib/countBadge'
+import { TAB_BADGE_SIZE, badgeGrew, v3TabBadgeStyle } from '../../../src/lib/countBadge'
 import { unreadBadge } from '../../../src/lib/unreadBadge'
 import { useV3Home } from '../../../src/hooks/useV3Home'
+import { useReduceMotion } from '../../../src/hooks/useReduceMotion'
+import { PressableScale } from '../../../src/components/ui/PressableScale'
+import { EASE_OUT } from '../../../src/lib/theme/motionAnimated'
+import { DURATION, PRESS_SCALE_GLYPH } from '../../../src/lib/theme/motionValues'
 
 /**
  * Feather rather than Lucide, which is what the design specifies: Lucide is a
@@ -139,30 +152,181 @@ const V3_PILL = { width: 56, height: 32 } as const
 /** The bar above the bottom inset: the pill, the word and the padding round them. */
 const V3_BAR_HEIGHT = 62
 
+/** A badge in the redesign's bar: the count as drawn, and the number behind it. */
+interface V3Badge {
+  text: string | undefined
+  count: number | undefined
+  look: 'blue' | 'pill'
+}
+
+/*
+ * The bar draws every icon twice, an active copy over an inactive one, and
+ * swaps their opacity in one frame — so the `focused` it passes says which
+ * copy this is, not whether the tab is on. The pill follows the tab's real
+ * focus instead (`useIsFocused`: each item sits under its own route's
+ * navigation), in both copies alike, so whichever copy is showing shows it
+ * arriving or leaving. The glyph's colour still swaps with the copies.
+ *
+ * On RN `Animated` with the native driver: the tab bar is on the launch path.
+ */
 function V3TabIcon({
   name,
   focused,
   tour,
+  badge,
 }: {
   name: keyof typeof Feather.glyphMap
   focused: boolean
   tour?: TourTargetId
+  badge?: V3Badge
 }) {
   const styles = useV3Styles()
   const { v3 } = useTheme()
+  const on = useIsFocused()
+  const reduce = useReduceMotion()
+  const shown = useRef(new Animated.Value(on ? 1 : 0)).current
+  useEffect(() => {
+    const toValue = on ? 1 : 0
+    if (reduce) {
+      shown.setValue(toValue)
+      return
+    }
+    // In at `fade`'s 200 ms, out quicker at `release`'s 150: nobody watches
+    // the tab they are leaving.
+    Animated.timing(shown, {
+      toValue,
+      duration: on ? DURATION.fade : DURATION.release,
+      easing: EASE_OUT,
+      useNativeDriver: true,
+    }).start()
+  }, [on, reduce, shown])
   const pill = (
-    <View style={[styles.pill, focused && styles.pillOn]}>
+    <View style={styles.pill}>
+      <Animated.View
+        style={[
+          StyleSheet.absoluteFill,
+          styles.pillOn,
+          {
+            opacity: shown,
+            transform: [
+              { scale: shown.interpolate({ inputRange: [0, 1], outputRange: [0.86, 1] }) },
+            ],
+          },
+        ]}
+      />
       <Feather name={name} size={v3.icon.xl} color={focused ? v3.colors.fg : v3.colors.muted} />
     </View>
   )
-  return tour ? (
-    <TourTarget id={tour} pad={4} radius={v3.radius.pill}>
-      {pill}
-    </TourTarget>
-  ) : (
-    pill
+  return (
+    <View style={styles.pill}>
+      {tour ? (
+        <TourTarget id={tour} pad={4} radius={v3.radius.pill}>
+          {pill}
+        </TourTarget>
+      ) : (
+        pill
+      )}
+      {badge ? <V3TabBadge {...badge} /> : null}
+    </View>
   )
 }
+
+/**
+ * The count on a tab, drawn here rather than by the bar's own badge so it can
+ * pop — 1 → 1.18 → 1 — when the number goes up, and only then: a count
+ * falling is somebody catching up, which needs no fanfare, and the first
+ * number a launch shows is not news either (`badgeGrew`).
+ *
+ * Where the bar put its own: three points over the slot's top end corner.
+ */
+function V3TabBadge({ text, count, look }: V3Badge) {
+  const { v3 } = useTheme()
+  const reduce = useReduceMotion()
+  const scale = useRef(new Animated.Value(1)).current
+  const previous = useRef(count)
+  useEffect(() => {
+    const grew = badgeGrew(previous.current, count)
+    previous.current = count
+    if (!grew || reduce) return
+    Animated.sequence([
+      Animated.timing(scale, {
+        toValue: 1.18,
+        duration: DURATION.press,
+        easing: EASE_OUT,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scale, {
+        toValue: 1,
+        duration: DURATION.release,
+        easing: EASE_OUT,
+        useNativeDriver: true,
+      }),
+    ]).start()
+  }, [count, reduce, scale])
+  if (!text) return null
+  return (
+    <Animated.Text
+      numberOfLines={1}
+      // As the bar's own badge: iOS shows the large-content viewer instead.
+      allowFontScaling={Platform.OS === 'ios' ? false : undefined}
+      style={[
+        v3TabBadgeStyle(
+          v3.type.label,
+          look === 'blue' ? v3.colors.blue : v3.colors.pill,
+          look === 'blue' ? v3.colors.onBlue : v3.colors.pillText,
+        ),
+        BADGE_BOX,
+        { transform: [{ scale }] },
+      ]}
+    >
+      {text}
+    </Animated.Text>
+  )
+}
+
+const BADGE_BOX = {
+  borderRadius: TAB_BADGE_SIZE / 2,
+  end: -3,
+  minWidth: TAB_BADGE_SIZE,
+  overflow: 'hidden',
+  paddingHorizontal: 4,
+  position: 'absolute',
+  top: -3,
+} as const
+
+/*
+ * The redesign's tab press: the shared `PressableScale`, not the bar's
+ * `PlatformPressable`, whose 0.3 dim was the one press in the app that
+ * looked unlike every other. The glyph scale, because the face is a glyph
+ * and its word. No haptic: a tab switch is plain navigation
+ * (`lib/haptics.ts`). The bar's own link, ripple and hover are dropped; the
+ * press navigates through `onPress` either way.
+ */
+type V3TabButtonProps = Omit<PressableProps, 'style' | 'children'> & {
+  children: ReactNode
+  style?: StyleProp<ViewStyle>
+  href?: string
+  pressOpacity?: number
+  hoverEffect?: unknown
+}
+
+function V3TabButton({
+  children,
+  style,
+  href: _href,
+  pressOpacity: _pressOpacity,
+  hoverEffect: _hoverEffect,
+  android_ripple: _ripple,
+  ...rest
+}: V3TabButtonProps) {
+  return (
+    <PressableScale {...rest} touchStyle={style} style={TAB_FACE} scaleTo={PRESS_SCALE_GLYPH}>
+      {children}
+    </PressableScale>
+  )
+}
+
+const TAB_FACE = { alignItems: 'center' } as const
 
 const useV3Styles = makeStyles(({ v3 }) => ({
   pill: {
@@ -172,7 +336,7 @@ const useV3Styles = makeStyles(({ v3 }) => ({
     justifyContent: 'center',
     width: V3_PILL.width,
   },
-  pillOn: { backgroundColor: v3.colors.tabOn },
+  pillOn: { backgroundColor: v3.colors.tabOn, borderRadius: v3.radius.pill },
 }))
 
 /**
@@ -220,12 +384,14 @@ export default function TabsLayout() {
    * nothing, so the request could only ever answer zero — and would 401
    * rather than answer it.
    */
-  const meBadge = unreadBadge(useNotificationUnread(!shouldGateGuest(session?.user)).data)
+  const meCount = useNotificationUnread(!shouldGateGuest(session?.user)).data
+  const meBadge = unreadBadge(meCount)
   /*
    * Cards due. Same guest gate: a guest has no cards, and the request would
    * 401 rather than answer zero.
    */
-  const echoBadge = unreadBadge(useEchoSummary(!shouldGateGuest(session?.user)).data?.due)
+  const echoDue = useEchoSummary(!shouldGateGuest(session?.user)).data?.due
+  const echoBadge = unreadBadge(echoDue)
   /*
    * The icon follows the same number as the tab, from the same query — see
    * `syncIconBadge`. Whatever changes the total invalidates that query, so
@@ -243,22 +409,6 @@ export default function TabsLayout() {
     if (unread.data !== undefined) void syncIconBadge(unread.data)
   }, [unread.data, unread.dataUpdatedAt])
 
-  /*
-   * A badge in the redesign's bar. Spread rather than passed as `undefined`,
-   * like the badges in today's bar below.
-   */
-  const v3Badge = (count: string | undefined, look: 'blue' | 'pill') =>
-    count
-      ? {
-          tabBarBadge: count,
-          tabBarBadgeStyle: v3TabBadgeStyle(
-            v3.type.label,
-            look === 'blue' ? v3.colors.blue : v3.colors.pill,
-            look === 'blue' ? v3.colors.onBlue : v3.colors.pillText,
-          ),
-        }
-      : {}
-
   if (v3Home) {
     return (
       <Tabs
@@ -270,6 +420,13 @@ export default function TabsLayout() {
           tabBarLabelStyle: v3.type.label,
           tabBarLabelPosition: 'below-icon',
           tabBarIconStyle: V3_PILL,
+          tabBarButton: (props) => <V3TabButton {...props} />,
+          /*
+           * A tab out of sight stops rendering until it is back: every socket
+           * patch used to re-render all five, the four nobody was looking at
+           * included. Updates queued meanwhile land when it is focused again.
+           */
+          freezeOnBlur: true,
           /*
            * Taller than the bar's own 49: the pill is 32 and the word under it
            * 16, which the default height clips. A custom height replaces the
@@ -293,12 +450,16 @@ export default function TabsLayout() {
           name="chats"
           options={{
             title: t('tabs.chats'),
-            tabBarIcon: ({ focused }) => (
-              <V3TabIcon name="message-square" focused={focused} tour="tabChats" />
-            ),
             // Blue, as the drawing has it: in this bar a count is news, and
             // red is kept for what went wrong.
-            ...v3Badge(badge, 'blue'),
+            tabBarIcon: ({ focused }) => (
+              <V3TabIcon
+                name="message-square"
+                focused={focused}
+                tour="tabChats"
+                badge={{ text: badge, count: unread.data, look: 'blue' }}
+              />
+            ),
           }}
         />
         <Tabs.Screen
@@ -306,9 +467,13 @@ export default function TabsLayout() {
           options={{
             title: t('tabs.echo'),
             tabBarIcon: ({ focused }) => (
-              <V3TabIcon name="repeat" focused={focused} tour="tabEcho" />
+              <V3TabIcon
+                name="repeat"
+                focused={focused}
+                tour="tabEcho"
+                badge={{ text: echoBadge, count: echoDue, look: 'pill' }}
+              />
             ),
-            ...v3Badge(echoBadge, 'pill'),
           }}
         />
         <Tabs.Screen
@@ -322,8 +487,13 @@ export default function TabsLayout() {
           name="me"
           options={{
             title: t('tabs.me'),
-            tabBarIcon: ({ focused }) => <V3TabIcon name="user" focused={focused} />,
-            ...v3Badge(meBadge, 'blue'),
+            tabBarIcon: ({ focused }) => (
+              <V3TabIcon
+                name="user"
+                focused={focused}
+                badge={{ text: meBadge, count: meCount, look: 'blue' }}
+              />
+            ),
           }}
         />
         {/* People's Posts segment now; reached by a link, it redirects there. */}
