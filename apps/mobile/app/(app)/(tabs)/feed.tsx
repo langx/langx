@@ -188,12 +188,24 @@ export function FeedScreen({ people }: { people?: ReactNode } = {}) {
   const feed = useFeed()
   const client = useQueryClient()
   /*
-   * A reset, not a refetch. A refetch of an infinite query re-reads every
-   * loaded page in turn, each one a ranked window read; a reset asks for page
-   * one alone — and is the only way to get a new ranking moment, since every
-   * later page is pinned to the one page one was read at.
+   * Trim to page one, then refetch. A plain refetch of an infinite query
+   * re-reads every loaded page in turn, each one a ranked window read; with
+   * only page one left it asks for page one alone — the new ranking moment,
+   * since every later page is pinned to the one page one was read at.
+   *
+   * Not `resetQueries`, which got the same request by dropping the data: the
+   * list went back to skeletons, the RefreshControl unmounted mid-pull and
+   * the scroll jumped. Trimming keeps what is on screen until the answer
+   * replaces it.
    */
-  const pull = usePullToRefresh(() => client.resetQueries({ queryKey: keys.timeline }))
+  const pull = usePullToRefresh(() => {
+    client.setQueryData<InfiniteData<FeedPage>>(keys.timeline, (data) =>
+      data && data.pages.length > 1
+        ? { pages: data.pages.slice(0, 1), pageParams: data.pageParams.slice(0, 1) }
+        : data,
+    )
+    return client.refetchQueries({ queryKey: keys.timeline, exact: true })
+  })
   const correctPost = useCorrectPost()
   const review = useReviewPrompt()
 
