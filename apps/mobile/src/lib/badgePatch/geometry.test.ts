@@ -75,6 +75,14 @@ describe('arcs as cubics', () => {
     expect(outlineLength(circle)).toBeCloseTo(2 * Math.PI * 27, 0)
   })
 
+  it('measures a straight-sided outline, H and V included', () => {
+    // The banner: 40 across, 50 down each side, two 22.36 diagonals.
+    expect(outlineLength('M12 7H52V57L32 47L12 57Z')).toBeCloseTo(
+      40 + 50 + 50 + 2 * Math.hypot(20, 10),
+      1,
+    )
+  })
+
   it('ends each arc exactly where the arc ended', () => {
     const curves = arcToCubics([0, 10], 10, 10, 0, false, true, [10, 0])
     expect(curves.at(-1)?.slice(4)).toEqual([10, 0])

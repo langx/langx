@@ -129,13 +129,14 @@ export function arcToCubics(
 }
 
 /**
- * The same path with every `A`/`a` replaced by absolute `C` segments. Every
- * other command is passed through as written; the current point is tracked
- * through all of them, relative ones included, so an arc after `h` or `q`
- * starts where the pen really is.
+ * The same path with every `A`/`a` replaced by absolute `C` segments, and
+ * everything else written absolute in `M L C Q Z` — which is also all
+ * `flatten` reads, so a straight-sided outline (`H`, `V`) is measured rather
+ * than read as one point. The current point is tracked through every
+ * command, relative ones included, so an arc after `h` or `q` starts where
+ * the pen really is.
  */
 export function withoutArcs(d: string): string {
-  if (!/[Aa]/.test(d)) return d
   const toks = tokens(d)
   const parts: string[] = []
   let i = 0
