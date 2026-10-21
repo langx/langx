@@ -4,10 +4,12 @@ import { useRef, useState } from 'react'
 import { KeyboardAvoidingView, Modal, Platform, Pressable, Text, View } from 'react-native'
 import { ApiRequestError } from '../api/client'
 import { keys, useRedeemGiftCode } from '../api/queries'
+import { useV3Home } from '../hooks/useV3Home'
 import { useT, type MessageKey } from '../i18n'
 import { track } from '../lib/analytics'
 import type { GiftCodeOutcome } from '../lib/analyticsEvents'
 import { makeStyles } from '../lib/theme'
+import { GiftCodeLinkV3, GiftCodeSheetV3 } from './GiftCodeEntryV3'
 import { KeyboardResizeHost } from './KeyboardResizeHost'
 import { Button } from './ui/Button'
 import { FormField } from './ui/FormField'
@@ -78,6 +80,7 @@ function outcomeOf(error: unknown): GiftCodeOutcome | null {
 export function GiftCodeEntry() {
   const styles = useStyles()
   const t = useT()
+  const v3Look = useV3Home()
   const queryClient = useQueryClient()
   const redeem = useRedeemGiftCode()
   const [open, setOpen] = useState(false)
@@ -122,16 +125,25 @@ export function GiftCodeEntry() {
     }
   }
 
+  function changeCode(next: string): void {
+    setCode(next)
+    if (error) setError(null)
+  }
+
   return (
     <>
-      <Pressable
-        accessibilityRole="button"
-        hitSlop={8}
-        onPress={() => setOpen(true)}
-        style={({ pressed }) => [styles.link, pressed && styles.pressed]}
-      >
-        <Text style={styles.linkText}>{t('giftCode.link')}</Text>
-      </Pressable>
+      {v3Look ? (
+        <GiftCodeLinkV3 onPress={() => setOpen(true)} />
+      ) : (
+        <Pressable
+          accessibilityRole="button"
+          hitSlop={8}
+          onPress={() => setOpen(true)}
+          style={({ pressed }) => [styles.link, pressed && styles.pressed]}
+        >
+          <Text style={styles.linkText}>{t('giftCode.link')}</Text>
+        </Pressable>
+      )}
 
       <Modal
         visible={open}
@@ -151,54 +163,63 @@ export function GiftCodeEntry() {
           style={styles.fill}
         >
           <KeyboardResizeHost>
-            <Pressable
-              style={styles.backdrop}
-              accessibilityLabel={t('giftCode.close')}
-              onPress={close}
-            >
-              {/* Swallows the press so tapping the sheet does not close it. */}
-              <Pressable style={styles.sheet} onPress={() => undefined}>
-                <Text style={styles.title}>{t('giftCode.title')}</Text>
-                {pending ? (
-                  <>
-                    <Text style={styles.pending} accessibilityLiveRegion="polite">
-                      {t('giftCode.pending')}
-                    </Text>
-                    <Button label={t('giftCode.close')} onPress={close} />
-                  </>
-                ) : (
-                  <>
-                    <Text style={styles.body}>{t('giftCode.body')}</Text>
-                    <FormField
-                      label={t('giftCode.label')}
-                      value={code}
-                      onChangeText={(next) => {
-                        setCode(next)
-                        if (error) setError(null)
-                      }}
-                      error={error ? t(error) : undefined}
-                      autoCapitalize="characters"
-                      autoCorrect={false}
-                      autoComplete="off"
-                      spellCheck={false}
-                      maxLength={64}
-                      returnKeyType="done"
-                      onSubmitEditing={() => void submit()}
-                      autoFocus
-                    />
-                    <View style={styles.actions}>
-                      <Button
-                        label={t('giftCode.redeem')}
-                        disabled={code.trim().length === 0}
-                        loading={redeem.isPending}
-                        onPress={() => void submit()}
+            {v3Look ? (
+              <GiftCodeSheetV3
+                code={code}
+                error={error ? t(error) : undefined}
+                pending={pending}
+                redeeming={redeem.isPending}
+                onChangeCode={changeCode}
+                onSubmit={() => void submit()}
+                onClose={close}
+              />
+            ) : (
+              <Pressable
+                style={styles.backdrop}
+                accessibilityLabel={t('giftCode.close')}
+                onPress={close}
+              >
+                {/* Swallows the press so tapping the sheet does not close it. */}
+                <Pressable style={styles.sheet} onPress={() => undefined}>
+                  <Text style={styles.title}>{t('giftCode.title')}</Text>
+                  {pending ? (
+                    <>
+                      <Text style={styles.pending} accessibilityLiveRegion="polite">
+                        {t('giftCode.pending')}
+                      </Text>
+                      <Button label={t('giftCode.close')} onPress={close} />
+                    </>
+                  ) : (
+                    <>
+                      <Text style={styles.body}>{t('giftCode.body')}</Text>
+                      <FormField
+                        label={t('giftCode.label')}
+                        value={code}
+                        onChangeText={changeCode}
+                        error={error ? t(error) : undefined}
+                        autoCapitalize="characters"
+                        autoCorrect={false}
+                        autoComplete="off"
+                        spellCheck={false}
+                        maxLength={64}
+                        returnKeyType="done"
+                        onSubmitEditing={() => void submit()}
+                        autoFocus
                       />
-                      <Button variant="secondary" label={t('giftCode.close')} onPress={close} />
-                    </View>
-                  </>
-                )}
+                      <View style={styles.actions}>
+                        <Button
+                          label={t('giftCode.redeem')}
+                          disabled={code.trim().length === 0}
+                          loading={redeem.isPending}
+                          onPress={() => void submit()}
+                        />
+                        <Button variant="secondary" label={t('giftCode.close')} onPress={close} />
+                      </View>
+                    </>
+                  )}
+                </Pressable>
               </Pressable>
-            </Pressable>
+            )}
           </KeyboardResizeHost>
         </KeyboardAvoidingView>
       </Modal>
