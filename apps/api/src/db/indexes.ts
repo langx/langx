@@ -885,6 +885,12 @@ export const INDEXES: Partial<IndexSpec> = {
     // Also the daily post cap's count (`FEED_POSTS_PER_24H`).
     { key: { authorId: 1, createdAt: -1 }, name: 'author' },
     /**
+     * The languages somebody has posted in, for the languages badge
+     * (`countLanguagesPractised`): a `distinct` on this skips from language
+     * to language in the index instead of reading every post they wrote.
+     */
+    { key: { authorId: 1, language: 1 }, name: 'author_language' },
+    /**
      * The two feed sections, each led by `kind`.
      *
      * New names rather than widening `needs_correction` and `recent` in place:

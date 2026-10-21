@@ -1,4 +1,5 @@
 import {
+  BADGE_ROUND_UP_CATALOGUE,
   BADGE_ROUND_UP_LOCAL_HOUR,
   findBadge,
   localDayKey,
@@ -103,7 +104,7 @@ export async function runBadgeRoundUpPass(
     const wantsPush = notificationsAllowed(profile.settings?.notifications, 'badges', 'push')
     const wantsEmail = notificationsAllowed(profile.settings?.notifications, 'badges', 'email')
 
-    const summary = await getBadgeSummary(db, profile._id, now)
+    const summary = await getBadgeSummary(db, profile._id, now, BADGE_ROUND_UP_CATALOGUE)
     const earned = summary.badges.filter((badge) => badge.earned).map((badge) => badge.id)
 
     const known = profile.stats?.notifiedBadgeIds

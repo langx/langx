@@ -8,6 +8,7 @@ import {
   TOKEN_RULES,
   ACTIVITY_MAX_RANGE_DAYS,
   shiftDayKey,
+  badgeCatalogueQuerySchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
@@ -219,18 +220,22 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
    * the profile in the path, and the guard that answers "is this person here,
    * for you" already lives in this file three times over.
    */
-  app.get('/profiles/:handle/badges', { preHandler: requireAuth }, async (request, reply) => {
-    const { handle } = request.params as { handle: string }
-    // Resolved and guarded exactly as the two routes above — see them for why
-    // an old handle still works and why a block is a 404 rather than a 403.
-    const target = await findProfileByHandleOrId(app.mongo.db, handle)
-    const hidden = await blockedUserIds(app.mongo.db, request.userId)
-    if (!target || hidden.includes(target._id)) {
-      throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
-    }
+  app.get(
+    '/profiles/:handle/badges',
+    { preHandler: requireAuth, schema: { querystring: badgeCatalogueQuerySchema } },
+    async (request, reply) => {
+      const { handle } = request.params as { handle: string }
+      // Resolved and guarded exactly as the two routes above — see them for why
+      // an old handle still works and why a block is a 404 rather than a 403.
+      const target = await findProfileByHandleOrId(app.mongo.db, handle)
+      const hidden = await blockedUserIds(app.mongo.db, request.userId)
+      if (!target || hidden.includes(target._id)) {
+        throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+      }
 
-    return reply.send(await getPublicBadges(app.mongo.db, target._id))
-  })
+      return reply.send(await getPublicBadges(app.mongo.db, target._id, request.query.catalogue))
+    },
+  )
 
   app.get(
     '/profiles/:handle/corrections',

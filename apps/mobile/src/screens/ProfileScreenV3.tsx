@@ -17,7 +17,7 @@ import {
   type ConversationDto,
 } from '../api/queries'
 import { ActivityMapV3 } from '../components/ActivityMapV3'
-import { BadgeMark } from '../components/BadgeMark'
+import { BadgePatch } from '../components/badges/BadgePatch'
 import { ConversationPicker } from '../components/ConversationPicker'
 import { GenderMark } from '../components/GenderMark'
 import { OfficialMark } from '../components/OfficialMark'
@@ -165,6 +165,14 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
     .filter(Boolean)
     .join(' · ')
   const showNumbers = summary.data && !user.official ? summary.data : undefined
+  // What the row wears: their pins, or the newest of each family. The label
+  // counts the same list it draws.
+  const worn = showNumbers ? (showNumbers.pinnedBadges ?? showNumbers.topBadges) : []
+  // Pins are a choice, not a count of what was earned, so they are named as
+  // pins rather than as "3 badges earned".
+  const wornLabel = showNumbers?.pinnedBadges
+    ? t('badgesV3.profilePinned')
+    : t('profile.badgeStrip', { count: worn.length })
   const study = [...user.learning].sort((a, b) => a.priority - b.priority)
 
   async function confirmBlock(): Promise<void> {
@@ -598,25 +606,21 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
             ) : null}
 
             {/* One button for the whole shelf, and nothing for nobody's badges. */}
-            {showNumbers && showNumbers.topBadges.length > 0 ? (
+            {worn.length > 0 ? (
               <PressableScale
                 accessibilityRole="button"
-                accessibilityLabel={t('profile.badgeStrip', {
-                  count: showNumbers.topBadges.length,
-                })}
+                accessibilityLabel={wornLabel}
                 onPress={() => openBadges(user.handle, here)}
                 style={styles.badges}
               >
                 <View style={styles.badgeMarks}>
-                  {showNumbers.topBadges.slice(0, 3).map((b, index) => (
+                  {worn.slice(0, 3).map((b, index) => (
                     <View key={b.id} style={[styles.badgeMark, index > 0 && styles.badgeOverlap]}>
-                      <BadgeMark id={b.id} size={BADGE} />
+                      <BadgePatch id={b.id} size={BADGE} />
                     </View>
                   ))}
                 </View>
-                <Text style={styles.badgesLabel}>
-                  {t('profile.badgeStrip', { count: showNumbers.topBadges.length })}
-                </Text>
+                <Text style={styles.badgesLabel}>{wornLabel}</Text>
                 <Feather name={chevron} size={v3.icon.md} color={v3.colors.muted} />
               </PressableScale>
             ) : null}

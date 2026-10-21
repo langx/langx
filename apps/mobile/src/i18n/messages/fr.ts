@@ -2891,7 +2891,9 @@ export const fr: Localized<EnMessages> = {
     of: '{current} sur {total}',
     toGo: 'Encore {amount}.',
     streakReward: 'Le palier de {days} jours de série rapporte +{tokens} jetons.',
-    noTokens: 'Les badges ne rapportent pas de jetons.',
+    noTokens: 'Le badge lui-même ne rapporte pas de jetons.',
+    milestonePays:
+      'Le badge lui-même ne rapporte rien ; le palier de {days} jours de série rapporte +{tokens} jetons.',
     earnedOn: 'Gagné le {date}',
     earned: 'Gagné',
     locked: 'Verrouillé',
@@ -2941,6 +2943,30 @@ export const fr: Localized<EnMessages> = {
         one: '{formatted} jour',
         other: '{formatted} jours',
       },
+      languages: {
+        one: '{formatted} langue',
+        other: '{formatted} langues',
+      },
+      calls: {
+        one: '{formatted} appel',
+        other: '{formatted} appels',
+      },
+      echo: {
+        one: '{formatted} révision',
+        other: '{formatted} révisions',
+      },
+      testimonials: {
+        one: '{formatted} partenaire',
+        other: '{formatted} partenaires',
+      },
+      guide: {
+        one: '{formatted} personne',
+        other: '{formatted} personnes',
+      },
+      openers: {
+        one: '{formatted} réponse',
+        other: '{formatted} réponses',
+      },
     },
     goal: {
       streak: {
@@ -2964,6 +2990,30 @@ export const fr: Localized<EnMessages> = {
         other: 'Sois membre depuis {formatted} jours',
       },
       origin: 'Avoir été sur LangX v1',
+      languages: {
+        one: 'Pratique {formatted} langue',
+        other: 'Pratique {formatted} langues',
+      },
+      calls: {
+        one: 'Passe {formatted} appel',
+        other: 'Passe {formatted} appels',
+      },
+      echo: {
+        one: 'Révise {formatted} carte Echo',
+        other: 'Révise {formatted} cartes Echo',
+      },
+      testimonials: {
+        one: 'Reçois les mots de {formatted} partenaire',
+        other: 'Reçois les mots de {formatted} partenaires',
+      },
+      guide: {
+        one: 'Corrige {formatted} personne',
+        other: 'Corrige {formatted} personnes',
+      },
+      openers: {
+        one: 'Donne {formatted} première réponse',
+        other: 'Donne {formatted} premières réponses',
+      },
     },
     note: {
       streak: 'Ta plus longue série compte : un jour manqué ne retire jamais un badge.',
@@ -2973,6 +3023,15 @@ export const fr: Localized<EnMessages> = {
       tokens: 'Tout ce que tu as gagné compte. Dépenser ne retire rien.',
       veteran: 'Compté depuis le jour de ton inscription.',
       origin: 'Pour celles et ceux qui étaient sur LangX v1.',
+      languages:
+        'Comptent les langues que tu pratiques dans Echo ou dans lesquelles tu publies, en plus de tes langues natives.',
+      calls: 'Un appel compte dès qu’il dure 5 minutes ou plus, peu importe qui a appelé.',
+      echo: 'Chaque révision compte, quelle que soit la note.',
+      testimonials:
+        'Chaque partenaire qui a écrit sur toi compte une fois. Même un que tu as masqué.',
+      guide:
+        'Corrige quelqu’un que tu n’as pas encore corrigé : une de ses publications, une demande de prononciation à laquelle tu réponds, ou un message qu’il t’a envoyé. La même personne compte une fois.',
+      openers: 'Compte chaque premier message auquel tu as répondu en moins d’un jour.',
     },
     family: {
       streak: {
@@ -2998,6 +3057,30 @@ export const fr: Localized<EnMessages> = {
       origin: {
         title: 'Early Adopter',
         body: 'Tu étais sur LangX v1.',
+      },
+      languages: {
+        title: 'Langues',
+        body: 'Les langues que tu pratiques, en plus de la tienne.',
+      },
+      calls: {
+        title: 'Appels',
+        body: 'Les appels de 5 minutes ou plus.',
+      },
+      echo: {
+        title: 'Révisions Echo',
+        body: 'Chaque carte Echo que tu révises.',
+      },
+      testimonials: {
+        title: 'Mots gentils',
+        body: 'Les partenaires qui ont écrit sur toi.',
+      },
+      guide: {
+        title: 'Personnes aidées',
+        body: 'Les différentes personnes que tu as corrigées.',
+      },
+      openers: {
+        title: 'Premières réponses',
+        body: 'Les premiers messages auxquels tu as répondu en moins d’un jour.',
       },
     },
     tier: {
@@ -3036,7 +3119,31 @@ export const fr: Localized<EnMessages> = {
       veteran_730: 'Deuxième cerne',
       veteran_1095: 'Troisième cerne',
       origin_v1: 'Early Adopter',
+      languages_2: 'Deux fils',
+      languages_3: 'Tresse',
+      languages_5: 'Cinq brins',
+      calls_1: 'Téléphone à ficelle',
+      calls_10: 'Longue ligne',
+      calls_50: 'Standard',
+      echo_100: 'Ondulation',
+      echo_1000: 'Vague',
+      echo_5000: 'Marée',
+      testimonials_1: 'Carré de patchwork',
+      testimonials_5: 'Patchwork',
+      testimonials_20: 'Courtepointe',
+      guide_3: 'Reprise',
+      guide_10: 'Raccommodage',
+      guide_50: 'Tisserand',
+      openers_10: 'Porte ouverte',
+      openers_50: 'Lampe du perron',
+      openers_200: 'Maison ouverte',
     },
+    profilePinned: 'Badges épinglés',
+    pin: 'Épingler au profil',
+    unpin: 'Retirer',
+    change: 'Modifier',
+    pinnedRow: 'Tes badges sur ton profil',
+    pinFull: 'L’épingler remplace {name}.',
   },
 
   shared: {
