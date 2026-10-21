@@ -39,6 +39,7 @@ import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { track } from '../../../src/lib/analytics'
 import { echoAskParams, type EchoAskParams } from '../../../src/lib/echoAsk'
 import { compactDuration } from '../../../src/lib/format'
+import { selection } from '../../../src/lib/haptics'
 import { FLAG_KEYS, readBoolFlag, setBoolFlag } from '../../../src/lib/localFlags'
 import { goBackTo } from '../../../src/lib/navigation'
 import { postLanguages } from '../../../src/lib/postLanguage'
@@ -267,6 +268,9 @@ export default function EchoSessionScreen() {
     if (!card) return
     // See `revealedAt`. A grade this close to the reveal is the same tap.
     if (Date.now() - revealedAt.current < REVEAL_GUARD_MS) return
+    // After the guard, so a tap it swallows is not felt as a grade. v3's
+    // tiles only: today's look stays as it is.
+    if (v3Home) void selection()
     const entry: Graded = {
       // Hermes has no `crypto.randomUUID`; this is the same minter the unsent
       // message rows use, for the same reason.
