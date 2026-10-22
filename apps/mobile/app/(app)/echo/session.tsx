@@ -17,7 +17,7 @@ import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Animated, Keyboard, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
-import { useEchoQueue, useMe, useSubmitEchoReviews } from '../../../src/api/queries'
+import { useEchoCard, useEchoQueue, useMe, useSubmitEchoReviews } from '../../../src/api/queries'
 import { Button } from '../../../src/components/ui/Button'
 import { ProgressBar } from '../../../src/components/ui/ProgressBar'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -38,6 +38,7 @@ import { voiceLabel } from '../../../src/i18n/labels'
 import { useDisplayNames } from '../../../src/i18n/displayNames'
 import { track } from '../../../src/lib/analytics'
 import { echoAskParams, type EchoAskParams } from '../../../src/lib/echoAsk'
+import { canEditInSession, withSessionEdit } from '../../../src/lib/echoSessionEdit'
 import { compactDuration } from '../../../src/lib/format'
 import { FLAG_KEYS, readBoolFlag, setBoolFlag } from '../../../src/lib/localFlags'
 import { goBackTo } from '../../../src/lib/navigation'
@@ -122,6 +123,8 @@ export default function EchoSessionScreen() {
   const languages = useMemo(() => postLanguages(me.data?.learning), [me.data])
 
   const [deck, setDeck] = useState<EchoCard[] | null>(null)
+  /** When the deck was frozen, so an edit made after it can be told from an older copy. */
+  const deckAt = useRef(0)
   const [index, setIndex] = useState(0)
   const [revealed, setRevealed] = useState(false)
   /** What was typed for this card, when it is a production review. */
@@ -167,6 +170,7 @@ export default function EchoSessionScreen() {
   useEffect(() => {
     if (deck !== null) return
     if (queue.data) {
+      deckAt.current = Date.now()
       setDeck(queue.data.cards)
       started(queue.data.cards.length, false)
       // The cheapest moment to know the truth is the moment it arrives.
@@ -182,6 +186,7 @@ export default function EchoSessionScreen() {
     void readEchoSnapshot().then((snapshot) => {
       if (!snapshot) return
       const cards = offlineQueue(snapshot, new Date())
+      deckAt.current = Date.now()
       setDeck(cards)
       setOffline(true)
       started(cards.length, true)
@@ -200,14 +205,23 @@ export default function EchoSessionScreen() {
     track({ name: 'echo_session_started', properties: { cards, offline: fromDevice } })
   }
 
-  const card = deck?.[index]
+  const deckCard = deck?.[index]
+  /*
+   * The single-card cache, read and never fetched: the edit screen writes the
+   * saved card there, and this is how the frozen deck hears about it. See
+   * `withSessionEdit`.
+   */
+  const edited = useEchoCard(deckCard?._id ?? '', false)
+  const card = deckCard
+    ? withSessionEdit(deckCard, deckAt.current, edited.data, edited.dataUpdatedAt)
+    : undefined
   const recordings = card ? echoAudiosOf(card) : []
   /**
    * Writing it, rather than recognising it. The card and its schedule are
    * unchanged — this is a presentation of the same row, decided by a pure
    * rule so that leaving and coming back asks the same thing.
    */
-  const producing = card ? asksProduction(parseSrs(card), card.front) : false
+  const producing = card ? asksProduction(parseSrs(card), card.front, card.back) : false
 
   /**
    * Sends whatever has been graded, and keeps it if the send fails.
@@ -336,6 +350,17 @@ export default function EchoSessionScreen() {
   function postToFeed(params: EchoAskParams): void {
     track({ name: 'echo_ask_opened', properties: { kind: 'pronunciation', entry: 'session' } })
     router.push({ pathname: '/(app)/compose', params })
+  }
+
+  /**
+   * Fixing the card in front of you, on the same edit screen the cards list
+   * opens. Saving comes back here with the card redrawn as saved, and the
+   * answer still up if it was.
+   */
+  const canEdit = card ? canEditInSession(card, { producing, revealed, offline }) : false
+  function edit(): void {
+    if (!card) return
+    router.push({ pathname: '/(app)/echo/edit', params: { id: card._id } })
   }
 
   const header = (
@@ -479,6 +504,7 @@ export default function EchoSessionScreen() {
         offline={offline}
         ask={ask}
         onPostToFeed={postToFeed}
+        onEdit={canEdit ? edit : null}
         onReveal={reveal}
         onGrade={grade}
         intervalLabel={intervalLabel}
