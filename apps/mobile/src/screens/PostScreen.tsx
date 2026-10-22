@@ -52,7 +52,9 @@ import { AudioBubble, MediaGallery } from '../components/MediaBubble'
 import { CommentThread } from '../components/CommentThread'
 import { PhotoViewer } from '../components/PhotoViewer'
 import { LoadFailed } from '../components/LoadFailed'
-import { PostThreadSkeleton } from '../components/skeletons/PostThreadSkeleton'
+import { PostRepliesSkeleton, PostThreadSkeleton } from '../components/skeletons/PostThreadSkeleton'
+import { CrossFade } from '../components/ui/CrossFade'
+import { usePostFromFeed } from '../hooks/usePostFromFeed'
 import { Avatar } from '../components/ui/Avatar'
 import { Button } from '../components/ui/Button'
 import { FormField } from '../components/ui/FormField'
@@ -164,6 +166,9 @@ function topOf(items: readonly (PostCorrection | PronunciationAnswer)[]): string
 }
 
 type PostStyles = ReturnType<typeof useStyles> | ReturnType<typeof usePostStylesV3>
+
+/** The list's rows while the thread is still on its way; one array, so the prop is stable. */
+const NO_ROWS: Row[] = []
 
 /** Module-level so the list is handed the same function on every render. */
 const rowKey = (row: Row): string => row.key
@@ -375,7 +380,15 @@ export function PostScreen({
    * thing this screen has is an id.
    */
   const query = usePostCorrections(id)
-  const post = query.data?.pages[0]?.post
+  /*
+   * The feed's copy while the post's own request is in flight, so a card
+   * tapped in the feed opens on its post at once instead of a skeleton. The
+   * same `FeedPost` shape the server answers with — viewer flags included —
+   * so everything below reads it unchanged; the server's copy wins as soon as
+   * it lands. Only the replies and comments wait (`threadReady`).
+   */
+  const fromFeed = usePostFromFeed(id)
+  const post = query.data?.pages[0]?.post ?? fromFeed
   const asks = post ? asksOf(post) : []
   const correcting = asks.includes('correction')
   const pronouncing = asks.includes('pronunciation')
@@ -568,6 +581,13 @@ export function PostScreen({
    * more, then recordings. Each is bounded at one reply per person per post,
    * so neither can hold the other back for long.
    */
+  /*
+   * What the section under the post waits for: its corrections page and the
+   * comments. Until both answer, a post drawn from the feed shows a skeleton
+   * there rather than "no corrections yet", which would be a false claim for
+   * the length of a round trip.
+   */
+  const threadReady = query.data !== undefined && !commentQuery.isPending
   const pager = correcting && query.hasNextPage ? query : pronouncing ? answerQuery : query
 
   const router = useRouter()
@@ -1039,7 +1059,7 @@ export function PostScreen({
           <FlatList
             ref={listRef}
             {...keyboard.scrollProps}
-            data={rows}
+            data={threadReady ? rows : NO_ROWS}
             keyExtractor={rowKey}
             contentContainerStyle={styles.list}
             refreshControl={<RefreshControl {...pull} />}
@@ -1192,151 +1212,159 @@ export function PostScreen({
              * bounded map is both cheaper and honest about what it is.
              */
             ListFooterComponent={
-              <View
-                onLayout={(event: LayoutChangeEvent) => {
-                  layout.current.footer = event.nativeEvent.layout.height
-                  tryFocus()
-                }}
-              >
-                {pager.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null}
+              !threadReady && query.isError ? (
+                <LoadFailed onRetry={() => void query.refetch()} />
+              ) : (
+                <CrossFade ready={threadReady} skeleton={<PostRepliesSkeleton />}>
+                  <View
+                    onLayout={(event: LayoutChangeEvent) => {
+                      layout.current.footer = event.nativeEvent.layout.height
+                      tryFocus()
+                    }}
+                  >
+                    {pager.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null}
 
-                {/*
-                The correction box, always open under the thread — on a post
-                that asks for one, and has words to correct. Absent on your
-                own post, and once you have answered: the thread above already
-                carries your row. The screen's one yellow is its send button.
-              */}
-                {correcting && !mine && post.body.trim() ? (
-                  post.correctedByViewer ? (
-                    <View style={styles.done}>
-                      <Feather name="check" size={16} color={colors.success} />
-                      <Text style={styles.doneLabel}>{t('feed.youCorrected')}</Text>
-                    </View>
-                  ) : (
-                    <View ref={correctionBox} collapsable={false} style={styles.compose}>
-                      <View style={styles.composeHead}>
-                        <Text style={styles.composeTitle}>{t('feed.yourCorrection')}</Text>
-                        {/*
-                        Seeded on request rather than by default: a correction
-                        is usually an edit of the original, but a rewrite from
-                        scratch should not have to delete it first.
-                      */}
-                        <Pressable
-                          accessibilityRole="button"
-                          hitSlop={8}
-                          onPress={() => setCorrection(post.body)}
-                          style={({ pressed }) => (pressed ? styles.pressed : null)}
-                        >
-                          <Text style={styles.accentAction}>{t('feed.startFromOriginal')}</Text>
-                        </Pressable>
-                      </View>
-                      <Field
-                        value={correction}
-                        onChangeText={setCorrection}
-                        {...keyboard.fieldProps(correctionBox)}
-                        placeholder={t('feed.correctionPlaceholder')}
-                        multiline
-                        autoCapitalize="sentences"
-                        maxLength={MAX_POST_LENGTH}
-                      />
-                      <Button
-                        label={correctPost.isPending ? t('feed.sending') : t('feed.sendCorrection')}
-                        disabled={!correction.trim() || correctPost.isPending}
-                        onPress={submitCorrection}
-                      />
-                      {/* What a correction pays, from `TOKEN_RULES` rather than the copy. */}
-                      <Text style={styles.reward}>
-                        {t('feed.correctionReward', { count: TOKEN_RULES.award.correction })}
-                      </Text>
-                    </View>
-                  )
-                ) : null}
+                    {/*
+                    The correction box, always open under the thread — on a post
+                    that asks for one, and has words to correct. Absent on your
+                    own post, and once you have answered: the thread above already
+                    carries your row. The screen's one yellow is its send button.
+                  */}
+                    {correcting && !mine && post.body.trim() ? (
+                      post.correctedByViewer ? (
+                        <View style={styles.done}>
+                          <Feather name="check" size={16} color={colors.success} />
+                          <Text style={styles.doneLabel}>{t('feed.youCorrected')}</Text>
+                        </View>
+                      ) : (
+                        <View ref={correctionBox} collapsable={false} style={styles.compose}>
+                          <View style={styles.composeHead}>
+                            <Text style={styles.composeTitle}>{t('feed.yourCorrection')}</Text>
+                            {/*
+                            Seeded on request rather than by default: a correction
+                            is usually an edit of the original, but a rewrite from
+                            scratch should not have to delete it first.
+                          */}
+                            <Pressable
+                              accessibilityRole="button"
+                              hitSlop={8}
+                              onPress={() => setCorrection(post.body)}
+                              style={({ pressed }) => (pressed ? styles.pressed : null)}
+                            >
+                              <Text style={styles.accentAction}>{t('feed.startFromOriginal')}</Text>
+                            </Pressable>
+                          </View>
+                          <Field
+                            value={correction}
+                            onChangeText={setCorrection}
+                            {...keyboard.fieldProps(correctionBox)}
+                            placeholder={t('feed.correctionPlaceholder')}
+                            multiline
+                            autoCapitalize="sentences"
+                            maxLength={MAX_POST_LENGTH}
+                          />
+                          <Button
+                            label={
+                              correctPost.isPending ? t('feed.sending') : t('feed.sendCorrection')
+                            }
+                            disabled={!correction.trim() || correctPost.isPending}
+                            onPress={submitCorrection}
+                          />
+                          {/* What a correction pays, from `TOKEN_RULES` rather than the copy. */}
+                          <Text style={styles.reward}>
+                            {t('feed.correctionReward', { count: TOKEN_RULES.award.correction })}
+                          </Text>
+                        </View>
+                      )
+                    ) : null}
 
-                <View
-                  onLayout={(event: LayoutChangeEvent) => {
-                    layout.current.block = event.nativeEvent.layout.y
-                    tryFocus()
-                  }}
-                >
-                  <Text style={styles.sectionTitle}>{t('feed.allComments')}</Text>
-                  {comments.length === 0 ? (
-                    <Text style={styles.empty}>{t('feed.commentsEmptyBody')}</Text>
-                  ) : null}
-                  {comments.map((root) => (
-                    <CommentThread
-                      key={root._id}
-                      root={root}
-                      postId={post._id}
-                      here={here}
-                      expanded={expanded.has(root._id)}
-                      onExpand={() => setExpanded((current) => new Set(current).add(root._id))}
-                      onReply={startReply}
-                      onMore={(comment, rootId) => void commentMore(comment, rootId)}
-                      highlightId={focusCommentId}
-                      onLayout={(event) => {
-                        layout.current.threads.set(root._id, event.nativeEvent.layout.y)
+                    <View
+                      onLayout={(event: LayoutChangeEvent) => {
+                        layout.current.block = event.nativeEvent.layout.y
                         tryFocus()
                       }}
-                    />
-                  ))}
-                </View>
-                {commentQuery.hasNextPage ? (
-                  <Pressable
-                    accessibilityRole="button"
-                    onPress={() => void commentQuery.fetchNextPage()}
-                    style={({ pressed }) => (pressed ? styles.pressed : null)}
-                  >
-                    <Text style={styles.showMore}>{t('feed.showMoreComments')}</Text>
-                  </Pressable>
-                ) : null}
-
-                <View ref={commentBox} collapsable={false} style={styles.commentCompose}>
-                  {/*
-                    Which comment the box is answering, with the way out of it.
-                    A strip above the field rather than a label inside it, so
-                    it survives the field being cleared.
-                  */}
-                  {replyTarget ? (
-                    <View style={styles.replyStrip}>
-                      <Text style={styles.replyStripLabel} numberOfLines={1}>
-                        {t('feed.replyingTo', { name: replyTarget.name })}
-                      </Text>
+                    >
+                      <Text style={styles.sectionTitle}>{t('feed.allComments')}</Text>
+                      {comments.length === 0 ? (
+                        <Text style={styles.empty}>{t('feed.commentsEmptyBody')}</Text>
+                      ) : null}
+                      {comments.map((root) => (
+                        <CommentThread
+                          key={root._id}
+                          root={root}
+                          postId={post._id}
+                          here={here}
+                          expanded={expanded.has(root._id)}
+                          onExpand={() => setExpanded((current) => new Set(current).add(root._id))}
+                          onReply={startReply}
+                          onMore={(comment, rootId) => void commentMore(comment, rootId)}
+                          highlightId={focusCommentId}
+                          onLayout={(event) => {
+                            layout.current.threads.set(root._id, event.nativeEvent.layout.y)
+                            tryFocus()
+                          }}
+                        />
+                      ))}
+                    </View>
+                    {commentQuery.hasNextPage ? (
                       <Pressable
                         accessibilityRole="button"
-                        accessibilityLabel={t('feed.cancelReply')}
-                        hitSlop={10}
-                        onPress={() => setReplyTarget(null)}
+                        onPress={() => void commentQuery.fetchNextPage()}
                         style={({ pressed }) => (pressed ? styles.pressed : null)}
                       >
-                        <Feather name="x" size={16} color={colors.textMuted} />
+                        <Text style={styles.showMore}>{t('feed.showMoreComments')}</Text>
                       </Pressable>
+                    ) : null}
+
+                    <View ref={commentBox} collapsable={false} style={styles.commentCompose}>
+                      {/*
+                        Which comment the box is answering, with the way out of it.
+                        A strip above the field rather than a label inside it, so
+                        it survives the field being cleared.
+                      */}
+                      {replyTarget ? (
+                        <View style={styles.replyStrip}>
+                          <Text style={styles.replyStripLabel} numberOfLines={1}>
+                            {t('feed.replyingTo', { name: replyTarget.name })}
+                          </Text>
+                          <Pressable
+                            accessibilityRole="button"
+                            accessibilityLabel={t('feed.cancelReply')}
+                            hitSlop={10}
+                            onPress={() => setReplyTarget(null)}
+                            style={({ pressed }) => (pressed ? styles.pressed : null)}
+                          >
+                            <Feather name="x" size={16} color={colors.textMuted} />
+                          </Pressable>
+                        </View>
+                      ) : null}
+                      <Field
+                        label={t('feed.addComment')}
+                        value={commentDraft}
+                        onChangeText={setCommentDraft}
+                        {...keyboard.fieldProps(commentBox)}
+                        placeholder={t('feed.commentPlaceholder')}
+                        multiline
+                        autoCapitalize="sentences"
+                        maxLength={MAX_COMMENT_LENGTH}
+                      />
+                      {/* Outlined, not yellow: the correction's send button is this screen's one commit. */}
+                      <Button
+                        label={
+                          addComment.isPending
+                            ? t('feed.sending')
+                            : replyTarget
+                              ? t('feed.reply')
+                              : t('feed.comment')
+                        }
+                        variant="secondary"
+                        disabled={!commentDraft.trim() || addComment.isPending}
+                        onPress={submitComment}
+                      />
                     </View>
-                  ) : null}
-                  <Field
-                    label={t('feed.addComment')}
-                    value={commentDraft}
-                    onChangeText={setCommentDraft}
-                    {...keyboard.fieldProps(commentBox)}
-                    placeholder={t('feed.commentPlaceholder')}
-                    multiline
-                    autoCapitalize="sentences"
-                    maxLength={MAX_COMMENT_LENGTH}
-                  />
-                  {/* Outlined, not yellow: the correction's send button is this screen's one commit. */}
-                  <Button
-                    label={
-                      addComment.isPending
-                        ? t('feed.sending')
-                        : replyTarget
-                          ? t('feed.reply')
-                          : t('feed.comment')
-                    }
-                    variant="secondary"
-                    disabled={!commentDraft.trim() || addComment.isPending}
-                    onPress={submitComment}
-                  />
-                </View>
-              </View>
+                  </View>
+                </CrossFade>
+              )
             }
           />
         )}
