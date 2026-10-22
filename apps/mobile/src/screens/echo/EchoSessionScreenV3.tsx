@@ -69,8 +69,12 @@ const GRADE_HEIGHT = 72
 /** The back's outline, in the front's colour: the same card, seen from the other side. */
 const BACK_BORDER = 3
 
-/** How deep the turn looks. Far enough that the near edge does not swell past the gutter. */
-const FLIP_PERSPECTIVE = 1000
+/**
+ * How deep the turn looks. Far enough that the near edge, swelling as it
+ * comes towards the reader, stays inside the gutter and is not clipped by the
+ * scroll view above the card or drawn under the takes below it.
+ */
+const FLIP_PERSPECTIVE = 1800
 
 export interface EchoSessionV3Props {
   deck: readonly EchoCard[]
@@ -449,7 +453,9 @@ function FlipCard({
   const styles = useStyles()
   const reduce = useReduceMotion()
   const progress = useSharedValue(revealed ? 1 : 0)
-  const [backHeight, setBackHeight] = useState(0)
+  // `null` until the back has been measured: until then the card is not
+  // drawn, so it never shows at the front's own height and then grows.
+  const [backHeight, setBackHeight] = useState<number | null>(null)
 
   useEffect(() => {
     // A crossfade when motion is reduced, not the cut `unlessReduced` makes:
@@ -468,10 +474,10 @@ function FlipCard({
   const backMotion = useAnimatedStyle(() => faceMotion('back', progress.get(), reduce))
 
   return (
-    <View>
+    <View style={backHeight === null && styles.unmeasured}>
       <Reanimated.View
         aria-hidden={revealed}
-        style={[{ minHeight: backHeight }, frontMotion, revealed && styles.faceAway]}
+        style={[{ minHeight: backHeight ?? 0 }, frontMotion, revealed && styles.faceAway]}
       >
         {front}
       </Reanimated.View>
@@ -766,36 +772,22 @@ function Reading({ take, autoplay, ink }: { take: EchoVoice; autoplay: boolean; 
   )
 }
 
-/** The answer, once it is up: the meaning, or what was typed and how close it was. */
-function Answer({ card, producing, typed, verdict }: EchoSessionV3Props) {
+/** A written card's check, once it is up: what was typed and how close it was. */
+function Answer({ card, typed, verdict }: EchoSessionV3Props) {
   const styles = useStyles()
   const t = useT()
   return (
     <View style={styles.answer}>
       {/* Pinyin with the answer rather than above the sentence; see the route. */}
       {card.reading ? <Text style={styles.reading}>{card.reading}</Text> : null}
-      {producing ? (
-        <>
-          <Text style={styles.answerLabel}>{t('echo.yourAnswer')}</Text>
-          <Text style={styles.answerText}>{typed.trim() || '—'}</Text>
-          {/* Reported, never graded: only the person knows whether they knew it. */}
-          <Text style={verdict === 'wrong' ? styles.verdictWrong : styles.verdictOk}>
-            {t(
-              `echo.verdict${verdict === 'exact' ? 'Exact' : verdict === 'close' ? 'Close' : 'Wrong'}`,
-            )}
-          </Text>
-        </>
-      ) : backAddsMeaning(card.front, card.back) ? (
-        <Text style={styles.answerText}>{card.back}</Text>
-      ) : (
-        /*
-         * An empty back, or one that is the sentence again — what a
-         * translation into the language it is already in returns. Showing the
-         * front twice read as a card with no back side at all; saying so
-         * points at the card's Edit instead.
-         */
-        <Text style={styles.noMeaning}>{t('echo.noMeaningYet')}</Text>
-      )}
+      <Text style={styles.answerLabel}>{t('echo.yourAnswer')}</Text>
+      <Text style={styles.answerText}>{typed.trim() || '—'}</Text>
+      {/* Reported, never graded: only the person knows whether they knew it. */}
+      <Text style={verdict === 'wrong' ? styles.verdictWrong : styles.verdictOk}>
+        {t(
+          `echo.verdict${verdict === 'exact' ? 'Exact' : verdict === 'close' ? 'Close' : 'Wrong'}`,
+        )}
+      </Text>
       {card.example ? <Text style={styles.example}>{card.example}</Text> : null}
     </View>
   )
@@ -880,6 +872,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   blockFill: { flexGrow: 1 },
   // The face turned away takes no touches: its Edit lies under the other face's.
   faceAway: { pointerEvents: 'none' },
+  unmeasured: { opacity: 0 },
   backFace: {
     backgroundColor: v3.colors.bg,
     borderRadius: v3.radius.block,
