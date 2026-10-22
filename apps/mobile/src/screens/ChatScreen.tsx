@@ -185,6 +185,7 @@ import {
 import { nextTypingSignal, TYPING_IDLE } from '../lib/typingSignal'
 import { saveMediaToDevice } from '../lib/saveMedia'
 import { shareLink } from '../lib/share'
+import { ShareCardSheet, type ShareCardRequest } from '../components/ShareCardSheet'
 import { addMeetingToCalendar } from '../lib/addToCalendar'
 import { showToast } from '../lib/toast'
 import { onSnap } from '../lib/snapOutbox'
@@ -293,6 +294,8 @@ export function ChatScreen({
    * into its chip, and ✕ folds it too (see `ThreadCelebrationV3`).
    */
   const [celebrating, setCelebrating] = useState<string | null>(null)
+  /** The streak card the celebration's Share asked for, on its way to the sheet. */
+  const [streakCard, setStreakCard] = useState<ShareCardRequest | null>(null)
   function noteAward(
     messageId: string,
     award: SendAward | undefined,
@@ -3126,16 +3129,26 @@ export function ChatScreen({
    * A string, so the bubbles' memo compares it by value.
    */
   const partnerHue = v3Thread && partner ? v3.hues[partnerHueFor(partner._id)] : undefined
-  /** What the celebrating row draws: Share carries the days and the invite, never tokens. */
+  /**
+   * What the celebrating row draws. Share opens the streak's card — the one
+   * the streak screen shares — with the sentence as its fallback: the days
+   * and the invite, never tokens.
+   */
   const myHandle = me.data?.handle
   const celebrated = celebrating
     ? rewards[celebrating]?.chips.find((chip) => chip.kind === 'streak')
     : undefined
   const rowCelebration = useMemo(
     () => ({
-      share:
+      onShare:
         celebrated?.kind === 'streak' && myHandle
-          ? streakShareText(t, { count: celebrated.days, handle: myHandle })
+          ? () =>
+              setStreakCard({
+                kind: 'streak',
+                headline: String(celebrated.days),
+                caption: t('share.cardStreakCaption'),
+                fallback: streakShareText(t, { count: celebrated.days, handle: myHandle }),
+              })
           : undefined,
       compact: keyboardUp,
       onClose: () => setCelebrating(null),
@@ -3999,6 +4012,7 @@ export function ChatScreen({
           )}
         </View>
         {copilot.sheets}
+        <ShareCardSheet request={streakCard} onClose={() => setStreakCard(null)} />
         <ScheduleTimeSheet
           visible={pickingSendTime}
           busy={scheduleMessage.isPending}

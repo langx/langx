@@ -133,8 +133,15 @@ function latinRuns(words: string[]): string[] {
  * direction rather than by the text engine, leaves that pass nothing to
  * reorder, and each word is still shaped whole, so Arabic letters still join.
  */
-export function textLine(text: string, style: TextStyle, rtl: boolean, width?: number): CardNode {
-  const sized = width ? { width } : {}
+export function textLine(
+  text: string,
+  style: TextStyle,
+  rtl: boolean,
+  width?: number,
+  /** Centre the words in `width` — a profile card's centred column. */
+  centred = false,
+): CardNode {
+  const sized = width ? { width, ...(centred ? { justifyContent: 'center' } : {}) } : {}
   if (!rtl && !/[→←]/.test(text)) {
     return el('div', { style: { display: 'flex', ...sized, ...style }, children: text })
   }

@@ -35,9 +35,9 @@ export interface BadgeCardContent {
 
 // `apps/mobile/src/lib/theme/tokens.ts`, v3, light: the ink every block is
 // outlined in, and the six partner hues the grounds are taken from.
-const INK = '#14161b'
-const INK_SOFT = 'rgba(20, 22, 27, 0.72)'
-const HUES = {
+export const INK = '#14161b'
+export const INK_SOFT = 'rgba(20, 22, 27, 0.72)'
+export const HUES = {
   lilac: '#bba4ff',
   aqua: '#48d3d0',
   mint: '#5fdc98',
@@ -194,7 +194,7 @@ function hero(content: BadgeCardContent, m: Metrics): CardNode {
   })
 }
 
-function brand(m: Metrics, rtl: boolean): CardNode {
+export function brand(m: Pick<Metrics, 'mark' | 'wordmark'>, rtl: boolean): CardNode {
   return el('div', {
     style: {
       alignItems: 'center',
@@ -220,8 +220,14 @@ function brand(m: Metrics, rtl: boolean): CardNode {
 }
 
 /** The one yellow thing on the card. */
-function kicker(content: BadgeCardContent, m: Metrics, rtl: boolean): CardNode {
-  const text = rtl ? content.kicker : content.kicker.toLocaleUpperCase(content.locale)
+export function pill(
+  words: string,
+  locale: Locale,
+  m: Pick<Metrics, 'kicker' | 'outline'>,
+  rtl: boolean,
+  upper = true,
+): CardNode {
+  const text = rtl || !upper ? words : words.toLocaleUpperCase(locale)
   return el('div', {
     style: {
       backgroundColor: YELLOW,
@@ -240,7 +246,7 @@ function kicker(content: BadgeCardContent, m: Metrics, rtl: boolean): CardNode {
           fontWeight: 800,
           // Tracking only where there are capitals: spaced-out Arabic breaks
           // the joins between its letters.
-          letterSpacing: rtl ? 0 : '0.08em',
+          letterSpacing: rtl || !upper ? 0 : '0.08em',
         },
         rtl,
       ),
@@ -251,7 +257,7 @@ function kicker(content: BadgeCardContent, m: Metrics, rtl: boolean): CardNode {
 /** The pill, the badge's name and the day it was earned. */
 function title(content: BadgeCardContent, width: number, m: Metrics, rtl: boolean): CardNode {
   const lines: CardNode[] = [
-    kicker(content, m, rtl),
+    pill(content.kicker, content.locale, m, rtl),
     textLine(
       content.name,
       {
@@ -288,7 +294,10 @@ function title(content: BadgeCardContent, width: number, m: Metrics, rtl: boolea
   })
 }
 
-function avatar(content: BadgeCardContent, m: Metrics): CardNode {
+export function avatar(
+  content: Pick<BadgeCardContent, 'avatar' | 'handle'>,
+  m: Pick<Metrics, 'avatar' | 'outline'>,
+): CardNode {
   const border = `${Math.max(3, m.outline - 2)}px solid ${INK}`
   if (content.avatar) {
     return el('img', {
@@ -368,7 +377,7 @@ function person(content: BadgeCardContent, m: Metrics, rtl: boolean): CardNode {
 }
 
 /** The scannable profile code on a white, ink-outlined tile, as on the other cards. */
-function qrTile(qr: string, m: Metrics): CardNode {
+export function qrTile(qr: string, m: Pick<Metrics, 'outline' | 'qr'>): CardNode {
   return el('div', {
     style: {
       backgroundColor: PAPER,

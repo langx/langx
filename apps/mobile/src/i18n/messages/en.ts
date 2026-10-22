@@ -3554,6 +3554,13 @@ export const en = {
     cardTitle: 'Share as a picture',
     cardStreakCaption: 'day streak on LangX',
     cardBadgeCaption: 'badge earned on LangX',
+    /*
+     * The profile card: the pill on it, from Share profile or from Invite,
+     * and the line under it on the card's page.
+     */
+    cardProfileHeadline: 'Practise languages with me',
+    cardInviteHeadline: 'Learn a language with me',
+    cardProfileCaption: 'Find me on LangX',
     cardBody: 'Pick where it is going — the card is drawn to fit.',
     shapeStory: 'Instagram / TikTok story',
     shapeSquare: 'Instagram post',

@@ -3,6 +3,7 @@ import { Resvg } from '@resvg/resvg-js'
 import { describe, expect, it } from 'vitest'
 import { CARD_PIXELS, renderCard, type CardNode } from './render'
 import { badgeCardElement, drawableName } from './badgeDesign'
+import { profileCardElement, PROFILE_GROUNDS } from './profileDesign'
 import { cardElement } from './design'
 import { el, textLine } from './recapDesign'
 
@@ -282,5 +283,88 @@ describe('badge card layout under satori', () => {
     expect(drawableName('さくら')).toBeUndefined()
     expect(drawableName('Sofia 🌸')).toBeUndefined()
     expect(drawableName('  ')).toBeUndefined()
+  })
+})
+
+/*
+ * The profile card exists to be scanned off somebody else's screen, so what
+ * these check is that the code is there and clear on every shape, and that
+ * the person sits where a reader starts.
+ */
+describe('profile card layout under satori', () => {
+  const content = (locale: 'en' | 'ar' = 'en') =>
+    ({
+      displayName: 'Sofia Martínez',
+      handle: '@sofia',
+      invitation: 'Practise languages with me',
+      languages: 'Spanish → learning Turkish',
+      ground: PROFILE_GROUNDS[0]!,
+      locale,
+    }) as const
+
+  /** A magenta square standing in for the QR: no other pixel on the card is that colour. */
+  const QR =
+    'data:image/svg+xml;base64,' +
+    Buffer.from(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><rect width="10" height="10" fill="#f0f"/></svg>',
+    ).toString('base64')
+
+  /** The magenta pixels, sampled: where the code was drawn. */
+  const codeBox = (card: Bitmap) => {
+    let left = card.width
+    let right = -1
+    let top = card.height
+    let bottom = -1
+    for (let y = 0; y < card.height; y += 2) {
+      for (let x = 0; x < card.width; x += 2) {
+        const [r, g, b] = pixel(card, x, y)
+        if (r === 255 && g === 0 && b === 255) {
+          left = Math.min(left, x)
+          right = Math.max(right, x)
+          top = Math.min(top, y)
+          bottom = Math.max(bottom, y)
+        }
+      }
+    }
+    return { left, right, top, bottom }
+  }
+
+  it.each(['story', 'square', 'wide'] as const)(
+    'carries a scannable code, whole and on the card, on a %s card',
+    async (shape) => {
+      const card = await render(profileCardElement(content(), shape, QR), shape)
+      const box = codeBox(card)
+      const side = box.right - box.left
+      // Square, and big enough for a camera across a room: at least a sixth
+      // of the card's short side.
+      expect(Math.abs(side - (box.bottom - box.top))).toBeLessThanOrEqual(4)
+      expect(side).toBeGreaterThan(Math.min(card.width, card.height) / 6)
+      expect(box.left).toBeGreaterThan(0)
+      expect(box.bottom).toBeLessThan(card.height - 1)
+      // On a white quiet zone: just outside the code is paper, not ground.
+      expect(isWhite(pixel(card, box.left - 6, Math.round((box.top + box.bottom) / 2)))).toBe(true)
+    },
+  )
+
+  it('puts the person first where the reader starts: left in English, right in Arabic', async () => {
+    const codeSide = async (locale: 'en' | 'ar') => {
+      const card = await render(profileCardElement(content(locale), 'wide', QR), 'wide')
+      return codeBox(card).left > card.width / 2 ? 'right' : 'left'
+    }
+    expect(await codeSide('en')).toBe('right')
+    expect(await codeSide('ar')).toBe('left')
+  })
+
+  it('is the colour of the owner, as their Share page is', () => {
+    // Six hues in `PARTNER_HUES` order (`apps/mobile/src/lib/theme/tokens.ts`):
+    // `partnerHueIndex` picks by position, so the order is the identity.
+    expect(PROFILE_GROUNDS).toEqual([
+      '#bba4ff',
+      '#48d3d0',
+      '#5fdc98',
+      '#b8e15c',
+      '#74b9ff',
+      '#ff9f52',
+    ])
   })
 })

@@ -526,6 +526,24 @@ describe('share cards', () => {
     expect(unknown.statusCode, unknown.body).toBe(400)
   }, 60_000)
 
+  it('draws your own profile as a card, and a stranger reads it as a profile card', async () => {
+    const created = await make({
+      kind: 'profile',
+      shape: 'story',
+      headline: 'Practise languages with me',
+      caption: 'Find me on LangX',
+      profile: { locale: 'en', languages: 'Turkish → learning English' },
+      // Not fields the schema has: whose card it is comes from the session.
+      displayName: 'Somebody Else',
+      handle: 'someoneelse',
+    })
+    expect(created.statusCode, created.body).toBe(201)
+    const { id } = created.json<{ id: string }>()
+    const page = await app.inject({ method: 'GET', url: `/public/share/${id}` })
+    expect(page.statusCode, page.body).toBe(200)
+    expect(page.json()).toMatchObject({ kind: 'profile', handle: '@cardhaver' })
+  }, 60_000)
+
   it('draws every shape at the size it claims', async () => {
     // The three ratios exist so a card is not cropped or letterboxed by the
     // place it is posted; a shape that renders at the wrong size defeats that

@@ -1,10 +1,12 @@
 import { profileQrUrl, profileUrl } from '@langx/shared'
 import * as Clipboard from 'expo-clipboard'
 import { Image } from 'expo-image'
+import { useState } from 'react'
 import { Text, View } from 'react-native'
 import { LoadFailed } from '../../src/components/LoadFailed'
 import { queryFailed } from '../../src/lib/listState'
 import { useMe } from '../../src/api/queries'
+import { ShareCardSheet, type ShareCardRequest } from '../../src/components/ShareCardSheet'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { Skeleton } from '../../src/components/ui/Skeleton'
@@ -16,6 +18,7 @@ import { shareLink } from '../../src/lib/share'
 import { makeStyles, radius } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 import { useT } from '../../src/i18n'
+import { useProfileCard } from '../../src/hooks/useProfileCard'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useV3Home } from '../../src/hooks/useV3Home'
 import { ShareProfileScreenV3 } from '../../src/screens/me/ShareProfileScreenV3'
@@ -43,6 +46,8 @@ function ShareProfileScreen() {
   const styles = useStyles()
   const t = useT()
   const me = useMe()
+  const profileCard = useProfileCard()
+  const [card, setCard] = useState<ShareCardRequest | null>(null)
 
   /*
    * `!me.data` rather than `isPending`, and an error branch beside it.
@@ -110,7 +115,10 @@ function ShareProfileScreen() {
         icon="share"
         onPress={() => {
           track({ name: 'profile_shared', properties: { own: true, via: 'sheet' } })
-          void shareLink({ message: t('me.shareMessage', { url }), url })
+          const fallback = { message: t('me.shareMessage', { url }), url }
+          const request = profileCard('profile', fallback)
+          if (request) setCard(request)
+          else void shareLink(fallback)
         }}
       />
       <Button
@@ -123,6 +131,7 @@ function ShareProfileScreen() {
           showToast(t('shareProfile.copied'))
         }}
       />
+      <ShareCardSheet request={card} onClose={() => setCard(null)} />
     </Screen>
   )
 }
