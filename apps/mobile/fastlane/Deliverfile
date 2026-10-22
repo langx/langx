@@ -13,7 +13,7 @@ skip_metadata(false)
 # keeps the old shots. Replacing is also what fixes the order: App Store
 # Connect keeps a bulk upload in whatever sequence it finished processing,
 # while deliver uploads one at a time in filename order — which is why
-# collect-store-screenshots.mjs numbers them 6.9-01 … 6.9-08.
+# collect-store-screenshots.mjs numbers them 6.9-01 … 6.9-09.
 overwrite_screenshots(true)
 
 # Written by the two collect-store-* scripts in ../scripts.

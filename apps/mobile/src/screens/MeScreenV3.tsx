@@ -205,7 +205,6 @@ function MemberMe() {
       .filter(Boolean)
       .join(' · '),
     languagesLine: languages,
-    pronouns: profile.pronouns,
     pro: Boolean(TIER_BADGES[tier]),
     titleId: wornTitle?.id,
     hidden:

@@ -64,6 +64,7 @@ import {
   type AdminLatestVersionInput,
   type AdminMinVersionInput,
   type AdminCaptchaRequiredInput,
+  type AdminFlagInput,
   type AppConfig,
   ERROR_CODES,
   type MessageSpeech,
@@ -3824,6 +3825,17 @@ export function useAdminSetCaptchaRequired() {
   })
 }
 
+/** Switching one of `appConfig.flags` from the Flags page — every switch is audited. */
+export function useAdminSetFlag() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: AdminFlagInput) => api.post<AppConfig>('/admin/app-config/flags', input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
 export function useAdminReports(status: string) {
   return useQuery({
     queryKey: keys.adminReports(status),
@@ -4364,7 +4376,11 @@ export function useUpdateEchoCard() {
         // that only fixes the sentence says nothing about them.
         ...(input.removeAudio?.length ? { removeAudio: input.removeAudio } : {}),
       }),
-    onSuccess: () => {
+    onSuccess: (card) => {
+      // Written before the invalidation, so a review that opened this edit
+      // finds the saved card at once — its deck is frozen and refetches
+      // nothing. See `withSessionEdit`.
+      client.setQueryData(keys.echoCard(card._id), card)
       void client.invalidateQueries({ queryKey: keys.echo })
     },
   })

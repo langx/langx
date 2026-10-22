@@ -70,8 +70,30 @@ describe('Faz 1 — indexes on the Better Auth collections', () => {
     expect(user.email).toBe('first-signup@example.com')
 
     const accountIndexes = (await handle.db.collection('account').indexes()).map((i) => i.name)
-    expect(accountIndexes).toContain('account_issuer_accountId_uidx')
+    expect(accountIndexes).not.toContain('account_issuer_accountId_uidx')
     expect(accountIndexes).toContain('account_userId_idx')
+  })
+
+  it("drops Better Auth 1.7.2's issuer unique, so two providers may share an account id", async () => {
+    const accounts = handle.db.collection('account')
+    // The index a database that ran 1.7.0–1.7.2 still carries.
+    await accounts.createIndex(
+      { issuer: 1, accountId: 1 },
+      { name: 'account_issuer_accountId_uidx', unique: true },
+    )
+
+    await ensureIndexes(handle.db)
+    expect((await accounts.indexes()).map((i) => i.name)).not.toContain(
+      'account_issuer_accountId_uidx',
+    )
+
+    // Rows as 1.7.3+ writes them: no `issuer`, so the old index saw one issuer.
+    await accounts.insertOne({ providerId: 'google', accountId: 'same-id', userId: 'u1' })
+    await accounts.insertOne({ providerId: 'facebook', accountId: 'same-id', userId: 'u2' })
+    await accounts.deleteMany({ accountId: 'same-id' })
+
+    // A second boot, with nothing left to drop, is still quiet.
+    await expect(ensureIndexes(handle.db)).resolves.toBeDefined()
   })
 })
 

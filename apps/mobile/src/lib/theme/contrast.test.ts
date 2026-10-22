@@ -79,11 +79,12 @@ const PAIRS: Pair[] = [
   // A video call's switches in the dark panel, off and lit.
   { text: 'onSignal', on: 'stageTile' },
   { text: 'ink', on: 'onSignal' },
-  // The PRO badge: its word on its tablet, on the ground and on a hue (where
-  // the tablet is ink), and the tablet itself against the ground as a shape.
-  { text: 'proWord', on: 'proTablet' },
-  { text: 'proWordOnInk', on: 'ink' },
-  { text: 'proTablet', on: 'bg', large: true },
+  // The PRO badge: its star and word on its pill, on the ground and on a hue,
+  // and the pill itself as a shape against the ground and every hue.
+  { text: 'onProBadge', on: 'proBadge' },
+  { text: 'onProBadge', on: 'proBadgeOnHue' },
+  { text: 'proBadge', on: 'bg', large: true },
+  ...PARTNER_HUES.map((hue): Pair => ({ text: 'proBadgeOnHue', on: hue, large: true })),
 ]
 
 function resolve(scheme: ColorScheme, token: Token): string {

@@ -501,6 +501,8 @@ export const en = {
 
     // The session.
     sessionProgress: '{done} of {total}',
+    /** Where the answer goes, on a card whose back is empty or the sentence again. */
+    noMeaningYet: 'No meaning on this card yet.',
     show: 'Show answer',
     again: 'Again',
     hard: 'Hard',
@@ -2488,12 +2490,44 @@ export const en = {
     appIcon: 'Home screen icon',
     appIconBody: 'Pick which one sits on your home screen.',
     appIcon_default: 'Classic',
-    appIcon_dark: 'Dark',
+    appIcon_dark: 'Night',
     appIcon_split: 'Split',
     appIcon_pro: 'Pro',
     appIcon_newYear: '2026',
+    appIcon_contrast: 'Contrast',
+    appIcon_paperCut: 'Paper Cut',
+    appIcon_feltStitch: 'Running Stitch',
+    appIcon_wovenReed: 'Woven Reed',
+    appIcon_linocut: 'Linocut',
+    appIcon_iznikTile: 'Iznik Tile',
+    appIcon_lacquerGold: 'Gold Lacquer',
+    appIcon_stainedGlass: 'Stained Glass',
+    appIcon_nightHoop: 'Night Hoop',
+    appIcon_indigoDye: 'Indigo Dye',
+    appIcon_marquetry: 'Marquetry',
+    appIcon_mosaic: 'Mosaic',
+    appIcon_origamiFold: 'Origami Fold',
+    appIcon_enamelPin: 'Enamel Pin',
     appIconChanged: 'Icon changed.',
     appIconFailed: 'Could not change the icon',
+    appIconOnHomeScreen: 'On your home screen',
+    appIconFreeBody: 'Yours on any plan.',
+    appIconProBody: 'Part of {plan}. Tap one to see what {plan} includes.',
+    appIconProBodyOwned: 'Included with your {plan} plan.',
+    appIconFootnote:
+      'The icon changes on this device only. Your phone shows a short notice each time it changes.',
+    appIconTileCurrent: '{icon}, current',
+    appIconTilePro: '{icon}, comes with {plan}',
+    appIconSheetTitle: '{icon} comes with {plan}',
+    appIconSheetCount: { one: '{count} {plan} icon', other: '{count} {plan} icons' },
+    appIconSheetCountBody: {
+      one: 'On top of the {count} free one',
+      other: 'On top of the {count} free ones',
+    },
+    appIconSeePro: 'See {plan}',
+    appIconNotNow: 'Not now',
+    // The app's name under its icon, as the home screen prints it. Not translated.
+    appIconAppName: 'LangX',
     showWeekChart: 'Show this week’s chart',
     showWeekChartBody: 'Which days you sent messages and corrections, on your profile.',
     voiceCredits: 'Voices and licences',
@@ -3884,7 +3918,7 @@ export const en = {
     },
     showLess: 'Show less',
     /**
-     * A price and what it is per — "$6.99 a month" — in the order the language
+     * A price and what it is per — "$6.66 a month" — in the order the language
      * says them; Turkish puts the period first. `{period}` is one of `perMonth`,
      * `perYear` or `perLifetime`.
      */
@@ -4279,6 +4313,14 @@ export const en = {
     errBusy: 'Copilot is busy. Try again later.',
     errNoAnswer: 'Copilot couldn’t answer that.',
     errNetwork: 'Couldn’t reach Copilot.',
+    /** The chip above an empty composer when their newest message is unanswered, and the heading over the ideas. */
+    replyIdeas: 'Reply ideas',
+    /** Screen-reader name of that chip. */
+    replyIdeasA11y: 'Ask Copilot for reply ideas',
+    /** Screen-reader hint on each idea: tapping fills the draft, it does not send. */
+    replyIdeaHint: 'Puts it in your message. Nothing is sent.',
+    /** Screen-reader words for the header above the ideas. */
+    replyIdeasCount: { one: '{count} reply idea', other: '{count} reply ideas' },
   },
 } as const
 

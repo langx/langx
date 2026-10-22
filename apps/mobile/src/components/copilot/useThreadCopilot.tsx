@@ -1,6 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { View } from 'react-native'
+import type { MessageDto } from '../../api/queries'
 import {
   COPILOT_STATUS_KEY,
   copilotErrorKey,
@@ -18,12 +19,15 @@ import {
   copilotTargetLanguage,
   type CopilotGate,
 } from '../../lib/copilotGate'
+import { copilotEmptyThread } from '../../lib/copilotErrors'
 import { shouldGateGuest } from '../../lib/guestGate'
+import { replyIdeasCache, replyIdeasFor, replyIdeasKey } from '../../lib/replyIdeas'
 import { makeStyles } from '../../lib/theme'
 import { CopilotConsentSheet } from '../CopilotConsentSheet'
 import type { ComposerCopilot } from '../thread/ComposerV3'
 import { CopilotCard, type CopilotAnswerState } from './CopilotCard'
 import { CopilotExplainSheet } from './CopilotExplainSheet'
+import { ReplyIdeasChip, RiseIn } from './ReplyIdeasChip'
 
 interface ThreadCopilotInput {
   /**
@@ -38,6 +42,15 @@ interface ThreadCopilotInput {
   correcting: boolean
   learning: readonly { code: string }[] | undefined
   partnerNative: readonly { code: string }[] | undefined
+  /**
+   * The thread newest first, sends on their way included — for Reply ideas,
+   * which answers the other person's newest line. Undefined in a window
+   * opened on an old message, whose "newest" is only the newest loaded.
+   */
+  items: readonly MessageDto[] | undefined
+  viewerId: string | undefined
+  /** An edit, a reply, a recording, an attachment or a failed send is under way: no chip. */
+  composerBusy: boolean
   /** "Use this", or an option tapped: into the draft, never sent. */
   onUse: (text: string) => void
 }
@@ -49,7 +62,7 @@ interface ThreadCopilot {
   /** For the long-press menu: whether to offer Explain at all. */
   canExplain: boolean
   explain: (message: { _id: string }) => void
-  /** The card above the composer, or nothing. */
+  /** The card above the composer — or Reply ideas, its chip or its answer — or nothing. */
   card: ReactNode
   /** The consent sheet and the Explain sheet, mounted with the thread's other sheets. */
   sheets: ReactNode
@@ -75,6 +88,9 @@ export function useThreadCopilot({
   correcting,
   learning,
   partnerNative,
+  items,
+  viewerId,
+  composerBusy,
   onUse,
 }: ThreadCopilotInput): ThreadCopilot {
   const styles = useStyles()
@@ -99,14 +115,32 @@ export function useThreadCopilot({
    * asking again, moves it on, so an answer that arrives after the person
    * has moved on is dropped rather than opening what they just closed.
    */
-  const turn = useRef({ card: 0, sheet: 0 })
+  const turn = useRef({ card: 0, sheet: 0, ideas: 0 })
+
+  /*
+   * Reply ideas: the message they would answer, and what its strip shows.
+   * `ideas` belongs to `ideasFor` — a newer message, a draft or a send makes
+   * the target go or change, and the strip goes with it.
+   */
+  const ideasMessage = replyIdeasFor(items ?? [], viewerId, draft, correcting, composerBusy)
+  const ideasTarget = ideasMessage ? replyIdeasKey(ideasMessage) : undefined
+  const [ideas, setIdeas] = useState<{ for: string; state: CopilotAnswerState } | null>(null)
+  /** Messages the server found nothing to reply to: no chip for them again. */
+  const [nothingFor, setNothingFor] = useState<ReadonlySet<string>>(() => new Set())
+  /**
+   * Chats Copilot will not read because the other person is under its age.
+   * Per chat, not per message: every later line would be refused the same way.
+   */
+  const [refusedChats, setRefusedChats] = useState<ReadonlySet<string>>(() => new Set())
 
   // Another thread is another conversation: nothing carries over.
   useEffect(() => {
     turn.current.card += 1
     turn.current.sheet += 1
+    turn.current.ideas += 1
     setCard(null)
     setExplained(null)
+    setIdeas(null)
   }, [conversationId])
 
   // Copilot went off for this person: whatever was open goes with it.
@@ -114,7 +148,14 @@ export function useThreadCopilot({
     if (gate !== 'off') return
     setCard(null)
     setExplained(null)
+    setIdeas(null)
   }, [gate])
+
+  // Typing, a send, or a newer message: the strip has nothing left to answer.
+  useEffect(() => {
+    turn.current.ideas += 1
+    setIdeas(null)
+  }, [ideasTarget])
 
   /** The draft the card's question was asked about, trimmed as it was sent. */
   const cardAsked = useRef<string | null>(null)
@@ -192,6 +233,73 @@ export function useThreadCopilot({
     )
   }
 
+  /*
+   * One call per message: an answer already in hand is drawn again from the
+   * session's cache, and the server's own cache dedupes the rest.
+   */
+  async function askIdeas(messageId: string): Promise<void> {
+    const viewer = viewerId
+    if (!viewer) return
+    // A second tap before the first answer would spend a second unit.
+    if (ideas?.for === messageId && ideas.state.kind === 'loading') return
+    turn.current.ideas += 1
+    const mine = turn.current.ideas
+    const current = () => turn.current.ideas === mine
+    const kept = replyIdeasCache.get(viewer, messageId)
+    if (kept) {
+      setIdeas({ for: messageId, state: answerOf(kept) })
+      return
+    }
+    setIdeas({ for: messageId, state: { kind: 'loading' } })
+    try {
+      const response = await ask.mutateAsync({ action: 'replyIdeas', conversationId })
+      // Kept even when the strip was closed meanwhile: it was paid for.
+      if (response.result.action === 'replyIdeas') {
+        replyIdeasCache.set(viewer, messageId, response.result.ideas)
+      }
+      if (!current()) return
+      if (response.result.action !== 'replyIdeas') {
+        setIdeas({ for: messageId, state: { kind: 'error', key: 'copilot.errNoAnswer' } })
+        return
+      }
+      setIdeas({ for: messageId, state: answerOf(response.result.ideas) })
+    } catch (error) {
+      if (!current()) return
+      // Nothing to reply to after all: no sentence, and no chip for this one.
+      if (copilotEmptyThread(error)) {
+        setIdeas(null)
+        setNothingFor((set) => new Set(set).add(messageId))
+        return
+      }
+      const key = copilotErrorKey(error)
+      // Said once, on the card; after that the chip stays away from this chat.
+      if (key === 'copilot.errPartnerAge') {
+        setRefusedChats((set) => new Set(set).add(conversationId))
+      }
+      if (key === 'off' || key === 'consent') {
+        setIdeas(null)
+        void queryClient.invalidateQueries({ queryKey: COPILOT_STATUS_KEY })
+        if (key === 'consent') {
+          pending.current = () => void askIdeas(messageId)
+          setConsenting(true)
+        }
+        return
+      }
+      setIdeas({
+        for: messageId,
+        state: { kind: 'error', key, retryAt: copilotRetryAt(error) },
+      })
+    }
+  }
+
+  const openIdeas = (messageId: string): void => {
+    withConsent(() => void askIdeas(messageId))
+  }
+  const closeIdeas = (): void => {
+    turn.current.ideas += 1
+    setIdeas(null)
+  }
+
   const closeCard = (): void => {
     cardAsked.current = null
     turn.current.card += 1
@@ -214,13 +322,18 @@ export function useThreadCopilot({
           loading: card?.kind === 'loading',
         }
 
+  const shown = card === null ? ideasTarget : undefined
+  const openIdeasState = shown && ideas?.for === shown ? ideas.state : null
+  const offered =
+    shown && !nothingFor.has(shown) && !refusedChats.has(conversationId) ? shown : undefined
+
   return {
     gate,
     composer,
     canExplain: gate !== 'off',
     explain,
     card:
-      card && gate !== 'off' ? (
+      gate === 'off' ? null : card ? (
         <View style={styles.cardSlot}>
           <CopilotCard
             state={card}
@@ -231,6 +344,24 @@ export function useThreadCopilot({
             }}
             onClose={closeCard}
           />
+        </View>
+      ) : openIdeasState ? (
+        <View style={styles.cardSlot}>
+          <RiseIn>
+            <CopilotCard
+              state={openIdeasState}
+              quota={status.data?.quota}
+              onUse={(text) => {
+                closeIdeas()
+                onUse(text)
+              }}
+              onClose={closeIdeas}
+            />
+          </RiseIn>
+        </View>
+      ) : offered ? (
+        <View style={styles.cardSlot}>
+          <ReplyIdeasChip onPress={() => openIdeas(offered)} />
         </View>
       ) : null,
     sheets: enabled ? (
@@ -248,6 +379,10 @@ export function useThreadCopilot({
       </>
     ) : null,
   }
+}
+
+function answerOf(ideas: readonly string[]): CopilotAnswerState {
+  return { kind: 'answer', result: { action: 'replyIdeas', ideas: [...ideas] }, asked: '' }
 }
 
 const useStyles = makeStyles(({ v3 }) => ({

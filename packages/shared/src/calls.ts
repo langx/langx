@@ -325,6 +325,8 @@ export const callPeerSchema = z.object({
   handle: z.string(),
   displayName: z.string(),
   avatarUrl: z.string().optional(),
+  /** Names the drawn face when there is no photo; see `defaultAvatarRev`. */
+  defaultAvatarRev: z.string().optional(),
 })
 export type CallPeer = z.infer<typeof callPeerSchema>
 
@@ -469,6 +471,13 @@ export const callRingDataSchema = z.object({
   callerName: z.string(),
   callerHandle: z.string(),
   callerAvatarUrl: z.string().optional(),
+  /**
+   * The caller's drawn face, absolute, when there is no photo. Its own field
+   * so `callerAvatarUrl` keeps meaning "has a photo" to every reader that
+   * already relies on that; a native reader picks this up when it is next
+   * built.
+   */
+  callerDefaultAvatarUrl: z.string().optional(),
   /** Seconds of ringing left when this was sent — relative, so no clock has to agree. */
   ringSeconds: z.number().int().positive(),
   callToken: z.string(),
