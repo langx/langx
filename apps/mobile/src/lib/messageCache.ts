@@ -44,9 +44,38 @@ export function patchThread(
     (old) => update(old) ?? old,
   )
   void queryClient.refetchQueries(
-    { queryKey, predicate: (query) => query.state.fetchStatus === 'fetching' },
+    {
+      queryKey,
+      predicate: (query) => query.state.fetchStatus === 'fetching' && !loadingMore(query.state),
+    },
     { cancelRefetch: true },
   )
+  /*
+   * An older (or newer) page on its way is different: it lands as the pages
+   * it started from plus itself, so it erases the patch too — but cancelling
+   * it for a refetch threw away the page somebody had scrolled up for, and
+   * the refetch only fetches the pages already there. So it is let land, and
+   * the patch written again on top of whatever it leaves.
+   */
+  const cache = queryClient.getQueryCache()
+  for (const query of cache.findAll({ queryKey })) {
+    if (query.state.fetchStatus !== 'fetching' || !loadingMore(query.state)) continue
+    const unsubscribe = cache.subscribe((event) => {
+      if (event.query !== query) return
+      if (event.type === 'removed') return unsubscribe()
+      if (query.state.fetchStatus === 'fetching') return
+      unsubscribe()
+      queryClient.setQueryData<InfiniteData<MessagePageDto>>(
+        query.queryKey,
+        (old) => update(old) ?? old,
+      )
+    })
+  }
+}
+
+/** Whether the fetch under way is `fetchNextPage`/`fetchPreviousPage`, not a refetch. */
+function loadingMore(state: { fetchMeta: unknown }): boolean {
+  return (state.fetchMeta as { fetchMore?: unknown } | null)?.fetchMore !== undefined
 }
 
 /**
