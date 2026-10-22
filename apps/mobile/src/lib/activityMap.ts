@@ -162,6 +162,26 @@ function mondayIndex(day: string): number {
 }
 
 /**
+ * The days a repair must treat as already kept: the ones on file, and every
+ * day of the current streak.
+ *
+ * The second half is the freeze. A day a banked freeze bridged has no row —
+ * a freeze writes no square — so from the rows alone it reads as the newest
+ * missed day. The store offered to sell it, and its confirmation walked the
+ * rows and promised the streak back ("2 → 10") when the streak already was
+ * 10: the server took the price and moved nothing. The run the profile
+ * reports is the run that happened, the same reason `activityGrid` fills it.
+ */
+export function daysOnRecord(
+  days: readonly { day: string }[],
+  streak: { current: number; lastQualifiedDay: string | null } | undefined,
+): Set<string> {
+  const filled = impliedStreakDays(streak)
+  for (const entry of days) filled.add(entry.day)
+  return filled
+}
+
+/**
  * The days the current streak must have covered, walking back from the last
  * one that qualified. Empty when there is no streak, which is the common case
  * and the one where `days` is the whole truth.

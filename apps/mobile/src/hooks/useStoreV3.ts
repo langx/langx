@@ -15,7 +15,7 @@ import { confirmAndRepair } from '../lib/repairFlow'
 import { buildStoreOffers, repairsUsedFor, type StoreOffer } from '../lib/storeOffers'
 import { showToast } from '../lib/toast'
 import { usePullToRefresh } from './usePullToRefresh'
-import { activityRange } from '../lib/activityMap'
+import { activityRange, daysOnRecord } from '../lib/activityMap'
 
 /**
  * What the redesign's store screens share: the same five queries today's
@@ -57,7 +57,7 @@ export function useStoreV3() {
           ? {
               repair: {
                 today: activity.data.today,
-                filled: new Set(activity.data.days.map((day) => day.day)),
+                filled: daysOnRecord(activity.data.days, activity.data.streak),
                 price: activity.data.repair.price,
                 usedThisMonth: activity.data.repair.usedThisMonth,
                 usedByMonth: activity.data.repair.usedByMonth,
@@ -78,7 +78,7 @@ export function useStoreV3() {
       void confirmAndRepair({
         day: offer.repairDay,
         today: activity.data.today,
-        filled: new Set(activity.data.days.map((day) => day.day)),
+        filled: daysOnRecord(activity.data.days, activity.data.streak),
         price: activity.data.repair.price,
         balance,
         left: Math.max(

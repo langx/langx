@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { shiftDayKey, TOKEN_RULES } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import {
   ACTIVITY_CELL_GAP,
@@ -5,9 +8,11 @@ import {
   ACTIVITY_CELL_MIN,
   activityCellSize,
   activityGrid,
+  daysOnRecord,
   repairEffect,
   type ActivityCell,
 } from './activityMap'
+import { newestRepairDay } from './storeOffers'
 
 // A Saturday, so the "today is not the end of the column" case is the default.
 const TODAY = '2026-08-29'
@@ -206,5 +211,55 @@ describe('activityCellSize', () => {
     expect(activityCellSize(0, 26)).toBe(ACTIVITY_CELL_MIN)
     expect(activityCellSize(Number.NaN, 26)).toBe(ACTIVITY_CELL_MIN)
     expect(activityCellSize(688, 0)).toBe(ACTIVITY_CELL_MIN)
+  })
+})
+
+/**
+ * A banked freeze bridges a missed day without writing a square, so the day
+ * has no row. Taken from the rows alone, the store offered to sell it back and
+ * the confirmation promised a streak the person already had.
+ */
+describe('daysOnRecord', () => {
+  const today = '2026-09-20'
+  const back = (n: number) => shiftDayKey(today, -n)
+  // Active on every day of a ten-day run except the 18th, which a freeze bridged.
+  const rows = [0, 1, 3, 4, 5, 6, 7, 8, 9].map((n) => ({ day: back(n) }))
+  const streak = { current: 10, lastQualifiedDay: today }
+
+  it('counts a day a freeze bridged as kept', () => {
+    const filled = daysOnRecord(rows, streak)
+    expect(filled.has(back(2))).toBe(true)
+    expect(
+      newestRepairDay({ today, filled, usedThisMonth: 0 }),
+      'the newest missed day is before the run, not inside it',
+    ).toBe(back(10))
+  })
+
+  it('leaves the confirmation telling the truth about the streak', () => {
+    const effect = repairEffect({
+      day: back(10),
+      today,
+      filled: daysOnRecord(rows, streak),
+      price: TOKEN_RULES.sinks.dayRepair,
+      balance: TOKEN_RULES.sinks.dayRepair,
+    })
+    expect(effect.streakBefore).toBe(streak.current)
+  })
+
+  it('is the rows alone when there is no streak', () => {
+    expect(daysOnRecord(rows, { current: 0, lastQualifiedDay: null })).toEqual(
+      new Set(rows.map((row) => row.day)),
+    )
+  })
+
+  it('is what both stores hand the repair', () => {
+    for (const file of ['../hooks/useStoreV3.ts', '../../app/(app)/wallet/store.tsx']) {
+      const source = readFileSync(resolve(__dirname, file), 'utf8')
+      expect(source, file).not.toContain('filled: new Set(activity.data.days')
+      expect(
+        source.match(/daysOnRecord\(activity\.data\.days, activity\.data\.streak\)/g),
+        file,
+      ).toHaveLength(2)
+    }
   })
 })

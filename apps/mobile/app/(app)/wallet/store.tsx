@@ -29,7 +29,7 @@ import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
 import { WalletStoreScreenV3 } from '../../../src/screens/WalletStoreScreenV3'
-import { activityRange } from '../../../src/lib/activityMap'
+import { activityRange, daysOnRecord } from '../../../src/lib/activityMap'
 
 /**
  * The store — or, with `flags.v3Home` on, the redesign's
@@ -110,7 +110,7 @@ function StoreScreen() {
       ? {
           repair: {
             today: activity.data.today,
-            filled: new Set(activity.data.days.map((day) => day.day)),
+            filled: daysOnRecord(activity.data.days, activity.data.streak),
             price: activity.data.repair.price,
             usedThisMonth: activity.data.repair.usedThisMonth,
             usedByMonth: activity.data.repair.usedByMonth,
@@ -151,7 +151,7 @@ function StoreScreen() {
       void confirmAndRepair({
         day: offer.repairDay,
         today: activity.data.today,
-        filled: new Set(activity.data.days.map((day) => day.day)),
+        filled: daysOnRecord(activity.data.days, activity.data.streak),
         price: activity.data.repair.price,
         balance,
         left: Math.max(
