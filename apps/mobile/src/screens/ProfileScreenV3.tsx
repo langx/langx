@@ -370,6 +370,8 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
                 variant="secondary"
                 icon="user-plus"
                 onPress={noop}
+                // Out of the tab order on web, where a zero-high box still takes focus.
+                disabled
                 style={styles.followFace}
               />
             ))}

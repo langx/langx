@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import type { LikeTargetType } from '@langx/shared'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Animated, Pressable, Text, View } from 'react-native'
 import { useSetLike } from '../api/queries'
 import { useReduceMotion } from '../hooks/useReduceMotion'
@@ -88,9 +88,22 @@ export function LikeButton({
    */
   const [intentState, setIntentState] = useState<LikeIntent>(IDLE_LIKE)
   const intentRef = useRef(intentState)
+  /*
+   * A card can scroll out of a virtualised list, or its screen close, while a
+   * request is out. The ref and any follow-up request carry on regardless —
+   * a like then unlike must still end unliked on the server — and only the
+   * state update is skipped once nothing is mounted to draw it.
+   */
+  const mounted = useRef(true)
+  useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+    }
+  }, [])
   const commit = (next: LikeIntent): void => {
     intentRef.current = next
-    setIntentState(next)
+    if (mounted.current) setIntentState(next)
   }
   // The props caught up with the tap: hand back to them, so a change made
   // elsewhere later (another screen, a refetch) shows here again.
@@ -100,17 +113,23 @@ export function LikeButton({
   const liked = shownLiked(intent, likedByViewer)
   const count = shownCount(intent, likedByViewer, likeCount)
 
+  /*
+   * `mutateAsync` rather than `mutate`'s per-call callbacks, which React Query
+   * drops once the component has unmounted — and with them the follow-up
+   * request a quick like-unlike needs. The rejection is already reported by
+   * `useSetLike`'s own `onError`.
+   */
+  const { mutateAsync } = setLike
   function send(next: boolean): void {
-    setLike.mutate(
-      { targetType, targetId, liked: next },
-      {
-        onSettled: (state, error) => {
-          const step = settleLike(intentRef.current, error || !state ? null : state.likedByViewer)
-          commit(step.intent)
-          if (step.send !== null) send(step.send)
-        },
-      },
+    mutateAsync({ targetType, targetId, liked: next }).then(
+      (state) => settle(state.likedByViewer),
+      () => settle(null),
     )
+  }
+  function settle(recorded: boolean | null): void {
+    const step = settleLike(intentRef.current, recorded)
+    commit(step.intent)
+    if (step.send !== null) send(step.send)
   }
 
   // Carried from the first render, never gained on the press — see the
@@ -138,10 +157,11 @@ export function LikeButton({
     const step = tapLike(intentRef.current, likedByViewer)
     commit(step.intent)
     if (step.send !== null) send(step.send)
-    if (step.intent.desired) {
-      // A deliberate tap whose server commit has not happened yet.
+    // v3 only, so the current look stays as it was. A deliberate tap whose
+    // server commit has not happened yet.
+    if (step.intent.desired && v3Look) {
       void impact('light')
-      if (v3Look && !reduceMotion) pop()
+      if (!reduceMotion) pop()
     }
   }
 

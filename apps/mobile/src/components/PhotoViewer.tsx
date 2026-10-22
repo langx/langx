@@ -429,8 +429,9 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
         return
       }
       if (mode === PAN_DISMISS) {
-        // Far enough, or flicked away: see `dismissDirection`.
-        const direction = dismissDirection(event.translationY, event.velocityY)
+        // Far enough, or (v3) flicked away: see `dismissDirection`. The
+        // current look keeps its distance-only rule, so no speed is passed.
+        const direction = dismissDirection(event.translationY, v3Look ? event.velocityY : 0)
         if (direction !== 0) {
           dismissNow(direction)
           return

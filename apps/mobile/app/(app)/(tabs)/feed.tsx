@@ -1,8 +1,8 @@
 import Feather from '@expo/vector-icons/Feather'
 import { FEED_TOP_CORRECTIONS, MAX_POST_LENGTH, PLAN_LIMITS } from '@langx/shared'
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query'
-import { Redirect, router, useFocusEffect, useScrollToTop } from 'expo-router'
-import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
+import { Redirect, router, useFocusEffect, useNavigation } from 'expo-router'
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
   ActivityIndicator,
   Animated,
@@ -65,6 +65,7 @@ import { attachmentsOf, type Media } from '@langx/shared'
 import { showToast } from '../../../src/lib/toast'
 import { relativeTime } from '../../../src/lib/format'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
+import { useReduceMotion } from '../../../src/hooks/useReduceMotion'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useV3Home } from '../../../src/hooks/useV3Home'
 import { useTwoPane } from '../../../src/hooks/useTwoPane'
@@ -352,8 +353,7 @@ export function FeedScreen({ people }: { people?: ReactNode } = {}) {
     listRef.current?.scrollToOffset({ offset, animated }),
   )
   const listRef = useRef<FlatList<FeedPost>>(null)
-  // A tap on the tab the feed is already showing goes back to the top.
-  useScrollToTop(listRef)
+  useTabPressScrollsToTop(listRef)
   /*
    * The correction box, not the field inside it: the attachment bar and the
    * send row sit below the field and it is those the keyboard has to clear.
@@ -442,7 +442,9 @@ export function FeedScreen({ people }: { people?: ReactNode } = {}) {
       onRetry={() => void feed.refetch()}
       pull={pull}
       onEndReached={() => {
-        if (feed.hasNextPage && !feed.isFetchingNextPage) void feed.fetchNextPage()
+        // `isFetching`, not only the next page: a page fetched during a pull
+        // would cancel the pull's refetch of page one.
+        if (feed.hasNextPage && !feed.isFetching) void feed.fetchNextPage()
       }}
       loadingMore={feed.isFetchingNextPage}
       meId={me.data?._id}
@@ -537,7 +539,9 @@ export function FeedScreen({ people }: { people?: ReactNode } = {}) {
             refreshControl={<RefreshControl {...pull} />}
             onEndReachedThreshold={0.6}
             onEndReached={() => {
-              if (feed.hasNextPage && !feed.isFetchingNextPage) void feed.fetchNextPage()
+              // `isFetching`, not only the next page: a page fetched during a pull
+              // would cancel the pull's refetch of page one.
+              if (feed.hasNextPage && !feed.isFetching) void feed.fetchNextPage()
             }}
             ListEmptyComponent={
               <EmptyState icon="users" title={t('feed.emptyTitle')} body={t('feed.emptyBody')} />
@@ -863,6 +867,47 @@ export function FeedScreen({ people }: { people?: ReactNode } = {}) {
 }
 
 const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e']
+
+/** The few navigation calls the tab-press listener needs, whatever navigator it is. */
+interface TabPressNavigation {
+  getState: () => { type?: string } | undefined
+  getParent: () => TabPressNavigation | undefined
+  isFocused: () => boolean
+  addListener: (
+    event: 'tabPress',
+    listener: (event: { defaultPrevented?: boolean }) => void,
+  ) => () => void
+}
+
+/**
+ * A tap on the tab the feed is already showing goes back to the top —
+ * `useScrollToTop`'s behaviour, which always animates, so here instead with
+ * the scroll set at once under reduce motion. Listens on every tab navigator
+ * above the screen, as that hook does, and only while the screen is focused.
+ */
+function useTabPressScrollsToTop(listRef: { current: FlatList<FeedPost> | null }): void {
+  const navigation: TabPressNavigation = useNavigation()
+  const reduceMotion = useReduceMotion()
+  const reduce = useRef(reduceMotion)
+  reduce.current = reduceMotion
+  useEffect(() => {
+    const tabs: TabPressNavigation[] = []
+    for (let at: TabPressNavigation | undefined = navigation; at; at = at.getParent()) {
+      if (at.getState()?.type === 'tab') tabs.push(at)
+    }
+    const stops = tabs.map((tab) =>
+      tab.addListener('tabPress', (event) => {
+        if (!navigation.isFocused()) return
+        // Next frame, so a listener that prevents the press has had its turn.
+        requestAnimationFrame(() => {
+          if (event.defaultPrevented) return
+          listRef.current?.scrollToOffset({ offset: 0, animated: !reduce.current })
+        })
+      }),
+    )
+    return () => stops.forEach((stop) => stop())
+  }, [navigation, listRef])
+}
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // The bottom half is the gap above the tip; `Tip` owns the one below it.

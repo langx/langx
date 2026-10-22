@@ -74,4 +74,16 @@ describe('likeIntent', () => {
     const flying = tapLike(IDLE_LIKE, false).intent
     expect(catchUpLike(flying, true)).toBe(flying)
   })
+
+  it('still sends the follow-up when the settle arrives after the button has gone', () => {
+    // like, then unlike, then the card scrolls away before the like is answered:
+    // the settle runs from the ref with nothing mounted, and must still undo it
+    const first = tapLike(IDLE_LIKE, false)
+    const second = tapLike(first.intent, false)
+    const settled = settleLike(second.intent, true)
+    expect(settled.send).toBe(false)
+    const done = settleLike(settled.intent, false)
+    expect(done.send).toBeNull()
+    expect(done.intent).toEqual({ desired: false, inFlight: false })
+  })
 })
