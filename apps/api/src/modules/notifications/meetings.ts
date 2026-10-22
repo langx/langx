@@ -60,12 +60,41 @@ export async function collectUpcomingMeetings(
     ]),
   )
 
+  /*
+   * Pairs where one has blocked the other. A block ends everything between
+   * them, an agreed call included, and the digest would otherwise name the
+   * blocked person in "tomorrow you have a call with …". One query for every
+   * pair in the tick, the same way the conversations are read above.
+   */
+  const pairs = conversations.flatMap(({ participants: [a, b] }) =>
+    a && b
+      ? [
+          { blockerId: a, blockedId: b },
+          { blockerId: b, blockedId: a },
+        ]
+      : [],
+  )
+  const blocks =
+    pairs.length === 0
+      ? []
+      : await db
+          .collection<{ blockerId: string; blockedId: string }>(COLLECTIONS.blocks)
+          .find({ $or: pairs }, { projection: { _id: 0, blockerId: 1, blockedId: 1 } })
+          .toArray()
+  const blockedPairs = new Set(
+    blocks.flatMap(({ blockerId, blockedId }) => [
+      `${blockerId}|${blockedId}`,
+      `${blockedId}|${blockerId}`,
+    ]),
+  )
+
   for (const message of due) {
     const startsAt = message.meeting?.startsAt
     if (!startsAt) continue
     const conversationId = message.conversationId.toHexString()
     const participants = participantsOf.get(conversationId)
     if (!participants) continue
+    if (blockedPairs.has(participants.join('|'))) continue
 
     // Both people, because the proposer is as likely to have forgotten as the
     // invitee — the same reasoning the hour-before push follows.
