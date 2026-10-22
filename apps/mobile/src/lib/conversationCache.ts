@@ -72,6 +72,51 @@ export function applyIncomingMessage(
 }
 
 /**
+ * An edit to the message a row is showing, written into that row.
+ *
+ * The server patches `lastMessage.body` when the edited message is still the
+ * newest one, and `message:updated` is the only thing either side hears about
+ * it — so without this the list kept the words as first sent until something
+ * else refetched it, on both phones. Matched on the same pair the server uses,
+ * `createdAt` and `senderId`: if something newer has arrived the row is not
+ * showing this message and nothing changes.
+ *
+ * Works on either shape under the `['conversations']` prefix — a tab's paged
+ * list or the one row `keys.conversation(id)` keeps. A thread no loaded page
+ * holds is left alone; it comes back right from the server when it is next
+ * fetched.
+ */
+export function applyMessageEdit(
+  data: unknown,
+  edit: { conversationId: string; senderId: string; createdAt: string; body: string },
+): unknown {
+  const stale = (row: ConversationDto): boolean =>
+    row._id === edit.conversationId &&
+    row.lastMessage.senderId === edit.senderId &&
+    row.lastMessage.createdAt === edit.createdAt &&
+    row.lastMessage.body !== edit.body
+  const patch = (row: ConversationDto): ConversationDto =>
+    stale(row) ? { ...row, lastMessage: { ...row.lastMessage, body: edit.body } } : row
+
+  if (isPagedList(data)) {
+    // Untouched unless a row actually changes, so a reaction — which arrives
+    // as the same event — does not hand the list a new object to redraw.
+    const found = findConversation(data, edit.conversationId)
+    if (!found || !stale(found.conversation)) return data
+    return {
+      ...data,
+      pages: data.pages.map((page) => ({
+        ...page,
+        items: page.items.map(patch),
+        pinned: page.pinned.map(patch),
+      })),
+    }
+  }
+  const row = data as ConversationDto | undefined
+  return row?._id === edit.conversationId && row.lastMessage ? patch(row) : data
+}
+
+/**
  * What the chat list row says for a message that just arrived over the socket.
  *
  * The server stores `body || previewOf(message)` as the row's line, so the
