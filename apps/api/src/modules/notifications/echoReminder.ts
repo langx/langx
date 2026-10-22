@@ -1,4 +1,9 @@
-import { ECHO_REMINDER_LOCAL_HOUR, localDayKey, notificationsAllowed } from '@langx/shared'
+import {
+  ECHO_REMINDER_LOCAL_HOUR,
+  localDayKey,
+  localDayStart,
+  notificationsAllowed,
+} from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { translator } from '../../i18n'
@@ -7,8 +12,6 @@ import type { EchoReviewDoc } from '../echo/documents'
 import { profilesInLocalHour } from '../profiles/localHour'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
 import { claimOnce } from './ledger'
-
-const DAY_MS = 24 * 60 * 60 * 1000
 
 /**
  * "Your cards are ready" — once, at the end of the reader's own day.
@@ -50,9 +53,13 @@ export async function runEchoReminderPass(
     const due = await cards.countDocuments({ userId: profile._id, 'srs.due': { $lte: now } })
     if (due === 0) continue
 
+    // Since the start of the reader's own day, not the last 24 hours: a
+    // session started by yesterday's nudge is not today's, and counting it
+    // skipped every other evening for somebody who answered each one.
+    const day = localDayKey(now, zone)
     const reviewedToday = await reviews.countDocuments({
       userId: profile._id,
-      at: { $gte: new Date(now.getTime() - DAY_MS) },
+      at: { $gte: localDayStart(day, zone) },
     })
     if (reviewedToday > 0) continue
 
@@ -61,7 +68,7 @@ export async function runEchoReminderPass(
 
     // Claimed before the send, deliberately: a crash after the push is one
     // silence, and a crash before it is one push twice.
-    if (!(await claimOnce(db, 'echoReminder', profile._id, localDayKey(now, zone)))) continue
+    if (!(await claimOnce(db, 'echoReminder', profile._id, day))) continue
 
     for (const [locale, tokens] of byLocale) {
       const t = translator(locale)
