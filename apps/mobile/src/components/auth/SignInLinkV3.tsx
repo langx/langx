@@ -1,9 +1,10 @@
 import { router } from 'expo-router'
+import type { ReactNode } from 'react'
 import { useT } from '../../i18n'
 import { goBackTo } from '../../lib/navigation'
 import { FieldV3 } from '../onboarding/WizardV3'
 import { Button } from '../ui/Button'
-import { AuthMarkV3, AuthNoticeV3, AuthScreenV3, AuthTitleV3 } from './AuthKitV3'
+import { AuthMarkV3, AuthNoteV3, AuthNoticeV3, AuthScreenV3, AuthTitleV3 } from './AuthKitV3'
 
 /**
  * Asking for a sign-in link in the redesign's look (`V-SignInLink`), behind
@@ -19,6 +20,8 @@ export function SignInLinkV3({
   canSubmit,
   sent,
   onSubmit,
+  captchaWidget,
+  captchaChecking,
 }: {
   email: string
   onChangeEmail: (value: string) => void
@@ -27,6 +30,8 @@ export function SignInLinkV3({
   canSubmit: boolean
   sent: boolean
   onSubmit: () => Promise<void>
+  captchaWidget: ReactNode
+  captchaChecking: boolean
 }) {
   const t = useT()
 
@@ -52,13 +57,17 @@ export function SignInLinkV3({
     <AuthScreenV3
       onBack={() => goBackTo('/(auth)/sign-in')}
       footer={
-        <Button
-          icon="send"
-          label={t('auth.sendSignInLink')}
-          onPress={onSubmit}
-          loading={loading}
-          disabled={!canSubmit}
-        />
+        <>
+          {captchaWidget}
+          <Button
+            icon="send"
+            label={t('auth.sendSignInLink')}
+            onPress={onSubmit}
+            loading={loading}
+            disabled={!canSubmit}
+          />
+          {captchaChecking ? <AuthNoteV3>{t('auth.captchaChecking')}</AuthNoteV3> : null}
+        </>
       }
     >
       <AuthMarkV3 hue="lilac" icon="link" />

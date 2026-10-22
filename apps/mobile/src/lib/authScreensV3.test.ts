@@ -42,9 +42,13 @@ const PAIRS: readonly Pair[] = [
   {
     route: '(auth)/sign-in-link.tsx',
     view: 'SignInLinkV3.tsx',
-    handlerOnly: ['errors.signInFailed'],
+    handlerOnly: ['errors.signInFailed', 'errors.captchaFailed'],
   },
-  { route: '(auth)/check-email.tsx', view: 'CheckEmailV3.tsx' },
+  {
+    route: '(auth)/check-email.tsx',
+    view: 'CheckEmailV3.tsx',
+    handlerOnly: ['errors.captchaFailed'],
+  },
   {
     route: '(auth)/forgot-password.tsx',
     view: 'ForgotPasswordV3.tsx',

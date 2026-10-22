@@ -6,6 +6,8 @@ import { makeStyles, useTheme } from '../../src/lib/theme'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { authClient } from '../../src/lib/auth-client'
+import { authErrorKey } from '../../src/lib/errors'
+import { useCaptcha } from '../../src/hooks/useCaptcha'
 import { useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
@@ -26,20 +28,48 @@ export default function CheckEmail() {
   const { email } = useLocalSearchParams<{ email: string }>()
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string>()
+  // A resend mails a typed address, so the API checks it as it does sign-up.
+  const captcha = useCaptcha()
   // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
   const v3 = useV3LaunchLook()
 
   async function onResend() {
     if (!email) return
     setLoading(true)
+    setError(undefined)
     // No `callbackURL`: the API builds the mailed link itself, the same one
     // sign-up's mail carries.
-    await authClient.sendVerificationEmail({ email })
+    const { error: resendError } = await authClient.sendVerificationEmail({
+      email,
+      fetchOptions: captcha.fetchOptions,
+    })
     setLoading(false)
+    // Single-use, and the resend can be pressed again.
+    captcha.reset()
+    // A failed bot check means no mail went, so "Sent" would be untrue. Any
+    // other answer reads as before.
+    const key = authErrorKey(resendError)
+    if (key === 'errors.captchaFailed') {
+      setError(t(key))
+      return
+    }
     setSent(true)
   }
 
-  if (v3) return <CheckEmailV3 email={email} sent={sent} loading={loading} onResend={onResend} />
+  if (v3) {
+    return (
+      <CheckEmailV3
+        email={email}
+        sent={sent}
+        loading={loading}
+        disabled={captcha.checking}
+        error={error}
+        onResend={onResend}
+        captchaWidget={captcha.widget}
+      />
+    )
+  }
 
   const [before = '', after = ''] = t('auth.checkEmailBody', { email: EMAIL_MARK }).split(
     EMAIL_MARK,
@@ -59,15 +89,17 @@ export default function CheckEmail() {
 
       <View style={styles.actions}>
         <Button label={t('auth.goToSignIn')} onPress={() => router.push('/(auth)/sign-in')} />
+        {captcha.widget}
         <Pressable
           accessibilityRole="button"
-          accessibilityState={{ disabled: loading, busy: loading }}
-          disabled={loading}
+          accessibilityState={{ disabled: loading || captcha.checking, busy: loading }}
+          disabled={loading || captcha.checking}
           onPress={() => void onResend()}
           style={({ pressed }) => [styles.resend, (pressed || loading) && styles.pressed]}
         >
           <Text style={styles.link}>{sent ? t('auth.resent') : t('auth.resendEmail')}</Text>
         </Pressable>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
       </View>
     </Screen>
   )
@@ -91,4 +123,5 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   resend: { alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.md },
   pressed: { opacity: 0.7 },
   link: { color: colors.accent, fontSize: 15, fontWeight: '600' },
+  error: { color: colors.danger, fontSize: 14, textAlign: 'center' },
 }))
