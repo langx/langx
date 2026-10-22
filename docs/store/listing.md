@@ -115,7 +115,7 @@ submitted; `3.0-metadata.json` has the plain form.
 >
 > Your first subscription, monthly or yearly, starts with a free week.
 >
-> **Or get Pro for free.** New to LangX and 18 or over? Your first week comes with Pro, and practicing every day that week keeps it for a second. Invite a friend, and when they start talking on LangX you each get a week of Pro. A 7-day streak earns a week, 100 days a month, 365 days three. Have a gift code? Enter it on the Plans screen.
+> **Or get Pro for free.** New to LangX and 18 or over? Your first week comes with Pro, and practicing every day that week keeps it for a second. Invite a friend, and when they start talking on LangX you each get a week of Pro. A 7-day streak earns a week (in your first week, that is the second week), 100 days a month, 365 days three. Have a gift code? Enter it on the Plans screen.
 >
 > LangX is open source (BSD-3) and can be self-hosted.
 >
@@ -515,18 +515,19 @@ the features that were built behind switches for it. The notes below are true
 only once these switches are on in production — they all start off in
 `DEFAULT_APP_CONFIG`, and Behic turns them on with the release:
 
-| Claim                                                                    | Switch                                        | What it rests on                                                                                                                                           |
-| ------------------------------------------------------------------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| The new look; Home, Chats, Echo, People, Me                              | `v3Home`                                      | `useV3Home`; the Home strings in `en.ts` (`home.*`)                                                                                                        |
-| A first week of Pro for a new account, 18+; a second for 7 practice days | `proWeek`                                     | `PRO_WEEK_RULES`; `decisions.md` → _The Pro Week_ (never a guest, a v1 account, a minor or a subscriber)                                                   |
-| Invite a friend, a week of Pro each                                      | `giveAWeek`                                   | `PRO_GIFT_RULES.giveAWeek` (inviter capped at 12 weeks a year, a value Behic has still to confirm); activation is a two-way conversation with someone else |
-| A hello to a newcomer is free                                            | `newcomerHello`                               | `NEWCOMER_HELLO_RULES`: joined in the last 7 days, 3 a day, adults at both ends                                                                            |
-| Copilot, beta, rolling out                                               | `copilotEnabled`, per-account `copilotAccess` | `COPILOT_RULES` (18+); `decisions.md` → _Copilot v1_. See the gate in `3.0-app-review-notes.md` before keeping this claim                                  |
-| Ten sticker packs, seven new                                             | none                                          | `COSMETICS` in `packages/shared/src/cosmetics.ts`: Paper Talk, Margin Notes, Polyglot, Study Desk, Night Owl, Qalam, Shared Table at 1,500 tokens          |
-| Six new badges; 17 app icons, nine with Pro                              | none                                          | #1897; `APP_ICONS` and `PRO_ICONS` in `appIconList.ts` (native, so only in the 3.0 binary)                                                                 |
-| Calls and the chat camera in the new look                                | `v3Home`                                      | #1874, #1887                                                                                                                                               |
-| A 7-day streak earns a week of Pro                                       | none                                          | `PRO_GIFT_RULES.streak`, live since 7 October (the 2.9 copy left it out)                                                                                   |
-| A free week on the first monthly or yearly subscription                  | store consoles                                | The offers Behic configures; the app reads the trial from the store (#1873), so a plan without one shows none                                              |
+| Claim                                                                    | Switch                                        | What it rests on                                                                                                                                                                         |
+| ------------------------------------------------------------------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The new look; Home, Chats, Echo, People, Me                              | `v3Home`                                      | `useV3Home`; the Home strings in `en.ts` (`home.*`)                                                                                                                                      |
+| A first week of Pro for a new account, 18+; a second for 7 practice days | `proWeek`                                     | `PRO_WEEK_RULES`; `decisions.md` → _The Pro Week_ (never a guest, a v1 account, a minor or a subscriber)                                                                                 |
+| Invite a friend, a week of Pro each                                      | `giveAWeek`                                   | `PRO_GIFT_RULES.giveAWeek` (inviter capped at 12 weeks a year, a value Behic has still to confirm); activation is a two-way conversation with someone else                               |
+| A hello to a newcomer is free                                            | `newcomerHello`                               | `NEWCOMER_HELLO_RULES`: joined in the last 7 days, 3 a day, adults at both ends                                                                                                          |
+| Copilot, beta, rolling out                                               | `copilotEnabled`, per-account `copilotAccess` | `COPILOT_RULES` (18+); `decisions.md` → _Copilot v1_. See the gate in `3.0-app-review-notes.md` before keeping this claim                                                                |
+| Ten sticker packs, seven new                                             | none                                          | `COSMETICS` in `packages/shared/src/cosmetics.ts`: Paper Talk, Margin Notes, Polyglot, Study Desk, Night Owl, Qalam, Shared Table at 1,500 tokens                                        |
+| Six new kinds of badge                                                   | `v3Home`                                      | #1897: the new kinds show only on the v3 shelf. Run `scripts/seed-v3-badge-notices.ts --apply` before the switch, or the first evening round-up announces every badge earned in the past |
+| 17 app icons, nine with Pro                                              | none                                          | `APP_ICONS` and `PRO_ICONS` in `appIconList.ts` (native, so only in the 3.0 binary)                                                                                                      |
+| Calls and the chat camera in the new look                                | `v3Home`                                      | #1874, #1887                                                                                                                                                                             |
+| A 7-day streak earns a week of Pro                                       | none                                          | `PRO_GIFT_RULES.streak`, live since 7 October (the 2.9 copy left it out)                                                                                                                 |
+| A free week on the first monthly or yearly subscription                  | store consoles                                | The offers Behic configures; the app reads the trial from the store (#1873), so a plan without one shows none                                                                            |
 
 **Not claimed, deliberately.** Giving a sticker pack to a chat partner
 (`stickerGifts`) is not on the 3.0 switch list, and promotional links to the
@@ -546,7 +547,7 @@ that word is the store's, and it means a purchase.
 > Give a week, get a week: invite a friend, and when they start talking on LangX you each get a week of Pro.
 > A hello to someone who joined this week doesn't use one of your daily new chats (up to 3 a day, 18+).
 > Copilot, our AI helper, is in beta and rolling out: check a sentence, say it in the language you're learning, have a message explained, or ask for reply ideas.
-> Seven new sticker packs, six new badges, and 17 app icons to choose from.
+> Seven new sticker packs, six new kinds of badge, and 17 app icons to choose from.
 > Calls and the chat camera, redrawn in the new look.
 >
 > Coming back from the old app? Sign up with the email you used before - your username is waiting for you.
