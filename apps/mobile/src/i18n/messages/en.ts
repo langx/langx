@@ -2650,6 +2650,15 @@ export const en = {
       other: '{count} free translations left today',
     },
     whatYouHave: 'What you have',
+    usageChats: 'New chats left today',
+    usageTranslations: 'Translations',
+    /** Spoken for a usage row, where the screen shows "3 / 5": a slash read aloud is "slash". */
+    usageA11y: '{title}: {left} of {total}',
+    whatPlanAdds: 'What {plan} adds',
+    appIconAll: 'All icons',
+    translateExampleLabel: 'Example',
+    /** The same sentence in every locale: the example card shows two locales' copies of it, one as the translation of the other. */
+    translateExample: 'Hi! Yesterday I cooked dinner for my family.',
     signInConnect: 'Connect',
     signInDisconnect: 'Disconnect',
     signInDisconnectConfirm:

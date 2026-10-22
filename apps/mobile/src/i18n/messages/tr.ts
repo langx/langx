@@ -2361,6 +2361,13 @@ export const tr: Localized<EnMessages> = {
       other: 'Bugün {count} ücretsiz çeviri hakkın kaldı',
     },
     whatYouHave: 'Sende olanlar',
+    usageChats: 'Bugün kalan yeni sohbet',
+    usageTranslations: 'Çeviriler',
+    usageA11y: '{title}: {total} içinden {left}',
+    whatPlanAdds: '{plan} neler katıyor',
+    appIconAll: 'Tüm simgeler',
+    translateExampleLabel: 'Örnek',
+    translateExample: 'Merhaba! Dün ailem için akşam yemeği pişirdim.',
     signInConnect: 'Bağla',
     signInDisconnect: 'Bağlantıyı kes',
     signInDisconnectConfirm:
