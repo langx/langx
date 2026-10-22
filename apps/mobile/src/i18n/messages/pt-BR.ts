@@ -1519,8 +1519,7 @@ export const ptBR: Localized<EnMessages> = {
     },
     pinnedMessage: 'Mensagem fixada',
     goToPinned: 'Ir para a mensagem fixada',
-    pinnedFrom: 'Fixada · {name}',
-    pinnedLabel: 'Fixada',
+    pinnedPreview: '{name}: {text}',
     unpinHint: 'Desafixa a mensagem para vocês dois',
     backToLatest: 'Voltar para o fim',
     jumpToNew: {
