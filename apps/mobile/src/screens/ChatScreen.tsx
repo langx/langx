@@ -3204,7 +3204,7 @@ export function ChatScreen({
               setStreakCard({
                 kind: 'streak',
                 headline: String(celebrated.days),
-                caption: t('share.cardStreakCaption'),
+                caption: t('share.cardStreakCaption', { count: celebrated.days }),
                 fallback: streakShareText(t, { count: celebrated.days, handle: myHandle }),
               })
           : undefined,

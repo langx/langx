@@ -3290,7 +3290,7 @@ export const es: Localized<EnMessages> = {
 
   share: {
     cardTitle: 'Compartir como imagen',
-    cardStreakCaption: 'días de racha en LangX',
+    cardStreakCaption: { one: 'día de racha en LangX', other: 'días de racha en LangX' },
     cardBadgeCaption: 'insignia lograda en LangX',
     cardProfileHeadline: 'Practica idiomas conmigo',
     cardInviteHeadline: 'Aprende un idioma conmigo',

@@ -83,4 +83,18 @@ describe('counts that vary with user data inflect', () => {
     const en = createTranslate('en')
     expect(en('feed.viewReplies', { count: 1 })).toBe('View 1 more reply')
   })
+
+  it("agrees the streak card's caption with the number drawn above it", () => {
+    // The card draws the streak as a bare number with this line under it; a
+    // plain string read "1 дней подряд" and "1 Tage" on every short streak.
+    const ru = createTranslate('ru')
+    expect(ru('share.cardStreakCaption', { count: 1 })).toBe('день подряд в LangX')
+    expect(ru('share.cardStreakCaption', { count: 3 })).toBe('дня подряд в LangX')
+    expect(ru('share.cardStreakCaption', { count: 12 })).toBe('дней подряд в LangX')
+    const de = createTranslate('de')
+    expect(de('share.cardStreakCaption', { count: 1 })).toBe('Tag in Folge auf LangX')
+    expect(de('share.cardStreakCaption', { count: 7 })).toBe('Tage in Folge auf LangX')
+    const ar = createTranslate('ar')
+    expect(ar('share.cardStreakCaption', { count: 2 })).toBe('يومان متتاليان في LangX')
+  })
 })

@@ -4151,7 +4151,14 @@ export const ar: Localized<EnMessages> = {
 
   share: {
     cardTitle: 'مشاركة كصورة',
-    cardStreakCaption: 'يوم متتالٍ في LangX',
+    cardStreakCaption: {
+      zero: 'يوم متتالٍ في LangX',
+      one: 'يوم متتالٍ في LangX',
+      two: 'يومان متتاليان في LangX',
+      few: 'أيام متتالية في LangX',
+      many: 'يومًا متتاليًا في LangX',
+      other: 'يوم متتالٍ في LangX',
+    },
     cardBadgeCaption: 'شارة في LangX',
     cardProfileHeadline: 'تدرّب على اللغات معي',
     cardInviteHeadline: 'تعلّم لغة معي',

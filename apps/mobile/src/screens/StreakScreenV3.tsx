@@ -227,7 +227,7 @@ function MemberStreak() {
             setCard({
               kind: 'streak',
               headline: String(current),
-              caption: t('share.cardStreakCaption'),
+              caption: t('share.cardStreakCaption', { count: current }),
               fallback: streakShareText(t, { count: current, handle }),
             }),
         }

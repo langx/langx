@@ -144,7 +144,7 @@ function StreakScreen() {
               setCard({
                 kind: 'streak',
                 headline: String(streak.current),
-                caption: t('share.cardStreakCaption'),
+                caption: t('share.cardStreakCaption', { count: streak.current }),
                 fallback: streakShareText(t, {
                   count: streak.current,
                   handle: me.data.handle,

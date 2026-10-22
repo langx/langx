@@ -3841,7 +3841,12 @@ export const ru: Localized<EnMessages> = {
 
   share: {
     cardTitle: 'Поделиться картинкой',
-    cardStreakCaption: 'дней подряд в LangX',
+    cardStreakCaption: {
+      one: 'день подряд в LangX',
+      few: 'дня подряд в LangX',
+      many: 'дней подряд в LangX',
+      other: 'дня подряд в LangX',
+    },
     cardBadgeCaption: 'значок получен в LangX',
     cardProfileHeadline: 'Практикуйте языки со мной',
     cardInviteHeadline: 'Учите язык вместе со мной',
