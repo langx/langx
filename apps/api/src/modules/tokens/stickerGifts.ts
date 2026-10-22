@@ -221,19 +221,51 @@ export async function giveStickerPack(
   input: GiveStickerPackInput,
   now: Date = new Date(),
 ): Promise<GiveStickerPackResult> {
-  const gifts = db.collection<StickerGift>(COLLECTIONS.stickerGifts)
-
   // The switch first: off means off, retries included.
   if (!(await flagOn(db))) refuse('disabled', 'Gifting is not available')
 
   // A retry of a gift that was given is answered with that gift whatever has
   // changed since, and charges nothing.
-  const already = await gifts.findOne({ giverId, clientId: input.clientId })
-  if (already) {
-    const answer = await replay(db, already, giverId)
-    if (answer) return answer
-  }
+  const already = await answerRetry(db, giverId, input.clientId)
+  if (already) return already
 
+  try {
+    return await giveOnce(db, giverId, input, now)
+  } catch (error) {
+    /*
+     * Asked again on every refusal, not only on a unique-index one. Two
+     * copies of one tap can both look before either has committed; once the
+     * first lands, the second fails on its twin's gift — the pack is now
+     * owned, the week's gift is given, the claim's indexes are taken — and
+     * any of those would be a lie about the person's own tap.
+     */
+    if (error instanceof ApiError && error.code === ERROR_CODES.STICKER_GIFT_REFUSED) {
+      const answer = await answerRetry(db, giverId, input.clientId)
+      if (answer) return answer
+    }
+    throw error
+  }
+}
+
+/** The gift this tap already gave, answered as the first attempt was, or `null`. */
+async function answerRetry(
+  db: Db,
+  giverId: string,
+  clientId: string,
+): Promise<GiveStickerPackResult | null> {
+  const gift = await db
+    .collection<StickerGift>(COLLECTIONS.stickerGifts)
+    .findOne({ giverId, clientId })
+  return gift ? replay(db, gift, giverId) : null
+}
+
+async function giveOnce(
+  db: Db,
+  giverId: string,
+  input: GiveStickerPackInput,
+  now: Date,
+): Promise<GiveStickerPackResult> {
+  const gifts = db.collection<StickerGift>(COLLECTIONS.stickerGifts)
   const pack = giftablePack(input.packId)
 
   // Participancy and blocks, both directions, live — the gate every
@@ -414,15 +446,8 @@ export async function giveStickerPack(
     })
   } catch (error) {
     if (error instanceof MongoServerError && error.code === 11000) {
-      /*
-       * Whichever index said no, ask first whether this tap already won. Two
-       * copies of the same tap share the client id *and* the week's slot, and
-       * the loser's error can name either — reporting `weeklyLimit` for a gift
-       * that was given would be a lie about the person's own tap.
-       */
-      const first = await gifts.findOne({ giverId, clientId: input.clientId })
-      const answer = first ? await replay(db, first, giverId) : null
-      if (answer) return answer
+      // A copy of this same tap that won is answered by `giveStickerPack`,
+      // whichever index this names; what is left is somebody else's claim.
       const index = JSON.stringify(error.keyPattern ?? {})
       if (index.includes('sendSlot')) refuse('weeklyLimit', 'You have given this week’s gift')
       if (index.includes('recipientId')) refuse('recipientOwns', `They already have ${pack.id}`)
