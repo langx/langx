@@ -218,6 +218,8 @@ import { useKeyboardUp } from '../hooks/useKeyboardUp'
 import { partnerHueFor } from '../lib/theme/partnerHue'
 import { latestToActOn } from '../lib/latestToActOn'
 import { keepIdentity } from '../lib/stableMessages'
+import { PinnedStripV3, type PinnedStripContent } from '../components/thread/PinnedStripV3'
+import { pinnedAuthor, pinnedLine } from '../lib/pinnedStrip'
 
 export interface ChatScreenProps {
   conversationId: string
@@ -736,6 +738,41 @@ export function ChatScreen({
    * composer is drawn for a channel — one wrong frame, and the alternative is
    * a thread that starts out looking read-only for everybody.
    */
+  /*
+   * The v3 strip's pinned message. Usually in the loaded pages, but a pin
+   * can be weeks back; then the window a tap on the strip would open is
+   * fetched now instead, under the same key, so the strip has its words and
+   * the jump finds the window already in the cache. Only while the message
+   * is missing: once it is in the thread this asks for nothing.
+   */
+  const pinnedId = pinned?.messageId ?? null
+  const pinnedInThread = useMemo(
+    () => (pinnedId ? items.find((m) => m._id === pinnedId) : undefined),
+    [items, pinnedId],
+  )
+  const pinnedLookup = useMessageWindow(
+    conversationId,
+    v3Thread && pinnedId && !pinnedInThread ? pinnedId : null,
+  )
+  const pinnedMessage =
+    pinnedInThread ??
+    (pinnedId ? messagesNewestFirst(pinnedLookup.data).find((m) => m._id === pinnedId) : undefined)
+  const partnerName = partner?.displayName
+  const pinStrip = useMemo<PinnedStripContent | null>(() => {
+    if (!v3Thread || !pinnedId) return null
+    const author = pinnedAuthor(pinnedMessage, viewerId)
+    const line = pinnedLine(pinnedMessage)
+    return {
+      messageId: pinnedId,
+      label:
+        author === null
+          ? t('chat.pinnedLabel')
+          : t('chat.pinnedFrom', {
+              name: author === 'you' ? t('messageMeta.you') : (partnerName ?? t('chat.them')),
+            }),
+      line: 'text' in line ? line.text : t(line.key),
+    }
+  }, [v3Thread, pinnedId, pinnedMessage, viewerId, partnerName, t])
   const channel = partner?.official === true && partner.acceptsMessages === false
   /**
    * A suspended account takes no messages either — the API refuses them with
@@ -3635,7 +3672,14 @@ export function ChatScreen({
         about the conversation, not a transient control, and it has to survive
         scrolling to the top of the history.
       */}
-        {pinned ? (
+        {v3Thread ? (
+          <PinnedStripV3
+            pin={pinStrip}
+            hue={partnerHue}
+            onJump={onJumpTo}
+            onUnpin={() => void emit('conversation:pin', { conversationId, messageId: null })}
+          />
+        ) : pinned ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('chat.goToPinned')}

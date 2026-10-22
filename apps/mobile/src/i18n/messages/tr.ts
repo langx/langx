@@ -1495,6 +1495,9 @@ export const tr: Localized<EnMessages> = {
     },
     pinnedMessage: 'Sabitlenmiş mesaj',
     goToPinned: 'Sabitlenmiş mesaja git',
+    pinnedFrom: 'Sabitlendi · {name}',
+    pinnedLabel: 'Sabitlendi',
+    unpinHint: 'Sabitlemeyi ikiniz için de kaldırır',
     backToLatest: 'En sona dön',
     jumpToNew: {
       one: '{count} yeni mesaja atla',
