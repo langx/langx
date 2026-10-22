@@ -15,6 +15,8 @@
  * — see `docs/decisions.md` → *The row swipe runs on the UI thread*.
  */
 
+import { SHEET } from './theme/motionValues'
+
 export const MIN_SCALE = 1
 export const MAX_SCALE = 4
 /** Where a double tap lands, and the line below which it zooms back out. */
@@ -25,6 +27,12 @@ export const DOUBLE_TAP_MS = 280
 export const AXIS_LOCK_PX = 6
 /** How far an unzoomed image is dragged before releasing it closes the viewer. */
 export const DISMISS_DRAG_PX = 120
+/**
+ * How much of the frame's height a dismissing drag covers before the viewer
+ * has faded as far as it goes while held. Half: by then the picture is plainly
+ * on its way out, and the rest of the travel is the throw's.
+ */
+export const DISMISS_FADE_FRACTION = 0.5
 /** How far a sideways drag at life size has to go to turn the page. */
 export const PAGE_SWIPE_PX = 60
 /** Or how fast, in px/ms: a short flick pages too. */
@@ -239,4 +247,36 @@ export function swipeStep(dx: number, dy: number, vx: number): -1 | 0 | 1 {
   if (Math.abs(dx) <= Math.abs(dy)) return 0
   if (Math.abs(dx) < PAGE_SWIPE_PX && Math.abs(vx) < PAGE_SWIPE_VX) return 0
   return dx < 0 ? 1 : -1
+}
+
+/**
+ * Does a released downward (or upward) drag at life size close the viewer,
+ * and which way does the picture leave? `1` is down, `-1` up, `0` stays.
+ *
+ * Far enough, or fast enough: a flick that has not travelled `DISMISS_DRAG_PX`
+ * still closes, as a sheet does (`SHEET.dismissVelocity`, in px/s like
+ * gesture-handler's velocity). Only a flick *away* from where the picture
+ * rests, though — a drag pulled back fast towards the middle is somebody
+ * changing their mind, and throwing the picture the other way would be
+ * exactly wrong.
+ */
+export function dismissDirection(dy: number, vy: number): -1 | 0 | 1 {
+  'worklet'
+  if (Math.abs(dy) > DISMISS_DRAG_PX) return dy < 0 ? -1 : 1
+  if (Math.abs(vy) > SHEET.dismissVelocity && Math.sign(vy) === Math.sign(dy)) {
+    return vy < 0 ? -1 : 1
+  }
+  return 0
+}
+
+/**
+ * How far along a dismissing drag is, `0` at rest to `1` once it has covered
+ * `DISMISS_FADE_FRACTION` of the frame — what the backdrop, the chrome and the
+ * picture's size follow while the finger is down.
+ */
+export function dismissProgress(dy: number, frameHeight: number): number {
+  'worklet'
+  const span = frameHeight * DISMISS_FADE_FRACTION
+  if (!(span > 0)) return 0
+  return Math.min(1, Math.abs(dy) / span)
 }

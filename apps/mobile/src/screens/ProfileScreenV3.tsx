@@ -5,7 +5,16 @@ import { useFonts } from 'expo-font'
 import { Image } from 'expo-image'
 import { router, useIsFocused } from 'expo-router'
 import { useState, type ReactNode } from 'react'
-import { Pressable, RefreshControl, ScrollView, Text, View } from 'react-native'
+import { Pressable, RefreshControl, Text, View } from 'react-native'
+import Animated, {
+  Extrapolation,
+  interpolate,
+  runOnJS,
+  useAnimatedReaction,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import {
   useBlockUser,
@@ -38,12 +47,14 @@ import { ProBadge } from '../components/ui/ProBadge'
 import { FlameGlyph } from '../components/ui/StreakFlame'
 import { TitleBadge } from '../components/ui/TitleBadge'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { interestLabel, levelLabel, useDisplayNames, useLocale, useT } from '../i18n'
 import { chooseAlert, confirmAlert, showAlert } from '../lib/alert'
 import { track } from '../lib/analytics'
 import { authClient } from '../lib/auth-client'
 import { shouldGateGuest } from '../lib/guestGate'
+import { selection } from '../lib/haptics'
 import { goBackTo, openBadges, openFollows, openPostCorrections } from '../lib/navigation'
 import { openPaywall } from '../lib/paywall'
 import { placeLabel } from '../lib/placeLabel'
@@ -56,6 +67,9 @@ import { DISPLAY_FONT, layout, makeStyles, useTheme } from '../lib/theme'
 import { partnerHueFor } from '../lib/theme/partnerHue'
 import { showToast } from '../lib/toast'
 import type { ProfileScreenProps } from './ProfileScreen'
+
+/** The follow button's unseen sizers take no press. */
+function noop(): void {}
 
 /**
  * Somebody's profile in the redesign, behind `flags.v3Home` — `ProfileScreen`
@@ -104,6 +118,36 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
   const [sending, setSending] = useState(false)
   // Both queries or neither, for the current screen's reason.
   const pull = usePullToRefresh(() => Promise.all([profile.refetch(), summary.refetch()]))
+
+  /*
+   * The compact bar: once the hero has scrolled away, its back, name and
+   * ••• come back as a thin strip on the same hue, fading in over the
+   * hero's last `COMPACT_FADE` points. Read on the UI thread; the JS thread
+   * hears only the crossing, to let the bar take touches while it shows.
+   */
+  const reduceMotion = useReduceMotion()
+  const scrollY = useSharedValue(0)
+  const heroBottom = useSharedValue(0)
+  const [compactShown, setCompactShown] = useState(false)
+  const onScroll = useAnimatedScrollHandler((event) => {
+    scrollY.set(event.contentOffset.y)
+  })
+  useAnimatedReaction(
+    () => heroBottom.get() > 0 && scrollY.get() >= heroBottom.get() - COMPACT_FADE / 2,
+    (shown, before) => {
+      if (shown !== before) runOnJS(setCompactShown)(shown)
+    },
+  )
+  const compactStyle = useAnimatedStyle(() => {
+    const end = heroBottom.get()
+    if (end <= 0) return { opacity: 0 }
+    // A fade tied to the finger is the scroll itself; with reduce motion on,
+    // the bar is simply there or not, at the fade's midpoint.
+    if (reduceMotion) return { opacity: scrollY.get() >= end - COMPACT_FADE / 2 ? 1 : 0 }
+    return {
+      opacity: interpolate(scrollY.get(), [end - COMPACT_FADE, end], [0, 1], Extrapolation.CLAMP),
+    }
+  })
 
   const back = () => goBackTo('/(app)/(tabs)/discover', from)
   const chevron = isRtl ? 'chevron-left' : 'chevron-right'
@@ -234,6 +278,10 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
 
   function toggleFollow(): void {
     if (!requireAccount(session?.user, { action: 'follow' })) return
+    // The label flipped on the tap (`useSetFollow` is optimistic); a second
+    // tap before the first is answered would race it, so it is dropped.
+    if (setFollow.isPending) return
+    void selection()
     setFollow.mutate(
       { userId: user._id, following: !following },
       { onError: () => showToast(t('profile.followFailed')) },
@@ -298,14 +346,45 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
     footer = (
       <>
         {write}
-        <Button
-          label={following ? t('profile.following') : t('profile.follow')}
-          variant="secondary"
-          icon={following ? 'check' : 'user-plus'}
-          loading={setFollow.isPending}
-          onPress={toggleFollow}
-          style={write ? styles.follow : styles.grow}
-        />
+        {/*
+          No spinner: the label is already the answer the moment it is
+          tapped, and a spinner hid it for the whole request. The check pops
+          in on following instead.
+
+          Both labels laid out, unseen and zero-high, under the real one, so
+          the button is always as wide as the wider of them and the button
+          beside it never moves when it flips — "Following" is the longer in
+          English and the shorter in other languages.
+        */}
+        <View style={write ? styles.follow : styles.grow}>
+          <View
+            style={styles.followSizer}
+            pointerEvents="none"
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+          >
+            {[t('profile.follow'), t('profile.following')].map((label) => (
+              <Button
+                key={label}
+                label={label}
+                variant="secondary"
+                icon="user-plus"
+                onPress={noop}
+                // Out of the tab order on web, where a zero-high box still takes focus.
+                disabled
+                style={styles.followFace}
+              />
+            ))}
+          </View>
+          <Button
+            label={following ? t('profile.following') : t('profile.follow')}
+            variant="secondary"
+            icon="user-plus"
+            success={following}
+            onPress={toggleFollow}
+            style={styles.followFace}
+          />
+        </View>
       </>
     )
   }
@@ -370,13 +449,31 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
       {focused ? <WebTitle page={user.displayName} /> : null}
       {/* The status bar's strip in the hero's colour, so the block reaches the top edge. */}
       <View style={{ backgroundColor: hue, height: insets.top }} />
-      <ScrollView
+      <Animated.ScrollView
         style={styles.fill}
         contentContainerStyle={styles.scrollContent}
-        refreshControl={<RefreshControl refreshing={pull.refreshing} onRefresh={pull.onRefresh} />}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        refreshControl={
+          <RefreshControl
+            refreshing={pull.refreshing}
+            onRefresh={pull.onRefresh}
+            // Over the hue the filler below paints, where the default grey vanishes.
+            tintColor={v3.colors.ink}
+          />
+        }
       >
         <View style={styles.column}>
-          <View style={[styles.hero, { backgroundColor: hue }]}>
+          {/* The hue above the hero, so a pull past the top never tears it
+              off the ground behind. */}
+          <View style={[styles.overscroll, { backgroundColor: hue }]} />
+          <View
+            style={[styles.hero, { backgroundColor: hue }]}
+            onLayout={(event) => {
+              const { y, height } = event.nativeEvent.layout
+              heroBottom.set(y + height)
+            }}
+          >
             <View style={styles.heroTop}>
               {backButton(true)}
               {/* Your own preview says whose page it is; anybody else's name is the title. */}
@@ -654,7 +751,31 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
             ) : null}
           </View>
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
+
+      {/* Over the scroll, under the status bar's strip, on the hero's hue. */}
+      <Animated.View
+        pointerEvents={compactShown ? 'box-none' : 'none'}
+        accessibilityElementsHidden={!compactShown}
+        importantForAccessibility={compactShown ? 'auto' : 'no-hide-descendants'}
+        style={[styles.compact, { backgroundColor: hue, top: insets.top }, compactStyle]}
+      >
+        <View style={[styles.column, styles.compactRow]}>
+          {backButton(true)}
+          <Text style={styles.compactTitle} numberOfLines={1}>
+            {isSelf ? t('profile.previewTitle') : user.displayName}
+          </Text>
+          {isSelf ? null : (
+            <IconButton
+              look="hue"
+              icon="more-horizontal"
+              iconSize={v3.icon.lg}
+              accessibilityLabel={`${t('share.profile')} · ${t('share.sendInChat')} · ${t('common.report')} · ${t('common.block')}`}
+              onPress={() => void openActions()}
+            />
+          )}
+        </View>
+      </Animated.View>
 
       {footer ? (
         <View style={[styles.footer, { paddingBottom: v3.space[16] + insets.bottom }]}>
@@ -707,6 +828,8 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
 }
 
 const AVATAR = 96
+/** Over how many of the hero's last points the compact bar fades in. */
+const COMPACT_FADE = 40
 const BADGE = 40
 
 const useStyles = makeStyles(({ v3 }) => ({
@@ -736,6 +859,17 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingTop: v3.space[6],
   },
   heroTop: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8], minHeight: 44 },
+  overscroll: { end: 0, height: 1000, position: 'absolute', start: 0, top: -1000 },
+  compact: {
+    alignItems: 'center',
+    end: 0,
+    paddingHorizontal: v3.space[8],
+    paddingVertical: v3.space[4],
+    position: 'absolute',
+    start: 0,
+  },
+  compactRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8], minHeight: 44 },
+  compactTitle: { ...v3.type.headline, color: v3.colors.ink, flex: 1 },
   topTitle: { ...v3.type.headline, color: v3.colors.ink, flex: 1 },
   heroBody: {
     alignItems: 'center',
@@ -884,7 +1018,11 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   footerRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8] },
   grow: { flex: 1, width: 'auto' },
-  follow: { flexShrink: 0, width: 'auto' },
+  follow: { flexShrink: 0 },
+  followSizer: { height: 0, overflow: 'hidden' },
+  // Stretched to the wrapper by the column, rather than `Button`'s 100%,
+  // which an auto-width wrapper has no width to resolve against.
+  followFace: { width: 'auto' },
   closedNote: {
     alignItems: 'center',
     flex: 1,
