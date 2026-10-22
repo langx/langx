@@ -7239,9 +7239,9 @@ at all until a build carrying it ships. This is the same constraint
 
 ## A yearly price is a `.99` month times twelve, plus 0.11
 
-> **Partly superseded** on 21 October 2026 (_The yearly price ends in 9.99_):
-> where the yearly stood at 83.99 or 95.99 in USD, EUR or GBP it was lowered to
-> the `…9.99` below it, and its per-month figure no longer ends in `.99`. The
+> **Amended 21 October 2026 — see _The yearly price ends in 9.99_ below.**
+> Where the yearly stood at 83.99 or 95.99 in USD, EUR or GBP (and EUR 71.99 on
+> Play) it was lowered to the `…9.99` below it, and its per-month figure no longer ends in `.99`. The
 > rule still describes every storefront that kept its price, and why the
 > division is truncated.
 
@@ -7942,6 +7942,10 @@ more.
 ## One plan: Pro
 
 > **Amended 18 October 2026 — see _The welcome pack waits for a purchase or a store's free week_ below.**
+>
+> **Amended 21 October 2026 — see _The yearly price ends in 9.99_ below.** The
+> US yearly is $79.99, and the yearly rule is no longer `.99 × 12 + 0.11` for
+> USD, EUR and GBP.
 
 Two paid plans confused people: Fluent (`pro`) and Polyglot (`pro_plus`) read
 as two products to choose between, and every large competitor sells one. On
@@ -9299,7 +9303,7 @@ only.
 **21 October 2026.** Pro's yearly price was lowered wherever it ended in 83.99
 or 95.99 — and 71.99 on Play — rounding it down to the next `…9.99`: $83.99 →
 $79.99, €95.99 → €89.99, £83.99 → £79.99, EUR 71.99 → 69.99 in eight West and
-Central African Play regions. App Store from 23 October, Play the same day, and
+Central African Play regions. App Store from 23 October, Play live on 21 October, and
 on the web a new product, `langx_pro_yearly_v2` at $79.99, because web prices
 cannot be edited. Monthly prices did not move. The release runbook (_One plan:
 Pro_) has the storefront counts.

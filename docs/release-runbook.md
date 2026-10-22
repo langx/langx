@@ -829,20 +829,23 @@ one month it falls back to "Save N%". The 24 September price script's guard
 "refuse a Polyglot price at or below Fluent's" becomes "Polyglot = Fluent" for
 this round.
 
-**The cut of 21 October 2026**, on `langx_fluent_yearly` only:
+**The cut of 21 October 2026**, on the yearly product only (`langx_fluent_yearly`
+in both stores, the web slot's own product on the web):
 
 - **App Store**, from 23 October 2026: USD 83.99 → 79.99 in 80 storefronts and
   95.99 → 89.99 in 28; EUR 95.99 → 89.99 in 24 and 83.99 → 79.99 in
   Montenegro; GBP 83.99 → 79.99. Every other currency already ended in `9.99`
   or has no `x9.99` point near it on Apple's ladder (CAD/AUD 119.99, TRY
   1,799.99, NZD 179.99, JPY, INR, CHF and the rest) and is unchanged.
-- **Google Play**, live the same day: the same mapping in 110 regions, plus EUR
+- **Google Play**, live on 21 October 2026: the same mapping in 110 regions, plus EUR
   71.99 → 69.99 in eight West and Central African EUR regions. The "other
   regions" fallback is USD 79.99 / EUR 89.99. Existing subscribers keep their
   old price.
 - **Web (RevenueCat Billing)**: web prices cannot be edited, so
   `langx_pro_yearly_v2` ($79.99, one-week trial) replaces `langx_pro_yearly`
-  ($83.99) in the `default` offering's web slot.
+  ($83.99) in the `default` offering's web slot. (The 28 September checklist
+  below names the $83.99 web product `langx_fluent_yearly_v3`; check the slot
+  in RevenueCat before relying on either name.)
 - A lower yearly can only raise "N months free", never lower it. Where the
   monthly is above the storefront's usual one it now reads **4 months free**:
   USD 89.99 against $11.99 (on Play: Albania, Belarus, Moldova, North
@@ -1040,8 +1043,9 @@ Per store:
   `langx_polyglot_yearly_v3` ($131.99), with the same trial, entitlements and
   change paths as the ones they replace.
 
-`src/lib/planSaving.test.ts` asserts the division for the US prices, so a
-dashboard edit that breaks the rule fails a test rather than shipping.
+`src/lib/planSaving.test.ts` asserts the US yearly price's ending (`9.99` since
+21 October) and its per-month figure, so a dashboard edit that breaks the rule
+fails a test rather than shipping.
 
 ## Calling is off until it is given a relay
 

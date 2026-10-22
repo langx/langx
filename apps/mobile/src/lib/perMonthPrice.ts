@@ -8,8 +8,8 @@
  * `CA$9.99`. That is `12 × month + 0.11`, which only survives the division if
  * the cents are cut off — the stores' own per-month strings round it up to the
  * next whole unit. (USD, EUR and GBP left that rule on 21 October 2026: their
- * yearly ends in `9.99`, and `$79.99` reads `$6.66`.) Rounding cannot be designed around either:
- * above about 100 units Apple sells only `.99` endings, and no `.99` yearly
+ * yearly ends in `9.99`, and `$79.99` reads `$6.66`.) Rounding cannot be
+ * designed around either: above about 100 units Apple sells only `.99` endings, and no `.99` yearly
  * rounds to a `.99` month. The error is under one minor unit a month, and the
  * charge itself is always stated beside it in the store's own words.
  *
