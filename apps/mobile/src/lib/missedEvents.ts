@@ -103,3 +103,23 @@ export function restartConnection(socket: RestartableSocket, resync: () => void)
   socket.once('connect', resync)
   socket.connect()
 }
+
+/**
+ * The Manager `reconnect` handler: resync, and disarm the `connect` resync a
+ * restart (or a replacement socket) may have left waiting.
+ *
+ * A restart whose first attempt fails is finished by the Manager's own
+ * retries, so the same connection coming back fires `reconnect` — when the
+ * engine opens — and then the socket's `connect`, when the server answers.
+ * Both resynced, and every query in `invalidateMissedEvents` went twice.
+ * `reconnect` always comes first, so it is the one that keeps the resync.
+ */
+export function resyncOnManagerReconnect(
+  socket: Pick<RestartableSocket, 'off'>,
+  resync: () => void,
+): () => void {
+  return () => {
+    socket.off('connect', resync)
+    resync()
+  }
+}

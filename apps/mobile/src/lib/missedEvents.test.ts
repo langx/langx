@@ -1,6 +1,11 @@
 import { QueryClient } from '@tanstack/react-query'
 import { describe, expect, it, vi } from 'vitest'
-import { invalidateMissedEvents, restartConnection, resumedFromBackground } from './missedEvents'
+import {
+  invalidateMissedEvents,
+  restartConnection,
+  resumedFromBackground,
+  resyncOnManagerReconnect,
+} from './missedEvents'
 
 describe('resumedFromBackground', () => {
   it('is the phone coming back from the background', () => {
@@ -118,6 +123,31 @@ describe('restartConnection', () => {
     restartConnection(socket, resync)
     restartConnection(socket, resync)
     socket.emit('connect')
+    socket.emit('connect')
+    expect(resync).toHaveBeenCalledTimes(1)
+  })
+
+  /**
+   * The restart's first attempt fails, so the Manager retries. Its success is
+   * a Manager `reconnect` — which `useSocket` resyncs on — and then, once the
+   * server acknowledges, the socket's `connect`, which the restart armed. One
+   * connection, one resync.
+   */
+  it('resyncs once when the restart lands as a Manager reconnect', () => {
+    const socket = fakeSocket()
+    const resync = vi.fn()
+    restartConnection(socket, resync)
+    resyncOnManagerReconnect(socket, resync)()
+    socket.emit('connect')
+    expect(resync).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('resyncOnManagerReconnect', () => {
+  it('resyncs on a plain Manager reconnect', () => {
+    const socket = fakeSocket()
+    const resync = vi.fn()
+    resyncOnManagerReconnect(socket, resync)()
     socket.emit('connect')
     expect(resync).toHaveBeenCalledTimes(1)
   })
