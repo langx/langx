@@ -143,14 +143,19 @@ export function FilterStrip({
   const scroll = useRef<ScrollView>(null)
   const spots = useRef<Partial<Record<CameraFilterId, { x: number; width: number }>>>({})
 
-  useEffect(() => {
-    const spot = spots.current[filter]
+  function bringIntoView(id: CameraFilterId, animated: boolean): void {
+    const spot = spots.current[id]
     if (!spot) return
     scroll.current?.scrollTo({
       x: Math.max(0, spot.x + spot.width / 2 - window.width / 2),
-      animated: !reduce,
+      animated,
     })
-  }, [filter, reduce, window.width])
+  }
+
+  useEffect(() => {
+    bringIntoView(filter, !reduce)
+    // Only a change of filter scrolls; `bringIntoView` reads refs and the width.
+  }, [filter, reduce])
 
   return (
     <ScrollView
@@ -173,6 +178,8 @@ export function FilterStrip({
             onLayout={(event) => {
               const { x, width } = event.nativeEvent.layout
               spots.current[id] = { x, width }
+              // Mounted again after a retake: open on the chosen one, not the start.
+              if (id === filter) bringIntoView(id, false)
             }}
             hitSlop={{ top: 6, bottom: 6 }}
             style={({ pressed }) => [styles.pill, on && styles.pillOn, pressed && styles.pressed]}

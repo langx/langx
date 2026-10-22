@@ -193,7 +193,7 @@ export const ptBR: Localized<EnMessages> = {
     filterCool: 'Frio',
     filterMono: 'P&B',
     filterVivid: 'Vívido',
-    filterFilm: 'Filme',
+    filterFilm: 'Analógico',
     filterFailed: 'Não foi possível aplicar o filtro. Tente de novo.',
     playFailed: 'Este vídeo não pode ser reproduzido neste dispositivo.',
   },

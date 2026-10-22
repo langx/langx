@@ -233,7 +233,7 @@ export const ar: Localized<EnMessages> = {
     filterCool: 'بارد',
     filterMono: 'أبيض وأسود',
     filterVivid: 'زاهٍ',
-    filterFilm: 'فيلم',
+    filterFilm: 'فيلم قديم',
     filterFailed: 'تعذر تطبيق الفلتر. حاول مرة أخرى.',
     playFailed: 'لا يمكن تشغيل هذا الفيديو على هذا الجهاز.',
   },

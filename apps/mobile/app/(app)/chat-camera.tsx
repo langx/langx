@@ -12,6 +12,7 @@ import { StatusBar } from 'expo-status-bar'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
+  AccessibilityInfo,
   ActivityIndicator,
   AppState,
   BackHandler,
@@ -30,8 +31,9 @@ import { useReduceMotion } from '../../src/hooks/useReduceMotion'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useT } from '../../src/i18n'
 import { showAlert } from '../../src/lib/alert'
-import { bakeCameraFilter } from '../../src/lib/bakeCameraFilter'
+import { bakeCameraFilter, deleteCacheFile } from '../../src/lib/bakeCameraFilter'
 import {
+  CAMERA_FILTER_IDS,
   cameraFilter,
   DEFAULT_CAMERA_FILTER,
   isOriginal,
@@ -57,6 +59,7 @@ import {
 } from '../../src/lib/viewOnce'
 import { useV3Home } from '../../src/hooks/useV3Home'
 import {
+  FILTER_LABEL,
   FilterNameFlash,
   FilterStrip,
   useFilterSwipe,
@@ -157,19 +160,49 @@ export default function SnapScreen() {
   /** Counts changes, so the name flashes again for each, the same filter included. */
   const [filterToken, setFilterToken] = useState(0)
   const [sending, setSending] = useState(false)
-  /** The last bake, so a Save and then a Send draw the photo once. */
-  const baked = useRef<{ from: string; filter: CameraFilterId; item: PickedMedia } | null>(null)
+  /**
+   * The last bake, kept as its promise, so a Save and then a Send draw the
+   * photo once even when the second tap lands while the first is drawing.
+   */
+  const baked = useRef<{
+    from: string
+    filter: CameraFilterId
+    done: Promise<PickedMedia>
+  } | null>(null)
+  /*
+   * Only a JPEG is filtered: a GIF from the library would lose its motion
+   * and a PNG its transparency in the JPEG the bake writes. The camera's own
+   * shots are always JPEG.
+   */
+  const filterable =
+    filtersOn && captured?.kind === 'image' && captured.contentType === 'image/jpeg'
 
   function pickFilter(next: CameraFilterId): void {
     if (next === filter) return
     void selection()
     setFilter(next)
     setFilterToken((count) => count + 1)
+    // The flashed name is hidden from screen readers; this says it instead.
+    AccessibilityInfo.announceForAccessibility(t(FILTER_LABEL[next]))
+  }
+
+  /** A screen reader's swipe up or down on the preview: the next filter or the one before. */
+  function stepFilter(direction: 1 | -1): void {
+    const index = CAMERA_FILTER_IDS.indexOf(filter) + direction
+    const next = CAMERA_FILTER_IDS[index]
+    if (next) pickFilter(next)
+  }
+
+  /** The bake's file, deleted once nothing will send it: replaced, or the shot retaken. */
+  function discardBake(): void {
+    const last = baked.current
+    baked.current = null
+    void last?.done.then((item) => deleteCacheFile(item.uri)).catch(() => {})
   }
 
   const previewSwipe = useFilterSwipe({
     // Not while a bake is under way: the photo would go with the filter it left with.
-    enabled: filtersOn && captured?.kind === 'image' && !sending && !saving,
+    enabled: filterable && !sending && !saving,
     filter,
     onFilter: pickFilter,
   })
@@ -181,6 +214,8 @@ export default function SnapScreen() {
   }, [])
 
   function pickMode(next: SnapMode): void {
+    // The send already read the mode; a change now would not be what goes.
+    if (sending) return
     modePicked.current = true
     if (next !== mode) void selection()
     setMode(next)
@@ -196,6 +231,9 @@ export default function SnapScreen() {
   }
 
   function retake(): void {
+    // A bake under way ends in a send of this shot; a retake now would be ignored.
+    if (sending) return
+    discardBake()
     setCaptured(null)
     setFromLibrary(false)
   }
@@ -212,7 +250,8 @@ export default function SnapScreen() {
       return true
     })
     return () => subscription.remove()
-  }, [captured])
+    // `retake` reads `sending`, so the handler is renewed when that changes.
+  }, [captured, sending])
 
   async function pickFromLibrary(): Promise<void> {
     const picked = await pickMediaAssets({ remaining: 1, source: 'library' })
@@ -224,6 +263,8 @@ export default function SnapScreen() {
     const first = picked.media[0]
     if (first) {
       setFromLibrary(true)
+      // A photo from the library opens as it is; the viewfinder's filter was for the camera.
+      setFilter(DEFAULT_CAMERA_FILTER)
       setCaptured(first)
       return
     }
@@ -248,21 +289,29 @@ export default function SnapScreen() {
    */
   async function outgoing(): Promise<PickedMedia | null> {
     if (!captured) return null
-    if (!filtersOn || captured.kind !== 'image' || isOriginal(filter)) return captured
+    if (!filterable || isOriginal(filter)) return captured
     const last = baked.current
-    if (last && last.from === captured.uri && last.filter === filter) return last.item
-    try {
-      const out = await bakeCameraFilter(captured.uri, cameraFilter(filter).matrix)
-      const item: PickedMedia = {
-        kind: 'image',
-        uri: out.uri,
-        contentType: 'image/jpeg',
-        width: out.width,
-        height: out.height,
+    if (!last || last.from !== captured.uri || last.filter !== filter) {
+      discardBake()
+      const from = captured.uri
+      baked.current = {
+        from,
+        filter,
+        done: bakeCameraFilter(from, cameraFilter(filter).matrix).then((out) => ({
+          kind: 'image',
+          uri: out.uri,
+          contentType: 'image/jpeg',
+          width: out.width,
+          height: out.height,
+        })),
       }
-      baked.current = { from: captured.uri, filter, item }
-      return item
+    }
+    const bake = baked.current
+    try {
+      return await bake!.done
     } catch {
+      // Forgotten, so the next tap tries again rather than failing from the cache.
+      if (baked.current === bake) baked.current = null
       void notification('error')
       showToast(t('viewOnce.filterFailed'))
       return null
@@ -330,9 +379,24 @@ export default function SnapScreen() {
           // The redesign's drawing of this step only; every handler is this screen's.
           <SnapPreviewV3
             picture={
-              filtersOn && captured.kind === 'image' ? (
+              filterable ? (
                 <GestureDetector gesture={previewSwipe}>
-                  <View style={StyleSheet.absoluteFill} collapsable={false}>
+                  <View
+                    style={StyleSheet.absoluteFill}
+                    collapsable={false}
+                    // There is no strip on this step, so a screen reader
+                    // steps through the filters here, by swiping up or down.
+                    accessible
+                    accessibilityRole="adjustable"
+                    accessibilityLabel={t('viewOnce.filters')}
+                    accessibilityValue={{ text: t(FILTER_LABEL[filter]) }}
+                    accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
+                    onAccessibilityAction={(event) => {
+                      if (sending || saving) return
+                      if (event.nativeEvent.actionName === 'increment') stepFilter(1)
+                      if (event.nativeEvent.actionName === 'decrement') stepFilter(-1)
+                    }}
+                  >
                     <FilteredPhotoV3 uri={captured.uri} matrix={cameraFilter(filter).matrix} />
                     <FilterNameFlash filter={filter} token={filterToken} />
                   </View>

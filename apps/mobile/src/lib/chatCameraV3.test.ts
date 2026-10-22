@@ -205,14 +205,17 @@ describe('the chat camera filters a photo', () => {
     expect(ROUTE).toContain('url: item.uri,')
   })
 
-  it('bakes only a photo, only with a filter on, and never sends unfiltered on failure', () => {
-    expect(ROUTE).toContain(
-      "if (!filtersOn || captured.kind !== 'image' || isOriginal(filter)) return captured",
-    )
-    expect(ROUTE).toContain('bakeCameraFilter(captured.uri, cameraFilter(filter).matrix)')
-    expect(ROUTE).toMatch(
-      /catch \{\s*void notification\('error'\)\s*showToast\(t\('viewOnce\.filterFailed'\)\)\s*return null/,
-    )
+  it('bakes only a JPEG, only with a filter on, and never sends unfiltered on failure', () => {
+    expect(ROUTE).toContain("captured?.kind === 'image' && captured.contentType === 'image/jpeg'")
+    expect(ROUTE).toContain('if (!filterable || isOriginal(filter)) return captured')
+    expect(ROUTE).toContain('bakeCameraFilter(from, cameraFilter(filter).matrix)')
+    expect(ROUTE).toMatch(/showToast\(t\('viewOnce\.filterFailed'\)\)\s*return null/)
+  })
+
+  it('holds the shot and its mode still while a bake is under way', () => {
+    expect(ROUTE).toMatch(/function retake\(\): void \{[^}]*if \(sending\) return/)
+    expect(ROUTE).toMatch(/function pickMode\(next: SnapMode\): void \{[^}]*if \(sending\) return/)
+    expect(ROUTE).toContain('enabled: filterable && !sending && !saving,')
   })
 
   it('is v3 and native only, and drops the tint and the swipe while recording', () => {

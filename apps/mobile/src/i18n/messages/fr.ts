@@ -194,7 +194,7 @@ export const fr: Localized<EnMessages> = {
     filterCool: 'Froid',
     filterMono: 'N&B',
     filterVivid: 'Vif',
-    filterFilm: 'Film',
+    filterFilm: 'Argentique',
     filterFailed: 'Impossible d’appliquer le filtre. Réessaie.',
     playFailed: 'Cette vidéo ne peut pas être lue sur cet appareil.',
   },

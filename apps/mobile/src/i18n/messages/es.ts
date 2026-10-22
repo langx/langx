@@ -196,7 +196,7 @@ export const es: Localized<EnMessages> = {
     filterCool: 'Frío',
     filterMono: 'B/N',
     filterVivid: 'Vivo',
-    filterFilm: 'Película',
+    filterFilm: 'Analógico',
     filterFailed: 'No se pudo aplicar el filtro. Inténtalo de nuevo.',
     playFailed: 'Este vídeo no se puede reproducir en este dispositivo.',
   },
