@@ -293,13 +293,14 @@ describe('the newcomer hello', () => {
     })
 
     it('still refuses a blocked pair, either way, and spends nothing on it', async () => {
+      // Only the sender's own block is named; theirs reads as a missing account.
       await seed(person('me'), newcomer('blocker'), newcomer('blocked'))
       await handle.db.collection(COLLECTIONS.blocks).insertMany([
         { _id: new ObjectId(), blockerId: 'blocker', blockedId: 'me', createdAt: new Date() },
         { _id: new ObjectId(), blockerId: 'me', blockedId: 'blocked', createdAt: new Date() },
       ])
 
-      expect(await refusal(start('me', 'blocker'))).toBe('BLOCKED')
+      expect(await refusal(start('me', 'blocker'))).toBe('NOT_FOUND')
       expect(await refusal(start('me', 'blocked'))).toBe('BLOCKED')
       expect(await spent('me')).toEqual({ chats: 0, hellos: [] })
     })
