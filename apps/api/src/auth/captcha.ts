@@ -8,12 +8,20 @@ import { getAppConfig } from '../modules/appConfig/appConfig'
 export const CAPTCHA_HEADER = 'x-captcha-response'
 
 /**
- * The forms a bot is worth stopping at: the two that send mail to an address
- * somebody typed, and the one that tries passwords. Better Auth's own default
- * list, spelled out so the "is this a checked path" test below and the plugin
+ * The forms a bot is worth stopping at: every one that sends mail to an
+ * address somebody typed, and the one that tries passwords. Better Auth's own
+ * default list plus the two mail routes it leaves out — the magic link and a
+ * resent verification mail, which mail a typed address just as sign-up does.
+ * Spelled out so the "is this a checked path" test below and the plugin
  * cannot drift apart.
  */
-export const CAPTCHA_ENDPOINTS = ['/sign-up/email', '/sign-in/email', '/request-password-reset']
+export const CAPTCHA_ENDPOINTS = [
+  '/sign-up/email',
+  '/sign-in/email',
+  '/request-password-reset',
+  '/sign-in/magic-link',
+  '/send-verification-email',
+]
 
 /**
  * Better Auth's `captcha` plugin with provider `cloudflare-turnstile`, made to
@@ -75,7 +83,7 @@ export function gatedCaptcha(options: {
  * The plugin's own path test, loosely: it strips the base path and compares
  * exactly, and that base path is only known inside the request. A suffix test
  * on the normalised path answers the same question without it — none of the
- * three can be the tail of some other Better Auth route.
+ * five can be the tail of some other Better Auth route.
  */
 function isCaptchaPath(url: string): boolean {
   const pathname = new URL(url).pathname.replace(/\/{2,}/g, '/').replace(/\/+$/, '')
