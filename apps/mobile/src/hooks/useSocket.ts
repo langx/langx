@@ -19,6 +19,7 @@ import { track } from '../lib/analytics'
 import { invalidateMissedEvents, resumedFromBackground } from '../lib/missedEvents'
 import {
   applyIncomingMessage,
+  applyMessageEdit,
   cachedConversation,
   type ConversationPageDto,
   listPreviewOf,
@@ -352,6 +353,17 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
         if (message.deleted) {
           void queryClient.invalidateQueries({ queryKey: ['conversations'] })
           invalidateUnread(queryClient)
+        } else if (message.editedAt) {
+          // An edit to the newest message changes the row's line, which the
+          // server has already rewritten; this is the cached list catching up.
+          queryClient.setQueriesData({ queryKey: ['conversations'] }, (old: unknown) =>
+            applyMessageEdit(old, {
+              conversationId,
+              senderId: message.senderId,
+              createdAt: message.createdAt,
+              body: listPreviewOf(message),
+            }),
+          )
         }
       })
 

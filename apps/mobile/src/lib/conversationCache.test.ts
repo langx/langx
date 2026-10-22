@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { ConversationDto } from '../api/queries'
 import {
   applyIncomingMessage,
+  applyMessageEdit,
   cachedConversation,
   type ConversationPageDto,
   listPreviewOf,
@@ -342,5 +343,45 @@ describe('listPreviewOf', () => {
     expect(listPreviewOf({ type: 'image', body: 'look *here*', attachments: [{}] })).toBe(
       'look here',
     )
+  })
+})
+
+describe('applyMessageEdit', () => {
+  const edit = {
+    conversationId: 'c1',
+    senderId: THEM,
+    createdAt: '2026-08-01T00:00:00.000Z',
+    body: 'edited',
+  }
+
+  it('rewrites the line of a row showing the edited message', () => {
+    const data = pages([[conversation('c0'), conversation('c1')]])
+    const next = applyMessageEdit(data, edit) as InfiniteData<ConversationPageDto>
+    expect(next.pages[0]?.items[1]?.lastMessage.body).toBe('edited')
+    expect(next.pages[0]?.items[0]?.lastMessage.body).toBe('old c0')
+  })
+
+  it('rewrites a pinned row too', () => {
+    const data = pages([[conversation('c0')]], [conversation('c1')])
+    const next = applyMessageEdit(data, edit) as InfiniteData<ConversationPageDto>
+    expect(next.pages[0]?.pinned[0]?.lastMessage.body).toBe('edited')
+  })
+
+  it('rewrites the single row the chat header keeps', () => {
+    const next = applyMessageEdit(conversation('c1'), edit) as ConversationDto
+    expect(next.lastMessage.body).toBe('edited')
+  })
+
+  it('leaves a row alone once something newer is its last message', () => {
+    const data = pages([[conversation('c1')]])
+    expect(applyMessageEdit(data, { ...edit, createdAt: '2026-07-31T00:00:00.000Z' })).toBe(data)
+    expect(applyMessageEdit(data, { ...edit, senderId: ME })).toBe(data)
+  })
+
+  it('hands back the same object when nothing changes, as for a reaction', () => {
+    const data = pages([[conversation('c1')]])
+    expect(applyMessageEdit(data, { ...edit, body: 'old c1' })).toBe(data)
+    expect(applyMessageEdit(data, { ...edit, conversationId: 'elsewhere' })).toBe(data)
+    expect(applyMessageEdit(undefined, edit)).toBeUndefined()
   })
 })
