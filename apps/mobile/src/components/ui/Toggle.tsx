@@ -112,6 +112,9 @@ export function Toggle({
     <Pressable
       accessibilityRole="switch"
       accessibilityState={{ checked: value, disabled: disabled || busy, busy }}
+      // react-native-web does not map `checked` out of `accessibilityState`
+      // (see `Chip`), so on web every switch was announced without its state.
+      aria-checked={value}
       accessibilityLabel={accessibilityLabel}
       disabled={disabled || busy}
       hitSlop={{
