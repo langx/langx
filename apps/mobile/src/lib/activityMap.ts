@@ -187,3 +187,25 @@ function intensityOf(actions: number): Intensity {
   if (actions >= 3) return 2
   return 1
 }
+
+/**
+ * The `from`/`to` to ask the activity endpoints for, so that the answer holds
+ * the profile's today and the `daysBack` days before it.
+ *
+ * Both endpoints answer in the profile's own day — the owner's, or that of the
+ * person being looked at — and the phone only knows the UTC date. East of UTC
+ * the profile's today is already the next UTC date before UTC midnight, so a
+ * range ending on the UTC date left today's row out. West of UTC the profile
+ * is still on the previous date in the evening, so a range starting `daysBack`
+ * before the UTC date stopped a day short: the store's repair offer read that
+ * oldest day as unfilled and offered to buy back a day that was not missed.
+ * No zone is more than a day either side of UTC, so one day of slack at each
+ * end covers all of them.
+ */
+export function activityRange(
+  daysBack: number,
+  now: Date = new Date(),
+): { from: string; to: string } {
+  const utc = now.toISOString().slice(0, 10)
+  return { from: shiftDayKey(utc, -daysBack - 1), to: shiftDayKey(utc, 1) }
+}
