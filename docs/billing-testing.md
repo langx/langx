@@ -87,7 +87,7 @@ event a store sends when a running subscription is swapped, rather than another
 retired `pro_plus_*` packages are refused, as `PACKAGES` no longer lists them.
 
 **The harness prices are Pro's US prices** — `TEST $9.99` a month, `TEST
-$83.99` a year — with a one-week trial on both, so the paywall under the
+$79.99` a year — with a one-week trial on both, so the paywall under the
 harness reads "3 months free" and "1 week free" the way the shipped one does.
 
 **A referral top-up needs a paid period.** The fake store's events carry no

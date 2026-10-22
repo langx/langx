@@ -56,6 +56,15 @@ export function copilotErrorKey(error: unknown): CopilotErrorKey {
   return 'copilot.errNoAnswer'
 }
 
+/**
+ * Reply ideas found nothing to reply to — the newest lines were all photos,
+ * voice notes or withdrawn. Not a failure worth a sentence: the chip simply
+ * goes for that message.
+ */
+export function copilotEmptyThread(error: unknown): boolean {
+  return errorCodeOf(error) === 'VALIDATION_FAILED' && field(error, 'reason') === 'empty_thread'
+}
+
 /** The quota's own answer for when the next Copilot answer frees up. */
 export function copilotRetryAt(error: unknown): string | undefined {
   return field(error, 'retryAt')

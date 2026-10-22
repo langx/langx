@@ -5667,6 +5667,23 @@ model. It carries no message text, message id or user id.
 button. People who suspect their partner of AI-written replies trust them
 less, and a language exchange is a trust product.
 
+_Superseded in October 2026, at the product owner's request:_ Reply ideas is in
+the v3 thread after all. The trust concern still stands, so what reached the
+thread was shaped to stay a nudge rather than a ghostwriter:
+
+- **It is asked for, never offered unprompted.** A chip appears only when the
+  other person's newest line is unanswered and the composer is empty. Nothing
+  is asked until it is tapped, and each fresh answer spends the person's own
+  Copilot allowance.
+- **An idea only fills the draft.** The person still reads it, can change it,
+  and sends it themselves. Nothing ever goes out from the card.
+- **It is gated like the rest of Copilot.** It needs the operator's
+  allow-list and consent, and it refuses a chat with an under-age partner.
+  Copilot is still tried by a few people, not everybody.
+
+If the trust cost shows up in what partners say, this is the first piece of
+Copilot to take back out.
+
 ## The feed and the wallet get switches of their own
 
 Two kinds joined the six: `social` — a follow, a correction or a recorded
@@ -7239,8 +7256,11 @@ at all until a build carrying it ships. This is the same constraint
 
 ## A yearly price is a `.99` month times twelve, plus 0.11
 
-> **Still in force** under the single plan (_One plan: Pro_): Pro is sold at
-> the Fluent prices this section set, and the yearly-price rule is unchanged.
+> **Amended 21 October 2026 — see _The yearly price ends in 9.99_ below.**
+> Where the yearly stood at 83.99 or 95.99 in USD, EUR or GBP (and EUR 71.99 on
+> Play) it was lowered to the `…9.99` below it, and its per-month figure no longer ends in `.99`. The
+> rule still describes every storefront that kept its price, and why the
+> division is truncated.
 
 On 24 September 2026 the prices went up — Fluent $9.99 a month or $83.99 a
 year, Polyglot $16.99 or $131.99 — and every figure on the paywall has to end in
@@ -7939,6 +7959,10 @@ more.
 ## One plan: Pro
 
 > **Amended 18 October 2026 — see _The welcome pack waits for a purchase or a store's free week_ below.**
+>
+> **Amended 21 October 2026 — see _The yearly price ends in 9.99_ below.** The
+> US yearly is $79.99, and the yearly rule is no longer `.99 × 12 + 0.11` for
+> USD, EUR and GBP.
 
 Two paid plans confused people: Fluent (`pro`) and Polyglot (`pro_plus`) read
 as two products to choose between, and every large competitor sells one. On
@@ -9290,3 +9314,28 @@ and is left without one, with no word standing in for it.
 What _Pronouns are free text, and gender is not_ says about the field still
 holds; its reason for being on `sharedProfileSchema` now holds for the old look
 only.
+
+## The yearly price ends in 9.99
+
+**21 October 2026.** Pro's yearly price was lowered wherever it ended in 83.99
+or 95.99 — and 71.99 on Play — rounding it down to the next `…9.99`: $83.99 →
+$79.99, €95.99 → €89.99, £83.99 → £79.99, EUR 71.99 → 69.99 in eight West and
+Central African Play regions. App Store from 23 October, Play live on 21 October, and
+on the web a new product, `langx_pro_yearly_v2` at $79.99, because web prices
+cannot be edited. Monthly prices did not move. The release runbook (_One plan:
+Pro_) has the storefront counts.
+
+- **The yearly keeps the clean ending; the month gives way.** The yearly is
+  the charge on the card and in the trial line. The per-month figure is still
+  the truncated division (`perMonthPrice.ts`), so the US paywall now reads
+  "$6.66 a month" rather than a `.99`. That replaces the 24 September rule
+  (12 × a `.99` month + 0.11) for these storefronts.
+- **A cut and not a rise**, so nobody's price goes up: storefronts that already
+  ended in `9.99` (CAD/AUD 119.99, TRY 1,799.99, NZD 179.99) or have no `x9.99`
+  point near them on Apple's ladder (JPY, INR, CHF and the rest) are unchanged.
+  Existing Play subscribers keep their old price.
+- **"3 months free" survives.** `floor(12 − 79.99 ÷ 9.99)` is 3, and so is every
+  storefront in the runbook's table. A lower yearly can only add months: where
+  the monthly is above the usual one — USD 89.99 against $11.99, EUR 69.99
+  against €8.99 — the card now reads "4 months free", computed as before from
+  the store's own prices. Nothing on the paywall is typed.

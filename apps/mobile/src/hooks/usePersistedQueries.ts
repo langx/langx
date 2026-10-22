@@ -1,10 +1,11 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
-import { hydrate, type QueryClient } from '@tanstack/react-query'
+import { dehydrate, hydrate, type QueryClient } from '@tanstack/react-query'
 import {
   persistQueryClientSubscribe,
   type PersistedClient,
 } from '@tanstack/react-query-persist-client'
 import { useEffect } from 'react'
+import { AppState } from 'react-native'
 import {
   PERSIST_THROTTLE_MS,
   QUERY_CACHE_VERSION,
@@ -48,6 +49,12 @@ import { openQueryStorage } from '../lib/queryStorage'
  * restore. Declared the other way round, B's restore would begin a beat before
  * the clear that is meant to precede it.
  *
+ * **Written at most every `PERSIST_THROTTLE_MS`, and once more on the way to
+ * the background.** Each write serialises the whole trimmed cache, so a short
+ * throttle spent the JS thread over and over during an active chat; a long one
+ * alone would lose the last half-minute to a swipe-away. Leaving the app is
+ * the moment a write is both cheap to the person and most likely the last.
+ *
  * Nothing here throws out, and nothing waits on it: a device that cannot read
  * or write the file behaves exactly as the app did before this existed.
  */
@@ -66,6 +73,14 @@ export function usePersistedQueries(queryClient: QueryClient, userId: string | u
       // was written by `serializePersistedClient` from a real client state.
       deserialize: (raw) => parsePersistedClient(raw) as PersistedClient,
     })
+
+    const dehydrateOptions = {
+      shouldDehydrateQuery: (query: Parameters<typeof shouldPersistQuery>[0]) =>
+        shouldPersistQuery(query),
+      // Unsent messages are `unsentStore.ts`'s to keep, in a shape the chat
+      // screen can retry; a restored mutation has no function to run.
+      shouldDehydrateMutation: () => false,
+    }
 
     let cancelled = false
     let unsubscribe: (() => void) | undefined
@@ -86,17 +101,42 @@ export function usePersistedQueries(queryClient: QueryClient, userId: string | u
         queryClient,
         persister,
         buster: QUERY_CACHE_VERSION,
-        dehydrateOptions: {
-          shouldDehydrateQuery: (query) => shouldPersistQuery(query),
-          // Unsent messages are `unsentStore.ts`'s to keep, in a shape the chat
-          // screen can retry; a restored mutation has no function to run.
-          shouldDehydrateMutation: () => false,
-        },
+        dehydrateOptions,
       })
     })()
 
+    /*
+     * Straight to the storage, past the persister: its own write is throttled,
+     * so asking it would only queue one more for later — by which time a
+     * phone in the background may have suspended this JS for good. Only once
+     * the restore has finished and the subscription is live, or this would
+     * write an empty cache over the one still being read.
+     */
+    let flushed = false
+    const flush = AppState.addEventListener('change', (state) => {
+      /*
+       * Any state but `active`, not only `background`: a swipe away in the
+       * iOS app switcher goes through `inactive` and is killed there, never
+       * reaching `background`. Once per trip away, so `inactive` then
+       * `background` writes once; coming back arms it again.
+       */
+      if (state === 'active') {
+        flushed = false
+        return
+      }
+      if (flushed || cancelled || !unsubscribe) return
+      flushed = true
+      const serialized = serializePersistedClient({
+        timestamp: Date.now(),
+        buster: QUERY_CACHE_VERSION,
+        clientState: dehydrate(queryClient, dehydrateOptions),
+      })
+      void storage.setItem(persistedCacheKey(userId), serialized).catch(() => undefined)
+    })
+
     return () => {
       cancelled = true
+      flush.remove()
       unsubscribe?.()
       // After the unsubscribe, so the throttle's trailing write — which the
       // unsubscribe cannot cancel — finds a storage that no longer writes.
