@@ -251,6 +251,16 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
       const user = await newUser('ws-origin-native@example.com')
       expect((await connectFrom(user.cookie, baseUrl)).connected).toBe(true)
     })
+
+    /*
+     * The same phone behind an edge that rewrites `Host`: the Origin it sends
+     * is still the public URL it dialled. Here the test connects to
+     * 127.0.0.1:<port> while the configured URL is localhost:4000.
+     */
+    it('accepts the configured public origin even when Host says otherwise', async () => {
+      const user = await newUser('ws-origin-public@example.com')
+      expect((await connectFrom(user.cookie, 'http://localhost:4000')).connected).toBe(true)
+    })
   })
 
   /**

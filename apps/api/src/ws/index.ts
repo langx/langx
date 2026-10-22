@@ -29,6 +29,7 @@ import {
   INBOX_KINDS_AUTH_KEY,
   type SendAward,
 } from '@langx/shared'
+import { publicApiUrl } from '../env'
 import { ApiError } from '../lib/ApiError'
 import { consumeQuota } from '../lib/quota'
 import { effectiveTier } from '../modules/profiles/entitlement'
@@ -193,6 +194,39 @@ function refuseRevoked(packet: unknown[], revocation: Revocation): void {
 }
 
 /**
+ * Whether a socket handshake may come from `origin`.
+ *
+ * - No `Origin` at all: not a browser, so there is no page to have been
+ *   tricked into connecting, and a cookie still has to be presented.
+ * - The API's own origin: React Native's WebSocket fills `Origin` in with the
+ *   address it connects to (`http(s)://host[:port]`), so this is what the
+ *   phones send. Accepted two ways — equal to the configured public URL
+ *   (`publicApiUrl`), or with the same host as the request's own `Host`. The
+ *   first holds even if the edge rewrites `Host` on the way in; the second
+ *   covers any other name the API answers on. A page on another site can
+ *   present neither.
+ * - Otherwise it must be in `TRUSTED_ORIGINS`. An empty list allows any — the
+ *   same fallback CORS uses, and only reachable outside production, where
+ *   `loadEnv` refuses to boot without the list.
+ */
+export function originAllowed(
+  origin: string | undefined,
+  host: string | undefined,
+  trusted: readonly string[],
+  ownOrigin: string,
+): boolean {
+  if (origin === undefined) return true
+  if (trusted.length === 0 || trusted.includes(origin)) return true
+  try {
+    const given = new URL(origin)
+    if (given.origin === new URL(ownOrigin).origin) return true
+    return host !== undefined && given.host === host
+  } catch {
+    return false
+  }
+}
+
+/**
  * One room per user (`user:<id>`), not one per conversation — a 1-1 chat
  * only ever has two participants, both already known from the conversation
  * document, so there's nothing a per-conversation room buys here and no
@@ -202,35 +236,8 @@ function refuseRevoked(packet: unknown[], revocation: Revocation): void {
  * the `modules/chat` functions that call it — the same gate REST uses, so
  * the socket transport can't become a back door around it.
  */
-/**
- * Whether a socket handshake may come from `origin`.
- *
- * - No `Origin` at all: not a browser, so there is no page to have been
- *   tricked into connecting, and a cookie still has to be presented.
- * - The API's own host: React Native's WebSocket fills `Origin` in with the
- *   address it connects to (`http(s)://host[:port]`), so this is what the
- *   phones send. Compared by host against the request's own `Host` rather
- *   than against a configured URL, so every name the API answers on works.
- *   A page on another site cannot present it.
- * - Otherwise it must be in `TRUSTED_ORIGINS`. An empty list allows any — the
- *   same fallback CORS uses, and only reachable outside production, where
- *   `loadEnv` refuses to boot without the list.
- */
-export function originAllowed(
-  origin: string | undefined,
-  host: string | undefined,
-  trusted: readonly string[],
-): boolean {
-  if (origin === undefined) return true
-  if (trusted.length === 0 || trusted.includes(origin)) return true
-  try {
-    return host !== undefined && new URL(origin).host === host
-  } catch {
-    return false
-  }
-}
-
 export function attachSocketServer(app: FastifyInstance): AppServer {
+  const ownOrigin = publicApiUrl(app.env)
   const io: AppServer = new SocketIOServer(app.server, {
     /*
      * Production is two machines (`fly.toml`), and a blue-green deploy briefly
@@ -265,10 +272,12 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
      * `Origin` itself. Runs for both transports, before `io.use` below.
      */
     allowRequest: (request, callback) => {
-      callback(
-        null,
-        originAllowed(request.headers.origin, request.headers.host, app.env.TRUSTED_ORIGINS),
-      )
+      const { origin, host } = request.headers
+      const allowed = originAllowed(origin, host, app.env.TRUSTED_ORIGINS, ownOrigin)
+      // Origin and host only: enough to tell a misconfigured edge from a
+      // foreign page, and nothing that names the person.
+      if (!allowed) app.log.warn({ origin, host }, 'socket handshake refused: untrusted origin')
+      callback(null, allowed)
     },
   })
 
