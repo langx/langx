@@ -181,7 +181,7 @@ export interface MessageBubbleProps {
    */
   onOpenViewOnce: (message: MessageDto) => void
   /**
-   * A tap on a lone big emoji, which replays the v3 thread's burst. Only the
+   * A tap on the big emoji, which replays the v3 thread's burst. Only the
    * v3 thread passes it; the screen decides whether it plays.
    */
   onBurst?: ((message: MessageDto) => void) | undefined

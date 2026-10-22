@@ -213,7 +213,7 @@ import { WebTitle } from '../components/WebTitle'
 import { ComposerV3, type LatestActions } from '../components/thread/ComposerV3'
 import { WithRewardChips } from '../components/thread/RewardChipV3'
 import { EmojiBurstV3, type Burst } from '../components/thread/EmojiBurstV3'
-import { drawsAsHero, loneEmoji, shouldPlayBurst, type BurstTrigger } from '../lib/emojiBurst'
+import { burstEmoji, drawsAsHero, shouldPlayBurst, type BurstTrigger } from '../lib/emojiBurst'
 import { ThreadHeaderV3 } from '../components/thread/ThreadHeaderV3'
 import { useV3Home } from '../hooks/useV3Home'
 import { useKeyboardUp } from '../hooks/useKeyboardUp'
@@ -916,8 +916,8 @@ export function ChatScreen({
   )
 
   /**
-   * The v3 thread's emoji burst: a message that is one emoji showers copies
-   * of itself over the screen (`EmojiBurstV3`). Played by events — this
+   * The v3 thread's emoji burst: a message that is one to three emoji showers
+   * copies of them over the screen (`EmojiBurstV3`). Played by events — this
    * screen's send, the partner's message pushed over the socket, a tap on the
    * big emoji — and never by the list drawing a row, which is what keeps it
    * from replaying as history loads, scrolls or re-renders. The rules are in
@@ -932,10 +932,10 @@ export function ChatScreen({
   const playBurst = useRef<
     (
       trigger: BurstTrigger,
-      message: { body: string; hero: boolean; id?: string; ageMs?: number },
+      message: { body: string; hero: boolean; id?: string; seed?: string; ageMs?: number },
     ) => void
   >(() => undefined)
-  playBurst.current = (trigger, { body, hero, id, ageMs }) => {
+  playBurst.current = (trigger, { body, hero, id, seed, ageMs }) => {
     const play = shouldPlayBurst({
       trigger,
       body,
@@ -947,11 +947,12 @@ export function ChatScreen({
       played: id !== undefined && burstPlayed.current.has(id),
       ...(ageMs !== undefined ? { ageMs } : {}),
     })
-    const emoji = loneEmoji(body)
-    if (!play || emoji === null) return
+    const emoji = burstEmoji(body)
+    if (!play || emoji.length === 0) return
     if (id !== undefined) burstPlayed.current.add(id)
     burstPlaying.current = true
-    setBurst({ emoji, key: Date.now() })
+    // Seeded by the message, so a tap replays the shower its first play drew.
+    setBurst({ emoji, seed: seed ?? id ?? body, key: Date.now() })
   }
   const endBurst = useCallback(() => {
     burstPlaying.current = false
@@ -959,7 +960,14 @@ export function ChatScreen({
   }, [])
   // Stable, so the memoised bubbles do not all re-render for it.
   const onBurstTap = useCallback((message: MessageDto) => {
-    playBurst.current('tap', { body: message.body, hero: true })
+    // The seed its first play used: the sender's own client id, which the
+    // server hands back to the sender only, or else the server's id, which
+    // is what the partner's live arrival played under.
+    playBurst.current('tap', {
+      body: message.body,
+      hero: true,
+      seed: message.clientId ?? message._id,
+    })
   }, [])
 
   useEffect(() => {
@@ -987,6 +995,7 @@ export function ChatScreen({
           // emoji does not burst with nothing on screen to explain it.
           hero: drawsAsHero(message),
           id: message._id,
+          seed: message.clientId ?? message._id,
           ageMs: Date.now() - Date.parse(message.createdAt),
         })
       }
