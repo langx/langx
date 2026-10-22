@@ -3501,7 +3501,8 @@ export const tr: Localized<EnMessages> = {
     nearbyBody:
       'Kişileri mesafeye göre sırala. Konumun yuvarlanır; başkaları yalnızca kaba bir mesafe görür.',
     copilot: 'Yapay zekâ yardımcısı',
-    copilotBody: 'Yazarken mesajları kurmana ve anlamana yardım eder. Beta aşamasında ve kademeli olarak açılıyor; hesabında henüz açık olmayabilir.',
+    copilotBody:
+      'Yazarken mesajları kurmana ve anlamana yardım eder. Beta aşamasında ve kademeli olarak açılıyor; hesabında henüz açık olmayabilir.',
     quotaNotice:
       'Bugünkü {count} yeni sohbet hakkını kullandın. Sana gelen her mesaja sınırsız cevap vermeye devam edebilirsin.',
     manageNotice: '{plan} kullanıyorsun. Mağaza hesabından yönetebilir ya da iptal edebilirsin.',

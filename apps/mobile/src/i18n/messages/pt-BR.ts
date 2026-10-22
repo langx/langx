@@ -3532,7 +3532,8 @@ export const ptBR: Localized<EnMessages> = {
     nearbyBody:
       'Ordene por distância. Sua localização é arredondada; os outros só veem uma distância aproximada.',
     copilot: 'Copiloto com IA',
-    copilotBody: 'Ajuda a redigir e a entender as mensagens enquanto você escreve. Está em beta e sendo liberado aos poucos, então pode ainda não estar ativo na sua conta.',
+    copilotBody:
+      'Ajuda a redigir e a entender as mensagens enquanto você escreve. Está em beta e sendo liberado aos poucos, então pode ainda não estar ativo na sua conta.',
     quotaNotice:
       'Você usou suas {count} conversas novas de hoje. Ainda pode responder a tudo que receber, sem limite.',
     manageNotice: 'Você está no {plan}. Gerencie ou cancele na sua conta da loja.',

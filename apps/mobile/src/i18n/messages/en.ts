@@ -3855,7 +3855,8 @@ export const en = {
     nearbyBody:
       'Sort people by distance. Your location is rounded; others see only a rough distance.',
     copilot: 'AI copilot',
-    copilotBody: 'Help composing and understanding messages as you write them. In beta and rolling out gradually, so it may not be on for your account yet.',
+    copilotBody:
+      'Help composing and understanding messages as you write them. In beta and rolling out gradually, so it may not be on for your account yet.',
     quotaNotice:
       'You’ve used today’s {count} new chats. You can still reply to everything you receive, with no limit.',
     manageNotice: 'You’re on {plan}. Manage or cancel it in your store account.',

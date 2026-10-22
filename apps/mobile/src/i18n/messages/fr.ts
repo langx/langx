@@ -3586,7 +3586,8 @@ export const fr: Localized<EnMessages> = {
     nearbyBody:
       'Trie par distance. Ta position est arrondie ; les autres ne voient qu’une distance approximative.',
     copilot: 'Copilote IA',
-    copilotBody: 'T’aide à formuler et à comprendre les messages pendant que tu écris. En bêta et déployé progressivement : il n’est peut-être pas encore activé sur ton compte.',
+    copilotBody:
+      'T’aide à formuler et à comprendre les messages pendant que tu écris. En bêta et déployé progressivement : il n’est peut-être pas encore activé sur ton compte.',
     quotaNotice:
       'Tu as utilisé tes {count} nouvelles discussions du jour. Tu peux toujours répondre à tout ce que tu reçois, sans limite.',
     manageNotice: 'Tu es sur {plan}. Gère-le ou annule-le depuis ton compte du store.',
