@@ -1870,7 +1870,10 @@ export function ChatScreen({
        * the report.
        */
       setUnsent((list) =>
-        addUnsent(list, failedSend({ clientId, body, replyToMessageId, quote, ask }, new Date())),
+        addUnsent(
+          list,
+          failedSend({ clientId, body, replyToMessageId, quote, ask, translation }, new Date()),
+        ),
       )
       recheckPartner(error)
       // Swallowed for the reader, counted for us: an unsent row is quiet by
@@ -1896,7 +1899,7 @@ export function ChatScreen({
         message.clientId,
         message.replyToMessageId,
         message.ask,
-        undefined,
+        message.translation,
         message.quote,
       )
     } finally {

@@ -190,6 +190,17 @@ describe('failedSend', () => {
     ).toBe('correction')
   })
 
+  /** A sent-translated message retried without it arrived untranslated. */
+  it('keeps the translation, so a retry sends it again', () => {
+    const translation = { text: 'I am', lang: 'en' as const }
+    const row = failedSend({ clientId: 'c', body: 'ich bin', translation }, new Date(0))
+    const stored = storeUnsent({}, unsentKey('anna', 'chat1'), [row])
+    expect(
+      readUnsent(JSON.parse(JSON.stringify(stored)) as UnsentByConversation, 'anna', 'chat1')[0]
+        ?.translation,
+    ).toEqual(translation)
+  })
+
   it('keeps a quote only with the reply it belongs to', () => {
     expect(failedSend({ clientId: 'c', body: 'b', quote: 'q' }, new Date(0))).toEqual({
       clientId: 'c',

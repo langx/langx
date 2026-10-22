@@ -21,7 +21,7 @@
  * was there before this: a row that lives as long as the screen does.
  */
 
-import type { MessageAsk } from '@langx/shared'
+import type { MessageAsk, MessageTranslation } from '@langx/shared'
 
 export interface UnsentMessage {
   /** Client-minted, so a row exists before the server has given it an id. */
@@ -36,6 +36,11 @@ export interface UnsentMessage {
    * gone.
    */
   ask?: MessageAsk
+  /**
+   * The translation it was sent with. The translate call is not made again on
+   * a retry, so without this the message arrived without it.
+   */
+  translation?: MessageTranslation
   /** For ordering, and so a retry can report how long it has been waiting. */
   failedAt: string
 }
@@ -69,6 +74,7 @@ export function failedSend(
     replyToMessageId?: string | undefined
     quote?: string | undefined
     ask?: MessageAsk | undefined
+    translation?: MessageTranslation | undefined
   },
   now: Date,
 ): UnsentMessage {
@@ -78,6 +84,7 @@ export function failedSend(
     ...(send.replyToMessageId ? { replyToMessageId: send.replyToMessageId } : {}),
     ...(send.replyToMessageId && send.quote ? { quote: send.quote } : {}),
     ...(send.ask ? { ask: send.ask } : {}),
+    ...(send.translation ? { translation: send.translation } : {}),
     failedAt: now.toISOString(),
   }
 }
