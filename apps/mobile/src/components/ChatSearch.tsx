@@ -5,6 +5,7 @@ import { ActivityIndicator, FlatList, Modal, Pressable, Text, TextInput, View } 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useConversationSearch } from '../api/queries'
 import { useDebounced } from '../hooks/useDebounced'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
 import { useLocale, useT } from '../i18n'
 import { dayKeyOf, dayLabel } from '../lib/messageGroups'
@@ -45,6 +46,7 @@ export function ChatSearch({
   onClose,
   onPick,
 }: ChatSearchProps) {
+  const reduce = useReduceMotion()
   const t = useT()
   const { locale } = useLocale()
   const current = useStyles()
@@ -74,7 +76,7 @@ export function ChatSearch({
   })
 
   return (
-    <Modal visible animationType="slide" onRequestClose={onClose}>
+    <Modal visible animationType={reduce ? 'none' : 'slide'} onRequestClose={onClose}>
       <View style={[styles.root, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
         <View style={styles.bar}>
           <View style={[styles.field, v3Look && focused && { borderColor: v3.colors.fg }]}>

@@ -2,6 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { useEffect, useState } from 'react'
 import { Modal, Platform, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
 import { dismissValue, resolveAlert, subscribeToAlerts } from '../lib/alert'
 import {
@@ -33,6 +34,7 @@ import { Button } from './ui/Button'
  * is a long way from the pointer.
  */
 export function AlertHost() {
+  const reduce = useReduceMotion()
   const current = useStyles()
   const redesigned = useStylesV3()
   const v3Look = useV3Home()
@@ -117,7 +119,7 @@ export function AlertHost() {
   return (
     <Modal
       transparent
-      animationType={wide ? 'fade' : 'slide'}
+      animationType={reduce ? 'none' : wide ? 'fade' : 'slide'}
       visible={isAlertVisible(presentation)}
       onRequestClose={dismiss}
       onDismiss={() => setPresentation(alertDismissed)}
