@@ -19,6 +19,7 @@ import type { Report } from '../modules/moderation/blocks'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { purgeExpiredAccounts } from '../modules/account/deletion'
+import { getReport } from '../modules/admin/reports'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
 import { awardTokens } from '../modules/tokens/ledger'
@@ -429,12 +430,64 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       expect(stored?.conversationId?.toString()).toBe(conversationId)
     })
 
+    it('refuses a message from a conversation the two of them do not share', async () => {
+      const reporter = await newUser()
+      const target = await newUser()
+      const a = await newUser()
+      const b = await newUser()
+      // The reporter's own thread with the target exists, so it is the
+      // pointers that are refused, not the lack of a conversation.
+      await startConversation(reporter, target.userId, 'hello there')
+      const started = await startConversation(a, b.userId, 'Private words.')
+      const conversationId = started.json<{ _id: string }>()._id
+      const messages = await get(a, `/conversations/${conversationId}/messages`)
+      const messageId = messages.json<{ items: { _id: string }[] }>().items[0]?._id
+
+      const both = await post(reporter, '/reports', {
+        userId: target.userId,
+        reason: 'harassment',
+        conversationId,
+        messageId,
+      })
+      expect(both.statusCode, both.body).toBe(404)
+      const messageOnly = await post(reporter, '/reports', {
+        userId: target.userId,
+        reason: 'harassment',
+        messageId,
+      })
+      expect(messageOnly.statusCode, messageOnly.body).toBe(404)
+
+      const stored = await handle.db
+        .collection<Report>(COLLECTIONS.reports)
+        .findOne({ reporterId: reporter.userId, reportedId: target.userId })
+      expect(stored).toBeNull()
+
+      // A row filed before the check still shows the panel nothing of theirs.
+      const legacy = await handle.db.collection<Report>(COLLECTIONS.reports).insertOne({
+        _id: new ObjectId(),
+        reporterId: reporter.userId,
+        reportedId: target.userId,
+        reason: 'harassment',
+        conversationId: new ObjectId(conversationId),
+        messageId: new ObjectId(messageId),
+        status: 'open',
+        createdAt: new Date(),
+      })
+      const detail = await getReport(handle.db, legacy.insertedId.toHexString())
+      expect(detail?.message).toBeNull()
+    })
+
     it('keeps the post a report was raised from', async () => {
       const reporter = await newUser()
       const target = await newUser()
-      // Existence is not checked, as it is not for a message: a post deleted
-      // between reading and reporting is still worth the reviewer's look.
-      const postId = new ObjectId().toString()
+      // A real post by the reported person: the server checks its author, as
+      // it does a comment's, since "Hide this post" acts on whatever is named.
+      const created = await post(target, '/posts', {
+        body: 'Hello everybody here.',
+        language: 'en',
+      })
+      expect(created.statusCode, created.body).toBe(201)
+      const postId = created.json<{ _id: string }>()._id
 
       const response = await post(reporter, '/reports', {
         userId: target.userId,
@@ -448,6 +501,32 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         .findOne({ reporterId: reporter.userId, reportedId: target.userId })
       expect(stored?.postId?.toString()).toBe(postId)
       expect(stored?.conversationId).toBeUndefined()
+    })
+
+    it('refuses a post somebody else wrote, as if it did not exist', async () => {
+      const reporter = await newUser()
+      const target = await newUser()
+      const author = await newUser()
+      const created = await post(author, '/posts', {
+        body: 'Hello everybody here.',
+        language: 'en',
+      })
+      expect(created.statusCode, created.body).toBe(201)
+      const postId = created.json<{ _id: string }>()._id
+
+      const response = await post(reporter, '/reports', {
+        userId: target.userId,
+        reason: 'spam',
+        postId,
+      })
+      expect(response.statusCode, response.body).toBe(404)
+      const missing = await post(reporter, '/reports', {
+        userId: target.userId,
+        reason: 'spam',
+        postId: new ObjectId().toString(),
+      })
+      expect(missing.statusCode, missing.body).toBe(404)
+      expect(missing.json<{ code: string }>().code).toBe(response.json<{ code: string }>().code)
     })
 
     it('still accepts a report raised from a profile, with neither pointer', async () => {
