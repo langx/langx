@@ -4,12 +4,13 @@ import { useT } from '../i18n'
 import { makeStyles, useTheme } from '../lib/theme'
 
 /**
- * "AI · may be wrong", on every Copilot answer.
+ * "Copilot · Beta", on every Copilot answer and atop the consent sheet.
  *
  * Blue, always: a person's correction is the green pair, and the two voices
  * in a chat must never be mistaken for each other (`tokens.ts` → the callout
- * pairs). The words are part of the label rather than a footnote, because an
- * answer read without them is an answer read as fact.
+ * pairs). The chip names who wrote the answer and that it is a beta; the
+ * consent sheet carries the sentence that AI can be wrong, which every
+ * person reads before the first answer.
  */
 export function CopilotLabel() {
   const styles = useStyles()

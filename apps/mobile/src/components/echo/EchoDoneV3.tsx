@@ -9,8 +9,15 @@ import {
 import { useIsFetching } from '@tanstack/react-query'
 import { useFonts } from 'expo-font'
 import { router } from 'expo-router'
-import { useEffect, useMemo, useState } from 'react'
-import { ScrollView, Text, View } from 'react-native'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { ScrollView, Text, View, type StyleProp, type ViewStyle } from 'react-native'
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated'
 import { keys, useEchoSummary } from '../../api/queries'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useT } from '../../i18n'
@@ -20,11 +27,13 @@ import { notification } from '../../lib/haptics'
 import { nextStreakMilestone } from '../../lib/homePlan'
 import { goBackTo } from '../../lib/navigation'
 import { DISPLAY_FONT, makeStyles, PARTNER_HUES, useTheme } from '../../lib/theme'
+import { SPRING, STAGGER, TIMING, unlessReduced } from '../../lib/theme/motion'
 import { Button } from '../ui/Button'
 import { Confetti } from '../ui/Confetti'
 import { PressableScale } from '../ui/PressableScale'
 import { Screen } from '../ui/Screen'
 import { Skeleton } from '../ui/Skeleton'
+import { FlameGlyph } from '../ui/StreakFlame'
 
 interface EchoDoneV3Props {
   graded: readonly { reviewId: string; grade: EchoGrade }[]
@@ -88,14 +97,16 @@ export function EchoDoneV3({
     dueNext: settled && queue.data && queue.dataUpdatedAt > since ? queue.data.dueCount : undefined,
   })
   const remembered = graded.filter((entry) => entry.grade !== 'again').length
-  const milestone =
+  const nextMilestone =
     plan.streakDay !== null
       ? nextStreakMilestone(plan.streakDay, TOKEN_RULES.streakMilestones)
       : null
+  const earned = plan.tokens !== null || plan.milestone !== null
 
   /*
-   * The celebration, once per batch and only for one that paid: the success
-   * haptic always, the confetti only when motion is allowed. It never takes a
+   * The celebration, once per batch and only for one that paid — the
+   * sessions, or a streak milestone crossed by a session past the cap: the
+   * success haptic always, the confetti only when motion is allowed. It never takes a
    * touch and is over inside `CELEBRATION_MS`, so the buttons are live from
    * the first frame.
    */
@@ -104,11 +115,11 @@ export function EchoDoneV3({
   const [raining, setRaining] = useState(false)
   const eventId = graded[0]?.reviewId
   useEffect(() => {
-    if (plan.tokens === null || !eventId) return
+    if (!earned || !eventId) return
     if (!claimCelebration(`echo-done:${eventId}`)) return
     void notification('success')
     if (!reduce) setRaining(true)
-  }, [plan.tokens, eventId, reduce])
+  }, [earned, eventId, reduce])
   // `useReduceMotion` can answer after the first frame; a rain already
   // started stops where it is.
   useEffect(() => {
@@ -167,23 +178,32 @@ export function EchoDoneV3({
   return (
     <Screen fluid ground={v3.colors.bg}>
       <ScrollView contentContainerStyle={styles.body}>
+        {/*
+          The hero lands rather than appears: the check pops, the title and
+          the line rise a beat apart, and the tokens chip pops whenever the
+          award arrives — which is usually a moment after the rest.
+        */}
         <View style={styles.hero}>
-          <View style={styles.check}>
+          <Land from="pop" style={styles.check}>
             <Feather name="check" size={40} color={v3.colors.blue} />
-          </View>
-          <Text style={[styles.title, !black && styles.titleFallback]} accessibilityRole="header">
-            {t('echo.doneTitle')}
-          </Text>
-          <Text style={styles.heroLine}>
-            {t('echo.cardCount', { count: graded.length })} ·{' '}
-            {t('echo.rememberedCount', { count: remembered })}
-          </Text>
+          </Land>
+          <Land from="rise" delay={STAGGER}>
+            <Text style={[styles.title, !black && styles.titleFallback]} accessibilityRole="header">
+              {t('echo.doneTitle')}
+            </Text>
+          </Land>
+          <Land from="rise" delay={STAGGER * 2}>
+            <Text style={styles.heroLine}>
+              {t('echo.cardCount', { count: graded.length })} ·{' '}
+              {t('echo.rememberedCount', { count: remembered })}
+            </Text>
+          </Land>
           {plan.tokens !== null ? (
-            <View style={styles.tokens}>
+            <Land from="pop" style={styles.tokens}>
               <Text style={styles.tokensText}>
                 {t('echo.tokensEarned', { count: plan.tokens })}
               </Text>
-            </View>
+            </Land>
           ) : null}
         </View>
 
@@ -194,21 +214,45 @@ export function EchoDoneV3({
             style={styles.streak}
           >
             <View style={styles.streakDisc}>
-              <Feather name="zap" size={v3.icon.xxl} color={v3.hues.tangerine} />
+              <FlameGlyph size={v3.icon.xxl} color={v3.hues.tangerine} />
             </View>
-            <View style={styles.streakText}>
-              <Text style={styles.streakTitle}>
-                {t('echo.streakKept', { day: plan.streakDay })}
-              </Text>
-              {milestone ? (
-                <Text style={styles.streakSub}>
-                  {t('home.streakNext', {
-                    count: milestone.day - plan.streakDay,
-                    day: milestone.day,
-                  })}
+            {plan.milestone ? (
+              /*
+               * A streak milestone (`TOKEN_RULES.streakMilestones`) reached
+               * through Echo: the milestone by name
+               * and what it paid, the bonus landing on its own bounce. Not
+               * "streak kept", which is every other day's line.
+               */
+              <>
+                <View style={styles.streakText}>
+                  <Text style={styles.streakTitle}>
+                    {t('chat.rewardStreak', { count: plan.milestone.day })}
+                  </Text>
+                  <Text style={styles.streakSub}>
+                    {t('chat.celebrateStreakNote', { count: plan.milestone.tokens })}
+                  </Text>
+                </View>
+                <Land from="pop" delay={STAGGER * 3} style={styles.bonus}>
+                  <Text style={styles.bonusText}>
+                    {t('tokens.shareAmount', { count: plan.milestone.tokens })}
+                  </Text>
+                </Land>
+              </>
+            ) : (
+              <View style={styles.streakText}>
+                <Text style={styles.streakTitle}>
+                  {t('echo.streakKept', { day: plan.streakDay })}
                 </Text>
-              ) : null}
-            </View>
+                {nextMilestone ? (
+                  <Text style={styles.streakSub}>
+                    {t('home.streakNext', {
+                      count: nextMilestone.day - plan.streakDay,
+                      day: nextMilestone.day,
+                    })}
+                  </Text>
+                ) : null}
+              </View>
+            )}
           </PressableScale>
         ) : null}
 
@@ -244,6 +288,44 @@ export function EchoDoneV3({
       {raining ? <Confetti pieces={pieces} count={36} rain={RAIN.celebration} /> : null}
     </Screen>
   )
+}
+
+/**
+ * One piece of the hero arriving, once, when it mounts: `pop` scales up on
+ * `SPRING.bounce` (the check, a chip), `rise` lifts 12 pt and fades in over
+ * `TIMING.enter` (a line of text). Started from an effect, never in render;
+ * with reduce motion the piece is simply there.
+ */
+function Land({
+  from,
+  delay = 0,
+  style,
+  children,
+}: {
+  from: 'pop' | 'rise'
+  delay?: number
+  style?: StyleProp<ViewStyle>
+  children: ReactNode
+}) {
+  const reduce = useReduceMotion()
+  const shown = useSharedValue(reduce ? 1 : 0)
+  useEffect(() => {
+    shown.set(
+      unlessReduced(reduce, 1, (to) =>
+        withDelay(
+          delay,
+          from === 'pop' ? withSpring(to, SPRING.bounce) : withTiming(to, TIMING.enter),
+        ),
+      ),
+    )
+  }, [reduce, delay, from, shown])
+  const motion = useAnimatedStyle(() => {
+    const value = shown.get()
+    return from === 'pop'
+      ? { opacity: Math.min(1, value * 2), transform: [{ scale: 0.6 + 0.4 * value }] }
+      : { opacity: value, transform: [{ translateY: (1 - value) * 12 }] }
+  })
+  return <Animated.View style={[style, motion]}>{children}</Animated.View>
 }
 
 const useStyles = makeStyles(({ v3 }) => ({
@@ -302,6 +384,14 @@ const useStyles = makeStyles(({ v3 }) => ({
   streakText: { flex: 1, minWidth: 0 },
   streakTitle: { ...v3.type.headline, color: v3.colors.ink },
   streakSub: { ...v3.type.callout, color: v3.colors.ink, fontWeight: '600' },
+  bonus: {
+    backgroundColor: v3.colors.ink,
+    borderRadius: v3.radius.pill,
+    justifyContent: 'center',
+    minHeight: 40,
+    paddingHorizontal: v3.space[14],
+  },
+  bonusText: { ...v3.type.headline, color: v3.hues.tangerine, fontVariant: ['tabular-nums'] },
   sessions: {
     backgroundColor: v3.colors.surface,
     borderRadius: v3.radius.badge,

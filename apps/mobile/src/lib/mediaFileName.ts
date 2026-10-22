@@ -21,6 +21,12 @@ const EXTENSION_BY_CONTENT_TYPE: Record<string, string> = {
 const KNOWN_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'gif', 'heic', 'mp4', 'mov'])
 
 export function mediaFileName(url: string, contentType?: string): string {
+  // A `data:` URL — what the web's picker can hand over — carries no name,
+  // and its payload would otherwise become eighty characters of base64.
+  if (/^data:/i.test(url)) {
+    const fromType = contentType ? EXTENSION_BY_CONTENT_TYPE[contentType] : undefined
+    return `langx.${fromType ?? 'jpg'}`
+  }
   const path = url.split(/[?#]/)[0] ?? ''
   const last = decodeSafely(path.slice(path.lastIndexOf('/') + 1))
   const dot = last.lastIndexOf('.')
@@ -42,4 +48,12 @@ function decodeSafely(segment: string): string {
 /** Only what every filesystem and every gallery accepts in a name. */
 function sanitise(stem: string): string {
   return stem.replace(/[^A-Za-z0-9._-]+/g, '-').slice(0, 80)
+}
+
+/**
+ * Whether the file still has to be fetched, rather than being on the device
+ * already: the chat camera's own shot is a `file://` before it is sent.
+ */
+export function isRemoteMedia(url: string): boolean {
+  return /^https?:\/\//i.test(url)
 }

@@ -111,6 +111,11 @@ describe('when and where a toast shows', () => {
     expect(toastEdge(['(auth)', 'sign-in'])).toBe('top')
   })
 
+  /** Its bottom is the shutter, or Retake and Send under the send modes. */
+  it('sits at the top on the chat camera', () => {
+    expect(toastEdge(['(app)', 'chat-camera'])).toBe('top')
+  })
+
   it('sits above the tab bar everywhere else', () => {
     expect(toastEdge(['(app)', '(tabs)', 'discover'])).toBe('bottom')
     expect(toastEdge(['(onboarding)', 'languages'])).toBe('bottom')

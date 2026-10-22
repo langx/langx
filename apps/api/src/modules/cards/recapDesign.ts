@@ -98,6 +98,9 @@ function arrowSrc(colour: string, pointsLeft: boolean): string {
 
 type TextStyle = Record<string, unknown> & { fontSize: number; color: string }
 
+/** Hebrew, Arabic, Syriac, Thaana and their presentation forms. */
+const RTL_LETTER = /[\u0590-\u08ff\ufb1d-\ufdff\ufe70-\ufeff]/
+
 /**
  * A line of text, laid out one word per element when it has to be.
  *
@@ -136,7 +139,26 @@ export function textLine(text: string, style: TextStyle, rtl: boolean, width?: n
               width: style.fontSize * 0.9,
               height: style.fontSize * 0.9,
             })
-          : el('div', { style: { ...style, display: 'flex', flexShrink: 0 }, children: word }),
+          : el('div', {
+              style: {
+                ...style,
+                display: 'flex',
+                flexShrink: 0,
+                /*
+                 * satori 0.62 resolves each word's own bidi, and against the
+                 * default left-to-right base a comma at the end of an Arabic
+                 * word is set on the word's right — the start of the line in
+                 * Arabic: "،بلغتين". Declaring the word right-to-left puts the
+                 * comma on its left, where the sentence goes on.
+                 *
+                 * Only a word with right-to-left letters in it: a Latin word
+                 * in an Arabic line — "Pro+" — would have its punctuation
+                 * moved to the wrong end in exactly the same way.
+                 */
+                ...(rtl && RTL_LETTER.test(word) ? { direction: 'rtl' } : {}),
+              },
+              children: word,
+            }),
       ),
   })
 }
@@ -548,6 +570,10 @@ export function site(
 /**
  * The yellow disc bled off the top corner — the one piece of decoration, and
  * mirrored in Arabic, where the brand starts on the right.
+ *
+ * Absolute, so satori 0.62 paints it after every unpositioned box whatever the
+ * tree order says; the column of content laid over it is `position: relative`
+ * in each design for that reason, which puts tree order back in charge.
  */
 export function disc(size: number, offset: number, rtl: boolean, colour = YELLOW): CardNode {
   return el('div', {
@@ -596,6 +622,7 @@ export function recapCardElement(
             flexDirection: 'column',
             gap: 56,
             padding: '96px 88px',
+            position: 'relative',
           },
           children: [
             brand(m, rtl),
@@ -636,6 +663,7 @@ export function recapCardElement(
             flexDirection: rtl ? 'row-reverse' : 'row',
             gap: 40,
             padding: pad,
+            position: 'relative',
           },
           children: [
             el('div', {
@@ -683,6 +711,7 @@ export function recapCardElement(
           flexDirection: rtl ? 'row-reverse' : 'row',
           gap: pad,
           padding: pad,
+          position: 'relative',
         },
         children: [
           el('div', {

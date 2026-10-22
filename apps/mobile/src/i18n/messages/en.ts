@@ -38,7 +38,6 @@ export const en = {
     checking: 'Checking…',
     oneMoment: 'One moment…',
     skip: 'Skip for now',
-    comingSoon: 'COMING SOON',
     continue: 'Continue',
     done: 'Done',
     reset: 'Reset',
@@ -208,6 +207,12 @@ export const en = {
     modeKeep: 'Keep in chat',
     send: 'Send',
     retake: 'Retake',
+    hideOptions: 'Hide options',
+    showOptions: 'Show options',
+    viewfinder: 'Camera view',
+    viewfinderHint: 'Pinch to zoom. Double-tap to switch camera.',
+    zoomedIn: 'Zoomed in',
+    notZoomed: 'Not zoomed',
     hint: 'Tap for photo, hold for video',
     close: 'Close camera',
     flip: 'Switch camera',
@@ -1686,6 +1691,12 @@ export const en = {
     },
     pinnedMessage: 'Pinned message',
     goToPinned: 'Go to the pinned message',
+    /** Over the v3 thread's pinned strip's preview: who wrote the pinned message. */
+    pinnedFrom: 'Pinned · {name}',
+    /** The same line while the pinned message itself has not loaded. */
+    pinnedLabel: 'Pinned',
+    /** The pinned strip's ✕: a pin belongs to the conversation, so it goes for both. */
+    unpinHint: 'Takes the pin off for both of you',
     backToLatest: 'Back to latest',
     jumpToNew: {
       one: 'Jump to {count} new message',
@@ -1954,8 +1965,8 @@ export const en = {
     correctionPlaceholder: 'Rewrite the sentence the way you would say it…',
     startFromOriginal: 'Start from the original',
     correctionReward: {
-      one: '+{count} token · Unlimited on every plan',
-      other: '+{count} tokens · Unlimited on every plan',
+      one: '+{count} token',
+      other: '+{count} tokens',
     },
     voiceNote: 'Voice note',
     top: 'Top',
@@ -3856,7 +3867,8 @@ export const en = {
     nearbyBody:
       'Sort people by distance. Your location is rounded; others see only a rough distance.',
     copilot: 'AI copilot',
-    copilotBody: 'Help composing and understanding messages as you write them.',
+    copilotBody:
+      'Help composing and understanding messages as you write them. It may not be on for your account yet.',
     quotaNotice:
       'You’ve used today’s {count} new chats. You can still reply to everything you receive, with no limit.',
     manageNotice: 'You’re on {plan}. Manage or cancel it in your store account.',
@@ -3963,6 +3975,10 @@ export const en = {
     compareLanguages: 'Languages you learn',
     compareUnlimited: 'Unlimited',
     compareSoon: 'Soon',
+    /** Pro's cell in the comparison for a feature in beta: works, but not for every account yet. */
+    compareBeta: 'Beta',
+    /** Beside a beta feature's name on the paywall and the plan page. One phrasing everywhere, the website and the docs included. */
+    betaTag: 'Beta, rolling out',
     compareIncluded: 'Included',
     compareNotIncluded: 'Not included',
     yearlyBadge: '{perMonth} · {saving}',
@@ -4264,8 +4280,8 @@ export const en = {
    * the person sends it themselves.
    */
   copilot: {
-    /** On every Copilot answer and on its consent sheet. Blue, never green: green is a person's correction. */
-    label: 'AI · may be wrong',
+    /** On every Copilot answer and on its consent sheet. Blue, never green: green is a person’s correction. The "AI can be wrong" disclosure is `consentWrong`, not this. */
+    label: 'Copilot · Beta',
     /** Copilot cannot answer here at all — switched off, or not for this account. */
     off: 'Copilot is off.',
     consentTitle: 'Before you use Copilot',
@@ -4280,7 +4296,7 @@ export const en = {
       'When you ask, the text you asked about goes to Anthropic, the company that runs the AI model, with your languages and levels. To explain a message, that is the one message you picked, which the other person wrote. For reply ideas, it includes the last few messages in the chat.',
     consentNever: 'Your name, email, photos and voice notes are never sent.',
     consentWrong:
-      'AI can be wrong. Its answers are marked AI, and nothing reaches the other person unless you send it yourself.',
+      'AI can be wrong. Its answers are marked Copilot, and nothing reaches the other person unless you send it yourself.',
     consentAccept: 'Turn on Copilot',
     consentDecline: 'Not now',
     /** Screen-reader name of the blue button beside send, which opens the two-row menu. */
@@ -4308,8 +4324,6 @@ export const en = {
     errQuota: 'You’ve used today’s Copilot answers. More at {time}.',
     /** The same, when the server did not say when. */
     errQuotaNoTime: 'You’ve used today’s Copilot answers.',
-    /** The other person is under 18, so their words are not sent. */
-    errPartnerAge: 'Copilot doesn’t read this chat.',
     errBusy: 'Copilot is busy. Try again later.',
     errNoAnswer: 'Copilot couldn’t answer that.',
     errNetwork: 'Couldn’t reach Copilot.',

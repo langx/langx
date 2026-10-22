@@ -331,7 +331,9 @@ PR.
   per-month figures and "N months free" become a subordinate line or badge.
   The draft PR builds the version with the free week in the subline and keeps
   the trial-led headline as an alternative for Behic to pick at merge. The
-  `copilot` "Coming soon" line is left alone until D12a is answered.
+  `copilot` "Coming soon" line is left alone until D12a is answered. (Settled
+  21 Oct 2026: it reads "Beta, rolling out" — `decisions.md` → _Copilot is
+  sold as a beta, rolling out_.)
 - **D7 — trial-ending reminder (16 Oct 2026).** It joins the Billing class: no
   switch, information only (charge date, the store's billed amount, how to
   cancel), linking to `/settings/plan`. `promo.trialEnding` stops targeting

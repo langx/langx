@@ -19,7 +19,6 @@ export const de: Localized<EnMessages> = {
     checking: 'Wird geprüft…',
     oneMoment: 'Einen Moment…',
     skip: 'Später',
-    comingSoon: 'BALD',
     continue: 'Weiter',
     done: 'Fertig',
     reset: 'Zurücksetzen',
@@ -167,6 +166,12 @@ export const de: Localized<EnMessages> = {
     modeKeep: 'Im Chat behalten',
     send: 'Senden',
     retake: 'Neu aufnehmen',
+    hideOptions: 'Optionen ausblenden',
+    showOptions: 'Optionen einblenden',
+    viewfinder: 'Kameraansicht',
+    viewfinderHint: 'Mit zwei Fingern zoomen. Doppeltippen, um die Kamera zu wechseln.',
+    zoomedIn: 'Gezoomt',
+    notZoomed: 'Nicht gezoomt',
     hint: 'Tippen für Foto, halten für Video',
     close: 'Kamera schließen',
     flip: 'Kamera wechseln',
@@ -1560,6 +1565,9 @@ export const de: Localized<EnMessages> = {
     },
     pinnedMessage: 'Angeheftete Nachricht',
     goToPinned: 'Zur angehefteten Nachricht',
+    pinnedFrom: 'Angeheftet · {name}',
+    pinnedLabel: 'Angeheftet',
+    unpinHint: 'Hebt das Anheften für euch beide auf',
     backToLatest: 'Zurück zum Ende',
     jumpToNew: {
       one: 'Zu {count} neuen Nachricht springen',
@@ -1802,8 +1810,8 @@ export const de: Localized<EnMessages> = {
     correctionPlaceholder: 'Schreib den Satz so, wie du ihn sagen würdest…',
     startFromOriginal: 'Mit dem Original anfangen',
     correctionReward: {
-      one: '+{count} Token · In jedem Tarif unbegrenzt',
-      other: '+{count} Token · In jedem Tarif unbegrenzt',
+      one: '+{count} Token',
+      other: '+{count} Token',
     },
     voiceNote: 'Sprachnotiz',
     top: 'Top',
@@ -3602,7 +3610,8 @@ export const de: Localized<EnMessages> = {
     nearbyBody:
       'Sortiere nach Entfernung. Dein Standort wird gerundet; andere sehen nur eine grobe Entfernung.',
     copilot: 'KI-Copilot',
-    copilotBody: 'Hilft beim Formulieren und Verstehen von Nachrichten, während du schreibst.',
+    copilotBody:
+      'Hilft beim Formulieren und Verstehen von Nachrichten, während du schreibst. Für dein Konto ist er vielleicht noch nicht aktiv.',
     quotaNotice:
       'Du hast deine {count} neuen Chats für heute aufgebraucht. Auf alles, was du bekommst, kannst du weiter unbegrenzt antworten.',
     manageNotice: 'Du hast {plan}. Verwalte oder kündige es in deinem Store-Konto.',
@@ -3704,6 +3713,8 @@ export const de: Localized<EnMessages> = {
     compareLanguages: 'Sprachen, die du lernst',
     compareUnlimited: 'Unbegrenzt',
     compareSoon: 'Bald',
+    compareBeta: 'Beta',
+    betaTag: 'Beta, schrittweise verfügbar',
     compareIncluded: 'Enthalten',
     compareNotIncluded: 'Nicht enthalten',
     yearlyBadge: '{perMonth} · {saving}',
@@ -3961,7 +3972,7 @@ export const de: Localized<EnMessages> = {
     },
   },
   copilot: {
-    label: 'KI · kann sich irren',
+    label: 'Copilot · Beta',
     off: 'Copilot ist ausgeschaltet.',
     consentTitle: 'Bevor du Copilot nutzt',
     consentBody:
@@ -3971,7 +3982,7 @@ export const de: Localized<EnMessages> = {
     consentNever:
       'Dein Name, deine E-Mail-Adresse, Fotos und Sprachnachrichten werden nie gesendet.',
     consentWrong:
-      'KI kann sich irren. Ihre Antworten sind als KI gekennzeichnet, und bei der anderen Person kommt nichts an, solange du es nicht selbst sendest.',
+      'KI kann sich irren. Ihre Antworten sind mit Copilot gekennzeichnet, und bei der anderen Person kommt nichts an, solange du es nicht selbst sendest.',
     consentAccept: 'Copilot einschalten',
     consentDecline: 'Jetzt nicht',
     button: 'Copilot',
@@ -3989,7 +4000,6 @@ export const de: Localized<EnMessages> = {
     moreAt: 'Mehr um {time}',
     errQuota: 'Du hast die Copilot-Antworten für heute aufgebraucht. Mehr um {time}.',
     errQuotaNoTime: 'Du hast die Copilot-Antworten für heute aufgebraucht.',
-    errPartnerAge: 'Copilot liest diesen Chat nicht.',
     errBusy: 'Copilot ist gerade ausgelastet. Versuch es später noch mal.',
     errNoAnswer: 'Darauf hat Copilot keine Antwort gefunden.',
     errNetwork: 'Copilot ist nicht erreichbar.',

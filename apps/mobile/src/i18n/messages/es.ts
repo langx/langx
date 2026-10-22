@@ -22,7 +22,6 @@ export const es: Localized<EnMessages> = {
     checking: 'Comprobando…',
     oneMoment: 'Un momento…',
     skip: 'Ahora no',
-    comingSoon: 'PRÓXIMAMENTE',
     continue: 'Continuar',
     done: 'Listo',
     reset: 'Restablecer',
@@ -169,6 +168,12 @@ export const es: Localized<EnMessages> = {
     modeKeep: 'Mantener en el chat',
     send: 'Enviar',
     retake: 'Repetir',
+    hideOptions: 'Ocultar opciones',
+    showOptions: 'Mostrar opciones',
+    viewfinder: 'Vista de la cámara',
+    viewfinderHint: 'Pellizca para hacer zoom. Toca dos veces para cambiar de cámara.',
+    zoomedIn: 'Con zoom',
+    notZoomed: 'Sin zoom',
     hint: 'Toca para foto, mantén para vídeo',
     close: 'Cerrar cámara',
     flip: 'Cambiar cámara',
@@ -1521,6 +1526,9 @@ export const es: Localized<EnMessages> = {
     },
     pinnedMessage: 'Mensaje fijado',
     goToPinned: 'Ir al mensaje fijado',
+    pinnedFrom: 'Fijado · {name}',
+    pinnedLabel: 'Fijado',
+    unpinHint: 'Quita el mensaje fijado para los dos',
     backToLatest: 'Volver al final',
     jumpToNew: {
       one: 'Ir a {count} mensaje nuevo',
@@ -1763,8 +1771,8 @@ export const es: Localized<EnMessages> = {
     correctionPlaceholder: 'Reescribe la frase como la dirías tú…',
     startFromOriginal: 'Empezar desde el original',
     correctionReward: {
-      one: '+{count} ficha · Ilimitado en todos los planes',
-      other: '+{count} fichas · Ilimitado en todos los planes',
+      one: '+{count} ficha',
+      other: '+{count} fichas',
     },
     voiceNote: 'Nota de voz',
     top: 'Destacado',
@@ -3547,7 +3555,8 @@ export const es: Localized<EnMessages> = {
     nearbyBody:
       'Ordena por distancia. Tu ubicación se redondea; los demás solo ven una distancia aproximada.',
     copilot: 'Copiloto con IA',
-    copilotBody: 'Te ayuda a redactar y entender los mensajes mientras escribes.',
+    copilotBody:
+      'Te ayuda a redactar y entender los mensajes mientras escribes. Puede que aún no esté activo en tu cuenta.',
     quotaNotice:
       'Has usado los {count} chats nuevos de hoy. Puedes seguir respondiendo a todo lo que recibas, sin límite.',
     manageNotice: 'Tienes {plan}. Gestiónalo o cancélalo desde tu cuenta de la tienda.',
@@ -3649,6 +3658,8 @@ export const es: Localized<EnMessages> = {
     compareLanguages: 'Idiomas que aprendes',
     compareUnlimited: 'Sin límite',
     compareSoon: 'Pronto',
+    compareBeta: 'Beta',
+    betaTag: 'Beta, en despliegue gradual',
     compareIncluded: 'Incluido',
     compareNotIncluded: 'No incluido',
     yearlyBadge: '{perMonth} · {saving}',
@@ -3905,7 +3916,7 @@ export const es: Localized<EnMessages> = {
     },
   },
   copilot: {
-    label: 'IA · puede equivocarse',
+    label: 'Copilot · Beta',
     off: 'Copilot está desactivado.',
     consentTitle: 'Antes de usar Copilot',
     consentBody:
@@ -3914,7 +3925,7 @@ export const es: Localized<EnMessages> = {
       'Cuando preguntas, el texto sobre el que preguntas se envía a Anthropic, la empresa que gestiona el modelo de IA, junto con tus idiomas y niveles. Para explicar un mensaje, es solo el mensaje que elegiste, escrito por la otra persona. Para las ideas de respuesta, incluye los últimos mensajes del chat.',
     consentNever: 'Tu nombre, tu correo, tus fotos y tus notas de voz nunca se envían.',
     consentWrong:
-      'La IA puede equivocarse. Sus respuestas van marcadas como IA, y nada le llega a la otra persona a menos que lo envíes tú.',
+      'La IA puede equivocarse. Sus respuestas van marcadas como Copilot, y nada le llega a la otra persona a menos que lo envíes tú.',
     consentAccept: 'Activar Copilot',
     consentDecline: 'Ahora no',
     button: 'Copilot',
@@ -3932,7 +3943,6 @@ export const es: Localized<EnMessages> = {
     moreAt: 'Más a las {time}',
     errQuota: 'Ya usaste las respuestas de Copilot de hoy. Más a las {time}.',
     errQuotaNoTime: 'Ya usaste las respuestas de Copilot de hoy.',
-    errPartnerAge: 'Copilot no lee este chat.',
     errBusy: 'Copilot está ocupado. Inténtalo más tarde.',
     errNoAnswer: 'Copilot no pudo responder a eso.',
     errNetwork: 'No se pudo conectar con Copilot.',

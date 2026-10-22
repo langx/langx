@@ -179,6 +179,7 @@ import {
 import { FOLLOW_INVALIDATES, TIMELINE_KEY, timelinePath } from '../lib/feedQueryKeys'
 import { isStaleCursor } from '../lib/postRefusal'
 import type { MessagePageDto } from '../lib/messageCache'
+import { clearConversationUnread } from '../lib/readReceipts'
 
 /**
  * Query keys in one place. A typo in an inline key array is invisible — the
@@ -261,6 +262,11 @@ export const keys = {
    */
   messagesAround: (id: string, anchorId: string) => ['messages', id, 'around', anchorId] as const,
   starred: ['starred'] as const,
+  /**
+   * Deliberately *not* under `messages(id)`: that prefix is invalidated on
+   * every read receipt and every resume, and the strip only needs one row.
+   */
+  pinnedMessage: (id: string, messageId: string) => ['pinnedMessage', id, messageId] as const,
   /** Its own prefix: nothing patches it, and it is about a page, not a conversation. */
   linkPreview: (url: string) => ['linkPreview', url] as const,
   /** `GET /public/profiles/:handle`, the key `app/[username].tsx` also writes out by hand. */
@@ -558,7 +564,14 @@ export async function markConversationRead(
       unreadBefore?: number
       lastMessage?: { createdAt: string }
     }>(`/conversations/${conversationId}/read`)
-    await queryClient.invalidateQueries({ queryKey: ['conversations'] })
+    /*
+     * Patched, not invalidated: the read changed one number in the chat list,
+     * and it is known — this thread's count is zero now. Invalidating
+     * refetched every loaded page of the list, and the socket posts a read
+     * for each message landing in an open thread. Only a thread no loaded
+     * page holds still sends the list back to the server.
+     */
+    clearConversationUnread(queryClient, conversationId)
     invalidateUnread(queryClient)
     const count = read.unreadBefore ?? 0
     return count > 0 && read.lastMessage ? { count, until: read.lastMessage.createdAt } : null
@@ -1533,6 +1546,26 @@ function windowUrl(conversationId: string, param: MessageWindowParam): string {
  * The key is a child of `keys.messages(id)`, so socket patches written with
  * that prefix reach this cache too.
  */
+/**
+ * One message by id, for the v3 thread's pinned strip when the pin is older
+ * than the loaded pages: the `around` window cut to the anchor alone. Null
+ * when the window comes back without it, or with it hidden for this viewer —
+ * a message gone from their copy, which the strip says is deleted.
+ */
+export function usePinnedMessage(conversationId: string, messageId: string | null) {
+  return useQuery({
+    queryKey: keys.pinnedMessage(conversationId, messageId ?? ''),
+    queryFn: async () => {
+      const page = await getMessagePage(
+        `/conversations/${conversationId}/messages?around=${encodeURIComponent(messageId ?? '')}&limit=1`,
+      )
+      const found = page.items.find((m) => m._id === messageId)
+      return found && !found.hidden ? found : null
+    },
+    enabled: conversationId.length > 0 && Boolean(messageId),
+  })
+}
+
 export function useMessageWindow(conversationId: string, anchorId: string | null) {
   // Annotated rather than asserted: the literal has to keep its narrow `dir`
   // type, and a plain object literal in the option bag widens it to `string`.

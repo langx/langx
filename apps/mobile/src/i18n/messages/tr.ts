@@ -28,7 +28,6 @@ export const tr: Localized<EnMessages> = {
     checking: 'Kontrol ediliyor…',
     oneMoment: 'Bir saniye…',
     skip: 'Şimdilik geç',
-    comingSoon: 'YAKINDA',
     continue: 'Devam',
     done: 'Bitti',
     reset: 'Sıfırla',
@@ -172,6 +171,13 @@ export const tr: Localized<EnMessages> = {
     modeKeep: 'Sohbette kalsın',
     send: 'Gönder',
     retake: 'Yeniden çek',
+    hideOptions: 'Seçenekleri gizle',
+    showOptions: 'Seçenekleri göster',
+    viewfinder: 'Kamera görüntüsü',
+    viewfinderHint:
+      'Yakınlaştırmak için iki parmağını aç. Kamerayı değiştirmek için iki kez dokun.',
+    zoomedIn: 'Yakınlaştırıldı',
+    notZoomed: 'Yakınlaştırılmadı',
     hint: 'Fotoğraf için dokun, video için basılı tut',
     close: 'Kamerayı kapat',
     flip: 'Kamerayı çevir',
@@ -1496,6 +1502,9 @@ export const tr: Localized<EnMessages> = {
     },
     pinnedMessage: 'Sabitlenmiş mesaj',
     goToPinned: 'Sabitlenmiş mesaja git',
+    pinnedFrom: 'Sabitlenmiş · {name}',
+    pinnedLabel: 'Sabitlenmiş',
+    unpinHint: 'Sabitlemeyi ikiniz için de kaldırır',
     backToLatest: 'En sona dön',
     jumpToNew: {
       one: '{count} yeni mesaja atla',
@@ -1741,8 +1750,8 @@ export const tr: Localized<EnMessages> = {
     correctionPlaceholder: 'Cümleyi sen nasıl söylerdin, öyle yaz…',
     startFromOriginal: 'Orijinalden başla',
     correctionReward: {
-      one: '+{count} jeton · Her planda sınırsız',
-      other: '+{count} jeton · Her planda sınırsız',
+      one: '+{count} jeton',
+      other: '+{count} jeton',
     },
     voiceNote: 'Ses kaydı',
     top: 'Öne çıkan',
@@ -3502,7 +3511,8 @@ export const tr: Localized<EnMessages> = {
     nearbyBody:
       'Kişileri mesafeye göre sırala. Konumun yuvarlanır; başkaları yalnızca kaba bir mesafe görür.',
     copilot: 'Yapay zekâ yardımcısı',
-    copilotBody: 'Yazarken mesajları kurmana ve anlamana yardım eder.',
+    copilotBody:
+      'Yazarken mesajları kurmana ve anlamana yardım eder. Hesabında henüz açık olmayabilir.',
     quotaNotice:
       'Bugünkü {count} yeni sohbet hakkını kullandın. Sana gelen her mesaja sınırsız cevap vermeye devam edebilirsin.',
     manageNotice: '{plan} kullanıyorsun. Mağaza hesabından yönetebilir ya da iptal edebilirsin.',
@@ -3603,6 +3613,8 @@ export const tr: Localized<EnMessages> = {
     compareLanguages: 'Öğrendiğin diller',
     compareUnlimited: 'Sınırsız',
     compareSoon: 'Yakında',
+    compareBeta: 'Beta',
+    betaTag: 'Beta, kademeli açılıyor',
     compareIncluded: 'Dahil',
     compareNotIncluded: 'Dahil değil',
     yearlyBadge: '{perMonth} · {saving}',
@@ -3859,7 +3871,7 @@ export const tr: Localized<EnMessages> = {
     },
   },
   copilot: {
-    label: 'Yapay zekâ · yanılabilir',
+    label: 'Copilot · Beta',
     off: 'Copilot kapalı.',
     consentTitle: 'Copilot: başlamadan önce',
     consentBody:
@@ -3868,7 +3880,7 @@ export const tr: Localized<EnMessages> = {
       'Sorduğunda, sorduğun metin dillerin ve seviyelerinle birlikte yapay zekâ modelini çalıştıran şirket olan Anthropic’e gider. Bir mesajı açıklatırken bu, seçtiğin ve karşı tarafın yazdığı tek mesajdır. Yanıt önerilerinde sohbetteki son birkaç mesaj da gider.',
     consentNever: 'Adın, e-posta adresin, fotoğrafların ve sesli mesajların asla gönderilmez.',
     consentWrong:
-      'Yapay zekâ yanılabilir. Yanıtları yapay zekâ olarak işaretlenir ve sen kendin göndermedikçe karşı tarafa hiçbir şey ulaşmaz.',
+      'Yapay zekâ yanılabilir. Yanıtları Copilot olarak işaretlenir ve sen kendin göndermedikçe karşı tarafa hiçbir şey ulaşmaz.',
     consentAccept: 'Kabul et ve aç',
     consentDecline: 'Şimdi değil',
     button: 'Copilot',
@@ -3886,7 +3898,6 @@ export const tr: Localized<EnMessages> = {
     moreAt: 'Yenisi saat {time}',
     errQuota: 'Bugünkü Copilot yanıtlarını kullandın. Yenisi saat {time}.',
     errQuotaNoTime: 'Bugünkü Copilot yanıtlarını kullandın.',
-    errPartnerAge: 'Copilot bu sohbeti okumaz.',
     errBusy: 'Copilot şu an meşgul. Daha sonra tekrar dene.',
     errNoAnswer: 'Copilot buna yanıt veremedi.',
     errNetwork: 'Copilot’a ulaşılamadı.',

@@ -29,7 +29,6 @@ export const ru: Localized<EnMessages> = {
     checking: 'Проверяем…',
     oneMoment: 'Минуту…',
     skip: 'Пока пропустить',
-    comingSoon: 'СКОРО',
     continue: 'Далее',
     done: 'Готово',
     reset: 'Сбросить',
@@ -195,6 +194,13 @@ export const ru: Localized<EnMessages> = {
     modeKeep: 'Оставить в чате',
     send: 'Отправить',
     retake: 'Переснять',
+    hideOptions: 'Скрыть параметры',
+    showOptions: 'Показать параметры',
+    viewfinder: 'Изображение с камеры',
+    viewfinderHint:
+      'Сведите или разведите пальцы, чтобы изменить масштаб. Коснитесь дважды, чтобы сменить камеру.',
+    zoomedIn: 'Увеличено',
+    notZoomed: 'Без увеличения',
     hint: 'Нажмите — фото, удерживайте — видео',
     close: 'Закрыть камеру',
     flip: 'Сменить камеру',
@@ -1720,6 +1726,9 @@ export const ru: Localized<EnMessages> = {
     },
     pinnedMessage: 'Закреплённое сообщение',
     goToPinned: 'К закреплённому сообщению',
+    pinnedFrom: 'Закреплено · {name}',
+    pinnedLabel: 'Закреплено',
+    unpinHint: 'Открепляет сообщение для вас обоих',
     backToLatest: 'Вернуться в конец',
     jumpToNew: {
       one: 'Перейти к {count} новому сообщению',
@@ -2005,10 +2014,10 @@ export const ru: Localized<EnMessages> = {
     correctionPlaceholder: 'Перепиши предложение своими словами…',
     startFromOriginal: 'Начать с оригинала',
     correctionReward: {
-      one: '+{count} жетон · Без ограничений на любом тарифе',
-      few: '+{count} жетона · Без ограничений на любом тарифе',
-      many: '+{count} жетонов · Без ограничений на любом тарифе',
-      other: '+{count} жетона · Без ограничений на любом тарифе',
+      one: '+{count} жетон',
+      few: '+{count} жетона',
+      many: '+{count} жетонов',
+      other: '+{count} жетона',
     },
     voiceNote: 'Голосовая заметка',
     top: 'Топ',
@@ -4124,7 +4133,8 @@ export const ru: Localized<EnMessages> = {
     nearbyBody:
       'Сортируй по расстоянию. Местоположение округляется; другие видят лишь примерное расстояние.',
     copilot: 'ИИ-помощник',
-    copilotBody: 'Помогает составлять и понимать сообщения прямо во время письма.',
+    copilotBody:
+      'Помогает составлять и понимать сообщения прямо во время письма. В твоём аккаунте он может быть ещё не включён.',
     quotaNotice:
       'Ты израсходовал {count} новых чатов на сегодня. Отвечать на всё входящее по-прежнему можно без ограничений.',
     manageNotice: 'У тебя {plan}. Управлять или отменить можно в аккаунте магазина.',
@@ -4244,6 +4254,8 @@ export const ru: Localized<EnMessages> = {
     compareLanguages: 'Изучаемые языки',
     compareUnlimited: 'Без лимита',
     compareSoon: 'Скоро',
+    compareBeta: 'Бета',
+    betaTag: 'Бета, открываем постепенно',
     compareIncluded: 'Есть',
     compareNotIncluded: 'Нет',
     yearlyBadge: '{perMonth} · {saving}',
@@ -4551,7 +4563,7 @@ export const ru: Localized<EnMessages> = {
     },
   },
   copilot: {
-    label: 'ИИ · может ошибаться',
+    label: 'Copilot · Бета',
     off: 'Copilot выключен.',
     consentTitle: 'Прежде чем пользоваться Copilot',
     consentBody:
@@ -4560,7 +4572,7 @@ export const ru: Localized<EnMessages> = {
       'Когда ты спрашиваешь, текст, о котором ты спросил, вместе с твоими языками и уровнями уходит в Anthropic — компанию, которая управляет ИИ-моделью. Чтобы объяснить сообщение, отправляется только выбранное тобой сообщение собеседника. Для идей ответа — ещё несколько последних сообщений чата.',
     consentNever: 'Твоё имя, почта, фото и голосовые сообщения никогда не отправляются.',
     consentWrong:
-      'ИИ может ошибаться. Его ответы помечены как ИИ, и собеседник ничего не получит, пока ты сам не отправишь.',
+      'ИИ может ошибаться. Его ответы помечены как Copilot, и собеседник ничего не получит, пока ты сам не отправишь.',
     consentAccept: 'Включить Copilot',
     consentDecline: 'Не сейчас',
     button: 'Copilot',
@@ -4583,7 +4595,6 @@ export const ru: Localized<EnMessages> = {
     moreAt: 'Ещё в {time}',
     errQuota: 'Ответы Copilot на сегодня закончились. Ещё в {time}.',
     errQuotaNoTime: 'Ответы Copilot на сегодня закончились.',
-    errPartnerAge: 'Copilot не читает этот чат.',
     errBusy: 'Copilot занят. Попробуй позже.',
     errNoAnswer: 'Copilot не смог на это ответить.',
     errNetwork: 'Не удалось связаться с Copilot.',

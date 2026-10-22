@@ -1,6 +1,7 @@
 import { AudioModule, RecordingPresets, useAudioRecorder, useAudioRecorderState } from 'expo-audio'
 import { Platform } from 'react-native'
 import { ensurePlaybackAudioMode, ensureRecordingAudioMode } from '../lib/audioSession'
+import { impact } from '../lib/haptics'
 import { nativeRecordingType, webRecorderMimeType, webRecordingType } from '../lib/recordingFormat'
 import { currentTranslate } from '../i18n/runtime'
 import { useCallback, useState } from 'react'
@@ -71,11 +72,17 @@ export function useVoiceRecorder() {
     await ensureRecordingAudioMode()
     await recorder.prepareToRecordAsync()
     recorder.record()
+    // After `record()`, not on the press: the buzz says the microphone is
+    // live, and a refused permission or a failed prepare must not claim it.
+    void impact('medium')
     return true
   }, [recorder])
 
   const stop = useCallback(async (): Promise<Recording | null> => {
     await recorder.stop()
+    // Lighter than the start: the take is in hand. A cancel stays silent —
+    // nothing was kept, so there is nothing to feel.
+    void impact('light')
     // Back to playback, so the note that is about to be played — and every
     // note played later in this session — is not left in a recording session.
     await ensurePlaybackAudioMode()

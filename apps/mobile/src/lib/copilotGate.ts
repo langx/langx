@@ -5,7 +5,7 @@ import { COPILOT_RULES, type CopilotStatus } from '@langx/shared'
  *
  * - `off` — say Copilot is off, and nothing else. The operator's switch is
  *   off, there is no key, the account is not on the operator's allow-list,
- *   it is under Copilot's age, or the API predates Copilot. Nothing breaks
+ *   or the API predates Copilot. Nothing breaks
  *   and nothing is asked; the v3 thread draws no Copilot control at all.
  * - `consent` — show the consent sheet first. Nothing is sent before it.
  * - `ready` — ask.
@@ -30,11 +30,10 @@ export function copilotGate(
  * Which of the composer's two questions the draft can be asked.
  *
  * Neither while writing a correction: that draft starts as the other
- * person's sentence, and Check and Say it send only the asker's own text —
- * which is why the partner-age guard leaves them alone on the server.
- * Sending their words through either would show the model the one thing that
- * guard keeps from it. Over a question's cap its row is not offered, since
- * the server would refuse it; Say it also needs a language to say it in.
+ * person's sentence, and the correction is meant to be the person's own
+ * work — Copilot explains a human's change, it never offers one of its own.
+ * Over a question's cap its row is not offered, since the server would
+ * refuse it; Say it also needs a language to say it in.
  */
 export function copilotOffers(
   draft: string,

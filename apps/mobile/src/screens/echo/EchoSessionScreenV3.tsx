@@ -29,6 +29,7 @@ import Reanimated, {
   ReduceMotion,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withTiming,
 } from 'react-native-reanimated'
 import { cardTone } from '../../components/echo/EchoCardsV3Parts'
@@ -42,13 +43,14 @@ import {
 import { Button } from '../../components/ui/Button'
 import { EmptyStateV3 } from '../../components/ui/EmptyStateV3'
 import { FitText } from '../../components/ui/FitText'
+import { PressableScale } from '../../components/ui/PressableScale'
 import { ProgressBar } from '../../components/ui/ProgressBar'
 import { Screen } from '../../components/ui/Screen'
 import { Skeleton } from '../../components/ui/Skeleton'
 import type { useKeyboardClearance } from '../../hooks/useKeyboardClearance'
 import { useProfileCache } from '../../hooks/useProfileCache'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
-import { useT } from '../../i18n'
+import { useLocale, useT } from '../../i18n'
 import { useDisplayNames } from '../../i18n/displayNames'
 import { voiceLabel } from '../../i18n/labels'
 import type { EchoAskParams } from '../../lib/echoAsk'
@@ -56,7 +58,7 @@ import { faceAngle, faceOpacity, type FlipFace } from '../../lib/echoFlip'
 import { spokenGrade } from '../../lib/format'
 import { goBackTo } from '../../lib/navigation'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
-import { TIMING } from '../../lib/theme/motion'
+import { PRESS_SCALE_CARD, STAGGER, TIMING, unlessReduced } from '../../lib/theme/motion'
 
 /** As on the current session card, and for the same reason: never crop the picture. */
 const PICTURE_MAX_HEIGHT = 240
@@ -155,37 +157,52 @@ export function EchoSessionScreenV3(props: EchoSessionV3Props) {
           style={styles.scroll}
           contentContainerStyle={styles.body}
         >
+          {/*
+            Keyed by card, so each new card arrives: it slides in from the
+            trailing edge, and the one graded simply goes — nobody watches a
+            card they have finished with leave. The first card came in with
+            the screen. The key also starts the next card face up, rather
+            than turning back.
+          */}
           {producing ? (
             <>
-              <CardBlock {...props} />
-              {revealed ? <Answer {...props} /> : null}
+              <Arrive key={props.card._id} dx={index > 0 ? 24 : 0}>
+                <CardBlock {...props} />
+              </Arrive>
+              {revealed ? (
+                <Arrive dy={12}>
+                  <Answer {...props} />
+                </Arrive>
+              ) : null}
             </>
           ) : (
             <>
-              {/* Keyed by card, so the next card starts face up rather than turning back. */}
-              <FlipCard
-                key={props.card._id}
-                revealed={revealed}
-                // Edit is offered only once the answer is up, which is the
-                // back's moment: on the front it would pop into the row as the
-                // card turned away.
-                front={<CardBlock {...props} onEdit={null} />}
-                back={<CardBack {...props} />}
-                backStyle={[styles.backFace, { borderColor: edge }]}
-              />
+              <Arrive key={props.card._id} dx={index > 0 ? 24 : 0}>
+                <FlipCard
+                  revealed={revealed}
+                  // Edit is offered only once the answer is up, which is the
+                  // back's moment: on the front it would pop into the row as
+                  // the card turned away.
+                  front={<CardBlock {...props} onEdit={null} />}
+                  back={<CardBack {...props} />}
+                  backStyle={[styles.backFace, { borderColor: edge }]}
+                />
+              </Arrive>
               {/*
                 Under the card rather than on a face, so they are there on
                 both sides — hearing it again is most use once the meaning is
                 up — and one set of players, so a take autoplaying on the
                 front plays on while the card turns.
               */}
-              <Takes
-                card={props.card}
-                autoplay={props.autoplay}
-                onHue={false}
-                fill={v3.colors.bg}
-                ink={v3.colors.fg}
-              />
+              <Arrive key={`${props.card._id}:takes`} dx={index > 0 ? 24 : 0}>
+                <Takes
+                  card={props.card}
+                  autoplay={props.autoplay}
+                  onHue={false}
+                  fill={v3.colors.bg}
+                  ink={v3.colors.fg}
+                />
+              </Arrive>
             </>
           )}
           {/*
@@ -201,14 +218,19 @@ export function EchoSessionScreenV3(props: EchoSessionV3Props) {
         <View style={styles.actions}>
           {revealed ? (
             <View style={styles.grades}>
-              {ECHO_GRADES.map((value) => (
-                <GradeTile
-                  key={value}
-                  value={value}
-                  interval={props.intervalLabel(value)}
-                  minutes={props.delayMinutes(value)}
-                  onPress={() => props.onGrade(value)}
-                />
+              {/*
+                Rising a beat apart, and pressable from the first frame: the
+                motion is only how they arrive, never something to wait for.
+              */}
+              {ECHO_GRADES.map((value, order) => (
+                <Arrive key={value} dy={8} delay={order * STAGGER} style={styles.gradeSlot}>
+                  <GradeTile
+                    value={value}
+                    interval={props.intervalLabel(value)}
+                    minutes={props.delayMinutes(value)}
+                    onPress={() => props.onGrade(value)}
+                  />
+                </Arrive>
               ))}
             </View>
           ) : (
@@ -223,6 +245,44 @@ export function EchoSessionScreenV3(props: EchoSessionV3Props) {
       </Animated.View>
     </Screen>
   )
+}
+
+/**
+ * A block arriving once, when it mounts: `dx` points in from the trailing
+ * edge (mirrored for right-to-left), or `dy` points up from below, fading in
+ * over `TIMING.enter`. Transform and opacity only, started from an effect on
+ * the UI thread; with reduce motion the block is simply there.
+ */
+function Arrive({
+  dx = 0,
+  dy = 0,
+  delay = 0,
+  style,
+  children,
+}: {
+  dx?: number
+  dy?: number
+  delay?: number
+  style?: StyleProp<ViewStyle>
+  children: ReactNode
+}) {
+  const reduce = useReduceMotion()
+  const { isRtl } = useLocale()
+  const still = dx === 0 && dy === 0
+  const shown = useSharedValue(reduce || still ? 1 : 0)
+  useEffect(() => {
+    if (still) return
+    shown.set(unlessReduced(reduce, 1, (to) => withDelay(delay, withTiming(to, TIMING.enter))))
+  }, [reduce, delay, still, shown])
+  const from = isRtl ? -dx : dx
+  const motion = useAnimatedStyle(() => {
+    const left = 1 - shown.get()
+    return {
+      opacity: shown.get(),
+      transform: [{ translateX: left * from }, { translateY: left * dy }],
+    }
+  })
+  return <Reanimated.View style={[style, motion]}>{children}</Reanimated.View>
 }
 
 /** While the deck is on its way: the header and the card's place. */
@@ -776,11 +836,12 @@ function GradeTile({
   const t = useT()
   const good = value === 'good'
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityLabel={spokenGrade(t, t(`echo.${value}`), minutes)}
       onPress={onPress}
-      style={({ pressed }) => [styles.grade, good && styles.gradeGood, pressed && styles.pressed]}
+      scaleTo={PRESS_SCALE_CARD}
+      style={[styles.grade, good && styles.gradeGood]}
     >
       {/*
         Shrinks rather than truncates: four tiles on a 375pt phone leave about
@@ -793,7 +854,7 @@ function GradeTile({
       <Text style={[styles.gradeInterval, good && styles.gradeOnYellow]} numberOfLines={1}>
         {interval}
       </Text>
-    </Pressable>
+    </PressableScale>
   )
 }
 
@@ -903,11 +964,11 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingTop: v3.space[10],
   },
   grades: { flexDirection: 'row', gap: v3.space[8] },
+  gradeSlot: { flex: 1, minWidth: 0 },
   grade: {
     alignItems: 'center',
     backgroundColor: v3.colors.surface,
     borderRadius: v3.radius.tile,
-    flex: 1,
     gap: v3.space[2],
     height: GRADE_HEIGHT,
     justifyContent: 'center',
