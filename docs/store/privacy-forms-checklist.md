@@ -158,33 +158,75 @@ be redeemed, and the outcome is a free grant rather than a wager — so Apple's
 questionnaire (gambling, loot boxes bought with money) stays as it is. The
 messaging rules that keep it that way are in `docs/token-messaging-brief.md`.
 
-## 7. Copilot — only on the day it is switched on
+## 7. Copilot — live, and the two forms still to update
 
-**Untick nothing and tick nothing here until then.** Copilot's server side
-ships dark (`privacy-data-safety.md` → _Copilot_); while `flags.copilotEnabled`
-is off no text reaches the provider, and a form that names one would be ahead
-of the app. Behic does each step himself, in this order, and the flag is last:
+**The flag is on.** `flags.copilotEnabled` is on in production and Copilot
+answers allow-listed accounts only (`privacy-data-safety.md` → _Copilot_). The
+privacy policy came first and is published; the two forms below are Behic's to
+transcribe. No new data type appears on either: chat text is already
+collected, and what changes is that a processor (Anthropic) sees some of it.
 
-- [ ] **Privacy policy (langx.io), first.** Name Anthropic as the processor
-      for Copilot. Say what it receives — the text asked about with the
-      person's languages and levels and app language; for Reply ideas the last
-      six text lines of that chat, both people's, each cut to 200 characters
-      and labelled only "me" or "them"; for Explain the original, the fix and
-      the corrector's note — and what it never receives: names, handles, ids,
-      email, photos, voice notes, view-once messages. Say it happens only after
-      the in-app consent, which can be withdrawn; that our cache keeps an
-      answer for 7 days linked to no account; that it is not available to
-      16- and 17-year-olds and their messages are not sent; and the provider's
-      own retention and training terms as it publishes them.
-- [ ] **Play Data Safety → Messages → Other in-app messages.** Stays
-      collected, **not shared** — a service provider processing for us is not
-      sharing on Play's definition — purpose **App functionality**. Read the
-      form's help text on service providers before relying on that sentence.
-      No new data type.
-- [ ] **Apple App Privacy → User Content** (Emails or Text Messages / Other
-      User Content). Confirm it is declared, linked to the user, purpose **App
-      Functionality**; tracking stays **no**. Apple counts what a processor
-      receives as collected by the app, which it already is.
+- [x] **Privacy policy (langx.io), first.** Published 22 October 2026
+      (langx/website #292): §2.6 names Anthropic as processor and model
+      provider and says, per help, what it receives and what it never does;
+      the training and 30-day retention terms Anthropic publishes; our 7-day
+      answer cache, linked to no account; consent on first use, versioned,
+      withdrawn in Settings → Privacy → Copilot; what a report carries; beta,
+      allow-list only, may be wrong; no age rule beyond the app's 16+. §5,
+      §6, §10.7 and §11 carry the matching lines. (An earlier draft of this
+      item said 16- and 17-year-olds were excluded; that has not been true
+      since #1927.)
+
+### Play Data Safety — answers to paste
+
+Play asks per data type; Copilot changes the answers on two existing rows and
+adds none.
+
+- [ ] **Messages → Other in-app messages** — already declared; confirm:
+  - Collected: **Yes**
+  - Shared: **No**. Anthropic is a service provider processing the text on our
+    behalf, which Play's definition of sharing excludes — the same reasoning
+    as PostHog.
+  - Processed ephemerally: **No** (chat messages are stored; Copilot's answer
+    cache keeps an answer for 7 days)
+  - Required or optional: **unchanged** (chat itself is core; Copilot is an
+    opt-in on top of it)
+  - Purposes: **App functionality** (only). Copilot's answers are app
+    functionality; nothing goes to analytics, advertising, personalisation or
+    account management.
+  - This also covers the draft a person asks Check or Say it about, and the
+    answer and optional draft in a Copilot report: they are message text.
+- [ ] **App activity → App interactions** — already declared for Analytics;
+      add one purpose:
+  - Collected: **Yes**. Shared: **No**. Processed ephemerally: **No**.
+  - Required or optional: **Optional** (unchanged: Copilot is opt-in, and
+    analytics has its own switch)
+  - Purposes: **Analytics** (existing) **+ App functionality** (new). The
+    daily Copilot limit stores, on the account, when each answer was used in
+    the last 24 hours (`profiles.quota.copilot`). That is a usage record kept
+    to run a feature, not to measure it.
+- [ ] **Security practices** — unchanged: data is encrypted in transit
+      (**Yes**); deletion is by the Delete account URL.
+
+### Apple App Privacy — answers to paste
+
+- [ ] **User Content → Other User Content** (or **Emails or Text Messages**,
+      whichever already carries chat messages — keep the same one) — confirm:
+  - Collected: **Yes**
+  - Linked to the user: **Yes**. Anthropic receives the text without any
+    identifier, but the same text is stored in our database against the
+    account, and Apple asks about the data, not about one copy of it.
+  - Used for tracking: **No**. Nothing is combined with other companies' data
+    and nothing goes to a broker or an ad network.
+  - Purposes: **App Functionality** (only)
+- [ ] **Usage Data → Product Interaction** — already declared for Analytics;
+      add one purpose:
+  - Linked to the user: **Yes**. Used for tracking: **No**.
+  - Purposes: **Analytics** (existing) **+ App Functionality** (new), for the
+    same per-account timestamps behind the daily Copilot limit.
+- [ ] **Tracking: stays "No"** for the app as a whole. No IDFA, no
+      `NSUserTrackingUsageDescription`.
+
 - [ ] **App Review notes**, with the build whose screens offer Copilot:
       describe it and its consent sheet (guideline 5.1.2(i)).
 - [x] **Before the flag, in the app:** a Settings control to withdraw consent,
@@ -200,7 +242,8 @@ of the app. Behic does each step himself, in this order, and the flag is last:
       sent for review: both arrive with the over-the-air update.
 - [ ] **A spend limit** on the key's workspace with the provider —
       `COPILOT_RULES.globalCallsPerDay` is our ceiling; that one is theirs.
-- [ ] **Then the flag:** `scripts/maintenance.ts flag copilotEnabled true`.
+- [x] **Then the flag:** `scripts/maintenance.ts flag copilotEnabled true`.
+      On in production, allow-listed accounts only.
 
 ## Reference — the rest of the Play form
 
