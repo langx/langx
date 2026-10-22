@@ -25,6 +25,11 @@ export function hasCopilotAccess(profile: Pick<Profile, 'copilotAccess'>): boole
  *
  * Allowing an account that already is keeps the first date: the row says
  * when the person started, not when somebody last pressed the switch.
+ *
+ * Taking access back takes the consent with it. While an account is off the
+ * list the app shows it no Copilot row, so there is nowhere to withdraw from;
+ * a consent left behind would let a later re-allow answer without asking
+ * again, on an agreement the person could not see or take back meanwhile.
  */
 export async function setCopilotAccess(
   db: Db,
@@ -34,7 +39,10 @@ export async function setCopilotAccess(
 ): Promise<boolean> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
   if (!allowed) {
-    const result = await profiles.updateOne({ _id: userId }, { $unset: { copilotAccess: '' } })
+    const result = await profiles.updateOne(
+      { _id: userId },
+      { $unset: { copilotAccess: '', copilotConsent: '' } },
+    )
     return result.matchedCount === 1
   }
   const fresh = await profiles.updateOne(

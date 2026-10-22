@@ -154,6 +154,12 @@ export const dataExportSchema = z.object({
   calls: z.array(z.unknown()),
   /** The phones registered to be rung, without the tokens that ring them. */
   callEndpoints: z.array(z.unknown()),
+  /**
+   * Copilot answers this user reported: the answer, which help wrote it, the
+   * draft only when they chose to send it, and the report's status. Not the
+   * operators' note on it.
+   */
+  copilotReports: z.array(z.unknown()),
 })
 export type DataExport = z.infer<typeof dataExportSchema>
 

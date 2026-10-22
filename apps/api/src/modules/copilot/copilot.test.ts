@@ -227,8 +227,20 @@ describe('Copilot', () => {
         .collection<{ copilotAccess?: { at: Date } }>(COLLECTIONS.profiles)
         .findOne({ _id: me as never })
       expect(row?.copilotAccess?.at).toEqual(NOW)
+      await recordCopilotConsent(handle.db, me, COPILOT_RULES.consentVersion, NOW)
       expect((await askCopilot(deps, me, 'en', check(), NOW)).source).toBe('ai')
       expect(await setCopilotAccess(handle.db, 'nobody', true, NOW)).toBe(false)
+    })
+
+    it('takes the consent with the access, so allowing again asks again', async () => {
+      expect((await getCopilotStatus(deps, me)).consented).toBe(true)
+      await setCopilotAccess(handle.db, me, false)
+      await setCopilotAccess(handle.db, me, true, NOW)
+
+      expect((await getCopilotStatus(deps, me)).consented).toBe(false)
+      const error = await refusal(askCopilot(deps, me, 'en', check(), NOW))
+      expect(error.code).toBe('COPILOT_CONSENT_REQUIRED')
+      expect(model.asked).toHaveLength(0)
     })
   })
 
