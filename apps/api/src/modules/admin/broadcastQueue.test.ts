@@ -551,4 +551,45 @@ describe('the in-app broadcast queue', () => {
         .countDocuments({ clientId: 'broadcast:muted:anna' }),
     ).toBe(1)
   })
+
+  /*
+   * The knock is a message push, so it answers to the messages switch the way
+   * every other push from @langx does — the fan-out's notes, the Pro gift, the
+   * end of a suspension. The message is still written: the switch is about
+   * being buzzed, not about the thread.
+   */
+  it('writes to a reader whose message push is off, and does not push them', async () => {
+    await Promise.all([
+      member('anna', {
+        settings: { discoverable: true, notifications: { messages: { push: false, email: true } } },
+      }),
+      member('bruno'),
+    ])
+    await db.collection(COLLECTIONS.devices).insertMany(
+      ['anna', 'bruno'].map((userId) => ({
+        userId,
+        deviceId: `phone-${userId}`,
+        pushToken: `token-${userId}`,
+        platform: 'ios',
+        createdAt: NOON,
+        updatedAt: NOON,
+      })),
+    )
+    await createBroadcast(db, {
+      id: 'switched-off',
+      bodies: { en: 'Something new' },
+      pushTitle: 'LangX',
+      createdBy: 'test',
+    })
+    await arm(db, 'switched-off')
+
+    const pushes = new LoggingPushSender()
+    expect(await runBroadcastQueuePass(db, pushes, NOON)).toEqual({ sent: 2 })
+    expect(pushes.sent.flatMap((message) => message.to)).toEqual(['token-bruno'])
+    expect(
+      await db
+        .collection(COLLECTIONS.messages)
+        .countDocuments({ clientId: 'broadcast:switched-off:anna' }),
+    ).toBe(1)
+  })
 })
