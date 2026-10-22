@@ -81,9 +81,7 @@ describe('createReplyIdeasCache', () => {
 describe('copilotEmptyThread', () => {
   it('is the server’s nothing-to-reply-to, and nothing else', () => {
     expect(copilotEmptyThread({ code: 'VALIDATION_FAILED', reason: 'empty_thread' })).toBe(true)
-    expect(copilotEmptyThread({ code: 'VALIDATION_FAILED', reason: 'not_explainable' })).toBe(
-      false,
-    )
+    expect(copilotEmptyThread({ code: 'VALIDATION_FAILED', reason: 'not_explainable' })).toBe(false)
     expect(copilotEmptyThread({ code: 'COPILOT_UNAVAILABLE', reason: 'empty_thread' })).toBe(false)
     expect(copilotEmptyThread(new Error('offline'))).toBe(false)
   })
