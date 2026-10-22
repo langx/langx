@@ -933,12 +933,29 @@ export function useDiscovery(
   { enabled = true }: { enabled?: boolean } = {},
 ) {
   const search = new URLSearchParams(params).toString()
+  const client = useQueryClient()
   return useInfiniteQuery({
     queryKey: keys.discovery(search),
-    queryFn: ({ pageParam }) =>
-      api.get<DiscoveryResult>(
-        `/discovery?${search}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
-      ),
+    /*
+     * The recommended cursor expires an hour after page one, by design — see
+     * `DISCOVERY_CURSOR_MAX_AGE_MS`. Discover stays mounted under its tab and
+     * its pages are persisted, so a list opened this morning asks for page
+     * two with this morning's cursor; that is the server's `stale_cursor`, and
+     * the answer is page one again, as `useFeed` does, not a list that quietly
+     * stops growing.
+     */
+    queryFn: async ({ pageParam }) => {
+      try {
+        return await api.get<DiscoveryResult>(
+          `/discovery?${search}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
+        )
+      } catch (error) {
+        if (pageParam && isStaleCursor(error)) {
+          setTimeout(() => void client.resetQueries({ queryKey: keys.discovery(search) }), 0)
+        }
+        throw error
+      }
+    },
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
     enabled,
