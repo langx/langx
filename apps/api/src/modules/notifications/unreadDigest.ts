@@ -11,7 +11,8 @@ import { COLLECTIONS } from '../../db/collections'
 import { unreadDigestSection as buildSection } from '../../email/templates'
 import type { Conversation } from '../chat/conversations'
 import { blockedUserIds } from '../moderation/blocks'
-import { fetchAvatarAsset, type AvatarFace } from '../../email/avatars'
+import { drawnFaceAsset, fetchAvatarAsset, type AvatarFace } from '../../email/avatars'
+import { drawnFaceRev, FACE_OWNER_FIELDS } from '../avatars/surfaces'
 import { alreadyClaimed, claimOnce } from './ledger'
 import type { DigestCandidate } from './digest'
 import type { Profile } from '../profiles/profiles'
@@ -89,15 +90,15 @@ export async function unreadDigestSection(
   const partners = await profiles
     .find(
       { _id: { $in: partnerIds }, deletedAt: { $exists: false } },
-      { projection: { displayName: 1, handle: 1, avatarUrl: 1 } },
+      { projection: { displayName: 1, handle: 1, ...FACE_OWNER_FIELDS } },
     )
     .toArray()
   const byId = new Map(partners.map((partner) => [partner._id, partner]))
   /*
    * Faces, not just names. The photo is fetched here rather than linked, for
-   * the reason every image in this app's mail is — see `email/avatars.ts` —
-   * and a fetch that fails leaves initials on a coloured disc, which is what
-   * somebody with no photo gets anyway.
+   * the reason every image in this app's mail is — see `email/avatars.ts`.
+   * Somebody with no photo gets their drawn face, inlined the same way, and
+   * a fetch that fails leaves initials on a coloured disc.
    */
   const faces: AvatarFace[] = []
   for (const id of partnerIds) {
@@ -106,7 +107,7 @@ export async function unreadDigestSection(
     if (!partner || !name) continue
     const asset = partner.avatarUrl
       ? await fetchAvatarAsset(partner.avatarUrl, `avatar-${id}`, storagePublicBaseUrl)
-      : null
+      : await drawnFaceAsset(drawnFaceRev(partner), `avatar-${id}`)
     faces.push({
       name,
       seed: id,

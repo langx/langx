@@ -21,7 +21,18 @@ const PAIRS: readonly { current: string; v3: string; except?: readonly string[] 
   { current: 'share-profile.tsx', v3: 'me/ShareProfileScreenV3.tsx' },
   { current: 'testimonials.tsx', v3: 'me/TestimonialsScreenV3.tsx' },
   { current: 'profile-testimonials.tsx', v3: 'me/ProfileTestimonialsScreenV3.tsx' },
-  { current: 'edit-profile.tsx', v3: 'me/EditProfileScreenV3.tsx' },
+  // v3 draws no pronouns, so its form does not ask for them (_v3 draws no
+  // pronouns_ in docs/decisions.md).
+  {
+    current: 'edit-profile.tsx',
+    v3: 'me/EditProfileScreenV3.tsx',
+    except: [
+      'editProfile.pronouns',
+      'editProfile.pronounsPlaceholder',
+      'editProfile.pronounsHint',
+      'pronouns.trim',
+    ],
+  },
   // The day counts are formatted for the locale (`toLocaleString`), not `String`ed.
   {
     current: 'streak/leaderboard.tsx',

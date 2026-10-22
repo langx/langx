@@ -1,7 +1,8 @@
 import { MATCH_SUGGESTIONS, discoveryQuerySchema, profileUrl, type Locale } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
-import { fetchAvatarAsset, type AvatarFace } from '../../email/avatars'
+import { DEFAULT_AVATAR_STYLE } from '@langx/shared'
+import { drawnFaceAsset, fetchAvatarAsset, type AvatarFace } from '../../email/avatars'
 import { matchSuggestionsSection } from '../../email/templates'
 import type { Conversation } from '../chat/conversations'
 import { discoverProfiles } from '../discovery/discovery'
@@ -80,7 +81,10 @@ export async function matchSuggestionsSectionFor(
   for (const item of shown) {
     const asset = item.avatarUrl
       ? await fetchAvatarAsset(item.avatarUrl, `match-${item._id}`, storagePublicBaseUrl)
-      : null
+      : await drawnFaceAsset(
+          DEFAULT_AVATAR_STYLE === 'v3' ? item.defaultAvatarRev : undefined,
+          `match-${item._id}`,
+        )
     faces.push({
       name: item.displayName,
       seed: item._id,

@@ -2,6 +2,7 @@ import {
   CALL_CANCEL_KIND,
   CALL_RING_KIND,
   DEFAULT_LOCALE,
+  defaultAvatarUrl,
   type ApnsEnvironment,
   type CallEndReason,
   type CallPeer,
@@ -9,12 +10,19 @@ import {
   type Locale,
 } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
+import { publicApiUrl } from '../../env'
 import { translator } from '../../i18n'
 import { devicesFor, sendCallSignalPush, sendPush, type Device } from '../push/devices'
 import { CALL_TOKEN_GRACE_SECONDS, signCallToken } from './callToken'
 import type { Call } from './calls'
 import { callEndpointsFor, dropVoipToken, type CallEndpoint } from './endpoints'
 
+/**
+ * The size a ringing screen draws the caller at, in points; with a 3x pixel
+ * ratio that asks for the 480px face, which an incoming-call screen is large
+ * enough to want.
+ */
+const CALL_FACE_POINTS = 160
 /**
  * Every way one account's phones can be rung while their apps are closed.
  *
@@ -122,6 +130,17 @@ export async function ringPhones(
     callerName: caller.displayName,
     callerHandle: caller.handle,
     ...(caller.avatarUrl ? { callerAvatarUrl: caller.avatarUrl } : {}),
+    ...(!caller.avatarUrl && caller.defaultAvatarRev
+      ? {
+          callerDefaultAvatarUrl: defaultAvatarUrl(
+            publicApiUrl(app.env),
+            caller._id,
+            CALL_FACE_POINTS,
+            3,
+            caller.defaultAvatarRev,
+          ),
+        }
+      : {}),
     ringSeconds,
     callToken: signCallToken(app.env.BETTER_AUTH_SECRET, {
       callId: call._id,

@@ -25,8 +25,9 @@ import { useTips } from './useTips'
 import { forgetTour } from './useTour'
 import { useLocale, useLocalePreference, useT } from '../i18n'
 import { confirmAlert, showAlert } from '../lib/alert'
-import { isAnalyticsAvailable } from '../lib/analytics'
-import { APP_ICONS, currentAppIcon, isSupported, setAppIcon, type AppIcon } from '../lib/appIcon'
+import { isAnalyticsAvailable, track } from '../lib/analytics'
+import { currentAppIcon, isSupported, setAppIcon, type AppIcon } from '../lib/appIcon'
+import { pickerIcons } from '../lib/appIconList'
 import { authClient } from '../lib/auth-client'
 import { authLandingHref } from '../lib/authLanding'
 import {
@@ -256,20 +257,31 @@ export function useSettingsModel() {
   const locationBusy = shareLocation.isPending || stopSharingLocation.isPending
 
   /**
-   * Pro only, and gated here rather than on the server: the icon never leaves
-   * the device, so there is no request for the server to refuse. That makes
-   * this a lock somebody could pick by editing the app — which is the same
-   * bargain as every other purely local cosmetic, and not worth a round trip.
+   * Gated here rather than on the server: the icon never leaves the device,
+   * so there is no request for the server to refuse. That makes the Pro lock
+   * one somebody could pick by editing the app — the same bargain as every
+   * other purely local cosmetic, and not worth a round trip.
    *
-   * The free plan's tap is its own road (`app_icon`); before the profile has
-   * loaded a tap does nothing, so a subscriber is never shown the paywall for
-   * an icon they already own.
+   * `appIconTap` decides per icon: a free one is chosen on any plan, a Pro
+   * one on the free plan is its own road (`app_icon`), and before the profile
+   * has loaded a Pro tile does nothing, so a subscriber is never shown the
+   * paywall for an icon they already own. The v3 picker asks `iconLocked`
+   * first and puts its Pro sheet in front of `openIconPaywall`; the old one
+   * goes straight to the paywall, as it always did.
    */
+  function iconTap(next: AppIcon) {
+    return appIconTap(next, { loaded: profile !== undefined, tier })
+  }
+
+  function openIconPaywall(): void {
+    openPaywall(undefined, undefined, 'app_icon')
+  }
+
   async function chooseIcon(next: AppIcon): Promise<void> {
-    const tap = appIconTap({ loaded: profile !== undefined, tier })
+    const tap = iconTap(next)
     if (tap === 'wait') return
     if (tap === 'paywall') {
-      openPaywall(undefined, undefined, 'app_icon')
+      openIconPaywall()
       return
     }
     if (next === appIcon) return
@@ -279,6 +291,7 @@ export function useSettingsModel() {
       return
     }
     setAppIcon_(next)
+    track({ name: 'app_icon_changed', properties: { icon: next } })
     showToast(t('settings.appIconChanged'))
   }
 
@@ -461,8 +474,10 @@ export function useSettingsModel() {
     pendingPrivacy,
     iconSupported,
     appIcon,
-    appIcons: APP_ICONS,
+    appIcons: pickerIcons(appIcon),
     chooseIcon,
+    iconLocked: (name: AppIcon) => iconTap(name) === 'paywall',
+    openIconPaywall,
     isPro,
     notifications,
     pushOnThisDevice,

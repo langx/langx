@@ -9,7 +9,6 @@ import {
   INTEREST_SUGGESTIONS,
   MAX_INTERESTS,
   PLAN_LIMITS,
-  PRONOUNS_MAX_LENGTH,
   type Gender,
 } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
@@ -130,7 +129,6 @@ function EditProfileFormV3({ profile }: { profile: MeProfile }) {
 
   const [displayName, setDisplayName] = useState(profile.displayName ?? '')
   const [bio, setBio] = useState(profile?.bio ?? '')
-  const [pronouns, setPronouns] = useState(profile?.pronouns ?? '')
   const [interests, setInterests] = useState<string[]>(profile?.interests ?? [])
   const tier = useEffectiveTier()
   const [error, setError] = useState<string | undefined>()
@@ -202,13 +200,14 @@ function EditProfileFormV3({ profile }: { profile: MeProfile }) {
   }
 
   // The typed fields only, as today; the languages save on their own screen.
+  // Not pronouns: v3 draws none (_v3 draws no pronouns_ in docs/decisions.md),
+  // so it does not ask, and leaving the key out keeps whatever was stored.
   async function save(): Promise<void> {
     setError(undefined)
     try {
       await update.mutateAsync({
         displayName: displayName.trim(),
         bio: bio.trim(),
-        pronouns: pronouns.trim(),
         interests,
       })
       goBackTo(ME)
@@ -356,17 +355,6 @@ function EditProfileFormV3({ profile }: { profile: MeProfile }) {
           onChangeText={setDisplayName}
           maxLength={DISPLAY_NAME_MAX_LENGTH}
         />
-        <View style={styles.block}>
-          <FormField
-            label={t('editProfile.pronouns')}
-            value={pronouns}
-            onChangeText={setPronouns}
-            placeholder={t('editProfile.pronounsPlaceholder')}
-            maxLength={PRONOUNS_MAX_LENGTH}
-            autoCapitalize="none"
-          />
-          <Text style={styles.note}>{t('editProfile.pronounsHint')}</Text>
-        </View>
         <FormField
           label={t('editProfile.aboutYou')}
           value={bio}

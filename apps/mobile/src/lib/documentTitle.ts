@@ -70,6 +70,7 @@ const PAGE_TITLES: Readonly<Record<string, MessageKey>> = {
   '/settings': 'settings.title',
   '/settings/about': 'settings.aboutSection',
   '/settings/account': 'settings.accountSection',
+  '/settings/app-icon': 'settings.appIconSection',
   '/settings/appearance': 'settings.appearanceSection',
   '/settings/delete-account': 'settings.deleteAccount',
   '/settings/notifications': 'settings.notificationsSection',

@@ -54,8 +54,8 @@ export function yearlySavingPercent(
  *
  * The paywall leads with this — "3 months free" — and falls back to
  * `yearlySavingPercent` when it is `null`. Months rather than a percentage
- * because it is the unit people compare: a year at $83.99 against $9.99 a
- * month is 3.6 months nobody pays for, and "3 months free" is the honest floor
+ * because it is the unit people compare: a year at $79.99 against $9.99 a
+ * month is 3.99 months nobody pays for, and "3 months free" is the honest floor
  * of that. Never rounded up — "4 months free" would be a claim the prices do
  * not make.
  *

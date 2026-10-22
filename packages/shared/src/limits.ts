@@ -176,8 +176,8 @@ export interface PlanLimits {
    * model call, so "unlimited" is a promise made against somebody else's
    * meter. Free gets a taste; Pro gets a ceiling sized so that one person
    * using every unit every day for a month still costs less than the yearly
-   * plan brings in a month after the store's commission ($83.99 / 12 × 0.85,
-   * about $5.95). At Sonnet 5's rates ($2 per million in, $10 out) and with
+   * plan brings in a month after the store's commission ($79.99 / 12 × 0.85,
+   * about $5.67). At Sonnet 5's rates ($2 per million in, $10 out) and with
    * `COPILOT_RULES`' bounds in force, an answer costs at most about 1.3 cents
    * — roughly 1,300 tokens in, of which the worst is a thread in Arabic, and
    * at most `maxOutputTokens` out — so twelve a day is about $4.70 a month at

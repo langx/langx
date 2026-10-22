@@ -17,6 +17,7 @@ import type {
   ProWelcomeSource,
   PushKind,
 } from '@langx/shared'
+import type { AppIcon } from './appIconList'
 import type { OnboardingStep } from './onboardingStep'
 import type { PaywallExit, PaywallOffersState, RestoreResult } from './paywallAnalytics'
 import type { AskSummary } from './postAsks'
@@ -422,6 +423,17 @@ export type AnalyticsEvent =
        */
       name: 'filters_applied'
       properties: { count: number; pro: boolean }
+    }
+  | {
+      /**
+       * The OS accepted a new home-screen icon from the picker; `icon` is its
+       * id in `APP_ICONS`. Nothing measured whether anybody changes the icon,
+       * or which of the free and Pro ones they pick. A Pro tile refused on
+       * the free plan is not this: that tap ends in `paywall_viewed` with
+       * source `app_icon`.
+       */
+      name: 'app_icon_changed'
+      properties: { icon: AppIcon }
     }
   | {
       /**
