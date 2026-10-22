@@ -446,6 +446,7 @@ export const ptBR: Localized<EnMessages> = {
     editTitle: 'Editar cartão',
     editFront: 'Frase',
     editBack: 'O que significa',
+    editBackIn: 'Como se diz em {language}',
     edited: 'Cartão atualizado',
     editFailedTitle: 'Não foi possível salvar este cartão',
     cardMenu: 'Opções do cartão',

@@ -455,6 +455,7 @@ export const fr: Localized<EnMessages> = {
     editTitle: 'Modifier la carte',
     editFront: 'Phrase',
     editBack: 'Ce que ça veut dire',
+    editBackIn: 'Comment le dire en {language}',
     edited: 'Carte mise à jour',
     editFailedTitle: 'Impossible d’enregistrer cette carte',
     cardMenu: 'Options de la carte',

@@ -448,6 +448,7 @@ export const es: Localized<EnMessages> = {
     editTitle: 'Editar tarjeta',
     editFront: 'Frase',
     editBack: 'Qué significa',
+    editBackIn: 'Cómo se dice en {language}',
     edited: 'Tarjeta actualizada',
     editFailedTitle: 'No se pudo guardar esta tarjeta',
     cardMenu: 'Opciones de la tarjeta',

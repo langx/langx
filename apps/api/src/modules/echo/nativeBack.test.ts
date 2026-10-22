@@ -7,7 +7,14 @@ import { ensureIndexes } from '../../db/indexes'
 import type { TranslationProvider } from '../../translation/TranslationProvider'
 import type { Conversation, Message } from '../chat/conversations'
 import type { Profile } from '../profiles/profiles'
-import { backForReader, captureFromMessage, updateCard, type CaptureDeps } from './cards'
+import { asksProduction, newCardSrs } from '@langx/shared'
+import {
+  backForReader,
+  captureFromMessage,
+  fillBackWrite,
+  updateCard,
+  type CaptureDeps,
+} from './cards'
 import type { EchoCardDoc } from './documents'
 
 /** Ada reads Turkish and learns English; Bo is an English native. */
@@ -285,5 +292,96 @@ describe('a card kept from a sentence in the reader’s own language', () => {
       backLang: 'en',
       lang: 'tr',
     })
+  })
+})
+
+/*
+ * "The reader's own language" is a native language from their profile, never
+ * the language the app is shown in: plenty of learners run the app in the one
+ * they are learning. A capture is handed no locale at all, which these pin
+ * from the profile's side; `routes/echo.test.ts` pins it from the request's.
+ */
+describe('the reader’s own language', () => {
+  let replSet: MongoMemoryReplSet
+  let handle: DbHandle
+
+  beforeAll(async () => {
+    replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
+    handle = await connectToDatabase(replSet.getUri(), 'langx_echo_reader_language_test')
+    await ensureIndexes(handle.db)
+  }, 120_000)
+
+  afterAll(async () => {
+    await handle?.close()
+    await replSet?.stop()
+  })
+
+  beforeEach(async () => {
+    for (const name of [COLLECTIONS.echoCards, COLLECTIONS.translationCache]) {
+      await handle.db.collection(name).deleteMany({})
+    }
+  })
+
+  const HOW = 'How are you doing today'
+  const table = {
+    [`tr:${HOW}`]: 'Bugün nasılsın',
+    [`de:${HOW}`]: 'Wie geht es dir heute',
+  }
+
+  it('is the first native language of somebody with several', async () => {
+    const { deps } = fakeTranslator(table)
+    const ada = person('ada', { nativeLanguages: [{ code: 'tr' }, { code: 'de' }] })
+    expect(await backForReader(handle.db, deps, ada, [{ code: 'en' }], HOW)).toEqual({
+      back: 'Bugün nasılsın',
+    })
+  })
+
+  it('is the native one they chose to read translations in, when they chose', async () => {
+    const { deps } = fakeTranslator(table)
+    const ada = person('ada', {
+      nativeLanguages: [{ code: 'tr' }, { code: 'de' }],
+      settings: { discoverable: true, notifications: true, translateTo: 'de' },
+    })
+    expect(await backForReader(handle.db, deps, ada, [{ code: 'en' }], HOW)).toEqual({
+      back: 'Wie geht es dir heute',
+    })
+  })
+
+  it('skips a signed native language for the next one with a written form', async () => {
+    const { deps } = fakeTranslator(table)
+    const ada = person('ada', { nativeLanguages: [{ code: 'ase' }, { code: 'tr' }] })
+    expect((await backForReader(handle.db, deps, ada, undefined, HOW)).back).toBe('Bugün nasılsın')
+  })
+
+  it('fills an empty card with a front in a language being learned, as the backfill does', async () => {
+    const { deps } = fakeTranslator(table)
+    const ada = person('ada', {})
+    const cards = handle.db.collection<EchoCardDoc>(COLLECTIONS.echoCards)
+    const now = new Date()
+    const { insertedId } = await cards.insertOne({
+      _id: new ObjectId(),
+      userId: 'ada',
+      lang: 'en',
+      front: HOW,
+      back: '',
+      source: { kind: 'post', postId: new ObjectId().toHexString(), authorId: 'bo' },
+      sourceKey: `post:${new ObjectId().toHexString()}`,
+      srs: newCardSrs(now),
+      createdAt: now,
+    })
+    const card = await cards.findOne({ _id: insertedId })
+    if (!card) throw new Error('card missing')
+
+    const meaning = await backForReader(handle.db, deps, ada, undefined, HOW)
+    const write = fillBackWrite(card, meaning)
+    await cards.updateOne(write.filter, write.update)
+
+    const filled = await cards.findOne({ _id: insertedId })
+    // A meaning, in her native Turkish, on an English card: an ordinary card,
+    // so typing reviews take it like any other.
+    expect(filled).toMatchObject({ back: 'Bugün nasılsın', lang: 'en' })
+    expect(filled?.backLang).toBeUndefined()
+    const due = { ...newCardSrs(now), state: 'review' as const, reps: 2 }
+    expect(asksProduction(due, HOW, filled?.back ?? '', filled?.backLang)).toBe(true)
   })
 })

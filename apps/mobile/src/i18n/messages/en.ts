@@ -497,6 +497,7 @@ export const en = {
     editTitle: 'Edit card',
     editFront: 'Sentence',
     editBack: 'What it means',
+    editBackIn: 'How to say it in {language}',
     edited: 'Card updated',
     editFailedTitle: 'Could not save this card',
     cardMenu: 'Card options',

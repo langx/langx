@@ -492,6 +492,7 @@ export const ru: Localized<EnMessages> = {
     editTitle: 'Изменить карточку',
     editFront: 'Фраза',
     editBack: 'Что это значит',
+    editBackIn: 'Как это сказать: {language}',
     edited: 'Карточка обновлена',
     editFailedTitle: 'Не удалось сохранить карточку',
     cardMenu: 'Действия с карточкой',

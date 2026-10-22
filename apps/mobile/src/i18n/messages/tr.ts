@@ -444,6 +444,7 @@ export const tr: Localized<EnMessages> = {
     editTitle: 'Kartı düzenle',
     editFront: 'Cümle',
     editBack: 'Anlamı',
+    editBackIn: '{language} dilinde nasıl söylenir',
     edited: 'Kart güncellendi',
     editFailedTitle: 'Bu kart kaydedilemedi',
     cardMenu: 'Kart seçenekleri',
