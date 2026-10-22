@@ -30,11 +30,11 @@ export const SPLASH_TIMING = {
    */
   TIMEOUT_MS: 5000,
   /**
-   * The film's own length: `assets/splash/intro.mp4`, 162 frames at 60 fps.
+   * The film's own length: `assets/splash/intro.mp4`, 108 frames at 60 fps.
    * A test reads the file and holds this to it, because the stall guard below
    * is measured from it.
    */
-  INTRO_MS: 2700,
+  INTRO_MS: 1800,
   /**
    * How long the yellow waits, once the native splash has gone, for the film
    * to start playing before giving up on it and leaving from the yellow

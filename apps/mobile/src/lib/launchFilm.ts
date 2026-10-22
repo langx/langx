@@ -1,7 +1,7 @@
 /**
  * Whether this launch plays the opening film to its end.
  *
- * Only the very first launch does. The film is 2.7 s, and every cold start
+ * Only the very first launch does. The film is 1.8 s, and every cold start
  * used to wait it out in full, ready app or not — fine as a first hello,
  * a toll on the hundredth. So the device remembers having shown it
  * (`FLAG_KEYS.launchFilmSeen`), and every launch after the first leaves as
