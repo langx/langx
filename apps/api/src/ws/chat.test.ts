@@ -825,6 +825,51 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     expect(ack.error?.code).toBe('VALIDATION_FAILED')
   })
 
+  // A correction pays its corrector, so a non-text target would be a reward
+  // for correcting nothing. The menu offers text only; this is the socket.
+  it('refuses a correction of a message that is not text, and pays nothing', async () => {
+    const alice = await newUser('ws-correct-image-alice@example.com')
+    const bob = await newUser('ws-correct-image-bob@example.com')
+    const conversation = await startConversation(alice, bob.userId, 'hello')
+    const bobSocket = await connectSocket(bob.cookie)
+
+    const conversationId = new ObjectId(conversation._id)
+    const targets = await handle.db.collection(COLLECTIONS.messages).insertMany(
+      (['image', 'sticker', 'correction'] as const).map((type) => ({
+        conversationId,
+        senderId: alice.userId,
+        type,
+        body: '',
+        createdAt: new Date(),
+      })),
+    )
+    for (const id of Object.values(targets.insertedIds)) {
+      const ack = await new Promise<{ ok: boolean; error?: { code: string } }>((resolve) => {
+        bobSocket.emit(
+          'message:correct',
+          { conversationId: conversation._id, targetMessageId: id.toHexString(), corrected: 'x' },
+          (response: { ok: boolean; error?: { code: string } }) => resolve(response),
+        )
+      })
+      expect(ack.ok).toBe(false)
+      expect(ack.error?.code).toBe('VALIDATION_FAILED')
+    }
+    expect(
+      await handle.db.collection(COLLECTIONS.messages).countDocuments({
+        conversationId,
+        senderId: bob.userId,
+        type: 'correction',
+      }),
+    ).toBe(0)
+    expect(
+      await handle.db.collection(COLLECTIONS.tokenLedger).countDocuments({
+        refId: {
+          $in: Object.values(targets.insertedIds).map((id) => `msgcorr:${id.toHexString()}`),
+        },
+      }),
+    ).toBe(0)
+  })
+
   it('rejects sending into a conversation the socket owner is not part of', async () => {
     const alice = await newUser('ws-notpart-alice@example.com')
     const bob = await newUser('ws-notpart-bob@example.com')
