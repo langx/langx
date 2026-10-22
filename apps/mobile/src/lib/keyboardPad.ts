@@ -68,8 +68,8 @@ export type KeyboardPadEvent =
  * Keyboard events alone used to decide it, and they can arrive late or out of
  * order on Android: a measurement resolving after the hide that followed it,
  * or a hide that comes late or not at all — React Native only looks for one
- * on a layout pass of the root view. Either way the whole app stayed padded with no keyboard on screen: the
- * tab bar sat a keyboard's height up the screen with a blank band under it,
+ * on a layout pass of the root view. Either way the whole app stayed padded
+ * with no keyboard on screen: the tab bar sat a keyboard's height up the screen with a blank band under it,
  * or, on a tab navigator still laid out at full height, was cut off below the
  * padded edge altogether. So a late measurement is ignored, and a pad with
  * nothing focused under it is let go.

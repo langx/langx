@@ -56,6 +56,18 @@ describe('nextKeyboardPad', () => {
     expect(state.pad).toBe(400)
   })
 
+  it('keeps the newer measurement when the older one lands after it', () => {
+    const state = run(
+      [
+        { type: 'show', shown: 2 },
+        { type: 'measured', shown: 2, pad: 400 },
+        { type: 'measured', shown: 1, pad: 312 },
+      ],
+      padded,
+    )
+    expect(state.pad).toBe(400)
+  })
+
   it('keeps the pad while an input is focused', () => {
     const checks = Array.from(
       { length: 10 },
