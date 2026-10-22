@@ -781,10 +781,15 @@ node apps/mobile/scripts/collect-store-screenshots.mjs
 cd apps/mobile && fastlane deliver --skip_binary_upload --skip_metadata
 ```
 
-The first command lays `branding/2.x/<locale>/ios/<slot>/` out the way
+The first command lays `branding/3.x/<locale>/ios/<slot>/` out the way
 `deliver` expects — one flat folder per App Store locale, device inferred from
-each image's own dimensions, order taken from the filename. Its output is
-generated and gitignored; the images live in `branding`.
+each image's own dimensions, order taken from the filename. Since 3.0 that
+folder is what `node tools/store-shots/run.mjs --out ../branding/3.x` writes:
+iPhone 6.9", 6.3" (1206 × 2622, which Apple's required sizes now name) and
+5.5", and iPad 13". The Apple Watch shots still come from `branding/2.x`,
+because the pipeline draws none and `deliver` clears every set of a locale it
+uploads to. `collect-play-screenshots.mjs` reads the same `3.x` folder for
+Play. Its output is generated and gitignored; the images live in `branding`.
 
 `deliver` authenticates with an **App Store Connect API key** (`.p8`), not an
 Apple ID, so there is no password and no 2FA prompt:

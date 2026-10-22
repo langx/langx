@@ -6,11 +6,13 @@
  * Manager.
  *
  * The images live in the sibling `branding` checkout (see docs/repo-map.md),
- * one folder per language per Apple slot. `deliver` wants one flat folder per
- * App Store locale and works out the device from the image's own dimensions,
- * so this only has to copy and rename — the numeric prefix is what keeps the
- * order, because deliver sorts by filename.
+ * one folder per language per Apple slot. Since 3.0 they are the output of
+ * `tools/store-shots`, run into `branding/3.x`. `deliver` wants one flat
+ * folder per App Store locale and works out the device from the image's own
+ * dimensions, so this only has to copy and rename — the numeric prefix is
+ * what keeps the order, because deliver sorts by filename.
  *
+ *   node tools/store-shots/run.mjs --out ../branding/3.x
  *   node apps/mobile/scripts/collect-store-screenshots.mjs
  *   cd apps/mobile && fastlane deliver
  *
@@ -27,6 +29,9 @@ import { fileURLToPath } from 'node:url'
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const MOBILE = path.resolve(HERE, '..')
 
+/** The release's folder: what `tools/store-shots/run.mjs --out` wrote. */
+const SHOTS = '3.x'
+
 /**
  * Where the branding checkout is. BRANDING_DIR overrides the sibling default
  * for a checkout kept somewhere else; either way the directory has to actually
@@ -35,9 +40,9 @@ const MOBILE = path.resolve(HERE, '..')
  */
 function brandingRoot() {
   const root = path.resolve(HERE, '..', process.env.BRANDING_DIR ?? '../../../branding')
-  if (!fs.existsSync(path.join(root, '2.x'))) {
+  if (!fs.existsSync(path.join(root, SHOTS))) {
     console.error(
-      `No 2.x in ${root}. Check out langx/branding next to this repo, or set BRANDING_DIR.`,
+      `No ${SHOTS} in ${root}. Check out langx/branding next to this repo, or set BRANDING_DIR.`,
     )
     process.exit(1)
   }
@@ -65,32 +70,40 @@ const LOCALES = {
 }
 
 /**
- * Three slots, not the four the folder holds. App Store Connect's "iPad 13\""
- * slot is APP_IPAD_PRO_3GEN_129, and it accepts 2064 × 2752 *and* 2048 × 2732
- * — so 13/ and 12.9/ both resolve to it, deliver posts sixteen images at a
- * ten-image slot, and six of each set are dropped. Sending 13/ alone fills it
- * correctly and App Store Connect derives 12.9", 10.5" and 9.7" from it, the
- * same way it derives 6.5" and the rest from 6.9".
+ * Four phone and tablet slots, all from the 3.x set. App Store Connect's
+ * "iPad 13\"" slot is APP_IPAD_PRO_3GEN_129, and it accepts 2064 × 2752 *and*
+ * 2048 × 2732 — so 13/ and 12.9/ both resolve to it and sending both posts too
+ * many images at a ten-image slot. Sending 13/ alone fills it, and App Store
+ * Connect derives 12.9", 10.5" and 9.7" from it. The 3.x pipeline renders no
+ * 12.9/ at all.
  *
- * 12.9/ stays in the branding repo: Play has no such derivation, and a future
- * App Store Connect may split the slots again.
- *
- * `watch/` is the fourth, and the one that is allowed to be short. deliver
- * works the device out from the image's own dimensions, so 416 x 496 lands in
- * the Apple Watch slot with nothing to configure — but Arabic ships one shot
- * where the others ship two (the thread screen's back chevron sits under the
- * clock in right-to-left), so this slot counts what it finds instead of
- * demanding a fixed eight.
+ * 6.3/ (1206 × 2622) is new with 3.0: Apple's required device sizes now name
+ * the 6.3" display for iPhone, and the pipeline renders it (#1907). deliver
+ * maps that size to APP_IPHONE_61, which App Store Connect labels 6.3".
  */
-const SLOTS = ['6.9', '5.5', '13', 'watch']
+const SLOTS = ['6.9', '6.3', '5.5', '13']
+
+/**
+ * The watch shots are still 2.x's, because the 3.x pipeline draws none — and
+ * they cannot simply be left out: with `overwrite_screenshots` deliver deletes
+ * every screenshot set of a locale it uploads to, the watch set included, so a
+ * missing folder would empty the Apple Watch slot rather than keep it.
+ *
+ * The slot is allowed to be short. deliver works the device out from the
+ * image's own dimensions, so 416 x 496 lands in the Apple Watch slot with
+ * nothing to configure — but Arabic ships one shot where the others ship two
+ * (the thread screen's back chevron sits under the clock in right-to-left), so
+ * this slot counts what it finds instead of demanding a fixed eight.
+ */
+const WATCH = { from: '2.x', slot: 'watch' }
 
 fs.rmSync(OUT, { recursive: true, force: true })
 let copied = 0
 for (const [ours, apple] of Object.entries(LOCALES)) {
   const dir = path.join(OUT, apple)
   fs.mkdirSync(dir, { recursive: true })
-  for (const slot of SLOTS) {
-    const from = path.join(BRANDING, '2.x', ours, 'ios', slot)
+  for (const [set, slot] of [...SLOTS.map((s) => [SHOTS, s]), [WATCH.from, WATCH.slot]]) {
+    const from = path.join(BRANDING, set, ours, 'ios', slot)
     if (!fs.existsSync(from)) {
       console.error(`Missing ${from}`)
       process.exit(1)

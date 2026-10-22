@@ -11,20 +11,22 @@
  * which is why this script and the `play` lane exist at all.
  *
  * The images live in the sibling `branding` checkout (see docs/repo-map.md),
- * one folder per language per device size. supply wants
+ * one folder per language per device size. Since 3.0 they are the output of
+ * `tools/store-shots`, run into `branding/3.x`. supply wants
  * `<locale>/images/<size>Screenshots/` and sorts by filename, so this only has
  * to copy and rename — the numeric prefix is what keeps the order.
  *
  * The feature graphic comes across too, as `<locale>/images/featureGraphic.png`.
  * It is the banner at the top of a Play listing and the one store asset that is
  * not a screenshot, so it is a different slot in the API and a different flag on
- * the lane. Since 2.9 it is one wordless file for every language,
- * `2.x/android-feature-graphic.png`: Play draws the app's title over the left of
+ * the lane. Since 2.9 it is one wordless file for every language, now
+ * `3.x/android-feature-graphic.png`: Play draws the app's title over the left of
  * it on desktop and a play button over its centre on phones, which is where the
- * per-language banners put their headline. Those `2.x/<lang>/android/
+ * old per-language banners put their headline. Those `2.x/<lang>/android/
  * feature-graphic.png` files are still in branding and are deliberately not read
  * here — sending them would put the covered-up headline back on five listings.
  *
+ *   node tools/store-shots/run.mjs --out ../branding/3.x
  *   node apps/mobile/scripts/collect-play-screenshots.mjs
  *   cd apps/mobile && fastlane play
  */
@@ -51,12 +53,15 @@ function within(root, ...parts) {
   return resolved
 }
 
+/** The release's folder: what `tools/store-shots/run.mjs --out` wrote. */
+const SHOTS = '3.x'
+
 /** Same resolution rule as the App Store script beside this one. */
 function brandingRoot() {
   const root = path.resolve(HERE, '..', process.env.BRANDING_DIR ?? '../../../branding')
-  if (!fs.existsSync(within(root, '2.x'))) {
+  if (!fs.existsSync(within(root, SHOTS))) {
     console.error(
-      `No 2.x in ${root}. Check out langx/branding next to this repo, or set BRANDING_DIR.`,
+      `No ${SHOTS} in ${root}. Check out langx/branding next to this repo, or set BRANDING_DIR.`,
     )
     process.exit(1)
   }
@@ -71,12 +76,12 @@ const OUT = within(MOBILE, 'fastlane/metadata/android')
  * region on most of them (`tr-TR`, not `tr`) and the listing's default is
  * British rather than American English.
  *
- * **Six, not the eight the branding repo holds.** The API refuses a locale
- * that is not already a translation on the listing, and Play's thirteen are
- * `de-DE en-GB es-419 es-ES fr-FR id it-IT ja-JP ko-KR pt-BR th tr-TR zh-CN`
- * — no Russian and no Arabic. Both have artwork sitting ready in
- * `branding/2.x`; adding either needs a title and a description first, which
- * is a copy decision rather than this script's.
+ * **Six, not the eight the store-shots pipeline knows.** The API refuses a
+ * locale that is not already a translation on the listing, and Play's thirteen
+ * are `de-DE en-GB es-419 es-ES fr-FR id it-IT ja-JP ko-KR pt-BR th tr-TR zh-CN`
+ * — no Russian and no Arabic, which is why the pipeline's `PLAY_LOCALES`
+ * renders no Play set for either; adding either needs a title and a
+ * description first, which is a copy decision rather than this script's.
  *
  * The seven Play locales we have no artwork for keep falling back to `en-GB`,
  * which is where the set that everyone actually sees lives: before this
@@ -98,16 +103,14 @@ const LOCALES = {
 /**
  * Our folder name to supply's directory name.
  *
- * `wear` is the one that is not eight shots. Play takes one to eight square
- * screenshots for a watch and asks for them only once the app is opted into
- * the Wear OS form factor in Play Console — so the folder holds two, and the
- * count printed below has to be counted rather than multiplied.
+ * No `wear` since 3.0: the pipeline draws no watch, and leaving the folder out
+ * is what keeps the 2.x watch shots on the listing — supply skips an image
+ * type with no file on disk instead of clearing it (see below).
  */
 const SIZES = {
   phone: 'phoneScreenshots',
   '7tablet': 'sevenInchScreenshots',
   '10tablet': 'tenInchScreenshots',
-  wear: 'wearScreenshots',
 }
 
 // Only the images are rewritten here: the screenshots and the feature graphic.
@@ -120,7 +123,7 @@ let copied = 0
 for (const [ours, play] of Object.entries(LOCALES)) {
   let copiedHere = 0
   for (const [size, supplyDir] of Object.entries(SIZES)) {
-    const from = within(BRANDING, '2.x', ours, 'android', size)
+    const from = within(BRANDING, SHOTS, ours, 'android', size)
     if (!fs.existsSync(from)) {
       console.error(`Missing ${from}`)
       process.exit(1)
@@ -142,7 +145,7 @@ for (const [ours, play] of Object.entries(LOCALES)) {
   }
 
   // supply reads one file per image type, named for the type itself.
-  const banner = within(BRANDING, '2.x', 'android-feature-graphic.png')
+  const banner = within(BRANDING, SHOTS, 'android-feature-graphic.png')
   if (!fs.existsSync(banner)) {
     console.error(`Missing ${banner}`)
     process.exit(1)
