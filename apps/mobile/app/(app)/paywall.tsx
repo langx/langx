@@ -44,6 +44,7 @@ import {
   FEATURE_TITLE,
   compareRows,
   highlightsFor,
+  pendingTag,
   sellableFeature,
   type BenefitCopy,
 } from '../../src/lib/paywallBenefits'
@@ -192,7 +193,7 @@ export default function PaywallScreen() {
   const change = planChangeFor(held)
   // The context line only for somebody who can still buy what they were
   // refused — a subscriber sent here from the Boosted strip already has it —
-  // and only for a capability that has shipped (`sellableFeature`).
+  // and only for a capability that is on for every buyer (`sellableFeature`).
   // Analytics keep the raw `feature`.
   const refused = change === 'buy' ? sellableFeature(feature) : null
   const remaining = quota.data?.initiations.remaining
@@ -849,6 +850,7 @@ function BenefitRow({ copy }: { copy: BenefitCopy }) {
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
+  const tag = pendingTag(copy)
 
   return (
     <View style={styles.benefit}>
@@ -859,11 +861,7 @@ function BenefitRow({ copy }: { copy: BenefitCopy }) {
         <Text style={styles.benefitTitle}>{t(copy.title)}</Text>
         <Text style={styles.benefitBody}>{t(copy.body, copy.vars)}</Text>
       </View>
-      {!copy.shipped ? (
-        <Text style={styles.soonTag}>{t('paywall.compareSoon')}</Text>
-      ) : copy.beta ? (
-        <Text style={styles.soonTag}>{t('paywall.betaTag')}</Text>
-      ) : null}
+      {tag ? <Text style={styles.soonTag}>{t(tag)}</Text> : null}
     </View>
   )
 }

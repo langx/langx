@@ -32,7 +32,7 @@ import type { PartnerHue } from './theme/tokens'
  * refused feature "is part of Pro".
  *
  * Here rather than in the screen so that the comparison below, which a test
- * can reach, reads the same `shipped` the rows do.
+ * can reach, reads the same `shipped` and `beta` the rows do.
  */
 export interface BenefitCopy {
   title: MessageKey
@@ -214,6 +214,16 @@ export function sellableFeature(feature: PlanFeature | null): PlanFeature | null
 /** Shipped and out of beta: on for every account on the plan. */
 export function fullyOn(copy: BenefitCopy): boolean {
   return copy.shipped && copy.beta !== true
+}
+
+/**
+ * The qualifier a benefit is listed with — "Soon" or "Beta, rolling out" — or
+ * `null` when it is on for everybody. One answer for the paywall's rows and
+ * the plan page's "What you have", so the two cannot drift.
+ */
+export function pendingTag(copy: BenefitCopy): MessageKey | null {
+  if (!copy.shipped) return 'paywall.compareSoon'
+  return copy.beta ? 'paywall.betaTag' : null
 }
 
 /**

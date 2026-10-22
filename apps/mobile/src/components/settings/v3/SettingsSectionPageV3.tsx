@@ -6,7 +6,7 @@ import { useSettingsModel, type SettingsModel } from '../../../hooks/useSettings
 import { useLocale, type MessageKey } from '../../../i18n'
 import { openExternal } from '../../../lib/openExternal'
 import { openPaywall } from '../../../lib/paywall'
-import { benefitsHeld } from '../../../lib/paywallBenefits'
+import { BENEFIT_COPY, benefitsHeld, pendingTag } from '../../../lib/paywallBenefits'
 import { showsSeePlans } from '../../../lib/proRoads'
 import { HIDDEN_MODE_CHILDREN, SETTINGS_V3_LAYOUT } from '../../../lib/settingsLayoutV3'
 import { settingsSection, type SettingsSectionId } from '../../../lib/settingsRegistry'
@@ -14,7 +14,7 @@ import { makeStyles, THEME_PREFERENCES, useTheme, type PartnerHue } from '../../
 import { Button } from '../../ui/Button'
 import { SegmentedControl } from '../../ui/SegmentedControl'
 import { Toggle } from '../../ui/Toggle'
-import { BENEFIT_TITLE, ICON_PREVIEWS, PENDING_BENEFITS, THEME_LABELS } from '../SettingsRow'
+import { BENEFIT_TITLE, ICON_PREVIEWS, THEME_LABELS } from '../SettingsRow'
 import {
   SettingsGroupV3,
   SettingsHeadingV3,
@@ -309,19 +309,19 @@ function PlanPage({ model }: { model: SettingsModel }) {
           <SettingsHeadingV3 title={t('settings.whatYouHave')} />
           <View style={styles.benefits}>
             {benefits.map((benefit) => {
-              const pending = PENDING_BENEFITS.has(benefit)
+              const tag = pendingTag(BENEFIT_COPY[benefit])
               return (
                 <View key={benefit} style={styles.benefit}>
                   <View style={styles.check}>
                     <Feather
                       name="check"
                       size={v3.icon.xs}
-                      color={pending ? v3.colors.muted : v3.colors.fg}
+                      color={tag ? v3.colors.muted : v3.colors.fg}
                     />
                   </View>
                   <Text style={styles.benefitText}>
                     {t(BENEFIT_TITLE[benefit])}
-                    {pending ? <Text style={styles.pending}> · {t('paywall.betaTag')}</Text> : null}
+                    {tag ? <Text style={styles.pending}> · {t(tag)}</Text> : null}
                   </Text>
                 </View>
               )

@@ -9445,7 +9445,12 @@ docs alike, and never ticked as if every buyer gets it.
   answer, in the same blue. "AI can be wrong" moves entirely to the consent
   sheet, which is read before the first answer and stays the disclosure; its
   sentence now says the answers are marked Copilot, since they no longer say
-  AI.
+  AI. This replaces the "AI · may be wrong" label in _Copilot ships dark_.
+- **Free is not a cross in the server's eyes.** An allow-listed free account
+  gets `PLAN_LIMITS.free.copilotPer24h` answers; the paywall still draws the
+  free column from the `copilot` flag. Left as it was here, since the plan
+  promise is Behic's to change.
 
 The qualifier is one phrase so it can be changed in one sweep: `paywall.betaTag`
-in every locale, the website's plan data and the docs' plan pages.
+in every locale (read through `pendingTag`, which the plan page shares), the
+website's copy and the docs' Copilot page.

@@ -38,7 +38,7 @@ import { type MessageKey, useDisplayNames, useLocale, useT } from '../../i18n'
 import { relativeTime } from '../../lib/format'
 import { openExternal } from '../../lib/openExternal'
 import { openPaywall } from '../../lib/paywall'
-import { benefitsHeld } from '../../lib/paywallBenefits'
+import { BENEFIT_COPY, benefitsHeld, pendingTag } from '../../lib/paywallBenefits'
 import { showsSeePlans } from '../../lib/proRoads'
 import { openStoreListing } from '../../lib/storeListing'
 import { makeStyles, THEME_PREFERENCES, type ThemePreference, useTheme } from '../../lib/theme'
@@ -73,15 +73,6 @@ export const BENEFIT_TITLE: Record<ProBenefit, MessageKey> = {
   nearby: 'paywall.nearby',
   copilot: 'paywall.copilot',
 }
-
-/**
- * Sold, not yet on for every account. Mirrors the `beta` entries of the
- * paywall's copy table — a "what you have" line that names a feature in the
- * present tense while the allow-list may not hold this account would be the
- * mis-sell that flag exists to prevent. One table for both screens is the
- * fix; until then the two must be changed together.
- */
-export const PENDING_BENEFITS: ReadonlySet<ProBenefit> = new Set(['copilot'])
 
 /**
  * Imported statically, because Metro resolves an image at build time: a path
@@ -201,19 +192,16 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
         <View style={[styles.features, !last && styles.divided]}>
           <Text style={styles.featuresKicker}>{t('settings.whatYouHave')}</Text>
           {benefits.map((benefit) => {
-            const pending = PENDING_BENEFITS.has(benefit)
+            // A "what you have" line that names a feature in the present
+            // tense while it is not on for this account would be the
+            // mis-sell the paywall's `shipped` and `beta` exist to prevent.
+            const tag = pendingTag(BENEFIT_COPY[benefit])
             return (
               <View key={benefit} style={styles.feature}>
-                <Feather
-                  name="check"
-                  size={16}
-                  color={pending ? colors.textFaint : colors.accent}
-                />
+                <Feather name="check" size={16} color={tag ? colors.textFaint : colors.accent} />
                 <Text style={styles.featureText}>
                   {t(BENEFIT_TITLE[benefit])}
-                  {pending ? (
-                    <Text style={styles.featurePending}> · {t('paywall.betaTag')}</Text>
-                  ) : null}
+                  {tag ? <Text style={styles.featurePending}> · {t(tag)}</Text> : null}
                 </Text>
               </View>
             )

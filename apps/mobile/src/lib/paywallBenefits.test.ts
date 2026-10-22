@@ -8,6 +8,7 @@ import {
   compareRows,
   fullyOn,
   highlightsFor,
+  pendingTag,
   sellableFeature,
 } from './paywallBenefits'
 
@@ -129,5 +130,21 @@ describe('benefitsHeld', () => {
     expect(gift).not.toContain('welcomePack')
     expect(gift).toHaveLength(PRO_BENEFITS.length - 1)
     expect(benefitsHeld({})).toEqual(gift)
+  })
+})
+
+describe('pendingTag', () => {
+  const base = BENEFIT_COPY.advancedFilters
+
+  it('qualifies Copilot as a beta, and nothing that is on for everybody', () => {
+    expect(pendingTag(BENEFIT_COPY.copilot)).toBe('paywall.betaTag')
+    for (const benefit of PRO_BENEFITS.filter((b) => fullyOn(BENEFIT_COPY[b]))) {
+      expect(pendingTag(BENEFIT_COPY[benefit])).toBeNull()
+    }
+  })
+
+  it('says Soon for one that has not shipped, beta or not', () => {
+    expect(pendingTag({ ...base, shipped: false })).toBe('paywall.compareSoon')
+    expect(pendingTag({ ...base, shipped: false, beta: true })).toBe('paywall.compareSoon')
   })
 })

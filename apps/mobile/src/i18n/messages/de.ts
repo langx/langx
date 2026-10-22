@@ -3602,7 +3602,7 @@ export const de: Localized<EnMessages> = {
       'Sortiere nach Entfernung. Dein Standort wird gerundet; andere sehen nur eine grobe Entfernung.',
     copilot: 'KI-Copilot',
     copilotBody:
-      'Hilft beim Formulieren und Verstehen von Nachrichten, während du schreibst. In der Beta und wird schrittweise freigeschaltet, deshalb ist es für dein Konto vielleicht noch nicht an.',
+      'Hilft beim Formulieren und Verstehen von Nachrichten, während du schreibst. Für dein Konto ist er vielleicht noch nicht aktiv.',
     quotaNotice:
       'Du hast deine {count} neuen Chats für heute aufgebraucht. Auf alles, was du bekommst, kannst du weiter unbegrenzt antworten.',
     manageNotice: 'Du hast {plan}. Verwalte oder kündige es in deinem Store-Konto.',

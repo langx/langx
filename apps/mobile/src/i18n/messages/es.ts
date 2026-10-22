@@ -3547,7 +3547,7 @@ export const es: Localized<EnMessages> = {
       'Ordena por distancia. Tu ubicación se redondea; los demás solo ven una distancia aproximada.',
     copilot: 'Copiloto con IA',
     copilotBody:
-      'Te ayuda a redactar y entender los mensajes mientras escribes. Está en beta y llega poco a poco, así que puede que aún no esté activo en tu cuenta.',
+      'Te ayuda a redactar y entender los mensajes mientras escribes. Puede que aún no esté activo en tu cuenta.',
     quotaNotice:
       'Has usado los {count} chats nuevos de hoy. Puedes seguir respondiendo a todo lo que recibas, sin límite.',
     manageNotice: 'Tienes {plan}. Gestiónalo o cancélalo desde tu cuenta de la tienda.',
@@ -3650,7 +3650,7 @@ export const es: Localized<EnMessages> = {
     compareUnlimited: 'Sin límite',
     compareSoon: 'Pronto',
     compareBeta: 'Beta',
-    betaTag: 'Beta, llegando poco a poco',
+    betaTag: 'Beta, en despliegue gradual',
     compareIncluded: 'Incluido',
     compareNotIncluded: 'No incluido',
     yearlyBadge: '{perMonth} · {saving}',
