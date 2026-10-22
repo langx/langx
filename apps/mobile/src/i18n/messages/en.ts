@@ -3916,7 +3916,7 @@ export const en = {
     },
     showLess: 'Show less',
     /**
-     * A price and what it is per — "$6.99 a month" — in the order the language
+     * A price and what it is per — "$6.66 a month" — in the order the language
      * says them; Turkish puts the period first. `{period}` is one of `perMonth`,
      * `perYear` or `perLifetime`.
      */
