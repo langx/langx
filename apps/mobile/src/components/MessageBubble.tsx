@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Ionicons } from '@expo/vector-icons'
-import { memo, useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
   Animated,
   Linking,
@@ -8,6 +8,7 @@ import {
   Pressable,
   Text,
   View,
+  type StyleProp,
   type TextStyle,
   type ViewStyle,
 } from 'react-native'
@@ -15,9 +16,12 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Reanimated, {
   interpolate,
   runOnJS,
+  useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
+  withSequence,
   withSpring,
+  withTiming,
 } from 'react-native-reanimated'
 import type { MessageDto } from '../api/queries'
 import {
@@ -36,11 +40,13 @@ import type { AnchorRect } from '../lib/messageMenu'
 import {
   SWIPE_ACTIVATE_PX,
   SWIPE_LOCK_PX,
+  swipeCrossing,
   swipeReleased,
   swipeToReplyEnabled,
   swipeTranslation,
 } from '../lib/swipeToReply'
 import { makeStyles, useTheme } from '../lib/theme'
+import { EASE_OUT, SPRING, TIMING } from '../lib/theme/motion'
 import { LinkedText } from './LinkedText'
 import { LinkPreviewCard } from './LinkPreviewCard'
 import { ProfileLinkCard } from './ProfileLinkCard'
@@ -221,6 +227,111 @@ function CorrectionLines({ original, corrected }: { original: string; corrected:
   )
 }
 
+type BubbleStyles = ReturnType<typeof useStyles>
+
+/**
+ * The jump ring's way out: slower than its way in (`TIMING.press`), because
+ * leaving is what walks the eye from the ring to the words it was around.
+ */
+const RING_OUT = { duration: 400, easing: EASE_OUT } as const
+
+/**
+ * The v3 ring a jump leaves on the message it landed on.
+ *
+ * Laid over the box, never a border on it. A `borderWidth: 2` that comes and
+ * goes grows the bubble by four points both ways and reflows the row — the
+ * whole thread twitched twice per jump, on arrival and as the ring went.
+ * Absolutely placed and faded on opacity alone, it moves nothing.
+ *
+ * Mounted only while it is showing or still fading out: a bubble that is not
+ * the target carries no extra view and no animated style, which matters in a
+ * list of hundreds of them.
+ */
+function HighlightRing({ on, style }: { on: boolean; style: StyleProp<ViewStyle> }) {
+  const [live, setLive] = useState(on)
+  if (on && !live) setLive(true)
+  return live ? <RingFade on={on} style={style} onGone={setLive} /> : null
+}
+
+function RingFade({
+  on,
+  style,
+  onGone,
+}: {
+  on: boolean
+  style: StyleProp<ViewStyle>
+  onGone: (live: boolean) => void
+}) {
+  const opacity = useSharedValue(0)
+  useEffect(() => {
+    // Reanimated's `ReduceMotion.System` default lands both at once for
+    // anyone who asked for less movement, and still calls back to unmount.
+    if (on) {
+      opacity.set(withTiming(1, TIMING.press))
+      return
+    }
+    opacity.set(
+      withTiming(0, RING_OUT, (finished) => {
+        if (finished) runOnJS(onGone)(false)
+      }),
+    )
+  }, [on, onGone, opacity])
+  const fade = useAnimatedStyle(() => ({ opacity: opacity.get() }))
+  return <Reanimated.View pointerEvents="none" style={[style, fade]} />
+}
+
+/**
+ * One emoji of a v3 reaction badge. A reaction that arrives while the bubble
+ * is on screen pops in, 0.5 to full size on `SPRING.select`, and a count that
+ * goes up ticks once; one that was already there when the row mounted —
+ * history, a row scrolled back into view — is simply drawn.
+ *
+ * Transform only, started from an effect, once per arrival or increase: the
+ * badge sits in a virtualised row, where anything that moved the row's own
+ * height would shove the thread about (rule 13).
+ */
+function ReactionChipV3({
+  emoji,
+  count,
+  arrived,
+  styles,
+}: {
+  emoji: string
+  count: number
+  /** Whether the bubble was already on screen when this emoji first appeared. */
+  arrived: boolean
+  styles: BubbleStyles
+}) {
+  // Read once: the chip is news on the render it first appears in, never later.
+  const [fresh] = useState(arrived)
+  const scale = useSharedValue(fresh ? 0.5 : 1)
+  const tick = useSharedValue(1)
+  const counted = useRef(count)
+
+  useEffect(() => {
+    if (fresh) scale.set(withSpring(1, SPRING.select))
+  }, [fresh, scale])
+
+  useEffect(() => {
+    if (count > counted.current) {
+      tick.set(withSequence(withTiming(1.2, TIMING.press), withTiming(1, TIMING.release)))
+    }
+    counted.current = count
+  }, [count, tick])
+
+  const chipStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.get() }] }))
+  const countStyle = useAnimatedStyle(() => ({ transform: [{ scale: tick.get() }] }))
+
+  return (
+    <Reanimated.View style={[styles.reaction, chipStyle]}>
+      <Text style={styles.reactionGlyph}>{emoji}</Text>
+      {count > 1 ? (
+        <Reanimated.Text style={[styles.reactionCount, countStyle]}>{count}</Reanimated.Text>
+      ) : null}
+    </Reanimated.View>
+  )
+}
+
 /**
  * One row of the thread.
  *
@@ -362,29 +473,69 @@ export const MessageBubble = memo(function MessageBubble({
       : undefined
 
   const translateX = useSharedValue(0)
-  const pan = Gesture.Pan()
-    // Not on the row a call or a gift leaves: the server refuses a reply to
-    // one, and a swipe that springs back to an error is worse than none.
-    .enabled(canReply && !isServerRecord(message) && swipeToReplyEnabled(Platform.OS, HAS_TOUCH))
-    /*
-     * The same two thresholds `shouldCaptureSwipe` applied, now decided
-     * natively — which is what stops the drag from competing with the list's
-     * own scroll on the JS thread.
-     *
-     * A single positive number, not a pair: reply is a rightwards gesture
-     * only, and leaving the other direction unclaimed keeps it free for a
-     * later action, exactly as `shouldCaptureSwipe` said.
-     */
-    .activeOffsetX(SWIPE_LOCK_PX)
-    .failOffsetY([-SWIPE_LOCK_PX, SWIPE_LOCK_PX])
-    .onUpdate((event) => {
-      translateX.set(swipeTranslation(event.translationX))
-    })
-    .onEnd((event) => {
-      if (swipeReleased(event.translationX)) runOnJS(onReply)(message)
-      translateX.set(withSpring(0, { damping: 20, stiffness: 220, overshootClamping: true }))
-    })
-  const flash = highlighted ? styles.highlighted : null
+  /*
+   * Memoised: a fresh gesture object on every render makes the detector
+   * re-attach its handlers natively, and a bubble re-renders whenever the
+   * thread hands it anything new.
+   */
+  const pan = useMemo(
+    () =>
+      Gesture.Pan()
+        // Not on the row a call or a gift leaves: the server refuses a reply to
+        // one, and a swipe that springs back to an error is worse than none.
+        .enabled(
+          canReply && !isServerRecord(message) && swipeToReplyEnabled(Platform.OS, HAS_TOUCH),
+        )
+        /*
+         * The same two thresholds `shouldCaptureSwipe` applied, now decided
+         * natively — which is what stops the drag from competing with the list's
+         * own scroll on the JS thread.
+         *
+         * A single positive number, not a pair: reply is a rightwards gesture
+         * only, and leaving the other direction unclaimed keeps it free for a
+         * later action, exactly as `shouldCaptureSwipe` said.
+         */
+        .activeOffsetX(SWIPE_LOCK_PX)
+        .failOffsetY([-SWIPE_LOCK_PX, SWIPE_LOCK_PX])
+        .onUpdate((event) => {
+          translateX.set(swipeTranslation(event.translationX))
+        })
+        .onEnd((event) => {
+          if (swipeReleased(event.translationX)) runOnJS(onReply)(message)
+          translateX.set(withSpring(0, SPRING.snap))
+        }),
+    [canReply, message, onReply, translateX],
+  )
+
+  /*
+   * The moment letting go would reply: one light buzz as the drag crosses the
+   * line, and — in the v3 look — the arrow popping and darkening, so the
+   * point of no return is felt and seen rather than guessed. Once per
+   * crossing (`swipeCrossing`); dropping back under the line re-arms it.
+   * Reanimated's own reduce-motion default (`ReduceMotion.System`) lands the
+   * pop and the colour at once for anyone who asked for less movement.
+   */
+  const armed = useSharedValue(0)
+  const arrowPop = useSharedValue(1)
+  useAnimatedReaction(
+    () => translateX.get(),
+    (now, prev) => {
+      const crossing = swipeCrossing(prev, now)
+      if (crossing === null) return
+      if (crossing === 'armed') {
+        runOnJS(impact)('light')
+        if (v3)
+          arrowPop.set(
+            withSequence(withTiming(1.15, { duration: 0 }), withSpring(1, SPRING.select)),
+          )
+      }
+      if (v3) armed.set(withTiming(crossing === 'armed' ? 1 : 0, TIMING.press))
+    },
+    [v3],
+  )
+  /** Only the v3 boxes ring through `HighlightRing`; the call and gift rows keep the border. */
+  const recordFlash = highlighted ? styles.highlighted : null
+  const flash = v3 ? null : recordFlash
 
   /**
    * A bounce on arrival that a tap can replay.
@@ -431,9 +582,30 @@ export const MessageBubble = memo(function MessageBubble({
    * The arrow simply stopped following after the first swipe. On the UI thread
    * there is one value and one reader.
    */
-  const arrowStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(translateX.get(), [0, SWIPE_ACTIVATE_PX], [0, 1], 'clamp'),
-  }))
+  const arrowStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(translateX.get(), [0, SWIPE_ACTIVATE_PX], [0, 1], 'clamp')
+    if (!v3) return { opacity }
+    // v3 grows it as well, 0.6 to full size at the line, and `arrowPop` is
+    // the pop on the frame it is reached.
+    const grow = interpolate(translateX.get(), [0, SWIPE_ACTIVATE_PX], [0.6, 1], 'clamp')
+    return { opacity, transform: [{ scale: grow * arrowPop.get() }] }
+  })
+  /** The armed arrow, in the ground's own text colour, faded in over the muted one. */
+  const armedArrowStyle = useAnimatedStyle(() => ({ opacity: armed.get() }))
+
+  /**
+   * False through the row's first commit. A reaction drawn then is history —
+   * the thread opening, a row scrolled back into view — and only one that
+   * arrives on a bubble already on screen pops (`ReactionChipV3`).
+   */
+  const settled = useRef(false)
+  useEffect(() => {
+    settled.current = true
+  }, [])
+
+  /** The v3 jump ring, laid over a box in that box's own shape. */
+  const ring = (shape: StyleProp<ViewStyle>): ReactNode =>
+    v3 ? <HighlightRing on={highlighted} style={shape} /> : null
   const sliderStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.get() }],
   }))
@@ -446,6 +618,11 @@ export const MessageBubble = memo(function MessageBubble({
     <View style={styles.row}>
       <Reanimated.View style={[styles.arrow, arrowStyle]} pointerEvents="none">
         <Feather name="corner-up-left" size={15} color={colors.textMuted} />
+        {v3 ? (
+          <Reanimated.View style={[styles.arrowArmed, armedArrowStyle]}>
+            <Feather name="corner-up-left" size={15} color={tokens.colors.fg} />
+          </Reanimated.View>
+        ) : null}
       </Reanimated.View>
       <GestureDetector gesture={pan}>
         <Animated.View style={styles.slider}>
@@ -465,17 +642,35 @@ export const MessageBubble = memo(function MessageBubble({
    * emojis were used at all.
    */
   const reactions = Object.entries(message.reactions ?? {}).filter(([, users]) => users.length > 0)
-  const badge =
+  /**
+   * `overlap` hangs the v3 badge over the bubble's bottom edge, so a first
+   * reaction grows the row by a few points rather than by a whole badge.
+   * Only where the badge comes straight after the box: anywhere else the
+   * thing it would sit on is a note under the bubble, not the bubble.
+   */
+  const reactionBadge = (overlap: boolean): ReactNode =>
     reactions.length > 0 ? (
-      <View style={styles.reactions}>
-        {reactions.map(([emoji, users]) => (
-          <View key={emoji} style={styles.reaction}>
-            <Text style={styles.reactionGlyph}>{emoji}</Text>
-            {users.length > 1 ? <Text style={styles.reactionCount}>{users.length}</Text> : null}
-          </View>
-        ))}
+      <View style={[styles.reactions, overlap && styles.reactionsOverlap]}>
+        {reactions.map(([emoji, users]) =>
+          v3 ? (
+            <ReactionChipV3
+              key={emoji}
+              emoji={emoji}
+              count={users.length}
+              arrived={settled.current}
+              styles={styles}
+            />
+          ) : (
+            <View key={emoji} style={styles.reaction}>
+              <Text style={styles.reactionGlyph}>{emoji}</Text>
+              {users.length > 1 ? <Text style={styles.reactionCount}>{users.length}</Text> : null}
+            </View>
+          ),
+        )}
       </View>
     ) : null
+  const badge = reactionBadge(false)
+  const badgeOnBox = reactionBadge(true)
   const replyTo = message.replyTo
 
   const quote = replyTo ? (
@@ -526,6 +721,7 @@ export const MessageBubble = memo(function MessageBubble({
             <Feather name="slash" size={13} color={colors.textMuted} />
             <Text style={styles.tombstoneText}>{t('chat.deleted')}</Text>
           </View>
+          {ring(styles.ring)}
         </View>
         {meta}
       </Pressable>,
@@ -575,6 +771,7 @@ export const MessageBubble = memo(function MessageBubble({
         ) : null}
         {badge}
         <View style={styles.correctionMeta}>{meta}</View>
+        {ring(styles.ringCorrection)}
       </Pressable>,
     )
   }
@@ -588,8 +785,9 @@ export const MessageBubble = memo(function MessageBubble({
           <Text style={styles.phraseTerm}>{term}</Text>
           <Text style={styles.phraseMeaning}>{meaning}</Text>
           {example ? <Text style={styles.phraseExample}>{example}</Text> : null}
+          {ring(styles.ringCard)}
         </View>
-        {badge}
+        {badgeOnBox}
         <View style={styles.cardMeta}>{meta}</View>
       </Pressable>,
     )
@@ -702,8 +900,9 @@ export const MessageBubble = memo(function MessageBubble({
               )}
             </View>
           )}
+          {ring(styles.ringCard)}
         </View>
-        {badge}
+        {badgeOnBox}
         <View style={styles.cardMeta}>{meta}</View>
       </Pressable>,
     )
@@ -726,8 +925,9 @@ export const MessageBubble = memo(function MessageBubble({
             // message type, and answered the same way rather than with a gap.
             <Text style={styles.phraseMeaning}>{t('chat.unsupportedMessage')}</Text>
           )}
+          {ring(styles.ringCard)}
         </View>
-        {badge}
+        {badgeOnBox}
         <View style={styles.cardMeta}>{meta}</View>
       </Pressable>,
     )
@@ -769,8 +969,9 @@ export const MessageBubble = memo(function MessageBubble({
           >
             <Text style={styles.locationOpen}>{t('chat.locationOpenInMaps')}</Text>
           </Pressable>
+          {ring(styles.ringCard)}
         </View>
-        {badge}
+        {badgeOnBox}
         <View style={styles.cardMeta}>{meta}</View>
       </Pressable>,
     )
@@ -818,8 +1019,9 @@ export const MessageBubble = memo(function MessageBubble({
               </Pressable>
             )
           })}
+          {ring(styles.ringCard)}
         </View>
-        {badge}
+        {badgeOnBox}
         <View style={styles.cardMeta}>{meta}</View>
       </Pressable>,
     )
@@ -841,7 +1043,7 @@ export const MessageBubble = memo(function MessageBubble({
         mine={mine}
         box={box}
         column={column}
-        flash={flash}
+        flash={recordFlash}
         meta={<MessageMeta message={message} mine={false} />}
         onLongPress={press}
         onCallBack={onCallBack ? () => onCallBack(message) : undefined}
@@ -903,7 +1105,7 @@ export const MessageBubble = memo(function MessageBubble({
         partnerName={partnerName}
         box={box}
         column={column}
-        flash={flash}
+        flash={recordFlash}
         meta={<MessageMeta message={message} mine={false} />}
         onLongPress={press}
       />,
@@ -925,6 +1127,7 @@ export const MessageBubble = memo(function MessageBubble({
       <Pressable onPress={tap} onLongPress={press} style={column}>
         <View ref={box} style={[styles.card, flash]}>
           <Text style={styles.phraseMeaning}>{t('chat.unsupportedMessage')}</Text>
+          {ring(styles.ringCard)}
         </View>
         <View style={styles.cardMeta}>{meta}</View>
       </Pressable>,
@@ -981,8 +1184,9 @@ export const MessageBubble = memo(function MessageBubble({
               {t(label.status)}
             </Text>
           </View>
+          {ring(styles.ringCard)}
         </View>
-        {badge}
+        {badgeOnBox}
         <View style={styles.cardMeta}>{meta}</View>
       </Pressable>,
     )
@@ -1033,6 +1237,7 @@ export const MessageBubble = memo(function MessageBubble({
               {message.body}
             </LinkedText>
           ) : null}
+          {ring([styles.ring, tail])}
         </View>
         {/*
           Under the bubble rather than inside `AudioBubble`, which the feed and
@@ -1067,7 +1272,7 @@ export const MessageBubble = memo(function MessageBubble({
             </Pressable>
           </View>
         ) : null}
-        {badge}
+        {message.type === 'audio' ? badge : badgeOnBox}
         {meta}
       </Pressable>,
     )
@@ -1175,6 +1380,7 @@ export const MessageBubble = memo(function MessageBubble({
         ) : firstLink && !internal ? (
           <LinkPreviewCard url={firstLink} onLongPress={press} />
         ) : null}
+        {ring([styles.ring, tail])}
       </View>
       {/*
         The request the sender attached, under their sentence rather than
@@ -1216,7 +1422,7 @@ export const MessageBubble = memo(function MessageBubble({
           onCardAction={() => onCardAction(message)}
         />
       ) : null}
-      {badge}
+      {message.ask || message.interactive ? badge : badgeOnBox}
       {/*
         The translation the sender chose to send, not one this reader asked
         for: it is part of the message, so it is drawn under the bubble for
@@ -1329,6 +1535,16 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     top: 0,
     width: 24,
   },
+  /** v3's armed arrow, stacked exactly over the resting one. */
+  arrowArmed: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
   /**
    * The quote, the bubble and the meta stacked on one side. 78% is the
    * prototype's cap; the gap is what used to be the meta's own top margin.
@@ -1389,6 +1605,14 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
    * that would say the wrong thing for a second and a half.
    */
   highlighted: { borderColor: colors.accent, borderWidth: 2 },
+  /**
+   * v3's jump ring over a bubble, a card and a correction (`HighlightRing`).
+   * Only the v3 look draws one, so they are empty here and `bubbleLookV3`
+   * fills them in.
+   */
+  ring: {},
+  ringCard: {},
+  ringCorrection: {},
   tombstone: { backgroundColor: colors.fill },
   edited: { ...font.caption, color: colors.textMuted, fontStyle: 'italic' },
   forwardedRow: { alignItems: 'center', flexDirection: 'row', gap: 4 },
@@ -1410,6 +1634,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
+  /** The v3 badge hung over the box's edge; the current look keeps it under. */
+  reactionsOverlap: {},
   reaction: { alignItems: 'center', flexDirection: 'row', gap: 2 },
   reactionGlyph: { fontSize: 13, lineHeight: 18 },
   reactionCount: { ...font.caption, color: colors.textMuted, fontWeight: '700' },
