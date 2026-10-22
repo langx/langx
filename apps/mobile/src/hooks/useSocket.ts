@@ -16,7 +16,11 @@ import {
 import { getActiveConversation } from '../lib/activeConversation'
 import { previewOf, shouldShowIncomingBanner, showMessageBanner } from '../lib/inAppNotifications'
 import { track } from '../lib/analytics'
-import { invalidateMissedEvents, resumedFromBackground } from '../lib/missedEvents'
+import {
+  invalidateMissedEvents,
+  resumedFromBackground,
+  resyncOnManagerReconnect,
+} from '../lib/missedEvents'
 import {
   applyIncomingMessage,
   applyMessageEdit,
@@ -138,7 +142,8 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
      * turns those 45 seconds into about one — and `resync` runs when the
      * restarted socket connects, so the gap is covered too. Passed in rather
      * than left to the Manager's `reconnect` handler below, which a restart
-     * never fires.
+     * fires only when its first attempt fails — and that handler then
+     * disarms this one, so the connection resyncs once either way.
      */
     const unsubscribeOnline = onlineManager.subscribe((online) => {
       if (online) restartSocket(resync)
@@ -175,8 +180,9 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
        * Manager per URL across sockets, so the cleanup below has to take this
        * handler off again or every replacement stacks one.
        */
-      socket.io.on('reconnect', resync)
-      offs.push(() => socket.io.off('reconnect', resync))
+      const onReconnect = resyncOnManagerReconnect(socket, resync)
+      socket.io.on('reconnect', onReconnect)
+      offs.push(() => socket.io.off('reconnect', onReconnect))
       // A replacement socket is a gap too, and its first connection is not a
       // Manager reconnect, so it is caught here.
       if (attached++ > 0) socket.once('connect', resync)
