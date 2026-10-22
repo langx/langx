@@ -369,7 +369,6 @@ describe('share cards', () => {
       handle: '@cardhaver',
       monthName: 'juin',
       recap: { ...RECAP_WORDS, month: '2026-06', locale: 'fr' },
-      storagePublicBaseUrl: undefined,
     })
     // French groups with a no-break space here (see recapCard.ts), and the
     // month is capitalised.
@@ -399,7 +398,6 @@ describe('share cards', () => {
       handle: '@cardhaver',
       monthName: '2026',
       recap: { ...RECAP_WORDS, month: '2026', locale: 'fr' },
-      storagePublicBaseUrl: undefined,
     })
     expect(year.month).toBe('2026')
     expect(year.year).toBeUndefined()
@@ -431,7 +429,6 @@ describe('share cards', () => {
         handle: '@cardhaver',
         monthName: 'May',
         recap: { ...RECAP_WORDS, month: '2026-05', slide },
-        storagePublicBaseUrl: undefined,
       })
 
     // The number is the ledger's, under the label the app sent for it.
@@ -488,6 +485,60 @@ describe('share cards', () => {
       const view = new DataView(png.buffer, png.byteOffset, png.byteLength)
       expect([view.getUint32(16), view.getUint32(20)]).toEqual([...expected])
     }
+  }, 60_000)
+
+  it('draws a badge the caller has earned, and refuses one they have not', async () => {
+    // `streak.longest` is what the streak badges read; 7 earns the first.
+    await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ handle: 'cardhaver' }, { $set: { 'streak.longest': 7 } })
+
+    const earned = await make({
+      kind: 'badge',
+      shape: 'square',
+      headline: 'Candle',
+      caption: 'badge earned on LangX',
+      badge: { id: 'streak.7', locale: 'ar' },
+    })
+    expect(earned.statusCode, earned.body).toBe(201)
+
+    // A badge further up the same ladder: the picture would be a claim with
+    // this handle on it, so it is refused rather than drawn.
+    const unearned = await make({
+      kind: 'badge',
+      shape: 'square',
+      headline: 'Bonfire',
+      caption: 'badge earned on LangX',
+      badge: { id: 'streak.30', locale: 'en' },
+    })
+    expect(unearned.statusCode, unearned.body).toBe(400)
+    // An id that is not a badge at all, the same.
+    const unknown = await make({
+      kind: 'badge',
+      shape: 'square',
+      headline: 'Nothing',
+      caption: 'badge earned on LangX',
+      badge: { id: 'nobody.knows', locale: 'en' },
+    })
+    expect(unknown.statusCode, unknown.body).toBe(400)
+  }, 60_000)
+
+  it('draws your own profile as a card, and a stranger reads it as a profile card', async () => {
+    const created = await make({
+      kind: 'profile',
+      shape: 'story',
+      headline: 'Practise languages with me',
+      caption: 'Find me on LangX',
+      profile: { locale: 'en', languages: 'Turkish → learning English' },
+      // Not fields the schema has: whose card it is comes from the session.
+      displayName: 'Somebody Else',
+      handle: 'someoneelse',
+    })
+    expect(created.statusCode, created.body).toBe(201)
+    const { id } = created.json<{ id: string }>()
+    const page = await app.inject({ method: 'GET', url: `/public/share/${id}` })
+    expect(page.statusCode, page.body).toBe(200)
+    expect(page.json()).toMatchObject({ kind: 'profile', handle: '@cardhaver' })
   }, 60_000)
 
   it('draws every shape at the size it claims', async () => {

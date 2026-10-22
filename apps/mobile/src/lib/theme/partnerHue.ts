@@ -1,3 +1,4 @@
+import { partnerHueIndex } from '@langx/shared'
 import { PARTNER_HUES, type PartnerHue } from './tokens'
 
 /**
@@ -12,17 +13,9 @@ import { PARTNER_HUES, type PartnerHue } from './tokens'
  * tells partners apart within one person's list often enough, and is never
  * the only thing that does — the name is always beside it.
  *
- * FNV-1a over the id's UTF-16 code units, then the remainder by six. Not for
- * its quality as a hash: it is short, has no dependency, and gives the same
- * answer on Hermes, V8 and JavaScriptCore, because it only uses 32-bit
- * integer arithmetic that all three define identically.
+ * The hash is `partnerHueIndex` in `@langx/shared`, where the server's
+ * profile card reads it too, so the card is the colour of the Share page.
  */
 export function partnerHueFor(id: string): PartnerHue {
-  let hash = 0x811c9dc5
-  for (let i = 0; i < id.length; i++) {
-    hash ^= id.charCodeAt(i)
-    hash = Math.imul(hash, 0x01000193)
-  }
-  // `>>> 0` reads the 32 bits as unsigned, so the remainder is never negative.
-  return PARTNER_HUES[(hash >>> 0) % PARTNER_HUES.length]!
+  return PARTNER_HUES[partnerHueIndex(id, PARTNER_HUES.length)]!
 }

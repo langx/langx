@@ -41,6 +41,14 @@ export const COPILOT_RULES = {
    * on the key as well: this is our ceiling, and that one is the provider's.
    */
   globalCallsPerDay: 500,
+  /**
+   * Asks one account may make of each Copilot route an hour, answered or not.
+   * A declined or failed answer refunds both the person's unit and the global
+   * call, so neither bounds a question the model keeps declining — and each of
+   * those is still a billed call. This is what does. Far above what a person
+   * tapping in a chat reaches, since `copilotPer24h` is the real allowance.
+   */
+  askRoutePerHour: 30,
   /** A sentence to Check. Longer than a chat line rarely is; the cost is what is bounded. */
   maxCheckChars: 400,
   /**

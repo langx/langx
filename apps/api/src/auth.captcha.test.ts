@@ -163,6 +163,18 @@ describe('Turnstile on sign-up, sign-in and reset', () => {
       ])
     })
 
+    it('lets a magic link and a resent verification mail through without one', async () => {
+      for (const url of ['/api/auth/sign-in/magic-link', '/api/auth/send-verification-email']) {
+        const response = await guarded.inject({
+          method: 'POST',
+          url,
+          payload: { email: 'nobody@example.com' },
+        })
+        expect(response.statusCode).toBe(200)
+      }
+      expect(siteverifyCalls).toHaveLength(0)
+    })
+
     it('refuses a bad token rather than treating it as absent', async () => {
       const response = await signUp(guarded, 'forged')
       expect(response.statusCode).toBe(403)
@@ -192,6 +204,35 @@ describe('Turnstile on sign-up, sign-in and reset', () => {
         payload: { email: 'nobody@example.com' },
       })
       expect(reset.statusCode).toBe(400)
+    })
+
+    it('refuses a magic link and a resent verification mail without one', async () => {
+      await setRequired(true)
+      const link = await guarded.inject({
+        method: 'POST',
+        url: '/api/auth/sign-in/magic-link',
+        payload: { email: 'nobody@example.com' },
+      })
+      expect(link.statusCode).toBe(400)
+      expect(link.json<{ code: string }>().code).toBe('MISSING_RESPONSE')
+      const verification = await guarded.inject({
+        method: 'POST',
+        url: '/api/auth/send-verification-email',
+        payload: { email: 'nobody@example.com' },
+      })
+      expect(verification.statusCode).toBe(400)
+      expect(verification.json<{ code: string }>().code).toBe('MISSING_RESPONSE')
+    })
+
+    it('still sends a magic link with a good token', async () => {
+      await setRequired(true)
+      const link = await guarded.inject({
+        method: 'POST',
+        url: '/api/auth/sign-in/magic-link',
+        headers: { [CAPTCHA_HEADER]: GOOD_TOKEN },
+        payload: { email: 'nobody@example.com' },
+      })
+      expect(link.statusCode).toBe(200)
     })
 
     it('still signs up with a good token', async () => {

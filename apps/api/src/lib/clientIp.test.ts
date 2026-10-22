@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { networkKey, resolveClientIp } from './clientIp'
+import { networkKey, resolveClientIp, trustProxyHops } from './clientIp'
 
 const SECRET = 'edge-secret-value'
 
@@ -50,5 +50,23 @@ describe('networkKey', () => {
     ]) {
       expect(networkKey(ip)).toBeUndefined()
     }
+  })
+})
+
+describe('trustProxyHops', () => {
+  it('trusts exactly the peer in production, so the last forwarded entry is the address', () => {
+    const trust = trustProxyHops({ NODE_ENV: 'production', TRUST_PROXY_HOPS: undefined })
+    if (trust === false) throw new Error('expected a trust function')
+    expect(trust('172.16.0.2', 0)).toBe(true)
+    expect(trust('198.51.100.7', 1)).toBe(false)
+  })
+
+  it('trusts no proxy outside production unless told to', () => {
+    expect(trustProxyHops({ NODE_ENV: 'development', TRUST_PROXY_HOPS: undefined })).toBe(false)
+    expect(trustProxyHops({ NODE_ENV: 'production', TRUST_PROXY_HOPS: 0 })).toBe(false)
+
+    const two = trustProxyHops({ NODE_ENV: 'development', TRUST_PROXY_HOPS: 2 })
+    if (two === false) throw new Error('expected a trust function')
+    expect([two('a', 0), two('b', 1), two('c', 2)]).toEqual([true, true, false])
   })
 })

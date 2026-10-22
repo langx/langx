@@ -213,6 +213,17 @@ export async function runDailyPool(
         count: award.amount,
         at: closedAt,
       })
+    } else if (award.reason === 'duplicate') {
+      /*
+       * Paid by an earlier pass that died before it finished — the retry this
+       * function exists to allow. Still part of the day: `result` is what the
+       * pool screen reads as "N people that day", and counting only this
+       * pass's awards made a recovered day look as if it paid a handful. The
+       * share is the one just computed, which is the one that was paid unless
+       * somebody's eligibility changed in between.
+       */
+      distributed += amount
+      paid++
     }
   }
 

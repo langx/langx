@@ -32,6 +32,7 @@ import { collectionCount, upNext, withinReach } from '../lib/storeHome'
 import type { StoreOffer } from '../lib/storeOffers'
 import type { CosmeticKind } from '@langx/shared'
 import { makeStyles, useTheme } from '../lib/theme'
+import { tokenSlot } from '../lib/tokenAmount'
 
 const WALLET = '/(app)/wallet'
 
@@ -262,7 +263,7 @@ export function StoreHeader({
 }) {
   const t = useT()
   const { locale } = useLocale()
-  const value = balance?.toLocaleString(locale) ?? ''
+  const digits = balance?.toLocaleString(locale) ?? ''
   return (
     <WalletHeader
       title={title ?? t('wallet.storeTitle')}
@@ -273,8 +274,8 @@ export function StoreHeader({
           ? undefined
           : {
               label: t('wallet.balance'),
-              value,
-              a11y: `${t('wallet.balance')}: ${t('wallet.price', { count: balance, amount: value })}`,
+              value: tokenSlot(t, balance, locale),
+              a11y: `${t('wallet.balance')}: ${t('wallet.price', { count: balance, amount: digits })}`,
             }
       }
     />

@@ -12,6 +12,8 @@
  * 119 — precisely the distinction being thrown away here.
  */
 
+import { countryFromHeaders as edgeCheckedCountry } from '../../lib/requestCountry'
+
 export interface DeviceIdentity {
   /** Stable across versions: `ios-safari`, `android-chrome`, `macos-app`. */
   fingerprint: string
@@ -96,12 +98,21 @@ export function deviceIdentity(userAgent: string | undefined | null): DeviceIden
 /**
  * The country Cloudflare says the request came from, as a two-letter code.
  *
- * `cf-ipcountry` is set at the edge and cannot be forged by the client — the
- * origin only accepts proxied requests (see `EDGE_SECRET`). `XX` is
- * Cloudflare's own "unknown", and `T1` is Tor; both are treated as no answer.
+ * The origin also answers requests that never passed through the edge, so
+ * `CF-IPCountry` alone is whatever the sender typed. This hands the decision
+ * to `requestCountry.ts`, which only believes the header alongside the edge
+ * secret — the same rule onboarding uses. Here only to adapt Better Auth's
+ * fetch `Headers` to the Node shape that function reads.
  */
-export function countryFromHeaders(headers: Headers | undefined): string | undefined {
-  const value = headers?.get('cf-ipcountry')?.trim().toUpperCase()
-  if (!value || value === 'XX' || value === 'T1') return undefined
-  return /^[A-Z]{2}$/.test(value) ? value : undefined
+export function countryFromHeaders(
+  headers: Headers | undefined,
+  edgeSecret: string | undefined,
+): string | undefined {
+  if (!headers) return undefined
+  const country = headers.get('cf-ipcountry')
+  const edge = headers.get('x-langx-edge')
+  return edgeCheckedCountry(
+    { ...(country ? { 'cf-ipcountry': country } : {}), ...(edge ? { 'x-langx-edge': edge } : {}) },
+    edgeSecret,
+  )
 }

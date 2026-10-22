@@ -22,6 +22,7 @@ import { useScreenInteractive } from '../../hooks/useScreenInteractive'
 import { useLocale, useT } from '../../i18n'
 import { dedupeById } from '../../lib/dedupeById'
 import { relativeTime } from '../../lib/format'
+import { lockedAvatarVeil } from '../../lib/lockedAvatarVeil'
 import { goBackTo, openProfile } from '../../lib/navigation'
 import { openPaywall } from '../../lib/paywall'
 import { makeStyles, useTheme } from '../../lib/theme'
@@ -60,6 +61,7 @@ export function ViewersScreenV3() {
     }),
   )
   const plan = TIER_NAMES.pro
+  const veil = lockedAvatarVeil(Platform.OS, locked)
 
   function unlock(): void {
     openPaywall('profileViewerIdentities', '/(app)/viewers')
@@ -156,19 +158,18 @@ export function ViewersScreenV3() {
                     name={locked ? '' : nameOf(item)}
                     seed={item.guest ? undefined : item.userId}
                     size={48}
+                    blurRadius={veil.kind === 'blurImage' ? veil.blurRadius : undefined}
                   />
-                  {/* Blurred, not swapped: see `viewers.tsx` for why, and for the web's flat veil. */}
-                  {locked ? (
-                    Platform.OS === 'web' ? (
-                      <View style={[styles.veil, styles.veilFlat]} pointerEvents="none" />
-                    ) : (
-                      <BlurView
-                        intensity={40}
-                        tint={scheme === 'dark' ? 'dark' : 'light'}
-                        style={styles.veil}
-                        pointerEvents="none"
-                      />
-                    )
+                  {/* Blurred, not swapped: see `viewers.tsx` for why, and `lockedAvatarVeil` for how per platform. */}
+                  {veil.kind === 'flat' ? (
+                    <View style={[styles.veil, styles.veilFlat]} pointerEvents="none" />
+                  ) : veil.kind === 'blurView' ? (
+                    <BlurView
+                      intensity={40}
+                      tint={scheme === 'dark' ? 'dark' : 'light'}
+                      style={styles.veil}
+                      pointerEvents="none"
+                    />
                   ) : null}
                 </View>
                 {locked ? (

@@ -243,15 +243,17 @@ const useStyles = makeStyles(({ v3 }) => ({
     lineHeight: 20,
     paddingStart: v3.space[4],
   },
+  // The board's tangerine block, a step deeper after dark as every partner
+  // hue is, with ink on it in both schemes; the blue tint read as Echo's.
   chosen: {
-    backgroundColor: v3.colors.echoTint,
+    backgroundColor: v3.hues.tangerine,
     borderRadius: v3.radius.tile,
     gap: v3.space[2],
     paddingHorizontal: v3.space[16],
     paddingVertical: v3.space[12],
   },
-  chosenTime: { ...v3.type.headline, color: v3.colors.fg, fontFamily: v3.type.title.fontFamily },
-  chosenZone: { ...v3.type.caption, color: v3.colors.echoText, fontSize: 15, fontWeight: '600' },
+  chosenTime: { ...v3.type.headline, color: v3.colors.ink, fontFamily: v3.type.title.fontFamily },
+  chosenZone: { ...v3.type.caption, color: v3.colors.ink, fontSize: 15, fontWeight: '600' },
   days: { flexDirection: 'row', gap: v3.space[4] },
   day: {
     alignItems: 'center',

@@ -1169,6 +1169,50 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     })
 
     /**
+     * Written under the caller's own prefix, read by every browser and the CDN
+     * as the victim's file — and the account purge would later have deleted
+     * whatever the stored string named. See `objectKeyOf`.
+     */
+    it('refuses an avatar or a gallery photo that climbs out of the caller’s prefix', async () => {
+      const attacker = await newUser('dotdot-attacker@example.com')
+      const victim = await newUser('dotdot-victim@example.com')
+      await configuredApp.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: attacker.cookie },
+        payload: onboardingBody({ handle: 'dotdotattacker' }),
+      })
+      const cdn = 'https://cdn.example.com'
+
+      const avatarUrl = `${cdn}/avatars/${attacker.userId}/../${victim.userId}/x.jpg`
+      // What a browser actually fetches for it.
+      expect(new URL(avatarUrl).pathname).toBe(`/avatars/${victim.userId}/x.jpg`)
+      const confirm = await configuredApp.inject({
+        method: 'POST',
+        url: '/me/avatar/confirm',
+        headers: { cookie: attacker.cookie },
+        payload: { avatarUrl },
+      })
+      expect(confirm.statusCode, confirm.body).toBe(400)
+
+      const photo = await configuredApp.inject({
+        method: 'POST',
+        url: '/me/photos',
+        headers: { cookie: attacker.cookie },
+        payload: { url: `${cdn}/photos/${attacker.userId}/../${victim.userId}/x.jpg` },
+      })
+      expect(photo.statusCode, photo.body).toBe(400)
+
+      const encoded = await configuredApp.inject({
+        method: 'POST',
+        url: '/me/photos',
+        headers: { cookie: attacker.cookie },
+        payload: { url: `${cdn}/photos/${attacker.userId}/%2e%2e/${victim.userId}/x.jpg` },
+      })
+      expect(encoded.statusCode, encoded.body).toBe(400)
+    })
+
+    /**
      * Apps released before the single plan unlock features off their own
      * profile's tier and write every one of these responses into their `me`
      * cache, and to them `pro` is Fluent. So every route that answers with the

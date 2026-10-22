@@ -198,7 +198,7 @@ export function MessageMenuHost() {
             pressed && pressedStyle,
           ]}
         >
-          <Ionicons name="chevron-back" size={20} color={glyph} />
+          <Ionicons name={isRtl ? 'chevron-forward' : 'chevron-back'} size={20} color={glyph} />
           <Text style={[labelStyle, styles.muted]}>{t('common.backPlain')}</Text>
         </Pressable>
       ) : null}

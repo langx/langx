@@ -214,15 +214,21 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
 async function recordSpend(db: Db, userId: string, sku: string, price: number): Promise<void> {
   const at = new Date()
   const keys = periodKeys(at)
+  const _id = new ObjectId()
   await db.collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger).insertOne({
-    _id: new ObjectId(),
+    _id,
     userId,
     kind: 'spend',
     amount: -price,
     // Not idempotent by design, and it must not be: buying two frames is two
     // real events. The unique index only covers rows that carry a `refId`
     // meaning "this exact thing", which a spend does not.
-    refId: `${sku}:${at.toISOString()}`,
+    //
+    // Keyed on the row's own id, not the instant. Two freezes bought in the
+    // same millisecond are both charged by then, and an instant-keyed second
+    // row hit the unique index: a 500 for a purchase that had gone through,
+    // and a history one spend short of the balance.
+    refId: `${sku}:${_id.toHexString()}`,
     day: utcDayKey(at),
     week: keys.week,
     month: keys.month,

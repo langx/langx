@@ -1023,6 +1023,8 @@ export interface ConversationDto {
     body: string
     senderId: string
     createdAt: string
+    /** The newest message was deleted for everyone; `body` is then empty. */
+    deleted?: boolean
     /**
      * Set when the newest thing in the thread is a call's row. `body` is then
      * a line in English for builds that predate calls; this is what the row is
@@ -1644,7 +1646,9 @@ export function useCitySearch(term: string) {
 }
 
 export function useHandleSearch(term: string) {
-  const trimmed = term.trim().toLowerCase()
+  // The `@` the server drops, dropped here too, so `@s` waits for a second
+  // letter rather than asking a question the server answers with a 400.
+  const trimmed = term.trim().toLowerCase().replace(/^@+/, '')
   return useQuery({
     queryKey: keys.handleSearch(trimmed),
     queryFn: () => api.get<HandleSearchPage>(`/discovery/handles?q=${encodeURIComponent(trimmed)}`),
@@ -2648,9 +2652,13 @@ async function uploadImage(
   onProgress?: (loaded: number, total: number) => void,
 ): Promise<string> {
   const path = kind === 'avatar' ? '/me/avatar/upload-url' : '/me/photos/upload-url'
-  const target = await api.post<UploadUrlDto>(path, { contentType })
-
+  // Blob first, so its size can be signed into the URL — see `uploadMessageMedia`.
   const blob = await (await fetch(uri)).blob()
+  const target = await api.post<UploadUrlDto>(path, {
+    contentType,
+    ...(blob.size > 0 ? { sizeBytes: blob.size } : {}),
+  })
+
   await putWithProgress({
     url: target.uploadUrl,
     body: blob,
@@ -2937,6 +2945,9 @@ async function uploadToSigningRoute(path: string, input: PresignedUpload): Promi
   const target = await api.post<UploadUrlDto>(path, {
     kind: input.kind,
     contentType,
+    // Signed into the URL, as in `uploadMessageMedia`, and left out for an
+    // empty blob for the same reason.
+    ...(blob.size > 0 ? { sizeBytes: blob.size } : {}),
   })
 
   await putWithProgress({

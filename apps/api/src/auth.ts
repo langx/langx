@@ -4,13 +4,14 @@ import {
   IOS_BUNDLE_ID,
   magicLinkUrl,
   PASSWORD_MIN_LENGTH,
+  UNLINK_FRESH_SESSION_SECONDS,
   verifyEmailUrl,
   WEB_HOST,
   webUrl,
   type Locale,
 } from '@langx/shared'
 import { betterAuth } from 'better-auth'
-import { APIError, createAuthMiddleware } from 'better-auth/api'
+import { APIError, createAuthMiddleware, getSessionFromCtx } from 'better-auth/api'
 import { setSessionCookie } from 'better-auth/cookies'
 import { mongodbAdapter } from 'better-auth/adapters/mongodb'
 import { expo } from '@better-auth/expo'
@@ -97,11 +98,12 @@ export interface CreateAuthOptions {
  * JWT first (see auth/appleClientSecret.ts), so construction is async.
  */
 /**
- * Every route that ends with a different password on the account. Reset and
- * set are here beside change: an attacker who used a stolen inbox to reset
- * the password is exactly who this mail is about.
+ * The signed-in routes that end with a different password on the account.
+ * Reset is not here: it has no session for this hook to read the user from,
+ * so it is told from `onPasswordReset` instead, and listing it here as well
+ * is how one reset would come to send two mails.
  */
-const PASSWORD_CHANGE_PATHS = new Set(['/change-password', '/set-password', '/reset-password'])
+const PASSWORD_CHANGE_PATHS = new Set(['/change-password', '/set-password'])
 
 /**
  * Refuses an email sign-up for an address on a known throwaway domain.
@@ -112,6 +114,31 @@ const PASSWORD_CHANGE_PATHS = new Set(['/change-password', '/set-password', '/re
  * hand over an address they hold for the person, and there is no route that
  * changes an account's address afterwards.
  */
+/**
+ * Puts Better Auth's freshness check back on `/unlink-account`.
+ *
+ * `freshAge: 0` (see the session block) switched the check off everywhere so
+ * an old phone can list its sessions, and `/unlink-account` was the other
+ * endpoint behind it. Disconnecting removes a way in, and linking accepts a
+ * provider account under any address, so a session stolen last week could
+ * link one of its own and then take the owner's away. A recent sign-in is the
+ * proof that the person holding the session is the owner.
+ *
+ * Same status and code as Better Auth's own check, so a client that already
+ * knows `SESSION_NOT_FRESH` needs nothing new. No session is left to the
+ * endpoint, which answers 401 itself.
+ */
+async function refuseStaleUnlink(ctx: Parameters<typeof getSessionFromCtx>[0]): Promise<void> {
+  const session = await getSessionFromCtx(ctx)
+  if (!session) return
+  const age = Date.now() - new Date(session.session.createdAt).getTime()
+  if (age < UNLINK_FRESH_SESSION_SECONDS * 1000) return
+  throw new APIError('FORBIDDEN', {
+    code: 'SESSION_NOT_FRESH',
+    message: 'Session is not fresh',
+  })
+}
+
 function refuseThrowawayAddress(body: unknown): void {
   if (typeof body !== 'object' || body === null) return
   const email: unknown = (body as { email?: unknown }).email
@@ -276,7 +303,7 @@ export async function createAuth({
   }): Promise<void> {
     const headers = ctx.headers
     const identity = deviceIdentity(headers?.get('user-agent'))
-    const country = countryFromHeaders(headers)
+    const country = countryFromHeaders(headers, env.EDGE_SECRET)
     const at = new Date()
     const detail: SecurityContext = { device: identity.label, ...(country ? { country } : {}), at }
 
@@ -350,9 +377,11 @@ export async function createAuth({
        * Where Better Auth reads a client's address — for its rate limiter and
        * for `session.ipAddress` — and nowhere else. The header is written by
        * the bridge in `routes/auth.ts` on every request, replacing anything
-       * the client sent, from Cloudflare's `CF-Connecting-IP` when the edge
-       * secret vouches for the request and from Fastify's `request.ip`
-       * otherwise. See `CLIENT_IP_HEADER` for why the default,
+       * the client sent, with `clientIpOf` — the same address the API's own
+       * rate limiter counts by: Cloudflare's `CF-Connecting-IP` when the edge
+       * secret vouches for the request, and otherwise Fastify's `request.ip`,
+       * which trusts only the hop Fly's proxy appended to `X-Forwarded-For`
+       * (`trustProxyHops`). See `CLIENT_IP_HEADER` for why the default,
        * `X-Forwarded-For`, left every production request without an address.
        */
       ipAddress: { ipAddressHeaders: [CLIENT_IP_HEADER] },
@@ -372,6 +401,32 @@ export async function createAuth({
       sendResetPassword: async ({ user, url }, request) => {
         const email = resetPasswordEmail(url, await mailLocale(user.id, request?.headers))
         await emailSender.send({ to: user.email, ...email })
+      },
+      /*
+       * A reset is what somebody does when they think somebody else is in, so
+       * every session the account had goes with the old password — including
+       * the intruder's. Better Auth deletes them in the same transaction that
+       * writes the new hash. The five-minute cookie cache (see `session`
+       * below) still applies: a device holding a cached cookie keeps working
+       * until it next asks the database.
+       */
+      revokeSessionsOnPasswordReset: true,
+      /**
+       * The password-changed notice for a reset. Here and not in the `after`
+       * hook because a reset carries no session for that hook to name the
+       * user by; this callback is handed the user directly. Same notifier,
+       * so the same rules: only a verified address is written to, which
+       * leaves out guests and the warm-up's `.invalid` account, and it never
+       * throws into the response.
+       */
+      onPasswordReset: async ({ user }, request) => {
+        const headers = request?.headers
+        const country = countryFromHeaders(headers, env.EDGE_SECRET)
+        await notifyPasswordChanged(db, security, user.id, {
+          device: deviceIdentity(headers?.get('user-agent')).label,
+          ...(country ? { country } : {}),
+          at: new Date(),
+        })
       },
       /**
        * A sign-up for an address that already has an account is answered with
@@ -472,7 +527,8 @@ export async function createAuth({
        * revocation: `/revoke-session` and `/revoke-other-sessions` use the
        * authoritative-session check, not the freshness one, and they are
        * unchanged. The only other fresh-gated endpoint is `/unlink-account`,
-       * which this app never calls.
+       * which the sign-in methods screen does call — so the `before` hook
+       * puts a 24-hour check back on that one (`refuseStaleUnlink`).
        */
       freshAge: 0,
       /*
@@ -521,6 +577,22 @@ export async function createAuth({
         if (ctx.path === '/sign-up/email') {
           refuseThrowawayAddress(ctx.body)
           return
+        }
+        if (ctx.path === '/unlink-account') {
+          await refuseStaleUnlink(ctx)
+          return
+        }
+        /*
+         * Every security mail says that changing the password signs every
+         * other device out, so the server makes that true whatever the
+         * request asks: builds already installed send `false`. The caller is
+         * not signed out — Better Auth issues it a fresh session and sets the
+         * cookie on the response.
+         */
+        if (ctx.path === '/change-password') {
+          const body: unknown = ctx.body
+          if (typeof body !== 'object' || body === null) return
+          return { context: { body: { ...body, revokeOtherSessions: true } } }
         }
         // The emailed link accepts a handle for the same reason, and the
         // rewrite runs before the endpoint's own `z.email()` check does.

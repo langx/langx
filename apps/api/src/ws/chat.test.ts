@@ -31,6 +31,7 @@ import type { LoggingPushSender } from '../modules/push/devices'
 import { ACCESS_RECHECK_MS } from './index'
 
 const PASSWORD = 'correct horse battery staple'
+const TRUSTED_ORIGIN = 'http://localhost:8081'
 
 function onboardingBody(overrides: Record<string, unknown> = {}) {
   return {
@@ -147,6 +148,7 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
       LOG_LEVEL: 'silent',
       BETTER_AUTH_SECRET: 'a'.repeat(32),
       BETTER_AUTH_URL: 'http://localhost:4000',
+      TRUSTED_ORIGINS: TRUSTED_ORIGIN,
     })
 
     await ensureIndexes(handle.db)
@@ -201,6 +203,64 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
 
   it('rejects a connection with a garbage cookie', async () => {
     await expect(connectSocket('session_token=not-a-real-session')).rejects.toThrow()
+  })
+
+  /**
+   * Socket.io's `cors` option only answers the polling transport's preflight;
+   * a WebSocket upgrade has no preflight and carried the cookie from any page
+   * that opened one. The handshake itself has to look at `Origin`.
+   */
+  describe('the Origin a handshake comes from', () => {
+    function connectFrom(cookie: string, origin: string | undefined): Promise<ClientSocket> {
+      return new Promise((resolve, reject) => {
+        const socket = ioClient(baseUrl, {
+          transports: ['websocket'],
+          auth: { cookie },
+          ...(origin ? { extraHeaders: { origin } } : {}),
+          forceNew: true,
+          reconnection: false,
+        })
+        openSockets.push(socket)
+        socket.once('connect', () => resolve(socket))
+        socket.once('connect_error', (error: Error) => reject(error))
+      })
+    }
+
+    it('refuses a page on a site the API does not trust', async () => {
+      const user = await newUser('ws-origin-foreign@example.com')
+      await expect(connectFrom(user.cookie, 'https://evil.example')).rejects.toThrow()
+    })
+
+    it('accepts a trusted origin', async () => {
+      const user = await newUser('ws-origin-trusted@example.com')
+      expect((await connectFrom(user.cookie, TRUSTED_ORIGIN)).connected).toBe(true)
+    })
+
+    // A plain client — a script, a test — says nothing about where it is.
+    it('accepts a handshake with no Origin at all', async () => {
+      const user = await newUser('ws-origin-none@example.com')
+      expect((await connectFrom(user.cookie, undefined)).connected).toBe(true)
+    })
+
+    /*
+     * React Native's WebSocket fills `Origin` in with the address it connects
+     * to (`http(s)://host[:port]`), so the phones present the API's own
+     * origin, which is not in the list.
+     */
+    it("accepts the API's own origin, which is what the native app sends", async () => {
+      const user = await newUser('ws-origin-native@example.com')
+      expect((await connectFrom(user.cookie, baseUrl)).connected).toBe(true)
+    })
+
+    /*
+     * The same phone behind an edge that rewrites `Host`: the Origin it sends
+     * is still the public URL it dialled. Here the test connects to
+     * 127.0.0.1:<port> while the configured URL is localhost:4000.
+     */
+    it('accepts the configured public origin even when Host says otherwise', async () => {
+      const user = await newUser('ws-origin-public@example.com')
+      expect((await connectFrom(user.cookie, 'http://localhost:4000')).connected).toBe(true)
+    })
   })
 
   /**
@@ -518,12 +578,16 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     const bob = await newUser('ws-deliv-bob@example.com')
     const conversation = await startConversation(alice, bob.userId, 'hello')
 
-    // Bob first, so his connect-time sweep of that opening message fires
-    // before Alice has a room to receive it in — leaving the send below as
-    // the only thing that can produce the event this test waits for.
-    const bobSocket = await connectSocket(bob.cookie)
-    await new Promise((resolve) => setTimeout(resolve, 200))
+    // Bob's connect-time sweep of that opening message emits the same event
+    // this test waits for. Letting it arrive first, rather than sleeping and
+    // hoping it went out before Alice had a room, leaves the send below as the
+    // only thing that can produce the next one. The sleep lost on a busy CI
+    // runner: the sweep's event landed after Alice joined, resolved the wait,
+    // and the history read beat the send's own stamp.
     const aliceSocket = await connectSocket(alice.cookie)
+    const swept = waitForEvent(aliceSocket, 'conversation:delivered')
+    const bobSocket = await connectSocket(bob.cookie)
+    await swept
 
     const delivered = waitForEvent<{ conversationId: string; deliveredTo: string }>(
       aliceSocket,
@@ -759,6 +823,51 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     })
     expect(ack.ok).toBe(false)
     expect(ack.error?.code).toBe('VALIDATION_FAILED')
+  })
+
+  // A correction pays its corrector, so a non-text target would be a reward
+  // for correcting nothing. The menu offers text only; this is the socket.
+  it('refuses a correction of a message that is not text, and pays nothing', async () => {
+    const alice = await newUser('ws-correct-image-alice@example.com')
+    const bob = await newUser('ws-correct-image-bob@example.com')
+    const conversation = await startConversation(alice, bob.userId, 'hello')
+    const bobSocket = await connectSocket(bob.cookie)
+
+    const conversationId = new ObjectId(conversation._id)
+    const targets = await handle.db.collection(COLLECTIONS.messages).insertMany(
+      (['image', 'sticker', 'correction'] as const).map((type) => ({
+        conversationId,
+        senderId: alice.userId,
+        type,
+        body: '',
+        createdAt: new Date(),
+      })),
+    )
+    for (const id of Object.values(targets.insertedIds)) {
+      const ack = await new Promise<{ ok: boolean; error?: { code: string } }>((resolve) => {
+        bobSocket.emit(
+          'message:correct',
+          { conversationId: conversation._id, targetMessageId: id.toHexString(), corrected: 'x' },
+          (response: { ok: boolean; error?: { code: string } }) => resolve(response),
+        )
+      })
+      expect(ack.ok).toBe(false)
+      expect(ack.error?.code).toBe('VALIDATION_FAILED')
+    }
+    expect(
+      await handle.db.collection(COLLECTIONS.messages).countDocuments({
+        conversationId,
+        senderId: bob.userId,
+        type: 'correction',
+      }),
+    ).toBe(0)
+    expect(
+      await handle.db.collection(COLLECTIONS.tokenLedger).countDocuments({
+        refId: {
+          $in: Object.values(targets.insertedIds).map((id) => `msgcorr:${id.toHexString()}`),
+        },
+      }),
+    ).toBe(0)
   })
 
   it('rejects sending into a conversation the socket owner is not part of', async () => {
@@ -1529,5 +1638,77 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     expect(
       await handle.db.collection(COLLECTIONS.pollAnswers).countDocuments({ pollId: 'poll-ws' }),
     ).toBe(1)
+  })
+
+  /**
+   * The answer acks carry the message as the answerer may see it. Raw, they
+   * would say who else starred or hid it — the other person's business.
+   */
+  describe('an answer acks the message as the answerer sees it', () => {
+    type Ack = { ok: boolean; data?: Record<string, unknown>; error?: unknown }
+
+    function emitForAck(socket: ClientSocket, event: string, payload: Record<string, unknown>) {
+      return new Promise<Ack>((resolve) => socket.emit(event, payload, resolve))
+    }
+
+    /** Sent by Alice, then starred and hidden by her, so the row carries both. */
+    async function askedByAlice(prefix: string, event: string, payload: Record<string, unknown>) {
+      const alice = await newUser(`${prefix}-alice@example.com`)
+      const bob = await newUser(`${prefix}-bob@example.com`)
+      const conversation = await startConversation(alice, bob.userId, 'opening')
+      const aliceSocket = await connectSocket(alice.cookie)
+      const sent = await emitForAck(aliceSocket, event, {
+        conversationId: conversation._id,
+        ...payload,
+      })
+      expect(sent.ok, JSON.stringify(sent.error)).toBe(true)
+      const messageId = String(sent.data?._id)
+      await handle.db
+        .collection(COLLECTIONS.messages)
+        .updateOne(
+          { _id: new ObjectId(messageId) },
+          { $set: { starredBy: [alice.userId], hiddenFor: [alice.userId] } },
+        )
+      const bobSocket = await connectSocket(bob.cookie)
+      return { bobSocket, conversationId: conversation._id, messageId }
+    }
+
+    function expectOwnView(ack: Ack) {
+      expect(ack.ok, JSON.stringify(ack.error)).toBe(true)
+      expect(ack.data).not.toHaveProperty('starredBy')
+      expect(ack.data).not.toHaveProperty('hiddenFor')
+      // Alice's star and hide are hers; to Bob the message is neither.
+      expect(ack.data).not.toHaveProperty('starred')
+      expect(ack.data).not.toHaveProperty('hidden')
+    }
+
+    it('for a quiz answer', async () => {
+      const { bobSocket, conversationId, messageId } = await askedByAlice(
+        'ws-quiz-view',
+        'message:quiz',
+        { question: 'Which one?', options: ['this', 'that'], correctIndex: 0 },
+      )
+      expectOwnView(
+        await emitForAck(bobSocket, 'quiz:answer', { conversationId, messageId, index: 1 }),
+      )
+    })
+
+    it('for a meeting response', async () => {
+      const { bobSocket, conversationId, messageId } = await askedByAlice(
+        'ws-meeting-view',
+        'message:meeting',
+        {
+          startsAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+          durationMinutes: 30,
+        },
+      )
+      expectOwnView(
+        await emitForAck(bobSocket, 'meeting:respond', {
+          conversationId,
+          messageId,
+          status: 'accepted',
+        }),
+      )
+    })
   })
 })

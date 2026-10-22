@@ -15,6 +15,7 @@ import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
 import { StreakHistoryScreenV3 } from '../../../src/screens/StreakHistoryScreenV3'
+import { activityRange } from '../../../src/lib/activityMap'
 
 /** Enough to read as a history without becoming a year of scrolling. */
 const DAYS = 60
@@ -44,17 +45,20 @@ function StreakHistoryScreen() {
   const { locale } = useLocale()
   const styles = useStyles()
 
-  const to = new Date().toISOString().slice(0, 10)
-  const from = shiftDayKey(to, -DAYS)
+  const { from, to } = activityRange(DAYS)
   const activity = useActivity(from, to)
   const pull = usePullToRefresh(() => activity.refetch())
 
   const rows = useMemo(
     () =>
       activity.data
-        ? streakHistory({ today: activity.data.today, from, days: activity.data.days })
+        ? streakHistory({
+            today: activity.data.today,
+            from: shiftDayKey(activity.data.today, -DAYS),
+            days: activity.data.days,
+          })
         : [],
-    [activity.data, from],
+    [activity.data],
   )
 
   if (activity.isPending) {
@@ -74,7 +78,7 @@ function StreakHistoryScreen() {
     )
   }
 
-  const now = new Date(`${activity.data?.today ?? to}T12:00:00`)
+  const now = new Date(`${activity.data?.today ?? new Date().toISOString().slice(0, 10)}T12:00:00`)
 
   return (
     <Screen scroll {...pull}>

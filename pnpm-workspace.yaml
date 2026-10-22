@@ -70,8 +70,11 @@ catalog:
   react-native-web: ~0.21.0
   '@types/react': ~19.2.2
 
-# esbuild needs its platform binary; mongodb-memory-server downloads a mongod.
+# esbuild needs its platform binary; mongodb-memory-server downloads a mongod;
+# react-native-skia downloads its prebuilt Skia libraries, without which its
+# podspec refuses to load and the native build stops at `pod install`.
 onlyBuiltDependencies:
+  - '@shopify/react-native-skia'
   - esbuild
   - mongodb-memory-server
 

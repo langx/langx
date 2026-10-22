@@ -229,6 +229,14 @@ export const en = {
     cameraUnavailable:
       'The camera isn’t available here. Choose a photo or video from your library instead.',
     captureFailed: 'Couldn’t take that. Try again.',
+    filters: 'Filters',
+    filterOriginal: 'Original',
+    filterWarm: 'Warm',
+    filterCool: 'Cool',
+    filterMono: 'Mono',
+    filterVivid: 'Vivid',
+    filterFilm: 'Film',
+    filterFailed: 'Couldn’t add the filter. Try again.',
     playFailed: 'This video can’t be played on this device.',
   },
   tips: {
@@ -489,6 +497,7 @@ export const en = {
     editTitle: 'Edit card',
     editFront: 'Sentence',
     editBack: 'What it means',
+    editBackIn: 'How to say it in {language}',
     edited: 'Card updated',
     editFailedTitle: 'Could not save this card',
     cardMenu: 'Card options',
@@ -532,6 +541,12 @@ export const en = {
      */
     autoplayOn: 'Autoplay on',
     autoplayOff: 'Autoplay off',
+    /**
+     * The words on that switch in the v3 header: the speaker icon shows the
+     * state, so the visible label is only the name and stays short in every
+     * locale. Screen readers keep `autoplayOn` / `autoplayOff`.
+     */
+    autoplay: 'Autoplay',
     voiceFemale: 'Synthesised · female',
     voiceMale: 'Synthesised · male',
     voiceSynthesised: 'Synthesised',
@@ -640,6 +655,13 @@ export const en = {
      */
     subtitle: 'Lines from your chats come back just before you’d forget them.',
     dueUnit: { one: 'card due', other: 'cards due' },
+    /** Under the due count: a review now fills Home's Today's three's Echo ring. */
+    closesRing: 'Closes today’s third ring',
+    /** The same, with `TOKEN_RULES.award.echoSession` when a session there pays. */
+    closesRingTokens: {
+      one: 'Closes today’s third ring · +{count} token',
+      other: 'Closes today’s third ring · +{count} tokens',
+    },
     aboutMinutes: { one: 'about {count} minute', other: 'about {count} minutes' },
     /** A grade tile read aloud: its word and, in full, when the card comes back. */
     gradeInMinutes: {
@@ -1456,6 +1478,8 @@ export const en = {
     stickers: 'Stickers',
     stickersHint: 'Tap a sticker to send it.',
     stickerBuy: 'Unlock for {price} tokens',
+    /** `stickerBuy` with the token icon in `{price}` instead of the word. */
+    stickerUnlock: 'Unlock for {price}',
     quizAddOption: 'Add an option',
     sendQuiz: 'Ask a quiz',
     quizQuestion: 'Question',
@@ -1692,10 +1716,8 @@ export const en = {
     },
     pinnedMessage: 'Pinned message',
     goToPinned: 'Go to the pinned message',
-    /** Over the v3 thread's pinned strip's preview: who wrote the pinned message. */
-    pinnedFrom: 'Pinned · {name}',
-    /** The same line while the pinned message itself has not loaded. */
-    pinnedLabel: 'Pinned',
+    /** The v3 pinned strip's line under "Pinned message": its author, then the message. */
+    pinnedPreview: '{name}: {text}',
     /** The pinned strip's ✕: a pin belongs to the conversation, so it goes for both. */
     unpinHint: 'Takes the pin off for both of you',
     backToLatest: 'Back to latest',
@@ -2397,7 +2419,8 @@ export const en = {
     freezes: 'Freezes: {banked} of {max}',
     freezeBody: 'A freeze covers the next day you miss.',
     freezesFull: 'Your bank is full. One is used the next time you miss a day.',
-    protect: { one: 'Protect · {count} token', other: 'Protect · {count} tokens' },
+    /** The freeze's button; `{amount}` is the number and the token icon, `protectA11y` says it. */
+    protectShort: 'Protect · {amount}',
     protectA11y: {
       one: 'Buy a streak freeze for {count} token',
       other: 'Buy a streak freeze for {count} tokens',
@@ -2412,6 +2435,8 @@ export const en = {
       one: 'Buy a day back · {count} token',
       other: 'Buy a day back · {count} tokens',
     },
+    /** `repairButton` with the token icon in `{amount}` instead of the word. */
+    repairShort: 'Buy a day back · {amount}',
     milestones: 'Milestones',
     rungTokens: '+{amount}',
     rungWeeksOfPro: {
@@ -2631,6 +2656,15 @@ export const en = {
       other: '{count} free translations left today',
     },
     whatYouHave: 'What you have',
+    usageChats: 'New chats left today',
+    usageTranslations: 'Translations',
+    /** Spoken for a usage row, where the screen shows "3 / 5": a slash read aloud is "slash". */
+    usageA11y: '{title}: {left} of {total}',
+    whatPlanAdds: 'What {plan} adds',
+    appIconAll: 'All icons',
+    translateExampleLabel: 'Example',
+    /** The same sentence in every locale: the example card shows two locales' copies of it, one as the translation of the other. */
+    translateExample: 'Hi! Yesterday I cooked dinner for my family.',
     signInConnect: 'Connect',
     signInDisconnect: 'Disconnect',
     signInDisconnectConfirm:
@@ -2640,6 +2674,8 @@ export const en = {
     signInUnlinked: 'Disconnected.',
     signInLinkFailed: 'Could not connect. Try again.',
     signInUnlinkFailed: 'Could not disconnect. Try again.',
+    // Shown when the server wants a recent sign-in before a way in is removed.
+    signInUnlinkSignInAgain: 'For your safety, sign out and back in, then try again.',
     exportPhrases: 'Export every phrase',
     exportPhrasesBody: 'Every card you have saved, from every conversation, as one file.',
   },
@@ -2753,6 +2789,8 @@ export const en = {
     buyFor: 'Buy for {amount}',
     buyTitle: 'Buy {title}',
     moreTokens: { one: '{amount} more token needed', other: '{amount} more tokens needed' },
+    /** `moreTokens` with the token icon in `{amount}` instead of the word. */
+    moreNeeded: '{amount} more needed',
     opensAfter: 'Opens after you own {title}',
     notYet: 'Not unlocked yet',
     youHave: 'You have {amount}',
@@ -2828,13 +2866,10 @@ export const en = {
     leaderboardBody: 'Who earned the most this week, month and year',
     poolBody: 'How the nightly share is worked out',
     storeBody: 'Streak freezes, missed days and cosmetics',
-    /**
-     * The redesign's wallet (`WalletScreenV3`). The unit beside the balance
-     * is the store's own word for a token, as `store.price` spells it.
-     */
-    tokensUnit: { one: 'token', other: 'tokens' },
     /** The hero's bar: the nearest frame or title the balance is saving for. */
     nextRung: { one: '{amount} token to {title}', other: '{amount} tokens to {title}' },
+    /** `nextRung` for the redesign, where `{amount}` is the number and the token icon. */
+    nextRungShort: '{amount} to {title}',
     nextRungReady: 'Enough for {title}',
     /** "1 of 2" freezes banked, "2 of 23" items owned. */
     countOf: '{current} of {total}',
@@ -2864,7 +2899,7 @@ export const en = {
     shareForDay: 'Your share for {day}',
     todaySoFar: 'Today so far',
     activityScore: { one: '{count} activity', other: '{count} activity' },
-    todayBreakdown: '{messages} messages, {corrections} corrections, {partners} people.',
+    todayBreakdown: '{messages}, {corrections}, {partners}.',
     poolParticipants: { one: '{n} active that day', other: '{n} active that day' },
     poolShareOfPool: '{percent} of the daily pool',
     poolActiveToday: { one: '{n} active today', other: '{n} active today' },
@@ -2996,10 +3031,6 @@ export const en = {
     chatNote: 'Whoever you send one to sees it, even if they do not have the pack.',
     sentByYou: 'You sent the {name} sticker',
     sentByThem: 'Your partner sent the {name} sticker',
-    tokenUnit: {
-      one: 'token',
-      other: 'tokens',
-    },
     afterBuying: '{balance} now · {after} after',
     shortBy: '{balance} now · {missing} to go',
     buy: 'Buy {title}',
@@ -3221,6 +3252,8 @@ export const en = {
     year: 'Year',
     badges: 'Badges',
     pays: { one: 'Pays {amount} token', other: 'Pays {amount} tokens' },
+    /** `pays` with the token icon in `{amount}` instead of the word. */
+    paysShort: 'Pays {amount}',
     you: 'You',
     streakTitle: 'Leaderboard',
     metricCurrent: 'Now',
@@ -3565,8 +3598,16 @@ export const en = {
 
   share: {
     cardTitle: 'Share as a picture',
-    cardStreakCaption: 'day streak on LangX',
+    /* Under the streak's number on the card, so the unit agrees with it. */
+    cardStreakCaption: { one: 'day streak on LangX', other: 'day streak on LangX' },
     cardBadgeCaption: 'badge earned on LangX',
+    /*
+     * The profile card: the pill on it, from Share profile or from Invite,
+     * and the line under it on the card's page.
+     */
+    cardProfileHeadline: 'Practise languages with me',
+    cardInviteHeadline: 'Learn a language with me',
+    cardProfileCaption: 'Find me on LangX',
     cardBody: 'Pick where it is going — the card is drawn to fit.',
     shapeStory: 'Instagram / TikTok story',
     shapeSquare: 'Instagram post',
@@ -3819,6 +3860,9 @@ export const en = {
     receivedEmptyTitle: 'Your reviews will live here',
     receivedEmptyBody:
       'Partners you practise with can leave a few words on your profile. Keep the conversations going.',
+    /** Somebody else's full list, with nothing on it yet. */
+    profileEmptyTitle: 'No reviews yet',
+    profileEmptyBody: 'When partners leave a few words on this profile, they show up here.',
     writtenEmptyTitle: 'Say thanks in writing',
     writtenEmptyBody:
       'Had a great practice partner? A short review on their profile helps others find them.',

@@ -42,16 +42,24 @@ export function useSetPassword() {
 export const WRONG_CURRENT_PASSWORD = 'INVALID_PASSWORD'
 
 /**
+ * Better Auth's code for a session that is too old for the action. The server
+ * answers it on `/unlink-account` when the session is more than a day old:
+ * removing a way in needs a recent sign-in.
+ */
+export const SESSION_NOT_FRESH = 'SESSION_NOT_FRESH'
+
+/**
  * Replaces a password that already exists, which is Better Auth's own
  * `/change-password` and so goes through `authClient` like the session
  * endpoints do, not through a route of ours. It asks for the current one:
  * `/me/password` deliberately refuses to overwrite, so that a live session
  * can only ever *add* a way in and never take one over.
  *
- * Other sessions stay signed in. Somebody changing a password from their own
- * phone is not usually locking anybody out, and the devices screen exists for
- * when they are. The rejection carries Better Auth's code so the screen can
- * tell "wrong current password" apart from "try again".
+ * Every other session is signed out, as the security mails promise; the
+ * server enforces that for older builds too. This device stays in: the
+ * response sets a fresh session cookie, which `expoClient` stores on native
+ * and the browser keeps on web. The rejection carries Better Auth's code so
+ * the screen can tell "wrong current password" apart from "try again".
  */
 export function useChangePassword() {
   const queryClient = useQueryClient()
@@ -60,7 +68,7 @@ export function useChangePassword() {
       const { error } = await authClient.changePassword({
         currentPassword: input.currentPassword,
         newPassword: input.newPassword,
-        revokeOtherSessions: false,
+        revokeOtherSessions: true,
       })
       if (error) throw new Error(error.code ?? error.message ?? 'could not change the password')
     },

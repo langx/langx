@@ -9,21 +9,24 @@ import Animated, {
 } from 'react-native-reanimated'
 import {
   BURST_MS,
-  burstEases,
-  burstKind,
-  burstParticles,
+  burstPlan,
+  burstRandom,
+  type BurstCopy,
   type BurstEase,
   type BurstParticle,
 } from '../../lib/emojiBurst'
 
 export interface Burst {
-  emoji: string
-  /** New for every burst, so a replay of the same emoji draws fresh paths. */
+  /** One to three distinct emoji, as `burstEmoji` gives them. */
+  emoji: string[]
+  /** The message's, so a replay draws the same shower its first play did. */
+  seed: string
+  /** New for every burst, so a replay mounts afresh. */
   key: number
 }
 
 /**
- * A lone emoji's shower over the whole thread, then gone (see
+ * A big emoji's shower over the whole thread, then gone (see
  * `lib/emojiBurst.ts` for when it plays and how each emoji moves).
  *
  * Decoration, not content: never read out and never in the way of a touch,
@@ -35,7 +38,6 @@ export interface Burst {
  * is what keeps it smooth while a message is also landing in the list.
  */
 export function EmojiBurstV3({ burst, onDone }: { burst: Burst; onDone: () => void }) {
-  const kind = burstKind(burst.emoji)
   /*
    * Worked out from the layer's own size, not the window's: on a wide web
    * layout the thread is one panel of several, and a burst sized to the
@@ -43,7 +45,7 @@ export function EmojiBurstV3({ burst, onDone }: { burst: Burst; onDone: () => vo
    * so a rotation mid-shower does not re-roll it; the caller keys this by
    * `burst.key`, so every burst mounts afresh.
    */
-  const [particles, setParticles] = useState<BurstParticle[] | null>(null)
+  const [copies, setCopies] = useState<BurstCopy[] | null>(null)
   const clock = useSharedValue(0)
 
   // From an effect, never during render: a timing started before its view
@@ -64,15 +66,17 @@ export function EmojiBurstV3({ burst, onDone }: { burst: Burst; onDone: () => vo
       importantForAccessibility="no-hide-descendants"
       onLayout={(event) => {
         const { width, height } = event.nativeEvent.layout
-        setParticles((drawn) => drawn ?? burstParticles(kind, width, height))
+        setCopies(
+          (drawn) => drawn ?? burstPlan(burst.emoji, width, height, burstRandom(burst.seed)),
+        )
       }}
     >
-      {particles?.map((particle, index) => (
+      {copies?.map((copy, index) => (
         <Copy
           key={index}
-          emoji={burst.emoji}
-          particle={particle}
-          eases={burstEases(kind)}
+          emoji={copy.emoji}
+          particle={copy.particle}
+          eases={copy.eases}
           clock={clock}
         />
       ))}

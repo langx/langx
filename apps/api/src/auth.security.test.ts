@@ -7,10 +7,11 @@ import { connectToDatabase, type DbHandle } from './db/client'
 import { COLLECTIONS } from './db/collections'
 import { ensureIndexes } from './db/indexes'
 import { loadEnv } from './env'
+import { authId } from './lib/authId'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
 import { LoggingPushSender } from './modules/push/devices'
 import { createStorageProvider } from './storage/createStorageProvider'
-import { CapturingEmailSender, signUpAndSignIn } from './testSupport/authFlow'
+import { CapturingEmailSender, setCookieValue, signUpAndSignIn } from './testSupport/authFlow'
 import { createTranslationProvider } from './translation/createTranslationProvider'
 
 const PASSWORD = 'correct horse battery staple'
@@ -171,6 +172,102 @@ describe('what a sign-in tells the person it belongs to', () => {
     expect(mail).toHaveLength(1)
     expect(mail[0]?.subject).toMatch(/password/i)
     expect(mail[0]?.html).toContain('Chrome on Windows')
+  })
+
+  /** The forgot-password flow end to end: ask for the link, spend its token. */
+  async function resetPassword(email: string, newPassword: string) {
+    const forgot = await app.inject({
+      method: 'POST',
+      url: '/api/auth/request-password-reset',
+      payload: { email, redirectTo: 'http://localhost:4000/reset' },
+    })
+    expect(forgot.statusCode, forgot.body).toBe(200)
+    const token = /\/reset-password\/([^/?]+)/.exec(emailSender.latestUrl())?.[1]
+    if (!token) throw new Error('no token in the reset link')
+    const reset = await app.inject({
+      method: 'POST',
+      url: '/api/auth/reset-password',
+      headers: { 'user-agent': WINDOWS },
+      payload: { newPassword, token: decodeURIComponent(token) },
+    })
+    expect(reset.statusCode, reset.body).toBe(200)
+  }
+
+  /** Straight from the database, past the five-minute cookie cache. */
+  async function sessionFor(cookie: string): Promise<unknown> {
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/auth/get-session?disableCookieCache=true',
+      headers: { cookie },
+    })
+    return response.json()
+  }
+
+  /**
+   * A reset is what somebody does when they think somebody else is in. A
+   * session left open through it is the intruder keeping the door they came
+   * in by, and the mail that tells the owner so would be the only thing
+   * standing between them.
+   */
+  it('signs every session out when the password is reset', async () => {
+    const user = await signUpAndSignIn(app, emailSender, {
+      email: `reset-${Math.random().toString(36).slice(2, 10)}@example.com`,
+      password: PASSWORD,
+      name: 'Test',
+    })
+    const sessions = handle.db.collection(COLLECTIONS.session)
+    expect(await sessions.countDocuments({ userId: authId(user.userId) })).toBeGreaterThan(0)
+
+    await resetPassword(user.email, 'a brand new long password')
+
+    expect(await sessions.countDocuments({ userId: authId(user.userId) })).toBe(0)
+    expect(await sessionFor(user.cookie)).toBeNull()
+  })
+
+  it('writes once when the password is reset', async () => {
+    const user = await signUpAndSignIn(app, emailSender, {
+      email: `reset-${Math.random().toString(36).slice(2, 10)}@example.com`,
+      password: PASSWORD,
+      name: 'Test',
+    })
+    emailSender.messages.length = 0
+
+    await resetPassword(user.email, 'a brand new long password')
+
+    const changed = emailSender.messages.filter((m) => /password was changed/i.test(m.subject))
+    expect(changed).toHaveLength(1)
+    expect(changed[0]?.to).toBe(user.email)
+    expect(changed[0]?.html).toContain('Chrome on Windows')
+  })
+
+  /**
+   * Every security mail says changing the password signs every other device
+   * out, so the server makes it true whatever the request asks — builds
+   * already installed still send `false`.
+   */
+  it('signs the other devices out on a password change, and keeps the caller in', async () => {
+    const user = await signUpAndSignIn(app, emailSender, {
+      email: `pw-${Math.random().toString(36).slice(2, 10)}@example.com`,
+      password: PASSWORD,
+      name: 'Test',
+    })
+    const otherDevice = setCookieValue(await signIn(user.email, IPHONE))
+    expect(await sessionFor(otherDevice)).not.toBeNull()
+
+    const changed = await app.inject({
+      method: 'POST',
+      url: '/api/auth/change-password',
+      headers: { cookie: user.cookie, 'user-agent': WINDOWS },
+      payload: {
+        currentPassword: PASSWORD,
+        newPassword: 'a different long password',
+        revokeOtherSessions: false,
+      },
+    })
+    expect(changed.statusCode, changed.body).toBe(200)
+
+    expect(await sessionFor(otherDevice)).toBeNull()
+    expect(await sessionFor(setCookieValue(changed))).not.toBeNull()
   })
 
   /** The notice is not a notification: no switch behind it, no header to opt out with. */

@@ -14,7 +14,12 @@ import { SettingsLeadV3, SettingsNoteV3 } from '../../components/settings/v3/Set
 import { Button } from '../../components/ui/Button'
 import { Skeleton } from '../../components/ui/Skeleton'
 import { useAppConfig } from '../../hooks/useAppConfig'
-import { useLinkProvider, useSignInMethods, useUnlinkProvider } from '../../hooks/useSignInMethods'
+import {
+  SESSION_NOT_FRESH,
+  useLinkProvider,
+  useSignInMethods,
+  useUnlinkProvider,
+} from '../../hooks/useSignInMethods'
 import { useScreenInteractive } from '../../hooks/useScreenInteractive'
 import { useLocale, useT } from '../../i18n'
 import { confirmAlert } from '../../lib/alert'
@@ -75,8 +80,12 @@ export function SignInMethodsScreenV3() {
     try {
       await unlink.mutateAsync(accountId)
       showToast(t('settings.signInUnlinked'))
-    } catch {
-      showToast(t('settings.signInUnlinkFailed'))
+    } catch (error) {
+      showToast(
+        error instanceof Error && error.message === SESSION_NOT_FRESH
+          ? t('settings.signInUnlinkSignInAgain')
+          : t('settings.signInUnlinkFailed'),
+      )
     }
   }
 

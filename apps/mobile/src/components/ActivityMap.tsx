@@ -1,4 +1,3 @@
-import { shiftDayKey } from '@langx/shared'
 import { useMemo, useRef, useState } from 'react'
 import { Pressable, ScrollView, Text, View } from 'react-native'
 import { usePublicActivity, useActivity, useRepairDay, useWallet } from '../api/queries'
@@ -7,6 +6,7 @@ import {
   activityCellSize,
   activityGrid,
   type ActivityCell,
+  activityRange,
 } from '../lib/activityMap'
 import { Skeleton } from './ui/Skeleton'
 import { confirmAndRepair } from '../lib/repairFlow'
@@ -42,9 +42,8 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
   const t = useT()
   const { locale } = useLocale()
 
-  const to = new Date().toISOString().slice(0, 10)
   // Generous: the server clamps the range, and the grid only draws what it needs.
-  const from = shiftDayKey(to, -(WEEKS + 1) * 7)
+  const { from, to } = activityRange((WEEKS + 1) * 7)
   const own = useActivity(from, to, !handle)
   const theirs = usePublicActivity(handle ?? '', from, to)
   const wallet = useWallet()

@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { shiftDayKey, TOKEN_RULES, wornCosmetic } from '@langx/shared'
+import { TOKEN_RULES, wornCosmetic } from '@langx/shared'
 import { Text, View } from 'react-native'
 import { LoadFailed } from '../../../src/components/LoadFailed'
 import { queryFailed } from '../../../src/lib/listState'
@@ -29,6 +29,7 @@ import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
 import { WalletStoreScreenV3 } from '../../../src/screens/WalletStoreScreenV3'
+import { activityRange, daysOnRecord } from '../../../src/lib/activityMap'
 
 /**
  * The store — or, with `flags.v3Home` on, the redesign's
@@ -65,8 +66,8 @@ function StoreScreen() {
    * inside it. Same query the heatmap on the streak page already runs, so it is
    * usually in cache by the time somebody walks over here.
    */
-  const today = new Date().toISOString().slice(0, 10)
-  const activity = useActivity(shiftDayKey(today, -TOKEN_RULES.sinks.dayRepairMaxAgeDays), today)
+  const range = activityRange(TOKEN_RULES.sinks.dayRepairMaxAgeDays)
+  const activity = useActivity(range.from, range.to)
   const repairDay = useRepairDay()
   const purchase = usePurchase()
   const equip = useEquip()
@@ -109,7 +110,7 @@ function StoreScreen() {
       ? {
           repair: {
             today: activity.data.today,
-            filled: new Set(activity.data.days.map((day) => day.day)),
+            filled: daysOnRecord(activity.data.days, activity.data.streak),
             price: activity.data.repair.price,
             usedThisMonth: activity.data.repair.usedThisMonth,
             usedByMonth: activity.data.repair.usedByMonth,
@@ -150,7 +151,7 @@ function StoreScreen() {
       void confirmAndRepair({
         day: offer.repairDay,
         today: activity.data.today,
-        filled: new Set(activity.data.days.map((day) => day.day)),
+        filled: daysOnRecord(activity.data.days, activity.data.streak),
         price: activity.data.repair.price,
         balance,
         left: Math.max(

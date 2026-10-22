@@ -1,5 +1,5 @@
 import { isServerRecord, type ThreadTestimonialState } from '@langx/shared'
-import type { InfiniteData } from '@tanstack/react-query'
+import type { InfiniteData, QueryClient } from '@tanstack/react-query'
 import type { MessageDto } from '../api/queries'
 
 export interface MessagePageDto {
@@ -19,6 +19,64 @@ export interface MessagePageDto {
 }
 
 type Pages = InfiniteData<MessagePageDto> | undefined
+
+/**
+ * Writes `update` into every cache that holds this thread: the live pages and
+ * any jump window, which sits under the same `['messages', id]` prefix.
+ *
+ * A thread that is refetching at that moment is fetched again. The GET that
+ * is already out was answered from before this message existed, and when it
+ * lands it replaces the cache wholesale — patch included. That is the
+ * reconnect: the resync refetches the thread, the retried send's ack writes
+ * the message in, the echo is dropped as a duplicate of it, and then the
+ * stale page erased it, so a stored message stayed off screen until a reload.
+ * `cancelRefetch` drops the stale answer without rolling the patch back; the
+ * new GET leaves after the server stored the message, so it carries it.
+ */
+export function patchThread(
+  queryClient: QueryClient,
+  conversationId: string,
+  update: (old: Pages) => Pages,
+): void {
+  const queryKey = ['messages', conversationId]
+  queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
+    { queryKey },
+    (old) => update(old) ?? old,
+  )
+  void queryClient.refetchQueries(
+    {
+      queryKey,
+      predicate: (query) => query.state.fetchStatus === 'fetching' && !loadingMore(query.state),
+    },
+    { cancelRefetch: true },
+  )
+  /*
+   * An older (or newer) page on its way is different: it lands as the pages
+   * it started from plus itself, so it erases the patch too — but cancelling
+   * it for a refetch threw away the page somebody had scrolled up for, and
+   * the refetch only fetches the pages already there. So it is let land, and
+   * the patch written again on top of whatever it leaves.
+   */
+  const cache = queryClient.getQueryCache()
+  for (const query of cache.findAll({ queryKey })) {
+    if (query.state.fetchStatus !== 'fetching' || !loadingMore(query.state)) continue
+    const unsubscribe = cache.subscribe((event) => {
+      if (event.query !== query) return
+      if (event.type === 'removed') return unsubscribe()
+      if (query.state.fetchStatus === 'fetching') return
+      unsubscribe()
+      queryClient.setQueryData<InfiniteData<MessagePageDto>>(
+        query.queryKey,
+        (old) => update(old) ?? old,
+      )
+    })
+  }
+}
+
+/** Whether the fetch under way is `fetchNextPage`/`fetchPreviousPage`, not a refetch. */
+function loadingMore(state: { fetchMeta: unknown }): boolean {
+  return (state.fetchMeta as { fetchMore?: unknown } | null)?.fetchMore !== undefined
+}
 
 /**
  * A page's `items` run oldest → newest, but `nextCursor` walks *backwards*
@@ -149,4 +207,18 @@ export function applyPinned(data: Pages, pinned: MessagePageDto['pinned']): Page
     a?.messageId === b?.messageId && a?.byUserId === b?.byUserId
   if (data.pages.every((page) => same(page.pinned, pinned))) return data
   return { ...data, pages: data.pages.map((page) => ({ ...page, pinned })) }
+}
+
+/**
+ * `message:updated` written into the thread, through `patchThread` for the
+ * reason an arriving message is: a refetch already out read the thread before
+ * the change, and when it landed it replaced the cache wholesale. A message
+ * withdrawn for everyone during the reconnect's resync came back with its
+ * words and its photo, and an edit reverted to what was first sent, until
+ * something else refetched the thread.
+ */
+export function patchMessageUpdate(queryClient: QueryClient, message: MessageDto): void {
+  patchThread(queryClient, String(message.conversationId), (old) =>
+    applyMessageUpdate(old, message),
+  )
 }

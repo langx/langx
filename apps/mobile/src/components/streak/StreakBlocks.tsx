@@ -18,6 +18,7 @@ import { Button } from '../ui/Button'
 import { PressableScale } from '../ui/PressableScale'
 import { ProgressBar } from '../ui/ProgressBar'
 import { FlameGlyph, StreakFlame } from '../ui/StreakFlame'
+import { TokenText } from '../ui/TokenIcon'
 
 /*
  * The blocks of the redesign's streak screen, drawn from `V-Streak`. Each is
@@ -235,7 +236,8 @@ export function StreakFreezes({
         onPress: () => void
       }
     | undefined
-  note?: string | undefined
+  /** With the token mark where it names an amount (`tokenSentence`). */
+  note?: { text: string; label: string } | undefined
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
@@ -275,7 +277,7 @@ export function StreakFreezes({
           onPress={protect.onPress}
         />
       ) : null}
-      {note ? <Text style={styles.note}>{note}</Text> : null}
+      {note ? <TokenText text={note.text} label={note.label} style={styles.note} /> : null}
     </View>
   )
 }
@@ -295,7 +297,8 @@ export function StreakRepairCard({
 }: {
   title: string
   body: string
-  button: string
+  /** "Buy a day back · 600 ✦", and the same said in words. */
+  button: { label: string; accessibilityLabel: string }
   pending: boolean
   onPress: () => void
 }) {
@@ -313,7 +316,7 @@ export function StreakRepairCard({
         </View>
       </View>
       <Button
-        label={button}
+        {...button}
         variant="ink"
         size="medium"
         icon="calendar"
@@ -328,8 +331,10 @@ export interface RungView {
   key: string
   /** "30 days". */
   title: string
-  /** "+250", "+50 and a week of Pro". */
+  /** "+250 ✦", "+50 ✦ and a week of Pro" — the token mark in place (`tokenSlot`). */
   reward: string
+  /** The same, said with the unit in words. */
+  rewardLabel: string
   /** "Done", "18 to go". */
   status: string
   /** The figure in the disc. */
@@ -365,7 +370,7 @@ export function StreakLadder({ title, rungs }: { title: string; rungs: readonly 
             <View
               accessible
               accessibilityRole="text"
-              accessibilityLabel={`${rung.title}. ${rung.reward}. ${rung.status}`}
+              accessibilityLabel={`${rung.title}. ${rung.rewardLabel}. ${rung.status}`}
               style={styles.rungRow}
             >
               <View
@@ -389,7 +394,9 @@ export function StreakLadder({ title, rungs }: { title: string; rungs: readonly 
               </View>
               <View style={styles.rungWords}>
                 <Text style={[styles.rungTitle, reached && styles.onHue]}>{rung.title}</Text>
-                <Text
+                <TokenText
+                  text={rung.reward}
+                  label={rung.rewardLabel}
                   style={[
                     styles.rungReward,
                     // "+50" has no letters, so the web build's `dir="auto"`
@@ -399,9 +406,7 @@ export function StreakLadder({ title, rungs }: { title: string; rungs: readonly 
                     reached && styles.onHue,
                     rung.state === 'later' && styles.muted,
                   ]}
-                >
-                  {rung.reward}
-                </Text>
+                />
               </View>
               <Text
                 style={[

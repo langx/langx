@@ -1698,8 +1698,36 @@ describe('Faz 5 — conversation/message history REST', () => {
       headers: { cookie: b.cookie },
     })
     expect(response.statusCode, response.body).toBe(200)
-    const body = response.json<{ unread: Record<string, number> }>()
-    expect(body.unread[b.userId]).toBe(0)
+    const body = response.json<{ unread: number }>()
+    expect(body.unread).toBe(0)
+  })
+
+  it('reading answers with the reader’s view, not the other person’s flags', async () => {
+    const a = await newUser('read-view-a@example.com')
+    const b = await newUser('read-view-b@example.com')
+    const conversation = await startConversation(a, b.userId, 'hey b')
+    // The other person's own choices about this thread, all of them per-user.
+    const flagged = await app.inject({
+      method: 'PATCH',
+      url: `/conversations/${conversation._id}/flags`,
+      headers: { cookie: a.cookie },
+      payload: { muted: true, archived: true, pinned: true },
+    })
+    expect(flagged.statusCode, flagged.body).toBe(200)
+
+    const response = await app.inject({
+      method: 'POST',
+      url: `/conversations/${conversation._id}/read`,
+      headers: { cookie: b.cookie },
+    })
+    expect(response.statusCode, response.body).toBe(200)
+    const body = response.json<Record<string, unknown>>()
+    for (const key of ['mutedBy', 'archivedBy', 'pinnedBy', 'deletedBy']) {
+      expect(body, key).not.toHaveProperty(key)
+    }
+    // The reader's own, as booleans and a number, and none of them A's.
+    expect(body).toMatchObject({ unread: 0, muted: false, archived: false, pinned: false })
+    expect(body.unreadBefore).toBe(1)
   })
 
   it('reading says how many it cleared, counted up to the newest message', async () => {

@@ -99,7 +99,28 @@ function arrowSrc(colour: string, pointsLeft: boolean): string {
 type TextStyle = Record<string, unknown> & { fontSize: number; color: string }
 
 /** Hebrew, Arabic, Syriac, Thaana and their presentation forms. */
-const RTL_LETTER = /[\u0590-\u08ff\ufb1d-\ufdff\ufe70-\ufeff]/
+export const RTL_LETTER = /[\u0590-\u08ff\ufb1d-\ufdff\ufe70-\ufeff]/
+
+/**
+ * Neighbouring words with no right-to-left letters in them, joined back into
+ * one run. Laid out one per element in a `row-reverse`, an English phrase
+ * inside an Arabic line — a badge the Arabic catalogue leaves as "Early
+ * Adopter" — came out "Adopter Early". A run is set left to right as a whole,
+ * which is what it is. Only words with letters join: a number beside a Latin
+ * word stays its own item, so "مع 12 Pro+" keeps the order bidi gives it, and
+ * the arrows stay words of their own, being drawn.
+ */
+function latinRuns(words: string[]): string[] {
+  const runs: string[] = []
+  for (const word of words) {
+    const last = runs.at(-1)
+    const joinable = (one: string) => /\p{L}/u.test(one) && !RTL_LETTER.test(one)
+    if (last !== undefined && joinable(last) && joinable(word))
+      runs[runs.length - 1] = `${last} ${word}`
+    else runs.push(word)
+  }
+  return runs
+}
 
 /**
  * A line of text, laid out one word per element when it has to be.
@@ -112,8 +133,15 @@ const RTL_LETTER = /[\u0590-\u08ff\ufb1d-\ufdff\ufe70-\ufeff]/
  * direction rather than by the text engine, leaves that pass nothing to
  * reorder, and each word is still shaped whole, so Arabic letters still join.
  */
-export function textLine(text: string, style: TextStyle, rtl: boolean, width?: number): CardNode {
-  const sized = width ? { width } : {}
+export function textLine(
+  text: string,
+  style: TextStyle,
+  rtl: boolean,
+  width?: number,
+  /** Centre the words in `width` — a profile card's centred column. */
+  centred = false,
+): CardNode {
+  const sized = width ? { width, ...(centred ? { justifyContent: 'center' } : {}) } : {}
   if (!rtl && !/[→←]/.test(text)) {
     return el('div', { style: { display: 'flex', ...sized, ...style }, children: text })
   }
@@ -127,10 +155,8 @@ export function textLine(text: string, style: TextStyle, rtl: boolean, width?: n
       flexWrap: 'wrap',
       ...sized,
     },
-    children: text
-      .split(/\s+/)
-      .filter(Boolean)
-      .map((word) =>
+    children: (rtl ? latinRuns : (words: string[]) => words)(text.split(/\s+/).filter(Boolean)).map(
+      (word) =>
         word === '→' || word === '←'
           ? el('img', {
               // Drawn the way the catalogue wrote it, which is the way that
@@ -143,7 +169,11 @@ export function textLine(text: string, style: TextStyle, rtl: boolean, width?: n
               style: {
                 ...style,
                 display: 'flex',
-                flexShrink: 0,
+                // A joined run may be longer than the line: it wraps inside
+                // itself, as its words did across the row before they joined.
+                ...(word.includes(' ')
+                  ? { flexShrink: 1, ...(width ? { maxWidth: width } : {}) }
+                  : { flexShrink: 0 }),
                 /*
                  * satori 0.62 resolves each word's own bidi, and against the
                  * default left-to-right base a comma at the end of an Arabic
@@ -159,7 +189,7 @@ export function textLine(text: string, style: TextStyle, rtl: boolean, width?: n
               },
               children: word,
             }),
-      ),
+    ),
   })
 }
 

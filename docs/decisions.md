@@ -564,7 +564,9 @@ reappears somewhere.
 ## Phase 10 — a blocked user's profile is 404, not 403
 
 A 403 **confirms the account exists**, which is exactly what blocking must not
-do. For the same reason `POST /reports` does not echo `xpFrozen` back: whether
+do. Starting a conversation with somebody who blocked you answers the same way,
+with the 404 an account that does not exist gets; only your own block is named
+`BLOCKED`, since you can undo it. For the same reason `POST /reports` does not echo `xpFrozen` back: whether
 someone else's earning is suspended is not the reporter's business, and telling
 them turns the threshold into a game to probe.
 
@@ -4436,8 +4438,17 @@ is also the only feedback that an approval landed, since the device it signed
 in is somewhere else. Better Auth puts `/list-sessions` behind a 24-hour
 freshness check by default, so a phone that signed in last week could not open
 the list at all. Zero turns the check off. Revocation uses the
-authoritative-session check, not the freshness one, and is unaffected; the only
-other fresh-gated endpoint is `/unlink-account`, which the app never calls.
+authoritative-session check, not the freshness one, and is unaffected. The
+only other fresh-gated endpoint is `/unlink-account`, and the sign-in methods
+screen does call it. With the check off, a session of any age could link a
+provider account of its own (linking accepts a different address) and then
+disconnect the owner's, so a `before` hook in `auth.ts` puts the 24-hour check
+back on that endpoint alone (`UNLINK_FRESH_SESSION_SECONDS` in
+`packages/shared`), answering with Better Auth's own `SESSION_NOT_FRESH`; the
+screen turns that into "sign out and back in, then try again". `/link-social`
+stays ungated: linking only adds a way in, linking and unlinking both send the
+owner a security notice, and once the owner has signed in again they can remove
+a link they did not make. Removing is the step that can lock them out.
 
 All of it is covered end to end in `routes/deviceFlow.test.ts`, including the
 case as it was lived — approve without claim — and a test that fails without
@@ -5250,6 +5261,17 @@ somebody in Toronto they signed in at an hour they were asleep), and one
 button, to the screen that changes the password and signs every other device
 out.
 
+**Both ways to a new password end every other session**, so that button does
+what the mail says. A change forces `revokeOtherSessions` on in the `before`
+hook, whatever the request sent — builds already installed send `false` — and
+the caller is handed a fresh session, so only the other devices are signed
+out. A reset (`revokeSessionsOnPasswordReset`) ends every session the account
+had, the intruder's included. Either way a device holding a cached session
+cookie keeps working for up to five minutes, the `cookieCache` window in
+`auth.ts`, until it next asks the database. A reset has no session for the
+`after` hook to name the user by, so its notice is sent from
+`onPasswordReset` instead.
+
 **"A device we have not seen" is its own collection.** The obvious source
 was `session`, and it is wrong: those rows expire in a week, so a person who
 signs in every fortnight would be told every fortnight that their own phone
@@ -5609,7 +5631,13 @@ a stated number: every unit is a paid call, and "unlimited" would be a promise
 made against somebody else's meter. A unit is spent only when the model writes
 an answer: a cached answer is free, and a declined or failed one is refunded.
 _(Pro raised to 24 on 21 October 2026, past that yearly-plan bound: see Copilot
-has no age rule of its own, and 24 a day for Pro.)_
+has no age rule of its own, and 24 a day for Pro.)_ _(22 October 2026: a
+declined or failed answer now gives back its global call as well as the
+person's unit, or one person repeating a question the model always declines
+could spend the day's 500 for everybody without spending their own allowance.
+Those calls are still billed and no longer count toward the 500, so what
+bounds them is `COPILOT_RULES.askRoutePerHour` — 30 asks an hour per account
+on each ask route, answered or not.)_
 
 **Cached by a hash of the question**, not of the person: the prompt's version,
 the model, the action and the exact user turn. Two people asking the same
@@ -8391,6 +8419,8 @@ would make the OS show a notice the person did not ask for. In the picker it
 is still marked current but locked with its Pro tag, and tapping it opens the
 sheet.
 `KEEP_PRO_ICON_AFTER_PRO_ENDS` in `src/lib/appIconList.ts` flips this.
+Behic confirmed on 21 October 2026 that the icon stays, so this is decided
+rather than a default awaiting his call, and the constant stays `true`.
 
 ## Gift codes give time, not discounts
 
@@ -8923,6 +8953,15 @@ than locking the person out — while the flag is off that request is accepted,
 and once it is on the form says the check failed and fetches a new token. A
 token is single-use, so every failed attempt fetches a new one too.
 
+**The magic link and the resent verification mail too** _(22 October 2026)_.
+`/sign-in/magic-link` and `/send-verification-email` mail a typed address just
+as sign-up does, and Better Auth's default list leaves them out, so a script
+could use them to mail anybody once the flag was on. They are in
+`CAPTCHA_ENDPOINTS` now, under the same two stages. The app's
+"email me a link" and "resend" screens draw no widget yet, so they send no
+token: those screens have to send one, and that build has to be the
+`minVersion`, before `flags.captchaRequired` is turned on.
+
 ## Sign-up refuses throwaway addresses and caps accounts per network
 
 Two rules sit in front of account creation.
@@ -8955,6 +8994,21 @@ is ignored when it holds more than one address unless trusted proxies are
 listed, and behind Cloudflare and Fly it always holds two — so until this,
 sessions recorded no address and the rate limiter counted every client in one
 bucket per route.
+
+The API's own rate limiter (`@fastify/rate-limit`, every route's limit) counts
+by the same address, through the same function, `clientIpOf`. It used to key on
+`request.ip` with `trustProxy: true`, and that was no limit at all: `true`
+believes every entry of `X-Forwarded-For` and takes the left-most, Cloudflare
+and Fly append to whatever header the client sent rather than replacing it, so
+the left-most entry was the client's to write — a new one per request, a new
+bucket per request. Now Fastify trusts one hop, the socket's peer, which is
+Fly's proxy, so `request.ip` is the entry Fly appended: Cloudflare's address
+for a request through the edge, where the edge secret lets `CF-Connecting-IP`
+name the visitor instead, and the client's own for a request sent straight to
+the origin. Cloudflare is not counted as a hop, because the origin can be
+reached around it. `TRUST_PROXY_HOPS` changes the count for a deployment with a
+different chain in front of it; one hop too many hands the address back to the
+client.
 
 The counter is a collection, `signUpsByIp`, not Better Auth's rate limiter.
 That limiter keeps its counts in process memory, and the API runs on more than

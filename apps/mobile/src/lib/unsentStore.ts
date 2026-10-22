@@ -1,5 +1,11 @@
 import { FLAG_KEYS, readJsonFlag, writeJsonFlag } from './localFlags'
-import { storeUnsent, type UnsentByConversation, type UnsentMessage } from './unsentMessages'
+import {
+  readUnsent,
+  storeUnsent,
+  unsentKey,
+  type UnsentByConversation,
+  type UnsentMessage,
+} from './unsentMessages'
 
 /**
  * Where the "not sent" rows live between one opening of a chat and the next.
@@ -20,16 +26,22 @@ import { storeUnsent, type UnsentByConversation, type UnsentMessage } from './un
  * and inside what the mobile test setup can load; the shape-keeping is there
  * and tested, the device is here.
  */
-export async function loadUnsent(conversationId: string): Promise<UnsentMessage[]> {
-  const stored = await readJsonFlag<UnsentByConversation>(FLAG_KEYS.unsentMessages)
-  const rows = stored?.[conversationId]
-  return Array.isArray(rows) ? rows : []
+export async function loadUnsent(userId: string, conversationId: string): Promise<UnsentMessage[]> {
+  return readUnsent(
+    await readJsonFlag<UnsentByConversation>(FLAG_KEYS.unsentMessages),
+    userId,
+    conversationId,
+  )
 }
 
 export async function saveUnsent(
+  userId: string,
   conversationId: string,
   list: readonly UnsentMessage[],
 ): Promise<void> {
   const stored = (await readJsonFlag<UnsentByConversation>(FLAG_KEYS.unsentMessages)) ?? {}
-  await writeJsonFlag(FLAG_KEYS.unsentMessages, storeUnsent(stored, conversationId, list))
+  await writeJsonFlag(
+    FLAG_KEYS.unsentMessages,
+    storeUnsent(stored, unsentKey(userId, conversationId), list),
+  )
 }

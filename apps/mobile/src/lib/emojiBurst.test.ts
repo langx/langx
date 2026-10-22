@@ -1,12 +1,18 @@
 import { describe, expect, it } from 'vitest'
+import { isBigEmoji } from '@langx/shared'
 import {
+  BURST_BUDGET,
   BURST_MS,
+  BURST_SIZE,
   LIVE_WINDOW_MS,
+  burstCounts,
+  burstEmoji,
   burstEndsAt,
   burstKind,
   burstParticles,
+  burstPlan,
+  burstRandom,
   drawsAsHero,
-  loneEmoji,
   shouldPlayBurst,
   type BurstKind,
   type BurstMoment,
@@ -39,18 +45,32 @@ describe('burstKind', () => {
   })
 })
 
-describe('loneEmoji', () => {
-  it('is the emoji when the message is one emoji and nothing else', () => {
-    expect(loneEmoji('🎉')).toBe('🎉')
-    expect(loneEmoji('  ❤️ ')).toBe('❤️')
-    expect(loneEmoji('👨‍👩‍👧‍👦')).toBe('👨‍👩‍👧‍👦')
+describe('burstEmoji', () => {
+  it('is the emoji of a message that is one to three emoji and nothing else', () => {
+    expect(burstEmoji('🎉')).toEqual(['🎉'])
+    expect(burstEmoji('  ❤️ ')).toEqual(['❤️'])
+    expect(burstEmoji('👨‍👩‍👧‍👦')).toEqual(['👨‍👩‍👧‍👦'])
+    expect(burstEmoji('❤️🔥')).toEqual(['❤️', '🔥'])
+    expect(burstEmoji('❤️ 🔥 🎉')).toEqual(['❤️', '🔥', '🎉'])
   })
 
-  it('is null for two emoji, text, or text with an emoji', () => {
-    expect(loneEmoji('🎉🔥')).toBeNull()
-    expect(loneEmoji('hi')).toBeNull()
-    expect(loneEmoji('hi 🎉')).toBeNull()
-    expect(loneEmoji('')).toBeNull()
+  it('names a repeated emoji once', () => {
+    expect(burstEmoji('😂😂')).toEqual(['😂'])
+    expect(burstEmoji('🎉🔥🎉')).toEqual(['🎉', '🔥'])
+  })
+
+  it('is empty for four emoji, text, or text with an emoji', () => {
+    expect(burstEmoji('🎉🎉🎉🎉')).toEqual([])
+    expect(burstEmoji('hi')).toEqual([])
+    expect(burstEmoji('hi 🎉')).toEqual([])
+    expect(burstEmoji('7')).toEqual([])
+    expect(burstEmoji('')).toEqual([])
+  })
+
+  it('bursts exactly what the hero draws big', () => {
+    for (const body of ['🎉', '😂😂', '❤️🔥🎉', '🎉🎉🎉🎉', '🇹🇷', '7️⃣', '7', 'hi 🎉', '', ' ']) {
+      expect(burstEmoji(body).length > 0).toBe(isBigEmoji(body))
+    }
   })
 })
 
@@ -81,7 +101,7 @@ describe('drawsAsHero', () => {
 })
 
 describe('shouldPlayBurst', () => {
-  it('plays a lone emoji sent from here, or arriving live while the thread is open', () => {
+  it('plays a big emoji sent from here, or arriving live while the thread is open', () => {
     expect(shouldPlayBurst({ ...base, trigger: 'sent' })).toBe(true)
     expect(shouldPlayBurst(base)).toBe(true)
   })
@@ -136,11 +156,92 @@ describe('shouldPlayBurst', () => {
     }
   })
 
-  it('plays only for a lone emoji', () => {
-    for (const body of ['🎉🎉', 'yay 🎉', 'yay']) {
+  it('plays for two or three emoji, the same or mixed', () => {
+    for (const body of ['🎉🎉', '❤️🔥', '❤️🔥🎉']) {
+      expect(shouldPlayBurst({ ...base, trigger: 'sent', body })).toBe(true)
+      expect(shouldPlayBurst({ ...base, trigger: 'tap', body })).toBe(true)
+    }
+  })
+
+  it('plays only for what is drawn as the big emoji', () => {
+    for (const body of ['🎉🎉🎉🎉', 'yay 🎉', 'yay']) {
       expect(shouldPlayBurst({ ...base, trigger: 'sent', body })).toBe(false)
       expect(shouldPlayBurst({ ...base, trigger: 'tap', body })).toBe(false)
     }
+  })
+})
+
+describe('burstCounts', () => {
+  it('keeps a lone emoji at its own kind count', () => {
+    expect(burstCounts(['burst'])).toEqual([22])
+    expect(burstCounts(['float'])).toEqual([14])
+  })
+
+  it('splits the budget across two or three emoji, first written first', () => {
+    expect(burstCounts(['float', 'rise'])).toEqual([11, 11])
+    expect(burstCounts(['float', 'rise', 'burst'])).toEqual([8, 7, 7])
+  })
+
+  it('never goes over the budget, whatever the mix', () => {
+    const kinds: BurstKind[] = ['fall', 'float', 'rise', 'burst', 'drift']
+    for (const a of kinds)
+      for (const b of kinds)
+        for (const c of kinds) {
+          for (const mix of [[a], [a, b], [a, b, c]]) {
+            const counts = burstCounts(mix)
+            expect(counts.reduce((sum, n) => sum + n, 0)).toBeLessThanOrEqual(BURST_BUDGET)
+            expect(counts.every((n) => n > 0)).toBe(true)
+          }
+        }
+  })
+})
+
+describe('burstPlan', () => {
+  it('gives each emoji its own kind of motion in a mixed burst', () => {
+    const plan = burstPlan(['❤️', '🔥', '🎉'], 390, 844, burstRandom('m1'))
+    expect(plan.length).toBeLessThanOrEqual(BURST_BUDGET)
+    const heart = plan.filter((copy) => copy.emoji === '❤️')
+    const fire = plan.filter((copy) => copy.emoji === '🔥')
+    const popper = plan.filter((copy) => copy.emoji === '🎉')
+    expect([heart.length, fire.length, popper.length]).toEqual(
+      burstCounts(['float', 'rise', 'burst']),
+    )
+    // Hearts and flames go up from low on the screen; a popper is thrown and
+    // pulled back down by gravity, the only one that has any.
+    for (const copy of [...heart, ...fire]) {
+      expect(copy.particle.dy).toBeLessThan(0)
+      expect(copy.particle.gravity).toBe(0)
+    }
+    expect(heart[0]!.eases.y).toBe('out')
+    expect(fire[0]!.eases.y).toBe('in')
+    for (const copy of popper) expect(copy.particle.gravity).toBeGreaterThan(0)
+  })
+
+  it('draws the same shower for the same seed, and another for another', () => {
+    const one = burstPlan(['😂'], 390, 844, burstRandom('abc'))
+    expect(burstPlan(['😂'], 390, 844, burstRandom('abc'))).toEqual(one)
+    expect(burstPlan(['😂'], 390, 844, burstRandom('abd'))).not.toEqual(one)
+  })
+
+  it('mixes sizes: mostly small, a few large accents, within the spread', () => {
+    for (const seed of ['a', 'b', 'c', 'client-123']) {
+      for (const emoji of [['😂'], ['❤️', '🔥'], ['❤️', '🔥', '🎉']]) {
+        const sizes = burstPlan(emoji, 390, 844, burstRandom(seed)).map((c) => c.particle.size)
+        for (const size of sizes) {
+          expect(size).toBeGreaterThanOrEqual(BURST_SIZE.min)
+          expect(size).toBeLessThanOrEqual(BURST_SIZE.max)
+        }
+        const large = sizes.filter((size) => size >= 44).length
+        expect(large).toBeGreaterThanOrEqual(1)
+        expect(large).toBeLessThanOrEqual(Math.ceil(sizes.length / 4))
+        expect(Math.max(...sizes) - Math.min(...sizes)).toBeGreaterThanOrEqual(16)
+      }
+    }
+  })
+
+  it('ends a mixed burst within the burst, at its slowest', () => {
+    const plan = burstPlan(['❄️', '🎉', '😂'], 390, 844, always(0.999999))
+    expect(burstEndsAt(plan.map((copy) => copy.particle))).toBeLessThanOrEqual(BURST_MS)
   })
 })
 

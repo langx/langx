@@ -10,8 +10,8 @@ const text = (body: string, extra: Partial<PinnedSource> = {}): PinnedSource => 
 })
 
 describe('pinnedLine', () => {
-  it('names the pin while the message has not loaded', () => {
-    expect(pinnedLine(undefined)).toEqual({ key: 'chat.pinnedMessage' })
+  it('holds the line with an ellipsis while the message has not loaded', () => {
+    expect(pinnedLine(undefined)).toEqual({ text: '…' })
   })
 
   it('prints the text on one line, without its markers', () => {
@@ -56,18 +56,28 @@ describe('pinnedLine', () => {
 
   it('says a message gone from this copy is deleted', () => {
     expect(pinnedLine(null)).toEqual({ key: 'chat.deleted' })
-    expect(pinnedAuthor(null, 'me')).toBeNull()
+    expect(pinnedAuthor(null, 'me', 'Maria')).toBeNull()
   })
 })
 
 describe('pinnedAuthor', () => {
-  it('tells your message from theirs', () => {
-    expect(pinnedAuthor(text('hi', { senderId: 'me' }), 'me')).toBe('you')
-    expect(pinnedAuthor(text('hi'), 'me')).toBe('them')
+  it('puts You in front of your own message', () => {
+    expect(pinnedAuthor(text('hi', { senderId: 'me' }), 'me', 'Maria')).toEqual({
+      key: 'messageMeta.you',
+    })
+  })
+
+  it('puts the partner in front of theirs by name', () => {
+    expect(pinnedAuthor(text('hi'), 'me', 'Maria')).toEqual({ text: 'Maria' })
+  })
+
+  it('leaves the line bare until the partner has a name', () => {
+    expect(pinnedAuthor(text('hi'), 'me', undefined)).toBeNull()
+    expect(pinnedAuthor(text('hi'), 'me', '')).toBeNull()
   })
 
   it('knows nobody until both the message and the viewer are known', () => {
-    expect(pinnedAuthor(undefined, 'me')).toBeNull()
-    expect(pinnedAuthor(text('hi'), undefined)).toBeNull()
+    expect(pinnedAuthor(undefined, 'me', 'Maria')).toBeNull()
+    expect(pinnedAuthor(text('hi'), undefined, 'Maria')).toBeNull()
   })
 })

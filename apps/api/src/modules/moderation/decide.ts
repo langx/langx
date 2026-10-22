@@ -118,12 +118,23 @@ export async function applyReviewDecision(
     const report = reportId
       ? await app.mongo.db
           .collection(COLLECTIONS.reports)
-          .findOne<{ postId?: ObjectId }>({ _id: reportId })
+          .findOne<{ postId?: ObjectId; reportedId: string }>({ _id: reportId })
       : null
     if (!report?.postId) return { ok: false, refusal: 'not_a_post' }
 
     const hidden = action === 'hide_post'
-    const before = await setPostHidden(app.mongo.db, report.postId.toHexString(), hidden)
+    /*
+     * Only the reported person's own post. `reportUser` checks that now, but
+     * rows filed before it did can name anybody's, and hiding that would act
+     * on somebody the report never named. A mismatch is answered as a post
+     * that is gone: from this report's side, the post it is about is.
+     */
+    const before = await setPostHidden(
+      app.mongo.db,
+      report.postId.toHexString(),
+      hidden,
+      report.reportedId,
+    )
     if (!before) return { ok: false, refusal: 'post_gone' }
     /*
      * Hiding decides the report; showing it again does not reopen it. The

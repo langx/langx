@@ -141,6 +141,99 @@ describe('Faz 0 — boot', () => {
   })
 })
 
+/**
+ * Who the rate limiter thinks is asking, under `NODE_ENV=production` — the
+ * only place proxy headers are read at all, and the only place the limiter's
+ * real ceilings apply. `inject` connects from 127.0.0.1, which stands in for
+ * the front proxy (Fly's) that every production request arrives through.
+ */
+describe('rate limiting behind the edge', () => {
+  const EDGE_SECRET = 'edge-secret-for-tests'
+  let mongod: MongoMemoryServer
+  let handle: DbHandle
+  let app: FastifyInstance
+
+  beforeAll(async () => {
+    mongod = await MongoMemoryServer.create()
+    handle = await connectToDatabase(mongod.getUri(), 'langx_rate_limit_test')
+    const env = loadEnv({
+      NODE_ENV: 'production',
+      MONGODB_URI: mongod.getUri(),
+      MONGODB_DB: 'langx_rate_limit_test',
+      LOG_LEVEL: 'silent',
+      BETTER_AUTH_SECRET: 'a'.repeat(32),
+      BETTER_AUTH_URL: 'http://localhost:4000',
+      EDGE_SECRET,
+      // Production refuses to boot without it.
+      TRUSTED_ORIGINS: 'https://app.example',
+    })
+    const emailSender = createEmailSender(env, { warn: () => undefined })
+    const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
+    app = await buildApp({
+      env,
+      client: handle.client,
+      db: handle.db,
+      auth,
+      storage: createStorageProvider(env),
+      translation: createTranslationProvider(env),
+      revenueCat: createRevenueCatClientFromEnv(env),
+      email: emailSender,
+    })
+    await app.ready()
+  })
+
+  afterAll(async () => {
+    await app?.close()
+    await handle?.close()
+    await mongod?.stop()
+  })
+
+  /** Unauthenticated and limited to 30 a minute, so a 429 is cheap to reach. */
+  async function unsubscribe(headers: Record<string, string>): Promise<number> {
+    const response = await app.inject({
+      method: 'POST',
+      url: '/email/unsubscribe?token=not-a-real-token',
+      headers,
+    })
+    return response.statusCode
+  }
+
+  it('limits one client however it fills in X-Forwarded-For', async () => {
+    const statuses: number[] = []
+    for (let i = 0; i < 40; i++) {
+      // Proxies append to the header a client sent, so the client chooses
+      // every entry but the last — which is the one the front proxy wrote.
+      statuses.push(await unsubscribe({ 'x-forwarded-for': `203.0.113.${i + 1}, 198.51.100.7` }))
+    }
+    expect(statuses).toContain(429)
+  })
+
+  it('gives two clients the edge vouches for a bucket each', async () => {
+    const first = { 'x-langx-edge': EDGE_SECRET, 'cf-connecting-ip': '192.0.2.10' }
+    const second = { 'x-langx-edge': EDGE_SECRET, 'cf-connecting-ip': '192.0.2.11' }
+
+    const statuses: number[] = []
+    for (let i = 0; i < 31; i++) statuses.push(await unsubscribe(first))
+    expect(statuses.at(-1)).toBe(429)
+
+    expect(await unsubscribe(second)).not.toBe(429)
+  })
+
+  it('ignores CF-Connecting-IP that arrives without the edge secret', async () => {
+    const statuses: number[] = []
+    for (let i = 0; i < 40; i++) {
+      statuses.push(
+        await unsubscribe({
+          'cf-connecting-ip': `192.0.2.${100 + i}`,
+          'x-langx-edge': 'not-the-secret',
+          'x-forwarded-for': '198.51.100.8',
+        }),
+      )
+    }
+    expect(statuses).toContain(429)
+  })
+})
+
 describe('env', () => {
   it('rejects a missing MONGODB_URI instead of failing at first query', () => {
     expect(() => loadEnv({})).toThrow(/MONGODB_URI/)
@@ -173,5 +266,34 @@ describe('env', () => {
     })
 
     expect(env.TRUSTED_ORIGINS).toEqual(['http://a.test', 'http://b.test'])
+  })
+
+  /*
+   * An empty list makes CORS and the socket fall back to reflecting whatever
+   * origin asks, with credentials — fine on a laptop, a credentialed grant to
+   * every site on the internet in production.
+   */
+  it('refuses to boot in production without TRUSTED_ORIGINS', () => {
+    const base = {
+      MONGODB_URI: 'mongodb://localhost:27017',
+      BETTER_AUTH_SECRET: 'a'.repeat(32),
+      NODE_ENV: 'production',
+    }
+    expect(() => loadEnv(base)).toThrow(/TRUSTED_ORIGINS/)
+    expect(() => loadEnv({ ...base, TRUSTED_ORIGINS: ' , ' })).toThrow(/TRUSTED_ORIGINS/)
+    expect(loadEnv({ ...base, TRUSTED_ORIGINS: 'https://app.example' }).TRUSTED_ORIGINS).toEqual([
+      'https://app.example',
+    ])
+  })
+
+  it('still boots without TRUSTED_ORIGINS in development and tests', () => {
+    for (const NODE_ENV of ['development', 'test']) {
+      const env = loadEnv({
+        MONGODB_URI: 'mongodb://localhost:27017',
+        BETTER_AUTH_SECRET: 'a'.repeat(32),
+        NODE_ENV,
+      })
+      expect(env.TRUSTED_ORIGINS).toEqual([])
+    }
   })
 })

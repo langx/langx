@@ -96,6 +96,7 @@ export function SnapViewfinderV3({
   onFlip,
   onPressIn,
   onPressOut,
+  filterStrip,
 }: {
   /** The route's `CameraView`, filling the frame. */
   camera: ReactNode
@@ -110,6 +111,11 @@ export function SnapViewfinderV3({
   onFlip: () => void
   onPressIn: () => void
   onPressOut: () => void
+  /**
+   * The filters' names, above the shutter. Faded out while recording: a
+   * filter is baked into photos only, so a clip would not keep it.
+   */
+  filterStrip?: ReactNode
 }) {
   const t = useT()
   const styles = useStyles()
@@ -164,6 +170,11 @@ export function SnapViewfinderV3({
             <Text style={styles.hintText}>{t('viewOnce.hint')}</Text>
           </View>
         )}
+        {filterStrip ? (
+          <FadesWhileRecording recording={recording} stretch>
+            {filterStrip}
+          </FadesWhileRecording>
+        ) : null}
         <View style={styles.shutterRow} pointerEvents="box-none">
           <FadesWhileRecording recording={recording}>
             <IconButton
@@ -200,7 +211,17 @@ export function SnapViewfinderV3({
 }
 
 /** Gallery and flip, faded out while recording; they keep their place, so nothing shifts. */
-function FadesWhileRecording({ recording, children }: { recording: boolean; children: ReactNode }) {
+function FadesWhileRecording({
+  recording,
+  stretch = false,
+  children,
+}: {
+  recording: boolean
+  /** As wide as the foot, for the filter strip; the buttons keep their own width. */
+  stretch?: boolean
+  children: ReactNode
+}) {
+  const styles = useStyles()
   const reduce = useReduceMotion()
   const shown = useSharedValue(recording ? 0 : 1)
   useEffect(() => {
@@ -209,7 +230,7 @@ function FadesWhileRecording({ recording, children }: { recording: boolean; chil
   const fade = useAnimatedStyle(() => ({ opacity: shown.get() }))
   return (
     <Animated.View
-      style={fade}
+      style={[fade, stretch && styles.stretch]}
       pointerEvents={recording ? 'none' : 'auto'}
       accessibilityElementsHidden={recording}
       importantForAccessibility={recording ? 'no-hide-descendants' : 'auto'}
@@ -483,6 +504,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingVertical: v3.space[6],
   },
   hintText: { ...v3.type.caption, color: ON_STAGE, textAlign: 'center' },
+  stretch: { alignSelf: 'stretch' },
   shutterRow: {
     alignItems: 'center',
     alignSelf: 'stretch',

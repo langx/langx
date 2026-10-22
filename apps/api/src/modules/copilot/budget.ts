@@ -24,9 +24,10 @@ function dayOf(now: Date): string {
  * answers kept, because a call is what is billed.
  *
  * Kept apart from the assistant's counter, so neither can spend the other's
- * day. Claimed and then not used — the model declined, or failed — is not
- * given back: it was a call, and the person's own allowance is what is
- * refunded.
+ * day. Claimed and then not used — the model declined, or failed — is given
+ * back with `releaseCopilotCall`, as the person's own unit is: otherwise one
+ * person could ask the same declined question over and over, never spending
+ * their allowance, until nobody else had a call left today.
  */
 export async function claimCopilotCall(db: Db, now: Date = new Date()): Promise<boolean> {
   const usage = db.collection<UsageDay>(COLLECTIONS.copilotUsage)
@@ -41,6 +42,17 @@ export async function claimCopilotCall(db: Db, now: Date = new Date()): Promise<
     if (error instanceof MongoServerError && error.code === 11000) return false
     throw error
   }
+}
+
+/**
+ * Gives back a call `claimCopilotCall` took. Same `now` as the claim, so a
+ * call that straddles midnight is returned to the day it came from; the
+ * filter keeps the counter from going below zero.
+ */
+export async function releaseCopilotCall(db: Db, now: Date = new Date()): Promise<void> {
+  await db
+    .collection<UsageDay>(COLLECTIONS.copilotUsage)
+    .updateOne({ _id: dayOf(now), calls: { $gt: 0 } }, { $inc: { calls: -1 } })
 }
 
 /** What has been spent today. Read by nothing but a person asking. */

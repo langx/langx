@@ -6,6 +6,7 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { objectKeyOf } from '../lib/assertOwnBucket'
 import type {
   StorageProviderWithPrefixDelete,
   StorageProviderWithPut,
@@ -126,10 +127,13 @@ export class S3StorageProvider implements StorageProviderWithPut, StorageProvide
     return deleted
   }
 
+  /**
+   * The same reading the routes apply on the way in — see `objectKeyOf`. A
+   * URL that was stored before that check existed, naming `..` or an encoded
+   * slash, resolves to some other object than its string says; handing its
+   * raw key to `deleteObject` is not a guess this provider should make.
+   */
   keyFromPublicUrl(url: string): string | null {
-    const prefix = `${this.#publicBaseUrl}/`
-    if (!url.startsWith(prefix)) return null
-    const key = url.slice(prefix.length)
-    return key.length > 0 ? key : null
+    return objectKeyOf(this.#publicBaseUrl, url)
   }
 }

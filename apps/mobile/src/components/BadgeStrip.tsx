@@ -96,10 +96,10 @@ const useStyles = makeStyles(({ spacing }) => ({
   // The vertical padding is the scroller's, so the marks do not sit against
   // the stats row above or the bio below while the row slides under them.
   scroller: { paddingVertical: spacing.lg },
-  // Lets the last mark reach the right edge rather than stopping at the
+  // Lets the last mark reach the far edge rather than stopping at the
   // gutter, which is what makes it read as "there is more" rather than "that
   // is all, oddly indented".
-  content: { paddingRight: spacing.lg },
+  content: { paddingEnd: spacing.lg },
   strip: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
   pressed: { opacity: 0.6 },
 }))

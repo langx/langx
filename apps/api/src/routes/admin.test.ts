@@ -925,6 +925,69 @@ describe('the operator panel', () => {
       expect(detail.post?.attachments.map((item) => item.url)).toEqual([photo.url])
     })
 
+    /*
+     * A row from before `reportUser` checked a post's author: it names the
+     * accused and somebody else's post. Neither door may hide that post.
+     */
+    it('hides nothing when an older report names somebody else’s post', async () => {
+      const admin = await newUser()
+      await makeAdmin(admin)
+      const author = await newUser()
+      const accused = await newUser()
+      const reporter = await newUser()
+      const postId = new ObjectId()
+      await handle.db.collection(COLLECTIONS.posts).insertOne({
+        _id: postId,
+        authorId: author.userId,
+        body: 'not the accused’s words',
+        language: 'en',
+        correctionCount: 0,
+        createdAt: new Date(),
+      })
+      const reportId = new ObjectId()
+      await handle.db.collection(COLLECTIONS.reports).insertOne({
+        _id: reportId,
+        reporterId: reporter.userId,
+        reportedId: accused.userId,
+        reason: 'inappropriate_content',
+        postId,
+        status: 'open',
+        createdAt: new Date(),
+      })
+      const hiddenAt = async () =>
+        (
+          await handle.db
+            .collection<{ hiddenAt?: Date }>(COLLECTIONS.posts)
+            .findOne({ _id: postId })
+        )?.hiddenAt
+
+      // The panel.
+      const viaPanel = await post(admin, `/admin/reports/${reportId.toHexString()}/decision`, {
+        action: 'hide_post',
+      })
+      expect(viaPanel.statusCode, viaPanel.body).toBe(404)
+      expect(await hiddenAt()).toBeUndefined()
+
+      // The emailed form.
+      const token = signReviewToken('a'.repeat(32), {
+        kind: 'report',
+        userId: accused.userId,
+        reportId: reportId.toHexString(),
+        expiresAt: Date.now() + 60_000,
+      })
+      const viaLink = await app.inject({
+        method: 'POST',
+        url: `/moderation/review?token=${encodeURIComponent(token)}`,
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        payload: 'action=hide_post',
+      })
+      expect(viaLink.statusCode, viaLink.body).toBe(404)
+      expect(await hiddenAt()).toBeUndefined()
+
+      const report = await handle.db.collection(COLLECTIONS.reports).findOne({ _id: reportId })
+      expect(report?.status).toBe('open')
+    })
+
     it('brings the end of their conversation, up to the report and no further', async () => {
       const admin = await newUser()
       await makeAdmin(admin)

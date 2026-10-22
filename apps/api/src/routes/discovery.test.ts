@@ -1085,6 +1085,28 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(handlesIn(response)).toHaveLength(0)
     })
 
+    /*
+     * Every row the app draws says `@handle`, so that is what people type. The
+     * `@` is not part of any handle, and kept it anchored the handle half on a
+     * character no handle starts with — `@sofia_m` found nobody whose name did
+     * not happen to contain the same words.
+     */
+    it('reads a leading @ as the handle it introduces', async () => {
+      const viewer = await newUser('search-at-viewer@example.com')
+      const target = await newUser('search-at-target@example.com', {
+        handle: 'attarget_m',
+        displayName: 'Maria',
+      })
+
+      expect(handlesIn(await search(viewer, '@attarget_m'))).toEqual([target.handle])
+      expect(handlesIn(await search(viewer, '@Attar'))).toEqual([target.handle])
+      // Still two characters of something, once the @ is gone: `@a` is the
+      // one-letter query the floor exists to refuse, and a bare `@@` would
+      // otherwise anchor on nothing and match everybody.
+      expect((await search(viewer, '@a')).statusCode).toBe(400)
+      expect((await search(viewer, '@@')).statusCode).toBe(400)
+    })
+
     it('refuses a term too short to be worth a query', async () => {
       const viewer = await newUser('search-short-viewer@example.com')
       expect((await search(viewer, 'a')).statusCode).toBe(400)

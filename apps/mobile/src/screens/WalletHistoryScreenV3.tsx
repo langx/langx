@@ -15,6 +15,7 @@ import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useLocale, useT } from '../i18n'
 import { listState } from '../lib/listState'
 import { goBackTo } from '../lib/navigation'
+import { tokenAmountLabel, tokenSlot } from '../lib/tokenAmount'
 import { makeStyles, useTheme, type PartnerHue } from '../lib/theme'
 import { buildTokenHistory } from '../lib/tokenHistory'
 import { historyItems, ledgerDayHeading, type HistoryItem } from '../lib/walletV3'
@@ -98,11 +99,8 @@ export function WalletHistoryScreenV3() {
           icon={look.icon}
           hue={look.hue ? v3.hues[look.hue] : undefined}
           label={item.entry.label}
-          amount={
-            amount < 0
-              ? t('tokens.ledgerSpent', { count: (-amount).toLocaleString(locale) })
-              : t('tokens.shareAmount', { count: amount.toLocaleString(locale) })
-          }
+          amount={tokenSlot(t, amount, locale, amount < 0 ? '−' : '+')}
+          amountLabel={tokenAmountLabel(t, amount, locale, amount < 0 ? '−' : '+')}
           spend={amount < 0}
           first={item.first}
           last={item.last}

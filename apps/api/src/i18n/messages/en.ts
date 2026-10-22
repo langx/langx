@@ -878,6 +878,96 @@ export const en = {
       'Hi! Thanks for reporting this Copilot answer — we read it, and reports like yours help us make Copilot better.',
     issue: 'You can follow it here: {url}',
   },
+  cards: {
+    /*
+     * The words on a badge's share card that are not the badge's own name:
+     * the pill above it and the day it was earned. The same words the app's
+     * badge sheet uses (`badgesV3.newBadge`, `badgesV3.earnedOn`), so the card
+     * and the screen it was shared from agree.
+     */
+    badgeKicker: 'New badge',
+    badgeEarnedOn: 'Earned {date}',
+  },
+  /**
+   * A badge's name, for the push and the evening letter that announce it.
+   * The same words the app's badge shelf uses (`badges.*`, `badgesV3.unit.*`
+   * in the mobile catalogue): `BADGES` in `@langx/shared` carries an English
+   * label, which used to be dropped into every language's sentence.
+   * `{formatted}` is the threshold in the reader's own digits.
+   */
+  badgeNames: {
+    /**
+     * The v3 kinds' names, keyed `<kind>_<threshold>` like the app's
+     * `badgesV3.name.*`: the shelf names each patch rather than counting it.
+     * The unit words below stay as the fallback for a threshold with no name.
+     */
+    v3: {
+      languages_2: 'Two Threads',
+      languages_3: 'Braid',
+      languages_5: 'Five Strands',
+      calls_1: 'Tin-Can Line',
+      calls_10: 'Long Line',
+      calls_50: 'Switchboard',
+      echo_100: 'Ripple',
+      echo_1000: 'Wave',
+      echo_5000: 'Tide',
+      testimonials_1: 'Quilt Square',
+      testimonials_5: 'Patchwork',
+      testimonials_20: 'Quilt',
+      guide_3: 'Darning',
+      guide_10: 'Mending',
+      guide_50: 'Weaver',
+      openers_10: 'Open Door',
+      openers_50: 'Porch Light',
+      openers_200: 'Open House',
+    },
+    firstCorrection: 'First correction',
+    streakDays: {
+      one: '{formatted} day',
+      other: '{formatted} days',
+    },
+    corrections: {
+      one: '{formatted} correction',
+      other: '{formatted} corrections',
+    },
+    messagesSent: {
+      one: '{formatted} message',
+      other: '{formatted} messages',
+    },
+    tokensEarned: {
+      one: '{formatted} token earned',
+      other: '{formatted} tokens earned',
+    },
+    memberDays: {
+      one: '{formatted} day a member',
+      other: '{formatted} days a member',
+    },
+    earlyAdopter: 'Early Adopter',
+    languages: {
+      one: '{formatted} language',
+      other: '{formatted} languages',
+    },
+    calls: {
+      one: '{formatted} call',
+      other: '{formatted} calls',
+    },
+    echo: {
+      one: '{formatted} review',
+      other: '{formatted} reviews',
+    },
+    testimonials: {
+      one: '{formatted} partner',
+      other: '{formatted} partners',
+    },
+    guide: {
+      one: '{formatted} person',
+      other: '{formatted} people',
+    },
+    openers: {
+      one: '{formatted} reply',
+      other: '{formatted} replies',
+    },
+  },
 } as const
 
 export type ServerMessages = typeof en

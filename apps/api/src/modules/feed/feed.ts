@@ -37,6 +37,7 @@ import { awardTokens } from '../tokens/ledger'
 import { settleReferral } from '../referrals/settle'
 import { recordQualifyingAction } from '../tokens/streak'
 import type { StorageProvider } from '../../storage/StorageProvider'
+import { claimPendingUploads } from '../chat/pendingUploads'
 import { assertAttachable, deleteObjects } from './attachments'
 import type { AttachmentNormalizer } from '../media/transcodeAudio'
 import { readCommentSummary } from './comments'
@@ -406,6 +407,13 @@ export async function createPost(
     ...(attachments[0] ? { media: attachments[0] } : {}),
     createdAt: new Date(),
   }
+  // The files as the row names them, before the row exists — the order
+  // `sendMediaMessage` claims in, for its reason: a claimed file that is never
+  // posted only stays in the bucket, an unclaimed one that is gets swept.
+  await claimPendingUploads(
+    db,
+    attachments.map((item) => item.url),
+  )
   await db.collection<Post>(COLLECTIONS.posts).insertOne(doc)
 
   // Nothing can have liked, corrected or answered a post that did not exist a
@@ -583,6 +591,11 @@ export async function correctPost(
     createdAt: new Date(),
   }
 
+  // Before the insert, as in `createPost`.
+  await claimPendingUploads(
+    db,
+    attachments.map((item) => item.url),
+  )
   try {
     await db.collection<PostCorrectionDoc>(COLLECTIONS.postCorrections).insertOne(doc)
   } catch (error) {
@@ -965,18 +978,26 @@ export async function deletePostCascade(
  * signed link that reached it, which names the report, and the report names
  * this post — see `email/reviewToken.ts`.
  *
+ * `authorId`, when given, is the author the post must have — a report's
+ * `reportedId`, so a report naming somebody else's post hides nothing.
+ *
  * Returns the post as it was *before* the write, so the caller can tell a
  * decision from a no-op and say "already hidden" rather than claiming to have
  * done something. `null` when there is no such post: a moderator can be
  * reading a report about something its author deleted in the meantime.
  */
-export async function setPostHidden(db: Db, postId: string, hidden: boolean): Promise<Post | null> {
+export async function setPostHidden(
+  db: Db,
+  postId: string,
+  hidden: boolean,
+  authorId?: string,
+): Promise<Post | null> {
   if (!ObjectId.isValid(postId)) return null
   const _id = new ObjectId(postId)
   return db
     .collection<Post>(COLLECTIONS.posts)
     .findOneAndUpdate(
-      { _id },
+      authorId === undefined ? { _id } : { _id, authorId },
       hidden ? { $set: { hiddenAt: new Date() } } : { $unset: { hiddenAt: '' } },
       { returnDocument: 'before' },
     )

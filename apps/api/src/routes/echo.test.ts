@@ -11,6 +11,7 @@ import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import { summary } from '../modules/echo/cards'
 import { submitReviews } from '../modules/echo/reviews'
+import { rememberTranslation } from '../modules/translation/translate'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
@@ -242,6 +243,40 @@ describe('echo', () => {
     expect(echoed.json<{ card: { back: string } }>().card.back).toBe('')
   })
 
+  it('writes the back in the reader’s native language, whatever language the app is in', async () => {
+    // A is an English native. B reads Turkish natively, learns English, and
+    // runs the app in English.
+    const [a, b] = await newPair('uilocale', {
+      nativeLanguages: [{ code: 'en' }],
+      learning: [{ code: 'tr', level: 'beginner', priority: 1 }],
+    })
+    const conversation = await startConversation(a, b.userId, 'How are you doing today')
+    const messageId = await firstMessageId(conversation._id)
+    // No provider here, so the cache stands in for it — in both languages, so
+    // a back taken from the app's language would show up as English.
+    await rememberTranslation(
+      handle.db,
+      { text: 'How are you doing today', targetLang: 'tr' },
+      { translatedText: 'Bugün nasılsın', sourceLang: 'en' },
+    )
+    await rememberTranslation(
+      handle.db,
+      { text: 'How are you doing today', targetLang: 'en' },
+      { translatedText: 'How are you doing today', sourceLang: 'en' },
+    )
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/echo/cards',
+      headers: { cookie: b.cookie, 'accept-language': 'en-US,en;q=0.9' },
+      payload: { source: { kind: 'chat', conversationId: conversation._id, messageId } },
+    })
+    expect(response.statusCode).toBe(201)
+    const { card } = response.json<{ card: { lang: string; back: string; backLang?: string } }>()
+    expect(card).toMatchObject({ lang: 'en', back: 'Bugün nasılsın' })
+    expect(card.backLang).toBeUndefined()
+  })
+
   it('refuses a message from a conversation the person is not in', async () => {
     const [a, b] = await newPair('out')
     const stranger = await newUser('out-c@example.com')
@@ -365,6 +400,97 @@ describe('echo', () => {
     expect(response.statusCode).toBe(200)
     const { results } = response.json<{ results: { status: string }[] }>()
     expect(results.map((r) => r.status)).toEqual(['missing', 'missing', 'applied'])
+  })
+
+  /*
+   * A review row is what a session is counted from and what the board ranks,
+   * so a grade for a card the caller does not have must write none — or ids
+   * made up on the spot pay sessions, fill the streak and climb the board.
+   */
+  it('writes, pays and ranks nothing for grades of cards that do not exist', async () => {
+    const user = await newUser('ghost-reviews@example.com')
+    const reviews = Array.from({ length: SRS_RULES.sessionSize * 3 }, (_, index) => ({
+      reviewId: `r-ghost-${index}`,
+      cardId: new ObjectId().toHexString(),
+      grade: 'good',
+      durationMs: 1000,
+    }))
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/echo/reviews',
+      headers: { cookie: user.cookie },
+      payload: { reviews },
+    })
+    expect(response.statusCode).toBe(200)
+    const body = response.json<{
+      results: { status: string }[]
+      award: { tokens: number; streak: unknown }
+    }>()
+    expect(body.results.every((r) => r.status === 'missing')).toBe(true)
+    expect(body.award).toEqual({ tokens: 0, streak: null })
+
+    const db = handle.db
+    expect(
+      await db
+        .collection(COLLECTIONS.tokenLedger)
+        .countDocuments({ userId: user.userId, kind: 'echo' }),
+    ).toBe(0)
+    expect(
+      await db.collection(COLLECTIONS.echoAggregates).countDocuments({ userId: user.userId }),
+    ).toBe(0)
+    expect(
+      await db.collection(COLLECTIONS.echoReviews).countDocuments({ userId: user.userId }),
+    ).toBe(0)
+  })
+
+  it('treats a grade of somebody else’s card as missing, and pays nothing for it', async () => {
+    const [a, b] = await newPair('ghost-other')
+    const conversation = await startConversation(a, b.userId)
+    const captured = await captureMessage(
+      b,
+      conversation._id,
+      await firstMessageId(conversation._id),
+    )
+    const cardId = captured.json<{ card: { _id: string } }>().card._id
+    const before = await handle.db
+      .collection(COLLECTIONS.echoCards)
+      .findOne({ _id: new ObjectId(cardId) })
+
+    // A whole session's worth, so a row for each would have paid one.
+    const response = await app.inject({
+      method: 'POST',
+      url: '/echo/reviews',
+      headers: { cookie: a.cookie },
+      payload: {
+        reviews: Array.from({ length: SRS_RULES.sessionSize }, (_, index) => ({
+          reviewId: `r-other-${index}`,
+          cardId,
+          grade: 'easy',
+          durationMs: 1000,
+        })),
+      },
+    })
+    expect(response.statusCode).toBe(200)
+    const body = response.json<{
+      results: { status: string }[]
+      award: { tokens: number; streak: unknown }
+    }>()
+    expect(body.results.every((r) => r.status === 'missing')).toBe(true)
+    expect(body.award).toEqual({ tokens: 0, streak: null })
+
+    const db = handle.db
+    expect(
+      await db
+        .collection(COLLECTIONS.tokenLedger)
+        .countDocuments({ userId: a.userId, kind: 'echo' }),
+    ).toBe(0)
+    expect(await db.collection(COLLECTIONS.echoReviews).countDocuments({ userId: a.userId })).toBe(
+      0,
+    )
+    expect(
+      await db.collection(COLLECTIONS.echoCards).findOne({ _id: new ObjectId(cardId) }),
+    ).toEqual(before)
   })
 
   it('removes a card by its source key, which is all the chat screen knows', async () => {

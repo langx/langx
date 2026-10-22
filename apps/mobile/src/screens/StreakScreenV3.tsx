@@ -39,6 +39,7 @@ import { buildStoreOffers, repairsUsedFor } from '../lib/storeOffers'
 import { brokenStreakRepair, streakLadder, type StreakRung } from '../lib/streakV3'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../lib/theme'
 import { showToast } from '../lib/toast'
+import { plain, tokenAmountLabel, tokenButton, tokenSentence, tokenSlot } from '../lib/tokenAmount'
 
 /**
  * The range today's streak screen asks `/me/activity` for — its map's twenty
@@ -226,7 +227,7 @@ function MemberStreak() {
             setCard({
               kind: 'streak',
               headline: String(current),
-              caption: t('share.cardStreakCaption'),
+              caption: t('share.cardStreakCaption', { count: current }),
               fallback: streakShareText(t, { count: current, handle }),
             }),
         }
@@ -265,7 +266,11 @@ function MemberStreak() {
               }),
             })}
             body={t('streak.repairBody', { count: rejoined })}
-            button={t('streak.repairButton', { count: repairOffer.price })}
+            button={tokenButton(t, 'streak.repairShort', {
+              count: repairOffer.price,
+              locale,
+              spokenKey: 'streak.repairButton',
+            })}
             pending={repairDay.isPending}
             onPress={() => buyDayBack(repairOffer.repairDay ?? '')}
           />
@@ -289,7 +294,9 @@ function MemberStreak() {
             protect={
               current > 0 && banked < maxFreezes
                 ? {
-                    label: t('streak.protect', { count: freeze.price }),
+                    label: t('streak.protectShort', {
+                      amount: tokenSlot(t, freeze.price, locale),
+                    }),
                     accessibilityLabel: t('streak.protectA11y', { count: freeze.price }),
                     disabled: !freeze.affordable,
                     pending: purchase.isPending,
@@ -299,9 +306,13 @@ function MemberStreak() {
             }
             note={
               banked >= maxFreezes
-                ? t('streak.freezesFull')
+                ? plain(t('streak.freezesFull'))
                 : current > 0 && !freeze.affordable
-                  ? t('streak.freezeShort', { count: balance })
+                  ? tokenSentence(t, 'storeHome.youHave', {
+                      count: balance,
+                      locale,
+                      spokenKey: 'streak.freezeShort',
+                    })
                   : undefined
             }
           />
@@ -401,16 +412,20 @@ function weekdayLetter(day: string, locale: Locale): string {
 
 /** A rung, worded. The reward names Pro only where `streakLadder` says it is still owed. */
 function rungView(rung: StreakRung, current: number, t: TranslateFn, locale: Locale): RungView {
-  const amount = rung.tokens.toLocaleString(locale)
-  const reward = rung.pro
-    ? rung.pro.months > 0
-      ? t('streak.rungMonthsOfPro', { count: rung.pro.months, amount })
-      : t('streak.rungWeeksOfPro', { count: rung.pro.weeks, amount })
-    : t('streak.rungTokens', { amount })
+  // Twice: once with the token mark beside the number, once with the unit in words.
+  const worded = (amount: string): string =>
+    rung.pro
+      ? rung.pro.months > 0
+        ? t('streak.rungMonthsOfPro', { count: rung.pro.months, amount })
+        : t('streak.rungWeeksOfPro', { count: rung.pro.weeks, amount })
+      : t('streak.rungTokens', { amount })
+  const reward = worded(tokenSlot(t, rung.tokens, locale))
+  const rewardLabel = worded(tokenAmountLabel(t, rung.tokens, locale))
   return {
     key: String(rung.days),
     title: t('format.days', { count: rung.days }),
     reward,
+    rewardLabel,
     status:
       rung.state === 'reached' ? t('common.done') : t('streak.rungToGo', { count: rung.toGo }),
     figure: rung.days.toLocaleString(locale),

@@ -20,7 +20,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { keys, useEchoSummary } from '../../api/queries'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
-import { useT } from '../../i18n'
+import { useLocale, useT } from '../../i18n'
 import { CELEBRATION_MS, claimCelebration, RAIN } from '../../lib/celebration'
 import { planEchoDone } from '../../lib/echoV3'
 import { notification } from '../../lib/haptics'
@@ -28,9 +28,11 @@ import { nextStreakMilestone } from '../../lib/homePlan'
 import { goBackTo } from '../../lib/navigation'
 import { DISPLAY_FONT, makeStyles, PARTNER_HUES, useTheme } from '../../lib/theme'
 import { SPRING, STAGGER, TIMING, unlessReduced } from '../../lib/theme/motion'
+import { tokenSlot } from '../../lib/tokenAmount'
 import { Button } from '../ui/Button'
 import { Confetti } from '../ui/Confetti'
 import { PressableScale } from '../ui/PressableScale'
+import { TokenText } from '../ui/TokenIcon'
 import { Screen } from '../ui/Screen'
 import { Skeleton } from '../ui/Skeleton'
 import { FlameGlyph } from '../ui/StreakFlame'
@@ -73,6 +75,7 @@ export function EchoDoneV3({
   scope,
 }: EchoDoneV3Props) {
   const t = useT()
+  const { locale } = useLocale()
   const styles = useStyles()
   const { v3 } = useTheme()
   const [black] = useFonts({ Nunito_900Black })
@@ -200,9 +203,11 @@ export function EchoDoneV3({
           </Land>
           {plan.tokens !== null ? (
             <Land from="pop" style={styles.tokens}>
-              <Text style={styles.tokensText}>
-                {t('echo.tokensEarned', { count: plan.tokens })}
-              </Text>
+              <TokenText
+                text={tokenSlot(t, plan.tokens, locale, '+')}
+                label={t('echo.tokensEarned', { count: plan.tokens })}
+                style={styles.tokensText}
+              />
             </Land>
           ) : null}
         </View>

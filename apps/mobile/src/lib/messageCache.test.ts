@@ -1,4 +1,4 @@
-import type { InfiniteData } from '@tanstack/react-query'
+import { InfiniteQueryObserver, QueryClient, type InfiniteData } from '@tanstack/react-query'
 import { describe, expect, it } from 'vitest'
 import type { MessageDto } from '../api/queries'
 import {
@@ -7,6 +7,8 @@ import {
   applyMessageUpdate,
   applyPinned,
   messagesNewestFirst,
+  patchMessageUpdate,
+  patchThread,
   type MessagePageDto,
 } from './messageCache'
 
@@ -243,5 +245,145 @@ describe('applyPinned', () => {
     expect(applyPinned(data, null)).toBe(data)
     const withPin = applyPinned(data, pin)
     expect(applyPinned(withPin, pin)).toBe(withPin)
+  })
+})
+
+describe('patchThread while the thread is refetching', () => {
+  /**
+   * The reconnect resync refetches the thread; the retried send's ack and its
+   * echo land while that GET is still out. Its answer was read before the
+   * server stored the message, and it must not erase the message the patch
+   * has just written.
+   */
+  it('keeps a message patched in during an in-flight refetch', async () => {
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+    const queryKey = ['messages', 'c1']
+    client.setQueryData(queryKey, pages([message('m1')]))
+
+    let release: (page: MessagePageDto) => void = () => undefined
+    let calls = 0
+    const queryFn = (): Promise<MessagePageDto> => {
+      calls += 1
+      // The first GET left before the send was stored; a later one sees it.
+      if (calls > 1) return Promise.resolve(pages([message('m1'), message('m2', ME)]).pages[0]!)
+      return new Promise((resolve) => {
+        release = resolve
+      })
+    }
+    const refetch = client.fetchInfiniteQuery({
+      queryKey,
+      queryFn,
+      initialPageParam: '',
+      getNextPageParam: () => null,
+      staleTime: 0,
+    })
+
+    // The ack, then the duplicate `message:new`.
+    patchThread(client, 'c1', (old) => appendIncomingMessage(old, message('m2', ME), ME))
+    patchThread(client, 'c1', (old) => appendIncomingMessage(old, message('m2', ME), ME))
+
+    release(pages([message('m1')]).pages[0]!)
+    await refetch.catch(() => undefined)
+    // Waits out whatever `patchThread` started, without starting anything.
+    while (client.isFetching({ queryKey }) > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 0))
+    }
+
+    const ids = messagesNewestFirst(client.getQueryData(queryKey)).map((m) => m._id)
+    expect(ids).toEqual(['m2', 'm1'])
+  })
+})
+
+describe('patchThread while an older page is loading', () => {
+  /**
+   * Somebody scrolls up and a message arrives before the older page does.
+   * The page must still land, and the message must still be there after it.
+   */
+  it('keeps both the older page and the patched message', async () => {
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+    const queryKey = ['messages', 'c1']
+    let stored = false
+    let releaseOlder: () => void = () => undefined
+    const observer = new InfiniteQueryObserver<
+      MessagePageDto,
+      Error,
+      InfiniteData<MessagePageDto>,
+      readonly unknown[],
+      string
+    >(client, {
+      queryKey,
+      queryFn: ({ pageParam }) => {
+        if (pageParam === 'older') {
+          return new Promise((resolve) => {
+            releaseOlder = () => resolve({ ...pages([message('m0')]).pages[0]!, nextCursor: null })
+          })
+        }
+        const newest = stored ? [message('m1'), message('m2')] : [message('m1')]
+        return Promise.resolve({ ...pages(newest).pages[0]!, nextCursor: 'older' })
+      },
+      initialPageParam: '',
+      getNextPageParam: (last) => last.nextCursor ?? undefined,
+    })
+    const unsubscribe = observer.subscribe(() => undefined)
+    while (client.isFetching({ queryKey }) > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 0))
+    }
+
+    const older = observer.fetchNextPage()
+    stored = true
+    patchThread(client, 'c1', (old) => appendIncomingMessage(old, message('m2'), ME))
+    releaseOlder()
+    await older
+    while (client.isFetching({ queryKey }) > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 0))
+    }
+
+    const ids = messagesNewestFirst(client.getQueryData(queryKey)).map((m) => m._id)
+    expect(ids).toEqual(['m2', 'm1', 'm0'])
+    unsubscribe()
+  })
+})
+
+describe('patchMessageUpdate while the thread is refetching', () => {
+  /**
+   * The same race as the arriving message above, for `message:updated`. A
+   * withdrawal for everyone lands while a refetch is out — the reconnect's
+   * resync, most often — and the GET read the thread before the withdrawal.
+   * When it lands it must not put the words back on screen.
+   */
+  it('keeps a withdrawal written during an in-flight refetch', async () => {
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+    const queryKey = ['messages', 'c1']
+    client.setQueryData(queryKey, pages([message('m1')]))
+    const withdrawn: MessageDto = { ...message('m1'), body: '', deleted: true }
+
+    let release: (page: MessagePageDto) => void = () => undefined
+    let calls = 0
+    const queryFn = (): Promise<MessagePageDto> => {
+      calls += 1
+      // A later GET leaves after the server withdrew it, so it carries that.
+      if (calls > 1) return Promise.resolve(pages([withdrawn]).pages[0]!)
+      return new Promise((resolve) => {
+        release = resolve
+      })
+    }
+    const refetch = client.fetchInfiniteQuery({
+      queryKey,
+      queryFn,
+      initialPageParam: '',
+      getNextPageParam: () => null,
+      staleTime: 0,
+    })
+
+    patchMessageUpdate(client, withdrawn)
+
+    release(pages([message('m1')]).pages[0]!)
+    await refetch.catch(() => undefined)
+    while (client.isFetching({ queryKey }) > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 0))
+    }
+
+    const [shown] = messagesNewestFirst(client.getQueryData(queryKey))
+    expect(shown).toMatchObject({ _id: 'm1', deleted: true, body: '' })
   })
 })

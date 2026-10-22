@@ -1,7 +1,9 @@
+import Feather from '@expo/vector-icons/Feather'
 import * as Location from 'expo-location'
 import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
-import { AppState, Linking, Platform } from 'react-native'
+import { AppState, Linking, Platform, View } from 'react-native'
+import Svg, { Circle } from 'react-native-svg'
 import {
   SettingsFormScreenV3,
   SettingsStateV3,
@@ -13,7 +15,7 @@ import { useScreenInteractive } from '../../hooks/useScreenInteractive'
 import { useT, type MessageKey } from '../../i18n'
 import { readLocationGuideStatus, type LocationGuideStatus } from '../../lib/locationPermission'
 import { goBackTo } from '../../lib/navigation'
-import type { PartnerHue } from '../../lib/theme'
+import { makeStyles, useTheme, type PartnerHue } from '../../lib/theme'
 
 const IOS_STEPS: readonly MessageKey[] = [
   'location.guide.iosStep1',
@@ -113,6 +115,9 @@ export function LocationGuideScreenV3() {
         icon={LOOK[status].icon}
         title={t(titleKey[status])}
         body={t(bodyKey[status])}
+        // The orbit only where the page is still asking: on a granted or a
+        // refused page the glyph is the news (a tick, a warning), not decor.
+        art={status === 'askable' || status === 'web' ? <NearbyOrbit /> : undefined}
       />
       {status === 'blocked' ? (
         <SettingsStepsV3 steps={(ios ? IOS_STEPS : ANDROID_STEPS).map((key) => t(key))} />
@@ -120,3 +125,70 @@ export function LocationGuideScreenV3() {
     </SettingsFormScreenV3>
   )
 }
+
+/** The drawing's frame, and the two rings' radii inside it. */
+const ORBIT_WIDTH = 180
+const ORBIT_HEIGHT = 156
+const INNER_RING = 46
+const OUTER_RING = 72
+const PIN_DISC = 30
+
+/**
+ * `V-SetLocation`'s picture: you, a pin on a disc, with people on two dashed
+ * rings around you — Nearby's "roughly how far", drawn. Decoration only, so
+ * hidden from a screen reader; ink on the hue like the rest of the block.
+ */
+function NearbyOrbit() {
+  const styles = useOrbitStyles()
+  const { v3 } = useTheme()
+  const cx = ORBIT_WIDTH / 2
+  const cy = ORBIT_HEIGHT / 2
+  // A person at `deg` degrees round a ring, clockwise from three o'clock.
+  const at = (r: number, deg: number) => ({
+    cx: cx + r * Math.cos((deg * Math.PI) / 180),
+    cy: cy + r * Math.sin((deg * Math.PI) / 180),
+  })
+  return (
+    <View
+      style={styles.orbit}
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+    >
+      <Svg width={ORBIT_WIDTH} height={ORBIT_HEIGHT}>
+        {[INNER_RING, OUTER_RING].map((r) => (
+          <Circle
+            key={r}
+            cx={cx}
+            cy={cy}
+            r={r}
+            fill="none"
+            stroke={v3.colors.ink}
+            strokeOpacity={0.55}
+            strokeWidth={1.5}
+            strokeDasharray="4 5"
+          />
+        ))}
+        <Circle {...at(OUTER_RING, 205)} r={12} fill={v3.hues.lilac} />
+        <Circle {...at(INNER_RING, 310)} r={9} fill={v3.hues.tangerine} />
+        <Circle {...at(OUTER_RING, 25)} r={12} fill={v3.hues.mint} />
+        <Circle cx={cx} cy={cy} r={PIN_DISC} fill={v3.colors.ink} />
+      </Svg>
+      <View style={styles.pin}>
+        <Feather name="map-pin" size={v3.icon.xl} color={v3.hues.sky} />
+      </View>
+    </View>
+  )
+}
+
+const useOrbitStyles = makeStyles(() => ({
+  orbit: { height: ORBIT_HEIGHT, width: ORBIT_WIDTH },
+  pin: {
+    alignItems: 'center',
+    bottom: 0,
+    end: 0,
+    justifyContent: 'center',
+    position: 'absolute',
+    start: 0,
+    top: 0,
+  },
+}))

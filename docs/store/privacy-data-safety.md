@@ -38,9 +38,9 @@ Both stores treat a wrong answer here as a policy violation, and both accept
 | Purchase state | `subscriptions` | Knowing whether you have Pro | Only if you subscribe |
 | Profile views | `profileViews` | "Who viewed me". Not written at all if the viewer has incognito on | Automatic; deleted after 90 days (TTL index) |
 | Reports you file | `reports` | Moderation | Only if you report someone |
-| Copilot consent | `profiles.copilotConsent` | Which version of the Copilot consent sheet you agreed to, and when — the only thing that lets your text reach the AI provider. **Not live** — see _Copilot_ below | Only if you agree; withdrawing removes it |
-| Copilot reports | `feedback` (`kind: 'copilot'`) | An AI answer you reported and which Copilot help wrote it. The answer can quote what it was about — a Check answer is your sentence, corrected — and the sheet says so; your original sentence goes only if you switch that on, and nothing else from the chat is sent. Read by the operators in their feedback queue; no mail, no public issue. **Not live** — see _Copilot_ below | Only if you report one; deleted with your account |
-| Copilot answers | `copilotCache` | An answer kept under a hash of the question, so the same question is not paid for twice. Linked to no account. **Not live** — see _Copilot_ below | Automatic once you use Copilot; deleted after 7 days (TTL index) |
+| Copilot consent | `profiles.copilotConsent` | Which version of the Copilot consent sheet you agreed to, and when — the only thing that lets your text reach the AI provider. See _Copilot_ below | Only if you agree; withdrawing removes it |
+| Copilot reports | `feedback` (`kind: 'copilot'`) | An AI answer you reported and which Copilot help wrote it. The answer can quote what it was about — a Check answer is your sentence, corrected — and the sheet says so; your original sentence goes only if you switch that on, and nothing else from the chat is sent. Read by the operators in their feedback queue; no mail, no public issue. See _Copilot_ below | Only if you report one; in the data export since #1948; deleted with your account |
+| Copilot answers | `copilotCache` | An answer kept under a hash of the question, so the same question is not paid for twice. Linked to no account. See _Copilot_ below | Automatic once you use Copilot; deleted after 7 days (TTL index) |
 | Usage analytics | PostHog (EU Cloud), not our database | Which screens and buttons are used, so the funnel from install to first conversation can be read, and a recording of the screen on iOS and Android with every word and image masked on the device before it is sent. Keyed by our user id; never a message body — `docs/analytics.md` | Optional — on by default, off in Settings → Privacy → Share usage data |
 
 **Analytics are collected, and declared.** A PostHog SDK ships in the app with
@@ -168,16 +168,16 @@ failed call, because by then the account itself is gone
 asynchronously, so the privacy policy should say the data is _requested for
 deletion_ at that point rather than erased the same second.
 
-## Copilot — an AI provider, not live yet
+## Copilot — an AI provider, live for allow-listed accounts
 
-**Nothing in this section is declared on either form today, and nothing may be
-until it is switched on.** The server side of Copilot (Check, Reply ideas,
-Explain) is in the code and ships dark: it answers only with an
-`ANTHROPIC_API_KEY` **and** `flags.copilotEnabled`, which starts off — a key
-alone never turns it on (`docs/decisions.md` → _Copilot ships dark, behind two
-switches and a consent_). The form follows the code, never leads it; the day
-the flag goes on, the rows below go on the forms and into the privacy policy,
-not before.
+**Live in production.** `flags.copilotEnabled` is on, and Copilot answers only
+an account on the operator's allow-list (`profiles.copilotAccess`), with an
+`ANTHROPIC_API_KEY`, after that person's consent — a key alone never turns it
+on (`docs/decisions.md` → _Copilot ships dark, behind two switches and a
+consent_). The privacy policy says so since 22 October 2026 (langx.io §2.6,
+with §5, §6, §10.7 and §11). The two store forms are Behic's to update; the
+answers to paste are in
+[`privacy-forms-checklist.md`](privacy-forms-checklist.md) §7.
 
 What reaches the provider (Anthropic, which runs the model), and only after the
 person has agreed to the in-app consent sheet (`profiles.copilotConsent`;
@@ -189,13 +189,24 @@ App Review guideline 5.1.2(i)):
   characters and labelled only "me" or "them", plus the person's languages and
   levels. This is the other person's text as well: the same shape as tapping
   Translate on their message, and it is what the sheet says.
-- **Explain** — a correction somebody gave: the original, the fix and the
-  corrector's note, plus the reader's level and app language.
+- **Explain** — the one message the person picked, plus their level and app
+  language. Either a text message the partner sent (cut to 500 characters), or
+  a correction either of them gave: the original, the fix and the corrector's
+  note.
+- **Say it** — what the person wrote in their own language, the language they
+  want it in, their level in it, and their app language. Never the thread.
 
 Never sent: names, handles, user ids, email, photos, voice notes, view-once
-messages, lines deleted for everyone or hidden by the reader. The request
-carries no identifier of ours — no user id, and no metadata naming one. Text
-only, by construction (`modules/copilot/copilot.ts`).
+messages, lines deleted for everyone or hidden by the reader — unless the text
+itself contains them. The request carries no identifier of ours — no user id,
+and no metadata naming one. Text only, by construction
+(`modules/copilot/copilot.ts`). One caveat the policy states: a correction
+keeps its own copy of the sentence it corrected, so Explain on a correction
+can send a sentence whose original message was deleted since.
+
+Taking an account off the allow-list clears its consent as well (#1948), so a
+re-allowed account is asked again; while it is off the list the Settings row
+is not drawn, and the policy offers hi@langx.io for withdrawing meanwhile.
 
 **Withdrawing and reporting.** Settings → Privacy → **Copilot** shows whether
 it is on and turns it off; that removes `profiles.copilotConsent`
@@ -214,25 +225,30 @@ No age rule of its own: Copilot is open to anybody the app's 16+ minimum lets
 in, and a partner's age is not checked (see `decisions.md` → _Copilot has no
 age rule of its own, and 24 a day for Pro_).
 
-For the forms, once it is on: the data is message content, which is already
-collected; what changes is that a processor sees it. Anthropic processes it for
-us under its commercial terms, which makes it **collected, not shared** on
-Play's definition (a service provider acting on our behalf), the same answer
-PostHog gets. Whether the provider keeps inputs for a period, and for what, is
-its terms' answer, not ours — the privacy policy should name the provider and
-state that period as the provider publishes it.
+**On the provider's side.** Anthropic's commercial terms (§B) say it may not
+train models on customer content, and its published retention page
+(privacy.claude.com, article 7996866, read 21 October 2026) says API inputs
+and outputs are deleted within 30 days, longer only for usage-policy
+enforcement or by law. Nothing in our code asks for a different arrangement.
+The policy links both pages; re-read them if either changes.
+
+For the forms: the data is message content, which is already collected; what
+changes is that a processor sees it. Anthropic processes it for us under its
+commercial terms, which makes it **collected, not shared** on Play's definition
+(a service provider acting on our behalf), the same answer PostHog gets. The
+provider's own retention is stated in the policy as it publishes it (above).
 
 ## Sharing with third parties
 
-| Recipient                    | What it receives                                                                                                                                                                            | Why                                                                                                                |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Resend                       | Your email address, and — for notification mail — how many messages are waiting and the display names of who wrote or looked. **Never the text of a message.**                              | Verification and password-reset mail, and the notification emails you have switched on                             |
-| Google Cloud Translation     | The text you asked to translate                                                                                                                                                             | Machine translation. Results are cached by a hash of the source text                                               |
-| RevenueCat                   | Your user id and purchase events                                                                                                                                                            | Subscription state                                                                                                 |
-| Expo push service            | Your push token and the notification text                                                                                                                                                   | Delivering notifications                                                                                           |
-| Cloudflare R2 / Backblaze B2 | Your photos                                                                                                                                                                                 | Hosting them                                                                                                       |
-| PostHog (EU Cloud)           | Screen names, the funnel events in `docs/analytics.md`, and our user id — never a message body                                                                                              | Product analytics. A processor acting for us, which is "collected, not shared" on both forms                       |
-| Anthropic — **not live**     | Only with Copilot switched on and the person's consent: the text they asked Copilot about, their languages and levels, and for Reply ideas the last lines of the chat. No id, name or email | Copilot's answers. A processor acting for us. Declare only once `flags.copilotEnabled` is on — see _Copilot_ above |
+| Recipient                    | What it receives                                                                                                                                                                            | Why                                                                                          |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Resend                       | Your email address, and — for notification mail — how many messages are waiting and the display names of who wrote or looked. **Never the text of a message.**                              | Verification and password-reset mail, and the notification emails you have switched on       |
+| Google Cloud Translation     | The text you asked to translate                                                                                                                                                             | Machine translation. Results are cached by a hash of the source text                         |
+| RevenueCat                   | Your user id and purchase events                                                                                                                                                            | Subscription state                                                                           |
+| Expo push service            | Your push token and the notification text                                                                                                                                                   | Delivering notifications                                                                     |
+| Cloudflare R2 / Backblaze B2 | Your photos                                                                                                                                                                                 | Hosting them                                                                                 |
+| PostHog (EU Cloud)           | Screen names, the funnel events in `docs/analytics.md`, and our user id — never a message body                                                                                              | Product analytics. A processor acting for us, which is "collected, not shared" on both forms |
+| Anthropic                    | Only with Copilot switched on and the person's consent: the text they asked Copilot about, their languages and levels, and for Reply ideas the last lines of the chat. No id, name or email | Copilot's answers. A processor acting for us — see _Copilot_ above                           |
 
 None of these receive data for their own advertising or profiling. There are no
 data brokers.

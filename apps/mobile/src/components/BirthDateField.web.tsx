@@ -1,8 +1,10 @@
-import { EARLIEST_BIRTH_YEAR, isCalendarDate } from '@langx/shared'
+import { EARLIEST_BIRTH_YEAR } from '@langx/shared'
+import { useEffect, useRef, useState } from 'react'
 import { Text, TextInput, View } from 'react-native'
 import { makeStyles, useTheme } from '../lib/theme'
 import type { BirthDateFieldProps } from './BirthDateField'
 import { useT } from '../i18n'
+import { boxesFromValue, editBox, valueFromBoxes, type DateBoxes } from '../lib/birthDateBoxes'
 
 /**
  * The web's answer, because `@react-native-community/datetimepicker` has no web
@@ -22,21 +24,27 @@ export function BirthDateField({ label, value, onChange, error, look, hint }: Bi
   const faint = v3 ? theme.v3.colors.muted : theme.colors.textFaint
   const t = useT()
 
-  const [year = '', month = '', day = ''] = value ? value.split('-') : []
+  /*
+   * The boxes as typed, not re-read from `value`: the value is padded once it
+   * is a real day, and a padded "02" shown back in the day box after its "2"
+   * refuses the "5" of "25" — so typing the year first, or correcting a day,
+   * saved the wrong date. `value` is read back only when it changes from
+   * outside, as the onboarding draft hydrating from storage does.
+   */
+  const [boxes, setBoxes] = useState(() => boxesFromValue(value))
+  const reported = useRef(value)
+  useEffect(() => {
+    if (value === reported.current) return
+    reported.current = value
+    setBoxes(boxesFromValue(value))
+  }, [value])
+  const { year, month, day } = boxes
 
-  // Rebuilt from the three boxes on every keystroke, and only reported once it
-  // is a real day — a half-typed `1995-06-1` is not a date and must not be
-  // sent as one.
-  function update(next: { year?: string; month?: string; day?: string }): void {
-    const y = (next.year ?? year).replace(/\D/g, '').slice(0, 4)
-    const m = (next.month ?? month).replace(/\D/g, '').slice(0, 2)
-    const d = (next.day ?? day).replace(/\D/g, '').slice(0, 2)
-    if (y.length === 4 && m.length > 0 && d.length > 0) {
-      const candidate = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`
-      onChange(isCalendarDate(candidate) ? candidate : `${y}-${m}-${d}`)
-      return
-    }
-    onChange(`${y}-${m}-${d}`)
+  function update(field: keyof DateBoxes, text: string): void {
+    const next = editBox(boxes, field, text)
+    setBoxes(next)
+    reported.current = valueFromBoxes(next)
+    onChange(reported.current)
   }
 
   return (
@@ -46,7 +54,7 @@ export function BirthDateField({ label, value, onChange, error, look, hint }: Bi
         <TextInput
           style={[styles.input, styles.small, error ? styles.inputError : null]}
           value={day}
-          onChangeText={(text) => update({ day: text })}
+          onChangeText={(text) => update('day', text)}
           placeholder={t('onboarding.day')}
           placeholderTextColor={faint}
           keyboardType="number-pad"
@@ -56,7 +64,7 @@ export function BirthDateField({ label, value, onChange, error, look, hint }: Bi
         <TextInput
           style={[styles.input, styles.small, error ? styles.inputError : null]}
           value={month}
-          onChangeText={(text) => update({ month: text })}
+          onChangeText={(text) => update('month', text)}
           placeholder={t('onboarding.month')}
           placeholderTextColor={faint}
           keyboardType="number-pad"
@@ -66,7 +74,7 @@ export function BirthDateField({ label, value, onChange, error, look, hint }: Bi
         <TextInput
           style={[styles.input, styles.year, error ? styles.inputError : null]}
           value={year}
-          onChangeText={(text) => update({ year: text })}
+          onChangeText={(text) => update('year', text)}
           placeholder={String(EARLIEST_BIRTH_YEAR + 95)}
           placeholderTextColor={faint}
           keyboardType="number-pad"

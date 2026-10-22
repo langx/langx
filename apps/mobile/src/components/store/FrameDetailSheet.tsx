@@ -6,6 +6,7 @@ import { useLocale, useT, type MessageKey } from '../../i18n'
 import { frameAction, frameRarity, gateRows, type GateRow } from '../../lib/storeHome'
 import type { StoreOffer } from '../../lib/storeOffers'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { tokenButton } from '../../lib/tokenAmount'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
 import { FrameSweep } from '../ui/FrameSweep'
@@ -221,9 +222,10 @@ function SheetBody({
             <Button
               variant="secondary"
               disabled
-              label={t('storeHome.moreTokens', {
+              {...tokenButton(t, 'storeHome.moreNeeded', {
                 count: offer.price - balance,
-                amount: n(offer.price - balance),
+                locale,
+                spokenKey: 'storeHome.moreTokens',
               })}
               onPress={() => undefined}
             />

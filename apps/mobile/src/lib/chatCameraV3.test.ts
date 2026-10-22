@@ -115,7 +115,9 @@ const HOOK = readFileSync(path.resolve(__dirname, '../screens/chat/useCameraZoom
 describe('the chat camera zooms and flips from the picture', () => {
   it('wraps the camera in a gesture detector, in both looks', () => {
     // Built in the route, so the legacy look and v3 share it.
-    expect(ROUTE).toMatch(/const cameraView = \(\s*<GestureDetector gesture=\{zoom\.gesture\}>/)
+    expect(ROUTE).toMatch(/const cameraView = \(\s*<GestureDetector gesture=\{gestures\}>/)
+    // The zoom's pinch and double-tap, raced against the filter swipe.
+    expect(ROUTE).toContain('Gesture.Race(zoom.gesture, swipe)')
   })
 
   it('races the pinch against a double-tap, and flips only when not recording', () => {
@@ -187,5 +189,40 @@ describe('the v3 preview discards from the corner too', () => {
   it('puts ✕ back at the top start, doing what Retake does', () => {
     expect(PREVIEW).toContain("<StageTopBar onClose={onRetake} closeLabel={t('viewOnce.retake')}>")
     expect(PREVIEW).toMatch(/onPress=\{onRetake\} style=\{styles\.retake\}/)
+  })
+})
+
+/*
+ * Filters: a tint on the live viewfinder, the exact matrix on the preview and
+ * in the file that leaves. The matrices and the swipe are tested in
+ * `cameraFilters.test.ts`; these hold the wiring.
+ */
+describe('the chat camera filters a photo', () => {
+  it('sends and saves what `outgoing` returns, never the raw shot', () => {
+    expect(ROUTE).toContain('const item = await outgoing()')
+    expect(ROUTE).toContain('sendSnap({ conversationId, item, viewOnce: viewOnceForMode(mode) })')
+    expect(ROUTE).not.toContain('item: captured,')
+    expect(ROUTE).toContain('url: item.uri,')
+  })
+
+  it('bakes only a JPEG, only with a filter on, and never sends unfiltered on failure', () => {
+    expect(ROUTE).toContain("captured?.kind === 'image' && captured.contentType === 'image/jpeg'")
+    expect(ROUTE).toContain('if (!filterable || isOriginal(filter)) return captured')
+    expect(ROUTE).toContain('bakeCameraFilter(from, cameraFilter(filter).matrix)')
+    expect(ROUTE).toMatch(/showToast\(t\('viewOnce\.filterFailed'\)\)\s*return null/)
+  })
+
+  it('holds the shot and its mode still while a bake is under way', () => {
+    expect(ROUTE).toMatch(/function retake\(\): void \{[^}]*if \(sending\) return/)
+    expect(ROUTE).toMatch(/function pickMode\(next: SnapMode\): void \{[^}]*if \(sending\) return/)
+    expect(ROUTE).toContain('enabled: filterable && !sending && !saving,')
+  })
+
+  it('is v3 and native only, and drops the tint and the swipe while recording', () => {
+    expect(ROUTE).toContain("const filtersOn = v3Look && Platform.OS !== 'web'")
+    expect(ROUTE).toContain(
+      'const tint = onFilter && !recording ? cameraFilter(filter).tint : null',
+    )
+    expect(ROUTE).toContain('enabled: onFilter !== undefined && !recording,')
   })
 })

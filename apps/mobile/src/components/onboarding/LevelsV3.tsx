@@ -82,7 +82,7 @@ export function LevelsV3({
                               level={level}
                               size={20}
                               color={v3.colors.fg}
-                              restColor={v3.colors.track}
+                              restColor={v3.colors.levelRest}
                             />
                           </>
                         }

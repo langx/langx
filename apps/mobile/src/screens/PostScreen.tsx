@@ -62,6 +62,7 @@ import { LikeButton } from '../components/LikeButton'
 import { attachmentsOf } from '@langx/shared'
 import { Screen } from '../components/ui/Screen'
 import { ScreenHeader } from '../components/ui/ScreenHeader'
+import { TokenText } from '../components/ui/TokenIcon'
 import { useKeyboardClearance } from '../hooks/useKeyboardClearance'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
 import { dedupeById } from '../lib/dedupeById'
@@ -69,6 +70,7 @@ import { track } from '../lib/analytics'
 import { replyDraftFor } from '../lib/commentThread'
 import { foldCorrection } from '../lib/feedCache'
 import { asksOf } from '../lib/postAsks'
+import { postGone, postOnScreen } from '../lib/postFromFeed'
 import { replyRefusalKey } from '../lib/postRefusal'
 import { goBackTo, openLikers, openProfile } from '../lib/navigation'
 import { relativeTime } from '../lib/format'
@@ -78,6 +80,7 @@ import { showToast } from '../lib/toast'
 import { shareLink } from '../lib/share'
 import { postShareText } from '../lib/shareText'
 import { makeStyles, useTheme } from '../lib/theme'
+import { tokenSlot } from '../lib/tokenAmount'
 import { useDisplayNames, useLocale, useT } from '../i18n'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { advanceUpload, percentOf, UPLOAD_START, type UploadProgress } from '../lib/uploadProgress'
@@ -397,11 +400,23 @@ export function PostScreen({
   const fromFeed = usePostFromFeed(id)
   /*
    * Except after a 404: the post was deleted, hidden or is from somebody
-   * blocked, and the feed's copy would draw it as live. That goes to the
-   * full-screen failure below, as a cold open of it would.
+   * blocked, and any copy in hand — the feed's, or this screen's own from an
+   * earlier visit — would draw it as live. That goes to the full-screen
+   * failure below, as a cold open of it would.
    */
-  const gone = query.error instanceof ApiRequestError && query.error.status === 404
-  const post = query.data?.pages[0]?.post ?? (gone ? undefined : fromFeed)
+  const notFound = query.error instanceof ApiRequestError && query.error.status === 404
+  // Remembered past the next error, which replaces it — see `postGone`.
+  const [lastNotFound, setLastNotFound] = useState<{ id: string; at: number } | null>(null)
+  const notFoundAt = query.errorUpdatedAt
+  useEffect(() => {
+    if (notFound) setLastNotFound({ id, at: notFoundAt })
+  }, [notFound, id, notFoundAt])
+  const gone = postGone(
+    notFound,
+    lastNotFound?.id === id ? lastNotFound.at : undefined,
+    query.dataUpdatedAt,
+  )
+  const post = postOnScreen(query.data?.pages[0]?.post, fromFeed, gone)
   const asks = post ? asksOf(post) : []
   const correcting = asks.includes('correction')
   const pronouncing = asks.includes('pronunciation')
@@ -1298,9 +1313,20 @@ export function PostScreen({
                             onPress={submitCorrection}
                           />
                           {/* What a correction pays, from `TOKEN_RULES` rather than the copy. */}
-                          <Text style={styles.reward}>
-                            {t('feed.correctionReward', { count: TOKEN_RULES.award.correction })}
-                          </Text>
+                          {v3Look ? (
+                            // The redesign's "+10 ✦", said as "+10 tokens".
+                            <TokenText
+                              text={tokenSlot(t, TOKEN_RULES.award.correction, locale, '+')}
+                              label={t('feed.correctionReward', {
+                                count: TOKEN_RULES.award.correction,
+                              })}
+                              style={styles.reward}
+                            />
+                          ) : (
+                            <Text style={styles.reward}>
+                              {t('feed.correctionReward', { count: TOKEN_RULES.award.correction })}
+                            </Text>
+                          )}
                         </View>
                       )
                     ) : null}

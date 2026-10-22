@@ -13,6 +13,7 @@ import {
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
+import { leavesUnread } from '../calls/callLog'
 import { acceptsMessages } from '../official/accounts'
 import { assertConversationAccess } from './access'
 import type { Conversation, Message } from './conversations'
@@ -204,12 +205,35 @@ export async function deleteMessage(
   // "Delete for me" is a per-user filter and nothing more. It stays available
   // forever, on anyone's message, including one already withdrawn.
   if (input.scope === 'me') {
-    const updated = await messages.findOneAndUpdate(
-      { _id: message._id },
+    /*
+     * `hiddenFor: { $ne }` in the filter, so only the write that actually
+     * hides it goes on to the count below — a repeat, or a second device at
+     * the same moment, matches nothing.
+     */
+    const hidden = await messages.findOneAndUpdate(
+      { _id: message._id, hiddenFor: { $ne: userId } },
       { $addToSet: { hiddenFor: userId } },
       { returnDocument: 'after' },
     )
+    const updated = hidden ?? (await messages.findOne({ _id: message._id }))
     if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Message not found')
+
+    /*
+     * A hidden message is not in the hider's count — the rule a withdrawal
+     * relies on below. Hiding somebody else's message before reading it took
+     * nothing off `unread`, so the badge kept one for a message there was no
+     * longer anything to open; and withdrawing it afterwards could not take
+     * it off either, since by then it is hidden. Floored, like the
+     * withdrawal's.
+     */
+    if (hidden && countsAsUnread(message, userId)) {
+      await db
+        .collection<Conversation>(COLLECTIONS.conversations)
+        .updateOne(
+          { _id: conversation._id, [`unread.${userId}`]: { $gt: 0 } },
+          { $inc: { [`unread.${userId}`]: -1 } },
+        )
+    }
     return { message: updated, conversation, audience: 'actor' }
   }
 
@@ -263,6 +287,20 @@ export async function deleteMessage(
 }
 
 /**
+ * Whether this message is one of the things `unread.<readerId>` is counting.
+ *
+ * Somebody else's, not yet read, not withdrawn (a withdrawal took it off
+ * already) and not hidden from them. A call's row counts only for the
+ * outcomes that left one — `leavesUnread`, the rule that wrote it.
+ */
+function countsAsUnread(message: Message, readerId: string): boolean {
+  if (message.senderId === readerId || message.readAt || message.deletedAt) return false
+  if (message.hiddenFor?.includes(readerId)) return false
+  if (message.call) return leavesUnread(message.call.outcome)
+  return true
+}
+
+/**
  * What a withdrawal costs the conversation document.
  *
  * Both writes are conditional, and both conditions are in the filter rather
@@ -293,7 +331,14 @@ async function applyDeleteSideEffects(
   )
 
   const recipientId = conversation.participants.find((id) => id !== deleted.senderId)
-  if (!recipientId || deleted.readAt) return
+  /*
+   * Hidden from the recipient means it is not in their count. Deleting a chat
+   * zeroes `unread` and hides every message without stamping `readAt` — a
+   * read receipt for something nobody read would be a lie — and hiding one
+   * message takes it off the count itself. Either way it is no longer the
+   * count's, and taking it off again would take one of the newer ones.
+   */
+  if (!recipientId || !countsAsUnread(deleted, recipientId)) return
 
   /**
    * `$inc: -1` rather than a recount, because it *commutes* with the `$inc: +1`
@@ -546,10 +591,19 @@ export async function deleteConversationForUser(
    * *of* — and leaving it standing is worse than untidy: `recordMessage`
    * revives a deleted thread on the next message, and it would come back
    * showing sixteen unread over the one message the user can actually see.
+   *
+   * The pin goes too. A deleted thread is in neither half of the list, so a
+   * pin left on it held one of `MAX_PINNED_CONVERSATIONS` with no row to
+   * unpin it from — and brought the thread back to the top of the list,
+   * above everything, the day it revived.
    */
-  const updated = await db
-    .collection<Conversation>(COLLECTIONS.conversations)
-    .updateOne({ _id }, { $set: { [`deletedBy.${userId}`]: true, [`unread.${userId}`]: 0 } })
+  const updated = await db.collection<Conversation>(COLLECTIONS.conversations).updateOne(
+    { _id },
+    {
+      $set: { [`deletedBy.${userId}`]: true, [`unread.${userId}`]: 0 },
+      $unset: { [`pinnedBy.${userId}`]: '' },
+    },
+  )
   if (updated.matchedCount === 0) {
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Conversation not found')
   }
@@ -574,8 +628,17 @@ export async function setConversationFlag(
   await assertConversationAccess(db, conversationId, userId)
 
   const path = `${flag}.${userId}`
+  /*
+   * A chat deleted for this reader cannot be pinned: it is in neither half of
+   * their list, so the pin would hold a slot with no row to take it off from.
+   * Only a stale device can ask — the thread is gone from every other screen
+   * — and it gets the same 404 a thread that is not there gets. In the
+   * filter, so a delete landing between the access check and this write is
+   * caught too.
+   */
+  const pinning = on && flag === 'pinnedBy'
   const updated = await conversations.findOneAndUpdate(
-    { _id },
+    pinning ? { _id, [`deletedBy.${userId}`]: { $ne: true } } : { _id },
     on ? { $set: { [path]: true } } : { $unset: { [path]: '' } },
     { returnDocument: 'after' },
   )
@@ -603,8 +666,15 @@ export async function setConversationFlag(
    * direction worth erring in: it is what the message says, and it walks the
    * account back toward a list that shows all of itself.
    */
-  if (on && flag === 'pinnedBy') {
-    const pinned = await conversations.countDocuments({ participants: userId, [path]: true })
+  if (pinning) {
+    // Deleted threads are left out for the reason above: rows pinned before
+    // deleting started clearing the pin still carry one, and counting them
+    // would refuse a pin the list has room to show.
+    const pinned = await conversations.countDocuments({
+      participants: userId,
+      [path]: true,
+      [`deletedBy.${userId}`]: { $ne: true },
+    })
     if (pinned > MAX_PINNED_CONVERSATIONS) {
       await conversations.updateOne({ _id }, { $unset: { [path]: '' } })
       throw new ApiError(

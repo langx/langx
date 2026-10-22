@@ -162,6 +162,26 @@ function mondayIndex(day: string): number {
 }
 
 /**
+ * The days a repair must treat as already kept: the ones on file, and every
+ * day of the current streak.
+ *
+ * The second half is the freeze. A day a banked freeze bridged has no row —
+ * a freeze writes no square — so from the rows alone it reads as the newest
+ * missed day. The store offered to sell it, and its confirmation walked the
+ * rows and promised the streak back ("2 → 10") when the streak already was
+ * 10: the server took the price and moved nothing. The run the profile
+ * reports is the run that happened, the same reason `activityGrid` fills it.
+ */
+export function daysOnRecord(
+  days: readonly { day: string }[],
+  streak: { current: number; lastQualifiedDay: string | null } | undefined,
+): Set<string> {
+  const filled = impliedStreakDays(streak)
+  for (const entry of days) filled.add(entry.day)
+  return filled
+}
+
+/**
  * The days the current streak must have covered, walking back from the last
  * one that qualified. Empty when there is no streak, which is the common case
  * and the one where `days` is the whole truth.
@@ -186,4 +206,26 @@ function intensityOf(actions: number): Intensity {
   if (actions >= 10) return 3
   if (actions >= 3) return 2
   return 1
+}
+
+/**
+ * The `from`/`to` to ask the activity endpoints for, so that the answer holds
+ * the profile's today and the `daysBack` days before it.
+ *
+ * Both endpoints answer in the profile's own day — the owner's, or that of the
+ * person being looked at — and the phone only knows the UTC date. East of UTC
+ * the profile's today is already the next UTC date before UTC midnight, so a
+ * range ending on the UTC date left today's row out. West of UTC the profile
+ * is still on the previous date in the evening, so a range starting `daysBack`
+ * before the UTC date stopped a day short: the store's repair offer read that
+ * oldest day as unfilled and offered to buy back a day that was not missed.
+ * No zone is more than a day either side of UTC, so one day of slack at each
+ * end covers all of them.
+ */
+export function activityRange(
+  daysBack: number,
+  now: Date = new Date(),
+): { from: string; to: string } {
+  const utc = now.toISOString().slice(0, 10)
+  return { from: shiftDayKey(utc, -daysBack - 1), to: shiftDayKey(utc, 1) }
 }

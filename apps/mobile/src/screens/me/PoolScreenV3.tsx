@@ -6,13 +6,16 @@ import { useMe, useTokens } from '../../api/queries'
 import { Button } from '../../components/ui/Button'
 import { Screen } from '../../components/ui/Screen'
 import { Skeleton } from '../../components/ui/Skeleton'
+import { TokenIcon, useTokenIconMetrics } from '../../components/ui/TokenIcon'
 import { WalletHeader } from '../../components/wallet/WalletBlocks'
 import { usePullToRefresh } from '../../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../hooks/useScreenInteractive'
 import { useLocale, useT } from '../../i18n'
 import { dayLabel } from '../../lib/messageGroups'
 import { goBackTo } from '../../lib/navigation'
+import { todayBreakdown } from '../../lib/poolBreakdown'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { tokenAmountLabel } from '../../lib/tokenAmount'
 import { useV3Fonts } from './useV3Fonts'
 
 /**
@@ -29,6 +32,7 @@ export function PoolScreenV3() {
   useScreenInteractive()
   const styles = useStyles()
   const { v3 } = useTheme()
+  const unitIcon = useTokenIconMetrics(v3.type.numeral.fontSize)
   const t = useT()
   const { locale } = useLocale()
   const black = useV3Fonts()
@@ -89,7 +93,12 @@ export function PoolScreenV3() {
                     {t('tokens.shareForDay', { day: dayLabel(lastPayout.day, { t, locale }) })}
                   </Text>
                 </View>
-                <View style={styles.amountRow}>
+                <View
+                  style={styles.amountRow}
+                  accessible
+                  accessibilityRole="text"
+                  accessibilityLabel={tokenAmountLabel(t, lastPayout.amount, locale, '+')}
+                >
                   <Text
                     style={[styles.amount, !black && styles.amountFallback]}
                     numberOfLines={1}
@@ -97,9 +106,9 @@ export function PoolScreenV3() {
                   >
                     {t('tokens.shareAmount', { count: lastPayout.amount })}
                   </Text>
-                  <Text style={styles.unit}>
-                    {t('wallet.tokensUnit', { count: lastPayout.amount })}
-                  </Text>
+                  <View style={{ transform: [{ translateY: unitIcon.drop }] }}>
+                    <TokenIcon size={unitIcon.size} color={v3.colors.ink} />
+                  </View>
                 </View>
                 <View style={styles.chips}>
                   {shareOfPool ? (
@@ -146,15 +155,7 @@ export function PoolScreenV3() {
                 {t('tokens.activityScore', { count: Math.round(today.activityScore) })}
               </Text>
             </View>
-            <View
-              style={styles.tiles}
-              accessible
-              accessibilityLabel={t('tokens.todayBreakdown', {
-                messages: today.messages,
-                corrections: today.corrections,
-                partners: today.distinctPartners,
-              })}
-            >
+            <View style={styles.tiles} accessible accessibilityLabel={todayBreakdown(t, today)}>
               <Tile
                 value={today.messages}
                 label={t('tokens.todayMessages', { count: today.messages })}
@@ -263,7 +264,6 @@ const useStyles = makeStyles(({ v3 }) => ({
     lineHeight: 84,
   },
   amountFallback: { fontFamily: v3.type.headline.fontFamily },
-  unit: { ...v3.type.headline, color: v3.colors.ink },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[6] },
   chip: {
     alignItems: 'center',

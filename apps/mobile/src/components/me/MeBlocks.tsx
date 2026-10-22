@@ -18,6 +18,7 @@ import { Skeleton } from '../ui/Skeleton'
 import { inkTrack, ProgressBar } from '../ui/ProgressBar'
 import { TitleBadge } from '../ui/TitleBadge'
 import { FlameGlyph } from '../ui/StreakFlame'
+import { TokenText } from '../ui/TokenIcon'
 
 type Glyph = keyof typeof Feather.glyphMap
 
@@ -425,8 +426,8 @@ export function MeNextBadge({
   art: ReactNode
   kicker: string
   title: string
-  /** "9 of 10 · Pays 50 tokens" */
-  progress: string
+  /** "9 of 10 · Pays 50 ✦", with the token mark (`tokenSentence`) and said in words. */
+  progress: { text: string; label: string }
   /** 0 to 1, for the bar. */
   fraction: number
   action?: { label: string; icon: Glyph; onPress: () => void } | undefined
@@ -442,7 +443,7 @@ export function MeNextBadge({
           <Text style={styles.onHueTitle} accessibilityRole="header">
             {title}
           </Text>
-          <Text style={styles.onHueBody}>{progress}</Text>
+          <TokenText text={progress.text} label={progress.label} style={styles.onHueBody} />
         </View>
       </View>
       {/* The words above already say how far; the bar is the picture of it. */}
@@ -452,7 +453,7 @@ export function MeNextBadge({
           height={12}
           fillColor={v3.colors.ink}
           trackColor={inkTrack(v3.colors.ink)}
-          accessibilityLabel={progress}
+          accessibilityLabel={progress.label}
         />
       </View>
       {action ? (

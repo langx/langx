@@ -16,12 +16,18 @@ export const UNSENT_UPLOAD_GRACE_MS = 24 * 60 * 60 * 1000
 const SWEEP_BATCH = 500
 
 /**
- * A chat attachment that was signed for and that no message names yet.
+ * An attachment that was signed for and that no row names yet.
  *
  * Why it exists: the chat prefix is keyed by conversation, not by uploader,
  * and the account purge finds chat files through the message rows that name
  * them. A file uploaded and never sent has neither, so before this nothing
  * could ever find it again and it stayed in the bucket for good.
+ *
+ * Feed and Echo uploads are recorded too. Their prefixes are keyed by user, so
+ * the account purge does find them — but only once the account is gone, and a
+ * photo picked for a post that was never sent would otherwise sit in the
+ * bucket for as long as the person keeps using the app. A post, a correction,
+ * a recorded answer or an Echo card claims what it names.
  */
 export interface PendingUpload {
   /** The public URL, which is what a message records and so what a send claims by. */
@@ -55,6 +61,19 @@ export async function recordPendingUpload(
 export async function claimPendingUploads(db: Db, urls: readonly string[]): Promise<void> {
   if (urls.length === 0) return
   await collection(db).deleteMany({ _id: { $in: [...urls] } })
+}
+
+/**
+ * The rows for files the account purge has just deleted by prefix.
+ *
+ * Without this the sweep would come back a day later and delete each of them
+ * again. `deleteObject` is idempotent, so that would be harmless, but it is a
+ * second delete of a file that is already gone, counted nowhere. Only called
+ * after the prefix delete succeeded, so a failed one leaves the sweep its rows.
+ */
+export async function forgetPendingUploadsUnder(db: Db, prefix: string): Promise<void> {
+  const escaped = prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  await collection(db).deleteMany({ key: { $regex: `^${escaped}` } })
 }
 
 /**

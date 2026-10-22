@@ -171,7 +171,7 @@ describe('Faz 4 — starting a conversation', () => {
     expect(response.statusCode).toBe(404)
   })
 
-  it('refuses a conversation in either block direction', async () => {
+  it('refuses a conversation in either block direction, naming only your own block', async () => {
     const viewer = await newUser('convo-blocker@example.com')
     const iBlock = await newUser('convo-i-block@example.com')
     const blocksMe = await newUser('convo-blocks-me@example.com')
@@ -186,9 +186,26 @@ describe('Faz 4 — starting a conversation', () => {
     expect(first.statusCode).toBe(403)
     expect(first.json()).toMatchObject({ code: 'BLOCKED' })
 
+    // Their block is not the viewer's to learn about: the answer is the one an
+    // account that does not exist gets, status, code and message alike.
     const second = await startConversation(viewer, blocksMe.userId)
-    expect(second.statusCode).toBe(403)
-    expect(second.json()).toMatchObject({ code: 'BLOCKED' })
+    const ghost = await startConversation(viewer, 'not-a-real-user-id')
+    expect(ghost.statusCode).toBe(404)
+    expect(second.statusCode).toBe(ghost.statusCode)
+    expect(second.json()).toEqual(ghost.json())
+  })
+
+  it('names your own block even when they blocked you as well', async () => {
+    const viewer = await newUser('convo-mutual-a@example.com')
+    const other = await newUser('convo-mutual-b@example.com')
+    await handle.db.collection(COLLECTIONS.blocks).insertMany([
+      { blockerId: viewer.userId, blockedId: other.userId },
+      { blockerId: other.userId, blockedId: viewer.userId },
+    ])
+
+    const response = await startConversation(viewer, other.userId)
+    expect(response.statusCode).toBe(403)
+    expect(response.json()).toMatchObject({ code: 'BLOCKED' })
   })
 
   it('refuses a first message to a suspended account, and spends no slot on it', async () => {

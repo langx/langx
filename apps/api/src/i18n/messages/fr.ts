@@ -688,4 +688,76 @@ export const fr: Localized<ServerMessages> = {
       'Bonjour ! Merci d’avoir signalé cette réponse de Copilot — on l’a lue, et les signalements comme le tien nous aident à améliorer Copilot.',
     issue: 'Tu peux suivre ça ici : {url}',
   },
+  cards: {
+    badgeKicker: 'Nouveau badge',
+    badgeEarnedOn: 'Gagné le {date}',
+  },
+  badgeNames: {
+    v3: {
+      languages_2: 'Deux fils',
+      languages_3: 'Tresse',
+      languages_5: 'Cinq brins',
+      calls_1: 'Téléphone à ficelle',
+      calls_10: 'Longue ligne',
+      calls_50: 'Standard',
+      echo_100: 'Ondulation',
+      echo_1000: 'Vague',
+      echo_5000: 'Marée',
+      testimonials_1: 'Carré de patchwork',
+      testimonials_5: 'Patchwork',
+      testimonials_20: 'Courtepointe',
+      guide_3: 'Reprise',
+      guide_10: 'Raccommodage',
+      guide_50: 'Tisserand',
+      openers_10: 'Porte ouverte',
+      openers_50: 'Lampe du perron',
+      openers_200: 'Maison ouverte',
+    },
+    firstCorrection: 'Première correction',
+    streakDays: {
+      one: '{formatted} jour',
+      other: '{formatted} jours',
+    },
+    corrections: {
+      one: '{formatted} correction',
+      other: '{formatted} corrections',
+    },
+    messagesSent: {
+      one: '{formatted} message',
+      other: '{formatted} messages',
+    },
+    tokensEarned: {
+      one: '{formatted} jeton gagné',
+      other: '{formatted} jetons gagnés',
+    },
+    memberDays: {
+      one: '{formatted} jour de membre',
+      other: '{formatted} jours de membre',
+    },
+    earlyAdopter: 'Utilisateur de la première heure',
+    languages: {
+      one: '{formatted} langue',
+      other: '{formatted} langues',
+    },
+    calls: {
+      one: '{formatted} appel',
+      other: '{formatted} appels',
+    },
+    echo: {
+      one: '{formatted} révision',
+      other: '{formatted} révisions',
+    },
+    testimonials: {
+      one: '{formatted} partenaire',
+      other: '{formatted} partenaires',
+    },
+    guide: {
+      one: '{formatted} personne',
+      other: '{formatted} personnes',
+    },
+    openers: {
+      one: '{formatted} réponse',
+      other: '{formatted} réponses',
+    },
+  },
 }

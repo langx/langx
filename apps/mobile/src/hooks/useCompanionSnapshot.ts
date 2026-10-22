@@ -1,9 +1,9 @@
-import { shiftDayKey } from '@langx/shared'
 import { useEffect, useMemo } from 'react'
 import { useActivity, useEchoSummary, useMe, useUnreadTotal } from '../api/queries'
 import { useLocale, useT } from '../i18n'
 import { buildCompanionSnapshot, COMPANION_ACTIVITY_WEEKS } from '../lib/companionSnapshot'
 import { clearCompanionSnapshot, writeCompanionSnapshot } from '../../modules/companion-snapshot'
+import { activityRange } from '../lib/activityMap'
 
 /**
  * Keeps the iOS widgets fed.
@@ -39,10 +39,7 @@ export function useCompanionSnapshot({ enabled }: { enabled: boolean }): void {
    * range. The server clamps it anyway; asking for the extra costs nothing and
    * a short range would silently blank the oldest column.
    */
-  const range = useMemo(() => {
-    const to = new Date().toISOString().slice(0, 10)
-    return { from: shiftDayKey(to, -(COMPANION_ACTIVITY_WEEKS + 1) * 7), to }
-  }, [])
+  const range = useMemo(() => activityRange((COMPANION_ACTIVITY_WEEKS + 1) * 7), [])
   const activity = useActivity(range.from, range.to, enabled)
 
   const unreadTotal = unread.data

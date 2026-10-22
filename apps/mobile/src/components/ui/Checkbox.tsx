@@ -38,6 +38,8 @@ export function Checkbox({
     <Pressable
       accessibilityRole="checkbox"
       accessibilityState={{ checked, disabled }}
+      // Not mapped out of `accessibilityState` by react-native-web — see `Chip`.
+      aria-checked={checked}
       accessibilityLabel={accessibilityLabel}
       disabled={disabled}
       onPress={() => onChange(!checked)}

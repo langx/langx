@@ -605,16 +605,18 @@ function MeScreen() {
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // Last in the hero so it is drawn, and touched, over the text column.
-  topRow: { flexDirection: 'row', position: 'absolute', right: 0, top: 0 },
+  // `end`, not `right`: on web `dir="rtl"` does not flip a physical edge, so
+  // in Arabic the two glyphs landed on the avatar instead of beside the name.
+  topRow: { end: 0, flexDirection: 'row', position: 'absolute', top: 0 },
   // On the bell's shoulder, whatever the touch target is padded out to.
   bellBadge: {
     alignItems: 'center',
     backgroundColor: colors.danger,
     borderRadius: radius.pill,
+    end: 4,
     minWidth: 16,
     paddingHorizontal: 4,
     position: 'absolute',
-    right: 4,
     top: 4,
   },
   bellCount: { color: colors.textInverse, fontSize: 10, fontWeight: '700' },

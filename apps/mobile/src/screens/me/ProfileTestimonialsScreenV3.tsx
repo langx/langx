@@ -7,6 +7,7 @@ import { ReviewCardV3 } from '../../components/testimonials/ReviewCardV3'
 import { TestimonialSheet } from '../../components/testimonials/TestimonialSheet'
 import { Avatar } from '../../components/ui/Avatar'
 import { Button } from '../../components/ui/Button'
+import { EmptyNoteV3 } from '../../components/ui/EmptyStateV3'
 import { Screen } from '../../components/ui/Screen'
 import { Skeleton } from '../../components/ui/Skeleton'
 import { WalletHeader } from '../../components/wallet/WalletBlocks'
@@ -117,6 +118,24 @@ export function ProfileTestimonialsScreenV3() {
                 style={styles.write}
               />
             ) : null
+          }
+          // Your own page reads as `testimonials.tsx`'s Received tab does; on
+          // anyone else's the words say only that none are there yet — never
+          // what it takes to write one.
+          ListEmptyComponent={
+            first?.viewer === 'self' ? (
+              <EmptyNoteV3
+                icon="message-circle"
+                title={t('testimonials.receivedEmptyTitle')}
+                body={t('testimonials.receivedEmptyBody')}
+              />
+            ) : (
+              <EmptyNoteV3
+                icon="message-circle"
+                title={t('testimonials.profileEmptyTitle')}
+                body={t('testimonials.profileEmptyBody')}
+              />
+            )
           }
           ListFooterComponent={
             page.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null

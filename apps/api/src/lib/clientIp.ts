@@ -1,5 +1,7 @@
+import type { FastifyRequest } from 'fastify'
 import type { IncomingHttpHeaders } from 'node:http'
 import { BlockList, isIPv4, isIPv6 } from 'node:net'
+import type { Env } from '../env'
 
 /**
  * The client's address, as the API resolved it, carried across the bridge
@@ -26,11 +28,13 @@ export const CLIENT_IP_HEADER = 'x-langx-client-ip'
  * `CF-Connecting-IP` when the request proves it passed through the edge — the
  * same shared-secret check `requestCountry.ts` makes before it believes
  * `CF-IPCountry`. Otherwise the address Fastify resolved (`request.ip`, through
- * `trustProxy` in production), which is what the API's own rate limiter keys
- * on. Unlike the country, Cloudflare's header is not taken at face value when
- * no secret is configured: the origin can be reached without passing through
- * Cloudflare, and a header the edge did not vouch for may have come from the
- * client.
+ * {@link trustProxyHops}). Unlike the country, Cloudflare's header is not taken
+ * at face value when no secret is configured: the origin can be reached
+ * without passing through Cloudflare, and a header the edge did not vouch for
+ * may have come from the client.
+ *
+ * Most callers want {@link clientIpOf}, which supplies the arguments from a
+ * request.
  */
 export function resolveClientIp(
   headers: IncomingHttpHeaders,
@@ -46,6 +50,62 @@ export function resolveClientIp(
   }
   const resolved = transportIp?.trim()
   return resolved && (isIPv4(resolved) || isIPv6(resolved)) ? resolved : undefined
+}
+
+/**
+ * {@link resolveClientIp} for a Fastify request — the one answer to "who is
+ * asking" that both rate limiters share: Better Auth's, through the bridge in
+ * `routes/auth.ts`, and the API's own, through {@link rateLimitKey}. They used
+ * to disagree: the API's keyed on `request.ip` alone, so behind Cloudflare it
+ * counted Cloudflare's addresses rather than its visitors'.
+ */
+export function clientIpOf(request: FastifyRequest): string | undefined {
+  return resolveClientIp(request.headers, request.ip, request.server.env.EDGE_SECRET)
+}
+
+/**
+ * The bucket `@fastify/rate-limit` counts a request in: the client's network,
+ * as {@link networkKey} groups it, so an IPv6 client is one bucket per /64 as
+ * it was under the plugin's default generator. A loopback or private address
+ * — a development machine, the test suite — is its own bucket, and a request
+ * with no usable address at all falls back to whatever Fastify resolved.
+ */
+export function rateLimitKey(request: FastifyRequest): string {
+  const ip = clientIpOf(request)
+  if (ip === undefined) return request.ip
+  return networkKey(ip) ?? ip
+}
+
+/**
+ * Fastify's `trustProxy`: which entries of `X-Forwarded-For` to believe.
+ *
+ * Never `true`. That believes every entry and makes `request.ip` the left-most
+ * one — and Cloudflare and Fly both append to the header a client sent rather
+ * than replacing it, so the left-most entry is whatever the client wrote. Each
+ * request could name a new address and every rate limit keyed on it was a
+ * limit per made-up address, which is to say none.
+ *
+ * Instead the socket's peer is trusted, and the entries it and the hops behind
+ * it appended, and nothing further left. In production that is one hop: the
+ * peer is Fly's proxy, and the entry it appended is the address that reached
+ * it — Cloudflare's when the request came through the edge (where
+ * {@link clientIpOf} reads `CF-Connecting-IP` instead), or the client's own
+ * when somebody connects to the origin directly. Neither is one the client can
+ * pick. Cloudflare is not counted as a hop, because the origin can be reached
+ * without it.
+ *
+ * A function rather than the number: Fastify 5 reads a bare hop count as
+ * "trust nothing", which would make every request appear to come from Fly's
+ * proxy and put all of them in one bucket. A function is also what decides
+ * `request.protocol` — Fly's `X-Forwarded-Proto` keeps reading `https` because
+ * the peer, hop 0, is trusted.
+ */
+export function trustProxyHops(
+  env: Pick<Env, 'NODE_ENV' | 'TRUST_PROXY_HOPS'>,
+): false | ((address: string, hop: number) => boolean) {
+  const hops = env.TRUST_PROXY_HOPS ?? (env.NODE_ENV === 'production' ? 1 : 0)
+  if (hops === 0) return false
+  return (_address, hop) => hop < hops
 }
 
 /**

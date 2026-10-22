@@ -252,6 +252,28 @@ export function AttachmentPreviewRow({
       // The crosses sit outside their squares, so the row needs room for them.
       style={styles.previewScroll}
     >
+      <AttachmentThumbs pending={pending} onRemove={onRemove} progress={progress} size={size} />
+    </ScrollView>
+  )
+}
+
+/**
+ * The thumbnails alone, for a caller that lays them out in its own row — the
+ * post composer, where they share one line with its add and voice tiles.
+ */
+export function AttachmentThumbs({
+  pending,
+  onRemove,
+  progress = null,
+  size = THUMB_SIZE,
+}: {
+  pending: readonly PendingAttachment[]
+  onRemove: (index: number) => void
+  progress?: ActiveUpload | null
+  size?: number
+}) {
+  return (
+    <>
       {pending.map((attachment, index) => (
         <AttachmentThumb
           key={`${attachment.uri}-${index}`}
@@ -261,7 +283,7 @@ export function AttachmentPreviewRow({
           size={size}
         />
       ))}
-    </ScrollView>
+    </>
   )
 }
 
@@ -358,18 +380,18 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
     bottom: 4,
     height: 20,
     justifyContent: 'center',
-    left: 4,
     position: 'absolute',
+    start: 4,
     width: 20,
   },
   removeBadge: {
     alignItems: 'center',
     backgroundColor: colors.text,
     borderRadius: radius.pill,
+    end: -6,
     height: 20,
     justifyContent: 'center',
     position: 'absolute',
-    right: -6,
     top: -6,
     width: 20,
   },

@@ -64,9 +64,8 @@ export const shareCardRoutes: FastifyPluginAsyncZod = async (app) => {
         },
         webBaseUrl: webUrl('').replace(/\/$/, ''),
         ...(request.body.recap ? { recap: request.body.recap } : {}),
-        ...(app.env.STORAGE_PUBLIC_BASE_URL
-          ? { storagePublicBaseUrl: app.env.STORAGE_PUBLIC_BASE_URL }
-          : {}),
+        ...(request.body.badge ? { badge: request.body.badge } : {}),
+        ...(request.body.profile ? { profile: request.body.profile } : {}),
       })
       return reply.code(201).send(result)
     },
@@ -107,8 +106,9 @@ export const shareCardRoutes: FastifyPluginAsyncZod = async (app) => {
    *
    * Unauthenticated, and safe to be: everything here was put on a card by its
    * owner in order to be posted in public. No email, no age, no location, no
-   * post text — the three things a card can be about are the owner's own
-   * numbers, which is the same line `sharedProfile.ts` draws.
+   * post text — a card is about the owner alone, their own numbers or the
+   * public face of their own profile, which is the same line `sharedProfile.ts`
+   * draws.
    */
   app.get(
     '/public/share/:id',

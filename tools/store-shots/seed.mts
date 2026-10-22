@@ -414,7 +414,7 @@ await db.collection(COLLECTIONS.profiles).updateOne({ _id: sofia } as never, {
 await db.collection('postCorrections').insertMany(
   Array.from({ length: 120 }, () => ({
     _id: new ObjectId(),
-    postId: String(new ObjectId()),
+    postId: new ObjectId(),
     authorId: sofia,
     createdAt: new Date(now - 30 * DAY),
   })) as never[],

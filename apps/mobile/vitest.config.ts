@@ -17,5 +17,10 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['src/lib/**/*.test.ts', 'src/i18n/**/*.test.ts'],
+    // CI runs this suite beside the API's on one runner. The tests that parse
+    // every screen, or cold-import a module after `vi.resetModules()`, take
+    // about a second alone and have crossed the 5 s default under that load —
+    // a timeout there is contention, not a hang, and it failed `main`.
+    testTimeout: 30_000,
   },
 })

@@ -1,9 +1,13 @@
-import { shiftDayKey } from '@langx/shared'
 import { useMemo, useRef, useState } from 'react'
 import { ScrollView, Text, View } from 'react-native'
 import { usePublicActivity } from '../api/queries'
 import { useT } from '../i18n'
-import { ACTIVITY_CELL_GAP, activityCellSize, activityGrid } from '../lib/activityMap'
+import {
+  ACTIVITY_CELL_GAP,
+  activityCellSize,
+  activityGrid,
+  activityRange,
+} from '../lib/activityMap'
 import { makeStyles } from '../lib/theme'
 import { INTENSITY_ACTIONS, WEEKS } from './ActivityMap'
 import { Skeleton } from './ui/Skeleton'
@@ -20,14 +24,13 @@ export function ActivityMapV3({ handle, hue }: { handle: string; hue: string }) 
   const styles = useStyles()
   const t = useT()
 
-  const to = new Date().toISOString().slice(0, 10)
-  const from = shiftDayKey(to, -(WEEKS + 1) * 7)
+  const { from, to } = activityRange((WEEKS + 1) * 7)
   const theirs = usePublicActivity(handle, from, to)
   const scroller = useRef<ScrollView>(null)
   const [width, setWidth] = useState(0)
   const cell = activityCellSize(width, WEEKS)
 
-  const today = theirs.data?.today ?? to
+  const today = theirs.data?.today ?? new Date().toISOString().slice(0, 10)
   const columns = useMemo(() => {
     if (!theirs.data || theirs.data.visible === false) return []
     return activityGrid({

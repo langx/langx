@@ -1,4 +1,4 @@
-import { shiftDayKey, TOKEN_RULES, wornCosmetic } from '@langx/shared'
+import { TOKEN_RULES, wornCosmetic } from '@langx/shared'
 import {
   useActivity,
   useEquip,
@@ -15,6 +15,7 @@ import { confirmAndRepair } from '../lib/repairFlow'
 import { buildStoreOffers, repairsUsedFor, type StoreOffer } from '../lib/storeOffers'
 import { showToast } from '../lib/toast'
 import { usePullToRefresh } from './usePullToRefresh'
+import { activityRange, daysOnRecord } from '../lib/activityMap'
 
 /**
  * What the redesign's store screens share: the same five queries today's
@@ -32,8 +33,8 @@ export function useStoreV3() {
   const me = useMe()
   const wallet = useWallet()
   // The same window, and so the same cache entry, today's store reads.
-  const today = new Date().toISOString().slice(0, 10)
-  const activity = useActivity(shiftDayKey(today, -TOKEN_RULES.sinks.dayRepairMaxAgeDays), today)
+  const range = activityRange(TOKEN_RULES.sinks.dayRepairMaxAgeDays)
+  const activity = useActivity(range.from, range.to)
   const repairDay = useRepairDay()
   const purchase = usePurchase()
   const equip = useEquip()
@@ -56,7 +57,7 @@ export function useStoreV3() {
           ? {
               repair: {
                 today: activity.data.today,
-                filled: new Set(activity.data.days.map((day) => day.day)),
+                filled: daysOnRecord(activity.data.days, activity.data.streak),
                 price: activity.data.repair.price,
                 usedThisMonth: activity.data.repair.usedThisMonth,
                 usedByMonth: activity.data.repair.usedByMonth,
@@ -77,7 +78,7 @@ export function useStoreV3() {
       void confirmAndRepair({
         day: offer.repairDay,
         today: activity.data.today,
-        filled: new Set(activity.data.days.map((day) => day.day)),
+        filled: daysOnRecord(activity.data.days, activity.data.streak),
         price: activity.data.repair.price,
         balance,
         left: Math.max(

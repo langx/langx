@@ -31,7 +31,7 @@ import {
   THEIR_MORNING_HOUR,
   viewOnceState,
 } from '@langx/shared'
-import { onlineManager, useQueryClient, type InfiniteData } from '@tanstack/react-query'
+import { onlineManager, useQueryClient } from '@tanstack/react-query'
 import {
   type NativeStackNavigationProp,
   router,
@@ -109,6 +109,8 @@ import { threadRewards, type ThreadReward } from '../lib/threadRewards'
 import { typingIndicator } from '../lib/typingIndicator'
 import {
   addUnsent,
+  failedSend,
+  mergeUnsent,
   newClientId,
   removeUnsent,
   retireDelivered,
@@ -187,15 +189,12 @@ import {
 import { nextTypingSignal, TYPING_IDLE } from '../lib/typingSignal'
 import { saveMediaToDevice } from '../lib/saveMedia'
 import { shareLink } from '../lib/share'
+import { ShareCardSheet, type ShareCardRequest } from '../components/ShareCardSheet'
 import { addMeetingToCalendar } from '../lib/addToCalendar'
 import { showToast } from '../lib/toast'
 import { onSnap } from '../lib/snapOutbox'
 import { withoutViewOnceFallback } from '../lib/viewOnce'
-import {
-  appendIncomingMessage,
-  messagesNewestFirst,
-  type MessagePageDto,
-} from '../lib/messageCache'
+import { appendIncomingMessage, messagesNewestFirst, patchThread } from '../lib/messageCache'
 import { createArrivals } from '../lib/arrivals'
 import { dayLabel, messageRows, rowKeyOf, type MessageRow } from '../lib/messageGroups'
 import { useDisplayNames, useLocale, useT } from '../i18n'
@@ -213,7 +212,7 @@ import { WebTitle } from '../components/WebTitle'
 import { ComposerV3, type LatestActions } from '../components/thread/ComposerV3'
 import { WithRewardChips } from '../components/thread/RewardChipV3'
 import { EmojiBurstV3, type Burst } from '../components/thread/EmojiBurstV3'
-import { drawsAsHero, loneEmoji, shouldPlayBurst, type BurstTrigger } from '../lib/emojiBurst'
+import { burstEmoji, drawsAsHero, shouldPlayBurst, type BurstTrigger } from '../lib/emojiBurst'
 import { ThreadHeaderV3 } from '../components/thread/ThreadHeaderV3'
 import { useV3Home } from '../hooks/useV3Home'
 import { useKeyboardUp } from '../hooks/useKeyboardUp'
@@ -297,6 +296,8 @@ export function ChatScreen({
    * into its chip, and ✕ folds it too (see `ThreadCelebrationV3`).
    */
   const [celebrating, setCelebrating] = useState<string | null>(null)
+  /** The streak card the celebration's Share asked for, on its way to the sheet. */
+  const [streakCard, setStreakCard] = useState<ShareCardRequest | null>(null)
   function noteAward(
     messageId: string,
     award: SendAward | undefined,
@@ -313,7 +314,7 @@ export function ChatScreen({
   const v3Styles = useThreadV3Styles()
   const t = useT()
   const names = useDisplayNames()
-  const { locale } = useLocale()
+  const { locale, isRtl } = useLocale()
 
   /*
    * The stack reads a screen's `animation` for its pop as well as its push.
@@ -354,21 +355,25 @@ export function ChatScreen({
    * initial state would wipe what this is here to keep.
    */
   const [unsentHydrated, setUnsentHydrated] = useState(false)
+  // Whose rows: the stored record is the device's, and both people in a
+  // conversation share its id — see `unsentKey`.
+  const myId = me.data?._id
   useEffect(() => {
+    if (!myId) return
     let cancelled = false
-    void loadUnsent(conversationId).then((stored) => {
+    void loadUnsent(myId, conversationId).then((stored) => {
       if (cancelled) return
-      if (stored.length > 0) setUnsent(stored)
+      if (stored.length > 0) setUnsent((list) => mergeUnsent(list, stored))
       setUnsentHydrated(true)
     })
     return () => {
       cancelled = true
     }
-  }, [conversationId])
+  }, [myId, conversationId])
   useEffect(() => {
-    if (!unsentHydrated) return
-    void saveUnsent(conversationId, unsent)
-  }, [conversationId, unsent, unsentHydrated])
+    if (!unsentHydrated || !myId) return
+    void saveUnsent(myId, conversationId, unsent)
+  }, [myId, conversationId, unsent, unsentHydrated])
   const [correcting, setCorrecting] = useState<MessageDto | null>(null)
   /**
    * What this message asks the other person for, once it is sent.
@@ -753,19 +758,18 @@ export function ChatScreen({
   const pinnedPartnerName = partner?.displayName
   const pinStrip = useMemo<PinnedStripContent | null>(() => {
     if (!v3Thread || !pinnedId) return null
-    const author = pinnedAuthor(pinnedMessage, viewerId)
+    const author = pinnedAuthor(pinnedMessage, viewerId, pinnedPartnerName)
     const line = pinnedLine(pinnedMessage)
+    const words = 'text' in line ? line.text : t(line.key)
     return {
       messageId: pinnedId,
-      // Their name, never the sentence-shaped "them": until the profile is
-      // in, the plain label.
-      label:
-        author === 'you'
-          ? t('chat.pinnedFrom', { name: t('messageMeta.you') })
-          : author === 'them' && pinnedPartnerName
-            ? t('chat.pinnedFrom', { name: pinnedPartnerName })
-            : t('chat.pinnedLabel'),
-      line: 'text' in line ? line.text : t(line.key),
+      label: t('chat.pinnedMessage'),
+      line: author
+        ? t('chat.pinnedPreview', {
+            name: 'text' in author ? author.text : t(author.key),
+            text: words,
+          })
+        : words,
     }
   }, [v3Thread, pinnedId, pinnedMessage, viewerId, pinnedPartnerName, t])
   /**
@@ -916,8 +920,8 @@ export function ChatScreen({
   )
 
   /**
-   * The v3 thread's emoji burst: a message that is one emoji showers copies
-   * of itself over the screen (`EmojiBurstV3`). Played by events — this
+   * The v3 thread's emoji burst: a message that is one to three emoji showers
+   * copies of them over the screen (`EmojiBurstV3`). Played by events — this
    * screen's send, the partner's message pushed over the socket, a tap on the
    * big emoji — and never by the list drawing a row, which is what keeps it
    * from replaying as history loads, scrolls or re-renders. The rules are in
@@ -932,10 +936,10 @@ export function ChatScreen({
   const playBurst = useRef<
     (
       trigger: BurstTrigger,
-      message: { body: string; hero: boolean; id?: string; ageMs?: number },
+      message: { body: string; hero: boolean; id?: string; seed?: string; ageMs?: number },
     ) => void
   >(() => undefined)
-  playBurst.current = (trigger, { body, hero, id, ageMs }) => {
+  playBurst.current = (trigger, { body, hero, id, seed, ageMs }) => {
     const play = shouldPlayBurst({
       trigger,
       body,
@@ -947,11 +951,12 @@ export function ChatScreen({
       played: id !== undefined && burstPlayed.current.has(id),
       ...(ageMs !== undefined ? { ageMs } : {}),
     })
-    const emoji = loneEmoji(body)
-    if (!play || emoji === null) return
+    const emoji = burstEmoji(body)
+    if (!play || emoji.length === 0) return
     if (id !== undefined) burstPlayed.current.add(id)
     burstPlaying.current = true
-    setBurst({ emoji, key: Date.now() })
+    // Seeded by the message, so a tap replays the shower its first play drew.
+    setBurst({ emoji, seed: seed ?? id ?? body, key: Date.now() })
   }
   const endBurst = useCallback(() => {
     burstPlaying.current = false
@@ -959,7 +964,14 @@ export function ChatScreen({
   }, [])
   // Stable, so the memoised bubbles do not all re-render for it.
   const onBurstTap = useCallback((message: MessageDto) => {
-    playBurst.current('tap', { body: message.body, hero: true })
+    // The seed its first play used: the sender's own client id, which the
+    // server hands back to the sender only, or else the server's id, which
+    // is what the partner's live arrival played under.
+    playBurst.current('tap', {
+      body: message.body,
+      hero: true,
+      seed: message.clientId ?? message._id,
+    })
   }, [])
 
   useEffect(() => {
@@ -987,6 +999,7 @@ export function ChatScreen({
           // emoji does not burst with nothing on screen to explain it.
           hero: drawsAsHero(message),
           id: message._id,
+          seed: message.clientId ?? message._id,
           ageMs: Date.now() - Date.parse(message.createdAt),
         })
       }
@@ -1635,17 +1648,16 @@ export function ChatScreen({
    * then back. Writing the acked message in first closes that gap; the echo
    * that follows is a duplicate, and `appendIncomingMessage` drops it.
    *
-   * `setQueriesData` on the prefix for the reason `useSocket` gives: a jump
-   * window open on this thread is a second cache under the same key.
+   * `patchThread` writes on the prefix for the reason `useSocket` gives: a
+   * jump window open on this thread is a second cache under the same key.
    */
   function landed(message: MessageDto | undefined): void {
     // An API too old to answer with the message would otherwise put
     // `undefined` in the thread, which renders as a crash rather than as a
     // missing row.
     if (!message?._id) return
-    queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
-      { queryKey: keys.messages(conversationId) },
-      (old) => appendIncomingMessage(old, withoutViewOnceFallback(message), viewerId) ?? old,
+    patchThread(queryClient, conversationId, (old) =>
+      appendIncomingMessage(old, withoutViewOnceFallback(message), viewerId),
     )
   }
 
@@ -1693,15 +1705,21 @@ export function ChatScreen({
              */
             onProgress: (loaded, total) =>
               setPending((list) =>
-                advancePending(list, clientId, (progress) =>
-                  advanceUpload(progress, index + (total > 0 ? loaded / total : 0), items.length),
+                advancePending(
+                  list,
+                  clientId,
+                  (progress) =>
+                    advanceUpload(progress, index + (total > 0 ? loaded / total : 0), items.length),
+                  new Date(),
                 ),
               ),
           }),
         )
       }
       // The bytes are up; the socket round-trip is what is left.
-      setPending((list) => updatePending(list, clientId, uploadSent(startOf(list, clientId))))
+      setPending((list) =>
+        updatePending(list, clientId, uploadSent(startOf(list, clientId)), new Date()),
+      )
       const socket = await getSocket()
       const saved = await emitWithAck<MessageDto>(socket, 'message:media', {
         conversationId,
@@ -1762,7 +1780,9 @@ export function ChatScreen({
       // still there, and tapping it tries again. A quota refusal and an
       // oversized file are the exceptions — retrying cannot help, so those
       // are dropped above.
-      setPending((list) => updatePending(list, clientId, uploadFailed(startOf(list, clientId))))
+      setPending((list) =>
+        updatePending(list, clientId, uploadFailed(startOf(list, clientId)), new Date()),
+      )
       void showAlert(t('chat.couldNotSend'), reason)
     } finally {
       setSendingMedia(false)
@@ -1850,13 +1870,10 @@ export function ChatScreen({
        * the report.
        */
       setUnsent((list) =>
-        addUnsent(list, {
-          clientId,
-          body,
-          ...(replyToMessageId ? { replyToMessageId } : {}),
-          ...(replyToMessageId && quote ? { quote } : {}),
-          failedAt: new Date().toISOString(),
-        }),
+        addUnsent(
+          list,
+          failedSend({ clientId, body, replyToMessageId, quote, ask, translation }, new Date()),
+        ),
       )
       recheckPartner(error)
       // Swallowed for the reader, counted for us: an unsent row is quiet by
@@ -1881,8 +1898,8 @@ export function ChatScreen({
         message.body,
         message.clientId,
         message.replyToMessageId,
-        undefined,
-        undefined,
+        message.ask,
+        message.translation,
         message.quote,
       )
     } finally {
@@ -3181,16 +3198,26 @@ export function ChatScreen({
    * A string, so the bubbles' memo compares it by value.
    */
   const partnerHue = v3Thread && partner ? v3.hues[partnerHueFor(partner._id)] : undefined
-  /** What the celebrating row draws: Share carries the days and the invite, never tokens. */
+  /**
+   * What the celebrating row draws. Share opens the streak's card — the one
+   * the streak screen shares — with the sentence as its fallback: the days
+   * and the invite, never tokens.
+   */
   const myHandle = me.data?.handle
   const celebrated = celebrating
     ? rewards[celebrating]?.chips.find((chip) => chip.kind === 'streak')
     : undefined
   const rowCelebration = useMemo(
     () => ({
-      share:
+      onShare:
         celebrated?.kind === 'streak' && myHandle
-          ? streakShareText(t, { count: celebrated.days, handle: myHandle })
+          ? () =>
+              setStreakCard({
+                kind: 'streak',
+                headline: String(celebrated.days),
+                caption: t('share.cardStreakCaption', { count: celebrated.days }),
+                fallback: streakShareText(t, { count: celebrated.days, handle: myHandle }),
+              })
           : undefined,
       compact: keyboardUp,
       onClose: () => setCelebrating(null),
@@ -3625,7 +3652,11 @@ export function ChatScreen({
                 hitSlop={12}
                 style={styles.back}
               >
-                <Feather name="arrow-left" size={22} color={colors.text} />
+                <Feather
+                  name={isRtl ? 'arrow-right' : 'arrow-left'}
+                  size={22}
+                  color={colors.text}
+                />
               </Pressable>
             )}
             <Pressable
@@ -4083,6 +4114,7 @@ export function ChatScreen({
           )}
         </View>
         {copilot.sheets}
+        <ShareCardSheet request={streakCard} onClose={() => setStreakCard(null)} />
         <ScheduleTimeSheet
           visible={pickingSendTime}
           busy={scheduleMessage.isPending}

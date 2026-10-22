@@ -662,4 +662,76 @@ export const tr: Localized<ServerMessages> = {
       'Merhaba! Bu Copilot yanıtını bildirdiğin için teşekkürler — okuduk; böyle bildirimler Copilot’u iyileştirmemize yardım ediyor.',
     issue: 'Buradan takip edebilirsin: {url}',
   },
+  cards: {
+    badgeKicker: 'Yeni rozet',
+    badgeEarnedOn: '{date} tarihinde kazanıldı',
+  },
+  badgeNames: {
+    v3: {
+      languages_2: 'İki iplik',
+      languages_3: 'Örgü',
+      languages_5: 'Beş tel',
+      calls_1: 'Teneke telefon',
+      calls_10: 'Uzun hat',
+      calls_50: 'Santral',
+      echo_100: 'Halka',
+      echo_1000: 'Dalga',
+      echo_5000: 'Gelgit',
+      testimonials_1: 'Yorgan karesi',
+      testimonials_5: 'Kırkyama',
+      testimonials_20: 'Yorgan',
+      guide_3: 'Örme',
+      guide_10: 'Yama',
+      guide_50: 'Dokumacı',
+      openers_10: 'Açık kapı',
+      openers_50: 'Sundurma ışığı',
+      openers_200: 'Açık ev',
+    },
+    firstCorrection: 'İlk düzeltme',
+    streakDays: {
+      one: '{formatted} gün',
+      other: '{formatted} gün',
+    },
+    corrections: {
+      one: '{formatted} düzeltme',
+      other: '{formatted} düzeltme',
+    },
+    messagesSent: {
+      one: '{formatted} mesaj',
+      other: '{formatted} mesaj',
+    },
+    tokensEarned: {
+      one: '{formatted} token kazanıldı',
+      other: '{formatted} token kazanıldı',
+    },
+    memberDays: {
+      one: '{formatted} gün üye',
+      other: '{formatted} gün üye',
+    },
+    earlyAdopter: 'İlk kullanıcılardan',
+    languages: {
+      one: '{formatted} dil',
+      other: '{formatted} dil',
+    },
+    calls: {
+      one: '{formatted} arama',
+      other: '{formatted} arama',
+    },
+    echo: {
+      one: '{formatted} tekrar',
+      other: '{formatted} tekrar',
+    },
+    testimonials: {
+      one: '{formatted} partner',
+      other: '{formatted} partner',
+    },
+    guide: {
+      one: '{formatted} kişi',
+      other: '{formatted} kişi',
+    },
+    openers: {
+      one: '{formatted} yanıt',
+      other: '{formatted} yanıt',
+    },
+  },
 }

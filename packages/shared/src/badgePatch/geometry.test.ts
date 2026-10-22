@@ -1,4 +1,4 @@
-import { BADGES } from '@langx/shared'
+import { BADGES } from '../badges'
 import { describe, expect, it } from 'vitest'
 import { cutFor, PATCH_IDS, patchNodes, patchTier, type PatchCut } from './geometry'
 import { arcToCubics, outlineLength, withoutArcs } from './pathData'

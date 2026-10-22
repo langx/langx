@@ -154,6 +154,12 @@ export const dataExportSchema = z.object({
   calls: z.array(z.unknown()),
   /** The phones registered to be rung, without the tokens that ring them. */
   callEndpoints: z.array(z.unknown()),
+  /**
+   * Copilot answers this user reported: the answer, which help wrote it, the
+   * draft only when they chose to send it, and the report's status. Not the
+   * operators' note on it.
+   */
+  copilotReports: z.array(z.unknown()),
 })
 export type DataExport = z.infer<typeof dataExportSchema>
 
@@ -216,3 +222,14 @@ export const setPasswordSchema = z.object({
   password: passwordSchema,
 })
 export type SetPasswordInput = z.infer<typeof setPasswordSchema>
+
+/**
+ * How recent a session must be to disconnect a sign-in method: Better Auth's
+ * own default fresh age, 24 hours.
+ *
+ * The API runs Better Auth with `freshAge: 0` so an old phone can still list
+ * its sessions, which also switched the check off for `/unlink-account`. A
+ * session stolen last week could then remove the owner's own way in, so the
+ * API puts the check back for that one endpoint with this number.
+ */
+export const UNLINK_FRESH_SESSION_SECONDS = 24 * 60 * 60

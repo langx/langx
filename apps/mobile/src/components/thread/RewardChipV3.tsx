@@ -3,8 +3,7 @@ import { useEffect, type ReactNode } from 'react'
 import { AccessibilityInfo, Text, View } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
-import { useT } from '../../i18n'
-import type { ShareContent } from '../../lib/shareText'
+import { useLocale, useT } from '../../i18n'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { SPRING, unlessReduced } from '../../lib/theme/motion'
 import {
@@ -13,7 +12,9 @@ import {
   rewardsAnnouncement,
   type ThreadReward,
 } from '../../lib/threadRewards'
+import { markAmount, tokenSlot } from '../../lib/tokenAmount'
 import { FlameGlyph } from '../ui/StreakFlame'
+import { tokenMarkChildren } from '../ui/TokenIcon'
 import { ThreadCelebrationV3 } from './ThreadCelebrationV3'
 
 /**
@@ -54,6 +55,7 @@ export function RewardChipV3({
   at: number
 }) {
   const t = useT()
+  const { locale } = useLocale()
   const styles = useStyles()
   const { v3 } = useTheme()
   const reduce = useReduceMotion()
@@ -61,10 +63,12 @@ export function RewardChipV3({
   const shown = useSharedValue(fresh ? 0 : 1)
 
   const corrected = reward.kind === 'corrected'
+  // "+10 ✦ · you corrected Anna": the token mark after the amount. The chip's
+  // row says the whole award in words (`rewardsAnnouncement`, `rewardLabel`).
   const amount =
     reward.kind === 'bothWrote'
-      ? t('chat.rewardBothAmount', { count: reward.amount })
-      : t('tokens.shareAmount', { count: reward.amount })
+      ? markAmount(t, t('chat.rewardBothAmount', { count: reward.amount }), `+${reward.amount}`)
+      : tokenSlot(t, reward.amount, locale, '+')
   const label = rewardLabel(t, reward, partnerName)
   const ground = corrected ? v3.colors.correctionTint : (hue ?? v3.hues.lilac)
   const ink = corrected ? v3.colors.correction : v3.colors.ink
@@ -94,7 +98,11 @@ export function RewardChipV3({
           <FlameGlyph size={16} color={ink} />
         )}
         <Text style={[styles.text, { color: ink }]} numberOfLines={2}>
-          {t('chat.rewardChip', { amount, reason: rewardReason(t, reward, partnerName) })}
+          {tokenMarkChildren(
+            t('chat.rewardChip', { amount, reason: rewardReason(t, reward, partnerName) }),
+            styles.text.fontSize,
+            ink,
+          )}
         </Text>
       </View>
     </Animated.View>
@@ -103,7 +111,8 @@ export function RewardChipV3({
 
 /** The streak milestone the thread is celebrating, and how to share and close it. */
 export interface RowCelebration {
-  share: ShareContent | undefined
+  /** Opens the streak's share card; see `ThreadCelebrationV3`. */
+  onShare: (() => void) | undefined
   compact: boolean
   onClose: () => void
 }
@@ -160,7 +169,7 @@ export function WithRewardChips({
           days={milestone.days}
           amount={milestone.amount}
           hue={hue}
-          share={celebration.share}
+          onShare={celebration.onShare}
           compact={celebration.compact}
           onClose={celebration.onClose}
         />

@@ -12,6 +12,7 @@ import { Button } from '../components/ui/Button'
 import { IconButton } from '../components/ui/IconButton'
 import { Screen } from '../components/ui/Screen'
 import { Skeleton } from '../components/ui/Skeleton'
+import { tokenMarkChildren } from '../components/ui/TokenIcon'
 import { useAppConfig } from '../hooks/useAppConfig'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
@@ -27,24 +28,13 @@ import { packTaglineKey, stickerAsset, stickerNameKey } from '../lib/stickerAsse
 import { cosmeticKey } from '../lib/storeOffers'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../lib/theme'
 import { showToast } from '../lib/toast'
+import { tokenSlot } from '../lib/tokenAmount'
 
 const STORE = '/(app)/wallet/store'
 
 /** `paper` → the `stickers.paper` pack, or nothing for a name the catalogue does not have. */
 export function packFromParam(param: string | undefined): Cosmetic | undefined {
   return COSMETICS.find((c) => c.kind === 'stickers' && c.id === `stickers.${param ?? ''}`)
-}
-
-/**
- * The token mark: a four-pointed spark, a point rather than a coin. The store
- * home draws the same path; fold the two together once both have landed.
- */
-function TokenGlyph({ size, color }: { size: number; color: string }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M12 2.5l2.4 7.1 7.1 2.4-7.1 2.4-2.4 7.1-2.4-7.1L2.5 12l7.1-2.4z" fill={color} />
-    </Svg>
-  )
 }
 
 /**
@@ -194,11 +184,13 @@ export function StickerPackScreenV3({ pack }: { pack: Cosmetic }) {
           accessibilityLabel={priceWords}
           accessibilityRole="text"
         >
-          <TokenGlyph size={v3.icon.md} color={v3.colors.blue} />
           <Text style={[styles.priceValue, !black && styles.blackFallback]}>
-            {amount(pack.price)}
+            {tokenMarkChildren(
+              tokenSlot(t, pack.price, locale),
+              styles.priceValue.fontSize,
+              v3.colors.fg,
+            )}
           </Text>
-          <Text style={styles.priceUnit}>{t('stickerPack.tokenUnit', { count: pack.price })}</Text>
         </View>
         <Text style={styles.after}>
           {balance >= pack.price
@@ -236,10 +228,13 @@ export function StickerPackScreenV3({ pack }: { pack: Cosmetic }) {
             accessible
             accessibilityLabel={`${t('wallet.balance')}: ${t('wallet.price', { count: balance, amount: amount(balance) })}`}
           >
-            <TokenGlyph size={v3.icon.xs} color={v3.colors.blue} />
             <Text style={styles.balanceLabel}>{t('wallet.balance')}</Text>
             <Text style={[styles.balanceValue, !black && styles.blackFallback]}>
-              {amount(balance)}
+              {tokenMarkChildren(
+                tokenSlot(t, balance, locale),
+                styles.balanceValue.fontSize,
+                v3.colors.fg,
+              )}
             </Text>
           </View>
         ) : null}
@@ -610,7 +605,6 @@ const useStyles = makeStyles(({ scheme, v3 }) => {
       fontSize: 24,
       lineHeight: 28,
     },
-    priceUnit: { ...v3.type.callout, color: v3.colors.muted, fontWeight: '600' },
     after: { ...v3.type.caption, color: v3.colors.muted, flexShrink: 1, textAlign: 'right' },
     ownedLine: {
       alignItems: 'center',

@@ -8,7 +8,7 @@ import { ensureIndexes } from '../../db/indexes'
 import type { ApiError } from '../../lib/ApiError'
 import type { StructuredProvider, StructuredRequest } from '../official/assistantProvider'
 import { setCopilotAccess } from './access'
-import { claimCopilotCall } from './budget'
+import { claimCopilotCall, copilotCallsToday } from './budget'
 import { recordCopilotConsent, withdrawCopilotConsent } from './consent'
 import { askCopilot, getCopilotStatus, type CopilotDeps, type CopilotQuestion } from './copilot'
 import { systemPromptFor } from './prompts'
@@ -227,8 +227,20 @@ describe('Copilot', () => {
         .collection<{ copilotAccess?: { at: Date } }>(COLLECTIONS.profiles)
         .findOne({ _id: me as never })
       expect(row?.copilotAccess?.at).toEqual(NOW)
+      await recordCopilotConsent(handle.db, me, COPILOT_RULES.consentVersion, NOW)
       expect((await askCopilot(deps, me, 'en', check(), NOW)).source).toBe('ai')
       expect(await setCopilotAccess(handle.db, 'nobody', true, NOW)).toBe(false)
+    })
+
+    it('takes the consent with the access, so allowing again asks again', async () => {
+      expect((await getCopilotStatus(deps, me)).consented).toBe(true)
+      await setCopilotAccess(handle.db, me, false)
+      await setCopilotAccess(handle.db, me, true, NOW)
+
+      expect((await getCopilotStatus(deps, me)).consented).toBe(false)
+      const error = await refusal(askCopilot(deps, me, 'en', check(), NOW))
+      expect(error.code).toBe('COPILOT_CONSENT_REQUIRED')
+      expect(model.asked).toHaveLength(0)
     })
   })
 
@@ -466,6 +478,17 @@ describe('Copilot', () => {
       const error = await refusal(askCopilot(deps, me, 'en', check(), NOW))
       expect(error.reason).toBe('no_answer')
       expect(await quotaUsed(me)).toBe(0)
+    })
+
+    it("gives everybody's call back too, so a declined question cannot drain the day", async () => {
+      model.answer = () => null
+      await refusal(askCopilot(deps, me, 'en', check(), NOW))
+      model.answer = () => {
+        throw new Error('network down')
+      }
+      await refusal(askCopilot(deps, me, 'en', check(), NOW))
+      expect(model.asked).toHaveLength(2)
+      expect(await copilotCallsToday(handle.db, NOW)).toBe(0)
     })
 
     it("stops everybody at the global ceiling, and gives the person's unit back", async () => {

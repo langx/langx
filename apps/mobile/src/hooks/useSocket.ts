@@ -16,9 +16,14 @@ import {
 import { getActiveConversation } from '../lib/activeConversation'
 import { previewOf, shouldShowIncomingBanner, showMessageBanner } from '../lib/inAppNotifications'
 import { track } from '../lib/analytics'
-import { invalidateMissedEvents, resumedFromBackground } from '../lib/missedEvents'
+import {
+  invalidateMissedEvents,
+  resumedFromBackground,
+  resyncOnManagerReconnect,
+} from '../lib/missedEvents'
 import {
   applyIncomingMessage,
+  applyMessageEdit,
   cachedConversation,
   type ConversationPageDto,
   listPreviewOf,
@@ -26,8 +31,9 @@ import {
 import {
   appendIncomingMessage,
   applyDeliveredAt,
-  applyMessageUpdate,
   applyPinned,
+  patchMessageUpdate,
+  patchThread,
   type MessagePageDto,
 } from '../lib/messageCache'
 import { clearFromTray, sweepTray } from '../lib/notifications'
@@ -133,11 +139,14 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
      * the OS saying the network came back. The socket cannot know that:
      * nothing closed its connection, it is holding one that stopped carrying
      * packets, and its own ping timeout is 45 seconds away. Restarting it here
-     * turns those 45 seconds into about one — and the reconnect that follows
-     * fires `resync` through the handler below, so the gap is covered too.
+     * turns those 45 seconds into about one — and `resync` runs when the
+     * restarted socket connects, so the gap is covered too. Passed in rather
+     * than left to the Manager's `reconnect` handler below, which a restart
+     * fires only when its first attempt fails — and that handler then
+     * disarms this one, so the connection resyncs once either way.
      */
     const unsubscribeOnline = onlineManager.subscribe((online) => {
-      if (online) restartSocket()
+      if (online) restartSocket(resync)
     })
 
     /**
@@ -171,8 +180,9 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
        * Manager per URL across sockets, so the cleanup below has to take this
        * handler off again or every replacement stacks one.
        */
-      socket.io.on('reconnect', resync)
-      offs.push(() => socket.io.off('reconnect', resync))
+      const onReconnect = resyncOnManagerReconnect(socket, resync)
+      socket.io.on('reconnect', onReconnect)
+      offs.push(() => socket.io.off('reconnect', onReconnect))
       // A replacement socket is a gap too, and its first connection is not a
       // Manager reconnect, so it is caught here.
       if (attached++ > 0) socket.once('connect', resync)
@@ -185,7 +195,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
             : String(message.conversationId)
 
         /**
-         * `setQueriesData` with the *prefix*, not `setQueryData` with the key:
+         * `patchThread` writes on the *prefix*, not `setQueryData` on the key:
          * `keys.messagesAround` lives under `keys.messages(id)`, so a jump
          * window open on this thread is patched by the same call. Without it
          * the window silently stops receiving anything while it is on screen.
@@ -218,10 +228,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
           )
         }
 
-        queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
-          { queryKey: keys.messages(conversationId) },
-          (old) => appendIncomingMessage(old, message, meId) ?? old,
-        )
+        patchThread(queryClient, conversationId, (old) => appendIncomingMessage(old, message, meId))
 
         /**
          * Patched rather than invalidated. On an infinite query
@@ -345,15 +352,23 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
       on('message:updated', (incoming: MessageDto) => {
         const message = withoutViewOnceFallback(incoming)
         const conversationId = String(message.conversationId)
-        queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
-          { queryKey: keys.messages(conversationId) },
-          (old) => applyMessageUpdate(old, message) ?? old,
-        )
+        patchMessageUpdate(queryClient, message)
         // A withdrawal empties the chat list's preview too, and that is the
         // one thing this cannot patch from here.
         if (message.deleted) {
           void queryClient.invalidateQueries({ queryKey: ['conversations'] })
           invalidateUnread(queryClient)
+        } else if (message.editedAt) {
+          // An edit to the newest message changes the row's line, which the
+          // server has already rewritten; this is the cached list catching up.
+          queryClient.setQueriesData({ queryKey: ['conversations'] }, (old: unknown) =>
+            applyMessageEdit(old, {
+              conversationId,
+              senderId: message.senderId,
+              createdAt: message.createdAt,
+              body: listPreviewOf(message),
+            }),
+          )
         }
       })
 

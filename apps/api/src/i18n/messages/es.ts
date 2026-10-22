@@ -682,4 +682,76 @@ export const es: Localized<ServerMessages> = {
       '¡Hola! Gracias por reportar esta respuesta de Copilot — la hemos leído, y reportes como el tuyo nos ayudan a mejorar Copilot.',
     issue: 'Puedes seguirlo aquí: {url}',
   },
+  cards: {
+    badgeKicker: 'Insignia nueva',
+    badgeEarnedOn: 'Conseguida el {date}',
+  },
+  badgeNames: {
+    v3: {
+      languages_2: 'Dos hilos',
+      languages_3: 'Trenza',
+      languages_5: 'Cinco hebras',
+      calls_1: 'Teléfono de latas',
+      calls_10: 'Línea larga',
+      calls_50: 'Centralita',
+      echo_100: 'Onda',
+      echo_1000: 'Ola',
+      echo_5000: 'Marea',
+      testimonials_1: 'Cuadro de colcha',
+      testimonials_5: 'Retazos',
+      testimonials_20: 'Colcha',
+      guide_3: 'Zurcido',
+      guide_10: 'Remiendo',
+      guide_50: 'Tejedor',
+      openers_10: 'Puerta abierta',
+      openers_50: 'Luz del porche',
+      openers_200: 'Casa abierta',
+    },
+    firstCorrection: 'Primera corrección',
+    streakDays: {
+      one: '{formatted} día',
+      other: '{formatted} días',
+    },
+    corrections: {
+      one: '{formatted} corrección',
+      other: '{formatted} correcciones',
+    },
+    messagesSent: {
+      one: '{formatted} mensaje',
+      other: '{formatted} mensajes',
+    },
+    tokensEarned: {
+      one: '{formatted} ficha ganada',
+      other: '{formatted} fichas ganadas',
+    },
+    memberDays: {
+      one: '{formatted} día como miembro',
+      other: '{formatted} días como miembro',
+    },
+    earlyAdopter: 'Usuario pionero',
+    languages: {
+      one: '{formatted} idioma',
+      other: '{formatted} idiomas',
+    },
+    calls: {
+      one: '{formatted} llamada',
+      other: '{formatted} llamadas',
+    },
+    echo: {
+      one: '{formatted} repaso',
+      other: '{formatted} repasos',
+    },
+    testimonials: {
+      one: '{formatted} compañero',
+      other: '{formatted} compañeros',
+    },
+    guide: {
+      one: '{formatted} persona',
+      other: '{formatted} personas',
+    },
+    openers: {
+      one: '{formatted} respuesta',
+      other: '{formatted} respuestas',
+    },
+  },
 }

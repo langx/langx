@@ -16,7 +16,7 @@ import {
 } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
@@ -28,6 +28,7 @@ import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueC
 import type { Profile } from '../modules/profiles/profiles'
 import type { DailyActivity } from '../modules/tokens/dailyActivity'
 import { claimGift } from '../modules/tokens/gift'
+import { purchase } from '../modules/tokens/wallet'
 import { awardTokens, type TokenAggregate, type TokenLedgerEntry } from '../modules/tokens/ledger'
 import {
   DAILY_POOL_JOB,
@@ -389,8 +390,14 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
 
       const second = await runDailyPool(handle.db, { day })
       expect(second.ran).toBe(true) // the lock let it through...
-      expect(second.ran && second.result.paid).toBe(0) // ...but the ledger did not
-      expect(await totalXp()).toBe(afterFirst)
+      expect(await totalXp()).toBe(afterFirst) // ...but the ledger did not pay again
+      expect(
+        await handle.db
+          .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
+          .countDocuments({ userId: user.userId, kind: 'dailyPool', refId: day }),
+      ).toBe(1)
+      // The record still describes the day: one person was paid for it.
+      expect(second.ran && second.result.paid).toBe(1)
     })
 
     /**
@@ -451,6 +458,40 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       const outcome = await runDailyPool(handle.db, { day })
       expect(outcome.ran).toBe(true)
       expect(outcome.ran && outcome.result.paid).toBe(1)
+    })
+
+    /**
+     * A run that died halfway paid some people, and the retry pays the rest.
+     * The record it leaves is the one the pool screen reads ("N people that
+     * day"), so it has to describe the day, not the retry: counting only the
+     * awards this pass wrote reported the day as having paid one person.
+     */
+    it('counts the whole day after recovering a half-finished run', async () => {
+      const early = await newUser()
+      const late = await newUser()
+      await ageAccount(early.userId)
+      await ageAccount(late.userId)
+      const day = shiftDayKey(YESTERDAY, -20)
+      await seedActivity(early.userId, { messages: 10, partners: ['r'] }, day)
+      await seedActivity(late.userId, { messages: 10, partners: ['s'] }, day)
+
+      // The first pass got as far as one award, then died holding the lock.
+      const first = await runDailyPool(handle.db, { day })
+      const share = first.ran ? first.result.distributed / 2 : 0
+      await handle.db
+        .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
+        .deleteOne({ userId: late.userId, kind: 'dailyPool', refId: day })
+      await handle.db.collection<JobRun>(COLLECTIONS.jobRuns).updateOne(
+        { job: DAILY_POOL_JOB, periodKey: day },
+        {
+          $set: { startedAt: new Date(Date.now() - POOL_LOCK_STALE_MS - 60_000) },
+          $unset: { finishedAt: '', result: '' },
+        },
+      )
+
+      const retry = await runDailyPool(handle.db, { day })
+      expect(retry.ran && retry.result.paid).toBe(2)
+      expect(retry.ran && retry.result.distributed).toBe(share * 2)
     })
 
     it('leaves a lock alone while the run holding it could still be alive', async () => {
@@ -1586,6 +1627,45 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       const overflow = await buy(user, STREAK_FREEZE_SKU)
       expect(overflow.statusCode).toBe(400)
       expect((await wallet(user)).streakFreezes).toBe(TOKEN_RULES.sinks.maxBankedStreakFreezes)
+    })
+
+    /**
+     * Two freezes bought in the same millisecond — a double tap, or two
+     * devices — are two real purchases, and both are charged. The audit row
+     * used to be keyed on the sku and the instant, so the second one hit the
+     * ledger's unique index *after* its charge had landed: the request failed
+     * with a 500, the freeze and the charge stayed, and the history showed
+     * one spend for two.
+     */
+    it('records both of two freezes bought in the same millisecond', async () => {
+      const user = await newUser()
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'adjustment',
+        amount: TOKEN_RULES.sinks.streakFreeze * 2,
+        refId: 'freeze-same-instant',
+      })
+
+      vi.useFakeTimers({ toFake: ['Date'], now: new Date() })
+      try {
+        const results = await Promise.allSettled([
+          purchase(handle.db, user.userId, STREAK_FREEZE_SKU),
+          purchase(handle.db, user.userId, STREAK_FREEZE_SKU),
+        ])
+        expect(results.map((r) => r.status)).toEqual(['fulfilled', 'fulfilled'])
+      } finally {
+        vi.useRealTimers()
+      }
+
+      const spends = await handle.db
+        .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
+        .find({ userId: user.userId, kind: 'spend' })
+        .toArray()
+      expect(spends.map((row) => row.amount)).toEqual([
+        -TOKEN_RULES.sinks.streakFreeze,
+        -TOKEN_RULES.sinks.streakFreeze,
+      ])
+      expect((await wallet(user)).spent).toBe(TOKEN_RULES.sinks.streakFreeze * 2)
     })
 
     it('does not let a freeze paper over a two-day gap', async () => {
