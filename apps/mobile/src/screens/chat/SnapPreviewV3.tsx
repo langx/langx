@@ -71,6 +71,7 @@ export function SnapPreviewV3({
   mode,
   bottomInset,
   saving,
+  sending = false,
   onMode,
   onRetake,
   onSend,
@@ -82,6 +83,8 @@ export function SnapPreviewV3({
   bottomInset: number
   /** A save is under way; the button waits for it rather than saving twice. */
   saving: boolean
+  /** The filter is being baked into the photo before it goes; Send waits for it. */
+  sending?: boolean
   onMode: (mode: SnapMode) => void
   onRetake: () => void
   onSend: () => void
@@ -245,7 +248,7 @@ export function SnapPreviewV3({
             <Text style={styles.retakeLabel}>{t('viewOnce.retake')}</Text>
           </PressableScale>
           <View style={styles.grow}>
-            <Button label={t('viewOnce.send')} icon="send" onPress={onSend} />
+            <Button label={t('viewOnce.send')} icon="send" onPress={onSend} loading={sending} />
           </View>
         </View>
       </View>

@@ -10,7 +10,7 @@ import { Image } from 'expo-image'
 import { useLocalSearchParams } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { useVideoPlayer, VideoView } from 'expo-video'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   ActivityIndicator,
   AppState,
@@ -23,13 +23,20 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native'
-import { GestureDetector } from 'react-native-gesture-handler'
+import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useReduceMotion } from '../../src/hooks/useReduceMotion'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useT } from '../../src/i18n'
 import { showAlert } from '../../src/lib/alert'
+import { bakeCameraFilter } from '../../src/lib/bakeCameraFilter'
+import {
+  cameraFilter,
+  DEFAULT_CAMERA_FILTER,
+  isOriginal,
+  type CameraFilterId,
+} from '../../src/lib/cameraFilters'
 import { impact, notification, selection } from '../../src/lib/haptics'
 import { FLAG_KEYS, readFlag, writeFlag } from '../../src/lib/localFlags'
 import { goBackTo } from '../../src/lib/navigation'
@@ -49,6 +56,12 @@ import {
   type SnapMode,
 } from '../../src/lib/viewOnce'
 import { useV3Home } from '../../src/hooks/useV3Home'
+import {
+  FilterNameFlash,
+  FilterStrip,
+  useFilterSwipe,
+} from '../../src/screens/chat/CameraFiltersV3'
+import { FilteredPhotoV3 } from '../../src/screens/chat/FilteredPhotoV3'
 import {
   CameraPermissionV3,
   LibraryOnlyV3,
@@ -133,6 +146,33 @@ export default function SnapScreen() {
   // lands is newer and wins.
   const modePicked = useRef(false)
   const [saving, setSaving] = useState(false)
+  /*
+   * The filter, chosen on the viewfinder and still changeable on the preview,
+   * v3 only and native only: the web has no camera to shoot with, and would
+   * need CanvasKit's WebAssembly for Skia. A photo is baked with it on the way
+   * out (`outgoing`); a video never is, so the strip goes while recording.
+   */
+  const filtersOn = v3Look && Platform.OS !== 'web'
+  const [filter, setFilter] = useState<CameraFilterId>(DEFAULT_CAMERA_FILTER)
+  /** Counts changes, so the name flashes again for each, the same filter included. */
+  const [filterToken, setFilterToken] = useState(0)
+  const [sending, setSending] = useState(false)
+  /** The last bake, so a Save and then a Send draw the photo once. */
+  const baked = useRef<{ from: string; filter: CameraFilterId; item: PickedMedia } | null>(null)
+
+  function pickFilter(next: CameraFilterId): void {
+    if (next === filter) return
+    void selection()
+    setFilter(next)
+    setFilterToken((count) => count + 1)
+  }
+
+  const previewSwipe = useFilterSwipe({
+    // Not while a bake is under way: the photo would go with the filter it left with.
+    enabled: filtersOn && captured?.kind === 'image' && !sending && !saving,
+    filter,
+    onFilter: pickFilter,
+  })
 
   useEffect(() => {
     void readFlag(FLAG_KEYS.snapMode).then((raw) => {
@@ -199,6 +239,36 @@ export default function SnapScreen() {
     }
   }
 
+  /**
+   * What leaves the screen: the shot itself, or for a filtered photo a new
+   * file with the filter drawn into it. Send and Save both go through here,
+   * so a view-once photo goes out filtered exactly as the preview showed it,
+   * and the unfiltered one is never what is sent. Null when the bake failed,
+   * which is said, rather than quietly sending the photo without the filter.
+   */
+  async function outgoing(): Promise<PickedMedia | null> {
+    if (!captured) return null
+    if (!filtersOn || captured.kind !== 'image' || isOriginal(filter)) return captured
+    const last = baked.current
+    if (last && last.from === captured.uri && last.filter === filter) return last.item
+    try {
+      const out = await bakeCameraFilter(captured.uri, cameraFilter(filter).matrix)
+      const item: PickedMedia = {
+        kind: 'image',
+        uri: out.uri,
+        contentType: 'image/jpeg',
+        width: out.width,
+        height: out.height,
+      }
+      baked.current = { from: captured.uri, filter, item }
+      return item
+    } catch {
+      void notification('error')
+      showToast(t('viewOnce.filterFailed'))
+      return null
+    }
+  }
+
   /*
    * The shot into the phone's photos, or the browser's downloads — the same
    * write-only path as the photo viewer's Save. Confirmed with a toast: this
@@ -208,9 +278,11 @@ export default function SnapScreen() {
     if (!captured || saving) return
     setSaving(true)
     try {
+      const item = await outgoing()
+      if (!item) return
       const result = await saveMediaToDevice({
-        url: captured.uri,
-        contentType: captured.contentType,
+        url: item.uri,
+        contentType: item.contentType,
       })
       if (result === 'denied') {
         void notification('error')
@@ -226,9 +298,15 @@ export default function SnapScreen() {
     }
   }
 
-  function send(): void {
-    if (!captured || !conversationId) return
-    sendSnap({ conversationId, item: captured, viewOnce: viewOnceForMode(mode) })
+  async function send(): Promise<void> {
+    if (!captured || !conversationId || sending) return
+    setSending(true)
+    const item = await outgoing()
+    if (!item) {
+      setSending(false)
+      return
+    }
+    sendSnap({ conversationId, item, viewOnce: viewOnceForMode(mode) })
     void impact('light')
     close()
   }
@@ -251,13 +329,25 @@ export default function SnapScreen() {
         {captured && v3Look ? (
           // The redesign's drawing of this step only; every handler is this screen's.
           <SnapPreviewV3
-            picture={<Captured item={captured} />}
+            picture={
+              filtersOn && captured.kind === 'image' ? (
+                <GestureDetector gesture={previewSwipe}>
+                  <View style={StyleSheet.absoluteFill} collapsable={false}>
+                    <FilteredPhotoV3 uri={captured.uri} matrix={cameraFilter(filter).matrix} />
+                    <FilterNameFlash filter={filter} token={filterToken} />
+                  </View>
+                </GestureDetector>
+              ) : (
+                <Captured item={captured} />
+              )
+            }
             mode={mode}
             bottomInset={rounded ? 0 : insets.bottom}
             onMode={pickMode}
             onRetake={retake}
-            onSend={send}
+            onSend={() => void send()}
             saving={saving}
+            sending={sending}
             onSave={fromLibrary ? undefined : () => void save()}
           />
         ) : captured ? (
@@ -267,7 +357,7 @@ export default function SnapScreen() {
             bottomInset={rounded ? 0 : insets.bottom}
             onMode={pickMode}
             onRetake={retake}
-            onSend={send}
+            onSend={() => void send()}
           />
         ) : Platform.OS === 'web' && v3Look ? (
           <LibraryOnlyV3
@@ -286,6 +376,7 @@ export default function SnapScreen() {
             }}
             onLibrary={() => void pickFromLibrary()}
             onClose={close}
+            {...(filtersOn ? { filter, filterToken, onFilter: pickFilter } : {})}
           />
         )}
       </View>
@@ -298,11 +389,18 @@ function SnapCamera({
   onCaptured,
   onLibrary,
   onClose,
+  filter = DEFAULT_CAMERA_FILTER,
+  filterToken = 0,
+  onFilter,
 }: {
   bottomInset: number
   onCaptured: (item: PickedMedia) => void
   onLibrary: () => void
   onClose: () => void
+  /** Absent where there are no filters: the old look and the web. */
+  filter?: CameraFilterId
+  filterToken?: number
+  onFilter?: (next: CameraFilterId) => void
 }) {
   const t = useT()
   const v3Look = useV3Home()
@@ -324,6 +422,20 @@ function SnapCamera({
   const dim = useSharedValue(0)
   const dimTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const dimStyle = useAnimatedStyle(() => ({ opacity: dim.get() }))
+  const swipe = useFilterSwipe({
+    enabled: onFilter !== undefined && !recording,
+    filter,
+    onFilter: (next) => onFilter?.(next),
+  })
+  // Two fingers are the pinch's, one going sideways the swipe's, two quick taps the flip's.
+  const gestures = useMemo(() => Gesture.Race(zoom.gesture, swipe), [zoom.gesture, swipe])
+  /*
+   * The viewfinder's filter is only a tint laid over the picture: expo-camera
+   * hands no frames to JavaScript for a real colour transform to run on. The
+   * preview and the photo that is sent get the exact matrix. Gone while
+   * recording, because a clip is never filtered.
+   */
+  const tint = onFilter && !recording ? cameraFilter(filter).tint : null
 
   const holding = useRef(false)
   const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -585,7 +697,7 @@ function SnapCamera({
    * for the same reason the double-tap is not the only way to flip.
    */
   const cameraView = (
-    <GestureDetector gesture={zoom.gesture}>
+    <GestureDetector gesture={gestures}>
       <View
         style={StyleSheet.absoluteFill}
         collapsable={false}
@@ -633,10 +745,14 @@ function SnapCamera({
             showToast(t('viewOnce.captureFailed'))
           }}
         />
+        {tint ? (
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: tint }]} pointerEvents="none" />
+        ) : null}
         <Animated.View
           style={[StyleSheet.absoluteFill, styles.flipDim, dimStyle]}
           pointerEvents="none"
         />
+        {onFilter ? <FilterNameFlash filter={filter} token={filterToken} /> : null}
       </View>
     </GestureDetector>
   )
@@ -655,6 +771,7 @@ function SnapCamera({
         onFlip={flip}
         onPressIn={onPressIn}
         onPressOut={onPressOut}
+        filterStrip={onFilter ? <FilterStrip filter={filter} onFilter={onFilter} /> : undefined}
       />
     )
   }

@@ -188,6 +188,14 @@ export const fr: Localized<EnMessages> = {
     cameraUnavailable:
       'L’appareil photo n’est pas disponible ici. Choisis plutôt une photo ou une vidéo dans ta galerie.',
     captureFailed: 'Impossible de prendre ça. Réessaie.',
+    filters: 'Filtres',
+    filterOriginal: 'Original',
+    filterWarm: 'Chaud',
+    filterCool: 'Froid',
+    filterMono: 'N&B',
+    filterVivid: 'Vif',
+    filterFilm: 'Film',
+    filterFailed: 'Impossible d’appliquer le filtre. Réessaie.',
     playFailed: 'Cette vidéo ne peut pas être lue sur cet appareil.',
   },
   tips: {

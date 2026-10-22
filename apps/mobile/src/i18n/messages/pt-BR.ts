@@ -187,6 +187,14 @@ export const ptBR: Localized<EnMessages> = {
     cameraUnavailable:
       'A câmera não está disponível aqui. Escolha uma foto ou um vídeo da sua galeria.',
     captureFailed: 'Não foi possível capturar. Tente de novo.',
+    filters: 'Filtros',
+    filterOriginal: 'Original',
+    filterWarm: 'Quente',
+    filterCool: 'Frio',
+    filterMono: 'P&B',
+    filterVivid: 'Vívido',
+    filterFilm: 'Filme',
+    filterFailed: 'Não foi possível aplicar o filtro. Tente de novo.',
     playFailed: 'Este vídeo não pode ser reproduzido neste dispositivo.',
   },
   tips: {
