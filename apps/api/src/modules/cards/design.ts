@@ -195,6 +195,14 @@ export async function cardElement(
           paddingLeft: unit * 8,
           paddingRight: unit * 8,
           paddingTop: unit * 9 * dense,
+          /*
+           * Positioned so it paints over the discs. satori 0.62 paints as CSS
+           * does — positioned boxes after in-flow ones, whatever their order
+           * in the tree — so an unpositioned panel went under the discs, and
+           * they tinted half the headline and put a grey quarter-circle in
+           * the panel. Among positioned boxes, tree order wins again.
+           */
+          position: 'relative',
           width: width - unit * 16,
         },
         children: [
@@ -248,6 +256,8 @@ export async function cardElement(
           display: 'flex',
           gap: unit * 2.5,
           marginTop: unit * 5 * dense,
+          // Over the discs, as the panel is.
+          position: 'relative',
         },
         children: [
           el('img', { src: badge, width: unit * 8, height: unit * 8 }),
