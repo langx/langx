@@ -1,18 +1,18 @@
 import Feather from '@expo/vector-icons/Feather'
 import { MAX_ATTACHMENTS, MAX_VIDEO_SECONDS } from '@langx/shared'
-import { useEffect } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { useEffect, type ReactNode } from 'react'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 import { useT } from '../i18n'
 import { useV3Home } from '../hooks/useV3Home'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
 import { pickMediaAssets } from '../lib/pickMediaAsset'
 import { showToast } from '../lib/toast'
 import { makeStyles, useTheme } from '../lib/theme'
-import { AttachmentPreviewRow, type PendingAttachment } from './AttachmentPreview'
-import { useAttachmentStylesV3 } from './AttachmentBarV3.styles'
+import { AttachmentPreviewRow, AttachmentThumbs, type PendingAttachment } from './AttachmentPreview'
+import { useAttachmentStylesV3, useAttachmentTileStylesV3 } from './AttachmentBarV3.styles'
 
 export type { PendingAttachment }
-export { AttachmentPreviewRow }
+export { AttachmentPreviewRow, AttachmentThumbs }
 
 interface AttachmentBarProps {
   pending: readonly PendingAttachment[]
@@ -31,6 +31,16 @@ interface AttachmentBarProps {
    * says what the chip is for there, where "Photo" undersold it.
    */
   mediaLabel?: string
+  /**
+   * Draws the two buttons as squares of this side, after `leading` in one
+   * scrolling line — `V-Compose`'s tiles. Only the v3 post composer asks:
+   * the correction composer's bar sits beside its Send, where a tile does
+   * not fit. The picker, the recorder and their limits are the same either
+   * way; only the drawing changes.
+   */
+  tile?: number
+  /** What goes before the tiles in that line: the thumbnails already picked. */
+  leading?: ReactNode
 }
 
 /**
@@ -54,8 +64,11 @@ export function AttachmentBar({
   disabled,
   voiceNote = true,
   mediaLabel,
+  tile,
+  leading,
 }: AttachmentBarProps) {
   const styles = useStyles()
+  const tiles = useAttachmentTileStylesV3()
   const { colors, v3 } = useTheme()
   const v3Look = useV3Home()
   // The glyphs' colour: the ink on the pills, and on the stop's ink disc its own text colour.
@@ -154,6 +167,61 @@ export function AttachmentBar({
   const photoDisabled = disabled || hasVoice || remaining <= 0
   const voiceDisabled = disabled || pending.length > 0
 
+  if (tile) {
+    const square = { height: tile, width: tile }
+    return (
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={tiles.line}
+        // The thumbnails' crosses sit outside their squares.
+        style={tiles.scroll}
+      >
+        {leading}
+        <Pressable
+          onPress={() => void pick()}
+          disabled={photoDisabled}
+          accessibilityRole="button"
+          accessibilityLabel={t('composer.attachMedia')}
+          accessibilityState={{ disabled: photoDisabled }}
+          style={({ pressed }) => [
+            tiles.tile,
+            tiles.add,
+            square,
+            photoDisabled && styles.chipDisabled,
+            pressed && styles.pressed,
+          ]}
+        >
+          <Feather name="image" size={v3.icon.xl} color={v3.colors.fg} />
+          <Text style={tiles.label} maxFontSizeMultiplier={TILE_TEXT_MAX_SCALE}>
+            {mediaLabel ?? t('composer.attachLibrary')}
+          </Text>
+        </Pressable>
+        {voiceNote ? (
+          <Pressable
+            onPress={() => void toggleRecording()}
+            disabled={voiceDisabled}
+            accessibilityRole="button"
+            accessibilityLabel={t('feed.recordVoice')}
+            accessibilityState={{ disabled: voiceDisabled }}
+            style={({ pressed }) => [
+              tiles.tile,
+              tiles.voice,
+              square,
+              voiceDisabled && styles.chipDisabled,
+              pressed && styles.pressed,
+            ]}
+          >
+            <Feather name="mic" size={v3.icon.xl} color={v3.colors.fg} />
+            <Text style={tiles.label} maxFontSizeMultiplier={TILE_TEXT_MAX_SCALE}>
+              {t('feed.voiceNote')}
+            </Text>
+          </Pressable>
+        ) : null}
+      </ScrollView>
+    )
+  }
+
   return (
     <View style={styles.row}>
       <Pressable
@@ -191,6 +259,12 @@ export function AttachmentBar({
     </View>
   )
 }
+
+/**
+ * How far the tiles' words follow the system text size. The square does not
+ * grow with them, so past this the label would spill out of it.
+ */
+const TILE_TEXT_MAX_SCALE = 1.2
 
 /** This file's sheet, or with `flags.v3Home` on the redesign's (`AttachmentBarV3.styles.ts`). */
 function useStyles() {

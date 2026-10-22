@@ -3512,6 +3512,8 @@ export const ptBR: Localized<EnMessages> = {
     receivedEmptyTitle: 'Suas avaliações vão aparecer aqui',
     receivedEmptyBody:
       'Quem pratica com você pode deixar algumas palavras no seu perfil. Continue conversando.',
+    profileEmptyTitle: 'Ainda não há avaliações',
+    profileEmptyBody: 'Quando alguém deixar algumas palavras neste perfil, elas vão aparecer aqui.',
     writtenEmptyTitle: 'Agradeça por escrito',
     writtenEmptyBody:
       'Tem um ótimo parceiro de prática? Uma avaliação curta no perfil ajuda outras pessoas a encontrá-lo.',

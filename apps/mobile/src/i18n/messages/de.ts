@@ -3579,6 +3579,9 @@ export const de: Localized<EnMessages> = {
     receivedEmptyTitle: 'Hier landen deine Bewertungen',
     receivedEmptyBody:
       'Wer mit dir übt, kann ein paar Worte in deinem Profil hinterlassen. Bleib im Gespräch.',
+    profileEmptyTitle: 'Noch keine Bewertungen',
+    profileEmptyBody:
+      'Wenn Partner ein paar Worte auf diesem Profil hinterlassen, erscheinen sie hier.',
     writtenEmptyTitle: 'Sag Danke in Worten',
     writtenEmptyBody:
       'Tolle Übungspartnerin oder toller Übungspartner? Eine kurze Bewertung im Profil hilft anderen, sie zu finden.',

@@ -3842,6 +3842,9 @@ export const en = {
     receivedEmptyTitle: 'Your reviews will live here',
     receivedEmptyBody:
       'Partners you practise with can leave a few words on your profile. Keep the conversations going.',
+    /** Somebody else's full list, with nothing on it yet. */
+    profileEmptyTitle: 'No reviews yet',
+    profileEmptyBody: 'When partners leave a few words on this profile, they show up here.',
     writtenEmptyTitle: 'Say thanks in writing',
     writtenEmptyBody:
       'Had a great practice partner? A short review on their profile helps others find them.',

@@ -3483,6 +3483,8 @@ export const tr: Localized<EnMessages> = {
     receivedEmptyTitle: 'Yorumların burada görünecek',
     receivedEmptyBody:
       'Pratik yaptığın kişiler profiline birkaç söz bırakabilir. Sohbetlere devam et.',
+    profileEmptyTitle: 'Henüz yorum yok',
+    profileEmptyBody: 'Partnerler bu profile birkaç söz bıraktığında burada görünür.',
     writtenEmptyTitle: 'Teşekkürünü yazıya dök',
     writtenEmptyBody:
       'Harika bir pratik partnerin mi var? Profiline bırakacağın kısa bir yorum, başkalarının da onu bulmasına yardım eder.',
