@@ -20,6 +20,11 @@ interface HeroTileProps {
   /** A line under the unit: how long it takes, the longest run. */
   detail?: string
   /**
+   * A full-width line above the button, beside a dashed ring: what pressing it
+   * also does elsewhere — Echo's "Closes today's third ring · +5 tokens".
+   */
+  note?: string
+  /**
    * The figure and its unit read as one, when the two apart would not make
    * sense — "12 cards due" from `echo.due` rather than "12", "cards due".
    */
@@ -40,7 +45,15 @@ interface HeroTileProps {
  * the figure is read and the pill is pressed. A hero without an action — the
  * streak's — is a heading, and is not pressable at all.
  */
-export function HeroTile({ tone, value, unit, detail, accessibilityLabel, action }: HeroTileProps) {
+export function HeroTile({
+  tone,
+  value,
+  unit,
+  detail,
+  note,
+  accessibilityLabel,
+  action,
+}: HeroTileProps) {
   const styles = useStyles()
   const { v3 } = useTheme()
   const ground = tone === 'blue' ? v3.colors.blue : v3.hues[tone]
@@ -76,6 +89,13 @@ export function HeroTile({ tone, value, unit, detail, accessibilityLabel, action
           {detail ? <Text style={[styles.detail, { color }]}>{detail}</Text> : null}
         </View>
       </View>
+      {note ? (
+        <View style={styles.note}>
+          {/* Dashed: the ring this fills, still open. Decoration — the words say it. */}
+          <View style={[styles.ring, { borderColor: color }]} />
+          <Text style={[styles.noteText, { color }]}>{note}</Text>
+        </View>
+      ) : null}
       {action ? (
         <Button
           label={action.label}
@@ -102,4 +122,14 @@ const useStyles = makeStyles(({ v3 }) => ({
   words: { flexShrink: 1, gap: v3.space[2], paddingBottom: v3.space[4] },
   unit: v3.type.headline,
   detail: { ...v3.type.callout, fontWeight: '600' },
+  note: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8] },
+  ring: {
+    borderRadius: v3.radius.pill,
+    borderStyle: 'dashed',
+    borderWidth: 2,
+    height: 16,
+    width: 16,
+  },
+  // Caption, a step under the detail: the drawing keeps it to one line at 390pt.
+  noteText: { ...v3.type.caption, flexShrink: 1, fontWeight: '600' },
 }))

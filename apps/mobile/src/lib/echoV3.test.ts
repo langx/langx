@@ -1,6 +1,6 @@
-import { ECHO_REVIEW_DURATION_MAX_MS, TOKEN_RULES, type EchoAward } from '@langx/shared'
+import { ECHO_REVIEW_DURATION_MAX_MS, SRS_RULES, TOKEN_RULES, type EchoAward } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
-import { boundedEchoReviews, planEchoDone, reviewMinutes } from './echoV3'
+import { boundedEchoReviews, echoRingNote, planEchoDone, reviewMinutes } from './echoV3'
 
 const CAP = TOKEN_RULES.caps.echoSessionsPerDay
 const PAY = TOKEN_RULES.award.echoSession
@@ -133,5 +133,34 @@ describe('boundedEchoReviews', () => {
       4000,
     ])
     expect(sent.reviews[0]).toMatchObject({ reviewId: 'rv-a-0000', cardId: 'a', grade: 'good' })
+  })
+})
+
+describe('echoRingNote', () => {
+  const SIZE = SRS_RULES.sessionSize
+
+  it('names the session token when a fresh day has a full session due', () => {
+    expect(echoRingNote({ due: SIZE, reviewedToday: 0, sessionsToday: 0 })).toEqual({ tokens: PAY })
+  })
+
+  it('closes the ring without a token when too few cards fill a session', () => {
+    expect(echoRingNote({ due: SIZE - 1, reviewedToday: 0, sessionsToday: 0 })).toEqual({
+      tokens: null,
+    })
+  })
+
+  it('names no token without the server count, or with the day already paid', () => {
+    expect(echoRingNote({ due: SIZE, reviewedToday: 0, sessionsToday: undefined })).toEqual({
+      tokens: null,
+    })
+    expect(echoRingNote({ due: SIZE, reviewedToday: 0, sessionsToday: CAP })).toEqual({
+      tokens: null,
+    })
+  })
+
+  it('says nothing once the ring is closed, unknown, or there is nothing due', () => {
+    expect(echoRingNote({ due: SIZE, reviewedToday: 3, sessionsToday: 0 })).toBeNull()
+    expect(echoRingNote({ due: SIZE, reviewedToday: undefined, sessionsToday: 0 })).toBeNull()
+    expect(echoRingNote({ due: 0, reviewedToday: 0, sessionsToday: 0 })).toBeNull()
   })
 })

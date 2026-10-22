@@ -545,6 +545,7 @@ export const tr: Localized<EnMessages> = {
     postToFeed: 'Akışa gönder',
     subtitle: 'Sohbetlerindeki cümleler, tam unutmak üzereyken geri gelir.',
     dueUnit: { one: 'kart bekliyor', other: 'kart bekliyor' },
+    closesRing: 'Bugünün üçüncü halkasını kapatır',
     aboutMinutes: { one: 'yaklaşık {count} dakika', other: 'yaklaşık {count} dakika' },
     gradeInMinutes: {
       one: '{grade}, {count} dakika sonra yeniden',

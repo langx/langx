@@ -556,6 +556,7 @@ export const de: Localized<EnMessages> = {
     postToFeed: 'Im Feed posten',
     subtitle: 'Sätze aus deinen Chats kommen zurück, kurz bevor du sie vergessen würdest.',
     dueUnit: { one: 'Karte fällig', other: 'Karten fällig' },
+    closesRing: 'Schließt den dritten Kreis von heute',
     aboutMinutes: { one: 'etwa {count} Minute', other: 'etwa {count} Minuten' },
     gradeInMinutes: {
       one: '{grade}, wieder in {count} Minute',

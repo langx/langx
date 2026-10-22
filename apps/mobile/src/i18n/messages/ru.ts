@@ -600,6 +600,7 @@ export const ru: Localized<EnMessages> = {
       many: 'карточек ждут',
       other: 'карточки ждут',
     },
+    closesRing: 'Замыкает третий круг на сегодня',
     aboutMinutes: {
       one: 'примерно {count} минута',
       few: 'примерно {count} минуты',

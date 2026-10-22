@@ -549,6 +549,7 @@ export const es: Localized<EnMessages> = {
     postToFeed: 'Publicar en el muro',
     subtitle: 'Las frases de tus chats vuelven justo antes de que las olvides.',
     dueUnit: { one: 'tarjeta pendiente', other: 'tarjetas pendientes' },
+    closesRing: 'Completa el tercer círculo de hoy',
     aboutMinutes: { one: 'alrededor de {count} minuto', other: 'alrededor de {count} minutos' },
     gradeInMinutes: {
       one: '{grade}, vuelve en {count} minuto',

@@ -600,6 +600,7 @@ export const ar: Localized<EnMessages> = {
       many: 'بطاقة للمراجعة',
       other: 'بطاقة للمراجعة',
     },
+    closesRing: 'يُكمل الدائرة الثالثة لليوم',
     aboutMinutes: {
       zero: 'نحو {count} دقيقة',
       one: 'نحو دقيقة واحدة',

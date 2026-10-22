@@ -556,6 +556,7 @@ export const fr: Localized<EnMessages> = {
     postToFeed: 'Publier dans le fil',
     subtitle: 'Les phrases de tes discussions reviennent juste avant que tu les oublies.',
     dueUnit: { one: 'carte à revoir', other: 'cartes à revoir' },
+    closesRing: 'Complète le troisième cercle du jour',
     aboutMinutes: { one: 'environ {count} minute', other: 'environ {count} minutes' },
     gradeInMinutes: {
       one: '{grade}, revient dans {count} minute',

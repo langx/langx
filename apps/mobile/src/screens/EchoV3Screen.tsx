@@ -24,7 +24,7 @@ import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useDisplayNames, useLocale, useT } from '../i18n'
 import { chooseAlert } from '../lib/alert'
 import { authClient } from '../lib/auth-client'
-import { reviewMinutes } from '../lib/echoV3'
+import { echoRingNote, reviewMinutes } from '../lib/echoV3'
 import { compactCount, dueInCompact } from '../lib/format'
 import { requireAccount } from '../lib/requireAccount'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../lib/theme'
@@ -70,6 +70,12 @@ export function EchoV3Screen() {
   const due = lang ? (chosen?.due ?? 0) : (counts?.due ?? 0)
   const total = lang ? (chosen?.total ?? 0) : (counts?.total ?? 0)
   const minutes = reviewMinutes(due, counts?.secondsPerCard)
+  // The server's answer only: the saved copy's `reviewedToday` may be a day old.
+  const ring = echoRingNote({
+    due,
+    reviewedToday: summary.data?.reviewedToday,
+    sessionsToday: summary.data?.sessionsToday,
+  })
   const packRows = packs.data?.items ?? []
   const nextDue = summary.data?.nextDue ? dueInCompact(summary.data.nextDue, { t }) : null
   const loading = summary.isPending && !counts
@@ -135,6 +141,14 @@ export function EchoV3Screen() {
           value={compactCount(due, locale)}
           unit={t('echo.dueUnit', { count: due })}
           {...(minutes !== null ? { detail: t('echo.aboutMinutes', { count: minutes }) } : {})}
+          {...(ring
+            ? {
+                note:
+                  ring.tokens !== null
+                    ? `${t('echo.closesRing')} · ${t('echo.tokensEarned', { count: ring.tokens })}`
+                    : t('echo.closesRing'),
+              }
+            : {})}
           accessibilityLabel={t('echo.due', { count: due })}
           action={{ label: t('home.echoStart'), icon: 'play', onPress: () => void startSession() }}
         />

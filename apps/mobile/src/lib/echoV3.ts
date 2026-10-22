@@ -1,5 +1,6 @@
 import {
   clampEchoDurationMs,
+  SRS_RULES,
   TOKEN_RULES,
   type EchoAward,
   type SubmitEchoReviewsInput,
@@ -21,6 +22,36 @@ export function reviewMinutes(
 ): number | null {
   if (!secondsPerCard || cards <= 0) return null
   return Math.max(1, Math.round((cards * secondsPerCard) / 60))
+}
+
+/**
+ * What starting a review now does for Home's Today's three, whose third ring
+ * is Echo's: null when it would do nothing, or when that cannot be told.
+ *
+ * The ring closes on any card answered in the summary's rolling day, so this
+ * speaks only while `reviewedToday` is zero — read off the server's answer,
+ * never the device's saved copy, which can be a day old. The token is
+ * `TOKEN_RULES.award.echoSession`, paid per `SRS_RULES.sessionSize` cards
+ * graded (`completedEchoSessions`), so it is named only when enough cards are
+ * due to fill a session and today's paid sessions are not used up. With
+ * nothing reviewed in the last twenty-four hours none of the UTC day's are
+ * either, so `sessionsToday` is zero here unless the server says otherwise.
+ */
+export function echoRingNote({
+  due,
+  reviewedToday,
+  sessionsToday,
+}: {
+  due: number
+  reviewedToday: number | undefined
+  sessionsToday: number | undefined
+}): { tokens: number | null } | null {
+  if (reviewedToday !== 0 || due <= 0) return null
+  const pays =
+    due >= SRS_RULES.sessionSize &&
+    sessionsToday !== undefined &&
+    sessionsToday < TOKEN_RULES.caps.echoSessionsPerDay
+  return { tokens: pays ? TOKEN_RULES.award.echoSession : null }
 }
 
 export interface EchoDoneInput {
