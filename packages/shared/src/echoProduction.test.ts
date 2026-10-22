@@ -125,6 +125,17 @@ describe('how close the answer was', () => {
     expect(productionVerdict('わたしはがくせいです', front)).toBe('wrong')
   })
 
+  /*
+   * The same rule when the front itself is kana — a pack word like がくせい.
+   * NFD splits が into か and a combining voicing mark, and the accent strip
+   * used to drop the mark, so the unvoiced word read as close.
+   */
+  it('keeps a voiced sound apart when the front is kana', () => {
+    expect(productionVerdict('かくせい', 'がくせい')).toBe('wrong')
+    expect(productionVerdict('はん', 'ぱん')).toBe('wrong')
+    expect(productionVerdict('ガクセイ', 'ガクセイ。')).toBe('close')
+  })
+
   it('never decides the grade — it only reports', () => {
     // The four buttons belong to the person: only they know whether they knew
     // it or guessed it. This function returns a verdict and nothing else.

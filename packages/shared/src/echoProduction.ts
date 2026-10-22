@@ -106,9 +106,11 @@ function normalise(value: string): string {
       // Decompose, then drop the combining marks: `é` → `e`, `ç` → `c`.
       // In Arabic the same step drops the vowel marks and the hamza a seat
       // carries (`أ` → `ا`, `ئ` → `ي`), which is what a learner on a phone
-      // keyboard leaves out; Cyrillic has nothing to decompose.
+      // keyboard leaves out; Cyrillic has nothing to decompose. Kana's two
+      // voicing marks are kept: NFD splits が into か and one of them, and
+      // が is a different sound — and so a different word — from か.
       .normalize('NFD')
-      .replace(/\p{M}+/gu, '')
+      .replace(/[^\P{M}\u3099\u309A]+/gu, '')
       // The letters that are one letter to the ear and two to the keyboard.
       // Turkish `ı` against `i`: a lowercase that ran without the Turkish
       // locale turned `I` into `i`, and a learner without a Turkish keyboard
