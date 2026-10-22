@@ -47,13 +47,13 @@ import type {
   PostCorrection,
   PronunciationAnswer,
 } from '../api/types'
+import { ApiRequestError } from '../api/client'
 import type { MessageKey } from '../i18n'
 import { AudioBubble, MediaGallery } from '../components/MediaBubble'
 import { CommentThread } from '../components/CommentThread'
 import { PhotoViewer } from '../components/PhotoViewer'
 import { LoadFailed } from '../components/LoadFailed'
 import { PostRepliesSkeleton, PostThreadSkeleton } from '../components/skeletons/PostThreadSkeleton'
-import { CrossFade } from '../components/ui/CrossFade'
 import { usePostFromFeed } from '../hooks/usePostFromFeed'
 import { Avatar } from '../components/ui/Avatar'
 import { Button } from '../components/ui/Button'
@@ -144,6 +144,7 @@ type Row =
   | { type: 'title'; key: string; label: MessageKey }
   | { type: 'empty'; key: string; title: MessageKey; body: MessageKey }
   | { type: 'reply'; key: string; item: PostCorrection | PronunciationAnswer }
+  | { type: 'skeleton'; key: string }
 
 /** The comment composer's target when it is a reply rather than a new comment. */
 interface ReplyTarget {
@@ -167,7 +168,13 @@ function topOf(items: readonly (PostCorrection | PronunciationAnswer)[]): string
 
 type PostStyles = ReturnType<typeof useStyles> | ReturnType<typeof usePostStylesV3>
 
-/** The list's rows while the thread is still on its way; one array, so the prop is stable. */
+/**
+ * The list's rows while the thread under a post drawn from the feed is still
+ * on its way: one placeholder where the replies will be. One array, so the
+ * prop is stable.
+ */
+const LOADING_ROWS: Row[] = [{ type: 'skeleton', key: 'skeleton' }]
+/** And none at all while the footer says the thread failed to load. */
 const NO_ROWS: Row[] = []
 
 /** Module-level so the list is handed the same function on every render. */
@@ -388,7 +395,13 @@ export function PostScreen({
    * it lands. Only the replies and comments wait (`threadReady`).
    */
   const fromFeed = usePostFromFeed(id)
-  const post = query.data?.pages[0]?.post ?? fromFeed
+  /*
+   * Except after a 404: the post was deleted, hidden or is from somebody
+   * blocked, and the feed's copy would draw it as live. That goes to the
+   * full-screen failure below, as a cold open of it would.
+   */
+  const gone = query.error instanceof ApiRequestError && query.error.status === 404
+  const post = query.data?.pages[0]?.post ?? (gone ? undefined : fromFeed)
   const asks = post ? asksOf(post) : []
   const correcting = asks.includes('correction')
   const pronouncing = asks.includes('pronunciation')
@@ -577,17 +590,20 @@ export function PostScreen({
   ]
 
   /*
+   * What the section under the post waits for: its corrections page, the
+   * comments and, on a post that asks for them, the recordings. Until they
+   * answer, a post drawn from the feed shows a skeleton there rather than
+   * "no corrections yet", which would be a false claim for the length of a
+   * round trip. The `pronouncing` guard matters: a disabled query stays
+   * pending forever.
+   */
+  const threadReady =
+    query.data !== undefined && !commentQuery.isPending && (!pronouncing || !answerQuery.isPending)
+  /*
    * Paging runs down the list as it is drawn: corrections until there are no
    * more, then recordings. Each is bounded at one reply per person per post,
    * so neither can hold the other back for long.
    */
-  /*
-   * What the section under the post waits for: its corrections page and the
-   * comments. Until both answer, a post drawn from the feed shows a skeleton
-   * there rather than "no corrections yet", which would be a false claim for
-   * the length of a round trip.
-   */
-  const threadReady = query.data !== undefined && !commentQuery.isPending
   const pager = correcting && query.hasNextPage ? query : pronouncing ? answerQuery : query
 
   const router = useRouter()
@@ -950,6 +966,7 @@ export function PostScreen({
       if (row.type === 'title') {
         return <Text style={styles.sectionTitle}>{t(row.label)}</Text>
       }
+      if (row.type === 'skeleton') return <PostRepliesSkeleton />
       if (row.type === 'empty') {
         return (
           <Text style={styles.empty}>
@@ -1059,7 +1076,7 @@ export function PostScreen({
           <FlatList
             ref={listRef}
             {...keyboard.scrollProps}
-            data={threadReady ? rows : NO_ROWS}
+            data={threadReady ? rows : query.isError ? NO_ROWS : LOADING_ROWS}
             keyExtractor={rowKey}
             contentContainerStyle={styles.list}
             refreshControl={<RefreshControl {...pull} />}
@@ -1212,10 +1229,20 @@ export function PostScreen({
              * bounded map is both cheaper and honest about what it is.
              */
             ListFooterComponent={
-              !threadReady && query.isError ? (
-                <LoadFailed onRetry={() => void query.refetch()} />
+              /*
+               * Empty until the thread is ready: the placeholder stands in the
+               * rows' slot, where the replies will land, and a plain swap
+               * replaces it. A fade here covered the wrong section — the rows
+               * arrive above the footer, not inside it.
+               */
+              !threadReady ? (
+                query.isError ? (
+                  <LoadFailed
+                    onRetry={() => void Promise.all([query.refetch(), commentQuery.refetch()])}
+                  />
+                ) : null
               ) : (
-                <CrossFade ready={threadReady} skeleton={<PostRepliesSkeleton />}>
+                <>
                   <View
                     onLayout={(event: LayoutChangeEvent) => {
                       layout.current.footer = event.nativeEvent.layout.height
@@ -1363,7 +1390,7 @@ export function PostScreen({
                       />
                     </View>
                   </View>
-                </CrossFade>
+                </>
               )
             }
           />
