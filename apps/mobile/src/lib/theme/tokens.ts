@@ -377,13 +377,17 @@ const v3LightColors = {
   track: '#dcdcd5',
   /**
    * The unfilled bars of a level glyph (`LevelBars`), drawn beside `fg` ones.
-   * Not `track`: in dark, `track` sat at 1.35:1 on `surface`, so a learner's
-   * level read as its filled bars alone. Dark lifts it to clear 3:1 against
-   * the ground and against the filled bars; light keeps `track`'s value.
+   * Not `track`: it sat at 1.35:1 on `surface` in dark (1.23:1 in light), so
+   * a learner's level read as its filled bars alone. This one clears 3:1
+   * against the ground and the filled bars in both schemes: 3.1:1 on
+   * `surface` and 5.2:1 under `fg` here.
    */
-  levelRest: '#dcdcd5',
-  /** The same, on a selected level cell's `pill`, beside `pillText` bars. */
-  levelRestOnPill: '#5a5f69',
+  levelRest: '#878b84',
+  /**
+   * The same, on a selected level cell's `pill`, beside `pillText` bars:
+   * 4.2:1 on the ink pill, 4.3:1 under its white bars.
+   */
+  levelRestOnPill: '#757a84',
   /** The selected tab's pill. */
   tabOn: '#e8e7e1',
   /** Echo's tab and Echo's own surfaces: set apart by tint, never by size. */
@@ -480,7 +484,7 @@ const v3DarkColors: V3Colors = {
   line: '#2a2d33',
   track: '#2f333b',
   // One grey between the ground and the ink: 3.4:1 on `surface`, 3.9:1 on
-  // `bg`, 4.5:1 under `fg` and on `pill`, 3.6:1 under `pillText`.
+  // `bg`, 4.48:1 under `fg` and on `pill`, 3.6:1 under `pillText`.
   levelRest: '#6b707a',
   levelRestOnPill: '#6b707a',
   tabOn: '#2a2d33',

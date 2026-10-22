@@ -277,8 +277,8 @@ Linocut) and nine Pro (Iznik Tile, Lacquer Gold, Stained Glass, Night Hoop,
 Indigo Dye, Marquetry, Mosaic, Origami Fold, Enamel Pin). The old Pro and New
 Year icons leave the picker; their native entries stay for one release. When
 Pro lapses, the icon stays and shows as locked in the picker (decided by
-Behic, 21 Oct). Alternate icons are native assets, so they move
-the fingerprint and ship only in the 3.0 binary, never by OTA.
+Behic, 21 Oct). Alternate icons are native assets, so they move the
+fingerprint and ship only in the 3.0 binary, never by OTA.
 
 **Default avatars.** 144 crafted portraits — 48 in each of three pools, women,
 men and neutral — on six grounds, drawn by the API as images so no binary

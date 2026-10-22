@@ -2817,7 +2817,7 @@ export const tr: Localized<EnMessages> = {
     polyglotNamaste: 'Namaste (Hintçe merhaba)',
     polyglotPrivet: 'Privet (Rusça selam)',
     polyglotKonnichiwa: 'Konnichiwa (Japonca merhaba)',
-    polyglotShukran: 'Şukran (Arapça teşekkürler)',
+    polyglotShukran: 'Shukran (Arapça teşekkürler)',
     polyglotDanke: 'Danke (Almanca teşekkürler)',
     polyglotGrazie: 'Grazie (İtalyanca teşekkürler)',
     polyglotXiexie: 'Xièxie (Çince teşekkürler)',
