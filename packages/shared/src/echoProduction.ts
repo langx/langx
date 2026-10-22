@@ -41,11 +41,32 @@ export const ECHO_PRODUCTION_MAX_LENGTH = 40
  *   asks, and a coin flip would make "why did it ask me to type this time"
  *   unanswerable. Alternating also keeps recognition in the rotation, which
  *   is what actually carries a card that has started to slip.
+ *
+ * And never for a card whose back is not a meaning — see `backAddsMeaning`.
+ * The back is the prompt here, so a back that is the sentence again would put
+ * the answer on screen as the question, and an empty one would ask nothing.
  */
-export function asksProduction(srs: EchoSrs, front: string): boolean {
+export function asksProduction(srs: EchoSrs, front: string, back: string): boolean {
   if (srs.state !== 'review') return false
   if (front.trim().length > ECHO_PRODUCTION_MAX_LENGTH) return false
+  if (!backAddsMeaning(front, back)) return false
   return srs.reps % 2 === 0
+}
+
+/**
+ * Whether a card's back says something its front does not.
+ *
+ * False for an empty back, and for a back that is the front again once case,
+ * punctuation, spacing and accents are set aside. The second is what a
+ * translation provider hands back when it is asked to translate a sentence
+ * into the language it is already in — a Turkish message kept by somebody
+ * whose own language is Turkish — and a card stored that way showed the same
+ * line on both sides. The capture stores an empty back instead, and the
+ * session treats an old card stored that way as having no meaning yet.
+ */
+export function backAddsMeaning(front: string, back: string): boolean {
+  const meaning = normalise(back)
+  return meaning.length > 0 && meaning !== normalise(front)
 }
 
 /**

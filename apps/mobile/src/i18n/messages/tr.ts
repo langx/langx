@@ -445,6 +445,7 @@ export const tr: Localized<EnMessages> = {
     recordIt: 'Kendin söyle',
     removeAudio: 'Kaydı kaldır',
     sessionProgress: '{done} / {total}',
+    noMeaningYet: 'Bu kartta henüz bir anlam yok.',
     show: 'Cevabı göster',
     again: 'Tekrar',
     hard: 'Zor',

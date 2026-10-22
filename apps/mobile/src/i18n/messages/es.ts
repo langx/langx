@@ -450,6 +450,7 @@ export const es: Localized<EnMessages> = {
     recordIt: 'Dilo tú',
     removeAudio: 'Quitar la grabación',
     sessionProgress: '{done} de {total}',
+    noMeaningYet: 'Esta tarjeta aún no tiene significado.',
     show: 'Ver la respuesta',
     again: 'Otra vez',
     hard: 'Difícil',

@@ -448,6 +448,7 @@ export const ptBR: Localized<EnMessages> = {
     recordIt: 'Fale você mesmo',
     removeAudio: 'Remover a gravação',
     sessionProgress: '{done} de {total}',
+    noMeaningYet: 'Este cartão ainda não tem significado.',
     show: 'Ver a resposta',
     again: 'De novo',
     hard: 'Difícil',
