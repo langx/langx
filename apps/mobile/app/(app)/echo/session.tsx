@@ -192,13 +192,13 @@ export default function EchoSessionScreen() {
     if (!queue.isPaused && !queue.isError) return
     void readEchoSnapshot().then((snapshot) => {
       if (!snapshot) return
-      const cards = offlineQueue(snapshot, new Date())
+      const cards = offlineQueue(snapshot, new Date(), { lang, partner })
       deckAt.current = Date.now()
       setDeck(cards)
       setOffline(true)
       started(cards.length, true)
     })
-  }, [deck, queue.data, queue.isPaused, queue.isError])
+  }, [deck, queue.data, queue.isPaused, queue.isError, lang, partner])
 
   /**
    * Counts the session, and only a session there was something to do in.

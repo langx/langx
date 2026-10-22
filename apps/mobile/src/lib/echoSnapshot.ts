@@ -125,9 +125,24 @@ export function withoutPending(snapshot: EchoSnapshot, reviewIds: readonly strin
  * and putting one back in front of somebody would ask them to grade the same
  * card twice in one sitting, which the ledger would then refuse — so the
  * second answer would be silently thrown away.
+ *
+ * And held to the session's language and partner, as `dueQueue` is on the
+ * server: the file keeps whichever deck was fetched last, not the one this
+ * session asked for, so a Spanish session opened with no network drew the
+ * French deck saved the day before — the mixed deck review never is.
  */
-export function offlineQueue(snapshot: EchoSnapshot, now: Date): EchoCard[] {
+export function offlineQueue(
+  snapshot: EchoSnapshot,
+  now: Date,
+  scope: { lang?: string | undefined; partner?: string | undefined } = {},
+): EchoCard[] {
   if (!snapshotIsFresh(snapshot, now)) return []
   const answered = new Set(snapshot.pending.map((item) => item.cardId))
-  return snapshot.cards.filter((card) => !answered.has(card._id))
+  const { lang, partner } = scope
+  return snapshot.cards.filter(
+    (card) =>
+      !answered.has(card._id) &&
+      (!lang || card.lang === lang) &&
+      (!partner || (card.source.kind === 'chat' && card.source.partnerId === partner)),
+  )
 }
