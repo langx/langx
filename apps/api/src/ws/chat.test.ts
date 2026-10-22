@@ -1590,4 +1590,76 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
       await handle.db.collection(COLLECTIONS.pollAnswers).countDocuments({ pollId: 'poll-ws' }),
     ).toBe(1)
   })
+
+  /**
+   * The answer acks carry the message as the answerer may see it. Raw, they
+   * would say who else starred or hid it — the other person's business.
+   */
+  describe('an answer acks the message as the answerer sees it', () => {
+    type Ack = { ok: boolean; data?: Record<string, unknown>; error?: unknown }
+
+    function emitForAck(socket: ClientSocket, event: string, payload: Record<string, unknown>) {
+      return new Promise<Ack>((resolve) => socket.emit(event, payload, resolve))
+    }
+
+    /** Sent by Alice, then starred and hidden by her, so the row carries both. */
+    async function askedByAlice(prefix: string, event: string, payload: Record<string, unknown>) {
+      const alice = await newUser(`${prefix}-alice@example.com`)
+      const bob = await newUser(`${prefix}-bob@example.com`)
+      const conversation = await startConversation(alice, bob.userId, 'opening')
+      const aliceSocket = await connectSocket(alice.cookie)
+      const sent = await emitForAck(aliceSocket, event, {
+        conversationId: conversation._id,
+        ...payload,
+      })
+      expect(sent.ok, JSON.stringify(sent.error)).toBe(true)
+      const messageId = String(sent.data?._id)
+      await handle.db
+        .collection(COLLECTIONS.messages)
+        .updateOne(
+          { _id: new ObjectId(messageId) },
+          { $set: { starredBy: [alice.userId], hiddenFor: [alice.userId] } },
+        )
+      const bobSocket = await connectSocket(bob.cookie)
+      return { bobSocket, conversationId: conversation._id, messageId }
+    }
+
+    function expectOwnView(ack: Ack) {
+      expect(ack.ok, JSON.stringify(ack.error)).toBe(true)
+      expect(ack.data).not.toHaveProperty('starredBy')
+      expect(ack.data).not.toHaveProperty('hiddenFor')
+      // Alice's star and hide are hers; to Bob the message is neither.
+      expect(ack.data).not.toHaveProperty('starred')
+      expect(ack.data).not.toHaveProperty('hidden')
+    }
+
+    it('for a quiz answer', async () => {
+      const { bobSocket, conversationId, messageId } = await askedByAlice(
+        'ws-quiz-view',
+        'message:quiz',
+        { question: 'Which one?', options: ['this', 'that'], correctIndex: 0 },
+      )
+      expectOwnView(
+        await emitForAck(bobSocket, 'quiz:answer', { conversationId, messageId, index: 1 }),
+      )
+    })
+
+    it('for a meeting response', async () => {
+      const { bobSocket, conversationId, messageId } = await askedByAlice(
+        'ws-meeting-view',
+        'message:meeting',
+        {
+          startsAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+          durationMinutes: 30,
+        },
+      )
+      expectOwnView(
+        await emitForAck(bobSocket, 'meeting:respond', {
+          conversationId,
+          messageId,
+          status: 'accepted',
+        }),
+      )
+    })
+  })
 })

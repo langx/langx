@@ -630,7 +630,7 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
         .then((input) => answerQuiz(app.mongo.db, userId, input))
         .then(({ message, conversation }) => {
           fanOutMessageUpdate(io, conversation, message, 'both', userId)
-          ack?.({ ok: true, data: message })
+          ack?.({ ok: true, data: toMessageView(message, userId) })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })
@@ -664,7 +664,7 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
         .then((input) => respondToMeeting(app.mongo.db, userId, input))
         .then(({ message, conversation }) => {
           fanOutMessageUpdate(io, conversation, message, 'both', userId)
-          ack?.({ ok: true, data: message })
+          ack?.({ ok: true, data: toMessageView(message, userId) })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })
