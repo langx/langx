@@ -3,6 +3,7 @@ import { File, Paths } from 'expo-file-system'
 import { useState } from 'react'
 import { ActivityIndicator, Modal, Platform, Pressable, Text } from 'react-native'
 import { useCreateShareCard } from '../api/queries'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
 import { useT, type MessageKey } from '../i18n'
 import { track } from '../lib/analytics'
@@ -75,6 +76,7 @@ export function ShareCardSheet({
   request: ShareCardRequest | null
   onClose: () => void
 }) {
+  const reduce = useReduceMotion()
   const styles = useStyles()
   const t = useT()
   const v3Look = useV3Home()
@@ -164,7 +166,7 @@ export function ShareCardSheet({
     <Modal
       visible={request !== null}
       transparent
-      animationType="slide"
+      animationType={reduce ? 'none' : 'slide'}
       onRequestClose={onClose}
       onDismiss={() => {
         if (!pending) return

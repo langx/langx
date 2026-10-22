@@ -61,6 +61,16 @@ Numbers are store order, zero-padded so a plain sort is the order. Play skips
 lowered until the purchase area runs off the tile, so the listing never
 carries one storefront's price into the others.
 
+To upload, copy the set into the branding checkout without the run's working
+files, then run the two collect scripts in `apps/mobile/scripts`, which read
+`branding/3.x`:
+
+```bash
+rsync -a --exclude .work ../store-shots-3.0/ ../branding/3.x/
+node apps/mobile/scripts/collect-store-screenshots.mjs   # then fastlane deliver
+node apps/mobile/scripts/collect-play-screenshots.mjs    # then fastlane android play
+```
+
 ## Sizes, and where they come from
 
 Checked 21 Oct 2026.

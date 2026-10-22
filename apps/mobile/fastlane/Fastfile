@@ -53,8 +53,8 @@ end
 #
 # There is no by-hand fallback for this one. The Play Console keeps no
 # `<input type=file>` in its page, so "Add assets" opens the operating
-# system's file picker and nothing but a person can drive it — 192 times,
-# across eight languages and three device sizes, plus a banner each.
+# system's file picker and nothing but a person can drive it — 144 times,
+# across six languages and three device sizes, plus a banner each.
 #
 # The key is the `eas-submit@` service account, the one EAS already submits
 # Android builds with, so it has the Android Publisher access supply needs.
@@ -84,7 +84,7 @@ platform :android do
       # Two separate flags for two separate slots: `screenshots` is the set of
       # eight this lane exists for, `images` is the single-file types — the
       # feature graphic, the icon, the TV banner. Both go up, because both are
-      # drawn from the same set in `branding/2.x` and a listing showing new
+      # drawn from the same set in `branding/3.x` and a listing showing new
       # screenshots above an old banner shows two versions of the app at once.
       #
       # Only the feature graphic actually moves: supply walks its list of image

@@ -1,13 +1,14 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Image } from 'expo-image'
 import { useEffect, useRef } from 'react'
-import { Animated, Easing, ScrollView, Text, View } from 'react-native'
+import { Animated, ScrollView, Text, View } from 'react-native'
 import logo from '../../../assets/brand/logo-rounded.png'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useT } from '../../i18n'
 import type { LanguagePair } from '../../lib/welcomePairs'
 import { DISPLAY_FONT, makeStyles, useTheme, type PartnerHue } from '../../lib/theme'
-import { CURVE, DURATION } from '../../lib/theme/motionValues'
+import { EASE_OUT } from '../../lib/theme/motionAnimated'
+import { DURATION } from '../../lib/theme/motionValues'
 import { Button } from '../ui/Button'
 import { PressableScale } from '../ui/PressableScale'
 import { Screen } from '../ui/Screen'
@@ -15,9 +16,6 @@ import { FlameGlyph } from '../ui/StreakFlame'
 import { ExchangeGlyph, useBlackFont } from './WizardV3'
 
 export type WelcomeChoice = 'browse' | 'create' | 'sign_in'
-
-/** `motion.ts`'s `EASE_OUT`, on React Native's `Easing`. */
-const EASE_OUT = Easing.bezier(...CURVE.out)
 
 /** Between one pill settling and the next starting, as today's rows deal in. */
 const STAGGER_MS = 90

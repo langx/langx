@@ -501,6 +501,8 @@ export const en = {
 
     // The session.
     sessionProgress: '{done} of {total}',
+    /** Where the answer goes, on a card whose back is empty or the sentence again. */
+    noMeaningYet: 'No meaning on this card yet.',
     show: 'Show answer',
     again: 'Again',
     hard: 'Hard',
@@ -4306,8 +4308,6 @@ export const en = {
     errQuota: 'You’ve used today’s Copilot answers. More at {time}.',
     /** The same, when the server did not say when. */
     errQuotaNoTime: 'You’ve used today’s Copilot answers.',
-    /** The other person is under 18, so their words are not sent. */
-    errPartnerAge: 'Copilot doesn’t read this chat.',
     errBusy: 'Copilot is busy. Try again later.',
     errNoAnswer: 'Copilot couldn’t answer that.',
     errNetwork: 'Couldn’t reach Copilot.',

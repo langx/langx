@@ -111,6 +111,18 @@ capture cap is an abuse ceiling — Add echo must not become a free translator �
 and is the same on every tier (50). It is not a paywall and it should not be
 sold as one.
 
+**A back that is the front again is no back.** A sentence already in the
+reader's language — a Turkish partner's message kept by a Turkish reader —
+comes back from every translation source unchanged, and until 21 October 2026
+that was stored as the back: the card showed one line on both sides, and a
+production review put the answer up as the question. `backFor` now stores an
+empty back whenever `backAddsMeaning` says the two are the same sentence (case,
+punctuation, spacing and accents aside), the session says the card has no
+meaning yet instead of repeating the front, and production is never asked of
+such a card. Cards kept before then are emptied by
+`apps/api/scripts/backfill-echo-same-backs.ts` (dry run by default, `--apply`
+to write; message and post cards only).
+
 **The card survives the message.** `front` and `back` are copied at capture,
 not referenced. An edited or deleted message, a deleted account, a left
 conversation: the card stands, the deep link simply stops resolving.

@@ -57,8 +57,8 @@ class FakeModel implements StructuredProvider {
 
 const NOW = new Date('2026-10-18T12:00:00Z')
 const ADULT = '1995-06-15'
-/** Seventeen today: eighteen tomorrow. Year-only arithmetic would call this eighteen. */
-const SEVENTEEN = '2008-10-19'
+/** Sixteen: the app's own minimum, and so old enough for Copilot too. */
+const SIXTEEN = '2010-06-15'
 
 describe('Copilot', () => {
   let server: MongoMemoryServer
@@ -189,7 +189,7 @@ describe('Copilot', () => {
     })
 
     it('says so in the status, without failing', async () => {
-      const status = await getCopilotStatus({ ...deps, enabled: false }, me, NOW)
+      const status = await getCopilotStatus({ ...deps, enabled: false }, me)
       expect(status).toMatchObject({ available: false, reason: 'off', consented: true })
       expect(status.quota.limit).toBe(PLAN_LIMITS.free.copilotPer24h)
     })
@@ -203,7 +203,7 @@ describe('Copilot', () => {
       expect(error.reason).toBe('off')
       expect(model.asked).toHaveLength(0)
       expect(await quotaUsed(me)).toBe(0)
-      expect(await getCopilotStatus(deps, me, NOW)).toMatchObject({
+      expect(await getCopilotStatus(deps, me)).toMatchObject({
         available: false,
         reason: 'off',
       })
@@ -261,7 +261,7 @@ describe('Copilot', () => {
       expect(stale.reason).toBe('stale_consent')
 
       await recordCopilotConsent(handle.db, me, COPILOT_RULES.consentVersion, NOW)
-      expect((await getCopilotStatus(deps, me, NOW)).consented).toBe(true)
+      expect((await getCopilotStatus(deps, me)).consented).toBe(true)
       const answer = await askCopilot(deps, me, 'en', check(), NOW)
       expect(answer.source).toBe('ai')
     })
@@ -275,64 +275,37 @@ describe('Copilot', () => {
     })
   })
 
-  describe('for 16- and 17-year-olds', () => {
-    it('is off by default, before consent or anything else is looked at', async () => {
+  /**
+   * Copilot has no age rule of its own: whoever the app lets in may use it,
+   * and a partner's age is not looked at either.
+   */
+  describe('age', () => {
+    it('is open to a 16-year-old', async () => {
       await handle.db
         .collection(COLLECTIONS.profiles)
-        .updateOne({ _id: me as never }, { $set: { birthDate: SEVENTEEN } })
-      const error = await refusal(askCopilot(deps, me, 'en', check(), NOW))
-      expect(error.reason).toBe('age')
-      expect(model.asked).toHaveLength(0)
-      expect((await getCopilotStatus(deps, me, NOW)).reason).toBe('age')
-    })
-
-    it('opens on the eighteenth birthday, not the year before', async () => {
-      await handle.db
-        .collection(COLLECTIONS.profiles)
-        .updateOne({ _id: me as never }, { $set: { birthDate: SEVENTEEN } })
-      const birthday = new Date('2026-10-19T00:30:00Z')
-      expect((await askCopilot(deps, me, 'en', check(), birthday)).source).toBe('ai')
-    })
-
-    /**
-     * Off for them has to mean their words stay here too — not only that
-     * their own button is missing — or any adult they talk to sends them.
-     */
-    it('sends none of their words when an adult asks in a chat with one', async () => {
-      await handle.db
-        .collection(COLLECTIONS.profiles)
-        .updateOne({ _id: partner as never }, { $set: { birthDate: SEVENTEEN } })
-      const text = await addMessage({ senderId: me, body: 'I have a apple.' })
-      const correction = await addMessage({
-        senderId: partner,
-        type: 'correction',
-        body: 'I have an apple.',
-        correction: {
-          targetMessageId: new ObjectId(text),
-          original: 'I have a apple.',
-          corrected: 'I have an apple.',
-        },
-      })
-
-      const ideas = await refusal(
-        askCopilot(deps, me, 'en', { action: 'replyIdeas', conversationId }, NOW),
-      )
-      expect(ideas.reason).toBe('partner_age')
-      const explain = await refusal(
-        askCopilot(
-          deps,
-          me,
-          'en',
-          { action: 'explain', conversationId, messageId: correction },
-          NOW,
-        ),
-      )
-      expect(explain.reason).toBe('partner_age')
-      expect(model.asked).toHaveLength(0)
-      expect(await quotaUsed(me)).toBe(0)
-
-      // Check sends only the asker's own sentence.
+        .updateOne({ _id: me as never }, { $set: { birthDate: SIXTEEN } })
+      expect(await getCopilotStatus(deps, me)).toMatchObject({ available: true, reason: null })
       expect((await askCopilot(deps, me, 'en', check(), NOW)).source).toBe('ai')
+    })
+
+    it("does not check the partner's age for Reply ideas or Explain", async () => {
+      await handle.db
+        .collection(COLLECTIONS.profiles)
+        .updateOne({ _id: partner as never }, { $set: { birthDate: SIXTEEN } })
+      await addMessage({ senderId: me, body: 'Hello!' })
+      const theirs = await addMessage({ senderId: partner, body: 'brb, dinner' })
+
+      const ideas = await askCopilot(deps, me, 'en', { action: 'replyIdeas', conversationId }, NOW)
+      expect(ideas.result.action).toBe('replyIdeas')
+      const explain = await askCopilot(
+        deps,
+        me,
+        'en',
+        { action: 'explain', conversationId, messageId: theirs },
+        NOW,
+      )
+      expect(explain.result.action).toBe('explain')
+      expect(model.asked).toHaveLength(2)
     })
   })
 
@@ -380,17 +353,6 @@ describe('Copilot', () => {
       expect(model.asked).toHaveLength(0)
       expect(await quotaUsed(me)).toBe(0)
     })
-
-    it("never sends a 17-year-old partner's text", async () => {
-      await handle.db
-        .collection(COLLECTIONS.profiles)
-        .updateOne({ _id: partner as never }, { $set: { birthDate: SEVENTEEN } })
-      const id = await addMessage({ senderId: partner, body: 'brb' })
-      const error = await refusal(askCopilot(deps, me, 'en', explain(id), NOW))
-      expect(error.reason).toBe('partner_age')
-      expect(model.asked).toHaveLength(0)
-      expect(await quotaUsed(me)).toBe(0)
-    })
   })
 
   describe('Say it', () => {
@@ -418,13 +380,6 @@ describe('Copilot', () => {
       })
       for (const leak of [me, partner, 'Name of', 'a line of the thread'])
         expect(sent).not.toContain(leak)
-    })
-
-    it('does not ask about the partner, since none of their words are sent', async () => {
-      await handle.db
-        .collection(COLLECTIONS.profiles)
-        .updateOne({ _id: partner as never }, { $set: { birthDate: SEVENTEEN } })
-      expect((await askCopilot(deps, me, 'en', sayIt(), NOW)).source).toBe('ai')
     })
 
     it('refuses a language it does not know, before asking', async () => {

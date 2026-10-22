@@ -1,9 +1,13 @@
 import Feather from '@expo/vector-icons/Feather'
 import { LANGUAGES } from '@langx/shared'
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native'
+import { useLayoutEffect, useRef } from 'react'
+import { Animated, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
+import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useDisplayNames, useLocale, useT } from '../../i18n'
 import type { OnboardingStep } from '../../lib/onboardingStep'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { EASE_OUT } from '../../lib/theme/motionAnimated'
+import { DURATION } from '../../lib/theme/motionValues'
 import { useLanguageSearch } from '../LanguagePicker'
 import { Button } from '../ui/Button'
 import { ICON_BUTTON_TARGET } from '../ui/IconButton'
@@ -47,7 +51,32 @@ export function LanguagesV3({
   const { v3 } = useTheme()
   const { isRtl } = useLocale()
   const wizard = useWizardStyles()
+  const styles = useStyles()
   const onNative = tab === 'native'
+
+  /*
+   * The other tab's list dissolves in rather than replacing this one in a
+   * frame. Only the list that arrives fades: the two are different lists, and
+   * keyed apart (below), so there is no old one left to fade out. Set before
+   * the frame is drawn, or the new list would flash in full first.
+   */
+  const reduceMotion = useReduceMotion()
+  const fade = useRef(new Animated.Value(1)).current
+  const shownTab = useRef(tab)
+  useLayoutEffect(() => {
+    if (shownTab.current === tab) return
+    shownTab.current = tab
+    if (reduceMotion) return
+    fade.setValue(0)
+    // Not stopped on cleanup: a stop part-way would leave the list faint. A
+    // tab tapped again mid-fade starts a new timing, which replaces this one.
+    Animated.timing(fade, {
+      toValue: 1,
+      duration: DURATION.crossfade,
+      easing: EASE_OUT,
+      useNativeDriver: true,
+    }).start()
+  }, [tab, reduceMotion, fade])
 
   return (
     <Screen fluid ground={v3.colors.bg}>
@@ -69,26 +98,28 @@ export function LanguagesV3({
           Keyed by tab, for the reason the route gives: a search typed on one
           tab must not survive into the other.
         */}
-        {onNative ? (
-          <LanguagePickerV3
-            key="native"
-            selected={nativeLanguages}
-            onToggle={onToggleNative}
-            disabledCodes={learning}
-            disabledLabel={t('onboarding.learning')}
-            max={max}
-          />
-        ) : (
-          <LanguagePickerV3
-            key="learning"
-            selected={learning}
-            onToggle={onToggleLearning}
-            disabledCodes={nativeLanguages}
-            disabledLabel={t('onboarding.native')}
-            max={max}
-            multiple
-          />
-        )}
+        <Animated.View style={[styles.picker, { opacity: fade }]}>
+          {onNative ? (
+            <LanguagePickerV3
+              key="native"
+              selected={nativeLanguages}
+              onToggle={onToggleNative}
+              disabledCodes={learning}
+              disabledLabel={t('onboarding.learning')}
+              max={max}
+            />
+          ) : (
+            <LanguagePickerV3
+              key="learning"
+              selected={learning}
+              onToggle={onToggleLearning}
+              disabledCodes={nativeLanguages}
+              disabledLabel={t('onboarding.native')}
+              max={max}
+              multiple
+            />
+          )}
+        </Animated.View>
 
         <View style={wizard.footer}>
           <Text style={wizard.hint}>
@@ -194,6 +225,7 @@ function LanguagePickerV3({
 }
 
 const useStyles = makeStyles(({ v3 }) => ({
+  picker: { flex: 1, minHeight: 0 },
   root: { flex: 1, gap: v3.space[12], minHeight: 0 },
   search: {
     alignItems: 'center',

@@ -74,3 +74,40 @@ export function seekFraction(x: number, width: number): number {
   if (width <= 0) return 0
   return Math.min(1, Math.max(0, x / width))
 }
+
+/**
+ * Further from the player's position than this, and the v3 sweep jumps to it
+ * rather than running on from where it was: that is a seek or a replay, not
+ * the few hundredths two clocks drift apart by between status updates.
+ */
+const SWEEP_SNAP = 0.03
+
+export interface SweepPlan {
+  /** Where to put the sweep at once, or `null` to carry on from where it is. */
+  from: number | null
+  /** How long to run on to the end, linearly, in ms. `0` holds it at `from`. */
+  ms: number
+}
+
+/**
+ * How the v3 voice-note sweep (`WaveformProgress`) follows the player.
+ *
+ * The status arrives a few times a second, so drawing it as it comes is a
+ * bar that steps. Each status instead restarts one linear run to the end,
+ * timed by the real time left, and the sweep moves every frame at the speed
+ * the note plays. Continuing from where the sweep already is, rather than
+ * snapping to the status first, makes each update a tiny change of speed
+ * instead of a visible hop back or forth.
+ *
+ * `secondsLeft` is wall-clock time, already divided by the playback rate.
+ */
+export function sweepPlan(
+  current: number,
+  at: number | null,
+  playing: boolean,
+  secondsLeft: number,
+): SweepPlan {
+  if (at === null) return { from: 0, ms: 0 }
+  if (!playing || secondsLeft <= 0) return { from: at, ms: 0 }
+  return { from: Math.abs(current - at) > SWEEP_SNAP ? at : null, ms: secondsLeft * 1000 }
+}

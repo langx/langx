@@ -2,6 +2,7 @@ import {
   aggregateId,
   asksOf,
   attachmentsOf,
+  backAddsMeaning,
   ECHO_AUDIO_MAX,
   ECHO_FRONT_MAX_LENGTH,
   ECHO_PACE_SAMPLE,
@@ -182,8 +183,26 @@ async function spendCapture(db: Db, profile: Profile): Promise<void> {
  * An empty string when nothing can translate it. A card with a front and no
  * back is still a card — the sentence is still the thing being learned — and
  * failing the capture because a third party is down would lose it.
+ *
+ * Also an empty string when the "translation" is the sentence again. That is
+ * what every source here returns for a sentence already in the reader's
+ * language — a Turkish partner's Turkish message, kept by a Turkish reader —
+ * and stored as the back it made a card whose two sides were the same line.
+ * An empty back is the honest version: the session says there is no meaning
+ * yet, and the card's Edit is where one goes.
  */
 async function backFor(
+  db: Db,
+  deps: CaptureDeps,
+  text: string,
+  targetLang: TargetLang | undefined,
+  offered: { text: string; lang: string | undefined } | undefined,
+): Promise<string> {
+  const back = await translatedBack(db, deps, text, targetLang, offered)
+  return backAddsMeaning(text, back) ? back : ''
+}
+
+async function translatedBack(
   db: Db,
   deps: CaptureDeps,
   text: string,
