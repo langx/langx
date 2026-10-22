@@ -145,9 +145,9 @@ export function AppSplash() {
    * The film has played on this device; `undefined` while it is read. Never
    * written with reduce motion on: there is no film then to have seen.
    */
-  const filmSeen = useLaunchFlag(FLAG_KEYS.launchFilmSeen, !reduceMotion)
+  const filmSeen = useLaunchFlag(FLAG_KEYS.launchFilmSeen, !reduceMotion && !resumed)
   /** A launch has been watched on this device, film or not: the floor's flag. */
-  const launchSeen = useLaunchFlag(FLAG_KEYS.launchSeen, true)
+  const launchSeen = useLaunchFlag(FLAG_KEYS.launchSeen, !resumed)
   const [skipped, setSkipped] = useState(false)
   const mountedAt = useRef(Date.now())
   const exitStarted = useRef(false)
@@ -174,9 +174,14 @@ export function AppSplash() {
    * A resumed mount draws nothing, so nothing lays out and `onLayout` never
    * asks the native splash to go. If Android drew it again for the new
    * activity, this is what takes it down; otherwise it rejects harmlessly.
+   * A frame later, as `onLayout` does, so the app under it has drawn first.
    */
   useEffect(() => {
-    if (resumed) void SplashScreen.hideAsync().catch(() => undefined)
+    if (!resumed) return
+    const frame = requestAnimationFrame(() => {
+      void SplashScreen.hideAsync().catch(() => undefined)
+    })
+    return () => cancelAnimationFrame(frame)
   }, [resumed])
 
   /*
@@ -198,6 +203,13 @@ export function AppSplash() {
   useEffect(() => {
     if (!visible || exitStarted.current) return
     if (!canExit({ ready, introDone: filmOver, reduceMotion })) return
+    /*
+     * Not while the native splash is still up. With no floor on a later
+     * launch, a reduced-motion exit started at once would dissolve the mark
+     * behind it, and the mark would go without anybody seeing it leave. (With
+     * motion on, `filmOver` already waits for this.)
+     */
+    if (reduceMotion && !nativeGone) return
     const done = ({ finished }: { finished: boolean }) => {
       if (!finished) return
       // The film's player has had the audio session; see forgetAudioMode.
@@ -257,7 +269,7 @@ export function AppSplash() {
       }),
     )
     return () => clearTimeout(timer)
-  }, [visible, ready, filmOver, reduceMotion, skipped, launchSeen, layer, mark])
+  }, [visible, ready, filmOver, nativeGone, reduceMotion, skipped, launchSeen, layer, mark])
 
   // A tap anywhere on the layer: the opening is somebody's to cut short.
   const skip = useCallback(() => setSkipped(true), [])

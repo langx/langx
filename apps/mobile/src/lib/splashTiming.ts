@@ -16,11 +16,13 @@ const EXIT_TILE_MS = 260
 export const SPLASH_TIMING = {
   /**
    * How long the logo stays up at minimum, measured from mount, when it is the
-   * whole opening: with reduced motion on, where there is no film to wait for.
+   * whole opening: with reduced motion on, where there is no film to wait for,
+   * and on the device's first launch only (`exitDelayMs` in `launchFilm.ts`).
    *
-   * A warm start resolves the session from a cached cookie almost immediately,
-   * and without a floor the logo would appear and vanish inside about eighty
-   * milliseconds — read as a flicker, not as an opening.
+   * A fast boot resolves the session almost immediately, and without a floor
+   * the logo would appear and vanish inside about eighty milliseconds — read
+   * as a flicker, not as an opening. From the second launch on the logo is no
+   * longer a hello, and its own dissolve is enough.
    */
   MIN_VISIBLE_MS: 800,
   /**
