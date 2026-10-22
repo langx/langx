@@ -322,8 +322,17 @@ export async function recordMessage(
        * hold carry their id in `hiddenFor`, and only the new one does not.
        * Unconditional because `$unset` on an absent key is free, which is
        * cheaper than reading the document to decide.
+       *
+       * And unpinned for whoever deleted it, read off the copy this call was
+       * handed. Deleting clears the pin now; a thread deleted before it did
+       * still has one, and would come back pinned above everything.
        */
-      $unset: Object.fromEntries(conversation.participants.map((id) => [`deletedBy.${id}`, ''])),
+      $unset: Object.fromEntries(
+        conversation.participants.flatMap((id): [string, ''][] => [
+          [`deletedBy.${id}`, ''],
+          ...(conversation.deletedBy?.[id] ? [[`pinnedBy.${id}`, ''] as [string, '']] : []),
+        ]),
+      ),
     },
     { returnDocument: 'after' },
   )
