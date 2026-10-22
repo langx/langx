@@ -241,6 +241,59 @@ describe('giving a sticker pack', () => {
     expect(await gifts().countDocuments({})).toBe(1)
   })
 
+  it('answers the second copy with the gift when the first lands during its checks', async () => {
+    const { giver, conversation } = await pair()
+    const clientId = id()
+
+    /*
+     * The interleaving the race above only hits now and then, pinned: the
+     * second copy looks for its client id before the first has committed,
+     * and the first commits before the second reaches the checks that its
+     * own gift now fails — the pack is owned and the week's gift is given.
+     */
+    let first: Awaited<ReturnType<typeof give>> | null = null
+    let looked = false
+    const lateLookup = new Proxy(handle.db, {
+      get(target, prop) {
+        if (prop === 'collection') {
+          return (name: string) => {
+            const collection = target.collection(name)
+            if (name !== COLLECTIONS.stickerGifts) return collection
+            return new Proxy(collection, {
+              get(inner, key) {
+                if (key === 'findOne' && !looked) {
+                  looked = true
+                  return async () => {
+                    first = await give(giver, conversation, clientId)
+                    return null
+                  }
+                }
+                const value: unknown = Reflect.get(inner, key, inner)
+                if (typeof value !== 'function') return value
+                return (value as (...args: unknown[]) => unknown).bind(inner)
+              },
+            })
+          }
+        }
+        const value: unknown = Reflect.get(target, prop, target)
+        if (typeof value !== 'function') return value
+        return (value as (...args: unknown[]) => unknown).bind(target)
+      },
+    })
+
+    const second = await giveStickerPack(lateLookup, giver, {
+      conversationId: conversation._id.toHexString(),
+      packId: PACK,
+      clientId,
+    })
+
+    expect(first).not.toBeNull()
+    expect(second.created).toBe(false)
+    expect(second.result.giftId).toBe(first!.result.giftId)
+    expect((await profiles().findOne({ _id: giver }))?.tokenSpent).toBe(PRICE)
+    expect(await gifts().countDocuments({})).toBe(1)
+  })
+
   it('rolls everything back when the thread goes in the middle of the gift', async () => {
     const { giver, recipient, conversation } = await pair()
     // `conversations.findOneAndUpdate` matching nothing: the thread purged
