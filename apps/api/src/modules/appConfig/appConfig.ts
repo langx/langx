@@ -1,9 +1,4 @@
-import {
-  ADMIN_FLAG_NAMES,
-  DEFAULT_APP_CONFIG,
-  type AdminFlagName,
-  type AppConfig,
-} from '@langx/shared'
+import { appConfigSchema, DEFAULT_APP_CONFIG, type AppConfig } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 
@@ -15,6 +10,10 @@ export interface AppConfigDoc extends Omit<AppConfig, 'updatedAt' | 'latestVersi
 }
 
 const CONFIG_ID = 'current'
+
+/** Every flag the schema knows, `captchaRequired` included. */
+export type AppConfigFlagName = keyof AppConfig['flags']
+const FLAG_NAMES = appConfigSchema.shape.flags.keyof().options
 
 /**
  * How long a read is served from memory before going back to Mongo.
@@ -102,17 +101,21 @@ export async function updateAppConfig(
  * would say it stuck. A read that fails falls back to the defaults, which
  * would reset every flag. Writing one path needs no read.
  *
- * The path is built from a name taken out of `ADMIN_FLAG_NAMES`, not from
+ * Every writer of a flag comes through here: the Flags page, the captcha
+ * route and `scripts/maintenance.ts flag`. Any one of them writing the flags
+ * whole is enough to undo the others.
+ *
+ * The path is built from a name taken out of the schema's own keys, not from
  * `flag` itself. That is `withPlatformVersion`'s reason: the name arrives on a
  * request, and a key computed from remote input is CodeQL's
  * `js/remote-property-injection`.
  */
 export async function setAppConfigFlag(
   db: Db,
-  flag: AdminFlagName,
+  flag: AppConfigFlagName,
   value: boolean,
 ): Promise<AppConfig> {
-  const name = ADMIN_FLAG_NAMES.find((known) => known === flag)
+  const name = FLAG_NAMES.find((known) => known === flag)
   if (!name) throw new Error(`unknown flag ${String(flag)}`)
   const result = await db.collection<AppConfigDoc>(COLLECTIONS.appConfig).findOneAndUpdate(
     { _id: CONFIG_ID },
