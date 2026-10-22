@@ -1,4 +1,9 @@
-import { BROADCAST_PER_TICK, broadcastTickShare, utcDayKey } from '@langx/shared'
+import {
+  BROADCAST_PER_TICK,
+  broadcastTickShare,
+  notificationsAllowed,
+  utcDayKey,
+} from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import {
@@ -224,6 +229,17 @@ async function deliver(
    * pressed a button to see the push.
    */
   if (delivered.conversation.mutedBy?.[userId]) return true
+
+  /*
+   * The same for the messages switch. The knock is a `message` push, and every
+   * other push @langx makes — a note, a Pro gift, a suspension ending — goes
+   * through the fan-out, which asks it. Without this a reader who turned
+   * message pushes off was still buzzed by every broadcast.
+   */
+  const reader = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne({ _id: userId }, { projection: { settings: 1 } })
+  if (!notificationsAllowed(reader?.settings?.notifications, 'messages', 'push')) return true
 
   /*
    * The knock, not the message. Deliberately not `fanOutMessage`: that calls
