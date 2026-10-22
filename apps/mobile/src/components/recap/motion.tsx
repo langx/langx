@@ -1,5 +1,5 @@
-import { useEffect, useState, type ReactNode } from 'react'
-import { Text, type StyleProp, type TextStyle, type ViewStyle } from 'react-native'
+import { useEffect, type ReactNode } from 'react'
+import { type StyleProp, type ViewStyle } from 'react-native'
 import Animated, {
   Easing,
   cancelAnimation,
@@ -56,51 +56,8 @@ export function Rise({
   return <Animated.View style={[style, animated]}>{children}</Animated.View>
 }
 
-/**
- * A number that counts up to itself over 900ms, ease-out cubic.
- *
- * The one per-frame React render on the story, and deliberately so: a string
- * cannot be animated on the UI thread without a text-input hack that the web
- * build does not honour, and one short `Text` re-rendering for under a second
- * is well inside the frame budget. Screen readers get the final value from the
- * first frame, never a number in flight.
- */
-export function CountUp({
-  value,
-  locale,
-  reduce,
-  delay,
-  style,
-}: {
-  value: number
-  locale: string
-  reduce: boolean
-  delay: number
-  style: StyleProp<TextStyle>
-}) {
-  const [shown, setShown] = useState(reduce ? value : 0)
-  useEffect(() => {
-    if (reduce) {
-      setShown(value)
-      return
-    }
-    let frame = 0
-    const start = Date.now() + delay
-    const tick = (): void => {
-      const t = Math.min(1, Math.max(0, (Date.now() - start) / 900))
-      setShown(Math.round(value * (1 - (1 - t) ** 3)))
-      if (t < 1) frame = requestAnimationFrame(tick)
-    }
-    frame = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(frame)
-  }, [value, reduce, delay])
-  const final = value.toLocaleString(locale)
-  return (
-    <Text accessibilityLabel={final} style={style} numberOfLines={1}>
-      {shown.toLocaleString(locale)}
-    </Text>
-  )
-}
+/** Moved to `ui/CountUp` for the wallet and the gift; kept here so the slides' import still reads. */
+export { CountUp } from '../ui/CountUp'
 
 /** Scales in from 0.6 with a turn of −6°, overshooting a little, once. */
 export function Pop({

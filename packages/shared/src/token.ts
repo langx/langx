@@ -188,6 +188,25 @@ export interface TokenRules {
     /** Max paying messages per partner per UTC day — blocks single-partner farming. */
     messagesPerPartnerPerDay: number
     /**
+     * Max paying corrections of one person's words per **UTC** day — a chat
+     * partner's messages and their posts together, counted against whoever
+     * wrote the sentence being corrected.
+     *
+     * Per partner only. There is still no daily ceiling on corrections
+     * overall: teaching many people is the behaviour the economy pays most
+     * for, and nothing about it needs bounding. What does is one pair: how
+     * much one person's sentences can pay one corrector, which is what
+     * `messagesPerPartnerPerDay` bounds for messages. UTC for the reason
+     * `messagesPerDay` is.
+     *
+     * It counts sentences, not attempts: a correction of a sentence that had
+     * already paid gives its slot back, so going over one message again does
+     * not use up the day. A correction past the cap does count, the same way
+     * a message past the cap still counts towards it. Sending is never
+     * refused; only paying stops.
+     */
+    correctionsPerPartnerPerDay: number
+    /**
      * Paying Echo sessions per **local** day.
      *
      * Local, unlike the message caps above, and the difference is what is
@@ -436,6 +455,15 @@ export const TOKEN_RULES: TokenRules = {
      * always did.
      */
     messagesPerPartnerPerDay: 60,
+    /*
+     * Ten: a hundred token from one person's sentences a day, half a day at
+     * the message cap. That keeps the ratio the message caps hold — one
+     * partner can never be worth a whole day's ceiling — while leaving a real
+     * lesson untouched: ten sentences of one person put right in a day is
+     * a lot of teaching, and an eleventh still sends and still counts in the
+     * thread, it just does not pay.
+     */
+    correctionsPerPartnerPerDay: 10,
     // Twenty-five token a day at the top, an eighth of the message cap.
     echoSessionsPerDay: 5,
   },
@@ -950,7 +978,10 @@ export const sendAwardSchema = z.object({
   tokens: z.number().int().nonnegative(),
   /** Null when the thread is outside the economy (an official account's). */
   streak: streakAwardSchema.nullable(),
-  /** True when this send crossed the daily or per-partner message cap. */
+  /**
+   * True when this send crossed a cap: the daily or per-partner message cap
+   * for a message, the per-partner correction cap for a correction.
+   */
   capped: z.boolean(),
 })
 export type SendAward = z.infer<typeof sendAwardSchema>

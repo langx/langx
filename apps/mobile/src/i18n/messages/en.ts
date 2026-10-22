@@ -1954,8 +1954,8 @@ export const en = {
     correctionPlaceholder: 'Rewrite the sentence the way you would say it…',
     startFromOriginal: 'Start from the original',
     correctionReward: {
-      one: '+{count} token · Unlimited on every plan',
-      other: '+{count} tokens · Unlimited on every plan',
+      one: '+{count} token',
+      other: '+{count} tokens',
     },
     voiceNote: 'Voice note',
     top: 'Top',

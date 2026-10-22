@@ -11,6 +11,7 @@ import {
 import { useLocale, useT } from '../../i18n'
 import { rungProgress, type Rung, type Shelf } from '../../lib/badgeShelves'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { ProgressBar } from '../ui/ProgressBar'
 import { BadgePatch } from './BadgePatch'
 
 /** "29 Mar" — the day a dated badge was earned, on its tile. */
@@ -135,7 +136,12 @@ function BadgeTile({ rung, onPress }: { rung: Rung; onPress: () => void }) {
             {line}
           </Text>
           <View style={styles.bar}>
-            <View style={[styles.barFill, { width: `${Math.round(progress * 100)}%` }]} />
+            <ProgressBar
+              value={progress}
+              height={6}
+              fillColor={v3.colors.fg}
+              accessibilityLabel={line}
+            />
           </View>
         </>
       ) : (
@@ -193,14 +199,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   name: { ...v3.type.buttonSmall, color: v3.colors.fg, textAlign: 'center' },
   muted: { color: v3.colors.muted },
   nextLine: { ...v3.type.caption, color: v3.colors.fg, fontWeight: '800', textAlign: 'center' },
-  bar: {
-    backgroundColor: v3.colors.track,
-    borderRadius: v3.radius.pill,
-    height: 6,
-    overflow: 'hidden',
-    width: 64,
-  },
-  barFill: { backgroundColor: v3.colors.fg, borderRadius: v3.radius.pill, height: 6 },
+  bar: { width: 64 },
   lineRow: {
     alignItems: 'flex-start',
     flexDirection: 'row',

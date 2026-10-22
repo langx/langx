@@ -32,7 +32,7 @@ import { blockedUserIds } from '../moderation/blocks'
 import { followingIds } from '../social/follows'
 import { EMPTY_LIKE_SUMMARY, readLikeSummary } from './likes'
 import type { Profile } from '../profiles/profiles'
-import { recordActivity } from '../tokens/dailyActivity'
+import { correctionCapped, recordActivity, releaseCorrectionSlot } from '../tokens/dailyActivity'
 import { awardTokens } from '../tokens/ledger'
 import { settleReferral } from '../referrals/settle'
 import { recordQualifyingAction } from '../tokens/streak'
@@ -540,7 +540,7 @@ export async function correctPost(
   if (!post) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   // Only an asked-for correction can be given. The ask is the author's
   // consent to having their words rewritten — and the award for it is
-  // uncapped, so a post that never asked must not be a way to earn it.
+  // uncapped overall, so a post that never asked must not be a way to earn it.
   if (!asksOf(post).includes('correction')) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That post is not asking for a correction', {
       reason: 'not_asked',
@@ -595,7 +595,7 @@ export async function correctPost(
   }
 
   await db.collection<Post>(COLLECTIONS.posts).updateOne({ _id }, { $inc: { correctionCount: 1 } })
-  await awardForPostCorrection(db, userId, doc)
+  await awardForPostCorrection(db, userId, doc, post.authorId)
 
   const authors = await loadAuthors(db, [userId])
   return correctionDto(doc, authors, EMPTY_LIKE_SUMMARY)
@@ -607,7 +607,9 @@ function isDuplicate(error: unknown): boolean {
 
 /**
  * Paid through the same `correction` kind as a chat correction, at the same
- * rate and with the same absence of a cap.
+ * rate and under the same per-partner cap: one counter, keyed on the post's
+ * author, so a person's sentences pay the same daily amount whether they were
+ * written in a thread or on a post.
  *
  * That sameness is the point: the economy rewards teaching, and it must not
  * matter whether the teaching happened in a thread or on a post. A separate
@@ -631,22 +633,36 @@ async function awardForPostCorrection(
   db: Db,
   userId: string,
   correction: PostCorrectionDoc,
+  postAuthorId: string,
 ): Promise<void> {
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   const frozen = Boolean(profile?.tokenFrozenAt)
   const at = correction.createdAt
 
-  await recordActivity(db, { userId, kind: 'correction', at, timeZone: profile?.timezone ?? 'UTC' })
-  await awardTokens(db, {
+  const activity = await recordActivity(db, {
     userId,
     kind: 'correction',
-    amount: frozen ? 0 : TOKEN_RULES.award.correction,
+    at,
+    timeZone: profile?.timezone ?? 'UTC',
+    partnerId: postAuthorId,
+  })
+  const capped = correctionCapped(activity, postAuthorId)
+  const award = await awardTokens(db, {
+    userId,
+    kind: 'correction',
+    amount: frozen || capped ? 0 : TOKEN_RULES.award.correction,
     refId: correctionRefId(correction.postId),
     at,
   })
+  // A post that already paid this person (a correction deleted and written
+  // again) gives the cap slot back, as in chat.
+  if (award.awarded === false && award.reason === 'duplicate') {
+    await releaseCorrectionSlot(db, { userId, partnerId: postAuthorId, at })
+  }
   if (profile) await recordQualifyingAction(db, profile, at)
-  // Teaching on a post is teaching. See the same call in `awardForSend`.
-  if (profile?.referredBy && !frozen) await settleReferral(db, userId, at)
+  // Teaching on a post is teaching. See the same call in `awardForSend`, which
+  // also settles nothing for a send that paid nothing.
+  if (profile?.referredBy && !frozen && !capped) await settleReferral(db, userId, at)
 }
 
 /**

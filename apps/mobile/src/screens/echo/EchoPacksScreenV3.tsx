@@ -130,7 +130,7 @@ function PackRow({ pack, first }: { pack: EchoPack; first: boolean }) {
         <ProgressBar
           value={pack.itemCount === 0 ? 0 : done / pack.itemCount}
           height={8}
-          {...(finished ? { color: v3.colors.correction } : {})}
+          {...(finished ? { fillColor: v3.colors.correction } : {})}
           accessibilityLabel={progress}
         />
       </View>

@@ -1741,8 +1741,8 @@ export const tr: Localized<EnMessages> = {
     correctionPlaceholder: 'Cümleyi sen nasıl söylerdin, öyle yaz…',
     startFromOriginal: 'Orijinalden başla',
     correctionReward: {
-      one: '+{count} jeton · Her planda sınırsız',
-      other: '+{count} jeton · Her planda sınırsız',
+      one: '+{count} jeton',
+      other: '+{count} jeton',
     },
     voiceNote: 'Ses kaydı',
     top: 'Öne çıkan',

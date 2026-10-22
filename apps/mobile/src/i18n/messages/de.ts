@@ -1802,8 +1802,8 @@ export const de: Localized<EnMessages> = {
     correctionPlaceholder: 'Schreib den Satz so, wie du ihn sagen würdest…',
     startFromOriginal: 'Mit dem Original anfangen',
     correctionReward: {
-      one: '+{count} Token · In jedem Tarif unbegrenzt',
-      other: '+{count} Token · In jedem Tarif unbegrenzt',
+      one: '+{count} Token',
+      other: '+{count} Token',
     },
     voiceNote: 'Sprachnotiz',
     top: 'Top',
