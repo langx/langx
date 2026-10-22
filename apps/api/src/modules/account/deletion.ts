@@ -24,6 +24,7 @@ interface AttachmentRow {
 }
 import { supportsPrefixDelete, supportsPut } from '../../storage/StorageProvider'
 import type { Conversation, Message } from '../chat/conversations'
+import { forgetPendingUploadsUnder } from '../chat/pendingUploads'
 import { purgeCommentsBy } from '../feed/comments'
 import type { LegacyMessage } from '../handles/legacyConversations'
 import type { LegacyProfile } from '../handles/legacyProfiles'
@@ -366,6 +367,9 @@ export async function purgeExpiredAccounts(
       for (const prefix of [`feedback/${userId}/`, `echo/${userId}/`, `posts/${userId}/`]) {
         try {
           objectsDeleted += await options.storage.deleteByPrefix(prefix)
+          // Unsent post and Echo uploads are among what just went; their
+          // sweep rows must not outlive the files.
+          await forgetPendingUploadsUnder(db, prefix)
         } catch {
           // Swallowed for the reason the per-object failure above is: an
           // orphaned file is a better outcome than an account that never gets

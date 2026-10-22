@@ -497,6 +497,22 @@ export type UpdateProfileInput = z.infer<typeof updateProfileSchema>
 export const AVATAR_CONTENT_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const
 export const avatarContentTypeSchema = z.enum(AVATAR_CONTENT_TYPES)
 
+/**
+ * `POST /me/avatar/upload-url` and `POST /me/photos/upload-url`.
+ *
+ * `sizeBytes` is the exact length of the file about to be PUT, checked against
+ * the image ceiling in `MEDIA_LIMITS` and signed into the URL — the same
+ * contract as `mediaUploadUrlSchema`, and optional for the same reason:
+ * binaries released before it cannot send it, and refusing them would break
+ * every installed build's avatar upload. They get the old, unsized URL until
+ * `minVersion` passes them.
+ */
+export const imageUploadUrlSchema = z.object({
+  contentType: avatarContentTypeSchema,
+  sizeBytes: z.number().int().positive().optional(),
+})
+export type ImageUploadUrlInput = z.infer<typeof imageUploadUrlSchema>
+
 export const avatarConfirmSchema = z.object({ avatarUrl: z.url() })
 
 /** `POST /me/photos` — confirm an upload and add it to the gallery. */

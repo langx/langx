@@ -1,7 +1,7 @@
 import {
-  avatarContentTypeSchema,
   avatarConfirmSchema,
   ERROR_CODES,
+  imageUploadUrlSchema,
   MEDIA_LIMITS,
   mediaKindOfContentType,
   mediaUploadUrlSchema,
@@ -9,10 +9,10 @@ import {
   photoOrderSchema,
   postMediaUploadUrlSchema,
   photoRemoveSchema,
+  type MediaKind,
 } from '@langx/shared'
 import { randomUUID } from 'node:crypto'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
-import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
 import { assertOwnObject } from '../lib/assertOwnBucket'
 import {
@@ -27,19 +27,33 @@ import { objectExtension } from '../modules/media/objectExtension'
 import { addPhoto, removePhoto, reorderPhotos, setAvatarUrl } from '../modules/profiles/profiles'
 import { toOwnProfileWire } from '../modules/profiles/ownProfileWire'
 
+/**
+ * Before any URL is signed, because once it is the bytes are out of our hands:
+ * the client PUTs straight to the bucket. The length is then signed into the
+ * URL, so it cannot be a fib. An absent size is let through only for installed
+ * binaries that predate the field — see `mediaUploadUrlSchema`.
+ */
+function assertUploadSize(kind: MediaKind, sizeBytes: number | undefined): void {
+  if (sizeBytes !== undefined && sizeBytes > MEDIA_LIMITS[kind].maxBytes) {
+    throw new ApiError(ERROR_CODES.MEDIA_TOO_LARGE, `That ${kind} is too large`)
+  }
+}
+
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
   app.post(
     '/me/avatar/upload-url',
     {
       preHandler: requireMember,
-      schema: { body: z.object({ contentType: avatarContentTypeSchema }) },
+      schema: { body: imageUploadUrlSchema },
     },
     async (request, reply) => {
-      const extension = objectExtension(request.body.contentType)
+      const { contentType, sizeBytes } = request.body
+      assertUploadSize('image', sizeBytes)
+      const extension = objectExtension(contentType)
       const key = `avatars/${request.userId}/${randomUUID()}.${extension}`
 
-      const upload = await app.storage.getUploadUrl(key, request.body.contentType)
+      const upload = await app.storage.getUploadUrl(key, contentType, sizeBytes)
       return reply.send(upload)
     },
   )
@@ -75,12 +89,14 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
     '/me/photos/upload-url',
     {
       preHandler: requireMember,
-      schema: { body: z.object({ contentType: avatarContentTypeSchema }) },
+      schema: { body: imageUploadUrlSchema },
     },
     async (request, reply) => {
-      const extension = objectExtension(request.body.contentType)
+      const { contentType, sizeBytes } = request.body
+      assertUploadSize('image', sizeBytes)
+      const extension = objectExtension(contentType)
       const key = `photos/${request.userId}/${randomUUID()}.${extension}`
-      return reply.send(await app.storage.getUploadUrl(key, request.body.contentType))
+      return reply.send(await app.storage.getUploadUrl(key, contentType, sizeBytes))
     },
   )
 
@@ -130,10 +146,7 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
         )
       }
       // Here rather than only at send, which was after the bytes were stored.
-      // The length is then signed into the URL, so it cannot be a fib.
-      if (sizeBytes !== undefined && sizeBytes > MEDIA_LIMITS[kind].maxBytes) {
-        throw new ApiError(ERROR_CODES.MEDIA_TOO_LARGE, `That ${kind} is too large`)
-      }
+      assertUploadSize(kind, sizeBytes)
 
       // Keyed by conversation so a leaked key reveals nothing about who is
       // talking. The account purge finds these through the message rows the
@@ -166,18 +179,24 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
     '/posts/upload-url',
     { preHandler: requireVerifiedEmail, schema: { body: postMediaUploadUrlSchema } },
     async (request, reply) => {
-      const { kind, contentType } = request.body
+      const { kind, contentType, sizeBytes } = request.body
       if (mediaKindOfContentType(contentType) !== kind) {
         throw new ApiError(
           ERROR_CODES.UNSUPPORTED_MEDIA_TYPE,
           `${contentType} is not a supported ${kind} type`,
         )
       }
+      assertUploadSize(kind, sizeBytes)
 
       // One table for every kind now — see `objectExtension`.
       const extension = objectExtension(contentType)
       const key = `posts/${request.userId}/${randomUUID()}.${extension}`
-      return reply.send(await app.storage.getUploadUrl(key, contentType))
+      const upload = await app.storage.getUploadUrl(key, contentType, sizeBytes)
+      // As for a chat upload: a post that is never sent leaves a file no row
+      // names, and the sweep is the only thing that would ever find it while
+      // the account lives. The post, correction or answer claims it.
+      await recordPendingUpload(app.mongo.db, { url: upload.publicUrl, key })
+      return reply.send(upload)
     },
   )
 
@@ -199,17 +218,22 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
     '/echo/upload-url',
     { preHandler: requireAuth, schema: { body: postMediaUploadUrlSchema } },
     async (request, reply) => {
-      const { kind, contentType } = request.body
+      const { kind, contentType, sizeBytes } = request.body
       if (mediaKindOfContentType(contentType) !== kind) {
         throw new ApiError(
           ERROR_CODES.UNSUPPORTED_MEDIA_TYPE,
           `${contentType} is not a supported ${kind} type`,
         )
       }
+      assertUploadSize(kind, sizeBytes)
 
       const extension = objectExtension(contentType)
       const key = `echo/${request.userId}/${randomUUID()}.${extension}`
-      return reply.send(await app.storage.getUploadUrl(key, contentType))
+      const upload = await app.storage.getUploadUrl(key, contentType, sizeBytes)
+      // The prefix only finds these once the account is purged; a picture
+      // picked and never saved onto a card is the sweep's. `updateCard` claims.
+      await recordPendingUpload(app.mongo.db, { url: upload.publicUrl, key })
+      return reply.send(upload)
     },
   )
 

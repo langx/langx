@@ -17,6 +17,7 @@ import type { Profile } from '../profiles/profiles'
 import { awardTokens } from '../tokens/ledger'
 import { settleReferral } from '../referrals/settle'
 import { recordQualifyingAction } from '../tokens/streak'
+import { claimPendingUploads } from '../chat/pendingUploads'
 import { assertAttachable } from './attachments'
 import type { AttachmentNormalizer } from '../media/transcodeAudio'
 import { notHidden } from './documents'
@@ -153,6 +154,8 @@ export async function answerPronunciation(
     createdAt: new Date(),
   }
 
+  // Before the insert, as in `createPost`: both takes, as the row names them.
+  await claimPendingUploads(db, [media.url, ...(slowMedia ? [slowMedia.url] : [])])
   try {
     await db.collection<PronunciationAnswerDoc>(COLLECTIONS.pronunciationAnswers).insertOne(doc)
   } catch (error) {

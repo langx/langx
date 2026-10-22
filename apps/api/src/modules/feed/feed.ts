@@ -37,6 +37,7 @@ import { awardTokens } from '../tokens/ledger'
 import { settleReferral } from '../referrals/settle'
 import { recordQualifyingAction } from '../tokens/streak'
 import type { StorageProvider } from '../../storage/StorageProvider'
+import { claimPendingUploads } from '../chat/pendingUploads'
 import { assertAttachable, deleteObjects } from './attachments'
 import type { AttachmentNormalizer } from '../media/transcodeAudio'
 import { readCommentSummary } from './comments'
@@ -406,6 +407,13 @@ export async function createPost(
     ...(attachments[0] ? { media: attachments[0] } : {}),
     createdAt: new Date(),
   }
+  // The files as the row names them, before the row exists — the order
+  // `sendMediaMessage` claims in, for its reason: a claimed file that is never
+  // posted only stays in the bucket, an unclaimed one that is gets swept.
+  await claimPendingUploads(
+    db,
+    attachments.map((item) => item.url),
+  )
   await db.collection<Post>(COLLECTIONS.posts).insertOne(doc)
 
   // Nothing can have liked, corrected or answered a post that did not exist a
@@ -583,6 +591,11 @@ export async function correctPost(
     createdAt: new Date(),
   }
 
+  // Before the insert, as in `createPost`.
+  await claimPendingUploads(
+    db,
+    attachments.map((item) => item.url),
+  )
   try {
     await db.collection<PostCorrectionDoc>(COLLECTIONS.postCorrections).insertOne(doc)
   } catch (error) {
