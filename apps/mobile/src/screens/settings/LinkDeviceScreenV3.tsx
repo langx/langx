@@ -143,7 +143,7 @@ export function LinkDeviceScreenV3() {
             autoCorrect={false}
             // Five characters plus room for a hyphen and a slip of the thumb.
             maxLength={8}
-            style={styles.input}
+            style={[styles.input, !entered && styles.inputEmpty]}
           />
         </View>
 
@@ -268,6 +268,13 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[16],
     paddingVertical: 0,
   },
+  /*
+   * The placeholder is a phrase, not a code: at the code's 22pt and wide
+   * tracking it ran past the pill beside the Scan button on iOS ("Type the
+   * cod…"). React Native cannot style a placeholder on its own, so the empty
+   * field takes the button size, and the first character brings the code's.
+   */
+  inputEmpty: { ...v3.type.button, letterSpacing: 0 },
   actions: { gap: v3.space[8] },
   section: { gap: v3.space[10] },
   spinner: { marginTop: v3.space[16] },
