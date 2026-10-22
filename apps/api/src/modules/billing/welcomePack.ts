@@ -54,6 +54,11 @@ export function earnsWelcomePack(entitlement: HeldEntitlement): boolean {
  * does not already own, so even a lost latch cannot hand out a second copy —
  * the worst case is a streak freeze, which is capped separately below.
  *
+ * The latch is claimed by the grant's own filter, not by the read before it.
+ * The webhook and the client's refresh both arrive within a second of a
+ * purchase, and two calls that each read "not given yet" both handed over
+ * the pack's freezes twice.
+ *
  * Lapsing and re-subscribing grants nothing, because the items are still owned. Cosmetics are **not**
  * taken back when a subscription ends: revoking them would change how somebody
  * looks at the moment they stop paying, which is a support ticket rather than
@@ -82,14 +87,19 @@ export async function grantWelcomePack(
   const cosmetics = welcomePackDelta(tier, profile.cosmetics ?? [])
   const freezes = PRO_WELCOME_PACKS[tier].streakFreezes
 
-  await profiles.updateOne(
-    { _id: userId },
+  const claimed = await profiles.updateOne(
+    {
+      _id: userId,
+      'welcomePackAt.pro': { $exists: false },
+      'welcomePackAt.pro_plus': { $exists: false },
+    },
     {
       ...(cosmetics.length > 0 ? { $addToSet: { cosmetics: { $each: [...cosmetics] } } } : {}),
       $inc: { streakFreezes: freezes },
       $set: { [`welcomePackAt.${tier}`]: new Date() },
     },
   )
+  if (claimed.modifiedCount === 0) return { granted: false, cosmetics: [] }
 
   return { granted: true, cosmetics }
 }
