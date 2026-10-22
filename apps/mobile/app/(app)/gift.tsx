@@ -12,6 +12,7 @@ import { giftState, giftTickDelay } from '../../src/lib/gift'
 import { impact, notification } from '../../src/lib/haptics'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../src/lib/theme'
+import { SPRING } from '../../src/lib/theme/motion'
 import { useLocale, useT } from '../../src/i18n'
 import { useReduceMotion } from '../../src/hooks/useReduceMotion'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
@@ -74,7 +75,8 @@ function GiftScreen() {
   // froze part-way on web — the number sat at forty percent opacity forever.
   useEffect(() => {
     if (phase !== 'revealed') return
-    pop.set(reduceMotion ? 1 : withSpring(1, { damping: 12, stiffness: 160 }))
+    // `SPRING.bounce`: the 12/160 spring that was here wobbled rather than landed.
+    pop.set(reduceMotion ? 1 : withSpring(1, SPRING.bounce))
   }, [phase, reduceMotion, pop])
 
   const amountStyle = useAnimatedStyle(() => ({

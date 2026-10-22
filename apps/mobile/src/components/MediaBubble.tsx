@@ -1,13 +1,13 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useEvent } from 'expo'
-import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
+import { useAudioPlayer, useAudioPlayerStatus, type AudioPlayer } from 'expo-audio'
 import { Image } from 'expo-image'
 import { useVideoPlayer, VideoView, type VideoPlayer } from 'expo-video'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Platform, Pressable, Text, View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { isImageContentType, isVideoContentType, type Media } from '@langx/shared'
-import { audioProgress } from '../lib/audioProgress'
+import { audioProgress, type AudioStatus } from '../lib/audioProgress'
 import { feedMediaHeight } from '../lib/feedMedia'
 import {
   WAVEFORM_BAR_WIDTH,
@@ -22,6 +22,7 @@ import { useLocale, useT } from '../i18n'
 import { useV3Home } from '../hooks/useV3Home'
 import { useMediaStylesV3 } from './MediaBubbleV3.styles'
 import { Skeleton } from './ui/Skeleton'
+import { WaveformProgress } from './thread/WaveformProgress'
 import { NORMAL_PLAYBACK_RATE, nextPlaybackRate, type PlaybackRate } from '../lib/playbackRate'
 
 export function formatSeconds(total: number): string {
@@ -43,12 +44,41 @@ export function formatSeconds(total: number): string {
  * A post and a correction carry the same `media` shape as a message, and a
  * second player for the feed would have re-derived the "one `useAudioPlayer`
  * per bubble, deliberately" decision this file exists to record.
+ *
+ * **The player is made on the first press, not on mount.** A thread of voice
+ * notes used to open one native player per bubble the moment it scrolled into
+ * view — each a decoder and a network fetch for a note nobody had asked to
+ * hear — and that is most of what a voice-heavy thread spent mounting. Until
+ * it is pressed a note is drawn from what the message already knows (its
+ * stored length and waveform); the press that wants it creates the player
+ * and is carried into it (`FirstPress`). The cost is that a file that will
+ * not load says so on that first press rather than before it.
  */
-export function AudioBubble({
-  media,
-  mine = false,
-  ink,
-}: {
+export function AudioBubble(props: AudioBubbleProps) {
+  const [first, setFirst] = useState<FirstPress | null>(null)
+  /*
+   * Out here rather than in the face, so a speed chosen before the first
+   * play is still the speed once the player exists, and a failure survives
+   * the swap from the idle face to the live one.
+   */
+  const [rate, setRate] = useState<PlaybackRate>(NORMAL_PLAYBACK_RATE)
+  /** A `play()` that threw; the status alone cannot report one. */
+  const [failed, setFailed] = useState(false)
+  /*
+   * The bars' measured width, out here for the same reason: the first press
+   * swaps the idle face for the live one, which remounts the waveform, and a
+   * width that started again at 0 blanked the bars for a frame.
+   */
+  const [waveWidth, setWaveWidth] = useState(0)
+  const face = { ...props, rate, setRate, failed, setFailed, waveWidth, setWaveWidth }
+  return first ? (
+    <LiveAudio {...face} first={first} />
+  ) : (
+    <AudioFace {...face} player={null} status={IDLE} onFirstPress={setFirst} />
+  )
+}
+
+interface AudioBubbleProps {
   media: Media
   mine?: boolean
   /**
@@ -60,6 +90,105 @@ export function AudioBubble({
    * look, unchanged.
    */
   ink?: string | undefined
+}
+
+/** What the press that created the player asked for: to play, or to seek there. */
+interface FirstPress {
+  play: boolean
+  /** Seconds. */
+  seekTo?: number
+}
+
+interface FaceProps extends AudioBubbleProps {
+  rate: PlaybackRate
+  setRate: (rate: PlaybackRate) => void
+  failed: boolean
+  setFailed: (failed: boolean) => void
+  waveWidth: number
+  setWaveWidth: (width: number) => void
+}
+
+/** A note nobody has pressed yet: nothing loaded, nothing playing. */
+const IDLE: AudioStatus = {}
+
+/**
+ * Configures the audio session *before* every play, not once at mount.
+ *
+ * `_layout.tsx` already sets it at start, which covers the reported bug — a
+ * note played on a silent-switched iPhone by someone who had not recorded.
+ * This second call covers the other direction: `useVoiceRecorder` puts the
+ * session into recording mode, and a note played after that would otherwise
+ * come out of the earpiece rather than the speaker. `audioSession` memoises,
+ * so in the common case this is a no-op.
+ */
+async function startPlayback(
+  player: AudioPlayer,
+  fromStart: boolean,
+  setFailed: (failed: boolean) => void,
+): Promise<void> {
+  await ensurePlaybackAudioMode()
+  // Replay from the start once it has finished, rather than sitting at
+  // the end doing nothing when tapped.
+  // `seekTo` is async but `play` does not need to wait for it — the
+  // player queues the seek ahead of playback itself.
+  if (fromStart) void player.seekTo(0)
+  try {
+    player.play()
+  } catch {
+    // A throw here used to be the whole failure: nothing moved, nothing was
+    // said, and the button looked identical to one that had worked. The
+    // status the bubble already draws carries it now.
+    setFailed(true)
+  }
+}
+
+/** The pressed note: the one place a player exists. */
+function LiveAudio({ first, ...face }: FaceProps & { first: FirstPress }) {
+  const player = useAudioPlayer(face.media.url)
+  const status = useAudioPlayerStatus(player)
+  const { setFailed } = face
+  /*
+   * The press that made this player, consumed once and only for the file it
+   * was made for. A bubble whose file changes under it — PostScreen's
+   * "Record again" — gets a new player for the new take, and that one must
+   * neither auto-play nor seek: it only takes the speed currently chosen.
+   */
+  const pending = useRef<(FirstPress & { url: string | undefined }) | null>({
+    ...first,
+    url: face.media.url,
+  })
+  const rate = useRef(face.rate)
+  rate.current = face.rate
+  const url = face.media.url
+  useEffect(() => {
+    if (rate.current !== NORMAL_PLAYBACK_RATE) player.setPlaybackRate(rate.current, 'high')
+    const press = pending.current
+    pending.current = null
+    if (!press || press.url !== url) return
+    if (press.seekTo !== undefined) void player.seekTo(press.seekTo)
+    if (press.play) void startPlayback(player, false, setFailed)
+  }, [player, url, setFailed])
+  return <AudioFace {...face} player={player} status={status} onFirstPress={undefined} />
+}
+
+function AudioFace({
+  media,
+  mine = false,
+  ink,
+  rate,
+  setRate,
+  failed,
+  setFailed,
+  waveWidth,
+  setWaveWidth,
+  player,
+  status,
+  onFirstPress,
+}: FaceProps & {
+  /** `null` until the first press; see `AudioBubble`. */
+  player: AudioPlayer | null
+  status: AudioStatus
+  onFirstPress: ((press: FirstPress) => void) | undefined
 }) {
   const { colors, v3 } = useTheme()
   const styles = useStyles()
@@ -67,9 +196,6 @@ export function AudioBubble({
   const v3Look = useV3Home()
   const t = useT()
   const { locale } = useLocale()
-
-  const player = useAudioPlayer(media.url)
-  const status = useAudioPlayerStatus(player)
 
   /*
    * Half speed, for the sentence you cannot quite catch — and, one tap
@@ -88,13 +214,11 @@ export function AudioBubble({
    * next one is usually fine. It lasts as long as the bubble, and so does the
    * player's own rate: `expo-audio` keeps it across a pause and across the
    * seek-and-play that replays a finished note, on all three platforms, so
-   * nothing here has to set it again.
+   * nothing here has to set it again. (The state itself is `AudioBubble`'s,
+   * so it outlives the swap from the idle face to the live one.)
    */
-  const [rate, setRate] = useState<PlaybackRate>(NORMAL_PLAYBACK_RATE)
   // "0,5" in German, "0.5" in English: the decimal comma is the reader's.
   const rateLabel = rate.toLocaleString(locale)
-  /** A `play()` that threw; the status alone cannot report one. */
-  const [failed, setFailed] = useState(false)
 
   // `Platform.OS` passed in rather than read there, so `audioProgress` stays
   // free of `react-native` and testable without a renderer.
@@ -113,35 +237,16 @@ export function AudioBubble({
   const broken = failed || state === 'error' || state === 'unsupported'
   const loading = state === 'loading'
 
-  /**
-   * Configures the audio session *before* every play, not once at mount.
-   *
-   * `_layout.tsx` already sets it at start, which covers the reported bug — a
-   * note played on a silent-switched iPhone by someone who had not recorded.
-   * This second call covers the other direction: `useVoiceRecorder` puts the
-   * session into recording mode, and a note played after that would otherwise
-   * come out of the earpiece rather than the speaker. `audioSession` memoises,
-   * so in the common case this is a no-op.
-   */
   const toggle = async (): Promise<void> => {
+    if (!player) {
+      onFirstPress?.({ play: true })
+      return
+    }
     if (status.playing) {
       player.pause()
       return
     }
-    await ensurePlaybackAudioMode()
-    // Replay from the start once it has finished, rather than sitting at
-    // the end doing nothing when tapped.
-    // `seekTo` is async but `play` does not need to wait for it — the
-    // player queues the seek ahead of playback itself.
-    if (canReplay) void player.seekTo(0)
-    try {
-      player.play()
-    } catch {
-      // A throw here used to be the whole failure: nothing moved, nothing was
-      // said, and the button looked identical to one that had worked. The
-      // status the bubble already draws carries it now.
-      setFailed(true)
-    }
+    await startPlayback(player, canReplay, setFailed)
   }
 
   return (
@@ -190,13 +295,19 @@ export function AudioBubble({
             time up, and that is what says the note is playing.
           */}
           <Waveform
+            width={waveWidth}
+            onWidth={setWaveWidth}
             waveform={media.waveform}
             fraction={fraction}
             color={tint}
+            smooth={v3Look}
+            playing={status.playing === true}
+            secondsLeft={Math.max(0, total - elapsed) / rate}
             onSeek={
               total > 0 && !loading
                 ? (to) => {
-                    void player.seekTo(to * total)
+                    if (player) void player.seekTo(to * total)
+                    else onFirstPress?.({ play: false, seekTo: to * total })
                   }
                 : undefined
             }
@@ -231,9 +342,10 @@ export function AudioBubble({
              * Drop it and the web build, which is the one at app2, plays a growl.
              *
              * Applied to the live player rather than saved for the next play, so
-             * a tap part-way through a word slows that word.
+             * a tap part-way through a word slows that word. Before the first
+             * play there is no player yet, and `LiveAudio` applies it.
              */
-            player.setPlaybackRate(next, 'high')
+            player?.setPlaybackRate(next, 'high')
           }}
         >
           <Text style={[styles.rate, { color: rate === NORMAL_PLAYBACK_RATE ? faint : tint }]}>
@@ -282,16 +394,28 @@ function Waveform({
   waveform,
   fraction,
   color,
+  smooth,
+  playing,
+  secondsLeft,
   onSeek,
+  width,
+  onWidth,
 }: {
   waveform: readonly number[] | undefined
   fraction: number | null
   color: string
+  /** v3: the played part sweeps in smoothly (`WaveformProgress`) rather than a bar at a time. */
+  smooth: boolean
+  playing: boolean
+  /** Wall-clock seconds to the end, at the current speed. */
+  secondsLeft: number
   /** Absent when there is nowhere to seek to — see `AudioBubble`. */
   onSeek: ((fraction: number) => void) | undefined
+  /** The row's measured width, kept by `AudioBubble` so a remount does not lose it. */
+  width: number
+  onWidth: (width: number) => void
 }) {
   const styles = useStyles()
-  const [width, setWidth] = useState(0)
   /** Where a drag is, drawn instead of the player's position until release. */
   const [scrub, setScrub] = useState<number | null>(null)
 
@@ -322,23 +446,38 @@ function Waveform({
       <View
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
-        onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
+        onLayout={(event) => onWidth(event.nativeEvent.layout.width)}
         style={styles.waveform}
       >
-        {bars.map((height, index) => (
-          <View
-            // Positional by nature: bar 3 is the fourth slice of the note.
-            key={index}
-            style={[
-              styles.bar,
-              {
-                backgroundColor: color,
-                height: Math.max(WAVEFORM_BAR_WIDTH, height * WAVEFORM_HEIGHT),
-                opacity: index < played ? 1 : 0.3,
-              },
-            ]}
+        {smooth ? (
+          <WaveformProgress
+            heights={bars.map((height) => Math.max(WAVEFORM_BAR_WIDTH, height * WAVEFORM_HEIGHT))}
+            width={width}
+            color={color}
+            rowStyle={styles.waveform}
+            barStyle={styles.bar}
+            // A drag is held where the finger is; the sweep resumes on release.
+            fraction={scrub ?? fraction}
+            playing={scrub === null && playing}
+            secondsLeft={secondsLeft}
           />
-        ))}
+        ) : null}
+        {smooth
+          ? null
+          : bars.map((height, index) => (
+              <View
+                // Positional by nature: bar 3 is the fourth slice of the note.
+                key={index}
+                style={[
+                  styles.bar,
+                  {
+                    backgroundColor: color,
+                    height: Math.max(WAVEFORM_BAR_WIDTH, height * WAVEFORM_HEIGHT),
+                    opacity: index < played ? 1 : 0.3,
+                  },
+                ]}
+              />
+            ))}
       </View>
     </GestureDetector>
   )

@@ -38,7 +38,6 @@ export const en = {
     checking: 'Checking…',
     oneMoment: 'One moment…',
     skip: 'Skip for now',
-    comingSoon: 'COMING SOON',
     continue: 'Continue',
     done: 'Done',
     reset: 'Reset',
@@ -208,6 +207,12 @@ export const en = {
     modeKeep: 'Keep in chat',
     send: 'Send',
     retake: 'Retake',
+    hideOptions: 'Hide options',
+    showOptions: 'Show options',
+    viewfinder: 'Camera view',
+    viewfinderHint: 'Pinch to zoom. Double-tap to switch camera.',
+    zoomedIn: 'Zoomed in',
+    notZoomed: 'Not zoomed',
     hint: 'Tap for photo, hold for video',
     close: 'Close camera',
     flip: 'Switch camera',
@@ -224,6 +229,14 @@ export const en = {
     cameraUnavailable:
       'The camera isn’t available here. Choose a photo or video from your library instead.',
     captureFailed: 'Couldn’t take that. Try again.',
+    filters: 'Filters',
+    filterOriginal: 'Original',
+    filterWarm: 'Warm',
+    filterCool: 'Cool',
+    filterMono: 'Mono',
+    filterVivid: 'Vivid',
+    filterFilm: 'Film',
+    filterFailed: 'Couldn’t add the filter. Try again.',
     playFailed: 'This video can’t be played on this device.',
   },
   tips: {
@@ -484,6 +497,7 @@ export const en = {
     editTitle: 'Edit card',
     editFront: 'Sentence',
     editBack: 'What it means',
+    editBackIn: 'How to say it in {language}',
     edited: 'Card updated',
     editFailedTitle: 'Could not save this card',
     cardMenu: 'Card options',
@@ -501,6 +515,8 @@ export const en = {
 
     // The session.
     sessionProgress: '{done} of {total}',
+    /** Where the answer goes, on a card whose back is empty or the sentence again. */
+    noMeaningYet: 'No meaning on this card yet.',
     show: 'Show answer',
     again: 'Again',
     hard: 'Hard',
@@ -639,6 +655,13 @@ export const en = {
      */
     subtitle: 'Lines from your chats come back just before you’d forget them.',
     dueUnit: { one: 'card due', other: 'cards due' },
+    /** Under the due count: a review now fills Home's Today's three's Echo ring. */
+    closesRing: 'Closes today’s third ring',
+    /** The same, with `TOKEN_RULES.award.echoSession` when a session there pays. */
+    closesRingTokens: {
+      one: 'Closes today’s third ring · +{count} token',
+      other: 'Closes today’s third ring · +{count} tokens',
+    },
     aboutMinutes: { one: 'about {count} minute', other: 'about {count} minutes' },
     /** A grade tile read aloud: its word and, in full, when the card comes back. */
     gradeInMinutes: {
@@ -1427,6 +1450,7 @@ export const en = {
     title: 'Chat',
     typing: 'typing…',
     notSentRetry: 'Not sent — tap to try again',
+    notSentTapRetry: 'Not sent · Tap to retry',
     editing: 'Editing',
     correcting: 'Correcting',
     partsReplyTitle: 'Which part are you replying to?',
@@ -1454,6 +1478,8 @@ export const en = {
     stickers: 'Stickers',
     stickersHint: 'Tap a sticker to send it.',
     stickerBuy: 'Unlock for {price} tokens',
+    /** `stickerBuy` with the token icon in `{price}` instead of the word. */
+    stickerUnlock: 'Unlock for {price}',
     quizAddOption: 'Add an option',
     sendQuiz: 'Ask a quiz',
     quizQuestion: 'Question',
@@ -1690,6 +1716,10 @@ export const en = {
     },
     pinnedMessage: 'Pinned message',
     goToPinned: 'Go to the pinned message',
+    /** The v3 pinned strip's line under "Pinned message": its author, then the message. */
+    pinnedPreview: '{name}: {text}',
+    /** The pinned strip's ✕: a pin belongs to the conversation, so it goes for both. */
+    unpinHint: 'Takes the pin off for both of you',
     backToLatest: 'Back to latest',
     jumpToNew: {
       one: 'Jump to {count} new message',
@@ -1958,8 +1988,8 @@ export const en = {
     correctionPlaceholder: 'Rewrite the sentence the way you would say it…',
     startFromOriginal: 'Start from the original',
     correctionReward: {
-      one: '+{count} token · Unlimited on every plan',
-      other: '+{count} tokens · Unlimited on every plan',
+      one: '+{count} token',
+      other: '+{count} tokens',
     },
     voiceNote: 'Voice note',
     top: 'Top',
@@ -2389,7 +2419,8 @@ export const en = {
     freezes: 'Freezes: {banked} of {max}',
     freezeBody: 'A freeze covers the next day you miss.',
     freezesFull: 'Your bank is full. One is used the next time you miss a day.',
-    protect: { one: 'Protect · {count} token', other: 'Protect · {count} tokens' },
+    /** The freeze's button; `{amount}` is the number and the token icon, `protectA11y` says it. */
+    protectShort: 'Protect · {amount}',
     protectA11y: {
       one: 'Buy a streak freeze for {count} token',
       other: 'Buy a streak freeze for {count} tokens',
@@ -2404,6 +2435,8 @@ export const en = {
       one: 'Buy a day back · {count} token',
       other: 'Buy a day back · {count} tokens',
     },
+    /** `repairButton` with the token icon in `{amount}` instead of the word. */
+    repairShort: 'Buy a day back · {amount}',
     milestones: 'Milestones',
     rungTokens: '+{amount}',
     rungWeeksOfPro: {
@@ -2623,6 +2656,15 @@ export const en = {
       other: '{count} free translations left today',
     },
     whatYouHave: 'What you have',
+    usageChats: 'New chats left today',
+    usageTranslations: 'Translations',
+    /** Spoken for a usage row, where the screen shows "3 / 5": a slash read aloud is "slash". */
+    usageA11y: '{title}: {left} of {total}',
+    whatPlanAdds: 'What {plan} adds',
+    appIconAll: 'All icons',
+    translateExampleLabel: 'Example',
+    /** The same sentence in every locale: the example card shows two locales' copies of it, one as the translation of the other. */
+    translateExample: 'Hi! Yesterday I cooked dinner for my family.',
     signInConnect: 'Connect',
     signInDisconnect: 'Disconnect',
     signInDisconnectConfirm:
@@ -2745,6 +2787,8 @@ export const en = {
     buyFor: 'Buy for {amount}',
     buyTitle: 'Buy {title}',
     moreTokens: { one: '{amount} more token needed', other: '{amount} more tokens needed' },
+    /** `moreTokens` with the token icon in `{amount}` instead of the word. */
+    moreNeeded: '{amount} more needed',
     opensAfter: 'Opens after you own {title}',
     notYet: 'Not unlocked yet',
     youHave: 'You have {amount}',
@@ -2820,13 +2864,10 @@ export const en = {
     leaderboardBody: 'Who earned the most this week, month and year',
     poolBody: 'How the nightly share is worked out',
     storeBody: 'Streak freezes, missed days and cosmetics',
-    /**
-     * The redesign's wallet (`WalletScreenV3`). The unit beside the balance
-     * is the store's own word for a token, as `store.price` spells it.
-     */
-    tokensUnit: { one: 'token', other: 'tokens' },
     /** The hero's bar: the nearest frame or title the balance is saving for. */
     nextRung: { one: '{amount} token to {title}', other: '{amount} tokens to {title}' },
+    /** `nextRung` for the redesign, where `{amount}` is the number and the token icon. */
+    nextRungShort: '{amount} to {title}',
     nextRungReady: 'Enough for {title}',
     /** "1 of 2" freezes banked, "2 of 23" items owned. */
     countOf: '{current} of {total}',
@@ -2988,10 +3029,6 @@ export const en = {
     chatNote: 'Whoever you send one to sees it, even if they do not have the pack.',
     sentByYou: 'You sent the {name} sticker',
     sentByThem: 'Your partner sent the {name} sticker',
-    tokenUnit: {
-      one: 'token',
-      other: 'tokens',
-    },
     afterBuying: '{balance} now · {after} after',
     shortBy: '{balance} now · {missing} to go',
     buy: 'Buy {title}',
@@ -3213,6 +3250,8 @@ export const en = {
     year: 'Year',
     badges: 'Badges',
     pays: { one: 'Pays {amount} token', other: 'Pays {amount} tokens' },
+    /** `pays` with the token icon in `{amount}` instead of the word. */
+    paysShort: 'Pays {amount}',
     you: 'You',
     streakTitle: 'Leaderboard',
     metricCurrent: 'Now',
@@ -3559,6 +3598,13 @@ export const en = {
     cardTitle: 'Share as a picture',
     cardStreakCaption: 'day streak on LangX',
     cardBadgeCaption: 'badge earned on LangX',
+    /*
+     * The profile card: the pill on it, from Share profile or from Invite,
+     * and the line under it on the card's page.
+     */
+    cardProfileHeadline: 'Practise languages with me',
+    cardInviteHeadline: 'Learn a language with me',
+    cardProfileCaption: 'Find me on LangX',
     cardBody: 'Pick where it is going — the card is drawn to fit.',
     shapeStory: 'Instagram / TikTok story',
     shapeSquare: 'Instagram post',
@@ -3811,6 +3857,9 @@ export const en = {
     receivedEmptyTitle: 'Your reviews will live here',
     receivedEmptyBody:
       'Partners you practise with can leave a few words on your profile. Keep the conversations going.',
+    /** Somebody else's full list, with nothing on it yet. */
+    profileEmptyTitle: 'No reviews yet',
+    profileEmptyBody: 'When partners leave a few words on this profile, they show up here.',
     writtenEmptyTitle: 'Say thanks in writing',
     writtenEmptyBody:
       'Had a great practice partner? A short review on their profile helps others find them.',
@@ -3860,7 +3909,8 @@ export const en = {
     nearbyBody:
       'Sort people by distance. Your location is rounded; others see only a rough distance.',
     copilot: 'AI copilot',
-    copilotBody: 'Help composing and understanding messages as you write them.',
+    copilotBody:
+      'Help composing and understanding messages as you write them. It may not be on for your account yet.',
     quotaNotice:
       'You’ve used today’s {count} new chats. You can still reply to everything you receive, with no limit.',
     manageNotice: 'You’re on {plan}. Manage or cancel it in your store account.',
@@ -3922,7 +3972,7 @@ export const en = {
     },
     showLess: 'Show less',
     /**
-     * A price and what it is per — "$6.99 a month" — in the order the language
+     * A price and what it is per — "$6.66 a month" — in the order the language
      * says them; Turkish puts the period first. `{period}` is one of `perMonth`,
      * `perYear` or `perLifetime`.
      */
@@ -3967,6 +4017,10 @@ export const en = {
     compareLanguages: 'Languages you learn',
     compareUnlimited: 'Unlimited',
     compareSoon: 'Soon',
+    /** Pro's cell in the comparison for a feature in beta: works, but not for every account yet. */
+    compareBeta: 'Beta',
+    /** Beside a beta feature's name on the paywall and the plan page. One phrasing everywhere, the website and the docs included. */
+    betaTag: 'Beta, rolling out',
     compareIncluded: 'Included',
     compareNotIncluded: 'Not included',
     yearlyBadge: '{perMonth} · {saving}',
@@ -4268,8 +4322,8 @@ export const en = {
    * the person sends it themselves.
    */
   copilot: {
-    /** On every Copilot answer and on its consent sheet. Blue, never green: green is a person's correction. */
-    label: 'AI · may be wrong',
+    /** On every Copilot answer and on its consent sheet. Blue, never green: green is a person’s correction. The "AI can be wrong" disclosure is `consentWrong`, not this. */
+    label: 'Copilot · Beta',
     /** Copilot cannot answer here at all — switched off, or not for this account. */
     off: 'Copilot is off.',
     consentTitle: 'Before you use Copilot',
@@ -4284,7 +4338,7 @@ export const en = {
       'When you ask, the text you asked about goes to Anthropic, the company that runs the AI model, with your languages and levels. To explain a message, that is the one message you picked, which the other person wrote. For reply ideas, it includes the last few messages in the chat.',
     consentNever: 'Your name, email, photos and voice notes are never sent.',
     consentWrong:
-      'AI can be wrong. Its answers are marked AI, and nothing reaches the other person unless you send it yourself.',
+      'AI can be wrong. Its answers are marked Copilot, and nothing reaches the other person unless you send it yourself.',
     consentAccept: 'Turn on Copilot',
     consentDecline: 'Not now',
     /** Screen-reader name of the blue button beside send, which opens the two-row menu. */
@@ -4312,8 +4366,6 @@ export const en = {
     errQuota: 'You’ve used today’s Copilot answers. More at {time}.',
     /** The same, when the server did not say when. */
     errQuotaNoTime: 'You’ve used today’s Copilot answers.',
-    /** The other person is under 18, so their words are not sent. */
-    errPartnerAge: 'Copilot doesn’t read this chat.',
     errBusy: 'Copilot is busy. Try again later.',
     errNoAnswer: 'Copilot couldn’t answer that.',
     errNetwork: 'Couldn’t reach Copilot.',
@@ -4325,6 +4377,34 @@ export const en = {
     replyIdeaHint: 'Puts it in your message. Nothing is sent.',
     /** Screen-reader words for the header above the ideas. */
     replyIdeasCount: { one: '{count} reply idea', other: '{count} reply ideas' },
+    /** The small action in the corner of every Copilot answer. */
+    report: 'Report',
+    reportA11y: 'Report this answer',
+    reportTitle: 'Report this answer?',
+    /**
+     * The confirm sheet: what always goes to the team. Says the answer can quote
+     * its subject — a Check answer is the draft, corrected — so the switch below
+     * is not mistaken for the only way the words leave.
+     */
+    reportBody:
+      'The LangX team will see this answer, which can quote the words it was about, and which Copilot help wrote it. Nothing is sent to the other person.',
+    /** Off until switched on; the draft it would send is shown under it. */
+    reportIncludeQuestion: 'Also send what you wrote',
+    /** Explain and Reply ideas: no draft to offer, and nothing of the chat beyond what the answer quotes. */
+    reportChatNotSent: 'Nothing else from your chat is sent with it.',
+    reportSend: 'Send report',
+    reportSent: 'Thanks — the team will look at it.',
+    /** The row on the Privacy page, for an account Copilot is on for. */
+    settingsTitle: 'Copilot',
+    settingsOnBody: 'On. Your text goes to the AI provider only when you tap a Copilot button.',
+    /** Under the row while consent is not given: Copilot asks before it is used. */
+    settingsOffStateBody: 'Off. Copilot asks for your permission before it is used.',
+    settingsOffTitle: 'Turn off Copilot?',
+    /** Turning it off withdraws consent on the server. */
+    settingsOffBody:
+      'Nothing more of yours goes to the AI provider. Copilot asks again the next time you use it.',
+    settingsOffConfirm: 'Turn off',
+    settingsOffDone: 'Copilot is off.',
   },
 } as const
 

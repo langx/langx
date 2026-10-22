@@ -9,9 +9,10 @@ import { makeStyles } from '../lib/theme'
  * The same names as the current sheet, for the reason `PostScreenV3.styles.ts`
  * gives: the picker's refusals and the recorder's ceiling are the bar's whole
  * point, and one component that picks a sheet by the flag cannot let them
- * drift. `V-Compose` draws its two buttons as tall tiles beside the previews;
- * the bar here stays a row of pills, because it also sits beside the Send
- * of a correction, where a tile would not fit.
+ * drift. `V-Compose` draws its two buttons as tall tiles beside the previews,
+ * which the bar draws when asked (`tile`, below); the pills stay the default,
+ * because the bar also sits beside the Send of a correction, where a tile
+ * would not fit.
  */
 export const useAttachmentStylesV3 = makeStyles(({ v3 }) => ({
   // Wraps where the current row does not: the board's words are bigger, and
@@ -79,4 +80,34 @@ export const useAttachmentStylesV3 = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[8],
     paddingVertical: v3.space[12],
   },
+}))
+
+/**
+ * The post composer's tiles (`V-Compose`): the picker as a dashed square, the
+ * microphone as a grey one, in one line after the thumbnails. The dash is
+ * `muted` rather than `line`: an empty square's edge is the whole control,
+ * and `line` would leave it under the 3:1 a control's edge needs.
+ */
+export const useAttachmentTileStylesV3 = makeStyles(({ v3 }) => ({
+  scroll: { flexGrow: 0 },
+  line: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: v3.space[10],
+    paddingEnd: v3.space[8],
+    paddingTop: v3.space[8],
+  },
+  tile: {
+    alignItems: 'center',
+    borderRadius: v3.radius.card,
+    gap: v3.space[6],
+    justifyContent: 'center',
+    paddingHorizontal: v3.space[8],
+    // 8 rather than the board's 10: at `buttonSmall` "Add a photo or video"
+    // takes three lines in a 112 square, and with the glyph that only fits here.
+    paddingVertical: v3.space[8],
+  },
+  add: { borderColor: v3.colors.muted, borderStyle: 'dashed', borderWidth: 2 },
+  voice: { backgroundColor: v3.colors.surface },
+  label: { ...v3.type.buttonSmall, color: v3.colors.fg, textAlign: 'center' },
 }))

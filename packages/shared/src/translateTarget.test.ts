@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { translateTargetFor, translateTargetOptions } from './translation'
+import { learningTargetFor, translateTargetFor, translateTargetOptions } from './translation'
 
 describe('translateTargetFor', () => {
   it('defaults to the first native language', () => {
@@ -47,5 +47,23 @@ describe('translateTargetOptions', () => {
         nativeLanguages: [{ code: 'de' }, { code: 'ase' }, { code: 'tr' }],
       }),
     ).toEqual(['de', 'tr'])
+  })
+})
+
+describe('learningTargetFor', () => {
+  const codes = (...list: string[]) => list.map((code) => ({ code }))
+
+  it('picks the language being learned that the partner speaks natively', () => {
+    expect(learningTargetFor(codes('es', 'en'), codes('en'))).toBe('en')
+  })
+
+  it('falls back to the first language being learned', () => {
+    expect(learningTargetFor(codes('es', 'en'), codes('ja'))).toBe('es')
+    expect(learningTargetFor(codes('es'), undefined)).toBe('es')
+  })
+
+  it('is undefined for somebody learning nothing', () => {
+    expect(learningTargetFor([], codes('en'))).toBeUndefined()
+    expect(learningTargetFor(undefined, codes('en'))).toBeUndefined()
   })
 })

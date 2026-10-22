@@ -672,6 +672,12 @@ export const ptBR: Localized<ServerMessages> = {
   feedbackReply: {
     bug: 'Oi! Obrigado por avisar — a gente leu e está investigando.',
     feature: 'Oi! Obrigado pela ideia — a gente leu e ela já está na nossa lista.',
+    copilot:
+      'Oi! Obrigado por avisar sobre esta resposta do Copilot — a gente leu, e avisos como o seu ajudam a melhorar o Copilot.',
     issue: 'Você pode acompanhar aqui: {url}',
+  },
+  cards: {
+    badgeKicker: 'Insígnia nova',
+    badgeEarnedOn: 'Conquistada em {date}',
   },
 }

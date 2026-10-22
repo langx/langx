@@ -21,7 +21,7 @@
  *
  * If you are here to "finish the translations": this is finished.
  */
-import { COPILOT_RULES, type AdminFlagName, type ReportReason } from '@langx/shared'
+import type { AdminFlagName, ReportReason } from '@langx/shared'
 
 /**
  * One decimal, and an em dash rather than a `0%` when there is nothing to take
@@ -288,6 +288,12 @@ export const ADMIN = {
     replied: (emailed: boolean) =>
       emailed ? 'Sent, and emailed.' : 'Sent in the app. The email did not go.',
     repliedAt: (date: string) => `Answered ${date}`,
+    /** A reported Copilot answer: which help wrote it, and the person's draft when they sent it. */
+    copilotAction: (action: string) => `Copilot · ${action}`,
+    copilotQuestion: 'They asked',
+    copilotAnswer: 'Copilot answered',
+    copilotNoQuestion: 'Their question was not sent.',
+    copilotClose: 'Close',
   },
 
   broadcast: {
@@ -387,7 +393,7 @@ export const ADMIN = {
     noHistory: 'Nothing yet.',
     copilot: {
       title: 'Copilot access',
-      hint: `Uses Copilot when the switch is on, they are ${COPILOT_RULES.minimumAge}+, and they agree.`,
+      hint: 'Uses Copilot when the switch is on and they agree.',
       allowed: 'Copilot allowed',
       revoked: 'Copilot access removed',
     },
@@ -957,7 +963,6 @@ export const ADMIN = {
     serviceOff: 'Off — no key, or flags.copilotEnabled is off',
     access: 'Your account',
     accessOk: 'Can use it',
-    accessAge: 'Off — under Copilot’s minimum age',
     accessOff: 'Off',
     consent: 'Consent',
     consentGiven: 'Given',
@@ -1000,10 +1005,8 @@ export const ADMIN = {
       'flags.copilotEnabled is on',
       'the API has a key',
       'the account is on the list above',
-      `they are ${COPILOT_RULES.minimumAge} or older, by the exact birthday`,
       'they agreed to the current consent sheet, asked on their first tap',
     ],
-    whoPartner: `On top of that, Explain and Reply ideas refuse a chat whose partner is under ${COPILOT_RULES.minimumAge}, so their words never reach the model.`,
   },
 
   common: {

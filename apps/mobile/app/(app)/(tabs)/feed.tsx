@@ -1,8 +1,8 @@
 import Feather from '@expo/vector-icons/Feather'
 import { FEED_TOP_CORRECTIONS, MAX_POST_LENGTH, PLAN_LIMITS } from '@langx/shared'
 import { useQueryClient, type InfiniteData } from '@tanstack/react-query'
-import { Redirect, router, useFocusEffect } from 'expo-router'
-import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
+import { Redirect, router, useFocusEffect, useNavigation } from 'expo-router'
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
   ActivityIndicator,
   Animated,
@@ -65,6 +65,7 @@ import { attachmentsOf, type Media } from '@langx/shared'
 import { showToast } from '../../../src/lib/toast'
 import { relativeTime } from '../../../src/lib/format'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
+import { useReduceMotion } from '../../../src/hooks/useReduceMotion'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useV3Home } from '../../../src/hooks/useV3Home'
 import { useTwoPane } from '../../../src/hooks/useTwoPane'
@@ -188,12 +189,24 @@ export function FeedScreen({ people }: { people?: ReactNode } = {}) {
   const feed = useFeed()
   const client = useQueryClient()
   /*
-   * A reset, not a refetch. A refetch of an infinite query re-reads every
-   * loaded page in turn, each one a ranked window read; a reset asks for page
-   * one alone — and is the only way to get a new ranking moment, since every
-   * later page is pinned to the one page one was read at.
+   * Trim to page one, then refetch. A plain refetch of an infinite query
+   * re-reads every loaded page in turn, each one a ranked window read; with
+   * only page one left it asks for page one alone — the new ranking moment,
+   * since every later page is pinned to the one page one was read at.
+   *
+   * Not `resetQueries`, which got the same request by dropping the data: the
+   * list went back to skeletons, the RefreshControl unmounted mid-pull and
+   * the scroll jumped. Trimming keeps what is on screen until the answer
+   * replaces it.
    */
-  const pull = usePullToRefresh(() => client.resetQueries({ queryKey: keys.timeline }))
+  const pull = usePullToRefresh(() => {
+    client.setQueryData<InfiniteData<FeedPage>>(keys.timeline, (data) =>
+      data && data.pages.length > 1
+        ? { pages: data.pages.slice(0, 1), pageParams: data.pageParams.slice(0, 1) }
+        : data,
+    )
+    return client.refetchQueries({ queryKey: keys.timeline, exact: true })
+  })
   const correctPost = useCorrectPost()
   const review = useReviewPrompt()
 
@@ -340,6 +353,7 @@ export function FeedScreen({ people }: { people?: ReactNode } = {}) {
     listRef.current?.scrollToOffset({ offset, animated }),
   )
   const listRef = useRef<FlatList<FeedPost>>(null)
+  useTabPressScrollsToTop(listRef)
   /*
    * The correction box, not the field inside it: the attachment bar and the
    * send row sit below the field and it is those the keyboard has to clear.
@@ -428,7 +442,9 @@ export function FeedScreen({ people }: { people?: ReactNode } = {}) {
       onRetry={() => void feed.refetch()}
       pull={pull}
       onEndReached={() => {
-        if (feed.hasNextPage && !feed.isFetchingNextPage) void feed.fetchNextPage()
+        // `isFetching`, not only the next page: a page fetched during a pull
+        // would cancel the pull's refetch of page one.
+        if (feed.hasNextPage && !feed.isFetching) void feed.fetchNextPage()
       }}
       loadingMore={feed.isFetchingNextPage}
       meId={me.data?._id}
@@ -523,7 +539,9 @@ export function FeedScreen({ people }: { people?: ReactNode } = {}) {
             refreshControl={<RefreshControl {...pull} />}
             onEndReachedThreshold={0.6}
             onEndReached={() => {
-              if (feed.hasNextPage && !feed.isFetchingNextPage) void feed.fetchNextPage()
+              // `isFetching`, not only the next page: a page fetched during a pull
+              // would cancel the pull's refetch of page one.
+              if (feed.hasNextPage && !feed.isFetching) void feed.fetchNextPage()
             }}
             ListEmptyComponent={
               <EmptyState icon="users" title={t('feed.emptyTitle')} body={t('feed.emptyBody')} />
@@ -849,6 +867,47 @@ export function FeedScreen({ people }: { people?: ReactNode } = {}) {
 }
 
 const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e']
+
+/** The few navigation calls the tab-press listener needs, whatever navigator it is. */
+interface TabPressNavigation {
+  getState: () => { type?: string } | undefined
+  getParent: () => TabPressNavigation | undefined
+  isFocused: () => boolean
+  addListener: (
+    event: 'tabPress',
+    listener: (event: { defaultPrevented?: boolean }) => void,
+  ) => () => void
+}
+
+/**
+ * A tap on the tab the feed is already showing goes back to the top —
+ * `useScrollToTop`'s behaviour, which always animates, so here instead with
+ * the scroll set at once under reduce motion. Listens on every tab navigator
+ * above the screen, as that hook does, and only while the screen is focused.
+ */
+function useTabPressScrollsToTop(listRef: { current: FlatList<FeedPost> | null }): void {
+  const navigation: TabPressNavigation = useNavigation()
+  const reduceMotion = useReduceMotion()
+  const reduce = useRef(reduceMotion)
+  reduce.current = reduceMotion
+  useEffect(() => {
+    const tabs: TabPressNavigation[] = []
+    for (let at: TabPressNavigation | undefined = navigation; at; at = at.getParent()) {
+      if (at.getState()?.type === 'tab') tabs.push(at)
+    }
+    const stops = tabs.map((tab) =>
+      tab.addListener('tabPress', (event) => {
+        if (!navigation.isFocused()) return
+        // Next frame, so a listener that prevents the press has had its turn.
+        requestAnimationFrame(() => {
+          if (event.defaultPrevented) return
+          listRef.current?.scrollToOffset({ offset: 0, animated: !reduce.current })
+        })
+      }),
+    )
+    return () => stops.forEach((stop) => stop())
+  }, [navigation, listRef])
+}
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   // The bottom half is the gap above the tip; `Tip` owns the one below it.

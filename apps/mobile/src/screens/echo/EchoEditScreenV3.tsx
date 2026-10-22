@@ -24,6 +24,7 @@ import { showAlert } from '../../lib/alert'
 import { queryFailed } from '../../lib/listState'
 import { goBackTo } from '../../lib/navigation'
 import { pickMediaAssets } from '../../lib/pickMediaAsset'
+import { echoBackLabel } from '../../lib/echoBackLabel'
 import { postLanguages, resolvePostLanguage } from '../../lib/postLanguage'
 import { reportWriteError } from '../../lib/reportWriteError'
 import { makeStyles, useTheme } from '../../lib/theme'
@@ -210,7 +211,7 @@ function EditForm({ card, onDone }: { card: EchoCard; onDone: () => void }) {
       />
       {/* Emptiable on purpose: a wrong translation is worse than none. */}
       <FieldV3
-        label={t('echo.editBack')}
+        label={echoBackLabel(t, names.language, card.backLang)}
         value={back}
         onChangeText={setBack}
         maxLength={ECHO_BACK_MAX_LENGTH}

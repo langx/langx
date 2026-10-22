@@ -1,15 +1,18 @@
 import { useEffect } from 'react'
 import { StyleSheet, View } from 'react-native'
 import Animated, {
+  cancelAnimation,
+  runOnJS,
   useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withTiming,
 } from 'react-native-reanimated'
 import Svg, { Path } from 'react-native-svg'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
-import { patchOutline } from '../../lib/badgePatch/geometry'
-import { EASE_OUT } from '../../lib/theme/motion'
+import { patchOutline } from '@langx/shared'
+import { DELAY, EASE_OUT, TIMING } from '../../lib/theme/motion'
 import { BadgePatch } from './BadgePatch'
 
 const AnimatedPath = Animated.createAnimatedComponent(Path)
@@ -21,32 +24,61 @@ const FADE_MS = 150
 
 /**
  * The earned moment: a needle stitches the patch's border once, 900 ms, ease
- * out, and the thread settles into the band that was already there. With
+ * out, and the thread fades into the band that was already there. With
  * reduced motion the finished patch fades in over 150 ms instead.
+ *
+ * The stitch waits `DELAY.afterPush` first: it lives on a sheet that slides
+ * up, and a needle that is half way round before the sheet has landed is half
+ * seen. `onStitched` runs when the last stitch is in — the moment the sheet's
+ * one haptic belongs to — or once the patch has faded in.
+ *
+ * Reduce motion is read as it answers, not only at mount: `useReduceMotion`
+ * can answer after the first frame, and a stitch already under way then
+ * finishes at once rather than playing on.
  *
  * Plays when it mounts; the caller decides whether this is the first time the
  * id has been seen (`useNewBadges`), so it plays once per badge.
  */
-export function BadgeStitch({ id, size }: { id: string; size: number }) {
+export function BadgeStitch({
+  id,
+  size,
+  onStitched,
+}: {
+  id: string
+  size: number
+  onStitched?: (() => void) | undefined
+}) {
   const reduce = useReduceMotion()
   const outline = patchOutline(id)
   const length = outline?.length ?? 0
-  const drawn = useSharedValue(reduce ? 1 : 0)
-  const shown = useSharedValue(reduce ? 0 : 1)
+  const drawn = useSharedValue(0)
+  const thread = useSharedValue(1)
+  const shown = useSharedValue(0)
 
   useEffect(() => {
+    const done = (finished?: boolean): void => {
+      'worklet'
+      if (finished && onStitched) runOnJS(onStitched)()
+    }
     if (reduce) {
+      cancelAnimation(drawn)
+      cancelAnimation(thread)
       drawn.set(1)
-      shown.set(withTiming(1, { duration: FADE_MS }))
+      thread.set(0)
+      shown.set(withTiming(1, { duration: FADE_MS }, done))
       return
     }
-    drawn.set(withTiming(1, { duration: STITCH_MS, easing: EASE_OUT }))
-  }, [reduce, drawn, shown])
-
-  const thread = useAnimatedProps(() => ({
-    strokeDashoffset: length * (1 - drawn.get()),
+    shown.set(1)
+    drawn.set(
+      withDelay(DELAY.afterPush, withTiming(1, { duration: STITCH_MS, easing: EASE_OUT }, done)),
+    )
     // Once round, the thread gives way to the band sewn underneath it.
-    strokeOpacity: drawn.get() >= 1 ? 0 : 1,
+    thread.set(withDelay(DELAY.afterPush + STITCH_MS, withTiming(0, TIMING.fade)))
+  }, [reduce, drawn, thread, shown, onStitched])
+
+  const threadProps = useAnimatedProps(() => ({
+    strokeDashoffset: length * (1 - drawn.get()),
+    strokeOpacity: thread.get(),
   }))
   const patch = useAnimatedStyle(() => ({ opacity: shown.get() }))
 
@@ -65,7 +97,7 @@ export function BadgeStitch({ id, size }: { id: string; size: number }) {
               strokeWidth={4.6}
               strokeLinecap="round"
               strokeDasharray={`${length} ${length}`}
-              animatedProps={thread}
+              animatedProps={threadProps}
             />
           </Svg>
         </Animated.View>

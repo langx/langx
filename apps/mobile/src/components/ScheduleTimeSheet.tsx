@@ -2,6 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { useMemo, useState } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
 import { useLocale, useT } from '../i18n'
 import { defaultScheduleTime, scheduleDays, scheduleSlots } from '../lib/scheduleTime'
@@ -30,12 +31,13 @@ export function ScheduleTimeSheet({
   onClose: () => void
   onConfirm: (at: Date) => void
 }) {
+  const reduce = useReduceMotion()
   // Mounted only while open, so each opening starts from a fresh "now".
   return (
     <Modal
       visible={visible}
       transparent
-      animationType="slide"
+      animationType={reduce ? 'none' : 'slide'}
       onRequestClose={onClose}
       accessibilityViewIsModal
     >

@@ -1,7 +1,7 @@
 /**
  * Whether this launch plays the opening film to its end.
  *
- * Only the very first launch does. The film is 2.7 s, and every cold start
+ * Only the very first launch does. The film is 1.8 s, and every cold start
  * used to wait it out in full, ready app or not — fine as a first hello,
  * a toll on the hundredth. So the device remembers having shown it
  * (`FLAG_KEYS.launchFilmSeen`), and every launch after the first leaves as
@@ -30,9 +30,27 @@ export function exitWaitsForFilm({
 
 /**
  * How long the reduced-motion mark still has to stay up. The floor is there so
- * a warm start does not flash the logo; a tap is somebody asking for it to go,
- * which no flicker argument outweighs.
+ * a fast boot does not flash the logo at somebody who has never seen it; a tap
+ * is somebody asking for it to go, which no flicker argument outweighs.
+ *
+ * Only on the first launch, for the film's reason: the mark is a hello, and
+ * from the second launch on the app is what they opened it for. The mark's own
+ * dissolve (`EXIT_TILE_MS`) is still there, so it never blinks out.
+ *
+ * `seen` is `FLAG_KEYS.launchSeen`, not the film's flag: with reduce motion on
+ * there is no film, so that one is never written, and every launch would count
+ * as the first. `undefined` while it is read counts as a first launch, as it
+ * does for the film.
  */
-export function exitDelayMs({ floorMs, skipped }: { floorMs: number; skipped: boolean }): number {
-  return skipped ? 0 : floorMs
+export function exitDelayMs({
+  floorMs,
+  skipped,
+  seen,
+}: {
+  floorMs: number
+  skipped: boolean
+  seen: boolean | undefined
+}): number {
+  if (skipped || seen === true) return 0
+  return floorMs
 }

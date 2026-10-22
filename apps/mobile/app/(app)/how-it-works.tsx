@@ -6,6 +6,7 @@ import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { useReduceMotion } from '../../src/hooks/useReduceMotion'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useT } from '../../src/i18n'
 import { messageActionsFor } from '../../src/lib/messageActions'
@@ -116,6 +117,7 @@ function TopicSheet({
   visible: boolean
   onClose: () => void
 }) {
+  const reduce = useReduceMotion()
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
@@ -127,7 +129,7 @@ function TopicSheet({
     <Modal
       visible={visible}
       transparent
-      animationType="slide"
+      animationType={reduce ? 'none' : 'slide'}
       onRequestClose={onClose}
       accessibilityViewIsModal
     >

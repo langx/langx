@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { streakMilestoneBonus, TOKEN_RULES } from '@langx/shared'
+import { patchTier, streakMilestoneBonus, TOKEN_RULES } from '@langx/shared'
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
@@ -11,7 +11,6 @@ import {
   badgeNote,
 } from '../../i18n/badgeWords'
 import { useLocale, useT } from '../../i18n'
-import { patchTier } from '../../lib/badgePatch/geometry'
 import { badgeAction, rungProgress, type Rung, type Shelf } from '../../lib/badgeShelves'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { Button } from '../ui/Button'

@@ -26,7 +26,9 @@ import { outlineLength, pointAlong, withoutArcs } from './pathData'
  * dark. Only the locked and in-progress drawings — a pencil pattern on paper,
  * never faded colour — take the scheme's paper and pencil.
  *
- * Pure data and no React: `BadgePatch` turns each node into a react-native-svg
+ * Pure data and no React, and in `packages/shared` so the badge share card
+ * (`apps/api/src/modules/cards/badgeDesign.ts`) draws the same patch the shelf
+ * does: `BadgePatch` turns each node into a react-native-svg
  * `Path`.
  */
 

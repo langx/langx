@@ -1,12 +1,24 @@
 import Feather from '@expo/vector-icons/Feather'
+import { useEffect } from 'react'
 import { Text, View } from 'react-native'
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated'
 import Svg, { Path } from 'react-native-svg'
+import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useLocale } from '../../i18n'
+import { claimCelebration } from '../../lib/celebration'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { SPRING, TIMING } from '../../lib/theme/motion'
 import { Button } from '../ui/Button'
 import { PressableScale } from '../ui/PressableScale'
 import { ProgressBar } from '../ui/ProgressBar'
 import { FlameGlyph, StreakFlame } from '../ui/StreakFlame'
+import { TokenText } from '../ui/TokenIcon'
 
 /*
  * The blocks of the redesign's streak screen, drawn from `V-Streak`. Each is
@@ -31,6 +43,14 @@ export interface WeekDayView {
  * it is hidden from screen readers rather than read twice. The week is one
  * element with a sentence for a label: seven rings read one by one would be
  * seven "image"s.
+ *
+ * Once per day per run of the app, the first time the screen shows today
+ * done, today's disc pops on `SPRING.bounce` and the flame gives one bounce:
+ * the day the person just kept is acknowledged, with no loop and no haptic.
+ * Every later visit that day in the same run — and reduce motion — is the
+ * hero standing still. `claimCelebration` remembers per run, so a cold start
+ * the same day plays it again; storing the day would buy little for a
+ * moment this small.
  */
 export function StreakHero({
   count,
@@ -46,10 +66,36 @@ export function StreakHero({
   weekLabel: string
 }) {
   const styles = useStyles()
+  const reduce = useReduceMotion()
+  const today = week.find((day) => day.today)
+  const kept = today?.done === true ? today.key : null
+
+  const disc = useSharedValue(1)
+  const flame = useSharedValue(1)
+  useEffect(() => {
+    if (!kept || !claimCelebration(`streak-hero:${kept}`) || reduce) return
+    disc.set(0)
+    disc.set(withSpring(1, SPRING.bounce))
+    flame.set(withSequence(withTiming(FLAME_BUMP, TIMING.press), withSpring(1, SPRING.bounce)))
+  }, [kept, reduce, disc, flame])
+  // `useReduceMotion` can answer after the first frame; then it stops at rest.
+  useEffect(() => {
+    if (!reduce) return
+    disc.set(1)
+    flame.set(1)
+  }, [reduce, disc, flame])
+  const discMotion = useAnimatedStyle(() => ({
+    opacity: Math.min(1, 0.3 + disc.get()),
+    transform: [{ scale: 0.6 + 0.4 * disc.get() }],
+  }))
+  const flameMotion = useAnimatedStyle(() => ({ transform: [{ scale: flame.get() }] }))
+
   return (
     <View style={styles.hero}>
       <View style={styles.heroTop}>
-        <StreakFlame count={count} size="hero" on="hue" />
+        <Animated.View style={flameMotion}>
+          <StreakFlame count={count} size="hero" on="hue" />
+        </Animated.View>
         <View style={styles.heroWords}>
           <Text
             style={styles.heroUnit}
@@ -78,7 +124,7 @@ export function StreakHero({
               <View style={[styles.letterPill, day.today && styles.letterPillToday]}>
                 <Text style={[styles.letter, day.today && styles.letterToday]}>{day.letter}</Text>
               </View>
-              <View
+              <Animated.View
                 style={[
                   styles.disc,
                   day.done
@@ -88,10 +134,11 @@ export function StreakHero({
                       : day.today
                         ? styles.discToday
                         : styles.discMissed,
+                  day.today ? discMotion : null,
                 ]}
               >
                 {day.done ? <DoneMark /> : null}
-              </View>
+              </Animated.View>
             </View>
           ))}
         </View>
@@ -99,6 +146,9 @@ export function StreakHero({
     </View>
   )
 }
+
+/** How far the flame swells before it lands on `SPRING.bounce`. */
+const FLAME_BUMP = 1.12
 
 function DoneMark() {
   const { v3 } = useTheme()
@@ -186,7 +236,8 @@ export function StreakFreezes({
         onPress: () => void
       }
     | undefined
-  note?: string | undefined
+  /** With the token mark where it names an amount (`tokenSentence`). */
+  note?: { text: string; label: string } | undefined
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
@@ -226,7 +277,7 @@ export function StreakFreezes({
           onPress={protect.onPress}
         />
       ) : null}
-      {note ? <Text style={styles.note}>{note}</Text> : null}
+      {note ? <TokenText text={note.text} label={note.label} style={styles.note} /> : null}
     </View>
   )
 }
@@ -246,7 +297,8 @@ export function StreakRepairCard({
 }: {
   title: string
   body: string
-  button: string
+  /** "Buy a day back · 600 ✦", and the same said in words. */
+  button: { label: string; accessibilityLabel: string }
   pending: boolean
   onPress: () => void
 }) {
@@ -264,7 +316,7 @@ export function StreakRepairCard({
         </View>
       </View>
       <Button
-        label={button}
+        {...button}
         variant="ink"
         size="medium"
         icon="calendar"
@@ -279,8 +331,10 @@ export interface RungView {
   key: string
   /** "30 days". */
   title: string
-  /** "+250", "+50 and a week of Pro". */
+  /** "+250 ✦", "+50 ✦ and a week of Pro" — the token mark in place (`tokenSlot`). */
   reward: string
+  /** The same, said with the unit in words. */
+  rewardLabel: string
   /** "Done", "18 to go". */
   status: string
   /** The figure in the disc. */
@@ -316,7 +370,7 @@ export function StreakLadder({ title, rungs }: { title: string; rungs: readonly 
             <View
               accessible
               accessibilityRole="text"
-              accessibilityLabel={`${rung.title}. ${rung.reward}. ${rung.status}`}
+              accessibilityLabel={`${rung.title}. ${rung.rewardLabel}. ${rung.status}`}
               style={styles.rungRow}
             >
               <View
@@ -340,7 +394,9 @@ export function StreakLadder({ title, rungs }: { title: string; rungs: readonly 
               </View>
               <View style={styles.rungWords}>
                 <Text style={[styles.rungTitle, reached && styles.onHue]}>{rung.title}</Text>
-                <Text
+                <TokenText
+                  text={rung.reward}
+                  label={rung.rewardLabel}
                   style={[
                     styles.rungReward,
                     // "+50" has no letters, so the web build's `dir="auto"`
@@ -350,9 +406,7 @@ export function StreakLadder({ title, rungs }: { title: string; rungs: readonly 
                     reached && styles.onHue,
                     rung.state === 'later' && styles.muted,
                   ]}
-                >
-                  {rung.reward}
-                </Text>
+                />
               </View>
               <Text
                 style={[
@@ -368,7 +422,7 @@ export function StreakLadder({ title, rungs }: { title: string; rungs: readonly 
               <ProgressBar
                 value={rung.progress.value}
                 height={10}
-                color={v3.hues.tangerine}
+                fillColor={v3.hues.tangerine}
                 accessibilityLabel={rung.progress.label}
               />
             ) : null}

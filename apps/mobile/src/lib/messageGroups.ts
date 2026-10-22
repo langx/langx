@@ -57,7 +57,7 @@ export function messageRows(items: MessageDto[], unread?: UnreadMark): MessageRo
 
     rows.push({
       kind: 'message',
-      key: String(message._id),
+      key: rowKeyOf(message),
       message,
       // The line breaks a run the way a heading does: the bubble under it
       // would otherwise be the tailless middle of a turn with nothing below.
@@ -74,6 +74,21 @@ export function messageRows(items: MessageDto[], unread?: UnreadMark): MessageRo
   })
 
   return rows
+}
+
+/**
+ * A message row's key: its `clientId` when it has one, else its id.
+ *
+ * The author's stand-in is drawn under a made-up id until the server names the
+ * message, and the echo arrives under the real one. Keyed by id, the list saw
+ * a row removed and another inserted — a remount of the bubble, with whatever
+ * it held (media, a playing animation) thrown away, on every message sent.
+ * The `clientId` is the one name both copies share: the server echoes it back
+ * to its author (`messageView.ts`), and to nobody else, so the other person's
+ * rows key by id as before.
+ */
+export function rowKeyOf(message: Pick<MessageDto, '_id' | 'clientId'>): string {
+  return message.clientId ? `c:${message.clientId}` : String(message._id)
 }
 
 /**

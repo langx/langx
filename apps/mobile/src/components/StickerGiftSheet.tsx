@@ -1,15 +1,18 @@
 import type { Cosmetic, StickerGiftOptions, StickerGiftPartnerState } from '@langx/shared'
 import { useState } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { ApiRequestError } from '../api/client'
 import { useGiveStickerPack } from '../api/queries'
 import { useLocale, useT, type MessageKey } from '../i18n'
 import { showAlert } from '../lib/alert'
 import { makeStyles, useTheme } from '../lib/theme'
 import { showToast } from '../lib/toast'
+import { tokenSlot } from '../lib/tokenAmount'
 import { newClientId } from '../lib/unsentMessages'
 import { Avatar } from './ui/Avatar'
 import { Button } from './ui/Button'
+import { TokenText } from './ui/TokenIcon'
 
 type Partner = StickerGiftOptions['partners'][number]
 
@@ -63,6 +66,7 @@ export function StickerGiftSheet({
   options: StickerGiftOptions | undefined
   onClose: () => void
 }) {
+  const reduce = useReduceMotion()
   const t = useT()
   const { locale } = useLocale()
   const { v3 } = useTheme()
@@ -120,7 +124,7 @@ export function StickerGiftSheet({
         </View>
       </View>
       <View style={styles.priceRow}>
-        <Text style={styles.price}>{price}</Text>
+        <TokenText text={tokenSlot(t, pack.price, locale)} label={price} style={styles.price} />
         <Text style={styles.muted}>
           {balance >= pack.price
             ? t('stickerPack.afterBuying', {
@@ -135,7 +139,8 @@ export function StickerGiftSheet({
       </View>
       <Text style={styles.honesty}>{t('stickerGift.honesty')}</Text>
       <Button
-        label={t('stickerGift.confirm', { price })}
+        label={t('stickerGift.confirm', { price: tokenSlot(t, pack.price, locale) })}
+        accessibilityLabel={t('stickerGift.confirm', { price })}
         loading={give.isPending}
         disabled={give.isPending || balance < pack.price}
         onPress={() => confirm(picked)}
@@ -208,7 +213,12 @@ export function StickerGiftSheet({
   )
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={close}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType={reduce ? 'none' : 'slide'}
+      onRequestClose={close}
+    >
       <Pressable
         style={styles.scrim}
         onPress={close}

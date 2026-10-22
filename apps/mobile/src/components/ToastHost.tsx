@@ -4,6 +4,7 @@ import { Animated, Platform, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useAppReady } from '../hooks/useAppReady'
 import { useReduceMotion } from '../hooks/useReduceMotion'
+import { useV3Home } from '../hooks/useV3Home'
 import { SPLASH_TIMING } from '../lib/splashTiming'
 import {
   dismissToast,
@@ -15,7 +16,8 @@ import {
 import { OVERLAY_LAYER } from '../lib/overlayLayers'
 import { makeStyles } from '../lib/theme'
 import { EASE_OUT } from '../lib/theme/motionAnimated'
-import { DURATION } from '../lib/theme/motionValues'
+import { DURATION, PRESS_SCALE_CARD } from '../lib/theme/motionValues'
+import { PressableScale } from './ui/PressableScale'
 
 /** How far the pill travels in and out, towards the edge it sits on. */
 const DRIFT = 10
@@ -47,6 +49,7 @@ const DRIFT = 10
 export function ToastHost() {
   const styles = useStyles()
   const reduce = useReduceMotion()
+  const v3Look = useV3Home()
 
   /** The head of the queue — what should be showing. */
   const [head, setHead] = useState<Toast | null>(null)
@@ -129,6 +132,29 @@ export function ToastHost() {
 
   if (!shown || !settled) return null
 
+  const body = (
+    <>
+      <Text style={styles.text}>{shown.message}</Text>
+      {shown.action ? (
+        // Its own `Pressable` inside the pill's, so the two taps mean
+        // different things: the action runs, and anywhere else dismisses.
+        // Running it also dismisses — leaving the pill up after the tap
+        // would invite a second one.
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => {
+            shown.action?.onPress()
+            dismissToast(shown.id)
+          }}
+          style={styles.action}
+        >
+          <View style={styles.actionGround} />
+          <Text style={styles.actionLabel}>{shown.action.label}</Text>
+        </Pressable>
+      ) : null}
+    </>
+  )
+
   return (
     <Animated.View
       // Nothing on the way out takes a tap: what is under it is what the
@@ -152,30 +178,27 @@ export function ToastHost() {
         },
       ]}
     >
-      <Pressable
-        accessibilityRole="alert"
-        onPress={() => dismissToast(shown.id)}
-        style={[styles.pill, shown.action ? styles.pillWithAction : null]}
-      >
-        <Text style={styles.text}>{shown.message}</Text>
-        {shown.action ? (
-          // Its own `Pressable` inside the pill's, so the two taps mean
-          // different things: the action runs, and anywhere else dismisses.
-          // Running it also dismisses — leaving the pill up after the tap
-          // would invite a second one.
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => {
-              shown.action?.onPress()
-              dismissToast(shown.id)
-            }}
-            style={styles.action}
-          >
-            <View style={styles.actionGround} />
-            <Text style={styles.actionLabel}>{shown.action.label}</Text>
-          </Pressable>
-        ) : null}
-      </Pressable>
+      {v3Look ? (
+        // The pill gives under the finger like a card does. The action inside
+        // it keeps its own plain press: it is the inner touch, so a tap on it
+        // never reaches the pill's.
+        <PressableScale
+          accessibilityRole="alert"
+          onPress={() => dismissToast(shown.id)}
+          scaleTo={PRESS_SCALE_CARD}
+          style={[styles.pill, shown.action ? styles.pillWithAction : null]}
+        >
+          {body}
+        </PressableScale>
+      ) : (
+        <Pressable
+          accessibilityRole="alert"
+          onPress={() => dismissToast(shown.id)}
+          style={[styles.pill, shown.action ? styles.pillWithAction : null]}
+        >
+          {body}
+        </Pressable>
+      )}
     </Animated.View>
   )
 }

@@ -1,5 +1,15 @@
 import { makeStyles } from '../../lib/theme'
 
+/** What every jump ring shares: over the whole box, an outline and nothing else. */
+const RING = {
+  borderWidth: 2,
+  bottom: 0,
+  left: 0,
+  position: 'absolute',
+  right: 0,
+  top: 0,
+} as const
+
 /**
  * The v3 thread's restyle of `MessageBubble`, as overrides of its own
  * stylesheet: the same keys, v3's values. Only the look moves — every branch,
@@ -41,10 +51,39 @@ const useOverrides = makeStyles(({ v3 }) => ({
   quote: { borderStartColor: v3.colors.blue },
   quoteText: { ...v3.type.caption, color: v3.colors.muted },
   // The ground's text colour: a blue ring would vanish around your own bubble.
+  // Only the call and gift rows still take it as a border; every other box
+  // gets the overlay below, which moves nothing as it comes and goes.
   highlighted: { borderColor: v3.colors.fg, borderWidth: 2 },
+  /**
+   * The jump ring (`HighlightRing` in `MessageBubble`), laid over the box in
+   * its own corners: the bubble's tile radius (the tail corner is added at
+   * the call site, from `tailMine`/`tailTheirs`), a card's row radius.
+   */
+  ring: { ...RING, borderRadius: v3.radius.tile, borderColor: v3.colors.fg },
+  ringCard: { ...RING, borderRadius: v3.radius.row, borderColor: v3.colors.fg },
+  /**
+   * Out over the correction's own 2pt green outline rather than inside it:
+   * an absolute child is placed from the inside of its parent's border.
+   */
+  ringCorrection: {
+    ...RING,
+    borderColor: v3.colors.fg,
+    borderRadius: v3.radius.row,
+    bottom: -2,
+    left: -2,
+    right: -2,
+    top: -2,
+  },
+  /**
+   * Over the box's bottom edge by half its height: the column's 6pt gap plus
+   * 12 of the badge's 24, inset from the corner so the bubble's curve shows.
+   */
+  reactionsOverlap: { marginHorizontal: v3.space[10], marginTop: -18 },
   tombstone: { backgroundColor: v3.colors.surface },
   tombstoneText: { ...v3.type.callout, color: v3.colors.muted, fontStyle: 'italic' },
-  edited: { color: v3.colors.muted },
+  // The meta line's face (`MessageMeta`): "Edited" is a fact about the
+  // message like its clock, not a remark in italics.
+  edited: { ...v3.type.caption, color: v3.colors.muted, fontStyle: 'normal' },
   forwardedText: { color: v3.colors.muted },
   // v3 is flat: an outline on the ground, no shadow under it.
   reactions: {
@@ -75,7 +114,7 @@ const useOverrides = makeStyles(({ v3 }) => ({
   callTitle: { color: v3.colors.fg },
   callTitleMissed: { color: v3.colors.danger },
   viewOnceIconLive: { backgroundColor: v3.colors.blue },
-  viewOnceIconUsed: { borderColor: v3.colors.line },
+  viewOnceIconUsed: { borderColor: v3.colors.line, borderWidth: 2 },
   viewOnceUsedTitle: { color: v3.colors.muted },
   // Blue as text is `echoText`: `blue` itself falls under 4.5:1 on the surface.
   viewOnceAction: { color: v3.colors.echoText },

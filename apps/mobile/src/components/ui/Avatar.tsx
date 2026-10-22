@@ -1,8 +1,9 @@
 import { Image } from 'expo-image'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { PixelRatio, Text, View } from 'react-native'
 import { useV3Home } from '../../hooks/useV3Home'
 import { API_URL } from '../../lib/apiUrl'
+import { avatarFadeMs, markAvatarShown } from '../../lib/avatarFade'
 import { avatarSource, drawnFaceRetryIn } from '../../lib/defaultAvatar'
 import { v3HomeLatched } from '../../lib/v3Home'
 import { artForTone } from '../../lib/frameArt/palettes'
@@ -51,6 +52,12 @@ interface AvatarProps {
    * neighbours leave the room. Omitted, the frame grows the box.
    */
   frameOverflow?: 'all' | 'vertical' | undefined
+  /**
+   * Blurs the picture itself (expo-image's `blurRadius`), for a face that is
+   * shown withheld. See `lockedAvatarVeil` for where this is used instead of
+   * a `BlurView`.
+   */
+  blurRadius?: number | undefined
 }
 
 /**
@@ -102,6 +109,7 @@ export function Avatar({
   frame,
   sweep,
   frameOverflow,
+  blurRadius,
 }: AvatarProps) {
   const { colors } = useTheme()
   const styles = useStyles()
@@ -123,16 +131,25 @@ export function Avatar({
    * screen. The flag is read from the launch latch, not `useV3Home`: a hook
    * here would be a config subscription per face in every list.
    */
+  const v3Look = v3HomeLatched()
   const source = avatarSource({
     url,
     seed,
     size,
     rev: defaultAvatarRev,
-    v3: v3HomeLatched(),
+    v3: v3Look,
     pixelRatio: PixelRatio.get(),
     apiBase: API_URL,
     maxPixels,
   })
+  /*
+   * Under the v3 look a face dissolves in over the grey, the first time this
+   * launch shows it — see `avatarFade` for why only the first. Decided once
+   * per picture for this view, so a re-render cannot change it under a load
+   * in flight. A dissolve moves nothing, which is why it stays under reduce
+   * motion too, and why a list of faces need not subscribe to that setting.
+   */
+  const fadeMs = useMemo(() => (source && v3Look ? avatarFadeMs(source) : 0), [source, v3Look])
 
   const inner = (
     // Sized rather than left to stretch: the online dot is positioned
@@ -144,7 +161,10 @@ export function Avatar({
           source={{ uri: source }}
           style={[styles.image, dimension]}
           contentFit="cover"
+          transition={fadeMs}
           key={attempt}
+          {...(blurRadius ? { blurRadius } : {})}
+          {...(v3Look ? { onLoad: () => markAvatarShown(source) } : {})}
           onError={() => {
             const wait = drawnFaceRetryIn(source, attempt)
             if (wait === null) {

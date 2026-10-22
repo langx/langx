@@ -684,6 +684,12 @@ export const fr: Localized<ServerMessages> = {
   feedbackReply: {
     bug: 'Bonjour ! Merci pour ton signalement — on l’a lu et on s’en occupe.',
     feature: 'Bonjour ! Merci pour l’idée — on l’a lue et elle est sur notre liste.',
+    copilot:
+      'Bonjour ! Merci d’avoir signalé cette réponse de Copilot — on l’a lue, et les signalements comme le tien nous aident à améliorer Copilot.',
     issue: 'Tu peux suivre ça ici : {url}',
+  },
+  cards: {
+    badgeKicker: 'Nouveau badge',
+    badgeEarnedOn: 'Gagné le {date}',
   },
 }

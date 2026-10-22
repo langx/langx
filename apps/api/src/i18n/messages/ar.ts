@@ -714,6 +714,12 @@ export const ar: Localized<ServerMessages> = {
   feedbackReply: {
     bug: 'مرحبًا! شكرًا على الإبلاغ — قرأناه ونعمل على فحصه.',
     feature: 'مرحبًا! شكرًا على الفكرة — قرأناها وأضفناها إلى قائمتنا.',
+    copilot:
+      'مرحبًا! شكرًا على الإبلاغ عن إجابة Copilot هذه — قرأناها، وبلاغات مثل بلاغك تساعدنا على تحسين Copilot.',
     issue: 'يمكنك متابعتها هنا: {url}',
+  },
+  cards: {
+    badgeKicker: 'شارة جديدة',
+    badgeEarnedOn: 'حُصّلت في {date}',
   },
 }

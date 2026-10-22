@@ -1,5 +1,6 @@
 import type { Media } from '@langx/shared'
 import type { MessageAction, MessageActionId } from './messageActions'
+import { DURATION, STAGGER_TIGHT } from './theme/motionValues'
 
 /**
  * The state behind the long-press menu, separate from the component that
@@ -119,6 +120,54 @@ export function resolveMessageMenu(id: number, value: MessageMenuResult | null):
   open = null
   resolve(value)
   publish()
+}
+
+/**
+ * How the v3 anchored menu lifts out of the thread and goes back, in ms.
+ *
+ * Numbers rather than `Animated` calls, so they are testable here and so the
+ * host — root-mounted, on the launch path, RN `Animated` only — reads plain
+ * values. The scrim and the copy arrive together, the copy only just lifting
+ * (3%: enough to read as picked up, not as zoomed); the menu and the strip
+ * grow from the bubble's side a beat behind; the emoji follow one by one.
+ * Going is shorter than coming, and the pick resolves once it has gone.
+ */
+export const MENU_MOTION = {
+  scrim: 150,
+  lift: DURATION.press,
+  liftScale: 1.03,
+  menu: 180,
+  menuFrom: 0.92,
+  emoji: 180,
+  emojiFrom: 0.6,
+  /** The last emoji starts no later than this, however long the strip. */
+  emojiCap: 160,
+  close: 140,
+} as const
+
+/** When the emoji at `index` starts: `STAGGER_TIGHT` apart, capped. */
+export function emojiDelay(index: number): number {
+  return Math.min(Math.max(0, index) * STAGGER_TIGHT, MENU_MOTION.emojiCap)
+}
+
+/**
+ * Where the menu or the strip grows from: the edge that touches the bubble,
+ * on the side it hangs from — so each opens out of the bubble rather than out
+ * of its own middle. The strip sits on the far side of the bubble from the
+ * menu, so it grows from the opposite edge.
+ *
+ * `trailing` is `messageMenuLayout`'s own rule (`mine !== rtl`): aligned to
+ * the bubble's right edge on screen. Physical words, because a transform's
+ * origin is not mirrored by an RTL layout.
+ */
+export function menuOrigin(
+  placement: 'below' | 'above',
+  part: 'menu' | 'strip',
+  trailing: boolean,
+): string {
+  const menuBelow = placement === 'below'
+  const fromTop = part === 'menu' ? menuBelow : !menuBelow
+  return `${trailing ? 'right' : 'left'} ${fromTop ? 'top' : 'bottom'}`
 }
 
 /** Test seam: drops any open request without resolving it. */

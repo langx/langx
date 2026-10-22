@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  DISMISS_DRAG_PX,
   MAX_OVERZOOM,
   MAX_SCALE,
   MIN_OVERZOOM,
@@ -10,6 +11,8 @@ import {
   albumSlots,
   clampOffset,
   clampScale,
+  dismissDirection,
+  dismissProgress,
   fittedSize,
   offsetForFocus,
   resist,
@@ -18,6 +21,7 @@ import {
   swipeStep,
   zoomAbout,
 } from './pinch'
+import { SHEET } from './theme/motionValues'
 
 const FRAME = { width: 400, height: 800 }
 
@@ -283,5 +287,41 @@ describe('albumSlots', () => {
     }
     expect(albumSlots(0, 2).map((slot) => slot.at)).toEqual([1, 0, 1])
     expect(albumSlots(0, 2)[2]?.key).toBe('1')
+  })
+})
+
+describe('dismissDirection', () => {
+  it('closes a drag past the distance, whichever way it went', () => {
+    expect(dismissDirection(DISMISS_DRAG_PX + 1, 0)).toBe(1)
+    expect(dismissDirection(-(DISMISS_DRAG_PX + 1), 0)).toBe(-1)
+  })
+
+  it('keeps a short, slow drag', () => {
+    expect(dismissDirection(DISMISS_DRAG_PX, 0)).toBe(0)
+    expect(dismissDirection(40, SHEET.dismissVelocity)).toBe(0)
+  })
+
+  it('closes a short flick away from rest', () => {
+    expect(dismissDirection(30, SHEET.dismissVelocity + 1)).toBe(1)
+    expect(dismissDirection(-30, -(SHEET.dismissVelocity + 1))).toBe(-1)
+  })
+
+  it('keeps a fast pull back towards the middle', () => {
+    expect(dismissDirection(60, -(SHEET.dismissVelocity + 400))).toBe(0)
+    expect(dismissDirection(0, SHEET.dismissVelocity + 400)).toBe(0)
+  })
+})
+
+describe('dismissProgress', () => {
+  it('runs from 0 at rest to 1 at half the frame, and stops there', () => {
+    expect(dismissProgress(0, 800)).toBe(0)
+    expect(dismissProgress(200, 800)).toBe(0.5)
+    expect(dismissProgress(-200, 800)).toBe(0.5)
+    expect(dismissProgress(400, 800)).toBe(1)
+    expect(dismissProgress(900, 800)).toBe(1)
+  })
+
+  it('is 0 before the frame has been measured', () => {
+    expect(dismissProgress(100, 0)).toBe(0)
   })
 })

@@ -1,8 +1,10 @@
-import { bigEmojiClusters } from '@langx/shared'
+import { bigEmojiClusters, isBigEmoji } from '@langx/shared'
 
 /**
- * The v3 thread's emoji burst: a message that is one emoji and nothing else
- * spills over the screen as a shower of copies of itself, once.
+ * The v3 thread's emoji burst: a message that is one to three emoji and
+ * nothing else — the big-emoji hero — spills over the screen as a shower of
+ * copies of them, once. "❤️🔥" rains hearts and flames together, each moving
+ * its own way.
  *
  * Kept apart from `EmojiBurstV3` so the two decisions that matter — how a
  * given emoji moves, and whether a given moment deserves the motion at all —
@@ -78,13 +80,14 @@ export function burstKind(emoji: string): BurstKind {
 }
 
 /**
- * The one emoji a message is, or null when it is anything else — text, two
- * emoji, or none. Two or three emoji still draw big (`isBigEmoji`), but only
- * a lone one bursts: "🎉🔥" has no single motion to give it.
+ * The emoji a message bursts with, each once, in the order written — or none
+ * when it is not drawn as the big emoji. The same 1–3 rule as the hero
+ * (`isBigEmoji`), so whatever is drawn big bursts and nothing else does.
+ * "😂😂" is one emoji's shower, not two of the same.
  */
-export function loneEmoji(body: string): string | null {
-  const clusters = bigEmojiClusters(body)
-  return clusters.length === 1 ? (clusters[0] ?? null) : null
+export function burstEmoji(body: string): string[] {
+  if (!isBigEmoji(body)) return []
+  return [...new Set(bigEmojiClusters(body))]
 }
 
 /**
@@ -151,7 +154,7 @@ export interface BurstMoment {
  */
 export function shouldPlayBurst(moment: BurstMoment): boolean {
   if (!moment.v3 || moment.reduceMotion || moment.playing || !moment.hero) return false
-  if (loneEmoji(moment.body) === null) return false
+  if (burstEmoji(moment.body).length === 0) return false
   switch (moment.trigger) {
     case 'history':
       return false
@@ -204,7 +207,6 @@ export type BurstEase = 'linear' | 'in' | 'out'
 
 interface KindStyle {
   count: number
-  size: readonly [number, number]
   delay: readonly [number, number]
   duration: readonly [number, number]
   sway: readonly [number, number]
@@ -228,7 +230,6 @@ const STYLES: Readonly<Record<BurstKind, KindStyle>> = {
    */
   fall: {
     count: 18,
-    size: [26, 40],
     delay: [0, 900],
     duration: [1300, 1900],
     sway: [6, 18],
@@ -237,11 +238,8 @@ const STYLES: Readonly<Record<BurstKind, KindStyle>> = {
     xEase: 'linear',
     endScale: 1,
   },
-  // Kept smaller than the 48-point bubble: a heart the size of the message
-  // reads as more messages, not as a flourish around one.
   float: {
     count: 14,
-    size: [26, 36],
     delay: [0, 900],
     duration: [1500, 1900],
     sway: [12, 26],
@@ -252,7 +250,6 @@ const STYLES: Readonly<Record<BurstKind, KindStyle>> = {
   },
   rise: {
     count: 16,
-    size: [30, 38],
     delay: [0, 900],
     duration: [1300, 1800],
     sway: [3, 10],
@@ -265,7 +262,6 @@ const STYLES: Readonly<Record<BurstKind, KindStyle>> = {
   // spread started it as a tower in the middle of the screen.
   burst: {
     count: 22,
-    size: [24, 40],
     delay: [0, 180],
     duration: [1700, 2300],
     sway: [0, 6],
@@ -277,7 +273,6 @@ const STYLES: Readonly<Record<BurstKind, KindStyle>> = {
   // Slow enough to read as snow: about twice a fall's crossing.
   drift: {
     count: 14,
-    size: [24, 38],
     delay: [0, 300],
     duration: [2200, 2500],
     sway: [28, 42],
@@ -287,6 +282,34 @@ const STYLES: Readonly<Record<BurstKind, KindStyle>> = {
     endScale: 1,
   },
 }
+
+/**
+ * Copies across every emoji in one burst. A lone emoji keeps its kind's own
+ * count; two or three share this, so "❤️🔥🎉" costs no more frames than "🎉".
+ */
+export const BURST_BUDGET = 22
+
+/**
+ * How many copies each of a burst's emoji gets: an even share of the budget,
+ * the remainder to the first ones written, and never more than its kind
+ * would have alone.
+ */
+export function burstCounts(kinds: readonly BurstKind[]): number[] {
+  if (kinds.length === 1) return [STYLES[kinds[0]!].count]
+  const share = Math.floor(BURST_BUDGET / kinds.length)
+  const spare = BURST_BUDGET - share * kinds.length
+  return kinds.map((kind, index) => Math.min(STYLES[kind].count, share + (index < spare ? 1 : 0)))
+}
+
+/**
+ * Font sizes, the same for every kind. Most copies are small, skewed towards
+ * the low end, and every fifth is a large accent: a shower of one size reads
+ * as a pattern, not as things thrown.
+ */
+export const BURST_SIZE = { min: 20, max: 56 } as const
+const SMALL: readonly [number, number] = [BURST_SIZE.min, 38]
+const ACCENT: readonly [number, number] = [44, BURST_SIZE.max]
+const ACCENT_EVERY = 5
 
 /** The whole burst, first frame to last copy gone. */
 export const BURST_MS = 2800
@@ -300,18 +323,37 @@ function between([low, high]: readonly [number, number], random: () => number): 
 }
 
 /**
- * The copies for one burst over a `width` × `height` screen. `random` is
- * `Math.random` in the app and a fixed sequence in tests.
+ * A repeatable random sequence from a string (mulberry32 over an FNV-1a
+ * hash). Seeded by the message, so a tap replays the same shower the send
+ * did rather than a new one.
+ */
+export function burstRandom(seed: string): () => number {
+  let state = 0x811c9dc5
+  for (let i = 0; i < seed.length; i++) state = Math.imul(state ^ seed.charCodeAt(i), 0x01000193)
+  return () => {
+    state = (state + 0x6d2b79f5) | 0
+    let t = Math.imul(state ^ (state >>> 15), 1 | state)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+/**
+ * The copies of one emoji's kind over a `width` × `height` screen. `random` is
+ * seeded per message in the app and a fixed sequence in tests.
  */
 export function burstParticles(
   kind: BurstKind,
   width: number,
   height: number,
   random: () => number = Math.random,
+  count: number = STYLES[kind].count,
 ): BurstParticle[] {
   const style = STYLES[kind]
-  return Array.from({ length: style.count }, () => {
-    const size = between(style.size, random)
+  return Array.from({ length: count }, (_, index) => {
+    const accent = index % ACCENT_EVERY === ACCENT_EVERY - 1
+    // Squared, so the small ones crowd towards the smallest.
+    const size = accent ? between(ACCENT, random) : between(SMALL, () => random() ** 2)
     const delay = between(style.delay, random)
     const duration = between(style.duration, random)
     const sway = between(style.sway, random) * (random() < 0.5 ? -1 : 1)
@@ -361,6 +403,35 @@ export function burstParticles(
         }
       }
     }
+  })
+}
+
+export interface BurstCopy {
+  emoji: string
+  eases: { x: BurstEase; y: BurstEase }
+  particle: BurstParticle
+}
+
+/**
+ * Every copy of a burst of `emoji` (as `burstEmoji` gives them), each with
+ * its own kind's path, within the budget between them.
+ */
+export function burstPlan(
+  emoji: readonly string[],
+  width: number,
+  height: number,
+  random: () => number = Math.random,
+): BurstCopy[] {
+  const kinds = emoji.map(burstKind)
+  const counts = burstCounts(kinds)
+  return emoji.flatMap((glyph, index) => {
+    const kind = kinds[index]!
+    const eases = burstEases(kind)
+    return burstParticles(kind, width, height, random, counts[index]).map((particle) => ({
+      emoji: glyph,
+      eases,
+      particle,
+    }))
   })
 }
 

@@ -5,8 +5,6 @@ import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useLocale, useT } from '../../i18n'
 import { claimCelebration } from '../../lib/celebration'
 import { notification } from '../../lib/haptics'
-import { shareLink } from '../../lib/share'
-import type { ShareContent } from '../../lib/shareText'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { SPRING } from '../../lib/theme/motion'
 import { Button } from '../ui/Button'
@@ -45,7 +43,7 @@ export function ThreadCelebrationV3({
   days,
   amount,
   hue,
-  share,
+  onShare,
   compact,
   onClose,
 }: {
@@ -54,8 +52,11 @@ export function ThreadCelebrationV3({
   amount: number
   /** The partner's hue, as a colour — the thread's colour, as the chips use. */
   hue: string | undefined
-  /** Built by `streakShareText`: the days and the invite link, never the tokens. */
-  share: ShareContent | undefined
+  /**
+   * Opens the streak's share card — the days and the invite, never the
+   * tokens. Absent before the handle has arrived.
+   */
+  onShare: (() => void) | undefined
   /** The soft keyboard is up: the sentence goes, the rest stays. */
   compact: boolean
   onClose: () => void
@@ -123,14 +124,14 @@ export function ThreadCelebrationV3({
             </Text>
           </View>
           <Text style={styles.rewardNote}>{t('chat.celebrateStreakNote', { count: amount })}</Text>
-          {share ? (
+          {onShare ? (
             <Button
               variant="hue"
               size="small"
               icon="share"
               style={styles.share}
               label={t('share.action')}
-              onPress={() => void shareLink(share)}
+              onPress={onShare}
             />
           ) : null}
         </View>

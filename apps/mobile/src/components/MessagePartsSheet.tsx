@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Button } from './ui/Button'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
 import { useT } from '../i18n'
 import { makeStyles, useTheme } from '../lib/theme'
@@ -39,6 +40,7 @@ export function MessagePartsSheet({
   selected?: string | null
   detail?: ReactNode
 }) {
+  const reduce = useReduceMotion()
   const current = useStyles()
   const redesigned = useStylesV3()
   const v3Look = useV3Home()
@@ -51,7 +53,7 @@ export function MessagePartsSheet({
     <Modal
       visible={parts !== null}
       transparent
-      animationType="slide"
+      animationType={reduce ? 'none' : 'slide'}
       onRequestClose={onClose}
       accessibilityViewIsModal
     >

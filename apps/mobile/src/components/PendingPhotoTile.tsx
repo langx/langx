@@ -12,6 +12,7 @@ import type { PendingPhoto } from '../hooks/useProfilePhotoUploads'
 import { useV3Home } from '../hooks/useV3Home'
 import { useT } from '../i18n'
 import { makeStyles } from '../lib/theme'
+import { SPRING } from '../lib/theme/motion'
 import { percentOf } from '../lib/uploadProgress'
 
 interface PendingPhotoTileProps {
@@ -56,7 +57,7 @@ export function PendingPhotoTile({ photo, size, onRetry, onDiscard }: PendingPho
       entrance.set(1)
       return
     }
-    entrance.set(withSpring(1, { damping: 12, stiffness: 160 }))
+    entrance.set(withSpring(1, SPRING.bounce))
   }, [reduceMotion, entrance])
 
   // Two flex children rather than a percentage width: the pair always sums

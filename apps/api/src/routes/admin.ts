@@ -326,9 +326,10 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
    *
    * Thrown the day `minVersion` moves everybody to a build that sends one —
    * before that, refusing a missing token locks every older build out of the
-   * password forms. Off is the undo and is never refused. Writes the flags
-   * whole from the current config, like the script does, so the other
-   * switches keep whatever value they had. See `auth/captcha.ts`.
+   * password forms. Off is the undo and is never refused. Writes its own
+   * flag and nothing else, like the Flags route below: writing the flags whole
+   * from this machine's cached read could put back a switch another machine
+   * made seconds ago. See `auth/captcha.ts`.
    */
   app.post(
     '/admin/app-config/captcha-required',
@@ -339,10 +340,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     },
     async (request, reply) => {
       const { required } = request.body
-      const current = await getAppConfig(app.mongo.db)
-      const config = await updateAppConfig(app.mongo.db, {
-        flags: { ...current.flags, captchaRequired: required },
-      })
+      const config = await setAppConfigFlag(app.mongo.db, 'captchaRequired', required)
       forgetAdminStats()
 
       await recordAdminAction(app.mongo.db, request.log, {
@@ -1096,6 +1094,12 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const row = await getFeedback(app.mongo.db, request.params.id)
       if (!row) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such report')
+      // A reported Copilot answer is never paid: a bounty on every answer
+      // somebody disliked would be a reason to dislike them. The panel hides
+      // Pay on these rows; this is what holds for any other caller.
+      if (row.kind === 'copilot') {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'A Copilot report is not paid for')
+      }
 
       const result = await payBounty(app, {
         userId: row.userId,

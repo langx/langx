@@ -874,7 +874,19 @@ export const en = {
   feedbackReply: {
     bug: 'Hi! Thanks for reporting this — we read it, and we’re looking into it.',
     feature: 'Hi! Thanks for the idea — we read it, and it’s on our list.',
+    copilot:
+      'Hi! Thanks for reporting this Copilot answer — we read it, and reports like yours help us make Copilot better.',
     issue: 'You can follow it here: {url}',
+  },
+  cards: {
+    /*
+     * The words on a badge's share card that are not the badge's own name:
+     * the pill above it and the day it was earned. The same words the app's
+     * badge sheet uses (`badgesV3.newBadge`, `badgesV3.earnedOn`), so the card
+     * and the screen it was shared from agree.
+     */
+    badgeKicker: 'New badge',
+    badgeEarnedOn: 'Earned {date}',
   },
 } as const
 

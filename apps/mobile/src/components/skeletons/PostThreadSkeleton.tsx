@@ -36,8 +36,21 @@ export function PostThreadSkeleton() {
         <Skeleton width={68} height={14} />
       </View>
 
-      <Skeleton width={148} height={18} style={styles.sectionTitle} />
+      <PostRepliesSkeleton />
+    </View>
+  )
+}
 
+/**
+ * The thread under a post on its own: the section title and three replies.
+ * For a post screen that already has its post — drawn from the feed's copy —
+ * and is only waiting for what was said about it.
+ */
+export function PostRepliesSkeleton() {
+  const styles = useStyles()
+  return (
+    <>
+      <Skeleton width={148} height={18} style={styles.sectionTitle} />
       {REPLIES.map((key) => (
         <View key={key} style={styles.reply}>
           <View style={styles.replyWho}>
@@ -47,7 +60,7 @@ export function PostThreadSkeleton() {
           <Skeleton width="100%" height={64} radius={radius.lg} />
         </View>
       ))}
-    </View>
+    </>
   )
 }
 

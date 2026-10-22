@@ -15,6 +15,7 @@ import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useLocale, useT } from '../i18n'
 import { listState } from '../lib/listState'
 import { goBackTo } from '../lib/navigation'
+import { tokenAmountLabel, tokenSlot } from '../lib/tokenAmount'
 import { makeStyles, useTheme, type PartnerHue } from '../lib/theme'
 import { buildTokenHistory } from '../lib/tokenHistory'
 import { historyItems, ledgerDayHeading, type HistoryItem } from '../lib/walletV3'
@@ -27,12 +28,13 @@ type Glyph = keyof typeof Feather.glyphMap
  * A spend and the operator's own entries sit on the neutral grey: the hues
  * are for what somebody did.
  */
-const KIND_LOOK: Record<TokenKind, { icon: Glyph; hue: PartnerHue | null }> = {
+const KIND_LOOK: Record<TokenKind, { icon: Glyph | 'flame'; hue: PartnerHue | null }> = {
   message: { icon: 'message-circle', hue: 'sky' },
   correction: { icon: 'edit-3', hue: 'mint' },
   pronunciation: { icon: 'mic', hue: 'mint' },
   echo: { icon: 'copy', hue: 'aqua' },
-  streak: { icon: 'zap', hue: 'tangerine' },
+  // v3's streak is a flame everywhere; the bolt was the current look's.
+  streak: { icon: 'flame', hue: 'tangerine' },
   dailyPool: { icon: 'moon', hue: 'lilac' },
   gift: { icon: 'gift', hue: 'lime' },
   signupBonus: { icon: 'star', hue: 'lime' },
@@ -97,11 +99,8 @@ export function WalletHistoryScreenV3() {
           icon={look.icon}
           hue={look.hue ? v3.hues[look.hue] : undefined}
           label={item.entry.label}
-          amount={
-            amount < 0
-              ? t('tokens.ledgerSpent', { count: (-amount).toLocaleString(locale) })
-              : t('tokens.shareAmount', { count: amount.toLocaleString(locale) })
-          }
+          amount={tokenSlot(t, amount, locale, amount < 0 ? '−' : '+')}
+          amountLabel={tokenAmountLabel(t, amount, locale, amount < 0 ? '−' : '+')}
           spend={amount < 0}
           first={item.first}
           last={item.last}

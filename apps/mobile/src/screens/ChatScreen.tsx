@@ -25,12 +25,13 @@ import {
   type MessageTranslation,
   type SendAward,
   TYPING_IDLE_MS,
+  TYPING_TTL_MS,
   ERROR_CODES,
   MAX_SCHEDULED_PER_CONVERSATION,
   THEIR_MORNING_HOUR,
   viewOnceState,
 } from '@langx/shared'
-import { onlineManager, useQueryClient, type InfiniteData } from '@tanstack/react-query'
+import { onlineManager, useQueryClient } from '@tanstack/react-query'
 import {
   type NativeStackNavigationProp,
   router,
@@ -46,6 +47,9 @@ import {
   Animated,
   FlatList,
   Linking,
+  type ListRenderItemInfo,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   Platform,
   Pressable,
   StyleSheet,
@@ -65,6 +69,7 @@ import {
   useMe,
   useMessages,
   useMessageWindow,
+  usePinnedMessage,
   useTranslate,
   useSpeakMessage,
   useRomanizeMessage,
@@ -151,6 +156,7 @@ import { placeLabel, type GeocodedAddress } from '../lib/sharedLocation'
 import { validatePickedAssets, type PickRefusal, type PickedMedia } from '../lib/pickedAssets'
 import { readDroppedFiles } from '../lib/droppedFiles'
 import { PendingMediaBubble } from '../components/PendingMediaBubble'
+import { UnsentRowV3 } from '../components/thread/UnsentRowV3'
 import {
   ScheduledMessageRows,
   useScheduleMessage,
@@ -160,9 +166,11 @@ import { ScheduleTimeSheet } from '../components/ScheduleTimeSheet'
 import { TestimonialSheet } from '../components/testimonials/TestimonialSheet'
 import { ThreadTestimonialCard } from '../components/testimonials/ThreadTestimonialCard'
 import { FirstReplyCard } from '../components/FirstReplyCard'
+import { ArrivalEntrance } from '../components/thread/ArrivalEntrance'
 import { DiscardUnsentButton } from '../components/DiscardUnsentButton'
 import {
   addPending,
+  advancePending,
   expirePending,
   newPendingId,
   removePending,
@@ -176,37 +184,41 @@ import {
   uploadSent,
   type UploadProgress,
 } from '../lib/uploadProgress'
+import { nextTypingSignal, TYPING_IDLE } from '../lib/typingSignal'
 import { saveMediaToDevice } from '../lib/saveMedia'
 import { shareLink } from '../lib/share'
+import { ShareCardSheet, type ShareCardRequest } from '../components/ShareCardSheet'
 import { addMeetingToCalendar } from '../lib/addToCalendar'
 import { showToast } from '../lib/toast'
 import { onSnap } from '../lib/snapOutbox'
 import { withoutViewOnceFallback } from '../lib/viewOnce'
-import {
-  appendIncomingMessage,
-  messagesNewestFirst,
-  type MessagePageDto,
-} from '../lib/messageCache'
-import { dayLabel, messageRows, type MessageRow } from '../lib/messageGroups'
+import { appendIncomingMessage, messagesNewestFirst, patchThread } from '../lib/messageCache'
+import { createArrivals } from '../lib/arrivals'
+import { dayLabel, messageRows, rowKeyOf, type MessageRow } from '../lib/messageGroups'
 import { useDisplayNames, useLocale, useT } from '../i18n'
 import { openStoreReview } from '../lib/storeListing'
 import { planJump } from '../lib/messageJump'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useReduceMotion } from '../hooks/useReduceMotion'
+import { flushPendingRead } from '../hooks/useSocket'
+import { EASE_OUT } from '../lib/theme/motionAnimated'
+import { DURATION } from '../lib/theme/motionValues'
 import { useWebFileDrop } from '../hooks/useWebFileDrop'
 import { OfficialMark } from '../components/OfficialMark'
 import { WebTitle } from '../components/WebTitle'
 import { ComposerV3, type LatestActions } from '../components/thread/ComposerV3'
 import { WithRewardChips } from '../components/thread/RewardChipV3'
 import { EmojiBurstV3, type Burst } from '../components/thread/EmojiBurstV3'
-import { drawsAsHero, loneEmoji, shouldPlayBurst, type BurstTrigger } from '../lib/emojiBurst'
+import { burstEmoji, drawsAsHero, shouldPlayBurst, type BurstTrigger } from '../lib/emojiBurst'
 import { ThreadHeaderV3 } from '../components/thread/ThreadHeaderV3'
 import { useV3Home } from '../hooks/useV3Home'
 import { useKeyboardUp } from '../hooks/useKeyboardUp'
 import { partnerHueFor } from '../lib/theme/partnerHue'
 import { latestToActOn } from '../lib/latestToActOn'
 import { keepIdentity } from '../lib/stableMessages'
+import { PinnedStripV3, type PinnedStripContent } from '../components/thread/PinnedStripV3'
+import { pinnedAuthor, pinnedLine } from '../lib/pinnedStrip'
 
 export interface ChatScreenProps {
   conversationId: string
@@ -282,6 +294,8 @@ export function ChatScreen({
    * into its chip, and ✕ folds it too (see `ThreadCelebrationV3`).
    */
   const [celebrating, setCelebrating] = useState<string | null>(null)
+  /** The streak card the celebration's Share asked for, on its way to the sheet. */
+  const [streakCard, setStreakCard] = useState<ShareCardRequest | null>(null)
   function noteAward(
     messageId: string,
     award: SendAward | undefined,
@@ -294,6 +308,8 @@ export function ChatScreen({
     if (chips.some((chip) => chip.kind === 'streak')) setCelebrating(messageId)
   }
   const styles = useStyles()
+  const rowsV3 = useRowStylesV3()
+  const v3Styles = useThreadV3Styles()
   const t = useT()
   const names = useDisplayNames()
   const { locale } = useLocale()
@@ -306,9 +322,13 @@ export function ChatScreen({
    * pushed without animating, so only the entrance is silent.
    */
   const navigation = useNavigation<NativeStackNavigationProp<Record<string, object | undefined>>>()
+  const reduceMotion = useReduceMotion()
   useEffect(() => {
-    if (inPlace && !embedded) navigation.setOptions({ animation: 'slide_from_right' })
-  }, [inPlace, embedded, navigation])
+    // Under reduced motion the pop is a cut too, as every other push is then.
+    if (inPlace && !embedded) {
+      navigation.setOptions({ animation: reduceMotion ? 'none' : 'slide_from_right' })
+    }
+  }, [inPlace, embedded, navigation, reduceMotion])
   const me = useMe()
   const queryClient = useQueryClient()
   const messages = useMessages(conversationId)
@@ -317,6 +337,12 @@ export function ChatScreen({
   /** Sends in flight, drawn in the thread before the server has answered. */
   const [outgoing, setOutgoing] = useState<OutgoingMessage[]>([])
   const [unsent, setUnsent] = useState<UnsentMessage[]>([])
+  /**
+   * Unsent rows whose retry is out. Only the v3 row draws it — "Sending" in
+   * place of the red line — so a tap that is being answered does not look
+   * like a tap that did nothing.
+   */
+  const [retrying, setRetrying] = useState<ReadonlySet<string>>(() => new Set())
   /**
    * And back out of the device, because until this the rows lived exactly as
    * long as the screen did. Somebody who types a sentence in a tunnel and goes
@@ -567,7 +593,18 @@ export function ChatScreen({
   const viewerId = me.data?._id
   const threadItems = useMemo<MessageDto[]>(() => {
     if (!viewerId || outgoing.length === 0) return items
-    const standIns: MessageDto[] = outgoing.map((message) => ({
+    /*
+     * A stand-in whose echo is already in `items` is dropped here, in the same
+     * render the echo arrives in. The effect below retires it from state too,
+     * but only after a commit — and for that one frame the thread painted the
+     * sentence twice.
+     */
+    const waiting = retireArrived(
+      outgoing,
+      items.map((message) => message.clientId),
+    )
+    if (waiting.length === 0) return items
+    const standIns: MessageDto[] = waiting.map((message) => ({
       _id: outgoingId(message.clientId),
       conversationId,
       senderId: viewerId,
@@ -588,6 +625,24 @@ export function ChatScreen({
     [unreadAtOpen, conversationId, viewerId],
   )
   const rows = useMemo(() => messageRows(threadItems, unreadMark), [threadItems, unreadMark])
+  /*
+   * The newest message row as of the last commit. Only a row drawn ahead of
+   * it — newer than anything already on screen — may play its entrance:
+   * history loading behind it never does, and on mount nothing is ahead of
+   * anything, so a thread opened or reopened is simply there.
+   */
+  const newestSeen = useRef<string | null>(null)
+  const newestKey = rows.find((row) => row.kind === 'message')?.key ?? null
+  useEffect(() => {
+    newestSeen.current = newestKey
+  }, [newestKey])
+  const seenAt =
+    newestSeen.current === null ? 0 : rows.findIndex((row) => row.key === newestSeen.current)
+  // Through a ref so the list's renderItem does not change with every
+  // message for it; the row reads it as it renders, which is the moment that
+  // matters.
+  const aheadOfSeen = useRef(0)
+  aheadOfSeen.current = Math.max(0, seenAt)
   /*
    * The newest call's row, which alone offers to call again. Every row
    * offering it turned a thread of six calls into six identical links, and
@@ -678,6 +733,39 @@ export function ChatScreen({
   const mediaLockedFor = messages.data?.pages[0]?.mediaLockedFor ?? 0
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
+  /*
+   * The v3 strip's pinned message. Usually in the loaded pages; a pin weeks
+   * back is fetched on its own, one row, and only while it is missing from
+   * the thread. Undefined while that is on its way, null when it came back
+   * gone.
+   */
+  const pinnedId = pinned?.messageId ?? null
+  const pinnedInThread = useMemo(
+    () => (pinnedId ? items.find((m) => m._id === pinnedId) : undefined),
+    [items, pinnedId],
+  )
+  const pinnedLookup = usePinnedMessage(
+    conversationId,
+    v3Thread && pinnedId && !pinnedInThread ? pinnedId : null,
+  )
+  const pinnedMessage = pinnedInThread ?? (pinnedId ? pinnedLookup.data : undefined)
+  const pinnedPartnerName = partner?.displayName
+  const pinStrip = useMemo<PinnedStripContent | null>(() => {
+    if (!v3Thread || !pinnedId) return null
+    const author = pinnedAuthor(pinnedMessage, viewerId, pinnedPartnerName)
+    const line = pinnedLine(pinnedMessage)
+    const words = 'text' in line ? line.text : t(line.key)
+    return {
+      messageId: pinnedId,
+      label: t('chat.pinnedMessage'),
+      line: author
+        ? t('chat.pinnedPreview', {
+            name: 'text' in author ? author.text : t(author.key),
+            text: words,
+          })
+        : words,
+    }
+  }, [v3Thread, pinnedId, pinnedMessage, viewerId, pinnedPartnerName, t])
   /**
    * A channel — `@langx` — rather than somebody to talk to.
    *
@@ -816,6 +904,9 @@ export function ChatScreen({
       })
       return () => {
         left = true
+        // Before the thread stops being the open one: a read still waiting out
+        // a burst covers what was on screen, and nothing after.
+        flushPendingRead(conversationId)
         setActiveConversation(null)
         setUnreadAtOpen(null)
       }
@@ -823,8 +914,8 @@ export function ChatScreen({
   )
 
   /**
-   * The v3 thread's emoji burst: a message that is one emoji showers copies
-   * of itself over the screen (`EmojiBurstV3`). Played by events — this
+   * The v3 thread's emoji burst: a message that is one to three emoji showers
+   * copies of them over the screen (`EmojiBurstV3`). Played by events — this
    * screen's send, the partner's message pushed over the socket, a tap on the
    * big emoji — and never by the list drawing a row, which is what keeps it
    * from replaying as history loads, scrolls or re-renders. The rules are in
@@ -833,17 +924,16 @@ export function ChatScreen({
    */
   const myIdRef = useRef(me.data?._id)
   myIdRef.current = me.data?._id
-  const reduceMotion = useReduceMotion()
   const [burst, setBurst] = useState<Burst | null>(null)
   const burstPlaying = useRef(false)
   const burstPlayed = useRef(new Set<string>())
   const playBurst = useRef<
     (
       trigger: BurstTrigger,
-      message: { body: string; hero: boolean; id?: string; ageMs?: number },
+      message: { body: string; hero: boolean; id?: string; seed?: string; ageMs?: number },
     ) => void
   >(() => undefined)
-  playBurst.current = (trigger, { body, hero, id, ageMs }) => {
+  playBurst.current = (trigger, { body, hero, id, seed, ageMs }) => {
     const play = shouldPlayBurst({
       trigger,
       body,
@@ -855,11 +945,12 @@ export function ChatScreen({
       played: id !== undefined && burstPlayed.current.has(id),
       ...(ageMs !== undefined ? { ageMs } : {}),
     })
-    const emoji = loneEmoji(body)
-    if (!play || emoji === null) return
+    const emoji = burstEmoji(body)
+    if (!play || emoji.length === 0) return
     if (id !== undefined) burstPlayed.current.add(id)
     burstPlaying.current = true
-    setBurst({ emoji, key: Date.now() })
+    // Seeded by the message, so a tap replays the shower its first play drew.
+    setBurst({ emoji, seed: seed ?? id ?? body, key: Date.now() })
   }
   const endBurst = useCallback(() => {
     burstPlaying.current = false
@@ -867,7 +958,14 @@ export function ChatScreen({
   }, [])
   // Stable, so the memoised bubbles do not all re-render for it.
   const onBurstTap = useCallback((message: MessageDto) => {
-    playBurst.current('tap', { body: message.body, hero: true })
+    // The seed its first play used: the sender's own client id, which the
+    // server hands back to the sender only, or else the server's id, which
+    // is what the partner's live arrival played under.
+    playBurst.current('tap', {
+      body: message.body,
+      hero: true,
+      seed: message.clientId ?? message._id,
+    })
   }, [])
 
   useEffect(() => {
@@ -895,6 +993,7 @@ export function ChatScreen({
           // emoji does not burst with nothing on screen to explain it.
           hero: drawsAsHero(message),
           id: message._id,
+          seed: message.clientId ?? message._id,
           ageMs: Date.now() - Date.parse(message.createdAt),
         })
       }
@@ -916,12 +1015,51 @@ export function ChatScreen({
     }
   }, [conversationId])
 
+  /** What the other side has been told; see `nextTypingSignal`. */
+  const typingSignal = useRef(TYPING_IDLE)
+  /**
+   * The rows that arrived while this screen was open, for their entrance
+   * (`ArrivalEntrance`). Filled by this screen's own sends and by the
+   * socket's `message:new` — never by a page loading, a scroll or a
+   * reconnect's refetch, which is what keeps history from animating.
+   */
+  const [arrivals] = useState(createArrivals)
+  useEffect(() => {
+    if (!v3Thread) return
+    const onArrival = (message: MessageDto) => {
+      if (String(message.conversationId) !== conversationId) return
+      arrivals.note(rowKeyOf(message), Date.now())
+    }
+    return onSocket((socket) => {
+      socket.on('message:new', onArrival)
+      return () => {
+        socket.off('message:new', onArrival)
+      }
+    })
+  }, [arrivals, conversationId, v3Thread])
+
   const notifyTyping = useCallback(
-    (isTyping: boolean) => {
+    (typing: boolean) => {
+      const next = nextTypingSignal(typingSignal.current, {
+        typing,
+        now: Date.now(),
+        ttlMs: TYPING_TTL_MS,
+      })
+      typingSignal.current = next.state
+      const isTyping = next.emit
+      if (isTyping === null) return
       void getSocket().then((socket) => socket.emit('typing', { conversationId, isTyping }))
     },
     [conversationId],
   )
+  // A field put down is not somebody typing, whatever the idle timer says.
+  useEffect(() => {
+    if (!fieldFocused) notifyTyping(false)
+  }, [fieldFocused, notifyTyping])
+  // Another thread is another audience: it has been told nothing yet.
+  useEffect(() => {
+    typingSignal.current = TYPING_IDLE
+  }, [conversationId])
 
   function onChangeDraft(text: string): void {
     setDraft(text)
@@ -963,10 +1101,15 @@ export function ChatScreen({
    * rule, and one that is missing teaches nothing.
    */
   /** A proposal's time, in the reader's own zone. */
-  function meetingWhenFor(message: MessageDto): string {
-    if (!message.meeting) return ''
-    return meetingClock(new Date(message.meeting.startsAt), me.data?.timezone, locale)
-  }
+  const myTimezone = me.data?.timezone
+  const partnerTimezone = partner?.timezone
+  const meetingWhenFor = useCallback(
+    (message: MessageDto): string => {
+      if (!message.meeting) return ''
+      return meetingClock(new Date(message.meeting.startsAt), myTimezone, locale)
+    },
+    [myTimezone, locale],
+  )
 
   /**
    * The same instant where the other person is.
@@ -975,30 +1118,36 @@ export function ChatScreen({
    * empty when it matches the reader's, because "9 PM, and 9 PM for them" is a
    * line that says nothing twice.
    */
-  function meetingTheirWhenFor(message: MessageDto): string {
-    if (!message.meeting || !partner?.timezone) return ''
-    const at = new Date(message.meeting.startsAt)
-    const theirs = meetingClock(at, partner.timezone, locale)
-    /*
-     * Compared as drawn, not as named.
-     *
-     * Comparing the zone *identifiers* looked equivalent and is not: a reader
-     * whose own profile has no `timezone` falls back to the device, so the
-     * check ran against `undefined` and never matched — and the card drew
-     * "9:00 PM" over "9:00 PM theirs", which is the exact line this feature
-     * exists to avoid. Two zones can also differ by name and agree right now
-     * (`Europe/London` and `Africa/Abidjan` in winter), and that is the same
-     * useless line.
-     */
-    return theirs === meetingClock(at, me.data?.timezone, locale)
-      ? ''
-      : t('chat.meetingTheirTime', { time: theirs })
-  }
+  const meetingTheirWhenFor = useCallback(
+    (message: MessageDto): string => {
+      if (!message.meeting || !partnerTimezone) return ''
+      const at = new Date(message.meeting.startsAt)
+      const theirs = meetingClock(at, partnerTimezone, locale)
+      /*
+       * Compared as drawn, not as named.
+       *
+       * Comparing the zone *identifiers* looked equivalent and is not: a reader
+       * whose own profile has no `timezone` falls back to the device, so the
+       * check ran against `undefined` and never matched — and the card drew
+       * "9:00 PM" over "9:00 PM theirs", which is the exact line this feature
+       * exists to avoid. Two zones can also differ by name and agree right now
+       * (`Europe/London` and `Africa/Abidjan` in winter), and that is the same
+       * useless line.
+       */
+      return theirs === meetingClock(at, myTimezone, locale)
+        ? ''
+        : t('chat.meetingTheirTime', { time: theirs })
+    },
+    [partnerTimezone, myTimezone, locale, t],
+  )
 
-  function meetingLengthFor(message: MessageDto): string {
-    if (!message.meeting) return ''
-    return t('format.minutes', { count: message.meeting.durationMinutes })
-  }
+  const meetingLengthFor = useCallback(
+    (message: MessageDto): string => {
+      if (!message.meeting) return ''
+      return t('format.minutes', { count: message.meeting.durationMinutes })
+    },
+    [t],
+  )
 
   /**
    * Writes an agreed meeting into this person's calendar.
@@ -1493,17 +1642,16 @@ export function ChatScreen({
    * then back. Writing the acked message in first closes that gap; the echo
    * that follows is a duplicate, and `appendIncomingMessage` drops it.
    *
-   * `setQueriesData` on the prefix for the reason `useSocket` gives: a jump
-   * window open on this thread is a second cache under the same key.
+   * `patchThread` writes on the prefix for the reason `useSocket` gives: a
+   * jump window open on this thread is a second cache under the same key.
    */
   function landed(message: MessageDto | undefined): void {
     // An API too old to answer with the message would otherwise put
     // `undefined` in the thread, which renders as a crash rather than as a
     // missing row.
     if (!message?._id) return
-    queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
-      { queryKey: keys.messages(conversationId) },
-      (old) => appendIncomingMessage(old, withoutViewOnceFallback(message), viewerId) ?? old,
+    patchThread(queryClient, conversationId, (old) =>
+      appendIncomingMessage(old, withoutViewOnceFallback(message), viewerId),
     )
   }
 
@@ -1551,17 +1699,8 @@ export function ChatScreen({
              */
             onProgress: (loaded, total) =>
               setPending((list) =>
-                list.map((row) =>
-                  row.clientId === clientId
-                    ? {
-                        ...row,
-                        progress: advanceUpload(
-                          row.progress,
-                          index + (total > 0 ? loaded / total : 0),
-                          items.length,
-                        ),
-                      }
-                    : row,
+                advancePending(list, clientId, (progress) =>
+                  advanceUpload(progress, index + (total > 0 ? loaded / total : 0), items.length),
                 ),
               ),
           }),
@@ -1741,14 +1880,24 @@ export function ChatScreen({
   }
 
   async function retry(message: UnsentMessage): Promise<void> {
-    await deliver(
-      message.body,
-      message.clientId,
-      message.replyToMessageId,
-      undefined,
-      undefined,
-      message.quote,
-    )
+    const id = message.clientId
+    setRetrying((ids) => new Set(ids).add(id))
+    try {
+      await deliver(
+        message.body,
+        message.clientId,
+        message.replyToMessageId,
+        undefined,
+        undefined,
+        message.quote,
+      )
+    } finally {
+      setRetrying((ids) => {
+        const next = new Set(ids)
+        next.delete(id)
+        return next
+      })
+    }
   }
 
   /**
@@ -1864,6 +2013,8 @@ export function ChatScreen({
       setReplyingTo(null)
       setAsking(null)
       const clientId = newClientId(Date.now(), Math.random())
+      // Its row mounts under this key, and keeps it through the echo (S18).
+      arrivals.note(rowKeyOf({ _id: '', clientId }), Date.now())
       setOutgoing((list) =>
         addOutgoing(list, {
           clientId,
@@ -2612,7 +2763,9 @@ export function ChatScreen({
       return
     }
     if (centred.current === jumpAnchor) return
-    const index = rows.findIndex((row) => row.kind === 'message' && row.key === jumpAnchor)
+    const index = rows.findIndex(
+      (row) => row.kind === 'message' && String(row.message._id) === jumpAnchor,
+    )
     if (index < 0) return
     centred.current = jumpAnchor
     listRef.current?.scrollToIndex({ index, viewPosition: 0.5, animated: false })
@@ -3034,19 +3187,32 @@ export function ChatScreen({
    * A string, so the bubbles' memo compares it by value.
    */
   const partnerHue = v3Thread && partner ? v3.hues[partnerHueFor(partner._id)] : undefined
-  /** What the celebrating row draws: Share carries the days and the invite, never tokens. */
+  /**
+   * What the celebrating row draws. Share opens the streak's card — the one
+   * the streak screen shares — with the sentence as its fallback: the days
+   * and the invite, never tokens.
+   */
   const myHandle = me.data?.handle
   const celebrated = celebrating
     ? rewards[celebrating]?.chips.find((chip) => chip.kind === 'streak')
     : undefined
-  const rowCelebration = {
-    share:
-      celebrated?.kind === 'streak' && myHandle
-        ? streakShareText(t, { count: celebrated.days, handle: myHandle })
-        : undefined,
-    compact: keyboardUp,
-    onClose: () => setCelebrating(null),
-  }
+  const rowCelebration = useMemo(
+    () => ({
+      onShare:
+        celebrated?.kind === 'streak' && myHandle
+          ? () =>
+              setStreakCard({
+                kind: 'streak',
+                headline: String(celebrated.days),
+                caption: t('share.cardStreakCaption'),
+                fallback: streakShareText(t, { count: celebrated.days, handle: myHandle }),
+              })
+          : undefined,
+      compact: keyboardUp,
+      onClose: () => setCelebrating(null),
+    }),
+    [celebrated, myHandle, t, keyboardUp],
+  )
   /** One sentence for both composers: what the field says before anything is typed. */
   const composerPlaceholder = correcting
     ? t('chat.writeCorrection')
@@ -3057,6 +3223,365 @@ export function ChatScreen({
       state === 'empty' && partner
       ? t('chat.sayHello', { name: partner.displayName })
       : t('chat.writeMessage')
+
+  /*
+   * Every prop the thread's FlatList gets, made stable across a keystroke.
+   *
+   * FlatList is a PureComponent, and it was handed a new renderItem, header,
+   * footer, scroll handler and `maintainVisibleContentPosition` object on
+   * every render of this screen — which typing is, once per character. Each
+   * one re-rendered every mounted cell: the bubbles' own `memo` bailed out,
+   * but the cells, the reward wrappers and the header's cards did not. Now
+   * the list re-renders only when something it draws has changed.
+   */
+  const partnerName = partner?.displayName ?? t('chat.them')
+  /** The header's send paths, read at press time so the header can stay memoised. */
+  const headerActions = useRef({ sendAttachments, retry, openUnsentActions })
+  headerActions.current = { sendAttachments, retry, openUnsentActions }
+  /*
+   * An unsent row whose message has arrived after all — a retry that landed,
+   * an ack lost on the way back — is dropped here, in the render the message
+   * arrives in, rather than a commit later by the effect that retires it
+   * from state. The same rule `threadItems` applies to stand-ins.
+   */
+  const visibleUnsent = useMemo(() => {
+    if (unsent.length === 0) return unsent
+    const arrived = new Set(items.map((message) => message.clientId).filter(Boolean))
+    return arrived.size === 0 ? unsent : unsent.filter((row) => !arrived.has(row.clientId))
+  }, [unsent, items])
+  const listHeader = useMemo(
+    () => (
+      <>
+        {pending.length > 0 ? (
+          <View style={styles.unsentBlock}>
+            {pending.map((row) => {
+              const discard = () => setPending((list) => removePending(list, row.clientId))
+              return (
+                <PendingMediaBubble
+                  key={row.clientId}
+                  item={row}
+                  onRetry={() => {
+                    setPending((list) => removePending(list, row.clientId))
+                    void headerActions.current.sendAttachments(
+                      row.files ?? [attachmentOf(row)],
+                      row.body,
+                      row.viewOnce,
+                    )
+                  }}
+                  onDiscard={discard}
+                  onLongPress={() =>
+                    void headerActions.current.openUnsentActions({
+                      body: row.body ?? '',
+                      preview: row.body || t(messagePreviewKey(row.kind)),
+                      discard,
+                    })
+                  }
+                />
+              )
+            })}
+          </View>
+        ) : null}
+        {visibleUnsent.length > 0 ? (
+          <View style={styles.unsentBlock}>
+            {visibleUnsent.map((message) => {
+              const discard = () => setUnsent((list) => removeUnsent(list, message.clientId))
+              const openActions = () =>
+                void headerActions.current.openUnsentActions({
+                  body: message.body,
+                  preview: message.body,
+                  discard,
+                })
+              if (v3Thread) {
+                return (
+                  <UnsentRowV3
+                    key={message.clientId}
+                    body={message.body}
+                    retrying={retrying.has(message.clientId)}
+                    onRetry={() => void headerActions.current.retry(message)}
+                    onDiscard={discard}
+                    onLongPress={openActions}
+                  />
+                )
+              }
+              return (
+                <View key={message.clientId} style={styles.unsentRow}>
+                  <DiscardUnsentButton onPress={discard} />
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t('chat.notSentRetry')}
+                    onPress={() => void headerActions.current.retry(message)}
+                    onLongPress={() =>
+                      void headerActions.current.openUnsentActions({
+                        body: message.body,
+                        preview: message.body,
+                        discard,
+                      })
+                    }
+                    style={({ pressed }) => [styles.unsent, pressed && styles.unsentPressed]}
+                  >
+                    <Text style={styles.unsentBody}>{message.body}</Text>
+                    <Text style={styles.unsentNote}>
+                      <Feather name="alert-circle" size={12} /> {t('chat.notSentRetry')}
+                    </Text>
+                  </Pressable>
+                </View>
+              )
+            })}
+          </View>
+        ) : null}
+        {/* Your own words still to come, under everything already sent. */}
+        <ScheduledMessageRows conversationId={conversationId} />
+        {/*
+        Last, so it sits nearest the composer: inverted, this header
+        is the bottom of the thread, and the other person typing is
+        the newest thing in it.
+      */}
+        {partnerTyping ? <TypingIndicator v3={v3Thread} hue={partnerHue} /> : null}
+        {/*
+          Nearest the composer, and not a message: the first time
+          somebody wrote back, once it has been answered. A jump
+          into the history is a slice, and says nothing about who
+          spoke first.
+        */}
+        {partner ? (
+          <FirstReplyCard
+            conversationId={conversationId}
+            partnerId={partnerId}
+            partnerName={partnerName}
+            partnerIsPerson={
+              partner.official !== true && !readOnly && partner.accountStatus !== 'deleted'
+            }
+            messages={items}
+            hasOlder={jumpAnchor !== null || messages.hasNextPage}
+          />
+        ) : null}
+        {/* Last of all, nearest the composer — and not a message. */}
+        {reviewOpen && (!testimonial.written || reviewedHere) ? (
+          <ThreadTestimonialCard
+            conversationId={conversationId}
+            name={partnerName}
+            done={testimonial.written && reviewedHere}
+            onWrite={() => setReviewing(true)}
+            onEdit={() => setReviewing(true)}
+          />
+        ) : null}
+      </>
+    ),
+    [
+      pending,
+      visibleUnsent,
+      retrying,
+      styles,
+      t,
+      conversationId,
+      partnerTyping,
+      v3Thread,
+      partnerHue,
+      partner,
+      partnerId,
+      partnerName,
+      readOnly,
+      items,
+      jumpAnchor,
+      messages.hasNextPage,
+      reviewOpen,
+      testimonial?.written,
+      reviewedHere,
+    ],
+  )
+  const showThreadTip = items.length < SHORT_THREAD_MESSAGES && !offerTopics
+  const listFooter = useMemo(
+    () => (
+      <>
+        {thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null}
+        {/* One opener at a time: the starters above the composer
+        are the same invitation, and a better one when offered. */}
+        {showThreadTip ? <ComposerHint slot="chat" style={styles.threadTip} /> : null}
+      </>
+    ),
+    [thread.isFetchingNextPage, showThreadTip, styles],
+  )
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = thread
+  const onEndReached = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) void fetchNextPage()
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
+  const onScrollToIndexFailed = useCallback(
+    (info: { index: number; averageItemLength: number }) => {
+      listRef.current?.scrollToOffset({
+        offset: info.averageItemLength * info.index,
+        animated: false,
+      })
+      setTimeout(
+        () =>
+          listRef.current?.scrollToIndex({
+            index: info.index,
+            viewPosition: 0.5,
+            animated: false,
+          }),
+        120,
+      )
+    },
+    [],
+  )
+  const newestId = items[0] ? String(items[0]._id) : null
+  const onScroll = useCallback(
+    ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+      // Nothing to measure against the content height any more: the
+      // bottom of an inverted list is offset 0.
+      if (nativeEvent.contentOffset.y <= BOTTOM_ANCHOR_SLACK) {
+        if (awayFrom !== null) setAwayFrom(null)
+      } else if (awayFrom === null) {
+        setAwayFrom(newestId)
+      }
+    },
+    [awayFrom, newestId],
+  )
+  const renderRow = useCallback(
+    ({ item: row, index }: ListRenderItemInfo<MessageRow>) =>
+      row.kind === 'day' ? (
+        <View style={styles.dayRow}>
+          <Text style={[styles.dayLabel, v3Thread && v3Styles.dayChip]}>
+            {dayLabel(row.day, { t, locale })}
+          </Text>
+        </View>
+      ) : row.kind === 'unread' ? (
+        <View style={styles.unreadRow}>
+          <View style={[styles.unreadLine, v3Thread && rowsV3.unreadLine]} />
+          <Text style={[styles.unreadLabel, v3Thread && rowsV3.unreadLabel]}>
+            {t('chat.newMessages')}
+          </Text>
+          <View style={[styles.unreadLine, v3Thread && rowsV3.unreadLine]} />
+        </View>
+      ) : (
+        // A stand-in has no server id yet, so a menu or a reply on it
+        // would have nothing to act on until the server's copy
+        // arrives.
+        <ArrivalEntrance
+          play={
+            v3Thread &&
+            !reduceMotion &&
+            index < aheadOfSeen.current &&
+            arrivals.take(row.key, Date.now())
+          }
+        >
+          <WithRewardChips
+            rewards={v3Thread ? rewards[row.message._id] : undefined}
+            partnerName={partnerName}
+            hue={partnerHue}
+            celebration={v3Thread && celebrating === row.message._id ? rowCelebration : undefined}
+          >
+            <MessageBubble
+              message={row.message}
+              mine={row.message.senderId === viewerId}
+              endsGroup={row.endsGroup}
+              partnerName={partnerName}
+              translation={translations[row.message._id]}
+              translating={translating === row.message._id}
+              romanization={romanizations[row.message._id]}
+              romanizing={romanizing === row.message._id}
+              speaking={speaking === row.message._id}
+              hasReading={speech[row.message._id] !== undefined}
+              onReplayReading={onReplayReading}
+              transcript={transcripts[row.message._id]}
+              transcribing={transcribing === row.message._id}
+              {...(transcriptService && !isOutgoingId(row.message._id) ? { onShowText } : {})}
+              highlighted={highlighted === row.message._id}
+              askAnswered={answeredAsks.has(row.message._id)}
+              onAnswerAsk={onAnswerAsk}
+              onRespondMeeting={onRespondMeeting}
+              onAnswerQuiz={onAnswerQuiz}
+              onAnswerPoll={onAnswerPoll}
+              onCardAction={onCardAction}
+              onAddToCalendar={onAddToCalendar}
+              meetingWhen={meetingWhenFor(row.message)}
+              meetingLength={meetingLengthFor(row.message)}
+              meetingTheirWhen={meetingTheirWhenFor(row.message)}
+              pending={isOutgoingId(row.message._id)}
+              onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
+              onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
+              onReply={isOutgoingId(row.message._id) ? ignore : onReply}
+              canReply={!readOnly}
+              onReact={isOutgoingId(row.message._id) ? ignore : onReact}
+              /*
+               * The same pair the menu's emoji strip is hidden for, and
+               * for the same reason: the server refuses a reaction to a
+               * withdrawn message and to an official channel, so offering
+               * the gesture there would end in an alert.
+               */
+              canReact={!readOnly && !row.message.deleted && !isServerRecord(row.message)}
+              // Only on the newest call, and not where a call cannot be
+              // placed from here at all: then a row is only a record.
+              onCallBack={
+                callGate !== 'hidden' && row.message._id === newestCallId ? onCallBack : undefined
+              }
+              onMeetingCall={
+                callGate !== 'hidden' && meetingCallOpen(row.message.meeting, meetingNow)
+                  ? onMeetingCall
+                  : undefined
+              }
+              onJumpTo={onJumpTo}
+              onOpenMedia={onOpenMedia}
+              onOpenViewOnce={onOpenViewOnce}
+              {...(v3Thread ? { onBurst: onBurstTap } : {})}
+              v3={v3Thread}
+              partnerHue={partnerHue}
+            />
+          </WithRewardChips>
+        </ArrivalEntrance>
+      ),
+    [
+      styles,
+      v3Styles,
+      reduceMotion,
+      arrivals,
+      t,
+      locale,
+      v3Thread,
+      rewards,
+      partnerName,
+      partnerHue,
+      celebrating,
+      rowCelebration,
+      viewerId,
+      translations,
+      translating,
+      romanizations,
+      romanizing,
+      speaking,
+      speech,
+      onReplayReading,
+      transcripts,
+      transcribing,
+      transcriptService,
+      onShowText,
+      highlighted,
+      answeredAsks,
+      onAnswerAsk,
+      onRespondMeeting,
+      onAnswerQuiz,
+      onAnswerPoll,
+      onCardAction,
+      onAddToCalendar,
+      meetingWhenFor,
+      meetingLengthFor,
+      meetingTheirWhenFor,
+      onLongPress,
+      onEcho,
+      onReply,
+      readOnly,
+      onReact,
+      callGate,
+      newestCallId,
+      onCallBack,
+      meetingNow,
+      onMeetingCall,
+      onJumpTo,
+      onOpenMedia,
+      onOpenViewOnce,
+      onBurstTap,
+      rowsV3,
+    ],
+  )
 
   return (
     /*
@@ -3203,7 +3728,14 @@ export function ChatScreen({
         about the conversation, not a transient control, and it has to survive
         scrolling to the top of the history.
       */}
-        {pinned ? (
+        {v3Thread ? (
+          <PinnedStripV3
+            pin={pinStrip}
+            hue={partnerHue}
+            onJump={onJumpTo}
+            onUnpin={() => void emit('conversation:pin', { conversationId, messageId: null })}
+          />
+        ) : pinned ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('chat.goToPinned')}
@@ -3263,7 +3795,7 @@ export function ChatScreen({
               <FlatList
                 ref={listRef}
                 data={rows}
-                keyExtractor={(row) => row.key}
+                keyExtractor={rowKey}
                 contentContainerStyle={styles.list}
                 /**
                  * The newest message sits at offset 0, and the list grows upward.
@@ -3299,264 +3831,45 @@ export function ChatScreen({
                  * the inverted list already does, and pinned there it would
                  * arrive out of sight. React Native Web has no such prop.
                  */
-                maintainVisibleContentPosition={
-                  awayFrom !== null ? { minIndexForVisible: 0 } : undefined
-                }
+                maintainVisibleContentPosition={awayFrom !== null ? HOLD_FIRST_VISIBLE : undefined}
                 /**
                  * "End" is the end of the data, and inverted that is the oldest
                  * message — so the same prop that means "load more" everywhere else
                  * in the app means "load older" here. It also sidesteps
                  * `onStartReached`, which react-native-web's FlatList does not have.
                  */
-                onEndReached={() => {
-                  if (thread.hasNextPage && !thread.isFetchingNextPage) {
-                    void thread.fetchNextPage()
-                  }
-                }}
+                onEndReached={onEndReached}
                 onEndReachedThreshold={0.4}
                 /**
                  * Header, not footer: inverted, the header is what sits at the
                  * bottom — under the newest message and directly above the
                  * composer, which is where something that failed to send belongs.
                  */
-                ListHeaderComponent={
-                  <>
-                    {pending.length > 0 ? (
-                      <View style={styles.unsentBlock}>
-                        {pending.map((row) => {
-                          const discard = () =>
-                            setPending((list) => removePending(list, row.clientId))
-                          return (
-                            <PendingMediaBubble
-                              key={row.clientId}
-                              item={row}
-                              onRetry={() => {
-                                setPending((list) => removePending(list, row.clientId))
-                                void sendAttachments(
-                                  row.files ?? [attachmentOf(row)],
-                                  row.body,
-                                  row.viewOnce,
-                                )
-                              }}
-                              onDiscard={discard}
-                              onLongPress={() =>
-                                void openUnsentActions({
-                                  body: row.body ?? '',
-                                  preview: row.body || t(messagePreviewKey(row.kind)),
-                                  discard,
-                                })
-                              }
-                            />
-                          )
-                        })}
-                      </View>
-                    ) : null}
-                    {unsent.length > 0 ? (
-                      <View style={styles.unsentBlock}>
-                        {unsent.map((message) => {
-                          const discard = () =>
-                            setUnsent((list) => removeUnsent(list, message.clientId))
-                          return (
-                            <View key={message.clientId} style={styles.unsentRow}>
-                              <DiscardUnsentButton onPress={discard} />
-                              <Pressable
-                                accessibilityRole="button"
-                                accessibilityLabel={t('chat.notSentRetry')}
-                                onPress={() => void retry(message)}
-                                onLongPress={() =>
-                                  void openUnsentActions({
-                                    body: message.body,
-                                    preview: message.body,
-                                    discard,
-                                  })
-                                }
-                                style={({ pressed }) => [
-                                  styles.unsent,
-                                  pressed && styles.unsentPressed,
-                                ]}
-                              >
-                                <Text style={styles.unsentBody}>{message.body}</Text>
-                                <Text style={styles.unsentNote}>
-                                  <Feather name="alert-circle" size={12} /> {t('chat.notSentRetry')}
-                                </Text>
-                              </Pressable>
-                            </View>
-                          )
-                        })}
-                      </View>
-                    ) : null}
-                    {/* Your own words still to come, under everything already sent. */}
-                    <ScheduledMessageRows conversationId={conversationId} />
-                    {/*
-                    Last, so it sits nearest the composer: inverted, this header
-                    is the bottom of the thread, and the other person typing is
-                    the newest thing in it.
-                  */}
-                    {partnerTyping ? <TypingIndicator /> : null}
-                    {/*
-                      Nearest the composer, and not a message: the first time
-                      somebody wrote back, once it has been answered. A jump
-                      into the history is a slice, and says nothing about who
-                      spoke first.
-                    */}
-                    {partner ? (
-                      <FirstReplyCard
-                        conversationId={conversationId}
-                        partnerId={partnerId}
-                        partnerName={partner.displayName}
-                        partnerIsPerson={
-                          partner.official !== true &&
-                          !readOnly &&
-                          partner.accountStatus !== 'deleted'
-                        }
-                        messages={items}
-                        hasOlder={jumpAnchor !== null || messages.hasNextPage}
-                      />
-                    ) : null}
-                    {/* Last of all, nearest the composer — and not a message. */}
-                    {reviewOpen && (!testimonial.written || reviewedHere) ? (
-                      <ThreadTestimonialCard
-                        conversationId={conversationId}
-                        name={partner.displayName}
-                        done={testimonial.written && reviewedHere}
-                        onWrite={() => setReviewing(true)}
-                        onEdit={() => setReviewing(true)}
-                      />
-                    ) : null}
-                  </>
-                }
+                ListHeaderComponent={listHeader}
                 /**
                  * Footer, not header: inverted, the footer is what sits on top —
                  * the spinner for older pages and, on a thread too short to have
                  * any, the opening tip.
                  */
-                ListFooterComponent={
-                  <>
-                    {thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null}
-                    {/* One opener at a time: the starters above the composer
-                    are the same invitation, and a better one when offered. */}
-                    {items.length < SHORT_THREAD_MESSAGES && !offerTopics ? (
-                      <ComposerHint slot="chat" style={styles.threadTip} />
-                    ) : null}
-                  </>
-                }
+                ListFooterComponent={listFooter}
                 /**
                  * Mandatory, not defensive: bubbles are variable height and there
                  * is no `getItemLayout`, so `scrollToIndex` throws outright on a
                  * row the list has not measured. Nudging to an estimate and asking
                  * again is the documented recovery.
                  */
-                onScrollToIndexFailed={(info) => {
-                  listRef.current?.scrollToOffset({
-                    offset: info.averageItemLength * info.index,
-                    animated: false,
-                  })
-                  setTimeout(
-                    () =>
-                      listRef.current?.scrollToIndex({
-                        index: info.index,
-                        viewPosition: 0.5,
-                        animated: false,
-                      }),
-                    120,
-                  )
-                }}
-                onScroll={({ nativeEvent }) => {
-                  // Nothing to measure against the content height any more: the
-                  // bottom of an inverted list is offset 0.
-                  if (nativeEvent.contentOffset.y <= BOTTOM_ANCHOR_SLACK) {
-                    if (awayFrom !== null) setAwayFrom(null)
-                  } else if (awayFrom === null) {
-                    setAwayFrom(items[0] ? String(items[0]._id) : null)
-                  }
-                }}
+                onScrollToIndexFailed={onScrollToIndexFailed}
+                onScroll={onScroll}
                 scrollEventThrottle={16}
-                renderItem={({ item: row }) =>
-                  row.kind === 'day' ? (
-                    <View style={styles.dayRow}>
-                      <Text style={styles.dayLabel}>{dayLabel(row.day, { t, locale })}</Text>
-                    </View>
-                  ) : row.kind === 'unread' ? (
-                    <View style={styles.unreadRow}>
-                      <View style={styles.unreadLine} />
-                      <Text style={styles.unreadLabel}>{t('chat.newMessages')}</Text>
-                      <View style={styles.unreadLine} />
-                    </View>
-                  ) : (
-                    // A stand-in has no server id yet, so a menu or a reply on it
-                    // would have nothing to act on until the server's copy
-                    // arrives.
-                    <WithRewardChips
-                      rewards={v3Thread ? rewards[row.message._id] : undefined}
-                      partnerName={partner?.displayName ?? t('chat.them')}
-                      hue={partnerHue}
-                      celebration={
-                        v3Thread && celebrating === row.message._id ? rowCelebration : undefined
-                      }
-                    >
-                      <MessageBubble
-                        message={row.message}
-                        mine={isMine(row.message)}
-                        endsGroup={row.endsGroup}
-                        partnerName={partner?.displayName ?? t('chat.them')}
-                        translation={translations[row.message._id]}
-                        translating={translating === row.message._id}
-                        romanization={romanizations[row.message._id]}
-                        romanizing={romanizing === row.message._id}
-                        speaking={speaking === row.message._id}
-                        hasReading={speech[row.message._id] !== undefined}
-                        onReplayReading={onReplayReading}
-                        transcript={transcripts[row.message._id]}
-                        transcribing={transcribing === row.message._id}
-                        {...(transcriptService && !isOutgoingId(row.message._id)
-                          ? { onShowText }
-                          : {})}
-                        highlighted={highlighted === row.message._id}
-                        askAnswered={answeredAsks.has(row.message._id)}
-                        onAnswerAsk={onAnswerAsk}
-                        onRespondMeeting={onRespondMeeting}
-                        onAnswerQuiz={onAnswerQuiz}
-                        onAnswerPoll={onAnswerPoll}
-                        onCardAction={onCardAction}
-                        onAddToCalendar={onAddToCalendar}
-                        meetingWhen={meetingWhenFor(row.message)}
-                        meetingLength={meetingLengthFor(row.message)}
-                        meetingTheirWhen={meetingTheirWhenFor(row.message)}
-                        pending={isOutgoingId(row.message._id)}
-                        onLongPress={isOutgoingId(row.message._id) ? ignore : onLongPress}
-                        onEcho={isOutgoingId(row.message._id) ? ignore : onEcho}
-                        onReply={isOutgoingId(row.message._id) ? ignore : onReply}
-                        canReply={!readOnly}
-                        onReact={isOutgoingId(row.message._id) ? ignore : onReact}
-                        /*
-                         * The same pair the menu's emoji strip is hidden for, and
-                         * for the same reason: the server refuses a reaction to a
-                         * withdrawn message and to an official channel, so offering
-                         * the gesture there would end in an alert.
-                         */
-                        canReact={!readOnly && !row.message.deleted && !isServerRecord(row.message)}
-                        // Only on the newest call, and not where a call cannot be
-                        // placed from here at all: then a row is only a record.
-                        onCallBack={
-                          callGate !== 'hidden' && row.message._id === newestCallId
-                            ? onCallBack
-                            : undefined
-                        }
-                        onMeetingCall={
-                          callGate !== 'hidden' && meetingCallOpen(row.message.meeting, meetingNow)
-                            ? onMeetingCall
-                            : undefined
-                        }
-                        onJumpTo={onJumpTo}
-                        onOpenMedia={onOpenMedia}
-                        onOpenViewOnce={onOpenViewOnce}
-                        {...(v3Thread ? { onBurst: onBurstTap } : {})}
-                        v3={v3Thread}
-                        partnerHue={partnerHue}
-                      />
-                    </WithRewardChips>
-                  )
-                }
+                /*
+                 * Dragging the thread puts the keyboard away, the way every
+                 * messenger does, and a tap on a bubble acts on the first try
+                 * instead of only closing the keyboard. Taps on bare thread
+                 * still dismiss it.
+                 */
+                keyboardDismissMode="on-drag"
+                keyboardShouldPersistTaps="handled"
+                renderItem={renderRow}
               />
             )}
 
@@ -3576,20 +3889,15 @@ export function ChatScreen({
             ) : null}
 
             {awayFrom !== null && jumpAnchor === null ? (
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={
-                  missed > 0 ? t('chat.jumpToNew', { count: missed }) : t('chat.jumpToNewest')
-                }
+              <JumpToNewest
+                v3={v3Thread}
+                missed={missed}
+                label={missed > 0 ? t('chat.jumpToNew', { count: missed }) : t('chat.jumpToNewest')}
                 onPress={() => {
                   listRef.current?.scrollToOffset({ offset: 0, animated: true })
                   setAwayFrom(null)
                 }}
-                style={styles.jump}
-              >
-                <Feather name="arrow-down" size={18} color={colors.textInverse} />
-                {missed > 0 ? <Text style={styles.jumpCount}>{missed}</Text> : null}
-              </Pressable>
+              />
             ) : null}
           </View>
 
@@ -3609,7 +3917,7 @@ export function ChatScreen({
           {copilot.card}
           {readOnly ? (
             <View style={styles.channelNote}>
-              <Text style={styles.channelNoteText}>
+              <Text style={[styles.channelNoteText, v3Thread && rowsV3.channelNoteText]}>
                 {t(suspended ? 'chat.suspendedOnly' : 'chat.channelOnly')}
               </Text>
             </View>
@@ -3791,6 +4099,7 @@ export function ChatScreen({
           )}
         </View>
         {copilot.sheets}
+        <ShareCardSheet request={streakCard} onClose={() => setStreakCard(null)} />
         <ScheduleTimeSheet
           visible={pickingSendTime}
           busy={scheduleMessage.isPending}
@@ -4160,6 +4469,16 @@ const SKELETON_BUBBLES = ['a', 'b', 'c', 'd', 'e', 'f']
 /** For a stand-in row: the server has not named it yet, so its actions wait. */
 const ignore = () => undefined
 
+/** Module-level so the FlatList is handed the same function on every render. */
+const rowKey = (row: MessageRow): string => row.key
+
+/**
+ * `maintainVisibleContentPosition` while the reader is away from the bottom.
+ * One object for the life of the app: an inline literal was a new prop on
+ * every render, and FlatList re-rendered every cell for it.
+ */
+const HOLD_FIRST_VISIBLE = { minIndexForVisible: 0 } as const
+
 /**
  * Below this many messages the thread still shows its opening tip. Three is
  * the prototype's cut-off: after a couple of exchanges the reader has found
@@ -4178,8 +4497,9 @@ const TYPING_DIM = 0.3
  * few seconds. Still when the reader has asked for less motion — three dots
  * already say what they mean.
  */
-function TypingIndicator() {
+function TypingIndicator({ v3, hue }: { v3: boolean; hue: string | undefined }) {
   const styles = useStyles()
+  const v3Styles = useThreadV3Styles()
   const t = useT()
   const reduceMotion = useReduceMotion()
   const dots = useRef([0, 1, 2].map(() => new Animated.Value(TYPING_DIM))).current
@@ -4205,13 +4525,193 @@ function TypingIndicator() {
   }, [dots, reduceMotion])
 
   return (
-    <View style={styles.typingBubble} accessibilityLabel={t('chat.typing')}>
+    <View
+      style={[
+        styles.typingBubble,
+        // Their bubble as the v3 thread draws it: the partner's hue with ink
+        // dots, or the surface grey until the partner is known.
+        v3 && v3Styles.typingBubble,
+        v3 && hue !== undefined ? { backgroundColor: hue } : null,
+      ]}
+      accessibilityLabel={t('chat.typing')}
+    >
       {dots.map((dot, index) => (
-        <Animated.View key={index} style={[styles.typingDot, { opacity: dot }]} />
+        <Animated.View
+          key={index}
+          style={[
+            styles.typingDot,
+            v3 && (hue !== undefined ? v3Styles.typingDotOnHue : v3Styles.typingDot),
+            { opacity: dot },
+          ]}
+        />
       ))}
     </View>
   )
 }
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
+
+/** Where the v3 pill starts as it arrives: a little small, so it is seen to appear. */
+const JUMP_FROM_SCALE = 0.86
+/** How far the count swells as it goes up, and back. */
+const JUMP_TICK_SCALE = 1.2
+
+/**
+ * "Back to the newest", floating over the thread while the reader is up in
+ * the history, with how many arrived since they left.
+ *
+ * In the v3 look it is the flat ink pill — no shadow, v3 draws none — that
+ * grows into place when it appears and ticks its count when another message
+ * lands. On the native driver, transform and opacity only; simply there,
+ * with the number changing, under reduced motion. The current look keeps
+ * its blue shadowed button exactly as it was.
+ */
+function JumpToNewest({
+  v3,
+  missed,
+  label,
+  onPress,
+}: {
+  v3: boolean
+  missed: number
+  label: string
+  onPress: () => void
+}) {
+  const styles = useStyles()
+  const v3Styles = useThreadV3Styles()
+  const theme = useTheme()
+  const reduce = useReduceMotion()
+  const shown = useRef(new Animated.Value(v3 ? 0 : 1)).current
+  const tick = useRef(new Animated.Value(1)).current
+  const lastMissed = useRef(missed)
+
+  useEffect(() => {
+    if (!v3) return
+    if (reduce) {
+      shown.setValue(1)
+      return
+    }
+    const arrival = Animated.timing(shown, {
+      toValue: 1,
+      // A fade's length: it is small, and arrives under the reader's eye.
+      duration: DURATION.fade,
+      easing: EASE_OUT,
+      useNativeDriver: true,
+    })
+    arrival.start()
+    return () => arrival.stop()
+  }, [v3, reduce, shown])
+
+  useEffect(() => {
+    const grew = missed > lastMissed.current
+    lastMissed.current = missed
+    if (!v3 || reduce || !grew) return
+    tick.setValue(1)
+    const swell = Animated.sequence([
+      Animated.timing(tick, {
+        toValue: JUMP_TICK_SCALE,
+        duration: DURATION.press,
+        easing: EASE_OUT,
+        useNativeDriver: true,
+      }),
+      Animated.timing(tick, {
+        toValue: 1,
+        duration: DURATION.release,
+        easing: EASE_OUT,
+        useNativeDriver: true,
+      }),
+    ])
+    swell.start()
+    return () => swell.stop()
+  }, [missed, v3, reduce, tick])
+
+  const ink = v3 ? theme.v3.colors.pillText : theme.colors.textInverse
+  return (
+    <AnimatedPressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={onPress}
+      style={[
+        styles.jump,
+        v3 && v3Styles.jump,
+        v3
+          ? {
+              opacity: shown,
+              transform: [
+                {
+                  scale: shown.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [JUMP_FROM_SCALE, 1],
+                  }),
+                },
+              ],
+            }
+          : null,
+      ]}
+    >
+      <Feather name="arrow-down" size={18} color={ink} />
+      {missed > 0 ? (
+        <Animated.Text
+          style={[
+            styles.jumpCount,
+            v3 && v3Styles.jumpCount,
+            v3 ? { transform: [{ scale: tick }] } : null,
+          ]}
+        >
+          {missed}
+        </Animated.Text>
+      ) : null}
+    </AnimatedPressable>
+  )
+}
+
+/**
+ * The v3 thread's overrides for what this file draws itself — the typing
+ * bubble, the day chip and the jump pill. Same keys idea as `bubbleLookV3`:
+ * layered over the current look's sheet, so v2 is untouched.
+ */
+const useThreadV3Styles = makeStyles(({ v3 }) => ({
+  // Their bubble's corners and padding, from `bubbleLookV3`.
+  typingBubble: {
+    backgroundColor: v3.colors.surface,
+    borderBottomStartRadius: v3.space[8],
+    borderRadius: v3.radius.tile,
+    paddingHorizontal: v3.space[16],
+    paddingVertical: v3.space[14],
+  },
+  typingDot: { backgroundColor: v3.colors.muted },
+  // Ink on a partner hue, as every hue-lettered thing has.
+  typingDotOnHue: { backgroundColor: v3.colors.ink },
+  // The date as a quiet grey chip, like the drawing's: the label is the chip.
+  dayChip: {
+    ...v3.type.label,
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.pill,
+    color: v3.colors.muted,
+    overflow: 'hidden',
+    paddingHorizontal: v3.space[10],
+    paddingVertical: v3.space[4],
+  },
+  // Flat: v3 keeps no shadow on a floating control.
+  jump: {
+    backgroundColor: v3.colors.pill,
+    elevation: 0,
+    shadowOpacity: 0,
+  },
+  jumpCount: { ...v3.type.label, color: v3.colors.pillText },
+}))
+
+/**
+ * The rest of the thread's own rows in the v3 look, over the current sheet's
+ * (the day chip, typing and jump are `useThreadV3Styles`'): the "New messages"
+ * divider in v3's caption, semibold, on a two-point line, and the read-only
+ * note in its caption.
+ */
+const useRowStylesV3 = makeStyles(({ v3 }) => ({
+  unreadLine: { backgroundColor: v3.colors.line, height: 2 },
+  unreadLabel: { ...v3.type.caption, color: v3.colors.echoText, fontWeight: '600' },
+  channelNoteText: { ...v3.type.caption, color: v3.colors.muted },
+}))
 
 /**
  * What the menu's copy of the bubble should draw, for the messages that draw a

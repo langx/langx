@@ -1,11 +1,17 @@
-import { ECHO_REVIEW_DURATION_MAX_MS, TOKEN_RULES, type EchoAward } from '@langx/shared'
+import { ECHO_REVIEW_DURATION_MAX_MS, SRS_RULES, TOKEN_RULES, type EchoAward } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
-import { boundedEchoReviews, planEchoDone, reviewMinutes } from './echoV3'
+import {
+  boundedEchoReviews,
+  echoRingNote,
+  oneSessionDue,
+  planEchoDone,
+  reviewMinutes,
+} from './echoV3'
 
 const CAP = TOKEN_RULES.caps.echoSessionsPerDay
 const PAY = TOKEN_RULES.award.echoSession
 
-function award(tokens: number, streak: number | null = null): EchoAward {
+function award(tokens: number, streak: number | null = null, milestoneXp = 0): EchoAward {
   return {
     tokens,
     streak:
@@ -16,7 +22,7 @@ function award(tokens: number, streak: number | null = null): EchoAward {
             longest: streak,
             lastQualifiedDay: '2026-10-19',
             advanced: true,
-            milestoneXp: 0,
+            milestoneXp,
             freezeUsed: false,
           },
   }
@@ -44,6 +50,7 @@ describe('planEchoDone', () => {
     expect(planEchoDone({ award: award(PAY, 12), sessionsToday: 1, dueNext: 3 })).toEqual({
       tokens: PAY,
       streakDay: 12,
+      milestone: null,
       sessions: { kind: 'this', done: 1, cap: CAP },
       more: true,
     })
@@ -88,6 +95,37 @@ describe('planEchoDone', () => {
   })
 })
 
+describe('planEchoDone and streak milestones', () => {
+  const BONUS = 50
+
+  it('names the milestone apart from what the session itself paid', () => {
+    const plan = planEchoDone({ award: award(PAY + BONUS, 7, BONUS), sessionsToday: 1, dueNext: 3 })
+    expect(plan.tokens).toBe(PAY)
+    expect(plan.milestone).toEqual({ day: 7, tokens: BONUS })
+    expect(plan.streakDay).toBe(7)
+    expect(plan.sessions).toEqual({ kind: 'this', done: 1, cap: CAP })
+  })
+
+  it('celebrates a milestone a session past the cap crossed, and claims no session token', () => {
+    const plan = planEchoDone({ award: award(BONUS, 30, BONUS), sessionsToday: CAP, dueNext: 3 })
+    expect(plan.tokens).toBeNull()
+    expect(plan.milestone).toEqual({ day: 30, tokens: BONUS })
+    expect(plan.sessions).toEqual({ kind: 'all', done: CAP, cap: CAP })
+  })
+
+  it('names no milestone for a streak that only moved on', () => {
+    expect(
+      planEchoDone({ award: award(PAY, 6), sessionsToday: 1, dueNext: 0 }).milestone,
+    ).toBeNull()
+  })
+
+  it('never claims fewer than no token from a bonus the total does not hold', () => {
+    const plan = planEchoDone({ award: award(0, 7, BONUS), sessionsToday: 1, dueNext: 0 })
+    expect(plan.tokens).toBeNull()
+    expect(plan.milestone).toEqual({ day: 7, tokens: BONUS })
+  })
+})
+
 describe('boundedEchoReviews', () => {
   it('holds a card left on screen to the server’s ceiling, and leaves the rest', () => {
     const sent = boundedEchoReviews({
@@ -101,5 +139,55 @@ describe('boundedEchoReviews', () => {
       4000,
     ])
     expect(sent.reviews[0]).toMatchObject({ reviewId: 'rv-a-0000', cardId: 'a', grade: 'good' })
+  })
+})
+
+describe('echoRingNote', () => {
+  const SIZE = SRS_RULES.sessionSize
+
+  it('names the session token when a fresh day has a full session due', () => {
+    expect(echoRingNote({ due: SIZE, reviewedToday: 0, sessionsToday: 0 })).toEqual({ tokens: PAY })
+  })
+
+  it('closes the ring without a token when too few cards fill a session', () => {
+    expect(echoRingNote({ due: SIZE - 1, reviewedToday: 0, sessionsToday: 0 })).toEqual({
+      tokens: null,
+    })
+  })
+
+  it('names no token without the server count, or with the day already paid', () => {
+    expect(echoRingNote({ due: SIZE, reviewedToday: 0, sessionsToday: undefined })).toEqual({
+      tokens: null,
+    })
+    expect(echoRingNote({ due: SIZE, reviewedToday: 0, sessionsToday: CAP })).toEqual({
+      tokens: null,
+    })
+  })
+
+  it('says nothing once the ring is closed, unknown, or there is nothing due', () => {
+    expect(echoRingNote({ due: SIZE, reviewedToday: 3, sessionsToday: 0 })).toBeNull()
+    expect(echoRingNote({ due: SIZE, reviewedToday: undefined, sessionsToday: 0 })).toBeNull()
+    expect(echoRingNote({ due: 0, reviewedToday: 0, sessionsToday: 0 })).toBeNull()
+  })
+})
+
+describe('oneSessionDue', () => {
+  const languages = [
+    { lang: 'fr', due: 7 },
+    { lang: 'es', due: 6 },
+  ]
+
+  it('takes the largest one language under All, not the total', () => {
+    expect(oneSessionDue(languages, null)).toBe(7)
+    // Thirteen due on the tab, but no single tap fills a paid session.
+    expect(
+      echoRingNote({ due: oneSessionDue(languages, null), reviewedToday: 0, sessionsToday: 0 }),
+    ).toEqual({ tokens: null })
+  })
+
+  it('takes the chosen language, and zero for none', () => {
+    expect(oneSessionDue(languages, 'es')).toBe(6)
+    expect(oneSessionDue(languages, 'de')).toBe(0)
+    expect(oneSessionDue([], null)).toBe(0)
   })
 })

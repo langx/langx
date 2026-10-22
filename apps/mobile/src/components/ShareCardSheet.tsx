@@ -1,8 +1,16 @@
-import { CARD_SHAPES, type CardKind, type CardShape, type RecapCardInput } from '@langx/shared'
+import {
+  CARD_SHAPES,
+  type BadgeCardInput,
+  type CardKind,
+  type CardShape,
+  type ProfileCardInput,
+  type RecapCardInput,
+} from '@langx/shared'
 import { File, Paths } from 'expo-file-system'
 import { useState } from 'react'
 import { ActivityIndicator, Modal, Platform, Pressable, Text } from 'react-native'
 import { useCreateShareCard } from '../api/queries'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
 import { useT, type MessageKey } from '../i18n'
 import { track } from '../lib/analytics'
@@ -28,6 +36,10 @@ export interface ShareCardRequest {
   fallback: ShareContent
   /** A recap's words; the server draws the poster from them and its own numbers. */
   recap?: RecapCardInput
+  /** A badge's id; the server draws its patch, and reads the rest itself. */
+  badge?: BadgeCardInput
+  /** Your own profile's words; the server draws you from your account. */
+  profile?: ProfileCardInput
 }
 
 /** A share that has been decided on but not yet handed to the OS. */
@@ -75,6 +87,7 @@ export function ShareCardSheet({
   request: ShareCardRequest | null
   onClose: () => void
 }) {
+  const reduce = useReduceMotion()
   const styles = useStyles()
   const t = useT()
   const v3Look = useV3Home()
@@ -130,6 +143,8 @@ export function ShareCardSheet({
         headline: request.headline,
         caption: request.caption,
         ...(request.recap ? { recap: request.recap } : {}),
+        ...(request.badge ? { badge: request.badge } : {}),
+        ...(request.profile ? { profile: request.profile } : {}),
       })
       track({
         name: 'share_card_created',
@@ -164,7 +179,7 @@ export function ShareCardSheet({
     <Modal
       visible={request !== null}
       transparent
-      animationType="slide"
+      animationType={reduce ? 'none' : 'slide'}
       onRequestClose={onClose}
       onDismiss={() => {
         if (!pending) return

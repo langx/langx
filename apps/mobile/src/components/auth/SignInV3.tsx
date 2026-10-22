@@ -1,7 +1,10 @@
 import { router } from 'expo-router'
-import type { ReactNode } from 'react'
-import { Platform, View } from 'react-native'
+import { useEffect, useRef, type ReactNode } from 'react'
+import { Animated, Platform } from 'react-native'
+import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useT } from '../../i18n'
+import { shakeSteps } from '../../lib/errorShake'
+import { notification } from '../../lib/haptics'
 import { goBackTo } from '../../lib/navigation'
 import { makeStyles } from '../../lib/theme'
 import { FieldV3 } from '../onboarding/WizardV3'
@@ -57,6 +60,29 @@ export function SignInV3({
 }) {
   const styles = useStyles()
   const t = useT()
+
+  /*
+   * A refusal shakes the fields and buzzes once, so it is felt as well as
+   * read. Each attempt clears the error before it is sent (`sign-in.tsx`),
+   * so the same refusal twice is two arrivals, and two shakes. Under reduce
+   * motion the buzz alone: it says the same without anything moving.
+   */
+  const reduceMotion = useReduceMotion()
+  const shake = useRef(new Animated.Value(0)).current
+  const shownError = useRef(error)
+  useEffect(() => {
+    const arrived = error !== undefined && shownError.current === undefined
+    shownError.current = error
+    if (!arrived) return
+    void notification('error')
+    if (reduceMotion) return
+    Animated.sequence(
+      shakeSteps().map((step) =>
+        Animated.timing(shake, { toValue: step.to, duration: step.ms, useNativeDriver: true }),
+      ),
+    ).start()
+  }, [error, reduceMotion, shake])
+
   return (
     <AuthScreenV3
       onBack={() => goBackTo('/(auth)/welcome')}
@@ -70,7 +96,7 @@ export function SignInV3({
     >
       <AuthTitleV3 title={t('auth.welcomeBack')} body={t('auth.welcomeBackSubtitle')} />
 
-      <View style={styles.fields}>
+      <Animated.View style={[styles.fields, { transform: [{ translateX: shake }] }]}>
         <FieldV3
           label={t('auth.emailOrHandle')}
           returnKeyType="go"
@@ -98,7 +124,7 @@ export function SignInV3({
           label={t('auth.forgotPassword')}
           onPress={() => router.push('/(auth)/forgot-password')}
         />
-      </View>
+      </Animated.View>
 
       {captchaWidget}
       <Button

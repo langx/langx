@@ -54,6 +54,13 @@ describe('threadRewards', () => {
     ])
   })
 
+  it('does not draw a capped correction as paid', () => {
+    expect(threadRewards(award(0, { capped: true }), 'correction')).toEqual([])
+    expect(threadRewards(award(mutualConversation, { capped: true }), 'correction')).toEqual([
+      { kind: 'bothWrote', amount: mutualConversation },
+    ])
+  })
+
   it("draws a streak milestone with the server's own figure and the streak's length", () => {
     expect(threadRewards(award(message + 50, { streak: streak(7, 50) }), 'message')).toEqual([
       { kind: 'streak', amount: 50, days: 7, day: '2026-10-19' },

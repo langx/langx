@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import { ApiRequestError } from '../../api/client'
 import { useDeleteTestimonial, useUpsertTestimonial } from '../../api/queries'
+import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useV3Home } from '../../hooks/useV3Home'
 import { useT, type MessageKey } from '../../i18n'
 import { confirmAlert } from '../../lib/alert'
@@ -63,11 +64,12 @@ function failureKey(caught: unknown): MessageKey {
  * the explanation arriving exactly when it is wanted.
  */
 export function TestimonialSheet(props: TestimonialSheetProps) {
+  const reduce = useReduceMotion()
   return (
     <Modal
       visible={props.visible}
       transparent
-      animationType="slide"
+      animationType={reduce ? 'none' : 'slide'}
       onRequestClose={props.onClose}
       accessibilityViewIsModal
     >

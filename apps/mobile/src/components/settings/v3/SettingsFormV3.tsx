@@ -106,31 +106,43 @@ export function SettingsNoteV3({
 /**
  * The big hue block a permission guide opens with: where things stand, in a
  * headline and a paragraph. Ink on the hue in both schemes, as everything on
- * a hue is.
+ * a hue is. With `art`, the drawing sits over the headline in place of the
+ * glyph beside it.
  */
 export function SettingsStateV3({
   hue,
   icon,
   title,
   body,
+  art,
 }: {
   hue: PartnerHue
   icon: Glyph
   title: string
   body: string
+  art?: ReactNode
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
   return (
     <View style={[styles.state, { backgroundColor: v3.hues[hue] }]}>
-      <View style={styles.stateHead}>
-        <View style={styles.stateMark}>
-          <Feather name={icon} size={v3.icon.xl} color={v3.hues[hue]} />
+      {art ? (
+        <>
+          <View style={styles.stateArt}>{art}</View>
+          <Text accessibilityRole="header" style={styles.stateTitle}>
+            {title}
+          </Text>
+        </>
+      ) : (
+        <View style={styles.stateHead}>
+          <View style={styles.stateMark}>
+            <Feather name={icon} size={v3.icon.xl} color={v3.hues[hue]} />
+          </View>
+          <Text accessibilityRole="header" style={styles.stateTitle}>
+            {title}
+          </Text>
         </View>
-        <Text accessibilityRole="header" style={styles.stateTitle}>
-          {title}
-        </Text>
-      </View>
+      )}
       <Text style={styles.stateBody}>{body}</Text>
     </View>
   )
@@ -243,6 +255,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingVertical: v3.space[20],
   },
   stateHead: { alignItems: 'center', flexDirection: 'row', gap: v3.space[14] },
+  stateArt: { alignItems: 'center' },
   stateMark: {
     alignItems: 'center',
     backgroundColor: v3.colors.ink,

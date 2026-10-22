@@ -28,12 +28,42 @@ import {
   applyDeliveredAt,
   applyMessageUpdate,
   applyPinned,
+  patchThread,
   type MessagePageDto,
 } from '../lib/messageCache'
 import { clearFromTray, sweepTray } from '../lib/notifications'
 import { applyPresence } from '../lib/presenceCache'
+import {
+  applyReadAt,
+  clearConversationUnread,
+  createKeyedDebounce,
+  incomingMayMoveTokens,
+  testimonialRecheckDue,
+} from '../lib/readReceipts'
 import { closeSocket, onSocket, restartSocket } from '../lib/socket'
 import { withoutViewOnceFallback } from '../lib/viewOnce'
+
+/** How long the socket waits after the last message in a burst before posting the read. */
+const READ_DEBOUNCE_MS = 1000
+
+/**
+ * The reads posted for messages landing in the open thread, one per
+ * conversation after a burst settles. See `createKeyedDebounce`. Module-level
+ * so the thread can flush its own as it closes (`flushPendingRead`).
+ */
+const reads = createKeyedDebounce(READ_DEBOUNCE_MS)
+
+/**
+ * Posts this thread's waiting read now, if there is one. The thread calls it
+ * as it closes: a read that fired a second later would also cover a message
+ * that arrived after the person had left.
+ */
+export function flushPendingRead(conversationId: string): void {
+  reads.flush(conversationId)
+}
+
+/** When the open thread last went back for its testimonial state; see `conversation:read`. */
+const testimonialCheckedAt = new Map<string, number>()
 
 /**
  * Opens the app's single socket and turns realtime events into cache updates.
@@ -90,6 +120,9 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
     let lastAppState = AppState.currentState
     const appStateSubscription = AppState.addEventListener('change', (next) => {
       if (resumedFromBackground(lastAppState, next)) resync()
+      // Going away: a read still waiting out its burst is posted now, while
+      // it is still true, rather than after the person has left.
+      if (next === 'background') reads.flushAll()
       lastAppState = next
     })
 
@@ -153,7 +186,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
             : String(message.conversationId)
 
         /**
-         * `setQueriesData` with the *prefix*, not `setQueryData` with the key:
+         * `patchThread` writes on the *prefix*, not `setQueryData` on the key:
          * `keys.messagesAround` lives under `keys.messages(id)`, so a jump
          * window open on this thread is patched by the same call. Without it
          * the window silently stops receiving anything while it is on screen.
@@ -186,10 +219,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
           )
         }
 
-        queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
-          { queryKey: keys.messages(conversationId) },
-          (old) => appendIncomingMessage(old, message, meId) ?? old,
-        )
+        patchThread(queryClient, conversationId, (old) => appendIncomingMessage(old, message, meId))
 
         /**
          * Patched rather than invalidated. On an infinite query
@@ -234,10 +264,23 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
           },
         )
         if (!patched) void queryClient.invalidateQueries({ queryKey: ['conversations'] })
-        // The tab badge is on screen on every tab, including the ones that
-        // never load this list, so the patch above does not reach it.
-        invalidateUnread(queryClient)
-        void queryClient.invalidateQueries({ queryKey: keys.tokens })
+
+        const mine = meId !== undefined && message.senderId === meId
+        /*
+         * Read off the caches rather than asked for. A muted thread nobody has
+         * loaded is not in them, so it gets one banner — and the invalidation
+         * above fetches it back with its flag, so the next message does not.
+         * The server's own push needs no such guess: it reads the document.
+         */
+        const cached = cachedConversation(
+          queryClient.getQueriesData({ queryKey: ['conversations'] }),
+          conversationId,
+        )
+        // Only when this message can have paid me something; see
+        // `incomingMayMoveTokens` for which ones can.
+        if (incomingMayMoveTokens({ mine, bothSpoke: cached?.bothSpoke })) {
+          void queryClient.invalidateQueries({ queryKey: keys.tokens })
+        }
 
         /**
          * And then say so, if there is anybody to say it to.
@@ -249,17 +292,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
          * all, this is the only notice there is.
          */
         const prefs = queryClient.getQueryData<MeProfile>(keys.me)?.settings.notifications
-        /*
-         * Read off the caches rather than asked for. A muted thread nobody has
-         * loaded is not in them, so it gets one banner — and the invalidation
-         * above fetches it back with its flag, so the next message does not.
-         * The server's own push needs no such guess: it reads the document.
-         */
-        const muted =
-          cachedConversation(
-            queryClient.getQueriesData({ queryKey: ['conversations'] }),
-            conversationId,
-          )?.muted === true
+        const muted = cached?.muted === true
         const decision = shouldShowIncomingBanner({
           message,
           meId,
@@ -268,8 +301,24 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
           messagesPushAllowed: notificationsAllowed(prefs, 'messages', 'push'),
           conversationMuted: muted,
         })
-        if (decision === 'markRead') void markConversationRead(conversationId, queryClient)
-        else if (decision === 'banner') {
+        if (decision === 'markRead') {
+          /*
+           * On screen, so already read as far as this phone is concerned: the
+           * list's count is cleared now rather than when the debounced read
+           * lands, and the tab badge is not refetched for a message the read
+           * is about to take back off it — the read refetches it once.
+           */
+          clearConversationUnread(queryClient, conversationId)
+          reads.schedule(conversationId, () => {
+            void markConversationRead(conversationId, queryClient)
+          })
+          return
+        }
+        // The tab badge is on screen on every tab, including the ones that
+        // never load this list, so the patch above does not reach it. My own
+        // message never moves my own unread total.
+        if (!mine) invalidateUnread(queryClient)
+        if (decision === 'banner') {
           showMessageBanner({
             conversationId,
             senderId: message.senderId,
@@ -280,13 +329,11 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
       })
 
       /**
-       * Patched into the cache rather than invalidated, unlike the read event
+       * Patched into the cache rather than invalidated, like the read event
        * below. Delivery fires on *every* message sent to someone who is
        * online, so refetching the thread each time would put a request behind
        * every keystroke-turned-message in an active conversation — and the
-       * event already carries everything the change needs. Reads are the
-       * rarer event and clear an unread count the client cannot recompute,
-       * which is why that one still goes back to the server.
+       * event already carries everything the change needs.
        */
       /**
        * One event for every mutation, carrying the message's whole new state.
@@ -343,32 +390,55 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
       )
 
       /**
-       * Still invalidated, unlike `message:new` above. This fires once when
-       * someone opens a thread, not once per message, so refetching the
-       * loaded pages is cheap here.
+       * Patched, like `message:new` above. It used to be invalidated on the
+       * reasoning that it fired once per thread opened — but an open thread
+       * marks every incoming message read, so in a live chat it fired once
+       * per *message*, and each one refetched every loaded page of the thread
+       * and the chat list on both phones. The event carries all the change.
        *
-       * It reaches two audiences now. For the *other* participant it carries
-       * `readBy` and means "they have seen it", which is a tick on a bubble.
-       * For the reader's own other devices — the second half, added because a
-       * phone left holding a badge for a thread read on a laptop keeps it —
-       * it means their unread total has dropped, and that number is the
-       * server's to give.
+       * It reaches two audiences. For the *other* participant it carries
+       * `readBy` and means "they have seen it", which is a tick on a bubble —
+       * their unread numbers did not move, so nothing else is touched. For
+       * the reader's own devices (this one included, which posted the read)
+       * it means their unread total has dropped. The thread's own count is
+       * known — zero — but the total is the server's to give, so only that
+       * one small number goes back to it.
        */
       on(
         'conversation:read',
-        ({ conversationId, readBy }: { conversationId: string; readBy: string }) => {
-          void queryClient.invalidateQueries({ queryKey: keys.messages(conversationId) })
-          void queryClient.invalidateQueries({ queryKey: ['conversations'] })
-          // This now also reaches the reader's own other devices, where it
-          // means "your unread total just dropped" rather than "they saw it".
-          // The badge cannot be recomputed from here, so it goes back to the
-          // server — the same reason this event is invalidated, not patched.
-          invalidateUnread(queryClient)
-          // Read on another device of mine: this one's shade is stale too. Read
-          // by the other participant, it says nothing about what I have seen.
-          if (readBy === queryClient.getQueryData<{ _id: string }>(keys.me)?._id) {
-            void clearFromTray({ conversationId })
+        ({
+          conversationId,
+          readBy,
+          readAt,
+        }: {
+          conversationId: string
+          readBy: string
+          readAt?: string
+        }) => {
+          queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
+            { queryKey: keys.messages(conversationId) },
+            (old) => applyReadAt(old, { readBy, readAt: readAt ?? new Date().toISOString() }),
+          )
+          if (readBy !== queryClient.getQueryData<{ _id: string }>(keys.me)?._id) return
+          /*
+           * The one thing the patch above cannot know: whether this thread has
+           * just crossed the line that unlocks a testimonial. The first page
+           * carries that state, and it used to be refreshed by the refetch this
+           * replaced. Asked again only while it is still locked, and at most
+           * once a minute per thread.
+           */
+          const testimonial = queryClient.getQueryData<InfiniteData<MessagePageDto>>(
+            keys.messages(conversationId),
+          )?.pages[0]?.testimonial
+          const now = Date.now()
+          if (testimonialRecheckDue(testimonial, testimonialCheckedAt.get(conversationId), now)) {
+            testimonialCheckedAt.set(conversationId, now)
+            void queryClient.invalidateQueries({ queryKey: keys.messages(conversationId) })
           }
+          clearConversationUnread(queryClient, conversationId)
+          invalidateUnread(queryClient)
+          // Read on another device of mine: this one's shade is stale too.
+          void clearFromTray({ conversationId })
         },
       )
 
@@ -407,6 +477,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
     })
 
     return () => {
+      reads.cancelAll()
       clearInterval(heartbeat)
       appStateSubscription.remove()
       unsubscribeOnline()

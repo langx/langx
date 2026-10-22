@@ -1,4 +1,5 @@
 import type { CardKind, CardShape } from '@langx/shared'
+import { RTL_LETTER, textLine } from './recapDesign'
 import { CARD_PIXELS, loadBadge, type CardNode } from './render'
 
 export interface CardCopy {
@@ -36,6 +37,9 @@ const GLYPH: Record<CardKind, string> = {
     'M12 2l2.6 1.9 3.2-.2.9 3.1 2.6 1.9-1.4 2.9 1.4 2.9-2.6 1.9-.9 3.1-3.2-.2L12 22l-2.6-1.9-3.2.2-.9-3.1L2.7 15.4l1.4-2.9-1.4-2.9 2.6-1.9.9-3.1 3.2.2z',
   // A cup.
   rank: 'M6 3h12v3h3v3a4 4 0 0 1-4 4h-.3A6 6 0 0 1 13 16v3h3v2H8v-2h3v-3a6 6 0 0 1-3.7-2.9H7a4 4 0 0 1-4-4V6h3zM5 8v1a2 2 0 0 0 1 1.7V8zm14 0h-2v2.7A2 2 0 0 0 19 9z',
+  // A person: head and shoulders. Only drawn for a profile card from a build
+  // that sent no `profile` words; the rest get `profileDesign.ts`.
+  profile: 'M12 2a5 5 0 1 1 0 10a5 5 0 1 1 0-10zM3 21c0-4.4 4-7.5 9-7.5s9 3.1 9 7.5v1H3z',
   // A calendar page.
   recap:
     'M7 2h2v2h6V2h2v2h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3zM5 9v10h14V9zm2 2h4v4H7z',
@@ -74,6 +78,7 @@ const GROUND: Record<CardKind, string> = {
   badge: '#7a5af8',
   rank: '#ffc409',
   recap: '#009f70',
+  profile: '#3b6cf6',
 }
 
 /** Yellow needs dark type on it; the others do not. */
@@ -82,6 +87,7 @@ const ON_GROUND: Record<CardKind, string> = {
   badge: PAPER,
   rank: '#201900',
   recap: PAPER,
+  profile: PAPER,
 }
 
 /**
@@ -195,6 +201,14 @@ export async function cardElement(
           paddingLeft: unit * 8,
           paddingRight: unit * 8,
           paddingTop: unit * 9 * dense,
+          /*
+           * Positioned so it paints over the discs. satori 0.62 paints as CSS
+           * does — positioned boxes after in-flow ones, whatever their order
+           * in the tree — so an unpositioned panel went under the discs, and
+           * they tinted half the headline and put a grey quarter-circle in
+           * the panel. Among positioned boxes, tree order wins again.
+           */
+          position: 'relative',
           width: width - unit * 16,
         },
         children: [
@@ -215,16 +229,29 @@ export async function cardElement(
             },
             children: copy.headline,
           }),
-          el('div', {
-            style: {
-              color: INK,
-              display: 'flex',
-              fontSize: unit * 6 * dense,
-              fontWeight: 800,
-              textAlign: 'center',
-            },
-            children: copy.caption,
-          }),
+          /*
+           * An Arabic caption goes word by word, centred. Handed to satori's
+           * own bidi as one string, "يوم متتالٍ في LangX" came out with its
+           * words in reverse order — the bug `textLine` exists for.
+           */
+          RTL_LETTER.test(copy.caption)
+            ? textLine(
+                copy.caption,
+                { color: INK, fontSize: unit * 6 * dense, fontWeight: 800 },
+                true,
+                width - unit * 32,
+                true,
+              )
+            : el('div', {
+                style: {
+                  color: INK,
+                  display: 'flex',
+                  fontSize: unit * 6 * dense,
+                  fontWeight: 800,
+                  textAlign: 'center',
+                },
+                children: copy.caption,
+              }),
           el('div', {
             style: {
               color: '#62676d',
@@ -248,6 +275,8 @@ export async function cardElement(
           display: 'flex',
           gap: unit * 2.5,
           marginTop: unit * 5 * dense,
+          // Over the discs, as the panel is.
+          position: 'relative',
         },
         children: [
           el('img', { src: badge, width: unit * 8, height: unit * 8 }),

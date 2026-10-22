@@ -229,11 +229,29 @@ export const echoCardSchema = z.object({
    * front is rewritten: it reads a sentence that is gone.
    */
   reading: z.string().optional(),
-  /** What it means, in the reader's language. Empty when nothing could translate it. */
+  /**
+   * What it means, in the reader's language — or, when `backLang` is set, the
+   * same sentence in a language they are learning. Empty when nothing could
+   * translate it.
+   */
   back: z.string(),
   /** Filled only by a phrase card, whose author typed one. */
   example: z.string().optional(),
+  /** The language the front is in. What the chip names and a reading speaks. */
   lang: z.string(),
+  /**
+   * The language the back is in, when it is one the reader is *learning*.
+   *
+   * Absent on almost every card, whose back is a meaning in the reader's own
+   * language. Present on a card kept from a sentence that was already in that
+   * language — a Turkish reader keeping "Bona'ya dc'den mesaj atayım" — where
+   * a translation into their own language would only repeat it, so the back
+   * is the sentence in the language they are learning instead: "I'll send
+   * Bona a message on Discord". Such a card runs the other way round, native
+   * front to learning back, and is never asked as a typing review: typing
+   * writes the front, which here is the reader's own language.
+   */
+  backLang: z.string().optional(),
   source: echoSourceSchema,
   /**
    * The first recording, and the only one an older client understands.

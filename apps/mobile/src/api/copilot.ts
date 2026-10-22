@@ -3,6 +3,7 @@ import {
   type CopilotCheckRequest,
   type CopilotExplainRequest,
   type CopilotReplyIdeasRequest,
+  type CopilotReportRequest,
   type CopilotResponse,
   type CopilotSayItRequest,
   type CopilotStatus,
@@ -75,5 +76,12 @@ export function useAskCopilot() {
     onSuccess: (response) => {
       if (!response.cached) void queryClient.invalidateQueries({ queryKey: COPILOT_STATUS_KEY })
     },
+  })
+}
+
+/** Reporting one answer to the operators. Nothing comes back but "received". */
+export function useReportCopilotAnswer() {
+  return useMutation({
+    mutationFn: (report: CopilotReportRequest) => api.post<{ ok: true }>('/copilot/report', report),
   })
 }

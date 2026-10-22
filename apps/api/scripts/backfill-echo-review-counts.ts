@@ -44,6 +44,11 @@ async function run(db: Db, apply: boolean): Promise<void> {
    * ISO-8601 week-numbering: `periodKeys` already knows it, and `$isoWeekYear`
    * plus a `$concat` is the same rule written twice, in a second language,
    * where it can drift.
+   *
+   * Every row, including rows whose card is gone. `removeCard` hard-deletes,
+   * so a card somebody really answered and later removed leaves a row and no
+   * card, and the live counter kept it; dropping those here would lower honest
+   * counts. Rows for cards that never existed are no longer written at all.
    */
   const wanted = new Map<string, Counter>()
   const cursor = db
