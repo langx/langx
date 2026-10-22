@@ -1646,7 +1646,9 @@ export function useCitySearch(term: string) {
 }
 
 export function useHandleSearch(term: string) {
-  const trimmed = term.trim().toLowerCase()
+  // The `@` the server drops, dropped here too, so `@s` waits for a second
+  // letter rather than asking a question the server answers with a 400.
+  const trimmed = term.trim().toLowerCase().replace(/^@+/, '')
   return useQuery({
     queryKey: keys.handleSearch(trimmed),
     queryFn: () => api.get<HandleSearchPage>(`/discovery/handles?q=${encodeURIComponent(trimmed)}`),

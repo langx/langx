@@ -350,8 +350,18 @@ export const handleSearchQuerySchema = z.object({
    * handles are stored, and bounded at the length of the longest thing it can
    * match, because this reaches a database index and an unbounded string is a
    * way to make it scan. A display name is the longer of the two.
+   *
+   * A leading `@` is dropped before the length check: every row in the app
+   * reads `@handle`, so that is what people type, and no handle starts with
+   * one. Checked after, so `@a` is still too short and `@@` is not an empty
+   * prefix that matches everybody.
    */
-  q: z.string().trim().toLowerCase().min(2).max(DISPLAY_NAME_MAX_LENGTH),
+  q: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .transform((value) => value.replace(/^@+/, ''))
+    .pipe(z.string().min(2).max(DISPLAY_NAME_MAX_LENGTH)),
 })
 export type HandleSearchQuery = z.infer<typeof handleSearchQuerySchema>
 
