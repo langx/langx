@@ -902,13 +902,16 @@ export async function sendCorrection(
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Target message not found in this conversation')
   }
   /*
-   * A call's row has no sentence in it, and it is the other person's row
-   * whenever they were the one who rang — which the own-message rule below
-   * would let through. A correction pays, once per target, so without this
-   * every call somebody placed would be ten tokens for whoever received it.
+   * Only a sentence somebody typed. A call's or a gift's row, an image, a
+   * sticker, a voice note, a poll — none has a sentence in it to teach about,
+   * and each is the other person's row often enough that the own-message rule
+   * below would let it through. A correction pays, once per target, so without
+   * this every one of them would be ten tokens for whoever received it. A
+   * correction is not a target either: the menu offers text only, and the
+   * server now says the same instead of trusting the menu.
    */
-  if (isServerRecord(target)) {
-    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'A call cannot be corrected')
+  if (target.type !== 'text') {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Only a text message can be corrected')
   }
 
   // Correcting your own sentence is not teaching, and it would pay for it —
