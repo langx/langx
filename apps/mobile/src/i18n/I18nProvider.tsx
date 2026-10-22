@@ -137,6 +137,19 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     setWebDirection(isRtl ? 'rtl' : 'ltr')
   }, [isRtl])
 
+  /*
+   * And the page's own language, on web. The export ships `lang="en"` and
+   * nothing changed it, so a screen reader read every other locale with an
+   * English voice — Arabic and Russian as noise — and the browser offered to
+   * translate the page out of "English". Native has no equivalent: the
+   * platform reads the app in the device's language.
+   */
+  useEffect(() => {
+    if (Platform.OS !== 'web') return
+    const root = globalThis.document?.documentElement
+    if (root) root.lang = locale
+  }, [locale])
+
   const value = useMemo<I18nContextValue>(
     () => ({ locale, isRtl, t: createTranslate(locale), preference, setPreference }),
     [locale, isRtl, preference, setPreference],
