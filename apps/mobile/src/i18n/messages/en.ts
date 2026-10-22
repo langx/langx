@@ -2652,6 +2652,8 @@ export const en = {
     whatYouHave: 'What you have',
     usageChats: 'New chats left today',
     usageTranslations: 'Translations',
+    /** Spoken for a usage row, where the screen shows "3 / 5": a slash read aloud is "slash". */
+    usageA11y: '{title}: {left} of {total}',
     whatPlanAdds: 'What {plan} adds',
     appIconAll: 'All icons',
     translateExampleLabel: 'Example',

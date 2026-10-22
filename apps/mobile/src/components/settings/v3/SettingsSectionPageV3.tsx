@@ -296,7 +296,11 @@ function AppIconBlock({ model }: { model: SettingsModel }) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.iconStrip}
       >
-        <View accessibilityRole="radiogroup" style={styles.iconStripGroup}>
+        <View
+          accessibilityRole="radiogroup"
+          accessibilityLabel={t('settings.appIconSection')}
+          style={styles.iconStripGroup}
+        >
           {icons.map((icon) => {
             const chosen = model.appIcon === icon
             const label = t(`settings.appIcon_${icon}` as MessageKey)
@@ -314,7 +318,7 @@ function AppIconBlock({ model }: { model: SettingsModel }) {
                 </View>
                 <Text
                   style={[styles.iconLabel, chosen && styles.iconLabelChosen]}
-                  numberOfLines={1}
+                  numberOfLines={2}
                 >
                   {label}
                 </Text>
@@ -337,7 +341,7 @@ function AppIconBlock({ model }: { model: SettingsModel }) {
               />
             </View>
           </View>
-          <Text style={styles.iconLabel} numberOfLines={1}>
+          <Text style={styles.iconLabel} numberOfLines={2}>
             {t('settings.appIconAll')}
           </Text>
         </Pressable>
@@ -510,6 +514,7 @@ function UsageBlock({ model }: { model: SettingsModel }) {
     <SettingsGroupV3>
       {chats ? (
         <UsageRow
+          model={model}
           icon="message-circle"
           hue="lilac"
           title={t('settings.usageChats')}
@@ -533,6 +538,7 @@ function UsageBlock({ model }: { model: SettingsModel }) {
       ) : null}
       {translations ? (
         <UsageRow
+          model={model}
           icon="repeat"
           hue="aqua"
           title={t('settings.usageTranslations')}
@@ -549,6 +555,7 @@ function UsageBlock({ model }: { model: SettingsModel }) {
 }
 
 function UsageRow({
+  model,
   icon,
   hue,
   title,
@@ -556,6 +563,7 @@ function UsageRow({
   total,
   children,
 }: {
+  model: SettingsModel
   icon: Glyph
   hue: PartnerHue
   title: string
@@ -566,8 +574,17 @@ function UsageRow({
   const styles = useStyles()
   const { v3 } = useTheme()
   const { locale } = useLocale()
+  const { t } = model
   return (
-    <View style={styles.usageRow} accessible accessibilityLabel={`${title}: ${left} / ${total}`}>
+    <View
+      style={styles.usageRow}
+      accessible
+      accessibilityLabel={t('settings.usageA11y', {
+        title,
+        left: left.toLocaleString(locale),
+        total: total.toLocaleString(locale),
+      })}
+    >
       <View style={[styles.kindSquare, { backgroundColor: v3.hues[hue] }]}>
         <Feather name={icon} size={v3.icon.md} color={v3.colors.ink} />
       </View>
@@ -739,8 +756,10 @@ const useStyles = makeStyles(({ v3 }) => ({
     top: v3.space[6],
     width: 24,
   },
-  iconStrip: { gap: v3.space[4], paddingHorizontal: v3.space[2] },
-  iconStripGroup: { flexDirection: 'row', gap: v3.space[4] },
+  // Top-aligned, so a name that wraps to a second line ("Toutes les icônes")
+  // lengthens its own tile and leaves the icons in one line.
+  iconStrip: { alignItems: 'flex-start', gap: v3.space[4], paddingHorizontal: v3.space[2] },
+  iconStripGroup: { alignItems: 'flex-start', flexDirection: 'row', gap: v3.space[4] },
   iconTile: { alignItems: 'center', gap: v3.space[4], width: 68 },
   iconRing: {
     borderColor: 'transparent',

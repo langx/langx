@@ -2363,6 +2363,7 @@ export const tr: Localized<EnMessages> = {
     whatYouHave: 'Sende olanlar',
     usageChats: 'Bugün kalan yeni sohbet',
     usageTranslations: 'Çeviriler',
+    usageA11y: '{title}: {total} içinden {left}',
     whatPlanAdds: '{plan} neler katıyor',
     appIconAll: 'Tüm simgeler',
     translateExampleLabel: 'Örnek',

@@ -2389,6 +2389,7 @@ export const ptBR: Localized<EnMessages> = {
     whatYouHave: 'O que você tem',
     usageChats: 'Conversas novas restantes hoje',
     usageTranslations: 'Traduções',
+    usageA11y: '{title}: {left} de {total}',
     whatPlanAdds: 'O que o {plan} acrescenta',
     appIconAll: 'Todos os ícones',
     translateExampleLabel: 'Exemplo',

@@ -2399,6 +2399,7 @@ export const es: Localized<EnMessages> = {
     whatYouHave: 'Lo que tienes',
     usageChats: 'Chats nuevos que te quedan hoy',
     usageTranslations: 'Traducciones',
+    usageA11y: '{title}: {left} de {total}',
     whatPlanAdds: 'Lo que añade {plan}',
     appIconAll: 'Todos los iconos',
     translateExampleLabel: 'Ejemplo',

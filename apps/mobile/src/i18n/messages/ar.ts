@@ -2923,6 +2923,7 @@ export const ar: Localized<EnMessages> = {
     whatYouHave: 'ما لديك',
     usageChats: 'المحادثات الجديدة المتبقية اليوم',
     usageTranslations: 'الترجمات',
+    usageA11y: '{title}: {left} من {total}',
     whatPlanAdds: 'ما يضيفه {plan}',
     appIconAll: 'كل الأيقونات',
     translateExampleLabel: 'مثال',

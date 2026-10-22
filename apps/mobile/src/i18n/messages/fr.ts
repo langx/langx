@@ -2429,6 +2429,7 @@ export const fr: Localized<EnMessages> = {
     whatYouHave: 'Ce que tu as',
     usageChats: 'Nouvelles discussions restantes aujourd’hui',
     usageTranslations: 'Traductions',
+    usageA11y: '{title} : {left} sur {total}',
     whatPlanAdds: 'Ce que {plan} ajoute',
     appIconAll: 'Toutes les icônes',
     translateExampleLabel: 'Exemple',

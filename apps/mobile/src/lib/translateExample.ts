@@ -1,4 +1,4 @@
-import { SUPPORTED_LOCALES, type Locale } from '@langx/shared'
+import { isRtlLocale, SUPPORTED_LOCALES, type Locale } from '@langx/shared'
 
 /**
  * Which two copies of `settings.translateExample` the translate picker's
@@ -31,4 +31,25 @@ export function translateExampleLocales(
 function localeFor(code: string): Locale | undefined {
   const base = code.split('-')[0]!.toLowerCase()
   return SUPPORTED_LOCALES.find((locale) => locale.split('-')[0]!.toLowerCase() === base)
+}
+
+/**
+ * How one of the card's sentences is set when its language may run the other
+ * way from the interface: Arabic in an English app, English in an Arabic one.
+ * Each sentence takes its own direction and sits at its own start edge.
+ *
+ * `textAlign` is written as the interface sees it: in a right-to-left layout
+ * React Native swaps `left` and `right` (`I18nManager.doLeftAndRightSwapInRTL`),
+ * so `left` is the layout's start and `right` its end. A sentence that reads
+ * the interface's way starts at the start; one that reads against it, at the end.
+ */
+export function sentenceDirection(
+  locale: Locale,
+  interfaceRtl: boolean,
+): { writingDirection: 'ltr' | 'rtl'; textAlign: 'left' | 'right' } {
+  const rtl = isRtlLocale(locale)
+  return {
+    writingDirection: rtl ? 'rtl' : 'ltr',
+    textAlign: rtl === interfaceRtl ? 'left' : 'right',
+  }
 }

@@ -4,11 +4,11 @@ import { Pressable, Text, View } from 'react-native'
 import { useMe, useQuota, useUpdateProfile } from '../../api/queries'
 import { SettingsGroupV3, SettingsScreenV3 } from '../../components/settings/v3/SettingsKitV3'
 import { useScreenInteractive } from '../../hooks/useScreenInteractive'
-import { createTranslate, useDisplayNames, useT } from '../../i18n'
+import { createTranslate, useDisplayNames, useLocale, useT } from '../../i18n'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { partnerHueFor } from '../../lib/theme/partnerHue'
 import { showToast } from '../../lib/toast'
-import { translateExampleLocales } from '../../lib/translateExample'
+import { sentenceDirection, translateExampleLocales } from '../../lib/translateExample'
 
 /**
  * Which native language a translated message is shown in, in the redesign's
@@ -26,6 +26,7 @@ export function TranslateLanguageScreenV3() {
   const { v3 } = useTheme()
   const t = useT()
   const names = useDisplayNames()
+  const { isRtl } = useLocale()
   const me = useMe()
   const update = useUpdateProfile()
   const quota = useQuota()
@@ -79,12 +80,12 @@ export function TranslateLanguageScreenV3() {
         <>
           <Text style={styles.exampleLabel}>{t('settings.translateExampleLabel')}</Text>
           <View style={styles.example}>
-            <Text style={styles.exampleText}>
+            <Text style={[styles.exampleText, sentenceDirection(example.from, isRtl)]}>
               {createTranslate(example.from)('settings.translateExample')}
             </Text>
             <View style={styles.exampleTranslation}>
               <Feather name="repeat" size={v3.icon.xs} color={v3.colors.echoText} />
-              <Text style={styles.exampleTranslated}>
+              <Text style={[styles.exampleTranslated, sentenceDirection(example.to, isRtl)]}>
                 {createTranslate(example.to)('settings.translateExample')}
               </Text>
             </View>
