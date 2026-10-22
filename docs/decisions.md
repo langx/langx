@@ -1423,6 +1423,8 @@ to a point where the app still works and the answer can be "not now".
 
 ## The panel may raise the banner, and may not touch anything else
 
+> **Amended 21 October 2026 — see _The flags are switched from the panel, and every switch is audited_ below.**
+
 `scripts/maintenance.ts` is a script rather than an admin endpoint on purpose,
 and that reasoning holds for everything in it but one field. `latestVersion`
 now also has a control on the operator panel's system screen, through
@@ -1918,6 +1920,8 @@ it. `GENDER_CHANGE_TOO_SOON` carries a `retryAt` the way the timezone cooldown
 does, and exists for the stale client and the racing tap.
 
 ## Pronouns are free text, and gender is not
+
+> **Amended 21 October 2026 — see _v3 draws no pronouns_ below.**
 
 `pronouns` sits in `updateProfileSchema` beside `bio`, editable as often as
 anybody likes, while `gender` two paragraphs up is rate-limited. The line
@@ -8336,6 +8340,21 @@ The card has no event of its own; `paywall_viewed` with `first_reply` counts
 its taps. What old builds see: nothing — the sources exist only in this JS, and
 a link naming one reaches an older paywall as `gate`.
 
+**Amended 20 October 2026: eight app icons are free, and only a Pro tile is a
+road.** Behic asked for the picker to follow the v3 design with new icons, some
+free and some Pro. There are now seventeen: eight free (Classic, Night, Split,
+Contrast, Paper Cut, Running Stitch, Woven Reed, Linocut) and nine with Pro.
+Contrast is free because an accessibility icon is never paid. `appIconTap` takes
+the icon and checks `PRO_ICONS`: a free tile is chosen on any plan and does not
+wait for the profile, since there is nothing to sell; a Pro tile keeps the
+rules above. On the free plan, the v3 picker first opens a short sheet saying
+what Pro includes, and its "See Pro" opens the paywall with `app_icon`. When
+Pro ends, a Pro icon already on the home screen stays there: switching it back
+would make the OS show a notice the person did not ask for. In the picker it
+is still marked current but locked with its Pro tag, and tapping it opens the
+sheet.
+`KEEP_PRO_ICON_AFTER_PRO_ENDS` in `src/lib/appIconList.ts` flips this.
+
 ## Gift codes give time, not discounts
 
 An operator can hand out a code — `UBER` on a partner's newsletter, a word on
@@ -9218,3 +9237,56 @@ skipped is a broken promise.
 
 The decision is made once, when the row's end is decided. A row that already
 has an end may already be at RevenueCat, so it finishes the way it started.
+
+## The flags are switched from the panel, and every switch is audited
+
+**21 October 2026.** `appConfig.flags` has a page on the operator panel, and
+`POST /admin/app-config/flags` behind it. This amends _The panel may raise the
+banner, and may not touch anything else_. That entry kept the flags in
+`scripts/maintenance.ts` because they can refuse somebody service. Since then
+they have become mostly rollout stages and consents rather than kill switches:
+`v3Home`, `proWeek`, `copilotEnabled`, `promoPaywallLinks` and the rest start
+off and go on when Behic decides. A decision that needs a machine that can
+reach Mongo is one that waits for that machine.
+
+**Maintenance stays in the script.** The panel is 503 while maintenance is on,
+so it cannot be the switch that turns it off, and that reasoning is unchanged.
+The script's `flag` command stays too, for the day the API is too unwell to
+sign anybody in.
+
+**Every switch is audited.** Each one is an `appConfig.flag` row with the name
+and the value, like every other panel action. A flag that went on and nobody
+remembers turning on is a mystery a week later.
+
+**Only a known name, only a boolean.** The name is checked against the flags
+schema's own keys, and the body is strict. The write sets one dotted path,
+`flags.<name>`, with the name taken from that list rather than read off the
+request. It does not write the flags whole from a cached read. The cache is per
+machine, so two switches made seconds apart on two machines would undo each
+other, and the audit log would still say both had stuck. The audit row is
+best-effort like every panel action's: a failed audit insert is logged and does
+not undo the switch. `captchaRequired` keeps its own route
+beside the minimum version, because it is thrown in step with it. Conditions a
+pull request asked for (`promoPaywallLinks`, `stickerGifts`) are shown as a
+caution, not a lock. Whether they are met is the operator's call, and the app
+cannot see it.
+
+## v3 draws no pronouns
+
+**21 October 2026.** The v3 profile, the Me hero and the shared page no longer
+draw `pronouns`, and v3's Edit profile no longer asks for them. On the profile
+the line sat under the handle and repeated the gender mark beside the name —
+"he" under a ♂ — and somebody who keeps their gender to themselves has no mark
+and is left without one, with no word standing in for it.
+
+- **Nothing is deleted.** The field stays in the schemas and in the stored
+  profiles, and the API still returns it. The old look, which is what the app
+  shows with `v3Home` off, still draws and edits it. v3's save leaves the key
+  out of its PATCH, so a value written before is kept, not cleared.
+- **The form goes with the line.** Its hint promised the pronouns were shown on
+  your profile. With nothing in v3 drawing them that promise would be false,
+  and a value nobody can see is better not asked for.
+
+What _Pronouns are free text, and gender is not_ says about the field still
+holds; its reason for being on `sharedProfileSchema` now holds for the old look
+only.

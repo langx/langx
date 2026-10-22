@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { facesRow, fetchAvatarAsset, initialsOf } from './avatars'
+import { drawnFaceAsset, facesRow, fetchAvatarAsset, initialsOf } from './avatars'
 
 const BASE = 'https://media.langx.io'
 
@@ -19,6 +19,24 @@ describe('faces in an email', () => {
     expect(initialsOf('')).toBe('?')
     // A name outside the Latin alphabet still yields its own first letters.
     expect(initialsOf('Ayşe Yılmaz')).toBe('AY')
+  })
+
+  it('inlines the drawn face as a 96px PNG, and nothing without one', async () => {
+    const asset = await drawnFaceAsset('1-W07-3', 'avatar-u2')
+    expect(asset).toMatchObject({
+      cid: 'avatar-u2',
+      contentType: 'image/png',
+      filename: 'avatar-u2.png',
+    })
+    const bytes = Buffer.from(asset?.base64 ?? '', 'base64')
+    expect(bytes.subarray(1, 4).toString()).toBe('PNG')
+    expect(bytes.readUInt32BE(16)).toBe(96)
+    // Gmail draws it: an <img> on a cid, like a photo, never an <svg>.
+    expect(
+      facesRow([{ name: 'Elif', seed: 'u2', ...(asset ? { asset } : {}) }], 0, 'ltr'),
+    ).toContain('cid:avatar-u2')
+    expect(await drawnFaceAsset(undefined, 'avatar-u3')).toBeNull()
+    expect(await drawnFaceAsset('not-a-rev', 'avatar-u3')).toBeNull()
   })
 
   it('fetches a photo from our own bucket and nowhere else', async () => {

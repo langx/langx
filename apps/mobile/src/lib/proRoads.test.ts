@@ -5,6 +5,7 @@ import type { InfiniteData } from '@tanstack/react-query'
 import { describe, expect, it } from 'vitest'
 import type { ConversationDto } from '../api/queries'
 import { PAYWALL_SOURCES } from './analyticsEvents'
+import { NATIVE_ICONS, PRO_ICONS } from './appIconList'
 import type { ConversationPageDto } from './conversationCache'
 import { BENEFIT_COPY } from './paywallBenefits'
 import {
@@ -62,12 +63,21 @@ describe('Pro is never sold to', () => {
     for (const held of HELD) expect(showsSeePlans({ loaded: false, ...held })).toBe(false)
   })
 
-  it('an app-icon tile sells only to the free plan, and does nothing while loading', () => {
-    expect(appIconTap({ loaded: true, tier: 'free' })).toBe('paywall')
-    expect(appIconTap({ loaded: true, tier: 'pro' })).toBe('choose')
-    for (const tier of PLAN_TIERS) expect(appIconTap({ loaded: false, tier })).toBe('wait')
-  })
-
+  it.each(NATIVE_ICONS)(
+    'the %s tile sells only if it is Pro, only to the free plan, never while loading',
+    (icon) => {
+      const pro = PRO_ICONS.has(icon)
+      for (const held of HELD) {
+        // A gift holds everything Pro does, so it chooses like a paid plan.
+        expect(appIconTap(icon, { loaded: true, tier: held.tier })).toBe(
+          pro && held.tier === 'free' ? 'paywall' : 'choose',
+        )
+      }
+      for (const tier of PLAN_TIERS) {
+        expect(appIconTap(icon, { loaded: false, tier })).toBe(pro ? 'wait' : 'choose')
+      }
+    },
+  )
   it('the PRO badge sells only to a free account looking at somebody else', () => {
     for (const tier of PLAN_TIERS) {
       for (const loaded of [true, false]) {

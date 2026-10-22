@@ -64,6 +64,7 @@ import {
   type AdminLatestVersionInput,
   type AdminMinVersionInput,
   type AdminCaptchaRequiredInput,
+  type AdminFlagInput,
   type AppConfig,
   ERROR_CODES,
   type MessageSpeech,
@@ -3826,6 +3827,17 @@ export function useAdminSetCaptchaRequired() {
   return useMutation({
     mutationFn: (input: AdminCaptchaRequiredInput) =>
       api.post<AppConfig>('/admin/app-config/captcha-required', input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+/** Switching one of `appConfig.flags` from the Flags page — every switch is audited. */
+export function useAdminSetFlag() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: AdminFlagInput) => api.post<AppConfig>('/admin/app-config/flags', input),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
     },
