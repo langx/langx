@@ -5,6 +5,7 @@ import {
   type GiftCodeRedeemResult,
   type ProWeekRecapResponse,
 } from '@langx/shared'
+import { timingSafeEqual } from 'node:crypto'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
@@ -50,7 +51,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (app) => {
       if (!app.env.REVENUECAT_WEBHOOK_AUTH_HEADER) {
         throw new ApiError(ERROR_CODES.INTERNAL, 'Billing is not configured')
       }
-      if (request.headers.authorization !== app.env.REVENUECAT_WEBHOOK_AUTH_HEADER) {
+      if (!sameSecret(request.headers.authorization, app.env.REVENUECAT_WEBHOOK_AUTH_HEADER)) {
         throw new ApiError(ERROR_CODES.UNAUTHENTICATED, 'Invalid webhook credentials')
       }
 
@@ -210,4 +211,19 @@ function registerTestStoreRoute(app: Parameters<FastifyPluginAsyncZod>[0]): void
       })
     },
   )
+}
+
+/**
+ * The webhook's shared secret, compared in constant time.
+ *
+ * `!==` stops at the first differing character, so how long a refusal takes
+ * says how much of a guess was right. Lengths are checked first because
+ * `timingSafeEqual` throws on a mismatch rather than answering; that only
+ * gives away the length.
+ */
+function sameSecret(given: string | undefined, expected: string): boolean {
+  if (given === undefined) return false
+  const a = Buffer.from(given)
+  const b = Buffer.from(expected)
+  return a.length === b.length && timingSafeEqual(a, b)
 }

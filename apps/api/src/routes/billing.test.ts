@@ -161,6 +161,21 @@ describe('Faz 7 — billing', () => {
       expect(response.statusCode).toBe(401)
     })
 
+    // The compare is constant-time, which only compares equal lengths: a
+    // longer or shorter header has to be a refusal, not a thrown 500.
+    it('rejects a header of the right length, and one that only starts right', async () => {
+      const sameLength = 'x'.repeat(WEBHOOK_SECRET.length)
+      for (const authorization of [sameLength, `${WEBHOOK_SECRET}x`, WEBHOOK_SECRET.slice(1)]) {
+        const response = await app.inject({
+          method: 'POST',
+          url: '/webhooks/revenuecat',
+          headers: { authorization },
+          payload: { event: { id: 'e2b', type: 'INITIAL_PURCHASE', app_user_id: 'someone' } },
+        })
+        expect(response.statusCode, authorization).toBe(401)
+      }
+    })
+
     /**
      * The two events billing says out loud. Neither asks a preference: this
      * is money, and the alternative to hearing about a failed card is finding

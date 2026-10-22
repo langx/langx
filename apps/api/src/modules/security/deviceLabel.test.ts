@@ -88,7 +88,7 @@ describe('naming the device somebody signed in from', () => {
 
   it('takes the country from the edge, and only a real one', () => {
     const of = (value?: string) =>
-      countryFromHeaders(value ? new Headers({ 'cf-ipcountry': value }) : new Headers())
+      countryFromHeaders(value ? new Headers({ 'cf-ipcountry': value }) : new Headers(), undefined)
     expect(of('tr')).toBe('TR')
     expect(of('CA')).toBe('CA')
     // Cloudflare's own "we do not know", and its code for Tor.
@@ -96,6 +96,22 @@ describe('naming the device somebody signed in from', () => {
     expect(of('T1')).toBeUndefined()
     expect(of('nonsense')).toBeUndefined()
     expect(of()).toBeUndefined()
-    expect(countryFromHeaders(undefined)).toBeUndefined()
+    expect(countryFromHeaders(undefined, undefined)).toBeUndefined()
+  })
+
+  /*
+   * The origin answers requests that never passed through the edge, so with a
+   * secret configured a bare `CF-IPCountry` is anybody's claim. The security
+   * mail would otherwise name whatever country the sender typed.
+   */
+  it('ignores the country header without the edge secret', () => {
+    const SECRET = 'edge-secret-for-tests'
+    expect(countryFromHeaders(new Headers({ 'cf-ipcountry': 'DE' }), SECRET)).toBeUndefined()
+    expect(
+      countryFromHeaders(new Headers({ 'cf-ipcountry': 'DE', 'x-langx-edge': 'wrong' }), SECRET),
+    ).toBeUndefined()
+    expect(
+      countryFromHeaders(new Headers({ 'cf-ipcountry': 'DE', 'x-langx-edge': SECRET }), SECRET),
+    ).toBe('DE')
   })
 })

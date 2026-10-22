@@ -303,7 +303,7 @@ export async function createAuth({
   }): Promise<void> {
     const headers = ctx.headers
     const identity = deviceIdentity(headers?.get('user-agent'))
-    const country = countryFromHeaders(headers)
+    const country = countryFromHeaders(headers, env.EDGE_SECRET)
     const at = new Date()
     const detail: SecurityContext = { device: identity.label, ...(country ? { country } : {}), at }
 
@@ -421,7 +421,7 @@ export async function createAuth({
        */
       onPasswordReset: async ({ user }, request) => {
         const headers = request?.headers
-        const country = countryFromHeaders(headers)
+        const country = countryFromHeaders(headers, env.EDGE_SECRET)
         await notifyPasswordChanged(db, security, user.id, {
           device: deviceIdentity(headers?.get('user-agent')).label,
           ...(country ? { country } : {}),

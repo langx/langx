@@ -29,6 +29,7 @@ import {
   INBOX_KINDS_AUTH_KEY,
   type SendAward,
 } from '@langx/shared'
+import { publicApiUrl } from '../env'
 import { ApiError } from '../lib/ApiError'
 import { consumeQuota } from '../lib/quota'
 import { effectiveTier } from '../modules/profiles/entitlement'
@@ -193,6 +194,39 @@ function refuseRevoked(packet: unknown[], revocation: Revocation): void {
 }
 
 /**
+ * Whether a socket handshake may come from `origin`.
+ *
+ * - No `Origin` at all: not a browser, so there is no page to have been
+ *   tricked into connecting, and a cookie still has to be presented.
+ * - The API's own origin: React Native's WebSocket fills `Origin` in with the
+ *   address it connects to (`http(s)://host[:port]`), so this is what the
+ *   phones send. Accepted two ways — equal to the configured public URL
+ *   (`publicApiUrl`), or with the same host as the request's own `Host`. The
+ *   first holds even if the edge rewrites `Host` on the way in; the second
+ *   covers any other name the API answers on. A page on another site can
+ *   present neither.
+ * - Otherwise it must be in `TRUSTED_ORIGINS`. An empty list allows any — the
+ *   same fallback CORS uses, and only reachable outside production, where
+ *   `loadEnv` refuses to boot without the list.
+ */
+export function originAllowed(
+  origin: string | undefined,
+  host: string | undefined,
+  trusted: readonly string[],
+  ownOrigin: string,
+): boolean {
+  if (origin === undefined) return true
+  if (trusted.length === 0 || trusted.includes(origin)) return true
+  try {
+    const given = new URL(origin)
+    if (given.origin === new URL(ownOrigin).origin) return true
+    return host !== undefined && given.host === host
+  } catch {
+    return false
+  }
+}
+
+/**
  * One room per user (`user:<id>`), not one per conversation — a 1-1 chat
  * only ever has two participants, both already known from the conversation
  * document, so there's nothing a per-conversation room buys here and no
@@ -203,6 +237,7 @@ function refuseRevoked(packet: unknown[], revocation: Revocation): void {
  * the socket transport can't become a back door around it.
  */
 export function attachSocketServer(app: FastifyInstance): AppServer {
+  const ownOrigin = publicApiUrl(app.env)
   const io: AppServer = new SocketIOServer(app.server, {
     /*
      * Production is two machines (`fly.toml`), and a blue-green deploy briefly
@@ -229,6 +264,20 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
     cors: {
       origin: app.env.TRUSTED_ORIGINS.length > 0 ? app.env.TRUSTED_ORIGINS : true,
       credentials: true,
+    },
+    /*
+     * `cors` above only answers the polling transport's preflight. A WebSocket
+     * upgrade has no preflight, so any page could open one and the browser
+     * would attach the session cookie — the handshake has to look at
+     * `Origin` itself. Runs for both transports, before `io.use` below.
+     */
+    allowRequest: (request, callback) => {
+      const { origin, host } = request.headers
+      const allowed = originAllowed(origin, host, app.env.TRUSTED_ORIGINS, ownOrigin)
+      // Origin and host only: enough to tell a misconfigured edge from a
+      // foreign page, and nothing that names the person.
+      if (!allowed) app.log.warn({ origin, host }, 'socket handshake refused: untrusted origin')
+      callback(null, allowed)
     },
   })
 
