@@ -129,9 +129,13 @@ sitting in somebody's inbox.
 an esbuild `--alias`: it ships as TypeScript source, so left external Node
 resolves it to a `.ts` file whose own extensionless imports it then cannot
 follow, and the process dies at startup. Run it with `node dist/index.js`
-behind a TLS terminator. Set `NODE_ENV=production` so `trustProxy` is on, or
-the rate limiter will see your proxy's IP for every request and put all your
-users in one bucket.
+behind a TLS terminator. Set `NODE_ENV=production` so the API believes the
+`X-Forwarded-For` entry your proxy appends, or the rate limiter will see your
+proxy's IP for every request and put all your users in one bucket. Production
+trusts exactly one proxy hop — the one directly in front of the API, as Fly's
+is. If every request passes through more proxies than that before it arrives,
+set `TRUST_PROXY_HOPS` to the real count; never count a CDN the origin can be
+reached around, or a client gets to choose the address it is limited under.
 
 The `Dockerfile` at the repo root packages exactly that, and the build context
 is the workspace root rather than `apps/api`. Note that `deploy` runs with
