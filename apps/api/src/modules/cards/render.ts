@@ -1,7 +1,7 @@
 import type { CardShape } from '@langx/shared'
 import { Resvg } from '@resvg/resvg-js'
 import satori from 'satori'
-import { loadAsset as readAsset } from '../../lib/assets'
+import { findAsset, loadAsset as readAsset } from '../../lib/assets'
 
 /** What `design.ts` builds: satori's element shape, without React. */
 export interface CardNode {
@@ -24,8 +24,14 @@ export const CARD_PIXELS: Record<CardShape, { width: number; height: number }> =
 
 const loadAsset = (relative: string): Promise<Buffer> => readAsset(relative, 'Card asset')
 
-let fonts: { name: string; data: Buffer; weight: 400 | 600 | 800 | 900; style: 'normal' }[] | null =
-  null
+interface Fonts {
+  /** What satori lays the text out with. */
+  faces: { name: string; data: Buffer; weight: 400 | 600 | 800 | 900; style: 'normal' }[]
+  /** The same four files, by path, for resvg. */
+  files: string[]
+}
+
+let fonts: Fonts | null = null
 
 /**
  * Read once and kept: the four faces are ~590KB and every render needs them.
@@ -37,21 +43,24 @@ let fonts: { name: string; data: Buffer; weight: 400 | 600 | 800 | 900; style: '
  * caller makes; it shapes and joins the letters properly, which was the part
  * worth checking before shipping a 190KB file to fix two words.
  */
-async function loadFonts(): Promise<NonNullable<typeof fonts>> {
+async function loadFonts(): Promise<Fonts> {
   if (fonts) return fonts
   const [black, extraBold, semiBold, arabic] = await Promise.all([
-    loadAsset('fonts/Nunito_900Black.ttf'),
-    loadAsset('fonts/Nunito_800ExtraBold.ttf'),
-    loadAsset('fonts/Nunito_600SemiBold.ttf'),
-    loadAsset('fonts/NotoSansArabic_600SemiBold.ttf'),
+    findAsset('fonts/Nunito_900Black.ttf', 'Card asset'),
+    findAsset('fonts/Nunito_800ExtraBold.ttf', 'Card asset'),
+    findAsset('fonts/Nunito_600SemiBold.ttf', 'Card asset'),
+    findAsset('fonts/NotoSansArabic_600SemiBold.ttf', 'Card asset'),
   ])
-  fonts = [
-    // The recap's numerals and month name: the poster's one heavier weight.
-    { name: 'Nunito', data: black, weight: 900, style: 'normal' },
-    { name: 'Nunito', data: extraBold, weight: 800, style: 'normal' },
-    { name: 'Nunito', data: semiBold, weight: 600, style: 'normal' },
-    { name: 'Noto Sans Arabic', data: arabic, weight: 600, style: 'normal' },
-  ]
+  fonts = {
+    faces: [
+      // The recap's numerals and month name: the poster's one heavier weight.
+      { name: 'Nunito', data: black.bytes, weight: 900, style: 'normal' },
+      { name: 'Nunito', data: extraBold.bytes, weight: 800, style: 'normal' },
+      { name: 'Nunito', data: semiBold.bytes, weight: 600, style: 'normal' },
+      { name: 'Noto Sans Arabic', data: arabic.bytes, weight: 600, style: 'normal' },
+    ],
+    files: [black.path, extraBold.path, semiBold.path, arabic.path],
+  }
   return fonts
 }
 
@@ -80,13 +89,30 @@ export async function renderCard(element: CardNode, shape: CardShape): Promise<B
    * process renders components, and a dependency carried for a signature is a
    * dependency that gets used for other things later.
    */
+  const { faces, files } = await loadFonts()
   const svg = await satori(element as Parameters<typeof satori>[0], {
     width,
     height,
-    fonts: await loadFonts(),
+    fonts: faces,
   })
-  // `fitTo` at the card's own width is a no-op that keeps resvg from guessing
-  // a size from the SVG's own units.
-  const png = new Resvg(svg, { fitTo: { mode: 'width', value: width } }).render().asPng()
+  const png = new Resvg(svg, {
+    // `fitTo` at the card's own width is a no-op that keeps resvg from
+    // guessing a size from the SVG's own units.
+    fitTo: { mode: 'width', value: width },
+    /*
+     * Left to its default, resvg scans every system font on every render, and
+     * that scan was most of the cost — about 600ms a picture on a Mac, the
+     * same scan #1904 took out of the avatars. Unlike a face, a card has
+     * words on it, so instead of no fonts it gets exactly the four satori
+     * was handed. satori 0.62 draws glyphs as paths, so today resvg finds no
+     * text to set and the PNG is byte-for-byte the same either way; the files
+     * are here so that if a `<text>` ever reaches resvg it is set in Nunito
+     * or Noto rather than dropped, and never in whatever the host happens to
+     * have installed.
+     */
+    font: { loadSystemFonts: false, fontFiles: files, defaultFontFamily: 'Nunito' },
+  })
+    .render()
+    .asPng()
   return Buffer.from(png)
 }
