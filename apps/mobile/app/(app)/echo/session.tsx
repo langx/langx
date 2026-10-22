@@ -248,7 +248,7 @@ export default function EchoSessionScreen() {
       await submit.mutateAsync({ reviews: batch })
       setSaved(true)
       setSaveFailed(false)
-      void forgetPendingReviews(batch.map((entry) => entry.reviewId))
+      void forgetPendingReviews(batch)
     } catch {
       setSaveFailed(true)
       /*
