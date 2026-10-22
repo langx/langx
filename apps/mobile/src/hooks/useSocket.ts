@@ -28,6 +28,7 @@ import {
   applyDeliveredAt,
   applyMessageUpdate,
   applyPinned,
+  patchThread,
   type MessagePageDto,
 } from '../lib/messageCache'
 import { clearFromTray, sweepTray } from '../lib/notifications'
@@ -185,7 +186,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
             : String(message.conversationId)
 
         /**
-         * `setQueriesData` with the *prefix*, not `setQueryData` with the key:
+         * `patchThread` writes on the *prefix*, not `setQueryData` on the key:
          * `keys.messagesAround` lives under `keys.messages(id)`, so a jump
          * window open on this thread is patched by the same call. Without it
          * the window silently stops receiving anything while it is on screen.
@@ -218,10 +219,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
           )
         }
 
-        queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
-          { queryKey: keys.messages(conversationId) },
-          (old) => appendIncomingMessage(old, message, meId) ?? old,
-        )
+        patchThread(queryClient, conversationId, (old) => appendIncomingMessage(old, message, meId))
 
         /**
          * Patched rather than invalidated. On an infinite query

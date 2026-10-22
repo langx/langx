@@ -31,7 +31,7 @@ import {
   THEIR_MORNING_HOUR,
   viewOnceState,
 } from '@langx/shared'
-import { onlineManager, useQueryClient, type InfiniteData } from '@tanstack/react-query'
+import { onlineManager, useQueryClient } from '@tanstack/react-query'
 import {
   type NativeStackNavigationProp,
   router,
@@ -191,11 +191,7 @@ import { addMeetingToCalendar } from '../lib/addToCalendar'
 import { showToast } from '../lib/toast'
 import { onSnap } from '../lib/snapOutbox'
 import { withoutViewOnceFallback } from '../lib/viewOnce'
-import {
-  appendIncomingMessage,
-  messagesNewestFirst,
-  type MessagePageDto,
-} from '../lib/messageCache'
+import { appendIncomingMessage, messagesNewestFirst, patchThread } from '../lib/messageCache'
 import { createArrivals } from '../lib/arrivals'
 import { dayLabel, messageRows, rowKeyOf, type MessageRow } from '../lib/messageGroups'
 import { useDisplayNames, useLocale, useT } from '../i18n'
@@ -1644,17 +1640,16 @@ export function ChatScreen({
    * then back. Writing the acked message in first closes that gap; the echo
    * that follows is a duplicate, and `appendIncomingMessage` drops it.
    *
-   * `setQueriesData` on the prefix for the reason `useSocket` gives: a jump
-   * window open on this thread is a second cache under the same key.
+   * `patchThread` writes on the prefix for the reason `useSocket` gives: a
+   * jump window open on this thread is a second cache under the same key.
    */
   function landed(message: MessageDto | undefined): void {
     // An API too old to answer with the message would otherwise put
     // `undefined` in the thread, which renders as a crash rather than as a
     // missing row.
     if (!message?._id) return
-    queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
-      { queryKey: keys.messages(conversationId) },
-      (old) => appendIncomingMessage(old, withoutViewOnceFallback(message), viewerId) ?? old,
+    patchThread(queryClient, conversationId, (old) =>
+      appendIncomingMessage(old, withoutViewOnceFallback(message), viewerId),
     )
   }
 
