@@ -164,6 +164,8 @@ describe('rate limiting behind the edge', () => {
       BETTER_AUTH_SECRET: 'a'.repeat(32),
       BETTER_AUTH_URL: 'http://localhost:4000',
       EDGE_SECRET,
+      // Production refuses to boot without it.
+      TRUSTED_ORIGINS: 'https://app.example',
     })
     const emailSender = createEmailSender(env, { warn: () => undefined })
     const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
