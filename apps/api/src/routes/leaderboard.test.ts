@@ -16,7 +16,7 @@ import {
 } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
@@ -28,6 +28,7 @@ import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueC
 import type { Profile } from '../modules/profiles/profiles'
 import type { DailyActivity } from '../modules/tokens/dailyActivity'
 import { claimGift } from '../modules/tokens/gift'
+import { purchase } from '../modules/tokens/wallet'
 import { awardTokens, type TokenAggregate, type TokenLedgerEntry } from '../modules/tokens/ledger'
 import {
   DAILY_POOL_JOB,
@@ -1586,6 +1587,45 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       const overflow = await buy(user, STREAK_FREEZE_SKU)
       expect(overflow.statusCode).toBe(400)
       expect((await wallet(user)).streakFreezes).toBe(TOKEN_RULES.sinks.maxBankedStreakFreezes)
+    })
+
+    /**
+     * Two freezes bought in the same millisecond — a double tap, or two
+     * devices — are two real purchases, and both are charged. The audit row
+     * used to be keyed on the sku and the instant, so the second one hit the
+     * ledger's unique index *after* its charge had landed: the request failed
+     * with a 500, the freeze and the charge stayed, and the history showed
+     * one spend for two.
+     */
+    it('records both of two freezes bought in the same millisecond', async () => {
+      const user = await newUser()
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'adjustment',
+        amount: TOKEN_RULES.sinks.streakFreeze * 2,
+        refId: 'freeze-same-instant',
+      })
+
+      vi.useFakeTimers({ toFake: ['Date'], now: new Date() })
+      try {
+        const results = await Promise.allSettled([
+          purchase(handle.db, user.userId, STREAK_FREEZE_SKU),
+          purchase(handle.db, user.userId, STREAK_FREEZE_SKU),
+        ])
+        expect(results.map((r) => r.status)).toEqual(['fulfilled', 'fulfilled'])
+      } finally {
+        vi.useRealTimers()
+      }
+
+      const spends = await handle.db
+        .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
+        .find({ userId: user.userId, kind: 'spend' })
+        .toArray()
+      expect(spends.map((row) => row.amount)).toEqual([
+        -TOKEN_RULES.sinks.streakFreeze,
+        -TOKEN_RULES.sinks.streakFreeze,
+      ])
+      expect((await wallet(user)).spent).toBe(TOKEN_RULES.sinks.streakFreeze * 2)
     })
 
     it('does not let a freeze paper over a two-day gap', async () => {
