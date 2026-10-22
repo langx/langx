@@ -8947,6 +8947,15 @@ than locking the person out — while the flag is off that request is accepted,
 and once it is on the form says the check failed and fetches a new token. A
 token is single-use, so every failed attempt fetches a new one too.
 
+**The magic link and the resent verification mail too** _(22 October 2026)_.
+`/sign-in/magic-link` and `/send-verification-email` mail a typed address just
+as sign-up does, and Better Auth's default list leaves them out, so a script
+could use them to mail anybody once the flag was on. They are in
+`CAPTCHA_ENDPOINTS` now, under the same two stages. The app's
+"email me a link" and "resend" screens draw no widget yet, so they send no
+token: those screens have to send one, and that build has to be the
+`minVersion`, before `flags.captchaRequired` is turned on.
+
 ## Sign-up refuses throwaway addresses and caps accounts per network
 
 Two rules sit in front of account creation.
