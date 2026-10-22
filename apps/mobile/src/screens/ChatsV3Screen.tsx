@@ -328,6 +328,21 @@ function MemberChats() {
             accessibilityLabel={t('chats.archivedChats')}
             onPress={() => setShelf('archived')}
           />
+          {/*
+           * The board's header pill: the way to a new chat without scrolling
+           * to the dashed one at the list's end, which stays for the reader
+           * who has just reached it. Both go to People.
+           */}
+          <Pressable
+            accessibilityRole="button"
+            onPress={goToPeople}
+            style={({ pressed }) => [styles.findPill, pressed && styles.findPillPressed]}
+          >
+            <Feather name="plus" size={v3.icon.xs} color={v3.colors.fg} />
+            <Text style={styles.findPillLabel} numberOfLines={1}>
+              {t('chats.findSomeone')}
+            </Text>
+          </Pressable>
         </>
       )}
     </View>
@@ -526,7 +541,15 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingBottom: v3.space[8],
     paddingTop: v3.space[8],
   },
-  title: { ...v3.type.title, color: v3.colors.fg, flex: 1, paddingStart: v3.space[6] },
+  // Grows to push the buttons to the end, but never gives up its own width:
+  // the header pill is what shrinks when a locale runs long.
+  title: {
+    ...v3.type.title,
+    color: v3.colors.fg,
+    flexGrow: 1,
+    flexShrink: 0,
+    paddingStart: v3.space[6],
+  },
   // A step down beside the back arrow: "Discussions archivées" at the tab
   // title's size would not fit a phone on one line.
   titleArchived: { ...v3.type.headline, color: v3.colors.fg, flex: 1 },
@@ -552,5 +575,20 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[16],
   },
   findPressed: { backgroundColor: v3.colors.surface },
+  // Shrinks before the title does: a long locale's label ends in an ellipsis
+  // rather than breaking "Chats" over two lines.
+  findPill: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.pill,
+    flexDirection: 'row',
+    flexShrink: 1,
+    gap: v3.space[4],
+    minHeight: 44,
+    // Tight: beside the star and the archive, English's label only just fits.
+    paddingHorizontal: v3.space[12],
+  },
+  findPillPressed: { backgroundColor: v3.colors.tabOn },
+  findPillLabel: { ...v3.type.buttonSmall, color: v3.colors.fg, flexShrink: 1 },
   findLabel: { ...v3.type.button, color: v3.colors.fg },
 }))
