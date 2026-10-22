@@ -199,9 +199,11 @@ export interface TokenRules {
      * `messagesPerPartnerPerDay` bounds for messages. UTC for the reason
      * `messagesPerDay` is.
      *
-     * Every correction sent counts, including one that paid nothing because
-     * that sentence had already paid — the same way a message past the cap
-     * still counts towards it. Sending is never refused; only paying stops.
+     * It counts sentences, not attempts: a correction of a sentence that had
+     * already paid gives its slot back, so going over one message again does
+     * not use up the day. A correction past the cap does count, the same way
+     * a message past the cap still counts towards it. Sending is never
+     * refused; only paying stops.
      */
     correctionsPerPartnerPerDay: number
     /**

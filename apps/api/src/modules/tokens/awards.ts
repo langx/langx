@@ -5,7 +5,7 @@ import type { Conversation, Message } from '../chat/conversations'
 import type { Profile } from '../profiles/profiles'
 import { isOfficialId } from '../official/accounts'
 import { settleReferral } from '../referrals/settle'
-import { correctionCapped, recordActivity } from './dailyActivity'
+import { correctionCapped, recordActivity, releaseCorrectionSlot } from './dailyActivity'
 import { MUTUAL_REF_PREFIX, awardTokens } from './ledger'
 import { recordQualifyingAction } from './streak'
 
@@ -116,6 +116,9 @@ export async function awardForSend(
       refId: messageCorrectionRefId(message),
       at,
     })
+    if (partnerId && award.awarded === false && award.reason === 'duplicate') {
+      await releaseCorrectionSlot(db, { userId: senderId, partnerId, at })
+    }
     tokens += award.amount
   } else {
     const activity = await recordActivity(db, {

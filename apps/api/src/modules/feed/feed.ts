@@ -32,7 +32,7 @@ import { blockedUserIds } from '../moderation/blocks'
 import { followingIds } from '../social/follows'
 import { EMPTY_LIKE_SUMMARY, readLikeSummary } from './likes'
 import type { Profile } from '../profiles/profiles'
-import { correctionCapped, recordActivity } from '../tokens/dailyActivity'
+import { correctionCapped, recordActivity, releaseCorrectionSlot } from '../tokens/dailyActivity'
 import { awardTokens } from '../tokens/ledger'
 import { settleReferral } from '../referrals/settle'
 import { recordQualifyingAction } from '../tokens/streak'
@@ -647,13 +647,18 @@ async function awardForPostCorrection(
     partnerId: postAuthorId,
   })
   const capped = correctionCapped(activity, postAuthorId)
-  await awardTokens(db, {
+  const award = await awardTokens(db, {
     userId,
     kind: 'correction',
     amount: frozen || capped ? 0 : TOKEN_RULES.award.correction,
     refId: correctionRefId(correction.postId),
     at,
   })
+  // A post that already paid this person (a correction deleted and written
+  // again) gives the cap slot back, as in chat.
+  if (award.awarded === false && award.reason === 'duplicate') {
+    await releaseCorrectionSlot(db, { userId, partnerId: postAuthorId, at })
+  }
   if (profile) await recordQualifyingAction(db, profile, at)
   // Teaching on a post is teaching. See the same call in `awardForSend`, which
   // also settles nothing for a send that paid nothing.

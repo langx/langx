@@ -1,6 +1,20 @@
 import { useEffect, useRef } from 'react'
-import { Animated, Keyboard, Platform, type KeyboardEvent } from 'react-native'
+import { Animated, Easing, Keyboard, Platform, type KeyboardEvent } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
+/**
+ * The iOS keyboard's own curve, near enough. UIKit moves the keyboard on a
+ * private curve (animation curve 7, a critically damped spring) that it does
+ * not hand to JS, and a pad following it on a linear curve visibly lags at the
+ * start and catches up at the end — the composer and the keyboard parting and
+ * meeting again. This bezier is the usual fit to that spring: fast out of the
+ * gate, a long soft landing.
+ *
+ * `LayoutAnimation`'s `keyboard` type would be the exact curve, but it
+ * animates every layout change in the same frame, an inverted list's new rows
+ * included (rule 13 in the polish plan).
+ */
+export const KEYBOARD_EASING = Easing.bezier(0.38, 0.7, 0.125, 1)
 
 /**
  * How much of the screen's bottom the keyboard is covering, as an animated
@@ -20,7 +34,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
  * at the root, so the value stays at zero there and nothing is padded twice.
  * Follows
  * `keyboardWillChangeFrame`, so the pad moves with the keyboard rather than
- * after it, and takes the animation's own duration and curve.
+ * after it, and takes the animation's own duration and `KEYBOARD_EASING`.
  */
 export function useKeyboardInset(): Animated.Value {
   const insets = useSafeAreaInsets()
@@ -37,7 +51,7 @@ export function useKeyboardInset(): Animated.Value {
       Animated.timing(inset, {
         toValue: target,
         duration: event.duration || 250,
-        easing: (t) => t,
+        easing: KEYBOARD_EASING,
         useNativeDriver: false,
       }).start()
     }
@@ -46,7 +60,7 @@ export function useKeyboardInset(): Animated.Value {
       Animated.timing(inset, {
         toValue: 0,
         duration: event.duration || 250,
-        easing: (t) => t,
+        easing: KEYBOARD_EASING,
         useNativeDriver: false,
       }).start()
     })

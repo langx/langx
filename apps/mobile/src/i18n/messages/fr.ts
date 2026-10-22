@@ -1777,8 +1777,8 @@ export const fr: Localized<EnMessages> = {
     correctionPlaceholder: 'Réécris la phrase comme tu la dirais…',
     startFromOriginal: 'Partir de l’original',
     correctionReward: {
-      one: '+{count} jeton · Illimité sur tous les forfaits',
-      other: '+{count} jetons · Illimité sur tous les forfaits',
+      one: '+{count} jeton',
+      other: '+{count} jetons',
     },
     voiceNote: 'Note vocale',
     top: 'Top',

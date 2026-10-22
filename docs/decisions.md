@@ -2511,11 +2511,12 @@ only while tokens cannot be bought: nothing in Apple 3.1.1 or Google Play's
 payments policy stands against it today, and if tokens or items are ever sold
 for money, gifting falls under in-app purchase rules.
 
-**21 October 2026, later.** All three are in: the per-partner correction cap
-(_One person's sentences pay ten corrections a day_), the token.langx.io line
-(langx/token-website#35), and the App Review note, drafted in
-`docs/store/3.0-app-review-notes.md` for Behic to paste and submit. The switch
-is still off; the note's checklist says what has to be true when it goes on.
+**21 October 2026, later.** All three are done or waiting on Behic: the
+per-partner correction cap (_One person's sentences pay ten corrections a
+day_), the token.langx.io line (langx/token-website#35), and the App Review
+note, drafted in `docs/store/3.0-app-review-notes.md` for Behic to paste and
+submit. The switch is still off; the note's checklist says what has to be true
+when it goes on.
 
 ## Language levels are v1's four, not CEFR's six
 
@@ -7262,8 +7263,11 @@ at all until a build carrying it ships. This is the same constraint
 
 ## A yearly price is a `.99` month times twelve, plus 0.11
 
-> **Still in force** under the single plan (_One plan: Pro_): Pro is sold at
-> the Fluent prices this section set, and the yearly-price rule is unchanged.
+> **Amended 21 October 2026 — see _The yearly price ends in 9.99_ below.**
+> Where the yearly stood at 83.99 or 95.99 in USD, EUR or GBP (and EUR 71.99 on
+> Play) it was lowered to the `…9.99` below it, and its per-month figure no longer ends in `.99`. The
+> rule still describes every storefront that kept its price, and why the
+> division is truncated.
 
 On 24 September 2026 the prices went up — Fluent $9.99 a month or $83.99 a
 year, Polyglot $16.99 or $131.99 — and every figure on the paywall has to end in
@@ -7962,6 +7966,10 @@ more.
 ## One plan: Pro
 
 > **Amended 18 October 2026 — see _The welcome pack waits for a purchase or a store's free week_ below.**
+>
+> **Amended 21 October 2026 — see _The yearly price ends in 9.99_ below.** The
+> US yearly is $79.99, and the yearly rule is no longer `.99 × 12 + 0.11` for
+> USD, EUR and GBP.
 
 Two paid plans confused people: Fluent (`pro`) and Polyglot (`pro_plus`) read
 as two products to choose between, and every large competitor sells one. On
@@ -9341,16 +9349,48 @@ day's activity; it pays nothing, and the send's award says `capped`.
   boundary pays exactly the cap. No new index: the document's `_id` is already
   unique per user per UTC day, and the counter cannot race inside it. UTC, for
   the reason every cap is.
-- **Every correction counts, paid or not.** A second correction of a sentence
-  that has already paid uses up one of the ten, the way a message past the cap
-  still counts towards it. Sending is never refused, so the cost is only ever
-  to the payout.
+- **Sentences, not attempts.** A correction of a sentence that has already
+  paid gives its slot back (`releaseCorrectionSlot`), so going over a message
+  again never costs a later one: somebody who fixes three things in each of a
+  partner's messages is still paid for ten messages. A correction past the cap
+  does count, as a message past the cap counts towards its own. Sending is
+  never refused, so the cost is only ever to the payout. The release comes
+  after the award, so a burst can over-count for a moment, which can refuse a
+  payout but never make one.
 - **The post's author is not a partner.** The counter does not touch
   `partners`, the pool's `distinctPartners` term: a post's author may be
   somebody the corrector has never spoken to, and the pool is unchanged.
-- **A capped post correction settles no referral**, as a capped or frozen send
-  in chat already did not. Activation waits on an earning act, and this one
-  earned nothing.
+- **A capped post correction settles no referral.** Activation waits on an
+  earning act, and this one earned nothing. Chat already settles only on a
+  send that paid something (`tokens > 0`).
 
-The public token pages quoted corrections as having no cap. langx.io, the
-GitBook token page and token.langx.io now say ten from any one person.
+The public token pages quoted corrections as having no cap. langx.io
+(langx/website#290), the GitBook token page (langx/docs#58) and token.langx.io
+(langx/token-website#36) say ten from any one person. The post's correction
+box drew "+10 tokens · Unlimited on every plan", which read as unlimited
+earning; it now draws the award alone, in all eight languages.
+
+## The yearly price ends in 9.99
+
+**21 October 2026.** Pro's yearly price was lowered wherever it ended in 83.99
+or 95.99 — and 71.99 on Play — rounding it down to the next `…9.99`: $83.99 →
+$79.99, €95.99 → €89.99, £83.99 → £79.99, EUR 71.99 → 69.99 in eight West and
+Central African Play regions. App Store from 23 October, Play live on 21 October, and
+on the web a new product, `langx_pro_yearly_v2` at $79.99, because web prices
+cannot be edited. Monthly prices did not move. The release runbook (_One plan:
+Pro_) has the storefront counts.
+
+- **The yearly keeps the clean ending; the month gives way.** The yearly is
+  the charge on the card and in the trial line. The per-month figure is still
+  the truncated division (`perMonthPrice.ts`), so the US paywall now reads
+  "$6.66 a month" rather than a `.99`. That replaces the 24 September rule
+  (12 × a `.99` month + 0.11) for these storefronts.
+- **A cut and not a rise**, so nobody's price goes up: storefronts that already
+  ended in `9.99` (CAD/AUD 119.99, TRY 1,799.99, NZD 179.99) or have no `x9.99`
+  point near them on Apple's ladder (JPY, INR, CHF and the rest) are unchanged.
+  Existing Play subscribers keep their old price.
+- **"3 months free" survives.** `floor(12 − 79.99 ÷ 9.99)` is 3, and so is every
+  storefront in the runbook's table. A lower yearly can only add months: where
+  the monthly is above the usual one — USD 89.99 against $11.99, EUR 69.99
+  against €8.99 — the card now reads "4 months free", computed as before from
+  the store's own prices. Nothing on the paywall is typed.

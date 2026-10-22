@@ -1762,8 +1762,8 @@ export const es: Localized<EnMessages> = {
     correctionPlaceholder: 'Reescribe la frase como la dirías tú…',
     startFromOriginal: 'Empezar desde el original',
     correctionReward: {
-      one: '+{count} ficha · Ilimitado en todos los planes',
-      other: '+{count} fichas · Ilimitado en todos los planes',
+      one: '+{count} ficha',
+      other: '+{count} fichas',
     },
     voiceNote: 'Nota de voz',
     top: 'Destacado',

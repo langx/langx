@@ -453,6 +453,32 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       expect(award?.tokens).toBeGreaterThanOrEqual(TOKEN_RULES.award.correction)
     })
 
+    /**
+     * The cap counts sentences, not attempts: going over a message that has
+     * already paid gives the slot back, so it never costs a later one.
+     */
+    it('does not spend the per-partner cap on corrections that could not pay', async () => {
+      const cap = TOKEN_RULES.caps.correctionsPerPartnerPerDay
+      const a = await newUser('xp-correction-slot-a@example.com')
+      const b = await newUser('xp-correction-slot-b@example.com')
+      const conversationId = await startConversation(a, b.userId, 'hello')
+      await reply(b.userId, conversationId, 'hi')
+      const targets = []
+      for (let i = 0; i < cap; i++) {
+        targets.push((await reply(a.userId, conversationId, `She go ${i} times`)).message)
+      }
+
+      const [first] = targets
+      for (let i = 0; i < 3; i++) await correct(b.userId, conversationId, String(first?._id))
+      for (const target of targets.slice(1)) {
+        const { award } = await correct(b.userId, conversationId, String(target._id))
+        expect(award?.capped).toBe(false)
+      }
+
+      const paid = (await earnedLedgerOf(b.userId)).filter((row) => row.kind === 'correction')
+      expect(paid).toHaveLength(cap)
+    })
+
     it('pays the reciprocity bonus to both sides, exactly once', async () => {
       const a = await newUser('xp-mutual-a@example.com')
       const b = await newUser('xp-mutual-b@example.com')

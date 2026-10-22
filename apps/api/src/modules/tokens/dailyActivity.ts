@@ -42,7 +42,9 @@ export interface DailyActivity {
   /**
    * Corrections per person corrected, for `caps.correctionsPerPartnerPerDay`.
    * Keyed by whoever wrote the corrected words — the chat partner, or the
-   * post's author. Absent until the day's first such correction.
+   * post's author. Absent until the day's first such correction. A correction
+   * of a sentence that had already paid gives its slot back
+   * (`releaseCorrectionSlot`), so this counts sentences, not attempts.
    */
   correctionsPerPartner?: Record<string, number>
   /**
@@ -183,6 +185,31 @@ export async function recordActivity(
 export function correctionCapped(activity: DailyActivity, partnerId: string): boolean {
   const count = activity.correctionsPerPartner?.[partnerId] ?? 0
   return count > TOKEN_RULES.caps.correctionsPerPartnerPerDay
+}
+
+/**
+ * Give back the cap slot a correction took when it turned out to pay nothing
+ * because its sentence had already paid (`awardTokens` answered `duplicate`).
+ *
+ * The cap is "ten of one person's sentences", and a second go at a sentence
+ * that already paid is not another sentence. Counting it would leave somebody
+ * who fixes three things in each of a partner's messages paid for four of
+ * them. Only the per-partner counter moves back: `corrections`, the act the
+ * profile and the pool count, is untouched.
+ *
+ * A burst can over-count for a moment between the bump and this, which can
+ * only ever refuse a payout, never make one — the safe side of the race.
+ */
+export async function releaseCorrectionSlot(
+  db: Db,
+  input: { userId: string; partnerId: string; at: Date },
+): Promise<void> {
+  await db
+    .collection<DailyActivity>(COLLECTIONS.dailyActivity)
+    .updateOne(
+      { _id: dailyActivityId(input.userId, utcDayKey(input.at)) },
+      { $inc: { [`correctionsPerPartner.${input.partnerId}`]: -1 } },
+    )
 }
 
 /** Number of days the profile chart shows, and so the length of `summary.week`. */
