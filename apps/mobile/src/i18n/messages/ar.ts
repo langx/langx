@@ -4990,5 +4990,16 @@ export const ar: Localized<EnMessages> = {
     errBusy: 'Copilot مشغول. حاول لاحقًا.',
     errNoAnswer: 'لم يستطع Copilot الإجابة عن ذلك.',
     errNetwork: 'تعذّر الوصول إلى Copilot.',
+    replyIdeas: 'أفكار للرد',
+    replyIdeasA11y: 'اطلب من Copilot أفكارًا للرد',
+    replyIdeaHint: 'تضعها في رسالتك. لا يُرسل شيء.',
+    replyIdeasCount: {
+      zero: 'لا أفكار للرد',
+      one: 'فكرة واحدة للرد',
+      two: 'فكرتان للرد',
+      few: '{count} أفكار للرد',
+      many: '{count} فكرة للرد',
+      other: '{count} فكرة للرد',
+    },
   },
 }

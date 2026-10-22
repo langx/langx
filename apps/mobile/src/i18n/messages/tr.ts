@@ -3889,5 +3889,9 @@ export const tr: Localized<EnMessages> = {
     errBusy: 'Copilot şu an meşgul. Daha sonra tekrar dene.',
     errNoAnswer: 'Copilot buna yanıt veremedi.',
     errNetwork: 'Copilot’a ulaşılamadı.',
+    replyIdeas: 'Yanıt fikirleri',
+    replyIdeasA11y: 'Copilot’tan yanıt fikirleri iste',
+    replyIdeaHint: 'Mesajına ekler. Hiçbir şey gönderilmez.',
+    replyIdeasCount: { one: '{count} yanıt fikri', other: '{count} yanıt fikri' },
   },
 }

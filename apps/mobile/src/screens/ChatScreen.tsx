@@ -713,6 +713,8 @@ export function ChatScreen({
     correcting: correcting !== null,
     learning: me.data?.learning,
     partnerNative: partner?.nativeLanguages,
+    items: jumpAnchor === null ? threadItems : undefined,
+    viewerId,
     onUse: onChangeDraft,
   })
   /**
