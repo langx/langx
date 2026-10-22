@@ -272,9 +272,12 @@ const useStyles = makeStyles(({ v3 }) => ({
    * The placeholder is a phrase, not a code: at the code's 22pt and wide
    * tracking it ran past the pill beside the Scan button on iOS ("Type the
    * cod…"). React Native cannot style a placeholder on its own, so the empty
-   * field takes the button size, and the first character brings the code's.
+   * field takes the small pill's size and a tighter inset, and the first
+   * character brings the code's. Measured in Nunito: the longest locale
+   * ("Escribe el código", 128pt at 16pt) fits beside "Escanear" on a 402pt
+   * iPhone; at 22pt with tracking even English did not.
    */
-  inputEmpty: { ...v3.type.button, letterSpacing: 0 },
+  inputEmpty: { ...v3.type.buttonSmall, letterSpacing: 0, paddingHorizontal: v3.space[12] },
   actions: { gap: v3.space[8] },
   section: { gap: v3.space[10] },
   spinner: { marginTop: v3.space[16] },
