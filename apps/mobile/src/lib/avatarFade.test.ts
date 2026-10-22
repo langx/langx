@@ -1,5 +1,11 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { AVATAR_FADE_MS, avatarFadeMs, markAvatarShown, resetAvatarFadeForTest } from './avatarFade'
+import {
+  AVATAR_FADE_MEMORY,
+  AVATAR_FADE_MS,
+  avatarFadeMs,
+  markAvatarShown,
+  resetAvatarFadeForTest,
+} from './avatarFade'
 
 describe('avatarFadeMs', () => {
   beforeEach(() => resetAvatarFadeForTest())
@@ -23,5 +29,13 @@ describe('avatarFadeMs', () => {
     // not seen it either: both fade in, together.
     avatarFadeMs('https://media.example/a.png')
     expect(avatarFadeMs('https://media.example/a.png')).toBe(AVATAR_FADE_MS)
+  })
+
+  it('forgets everything once it holds too many, rather than growing', () => {
+    for (let i = 0; i < AVATAR_FADE_MEMORY; i++) markAvatarShown(`https://media.example/${i}.png`)
+    expect(avatarFadeMs('https://media.example/0.png')).toBe(0)
+    markAvatarShown('https://media.example/new.png')
+    expect(avatarFadeMs('https://media.example/0.png')).toBe(AVATAR_FADE_MS)
+    expect(avatarFadeMs('https://media.example/new.png')).toBe(0)
   })
 })

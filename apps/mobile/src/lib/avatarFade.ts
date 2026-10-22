@@ -14,6 +14,9 @@
  */
 export const AVATAR_FADE_MS = 120
 
+/** How many pictures are remembered before the memory starts again. */
+export const AVATAR_FADE_MEMORY = 2000
+
 const shown = new Set<string>()
 
 /** The `transition` for a view about to show `uri`: a fade only if nothing has shown it yet. */
@@ -23,6 +26,9 @@ export function avatarFadeMs(uri: string): number {
 
 /** Called once the picture has loaded, so every later view of it skips the fade. */
 export function markAvatarShown(uri: string): void {
+  // A bound, not an eviction policy: past it everything fades once more,
+  // which costs a 120 ms dissolve and keeps a long session's memory flat.
+  if (shown.size >= AVATAR_FADE_MEMORY) shown.clear()
   shown.add(uri)
 }
 

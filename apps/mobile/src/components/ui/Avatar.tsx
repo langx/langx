@@ -156,7 +156,7 @@ export function Avatar({
           contentFit="cover"
           transition={fadeMs}
           key={attempt}
-          onLoad={() => markAvatarShown(source)}
+          {...(v3Look ? { onLoad: () => markAvatarShown(source) } : {})}
           onError={() => {
             const wait = drawnFaceRetryIn(source, attempt)
             if (wait === null) {

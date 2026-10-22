@@ -1,5 +1,5 @@
 import { router } from 'expo-router'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Animated, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useT, type MessageKey } from '../i18n'
@@ -50,13 +50,32 @@ export function MessageBannerHost() {
   /** What is drawn. Lags `head` by the way out when a banner is dismissed. */
   const [banner, setBanner] = useState<MessageBanner | null>(null)
   const [leaving, setLeaving] = useState(false)
-  const slide = useRef(new Animated.Value(0)).current
+  // Read by the entrance through refs, so a flag settling while a banner is
+  // up neither replays its entrance nor restarts its clock.
+  const reduceRef = useRef(reduce)
+  reduceRef.current = reduce
+  const v3LookRef = useRef(v3Look)
+  v3LookRef.current = v3Look
   /*
+   * Fresh values for every banner, not one pair reused. After a v3 exit the
+   * old pair is native and sits at 0; `setValue(1)` on a native value is not
+   * guaranteed to reach the view before the next card paints, and a late
+   * `getValue` from the old view's detach can write 0 back. A new value starts
+   * life JS-side at its initial number, so the next card is drawn at full
+   * opacity from its first frame whatever the native driver does.
+   *
    * Only the way out fades. It starts at 1 and stays there until a dismissal,
    * so — unlike a fade *in* — the card's visibility never waits on the native
    * driver connecting (see the slide's comment below).
    */
-  const fade = useRef(new Animated.Value(1)).current
+  const bannerId = banner?.id
+  const { slide, fade } = useMemo(
+    () => ({
+      slide: new Animated.Value(reduceRef.current ? 1 : 0),
+      fade: new Animated.Value(1),
+    }),
+    [bannerId],
+  )
   // The v3 look leaves the way it came; the current one still vanishes.
   const animateExit = v3Look && !reduce
 
@@ -115,15 +134,11 @@ export function MessageBannerHost() {
    */
   useEffect(() => {
     if (!banner) return
-    fade.setValue(1)
-    // Reduce motion: in place from the first frame, no slide.
-    if (reduce) {
-      slide.setValue(1)
-    } else {
-      slide.setValue(0)
+    // Reduce motion: in place from the first frame (the value starts at 1).
+    if (!reduceRef.current) {
       Animated.timing(
         slide,
-        v3Look
+        v3LookRef.current
           ? { toValue: 1, duration: DURATION.enter, easing: EASE_OUT, useNativeDriver: true }
           : { toValue: 1, duration: 180, useNativeDriver: true },
       ).start()
@@ -132,7 +147,7 @@ export function MessageBannerHost() {
     // itself rather than inheriting what was left of the first one's.
     const timer = setTimeout(() => dismissMessageBanner(banner.id), MESSAGE_BANNER_DURATION_MS)
     return () => clearTimeout(timer)
-  }, [banner, slide, fade, reduce, v3Look])
+  }, [banner, slide])
 
   if (!banner) return null
 
