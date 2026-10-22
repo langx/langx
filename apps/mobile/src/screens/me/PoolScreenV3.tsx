@@ -6,7 +6,7 @@ import { useMe, useTokens } from '../../api/queries'
 import { Button } from '../../components/ui/Button'
 import { Screen } from '../../components/ui/Screen'
 import { Skeleton } from '../../components/ui/Skeleton'
-import { TokenIcon } from '../../components/ui/TokenIcon'
+import { TokenIcon, useTokenIconMetrics } from '../../components/ui/TokenIcon'
 import { WalletHeader } from '../../components/wallet/WalletBlocks'
 import { usePullToRefresh } from '../../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../hooks/useScreenInteractive'
@@ -14,7 +14,7 @@ import { useLocale, useT } from '../../i18n'
 import { dayLabel } from '../../lib/messageGroups'
 import { goBackTo } from '../../lib/navigation'
 import { makeStyles, useTheme } from '../../lib/theme'
-import { tokenAmountLabel, tokenIconMetrics } from '../../lib/tokenAmount'
+import { tokenAmountLabel } from '../../lib/tokenAmount'
 import { useV3Fonts } from './useV3Fonts'
 
 /**
@@ -31,7 +31,7 @@ export function PoolScreenV3() {
   useScreenInteractive()
   const styles = useStyles()
   const { v3 } = useTheme()
-  const unitIcon = tokenIconMetrics(v3.type.numeral.fontSize)
+  const unitIcon = useTokenIconMetrics(v3.type.numeral.fontSize)
   const t = useT()
   const { locale } = useLocale()
   const black = useV3Fonts()

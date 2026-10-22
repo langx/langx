@@ -6,6 +6,7 @@ import {
   type StyleProp,
   type TextProps,
   type TextStyle,
+  useWindowDimensions,
 } from 'react-native'
 import Svg, { Path } from 'react-native-svg'
 import { splitTokenMarks, tokenIconMetrics } from '../../lib/tokenAmount'
@@ -39,28 +40,65 @@ export function TokenIcon({ size, color }: { size: number; color: string }) {
 }
 
 /**
+ * The metrics for a mark beside text of `fontSize`, at the size the text is
+ * really drawn: the text grows with the reader's font scale, so the mark has
+ * to as well, or at the largest sizes it sits small and low beside the
+ * digits. `maxScale` follows a text that caps its own growth
+ * (`maxFontSizeMultiplier`).
+ */
+export function useTokenIconMetrics(
+  fontSize: number,
+  maxScale = Infinity,
+): ReturnType<typeof tokenIconMetrics> {
+  const { fontScale } = useWindowDimensions()
+  return tokenIconMetrics(fontSize * Math.min(fontScale, maxScale))
+}
+
+/** One inline mark, sized from its sentence's font. */
+function InlineTokenIcon({
+  fontSize,
+  color,
+  gapStart,
+  gapEnd,
+}: {
+  fontSize: number
+  color: string
+  gapStart: boolean
+  gapEnd: boolean
+}) {
+  const { size, gap, drop } = useTokenIconMetrics(fontSize)
+  return (
+    <View
+      style={{
+        height: size,
+        paddingStart: gapStart ? gap : 0,
+        paddingEnd: gapEnd ? gap : 0,
+        transform: [{ translateY: drop }],
+      }}
+    >
+      <TokenIcon size={size} color={color} />
+    </View>
+  )
+}
+
+/**
  * The pieces of a sentence with `TOKEN_MARK`s in it, for a `Text` to hold: the
  * words as they are, and an inline icon wherever a marker was, sized from the
  * sentence's font and sat on its baseline. For a component that owns its own
  * `Text` and label (`Button`); everything else wants `TokenText`.
  */
 export function tokenMarkChildren(text: string, fontSize: number, color: string): ReactNode {
-  const { size, gap, drop } = tokenIconMetrics(fontSize)
   const parts = splitTokenMarks(text)
   return parts.map((part, index) => (
     <Fragment key={index}>
       {index > 0 ? (
-        <View
-          style={{
-            height: size,
-            // The gap goes on whichever side touches the number, not a word's space.
-            paddingStart: /\S$/.test(parts[index - 1] ?? '') ? gap : 0,
-            paddingEnd: /^\S/.test(part) ? gap : 0,
-            transform: [{ translateY: drop }],
-          }}
-        >
-          <TokenIcon size={size} color={color} />
-        </View>
+        <InlineTokenIcon
+          fontSize={fontSize}
+          color={color}
+          // The gap goes on whichever side touches the number, not a word's space.
+          gapStart={/\S$/.test(parts[index - 1] ?? '')}
+          gapEnd={/^\S/.test(part)}
+        />
       ) : null}
       {part}
     </Fragment>

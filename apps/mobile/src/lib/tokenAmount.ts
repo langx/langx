@@ -19,7 +19,7 @@ import type { MessageKey, TranslateFn } from '../i18n/runtime'
  */
 
 /** Unicode private use: no catalogue, no name and no number can contain it. */
-export const TOKEN_MARK = ''
+export const TOKEN_MARK = '\uE7A0'
 
 /**
  * How the token icon sits beside text of a given size, as the design review
@@ -56,10 +56,11 @@ export function tokenAmountLabel(
   locale: Locale,
   sign: TokenSign = '',
 ): string {
-  return t('wallet.price', {
-    count: Math.abs(count),
-    amount: sign + formatTokenCount(count, locale),
-  })
+  const amount = sign + formatTokenCount(count, locale)
+  const said = t('wallet.price', { count: Math.abs(count), amount })
+  // Arabic says one and two in words ("رمز واحد", "رمزان"), with no number
+  // for the sign to ride on; a "+1" must not be read as a plain "one".
+  return sign && !said.includes(amount) ? `${sign}${said}` : said
 }
 
 /**

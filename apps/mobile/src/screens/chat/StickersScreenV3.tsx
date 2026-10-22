@@ -153,8 +153,8 @@ export function StickersScreenV3() {
                   {...tokenButton(t, 'chat.stickerUnlock', {
                     count: pack.price,
                     locale,
+                    // Said through `wallet.price`'s plural, not `stickerBuy`'s fixed word.
                     slot: 'price',
-                    spokenKey: 'chat.stickerBuy',
                   })}
                   disabled={purchase.isPending}
                   onPress={() => void unlock(pack)}

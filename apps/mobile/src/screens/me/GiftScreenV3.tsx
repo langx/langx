@@ -16,7 +16,7 @@ import { Confetti } from '../../components/ui/Confetti'
 import { CountUp } from '../../components/ui/CountUp'
 import { PressableScale } from '../../components/ui/PressableScale'
 import { Screen } from '../../components/ui/Screen'
-import { TokenIcon } from '../../components/ui/TokenIcon'
+import { TokenIcon, useTokenIconMetrics } from '../../components/ui/TokenIcon'
 import { WalletHeader } from '../../components/wallet/WalletBlocks'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useScreenInteractive } from '../../hooks/useScreenInteractive'
@@ -29,7 +29,7 @@ import { notification } from '../../lib/haptics'
 import { goBackTo } from '../../lib/navigation'
 import { makeStyles, PARTNER_HUES, useTheme } from '../../lib/theme'
 import { DURATION, EASE_OUT, SPRING, TIMING } from '../../lib/theme/motion'
-import { tokenAmountLabel, tokenIconMetrics } from '../../lib/tokenAmount'
+import { tokenAmountLabel } from '../../lib/tokenAmount'
 import { useV3Fonts } from './useV3Fonts'
 
 type Phase = 'waiting' | 'opening' | 'revealed'
@@ -66,7 +66,7 @@ export function GiftScreenV3() {
   const { locale } = useLocale()
   const styles = useStyles()
   const { v3 } = useTheme()
-  const amountIcon = tokenIconMetrics(v3.type.numeral.fontSize)
+  const amountIcon = useTokenIconMetrics(v3.type.numeral.fontSize)
   const black = useV3Fonts()
   const reduceMotion = useReduceMotion()
   const wallet = useWallet()
@@ -221,7 +221,7 @@ export function GiftScreenV3() {
             {amount > 0 ? (
               // "+25 ✦", said as "+25 tokens": the roll and the mark are one figure.
               <View
-                style={styles.figure}
+                style={[styles.figure, { gap: amountIcon.gap }]}
                 accessible
                 accessibilityRole="text"
                 accessibilityLabel={tokenAmountLabel(t, amount, locale, '+')}
@@ -366,12 +366,13 @@ const useStyles = makeStyles(({ v3 }) => ({
   figure: {
     alignItems: 'baseline',
     flexDirection: 'row',
-    gap: tokenIconMetrics(v3.type.numeral.fontSize).gap,
     justifyContent: 'center',
   },
   amount: {
     ...v3.type.numeral,
     color: v3.colors.ink,
+    // Fixed-width digits, so the roll does not slide the mark beside it.
+    fontVariant: ['tabular-nums'],
     lineHeight: 84,
     textAlign: 'center',
   },

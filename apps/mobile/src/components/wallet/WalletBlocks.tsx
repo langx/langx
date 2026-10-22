@@ -16,7 +16,7 @@ import type { StoreOffer } from '../../lib/storeOffers'
 import { stickerAsset } from '../../lib/stickerAssets'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
 import { DURATION, PRESS_SCALE_CARD, SPRING, TIMING, unlessReduced } from '../../lib/theme/motion'
-import { tokenIconMetrics, tokenSlot } from '../../lib/tokenAmount'
+import { tokenSlot } from '../../lib/tokenAmount'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
 import { CountUp } from '../ui/CountUp'
@@ -24,7 +24,7 @@ import { ICON_BUTTON_TARGET, IconButton } from '../ui/IconButton'
 import { PressableScale } from '../ui/PressableScale'
 import { FlameGlyph } from '../ui/StreakFlame'
 import { inkTrack, ProgressBar } from '../ui/ProgressBar'
-import { TokenIcon, tokenMarkChildren, TokenText } from '../ui/TokenIcon'
+import { TokenIcon, tokenMarkChildren, TokenText, useTokenIconMetrics } from '../ui/TokenIcon'
 
 type Glyph = keyof typeof Feather.glyphMap
 
@@ -179,7 +179,8 @@ export function WalletHero({ view }: { view: WalletHeroView }) {
     )
   }, [view.value, reduce, bump])
   const bumpStyle = useAnimatedStyle(() => ({ transform: [{ scale: bump.get() }] }))
-  const heroIcon = tokenIconMetrics(styles.numeral.fontSize)
+  // Capped where the figure caps its own growth (`maxFontSizeMultiplier` below).
+  const heroIcon = useTokenIconMetrics(styles.numeral.fontSize, HERO_MAX_SCALE)
 
   return (
     <PressableScale
@@ -210,11 +211,11 @@ export function WalletHero({ view }: { view: WalletHeroView }) {
             numberOfLines={0}
             // A figure in a fixed block: at the largest text sizes six digits
             // would leave it. The unit beside it still scales in full.
-            maxFontSizeMultiplier={1.4}
+            maxFontSizeMultiplier={HERO_MAX_SCALE}
           />
         </Animated.View>
         {/* The unit, as the token mark: on the figure's baseline, in its ink. */}
-        <View style={[styles.unit, { transform: [{ translateY: heroIcon.drop }] }]}>
+        <View style={{ transform: [{ translateY: heroIcon.drop }] }}>
           <TokenIcon size={heroIcon.size} color={v3.colors.ink} />
         </View>
       </View>
@@ -234,6 +235,9 @@ export function WalletHero({ view }: { view: WalletHeroView }) {
     </PressableScale>
   )
 }
+
+/** How far the balance figure may grow with the reader's text size. */
+const HERO_MAX_SCALE = 1.4
 
 /** How far the balance swells on an increase before it lands on `SPRING.bounce`. */
 const HERO_BUMP = 1.06
@@ -644,7 +648,6 @@ const useStyles = makeStyles(({ v3 }) => ({
   // The bump scales round the figure's own centre, not the block's.
   numeralBox: { flexShrink: 1 },
   numeral: { ...v3.type.numeral, color: v3.colors.ink, fontVariant: ['tabular-nums'] },
-  unit: { alignSelf: 'baseline' },
   rung: { gap: v3.space[6], paddingTop: v3.space[4] },
   heroHead: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8] },
   heroHeadText: { flex: 1 },

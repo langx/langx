@@ -33,6 +33,13 @@ describe('tokenAmountLabel', () => {
     expect(tokenAmountLabel(en, -1, 'en', '−')).toBe('−1 token')
   })
 
+  it('keeps the sign where Arabic says one and two in words', () => {
+    const ar = createTranslate('ar')
+    expect(tokenAmountLabel(ar, -1, 'ar', '−').startsWith('−')).toBe(true)
+    expect(tokenAmountLabel(ar, 2, 'ar', '+').startsWith('+')).toBe(true)
+    expect(tokenAmountLabel(ar, 5, 'ar', '+')).toContain('+5')
+  })
+
   it('follows each language’s own plural rule', () => {
     expect(tokenAmountLabel(createTranslate('tr'), 23, 'tr')).toBe('23 jeton')
     const ru = createTranslate('ru')
@@ -93,7 +100,6 @@ describe('tokenSlot and tokenSentence', () => {
       count: 1200,
       locale: 'en',
       slot: 'price',
-      spokenKey: 'chat.stickerBuy',
     })
     expect(text).toBe(`Unlock for 1,200${TOKEN_MARK}`)
     expect(label).toBe('Unlock for 1,200 tokens')
@@ -128,7 +134,8 @@ describe('tokenSlot and tokenSentence', () => {
       for (const { text, label } of pairs) {
         expect(text, locale).toContain(TOKEN_MARK)
         expect(label, locale).not.toContain(TOKEN_MARK)
-        expect(label.length, locale).toBeGreaterThan(text.length - 1)
+        expect(label, locale).toMatch(/\d/)
+        expect(label, locale).not.toBe(text.replace(TOKEN_MARK, ''))
       }
     }
   })
