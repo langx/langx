@@ -640,6 +640,7 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     testimonials,
     calls,
     callEndpoints,
+    copilotReports,
   ] = await Promise.all([
     db.collection(COLLECTIONS.profiles).findOne({ _id: userId as unknown as never }),
     db.collection<Conversation>(COLLECTIONS.conversations).find({ participants: userId }).toArray(),
@@ -674,6 +675,19 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
       .collection(COLLECTIONS.callEndpoints)
       .find({ userId }, { projection: { 'voip.token': 0 } })
       .toArray(),
+    /*
+     * The Copilot answers they reported, with the draft when they chose to
+     * send it: their own report, held against their user id. What the
+     * operators did with it — the note, who closed it — is our record, not
+     * theirs, so only the report and its status leave.
+     */
+    db
+      .collection(COLLECTIONS.feedback)
+      .find(
+        { userId, kind: 'copilot' },
+        { projection: { _id: 1, body: 1, copilot: 1, status: 1, createdAt: 1 } },
+      )
+      .toArray(),
   ])
 
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
@@ -697,5 +711,6 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     testimonials,
     calls,
     callEndpoints,
+    copilotReports,
   }
 }

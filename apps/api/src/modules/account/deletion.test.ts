@@ -523,6 +523,58 @@ describe('deleting an account', () => {
     })
   })
 
+  describe('Copilot reports', () => {
+    const feedback = () => handle.db.collection(COLLECTIONS.feedback)
+
+    beforeEach(async () => {
+      await feedback().deleteMany({})
+    })
+
+    it("are in the data export, without the operators' note on them", async () => {
+      const me = userId('g1')
+      const other = userId('g2')
+      await seed(me)
+      await seed(other)
+      const at = new Date()
+      await feedback().insertMany([
+        {
+          _id: 'report-mine' as never,
+          userId: me,
+          kind: 'copilot',
+          body: 'An answer I reported.',
+          attachmentUrls: [],
+          copilot: { action: 'check', question: 'My own draft' },
+          status: 'closed',
+          note: 'Operator note, ours',
+          closedBy: other,
+          createdAt: at,
+        },
+        {
+          _id: 'report-theirs' as never,
+          userId: other,
+          kind: 'copilot',
+          body: 'Somebody else’s report.',
+          attachmentUrls: [],
+          copilot: { action: 'explain' },
+          status: 'open',
+          createdAt: at,
+        },
+      ])
+
+      const exported = await exportUserData(handle.db, me)
+
+      expect(exported.copilotReports).toEqual([
+        {
+          _id: 'report-mine',
+          body: 'An answer I reported.',
+          copilot: { action: 'check', question: 'My own draft' },
+          status: 'closed',
+          createdAt: at,
+        },
+      ])
+    })
+  })
+
   /**
    * "Why are you leaving?" — optional, held while the account can still come
    * back, and kept afterwards with nothing that says whose it was.
