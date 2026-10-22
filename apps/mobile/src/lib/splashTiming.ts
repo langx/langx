@@ -16,11 +16,13 @@ const EXIT_TILE_MS = 260
 export const SPLASH_TIMING = {
   /**
    * How long the logo stays up at minimum, measured from mount, when it is the
-   * whole opening: with reduced motion on, where there is no film to wait for.
+   * whole opening: with reduced motion on, where there is no film to wait for,
+   * and on the device's first launch only (`exitDelayMs` in `launchFilm.ts`).
    *
-   * A warm start resolves the session from a cached cookie almost immediately,
-   * and without a floor the logo would appear and vanish inside about eighty
-   * milliseconds — read as a flicker, not as an opening.
+   * A fast boot resolves the session almost immediately, and without a floor
+   * the logo would appear and vanish inside about eighty milliseconds — read
+   * as a flicker, not as an opening. From the second launch on the logo is no
+   * longer a hello, and its own dissolve is enough.
    */
   MIN_VISIBLE_MS: 800,
   /**
@@ -30,11 +32,11 @@ export const SPLASH_TIMING = {
    */
   TIMEOUT_MS: 5000,
   /**
-   * The film's own length: `assets/splash/intro.mp4`, 162 frames at 60 fps.
+   * The film's own length: `assets/splash/intro.mp4`, 108 frames at 60 fps.
    * A test reads the file and holds this to it, because the stall guard below
    * is measured from it.
    */
-  INTRO_MS: 2700,
+  INTRO_MS: 1800,
   /**
    * How long the yellow waits, once the native splash has gone, for the film
    * to start playing before giving up on it and leaving from the yellow

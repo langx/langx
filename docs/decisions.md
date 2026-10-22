@@ -1308,7 +1308,7 @@ intro in front of it.
   lets the look follow the flag while the splash still covers the screen,
   then fixes it for the launch the moment the splash goes, so nobody sees a
   screen change look in front of them and no wizard changes look halfway
-  through. With motion on, the launch film (2.7 s) outlasts the flag's own
+  through. With motion on, the launch film (1.8 s) outlasts the flag's own
   ceiling (`V3_HOME_WAIT_MS`), so the answer is nearly always in. With
   reduce motion the splash can lift at its 0.8 s floor, and a slower answer
   means today's look on every launch-path screen until the next launch.
