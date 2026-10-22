@@ -583,8 +583,17 @@ export async function setConversationFlag(
   await assertConversationAccess(db, conversationId, userId)
 
   const path = `${flag}.${userId}`
+  /*
+   * A chat deleted for this reader cannot be pinned: it is in neither half of
+   * their list, so the pin would hold a slot with no row to take it off from.
+   * Only a stale device can ask — the thread is gone from every other screen
+   * — and it gets the same 404 a thread that is not there gets. In the
+   * filter, so a delete landing between the access check and this write is
+   * caught too.
+   */
+  const pinning = on && flag === 'pinnedBy'
   const updated = await conversations.findOneAndUpdate(
-    { _id },
+    pinning ? { _id, [`deletedBy.${userId}`]: { $ne: true } } : { _id },
     on ? { $set: { [path]: true } } : { $unset: { [path]: '' } },
     { returnDocument: 'after' },
   )
@@ -612,8 +621,15 @@ export async function setConversationFlag(
    * direction worth erring in: it is what the message says, and it walks the
    * account back toward a list that shows all of itself.
    */
-  if (on && flag === 'pinnedBy') {
-    const pinned = await conversations.countDocuments({ participants: userId, [path]: true })
+  if (pinning) {
+    // Deleted threads are left out for the reason above: rows pinned before
+    // deleting started clearing the pin still carry one, and counting them
+    // would refuse a pin the list has room to show.
+    const pinned = await conversations.countDocuments({
+      participants: userId,
+      [path]: true,
+      [`deletedBy.${userId}`]: { $ne: true },
+    })
     if (pinned > MAX_PINNED_CONVERSATIONS) {
       await conversations.updateOne({ _id }, { $unset: { [path]: '' } })
       throw new ApiError(

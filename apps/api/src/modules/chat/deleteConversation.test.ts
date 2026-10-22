@@ -5,8 +5,9 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
+import type { Profile } from '../profiles/profiles'
 import type { Conversation } from './conversations'
-import { listConversations } from './messages'
+import { listConversations, sendTextMessage } from './messages'
 import { deleteConversationForUser, setConversationFlag } from './mutations'
 
 describe('deleting a pinned chat', () => {
@@ -27,7 +28,19 @@ describe('deleting a pinned chat', () => {
   beforeEach(async () => {
     await handle.db.collection(COLLECTIONS.conversations).deleteMany({})
     await handle.db.collection(COLLECTIONS.messages).deleteMany({})
+    await handle.db.collection(COLLECTIONS.profiles).deleteMany({})
+    await handle.db.collection(COLLECTIONS.tokenLedger).deleteMany({})
   })
+
+  async function legacyDeletedPin(id: string): Promise<void> {
+    // What a delete wrote before it cleared the pin.
+    await handle.db
+      .collection<Conversation>(COLLECTIONS.conversations)
+      .updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { 'pinnedBy.ada': true, 'deletedBy.ada': true } },
+      )
+  }
 
   async function thread(partner: string): Promise<string> {
     const at = new Date()
@@ -61,5 +74,65 @@ describe('deleting a pinned chat', () => {
     await expect(setConversationFlag(handle.db, extra, 'ada', 'pinnedBy', true)).resolves.toEqual(
       expect.objectContaining({ pinned: true }),
     )
+  })
+  it('does not count a deleted thread that still carries an old pin', async () => {
+    const ids: string[] = []
+    for (let i = 0; i < MAX_PINNED_CONVERSATIONS; i++) ids.push(await thread(`p${i}`))
+    for (const id of ids.slice(1)) await setConversationFlag(handle.db, id, 'ada', 'pinnedBy', true)
+    await legacyDeletedPin(ids[0] ?? '')
+
+    const extra = await thread('extra')
+    await expect(setConversationFlag(handle.db, extra, 'ada', 'pinnedBy', true)).resolves.toEqual(
+      expect.objectContaining({ pinned: true }),
+    )
+  })
+
+  it('refuses a pin from a device that has not seen the delete', async () => {
+    const id = await thread('bo')
+    await deleteConversationForUser(handle.db, id, 'ada')
+    await expect(setConversationFlag(handle.db, id, 'ada', 'pinnedBy', true)).rejects.toMatchObject(
+      { code: 'NOT_FOUND' },
+    )
+    const row = await handle.db
+      .collection<Conversation>(COLLECTIONS.conversations)
+      .findOne({ _id: new ObjectId(id) })
+    expect(row?.pinnedBy?.ada).toBeUndefined()
+    // Unpinning, archiving and muting are still fine: nothing is held by them.
+    await expect(setConversationFlag(handle.db, id, 'ada', 'mutedBy', true)).resolves.toBeDefined()
+  })
+
+  it('brings an old deleted-and-pinned thread back unpinned, and only for the deleter', async () => {
+    const now = new Date()
+    for (const id of ['ada', 'bo']) {
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).insertOne({
+        _id: id,
+        handle: id,
+        displayName: id,
+        birthDate: '1995-06-15',
+        gender: 'undisclosed',
+        nativeLanguages: [{ code: 'tr' }],
+        learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
+        interests: [],
+        settings: { discoverable: true, notifications: true },
+        privacy: { incognito: false },
+        entitlement: { tier: 'free', updatedAt: now },
+        quota: { initiations: [], translations: [], media: [] },
+        streak: { current: 0, longest: 0, lastQualifiedDay: null },
+        stats: { lastActiveAt: now, messagesSent: 0 },
+        createdAt: now,
+        updatedAt: now,
+      })
+    }
+    const id = await thread('bo')
+    await setConversationFlag(handle.db, id, 'bo', 'pinnedBy', true)
+    await legacyDeletedPin(id)
+
+    await sendTextMessage(handle.db, 'bo', { conversationId: id, body: 'back again' })
+    const row = await handle.db
+      .collection<Conversation>(COLLECTIONS.conversations)
+      .findOne({ _id: new ObjectId(id) })
+    expect(row?.deletedBy?.ada).toBeUndefined()
+    expect(row?.pinnedBy?.ada).toBeUndefined()
+    expect(row?.pinnedBy?.bo).toBe(true)
   })
 })
