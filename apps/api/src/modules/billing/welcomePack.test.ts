@@ -85,6 +85,28 @@ describe('grantWelcomePack', () => {
   })
 
   /**
+   * The webhook and the client's `POST /billing/refresh` both land within a
+   * second of a purchase, so two grants racing is the ordinary case, not a
+   * rare one. The latch has to be claimed by the write itself; read first, both
+   * saw no latch and both handed over the freezes.
+   *
+   * Thirty rounds because one pair of calls in-process rarely interleaves;
+   * before the fix, thirty never all came out right.
+   */
+  it('hands the pack over once when two refreshes race', async () => {
+    for (let i = 0; i < 30; i++) {
+      const id = await seed()
+      const results = await Promise.all([
+        grantWelcomePack(handle.db, id, 'pro'),
+        grantWelcomePack(handle.db, id, 'pro'),
+      ])
+
+      expect(results.filter((r) => r.granted)).toHaveLength(1)
+      expect((await read(id))?.streakFreezes).toBe(PRO_WELCOME_PACKS.pro.streakFreezes)
+    }
+  })
+
+  /**
    * Neither key is migrated by the merge: an ex-Polyglot's `pro_plus` latch
    * must keep the pack and its two freezes from being handed over again, and
    * an ex-Fluent's `pro` latch leaves their difference to the merge script.
