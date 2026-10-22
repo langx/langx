@@ -492,7 +492,7 @@ export const ar: Localized<EnMessages> = {
     recordIt: 'انطقها بنفسك',
     removeAudio: 'أزل التسجيل',
     sessionProgress: '{done} من {total}',
-    noMeaningYet: 'لا معنى لهذه البطاقة بعد.',
+    noMeaningYet: 'لم يُضَف معنى لهذه البطاقة بعد.',
     show: 'أظهر الإجابة',
     again: 'مرة أخرى',
     hard: 'صعبة',

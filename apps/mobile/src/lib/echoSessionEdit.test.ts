@@ -20,7 +20,7 @@ function card(source: EchoSource, overrides: Partial<EchoCard> = {}): EchoCard {
 }
 
 const CHAT: EchoSource = { kind: 'chat', conversationId: 'c1', messageId: 'm1', partnerId: 'p1' }
-const SHOWING = { producing: false, revealed: false, offline: false }
+const SHOWING = { revealed: true, offline: false }
 
 describe('canEditInSession', () => {
   it('offers Edit on the cards a person kept or wrote', () => {
@@ -38,9 +38,8 @@ describe('canEditInSession', () => {
     ).toBe(false)
   })
 
-  it('waits while a production card is asking, since the edit shows the answer', () => {
-    expect(canEditInSession(card(CHAT), { ...SHOWING, producing: true })).toBe(false)
-    expect(canEditInSession(card(CHAT), { ...SHOWING, producing: true, revealed: true })).toBe(true)
+  it('waits for the reveal, since the edit screen shows the answer', () => {
+    expect(canEditInSession(card(CHAT), { ...SHOWING, revealed: false })).toBe(false)
   })
 
   it('is not offered offline', () => {

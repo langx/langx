@@ -457,7 +457,7 @@ export const fr: Localized<EnMessages> = {
     recordIt: 'Dis-le toi-même',
     removeAudio: 'Retirer l’enregistrement',
     sessionProgress: '{done} sur {total}',
-    noMeaningYet: 'Cette carte n’a pas encore de sens.',
+    noMeaningYet: 'Pas encore de traduction pour cette carte.',
     show: 'Voir la réponse',
     again: 'À revoir',
     hard: 'Difficile',

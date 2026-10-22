@@ -14,16 +14,16 @@ import type { EchoCard } from '@langx/shared'
  * A pack card's two lines are curated content that the next learner of the
  * pack is given too; fixing one belongs to the pack, not to a review of it.
  *
- * Never while a production card is still asking: the edit screen shows the
- * sentence, which is the answer being asked for. And never offline, where the
- * edit screen has nothing to load and nowhere to save.
+ * Only once the answer is up: the edit screen shows both sides, so before the
+ * reveal it would give the answer away — and the answer is what somebody sees
+ * is wrong. And never offline, where the edit screen has nothing to load and
+ * nowhere to save.
  */
 export function canEditInSession(
   card: EchoCard,
-  state: { producing: boolean; revealed: boolean; offline: boolean },
+  state: { revealed: boolean; offline: boolean },
 ): boolean {
-  if (state.offline) return false
-  if (state.producing && !state.revealed) return false
+  if (state.offline || !state.revealed) return false
   const kind = card.source.kind
   return kind === 'chat' || kind === 'post' || kind === 'manual'
 }

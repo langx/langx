@@ -34,31 +34,34 @@ async function main(): Promise<void> {
 
   try {
     const cards = handle.db.collection<EchoCardDoc>(COLLECTIONS.echoCards)
-    const ids: EchoCardDoc['_id'][] = []
+    const found: { id: EchoCardDoc['_id']; back: string }[] = []
     const samples: string[] = []
     for await (const card of cards.find(
-      { sourceKey: /^(msg|post):/, back: { $ne: '' } },
+      { sourceKey: /^(msg|post):/, back: { $type: 'string', $ne: '' } },
       { projection: { front: 1, back: 1, sourceKey: 1 } },
     )) {
       if (backAddsMeaning(card.front, card.back)) continue
-      ids.push(card._id)
+      found.push({ id: card._id, back: card.back })
       if (samples.length < 5) samples.push(`${card.sourceKey}: "${card.front}" / "${card.back}"`)
     }
 
-    console.log(`${ids.length} card(s) whose back repeats the front.`)
+    console.log(`${found.length} card(s) whose back repeats the front.`)
     for (const line of samples) console.log(`  ${line}`)
     if (!apply) {
       console.log('Dry run. Pass --apply to write.')
       return
     }
 
-    // In chunks, so a large environment does not build one enormous update.
+    // In chunks, so a large environment does not build one enormous write.
+    // Each filter names the back that was read, so a card somebody edited
+    // between the scan and the write keeps what they wrote.
     const CHUNK = 500
     let written = 0
-    for (let at = 0; at < ids.length; at += CHUNK) {
-      const result = await cards.updateMany(
-        { _id: { $in: ids.slice(at, at + CHUNK) } },
-        { $set: { back: '' } },
+    for (let at = 0; at < found.length; at += CHUNK) {
+      const result = await cards.bulkWrite(
+        found.slice(at, at + CHUNK).map((row) => ({
+          updateOne: { filter: { _id: row.id, back: row.back }, update: { $set: { back: '' } } },
+        })),
       )
       written += result.modifiedCount
     }

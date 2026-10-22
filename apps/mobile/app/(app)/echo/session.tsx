@@ -221,7 +221,11 @@ export default function EchoSessionScreen() {
    * unchanged — this is a presentation of the same row, decided by a pure
    * rule so that leaving and coming back asks the same thing.
    */
-  const producing = card ? asksProduction(parseSrs(card), card.front, card.back) : false
+  // From the deck's copy, not an edited one: an edit made mid-card must not
+  // turn the card in front of somebody into the other kind of question.
+  const producing = deckCard
+    ? asksProduction(parseSrs(deckCard), deckCard.front, deckCard.back)
+    : false
 
   /**
    * Sends whatever has been graded, and keeps it if the send fails.
@@ -357,7 +361,7 @@ export default function EchoSessionScreen() {
    * opens. Saving comes back here with the card redrawn as saved, and the
    * answer still up if it was.
    */
-  const canEdit = card ? canEditInSession(card, { producing, revealed, offline }) : false
+  const canEdit = card ? canEditInSession(card, { revealed, offline }) : false
   function edit(): void {
     if (!card) return
     router.push({ pathname: '/(app)/echo/edit', params: { id: card._id } })
