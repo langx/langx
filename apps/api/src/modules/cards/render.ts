@@ -76,6 +76,34 @@ export async function loadBadge(): Promise<string> {
 }
 
 /**
+ * Gives every box the border-box model, unless it names its own.
+ *
+ * Every measurement in the three designs was taken under satori 0.33, whose
+ * layout counted padding inside a box's `width`. 0.62 follows CSS and counts
+ * it outside, so the panel on a streak or badge card — `width: width - 16
+ * units` plus 8 units of padding a side — came out exactly the card's width
+ * and ran edge to edge. Set once here rather than on each padded box, so a box
+ * added to a design later is measured the way the ones beside it were.
+ */
+export function withBorderBox(node: CardNode): CardNode {
+  const { children, style } = node.props
+  // Anything that is not an element — text, and the null, false and numbers
+  // satori also accepts as children — passes through as it is.
+  const walk = (child: CardNode | string): CardNode | string =>
+    typeof child === 'object' && child !== null ? withBorderBox(child) : child
+  return {
+    type: node.type,
+    props: {
+      ...node.props,
+      style: { boxSizing: 'border-box', ...(style as Record<string, unknown> | undefined) },
+      ...(children === undefined
+        ? {}
+        : { children: Array.isArray(children) ? children.map(walk) : walk(children) }),
+    },
+  }
+}
+
+/**
  * Turns a satori element into a PNG.
  *
  * Two libraries because there is no one-step option that is not a browser:
@@ -92,7 +120,7 @@ export async function renderCard(element: CardNode, shape: CardShape): Promise<B
    * dependency that gets used for other things later.
    */
   const { faces, files } = await loadFonts()
-  const svg = await satori(element as Parameters<typeof satori>[0], {
+  const svg = await satori(withBorderBox(element) as Parameters<typeof satori>[0], {
     width,
     height,
     fonts: faces,
