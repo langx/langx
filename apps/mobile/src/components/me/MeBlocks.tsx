@@ -1,6 +1,10 @@
 import Feather from '@expo/vector-icons/Feather'
-import type { ReactNode } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { useEffect, useRef, type ReactNode } from 'react'
+import { Pressable, Text, View } from 'react-native'
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
+import { useReduceMotion } from '../../hooks/useReduceMotion'
+import { claimCelebration } from '../../lib/celebration'
+import { SPRING } from '../../lib/theme/motion'
 import { useLocale } from '../../i18n'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
 import { Avatar } from '../ui/Avatar'
@@ -11,6 +15,7 @@ import { PressableScale } from '../ui/PressableScale'
 import { ProBadge } from '../ui/ProBadge'
 import { ProgressRing } from '../ui/ProgressRing'
 import { Skeleton } from '../ui/Skeleton'
+import { inkTrack, ProgressBar } from '../ui/ProgressBar'
 import { TitleBadge } from '../ui/TitleBadge'
 import { FlameGlyph } from '../ui/StreakFlame'
 
@@ -335,27 +340,70 @@ export function MeProBlock({
 export function MeSectionHead({
   title,
   count,
+  fresh,
   onPress,
 }: {
   title: string
   count?: string | undefined
+  /**
+   * "New", when the section holds something earned and not yet seen, and a
+   * key naming what — the chip pops once per key, not on every mount.
+   */
+  fresh?: { label: string; key: string } | undefined
   onPress: () => void
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
+  const label = [title, fresh?.label, count].filter(Boolean).join(', ')
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={count ? `${title}, ${count}` : title}
+      accessibilityLabel={label}
       onPress={onPress}
       style={({ pressed }) => [styles.sectionHead, pressed && styles.pressed]}
     >
       <Text style={styles.sectionTitle} accessibilityRole="header">
         {title}
       </Text>
+      {fresh ? <FreshChip label={fresh.label} eventId={fresh.key} /> : null}
       {count ? <Text style={styles.sectionCount}>{count}</Text> : null}
       <Chevron color={v3.colors.muted} />
     </Pressable>
+  )
+}
+
+/**
+ * The yellow "New" beside a section's title: a badge was earned somewhere
+ * other than the badges page, and this is where it is waiting. It pops on
+ * `SPRING.select` the first time this run shows these badges as new
+ * (`claimCelebration`, keyed by them); coming back to the tab, or reduce
+ * motion, is the chip simply there.
+ */
+function FreshChip({ label, eventId }: { label: string; eventId: string }) {
+  const styles = useStyles()
+  const reduce = useReduceMotion()
+  const shown = useSharedValue(1)
+  const decided = useRef<string | null>(null)
+  // Decided once per key, in an effect: claiming is a side effect, and the
+  // ref keeps a development double-run from finding it already claimed.
+  useEffect(() => {
+    if (decided.current === eventId) return
+    decided.current = eventId
+    if (!claimCelebration(`me-fresh:${eventId}`) || reduce) return
+    shown.set(0)
+    shown.set(withSpring(1, SPRING.select))
+  }, [eventId, reduce, shown])
+  useEffect(() => {
+    if (reduce) shown.set(1)
+  }, [reduce, shown])
+  const motion = useAnimatedStyle(() => ({
+    opacity: Math.min(1, shown.get() * 2),
+    transform: [{ scale: 0.5 + 0.5 * shown.get() }],
+  }))
+  return (
+    <Animated.View style={[styles.fresh, motion]}>
+      <Text style={styles.freshText}>{label}</Text>
+    </Animated.View>
   )
 }
 
@@ -384,7 +432,7 @@ export function MeNextBadge({
   action?: { label: string; icon: Glyph; onPress: () => void } | undefined
 }) {
   const styles = useStyles()
-  const percent = Math.round(Math.min(1, Math.max(0, fraction)) * 100)
+  const { v3 } = useTheme()
   return (
     <View style={[styles.badge, { backgroundColor: hue }]}>
       <View style={styles.badgeHead}>
@@ -398,13 +446,14 @@ export function MeNextBadge({
         </View>
       </View>
       {/* The words above already say how far; the bar is the picture of it. */}
-      <View
-        style={styles.bar}
-        accessibilityElementsHidden
-        importantForAccessibility="no-hide-descendants"
-      >
-        <View style={[StyleSheet.absoluteFill, styles.barTrack]} />
-        <View style={[styles.barFill, { width: `${percent}%` }]} />
+      <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+        <ProgressBar
+          value={fraction}
+          height={12}
+          fillColor={v3.colors.ink}
+          trackColor={inkTrack(v3.colors.ink)}
+          accessibilityLabel={progress}
+        />
       </View>
       {action ? (
         <Button
@@ -751,6 +800,13 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   sectionTitle: { ...v3.type.headline, color: v3.colors.fg, flex: 1 },
   sectionCount: { ...v3.type.callout, color: v3.colors.muted, fontWeight: '700' },
+  fresh: {
+    backgroundColor: v3.colors.yellow,
+    borderRadius: v3.radius.pill,
+    paddingHorizontal: v3.space[8],
+    paddingVertical: v3.space[2],
+  },
+  freshText: { ...v3.type.caption, color: v3.colors.onYellow, fontWeight: '800' },
 
   badge: {
     borderRadius: v3.radius.block,
@@ -771,15 +827,6 @@ const useStyles = makeStyles(({ v3 }) => ({
   onHueBody: { ...v3.type.callout, color: v3.colors.ink, fontWeight: '600' },
   onHueRowTitle: { ...v3.type.button, color: v3.colors.ink },
   onHueCaption: { ...v3.type.caption, color: v3.colors.ink, fontWeight: '600' },
-  bar: {
-    borderRadius: v3.radius.pill,
-    flexDirection: 'row',
-    height: 12,
-    overflow: 'hidden',
-  },
-  // Ink at a fifth, as the drawing has it: a track that reads on every hue.
-  barTrack: { backgroundColor: v3.colors.ink, opacity: 0.18 },
-  barFill: { backgroundColor: v3.colors.ink, borderRadius: v3.radius.pill },
   badgeAction: { alignSelf: 'flex-start', width: 'auto' },
 
   group: {

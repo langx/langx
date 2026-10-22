@@ -5,7 +5,7 @@ import { boundedEchoReviews, planEchoDone, reviewMinutes } from './echoV3'
 const CAP = TOKEN_RULES.caps.echoSessionsPerDay
 const PAY = TOKEN_RULES.award.echoSession
 
-function award(tokens: number, streak: number | null = null): EchoAward {
+function award(tokens: number, streak: number | null = null, milestoneXp = 0): EchoAward {
   return {
     tokens,
     streak:
@@ -16,7 +16,7 @@ function award(tokens: number, streak: number | null = null): EchoAward {
             longest: streak,
             lastQualifiedDay: '2026-10-19',
             advanced: true,
-            milestoneXp: 0,
+            milestoneXp,
             freezeUsed: false,
           },
   }
@@ -44,6 +44,7 @@ describe('planEchoDone', () => {
     expect(planEchoDone({ award: award(PAY, 12), sessionsToday: 1, dueNext: 3 })).toEqual({
       tokens: PAY,
       streakDay: 12,
+      milestone: null,
       sessions: { kind: 'this', done: 1, cap: CAP },
       more: true,
     })
@@ -85,6 +86,37 @@ describe('planEchoDone', () => {
     expect(plan.tokens).toBeNull()
     expect(plan.streakDay).toBeNull()
     expect(plan.sessions).toBeNull()
+  })
+})
+
+describe('planEchoDone and streak milestones', () => {
+  const BONUS = 50
+
+  it('names the milestone apart from what the session itself paid', () => {
+    const plan = planEchoDone({ award: award(PAY + BONUS, 7, BONUS), sessionsToday: 1, dueNext: 3 })
+    expect(plan.tokens).toBe(PAY)
+    expect(plan.milestone).toEqual({ day: 7, tokens: BONUS })
+    expect(plan.streakDay).toBe(7)
+    expect(plan.sessions).toEqual({ kind: 'this', done: 1, cap: CAP })
+  })
+
+  it('celebrates a milestone a session past the cap crossed, and claims no session token', () => {
+    const plan = planEchoDone({ award: award(BONUS, 30, BONUS), sessionsToday: CAP, dueNext: 3 })
+    expect(plan.tokens).toBeNull()
+    expect(plan.milestone).toEqual({ day: 30, tokens: BONUS })
+    expect(plan.sessions).toEqual({ kind: 'all', done: CAP, cap: CAP })
+  })
+
+  it('names no milestone for a streak that only moved on', () => {
+    expect(
+      planEchoDone({ award: award(PAY, 6), sessionsToday: 1, dueNext: 0 }).milestone,
+    ).toBeNull()
+  })
+
+  it('never claims fewer than no token from a bonus the total does not hold', () => {
+    const plan = planEchoDone({ award: award(0, 7, BONUS), sessionsToday: 1, dueNext: 0 })
+    expect(plan.tokens).toBeNull()
+    expect(plan.milestone).toEqual({ day: 7, tokens: BONUS })
   })
 })
 

@@ -36,6 +36,7 @@ import {
   type StoryRecap,
 } from '../../lib/recapStory'
 import { DISPLAY_FONT, useTheme } from '../../lib/theme'
+import { EASE_RISE, SPRING } from '../../lib/theme/motion'
 import { Button } from '../ui/Button'
 import { RISE_DELAYS, Rise } from './motion'
 import { Slide, hueLook, slideLook } from './RecapSlides'
@@ -228,11 +229,7 @@ export function RecapStory(props: RecapStoryProps) {
   // The ground cross-fades rather than cuts: 500ms, as designed.
   const ground = useSharedValue(look.ground)
   useEffect(() => {
-    ground.set(
-      reduce
-        ? look.ground
-        : withTiming(look.ground, { duration: 500, easing: Easing.bezier(0.2, 0.8, 0.2, 1) }),
-    )
+    ground.set(reduce ? look.ground : withTiming(look.ground, { duration: 500, easing: EASE_RISE }))
   }, [look.ground, reduce, ground])
   const groundStyle = useAnimatedStyle(() => ({ backgroundColor: ground.get() }))
 
@@ -263,7 +260,7 @@ export function RecapStory(props: RecapStoryProps) {
         scheduleOnRN(onClose)
         return
       }
-      drag.set(withSpring(0, { duration: 400, dampingRatio: 0.8, velocity: event.velocityY }))
+      drag.set(withSpring(0, { ...SPRING.settle, velocity: event.velocityY }))
       if (intent) scheduleOnRN(tap, intent)
     })
 

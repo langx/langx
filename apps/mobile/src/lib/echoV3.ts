@@ -39,10 +39,19 @@ export interface EchoDoneInput {
 }
 
 export interface EchoDonePlan {
-  /** Token this batch earned; null when it earned none, and then nothing is said. */
+  /**
+   * Token the sessions themselves earned, the milestone's bonus left out;
+   * null when they earned none, and then nothing is said.
+   */
   tokens: number | null
   /** The streak's day after this batch, only when the batch's award reports it. */
   streakDay: number | null
+  /**
+   * The streak milestone this batch crossed — its day and what it paid — or
+   * null. The server folds the bonus into `award.tokens`; it is taken back
+   * out here so day 7 reads as day 7, not as an unusually good session.
+   */
+  milestone: { day: number; tokens: number } | null
   /**
    * `this`: the batch completed session `done` of `cap`. `all`: it completed
    * none, and today's `cap` are already done — the reason it earned nothing.
@@ -54,8 +63,13 @@ export interface EchoDonePlan {
 }
 
 export function planEchoDone({ award, sessionsToday, dueNext }: EchoDoneInput): EchoDonePlan {
-  const tokens = award && award.tokens > 0 ? award.tokens : null
-  const streakDay = award?.streak && award.streak.current > 0 ? award.streak.current : null
+  const streak = award?.streak ?? null
+  const bonus = streak?.milestoneXp ?? 0
+  const milestone = streak && bonus > 0 ? { day: streak.current, tokens: bonus } : null
+  // Never below zero, should an older server ever report a bonus it did not add.
+  const earned = award ? Math.max(0, award.tokens - bonus) : 0
+  const tokens = earned > 0 ? earned : null
+  const streakDay = streak && streak.current > 0 ? streak.current : null
   const cap = TOKEN_RULES.caps.echoSessionsPerDay
   const done = sessionsToday
 
@@ -66,7 +80,7 @@ export function planEchoDone({ award, sessionsToday, dueNext }: EchoDoneInput): 
   }
 
   const more = done !== undefined && dueNext !== undefined && done < cap && dueNext > 0
-  return { tokens, streakDay, sessions, more }
+  return { tokens, streakDay, milestone, sessions, more }
 }
 
 /**

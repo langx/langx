@@ -6,6 +6,7 @@ import { Button } from '../ui/Button'
 import { PressableScale } from '../ui/PressableScale'
 import { ProBadge } from '../ui/ProBadge'
 import { ProgressRing } from '../ui/ProgressRing'
+import { FlameGlyph } from '../ui/StreakFlame'
 
 /*
  * The blocks under Home's hero, drawn from `V-Home`. Each is dumb: the screen
@@ -113,7 +114,7 @@ export function HomeStreakRow({
       style={styles.row}
     >
       <View style={[styles.disc, { backgroundColor: v3.hues.tangerine }]}>
-        <Feather name="zap" size={v3.icon.lg} color={v3.colors.ink} />
+        <FlameGlyph size={v3.icon.lg} color={v3.colors.ink} />
       </View>
       <View style={styles.rowText}>
         <Text style={styles.rowTitle}>{title}</Text>
