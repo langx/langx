@@ -5601,6 +5601,8 @@ changes what `architecture.md` planned — "Pro: unlimited within fair use" — 
 a stated number: every unit is a paid call, and "unlimited" would be a promise
 made against somebody else's meter. A unit is spent only when the model writes
 an answer: a cached answer is free, and a declined or failed one is refunded.
+_(Pro raised to 24 on 21 October 2026, past that yearly-plan bound: see Copilot
+has no age rule of its own, and 24 a day for Pro.)_
 
 **Cached by a hash of the question**, not of the person: the prompt's version,
 the model, the action and the exact user turn. Two people asking the same
@@ -5630,7 +5632,9 @@ _20 October 2026._ Behic asked for a simple Copilot first, one he can turn on
 for some people rather than for everybody, connected straight to the Claude
 API. Everything in the entry above still holds: the flag, the key, the exact
 18+ check, the partner-age guard, the consent sheet, `copilotPer24h`, the
-global day, the cache. Three things are added.
+global day, the cache. Three things are added. _(Both age checks were removed
+on 21 October 2026: see Copilot has no age rule of its own, and 24 a day for
+Pro.)_
 
 **A third switch, per account.** `copilotAccess` on the profile, set from the
 operator panel (Find someone → Copilot access) and listed in the Copilot lab.

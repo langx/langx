@@ -279,7 +279,7 @@ describe('Copilot', () => {
    * Copilot has no age rule of its own: whoever the app lets in may use it,
    * and a partner's age is not looked at either.
    */
-  describe('for 16- and 17-year-olds', () => {
+  describe('age', () => {
     it('is open to a 16-year-old', async () => {
       await handle.db
         .collection(COLLECTIONS.profiles)
