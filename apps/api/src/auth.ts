@@ -351,9 +351,11 @@ export async function createAuth({
        * Where Better Auth reads a client's address — for its rate limiter and
        * for `session.ipAddress` — and nowhere else. The header is written by
        * the bridge in `routes/auth.ts` on every request, replacing anything
-       * the client sent, from Cloudflare's `CF-Connecting-IP` when the edge
-       * secret vouches for the request and from Fastify's `request.ip`
-       * otherwise. See `CLIENT_IP_HEADER` for why the default,
+       * the client sent, with `clientIpOf` — the same address the API's own
+       * rate limiter counts by: Cloudflare's `CF-Connecting-IP` when the edge
+       * secret vouches for the request, and otherwise Fastify's `request.ip`,
+       * which trusts only the hop Fly's proxy appended to `X-Forwarded-For`
+       * (`trustProxyHops`). See `CLIENT_IP_HEADER` for why the default,
        * `X-Forwarded-For`, left every production request without an address.
        */
       ipAddress: { ipAddressHeaders: [CLIENT_IP_HEADER] },

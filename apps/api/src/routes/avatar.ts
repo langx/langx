@@ -13,6 +13,7 @@ import { notionists } from '@dicebear/collection'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { loadAsset } from '../lib/assets'
+import { rateLimitKey } from '../lib/clientIp'
 import { RenderBusyError, renderDefaultAvatar } from '../modules/avatars/raster'
 import { getDefaultAvatarFor } from '../modules/profiles/defaultAvatar'
 import { getProfileGender } from '../modules/profiles/profiles'
@@ -178,7 +179,8 @@ export const avatarRoutes: FastifyPluginAsyncZod = async (app) => {
       config: {
         rateLimit: {
           max: (request) => (isLargeFace(request) ? LARGE_FACES_PER_MINUTE : 300),
-          keyGenerator: (request) => `${request.ip}:${isLargeFace(request) ? 'large' : 'list'}`,
+          keyGenerator: (request) =>
+            `${rateLimitKey(request)}:${isLargeFace(request) ? 'large' : 'list'}`,
           timeWindow: '1 minute',
         },
       },

@@ -8969,6 +8969,21 @@ listed, and behind Cloudflare and Fly it always holds two — so until this,
 sessions recorded no address and the rate limiter counted every client in one
 bucket per route.
 
+The API's own rate limiter (`@fastify/rate-limit`, every route's limit) counts
+by the same address, through the same function, `clientIpOf`. It used to key on
+`request.ip` with `trustProxy: true`, and that was no limit at all: `true`
+believes every entry of `X-Forwarded-For` and takes the left-most, Cloudflare
+and Fly append to whatever header the client sent rather than replacing it, so
+the left-most entry was the client's to write — a new one per request, a new
+bucket per request. Now Fastify trusts one hop, the socket's peer, which is
+Fly's proxy, so `request.ip` is the entry Fly appended: Cloudflare's address
+for a request through the edge, where the edge secret lets `CF-Connecting-IP`
+name the visitor instead, and the client's own for a request sent straight to
+the origin. Cloudflare is not counted as a hop, because the origin can be
+reached around it. `TRUST_PROXY_HOPS` changes the count for a deployment with a
+different chain in front of it; one hop too many hands the address back to the
+client.
+
 The counter is a collection, `signUpsByIp`, not Better Auth's rate limiter.
 That limiter keeps its counts in process memory, and the API runs on more than
 one machine, so each would count on its own and the cap would be multiplied by

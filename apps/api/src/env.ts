@@ -15,6 +15,13 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(4000),
   HOST: z.string().min(1).default('0.0.0.0'),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
+  /**
+   * How many proxies every request is certain to pass through before it
+   * reaches the API, each appending to `X-Forwarded-For`. Unset means one
+   * under `NODE_ENV=production` — Fly's — and none elsewhere. See `trustProxy`
+   * in `app.ts` for why it is a count and not `true`.
+   */
+  TRUST_PROXY_HOPS: emptyToUndefined(z.coerce.number().int().min(0).optional()),
 
   MONGODB_URI: z.string().min(1, 'MONGODB_URI is required — see .env.example'),
   MONGODB_DB: z.string().min(1).default('langx_dev'),

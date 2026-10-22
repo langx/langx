@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import type { Auth } from '../auth'
-import { CLIENT_IP_HEADER, resolveClientIp } from '../lib/clientIp'
+import { CLIENT_IP_HEADER, clientIpOf } from '../lib/clientIp'
 
 /**
  * Bridges Fastify to Better Auth's handler, which speaks the Web Fetch API
@@ -52,7 +52,7 @@ export async function registerAuthRoutes(app: FastifyInstance, auth: Auth): Prom
         else if (Array.isArray(value)) for (const v of value) headers.append(key, v)
       }
       // After the copy, so it replaces anything a client sent under this name.
-      const clientIp = resolveClientIp(request.headers, request.ip, app.env.EDGE_SECRET)
+      const clientIp = clientIpOf(request)
       if (clientIp) headers.set(CLIENT_IP_HEADER, clientIp)
       else headers.delete(CLIENT_IP_HEADER)
 
