@@ -89,7 +89,8 @@ describe('card layout under satori', () => {
     const unit = card.width / 100
     const { bottom } = whiteRun(card, Math.round(unit * 12))
     // Inside the panel, clear of its rounded corner, and inside the disc
-    // (centred at 90, 92 units with a radius of 30).
+    // (centred at 90, 92 units with a radius of 30: the second disc in
+    // `cardElement`, design.ts — move it and this point moves with it).
     const x = Math.round(unit * 88)
     const y = bottom - Math.round(unit * 10)
     expect(Math.hypot(x - unit * 90, y - unit * 92)).toBeLessThan(unit * 30)
@@ -147,5 +148,17 @@ describe('card layout under satori', () => {
     // The letters, moved by the comma's width — not where they were.
     expect(missing(shift)).toBeLessThan(0.05)
     expect(missing(0)).toBeGreaterThan(0.2)
+  })
+
+  it('leaves a Latin word in an Arabic line left to right', () => {
+    // "Pro+" set right to left would come out "+Pro".
+    const line = textLine('مشترك Pro+', { color: '#000000', fontSize: 40 }, true)
+    const words = line.props.children as CardNode[]
+    const direction = (node: CardNode) =>
+      (node.props.style as Record<string, unknown>).direction ?? 'ltr'
+    expect(words.map((word) => [word.props.children, direction(word)])).toEqual([
+      ['مشترك', 'rtl'],
+      ['Pro+', 'ltr'],
+    ])
   })
 })

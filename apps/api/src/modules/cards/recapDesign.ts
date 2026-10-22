@@ -98,6 +98,9 @@ function arrowSrc(colour: string, pointsLeft: boolean): string {
 
 type TextStyle = Record<string, unknown> & { fontSize: number; color: string }
 
+/** Hebrew, Arabic, Syriac, Thaana and their presentation forms. */
+const RTL_LETTER = /[\u0590-\u08ff\ufb1d-\ufdff\ufe70-\ufeff]/
+
 /**
  * A line of text, laid out one word per element when it has to be.
  *
@@ -147,8 +150,12 @@ export function textLine(text: string, style: TextStyle, rtl: boolean, width?: n
                  * word is set on the word's right — the start of the line in
                  * Arabic: "،بلغتين". Declaring the word right-to-left puts the
                  * comma on its left, where the sentence goes on.
+                 *
+                 * Only a word with right-to-left letters in it: a Latin word
+                 * in an Arabic line — "Pro+" — would have its punctuation
+                 * moved to the wrong end in exactly the same way.
                  */
-                ...(rtl ? { direction: 'rtl' } : {}),
+                ...(rtl && RTL_LETTER.test(word) ? { direction: 'rtl' } : {}),
               },
               children: word,
             }),

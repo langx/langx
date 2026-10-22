@@ -87,8 +87,10 @@ export async function loadBadge(): Promise<string> {
  */
 export function withBorderBox(node: CardNode): CardNode {
   const { children, style } = node.props
+  // Anything that is not an element — text, and the null, false and numbers
+  // satori also accepts as children — passes through as it is.
   const walk = (child: CardNode | string): CardNode | string =>
-    typeof child === 'string' ? child : withBorderBox(child)
+    typeof child === 'object' && child !== null ? withBorderBox(child) : child
   return {
     type: node.type,
     props: {
