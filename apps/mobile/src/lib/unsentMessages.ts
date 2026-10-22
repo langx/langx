@@ -81,6 +81,36 @@ export function newClientId(now: number, random: number): string {
 }
 
 /**
+ * Where one account's rows for one conversation sit in the stored record.
+ *
+ * The account is part of the key because the record belongs to the device,
+ * not to whoever is signed in, and a conversation id is shared by both people
+ * in it. Keyed by conversation alone, a sentence one person failed to send
+ * was drawn to the next person who signed in on the same phone or browser as
+ * their own "not sent" row — and one tap on it sent it, under their name, to
+ * the person it was written to. Clearing the record on sign-out would not
+ * have been enough: a session that ends while the app is closed is never seen
+ * ending, and it would also throw away the one copy of a sentence its own
+ * author signs back in to find.
+ *
+ * Rows stored before this, under the bare conversation id, are never read
+ * again; `MAX_UNSENT_THREADS` ages them out.
+ */
+export function unsentKey(userId: string, conversationId: string): string {
+  return `${userId}:${conversationId}`
+}
+
+/** One account's rows for one conversation, or none. */
+export function readUnsent(
+  stored: UnsentByConversation | null | undefined,
+  userId: string,
+  conversationId: string,
+): UnsentMessage[] {
+  const rows = stored?.[unsentKey(userId, conversationId)]
+  return Array.isArray(rows) ? rows : []
+}
+
+/**
  * Every conversation's unsent rows, as one stored value.
  *
  * One key rather than a key per conversation: the store is `expo-secure-store`
@@ -89,6 +119,7 @@ export function newClientId(now: number, random: number): string {
  * `MAX_UNSENT` rows within a thread, `MAX_UNSENT_THREADS` threads — because a
  * record that only ever grows is a slow way to fill a keychain.
  */
+/** Keyed by `unsentKey`. */
 export type UnsentByConversation = Record<string, UnsentMessage[]>
 
 export const MAX_UNSENT_THREADS = 10

@@ -4,9 +4,11 @@ import {
   MAX_UNSENT,
   MAX_UNSENT_THREADS,
   newClientId,
+  readUnsent,
   removeUnsent,
   retireDelivered,
   storeUnsent,
+  unsentKey,
   type UnsentByConversation,
   type UnsentMessage,
 } from './unsentMessages'
@@ -99,5 +101,33 @@ describe('storeUnsent', () => {
     // The newest is kept, the oldest is not.
     expect(stored[`c${MAX_UNSENT_THREADS + 3}`]).toBeDefined()
     expect(stored.c0).toBeUndefined()
+  })
+})
+
+describe('readUnsent', () => {
+  const row: UnsentMessage = {
+    clientId: 'x1',
+    body: 'are you there',
+    failedAt: '2026-10-22T07:54:50.000Z',
+  }
+
+  it('gives one account back its own rows', () => {
+    const stored = storeUnsent({}, unsentKey('anna', 'chat1'), [row])
+    expect(readUnsent(stored, 'anna', 'chat1')).toEqual([row])
+  })
+
+  it('never hands one account the other person’s rows in the same conversation', () => {
+    // Both people in a conversation share its id; the record is the device's.
+    const stored = storeUnsent({}, unsentKey('anna', 'chat1'), [row])
+    expect(readUnsent(stored, 'sofia', 'chat1')).toEqual([])
+  })
+
+  it('does not read rows stored before they were keyed by account', () => {
+    expect(readUnsent({ chat1: [row] }, 'sofia', 'chat1')).toEqual([])
+  })
+
+  it('reads nothing from an empty or missing record', () => {
+    expect(readUnsent(null, 'sofia', 'chat1')).toEqual([])
+    expect(readUnsent({}, 'sofia', 'chat1')).toEqual([])
   })
 })

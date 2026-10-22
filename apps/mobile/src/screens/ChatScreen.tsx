@@ -353,9 +353,13 @@ export function ChatScreen({
    * initial state would wipe what this is here to keep.
    */
   const [unsentHydrated, setUnsentHydrated] = useState(false)
+  // Whose rows: the stored record is the device's, and both people in a
+  // conversation share its id — see `unsentKey`.
+  const myId = me.data?._id
   useEffect(() => {
+    if (!myId) return
     let cancelled = false
-    void loadUnsent(conversationId).then((stored) => {
+    void loadUnsent(myId, conversationId).then((stored) => {
       if (cancelled) return
       if (stored.length > 0) setUnsent(stored)
       setUnsentHydrated(true)
@@ -363,11 +367,11 @@ export function ChatScreen({
     return () => {
       cancelled = true
     }
-  }, [conversationId])
+  }, [myId, conversationId])
   useEffect(() => {
-    if (!unsentHydrated) return
-    void saveUnsent(conversationId, unsent)
-  }, [conversationId, unsent, unsentHydrated])
+    if (!unsentHydrated || !myId) return
+    void saveUnsent(myId, conversationId, unsent)
+  }, [myId, conversationId, unsent, unsentHydrated])
   const [correcting, setCorrecting] = useState<MessageDto | null>(null)
   /**
    * What this message asks the other person for, once it is sent.
