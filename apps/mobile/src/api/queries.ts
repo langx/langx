@@ -158,6 +158,7 @@ import { currentTranslate } from '../i18n/runtime'
 import { applyLanguageEdit, sameLanguageLists, type LanguageEdit } from '../lib/profileLanguages'
 import { isAllowedAudioType } from '../lib/recordingFormat'
 import { boundedEchoReviews } from '../lib/echoV3'
+import { ECHO_SUBMIT_NETWORK_MODE } from '../lib/echoSubmitMode'
 import {
   applyAnswer,
   applyCommentCount,
@@ -4695,6 +4696,8 @@ export function useSubmitEchoReviews() {
   return useMutation({
     mutationFn: (input: SubmitEchoReviewsInput) =>
       api.post<SubmitEchoReviewsResult>('/echo/reviews', boundedEchoReviews(input)),
+    // Fail offline instead of pausing, so the session keeps its grades. See the constant.
+    networkMode: ECHO_SUBMIT_NETWORK_MODE,
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.echo })
     },
