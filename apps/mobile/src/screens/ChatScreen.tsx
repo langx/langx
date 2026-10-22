@@ -2870,6 +2870,12 @@ export function ChatScreen({
             },
           ]
         : []),
+      // Beside Block and worded like the profile's sheet, so the person who
+      // wants out of this thread finds both ways in one place. The redesign
+      // only: the current look's menu stays as it shipped.
+      ...(v3Thread
+        ? [{ label: t('common.report'), value: 'report' as const, destructive: true }]
+        : []),
       { label: t('common.block'), value: 'block', destructive: true },
     ])
     if (choice === 'profile') {
@@ -2888,6 +2894,10 @@ export function ChatScreen({
       flags.mutate({ conversationId, muted: !muted })
     } else if (choice === 'review') {
       setReviewing(true)
+    } else if (choice === 'report') {
+      // The person, not one message: the conversation id only says where it
+      // happened. The operator panel finds the last messages by the pair.
+      router.push({ pathname: '/(app)/report', params: { userId: partnerId, conversationId } })
     } else if (choice === 'block') {
       // The same question the profile asks, so the two places agree.
       const yes = await confirmAlert({
