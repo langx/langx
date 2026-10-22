@@ -1,5 +1,6 @@
 import {
   clampEchoDurationMs,
+  SRS_RULES,
   TOKEN_RULES,
   type EchoAward,
   type SubmitEchoReviewsInput,
@@ -21,6 +22,51 @@ export function reviewMinutes(
 ): number | null {
   if (!secondsPerCard || cards <= 0) return null
   return Math.max(1, Math.round((cards * secondsPerCard) / 60))
+}
+
+/**
+ * What starting a review now does for Home's Today's three, whose third ring
+ * is Echo's: null when it would do nothing, or when that cannot be told.
+ *
+ * The ring closes on any card answered in the summary's rolling day, so this
+ * speaks only while `reviewedToday` is zero — read off the server's answer,
+ * never the device's saved copy, which can be a day old. The token is
+ * `TOKEN_RULES.award.echoSession`, paid per `SRS_RULES.sessionSize` cards
+ * graded (`completedEchoSessions`), so it is named only when enough cards are
+ * due to fill a session — `due` is `oneSessionDue`, what one tap reviews, and today's paid sessions are not used up. With
+ * nothing reviewed in the last twenty-four hours none of the UTC day's are
+ * either, so `sessionsToday` is zero here unless the server says otherwise.
+ */
+/**
+ * The most cards one tap of the hero's button can review. A review never mixes
+ * languages, so under All it opens one language (or asks which), and the
+ * total across them is not what a session fills: French 7 and Spanish 6 due
+ * is thirteen on the tab but never a ten-card session. A chosen chip is its
+ * own count.
+ */
+export function oneSessionDue(
+  languages: readonly { lang: string; due: number }[],
+  lang: string | null,
+): number {
+  if (lang) return languages.find((row) => row.lang === lang)?.due ?? 0
+  return Math.max(0, ...languages.map((row) => row.due))
+}
+
+export function echoRingNote({
+  due,
+  reviewedToday,
+  sessionsToday,
+}: {
+  due: number
+  reviewedToday: number | undefined
+  sessionsToday: number | undefined
+}): { tokens: number | null } | null {
+  if (reviewedToday !== 0 || due <= 0) return null
+  const pays =
+    due >= SRS_RULES.sessionSize &&
+    sessionsToday !== undefined &&
+    sessionsToday < TOKEN_RULES.caps.echoSessionsPerDay
+  return { tokens: pays ? TOKEN_RULES.award.echoSession : null }
 }
 
 export interface EchoDoneInput {
