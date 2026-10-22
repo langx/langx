@@ -48,6 +48,28 @@ export function translateTargetFor(profile: {
   return candidates[0]
 }
 
+/**
+ * The language somebody is learning that this conversation is most likely in.
+ *
+ * The first one they are learning that the other person speaks natively — a
+ * Turkish learner of English talking to an English native is, give or take,
+ * talking English — or else the first one they are learning. `undefined` for
+ * somebody learning nothing.
+ *
+ * Two readers: Copilot's Say it, which answers in it, and an Echo card kept
+ * from a sentence already in the reader's own language, whose back becomes
+ * that sentence in it. One definition, so the two cannot disagree about which
+ * language a chat is in. Not checked against the translatable table here:
+ * each caller decides what to do with a language a machine cannot write.
+ */
+export function learningTargetFor(
+  learning: readonly { code: string }[] | undefined,
+  partnerNative: readonly { code: string }[] | undefined,
+): string | undefined {
+  const theirs = new Set((partnerNative ?? []).map((language) => language.code))
+  return learning?.find((language) => theirs.has(language.code))?.code ?? learning?.[0]?.code
+}
+
 /** The languages the Settings row offers: the native ones with a written form. */
 export function translateTargetOptions(profile: { nativeLanguages: { code: string }[] }): string[] {
   return profile.nativeLanguages.map((l) => l.code).filter(isTranslatableLanguage)

@@ -45,8 +45,21 @@ export const ECHO_PRODUCTION_MAX_LENGTH = 40
  * And never for a card whose back is not a meaning — see `backAddsMeaning`.
  * The back is the prompt here, so a back that is the sentence again would put
  * the answer on screen as the question, and an empty one would ask nothing.
+ *
+ * Nor for a card whose back is in a language being learned (`backLang`). Its
+ * front is in the reader's own language, so typing it would be writing a
+ * sentence they already speak, prompted by the one they are learning — the
+ * exercise backwards. Such a card is reviewed by recognition only, which for
+ * it is already the useful direction: their own sentence, then recalling how
+ * it is said.
  */
-export function asksProduction(srs: EchoSrs, front: string, back: string): boolean {
+export function asksProduction(
+  srs: EchoSrs,
+  front: string,
+  back: string,
+  backLang?: string,
+): boolean {
+  if (backLang) return false
   if (srs.state !== 'review') return false
   if (front.trim().length > ECHO_PRODUCTION_MAX_LENGTH) return false
   if (!backAddsMeaning(front, back)) return false

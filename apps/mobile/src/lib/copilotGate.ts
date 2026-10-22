@@ -1,4 +1,4 @@
-import { COPILOT_RULES, type CopilotStatus } from '@langx/shared'
+import { COPILOT_RULES, learningTargetFor, type CopilotStatus } from '@langx/shared'
 
 /**
  * What the app does when somebody reaches for Copilot.
@@ -53,11 +53,9 @@ export function copilotOffers(
  * the other person speaks natively — the one this chat is most likely in —
  * or else the first one they are learning. None for somebody learning
  * nothing, and then the row is not offered.
+ *
+ * Defined in `@langx/shared` as `learningTargetFor`, because an Echo card
+ * made from a sentence in the reader's own language picks the same language
+ * on the server.
  */
-export function copilotTargetLanguage(
-  learning: readonly { code: string }[] | undefined,
-  partnerNative: readonly { code: string }[] | undefined,
-): string | undefined {
-  const theirs = new Set((partnerNative ?? []).map((language) => language.code))
-  return learning?.find((language) => theirs.has(language.code))?.code ?? learning?.[0]?.code
-}
+export const copilotTargetLanguage = learningTargetFor
