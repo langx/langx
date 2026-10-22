@@ -502,6 +502,7 @@ export const ar: Localized<EnMessages> = {
     packNext: 'التالي',
     autoplayOn: 'التشغيل التلقائي مفعّل',
     autoplayOff: 'التشغيل التلقائي متوقف',
+    autoplay: 'تشغيل تلقائي',
     voiceFemale: 'مُركَّب · أنثوي',
     voiceMale: 'مُركَّب · ذكوري',
     voiceSynthesised: 'مُركَّب',

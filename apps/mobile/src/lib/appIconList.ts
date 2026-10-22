@@ -64,7 +64,7 @@ export function isProIcon(icon: AppIcon): boolean {
 /**
  * What happens to a Pro icon on the home screen when Pro ends.
  *
- * `true` (the decision of 20 October 2026): it stays. Switching an icon makes
+ * `true` (built 20 October 2026, confirmed by Behic 21 October): it stays. Switching an icon makes
  * iOS and Android show a notice ("You have changed the icon for LangX"), and
  * one that arrives unasked, the moment a plan ends, reads like the app taking
  * something back. The picker still marks it current, with its Pro tag, and

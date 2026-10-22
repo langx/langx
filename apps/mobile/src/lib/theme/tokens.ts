@@ -375,6 +375,15 @@ const v3LightColors = {
    * on the ground, and `line` all but vanishes there. Not a text colour.
    */
   track: '#dcdcd5',
+  /**
+   * The unfilled bars of a level glyph (`LevelBars`), drawn beside `fg` ones.
+   * Not `track`: in dark, `track` sat at 1.35:1 on `surface`, so a learner's
+   * level read as its filled bars alone. Dark lifts it to clear 3:1 against
+   * the ground and against the filled bars; light keeps `track`'s value.
+   */
+  levelRest: '#dcdcd5',
+  /** The same, on a selected level cell's `pill`, beside `pillText` bars. */
+  levelRestOnPill: '#5a5f69',
   /** The selected tab's pill. */
   tabOn: '#e8e7e1',
   /** Echo's tab and Echo's own surfaces: set apart by tint, never by size. */
@@ -470,6 +479,10 @@ const v3DarkColors: V3Colors = {
   surface: '#1a1c21',
   line: '#2a2d33',
   track: '#2f333b',
+  // One grey between the ground and the ink: 3.4:1 on `surface`, 3.9:1 on
+  // `bg`, 4.5:1 under `fg` and on `pill`, 3.6:1 under `pillText`.
+  levelRest: '#6b707a',
+  levelRestOnPill: '#6b707a',
   tabOn: '#2a2d33',
   echoTint: '#1c2748',
   echoText: '#8aa6ff',

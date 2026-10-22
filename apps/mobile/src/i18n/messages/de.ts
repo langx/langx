@@ -466,6 +466,7 @@ export const de: Localized<EnMessages> = {
     packNext: 'Als Nächstes',
     autoplayOn: 'Automatische Wiedergabe an',
     autoplayOff: 'Automatische Wiedergabe aus',
+    autoplay: 'Autoplay',
     voiceFemale: 'Synthetisch · weiblich',
     voiceMale: 'Synthetisch · männlich',
     voiceSynthesised: 'Synthetisch',

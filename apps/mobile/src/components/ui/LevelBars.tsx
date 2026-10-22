@@ -12,7 +12,7 @@ interface LevelBarsProps {
   native?: boolean
   /** Bar colour for the filled steps; defaults to `accent` (v3: `fg`). */
   color?: string
-  /** Colour for the unfilled steps; defaults to `border` (v3: `track`). */
+  /** Colour for the unfilled steps; defaults to `border` (v3: `levelRest`). */
   restColor?: string
   size?: number
 }
@@ -33,7 +33,7 @@ export function LevelBars({ level, native = false, color, restColor, size = 14 }
   // blue is held to one use a screen there, and a row of level
   // glyphs would spend it on decoration. Callers that pass a colour keep it.
   const on = color ?? (v3Look ? v3.colors.fg : colors.accent)
-  const off = restColor ?? (v3Look ? v3.colors.track : colors.border)
+  const off = restColor ?? (v3Look ? v3.colors.levelRest : colors.border)
 
   // Heights ascend 5→size in even steps, matching the design's 5/8/11/14(/17).
   const step = (size - 5) / (bars - 1)

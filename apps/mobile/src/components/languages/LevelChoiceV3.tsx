@@ -43,7 +43,7 @@ export function LevelChoiceV3({
             <LevelBars
               level={option.level}
               color={on ? v3.colors.pillText : v3.colors.fg}
-              restColor={on ? v3.colors.muted : v3.colors.track}
+              restColor={on ? v3.colors.levelRestOnPill : v3.colors.levelRest}
               size={12}
             />
             <Text numberOfLines={1} style={[styles.label, on && styles.labelOn]}>

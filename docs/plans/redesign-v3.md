@@ -276,8 +276,8 @@ then the sibling copies.
 Linocut) and nine Pro (Iznik Tile, Lacquer Gold, Stained Glass, Night Hoop,
 Indigo Dye, Marquetry, Mosaic, Origami Fold, Enamel Pin). The old Pro and New
 Year icons leave the picker; their native entries stay for one release. When
-Pro lapses, the icon stays and shows as locked in the picker (the builder's
-default; Behic may change it). Alternate icons are native assets, so they move
+Pro lapses, the icon stays and shows as locked in the picker (decided by
+Behic, 21 Oct). Alternate icons are native assets, so they move
 the fingerprint and ship only in the 3.0 binary, never by OTA.
 
 **Default avatars.** 144 crafted portraits — 48 in each of three pools, women,
@@ -363,6 +363,7 @@ PR.
 | 20 Oct 2026 | Free trial           | A one-week free trial on monthly and yearly with 3.0; Behic sets the store offers, the app reads the trial from the store                                                                                                                                                                              |
 | 20 Oct 2026 | 3.0 gates            | New iOS and Android store screenshots in the v3 look before the 3.0 submission; langx.io in the v3 look ships with 3.0                                                                                                                                                                                 |
 | 20 Oct 2026 | New work             | Badges, sticker packs (three redrawn, six new), app icons (free and Pro) and default avatars in the v3 look; the operator panel last                                                                                                                                                                   |
+| 21 Oct 2026 | v3 open items        | A Pro icon stays when Pro ends; "Qalam stickers" and "Polyglot stickers" keep their names; Echo's switch reads "Autoplay" with the state in its icon (the full label for screen readers); dark level bars clear 3:1; Polyglot lettering checked per language                                           |
 
 ## Open questions
 

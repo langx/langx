@@ -525,6 +525,12 @@ export const en = {
      */
     autoplayOn: 'Autoplay on',
     autoplayOff: 'Autoplay off',
+    /**
+     * The words on that switch in the v3 header: the speaker icon shows the
+     * state, so the visible label is only the name and stays short in every
+     * locale. Screen readers keep `autoplayOn` / `autoplayOff`.
+     */
+    autoplay: 'Autoplay',
     voiceFemale: 'Synthesised · female',
     voiceMale: 'Synthesised · male',
     voiceSynthesised: 'Synthesised',
