@@ -70,7 +70,7 @@ import { track } from '../lib/analytics'
 import { replyDraftFor } from '../lib/commentThread'
 import { foldCorrection } from '../lib/feedCache'
 import { asksOf } from '../lib/postAsks'
-import { postOnScreen } from '../lib/postFromFeed'
+import { postGone, postOnScreen } from '../lib/postFromFeed'
 import { replyRefusalKey } from '../lib/postRefusal'
 import { goBackTo, openLikers, openProfile } from '../lib/navigation'
 import { relativeTime } from '../lib/format'
@@ -404,7 +404,18 @@ export function PostScreen({
    * earlier visit — would draw it as live. That goes to the full-screen
    * failure below, as a cold open of it would.
    */
-  const gone = query.error instanceof ApiRequestError && query.error.status === 404
+  const notFound = query.error instanceof ApiRequestError && query.error.status === 404
+  // Remembered past the next error, which replaces it — see `postGone`.
+  const [lastNotFound, setLastNotFound] = useState<{ id: string; at: number } | null>(null)
+  const notFoundAt = query.errorUpdatedAt
+  useEffect(() => {
+    if (notFound) setLastNotFound({ id, at: notFoundAt })
+  }, [notFound, id, notFoundAt])
+  const gone = postGone(
+    notFound,
+    lastNotFound?.id === id ? lastNotFound.at : undefined,
+    query.dataUpdatedAt,
+  )
   const post = postOnScreen(query.data?.pages[0]?.post, fromFeed, gone)
   const asks = post ? asksOf(post) : []
   const correcting = asks.includes('correction')

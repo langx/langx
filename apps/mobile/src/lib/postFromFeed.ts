@@ -52,3 +52,22 @@ export function postOnScreen<T>(
   if (gone) return undefined
   return fetched ?? fromFeed
 }
+
+/**
+ * Whether the post has answered 404 more recently than it answered with
+ * itself.
+ *
+ * Not just "is the latest error a 404": React Query keeps one error, the
+ * latest, so a refetch that fails afterwards for any other reason — a tunnel,
+ * a 503 — replaced the 404, and the cached answer from before the deletion
+ * was drawn as the live post again. The screen remembers when it last saw a
+ * 404 and passes that in; only a later successful answer brings the post back.
+ */
+export function postGone(
+  notFoundNow: boolean,
+  lastNotFoundAt: number | undefined,
+  dataUpdatedAt: number,
+): boolean {
+  if (notFoundNow) return true
+  return lastNotFoundAt !== undefined && lastNotFoundAt > dataUpdatedAt
+}
