@@ -688,4 +688,8 @@ export const fr: Localized<ServerMessages> = {
       'Bonjour ! Merci d’avoir signalé cette réponse de Copilot — on l’a lue, et les signalements comme le tien nous aident à améliorer Copilot.',
     issue: 'Tu peux suivre ça ici : {url}',
   },
+  cards: {
+    badgeKicker: 'Nouveau badge',
+    badgeEarnedOn: 'Gagné le {date}',
+  },
 }

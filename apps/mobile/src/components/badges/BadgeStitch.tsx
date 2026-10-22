@@ -11,7 +11,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import Svg, { Path } from 'react-native-svg'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
-import { patchOutline } from '../../lib/badgePatch/geometry'
+import { patchOutline } from '@langx/shared'
 import { DELAY, EASE_OUT, TIMING } from '../../lib/theme/motion'
 import { BadgePatch } from './BadgePatch'
 

@@ -682,4 +682,8 @@ export const es: Localized<ServerMessages> = {
       '¡Hola! Gracias por reportar esta respuesta de Copilot — la hemos leído, y reportes como el tuyo nos ayudan a mejorar Copilot.',
     issue: 'Puedes seguirlo aquí: {url}',
   },
+  cards: {
+    badgeKicker: 'Insignia nueva',
+    badgeEarnedOn: 'Conseguida el {date}',
+  },
 }

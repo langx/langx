@@ -39,6 +39,12 @@ export const createShareCardSchema = z.object({
    * gets the plain card rather than a 400.
    */
   recap: z.lazy(() => recapCardInputSchema).optional(),
+  /**
+   * Which badge a badge card is of, so the server can draw its patch. Only
+   * read when `kind` is `badge`, and optional for the reason `recap` is: a
+   * build from before it still gets the plain card.
+   */
+  badge: z.lazy(() => badgeCardInputSchema).optional(),
 })
 export type CreateShareCardInput = z.infer<typeof createShareCardSchema>
 
@@ -289,3 +295,18 @@ export const recapCardInputSchema = z.object({
   languages: z.string().trim().min(1).max(60).optional(),
 })
 export type RecapCardInput = z.infer<typeof recapCardInputSchema>
+
+/**
+ * What turns a badge card from a name on a panel into the badge itself.
+ *
+ * Only the id and the reader's language. Whether the badge is earned, when,
+ * and whose name goes under it are read on the server, from the same
+ * derivation `GET /me/badges` uses: a card is a claim about who did the
+ * thing, so none of it is taken from the body. The badge's own name is still
+ * the request's `headline`, worded on the device like every other card.
+ */
+export const badgeCardInputSchema = z.object({
+  id: z.string().trim().min(1).max(40),
+  locale: localeSchema,
+})
+export type BadgeCardInput = z.infer<typeof badgeCardInputSchema>

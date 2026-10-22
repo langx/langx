@@ -490,6 +490,42 @@ describe('share cards', () => {
     }
   }, 60_000)
 
+  it('draws a badge the caller has earned, and refuses one they have not', async () => {
+    // `streak.longest` is what the streak badges read; 7 earns the first.
+    await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ handle: 'cardhaver' }, { $set: { 'streak.longest': 7 } })
+
+    const earned = await make({
+      kind: 'badge',
+      shape: 'square',
+      headline: 'Candle',
+      caption: 'badge earned on LangX',
+      badge: { id: 'streak.7', locale: 'ar' },
+    })
+    expect(earned.statusCode, earned.body).toBe(201)
+
+    // A badge further up the same ladder: the picture would be a claim with
+    // this handle on it, so it is refused rather than drawn.
+    const unearned = await make({
+      kind: 'badge',
+      shape: 'square',
+      headline: 'Bonfire',
+      caption: 'badge earned on LangX',
+      badge: { id: 'streak.30', locale: 'en' },
+    })
+    expect(unearned.statusCode, unearned.body).toBe(400)
+    // An id that is not a badge at all, the same.
+    const unknown = await make({
+      kind: 'badge',
+      shape: 'square',
+      headline: 'Nothing',
+      caption: 'badge earned on LangX',
+      badge: { id: 'nobody.knows', locale: 'en' },
+    })
+    expect(unknown.statusCode, unknown.body).toBe(400)
+  }, 60_000)
+
   it('draws every shape at the size it claims', async () => {
     // The three ratios exist so a card is not cropped or letterboxed by the
     // place it is posted; a shape that renders at the wrong size defeats that

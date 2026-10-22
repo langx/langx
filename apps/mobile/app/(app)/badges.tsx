@@ -1,3 +1,4 @@
+import type { EarnedBadge } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
 import { useMemo, useState } from 'react'
 import { Text } from 'react-native'
@@ -11,7 +12,7 @@ import { goBackTo } from '../../src/lib/navigation'
 import { ShareCardSheet, type ShareCardRequest } from '../../src/components/ShareCardSheet'
 import { badgeShareText } from '../../src/lib/shareText'
 import { makeStyles } from '../../src/lib/theme'
-import { useT } from '../../src/i18n'
+import { useLocale, useT } from '../../src/i18n'
 import { usePullToRefresh } from '../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useV3Home } from '../../src/hooks/useV3Home'
@@ -50,6 +51,7 @@ function BadgesScreen() {
   const [card, setCard] = useState<ShareCardRequest | null>(null)
   const styles = useStyles()
   const t = useT()
+  const { locale } = useLocale()
 
   const { handle: of, from } = useLocalSearchParams<{ handle?: string; from?: string }>()
   const me = useMe()
@@ -103,12 +105,16 @@ function BadgesScreen() {
           {...(next ? { next } : {})}
           {...(mine && handle
             ? {
-                onShare: (label: string) =>
+                onShare: (label: string, badge: EarnedBadge) =>
                   setCard({
                     kind: 'badge',
                     headline: label,
                     caption: t('share.cardBadgeCaption'),
                     fallback: badgeShareText(t, { label, handle }),
+                    // The patch, drawn on the card. Not for a tokens badge,
+                    // which the server refuses to draw: its name is an
+                    // amount, so it keeps the plain card it always had.
+                    ...(badge.kind === 'tokens' ? {} : { badge: { id: badge.id, locale } }),
                   }),
               }
             : {})}

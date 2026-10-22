@@ -718,4 +718,8 @@ export const ru: Localized<ServerMessages> = {
       'Здравствуйте! Спасибо, что сообщили об этом ответе Copilot — мы прочитали, и такие сообщения помогают нам улучшать Copilot.',
     issue: 'Следить можно здесь: {url}',
   },
+  cards: {
+    badgeKicker: 'Новый значок',
+    badgeEarnedOn: 'Получен {date}',
+  },
 }

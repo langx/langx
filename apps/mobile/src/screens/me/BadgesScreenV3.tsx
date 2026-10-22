@@ -77,7 +77,7 @@ export function BadgesScreenV3() {
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
-  const { isRtl } = useLocale()
+  const { isRtl, locale } = useLocale()
   const black = useV3Fonts()
 
   const { handle: of, from } = useLocalSearchParams<{ handle?: string; from?: string }>()
@@ -158,13 +158,16 @@ export function BadgesScreenV3() {
    */
   const waitingCard = useRef<ShareCardRequest | null>(null)
 
-  const share = (label: string) => {
+  const share = (label: string, id: string | null) => {
     if (!handle) return
     const request: ShareCardRequest = {
       kind: 'badge',
       headline: label,
       caption: t('share.cardBadgeCaption'),
       fallback: badgeShareText(t, { label, handle }),
+      // The id is what puts the patch on the card; the server reads whether
+      // and when it was earned for itself.
+      ...(id ? { badge: { id, locale } } : {}),
     }
     setOpenId(null)
     // Sharing is one way of closing the earned sheet, so it marks it seen too.
@@ -239,7 +242,7 @@ export function BadgesScreenV3() {
         mine={mine}
         onClose={() => setOpenId(null)}
         onDismiss={sheetGone}
-        onShare={share}
+        onShare={(label) => share(label, openId)}
         onAction={(action) => {
           setOpenId(null)
           go(action)
@@ -251,7 +254,11 @@ export function BadgesScreenV3() {
         rung={shown?.rung ?? null}
         onClose={closeMoment}
         onDismiss={sheetGone}
-        onShare={shown && shown.rung.badge.kind !== 'tokens' ? share : undefined}
+        onShare={
+          shown && shown.rung.badge.kind !== 'tokens'
+            ? (label) => share(label, shown.rung.badge.id)
+            : undefined
+        }
         pin={moment ? pinFor(moment) : undefined}
       />
       <ShareCardSheet request={card} onClose={() => setCard(null)} />

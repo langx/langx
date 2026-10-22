@@ -676,4 +676,8 @@ export const ptBR: Localized<ServerMessages> = {
       'Oi! Obrigado por avisar sobre esta resposta do Copilot — a gente leu, e avisos como o seu ajudam a melhorar o Copilot.',
     issue: 'Você pode acompanhar aqui: {url}',
   },
+  cards: {
+    badgeKicker: 'Insígnia nova',
+    badgeEarnedOn: 'Conquistada em {date}',
+  },
 }

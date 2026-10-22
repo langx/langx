@@ -54,7 +54,7 @@ export async function fetchCardAvatar(
  * a story) in its full cut. Undefined for a photo, an official account or the
  * old style, and the card draws the handle's initial as before.
  */
-async function drawnCardAvatar(owner: FaceOwner): Promise<string | undefined> {
+export async function drawnCardAvatar(owner: FaceOwner): Promise<string | undefined> {
   const rev = drawnFaceRev(owner)
   const png = rev ? await drawnFacePng(rev, 160, 120) : null
   return png ? `data:image/png;base64,${png.toString('base64')}` : undefined

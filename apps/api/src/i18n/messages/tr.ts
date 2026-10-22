@@ -662,4 +662,8 @@ export const tr: Localized<ServerMessages> = {
       'Merhaba! Bu Copilot yanıtını bildirdiğin için teşekkürler — okuduk; böyle bildirimler Copilot’u iyileştirmemize yardım ediyor.',
     issue: 'Buradan takip edebilirsin: {url}',
   },
+  cards: {
+    badgeKicker: 'Yeni rozet',
+    badgeEarnedOn: '{date} tarihinde kazanıldı',
+  },
 }

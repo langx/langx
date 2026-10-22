@@ -681,4 +681,8 @@ export const de: Localized<ServerMessages> = {
       'Hallo! Danke, dass du diese Copilot-Antwort gemeldet hast — wir haben sie gelesen, und Meldungen wie deine helfen uns, Copilot besser zu machen.',
     issue: 'Hier kannst du den Stand verfolgen: {url}',
   },
+  cards: {
+    badgeKicker: 'Neues Abzeichen',
+    badgeEarnedOn: 'Verdient am {date}',
+  },
 }

@@ -718,4 +718,8 @@ export const ar: Localized<ServerMessages> = {
       'مرحبًا! شكرًا على الإبلاغ عن إجابة Copilot هذه — قرأناها، وبلاغات مثل بلاغك تساعدنا على تحسين Copilot.',
     issue: 'يمكنك متابعتها هنا: {url}',
   },
+  cards: {
+    badgeKicker: 'شارة جديدة',
+    badgeEarnedOn: 'حُصّلت في {date}',
+  },
 }
