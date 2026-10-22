@@ -108,11 +108,11 @@ export async function rememberPendingReviews(
   await update((snapshot) => withPending(snapshot, reviews), now)
 }
 
-/** Forgets the grades the server has accepted. */
+/** Forgets the grades the server has accepted, and their cards from the saved queue. */
 export async function forgetPendingReviews(
-  reviewIds: readonly string[],
+  accepted: readonly { reviewId: string; cardId: string }[],
   now: Date = new Date(),
 ): Promise<void> {
-  if (reviewIds.length === 0) return
-  await update((snapshot) => withoutPending(snapshot, reviewIds), now)
+  if (accepted.length === 0) return
+  await update((snapshot) => withoutPending(snapshot, accepted), now)
 }

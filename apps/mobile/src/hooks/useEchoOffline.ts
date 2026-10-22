@@ -51,7 +51,7 @@ export function useEchoOffline(summary: { total: number } | undefined): {
         })),
       })
       .then(async () => {
-        await forgetPendingReviews(pending.map((item) => item.reviewId))
+        await forgetPendingReviews(pending)
         setSaved(await readEchoSnapshot())
       })
       .catch(() => {

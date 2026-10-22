@@ -112,10 +112,27 @@ export function withPending(
   return { ...snapshot, pending: [...byId.values()] }
 }
 
-/** Drops the grades the server has now accepted, by id. */
-export function withoutPending(snapshot: EchoSnapshot, reviewIds: readonly string[]): EchoSnapshot {
-  const done = new Set(reviewIds)
-  return { ...snapshot, pending: snapshot.pending.filter((item) => !done.has(item.reviewId)) }
+/**
+ * Drops the grades the server has now accepted, and their cards from the
+ * saved queue.
+ *
+ * The cards as well, because the saved queue carries the `srs` the deck was
+ * drawn with. Once the server holds a card's grade that copy says "due" about
+ * a card that no longer is, and a session opened later with no network would
+ * ask it again and send a second grade — the card moved twice, and early.
+ * What remains is still due; the next online fetch replaces the whole list.
+ */
+export function withoutPending(
+  snapshot: EchoSnapshot,
+  accepted: readonly { reviewId: string; cardId: string }[],
+): EchoSnapshot {
+  const done = new Set(accepted.map((item) => item.reviewId))
+  const answered = new Set(accepted.map((item) => item.cardId))
+  return {
+    ...snapshot,
+    cards: snapshot.cards.filter((card) => !answered.has(card._id)),
+    pending: snapshot.pending.filter((item) => !done.has(item.reviewId)),
+  }
 }
 
 /**

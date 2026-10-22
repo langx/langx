@@ -112,7 +112,21 @@ describe('grades waiting to reach the server', () => {
 
   it('forgets only what the server accepted', () => {
     const snapshot = withPending(emptySnapshot(NOW), [pending('r-1', 'c-1'), pending('r-2', 'c-2')])
-    expect(withoutPending(snapshot, ['r-1']).pending.map((p) => p.reviewId)).toEqual(['r-2'])
+    expect(
+      withoutPending(snapshot, [{ reviewId: 'r-1', cardId: 'c-1' }]).pending.map((p) => p.reviewId),
+    ).toEqual(['r-2'])
+  })
+
+  /*
+   * The saved queue is the deck a session was drawn from, srs and all. Once
+   * the server has a card's grade that copy is stale: the card is no longer
+   * due, and a session opened later with no network asked it again and sent
+   * a second grade — moving it twice, and early.
+   */
+  it('takes a card the server has a grade for out of the saved queue', () => {
+    const snapshot = { ...emptySnapshot(NOW), cards: [card('c-1'), card('c-2')] }
+    const after = withoutPending(snapshot, [{ reviewId: 'r-1', cardId: 'c-1' }])
+    expect(offlineQueue(after, NOW).map((c) => c._id)).toEqual(['c-2'])
   })
 
   it('never drops a grade for being old — it is work somebody did', () => {
