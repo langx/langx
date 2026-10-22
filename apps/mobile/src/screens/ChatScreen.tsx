@@ -317,9 +317,13 @@ export function ChatScreen({
    * pushed without animating, so only the entrance is silent.
    */
   const navigation = useNavigation<NativeStackNavigationProp<Record<string, object | undefined>>>()
+  const reduceMotion = useReduceMotion()
   useEffect(() => {
-    if (inPlace && !embedded) navigation.setOptions({ animation: 'slide_from_right' })
-  }, [inPlace, embedded, navigation])
+    // Under reduced motion the pop is a cut too, as every other push is then.
+    if (inPlace && !embedded) {
+      navigation.setOptions({ animation: reduceMotion ? 'none' : 'slide_from_right' })
+    }
+  }, [inPlace, embedded, navigation, reduceMotion])
   const me = useMe()
   const queryClient = useQueryClient()
   const messages = useMessages(conversationId)
@@ -611,6 +615,20 @@ export function ChatScreen({
   )
   const rows = useMemo(() => messageRows(threadItems, unreadMark), [threadItems, unreadMark])
   /*
+   * The newest message row as of the last commit. Only a row drawn ahead of
+   * it — newer than anything already on screen — may play its entrance:
+   * history loading behind it never does, and on mount nothing is ahead of
+   * anything, so a thread opened or reopened is simply there.
+   */
+  const newestSeen = useRef<string | null>(null)
+  const newestKey = rows.find((row) => row.kind === 'message')?.key ?? null
+  useEffect(() => {
+    newestSeen.current = newestKey
+  }, [newestKey])
+  const seenAt =
+    newestSeen.current === null ? 0 : rows.findIndex((row) => row.key === newestSeen.current)
+  const aheadOfSeen = Math.max(0, seenAt)
+  /*
    * The newest call's row, which alone offers to call again. Every row
    * offering it turned a thread of six calls into six identical links, and
    * the newest is the only one anybody means.
@@ -847,7 +865,6 @@ export function ChatScreen({
    */
   const myIdRef = useRef(me.data?._id)
   myIdRef.current = me.data?._id
-  const reduceMotion = useReduceMotion()
   const [burst, setBurst] = useState<Burst | null>(null)
   const burstPlaying = useRef(false)
   const burstPlayed = useRef(new Set<string>())
@@ -3289,7 +3306,7 @@ export function ChatScreen({
     [awayFrom, newestId],
   )
   const renderRow = useCallback(
-    ({ item: row }: ListRenderItemInfo<MessageRow>) =>
+    ({ item: row, index }: ListRenderItemInfo<MessageRow>) =>
       row.kind === 'day' ? (
         <View style={styles.dayRow}>
           <Text style={[styles.dayLabel, v3Thread && v3Styles.dayChip]}>
@@ -3306,7 +3323,11 @@ export function ChatScreen({
         // A stand-in has no server id yet, so a menu or a reply on it
         // would have nothing to act on until the server's copy
         // arrives.
-        <ArrivalEntrance play={v3Thread && !reduceMotion && arrivals.take(row.key, Date.now())}>
+        <ArrivalEntrance
+          play={
+            v3Thread && !reduceMotion && index < aheadOfSeen && arrivals.take(row.key, Date.now())
+          }
+        >
           <WithRewardChips
             rewards={v3Thread ? rewards[row.message._id] : undefined}
             partnerName={partnerName}
@@ -3377,6 +3398,7 @@ export function ChatScreen({
       v3Styles,
       reduceMotion,
       arrivals,
+      aheadOfSeen,
       t,
       locale,
       v3Thread,

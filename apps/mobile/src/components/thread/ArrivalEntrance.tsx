@@ -3,7 +3,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 import { EASE_OUT } from '../../lib/theme/motion'
 
 /** How far a new bubble rises into place, in points. */
-const RISE = 8
+const RISE = 10
 /** Short: a chat is read as it arrives, and nothing should wait on the motion. */
 const ENTRANCE = { duration: 180, easing: EASE_OUT }
 
@@ -13,8 +13,9 @@ const ENTRANCE = { duration: 180, easing: EASE_OUT }
  *
  * Rule 13 holds: nothing animates the list or the row's height — only this
  * row's transform and opacity, on the UI thread, started from an effect.
- * Whether to play is decided once, on mount, by the caller (`play`, from the
- * screen's live-arrival map), and a row that does not play renders its
+ * Whether to play is decided once, on mount, by the caller (`play`: the row
+ * arrived live, per the screen's arrival map, and is newer than the newest
+ * row already on screen), and a row that does not play renders its
  * children with no animated node around them, so history costs nothing.
  *
  * Bottom to top on screen even though the thread is an inverted list: the
