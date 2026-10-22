@@ -44,6 +44,12 @@ Change the copy here first and carry it over; nothing checks the two agree.
 Play has no Russian or Arabic listing, so the file has no Play entry for
 either.
 
+`docs/store/3.0-metadata.json` is the 3.0 draft in the same form, English only
+for now (App Store en-US; Play en-US, with en-GB's release notes). It is a
+draft: Behic uploads it himself, and the other languages are translated from
+it first. What each new claim in it rests on, and which switch has to be on for
+it to be true, is under _3.0 (draft)_ in _What's new_ below.
+
 Why each language's App Store keywords are what they are, and the custom
 product pages, the Product Page Optimization test and the screenshot order
 built on them, are in [`app-store-growth.md`](app-store-growth.md). A keyword
@@ -72,9 +78,13 @@ Alternative", which named a competitor (App Review guideline 2.3.7).
 **Play short description (80)**
 `Practice a language by talking with people learning yours.`
 
-**Description**
+**Description** — 3.0 draft, English only. The seven other languages below
+still carry 2.9's description and need translating from this one before 3.0 is
+submitted; `3.0-metadata.json` has the plain form.
 
 > LangX matches you with people who speak the language you're learning and are learning the language you speak. No lessons, no homework — just real conversations with someone who needs exactly what you can offer.
+>
+> **A new look, built around today.** Home opens on the one thing that matters first — who is waiting for your reply, your streak, the Echo cards that are ready — then Chats, Echo, People and Me.
 >
 > **Matched both ways.** You only see people whose languages fit yours in both directions, so every conversation has something in it for both of you.
 >
@@ -84,9 +94,11 @@ Alternative", which named a competitor (App Review guideline 2.3.7).
 >
 > **Voice and video calls.** Call the people you chat with, free on every plan. A call rings like a phone call even when the app is closed, and one switch turns calls off.
 >
-> **A reason to come back.** Keep a daily streak, earn tokens for talking and teaching, and see where you land on the weekly, monthly, yearly and all-time boards.
+> **Copilot, in beta.** An AI helper inside your chats: check a sentence before you send it, find how to say something in the language you're learning, get a message or a correction explained, or ask for reply ideas. Its answers are marked as AI, and nothing is sent unless you send it. Copilot is rolling out to a few people at a time, for members 18 and over.
 >
-> **Free to use, always.** Reply to every message you receive with no limits, and correct as many as you like. Every day the free plan gives you 5 new conversations and 20 translations. Photo and voice messages, up to 500 a day, and 10 profile photos are the same on every plan.
+> **A reason to come back.** Keep a daily streak, earn tokens for talking and teaching, and see where you land on the weekly, monthly, yearly and all-time boards. Spend your tokens on sticker packs and profile frames — ten sticker packs, seven of them new.
+>
+> **Free to use, always.** Reply to every message you receive with no limits, and correct as many as you like. Every day the free plan gives you 5 new conversations and 20 translations, and a hello to someone who joined LangX this week doesn't count toward them (up to 3 a day, between members 18 and over). Photo and voice messages, up to 500 a day, and 10 profile photos are the same on every plan.
 >
 > **LangX Pro is one plan with everything:**
 > • Unlimited new conversations
@@ -99,10 +111,11 @@ Alternative", which named a competitor (App Review guideline 2.3.7).
 > • Send in their language: write in yours, and both arrive
 > • Export your saved phrases
 > • A boosted profile in Discover
+> • Nine more app icons
 >
 > Your first subscription, monthly or yearly, starts with a free week.
 >
-> **Or get Pro for free.** Invite three friends who start talking on LangX and you get a month of Pro. A 100-day streak earns you a month, a 365-day streak three. Have a gift code? Enter it on the Plans screen.
+> **Or get Pro for free.** New to LangX and 18 or over? Your first week comes with Pro, and practicing every day that week keeps it for a second. Invite a friend, and when they start talking on LangX you each get a week of Pro. A 7-day streak earns a week, 100 days a month, 365 days three. Have a gift code? Enter it on the Plans screen.
 >
 > LangX is open source (BSD-3) and can be self-hosted.
 >
@@ -494,6 +507,61 @@ Alternative", which named a competitor (App Review guideline 2.3.7).
 ---
 
 ## What's new (release notes)
+
+### 3.0 (draft, English only)
+
+3.0 is the redesign release: every screen in the v3 look (`flags.v3Home`), with
+the features that were built behind switches for it. The notes below are true
+only once these switches are on in production — they all start off in
+`DEFAULT_APP_CONFIG`, and Behic turns them on with the release:
+
+| Claim                                                                    | Switch                                        | What it rests on                                                                                                                                           |
+| ------------------------------------------------------------------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The new look; Home, Chats, Echo, People, Me                              | `v3Home`                                      | `useV3Home`; the Home strings in `en.ts` (`home.*`)                                                                                                        |
+| A first week of Pro for a new account, 18+; a second for 7 practice days | `proWeek`                                     | `PRO_WEEK_RULES`; `decisions.md` → _The Pro Week_ (never a guest, a v1 account, a minor or a subscriber)                                                   |
+| Invite a friend, a week of Pro each                                      | `giveAWeek`                                   | `PRO_GIFT_RULES.giveAWeek` (inviter capped at 12 weeks a year, a value Behic has still to confirm); activation is a two-way conversation with someone else |
+| A hello to a newcomer is free                                            | `newcomerHello`                               | `NEWCOMER_HELLO_RULES`: joined in the last 7 days, 3 a day, adults at both ends                                                                            |
+| Copilot, beta, rolling out                                               | `copilotEnabled`, per-account `copilotAccess` | `COPILOT_RULES` (18+); `decisions.md` → _Copilot v1_. See the gate in `3.0-app-review-notes.md` before keeping this claim                                  |
+| Ten sticker packs, seven new                                             | none                                          | `COSMETICS` in `packages/shared/src/cosmetics.ts`: Paper Talk, Margin Notes, Polyglot, Study Desk, Night Owl, Qalam, Shared Table at 1,500 tokens          |
+| Six new badges; 17 app icons, nine with Pro                              | none                                          | #1897; `APP_ICONS` and `PRO_ICONS` in `appIconList.ts` (native, so only in the 3.0 binary)                                                                 |
+| Calls and the chat camera in the new look                                | `v3Home`                                      | #1874, #1887                                                                                                                                               |
+| A 7-day streak earns a week of Pro                                       | none                                          | `PRO_GIFT_RULES.streak`, live since 7 October (the 2.9 copy left it out)                                                                                   |
+| A free week on the first monthly or yearly subscription                  | store consoles                                | The offers Behic configures; the app reads the trial from the store (#1873), so a plan without one shows none                                              |
+
+**Not claimed, deliberately.** Giving a sticker pack to a chat partner
+(`stickerGifts`) is not on the 3.0 switch list, and promotional links to the
+paywall change nothing a reader would see. Pair streaks were in the concept
+but the 3.0 streak screen has none. The Pro Week is never called a free trial:
+that word is the store's, and it means a purchase.
+
+**App Store promotional text (170)**
+
+> LangX 3.0: a whole new look, a week of Pro when you join (18+), and a week each when a friend you invite starts talking. Copilot, our AI helper, is in beta.
+
+**App Store release notes**
+
+> LangX 3.0 is a new LangX.
+> A new look, everywhere. Home opens on the one thing that matters first: who is waiting for your reply, your streak, the Echo cards that are ready. Then Chats, Echo, People and Me.
+> New here and 18 or over? Your first week comes with Pro. Practice every day that week and Pro stays a second week.
+> Give a week, get a week: invite a friend, and when they start talking on LangX you each get a week of Pro.
+> A hello to someone who joined this week doesn't use one of your daily new chats (up to 3 a day, 18+).
+> Copilot, our AI helper, is in beta and rolling out: check a sentence, say it in the language you're learning, have a message explained, or ask for reply ideas.
+> Seven new sticker packs, six new badges, and 17 app icons to choose from.
+> Calls and the chat camera, redrawn in the new look.
+>
+> Coming back from the old app? Sign up with the email you used before - your username is waiting for you.
+
+**Play release notes (500)**, en-US and en-GB
+
+> LangX 3.0: a new look, everywhere. Home opens on who is waiting for your reply, your streak and your Echo cards.
+> New and 18+? Your first week comes with Pro.
+> Invite a friend: when they start talking, you each get a week of Pro.
+> Copilot, our AI helper, is in beta and rolling out.
+> New sticker packs, badges and app icons.
+>
+> Coming back from the old app? Sign up with the email you used before - your username is waiting for you.
+
+### 2.9
 
 These are **2.9's** notes. 2.9 is the calls release: the first build that
 carries voice and video calls to the phones (#1711) — the browser has had them
