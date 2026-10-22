@@ -225,8 +225,6 @@ export function GiftScreenV3() {
                   duration={DURATION.roll}
                   style={styles.amount}
                   numberOfLines={1}
-                  adjustsFontSizeToFit
-                  minimumFontScale={0.5}
                 />
                 <Text style={styles.amountUnit}>{t('gift.tokensUnit', { count: amount })}</Text>
               </>
@@ -347,11 +345,19 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[14],
   },
   chipText: { ...v3.type.caption, color: v3.colors.ink, fontWeight: '700' },
-  // Stretched, so the amount has the stage's width to fit into. Centred and
-  // shrink-wrapped, iOS's adjustsFontSizeToFit measured a zero-width line and
-  // drew "+13" at a few points tall on TestFlight 194.
+  // No adjustsFontSizeToFit on the amount. On iOS it measured the line while
+  // the reveal was still scaled and the count was still rolling, and drew
+  // "+13" a few points tall on TestFlight 194 and again on 195 even with the
+  // view stretched. An hourly gift is a few digits, which the numeral fits
+  // at full size, so the amount simply takes the stage's width.
   reveal: { alignItems: 'center', alignSelf: 'stretch', gap: v3.space[4] },
-  amount: { ...v3.type.numeral, color: v3.colors.ink, lineHeight: 84, textAlign: 'center' },
+  amount: {
+    ...v3.type.numeral,
+    alignSelf: 'stretch',
+    color: v3.colors.ink,
+    lineHeight: 84,
+    textAlign: 'center',
+  },
   amountUnit: { ...v3.type.headline, color: v3.colors.ink, textAlign: 'center' },
   note: {
     ...v3.type.caption,
