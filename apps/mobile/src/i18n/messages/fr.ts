@@ -2444,6 +2444,7 @@ export const fr: Localized<EnMessages> = {
     signInUnlinked: 'Déconnecté.',
     signInLinkFailed: 'Connexion impossible. Réessayez.',
     signInUnlinkFailed: 'Déconnexion impossible. Réessayez.',
+    signInUnlinkSignInAgain: 'Par sécurité, fermez la session et reconnectez-vous, puis réessayez.',
     exportPhrases: 'Exporter toutes les expressions',
     exportPhrasesBody:
       'Toutes les cartes enregistrées, de toutes les conversations, dans un fichier.',

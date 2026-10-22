@@ -4436,8 +4436,17 @@ is also the only feedback that an approval landed, since the device it signed
 in is somewhere else. Better Auth puts `/list-sessions` behind a 24-hour
 freshness check by default, so a phone that signed in last week could not open
 the list at all. Zero turns the check off. Revocation uses the
-authoritative-session check, not the freshness one, and is unaffected; the only
-other fresh-gated endpoint is `/unlink-account`, which the app never calls.
+authoritative-session check, not the freshness one, and is unaffected. The
+only other fresh-gated endpoint is `/unlink-account`, and the sign-in methods
+screen does call it. With the check off, a session of any age could link a
+provider account of its own (linking accepts a different address) and then
+disconnect the owner's, so a `before` hook in `auth.ts` puts the 24-hour check
+back on that endpoint alone (`UNLINK_FRESH_SESSION_SECONDS` in
+`packages/shared`), answering with Better Auth's own `SESSION_NOT_FRESH`; the
+screen turns that into "sign out and back in, then try again". `/link-social`
+stays ungated: linking only adds a way in, linking and unlinking both send the
+owner a security notice, and once the owner has signed in again they can remove
+a link they did not make. Removing is the step that can lock them out.
 
 All of it is covered end to end in `routes/deviceFlow.test.ts`, including the
 case as it was lived — approve without claim — and a test that fails without

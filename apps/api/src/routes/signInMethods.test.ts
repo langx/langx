@@ -1,7 +1,7 @@
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import type { SignInMethods } from '@langx/shared'
+import { UNLINK_FRESH_SESSION_SECONDS, type SignInMethods } from '@langx/shared'
 import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
@@ -70,6 +70,15 @@ describe('sign-in methods', () => {
       createdAt,
       updatedAt: createdAt,
     })
+  }
+
+  /** Backdates the session behind `user.cookie` by `seconds`. */
+  async function ageSession(user: SignedUpUser, seconds: number) {
+    const token = decodeURIComponent(user.cookie.split('=')[1] ?? '').split('.')[0]
+    const result = await handle.db
+      .collection('session')
+      .updateOne({ token }, { $set: { createdAt: new Date(Date.now() - seconds * 1000) } })
+    expect(result.matchedCount).toBe(1)
   }
 
   async function dropPassword(userId: string) {
@@ -191,6 +200,50 @@ describe('sign-in methods', () => {
 
       const after = (await methods(user)).json<SignInMethods>()
       expect(after.linked.map((row) => row.provider)).toEqual(['apple'])
+    })
+
+    /**
+     * `freshAge: 0` switched Better Auth's own freshness check off, and with
+     * it the one on this endpoint. A session that has been around for days
+     * could then take away a way in, so the hook puts the check back here.
+     */
+    it('refuses a session older than the fresh window', async () => {
+      const { user } = await newUser('unlink-stale@example.com')
+      await linkProvider(user.userId, 'google', new Date('2026-04-01T00:00:00.000Z'))
+      const google = (await methods(user)).json<SignInMethods>().linked[0]
+      expect(google).toBeDefined()
+      await ageSession(user, UNLINK_FRESH_SESSION_SECONDS + 60)
+
+      const response = await unlink(user, google!.id)
+      expect(response.statusCode, response.body).toBe(403)
+      expect(response.json<{ code?: string }>().code).toBe('SESSION_NOT_FRESH')
+
+      const after = (await methods(user)).json<SignInMethods>()
+      expect(after.linked.map((row) => row.provider)).toEqual(['google'])
+    })
+
+    it('accepts a session just inside the fresh window', async () => {
+      const { user } = await newUser('unlink-fresh@example.com')
+      await linkProvider(user.userId, 'google', new Date('2026-04-01T00:00:00.000Z'))
+      const google = (await methods(user)).json<SignInMethods>().linked[0]
+      expect(google).toBeDefined()
+      await ageSession(user, UNLINK_FRESH_SESSION_SECONDS - 60)
+
+      const response = await unlink(user, google!.id)
+      expect(response.statusCode, response.body).toBe(200)
+    })
+
+    // The reason `freshAge` is 0 at all: the list must still open.
+    it('still lists sessions from the same old session', async () => {
+      const { user } = await newUser('unlink-list@example.com')
+      await ageSession(user, UNLINK_FRESH_SESSION_SECONDS + 60)
+
+      const listed = await app.inject({
+        method: 'GET',
+        url: '/api/auth/list-sessions',
+        headers: { cookie: user.cookie },
+      })
+      expect(listed.statusCode, listed.body).toBe(200)
     })
   })
 

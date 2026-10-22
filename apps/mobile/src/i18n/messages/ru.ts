@@ -2769,6 +2769,8 @@ export const ru: Localized<EnMessages> = {
     signInUnlinked: 'Отключено.',
     signInLinkFailed: 'Не удалось подключить. Попробуйте ещё раз.',
     signInUnlinkFailed: 'Не удалось отключить. Попробуйте ещё раз.',
+    signInUnlinkSignInAgain:
+      'В целях безопасности выйдите и снова войдите в аккаунт, затем повторите попытку.',
     exportPhrases: 'Экспорт всех выражений',
     exportPhrasesBody: 'Все сохранённые карточки из всех чатов — одним файлом.',
   },

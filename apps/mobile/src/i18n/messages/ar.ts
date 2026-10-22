@@ -2937,6 +2937,7 @@ export const ar: Localized<EnMessages> = {
     signInUnlinked: 'تم إلغاء الربط.',
     signInLinkFailed: 'تعذّر الربط. حاول مرة أخرى.',
     signInUnlinkFailed: 'تعذّر إلغاء الربط. حاول مرة أخرى.',
+    signInUnlinkSignInAgain: 'لأمانك، سجّل الخروج ثم سجّل الدخول من جديد، وبعدها حاول مرة أخرى.',
     exportPhrases: 'تصدير كل العبارات',
     exportPhrasesBody: 'كل البطاقات التي حفظتها، من كل المحادثات، في ملف واحد.',
   },

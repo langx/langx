@@ -2403,6 +2403,8 @@ export const ptBR: Localized<EnMessages> = {
     signInUnlinked: 'Desconectado.',
     signInLinkFailed: 'Não foi possível conectar. Tente de novo.',
     signInUnlinkFailed: 'Não foi possível desconectar. Tente de novo.',
+    signInUnlinkSignInAgain:
+      'Por segurança, saia e entre de novo na conta, depois tente outra vez.',
     exportPhrases: 'Exportar todas as expressões',
     exportPhrasesBody: 'Todos os cartões que você salvou, de todas as conversas, em um arquivo.',
   },

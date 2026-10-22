@@ -2466,6 +2466,8 @@ export const de: Localized<EnMessages> = {
     signInUnlinked: 'Getrennt.',
     signInLinkFailed: 'Verbinden fehlgeschlagen. Versuch es noch einmal.',
     signInUnlinkFailed: 'Trennen fehlgeschlagen. Versuch es noch einmal.',
+    signInUnlinkSignInAgain:
+      'Melde dich zur Sicherheit ab und wieder an, dann versuch es noch einmal.',
     exportPhrases: 'Alle Wendungen exportieren',
     exportPhrasesBody: 'Alle gespeicherten Karten aus allen Chats, in einer Datei.',
   },

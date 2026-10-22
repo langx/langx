@@ -2674,6 +2674,8 @@ export const en = {
     signInUnlinked: 'Disconnected.',
     signInLinkFailed: 'Could not connect. Try again.',
     signInUnlinkFailed: 'Could not disconnect. Try again.',
+    // Shown when the server wants a recent sign-in before a way in is removed.
+    signInUnlinkSignInAgain: 'For your safety, sign out and back in, then try again.',
     exportPhrases: 'Export every phrase',
     exportPhrasesBody: 'Every card you have saved, from every conversation, as one file.',
   },
