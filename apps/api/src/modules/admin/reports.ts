@@ -306,7 +306,7 @@ export async function getReport(
     ...toRow(report, parties),
     comment: await readComment(db, report.commentId),
     testimonial: await readTestimonial(db, report.testimonialId, now),
-    message: await readMessage(db, report.messageId),
+    message: await readMessage(db, report),
     thread: await readThread(db, report),
     post: post
       ? {
@@ -330,12 +330,23 @@ export async function getReport(
   }
 }
 
-async function readMessage(
-  db: Db,
-  messageId: ObjectId | undefined,
-): Promise<AdminReportedMessage | null> {
-  if (!messageId) return null
-  const message = await db.collection<Message>(COLLECTIONS.messages).findOne({ _id: messageId })
+/**
+ * Scoped to the pair's conversation, as `readThread` is: `report.messageId` is
+ * the client's word, and rows filed before `reportUser` checked it could name
+ * a message from somebody else's conversation entirely.
+ */
+async function readMessage(db: Db, report: Report): Promise<AdminReportedMessage | null> {
+  if (!report.messageId) return null
+  const conversation = await db
+    .collection<Conversation>(COLLECTIONS.conversations)
+    .findOne(
+      { pairKey: pairKeyFor(report.reporterId, report.reportedId) },
+      { projection: { _id: 1 } },
+    )
+  if (!conversation) return null
+  const message = await db
+    .collection<Message>(COLLECTIONS.messages)
+    .findOne({ _id: report.messageId, conversationId: conversation._id })
   if (!message) return null
   return {
     id: message._id.toHexString(),

@@ -9,7 +9,8 @@ import { MongoServerError, ObjectId, type Db, type Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
-import type { PostCommentDoc } from '../feed/documents'
+import { pairKeyFor, type Conversation, type Message } from '../chat/conversations'
+import type { Post, PostCommentDoc } from '../feed/documents'
 import { findTestimonialById } from '../testimonials/testimonials'
 
 export interface Block {
@@ -205,6 +206,33 @@ export async function reportUser(
       throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed message id')
     }
   }
+  if (report.conversationId || report.messageId) {
+    /*
+     * Both have to be the reporter's own conversation with the reported
+     * person, and the message has to sit in it. The client only ever sends
+     * those, but the ids are the client's word: unchecked, a report between
+     * two people could carry any conversation's message, and the operator
+     * panel would show a stranger's private words as the evidence.
+     */
+    const conversation = await db
+      .collection<Conversation>(COLLECTIONS.conversations)
+      .findOne({ pairKey: pairKeyFor(reporterId, input.userId) }, { projection: { _id: 1 } })
+    if (report.conversationId && !conversation?._id.equals(report.conversationId)) {
+      throw new ApiError(ERROR_CODES.NOT_FOUND, 'Conversation not found')
+    }
+    if (report.messageId) {
+      // Unfiltered, so a message already deleted can still be reported.
+      const message = conversation
+        ? await db
+            .collection<Message>(COLLECTIONS.messages)
+            .findOne(
+              { _id: report.messageId, conversationId: conversation._id },
+              { projection: { _id: 1 } },
+            )
+        : null
+      if (!message) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Message not found')
+    }
+  }
   if (input.testimonialId !== undefined) {
     /*
      * Checked before the comment and the post and stored instead of both: a
@@ -237,11 +265,21 @@ export async function reportUser(
     }
     report.commentId = comment._id
   } else if (input.postId !== undefined) {
-    try {
-      report.postId = new ObjectId(input.postId)
-    } catch {
-      throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed post id')
+    /*
+     * The post has to be the reported person's own, as a comment does: the
+     * panel's "Hide this post" acts on `postId`, so somebody else's would be
+     * hidden over a report that never named them. Unfiltered, so a post a
+     * moderator already hid can be reported again.
+     */
+    const post = ObjectId.isValid(input.postId)
+      ? await db
+          .collection<Post>(COLLECTIONS.posts)
+          .findOne({ _id: new ObjectId(input.postId) }, { projection: { authorId: 1 } })
+      : null
+    if (!post || post.authorId !== input.userId) {
+      throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
     }
+    report.postId = post._id
   }
   await reports.insertOne(report)
 

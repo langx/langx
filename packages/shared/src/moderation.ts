@@ -44,7 +44,11 @@ export const reportSchema = z.object({
   userId: z.string().trim().min(1),
   reason: reportReasonSchema,
   details: z.string().trim().max(REPORT_DETAILS_MAX_LENGTH).optional(),
-  /** Optional pointer to the conversation the reported behaviour happened in. */
+  /**
+   * Optional pointer to the conversation the reported behaviour happened in.
+   * It has to be the reporter's own conversation with the reported person,
+   * which the server checks; so does the message below have to sit in it.
+   */
   conversationId: z.string().trim().min(1).optional(),
   /**
    * Optional pointer to the specific message. Narrower than `conversationId`
@@ -55,7 +59,8 @@ export const reportSchema = z.object({
   /**
    * Optional pointer to the post the report is about. A post is public and
    * has no conversation, so it is a third place a report can be raised from,
-   * alongside a profile and a message.
+   * alongside a profile and a message. The post has to be the reported
+   * person's own, which the server checks.
    */
   postId: z.string().trim().min(1).optional(),
   /**
