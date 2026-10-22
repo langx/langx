@@ -46,12 +46,15 @@ describe('the latch as a store', () => {
     expect(v3HomeSnapshot()).toBe(true)
   })
 
-  it('wakes nobody while there is no answer', () => {
+  // The 3.0 TestFlight latch answers v3 before the config settles, so there
+  // is no "no answer yet" state for the root to stay quiet through.
+  it('wakes nobody before the root announces', () => {
     let calls = 0
     subscribeV3Home(() => calls++)
-    latchV3Home({ settled: false, on: true })
-    announceV3Home()
+    latchV3Home({ settled: false, on: false })
     expect(calls).toBe(0)
+    announceV3Home()
+    expect(calls).toBe(1)
   })
 
   it('wakes each subscriber once, however often the root announces', () => {
