@@ -136,3 +136,37 @@ describe('grades waiting to reach the server', () => {
     expect(snapshot.pending).toHaveLength(1)
   })
 })
+
+describe('the saved queue drawn for one session', () => {
+  const chat = (id: string, lang: string, partnerId: string): EchoCard => ({
+    ...card(id),
+    lang,
+    source: { kind: 'chat', conversationId: 'conv', messageId: `m-${id}`, partnerId },
+  })
+
+  /*
+   * The file holds whichever deck was last fetched, not the one asked for. A
+   * Spanish session opened on a train drew the French deck saved the day
+   * before — a mixed deck, which review never is.
+   */
+  it('draws only the language the session is for', () => {
+    const snapshot = { ...emptySnapshot(NOW), cards: [card('fr-1'), chat('es-1', 'es', 'p-1')] }
+    expect(offlineQueue(snapshot, NOW, { lang: 'es' }).map((c) => c._id)).toEqual(['es-1'])
+    expect(offlineQueue(snapshot, NOW, { lang: 'de' })).toEqual([])
+  })
+
+  it('draws only what one partner wrote when the session is theirs', () => {
+    const snapshot = {
+      ...emptySnapshot(NOW),
+      cards: [card('pack-1'), chat('c-1', 'fr', 'anna'), chat('c-2', 'fr', 'ben')],
+    }
+    expect(offlineQueue(snapshot, NOW, { lang: 'fr', partner: 'anna' }).map((c) => c._id)).toEqual([
+      'c-1',
+    ])
+  })
+
+  it('draws everything saved when the session names neither', () => {
+    const snapshot = { ...emptySnapshot(NOW), cards: [card('fr-1'), chat('es-1', 'es', 'p-1')] }
+    expect(offlineQueue(snapshot, NOW).map((c) => c._id)).toEqual(['fr-1', 'es-1'])
+  })
+})
