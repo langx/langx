@@ -1,4 +1,4 @@
-import type { InfiniteData } from '@tanstack/react-query'
+import { QueryClient, type InfiniteData } from '@tanstack/react-query'
 import type {
   FeedPage,
   FeedPost,
@@ -6,7 +6,7 @@ import type {
   PostCorrectionsPage,
   PronunciationAnswer,
 } from '@langx/shared'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import {
   applyAnswer,
   applyCommentCount,
@@ -165,9 +165,33 @@ describe('applyLikeToThread', () => {
     expect(patched?.pages[0]?.items[1]?.likeCount).toBe(1)
   })
 
-  it('returns the identical object when nothing matched', () => {
-    const data = thread()
-    expect(applyLikeToThread(data, 'correction', 'missing', state)).toBe(data)
+  /**
+   * `undefined`, not the same object: TanStack's `setQueryData` skips only an
+   * updater that returns `undefined`. Handing the data back still counts as a
+   * successful write — it moves `dataUpdatedAt` and clears the error — so a
+   * like anywhere in the app wiped a deleted post's 404 and the post screen
+   * drew it as live again.
+   */
+  it('writes nothing when nothing matched', () => {
+    expect(applyLikeToThread(thread(), 'correction', 'missing', state)).toBeUndefined()
+  })
+
+  it('does not touch another post’s query, so its 404 stands', () => {
+    vi.useFakeTimers({ now: 1_000 })
+    try {
+      const client = new QueryClient()
+      const key = ['postCorrections', 'gone']
+      client.setQueryData(key, thread())
+      const before = client.getQueryState(key)!.dataUpdatedAt
+      vi.setSystemTime(5_000)
+      client.setQueriesData<InfiniteData<PostCorrectionsPage>>(
+        { queryKey: ['postCorrections'] },
+        (data) => applyLikeToThread(data, 'correction', 'elsewhere', state),
+      )
+      expect(client.getQueryState(key)!.dataUpdatedAt).toBe(before)
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })
 
@@ -279,7 +303,9 @@ describe('applyEchoedToThread', () => {
     }
     const patched = applyEchoedToThread(data, 'p1', true)
     expect(patched!.pages[0]!.post.echoedByViewer).toBe(true)
-    expect(applyEchoedToThread(data, 'other', true)).toBe(data)
+    // `undefined` so `setQueryData` skips the write — see `applyLikeToThread`.
+    expect(applyEchoedToThread(data, 'other', true)).toBeUndefined()
+    expect(applyEchoedToThread(patched, 'p1', true)).toBeUndefined()
   })
 })
 

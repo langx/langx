@@ -126,13 +126,20 @@ export function applyEchoed(data: Pages, postId: string, echoed: boolean): Pages
 /**
  * The same mark on the post a thread's pages carry, so the post screen's
  * "Add to Echo" flips with the card behind it.
+ *
+ * `undefined` when there is nothing to change, so `setQueryData` skips the
+ * write — see `applyLikeToThread` for why the same object is not enough.
  */
 export function applyEchoedToThread<Page extends { post: FeedPost }>(
   data: InfiniteData<Page> | undefined,
   postId: string,
   echoed: boolean,
 ): InfiniteData<Page> | undefined {
-  if (!data || !data.pages.some((page) => page.post._id === postId)) return data
+  if (!data) return data
+  const target = data.pages.some(
+    (page) => page.post._id === postId && page.post.echoedByViewer !== echoed,
+  )
+  if (!target) return undefined
   return {
     ...data,
     pages: data.pages.map((page) =>
@@ -274,7 +281,16 @@ export function applyLikeToAnswers(
   return found ? { ...data, pages } : data
 }
 
-/** The same patch against the post detail screen's pages. */
+/**
+ * The same patch against the post detail screen's pages.
+ *
+ * `undefined` when nothing matched, not the data handed back. It runs over
+ * every cached post screen, and TanStack's `setQueryData` skips only an
+ * updater that returns `undefined`: the same object is still a successful
+ * write, which moves `dataUpdatedAt` and clears the query's error. A deleted
+ * post's 404 went with it, and `postGone` drew the post as live again after
+ * a like on any other post.
+ */
 export function applyLikeToThread(
   data: ThreadPages,
   targetType: LikeTargetType,
@@ -293,7 +309,7 @@ export function applyLikeToThread(
     if (post !== page.post) found = true
     return { ...page, post, items }
   })
-  return found ? { ...data, pages } : data
+  return found ? { ...data, pages } : undefined
 }
 
 /** One run of a folded correction line. `kept` is the uncoloured majority. */
