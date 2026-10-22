@@ -13,6 +13,7 @@ import { versionAuth } from './appVersion'
 import { authClient } from './auth-client'
 import { engine } from './calls/rtc'
 import { deviceId } from './deviceId'
+import { restartConnection } from './missedEvents'
 import { DRAWABLE_INBOX_KINDS } from './notificationInbox'
 import { createSocketListeners, type SocketAttach } from './socketListeners'
 
@@ -133,10 +134,9 @@ export function closeSocket(): void {
  * app's own listeners survive — socket.io's `destroy()` drops the manager's
  * subscriptions, not the events the app registered.
  */
-export function restartSocket(): void {
+export function restartSocket(onBack: () => void): void {
   if (!socket) return
-  socket.disconnect()
-  socket.connect()
+  restartConnection(socket, onBack)
 }
 
 /** Promise wrapper over socket.io's ack callback, with the API's error shape. */

@@ -135,11 +135,13 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
      * the OS saying the network came back. The socket cannot know that:
      * nothing closed its connection, it is holding one that stopped carrying
      * packets, and its own ping timeout is 45 seconds away. Restarting it here
-     * turns those 45 seconds into about one — and the reconnect that follows
-     * fires `resync` through the handler below, so the gap is covered too.
+     * turns those 45 seconds into about one — and `resync` runs when the
+     * restarted socket connects, so the gap is covered too. Passed in rather
+     * than left to the Manager's `reconnect` handler below, which a restart
+     * never fires.
      */
     const unsubscribeOnline = onlineManager.subscribe((online) => {
-      if (online) restartSocket()
+      if (online) restartSocket(resync)
     })
 
     /**
