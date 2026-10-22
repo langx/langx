@@ -74,7 +74,7 @@ interface ThreadCopilot {
  *
  * Three answers have to agree before anything is drawn — `flags.v3Home`
  * (`enabled`), the deployment's `copilotService`, and the server's "available
- * for you" (the allow-list, the exact 18+ check and consent), which is only
+ * for you" (the allow-list and consent), which is only
  * asked when the first two say yes. Every one of them says no for almost
  * everybody, and then this returns nothing to draw.
  *

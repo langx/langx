@@ -174,15 +174,20 @@ export interface PlanLimits {
    *
    * **Finite on both tiers, and it must stay that way.** Every unit is a paid
    * model call, so "unlimited" is a promise made against somebody else's
-   * meter. Free gets a taste; Pro gets a ceiling sized so that one person
-   * using every unit every day for a month still costs less than the yearly
-   * plan brings in a month after the store's commission ($83.99 / 12 × 0.85,
-   * about $5.95). At Sonnet 5's rates ($2 per million in, $10 out) and with
-   * `COPILOT_RULES`' bounds in force, an answer costs at most about 1.3 cents
-   * — roughly 1,300 tokens in, of which the worst is a thread in Arabic, and
-   * at most `maxOutputTokens` out — so twelve a day is about $4.70 a month at
-   * worst, and three is about $1.20. A cheaper model buys a higher ceiling;
-   * a dearer one needs a lower one. Re-do this sum before changing either.
+   * meter. Free gets a taste; Pro gets a ceiling. At Sonnet 5's rates ($2 per
+   * million in, $10 out) and with `COPILOT_RULES`' bounds in force, an answer
+   * costs at most about 1.3 cents — roughly 1,300 tokens in, of which the
+   * worst is a thread in Arabic, and at most `maxOutputTokens` out — so three
+   * a day is about $1.20 a month at worst.
+   *
+   * Pro was twelve, sized so one person spending every unit every day for a
+   * month (about $4.70) still cost less than the yearly plan brings in a month
+   * after the store's commission ($83.99 / 12 × 0.85, about $5.95). Behic
+   * raised it to 24 on 21 October 2026: about $9.40 a month at that worst
+   * case, above the yearly plan's month, accepted because the worst case is one
+   * person maxing it daily and `COPILOT_RULES.globalCallsPerDay` caps the
+   * whole bill regardless. A cheaper model buys a higher ceiling; a dearer one
+   * needs a lower one. Re-do this sum before changing either.
    *
    * `COPILOT_RULES.globalCallsPerDay` bounds everybody together; this bounds
    * one person.
@@ -369,7 +374,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     echoVoicesPerDay: 500,
     chatVoicesPerDay: 1000,
     transcriptsPerDay: 400,
-    copilotPer24h: 12,
+    copilotPer24h: 24,
     advancedFilters: true,
     boostedProfile: true,
     sendTranslation: true,

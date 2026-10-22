@@ -4986,7 +4986,6 @@ export const ar: Localized<EnMessages> = {
     moreAt: 'المزيد عند {time}',
     errQuota: 'استخدمت إجابات Copilot لهذا اليوم. المزيد عند {time}.',
     errQuotaNoTime: 'استخدمت إجابات Copilot لهذا اليوم.',
-    errPartnerAge: 'Copilot لا يقرأ هذه المحادثة.',
     errBusy: 'Copilot مشغول. حاول لاحقًا.',
     errNoAnswer: 'لم يستطع Copilot الإجابة عن ذلك.',
     errNetwork: 'تعذّر الوصول إلى Copilot.',

@@ -754,7 +754,8 @@ Pro ceiling (`PLAN_LIMITS.copilotPer24h`).
 
 The server side exists and **ships dark** (`modules/copilot`, `routes/copilot.ts`):
 it answers only with a key **and** `flags.copilotEnabled`, which starts off, and
-only for people who agreed to its consent sheet. No screen offers it yet but the
+only for people who agreed to its consent sheet. It has no age rule beyond the
+app's 16+ minimum. No screen offers it yet but the
 operator panel's Copilot lab. See `decisions.md` → _Copilot ships dark, behind two
 switches and a consent_.
 

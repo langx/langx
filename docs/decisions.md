@@ -5586,7 +5586,9 @@ button: Reply ideas and Explain refuse a chat whose other person is under the
 age (`partner_age`), because both send that person's lines, and otherwise any
 adult they talk to would send them for them. Check sends only the asker's own
 sentence and still works there. `COPILOT_RULES.minimumAge` is the one number
-to change if Behic decides otherwise; it moves both.
+to change if Behic decides otherwise; it moves both. _(Removed on 21 October
+2026, both checks: see Copilot has no age rule of its own, and 24 a day
+for Pro.)_
 
 **Finite on both tiers.** `copilotPer24h` is a small free taste and a Pro
 ceiling sized so that one person spending every unit every day for a month
@@ -9307,3 +9309,27 @@ and is left without one, with no word standing in for it.
 What _Pronouns are free text, and gender is not_ says about the field still
 holds; its reason for being on `sharedProfileSchema` now holds for the old look
 only.
+
+## Copilot has no age rule of its own, and 24 a day for Pro
+
+_21 October 2026._ Behic removed Copilot's own 18+ gate. The app's minimum age
+is 16 (`MINIMUM_AGE`, checked at sign-up), and whoever the app lets in may use
+Copilot like any other feature; it does not check age a second time. That
+removes both halves of the entry _Copilot ships dark_ describes: the asker's
+exact-birthday check (`COPILOT_RULES.minimumAge`, `copilotAgeAllows`), and the
+partner-age guard that refused Reply ideas and Explain in a chat with somebody
+under 18. The `age` and `partner_age` reasons are gone from
+`COPILOT_UNAVAILABLE_REASONS`, and so is the line the app showed for the
+second. Every other switch still applies: the flag, a key, the operator's
+allow-list and the person's own consent.
+
+Only Copilot changes. The sticker gifts' adult-only rule (`ADULT_AGE`) and
+every other feature's age rule stay as they are.
+
+**Pro's allowance is 24 a day, up from 12** (`PLAN_LIMITS.pro.copilotPer24h`);
+free stays at 3. Twelve was sized so one person spending every unit every day
+for a month cost less than the yearly plan nets in a month (about $5.95); 24
+is about $9.40 at that worst case, which Behic accepted: it takes one person
+maxing it every day, and `COPILOT_RULES.globalCallsPerDay` (500, unchanged)
+caps the whole bill whatever the tiers say. 500 is still above 24, so one Pro
+account can always spend its own allowance.
