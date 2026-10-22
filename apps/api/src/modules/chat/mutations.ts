@@ -546,10 +546,19 @@ export async function deleteConversationForUser(
    * *of* — and leaving it standing is worse than untidy: `recordMessage`
    * revives a deleted thread on the next message, and it would come back
    * showing sixteen unread over the one message the user can actually see.
+   *
+   * The pin goes too. A deleted thread is in neither half of the list, so a
+   * pin left on it held one of `MAX_PINNED_CONVERSATIONS` with no row to
+   * unpin it from — and brought the thread back to the top of the list,
+   * above everything, the day it revived.
    */
-  const updated = await db
-    .collection<Conversation>(COLLECTIONS.conversations)
-    .updateOne({ _id }, { $set: { [`deletedBy.${userId}`]: true, [`unread.${userId}`]: 0 } })
+  const updated = await db.collection<Conversation>(COLLECTIONS.conversations).updateOne(
+    { _id },
+    {
+      $set: { [`deletedBy.${userId}`]: true, [`unread.${userId}`]: 0 },
+      $unset: { [`pinnedBy.${userId}`]: '' },
+    },
+  )
   if (updated.matchedCount === 0) {
     throw new ApiError(ERROR_CODES.NOT_FOUND, 'Conversation not found')
   }
