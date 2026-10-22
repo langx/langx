@@ -2648,9 +2648,13 @@ async function uploadImage(
   onProgress?: (loaded: number, total: number) => void,
 ): Promise<string> {
   const path = kind === 'avatar' ? '/me/avatar/upload-url' : '/me/photos/upload-url'
-  const target = await api.post<UploadUrlDto>(path, { contentType })
-
+  // Blob first, so its size can be signed into the URL — see `uploadMessageMedia`.
   const blob = await (await fetch(uri)).blob()
+  const target = await api.post<UploadUrlDto>(path, {
+    contentType,
+    ...(blob.size > 0 ? { sizeBytes: blob.size } : {}),
+  })
+
   await putWithProgress({
     url: target.uploadUrl,
     body: blob,
@@ -2937,6 +2941,9 @@ async function uploadToSigningRoute(path: string, input: PresignedUpload): Promi
   const target = await api.post<UploadUrlDto>(path, {
     kind: input.kind,
     contentType,
+    // Signed into the URL, as in `uploadMessageMedia`, and left out for an
+    // empty blob for the same reason.
+    ...(blob.size > 0 ? { sizeBytes: blob.size } : {}),
   })
 
   await putWithProgress({
