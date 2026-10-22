@@ -111,16 +111,15 @@ export async function readFollowState(
   const notHidden = hidden.length > 0 ? { $nin: hidden } : undefined
 
   /*
-   * Your own counts are plain counts — your own lists show everyone (see
-   * `listEdges`). Anybody else's leave out the people their list leaves out,
-   * for the block's reason above: a count beside a shorter list says somebody
-   * is missing from it, and that is the thing "hide me from Discover" is for.
-   * A join rather than a `countDocuments`, so only when it is needed.
+   * Every count is the length of the list beside it, for the block's reason
+   * above: a count beside a shorter list says somebody is missing from it.
+   * That holds for your own as well. Your own list skips nobody for "hide me
+   * from Discover", but it does skip an account in its deletion grace — and a
+   * plain `countDocuments` here kept counting it, so "Following 12" sat over
+   * eleven rows for the thirty days, with no row to unfollow from.
    */
   const count = (match: Document, personField: PersonField) =>
-    viewerId === targetId
-      ? follows.countDocuments({ ...match, ...(notHidden ? { [personField]: notHidden } : {}) })
-      : countListed(db, viewerId, match, personField, notHidden)
+    countListed(db, viewerId, match, personField, notHidden)
 
   const [followers, following, mine] = await Promise.all([
     count({ followeeId: targetId }, 'followerId'),
