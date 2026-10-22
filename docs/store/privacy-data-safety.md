@@ -39,7 +39,7 @@ Both stores treat a wrong answer here as a policy violation, and both accept
 | Profile views | `profileViews` | "Who viewed me". Not written at all if the viewer has incognito on | Automatic; deleted after 90 days (TTL index) |
 | Reports you file | `reports` | Moderation | Only if you report someone |
 | Copilot consent | `profiles.copilotConsent` | Which version of the Copilot consent sheet you agreed to, and when — the only thing that lets your text reach the AI provider. See _Copilot_ below | Only if you agree; withdrawing removes it |
-| Copilot reports | `feedback` (`kind: 'copilot'`) | An AI answer you reported and which Copilot help wrote it. The answer can quote what it was about — a Check answer is your sentence, corrected — and the sheet says so; your original sentence goes only if you switch that on, and nothing else from the chat is sent. Read by the operators in their feedback queue; no mail, no public issue. See _Copilot_ below | Only if you report one; deleted with your account |
+| Copilot reports | `feedback` (`kind: 'copilot'`) | An AI answer you reported and which Copilot help wrote it. The answer can quote what it was about — a Check answer is your sentence, corrected — and the sheet says so; your original sentence goes only if you switch that on, and nothing else from the chat is sent. Read by the operators in their feedback queue; no mail, no public issue. See _Copilot_ below | Only if you report one; in the data export since #1948; deleted with your account |
 | Copilot answers | `copilotCache` | An answer kept under a hash of the question, so the same question is not paid for twice. Linked to no account. See _Copilot_ below | Automatic once you use Copilot; deleted after 7 days (TTL index) |
 | Usage analytics | PostHog (EU Cloud), not our database | Which screens and buttons are used, so the funnel from install to first conversation can be read, and a recording of the screen on iOS and Android with every word and image masked on the device before it is sent. Keyed by our user id; never a message body — `docs/analytics.md` | Optional — on by default, off in Settings → Privacy → Share usage data |
 
@@ -197,9 +197,16 @@ App Review guideline 5.1.2(i)):
   want it in, their level in it, and their app language. Never the thread.
 
 Never sent: names, handles, user ids, email, photos, voice notes, view-once
-messages, lines deleted for everyone or hidden by the reader. The request
-carries no identifier of ours — no user id, and no metadata naming one. Text
-only, by construction (`modules/copilot/copilot.ts`).
+messages, lines deleted for everyone or hidden by the reader — unless the text
+itself contains them. The request carries no identifier of ours — no user id,
+and no metadata naming one. Text only, by construction
+(`modules/copilot/copilot.ts`). One caveat the policy states: a correction
+keeps its own copy of the sentence it corrected, so Explain on a correction
+can send a sentence whose original message was deleted since.
+
+Taking an account off the allow-list clears its consent as well (#1948), so a
+re-allowed account is asked again; while it is off the list the Settings row
+is not drawn, and the policy offers hi@langx.io for withdrawing meanwhile.
 
 **Withdrawing and reporting.** Settings → Privacy → **Copilot** shows whether
 it is on and turns it off; that removes `profiles.copilotConsent`
