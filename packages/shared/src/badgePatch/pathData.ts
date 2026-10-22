@@ -12,7 +12,8 @@
  * renderer agrees on: each arc becomes the cubic Béziers that approximate it
  * (one per quarter turn or less, which is under 0.03% off a true circle).
  *
- * Pure functions over strings, so the mobile vitest reaches them.
+ * Pure functions over strings, so both vitests reach them, and the API draws
+ * the same patch on a share card that the app draws on the shelf.
  */
 
 type Pt = readonly [number, number]

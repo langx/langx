@@ -1,13 +1,13 @@
 import { View } from 'react-native'
 import Svg, { G, Path } from 'react-native-svg'
-import { cutFor, patchNodes, type PatchState } from '../../lib/badgePatch/geometry'
+import { cutFor, patchNodes, type PatchState } from '@langx/shared'
 import { useTheme } from '../../lib/theme'
 
 const EARNED: PatchState = { kind: 'earned' }
 
 /**
  * A badge drawn as its embroidered patch, the v3 badge art: see
- * `lib/badgePatch/geometry.ts`.
+ * `badgePatch/geometry.ts` in `packages/shared`.
  *
  * Found by `id`, for the reason `BadgeMark` is: what this build draws depends
  * only on this build. An id it does not know draws the empty hoop, keeping the

@@ -36,7 +36,7 @@ function BadgeRow({
 }: {
   badge: EarnedBadge
   next: BadgeSummary['next'] | undefined
-  onShare?: ((label: string) => void) | undefined
+  onShare?: ((label: string, badge: EarnedBadge) => void) | undefined
 }) {
   const { colors } = useTheme()
   const styles = useStyles()
@@ -90,7 +90,7 @@ function BadgeRow({
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={t('share.badge', { label })}
-      onPress={() => onShare(label)}
+      onPress={() => onShare(label, badge)}
       style={({ pressed }) => [styles.row, pressed && styles.pressed]}
     >
       {content}
@@ -107,7 +107,7 @@ export function BadgeGrid({
   /** The nearest unearned badge and where the reader stands on it, if the API knows. */
   next?: BadgeSummary['next']
   /** Given, an earned row opens the share sheet with its name. */
-  onShare?: (label: string) => void
+  onShare?: (label: string, badge: EarnedBadge) => void
 }) {
   // Earned first, always — see `badgesEarnedFirst` for why the catalogue's own
   // order is the wrong one here and what survives of it.

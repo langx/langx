@@ -660,4 +660,8 @@ export const tr: Localized<ServerMessages> = {
     feature: 'Merhaba! Fikrin için teşekkürler — okuduk, listemize ekledik.',
     issue: 'Buradan takip edebilirsin: {url}',
   },
+  cards: {
+    badgeKicker: 'Yeni rozet',
+    badgeEarnedOn: '{date} tarihinde kazanıldı',
+  },
 }

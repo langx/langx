@@ -716,4 +716,8 @@ export const ru: Localized<ServerMessages> = {
     feature: 'Здравствуйте! Спасибо за идею — мы прочитали и добавили её в список.',
     issue: 'Следить можно здесь: {url}',
   },
+  cards: {
+    badgeKicker: 'Новый значок',
+    badgeEarnedOn: 'Получен {date}',
+  },
 }

@@ -680,4 +680,8 @@ export const es: Localized<ServerMessages> = {
     feature: '¡Hola! Gracias por la idea — la hemos leído y ya está en nuestra lista.',
     issue: 'Puedes seguirlo aquí: {url}',
   },
+  cards: {
+    badgeKicker: 'Insignia nueva',
+    badgeEarnedOn: 'Conseguida el {date}',
+  },
 }

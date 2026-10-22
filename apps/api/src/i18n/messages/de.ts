@@ -679,4 +679,8 @@ export const de: Localized<ServerMessages> = {
     feature: 'Hallo! Danke für die Idee — wir haben sie gelesen, und sie steht auf unserer Liste.',
     issue: 'Hier kannst du den Stand verfolgen: {url}',
   },
+  cards: {
+    badgeKicker: 'Neues Abzeichen',
+    badgeEarnedOn: 'Verdient am {date}',
+  },
 }

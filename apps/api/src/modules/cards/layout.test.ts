@@ -1,6 +1,8 @@
+import { BADGES, findBadge, hasPatch } from '@langx/shared'
 import { Resvg } from '@resvg/resvg-js'
 import { describe, expect, it } from 'vitest'
 import { CARD_PIXELS, renderCard, type CardNode } from './render'
+import { badgeCardElement, drawableName } from './badgeDesign'
 import { cardElement } from './design'
 import { el, textLine } from './recapDesign'
 
@@ -160,5 +162,125 @@ describe('card layout under satori', () => {
       ['مشترك', 'rtl'],
       ['Pro+', 'ltr'],
     ])
+  })
+})
+
+/*
+ * The badge card is the badge: its patch, large and in the middle. Until
+ * the v3 art reached the card it was the same rosette for every badge, and
+ * every structural test passed on it — so these look at the picture.
+ */
+describe('badge card layout under satori', () => {
+  const content = (id: string, locale: 'en' | 'ar' = 'en') => {
+    const badge = findBadge(id)!
+    return {
+      id,
+      kind: badge.kind,
+      name: badge.label,
+      kicker: 'New badge',
+      earned: 'Earned 12 October 2026',
+      displayName: 'Sofia Martínez',
+      handle: '@sofia',
+      locale,
+    } as const
+  }
+
+  /** The hero block: the white run down a column just inside its left edge. */
+  const heroBox = (card: Bitmap, x: number) => {
+    const { top, bottom } = whiteRun(card, x)
+    const row = top + 12
+    const white = [...Array(card.width).keys()].filter((at) => isWhite(pixel(card, at, row)))
+    return { top, bottom, left: white[0]!, right: white.at(-1)! }
+  }
+
+  type Box = ReturnType<typeof heroBox>
+
+  /** The share of the hero's middle that is not white: the patch, drawn. */
+  const inked = (card: Bitmap, box: Box) => {
+    const inset = Math.round((box.right - box.left) * 0.2)
+    let all = 0
+    let ink = 0
+    for (let y = box.top + inset; y < box.bottom - inset; y += 4) {
+      for (let x = box.left + inset; x < box.right - inset; x += 4) {
+        all++
+        if (!isWhite(pixel(card, x, y))) ink++
+      }
+    }
+    return ink / all
+  }
+
+  /** A coarse fingerprint of the patch: a grid of samples across the block. */
+  const fingerprint = (card: Bitmap, box: Box) => {
+    const samples: string[] = []
+    for (let i = 1; i < 6; i++) {
+      for (let j = 1; j < 6; j++) {
+        const x = Math.round(box.left + ((box.right - box.left) * i) / 6)
+        const y = Math.round(box.top + ((box.bottom - box.top) * j) / 6)
+        samples.push(pixel(card, x, y).join())
+      }
+    }
+    return samples.join('|')
+  }
+
+  it.each(['story', 'square'] as const)('centres the patch on a %s card', async (shape) => {
+    const card = await render(badgeCardElement(content('streak.7'), shape), shape)
+    // The hero's left edge sits at (width - hero) / 2; a few pixels in is
+    // white from its top to its bottom and nowhere else in that column.
+    const hero = shape === 'story' ? 904 : 500
+    const box = heroBox(card, Math.round((card.width - hero) / 2) + 14)
+    expect(Math.abs(box.left - (card.width - 1 - box.right))).toBeLessThanOrEqual(2)
+    // Large: the block is most of the card's width.
+    expect(box.right - box.left).toBeGreaterThan(card.width * 0.44)
+    expect(inked(card, box)).toBeGreaterThan(0.3)
+  })
+
+  it('draws its own patch for every kind, Early Adopter included', async () => {
+    const kinds = new Map<string, string>()
+    for (const badge of BADGES) if (badge.kind !== 'tokens') kinds.set(badge.kind, badge.id)
+    expect([...kinds.values()]).toContain('origin.v1')
+
+    const prints = new Set<string>()
+    for (const id of kinds.values()) {
+      expect(hasPatch(id), id).toBe(true)
+      const card = await render(badgeCardElement(content(id), 'wide'), 'wide')
+      const box = heroBox(card, 52 + 14)
+      expect(inked(card, box), id).toBeGreaterThan(0.2)
+      prints.add(fingerprint(card, box))
+    }
+    // Two kinds with one picture is the bug this card replaced.
+    expect(prints.size).toBe(kinds.size)
+  }, 120_000)
+
+  it('puts the patch where the eye starts: left in English, right in Arabic', async () => {
+    const at = async (locale: 'en' | 'ar') => {
+      const card = await render(badgeCardElement(content('veteran.365', locale), 'wide'), 'wide')
+      const y = Math.round(card.height / 2)
+      return { left: isWhite(pixel(card, 80, y)), right: isWhite(pixel(card, card.width - 80, y)) }
+    }
+    expect(await at('en')).toEqual({ left: true, right: false })
+    expect(await at('ar')).toEqual({ left: false, right: true })
+  })
+
+  it('keeps an English phrase in an Arabic line in its own order', () => {
+    // "Early Adopter" is English in the Arabic catalogue; one word per
+    // element in a reversed row drew it "Adopter Early".
+    const words = (text: string) =>
+      (textLine(text, { color: '#000000', fontSize: 40 }, true).props.children as CardNode[]).map(
+        (word) => word.props.children,
+      )
+    expect(words('Early Adopter')).toEqual(['Early Adopter'])
+    expect(words('شارة Early Adopter جديدة')).toEqual(['شارة', 'Early Adopter', 'جديدة'])
+    // A number stays its own item: joined to "Pro+" it would read "12 Pro+".
+    expect(words('مع 12 Pro+')).toEqual(['مع', '12', 'Pro+'])
+  })
+
+  it('leaves out a display name the faces cannot draw, and keeps the handle', () => {
+    expect(drawableName('Sofia Martínez')).toBe('Sofia Martínez')
+    expect(drawableName('صوفيا')).toBe('صوفيا')
+    expect(drawableName('مُحَمَّد')).toBe('مُحَمَّد')
+    expect(drawableName('Соня')).toBe('Соня')
+    expect(drawableName('さくら')).toBeUndefined()
+    expect(drawableName('Sofia 🌸')).toBeUndefined()
+    expect(drawableName('  ')).toBeUndefined()
   })
 })

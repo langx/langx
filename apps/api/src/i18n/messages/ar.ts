@@ -716,4 +716,8 @@ export const ar: Localized<ServerMessages> = {
     feature: 'مرحبًا! شكرًا على الفكرة — قرأناها وأضفناها إلى قائمتنا.',
     issue: 'يمكنك متابعتها هنا: {url}',
   },
+  cards: {
+    badgeKicker: 'شارة جديدة',
+    badgeEarnedOn: 'حُصّلت في {date}',
+  },
 }

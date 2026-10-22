@@ -674,4 +674,8 @@ export const ptBR: Localized<ServerMessages> = {
     feature: 'Oi! Obrigado pela ideia — a gente leu e ela já está na nossa lista.',
     issue: 'Você pode acompanhar aqui: {url}',
   },
+  cards: {
+    badgeKicker: 'Insígnia nova',
+    badgeEarnedOn: 'Conquistada em {date}',
+  },
 }

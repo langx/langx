@@ -1,4 +1,10 @@
-import { CARD_SHAPES, type CardKind, type CardShape, type RecapCardInput } from '@langx/shared'
+import {
+  CARD_SHAPES,
+  type BadgeCardInput,
+  type CardKind,
+  type CardShape,
+  type RecapCardInput,
+} from '@langx/shared'
 import { File, Paths } from 'expo-file-system'
 import { useState } from 'react'
 import { ActivityIndicator, Modal, Platform, Pressable, Text } from 'react-native'
@@ -29,6 +35,8 @@ export interface ShareCardRequest {
   fallback: ShareContent
   /** A recap's words; the server draws the poster from them and its own numbers. */
   recap?: RecapCardInput
+  /** A badge's id; the server draws its patch, and reads the rest itself. */
+  badge?: BadgeCardInput
 }
 
 /** A share that has been decided on but not yet handed to the OS. */
@@ -132,6 +140,7 @@ export function ShareCardSheet({
         headline: request.headline,
         caption: request.caption,
         ...(request.recap ? { recap: request.recap } : {}),
+        ...(request.badge ? { badge: request.badge } : {}),
       })
       track({
         name: 'share_card_created',
