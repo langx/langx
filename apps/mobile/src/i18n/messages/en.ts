@@ -4323,13 +4323,17 @@ export const en = {
     report: 'Report',
     reportA11y: 'Report this answer',
     reportTitle: 'Report this answer?',
-    /** The confirm sheet: what always goes to the team. */
+    /**
+     * The confirm sheet: what always goes to the team. Says the answer can quote
+     * its subject — a Check answer is the draft, corrected — so the switch below
+     * is not mistaken for the only way the words leave.
+     */
     reportBody:
-      'The LangX team will see this answer and which Copilot help wrote it. Nothing is sent to the other person.',
+      'The LangX team will see this answer, which can quote the words it was about, and which Copilot help wrote it. Nothing is sent to the other person.',
     /** Off until switched on; the draft it would send is shown under it. */
     reportIncludeQuestion: 'Also send what you wrote',
-    /** Explain and Reply ideas: what they were asked about is the other person’s, and is never sent. */
-    reportChatNotSent: 'Nothing from your chat is sent with it.',
+    /** Explain and Reply ideas: no draft to offer, and nothing of the chat beyond what the answer quotes. */
+    reportChatNotSent: 'Nothing else from your chat is sent with it.',
     reportSend: 'Send report',
     reportSent: 'Thanks — the team will look at it.',
     /** The row on the Privacy page, for an account Copilot is on for. */

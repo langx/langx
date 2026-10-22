@@ -193,8 +193,9 @@ of the app. Behic does each step himself, in this order, and the flag is last:
       account Copilot is on for) says whether it is on and turns it off,
       which calls `DELETE /copilot/consent`; Copilot asks again next time.
       Every answer card and the Explain sheet have **Report**, which sends
-      the answer and which help wrote it — and the person's own draft only
-      if they switch that on in the confirm sheet — to the operator panel's
+      the answer (which can quote what it was about, as the sheet says) and
+      which help wrote it — and the person's original draft only if they
+      switch that on in the confirm sheet — to the operator panel's
       feedback queue (`POST /copilot/report`). Tick it again on the build
       sent for review: both arrive with the over-the-air update.
 - [ ] **A spend limit** on the key's workspace with the provider —

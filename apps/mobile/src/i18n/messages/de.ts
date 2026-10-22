@@ -4000,9 +4000,9 @@ export const de: Localized<EnMessages> = {
     reportA11y: 'Diese Antwort melden',
     reportTitle: 'Diese Antwort melden?',
     reportBody:
-      'Das LangX-Team sieht diese Antwort und welche Copilot-Hilfe sie geschrieben hat. An die andere Person wird nichts gesendet.',
+      'Das LangX-Team sieht diese Antwort, die die Wörter zitieren kann, um die es ging, und welche Copilot-Hilfe sie geschrieben hat. An die andere Person wird nichts gesendet.',
     reportIncludeQuestion: 'Auch senden, was du geschrieben hast',
-    reportChatNotSent: 'Aus deinem Chat wird nichts mitgesendet.',
+    reportChatNotSent: 'Sonst wird nichts aus deinem Chat mitgesendet.',
     reportSend: 'Meldung senden',
     reportSent: 'Danke — das Team sieht es sich an.',
     settingsTitle: 'Copilot',

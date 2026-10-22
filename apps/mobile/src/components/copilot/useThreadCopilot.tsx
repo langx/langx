@@ -148,6 +148,7 @@ export function useThreadCopilot({
     setCard(null)
     setExplained(null)
     setIdeas(null)
+    setReporting(null)
   }, [gate])
 
   // Typing, a send, or a newer message: the strip has nothing left to answer.

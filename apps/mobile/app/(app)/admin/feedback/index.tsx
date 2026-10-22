@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { FlatList, Linking, Text, View } from 'react-native'
-import { BOUNTY_MAX, BOUNTY_MIN } from '@langx/shared'
+import { BOUNTY_MAX, BOUNTY_MIN, COPILOT_OWN_QUESTION_ACTIONS } from '@langx/shared'
 import {
   useAdminCloseFeedback,
   useAdminFeedback,
@@ -156,7 +156,8 @@ function Row({ row }: { row: AdminFeedbackDto }) {
         {row.copilot ? ADMIN.feedback.copilotAction(row.copilot.action) : row.kind} ·{' '}
         {ADMIN.feedback.from} {who} · {row.createdAt.slice(0, 10)}
       </Text>
-      {row.copilot ? (
+      {/* Explain and Reply ideas never carry a question, so they say nothing about one. */}
+      {row.copilot && COPILOT_OWN_QUESTION_ACTIONS.includes(row.copilot.action) ? (
         <>
           <Text style={styles.meta}>{ADMIN.feedback.copilotQuestion}</Text>
           {row.copilot.question ? (
@@ -164,9 +165,9 @@ function Row({ row }: { row: AdminFeedbackDto }) {
           ) : (
             <Text style={styles.meta}>{ADMIN.feedback.copilotNoQuestion}</Text>
           )}
-          <Text style={styles.meta}>{ADMIN.feedback.copilotAnswer}</Text>
         </>
       ) : null}
+      {row.copilot ? <Text style={styles.meta}>{ADMIN.feedback.copilotAnswer}</Text> : null}
       <AdminQuoteV3>{row.body}</AdminQuoteV3>
 
       {row.attachmentUrls.length > 0 ? (

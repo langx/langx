@@ -5005,9 +5005,9 @@ export const ar: Localized<EnMessages> = {
     reportA11y: 'الإبلاغ عن هذه الإجابة',
     reportTitle: 'هل تريد الإبلاغ عن هذه الإجابة؟',
     reportBody:
-      'سيرى فريق LangX هذه الإجابة وأي مساعدة من Copilot كتبتها. لا يُرسل أي شيء إلى الشخص الآخر.',
+      'سيرى فريق LangX هذه الإجابة، وقد تقتبس الكلمات التي كانت عنها، وأي مساعدة من Copilot كتبتها. لا يُرسل أي شيء إلى الشخص الآخر.',
     reportIncludeQuestion: 'أرسل أيضًا ما كتبته',
-    reportChatNotSent: 'لا يُرسل معها أي شيء من محادثتك.',
+    reportChatNotSent: 'لا يُرسل معها أي شيء آخر من محادثتك.',
     reportSend: 'إرسال البلاغ',
     reportSent: 'شكرًا — سيطّلع الفريق عليه.',
     settingsTitle: 'Copilot',

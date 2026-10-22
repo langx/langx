@@ -247,4 +247,11 @@ export const copilotReportRequestSchema = z
       report.question === undefined || COPILOT_OWN_QUESTION_ACTIONS.includes(report.action),
     { message: 'Only Check and Say it can include the question', path: ['question'] },
   )
+  .refine(
+    (report) =>
+      report.question === undefined ||
+      report.question.length <=
+        (report.action === 'sayIt' ? COPILOT_RULES.maxSayItChars : COPILOT_RULES.maxCheckChars),
+    { message: 'Longer than that question could have been', path: ['question'] },
+  )
 export type CopilotReportRequest = z.infer<typeof copilotReportRequestSchema>

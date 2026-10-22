@@ -3927,9 +3927,9 @@ export const ptBR: Localized<EnMessages> = {
     reportA11y: 'Denunciar esta resposta',
     reportTitle: 'Denunciar esta resposta?',
     reportBody:
-      'A equipe do LangX vai ver esta resposta e qual ajuda do Copilot a escreveu. Nada é enviado para a outra pessoa.',
+      'A equipe do LangX vai ver esta resposta, que pode citar as palavras de que tratava, e qual ajuda do Copilot a escreveu. Nada é enviado para a outra pessoa.',
     reportIncludeQuestion: 'Enviar também o que você escreveu',
-    reportChatNotSent: 'Nada da sua conversa é enviado junto.',
+    reportChatNotSent: 'Nada mais da sua conversa é enviado junto.',
     reportSend: 'Enviar denúncia',
     reportSent: 'Obrigado — a equipe vai dar uma olhada.',
     settingsTitle: 'Copilot',

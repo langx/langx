@@ -39,7 +39,7 @@ Both stores treat a wrong answer here as a policy violation, and both accept
 | Profile views | `profileViews` | "Who viewed me". Not written at all if the viewer has incognito on | Automatic; deleted after 90 days (TTL index) |
 | Reports you file | `reports` | Moderation | Only if you report someone |
 | Copilot consent | `profiles.copilotConsent` | Which version of the Copilot consent sheet you agreed to, and when — the only thing that lets your text reach the AI provider. **Not live** — see _Copilot_ below | Only if you agree; withdrawing removes it |
-| Copilot reports | `feedback` (`kind: 'copilot'`) | An AI answer you reported: the answer, which Copilot help wrote it and, only if you switched it on in the confirm sheet, the sentence you had asked about — never the other person's message. Read by the operators in their feedback queue; no mail, no public issue. **Not live** — see _Copilot_ below | Only if you report one; deleted with your account |
+| Copilot reports | `feedback` (`kind: 'copilot'`) | An AI answer you reported and which Copilot help wrote it. The answer can quote what it was about — a Check answer is your sentence, corrected — and the sheet says so; your original sentence goes only if you switch that on, and nothing else from the chat is sent. Read by the operators in their feedback queue; no mail, no public issue. **Not live** — see _Copilot_ below | Only if you report one; deleted with your account |
 | Copilot answers | `copilotCache` | An answer kept under a hash of the question, so the same question is not paid for twice. Linked to no account. **Not live** — see _Copilot_ below | Automatic once you use Copilot; deleted after 7 days (TTL index) |
 | Usage analytics | PostHog (EU Cloud), not our database | Which screens and buttons are used, so the funnel from install to first conversation can be read, and a recording of the screen on iOS and Android with every word and image masked on the device before it is sent. Keyed by our user id; never a message body — `docs/analytics.md` | Optional — on by default, off in Settings → Privacy → Share usage data |
 
@@ -203,8 +203,10 @@ it is on and turns it off; that removes `profiles.copilotConsent`
 and the next use asks again. Every answer has **Report**: after a confirm sheet
 that says what goes, the answer and the help that wrote it go to the operators'
 feedback queue, with the person's own draft (Check, Say it) only if they turn
-that on. Explain and Reply ideas never send what they were asked about — it is
-the other person's message. A report reaches our operators only, not the
+that on. The answer itself can quote what it was about — a Check answer is the
+sentence corrected, an explanation may quote the message it explains — and the
+sheet says so. Explain and Reply ideas never offer the switch: what they were
+asked about is the other person's message, and the server refuses it. A report reaches our operators only, not the
 provider, so it changes nothing on the forms beyond what is already declared
 as collected.
 

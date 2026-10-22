@@ -3986,9 +3986,9 @@ export const fr: Localized<EnMessages> = {
     reportA11y: 'Signaler cette réponse',
     reportTitle: 'Signaler cette réponse ?',
     reportBody:
-      'L’équipe LangX verra cette réponse et quelle aide Copilot l’a écrite. Rien n’est envoyé à l’autre personne.',
+      'L’équipe LangX verra cette réponse, qui peut citer les mots dont elle parlait, et quelle aide Copilot l’a écrite. Rien n’est envoyé à l’autre personne.',
     reportIncludeQuestion: 'Envoyer aussi ce que tu as écrit',
-    reportChatNotSent: 'Rien de ta conversation n’est envoyé avec.',
+    reportChatNotSent: 'Rien d’autre de ta conversation n’est envoyé avec.',
     reportSend: 'Envoyer le signalement',
     reportSent: 'Merci — l’équipe va regarder.',
     settingsTitle: 'Copilot',

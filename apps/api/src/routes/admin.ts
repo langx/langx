@@ -1094,6 +1094,12 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const row = await getFeedback(app.mongo.db, request.params.id)
       if (!row) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such report')
+      // A reported Copilot answer is never paid: a bounty on every answer
+      // somebody disliked would be a reason to dislike them. The panel hides
+      // Pay on these rows; this is what holds for any other caller.
+      if (row.kind === 'copilot') {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'A Copilot report is not paid for')
+      }
 
       const result = await payBounty(app, {
         userId: row.userId,

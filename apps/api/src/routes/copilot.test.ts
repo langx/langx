@@ -1,4 +1,5 @@
 import {
+  BOUNTY_MIN,
   COPILOT_REPORT_MAX_ANSWER_CHARS,
   COPILOT_RULES,
   DEFAULT_APP_CONFIG,
@@ -285,6 +286,8 @@ describe('Copilot over HTTP', () => {
         { action: 'check', answer: '   ' },
         { action: 'check', answer: 'a'.repeat(COPILOT_REPORT_MAX_ANSWER_CHARS + 1) },
         { action: 'check', answer: 'ok', question: 'a'.repeat(COPILOT_RULES.maxCheckChars + 1) },
+        // Each action's own cap: a Say it question is shorter than a Check one.
+        { action: 'sayIt', answer: 'ok', question: 'a'.repeat(COPILOT_RULES.maxSayItChars + 1) },
         { action: 'translate', answer: 'ok' },
         { answer: 'ok' },
       ]
@@ -336,6 +339,17 @@ describe('Copilot over HTTP', () => {
       expect(items[0]?.replyDraft).toContain('teşekkürler')
       expect(items[1]).toMatchObject({ kind: 'copilot', copilot: { action: 'explain' } })
       expect((items[1]?.copilot as Record<string, unknown>).question).toBeUndefined()
+
+      // Never paid, whoever asks: the panel hides Pay, and the route refuses it.
+      const award = await app.inject({
+        method: 'POST',
+        url: `/admin/feedback/${String(items[0]?._id)}/award`,
+        headers: { cookie },
+        payload: { amount: BOUNTY_MIN },
+      })
+      expect(award.statusCode).toBe(400)
+      const ledger = handle.db.collection(COLLECTIONS.tokenLedger)
+      expect(await ledger.countDocuments({ refId: items[0]?._id })).toBe(0)
     })
   })
 })

@@ -3897,9 +3897,9 @@ export const tr: Localized<EnMessages> = {
     reportA11y: 'Bu yanıtı bildir',
     reportTitle: 'Bu yanıt bildirilsin mi?',
     reportBody:
-      'LangX ekibi bu yanıtı ve onu hangi Copilot yardımının yazdığını görecek. Karşı tarafa hiçbir şey gönderilmez.',
+      'LangX ekibi bu yanıtı (hakkında olduğu sözleri alıntılayabilir) ve onu hangi Copilot yardımının yazdığını görecek. Karşı tarafa hiçbir şey gönderilmez.',
     reportIncludeQuestion: 'Yazdığını da gönder',
-    reportChatNotSent: 'Sohbetinden hiçbir şey onunla birlikte gönderilmez.',
+    reportChatNotSent: 'Sohbetinden başka hiçbir şey onunla birlikte gönderilmez.',
     reportSend: 'Bildirimi gönder',
     reportSent: 'Teşekkürler — ekip inceleyecek.',
     settingsTitle: 'Copilot',
@@ -3908,7 +3908,7 @@ export const tr: Localized<EnMessages> = {
     settingsOffStateBody: 'Kapalı. Copilot kullanılmadan önce iznini ister.',
     settingsOffTitle: 'Copilot kapatılsın mı?',
     settingsOffBody:
-      'Senden başka hiçbir şey yapay zekâ sağlayıcısına gitmez. Copilot bir dahaki kullanımında yeniden sorar.',
+      'Artık senden hiçbir şey yapay zekâ sağlayıcısına gitmez. Copilot bir dahaki kullanımında yeniden sorar.',
     settingsOffConfirm: 'Kapat',
     settingsOffDone: 'Copilot kapalı.',
   },
