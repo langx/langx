@@ -3989,7 +3989,6 @@ export const de: Localized<EnMessages> = {
     moreAt: 'Mehr um {time}',
     errQuota: 'Du hast die Copilot-Antworten für heute aufgebraucht. Mehr um {time}.',
     errQuotaNoTime: 'Du hast die Copilot-Antworten für heute aufgebraucht.',
-    errPartnerAge: 'Copilot liest diesen Chat nicht.',
     errBusy: 'Copilot ist gerade ausgelastet. Versuch es später noch mal.',
     errNoAnswer: 'Darauf hat Copilot keine Antwort gefunden.',
     errNetwork: 'Copilot ist nicht erreichbar.',

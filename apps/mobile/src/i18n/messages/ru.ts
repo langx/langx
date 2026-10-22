@@ -4583,7 +4583,6 @@ export const ru: Localized<EnMessages> = {
     moreAt: 'Ещё в {time}',
     errQuota: 'Ответы Copilot на сегодня закончились. Ещё в {time}.',
     errQuotaNoTime: 'Ответы Copilot на сегодня закончились.',
-    errPartnerAge: 'Copilot не читает этот чат.',
     errBusy: 'Copilot занят. Попробуй позже.',
     errNoAnswer: 'Copilot не смог на это ответить.',
     errNetwork: 'Не удалось связаться с Copilot.',

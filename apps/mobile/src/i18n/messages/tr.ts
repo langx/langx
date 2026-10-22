@@ -3886,7 +3886,6 @@ export const tr: Localized<EnMessages> = {
     moreAt: 'Yenisi saat {time}',
     errQuota: 'Bugünkü Copilot yanıtlarını kullandın. Yenisi saat {time}.',
     errQuotaNoTime: 'Bugünkü Copilot yanıtlarını kullandın.',
-    errPartnerAge: 'Copilot bu sohbeti okumaz.',
     errBusy: 'Copilot şu an meşgul. Daha sonra tekrar dene.',
     errNoAnswer: 'Copilot buna yanıt veremedi.',
     errNetwork: 'Copilot’a ulaşılamadı.',

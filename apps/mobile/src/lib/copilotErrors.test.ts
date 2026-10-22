@@ -7,12 +7,11 @@ function refusal(status: number, code: string, extra: Record<string, unknown> = 
 }
 
 describe('copilotErrorKey', () => {
-  it.each(['off', 'age'])('hides Copilot when it is not for this person (%s)', (reason) => {
-    expect(copilotErrorKey(refusal(503, 'COPILOT_UNAVAILABLE', { reason }))).toBe('off')
+  it('hides Copilot when it is not for this person', () => {
+    expect(copilotErrorKey(refusal(503, 'COPILOT_UNAVAILABLE', { reason: 'off' }))).toBe('off')
   })
 
   it.each([
-    ['partner_age', 'copilot.errPartnerAge'],
     ['busy', 'copilot.errBusy'],
     ['no_answer', 'copilot.errNoAnswer'],
     // A reason this build has never heard of reads as no answer, which is

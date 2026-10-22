@@ -34,7 +34,7 @@ const POINTS: { icon: 'send' | 'slash' | 'alert-circle'; key: MessageKey }[] = [
  * the yellow, because every Copilot surface is blue. Tapping outside is "Not
  * now", and nothing is recorded.
  *
- * When Copilot is off — no key, the operator's switch, the account's age, or
+ * When Copilot is off — no key, the operator's switch, the allow-list, or
  * an API that predates it — the sheet says so and offers nothing to agree to.
  * The caller gates guests with `requireAccount` before opening it.
  */
