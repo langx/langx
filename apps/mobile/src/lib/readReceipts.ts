@@ -1,4 +1,5 @@
 import type { InfiniteData, QueryClient } from '@tanstack/react-query'
+import type { ThreadTestimonialState } from '@langx/shared'
 import type { ConversationDto } from '../api/queries'
 import type { ConversationPageDto } from './conversationCache'
 import type { MessagePageDto } from './messageCache'
@@ -148,26 +149,53 @@ export function incomingMayMoveTokens(input: {
  */
 export function createKeyedDebounce(delayMs: number): {
   schedule: (key: string, run: () => void) => void
+  /** Runs this key's pending call now, if there is one. */
+  flush: (key: string) => void
+  /** Runs every pending call now. */
+  flushAll: () => void
   cancelAll: () => void
 } {
-  const timers = new Map<string, ReturnType<typeof setTimeout>>()
+  const timers = new Map<string, { timer: ReturnType<typeof setTimeout>; run: () => void }>()
+  const flush = (key: string): void => {
+    const pending = timers.get(key)
+    if (!pending) return
+    clearTimeout(pending.timer)
+    timers.delete(key)
+    pending.run()
+  }
   return {
     schedule(key, run) {
       const pending = timers.get(key)
-      if (pending !== undefined) clearTimeout(pending)
-      timers.set(
-        key,
-        setTimeout(() => {
-          timers.delete(key)
-          run()
-        }, delayMs),
-      )
+      if (pending !== undefined) clearTimeout(pending.timer)
+      timers.set(key, { timer: setTimeout(() => flush(key), delayMs), run })
+    },
+    flush,
+    flushAll() {
+      for (const key of [...timers.keys()]) flush(key)
     },
     cancelAll() {
-      for (const timer of timers.values()) clearTimeout(timer)
+      for (const pending of timers.values()) clearTimeout(pending.timer)
       timers.clear()
     },
   }
+}
+
+/** At most this often per thread does a read go back for the testimonial state. */
+export const TESTIMONIAL_RECHECK_MS = 60_000
+
+/**
+ * Whether a read of my own should refetch the thread to learn if the
+ * testimonial has unlocked. Only while the state is present and still locked
+ * — once it is unlocked, or on a thread that never carries it, there is
+ * nothing to learn — and no more than once per `TESTIMONIAL_RECHECK_MS`.
+ */
+export function testimonialRecheckDue(
+  testimonial: ThreadTestimonialState | undefined,
+  lastCheckedAt: number | undefined,
+  now: number,
+): boolean {
+  if (!testimonial || testimonial.unlocked) return false
+  return lastCheckedAt === undefined || now - lastCheckedAt >= TESTIMONIAL_RECHECK_MS
 }
 
 function isPagedList(data: unknown): data is InfiniteData<ConversationPageDto> {

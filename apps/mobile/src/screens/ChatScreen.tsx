@@ -202,6 +202,7 @@ import { planJump } from '../lib/messageJump'
 import { makeStyles, useTheme } from '../lib/theme'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useReduceMotion } from '../hooks/useReduceMotion'
+import { flushPendingRead } from '../hooks/useSocket'
 import { EASE_OUT } from '../lib/theme/motionAnimated'
 import { DURATION } from '../lib/theme/motionValues'
 import { useWebFileDrop } from '../hooks/useWebFileDrop'
@@ -627,7 +628,11 @@ export function ChatScreen({
   }, [newestKey])
   const seenAt =
     newestSeen.current === null ? 0 : rows.findIndex((row) => row.key === newestSeen.current)
-  const aheadOfSeen = Math.max(0, seenAt)
+  // Through a ref so the list's renderItem does not change with every
+  // message for it; the row reads it as it renders, which is the moment that
+  // matters.
+  const aheadOfSeen = useRef(0)
+  aheadOfSeen.current = Math.max(0, seenAt)
   /*
    * The newest call's row, which alone offers to call again. Every row
    * offering it turned a thread of six calls into six identical links, and
@@ -856,6 +861,9 @@ export function ChatScreen({
       })
       return () => {
         left = true
+        // Before the thread stops being the open one: a read still waiting out
+        // a burst covers what was on screen, and nothing after.
+        flushPendingRead(conversationId)
         setActiveConversation(null)
         setUnreadAtOpen(null)
       }
@@ -992,6 +1000,10 @@ export function ChatScreen({
     },
     [conversationId],
   )
+  // A field put down is not somebody typing, whatever the idle timer says.
+  useEffect(() => {
+    if (!fieldFocused) notifyTyping(false)
+  }, [fieldFocused, notifyTyping])
   // Another thread is another audience: it has been told nothing yet.
   useEffect(() => {
     typingSignal.current = TYPING_IDLE
@@ -3155,6 +3167,17 @@ export function ChatScreen({
   /** The header's send paths, read at press time so the header can stay memoised. */
   const headerActions = useRef({ sendAttachments, retry, openUnsentActions })
   headerActions.current = { sendAttachments, retry, openUnsentActions }
+  /*
+   * An unsent row whose message has arrived after all — a retry that landed,
+   * an ack lost on the way back — is dropped here, in the render the message
+   * arrives in, rather than a commit later by the effect that retires it
+   * from state. The same rule `threadItems` applies to stand-ins.
+   */
+  const visibleUnsent = useMemo(() => {
+    if (unsent.length === 0) return unsent
+    const arrived = new Set(items.map((message) => message.clientId).filter(Boolean))
+    return arrived.size === 0 ? unsent : unsent.filter((row) => !arrived.has(row.clientId))
+  }, [unsent, items])
   const listHeader = useMemo(
     () => (
       <>
@@ -3187,9 +3210,9 @@ export function ChatScreen({
             })}
           </View>
         ) : null}
-        {unsent.length > 0 ? (
+        {visibleUnsent.length > 0 ? (
           <View style={styles.unsentBlock}>
-            {unsent.map((message) => {
+            {visibleUnsent.map((message) => {
               const discard = () => setUnsent((list) => removeUnsent(list, message.clientId))
               return (
                 <View key={message.clientId} style={styles.unsentRow}>
@@ -3257,7 +3280,7 @@ export function ChatScreen({
     ),
     [
       pending,
-      unsent,
+      visibleUnsent,
       styles,
       t,
       conversationId,
@@ -3343,7 +3366,10 @@ export function ChatScreen({
         // arrives.
         <ArrivalEntrance
           play={
-            v3Thread && !reduceMotion && index < aheadOfSeen && arrivals.take(row.key, Date.now())
+            v3Thread &&
+            !reduceMotion &&
+            index < aheadOfSeen.current &&
+            arrivals.take(row.key, Date.now())
           }
         >
           <WithRewardChips
@@ -3416,7 +3442,6 @@ export function ChatScreen({
       v3Styles,
       reduceMotion,
       arrivals,
-      aheadOfSeen,
       t,
       locale,
       v3Thread,

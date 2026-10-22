@@ -37,12 +37,32 @@ import {
   clearConversationUnread,
   createKeyedDebounce,
   incomingMayMoveTokens,
+  testimonialRecheckDue,
 } from '../lib/readReceipts'
 import { closeSocket, onSocket, restartSocket } from '../lib/socket'
 import { withoutViewOnceFallback } from '../lib/viewOnce'
 
 /** How long the socket waits after the last message in a burst before posting the read. */
 const READ_DEBOUNCE_MS = 1000
+
+/**
+ * The reads posted for messages landing in the open thread, one per
+ * conversation after a burst settles. See `createKeyedDebounce`. Module-level
+ * so the thread can flush its own as it closes (`flushPendingRead`).
+ */
+const reads = createKeyedDebounce(READ_DEBOUNCE_MS)
+
+/**
+ * Posts this thread's waiting read now, if there is one. The thread calls it
+ * as it closes: a read that fired a second later would also cover a message
+ * that arrived after the person had left.
+ */
+export function flushPendingRead(conversationId: string): void {
+  reads.flush(conversationId)
+}
+
+/** When the open thread last went back for its testimonial state; see `conversation:read`. */
+const testimonialCheckedAt = new Map<string, number>()
 
 /**
  * Opens the app's single socket and turns realtime events into cache updates.
@@ -99,6 +119,9 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
     let lastAppState = AppState.currentState
     const appStateSubscription = AppState.addEventListener('change', (next) => {
       if (resumedFromBackground(lastAppState, next)) resync()
+      // Going away: a read still waiting out its burst is posted now, while
+      // it is still true, rather than after the person has left.
+      if (next === 'background') reads.flushAll()
       lastAppState = next
     })
 
@@ -124,12 +147,6 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
      * `_layout.tsx` gives for owning the socket once — and goes to whichever
      * socket object is current, not the one that was when this started.
      */
-    /**
-     * The reads posted for messages landing in the open thread, one per
-     * conversation after a burst settles. See `createKeyedDebounce`.
-     */
-    const reads = createKeyedDebounce(READ_DEBOUNCE_MS)
-
     const heartbeat = setInterval(() => {
       current?.emit('presence:ping', {})
     }, PRESENCE_HEARTBEAT_MS)
@@ -405,6 +422,21 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
             (old) => applyReadAt(old, { readBy, readAt: readAt ?? new Date().toISOString() }),
           )
           if (readBy !== queryClient.getQueryData<{ _id: string }>(keys.me)?._id) return
+          /*
+           * The one thing the patch above cannot know: whether this thread has
+           * just crossed the line that unlocks a testimonial. The first page
+           * carries that state, and it used to be refreshed by the refetch this
+           * replaced. Asked again only while it is still locked, and at most
+           * once a minute per thread.
+           */
+          const testimonial = queryClient.getQueryData<InfiniteData<MessagePageDto>>(
+            keys.messages(conversationId),
+          )?.pages[0]?.testimonial
+          const now = Date.now()
+          if (testimonialRecheckDue(testimonial, testimonialCheckedAt.get(conversationId), now)) {
+            testimonialCheckedAt.set(conversationId, now)
+            void queryClient.invalidateQueries({ queryKey: keys.messages(conversationId) })
+          }
           clearConversationUnread(queryClient, conversationId)
           invalidateUnread(queryClient)
           // Read on another device of mine: this one's shade is stale too.

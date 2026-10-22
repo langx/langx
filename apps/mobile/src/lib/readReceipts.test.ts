@@ -9,6 +9,8 @@ import {
   clearConversationUnread,
   createKeyedDebounce,
   incomingMayMoveTokens,
+  TESTIMONIAL_RECHECK_MS,
+  testimonialRecheckDue,
 } from './readReceipts'
 
 const ME = 'me'
@@ -203,6 +205,36 @@ describe('createKeyedDebounce', () => {
     expect(b).toHaveBeenCalledTimes(1)
   })
 
+  it('flushes one key now and leaves the others waiting', () => {
+    const debounce = createKeyedDebounce(1000)
+    const a = vi.fn()
+    const b = vi.fn()
+    debounce.schedule('c1', a)
+    debounce.schedule('c2', b)
+    debounce.flush('c1')
+    expect(a).toHaveBeenCalledTimes(1)
+    expect(b).not.toHaveBeenCalled()
+    vi.advanceTimersByTime(1000)
+    // Flushed, so its timer does not run it a second time.
+    expect(a).toHaveBeenCalledTimes(1)
+    expect(b).toHaveBeenCalledTimes(1)
+    debounce.flush('c1')
+    expect(a).toHaveBeenCalledTimes(1)
+  })
+
+  it('flushes everything pending', () => {
+    const debounce = createKeyedDebounce(1000)
+    const a = vi.fn()
+    const b = vi.fn()
+    debounce.schedule('c1', a)
+    debounce.schedule('c2', b)
+    debounce.flushAll()
+    expect(a).toHaveBeenCalledTimes(1)
+    expect(b).toHaveBeenCalledTimes(1)
+    vi.advanceTimersByTime(2000)
+    expect(a).toHaveBeenCalledTimes(1)
+  })
+
   it('cancels everything pending', () => {
     const debounce = createKeyedDebounce(1000)
     const run = vi.fn()
@@ -210,5 +242,23 @@ describe('createKeyedDebounce', () => {
     debounce.cancelAll()
     vi.advanceTimersByTime(2000)
     expect(run).not.toHaveBeenCalled()
+  })
+})
+
+describe('testimonialRecheckDue', () => {
+  const locked = { unlocked: false, written: false }
+
+  it('asks while the state is present and still locked', () => {
+    expect(testimonialRecheckDue(locked, undefined, 0)).toBe(true)
+  })
+
+  it('asks at most once a minute', () => {
+    expect(testimonialRecheckDue(locked, 0, TESTIMONIAL_RECHECK_MS - 1)).toBe(false)
+    expect(testimonialRecheckDue(locked, 0, TESTIMONIAL_RECHECK_MS)).toBe(true)
+  })
+
+  it('never asks once unlocked, or where there is no state', () => {
+    expect(testimonialRecheckDue({ unlocked: true, written: false }, undefined, 0)).toBe(false)
+    expect(testimonialRecheckDue(undefined, undefined, 0)).toBe(false)
   })
 })
