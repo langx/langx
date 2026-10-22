@@ -204,11 +204,6 @@ function RootLayout() {
 export default ObserveRoot.wrap(RootLayout)
 
 /**
- * Split from `RootLayout` only so it sits *inside* `ThemeProvider` and can call
- * `useTheme()` — the splash background and the status-bar style both have to
- * follow the theme, and a provider cannot consume itself.
- */
-/**
  * The one subscriber to `/app-config` that decides things for everybody: the
  * v3 latch every `useV3Home` reads, and the refetch on each return to the
  * foreground. A component of its own, rendering nothing, so a refetch wakes
@@ -221,6 +216,11 @@ function AppConfigWatch() {
   return null
 }
 
+/**
+ * Split from `RootLayout` only so it sits *inside* `ThemeProvider` and can call
+ * `useTheme()` — the splash background and the status-bar style both have to
+ * follow the theme, and a provider cannot consume itself.
+ */
 function RootShell() {
   const { colors, scheme, v3 } = useTheme()
   const v3Home = useV3Home()

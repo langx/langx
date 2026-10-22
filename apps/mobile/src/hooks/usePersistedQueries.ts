@@ -112,8 +112,20 @@ export function usePersistedQueries(queryClient: QueryClient, userId: string | u
      * the restore has finished and the subscription is live, or this would
      * write an empty cache over the one still being read.
      */
+    let flushed = false
     const flush = AppState.addEventListener('change', (state) => {
-      if (state !== 'background' || cancelled || !unsubscribe) return
+      /*
+       * Any state but `active`, not only `background`: a swipe away in the
+       * iOS app switcher goes through `inactive` and is killed there, never
+       * reaching `background`. Once per trip away, so `inactive` then
+       * `background` writes once; coming back arms it again.
+       */
+      if (state === 'active') {
+        flushed = false
+        return
+      }
+      if (flushed || cancelled || !unsubscribe) return
+      flushed = true
       const serialized = serializePersistedClient({
         timestamp: Date.now(),
         buster: QUERY_CACHE_VERSION,

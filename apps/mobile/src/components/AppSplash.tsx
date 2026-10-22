@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import {
   ActivityIndicator,
   Animated,
+  AppState,
   Easing,
   Image,
   Platform,
@@ -155,21 +156,45 @@ export function AppSplash() {
   }, [])
 
   /*
-   * Written as soon as this launch is known to be the first, not when the film
-   * ends: "the very first launch" is the launch, and one closed halfway
-   * through the film has had its hello.
+   * The stored flag. Written (below) as soon as this launch is known to be the
+   * first, not when the film ends: "the very first launch" is the launch, and
+   * one closed halfway through the film has had its hello.
    */
   useEffect(() => {
     let cancelled = false
     void readBoolFlag(FLAG_KEYS.launchFilmSeen).then((seen) => {
-      if (cancelled) return
-      setFilmSeen(seen)
-      if (!seen) void setBoolFlag(FLAG_KEYS.launchFilmSeen, true)
+      if (!cancelled) setFilmSeen(seen)
     })
     return () => {
       cancelled = true
     }
   }, [])
+
+  /*
+   * Only once somebody can be watching. A VoIP push cold-starts the app in
+   * the background, where nobody sees the film, and writing then would spend
+   * the one full showing on nothing; so a launch that is not active yet writes
+   * on its first `active`. With reduce motion on there is no film to have
+   * seen, and nothing is written.
+   */
+  const filmWritten = useRef(false)
+  useEffect(() => {
+    if (filmSeen !== false || reduceMotion || filmWritten.current) return
+    const write = () => {
+      filmWritten.current = true
+      void setBoolFlag(FLAG_KEYS.launchFilmSeen, true)
+    }
+    if (AppState.currentState === 'active') {
+      write()
+      return
+    }
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state !== 'active' || filmWritten.current) return
+      write()
+      subscription.remove()
+    })
+    return () => subscription.remove()
+  }, [filmSeen, reduceMotion])
 
   /*
    * Both gates resolve to "/" — expo-router strips group segments, so

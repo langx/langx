@@ -226,7 +226,11 @@ function V3TabIcon({
       ) : (
         pill
       )}
-      {badge ? <V3TabBadge {...badge} /> : null}
+      {/*
+        The bar draws this twice; only the active copy's count is read out,
+        or a screen reader says it twice.
+      */}
+      {badge ? <V3TabBadge {...badge} hidden={!focused} /> : null}
     </View>
   )
 }
@@ -239,7 +243,7 @@ function V3TabIcon({
  *
  * Where the bar put its own: three points over the slot's top end corner.
  */
-function V3TabBadge({ text, count, look }: V3Badge) {
+function V3TabBadge({ text, count, look, hidden }: V3Badge & { hidden: boolean }) {
   const { v3 } = useTheme()
   const reduce = useReduceMotion()
   const scale = useRef(new Animated.Value(1)).current
@@ -269,6 +273,9 @@ function V3TabBadge({ text, count, look }: V3Badge) {
       numberOfLines={1}
       // As the bar's own badge: iOS shows the large-content viewer instead.
       allowFontScaling={Platform.OS === 'ios' ? false : undefined}
+      accessibilityElementsHidden={hidden}
+      importantForAccessibility={hidden ? 'no-hide-descendants' : 'auto'}
+      aria-hidden={hidden}
       style={[
         v3TabBadgeStyle(
           v3.type.label,

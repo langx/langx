@@ -57,9 +57,9 @@ const serverSnapshot = () => false
  * Whether the reader has asked for less movement.
  *
  * Both halves exist on the web: react-native-web maps this onto
- * `prefers-reduced-motion`, and resolves `true` when there is no `matchMedia`
- * at all — during the static export's prerender, say. That is the safe way
- * round: no motion rather than motion nobody asked for.
+ * `prefers-reduced-motion`. The static export's prerender and the hydration
+ * of its pages read `false` (`serverSnapshot`); the browser's own answer
+ * replaces it right after.
  */
 export function useReduceMotion(): boolean {
   return useSyncExternalStore(subscribe, snapshot, serverSnapshot)
