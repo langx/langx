@@ -1,18 +1,11 @@
 import { useSegments } from 'expo-router'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { Animated, Platform, Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useAppReady } from '../hooks/useAppReady'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
-import { SPLASH_TIMING, STAMP_DONE_AT } from '../lib/splashTiming'
-import {
-  dismissToast,
-  msUntilToastsMayShow,
-  subscribeToToasts,
-  toastEdge,
-  type Toast,
-} from '../lib/toast'
+import { isLaunchOver, subscribeToLaunchOver } from '../lib/launchOver'
+import { dismissToast, subscribeToToasts, toastEdge, type Toast } from '../lib/toast'
 import { OVERLAY_LAYER } from '../lib/overlayLayers'
 import { makeStyles } from '../lib/theme'
 import { EASE_OUT } from '../lib/theme/motionAnimated'
@@ -63,19 +56,17 @@ export function ToastHost() {
   useEffect(() => subscribeToToasts(setHead), [])
 
   /*
-   * Held back until the opening has gone, and its clock with it — see
-   * `msUntilToastsMayShow`. Queued toasts wait rather than being dropped.
+   * Held back until the opening is off the screen. `markAppReady` fires when
+   * the first screen is up, which is when the opening may *start* to leave,
+   * not when it has gone, and a toast raised in between — the update notice,
+   * whose download often finishes during that very opening — spent most of
+   * its life under the logo, surfaced for a moment and vanished as the reader
+   * went for it. This used to be a fixed time after ready, which held every
+   * later launch's toasts long after the splash had gone, and let one through
+   * under a first launch's sheet when a deep link marked the app ready before
+   * the stamp had even started. Queued toasts wait rather than being dropped.
    */
-  const ready = useAppReady()
-  const [settled, setSettled] = useState(false)
-  useEffect(() => {
-    if (!ready || settled) return
-    const timer = setTimeout(
-      () => setSettled(true),
-      msUntilToastsMayShow(SPLASH_TIMING, STAMP_DONE_AT),
-    )
-    return () => clearTimeout(timer)
-  }, [ready, settled])
+  const settled = useSyncExternalStore(subscribeToLaunchOver, isLaunchOver, isLaunchOver)
 
   // The queue moved on: the drawn pill leaves first. A second change during
   // the way out stops it and starts it again from where it got to, so the

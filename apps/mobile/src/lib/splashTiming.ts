@@ -34,7 +34,11 @@ export const RING_WIDTH = 6
 
 /** The two partner discs that pop out from behind the badge on the first launch. */
 export const PARTNER_SIZE = 56
-/** How far each partner travels along its diagonal, per axis: clear of the disc's edge. */
+/**
+ * How far each partner travels along its diagonal, per axis: far enough that
+ * its centre is past the disc's edge, so most of it shows while it still
+ * tucks under the badge rather than floating free.
+ */
 export const PARTNER_OFFSET = 76
 
 export const SPLASH_TIMING = {

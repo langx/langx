@@ -35,7 +35,7 @@ import { ProMark } from './ProMark'
  * "Keep Pro" opens the paywall as `gift_end`; the paywall says what the store
  * charges and whether its own free week is still there.
  *
- * Not while the launch film, the Discover tour or "You're Pro now" is up:
+ * Not while the launch opening, the Discover tour or "You're Pro now" is up:
  * each is a window of its own, and the second to open would paint over the
  * first. A `Modal`, so it needs no `OVERLAY_LAYER`.
  */

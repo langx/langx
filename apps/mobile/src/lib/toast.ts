@@ -53,24 +53,6 @@ export const TOAST_DURATION_MS = 4000
 export const ACTION_TOAST_DURATION_MS = 8000
 
 /**
- * How long after the app says it is ready a toast may appear.
- *
- * `markAppReady` fires when the first screen is up, which is when the opening
- * may *start* to leave, not when it has gone: a first launch still finishes
- * its stamp and then lifts, and reduced motion holds its minimum time and
- * then fades. A toast raised before then — the update notice, whose download
- * often finishes during that very opening — spent most of its life under the
- * logo, surfaced for a moment and vanished as the reader went for it. The
- * numbers are the opening's own: the longer of its two holds plus its exit.
- */
-export function msUntilToastsMayShow(
-  timing: { MIN_VISIBLE_MS: number; FADE_MS: number; LIFT_MS: number },
-  stampDoneAt: number,
-): number {
-  return Math.max(stampDoneAt + timing.LIFT_MS, timing.MIN_VISIBLE_MS + timing.FADE_MS)
-}
-
-/**
  * Which edge a toast sits on, from the route's segments.
  *
  * The bottom, above the tab bar, everywhere the tab bar is. The signed-out

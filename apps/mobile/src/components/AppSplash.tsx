@@ -11,6 +11,7 @@ import {
   View,
   useColorScheme,
   useWindowDimensions,
+  type LayoutChangeEvent,
   type ViewStyle,
 } from 'react-native'
 import Svg, { Circle, G, Path } from 'react-native-svg'
@@ -158,11 +159,19 @@ export function AppSplash() {
   const ready = useAppReady()
   const reduceMotion = useReduceMotion()
   const pathname = usePathname()
-  const { height } = useWindowDimensions()
+  const windowSize = useWindowDimensions()
 
   const [visible, setVisible] = useState(true)
   const [exiting, setExiting] = useState(false)
-  const [laidOut, setLaidOut] = useState(false)
+  /**
+   * The layer's own height, which is what the sheet is sized from. Not the
+   * window's: on Android edge-to-edge the window can be shorter than the root
+   * view by both system bars, more than the bleed, and a lift measured from it
+   * stopped with the sheet's edge still across the top of the screen.
+   * `undefined` until the first layout, when the window is the best guess.
+   */
+  const [layerHeight, setLayerHeight] = useState<number | undefined>(undefined)
+  const laidOut = layerHeight !== undefined
   /** On the web the badge is inline SVG, in the prerendered HTML: drawn from the first paint. */
   const [markDrawn, setMarkDrawn] = useState(Platform.OS === 'web')
   /**
@@ -179,6 +188,8 @@ export function AppSplash() {
   const stampStarted = useRef(false)
   const exitStarted = useRef(false)
   const stampRun = useRef<Animated.CompositeAnimation | null>(null)
+  /** When the stamp started, for how much of the ring a quick exit finds drawn. */
+  const stampStartedAt = useRef<number | undefined>(undefined)
 
   /** The ring, drawn from 0 to 1. */
   const ring = useRef(new Animated.Value(0)).current
@@ -327,10 +338,28 @@ export function AppSplash() {
       ]),
     ])
     stampRun.current = run
+    stampStartedAt.current = Date.now()
     run.start(({ finished }) => {
       if (finished) setStampDone(true)
     })
   }, [plan, filmSeen, nativeGone, ring, scale, partner])
+
+  /*
+   * Reduced motion can answer after the stamp has started: `useReduceMotion`
+   * starts at `false` and the OS replies asynchronously. Nothing would stop
+   * the stamp then, and the ring, the press and the partners played on while
+   * the layer faded. Put the badge back as the OS drew it instead. Not once an
+   * exit is running, whose own animations share these values: stopping one of
+   * them would stop the whole exit, and the layer would never leave.
+   */
+  useEffect(() => {
+    if (plan !== 'still' || !stampStarted.current || exitStarted.current) return
+    stampRun.current?.stop()
+    stampRun.current = null
+    ring.setValue(0)
+    scale.setValue(1)
+    partner.setValue(0)
+  }, [plan, ring, scale, partner])
 
   useEffect(() => {
     if (exitStarted.current || !ready || !nativeGone) return
@@ -381,35 +410,39 @@ export function AppSplash() {
     exitStarted.current = true
     setExiting(true)
     stampRun.current?.stop()
-    ring.stopAnimation((drawn) => {
-      Animated.parallel([
-        Animated.timing(ring, {
-          toValue: 1,
-          duration: quickRingMs(drawn),
-          easing: EASE_OUT,
-          useNativeDriver: true,
-        }),
-        Animated.timing(scale, {
-          toValue: 1,
-          duration: DURATION.press,
-          easing: EASE_OUT,
-          useNativeDriver: true,
-        }),
-        Animated.timing(partner, {
-          toValue: 0,
-          duration: DURATION.press,
-          easing: EASE_OUT,
-          useNativeDriver: true,
-        }),
-        Animated.timing(lift, {
-          toValue: 1,
-          delay: SPLASH_TIMING.QUICK_LIFT_DELAY_MS,
-          duration: SPLASH_TIMING.QUICK_LIFT_MS,
-          easing: EASE_RISE,
-          useNativeDriver: true,
-        }),
-      ]).start(done)
-    })
+    /*
+     * From the clock, not from `ring.stopAnimation`'s value: a native-driven
+     * value is never synced back to JS, so that read 0 on a device whatever
+     * the ring had drawn, and the rest of the ring always took the full time.
+     */
+    const drawn = ringDrawnAt(stampStartedAt.current, Date.now())
+    Animated.parallel([
+      Animated.timing(ring, {
+        toValue: 1,
+        duration: quickRingMs(drawn),
+        easing: EASE_OUT,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scale, {
+        toValue: 1,
+        duration: DURATION.press,
+        easing: EASE_OUT,
+        useNativeDriver: true,
+      }),
+      Animated.timing(partner, {
+        toValue: 0,
+        duration: DURATION.press,
+        easing: EASE_OUT,
+        useNativeDriver: true,
+      }),
+      Animated.timing(lift, {
+        toValue: 1,
+        delay: SPLASH_TIMING.QUICK_LIFT_DELAY_MS,
+        duration: SPLASH_TIMING.QUICK_LIFT_MS,
+        easing: EASE_RISE,
+        useNativeDriver: true,
+      }),
+    ]).start(done)
   }, [ready, nativeGone, plan, stampDone, skipped, ring, scale, partner, lift, layer])
 
   /*
@@ -418,12 +451,15 @@ export function AppSplash() {
    * touch system from then on, so a tap mid-lift can never restart it.
    */
   const skip = useCallback(() => setSkipped(true), [])
-  const onLayout = useCallback(() => setLaidOut(true), [])
+  const onLayout = useCallback(
+    (event: LayoutChangeEvent) => setLayerHeight(event.nativeEvent.layout.height),
+    [],
+  )
   const onMarkLoad = useCallback(() => setMarkDrawn(true), [])
 
   if (!visible) return null
 
-  const travel = height + SHEET_BLEED * 2
+  const travel = (layerHeight ?? windowSize.height) + SHEET_BLEED * 2
   const sheetMotion = {
     transform: [
       { translateY: lift.interpolate({ inputRange: [0, 1], outputRange: [0, -travel] }) },
@@ -484,6 +520,16 @@ export function AppSplash() {
       </Animated.View>
     </Animated.View>
   )
+}
+
+/**
+ * How much of the ring is drawn `now`, for a stamp started at `startedAt`
+ * (`undefined`: not started): the ring's own timing and curve, replayed.
+ */
+function ringDrawnAt(startedAt: number | undefined, now: number): number {
+  if (startedAt === undefined) return 0
+  const t = (now - startedAt - SPLASH_TIMING.STAMP_HOLD_MS) / SPLASH_TIMING.STAMP_RING_MS
+  return EASE_OUT(Math.min(1, Math.max(0, t)))
 }
 
 /**

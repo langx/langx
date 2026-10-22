@@ -1,13 +1,13 @@
 /**
  * "The launch is off the screen." A one-way latch, like `appReady.ts`, and
- * set later than it: the app is ready while the launch film is still playing
- * over it, and only when `AppSplash` has faded and unmounted is there anything
+ * set later than it: the app is ready while the opening is still on screen
+ * over it, and only when `AppSplash` has left and unmounted is there anything
  * for a person to see.
  *
  * What waits on it is anything that opens itself in a `Modal`. A Modal is a
  * window of its own, above every view the app draws — the splash included —
  * so the first-run tour, which starts as soon as Discover has settled, used to
- * open its card on top of the film, pointing at a screen nobody could see yet.
+ * open its card on top of the opening, pointing at a screen nobody could see yet.
  */
 type Listener = () => void
 

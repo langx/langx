@@ -37,7 +37,7 @@ const SESSION_STARTED_AT = Date.now()
  * Opened only off a `me` fetched in this run of the app, never off the
  * persisted copy restored at launch: that copy can hold a welcome another
  * device has already dismissed, and a celebration shown twice is worse than
- * one shown a launch late. Not while the launch film is up or the Discover
+ * one shown a launch late. Not while the launch opening is up or the Discover
  * tour is open either — all three are windows of their own, and the one that
  * opens second would paint over, or under, the first. When the tour and this
  * are due in the same frame, this goes first and the tour waits for it

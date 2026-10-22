@@ -106,8 +106,8 @@ describe('the geometry', () => {
     expect(DISC_SIZE).toBeLessThan(192)
   })
 
-  /** Tucked, a partner is hidden behind the disc; out, it clears the disc's edge. */
-  it('hides the partners behind the disc and lets them clear it', () => {
+  /** Tucked, a partner is hidden behind the disc; out, its centre is past the disc's edge. */
+  it('hides the partners behind the disc and brings most of each out', () => {
     expect(PARTNER_SIZE).toBeLessThan(DISC_SIZE)
     const out = Math.hypot(PARTNER_OFFSET, PARTNER_OFFSET)
     expect(out).toBeGreaterThan(DISC_SIZE / 2)

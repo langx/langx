@@ -58,7 +58,7 @@ export const PRO_WELCOME_HIGHLIGHTS = [
 
 /*
  * Whether "You're Pro now" is on screen — a latch like `launchOver.ts`, read
- * by the Discover tour. Both are Modals and both wait for the launch film, so
+ * by the Discover tour. Both are Modals and both wait for the opening, so
  * on a cold start they opened in the same frame, one over the other. The
  * welcome goes first and the tour waits for it: the tour points at the
  * screen the welcome's button leads to.

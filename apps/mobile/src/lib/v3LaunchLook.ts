@@ -11,9 +11,10 @@
  * starts as today's.
  *
  * While the splash still covers it, the look follows the flag — the screen
- * can change underneath without anybody seeing it, and with the launch film
- * longer than the flag's own ceiling (`V3_HOME_WAIT_MS`) it nearly always has
- * its answer by then. Once the launch is over and a person can see the
+ * can change underneath without anybody seeing it. The opening is shorter
+ * than the flag's own ceiling (`V3_HOME_WAIT_MS`) — a later launch's adds
+ * half a second to the boot — so a slow answer can miss it, and that launch
+ * starts in today's look. Once the launch is over and a person can see the
  * screen, the look is whatever the flag has said by that moment, and nothing
  * said later moves it: not on this screen, not on the next step. A wizard
  * that changed look halfway through would be worse than either look, for the

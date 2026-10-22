@@ -87,7 +87,7 @@ export function useDiscoveryTour({ ready, guest, onFinished }: DiscoveryTourOpti
   const open = useTourOpen()
   /*
    * Not while the launch is still on screen: the tour is a Modal, which
-   * paints above the splash, so it opened its first card over the film. The
+   * paints above the splash, so it opened its first card over the opening. The
    * third argument is for the web's static prerender, as in `useAppReady`.
    */
   const launchOver = useSyncExternalStore(subscribeToLaunchOver, isLaunchOver, isLaunchOver)
