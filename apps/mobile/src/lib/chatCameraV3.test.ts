@@ -59,3 +59,133 @@ describe('the v3 chat camera is only a drawing', () => {
     expect(ROUTE).toMatch(/if \(v3Look\) \{\s*return \(\s*<SnapViewfinderV3/)
   })
 })
+
+const PREVIEW = readFileSync(path.resolve(__dirname, '../screens/chat/SnapPreviewV3.tsx'), 'utf8')
+
+/*
+ * The preview's panel folds to a chip so the whole photo can be seen, and a
+ * Save in the top corner puts the shot in the phone's photos. Mobile vitest
+ * cannot render a screen, so these hold the promises that are easy to lose in
+ * a later redraw.
+ */
+describe('the v3 preview folds and saves', () => {
+  it('names both ends of the fold for a screen reader', () => {
+    expect(PREVIEW).toContain("accessibilityLabel={t('viewOnce.hideOptions')}")
+    expect(PREVIEW).toContain("accessibilityHint={t('viewOnce.showOptions')}")
+    expect(PREVIEW).toMatch(/accessibilityState=\{\{ expanded: false \}\}/)
+  })
+
+  it('folds on the UI thread, and not at all when motion is reduced', () => {
+    expect(PREVIEW).toMatch(/from 'react-native-reanimated'/)
+    expect(PREVIEW).toMatch(/unlessReduced\(reduce,/)
+    expect(PREVIEW).toMatch(/SPRING\.sheet/)
+  })
+
+  it('keeps Retake and Send outside the part that folds', () => {
+    const folding = PREVIEW.indexOf('styles.clip, optionsMotion')
+    const actions = PREVIEW.indexOf('<View style={styles.actions}>')
+    expect(folding).toBeGreaterThan(0)
+    expect(actions).toBeGreaterThan(folding)
+    expect(PREVIEW.slice(folding, actions)).not.toMatch(/viewOnce\.(retake|send)/)
+  })
+
+  it('names the Save button and leaves the saving to the route', () => {
+    expect(PREVIEW).toContain("accessibilityLabel={t('photo.save')}")
+    expect(PREVIEW).not.toMatch(/saveMediaToDevice|expo-media-library/)
+    expect(ROUTE).toMatch(/saveMediaToDevice\(/)
+  })
+
+  it('tells the person when a save is refused, and confirms one that worked', () => {
+    expect(ROUTE).toMatch(
+      /=== 'denied'\) \{\s*void notification\('error'\)\s*void showAlert\(t\('photo\.saveFailed'\), t\('photo\.saveDenied'\)\)/,
+    )
+    expect(ROUTE).toContain("showToast(t('photo.saved'))")
+  })
+})
+
+const ZOOM_HOOK = readFileSync(path.resolve(__dirname, '../screens/chat/useCameraZoom.ts'), 'utf8')
+const EN = readFileSync(path.resolve(__dirname, '../i18n/messages/en.ts'), 'utf8')
+const HOOK = readFileSync(path.resolve(__dirname, '../screens/chat/useCameraZoom.ts'), 'utf8')
+
+/*
+ * Story-camera gestures: pinch the picture to zoom, double-tap it to flip.
+ * The zoom maths is tested in `cameraZoom.test.ts`; these hold the wiring a
+ * redraw could quietly lose.
+ */
+describe('the chat camera zooms and flips from the picture', () => {
+  it('wraps the camera in a gesture detector, in both looks', () => {
+    // Built in the route, so the legacy look and v3 share it.
+    expect(ROUTE).toMatch(/const cameraView = \(\s*<GestureDetector gesture=\{zoom\.gesture\}>/)
+  })
+
+  it('races the pinch against a double-tap, and flips only when not recording', () => {
+    expect(ZOOM_HOOK).toContain('Gesture.Race(pinch, doubleTap)')
+    expect(ZOOM_HOOK).toContain('Gesture.Pinch()')
+    expect(ZOOM_HOOK).toContain('.numberOfTaps(2)')
+    expect(ZOOM_HOOK).toContain('.enabled(flipEnabled)')
+    expect(ROUTE).toContain('useCameraZoom({ flipEnabled: !recording,')
+  })
+
+  it('zooms on the UI thread, with no render per frame', () => {
+    expect(ZOOM_HOOK).toMatch(/useAnimatedProps\(/)
+    expect(ZOOM_HOOK).toMatch(/\.onChange\(\(event\) => \{\s*const next = pinchFactor/)
+    // React hears only where a pinch came to rest.
+    expect(ZOOM_HOOK).toMatch(/\.onEnd\(\(\) => \{[^}]*runOnJS\(setSettled\)/)
+    expect(ROUTE).toContain('animatedProps={zoom.animatedProps}')
+    expect(ROUTE).toContain('zoom={zoom.zoom}')
+    expect(ROUTE).not.toMatch(/zoom=\{0\}/)
+  })
+
+  it('puts the zoom back to 1 on a flip, from the button or the double-tap', () => {
+    expect(ROUTE).toMatch(/function flip\(\): void \{\s*zoom\.reset\(\)/)
+    expect(ROUTE).toContain('onDoubleTap: () => flip()')
+    expect(ROUTE).toContain('onFlip={flip}')
+    expect(ROUTE).not.toMatch(/onFlip=\{\(\) => setFacing/)
+  })
+
+  it('applies the zoom again on every switch between photo and video, both ways', () => {
+    expect(ROUTE).toMatch(
+      /useEffect\(\(\) => \{\s*zoom\.resend\(\)[\s\S]{0,120}\}, \[cameraMode\]\)/,
+    )
+  })
+
+  it('builds the gestures once, not on every tick of the recording clock', () => {
+    expect(HOOK).toMatch(/const gesture = useMemo\(\(\) => \{/)
+    expect(HOOK).toContain('}, [flipEnabled, armed, factor])')
+  })
+
+  it('makes Android back on the preview a Retake, not a lost shot', () => {
+    expect(ROUTE).toMatch(
+      /if \(!captured\) return\s*const subscription = BackHandler\.addEventListener\('hardwareBackPress', \(\) => \{\s*retake\(\)\s*return true/,
+    )
+  })
+
+  it('offers no Save for a pick from the library', () => {
+    expect(ROUTE).toContain('onSave={fromLibrary ? undefined : () => void save()}')
+    expect(PREVIEW).toMatch(/\{onSave \? \(\s*<IconButton\s*icon="download"/)
+  })
+
+  it('lets a screen reader zoom without pinching', () => {
+    expect(ROUTE).toContain('accessibilityRole="adjustable"')
+    expect(ROUTE).toContain("accessibilityLabel={t('viewOnce.viewfinder')}")
+    expect(ROUTE).toContain("accessibilityHint={t('viewOnce.viewfinderHint')}")
+    expect(ROUTE).toMatch(/t\('viewOnce\.zoomedIn'\) : t\('viewOnce\.notZoomed'\)/)
+    expect(ROUTE).toMatch(/'increment'\) zoom\.step\(1\)/)
+    expect(ROUTE).toMatch(/'decrement'\) zoom\.step\(-1\)/)
+    for (const key of ['viewfinder', 'viewfinderHint', 'zoomedIn', 'notZoomed']) {
+      expect(EN).toMatch(new RegExp(`\\n    ${key}: '`))
+    }
+  })
+
+  it('lets a pinch start anywhere on the picture, beside the shutter included', () => {
+    expect(V3).toMatch(/styles\.foot,[^\n]*\]\}\s*pointerEvents="box-none"/)
+    expect(V3).toContain('<View style={styles.shutterRow} pointerEvents="box-none">')
+  })
+})
+
+describe('the v3 preview discards from the corner too', () => {
+  it('puts ✕ back at the top start, doing what Retake does', () => {
+    expect(PREVIEW).toContain("<StageTopBar onClose={onRetake} closeLabel={t('viewOnce.retake')}>")
+    expect(PREVIEW).toMatch(/onPress=\{onRetake\} style=\{styles\.retake\}/)
+  })
+})

@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from 'react'
 import {
   ActivityIndicator,
   AppState,
+  BackHandler,
   Linking,
   Platform,
   Pressable,
@@ -22,17 +23,22 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native'
+import { GestureDetector } from 'react-native-gesture-handler'
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useReduceMotion } from '../../src/hooks/useReduceMotion'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useT } from '../../src/i18n'
 import { showAlert } from '../../src/lib/alert'
-import { impact } from '../../src/lib/haptics'
+import { impact, notification, selection } from '../../src/lib/haptics'
 import { FLAG_KEYS, readFlag, writeFlag } from '../../src/lib/localFlags'
 import { goBackTo } from '../../src/lib/navigation'
 import { pickMediaAssets } from '../../src/lib/pickMediaAsset'
+import { saveMediaToDevice } from '../../src/lib/saveMedia'
 import type { PickedMedia } from '../../src/lib/pickedAssets'
 import { sendSnap } from '../../src/lib/snapOutbox'
 import { makeStyles, spacing } from '../../src/lib/theme'
+import { TIMING } from '../../src/lib/theme/motion'
 import { showToast } from '../../src/lib/toast'
 import {
   DEFAULT_SNAP_MODE,
@@ -49,6 +55,7 @@ import {
   SnapViewfinderV3,
 } from '../../src/screens/chat/SnapCameraV3'
 import { SnapPreviewV3 } from '../../src/screens/chat/SnapPreviewV3'
+import { useCameraZoom } from '../../src/screens/chat/useCameraZoom'
 
 /*
  * Literal colours, as in `scan.tsx`: a camera is dark whichever scheme the app
@@ -74,6 +81,17 @@ const MODE_SETTLE_MS = Platform.OS === 'android' ? 700 : 250
  * is under forty megabytes and still sharp on the screen it is watched on.
  */
 const VIDEO_BITRATE = 5_000_000
+/**
+ * How long the picture stays dimmed after a flip if the camera never says it
+ * is ready again: long enough to cover the lens switch's black or frozen frame.
+ */
+const FLIP_DIM_MS = 400
+
+/**
+ * The camera, with its `zoom` fed from the UI thread by the pinch
+ * (`useCameraZoom`) rather than through a render per frame.
+ */
+const AnimatedCamera = Animated.createAnimatedComponent(CameraView)
 
 /**
  * The frame the camera and the preview are drawn in: 9:16, as wide as the
@@ -108,10 +126,13 @@ export default function SnapScreen() {
   const conversationId = id ?? ''
   const v3Look = useV3Home()
   const [captured, setCaptured] = useState<PickedMedia | null>(null)
+  /** The shot came from the library, which already holds it: no Save. */
+  const [fromLibrary, setFromLibrary] = useState(false)
   const [mode, setMode] = useState<SnapMode>(DEFAULT_SNAP_MODE)
   // The stored choice arrives after the first render; a tap made before it
   // lands is newer and wins.
   const modePicked = useRef(false)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     void readFlag(FLAG_KEYS.snapMode).then((raw) => {
@@ -121,6 +142,7 @@ export default function SnapScreen() {
 
   function pickMode(next: SnapMode): void {
     modePicked.current = true
+    if (next !== mode) void selection()
     setMode(next)
     void writeFlag(FLAG_KEYS.snapMode, next)
   }
@@ -133,6 +155,25 @@ export default function SnapScreen() {
     goBackTo(`/(app)/chat/${conversationId}`)
   }
 
+  function retake(): void {
+    setCaptured(null)
+    setFromLibrary(false)
+  }
+
+  /*
+   * Android's back on the preview is Retake, as the corner's ✕ is and as
+   * Instagram's is: it would otherwise close the screen and lose the shot.
+   * On the camera itself back still leaves, the navigator's own handling.
+   */
+  useEffect(() => {
+    if (!captured) return
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      retake()
+      return true
+    })
+    return () => subscription.remove()
+  }, [captured])
+
   async function pickFromLibrary(): Promise<void> {
     const picked = await pickMediaAssets({ remaining: 1, source: 'library' })
     if (picked.status === 'denied') {
@@ -142,6 +183,7 @@ export default function SnapScreen() {
     if (picked.status === 'cancelled') return
     const first = picked.media[0]
     if (first) {
+      setFromLibrary(true)
       setCaptured(first)
       return
     }
@@ -154,6 +196,33 @@ export default function SnapScreen() {
             ? t('errors.attachmentTooLarge')
             : t('errors.attachmentUnsupported'),
       )
+    }
+  }
+
+  /*
+   * The shot into the phone's photos, or the browser's downloads — the same
+   * write-only path as the photo viewer's Save. Confirmed with a toast: this
+   * is a plain stack screen, not a `Modal`, so the root's toast shows above it.
+   */
+  async function save(): Promise<void> {
+    if (!captured || saving) return
+    setSaving(true)
+    try {
+      const result = await saveMediaToDevice({
+        url: captured.uri,
+        contentType: captured.contentType,
+      })
+      if (result === 'denied') {
+        void notification('error')
+        void showAlert(t('photo.saveFailed'), t('photo.saveDenied'))
+        return
+      }
+      showToast(t('photo.saved'))
+    } catch {
+      void notification('error')
+      void showAlert(t('photo.saveFailed'), t('common.retry'))
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -170,7 +239,7 @@ export default function SnapScreen() {
       <View
         style={[
           styles.frame,
-          rounded && styles.frameRounded,
+          rounded && (v3Look ? styles.frameRoundedV3 : styles.frameRounded),
           {
             top: insets.top,
             left: (window.width - frame.width) / 2,
@@ -186,8 +255,10 @@ export default function SnapScreen() {
             mode={mode}
             bottomInset={rounded ? 0 : insets.bottom}
             onMode={pickMode}
-            onRetake={() => setCaptured(null)}
+            onRetake={retake}
             onSend={send}
+            saving={saving}
+            onSave={fromLibrary ? undefined : () => void save()}
           />
         ) : captured ? (
           <SnapPreview
@@ -195,7 +266,7 @@ export default function SnapScreen() {
             mode={mode}
             bottomInset={rounded ? 0 : insets.bottom}
             onMode={pickMode}
-            onRetake={() => setCaptured(null)}
+            onRetake={retake}
             onSend={send}
           />
         ) : Platform.OS === 'web' && v3Look ? (
@@ -209,7 +280,10 @@ export default function SnapScreen() {
         ) : (
           <SnapCamera
             bottomInset={rounded ? 0 : insets.bottom}
-            onCaptured={setCaptured}
+            onCaptured={(item) => {
+              setFromLibrary(false)
+              setCaptured(item)
+            }}
             onLibrary={() => void pickFromLibrary()}
             onClose={close}
           />
@@ -244,6 +318,12 @@ function SnapCamera({
   const [elapsed, setElapsed] = useState(0)
   /** Per lens: the front and back cameras offer different sizes. */
   const [pictureSizes, setPictureSizes] = useState<Partial<Record<CameraType, string | null>>>({})
+  const reduce = useReduceMotion()
+  const zoom = useCameraZoom({ flipEnabled: !recording, onDoubleTap: () => flip() })
+  /** 1 while a flip's lens switch is under way: the picture dims over it. */
+  const dim = useSharedValue(0)
+  const dimTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const dimStyle = useAnimatedStyle(() => ({ opacity: dim.get() }))
 
   const holding = useRef(false)
   const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -262,6 +342,19 @@ function SnapCamera({
     )
     return () => clearInterval(timer)
   }, [recording])
+
+  /*
+   * Every switch between photo and video, both ways, applies the zoom again:
+   * iOS drops it with the session preset, and nothing else would put it back
+   * — not on the way into a clip, and not on the way out of one, whether the
+   * clip ended, failed or never started. The native side handles the mode and
+   * the zoom on one queue in order, so this lands after the switch without
+   * waiting for `MODE_SETTLE_MS`.
+   */
+  useEffect(() => {
+    zoom.resend()
+    // `zoom` is re-made each render; its `resend` touches only a shared value.
+  }, [cameraMode])
 
   // Recording waits for the switch to video. See `MODE_SETTLE_MS`.
   useEffect(() => {
@@ -288,11 +381,34 @@ function SnapCamera({
   useEffect(
     () => () => {
       if (holdTimer.current) clearTimeout(holdTimer.current)
+      if (dimTimer.current) clearTimeout(dimTimer.current)
     },
     [],
   )
 
+  /*
+   * The other lens, from the button or a double-tap on the picture. The zoom
+   * goes back to 1 first: the other lens has another maximum. The picture
+   * dims over the switch, which otherwise shows a black or frozen frame, and
+   * clears when the camera is ready again (or after `FLIP_DIM_MS`).
+   */
+  function flip(): void {
+    zoom.reset()
+    setFacing((side) => (side === 'back' ? 'front' : 'back'))
+    if (reduce) return
+    dim.set(withTiming(1, TIMING.exit))
+    if (dimTimer.current) clearTimeout(dimTimer.current)
+    dimTimer.current = setTimeout(undim, FLIP_DIM_MS)
+  }
+
+  function undim(): void {
+    if (dimTimer.current) clearTimeout(dimTimer.current)
+    dimTimer.current = null
+    dim.set(withTiming(0, TIMING.fade))
+  }
+
   function onCameraReady(): void {
+    if (dimTimer.current) undim()
     if (cameraMode === 'video' && wantsRecording.current) {
       void record()
       return
@@ -309,6 +425,7 @@ function SnapCamera({
   async function takePhoto(): Promise<void> {
     if (shooting.current || !camera.current) return
     shooting.current = true
+    void impact('medium')
     try {
       const picture = await camera.current.takePictureAsync({ quality: 0.8 })
       if (picture?.uri) {
@@ -321,6 +438,7 @@ function SnapCamera({
         })
       }
     } catch {
+      void notification('error')
       showToast(t('viewOnce.captureFailed'))
     } finally {
       shooting.current = false
@@ -379,6 +497,7 @@ function SnapCamera({
         })
       }
     } catch {
+      void notification('error')
       showToast(t('viewOnce.captureFailed'))
     } finally {
       recordingNow.current = false
@@ -458,25 +577,68 @@ function SnapCamera({
 
   const pictureSize = pictureSizes[facing]
 
+  /*
+   * The picture is also the zoom control: pinch it, or double-tap it to flip.
+   * The chrome is drawn over it in views of its own, which keep their own
+   * touches. A screen reader cannot pinch, so the same surface is an
+   * adjustable element — swipe up or down to zoom — and the flip button stays
+   * for the same reason the double-tap is not the only way to flip.
+   */
   const cameraView = (
-    <CameraView
-      ref={camera}
-      style={StyleSheet.absoluteFill}
-      facing={facing}
-      mode={cameraMode}
-      flash={flash}
-      enableTorch={recording && flash === 'on'}
-      mirror={facing === 'front'}
-      mute={muted}
-      videoQuality="1080p"
-      videoBitrate={VIDEO_BITRATE}
-      // Android fits a 16:9 preview into the 9:16 frame; iOS fills the frame
-      // and takes the 16:9 still from `pictureSize`.
-      {...(Platform.OS === 'android' ? { ratio: '16:9' as const } : {})}
-      {...(pictureSize ? { pictureSize } : {})}
-      onCameraReady={onCameraReady}
-      onMountError={() => showToast(t('viewOnce.captureFailed'))}
-    />
+    <GestureDetector gesture={zoom.gesture}>
+      <View
+        style={StyleSheet.absoluteFill}
+        collapsable={false}
+        accessible
+        accessibilityRole="adjustable"
+        accessibilityLabel={t('viewOnce.viewfinder')}
+        accessibilityHint={t('viewOnce.viewfinderHint')}
+        accessibilityValue={{
+          text: zoom.zoomed ? t('viewOnce.zoomedIn') : t('viewOnce.notZoomed'),
+        }}
+        accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
+        onAccessibilityAction={(event) => {
+          if (event.nativeEvent.actionName === 'increment') zoom.step(1)
+          if (event.nativeEvent.actionName === 'decrement') zoom.step(-1)
+        }}
+      >
+        <AnimatedCamera
+          ref={camera}
+          style={StyleSheet.absoluteFill}
+          facing={facing}
+          mode={cameraMode}
+          flash={flash}
+          enableTorch={recording && flash === 'on'}
+          mirror={facing === 'front'}
+          mute={muted}
+          // On iOS this is the same session preset as the still's 1920x1080
+          // `pictureSize`, so a switch to video keeps the capture format, and
+          // with it the zoom's scale: the prop means the same magnification in
+          // both modes. Only before the sizes are known (or where a camera has
+          // no 16:9 size) do the two presets differ.
+          videoQuality="1080p"
+          videoBitrate={VIDEO_BITRATE}
+          // Where the last pinch came to rest, so a render between pinches
+          // carries the zoom rather than expo-camera's default of 0; while the
+          // fingers move, `animatedProps` carries it without a render.
+          zoom={zoom.zoom}
+          animatedProps={zoom.animatedProps}
+          // Android fits a 16:9 preview into the 9:16 frame; iOS fills the frame
+          // and takes the 16:9 still from `pictureSize`.
+          {...(Platform.OS === 'android' ? { ratio: '16:9' as const } : {})}
+          {...(pictureSize ? { pictureSize } : {})}
+          onCameraReady={onCameraReady}
+          onMountError={() => {
+            void notification('error')
+            showToast(t('viewOnce.captureFailed'))
+          }}
+        />
+        <Animated.View
+          style={[StyleSheet.absoluteFill, styles.flipDim, dimStyle]}
+          pointerEvents="none"
+        />
+      </View>
+    </GestureDetector>
   )
 
   if (v3Look) {
@@ -490,7 +652,7 @@ function SnapCamera({
         onClose={onClose}
         onFlash={() => setFlash((on) => (on === 'on' ? 'off' : 'on'))}
         onLibrary={onLibrary}
-        onFlip={() => setFacing((side) => (side === 'back' ? 'front' : 'back'))}
+        onFlip={flip}
         onPressIn={onPressIn}
         onPressOut={onPressOut}
       />
@@ -553,7 +715,7 @@ function SnapCamera({
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('viewOnce.flip')}
-            onPress={() => setFacing((side) => (side === 'back' ? 'front' : 'back'))}
+            onPress={flip}
             disabled={recording}
             hitSlop={10}
             style={({ pressed }) => [
@@ -721,10 +883,12 @@ function TopBar({
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius }) => ({
+const useStyles = makeStyles(({ colors, font, radius, v3 }) => ({
   stage: { backgroundColor: STAGE_BG, flex: 1 },
   frame: { backgroundColor: STAGE_BG, overflow: 'hidden', position: 'absolute' },
   frameRounded: { borderRadius: radius.lg },
+  // The preview panel's radius family.
+  frameRoundedV3: { borderRadius: v3.radius.card },
   centre: {
     alignItems: 'center',
     flex: 1,
@@ -752,6 +916,8 @@ const useStyles = makeStyles(({ colors, font, radius }) => ({
   },
   hidden: { opacity: 0 },
   pressed: { opacity: 0.6 },
+  // Over the picture during a flip; black in both schemes, like the stage.
+  flipDim: { backgroundColor: 'rgba(0, 0, 0, 0.6)' },
   timer: {
     alignItems: 'center',
     backgroundColor: SCRIM,
