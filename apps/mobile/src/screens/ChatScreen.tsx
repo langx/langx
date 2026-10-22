@@ -109,6 +109,8 @@ import { threadRewards, type ThreadReward } from '../lib/threadRewards'
 import { typingIndicator } from '../lib/typingIndicator'
 import {
   addUnsent,
+  failedSend,
+  mergeUnsent,
   newClientId,
   removeUnsent,
   retireDelivered,
@@ -361,7 +363,7 @@ export function ChatScreen({
     let cancelled = false
     void loadUnsent(myId, conversationId).then((stored) => {
       if (cancelled) return
-      if (stored.length > 0) setUnsent(stored)
+      if (stored.length > 0) setUnsent((list) => mergeUnsent(list, stored))
       setUnsentHydrated(true)
     })
     return () => {
@@ -1868,13 +1870,7 @@ export function ChatScreen({
        * the report.
        */
       setUnsent((list) =>
-        addUnsent(list, {
-          clientId,
-          body,
-          ...(replyToMessageId ? { replyToMessageId } : {}),
-          ...(replyToMessageId && quote ? { quote } : {}),
-          failedAt: new Date().toISOString(),
-        }),
+        addUnsent(list, failedSend({ clientId, body, replyToMessageId, quote, ask }, new Date())),
       )
       recheckPartner(error)
       // Swallowed for the reader, counted for us: an unsent row is quiet by
@@ -1899,7 +1895,7 @@ export function ChatScreen({
         message.body,
         message.clientId,
         message.replyToMessageId,
-        undefined,
+        message.ask,
         undefined,
         message.quote,
       )

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import {
   addUnsent,
+  failedSend,
   MAX_UNSENT,
+  mergeUnsent,
   MAX_UNSENT_THREADS,
   newClientId,
   readUnsent,
@@ -84,23 +86,33 @@ describe('storeUnsent', () => {
   })
 
   it('keeps the thread just written at the front', () => {
-    const stored = storeUnsent({ b: [row('b1')] }, 'a', [row('a1')])
-    expect(Object.keys(stored)).toEqual(['a', 'b'])
+    const stored = storeUnsent({ 'u:b': [row('b1')] }, 'u:a', [row('a1')])
+    expect(Object.keys(stored)).toEqual(['u:a', 'u:b'])
   })
 
   it('drops a thread once its last row has gone', () => {
-    expect(storeUnsent({ a: [row('a1')] }, 'a', [])).toEqual({})
+    expect(storeUnsent({ 'u:a': [row('a1')] }, 'u:a', [])).toEqual({})
   })
 
   it('remembers only the most recent threads', () => {
     let stored: UnsentByConversation = {}
     for (let i = 0; i < MAX_UNSENT_THREADS + 4; i++) {
-      stored = storeUnsent(stored, `c${i}`, [row(`m${i}`)])
+      stored = storeUnsent(stored, `u:c${i}`, [row(`m${i}`)])
     }
     expect(Object.keys(stored)).toHaveLength(MAX_UNSENT_THREADS)
     // The newest is kept, the oldest is not.
-    expect(stored[`c${MAX_UNSENT_THREADS + 3}`]).toBeDefined()
-    expect(stored.c0).toBeUndefined()
+    expect(stored[`u:c${MAX_UNSENT_THREADS + 3}`]).toBeDefined()
+    expect(stored['u:c0']).toBeUndefined()
+  })
+
+  /**
+   * Rows from before the account was part of the key are never read again,
+   * but they are somebody's words and they sat in the record until nine newer
+   * threads pushed them out. The first write takes them away.
+   */
+  it('drops rows stored under a bare conversation id', () => {
+    const stored = storeUnsent({ chat1: [row('old')], 'u:b': [row('b1')] }, 'u:a', [row('a1')])
+    expect(Object.keys(stored)).toEqual(['u:a', 'u:b'])
   })
 })
 
@@ -129,5 +141,63 @@ describe('readUnsent', () => {
   it('reads nothing from an empty or missing record', () => {
     expect(readUnsent(null, 'sofia', 'chat1')).toEqual([])
     expect(readUnsent({}, 'sofia', 'chat1')).toEqual([])
+  })
+})
+
+describe('mergeUnsent', () => {
+  const row = (clientId: string, failedAt = '2026-10-22T08:00:00.000Z'): UnsentMessage => ({
+    clientId,
+    body: clientId,
+    failedAt,
+  })
+
+  /**
+   * A send that fails before `me` has loaded is a row in memory before the
+   * stored ones arrive. Replacing the list with what was stored threw it away.
+   */
+  it('keeps a row that failed before the stored ones had loaded', () => {
+    const merged = mergeUnsent([row('new', '2026-10-22T09:00:00.000Z')], [row('old')])
+    expect(merged.map((r) => r.clientId)).toEqual(['new', 'old'])
+  })
+
+  it('keeps the in-memory copy of a row that is in both', () => {
+    const fresh = { ...row('x'), failedAt: '2026-10-22T09:00:00.000Z' }
+    expect(mergeUnsent([fresh], [row('x')])).toEqual([fresh])
+  })
+
+  it('returns the stored rows when nothing failed in memory', () => {
+    const stored = [row('a'), row('b')]
+    expect(mergeUnsent([], stored)).toEqual(stored)
+  })
+
+  it('stays within the ceiling', () => {
+    const many = Array.from({ length: MAX_UNSENT }, (_, i) => row(`s${i}`))
+    expect(mergeUnsent([row('m')], many)).toHaveLength(MAX_UNSENT)
+  })
+})
+
+describe('failedSend', () => {
+  /**
+   * A failed "check my sentence" went into the row without its ask, so a tap
+   * on it sent the sentence as a plain message.
+   */
+  it('keeps the ask, so a retry asks again', () => {
+    const row = failedSend({ clientId: 'c', body: 'ich bin', ask: 'correction' }, new Date(0))
+    const stored = storeUnsent({}, unsentKey('anna', 'chat1'), [row])
+    expect(
+      readUnsent(JSON.parse(JSON.stringify(stored)) as UnsentByConversation, 'anna', 'chat1')[0]
+        ?.ask,
+    ).toBe('correction')
+  })
+
+  it('keeps a quote only with the reply it belongs to', () => {
+    expect(failedSend({ clientId: 'c', body: 'b', quote: 'q' }, new Date(0))).toEqual({
+      clientId: 'c',
+      body: 'b',
+      failedAt: new Date(0).toISOString(),
+    })
+    expect(
+      failedSend({ clientId: 'c', body: 'b', replyToMessageId: 'm', quote: 'q' }, new Date(0)),
+    ).toMatchObject({ replyToMessageId: 'm', quote: 'q' })
   })
 })
