@@ -44,12 +44,12 @@ export function isFakePurchasesEnabled(): boolean {
  * harness advertise a discount its own prices do not contain.
  *
  * The amounts are Pro's US prices, so the harness shows the screen that ships:
- * a yearly price that is twelve `.99` months plus 0.11 (`planSaving.test.ts`
- * says why) and reads "3 months free" against the monthly one.
+ * a yearly price that ends in `9.99` (`planSaving.test.ts` says why) and reads
+ * "3 months free" against the monthly one.
  */
 const TEST_AMOUNTS: Record<keyof typeof PACKAGES, number> = {
   $rc_monthly: 9.99,
-  $rc_annual: 83.99,
+  $rc_annual: 79.99,
   $rc_lifetime: 199.99,
 }
 

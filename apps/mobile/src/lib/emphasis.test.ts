@@ -9,10 +9,10 @@ describe('emphasisRuns', () => {
   })
 
   it('finds every marked value, wherever the translation put it', () => {
-    expect(emphasisRuns(`1 week free, then ${emphasise('$83.99')} ${emphasise('a year')}`)).toEqual(
+    expect(emphasisRuns(`1 week free, then ${emphasise('$79.99')} ${emphasise('a year')}`)).toEqual(
       [
         { text: '1 week free, then ', strong: false },
-        { text: '$83.99', strong: true },
+        { text: '$79.99', strong: true },
         { text: ' ', strong: false },
         { text: 'a year', strong: true },
       ],
