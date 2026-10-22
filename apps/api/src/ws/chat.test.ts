@@ -578,12 +578,16 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     const bob = await newUser('ws-deliv-bob@example.com')
     const conversation = await startConversation(alice, bob.userId, 'hello')
 
-    // Bob first, so his connect-time sweep of that opening message fires
-    // before Alice has a room to receive it in — leaving the send below as
-    // the only thing that can produce the event this test waits for.
-    const bobSocket = await connectSocket(bob.cookie)
-    await new Promise((resolve) => setTimeout(resolve, 200))
+    // Bob's connect-time sweep of that opening message emits the same event
+    // this test waits for. Letting it arrive first, rather than sleeping and
+    // hoping it went out before Alice had a room, leaves the send below as the
+    // only thing that can produce the next one. The sleep lost on a busy CI
+    // runner: the sweep's event landed after Alice joined, resolved the wait,
+    // and the history read beat the send's own stamp.
     const aliceSocket = await connectSocket(alice.cookie)
+    const swept = waitForEvent(aliceSocket, 'conversation:delivered')
+    const bobSocket = await connectSocket(bob.cookie)
+    await swept
 
     const delivered = waitForEvent<{ conversationId: string; deliveredTo: string }>(
       aliceSocket,
