@@ -5250,6 +5250,17 @@ somebody in Toronto they signed in at an hour they were asleep), and one
 button, to the screen that changes the password and signs every other device
 out.
 
+**Both ways to a new password end every other session**, so that button does
+what the mail says. A change forces `revokeOtherSessions` on in the `before`
+hook, whatever the request sent — builds already installed send `false` — and
+the caller is handed a fresh session, so only the other devices are signed
+out. A reset (`revokeSessionsOnPasswordReset`) ends every session the account
+had, the intruder's included. Either way a device holding a cached session
+cookie keeps working for up to five minutes, the `cookieCache` window in
+`auth.ts`, until it next asks the database. A reset has no session for the
+`after` hook to name the user by, so its notice is sent from
+`onPasswordReset` instead.
+
 **"A device we have not seen" is its own collection.** The obvious source
 was `session`, and it is wrong: those rows expire in a week, so a person who
 signs in every fortnight would be told every fortnight that their own phone

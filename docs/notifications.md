@@ -191,7 +191,7 @@ notice. No `List-Unsubscribe` header — it is not a list.
 | Message                          | Fires on                                                                       | Once because                                    |
 | -------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------- |
 | **New sign-in to your account**  | any endpoint that created a session, from a device `knownDevices` has not seen | `knownDevices` `<userId>:<fingerprint>`, no TTL |
-| **Your password was changed**    | `/change-password`, `/set-password`, `/reset-password`                         | —                                               |
+| **Your password was changed**    | `/change-password`, `/set-password`; a reset from `onPasswordReset`            | —                                               |
 | **A sign-in method was added**   | `/link-social`                                                                 | —                                               |
 | **A sign-in method was removed** | `/unlink-account`                                                              | —                                               |
 
