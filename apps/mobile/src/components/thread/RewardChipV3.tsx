@@ -4,7 +4,6 @@ import { AccessibilityInfo, Text, View } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useT } from '../../i18n'
-import type { ShareContent } from '../../lib/shareText'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { SPRING, unlessReduced } from '../../lib/theme/motion'
 import {
@@ -103,7 +102,8 @@ export function RewardChipV3({
 
 /** The streak milestone the thread is celebrating, and how to share and close it. */
 export interface RowCelebration {
-  share: ShareContent | undefined
+  /** Opens the streak's share card; see `ThreadCelebrationV3`. */
+  onShare: (() => void) | undefined
   compact: boolean
   onClose: () => void
 }
@@ -160,7 +160,7 @@ export function WithRewardChips({
           days={milestone.days}
           amount={milestone.amount}
           hue={hue}
-          share={celebration.share}
+          onShare={celebration.onShare}
           compact={celebration.compact}
           onClose={celebration.onClose}
         />

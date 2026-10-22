@@ -1,14 +1,17 @@
 import { profileQrUrl, profileUrl } from '@langx/shared'
 import * as Clipboard from 'expo-clipboard'
 import { Image } from 'expo-image'
+import { useState } from 'react'
 import { Text, View } from 'react-native'
 import { useMe } from '../../api/queries'
 import { LoadFailed } from '../../components/LoadFailed'
+import { ShareCardSheet, type ShareCardRequest } from '../../components/ShareCardSheet'
 import { Avatar } from '../../components/ui/Avatar'
 import { Button } from '../../components/ui/Button'
 import { Screen } from '../../components/ui/Screen'
 import { Skeleton } from '../../components/ui/Skeleton'
 import { WalletHeader } from '../../components/wallet/WalletBlocks'
+import { useProfileCard } from '../../hooks/useProfileCard'
 import { useScreenInteractive } from '../../hooks/useScreenInteractive'
 import { useT } from '../../i18n'
 import { track } from '../../lib/analytics'
@@ -39,6 +42,8 @@ export function ShareProfileScreenV3() {
   const t = useT()
   const black = useV3Fonts()
   const me = useMe()
+  const profileCard = useProfileCard()
+  const [card, setCard] = useState<ShareCardRequest | null>(null)
 
   const header = (
     <WalletHeader title={t('shareProfile.title')} black={black} onBack={() => goBackTo(BACK)} />
@@ -104,7 +109,10 @@ export function ShareProfileScreenV3() {
           variant="blue"
           onPress={() => {
             track({ name: 'profile_shared', properties: { own: true, via: 'sheet' } })
-            void shareLink({ message: t('me.shareMessage', { url }), url })
+            const fallback = { message: t('me.shareMessage', { url }), url }
+            const request = profileCard('profile', fallback)
+            if (request) setCard(request)
+            else void shareLink(fallback)
           }}
         />
         <Button
@@ -118,6 +126,7 @@ export function ShareProfileScreenV3() {
           }}
         />
       </View>
+      <ShareCardSheet request={card} onClose={() => setCard(null)} />
     </Screen>
   )
 }

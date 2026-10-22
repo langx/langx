@@ -5,13 +5,25 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ERROR_CODES } from '@langx/shared'
 import { ApiError } from '../../lib/ApiError'
-import { supportsPut, type StorageProvider } from '../../storage/StorageProvider'
-import type { BadgeCardInput, CardKind, CardShape, RecapCardInput } from '@langx/shared'
+import {
+  supportsPut,
+  type StorageProvider,
+  type StorageProviderWithPut,
+} from '../../storage/StorageProvider'
+import type {
+  BadgeCardInput,
+  CardKind,
+  CardShape,
+  ProfileCardInput,
+  RecapCardInput,
+} from '@langx/shared'
 import { notSuspended } from '../moderation/suspension'
 import type { Profile } from '../profiles/profiles'
 import { badgeCardContent } from './badgeCard'
 import { badgeCardElement } from './badgeDesign'
 import { cardElement, type CardCopy } from './design'
+import { profileCardContent } from './profileCard'
+import { profileCardElement } from './profileDesign'
 import { recapCardContent } from './recapCard'
 import { recapCardElement } from './recapDesign'
 import { recapSlideElement } from './recapSlideDesign'
@@ -66,8 +78,8 @@ export async function createShareCard(
     recap?: RecapCardInput
     /** Only read for `kind: 'badge'`; without it a badge is the plain card. */
     badge?: BadgeCardInput
-    /** Where an owner's photo may be fetched from for the recap's face. */
-    storagePublicBaseUrl?: string
+    /** Only read for `kind: 'profile'`; without it a profile is the plain card. */
+    profile?: ProfileCardInput
   },
 ): Promise<ShareCardResult> {
   if (!supportsPut(storage)) {
@@ -75,7 +87,7 @@ export async function createShareCard(
   }
 
   const qr = await profileQr(input.copy.handle)
-  const png = await renderCard(await elementFor(db, input, qr), input.shape)
+  const png = await renderCard(await elementFor(db, storage, input, qr), input.shape)
 
   const id = randomUUID().replaceAll('-', '').slice(0, 22)
   // Under the owner's own prefix, like every other object they own. What the
@@ -100,7 +112,8 @@ export async function createShareCard(
 }
 
 /**
- * The patch for a badge that came with its id, the poster for a recap that
+ * The patch for a badge that came with its id, the person for a profile card
+ * that came with its words, the poster for a recap that
  * came with its wording — or, when one slide of the story was asked for, that
  * slide's card — and the plain card for everything else.
  *
@@ -110,6 +123,7 @@ export async function createShareCard(
  */
 async function elementFor(
   db: Db,
+  storage: StorageProviderWithPut,
   input: Parameters<typeof createShareCard>[2],
   qr: string | undefined,
 ): Promise<CardNode> {
@@ -119,9 +133,19 @@ async function elementFor(
       handle: input.copy.handle,
       name: input.copy.headline,
       badge: input.badge,
-      storagePublicBaseUrl: input.storagePublicBaseUrl,
+      storage,
     })
     return badgeCardElement(content, input.shape, qr)
+  }
+  if (input.kind === 'profile' && input.profile) {
+    const content = await profileCardContent(db, {
+      userId: input.userId,
+      handle: input.copy.handle,
+      invitation: input.copy.headline,
+      profile: input.profile,
+      storage,
+    })
+    return profileCardElement(content, input.shape, qr)
   }
   if (input.kind === 'recap' && input.recap) {
     const content = await recapCardContent(db, {
@@ -129,7 +153,7 @@ async function elementFor(
       handle: input.copy.handle,
       monthName: input.copy.headline,
       recap: input.recap,
-      storagePublicBaseUrl: input.storagePublicBaseUrl,
+      storage,
     })
     if (content.stats.length > 0) {
       return content.slide
@@ -169,8 +193,8 @@ async function profileQr(handle: string): Promise<string | undefined> {
  *
  * Unauthenticated by design and safe to be: everything here was already put on
  * a card by its owner in order to be posted publicly. It carries no email, no
- * age, no location and no post text — the three things a card can be about are
- * the owner's own numbers.
+ * age, no location and no post text — a card is about the owner alone: their
+ * own numbers, or the public face of their own profile.
  *
  * **While that owner is still someone the open internet may see.** This is the
  * app's second unauthenticated read, and `getSharedProfile` — which calls

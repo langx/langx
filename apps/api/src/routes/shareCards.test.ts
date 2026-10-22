@@ -369,7 +369,6 @@ describe('share cards', () => {
       handle: '@cardhaver',
       monthName: 'juin',
       recap: { ...RECAP_WORDS, month: '2026-06', locale: 'fr' },
-      storagePublicBaseUrl: undefined,
     })
     // French groups with a no-break space here (see recapCard.ts), and the
     // month is capitalised.
@@ -399,7 +398,6 @@ describe('share cards', () => {
       handle: '@cardhaver',
       monthName: '2026',
       recap: { ...RECAP_WORDS, month: '2026', locale: 'fr' },
-      storagePublicBaseUrl: undefined,
     })
     expect(year.month).toBe('2026')
     expect(year.year).toBeUndefined()
@@ -431,7 +429,6 @@ describe('share cards', () => {
         handle: '@cardhaver',
         monthName: 'May',
         recap: { ...RECAP_WORDS, month: '2026-05', slide },
-        storagePublicBaseUrl: undefined,
       })
 
     // The number is the ledger's, under the label the app sent for it.
@@ -524,6 +521,24 @@ describe('share cards', () => {
       badge: { id: 'nobody.knows', locale: 'en' },
     })
     expect(unknown.statusCode, unknown.body).toBe(400)
+  }, 60_000)
+
+  it('draws your own profile as a card, and a stranger reads it as a profile card', async () => {
+    const created = await make({
+      kind: 'profile',
+      shape: 'story',
+      headline: 'Practise languages with me',
+      caption: 'Find me on LangX',
+      profile: { locale: 'en', languages: 'Turkish → learning English' },
+      // Not fields the schema has: whose card it is comes from the session.
+      displayName: 'Somebody Else',
+      handle: 'someoneelse',
+    })
+    expect(created.statusCode, created.body).toBe(201)
+    const { id } = created.json<{ id: string }>()
+    const page = await app.inject({ method: 'GET', url: `/public/share/${id}` })
+    expect(page.statusCode, page.body).toBe(200)
+    expect(page.json()).toMatchObject({ kind: 'profile', handle: '@cardhaver' })
   }, 60_000)
 
   it('draws every shape at the size it claims', async () => {

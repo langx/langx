@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
 import { inviteUrl, PRO_GIFT_RULES, TOKEN_RULES } from '@langx/shared'
 import * as Clipboard from 'expo-clipboard'
@@ -21,6 +22,8 @@ import { inviteHeroFor, type InviteHero } from '../../lib/inviteHero'
 import { goBackTo } from '../../lib/navigation'
 import { requireAccount } from '../../lib/requireAccount'
 import { shareLink } from '../../lib/share'
+import { ShareCardSheet, type ShareCardRequest } from '../../components/ShareCardSheet'
+import { useProfileCard } from '../../hooks/useProfileCard'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { showToast } from '../../lib/toast'
 
@@ -49,6 +52,8 @@ export function InviteScreenV3() {
   const t = useT()
   const { locale } = useLocale()
   const me = useMe()
+  const profileCard = useProfileCard()
+  const [card, setCard] = useState<ShareCardRequest | null>(null)
   const referrals = useReferrals()
   const { data: session } = authClient.useSession()
   const giveAWeek = useAppConfig().data?.flags.giveAWeek === true
@@ -93,7 +98,10 @@ export function InviteScreenV3() {
 
   const share = () => {
     track({ name: 'invite_shared', properties: { via: 'sheet' } })
-    void shareLink({ message: t('invite.shareMessage', { url }), url })
+    const fallback = { message: t('invite.shareMessage', { url }), url }
+    const request = profileCard('invite', fallback)
+    if (request) setCard(request)
+    else void shareLink(fallback)
   }
 
   const steps = [
@@ -239,6 +247,7 @@ export function InviteScreenV3() {
           <Button label={t('invite.share')} icon="share" variant="blue" onPress={share} />
         </View>
       )}
+      <ShareCardSheet request={card} onClose={() => setCard(null)} />
     </Screen>
   )
 }

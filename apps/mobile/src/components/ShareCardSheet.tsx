@@ -3,6 +3,7 @@ import {
   type BadgeCardInput,
   type CardKind,
   type CardShape,
+  type ProfileCardInput,
   type RecapCardInput,
 } from '@langx/shared'
 import { File, Paths } from 'expo-file-system'
@@ -37,6 +38,8 @@ export interface ShareCardRequest {
   recap?: RecapCardInput
   /** A badge's id; the server draws its patch, and reads the rest itself. */
   badge?: BadgeCardInput
+  /** Your own profile's words; the server draws you from your account. */
+  profile?: ProfileCardInput
 }
 
 /** A share that has been decided on but not yet handed to the OS. */
@@ -141,6 +144,7 @@ export function ShareCardSheet({
         caption: request.caption,
         ...(request.recap ? { recap: request.recap } : {}),
         ...(request.badge ? { badge: request.badge } : {}),
+        ...(request.profile ? { profile: request.profile } : {}),
       })
       track({
         name: 'share_card_created',
