@@ -18,9 +18,59 @@ import { ApiError } from './ApiError'
  * `${base}/${key}`, so nothing legitimate is lost by requiring the slash.
  */
 export function isOwnBucketUrl(base: string | undefined, url: string): boolean {
-  if (!base) return false
-  const prefix = base.endsWith('/') ? base : `${base}/`
-  return url.startsWith(prefix)
+  return objectKeyOf(base, url) !== null
+}
+
+/**
+ * Characters a browser or the CDN may resolve into another path than the one
+ * written, beyond the `.` and `..` segments `objectKeyOf` splits out: a dot
+ * or slash percent-encoded, a backslash (which the URL standard reads as a
+ * slash) and its encoded form, and the tabs and newlines the parser silently
+ * deletes — `.<tab>.` is `..` by the time anything fetches it. No key this
+ * app writes contains any of them, spaces and control characters included.
+ */
+function resolvesElsewhere(url: string): boolean {
+  if (/\\|%2e|%2f|%5c/i.test(url)) return true
+  for (let i = 0; i < url.length; i++) {
+    const code = url.charCodeAt(i)
+    if (code <= 0x20 || code === 0x7f) return true
+  }
+  return false
+}
+
+/**
+ * The object key a URL names in our bucket, or `null` if it is not one.
+ *
+ * **The key must be exactly what is fetched.** A raw `startsWith` compares
+ * the string as written, but the browser, the CDN and every WHATWG parser
+ * resolve the path first, so `avatars/<me>/../<victim>/x.jpg` is read as
+ * `avatars/<me>/…` here and served as the victim's file — the owner check in
+ * `isOwnObjectUrl` passed, and the purge would later have deleted it. So
+ * anything that can resolve elsewhere is refused before any prefix is
+ * compared, rather than normalised: no key this app writes contains one,
+ * and a URL that needs normalising was not produced by us.
+ *
+ * A query or a fragment is refused for the same reason. Every stored URL is
+ * `${base}/${key}` — `publicUrl`, `putObject` and the v1 copies under
+ * `legacy/` alike — so neither is ever legitimate, and both would make two
+ * different strings name one object.
+ *
+ * Empty segments (`//`) too: a key with one is a different key, but the CDN
+ * may well collapse it, and none of ours has one.
+ */
+export function objectKeyOf(base: string | undefined, url: string): string | null {
+  if (!base) return null
+  const root = base.endsWith('/') ? base : `${base}/`
+  if (!url.startsWith(root)) return null
+  if (!URL.canParse(url) || resolvesElsewhere(url)) return null
+  if (url.includes('?') || url.includes('#')) return null
+
+  const key = url.slice(root.length)
+  const segments = key.split('/')
+  if (segments.some((segment) => segment === '' || segment === '.' || segment === '..')) {
+    return null
+  }
+  return key
 }
 
 /**
@@ -74,9 +124,7 @@ export function isOwnObjectUrl(
   url: string,
   prefix: ObjectPrefix,
 ): boolean {
-  if (!base) return false
-  const root = base.endsWith('/') ? base : `${base}/`
-  return url.startsWith(`${root}${prefix}`)
+  return objectKeyOf(base, url)?.startsWith(prefix) ?? false
 }
 
 /** `isOwnObjectUrl`, as the refusal the routes hand back. */

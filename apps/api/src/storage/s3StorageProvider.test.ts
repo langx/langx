@@ -44,3 +44,29 @@ describe('getUploadUrl', () => {
     expect(signedHeaders(uploadUrl)).not.toContain('content-length')
   })
 })
+
+describe('keyFromPublicUrl', () => {
+  it('reads the key back from a URL it handed out', () => {
+    expect(provider.keyFromPublicUrl('https://cdn.example.test/avatars/u1/a.b.jpg')).toBe(
+      'avatars/u1/a.b.jpg',
+    )
+  })
+
+  /**
+   * Defence in depth behind the routes' check: a URL stored before it existed
+   * may climb out of its prefix, and the purge must not delete whatever the
+   * raw string names.
+   */
+  it('refuses a URL that resolves to another key than it spells', () => {
+    for (const url of [
+      'https://cdn.example.test/avatars/u1/../u2/a.jpg',
+      'https://cdn.example.test/avatars/u1/%2e%2e/u2/a.jpg',
+      'https://cdn.example.test/avatars/u1%2Fu2/a.jpg',
+      'https://cdn.example.test/avatars/u1\\..\\u2/a.jpg',
+      'https://cdn.example.test/avatars//u2/a.jpg',
+      'https://cdn.example.test/',
+    ]) {
+      expect(provider.keyFromPublicUrl(url), url).toBeNull()
+    }
+  })
+})
