@@ -1,6 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
 import {
+  backAddsMeaning,
   ECHO_GRADES,
   echoAudiosOf,
   type EchoAudio,
@@ -76,6 +77,8 @@ export interface EchoSessionV3Props {
   offline: boolean
   ask: EchoAskParams | null
   onPostToFeed: (params: EchoAskParams) => void
+  /** Opens the card's edit screen; `null` where the route does not offer it. */
+  onEdit: (() => void) | null
   onReveal: () => void
   onGrade: (grade: EchoGrade) => void
   intervalLabel: (grade: EchoGrade) => string
@@ -311,6 +314,7 @@ function CardBlock({
   onType,
   autoplay,
   keyboard,
+  onEdit,
 }: EchoSessionV3Props) {
   const styles = useStyles()
   const { v3 } = useTheme()
@@ -325,7 +329,7 @@ function CardBlock({
 
   return (
     <View style={[styles.block, { backgroundColor: fill }]}>
-      <Source card={card} fill={fill} ink={ink} glyph={tone.glyph} />
+      <Source card={card} fill={fill} ink={ink} glyph={tone.glyph} onEdit={onEdit} />
       {card.image ? <Picture key={card.image.url} image={card.image} /> : null}
       {producing && !revealed ? (
         /*
@@ -396,11 +400,13 @@ function Source({
   fill,
   ink,
   glyph,
+  onEdit,
 }: {
   card: EchoCard
   fill: string
   ink: string
   glyph: keyof typeof Feather.glyphMap | null
+  onEdit: (() => void) | null
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
@@ -446,6 +452,24 @@ function Source({
         <Text style={[styles.sourceLang, { color: ink }]} numberOfLines={1}>
           {language}
         </Text>
+      ) : null}
+      {onEdit ? (
+        /*
+         * In the card's own top row, beside who it is from: it is about this
+         * card, and it is not a grade, so it stays out of the row at the foot.
+         */
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('echo.editTitle')}
+          hitSlop={8}
+          onPress={onEdit}
+          style={({ pressed }) => [styles.edit, { borderColor: ink }, pressed && styles.pressed]}
+        >
+          <Feather name="edit-2" size={v3.icon.xs} color={ink} />
+          <Text style={[styles.editText, { color: ink }]} numberOfLines={1}>
+            {t('common.edit')}
+          </Text>
+        </Pressable>
       ) : null}
     </View>
   )
@@ -561,8 +585,16 @@ function Answer({ card, producing, typed, verdict }: EchoSessionV3Props) {
             )}
           </Text>
         </>
-      ) : (
+      ) : backAddsMeaning(card.front, card.back) ? (
         <Text style={styles.answerText}>{card.back}</Text>
+      ) : (
+        /*
+         * An empty back, or one that is the sentence again — what a
+         * translation into the language it is already in returns. Showing the
+         * front twice read as a card with no back side at all; saying so
+         * points at the card's Edit instead.
+         */
+        <Text style={styles.noMeaning}>{t('echo.noMeaningYet')}</Text>
       )}
       {card.example ? <Text style={styles.example}>{card.example}</Text> : null}
     </View>
@@ -698,6 +730,18 @@ const useStyles = makeStyles(({ v3 }) => ({
   reading: { ...v3.type.callout, color: v3.colors.muted },
   answerLabel: { ...v3.type.label, color: v3.colors.muted },
   answerText: { ...v3.type.body, color: v3.colors.fg, fontWeight: '700' },
+  noMeaning: { ...v3.type.body, color: v3.colors.muted },
+  edit: {
+    alignItems: 'center',
+    borderRadius: v3.radius.pill,
+    borderWidth: 2,
+    flexDirection: 'row',
+    flexShrink: 0,
+    gap: v3.space[4],
+    minHeight: 32,
+    paddingHorizontal: v3.space[10],
+  },
+  editText: { ...v3.type.caption, fontWeight: '700' },
   verdictOk: { ...v3.type.callout, color: v3.colors.echoText, fontWeight: '700' },
   verdictWrong: { ...v3.type.callout, color: v3.colors.danger, fontWeight: '700' },
   example: { ...v3.type.callout, color: v3.colors.muted, fontStyle: 'italic' },

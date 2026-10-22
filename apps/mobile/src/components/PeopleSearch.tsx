@@ -105,11 +105,7 @@ export function PeopleSearch({ onSearchingChange }: PeopleSearchProps) {
     )
   }
 
-  if (v3Look) {
-    return (
-      <PeopleSearchFieldV3 value={current} onChangeText={setTerm} onClose={() => open(false)} />
-    )
-  }
+  if (v3Look) return <OpenFieldV3 value={current} onClose={() => open(false)} />
 
   return (
     <View style={styles.field}>
@@ -148,6 +144,27 @@ export function PeopleSearch({ onSearchingChange }: PeopleSearchProps) {
 }
 
 /**
+ * The v3 field, with the search's spinner inside it rather than over the
+ * results, where each request pushed the rows down by its height and pulled
+ * them back up when it answered.
+ *
+ * The same query as `PeopleSearchResults`, on the same debounced term, so it
+ * shares that request rather than making one of its own; it only reads
+ * whether the request is out.
+ */
+function OpenFieldV3({ value, onClose }: { value: string; onClose: () => void }) {
+  const search = useHandleSearch(useDebounced(value))
+  return (
+    <PeopleSearchFieldV3
+      value={value}
+      onChangeText={setTerm}
+      onClose={onClose}
+      fetching={search.isFetching}
+    />
+  )
+}
+
+/**
  * The results, rendered by the host in place of its own list while search is
  * open. In normal flow, so every row is inside its parents' frames and a tap
  * lands on it — and `keyboardShouldPersistTaps`, or the first tap with the
@@ -170,7 +187,6 @@ export function PeopleSearchResults({ from }: { from: SearchHost }) {
     return (
       <PeopleSearchResultsV3
         items={items}
-        fetching={search.isFetching}
         none={none}
         onOpen={(handle) => openProfile(handle, from)}
       />

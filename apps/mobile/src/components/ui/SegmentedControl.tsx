@@ -1,7 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import {
   Animated,
-  Easing,
   Platform,
   Pressable,
   Text,
@@ -12,7 +11,8 @@ import {
 import { useChangeHaptic } from '../../hooks/useChangeHaptic'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { makeStyles } from '../../lib/theme'
-import { CURVE, DURATION } from '../../lib/theme/motionValues'
+import { EASE_OUT } from '../../lib/theme/motionAnimated'
+import { DURATION } from '../../lib/theme/motionValues'
 
 interface SegmentedControlProps<T extends string> {
   options: readonly { value: T; label: string }[]
@@ -21,9 +21,6 @@ interface SegmentedControlProps<T extends string> {
   onToggle: (value: T) => void
   accessibilityLabel: string
 }
-
-/** `motion.ts`'s `EASE_OUT`, on React Native's `Easing`. */
-const EASE_OUT = Easing.bezier(...CURVE.out)
 
 /** Each segment is a whole target: 44pt on iOS, 48dp on Android. */
 const SEGMENT_HEIGHT = Platform.select({ android: 48, default: 44 })

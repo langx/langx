@@ -1,14 +1,16 @@
 import Feather from '@expo/vector-icons/Feather'
 import { countryFlag, formatDistance } from '@langx/shared'
 import { memo } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import type { DiscoveryItem } from '../../api/types'
 import { useDisplayNames, useLocale, useT } from '../../i18n'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
+import { PRESS_SCALE_CARD } from '../../lib/theme/motionValues'
 import { partnerHueFor } from '../../lib/theme/partnerHue'
 import { Avatar } from '../ui/Avatar'
 import { frameArtBox } from '../ui/FrameArt'
 import { Button } from '../ui/Button'
+import { PressableScale } from '../ui/PressableScale'
 
 /**
  * One person on People, in the v3 look: their face first, in their partner
@@ -79,13 +81,15 @@ export const PersonCard = memo(function PersonCard({
     <View style={[styles.card, { backgroundColor: hue }, selected && styles.selected]}>
       {/*
         The open target wraps the face, the words and nothing else, so the web
-        build never puts a button inside a button.
+        build never puts a button inside a button — and so it is that block,
+        not the whole card, that gives under the finger.
       */}
-      <Pressable
+      <PressableScale
         accessibilityRole="button"
         accessibilityLabel={openLabel}
         onPress={() => onOpen(person, index)}
-        style={({ pressed }) => [styles.open, pressed && styles.pressed]}
+        scaleTo={PRESS_SCALE_CARD}
+        style={styles.open}
       >
         <View style={styles.head}>
           {/*
@@ -149,7 +153,7 @@ export const PersonCard = memo(function PersonCard({
             <Text style={styles.metaLabel}>{t('discover.repliesWithinDay')}</Text>
           </View>
         ) : null}
-      </Pressable>
+      </PressableScale>
       <Button
         label={t('onboarding.sayHelloTo', { name: person.displayName })}
         icon="message-circle"
@@ -177,15 +181,12 @@ export const NewcomerTile = memo(function NewcomerTile({
   const names = useDisplayNames()
   const speaks = person.nativeLanguages[0]
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityLabel={t('discover.helloNewcomer', { name: person.displayName })}
       onPress={() => onHello(person)}
-      style={({ pressed }) => [
-        styles.tile,
-        { backgroundColor: v3.hues[partnerHueFor(person._id)] },
-        pressed && styles.pressed,
-      ]}
+      scaleTo={PRESS_SCALE_CARD}
+      style={[styles.tile, { backgroundColor: v3.hues[partnerHueFor(person._id)] }]}
     >
       {/*
         A framed face is the 40 cut inside the bare face's 44 slot, its frame
@@ -211,7 +212,7 @@ export const NewcomerTile = memo(function NewcomerTile({
           {names.language(speaks.code)}
         </Text>
       ) : null}
-    </Pressable>
+    </PressableScale>
   )
 })
 
@@ -243,7 +244,6 @@ const useStyles = makeStyles(({ v3 }) => ({
   // The wide window's open profile: an ink ring, since the card is already a colour.
   selected: { borderColor: v3.colors.fg, borderWidth: 3 },
   open: { gap: v3.space[10] },
-  pressed: { opacity: 0.8 },
   head: { alignItems: 'center', flexDirection: 'row', gap: v3.space[14] },
   dot: {
     borderRadius: v3.radius.pill,

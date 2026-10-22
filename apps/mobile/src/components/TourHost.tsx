@@ -1,7 +1,8 @@
 import { router, useSegments } from 'expo-router'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   AccessibilityInfo,
+  Animated,
   Modal,
   Pressable,
   ScrollView,
@@ -15,7 +16,9 @@ import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
 import { useT, type MessageKey } from '../i18n'
 import { track } from '../lib/analytics'
-import { makeStyles } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
+import { EASE_OUT } from '../lib/theme/motionAnimated'
+import { DURATION } from '../lib/theme/motionValues'
 import {
   advance,
   currentStep,
@@ -36,6 +39,9 @@ import {
 } from '../lib/tour'
 import { tourCover, tourLayout } from '../lib/tourLayout'
 import { Button } from './ui/Button'
+
+/** How far below its place a step's bubble starts, in points. */
+const STEP_RISE = 8
 
 /** Long enough for the tab that was just switched to to have drawn itself. */
 const SETTLE_MS = 260
@@ -85,6 +91,7 @@ export function TourHost() {
   const currentStyles = useStyles()
   const v3Styles = useStylesV3()
   const styles = v3Look ? v3Styles : currentStyles
+  const { scheme } = useTheme()
   const t = useT()
   const screen = useWindowDimensions()
   const insets = useSafeAreaInsets()
@@ -217,6 +224,30 @@ export function TourHost() {
     // when the run actually moves, because nothing publishes without changing.
   }, [goNext, paused, screen.height, screen.width, state, step, t, target])
 
+  /*
+   * Under v3 each step's ring and bubble arrive rather than appear: the
+   * bubble rises a few points into place as both fade up, so a step reads as
+   * moving on instead of the overlay blinking. Restarted whenever a step is
+   * measured — a rotation's re-measure included, which is a new place to look.
+   * A layout effect, so the start is set before the frame that draws the step.
+   */
+  const arrive = useRef(new Animated.Value(1)).current
+  useLayoutEffect(() => {
+    if (!anchor || !v3Look) return
+    if (reduceMotion) {
+      arrive.setValue(1)
+      return
+    }
+    arrive.setValue(0)
+    Animated.timing(arrive, {
+      toValue: 1,
+      duration: DURATION.enter,
+      easing: EASE_OUT,
+      useNativeDriver: true,
+    }).start()
+  }, [anchor, v3Look, reduceMotion, arrive])
+  const rise = arrive.interpolate({ inputRange: [0, 1], outputRange: [STEP_RISE, 0] })
+
   if (!state || !step || paused) return null
 
   const layout = anchor ? tourLayout({ anchor, screen, insets }) : null
@@ -274,9 +305,10 @@ export function TourHost() {
                 ]}
               />
             ))}
-            <View
+            <Animated.View
               pointerEvents="none"
               style={[
+                { opacity: arrive },
                 styles.ring,
                 {
                   left: layout.hole.x,
@@ -291,7 +323,7 @@ export function TourHost() {
         ) : null}
 
         {layout ? (
-          <View
+          <Animated.View
             /*
              * Politely live as well as announced. The announcement above is
              * the iOS path; `announceForAccessibility` does nothing on
@@ -302,6 +334,7 @@ export function TourHost() {
             accessibilityLiveRegion="polite"
             style={[
               styles.bubble,
+              v3Look && scheme === 'dark' && v3Styles.bubbleDark,
               {
                 left: layout.bubble.left,
                 width: layout.bubble.width,
@@ -310,6 +343,7 @@ export function TourHost() {
               layout.bubble.placement === 'below'
                 ? { top: layout.bubble.top }
                 : { bottom: layout.bubble.bottom },
+              { opacity: arrive, transform: [{ translateY: rise }] },
             ]}
           >
             <ScrollView
@@ -341,7 +375,7 @@ export function TourHost() {
                 />
               </View>
             </ScrollView>
-          </View>
+          </Animated.View>
         ) : null}
       </View>
     </Modal>
@@ -381,6 +415,9 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
  * the dim and not on a screen — with the counter in the label face, the
  * title in Headline and the sentence in Callout. The ring is the blue, the
  * colour v3 gives "look here, nothing is decided yet".
+ *
+ * In dark mode the bubble is the raised surface instead: the dark ground
+ * under a dark dim barely separated from it, and the bubble read as a hole.
  */
 const useStylesV3 = makeStyles(({ v3 }) => ({
   dim: { backgroundColor: v3.colors.scrim, position: 'absolute' },
@@ -390,6 +427,7 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
     borderRadius: v3.radius.badge,
     position: 'absolute',
   },
+  bubbleDark: { backgroundColor: v3.colors.surface },
   bubbleInner: { gap: v3.space[8], padding: v3.space[16] },
   counter: { ...v3.type.label, color: v3.colors.muted },
   title: { ...v3.type.headline, color: v3.colors.fg },

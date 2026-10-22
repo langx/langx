@@ -5586,7 +5586,9 @@ button: Reply ideas and Explain refuse a chat whose other person is under the
 age (`partner_age`), because both send that person's lines, and otherwise any
 adult they talk to would send them for them. Check sends only the asker's own
 sentence and still works there. `COPILOT_RULES.minimumAge` is the one number
-to change if Behic decides otherwise; it moves both.
+to change if Behic decides otherwise; it moves both. _(Removed on 21 October
+2026, both checks: see Copilot has no age rule of its own, and 24 a day
+for Pro.)_
 
 **Finite on both tiers.** `copilotPer24h` is a small free taste and a Pro
 ceiling sized so that one person spending every unit every day for a month
@@ -5599,6 +5601,8 @@ changes what `architecture.md` planned — "Pro: unlimited within fair use" — 
 a stated number: every unit is a paid call, and "unlimited" would be a promise
 made against somebody else's meter. A unit is spent only when the model writes
 an answer: a cached answer is free, and a declined or failed one is refunded.
+_(Pro raised to 24 on 21 October 2026, past that yearly-plan bound: see Copilot
+has no age rule of its own, and 24 a day for Pro.)_
 
 **Cached by a hash of the question**, not of the person: the prompt's version,
 the model, the action and the exact user turn. Two people asking the same
@@ -5628,7 +5632,9 @@ _20 October 2026._ Behic asked for a simple Copilot first, one he can turn on
 for some people rather than for everybody, connected straight to the Claude
 API. Everything in the entry above still holds: the flag, the key, the exact
 18+ check, the partner-age guard, the consent sheet, `copilotPer24h`, the
-global day, the cache. Three things are added.
+global day, the cache. Three things are added. _(Both age checks were removed
+on 21 October 2026: see Copilot has no age rule of its own, and 24 a day for
+Pro.)_
 
 **A third switch, per account.** `copilotAccess` on the profile, set from the
 operator panel (Find someone → Copilot access) and listed in the Copilot lab.
@@ -9287,7 +9293,10 @@ schema's own keys, and the body is strict. The write sets one dotted path,
 `flags.<name>`, with the name taken from that list rather than read off the
 request. It does not write the flags whole from a cached read. The cache is per
 machine, so two switches made seconds apart on two machines would undo each
-other, and the audit log would still say both had stuck. The audit row is
+other, and the audit log would still say both had stuck. The captcha route and
+the script's `flag` command write the same way, through `setAppConfigFlag`: one
+writer that still wrote the flags whole would undo the others just as well. The
+audit row is
 best-effort like every panel action's: a failed audit insert is logged and does
 not undo the switch. `captchaRequired` keeps its own route
 beside the minimum version, because it is thrown in step with it. Conditions a
@@ -9339,3 +9348,27 @@ Pro_) has the storefront counts.
   the monthly is above the usual one — USD 89.99 against $11.99, EUR 69.99
   against €8.99 — the card now reads "4 months free", computed as before from
   the store's own prices. Nothing on the paywall is typed.
+
+## Copilot has no age rule of its own, and 24 a day for Pro
+
+_21 October 2026._ Behic removed Copilot's own 18+ gate. The app's minimum age
+is 16 (`MINIMUM_AGE`, checked at sign-up), and whoever the app lets in may use
+Copilot like any other feature; it does not check age a second time. That
+removes both halves of the entry _Copilot ships dark_ describes: the asker's
+exact-birthday check (`COPILOT_RULES.minimumAge`, `copilotAgeAllows`), and the
+partner-age guard that refused Reply ideas and Explain in a chat with somebody
+under 18. The `age` and `partner_age` reasons are gone from
+`COPILOT_UNAVAILABLE_REASONS`, and so is the line the app showed for the
+second. Every other switch still applies: the flag, a key, the operator's
+allow-list and the person's own consent.
+
+Only Copilot changes. The sticker gifts' adult-only rule (`ADULT_AGE`) and
+every other feature's age rule stay as they are.
+
+**Pro's allowance is 24 a day, up from 12** (`PLAN_LIMITS.pro.copilotPer24h`);
+free stays at 3. Twelve was sized so one person spending every unit every day
+for a month cost less than the yearly plan nets in a month (about $5.95 then,
+$5.67 at the new $79.99); 24 is about $9.40 at that worst case, which Behic
+accepted: it takes one person maxing it every day, and `COPILOT_RULES.globalCallsPerDay` (500, unchanged)
+caps the whole bill whatever the tiers say. 500 is still above 24, so one Pro
+account can always spend its own allowance.

@@ -2,6 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { Fragment } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
 import { Button } from './ui/Button'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useT, type MessageKey } from '../i18n'
 import { makeStyles, useTheme } from '../lib/theme'
 
@@ -81,6 +82,7 @@ function Curve({ points, color }: { points: number[]; color: string }) {
  * explanation that ends in an upsell stops being read.
  */
 export function EchoAboutSheet({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const reduce = useReduceMotion()
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
@@ -89,7 +91,7 @@ export function EchoAboutSheet({ visible, onClose }: { visible: boolean; onClose
     <Modal
       visible={visible}
       transparent
-      animationType="slide"
+      animationType={reduce ? 'none' : 'slide'}
       onRequestClose={onClose}
       accessibilityViewIsModal
     >

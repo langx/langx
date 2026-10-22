@@ -35,6 +35,25 @@ export function swipeReleased(dx: number): boolean {
 }
 
 /**
+ * What a frame of the drag did to the reply: crossed into it (`'armed'` —
+ * letting go now replies), back out of it (`'disarmed'`), or nothing.
+ *
+ * Asked of every frame by the bubble's `useAnimatedReaction`, so the buzz and
+ * the arrow's pop happen once per crossing rather than once per frame past the
+ * line, and come back if the finger drops under it and crosses again. `prev`
+ * is `null` on the reaction's first run, which is no crossing at all: a bubble
+ * mounting at rest must not buzz.
+ */
+export function swipeCrossing(prev: number | null, now: number): 'armed' | 'disarmed' | null {
+  'worklet'
+  if (prev === null) return null
+  const was = prev >= SWIPE_ACTIVATE_PX
+  const is = now >= SWIPE_ACTIVATE_PX
+  if (was === is) return null
+  return is ? 'armed' : 'disarmed'
+}
+
+/**
  * Whether the gesture is offered at all.
  *
  * Native always. On the web only with a touch pointer, and that distinction is

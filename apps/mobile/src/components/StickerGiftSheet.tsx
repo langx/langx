@@ -1,6 +1,7 @@
 import type { Cosmetic, StickerGiftOptions, StickerGiftPartnerState } from '@langx/shared'
 import { useState } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { ApiRequestError } from '../api/client'
 import { useGiveStickerPack } from '../api/queries'
 import { useLocale, useT, type MessageKey } from '../i18n'
@@ -63,6 +64,7 @@ export function StickerGiftSheet({
   options: StickerGiftOptions | undefined
   onClose: () => void
 }) {
+  const reduce = useReduceMotion()
   const t = useT()
   const { locale } = useLocale()
   const { v3 } = useTheme()
@@ -208,7 +210,12 @@ export function StickerGiftSheet({
   )
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={close}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType={reduce ? 'none' : 'slide'}
+      onRequestClose={close}
+    >
       <Pressable
         style={styles.scrim}
         onPress={close}

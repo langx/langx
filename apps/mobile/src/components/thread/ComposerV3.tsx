@@ -209,7 +209,7 @@ export function ComposerV3({
   const sendLive = canSend && !busy
   /*
    * Only for a typed draft, and only when this person has Copilot at all — an
-   * account off the allow-list, under 18 or on a deployment with no key sees
+   * account off the allow-list or on a deployment with no key sees
    * no trace of it. The menu folds when the draft empties, and when a row is
    * picked.
    */

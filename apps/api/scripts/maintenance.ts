@@ -15,7 +15,12 @@
 import { appConfigSchema, minVersionSchema } from '@langx/shared'
 import { connectToDatabase } from '../src/db/client'
 import { loadEnv } from '../src/env'
-import { getAppConfig, setMaintenance, updateAppConfig } from '../src/modules/appConfig/appConfig'
+import {
+  getAppConfig,
+  setAppConfigFlag,
+  setMaintenance,
+  updateAppConfig,
+} from '../src/modules/appConfig/appConfig'
 
 async function main(): Promise<void> {
   const [command, ...args] = process.argv.slice(2)
@@ -78,10 +83,10 @@ async function main(): Promise<void> {
         if (!flagKey.success || (value !== 'true' && value !== 'false')) {
           throw new Error('usage: flag <name> <true|false>')
         }
-        const current = await getAppConfig(db, Number.POSITIVE_INFINITY)
-        await updateAppConfig(db, {
-          flags: { ...current.flags, [flagKey.data]: value === 'true' },
-        })
+        // One path, no read: writing the flags whole would put back whatever
+        // this read saw, over a switch made from the panel in the meantime —
+        // and a read that failed would hand back the defaults for all of them.
+        await setAppConfigFlag(db, flagKey.data, value === 'true')
         console.log(`Flag ${name} is now ${value}`)
         break
       }

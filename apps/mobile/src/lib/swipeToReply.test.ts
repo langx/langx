@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   SWIPE_ACTIVATE_PX,
   SWIPE_MAX_PX,
+  swipeCrossing,
   swipeReleased,
   swipeToReplyEnabled,
   swipeTranslation,
@@ -45,5 +46,22 @@ describe('swipeToReplyEnabled', () => {
 
   it('is off in a browser driven by a mouse, where it would fight text selection', () => {
     expect(swipeToReplyEnabled('web', false)).toBe(false)
+  })
+})
+
+describe('swipeCrossing', () => {
+  it('arms once, on the frame that reaches the line', () => {
+    expect(swipeCrossing(SWIPE_ACTIVATE_PX - 1, SWIPE_ACTIVATE_PX)).toBe('armed')
+    expect(swipeCrossing(SWIPE_ACTIVATE_PX, SWIPE_ACTIVATE_PX + 10)).toBeNull()
+  })
+
+  it('disarms below the line, so the next crossing arms again', () => {
+    expect(swipeCrossing(SWIPE_ACTIVATE_PX + 4, SWIPE_ACTIVATE_PX - 1)).toBe('disarmed')
+    expect(swipeCrossing(SWIPE_ACTIVATE_PX - 1, SWIPE_ACTIVATE_PX + 2)).toBe('armed')
+  })
+
+  it('says nothing on the first run, or while under the line', () => {
+    expect(swipeCrossing(null, SWIPE_ACTIVATE_PX + 20)).toBeNull()
+    expect(swipeCrossing(0, 30)).toBeNull()
   })
 })
