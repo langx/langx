@@ -27,8 +27,8 @@ import {
 import {
   appendIncomingMessage,
   applyDeliveredAt,
-  applyMessageUpdate,
   applyPinned,
+  patchMessageUpdate,
   patchThread,
   type MessagePageDto,
 } from '../lib/messageCache'
@@ -344,10 +344,7 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
       on('message:updated', (incoming: MessageDto) => {
         const message = withoutViewOnceFallback(incoming)
         const conversationId = String(message.conversationId)
-        queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
-          { queryKey: keys.messages(conversationId) },
-          (old) => applyMessageUpdate(old, message) ?? old,
-        )
+        patchMessageUpdate(queryClient, message)
         // A withdrawal empties the chat list's preview too, and that is the
         // one thing this cannot patch from here.
         if (message.deleted) {

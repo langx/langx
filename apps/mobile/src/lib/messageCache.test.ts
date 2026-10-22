@@ -7,6 +7,7 @@ import {
   applyMessageUpdate,
   applyPinned,
   messagesNewestFirst,
+  patchMessageUpdate,
   patchThread,
   type MessagePageDto,
 } from './messageCache'
@@ -340,5 +341,49 @@ describe('patchThread while an older page is loading', () => {
     const ids = messagesNewestFirst(client.getQueryData(queryKey)).map((m) => m._id)
     expect(ids).toEqual(['m2', 'm1', 'm0'])
     unsubscribe()
+  })
+})
+
+describe('patchMessageUpdate while the thread is refetching', () => {
+  /**
+   * The same race as the arriving message above, for `message:updated`. A
+   * withdrawal for everyone lands while a refetch is out — the reconnect's
+   * resync, most often — and the GET read the thread before the withdrawal.
+   * When it lands it must not put the words back on screen.
+   */
+  it('keeps a withdrawal written during an in-flight refetch', async () => {
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+    const queryKey = ['messages', 'c1']
+    client.setQueryData(queryKey, pages([message('m1')]))
+    const withdrawn: MessageDto = { ...message('m1'), body: '', deleted: true }
+
+    let release: (page: MessagePageDto) => void = () => undefined
+    let calls = 0
+    const queryFn = (): Promise<MessagePageDto> => {
+      calls += 1
+      // A later GET leaves after the server withdrew it, so it carries that.
+      if (calls > 1) return Promise.resolve(pages([withdrawn]).pages[0]!)
+      return new Promise((resolve) => {
+        release = resolve
+      })
+    }
+    const refetch = client.fetchInfiniteQuery({
+      queryKey,
+      queryFn,
+      initialPageParam: '',
+      getNextPageParam: () => null,
+      staleTime: 0,
+    })
+
+    patchMessageUpdate(client, withdrawn)
+
+    release(pages([message('m1')]).pages[0]!)
+    await refetch.catch(() => undefined)
+    while (client.isFetching({ queryKey }) > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 0))
+    }
+
+    const [shown] = messagesNewestFirst(client.getQueryData(queryKey))
+    expect(shown).toMatchObject({ _id: 'm1', deleted: true, body: '' })
   })
 })
