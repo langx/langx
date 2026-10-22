@@ -160,8 +160,34 @@ export function CopilotAnswerBody({
   if (result.action === 'explain') {
     return <Text style={styles.body}>{result.explanation}</Text>
   }
-  // Reply ideas has no surface in the thread (see the v1 design): an answer
-  // of that kind never reaches here, and would say nothing if it did.
+  if (result.action === 'replyIdeas') {
+    // Say it's rows, without a gloss: an idea is already in the language of
+    // the chat. A tap puts it in the draft, and the person sends it or not.
+    return (
+      <View style={styles.options}>
+        <Text
+          style={styles.title}
+          accessibilityRole="header"
+          accessibilityLabel={t('copilot.replyIdeasCount', { count: result.ideas.length })}
+        >
+          {t('copilot.replyIdeas')}
+        </Text>
+        {result.ideas.map((idea, index) => (
+          <PressableScale
+            key={`${index}-${idea}`}
+            accessibilityRole="button"
+            accessibilityLabel={idea}
+            accessibilityHint={t('copilot.replyIdeaHint')}
+            onPress={() => onUse?.(idea)}
+            disabled={onUse === undefined}
+            style={styles.option}
+          >
+            <Text style={styles.optionText}>{idea}</Text>
+          </PressableScale>
+        ))}
+      </View>
+    )
+  }
   return null
 }
 

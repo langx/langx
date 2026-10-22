@@ -3916,7 +3916,7 @@ export const en = {
     },
     showLess: 'Show less',
     /**
-     * A price and what it is per — "$6.99 a month" — in the order the language
+     * A price and what it is per — "$6.66 a month" — in the order the language
      * says them; Turkish puts the period first. `{period}` is one of `perMonth`,
      * `perYear` or `perLifetime`.
      */
@@ -4311,6 +4311,14 @@ export const en = {
     errBusy: 'Copilot is busy. Try again later.',
     errNoAnswer: 'Copilot couldn’t answer that.',
     errNetwork: 'Couldn’t reach Copilot.',
+    /** The chip above an empty composer when their newest message is unanswered, and the heading over the ideas. */
+    replyIdeas: 'Reply ideas',
+    /** Screen-reader name of that chip. */
+    replyIdeasA11y: 'Ask Copilot for reply ideas',
+    /** Screen-reader hint on each idea: tapping fills the draft, it does not send. */
+    replyIdeaHint: 'Puts it in your message. Nothing is sent.',
+    /** Screen-reader words for the header above the ideas. */
+    replyIdeasCount: { one: '{count} reply idea', other: '{count} reply ideas' },
   },
 } as const
 

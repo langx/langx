@@ -3,13 +3,16 @@ import { perMonthPriceString } from './perMonthPrice'
 
 describe('perMonthPriceString', () => {
   /**
-   * The prices on sale since 25 September 2026: every yearly price is
+   * The prices on sale since 25 September 2026: most yearly prices are
    * `12 × month + 0.11`, so each one must read as the `.99` month it was
    * chosen for. The stores' own per-month strings round these up to the next
-   * whole unit, which is the reason this function exists.
+   * whole unit, which is the reason this function exists. USD, EUR and GBP
+   * yearlies end in `9.99` since 21 October 2026 and read whatever the
+   * truncated month is.
    */
   it.each([
-    ['US Fluent', '$83.99', 83.99, '$6.99'],
+    ['US Pro', '$79.99', 79.99, '$6.66'],
+    ['euro Pro', '89,99 €', 89.99, '7,49 €'],
     ['US Polyglot', '$131.99', 131.99, '$10.99'],
     ['Türkiye Fluent', '₺1.799,99', 1799.99, '₺149,99'],
     ['Türkiye Polyglot', '₺2.699,99', 2699.99, '₺224,99'],
@@ -42,8 +45,8 @@ describe('perMonthPriceString', () => {
   })
 
   it('gives up on a string that does not state the price it came with', () => {
-    expect(perMonthPriceString('$83.99', 90)).toBeNull()
-    expect(perMonthPriceString('Free', 83.99)).toBeNull()
+    expect(perMonthPriceString('$79.99', 90)).toBeNull()
+    expect(perMonthPriceString('Free', 79.99)).toBeNull()
     expect(perMonthPriceString('$0.00', 0)).toBeNull()
   })
 })

@@ -4586,5 +4586,14 @@ export const ru: Localized<EnMessages> = {
     errBusy: 'Copilot занят. Попробуй позже.',
     errNoAnswer: 'Copilot не смог на это ответить.',
     errNetwork: 'Не удалось связаться с Copilot.',
+    replyIdeas: 'Идеи для ответа',
+    replyIdeasA11y: 'Попросить у Copilot идеи для ответа',
+    replyIdeaHint: 'Добавит в сообщение. Ничего не отправляется.',
+    replyIdeasCount: {
+      one: '{count} идея для ответа',
+      few: '{count} идеи для ответа',
+      many: '{count} идей для ответа',
+      other: '{count} идеи для ответа',
+    },
   },
 }

@@ -3992,5 +3992,9 @@ export const de: Localized<EnMessages> = {
     errBusy: 'Copilot ist gerade ausgelastet. Versuch es später noch mal.',
     errNoAnswer: 'Darauf hat Copilot keine Antwort gefunden.',
     errNetwork: 'Copilot ist nicht erreichbar.',
+    replyIdeas: 'Antwortideen',
+    replyIdeasA11y: 'Copilot nach Antwortideen fragen',
+    replyIdeaHint: 'Fügt sie in deine Nachricht ein. Es wird nichts gesendet.',
+    replyIdeasCount: { one: '{count} Antwortidee', other: '{count} Antwortideen' },
   },
 }
