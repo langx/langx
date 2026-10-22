@@ -888,6 +888,61 @@ export const en = {
     badgeKicker: 'New badge',
     badgeEarnedOn: 'Earned {date}',
   },
+  /**
+   * A badge's name, for the push and the evening letter that announce it.
+   * The same words the app's badge shelf uses (`badges.*`, `badgesV3.unit.*`
+   * in the mobile catalogue): `BADGES` in `@langx/shared` carries an English
+   * label, which used to be dropped into every language's sentence.
+   * `{formatted}` is the threshold in the reader's own digits.
+   */
+  badgeNames: {
+    firstCorrection: 'First correction',
+    streakDays: {
+      one: '{formatted} day',
+      other: '{formatted} days',
+    },
+    corrections: {
+      one: '{formatted} correction',
+      other: '{formatted} corrections',
+    },
+    messagesSent: {
+      one: '{formatted} message',
+      other: '{formatted} messages',
+    },
+    tokensEarned: {
+      one: '{formatted} token earned',
+      other: '{formatted} tokens earned',
+    },
+    memberDays: {
+      one: '{formatted} day a member',
+      other: '{formatted} days a member',
+    },
+    earlyAdopter: 'Early Adopter',
+    languages: {
+      one: '{formatted} language',
+      other: '{formatted} languages',
+    },
+    calls: {
+      one: '{formatted} call',
+      other: '{formatted} calls',
+    },
+    echo: {
+      one: '{formatted} review',
+      other: '{formatted} reviews',
+    },
+    testimonials: {
+      one: '{formatted} partner',
+      other: '{formatted} partners',
+    },
+    guide: {
+      one: '{formatted} person',
+      other: '{formatted} people',
+    },
+    openers: {
+      one: '{formatted} reply',
+      other: '{formatted} replies',
+    },
+  },
 } as const
 
 export type ServerMessages = typeof en

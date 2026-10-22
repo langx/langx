@@ -666,4 +666,52 @@ export const tr: Localized<ServerMessages> = {
     badgeKicker: 'Yeni rozet',
     badgeEarnedOn: '{date} tarihinde kazanıldı',
   },
+  badgeNames: {
+    firstCorrection: 'İlk düzeltme',
+    streakDays: {
+      one: '{formatted} gün',
+      other: '{formatted} gün',
+    },
+    corrections: {
+      one: '{formatted} düzeltme',
+      other: '{formatted} düzeltme',
+    },
+    messagesSent: {
+      one: '{formatted} mesaj',
+      other: '{formatted} mesaj',
+    },
+    tokensEarned: {
+      one: '{formatted} token kazanıldı',
+      other: '{formatted} token kazanıldı',
+    },
+    memberDays: {
+      one: '{formatted} gün üye',
+      other: '{formatted} gün üye',
+    },
+    earlyAdopter: 'İlk kullanıcılardan',
+    languages: {
+      one: '{formatted} dil',
+      other: '{formatted} dil',
+    },
+    calls: {
+      one: '{formatted} arama',
+      other: '{formatted} arama',
+    },
+    echo: {
+      one: '{formatted} tekrar',
+      other: '{formatted} tekrar',
+    },
+    testimonials: {
+      one: '{formatted} partner',
+      other: '{formatted} partner',
+    },
+    guide: {
+      one: '{formatted} kişi',
+      other: '{formatted} kişi',
+    },
+    openers: {
+      one: '{formatted} yanıt',
+      other: '{formatted} yanıt',
+    },
+  },
 }

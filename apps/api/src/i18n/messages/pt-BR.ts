@@ -680,4 +680,52 @@ export const ptBR: Localized<ServerMessages> = {
     badgeKicker: 'Insígnia nova',
     badgeEarnedOn: 'Conquistada em {date}',
   },
+  badgeNames: {
+    firstCorrection: 'Primeira correção',
+    streakDays: {
+      one: '{formatted} dia',
+      other: '{formatted} dias',
+    },
+    corrections: {
+      one: '{formatted} correção',
+      other: '{formatted} correções',
+    },
+    messagesSent: {
+      one: '{formatted} mensagem',
+      other: '{formatted} mensagens',
+    },
+    tokensEarned: {
+      one: '{formatted} ficha ganha',
+      other: '{formatted} fichas ganhas',
+    },
+    memberDays: {
+      one: '{formatted} dia como membro',
+      other: '{formatted} dias como membro',
+    },
+    earlyAdopter: 'Usuário pioneiro',
+    languages: {
+      one: '{formatted} idioma',
+      other: '{formatted} idiomas',
+    },
+    calls: {
+      one: '{formatted} chamada',
+      other: '{formatted} chamadas',
+    },
+    echo: {
+      one: '{formatted} revisão',
+      other: '{formatted} revisões',
+    },
+    testimonials: {
+      one: '{formatted} parceiro',
+      other: '{formatted} parceiros',
+    },
+    guide: {
+      one: '{formatted} pessoa',
+      other: '{formatted} pessoas',
+    },
+    openers: {
+      one: '{formatted} resposta',
+      other: '{formatted} respostas',
+    },
+  },
 }

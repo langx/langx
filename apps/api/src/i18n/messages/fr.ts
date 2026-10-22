@@ -692,4 +692,52 @@ export const fr: Localized<ServerMessages> = {
     badgeKicker: 'Nouveau badge',
     badgeEarnedOn: 'Gagné le {date}',
   },
+  badgeNames: {
+    firstCorrection: 'Première correction',
+    streakDays: {
+      one: '{formatted} jour',
+      other: '{formatted} jours',
+    },
+    corrections: {
+      one: '{formatted} correction',
+      other: '{formatted} corrections',
+    },
+    messagesSent: {
+      one: '{formatted} message',
+      other: '{formatted} messages',
+    },
+    tokensEarned: {
+      one: '{formatted} jeton gagné',
+      other: '{formatted} jetons gagnés',
+    },
+    memberDays: {
+      one: '{formatted} jour de membre',
+      other: '{formatted} jours de membre',
+    },
+    earlyAdopter: 'Utilisateur de la première heure',
+    languages: {
+      one: '{formatted} langue',
+      other: '{formatted} langues',
+    },
+    calls: {
+      one: '{formatted} appel',
+      other: '{formatted} appels',
+    },
+    echo: {
+      one: '{formatted} révision',
+      other: '{formatted} révisions',
+    },
+    testimonials: {
+      one: '{formatted} partenaire',
+      other: '{formatted} partenaires',
+    },
+    guide: {
+      one: '{formatted} personne',
+      other: '{formatted} personnes',
+    },
+    openers: {
+      one: '{formatted} réponse',
+      other: '{formatted} réponses',
+    },
+  },
 }
