@@ -6,7 +6,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
 import type { Profile } from '../profiles/profiles'
 import type { Conversation } from './conversations'
-import { sendTextMessage } from './messages'
+import { markConversationRead, sendTextMessage } from './messages'
 import { deleteConversationForUser, deleteMessage } from './mutations'
 
 function person(id: string): Profile {
@@ -112,5 +112,50 @@ describe('withdrawing a message and the recipient’s unread count', () => {
       scope: 'everyone',
     })
     expect(await unreadFor(id, 'bo')).toBe(1)
+  })
+  it('takes a message hidden for me, unread, off my count — once', async () => {
+    const id = await thread()
+    await sendTextMessage(handle.db, 'ada', { conversationId: id, body: 'one' })
+    const sent = await sendTextMessage(handle.db, 'ada', { conversationId: id, body: 'two' })
+    const hide = {
+      conversationId: id,
+      messageId: sent.message._id.toHexString(),
+      scope: 'me' as const,
+    }
+    await Promise.all([deleteMessage(handle.db, 'bo', hide), deleteMessage(handle.db, 'bo', hide)])
+    expect(await unreadFor(id, 'bo')).toBe(1)
+  })
+
+  it('reaches zero when Bo hides it unread and Ada then withdraws it', async () => {
+    const id = await thread()
+    const sent = await sendTextMessage(handle.db, 'ada', { conversationId: id, body: 'one' })
+    const messageId = sent.message._id.toHexString()
+    await deleteMessage(handle.db, 'bo', { conversationId: id, messageId, scope: 'me' })
+    expect(await unreadFor(id, 'bo')).toBe(0)
+    await deleteMessage(handle.db, 'ada', { conversationId: id, messageId, scope: 'everyone' })
+    expect(await unreadFor(id, 'bo')).toBe(0)
+
+    // And a newer message is still counted after all of it.
+    await sendTextMessage(handle.db, 'ada', { conversationId: id, body: 'two' })
+    expect(await unreadFor(id, 'bo')).toBe(1)
+  })
+
+  it('leaves the count alone when the hidden message was read, or was my own', async () => {
+    const id = await thread()
+    const read = await sendTextMessage(handle.db, 'ada', { conversationId: id, body: 'one' })
+    await markConversationRead(handle.db, 'bo', id)
+    const unread = await sendTextMessage(handle.db, 'ada', { conversationId: id, body: 'two' })
+    const mine = await sendTextMessage(handle.db, 'bo', { conversationId: id, body: 'three' })
+
+    for (const message of [read.message, mine.message]) {
+      await deleteMessage(handle.db, 'bo', {
+        conversationId: id,
+        messageId: message._id.toHexString(),
+        scope: 'me',
+      })
+    }
+    expect(await unreadFor(id, 'bo')).toBe(1)
+    expect(await unreadFor(id, 'ada')).toBe(1)
+    expect(unread.message.readAt).toBeUndefined()
   })
 })

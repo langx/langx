@@ -13,6 +13,7 @@ import {
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
+import { leavesUnread } from '../calls/callLog'
 import { acceptsMessages } from '../official/accounts'
 import { assertConversationAccess } from './access'
 import type { Conversation, Message } from './conversations'
@@ -204,12 +205,35 @@ export async function deleteMessage(
   // "Delete for me" is a per-user filter and nothing more. It stays available
   // forever, on anyone's message, including one already withdrawn.
   if (input.scope === 'me') {
-    const updated = await messages.findOneAndUpdate(
-      { _id: message._id },
+    /*
+     * `hiddenFor: { $ne }` in the filter, so only the write that actually
+     * hides it goes on to the count below — a repeat, or a second device at
+     * the same moment, matches nothing.
+     */
+    const hidden = await messages.findOneAndUpdate(
+      { _id: message._id, hiddenFor: { $ne: userId } },
       { $addToSet: { hiddenFor: userId } },
       { returnDocument: 'after' },
     )
+    const updated = hidden ?? (await messages.findOne({ _id: message._id }))
     if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Message not found')
+
+    /*
+     * A hidden message is not in the hider's count — the rule a withdrawal
+     * relies on below. Hiding somebody else's message before reading it took
+     * nothing off `unread`, so the badge kept one for a message there was no
+     * longer anything to open; and withdrawing it afterwards could not take
+     * it off either, since by then it is hidden. Floored, like the
+     * withdrawal's.
+     */
+    if (hidden && countsAsUnread(message, userId)) {
+      await db
+        .collection<Conversation>(COLLECTIONS.conversations)
+        .updateOne(
+          { _id: conversation._id, [`unread.${userId}`]: { $gt: 0 } },
+          { $inc: { [`unread.${userId}`]: -1 } },
+        )
+    }
     return { message: updated, conversation, audience: 'actor' }
   }
 
@@ -263,6 +287,20 @@ export async function deleteMessage(
 }
 
 /**
+ * Whether this message is one of the things `unread.<readerId>` is counting.
+ *
+ * Somebody else's, not yet read, not withdrawn (a withdrawal took it off
+ * already) and not hidden from them. A call's row counts only for the
+ * outcomes that left one — `leavesUnread`, the rule that wrote it.
+ */
+function countsAsUnread(message: Message, readerId: string): boolean {
+  if (message.senderId === readerId || message.readAt || message.deletedAt) return false
+  if (message.hiddenFor?.includes(readerId)) return false
+  if (message.call) return leavesUnread(message.call.outcome)
+  return true
+}
+
+/**
  * What a withdrawal costs the conversation document.
  *
  * Both writes are conditional, and both conditions are in the filter rather
@@ -293,16 +331,14 @@ async function applyDeleteSideEffects(
   )
 
   const recipientId = conversation.participants.find((id) => id !== deleted.senderId)
-  if (!recipientId || deleted.readAt) return
   /*
    * Hidden from the recipient means it is not in their count. Deleting a chat
    * zeroes `unread` and hides every message without stamping `readAt` — a
-   * read receipt for something nobody read would be a lie — so an unread
-   * message the recipient deleted the chat over still looks unread here. If
-   * the thread has come back since, the count is the new messages', and
-   * withdrawing the old one would take one of theirs off the badge.
+   * read receipt for something nobody read would be a lie — and hiding one
+   * message takes it off the count itself. Either way it is no longer the
+   * count's, and taking it off again would take one of the newer ones.
    */
-  if (deleted.hiddenFor?.includes(recipientId)) return
+  if (!recipientId || !countsAsUnread(deleted, recipientId)) return
 
   /**
    * `$inc: -1` rather than a recount, because it *commutes* with the `$inc: +1`
