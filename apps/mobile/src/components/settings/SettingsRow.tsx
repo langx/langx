@@ -75,9 +75,9 @@ export const BENEFIT_TITLE: Record<ProBenefit, MessageKey> = {
 }
 
 /**
- * Sold, not yet built. Mirrors the `shipped: false` entries of the paywall's
- * copy table, which is local to that screen — a "what you have" line that
- * names a feature in the present tense while it does nothing would be the
+ * Sold, not yet on for every account. Mirrors the `beta` entries of the
+ * paywall's copy table — a "what you have" line that names a feature in the
+ * present tense while the allow-list may not hold this account would be the
  * mis-sell that flag exists to prevent. One table for both screens is the
  * fix; until then the two must be changed together.
  */
@@ -212,7 +212,7 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
                 <Text style={styles.featureText}>
                   {t(BENEFIT_TITLE[benefit])}
                   {pending ? (
-                    <Text style={styles.featurePending}> · {t('common.comingSoon')}</Text>
+                    <Text style={styles.featurePending}> · {t('paywall.betaTag')}</Text>
                   ) : null}
                 </Text>
               </View>

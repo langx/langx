@@ -6,6 +6,7 @@ import {
   HIGHLIGHT_COUNT,
   benefitsHeld,
   compareRows,
+  fullyOn,
   highlightsFor,
   sellableFeature,
 } from './paywallBenefits'
@@ -60,12 +61,19 @@ describe('compareRows', () => {
     }
   })
 
-  it('never ticks a feature that has not shipped, and puts it last', () => {
+  it('never ticks a feature that is not on for every buyer, and puts it last', () => {
     const rows = compareRows()
-    const unshipped = PRO_BENEFITS.filter((benefit) => !BENEFIT_COPY[benefit].shipped)
-    expect(unshipped).toContain('copilot')
-    for (const benefit of unshipped) expect(row(benefit).pro).toEqual({ kind: 'soon' })
-    expect(rows.slice(-unshipped.length).map((r) => r.benefit)).toEqual(unshipped)
+    const partial = PRO_BENEFITS.filter((benefit) => !fullyOn(BENEFIT_COPY[benefit]))
+    expect(partial).toContain('copilot')
+    for (const benefit of partial) {
+      expect(row(benefit).pro).toEqual({ kind: BENEFIT_COPY[benefit].shipped ? 'beta' : 'soon' })
+    }
+    expect(rows.slice(-partial.length).map((r) => r.benefit)).toEqual(partial)
+  })
+
+  it('reads Copilot as a beta, not as coming', () => {
+    expect(BENEFIT_COPY.copilot).toMatchObject({ shipped: true, beta: true })
+    expect(row('copilot').pro).toEqual({ kind: 'beta' })
   })
 
   it('gives the welcome pack to Pro only', () => {
@@ -103,8 +111,8 @@ describe('sellableFeature', () => {
     expect(sellableFeature('profileViewerIdentities')).toBe('profileViewerIdentities')
   })
 
-  it('never sells one that has not shipped as part of Pro', () => {
-    expect(BENEFIT_COPY.copilot.shipped).toBe(false)
+  it('never sells one in beta as part of Pro', () => {
+    expect(BENEFIT_COPY.copilot.beta).toBe(true)
     expect(sellableFeature('copilot')).toBeNull()
   })
 

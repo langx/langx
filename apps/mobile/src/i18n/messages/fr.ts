@@ -19,7 +19,6 @@ export const fr: Localized<EnMessages> = {
     checking: 'Vérification…',
     oneMoment: 'Un instant…',
     skip: 'Plus tard',
-    comingSoon: 'BIENTÔT',
     continue: 'Continuer',
     done: 'Terminé',
     reset: 'Réinitialiser',
@@ -3587,7 +3586,7 @@ export const fr: Localized<EnMessages> = {
     nearbyBody:
       'Trie par distance. Ta position est arrondie ; les autres ne voient qu’une distance approximative.',
     copilot: 'Copilote IA',
-    copilotBody: 'T’aide à formuler et à comprendre les messages pendant que tu écris.',
+    copilotBody: 'T’aide à formuler et à comprendre les messages pendant que tu écris. En bêta et déployé progressivement : il n’est peut-être pas encore activé sur ton compte.',
     quotaNotice:
       'Tu as utilisé tes {count} nouvelles discussions du jour. Tu peux toujours répondre à tout ce que tu reçois, sans limite.',
     manageNotice: 'Tu es sur {plan}. Gère-le ou annule-le depuis ton compte du store.',
@@ -3689,6 +3688,8 @@ export const fr: Localized<EnMessages> = {
     compareLanguages: 'Langues apprises',
     compareUnlimited: 'Sans limite',
     compareSoon: 'Bientôt',
+    compareBeta: 'Bêta',
+    betaTag: 'Bêta, déploiement progressif',
     compareIncluded: 'Inclus',
     compareNotIncluded: 'Non inclus',
     yearlyBadge: '{perMonth} · {saving}',
@@ -3948,7 +3949,7 @@ export const fr: Localized<EnMessages> = {
     },
   },
   copilot: {
-    label: 'IA · peut se tromper',
+    label: 'Copilot · Bêta',
     off: 'Copilot est désactivé.',
     consentTitle: 'Avant d’utiliser Copilot',
     consentBody:
@@ -3957,7 +3958,7 @@ export const fr: Localized<EnMessages> = {
       'Quand tu demandes, le texte concerné est envoyé à Anthropic, l’entreprise qui fait tourner le modèle d’IA, avec tes langues et tes niveaux. Pour expliquer un message, c’est le seul message que tu as choisi, écrit par l’autre personne. Pour les idées de réponse, cela inclut les derniers messages de la discussion.',
     consentNever: 'Ton nom, ton e-mail, tes photos et tes messages vocaux ne sont jamais envoyés.',
     consentWrong:
-      'L’IA peut se tromper. Ses réponses sont marquées IA, et rien n’arrive à l’autre personne sans que tu l’envoies toi-même.',
+      'L’IA peut se tromper. Ses réponses sont marquées Copilot, et rien n’arrive à l’autre personne sans que tu l’envoies toi-même.',
     consentAccept: 'Activer Copilot',
     consentDecline: 'Pas maintenant',
     button: 'Copilot',

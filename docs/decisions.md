@@ -9427,3 +9427,25 @@ $5.67 at the new $79.99); 24 is about $9.40 at that worst case, which Behic
 accepted: it takes one person maxing it every day, and `COPILOT_RULES.globalCallsPerDay` (500, unchanged)
 caps the whole bill whatever the tiers say. 500 is still above 24, so one Pro
 account can always spend its own allowance.
+
+## Copilot is sold as a beta, rolling out
+
+**21 October 2026.** Copilot works, so the paywall stops calling it "Soon" —
+but it answers only accounts on the operator's allow-list, so a buyer may not
+get it on the day they pay. Wherever Pro is listed it is therefore named with
+one qualifier, "beta, rolling out", in the app, on langx.io and in the GitBook
+docs alike, and never ticked as if every buyer gets it.
+
+- **A third state, not a flipped flag.** `BenefitCopy.beta` sits beside
+  `shipped`: the comparison's Pro cell reads "Beta" instead of a tick, the row
+  carries the "Beta, rolling out" tag, the plan page's "What you have" line
+  says the same, the "What's Pro?" sheet does not count it in "And N more",
+  and `sellableFeature` never names it as the refused feature "part of Pro".
+- **The chip on every answer reads "Copilot · Beta".** It names who wrote the
+  answer, in the same blue. "AI can be wrong" moves entirely to the consent
+  sheet, which is read before the first answer and stays the disclosure; its
+  sentence now says the answers are marked Copilot, since they no longer say
+  AI.
+
+The qualifier is one phrase so it can be changed in one sweep: `paywall.betaTag`
+in every locale, the website's plan data and the docs' plan pages.

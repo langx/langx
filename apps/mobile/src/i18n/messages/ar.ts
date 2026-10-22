@@ -32,7 +32,6 @@ export const ar: Localized<EnMessages> = {
     checking: 'جارٍ التحقق…',
     oneMoment: 'لحظة…',
     skip: 'ليس الآن',
-    comingSoon: 'قريبًا',
     continue: 'متابعة',
     done: 'تم',
     reset: 'إعادة ضبط',
@@ -4455,7 +4454,7 @@ export const ar: Localized<EnMessages> = {
     nearby: 'قريبون',
     nearbyBody: 'رتّب حسب المسافة. يُقرَّب موقعك، ولا يرى الآخرون إلا مسافة تقريبية.',
     copilot: 'مساعد ذكي',
-    copilotBody: 'يساعدك على صياغة الرسائل وفهمها أثناء الكتابة.',
+    copilotBody: 'يساعدك على صياغة الرسائل وفهمها أثناء الكتابة. ما زال تجريبيًا ويُتاح تدريجيًا، فقد لا يكون مفعّلًا لحسابك بعد.',
     quotaNotice:
       'استخدمت محادثاتك الجديدة الـ {count} لهذا اليوم. ما زال بإمكانك الرد على كل ما يصلك بلا حدود.',
     manageNotice: 'أنت على {plan}. أدرها أو ألغِها من حساب المتجر.',
@@ -4594,6 +4593,8 @@ export const ar: Localized<EnMessages> = {
     compareLanguages: 'اللغات التي تتعلمها',
     compareUnlimited: 'بلا حدود',
     compareSoon: 'قريبًا',
+    compareBeta: 'تجريبي',
+    betaTag: 'تجريبي، يُتاح تدريجيًا',
     compareIncluded: 'مشمول',
     compareNotIncluded: 'غير مشمول',
     yearlyBadge: '{perMonth} · {saving}',
@@ -4953,7 +4954,7 @@ export const ar: Localized<EnMessages> = {
     },
   },
   copilot: {
-    label: 'ذكاء اصطناعي · قد يخطئ',
+    label: 'Copilot · تجريبي',
     off: 'Copilot متوقف.',
     consentTitle: 'قبل أن تستخدم Copilot',
     consentBody:
@@ -4962,7 +4963,7 @@ export const ar: Localized<EnMessages> = {
       'عندما تطلب منه، يُرسَل النص الذي تسأل عنه مع لغاتك ومستوياتك إلى Anthropic، الشركة التي تشغّل نموذج الذكاء الاصطناعي. لشرح رسالة، تُرسَل الرسالة الواحدة التي اخترتها والتي كتبها الطرف الآخر. وفي اقتراحات الردود يشمل ذلك آخر بضع رسائل في المحادثة.',
     consentNever: 'لا يُرسَل اسمك أو بريدك الإلكتروني أو صورك أو رسائلك الصوتية أبدًا.',
     consentWrong:
-      'قد يخطئ الذكاء الاصطناعي. إجاباته مُعلَّمة بأنها من الذكاء الاصطناعي، ولا يصل شيء إلى الطرف الآخر ما لم ترسله أنت بنفسك.',
+      'قد يخطئ الذكاء الاصطناعي. إجاباته مُعلَّمة باسم Copilot، ولا يصل شيء إلى الطرف الآخر ما لم ترسله أنت بنفسك.',
     consentAccept: 'تفعيل Copilot',
     consentDecline: 'ليس الآن',
     button: 'Copilot',

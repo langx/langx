@@ -842,8 +842,8 @@ function cardCopy(
 /**
  * One reason, as v3 draws a row: the glyph on its hue's tile, the name, and
  * the number it comes with underneath — the limit is the part of the promise
- * worth keeping visible. A not-yet-shipped feature keeps its name and body but
- * says so.
+ * worth keeping visible. A not-yet-shipped or beta feature keeps its name and
+ * body but says so.
  */
 function BenefitRow({ copy }: { copy: BenefitCopy }) {
   const styles = useStyles()
@@ -859,7 +859,11 @@ function BenefitRow({ copy }: { copy: BenefitCopy }) {
         <Text style={styles.benefitTitle}>{t(copy.title)}</Text>
         <Text style={styles.benefitBody}>{t(copy.body, copy.vars)}</Text>
       </View>
-      {copy.shipped ? null : <Text style={styles.soonTag}>{t('paywall.compareSoon')}</Text>}
+      {!copy.shipped ? (
+        <Text style={styles.soonTag}>{t('paywall.compareSoon')}</Text>
+      ) : copy.beta ? (
+        <Text style={styles.soonTag}>{t('paywall.betaTag')}</Text>
+      ) : null}
     </View>
   )
 }

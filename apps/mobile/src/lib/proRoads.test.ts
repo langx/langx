@@ -7,7 +7,7 @@ import type { ConversationDto } from '../api/queries'
 import { PAYWALL_SOURCES } from './analyticsEvents'
 import { NATIVE_ICONS, PRO_ICONS } from './appIconList'
 import type { ConversationPageDto } from './conversationCache'
-import { BENEFIT_COPY } from './paywallBenefits'
+import { BENEFIT_COPY, fullyOn } from './paywallBenefits'
 import {
   FIRST_REPLY_FRESH_MS,
   appIconTap,
@@ -284,10 +284,10 @@ describe('the first-reply card is shown at most once per account', () => {
 })
 
 describe('the "What\'s Pro?" sheet', () => {
-  it('lists the paywall comparison lead and counts only shipped benefits after it', () => {
+  it('lists the paywall comparison lead and counts only benefits on for every buyer after it', () => {
     const { rows, more } = badgeSheetBenefits()
-    for (const benefit of rows) expect(BENEFIT_COPY[benefit].shipped).toBe(true)
+    for (const benefit of rows) expect(fullyOn(BENEFIT_COPY[benefit])).toBe(true)
     const rest = PRO_BENEFITS.filter((benefit) => !rows.includes(benefit))
-    expect(more).toBe(rest.filter((benefit) => BENEFIT_COPY[benefit].shipped).length)
+    expect(more).toBe(rest.filter((benefit) => fullyOn(BENEFIT_COPY[benefit])).length)
   })
 })

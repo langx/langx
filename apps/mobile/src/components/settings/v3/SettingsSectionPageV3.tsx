@@ -322,7 +322,7 @@ function PlanPage({ model }: { model: SettingsModel }) {
                   <Text style={styles.benefitText}>
                     {t(BENEFIT_TITLE[benefit])}
                     {pending ? (
-                      <Text style={styles.pending}> · {t('common.comingSoon')}</Text>
+                      <Text style={styles.pending}> · {t('paywall.betaTag')}</Text>
                     ) : null}
                   </Text>
                 </View>

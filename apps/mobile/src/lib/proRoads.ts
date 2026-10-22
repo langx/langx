@@ -2,7 +2,7 @@ import { isPaidTier, PRO_BENEFITS, type PlanTier, type ProBenefit } from '@langx
 import type { InfiniteData } from '@tanstack/react-query'
 import { isProIcon, type AppIcon } from './appIconList'
 import type { ConversationPageDto } from './conversationCache'
-import { BENEFIT_COPY, COMPARE_LEAD } from './paywallBenefits'
+import { BENEFIT_COPY, COMPARE_LEAD, fullyOn } from './paywallBenefits'
 
 /*
  * The roads to Pro that are not a gate — Settings, the app-icon picker, the
@@ -66,11 +66,12 @@ export type BadgeSheetEnd =
  * three numbers a free account meets first, then two things Pro adds that it
  * can see — and how many shipped benefits are left after them. Named off the
  * paywall's list rather than a second one, so the badge and the paywall never
- * describe Pro differently, and a benefit that has not shipped is not counted.
+ * describe Pro differently, and a benefit that has not shipped, or is still in
+ * beta, is not counted.
  */
 export function badgeSheetBenefits(): { rows: readonly ProBenefit[]; more: number } {
   const more = PRO_BENEFITS.filter(
-    (benefit) => BENEFIT_COPY[benefit].shipped && !COMPARE_LEAD.includes(benefit),
+    (benefit) => fullyOn(BENEFIT_COPY[benefit]) && !COMPARE_LEAD.includes(benefit),
   ).length
   return { rows: COMPARE_LEAD, more }
 }
