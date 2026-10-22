@@ -3047,7 +3047,7 @@ export const ru: Localized<EnMessages> = {
       many: '{count} активности',
       other: '{count} активности',
     },
-    todayBreakdown: '{messages} сообщений, {corrections} исправлений, {partners} собеседников.',
+    todayBreakdown: '{messages}, {corrections}, {partners}.',
     poolParticipants: {
       one: '{n} активный в тот день',
       few: '{n} активных в тот день',

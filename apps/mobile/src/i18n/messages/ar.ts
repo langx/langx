@@ -3264,7 +3264,7 @@ export const ar: Localized<EnMessages> = {
       many: '{count} نشاط',
       other: '{count} نشاط',
     },
-    todayBreakdown: '{messages} رسالة، {corrections} تصحيح، {partners} أشخاص.',
+    todayBreakdown: '{messages}، {corrections}، {partners}.',
     poolParticipants: {
       zero: 'لا أحد كان نشطًا ذلك اليوم',
       one: 'شخص واحد كان نشطًا ذلك اليوم',

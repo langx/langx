@@ -2673,7 +2673,7 @@ export const de: Localized<EnMessages> = {
     shareForDay: 'Dein Anteil für {day}',
     todaySoFar: 'Heute bisher',
     activityScore: { one: '{count} Aktivität', other: '{count} Aktivität' },
-    todayBreakdown: '{messages} Nachrichten, {corrections} Korrekturen, {partners} Personen.',
+    todayBreakdown: '{messages}, {corrections}, {partners}.',
     poolParticipants: { one: '{n} aktiv an dem Tag', other: '{n} aktiv an dem Tag' },
     poolShareOfPool: '{percent} des täglichen Pools',
     poolActiveToday: { one: '{n} heute aktiv', other: '{n} heute aktiv' },
