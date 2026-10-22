@@ -1,5 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import type { InAppNotification, InAppNotificationKind } from '@langx/shared'
+import { memo, useCallback } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useMarkNotificationsRead, useNotifications } from '../../api/queries'
 import { PersonRowsSkeletonV3 } from '../../components/people/PersonRowV3'
@@ -57,6 +58,29 @@ export function NotificationsScreenV3() {
 
   const hasUnread = items.some((item) => !item.read)
 
+  /*
+   * Stable, so a memoised row re-renders only when its own notification or
+   * its place at an end of the list changes: a pull, a next page or one row
+   * read used to redraw every row on screen. `mutate` itself is stable.
+   */
+  const { mutate: markOne } = markRead
+  const onRead = useCallback((id: string) => markOne(id), [markOne])
+  const count = items.length
+  const renderItem = useCallback(
+    ({ item, index }: { item: InAppNotification; index: number }) => (
+      // One row that throws is one row missing, not the screen.
+      <RowBoundary>
+        <NotificationRowV3
+          item={item}
+          first={index === 0}
+          last={index === count - 1}
+          onRead={onRead}
+        />
+      </RowBoundary>
+    ),
+    [count, onRead],
+  )
+
   return (
     <Screen fluid ground={v3.colors.bg}>
       <SettingsHeaderV3
@@ -95,17 +119,7 @@ export function NotificationsScreenV3() {
           ListEmptyComponent={
             <EmptyNoteV3 icon="bell" title={t('inbox.emptyTitle')} body={t('inbox.emptyBody')} />
           }
-          renderItem={({ item, index }) => (
-            // One row that throws is one row missing, not the screen.
-            <RowBoundary>
-              <NotificationRowV3
-                item={item}
-                first={index === 0}
-                last={index === items.length - 1}
-                onRead={(id) => markRead.mutate(id)}
-              />
-            </RowBoundary>
-          )}
+          renderItem={renderItem}
         />
       )}
     </Screen>
@@ -113,7 +127,7 @@ export function NotificationsScreenV3() {
 }
 
 /** One row, inside its own boundary for the reason `notifications.tsx` gives. */
-function NotificationRowV3({
+const NotificationRowV3 = memo(function NotificationRowV3({
   item,
   first,
   last,
@@ -181,7 +195,7 @@ function NotificationRowV3({
       {unread ? <View style={styles.dot} accessibilityLabel={t('inbox.unread')} /> : null}
     </Pressable>
   )
-}
+})
 
 const useStyles = makeStyles(({ v3 }) => ({
   markAll: { width: 'auto' },
