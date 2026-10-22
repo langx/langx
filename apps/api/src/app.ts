@@ -12,6 +12,7 @@ import type { Db, MongoClient } from 'mongodb'
 import type { Auth } from './auth'
 import type { Env } from './env'
 import { ApiError } from './lib/ApiError'
+import { rateLimitKey, trustProxyHops } from './lib/clientIp'
 import { redactUrl } from './lib/redactUrl'
 import type { AssistantProvider, StructuredProvider } from './modules/official/assistantProvider'
 import { registerMaintenanceGate } from './middleware/maintenance'
@@ -252,9 +253,7 @@ export async function buildApp({
             },
           }
         : { level: env.LOG_LEVEL, serializers },
-    // Railway/Render terminate TLS upstream; without this the client IP the
-    // rate limiter sees is the proxy's, i.e. everyone shares one bucket.
-    trustProxy: env.NODE_ENV === 'production',
+    trustProxy: trustProxyHops(env),
   })
 
   app.setValidatorCompiler(validatorCompiler)
@@ -357,6 +356,10 @@ export async function buildApp({
      */
     max: env.NODE_ENV === 'test' ? Number.MAX_SAFE_INTEGER : 300,
     timeWindow: '1 minute',
+    // Inherited by every route's own `config.rateLimit`: the plugin merges a
+    // route's options over these, so only a route that names its own
+    // generator (the avatar route) replaces it — and that one calls this too.
+    keyGenerator: rateLimitKey,
   })
 
   app.setErrorHandler((error, request, reply) => {
