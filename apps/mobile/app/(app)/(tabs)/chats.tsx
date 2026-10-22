@@ -40,6 +40,7 @@ import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
 import { OfficialMark } from '../../../src/components/OfficialMark'
 import { acceptsSends } from '../../../src/lib/conversationPicker'
 import { callRowIcon, callRowLabel } from '../../../src/lib/calls/callLabels'
+import { chatRowPreview } from '../../../src/lib/chatRowPreview'
 
 /** The design draws chat avatars at 56, the same size as Discover's rows. */
 const AVATAR_SIZE = 56
@@ -288,6 +289,7 @@ function ChatsScreen() {
             const partner = partners[partnerId]
             const unread = item.unread
             const mine = item.lastMessage.senderId === me.data?._id
+            const preview = chatRowPreview(item.lastMessage)
             /*
              * A call's row is worded for whoever is reading it — "missed" to
              * one of them, "no answer" to the other — so the server's line,
@@ -454,7 +456,7 @@ function ChatsScreen() {
                         ) : (
                           <Text style={styles.preview} numberOfLines={1}>
                             {mine ? `${t('chats.youPrefix')} ` : ''}
-                            {item.lastMessage.body}
+                            {'key' in preview ? t(preview.key) : preview.text}
                           </Text>
                         )}
                         {unread > 0 ? (

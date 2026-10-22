@@ -16,6 +16,7 @@ import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
 import { IconButton } from '../ui/IconButton'
 import { Skeleton } from '../ui/Skeleton'
+import { chatRowPreview } from '../../lib/chatRowPreview'
 
 /*
  * The redesign's chat list, piece by piece: the colour block for somebody
@@ -238,6 +239,7 @@ export const ChatRowV3 = memo(function ChatRowV3({
   const id = thread._id
   const name = partner?.displayName ?? ''
   const mine = thread.lastMessage.senderId === meId
+  const preview = chatRowPreview(thread.lastMessage)
   const call = thread.lastMessage.call
   const callLabel = call ? callRowLabel(call, mine) : null
   /*
@@ -372,7 +374,7 @@ export const ChatRowV3 = memo(function ChatRowV3({
               ) : (
                 <Text style={styles.preview} numberOfLines={1}>
                   {mine ? `${t('chats.youPrefix')} ` : ''}
-                  {thread.lastMessage.body}
+                  {'key' in preview ? t(preview.key) : preview.text}
                 </Text>
               )}
               {thread.unread > 0 ? (

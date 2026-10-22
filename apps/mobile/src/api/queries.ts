@@ -1023,6 +1023,8 @@ export interface ConversationDto {
     body: string
     senderId: string
     createdAt: string
+    /** The newest message was deleted for everyone; `body` is then empty. */
+    deleted?: boolean
     /**
      * Set when the newest thing in the thread is a call's row. `body` is then
      * a line in English for builds that predate calls; this is what the row is
