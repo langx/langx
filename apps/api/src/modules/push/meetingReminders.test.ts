@@ -33,6 +33,7 @@ describe('the meeting reminder pass', () => {
       COLLECTIONS.messages,
       COLLECTIONS.conversations,
       COLLECTIONS.meetingReminders,
+      COLLECTIONS.blocks,
     ]) {
       await handle.db.collection(name).deleteMany({})
     }
@@ -118,6 +119,33 @@ describe('the meeting reminder pass', () => {
 
   it('respects the switch, per person', async () => {
     await seed({ notifications: { meetings: { push: false } } })
+    expect((await runMeetingReminderTick(handle.db, push, now)).pushed).toBe(0)
+  })
+
+  /**
+   * The tick that owned this meeting's five minutes never ran — a deploy
+   * restarting the process, or the previous pass still running. The next one
+   * must still find it, rather than the meeting falling between two passes.
+   */
+  it('catches a meeting whose own pass was skipped', async () => {
+    await seed({ startsAt: new Date(now.getTime() + MEETING_REMINDER_LEAD_MS - 3 * 60_000) })
+    expect((await runMeetingReminderTick(handle.db, push, now)).pushed).toBe(2)
+  })
+
+  it('says nothing about a meeting that has already started', async () => {
+    await seed({ startsAt: new Date(now.getTime() - 60_000) })
+    expect((await runMeetingReminderTick(handle.db, push, now)).pushed).toBe(0)
+  })
+
+  /** A block ends everything between two people, a call they had agreed included. */
+  it('says nothing to either side once one has blocked the other', async () => {
+    await seed()
+    await handle.db.collection(COLLECTIONS.blocks).insertOne({
+      _id: new ObjectId(),
+      blockerId: bob,
+      blockedId: alice,
+      createdAt: now,
+    })
     expect((await runMeetingReminderTick(handle.db, push, now)).pushed).toBe(0)
   })
 })

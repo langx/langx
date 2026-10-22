@@ -22,6 +22,22 @@ import { translator } from '../../i18n'
 export const MEETING_REMINDER_LEAD_MS = 60 * 60 * 1000
 export const MEETING_REMINDER_INTERVAL_MS = 5 * 60 * 1000
 
+/**
+ * How far behind the hour mark a pass still looks.
+ *
+ * The window above is exactly one tick wide, so a tick that does not run —
+ * a deploy restarting every machine, a pass still busy when the next is due,
+ * a timer the event loop delivered late — left its five minutes of meetings
+ * with no reminder at all. Each pass therefore also looks back over this
+ * much, and the ledger keeps the overlap from reminding anybody twice.
+ *
+ * Fifteen minutes, so the push still means what it says: a call found
+ * forty-five minutes out is close enough to "in an hour", and one found ten
+ * minutes out is not. It is also what lets a meeting accepted a little under
+ * an hour before it starts be reminded at all.
+ */
+export const MEETING_REMINDER_CATCH_UP_MS = 15 * 60 * 1000
+
 export interface MeetingReminderLedgerEntry {
   _id: string
   sentOn: Date
@@ -51,8 +67,9 @@ export async function runMeetingReminderTick(
   sender: PushSender,
   now: Date = new Date(),
 ): Promise<{ pushed: number }> {
-  const from = new Date(now.getTime() + MEETING_REMINDER_LEAD_MS)
-  const to = new Date(from.getTime() + MEETING_REMINDER_INTERVAL_MS)
+  const hourMark = now.getTime() + MEETING_REMINDER_LEAD_MS
+  const from = new Date(hourMark - MEETING_REMINDER_CATCH_UP_MS)
+  const to = new Date(hourMark + MEETING_REMINDER_INTERVAL_MS)
 
   const due = await db
     .collection<Message>(COLLECTIONS.messages)
@@ -66,6 +83,26 @@ export async function runMeetingReminderTick(
 
   let pushed = 0
   for (const message of due) {
+    const conversation = await db
+      .collection<Conversation>(COLLECTIONS.conversations)
+      .findOne({ _id: message.conversationId })
+    if (!conversation) continue
+
+    // A block between them ends everything they had, an agreed call included.
+    // Checked before the claim, so that an unblock inside the window still
+    // gets the reminder the block held back.
+    const [a, b] = conversation.participants
+    const blocked = await db.collection(COLLECTIONS.blocks).findOne(
+      {
+        $or: [
+          { blockerId: a, blockedId: b },
+          { blockerId: b, blockedId: a },
+        ],
+      },
+      { projection: { _id: 1 } },
+    )
+    if (blocked) continue
+
     try {
       await db
         .collection<MeetingReminderLedgerEntry>(COLLECTIONS.meetingReminders)
@@ -73,11 +110,6 @@ export async function runMeetingReminderTick(
     } catch {
       continue // already reminded
     }
-
-    const conversation = await db
-      .collection<Conversation>(COLLECTIONS.conversations)
-      .findOne({ _id: message.conversationId })
-    if (!conversation) continue
 
     for (const userId of conversation.participants) {
       const profile = await db
