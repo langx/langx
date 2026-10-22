@@ -2377,6 +2377,7 @@ export const tr: Localized<EnMessages> = {
     signInUnlinked: 'Bağlantı kesildi.',
     signInLinkFailed: 'Bağlanamadı. Tekrar dene.',
     signInUnlinkFailed: 'Bağlantı kesilemedi. Tekrar dene.',
+    signInUnlinkSignInAgain: 'Güvenliğin için çıkış yapıp tekrar giriş yap, sonra yeniden dene.',
     exportPhrases: 'Tüm ifadeleri dışa aktar',
     exportPhrasesBody: 'Her sohbetten kaydettiğin bütün kartlar, tek dosyada.',
   },

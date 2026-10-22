@@ -2412,6 +2412,8 @@ export const es: Localized<EnMessages> = {
     signInUnlinked: 'Desconectado.',
     signInLinkFailed: 'No se pudo conectar. Inténtalo de nuevo.',
     signInUnlinkFailed: 'No se pudo desconectar. Inténtalo de nuevo.',
+    signInUnlinkSignInAgain:
+      'Por seguridad, cierra sesión y vuelve a entrar; luego inténtalo de nuevo.',
     exportPhrases: 'Exportar todas las expresiones',
     exportPhrasesBody: 'Todas las tarjetas que has guardado, de todos los chats, en un archivo.',
   },

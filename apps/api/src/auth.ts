@@ -4,13 +4,14 @@ import {
   IOS_BUNDLE_ID,
   magicLinkUrl,
   PASSWORD_MIN_LENGTH,
+  UNLINK_FRESH_SESSION_SECONDS,
   verifyEmailUrl,
   WEB_HOST,
   webUrl,
   type Locale,
 } from '@langx/shared'
 import { betterAuth } from 'better-auth'
-import { APIError, createAuthMiddleware } from 'better-auth/api'
+import { APIError, createAuthMiddleware, getSessionFromCtx } from 'better-auth/api'
 import { setSessionCookie } from 'better-auth/cookies'
 import { mongodbAdapter } from 'better-auth/adapters/mongodb'
 import { expo } from '@better-auth/expo'
@@ -113,6 +114,31 @@ const PASSWORD_CHANGE_PATHS = new Set(['/change-password', '/set-password'])
  * hand over an address they hold for the person, and there is no route that
  * changes an account's address afterwards.
  */
+/**
+ * Puts Better Auth's freshness check back on `/unlink-account`.
+ *
+ * `freshAge: 0` (see the session block) switched the check off everywhere so
+ * an old phone can list its sessions, and `/unlink-account` was the other
+ * endpoint behind it. Disconnecting removes a way in, and linking accepts a
+ * provider account under any address, so a session stolen last week could
+ * link one of its own and then take the owner's away. A recent sign-in is the
+ * proof that the person holding the session is the owner.
+ *
+ * Same status and code as Better Auth's own check, so a client that already
+ * knows `SESSION_NOT_FRESH` needs nothing new. No session is left to the
+ * endpoint, which answers 401 itself.
+ */
+async function refuseStaleUnlink(ctx: Parameters<typeof getSessionFromCtx>[0]): Promise<void> {
+  const session = await getSessionFromCtx(ctx)
+  if (!session) return
+  const age = Date.now() - new Date(session.session.createdAt).getTime()
+  if (age < UNLINK_FRESH_SESSION_SECONDS * 1000) return
+  throw new APIError('FORBIDDEN', {
+    code: 'SESSION_NOT_FRESH',
+    message: 'Session is not fresh',
+  })
+}
+
 function refuseThrowawayAddress(body: unknown): void {
   if (typeof body !== 'object' || body === null) return
   const email: unknown = (body as { email?: unknown }).email
@@ -499,7 +525,8 @@ export async function createAuth({
        * revocation: `/revoke-session` and `/revoke-other-sessions` use the
        * authoritative-session check, not the freshness one, and they are
        * unchanged. The only other fresh-gated endpoint is `/unlink-account`,
-       * which this app never calls.
+       * which the sign-in methods screen does call — so the `before` hook
+       * puts a 24-hour check back on that one (`refuseStaleUnlink`).
        */
       freshAge: 0,
       /*
@@ -547,6 +574,10 @@ export async function createAuth({
       before: createAuthMiddleware(async (ctx) => {
         if (ctx.path === '/sign-up/email') {
           refuseThrowawayAddress(ctx.body)
+          return
+        }
+        if (ctx.path === '/unlink-account') {
+          await refuseStaleUnlink(ctx)
           return
         }
         /*

@@ -42,6 +42,13 @@ export function useSetPassword() {
 export const WRONG_CURRENT_PASSWORD = 'INVALID_PASSWORD'
 
 /**
+ * Better Auth's code for a session that is too old for the action. The server
+ * answers it on `/unlink-account` when the session is more than a day old:
+ * removing a way in needs a recent sign-in.
+ */
+export const SESSION_NOT_FRESH = 'SESSION_NOT_FRESH'
+
+/**
  * Replaces a password that already exists, which is Better Auth's own
  * `/change-password` and so goes through `authClient` like the session
  * endpoints do, not through a route of ours. It asks for the current one:

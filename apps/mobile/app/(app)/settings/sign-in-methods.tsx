@@ -11,6 +11,7 @@ import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useAppConfig } from '../../../src/hooks/useAppConfig'
 import {
+  SESSION_NOT_FRESH,
   useLinkProvider,
   useSignInMethods,
   useUnlinkProvider,
@@ -99,8 +100,12 @@ function SignInMethodsScreen() {
     try {
       await unlink.mutateAsync(accountId)
       showToast(t('settings.signInUnlinked'))
-    } catch {
-      showToast(t('settings.signInUnlinkFailed'))
+    } catch (error) {
+      showToast(
+        error instanceof Error && error.message === SESSION_NOT_FRESH
+          ? t('settings.signInUnlinkSignInAgain')
+          : t('settings.signInUnlinkFailed'),
+      )
     }
   }
 
