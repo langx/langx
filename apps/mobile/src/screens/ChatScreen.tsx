@@ -69,6 +69,7 @@ import {
   useMe,
   useMessages,
   useMessageWindow,
+  usePinnedMessage,
   useTranslate,
   useSpeakMessage,
   useRomanizeMessage,
@@ -725,6 +726,40 @@ export function ChatScreen({
   const mediaLockedFor = messages.data?.pages[0]?.mediaLockedFor ?? 0
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
+  /*
+   * The v3 strip's pinned message. Usually in the loaded pages; a pin weeks
+   * back is fetched on its own, one row, and only while it is missing from
+   * the thread. Undefined while that is on its way, null when it came back
+   * gone.
+   */
+  const pinnedId = pinned?.messageId ?? null
+  const pinnedInThread = useMemo(
+    () => (pinnedId ? items.find((m) => m._id === pinnedId) : undefined),
+    [items, pinnedId],
+  )
+  const pinnedLookup = usePinnedMessage(
+    conversationId,
+    v3Thread && pinnedId && !pinnedInThread ? pinnedId : null,
+  )
+  const pinnedMessage = pinnedInThread ?? (pinnedId ? pinnedLookup.data : undefined)
+  const pinnedPartnerName = partner?.displayName
+  const pinStrip = useMemo<PinnedStripContent | null>(() => {
+    if (!v3Thread || !pinnedId) return null
+    const author = pinnedAuthor(pinnedMessage, viewerId)
+    const line = pinnedLine(pinnedMessage)
+    return {
+      messageId: pinnedId,
+      // Their name, never the sentence-shaped "them": until the profile is
+      // in, the plain label.
+      label:
+        author === 'you'
+          ? t('chat.pinnedFrom', { name: t('messageMeta.you') })
+          : author === 'them' && pinnedPartnerName
+            ? t('chat.pinnedFrom', { name: pinnedPartnerName })
+            : t('chat.pinnedLabel'),
+      line: 'text' in line ? line.text : t(line.key),
+    }
+  }, [v3Thread, pinnedId, pinnedMessage, viewerId, pinnedPartnerName, t])
   /**
    * A channel — `@langx` — rather than somebody to talk to.
    *
@@ -738,41 +773,6 @@ export function ChatScreen({
    * composer is drawn for a channel — one wrong frame, and the alternative is
    * a thread that starts out looking read-only for everybody.
    */
-  /*
-   * The v3 strip's pinned message. Usually in the loaded pages, but a pin
-   * can be weeks back; then the window a tap on the strip would open is
-   * fetched now instead, under the same key, so the strip has its words and
-   * the jump finds the window already in the cache. Only while the message
-   * is missing: once it is in the thread this asks for nothing.
-   */
-  const pinnedId = pinned?.messageId ?? null
-  const pinnedInThread = useMemo(
-    () => (pinnedId ? items.find((m) => m._id === pinnedId) : undefined),
-    [items, pinnedId],
-  )
-  const pinnedLookup = useMessageWindow(
-    conversationId,
-    v3Thread && pinnedId && !pinnedInThread ? pinnedId : null,
-  )
-  const pinnedMessage =
-    pinnedInThread ??
-    (pinnedId ? messagesNewestFirst(pinnedLookup.data).find((m) => m._id === pinnedId) : undefined)
-  const partnerName = partner?.displayName
-  const pinStrip = useMemo<PinnedStripContent | null>(() => {
-    if (!v3Thread || !pinnedId) return null
-    const author = pinnedAuthor(pinnedMessage, viewerId)
-    const line = pinnedLine(pinnedMessage)
-    return {
-      messageId: pinnedId,
-      label:
-        author === null
-          ? t('chat.pinnedLabel')
-          : t('chat.pinnedFrom', {
-              name: author === 'you' ? t('messageMeta.you') : (partnerName ?? t('chat.them')),
-            }),
-      line: 'text' in line ? line.text : t(line.key),
-    }
-  }, [v3Thread, pinnedId, pinnedMessage, viewerId, partnerName, t])
   const channel = partner?.official === true && partner.acceptsMessages === false
   /**
    * A suspended account takes no messages either — the API refuses them with

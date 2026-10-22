@@ -31,15 +31,16 @@ export type PinnedLine = { text: string } | { key: MessageKey }
  *
  *   - **Not loaded** (`undefined`): the pin is known, the message is not yet.
  *     "Pinned message", which was the whole of the old strip.
- *   - **Deleted** after it was pinned: said so, as the bubble says so,
- *     rather than a blank line or the words that were withdrawn.
+ *   - **Deleted** after it was pinned, or gone (`null`: deleted from this
+ *     viewer's own copy, so it never comes back): said so, as the bubble
+ *     says so, rather than a blank line or the words that were withdrawn.
  *   - **View once**: its kind only, never a caption. Opening it is the one
  *     time it is meant to be seen, and a strip that printed it would be a
  *     second.
  */
-export function pinnedLine(message: PinnedSource | undefined): PinnedLine {
-  if (!message) return { key: 'chat.pinnedMessage' }
-  if (message.deleted) return { key: 'chat.deleted' }
+export function pinnedLine(message: PinnedSource | null | undefined): PinnedLine {
+  if (message === undefined) return { key: 'chat.pinnedMessage' }
+  if (message === null || message.deleted) return { key: 'chat.deleted' }
   if (message.viewOnce === undefined) {
     const text = stripFormatting(message.body).replace(/\s+/g, ' ').trim()
     if (text) return { text }
@@ -49,7 +50,7 @@ export function pinnedLine(message: PinnedSource | undefined): PinnedLine {
 
 /** Whose message it is, or null while the message itself has not loaded. */
 export function pinnedAuthor(
-  message: PinnedSource | undefined,
+  message: PinnedSource | null | undefined,
   viewerId: string | undefined,
 ): 'you' | 'them' | null {
   if (!message || !viewerId) return null

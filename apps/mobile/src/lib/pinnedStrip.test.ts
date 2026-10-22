@@ -53,6 +53,11 @@ describe('pinnedLine', () => {
       key: 'chat.deleted',
     })
   })
+
+  it('says a message gone from this copy is deleted', () => {
+    expect(pinnedLine(null)).toEqual({ key: 'chat.deleted' })
+    expect(pinnedAuthor(null, 'me')).toBeNull()
+  })
 })
 
 describe('pinnedAuthor', () => {

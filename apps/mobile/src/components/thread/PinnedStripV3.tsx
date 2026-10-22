@@ -59,7 +59,9 @@ export function PinnedStripV3({ pin, hue, onJump, onUnpin }: PinnedStripV3Props)
   // What is drawn: the current pin, or the last one while the card folds.
   const [drawn, setDrawn] = useState<PinnedStripContent | null>(pin)
   const height = useSharedValue(0)
-  const open = useSharedValue(0)
+  // Open from the start when the pin is already known (a thread from cache):
+  // only a pin that arrives or goes should move the list.
+  const open = useSharedValue(pin ? 1 : 0)
   const showing = pin !== null
 
   useEffect(() => {
