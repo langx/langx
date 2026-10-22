@@ -3523,6 +3523,8 @@ export const es: Localized<EnMessages> = {
     receivedEmptyTitle: 'Aquí vivirán tus reseñas',
     receivedEmptyBody:
       'Las personas con las que practicas pueden dejar unas palabras en tu perfil. Sigue conversando.',
+    profileEmptyTitle: 'Aún no hay reseñas',
+    profileEmptyBody: 'Cuando alguien deje unas palabras en este perfil, aparecerán aquí.',
     writtenEmptyTitle: 'Da las gracias por escrito',
     writtenEmptyBody:
       '¿Tienes un gran compañero de práctica? Una reseña breve en su perfil ayuda a que otros lo encuentren.',

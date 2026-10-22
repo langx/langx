@@ -4417,6 +4417,8 @@ export const ar: Localized<EnMessages> = {
     removedTag: 'أزالها المشرفون',
     receivedEmptyTitle: 'ستظهر مراجعاتك هنا',
     receivedEmptyBody: 'يمكن لمن تتدرّب معهم أن يتركوا بضع كلمات في ملفك الشخصي. واصل المحادثات.',
+    profileEmptyTitle: 'لا توجد مراجعات بعد',
+    profileEmptyBody: 'عندما يترك الشركاء بضع كلمات في هذا الملف الشخصي، ستظهر هنا.',
     writtenEmptyTitle: 'قل شكرًا بالكلمات',
     writtenEmptyBody: 'لديك شريك ممارسة رائع؟ مراجعة قصيرة في ملفه تساعد الآخرين على إيجاده.',
     meRowBody: 'ما يقوله شركاؤك عنك، وما كتبته أنت',

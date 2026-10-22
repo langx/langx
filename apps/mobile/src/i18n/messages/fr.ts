@@ -3563,6 +3563,9 @@ export const fr: Localized<EnMessages> = {
     receivedEmptyTitle: 'Tes avis s’afficheront ici',
     receivedEmptyBody:
       'Les personnes avec qui tu pratiques peuvent laisser quelques mots sur ton profil. Continue à échanger.',
+    profileEmptyTitle: 'Pas encore d’avis',
+    profileEmptyBody:
+      'Quand des partenaires laisseront quelques mots sur ce profil, ils s’afficheront ici.',
     writtenEmptyTitle: 'Dis merci par écrit',
     writtenEmptyBody:
       'Un super partenaire de pratique ? Un petit avis sur son profil aide les autres à le trouver.',

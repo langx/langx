@@ -4095,6 +4095,8 @@ export const ru: Localized<EnMessages> = {
     receivedEmptyTitle: 'Здесь будут твои отзывы',
     receivedEmptyBody:
       'Те, с кем ты практикуешься, могут оставить пару слов в твоём профиле. Продолжай общаться.',
+    profileEmptyTitle: 'Отзывов пока нет',
+    profileEmptyBody: 'Когда партнёры оставят пару слов в этом профиле, они появятся здесь.',
     writtenEmptyTitle: 'Скажи спасибо словами',
     writtenEmptyBody:
       'Попался отличный собеседник? Короткий отзыв в профиле поможет другим его найти.',

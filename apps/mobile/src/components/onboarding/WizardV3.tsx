@@ -261,6 +261,12 @@ interface FieldV3Props extends TextInputProps {
    * end of the pill from the name it belongs to.
    */
   ltr?: boolean
+  /**
+   * The ink edge on the ground at rest as well, rather than the grey pill:
+   * `V-Compose`'s post text, where the box is the page's main thing to fill
+   * and the board draws it outlined like the selected ask under it.
+   */
+  outlined?: boolean
 }
 
 /**
@@ -276,6 +282,7 @@ export function FieldV3({
   suffix,
   large = false,
   ltr = false,
+  outlined = false,
   multiline,
   style,
   onFocus,
@@ -292,6 +299,7 @@ export function FieldV3({
         style={[
           styles.fieldBox,
           multiline ? styles.fieldMultiline : large ? styles.fieldLarge : null,
+          outlined && styles.fieldOutlined,
           focused && styles.fieldFocused,
           error ? (focused ? styles.fieldErrorFocused : styles.fieldError) : null,
           ltr && styles.ltr,
@@ -424,6 +432,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingVertical: v3.space[12],
   },
   fieldFocused: { borderColor: v3.colors.fg },
+  fieldOutlined: { backgroundColor: v3.colors.bg, borderColor: v3.colors.fg, borderWidth: 2 },
   ltr: { direction: 'ltr' },
   inputLtr: { textAlign: 'left', writingDirection: 'ltr' },
   fieldError: { borderColor: v3.colors.danger },

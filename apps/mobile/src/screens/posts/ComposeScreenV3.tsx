@@ -6,7 +6,7 @@ import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { useCreatePost, useLinkEchoAsk, useMe } from '../../api/queries'
 import {
   AttachmentBar,
-  AttachmentPreviewRow,
+  AttachmentThumbs,
   type PendingAttachment,
 } from '../../components/AttachmentBar'
 import { ChoiceRowV3, FieldV3 } from '../../components/onboarding/WizardV3'
@@ -28,6 +28,9 @@ import { reportWriteError } from '../../lib/reportWriteError'
 import { requireAccount } from '../../lib/requireAccount'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { showToast } from '../../lib/toast'
+
+/** A media square's side: three of them and their gaps fill a phone's width. */
+const MEDIA_TILE = 112
 
 /** Past this many languages the segmented row stops fitting a phone. */
 const SEGMENTED_MAX = 3
@@ -228,26 +231,29 @@ export function ComposeScreenV3() {
             )}
           </View>
 
-          <View style={styles.block}>
-            <AttachmentBar
-              pending={media}
-              onPick={(picked) => setMedia((items) => [...items, ...picked])}
-              disabled={busy}
-              mediaLabel={t('feed.addMedia')}
-            />
-            <AttachmentPreviewRow
-              pending={media}
-              onRemove={(index) => setMedia((items) => items.filter((_, at) => at !== index))}
-              progress={progress}
-              size={112}
-            />
-          </View>
+          {/* `V-Compose`'s squares: what is picked, then the dashed add and the voice note. */}
+          <AttachmentBar
+            pending={media}
+            onPick={(picked) => setMedia((items) => [...items, ...picked])}
+            disabled={busy}
+            mediaLabel={t('feed.addMedia')}
+            tile={MEDIA_TILE}
+            leading={
+              <AttachmentThumbs
+                pending={media}
+                onRemove={(index) => setMedia((items) => items.filter((_, at) => at !== index))}
+                progress={progress}
+                size={MEDIA_TILE}
+              />
+            }
+          />
 
           <FieldV3
             value={draft}
             onChangeText={setDraft}
             placeholder={t('feed.captionPlaceholder', { language: names.language(language) })}
             multiline
+            outlined
             autoCapitalize="sentences"
             maxLength={MAX_POST_LENGTH}
             autoFocus={!!draftParam && media.length === 0}
