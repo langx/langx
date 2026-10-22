@@ -1,18 +1,34 @@
 import Feather from '@expo/vector-icons/Feather'
-import { ACCOUNT_DELETION_GRACE_DAYS, NOTIFICATION_CHANNELS, profileUrl } from '@langx/shared'
+import {
+  ACCOUNT_DELETION_GRACE_DAYS,
+  NOTIFICATION_CHANNELS,
+  profileUrl,
+  TIER_NAMES,
+  type ProBenefit,
+} from '@langx/shared'
 import { router } from 'expo-router'
-import { Image, Pressable, Text, View } from 'react-native'
+import type { ReactNode } from 'react'
+import { Image, Pressable, ScrollView, Text, View } from 'react-native'
+import { useQuota } from '../../../api/queries'
 import { useSettingsModel, type SettingsModel } from '../../../hooks/useSettingsModel'
 import { useLocale, type MessageKey } from '../../../i18n'
+import { isProIcon } from '../../../lib/appIconList'
+import { chatsLeft } from '../../../lib/chatsLeft'
 import { openExternal } from '../../../lib/openExternal'
 import { openPaywall } from '../../../lib/paywall'
 import { BENEFIT_COPY, benefitsHeld, pendingTag } from '../../../lib/paywallBenefits'
 import { showsSeePlans } from '../../../lib/proRoads'
 import { HIDDEN_MODE_CHILDREN, SETTINGS_V3_LAYOUT } from '../../../lib/settingsLayoutV3'
 import { settingsSection, type SettingsSectionId } from '../../../lib/settingsRegistry'
-import { makeStyles, THEME_PREFERENCES, useTheme, type PartnerHue } from '../../../lib/theme'
+import {
+  makeStyles,
+  THEME_PREFERENCES,
+  useTheme,
+  v3 as V3_SCHEMES,
+  type ColorScheme,
+  type PartnerHue,
+} from '../../../lib/theme'
 import { Button } from '../../ui/Button'
-import { SegmentedControl } from '../../ui/SegmentedControl'
 import { Toggle } from '../../ui/Toggle'
 import { BENEFIT_TITLE, ICON_PREVIEWS, THEME_LABELS } from '../SettingsRow'
 import {
@@ -183,26 +199,85 @@ function NotificationTable({ ids, model }: { ids: readonly string[]; model: Sett
   )
 }
 
-/** Auto, light or dark, as one segmented choice: the same three options, the same setter. */
+/**
+ * Auto, light or dark, as three tiles that each draw a little screen in that
+ * scheme: the same three options, the same setter. The miniature uses each
+ * scheme's own tokens, not the current one's, so Dark looks dark from a light
+ * phone; Auto is the two halves side by side.
+ */
 function ThemeBlock({ model }: { model: SettingsModel }) {
+  const styles = useStyles()
+  const { v3 } = useTheme()
   const { t, theme } = model
   return (
     <>
       <SettingsHeadingV3 title={t('theme.label')} />
-      <SegmentedControl
+      <View
+        accessibilityRole="radiogroup"
         accessibilityLabel={t('theme.label')}
-        options={THEME_PREFERENCES.map((value) => ({ value, label: t(THEME_LABELS[value]) }))}
-        selected={[theme.preference]}
-        onToggle={theme.setPreference}
-      />
+        style={styles.themes}
+      >
+        {THEME_PREFERENCES.map((value) => {
+          const chosen = theme.preference === value
+          return (
+            <Pressable
+              key={value}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: chosen }}
+              onPress={() => theme.setPreference(value)}
+              style={({ pressed }) => [
+                styles.themeTile,
+                chosen && styles.themeTileChosen,
+                pressed && styles.pressed,
+              ]}
+            >
+              <View style={styles.themePreview}>
+                {value === 'auto' ? (
+                  <>
+                    <MiniScreen scheme="light" half="start" />
+                    <MiniScreen scheme="dark" half="end" />
+                  </>
+                ) : (
+                  <MiniScreen scheme={value} />
+                )}
+              </View>
+              <Text style={styles.themeLabel}>{t(THEME_LABELS[value])}</Text>
+              {chosen ? (
+                <View style={styles.themeCheck}>
+                  <Feather name="check" size={v3.icon.xs} color={v3.colors.onBlue} />
+                </View>
+              ) : null}
+            </Pressable>
+          )
+        })}
+      </View>
     </>
   )
 }
 
+/** One scheme's ground with three lines of "text" on it: a title, a body, a blue link. */
+function MiniScreen({ scheme, half }: { scheme: ColorScheme; half?: 'start' | 'end' }) {
+  const styles = useStyles()
+  const colors = V3_SCHEMES[scheme].colors
+  return (
+    <View
+      style={[styles.mini, { backgroundColor: colors.bg }, half && styles.miniHalf]}
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+    >
+      <View style={[styles.miniLine, styles.miniTitle, { backgroundColor: colors.fg }]} />
+      <View style={[styles.miniLine, { backgroundColor: colors.line }]} />
+      <View style={[styles.miniLine, styles.miniLink, { backgroundColor: colors.blue }]} />
+    </View>
+  )
+}
+
 /**
- * Only where there is a home screen to put an icon on, as today. Seventeen
- * icons are a page of their own (`settings/app-icon`, `V-AppIcons`); here is
- * the one on the home screen now, and the way to the rest.
+ * Only where there is a home screen to put an icon on, as today. The free
+ * icons as a strip that sets one on the tap, the current one ringed, and a
+ * last tile to the full page (`settings/app-icon`, `V-AppIcons`), where the
+ * Pro ones and their sheet live. A Pro icon still on the home screen leads
+ * the strip so the current one is always in it; its tap goes to that page too.
  */
 function AppIconBlock({ model }: { model: SettingsModel }) {
   const styles = useStyles()
@@ -210,29 +285,63 @@ function AppIconBlock({ model }: { model: SettingsModel }) {
   const { isRtl } = useLocale()
   const { t } = model
   if (!model.iconSupported) return null
-  const current = t(`settings.appIcon_${model.appIcon}` as MessageKey)
+  const free = model.appIcons.filter((icon) => !isProIcon(icon))
+  const icons = free.includes(model.appIcon) ? free : [model.appIcon, ...free]
+  const openPage = () => router.push('/(app)/settings/app-icon')
   return (
     <>
       <SettingsHeadingV3 title={t('settings.appIconSection')} body={t('settings.appIconBody')} />
-      <SettingsGroupV3>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.iconStrip}
+      >
+        <View accessibilityRole="radiogroup" style={styles.iconStripGroup}>
+          {icons.map((icon) => {
+            const chosen = model.appIcon === icon
+            const label = t(`settings.appIcon_${icon}` as MessageKey)
+            return (
+              <Pressable
+                key={icon}
+                accessibilityRole="radio"
+                accessibilityLabel={label}
+                accessibilityState={{ checked: chosen }}
+                onPress={() => (model.iconLocked(icon) ? openPage() : void model.chooseIcon(icon))}
+                style={({ pressed }) => [styles.iconTile, pressed && styles.pressed]}
+              >
+                <View style={[styles.iconRing, chosen && styles.iconRingChosen]}>
+                  <Image source={ICON_PREVIEWS[icon]} style={styles.iconImage} />
+                </View>
+                <Text
+                  style={[styles.iconLabel, chosen && styles.iconLabelChosen]}
+                  numberOfLines={1}
+                >
+                  {label}
+                </Text>
+              </Pressable>
+            )
+          })}
+        </View>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={`${t('settings.appIcon')}, ${current}`}
-          onPress={() => router.push('/(app)/settings/app-icon')}
-          style={({ pressed }) => [styles.iconRow, pressed && styles.pressed]}
+          accessibilityLabel={t('settings.appIconAll')}
+          onPress={openPage}
+          style={({ pressed }) => [styles.iconTile, pressed && styles.pressed]}
         >
-          <Image source={ICON_PREVIEWS[model.appIcon]} style={styles.iconImage} />
-          <View style={styles.iconRowText}>
-            <Text style={styles.iconRowTitle}>{t('settings.appIcon')}</Text>
-            <Text style={styles.iconLabelOff}>{current}</Text>
+          <View style={styles.iconRing}>
+            <View style={[styles.iconImage, styles.iconMore]}>
+              <Feather
+                name={isRtl ? 'chevron-left' : 'chevron-right'}
+                size={v3.icon.lg}
+                color={v3.colors.fg}
+              />
+            </View>
           </View>
-          <Feather
-            name={isRtl ? 'chevron-left' : 'chevron-right'}
-            size={v3.icon.md}
-            color={v3.colors.muted}
-          />
+          <Text style={styles.iconLabel} numberOfLines={1}>
+            {t('settings.appIconAll')}
+          </Text>
         </Pressable>
-      </SettingsGroupV3>
+      </ScrollView>
     </>
   )
 }
@@ -259,8 +368,10 @@ function DeleteBlock({ model }: { model: SettingsModel }) {
 
 /**
  * The plan page: the plan as a block, then today's rows — the renewal line,
- * the store's own page to manage it, what the plan includes — and "See the
- * plans" only where `showsSeePlans` puts it today. Never on a paid Pro.
+ * the store's own page to manage it, what is left of the free allowances,
+ * what the plan includes — and "See the plans" only where `showsSeePlans`
+ * puts it today, with what Pro adds over it for a free account. Never on a
+ * paid Pro.
  */
 function PlanPage({ model }: { model: SettingsModel }) {
   const styles = useStyles()
@@ -332,6 +443,7 @@ function PlanPage({ model }: { model: SettingsModel }) {
           </View>
         </>
       ) : null}
+      <UsageBlock model={model} />
       {seePlans ? (
         <>
           {/* Beside the road to the plans, the promise of what stays free. */}
@@ -339,6 +451,21 @@ function PlanPage({ model }: { model: SettingsModel }) {
             <Feather name="check-circle" size={v3.icon.md} color={v3.colors.correction} />
             <Text style={styles.promiseText}>{t('paywall.freePromise')}</Text>
           </View>
+          {model.tier === 'free' ? (
+            <>
+              <SettingsHeadingV3 title={t('settings.whatPlanAdds', { plan: TIER_NAMES.pro })} />
+              <View style={styles.benefits}>
+                {PRO_ADDS.map((benefit) => (
+                  <View key={benefit} style={styles.benefit}>
+                    <View style={styles.check}>
+                      <Feather name="check" size={v3.icon.xs} color={v3.colors.fg} />
+                    </View>
+                    <Text style={styles.benefitText}>{t(BENEFIT_TITLE[benefit])}</Text>
+                  </View>
+                ))}
+              </View>
+            </>
+          ) : null}
           <Button
             label={t('settings.upgrade')}
             variant="blue"
@@ -347,6 +474,112 @@ function PlanPage({ model }: { model: SettingsModel }) {
         </>
       ) : null}
     </>
+  )
+}
+
+/**
+ * The four the drawing lists under "What Pro adds", by their paywall names.
+ * A short pick rather than all of `PRO_BENEFITS`: the paywall is one tap away
+ * and lists every one; these are the ones the usage rows above it are about,
+ * and the two a free account meets most.
+ */
+const PRO_ADDS: readonly ProBenefit[] = [
+  'unlimitedInitiations',
+  'translationQuota',
+  'profileViewerIdentities',
+  'advancedFilters',
+]
+
+/**
+ * What is left of the free allowances, as `/me/quota` counts them — the same
+ * numbers People and the translate picker show. Both totals are the server's
+ * `PLAN_LIMITS` entry for this account, so nothing here knows what "free"
+ * gives. A row draws only for an allowance that has a limit, so Pro and a
+ * gift see nothing, and nothing draws until the quota has loaded.
+ */
+function UsageBlock({ model }: { model: SettingsModel }) {
+  const styles = useStyles()
+  const { v3 } = useTheme()
+  const { t } = model
+  const quota = useQuota()
+  const chats = chatsLeft(quota.data?.initiations)
+  // The same clamp and the same "no limit, no row" for the translation count.
+  const translations = chatsLeft(quota.data?.translations)
+  if (!chats && !translations) return null
+  return (
+    <SettingsGroupV3>
+      {chats ? (
+        <UsageRow
+          icon="message-circle"
+          hue="lilac"
+          title={t('settings.usageChats')}
+          left={chats.left}
+          total={chats.total}
+        >
+          {chats.pips ? (
+            <View style={styles.pips} accessibilityElementsHidden>
+              {Array.from({ length: chats.total }, (_, at) => (
+                <View
+                  key={at}
+                  style={[
+                    styles.pip,
+                    { backgroundColor: at < chats.left ? v3.colors.fg : v3.colors.line },
+                  ]}
+                />
+              ))}
+            </View>
+          ) : null}
+        </UsageRow>
+      ) : null}
+      {translations ? (
+        <UsageRow
+          icon="repeat"
+          hue="aqua"
+          title={t('settings.usageTranslations')}
+          left={translations.left}
+          total={translations.total}
+        >
+          <Text style={styles.caption}>
+            {t('settings.translationsLeft', { count: translations.left })}
+          </Text>
+        </UsageRow>
+      ) : null}
+    </SettingsGroupV3>
+  )
+}
+
+function UsageRow({
+  icon,
+  hue,
+  title,
+  left,
+  total,
+  children,
+}: {
+  icon: Glyph
+  hue: PartnerHue
+  title: string
+  left: number
+  total: number
+  children: ReactNode
+}) {
+  const styles = useStyles()
+  const { v3 } = useTheme()
+  const { locale } = useLocale()
+  return (
+    <View style={styles.usageRow} accessible accessibilityLabel={`${title}: ${left} / ${total}`}>
+      <View style={[styles.kindSquare, { backgroundColor: v3.hues[hue] }]}>
+        <Feather name={icon} size={v3.icon.md} color={v3.colors.ink} />
+      </View>
+      <View style={styles.kindText}>
+        <Text style={styles.kindTitle}>{title}</Text>
+        {children}
+      </View>
+      <Text style={styles.usageCount}>
+        {left.toLocaleString(locale)}
+        <Text style={styles.usageTotal}> / {total.toLocaleString(locale)}</Text>
+      </Text>
+    </View>
   )
 }
 
@@ -464,18 +697,62 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   kindText: { flex: 1, gap: v3.space[2], minWidth: 0 },
   kindTitle: { ...v3.type.button, color: v3.colors.fg },
-  iconRow: {
+  themes: { flexDirection: 'row', gap: v3.space[8] },
+  themeTile: {
     alignItems: 'center',
-    flexDirection: 'row',
-    gap: v3.space[12],
-    minHeight: 72,
-    paddingHorizontal: v3.space[12],
-    paddingVertical: v3.space[8],
+    backgroundColor: v3.colors.surface,
+    borderColor: 'transparent',
+    borderRadius: v3.radius.tile,
+    borderWidth: 2.5,
+    flex: 1,
+    gap: v3.space[8],
+    paddingHorizontal: v3.space[6],
+    paddingVertical: v3.space[12],
   },
-  iconImage: { borderRadius: v3.radius.icon + 2, height: 56, width: 56 },
-  iconRowText: { flex: 1, gap: v3.space[2], minWidth: 0 },
-  iconRowTitle: { ...v3.type.button, color: v3.colors.fg },
-  iconLabelOff: { ...v3.type.caption, color: v3.colors.muted },
+  themeTileChosen: { borderColor: v3.colors.fg },
+  themePreview: {
+    borderColor: v3.colors.line,
+    borderRadius: 10,
+    borderWidth: 1,
+    flexDirection: 'row',
+    height: 62,
+    overflow: 'hidden',
+    width: 50,
+  },
+  mini: { flex: 1, gap: 5, paddingHorizontal: 7, paddingTop: 10 },
+  // Each half of Auto carries its own lines, cut off at the middle.
+  miniHalf: { paddingHorizontal: 4 },
+  miniLine: { borderRadius: 2, height: 4 },
+  miniTitle: { height: 5 },
+  miniLink: { width: '60%' },
+  themeLabel: { ...v3.type.label, color: v3.colors.fg, textAlign: 'center' },
+  themeCheck: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.blue,
+    borderColor: v3.colors.surface,
+    borderRadius: v3.radius.pill,
+    borderWidth: 2,
+    end: v3.space[6],
+    height: 24,
+    justifyContent: 'center',
+    position: 'absolute',
+    top: v3.space[6],
+    width: 24,
+  },
+  iconStrip: { gap: v3.space[4], paddingHorizontal: v3.space[2] },
+  iconStripGroup: { flexDirection: 'row', gap: v3.space[4] },
+  iconTile: { alignItems: 'center', gap: v3.space[4], width: 68 },
+  iconRing: {
+    borderColor: 'transparent',
+    borderRadius: v3.radius.icon + 8,
+    borderWidth: 2.5,
+    padding: 2.5,
+  },
+  iconRingChosen: { borderColor: v3.colors.fg },
+  iconImage: { borderRadius: v3.radius.icon + 2, height: 52, width: 52 },
+  iconMore: { alignItems: 'center', backgroundColor: v3.colors.surface, justifyContent: 'center' },
+  iconLabel: { ...v3.type.label, color: v3.colors.muted, textAlign: 'center' },
+  iconLabelChosen: { color: v3.colors.fg },
   deleteBlock: { gap: v3.space[8], paddingTop: v3.space[8] },
   planHero: {
     backgroundColor: v3.colors.surface,
@@ -499,6 +776,21 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   benefitText: { ...v3.type.body, color: v3.colors.fg, flex: 1, fontWeight: '600' },
   pending: { ...v3.type.caption, color: v3.colors.muted, fontWeight: '700' },
+  usageRow: {
+    alignItems: 'center',
+    borderTopColor: v3.colors.line,
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    gap: v3.space[12],
+    minHeight: 64,
+    paddingEnd: v3.space[16],
+    paddingStart: v3.space[12],
+    paddingVertical: v3.space[10],
+  },
+  usageCount: { ...v3.type.headline, color: v3.colors.fg },
+  usageTotal: { ...v3.type.caption, color: v3.colors.muted, fontWeight: '700' },
+  pips: { flexDirection: 'row', gap: v3.space[4], paddingTop: v3.space[2] },
+  pip: { borderRadius: v3.radius.pill, height: 8, width: 16 },
   promise: {
     alignItems: 'center',
     backgroundColor: v3.colors.correctionTint,
