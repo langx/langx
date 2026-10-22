@@ -1,4 +1,5 @@
 import {
+  COPILOT_RULES,
   copilotCheckRequestSchema,
   copilotConsentRequestSchema,
   copilotExplainRequestSchema,
@@ -6,9 +7,10 @@ import {
   copilotReportRequestSchema,
   copilotSayItRequestSchema,
 } from '@langx/shared'
-import type { FastifyInstance } from 'fastify'
+import type { FastifyInstance, FastifyRequest } from 'fastify'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { localeFromHeader } from '../i18n'
+import { rateLimitKey } from '../lib/clientIp'
 import { requireVerifiedEmail } from '../middleware/requireAuth'
 import { getAppConfig } from '../modules/appConfig/appConfig'
 import { askCopilot, getCopilotStatus, type CopilotDeps } from '../modules/copilot/copilot'
@@ -29,6 +31,21 @@ async function depsFor(app: FastifyInstance): Promise<CopilotDeps> {
     enabled: config.flags.copilotEnabled,
     log: app.log,
   }
+}
+
+/**
+ * Each ask route's own ceiling, per account: `COPILOT_RULES.askRoutePerHour`.
+ * Counted at `preHandler`, after `requireVerifiedEmail` has set `userId`, so
+ * the key is the person rather than their network — the default hook runs
+ * before anyone is known. Keyed on the user, it is also safe under test: a
+ * suite's fixtures sign in as different people, so none spends another's.
+ */
+const askRateLimit = {
+  max: COPILOT_RULES.askRoutePerHour,
+  timeWindow: '1 hour',
+  hook: 'preHandler' as const,
+  keyGenerator: (request: FastifyRequest) =>
+    request.userId ? `user:${request.userId}` : rateLimitKey(request),
 }
 
 /**
@@ -81,7 +98,11 @@ export const copilotRoutes: FastifyPluginAsyncZod = async (app) => {
 
   app.post(
     '/copilot/check',
-    { preHandler: requireVerifiedEmail, schema: { body: copilotCheckRequestSchema } },
+    {
+      preHandler: requireVerifiedEmail,
+      schema: { body: copilotCheckRequestSchema },
+      config: { rateLimit: askRateLimit },
+    },
     async (request, reply) => {
       const result = await askCopilot(
         await depsFor(app),
@@ -95,7 +116,11 @@ export const copilotRoutes: FastifyPluginAsyncZod = async (app) => {
 
   app.post(
     '/copilot/reply-ideas',
-    { preHandler: requireVerifiedEmail, schema: { body: copilotReplyIdeasRequestSchema } },
+    {
+      preHandler: requireVerifiedEmail,
+      schema: { body: copilotReplyIdeasRequestSchema },
+      config: { rateLimit: askRateLimit },
+    },
     async (request, reply) => {
       const result = await askCopilot(
         await depsFor(app),
@@ -109,7 +134,11 @@ export const copilotRoutes: FastifyPluginAsyncZod = async (app) => {
 
   app.post(
     '/copilot/say-it',
-    { preHandler: requireVerifiedEmail, schema: { body: copilotSayItRequestSchema } },
+    {
+      preHandler: requireVerifiedEmail,
+      schema: { body: copilotSayItRequestSchema },
+      config: { rateLimit: askRateLimit },
+    },
     async (request, reply) => {
       const result = await askCopilot(
         await depsFor(app),
@@ -123,7 +152,11 @@ export const copilotRoutes: FastifyPluginAsyncZod = async (app) => {
 
   app.post(
     '/copilot/explain',
-    { preHandler: requireVerifiedEmail, schema: { body: copilotExplainRequestSchema } },
+    {
+      preHandler: requireVerifiedEmail,
+      schema: { body: copilotExplainRequestSchema },
+      config: { rateLimit: askRateLimit },
+    },
     async (request, reply) => {
       const result = await askCopilot(
         await depsFor(app),

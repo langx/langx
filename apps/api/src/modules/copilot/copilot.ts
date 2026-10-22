@@ -26,7 +26,7 @@ import type { StructuredProvider } from '../official/assistantProvider'
 import { effectiveTier } from '../profiles/entitlement'
 import { getProfile, type Profile } from '../profiles/profiles'
 import { hasCopilotAccess } from './access'
-import { claimCopilotCall } from './budget'
+import { claimCopilotCall, releaseCopilotCall } from './budget'
 import { copilotCacheKey, lookupCopilotResult, rememberCopilotResult } from './cache'
 import { hasCopilotConsent } from './consent'
 import {
@@ -335,7 +335,8 @@ async function prepare(
  *    day; and the person's unit is given back if the global day is spent.
  * 6. **The model** — and if it declines or fails, the unit is given back:
  *    telling somebody it did not work while charging them is the unfairness
- *    `refundQuota` exists for.
+ *    `refundQuota` exists for. So is everybody's call, or a question the
+ *    model always declines could be asked until the global day ran out.
  *
  * One log line per ask, `copilot answered`, with the action, whether it was
  * cached, how it ended, how long it took and the model — and never the text,
@@ -420,6 +421,7 @@ async function answer(
   }
   if (!result) {
     await refundQuota(db, userId, 'copilot', quota.spentAt)
+    await releaseCopilotCall(db, now)
     throw unavailable('no_answer', 'Copilot could not answer that')
   }
 

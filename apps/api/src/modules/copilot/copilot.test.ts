@@ -8,7 +8,7 @@ import { ensureIndexes } from '../../db/indexes'
 import type { ApiError } from '../../lib/ApiError'
 import type { StructuredProvider, StructuredRequest } from '../official/assistantProvider'
 import { setCopilotAccess } from './access'
-import { claimCopilotCall } from './budget'
+import { claimCopilotCall, copilotCallsToday } from './budget'
 import { recordCopilotConsent, withdrawCopilotConsent } from './consent'
 import { askCopilot, getCopilotStatus, type CopilotDeps, type CopilotQuestion } from './copilot'
 import { systemPromptFor } from './prompts'
@@ -478,6 +478,17 @@ describe('Copilot', () => {
       const error = await refusal(askCopilot(deps, me, 'en', check(), NOW))
       expect(error.reason).toBe('no_answer')
       expect(await quotaUsed(me)).toBe(0)
+    })
+
+    it("gives everybody's call back too, so a declined question cannot drain the day", async () => {
+      model.answer = () => null
+      await refusal(askCopilot(deps, me, 'en', check(), NOW))
+      model.answer = () => {
+        throw new Error('network down')
+      }
+      await refusal(askCopilot(deps, me, 'en', check(), NOW))
+      expect(model.asked).toHaveLength(2)
+      expect(await copilotCallsToday(handle.db, NOW)).toBe(0)
     })
 
     it("stops everybody at the global ceiling, and gives the person's unit back", async () => {
