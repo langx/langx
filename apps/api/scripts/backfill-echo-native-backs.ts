@@ -110,12 +110,16 @@ async function main(): Promise<void> {
           ObjectId.isValid(card.source.messageId)
             ? db
                 .collection<Message>(COLLECTIONS.messages)
-                .findOne({ _id: new ObjectId(card.source.messageId) }, { projection: { type: 1 } })
+                .findOne(
+                  { _id: new ObjectId(card.source.messageId) },
+                  { projection: { type: 1, deletedAt: 1 } },
+                )
             : null,
         ])
         partnerNative = partner?.nativeLanguages
         // A message since deleted is treated as a correction: nothing says it was not.
-        if (!message || message.type === 'correction') deps = CACHE_ONLY
+        // Deletes are soft (`deletedAt`, body blanked), so the row being there proves nothing.
+        if (!message || message.deletedAt || message.type === 'correction') deps = CACHE_ONLY
       } else if (card.source.kind === 'post') {
         const post = ObjectId.isValid(card.source.postId)
           ? await db
@@ -143,13 +147,15 @@ async function main(): Promise<void> {
     console.log(`  ${turned} turn round: the sentence in a language being learned.`)
     console.log(`  ${unfilled.length} stay empty (nothing translated it, or only into itself).`)
     console.log(`  ${skipped} skipped (account being deleted, or post gone or hidden).`)
-    for (const { card, meaning } of filled.slice(0, 50)) {
+    // Every one, uncapped: this list is the only check against refilling a back
+    // its owner emptied on purpose.
+    for (const { card, meaning } of filled) {
       const into = meaning.backLang ?? 'native'
       console.log(
         `  fill ${card.sourceKey} [${meaning.lang ?? card.lang} -> ${into}]: "${card.front}" / "${meaning.back}"`,
       )
     }
-    for (const card of unfilled.slice(0, 50)) {
+    for (const card of unfilled) {
       console.log(`  empty ${card.sourceKey} [${card.lang}]: "${card.front}"`)
     }
     if (!apply) {
