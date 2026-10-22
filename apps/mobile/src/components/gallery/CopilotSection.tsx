@@ -75,7 +75,6 @@ const STATES: { label: string; state: CopilotAnswerState; quota?: CopilotStatus[
 
 const ERRORS: CopilotAnswerState[] = [
   { kind: 'error', key: 'copilot.errQuota', retryAt: spent.nextAvailableAt ?? undefined },
-  { kind: 'error', key: 'copilot.errPartnerAge' },
   { kind: 'error', key: 'copilot.errBusy' },
   { kind: 'error', key: 'copilot.errNoAnswer' },
   { kind: 'error', key: 'copilot.errNetwork' },

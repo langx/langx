@@ -5,9 +5,29 @@ import {
   WAVEFORM_BAR_WIDTH,
   playedBarCount,
   seekFraction,
+  sweepPlan,
   waveformBarCount,
   waveformBars,
 } from './waveform'
+
+describe('sweepPlan', () => {
+  it('runs on from where it is, to the end, in the time left', () => {
+    expect(sweepPlan(0.41, 0.4, true, 6)).toEqual({ from: null, ms: 6000 })
+  })
+
+  it('jumps to the player after a seek or a replay', () => {
+    expect(sweepPlan(0.9, 0.1, true, 9)).toEqual({ from: 0.1, ms: 9000 })
+  })
+
+  it('holds where the player is while paused or at the end', () => {
+    expect(sweepPlan(0.55, 0.5, false, 5)).toEqual({ from: 0.5, ms: 0 })
+    expect(sweepPlan(1, 1, true, 0)).toEqual({ from: 1, ms: 0 })
+  })
+
+  it('draws nothing played for a note of unknown length', () => {
+    expect(sweepPlan(0.3, null, true, 0)).toEqual({ from: 0, ms: 0 })
+  })
+})
 
 describe('waveformBarCount', () => {
   it('fits whole bars, the last with no gap after it', () => {

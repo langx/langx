@@ -33,13 +33,6 @@ export const COPILOT_RULES = {
    */
   consentVersion: 2,
   /**
-   * Off for 16- and 17-year-olds by default — a default for minors is a
-   * product owner's decision, and the EU's DSA Art. 28 guidance leans the
-   * same way. Lowering this to `MINIMUM_AGE` is what turns it on for them;
-   * nothing else would need to change.
-   */
-  minimumAge: 18,
-  /**
    * Answers the model writes for **everybody**, per UTC day — the ceiling
    * that bounds the bill, since `copilotPer24h` bounds one person and the
    * number of people is not bounded by anything. At the worst case worked
@@ -98,30 +91,8 @@ export const COPILOT_RULES = {
  * Why Copilot did not answer — the `reason` on `COPILOT_UNAVAILABLE`. See
  * `ERROR_CODES.COPILOT_UNAVAILABLE` for each one.
  */
-export const COPILOT_UNAVAILABLE_REASONS = [
-  'off',
-  'age',
-  'partner_age',
-  'busy',
-  'no_answer',
-] as const
+export const COPILOT_UNAVAILABLE_REASONS = ['off', 'busy', 'no_answer'] as const
 export type CopilotUnavailableReason = (typeof COPILOT_UNAVAILABLE_REASONS)[number]
-
-/**
- * Whether somebody born on `birthDate` is old enough for Copilot today.
- *
- * Exact — the birthday has to have passed — where `ageFromBirthDate` counts
- * whole years from the birth year alone. That arithmetic is right for what
- * a profile prints; for a gate that keeps 17-year-olds out it would let one
- * in for up to a year. A calendar day against a calendar day, both as
- * `YYYY-MM-DD`, so the comparison is a string comparison and no time zone
- * moves it.
- */
-export function copilotAgeAllows(birthDate: string, now: Date = new Date()): boolean {
-  const today = now.toISOString().slice(0, 10)
-  const cutoff = `${Number(today.slice(0, 4)) - COPILOT_RULES.minimumAge}${today.slice(4)}`
-  return birthDate <= cutoff
-}
 
 const conversationId = z.string().trim().min(1)
 
@@ -208,9 +179,9 @@ export const copilotStatusSchema = z.object({
   /**
    * Why not, when not: `off` for the operator's switch, no key, or an
    * account the operator has not allowed — the app hides Copilot for all
-   * three alike — or `age` for the person's age.
+   * three alike.
    */
-  reason: z.enum(['off', 'age']).nullable(),
+  reason: z.enum(['off']).nullable(),
   /** Agreed to the current version of the consent sheet. */
   consented: z.boolean(),
   /** The version the consent sheet must send back. */
@@ -225,8 +196,8 @@ export type CopilotStatus = z.infer<typeof copilotStatusSchema>
 
 /**
  * Allowing one account to use Copilot, or taking it back — the operator
- * panel's per-account switch. It opens nothing by itself: the flag, a key,
- * the age floor and the person's own consent all still apply.
+ * panel's per-account switch. It opens nothing by itself: the flag, a key
+ * and the person's own consent all still apply.
  */
 export const adminCopilotAccessRequestSchema = z.object({ allowed: z.boolean() })
 export type AdminCopilotAccessRequest = z.infer<typeof adminCopilotAccessRequestSchema>

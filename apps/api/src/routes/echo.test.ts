@@ -207,6 +207,41 @@ describe('echo', () => {
     expect(card.back).toBe('')
   })
 
+  it('keeps the translation on screen as the back, but never the sentence again', async () => {
+    const [a, b] = await newPair('sameback')
+    const conversation = await startConversation(a, b.userId)
+    const messageId = await firstMessageId(conversation._id)
+    await app.inject({
+      method: 'POST',
+      url: `/conversations/${conversation._id}/messages`,
+      headers: { cookie: a.cookie },
+      payload: { body: 'À demain alors.' },
+    })
+    const second = await handle.db
+      .collection(COLLECTIONS.messages)
+      .findOne({ conversationId: new ObjectId(conversation._id), body: 'À demain alors.' })
+    if (!second) throw new Error('second message missing')
+
+    const translated = await capture(b, {
+      kind: 'chat',
+      conversationId: conversation._id,
+      messageId,
+      translation: 'Shall we go tomorrow?',
+    })
+    expect(translated.json<{ card: { back: string } }>().card.back).toBe('Shall we go tomorrow?')
+
+    // What a provider returns for a sentence already in the reader's
+    // language. Stored, it made a card with the same line on both sides.
+    const echoed = await capture(b, {
+      kind: 'chat',
+      conversationId: conversation._id,
+      messageId: second._id.toHexString(),
+      translation: 'à demain alors',
+    })
+    expect(echoed.statusCode).toBe(201)
+    expect(echoed.json<{ card: { back: string } }>().card.back).toBe('')
+  })
+
   it('refuses a message from a conversation the person is not in', async () => {
     const [a, b] = await newPair('out')
     const stranger = await newUser('out-c@example.com')

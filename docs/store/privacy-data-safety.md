@@ -196,9 +196,9 @@ messages, lines deleted for everyone or hidden by the reader. The request
 carries no identifier of ours — no user id, and no metadata naming one. Text
 only, by construction (`modules/copilot/copilot.ts`).
 
-Off for 16- and 17-year-olds by default (`COPILOT_RULES.minimumAge`), checked
-against the birthday, server-side — and their words are not sent either: Reply
-ideas and Explain refuse a chat whose other person is under that age.
+No age rule of its own: Copilot is open to anybody the app's 16+ minimum lets
+in, and a partner's age is not checked (see `decisions.md` → _Copilot has no
+age rule of its own, and 24 a day for Pro_).
 
 For the forms, once it is on: the data is message content, which is already
 collected; what changes is that a processor sees it. Anthropic processes it for

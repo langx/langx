@@ -4384,7 +4384,11 @@ export function useUpdateEchoCard() {
         // that only fixes the sentence says nothing about them.
         ...(input.removeAudio?.length ? { removeAudio: input.removeAudio } : {}),
       }),
-    onSuccess: () => {
+    onSuccess: (card) => {
+      // Written before the invalidation, so a review that opened this edit
+      // finds the saved card at once — its deck is frozen and refetches
+      // nothing. See `withSessionEdit`.
+      client.setQueryData(keys.echoCard(card._id), card)
       void client.invalidateQueries({ queryKey: keys.echo })
     },
   })

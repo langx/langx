@@ -1,19 +1,23 @@
 import type Feather from '@expo/vector-icons/Feather'
 import { attachmentsOf, type Media } from '@langx/shared'
-import { memo, useMemo, type ReactNode } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { memo, useEffect, useMemo, useRef, type ReactNode } from 'react'
+import { Animated, Pressable, Text, View } from 'react-native'
 import type { FeedPost } from '../../api/types'
+import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useDisplayNames, useLocale, useT } from '../../i18n'
 import { foldCorrection } from '../../lib/feedCache'
 import { relativeTime } from '../../lib/format'
 import { asksOf } from '../../lib/postAsks'
 import { postCardAction, postCardKind, type PostCardAction } from '../../lib/postCard'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
+import { EASE_OUT } from '../../lib/theme/motionAnimated'
+import { DELAY, DURATION } from '../../lib/theme/motionValues'
 import { partnerHueFor } from '../../lib/theme/partnerHue'
 import { LikeButton } from '../LikeButton'
 import { MediaGallery } from '../MediaBubble'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
+import { PressableScale } from '../ui/PressableScale'
 
 /** Back from a post lands on the feed's route, which redirects to this segment. */
 const FROM = '/(app)/(tabs)/feed'
@@ -23,6 +27,22 @@ const FROM = '/(app)/(tabs)/feed'
  * "I am agree with you" like a heading; a paragraph at that size is a wall.
  */
 const BIG_SENTENCE = 40
+
+/**
+ * The words are most of the card, so they shrink by less than a card does
+ * (`PRESS_SCALE_CARD`): a paragraph moving 2% under a thumb reads as the
+ * list jumping.
+ */
+const SENTENCE_PRESS_SCALE = 0.99
+
+/** How long the new-post ring stays at full strength between its fades. */
+const RING_HOLD = 900
+
+/**
+ * The ring's whole life: a wait for the composer to finish closing, a fade
+ * in, the hold, and a slower fade out — nobody watches it go.
+ */
+export const NEW_POST_RING_MS = DELAY.afterSheet + DURATION.fade + RING_HOLD + DURATION.roll
 
 /**
  * The card's handlers, one stable object for the whole list: each takes the
@@ -66,6 +86,7 @@ export const PostCard = memo(function PostCard({
   composing,
   composer,
   black,
+  ringed = false,
   handlers,
 }: {
   post: FeedPost
@@ -81,6 +102,8 @@ export const PostCard = memo(function PostCard({
   composer: ReactNode
   /** Whether Nunito Black has arrived. */
   black: boolean
+  /** The post just written, back from the composer: ring it once (`lib/justPosted`). */
+  ringed?: boolean
   handlers: PostCardHandlers
 }) {
   const styles = useStyles()
@@ -174,11 +197,12 @@ export const PostCard = memo(function PostCard({
           renders a button inside a button.
         */}
         {text ? (
-          <Pressable
+          <PressableScale
             accessibilityRole="button"
             accessibilityHint={t('feed.openPost')}
             onPress={() => handlers.open(post, index)}
             onLongPress={() => handlers.more(post)}
+            scaleTo={SENTENCE_PRESS_SCALE}
           >
             <Text
               style={[
@@ -192,7 +216,7 @@ export const PostCard = memo(function PostCard({
             >
               {post.body}
             </Text>
-          </Pressable>
+          </PressableScale>
         ) : null}
 
         {media.length > 0 ? (
@@ -268,11 +292,51 @@ export const PostCard = memo(function PostCard({
             }
           />
         )}
+        {ringed ? <NewPostRing /> : null}
       </View>
       {composer}
     </View>
   )
 })
+
+/**
+ * A ring round the card somebody has just posted, once: it fades in, holds,
+ * and fades out. Opacity only, inside the row and started from an effect on
+ * mount, so a recycled list is not disturbed (rule 13); the list clears
+ * `ringed` once it is over. With reduce motion on it is simply there for the
+ * hold, then gone.
+ */
+function NewPostRing() {
+  const styles = useStyles()
+  const reduceMotion = useReduceMotion()
+  const opacity = useRef(new Animated.Value(0)).current
+  useEffect(() => {
+    if (reduceMotion) {
+      opacity.setValue(1)
+      const timer = setTimeout(() => opacity.setValue(0), DELAY.afterSheet + RING_HOLD)
+      return () => clearTimeout(timer)
+    }
+    const ring = Animated.sequence([
+      Animated.delay(DELAY.afterSheet),
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: DURATION.fade,
+        easing: EASE_OUT,
+        useNativeDriver: true,
+      }),
+      Animated.delay(RING_HOLD),
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: DURATION.roll,
+        easing: EASE_OUT,
+        useNativeDriver: true,
+      }),
+    ])
+    ring.start()
+    return () => ring.stop()
+  }, [opacity, reduceMotion])
+  return <Animated.View pointerEvents="none" style={[styles.ring, { opacity }]} />
+}
 
 /** The corrected sentence as one line, only the changed parts in colour — see `foldCorrection`. */
 function CorrectedLine({ original, corrected }: { original: string; corrected: string }) {
@@ -304,6 +368,17 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingTop: v3.space[14],
   },
   selected: { borderColor: v3.colors.fg, borderWidth: 3 },
+  // Laid over the card's edge rather than a border on it, so ringing moves nothing.
+  ring: {
+    borderColor: v3.colors.fg,
+    borderRadius: v3.radius.block,
+    borderWidth: 3,
+    bottom: 0,
+    end: 0,
+    position: 'absolute',
+    start: 0,
+    top: 0,
+  },
   pressed: { opacity: 0.7 },
   head: { alignItems: 'center', flexDirection: 'row', gap: v3.space[10] },
   headText: { flex: 1, minWidth: 0 },

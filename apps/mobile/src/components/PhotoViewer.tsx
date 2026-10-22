@@ -15,6 +15,7 @@ import {
 } from 'react-native'
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler'
 import Animated, {
+  interpolate,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -26,13 +27,14 @@ import { useLocale, useT } from '../i18n'
 import { chooseAlert, showAlert } from '../lib/alert'
 import {
   AXIS_LOCK_PX,
-  DISMISS_DRAG_PX,
   DOUBLE_TAP_MS,
   DOUBLE_TAP_SCALE,
   MIN_SCALE,
   type Size,
   albumSlots,
   clampOffset,
+  dismissDirection,
+  dismissProgress,
   fittedSize,
   maxOffset,
   offsetForFocus,
@@ -45,7 +47,9 @@ import {
 import { messagePreviewKey } from '../lib/messagePreview'
 import { saveMediaToDevice } from '../lib/saveMedia'
 import { makeStyles, spacing, useTheme } from '../lib/theme'
+import { DURATION, EASE_OUT, SPRING, unlessReduced } from '../lib/theme/motion'
 import { IconButton } from './ui/IconButton'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
 
 /**
@@ -141,6 +145,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   const { colors } = useTheme()
   const t = useT()
   const v3Look = useV3Home()
+  const reduceMotion = useReduceMotion()
   const { isRtl } = useLocale()
   /*
    * A `Modal` is outside every `SafeAreaView` and every `Screen`, so the
@@ -195,6 +200,21 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   const panMode = useSharedValue<PanMode>(PAN_IDLE)
   const pinching = useSharedValue(false)
   const panning = useSharedValue(false)
+  /**
+   * 0 until a dismissal is committed, then 1 over the throw: the backdrop and
+   * the chrome finish fading on it, so the picture leaves an empty screen
+   * rather than a scrim that vanishes in one frame after it.
+   */
+  const leaving = useSharedValue(0)
+
+  /**
+   * A spring that does not follow a finger — a settle, a double tap — or,
+   * with reduce motion on, the value it would have ended on (`unlessReduced`).
+   */
+  function settleTo(to: number): number {
+    'worklet'
+    return unlessReduced(reduceMotion, to, (value) => withSpring(value, SPRING.snap))
+  }
 
   /**
    * The page turn runs on the JS side and outlives the render that started
@@ -222,7 +242,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   }
 
   function settleStrip(): void {
-    pageX.set(withSpring(-turned.current * frame.current.width, SPRING))
+    pageX.set(settleTo(-turned.current * frame.current.width))
   }
 
   /** The end of a page turn, back on the JS side once the slide has landed. */
@@ -245,12 +265,22 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
     }
     const to = turned.current + step
     const next = (at + album.length + step) % album.length
+    if (reduceMotion) {
+      pageX.set(-to * frame.current.width)
+      landTurn(to, next)
+      return
+    }
     pageX.set(
-      withTiming(-to * frame.current.width, { duration: 160 }, (finished) => {
-        // Cut short by a finger landing mid-slide: the strip is wherever that
-        // finger now has it, and its release decides.
-        if (finished) runOnJS(landTurn)(to, next)
-      }),
+      withTiming(
+        -to * frame.current.width,
+        // v3 lands the turn on the app's ease-out; the current look keeps its curve.
+        v3Look ? { duration: 160, easing: EASE_OUT } : { duration: 160 },
+        (finished) => {
+          // Cut short by a finger landing mid-slide: the strip is wherever that
+          // finger now has it, and its release decides.
+          if (finished) runOnJS(landTurn)(to, next)
+        },
+      ),
     )
   }
 
@@ -260,6 +290,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
     scale.set(MIN_SCALE)
     offsetX.set(0)
     offsetY.set(0)
+    leaving.set(0)
     syncContent()
     // Closed: nothing is on screen, so this is the one moment the strip can go
     // back to the start without anyone seeing it move.
@@ -287,14 +318,32 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
       { width: frameW.get(), height: frameH.get() },
       { width: contentW.get(), height: contentH.get() },
     )
-    scale.set(withSpring(next.scale, SPRING))
-    offsetX.set(withSpring(next.offset.x, SPRING))
-    offsetY.set(withSpring(next.offset.y, SPRING))
+    scale.set(settleTo(next.scale))
+    offsetX.set(settleTo(next.offset.x))
+    offsetY.set(settleTo(next.offset.y))
   }
 
   function settleStripNow(): void {
     'worklet'
-    pageX.set(withSpring(-turnedAt.get() * frameW.get(), SPRING))
+    pageX.set(settleTo(-turnedAt.get() * frameW.get()))
+  }
+
+  /**
+   * A committed dismissal. In v3 the picture is thrown on the way it was
+   * going, off the frame over `DURATION.exit`, and the viewer closes once it
+   * is gone; in the current look, and with reduce motion on, it simply closes.
+   */
+  function dismissNow(direction: -1 | 1): void {
+    'worklet'
+    if (!v3Look || reduceMotion) {
+      runOnJS(onClose)()
+      return
+    }
+    const throwing = { duration: DURATION.exit, easing: EASE_OUT }
+    leaving.set(withTiming(1, throwing))
+    // Closed whether or not the throw finished: a finger landing mid-throw
+    // must not strand an empty viewer on screen.
+    offsetY.set(withTiming(direction * frameH.get(), throwing, () => runOnJS(onClose)()))
   }
 
   const multiple = photos.length > 1
@@ -379,9 +428,14 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
         else settleStripNow()
         return
       }
-      if (mode === PAN_DISMISS && Math.abs(event.translationY) > DISMISS_DRAG_PX) {
-        runOnJS(onClose)()
-        return
+      if (mode === PAN_DISMISS) {
+        // Far enough, or (v3) flicked away: see `dismissDirection`. The
+        // current look keeps its distance-only rule, so no speed is passed.
+        const direction = dismissDirection(event.translationY, v3Look ? event.velocityY : 0)
+        if (direction !== 0) {
+          dismissNow(direction)
+          return
+        }
       }
       settleZoomNow()
     })
@@ -392,9 +446,9 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
     .onEnd((event, success) => {
       if (!success) return
       if (scale.get() > MIN_SCALE) {
-        scale.set(withSpring(MIN_SCALE, SPRING))
-        offsetX.set(withSpring(0, SPRING))
-        offsetY.set(withSpring(0, SPRING))
+        scale.set(settleTo(MIN_SCALE))
+        offsetX.set(settleTo(0))
+        offsetY.set(settleTo(0))
         return
       }
       // Zoomed about the point tapped, so the face somebody tapped stays
@@ -406,9 +460,9 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
         { width: frameW.get(), height: frameH.get() },
         { width: contentW.get(), height: contentH.get() },
       )
-      scale.set(withSpring(DOUBLE_TAP_SCALE, SPRING))
-      offsetX.set(withSpring(offset.x, SPRING))
-      offsetY.set(withSpring(offset.y, SPRING))
+      scale.set(settleTo(DOUBLE_TAP_SCALE))
+      offsetX.set(settleTo(offset.x))
+      offsetY.set(settleTo(offset.y))
     })
 
   /*
@@ -449,12 +503,32 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
   )
 
   const stripStyle = useAnimatedStyle(() => ({ transform: [{ translateX: pageX.get() }] }))
+  /*
+   * How far a life-size picture has been dragged towards closing. Only at
+   * life size: there the picture fits and has no pan, so an offset means a
+   * dismissal; zoomed, an offset is somebody looking around. The current
+   * look keeps its fixed scrim.
+   */
+  const dismissAt = (): number => {
+    'worklet'
+    if (!v3Look || Math.abs(scale.get() - MIN_SCALE) > 0.001) return 0
+    return dismissProgress(offsetY.get(), frameH.get())
+  }
   const openStyle = useAnimatedStyle(() => ({
     transform: [
       { translateX: offsetX.get() },
       { translateY: offsetY.get() },
-      { scale: scale.get() },
+      // The picture eases back from the screen as it is pulled.
+      { scale: scale.get() * interpolate(dismissAt(), [0, 1], [1, DISMISS_SCALE]) },
     ],
+  }))
+  // The screen behind shows through as the picture is pulled, as far as
+  // `DISMISS_SCRIM` while the finger is down, then the rest with the throw.
+  const scrimStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(dismissAt(), [0, 1], [1, DISMISS_SCRIM]) * (1 - leaving.get()),
+  }))
+  const chromeStyle = useAnimatedStyle(() => ({
+    opacity: (1 - dismissAt()) * (1 - leaving.get()),
   }))
 
   if (index === null) return null
@@ -505,7 +579,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
     <Modal
       visible
       transparent
-      animationType="fade"
+      animationType={reduceMotion ? 'none' : 'fade'}
       // Android's hardware back has to close the viewer, or it closes the
       // screen behind it and the reader loses their place.
       onRequestClose={onClose}
@@ -515,7 +589,9 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
         `GestureHandlerRootView` in `app/_layout.tsx`, and without one here
         Android delivers the viewer's gestures to nothing at all.
       */}
-      <GestureHandlerRootView style={styles.backdrop}>
+      <GestureHandlerRootView style={[styles.backdrop, v3Look && styles.backdropClear]}>
+        {/* v3's scrim is a layer of its own, so a dismissing drag can fade it. */}
+        {v3Look ? <Animated.View pointerEvents="none" style={[styles.scrim, scrimStyle]} /> : null}
         {isVideoContentType(photo.contentType ?? '') ? (
           /*
            * No pinch and no pan for a video: the gesture layer below exists to
@@ -599,7 +675,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
           because the stage is a sibling rather than an ancestor, a touch that
           starts on a disc never reaches the stage's gestures at all.
         */}
-        <View style={styles.chrome} pointerEvents="box-none">
+        <Animated.View style={[styles.chrome, chromeStyle]} pointerEvents="box-none">
           {v3Look ? (
             // The kit's dark disc, dark in both schemes as the scrim is: the
             // platform's minimum target in place of a 36pt disc and its slop.
@@ -708,7 +784,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
               )}
             </View>
           ) : null}
-        </View>
+        </Animated.View>
       </GestureHandlerRootView>
     </Modal>
   )
@@ -724,8 +800,10 @@ const PAN_DISMISS: PanMode = 3
 /** See `longPress`. */
 const SHEET_ON_RELEASE = Platform.OS === 'web'
 
-/** `bounciness: 0`'s successor, as `SwipeableRow` has it: a settle that overshoots shows scrim. */
-const SPRING = { damping: 20, stiffness: 220, overshootClamping: true }
+/** How small the picture gets as it is pulled towards closing (v3). */
+const DISMISS_SCALE = 0.9
+/** How far the scrim fades while the finger is still down (v3). */
+const DISMISS_SCRIM = 0.3
 
 /** A disc's diameter and the slop around it; 36 + 12 + 12 is the platform's 44pt target and then some. */
 const DISC_SIZE = 36
@@ -739,6 +817,15 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     flex: 1,
     justifyContent: 'center',
     position: 'relative',
+  },
+  backdropClear: { backgroundColor: 'transparent' },
+  scrim: {
+    backgroundColor: colors.scrimStrong,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
   },
   chrome: { bottom: 0, elevation: 2, left: 0, position: 'absolute', right: 0, top: 0, zIndex: 2 },
   // `hidden`, for the two neighbours: off-screen on native, but on web an
