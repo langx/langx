@@ -208,3 +208,17 @@ export function applyPinned(data: Pages, pinned: MessagePageDto['pinned']): Page
   if (data.pages.every((page) => same(page.pinned, pinned))) return data
   return { ...data, pages: data.pages.map((page) => ({ ...page, pinned })) }
 }
+
+/**
+ * `message:updated` written into the thread, through `patchThread` for the
+ * reason an arriving message is: a refetch already out read the thread before
+ * the change, and when it landed it replaced the cache wholesale. A message
+ * withdrawn for everyone during the reconnect's resync came back with its
+ * words and its photo, and an edit reverted to what was first sent, until
+ * something else refetched the thread.
+ */
+export function patchMessageUpdate(queryClient: QueryClient, message: MessageDto): void {
+  patchThread(queryClient, String(message.conversationId), (old) =>
+    applyMessageUpdate(old, message),
+  )
+}
