@@ -143,6 +143,7 @@ export function HandleV3({
           <Text
             style={[wizard.hint, isRule && styles.hidden]}
             accessibilityElementsHidden={isRule}
+            aria-hidden={isRule}
             importantForAccessibility={isRule ? 'no-hide-descendants' : 'auto'}
           >
             {rule}

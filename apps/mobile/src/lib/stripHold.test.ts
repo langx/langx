@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { STRIP_HOLD_MS, holdForStrips, stripSettled } from './stripHold'
+import { STRIP_HOLD_MS, firstStripHoldPhase, holdForStrips, stripSettled } from './stripHold'
 
 describe('stripSettled', () => {
   it('waits for a query that is out', () => {
@@ -20,21 +20,38 @@ describe('stripSettled', () => {
   })
 })
 
+describe('firstStripHoldPhase', () => {
+  it('may hold a list that starts on its skeleton', () => {
+    expect(firstStripHoldPhase(true)).toBe('loading')
+  })
+
+  it('never holds a list drawn from the cache', () => {
+    expect(firstStripHoldPhase(false)).toBe('done')
+  })
+})
+
 describe('holdForStrips', () => {
-  it('holds a list that has answered while a strip has not', () => {
-    expect(holdForStrips({ listReady: true, stripsSettled: false, capped: false })).toBe(true)
+  const first = { firstLoad: true, listReady: true, stripsSettled: false, capped: false }
+
+  it('holds a list leaving its skeleton while a strip has not answered', () => {
+    expect(holdForStrips(first)).toBe(true)
   })
 
   it('lets go when the strips answer', () => {
-    expect(holdForStrips({ listReady: true, stripsSettled: true, capped: false })).toBe(false)
+    expect(holdForStrips({ ...first, stripsSettled: true })).toBe(false)
   })
 
   it('lets go at the cap, strips or not', () => {
-    expect(holdForStrips({ listReady: true, stripsSettled: false, capped: true })).toBe(false)
+    expect(holdForStrips({ ...first, capped: true })).toBe(false)
   })
 
   it('has nothing to hold while the list itself is loading', () => {
-    expect(holdForStrips({ listReady: false, stripsSettled: false, capped: false })).toBe(false)
+    expect(holdForStrips({ ...first, listReady: false })).toBe(false)
+  })
+
+  it('does not re-arm once the list has been shown', () => {
+    // A strip refetching under a new sort is pending again; the list stays.
+    expect(holdForStrips({ ...first, firstLoad: false })).toBe(false)
   })
 
   it('caps the wait well under half a second', () => {

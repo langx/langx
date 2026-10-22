@@ -457,8 +457,9 @@ function DiscoverScreen({ people }: { people?: ReactNode } = {}) {
       state={state}
       onRetry={() => void query.refetch()}
       people={items}
-      // keepPreviousData's old rows, while a new sort or filter is asked for.
-      stale={query.isPlaceholderData}
+      // keepPreviousData's old rows, while a new sort or filter is asked for —
+      // not while the request waits for a network, which could be a long time.
+      stale={query.isPlaceholderData && query.fetchStatus !== 'paused'}
       listKey={new URLSearchParams({ ...sortParams, ...filterParams }).toString()}
       pull={pull}
       onEndReached={() => {

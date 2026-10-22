@@ -19,7 +19,13 @@ import type { ListState } from '../../lib/listState'
 import { openProfile } from '../../lib/navigation'
 import { requireAccount } from '../../lib/requireAccount'
 import { POP_FROM_PILL } from '../../lib/selectPop'
-import { holdForStrips, STRIP_HOLD_MS, stripSettled } from '../../lib/stripHold'
+import {
+  firstStripHoldPhase,
+  holdForStrips,
+  STRIP_HOLD_MS,
+  stripSettled,
+  type StripHoldPhase,
+} from '../../lib/stripHold'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
 import { EASE_OUT } from '../../lib/theme/motionAnimated'
 import { DURATION } from '../../lib/theme/motionValues'
@@ -136,17 +142,26 @@ export function PeopleV3(props: PeopleV3Props) {
       isPending: newcomers.isPending,
       fetchStatus: newcomers.fetchStatus,
     })
+  /*
+   * Only the list's first way out of its skeleton is held, and only once:
+   * a list drawn from the cache never waits, and a list already shown is
+   * never sent back to the skeleton by a strip refetching under a new sort.
+   */
+  const [phase, setPhase] = useState<StripHoldPhase>(() =>
+    firstStripHoldPhase(props.state === 'skeleton'),
+  )
   const [capped, setCapped] = useState(false)
   useEffect(() => {
-    if (!listReady) {
-      setCapped(false)
-      return
-    }
-    if (stripsSettled) return
+    if (phase !== 'loading' || !listReady || stripsSettled) return
     const timer = setTimeout(() => setCapped(true), STRIP_HOLD_MS)
     return () => clearTimeout(timer)
-  }, [listReady, stripsSettled])
-  const holding = holdForStrips({ listReady, stripsSettled, capped })
+  }, [phase, listReady, stripsSettled])
+  const holding = holdForStrips({
+    firstLoad: phase === 'loading',
+    listReady,
+    stripsSettled,
+    capped,
+  })
   /*
    * Whether the list was already on screen before this render: a strip that
    * arrives after that — past the cap, or on a sort it was not on — fades in
@@ -156,6 +171,10 @@ export function PeopleV3(props: PeopleV3Props) {
   const showingList = listReady && !holding
   const [listShown, setListShown] = useState(false)
   useEffect(() => setListShown(showingList), [showingList])
+  useEffect(() => {
+    // Shown once is shown for good: see `StripHoldPhase`.
+    if (showingList) setPhase('done')
+  }, [showingList])
 
   /*
    * A sort or filter change: the previous answer stays up, dimmed, until the

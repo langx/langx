@@ -29,17 +29,36 @@ export function stripSettled(query: StripQuery): boolean {
 }
 
 /**
+ * Whether this mount's list still has its first load ahead of it.
+ *
+ * `loading`: the list started on its skeleton and has not been shown yet, so
+ * its first appearance may be held for the strips. `done`: it has been shown,
+ * or it was drawn from the cache on the first render. A list that has been
+ * shown is never held again — a strip refetching under a new sort or filter
+ * would otherwise send the whole list back to its skeleton — and a cached
+ * list never waited for anything in the first place.
+ */
+export type StripHoldPhase = 'loading' | 'done'
+
+export function firstStripHoldPhase(startsOnSkeleton: boolean): StripHoldPhase {
+  return startsOnSkeleton ? 'loading' : 'done'
+}
+
+/**
  * Whether the skeleton is still standing in for a list that has already
- * answered. `capped` is the hold's timer having run out.
+ * answered. `capped` is the hold's timer having run out; `firstLoad` is the
+ * phase above being `loading`.
  */
 export function holdForStrips({
+  firstLoad,
   listReady,
   stripsSettled,
   capped,
 }: {
+  firstLoad: boolean
   listReady: boolean
   stripsSettled: boolean
   capped: boolean
 }): boolean {
-  return listReady && !stripsSettled && !capped
+  return firstLoad && listReady && !stripsSettled && !capped
 }

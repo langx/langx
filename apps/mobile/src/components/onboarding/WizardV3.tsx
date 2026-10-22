@@ -211,7 +211,9 @@ export function ChoiceRowV3({
       accessibilityLabel={accessibilityLabel ?? (detail ? `${label}, ${detail}` : label)}
       disabled={disabled}
       onPress={() => {
-        markPress()
+        // A chosen radio pressed again changes nothing, so it leaves no stamp
+        // for the next pick to tick on a second time.
+        if (role !== 'radio' || !selected) markPress()
         onPress()
       }}
       style={({ pressed }) => [
@@ -291,7 +293,7 @@ export function FieldV3({
           styles.fieldBox,
           multiline ? styles.fieldMultiline : large ? styles.fieldLarge : null,
           focused && styles.fieldFocused,
-          error ? styles.fieldError : null,
+          error ? (focused ? styles.fieldErrorFocused : styles.fieldError) : null,
           ltr && styles.ltr,
         ]}
       >
@@ -425,6 +427,17 @@ const useStyles = makeStyles(({ v3 }) => ({
   ltr: { direction: 'ltr' },
   inputLtr: { textAlign: 'left', writingDirection: 'ltr' },
   fieldError: { borderColor: v3.colors.danger },
+  // Wrong and being typed in: the red edge stays, and a red ring just outside
+  // it says where the keyboard is — the browser's own ring is gone, and the
+  // ink edge that says focus is what the error replaced. An outline, so the
+  // field keeps its size.
+  fieldErrorFocused: {
+    borderColor: v3.colors.danger,
+    outlineColor: v3.colors.danger,
+    outlineOffset: 2,
+    outlineStyle: 'solid',
+    outlineWidth: 2,
+  },
   // `paddingVertical: 0`: Android gives a TextInput padding of its own, which
   // would push the text off the prefix beside it. `outlineWidth: 0`: on the
   // web the browser drew its own blue focus ring inside the pill, under the
