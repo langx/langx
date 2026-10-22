@@ -66,6 +66,23 @@ export async function submitReviews(
     }
     const cardId = new ObjectId(item.cardId)
 
+    /*
+     * The card first, and no row without it. A review row is not only the
+     * idempotency key below: it is what `echoSessionsToday` counts to pay a
+     * session and fill the streak, and what the board's counter is moved by.
+     * Written before this check, a batch of made-up ids paid sessions and
+     * ranked on the board with no cards at all.
+     *
+     * Skipping the row is safe for a retry. A card id that is gone stays gone
+     * — ids are never reused — so a resent grade for it finds no card again
+     * and is `missing` again, never applied.
+     */
+    const card = await cards.findOne({ _id: cardId, userId })
+    if (!card) {
+      results.push({ reviewId: item.reviewId, cardId: item.cardId, status: 'missing', srs: null })
+      continue
+    }
+
     try {
       await reviews.insertOne({
         _id: new ObjectId(),
@@ -80,7 +97,8 @@ export async function submitReviews(
       if (!isDuplicate(caught)) throw caught
       // Already applied. Hand back what the card actually says, so a client
       // that retried converges on the server rather than keeping the guess it
-      // drew on the button.
+      // drew on the button. Read again after the conflict rather than reusing
+      // `card`: the request that wrote the row may have moved it since.
       const current = await cards.findOne({ _id: cardId, userId })
       results.push({
         reviewId: item.reviewId,
@@ -91,15 +109,6 @@ export async function submitReviews(
       continue
     }
     inserted += 1
-
-    const card = await cards.findOne({ _id: cardId, userId })
-    if (!card) {
-      // Removed while the session was open, or never theirs. The ledger row
-      // stays: it records what the client claimed, and deleting it would let
-      // the retry apply instead of repeat.
-      results.push({ reviewId: item.reviewId, cardId: item.cardId, status: 'missing', srs: null })
-      continue
-    }
 
     const next = schedule(card, item.grade, now)
     await cards.updateOne({ _id: cardId, userId }, { $set: { srs: next } })
