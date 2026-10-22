@@ -564,7 +564,9 @@ reappears somewhere.
 ## Phase 10 — a blocked user's profile is 404, not 403
 
 A 403 **confirms the account exists**, which is exactly what blocking must not
-do. For the same reason `POST /reports` does not echo `xpFrozen` back: whether
+do. Starting a conversation with somebody who blocked you answers the same way,
+with the 404 an account that does not exist gets; only your own block is named
+`BLOCKED`, since you can undo it. For the same reason `POST /reports` does not echo `xpFrozen` back: whether
 someone else's earning is suspended is not the reporter's business, and telling
 them turns the threshold into a game to probe.
 

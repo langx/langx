@@ -391,13 +391,24 @@ export async function startConversation(
   }
 
   const blocks = db.collection<{ blockerId: string; blockedId: string }>(COLLECTIONS.blocks)
-  const blocked = await blocks.findOne({
-    $or: [
-      { blockerId: viewerId, blockedId: input.toUserId },
-      { blockerId: input.toUserId, blockedId: viewerId },
-    ],
-  })
-  if (blocked) throw new ApiError(ERROR_CODES.BLOCKED, 'Cannot message a blocked user')
+  const blocked = await blocks
+    .find({
+      $or: [
+        { blockerId: viewerId, blockedId: input.toUserId },
+        { blockerId: input.toUserId, blockedId: viewerId },
+      ],
+    })
+    .toArray()
+  /*
+   * Only the viewer's own block is named. Somebody who was blocked gets the
+   * answer an account that does not exist gets, word for word: `BLOCKED` here
+   * would tell them what their 404 on the profile is there to keep from them
+   * (see docs/decisions.md, "a blocked user's profile is 404, not 403").
+   */
+  if (blocked.some((row) => row.blockerId === viewerId)) {
+    throw new ApiError(ERROR_CODES.BLOCKED, 'Cannot message a blocked user')
+  }
+  if (blocked.length > 0) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Recipient not found')
 
   /*
    * After the block, so a blocked viewer learns nothing about a suspension

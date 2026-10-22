@@ -193,10 +193,11 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         discovery.json<{ items: { _id: string }[] }>().items.some((i) => i._id === blocker.userId),
       ).toBe(false)
       expect((await get(blocked, `/profiles/${blocker.userId}`)).statusCode).toBe(404)
-      // And they cannot start a conversation either.
+      // And they cannot start a conversation either — told, as the profile
+      // tells them, that there is nobody there rather than that they were blocked.
       const attempt = await startConversation(blocked, blocker.userId, 'hello?')
-      expect(attempt.statusCode).toBe(403)
-      expect(attempt.json<{ code: string }>().code).toBe('BLOCKED')
+      expect(attempt.statusCode).toBe(404)
+      expect(attempt.json<{ code: string }>().code).toBe('NOT_FOUND')
     })
 
     it('is idempotent and reversible', async () => {
