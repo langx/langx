@@ -13,6 +13,7 @@ import {
   isOldEnough,
   isReminderCandidate,
   ONBOARDING_REMINDER_MAX_AGE_HOURS,
+  ONBOARDING_REMINDER_PER_TICK,
   reminderCohort,
   reminderVariant,
   runOnboardingReminderPass,
@@ -243,6 +244,41 @@ describe('reading the cohort out of the database', () => {
      * Without this bound, switching the timer on would mail every abandoned
      * sign-up the app has ever had, in one tick.
      */
+    /*
+     * The ceiling is per tick, and the promise beside it is that whoever is
+     * left goes on the next one. Cut before the ledger was asked, the oldest
+     * fifty — already written to and still in the window — held every slot.
+     */
+    it('writes on the next tick to whoever the ceiling left over', async () => {
+      for (let index = 0; index <= ONBOARDING_REMINDER_PER_TICK; index++) {
+        await signUp({ email: `stalled-${index}@example.test`, hoursOld: 100 - index / 10 })
+      }
+
+      const first = collector()
+      expect((await runOnboardingReminderPass(handle.db, first.email, NOW)).sent).toBe(
+        ONBOARDING_REMINDER_PER_TICK,
+      )
+
+      const second = collector()
+      expect((await runOnboardingReminderPass(handle.db, second.email, NOW)).sent).toBe(1)
+      expect(second.sent.map((message) => message.to)).toEqual([
+        `stalled-${ONBOARDING_REMINDER_PER_TICK}@example.test`,
+      ])
+    })
+
+    it('does not let a suppressed address hold a slot', async () => {
+      for (let index = 0; index < ONBOARDING_REMINDER_PER_TICK; index++) {
+        const address = `bounced-${index}@example.test`
+        await signUp({ email: address, hoursOld: 100 })
+        await suppressEmail(handle.db, { email: address, reason: 'bounced' })
+      }
+      await signUp({ email: 'reachable@example.test', hoursOld: 30 })
+
+      const { sent, email } = collector()
+      expect((await runOnboardingReminderPass(handle.db, email, NOW)).sent).toBe(1)
+      expect(sent.map((message) => message.to)).toEqual(['reachable@example.test'])
+    })
+
     it('leaves a sign-up older than the window alone', async () => {
       await signUp({
         email: 'ancient@example.test',
