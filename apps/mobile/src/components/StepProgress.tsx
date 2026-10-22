@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { Pressable, Text, View } from 'react-native'
 import { ONBOARDING_STEPS } from '../lib/onboardingStep'
 import { makeStyles, useTheme } from '../lib/theme'
-import { useT } from '../i18n'
+import { useLocale, useT } from '../i18n'
 
 /**
  * The wizard header: "Step 1 of 5" over one bar per step, the steps up to
@@ -40,6 +40,7 @@ export function StepProgress({
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
+  const { isRtl } = useLocale()
   const index = steps.indexOf(step)
   const total = steps.length
   const stepText = t('onboarding.stepOf', { step: index + 1, total })
@@ -54,7 +55,7 @@ export function StepProgress({
           onPress={onBack}
           style={({ pressed }) => [styles.back, pressed && styles.pressed]}
         >
-          <Feather name="arrow-left" size={22} color={colors.text} />
+          <Feather name={isRtl ? 'arrow-right' : 'arrow-left'} size={22} color={colors.text} />
         </Pressable>
       ) : null}
       <View style={styles.block}>

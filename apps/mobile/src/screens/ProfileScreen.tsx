@@ -133,7 +133,7 @@ function ProfileScreenCurrent({ handle, from, embedded = false, onClose }: Profi
       hitSlop={12}
       style={({ pressed }) => [styles.back, pressed && styles.iconPressed]}
     >
-      <Feather name="arrow-left" size={22} color={colors.text} />
+      <Feather name={isRtl ? 'arrow-right' : 'arrow-left'} size={22} color={colors.text} />
     </Pressable>
   )
 

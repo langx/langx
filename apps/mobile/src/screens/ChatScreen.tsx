@@ -312,7 +312,7 @@ export function ChatScreen({
   const v3Styles = useThreadV3Styles()
   const t = useT()
   const names = useDisplayNames()
-  const { locale } = useLocale()
+  const { locale, isRtl } = useLocale()
 
   /*
    * The stack reads a screen's `animation` for its pop as well as its push.
@@ -3641,7 +3641,11 @@ export function ChatScreen({
                 hitSlop={12}
                 style={styles.back}
               >
-                <Feather name="arrow-left" size={22} color={colors.text} />
+                <Feather
+                  name={isRtl ? 'arrow-right' : 'arrow-left'}
+                  size={22}
+                  color={colors.text}
+                />
               </Pressable>
             )}
             <Pressable

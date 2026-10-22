@@ -53,7 +53,8 @@ export function ScreenHeader({ title, onBack, trailing }: ScreenHeaderProps) {
           onPress={onBack}
           style={({ pressed }) => [styles.back, pressed && styles.pressed]}
         >
-          <Feather name="arrow-left" size={22} color={colors.text} />
+          {/* Back points the way the screens stack: rightwards in Arabic. */}
+          <Feather name={isRtl ? 'arrow-right' : 'arrow-left'} size={22} color={colors.text} />
         </Pressable>
       ) : null}
       {title ? (

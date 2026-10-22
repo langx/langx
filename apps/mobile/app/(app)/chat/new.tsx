@@ -10,7 +10,7 @@ import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useKeyboardInset } from '../../../src/hooks/useKeyboardInset'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useV3Home } from '../../../src/hooks/useV3Home'
-import { useT } from '../../../src/i18n'
+import { useLocale, useT } from '../../../src/i18n'
 import { goBackTo, openProfile } from '../../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { NewChatScreenV3 } from '../../../src/screens/chat/NewChatScreenV3'
@@ -39,6 +39,7 @@ function NewChatScreen() {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
+  const { isRtl } = useLocale()
   const keyboardInset = useKeyboardInset()
   const {
     partnerId,
@@ -69,7 +70,7 @@ function NewChatScreen() {
             hitSlop={12}
             style={styles.back}
           >
-            <Feather name="arrow-left" size={22} color={colors.text} />
+            <Feather name={isRtl ? 'arrow-right' : 'arrow-left'} size={22} color={colors.text} />
           </Pressable>
           <Pressable
             style={styles.headerUser}
