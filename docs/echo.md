@@ -537,7 +537,8 @@ userId, periodType, periodKey, reviews, updatedAt }`, the shape and the
 `periodKeys` of `tokenAggregates` down to the UTC week, so "this week" means
 the same seven days on both boards. `submitReviews` `$inc`s the four periods
 with the rows it actually inserted — a resubmitted batch adds nothing, the same
-rule the ledger applies — and `scripts/backfill-echo-review-counts.ts` rebuilds
+rule the ledger applies, and a grade for a card the caller does not have writes
+no row at all, so it neither counts here nor pays a session — and `scripts/backfill-echo-review-counts.ts` rebuilds
 the counters from the rows: once for everything answered before the collection
 existed, and afterwards whenever a crash between the insert and the `$inc` is
 worth correcting. The counter is the side allowed to be wrong, because a card

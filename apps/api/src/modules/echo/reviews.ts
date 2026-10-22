@@ -28,7 +28,9 @@ function isDuplicate(error: unknown): boolean {
  * Applies a session's grades, once, however many times it is sent.
  *
  * **The ledger row is written before the card moves**, and that order is the
- * whole design. `user_review_unique` then decides, for the entire cluster at
+ * whole design. It is written only once the card is found to be the caller's:
+ * the row is also what pays a session and ranks the board, so a grade with no
+ * card behind it must leave nothing. `user_review_unique` then decides, for the entire cluster at
  * once, whether this grade has already been applied — a session the app
  * retried after a dropped socket cannot advance a card twice, and no handler
  * has to remember to check.
