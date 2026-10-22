@@ -37,9 +37,10 @@ describe('setAppConfigFlag', () => {
         { $set: Object.fromEntries(Object.entries(fields).map(([k, v]) => [`flags.${k}`, v])) },
       )
 
-  // Every caller of this — the Flags page, the captcha route and
-  // `scripts/maintenance.ts flag` — so each is shown not to undo a switch
-  // another machine made inside this machine's ten-second cache.
+  // The Flags page, the captcha route and `scripts/maintenance.ts flag` all
+  // write through this, so this is where a stale cache must not undo a switch
+  // another machine made inside its ten seconds. The captcha route has its
+  // own test in `admin.test.ts`; the script, which runs at import, has none.
   it.each<AppConfigFlagName>(['captchaRequired', 'v3Home', 'translationEnabled'])(
     'setting %s keeps a switch made behind a warm cache',
     async (flag) => {

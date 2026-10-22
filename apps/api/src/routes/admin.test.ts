@@ -2061,7 +2061,10 @@ describe('the operator panel', () => {
       const admin = await newUser()
       await makeAdmin(admin)
       // As in the Flags route's test: warm this process's cache, then switch
-      // another flag behind its back, as another machine would.
+      // another flag behind its back, as another machine would. The first
+      // write makes sure there is a document to write behind, whatever ran
+      // before this.
+      await post(admin, '/admin/app-config/captcha-required', { required: false })
       await get(admin, '/admin/stats')
       const behind = await handle.db
         .collection(COLLECTIONS.appConfig)
