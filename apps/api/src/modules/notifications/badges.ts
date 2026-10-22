@@ -11,6 +11,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { badgeEarnedSection } from '../../email/templates'
 import { translator } from '../../i18n'
+import { badgeName } from '../../i18n/badgeName'
 import type { Profile } from '../profiles/profiles'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { sendPush, tokensByLocale, type PushSender } from '../push/devices'
@@ -158,10 +159,10 @@ export async function runBadgeRoundUpPass(
     if (!wantsPush && !wantsEmail) return
     if (!(await claimOnce(db, 'badgeEarned', profile._id, localDayKey(now, zone)))) return
 
-    // The label is English in the catalogue — `BADGES` builds it from the
-    // threshold — so the notification names it only when there is exactly one,
-    // and counts otherwise. A list of five English labels inside an Arabic
-    // sentence is worse than a number.
+    // Named only when there is exactly one, and counted otherwise: five names
+    // in one title is a list nobody reads on a lock screen. The name is worded
+    // in the phone's language by `badgeName` — the catalogue's `label` is
+    // English, and stays on the digest row only for rows written before.
     const only = fresh.length === 1 ? findBadge(fresh[0] as string) : undefined
 
     const byLocale = wantsPush ? await tokensByLocale(db, profile._id) : new Map<never, never>()
@@ -170,7 +171,7 @@ export async function runBadgeRoundUpPass(
       await sendPush(db, push, {
         to: tokens,
         title: only
-          ? t('push.badgeOneTitle', { label: only.label })
+          ? t('push.badgeOneTitle', { label: badgeName(locale, only) })
           : t('push.badgeManyTitle', { count: fresh.length }),
         body: t('push.badgeBody'),
         data: { kind: 'badgeEarned' },
@@ -237,12 +238,22 @@ export async function badgeSectionFor(
     pending.ids !== undefined &&
     (await alreadySeenInApp(db, profile._id, { kinds: ['badgeEarned'], refIds: pending.ids }))
 
+  // The one badge, worded per locale when the letter is built. A row written
+  // before `ids` existed falls back to the English label it stored.
+  const only =
+    pending.label !== null && pending.ids?.length === 1
+      ? findBadge(pending.ids[0] as string)
+      : undefined
+
   return {
     // A badge that already buzzed a phone rides along, and so does one the
     // bell has already shown; one nobody has heard of is the news itself.
     trigger: !pending.pushed && !seen,
     claim: () => claimOnce(db, 'badgeDigest', profile._id, pending.day),
     build: (locale: Locale) =>
-      badgeEarnedSection(locale, { count: pending.count, label: pending.label }),
+      badgeEarnedSection(locale, {
+        count: pending.count,
+        label: only ? badgeName(locale, only) : pending.label,
+      }),
   }
 }

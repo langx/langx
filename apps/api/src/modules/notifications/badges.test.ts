@@ -177,6 +177,24 @@ describe('the badge round-up', () => {
     expect(push.sent[0]?.title).toContain('100 messages')
   })
 
+  /*
+   * The catalogue's `label` is English. Dropped into a Turkish title it read
+   * "Yeni rozet: 100 messages 🏅" — the name is worded in the phone's language.
+   */
+  it("names the badge in the phone's own language", async () => {
+    const userId = await newProfile({ messagesSent: 100, withDevice: true })
+    await handle.db
+      .collection(COLLECTIONS.devices)
+      .updateOne({ userId }, { $set: { locale: 'tr' } })
+    await runBadgeRoundUpPass(handle.db, push, now)
+    await handle.db
+      .collection(COLLECTIONS.profiles)
+      .updateOne({ _id: userId as never }, { $set: { 'stats.messagesSent': 1000 } })
+
+    await runBadgeRoundUpPass(handle.db, push, now)
+    expect(push.sent[0]?.title).toBe('Yeni rozet: 1.000 mesaj 🏅')
+  })
+
   it('counts them instead when several arrive at once', async () => {
     const userId = await newProfile({ withDevice: true })
     await runBadgeRoundUpPass(handle.db, push, now)
@@ -325,6 +343,12 @@ describe('the badge round-up', () => {
     it('is still the news while the row is unread', async () => {
       const section = await badgeSectionFor(handle.db, await earnOne(), now)
       expect(section?.trigger).toBe(true)
+    })
+
+    it("names the badge in the letter's language", async () => {
+      const section = await badgeSectionFor(handle.db, await earnOne(), now)
+      expect(section?.build('de').subject).toContain('100 Nachrichten')
+      expect(section?.build('en').subject).toContain('100 messages')
     })
 
     it('rides along instead once the bell has shown it', async () => {

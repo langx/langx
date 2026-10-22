@@ -685,4 +685,72 @@ export const de: Localized<ServerMessages> = {
     badgeKicker: 'Neues Abzeichen',
     badgeEarnedOn: 'Verdient am {date}',
   },
+  badgeNames: {
+    v3: {
+      languages_2: 'Zwei Fäden',
+      languages_3: 'Zopf',
+      languages_5: 'Fünf Stränge',
+      calls_1: 'Dosentelefon',
+      calls_10: 'Lange Leitung',
+      calls_50: 'Vermittlung',
+      echo_100: 'Kräuseln',
+      echo_1000: 'Welle',
+      echo_5000: 'Flut',
+      testimonials_1: 'Quiltquadrat',
+      testimonials_5: 'Patchwork',
+      testimonials_20: 'Quilt',
+      guide_3: 'Stopfen',
+      guide_10: 'Flicken',
+      guide_50: 'Weber',
+      openers_10: 'Offene Tür',
+      openers_50: 'Verandalicht',
+      openers_200: 'Offenes Haus',
+    },
+    firstCorrection: 'Erste Korrektur',
+    streakDays: {
+      one: '{formatted} Tag',
+      other: '{formatted} Tage',
+    },
+    corrections: {
+      one: '{formatted} Korrektur',
+      other: '{formatted} Korrekturen',
+    },
+    messagesSent: {
+      one: '{formatted} Nachricht',
+      other: '{formatted} Nachrichten',
+    },
+    tokensEarned: {
+      one: '{formatted} Token verdient',
+      other: '{formatted} Token verdient',
+    },
+    memberDays: {
+      one: '{formatted} Tag dabei',
+      other: '{formatted} Tage dabei',
+    },
+    earlyAdopter: 'Nutzer der ersten Stunde',
+    languages: {
+      one: '{formatted} Sprache',
+      other: '{formatted} Sprachen',
+    },
+    calls: {
+      one: '{formatted} Anruf',
+      other: '{formatted} Anrufe',
+    },
+    echo: {
+      one: '{formatted} Wiederholung',
+      other: '{formatted} Wiederholungen',
+    },
+    testimonials: {
+      one: '{formatted} Partner',
+      other: '{formatted} Partner',
+    },
+    guide: {
+      one: '{formatted} Person',
+      other: '{formatted} Personen',
+    },
+    openers: {
+      one: '{formatted} Antwort',
+      other: '{formatted} Antworten',
+    },
+  },
 }

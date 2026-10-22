@@ -1167,10 +1167,8 @@ export function profileVisitsSection(
 /**
  * "You earned a badge", for somebody with no phone signed in.
  *
- * `label` is the badge's own name and comes from the catalogue in English —
- * `BADGES` builds it from the threshold. So it is used only when exactly one
- * badge is new; several become a count, because five English labels inside an
- * Arabic sentence read worse than a number does.
+ * `label` is the badge's own name, already worded in `locale` (`badgeName`).
+ * It is there only when exactly one badge is new; several become a count.
  */
 export function badgeEarnedSection(
   locale: Locale,

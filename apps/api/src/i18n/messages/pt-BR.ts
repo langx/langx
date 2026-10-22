@@ -680,4 +680,72 @@ export const ptBR: Localized<ServerMessages> = {
     badgeKicker: 'Insígnia nova',
     badgeEarnedOn: 'Conquistada em {date}',
   },
+  badgeNames: {
+    v3: {
+      languages_2: 'Dois fios',
+      languages_3: 'Trança',
+      languages_5: 'Cinco fios',
+      calls_1: 'Telefone de lata',
+      calls_10: 'Linha longa',
+      calls_50: 'Mesa telefônica',
+      echo_100: 'Ondulação',
+      echo_1000: 'Onda',
+      echo_5000: 'Maré',
+      testimonials_1: 'Quadrado de colcha',
+      testimonials_5: 'Retalhos',
+      testimonials_20: 'Colcha',
+      guide_3: 'Cerzido',
+      guide_10: 'Remendo',
+      guide_50: 'Tecelão',
+      openers_10: 'Porta aberta',
+      openers_50: 'Luz da varanda',
+      openers_200: 'Casa aberta',
+    },
+    firstCorrection: 'Primeira correção',
+    streakDays: {
+      one: '{formatted} dia',
+      other: '{formatted} dias',
+    },
+    corrections: {
+      one: '{formatted} correção',
+      other: '{formatted} correções',
+    },
+    messagesSent: {
+      one: '{formatted} mensagem',
+      other: '{formatted} mensagens',
+    },
+    tokensEarned: {
+      one: '{formatted} ficha ganha',
+      other: '{formatted} fichas ganhas',
+    },
+    memberDays: {
+      one: '{formatted} dia como membro',
+      other: '{formatted} dias como membro',
+    },
+    earlyAdopter: 'Usuário pioneiro',
+    languages: {
+      one: '{formatted} idioma',
+      other: '{formatted} idiomas',
+    },
+    calls: {
+      one: '{formatted} chamada',
+      other: '{formatted} chamadas',
+    },
+    echo: {
+      one: '{formatted} revisão',
+      other: '{formatted} revisões',
+    },
+    testimonials: {
+      one: '{formatted} parceiro',
+      other: '{formatted} parceiros',
+    },
+    guide: {
+      one: '{formatted} pessoa',
+      other: '{formatted} pessoas',
+    },
+    openers: {
+      one: '{formatted} resposta',
+      other: '{formatted} respostas',
+    },
+  },
 }
