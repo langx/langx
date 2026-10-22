@@ -301,6 +301,7 @@ export function FieldV3({
           multiline ? styles.fieldMultiline : large ? styles.fieldLarge : null,
           outlined && styles.fieldOutlined,
           focused && styles.fieldFocused,
+          outlined && focused && styles.fieldOutlinedFocused,
           error ? (focused ? styles.fieldErrorFocused : styles.fieldError) : null,
           ltr && styles.ltr,
         ]}
@@ -433,6 +434,14 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   fieldFocused: { borderColor: v3.colors.fg },
   fieldOutlined: { backgroundColor: v3.colors.bg, borderColor: v3.colors.fg, borderWidth: 2 },
+  // The outlined field already wears the ink edge at rest, so focus adds the
+  // ring `fieldErrorFocused` uses: an outline, so the text does not move.
+  fieldOutlinedFocused: {
+    outlineColor: v3.colors.fg,
+    outlineOffset: 2,
+    outlineStyle: 'solid',
+    outlineWidth: 2,
+  },
   ltr: { direction: 'ltr' },
   inputLtr: { textAlign: 'left', writingDirection: 'ltr' },
   fieldError: { borderColor: v3.colors.danger },

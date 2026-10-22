@@ -29,7 +29,11 @@ import { requireAccount } from '../../lib/requireAccount'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { showToast } from '../../lib/toast'
 
-/** A media square's side: three of them and their gaps fill a phone's width. */
+/**
+ * A media square's side, the board's. Three of them and their gaps come to
+ * 356pt, a little wider than a phone's content column, so the line scrolls
+ * rather than shrinking them.
+ */
 const MEDIA_TILE = 112
 
 /** Past this many languages the segmented row stops fitting a phone. */

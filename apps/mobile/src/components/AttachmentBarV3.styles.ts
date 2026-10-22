@@ -90,24 +90,24 @@ export const useAttachmentStylesV3 = makeStyles(({ v3 }) => ({
  */
 export const useAttachmentTileStylesV3 = makeStyles(({ v3 }) => ({
   scroll: { flexGrow: 0 },
-  line: { alignItems: 'center', flexDirection: 'row', gap: 11, paddingEnd: 8, paddingTop: 8 },
+  line: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: v3.space[10],
+    paddingEnd: v3.space[8],
+    paddingTop: v3.space[8],
+  },
   tile: {
     alignItems: 'center',
     borderRadius: v3.radius.card,
     gap: v3.space[6],
     justifyContent: 'center',
     paddingHorizontal: v3.space[8],
-    paddingVertical: v3.space[10],
+    // 8 rather than the board's 10: at `buttonSmall` "Add a photo or video"
+    // takes three lines in a 112 square, and with the glyph that only fits here.
+    paddingVertical: v3.space[8],
   },
   add: { borderColor: v3.colors.muted, borderStyle: 'dashed', borderWidth: 2 },
   voice: { backgroundColor: v3.colors.surface },
-  // A step under `buttonSmall`, as the board draws it: at 16 "Add a photo or
-  // video" breaks onto a third line inside a 112 square.
-  label: {
-    ...v3.type.buttonSmall,
-    color: v3.colors.fg,
-    fontSize: 15,
-    lineHeight: 18,
-    textAlign: 'center',
-  },
+  label: { ...v3.type.buttonSmall, color: v3.colors.fg, textAlign: 'center' },
 }))

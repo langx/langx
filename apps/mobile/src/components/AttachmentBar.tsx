@@ -193,7 +193,9 @@ export function AttachmentBar({
           ]}
         >
           <Feather name="image" size={v3.icon.xl} color={v3.colors.fg} />
-          <Text style={tiles.label}>{mediaLabel ?? t('composer.attachLibrary')}</Text>
+          <Text style={tiles.label} maxFontSizeMultiplier={TILE_TEXT_MAX_SCALE}>
+            {mediaLabel ?? t('composer.attachLibrary')}
+          </Text>
         </Pressable>
         {voiceNote ? (
           <Pressable
@@ -211,7 +213,9 @@ export function AttachmentBar({
             ]}
           >
             <Feather name="mic" size={v3.icon.xl} color={v3.colors.fg} />
-            <Text style={tiles.label}>{t('feed.voiceNote')}</Text>
+            <Text style={tiles.label} maxFontSizeMultiplier={TILE_TEXT_MAX_SCALE}>
+              {t('feed.voiceNote')}
+            </Text>
           </Pressable>
         ) : null}
       </ScrollView>
@@ -255,6 +259,12 @@ export function AttachmentBar({
     </View>
   )
 }
+
+/**
+ * How far the tiles' words follow the system text size. The square does not
+ * grow with them, so past this the label would spill out of it.
+ */
+const TILE_TEXT_MAX_SCALE = 1.2
 
 /** This file's sheet, or with `flags.v3Home` on the redesign's (`AttachmentBarV3.styles.ts`). */
 function useStyles() {
