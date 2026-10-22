@@ -392,6 +392,13 @@ const config: ExpoConfig = {
      */
     './plugins/withCalls',
     /*
+     * Lets the app see Instagram, so a video can go straight to Stories:
+     * the iOS query schemes and the Android `<queries>` entry. The share
+     * itself is `react-native-share`, whose own plugin is deliberately not
+     * used. See `plugins/withInstagramStories.js`.
+     */
+    './plugins/withInstagramStories',
+    /*
      * The Android half of the same feature, and it needs no targets: an
      * Android widget is drawn by the app's own JavaScript in a headless task,
      * so the views live in `widgets/` as TSX and the plugin only has to write
