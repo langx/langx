@@ -1,6 +1,7 @@
 import { onlineManager } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSubmitEchoReviews } from '../api/queries'
+import { pendingBatches } from '../lib/echoPendingBatches'
 import type { EchoSnapshot } from '../lib/echoSnapshot'
 import { forgetPendingReviews, readEchoSnapshot, rememberEchoSummary } from '../lib/echoStore'
 
@@ -20,7 +21,9 @@ export function useEchoOffline(summary: { total: number } | undefined): {
   saved: EchoSnapshot | null
 } {
   const [saved, setSaved] = useState<EchoSnapshot | null>(null)
-  const submit = useSubmitEchoReviews()
+  // The function alone: the mutation object is new on every state change, and
+  // an effect keyed on it re-sent a refused queue as fast as it was refused.
+  const { mutateAsync: send } = useSubmitEchoReviews()
 
   useEffect(() => {
     void readEchoSnapshot().then(setSaved)
@@ -31,33 +34,45 @@ export function useEchoOffline(summary: { total: number } | undefined): {
     if (summary) void rememberEchoSummary(summary as EchoSnapshot['summary'])
   }, [summary])
 
+  /*
+   * One flush at a time. The mutation's own `isPending` drops between two
+   * batches, and the effect re-runs on that render with the file not yet
+   * re-read — so it started a second flush of everything still listed.
+   */
+  const flushing = useRef(false)
+
   useEffect(() => {
     const pending = saved?.pending ?? []
-    if (pending.length === 0 || !onlineManager.isOnline() || submit.isPending) return
+    if (pending.length === 0 || !onlineManager.isOnline() || flushing.current) return
+    flushing.current = true
 
     /*
-     * The ids were minted when each grade was given, so this is the same
-     * idempotent batch the session would have sent. Anything the server has
+     * The ids were minted when each grade was given, so these are the same
+     * idempotent batches the session would have sent. Anything the server has
      * already applied comes back `duplicate` and is dropped from the file
      * either way — what matters is that it stops being pending.
+     *
+     * In batches, and in order, each forgotten as it lands: see
+     * `pendingBatches` for the two ways one request for everything stuck.
      */
-    void submit
-      .mutateAsync({
-        reviews: pending.map(({ reviewId, cardId, grade, durationMs }) => ({
-          reviewId,
-          cardId,
-          grade,
-          durationMs,
-        })),
-      })
-      .then(async () => {
-        await forgetPendingReviews(pending)
+    const { batches, invalid } = pendingBatches(pending)
+    void (async () => {
+      try {
+        await forgetPendingReviews(invalid)
+        for (const reviews of batches) {
+          await send({ reviews })
+          await forgetPendingReviews(reviews)
+        }
+        flushing.current = false
+        // Re-read, which also picks up anything a session added meanwhile.
         setSaved(await readEchoSnapshot())
-      })
-      .catch(() => {
-        // Still no network, or the server is unwell. The file keeps them.
-      })
-  }, [saved, submit])
+      } catch {
+        // Still no network, or the server is unwell. The file keeps the rest
+        // for the next time the tab opens; retrying here would only spin.
+        flushing.current = false
+      }
+    })()
+  }, [saved, send])
 
   return { saved }
 }
