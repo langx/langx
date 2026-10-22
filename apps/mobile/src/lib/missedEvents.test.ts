@@ -1,6 +1,6 @@
 import { QueryClient } from '@tanstack/react-query'
-import { describe, expect, it } from 'vitest'
-import { invalidateMissedEvents, resumedFromBackground } from './missedEvents'
+import { describe, expect, it, vi } from 'vitest'
+import { invalidateMissedEvents, restartConnection, resumedFromBackground } from './missedEvents'
 
 describe('resumedFromBackground', () => {
   it('is the phone coming back from the background', () => {
@@ -56,5 +56,69 @@ describe('invalidateMissedEvents', () => {
       expect(client.getQueryState(key)?.isInvalidated, key.join('/')).toBe(true)
     }
     expect(client.getQueryState(['me'])?.isInvalidated).toBe(false)
+  })
+})
+
+/**
+ * What socket.io-client 4.8 does on `disconnect()` then `connect()`, checked
+ * against a real server: the socket emits `disconnect` and then `connect`,
+ * and the Manager emits no `reconnect` — that event is only for the
+ * Manager's own retries.
+ */
+function fakeSocket() {
+  const handlers = new Map<string, Set<() => void>>()
+  const emit = (event: string): void => {
+    for (const handler of [...(handlers.get(event) ?? [])]) handler()
+  }
+  return {
+    emit,
+    disconnect: vi.fn(() => emit('disconnect')),
+    connect: vi.fn(),
+    once(event: 'connect', listener: () => void) {
+      const wrapped = (): void => {
+        handlers.get(event)?.delete(wrapped)
+        listener()
+      }
+      Object.assign(wrapped, { listener })
+      if (!handlers.has(event)) handlers.set(event, new Set())
+      handlers.get(event)!.add(wrapped)
+    },
+    off(event: 'connect', listener: () => void) {
+      for (const handler of handlers.get(event) ?? []) {
+        if ((handler as { listener?: unknown }).listener === listener) {
+          handlers.get(event)!.delete(handler)
+        }
+      }
+    },
+  }
+}
+
+describe('restartConnection', () => {
+  /**
+   * The network-came-back restart. The socket was holding a connection that
+   * had stopped carrying packets, so whatever was sent in that time never
+   * arrived — and with no Manager `reconnect` nothing went back for it.
+   */
+  it('resyncs once the restarted socket is connected again', () => {
+    const socket = fakeSocket()
+    const resync = vi.fn()
+    restartConnection(socket, resync)
+    expect(socket.disconnect).toHaveBeenCalledTimes(1)
+    expect(socket.connect).toHaveBeenCalledTimes(1)
+    expect(resync).not.toHaveBeenCalled()
+    socket.emit('connect')
+    expect(resync).toHaveBeenCalledTimes(1)
+  })
+
+  /** A flapping radio restarts it several times before anything connects. */
+  it('resyncs once for several restarts before the connection is back', () => {
+    const socket = fakeSocket()
+    const resync = vi.fn()
+    restartConnection(socket, resync)
+    restartConnection(socket, resync)
+    restartConnection(socket, resync)
+    socket.emit('connect')
+    socket.emit('connect')
+    expect(resync).toHaveBeenCalledTimes(1)
   })
 })

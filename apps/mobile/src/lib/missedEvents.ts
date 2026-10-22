@@ -75,3 +75,31 @@ export async function invalidateMissedEvents(queryClient: QueryClient): Promise<
     queryClient.invalidateQueries({ queryKey: ['profile'] }),
   ])
 }
+
+/** The parts of a socket.io `Socket` a restart touches, so a test can stand in for it. */
+export interface RestartableSocket {
+  disconnect: () => unknown
+  connect: () => unknown
+  once: (event: 'connect', listener: () => void) => unknown
+  off: (event: 'connect', listener: () => void) => unknown
+}
+
+/**
+ * Starts the connection over and resyncs when it is back.
+ *
+ * The restart is a gap, and the third signal `useSocket` counts as one, but
+ * it does not end in a Manager `reconnect`: that event is only for the
+ * Manager's own retries, and a `disconnect()` then `connect()` opens the
+ * engine afresh and emits nothing but `connect`. So the network coming back
+ * restarted the socket and went back for nothing — whatever was sent while
+ * the connection had stopped carrying packets stayed off screen.
+ *
+ * `off` first, so a radio that flaps three times before anything connects
+ * resyncs once rather than three times.
+ */
+export function restartConnection(socket: RestartableSocket, resync: () => void): void {
+  socket.disconnect()
+  socket.off('connect', resync)
+  socket.once('connect', resync)
+  socket.connect()
+}
