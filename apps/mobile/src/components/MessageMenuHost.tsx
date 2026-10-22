@@ -71,18 +71,6 @@ export function MessageMenuHost() {
   const keyboardInset = useKeyboardInset()
   const screen = useWindowDimensions()
 
-  useEffect(
-    () =>
-      subscribeToMessageMenu((next) => {
-        // A new menu always opens on the first page; leaving it on `more`
-        // would show the second page of a message nobody asked about.
-        setPage('primary')
-        setPicking(false)
-        setRequest(next)
-      }),
-    [],
-  )
-
   /*
    * The v3 anchored menu lifts out of the bubble (`MENU_MOTION`) instead of
    * the whole Modal fading in: the scrim and the copy together, then the menu
@@ -98,6 +86,25 @@ export function MessageMenuHost() {
     menu: new Animated.Value(0),
     emoji: [] as Animated.Value[],
   }).current
+
+  useEffect(
+    () =>
+      subscribeToMessageMenu((next) => {
+        // A new menu always opens on the first page; leaving it on `more`
+        // would show the second page of a message nobody asked about.
+        setPage('primary')
+        setPicking(false)
+        // Back to the start of the lift before the next menu's first commit.
+        // A close that skipped the exit — through the full picker, or with
+        // reduced motion — leaves them at 1, and the menu would be drawn
+        // once at full size before its entrance reset it.
+        for (const value of [motion.scrim, motion.lift, motion.menu, ...motion.emoji]) {
+          value.setValue(0)
+        }
+        setRequest(next)
+      }),
+    [motion],
+  )
   // One value per emoji, made the first time a strip that long is drawn.
   while (motion.emoji.length < (request?.reactions?.length ?? 0)) {
     motion.emoji.push(new Animated.Value(0))

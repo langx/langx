@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import {
   Animated,
   Easing,
@@ -67,10 +67,19 @@ export function WaveformProgress({
   const rtl = Platform.OS === 'web' ? isRtl : I18nManager.isRTL
 
   const progress = useRef(new Animated.Value(fraction ?? 0)).current
+  /*
+   * Bumped by every run of the effect below and by unmounting. The value
+   * comes back from `stopAnimation` asynchronously, so a callback from an
+   * older status — or one landing after the bubble has gone — must not start
+   * a run of its own.
+   */
+  const generation = useRef(0)
   useEffect(() => {
+    const mine = ++generation.current
     // Stopping hands back where the native side had got to, which is what
     // the next run carries on from.
     progress.stopAnimation((current) => {
+      if (generation.current !== mine) return
       const plan = sweepPlan(current, fraction, playing && !reduce, secondsLeft)
       if (plan.from !== null) progress.setValue(plan.from)
       if (plan.ms <= 0) return
@@ -82,11 +91,22 @@ export function WaveformProgress({
       }).start()
     })
   }, [fraction, playing, reduce, secondsLeft, progress])
-  useEffect(() => () => progress.stopAnimation(), [progress])
+  useEffect(
+    () => () => {
+      generation.current += 1
+      progress.stopAnimation()
+    },
+    [progress],
+  )
 
   const sign = rtl ? -1 : 1
-  const shift = (direction: number) =>
-    progress.interpolate({ inputRange: [0, 1], outputRange: [direction * width, 0] })
+  // Built once per width and direction, not per render: each status update
+  // re-renders this, and a fresh interpolation node is a fresh native node.
+  const [windowShift, copyShift] = useMemo(() => {
+    const shift = (direction: number) =>
+      progress.interpolate({ inputRange: [0, 1], outputRange: [direction * width, 0] })
+    return [shift(-sign), shift(sign)]
+  }, [progress, width, sign])
 
   const bars = (opacity: number) =>
     heights.map((height, index) => (
@@ -100,9 +120,9 @@ export function WaveformProgress({
       {width > 0 ? (
         <Animated.View
           pointerEvents="none"
-          style={[CLIP, { transform: [{ translateX: shift(-sign) }] }]}
+          style={[CLIP, { transform: [{ translateX: windowShift }] }]}
         >
-          <Animated.View style={[rowStyle, { width, transform: [{ translateX: shift(sign) }] }]}>
+          <Animated.View style={[rowStyle, { width, transform: [{ translateX: copyShift }] }]}>
             {bars(1)}
           </Animated.View>
         </Animated.View>

@@ -64,7 +64,13 @@ export function AudioBubble(props: AudioBubbleProps) {
   const [rate, setRate] = useState<PlaybackRate>(NORMAL_PLAYBACK_RATE)
   /** A `play()` that threw; the status alone cannot report one. */
   const [failed, setFailed] = useState(false)
-  const face = { ...props, rate, setRate, failed, setFailed }
+  /*
+   * The bars' measured width, out here for the same reason: the first press
+   * swaps the idle face for the live one, which remounts the waveform, and a
+   * width that started again at 0 blanked the bars for a frame.
+   */
+  const [waveWidth, setWaveWidth] = useState(0)
+  const face = { ...props, rate, setRate, failed, setFailed, waveWidth, setWaveWidth }
   return first ? (
     <LiveAudio {...face} first={first} />
   ) : (
@@ -98,6 +104,8 @@ interface FaceProps extends AudioBubbleProps {
   setRate: (rate: PlaybackRate) => void
   failed: boolean
   setFailed: (failed: boolean) => void
+  waveWidth: number
+  setWaveWidth: (width: number) => void
 }
 
 /** A note nobody has pressed yet: nothing loaded, nothing playing. */
@@ -139,15 +147,27 @@ function LiveAudio({ first, ...face }: FaceProps & { first: FirstPress }) {
   const player = useAudioPlayer(face.media.url)
   const status = useAudioPlayerStatus(player)
   const { setFailed } = face
-  // Read once, for the press that made this player: from here on the face
-  // sets the rate on the player itself, and a re-render must not replay.
-  const firstPress = useRef({ ...first, rate: face.rate })
+  /*
+   * The press that made this player, consumed once and only for the file it
+   * was made for. A bubble whose file changes under it — PostScreen's
+   * "Record again" — gets a new player for the new take, and that one must
+   * neither auto-play nor seek: it only takes the speed currently chosen.
+   */
+  const pending = useRef<(FirstPress & { url: string | undefined }) | null>({
+    ...first,
+    url: face.media.url,
+  })
+  const rate = useRef(face.rate)
+  rate.current = face.rate
+  const url = face.media.url
   useEffect(() => {
-    const press = firstPress.current
-    if (press.rate !== NORMAL_PLAYBACK_RATE) player.setPlaybackRate(press.rate, 'high')
+    if (rate.current !== NORMAL_PLAYBACK_RATE) player.setPlaybackRate(rate.current, 'high')
+    const press = pending.current
+    pending.current = null
+    if (!press || press.url !== url) return
     if (press.seekTo !== undefined) void player.seekTo(press.seekTo)
     if (press.play) void startPlayback(player, false, setFailed)
-  }, [player, setFailed])
+  }, [player, url, setFailed])
   return <AudioFace {...face} player={player} status={status} onFirstPress={undefined} />
 }
 
@@ -159,6 +179,8 @@ function AudioFace({
   setRate,
   failed,
   setFailed,
+  waveWidth,
+  setWaveWidth,
   player,
   status,
   onFirstPress,
@@ -273,6 +295,8 @@ function AudioFace({
             time up, and that is what says the note is playing.
           */}
           <Waveform
+            width={waveWidth}
+            onWidth={setWaveWidth}
             waveform={media.waveform}
             fraction={fraction}
             color={tint}
@@ -374,6 +398,8 @@ function Waveform({
   playing,
   secondsLeft,
   onSeek,
+  width,
+  onWidth,
 }: {
   waveform: readonly number[] | undefined
   fraction: number | null
@@ -385,9 +411,11 @@ function Waveform({
   secondsLeft: number
   /** Absent when there is nowhere to seek to — see `AudioBubble`. */
   onSeek: ((fraction: number) => void) | undefined
+  /** The row's measured width, kept by `AudioBubble` so a remount does not lose it. */
+  width: number
+  onWidth: (width: number) => void
 }) {
   const styles = useStyles()
-  const [width, setWidth] = useState(0)
   /** Where a drag is, drawn instead of the player's position until release. */
   const [scrub, setScrub] = useState<number | null>(null)
 
@@ -418,7 +446,7 @@ function Waveform({
       <View
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
-        onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
+        onLayout={(event) => onWidth(event.nativeEvent.layout.width)}
         style={styles.waveform}
       >
         {smooth ? (
