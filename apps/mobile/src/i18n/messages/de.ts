@@ -3996,5 +3996,23 @@ export const de: Localized<EnMessages> = {
     replyIdeasA11y: 'Copilot nach Antwortideen fragen',
     replyIdeaHint: 'Fügt sie in deine Nachricht ein. Es wird nichts gesendet.',
     replyIdeasCount: { one: '{count} Antwortidee', other: '{count} Antwortideen' },
+    report: 'Melden',
+    reportA11y: 'Diese Antwort melden',
+    reportTitle: 'Diese Antwort melden?',
+    reportBody:
+      'Das LangX-Team sieht diese Antwort und welche Copilot-Hilfe sie geschrieben hat. An die andere Person wird nichts gesendet.',
+    reportIncludeQuestion: 'Auch senden, was du geschrieben hast',
+    reportChatNotSent: 'Aus deinem Chat wird nichts mitgesendet.',
+    reportSend: 'Meldung senden',
+    reportSent: 'Danke — das Team sieht es sich an.',
+    settingsTitle: 'Copilot',
+    settingsOnBody:
+      'An. Dein Text geht nur an den KI-Anbieter, wenn du auf eine Copilot-Schaltfläche tippst.',
+    settingsOffStateBody: 'Aus. Copilot fragt nach deiner Erlaubnis, bevor es genutzt wird.',
+    settingsOffTitle: 'Copilot ausschalten?',
+    settingsOffBody:
+      'Von dir geht nichts mehr an den KI-Anbieter. Copilot fragt beim nächsten Mal erneut.',
+    settingsOffConfirm: 'Ausschalten',
+    settingsOffDone: 'Copilot ist aus.',
   },
 }

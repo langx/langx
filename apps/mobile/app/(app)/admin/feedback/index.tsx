@@ -43,7 +43,7 @@ const CLOSE_REASONS = [
 ] as const
 
 /**
- * The bug and idea queue, oldest first — the server sorts it that way because
+ * The bug and idea queue — and reported Copilot answers — oldest first — the server sorts it that way because
  * it is a queue and not a feed, and the row that matters is the one nobody has
  * closed for longest.
  *
@@ -153,8 +153,20 @@ function Row({ row }: { row: AdminFeedbackDto }) {
   return (
     <AdminBlockV3>
       <Text style={styles.meta}>
-        {row.kind} · {ADMIN.feedback.from} {who} · {row.createdAt.slice(0, 10)}
+        {row.copilot ? ADMIN.feedback.copilotAction(row.copilot.action) : row.kind} ·{' '}
+        {ADMIN.feedback.from} {who} · {row.createdAt.slice(0, 10)}
       </Text>
+      {row.copilot ? (
+        <>
+          <Text style={styles.meta}>{ADMIN.feedback.copilotQuestion}</Text>
+          {row.copilot.question ? (
+            <AdminQuoteV3>{row.copilot.question}</AdminQuoteV3>
+          ) : (
+            <Text style={styles.meta}>{ADMIN.feedback.copilotNoQuestion}</Text>
+          )}
+          <Text style={styles.meta}>{ADMIN.feedback.copilotAnswer}</Text>
+        </>
+      ) : null}
       <AdminQuoteV3>{row.body}</AdminQuoteV3>
 
       {row.attachmentUrls.length > 0 ? (
@@ -163,7 +175,20 @@ function Row({ row }: { row: AdminFeedbackDto }) {
         </Text>
       ) : null}
 
-      {row.bounty ? (
+      {/*
+       * A reported AI answer is not paid for: a bounty on every answer
+       * somebody disliked would be a reason to dislike them. Close only.
+       */}
+      {row.copilot ? (
+        <AdminActionsV3>
+          <Button
+            label={ADMIN.feedback.copilotClose}
+            variant="neutral"
+            onPress={onClose}
+            loading={close.isPending}
+          />
+        </AdminActionsV3>
+      ) : row.bounty ? (
         <Text style={styles.paid}>{ADMIN.feedback.paid(row.bounty.amount)}</Text>
       ) : (
         <>

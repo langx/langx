@@ -2,6 +2,7 @@ import {
   type AccountDeletionReason,
   type AdminCopilotAccessRequest,
   type AdminCopilotAccessRow,
+  type CopilotAction,
   type GiftCodeRedeemResult,
   type FeedbackInput,
   type LinkPreviewResponse,
@@ -3584,8 +3585,10 @@ export interface AdminAppealDto {
 
 export interface AdminFeedbackDto {
   _id: string
-  kind: 'bug' | 'feature'
+  /** `copilot` is a reported AI answer: `body` is the answer, `copilot` the rest. */
+  kind: 'bug' | 'feature' | 'copilot'
   body: string
+  copilot?: { action: CopilotAction; question?: string }
   attachmentUrls: string[]
   issueUrl?: string
   status: 'open' | 'triaged' | 'closed'

@@ -1,4 +1,5 @@
 import type { CopilotStatus } from '@langx/shared'
+import { useEffect, useState } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useT } from '../../i18n'
@@ -7,6 +8,7 @@ import { CopilotLabel } from '../CopilotLabel'
 import { Button } from '../ui/Button'
 import { CopilotAllowance } from './CopilotAllowance'
 import { CopilotAnswerBody, showsAllowance, type CopilotAnswerState } from './CopilotCard'
+import { CopilotReportButton, CopilotReportPanel } from './CopilotReport'
 
 /**
  * Explain's answer: what one message means, or what a correction changed
@@ -16,6 +18,10 @@ import { CopilotAnswerBody, showsAllowance, type CopilotAnswerState } from './Co
  * own; the server's prompt is what holds that, and this sheet has nowhere to
  * put a sentence of Copilot's even if one came back. Tapping outside closes
  * it, as Close does.
+ *
+ * Report swaps the sheet's contents for the confirm step rather than opening
+ * a second sheet over this one: two modals at once is what iOS refuses to
+ * present, and Cancel then lands back on the explanation; sending closes it.
  */
 export function CopilotExplainSheet({
   state,
@@ -30,6 +36,9 @@ export function CopilotExplainSheet({
   const styles = useStyles()
   const t = useT()
   const reduceMotion = useReduceMotion()
+  const [reporting, setReporting] = useState(false)
+  // A new answer, or the sheet closing, starts on the explanation again.
+  useEffect(() => setReporting(false), [state])
 
   return (
     <Modal
@@ -42,17 +51,34 @@ export function CopilotExplainSheet({
       <Pressable style={styles.backdrop} accessibilityLabel={t('copilot.close')} onPress={onClose}>
         {/* Swallows the press so tapping the sheet does not close it. */}
         <Pressable style={styles.sheet} onPress={() => undefined}>
-          <ScrollView contentContainerStyle={styles.content} accessibilityLiveRegion="polite">
-            <CopilotLabel />
-            <Text style={styles.title} accessibilityRole="header">
-              {t('copilot.explainTitle')}
-            </Text>
-            {state ? <CopilotAnswerBody state={state} /> : null}
-            {state && showsAllowance(state) ? <CopilotAllowance quota={quota} /> : null}
-          </ScrollView>
-          <View style={styles.footer}>
-            <Button label={t('copilot.close')} variant="secondary" onPress={onClose} />
-          </View>
+          {reporting && state?.kind === 'answer' ? (
+            <CopilotReportPanel
+              target={{ result: state.result, asked: state.asked }}
+              onDone={() => setReporting(false)}
+              // Sent: the sheet has done its job. Back on the explanation,
+              // Report would only invite a second copy of the same report.
+              onSent={onClose}
+            />
+          ) : (
+            <>
+              <ScrollView contentContainerStyle={styles.content} accessibilityLiveRegion="polite">
+                <View style={styles.labelRow}>
+                  <CopilotLabel />
+                  {state?.kind === 'answer' ? (
+                    <CopilotReportButton onPress={() => setReporting(true)} />
+                  ) : null}
+                </View>
+                <Text style={styles.title} accessibilityRole="header">
+                  {t('copilot.explainTitle')}
+                </Text>
+                {state ? <CopilotAnswerBody state={state} /> : null}
+                {state && showsAllowance(state) ? <CopilotAllowance quota={quota} /> : null}
+              </ScrollView>
+              <View style={styles.footer}>
+                <Button label={t('copilot.close')} variant="secondary" onPress={onClose} />
+              </View>
+            </>
+          )}
         </Pressable>
       </Pressable>
     </Modal>
@@ -77,6 +103,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[24],
     paddingTop: v3.space[24],
   },
+  labelRow: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
   title: { ...v3.type.headline, color: v3.colors.fg },
   footer: {
     paddingBottom: v3.space[24],

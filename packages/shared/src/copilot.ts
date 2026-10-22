@@ -210,3 +210,41 @@ export interface AdminCopilotAccessRow {
   /** When access was given, as an ISO string. */
   at: string
 }
+
+/**
+ * The longest answer a report may carry. Well past anything the model writes
+ * under `maxOutputTokens`, so a real answer always fits. The bound is there
+ * because the client sends the answer — the server keeps no copy tied to
+ * anybody (`copilotCache` is keyed by a hash) — and an unbounded field would
+ * be an unbounded row in the operators' queue.
+ */
+export const COPILOT_REPORT_MAX_ANSWER_CHARS = 4000
+
+/** The actions whose question is the person's own words: their draft. */
+export const COPILOT_OWN_QUESTION_ACTIONS: readonly CopilotAction[] = ['check', 'sayIt']
+
+/**
+ * Reporting one answer to the operators, from the card or the sheet it is on.
+ *
+ * `question` is the person's own draft, and only when they ticked the box
+ * that says it is sent. It is refused for Explain and Reply ideas: what they
+ * asked about is a message the other person wrote, and nobody can agree to
+ * pass that on for someone else.
+ */
+export const copilotReportRequestSchema = z
+  .object({
+    action: z.enum(COPILOT_ACTIONS),
+    answer: z.string().trim().min(1).max(COPILOT_REPORT_MAX_ANSWER_CHARS),
+    question: z
+      .string()
+      .trim()
+      .min(1)
+      .max(Math.max(COPILOT_RULES.maxCheckChars, COPILOT_RULES.maxSayItChars))
+      .optional(),
+  })
+  .refine(
+    (report) =>
+      report.question === undefined || COPILOT_OWN_QUESTION_ACTIONS.includes(report.action),
+    { message: 'Only Check and Say it can include the question', path: ['question'] },
+  )
+export type CopilotReportRequest = z.infer<typeof copilotReportRequestSchema>

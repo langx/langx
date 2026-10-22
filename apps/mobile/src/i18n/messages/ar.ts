@@ -5001,5 +5001,22 @@ export const ar: Localized<EnMessages> = {
       many: '{count} فكرة للرد',
       other: '{count} فكرة للرد',
     },
+    report: 'إبلاغ',
+    reportA11y: 'الإبلاغ عن هذه الإجابة',
+    reportTitle: 'هل تريد الإبلاغ عن هذه الإجابة؟',
+    reportBody:
+      'سيرى فريق LangX هذه الإجابة وأي مساعدة من Copilot كتبتها. لا يُرسل أي شيء إلى الشخص الآخر.',
+    reportIncludeQuestion: 'أرسل أيضًا ما كتبته',
+    reportChatNotSent: 'لا يُرسل معها أي شيء من محادثتك.',
+    reportSend: 'إرسال البلاغ',
+    reportSent: 'شكرًا — سيطّلع الفريق عليه.',
+    settingsTitle: 'Copilot',
+    settingsOnBody: 'مُفعّل. يذهب نصك إلى مزوّد الذكاء الاصطناعي فقط عندما تضغط على زر Copilot.',
+    settingsOffStateBody: 'متوقف. يطلب Copilot إذنك قبل استخدامه.',
+    settingsOffTitle: 'إيقاف Copilot؟',
+    settingsOffBody:
+      'لن يُرسل أي شيء آخر منك إلى مزوّد الذكاء الاصطناعي. سيسألك Copilot مجددًا في المرة القادمة التي تستخدمه فيها.',
+    settingsOffConfirm: 'إيقاف',
+    settingsOffDone: 'Copilot متوقف.',
   },
 }

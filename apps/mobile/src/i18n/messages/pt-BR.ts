@@ -3923,5 +3923,23 @@ export const ptBR: Localized<EnMessages> = {
     replyIdeasA11y: 'Pedir ideias de resposta ao Copilot',
     replyIdeaHint: 'Coloca na sua mensagem. Nada é enviado.',
     replyIdeasCount: { one: '{count} ideia de resposta', other: '{count} ideias de resposta' },
+    report: 'Denunciar',
+    reportA11y: 'Denunciar esta resposta',
+    reportTitle: 'Denunciar esta resposta?',
+    reportBody:
+      'A equipe do LangX vai ver esta resposta e qual ajuda do Copilot a escreveu. Nada é enviado para a outra pessoa.',
+    reportIncludeQuestion: 'Enviar também o que você escreveu',
+    reportChatNotSent: 'Nada da sua conversa é enviado junto.',
+    reportSend: 'Enviar denúncia',
+    reportSent: 'Obrigado — a equipe vai dar uma olhada.',
+    settingsTitle: 'Copilot',
+    settingsOnBody:
+      'Ativado. Seu texto só vai para o provedor de IA quando você toca em um botão do Copilot.',
+    settingsOffStateBody: 'Desativado. O Copilot pede sua permissão antes de ser usado.',
+    settingsOffTitle: 'Desativar o Copilot?',
+    settingsOffBody:
+      'Nada mais seu vai para o provedor de IA. O Copilot pergunta de novo na próxima vez que você usar.',
+    settingsOffConfirm: 'Desativar',
+    settingsOffDone: 'O Copilot está desativado.',
   },
 }

@@ -4595,5 +4595,24 @@ export const ru: Localized<EnMessages> = {
       many: '{count} идей для ответа',
       other: '{count} идеи для ответа',
     },
+    report: 'Пожаловаться',
+    reportA11y: 'Пожаловаться на этот ответ',
+    reportTitle: 'Пожаловаться на этот ответ?',
+    reportBody:
+      'Команда LangX увидит этот ответ и то, какая функция Copilot его написала. Собеседнику ничего не отправляется.',
+    reportIncludeQuestion: 'Отправить и то, что вы написали',
+    reportChatNotSent: 'Ничего из вашего чата вместе с ним не отправляется.',
+    reportSend: 'Отправить жалобу',
+    reportSent: 'Спасибо — команда посмотрит.',
+    settingsTitle: 'Copilot',
+    settingsOnBody:
+      'Включён. Ваш текст уходит поставщику ИИ, только когда вы нажимаете кнопку Copilot.',
+    settingsOffStateBody:
+      'Выключен. Copilot спросит разрешения, прежде чем им можно будет пользоваться.',
+    settingsOffTitle: 'Выключить Copilot?',
+    settingsOffBody:
+      'Больше ничего вашего не уйдёт поставщику ИИ. В следующий раз Copilot спросит снова.',
+    settingsOffConfirm: 'Выключить',
+    settingsOffDone: 'Copilot выключен.',
   },
 }

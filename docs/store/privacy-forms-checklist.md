@@ -187,10 +187,16 @@ of the app. Behic does each step himself, in this order, and the flag is last:
       receives as collected by the app, which it already is.
 - [ ] **App Review notes**, with the build whose screens offer Copilot:
       describe it and its consent sheet (guideline 5.1.2(i)).
-- [ ] **Before the flag, in the app:** a Settings control to withdraw consent
-      (the server's `DELETE /copilot/consent` exists; the lab has the only
-      button today), and a way to report an AI answer (Play's AI-generated
-      content policy). Both belong to the PR that ships Copilot's screens.
+- [x] **Before the flag, in the app:** a Settings control to withdraw consent,
+      and a way to report an AI answer (Play's AI-generated content policy).
+      Both exist now. Settings → Privacy → **Copilot** (v3, shown only to an
+      account Copilot is on for) says whether it is on and turns it off,
+      which calls `DELETE /copilot/consent`; Copilot asks again next time.
+      Every answer card and the Explain sheet have **Report**, which sends
+      the answer and which help wrote it — and the person's own draft only
+      if they switch that on in the confirm sheet — to the operator panel's
+      feedback queue (`POST /copilot/report`). Tick it again on the build
+      sent for review: both arrive with the over-the-air update.
 - [ ] **A spend limit** on the key's workspace with the provider —
       `COPILOT_RULES.globalCallsPerDay` is our ceiling; that one is theirs.
 - [ ] **Then the flag:** `scripts/maintenance.ts flag copilotEnabled true`.

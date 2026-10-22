@@ -1,4 +1,9 @@
-import { COPILOT_RULES, DEFAULT_APP_CONFIG, type AppConfigResponse } from '@langx/shared'
+import {
+  COPILOT_REPORT_MAX_ANSWER_CHARS,
+  COPILOT_RULES,
+  DEFAULT_APP_CONFIG,
+  type AppConfigResponse,
+} from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
@@ -237,5 +242,100 @@ describe('Copilot over HTTP', () => {
     expect(withdraw.statusCode).toBe(204)
     expect((await check()).statusCode).toBe(409)
     expect(model.asked).toHaveLength(1)
+  })
+
+  describe('reporting an answer', () => {
+    function report(
+      payload: Record<string, unknown>,
+      headers: Record<string, string> = { cookie },
+    ) {
+      return app.inject({ method: 'POST', url: '/copilot/report', headers, payload })
+    }
+    const feedback = () => handle.db.collection(COLLECTIONS.feedback)
+
+    afterEach(async () => {
+      await feedback().deleteMany({})
+      await handle.db
+        .collection(COLLECTIONS.profiles)
+        .updateOne({ _id: userId as never }, { $unset: { admin: '' } })
+    })
+
+    it('needs a session', async () => {
+      const response = await report({ action: 'explain', answer: 'It means hello.' }, {})
+      expect(response.statusCode).toBe(401)
+      expect(await feedback().countDocuments()).toBe(0)
+    })
+
+    it('is refused for an account not on the allow-list', async () => {
+      await setCopilotAccess(handle.db, userId, false)
+      try {
+        const response = await report({ action: 'explain', answer: 'It means hello.' })
+        expect(response.statusCode).toBe(403)
+        expect(await feedback().countDocuments()).toBe(0)
+      } finally {
+        await setCopilotAccess(handle.db, userId, true)
+      }
+    })
+
+    it('validates the report', async () => {
+      const refused = [
+        // The question of an Explain or Reply ideas is the other person's message.
+        { action: 'explain', answer: 'It means hello.', question: 'merhaba' },
+        { action: 'replyIdeas', answer: 'Sure!', question: 'what they said' },
+        { action: 'check', answer: '   ' },
+        { action: 'check', answer: 'a'.repeat(COPILOT_REPORT_MAX_ANSWER_CHARS + 1) },
+        { action: 'check', answer: 'ok', question: 'a'.repeat(COPILOT_RULES.maxCheckChars + 1) },
+        { action: 'translate', answer: 'ok' },
+        { answer: 'ok' },
+      ]
+      for (const payload of refused) {
+        expect((await report(payload)).statusCode, JSON.stringify(payload)).toBe(400)
+      }
+      expect(await feedback().countDocuments()).toBe(0)
+    })
+
+    it('puts the answer, and the draft only when sent, in the operators’ feedback queue', async () => {
+      const mailsBefore = emailSender.messages.length
+      const withDraft = await report({
+        action: 'check',
+        answer: 'I have an apple.\nAn, before a vowel.',
+        question: 'I have a apple.',
+      })
+      expect(withDraft.statusCode).toBe(202)
+      const withoutDraft = await report({ action: 'explain', answer: 'It means hello.' })
+      expect(withoutDraft.statusCode).toBe(202)
+
+      // The row is the whole record: no mail with the draft in it.
+      expect(emailSender.messages).toHaveLength(mailsBefore)
+
+      const member = await app.inject({
+        method: 'GET',
+        url: '/admin/feedback',
+        headers: { cookie },
+      })
+      expect(member.statusCode).toBe(403)
+
+      await handle.db
+        .collection(COLLECTIONS.profiles)
+        .updateOne({ _id: userId as never }, { $set: { admin: true } })
+      const list = await app.inject({ method: 'GET', url: '/admin/feedback', headers: { cookie } })
+      expect(list.statusCode).toBe(200)
+      const items = list.json<{ items: Record<string, unknown>[] }>().items
+      expect(items).toHaveLength(2)
+      expect(items[0]).toMatchObject({
+        kind: 'copilot',
+        status: 'open',
+        body: 'I have an apple.\nAn, before a vowel.',
+        attachmentUrls: [],
+        copilot: { action: 'check', question: 'I have a apple.' },
+        sender: { userId, handle: 'copilotuser' },
+      })
+      expect(items[0]).not.toHaveProperty('issueUrl')
+      // In the sender's language, as every reply draft is.
+      expect(items[0]?.replyDraft).toContain('Copilot')
+      expect(items[0]?.replyDraft).toContain('teşekkürler')
+      expect(items[1]).toMatchObject({ kind: 'copilot', copilot: { action: 'explain' } })
+      expect((items[1]?.copilot as Record<string, unknown>).question).toBeUndefined()
+    })
   })
 })
