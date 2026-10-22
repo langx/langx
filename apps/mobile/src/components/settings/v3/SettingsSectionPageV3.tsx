@@ -22,6 +22,7 @@ import {
   SettingsScreenV3,
   type Glyph,
 } from './SettingsKitV3'
+import { CopilotSettingsV3 } from './CopilotSettingsV3'
 import { HiddenModeNestV3, SettingsRowV3 } from './SettingsRowV3'
 
 /**
@@ -50,6 +51,8 @@ export function SettingsSectionPageV3({ id }: { id: SettingsSectionId }) {
           />
         ))
       )}
+      {/* Only for an account Copilot is on for; nothing for everybody else. */}
+      {id === 'privacy' ? <CopilotSettingsV3 /> : null}
     </SettingsScreenV3>
   )
 }

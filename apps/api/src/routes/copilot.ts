@@ -3,6 +3,7 @@ import {
   copilotConsentRequestSchema,
   copilotExplainRequestSchema,
   copilotReplyIdeasRequestSchema,
+  copilotReportRequestSchema,
   copilotSayItRequestSchema,
 } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
@@ -12,6 +13,7 @@ import { requireVerifiedEmail } from '../middleware/requireAuth'
 import { getAppConfig } from '../modules/appConfig/appConfig'
 import { askCopilot, getCopilotStatus, type CopilotDeps } from '../modules/copilot/copilot'
 import { recordCopilotConsent, withdrawCopilotConsent } from '../modules/copilot/consent'
+import { reportCopilotAnswer } from '../modules/copilot/report'
 
 /**
  * Read per request, never at boot: the operator's switch is a database write
@@ -56,6 +58,26 @@ export const copilotRoutes: FastifyPluginAsyncZod = async (app) => {
     await withdrawCopilotConsent(app.mongo.db, request.userId)
     return reply.code(204).send()
   })
+
+  /*
+   * Reporting an answer: a row in the operators' feedback queue. Its own
+   * ceiling, off under test for the reason `feedback.ts` gives — a suite's
+   * one connection would spend it on fixtures.
+   */
+  app.post(
+    '/copilot/report',
+    {
+      preHandler: requireVerifiedEmail,
+      schema: { body: copilotReportRequestSchema },
+      config: {
+        rateLimit: app.env.NODE_ENV === 'test' ? false : { max: 20, timeWindow: '1 hour' },
+      },
+    },
+    async (request, reply) => {
+      await reportCopilotAnswer(app.mongo.db, request.userId, request.body)
+      return reply.code(202).send({ ok: true })
+    },
+  )
 
   app.post(
     '/copilot/check',

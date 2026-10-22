@@ -4335,6 +4335,34 @@ export const en = {
     replyIdeaHint: 'Puts it in your message. Nothing is sent.',
     /** Screen-reader words for the header above the ideas. */
     replyIdeasCount: { one: '{count} reply idea', other: '{count} reply ideas' },
+    /** The small action in the corner of every Copilot answer. */
+    report: 'Report',
+    reportA11y: 'Report this answer',
+    reportTitle: 'Report this answer?',
+    /**
+     * The confirm sheet: what always goes to the team. Says the answer can quote
+     * its subject — a Check answer is the draft, corrected — so the switch below
+     * is not mistaken for the only way the words leave.
+     */
+    reportBody:
+      'The LangX team will see this answer, which can quote the words it was about, and which Copilot help wrote it. Nothing is sent to the other person.',
+    /** Off until switched on; the draft it would send is shown under it. */
+    reportIncludeQuestion: 'Also send what you wrote',
+    /** Explain and Reply ideas: no draft to offer, and nothing of the chat beyond what the answer quotes. */
+    reportChatNotSent: 'Nothing else from your chat is sent with it.',
+    reportSend: 'Send report',
+    reportSent: 'Thanks — the team will look at it.',
+    /** The row on the Privacy page, for an account Copilot is on for. */
+    settingsTitle: 'Copilot',
+    settingsOnBody: 'On. Your text goes to the AI provider only when you tap a Copilot button.',
+    /** Under the row while consent is not given: Copilot asks before it is used. */
+    settingsOffStateBody: 'Off. Copilot asks for your permission before it is used.',
+    settingsOffTitle: 'Turn off Copilot?',
+    /** Turning it off withdraws consent on the server. */
+    settingsOffBody:
+      'Nothing more of yours goes to the AI provider. Copilot asks again the next time you use it.',
+    settingsOffConfirm: 'Turn off',
+    settingsOffDone: 'Copilot is off.',
   },
 } as const
 

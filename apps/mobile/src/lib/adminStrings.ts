@@ -288,6 +288,12 @@ export const ADMIN = {
     replied: (emailed: boolean) =>
       emailed ? 'Sent, and emailed.' : 'Sent in the app. The email did not go.',
     repliedAt: (date: string) => `Answered ${date}`,
+    /** A reported Copilot answer: which help wrote it, and the person's draft when they sent it. */
+    copilotAction: (action: string) => `Copilot · ${action}`,
+    copilotQuestion: 'They asked',
+    copilotAnswer: 'Copilot answered',
+    copilotNoQuestion: 'Their question was not sent.',
+    copilotClose: 'Close',
   },
 
   broadcast: {

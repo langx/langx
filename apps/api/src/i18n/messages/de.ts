@@ -677,6 +677,8 @@ export const de: Localized<ServerMessages> = {
   feedbackReply: {
     bug: 'Hallo! Danke für deine Meldung — wir haben sie gelesen und schauen sie uns an.',
     feature: 'Hallo! Danke für die Idee — wir haben sie gelesen, und sie steht auf unserer Liste.',
+    copilot:
+      'Hallo! Danke, dass du diese Copilot-Antwort gemeldet hast — wir haben sie gelesen, und Meldungen wie deine helfen uns, Copilot besser zu machen.',
     issue: 'Hier kannst du den Stand verfolgen: {url}',
   },
 }

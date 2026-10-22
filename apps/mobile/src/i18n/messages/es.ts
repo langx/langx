@@ -3950,5 +3950,23 @@ export const es: Localized<EnMessages> = {
     replyIdeasA11y: 'Pedir a Copilot ideas de respuesta',
     replyIdeaHint: 'La pone en tu mensaje. No se envía nada.',
     replyIdeasCount: { one: '{count} idea de respuesta', other: '{count} ideas de respuesta' },
+    report: 'Reportar',
+    reportA11y: 'Reportar esta respuesta',
+    reportTitle: '¿Reportar esta respuesta?',
+    reportBody:
+      'El equipo de LangX verá esta respuesta, que puede citar las palabras sobre las que trataba, y qué ayuda de Copilot la escribió. No se envía nada a la otra persona.',
+    reportIncludeQuestion: 'Enviar también lo que escribiste',
+    reportChatNotSent: 'No se envía nada más de tu chat con ella.',
+    reportSend: 'Enviar reporte',
+    reportSent: 'Gracias — el equipo lo revisará.',
+    settingsTitle: 'Copilot',
+    settingsOnBody:
+      'Activado. Tu texto va al proveedor de IA solo cuando tocas un botón de Copilot.',
+    settingsOffStateBody: 'Desactivado. Copilot te pide permiso antes de usarse.',
+    settingsOffTitle: '¿Desactivar Copilot?',
+    settingsOffBody:
+      'No se enviará nada más tuyo al proveedor de IA. Copilot te volverá a preguntar la próxima vez que lo uses.',
+    settingsOffConfirm: 'Desactivar',
+    settingsOffDone: 'Copilot está desactivado.',
   },
 }

@@ -11,6 +11,7 @@ import { IconButton } from '../ui/IconButton'
 import { PressableScale } from '../ui/PressableScale'
 import { Skeleton } from '../ui/Skeleton'
 import { CopilotAllowance, copilotTime } from './CopilotAllowance'
+import { CopilotReportButton } from './CopilotReport'
 
 /** A line the card can show for a refusal: everything but the two that are steps. */
 export type CopilotErrorLine = Exclude<CopilotErrorKey, 'off' | 'consent'>
@@ -42,12 +43,15 @@ export function CopilotCard({
   quota,
   onUse,
   onClose,
+  onReport,
 }: {
   state: CopilotAnswerState
   quota: CopilotStatus['quota'] | undefined
   /** Replaces the draft. Never sends. */
   onUse: (text: string) => void
   onClose: () => void
+  /** Opens the confirm sheet for this answer. Offered only once there is an answer. */
+  onReport?: (() => void) | undefined
 }) {
   const styles = useStyles()
   const t = useT()
@@ -58,6 +62,7 @@ export function CopilotCard({
       <View style={styles.header}>
         <CopilotLabel />
         <View style={styles.grow} />
+        {state.kind === 'answer' && onReport ? <CopilotReportButton onPress={onReport} /> : null}
         <IconButton
           icon="x"
           iconSize={v3.icon.md}

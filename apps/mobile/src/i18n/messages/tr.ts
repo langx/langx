@@ -3905,5 +3905,23 @@ export const tr: Localized<EnMessages> = {
     replyIdeasA11y: 'Copilot’tan yanıt fikirleri iste',
     replyIdeaHint: 'Mesajına ekler. Hiçbir şey gönderilmez.',
     replyIdeasCount: { one: '{count} yanıt fikri', other: '{count} yanıt fikri' },
+    report: 'Bildir',
+    reportA11y: 'Bu yanıtı bildir',
+    reportTitle: 'Bu yanıt bildirilsin mi?',
+    reportBody:
+      'LangX ekibi bu yanıtı (hakkında olduğu sözleri alıntılayabilir) ve onu hangi Copilot yardımının yazdığını görecek. Karşı tarafa hiçbir şey gönderilmez.',
+    reportIncludeQuestion: 'Yazdığını da gönder',
+    reportChatNotSent: 'Sohbetinden başka hiçbir şey onunla birlikte gönderilmez.',
+    reportSend: 'Bildirimi gönder',
+    reportSent: 'Teşekkürler — ekip inceleyecek.',
+    settingsTitle: 'Copilot',
+    settingsOnBody:
+      'Açık. Metnin yalnızca bir Copilot düğmesine dokunduğunda yapay zekâ sağlayıcısına gider.',
+    settingsOffStateBody: 'Kapalı. Copilot kullanılmadan önce iznini ister.',
+    settingsOffTitle: 'Copilot kapatılsın mı?',
+    settingsOffBody:
+      'Artık senden hiçbir şey yapay zekâ sağlayıcısına gitmez. Copilot bir dahaki kullanımında yeniden sorar.',
+    settingsOffConfirm: 'Kapat',
+    settingsOffDone: 'Copilot kapalı.',
   },
 }

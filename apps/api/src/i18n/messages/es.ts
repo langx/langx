@@ -678,6 +678,8 @@ export const es: Localized<ServerMessages> = {
   feedbackReply: {
     bug: '¡Hola! Gracias por avisarnos — lo hemos leído y lo estamos revisando.',
     feature: '¡Hola! Gracias por la idea — la hemos leído y ya está en nuestra lista.',
+    copilot:
+      '¡Hola! Gracias por reportar esta respuesta de Copilot — la hemos leído, y reportes como el tuyo nos ayudan a mejorar Copilot.',
     issue: 'Puedes seguirlo aquí: {url}',
   },
 }

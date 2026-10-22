@@ -27,6 +27,7 @@ import { CopilotConsentSheet } from '../CopilotConsentSheet'
 import type { ComposerCopilot } from '../thread/ComposerV3'
 import { CopilotCard, type CopilotAnswerState } from './CopilotCard'
 import { CopilotExplainSheet } from './CopilotExplainSheet'
+import { CopilotReportSheet, type CopilotReportTarget } from './CopilotReport'
 import { ReplyIdeasChip, RiseIn } from './ReplyIdeasChip'
 
 interface ThreadCopilotInput {
@@ -108,6 +109,8 @@ export function useThreadCopilot({
   const [card, setCard] = useState<CopilotAnswerState | null>(null)
   const [explained, setExplained] = useState<CopilotAnswerState | null>(null)
   const [consenting, setConsenting] = useState(false)
+  /** The answer whose Report was tapped, on the card or the ideas: the confirm sheet's. */
+  const [reporting, setReporting] = useState<CopilotReportTarget | null>(null)
   /** The question the consent sheet stands in front of, asked once it is accepted. */
   const pending = useRef<(() => void) | null>(null)
   /*
@@ -136,6 +139,7 @@ export function useThreadCopilot({
     setCard(null)
     setExplained(null)
     setIdeas(null)
+    setReporting(null)
   }, [conversationId])
 
   // Copilot went off for this person: whatever was open goes with it.
@@ -144,6 +148,7 @@ export function useThreadCopilot({
     setCard(null)
     setExplained(null)
     setIdeas(null)
+    setReporting(null)
   }, [gate])
 
   // Typing, a send, or a newer message: the strip has nothing left to answer.
@@ -313,6 +318,12 @@ export function useThreadCopilot({
           loading: card?.kind === 'loading',
         }
 
+  /** Report on a card: the answer as it stands, kept even if the card then closes. */
+  const reportFor = (state: CopilotAnswerState) =>
+    state.kind === 'answer'
+      ? () => setReporting({ result: state.result, asked: state.asked })
+      : undefined
+
   const shown = card === null ? ideasTarget : undefined
   const openIdeasState = shown && ideas?.for === shown ? ideas.state : null
   const offered = shown && !nothingFor.has(shown) ? shown : undefined
@@ -333,6 +344,7 @@ export function useThreadCopilot({
               onUse(text)
             }}
             onClose={closeCard}
+            onReport={reportFor(card)}
           />
         </View>
       ) : openIdeasState ? (
@@ -346,6 +358,7 @@ export function useThreadCopilot({
                 onUse(text)
               }}
               onClose={closeIdeas}
+              onReport={reportFor(openIdeasState)}
             />
           </RiseIn>
         </View>
@@ -366,6 +379,7 @@ export function useThreadCopilot({
           }}
         />
         <CopilotExplainSheet state={explained} quota={status.data?.quota} onClose={closeSheet} />
+        <CopilotReportSheet target={reporting} onClose={() => setReporting(null)} />
       </>
     ) : null,
   }
