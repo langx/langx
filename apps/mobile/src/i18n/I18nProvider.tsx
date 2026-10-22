@@ -8,7 +8,7 @@ import {
 import { getLocales } from 'expo-localization'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import { I18nManager, Platform } from 'react-native'
+import { I18nManager, Platform, View } from 'react-native'
 import { FLAG_KEYS, readFlag, writeFlag } from '../lib/localFlags'
 import { createTranslate, setActiveLocale, type TranslateFn } from './runtime'
 
@@ -122,8 +122,19 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   // render behind — a dialog in the language the user just left.
   setActiveLocale(locale)
 
+  /*
+   * What react-native-web is told, on web only — see the return below. State
+   * set after mount rather than `isRtl` itself: the static export prerenders
+   * every page in English, and hydration keeps a prerendered attribute and
+   * class name that differ from the first client render rather than patching
+   * them, so a direction known from the first render would never reach the
+   * page. An update after hydration is an ordinary render, and does.
+   */
+  const [webDirection, setWebDirection] = useState<'ltr' | 'rtl'>('ltr')
+
   useEffect(() => {
     applyDirection(isRtl)
+    setWebDirection(isRtl ? 'rtl' : 'ltr')
   }, [isRtl])
 
   const value = useMemo<I18nContextValue>(
@@ -131,8 +142,25 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     [locale, isRtl, preference, setPreference],
   )
 
-  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>
+  const tree = <I18nContext.Provider value={value}>{children}</I18nContext.Provider>
+  if (Platform.OS !== 'web') return tree
+  /*
+   * `dir` on the document flips flex rows, but react-native-web resolves
+   * `start`/`end` — and every `marginStart`, `paddingEnd` — from its own
+   * locale context, which defaults to left-to-right and never reads the
+   * document. Without this, Arabic on web laid out its rows right to left and
+   * every logical edge left to right. A `View` with `dir` is the only public
+   * way to set that context; `display: contents` keeps it out of the layout,
+   * and it is always there so a language change does not remount the app.
+   */
+  return (
+    <View style={WEB_DIRECTION_ROOT} {...({ dir: webDirection } as object)}>
+      {tree}
+    </View>
+  )
 }
+
+const WEB_DIRECTION_ROOT = { display: 'contents' } as const
 
 /** The one every screen wants. */
 export function useT(): TranslateFn {
