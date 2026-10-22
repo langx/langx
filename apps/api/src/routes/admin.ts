@@ -326,9 +326,10 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
    *
    * Thrown the day `minVersion` moves everybody to a build that sends one —
    * before that, refusing a missing token locks every older build out of the
-   * password forms. Off is the undo and is never refused. Writes the flags
-   * whole from the current config, like the script does, so the other
-   * switches keep whatever value they had. See `auth/captcha.ts`.
+   * password forms. Off is the undo and is never refused. Writes its own
+   * flag and nothing else, like the Flags route below: writing the flags whole
+   * from this machine's cached read could put back a switch another machine
+   * made seconds ago. See `auth/captcha.ts`.
    */
   app.post(
     '/admin/app-config/captcha-required',
@@ -339,10 +340,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     },
     async (request, reply) => {
       const { required } = request.body
-      const current = await getAppConfig(app.mongo.db)
-      const config = await updateAppConfig(app.mongo.db, {
-        flags: { ...current.flags, captchaRequired: required },
-      })
+      const config = await setAppConfigFlag(app.mongo.db, 'captchaRequired', required)
       forgetAdminStats()
 
       await recordAdminAction(app.mongo.db, request.log, {

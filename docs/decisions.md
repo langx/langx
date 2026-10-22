@@ -9263,7 +9263,10 @@ schema's own keys, and the body is strict. The write sets one dotted path,
 `flags.<name>`, with the name taken from that list rather than read off the
 request. It does not write the flags whole from a cached read. The cache is per
 machine, so two switches made seconds apart on two machines would undo each
-other, and the audit log would still say both had stuck. The audit row is
+other, and the audit log would still say both had stuck. The captcha route and
+the script's `flag` command write the same way, through `setAppConfigFlag`: one
+writer that still wrote the flags whole would undo the others just as well. The
+audit row is
 best-effort like every panel action's: a failed audit insert is logged and does
 not undo the switch. `captchaRequired` keeps its own route
 beside the minimum version, because it is thrown in step with it. Conditions a
