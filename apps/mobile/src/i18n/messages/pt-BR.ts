@@ -1261,6 +1261,7 @@ export const ptBR: Localized<EnMessages> = {
     title: 'Conversa',
     typing: 'digitando…',
     notSentRetry: 'Não enviado — toque para tentar de novo',
+    notSentTapRetry: 'Não enviado · Toque para tentar de novo',
     editing: 'Editando',
     correcting: 'Corrigindo',
     partsReplyTitle: 'Qual parte você está respondendo?',

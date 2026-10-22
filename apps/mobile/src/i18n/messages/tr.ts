@@ -1254,6 +1254,7 @@ export const tr: Localized<EnMessages> = {
     title: 'Sohbet',
     typing: 'yazıyor…',
     notSentRetry: 'Gönderilmedi — tekrar denemek için dokun',
+    notSentTapRetry: 'Gönderilmedi · Tekrar denemek için dokun',
     editing: 'Düzenleniyor',
     correcting: 'Düzeltiliyor',
     partsReplyTitle: 'Hangi kısmı yanıtlıyorsun?',

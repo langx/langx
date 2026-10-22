@@ -1281,6 +1281,7 @@ export const fr: Localized<EnMessages> = {
     title: 'Discussion',
     typing: 'écrit…',
     notSentRetry: 'Non envoyé — touche pour réessayer',
+    notSentTapRetry: 'Non envoyé · Touche pour réessayer',
     editing: 'Modification',
     correcting: 'Correction',
     partsReplyTitle: 'À quelle partie réponds-tu ?',

@@ -1439,6 +1439,7 @@ export const ru: Localized<EnMessages> = {
     title: 'Чат',
     typing: 'печатает…',
     notSentRetry: 'Не отправлено — нажми, чтобы повторить',
+    notSentTapRetry: 'Не отправлено · Нажми, чтобы повторить',
     editing: 'Редактирование',
     correcting: 'Исправление',
     partsReplyTitle: 'На какую часть ты отвечаешь?',

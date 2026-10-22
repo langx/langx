@@ -156,6 +156,7 @@ import { placeLabel, type GeocodedAddress } from '../lib/sharedLocation'
 import { validatePickedAssets, type PickRefusal, type PickedMedia } from '../lib/pickedAssets'
 import { readDroppedFiles } from '../lib/droppedFiles'
 import { PendingMediaBubble } from '../components/PendingMediaBubble'
+import { UnsentRowV3 } from '../components/thread/UnsentRowV3'
 import {
   ScheduledMessageRows,
   useScheduleMessage,
@@ -308,6 +309,7 @@ export function ChatScreen({
     if (chips.some((chip) => chip.kind === 'streak')) setCelebrating(messageId)
   }
   const styles = useStyles()
+  const rowsV3 = useRowStylesV3()
   const v3Styles = useThreadV3Styles()
   const t = useT()
   const names = useDisplayNames()
@@ -336,6 +338,12 @@ export function ChatScreen({
   /** Sends in flight, drawn in the thread before the server has answered. */
   const [outgoing, setOutgoing] = useState<OutgoingMessage[]>([])
   const [unsent, setUnsent] = useState<UnsentMessage[]>([])
+  /**
+   * Unsent rows whose retry is out. Only the v3 row draws it — "Sending" in
+   * place of the red line — so a tap that is being answered does not look
+   * like a tap that did nothing.
+   */
+  const [retrying, setRetrying] = useState<ReadonlySet<string>>(() => new Set())
   /**
    * And back out of the device, because until this the rows lived exactly as
    * long as the screen did. Somebody who types a sentence in a tunnel and goes
@@ -1866,14 +1874,24 @@ export function ChatScreen({
   }
 
   async function retry(message: UnsentMessage): Promise<void> {
-    await deliver(
-      message.body,
-      message.clientId,
-      message.replyToMessageId,
-      undefined,
-      undefined,
-      message.quote,
-    )
+    const id = message.clientId
+    setRetrying((ids) => new Set(ids).add(id))
+    try {
+      await deliver(
+        message.body,
+        message.clientId,
+        message.replyToMessageId,
+        undefined,
+        undefined,
+        message.quote,
+      )
+    } finally {
+      setRetrying((ids) => {
+        const next = new Set(ids)
+        next.delete(id)
+        return next
+      })
+    }
   }
 
   /**
@@ -3251,6 +3269,24 @@ export function ChatScreen({
           <View style={styles.unsentBlock}>
             {visibleUnsent.map((message) => {
               const discard = () => setUnsent((list) => removeUnsent(list, message.clientId))
+              const openActions = () =>
+                void headerActions.current.openUnsentActions({
+                  body: message.body,
+                  preview: message.body,
+                  discard,
+                })
+              if (v3Thread) {
+                return (
+                  <UnsentRowV3
+                    key={message.clientId}
+                    body={message.body}
+                    retrying={retrying.has(message.clientId)}
+                    onRetry={() => void headerActions.current.retry(message)}
+                    onDiscard={discard}
+                    onLongPress={openActions}
+                  />
+                )
+              }
               return (
                 <View key={message.clientId} style={styles.unsentRow}>
                   <DiscardUnsentButton onPress={discard} />
@@ -3318,6 +3354,7 @@ export function ChatScreen({
     [
       pending,
       visibleUnsent,
+      retrying,
       styles,
       t,
       conversationId,
@@ -3393,9 +3430,11 @@ export function ChatScreen({
         </View>
       ) : row.kind === 'unread' ? (
         <View style={styles.unreadRow}>
-          <View style={styles.unreadLine} />
-          <Text style={styles.unreadLabel}>{t('chat.newMessages')}</Text>
-          <View style={styles.unreadLine} />
+          <View style={[styles.unreadLine, v3Thread && rowsV3.unreadLine]} />
+          <Text style={[styles.unreadLabel, v3Thread && rowsV3.unreadLabel]}>
+            {t('chat.newMessages')}
+          </Text>
+          <View style={[styles.unreadLine, v3Thread && rowsV3.unreadLine]} />
         </View>
       ) : (
         // A stand-in has no server id yet, so a menu or a reply on it
@@ -3524,6 +3563,7 @@ export function ChatScreen({
       onOpenMedia,
       onOpenViewOnce,
       onBurstTap,
+      rowsV3,
     ],
   )
 
@@ -3861,7 +3901,7 @@ export function ChatScreen({
           {copilot.card}
           {readOnly ? (
             <View style={styles.channelNote}>
-              <Text style={styles.channelNoteText}>
+              <Text style={[styles.channelNoteText, v3Thread && rowsV3.channelNoteText]}>
                 {t(suspended ? 'chat.suspendedOnly' : 'chat.channelOnly')}
               </Text>
             </View>
@@ -4642,6 +4682,18 @@ const useThreadV3Styles = makeStyles(({ v3 }) => ({
     shadowOpacity: 0,
   },
   jumpCount: { ...v3.type.label, color: v3.colors.pillText },
+}))
+
+/**
+ * The rest of the thread's own rows in the v3 look, over the current sheet's
+ * (the day chip, typing and jump are `useThreadV3Styles`'): the "New messages"
+ * divider in v3's caption, semibold, on a two-point line, and the read-only
+ * note in its caption.
+ */
+const useRowStylesV3 = makeStyles(({ v3 }) => ({
+  unreadLine: { backgroundColor: v3.colors.line, height: 2 },
+  unreadLabel: { ...v3.type.caption, color: v3.colors.echoText, fontWeight: '600' },
+  channelNoteText: { ...v3.type.caption, color: v3.colors.muted },
 }))
 
 /**

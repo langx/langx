@@ -38,14 +38,19 @@ export function MessageMeta({
   message,
   mine,
   pending = false,
+  v3 = false,
 }: {
   message: MessageDto
   mine: boolean
   /** The row is an optimistic stand-in; see `lib/outgoingMessages`. */
   pending?: boolean
+  /** The v3 thread's look, as `MessageBubble`'s own `v3`. */
+  v3?: boolean
 }) {
   const { colors } = useTheme()
-  const styles = useStyles()
+  const current = useStyles()
+  const redesigned = useStylesV3()
+  const styles = v3 ? redesigned : current
   const t = useT()
   const { locale } = useLocale()
   const state = pending ? 'sending' : deliveryStateOf(message)
@@ -70,4 +75,16 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   row: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
   // Already faint by colour; a second dampening via opacity would bury it.
   time: { ...font.caption, color: colors.textFaint, fontSize: 11 },
+}))
+
+/**
+ * The same line in the v3 thread: v3's caption in its grey. The current
+ * look's 11pt is under v3's floor of 12 for anything a person reads, and the
+ * clock and "Sending" or "Read" are read; Nunito's label step was tried and
+ * shouted, on every row. Tabular, so a clock does not shift the line when its
+ * digits change.
+ */
+const useStylesV3 = makeStyles(({ v3 }) => ({
+  row: { alignItems: 'center', flexDirection: 'row', gap: v3.space[4] },
+  time: { ...v3.type.caption, color: v3.colors.muted, fontVariant: ['tabular-nums'] },
 }))

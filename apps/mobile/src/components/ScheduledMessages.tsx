@@ -3,8 +3,10 @@ import type { ScheduleMessageInput, ScheduledMessageDto } from '@langx/shared'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Pressable, Text, View } from 'react-native'
 import { api } from '../api/client'
+import { useV3Home } from '../hooks/useV3Home'
 import { useLocale, useT } from '../i18n'
 import { makeStyles, useTheme } from '../lib/theme'
+import { ScheduledRowV3 } from './thread/ScheduledRowV3'
 
 const scheduledKey = (conversationId: string) => ['scheduled', conversationId] as const
 
@@ -62,6 +64,7 @@ export function ScheduledMessageRows({ conversationId }: { conversationId: strin
   const { locale } = useLocale()
   const scheduled = useScheduledMessages(conversationId)
   const cancel = useCancelScheduled(conversationId)
+  const v3Look = useV3Home()
 
   const rows = scheduled.data ?? []
   if (rows.length === 0) return null
@@ -77,6 +80,24 @@ export function ScheduledMessageRows({ conversationId }: { conversationId: strin
       {rows.map((row) => {
         const failed = row.status === 'failed'
         const due = !failed && new Date(row.sendAt).getTime() <= Date.now()
+        const note = failed
+          ? t('chat.scheduledNotSent')
+          : due || row.status === 'sending'
+            ? t('chat.scheduledSending')
+            : t('chat.scheduledFor', { time: when.format(new Date(row.sendAt)) })
+        if (v3Look) {
+          return (
+            <ScheduledRowV3
+              key={row._id}
+              body={row.body}
+              failed={failed}
+              note={note}
+              actionLabel={failed ? t('chat.scheduledDismiss') : t('chat.scheduledCancel')}
+              cancelDisabled={row.status === 'sending'}
+              onCancel={() => cancel.mutate(row._id)}
+            />
+          )
+        }
         return (
           <View key={row._id} style={styles.row}>
             <Pressable
@@ -94,12 +115,7 @@ export function ScheduledMessageRows({ conversationId }: { conversationId: strin
                 {row.body}
               </Text>
               <Text style={[styles.note, failed ? styles.noteFailed : styles.onPrimaryMuted]}>
-                <Feather name={failed ? 'alert-circle' : 'clock'} size={12} />{' '}
-                {failed
-                  ? t('chat.scheduledNotSent')
-                  : due || row.status === 'sending'
-                    ? t('chat.scheduledSending')
-                    : t('chat.scheduledFor', { time: when.format(new Date(row.sendAt)) })}
+                <Feather name={failed ? 'alert-circle' : 'clock'} size={12} /> {note}
               </Text>
             </View>
           </View>
