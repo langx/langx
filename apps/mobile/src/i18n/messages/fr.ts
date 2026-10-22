@@ -170,7 +170,7 @@ export const fr: Localized<EnMessages> = {
     hideOptions: 'Masquer les options',
     showOptions: 'Afficher les options',
     viewfinder: 'Vue de la caméra',
-    viewfinderHint: 'Pincez pour zoomer. Touchez deux fois pour changer de caméra.',
+    viewfinderHint: 'Pince pour zoomer. Touche deux fois pour changer de caméra.',
     zoomedIn: 'Zoom activé',
     notZoomed: 'Sans zoom',
     hint: 'Touche pour une photo, maintiens pour une vidéo',

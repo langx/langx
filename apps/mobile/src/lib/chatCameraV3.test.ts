@@ -105,6 +105,7 @@ describe('the v3 preview folds and saves', () => {
 
 const ZOOM_HOOK = readFileSync(path.resolve(__dirname, '../screens/chat/useCameraZoom.ts'), 'utf8')
 const EN = readFileSync(path.resolve(__dirname, '../i18n/messages/en.ts'), 'utf8')
+const HOOK = readFileSync(path.resolve(__dirname, '../screens/chat/useCameraZoom.ts'), 'utf8')
 
 /*
  * Story-camera gestures: pinch the picture to zoom, double-tap it to flip.
@@ -142,8 +143,26 @@ describe('the chat camera zooms and flips from the picture', () => {
     expect(ROUTE).not.toMatch(/onFlip=\{\(\) => setFacing/)
   })
 
-  it('applies the zoom again when a clip starts', () => {
-    expect(ROUTE).toMatch(/recordingNow\.current = true[\s\S]{0,300}zoom\.resend\(\)/)
+  it('applies the zoom again on every switch between photo and video, both ways', () => {
+    expect(ROUTE).toMatch(
+      /useEffect\(\(\) => \{\s*zoom\.resend\(\)[\s\S]{0,120}\}, \[cameraMode\]\)/,
+    )
+  })
+
+  it('builds the gestures once, not on every tick of the recording clock', () => {
+    expect(HOOK).toMatch(/const gesture = useMemo\(\(\) => \{/)
+    expect(HOOK).toContain('}, [flipEnabled, armed, factor])')
+  })
+
+  it('makes Android back on the preview a Retake, not a lost shot', () => {
+    expect(ROUTE).toMatch(
+      /if \(!captured\) return\s*const subscription = BackHandler\.addEventListener\('hardwareBackPress', \(\) => \{\s*retake\(\)\s*return true/,
+    )
+  })
+
+  it('offers no Save for a pick from the library', () => {
+    expect(ROUTE).toContain('onSave={fromLibrary ? undefined : () => void save()}')
+    expect(PREVIEW).toMatch(/\{onSave \? \(\s*<IconButton\s*icon="download"/)
   })
 
   it('lets a screen reader zoom without pinching', () => {

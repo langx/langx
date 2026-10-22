@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Platform } from 'react-native'
 import { Gesture } from 'react-native-gesture-handler'
 import { runOnJS, useAnimatedProps, useSharedValue } from 'react-native-reanimated'
@@ -64,38 +64,51 @@ export function useCameraZoom({
     zoom: Math.max(0, zoomProp(factor.get(), OS) - nudge.get()),
   }))
 
-  const pinch = Gesture.Pinch()
-    .onStart(() => {
-      armed.set(!atZoomEdge(factor.get()))
-    })
-    .onChange((event) => {
-      const next = pinchFactor(factor.get(), event.scaleChange)
-      factor.set(next)
-      // One tick on reaching 1x or the stop, not a rattle while the fingers hover there.
-      if (armed.get() && atZoomEdge(next)) {
-        armed.set(false)
-        runOnJS(buzz)()
-      } else if (!armed.get() && clearOfZoomEdge(next)) {
-        armed.set(true)
-      }
-    })
-    .onEnd(() => {
-      const rest = settleFactor(factor.get())
-      factor.set(rest)
-      runOnJS(setSettled)(rest)
-    })
+  // The latest handler, read at tap time, so the gestures need not be rebuilt for it.
+  const onDoubleTapRef = useRef(onDoubleTap)
+  onDoubleTapRef.current = onDoubleTap
 
-  const doubleTap = Gesture.Tap()
-    .numberOfTaps(2)
-    .maxDelay(DOUBLE_TAP_MS)
-    .maxDistance(DOUBLE_TAP_SLOP)
-    .enabled(flipEnabled)
-    .runOnJS(true)
-    .onEnd((_event, success) => {
-      if (!success) return
-      buzz()
-      onDoubleTap()
-    })
+  /*
+   * Built once per `flipEnabled`, not per render: the recording clock renders
+   * four times a second, and each new gesture object would send its handlers
+   * to the UI thread again mid-pinch.
+   */
+  const gesture = useMemo(() => {
+    const pinch = Gesture.Pinch()
+      .onStart(() => {
+        armed.set(!atZoomEdge(factor.get(), OS))
+      })
+      .onChange((event) => {
+        const next = pinchFactor(factor.get(), event.scaleChange, OS)
+        factor.set(next)
+        // One tick on reaching 1x or the stop, not a rattle while the fingers hover there.
+        if (armed.get() && atZoomEdge(next, OS)) {
+          armed.set(false)
+          runOnJS(buzz)()
+        } else if (!armed.get() && clearOfZoomEdge(next, OS)) {
+          armed.set(true)
+        }
+      })
+      .onEnd(() => {
+        const rest = settleFactor(factor.get())
+        factor.set(rest)
+        runOnJS(setSettled)(rest)
+      })
+
+    const doubleTap = Gesture.Tap()
+      .numberOfTaps(2)
+      .maxDelay(DOUBLE_TAP_MS)
+      .maxDistance(DOUBLE_TAP_SLOP)
+      .enabled(flipEnabled)
+      .runOnJS(true)
+      .onEnd((_event, success) => {
+        if (!success) return
+        buzz()
+        onDoubleTapRef.current()
+      })
+
+    return Gesture.Race(pinch, doubleTap)
+  }, [flipEnabled, armed, factor])
 
   /**
    * Back to no zoom. Before a flip, because the other lens has another
@@ -108,22 +121,24 @@ export function useCameraZoom({
 
   /** A screen reader's swipe up or down: twice or half the zoom. */
   function step(direction: 1 | -1): void {
-    const next = stepFactor(settled, direction)
+    const next = stepFactor(settled, direction, OS)
     factor.set(next)
     setSettled(next)
   }
 
   /**
-   * Applies the current zoom again. Switching to video changes the capture
-   * format, and AVFoundation resets `videoZoomFactor` when the format
-   * changes; the prop has not, so iOS would not re-apply it by itself.
+   * Applies the current zoom again. Called on every switch between photo and
+   * video: a change of session preset makes AVFoundation reset
+   * `videoZoomFactor`, and the prop has not changed, so iOS would not apply
+   * it again by itself. Android re-applies its zoom when it rebinds; the
+   * nudge is invisible there.
    */
   function resend(): void {
     nudge.set(nudge.get() === 0 ? NUDGE : 0)
   }
 
   return {
-    gesture: Gesture.Race(pinch, doubleTap),
+    gesture,
     animatedProps,
     /** The prop React passes, for renders between pinches. */
     zoom: zoomProp(settled, OS),

@@ -176,7 +176,7 @@ export const tr: Localized<EnMessages> = {
     showOptions: 'Seçenekleri göster',
     viewfinder: 'Kamera görüntüsü',
     viewfinderHint:
-      'Yakınlaştırmak için iki parmağınızı açın. Kamerayı değiştirmek için iki kez dokunun.',
+      'Yakınlaştırmak için iki parmağını aç. Kamerayı değiştirmek için iki kez dokun.',
     zoomedIn: 'Yakınlaştırıldı',
     notZoomed: 'Yakınlaştırılmadı',
     hint: 'Fotoğraf için dokun, video için basılı tut',

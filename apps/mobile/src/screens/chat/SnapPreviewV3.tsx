@@ -63,7 +63,8 @@ function clamp01(value: number): number {
  *
  * Save, at the top end, is the story camera's download: the shot into the
  * phone's own photos (or the browser's downloads) before it goes, which a
- * view-once photo otherwise never is. The route does the saving.
+ * view-once photo otherwise never is. The route does the saving, and leaves
+ * it out for a pick from the library, which would only be a second copy.
  */
 export function SnapPreviewV3({
   picture,
@@ -84,7 +85,8 @@ export function SnapPreviewV3({
   onMode: (mode: SnapMode) => void
   onRetake: () => void
   onSend: () => void
-  onSave: () => void
+  /** Absent when the shot came from the library: there is nothing to save. */
+  onSave?: (() => void) | undefined
 }) {
   const t = useT()
   const styles = useStyles()
@@ -134,15 +136,17 @@ export function SnapPreviewV3({
         back to the viewfinder.
       */}
       <StageTopBar onClose={onRetake} closeLabel={t('viewOnce.retake')}>
-        <IconButton
-          icon="download"
-          iconSize={22}
-          look="hue"
-          accessibilityLabel={t('photo.save')}
-          onPress={onSave}
-          disabled={saving}
-          hitSlop={10}
-        />
+        {onSave ? (
+          <IconButton
+            icon="download"
+            iconSize={22}
+            look="hue"
+            accessibilityLabel={t('photo.save')}
+            onPress={onSave}
+            disabled={saving}
+            hitSlop={10}
+          />
+        ) : null}
       </StageTopBar>
       <View style={[styles.panel, { paddingBottom: v3.space[16] + bottomInset }]}>
         <View style={styles.head}>

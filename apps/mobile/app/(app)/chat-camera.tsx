@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from 'react'
 import {
   ActivityIndicator,
   AppState,
+  BackHandler,
   Linking,
   Platform,
   Pressable,
@@ -125,6 +126,8 @@ export default function SnapScreen() {
   const conversationId = id ?? ''
   const v3Look = useV3Home()
   const [captured, setCaptured] = useState<PickedMedia | null>(null)
+  /** The shot came from the library, which already holds it: no Save. */
+  const [fromLibrary, setFromLibrary] = useState(false)
   const [mode, setMode] = useState<SnapMode>(DEFAULT_SNAP_MODE)
   // The stored choice arrives after the first render; a tap made before it
   // lands is newer and wins.
@@ -152,6 +155,25 @@ export default function SnapScreen() {
     goBackTo(`/(app)/chat/${conversationId}`)
   }
 
+  function retake(): void {
+    setCaptured(null)
+    setFromLibrary(false)
+  }
+
+  /*
+   * Android's back on the preview is Retake, as the corner's ✕ is and as
+   * Instagram's is: it would otherwise close the screen and lose the shot.
+   * On the camera itself back still leaves, the navigator's own handling.
+   */
+  useEffect(() => {
+    if (!captured) return
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      retake()
+      return true
+    })
+    return () => subscription.remove()
+  }, [captured])
+
   async function pickFromLibrary(): Promise<void> {
     const picked = await pickMediaAssets({ remaining: 1, source: 'library' })
     if (picked.status === 'denied') {
@@ -161,6 +183,7 @@ export default function SnapScreen() {
     if (picked.status === 'cancelled') return
     const first = picked.media[0]
     if (first) {
+      setFromLibrary(true)
       setCaptured(first)
       return
     }
@@ -232,10 +255,10 @@ export default function SnapScreen() {
             mode={mode}
             bottomInset={rounded ? 0 : insets.bottom}
             onMode={pickMode}
-            onRetake={() => setCaptured(null)}
+            onRetake={retake}
             onSend={send}
             saving={saving}
-            onSave={() => void save()}
+            onSave={fromLibrary ? undefined : () => void save()}
           />
         ) : captured ? (
           <SnapPreview
@@ -243,7 +266,7 @@ export default function SnapScreen() {
             mode={mode}
             bottomInset={rounded ? 0 : insets.bottom}
             onMode={pickMode}
-            onRetake={() => setCaptured(null)}
+            onRetake={retake}
             onSend={send}
           />
         ) : Platform.OS === 'web' && v3Look ? (
@@ -257,7 +280,10 @@ export default function SnapScreen() {
         ) : (
           <SnapCamera
             bottomInset={rounded ? 0 : insets.bottom}
-            onCaptured={setCaptured}
+            onCaptured={(item) => {
+              setFromLibrary(false)
+              setCaptured(item)
+            }}
             onLibrary={() => void pickFromLibrary()}
             onClose={close}
           />
@@ -316,6 +342,19 @@ function SnapCamera({
     )
     return () => clearInterval(timer)
   }, [recording])
+
+  /*
+   * Every switch between photo and video, both ways, applies the zoom again:
+   * iOS drops it with the session preset, and nothing else would put it back
+   * — not on the way into a clip, and not on the way out of one, whether the
+   * clip ended, failed or never started. The native side handles the mode and
+   * the zoom on one queue in order, so this lands after the switch without
+   * waiting for `MODE_SETTLE_MS`.
+   */
+  useEffect(() => {
+    zoom.resend()
+    // `zoom` is re-made each render; its `resend` touches only a shared value.
+  }, [cameraMode])
 
   // Recording waits for the switch to video. See `MODE_SETTLE_MS`.
   useEffect(() => {
@@ -433,9 +472,6 @@ function SnapCamera({
       return
     }
     recordingNow.current = true
-    // The switch to video changed the capture format, which on iOS drops the
-    // zoom the person framed with; apply it again before the clip starts.
-    zoom.resend()
     startedAt.current = Date.now()
     setElapsed(0)
     setRecording(true)
@@ -575,6 +611,11 @@ function SnapCamera({
           enableTorch={recording && flash === 'on'}
           mirror={facing === 'front'}
           mute={muted}
+          // On iOS this is the same session preset as the still's 1920x1080
+          // `pictureSize`, so a switch to video keeps the capture format, and
+          // with it the zoom's scale: the prop means the same magnification in
+          // both modes. Only before the sizes are known (or where a camera has
+          // no 16:9 size) do the two presets differ.
           videoQuality="1080p"
           videoBitrate={VIDEO_BITRATE}
           // Where the last pinch came to rest, so a render between pinches
