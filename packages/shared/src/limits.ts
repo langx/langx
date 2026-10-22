@@ -182,7 +182,7 @@ export interface PlanLimits {
    *
    * Pro was twelve, sized so one person spending every unit every day for a
    * month (about $4.70) still cost less than the yearly plan brings in a month
-   * after the store's commission ($83.99 / 12 × 0.85, about $5.95). Behic
+   * after the store's commission ($79.99 / 12 × 0.85, about $5.67). Behic
    * raised it to 24 on 21 October 2026: about $9.40 a month at that worst
    * case, above the yearly plan's month, accepted because the worst case is one
    * person maxing it daily and `COPILOT_RULES.globalCallsPerDay` caps the

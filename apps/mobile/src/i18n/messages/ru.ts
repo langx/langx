@@ -493,6 +493,7 @@ export const ru: Localized<EnMessages> = {
     recordIt: 'Скажите сами',
     removeAudio: 'Убрать запись',
     sessionProgress: '{done} из {total}',
+    noMeaningYet: 'У этой карточки пока нет значения.',
     show: 'Показать ответ',
     again: 'Снова',
     hard: 'Трудно',

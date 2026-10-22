@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { asksProduction, ECHO_PRODUCTION_MAX_LENGTH, productionVerdict } from './echoProduction'
+import {
+  asksProduction,
+  backAddsMeaning,
+  ECHO_PRODUCTION_MAX_LENGTH,
+  productionVerdict,
+} from './echoProduction'
 import { newCardSrs, type EchoSrs } from './srs'
 
 const NOW = new Date('2026-09-14T12:00:00Z')
@@ -11,26 +16,50 @@ function reviewing(overrides: Partial<EchoSrs> = {}): EchoSrs {
 describe('when a review asks for the sentence', () => {
   it('never while the card is still being learned', () => {
     // Ninety seconds after meeting it is not a test, it is a setup.
-    expect(asksProduction(newCardSrs(NOW), 'bonjour')).toBe(false)
-    expect(asksProduction(reviewing({ state: 'learning' }), 'bonjour')).toBe(false)
+    expect(asksProduction(newCardSrs(NOW), 'bonjour', 'hello')).toBe(false)
+    expect(asksProduction(reviewing({ state: 'learning' }), 'bonjour', 'hello')).toBe(false)
   })
 
   it('never for a sentence too long to type on a phone', () => {
     const long = 'a'.repeat(ECHO_PRODUCTION_MAX_LENGTH + 1)
-    expect(asksProduction(reviewing(), long)).toBe(false)
-    expect(asksProduction(reviewing(), 'a'.repeat(ECHO_PRODUCTION_MAX_LENGTH))).toBe(true)
+    expect(asksProduction(reviewing(), long, 'hello')).toBe(false)
+    expect(asksProduction(reviewing(), 'a'.repeat(ECHO_PRODUCTION_MAX_LENGTH), 'hello')).toBe(true)
   })
 
   it('alternates, so recognition stays in the rotation', () => {
-    expect(asksProduction(reviewing({ reps: 2 }), 'bonjour')).toBe(true)
-    expect(asksProduction(reviewing({ reps: 3 }), 'bonjour')).toBe(false)
-    expect(asksProduction(reviewing({ reps: 4 }), 'bonjour')).toBe(true)
+    expect(asksProduction(reviewing({ reps: 2 }), 'bonjour', 'hello')).toBe(true)
+    expect(asksProduction(reviewing({ reps: 3 }), 'bonjour', 'hello')).toBe(false)
+    expect(asksProduction(reviewing({ reps: 4 }), 'bonjour', 'hello')).toBe(true)
   })
 
   it('answers the same way twice for the same card', () => {
     // Leaving a session and coming back must not change what it asks.
     const card = reviewing()
-    expect(asksProduction(card, 'bonjour')).toBe(asksProduction(card, 'bonjour'))
+    expect(asksProduction(card, 'bonjour', 'hello')).toBe(asksProduction(card, 'bonjour', 'hello'))
+  })
+
+  it('never when the back is not a meaning to write from', () => {
+    // The back is the prompt: the sentence again would show the answer.
+    expect(asksProduction(reviewing(), 'Merhaba!', 'merhaba')).toBe(false)
+    expect(asksProduction(reviewing(), 'Merhaba!', '')).toBe(false)
+  })
+})
+
+describe('whether a back says anything the front does not', () => {
+  it('is a meaning when it is another sentence', () => {
+    expect(backAddsMeaning('Nasılsın?', 'How are you?')).toBe(true)
+  })
+
+  it('is not when it is empty', () => {
+    expect(backAddsMeaning('Nasılsın?', '')).toBe(false)
+    expect(backAddsMeaning('Nasılsın?', '   ')).toBe(false)
+  })
+
+  it('is not when it is the front again, as an identity translation returns it', () => {
+    expect(backAddsMeaning('Nasılsın?', 'Nasılsın?')).toBe(false)
+    // Case, punctuation, spacing and accents are not a translation.
+    expect(backAddsMeaning('Nasılsın?', ' nasilsin ')).toBe(false)
+    expect(backAddsMeaning('Ça va ?', 'ca va')).toBe(false)
   })
 })
 

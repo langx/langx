@@ -501,6 +501,8 @@ export const en = {
 
     // The session.
     sessionProgress: '{done} of {total}',
+    /** Where the answer goes, on a card whose back is empty or the sentence again. */
+    noMeaningYet: 'No meaning on this card yet.',
     show: 'Show answer',
     again: 'Again',
     hard: 'Hard',
@@ -3916,7 +3918,7 @@ export const en = {
     },
     showLess: 'Show less',
     /**
-     * A price and what it is per — "$6.99 a month" — in the order the language
+     * A price and what it is per — "$6.66 a month" — in the order the language
      * says them; Turkish puts the period first. `{period}` is one of `perMonth`,
      * `perYear` or `perLifetime`.
      */
