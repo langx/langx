@@ -13,6 +13,7 @@ import { useScreenInteractive } from '../../hooks/useScreenInteractive'
 import { useLocale, useT } from '../../i18n'
 import { dayLabel } from '../../lib/messageGroups'
 import { goBackTo } from '../../lib/navigation'
+import { todayBreakdown } from '../../lib/poolBreakdown'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { tokenAmountLabel } from '../../lib/tokenAmount'
 import { useV3Fonts } from './useV3Fonts'
@@ -154,15 +155,7 @@ export function PoolScreenV3() {
                 {t('tokens.activityScore', { count: Math.round(today.activityScore) })}
               </Text>
             </View>
-            <View
-              style={styles.tiles}
-              accessible
-              accessibilityLabel={t('tokens.todayBreakdown', {
-                messages: today.messages,
-                corrections: today.corrections,
-                partners: today.distinctPartners,
-              })}
-            >
+            <View style={styles.tiles} accessible accessibilityLabel={todayBreakdown(t, today)}>
               <Tile
                 value={today.messages}
                 label={t('tokens.todayMessages', { count: today.messages })}

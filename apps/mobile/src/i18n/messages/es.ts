@@ -2623,7 +2623,7 @@ export const es: Localized<EnMessages> = {
     shareForDay: 'Tu parte del {day}',
     todaySoFar: 'Hoy hasta ahora',
     activityScore: { one: '{count} de actividad', other: '{count} de actividad' },
-    todayBreakdown: '{messages} mensajes, {corrections} correcciones, {partners} personas.',
+    todayBreakdown: '{messages}, {corrections}, {partners}.',
     poolParticipants: { one: '{n} activo ese día', other: '{n} activos ese día' },
     poolShareOfPool: '{percent} del bote diario',
     poolActiveToday: { one: '{n} activo hoy', other: '{n} activos hoy' },

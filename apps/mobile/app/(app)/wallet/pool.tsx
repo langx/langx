@@ -6,6 +6,7 @@ import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { ScreenHeader } from '../../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../../src/lib/navigation'
 import { dayLabel } from '../../../src/lib/messageGroups'
+import { todayBreakdown } from '../../../src/lib/poolBreakdown'
 import { makeStyles } from '../../../src/lib/theme'
 import { useLocale, useT } from '../../../src/i18n'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
@@ -151,12 +152,7 @@ function PoolScreen() {
             </Text>
           </View>
           <Text style={styles.body}>
-            {t('tokens.todayBreakdown', {
-              messages: today.messages,
-              corrections: today.corrections,
-              partners: today.distinctPartners,
-            })}{' '}
-            {t('tokens.poolCap', { cap: shareCap })}
+            {todayBreakdown(t, today)} {t('tokens.poolCap', { cap: shareCap })}
           </Text>
           {/*
             Who you are splitting tonight's pool with. The count the API has

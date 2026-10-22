@@ -2899,7 +2899,7 @@ export const en = {
     shareForDay: 'Your share for {day}',
     todaySoFar: 'Today so far',
     activityScore: { one: '{count} activity', other: '{count} activity' },
-    todayBreakdown: '{messages} messages, {corrections} corrections, {partners} people.',
+    todayBreakdown: '{messages}, {corrections}, {partners}.',
     poolParticipants: { one: '{n} active that day', other: '{n} active that day' },
     poolShareOfPool: '{percent} of the daily pool',
     poolActiveToday: { one: '{n} active today', other: '{n} active today' },
