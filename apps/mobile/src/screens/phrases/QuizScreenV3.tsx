@@ -158,7 +158,10 @@ function OptionField({
         focused ? styles.optionFocused : correct ? styles.optionCorrect : null,
       ]}
     >
-      <Text style={styles.optionLabel}>{label}</Text>
+      {/* Seen, not read out: the input below carries the same label. */}
+      <Text style={styles.optionLabel} accessibilityElementsHidden importantForAccessibility="no">
+        {label}
+      </Text>
       <TextInput
         ref={input}
         accessibilityLabel={label}

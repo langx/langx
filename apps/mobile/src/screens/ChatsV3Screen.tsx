@@ -309,7 +309,11 @@ function MemberChats() {
       <Text
         style={archived ? styles.titleArchived : [styles.title, !black && styles.titleFallback]}
         accessibilityRole="header"
-        numberOfLines={2}
+        // The tab's title on one line beside three buttons: a long word steps
+        // down a little rather than breaking. The archive's title may wrap.
+        numberOfLines={archived ? 2 : 1}
+        adjustsFontSizeToFit={!archived}
+        minimumFontScale={0.8}
       >
         {archived ? t('chats.archivedChats') : t('tabs.chats')}
       </Text>
@@ -329,20 +333,18 @@ function MemberChats() {
             onPress={() => setShelf('archived')}
           />
           {/*
-           * The board's header pill: the way to a new chat without scrolling
-           * to the dashed one at the list's end, which stays for the reader
-           * who has just reached it. Both go to People.
+           * The board's "Find someone", as an icon: its labelled pill has no
+           * room once the star and the archive sit beside it, and in most
+           * locales the words were cut to "+…". The dashed row at the list's
+           * end and the empty state keep the words; all three go to People.
            */}
-          <Pressable
-            accessibilityRole="button"
+          <IconButton
+            icon="user-plus"
+            look="surface"
+            iconSize={v3.icon.xl}
+            accessibilityLabel={t('chats.findSomeone')}
             onPress={goToPeople}
-            style={({ pressed }) => [styles.findPill, pressed && styles.findPillPressed]}
-          >
-            <Feather name="plus" size={v3.icon.xs} color={v3.colors.fg} />
-            <Text style={styles.findPillLabel} numberOfLines={1}>
-              {t('chats.findSomeone')}
-            </Text>
-          </Pressable>
+          />
         </>
       )}
     </View>
@@ -541,13 +543,11 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingBottom: v3.space[8],
     paddingTop: v3.space[8],
   },
-  // Grows to push the buttons to the end, but never gives up its own width:
-  // the header pill is what shrinks when a locale runs long.
   title: {
     ...v3.type.title,
     color: v3.colors.fg,
-    flexGrow: 1,
-    flexShrink: 0,
+    flex: 1,
+    minWidth: 0,
     paddingStart: v3.space[6],
   },
   // A step down beside the back arrow: "Discussions archivées" at the tab
@@ -575,20 +575,5 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[16],
   },
   findPressed: { backgroundColor: v3.colors.surface },
-  // Shrinks before the title does: a long locale's label ends in an ellipsis
-  // rather than breaking "Chats" over two lines.
-  findPill: {
-    alignItems: 'center',
-    backgroundColor: v3.colors.surface,
-    borderRadius: v3.radius.pill,
-    flexDirection: 'row',
-    flexShrink: 1,
-    gap: v3.space[4],
-    minHeight: 44,
-    // Tight: beside the star and the archive, English's label only just fits.
-    paddingHorizontal: v3.space[12],
-  },
-  findPillPressed: { backgroundColor: v3.colors.tabOn },
-  findPillLabel: { ...v3.type.buttonSmall, color: v3.colors.fg, flexShrink: 1 },
   findLabel: { ...v3.type.button, color: v3.colors.fg },
 }))

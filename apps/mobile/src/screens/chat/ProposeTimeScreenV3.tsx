@@ -243,8 +243,8 @@ const useStyles = makeStyles(({ v3 }) => ({
     lineHeight: 20,
     paddingStart: v3.space[4],
   },
-  // The board's tangerine block, the same in both schemes as every partner
-  // hue: the blue tint read as Echo's and went navy after dark.
+  // The board's tangerine block, a step deeper after dark as every partner
+  // hue is, with ink on it in both schemes; the blue tint read as Echo's.
   chosen: {
     backgroundColor: v3.hues.tangerine,
     borderRadius: v3.radius.tile,
