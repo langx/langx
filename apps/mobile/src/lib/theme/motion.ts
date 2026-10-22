@@ -51,6 +51,8 @@ export const EASE_OUT = Easing.bezier(...CURVE.out)
 export const EASE_RISE = Easing.bezier(...CURVE.rise)
 /** A small overshoot, for the one thing on a screen that is thrown. */
 export const EASE_POP = Easing.bezier(...CURVE.pop)
+/** Slow out, slow in: a card turning over, whose middle is edge-on and unseen anyway. */
+export const EASE_IN_OUT = Easing.bezier(...CURVE.inOut)
 
 export const TIMING = {
   press: { duration: DURATION.press, easing: EASE_OUT },
@@ -59,6 +61,7 @@ export const TIMING = {
   rise: { duration: DURATION.rise, easing: EASE_RISE },
   pop: { duration: DURATION.pop, easing: EASE_POP },
   exit: { duration: DURATION.exit, easing: EASE_OUT },
+  flip: { duration: DURATION.flip, easing: EASE_IN_OUT },
   fade: { duration: DURATION.fade, easing: EASE_OUT },
   fill: { duration: DURATION.fill, easing: EASE_OUT },
   crossfade: { duration: DURATION.crossfade, easing: EASE_OUT },
