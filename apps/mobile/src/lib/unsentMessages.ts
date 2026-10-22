@@ -21,6 +21,8 @@
  * was there before this: a row that lives as long as the screen does.
  */
 
+import type { MessageAsk } from '@langx/shared'
+
 export interface UnsentMessage {
   /** Client-minted, so a row exists before the server has given it an id. */
   clientId: string
@@ -28,6 +30,12 @@ export interface UnsentMessage {
   replyToMessageId?: string
   /** The sentence of that message the reply is to, when it is not all of it. */
   quote?: string
+  /**
+   * What the sentence asked for — a correction, a pronunciation. Without it a
+   * tap on the row sent the sentence as a plain message and the question was
+   * gone.
+   */
+  ask?: MessageAsk
   /** For ordering, and so a retry can report how long it has been waiting. */
   failedAt: string
 }
@@ -48,6 +56,48 @@ export const MAX_UNSENT = 20
 export function addUnsent(list: readonly UnsentMessage[], message: UnsentMessage): UnsentMessage[] {
   const withoutSelf = list.filter((entry) => entry.clientId !== message.clientId)
   return [message, ...withoutSelf].slice(0, MAX_UNSENT)
+}
+
+/**
+ * The row a failed send leaves behind. Here rather than inline in the chat
+ * screen so what it keeps — and so what a retry can send again — is tested.
+ */
+export function failedSend(
+  send: {
+    clientId: string
+    body: string
+    replyToMessageId?: string | undefined
+    quote?: string | undefined
+    ask?: MessageAsk | undefined
+  },
+  now: Date,
+): UnsentMessage {
+  return {
+    clientId: send.clientId,
+    body: send.body,
+    ...(send.replyToMessageId ? { replyToMessageId: send.replyToMessageId } : {}),
+    ...(send.replyToMessageId && send.quote ? { quote: send.quote } : {}),
+    ...(send.ask ? { ask: send.ask } : {}),
+    failedAt: now.toISOString(),
+  }
+}
+
+/**
+ * The stored rows joined to the ones already in memory, rather than written
+ * over them.
+ *
+ * The read waits for `me`, and a send can fail before `me` has loaded — a cold
+ * start in a tunnel is exactly when both happen. That row is in memory only,
+ * and replacing the list with the stored one threw away the one copy of the
+ * sentence. The in-memory copy wins a tie: it is the later of the two.
+ */
+export function mergeUnsent(
+  inMemory: readonly UnsentMessage[],
+  stored: readonly UnsentMessage[],
+): UnsentMessage[] {
+  if (inMemory.length === 0) return [...stored]
+  const seen = new Set(inMemory.map((entry) => entry.clientId))
+  return [...inMemory, ...stored.filter((entry) => !seen.has(entry.clientId))].slice(0, MAX_UNSENT)
 }
 
 export function removeUnsent(list: readonly UnsentMessage[], clientId: string): UnsentMessage[] {
@@ -94,7 +144,7 @@ export function newClientId(now: number, random: number): string {
  * author signs back in to find.
  *
  * Rows stored before this, under the bare conversation id, are never read
- * again; `MAX_UNSENT_THREADS` ages them out.
+ * again, and `storeUnsent` drops them on its first write.
  */
 export function unsentKey(userId: string, conversationId: string): string {
   return `${userId}:${conversationId}`
@@ -128,6 +178,10 @@ export const MAX_UNSENT_THREADS = 10
  * Writes one conversation's rows into the record, newest thread first, and
  * drops a thread that has nothing left in it. Pure, so the bounding is
  * testable without a device.
+ *
+ * Also drops any key without an account in it — rows from before `unsentKey`,
+ * never read again but still somebody's words, and left to sit until nine
+ * newer threads pushed them out.
  */
 export function storeUnsent(
   stored: UnsentByConversation,
@@ -135,7 +189,7 @@ export function storeUnsent(
   list: readonly UnsentMessage[],
 ): UnsentByConversation {
   const rest: [string, UnsentMessage[]][] = Object.entries(stored).filter(
-    ([id]) => id !== conversationId,
+    ([id]) => id !== conversationId && id.includes(':'),
   )
   const kept: [string, UnsentMessage[]][] =
     list.length > 0 ? [[conversationId, [...list]], ...rest] : rest
