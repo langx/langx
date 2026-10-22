@@ -29,6 +29,7 @@
     "@posthog/react-native-plugin": "^2.12.6",
     "@react-native-community/datetimepicker": "9.1.0",
     "@revenuecat/purchases-js": "^1.71.0",
+    "@shopify/react-native-skia": "2.6.2",
     "@tanstack/query-async-storage-persister": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-query-persist-client": "catalog:",

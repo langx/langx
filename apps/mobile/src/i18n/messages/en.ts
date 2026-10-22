@@ -229,6 +229,14 @@ export const en = {
     cameraUnavailable:
       'The camera isn’t available here. Choose a photo or video from your library instead.',
     captureFailed: 'Couldn’t take that. Try again.',
+    filters: 'Filters',
+    filterOriginal: 'Original',
+    filterWarm: 'Warm',
+    filterCool: 'Cool',
+    filterMono: 'Mono',
+    filterVivid: 'Vivid',
+    filterFilm: 'Film',
+    filterFailed: 'Couldn’t add the filter. Try again.',
     playFailed: 'This video can’t be played on this device.',
   },
   tips: {

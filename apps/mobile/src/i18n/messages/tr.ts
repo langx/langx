@@ -194,6 +194,14 @@ export const tr: Localized<EnMessages> = {
     cameraUnavailable:
       'Kamera burada kullanılamıyor. Bunun yerine galeriden bir fotoğraf ya da video seç.',
     captureFailed: 'Çekilemedi. Tekrar dene.',
+    filters: 'Filtreler',
+    filterOriginal: 'Orijinal',
+    filterWarm: 'Sıcak',
+    filterCool: 'Soğuk',
+    filterMono: 'Siyah-beyaz',
+    filterVivid: 'Canlı',
+    filterFilm: 'Film',
+    filterFailed: 'Filtre uygulanamadı. Tekrar dene.',
     playFailed: 'Bu video bu cihazda oynatılamıyor.',
   },
   tips: {

@@ -188,6 +188,14 @@ export const de: Localized<EnMessages> = {
     cameraUnavailable:
       'Die Kamera ist hier nicht verfügbar. Wähle stattdessen ein Foto oder Video aus deiner Mediathek.',
     captureFailed: 'Das hat nicht geklappt. Versuch es noch einmal.',
+    filters: 'Filter',
+    filterOriginal: 'Original',
+    filterWarm: 'Warm',
+    filterCool: 'Kühl',
+    filterMono: 'Schwarzweiß',
+    filterVivid: 'Lebhaft',
+    filterFilm: 'Film',
+    filterFailed: 'Der Filter ließ sich nicht anwenden. Versuch es noch einmal.',
     playFailed: 'Dieses Video kann auf diesem Gerät nicht abgespielt werden.',
   },
   tips: {
