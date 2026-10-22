@@ -44,10 +44,11 @@ const PAIRS: readonly { current: string; v3: string; except?: readonly string[] 
   { current: 'invite.tsx', v3: 'me/InviteScreenV3.tsx' },
   // One haptic per gift, the reveal's (see `lib/haptics.ts`): v3 drops the press's
   // `impact`. The amount counts up in `CountUp`, which formats it for the locale.
+  // Its unit is the token icon, said through `tokenAmountLabel`, not the word.
   {
     current: 'gift.tsx',
     v3: 'me/GiftScreenV3.tsx',
-    except: ['impact', 'amount.toLocaleString'],
+    except: ['impact', 'amount.toLocaleString', 'gift.tokensUnit'],
   },
   { current: 'how-it-works.tsx', v3: 'me/HowItWorksScreenV3.tsx' },
   // Every link still drawn: the first in a group of its own, the rest `.map`ped under it.

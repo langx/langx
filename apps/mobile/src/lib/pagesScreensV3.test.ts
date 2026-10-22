@@ -15,14 +15,17 @@ import { uses } from './v3ScreenParity'
 const SRC = path.resolve(__dirname, '..')
 const APP = path.resolve(__dirname, '../../app/(app)')
 
-const PAIRS: readonly { current: string; v3: string }[] = [
+const PAIRS: readonly { current: string; v3: string; except?: readonly string[] }[] = [
   {
     current: path.join(APP, 'kitchen.tsx'),
     v3: path.join(SRC, 'screens/settings/KitchenScreenV3.tsx'),
   },
+  // The unlock's price is the token icon, said through `wallet.price`'s
+  // plural; `stickerBuy` has one fixed word for every count.
   {
     current: path.join(APP, 'stickers.tsx'),
     v3: path.join(SRC, 'screens/chat/StickersScreenV3.tsx'),
+    except: ['chat.stickerBuy'],
   },
   {
     current: path.join(SRC, 'components/CommentThread.tsx'),
@@ -31,13 +34,15 @@ const PAIRS: readonly { current: string; v3: string }[] = [
 ]
 
 describe('v3 pages keep the current pages’ words and requests', () => {
-  for (const { current, v3 } of PAIRS) {
+  for (const { current, v3, except = [] } of PAIRS) {
     const name = path.basename(v3)
     it(`${name} uses everything ${path.basename(current)} does`, () => {
       const before = uses(current)
       const after = uses(v3)
       expect(before.keys.size, `${current} has no keys — is the reader broken?`).toBeGreaterThan(0)
-      for (const key of before.keys) expect(after.keys, `key ${key}`).toContain(key)
+      for (const key of before.keys) {
+        if (!except.includes(key)) expect(after.keys, `key ${key}`).toContain(key)
+      }
       for (const api of before.paths) expect(after.paths, `request ${api}`).toContain(api)
       for (const call of before.calls) expect(after.calls, `call ${call}`).toContain(call)
       for (const role of before.roles) {

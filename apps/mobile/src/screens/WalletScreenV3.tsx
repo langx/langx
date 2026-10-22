@@ -30,6 +30,7 @@ import { clearFromTray } from '../lib/notifications'
 import { requireAccount } from '../lib/requireAccount'
 import { makeStyles, useTheme } from '../lib/theme'
 import { DELAY } from '../lib/theme/motionValues'
+import { plain, tokenSentence } from '../lib/tokenAmount'
 import { freezeBankValue, nextRung } from '../lib/walletV3'
 
 const ME = '/(app)/(tabs)/me'
@@ -146,7 +147,6 @@ function MemberWallet() {
   }
 
   const data = wallet.data
-  const unit = t('wallet.tokensUnit', { count: data.balance })
   const balance = data.balance.toLocaleString(locale)
   const earnedSpent = t('wallet.earnedSpent', {
     earned: data.earned.toLocaleString(locale),
@@ -155,12 +155,13 @@ function MemberWallet() {
   const rung = nextRung(data.owned, data.balance)
   const rungLine = rung
     ? rung.left > 0
-      ? t('wallet.nextRung', {
+      ? tokenSentence(t, 'wallet.nextRungShort', {
           count: rung.left,
-          amount: rung.left.toLocaleString(locale),
-          title: cosmeticLabel(t, rung.cosmetic.id),
+          locale,
+          params: { title: cosmeticLabel(t, rung.cosmetic.id) },
+          spokenKey: 'wallet.nextRung',
         })
-      : t('wallet.nextRungReady', { title: cosmeticLabel(t, rung.cosmetic.id) })
+      : plain(t('wallet.nextRungReady', { title: cosmeticLabel(t, rung.cosmetic.id) }))
     : undefined
 
   const maxFreezes = TOKEN_RULES.sinks.maxBankedStreakFreezes
@@ -214,14 +215,16 @@ function MemberWallet() {
             ground: v3.hues.lime,
             kicker: t('wallet.balance'),
             value: heroBalance ?? data.balance,
-            unit,
             earnedSpent,
-            rung: rung && rungLine ? { line: rungLine, fraction: rung.fraction } : undefined,
+            rung:
+              rung && rungLine
+                ? { line: rungLine.text, label: rungLine.label, fraction: rung.fraction }
+                : undefined,
             history: t('tokens.history'),
             a11y: [
               `${t('wallet.balance')}: ${t('wallet.price', { count: data.balance, amount: balance })}`,
               earnedSpent,
-              rungLine,
+              rungLine?.label,
               t('tokens.history'),
             ]
               .filter(Boolean)

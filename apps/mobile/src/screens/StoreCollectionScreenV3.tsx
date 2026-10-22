@@ -29,6 +29,7 @@ import { goBackTo } from '../lib/navigation'
 import { frameAction, frameRarity, framesByRarity, initialFrame } from '../lib/storeHome'
 import type { StoreOffer } from '../lib/storeOffers'
 import { makeStyles, useTheme } from '../lib/theme'
+import { tokenButton } from '../lib/tokenAmount'
 import { GuestStore, StoreHeader } from './WalletStoreScreenV3'
 
 const STORE = '/(app)/wallet/store'
@@ -302,9 +303,10 @@ function Frames({
           <Button
             variant="secondary"
             disabled
-            label={t('storeHome.moreTokens', {
+            {...tokenButton(t, 'storeHome.moreNeeded', {
               count: chosen.price - store.balance,
-              amount: n(chosen.price - store.balance),
+              locale,
+              spokenKey: 'storeHome.moreTokens',
             })}
             onPress={() => undefined}
           />

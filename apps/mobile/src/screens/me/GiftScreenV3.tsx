@@ -16,6 +16,7 @@ import { Confetti } from '../../components/ui/Confetti'
 import { CountUp } from '../../components/ui/CountUp'
 import { PressableScale } from '../../components/ui/PressableScale'
 import { Screen } from '../../components/ui/Screen'
+import { TokenIcon, useTokenIconMetrics } from '../../components/ui/TokenIcon'
 import { WalletHeader } from '../../components/wallet/WalletBlocks'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useScreenInteractive } from '../../hooks/useScreenInteractive'
@@ -28,6 +29,7 @@ import { notification } from '../../lib/haptics'
 import { goBackTo } from '../../lib/navigation'
 import { makeStyles, PARTNER_HUES, useTheme } from '../../lib/theme'
 import { DURATION, EASE_OUT, SPRING, TIMING } from '../../lib/theme/motion'
+import { tokenAmountLabel } from '../../lib/tokenAmount'
 import { useV3Fonts } from './useV3Fonts'
 
 type Phase = 'waiting' | 'opening' | 'revealed'
@@ -64,6 +66,7 @@ export function GiftScreenV3() {
   const { locale } = useLocale()
   const styles = useStyles()
   const { v3 } = useTheme()
+  const amountIcon = useTokenIconMetrics(v3.type.numeral.fontSize)
   const black = useV3Fonts()
   const reduceMotion = useReduceMotion()
   const wallet = useWallet()
@@ -216,7 +219,13 @@ export function GiftScreenV3() {
         {phase === 'revealed' ? (
           <Animated.View style={[styles.reveal, amountStyle]}>
             {amount > 0 ? (
-              <>
+              // "+25 ✦", said as "+25 tokens": the roll and the mark are one figure.
+              <View
+                style={[styles.figure, { gap: amountIcon.gap }]}
+                accessible
+                accessibilityRole="text"
+                accessibilityLabel={tokenAmountLabel(t, amount, locale, '+')}
+              >
                 <CountUp
                   value={amount}
                   prefix="+"
@@ -226,8 +235,10 @@ export function GiftScreenV3() {
                   style={styles.amount}
                   numberOfLines={1}
                 />
-                <Text style={styles.amountUnit}>{t('gift.tokensUnit', { count: amount })}</Text>
-              </>
+                <View style={{ transform: [{ translateY: amountIcon.drop }] }}>
+                  <TokenIcon size={amountIcon.size} color={v3.colors.ink} />
+                </View>
+              </View>
             ) : (
               <Text style={styles.caption}>{t('gift.revealedZero')}</Text>
             )}
@@ -349,16 +360,22 @@ const useStyles = makeStyles(({ v3 }) => ({
   // the reveal was still scaled and the count was still rolling, and drew
   // "+13" a few points tall on TestFlight 194 and again on 195 even with the
   // view stretched. An hourly gift is a few digits, which the numeral fits
-  // at full size, so the amount simply takes the stage's width.
+  // at full size, so the amount simply takes its own width beside the mark.
   reveal: { alignItems: 'center', alignSelf: 'stretch', gap: v3.space[4] },
+  // The mark stands on the figure's baseline, a gap after it.
+  figure: {
+    alignItems: 'baseline',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
   amount: {
     ...v3.type.numeral,
-    alignSelf: 'stretch',
     color: v3.colors.ink,
+    // Fixed-width digits, so the roll does not slide the mark beside it.
+    fontVariant: ['tabular-nums'],
     lineHeight: 84,
     textAlign: 'center',
   },
-  amountUnit: { ...v3.type.headline, color: v3.colors.ink, textAlign: 'center' },
   note: {
     ...v3.type.caption,
     color: v3.colors.muted,
