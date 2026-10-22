@@ -1,18 +1,24 @@
 /**
- * Turns round the cards left with an empty back because their sentence was
- * already in the reader's own language.
+ * Fills the cards a message or a post left with an empty back, by the rule a
+ * capture uses today: `backForReader` in `src/modules/echo/cards.ts`, whose
+ * "own language" is the reader's native one from their profile.
  *
- * A Turkish reader keeping a Turkish sentence used to get the sentence back
- * as its "translation". #1925 stopped storing that, and
- * `backfill-echo-same-backs.ts` emptied the cards already stored that way, so
- * those cards say "No meaning on this card yet". A capture now translates such
- * a sentence into the language the reader is learning instead (`backFor` in
- * `src/modules/echo/cards.ts`). This runs the same rule — `backForReader` —
- * over every card a message or a post left with an empty back, and writes
- * **only the turned-round ones**: a card whose back would be a meaning in the
- * reader's own language was empty for some other reason (the provider was
- * down, or its owner cleared it in Edit), and is not this script's to fill.
- * It is counted and left alone.
+ * Two kinds of fill, both written:
+ *
+ * - **A meaning in the reader's native language** — the common case: a
+ *   sentence in a language they learn. Such a card is empty because nothing
+ *   translated it at the time (the provider failed, or was not set up yet).
+ * - **Turned round** — a sentence already in the reader's native language,
+ *   which #1925 stopped storing as its own back and
+ *   `backfill-echo-same-backs.ts` emptied. It gets the sentence in a language
+ *   they learn, `backLang` saying which (#1941).
+ *
+ * The first version wrote only the second kind and counted the first as not
+ * its to fill, which is why its production run found six empty cards with
+ * fronts in a learning language and filled none of them. A back its owner
+ * emptied in Edit cannot be told apart from one nothing translated, because
+ * nothing on the card records the edit. So the dry run lists every card it
+ * would fill: read the list before `--apply`.
  *
  * Only cards kept from a message or a post, as in the earlier script: a
  * hand-written card's back is its author's and a pack's is curated. Skipped:
@@ -22,8 +28,8 @@
  *
  * **A card kept from a correction never reaches the provider** — it may have
  * been kept automatically, and automatic capture must not send text nobody
- * asked to translate (see `correctionCapture.ts`). Such a card turns round
- * only from the shared cache.
+ * asked to translate (see `correctionCapture.ts`). Such a card is filled only
+ * from the shared cache, and so is one whose message has since been deleted.
  *
  * **The dry run asks the provider too** — that is how it can show what would
  * be written. What it is told goes into the shared translation cache, exactly
@@ -53,7 +59,7 @@ import { createTranslationProvider } from '../src/translation/createTranslationP
 
 const CACHE_ONLY: CaptureDeps = {
   translation: {
-    translate: () => Promise.reject(new Error('A correction card turns round from the cache only')),
+    translate: () => Promise.reject(new Error('A correction card is filled from the cache only')),
   },
 }
 
@@ -85,9 +91,8 @@ async function main(): Promise<void> {
       })
       .toArray()
 
-    const turned: { card: Row; meaning: CardBack }[] = []
-    let ownLanguage = 0
-    let unfilled = 0
+    const filled: { card: Row; meaning: CardBack }[] = []
+    const unfilled: Row[] = []
     let skipped = 0
     for (const card of empty) {
       const me = await profiles.findOne({ _id: card.userId })
@@ -128,20 +133,24 @@ async function main(): Promise<void> {
       }
 
       const meaning = await backForReader(db, deps, me, partnerNative, text)
-      if (meaning.backLang) turned.push({ card, meaning })
-      else if (meaning.back !== '') ownLanguage++
-      else unfilled++
+      if (meaning.back !== '') filled.push({ card, meaning })
+      else unfilled.push(card)
     }
 
+    const turned = filled.filter(({ meaning }) => meaning.backLang).length
     console.log(`${empty.length} card(s) from a message or a post with an empty back.`)
-    console.log(`  ${turned.length} turn round: the sentence in a language being learned.`)
-    console.log(`  ${ownLanguage} would get a meaning in the reader's own language; left alone.`)
-    console.log(`  ${unfilled} stay empty (nothing to learn into, or nothing translated).`)
+    console.log(`  ${filled.length - turned} get a meaning in the reader's native language.`)
+    console.log(`  ${turned} turn round: the sentence in a language being learned.`)
+    console.log(`  ${unfilled.length} stay empty (nothing translated it, or only into itself).`)
     console.log(`  ${skipped} skipped (account being deleted, or post gone or hidden).`)
-    for (const { card, meaning } of turned.slice(0, 10)) {
+    for (const { card, meaning } of filled.slice(0, 50)) {
+      const into = meaning.backLang ?? 'native'
       console.log(
-        `  ${card.sourceKey} [${meaning.lang ?? card.lang} -> ${meaning.backLang}]: "${card.front}" / "${meaning.back}"`,
+        `  fill ${card.sourceKey} [${meaning.lang ?? card.lang} -> ${into}]: "${card.front}" / "${meaning.back}"`,
       )
+    }
+    for (const card of unfilled.slice(0, 50)) {
+      console.log(`  empty ${card.sourceKey} [${card.lang}]: "${card.front}"`)
     }
     if (!apply) {
       console.log('Dry run. Pass --apply to write.')
@@ -149,12 +158,12 @@ async function main(): Promise<void> {
     }
 
     let written = 0
-    for (const { card, meaning } of turned) {
+    for (const { card, meaning } of filled) {
       const write = fillBackWrite(card, meaning)
       const result = await cards.updateOne(write.filter, write.update)
       written += result.modifiedCount
     }
-    console.log(`Turned round ${written} card(s).`)
+    console.log(`Filled ${written} card(s).`)
   } finally {
     await handle.close()
   }

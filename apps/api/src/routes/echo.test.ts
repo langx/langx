@@ -11,6 +11,7 @@ import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import { summary } from '../modules/echo/cards'
 import { submitReviews } from '../modules/echo/reviews'
+import { rememberTranslation } from '../modules/translation/translate'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
@@ -240,6 +241,40 @@ describe('echo', () => {
     })
     expect(echoed.statusCode).toBe(201)
     expect(echoed.json<{ card: { back: string } }>().card.back).toBe('')
+  })
+
+  it('writes the back in the reader’s native language, whatever language the app is in', async () => {
+    // A is an English native. B reads Turkish natively, learns English, and
+    // runs the app in English.
+    const [a, b] = await newPair('uilocale', {
+      nativeLanguages: [{ code: 'en' }],
+      learning: [{ code: 'tr', level: 'beginner', priority: 1 }],
+    })
+    const conversation = await startConversation(a, b.userId, 'How are you doing today')
+    const messageId = await firstMessageId(conversation._id)
+    // No provider here, so the cache stands in for it — in both languages, so
+    // a back taken from the app's language would show up as English.
+    await rememberTranslation(
+      handle.db,
+      { text: 'How are you doing today', targetLang: 'tr' },
+      { translatedText: 'Bugün nasılsın', sourceLang: 'en' },
+    )
+    await rememberTranslation(
+      handle.db,
+      { text: 'How are you doing today', targetLang: 'en' },
+      { translatedText: 'How are you doing today', sourceLang: 'en' },
+    )
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/echo/cards',
+      headers: { cookie: b.cookie, 'accept-language': 'en-US,en;q=0.9' },
+      payload: { source: { kind: 'chat', conversationId: conversation._id, messageId } },
+    })
+    expect(response.statusCode).toBe(201)
+    const { card } = response.json<{ card: { lang: string; back: string; backLang?: string } }>()
+    expect(card).toMatchObject({ lang: 'en', back: 'Bugün nasılsın' })
+    expect(card.backLang).toBeUndefined()
   })
 
   it('refuses a message from a conversation the person is not in', async () => {

@@ -24,6 +24,7 @@ import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { useDisplayNames, useT } from '../../../src/i18n'
 import { showAlert } from '../../../src/lib/alert'
 import { goBackTo } from '../../../src/lib/navigation'
+import { echoBackLabel } from '../../../src/lib/echoBackLabel'
 import { pickMediaAssets } from '../../../src/lib/pickMediaAsset'
 import { postLanguages, resolvePostLanguage } from '../../../src/lib/postLanguage'
 import { reportWriteError } from '../../../src/lib/reportWriteError'
@@ -279,7 +280,7 @@ function EditForm({ card, onDone }: { card: EchoCard; onDone: () => void }) {
       />
       {/* Emptiable on purpose: a wrong translation is worse than none. */}
       <FormField
-        label={t('echo.editBack')}
+        label={echoBackLabel(t, names.language, card.backLang)}
         value={back}
         onChangeText={setBack}
         maxLength={ECHO_BACK_MAX_LENGTH}

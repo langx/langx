@@ -482,6 +482,7 @@ export const ar: Localized<EnMessages> = {
     editTitle: 'تعديل البطاقة',
     editFront: 'الجملة',
     editBack: 'ما معناها',
+    editBackIn: 'كيف تقولها بـ{language}',
     edited: 'تم تحديث البطاقة',
     editFailedTitle: 'تعذّر حفظ هذه البطاقة',
     cardMenu: 'خيارات البطاقة',
