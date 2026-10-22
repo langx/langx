@@ -24,7 +24,7 @@ import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useDisplayNames, useLocale, useT } from '../i18n'
 import { chooseAlert } from '../lib/alert'
 import { authClient } from '../lib/auth-client'
-import { echoRingNote, reviewMinutes } from '../lib/echoV3'
+import { echoRingNote, oneSessionDue, reviewMinutes } from '../lib/echoV3'
 import { compactCount, dueInCompact } from '../lib/format'
 import { requireAccount } from '../lib/requireAccount'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../lib/theme'
@@ -72,7 +72,7 @@ export function EchoV3Screen() {
   const minutes = reviewMinutes(due, counts?.secondsPerCard)
   // The server's answer only: the saved copy's `reviewedToday` may be a day old.
   const ring = echoRingNote({
-    due,
+    due: oneSessionDue(languages, lang),
     reviewedToday: summary.data?.reviewedToday,
     sessionsToday: summary.data?.sessionsToday,
   })
@@ -145,7 +145,7 @@ export function EchoV3Screen() {
             ? {
                 note:
                   ring.tokens !== null
-                    ? `${t('echo.closesRing')} · ${t('echo.tokensEarned', { count: ring.tokens })}`
+                    ? t('echo.closesRingTokens', { count: ring.tokens })
                     : t('echo.closesRing'),
               }
             : {})}

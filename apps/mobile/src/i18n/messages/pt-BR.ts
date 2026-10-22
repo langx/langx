@@ -548,6 +548,10 @@ export const ptBR: Localized<EnMessages> = {
     subtitle: 'As frases das suas conversas voltam logo antes de você esquecê-las.',
     dueUnit: { one: 'cartão pendente', other: 'cartões pendentes' },
     closesRing: 'Fecha o terceiro círculo de hoje',
+    closesRingTokens: {
+      one: 'Fecha o terceiro círculo de hoje · +{count} token',
+      other: 'Fecha o terceiro círculo de hoje · +{count} tokens',
+    },
     aboutMinutes: { one: 'cerca de {count} minuto', other: 'cerca de {count} minutos' },
     gradeInMinutes: {
       one: '{grade}, volta em {count} minuto',

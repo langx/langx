@@ -601,6 +601,12 @@ export const ru: Localized<EnMessages> = {
       other: 'карточки ждут',
     },
     closesRing: 'Замыкает третий круг на сегодня',
+    closesRingTokens: {
+      one: 'Замыкает третий круг на сегодня · +{count} токен',
+      few: 'Замыкает третий круг на сегодня · +{count} токена',
+      many: 'Замыкает третий круг на сегодня · +{count} токенов',
+      other: 'Замыкает третий круг на сегодня · +{count} токена',
+    },
     aboutMinutes: {
       one: 'примерно {count} минута',
       few: 'примерно {count} минуты',

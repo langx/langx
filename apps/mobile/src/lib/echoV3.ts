@@ -33,10 +33,25 @@ export function reviewMinutes(
  * never the device's saved copy, which can be a day old. The token is
  * `TOKEN_RULES.award.echoSession`, paid per `SRS_RULES.sessionSize` cards
  * graded (`completedEchoSessions`), so it is named only when enough cards are
- * due to fill a session and today's paid sessions are not used up. With
+ * due to fill a session — `due` is `oneSessionDue`, what one tap reviews, and today's paid sessions are not used up. With
  * nothing reviewed in the last twenty-four hours none of the UTC day's are
  * either, so `sessionsToday` is zero here unless the server says otherwise.
  */
+/**
+ * The most cards one tap of the hero's button can review. A review never mixes
+ * languages, so under All it opens one language (or asks which), and the
+ * total across them is not what a session fills: French 7 and Spanish 6 due
+ * is thirteen on the tab but never a ten-card session. A chosen chip is its
+ * own count.
+ */
+export function oneSessionDue(
+  languages: readonly { lang: string; due: number }[],
+  lang: string | null,
+): number {
+  if (lang) return languages.find((row) => row.lang === lang)?.due ?? 0
+  return Math.max(0, ...languages.map((row) => row.due))
+}
+
 export function echoRingNote({
   due,
   reviewedToday,

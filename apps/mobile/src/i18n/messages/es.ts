@@ -550,6 +550,10 @@ export const es: Localized<EnMessages> = {
     subtitle: 'Las frases de tus chats vuelven justo antes de que las olvides.',
     dueUnit: { one: 'tarjeta pendiente', other: 'tarjetas pendientes' },
     closesRing: 'Completa el tercer círculo de hoy',
+    closesRingTokens: {
+      one: 'Completa el tercer círculo de hoy · +{count} token',
+      other: 'Completa el tercer círculo de hoy · +{count} tokens',
+    },
     aboutMinutes: { one: 'alrededor de {count} minuto', other: 'alrededor de {count} minutos' },
     gradeInMinutes: {
       one: '{grade}, vuelve en {count} minuto',

@@ -1,6 +1,12 @@
 import { ECHO_REVIEW_DURATION_MAX_MS, SRS_RULES, TOKEN_RULES, type EchoAward } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
-import { boundedEchoReviews, echoRingNote, planEchoDone, reviewMinutes } from './echoV3'
+import {
+  boundedEchoReviews,
+  echoRingNote,
+  oneSessionDue,
+  planEchoDone,
+  reviewMinutes,
+} from './echoV3'
 
 const CAP = TOKEN_RULES.caps.echoSessionsPerDay
 const PAY = TOKEN_RULES.award.echoSession
@@ -162,5 +168,26 @@ describe('echoRingNote', () => {
     expect(echoRingNote({ due: SIZE, reviewedToday: 3, sessionsToday: 0 })).toBeNull()
     expect(echoRingNote({ due: SIZE, reviewedToday: undefined, sessionsToday: 0 })).toBeNull()
     expect(echoRingNote({ due: 0, reviewedToday: 0, sessionsToday: 0 })).toBeNull()
+  })
+})
+
+describe('oneSessionDue', () => {
+  const languages = [
+    { lang: 'fr', due: 7 },
+    { lang: 'es', due: 6 },
+  ]
+
+  it('takes the largest one language under All, not the total', () => {
+    expect(oneSessionDue(languages, null)).toBe(7)
+    // Thirteen due on the tab, but no single tap fills a paid session.
+    expect(
+      echoRingNote({ due: oneSessionDue(languages, null), reviewedToday: 0, sessionsToday: 0 }),
+    ).toEqual({ tokens: null })
+  })
+
+  it('takes the chosen language, and zero for none', () => {
+    expect(oneSessionDue(languages, 'es')).toBe(6)
+    expect(oneSessionDue(languages, 'de')).toBe(0)
+    expect(oneSessionDue([], null)).toBe(0)
   })
 })

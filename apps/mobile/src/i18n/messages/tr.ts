@@ -546,6 +546,10 @@ export const tr: Localized<EnMessages> = {
     subtitle: 'Sohbetlerindeki cümleler, tam unutmak üzereyken geri gelir.',
     dueUnit: { one: 'kart bekliyor', other: 'kart bekliyor' },
     closesRing: 'Bugünün üçüncü halkasını kapatır',
+    closesRingTokens: {
+      one: 'Bugünün üçüncü halkasını kapatır · +{count} token',
+      other: 'Bugünün üçüncü halkasını kapatır · +{count} token',
+    },
     aboutMinutes: { one: 'yaklaşık {count} dakika', other: 'yaklaşık {count} dakika' },
     gradeInMinutes: {
       one: '{grade}, {count} dakika sonra yeniden',

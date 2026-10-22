@@ -651,6 +651,11 @@ export const en = {
     dueUnit: { one: 'card due', other: 'cards due' },
     /** Under the due count: a review now fills Home's Today's three's Echo ring. */
     closesRing: 'Closes today’s third ring',
+    /** The same, with `TOKEN_RULES.award.echoSession` when a session there pays. */
+    closesRingTokens: {
+      one: 'Closes today’s third ring · +{count} token',
+      other: 'Closes today’s third ring · +{count} tokens',
+    },
     aboutMinutes: { one: 'about {count} minute', other: 'about {count} minutes' },
     /** A grade tile read aloud: its word and, in full, when the card comes back. */
     gradeInMinutes: {
