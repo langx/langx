@@ -3978,5 +3978,9 @@ export const fr: Localized<EnMessages> = {
     errBusy: 'Copilot est occupé. Réessaie plus tard.',
     errNoAnswer: 'Copilot n’a pas pu répondre à ça.',
     errNetwork: 'Impossible de joindre Copilot.',
+    replyIdeas: 'Idées de réponse',
+    replyIdeasA11y: 'Demander à Copilot des idées de réponse',
+    replyIdeaHint: 'L’ajoute à ton message. Rien n’est envoyé.',
+    replyIdeasCount: { one: '{count} idée de réponse', other: '{count} idées de réponse' },
   },
 }

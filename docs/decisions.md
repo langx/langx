@@ -5667,6 +5667,23 @@ model. It carries no message text, message id or user id.
 button. People who suspect their partner of AI-written replies trust them
 less, and a language exchange is a trust product.
 
+_Superseded in October 2026, at the product owner's request:_ Reply ideas is in
+the v3 thread after all. The trust concern still stands, so what reached the
+thread was shaped to stay a nudge rather than a ghostwriter:
+
+- **It is asked for, never offered unprompted.** A chip appears only when the
+  other person's newest line is unanswered and the composer is empty. Nothing
+  is asked until it is tapped, and each fresh answer spends the person's own
+  Copilot allowance.
+- **An idea only fills the draft.** The person still reads it, can change it,
+  and sends it themselves. Nothing ever goes out from the card.
+- **It is gated like the rest of Copilot.** It needs the operator's
+  allow-list and consent, and it refuses a chat with an under-age partner.
+  Copilot is still tried by a few people, not everybody.
+
+If the trust cost shows up in what partners say, this is the first piece of
+Copilot to take back out.
+
 ## The feed and the wallet get switches of their own
 
 Two kinds joined the six: `social` — a follow, a correction or a recorded

@@ -3919,5 +3919,9 @@ export const ptBR: Localized<EnMessages> = {
     errBusy: 'O Copilot está ocupado. Tente mais tarde.',
     errNoAnswer: 'O Copilot não conseguiu responder a isso.',
     errNetwork: 'Não foi possível falar com o Copilot.',
+    replyIdeas: 'Ideias de resposta',
+    replyIdeasA11y: 'Pedir ideias de resposta ao Copilot',
+    replyIdeaHint: 'Coloca na sua mensagem. Nada é enviado.',
+    replyIdeasCount: { one: '{count} ideia de resposta', other: '{count} ideias de resposta' },
   },
 }
