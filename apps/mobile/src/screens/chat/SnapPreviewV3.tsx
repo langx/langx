@@ -3,14 +3,19 @@ import Feather from '@expo/vector-icons/Feather'
 import { useFonts } from 'expo-font'
 import { useEffect, useState, type ReactNode } from 'react'
 import { Pressable, Text, View } from 'react-native'
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated'
 import { Button } from '../../components/ui/Button'
 import { ICON_BUTTON_TARGET, IconButton } from '../../components/ui/IconButton'
 import { PressableScale } from '../../components/ui/PressableScale'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useT } from '../../i18n'
 import { makeStyles, useTheme } from '../../lib/theme'
-import { SPRING, unlessReduced } from '../../lib/theme/motion'
+import { SPRING, TIMING, unlessReduced } from '../../lib/theme/motion'
 import { SNAP_MODES, type SnapMode } from '../../lib/viewOnce'
 import { StageTopBar } from './SnapCameraV3'
 
@@ -110,13 +115,25 @@ export function SnapPreviewV3({
     const progress = clamp01(shown.get())
     return full === 0 ? { opacity: progress } : { height: full * progress, opacity: progress }
   })
+  // The step fades in over the viewfinder it replaces rather than cutting to it.
+  const entered = useSharedValue(reduce ? 1 : 0)
+  useEffect(() => {
+    entered.set(unlessReduced(reduce, 1, (to) => withTiming(to, TIMING.crossfade)))
+  }, [reduce, entered])
+  const enterMotion = useAnimatedStyle(() => ({ opacity: entered.get() }))
+
   const headingMotion = useAnimatedStyle(() => ({ opacity: clamp01(shown.get()) }))
   const chipMotion = useAnimatedStyle(() => ({ opacity: clamp01(1 - shown.get()) }))
 
   return (
-    <>
+    <Animated.View style={[styles.fill, enterMotion]}>
       {picture}
-      <StageTopBar onClose={undefined}>
+      {/*
+        Discard at the top start, where a story camera keeps it, as well as
+        Retake at the foot, where a one-handed thumb already is. Both go
+        back to the viewfinder.
+      */}
+      <StageTopBar onClose={onRetake} closeLabel={t('viewOnce.retake')}>
         <IconButton
           icon="download"
           iconSize={22}
@@ -228,11 +245,12 @@ export function SnapPreviewV3({
           </View>
         </View>
       </View>
-    </>
+    </Animated.View>
   )
 }
 
 const useStyles = makeStyles(({ v3 }) => ({
+  fill: { bottom: 0, end: 0, position: 'absolute', start: 0, top: 0 },
   panel: {
     backgroundColor: PANEL,
     borderTopLeftRadius: v3.radius.block,

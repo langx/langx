@@ -174,6 +174,11 @@ export const tr: Localized<EnMessages> = {
     retake: 'Yeniden çek',
     hideOptions: 'Seçenekleri gizle',
     showOptions: 'Seçenekleri göster',
+    viewfinder: 'Kamera görüntüsü',
+    viewfinderHint:
+      'Yakınlaştırmak için iki parmağınızı açın. Kamerayı değiştirmek için iki kez dokunun.',
+    zoomedIn: 'Yakınlaştırıldı',
+    notZoomed: 'Yakınlaştırılmadı',
     hint: 'Fotoğraf için dokun, video için basılı tut',
     close: 'Kamerayı kapat',
     flip: 'Kamerayı çevir',
