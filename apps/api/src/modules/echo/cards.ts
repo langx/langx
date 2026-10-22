@@ -9,6 +9,7 @@ import {
   ECHO_SUMMARY_PARTNERS,
   echoSecondsPerCard,
   ERROR_CODES,
+  isTranslatableLanguage,
   learningTargetFor,
   type CaptureEchoInput,
   type CaptureEchoResult,
@@ -37,7 +38,7 @@ import {
   translateTargetFor,
   type UpdateEchoCardInput,
 } from '@langx/shared'
-import { MongoServerError, ObjectId, type Db, type Filter } from 'mongodb'
+import { MongoServerError, ObjectId, type Db, type Filter, type UpdateFilter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { consumeQuota } from '../../lib/quota'
@@ -175,7 +176,10 @@ export function backTargetsFor(
   partnerNative: readonly { code: string }[] | undefined,
 ): BackTargets {
   const native = targetLangFor(me)
-  const learning = translatable(learningTargetFor(me.learning, partnerNative))
+  // Filtered first, so a signed language learned first falls through to the
+  // next one rather than leaving the card with no back at all.
+  const writable = me.learning.filter((language) => isTranslatableLanguage(language.code))
+  const learning = translatable(learningTargetFor(writable, partnerNative))
   return { native, learning: learning === native ? undefined : learning }
 }
 
@@ -359,6 +363,34 @@ export function backFields(
 }
 
 /**
+ * Filling the empty back of a card that already exists: the filter and the
+ * update, for the re-tap below and for the backfill.
+ *
+ * The filter names the empty back and the language that were read, so two
+ * taps racing fill it once and a language its owner chose meanwhile is not
+ * overwritten. A fill that moves the card to another language takes its
+ * readings off, as `updateCard` does: they are a voice for the old language
+ * reading this sentence, and "Read it aloud" comes back for the right one.
+ */
+export function fillBackWrite(
+  card: Pick<EchoCardDoc, '_id' | 'userId' | 'lang' | 'voices' | 'reading'>,
+  meaning: CardBack,
+): { filter: Filter<EchoCardDoc>; update: UpdateFilter<EchoCardDoc> } {
+  const relabelled = meaning.lang !== undefined && meaning.lang !== card.lang
+  const unset: { voices?: ''; reading?: '' } = {
+    ...(relabelled && card.voices?.length ? { voices: '' as const } : {}),
+    ...(relabelled && card.reading ? { reading: '' as const } : {}),
+  }
+  return {
+    filter: { _id: card._id, userId: card.userId, back: '', lang: card.lang },
+    update: {
+      $set: backFields(meaning),
+      ...(Object.keys(unset).length > 0 ? { $unset: unset } : {}),
+    },
+  }
+}
+
+/**
  * Writes the card, or hands back the one that is already there.
  *
  * The lookup before the insert is the cheap path and the duplicate-key catch
@@ -389,12 +421,10 @@ async function upsertCard(
   if (existing) {
     const filling = existing.back === '' && fillBack ? await fillBack() : undefined
     if (!filling || filling.back === '') return { card: toEchoCard(existing), created: false }
-    // `back: ''` in the filter, so two taps racing fill it once.
-    const filled = await cards.findOneAndUpdate(
-      { _id: existing._id, userId, back: '' },
-      { $set: backFields(filling) },
-      { returnDocument: 'after' },
-    )
+    const write = fillBackWrite(existing, filling)
+    const filled = await cards.findOneAndUpdate(write.filter, write.update, {
+      returnDocument: 'after',
+    })
     const card = filled ?? (await cards.findOne({ _id: existing._id, userId })) ?? existing
     return { card: toEchoCard(card), created: false }
   }

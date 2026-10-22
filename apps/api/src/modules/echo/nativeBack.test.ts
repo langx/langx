@@ -7,7 +7,7 @@ import { ensureIndexes } from '../../db/indexes'
 import type { TranslationProvider } from '../../translation/TranslationProvider'
 import type { Conversation, Message } from '../chat/conversations'
 import type { Profile } from '../profiles/profiles'
-import { backForReader, captureFromMessage, type CaptureDeps } from './cards'
+import { backForReader, captureFromMessage, updateCard, type CaptureDeps } from './cards'
 import type { EchoCardDoc } from './documents'
 
 /** Ada reads Turkish and learns English; Bo is an English native. */
@@ -237,6 +237,42 @@ describe('a card kept from a sentence in the reader’s own language', () => {
     expect(tapped.created).toBe(false)
     expect(tapped.card).toMatchObject({ back: ENGLISH, backLang: 'en', lang: 'tr' })
     expect(await stored()).toMatchObject({ back: ENGLISH, backLang: 'en', lang: 'tr' })
+  })
+
+  it('takes off readings in the old language when a fill moves the card', async () => {
+    await seed({})
+    const sent = await message(TURKISH)
+    const failing = vi.fn<TranslationProvider['translate']>().mockRejectedValue(new Error('x'))
+    await keep({ translation: { translate: failing } }, sent)
+    // Filed under Bo's English and read aloud by an English voice.
+    await handle.db
+      .collection<EchoCardDoc>(COLLECTIONS.echoCards)
+      .updateOne({}, { $set: { voices: [{ url: 'https://x/en.mp3', voice: 'af_heart' }] } })
+
+    const { deps } = fakeTranslator({ [`en:${TURKISH}`]: ENGLISH })
+    const tapped = await keep(deps, sent)
+    expect(tapped.card.lang).toBe('tr')
+    expect(tapped.card.voices).toBeUndefined()
+  })
+
+  it('skips a learned language no machine can write', async () => {
+    await seed({
+      learning: [
+        { code: 'ase', level: 'beginner', priority: 1 },
+        { code: 'en', level: 'intermediate', priority: 2 },
+      ],
+    })
+    const { deps } = fakeTranslator({ [`en:${TURKISH}`]: ENGLISH })
+    expect((await keep(deps, await message(TURKISH))).card.backLang).toBe('en')
+  })
+
+  it('clears backLang when the owner empties the back', async () => {
+    await seed({})
+    const { deps } = fakeTranslator({ [`en:${TURKISH}`]: ENGLISH })
+    const { card } = await keep(deps, await message(TURKISH))
+    const edited = await updateCard(handle.db, 'ada', card._id, { front: card.front, back: '' })
+    expect(edited.back).toBe('')
+    expect(edited.backLang).toBeUndefined()
   })
 
   it('is what the backfill computes for a card it reads', async () => {

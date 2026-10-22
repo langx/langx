@@ -128,7 +128,8 @@ already in the reader's language is translated a second time, into a language
 they are learning, and that is the back: a Turkish reader learning English
 keeps "Bona'ya dc'den mesaj atayım" and the back reads "I'll send Bona a
 message on Discord". The card teaches how to say their own sentence. Which
-language: the one they learn that the partner speaks natively — the likely
+language: of those a machine can write, the one they learn that the partner
+speaks natively — the likely
 language of the chat — else the first one they learn. That is
 `learningTargetFor` in `packages/shared`, the same rule Copilot's Say it uses.
 A post has no partner, so it is the first one they learn.
@@ -149,10 +150,16 @@ empty answer says nothing about the sentence's language), a second one that
 failed, or a second one that is the sentence yet again — a name, an "OK". A
 correction kept automatically still never asks the provider, so it turns
 round only from the cache. Clearing a card's back in Edit clears `backLang`
-with it. Cards left empty before this are filled by
+with it. A re-tap that fills an empty back and moves the card to another
+language takes its readings off, as an edit of the language does. Cards left
+empty before this are turned round by
 `apps/api/scripts/backfill-echo-native-backs.ts` (dry run by default; the dry
-run asks the provider and caches the answers, `--apply` writes), which runs
-the capture's own rule over every message and post card with an empty back.
+run asks the provider and caches the answers, `--apply` writes). It runs the
+capture's own rule over every message and post card with an empty back and
+writes only the cards that turn round — one that would get a meaning in the
+reader's own language was empty for another reason, perhaps its owner's Edit,
+and is left alone. A card kept from a correction asks the cache only, like the
+automatic capture that may have made it.
 
 **The card survives the message.** `front` and `back` are copied at capture,
 not referenced. An edited or deleted message, a deleted account, a left
