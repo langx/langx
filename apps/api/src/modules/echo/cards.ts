@@ -9,6 +9,8 @@ import {
   ECHO_SUMMARY_PARTNERS,
   echoSecondsPerCard,
   ERROR_CODES,
+  isTranslatableLanguage,
+  learningTargetFor,
   type CaptureEchoInput,
   type CaptureEchoResult,
   type EchoAudio,
@@ -36,7 +38,7 @@ import {
   translateTargetFor,
   type UpdateEchoCardInput,
 } from '@langx/shared'
-import { MongoServerError, ObjectId, type Db, type Filter } from 'mongodb'
+import { MongoServerError, ObjectId, type Db, type Filter, type UpdateFilter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { consumeQuota } from '../../lib/quota'
@@ -144,10 +146,57 @@ type TargetLang = TranslateRequestInput['targetLang']
  * is what keeps a signed language out of a request the provider would refuse.
  */
 function targetLangFor(profile: Profile): TargetLang | undefined {
-  const chosen = translateTargetFor(profile)
-  if (!chosen) return undefined
-  const parsed = translatableLanguageSchema.safeParse(chosen)
+  return translatable(translateTargetFor(profile))
+}
+
+function translatable(code: string | undefined): TargetLang | undefined {
+  if (!code) return undefined
+  const parsed = translatableLanguageSchema.safeParse(code)
   return parsed.success ? parsed.data : undefined
+}
+
+/**
+ * The two languages a back can be written in, for one reader.
+ *
+ * `native` is the usual one: what the sentence means, in their own language.
+ * `learning` is the fallback for a sentence already in that language — the
+ * one they are learning that the partner speaks natively, else the first one
+ * they learn (`learningTargetFor`, the language Copilot's Say it answers in).
+ * Undefined when they learn nothing a machine can write, and when it would be
+ * their native language again, which would only repeat the sentence a second
+ * time.
+ */
+export interface BackTargets {
+  native: TargetLang | undefined
+  learning: TargetLang | undefined
+}
+
+export function backTargetsFor(
+  me: Profile,
+  partnerNative: readonly { code: string }[] | undefined,
+): BackTargets {
+  const native = targetLangFor(me)
+  // Filtered first, so a signed language learned first falls through to the
+  // next one rather than leaving the card with no back at all.
+  const writable = me.learning.filter((language) => isTranslatableLanguage(language.code))
+  const learning = translatable(learningTargetFor(writable, partnerNative))
+  return { native, learning: learning === native ? undefined : learning }
+}
+
+/**
+ * A card's back, and the languages it settles.
+ *
+ * `backLang` and `lang` arrive together and only together: on a card whose
+ * back is the sentence in a language being learned. Finding that the sentence
+ * needed no translation into the reader's own language is the proof of which
+ * language the front is in — theirs — so `lang` is that, overriding a guess
+ * made from the partner's native languages that would be wrong for the
+ * reader's own message.
+ */
+export interface CardBack {
+  back: string
+  backLang?: TargetLang
+  lang?: TargetLang
 }
 
 /**
@@ -184,22 +233,51 @@ async function spendCapture(db: Db, profile: Profile): Promise<void> {
  * back is still a card — the sentence is still the thing being learned — and
  * failing the capture because a third party is down would lose it.
  *
- * Also an empty string when the "translation" is the sentence again. That is
- * what every source here returns for a sentence already in the reader's
- * language — a Turkish partner's Turkish message, kept by a Turkish reader —
- * and stored as the back it made a card whose two sides were the same line.
- * An empty back is the honest version: the session says there is no meaning
- * yet, and the card's Edit is where one goes.
+ * **A sentence already in the reader's language goes the other way.** Every
+ * source here hands such a sentence back unchanged — a Turkish partner's
+ * Turkish message, kept by a Turkish reader — and stored as the back that
+ * made a card whose two sides were the same line. So the sentence is
+ * translated a second time, into the language they are learning, and the
+ * card teaches how to say it: "Bona'ya dc'den mesaj atayım" on the front, "I'll
+ * send Bona a message on Discord" on the back, `backLang` saying which.
+ *
+ * An empty back, as before, when that cannot be done: nothing to learn into,
+ * no translation either way, or a second translation that is the sentence
+ * yet again (a name, an "OK"). The session says there is no meaning yet, and
+ * the card's Edit is where one goes. A first translation that *failed* never
+ * reaches the second: an empty answer says nothing about which language the
+ * sentence is in.
  */
 async function backFor(
   db: Db,
   deps: CaptureDeps,
   text: string,
-  targetLang: TargetLang | undefined,
+  targets: BackTargets,
   offered: { text: string; lang: string | undefined } | undefined,
-): Promise<string> {
-  const back = await translatedBack(db, deps, text, targetLang, offered)
-  return backAddsMeaning(text, back) ? back : ''
+): Promise<CardBack> {
+  const back = await translatedBack(db, deps, text, targets.native, offered)
+  if (backAddsMeaning(text, back)) return { back }
+  if (back.trim() === '' || !targets.native || !targets.learning) return { back: '' }
+
+  const learned = await translatedBack(db, deps, text, targets.learning, undefined)
+  if (!backAddsMeaning(text, learned)) return { back: '' }
+  return { back: learned, backLang: targets.learning, lang: targets.native }
+}
+
+/**
+ * The back a capture would write for this reader, today.
+ *
+ * What `scripts/backfill-echo-native-backs.ts` runs over the cards an older
+ * capture left empty, so a filled card is exactly the card a new tap makes.
+ */
+export async function backForReader(
+  db: Db,
+  deps: CaptureDeps,
+  me: Profile,
+  partnerNative: readonly { code: string }[] | undefined,
+  text: string,
+): Promise<CardBack> {
+  return await backFor(db, deps, text, backTargetsFor(me, partnerNative), undefined)
 }
 
 async function translatedBack(
@@ -273,6 +351,45 @@ async function chatAudioFor(db: Db, message: Message): Promise<EchoAudio | undef
   }
 }
 
+/** A `CardBack` as the fields it sets on a card. Every write of a back goes through here. */
+export function backFields(
+  meaning: CardBack,
+): Pick<EchoCardDoc, 'back' | 'backLang'> & Partial<Pick<EchoCardDoc, 'lang'>> {
+  return {
+    back: meaning.back,
+    ...(meaning.backLang ? { backLang: meaning.backLang } : {}),
+    ...(meaning.lang ? { lang: meaning.lang } : {}),
+  }
+}
+
+/**
+ * Filling the empty back of a card that already exists: the filter and the
+ * update, for the re-tap below and for the backfill.
+ *
+ * The filter names the empty back and the language that were read, so two
+ * taps racing fill it once and a language its owner chose meanwhile is not
+ * overwritten. A fill that moves the card to another language takes its
+ * readings off, as `updateCard` does: they are a voice for the old language
+ * reading this sentence, and "Read it aloud" comes back for the right one.
+ */
+export function fillBackWrite(
+  card: Pick<EchoCardDoc, '_id' | 'userId' | 'lang' | 'voices' | 'reading'>,
+  meaning: CardBack,
+): { filter: Filter<EchoCardDoc>; update: UpdateFilter<EchoCardDoc> } {
+  const relabelled = meaning.lang !== undefined && meaning.lang !== card.lang
+  const unset: { voices?: ''; reading?: '' } = {
+    ...(relabelled && card.voices?.length ? { voices: '' as const } : {}),
+    ...(relabelled && card.reading ? { reading: '' as const } : {}),
+  }
+  return {
+    filter: { _id: card._id, userId: card.userId, back: '', lang: card.lang },
+    update: {
+      $set: backFields(meaning),
+      ...(Object.keys(unset).length > 0 ? { $unset: unset } : {}),
+    },
+  }
+}
+
 /**
  * Writes the card, or hands back the one that is already there.
  *
@@ -295,21 +412,19 @@ async function upsertCard(
     Omit<EchoCardDoc, '_id' | 'userId' | 'source' | 'sourceKey' | 'srs' | 'createdAt'>
   >,
   profile: Profile,
-  fillBack?: () => Promise<string>,
+  fillBack?: () => Promise<CardBack>,
 ): Promise<CaptureEchoResult> {
   const cards = db.collection<EchoCardDoc>(COLLECTIONS.echoCards)
   const sourceKey = sourceKeyOf(source)
 
   const existing = await cards.findOne({ userId, sourceKey })
   if (existing) {
-    const back = existing.back === '' && fillBack ? await fillBack() : ''
-    if (back === '') return { card: toEchoCard(existing), created: false }
-    // `back: ''` in the filter, so two taps racing fill it once.
-    const filled = await cards.findOneAndUpdate(
-      { _id: existing._id, userId, back: '' },
-      { $set: { back } },
-      { returnDocument: 'after' },
-    )
+    const filling = existing.back === '' && fillBack ? await fillBack() : undefined
+    if (!filling || filling.back === '') return { card: toEchoCard(existing), created: false }
+    const write = fillBackWrite(existing, filling)
+    const filled = await cards.findOneAndUpdate(write.filter, write.update, {
+      returnDocument: 'after',
+    })
     const card = filled ?? (await cards.findOne({ _id: existing._id, userId })) ?? existing
     return { card: toEchoCard(card), created: false }
   }
@@ -396,7 +511,7 @@ export async function captureFromMessage(
   if (!lang)
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'No language to file this card under')
 
-  const target = targetLangFor(me)
+  const targets = backTargetsFor(me, partner?.nativeLanguages)
   const offered = args.translation
     ? { text: args.translation, lang: args.translationLang }
     : message.translation
@@ -413,15 +528,21 @@ export async function captureFromMessage(
       partnerId,
     },
     async () => {
-      const [back, audio] = await Promise.all([
-        backFor(db, deps, front, target, offered),
+      const [meaning, audio] = await Promise.all([
+        backFor(db, deps, front, targets, offered),
         chatAudioFor(db, message),
       ])
       const image = imageOf(message)
-      return { lang, front, back, ...(audio ? { audio } : {}), ...(image ? { image } : {}) }
+      return {
+        lang,
+        front,
+        ...backFields(meaning),
+        ...(audio ? { audio } : {}),
+        ...(image ? { image } : {}),
+      }
     },
     me,
-    () => backFor(db, deps, front, target, offered),
+    () => backFor(db, deps, front, targets, offered),
   )
 }
 
@@ -463,7 +584,10 @@ export async function captureFromPost(
   const answer = answers.topByPost.get(postId.toHexString())
   const audio = answer ? await audioFromAnswer(db, answer) : undefined
 
-  const target = targetLangFor(me)
+  // No partner on a post, so a sentence in the reader's own language goes to
+  // the first language they learn: the author wrote to everybody, and their
+  // native language is, for such a post, the reader's own.
+  const targets = backTargetsFor(me, undefined)
 
   return await upsertCard(
     db,
@@ -473,14 +597,19 @@ export async function captureFromPost(
       // The original body, not the corrected front: a learner reading the back
       // wants what the sentence means, and the correction usually fixed
       // grammar rather than meaning.
-      const back = await backFor(
+      const meaning = await backFor(
         db,
         deps,
         post.body.trim().slice(0, ECHO_FRONT_MAX_LENGTH),
-        target,
+        targets,
         undefined,
       )
-      return { lang: post.language, front, back, ...audioFields(audio ? [audio] : []) }
+      return {
+        lang: post.language,
+        front,
+        ...backFields(meaning),
+        ...audioFields(audio ? [audio] : []),
+      }
     },
     me,
   )
@@ -523,11 +652,14 @@ export async function captureManual(
        * — unless the card is already in the language it would be translated
        * into, where the answer would be the sentence back again.
        */
+      // `learning` left out: the author named the front's language, and a card
+      // they wrote in their own one with no back is theirs to finish.
       const back = args.back
         ? args.back.trim()
         : args.lang === target
           ? ''
-          : await backFor(db, deps, front, target, undefined)
+          : (await backFor(db, deps, front, { native: target, learning: undefined }, undefined))
+              .back
       return { lang: args.lang, front, back }
     },
     me,
@@ -714,8 +846,18 @@ export async function updateCard(
   // `'' | 1 | true`, and a widened `string` is rejected by the driver's types.
   const rewritten =
     input.front !== card.front || (input.lang !== undefined && input.lang !== card.lang)
-  const unset: { image?: ''; audio?: ''; audios?: ''; voices?: ''; reading?: '' } = {
+  const unset: {
+    image?: ''
+    audio?: ''
+    audios?: ''
+    voices?: ''
+    reading?: ''
+    backLang?: ''
+  } = {
     ...(input.image === null ? { image: '' as const } : {}),
+    // An emptied back is in no language. Left set, it would keep the card out
+    // of typing reviews after its owner writes a meaning in their own one.
+    ...(input.back === '' && card.backLang ? { backLang: '' as const } : {}),
     ...(touchesAudio && nextAudios.length === 0 ? { audio: '' as const, audios: '' as const } : {}),
     ...(rewritten && card.voices?.length ? { voices: '' as const } : {}),
     // Pinyin is a reading of the old sentence for the same reason `voices` is.

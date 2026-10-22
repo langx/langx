@@ -231,7 +231,7 @@ export default function EchoSessionScreen() {
   // From the deck's copy, not an edited one: an edit made mid-card must not
   // turn the card in front of somebody into the other kind of question.
   const producing = deckCard
-    ? asksProduction(parseSrs(deckCard), deckCard.front, deckCard.back)
+    ? asksProduction(parseSrs(deckCard), deckCard.front, deckCard.back, deckCard.backLang)
     : false
 
   /**

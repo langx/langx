@@ -43,6 +43,12 @@ describe('when a review asks for the sentence', () => {
     expect(asksProduction(reviewing(), 'Merhaba!', 'merhaba')).toBe(false)
     expect(asksProduction(reviewing(), 'Merhaba!', '')).toBe(false)
   })
+
+  it('never for a card whose back is in the language being learned', () => {
+    // Typing writes the front, and here the front is the reader's own language.
+    expect(asksProduction(reviewing(), 'Görüşürüz', 'See you', 'en')).toBe(false)
+    expect(asksProduction(reviewing(), 'Görüşürüz', 'See you')).toBe(true)
+  })
 })
 
 describe('whether a back says anything the front does not', () => {
