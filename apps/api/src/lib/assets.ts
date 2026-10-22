@@ -25,9 +25,22 @@ const ASSET_ROOTS = [
 ]
 
 export async function loadAsset(relative: string, label = 'Asset'): Promise<Buffer> {
+  return (await findAsset(relative, label)).bytes
+}
+
+/**
+ * The bytes and the path they were read from. The path is for a library that
+ * takes files rather than buffers — resvg's native binding loads fonts only
+ * by path — so it gets the same file the bytes came from, not a second probe.
+ */
+export async function findAsset(
+  relative: string,
+  label = 'Asset',
+): Promise<{ path: string; bytes: Buffer }> {
   for (const root of ASSET_ROOTS) {
+    const path = join(root, relative)
     try {
-      return await readFile(join(root, relative))
+      return { path, bytes: await readFile(path) }
     } catch {
       continue
     }
