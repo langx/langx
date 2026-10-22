@@ -2511,6 +2511,12 @@ only while tokens cannot be bought: nothing in Apple 3.1.1 or Google Play's
 payments policy stands against it today, and if tokens or items are ever sold
 for money, gifting falls under in-app purchase rules.
 
+**21 October 2026, later.** All three are in: the per-partner correction cap
+(_One person's sentences pay ten corrections a day_), the token.langx.io line
+(langx/token-website#35), and the App Review note, drafted in
+`docs/store/3.0-app-review-notes.md` for Behic to paste and submit. The switch
+is still off; the note's checklist says what has to be true when it goes on.
+
 ## Language levels are v1's four, not CEFR's six
 
 `A1…C2` was replaced by Absolute beginner / Beginner / Intermediate / Fluent.
@@ -9307,3 +9313,44 @@ and is left without one, with no word standing in for it.
 What _Pronouns are free text, and gender is not_ says about the field still
 holds; its reason for being on `sharedProfileSchema` now holds for the old look
 only.
+
+## One person's sentences pay ten corrections a day
+
+**21 October 2026.** `TOKEN_RULES.caps.correctionsPerPartnerPerDay` is 10.
+Past it, a correction of that person's words still sends, still shows in the
+thread and still counts as a correction written, on the profile and in the
+day's activity; it pays nothing, and the send's award says `capped`.
+
+- **Per partner, not per day.** Teaching many people stays unbounded. What a
+  correction pays was bounded once per sentence (`msgcorr:`, `postcorr:`), and
+  nothing bounded how many sentences of one person could pay one corrector in
+  a day. Messages have had that bound from the start
+  (`messagesPerPartnerPerDay`); corrections now have the same shape.
+- **Ten.** A hundred token a day from one person, half the day's message
+  ceiling. That keeps the rule the message caps hold — one partner is never
+  worth a whole day — and ten sentences of one person put right in a day is a
+  real lesson, not the edge of one. `rules.test.ts` holds that one partner
+  stays below a day's message ceiling, so a change that breaks it fails loudly.
+- **Chat and posts share one counter**, keyed on whoever wrote the corrected
+  words: the conversation's other participant, or the post's author. A
+  person's sentences pay the same whether they were written in a thread or on
+  a post.
+- **Counted in the day's activity document**, as
+  `correctionsPerPartner.<id>`, read back from the same `findOneAndUpdate` that
+  bumps it — the per-partner message cap's mechanism, so a burst at the
+  boundary pays exactly the cap. No new index: the document's `_id` is already
+  unique per user per UTC day, and the counter cannot race inside it. UTC, for
+  the reason every cap is.
+- **Every correction counts, paid or not.** A second correction of a sentence
+  that has already paid uses up one of the ten, the way a message past the cap
+  still counts towards it. Sending is never refused, so the cost is only ever
+  to the payout.
+- **The post's author is not a partner.** The counter does not touch
+  `partners`, the pool's `distinctPartners` term: a post's author may be
+  somebody the corrector has never spoken to, and the pool is unchanged.
+- **A capped post correction settles no referral**, as a capped or frozen send
+  in chat already did not. Activation waits on an earning act, and this one
+  earned nothing.
+
+The public token pages quoted corrections as having no cap. langx.io, the
+GitBook token page and token.langx.io now say ten from any one person.

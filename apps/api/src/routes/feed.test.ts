@@ -20,6 +20,7 @@ import { createTranslationProvider } from '../translation/createTranslationProvi
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
 import { deletePost } from '../modules/feed/feed'
+import { recordActivity } from '../modules/tokens/dailyActivity'
 import { listTimeline, olderThan, visibleTo, withinRange } from '../modules/feed/timeline'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 
@@ -255,6 +256,35 @@ describe('community feed', () => {
       .collection(COLLECTIONS.tokenLedger)
       .findOne({ userId: helper.userId, kind: 'correction' })
     expect(row?.amount).toBe(TOKEN_RULES.award.correction)
+  })
+
+  /**
+   * One counter for a person's sentences, wherever they were written: a day
+   * already at the cap through chat corrections of this author pays nothing
+   * for their post either, and another author's post still pays.
+   */
+  it('counts a post correction against the same per-partner cap as a chat correction', async () => {
+    const author = await newUser('capped-author@example.com')
+    const other = await newUser('capped-other@example.com')
+    const helper = await newUser('capped-helper@example.com')
+    for (let i = 0; i < TOKEN_RULES.caps.correctionsPerPartnerPerDay; i++) {
+      await recordActivity(handle.db, {
+        userId: helper.userId,
+        kind: 'correction',
+        partnerId: author.userId,
+      })
+    }
+
+    const capped = (await post(author, 'She go to school.')).json<{ _id: string }>()._id
+    expect((await correct(helper, capped, 'She goes to school.')).statusCode).toBe(201)
+    const open = (await post(other, 'He go to work.')).json<{ _id: string }>()._id
+    expect((await correct(helper, open, 'He goes to work.')).statusCode).toBe(201)
+
+    const rows = await handle.db
+      .collection<{ refId: string }>(COLLECTIONS.tokenLedger)
+      .find({ userId: helper.userId, kind: 'correction' })
+      .toArray()
+    expect(rows.map((row) => row.refId)).toEqual([`postcorr:${open}`])
   })
 
   it('refuses to let someone correct their own post', async () => {

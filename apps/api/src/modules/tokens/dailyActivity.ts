@@ -40,6 +40,12 @@ export interface DailyActivity {
   /** Messages per partner, for the per-partner cap. Only text messages count. */
   perPartner: Record<string, number>
   /**
+   * Corrections per person corrected, for `caps.correctionsPerPartnerPerDay`.
+   * Keyed by whoever wrote the corrected words — the chat partner, or the
+   * post's author. Absent until the day's first such correction.
+   */
+  correctionsPerPartner?: Record<string, number>
+  /**
    * The two counters the chart draws, split again by the *actor's* local day.
    * At most two keys: one UTC day covers at most two local days in any zone.
    *
@@ -122,6 +128,16 @@ export async function recordActivity(
   if (input.kind === 'message' && input.partnerId) {
     inc[`perPartner.${input.partnerId}`] = 1
   }
+  if (input.kind === 'correction' && input.partnerId) {
+    inc[`correctionsPerPartner.${input.partnerId}`] = 1
+  }
+  /*
+   * A correction's partner is counted against the cap only, never added to
+   * `partners`. That set is the pool's `distinctPartners` term, and a post's
+   * author is somebody the corrector may never have spoken to: scoring them
+   * as a partner would be a change to the pool, which this is not.
+   */
+  const partnerId = input.kind === 'correction' ? undefined : input.partnerId
   /*
    * Only the two kinds the chart draws. `mutualConversations` is not one of
    * them, and the mutual write is also made for the *partner*, whose zone is
@@ -145,7 +161,7 @@ export async function recordActivity(
     { _id: dailyActivityId(input.userId, day) },
     {
       $inc: inc,
-      ...(input.partnerId ? { $addToSet: { partners: input.partnerId } } : {}),
+      ...(partnerId ? { $addToSet: { partners: partnerId } } : {}),
       $setOnInsert: { userId: input.userId, day },
       $set: { updatedAt: at },
     },
@@ -155,6 +171,18 @@ export async function recordActivity(
   // `upsert` + `returnDocument: 'after'` always yields a document.
   if (!result) throw new Error('recordActivity: no document returned from upsert')
   return { ...result, partners: result.partners ?? [], perPartner: result.perPartner ?? {} }
+}
+
+/**
+ * Whether the correction `recordActivity` just counted is past
+ * `caps.correctionsPerPartnerPerDay` for the person corrected. Read off the
+ * post-image of that same write, so concurrent corrections each see their own
+ * count and the comparison cannot race, for the reason the per-partner
+ * message cap reads its own.
+ */
+export function correctionCapped(activity: DailyActivity, partnerId: string): boolean {
+  const count = activity.correctionsPerPartner?.[partnerId] ?? 0
+  return count > TOKEN_RULES.caps.correctionsPerPartnerPerDay
 }
 
 /** Number of days the profile chart shows, and so the length of `summary.week`. */
