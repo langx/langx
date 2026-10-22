@@ -31,6 +31,7 @@ import type { LoggingPushSender } from '../modules/push/devices'
 import { ACCESS_RECHECK_MS } from './index'
 
 const PASSWORD = 'correct horse battery staple'
+const TRUSTED_ORIGIN = 'http://localhost:8081'
 
 function onboardingBody(overrides: Record<string, unknown> = {}) {
   return {
@@ -147,6 +148,7 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
       LOG_LEVEL: 'silent',
       BETTER_AUTH_SECRET: 'a'.repeat(32),
       BETTER_AUTH_URL: 'http://localhost:4000',
+      TRUSTED_ORIGINS: TRUSTED_ORIGIN,
     })
 
     await ensureIndexes(handle.db)
@@ -201,6 +203,54 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
 
   it('rejects a connection with a garbage cookie', async () => {
     await expect(connectSocket('session_token=not-a-real-session')).rejects.toThrow()
+  })
+
+  /**
+   * Socket.io's `cors` option only answers the polling transport's preflight;
+   * a WebSocket upgrade has no preflight and carried the cookie from any page
+   * that opened one. The handshake itself has to look at `Origin`.
+   */
+  describe('the Origin a handshake comes from', () => {
+    function connectFrom(cookie: string, origin: string | undefined): Promise<ClientSocket> {
+      return new Promise((resolve, reject) => {
+        const socket = ioClient(baseUrl, {
+          transports: ['websocket'],
+          auth: { cookie },
+          ...(origin ? { extraHeaders: { origin } } : {}),
+          forceNew: true,
+          reconnection: false,
+        })
+        openSockets.push(socket)
+        socket.once('connect', () => resolve(socket))
+        socket.once('connect_error', (error: Error) => reject(error))
+      })
+    }
+
+    it('refuses a page on a site the API does not trust', async () => {
+      const user = await newUser('ws-origin-foreign@example.com')
+      await expect(connectFrom(user.cookie, 'https://evil.example')).rejects.toThrow()
+    })
+
+    it('accepts a trusted origin', async () => {
+      const user = await newUser('ws-origin-trusted@example.com')
+      expect((await connectFrom(user.cookie, TRUSTED_ORIGIN)).connected).toBe(true)
+    })
+
+    // A plain client — a script, a test — says nothing about where it is.
+    it('accepts a handshake with no Origin at all', async () => {
+      const user = await newUser('ws-origin-none@example.com')
+      expect((await connectFrom(user.cookie, undefined)).connected).toBe(true)
+    })
+
+    /*
+     * React Native's WebSocket fills `Origin` in with the address it connects
+     * to (`http(s)://host[:port]`), so the phones present the API's own
+     * origin, which is not in the list.
+     */
+    it("accepts the API's own origin, which is what the native app sends", async () => {
+      const user = await newUser('ws-origin-native@example.com')
+      expect((await connectFrom(user.cookie, baseUrl)).connected).toBe(true)
+    })
   })
 
   /**

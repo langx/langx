@@ -202,6 +202,34 @@ function refuseRevoked(packet: unknown[], revocation: Revocation): void {
  * the `modules/chat` functions that call it — the same gate REST uses, so
  * the socket transport can't become a back door around it.
  */
+/**
+ * Whether a socket handshake may come from `origin`.
+ *
+ * - No `Origin` at all: not a browser, so there is no page to have been
+ *   tricked into connecting, and a cookie still has to be presented.
+ * - The API's own host: React Native's WebSocket fills `Origin` in with the
+ *   address it connects to (`http(s)://host[:port]`), so this is what the
+ *   phones send. Compared by host against the request's own `Host` rather
+ *   than against a configured URL, so every name the API answers on works.
+ *   A page on another site cannot present it.
+ * - Otherwise it must be in `TRUSTED_ORIGINS`. An empty list allows any — the
+ *   same fallback CORS uses, and only reachable outside production, where
+ *   `loadEnv` refuses to boot without the list.
+ */
+export function originAllowed(
+  origin: string | undefined,
+  host: string | undefined,
+  trusted: readonly string[],
+): boolean {
+  if (origin === undefined) return true
+  if (trusted.length === 0 || trusted.includes(origin)) return true
+  try {
+    return host !== undefined && new URL(origin).host === host
+  } catch {
+    return false
+  }
+}
+
 export function attachSocketServer(app: FastifyInstance): AppServer {
   const io: AppServer = new SocketIOServer(app.server, {
     /*
@@ -229,6 +257,18 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
     cors: {
       origin: app.env.TRUSTED_ORIGINS.length > 0 ? app.env.TRUSTED_ORIGINS : true,
       credentials: true,
+    },
+    /*
+     * `cors` above only answers the polling transport's preflight. A WebSocket
+     * upgrade has no preflight, so any page could open one and the browser
+     * would attach the session cookie — the handshake has to look at
+     * `Origin` itself. Runs for both transports, before `io.use` below.
+     */
+    allowRequest: (request, callback) => {
+      callback(
+        null,
+        originAllowed(request.headers.origin, request.headers.host, app.env.TRUSTED_ORIGINS),
+      )
     },
   })
 
