@@ -1,5 +1,5 @@
 import { isServerRecord, type ThreadTestimonialState } from '@langx/shared'
-import type { InfiniteData } from '@tanstack/react-query'
+import type { InfiniteData, QueryClient } from '@tanstack/react-query'
 import type { MessageDto } from '../api/queries'
 
 export interface MessagePageDto {
@@ -19,6 +19,35 @@ export interface MessagePageDto {
 }
 
 type Pages = InfiniteData<MessagePageDto> | undefined
+
+/**
+ * Writes `update` into every cache that holds this thread: the live pages and
+ * any jump window, which sits under the same `['messages', id]` prefix.
+ *
+ * A thread that is refetching at that moment is fetched again. The GET that
+ * is already out was answered from before this message existed, and when it
+ * lands it replaces the cache wholesale — patch included. That is the
+ * reconnect: the resync refetches the thread, the retried send's ack writes
+ * the message in, the echo is dropped as a duplicate of it, and then the
+ * stale page erased it, so a stored message stayed off screen until a reload.
+ * `cancelRefetch` drops the stale answer without rolling the patch back; the
+ * new GET leaves after the server stored the message, so it carries it.
+ */
+export function patchThread(
+  queryClient: QueryClient,
+  conversationId: string,
+  update: (old: Pages) => Pages,
+): void {
+  const queryKey = ['messages', conversationId]
+  queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
+    { queryKey },
+    (old) => update(old) ?? old,
+  )
+  void queryClient.refetchQueries(
+    { queryKey, predicate: (query) => query.state.fetchStatus === 'fetching' },
+    { cancelRefetch: true },
+  )
+}
 
 /**
  * A page's `items` run oldest → newest, but `nextCursor` walks *backwards*

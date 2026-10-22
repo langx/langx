@@ -1,4 +1,4 @@
-import type { InfiniteData } from '@tanstack/react-query'
+import { QueryClient, type InfiniteData } from '@tanstack/react-query'
 import { describe, expect, it } from 'vitest'
 import type { MessageDto } from '../api/queries'
 import {
@@ -7,6 +7,7 @@ import {
   applyMessageUpdate,
   applyPinned,
   messagesNewestFirst,
+  patchThread,
   type MessagePageDto,
 } from './messageCache'
 
@@ -243,5 +244,51 @@ describe('applyPinned', () => {
     expect(applyPinned(data, null)).toBe(data)
     const withPin = applyPinned(data, pin)
     expect(applyPinned(withPin, pin)).toBe(withPin)
+  })
+})
+
+describe('patchThread while the thread is refetching', () => {
+  /**
+   * The reconnect resync refetches the thread; the retried send's ack and its
+   * echo land while that GET is still out. Its answer was read before the
+   * server stored the message, and it must not erase the message the patch
+   * has just written.
+   */
+  it('keeps a message patched in during an in-flight refetch', async () => {
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+    const queryKey = ['messages', 'c1']
+    client.setQueryData(queryKey, pages([message('m1')]))
+
+    let release: (page: MessagePageDto) => void = () => undefined
+    let calls = 0
+    const queryFn = (): Promise<MessagePageDto> => {
+      calls += 1
+      // The first GET left before the send was stored; a later one sees it.
+      if (calls > 1) return Promise.resolve(pages([message('m1'), message('m2', ME)]).pages[0]!)
+      return new Promise((resolve) => {
+        release = resolve
+      })
+    }
+    const refetch = client.fetchInfiniteQuery({
+      queryKey,
+      queryFn,
+      initialPageParam: '',
+      getNextPageParam: () => null,
+      staleTime: 0,
+    })
+
+    // The ack, then the duplicate `message:new`.
+    patchThread(client, 'c1', (old) => appendIncomingMessage(old, message('m2', ME), ME))
+    patchThread(client, 'c1', (old) => appendIncomingMessage(old, message('m2', ME), ME))
+
+    release(pages([message('m1')]).pages[0]!)
+    await refetch.catch(() => undefined)
+    // Waits out whatever `patchThread` started, without starting anything.
+    while (client.isFetching({ queryKey }) > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 0))
+    }
+
+    const ids = messagesNewestFirst(client.getQueryData(queryKey)).map((m) => m._id)
+    expect(ids).toEqual(['m2', 'm1'])
   })
 })
