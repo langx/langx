@@ -604,6 +604,6 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
      * zero, and the chat list's cached copy is last session's on a cold start
      * from a push — the usual way into a thread with something unread.
      */
-    return reply.send({ ...conversation, unreadBefore })
+    return reply.send({ ...toConversationView(conversation, request.userId), unreadBefore })
   })
 }
