@@ -151,6 +151,7 @@ import { placeLabel, type GeocodedAddress } from '../lib/sharedLocation'
 import { validatePickedAssets, type PickRefusal, type PickedMedia } from '../lib/pickedAssets'
 import { readDroppedFiles } from '../lib/droppedFiles'
 import { PendingMediaBubble } from '../components/PendingMediaBubble'
+import { UnsentRowV3 } from '../components/thread/UnsentRowV3'
 import {
   ScheduledMessageRows,
   useScheduleMessage,
@@ -294,6 +295,7 @@ export function ChatScreen({
     if (chips.some((chip) => chip.kind === 'streak')) setCelebrating(messageId)
   }
   const styles = useStyles()
+  const rowsV3 = useRowStylesV3()
   const t = useT()
   const names = useDisplayNames()
   const { locale } = useLocale()
@@ -317,6 +319,12 @@ export function ChatScreen({
   /** Sends in flight, drawn in the thread before the server has answered. */
   const [outgoing, setOutgoing] = useState<OutgoingMessage[]>([])
   const [unsent, setUnsent] = useState<UnsentMessage[]>([])
+  /**
+   * Unsent rows whose retry is out. Only the v3 row draws it — "Sending" in
+   * place of the red line — so a tap that is being answered does not look
+   * like a tap that did nothing.
+   */
+  const [retrying, setRetrying] = useState<ReadonlySet<string>>(() => new Set())
   /**
    * And back out of the device, because until this the rows lived exactly as
    * long as the screen did. Somebody who types a sentence in a tunnel and goes
@@ -1741,14 +1749,24 @@ export function ChatScreen({
   }
 
   async function retry(message: UnsentMessage): Promise<void> {
-    await deliver(
-      message.body,
-      message.clientId,
-      message.replyToMessageId,
-      undefined,
-      undefined,
-      message.quote,
-    )
+    const id = message.clientId
+    setRetrying((ids) => new Set(ids).add(id))
+    try {
+      await deliver(
+        message.body,
+        message.clientId,
+        message.replyToMessageId,
+        undefined,
+        undefined,
+        message.quote,
+      )
+    } finally {
+      setRetrying((ids) => {
+        const next = new Set(ids)
+        next.delete(id)
+        return next
+      })
+    }
   }
 
   /**
@@ -3356,6 +3374,24 @@ export function ChatScreen({
                         {unsent.map((message) => {
                           const discard = () =>
                             setUnsent((list) => removeUnsent(list, message.clientId))
+                          if (v3Thread) {
+                            return (
+                              <UnsentRowV3
+                                key={message.clientId}
+                                body={message.body}
+                                retrying={retrying.has(message.clientId)}
+                                onRetry={() => void retry(message)}
+                                onDiscard={discard}
+                                onLongPress={() =>
+                                  void openUnsentActions({
+                                    body: message.body,
+                                    preview: message.body,
+                                    discard,
+                                  })
+                                }
+                              />
+                            )
+                          }
                           return (
                             <View key={message.clientId} style={styles.unsentRow}>
                               <DiscardUnsentButton onPress={discard} />
@@ -3392,7 +3428,9 @@ export function ChatScreen({
                     is the bottom of the thread, and the other person typing is
                     the newest thing in it.
                   */}
-                    {partnerTyping ? <TypingIndicator /> : null}
+                    {partnerTyping ? (
+                      <TypingIndicator {...(v3Thread ? { v3Fill: partnerHue ?? null } : {})} />
+                    ) : null}
                     {/*
                       Nearest the composer, and not a message: the first time
                       somebody wrote back, once it has been answered. A jump
@@ -3474,13 +3512,17 @@ export function ChatScreen({
                 renderItem={({ item: row }) =>
                   row.kind === 'day' ? (
                     <View style={styles.dayRow}>
-                      <Text style={styles.dayLabel}>{dayLabel(row.day, { t, locale })}</Text>
+                      <Text style={[styles.dayLabel, v3Thread && rowsV3.dayLabel]}>
+                        {dayLabel(row.day, { t, locale })}
+                      </Text>
                     </View>
                   ) : row.kind === 'unread' ? (
                     <View style={styles.unreadRow}>
-                      <View style={styles.unreadLine} />
-                      <Text style={styles.unreadLabel}>{t('chat.newMessages')}</Text>
-                      <View style={styles.unreadLine} />
+                      <View style={[styles.unreadLine, v3Thread && rowsV3.unreadLine]} />
+                      <Text style={[styles.unreadLabel, v3Thread && rowsV3.unreadLabel]}>
+                        {t('chat.newMessages')}
+                      </Text>
+                      <View style={[styles.unreadLine, v3Thread && rowsV3.unreadLine]} />
                     </View>
                   ) : (
                     // A stand-in has no server id yet, so a menu or a reply on it
@@ -3609,7 +3651,7 @@ export function ChatScreen({
           {copilot.card}
           {readOnly ? (
             <View style={styles.channelNote}>
-              <Text style={styles.channelNoteText}>
+              <Text style={[styles.channelNoteText, v3Thread && rowsV3.channelNoteText]}>
                 {t(suspended ? 'chat.suspendedOnly' : 'chat.channelOnly')}
               </Text>
             </View>
@@ -4178,8 +4220,19 @@ const TYPING_DIM = 0.3
  * few seconds. Still when the reader has asked for less motion — three dots
  * already say what they mean.
  */
-function TypingIndicator() {
+function TypingIndicator({
+  v3Fill,
+}: {
+  /**
+   * The v3 thread's look: their bubble in the partner's hue (the colour), or
+   * on the surface grey while the partner is not known yet (`null`). Absent
+   * in the current look.
+   */
+  v3Fill?: string | null
+}) {
   const styles = useStyles()
+  const rowsV3 = useRowStylesV3()
+  const v3Look = v3Fill !== undefined
   const t = useT()
   const reduceMotion = useReduceMotion()
   const dots = useRef([0, 1, 2].map(() => new Animated.Value(TYPING_DIM))).current
@@ -4205,14 +4258,49 @@ function TypingIndicator() {
   }, [dots, reduceMotion])
 
   return (
-    <View style={styles.typingBubble} accessibilityLabel={t('chat.typing')}>
+    <View
+      style={[
+        styles.typingBubble,
+        v3Look && rowsV3.typingBubble,
+        v3Fill ? { backgroundColor: v3Fill } : null,
+      ]}
+      accessibilityLabel={t('chat.typing')}
+    >
       {dots.map((dot, index) => (
-        <Animated.View key={index} style={[styles.typingDot, { opacity: dot }]} />
+        <Animated.View
+          key={index}
+          style={[
+            styles.typingDot,
+            v3Look && (v3Fill ? rowsV3.typingDotOnHue : rowsV3.typingDot),
+            { opacity: dot },
+          ]}
+        />
       ))}
     </View>
   )
 }
 
+/**
+ * The thread's own rows in the v3 look, over the current sheet's: the day
+ * and the "New messages" divider in v3's caption, semibold, the read-only
+ * note in its caption, and the typing bubble in `bubbleLookV3`'s shape — their
+ * side's corner and tail, the partner's hue with ink dots, or the surface grey
+ * with muted ones until the partner is known.
+ */
+const useRowStylesV3 = makeStyles(({ v3 }) => ({
+  // The drawing's "Today": semibold, in the grey.
+  dayLabel: { ...v3.type.caption, color: v3.colors.muted, fontWeight: '600' },
+  unreadLine: { backgroundColor: v3.colors.line, height: 2 },
+  unreadLabel: { ...v3.type.caption, color: v3.colors.echoText, fontWeight: '600' },
+  channelNoteText: { ...v3.type.caption, color: v3.colors.muted },
+  typingBubble: {
+    backgroundColor: v3.colors.surface,
+    borderBottomStartRadius: v3.space[8],
+    borderRadius: v3.radius.tile,
+  },
+  typingDot: { backgroundColor: v3.colors.muted },
+  typingDotOnHue: { backgroundColor: v3.colors.ink },
+}))
 /**
  * What the menu's copy of the bubble should draw, for the messages that draw a
  * picture rather than a sentence.

@@ -81,7 +81,9 @@ const useOverrides = makeStyles(({ v3 }) => ({
   reactionsOverlap: { marginHorizontal: v3.space[10], marginTop: -18 },
   tombstone: { backgroundColor: v3.colors.surface },
   tombstoneText: { ...v3.type.callout, color: v3.colors.muted, fontStyle: 'italic' },
-  edited: { color: v3.colors.muted },
+  // The meta line's face (`MessageMeta`): "Edited" is a fact about the
+  // message like its clock, not a remark in italics.
+  edited: { ...v3.type.caption, color: v3.colors.muted, fontStyle: 'normal' },
   forwardedText: { color: v3.colors.muted },
   // v3 is flat: an outline on the ground, no shadow under it.
   reactions: {
@@ -112,7 +114,7 @@ const useOverrides = makeStyles(({ v3 }) => ({
   callTitle: { color: v3.colors.fg },
   callTitleMissed: { color: v3.colors.danger },
   viewOnceIconLive: { backgroundColor: v3.colors.blue },
-  viewOnceIconUsed: { borderColor: v3.colors.line },
+  viewOnceIconUsed: { borderColor: v3.colors.line, borderWidth: 2 },
   viewOnceUsedTitle: { color: v3.colors.muted },
   // Blue as text is `echoText`: `blue` itself falls under 4.5:1 on the surface.
   viewOnceAction: { color: v3.colors.echoText },

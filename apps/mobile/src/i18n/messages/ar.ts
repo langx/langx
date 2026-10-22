@@ -1478,6 +1478,7 @@ export const ar: Localized<EnMessages> = {
     title: 'محادثة',
     typing: 'يكتب…',
     notSentRetry: 'لم يُرسل — اضغط للمحاولة مرة أخرى',
+    notSentTapRetry: 'لم يُرسل · اضغط لإعادة المحاولة',
     editing: 'تعديل',
     correcting: 'تصحيح',
     partsReplyTitle: 'على أي جزء تردّ؟',

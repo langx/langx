@@ -1423,6 +1423,7 @@ export const en = {
     title: 'Chat',
     typing: 'typing…',
     notSentRetry: 'Not sent — tap to try again',
+    notSentTapRetry: 'Not sent · Tap to retry',
     editing: 'Editing',
     correcting: 'Correcting',
     partsReplyTitle: 'Which part are you replying to?',

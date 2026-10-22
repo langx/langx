@@ -1298,6 +1298,7 @@ export const de: Localized<EnMessages> = {
     title: 'Chat',
     typing: 'schreibt…',
     notSentRetry: 'Nicht gesendet — zum Wiederholen tippen',
+    notSentTapRetry: 'Nicht gesendet · Zum Wiederholen tippen',
     editing: 'Bearbeiten',
     correcting: 'Korrigieren',
     partsReplyTitle: 'Auf welchen Teil antwortest du?',

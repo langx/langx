@@ -706,7 +706,7 @@ export const MessageBubble = memo(function MessageBubble({
    * rounded shape, and the side is the only thing that says whose it is.
    */
   const column = [styles.column, mine ? styles.columnMine : styles.columnTheirs]
-  const meta = <MessageMeta message={message} mine={mine} pending={pending} />
+  const meta = <MessageMeta message={message} mine={mine} pending={pending} v3={v3} />
 
   /**
    * A withdrawal keeps its place in the thread rather than closing the gap.
@@ -718,7 +718,7 @@ export const MessageBubble = memo(function MessageBubble({
       <Pressable onPress={tap} onLongPress={press} style={column}>
         <View ref={box} style={[styles.bubble, styles.tombstone, flash]}>
           <View style={styles.tombstoneRow}>
-            <Feather name="slash" size={13} color={colors.textMuted} />
+            <Feather name="slash" size={13} color={v3 ? tokens.colors.muted : colors.textMuted} />
             <Text style={styles.tombstoneText}>{t('chat.deleted')}</Text>
           </View>
           {ring(styles.ring)}
@@ -1044,7 +1044,7 @@ export const MessageBubble = memo(function MessageBubble({
         box={box}
         column={column}
         flash={recordFlash}
-        meta={<MessageMeta message={message} mine={false} />}
+        meta={<MessageMeta message={message} mine={false} v3={v3} />}
         onLongPress={press}
         onCallBack={onCallBack ? () => onCallBack(message) : undefined}
       />,
@@ -1090,7 +1090,7 @@ export const MessageBubble = memo(function MessageBubble({
           </View>
         </View>
         <View style={styles.cardMeta}>
-          <MessageMeta message={message} mine={false} />
+          <MessageMeta message={message} mine={false} v3={v3} />
         </View>
       </Pressable>,
     )
@@ -1106,7 +1106,7 @@ export const MessageBubble = memo(function MessageBubble({
         box={box}
         column={column}
         flash={recordFlash}
-        meta={<MessageMeta message={message} mine={false} />}
+        meta={<MessageMeta message={message} mine={false} v3={v3} />}
         onLongPress={press}
       />,
     )
@@ -1172,7 +1172,15 @@ export const MessageBubble = memo(function MessageBubble({
             <Feather
               name={view.kind === 'video' ? 'video' : 'camera'}
               size={17}
-              color={label.opens ? colors.textInverse : colors.textMuted}
+              color={
+                v3
+                  ? label.opens
+                    ? tokens.colors.onBlue
+                    : tokens.colors.muted
+                  : label.opens
+                    ? colors.textInverse
+                    : colors.textMuted
+              }
             />
           </View>
           <View style={styles.callText}>
