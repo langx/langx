@@ -28,7 +28,6 @@ export const tr: Localized<EnMessages> = {
     checking: 'Kontrol ediliyor…',
     oneMoment: 'Bir saniye…',
     skip: 'Şimdilik geç',
-    comingSoon: 'YAKINDA',
     continue: 'Devam',
     done: 'Bitti',
     reset: 'Sıfırla',
@@ -3502,7 +3501,8 @@ export const tr: Localized<EnMessages> = {
     nearbyBody:
       'Kişileri mesafeye göre sırala. Konumun yuvarlanır; başkaları yalnızca kaba bir mesafe görür.',
     copilot: 'Yapay zekâ yardımcısı',
-    copilotBody: 'Yazarken mesajları kurmana ve anlamana yardım eder.',
+    copilotBody:
+      'Yazarken mesajları kurmana ve anlamana yardım eder. Hesabında henüz açık olmayabilir.',
     quotaNotice:
       'Bugünkü {count} yeni sohbet hakkını kullandın. Sana gelen her mesaja sınırsız cevap vermeye devam edebilirsin.',
     manageNotice: '{plan} kullanıyorsun. Mağaza hesabından yönetebilir ya da iptal edebilirsin.',
@@ -3603,6 +3603,8 @@ export const tr: Localized<EnMessages> = {
     compareLanguages: 'Öğrendiğin diller',
     compareUnlimited: 'Sınırsız',
     compareSoon: 'Yakında',
+    compareBeta: 'Beta',
+    betaTag: 'Beta, kademeli açılıyor',
     compareIncluded: 'Dahil',
     compareNotIncluded: 'Dahil değil',
     yearlyBadge: '{perMonth} · {saving}',
@@ -3859,7 +3861,7 @@ export const tr: Localized<EnMessages> = {
     },
   },
   copilot: {
-    label: 'Yapay zekâ · yanılabilir',
+    label: 'Copilot · Beta',
     off: 'Copilot kapalı.',
     consentTitle: 'Copilot: başlamadan önce',
     consentBody:
@@ -3868,7 +3870,7 @@ export const tr: Localized<EnMessages> = {
       'Sorduğunda, sorduğun metin dillerin ve seviyelerinle birlikte yapay zekâ modelini çalıştıran şirket olan Anthropic’e gider. Bir mesajı açıklatırken bu, seçtiğin ve karşı tarafın yazdığı tek mesajdır. Yanıt önerilerinde sohbetteki son birkaç mesaj da gider.',
     consentNever: 'Adın, e-posta adresin, fotoğrafların ve sesli mesajların asla gönderilmez.',
     consentWrong:
-      'Yapay zekâ yanılabilir. Yanıtları yapay zekâ olarak işaretlenir ve sen kendin göndermedikçe karşı tarafa hiçbir şey ulaşmaz.',
+      'Yapay zekâ yanılabilir. Yanıtları Copilot olarak işaretlenir ve sen kendin göndermedikçe karşı tarafa hiçbir şey ulaşmaz.',
     consentAccept: 'Kabul et ve aç',
     consentDecline: 'Şimdi değil',
     button: 'Copilot',
