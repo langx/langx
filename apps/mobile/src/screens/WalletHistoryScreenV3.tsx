@@ -27,12 +27,13 @@ type Glyph = keyof typeof Feather.glyphMap
  * A spend and the operator's own entries sit on the neutral grey: the hues
  * are for what somebody did.
  */
-const KIND_LOOK: Record<TokenKind, { icon: Glyph; hue: PartnerHue | null }> = {
+const KIND_LOOK: Record<TokenKind, { icon: Glyph | 'flame'; hue: PartnerHue | null }> = {
   message: { icon: 'message-circle', hue: 'sky' },
   correction: { icon: 'edit-3', hue: 'mint' },
   pronunciation: { icon: 'mic', hue: 'mint' },
   echo: { icon: 'copy', hue: 'aqua' },
-  streak: { icon: 'zap', hue: 'tangerine' },
+  // v3's streak is a flame everywhere; the bolt was the current look's.
+  streak: { icon: 'flame', hue: 'tangerine' },
   dailyPool: { icon: 'moon', hue: 'lilac' },
   gift: { icon: 'gift', hue: 'lime' },
   signupBonus: { icon: 'star', hue: 'lime' },

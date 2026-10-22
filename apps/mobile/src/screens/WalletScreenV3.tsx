@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
 import { COSMETICS, TOKEN_RULES } from '@langx/shared'
 import { useFonts } from 'expo-font'
-import { router, useFocusEffect } from 'expo-router'
+import { router, useFocusEffect, useIsFocused } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
 import { useMe, useWallet } from '../api/queries'
@@ -29,6 +29,7 @@ import { goBackTo } from '../lib/navigation'
 import { clearFromTray } from '../lib/notifications'
 import { requireAccount } from '../lib/requireAccount'
 import { makeStyles, useTheme } from '../lib/theme'
+import { DELAY } from '../lib/theme/motionValues'
 import { freezeBankValue, nextRung } from '../lib/walletV3'
 
 const ME = '/(app)/(tabs)/me'
@@ -48,6 +49,41 @@ export function WalletScreenV3() {
   return shouldGateGuest(session?.user) ? <GuestWallet /> : <MemberWallet />
 }
 
+/**
+ * The balance the hero last showed, and whose, for the life of the app: a
+ * return to the wallet rolls the figure only by what changed since, rather
+ * than counting a balance of thousands up from zero every visit.
+ */
+let lastShown: { id: string; balance: number } | null = null
+
+/**
+ * The balance for the hero to show: the one it last showed, then — once the
+ * screen is in front and the push that brought it has landed — the real one,
+ * so the roll is seen rather than played under a screen sliding over it. A
+ * gift opened on the page above lands in the cache while the wallet is
+ * underneath; it rolls when the wallet is back in view.
+ */
+function useHeroBalance(id: string | undefined, balance: number | undefined): number | undefined {
+  const focused = useIsFocused()
+  const [shown, setShown] = useState(() =>
+    lastShown && id && lastShown.id === id ? lastShown.balance : balance,
+  )
+  useEffect(() => {
+    if (balance === undefined || !focused || shown === balance) return
+    // Nothing shown yet: the first figure is simply there.
+    if (shown === undefined) {
+      setShown(balance)
+      return
+    }
+    const timer = setTimeout(() => setShown(balance), DELAY.afterPush)
+    return () => clearTimeout(timer)
+  }, [balance, focused, shown])
+  useEffect(() => {
+    if (id && shown !== undefined) lastShown = { id, balance: shown }
+  }, [id, shown])
+  return shown
+}
+
 function MemberWallet() {
   useScreenInteractive()
   const t = useT()
@@ -58,6 +94,8 @@ function MemberWallet() {
 
   const me = useMe()
   const wallet = useWallet()
+  const { data: session } = authClient.useSession()
+  const heroBalance = useHeroBalance(session?.user.id, wallet.data?.balance)
   // As today's wallet: a gift, pool or bounty push is read here, so it goes
   // when the page comes back into view.
   useFocusEffect(
@@ -175,7 +213,7 @@ function MemberWallet() {
           view={{
             ground: v3.hues.lime,
             kicker: t('wallet.balance'),
-            value: balance,
+            value: heroBalance ?? data.balance,
             unit,
             earnedSpent,
             rung: rung && rungLine ? { line: rungLine, fraction: rung.fraction } : undefined,

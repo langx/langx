@@ -291,11 +291,12 @@ export interface PlanLimits {
    * The AI language copilot — the one paid feature v1 ever promised publicly
    * (`architecture.md:425`).
    *
-   * Paid: unlike nearby, a copilot call has a real per-request cost. **Not
-   * shipped** — the server side exists and ships dark behind
+   * Paid: unlike nearby, a copilot call has a real per-request cost. **In
+   * beta** — it answers only accounts on the operator's allow-list, behind
    * `flags.copilotEnabled`, and what it meters is `copilotPer24h`, which gives
-   * the free tier a small taste. This flag is what the paywall copy reads, and
-   * it keeps saying "coming soon" until Copilot is live on every platform.
+   * the free tier a small taste. This flag is what the paywall copy reads; the
+   * app's `BenefitCopy.beta` is what makes it say "Beta, rolling out" instead
+   * of a tick until every Pro account gets it.
    */
   copilot: boolean
   /**

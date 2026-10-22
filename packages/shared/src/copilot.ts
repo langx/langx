@@ -15,7 +15,7 @@ import { z } from 'zod'
  *
  * Here is only what both sides must agree on: the actions, the shapes, and
  * the numbers that bound the bill. How an answer looks — blue, labelled
- * "AI · may be wrong", never the green a person's correction wears — is the
+ * "Copilot · Beta", never the green a person's correction wears — is the
  * client's. See `docs/decisions.md` → _Copilot ships dark, behind two
  * switches and a consent_.
  */
@@ -162,7 +162,7 @@ export type CopilotResult = z.infer<typeof copilotResultSchema>
 export const copilotResponseSchema = z.object({
   /**
    * Always `'ai'`: every Copilot answer is a model's, and the client draws it
-   * blue and labelled "AI · may be wrong". Sent rather than assumed so that a
+   * blue and labelled "Copilot · Beta". Sent rather than assumed so that a
    * screen rendering a result cannot be handed one without the label's cue.
    */
   source: z.literal('ai'),

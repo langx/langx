@@ -44,6 +44,7 @@ import {
   FEATURE_TITLE,
   compareRows,
   highlightsFor,
+  pendingTag,
   sellableFeature,
   type BenefitCopy,
 } from '../../src/lib/paywallBenefits'
@@ -192,7 +193,7 @@ export default function PaywallScreen() {
   const change = planChangeFor(held)
   // The context line only for somebody who can still buy what they were
   // refused — a subscriber sent here from the Boosted strip already has it —
-  // and only for a capability that has shipped (`sellableFeature`).
+  // and only for a capability that is on for every buyer (`sellableFeature`).
   // Analytics keep the raw `feature`.
   const refused = change === 'buy' ? sellableFeature(feature) : null
   const remaining = quota.data?.initiations.remaining
@@ -842,13 +843,14 @@ function cardCopy(
 /**
  * One reason, as v3 draws a row: the glyph on its hue's tile, the name, and
  * the number it comes with underneath — the limit is the part of the promise
- * worth keeping visible. A not-yet-shipped feature keeps its name and body but
- * says so.
+ * worth keeping visible. A not-yet-shipped or beta feature keeps its name and
+ * body but says so.
  */
 function BenefitRow({ copy }: { copy: BenefitCopy }) {
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
+  const tag = pendingTag(copy)
 
   return (
     <View style={styles.benefit}>
@@ -859,7 +861,7 @@ function BenefitRow({ copy }: { copy: BenefitCopy }) {
         <Text style={styles.benefitTitle}>{t(copy.title)}</Text>
         <Text style={styles.benefitBody}>{t(copy.body, copy.vars)}</Text>
       </View>
-      {copy.shipped ? null : <Text style={styles.soonTag}>{t('paywall.compareSoon')}</Text>}
+      {tag ? <Text style={styles.soonTag}>{t(tag)}</Text> : null}
     </View>
   )
 }

@@ -1,7 +1,7 @@
 import { PINNED_BADGES_MAX, streakMilestoneBonus, type BadgeSummary } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Platform, StyleSheet, Text, View } from 'react-native'
+import { Platform, Text, View } from 'react-native'
 import { useBadgesV3, useMe, usePinBadges, usePublicBadges } from '../../api/queries'
 import { BadgeDetailSheet } from '../../components/badges/BadgeDetailSheet'
 import { BadgeEarnedSheet } from '../../components/badges/BadgeEarnedSheet'
@@ -11,6 +11,7 @@ import { ShareCardSheet, type ShareCardRequest } from '../../components/ShareCar
 import { Button } from '../../components/ui/Button'
 import { EmptyArt } from '../../components/ui/EmptyStateV3'
 import { IconButton } from '../../components/ui/IconButton'
+import { ProgressBar } from '../../components/ui/ProgressBar'
 import { Screen } from '../../components/ui/Screen'
 import { useNewBadges } from '../../hooks/useNewBadges'
 import { usePullToRefresh } from '../../hooks/usePullToRefresh'
@@ -261,6 +262,7 @@ export function BadgesScreenV3() {
 /** The API's nearest badge, with its fraction and, for a streak, what the milestone pays. */
 function NextCard({ next: n }: { next: NonNullable<BadgeSummary['next']> }) {
   const styles = useStyles()
+  const { v3 } = useTheme()
   const t = useT()
   const { locale } = useLocale()
   const words = { t, locale }
@@ -291,6 +293,7 @@ function NextCard({ next: n }: { next: NonNullable<BadgeSummary['next']> }) {
             {name}
           </Text>
           <Text style={styles.nextFraction}>{fraction}</Text>
+          {/* The bar's own count is "9 of 10", not a percentage: said by the wrapper. */}
           <View
             accessible
             accessibilityRole="progressbar"
@@ -298,8 +301,12 @@ function NextCard({ next: n }: { next: NonNullable<BadgeSummary['next']> }) {
             accessibilityValue={{ min: 0, max: n.threshold, now: n.current }}
             style={styles.bar}
           >
-            <View style={[StyleSheet.absoluteFill, styles.barTrack]} />
-            <View style={[styles.barFill, { width: `${Math.round(done * 100)}%` }]} />
+            <ProgressBar
+              value={done}
+              height={10}
+              fillColor={v3.colors.fg}
+              accessibilityLabel={t('badgesV3.progressLabel', { name })}
+            />
           </View>
         </View>
       </View>
@@ -358,9 +365,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   nextName: { ...v3.type.headline, color: v3.colors.fg },
   nextFraction: { ...v3.type.button, color: v3.colors.fg },
   nextBody: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '500' },
-  bar: { borderRadius: v3.radius.pill, height: 10, marginTop: v3.space[2], overflow: 'hidden' },
-  barTrack: { backgroundColor: v3.colors.track },
-  barFill: { backgroundColor: v3.colors.fg, borderRadius: v3.radius.pill, height: 10 },
+  bar: { marginTop: v3.space[2] },
   empty: {
     alignItems: 'center',
     gap: v3.space[12],
