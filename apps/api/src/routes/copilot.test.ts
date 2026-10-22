@@ -180,6 +180,28 @@ describe('Copilot over HTTP', () => {
     }
   })
 
+  // Counted whether or not anything is answered: the switch is off here, and
+  // every ask still spends one. A fresh account, so no other test's asks count.
+  it('refuses the 31st ask of a route in an hour, for that account only', async () => {
+    const other = await signUpAndSignIn(app, emailSender, {
+      email: 'copilot-ceiling@example.com',
+      password: PASSWORD,
+      name: 'Ceiling',
+    })
+    const ask = () =>
+      app.inject({
+        method: 'POST',
+        url: '/copilot/check',
+        headers: { cookie: other.cookie },
+        payload: { conversationId, text: 'I have a apple.' },
+      })
+    for (let i = 0; i < COPILOT_RULES.askRoutePerHour; i++) {
+      expect((await ask()).statusCode).toBe(503)
+    }
+    expect((await ask()).statusCode).toBe(429)
+    expect((await check()).statusCode).toBe(503)
+  })
+
   it('validates Say it before anything else', async () => {
     await setFlag(true)
     const sayIt = (payload: Record<string, unknown>) =>

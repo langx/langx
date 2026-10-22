@@ -5631,7 +5631,13 @@ a stated number: every unit is a paid call, and "unlimited" would be a promise
 made against somebody else's meter. A unit is spent only when the model writes
 an answer: a cached answer is free, and a declined or failed one is refunded.
 _(Pro raised to 24 on 21 October 2026, past that yearly-plan bound: see Copilot
-has no age rule of its own, and 24 a day for Pro.)_
+has no age rule of its own, and 24 a day for Pro.)_ _(22 October 2026: a
+declined or failed answer now gives back its global call as well as the
+person's unit, or one person repeating a question the model always declines
+could spend the day's 500 for everybody without spending their own allowance.
+Those calls are still billed and no longer count toward the 500, so what
+bounds them is `COPILOT_RULES.askRoutePerHour` — 30 asks an hour per account
+on each ask route, answered or not.)_
 
 **Cached by a hash of the question**, not of the person: the prompt's version,
 the model, the action and the exact user turn. Two people asking the same
