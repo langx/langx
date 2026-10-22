@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { SPLASH_TIMING } from './splashTiming'
+import { SPLASH_TIMING, STAMP_DONE_AT } from './splashTiming'
 import {
   ACTION_TOAST_DURATION_MS,
   TOAST_DURATION_MS,
@@ -95,11 +95,9 @@ describe('showToast', () => {
 
 describe('when and where a toast shows', () => {
   it('waits out the opening: its longest hold and its whole exit', () => {
-    expect(msUntilToastsMayShow(SPLASH_TIMING)).toBe(
-      SPLASH_TIMING.MIN_VISIBLE_MS +
-        SPLASH_TIMING.EXIT_GROUND_DELAY_MS +
-        SPLASH_TIMING.EXIT_GROUND_MS,
-    )
+    const ms = msUntilToastsMayShow(SPLASH_TIMING, STAMP_DONE_AT)
+    expect(ms).toBe(STAMP_DONE_AT + SPLASH_TIMING.LIFT_MS)
+    expect(ms).toBeGreaterThanOrEqual(SPLASH_TIMING.MIN_VISIBLE_MS + SPLASH_TIMING.FADE_MS)
   })
 
   it('gives a toast with something to press longer than one without', () => {

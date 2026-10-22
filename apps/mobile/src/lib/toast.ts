@@ -56,19 +56,18 @@ export const ACTION_TOAST_DURATION_MS = 8000
  * How long after the app says it is ready a toast may appear.
  *
  * `markAppReady` fires when the first screen is up, which is when the opening
- * animation *starts* to leave, not when it has gone: it may still hold for its
- * minimum time and then fades out over its own exit. A toast raised before
- * then — the update notice, whose download often finishes during that very
- * opening — spent most of its life under the logo, surfaced for a moment and
- * vanished as the reader went for it. The numbers are the opening's own:
- * its longest hold plus its exit.
+ * may *start* to leave, not when it has gone: a first launch still finishes
+ * its stamp and then lifts, and reduced motion holds its minimum time and
+ * then fades. A toast raised before then — the update notice, whose download
+ * often finishes during that very opening — spent most of its life under the
+ * logo, surfaced for a moment and vanished as the reader went for it. The
+ * numbers are the opening's own: the longer of its two holds plus its exit.
  */
-export function msUntilToastsMayShow(timing: {
-  MIN_VISIBLE_MS: number
-  EXIT_GROUND_DELAY_MS: number
-  EXIT_GROUND_MS: number
-}): number {
-  return timing.MIN_VISIBLE_MS + timing.EXIT_GROUND_DELAY_MS + timing.EXIT_GROUND_MS
+export function msUntilToastsMayShow(
+  timing: { MIN_VISIBLE_MS: number; FADE_MS: number; LIFT_MS: number },
+  stampDoneAt: number,
+): number {
+  return Math.max(stampDoneAt + timing.LIFT_MS, timing.MIN_VISIBLE_MS + timing.FADE_MS)
 }
 
 /**

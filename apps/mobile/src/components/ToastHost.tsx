@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useAppReady } from '../hooks/useAppReady'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
-import { SPLASH_TIMING } from '../lib/splashTiming'
+import { SPLASH_TIMING, STAMP_DONE_AT } from '../lib/splashTiming'
 import {
   dismissToast,
   msUntilToastsMayShow,
@@ -70,7 +70,10 @@ export function ToastHost() {
   const [settled, setSettled] = useState(false)
   useEffect(() => {
     if (!ready || settled) return
-    const timer = setTimeout(() => setSettled(true), msUntilToastsMayShow(SPLASH_TIMING))
+    const timer = setTimeout(
+      () => setSettled(true),
+      msUntilToastsMayShow(SPLASH_TIMING, STAMP_DONE_AT),
+    )
     return () => clearTimeout(timer)
   }, [ready, settled])
 

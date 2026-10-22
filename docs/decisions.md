@@ -9372,3 +9372,55 @@ $5.67 at the new $79.99); 24 is about $9.40 at that worst case, which Behic
 accepted: it takes one person maxing it every day, and `COPILOT_RULES.globalCallsPerDay` (500, unchanged)
 caps the whole bill whatever the tiers say. 500 is still above 24, so one Pro
 account can always spend its own allowance.
+
+## The opening is a stamp, and the OS draws its first frame
+
+**21 October 2026, for 3.0.** The 2.7 s film of hellos bending into the mark
+is replaced by the ink stamp. The native splash now shows the badge, the mark
+on its yellow disc (`assets/splash/stamp.png`), centred on the brand yellow
+or, in dark mode, on v3's dark `bg` (`#0c0d10`, no longer v2's `#1c1f24`).
+`AppSplash` starts from exactly that picture. On the first launch an ink ring
+draws once around the badge, the badge presses and lifts on `pop` while a
+lilac and a mint disc pop out from behind it and tuck back, and then the whole
+ground lifts off the app as one sheet, its rounded, outlined bottom edge
+appearing only as it moves. Every later launch, and a tap, holds the first
+frame until the app is ready, closes the ring and lifts: 500 ms on top of the
+boot, where the film cost 2.7 s on every launch until #1911 and its tail after
+that. With reduced motion the badge holds and the layer dissolves.
+
+Three directions were drawn and judged: this one; two speech bubbles trading
+hellos; and a paper-cut flap fold. The bubbles fit the product best and were
+turned down for their length (1.9 s) and for six hellos in four scripts that
+would have had to be outlined, Arabic shaped first, because no font is loaded
+while the opening is up. The paper cut needed the wordmark outlined, read busy
+and turned the one yellow into a rainbow. The stamp has no type at all.
+
+**Why the native splash shows the badge again.** The film needed a bare
+ground on frame 0, so the OS drew colour and nothing else, and after #1911 a
+later launch was mostly that bare colour and a fraction of a second of film.
+Putting the badge on the native splash makes the part every launch sees the
+part that says which app this is. It moves the fingerprint, so it rides the
+3.0 binary. A 2.9 binary keeps its own JS and never runs this layer, so the
+seam never has a mismatched side.
+
+**The size is 184 on both platforms.** Expo draws the image at `imageWidth`
+on iOS. On Android 12+ it composites the image at that size into a 288 dp
+canvas, which the platform masks to a 192 dp circle. A disc as wide as the
+mask has its edge shaved by the mask's anti-aliasing, so the PNG is the disc
+alone, and at 184 the whole disc sits inside the mask. `DISC_SIZE` and the
+config's `imageWidth` are one number written twice, because `app.config.ts`
+may import nothing. `splashTiming.test.ts` reads the config as text and holds
+the size and both grounds to the code.
+
+**On `Animated` with the native driver, not Reanimated.** This is the launch
+path, which must not evaluate Reanimated on import (see `motionValues.ts`).
+The native driver still runs every frame on the UI thread, which is what
+matters while the JS thread is booting the app. It cannot animate an SVG
+stroke, so the ring is two clipped half-rings turned into view. On the web,
+where an `Image` is an empty box until scripts run, the badge is inline SVG
+and every ink is `light-dark()`. Otherwise the prerender's light inks
+survived hydration onto a dark ground.
+
+**What is not verified yet.** The native-to-JS seam on a Release build, iOS
+and Android 12+, light and dark: Expo Go and dev clients do not show the real
+splash.

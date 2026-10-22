@@ -60,8 +60,14 @@ Everything they write goes to `out/`, which git ignores.
 stream in along the Cut, bend into the arcs, turn 540° and lock into the mark
 on the yellow — 08's finale with no hairline, wordmark or tagline. It sets
 `window.REEL_PLAN` before `core.js` loads, has no score, and is laid out for the
-9:16 frame. The app plays the result as `apps/mobile/assets/splash/intro.mp4`,
-from `AppSplash.tsx`.
+9:16 frame.
+
+**The app no longer plays it.** From 3.0 the opening is the ink stamp, drawn
+live by `AppSplash.tsx` from the native splash's own badge (see _The opening
+is a stamp, and the OS draws its first frame_ in `docs/decisions.md`), and
+`intro.mp4`, `intro-dark.mp4` and `badge-dark.png` are gone from the app. The
+scene stays as a reel piece; what follows is what the app relied on while it
+played it.
 
 `--theme dark` is the night cut, `intro-dark.mp4`, which a device in dark mode
 plays: the app's dark ground `#1c1f24`, the black arc and its rail in yellow,

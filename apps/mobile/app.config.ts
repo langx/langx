@@ -477,26 +477,30 @@ const config: ExpoConfig = {
      */
     ['expo-notifications', { enableBackgroundRemoteNotifications: true }],
     /*
-     * The static splash the OS draws before any JS exists: the brand yellow
-     * and nothing else, or the app's dark ground in dark mode (a full yellow
-     * screen at night was a glare). It is the first frame of the launch
-     * film (`AppSplash`, `assets/splash/intro.mp4`), so the film starts on it
-     * without a cut — the opening is one piece rather than a logo that gives
-     * way to another opening. `LAUNCH` in `AppSplash.tsx` holds both hexes.
+     * The static splash the OS draws before any JS exists: the badge — the
+     * mark on its yellow disc — centred on the brand yellow, or on v3's dark
+     * ground in dark mode (a full yellow screen at night was a glare). On the
+     * yellow the disc sinks into the ground and only the mark shows.
      *
-     * The image is a transparent square, not left out: Android 12+ draws the
-     * splash through the platform SplashScreen API, which puts the launcher
-     * icon in the middle when no image is given — the mark on its squircle,
-     * which is exactly what this splash no longer shows.
+     * It is the first frame of the opening (`AppSplash`, the ink stamp), so
+     * the hand-over is invisible: `LAUNCH` there holds both grounds, and
+     * `DISC_SIZE` in `src/lib/splashTiming.ts` is `imageWidth` — this file
+     * may not import either, so `splashTiming.test.ts` holds them together.
+     *
+     * `stamp.png` is the disc and nothing else. Android 12+ composites the
+     * image into a 288 dp canvas and masks it to a 192 dp circle; at 184 dp
+     * the whole disc sits inside the mask with room to spare, so the mask
+     * clips nothing and both platforms draw the same picture. Changing any of
+     * this changes the native build: the fingerprint moves with it.
      */
     [
       'expo-splash-screen',
       {
-        image: './assets/splash/blank.png',
-        imageWidth: 160,
+        image: './assets/splash/stamp.png',
+        imageWidth: 184,
         resizeMode: 'contain',
         backgroundColor: '#ffc409',
-        dark: { image: './assets/splash/blank.png', backgroundColor: '#1c1f24' },
+        dark: { image: './assets/splash/stamp.png', backgroundColor: '#0c0d10' },
       },
     ],
     /**
