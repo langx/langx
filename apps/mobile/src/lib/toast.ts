@@ -77,9 +77,11 @@ export function msUntilToastsMayShow(timing: {
  * The bottom, above the tab bar, everywhere the tab bar is. The signed-out
  * screens have no tab bar, and their bottom is exactly where their buttons
  * are — the pill sat on "Create an account" — so there it sits at the top.
+ * So does the chat camera's: its bottom is the shutter, or the panel with
+ * the send modes, Retake and Send, and the camera's Save confirms there.
  */
 export function toastEdge(segments: readonly string[]): 'top' | 'bottom' {
-  return segments[0] === '(auth)' ? 'top' : 'bottom'
+  return segments[0] === '(auth)' || segments.at(-1) === 'chat-camera' ? 'top' : 'bottom'
 }
 
 type Listener = (toast: Toast | null) => void

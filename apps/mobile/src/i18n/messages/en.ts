@@ -208,6 +208,8 @@ export const en = {
     modeKeep: 'Keep in chat',
     send: 'Send',
     retake: 'Retake',
+    hideOptions: 'Hide options',
+    showOptions: 'Show options',
     hint: 'Tap for photo, hold for video',
     close: 'Close camera',
     flip: 'Switch camera',

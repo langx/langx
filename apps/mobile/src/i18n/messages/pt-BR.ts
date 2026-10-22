@@ -166,6 +166,8 @@ export const ptBR: Localized<EnMessages> = {
     modeKeep: 'Manter na conversa',
     send: 'Enviar',
     retake: 'Refazer',
+    hideOptions: 'Ocultar opções',
+    showOptions: 'Mostrar opções',
     hint: 'Toque para foto, segure para vídeo',
     close: 'Fechar câmera',
     flip: 'Trocar câmera',

@@ -167,6 +167,8 @@ export const fr: Localized<EnMessages> = {
     modeKeep: 'Garder dans la discussion',
     send: 'Envoyer',
     retake: 'Reprendre',
+    hideOptions: 'Masquer les options',
+    showOptions: 'Afficher les options',
     hint: 'Touche pour une photo, maintiens pour une vidéo',
     close: 'Fermer la caméra',
     flip: 'Changer de caméra',

@@ -195,6 +195,8 @@ export const ru: Localized<EnMessages> = {
     modeKeep: 'Оставить в чате',
     send: 'Отправить',
     retake: 'Переснять',
+    hideOptions: 'Скрыть параметры',
+    showOptions: 'Показать параметры',
     hint: 'Нажмите — фото, удерживайте — видео',
     close: 'Закрыть камеру',
     flip: 'Сменить камеру',

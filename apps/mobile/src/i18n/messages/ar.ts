@@ -207,6 +207,8 @@ export const ar: Localized<EnMessages> = {
     modeKeep: 'الإبقاء في الدردشة',
     send: 'إرسال',
     retake: 'إعادة الالتقاط',
+    hideOptions: 'إخفاء الخيارات',
+    showOptions: 'إظهار الخيارات',
     hint: 'اضغط لصورة، واضغط مطولًا لفيديو',
     close: 'إغلاق الكاميرا',
     flip: 'تبديل الكاميرا',

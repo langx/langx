@@ -172,6 +172,8 @@ export const tr: Localized<EnMessages> = {
     modeKeep: 'Sohbette kalsın',
     send: 'Gönder',
     retake: 'Yeniden çek',
+    hideOptions: 'Seçenekleri gizle',
+    showOptions: 'Seçenekleri göster',
     hint: 'Fotoğraf için dokun, video için basılı tut',
     close: 'Kamerayı kapat',
     flip: 'Kamerayı çevir',

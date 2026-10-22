@@ -169,6 +169,8 @@ export const es: Localized<EnMessages> = {
     modeKeep: 'Mantener en el chat',
     send: 'Enviar',
     retake: 'Repetir',
+    hideOptions: 'Ocultar opciones',
+    showOptions: 'Mostrar opciones',
     hint: 'Toca para foto, mantén para vídeo',
     close: 'Cerrar cámara',
     flip: 'Cambiar cámara',
