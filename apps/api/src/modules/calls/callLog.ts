@@ -121,6 +121,17 @@ export async function recordCallLog(db: Db, call: Call): Promise<CallLogResult |
     },
   )
 
+  /*
+   * Who had deleted the thread, read before reviving it. Unlike
+   * `recordMessage`, this is not handed a copy of the conversation, and the
+   * pin of whoever deleted it has to go with the deletion: a thread deleted
+   * before deleting cleared the pin still has one, and would otherwise come
+   * back pinned above everything because somebody called.
+   */
+  const before = await conversations.findOne(
+    { _id: call.conversationId },
+    { projection: { deletedBy: 1 } },
+  )
   const conversation = await conversations.findOneAndUpdate(
     { _id: call.conversationId },
     {
@@ -129,7 +140,12 @@ export async function recordCallLog(db: Db, call: Call): Promise<CallLogResult |
       ...(leavesUnread(outcome) ? { $inc: { [`unread.${call.calleeId}`]: 1 } } : {}),
       // A call brings a deleted thread back, as a message does: see
       // `recordMessage`.
-      $unset: Object.fromEntries(call.parties.map((id) => [`deletedBy.${id}`, ''])),
+      $unset: Object.fromEntries(
+        call.parties.flatMap((id): [string, ''][] => [
+          [`deletedBy.${id}`, ''],
+          ...(before?.deletedBy?.[id] ? [[`pinnedBy.${id}`, ''] as [string, '']] : []),
+        ]),
+      ),
     },
     { returnDocument: 'after' },
   )
