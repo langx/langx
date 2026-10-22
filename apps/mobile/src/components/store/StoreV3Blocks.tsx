@@ -2,16 +2,17 @@ import Feather from '@expo/vector-icons/Feather'
 import { Image } from 'expo-image'
 import type { ReactNode } from 'react'
 import { Pressable, ScrollView, Text, View } from 'react-native'
-import Svg, { Path } from 'react-native-svg'
 import { useLocale, useT, type MessageKey } from '../../i18n'
 import { frameRarity, type Rarity } from '../../lib/storeHome'
 import type { StoreOffer } from '../../lib/storeOffers'
 import { FEATURE_COLORS, RARITY_COLORS } from '../../lib/storePalette'
 import { stickerAsset } from '../../lib/stickerAssets'
+import { tokenSlot } from '../../lib/tokenAmount'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
 import { ICON_BUTTON_TARGET } from '../ui/IconButton'
+import { TokenIcon, tokenMarkChildren } from '../ui/TokenIcon'
 
 /*
  * The blocks of the redesign's token store — its home, its collections and a
@@ -26,43 +27,41 @@ import { ICON_BUTTON_TARGET } from '../ui/IconButton'
 
 export type Viewer = { _id: string; name: string; avatarUrl?: string | undefined }
 
-/** The token mark: a four-pointed spark. A point, not a coin. */
-export function TokenGlyph({ size, color }: { size: number; color: string }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M12 2.5l2.4 7.1 7.1 2.4-7.1 2.4-2.4 7.1-2.4-7.1L2.5 12l7.1-2.4z" fill={color} />
-    </Svg>
-  )
-}
+/**
+ * The token mark, as every amount in the redesign now draws it
+ * (`TokenIcon`). Kept under its store name for the buttons that wear it as
+ * their glyph — "✦ Buy" — where it marks a purchase rather than an amount.
+ */
+export const TokenGlyph = TokenIcon
 
 /**
- * "✦ 6,000": a price as the drawings set it. Hidden from a screen reader —
- * the block it sits in says "6,000 tokens" in words, which the mark cannot.
+ * "6,000 ✦": a price as the drawings set it, the mark after the number as
+ * the language puts its unit (`tokenSlot`) and in the number's colour.
+ * Hidden from a screen reader — the block it sits in says "6,000 tokens" in
+ * words, which the mark cannot.
  */
 export function TokenAmount({
   amount,
   color,
-  glyphColor,
   muted = false,
 }: {
   amount: number
   color?: string | undefined
-  glyphColor?: string | undefined
   muted?: boolean
 }) {
+  const t = useT()
   const { locale } = useLocale()
   const { v3 } = useTheme()
   const styles = useStyles()
   const ink = color ?? (muted ? v3.colors.muted : v3.colors.fg)
   return (
-    <View
-      style={styles.amount}
+    <Text
+      style={[styles.amountText, { color: ink }]}
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
     >
-      <TokenGlyph size={v3.icon.xs} color={glyphColor ?? v3.colors.blue} />
-      <Text style={[styles.amountText, { color: ink }]}>{amount.toLocaleString(locale)}</Text>
-    </View>
+      {tokenMarkChildren(tokenSlot(t, amount, locale), styles.amountText.fontSize, ink)}
+    </Text>
   )
 }
 
@@ -605,7 +604,6 @@ const useStyles = makeStyles(({ v3 }) => ({
   muted: { ...v3.type.caption, color: v3.colors.muted },
   mutedSmall: { ...v3.type.label, color: v3.colors.muted },
 
-  amount: { alignItems: 'center', flexDirection: 'row', gap: v3.space[4] },
   amountText: { ...v3.type.buttonSmall, fontVariant: ['tabular-nums'] },
 
   rarity: {

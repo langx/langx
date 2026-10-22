@@ -75,6 +75,7 @@ import { placeLabel } from '../lib/placeLabel'
 import { monthName, recapMonthFor, recapYearFor } from '../lib/recapMonth'
 import { requireAccount } from '../lib/requireAccount'
 import { makeStyles, useTheme, type PartnerHue } from '../lib/theme'
+import { joinSentences, plain, tokenSentence } from '../lib/tokenAmount'
 import { partnerHueFor } from '../lib/theme/partnerHue'
 import { unreadBadge } from '../lib/unreadBadge'
 
@@ -672,20 +673,24 @@ function ActiveBody({
               }
               kicker={t('me.nextBadgeKicker')}
               title={badgeName({ t, locale }, next)}
-              progress={[
-                t('me.nextBadgeProgress', {
-                  current: next.current.toLocaleString(locale),
-                  total: next.threshold.toLocaleString(locale),
-                }),
-                next.reward > 0
-                  ? t('leaderboard.pays', {
-                      count: next.reward,
-                      amount: next.reward.toLocaleString(locale),
-                    })
-                  : null,
-              ]
-                .filter(Boolean)
-                .join(' · ')}
+              progress={joinSentences(
+                [
+                  plain(
+                    t('me.nextBadgeProgress', {
+                      current: next.current.toLocaleString(locale),
+                      total: next.threshold.toLocaleString(locale),
+                    }),
+                  ),
+                  next.reward > 0
+                    ? tokenSentence(t, 'leaderboard.paysShort', {
+                        count: next.reward,
+                        locale,
+                        spokenKey: 'leaderboard.pays',
+                      })
+                    : null,
+                ],
+                ' · ',
+              )}
               fraction={next.current / next.threshold}
               action={
                 badgeAction === 'correct'

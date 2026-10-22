@@ -16,14 +16,15 @@ import type { StoreOffer } from '../../lib/storeOffers'
 import { stickerAsset } from '../../lib/stickerAssets'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
 import { DURATION, PRESS_SCALE_CARD, SPRING, TIMING, unlessReduced } from '../../lib/theme/motion'
+import { tokenIconMetrics, tokenSlot } from '../../lib/tokenAmount'
 import { Avatar } from '../ui/Avatar'
-import { TokenGlyph } from '../store/StoreV3Blocks'
 import { Button } from '../ui/Button'
 import { CountUp } from '../ui/CountUp'
 import { ICON_BUTTON_TARGET, IconButton } from '../ui/IconButton'
 import { PressableScale } from '../ui/PressableScale'
 import { FlameGlyph } from '../ui/StreakFlame'
 import { inkTrack, ProgressBar } from '../ui/ProgressBar'
+import { TokenIcon, tokenMarkChildren, TokenText } from '../ui/TokenIcon'
 
 type Glyph = keyof typeof Feather.glyphMap
 
@@ -86,7 +87,10 @@ export function WalletHeader({
 }: {
   title: string
   subtitle?: string | undefined
-  /** "Balance 1,240", read as one: the store's chip. */
+  /**
+   * "Balance 1,240 ✦", read as one: the store's chip. `value` carries the
+   * token mark (`tokenSlot`); `a11y` says the unit in words.
+   */
   balance?: { label: string; value: string; a11y: string } | undefined
   /** Whether Nunito Black has arrived; until then the title is ExtraBold. */
   black: boolean
@@ -94,6 +98,7 @@ export function WalletHeader({
 }) {
   const t = useT()
   const { isRtl } = useLocale()
+  const { v3 } = useTheme()
   const styles = useStyles()
   return (
     <View style={styles.header}>
@@ -106,7 +111,9 @@ export function WalletHeader({
         {balance ? (
           <View style={styles.balanceChip} accessible accessibilityLabel={balance.a11y}>
             <Text style={styles.balanceChipLabel}>{balance.label}</Text>
-            <Text style={styles.balanceChipValue}>{balance.value}</Text>
+            <Text style={styles.balanceChipValue}>
+              {tokenMarkChildren(balance.value, styles.balanceChipValue.fontSize, v3.colors.fg)}
+            </Text>
           </View>
         ) : null}
       </View>
@@ -128,10 +135,12 @@ export interface WalletHeroView {
    * decides when to hand a new one over — not while the hero is out of sight.
    */
   value: number
-  unit: string
   earnedSpent: string
-  /** The bar to the nearest frame or title, and the line that names it. */
-  rung?: { line: string; fraction: number } | undefined
+  /**
+   * The bar to the nearest frame or title, and the line that names it — with
+   * the token mark in it (`tokenSentence`) and `label` saying it in words.
+   */
+  rung?: { line: string; label: string; fraction: number } | undefined
   history: string
   a11y: string
   onPress: () => void
@@ -170,6 +179,7 @@ export function WalletHero({ view }: { view: WalletHeroView }) {
     )
   }, [view.value, reduce, bump])
   const bumpStyle = useAnimatedStyle(() => ({ transform: [{ scale: bump.get() }] }))
+  const heroIcon = tokenIconMetrics(styles.numeral.fontSize)
 
   return (
     <PressableScale
@@ -203,7 +213,10 @@ export function WalletHero({ view }: { view: WalletHeroView }) {
             maxFontSizeMultiplier={1.4}
           />
         </Animated.View>
-        <Text style={styles.unit}>{view.unit}</Text>
+        {/* The unit, as the token mark: on the figure's baseline, in its ink. */}
+        <View style={[styles.unit, { transform: [{ translateY: heroIcon.drop }] }]}>
+          <TokenIcon size={heroIcon.size} color={v3.colors.ink} />
+        </View>
       </View>
       <Text style={styles.onHueBody}>{view.earnedSpent}</Text>
       {view.rung ? (
@@ -213,9 +226,9 @@ export function WalletHero({ view }: { view: WalletHeroView }) {
             height={12}
             fillColor={v3.colors.ink}
             trackColor={inkTrack(v3.colors.ink)}
-            accessibilityLabel={view.rung.line}
+            accessibilityLabel={view.rung.label}
           />
-          <Text style={styles.onHueBody}>{view.rung.line}</Text>
+          <TokenText text={view.rung.line} label={view.rung.label} style={styles.onHueBody} />
         </View>
       ) : null}
     </PressableScale>
@@ -334,6 +347,7 @@ export const HistoryEntryRow = memo(function HistoryEntryRow({
   hue,
   label,
   amount,
+  amountLabel,
   spend,
   first,
   last,
@@ -343,7 +357,10 @@ export const HistoryEntryRow = memo(function HistoryEntryRow({
   /** A partner hue for the square; the neutral grey when left out. */
   hue?: string | undefined
   label: string
+  /** "+25 ✦", with the token mark (`tokenSlot`). */
   amount: string
+  /** "+25 tokens": the amount as it is said. */
+  amountLabel: string
   /** A spend is the one red on the page. */
   spend: boolean
   first: boolean
@@ -359,7 +376,7 @@ export const HistoryEntryRow = memo(function HistoryEntryRow({
         last && styles.entryLast,
       ]}
       accessible
-      accessibilityLabel={`${label}, ${amount}`}
+      accessibilityLabel={`${label}, ${amountLabel}`}
     >
       <View style={[styles.entrySquare, { backgroundColor: hue ?? v3.colors.line }]}>
         {icon === 'flame' ? (
@@ -369,7 +386,11 @@ export const HistoryEntryRow = memo(function HistoryEntryRow({
         )}
       </View>
       <Text style={styles.entryLabel}>{label}</Text>
-      <Text style={[styles.entryAmount, spend && styles.entrySpend]}>{amount}</Text>
+      <TokenText
+        text={amount}
+        label={amountLabel}
+        style={[styles.entryAmount, spend && styles.entrySpend]}
+      />
     </View>
   )
 })
@@ -505,7 +526,8 @@ export function StoreRowV3({
     </View>
   ) : (
     <Button
-      label={price}
+      // "1,000 ✦": the number and the token mark, said in full below.
+      label={tokenSlot(t, offer.price, locale)}
       accessibilityLabel={
         short
           ? t('store.notEnoughBody', {
@@ -520,8 +542,6 @@ export function StoreRowV3({
       }
       variant="secondary"
       size="medium"
-      // The token mark beside every price, as the v3 store's own blocks draw it.
-      icon={<TokenGlyph size={v3.icon.md} color={v3.colors.blue} />}
       disabled={!buyable}
       onPress={() => onBuy(offer)}
       style={styles.buy}
@@ -619,11 +639,12 @@ const useStyles = makeStyles(({ v3 }) => ({
   onHueKicker: { ...v3.type.callout, color: v3.colors.ink, fontWeight: '700' },
   onHueBody: { ...v3.type.callout, color: v3.colors.ink, fontWeight: '600' },
   // Wraps, so a long balance pushes the unit under it rather than off the block.
-  figure: { alignItems: 'flex-end', flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
+  // On the baseline: the mark's box stands on the figure's, then drops a hair.
+  figure: { alignItems: 'baseline', flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
   // The bump scales round the figure's own centre, not the block's.
   numeralBox: { flexShrink: 1 },
   numeral: { ...v3.type.numeral, color: v3.colors.ink, fontVariant: ['tabular-nums'] },
-  unit: { ...v3.type.headline, color: v3.colors.ink, paddingBottom: v3.space[8] },
+  unit: { alignSelf: 'baseline' },
   rung: { gap: v3.space[6], paddingTop: v3.space[4] },
   heroHead: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8] },
   heroHeadText: { flex: 1 },

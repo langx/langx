@@ -16,6 +16,7 @@ import { stickerAsset, stickerNameKey } from '../../lib/stickerAssets'
 import { cosmeticKey } from '../../lib/storeOffers'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { showToast } from '../../lib/toast'
+import { tokenButton } from '../../lib/tokenAmount'
 
 const PACKS = COSMETICS.filter((cosmetic) => cosmetic.kind === 'stickers')
 
@@ -32,7 +33,7 @@ export function StickersScreenV3() {
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
-  const { isRtl } = useLocale()
+  const { isRtl, locale } = useLocale()
   const { id: conversationId } = useLocalSearchParams<{ id: string }>()
   const wallet = useWallet()
   const purchase = usePurchase()
@@ -149,7 +150,12 @@ export function StickersScreenV3() {
                 <Button
                   variant="secondary"
                   icon="lock"
-                  label={t('chat.stickerBuy', { price: pack.price })}
+                  {...tokenButton(t, 'chat.stickerUnlock', {
+                    count: pack.price,
+                    locale,
+                    slot: 'price',
+                    spokenKey: 'chat.stickerBuy',
+                  })}
                   disabled={purchase.isPending}
                   onPress={() => void unlock(pack)}
                 />

@@ -27,6 +27,7 @@ import { goBackTo } from '../lib/navigation'
 import { confirmAndRepair } from '../lib/repairFlow'
 import { streakDayDetail, streakHistory, type StreakDayKind } from '../lib/streakHistory'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../lib/theme'
+import { tokenButton } from '../lib/tokenAmount'
 
 /**
  * The range the streak screens ask `/me/activity` for — twenty weeks and one
@@ -185,7 +186,11 @@ export function StreakHistoryScreenV3() {
           <StreakRepairCard
             title={t('streak.repairTitle', { day: dayLabel(offer.day, { t, locale, now }) })}
             body={t('store.repairDayBody', { left: offer.left })}
-            button={t('streak.repairButton', { count: data.repair.price })}
+            button={tokenButton(t, 'streak.repairShort', {
+              count: data.repair.price,
+              locale,
+              spokenKey: 'streak.repairButton',
+            })}
             pending={repairDay.isPending}
             onPress={() => buyBack(offer.day, offer.left)}
           />

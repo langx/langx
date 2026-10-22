@@ -62,6 +62,7 @@ import { LikeButton } from '../components/LikeButton'
 import { attachmentsOf } from '@langx/shared'
 import { Screen } from '../components/ui/Screen'
 import { ScreenHeader } from '../components/ui/ScreenHeader'
+import { TokenText } from '../components/ui/TokenIcon'
 import { useKeyboardClearance } from '../hooks/useKeyboardClearance'
 import { useVoiceRecorder } from '../hooks/useVoiceRecorder'
 import { dedupeById } from '../lib/dedupeById'
@@ -78,6 +79,7 @@ import { showToast } from '../lib/toast'
 import { shareLink } from '../lib/share'
 import { postShareText } from '../lib/shareText'
 import { makeStyles, useTheme } from '../lib/theme'
+import { tokenSlot } from '../lib/tokenAmount'
 import { useDisplayNames, useLocale, useT } from '../i18n'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { advanceUpload, percentOf, UPLOAD_START, type UploadProgress } from '../lib/uploadProgress'
@@ -1298,9 +1300,20 @@ export function PostScreen({
                             onPress={submitCorrection}
                           />
                           {/* What a correction pays, from `TOKEN_RULES` rather than the copy. */}
-                          <Text style={styles.reward}>
-                            {t('feed.correctionReward', { count: TOKEN_RULES.award.correction })}
-                          </Text>
+                          {v3Look ? (
+                            // The redesign's "+10 ✦", said as "+10 tokens".
+                            <TokenText
+                              text={tokenSlot(t, TOKEN_RULES.award.correction, locale, '+')}
+                              label={t('feed.correctionReward', {
+                                count: TOKEN_RULES.award.correction,
+                              })}
+                              style={styles.reward}
+                            />
+                          ) : (
+                            <Text style={styles.reward}>
+                              {t('feed.correctionReward', { count: TOKEN_RULES.award.correction })}
+                            </Text>
+                          )}
                         </View>
                       )
                     ) : null}

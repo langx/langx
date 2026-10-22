@@ -4,10 +4,12 @@ import type { ReactNode } from 'react'
 import { ScrollView, Text, View } from 'react-native'
 import { useLocale, useT } from '../../i18n'
 import { DISPLAY_FONT, makeStyles, useTheme, type PartnerHue } from '../../lib/theme'
+import { tokenSlot } from '../../lib/tokenAmount'
 import { NotificationPriming } from '../NotificationPriming'
 import { Button } from '../ui/Button'
 import { Screen } from '../ui/Screen'
 import { FlameGlyph } from '../ui/StreakFlame'
+import { TokenText } from '../ui/TokenIcon'
 import { useBlackFont } from './WizardV3'
 
 /** The restore as the route reads it off `/profiles/me`. */
@@ -43,7 +45,7 @@ export function WelcomeBackV3({
   const t = useT()
   const styles = useStyles()
   const { v3 } = useTheme()
-  const { isRtl } = useLocale()
+  const { isRtl, locale } = useLocale()
   const black = useBlackFont()
   const { tokensCredited, conversationsImported, frozenStreak, lifetimeGranted } = restored
 
@@ -89,7 +91,9 @@ export function WelcomeBackV3({
             <Row
               hue="lime"
               mark={<Feather name="star" size={v3.icon.lg} color={v3.colors.ink} />}
-              title={t('welcomeBack.tokensCarried', {
+              // "1,250 ✦": the balance as the wallet now draws it.
+              title={tokenSlot(t, tokensCredited + TOKEN_RULES.welcomeBackBonus, locale)}
+              titleLabel={t('welcomeBack.tokensCarried', {
                 count: tokensCredited + TOKEN_RULES.welcomeBackBonus,
               })}
               body={t('welcomeBack.tokensCarriedBody', {
@@ -101,7 +105,8 @@ export function WelcomeBackV3({
             <Row
               hue="lime"
               mark={<Feather name="star" size={v3.icon.lg} color={v3.colors.ink} />}
-              title={t('welcomeBack.tokensBonus', { count: TOKEN_RULES.welcomeBackBonus })}
+              title={tokenSlot(t, TOKEN_RULES.welcomeBackBonus, locale)}
+              titleLabel={t('welcomeBack.tokensBonus', { count: TOKEN_RULES.welcomeBackBonus })}
               body={t('welcomeBack.tokensBonusBody')}
             />
           )}
@@ -146,12 +151,15 @@ function Row({
   hue,
   mark,
   title,
+  titleLabel,
   body,
   children,
 }: {
   hue: PartnerHue
   mark: ReactNode
+  /** May carry the token mark (`tokenSlot`); `titleLabel` then says it in words. */
   title: string
+  titleLabel?: string
   body: string
   children?: ReactNode
 }) {
@@ -161,7 +169,7 @@ function Row({
     <View style={styles.row}>
       <View style={[styles.mark, { backgroundColor: v3.hues[hue] }]}>{mark}</View>
       <View style={styles.rowText}>
-        <Text style={styles.rowTitle}>{title}</Text>
+        <TokenText text={title} label={titleLabel ?? title} style={styles.rowTitle} />
         <Text style={styles.rowBody}>{body}</Text>
         {children}
       </View>

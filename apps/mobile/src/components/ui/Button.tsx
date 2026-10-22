@@ -8,7 +8,9 @@ import { makeStyles, useTheme, type V3Colors } from '../../lib/theme'
 import { disabledButtonLook, FILLED_BUTTON_VARIANTS } from '../../lib/theme/buttonDisabledLook'
 import { EASE_POP } from '../../lib/theme/motionAnimated'
 import { DURATION } from '../../lib/theme/motionValues'
+import { TOKEN_MARK } from '../../lib/tokenAmount'
 import { PressableScaleBase } from './PressableScale'
+import { tokenMarkChildren } from './TokenIcon'
 
 type Variant = 'primary' | 'blue' | 'secondary' | 'neutral' | 'ink' | 'hue' | 'danger'
 type Size = 'default' | 'medium' | 'small'
@@ -66,6 +68,8 @@ interface ButtonProps {
   /**
    * What a screen reader says instead of the label, when the label alone is
    * not a sentence — a store row's "200 tokens" needs the item's name too.
+   * Always set with a label that carries the token icon (`TOKEN_MARK`): the
+   * icon is silent, and without this the reader would hear a bare number.
    */
   accessibilityLabel?: string
   style?: ViewStyle
@@ -223,7 +227,15 @@ export function Button({
           <Text
             style={[size === 'small' ? styles.labelSmall : styles.label, { color: look.label }]}
           >
-            {label}
+            {/* A price ("Protect · 200 ✦") carries the token icon where the
+                label marks it; every other label is drawn as it is. */}
+            {label.includes(TOKEN_MARK)
+              ? tokenMarkChildren(
+                  label,
+                  (size === 'small' ? v3.type.buttonSmall : v3.type.button).fontSize,
+                  look.label,
+                )
+              : label}
           </Text>
           {iconPosition === 'end' ? iconNode : null}
         </View>
