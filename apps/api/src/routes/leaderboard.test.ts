@@ -390,8 +390,14 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
 
       const second = await runDailyPool(handle.db, { day })
       expect(second.ran).toBe(true) // the lock let it through...
-      expect(second.ran && second.result.paid).toBe(0) // ...but the ledger did not
-      expect(await totalXp()).toBe(afterFirst)
+      expect(await totalXp()).toBe(afterFirst) // ...but the ledger did not pay again
+      expect(
+        await handle.db
+          .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
+          .countDocuments({ userId: user.userId, kind: 'dailyPool', refId: day }),
+      ).toBe(1)
+      // The record still describes the day: one person was paid for it.
+      expect(second.ran && second.result.paid).toBe(1)
     })
 
     /**
@@ -452,6 +458,40 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       const outcome = await runDailyPool(handle.db, { day })
       expect(outcome.ran).toBe(true)
       expect(outcome.ran && outcome.result.paid).toBe(1)
+    })
+
+    /**
+     * A run that died halfway paid some people, and the retry pays the rest.
+     * The record it leaves is the one the pool screen reads ("N people that
+     * day"), so it has to describe the day, not the retry: counting only the
+     * awards this pass wrote reported the day as having paid one person.
+     */
+    it('counts the whole day after recovering a half-finished run', async () => {
+      const early = await newUser()
+      const late = await newUser()
+      await ageAccount(early.userId)
+      await ageAccount(late.userId)
+      const day = shiftDayKey(YESTERDAY, -20)
+      await seedActivity(early.userId, { messages: 10, partners: ['r'] }, day)
+      await seedActivity(late.userId, { messages: 10, partners: ['s'] }, day)
+
+      // The first pass got as far as one award, then died holding the lock.
+      const first = await runDailyPool(handle.db, { day })
+      const share = first.ran ? first.result.distributed / 2 : 0
+      await handle.db
+        .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
+        .deleteOne({ userId: late.userId, kind: 'dailyPool', refId: day })
+      await handle.db.collection<JobRun>(COLLECTIONS.jobRuns).updateOne(
+        { job: DAILY_POOL_JOB, periodKey: day },
+        {
+          $set: { startedAt: new Date(Date.now() - POOL_LOCK_STALE_MS - 60_000) },
+          $unset: { finishedAt: '', result: '' },
+        },
+      )
+
+      const retry = await runDailyPool(handle.db, { day })
+      expect(retry.ran && retry.result.paid).toBe(2)
+      expect(retry.ran && retry.result.distributed).toBe(share * 2)
     })
 
     it('leaves a lock alone while the run holding it could still be alive', async () => {
