@@ -60,6 +60,12 @@ export interface PendingMedia {
   viewOnce?: { replay: boolean }
   progress: UploadProgress
   startedAt: string
+  /**
+   * When the row last moved — added, a percent further, sent, failed. What
+   * `expirePending` measures, rather than `startedAt`: a slow upload that is
+   * still moving is not one whose ack was lost.
+   */
+  movedAt: string
 }
 
 /**
@@ -71,10 +77,11 @@ export const MAX_PENDING_MEDIA = 8
 
 export function addPending(
   list: readonly PendingMedia[],
-  item: Omit<PendingMedia, 'progress' | 'startedAt'>,
+  item: Omit<PendingMedia, 'progress' | 'startedAt' | 'movedAt'>,
   now: Date,
 ): PendingMedia[] {
-  const next: PendingMedia = { ...item, progress: UPLOAD_START, startedAt: now.toISOString() }
+  const at = now.toISOString()
+  const next: PendingMedia = { ...item, progress: UPLOAD_START, startedAt: at, movedAt: at }
   return [...list, next].slice(-MAX_PENDING_MEDIA)
 }
 
@@ -82,8 +89,10 @@ export function updatePending(
   list: readonly PendingMedia[],
   clientId: string,
   progress: UploadProgress,
+  now: Date,
 ): PendingMedia[] {
-  return list.map((item) => (item.clientId === clientId ? { ...item, progress } : item))
+  const movedAt = now.toISOString()
+  return list.map((item) => (item.clientId === clientId ? { ...item, progress, movedAt } : item))
 }
 
 /**
@@ -99,12 +108,13 @@ export function advancePending(
   list: readonly PendingMedia[],
   clientId: string,
   advance: (current: UploadProgress) => UploadProgress,
+  now: Date,
 ): PendingMedia[] {
   const row = list.find((item) => item.clientId === clientId)
   if (!row) return list as PendingMedia[]
   const progress = advance(row.progress)
   if (sameDisplayedProgress(progress, row.progress)) return list as PendingMedia[]
-  return updatePending(list, clientId, progress)
+  return updatePending(list, clientId, progress, now)
 }
 
 export function removePending(list: readonly PendingMedia[], clientId: string): PendingMedia[] {
@@ -112,12 +122,17 @@ export function removePending(list: readonly PendingMedia[], clientId: string): 
 }
 
 /**
- * Anything still pending after this is not coming back.
+ * Anything that has not moved for this long is not coming back.
  *
  * The socket ack is what normally retires a row — `sendMediaMessageSchema` has
  * no `clientId`, so the echoed message cannot be matched to the attempt that
  * made it. An ack lost to a dropped connection would otherwise leave a bubble
  * uploading forever.
+ *
+ * Counted from the row's last movement, not from when it started. Measured
+ * from the start, a 64 MB video on a slow uplink was failed while its bytes
+ * were still going up — and a tap on the "not sent" row it turned into began
+ * a second upload beside the first, so the message arrived twice.
  */
 export const PENDING_MEDIA_STALE_MS = 90_000
 
@@ -129,7 +144,7 @@ export function expirePending(
   let changed = false
   const next = list.map((item) => {
     if (item.progress.phase === 'failed') return item
-    const age = now.getTime() - new Date(item.startedAt).getTime()
+    const age = now.getTime() - new Date(item.movedAt).getTime()
     if (age < staleMs) return item
     changed = true
     return { ...item, progress: { phase: 'failed' as const, fraction: item.progress.fraction } }
