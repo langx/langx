@@ -22,6 +22,8 @@ export const CURVE = {
   out: [0.23, 1, 0.32, 1],
   rise: [0.2, 0.8, 0.2, 1],
   pop: [0.34, 1.56, 0.64, 1],
+  /** Slow at both ends: a turn, where both halves of the movement are watched. */
+  inOut: [0.65, 0, 0.35, 1],
 } as const
 
 /** In milliseconds. */
@@ -38,6 +40,11 @@ export const DURATION = {
   pop: 900,
   /** Something leaving. Quicker than `enter`: nobody watches a thing go. */
   exit: 200,
+  /**
+   * A card turning over, front to back. Long enough to see both halves of
+   * the turn, short enough not to stand between a reveal and the grade.
+   */
+  flip: 360,
   /** A plain opacity change, in or out, with nothing moving. */
   fade: 200,
   /** A bar or a ring filling to its new value. */

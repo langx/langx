@@ -18,6 +18,7 @@ import {
   Animated,
   Pressable,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   View,
@@ -25,6 +26,7 @@ import {
   type ViewStyle,
 } from 'react-native'
 import Reanimated, {
+  ReduceMotion,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -52,6 +54,7 @@ import { useLocale, useT } from '../../i18n'
 import { useDisplayNames } from '../../i18n/displayNames'
 import { voiceLabel } from '../../i18n/labels'
 import type { EchoAskParams } from '../../lib/echoAsk'
+import { faceAngle, faceOpacity, type FlipFace } from '../../lib/echoFlip'
 import { spokenGrade } from '../../lib/format'
 import { goBackTo } from '../../lib/navigation'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
@@ -62,6 +65,16 @@ const PICTURE_MAX_HEIGHT = 240
 
 /** The grade tiles' height, from the drawing: two lines and air, well over any minimum target. */
 const GRADE_HEIGHT = 72
+
+/** The back's outline, in the front's colour: the same card, seen from the other side. */
+const BACK_BORDER = 3
+
+/**
+ * How deep the turn looks. Far enough that the near edge, swelling as it
+ * comes towards the reader, stays inside the gutter and is not clipped by the
+ * scroll view above the card or drawn under the takes below it.
+ */
+const FLIP_PERSPECTIVE = 1800
 
 export interface EchoSessionV3Props {
   deck: readonly EchoCard[]
@@ -103,15 +116,22 @@ function back(): void {
  * to the route's words and roles.
  *
  * The card is one colour block, in the hue of the person it came from as
- * everywhere in v3: who it is from, the sentence, and the takes under it.
- * The answer is a grey block under that, and the grades are four tiles at
- * the foot — Good the one yellow, since Show answer has gone by then.
+ * everywhere in v3: who it is from and the sentence, with the takes under
+ * it. Show answer turns it over: the back is the same card outlined in that
+ * hue, the sentence small and the meaning large. The grades are four tiles
+ * at the foot — Good the one yellow, since Show answer has gone by then.
+ *
+ * A card to write keeps its own flow and does not turn: the meaning and the
+ * box are its front, and what was typed is checked in a grey block under it.
  */
 export function EchoSessionScreenV3(props: EchoSessionV3Props) {
   const { deck, index, producing, revealed, keyboard, cardRef } = props
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
+  const tone = cardTone(props.card, v3)
+  // The front's hue, or for a plain grey card a step darker than its grey.
+  const edge = tone.onHue ? tone.fill : v3.colors.track
 
   return (
     <Screen fluid ground={v3.colors.bg}>
@@ -145,16 +165,50 @@ export function EchoSessionScreenV3(props: EchoSessionV3Props) {
             Keyed by card, so each new card arrives: it slides in from the
             trailing edge, and the one graded simply goes — nobody watches a
             card they have finished with leave. The first card came in with
-            the screen.
+            the screen. The key also starts the next card face up, rather
+            than turning back.
           */}
-          <Arrive key={props.card._id} dx={index > 0 ? 24 : 0}>
-            <CardBlock {...props} />
-          </Arrive>
-          {revealed ? (
-            <Arrive dy={12}>
-              <Answer {...props} />
-            </Arrive>
-          ) : null}
+          {producing ? (
+            <>
+              <Arrive key={props.card._id} dx={index > 0 ? 24 : 0}>
+                <CardBlock {...props} />
+              </Arrive>
+              {revealed ? (
+                <Arrive dy={12}>
+                  <Answer {...props} />
+                </Arrive>
+              ) : null}
+            </>
+          ) : (
+            <>
+              <Arrive key={props.card._id} dx={index > 0 ? 24 : 0}>
+                <FlipCard
+                  revealed={revealed}
+                  // Edit is offered only once the answer is up, which is the
+                  // back's moment: on the front it would pop into the row as
+                  // the card turned away.
+                  front={<CardBlock {...props} onEdit={null} />}
+                  back={<CardBack {...props} />}
+                  backStyle={[styles.backFace, { borderColor: edge }]}
+                />
+              </Arrive>
+              {/*
+                Under the card rather than on a face, so they are there on
+                both sides — hearing it again is most use once the meaning is
+                up — and one set of players, so a take autoplaying on the
+                front plays on while the card turns.
+              */}
+              <Arrive key={`${props.card._id}:takes`} dx={index > 0 ? 24 : 0}>
+                <Takes
+                  card={props.card}
+                  autoplay={props.autoplay}
+                  onHue={false}
+                  fill={v3.colors.bg}
+                  ink={v3.colors.fg}
+                />
+              </Arrive>
+            </>
+          )}
           {/*
             One way to the feed, in the card body and never in the grade row:
             it is not a grade. Recognition cards only — a production card's
@@ -324,11 +378,9 @@ function CardBlock({
   const tone = cardTone(card, v3)
   const fill = tone.onHue ? tone.fill : v3.colors.surface
   const ink = tone.onHue ? v3.colors.ink : v3.colors.fg
-  const recordings = echoAudiosOf(card)
-  const hearing = !producing || revealed
 
   return (
-    <View style={[styles.block, { backgroundColor: fill }]}>
+    <View style={[styles.block, styles.blockFill, { backgroundColor: fill }]}>
       <Source card={card} fill={fill} ink={ink} glyph={tone.glyph} onEdit={onEdit} />
       {card.image ? <Picture key={card.image.url} image={card.image} /> : null}
       {producing && !revealed ? (
@@ -363,34 +415,188 @@ function CardBlock({
         </Text>
       )}
       {/*
-        Keyed by card, as today: a new card starts with no take to repeat, and
-        two cards sharing a file still mount fresh players.
+        On the card only for a card to write, and only once it is checked:
+        before that they would read the answer out. A card to recognise has
+        them under the card instead, on neither face.
       */}
-      <PlayAgainProvider key={card._id}>
-        {hearing ? (
-          <View style={styles.takes}>
-            {recordings.map((audio, i) => (
-              <Recording
-                key={`${card._id}:${audio.url}`}
-                audio={audio}
-                autoplay={autoplay && i === 0}
-                onHue={tone.onHue}
-                fill={fill}
-              />
-            ))}
-            {(card.voices ?? []).map((take, i) => (
-              <Reading
-                key={`${card._id}:${take.voice}`}
-                take={take}
-                autoplay={autoplay && recordings.length === 0 && i === 0}
-                ink={ink}
-              />
-            ))}
-            <PlayAgainButtonV3 onHue={tone.onHue} />
-          </View>
-        ) : null}
-      </PlayAgainProvider>
+      {producing && revealed ? (
+        <Takes card={card} autoplay={autoplay} onHue={tone.onHue} fill={fill} ink={ink} />
+      ) : null}
     </View>
+  )
+}
+
+/**
+ * The card's two faces and the turn between them, on the UI thread.
+ *
+ * Both faces stay mounted, stacked, and turn together through 180°; each is
+ * see-through outside its own half of the turn, so the swap happens at 90°,
+ * edge-on, and no text is ever seen from behind (`lib/echoFlip`). With
+ * reduced motion the faces crossfade in place instead of turning.
+ *
+ * The front is in the flow and the back lies over it, and the front is held
+ * at least as tall as the back: the card is the height of its taller face
+ * before the turn and after it, so nothing under it jumps at the swap, and a
+ * long sentence or a long meaning has its room on either side.
+ */
+function FlipCard({
+  revealed,
+  front,
+  back,
+  backStyle,
+}: {
+  revealed: boolean
+  front: ReactNode
+  back: ReactNode
+  backStyle: StyleProp<ViewStyle>
+}) {
+  const styles = useStyles()
+  const reduce = useReduceMotion()
+  const progress = useSharedValue(revealed ? 1 : 0)
+  // `null` until the back has been measured: until then the card is not
+  // drawn, so it never shows at the front's own height and then grows.
+  const [backHeight, setBackHeight] = useState<number | null>(null)
+
+  useEffect(() => {
+    // A crossfade when motion is reduced, not the cut `unlessReduced` makes:
+    // a cut here reads as one card swapped for another rather than turned.
+    // `ReduceMotion.Never` on it, because Reanimated's own default skips every
+    // animation to its end under the system setting, crossfade included.
+    progress.set(
+      withTiming(
+        revealed ? 1 : 0,
+        reduce ? { ...TIMING.crossfade, reduceMotion: ReduceMotion.Never } : TIMING.flip,
+      ),
+    )
+  }, [revealed, reduce, progress])
+
+  const frontMotion = useAnimatedStyle(() => faceMotion('front', progress.get(), reduce))
+  const backMotion = useAnimatedStyle(() => faceMotion('back', progress.get(), reduce))
+
+  return (
+    <View style={backHeight === null && styles.unmeasured}>
+      <Reanimated.View
+        aria-hidden={revealed}
+        style={[{ minHeight: backHeight ?? 0 }, frontMotion, revealed && styles.faceAway]}
+      >
+        {front}
+      </Reanimated.View>
+      <Reanimated.View
+        aria-hidden={!revealed}
+        style={[StyleSheet.absoluteFill, backStyle, backMotion, !revealed && styles.faceAway]}
+      >
+        {/* Measured at its own height, not the card's: what the front is held to. */}
+        <View
+          onLayout={({ nativeEvent }) => setBackHeight(nativeEvent.layout.height + 2 * BACK_BORDER)}
+        >
+          {back}
+        </View>
+      </Reanimated.View>
+    </View>
+  )
+}
+
+function faceMotion(face: FlipFace, progress: number, reduce: boolean) {
+  'worklet'
+  return {
+    opacity: faceOpacity(face, progress, reduce),
+    transform: [
+      { perspective: FLIP_PERSPECTIVE },
+      { rotateY: `${faceAngle(face, progress, reduce)}deg` },
+    ],
+  }
+}
+
+/**
+ * The back: who it is from, the sentence again but small, and the meaning as
+ * large as the sentence was on the front — or the note that the card has no
+ * meaning yet, under the Edit that gives it one.
+ */
+function CardBack({ card, onEdit }: EchoSessionV3Props) {
+  const styles = useStyles()
+  const { v3 } = useTheme()
+  const t = useT()
+  const [black] = useFonts({ Nunito_900Black })
+  const tone = cardTone(card, v3)
+
+  return (
+    <View style={styles.block}>
+      <Source
+        card={card}
+        fill={v3.colors.bg}
+        ink={v3.colors.fg}
+        glyph={tone.glyph}
+        onEdit={onEdit}
+      />
+      {/* The sentence as it was written. Data, never interface copy. */}
+      <Text style={styles.backSentence}>{card.front}</Text>
+      <View style={styles.backRule} />
+      {/* Pinyin with the answer rather than above the sentence; see the route. */}
+      {card.reading ? <Text style={styles.reading}>{card.reading}</Text> : null}
+      {backAddsMeaning(card.front, card.back) ? (
+        <Text style={[styles.front, styles.meaning, !black && styles.frontFallback]}>
+          {card.back}
+        </Text>
+      ) : (
+        /*
+         * An empty back, or one that is the sentence again — what a
+         * translation into the language it is already in returns. Showing the
+         * front twice read as a card with no back side at all; saying so
+         * points at the card's Edit instead.
+         */
+        <Text style={styles.noMeaning}>{t('echo.noMeaningYet')}</Text>
+      )}
+      {card.example ? <Text style={styles.example}>{card.example}</Text> : null}
+    </View>
+  )
+}
+
+/**
+ * The card's takes — a person's recordings first, then the readings — and
+ * Play again under them. Autoplay starts the first.
+ */
+function Takes({
+  card,
+  autoplay,
+  onHue,
+  fill,
+  ink,
+}: {
+  card: EchoCard
+  autoplay: boolean
+  onHue: boolean
+  fill: string
+  ink: string
+}) {
+  const styles = useStyles()
+  const recordings = echoAudiosOf(card)
+  return (
+    /*
+      Keyed by card, as today: a new card starts with no take to repeat, and
+      two cards sharing a file still mount fresh players.
+    */
+    <PlayAgainProvider key={card._id}>
+      <View style={styles.takes}>
+        {recordings.map((audio, i) => (
+          <Recording
+            key={`${card._id}:${audio.url}`}
+            audio={audio}
+            autoplay={autoplay && i === 0}
+            onHue={onHue}
+            fill={fill}
+          />
+        ))}
+        {(card.voices ?? []).map((take, i) => (
+          <Reading
+            key={`${card._id}:${take.voice}`}
+            take={take}
+            autoplay={autoplay && recordings.length === 0 && i === 0}
+            ink={ink}
+          />
+        ))}
+        <PlayAgainButtonV3 onHue={onHue} />
+      </View>
+    </PlayAgainProvider>
   )
 }
 
@@ -566,36 +772,22 @@ function Reading({ take, autoplay, ink }: { take: EchoVoice; autoplay: boolean; 
   )
 }
 
-/** The answer, once it is up: the meaning, or what was typed and how close it was. */
-function Answer({ card, producing, typed, verdict }: EchoSessionV3Props) {
+/** A written card's check, once it is up: what was typed and how close it was. */
+function Answer({ card, typed, verdict }: EchoSessionV3Props) {
   const styles = useStyles()
   const t = useT()
   return (
     <View style={styles.answer}>
       {/* Pinyin with the answer rather than above the sentence; see the route. */}
       {card.reading ? <Text style={styles.reading}>{card.reading}</Text> : null}
-      {producing ? (
-        <>
-          <Text style={styles.answerLabel}>{t('echo.yourAnswer')}</Text>
-          <Text style={styles.answerText}>{typed.trim() || '—'}</Text>
-          {/* Reported, never graded: only the person knows whether they knew it. */}
-          <Text style={verdict === 'wrong' ? styles.verdictWrong : styles.verdictOk}>
-            {t(
-              `echo.verdict${verdict === 'exact' ? 'Exact' : verdict === 'close' ? 'Close' : 'Wrong'}`,
-            )}
-          </Text>
-        </>
-      ) : backAddsMeaning(card.front, card.back) ? (
-        <Text style={styles.answerText}>{card.back}</Text>
-      ) : (
-        /*
-         * An empty back, or one that is the sentence again — what a
-         * translation into the language it is already in returns. Showing the
-         * front twice read as a card with no back side at all; saying so
-         * points at the card's Edit instead.
-         */
-        <Text style={styles.noMeaning}>{t('echo.noMeaningYet')}</Text>
-      )}
+      <Text style={styles.answerLabel}>{t('echo.yourAnswer')}</Text>
+      <Text style={styles.answerText}>{typed.trim() || '—'}</Text>
+      {/* Reported, never graded: only the person knows whether they knew it. */}
+      <Text style={verdict === 'wrong' ? styles.verdictWrong : styles.verdictOk}>
+        {t(
+          `echo.verdict${verdict === 'exact' ? 'Exact' : verdict === 'close' ? 'Close' : 'Wrong'}`,
+        )}
+      </Text>
       {card.example ? <Text style={styles.example}>{card.example}</Text> : null}
     </View>
   )
@@ -676,6 +868,19 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[16],
     paddingTop: v3.space[14],
   },
+  // The front fills its face, which is held to the back's height.
+  blockFill: { flexGrow: 1 },
+  // The face turned away takes no touches: its Edit lies under the other face's.
+  faceAway: { pointerEvents: 'none' },
+  unmeasured: { opacity: 0 },
+  backFace: {
+    backgroundColor: v3.colors.bg,
+    borderRadius: v3.radius.block,
+    borderWidth: BACK_BORDER,
+  },
+  backSentence: { ...v3.type.headline, color: v3.colors.muted },
+  backRule: { backgroundColor: v3.colors.line, height: 2 },
+  meaning: { color: v3.colors.fg },
   source: { alignItems: 'center', flexDirection: 'row', gap: v3.space[10] },
   lead: {
     alignItems: 'center',
