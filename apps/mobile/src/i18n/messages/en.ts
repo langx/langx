@@ -1685,6 +1685,12 @@ export const en = {
     },
     pinnedMessage: 'Pinned message',
     goToPinned: 'Go to the pinned message',
+    /** Over the v3 thread's pinned strip's preview: who wrote the pinned message. */
+    pinnedFrom: 'Pinned · {name}',
+    /** The same line while the pinned message itself has not loaded. */
+    pinnedLabel: 'Pinned',
+    /** The pinned strip's ✕: a pin belongs to the conversation, so it goes for both. */
+    unpinHint: 'Takes the pin off for both of you',
     backToLatest: 'Back to latest',
     jumpToNew: {
       one: 'Jump to {count} new message',

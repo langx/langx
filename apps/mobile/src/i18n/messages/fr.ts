@@ -1535,6 +1535,9 @@ export const fr: Localized<EnMessages> = {
     },
     pinnedMessage: 'Message épinglé',
     goToPinned: 'Aller au message épinglé',
+    pinnedFrom: 'Épinglé · {name}',
+    pinnedLabel: 'Épinglé',
+    unpinHint: 'Retire l’épingle pour vous deux',
     backToLatest: 'Revenir à la fin',
     jumpToNew: {
       one: 'Aller au {count} nouveau message',

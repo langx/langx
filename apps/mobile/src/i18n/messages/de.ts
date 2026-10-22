@@ -1559,6 +1559,9 @@ export const de: Localized<EnMessages> = {
     },
     pinnedMessage: 'Angeheftete Nachricht',
     goToPinned: 'Zur angehefteten Nachricht',
+    pinnedFrom: 'Angeheftet · {name}',
+    pinnedLabel: 'Angeheftet',
+    unpinHint: 'Hebt das Anheften für euch beide auf',
     backToLatest: 'Zurück zum Ende',
     jumpToNew: {
       one: 'Zu {count} neuen Nachricht springen',

@@ -69,6 +69,7 @@ import {
   useMe,
   useMessages,
   useMessageWindow,
+  usePinnedMessage,
   useTranslate,
   useSpeakMessage,
   useRomanizeMessage,
@@ -218,6 +219,8 @@ import { useKeyboardUp } from '../hooks/useKeyboardUp'
 import { partnerHueFor } from '../lib/theme/partnerHue'
 import { latestToActOn } from '../lib/latestToActOn'
 import { keepIdentity } from '../lib/stableMessages'
+import { PinnedStripV3, type PinnedStripContent } from '../components/thread/PinnedStripV3'
+import { pinnedAuthor, pinnedLine } from '../lib/pinnedStrip'
 
 export interface ChatScreenProps {
   conversationId: string
@@ -723,6 +726,40 @@ export function ChatScreen({
   const mediaLockedFor = messages.data?.pages[0]?.mediaLockedFor ?? 0
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
+  /*
+   * The v3 strip's pinned message. Usually in the loaded pages; a pin weeks
+   * back is fetched on its own, one row, and only while it is missing from
+   * the thread. Undefined while that is on its way, null when it came back
+   * gone.
+   */
+  const pinnedId = pinned?.messageId ?? null
+  const pinnedInThread = useMemo(
+    () => (pinnedId ? items.find((m) => m._id === pinnedId) : undefined),
+    [items, pinnedId],
+  )
+  const pinnedLookup = usePinnedMessage(
+    conversationId,
+    v3Thread && pinnedId && !pinnedInThread ? pinnedId : null,
+  )
+  const pinnedMessage = pinnedInThread ?? (pinnedId ? pinnedLookup.data : undefined)
+  const pinnedPartnerName = partner?.displayName
+  const pinStrip = useMemo<PinnedStripContent | null>(() => {
+    if (!v3Thread || !pinnedId) return null
+    const author = pinnedAuthor(pinnedMessage, viewerId)
+    const line = pinnedLine(pinnedMessage)
+    return {
+      messageId: pinnedId,
+      // Their name, never the sentence-shaped "them": until the profile is
+      // in, the plain label.
+      label:
+        author === 'you'
+          ? t('chat.pinnedFrom', { name: t('messageMeta.you') })
+          : author === 'them' && pinnedPartnerName
+            ? t('chat.pinnedFrom', { name: pinnedPartnerName })
+            : t('chat.pinnedLabel'),
+      line: 'text' in line ? line.text : t(line.key),
+    }
+  }, [v3Thread, pinnedId, pinnedMessage, viewerId, pinnedPartnerName, t])
   /**
    * A channel — `@langx` — rather than somebody to talk to.
    *
@@ -3635,7 +3672,14 @@ export function ChatScreen({
         about the conversation, not a transient control, and it has to survive
         scrolling to the top of the history.
       */}
-        {pinned ? (
+        {v3Thread ? (
+          <PinnedStripV3
+            pin={pinStrip}
+            hue={partnerHue}
+            onJump={onJumpTo}
+            onUnpin={() => void emit('conversation:pin', { conversationId, messageId: null })}
+          />
+        ) : pinned ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('chat.goToPinned')}

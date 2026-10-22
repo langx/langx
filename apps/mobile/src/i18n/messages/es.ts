@@ -1520,6 +1520,9 @@ export const es: Localized<EnMessages> = {
     },
     pinnedMessage: 'Mensaje fijado',
     goToPinned: 'Ir al mensaje fijado',
+    pinnedFrom: 'Fijado · {name}',
+    pinnedLabel: 'Fijado',
+    unpinHint: 'Quita el mensaje fijado para los dos',
     backToLatest: 'Volver al final',
     jumpToNew: {
       one: 'Ir a {count} mensaje nuevo',
