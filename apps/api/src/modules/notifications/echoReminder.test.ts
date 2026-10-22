@@ -107,6 +107,29 @@ describe('the evening Echo nudge', () => {
     expect(await runEchoReminderPass(handle.db, push, now)).toEqual({ sent: 0 })
   })
 
+  /*
+   * "Today" is the reader's calendar day. Counted as the last 24 hours, a
+   * session started by yesterday's 19:00 nudge — say at 19:40 — silenced
+   * this evening's, so somebody who answered every nudge got one every other
+   * day.
+   */
+  it('nudges somebody whose last session was yesterday evening', async () => {
+    const userId = await learner()
+    await dueCard(userId)
+    await handle.db.collection(COLLECTIONS.echoReviews).insertOne({
+      _id: new ObjectId(),
+      userId,
+      reviewId: 'yesterday-evening-1',
+      cardId: new ObjectId(),
+      grade: 'good',
+      // 23 hours ago: yesterday at 20:00 on the reader's clock.
+      at: new Date(now.getTime() - 23 * 60 * 60 * 1000),
+      durationMs: 900,
+    })
+
+    expect(await runEchoReminderPass(handle.db, push, now)).toEqual({ sent: 1 })
+  })
+
   it('says nothing when nothing is due', async () => {
     const userId = await learner()
     await dueCard(userId, new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000))
