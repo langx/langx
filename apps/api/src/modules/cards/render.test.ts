@@ -4,8 +4,8 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
 /*
- * resvg scans every system font on each render unless told not to, and that
- * scan was about 600ms of a card's render on a Mac. A card has text, so it
+ * resvg scans every system font on each render unless told not to, and on a
+ * Mac that scan was most of a card's raster step. A card has text, so it
  * cannot go without fonts the way an avatar does (#1904); it gets the four
  * bundled files instead.
  *
@@ -23,6 +23,9 @@ describe('renderCard', () => {
 
   it('hands resvg the bundled font files instead', () => {
     expect(call, 'the new Resvg call in render.ts').toMatch(/fontFiles: files/)
+    // Every face satori gets, by path — an empty or shortened list would
+    // leave resvg with nothing or less to set a stray <text> in.
+    expect(source).toContain('files: [black.path, extraBold.path, semiBold.path, arabic.path]')
     for (const file of [
       'Nunito_900Black.ttf',
       'Nunito_800ExtraBold.ttf',

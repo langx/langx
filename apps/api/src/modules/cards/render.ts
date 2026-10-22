@@ -35,6 +35,8 @@ let fonts: Fonts | null = null
 
 /**
  * Read once and kept: the four faces are ~590KB and every render needs them.
+ * satori keeps these bytes; resvg is given the paths and reads the files
+ * itself (see `renderCard`).
  *
  * Nunito has no Arabic in it, so anything Arabic — a handle, a caption, the
  * labels on the Echo chart — came out as a row of empty boxes until Noto Sans
@@ -101,14 +103,16 @@ export async function renderCard(element: CardNode, shape: CardShape): Promise<B
     fitTo: { mode: 'width', value: width },
     /*
      * Left to its default, resvg scans every system font on every render, and
-     * that scan was most of the cost — about 600ms a picture on a Mac, the
-     * same scan #1904 took out of the avatars. Unlike a face, a card has
-     * words on it, so instead of no fonts it gets exactly the four satori
-     * was handed. satori 0.62 draws glyphs as paths, so today resvg finds no
-     * text to set and the PNG is byte-for-byte the same either way; the files
-     * are here so that if a `<text>` ever reaches resvg it is set in Nunito
-     * or Noto rather than dropped, and never in whatever the host happens to
-     * have installed.
+     * on a Mac that scan was most of the raster step — the same scan #1904
+     * took out of the avatars. Unlike a face, a card has words on it, so
+     * instead of no fonts it gets exactly the four satori was handed. satori
+     * 0.62 draws glyphs as paths, so today resvg finds no text to set and the
+     * PNG is byte-for-byte the same either way; the files are here so that if
+     * a `<text>` ever reaches resvg it is set in Nunito or Noto rather than
+     * dropped, and never in whatever the host happens to have installed.
+     * resvg reads the four files again on each render (~590KB, no buffer
+     * option in the native binding); that is accepted, being a small part of
+     * what the scan cost.
      */
     font: { loadSystemFonts: false, fontFiles: files, defaultFontFamily: 'Nunito' },
   })
