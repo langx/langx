@@ -8,6 +8,7 @@ import {
   newPendingId,
   removePending,
   updatePending,
+  type PendingMedia,
 } from './pendingMedia'
 import { UPLOAD_START, advanceUpload, uploadFailed } from './uploadProgress'
 
@@ -159,6 +160,26 @@ describe('advancePending', () => {
     const next = advancePending(started, 'a', (p) => advanceUpload(p, 11, 100), NOW)
     expect(next).not.toBe(started)
     expect(next[0]?.progress.fraction).toBeCloseTo(0.11)
+  })
+
+  /**
+   * Six 64 MiB videos at ~40 KB/s: one whole percent of the bar is ~3.8 MiB,
+   * over 90 seconds of bytes. The label does not change, so the row was never
+   * moved, and the sweep failed an upload that was still going up.
+   */
+  it('keeps a slow upload alive while its bytes move inside one percent', () => {
+    let list: PendingMedia[] = started
+    for (let s = 5; s <= 120; s += 5) {
+      const at = new Date(NOW.getTime() + s * 1000)
+      list = advancePending(list, 'a', (p) => advanceUpload(p, 100_000 + s, 1_000_000), at)
+      list = expirePending(list, at)
+    }
+    expect(list[0]?.progress.phase).toBe('uploading')
+  })
+
+  it('does not hand back a new list for every event inside one percent', () => {
+    const soon = new Date(NOW.getTime() + 1000)
+    expect(advancePending(started, 'a', (p) => advanceUpload(p, 101, 1000), soon)).toBe(started)
   })
 
   it('ignores a row that is no longer there', () => {

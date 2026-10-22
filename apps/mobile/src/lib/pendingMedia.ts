@@ -61,7 +61,7 @@ export interface PendingMedia {
   progress: UploadProgress
   startedAt: string
   /**
-   * When the row last moved — added, a percent further, sent, failed. What
+   * When the row last moved — added, bytes further, sent, failed. What
    * `expirePending` measures, rather than `startedAt`: a slow upload that is
    * still moving is not one whose ack was lost.
    */
@@ -113,9 +113,27 @@ export function advancePending(
   const row = list.find((item) => item.clientId === clientId)
   if (!row) return list as PendingMedia[]
   const progress = advance(row.progress)
-  if (sameDisplayedProgress(progress, row.progress)) return list as PendingMedia[]
+  if (sameDisplayedProgress(progress, row.progress)) {
+    /*
+     * The label has not changed, but bytes may have — and `movedAt` is what
+     * the stale sweep reads. Six 64 MiB videos at 40 KB/s take over 90 s per
+     * whole percent, so refreshing it only with the label failed uploads that
+     * were still going up. Every `PENDING_MEDIA_TOUCH_MS` rather than every
+     * event, which keeps the render this function exists to skip skipped.
+     */
+    const bytesMoved = progress.fraction > row.progress.fraction
+    const sinceMoved = now.getTime() - new Date(row.movedAt).getTime()
+    if (!bytesMoved || sinceMoved < PENDING_MEDIA_TOUCH_MS) return list as PendingMedia[]
+  }
   return updatePending(list, clientId, progress, now)
 }
+
+/**
+ * How often bytes that do not move the drawn percent still count as movement.
+ * Well inside `PENDING_MEDIA_STALE_MS`, and slow enough to be a render every
+ * few seconds rather than one per chunk.
+ */
+export const PENDING_MEDIA_TOUCH_MS = 10_000
 
 export function removePending(list: readonly PendingMedia[], clientId: string): PendingMedia[] {
   return list.filter((item) => item.clientId !== clientId)
