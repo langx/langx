@@ -1699,15 +1699,21 @@ export function ChatScreen({
              */
             onProgress: (loaded, total) =>
               setPending((list) =>
-                advancePending(list, clientId, (progress) =>
-                  advanceUpload(progress, index + (total > 0 ? loaded / total : 0), items.length),
+                advancePending(
+                  list,
+                  clientId,
+                  (progress) =>
+                    advanceUpload(progress, index + (total > 0 ? loaded / total : 0), items.length),
+                  new Date(),
                 ),
               ),
           }),
         )
       }
       // The bytes are up; the socket round-trip is what is left.
-      setPending((list) => updatePending(list, clientId, uploadSent(startOf(list, clientId))))
+      setPending((list) =>
+        updatePending(list, clientId, uploadSent(startOf(list, clientId)), new Date()),
+      )
       const socket = await getSocket()
       const saved = await emitWithAck<MessageDto>(socket, 'message:media', {
         conversationId,
@@ -1768,7 +1774,9 @@ export function ChatScreen({
       // still there, and tapping it tries again. A quota refusal and an
       // oversized file are the exceptions — retrying cannot help, so those
       // are dropped above.
-      setPending((list) => updatePending(list, clientId, uploadFailed(startOf(list, clientId))))
+      setPending((list) =>
+        updatePending(list, clientId, uploadFailed(startOf(list, clientId)), new Date()),
+      )
       void showAlert(t('chat.couldNotSend'), reason)
     } finally {
       setSendingMedia(false)
