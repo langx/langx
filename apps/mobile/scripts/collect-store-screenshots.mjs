@@ -2,17 +2,19 @@
 /* global console */
 /**
  * Lays the store screenshots out the way `fastlane deliver` expects, so all
- * eight languages go up in one command instead of 32 drags through Media
- * Manager.
+ * eight languages go up in one command instead of 40 drags through Media
+ * Manager (five slots, eight languages).
  *
  * The images live in the sibling `branding` checkout (see docs/repo-map.md),
  * one folder per language per Apple slot. Since 3.0 they are the output of
- * `tools/store-shots`, run into `branding/3.x`. `deliver` wants one flat
+ * `tools/store-shots`, copied into `branding/3.x` without its `.work` folder
+ * (the web export and raw captures, which do not belong in branding). `deliver` wants one flat
  * folder per App Store locale and works out the device from the image's own
  * dimensions, so this only has to copy and rename — the numeric prefix is
  * what keeps the order, because deliver sorts by filename.
  *
- *   node tools/store-shots/run.mjs --out ../branding/3.x
+ *   node tools/store-shots/run.mjs --out ../store-shots-3.0
+ *   rsync -a --exclude .work ../store-shots-3.0/ ../branding/3.x/
  *   node apps/mobile/scripts/collect-store-screenshots.mjs
  *   cd apps/mobile && fastlane deliver
  *
@@ -89,11 +91,9 @@ const SLOTS = ['6.9', '6.3', '5.5', '13']
  * every screenshot set of a locale it uploads to, the watch set included, so a
  * missing folder would empty the Apple Watch slot rather than keep it.
  *
- * The slot is allowed to be short. deliver works the device out from the
- * image's own dimensions, so 416 x 496 lands in the Apple Watch slot with
- * nothing to configure — but Arabic ships one shot where the others ship two
- * (the thread screen's back chevron sits under the clock in right-to-left), so
- * this slot counts what it finds instead of demanding a fixed eight.
+ * deliver works the device out from the image's own dimensions, so 416 x 496
+ * lands in the Apple Watch slot with nothing to configure. The slot counts
+ * what it finds rather than demanding a fixed number.
  */
 const WATCH = { from: '2.x', slot: 'watch' }
 

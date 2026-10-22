@@ -12,7 +12,7 @@
  *
  * The images live in the sibling `branding` checkout (see docs/repo-map.md),
  * one folder per language per device size. Since 3.0 they are the output of
- * `tools/store-shots`, run into `branding/3.x`. supply wants
+ * `tools/store-shots`, copied into `branding/3.x` without its `.work` folder. supply wants
  * `<locale>/images/<size>Screenshots/` and sorts by filename, so this only has
  * to copy and rename — the numeric prefix is what keeps the order.
  *
@@ -26,7 +26,8 @@
  * feature-graphic.png` files are still in branding and are deliberately not read
  * here — sending them would put the covered-up headline back on five listings.
  *
- *   node tools/store-shots/run.mjs --out ../branding/3.x
+ *   node tools/store-shots/run.mjs --out ../store-shots-3.0
+ *   rsync -a --exclude .work ../store-shots-3.0/ ../branding/3.x/
  *   node apps/mobile/scripts/collect-play-screenshots.mjs
  *   cd apps/mobile && fastlane play
  */
