@@ -21,6 +21,17 @@ export function badgeName(
   const t = translator(locale)
   const count = badge.threshold
   const formatted = count.toLocaleString(locale)
+  /*
+   * The v3 kinds are named per patch on the app's v3 shelf ("Weaver", not
+   * "50 people"), so they are named the same way here. A threshold the
+   * catalogue has no name for falls back to the family's unit.
+   */
+  const named = (unit: () => string) => (): string => {
+    const key = `badgeNames.v3.${badge.kind}_${count}`
+    const name = t(key as never)
+    // `t` answers a missing key with the key itself.
+    return name === key ? unit() : name
+  }
   const wording: Record<BadgeKind, () => string> = {
     streak: () => t('badgeNames.streakDays', { count, formatted }),
     correction: () =>
@@ -31,12 +42,12 @@ export function badgeName(
     tokens: () => t('badgeNames.tokensEarned', { count, formatted }),
     veteran: () => t('badgeNames.memberDays', { count, formatted }),
     origin: () => t('badgeNames.earlyAdopter'),
-    languages: () => t('badgeNames.languages', { count, formatted }),
-    calls: () => t('badgeNames.calls', { count, formatted }),
-    echo: () => t('badgeNames.echo', { count, formatted }),
-    testimonials: () => t('badgeNames.testimonials', { count, formatted }),
-    guide: () => t('badgeNames.guide', { count, formatted }),
-    openers: () => t('badgeNames.openers', { count, formatted }),
+    languages: named(() => t('badgeNames.languages', { count, formatted })),
+    calls: named(() => t('badgeNames.calls', { count, formatted })),
+    echo: named(() => t('badgeNames.echo', { count, formatted })),
+    testimonials: named(() => t('badgeNames.testimonials', { count, formatted })),
+    guide: named(() => t('badgeNames.guide', { count, formatted })),
+    openers: named(() => t('badgeNames.openers', { count, formatted })),
   }
   return wording[badge.kind]()
 }

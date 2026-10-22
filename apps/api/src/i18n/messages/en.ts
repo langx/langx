@@ -896,6 +896,31 @@ export const en = {
    * `{formatted}` is the threshold in the reader's own digits.
    */
   badgeNames: {
+    /**
+     * The v3 kinds' names, keyed `<kind>_<threshold>` like the app's
+     * `badgesV3.name.*`: the shelf names each patch rather than counting it.
+     * The unit words below stay as the fallback for a threshold with no name.
+     */
+    v3: {
+      languages_2: 'Two Threads',
+      languages_3: 'Braid',
+      languages_5: 'Five Strands',
+      calls_1: 'Tin-Can Line',
+      calls_10: 'Long Line',
+      calls_50: 'Switchboard',
+      echo_100: 'Ripple',
+      echo_1000: 'Wave',
+      echo_5000: 'Tide',
+      testimonials_1: 'Quilt Square',
+      testimonials_5: 'Patchwork',
+      testimonials_20: 'Quilt',
+      guide_3: 'Darning',
+      guide_10: 'Mending',
+      guide_50: 'Weaver',
+      openers_10: 'Open Door',
+      openers_50: 'Porch Light',
+      openers_200: 'Open House',
+    },
     firstCorrection: 'First correction',
     streakDays: {
       one: '{formatted} day',
