@@ -322,7 +322,7 @@ export function EchoSessionEmptyV3() {
 }
 
 /**
- * The speaker at the end of the header row, now with its words on it. One
+ * The speaker at the end of the header row, with the switch's name on it. One
  * control for the session, not a thing re-decided per card.
  */
 function AutoplaySwitch({ on, onToggle }: { on: boolean; onToggle: () => void }) {
@@ -348,12 +348,13 @@ function AutoplaySwitch({ on, onToggle }: { on: boolean; onToggle: () => void })
         color={on ? v3.colors.echoText : v3.colors.muted}
       />
       {/*
-        One line, shrinking: "Reproducción automática desactivada" is wider
-        than the room beside the chevron on a 390pt phone, and a wrapped pill
-        pushes the title down every time autoplay is switched.
+        The words name the switch and the speaker says its state: "Reproducción
+        automática desactivada" crowded the room beside the chevron even when
+        shrunk. A screen reader still hears the full on/off label above. One
+        line, shrinking, so a wrapped pill never pushes the title down.
       */}
       <FitText style={[styles.autoplayText, !on && styles.autoplayTextOff]} minimumFontScale={0.75}>
-        {label}
+        {t('echo.autoplay')}
       </FitText>
     </Pressable>
   )

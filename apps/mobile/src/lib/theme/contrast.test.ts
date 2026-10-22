@@ -181,3 +181,32 @@ describe('a filled button that cannot be pressed yet', () => {
     })
   }
 })
+
+describe('a level glyph', () => {
+  // The unfilled bars were `track`, 1.35:1 on the grey block after dark and
+  // 1.23:1 in light: a level read as its filled bars alone. 3:1 is WCAG's
+  // floor for a graphic that carries meaning, and a glyph's rest bars carry
+  // the scale's length.
+  for (const scheme of SCHEMES) {
+    const colors = v3[scheme].colors
+
+    // The grounds the glyph is drawn on: a profile's language tile and the
+    // edit and onboarding rows (`surface`), and an unselected cell (`bg`).
+    for (const ground of ['bg', 'surface'] as const) {
+      it(`${scheme}: sets the unfilled bars off ${ground}`, () => {
+        expect(contrast(colors.levelRest, colors[ground])).toBeGreaterThanOrEqual(3)
+      })
+    }
+
+    it(`${scheme}: sets the filled bars off the unfilled ones`, () => {
+      expect(contrast(colors.fg, colors.levelRest)).toBeGreaterThanOrEqual(3)
+    })
+
+    // A selected level cell inverts: `pillText` bars on the `pill`.
+    it(`${scheme}: does the same inside a selected level cell`, () => {
+      const onPill = colors.levelRestOnPill
+      expect(contrast(onPill, colors.pill)).toBeGreaterThanOrEqual(3)
+      expect(contrast(colors.pillText, onPill)).toBeGreaterThanOrEqual(3)
+    })
+  }
+})

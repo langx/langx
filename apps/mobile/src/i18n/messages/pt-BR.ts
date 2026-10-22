@@ -473,6 +473,7 @@ export const ptBR: Localized<EnMessages> = {
     packNext: 'A seguir',
     autoplayOn: 'Reprodução automática ativada',
     autoplayOff: 'Reprodução automática desativada',
+    autoplay: 'Reprodução automática',
     voiceFemale: 'Sintetizada · feminina',
     voiceMale: 'Sintetizada · masculina',
     voiceSynthesised: 'Sintetizada',

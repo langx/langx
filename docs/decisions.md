@@ -8402,6 +8402,8 @@ would make the OS show a notice the person did not ask for. In the picker it
 is still marked current but locked with its Pro tag, and tapping it opens the
 sheet.
 `KEEP_PRO_ICON_AFTER_PRO_ENDS` in `src/lib/appIconList.ts` flips this.
+Behic confirmed on 21 October 2026 that the icon stays, so this is decided
+rather than a default awaiting his call, and the constant stays `true`.
 
 ## Gift codes give time, not discounts
 

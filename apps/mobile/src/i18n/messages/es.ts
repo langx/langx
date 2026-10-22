@@ -475,6 +475,7 @@ export const es: Localized<EnMessages> = {
     packNext: 'A continuación',
     autoplayOn: 'Reproducción automática activada',
     autoplayOff: 'Reproducción automática desactivada',
+    autoplay: 'Reproducción automática',
     voiceFemale: 'Sintetizada · femenina',
     voiceMale: 'Sintetizada · masculina',
     voiceSynthesised: 'Sintetizada',
