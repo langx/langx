@@ -1,6 +1,6 @@
 import type { FeedPost } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
-import { findFeedPost } from './postFromFeed'
+import { findFeedPost, postOnScreen } from './postFromFeed'
 
 const post = (id: string) => ({ _id: id, body: id }) as unknown as FeedPost
 
@@ -38,5 +38,24 @@ describe('findFeedPost', () => {
       [['feed', 'timeline'], { pages: [{ items: [wanted] }] }],
     ] as const
     expect(findFeedPost(entries, 'y')).toBe(wanted)
+  })
+})
+
+describe('postOnScreen', () => {
+  const fetched = post('p1')
+  const fromFeed = post('p1')
+
+  it('draws the post’s own answer over the feed’s copy', () => {
+    expect(postOnScreen(fetched, fromFeed, false)).toBe(fetched)
+  })
+
+  it('draws the feed’s copy while the post’s own answer is on its way', () => {
+    expect(postOnScreen(undefined, fromFeed, false)).toBe(fromFeed)
+  })
+
+  it('draws nothing once the post is gone, even with its own answer cached', () => {
+    // Opened once, deleted by its author, reopened: the refetch 404s and
+    // keeps the old answer.
+    expect(postOnScreen(fetched, fromFeed, true)).toBeUndefined()
   })
 })
