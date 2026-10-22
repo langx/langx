@@ -70,6 +70,7 @@ import { track } from '../lib/analytics'
 import { replyDraftFor } from '../lib/commentThread'
 import { foldCorrection } from '../lib/feedCache'
 import { asksOf } from '../lib/postAsks'
+import { postOnScreen } from '../lib/postFromFeed'
 import { replyRefusalKey } from '../lib/postRefusal'
 import { goBackTo, openLikers, openProfile } from '../lib/navigation'
 import { relativeTime } from '../lib/format'
@@ -399,11 +400,12 @@ export function PostScreen({
   const fromFeed = usePostFromFeed(id)
   /*
    * Except after a 404: the post was deleted, hidden or is from somebody
-   * blocked, and the feed's copy would draw it as live. That goes to the
-   * full-screen failure below, as a cold open of it would.
+   * blocked, and any copy in hand — the feed's, or this screen's own from an
+   * earlier visit — would draw it as live. That goes to the full-screen
+   * failure below, as a cold open of it would.
    */
   const gone = query.error instanceof ApiRequestError && query.error.status === 404
-  const post = query.data?.pages[0]?.post ?? (gone ? undefined : fromFeed)
+  const post = postOnScreen(query.data?.pages[0]?.post, fromFeed, gone)
   const asks = post ? asksOf(post) : []
   const correcting = asks.includes('correction')
   const pronouncing = asks.includes('pronunciation')
