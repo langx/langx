@@ -294,6 +294,15 @@ async function applyDeleteSideEffects(
 
   const recipientId = conversation.participants.find((id) => id !== deleted.senderId)
   if (!recipientId || deleted.readAt) return
+  /*
+   * Hidden from the recipient means it is not in their count. Deleting a chat
+   * zeroes `unread` and hides every message without stamping `readAt` — a
+   * read receipt for something nobody read would be a lie — so an unread
+   * message the recipient deleted the chat over still looks unread here. If
+   * the thread has come back since, the count is the new messages', and
+   * withdrawing the old one would take one of theirs off the badge.
+   */
+  if (deleted.hiddenFor?.includes(recipientId)) return
 
   /**
    * `$inc: -1` rather than a recount, because it *commutes* with the `$inc: +1`
