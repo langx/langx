@@ -127,11 +127,6 @@ export function useThreadCopilot({
   const [ideas, setIdeas] = useState<{ for: string; state: CopilotAnswerState } | null>(null)
   /** Messages the server found nothing to reply to: no chip for them again. */
   const [nothingFor, setNothingFor] = useState<ReadonlySet<string>>(() => new Set())
-  /**
-   * Chats Copilot will not read because the other person is under its age.
-   * Per chat, not per message: every later line would be refused the same way.
-   */
-  const [refusedChats, setRefusedChats] = useState<ReadonlySet<string>>(() => new Set())
 
   // Another thread is another conversation: nothing carries over.
   useEffect(() => {
@@ -272,10 +267,6 @@ export function useThreadCopilot({
         return
       }
       const key = copilotErrorKey(error)
-      // Said once, on the card; after that the chip stays away from this chat.
-      if (key === 'copilot.errPartnerAge') {
-        setRefusedChats((set) => new Set(set).add(conversationId))
-      }
       if (key === 'off' || key === 'consent') {
         setIdeas(null)
         void queryClient.invalidateQueries({ queryKey: COPILOT_STATUS_KEY })
@@ -324,8 +315,7 @@ export function useThreadCopilot({
 
   const shown = card === null ? ideasTarget : undefined
   const openIdeasState = shown && ideas?.for === shown ? ideas.state : null
-  const offered =
-    shown && !nothingFor.has(shown) && !refusedChats.has(conversationId) ? shown : undefined
+  const offered = shown && !nothingFor.has(shown) ? shown : undefined
 
   return {
     gate,
