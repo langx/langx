@@ -119,7 +119,12 @@ function decodeOnlineOffsetCursor(cursor: string, now: Date): OnlineOffsetCursor
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed cursor')
   }
   if (now.getTime() - cutoff.getTime() > DISCOVERY_CURSOR_MAX_AGE_MS) {
-    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Cursor has expired; start again')
+    // The timeline's `stale_cursor`, so the app can tell "start again" from a
+    // failure. Without it a list left open past the hour simply stopped: every
+    // scroll asked for the same page, got the same 400, and showed nothing.
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Cursor has expired; start again', {
+      reason: 'stale_cursor',
+    })
   }
   return { cutoff, offset: decodeOffsetCursor(rawOffset) }
 }

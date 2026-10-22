@@ -543,7 +543,12 @@ describe('Faz 3 — discovery aggregation', () => {
       const old = new Date(Date.now() - DISCOVERY_CURSOR_MAX_AGE_MS - 60_000).toISOString()
       const response = await discover(viewer, `cursor=${encodeURIComponent(`${old}|1`)}`)
       expect(response.statusCode).toBe(400)
-      expect(response.json<{ code: string }>().code).toBe('VALIDATION_FAILED')
+      // `stale_cursor` is what tells the app to start again from page one
+      // rather than treat the next page as failed — see `useDiscovery`.
+      expect(response.json<{ code: string; reason?: string }>()).toMatchObject({
+        code: 'VALIDATION_FAILED',
+        reason: 'stale_cursor',
+      })
     })
 
     /** Old app builds in the wild send a bare integer. */
