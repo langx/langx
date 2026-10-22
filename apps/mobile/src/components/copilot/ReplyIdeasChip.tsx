@@ -61,7 +61,7 @@ export function RiseIn({ children }: { children: ReactNode }) {
   return <Animated.View style={motion}>{children}</Animated.View>
 }
 
-const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
+const useStyles = makeStyles(({ colors, font, radius, spacing, v3 }) => ({
   // `CopilotLabel`'s pill, as a control.
   chip: {
     alignItems: 'center',
@@ -74,5 +74,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
   },
-  text: { ...font.label, color: colors.info },
+  // `echoText`, not `info`: the blue glyph colour is under 4.5:1 as text on
+  // its own tint in the light scheme, and this one is a control to read.
+  text: { ...font.label, color: v3.colors.echoText },
 }))

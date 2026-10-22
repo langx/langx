@@ -22,12 +22,26 @@ export function replyIdeasFor(
   viewerId: string | undefined,
   draft: string,
   correcting: boolean,
+  /**
+   * The composer is already busy with something else — an edit or a reply, a
+   * recording, a picked attachment, a send that failed — so the person has
+   * plainly started, as `ComposerV3` reads it for its own row.
+   */
+  busy = false,
 ): MessageDto | undefined {
-  if (!viewerId || correcting || draft.trim().length > 0) return undefined
+  if (!viewerId || correcting || busy || draft.trim().length > 0) return undefined
   const newest = items[0]
   if (!newest || newest.senderId === viewerId) return undefined
   if (newest.type !== 'text' || newest.deleted || newest.viewOnce) return undefined
   return newest.body.trim().length > 0 ? newest : undefined
+}
+
+/**
+ * What the ideas for `message` are kept under: the message as it reads now.
+ * An edit is a different sentence to answer, so it gets ideas of its own.
+ */
+export function replyIdeasKey(message: Pick<MessageDto, '_id' | 'editedAt'>): string {
+  return message.editedAt ? `${message._id}@${message.editedAt}` : message._id
 }
 
 /** Enough for every unanswered message somebody opens in a sitting; the oldest goes first. */

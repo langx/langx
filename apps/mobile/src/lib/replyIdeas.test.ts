@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { MessageDto } from '../api/queries'
 import { copilotEmptyThread } from './copilotErrors'
-import { createReplyIdeasCache, replyIdeasFor } from './replyIdeas'
+import { createReplyIdeasCache, replyIdeasFor, replyIdeasKey } from './replyIdeas'
 
 const ME = 'me'
 const THEM = 'them'
@@ -34,6 +34,10 @@ describe('replyIdeasFor', () => {
     const items = [message('t1', THEM)]
     expect(replyIdeasFor(items, ME, 'Hal', false)).toBeUndefined()
     expect(replyIdeasFor(items, ME, '', true)).toBeUndefined()
+  })
+
+  it('is nothing while the composer is busy with something else', () => {
+    expect(replyIdeasFor([message('t1', THEM)], ME, '', false, true)).toBeUndefined()
   })
 
   it('is nothing for a photo, a voice note, a call, a withdrawn or a view-once message', () => {
@@ -75,6 +79,15 @@ describe('createReplyIdeasCache', () => {
     expect(cache.get(ME, 'b')).toBeUndefined()
     expect(cache.get(ME, 'a')).toEqual(['1 again'])
     expect(cache.get(ME, 'c')).toEqual(['3'])
+  })
+})
+
+describe('replyIdeasKey', () => {
+  it('is the message id, and a new key once the message is edited', () => {
+    expect(replyIdeasKey(message('t1', THEM))).toBe('t1')
+    const edited = replyIdeasKey(message('t1', THEM, { editedAt: '2026-10-21T12:05:00.000Z' }))
+    expect(edited).not.toBe('t1')
+    expect(edited).toContain('t1')
   })
 })
 

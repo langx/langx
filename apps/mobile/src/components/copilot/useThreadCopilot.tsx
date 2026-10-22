@@ -21,7 +21,7 @@ import {
 } from '../../lib/copilotGate'
 import { copilotEmptyThread } from '../../lib/copilotErrors'
 import { shouldGateGuest } from '../../lib/guestGate'
-import { replyIdeasCache, replyIdeasFor } from '../../lib/replyIdeas'
+import { replyIdeasCache, replyIdeasFor, replyIdeasKey } from '../../lib/replyIdeas'
 import { makeStyles } from '../../lib/theme'
 import { CopilotConsentSheet } from '../CopilotConsentSheet'
 import type { ComposerCopilot } from '../thread/ComposerV3'
@@ -49,6 +49,8 @@ interface ThreadCopilotInput {
    */
   items: readonly MessageDto[] | undefined
   viewerId: string | undefined
+  /** An edit, a reply, a recording, an attachment or a failed send is under way: no chip. */
+  composerBusy: boolean
   /** "Use this", or an option tapped: into the draft, never sent. */
   onUse: (text: string) => void
 }
@@ -88,6 +90,7 @@ export function useThreadCopilot({
   partnerNative,
   items,
   viewerId,
+  composerBusy,
   onUse,
 }: ThreadCopilotInput): ThreadCopilot {
   const styles = useStyles()
@@ -119,10 +122,16 @@ export function useThreadCopilot({
    * `ideas` belongs to `ideasFor` — a newer message, a draft or a send makes
    * the target go or change, and the strip goes with it.
    */
-  const ideasTarget = replyIdeasFor(items ?? [], viewerId, draft, correcting)
+  const ideasMessage = replyIdeasFor(items ?? [], viewerId, draft, correcting, composerBusy)
+  const ideasTarget = ideasMessage ? replyIdeasKey(ideasMessage) : undefined
   const [ideas, setIdeas] = useState<{ for: string; state: CopilotAnswerState } | null>(null)
   /** Messages the server found nothing to reply to: no chip for them again. */
   const [nothingFor, setNothingFor] = useState<ReadonlySet<string>>(() => new Set())
+  /**
+   * Chats Copilot will not read because the other person is under its age.
+   * Per chat, not per message: every later line would be refused the same way.
+   */
+  const [refusedChats, setRefusedChats] = useState<ReadonlySet<string>>(() => new Set())
 
   // Another thread is another conversation: nothing carries over.
   useEffect(() => {
@@ -143,11 +152,10 @@ export function useThreadCopilot({
   }, [gate])
 
   // Typing, a send, or a newer message: the strip has nothing left to answer.
-  const ideasTargetId = ideasTarget?._id
   useEffect(() => {
     turn.current.ideas += 1
     setIdeas(null)
-  }, [ideasTargetId])
+  }, [ideasTarget])
 
   /** The draft the card's question was asked about, trimmed as it was sent. */
   const cardAsked = useRef<string | null>(null)
@@ -232,6 +240,8 @@ export function useThreadCopilot({
   async function askIdeas(messageId: string): Promise<void> {
     const viewer = viewerId
     if (!viewer) return
+    // A second tap before the first answer would spend a second unit.
+    if (ideas?.for === messageId && ideas.state.kind === 'loading') return
     turn.current.ideas += 1
     const mine = turn.current.ideas
     const current = () => turn.current.ideas === mine
@@ -243,12 +253,15 @@ export function useThreadCopilot({
     setIdeas({ for: messageId, state: { kind: 'loading' } })
     try {
       const response = await ask.mutateAsync({ action: 'replyIdeas', conversationId })
+      // Kept even when the strip was closed meanwhile: it was paid for.
+      if (response.result.action === 'replyIdeas') {
+        replyIdeasCache.set(viewer, messageId, response.result.ideas)
+      }
       if (!current()) return
       if (response.result.action !== 'replyIdeas') {
         setIdeas({ for: messageId, state: { kind: 'error', key: 'copilot.errNoAnswer' } })
         return
       }
-      replyIdeasCache.set(viewer, messageId, response.result.ideas)
       setIdeas({ for: messageId, state: answerOf(response.result.ideas) })
     } catch (error) {
       if (!current()) return
@@ -259,6 +272,10 @@ export function useThreadCopilot({
         return
       }
       const key = copilotErrorKey(error)
+      // Said once, on the card; after that the chip stays away from this chat.
+      if (key === 'copilot.errPartnerAge') {
+        setRefusedChats((set) => new Set(set).add(conversationId))
+      }
       if (key === 'off' || key === 'consent') {
         setIdeas(null)
         void queryClient.invalidateQueries({ queryKey: COPILOT_STATUS_KEY })
@@ -305,9 +322,10 @@ export function useThreadCopilot({
           loading: card?.kind === 'loading',
         }
 
+  const shown = card === null ? ideasTarget : undefined
+  const openIdeasState = shown && ideas?.for === shown ? ideas.state : null
   const offered =
-    ideasTarget && card === null && !nothingFor.has(ideasTarget._id) ? ideasTarget : undefined
-  const openIdeasState = offered && ideas?.for === offered._id ? ideas.state : null
+    shown && !nothingFor.has(shown) && !refusedChats.has(conversationId) ? shown : undefined
 
   return {
     gate,
@@ -343,7 +361,7 @@ export function useThreadCopilot({
         </View>
       ) : offered ? (
         <View style={styles.cardSlot}>
-          <ReplyIdeasChip onPress={() => openIdeas(offered._id)} />
+          <ReplyIdeasChip onPress={() => openIdeas(offered)} />
         </View>
       ) : null,
     sheets: enabled ? (

@@ -4311,7 +4311,7 @@ export const en = {
     errBusy: 'Copilot is busy. Try again later.',
     errNoAnswer: 'Copilot couldn’t answer that.',
     errNetwork: 'Couldn’t reach Copilot.',
-    /** The chip above an empty composer when their newest message is unanswered. */
+    /** The chip above an empty composer when their newest message is unanswered, and the heading over the ideas. */
     replyIdeas: 'Reply ideas',
     /** Screen-reader name of that chip. */
     replyIdeasA11y: 'Ask Copilot for reply ideas',
