@@ -45,6 +45,7 @@ import { consumeQuota } from '../../lib/quota'
 import type { TranslationProvider } from '../../translation/TranslationProvider'
 import { assertConversationAccess } from '../chat/access'
 import type { Conversation, Message } from '../chat/conversations'
+import { claimPendingUploads } from '../chat/pendingUploads'
 import { assertAttachable } from '../feed/attachments'
 import {
   notHidden,
@@ -864,6 +865,12 @@ export async function updateCard(
     ...(rewritten && card.reading ? { reading: '' as const } : {}),
   }
 
+  // Signed by `/echo/upload-url`, which recorded them for the sweep; from here
+  // the card names them. Before the write, as `createPost` claims.
+  await claimPendingUploads(
+    db,
+    attached.map((media) => media.url),
+  )
   const updated = await cards.findOneAndUpdate(
     { _id: card._id, userId },
     { $set: set, ...(Object.keys(unset).length > 0 ? { $unset: unset } : {}) },

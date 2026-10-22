@@ -539,6 +539,13 @@ export type FeedPost = z.infer<typeof feedPostSchema>
 export const postMediaUploadUrlSchema = z.object({
   kind: mediaKindSchema,
   contentType: z.string().trim().min(1),
+  /**
+   * The exact length of the file about to be PUT, checked against
+   * `MEDIA_LIMITS` and signed into the URL — see `mediaUploadUrlSchema`, whose
+   * contract this is. Optional for the same reason: binaries released before
+   * it cannot send it.
+   */
+  sizeBytes: z.number().int().positive().optional(),
 })
 export type PostMediaUploadUrlInput = z.infer<typeof postMediaUploadUrlSchema>
 
