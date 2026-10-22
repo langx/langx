@@ -3254,7 +3254,7 @@ export const tr: Localized<EnMessages> = {
 
   share: {
     cardTitle: 'Görsel olarak paylaş',
-    cardStreakCaption: 'gün LangX serisi',
+    cardStreakCaption: { one: 'gün LangX serisi', other: 'gün LangX serisi' },
     cardBadgeCaption: 'LangX’te kazanılan rozet',
     cardProfileHeadline: 'Benimle dil pratiği yap',
     cardInviteHeadline: 'Benimle bir dil öğren',

@@ -3590,7 +3590,8 @@ export const en = {
 
   share: {
     cardTitle: 'Share as a picture',
-    cardStreakCaption: 'day streak on LangX',
+    /* Under the streak's number on the card, so the unit agrees with it. */
+    cardStreakCaption: { one: 'day streak on LangX', other: 'day streak on LangX' },
     cardBadgeCaption: 'badge earned on LangX',
     /*
      * The profile card: the pill on it, from Share profile or from Invite,

@@ -3340,7 +3340,7 @@ export const de: Localized<EnMessages> = {
 
   share: {
     cardTitle: 'Als Bild teilen',
-    cardStreakCaption: 'Tage Serie auf LangX',
+    cardStreakCaption: { one: 'Tag in Folge auf LangX', other: 'Tage in Folge auf LangX' },
     cardBadgeCaption: 'Abzeichen auf LangX',
     cardProfileHeadline: 'Übe Sprachen mit mir',
     cardInviteHeadline: 'Lern eine Sprache mit mir',

@@ -3278,7 +3278,7 @@ export const ptBR: Localized<EnMessages> = {
 
   share: {
     cardTitle: 'Compartilhar como imagem',
-    cardStreakCaption: 'dias seguidos no LangX',
+    cardStreakCaption: { one: 'dia seguido no LangX', other: 'dias seguidos no LangX' },
     cardBadgeCaption: 'medalha no LangX',
     cardProfileHeadline: 'Pratique idiomas comigo',
     cardInviteHeadline: 'Aprenda um idioma comigo',
