@@ -1,4 +1,5 @@
 import { router } from 'expo-router'
+import type { ReactNode } from 'react'
 import { Text } from 'react-native'
 import { useT } from '../../i18n'
 import { makeStyles } from '../../lib/theme'
@@ -19,12 +20,18 @@ export function CheckEmailV3({
   email,
   sent,
   loading,
+  disabled,
+  error,
   onResend,
+  captchaWidget,
 }: {
   email: string | undefined
   sent: boolean
   loading: boolean
+  disabled: boolean
+  error: string | undefined
   onResend: () => Promise<void>
+  captchaWidget: ReactNode
 }) {
   const styles = useStyles()
   const t = useT()
@@ -50,17 +57,21 @@ export function CheckEmailV3({
         label={t('auth.goToSignIn')}
         onPress={() => router.push('/(auth)/sign-in')}
       />
+      {captchaWidget}
       <Button
         variant="secondary"
         icon="refresh-cw"
         label={sent ? t('auth.resent') : t('auth.resendEmail')}
         loading={loading}
+        disabled={disabled}
         onPress={onResend}
       />
+      {error ? <Text style={styles.error}>{error}</Text> : null}
     </AuthNoticeV3>
   )
 }
 
 const useStyles = makeStyles(({ v3 }) => ({
   strong: { color: v3.colors.fg, fontWeight: '700' },
+  error: { ...v3.type.caption, color: v3.colors.danger, textAlign: 'center' },
 }))

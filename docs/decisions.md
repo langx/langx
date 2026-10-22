@@ -8958,9 +8958,10 @@ token is single-use, so every failed attempt fetches a new one too.
 as sign-up does, and Better Auth's default list leaves them out, so a script
 could use them to mail anybody once the flag was on. They are in
 `CAPTCHA_ENDPOINTS` now, under the same two stages. The app's
-"email me a link" and "resend" screens draw no widget yet, so they send no
-token: those screens have to send one, and that build has to be the
-`minVersion`, before `flags.captchaRequired` is turned on.
+"email me a link" and "resend" screens send a token from the build after 22
+October 2026; `src/lib/captchaScreens.test.ts` fails if any call to a covered
+endpoint stops sending one. That build has to be the `minVersion` before
+`flags.captchaRequired` is turned on, or every older install loses both.
 
 ## Sign-up refuses throwaway addresses and caps accounts per network
 

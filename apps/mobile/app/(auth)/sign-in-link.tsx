@@ -6,11 +6,13 @@ import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { useCaptcha } from '../../src/hooks/useCaptcha'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useV3LaunchLook } from '../../src/hooks/useV3LaunchLook'
 import { SignInLinkV3 } from '../../src/components/auth/SignInLinkV3'
 import { useT } from '../../src/i18n'
 import { authClient } from '../../src/lib/auth-client'
+import { authErrorKey } from '../../src/lib/errors'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 
@@ -36,6 +38,8 @@ export default function SignInLink() {
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState<string>()
+  // The link mails a typed address, so the API checks it as it does sign-up.
+  const captcha = useCaptcha()
   // The redesign's look behind `flags.v3Home`; see `latchV3LaunchLook`.
   const v3 = useV3LaunchLook()
 
@@ -50,11 +54,14 @@ export default function SignInLink() {
     // tell it from a slow send and nothing to press.
     const { error: sendError } = await authClient.signIn.magicLink({
       email: email.trim(),
-      fetchOptions: { timeout: REQUEST_TIMEOUT_MS },
+      fetchOptions: { ...captcha.fetchOptions, timeout: REQUEST_TIMEOUT_MS },
     })
     setLoading(false)
     if (sendError) {
-      setError(t('errors.signInFailed'))
+      // The token was spent on this attempt whatever the answer was.
+      captcha.reset()
+      const key = authErrorKey(sendError)
+      setError(t(key === 'errors.captchaFailed' ? key : 'errors.signInFailed'))
       return
     }
     setSent(true)
@@ -67,9 +74,11 @@ export default function SignInLink() {
         onChangeEmail={setEmail}
         error={error}
         loading={loading}
-        canSubmit={!loading && !!email.trim()}
+        canSubmit={!loading && !!email.trim() && !captcha.checking}
         sent={sent}
         onSubmit={onSubmit}
+        captchaWidget={captcha.widget}
+        captchaChecking={!!email.trim() && captcha.checking}
       />
     )
   }
@@ -90,7 +99,7 @@ export default function SignInLink() {
     )
   }
 
-  const canSubmit = !loading && !!email.trim()
+  const canSubmit = !loading && !!email.trim() && !captcha.checking
 
   return (
     <Screen scroll style={styles.form}>
@@ -111,12 +120,16 @@ export default function SignInLink() {
         autoComplete="username"
         error={error}
       />
+      {captcha.widget}
       <Button
         label={t('auth.sendSignInLink')}
         onPress={onSubmit}
         loading={loading}
         disabled={!canSubmit}
       />
+      {!!email.trim() && captcha.checking ? (
+        <Text style={styles.checking}>{t('auth.captchaChecking')}</Text>
+      ) : null}
       <Text style={styles.note}>{t('auth.signInLinkNote')}</Text>
     </Screen>
   )
@@ -128,6 +141,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   title: { ...font.title, color: colors.text, lineHeight: 36 },
   body: { color: colors.textMuted, fontSize: 16, lineHeight: 24, marginTop: spacing.sm },
   note: { color: colors.textFaint, fontSize: 14, lineHeight: 21 },
+  // Under the button it is holding, and quieter than an error.
+  checking: { color: colors.textFaint, fontSize: 13, marginTop: -spacing.sm, textAlign: 'center' },
   // The prototype's 20 between the icon, the title and the words.
   centred: { alignItems: 'center', gap: 20, justifyContent: 'center', paddingBottom: 28 },
   badge: {

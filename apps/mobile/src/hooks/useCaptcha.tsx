@@ -30,7 +30,9 @@ export interface Captcha {
 }
 
 /**
- * Turnstile for the password forms: sign-up, sign-in and forgot-password.
+ * Turnstile for the forms that mail a typed address or try a password:
+ * sign-up, sign-in, forgot-password, the sign-in link and the verification
+ * resend. `src/lib/captchaScreens.test.ts` holds every such call to it.
  *
  * A widget that fails (a blocked script, a network that will not reach
  * Cloudflare) lets the form submit without a token rather than locking the
