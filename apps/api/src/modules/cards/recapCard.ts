@@ -10,10 +10,10 @@ import {
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
-import { isOwnBucketUrl } from '../../lib/assertOwnBucket'
 import { sniffImageType } from '../../lib/sniffImageType'
 import { recapForMonth, recapForYear } from '../notifications/newsletter'
 import type { Profile } from '../profiles/profiles'
+import type { StorageProviderWithPut } from '../../storage/StorageProvider'
 import type { RecapCardContent } from './recapDesign'
 import type { RecapSlideContent } from './recapSlideDesign'
 
@@ -24,6 +24,16 @@ const AVATAR_TIMEOUT_MS = 3000
 /**
  * The owner's photo as a data URI satori can draw, or nothing.
  *
+ * **Read through the storage provider, never fetched by URL.** `avatarUrl` is
+ * a string on a profile, and handing it to `fetch` made this a server-side
+ * request to wherever that string pointed (CodeQL `js/request-forgery`). The
+ * prefix check in front of it held, but it was the only thing standing
+ * between a stored string and an outbound request. Now the URL is only ever
+ * parsed: `keyFromPublicUrl` turns it into a key in our own bucket — or into
+ * nothing — and the bytes come from the bucket's own API by that key. An
+ * avatar key also has to be under `avatars/`, so no other object in the
+ * bucket can be drawn as somebody's face.
+ *
  * PNG and JPEG only, read from the bytes rather than the header — a stored
  * content type is a claim, and satori given a WebP draws an empty square
  * rather than failing. Anything else, anything slow and anything outside our
@@ -32,13 +42,12 @@ const AVATAR_TIMEOUT_MS = 3000
  */
 export async function fetchCardAvatar(
   url: string | undefined,
-  storagePublicBaseUrl: string | undefined,
+  storage: Pick<StorageProviderWithPut, 'getObject' | 'keyFromPublicUrl'> | undefined,
 ): Promise<string | undefined> {
-  if (!url || !isOwnBucketUrl(storagePublicBaseUrl, url)) return undefined
+  const key = url && storage ? storage.keyFromPublicUrl(url) : null
+  if (!storage || !key || !key.startsWith('avatars/')) return undefined
   try {
-    const response = await fetch(url, { signal: AbortSignal.timeout(AVATAR_TIMEOUT_MS) })
-    if (!response.ok) return undefined
-    const bytes = new Uint8Array(await response.arrayBuffer())
+    const bytes = await withTimeout(storage.getObject(key), AVATAR_TIMEOUT_MS)
     if (bytes.byteLength === 0 || bytes.byteLength > MAX_AVATAR_BYTES) return undefined
     const type = sniffImageType(bytes)
     if (type !== 'image/png' && type !== 'image/jpeg') return undefined
@@ -46,6 +55,15 @@ export async function fetchCardAvatar(
   } catch {
     return undefined
   }
+}
+
+/** `promise`, or a rejection once `ms` have passed: a slow bucket costs the face, not the card. */
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  let timer: NodeJS.Timeout | undefined
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error('timed out')), ms)
+  })
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer))
 }
 
 /**
@@ -84,7 +102,8 @@ export async function recapCardContent(
     /** The card's headline: the month's name, or the year, in the reader's language. */
     monthName: string
     recap: RecapCardInput
-    storagePublicBaseUrl: string | undefined
+    /** Where the owner's photo is read from; without it the card draws their initial. */
+    storage?: Pick<StorageProviderWithPut, 'getObject' | 'keyFromPublicUrl'>
   },
 ): Promise<RecapCardContent & { slide?: RecapSlideContent }> {
   const { recap, userId } = input
@@ -101,7 +120,7 @@ export async function recapCardContent(
   // have: satori drew "1204". The ordinary no-break space it does have.
   const show = (value: number): string => format.format(value).replace(/\u202f/g, '\u00a0')
   const avatar =
-    (await fetchCardAvatar(profile?.avatarUrl, input.storagePublicBaseUrl)) ??
+    (await fetchCardAvatar(profile?.avatarUrl, input.storage)) ??
     (profile ? await drawnCardAvatar(profile) : undefined)
   const content: RecapCardContent = {
     month: capitalise(input.monthName, recap.locale),

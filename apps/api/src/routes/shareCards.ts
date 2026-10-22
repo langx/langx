@@ -66,9 +66,6 @@ export const shareCardRoutes: FastifyPluginAsyncZod = async (app) => {
         ...(request.body.recap ? { recap: request.body.recap } : {}),
         ...(request.body.badge ? { badge: request.body.badge } : {}),
         ...(request.body.profile ? { profile: request.body.profile } : {}),
-        ...(app.env.STORAGE_PUBLIC_BASE_URL
-          ? { storagePublicBaseUrl: app.env.STORAGE_PUBLIC_BASE_URL }
-          : {}),
       })
       return reply.code(201).send(result)
     },

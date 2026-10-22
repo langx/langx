@@ -5,6 +5,7 @@ import { translator } from '../../i18n'
 import { ApiError } from '../../lib/ApiError'
 import { FACE_OWNER_FIELDS } from '../avatars/surfaces'
 import type { Profile } from '../profiles/profiles'
+import type { StorageProviderWithPut } from '../../storage/StorageProvider'
 import { getBadgeSummary } from '../tokens/badges'
 import { drawableName, type BadgeCardContent } from './badgeDesign'
 import { drawnCardAvatar, fetchCardAvatar } from './recapCard'
@@ -35,7 +36,7 @@ export async function badgeCardContent(
     /** The badge's name, in the reader's language. */
     name: string
     badge: BadgeCardInput
-    storagePublicBaseUrl: string | undefined
+    storage?: Pick<StorageProviderWithPut, 'getObject' | 'keyFromPublicUrl'>
   },
 ): Promise<BadgeCardContent> {
   const [summary, profile] = await Promise.all([
@@ -54,7 +55,7 @@ export async function badgeCardContent(
     ? t('cards.badgeEarnedOn', { date: earnedDate(badge.earnedAt, input.badge.locale) })
     : undefined
   const avatar =
-    (await fetchCardAvatar(profile?.avatarUrl, input.storagePublicBaseUrl)) ??
+    (await fetchCardAvatar(profile?.avatarUrl, input.storage)) ??
     (profile ? await drawnCardAvatar(profile) : undefined)
   const displayName = drawableName(profile?.displayName)
 

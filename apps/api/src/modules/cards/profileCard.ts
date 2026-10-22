@@ -3,6 +3,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { FACE_OWNER_FIELDS } from '../avatars/surfaces'
 import type { Profile } from '../profiles/profiles'
+import type { StorageProviderWithPut } from '../../storage/StorageProvider'
 import { drawableName } from './badgeDesign'
 import { PROFILE_GROUNDS, type ProfileCardContent } from './profileDesign'
 import { drawnCardAvatar, fetchCardAvatar } from './recapCard'
@@ -22,14 +23,14 @@ export async function profileCardContent(
     handle: string
     invitation: string
     profile: ProfileCardInput
-    storagePublicBaseUrl: string | undefined
+    storage?: Pick<StorageProviderWithPut, 'getObject' | 'keyFromPublicUrl'>
   },
 ): Promise<ProfileCardContent> {
   const profile = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .findOne({ _id: input.userId }, { projection: { ...FACE_OWNER_FIELDS, displayName: 1 } })
   const avatar =
-    (await fetchCardAvatar(profile?.avatarUrl, input.storagePublicBaseUrl)) ??
+    (await fetchCardAvatar(profile?.avatarUrl, input.storage)) ??
     (profile ? await drawnCardAvatar(profile) : undefined)
   const displayName = drawableName(profile?.displayName)
   return {

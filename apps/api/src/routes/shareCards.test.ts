@@ -369,7 +369,6 @@ describe('share cards', () => {
       handle: '@cardhaver',
       monthName: 'juin',
       recap: { ...RECAP_WORDS, month: '2026-06', locale: 'fr' },
-      storagePublicBaseUrl: undefined,
     })
     // French groups with a no-break space here (see recapCard.ts), and the
     // month is capitalised.
@@ -399,7 +398,6 @@ describe('share cards', () => {
       handle: '@cardhaver',
       monthName: '2026',
       recap: { ...RECAP_WORDS, month: '2026', locale: 'fr' },
-      storagePublicBaseUrl: undefined,
     })
     expect(year.month).toBe('2026')
     expect(year.year).toBeUndefined()
@@ -431,7 +429,6 @@ describe('share cards', () => {
         handle: '@cardhaver',
         monthName: 'May',
         recap: { ...RECAP_WORDS, month: '2026-05', slide },
-        storagePublicBaseUrl: undefined,
       })
 
     // The number is the ledger's, under the label the app sent for it.

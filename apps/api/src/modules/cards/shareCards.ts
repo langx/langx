@@ -5,7 +5,11 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ERROR_CODES } from '@langx/shared'
 import { ApiError } from '../../lib/ApiError'
-import { supportsPut, type StorageProvider } from '../../storage/StorageProvider'
+import {
+  supportsPut,
+  type StorageProvider,
+  type StorageProviderWithPut,
+} from '../../storage/StorageProvider'
 import type {
   BadgeCardInput,
   CardKind,
@@ -76,8 +80,6 @@ export async function createShareCard(
     badge?: BadgeCardInput
     /** Only read for `kind: 'profile'`; without it a profile is the plain card. */
     profile?: ProfileCardInput
-    /** Where an owner's photo may be fetched from for the recap's face. */
-    storagePublicBaseUrl?: string
   },
 ): Promise<ShareCardResult> {
   if (!supportsPut(storage)) {
@@ -85,7 +87,7 @@ export async function createShareCard(
   }
 
   const qr = await profileQr(input.copy.handle)
-  const png = await renderCard(await elementFor(db, input, qr), input.shape)
+  const png = await renderCard(await elementFor(db, storage, input, qr), input.shape)
 
   const id = randomUUID().replaceAll('-', '').slice(0, 22)
   // Under the owner's own prefix, like every other object they own. What the
@@ -121,6 +123,7 @@ export async function createShareCard(
  */
 async function elementFor(
   db: Db,
+  storage: StorageProviderWithPut,
   input: Parameters<typeof createShareCard>[2],
   qr: string | undefined,
 ): Promise<CardNode> {
@@ -130,7 +133,7 @@ async function elementFor(
       handle: input.copy.handle,
       name: input.copy.headline,
       badge: input.badge,
-      storagePublicBaseUrl: input.storagePublicBaseUrl,
+      storage,
     })
     return badgeCardElement(content, input.shape, qr)
   }
@@ -140,7 +143,7 @@ async function elementFor(
       handle: input.copy.handle,
       invitation: input.copy.headline,
       profile: input.profile,
-      storagePublicBaseUrl: input.storagePublicBaseUrl,
+      storage,
     })
     return profileCardElement(content, input.shape, qr)
   }
@@ -150,7 +153,7 @@ async function elementFor(
       handle: input.copy.handle,
       monthName: input.copy.headline,
       recap: input.recap,
-      storagePublicBaseUrl: input.storagePublicBaseUrl,
+      storage,
     })
     if (content.stats.length > 0) {
       return content.slide
