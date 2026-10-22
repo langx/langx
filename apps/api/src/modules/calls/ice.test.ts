@@ -8,7 +8,12 @@ import {
   createIceProvider,
 } from './ice'
 
-const BASE = { MONGODB_URI: 'mongodb://localhost/test', BETTER_AUTH_SECRET: 'a'.repeat(32) }
+const BASE = {
+  MONGODB_URI: 'mongodb://localhost/test',
+  BETTER_AUTH_SECRET: 'a'.repeat(32),
+  // Production refuses to boot without it.
+  TRUSTED_ORIGINS: 'https://app.example',
+}
 
 const cloudflareAnswer = {
   iceServers: [

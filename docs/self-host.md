@@ -189,7 +189,10 @@ lack of sticky sessions does not matter either.
 **Web** — `pnpm --filter @langx/mobile exec expo export --platform web` emits
 a static site in `dist/`. Serve it from any static host. It needs
 `EXPO_PUBLIC_API_URL` set at build time, and that origin must appear in the
-API's `TRUSTED_ORIGINS` or the browser will block the session cookie.
+API's `TRUSTED_ORIGINS` or the browser will block the session cookie. Under
+`NODE_ENV=production` the API refuses to start with `TRUSTED_ORIGINS` empty,
+because an empty list lets any site send credentialed requests and open a
+socket. Set it even if you serve no web build.
 
 **The two official accounts appear by themselves.** `@langx` and `@copilot` are
 created at boot, on the first start of any instance — there is nothing to seed

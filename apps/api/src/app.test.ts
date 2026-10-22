@@ -265,4 +265,33 @@ describe('env', () => {
 
     expect(env.TRUSTED_ORIGINS).toEqual(['http://a.test', 'http://b.test'])
   })
+
+  /*
+   * An empty list makes CORS and the socket fall back to reflecting whatever
+   * origin asks, with credentials — fine on a laptop, a credentialed grant to
+   * every site on the internet in production.
+   */
+  it('refuses to boot in production without TRUSTED_ORIGINS', () => {
+    const base = {
+      MONGODB_URI: 'mongodb://localhost:27017',
+      BETTER_AUTH_SECRET: 'a'.repeat(32),
+      NODE_ENV: 'production',
+    }
+    expect(() => loadEnv(base)).toThrow(/TRUSTED_ORIGINS/)
+    expect(() => loadEnv({ ...base, TRUSTED_ORIGINS: ' , ' })).toThrow(/TRUSTED_ORIGINS/)
+    expect(loadEnv({ ...base, TRUSTED_ORIGINS: 'https://app.example' }).TRUSTED_ORIGINS).toEqual([
+      'https://app.example',
+    ])
+  })
+
+  it('still boots without TRUSTED_ORIGINS in development and tests', () => {
+    for (const NODE_ENV of ['development', 'test']) {
+      const env = loadEnv({
+        MONGODB_URI: 'mongodb://localhost:27017',
+        BETTER_AUTH_SECRET: 'a'.repeat(32),
+        NODE_ENV,
+      })
+      expect(env.TRUSTED_ORIGINS).toEqual([])
+    }
+  })
 })

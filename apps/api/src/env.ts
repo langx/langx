@@ -453,5 +453,14 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
     )
   }
 
+  // An empty list makes CORS and the socket reflect whatever origin asks, with
+  // credentials — convenient on a laptop, and a session-carrying grant to
+  // every site on the internet anywhere else.
+  if (parsed.data.NODE_ENV === 'production' && parsed.data.TRUSTED_ORIGINS.length === 0) {
+    throw new Error(
+      'Invalid environment:\n  TRUSTED_ORIGINS: required under NODE_ENV=production — list the web origins allowed to send credentialed requests, comma-separated',
+    )
+  }
+
   return parsed.data
 }
