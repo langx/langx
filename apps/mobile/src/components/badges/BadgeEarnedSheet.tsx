@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback } from 'react'
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
@@ -31,12 +31,18 @@ export function BadgeEarnedSheet({
   shelf,
   rung,
   onClose,
+  onDismiss,
   onShare,
   pin,
 }: {
   shelf: Shelf | null
   rung: Rung | null
   onClose: () => void
+  /**
+   * The sheet has finished sliding away — iOS only, as `Modal`'s own is. What
+   * Share opens waits for it there.
+   */
+  onDismiss?: (() => void) | undefined
   /** Left out for a badge that cannot be shared (the token ones). */
   onShare?: ((name: string) => void) | undefined
   /** Your own earned badge: whether it is pinned, and how to change that. */
@@ -52,11 +58,14 @@ export function BadgeEarnedSheet({
   const visible = !!shelf && !!rung
   const id = rung?.badge.id
 
-  useEffect(() => {
+  // When the stitch is in, not when the sheet opens: the haptic lands with
+  // the thing it is for. Once per run, as every celebration.
+  const stitched = useCallback(() => {
     if (id && claimCelebration(`badge:${id}`)) void notification('success')
   }, [id])
 
-  if (!shelf || !rung) return <Modal visible={false} transparent />
+  // Closing renders this branch, so it is the one whose `onDismiss` fires.
+  if (!shelf || !rung) return <Modal visible={false} transparent onDismiss={onDismiss} />
 
   const { badge } = rung
   const name = badgeName(words, badge)
@@ -76,6 +85,7 @@ export function BadgeEarnedSheet({
       animationType={reduce ? 'none' : 'slide'}
       statusBarTranslucent
       onRequestClose={onClose}
+      onDismiss={onDismiss}
     >
       <View style={styles.root}>
         <Pressable
@@ -89,7 +99,7 @@ export function BadgeEarnedSheet({
           style={[styles.sheet, { paddingBottom: insets.bottom + v3.space[16] }]}
         >
           <View style={styles.head}>
-            <BadgeStitch id={badge.id} size={PATCH} />
+            <BadgeStitch id={badge.id} size={PATCH} onStitched={stitched} />
             <View style={styles.headText}>
               <Text style={styles.kicker}>{t('badgesV3.newBadge')}</Text>
               <Text style={styles.name} accessibilityRole="header">

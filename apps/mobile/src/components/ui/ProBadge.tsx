@@ -19,23 +19,27 @@ interface ProBadgeProps {
    */
   fontSize: number
   /**
-   * What it stands on: the ground, or a partner's hue. On a hue the tablet is
-   * ink in both schemes, the way everything drawn on a hue is.
+   * What it stands on: the ground, or a partner's hue. On a hue the pill is
+   * the deeper violet in both schemes, the one that holds on all six.
    */
   on?: 'ground' | 'hue'
   style?: StyleProp<ViewStyle>
 }
 
 /**
- * v3's PRO badge: an ink tablet with PRO drawn into it, set in a name's line
- * the way a verified tick is.
+ * v3's PRO badge: a violet pill with a white star and PRO, set in a name's
+ * line the way a verified tick is.
  *
- * A word rather than a shape, so it cannot be read as the official account's
- * seal or a badge patch; flat ink with no yellow, so it does not spend the
- * screen's one committing colour on a status. Its bottom edge is its
- * baseline: in a row aligned on `baseline` it stands on the text's baseline
- * with its top at the capitals, and drops to the next line with the rest of
- * the row when a long name wraps.
+ * It replaces an ink tablet with a lilac word, which read as one more tag on
+ * the hue rather than as the plan. The star is what Pro wears everywhere
+ * else — the old chip, the Pro Week tag, the plan mark on the Pro sheets —
+ * and the violet is the plan's own colour, so the badge says which plan at a
+ * glance instead of asking to be read. Still a word with its star rather
+ * than a shape on its own, so it is never the official account's tick or a
+ * badge patch, and still no yellow, the screen's one committing colour. Its
+ * bottom edge is its baseline: in a row aligned on `baseline` it stands on
+ * the text's baseline with its top at the capitals, and drops to the next
+ * line with the rest of the row when a long name wraps.
  *
  * The old look keeps `ProMark`. Renders nothing when the shared table gives
  * the plan no badge.
@@ -47,8 +51,8 @@ export function ProBadge({ fontSize, on = 'ground', style }: ProBadgeProps) {
   const art = useMemo(() => proBadgeArt(height), [height])
   if (!TIER_BADGES.pro) return null
 
-  const tablet = on === 'hue' ? v3.colors.ink : v3.colors.proTablet
-  const word = on === 'hue' ? v3.colors.proWordOnInk : v3.colors.proWord
+  const pill = on === 'hue' ? v3.colors.proBadgeOnHue : v3.colors.proBadge
+  const mark = v3.colors.onProBadge
   const width = proBadgeWidth(art, height)
 
   return (
@@ -59,16 +63,23 @@ export function ProBadge({ fontSize, on = 'ground', style }: ProBadgeProps) {
       style={[{ height, width }, style]}
     >
       <Svg width={width} height={height} viewBox={`0 0 ${art.width} ${PRO_BADGE_ART_HEIGHT}`}>
-        <Rect x={1} y={1} width={art.width - 2} height={22} rx={5.5} fill={tablet} />
+        <Rect x={1} y={1} width={art.width - 2} height={22} rx={11} fill={pill} />
+        <Path
+          d={art.star}
+          fill={mark}
+          stroke={mark}
+          strokeWidth={art.starRound}
+          strokeLinejoin="round"
+        />
         <Path
           d={art.letters}
-          stroke={word}
+          stroke={mark}
           strokeWidth={art.stroke}
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
         />
-        <Path d={art.o} stroke={word} strokeWidth={art.stroke} fill="none" />
+        <Path d={art.o} stroke={mark} strokeWidth={art.stroke} fill="none" />
       </Svg>
     </View>
   )

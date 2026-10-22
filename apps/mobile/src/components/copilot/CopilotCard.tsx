@@ -11,6 +11,7 @@ import { IconButton } from '../ui/IconButton'
 import { PressableScale } from '../ui/PressableScale'
 import { Skeleton } from '../ui/Skeleton'
 import { CopilotAllowance, copilotTime } from './CopilotAllowance'
+import { CopilotReportButton } from './CopilotReport'
 
 /** A line the card can show for a refusal: everything but the two that are steps. */
 export type CopilotErrorLine = Exclude<CopilotErrorKey, 'off' | 'consent'>
@@ -42,12 +43,15 @@ export function CopilotCard({
   quota,
   onUse,
   onClose,
+  onReport,
 }: {
   state: CopilotAnswerState
   quota: CopilotStatus['quota'] | undefined
   /** Replaces the draft. Never sends. */
   onUse: (text: string) => void
   onClose: () => void
+  /** Opens the confirm sheet for this answer. Offered only once there is an answer. */
+  onReport?: (() => void) | undefined
 }) {
   const styles = useStyles()
   const t = useT()
@@ -58,6 +62,7 @@ export function CopilotCard({
       <View style={styles.header}>
         <CopilotLabel />
         <View style={styles.grow} />
+        {state.kind === 'answer' && onReport ? <CopilotReportButton onPress={onReport} /> : null}
         <IconButton
           icon="x"
           iconSize={v3.icon.md}
@@ -160,8 +165,34 @@ export function CopilotAnswerBody({
   if (result.action === 'explain') {
     return <Text style={styles.body}>{result.explanation}</Text>
   }
-  // Reply ideas has no surface in the thread (see the v1 design): an answer
-  // of that kind never reaches here, and would say nothing if it did.
+  if (result.action === 'replyIdeas') {
+    // Say it's rows, without a gloss: an idea is already in the language of
+    // the chat. A tap puts it in the draft, and the person sends it or not.
+    return (
+      <View style={styles.options}>
+        <Text
+          style={styles.title}
+          accessibilityRole="header"
+          accessibilityLabel={t('copilot.replyIdeasCount', { count: result.ideas.length })}
+        >
+          {t('copilot.replyIdeas')}
+        </Text>
+        {result.ideas.map((idea, index) => (
+          <PressableScale
+            key={`${index}-${idea}`}
+            accessibilityRole="button"
+            accessibilityLabel={idea}
+            accessibilityHint={t('copilot.replyIdeaHint')}
+            onPress={() => onUse?.(idea)}
+            disabled={onUse === undefined}
+            style={styles.option}
+          >
+            <Text style={styles.optionText}>{idea}</Text>
+          </PressableScale>
+        ))}
+      </View>
+    )
+  }
   return null
 }
 

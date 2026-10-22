@@ -658,6 +658,8 @@ export const tr: Localized<ServerMessages> = {
   feedbackReply: {
     bug: 'Merhaba! Bildirdiğin için teşekkürler — okuduk, inceliyoruz.',
     feature: 'Merhaba! Fikrin için teşekkürler — okuduk, listemize ekledik.',
+    copilot:
+      'Merhaba! Bu Copilot yanıtını bildirdiğin için teşekkürler — okuduk; böyle bildirimler Copilot’u iyileştirmemize yardım ediyor.',
     issue: 'Buradan takip edebilirsin: {url}',
   },
 }

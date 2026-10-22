@@ -3,6 +3,7 @@ import {
   MAX_PENDING_MEDIA,
   PENDING_MEDIA_STALE_MS,
   addPending,
+  advancePending,
   expirePending,
   newPendingId,
   removePending,
@@ -101,6 +102,43 @@ describe('expirePending', () => {
       uploadFailed(advanceUpload(UPLOAD_START, 40, 100)),
     )
     expect(expirePending(list, later)[0]?.progress).toEqual({ phase: 'failed', fraction: 0.4 })
+  })
+})
+
+describe('expirePending identity', () => {
+  it('returns the same list when nothing expired, so the screen does not re-render', () => {
+    const list = addPending([], item('a'), NOW)
+    expect(expirePending(list, new Date(NOW.getTime() + 1000))).toBe(list)
+    const failed = updatePending(list, 'a', uploadFailed(UPLOAD_START))
+    expect(expirePending(failed, new Date(NOW.getTime() + PENDING_MEDIA_STALE_MS + 1))).toBe(failed)
+  })
+
+  it('returns a new list when a row expired', () => {
+    const list = addPending([], item('a'), NOW)
+    expect(expirePending(list, new Date(NOW.getTime() + PENDING_MEDIA_STALE_MS + 1))).not.toBe(list)
+  })
+})
+
+describe('advancePending', () => {
+  const started = updatePending(
+    addPending([], item('a'), NOW),
+    'a',
+    advanceUpload(UPLOAD_START, 10, 100),
+  )
+
+  it('returns the same list while the drawn percent has not moved', () => {
+    // 10.0% → 10.4%: the bar still reads 10.
+    expect(advancePending(started, 'a', (p) => advanceUpload(p, 104, 1000))).toBe(started)
+  })
+
+  it('moves the row once the drawn percent changes', () => {
+    const next = advancePending(started, 'a', (p) => advanceUpload(p, 11, 100))
+    expect(next).not.toBe(started)
+    expect(next[0]?.progress.fraction).toBeCloseTo(0.11)
+  })
+
+  it('ignores a row that is no longer there', () => {
+    expect(advancePending(started, 'zzz', (p) => advanceUpload(p, 90, 100))).toBe(started)
   })
 })
 

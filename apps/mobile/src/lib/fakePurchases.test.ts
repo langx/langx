@@ -1,6 +1,7 @@
 import { PACKAGES } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { fakeOffers } from './fakePurchases'
+import { yearlyFreeMonths } from './planSaving'
 
 describe('fakeOffers', () => {
   it('offers every package the app sells', () => {
@@ -50,15 +51,18 @@ describe('fakeOffers', () => {
   })
 
   /**
-   * Real yearly prices are picked so that dividing them by twelve reads as a
-   * price rather than a remainder — `planSaving.test.ts` says why, and the
-   * paywall's largest number is the one it produces. The harness has to render
-   * the same shape or it is exercising a screen that no longer exists.
+   * Real yearly prices end in `9.99` (since 21 October 2026; `planSaving.test.ts`
+   * says why), and the paywall reads "3 months free" off them against the
+   * monthly. The harness has to render the same shape or it is exercising a
+   * screen that no longer exists.
    */
-  it('divides every yearly price into a clean monthly one', () => {
-    for (const offer of fakeOffers()) {
+  it('prices every yearly offer like the stores do', () => {
+    const offers = fakeOffers()
+    const monthly = offers.find((offer) => offer.period === 'monthly')
+    for (const offer of offers) {
       if (offer.period !== 'yearly') continue
-      expect(offer.perMonthPriceString).toMatch(/\.99$/)
+      expect(offer.price.toFixed(2).endsWith('9.99')).toBe(true)
+      expect(yearlyFreeMonths(offer, monthly)).toBe(3)
     }
   })
 })

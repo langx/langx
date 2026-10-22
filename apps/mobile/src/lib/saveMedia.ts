@@ -1,5 +1,5 @@
 import { Platform } from 'react-native'
-import { mediaFileName } from './mediaFileName'
+import { isRemoteMedia, mediaFileName } from './mediaFileName'
 
 export type SaveMediaResult = 'saved' | 'denied'
 
@@ -37,6 +37,13 @@ export async function saveMediaToDevice(media: {
   const MediaLibrary = await import('expo-media-library')
   const permission = await MediaLibrary.requestPermissionsAsync(true)
   if (!permission.granted) return 'denied'
+
+  // Already on the phone — the chat camera's own shot, before it is sent — so
+  // there is nothing to download, and `downloadFileAsync` refuses a `file://`.
+  if (!isRemoteMedia(media.url)) {
+    await MediaLibrary.Asset.create(media.url)
+    return 'saved'
+  }
 
   const { Directory, File, Paths } = await import('expo-file-system')
   // A directory of its own per save, so the file keeps the name it will have in

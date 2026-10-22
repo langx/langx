@@ -5,6 +5,7 @@ import {
   adminMeasureQuerySchema,
   adminMinVersionSchema,
   adminCaptchaRequiredSchema,
+  adminFlagSchema,
   adminCopilotAccessRequestSchema,
   adminMemberListQuerySchema,
   adminMessageSchema,
@@ -72,7 +73,7 @@ import { forgetAdminStats, readAdminStats } from '../modules/admin/stats'
 import { findAdminUser, getAdminUser, listMembers } from '../modules/admin/users'
 import { suspendMany } from '../modules/admin/bulkSuspend'
 import { findLinkedAccounts } from '../modules/admin/linked'
-import { getAppConfig, updateAppConfig } from '../modules/appConfig/appConfig'
+import { getAppConfig, setAppConfigFlag, updateAppConfig } from '../modules/appConfig/appConfig'
 import { payBounty } from '../modules/feedback/awardBounty'
 import {
   getFeedback,
@@ -325,9 +326,10 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
    *
    * Thrown the day `minVersion` moves everybody to a build that sends one —
    * before that, refusing a missing token locks every older build out of the
-   * password forms. Off is the undo and is never refused. Writes the flags
-   * whole from the current config, like the script does, so the other
-   * switches keep whatever value they had. See `auth/captcha.ts`.
+   * password forms. Off is the undo and is never refused. Writes its own
+   * flag and nothing else, like the Flags route below: writing the flags whole
+   * from this machine's cached read could put back a switch another machine
+   * made seconds ago. See `auth/captcha.ts`.
    */
   app.post(
     '/admin/app-config/captcha-required',
@@ -338,16 +340,48 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     },
     async (request, reply) => {
       const { required } = request.body
-      const current = await getAppConfig(app.mongo.db)
-      const config = await updateAppConfig(app.mongo.db, {
-        flags: { ...current.flags, captchaRequired: required },
-      })
+      const config = await setAppConfigFlag(app.mongo.db, 'captchaRequired', required)
       forgetAdminStats()
 
       await recordAdminAction(app.mongo.db, request.log, {
         adminId: request.userId,
         action: 'appConfig.captchaRequired',
         payload: { required },
+      })
+      return reply.send(config)
+    },
+  )
+
+  /**
+   * Switching one of the other flags, from the panel's Flags page.
+   *
+   * The captcha route's shape: the name is checked against the flags
+   * schema's keys by `adminFlagSchema` before this runs, and every switch
+   * lands in the audit log with the name and the value. The write differs on
+   * purpose. It sets one dotted path rather than writing the flags whole from
+   * a cached read, so two switches made close together on two machines cannot
+   * undo each other (`setAppConfigFlag`). Maintenance is
+   * not here and never will be — the panel is 503 while it is on, so it
+   * cannot be the switch; that stays `scripts/maintenance.ts`. See
+   * `docs/decisions.md` → _The flags are switched from the panel, and every
+   * switch is audited_.
+   */
+  app.post(
+    '/admin/app-config/flags',
+    {
+      preHandler: requireAdmin,
+      schema: { body: adminFlagSchema },
+      config: { rateLimit: limit(20, '1 minute') },
+    },
+    async (request, reply) => {
+      const { flag, value } = request.body
+      const config = await setAppConfigFlag(app.mongo.db, flag, value)
+      forgetAdminStats()
+
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'appConfig.flag',
+        payload: { flag, value },
       })
       return reply.send(config)
     },
@@ -1060,6 +1094,12 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const row = await getFeedback(app.mongo.db, request.params.id)
       if (!row) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such report')
+      // A reported Copilot answer is never paid: a bounty on every answer
+      // somebody disliked would be a reason to dislike them. The panel hides
+      // Pay on these rows; this is what holds for any other caller.
+      if (row.kind === 'copilot') {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'A Copilot report is not paid for')
+      }
 
       const result = await payBounty(app, {
         userId: row.userId,

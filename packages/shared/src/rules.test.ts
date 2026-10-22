@@ -270,6 +270,14 @@ describe('xp rules', () => {
     expect(TOKEN_RULES.award.correction).toBeGreaterThan(TOKEN_RULES.award.message)
   })
 
+  it("never lets one partner's corrections pay a whole day's message ceiling", () => {
+    const { award, caps } = TOKEN_RULES
+    expect(caps.correctionsPerPartnerPerDay).toBeGreaterThan(0)
+    expect(caps.correctionsPerPartnerPerDay * award.correction).toBeLessThan(
+      caps.messagesPerDay * award.message,
+    )
+  })
+
   it('scores activity with the message term capped', () => {
     const counters = { mutualConversations: 2, corrections: 3, messages: 500, distinctPartners: 4 }
     const { weights, messageCountCap } = TOKEN_RULES.pool

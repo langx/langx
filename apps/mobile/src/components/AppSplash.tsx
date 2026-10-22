@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import {
   ActivityIndicator,
   Animated,
+  AppState,
   Easing,
   Image,
   Platform,
@@ -23,9 +24,11 @@ import { useT } from '../i18n'
 import { useAppReady } from '../hooks/useAppReady'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { markAppReady } from '../lib/appReady'
-import { markLaunchOver } from '../lib/launchOver'
+import { isLaunchOver, markLaunchOver } from '../lib/launchOver'
 import { forgetAudioMode } from '../lib/audioSession'
 import { SPLASH_TIMING, canExit, msUntilExitAllowed } from '../lib/splashTiming'
+import { exitDelayMs, exitWaitsForFilm } from '../lib/launchFilm'
+import { FLAG_KEYS, readBoolFlag, setBoolFlag, type FlagKey } from '../lib/localFlags'
 import { OVERLAY_LAYER } from '../lib/overlayLayers'
 import { makeStyles } from '../lib/theme'
 
@@ -99,6 +102,10 @@ const FILM_ASPECT = 1080 / 1920
  *
  * With reduced motion there is no film: the mark sits still on the yellow and
  * dissolves.
+ *
+ * The film is played to its end on the device's first launch only; every
+ * launch after that leaves as soon as the app is ready, and a tap leaves early
+ * on any launch (`lib/launchFilm.ts`).
  */
 export function AppSplash() {
   const styles = useStyles()
@@ -108,14 +115,24 @@ export function AppSplash() {
   const reduceMotion = useReduceMotion()
   const pathname = usePathname()
 
-  const [visible, setVisible] = useState(true)
+  /**
+   * Not up at all if this JS context has already had its launch. A return
+   * from the background never remounts this, but Android can: closing the
+   * last activity with the back button keeps the process and its JS, and
+   * opening the app again mounts the root afresh. That is a warm start, and
+   * it must not get the opening a second time.
+   */
+  const [resumed] = useState(isLaunchOver)
+  const [visible, setVisible] = useState(!resumed)
   const [exiting, setExiting] = useState(false)
   /**
-   * The film is only mounted after the first commit. The web build is a
-   * static export, and this renders during its prerender, where a `<video>`
-   * in the HTML would start downloading before the app that owns it exists.
+   * On the web the film is only mounted after the first commit. The web build
+   * is a static export, and this renders during its prerender, where a
+   * `<video>` in the HTML would start downloading before the app that owns it
+   * exists. Native has no prerender, so its player starts loading on the very
+   * first render and has the most time to be ready when the native splash goes.
    */
-  const [filmMounted, setFilmMounted] = useState(false)
+  const [filmMounted, setFilmMounted] = useState(Platform.OS !== 'web')
   /**
    * The native splash has been asked to go. The film does not start before
    * then: on Android the native view leaves last, and anything that moves
@@ -124,6 +141,14 @@ export function AppSplash() {
   const [nativeGone, setNativeGone] = useState(false)
   const [filmFrame, setFilmFrame] = useState(false)
   const [introDone, setIntroDone] = useState(false)
+  /**
+   * The film has played on this device; `undefined` while it is read. Never
+   * written with reduce motion on: there is no film then to have seen.
+   */
+  const filmSeen = useLaunchFlag(FLAG_KEYS.launchFilmSeen, !reduceMotion && !resumed)
+  /** A launch has been watched on this device, film or not: the floor's flag. */
+  const launchSeen = useLaunchFlag(FLAG_KEYS.launchSeen, !resumed)
+  const [skipped, setSkipped] = useState(false)
   const mountedAt = useRef(Date.now())
   const exitStarted = useRef(false)
 
@@ -146,6 +171,20 @@ export function AppSplash() {
   }, [])
 
   /*
+   * A resumed mount draws nothing, so nothing lays out and `onLayout` never
+   * asks the native splash to go. If Android drew it again for the new
+   * activity, this is what takes it down; otherwise it rejects harmlessly.
+   * A frame later, as `onLayout` does, so the app under it has drawn first.
+   */
+  useEffect(() => {
+    if (!resumed) return
+    const frame = requestAnimationFrame(() => {
+      void SplashScreen.hideAsync().catch(() => undefined)
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [resumed])
+
+  /*
    * Both gates resolve to "/" — expo-router strips group segments, so
    * `app/(auth)/index.tsx` is "/" as well. Any other path means both of them
    * are already behind us: a deep link, a notification, a restored route.
@@ -159,10 +198,18 @@ export function AppSplash() {
    * once it has: otherwise the layer could fade off before the OS's own splash
    * is down, and the app would appear from behind a yellow that then vanishes.
    */
-  const filmOver = introDone && nativeGone
+  const filmOver = (introDone || !exitWaitsForFilm({ seen: filmSeen, skipped })) && nativeGone
 
   useEffect(() => {
-    if (exitStarted.current || !canExit({ ready, introDone: filmOver, reduceMotion })) return
+    if (!visible || exitStarted.current) return
+    if (!canExit({ ready, introDone: filmOver, reduceMotion })) return
+    /*
+     * Not while the native splash is still up. With no floor on a later
+     * launch, a reduced-motion exit started at once would dissolve the mark
+     * behind it, and the mark would go without anybody seeing it leave. (With
+     * motion on, `filmOver` already waits for this.)
+     */
+    if (reduceMotion && !nativeGone) return
     const done = ({ finished }: { finished: boolean }) => {
       if (!finished) return
       // The film's player has had the audio session; see forgetAudioMode.
@@ -215,10 +262,17 @@ export function AppSplash() {
           }),
         ]).start(done)
       },
-      msUntilExitAllowed(mountedAt.current, Date.now()),
+      exitDelayMs({
+        floorMs: msUntilExitAllowed(mountedAt.current, Date.now()),
+        skipped,
+        seen: launchSeen,
+      }),
     )
     return () => clearTimeout(timer)
-  }, [ready, filmOver, reduceMotion, layer, mark])
+  }, [visible, ready, filmOver, nativeGone, reduceMotion, skipped, launchSeen, layer, mark])
+
+  // A tap anywhere on the layer: the opening is somebody's to cut short.
+  const skip = useCallback(() => setSkipped(true), [])
 
   /**
    * The one place the native splash is allowed to go: after this layer has been
@@ -249,6 +303,8 @@ export function AppSplash() {
       testID="app-splash"
       onLayout={onLayout}
       pointerEvents={exiting ? 'none' : 'auto'}
+      onStartShouldSetResponder={() => true}
+      onResponderRelease={skip}
       accessibilityRole="progressbar"
       accessibilityLabel={t('common.oneMoment')}
       style={[StyleSheet.absoluteFill, styles.layer, { opacity: layer }]}
@@ -376,6 +432,51 @@ function IntroFilm({
       />
     </View>
   )
+}
+
+/**
+ * A device flag about the opening: read at mount, `undefined` until it is in,
+ * and written while `write` holds, the first time this launch is active.
+ *
+ * Written as soon as the launch is known to be the first, not when the film
+ * ends: "the very first launch" is the launch, and one closed halfway through
+ * the film has had its hello. But only once somebody can be watching. A VoIP
+ * push cold-starts the app in the background, where nobody sees the film, and
+ * writing then would spend the one full showing on nothing; so a launch that
+ * is not active yet writes on its first `active`.
+ */
+function useLaunchFlag(key: FlagKey, write: boolean): boolean | undefined {
+  const [seen, setSeen] = useState<boolean | undefined>(undefined)
+  useEffect(() => {
+    let cancelled = false
+    void readBoolFlag(key).then((value) => {
+      if (!cancelled) setSeen(value)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [key])
+
+  const written = useRef(false)
+  useEffect(() => {
+    if (seen !== false || !write || written.current) return
+    const save = () => {
+      written.current = true
+      void setBoolFlag(key, true)
+    }
+    if (AppState.currentState === 'active') {
+      save()
+      return
+    }
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state !== 'active' || written.current) return
+      save()
+      subscription.remove()
+    })
+    return () => subscription.remove()
+  }, [key, seen, write])
+
+  return seen
 }
 
 /**

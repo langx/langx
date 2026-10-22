@@ -1,5 +1,11 @@
-import { useEffect, useState } from 'react'
-import { latchV3Home, v3HomeWaitLeft } from '../lib/v3Home'
+import { useEffect, useState, useSyncExternalStore } from 'react'
+import {
+  announceV3Home,
+  latchV3Home,
+  subscribeV3Home,
+  v3HomeSnapshot,
+  v3HomeWaitLeft,
+} from '../lib/v3Home'
 import { useAppConfig } from './useAppConfig'
 
 /**
@@ -38,11 +44,20 @@ export function useV3Home(): boolean {
  * Home's own route, which with the flag off sends itself to Discover and on a
  * web page load would otherwise do that before the config had said anything.
  *
- * Never `undefined` for longer than `V3_HOME_WAIT_MS` from the first caller:
+ * Never `undefined` for longer than `V3_HOME_WAIT_MS` from launch (`useV3HomeLatch`):
  * past that the answer is taken from whatever the config has said by then,
  * which for a request still out is nothing, and so off.
  */
 export function useV3HomeDecision(): boolean | undefined {
+  return useSyncExternalStore(subscribeV3Home, v3HomeSnapshot, v3HomeSnapshot)
+}
+
+/**
+ * What decides it: the config query and the wait's clock, run once, by the
+ * root layout. Every `useV3Home` reads the store this fills rather than
+ * subscribing to the config itself — see `subscribeV3Home`.
+ */
+export function useV3HomeLatch(): void {
   const config = useAppConfig()
   const [waitOver, setWaitOver] = useState(false)
   // The clock starts in an effect, never during render: the web export
@@ -52,8 +67,14 @@ export function useV3HomeDecision(): boolean | undefined {
     const timer = setTimeout(() => setWaitOver(true), v3HomeWaitLeft(Date.now()))
     return () => clearTimeout(timer)
   }, [])
-  return latchV3Home({
+  // Latched during render, as it always was, so anything rendered after the
+  // root in the same pass already reads the answer; announced after commit
+  // for whatever rendered before it.
+  const decision = latchV3Home({
     settled: waitOver || appConfigSettled(config),
     on: config.data?.flags.v3Home === true,
   })
+  useEffect(() => {
+    if (decision !== undefined) announceV3Home()
+  }, [decision])
 }

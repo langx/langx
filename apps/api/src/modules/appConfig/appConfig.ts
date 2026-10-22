@@ -1,4 +1,4 @@
-import { DEFAULT_APP_CONFIG, type AppConfig } from '@langx/shared'
+import { appConfigSchema, DEFAULT_APP_CONFIG, type AppConfig } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 
@@ -10,6 +10,10 @@ export interface AppConfigDoc extends Omit<AppConfig, 'updatedAt' | 'latestVersi
 }
 
 const CONFIG_ID = 'current'
+
+/** Every flag the schema knows, `captchaRequired` included. */
+export type AppConfigFlagName = keyof AppConfig['flags']
+const FLAG_NAMES = appConfigSchema.shape.flags.keyof().options
 
 /**
  * How long a read is served from memory before going back to Mongo.
@@ -79,6 +83,51 @@ export async function updateAppConfig(
         ...(patch.minVersion ? {} : { minVersion: DEFAULT_APP_CONFIG.minVersion }),
         ...(patch.latestVersion ? {} : { latestVersion: DEFAULT_APP_CONFIG.latestVersion }),
         ...(patch.flags ? {} : { flags: DEFAULT_APP_CONFIG.flags }),
+      },
+    },
+    { upsert: true, returnDocument: 'after' },
+  )
+  invalidateAppConfigCache()
+  return toDto(result)
+}
+
+/**
+ * Sets one flag, and only that one, as a single dotted `$set`.
+ *
+ * Not `updateAppConfig({ flags: { ...current.flags, … } })`. That reads the
+ * flags through the ten-second cache, and the cache is per machine. A switch
+ * made on one machine and a second switch made on another within those ten
+ * seconds would write the first one back to what it was, and the audit log
+ * would say it stuck. A read that fails falls back to the defaults, which
+ * would reset every flag. Writing one path needs no read.
+ *
+ * Every writer of a flag comes through here: the Flags page, the captcha
+ * route and `scripts/maintenance.ts flag`. Any one of them writing the flags
+ * whole is enough to undo the others.
+ *
+ * The path is built from a name taken out of the schema's own keys, not from
+ * `flag` itself. That is `withPlatformVersion`'s reason: the name arrives on a
+ * request, and a key computed from remote input is CodeQL's
+ * `js/remote-property-injection`.
+ */
+export async function setAppConfigFlag(
+  db: Db,
+  flag: AppConfigFlagName,
+  value: boolean,
+): Promise<AppConfig> {
+  const name = FLAG_NAMES.find((known) => known === flag)
+  if (!name) throw new Error(`unknown flag ${String(flag)}`)
+  const result = await db.collection<AppConfigDoc>(COLLECTIONS.appConfig).findOneAndUpdate(
+    { _id: CONFIG_ID },
+    {
+      $set: { [`flags.${name}`]: value, updatedAt: new Date() },
+      // No `flags` here: it would conflict with the dotted path. A document
+      // created by this write holds one flag, and `toDto` lays it over the
+      // defaults like any other partial `flags`.
+      $setOnInsert: {
+        maintenance: DEFAULT_APP_CONFIG.maintenance,
+        minVersion: DEFAULT_APP_CONFIG.minVersion,
+        latestVersion: DEFAULT_APP_CONFIG.latestVersion,
       },
     },
     { upsert: true, returnDocument: 'after' },

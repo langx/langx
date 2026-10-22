@@ -48,6 +48,7 @@ import { IconButton } from '../components/ui/IconButton'
 import { Screen } from '../components/ui/Screen'
 import { Skeleton } from '../components/ui/Skeleton'
 import { useChangeAvatar } from '../hooks/useChangeAvatar'
+import { useNewBadges } from '../hooks/useNewBadges'
 import { DefaultAvatarPickerSheet } from '../components/me/DefaultAvatarPickerSheet'
 import { PhotoNudge } from '../components/me/PhotoNudge'
 import { ownDefaultAvatar, ownDefaultAvatarRev } from '../lib/defaultAvatar'
@@ -205,7 +206,6 @@ function MemberMe() {
       .filter(Boolean)
       .join(' · '),
     languagesLine: languages,
-    pronouns: profile.pronouns,
     pro: Boolean(TIER_BADGES[tier]),
     titleId: wornTitle?.id,
     hidden:
@@ -467,6 +467,10 @@ function ActiveBody({
   const freezes = wallet.data?.streakFreezes
   const shelf = badges.data
   const next = shelf?.next ?? null
+  // Read here as well as on /badges, so a badge earned in a chat or a session
+  // is waiting on the way in rather than only once the page is opened. Only
+  // the badges page marks one seen.
+  const { fresh } = useNewBadges(profileId, shelf?.badges)
   const viewerPage = viewers.data?.pages[0]
   const follows = ownProfile.data?.follow
   const free = tier === 'free'
@@ -647,6 +651,11 @@ function ActiveBody({
               // "0 of 25 earned" is the zero this page is not shown.
               shelf.earnedCount > 0
                 ? t('badges.earnedOf', { earned: shelf.earnedCount, total: shelf.badges.length })
+                : undefined
+            }
+            fresh={
+              fresh.size > 0
+                ? { label: t('badgesV3.newChip'), key: [...fresh].sort().join(',') }
                 : undefined
             }
             onPress={() => router.push('/(app)/badges')}

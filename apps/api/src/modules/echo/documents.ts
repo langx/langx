@@ -33,6 +33,8 @@ export interface EchoCardDoc {
   /** Pinyin, copied from a Chinese pack. See the DTO. */
   reading?: string
   back: string
+  /** Set only when the back is in a language the reader is learning. See the DTO. */
+  backLang?: string
   example?: string
   /**
    * The first recording, mirrored from `audios[0]` on every write.
@@ -129,6 +131,7 @@ export function toEchoCard(doc: EchoCardDoc): EchoCard {
     back: doc.back,
     ...(doc.example ? { example: doc.example } : {}),
     lang: doc.lang,
+    ...(doc.backLang ? { backLang: doc.backLang } : {}),
     source: doc.source,
     ...(doc.audio ? { audio: doc.audio } : {}),
     ...(doc.audios?.length ? { audios: doc.audios } : {}),

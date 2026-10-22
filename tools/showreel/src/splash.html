@@ -245,7 +245,7 @@
   One scene, no score: the app's launch animation, rendered to
   apps/mobile/assets/splash/intro.mp4. The plan is set before core.js loads,
   which is the runtime's documented way in for a cut other than the reel's.
-  Its length is in beats at 120 BPM, so 5.4 is 2.7 s.
+  Its length is in beats at 120 BPM, so 3.6 is 1.8 s.
 -->
 <script>
   // `?theme=dark` is the night cut: the app's dark ground instead of the yellow.
@@ -254,7 +254,7 @@
       id: 'splash',
       title: 'Launch',
       start: 0,
-      dur: 5.4,
+      dur: 3.6,
       ground: new URLSearchParams(location.search).get('theme') === 'dark' ? '#1c1f24' : '#ffc409',
     },
   ]

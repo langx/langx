@@ -21,7 +21,8 @@ interface CompareTableProps {
  * table answers is "what do I not have", and a column of crosses answers it
  * at a glance. Numbers stay numbers — "5" against "Unlimited" — because the
  * limit is the part of the promise worth keeping visible. A feature that has
- * not shipped reads "Soon" in the Pro column, never a tick.
+ * not shipped reads "Soon" in the Pro column, and one in beta "Beta" — never
+ * a tick, since neither is on for every buyer.
  *
  * Each row is one element to a screen reader, read as a sentence, since a
  * tick has no words of its own.
@@ -45,6 +46,8 @@ export function CompareTable({ rows, lead, expanded, onToggle }: CompareTablePro
         return t('paywall.compareUnlimited')
       case 'soon':
         return t('paywall.compareSoon')
+      case 'beta':
+        return t('paywall.compareBeta')
     }
   }
 
@@ -132,6 +135,8 @@ function Cell({ cell, muted = false }: { cell: CompareCell; muted?: boolean }) {
       )
     case 'soon':
       return <Text style={styles.soon}>{t('paywall.compareSoon')}</Text>
+    case 'beta':
+      return <Text style={styles.soon}>{t('paywall.compareBeta')}</Text>
   }
 }
 

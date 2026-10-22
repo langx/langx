@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { Animated, Easing, Pressable, Text, View } from 'react-native'
+import { Animated, Pressable, Text, View } from 'react-native'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useLocale, useT } from '../../i18n'
 import { DISPLAY_FONT, makeStyles, useTheme, type PartnerHue } from '../../lib/theme'
-import { CURVE, DURATION } from '../../lib/theme/motionValues'
+import { EASE_OUT } from '../../lib/theme/motionAnimated'
+import { DURATION } from '../../lib/theme/motionValues'
 import { welcomePairs } from '../../lib/welcomePairs'
 import { FIRST_MILESTONE, SLIDES, type IntroCarouselProps } from '../IntroCarousel'
 import { Button } from '../ui/Button'
@@ -11,9 +12,6 @@ import { ICON_BUTTON_TARGET } from '../ui/IconButton'
 import { Screen } from '../ui/Screen'
 import { FlameGlyph } from '../ui/StreakFlame'
 import { ExchangeGlyph, useBlackFont } from './WizardV3'
-
-/** `motion.ts`'s `EASE_OUT`, on React Native's `Easing`. */
-const EASE_OUT = Easing.bezier(...CURVE.out)
 
 /** The two halves of each exchange on the first slide, in the drawing's hues. */
 const SPLIT_HUES: readonly (readonly [PartnerHue, PartnerHue])[] = [

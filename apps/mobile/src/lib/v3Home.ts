@@ -70,8 +70,49 @@ export function v3HomeWaitLeft(now: number): number {
   return Math.max(0, waitStartedAt + V3_HOME_WAIT_MS - now)
 }
 
+/*
+ * The latch as a store, for `useSyncExternalStore`.
+ *
+ * `useV3Home()` is read in about a hundred components, leaves included, and
+ * each used to be a config query subscription of its own — so every refetch
+ * of `/app-config`, which happens on every return to the foreground,
+ * re-rendered all of them to hand back an answer that cannot change. One
+ * component at the root now watches the config and latches; everything else
+ * subscribes here, hears at most one change for the life of the runtime, and
+ * after that reads a constant.
+ */
+const listeners = new Set<() => void>()
+
+export function subscribeV3Home(listener: () => void): () => void {
+  listeners.add(listener)
+  return () => {
+    listeners.delete(listener)
+  }
+}
+
+/** The latched answer, `undefined` until there is one. */
+export function v3HomeSnapshot(): boolean | undefined {
+  return latched
+}
+
+let announced: boolean | undefined
+
+/**
+ * Tells the subscribers the latch has an answer. Separate from `latchV3Home`
+ * because that runs during the root's render, and waking other components
+ * from inside a render is an update React refuses; the root calls this from
+ * an effect instead. Once per launch: later calls find nothing new to say.
+ */
+export function announceV3Home(): void {
+  if (latched === undefined || announced === latched) return
+  announced = latched
+  for (const listener of listeners) listener()
+}
+
 /** For tests: forget the answer and the wait, as a cold start would. */
 export function resetV3HomeLatch(): void {
   latched = undefined
   waitStartedAt = undefined
+  announced = undefined
+  listeners.clear()
 }

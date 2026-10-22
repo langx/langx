@@ -383,6 +383,11 @@ describe('share cards', () => {
     // Nobody messaged by id this month, so the "with N people" line goes.
     expect(content.people).toBeUndefined()
     expect(content.languages).toBe('Spanish → learning Turkish')
+    // No photo: the owner's drawn face, rendered in process at 160px, rather
+    // than the handle's initial.
+    expect(content.avatar).toMatch(/^data:image\/png;base64,/)
+    const face = Buffer.from(content.avatar?.split(',')[1] ?? '', 'base64')
+    expect(face.readUInt32BE(16)).toBe(160)
 
     // A four-digit key is the year's card: the whole year's numbers, and the
     // year is the headline rather than a second time beside the kicker.

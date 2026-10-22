@@ -130,7 +130,7 @@ This is communication work, and it is part of the delivery:
 | **Match model**     | **None.** No like/match/swipe — a direct "message" CTA on every profile and list row. Access is governed purely by quota: Pro unlimited, free 5 new conversations per rolling 24h. No `matches` collection, and no like/match/swipe **gate**. A `likes` collection does exist, but it is a signal on feed _content_ (`targetType: 'post' \| 'correction' \| 'answer'`) — never on a person, and it opens no channel |
 | Billing             | RevenueCat as the single entitlement system: StoreKit/Play Billing natively, RevenueCat Web + **our own Stripe Billing account** on the web                                                                                                                                                                                                                                                                         |
 | Free quota          | **5 new conversations per rolling 24 hours**; replying is **unlimited**                                                                                                                                                                                                                                                                                                                                             |
-| Pro bundle          | One paid plan since 28 September 2026 (Fluent and Polyglot merged): unlimited conversations · advanced filters (gender, city) · boosted profile on Discover · who viewed me + incognito · unlimited translations (fair use) · 5 languages learned, 5 spoken · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (not built)                                                        |
+| Pro bundle          | One paid plan since 28 September 2026 (Fluent and Polyglot merged): unlimited conversations · advanced filters (gender, city) · boosted profile on Discover · who viewed me + incognito · unlimited translations (fair use) · 5 languages learned, 5 spoken · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (beta, rolling out)                                                |
 | Pricing             | Monthly + yearly, one free week on both, regional pricing; the yearly plan is sold as "N months free", computed from the store's prices                                                                                                                                                                                                                                                                             |
 | **Product promise** | **Changes** — langx.io + Terms + privacy + store listings get rewritten (section above)                                                                                                                                                                                                                                                                                                                             |
 | Message correction  | **P0**, and **unlimited for everyone** (no quota)                                                                                                                                                                                                                                                                                                                                                                   |
@@ -357,7 +357,7 @@ stored tier is always read through `normalizePlanTier` / `effectivePlanTier`.
 | Incognito                           | —                                            | **Yes**              |
 | Send in their language, deck export | —                                            | **Yes**              |
 | Hiding that you are online          | **Yes**                                      | **Yes**              |
-| AI copilot                          | Not shipped (server side ships dark)         | **Not shipped**      |
+| AI copilot (allow-listed accounts)  | Beta: **3** per rolling 24h                  | Beta: **24**         |
 
 The @langx assistant answers everybody the same number of times a day,
 `OFFICIAL_ASSISTANT.maxRepliesPerDay`; it is no longer a plan row.
@@ -754,7 +754,8 @@ Pro ceiling (`PLAN_LIMITS.copilotPer24h`).
 
 The server side exists and **ships dark** (`modules/copilot`, `routes/copilot.ts`):
 it answers only with a key **and** `flags.copilotEnabled`, which starts off, and
-only for people who agreed to its consent sheet. No screen offers it yet but the
+only for people who agreed to its consent sheet. It has no age rule beyond the
+app's 16+ minimum. No screen offers it yet but the
 operator panel's Copilot lab. See `decisions.md` → _Copilot ships dark, behind two
 switches and a consent_.
 
@@ -846,6 +847,7 @@ write to them directly and never change their shape.
 ```ts
 {
   _id: userId, handle (unique), displayName, avatarUrl,
+  defaultAvatar?: { pool, index, ground, picked? },  ← the v3 drawn face; no index; absent = hash of _id
   previousHandle?,                    ← unique, sparse; the name left at the last change, still resolvable
   handleChangedAt?,                   ← the cooldown clock for the next change; absent = never changed
   official?: true,                    ← @langx or @copilot; created at boot, never by a form
@@ -1082,8 +1084,10 @@ The photo and the bio are not a new idea of a good profile: `promotions.ts`
 already nudges an account with no `avatarUrl` on the grounds that a faceless
 one is scrolled past, and onboarding calls the avatar and the bio the two
 things that make a first impression. `avatarUrl` is only ever an uploaded file
-— `assertOwnBucket` refuses anything else and the drawn fallback is generated
-client-side from the id, never stored — so its presence _is_ the test. Nobody
+— `assertOwnBucket` refuses anything else, and the drawn fallback is rendered
+by the API from the id and lives in its own field (`defaultAvatar`, see
+`decisions.md` → _v3 default faces_), never in this one — so its presence _is_
+the test. Nobody
 is excluded for failing any of this: they paid, so they are in the strip
 either way; they just do not lead it, and the explainer on the screen says so.
 
@@ -1415,16 +1419,27 @@ The point is that nobody's first news of a version problem should be a screen
 they cannot leave — by the time `minVersion` passes a build, its user has been
 offered the update for weeks and chosen to wait.
 
-It and `minVersion` are the parts of the config the operator panel can write,
-through `POST /admin/app-config/latest-version` and `…/min-version` on the
-system screen; the minimum is refused above `latestVersion` (see
+It and `minVersion` are the version parts of the config the operator panel can
+write, through `POST /admin/app-config/latest-version` and `…/min-version` on
+the system screen; the minimum is refused above `latestVersion` (see
 `docs/decisions.md`). For `latestVersion` the
 exception is about _when_ it is needed rather than convenience: this is set the
 moment a store release goes live, which is the review queue's decision and not
 reliably a moment anybody is at a machine that can reach Mongo. The reason it
 can cross the line the maintenance switch cannot is that it blocks nothing — a
-wrong value here shows a dismissible banner, or shows none. Maintenance and the
-flags stay in the script.
+wrong value here shows a dismissible banner, or shows none. Maintenance stays
+in the script.
+
+The flags are switched on the panel's Flags page (`app/(app)/admin/flags.tsx`),
+through `POST /admin/app-config/flags` with `{ flag, value }`. The name must be
+a key of the flags schema (`adminFlagNameSchema`, every key but
+`captchaRequired`, which keeps its own route on the system screen), the value
+must be a boolean, and the body may carry nothing else. Each switch asks first,
+and each is recorded in the audit log as `appConfig.flag` with the name and the
+value. The two flags whose pull requests asked for a condition first,
+`promoPaywallLinks` and `stickerGifts`, carry it under their row as a caution
+rather than a lock. `scripts/maintenance.ts flag <name> <bool>` still works,
+for the day the API is too unwell to sign anybody in.
 
 Dismissal is stored per version on the device, so saying no to 2.2.0 says
 nothing about 2.3.0. Both defaults are `0.0.0`, which means a fresh or

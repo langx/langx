@@ -24,6 +24,16 @@ describe('planJump', () => {
     expect(planJump([row('a'), DAY, row('b')], 'b')).toEqual({ kind: 'scroll', index: 2 })
   })
 
+  it('finds your own message, keyed by its clientId rather than its id', () => {
+    const mine: MessageRow = {
+      kind: 'message',
+      key: 'c:abc',
+      endsGroup: true,
+      message: { _id: 'm1', clientId: 'abc' } as MessageDto,
+    }
+    expect(planJump([row('a'), mine], 'm1')).toEqual({ kind: 'scroll', index: 1 })
+  })
+
   it('fetches a window for a target that has paged out', () => {
     expect(planJump([row('a')], 'gone')).toEqual({ kind: 'fetch', anchorId: 'gone' })
   })

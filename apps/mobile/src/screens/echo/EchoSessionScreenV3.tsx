@@ -1,6 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
 import {
+  backAddsMeaning,
   ECHO_GRADES,
   echoAudiosOf,
   type EchoAudio,
@@ -12,8 +13,23 @@ import {
 import { useAudioPlayer } from 'expo-audio'
 import { useFonts } from 'expo-font'
 import { Image } from 'expo-image'
-import { useState, type RefObject } from 'react'
-import { Animated, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
+import { useEffect, useState, type ReactNode, type RefObject } from 'react'
+import {
+  Animated,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native'
+import Reanimated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from 'react-native-reanimated'
 import { cardTone } from '../../components/echo/EchoCardsV3Parts'
 import { EchoHeaderV3 } from '../../components/echo/EchoHeaderV3'
 import {
@@ -25,18 +41,21 @@ import {
 import { Button } from '../../components/ui/Button'
 import { EmptyStateV3 } from '../../components/ui/EmptyStateV3'
 import { FitText } from '../../components/ui/FitText'
+import { PressableScale } from '../../components/ui/PressableScale'
 import { ProgressBar } from '../../components/ui/ProgressBar'
 import { Screen } from '../../components/ui/Screen'
 import { Skeleton } from '../../components/ui/Skeleton'
 import type { useKeyboardClearance } from '../../hooks/useKeyboardClearance'
 import { useProfileCache } from '../../hooks/useProfileCache'
-import { useT } from '../../i18n'
+import { useReduceMotion } from '../../hooks/useReduceMotion'
+import { useLocale, useT } from '../../i18n'
 import { useDisplayNames } from '../../i18n/displayNames'
 import { voiceLabel } from '../../i18n/labels'
 import type { EchoAskParams } from '../../lib/echoAsk'
 import { spokenGrade } from '../../lib/format'
 import { goBackTo } from '../../lib/navigation'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
+import { PRESS_SCALE_CARD, STAGGER, TIMING, unlessReduced } from '../../lib/theme/motion'
 
 /** As on the current session card, and for the same reason: never crop the picture. */
 const PICTURE_MAX_HEIGHT = 240
@@ -58,6 +77,8 @@ export interface EchoSessionV3Props {
   offline: boolean
   ask: EchoAskParams | null
   onPostToFeed: (params: EchoAskParams) => void
+  /** Opens the card's edit screen; `null` where the route does not offer it. */
+  onEdit: (() => void) | null
   onReveal: () => void
   onGrade: (grade: EchoGrade) => void
   intervalLabel: (grade: EchoGrade) => string
@@ -120,8 +141,20 @@ export function EchoSessionScreenV3(props: EchoSessionV3Props) {
           style={styles.scroll}
           contentContainerStyle={styles.body}
         >
-          <CardBlock {...props} />
-          {revealed ? <Answer {...props} /> : null}
+          {/*
+            Keyed by card, so each new card arrives: it slides in from the
+            trailing edge, and the one graded simply goes — nobody watches a
+            card they have finished with leave. The first card came in with
+            the screen.
+          */}
+          <Arrive key={props.card._id} dx={index > 0 ? 24 : 0}>
+            <CardBlock {...props} />
+          </Arrive>
+          {revealed ? (
+            <Arrive dy={12}>
+              <Answer {...props} />
+            </Arrive>
+          ) : null}
           {/*
             One way to the feed, in the card body and never in the grade row:
             it is not a grade. Recognition cards only — a production card's
@@ -135,14 +168,19 @@ export function EchoSessionScreenV3(props: EchoSessionV3Props) {
         <View style={styles.actions}>
           {revealed ? (
             <View style={styles.grades}>
-              {ECHO_GRADES.map((value) => (
-                <GradeTile
-                  key={value}
-                  value={value}
-                  interval={props.intervalLabel(value)}
-                  minutes={props.delayMinutes(value)}
-                  onPress={() => props.onGrade(value)}
-                />
+              {/*
+                Rising a beat apart, and pressable from the first frame: the
+                motion is only how they arrive, never something to wait for.
+              */}
+              {ECHO_GRADES.map((value, order) => (
+                <Arrive key={value} dy={8} delay={order * STAGGER} style={styles.gradeSlot}>
+                  <GradeTile
+                    value={value}
+                    interval={props.intervalLabel(value)}
+                    minutes={props.delayMinutes(value)}
+                    onPress={() => props.onGrade(value)}
+                  />
+                </Arrive>
               ))}
             </View>
           ) : (
@@ -157,6 +195,44 @@ export function EchoSessionScreenV3(props: EchoSessionV3Props) {
       </Animated.View>
     </Screen>
   )
+}
+
+/**
+ * A block arriving once, when it mounts: `dx` points in from the trailing
+ * edge (mirrored for right-to-left), or `dy` points up from below, fading in
+ * over `TIMING.enter`. Transform and opacity only, started from an effect on
+ * the UI thread; with reduce motion the block is simply there.
+ */
+function Arrive({
+  dx = 0,
+  dy = 0,
+  delay = 0,
+  style,
+  children,
+}: {
+  dx?: number
+  dy?: number
+  delay?: number
+  style?: StyleProp<ViewStyle>
+  children: ReactNode
+}) {
+  const reduce = useReduceMotion()
+  const { isRtl } = useLocale()
+  const still = dx === 0 && dy === 0
+  const shown = useSharedValue(reduce || still ? 1 : 0)
+  useEffect(() => {
+    if (still) return
+    shown.set(unlessReduced(reduce, 1, (to) => withDelay(delay, withTiming(to, TIMING.enter))))
+  }, [reduce, delay, still, shown])
+  const from = isRtl ? -dx : dx
+  const motion = useAnimatedStyle(() => {
+    const left = 1 - shown.get()
+    return {
+      opacity: shown.get(),
+      transform: [{ translateX: left * from }, { translateY: left * dy }],
+    }
+  })
+  return <Reanimated.View style={[style, motion]}>{children}</Reanimated.View>
 }
 
 /** While the deck is on its way: the header and the card's place. */
@@ -238,6 +314,7 @@ function CardBlock({
   onType,
   autoplay,
   keyboard,
+  onEdit,
 }: EchoSessionV3Props) {
   const styles = useStyles()
   const { v3 } = useTheme()
@@ -252,7 +329,7 @@ function CardBlock({
 
   return (
     <View style={[styles.block, { backgroundColor: fill }]}>
-      <Source card={card} fill={fill} ink={ink} glyph={tone.glyph} />
+      <Source card={card} fill={fill} ink={ink} glyph={tone.glyph} onEdit={onEdit} />
       {card.image ? <Picture key={card.image.url} image={card.image} /> : null}
       {producing && !revealed ? (
         /*
@@ -323,11 +400,13 @@ function Source({
   fill,
   ink,
   glyph,
+  onEdit,
 }: {
   card: EchoCard
   fill: string
   ink: string
   glyph: keyof typeof Feather.glyphMap | null
+  onEdit: (() => void) | null
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
@@ -373,6 +452,24 @@ function Source({
         <Text style={[styles.sourceLang, { color: ink }]} numberOfLines={1}>
           {language}
         </Text>
+      ) : null}
+      {onEdit ? (
+        /*
+         * In the card's own top row, beside who it is from: it is about this
+         * card, and it is not a grade, so it stays out of the row at the foot.
+         */
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('echo.editTitle')}
+          hitSlop={8}
+          onPress={onEdit}
+          style={({ pressed }) => [styles.edit, { borderColor: ink }, pressed && styles.pressed]}
+        >
+          <Feather name="edit-2" size={v3.icon.xs} color={ink} />
+          <Text style={[styles.editText, { color: ink }]} numberOfLines={1}>
+            {t('common.edit')}
+          </Text>
+        </Pressable>
       ) : null}
     </View>
   )
@@ -488,8 +585,16 @@ function Answer({ card, producing, typed, verdict }: EchoSessionV3Props) {
             )}
           </Text>
         </>
-      ) : (
+      ) : backAddsMeaning(card.front, card.back) ? (
         <Text style={styles.answerText}>{card.back}</Text>
+      ) : (
+        /*
+         * An empty back, or one that is the sentence again — what a
+         * translation into the language it is already in returns. Showing the
+         * front twice read as a card with no back side at all; saying so
+         * points at the card's Edit instead.
+         */
+        <Text style={styles.noMeaning}>{t('echo.noMeaningYet')}</Text>
       )}
       {card.example ? <Text style={styles.example}>{card.example}</Text> : null}
     </View>
@@ -531,11 +636,12 @@ function GradeTile({
   const t = useT()
   const good = value === 'good'
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityLabel={spokenGrade(t, t(`echo.${value}`), minutes)}
       onPress={onPress}
-      style={({ pressed }) => [styles.grade, good && styles.gradeGood, pressed && styles.pressed]}
+      scaleTo={PRESS_SCALE_CARD}
+      style={[styles.grade, good && styles.gradeGood]}
     >
       {/*
         Shrinks rather than truncates: four tiles on a 375pt phone leave about
@@ -548,7 +654,7 @@ function GradeTile({
       <Text style={[styles.gradeInterval, good && styles.gradeOnYellow]} numberOfLines={1}>
         {interval}
       </Text>
-    </Pressable>
+    </PressableScale>
   )
 }
 
@@ -624,6 +730,18 @@ const useStyles = makeStyles(({ v3 }) => ({
   reading: { ...v3.type.callout, color: v3.colors.muted },
   answerLabel: { ...v3.type.label, color: v3.colors.muted },
   answerText: { ...v3.type.body, color: v3.colors.fg, fontWeight: '700' },
+  noMeaning: { ...v3.type.body, color: v3.colors.muted },
+  edit: {
+    alignItems: 'center',
+    borderRadius: v3.radius.pill,
+    borderWidth: 2,
+    flexDirection: 'row',
+    flexShrink: 0,
+    gap: v3.space[4],
+    minHeight: 32,
+    paddingHorizontal: v3.space[10],
+  },
+  editText: { ...v3.type.caption, fontWeight: '700' },
   verdictOk: { ...v3.type.callout, color: v3.colors.echoText, fontWeight: '700' },
   verdictWrong: { ...v3.type.callout, color: v3.colors.danger, fontWeight: '700' },
   example: { ...v3.type.callout, color: v3.colors.muted, fontStyle: 'italic' },
@@ -634,11 +752,11 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingTop: v3.space[10],
   },
   grades: { flexDirection: 'row', gap: v3.space[8] },
+  gradeSlot: { flex: 1, minWidth: 0 },
   grade: {
     alignItems: 'center',
     backgroundColor: v3.colors.surface,
     borderRadius: v3.radius.tile,
-    flex: 1,
     gap: v3.space[2],
     height: GRADE_HEIGHT,
     justifyContent: 'center',

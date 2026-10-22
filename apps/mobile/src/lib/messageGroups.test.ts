@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { MessageDto } from '../api/queries'
 import { createTranslate } from '../i18n/runtime'
-import { dayLabel, messageRows, type UnreadMark } from './messageGroups'
+import { dayLabel, messageRows, rowKeyOf, type UnreadMark } from './messageGroups'
 
 const ME = 'me'
 const THEM = 'them'
@@ -239,5 +239,28 @@ describe('dayLabel', () => {
 
   it('falls back to the key it was given rather than printing an invalid date', () => {
     expect(dayLabel('', en)).toBe('')
+  })
+})
+
+describe('rowKeyOf', () => {
+  it('keys the stand-in and its echo alike, so the row is not remounted', () => {
+    const standIn = { _id: 'outgoing:abc', clientId: 'abc' }
+    const echo = { _id: '66f0c0ffee', clientId: 'abc' }
+    expect(rowKeyOf(standIn)).toBe('c:abc')
+    expect(rowKeyOf(echo)).toBe(rowKeyOf(standIn))
+  })
+
+  it('keys a message with no clientId — the other person’s — by its id', () => {
+    expect(rowKeyOf({ _id: '66f0c0ffee' })).toBe('66f0c0ffee')
+  })
+
+  it('is what messageRows keys message rows by', () => {
+    const day = '2026-10-21'
+    const items = [
+      { ...message('m2', ME, at(day, '10:01')), clientId: 'k2' },
+      message('m1', THEM, at(day, '10:00')),
+    ]
+    const keys = messageRows(items).flatMap((row) => (row.kind === 'message' ? [row.key] : []))
+    expect(keys).toEqual(['c:k2', 'm1'])
   })
 })

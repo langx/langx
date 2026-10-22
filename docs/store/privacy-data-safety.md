@@ -39,6 +39,7 @@ Both stores treat a wrong answer here as a policy violation, and both accept
 | Profile views | `profileViews` | "Who viewed me". Not written at all if the viewer has incognito on | Automatic; deleted after 90 days (TTL index) |
 | Reports you file | `reports` | Moderation | Only if you report someone |
 | Copilot consent | `profiles.copilotConsent` | Which version of the Copilot consent sheet you agreed to, and when — the only thing that lets your text reach the AI provider. **Not live** — see _Copilot_ below | Only if you agree; withdrawing removes it |
+| Copilot reports | `feedback` (`kind: 'copilot'`) | An AI answer you reported and which Copilot help wrote it. The answer can quote what it was about — a Check answer is your sentence, corrected — and the sheet says so; your original sentence goes only if you switch that on, and nothing else from the chat is sent. Read by the operators in their feedback queue; no mail, no public issue. **Not live** — see _Copilot_ below | Only if you report one; deleted with your account |
 | Copilot answers | `copilotCache` | An answer kept under a hash of the question, so the same question is not paid for twice. Linked to no account. **Not live** — see _Copilot_ below | Automatic once you use Copilot; deleted after 7 days (TTL index) |
 | Usage analytics | PostHog (EU Cloud), not our database | Which screens and buttons are used, so the funnel from install to first conversation can be read, and a recording of the screen on iOS and Android with every word and image masked on the device before it is sent. Keyed by our user id; never a message body — `docs/analytics.md` | Optional — on by default, off in Settings → Privacy → Share usage data |
 
@@ -196,9 +197,22 @@ messages, lines deleted for everyone or hidden by the reader. The request
 carries no identifier of ours — no user id, and no metadata naming one. Text
 only, by construction (`modules/copilot/copilot.ts`).
 
-Off for 16- and 17-year-olds by default (`COPILOT_RULES.minimumAge`), checked
-against the birthday, server-side — and their words are not sent either: Reply
-ideas and Explain refuse a chat whose other person is under that age.
+**Withdrawing and reporting.** Settings → Privacy → **Copilot** shows whether
+it is on and turns it off; that removes `profiles.copilotConsent`
+(`DELETE /copilot/consent`), nothing more of the person's reaches the provider,
+and the next use asks again. Every answer has **Report**: after a confirm sheet
+that says what goes, the answer and the help that wrote it go to the operators'
+feedback queue, with the person's own draft (Check, Say it) only if they turn
+that on. The answer itself can quote what it was about — a Check answer is the
+sentence corrected, an explanation may quote the message it explains — and the
+sheet says so. Explain and Reply ideas never offer the switch: what they were
+asked about is the other person's message, and the server refuses it. A report reaches our operators only, not the
+provider, so it changes nothing on the forms beyond what is already declared
+as collected.
+
+No age rule of its own: Copilot is open to anybody the app's 16+ minimum lets
+in, and a partner's age is not checked (see `decisions.md` → _Copilot has no
+age rule of its own, and 24 a day for Pro_).
 
 For the forms, once it is on: the data is message content, which is already
 collected; what changes is that a processor sees it. Anthropic processes it for

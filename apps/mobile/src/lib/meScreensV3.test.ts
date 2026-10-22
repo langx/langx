@@ -21,7 +21,18 @@ const PAIRS: readonly { current: string; v3: string; except?: readonly string[] 
   { current: 'share-profile.tsx', v3: 'me/ShareProfileScreenV3.tsx' },
   { current: 'testimonials.tsx', v3: 'me/TestimonialsScreenV3.tsx' },
   { current: 'profile-testimonials.tsx', v3: 'me/ProfileTestimonialsScreenV3.tsx' },
-  { current: 'edit-profile.tsx', v3: 'me/EditProfileScreenV3.tsx' },
+  // v3 draws no pronouns, so its form does not ask for them (_v3 draws no
+  // pronouns_ in docs/decisions.md).
+  {
+    current: 'edit-profile.tsx',
+    v3: 'me/EditProfileScreenV3.tsx',
+    except: [
+      'editProfile.pronouns',
+      'editProfile.pronounsPlaceholder',
+      'editProfile.pronounsHint',
+      'pronouns.trim',
+    ],
+  },
   // The day counts are formatted for the locale (`toLocaleString`), not `String`ed.
   {
     current: 'streak/leaderboard.tsx',
@@ -31,7 +42,13 @@ const PAIRS: readonly { current: string; v3: string; except?: readonly string[] 
   { current: 'wallet/leaderboard.tsx', v3: 'me/WalletLeaderboardScreenV3.tsx' },
   { current: 'wallet/pool.tsx', v3: 'me/PoolScreenV3.tsx' },
   { current: 'invite.tsx', v3: 'me/InviteScreenV3.tsx' },
-  { current: 'gift.tsx', v3: 'me/GiftScreenV3.tsx' },
+  // One haptic per gift, the reveal's (see `lib/haptics.ts`): v3 drops the press's
+  // `impact`. The amount counts up in `CountUp`, which formats it for the locale.
+  {
+    current: 'gift.tsx',
+    v3: 'me/GiftScreenV3.tsx',
+    except: ['impact', 'amount.toLocaleString'],
+  },
   { current: 'how-it-works.tsx', v3: 'me/HowItWorksScreenV3.tsx' },
   // Every link still drawn: the first in a group of its own, the rest `.map`ped under it.
   { current: 'legal.tsx', v3: 'settings/LegalScreenV3.tsx', except: ['LEGAL_LINKS.map'] },

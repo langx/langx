@@ -1,5 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { V3_HOME_WAIT_MS, latchV3Home, resetV3HomeLatch, v3HomeWaitLeft } from './v3Home'
+import {
+  V3_HOME_WAIT_MS,
+  announceV3Home,
+  latchV3Home,
+  resetV3HomeLatch,
+  subscribeV3Home,
+  v3HomeSnapshot,
+  v3HomeWaitLeft,
+} from './v3Home'
 
 describe('latchV3Home', () => {
   beforeEach(() => resetV3HomeLatch())
@@ -26,5 +34,44 @@ describe('v3HomeWaitLeft', () => {
     v3HomeWaitLeft(10_000)
     // A screen that mounts a second later has half a second left, not 1.5.
     expect(v3HomeWaitLeft(11_000)).toBe(V3_HOME_WAIT_MS - 1_000)
+  })
+})
+
+describe('the latch as a store', () => {
+  beforeEach(() => resetV3HomeLatch())
+
+  it('reads undefined, then the latched answer', () => {
+    expect(v3HomeSnapshot()).toBeUndefined()
+    latchV3Home({ settled: true, on: true })
+    expect(v3HomeSnapshot()).toBe(true)
+  })
+
+  it('wakes nobody while there is no answer', () => {
+    let calls = 0
+    subscribeV3Home(() => calls++)
+    latchV3Home({ settled: false, on: true })
+    announceV3Home()
+    expect(calls).toBe(0)
+  })
+
+  it('wakes each subscriber once, however often the root announces', () => {
+    let calls = 0
+    subscribeV3Home(() => calls++)
+    latchV3Home({ settled: true, on: false })
+    announceV3Home()
+    announceV3Home()
+    // A later refetch saying "on" changes nothing, so it says nothing.
+    latchV3Home({ settled: true, on: true })
+    announceV3Home()
+    expect(calls).toBe(1)
+  })
+
+  it('stops waking a subscriber that has left', () => {
+    let calls = 0
+    const leave = subscribeV3Home(() => calls++)
+    leave()
+    latchV3Home({ settled: true, on: true })
+    announceV3Home()
+    expect(calls).toBe(0)
   })
 })

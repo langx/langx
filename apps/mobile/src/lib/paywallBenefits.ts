@@ -23,11 +23,16 @@ import type { PartnerHue } from './theme/tokens'
  * lands, but a screen that describes it in the present tense while it does
  * nothing is selling something that does not exist. Making it a required
  * field means a feature cannot ship quietly half-true: someone has to come
- * back and flip it, which is what happened to `nearby` and has not yet
- * happened to `copilot`.
+ * back and flip it, which is what happened to `nearby` and `copilot`.
+ *
+ * `beta` is the step between: the feature works, but not for every account
+ * that buys the plan yet — Copilot answers only accounts on the operator's
+ * allow-list. So it is named with its qualifier wherever it is listed, never
+ * ticked as if every buyer gets it, and never the reason the paywall says a
+ * refused feature "is part of Pro".
  *
  * Here rather than in the screen so that the comparison below, which a test
- * can reach, reads the same `shipped` the rows do.
+ * can reach, reads the same `shipped` and `beta` the rows do.
  */
 export interface BenefitCopy {
   title: MessageKey
@@ -48,6 +53,8 @@ export interface BenefitCopy {
    */
   compare?: MessageKey
   shipped: boolean
+  /** Shipped, but not on for every account yet. See above. */
+  beta?: true
 }
 
 export const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
@@ -139,7 +146,8 @@ export const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
     body: 'paywall.copilotBody',
     icon: 'cpu',
     hue: 'lilac',
-    shipped: false,
+    shipped: true,
+    beta: true,
   },
   welcomePack: {
     title: 'paywall.welcomePack',
@@ -192,14 +200,30 @@ export function benefitsHeld(
 /**
  * The refused capability the paywall may name as part of Pro, or `null`.
  *
- * Only a shipped one. Nothing in the app opens the paywall over a feature that
- * has not shipped — Copilot's controls do not exist yet — but the feature is a
- * route param, so a hand-typed or stale link can still carry one, and "Copilot
- * is part of Pro" over a feature that does nothing sells it as present. Such a
- * link gets the general page, where the table already says "Soon".
+ * Only one that is on for everybody who buys. Nothing in the app opens the
+ * paywall over a feature that has not shipped or is in beta — Copilot says
+ * "off" to an account it does not answer — but the feature is a route param,
+ * so a hand-typed or stale link can still carry one, and "Copilot is part of
+ * Pro" promises it to a buyer the allow-list may not hold. Such a link gets
+ * the general page, where the table already qualifies it.
  */
 export function sellableFeature(feature: PlanFeature | null): PlanFeature | null {
-  return feature !== null && BENEFIT_COPY[feature].shipped ? feature : null
+  return feature !== null && fullyOn(BENEFIT_COPY[feature]) ? feature : null
+}
+
+/** Shipped and out of beta: on for every account on the plan. */
+export function fullyOn(copy: BenefitCopy): boolean {
+  return copy.shipped && copy.beta !== true
+}
+
+/**
+ * The qualifier a benefit is listed with — "Soon" or "Beta, rolling out" — or
+ * `null` when it is on for everybody. One answer for the paywall's rows and
+ * the plan page's "What you have", so the two cannot drift.
+ */
+export function pendingTag(copy: BenefitCopy): MessageKey | null {
+  if (!copy.shipped) return 'paywall.compareSoon'
+  return copy.beta ? 'paywall.betaTag' : null
 }
 
 /**
@@ -252,6 +276,8 @@ export type CompareCell =
   | { kind: 'unlimited' }
   /** Pro's cell for a feature that has not shipped: never a tick for something that does nothing yet. */
   | { kind: 'soon' }
+  /** Pro's cell for a feature in beta: it works, but not yet for every buyer, so no tick either. */
+  | { kind: 'beta' }
 
 export interface CompareRow {
   benefit: ProBenefit
@@ -294,14 +320,15 @@ export const COMPARE_LEAD: readonly ProBenefit[] = [
  *
  * Pure, so a test holds the table to the config: a limit that changes in
  * `packages/shared` changes this table and nothing else has to. A benefit that
- * has not shipped goes last and reads "Soon" in the Pro column, never a tick.
+ * has not shipped or is in beta goes last and reads "Soon" or "Beta" in the
+ * Pro column, never a tick.
  */
 export function compareRows(limits: Record<PlanTier, PlanLimits> = PLAN_LIMITS): CompareRow[] {
   const rest = PRO_BENEFITS.filter((benefit) => !COMPARE_LEAD.includes(benefit))
   const order = [
     ...COMPARE_LEAD,
-    ...rest.filter((benefit) => BENEFIT_COPY[benefit].shipped),
-    ...rest.filter((benefit) => !BENEFIT_COPY[benefit].shipped),
+    ...rest.filter((benefit) => fullyOn(BENEFIT_COPY[benefit])),
+    ...rest.filter((benefit) => !fullyOn(BENEFIT_COPY[benefit])),
   ]
   return order.map((benefit) => {
     const copy = BENEFIT_COPY[benefit]
@@ -310,7 +337,11 @@ export function compareRows(limits: Record<PlanTier, PlanLimits> = PLAN_LIMITS):
       benefit,
       label: copy.compare ?? copy.title,
       free: cellFor(source, 'free', limits),
-      pro: copy.shipped ? cellFor(source, 'pro', limits) : { kind: 'soon' },
+      pro: !copy.shipped
+        ? { kind: 'soon' }
+        : copy.beta
+          ? { kind: 'beta' }
+          : cellFor(source, 'pro', limits),
     }
   })
 }

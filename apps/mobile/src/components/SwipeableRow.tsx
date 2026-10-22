@@ -9,6 +9,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import { makeStyles } from '../lib/theme'
+import { SPRING } from '../lib/theme/motion'
 import {
   ACTION_LOCK_PX,
   ACTION_WIDTH_PX,
@@ -114,7 +115,7 @@ export function SwipeableRow({
     restingAt.set(to)
     // `bounciness: 0`'s successor: a drawer that overshoots its own width
     // shows the row's background through the gap it opens.
-    translateX.set(withSpring(to, { damping: 20, stiffness: 220, overshootClamping: true }))
+    translateX.set(withSpring(to, SPRING.snap))
   }
 
   // The list closes this row by flipping `open`; the row is what animates.
@@ -150,7 +151,7 @@ export function SwipeableRow({
         event.velocityX,
       )
       restingAt.set(to)
-      translateX.set(withSpring(to, { damping: 20, stiffness: 220, overshootClamping: true }))
+      translateX.set(withSpring(to, SPRING.snap))
       // The list's state lives in React, so crossing back costs one hop —
       // once, on release, rather than on every frame.
       runOnJS(onOpenChange)(to !== 0)

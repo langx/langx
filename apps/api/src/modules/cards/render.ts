@@ -1,7 +1,7 @@
 import type { CardShape } from '@langx/shared'
 import { Resvg } from '@resvg/resvg-js'
 import satori from 'satori'
-import { loadAsset as readAsset } from '../../lib/assets'
+import { findAsset, loadAsset as readAsset } from '../../lib/assets'
 
 /** What `design.ts` builds: satori's element shape, without React. */
 export interface CardNode {
@@ -24,11 +24,19 @@ export const CARD_PIXELS: Record<CardShape, { width: number; height: number }> =
 
 const loadAsset = (relative: string): Promise<Buffer> => readAsset(relative, 'Card asset')
 
-let fonts: { name: string; data: Buffer; weight: 400 | 600 | 800 | 900; style: 'normal' }[] | null =
-  null
+interface Fonts {
+  /** What satori lays the text out with. */
+  faces: { name: string; data: Buffer; weight: 400 | 600 | 800 | 900; style: 'normal' }[]
+  /** The same four files, by path, for resvg. */
+  files: string[]
+}
+
+let fonts: Fonts | null = null
 
 /**
  * Read once and kept: the four faces are ~590KB and every render needs them.
+ * satori keeps these bytes; resvg is given the paths and reads the files
+ * itself (see `renderCard`).
  *
  * Nunito has no Arabic in it, so anything Arabic — a handle, a caption, the
  * labels on the Echo chart — came out as a row of empty boxes until Noto Sans
@@ -37,21 +45,24 @@ let fonts: { name: string; data: Buffer; weight: 400 | 600 | 800 | 900; style: '
  * caller makes; it shapes and joins the letters properly, which was the part
  * worth checking before shipping a 190KB file to fix two words.
  */
-async function loadFonts(): Promise<NonNullable<typeof fonts>> {
+async function loadFonts(): Promise<Fonts> {
   if (fonts) return fonts
   const [black, extraBold, semiBold, arabic] = await Promise.all([
-    loadAsset('fonts/Nunito_900Black.ttf'),
-    loadAsset('fonts/Nunito_800ExtraBold.ttf'),
-    loadAsset('fonts/Nunito_600SemiBold.ttf'),
-    loadAsset('fonts/NotoSansArabic_600SemiBold.ttf'),
+    findAsset('fonts/Nunito_900Black.ttf', 'Card asset'),
+    findAsset('fonts/Nunito_800ExtraBold.ttf', 'Card asset'),
+    findAsset('fonts/Nunito_600SemiBold.ttf', 'Card asset'),
+    findAsset('fonts/NotoSansArabic_600SemiBold.ttf', 'Card asset'),
   ])
-  fonts = [
-    // The recap's numerals and month name: the poster's one heavier weight.
-    { name: 'Nunito', data: black, weight: 900, style: 'normal' },
-    { name: 'Nunito', data: extraBold, weight: 800, style: 'normal' },
-    { name: 'Nunito', data: semiBold, weight: 600, style: 'normal' },
-    { name: 'Noto Sans Arabic', data: arabic, weight: 600, style: 'normal' },
-  ]
+  fonts = {
+    faces: [
+      // The recap's numerals and month name: the poster's one heavier weight.
+      { name: 'Nunito', data: black.bytes, weight: 900, style: 'normal' },
+      { name: 'Nunito', data: extraBold.bytes, weight: 800, style: 'normal' },
+      { name: 'Nunito', data: semiBold.bytes, weight: 600, style: 'normal' },
+      { name: 'Noto Sans Arabic', data: arabic.bytes, weight: 600, style: 'normal' },
+    ],
+    files: [black.path, extraBold.path, semiBold.path, arabic.path],
+  }
   return fonts
 }
 
@@ -62,6 +73,34 @@ export async function loadBadge(): Promise<string> {
   if (badge) return badge
   badge = `data:image/png;base64,${(await loadAsset('badge.png')).toString('base64')}`
   return badge
+}
+
+/**
+ * Gives every box the border-box model, unless it names its own.
+ *
+ * Every measurement in the three designs was taken under satori 0.33, whose
+ * layout counted padding inside a box's `width`. 0.62 follows CSS and counts
+ * it outside, so the panel on a streak or badge card — `width: width - 16
+ * units` plus 8 units of padding a side — came out exactly the card's width
+ * and ran edge to edge. Set once here rather than on each padded box, so a box
+ * added to a design later is measured the way the ones beside it were.
+ */
+export function withBorderBox(node: CardNode): CardNode {
+  const { children, style } = node.props
+  // Anything that is not an element — text, and the null, false and numbers
+  // satori also accepts as children — passes through as it is.
+  const walk = (child: CardNode | string): CardNode | string =>
+    typeof child === 'object' && child !== null ? withBorderBox(child) : child
+  return {
+    type: node.type,
+    props: {
+      ...node.props,
+      style: { boxSizing: 'border-box', ...(style as Record<string, unknown> | undefined) },
+      ...(children === undefined
+        ? {}
+        : { children: Array.isArray(children) ? children.map(walk) : walk(children) }),
+    },
+  }
 }
 
 /**
@@ -80,13 +119,32 @@ export async function renderCard(element: CardNode, shape: CardShape): Promise<B
    * process renders components, and a dependency carried for a signature is a
    * dependency that gets used for other things later.
    */
-  const svg = await satori(element as Parameters<typeof satori>[0], {
+  const { faces, files } = await loadFonts()
+  const svg = await satori(withBorderBox(element) as Parameters<typeof satori>[0], {
     width,
     height,
-    fonts: await loadFonts(),
+    fonts: faces,
   })
-  // `fitTo` at the card's own width is a no-op that keeps resvg from guessing
-  // a size from the SVG's own units.
-  const png = new Resvg(svg, { fitTo: { mode: 'width', value: width } }).render().asPng()
+  const png = new Resvg(svg, {
+    // `fitTo` at the card's own width is a no-op that keeps resvg from
+    // guessing a size from the SVG's own units.
+    fitTo: { mode: 'width', value: width },
+    /*
+     * Left to its default, resvg scans every system font on every render, and
+     * on a Mac that scan was most of the raster step — the same scan #1904
+     * took out of the avatars. Unlike a face, a card has words on it, so
+     * instead of no fonts it gets exactly the four satori was handed. satori
+     * 0.62 draws glyphs as paths, so today resvg finds no text to set and the
+     * PNG is byte-for-byte the same either way; the files are here so that if
+     * a `<text>` ever reaches resvg it is set in Nunito or Noto rather than
+     * dropped, and never in whatever the host happens to have installed.
+     * resvg reads the four files again on each render (~590KB, no buffer
+     * option in the native binding); that is accepted, being a small part of
+     * what the scan cost.
+     */
+    font: { loadSystemFonts: false, fontFiles: files, defaultFontFamily: 'Nunito' },
+  })
+    .render()
+    .asPng()
   return Buffer.from(png)
 }

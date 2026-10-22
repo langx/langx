@@ -14,7 +14,7 @@
  * Frame 0 must be the bare ground and nothing else: it is the frame the app's
  * own yellow disc hands over to, and anything on it would pop in at the seam.
  *
- * Times below are in seconds, not beats; the scene is 2.7 s long and there is
+ * Times below are in seconds, not beats; the scene is 1.8 s long and there is
  * no score to phase against.
  */
 REEL.scene('splash', (ctx) => {
@@ -56,16 +56,23 @@ REEL.scene('splash', (ctx) => {
   const END_S = (0.4 * Math.min(ctx.W, ctx.H)) / INK_W
   const START_S = ctx.portrait ? 2.2 : 1.4
 
-  /* The beats of it, in seconds. */
+  /*
+   * The beats of it, in seconds. The first cut was 2.7 s and the owner found
+   * it long. Most of what went was dead: a 0.4 s hold on the finished mark
+   * (the app's own exit fade already lets it sit) and some of the straight
+   * lead-in. The rest came out of the turn, which keeps its ease and its 540°
+   * and runs at about three-quarters of its old length; the ink still lands
+   * mid-turn and the lock on its last frame.
+   */
   const T = {
-    bend: [0.35, 0.95],
-    camera: [0.4, 2.05],
-    turn: [0.45, 2.05],
+    bend: [0.28, 0.83],
+    camera: [0.33, 1.5],
+    turn: [0.36, 1.5],
     counter: 0.08, // the wind-up before the turn, 6° the other way
-    inkBlack: [1.0, 1.5],
-    inkWhite: [1.15, 1.65],
-    lock: 2.05,
-    shadow: 0.25,
+    inkBlack: [0.8, 1.2],
+    inkWhite: [0.92, 1.32],
+    lock: 1.5,
+    shadow: 0.22,
   }
 
   /* --------------------------------------------------------------- layers */
@@ -270,10 +277,12 @@ REEL.scene('splash', (ctx) => {
    * rails have to be full before the bend shows their ends — and settles to
    * 08's cruising speed: v(t) = V1 → V2 over DECAY, quadratically, integrated
    * here in closed form so a seek lands on the same frame as playback.
+   * V1 and DECAY were 1500 and 1 in the 2.7 s cut; with the bend 0.07 s
+   * earlier, they bring the rails in about as full as they were then.
    */
-  const V1 = 1500
+  const V1 = 1800
   const V2 = 250
-  const DECAY = 1
+  const DECAY = 0.85
   function travelled(t) {
     const p = Math.min(t, DECAY) / DECAY
     const burst = ((V1 - V2) * DECAY * (1 - (1 - p) ** 3)) / 3

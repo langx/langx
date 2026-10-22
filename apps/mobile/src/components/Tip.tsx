@@ -1,11 +1,14 @@
 import Feather from '@expo/vector-icons/Feather'
-import { useEffect, useState } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { useEffect, useRef, useState } from 'react'
+import { Animated, Pressable, Text, View } from 'react-native'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useTips } from '../hooks/useTips'
 import { useT } from '../i18n'
 import type { MessageKey } from '../i18n/runtime'
 import { track } from '../lib/analytics'
 import { makeStyles, useTheme } from '../lib/theme'
+import { EASE_OUT } from '../lib/theme/motionAnimated'
+import { DURATION } from '../lib/theme/motionValues'
 import type { TipId, TipSlot } from '../lib/tips'
 import { TipV3 } from './TipV3'
 import { useV3Home } from '../hooks/useV3Home'
@@ -43,7 +46,17 @@ export function Tip({ slot, spaced = true }: TipProps) {
   const tips = useTips()
   const styles = useStyles()
   const { colors } = useTheme()
+  const reduceMotion = useReduceMotion()
   const [sentAway, setSentAway] = useState(false)
+  /*
+   * v3's card fades before it is removed, so the list under it is not
+   * yanked up by the card's height in the frame of the tap. Only the
+   * opacity: the removal itself is still one frame, but by then there is
+   * nothing left to see go.
+   */
+  const fade = useRef(new Animated.Value(1)).current
+  // A second tap on the ✕ while the card fades is the same dismissal.
+  const leaving = useRef(false)
   /*
    * Held for the life of this mount, and that is load-bearing rather than an
    * optimisation. Advancing the cursor publishes, which re-renders this
@@ -76,12 +89,29 @@ export function Tip({ slot, spaced = true }: TipProps) {
   const tipId = id
 
   function dismiss(): void {
-    setSentAway(true)
+    if (leaving.current) return
+    leaving.current = true
     tips.dismiss(tipId)
     track({ name: 'tip_dismissed', properties: { tip: tipId, slot } })
+    if (!v3Look || reduceMotion) {
+      setSentAway(true)
+      return
+    }
+    Animated.timing(fade, {
+      toValue: 0,
+      duration: DURATION.release,
+      easing: EASE_OUT,
+      useNativeDriver: true,
+    }).start(() => setSentAway(true))
   }
 
-  if (v3Look) return <TipV3 body={t(body)} spaced={spaced} onDismiss={dismiss} />
+  if (v3Look) {
+    return (
+      <Animated.View style={{ opacity: fade }}>
+        <TipV3 body={t(body)} spaced={spaced} onDismiss={dismiss} />
+      </Animated.View>
+    )
+  }
 
   return (
     <View style={[styles.root, spaced && styles.spaced]}>

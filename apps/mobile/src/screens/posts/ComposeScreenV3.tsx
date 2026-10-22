@@ -18,6 +18,7 @@ import { useDisplayNames, useT } from '../../i18n'
 import { chooseAlert } from '../../lib/alert'
 import { track } from '../../lib/analytics'
 import { authClient } from '../../lib/auth-client'
+import { markJustPosted } from '../../lib/justPosted'
 import { FLAG_KEYS, readFlag, writeFlag } from '../../lib/localFlags'
 import { goBackTo } from '../../lib/navigation'
 import { askSummary, POST_ASKS, type PostAsk } from '../../lib/postAsks'
@@ -163,6 +164,8 @@ export function ComposeScreenV3() {
               from: cardParam ? 'echo' : 'feed',
             },
           })
+          // The feed scrolls up to the new card and rings it once.
+          markJustPosted(post._id)
           goBackTo('/(app)/(tabs)/feed')
           showToast(t(postedKey(sent)))
         },

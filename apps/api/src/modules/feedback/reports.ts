@@ -2,9 +2,12 @@ import {
   DEFAULT_LOCALE,
   matchLocale,
   type AdminFeedbackListQuery,
+  type CopilotAction,
+  type CopilotReportRequest,
   type FeedbackKind,
   type Locale,
 } from '@langx/shared'
+import { randomUUID } from 'node:crypto'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { translator } from '../../i18n'
@@ -35,9 +38,12 @@ export interface FeedbackReport {
   /** The uuid `submit.ts` mints — also the bounty token's `reportId`. */
   _id: string
   userId: string
-  kind: FeedbackKind
+  kind: FeedbackRowKind
+  /** For `copilot`, the answer being reported. */
   body: string
   attachmentUrls: string[]
+  /** Only on a `copilot` row: which help answered, and the draft, when they chose to send it. */
+  copilot?: { action: CopilotAction; question?: string }
   /**
    * The prefilled GitHub new-issue link at submit; replaced with the real
    * issue's URL once somebody files it.
@@ -54,6 +60,14 @@ export interface FeedbackReport {
   repliedAt?: Date
   createdAt: Date
 }
+
+/**
+ * What a row is. `bug` and `feature` are what `POST /feedback` takes;
+ * `copilot` is a reported AI answer, which only `POST /copilot/report` writes
+ * — never a choice on the feedback form, and never a GitHub issue, because
+ * the tracker is public and an answer is about somebody's chat.
+ */
+export type FeedbackRowKind = FeedbackKind | 'copilot'
 
 export type FeedbackStatus = 'open' | 'triaged' | 'closed'
 export type FeedbackCloseReason = 'fixed' | 'shipped' | 'wontfix' | 'duplicate' | 'invalid'
@@ -81,7 +95,7 @@ export function replyDraft(
   report: Pick<FeedbackReport, 'kind' | 'issueUrl'>,
 ): string {
   const t = translator(locale)
-  const lines = [t(report.kind === 'bug' ? 'feedbackReply.bug' : 'feedbackReply.feature')]
+  const lines = [t(`feedbackReply.${report.kind}`)]
   if (isFiledIssue(report.issueUrl)) lines.push(t('feedbackReply.issue', { url: report.issueUrl }))
   return lines.join('\n\n')
 }
@@ -103,6 +117,36 @@ export async function recordFeedback(
   await db
     .collection<FeedbackReport>(COLLECTIONS.feedback)
     .insertOne({ ...report, status: 'open', createdAt: new Date() })
+}
+
+/**
+ * A reported Copilot answer, as a row in the same queue as bugs and ideas.
+ *
+ * The same queue because it is the same job — read it, decide, close it,
+ * perhaps write back — and the account purge already sweeps `feedback` by
+ * `userId`, so a report goes when its sender does. What it does not share is
+ * the rest of `submitFeedback`: no issue (the tracker is public), no bounty
+ * link (a token for every answer somebody disliked is a farm), and no mail —
+ * the person's draft, when they sent it, lives in this row and nowhere else.
+ */
+export async function recordCopilotReport(
+  db: Db,
+  userId: string,
+  report: CopilotReportRequest,
+): Promise<string> {
+  const id = randomUUID()
+  await recordFeedback(db, {
+    _id: id,
+    userId,
+    kind: 'copilot',
+    body: report.answer,
+    attachmentUrls: [],
+    copilot: {
+      action: report.action,
+      ...(report.question !== undefined ? { question: report.question } : {}),
+    },
+  })
+  return id
 }
 
 /**

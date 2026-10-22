@@ -50,6 +50,19 @@ export function generatedAvatarUrl(apiBaseUrl: string, seed: string): string {
  * ---------------------------------------------------------------------------
  */
 
+/**
+ * Which drawn face the server's own surfaces use for an account without a
+ * photo: the digest and match emails, the recap card, the call push, and the
+ * answer to the old `/public/avatar/:seed` URL that builds released before v3
+ * still ask for.
+ *
+ * One constant rather than a flag in `/app-config`, because none of these
+ * surfaces has a client to latch it: an email that went out with one face
+ * cannot be redrawn with the other. Set back to `'notionists'` to undo the
+ * switch everywhere at once; the app's own screens follow `flags.v3Home`.
+ */
+export const DEFAULT_AVATAR_STYLE: 'notionists' | 'v3' = 'v3'
+
 /** W, M and N: woman, man, and the neutral pool everybody else draws from. */
 export const DEFAULT_AVATAR_POOLS = ['W', 'M', 'N'] as const
 export type DefaultAvatarPool = (typeof DEFAULT_AVATAR_POOLS)[number]

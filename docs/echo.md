@@ -76,15 +76,15 @@ three-field form, which is right for a phrase card — it is being written for
 another person. Echo is written for yourself, so the fields are filled in for
 you:
 
-| Field     | From                                                                                                                                                                                                 |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `front`   | The message body, as written. A correction message uses the **corrected** text. Media, stickers, meetings and quizzes are not offered the action.                                                    |
-| `back`    | The translation into the reader's own language. If the message was already translated in the thread, that translation, with no second request. Otherwise the server translates once at capture time. |
-| `lang`    | The language the front is in: the partner's first native language with a written form — the same `translateTargetFor` rule the Translate and phrase actions already use, pointed at the partner.     |
-| `example` | Empty. A chat card's front _is_ the example; the sentence was said to you.                                                                                                                           |
-| `source`  | `{ kind: 'chat', conversationId, messageId, partnerId }`. Kept so the session can say "Marie, 3 days ago" and deep-link back to the thread with `?at=`.                                              |
-| `audio`   | The voice note that answers a `pronunciation` ask on this message, if there is one (Phase 2); otherwise the server voice. See "Audio".                                                               |
-| `image`   | The photo the message carried, if it carried one. See "Images".                                                                                                                                      |
+| Field     | From                                                                                                                                                                                                                                                                                                                                      |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `front`   | The message body, as written. A correction message uses the **corrected** text. Media, stickers, meetings and quizzes are not offered the action.                                                                                                                                                                                         |
+| `back`    | The translation into the reader's own language. If the message was already translated in the thread, that translation, with no second request. Otherwise the server translates once at capture time. A sentence already in the reader's language is translated into a language they learn instead, and `backLang` says which — see below. |
+| `lang`    | The language the front is in: the partner's first native language with a written form — the same `translateTargetFor` rule the Translate and phrase actions already use, pointed at the partner. The reader's own language on a card whose back went to a learning language.                                                              |
+| `example` | Empty. A chat card's front _is_ the example; the sentence was said to you.                                                                                                                                                                                                                                                                |
+| `source`  | `{ kind: 'chat', conversationId, messageId, partnerId }`. Kept so the session can say "Marie, 3 days ago" and deep-link back to the thread with `?at=`.                                                                                                                                                                                   |
+| `audio`   | The voice note that answers a `pronunciation` ask on this message, if there is one (Phase 2); otherwise the server voice. See "Audio".                                                                                                                                                                                                    |
+| `image`   | The photo the message carried, if it carried one. See "Images".                                                                                                                                                                                                                                                                           |
 
 Two places to tap, both cheap, both in the first pass:
 
@@ -110,6 +110,56 @@ metered by `PLAN_LIMITS.echoCapturesPerDay`, not by `translationsPer24h`. The
 capture cap is an abuse ceiling — Add echo must not become a free translator —
 and is the same on every tier (50). It is not a paywall and it should not be
 sold as one.
+
+**A back that is the front again is no back.** A sentence already in the
+reader's language — a Turkish partner's message kept by a Turkish reader —
+comes back from every translation source unchanged, and until 21 October 2026
+that was stored as the back: the card showed one line on both sides, and a
+production review put the answer up as the question. `backFor` now stores an
+empty back whenever `backAddsMeaning` says the two are the same sentence (case,
+punctuation, spacing and accents aside), the session says the card has no
+meaning yet instead of repeating the front, and production is never asked of
+such a card. Cards kept before then are emptied by
+`apps/api/scripts/backfill-echo-same-backs.ts` (dry run by default, `--apply`
+to write; message and post cards only).
+
+**Such a sentence is turned round instead.** Since 22 October 2026 a sentence
+already in the reader's language is translated a second time, into a language
+they are learning, and that is the back: a Turkish reader learning English
+keeps "Bona'ya dc'den mesaj atayım" and the back reads "I'll send Bona a
+message on Discord". The card teaches how to say their own sentence. Which
+language: of those a machine can write, the one they learn that the partner
+speaks natively — the likely
+language of the chat — else the first one they learn. That is
+`learningTargetFor` in `packages/shared`, the same rule Copilot's Say it uses.
+A post has no partner, so it is the first one they learn.
+
+The card says it runs the other way round. `backLang` is set to the learning
+language, and `lang` to the reader's own — the front's language, proved by the
+translation that came back unchanged, and better than the partner's native
+language when the sentence was the reader's own message. So the chip names the
+front ("Turkish"), a reading speaks the front in `lang`, and nothing reads the
+back aloud on any card yet. Such a card is **never a typing review**: typing
+writes the front from the back, which here would be writing one's own language
+from the one being learned. It is reviewed by recognition, which for it is
+already the useful direction.
+
+The empty back stays for everything that cannot be turned round: a reader
+learning nothing a machine can write, a first translation that failed (an
+empty answer says nothing about the sentence's language), a second one that
+failed, or a second one that is the sentence yet again — a name, an "OK". A
+correction kept automatically still never asks the provider, so it turns
+round only from the cache. Clearing a card's back in Edit clears `backLang`
+with it. A re-tap that fills an empty back and moves the card to another
+language takes its readings off, as an edit of the language does. Cards left
+empty before this are turned round by
+`apps/api/scripts/backfill-echo-native-backs.ts` (dry run by default; the dry
+run asks the provider and caches the answers, `--apply` writes). It runs the
+capture's own rule over every message and post card with an empty back and
+writes only the cards that turn round — one that would get a meaning in the
+reader's own language was empty for another reason, perhaps its owner's Edit,
+and is left alone. A card kept from a correction asks the cache only, like the
+automatic capture that may have made it.
 
 **The card survives the message.** `front` and `back` are copied at capture,
 not referenced. An edited or deleted message, a deleted account, a left
@@ -424,12 +474,12 @@ violated by accident:
 
 Four collections, registered in `collections.ts`:
 
-| Collection      | Holds                                                                                                                                                                                                      |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `echoCards`     | Per-user: `{ userId, lang, front, back, example?, audio?, image?, askedPostId?, askedCorrectionPostId?, source, sourceKey, srs: { state, due, interval, ease, reps, lapses, lastReviewedAt }, createdAt }` |
-| `echoReviews`   | One row per graded card: `{ userId, reviewId, cardId, grade, at, durationMs }`                                                                                                                             |
-| `echoPacks`     | Content: `{ _id: 'fr:beginner', lang, level, itemCount, contentVersion, glossLocales }`                                                                                                                    |
-| `echoPackItems` | Content: `{ packId, index, kind: 'word' \| 'phrase', text, gloss: Record<Locale, string>, example?, freqRank, contentVersion }`                                                                            |
+| Collection      | Holds                                                                                                                                                                                                                 |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `echoCards`     | Per-user: `{ userId, lang, front, back, backLang?, example?, audio?, image?, askedPostId?, askedCorrectionPostId?, source, sourceKey, srs: { state, due, interval, ease, reps, lapses, lastReviewedAt }, createdAt }` |
+| `echoReviews`   | One row per graded card: `{ userId, reviewId, cardId, grade, at, durationMs }`                                                                                                                                        |
+| `echoPacks`     | Content: `{ _id: 'fr:beginner', lang, level, itemCount, contentVersion, glossLocales }`                                                                                                                               |
+| `echoPackItems` | Content: `{ packId, index, kind: 'word' \| 'phrase', text, gloss: Record<Locale, string>, example?, freqRank, contentVersion }`                                                                                       |
 
 `source` is a tagged union:
 
@@ -520,7 +570,8 @@ from its meaning — is built**, and pack-only multiple choice is still Phase 3.
 Production is a _presentation_ of the same card, not a second schedule: one
 row, one `srs`, one queue. It is asked only once a card has graduated out of
 the learning steps, only when the front is short enough to type on a phone
-(`ECHO_PRODUCTION_MAX_LENGTH`), and only on every other review, by parity of
+(`ECHO_PRODUCTION_MAX_LENGTH`), never on a card whose back is in a language
+being learned (`backLang`), and only on every other review, by parity of
 `reps` — deterministic, so leaving a session and coming back does not change
 what the card asks. The typed answer is compared with diacritics, case,
 punctuation and spacing stripped — and Arabic's vowel marks, hamza seats,

@@ -1,6 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { MessageMenuRequest } from './messageMenu'
+import { STAGGER_TIGHT } from './theme/motionValues'
 import {
+  MENU_MOTION,
+  emojiDelay,
+  menuOrigin,
   openMessageMenu,
   resetMessageMenuForTest,
   resolveMessageMenu,
@@ -78,5 +82,30 @@ describe('messageMenu', () => {
     listener.mockClear()
     void openMessageMenu({ mine: false, preview: 'hello', actions: COPY })
     expect(listener).not.toHaveBeenCalled()
+  })
+})
+
+describe('emojiDelay', () => {
+  it('staggers the strip one emoji at a time', () => {
+    expect(emojiDelay(0)).toBe(0)
+    expect(emojiDelay(1)).toBe(STAGGER_TIGHT)
+    expect(emojiDelay(3)).toBe(3 * STAGGER_TIGHT)
+  })
+
+  it('caps the wait, so a long strip is never still arriving', () => {
+    expect(emojiDelay(40)).toBe(MENU_MOTION.emojiCap)
+    expect(emojiDelay(40) + MENU_MOTION.emoji).toBeLessThanOrEqual(400)
+  })
+})
+
+describe('menuOrigin', () => {
+  it('grows the menu from the edge that touches the bubble', () => {
+    expect(menuOrigin('below', 'menu', true)).toBe('right top')
+    expect(menuOrigin('above', 'menu', false)).toBe('left bottom')
+  })
+
+  it('grows the strip from the opposite edge, on the same side', () => {
+    expect(menuOrigin('below', 'strip', true)).toBe('right bottom')
+    expect(menuOrigin('above', 'strip', false)).toBe('left top')
   })
 })

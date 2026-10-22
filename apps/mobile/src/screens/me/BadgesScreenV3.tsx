@@ -1,7 +1,7 @@
 import { PINNED_BADGES_MAX, streakMilestoneBonus, type BadgeSummary } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useEffect, useMemo, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Platform, Text, View } from 'react-native'
 import { useBadgesV3, useMe, usePinBadges, usePublicBadges } from '../../api/queries'
 import { BadgeDetailSheet } from '../../components/badges/BadgeDetailSheet'
 import { BadgeEarnedSheet } from '../../components/badges/BadgeEarnedSheet'
@@ -11,6 +11,7 @@ import { ShareCardSheet, type ShareCardRequest } from '../../components/ShareCar
 import { Button } from '../../components/ui/Button'
 import { EmptyArt } from '../../components/ui/EmptyStateV3'
 import { IconButton } from '../../components/ui/IconButton'
+import { ProgressBar } from '../../components/ui/ProgressBar'
 import { Screen } from '../../components/ui/Screen'
 import { useNewBadges } from '../../hooks/useNewBadges'
 import { usePullToRefresh } from '../../hooks/usePullToRefresh'
@@ -100,12 +101,19 @@ export function BadgesScreenV3() {
     [data, mine, own.data?.progress, fresh],
   )
 
-  // The earned moment: the first time this device sees a new badge.
+  // The earned moment: the first time this device sees a new badge, once a
+  // visit — the rest keep their New mark until opened. Guarded by the open
+  // moment instead, it raised the same sheet again the instant Share closed
+  // it, before anything had marked the badge seen, so the sheet came back
+  // over the share card on every press.
+  const celebratedThisVisit = useRef(false)
   useEffect(() => {
-    if (moment || !mine || fresh.size === 0) return
+    if (celebratedThisVisit.current || !mine || fresh.size === 0) return
     const top = celebrated(own.data?.badges ?? [], [...fresh])
-    if (top) setMoment(top.id)
-  }, [fresh, mine, moment, own.data?.badges])
+    if (!top) return
+    celebratedThisVisit.current = true
+    setMoment(top.id)
+  }, [fresh, mine, own.data?.badges])
 
   // Up to three, in order; a fourth pushes out the oldest pin.
   const pinned = own.data?.pinned ?? []
@@ -127,18 +135,6 @@ export function BadgesScreenV3() {
   const handle = me.data?.handle
   const back = () => goBackTo('/(app)/(tabs)/me', from)
 
-  const share = (label: string) => {
-    if (!handle) return
-    setOpenId(null)
-    setMoment(null)
-    setCard({
-      kind: 'badge',
-      headline: label,
-      caption: t('share.cardBadgeCaption'),
-      fallback: badgeShareText(t, { label, handle }),
-    })
-  }
-
   const open = (rung: Rung) => {
     setOpenId(rung.badge.id)
     if (rung.isNew) markSeen([rung.badge.id])
@@ -149,6 +145,39 @@ export function BadgesScreenV3() {
   const closeMoment = () => {
     if (moment) markSeen([moment])
     setMoment(null)
+  }
+
+  /*
+   * Share is pressed inside a badge sheet, and the card's sheet must not be
+   * asked for until that one has gone. iOS refuses to present a Modal while
+   * another is still sliding away, silently, and React Native records the
+   * refused one as presented and never asks again (`alertPresentation.ts`
+   * tells the same story): the card never came up, and every later Share on
+   * the page found it already "open". So on iOS the card waits here for the
+   * badge sheet's `onDismiss` — only iOS fires it, and only iOS has the rule.
+   */
+  const waitingCard = useRef<ShareCardRequest | null>(null)
+
+  const share = (label: string) => {
+    if (!handle) return
+    const request: ShareCardRequest = {
+      kind: 'badge',
+      headline: label,
+      caption: t('share.cardBadgeCaption'),
+      fallback: badgeShareText(t, { label, handle }),
+    }
+    setOpenId(null)
+    // Sharing is one way of closing the earned sheet, so it marks it seen too.
+    closeMoment()
+    if (Platform.OS === 'ios') waitingCard.current = request
+    else setCard(request)
+  }
+
+  const sheetGone = () => {
+    const request = waitingCard.current
+    if (!request) return
+    waitingCard.current = null
+    setCard(request)
   }
 
   return (
@@ -209,6 +238,7 @@ export function BadgesScreenV3() {
         rung={opened?.rung ?? null}
         mine={mine}
         onClose={() => setOpenId(null)}
+        onDismiss={sheetGone}
         onShare={share}
         onAction={(action) => {
           setOpenId(null)
@@ -220,6 +250,7 @@ export function BadgesScreenV3() {
         shelf={shown?.shelf ?? null}
         rung={shown?.rung ?? null}
         onClose={closeMoment}
+        onDismiss={sheetGone}
         onShare={shown && shown.rung.badge.kind !== 'tokens' ? share : undefined}
         pin={moment ? pinFor(moment) : undefined}
       />
@@ -231,6 +262,7 @@ export function BadgesScreenV3() {
 /** The API's nearest badge, with its fraction and, for a streak, what the milestone pays. */
 function NextCard({ next: n }: { next: NonNullable<BadgeSummary['next']> }) {
   const styles = useStyles()
+  const { v3 } = useTheme()
   const t = useT()
   const { locale } = useLocale()
   const words = { t, locale }
@@ -261,6 +293,7 @@ function NextCard({ next: n }: { next: NonNullable<BadgeSummary['next']> }) {
             {name}
           </Text>
           <Text style={styles.nextFraction}>{fraction}</Text>
+          {/* The bar's own count is "9 of 10", not a percentage: said by the wrapper. */}
           <View
             accessible
             accessibilityRole="progressbar"
@@ -268,8 +301,12 @@ function NextCard({ next: n }: { next: NonNullable<BadgeSummary['next']> }) {
             accessibilityValue={{ min: 0, max: n.threshold, now: n.current }}
             style={styles.bar}
           >
-            <View style={[StyleSheet.absoluteFill, styles.barTrack]} />
-            <View style={[styles.barFill, { width: `${Math.round(done * 100)}%` }]} />
+            <ProgressBar
+              value={done}
+              height={10}
+              fillColor={v3.colors.fg}
+              accessibilityLabel={t('badgesV3.progressLabel', { name })}
+            />
           </View>
         </View>
       </View>
@@ -328,9 +365,7 @@ const useStyles = makeStyles(({ v3 }) => ({
   nextName: { ...v3.type.headline, color: v3.colors.fg },
   nextFraction: { ...v3.type.button, color: v3.colors.fg },
   nextBody: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '500' },
-  bar: { borderRadius: v3.radius.pill, height: 10, marginTop: v3.space[2], overflow: 'hidden' },
-  barTrack: { backgroundColor: v3.colors.track },
-  barFill: { backgroundColor: v3.colors.fg, borderRadius: v3.radius.pill, height: 10 },
+  bar: { marginTop: v3.space[2] },
   empty: {
     alignItems: 'center',
     gap: v3.space[12],

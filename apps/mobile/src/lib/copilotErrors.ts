@@ -5,7 +5,7 @@ import { errorCodeOf, errorStatusOf } from './errors'
  * What a Copilot surface does with a refusal.
  *
  * - `off` — Copilot is not for this person after all: the operator's switch
- *   went off, the account left the allow-list, or it is under age. The card
+ *   went off, or the account left the allow-list. The card
  *   closes and the button goes, rather than leaving a sentence about a
  *   feature the thread no longer offers.
  * - `consent` — the agreement is gone (withdrawn on another device, or given
@@ -23,7 +23,6 @@ export type CopilotErrorKey =
       MessageKey,
       | 'copilot.errQuota'
       | 'copilot.errQuotaNoTime'
-      | 'copilot.errPartnerAge'
       | 'copilot.errBusy'
       | 'copilot.errNoAnswer'
       | 'copilot.errNetwork'
@@ -39,10 +38,7 @@ export function copilotErrorKey(error: unknown): CopilotErrorKey {
   const code = errorCodeOf(error)
   if (code === 'COPILOT_UNAVAILABLE') {
     const reason = field(error, 'reason')
-    // `age` reads as off too: the status said available a moment ago, so the
-    // birthday has just passed the other way, or the profile changed.
-    if (reason === 'off' || reason === 'age') return 'off'
-    if (reason === 'partner_age') return 'copilot.errPartnerAge'
+    if (reason === 'off') return 'off'
     if (reason === 'busy') return 'copilot.errBusy'
     // `no_answer`, and any reason this build has never heard of.
     return 'copilot.errNoAnswer'
@@ -54,6 +50,15 @@ export function copilotErrorKey(error: unknown): CopilotErrorKey {
   // No status at all: the request never reached a server.
   if (code === undefined && errorStatusOf(error) === undefined) return 'copilot.errNetwork'
   return 'copilot.errNoAnswer'
+}
+
+/**
+ * Reply ideas found nothing to reply to — the newest lines were all photos,
+ * voice notes or withdrawn. Not a failure worth a sentence: the chip simply
+ * goes for that message.
+ */
+export function copilotEmptyThread(error: unknown): boolean {
+  return errorCodeOf(error) === 'VALIDATION_FAILED' && field(error, 'reason') === 'empty_thread'
 }
 
 /** The quota's own answer for when the next Copilot answer frees up. */

@@ -38,7 +38,6 @@ export const en = {
     checking: 'Checking…',
     oneMoment: 'One moment…',
     skip: 'Skip for now',
-    comingSoon: 'COMING SOON',
     continue: 'Continue',
     done: 'Done',
     reset: 'Reset',
@@ -208,6 +207,12 @@ export const en = {
     modeKeep: 'Keep in chat',
     send: 'Send',
     retake: 'Retake',
+    hideOptions: 'Hide options',
+    showOptions: 'Show options',
+    viewfinder: 'Camera view',
+    viewfinderHint: 'Pinch to zoom. Double-tap to switch camera.',
+    zoomedIn: 'Zoomed in',
+    notZoomed: 'Not zoomed',
     hint: 'Tap for photo, hold for video',
     close: 'Close camera',
     flip: 'Switch camera',
@@ -501,6 +506,8 @@ export const en = {
 
     // The session.
     sessionProgress: '{done} of {total}',
+    /** Where the answer goes, on a card whose back is empty or the sentence again. */
+    noMeaningYet: 'No meaning on this card yet.',
     show: 'Show answer',
     again: 'Again',
     hard: 'Hard',
@@ -1684,6 +1691,12 @@ export const en = {
     },
     pinnedMessage: 'Pinned message',
     goToPinned: 'Go to the pinned message',
+    /** Over the v3 thread's pinned strip's preview: who wrote the pinned message. */
+    pinnedFrom: 'Pinned · {name}',
+    /** The same line while the pinned message itself has not loaded. */
+    pinnedLabel: 'Pinned',
+    /** The pinned strip's ✕: a pin belongs to the conversation, so it goes for both. */
+    unpinHint: 'Takes the pin off for both of you',
     backToLatest: 'Back to latest',
     jumpToNew: {
       one: 'Jump to {count} new message',
@@ -1952,8 +1965,8 @@ export const en = {
     correctionPlaceholder: 'Rewrite the sentence the way you would say it…',
     startFromOriginal: 'Start from the original',
     correctionReward: {
-      one: '+{count} token · Unlimited on every plan',
-      other: '+{count} tokens · Unlimited on every plan',
+      one: '+{count} token',
+      other: '+{count} tokens',
     },
     voiceNote: 'Voice note',
     top: 'Top',
@@ -3854,7 +3867,8 @@ export const en = {
     nearbyBody:
       'Sort people by distance. Your location is rounded; others see only a rough distance.',
     copilot: 'AI copilot',
-    copilotBody: 'Help composing and understanding messages as you write them.',
+    copilotBody:
+      'Help composing and understanding messages as you write them. It may not be on for your account yet.',
     quotaNotice:
       'You’ve used today’s {count} new chats. You can still reply to everything you receive, with no limit.',
     manageNotice: 'You’re on {plan}. Manage or cancel it in your store account.',
@@ -3916,7 +3930,7 @@ export const en = {
     },
     showLess: 'Show less',
     /**
-     * A price and what it is per — "$6.99 a month" — in the order the language
+     * A price and what it is per — "$6.66 a month" — in the order the language
      * says them; Turkish puts the period first. `{period}` is one of `perMonth`,
      * `perYear` or `perLifetime`.
      */
@@ -3961,6 +3975,10 @@ export const en = {
     compareLanguages: 'Languages you learn',
     compareUnlimited: 'Unlimited',
     compareSoon: 'Soon',
+    /** Pro's cell in the comparison for a feature in beta: works, but not for every account yet. */
+    compareBeta: 'Beta',
+    /** Beside a beta feature's name on the paywall and the plan page. One phrasing everywhere, the website and the docs included. */
+    betaTag: 'Beta, rolling out',
     compareIncluded: 'Included',
     compareNotIncluded: 'Not included',
     yearlyBadge: '{perMonth} · {saving}',
@@ -4262,8 +4280,8 @@ export const en = {
    * the person sends it themselves.
    */
   copilot: {
-    /** On every Copilot answer and on its consent sheet. Blue, never green: green is a person's correction. */
-    label: 'AI · may be wrong',
+    /** On every Copilot answer and on its consent sheet. Blue, never green: green is a person’s correction. The "AI can be wrong" disclosure is `consentWrong`, not this. */
+    label: 'Copilot · Beta',
     /** Copilot cannot answer here at all — switched off, or not for this account. */
     off: 'Copilot is off.',
     consentTitle: 'Before you use Copilot',
@@ -4278,7 +4296,7 @@ export const en = {
       'When you ask, the text you asked about goes to Anthropic, the company that runs the AI model, with your languages and levels. To explain a message, that is the one message you picked, which the other person wrote. For reply ideas, it includes the last few messages in the chat.',
     consentNever: 'Your name, email, photos and voice notes are never sent.',
     consentWrong:
-      'AI can be wrong. Its answers are marked AI, and nothing reaches the other person unless you send it yourself.',
+      'AI can be wrong. Its answers are marked Copilot, and nothing reaches the other person unless you send it yourself.',
     consentAccept: 'Turn on Copilot',
     consentDecline: 'Not now',
     /** Screen-reader name of the blue button beside send, which opens the two-row menu. */
@@ -4306,11 +4324,45 @@ export const en = {
     errQuota: 'You’ve used today’s Copilot answers. More at {time}.',
     /** The same, when the server did not say when. */
     errQuotaNoTime: 'You’ve used today’s Copilot answers.',
-    /** The other person is under 18, so their words are not sent. */
-    errPartnerAge: 'Copilot doesn’t read this chat.',
     errBusy: 'Copilot is busy. Try again later.',
     errNoAnswer: 'Copilot couldn’t answer that.',
     errNetwork: 'Couldn’t reach Copilot.',
+    /** The chip above an empty composer when their newest message is unanswered, and the heading over the ideas. */
+    replyIdeas: 'Reply ideas',
+    /** Screen-reader name of that chip. */
+    replyIdeasA11y: 'Ask Copilot for reply ideas',
+    /** Screen-reader hint on each idea: tapping fills the draft, it does not send. */
+    replyIdeaHint: 'Puts it in your message. Nothing is sent.',
+    /** Screen-reader words for the header above the ideas. */
+    replyIdeasCount: { one: '{count} reply idea', other: '{count} reply ideas' },
+    /** The small action in the corner of every Copilot answer. */
+    report: 'Report',
+    reportA11y: 'Report this answer',
+    reportTitle: 'Report this answer?',
+    /**
+     * The confirm sheet: what always goes to the team. Says the answer can quote
+     * its subject — a Check answer is the draft, corrected — so the switch below
+     * is not mistaken for the only way the words leave.
+     */
+    reportBody:
+      'The LangX team will see this answer, which can quote the words it was about, and which Copilot help wrote it. Nothing is sent to the other person.',
+    /** Off until switched on; the draft it would send is shown under it. */
+    reportIncludeQuestion: 'Also send what you wrote',
+    /** Explain and Reply ideas: no draft to offer, and nothing of the chat beyond what the answer quotes. */
+    reportChatNotSent: 'Nothing else from your chat is sent with it.',
+    reportSend: 'Send report',
+    reportSent: 'Thanks — the team will look at it.',
+    /** The row on the Privacy page, for an account Copilot is on for. */
+    settingsTitle: 'Copilot',
+    settingsOnBody: 'On. Your text goes to the AI provider only when you tap a Copilot button.',
+    /** Under the row while consent is not given: Copilot asks before it is used. */
+    settingsOffStateBody: 'Off. Copilot asks for your permission before it is used.',
+    settingsOffTitle: 'Turn off Copilot?',
+    /** Turning it off withdraws consent on the server. */
+    settingsOffBody:
+      'Nothing more of yours goes to the AI provider. Copilot asks again the next time you use it.',
+    settingsOffConfirm: 'Turn off',
+    settingsOffDone: 'Copilot is off.',
   },
 } as const
 
