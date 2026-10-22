@@ -52,6 +52,12 @@ interface AvatarProps {
    * neighbours leave the room. Omitted, the frame grows the box.
    */
   frameOverflow?: 'all' | 'vertical' | undefined
+  /**
+   * Blurs the picture itself (expo-image's `blurRadius`), for a face that is
+   * shown withheld. See `lockedAvatarVeil` for where this is used instead of
+   * a `BlurView`.
+   */
+  blurRadius?: number | undefined
 }
 
 /**
@@ -103,6 +109,7 @@ export function Avatar({
   frame,
   sweep,
   frameOverflow,
+  blurRadius,
 }: AvatarProps) {
   const { colors } = useTheme()
   const styles = useStyles()
@@ -156,6 +163,7 @@ export function Avatar({
           contentFit="cover"
           transition={fadeMs}
           key={attempt}
+          {...(blurRadius ? { blurRadius } : {})}
           {...(v3Look ? { onLoad: () => markAvatarShown(source) } : {})}
           onError={() => {
             const wait = drawnFaceRetryIn(source, attempt)
