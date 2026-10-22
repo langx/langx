@@ -13,6 +13,9 @@ import { useV3Home } from '../hooks/useV3Home'
 import { useT } from '../i18n'
 import type { PendingMedia } from '../lib/pendingMedia'
 import { DiscardUnsentButton } from './DiscardUnsentButton'
+import { NotSentColumnV3 } from './thread/NotSentLineV3'
+import { PendingVoiceNoteV3 } from './thread/PendingVoiceNoteV3'
+import { UploadRingV3 } from './thread/UploadRingV3'
 import { UploadRing } from './UploadRing'
 import { percentOf } from '../lib/uploadProgress'
 import { makeStyles, useTheme } from '../lib/theme'
@@ -34,6 +37,12 @@ import { makeStyles, useTheme } from '../lib/theme'
  * When it fails it keeps its place and becomes a button, following the unsent
  * text queue above it. Before this, a failed attachment raised an alert and
  * the picked file was thrown away.
+ *
+ * Under `flags.v3Home` the same bubble in the v3 thread's terms: the ring is
+ * `UploadRingV3`, a voice note is `PendingVoiceNoteV3` — the sent note's row
+ * with its bars in a pending style — and a failed one carries v3's not-sent
+ * line under the bubble (`NotSentColumnV3`) rather than a status inside it.
+ * The handlers are this component's either way.
  */
 export function PendingMediaBubble({
   item,
@@ -74,6 +83,12 @@ export function PendingMediaBubble({
       : item.progress.phase === 'sending'
         ? t('chat.sendingAttachment')
         : t('composer.uploadingPercent', { percent })
+  // What the ring — or v3's voice note — draws; see the comment at the ring.
+  const ringFraction = item.progress.phase === 'reading' ? null : item.progress.fraction
+  const ringLabel =
+    item.progress.phase === 'reading'
+      ? t('composer.percentPending')
+      : t('composer.percentOnly', { percent })
   // A picture carries its own progress on top of it; a status line under it
   // would say the same thing twice.
   const pictured = !item.viewOnce && (item.kind === 'image' || item.kind === 'video')
@@ -119,17 +134,21 @@ export function PendingMediaBubble({
                 being uploaded. Reading has no number yet, so it is an ellipsis
                 rather than 0%.
               */}
-              <UploadRing
-                fraction={item.progress.phase === 'reading' ? null : item.progress.fraction}
-                label={
-                  item.progress.phase === 'reading'
-                    ? t('composer.percentPending')
-                    : t('composer.percentOnly', { percent })
-                }
-              />
+              {v3Look ? (
+                <UploadRingV3 fraction={ringFraction} label={ringLabel} />
+              ) : (
+                <UploadRing fraction={ringFraction} label={ringLabel} />
+              )}
             </View>
           )}
         </View>
+      ) : v3Look ? (
+        <PendingVoiceNoteV3
+          seed={item.clientId}
+          fraction={ringFraction}
+          failed={failed}
+          percentLabel={ringLabel}
+        />
       ) : (
         <View style={styles.audioRow}>
           <Feather name="mic" size={16} color={muted} />
@@ -146,7 +165,12 @@ export function PendingMediaBubble({
 
       {item.body ? <Text style={styles.caption}>{item.body}</Text> : null}
 
-      {pictured && !failed ? null : (
+      {/*
+        v3 says the upload on the thing itself — the ring, the voice note's
+        number — and a failure under the bubble, so only a view-once card,
+        which has neither, keeps a status line there.
+      */}
+      {(pictured && !failed) || (v3Look && (failed || !item.viewOnce)) ? null : (
         <View style={styles.status}>
           {failed ? (
             <>
@@ -159,7 +183,8 @@ export function PendingMediaBubble({
             </>
           ) : (
             <>
-              <ActivityIndicator size="small" {...(v3Look ? { color: v3.colors.muted } : {})} />
+              {/* v3 is calm about it: the bar above already moves. */}
+              {v3Look ? null : <ActivityIndicator size="small" />}
               <Text style={styles.label}>{label}</Text>
             </>
           )}
@@ -168,7 +193,32 @@ export function PendingMediaBubble({
     </>
   )
 
-  if (!failed) return <View style={[styles.bubble, styles.pending]}>{body}</View>
+  if (!failed) {
+    return (
+      <View
+        style={[styles.bubble, styles.pending]}
+        // The ring and the bars show a number; the sentence is for the screen reader.
+        {...(v3Look ? { accessible: true, accessibilityLabel: label } : {})}
+      >
+        {body}
+      </View>
+    )
+  }
+  if (v3Look) {
+    return (
+      <View style={styles.failedRow}>
+        <DiscardUnsentButton onPress={onDiscard} />
+        <NotSentColumnV3
+          label={t('chat.notSentTapRetry')}
+          spoken={t('chat.notSentRetry')}
+          onPress={onRetry}
+          onLongPress={onLongPress}
+        >
+          <View style={[styles.bubble, styles.failed]}>{body}</View>
+        </NotSentColumnV3>
+      </View>
+    )
+  }
   return (
     <View style={styles.failedRow}>
       <DiscardUnsentButton onPress={onDiscard} />
@@ -247,21 +297,26 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
 /**
  * v3's look for the same bubble, behind `flags.v3Home` with the thread
  * (V-Thread draws your sent bubble, not this one): the sent bubble's shape —
- * v3's tile corner — still drained to an outline, since the message does not
- * exist yet, at v3's two-point weight; the picture at the row corner, the
- * track in v3's ring grey filling in your blue, and v3's type.
+ * v3's tile corner and your side's tail — still drained to an outline, since
+ * the message does not exist yet, at v3's two-point weight; the picture close
+ * to the edge at the card corner, as a sent one's; the track in v3's ring
+ * grey filling in your blue, and v3's type.
  */
 const useStylesV3 = makeStyles(({ v3 }) => ({
+  // `bubbleLookV3`'s bubble, tail and all; the frame is the picture's, as there.
   bubble: {
     alignSelf: 'flex-end',
+    borderBottomEndRadius: v3.space[8],
     borderRadius: v3.radius.tile,
     borderWidth: 2,
     gap: v3.space[4],
     maxWidth: '78%',
-    padding: v3.space[8],
+    padding: v3.space[4],
   },
   pending: { borderColor: v3.colors.line },
-  failed: { borderColor: v3.colors.danger, flexShrink: 1 },
+  // Inside `NotSentColumnV3`, which already caps the width: a second
+  // percentage of a column sized by its child resolves against nothing.
+  failed: { borderColor: v3.colors.danger, maxWidth: '100%' },
   failedRow: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -271,7 +326,7 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
   pressed: { opacity: 0.7 },
   image: {
     backgroundColor: v3.colors.surface,
-    borderRadius: v3.radius.row,
+    borderRadius: v3.radius.card,
     overflow: 'hidden',
     width: 220,
   },
@@ -279,19 +334,44 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
   veil: {
     ...({ position: 'absolute' } as const),
     backgroundColor: v3.colors.scrim,
-    borderRadius: v3.radius.row,
+    borderRadius: v3.radius.card,
     bottom: 0,
     left: 0,
     right: 0,
     top: 0,
   },
   progressOverlay: { alignItems: 'center', justifyContent: 'center' },
-  audioRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8], minWidth: 180 },
-  track: { backgroundColor: v3.colors.track, borderRadius: 2, flex: 1, height: 3 },
-  trackFill: { borderRadius: 2, height: 3 },
+  // The view-once card's row; a voice note is `PendingVoiceNoteV3`'s own.
+  audioRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: v3.space[8],
+    minWidth: 180,
+    padding: v3.space[6],
+  },
+  track: {
+    backgroundColor: v3.colors.track,
+    borderRadius: v3.radius.pill,
+    flex: 1,
+    height: 4,
+    overflow: 'hidden',
+  },
+  trackFill: { borderRadius: v3.radius.pill, height: 4 },
   viewOnceTitle: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '600' },
-  caption: { ...v3.type.body, color: v3.colors.fg, lineHeight: 23 },
-  status: { alignItems: 'center', flexDirection: 'row', gap: v3.space[4] },
+  caption: {
+    ...v3.type.body,
+    color: v3.colors.fg,
+    lineHeight: 23,
+    paddingBottom: v3.space[6],
+    paddingHorizontal: v3.space[10],
+  },
+  status: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: v3.space[4],
+    paddingBottom: v3.space[4],
+    paddingHorizontal: v3.space[6],
+  },
   label: { ...v3.type.caption, color: v3.colors.muted, fontVariant: ['tabular-nums'] },
   failedLabel: { ...v3.type.caption, color: v3.colors.danger },
 }))

@@ -1269,6 +1269,7 @@ export const es: Localized<EnMessages> = {
     title: 'Chat',
     typing: 'escribiendo…',
     notSentRetry: 'No enviado: toca para reintentar',
+    notSentTapRetry: 'No enviado · Toca para reintentar',
     editing: 'Editando',
     correcting: 'Corrigiendo',
     partsReplyTitle: '¿A qué parte respondes?',
