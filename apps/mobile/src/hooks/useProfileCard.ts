@@ -1,3 +1,4 @@
+import { PROFILE_LANGUAGES_MAX } from '@langx/shared'
 import { useMe } from '../api/queries'
 import type { ShareCardRequest } from '../components/ShareCardSheet'
 import { useDisplayNames, useLocale, useT } from '../i18n'
@@ -34,13 +35,17 @@ export function useProfileCard(): (
     // words them: the line that says what a stranger would practise with you.
     const native = profile.nativeLanguages[0]?.code
     const learning = [...profile.learning].sort((a, b) => a.priority - b.priority)[0]?.code
-    const languages =
+    const words =
       native && learning
         ? t('recap.card.languages', {
             native: names.language(native),
             learning: names.language(learning),
           })
         : undefined
+    // The request refuses a line over 60 characters, and a long pair of
+    // language names in German can reach it: the card goes without the line
+    // rather than failing over it.
+    const languages = words && words.length <= PROFILE_LANGUAGES_MAX ? words : undefined
     return {
       kind: 'profile',
       headline: t(pill === 'invite' ? 'share.cardInviteHeadline' : 'share.cardProfileHeadline'),

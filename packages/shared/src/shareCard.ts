@@ -321,9 +321,12 @@ export type BadgeCardInput = z.infer<typeof badgeCardInputSchema>
  * account — never from the body — and nothing else about them goes on it: no
  * age, no city, no numbers. The pill is the request's `headline`.
  */
+/** The longest languages line a profile card takes; the app drops a longer one. */
+export const PROFILE_LANGUAGES_MAX = 60
+
 export const profileCardInputSchema = z.object({
   locale: localeSchema,
   /** "Turkish → learning English", as the recap card words it. */
-  languages: z.string().trim().min(1).max(60).optional(),
+  languages: z.string().trim().min(1).max(PROFILE_LANGUAGES_MAX).optional(),
 })
 export type ProfileCardInput = z.infer<typeof profileCardInputSchema>

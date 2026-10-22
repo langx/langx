@@ -1,4 +1,4 @@
-import { isRtlLocale, type CardShape, type Locale } from '@langx/shared'
+import { isRtlLocale, profileUrl, type CardShape, type Locale } from '@langx/shared'
 import { avatar, brand, HUES, INK, INK_SOFT, pill, qrTile } from './badgeDesign'
 import { el, fitSize, PAPER, RTL_LETTER, textLine } from './recapDesign'
 import { CARD_PIXELS, type CardNode } from './render'
@@ -191,7 +191,9 @@ function code(content: ProfileCardContent, qr: string | undefined, m: Metrics): 
       ...(qr ? [qrTile(qr, m)] : []),
       el('div', {
         style: { color: INK, display: 'flex', fontSize: m.link, fontWeight: 800 },
-        children: `langx.io/${content.handle.replace(/^@/, '')}`,
+        // The profile's own address, which is the app's host — the marketing
+        // site at bare langx.io has no page per handle.
+        children: profileUrl(content.handle.replace(/^@/, '')).replace(/^https?:\/\//, ''),
       }),
     ],
   })
