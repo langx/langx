@@ -38,13 +38,13 @@ export function threadRewards(
   if (!award || award.tokens <= 0) return []
   const milestone = Math.min(award.streak?.milestoneXp ?? 0, award.tokens)
   const rest = award.tokens - milestone
-  // A capped message was paid nothing for itself; a correction is never capped.
-  const ownRate =
-    kind === 'correction'
+  // A capped send was paid nothing for itself: a message past the daily or
+  // per-partner cap, or a correction past the per-partner one.
+  const ownRate = award.capped
+    ? 0
+    : kind === 'correction'
       ? TOKEN_RULES.award.correction
-      : award.capped
-        ? 0
-        : TOKEN_RULES.award.message
+      : TOKEN_RULES.award.message
   const own = Math.min(rest, ownRate)
   const both = rest - own
 

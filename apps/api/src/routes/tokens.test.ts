@@ -407,6 +407,78 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       ])
     })
 
+    /**
+     * Teaching many people is uncapped; one person's sentences are not. The
+     * counter is the day's activity document, read back from the write that
+     * bumps it, so a burst at the boundary pays exactly the cap.
+     */
+    it('pays corrections of one partner up to the per-partner cap, and no further', async () => {
+      const cap = TOKEN_RULES.caps.correctionsPerPartnerPerDay
+      const a = await newUser('xp-correction-cap-a@example.com')
+      const b = await newUser('xp-correction-cap-b@example.com')
+      const c = await newUser('xp-correction-cap-c@example.com')
+      const conversationId = await startConversation(a, b.userId, 'hello')
+      await reply(b.userId, conversationId, 'hi')
+      const targets = []
+      for (let i = 0; i < cap + 2; i++) {
+        targets.push((await reply(a.userId, conversationId, `I has ${i} apple`)).message)
+      }
+
+      const before = (await summary(b)).tokens
+      // All at once: the shape a read-then-write count would let through.
+      const sent = await Promise.all(
+        targets.map((target) => correct(b.userId, conversationId, String(target._id))),
+      )
+      // Sending is never refused; only paying stops.
+      expect(sent.every(({ message }) => message.type === 'correction')).toBe(true)
+      expect(sent.filter(({ award }) => award?.capped)).toHaveLength(2)
+      expect(sent.filter(({ award }) => !award?.capped).every(({ award }) => award?.tokens)).toBe(
+        true,
+      )
+
+      const after = await summary(b)
+      expect(after.tokens.week - before.week).toBe(cap * TOKEN_RULES.award.correction)
+      // Every one of them is still a correction written today.
+      expect(after.today.corrections).toBe(cap + 2)
+      const paid = (await earnedLedgerOf(b.userId)).filter((row) => row.kind === 'correction')
+      expect(paid).toHaveLength(cap)
+
+      // Somebody else's sentence is somebody else's cap.
+      const other = await startConversation(c, b.userId, 'She go home')
+      const target = await handle.db
+        .collection<{ _id: ObjectId }>(COLLECTIONS.messages)
+        .findOne({ conversationId: new ObjectId(other) })
+      const { award } = await correct(b.userId, other, String(target?._id))
+      expect(award?.capped).toBe(false)
+      expect(award?.tokens).toBeGreaterThanOrEqual(TOKEN_RULES.award.correction)
+    })
+
+    /**
+     * The cap counts sentences, not attempts: going over a message that has
+     * already paid gives the slot back, so it never costs a later one.
+     */
+    it('does not spend the per-partner cap on corrections that could not pay', async () => {
+      const cap = TOKEN_RULES.caps.correctionsPerPartnerPerDay
+      const a = await newUser('xp-correction-slot-a@example.com')
+      const b = await newUser('xp-correction-slot-b@example.com')
+      const conversationId = await startConversation(a, b.userId, 'hello')
+      await reply(b.userId, conversationId, 'hi')
+      const targets = []
+      for (let i = 0; i < cap; i++) {
+        targets.push((await reply(a.userId, conversationId, `She go ${i} times`)).message)
+      }
+
+      const [first] = targets
+      for (let i = 0; i < 3; i++) await correct(b.userId, conversationId, String(first?._id))
+      for (const target of targets.slice(1)) {
+        const { award } = await correct(b.userId, conversationId, String(target._id))
+        expect(award?.capped).toBe(false)
+      }
+
+      const paid = (await earnedLedgerOf(b.userId)).filter((row) => row.kind === 'correction')
+      expect(paid).toHaveLength(cap)
+    })
+
     it('pays the reciprocity bonus to both sides, exactly once', async () => {
       const a = await newUser('xp-mutual-a@example.com')
       const b = await newUser('xp-mutual-b@example.com')

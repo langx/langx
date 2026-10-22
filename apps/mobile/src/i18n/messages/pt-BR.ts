@@ -1754,8 +1754,8 @@ export const ptBR: Localized<EnMessages> = {
     correctionPlaceholder: 'Reescreva a frase do jeito que você diria…',
     startFromOriginal: 'Começar do original',
     correctionReward: {
-      one: '+{count} ficha · Ilimitado em todos os planos',
-      other: '+{count} fichas · Ilimitado em todos os planos',
+      one: '+{count} ficha',
+      other: '+{count} fichas',
     },
     voiceNote: 'Áudio',
     top: 'Destaque',
