@@ -30,6 +30,7 @@ import { impact } from '../../src/lib/haptics'
 import { FLAG_KEYS, readFlag, writeFlag } from '../../src/lib/localFlags'
 import { goBackTo } from '../../src/lib/navigation'
 import { pickMediaAssets } from '../../src/lib/pickMediaAsset'
+import { saveMediaToDevice } from '../../src/lib/saveMedia'
 import type { PickedMedia } from '../../src/lib/pickedAssets'
 import { sendSnap } from '../../src/lib/snapOutbox'
 import { makeStyles, spacing } from '../../src/lib/theme'
@@ -112,6 +113,7 @@ export default function SnapScreen() {
   // The stored choice arrives after the first render; a tap made before it
   // lands is newer and wins.
   const modePicked = useRef(false)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     void readFlag(FLAG_KEYS.snapMode).then((raw) => {
@@ -157,6 +159,31 @@ export default function SnapScreen() {
     }
   }
 
+  /*
+   * The shot into the phone's photos, or the browser's downloads — the same
+   * write-only path as the photo viewer's Save. Confirmed with a toast: this
+   * is a plain stack screen, not a `Modal`, so the root's toast shows above it.
+   */
+  async function save(): Promise<void> {
+    if (!captured || saving) return
+    setSaving(true)
+    try {
+      const result = await saveMediaToDevice({
+        url: captured.uri,
+        contentType: captured.contentType,
+      })
+      if (result === 'denied') {
+        void showAlert(t('photo.saveFailed'), t('photo.saveDenied'))
+        return
+      }
+      showToast(t('photo.saved'))
+    } catch {
+      void showAlert(t('photo.saveFailed'), t('common.retry'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
   function send(): void {
     if (!captured || !conversationId) return
     sendSnap({ conversationId, item: captured, viewOnce: viewOnceForMode(mode) })
@@ -188,6 +215,8 @@ export default function SnapScreen() {
             onMode={pickMode}
             onRetake={() => setCaptured(null)}
             onSend={send}
+            saving={saving}
+            onSave={() => void save()}
           />
         ) : captured ? (
           <SnapPreview

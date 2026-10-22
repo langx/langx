@@ -33,7 +33,7 @@ const RECORDING = '#ff3b30'
  */
 
 /** Close at the top start, and whatever the state puts at the top end. */
-function StageTopBar({
+export function StageTopBar({
   onClose,
   children,
 }: {

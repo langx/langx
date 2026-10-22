@@ -59,3 +59,46 @@ describe('the v3 chat camera is only a drawing', () => {
     expect(ROUTE).toMatch(/if \(v3Look\) \{\s*return \(\s*<SnapViewfinderV3/)
   })
 })
+
+const PREVIEW = readFileSync(path.resolve(__dirname, '../screens/chat/SnapPreviewV3.tsx'), 'utf8')
+
+/*
+ * The preview's panel folds to a chip so the whole photo can be seen, and a
+ * Save in the top corner puts the shot in the phone's photos. Mobile vitest
+ * cannot render a screen, so these hold the promises that are easy to lose in
+ * a later redraw.
+ */
+describe('the v3 preview folds and saves', () => {
+  it('names both ends of the fold for a screen reader', () => {
+    expect(PREVIEW).toContain("accessibilityLabel={t('viewOnce.hideOptions')}")
+    expect(PREVIEW).toContain("accessibilityHint={t('viewOnce.showOptions')}")
+    expect(PREVIEW).toMatch(/accessibilityState=\{\{ expanded: false \}\}/)
+  })
+
+  it('folds on the UI thread, and not at all when motion is reduced', () => {
+    expect(PREVIEW).toMatch(/from 'react-native-reanimated'/)
+    expect(PREVIEW).toMatch(/unlessReduced\(reduce,/)
+    expect(PREVIEW).toMatch(/SPRING\.sheet/)
+  })
+
+  it('keeps Retake and Send outside the part that folds', () => {
+    const folding = PREVIEW.indexOf('styles.clip, optionsMotion')
+    const actions = PREVIEW.indexOf('<View style={styles.actions}>')
+    expect(folding).toBeGreaterThan(0)
+    expect(actions).toBeGreaterThan(folding)
+    expect(PREVIEW.slice(folding, actions)).not.toMatch(/viewOnce\.(retake|send)/)
+  })
+
+  it('names the Save button and leaves the saving to the route', () => {
+    expect(PREVIEW).toContain("accessibilityLabel={t('photo.save')}")
+    expect(PREVIEW).not.toMatch(/saveMediaToDevice|expo-media-library/)
+    expect(ROUTE).toMatch(/saveMediaToDevice\(/)
+  })
+
+  it('tells the person when a save is refused, and confirms one that worked', () => {
+    expect(ROUTE).toMatch(
+      /=== 'denied'\) \{\s*void showAlert\(t\('photo\.saveFailed'\), t\('photo\.saveDenied'\)\)/,
+    )
+    expect(ROUTE).toContain("showToast(t('photo.saved'))")
+  })
+})
