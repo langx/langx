@@ -1,3 +1,4 @@
+import { drawnFacePng, drawnFaceRev, FACE_OWNER_FIELDS, type FaceOwner } from '../avatars/surfaces'
 import {
   recapCalendar,
   recapHighlights,
@@ -47,6 +48,18 @@ export async function fetchCardAvatar(
   }
 }
 
+/**
+ * The drawn face for an owner without a photo, as a data URI: rendered in
+ * process rather than fetched, at 160px for the card's largest disc (120px on
+ * a story) in its full cut. Undefined for a photo, an official account or the
+ * old style, and the card draws the handle's initial as before.
+ */
+async function drawnCardAvatar(owner: FaceOwner): Promise<string | undefined> {
+  const rev = drawnFaceRev(owner)
+  const png = rev ? await drawnFacePng(rev, 160, 120) : null
+  return png ? `data:image/png;base64,${png.toString('base64')}` : undefined
+}
+
 /** "septembre" → "Septembre": the month is a headline on the card. */
 function capitalise(text: string, locale: string): string {
   const [first = '', ...rest] = [...text]
@@ -81,13 +94,15 @@ export async function recapCardContent(
     yearly ? recapForYear(db, userId, recap.month) : recapForMonth(db, userId, recap.month),
     db
       .collection<Profile>(COLLECTIONS.profiles)
-      .findOne({ _id: userId }, { projection: { avatarUrl: 1 } }),
+      .findOne({ _id: userId }, { projection: FACE_OWNER_FIELDS }),
   ])
   const format = new Intl.NumberFormat(recap.locale)
   // French groups digits with a narrow no-break space, which Nunito does not
   // have: satori drew "1204". The ordinary no-break space it does have.
   const show = (value: number): string => format.format(value).replace(/\u202f/g, '\u00a0')
-  const avatar = await fetchCardAvatar(profile?.avatarUrl, input.storagePublicBaseUrl)
+  const avatar =
+    (await fetchCardAvatar(profile?.avatarUrl, input.storagePublicBaseUrl)) ??
+    (profile ? await drawnCardAvatar(profile) : undefined)
   const content: RecapCardContent = {
     month: capitalise(input.monthName, recap.locale),
     ...(yearly

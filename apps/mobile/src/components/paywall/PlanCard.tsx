@@ -17,9 +17,9 @@ interface PlanCardProps {
   onSelect: () => void
   /** "Yearly", "Monthly". */
   title: string
-  /** What the store will charge, with its period — "$83.99 a year". The card's largest words. */
+  /** What the store will charge, with its period — "$79.99 a year". The card's largest words. */
   price: string
-  /** The computed figures under it — "$6.99 a month · 3 months free" — when there is an honest one. */
+  /** The computed figures under it — "$6.66 a month · 3 months free" — when there is an honest one. */
   badge?: string | null
   /** A quiet line for what the price does not say — a one-off payment that never renews. */
   detail?: string | null

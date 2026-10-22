@@ -554,11 +554,6 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
                 <Text style={[styles.handle, styles.hugStart]} numberOfLines={1}>
                   {handleLine}
                 </Text>
-                {user.pronouns ? (
-                  <Text style={[styles.pronouns, styles.hugStart]} numberOfLines={1}>
-                    {user.pronouns}
-                  </Text>
-                ) : null}
                 {/* Read-only, and the whole of what anybody else is told. */}
                 {active ? null : (
                   <View
@@ -906,7 +901,6 @@ const useStyles = makeStyles(({ v3 }) => ({
    * paragraph right-to-left instead moves the "@" to the far end.
    */
   hugStart: { alignSelf: 'flex-start', maxWidth: '100%' },
-  pronouns: { ...v3.type.caption, color: v3.colors.ink, fontWeight: '600' },
   statusTag: {
     alignSelf: 'flex-start',
     backgroundColor: v3.colors.onBlue,

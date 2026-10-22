@@ -148,11 +148,6 @@ export function SharedProfileV3({
               @{user.handle}
               {country ? ` · ${names.country(country.code)}` : ''}
             </Text>
-            {user.pronouns ? (
-              <Text style={styles.pronouns} numberOfLines={1}>
-                {user.pronouns}
-              </Text>
-            ) : null}
           </View>
         </View>
 
@@ -243,7 +238,6 @@ const useStyles = makeStyles(({ v3 }) => ({
   nameRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8] },
   name: { ...v3.type.display, color: v3.colors.ink, flexShrink: 1 },
   handle: { ...v3.type.callout, color: v3.colors.ink, fontWeight: '700' },
-  pronouns: { ...v3.type.caption, color: v3.colors.ink, fontWeight: '600' },
 
   languages: { flexDirection: 'row', gap: v3.space[8] },
   // A veil of white over the hue, as the board draws it: ink still reads on it.

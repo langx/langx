@@ -33,10 +33,14 @@ export const QUERY_CACHE_VERSION = '1'
 export const PERSIST_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000
 
 /**
- * The gap between two writes. The whole trimmed cache is serialised on every
- * write, so during an active chat this is what keeps the JS thread free.
+ * The gap between two writes. The whole trimmed cache — up to
+ * `PERSIST_BUDGET_CHARS` — is serialised on every write, so during an active
+ * chat this is what keeps the JS thread free. Thirty seconds rather than five:
+ * a socket patch every few seconds made the five-second throttle a write
+ * every five seconds, and `usePersistedQueries` writes once more when the app
+ * goes to the background, which is when the last half-minute would matter.
  */
-export const PERSIST_THROTTLE_MS = 5_000
+export const PERSIST_THROTTLE_MS = 30_000
 
 /**
  * The ceiling on the serialised cache, in characters.

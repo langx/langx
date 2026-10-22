@@ -57,8 +57,9 @@ const PLATFORMS: readonly { value: keyof MinVersion; label: string }[] = [
  * `minVersion` does block — it is the "update to continue" screen — and it is
  * here anyway because it is raised on a release day, not in an incident, and
  * the server refuses it above `latestVersion`, so the worst typo is a floor
- * the store can already satisfy. Maintenance and the flags, the controls that
- * can stop the app for everybody, are still in the script.
+ * the store can already satisfy. Maintenance, the control that stops the app
+ * for everybody, is still in the script; the flags are switched on the Flags
+ * page (`flags.tsx`), each switch audited.
  */
 export default function AdminSystemScreen() {
   useScreenInteractive()
@@ -325,7 +326,7 @@ export default function AdminSystemScreen() {
       {/*
        * One chip per flag, the ink ones on: read at a glance which of them
        * is lit, where a sentence of nine "name on/off" pairs had to be read
-       * to the end. Read only — the flags are the script's.
+       * to the end. Read only here — they are switched on the Flags page.
        */}
       <AdminHeadingV3 title={ADMIN.system.flags} />
       <View style={styles.flags}>

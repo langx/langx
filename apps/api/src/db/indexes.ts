@@ -25,7 +25,8 @@ export const INDEXES: Partial<IndexSpec> = {
   // `indexes` — field-level metadata is for the SQL migrator's column
   // constraints. Verified against a live Atlas sign-up: `account` came back
   // with the adapter's own `account_issuer_accountId_uidx` (the one table-level
-  // index Better Auth declares) and `user` with nothing but `_id_`. So
+  // index Better Auth 1.7.2 declared; 1.7.3 declares none, see
+  // RETIRED_INDEXES) and `user` with nothing but `_id_`. So
   // duplicate emails are only prevented by a read-then-write in application
   // code, and every session lookup — one per authenticated request — is a
   // collection scan.
@@ -44,8 +45,10 @@ export const INDEXES: Partial<IndexSpec> = {
     // Sign-out-everywhere and the account purge delete by user.
     { key: { userId: 1 }, name: 'session_userId_idx' },
   ],
-  // `account_issuer_accountId_uidx` is the adapter's own — not repeated here.
-  // This is the other access path: every account of one user.
+  // Better Auth finds an account by `(providerId, accountId)` and declares no
+  // index for it; its old `account_issuer_accountId_uidx` is dropped at boot
+  // (see RETIRED_INDEXES). This is the other access path: every account of
+  // one user.
   [COLLECTIONS.account]: [{ key: { userId: 1 }, name: 'account_userId_idx' }],
   // Email verification and password reset both look a token up by identifier.
   [COLLECTIONS.verification]: [{ key: { identifier: 1 }, name: 'verification_identifier_idx' }],
@@ -1352,6 +1355,27 @@ export const INDEXES: Partial<IndexSpec> = {
   ],
 }
 
+/**
+ * Indexes that something other than this file created and that must not
+ * survive, dropped at boot by {@link ensureIndexes}.
+ *
+ * `account_issuer_accountId_uidx` was Better Auth's own: 1.7.0–1.7.2 wrote an
+ * `issuer` on every account and created this unique on `(issuer, accountId)`
+ * at the first write. 1.7.3 went back to the 1.6 schema — accounts are found
+ * by `(providerId, accountId)` and `issuer` is no longer written — and its
+ * upgrade guide says to drop the index. Left in place, every new account has
+ * no `issuer`, so the index reads them all as one issuer and refuses the
+ * second provider that hands out an account id another provider already
+ * used. Dropping it here rather than from a console means every database
+ * that ran 1.7.2 (production, dev, a self-host) is cleaned the same way.
+ */
+const RETIRED_INDEXES: { collection: CollectionName; name: string }[] = [
+  { collection: COLLECTIONS.account, name: 'account_issuer_accountId_uidx' },
+]
+
+/** NamespaceNotFound and IndexNotFound: already gone, which is the goal. */
+const ALREADY_GONE = new Set([26, 27])
+
 export interface EnsureIndexesResult {
   collection: string
   created: string[]
@@ -1381,6 +1405,15 @@ export async function ensureIndexes(db: Db): Promise<EnsureIndexesResult[]> {
        */
       if (caught instanceof Error) caught.message = `${collection}: ${caught.message}`
       throw caught
+    }
+  }
+
+  for (const { collection, name } of RETIRED_INDEXES) {
+    try {
+      await db.collection(collection).dropIndex(name)
+    } catch (caught) {
+      const code = (caught as { code?: number }).code
+      if (code === undefined || !ALREADY_GONE.has(code)) throw caught
     }
   }
 
