@@ -116,14 +116,16 @@ export function useNewChat() {
     } catch {
       // Nothing to add to the refusal that already happened.
     }
-    if (!conversationId) {
+    const userId = session?.user.id
+    if (!conversationId || !userId) {
       router.replace('/(app)/(tabs)/chats')
       return
     }
     // Added to what is stored rather than written over it: a thread reached
     // this way can already be holding rows from a tunnel.
-    const stored = await loadUnsent(conversationId)
+    const stored = await loadUnsent(userId, conversationId)
     await saveUnsent(
+      userId,
       conversationId,
       addUnsent(stored, {
         clientId: newClientId(Date.now(), Math.random()),
