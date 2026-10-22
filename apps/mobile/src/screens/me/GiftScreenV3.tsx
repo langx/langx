@@ -119,7 +119,11 @@ export function GiftScreenV3() {
     tilt.set(
       withSequence(withTiming(WIGGLE_DEG, leg), withTiming(-WIGGLE_DEG, leg), withTiming(0, leg)),
     )
-    return () => cancelAnimation(tilt)
+    // Home as well as stopped: a claim that fails mid-wiggle leaves no tilt.
+    return () => {
+      cancelAnimation(tilt)
+      tilt.set(0)
+    }
   }, [phase, reduceMotion, tilt])
 
   // Confetti only for a gift with something in it, and never under reduce motion.

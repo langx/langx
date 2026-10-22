@@ -143,6 +143,12 @@ export default function EchoSessionScreen() {
    * does a recognition card, which has no keyboard to dismiss.
    */
   const revealedAt = useRef(0)
+  /*
+   * The deck position last graded. Two taps landing before the re-render that
+   * moves the deck on would otherwise both grade the card on screen: two
+   * entries for one answer, and the second card skipped.
+   */
+  const gradedIndex = useRef(-1)
 
   /** True when the deck came off the device rather than off the server. */
   const [offline, setOffline] = useState(false)
@@ -268,9 +274,12 @@ export default function EchoSessionScreen() {
     if (!card) return
     // See `revealedAt`. A grade this close to the reveal is the same tap.
     if (Date.now() - revealedAt.current < REVEAL_GUARD_MS) return
-    // After the guard, so a tap it swallows is not felt as a grade. v3's
-    // tiles only: today's look stays as it is.
-    if (v3Home) void selection()
+    if (gradedIndex.current === index) return
+    gradedIndex.current = index
+    // After the guards, so a tap they swallow is not felt as a grade. v3's
+    // tiles only: today's look stays as it is. Not on the last card, whose
+    // done screen buzzes for the session: one haptic per action.
+    if (v3Home && !(deck && index + 1 >= deck.length)) void selection()
     const entry: Graded = {
       // Hermes has no `crypto.randomUUID`; this is the same minter the unsent
       // message rows use, for the same reason.

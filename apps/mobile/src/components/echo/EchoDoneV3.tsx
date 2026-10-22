@@ -218,7 +218,8 @@ export function EchoDoneV3({
             </View>
             {plan.milestone ? (
               /*
-               * Day 7, 30 or 100, reached through Echo: the milestone by name
+               * A streak milestone (`TOKEN_RULES.streakMilestones`) reached
+               * through Echo: the milestone by name
                * and what it paid, the bonus landing on its own bounce. Not
                * "streak kept", which is every other day's line.
                */

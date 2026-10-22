@@ -653,7 +653,11 @@ function ActiveBody({
                 ? t('badges.earnedOf', { earned: shelf.earnedCount, total: shelf.badges.length })
                 : undefined
             }
-            fresh={fresh.size > 0 ? t('badgesV3.newChip') : undefined}
+            fresh={
+              fresh.size > 0
+                ? { label: t('badgesV3.newChip'), key: [...fresh].sort().join(',') }
+                : undefined
+            }
             onPress={() => router.push('/(app)/badges')}
           />
           {next ? (

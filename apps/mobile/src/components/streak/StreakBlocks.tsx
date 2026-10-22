@@ -43,10 +43,13 @@ export interface WeekDayView {
  * element with a sentence for a label: seven rings read one by one would be
  * seven "image"s.
  *
- * Once a day, the first time the screen shows today done, today's disc pops
- * on `SPRING.bounce` and the flame gives one bounce: the day the person just
- * kept is acknowledged, once, with no loop and no haptic. Every later visit
- * that day — and reduce motion — is the hero standing still.
+ * Once per day per run of the app, the first time the screen shows today
+ * done, today's disc pops on `SPRING.bounce` and the flame gives one bounce:
+ * the day the person just kept is acknowledged, with no loop and no haptic.
+ * Every later visit that day in the same run — and reduce motion — is the
+ * hero standing still. `claimCelebration` remembers per run, so a cold start
+ * the same day plays it again; storing the day would buy little for a
+ * moment this small.
  */
 export function StreakHero({
   count,

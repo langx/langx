@@ -1,8 +1,9 @@
 import Feather from '@expo/vector-icons/Feather'
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
+import { claimCelebration } from '../../lib/celebration'
 import { SPRING } from '../../lib/theme/motion'
 import { useLocale } from '../../i18n'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
@@ -344,13 +345,16 @@ export function MeSectionHead({
 }: {
   title: string
   count?: string | undefined
-  /** "New", when the section holds something earned and not yet seen. */
-  fresh?: string | undefined
+  /**
+   * "New", when the section holds something earned and not yet seen, and a
+   * key naming what — the chip pops once per key, not on every mount.
+   */
+  fresh?: { label: string; key: string } | undefined
   onPress: () => void
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
-  const label = [title, fresh, count].filter(Boolean).join(', ')
+  const label = [title, fresh?.label, count].filter(Boolean).join(', ')
   return (
     <Pressable
       accessibilityRole="button"
@@ -361,7 +365,7 @@ export function MeSectionHead({
       <Text style={styles.sectionTitle} accessibilityRole="header">
         {title}
       </Text>
-      {fresh ? <FreshChip label={fresh} /> : null}
+      {fresh ? <FreshChip label={fresh.label} eventId={fresh.key} /> : null}
       {count ? <Text style={styles.sectionCount}>{count}</Text> : null}
       <Chevron color={v3.colors.muted} />
     </Pressable>
@@ -370,15 +374,27 @@ export function MeSectionHead({
 
 /**
  * The yellow "New" beside a section's title: a badge was earned somewhere
- * other than the badges page, and this is where it is waiting. It pops once
- * on `SPRING.select` when it appears, and is simply there with reduce motion.
+ * other than the badges page, and this is where it is waiting. It pops on
+ * `SPRING.select` the first time this run shows these badges as new
+ * (`claimCelebration`, keyed by them); coming back to the tab, or reduce
+ * motion, is the chip simply there.
  */
-function FreshChip({ label }: { label: string }) {
+function FreshChip({ label, eventId }: { label: string; eventId: string }) {
   const styles = useStyles()
   const reduce = useReduceMotion()
-  const shown = useSharedValue(reduce ? 1 : 0)
+  const shown = useSharedValue(1)
+  const decided = useRef<string | null>(null)
+  // Decided once per key, in an effect: claiming is a side effect, and the
+  // ref keeps a development double-run from finding it already claimed.
   useEffect(() => {
-    shown.set(reduce ? 1 : withSpring(1, SPRING.select))
+    if (decided.current === eventId) return
+    decided.current = eventId
+    if (!claimCelebration(`me-fresh:${eventId}`) || reduce) return
+    shown.set(0)
+    shown.set(withSpring(1, SPRING.select))
+  }, [eventId, reduce, shown])
+  useEffect(() => {
+    if (reduce) shown.set(1)
   }, [reduce, shown])
   const motion = useAnimatedStyle(() => ({
     opacity: Math.min(1, shown.get() * 2),
