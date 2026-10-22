@@ -12,6 +12,7 @@ import {
   type View,
 } from 'react-native'
 import { spacing } from '../lib/theme'
+import { KEYBOARD_EASING } from './useKeyboardInset'
 
 /**
  * How long Android's own scroll-the-focused-child-into-view takes, plus a
@@ -163,12 +164,12 @@ export function useKeyboardClearance(scrollTo: (offset: number, animated: boolea
   useEffect(() => {
     if (!ios) return
     // Follows `keyboardWillChangeFrame`'s timing: the keyboard's own
-    // duration, and a linear curve since the keyboard's is private.
+    // duration, and the fit to its private curve (`KEYBOARD_EASING`).
     const follow = (event: KeyboardEvent, toValue: number, done?: () => void) =>
       Animated.timing(pad, {
         toValue,
         duration: event.duration || 250,
-        easing: (t) => t,
+        easing: KEYBOARD_EASING,
         useNativeDriver: false,
       }).start(({ finished }) => {
         if (finished) done?.()

@@ -53,20 +53,39 @@ describe('proBadgeGap', () => {
   })
 })
 
+/** The star's corners, which it is written as: M, then L to each, then Z. */
+function corners(path: string): [number, number][] {
+  const n = numbers(path)
+  return n.flatMap((value, index) => (index % 2 === 0 ? [[value, n[index + 1]!]] : []))
+}
+
 describe('proBadgeArt', () => {
-  it('keeps the word inside the tablet at both cuts', () => {
+  it('keeps the star and the word inside the pill at both cuts', () => {
     for (const height of [10, 24]) {
       const art = proBadgeArt(height)
-      const all = xs(art.letters + art.o)
-      // Every x, plus half a stroke, stays inside the tablet's 1-unit inset,
-      // with the same padding left and right.
-      const left = Math.min(...all) - art.stroke / 2
-      const right = Math.max(...all) + art.stroke / 2
+      const star = corners(art.star).map(([x]) => x)
+      const word = xs(art.letters + art.o)
+      // Every x, plus half its stroke, stays inside the pill's 1-unit inset,
+      // and the two ends' padding is within a unit of each other.
+      const left = Math.min(...star) - art.starRound / 2
+      const right = Math.max(...word) + art.stroke / 2
       expect(left).toBeGreaterThan(1)
       expect(right).toBeLessThan(art.width - 1)
-      expect(left).toBeCloseTo(art.width - right, 0)
-      expect(numbers(art.letters + art.o).every(Number.isFinite)).toBe(true)
+      expect(Math.abs(left - (art.width - right))).toBeLessThan(1)
+      // The star ends before the word begins.
+      expect(Math.max(...star) + art.starRound / 2).toBeLessThan(Math.min(...word) - art.stroke / 2)
+      expect(numbers(art.star + art.letters + art.o).every(Number.isFinite)).toBe(true)
     }
+  })
+
+  it('sets the star level with the word, inside the pill', () => {
+    const art = proBadgeArt(24)
+    const ys = corners(art.star).map(([, y]) => y)
+    const top = Math.min(...ys) - art.starRound / 2
+    const bottom = Math.max(...ys) + art.starRound / 2
+    expect(top).toBeGreaterThan(1)
+    expect(bottom).toBeLessThan(PRO_BADGE_ART_HEIGHT - 1)
+    expect((top + bottom) / 2).toBeCloseTo(PRO_BADGE_ART_HEIGHT / 2, 1)
   })
 
   it('thickens the strokes for the small cut, and widens to keep the spacing', () => {
@@ -76,10 +95,10 @@ describe('proBadgeArt', () => {
     expect(small.width).toBeGreaterThan(large.width)
   })
 
-  it('reads as a tablet, not a square or a strip', () => {
+  it('reads as a pill with room for its star, not a strip', () => {
     const { width } = proBadgeArt(24)
-    expect(width / PRO_BADGE_ART_HEIGHT).toBeGreaterThan(1.3)
-    expect(width / PRO_BADGE_ART_HEIGHT).toBeLessThan(1.8)
+    expect(width / PRO_BADGE_ART_HEIGHT).toBeGreaterThan(2)
+    expect(width / PRO_BADGE_ART_HEIGHT).toBeLessThan(2.5)
   })
 })
 

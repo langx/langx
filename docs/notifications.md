@@ -531,8 +531,10 @@ reading is a thing the reader did, and the channels declining to repeat it
 back is the only reasonable answer to it.
 
 The unread section and the suggestions carry **faces**: up to three people,
-photo fetched from our own bucket and attached to the mail, initials on a
-coloured disc when there is none. Each face links to `app.langx.io/<handle>`.
+photo fetched from our own bucket and attached to the mail. Without a photo,
+the person's v3 drawn face is rendered by the API and attached the same way
+(`DEFAULT_AVATAR_STYLE`). Initials on a coloured disc are left for when
+neither can be had. Each face links to `app.langx.io/<handle>`.
 
 The badge section is the one that cannot be recomputed at seven o'clock: the
 round-up overwrites `notifiedBadgeIds` at six, so it leaves what it found in

@@ -2,6 +2,7 @@ import { GENERATED_AVATAR_BACKGROUNDS } from '@langx/shared'
 import type { InlineAsset } from './inlineAssets'
 import { inlineSrc } from './logo'
 import { isOwnBucketUrl } from '../lib/assertOwnBucket'
+import { drawnFacePng } from '../modules/avatars/surfaces'
 
 /**
  * Faces in an email, which is harder than it sounds.
@@ -12,10 +13,12 @@ import { isOwnBucketUrl } from '../lib/assertOwnBucket'
  * recipient, so it cannot be a build-time constant: the bytes are fetched
  * when the mail is built and attached to that one message.
  *
- * The generated avatar is not an option here. It is an SVG, and Gmail drops
- * `<svg>` from mail bodies and will not render an `<img>` pointing at one
- * either — so somebody with no photo gets initials on a coloured disc drawn
- * in HTML, which needs no image at all and therefore cannot fail to render.
+ * The Notionists avatar was never an option here. It is an SVG, and Gmail
+ * drops `<svg>` from mail bodies and will not render an `<img>` pointing at
+ * one either. The v3 drawn face is a PNG the API renders itself, so somebody
+ * with no photo now gets their face inlined like a photo (`drawnFaceAsset`);
+ * initials on a coloured disc, drawn in HTML, remain the fallback when there
+ * is neither.
  *
  * A fetch that is slow, large or broken falls back to those initials. A
  * digest is worth sending without a face; it is not worth holding a
@@ -92,6 +95,21 @@ export async function fetchAvatarAsset(
     // A slow bucket, a 404, a body that was not an image: all the same answer.
     return null
   }
+}
+
+/**
+ * The drawn face as an inline attachment, at 96px for the 56px disc so it is
+ * sharp on a retina screen, in the cut for 56. `null` with no face to draw —
+ * a photo, an official account, the old style — and the row draws initials.
+ */
+export async function drawnFaceAsset(
+  rev: string | undefined,
+  cid: string,
+): Promise<InlineAsset | null> {
+  if (!rev) return null
+  const png = await drawnFacePng(rev, 96, 56)
+  if (!png) return null
+  return { cid, filename: `${cid}.png`, contentType: 'image/png', base64: png.toString('base64') }
 }
 
 /**

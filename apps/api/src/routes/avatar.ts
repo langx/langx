@@ -2,6 +2,7 @@ import {
   avatarOptionsFor,
   DEFAULT_AVATAR_CUTS,
   DEFAULT_AVATAR_SIZES,
+  DEFAULT_AVATAR_STYLE,
   defaultAvatarCutFor,
   GENERATED_AVATAR_BACKGROUNDS,
   OFFICIAL_HANDLES,
@@ -92,6 +93,21 @@ export const avatarRoutes: FastifyPluginAsyncZod = async (app) => {
     },
     async (request, reply) => {
       const { seed } = request.params
+      /*
+       * After the v3 switch (`DEFAULT_AVATAR_STYLE`) a build released before
+       * it — which asks for this URL for every photoless face — is sent to the
+       * v3 face instead, so it shows the face every newer screen shows. 160px
+       * in the flat cut: those builds draw it anywhere from a 36pt row to a
+       * 128pt hero, and the flat cut is the one that reads at both ends. They
+       * pick it up as their week-long cache of the old SVG runs out; the
+       * redirect itself is cached for a day, so undoing the switch is too.
+       */
+      if (DEFAULT_AVATAR_STYLE === 'v3') {
+        return reply
+          .header('cache-control', `public, max-age=${DAY_SECONDS}`)
+          .headers(EMBEDDABLE)
+          .redirect(`/public/avatar/v3/${seed}?s=160&c=flat`, 302)
+      }
       /*
        * An id nobody holds gets a face too, 200 rather than 404. With a lookup
        * behind it, answering "not found" would make this a way to ask whether

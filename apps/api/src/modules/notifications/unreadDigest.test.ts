@@ -139,10 +139,16 @@ describe('the unread-message digest', () => {
 
     const message = sender.messages[0]
     expect(message?.html).toContain(`src="cid:avatar-${withPhoto}"`)
-    expect(message?.attachments?.map((asset) => asset.cid)).toEqual([`avatar-${withPhoto}`])
-    // Kenji has no photo, so his disc is initials rather than a broken image.
-    expect(message?.html).not.toContain(`cid:avatar-${without}`)
-    expect(message?.html).toContain('>K<')
+    // Kenji has no photo, so his is the drawn face every screen shows him
+    // with, rendered here and inlined like the photo — never fetched.
+    expect(message?.attachments?.map((asset) => asset.cid)).toEqual([
+      `avatar-${withPhoto}`,
+      `avatar-${without}`,
+    ])
+    expect(message?.html).toContain(`src="cid:avatar-${without}"`)
+    const drawn = message?.attachments?.find((asset) => asset.cid === `avatar-${without}`)
+    expect(drawn?.contentType).toBe('image/png')
+    expect(message?.html).not.toContain('>K<')
   })
 
   /** A bucket that is slow or gone costs the digest a photo, never the mail. */

@@ -1423,6 +1423,8 @@ to a point where the app still works and the answer can be "not now".
 
 ## The panel may raise the banner, and may not touch anything else
 
+> **Amended 21 October 2026 — see _The flags are switched from the panel, and every switch is audited_ below.**
+
 `scripts/maintenance.ts` is a script rather than an admin endpoint on purpose,
 and that reasoning holds for everything in it but one field. `latestVersion`
 now also has a control on the operator panel's system screen, through
@@ -1918,6 +1920,8 @@ it. `GENDER_CHANGE_TOO_SOON` carries a `retryAt` the way the timezone cooldown
 does, and exists for the stale client and the racing tap.
 
 ## Pronouns are free text, and gender is not
+
+> **Amended 21 October 2026 — see _v3 draws no pronouns_ below.**
 
 `pronouns` sits in `updateProfileSchema` beside `bio`, editable as often as
 anybody likes, while `gender` two paragraphs up is rate-limited. The line
@@ -5663,6 +5667,23 @@ model. It carries no message text, message id or user id.
 button. People who suspect their partner of AI-written replies trust them
 less, and a language exchange is a trust product.
 
+_Superseded in October 2026, at the product owner's request:_ Reply ideas is in
+the v3 thread after all. The trust concern still stands, so what reached the
+thread was shaped to stay a nudge rather than a ghostwriter:
+
+- **It is asked for, never offered unprompted.** A chip appears only when the
+  other person's newest line is unanswered and the composer is empty. Nothing
+  is asked until it is tapped, and each fresh answer spends the person's own
+  Copilot allowance.
+- **An idea only fills the draft.** The person still reads it, can change it,
+  and sends it themselves. Nothing ever goes out from the card.
+- **It is gated like the rest of Copilot.** It needs the operator's
+  allow-list and consent, and it refuses a chat with an under-age partner.
+  Copilot is still tried by a few people, not everybody.
+
+If the trust cost shows up in what partners say, this is the first piece of
+Copilot to take back out.
+
 ## The feed and the wallet get switches of their own
 
 Two kinds joined the six: `social` — a follow, a correction or a recorded
@@ -7235,8 +7256,11 @@ at all until a build carrying it ships. This is the same constraint
 
 ## A yearly price is a `.99` month times twelve, plus 0.11
 
-> **Still in force** under the single plan (_One plan: Pro_): Pro is sold at
-> the Fluent prices this section set, and the yearly-price rule is unchanged.
+> **Amended 21 October 2026 — see _The yearly price ends in 9.99_ below.**
+> Where the yearly stood at 83.99 or 95.99 in USD, EUR or GBP (and EUR 71.99 on
+> Play) it was lowered to the `…9.99` below it, and its per-month figure no longer ends in `.99`. The
+> rule still describes every storefront that kept its price, and why the
+> division is truncated.
 
 On 24 September 2026 the prices went up — Fluent $9.99 a month or $83.99 a
 year, Polyglot $16.99 or $131.99 — and every figure on the paywall has to end in
@@ -7935,6 +7959,10 @@ more.
 ## One plan: Pro
 
 > **Amended 18 October 2026 — see _The welcome pack waits for a purchase or a store's free week_ below.**
+>
+> **Amended 21 October 2026 — see _The yearly price ends in 9.99_ below.** The
+> US yearly is $79.99, and the yearly rule is no longer `.99 × 12 + 0.11` for
+> USD, EUR and GBP.
 
 Two paid plans confused people: Fluent (`pro`) and Polyglot (`pro_plus`) read
 as two products to choose between, and every large competitor sells one. On
@@ -8335,6 +8363,21 @@ removes the daily limit on new chats. The ✕ closes it in one tap.
 The card has no event of its own; `paywall_viewed` with `first_reply` counts
 its taps. What old builds see: nothing — the sources exist only in this JS, and
 a link naming one reaches an older paywall as `gate`.
+
+**Amended 20 October 2026: eight app icons are free, and only a Pro tile is a
+road.** Behic asked for the picker to follow the v3 design with new icons, some
+free and some Pro. There are now seventeen: eight free (Classic, Night, Split,
+Contrast, Paper Cut, Running Stitch, Woven Reed, Linocut) and nine with Pro.
+Contrast is free because an accessibility icon is never paid. `appIconTap` takes
+the icon and checks `PRO_ICONS`: a free tile is chosen on any plan and does not
+wait for the profile, since there is nothing to sell; a Pro tile keeps the
+rules above. On the free plan, the v3 picker first opens a short sheet saying
+what Pro includes, and its "See Pro" opens the paywall with `app_icon`. When
+Pro ends, a Pro icon already on the home screen stays there: switching it back
+would make the OS show a notice the person did not ask for. In the picker it
+is still marked current but locked with its Pro tag, and tapping it opens the
+sheet.
+`KEEP_PRO_ICON_AFTER_PRO_ENDS` in `src/lib/appIconList.ts` flips this.
 
 ## Gift codes give time, not discounts
 
@@ -9218,3 +9261,81 @@ skipped is a broken promise.
 
 The decision is made once, when the row's end is decided. A row that already
 has an end may already be at RevenueCat, so it finishes the way it started.
+
+## The flags are switched from the panel, and every switch is audited
+
+**21 October 2026.** `appConfig.flags` has a page on the operator panel, and
+`POST /admin/app-config/flags` behind it. This amends _The panel may raise the
+banner, and may not touch anything else_. That entry kept the flags in
+`scripts/maintenance.ts` because they can refuse somebody service. Since then
+they have become mostly rollout stages and consents rather than kill switches:
+`v3Home`, `proWeek`, `copilotEnabled`, `promoPaywallLinks` and the rest start
+off and go on when Behic decides. A decision that needs a machine that can
+reach Mongo is one that waits for that machine.
+
+**Maintenance stays in the script.** The panel is 503 while maintenance is on,
+so it cannot be the switch that turns it off, and that reasoning is unchanged.
+The script's `flag` command stays too, for the day the API is too unwell to
+sign anybody in.
+
+**Every switch is audited.** Each one is an `appConfig.flag` row with the name
+and the value, like every other panel action. A flag that went on and nobody
+remembers turning on is a mystery a week later.
+
+**Only a known name, only a boolean.** The name is checked against the flags
+schema's own keys, and the body is strict. The write sets one dotted path,
+`flags.<name>`, with the name taken from that list rather than read off the
+request. It does not write the flags whole from a cached read. The cache is per
+machine, so two switches made seconds apart on two machines would undo each
+other, and the audit log would still say both had stuck. The audit row is
+best-effort like every panel action's: a failed audit insert is logged and does
+not undo the switch. `captchaRequired` keeps its own route
+beside the minimum version, because it is thrown in step with it. Conditions a
+pull request asked for (`promoPaywallLinks`, `stickerGifts`) are shown as a
+caution, not a lock. Whether they are met is the operator's call, and the app
+cannot see it.
+
+## v3 draws no pronouns
+
+**21 October 2026.** The v3 profile, the Me hero and the shared page no longer
+draw `pronouns`, and v3's Edit profile no longer asks for them. On the profile
+the line sat under the handle and repeated the gender mark beside the name —
+"he" under a ♂ — and somebody who keeps their gender to themselves has no mark
+and is left without one, with no word standing in for it.
+
+- **Nothing is deleted.** The field stays in the schemas and in the stored
+  profiles, and the API still returns it. The old look, which is what the app
+  shows with `v3Home` off, still draws and edits it. v3's save leaves the key
+  out of its PATCH, so a value written before is kept, not cleared.
+- **The form goes with the line.** Its hint promised the pronouns were shown on
+  your profile. With nothing in v3 drawing them that promise would be false,
+  and a value nobody can see is better not asked for.
+
+What _Pronouns are free text, and gender is not_ says about the field still
+holds; its reason for being on `sharedProfileSchema` now holds for the old look
+only.
+
+## The yearly price ends in 9.99
+
+**21 October 2026.** Pro's yearly price was lowered wherever it ended in 83.99
+or 95.99 — and 71.99 on Play — rounding it down to the next `…9.99`: $83.99 →
+$79.99, €95.99 → €89.99, £83.99 → £79.99, EUR 71.99 → 69.99 in eight West and
+Central African Play regions. App Store from 23 October, Play live on 21 October, and
+on the web a new product, `langx_pro_yearly_v2` at $79.99, because web prices
+cannot be edited. Monthly prices did not move. The release runbook (_One plan:
+Pro_) has the storefront counts.
+
+- **The yearly keeps the clean ending; the month gives way.** The yearly is
+  the charge on the card and in the trial line. The per-month figure is still
+  the truncated division (`perMonthPrice.ts`), so the US paywall now reads
+  "$6.66 a month" rather than a `.99`. That replaces the 24 September rule
+  (12 × a `.99` month + 0.11) for these storefronts.
+- **A cut and not a rise**, so nobody's price goes up: storefronts that already
+  ended in `9.99` (CAD/AUD 119.99, TRY 1,799.99, NZD 179.99) or have no `x9.99`
+  point near them on Apple's ladder (JPY, INR, CHF and the rest) are unchanged.
+  Existing Play subscribers keep their old price.
+- **"3 months free" survives.** `floor(12 − 79.99 ÷ 9.99)` is 3, and so is every
+  storefront in the runbook's table. A lower yearly can only add months: where
+  the monthly is above the usual one — USD 89.99 against $11.99, EUR 69.99
+  against €8.99 — the card now reads "4 months free", computed as before from
+  the store's own prices. Nothing on the paywall is typed.

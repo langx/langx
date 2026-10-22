@@ -1,5 +1,6 @@
 import { isPaidTier, PRO_BENEFITS, type PlanTier, type ProBenefit } from '@langx/shared'
 import type { InfiniteData } from '@tanstack/react-query'
+import { isProIcon, type AppIcon } from './appIconList'
 import type { ConversationPageDto } from './conversationCache'
 import { BENEFIT_COPY, COMPARE_LEAD } from './paywallBenefits'
 
@@ -37,12 +38,16 @@ export function showsSeePlans(viewer: RoadViewer & { gift: boolean }): boolean {
 }
 
 /**
- * What a tap on a tile in the app-icon picker does. Pro chooses — a gift
- * included, since it holds everything Pro does — and the free plan is shown
- * the paywall (source `app_icon`). Before the profile has loaded it does
- * nothing: a subscriber's tap must never land on a sale.
+ * What a tap on a tile in the app-icon picker does. A free icon is chosen on
+ * any plan, at once: there is nothing to sell, so nothing to wait for. A Pro
+ * icon (`PRO_ICONS`) is chosen by Pro, a gift included since it holds
+ * everything Pro does, and on the free plan leads to the paywall (source
+ * `app_icon`; the v3 picker puts its short Pro sheet first). Before the
+ * profile has loaded a Pro tile does nothing: a subscriber's tap must never
+ * land on a sale.
  */
-export function appIconTap(viewer: RoadViewer): 'choose' | 'paywall' | 'wait' {
+export function appIconTap(icon: AppIcon, viewer: RoadViewer): 'choose' | 'paywall' | 'wait' {
+  if (!isProIcon(icon)) return 'choose'
   if (!viewer.loaded) return 'wait'
   return isPaidTier(viewer.tier) ? 'choose' : 'paywall'
 }

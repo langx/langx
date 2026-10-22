@@ -448,16 +448,17 @@ const v3LightColors = {
    */
   stageTile: '#2a2d33',
   /**
-   * The PRO badge: a tablet with the word cut out of it. Ink with a lilac
-   * word on the ground in light — the plan's violet family, lifted until it
-   * reads on ink — and on every partner hue in both schemes, where ink is the
-   * one colour that holds. On the dark ground an ink tablet would sink, so it
-   * turns to the plan's lifted violet with an ink word.
+   * The PRO badge: a pill in a deep shade of the plan's violet, with a white
+   * star and word. Deep enough in light to stand off the ground and every
+   * partner hue — lilac, the nearest, included. On the dark ground that
+   * violet would sink, so there it is lifted, still dark enough for the white
+   * on it.
    */
-  proTablet: '#14161b',
-  proWord: '#c9b8ff',
-  /** The word on an ink tablet, wherever the tablet is ink: on a hue, in both schemes. */
-  proWordOnInk: '#c9b8ff',
+  proBadge: '#5b21b6',
+  /** The pill on a partner hue, in both schemes: the deep violet clears all six. */
+  proBadgeOnHue: '#5b21b6',
+  /** The star and the word, on either pill. */
+  onProBadge: '#ffffff',
 } as const
 
 export type V3Colors = { readonly [K in keyof typeof v3LightColors]: string }
@@ -493,9 +494,9 @@ const v3DarkColors: V3Colors = {
   hueRingFaint: 'rgba(20, 22, 27, 0.16)',
   stageScrim: 'rgba(12, 13, 16, 0.62)',
   stageTile: '#2a2d33',
-  proTablet: '#9b83ff',
-  proWord: '#14161b',
-  proWordOnInk: '#c9b8ff',
+  proBadge: '#7c3aed',
+  proBadgeOnHue: '#5b21b6',
+  onProBadge: '#ffffff',
 }
 
 /**

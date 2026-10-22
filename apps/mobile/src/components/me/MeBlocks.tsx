@@ -38,7 +38,6 @@ export interface MeHeroView {
   handleLine: string
   /** "Spanish · learning English" */
   languagesLine?: string | undefined
-  pronouns?: string | undefined
   pro: boolean
   /** The worn title's id, drawn as its badge. */
   titleId?: string | undefined
@@ -183,11 +182,6 @@ export function MeHero({ view }: { view: MeHeroView }) {
           {view.languagesLine ? (
             <Text style={styles.languages} numberOfLines={2}>
               {view.languagesLine}
-            </Text>
-          ) : null}
-          {view.pronouns ? (
-            <Text style={styles.languages} numberOfLines={1}>
-              {view.pronouns}
             </Text>
           ) : null}
           {/* On a line of their own, so a long handle and city keep theirs. */}

@@ -43,6 +43,7 @@ export function BadgeDetailSheet({
   rung,
   mine,
   onClose,
+  onDismiss,
   onShare,
   onAction,
   pin,
@@ -51,6 +52,11 @@ export function BadgeDetailSheet({
   rung: Rung | null
   mine: boolean
   onClose: () => void
+  /**
+   * The sheet has finished sliding away — iOS only, as `Modal`'s own is. What
+   * Share opens waits for it there.
+   */
+  onDismiss?: (() => void) | undefined
   onShare: (name: string) => void
   onAction: (action: NonNullable<ReturnType<typeof badgeAction>>) => void
   /** Your own earned badge: whether it is pinned, and how to change that. */
@@ -241,6 +247,7 @@ export function BadgeDetailSheet({
       animationType={reduce ? 'none' : 'slide'}
       statusBarTranslucent
       onRequestClose={onClose}
+      onDismiss={onDismiss}
     >
       <View style={styles.root}>
         <Pressable

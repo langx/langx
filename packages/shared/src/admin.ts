@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { isVersion, minVersionSchema } from './appConfig'
+import { appConfigSchema, isVersion, minVersionSchema } from './appConfig'
 import { mediaSchema } from './media'
 import {
   MODERATION_PAGE_SIZE_DEFAULT,
@@ -200,7 +200,8 @@ export const adminMinVersionSchema = adminLatestVersionSchema
 export type AdminMinVersionInput = AdminLatestVersionInput
 
 /**
- * Turning `flags.captchaRequired` on or off — the one flag the panel writes.
+ * Turning `flags.captchaRequired` on or off. The other flags are switched on
+ * the Flags page through `adminFlagSchema`; this one stays on the system screen.
  *
  * It sits with `minVersion` rather than with the kill switches in
  * `scripts/maintenance.ts` for `minVersion`'s reason: it is thrown on a release
@@ -209,6 +210,26 @@ export type AdminMinVersionInput = AdminLatestVersionInput
  */
 export const adminCaptchaRequiredSchema = z.object({ required: z.boolean() })
 export type AdminCaptchaRequiredInput = z.infer<typeof adminCaptchaRequiredSchema>
+
+/**
+ * The flags the panel's Flags page may switch: every key of the flags schema
+ * but `captchaRequired`, which keeps its own route beside the minimum version
+ * because it is thrown in step with it.
+ *
+ * Drawn from the schema's own keys rather than listed, so a flag added there
+ * is switchable here without a second edit, and a name the schema does not
+ * know is a 400 rather than a new field in the stored document.
+ */
+export const adminFlagNameSchema = appConfigSchema.shape.flags.keyof().exclude(['captchaRequired'])
+export type AdminFlagName = z.infer<typeof adminFlagNameSchema>
+export const ADMIN_FLAG_NAMES = adminFlagNameSchema.options
+
+/**
+ * Switching one flag. Strict, so the body is a name and a boolean and nothing
+ * else: no second key rides along into the write, and `"true"` is not `true`.
+ */
+export const adminFlagSchema = z.strictObject({ flag: adminFlagNameSchema, value: z.boolean() })
+export type AdminFlagInput = z.infer<typeof adminFlagSchema>
 
 /**
  * Every mutating thing the panel can do, as the audit log names it.
@@ -250,6 +271,7 @@ export const ADMIN_ACTIONS = [
   'appConfig.latestVersion',
   'appConfig.minVersion',
   'appConfig.captchaRequired',
+  'appConfig.flag',
 ] as const
 export type AdminActionName = (typeof ADMIN_ACTIONS)[number]
 

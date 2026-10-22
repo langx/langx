@@ -31,12 +31,18 @@ export function BadgeEarnedSheet({
   shelf,
   rung,
   onClose,
+  onDismiss,
   onShare,
   pin,
 }: {
   shelf: Shelf | null
   rung: Rung | null
   onClose: () => void
+  /**
+   * The sheet has finished sliding away — iOS only, as `Modal`'s own is. What
+   * Share opens waits for it there.
+   */
+  onDismiss?: (() => void) | undefined
   /** Left out for a badge that cannot be shared (the token ones). */
   onShare?: ((name: string) => void) | undefined
   /** Your own earned badge: whether it is pinned, and how to change that. */
@@ -56,7 +62,8 @@ export function BadgeEarnedSheet({
     if (id && claimCelebration(`badge:${id}`)) void notification('success')
   }, [id])
 
-  if (!shelf || !rung) return <Modal visible={false} transparent />
+  // Closing renders this branch, so it is the one whose `onDismiss` fires.
+  if (!shelf || !rung) return <Modal visible={false} transparent onDismiss={onDismiss} />
 
   const { badge } = rung
   const name = badgeName(words, badge)
@@ -76,6 +83,7 @@ export function BadgeEarnedSheet({
       animationType={reduce ? 'none' : 'slide'}
       statusBarTranslucent
       onRequestClose={onClose}
+      onDismiss={onDismiss}
     >
       <View style={styles.root}>
         <Pressable
