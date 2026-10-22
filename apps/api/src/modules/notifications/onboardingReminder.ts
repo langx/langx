@@ -6,7 +6,7 @@ import { unsubscribeHeaders } from '../../email/notify'
 import { EMAIL_BATCH_SIZE, type EmailMessage } from '../../email/sender'
 import { signUnsubscribeToken, unsubscribeUrl } from '../../email/unsubscribeToken'
 import { UNSUBSCRIBE_PLACEHOLDER } from './campaign'
-import { claimOnce } from './ledger'
+import { claimOnce, type NotificationLedgerEntry } from './ledger'
 import { suppressedAmong } from './suppressions'
 
 /**
@@ -242,22 +242,33 @@ export async function runOnboardingReminderPass(
   email: NotificationEmailContext,
   now: Date = new Date(),
 ): Promise<{ sent: number; skipped?: number }> {
+  /*
+   * The ceiling is applied to who is still owed a letter, not to the cohort.
+   * Cut first, the oldest fifty of the week — already written to, or
+   * suppressed, and still in the window for days — took every slot on every
+   * tick, and nobody behind them heard anything until they aged out. The
+   * window is a week of sign-ups, so reading it whole is cheap.
+   */
   const cohort = await reminderCohort(db, {
     now,
     minAgeHours: ONBOARDING_REMINDER_AFTER_HOURS,
     maxAgeHours: ONBOARDING_REMINDER_MAX_AGE_HOURS,
-    limit: ONBOARDING_REMINDER_PER_TICK,
   })
   if (cohort.length === 0) return { sent: 0 }
 
-  const suppressed = await suppressedAmong(
-    db,
-    cohort.map((person) => person.email),
-  )
-  const writable = cohort.filter((person) => !suppressed.has(person.email.toLowerCase()))
+  const [suppressed, written] = await Promise.all([
+    suppressedAmong(
+      db,
+      cohort.map((person) => person.email),
+    ),
+    alreadyWritten(db, cohort),
+  ])
+  const owed = cohort.filter((person) => !written.has(person.userId))
+  const reachable = owed.filter((person) => !suppressed.has(person.email.toLowerCase()))
+  const writable = reachable.slice(0, ONBOARDING_REMINDER_PER_TICK)
 
   let sent = 0
-  let skipped = cohort.length - writable.length
+  let skipped = owed.length - reachable.length
   for (let index = 0; index < writable.length; index += EMAIL_BATCH_SIZE) {
     const batch = writable.slice(index, index + EMAIL_BATCH_SIZE)
 
@@ -293,4 +304,17 @@ export async function runOnboardingReminderPass(
   }
 
   return skipped > 0 ? { sent, skipped } : { sent }
+}
+
+/** Who in this cohort the ledger says was already written to. */
+async function alreadyWritten(db: Db, cohort: ReminderRecipient[]): Promise<Set<string>> {
+  const prefix = 'onboardingReminder:'
+  const rows = await db
+    .collection<NotificationLedgerEntry>(COLLECTIONS.notificationLedger)
+    .find(
+      { _id: { $in: cohort.map((person) => `${prefix}${person.userId}:once`) } },
+      { projection: { _id: 1 } },
+    )
+    .toArray()
+  return new Set(rows.map((row) => row._id.slice(prefix.length, -':once'.length)))
 }
