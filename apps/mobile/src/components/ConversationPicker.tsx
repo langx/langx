@@ -4,6 +4,7 @@ import { ActivityIndicator, FlatList, Modal, Pressable, Text, TextInput, View } 
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useConversations, useMe, type ConversationDto } from '../api/queries'
 import { useConversationPartners } from '../hooks/useConversationPartners'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
 import { useT } from '../i18n'
 import { dedupeById } from '../lib/dedupeById'
@@ -39,6 +40,7 @@ export function ConversationPicker({
   onPick: (conversation: ConversationDto) => void
   onClose: () => void
 }) {
+  const reduce = useReduceMotion()
   const { colors, v3 } = useTheme()
   const current = useStyles()
   const redesigned = useStylesV3()
@@ -77,7 +79,7 @@ export function ConversationPicker({
     <Modal
       visible={visible}
       transparent
-      animationType="slide"
+      animationType={reduce ? 'none' : 'slide'}
       onRequestClose={close}
       accessibilityViewIsModal
     >

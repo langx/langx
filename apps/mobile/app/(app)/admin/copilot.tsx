@@ -149,13 +149,7 @@ export default function AdminCopilotScreen() {
   }
 
   const data = status.data
-  const access = !data
-    ? ADMIN.common.loading
-    : data.available
-      ? L.accessOk
-      : data.reason === 'age'
-        ? L.accessAge
-        : L.accessOff
+  const access = !data ? ADMIN.common.loading : data.available ? L.accessOk : L.accessOff
 
   const lab = (
     <>
@@ -346,7 +340,6 @@ export default function AdminCopilotScreen() {
           </View>
         ))}
       </AdminRowsV3>
-      <AdminCaptionV3>{L.whoPartner}</AdminCaptionV3>
       <AdminCaptionV3>{L.switchNote}</AdminCaptionV3>
     </>
   )

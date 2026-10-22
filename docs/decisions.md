@@ -2511,6 +2511,13 @@ only while tokens cannot be bought: nothing in Apple 3.1.1 or Google Play's
 payments policy stands against it today, and if tokens or items are ever sold
 for money, gifting falls under in-app purchase rules.
 
+**21 October 2026, later.** All three are done or waiting on Behic: the
+per-partner correction cap (_One person's sentences pay ten corrections a
+day_), the token.langx.io line (langx/token-website#35), and the App Review
+note, drafted in `docs/store/3.0-app-review-notes.md` for Behic to paste and
+submit. The switch is still off; the note's checklist says what has to be true
+when it goes on.
+
 ## Language levels are v1's four, not CEFR's six
 
 `A1…C2` was replaced by Absolute beginner / Beginner / Intermediate / Fluent.
@@ -5586,7 +5593,9 @@ button: Reply ideas and Explain refuse a chat whose other person is under the
 age (`partner_age`), because both send that person's lines, and otherwise any
 adult they talk to would send them for them. Check sends only the asker's own
 sentence and still works there. `COPILOT_RULES.minimumAge` is the one number
-to change if Behic decides otherwise; it moves both.
+to change if Behic decides otherwise; it moves both. _(Removed on 21 October
+2026, both checks: see Copilot has no age rule of its own, and 24 a day
+for Pro.)_
 
 **Finite on both tiers.** `copilotPer24h` is a small free taste and a Pro
 ceiling sized so that one person spending every unit every day for a month
@@ -5599,6 +5608,8 @@ changes what `architecture.md` planned — "Pro: unlimited within fair use" — 
 a stated number: every unit is a paid call, and "unlimited" would be a promise
 made against somebody else's meter. A unit is spent only when the model writes
 an answer: a cached answer is free, and a declined or failed one is refunded.
+_(Pro raised to 24 on 21 October 2026, past that yearly-plan bound: see Copilot
+has no age rule of its own, and 24 a day for Pro.)_
 
 **Cached by a hash of the question**, not of the person: the prompt's version,
 the model, the action and the exact user turn. Two people asking the same
@@ -5628,7 +5639,9 @@ _20 October 2026._ Behic asked for a simple Copilot first, one he can turn on
 for some people rather than for everybody, connected straight to the Claude
 API. Everything in the entry above still holds: the flag, the key, the exact
 18+ check, the partner-age guard, the consent sheet, `copilotPer24h`, the
-global day, the cache. Three things are added.
+global day, the cache. Three things are added. _(Both age checks were removed
+on 21 October 2026: see Copilot has no age rule of its own, and 24 a day for
+Pro.)_
 
 **A third switch, per account.** `copilotAccess` on the profile, set from the
 operator panel (Find someone → Copilot access) and listed in the Copilot lab.
@@ -9287,7 +9300,10 @@ schema's own keys, and the body is strict. The write sets one dotted path,
 `flags.<name>`, with the name taken from that list rather than read off the
 request. It does not write the flags whole from a cached read. The cache is per
 machine, so two switches made seconds apart on two machines would undo each
-other, and the audit log would still say both had stuck. The audit row is
+other, and the audit log would still say both had stuck. The captcha route and
+the script's `flag` command write the same way, through `setAppConfigFlag`: one
+writer that still wrote the flags whole would undo the others just as well. The
+audit row is
 best-effort like every panel action's: a failed audit insert is logged and does
 not undo the switch. `captchaRequired` keeps its own route
 beside the minimum version, because it is thrown in step with it. Conditions a
@@ -9315,6 +9331,54 @@ What _Pronouns are free text, and gender is not_ says about the field still
 holds; its reason for being on `sharedProfileSchema` now holds for the old look
 only.
 
+## One person's sentences pay ten corrections a day
+
+**21 October 2026.** `TOKEN_RULES.caps.correctionsPerPartnerPerDay` is 10.
+Past it, a correction of that person's words still sends, still shows in the
+thread and still counts as a correction written, on the profile and in the
+day's activity; it pays nothing, and the send's award says `capped`.
+
+- **Per partner, not per day.** Teaching many people stays unbounded. What a
+  correction pays was bounded once per sentence (`msgcorr:`, `postcorr:`), and
+  nothing bounded how many sentences of one person could pay one corrector in
+  a day. Messages have had that bound from the start
+  (`messagesPerPartnerPerDay`); corrections now have the same shape.
+- **Ten.** A hundred token a day from one person, half the day's message
+  ceiling. That keeps the rule the message caps hold — one partner is never
+  worth a whole day — and ten sentences of one person put right in a day is a
+  real lesson, not the edge of one. `rules.test.ts` holds that one partner
+  stays below a day's message ceiling, so a change that breaks it fails loudly.
+- **Chat and posts share one counter**, keyed on whoever wrote the corrected
+  words: the conversation's other participant, or the post's author. A
+  person's sentences pay the same whether they were written in a thread or on
+  a post.
+- **Counted in the day's activity document**, as
+  `correctionsPerPartner.<id>`, read back from the same `findOneAndUpdate` that
+  bumps it — the per-partner message cap's mechanism, so a burst at the
+  boundary pays exactly the cap. No new index: the document's `_id` is already
+  unique per user per UTC day, and the counter cannot race inside it. UTC, for
+  the reason every cap is.
+- **Sentences, not attempts.** A correction of a sentence that has already
+  paid gives its slot back (`releaseCorrectionSlot`), so going over a message
+  again never costs a later one: somebody who fixes three things in each of a
+  partner's messages is still paid for ten messages. A correction past the cap
+  does count, as a message past the cap counts towards its own. Sending is
+  never refused, so the cost is only ever to the payout. The release comes
+  after the award, so a burst can over-count for a moment, which can refuse a
+  payout but never make one.
+- **The post's author is not a partner.** The counter does not touch
+  `partners`, the pool's `distinctPartners` term: a post's author may be
+  somebody the corrector has never spoken to, and the pool is unchanged.
+- **A capped post correction settles no referral.** Activation waits on an
+  earning act, and this one earned nothing. Chat already settles only on a
+  send that paid something (`tokens > 0`).
+
+The public token pages quoted corrections as having no cap. langx.io
+(langx/website#290), the GitBook token page (langx/docs#58) and token.langx.io
+(langx/token-website#36) say ten from any one person. The post's correction
+box drew "+10 tokens · Unlimited on every plan", which read as unlimited
+earning; it now draws the award alone, in all eight languages.
+
 ## The yearly price ends in 9.99
 
 **21 October 2026.** Pro's yearly price was lowered wherever it ended in 83.99
@@ -9339,3 +9403,54 @@ Pro_) has the storefront counts.
   the monthly is above the usual one — USD 89.99 against $11.99, EUR 69.99
   against €8.99 — the card now reads "4 months free", computed as before from
   the store's own prices. Nothing on the paywall is typed.
+
+## Copilot has no age rule of its own, and 24 a day for Pro
+
+_21 October 2026._ Behic removed Copilot's own 18+ gate. The app's minimum age
+is 16 (`MINIMUM_AGE`, checked at sign-up), and whoever the app lets in may use
+Copilot like any other feature; it does not check age a second time. That
+removes both halves of the entry _Copilot ships dark_ describes: the asker's
+exact-birthday check (`COPILOT_RULES.minimumAge`, `copilotAgeAllows`), and the
+partner-age guard that refused Reply ideas and Explain in a chat with somebody
+under 18. The `age` and `partner_age` reasons are gone from
+`COPILOT_UNAVAILABLE_REASONS`, and so is the line the app showed for the
+second. Every other switch still applies: the flag, a key, the operator's
+allow-list and the person's own consent.
+
+Only Copilot changes. The sticker gifts' adult-only rule (`ADULT_AGE`) and
+every other feature's age rule stay as they are.
+
+**Pro's allowance is 24 a day, up from 12** (`PLAN_LIMITS.pro.copilotPer24h`);
+free stays at 3. Twelve was sized so one person spending every unit every day
+for a month cost less than the yearly plan nets in a month (about $5.95 then,
+$5.67 at the new $79.99); 24 is about $9.40 at that worst case, which Behic
+accepted: it takes one person maxing it every day, and `COPILOT_RULES.globalCallsPerDay` (500, unchanged)
+caps the whole bill whatever the tiers say. 500 is still above 24, so one Pro
+account can always spend its own allowance.
+
+## Copilot is sold as a beta, rolling out
+
+**21 October 2026.** Copilot works, so the paywall stops calling it "Soon" —
+but it answers only accounts on the operator's allow-list, so a buyer may not
+get it on the day they pay. Wherever Pro is listed it is therefore named with
+one qualifier, "beta, rolling out", in the app, on langx.io and in the GitBook
+docs alike, and never ticked as if every buyer gets it.
+
+- **A third state, not a flipped flag.** `BenefitCopy.beta` sits beside
+  `shipped`: the comparison's Pro cell reads "Beta" instead of a tick, the row
+  carries the "Beta, rolling out" tag, the plan page's "What you have" line
+  says the same, the "What's Pro?" sheet does not count it in "And N more",
+  and `sellableFeature` never names it as the refused feature "part of Pro".
+- **The chip on every answer reads "Copilot · Beta".** It names who wrote the
+  answer, in the same blue. "AI can be wrong" moves entirely to the consent
+  sheet, which is read before the first answer and stays the disclosure; its
+  sentence now says the answers are marked Copilot, since they no longer say
+  AI. This replaces the "AI · may be wrong" label in _Copilot ships dark_.
+- **Free is not a cross in the server's eyes.** An allow-listed free account
+  gets `PLAN_LIMITS.free.copilotPer24h` answers; the paywall still draws the
+  free column from the `copilot` flag. Left as it was here, since the plan
+  promise is Behic's to change.
+
+The qualifier is one phrase so it can be changed in one sweep: `paywall.betaTag`
+in every locale (read through `pendingTag`, which the plan page shares), the
+website's copy and the docs' Copilot page.

@@ -19,7 +19,6 @@ export const ptBR: Localized<EnMessages> = {
     checking: 'Verificando…',
     oneMoment: 'Um instante…',
     skip: 'Agora não',
-    comingSoon: 'EM BREVE',
     continue: 'Continuar',
     done: 'Pronto',
     reset: 'Limpar',
@@ -1755,8 +1754,8 @@ export const ptBR: Localized<EnMessages> = {
     correctionPlaceholder: 'Reescreva a frase do jeito que você diria…',
     startFromOriginal: 'Começar do original',
     correctionReward: {
-      one: '+{count} ficha · Ilimitado em todos os planos',
-      other: '+{count} fichas · Ilimitado em todos os planos',
+      one: '+{count} ficha',
+      other: '+{count} fichas',
     },
     voiceNote: 'Áudio',
     top: 'Destaque',
@@ -3534,7 +3533,8 @@ export const ptBR: Localized<EnMessages> = {
     nearbyBody:
       'Ordene por distância. Sua localização é arredondada; os outros só veem uma distância aproximada.',
     copilot: 'Copiloto com IA',
-    copilotBody: 'Ajuda a redigir e a entender as mensagens enquanto você escreve.',
+    copilotBody:
+      'Ajuda a redigir e a entender as mensagens enquanto você escreve. Pode ainda não estar ativo na sua conta.',
     quotaNotice:
       'Você usou suas {count} conversas novas de hoje. Ainda pode responder a tudo que receber, sem limite.',
     manageNotice: 'Você está no {plan}. Gerencie ou cancele na sua conta da loja.',
@@ -3634,6 +3634,8 @@ export const ptBR: Localized<EnMessages> = {
     compareLanguages: 'Idiomas que você aprende',
     compareUnlimited: 'Sem limite',
     compareSoon: 'Em breve',
+    compareBeta: 'Beta',
+    betaTag: 'Beta, liberado aos poucos',
     compareIncluded: 'Incluído',
     compareNotIncluded: 'Não incluído',
     yearlyBadge: '{perMonth} · {saving}',
@@ -3890,7 +3892,7 @@ export const ptBR: Localized<EnMessages> = {
     },
   },
   copilot: {
-    label: 'IA · pode errar',
+    label: 'Copilot · Beta',
     off: 'O Copilot está desativado.',
     consentTitle: 'Antes de usar o Copilot',
     consentBody:
@@ -3899,7 +3901,7 @@ export const ptBR: Localized<EnMessages> = {
       'Quando você pede, o texto em questão vai para a Anthropic, a empresa que opera o modelo de IA, junto com seus idiomas e níveis. Para explicar uma mensagem, é só a mensagem que você escolheu, escrita pela outra pessoa. Para ideias de resposta, inclui as últimas mensagens da conversa.',
     consentNever: 'Seu nome, e-mail, fotos e mensagens de voz nunca são enviados.',
     consentWrong:
-      'A IA pode errar. As respostas dela são marcadas como IA, e nada chega à outra pessoa a menos que você mesmo envie.',
+      'A IA pode errar. As respostas dela são marcadas como Copilot, e nada chega à outra pessoa a menos que você mesmo envie.',
     consentAccept: 'Ativar o Copilot',
     consentDecline: 'Agora não',
     button: 'Copilot',
@@ -3917,7 +3919,6 @@ export const ptBR: Localized<EnMessages> = {
     moreAt: 'Mais às {time}',
     errQuota: 'Você usou as respostas do Copilot de hoje. Mais às {time}.',
     errQuotaNoTime: 'Você usou as respostas do Copilot de hoje.',
-    errPartnerAge: 'O Copilot não lê esta conversa.',
     errBusy: 'O Copilot está ocupado. Tente mais tarde.',
     errNoAnswer: 'O Copilot não conseguiu responder a isso.',
     errNetwork: 'Não foi possível falar com o Copilot.',

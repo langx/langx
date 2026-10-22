@@ -117,7 +117,9 @@ function PendingWaveformV3({
   return (
     <View
       style={styles.box}
-      onLayout={(event) => setWidth(Math.floor(event.nativeEvent.layout.width))}
+      // Unrounded: the blue copy is laid out at this width, and a floored one
+      // drifts off the grey bars it covers.
+      onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
     >
       <Animated.View style={[styles.bars, restStyle]}>{row(styles.rest)}</Animated.View>
       {/* `start`, not `left`: in a right-to-left thread the note fills from the right. */}

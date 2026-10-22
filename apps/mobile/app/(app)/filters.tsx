@@ -38,6 +38,7 @@ import { makeStyles, useTheme } from '../../src/lib/theme'
 import { genderLabel, genderShortLabel, useDisplayNames, useLocale, useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { IconButton } from '../../src/components/ui/IconButton'
+import { PressableScale } from '../../src/components/ui/PressableScale'
 import { useV3Home } from '../../src/hooks/useV3Home'
 import { FilterChipV3 } from '../../src/components/people/FilterChipV3'
 import { useFiltersStylesV3 } from '../../src/screens/people/FiltersV3.styles'
@@ -288,15 +289,27 @@ export default function FiltersScreen() {
         <Text style={styles.title} numberOfLines={1}>
           {t('filters.title')}
         </Text>
-        <Pressable
-          accessibilityRole="button"
-          onPress={reset}
-          hitSlop={8}
-          style={styles.resetButton}
-        >
-          {v3Look ? <Feather name="rotate-ccw" size={18} color={colors.text} /> : null}
-          <Text style={styles.reset}>{t('common.reset')}</Text>
-        </Pressable>
+        {v3Look ? (
+          // v3's chips shrink under the finger; the current look's link stays as it was.
+          <PressableScale
+            accessibilityRole="button"
+            onPress={reset}
+            hitSlop={8}
+            style={styles.resetButton}
+          >
+            <Feather name="rotate-ccw" size={18} color={colors.text} />
+            <Text style={styles.reset}>{t('common.reset')}</Text>
+          </PressableScale>
+        ) : (
+          <Pressable
+            accessibilityRole="button"
+            onPress={reset}
+            hitSlop={8}
+            style={styles.resetButton}
+          >
+            <Text style={styles.reset}>{t('common.reset')}</Text>
+          </Pressable>
+        )}
       </View>
 
       <ScrollView

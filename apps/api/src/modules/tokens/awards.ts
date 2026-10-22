@@ -5,7 +5,7 @@ import type { Conversation, Message } from '../chat/conversations'
 import type { Profile } from '../profiles/profiles'
 import { isOfficialId } from '../official/accounts'
 import { settleReferral } from '../referrals/settle'
-import { recordActivity } from './dailyActivity'
+import { correctionCapped, recordActivity, releaseCorrectionSlot } from './dailyActivity'
 import { MUTUAL_REF_PREFIX, awardTokens } from './ledger'
 import { recordQualifyingAction } from './streak'
 
@@ -93,21 +93,32 @@ export async function awardForSend(
   const timeZone = sender?.timezone ?? 'UTC'
 
   let tokens = 0
-  let capped = false
+  let capped: boolean
 
   if (message.type === 'correction') {
-    // Uncapped on purpose: corrections are unlimited on both tiers
-    // (`PLAN_LIMITS.correctionsPer24h`) and teaching is the behaviour the
-    // whole economy exists to reward. Uncapped is not unbounded: each message
-    // pays its corrector once — see `messageCorrectionRefId`.
-    await recordActivity(db, { userId: senderId, kind: 'correction', at, timeZone })
+    // Sending is unlimited on both tiers (`PLAN_LIMITS.correctionsPer24h`)
+    // and teaching is the behaviour the whole economy exists to reward. Paying
+    // is bounded twice: each message pays its corrector once — see
+    // `messageCorrectionRefId` — and one partner's messages pay at most
+    // `caps.correctionsPerPartnerPerDay` a day. No overall daily cap.
+    const activity = await recordActivity(db, {
+      userId: senderId,
+      kind: 'correction',
+      at,
+      timeZone,
+      ...(partnerId ? { partnerId } : {}),
+    })
+    capped = partnerId ? correctionCapped(activity, partnerId) : false
     const award = await awardTokens(db, {
       userId: senderId,
       kind: 'correction',
-      amount: frozen ? 0 : TOKEN_RULES.award.correction,
+      amount: capped || frozen ? 0 : TOKEN_RULES.award.correction,
       refId: messageCorrectionRefId(message),
       at,
     })
+    if (partnerId && award.awarded === false && award.reason === 'duplicate') {
+      await releaseCorrectionSlot(db, { userId: senderId, partnerId, at })
+    }
     tokens += award.amount
   } else {
     const activity = await recordActivity(db, {

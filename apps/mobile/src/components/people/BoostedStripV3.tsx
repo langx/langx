@@ -1,19 +1,22 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useFocusEffect } from 'expo-router'
-import { memo, useCallback, useMemo } from 'react'
-import { FlatList, Pressable, Text, View } from 'react-native'
-import { useBoostedProfiles } from '../../api/queries'
-import type { BoostedProfile } from '../../api/types'
+import { memo, useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react'
+import { Animated, FlatList, Text, View, type StyleProp, type ViewStyle } from 'react-native'
+import type { BoostedProfile, BoostedProfilesPage } from '../../api/types'
+import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useDisplayNames, useLocale, useT } from '../../i18n'
 import { confirmAlert } from '../../lib/alert'
 import { track } from '../../lib/analytics'
 import { openProfile } from '../../lib/navigation'
 import { openPaywall } from '../../lib/paywall'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { EASE_OUT } from '../../lib/theme/motionAnimated'
+import { DURATION, PRESS_SCALE_CARD } from '../../lib/theme/motionValues'
 import { partnerHueFor } from '../../lib/theme/partnerHue'
 import { Avatar } from '../ui/Avatar'
 import { dedupeGrounds } from '../../lib/avatarViewport'
 import { ICON_BUTTON_TARGET } from '../ui/IconButton'
+import { PressableScale } from '../ui/PressableScale'
 
 const FROM = '/(app)/(tabs)/discover'
 
@@ -32,13 +35,22 @@ const FROM = '/(app)/(tabs)/discover'
  *
  * Nothing at all when nobody qualifies — no heading and no gap — for the
  * reason `BoostedProfiles` gives.
+ *
+ * The query is `PeopleV3`'s, which asks for it alongside the list so the
+ * cards are not pushed down when it answers (`lib/stripHold.ts`).
  */
-export function BoostedStripV3({ params }: { params: Record<string, string> }) {
+export function BoostedStripV3({
+  page,
+  late,
+}: {
+  page: BoostedProfilesPage | undefined
+  /** Whether the list was already showing; see `StripArrival`. */
+  late: boolean
+}) {
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
-  const query = useBoostedProfiles(params)
-  const items = useMemo(() => dedupeGrounds(query.data?.items ?? []), [query.data])
+  const items = useMemo(() => dedupeGrounds(page?.items ?? []), [page])
 
   // The count, not the items, for the reason `BoostedProfiles` gives.
   const count = items.length
@@ -56,7 +68,7 @@ export function BoostedStripV3({ params }: { params: Record<string, string> }) {
   if (items.length === 0) return null
 
   return (
-    <View style={styles.strip}>
+    <StripArrival late={late} style={styles.strip}>
       <View style={styles.head}>
         <View style={styles.heading}>
           <Feather name="zap" size={v3.icon.md} color={v3.colors.fg} />
@@ -64,7 +76,7 @@ export function BoostedStripV3({ params }: { params: Record<string, string> }) {
             {t('discover.boosted')}
           </Text>
         </View>
-        <Pressable
+        <PressableScale
           accessibilityRole="button"
           onPress={() => {
             void confirmAlert({
@@ -75,10 +87,10 @@ export function BoostedStripV3({ params }: { params: Record<string, string> }) {
               if (yes) openPaywall('boostedProfile', FROM)
             })
           }}
-          style={({ pressed }) => [styles.what, pressed && styles.pressed]}
+          style={styles.what}
         >
           <Text style={styles.whatLabel}>{t('discover.boostedWhat')}</Text>
-        </Pressable>
+        </PressableScale>
       </View>
       <FlatList
         horizontal
@@ -95,8 +107,48 @@ export function BoostedStripV3({ params }: { params: Record<string, string> }) {
           index,
         })}
       />
-    </View>
+    </StripArrival>
   )
+}
+
+/**
+ * A strip's block, which fades in when it arrives after the list was already
+ * on screen — past the skeleton's hold, or on a sort it was not on — instead
+ * of appearing in one frame over the cards it pushes down. One that arrives
+ * with the list is simply there. Decided once, when the strip first has
+ * someone to show: this mounts then, and `late` is read only on mount.
+ *
+ * In the list's header, not a row, so rule 13 has nothing to say; and only
+ * opacity, on the native driver.
+ */
+export function StripArrival({
+  late,
+  style,
+  children,
+}: {
+  late: boolean
+  style: StyleProp<ViewStyle>
+  children: ReactNode
+}) {
+  const reduceMotion = useReduceMotion()
+  const fadeIn = useRef(late).current
+  const opacity = useRef(new Animated.Value(fadeIn ? 0 : 1)).current
+  useEffect(() => {
+    if (!fadeIn) return
+    if (reduceMotion) {
+      opacity.setValue(1)
+      return
+    }
+    const animation = Animated.timing(opacity, {
+      toValue: 1,
+      duration: DURATION.enter,
+      easing: EASE_OUT,
+      useNativeDriver: true,
+    })
+    animation.start()
+    return () => animation.stop()
+  }, [fadeIn, reduceMotion, opacity])
+  return <Animated.View style={[style, { opacity }]}>{children}</Animated.View>
 }
 
 const BoostedTile = memo(function BoostedTile({
@@ -117,11 +169,12 @@ const BoostedTile = memo(function BoostedTile({
   const speaks = person.nativeLanguages[0]
   const learns = person.learning[0]
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityHint={t('chat.viewProfile')}
       onPress={() => onOpen(person, index)}
-      style={({ pressed }) => [styles.tile, { backgroundColor: hue }, pressed && styles.pressed]}
+      scaleTo={PRESS_SCALE_CARD}
+      style={[styles.tile, { backgroundColor: hue }]}
     >
       {/* A framed face is the smaller cut inside the bare face's slot, its
           frame spilling into the tile's padding, so every tile is as tall. */}
@@ -160,7 +213,7 @@ const BoostedTile = memo(function BoostedTile({
           </Text>
         </View>
       ) : null}
-    </Pressable>
+    </PressableScale>
   )
 })
 
@@ -202,7 +255,6 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[14],
   },
   whatLabel: { ...v3.type.buttonSmall, color: v3.colors.fg },
-  pressed: { opacity: 0.8 },
   gap: { width: GAP },
   tile: {
     alignItems: 'center',

@@ -52,7 +52,7 @@ export function ScheduledRowV3({
           <NotSentLineV3 label={note} />
         ) : (
           <View style={styles.note}>
-            <Feather name="clock" size={13} color={v3.colors.muted} />
+            <Feather name="clock" size={v3.icon.xs} color={v3.colors.muted} />
             <Text style={styles.noteText}>{note}</Text>
           </View>
         )}

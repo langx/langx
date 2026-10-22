@@ -1,4 +1,4 @@
-import { UPLOAD_START, type UploadProgress } from './uploadProgress'
+import { sameDisplayedProgress, UPLOAD_START, type UploadProgress } from './uploadProgress'
 
 /**
  * Attachments that have been picked but are not yet messages.
@@ -86,6 +86,27 @@ export function updatePending(
   return list.map((item) => (item.clientId === clientId ? { ...item, progress } : item))
 }
 
+/**
+ * `updatePending` for the upload's own progress events, which return the list
+ * itself when the row would draw the same thing.
+ *
+ * `XMLHttpRequest` reports per chunk, dozens of times a second on a video, and
+ * every report was a `setState` on the chat screen — a render of the whole
+ * thread to move a bar that shows whole percents and mostly had not moved.
+ * Handing React the same array lets it skip the render outright.
+ */
+export function advancePending(
+  list: readonly PendingMedia[],
+  clientId: string,
+  advance: (current: UploadProgress) => UploadProgress,
+): PendingMedia[] {
+  const row = list.find((item) => item.clientId === clientId)
+  if (!row) return list as PendingMedia[]
+  const progress = advance(row.progress)
+  if (sameDisplayedProgress(progress, row.progress)) return list as PendingMedia[]
+  return updatePending(list, clientId, progress)
+}
+
 export function removePending(list: readonly PendingMedia[], clientId: string): PendingMedia[] {
   return list.filter((item) => item.clientId !== clientId)
 }
@@ -105,12 +126,18 @@ export function expirePending(
   now: Date,
   staleMs: number = PENDING_MEDIA_STALE_MS,
 ): PendingMedia[] {
-  return list.map((item) => {
+  let changed = false
+  const next = list.map((item) => {
     if (item.progress.phase === 'failed') return item
     const age = now.getTime() - new Date(item.startedAt).getTime()
     if (age < staleMs) return item
-    return { ...item, progress: { phase: 'failed', fraction: item.progress.fraction } }
+    changed = true
+    return { ...item, progress: { phase: 'failed' as const, fraction: item.progress.fraction } }
   })
+  // The same list when nothing expired, which is every tick but the last: the
+  // sweep runs every five seconds while anything is pending, and a new array
+  // each time re-rendered the thread to draw exactly what it already showed.
+  return changed ? next : (list as PendingMedia[])
 }
 
 export function newPendingId(): string {

@@ -289,6 +289,7 @@ export async function recapSlideElement(
             flexDirection: 'column',
             gap: 56,
             padding: '96px 88px',
+            position: 'relative',
           },
           children: [
             brand(m, rtl, look.ink),
@@ -346,6 +347,7 @@ export async function recapSlideElement(
             flexDirection: 'column',
             gap: 36,
             padding: pad,
+            position: 'relative',
           },
           children: [
             brand(m, rtl, look.ink),
@@ -404,6 +406,7 @@ export async function recapSlideElement(
           flexDirection: row,
           gap: pad,
           padding: pad,
+          position: 'relative',
         },
         children: [
           column(

@@ -38,6 +38,7 @@ export function UnsentRowV3({
       <DiscardUnsentButton onPress={onDiscard} />
       <NotSentColumnV3
         label={retrying ? t('messageMeta.sending') : t('chat.notSentTapRetry')}
+        spoken={retrying ? t('messageMeta.sending') : t('chat.notSentRetry')}
         retrying={retrying}
         onPress={onRetry}
         onLongPress={onLongPress}

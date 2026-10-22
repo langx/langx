@@ -5,12 +5,26 @@ import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { makeStyles } from '../../lib/theme'
 import { TIMING, unlessReduced } from '../../lib/theme/motion'
 
+/**
+ * The track for a bar drawn in ink on a partner's hue: ink at about a fifth
+ * (0x2E of 0xFF), which reads on every hue in both schemes. `ink` is the
+ * palette's six-digit hex, the same after dark.
+ */
+export function inkTrack(ink: string): string {
+  return `${ink}2E`
+}
+
 interface ProgressBarProps {
   /** Clamped to 0–1; callers compute it from real counts and can overshoot. */
   value: number
   height?: number
   /** Defaults to v3's `blue`. Pass a tone when the bar belongs to one. */
-  color?: string
+  fillColor?: string
+  /**
+   * Defaults to v3's grey `track`. A bar on a partner's hue passes ink at a
+   * fifth: the grey all but disappears into a hue after dark.
+   */
+  trackColor?: string
   accessibilityLabel: string
 }
 
@@ -26,7 +40,13 @@ interface ProgressBarProps {
  * On Reanimated, so **not for the launch path**: the onboarding steps draw
  * their own steps in `StepProgress` rather than rendering this.
  */
-export function ProgressBar({ value, height = 4, color, accessibilityLabel }: ProgressBarProps) {
+export function ProgressBar({
+  value,
+  height = 4,
+  fillColor,
+  trackColor,
+  accessibilityLabel,
+}: ProgressBarProps) {
   const styles = useStyles()
   const reduce = useReduceMotion()
   const fraction = Math.max(0, Math.min(1, value))
@@ -42,11 +62,11 @@ export function ProgressBar({ value, height = 4, color, accessibilityLabel }: Pr
       accessibilityRole="progressbar"
       accessibilityLabel={accessibilityLabel}
       accessibilityValue={{ min: 0, max: 100, now: Math.round(fraction * 100) }}
-      style={[styles.track, { height }]}
+      style={[styles.track, { height }, trackColor ? { backgroundColor: trackColor } : null]}
     >
       <Animated.View
         collapsable={false}
-        style={[styles.fill, fillStyle, color ? { backgroundColor: color } : null]}
+        style={[styles.fill, fillStyle, fillColor ? { backgroundColor: fillColor } : null]}
       />
     </View>
   )

@@ -15,6 +15,10 @@ export type JumpPlan = { kind: 'scroll'; index: number } | { kind: 'fetch'; anch
  * between them — `scrollToIndex` addresses what the list renders.
  */
 export function planJump(rows: MessageRow[], messageId: string): JumpPlan {
-  const index = rows.findIndex((row) => row.kind === 'message' && row.key === messageId)
+  // By the message's id, not the row's key: your own messages are keyed by
+  // their `clientId` (`rowKeyOf`), so a quote of one would never match.
+  const index = rows.findIndex(
+    (row) => row.kind === 'message' && String(row.message._id) === messageId,
+  )
   return index >= 0 ? { kind: 'scroll', index } : { kind: 'fetch', anchorId: messageId }
 }

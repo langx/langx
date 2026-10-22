@@ -60,12 +60,15 @@ export function NotSentLineV3({ label, retrying = false }: { label: string; retr
  */
 export function NotSentColumnV3({
   label,
+  spoken,
   retrying = false,
   onPress,
   onLongPress,
   children,
 }: {
   label: string
+  /** What a screen reader says, when the drawn words would read badly ("·"). */
+  spoken?: string
   retrying?: boolean
   onPress: () => void
   onLongPress: () => void
@@ -75,7 +78,7 @@ export function NotSentColumnV3({
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={spoken ?? label}
       onPress={onPress}
       onLongPress={onLongPress}
       style={({ pressed }) => [styles.column, pressed && styles.pressed]}

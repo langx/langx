@@ -210,6 +210,7 @@ export function PendingMediaBubble({
         <DiscardUnsentButton onPress={onDiscard} />
         <NotSentColumnV3
           label={t('chat.notSentTapRetry')}
+          spoken={t('chat.notSentRetry')}
           onPress={onRetry}
           onLongPress={onLongPress}
         >

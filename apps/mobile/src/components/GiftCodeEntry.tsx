@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import { KeyboardAvoidingView, Modal, Platform, Pressable, Text, View } from 'react-native'
 import { ApiRequestError } from '../api/client'
 import { keys, useRedeemGiftCode } from '../api/queries'
+import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
 import { useT, type MessageKey } from '../i18n'
 import { track } from '../lib/analytics'
@@ -78,6 +79,7 @@ function outcomeOf(error: unknown): GiftCodeOutcome | null {
  * here speaks of a discount.
  */
 export function GiftCodeEntry() {
+  const reduce = useReduceMotion()
   const styles = useStyles()
   const t = useT()
   const v3Look = useV3Home()
@@ -148,7 +150,7 @@ export function GiftCodeEntry() {
       <Modal
         visible={open}
         transparent
-        animationType="slide"
+        animationType={reduce ? 'none' : 'slide'}
         onRequestClose={close}
         onDismiss={refreshMe}
         accessibilityViewIsModal

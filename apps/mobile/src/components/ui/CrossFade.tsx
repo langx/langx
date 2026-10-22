@@ -2,11 +2,8 @@ import { useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'reac
 import { Animated, View, type StyleProp, type ViewStyle } from 'react-native'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { makeStyles } from '../../lib/theme'
-// The paywall's curve (`Reveal`): fastest as the content arrives.
 import { EASE_OUT } from '../../lib/theme/motionAnimated'
-
-/** Long enough to read as a dissolve; short enough that nothing waits on it. */
-const DURATION = 240
+import { DURATION } from '../../lib/theme/motionValues'
 
 /**
  * A placeholder that dissolves into what it stood for.
@@ -77,7 +74,8 @@ export function CrossFade({
     setFading(true)
     const fade = Animated.timing(progress, {
       toValue: 1,
-      duration: DURATION,
+      duration: DURATION.crossfade,
+      // The paywall's curve (`Reveal`): fastest as the content arrives.
       easing: EASE_OUT,
       useNativeDriver: true,
     })
