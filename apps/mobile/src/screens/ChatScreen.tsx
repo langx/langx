@@ -745,19 +745,18 @@ export function ChatScreen({
   const pinnedPartnerName = partner?.displayName
   const pinStrip = useMemo<PinnedStripContent | null>(() => {
     if (!v3Thread || !pinnedId) return null
-    const author = pinnedAuthor(pinnedMessage, viewerId)
+    const author = pinnedAuthor(pinnedMessage, viewerId, pinnedPartnerName)
     const line = pinnedLine(pinnedMessage)
+    const words = 'text' in line ? line.text : t(line.key)
     return {
       messageId: pinnedId,
-      // Their name, never the sentence-shaped "them": until the profile is
-      // in, the plain label.
-      label:
-        author === 'you'
-          ? t('chat.pinnedFrom', { name: t('messageMeta.you') })
-          : author === 'them' && pinnedPartnerName
-            ? t('chat.pinnedFrom', { name: pinnedPartnerName })
-            : t('chat.pinnedLabel'),
-      line: 'text' in line ? line.text : t(line.key),
+      label: t('chat.pinnedMessage'),
+      line: author
+        ? t('chat.pinnedPreview', {
+            name: 'text' in author ? author.text : t(author.key),
+            text: words,
+          })
+        : words,
     }
   }, [v3Thread, pinnedId, pinnedMessage, viewerId, pinnedPartnerName, t])
   /**

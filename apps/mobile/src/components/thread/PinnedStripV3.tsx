@@ -16,9 +16,9 @@ import { PressableScale } from '../ui/PressableScale'
 
 export interface PinnedStripContent {
   messageId: string
-  /** "Pinned · Maria", already worded. */
+  /** "Pinned message", already worded. */
   label: string
-  /** One line of the message, already worded. */
+  /** One line of the message with its author in front ("Maria: …"), already worded. */
   line: string
 }
 

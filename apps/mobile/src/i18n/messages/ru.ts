@@ -1726,8 +1726,7 @@ export const ru: Localized<EnMessages> = {
     },
     pinnedMessage: 'Закреплённое сообщение',
     goToPinned: 'К закреплённому сообщению',
-    pinnedFrom: 'Закреплено · {name}',
-    pinnedLabel: 'Закреплено',
+    pinnedPreview: '{name}: {text}',
     unpinHint: 'Открепляет сообщение для вас обоих',
     backToLatest: 'Вернуться в конец',
     jumpToNew: {

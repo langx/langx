@@ -1788,8 +1788,7 @@ export const ar: Localized<EnMessages> = {
     },
     pinnedMessage: 'رسالة مثبّتة',
     goToPinned: 'الذهاب إلى الرسالة المثبّتة',
-    pinnedFrom: 'مثبّتة · {name}',
-    pinnedLabel: 'مثبّتة',
+    pinnedPreview: '{name}: {text}',
     unpinHint: 'يُلغي تثبيت الرسالة لديكما معًا',
     backToLatest: 'العودة إلى الأحدث',
     jumpToNew: {
