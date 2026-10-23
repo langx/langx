@@ -55,6 +55,14 @@ const dayKey = (daysAgo: number) => new Date(now - daysAgo * DAY).toISOString().
 type Hue = ReturnType<typeof partnerHueFor>
 interface Person extends OnboardingProfileInput {
   hue?: Hue
+  /**
+   * The drawn face, pinned. Left to sign-up, a face is the least used in the
+   * pool after a hash of the id, and the id is new every run: each locale's
+   * stack drew a different Anna, so the same person changed face from one
+   * listing to the next. Ground is an index into DEFAULT_AVATAR_GROUNDS,
+   * picked to stand off the card it sits on.
+   */
+  face: shared.DefaultAvatar
 }
 
 /*
@@ -63,6 +71,7 @@ interface Person extends OnboardingProfileInput {
  */
 const SOFIA: Person = {
   handle: 'sofia',
+  face: { pool: 'W', index: 9, ground: 0 },
   displayName: 'Sofia',
   birthDate: '1996-04-12',
   gender: 'female',
@@ -75,6 +84,7 @@ const SOFIA: Person = {
 const CAST: Record<string, Person> = {
   anna: {
     handle: 'demo_anna',
+    face: { pool: 'W', index: 34, ground: 3 },
     displayName: 'Anna',
     birthDate: '1995-03-02',
     gender: 'female',
@@ -87,6 +97,7 @@ const CAST: Record<string, Person> = {
   },
   george: {
     handle: 'demo_george',
+    face: { pool: 'M', index: 44, ground: 4 },
     displayName: 'George',
     birthDate: '1991-09-20',
     gender: 'male',
@@ -99,6 +110,7 @@ const CAST: Record<string, Person> = {
   },
   yuki: {
     handle: 'demo_yuki',
+    face: { pool: 'W', index: 6, ground: 1 },
     displayName: 'Yuki',
     birthDate: '1998-01-15',
     gender: 'female',
@@ -111,6 +123,7 @@ const CAST: Record<string, Person> = {
   },
   marina: {
     handle: 'demo_marina',
+    face: { pool: 'W', index: 26, ground: 4 },
     displayName: 'Marina',
     birthDate: '1994-07-07',
     gender: 'female',
@@ -122,6 +135,7 @@ const CAST: Record<string, Person> = {
   },
   elif: {
     handle: 'demo_elif',
+    face: { pool: 'W', index: 24, ground: 5 },
     displayName: 'Elif',
     birthDate: '1997-05-30',
     gender: 'female',
@@ -161,7 +175,7 @@ async function makeAccount(person: Person, daysOld: number): Promise<string> {
     createdAt: at,
     updatedAt: at,
   })
-  const { hue: _hue, ...input } = person
+  const { hue: _hue, face, ...input } = person
   await createProfile(db, String(id), null, {
     ...input,
     nativeLanguages: [input.nativeLanguages[0]!],
@@ -173,6 +187,7 @@ async function makeAccount(person: Person, daysOld: number): Promise<string> {
       learning: input.learning,
       createdAt: at,
       lastActiveAt: new Date(now - 10 * 60_000),
+      defaultAvatar: face,
     },
   })
   return String(id)
