@@ -58,6 +58,7 @@ import type { ProWelcome } from '../billing/proWelcome'
 import { cameFromV1 } from '../handles/legacyPrecreate'
 import { isUserSuppressed } from '../notifications/suppressions'
 import { restoreByHash } from '../handles/legacyRestore'
+import { refreshEntitlementIfHeld } from '../billing/refresh'
 import { isSuspended } from '../moderation/suspension'
 import { attachReferral, readSignUpReferrer } from '../referrals/referrals'
 import { grantSignupBonus } from '../tokens/signupBonus'
@@ -630,9 +631,10 @@ export async function createProfile(
   }
 
   /**
-   * Onboarding is always the free tier — an entitlement arrives from
-   * RevenueCat afterwards, never before the profile exists. So the cap here is
-   * simply the free row, and there is no stored profile to grandfather against.
+   * Onboarding starts on the free tier — a purchase made before this form is
+   * read back from RevenueCat only once the profile is written, below. So the
+   * cap here is simply the free row, and there is no stored profile to
+   * grandfather against.
    */
   assertLanguageCap(
     'learningLanguages',
@@ -820,6 +822,29 @@ export async function createProfile(
     if (referrer) await attachReferral(db, userId, referrer.handle, referrer.source)
   } catch (error) {
     console.error('[referral] attach failed', { userId, error })
+  }
+
+  /*
+   * A purchase made before this form was finished. The paywall can come first,
+   * and its webhook then lands while there is no profile: every write it makes
+   * matches nothing, and the profile above is created free over a subscription
+   * somebody is already on. Asking RevenueCat once, here, is the only moment
+   * both exist. After the referral, so a paid purchase still reaches the
+   * referrer through `applyEntitlement`'s edge.
+   *
+   * Swallowed like the rest: the profile is written, and the next webhook or
+   * `/billing/refresh` writes the same answer.
+   */
+  if (billing) {
+    try {
+      if (await refreshEntitlementIfHeld(db, billing, userId)) {
+        // Re-read whole: the refresh also writes the Pro welcome and the pack.
+        const reconciled = await profiles.findOne({ _id: userId })
+        if (reconciled) Object.assign(profile, reconciled)
+      }
+    } catch (error) {
+      console.error('[billing] entitlement refresh after onboarding failed', { userId, error })
+    }
   }
 
   // Finishes a restore that could not run at verification time because the v1

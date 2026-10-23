@@ -76,6 +76,9 @@ describe('Faz 7 — billing', () => {
       password: PASSWORD,
       name: 'Test',
     })
+    // Onboarding reads RevenueCat now, and a subscriber left over from the
+    // test before would start this one on Pro.
+    fakeRevenueCat.next = null
     const response = await app.inject({
       method: 'POST',
       url: '/profiles',
@@ -534,6 +537,75 @@ describe('Faz 7 — billing', () => {
         headers: { cookie: user.cookie },
       })
       expect(profile.json()).toMatchObject({ entitlement: { tier: 'free' } })
+    })
+  })
+
+  describe('a purchase made before onboarding', () => {
+    /*
+     * The paywall can come before the profile form. The webhook then finds no
+     * profile to write to, and onboarding used to create one on the free tier
+     * over a subscription that was already running.
+     */
+    it('is on the profile onboarding creates', async () => {
+      const user = await signUpAndSignIn(app, emailSender, {
+        email: 'paid-before-onboarding@example.com',
+        password: PASSWORD,
+        name: 'Test',
+      })
+      fakeRevenueCat.unavailable = false
+      fakeRevenueCat.next = {
+        tier: 'pro',
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        productId: 'yearly',
+        store: 'play_store',
+        willRenew: true,
+        periodType: 'trial',
+      }
+
+      const webhook = await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: WEBHOOK_SECRET },
+        payload: {
+          event: {
+            id: 'evt-before-onboarding',
+            type: 'INITIAL_PURCHASE',
+            app_user_id: user.userId,
+            store: 'PLAY_STORE',
+            period_type: 'TRIAL',
+            expiration_at_ms: Date.now() + 7 * 24 * 60 * 60 * 1000,
+          },
+        },
+      })
+      expect(webhook.statusCode, webhook.body).toBe(200)
+      expect(
+        await handle.db
+          .collection(COLLECTIONS.subscriptions)
+          .findOne({ eventId: 'evt-before-onboarding' }),
+      ).toMatchObject({ periodType: 'trial' })
+
+      const onboarding = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody(),
+      })
+      expect(onboarding.statusCode, onboarding.body).toBe(201)
+
+      const stored = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(stored?.entitlement).toMatchObject({ tier: 'pro', periodType: 'trial' })
+    })
+
+    it('leaves somebody who bought nothing on free', async () => {
+      fakeRevenueCat.unavailable = false
+      const user = await newUser('nothing-before-onboarding@example.com')
+
+      const stored = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(stored?.entitlement?.tier).toBe('free')
     })
   })
 
