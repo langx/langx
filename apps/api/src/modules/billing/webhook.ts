@@ -170,42 +170,7 @@ export async function processRevenueCatWebhook(
       ...(periodType ? { periodType } : {}),
     }
     if (record.expiresAt) entitlement.expiresAt = record.expiresAt
-    /*
-     * With the pre-image, for the welcome: this is the path a purchase takes
-     * when RevenueCat cannot be asked, and the reconciled branch above has
-     * its own edge inside `refreshEntitlement`. Swallowed like the credit
-     * below, and for the same reason.
-     */
-    const before = await profiles.findOneAndUpdate(
-      { _id: userId },
-      { $set: { entitlement, updatedAt: now } },
-      { returnDocument: 'before', projection: { entitlement: 1 } },
-    )
-    try {
-      await welcomeIfBecamePro(db, userId, before?.entitlement, entitlement, now)
-    } catch (error) {
-      console.error('[billing] pro welcome failed', { userId, error })
-    }
-
-    /*
-     * Any grant event, once the entitlement it wrote is one somebody pays
-     * for — a first purchase, or the `RENEWAL` that turns a free week into a
-     * charged month. It used to be `INITIAL_PURCHASE` alone, which is also
-     * the event for starting a trial, so a free week somebody cancelled on
-     * day six paid their referrer in full. `creditReferrerForSubscription`
-     * checks `isPaidPurchase` and is idempotent, so a redelivery or the
-     * client's refresh racing this pays once.
-     *
-     * Failure is swallowed for the reason `grantWelcomePack`'s is: the
-     * subscription is what the user paid for and it is already recorded above,
-     * and losing a referral top-up to a transient write is not worth failing
-     * the webhook RevenueCat is waiting on.
-     */
-    try {
-      await creditReferrerForSubscription(db, userId, entitlement, now)
-    } catch (error) {
-      console.error('[referral] subscription credit failed', { userId, error })
-    }
+    await writeGrant(db, userId, entitlement, now)
   } else if (REVOKE_SET.has(event.type)) {
     // An EXPIRATION says something ended — never what is left. A subscriber
     // whose subscription lapses while a gift or a second one runs on must
@@ -282,6 +247,100 @@ export async function processRevenueCatWebhook(
   // Anything else unrecognized: recorded above for audit, no entitlement change.
 
   return { processed: true }
+}
+
+/**
+ * The event-derived write of a grant, for when RevenueCat cannot be asked or
+ * has not caught up: the entitlement, then the two edges a purchase owes —
+ * the Pro welcome and the referrer's top-up.
+ */
+async function writeGrant(
+  db: Db,
+  userId: string,
+  entitlement: Profile['entitlement'],
+  now: Date,
+): Promise<void> {
+  /*
+   * With the pre-image, for the welcome: this is the path a purchase takes
+   * when RevenueCat cannot be asked, and the reconciled path has its own
+   * edge inside `refreshEntitlement`. Swallowed like the credit below, and
+   * for the same reason.
+   */
+  const before = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOneAndUpdate(
+      { _id: userId },
+      { $set: { entitlement, updatedAt: now } },
+      { returnDocument: 'before', projection: { entitlement: 1 } },
+    )
+  try {
+    await welcomeIfBecamePro(db, userId, before?.entitlement, entitlement, now)
+  } catch (error) {
+    console.error('[billing] pro welcome failed', { userId, error })
+  }
+
+  /*
+   * Any grant event, once the entitlement it wrote is one somebody pays
+   * for — a first purchase, or the `RENEWAL` that turns a free week into a
+   * charged month. It used to be `INITIAL_PURCHASE` alone, which is also
+   * the event for starting a trial, so a free week somebody cancelled on
+   * day six paid their referrer in full. `creditReferrerForSubscription`
+   * checks `isPaidPurchase` and is idempotent, so a redelivery or the
+   * client's refresh racing this pays once.
+   *
+   * Failure is swallowed for the reason `grantWelcomePack`'s is: the
+   * subscription is what the user paid for and it is already recorded above,
+   * and losing a referral top-up to a transient write is not worth failing
+   * the webhook RevenueCat is waiting on.
+   */
+  try {
+    await creditReferrerForSubscription(db, userId, entitlement, now)
+  } catch (error) {
+    console.error('[referral] subscription credit failed', { userId, error })
+  }
+}
+
+/**
+ * A grant that arrived before its profile did, replayed from the log.
+ *
+ * The paywall can come before onboarding, and every write the webhook made
+ * then matched nothing. Onboarding asks RevenueCat first; this is for when it
+ * cannot — no key, an outage, or a subscriber record that has not caught up
+ * with its own webhook — and is the same fallback the webhook takes itself.
+ *
+ * Only the latest event decides: a later `EXPIRATION` means nothing is held,
+ * a later `CANCELLATION` means it is held but will not renew. Returns whether
+ * anything was written.
+ */
+export async function applyLoggedGrant(db: Db, userId: string, now: Date): Promise<boolean> {
+  const events = await db
+    .collection<SubscriptionRecord>(COLLECTIONS.subscriptions)
+    .find({ userId, type: { $in: [...GRANT_SET, ...REVOKE_SET, ...CANCEL_SET] } })
+    .sort({ createdAt: -1 })
+    .limit(20)
+    .toArray()
+
+  let cancelled = false
+  for (const event of events) {
+    if (CANCEL_SET.has(event.type)) {
+      cancelled = true
+      continue
+    }
+    if (REVOKE_SET.has(event.type)) return false
+    if (event.expiresAt && event.expiresAt <= now) return false
+
+    const entitlement: Profile['entitlement'] = {
+      tier: 'pro',
+      willRenew: !cancelled,
+      store: event.store,
+      updatedAt: now,
+      ...(event.periodType ? { periodType: event.periodType } : {}),
+    }
+    if (event.expiresAt) entitlement.expiresAt = event.expiresAt
+    await writeGrant(db, userId, entitlement, now)
+    return true
+  }
+  return false
 }
 
 /**

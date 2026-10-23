@@ -59,6 +59,7 @@ import { cameFromV1 } from '../handles/legacyPrecreate'
 import { isUserSuppressed } from '../notifications/suppressions'
 import { restoreByHash } from '../handles/legacyRestore'
 import { refreshEntitlementIfHeld } from '../billing/refresh'
+import { applyLoggedGrant } from '../billing/webhook'
 import { isSuspended } from '../moderation/suspension'
 import { attachReferral, readSignUpReferrer } from '../referrals/referrals'
 import { grantSignupBonus } from '../tokens/signupBonus'
@@ -832,19 +833,24 @@ export async function createProfile(
    * both exist. After the referral, so a paid purchase still reaches the
    * referrer through `applyEntitlement`'s edge.
    *
+   * When RevenueCat cannot answer — no key, an outage, or a record that has
+   * not caught up with its own webhook — the webhook's own log decides, as
+   * the webhook itself would have.
+   *
    * Swallowed like the rest: the profile is written, and the next webhook or
    * `/billing/refresh` writes the same answer.
    */
-  if (billing) {
-    try {
-      if (await refreshEntitlementIfHeld(db, billing, userId)) {
-        // Re-read whole: the refresh also writes the Pro welcome and the pack.
-        const reconciled = await profiles.findOne({ _id: userId })
-        if (reconciled) Object.assign(profile, reconciled)
-      }
-    } catch (error) {
-      console.error('[billing] entitlement refresh after onboarding failed', { userId, error })
+  try {
+    const reconciled =
+      (billing && (await refreshEntitlementIfHeld(db, billing, userId).catch(() => false))) ||
+      (await applyLoggedGrant(db, userId, new Date()))
+    if (reconciled) {
+      // Re-read whole: the write also leaves the Pro welcome and the pack.
+      const fresh = await profiles.findOne({ _id: userId })
+      if (fresh) Object.assign(profile, fresh)
     }
+  } catch (error) {
+    console.error('[billing] entitlement after onboarding failed', { userId, error })
   }
 
   // Finishes a restore that could not run at verification time because the v1
