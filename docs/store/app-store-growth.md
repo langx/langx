@@ -203,6 +203,10 @@ Pages and why each owns its words:
 Same voice as the version's promotional text: plain, second person, no prices
 and no ranking claims. Each is under Apple's 170 characters.
 
+These are 2.9's. The 3.0 texts for all nine pages, shorter and with Echo in
+the language pages, are in [`3.0-metadata.json`](3.0-metadata.json) under
+`cpp`, keyed by page; the names there are the page names used here.
+
 **Speaking practice and calls**
 
 | Language       | Promotional text                                                                                                                                                         |
