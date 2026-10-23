@@ -1,4 +1,4 @@
-import { ERROR_CODES, type BadgeCardInput } from '@langx/shared'
+import { ERROR_CODES, type BadgeCardInput, shortDisplayName } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { translator } from '../../i18n'
@@ -57,7 +57,7 @@ export async function badgeCardContent(
   const avatar =
     (await fetchCardAvatar(profile?.avatarUrl, input.storage)) ??
     (profile ? await drawnCardAvatar(profile) : undefined)
-  const displayName = drawableName(profile?.displayName)
+  const displayName = drawableName(profile?.displayName && shortDisplayName(profile.displayName))
 
   return {
     id: badge.id,

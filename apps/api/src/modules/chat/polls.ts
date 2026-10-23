@@ -3,6 +3,7 @@ import {
   type AnswerPollInput,
   type HeardAboutAnswerView,
   type PollResults,
+  shortDisplayName,
 } from '@langx/shared'
 import { MongoServerError, ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -168,7 +169,7 @@ export async function recentPollAnswers(
   return rows.map((row) => ({
     userId: row.userId,
     handle: row.profile?.handle ?? null,
-    displayName: row.profile?.displayName ?? null,
+    displayName: row.profile?.displayName ? shortDisplayName(row.profile.displayName) : null,
     country: row.profile?.country ?? null,
     optionId: row.optionId,
     createdAt: row.createdAt.toISOString(),

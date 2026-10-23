@@ -1,4 +1,4 @@
-import { HANDLE_SEARCH_LIMIT, type HandleSearchPage } from '@langx/shared'
+import { HANDLE_SEARCH_LIMIT, type HandleSearchPage, shortDisplayName } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { blockedUserIds } from '../moderation/blocks'
@@ -114,7 +114,7 @@ export async function searchHandles(
     items: rows.map((row) => ({
       _id: row._id,
       handle: row.handle,
-      displayName: row.displayName,
+      displayName: shortDisplayName(row.displayName),
       ...(row.avatarUrl ? { avatarUrl: row.avatarUrl } : {}),
       ...(row.official ? { official: true as const } : {}),
     })),

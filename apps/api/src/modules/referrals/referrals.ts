@@ -4,6 +4,7 @@ import {
   TOKEN_RULES,
   handleSchema,
   referralSourceSchema,
+  shortDisplayName,
 } from '@langx/shared'
 import type {
   PaidPlanTier,
@@ -314,7 +315,7 @@ export async function readReferralStatus(db: Db, userId: string): Promise<Referr
           // on every other screen.
           _id: profile._id,
           handle: profile.handle,
-          displayName: profile.displayName,
+          displayName: shortDisplayName(profile.displayName),
           ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
           status: statusOf(row),
           invitedAt: row.createdAt.toISOString(),
@@ -323,7 +324,9 @@ export async function readReferralStatus(db: Db, userId: string): Promise<Referr
       ]
     }),
     referredBy:
-      mine && referrer ? { handle: referrer.handle, displayName: referrer.displayName } : null,
+      mine && referrer
+        ? { handle: referrer.handle, displayName: shortDisplayName(referrer.displayName) }
+        : null,
   }
 }
 

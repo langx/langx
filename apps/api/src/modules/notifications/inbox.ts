@@ -4,6 +4,7 @@ import {
   type InAppNotificationKind,
   type ListNotificationsQuery,
   type NotificationsPage,
+  shortDisplayName,
 } from '@langx/shared'
 import { ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -419,7 +420,7 @@ export async function listNotifications(
               actor: {
                 _id: actor._id,
                 handle: actor.handle,
-                displayName: actor.displayName,
+                displayName: shortDisplayName(actor.displayName),
                 ...(actor.avatarUrl ? { avatarUrl: actor.avatarUrl } : {}),
               },
             }

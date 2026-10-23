@@ -1,4 +1,4 @@
-import { localDayKey, type Locale } from '@langx/shared'
+import { localDayKey, type Locale, shortDisplayName } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { meetingsSection, type DigestMeeting } from '../../email/templates'
@@ -144,7 +144,10 @@ export async function meetingsSectionFor(
     )
     .toArray()
   const nameOf = new Map(
-    partners.map((partner) => [partner._id, partner.displayName ?? partner.handle ?? '']),
+    partners.map((partner) => [
+      partner._id,
+      shortDisplayName(partner.displayName ?? partner.handle ?? ''),
+    ]),
   )
 
   return {

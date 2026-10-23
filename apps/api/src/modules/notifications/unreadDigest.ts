@@ -5,6 +5,7 @@ import {
   profileUrl,
   webUrl,
   type Locale,
+  shortDisplayName,
 } from '@langx/shared'
 import type { Db, Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -103,7 +104,7 @@ export async function unreadDigestSection(
   const faces: AvatarFace[] = []
   for (const id of partnerIds) {
     const partner = byId.get(id)
-    const name = partner?.displayName ?? partner?.handle
+    const name = partner?.displayName ? shortDisplayName(partner.displayName) : partner?.handle
     if (!partner || !name) continue
     const asset = partner.avatarUrl
       ? await fetchAvatarAsset(partner.avatarUrl, `avatar-${id}`, storagePublicBaseUrl)

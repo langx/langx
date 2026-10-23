@@ -205,14 +205,14 @@ describe('the profile-visit round-up', () => {
     it('names them for an account allowed to see who', async () => {
       const me = await newProfile({ tier: 'pro' })
       await view(await newProfile({ name: 'Ada Lovelace' }), me, 2)
-      expect((await sectionFor(me))?.build('en').html).toContain('Ada Lovelace')
+      expect((await sectionFor(me))?.build('en').html).toContain('Among them: Ada L.<')
     })
 
     /** A Polyglot row not merged yet is Pro, and sees who looked. */
     it('names them for a row still stored as pro_plus', async () => {
       const me = await newProfile({ tier: 'pro_plus' })
       await view(await newProfile({ name: 'Ada Lovelace' }), me, 2)
-      expect((await sectionFor(me))?.build('en').html).toContain('Ada Lovelace')
+      expect((await sectionFor(me))?.build('en').html).toContain('Among them: Ada L.<')
     })
 
     it('only goes out on the reader’s own Monday', async () => {

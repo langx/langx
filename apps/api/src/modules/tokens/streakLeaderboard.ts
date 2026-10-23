@@ -5,6 +5,7 @@ import {
   type StreakLeaderboard,
   type StreakLeaderboardEntry,
   type StreakMetric,
+  shortDisplayName,
 } from '@langx/shared'
 import type { Db, Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -108,7 +109,7 @@ export async function getStreakLeaderboard(
       rank,
       userId: profile._id,
       handle: profile.handle,
-      displayName: profile.displayName ?? profile.handle,
+      displayName: shortDisplayName(profile.displayName ?? profile.handle),
       streak: days,
       isViewer: profile._id === viewerId,
     }

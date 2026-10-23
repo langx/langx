@@ -9,6 +9,7 @@ import {
   type TestimonialViewerState,
   type ThreadTestimonialState,
   type WrittenTestimonialsPage,
+  shortDisplayName,
 } from '@langx/shared'
 import { MongoServerError, ObjectId, type Db, type Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -55,7 +56,7 @@ function toPerson(profile: PersonProfile): TestimonialPerson {
   return {
     _id: profile._id,
     handle: profile.handle,
-    displayName: profile.displayName || profile.handle,
+    displayName: shortDisplayName(profile.displayName || profile.handle),
     avatarUrl: profile.avatarUrl ?? null,
   }
 }

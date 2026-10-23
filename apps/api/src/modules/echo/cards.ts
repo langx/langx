@@ -28,6 +28,7 @@ import {
   type AttachEchoAudioInput,
   echoAudiosOf,
   type LinkEchoAskInput,
+  shortDisplayName,
   type ListEchoCardsQuery,
   newCardSrs,
   periodKeys,
@@ -118,7 +119,7 @@ async function audioFromAnswer(db: Db, answer: PronunciationAnswerDoc): Promise<
     url: answer.media.url,
     ...(answer.slowMedia ? { slowUrl: answer.slowMedia.url } : {}),
     origin: 'post',
-    ...(speaker?.displayName ? { speakerName: speaker.displayName } : {}),
+    ...(speaker?.displayName ? { speakerName: shortDisplayName(speaker.displayName) } : {}),
     answerId: answer._id.toHexString(),
   }
 }
@@ -348,7 +349,7 @@ async function chatAudioFor(db: Db, message: Message): Promise<EchoAudio | undef
   return {
     url: recording.url,
     origin: 'chat',
-    ...(speaker?.displayName ? { speakerName: speaker.displayName } : {}),
+    ...(speaker?.displayName ? { speakerName: shortDisplayName(speaker.displayName) } : {}),
   }
 }
 

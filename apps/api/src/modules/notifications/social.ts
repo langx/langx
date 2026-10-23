@@ -3,6 +3,7 @@ import {
   localDayKey,
   localHour,
   notificationsAllowed,
+  shortDisplayName,
 } from '@langx/shared'
 import type { Db, ObjectId } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -79,7 +80,7 @@ export async function notifyFollowed(
     .collection<Profile>(COLLECTIONS.profiles)
     .findOne({ _id: input.followerId }, { projection: { displayName: 1, handle: 1 } })
   if (!follower) return
-  const name = follower.displayName || follower.handle
+  const name = shortDisplayName(follower.displayName || follower.handle)
 
   await pushSocial(
     db,
@@ -115,7 +116,7 @@ export async function notifyTestimonial(
     .collection<Profile>(COLLECTIONS.profiles)
     .findOne({ _id: input.authorId }, { projection: { displayName: 1, handle: 1 } })
   if (!author) return
-  const name = author.displayName || author.handle
+  const name = shortDisplayName(author.displayName || author.handle)
 
   await pushSocial(
     db,
@@ -174,7 +175,7 @@ export async function notifyPostReply(
   const responder = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .findOne({ _id: input.responderId }, { projection: { displayName: 1, handle: 1 } })
-  const name = responder?.displayName || responder?.handle || ''
+  const name = shortDisplayName(responder?.displayName || responder?.handle || '')
 
   await pushSocial(
     db,

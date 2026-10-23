@@ -361,6 +361,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
         follow,
         now,
         conversation?._id.toHexString(),
+        request.userId,
       )
       // Only where a first message is still to be written: not on your own
       // profile, and not for somebody you already talk to. The block check

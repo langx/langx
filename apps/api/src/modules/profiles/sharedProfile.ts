@@ -1,4 +1,4 @@
-import { type LanguageLevel, type SharedProfile } from '@langx/shared'
+import { type LanguageLevel, type SharedProfile, shortDisplayName } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
@@ -90,7 +90,7 @@ export async function getSharedProfile(db: Db, handle: string): Promise<SharedPr
   return {
     _id: profile._id,
     handle: profile.handle,
-    displayName: profile.displayName ?? profile.handle,
+    displayName: shortDisplayName(profile.displayName ?? profile.handle),
     ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
     // The face the picture already shows, named so the page can cache it.
     // It names the pool, and so whether the account said female, male or
