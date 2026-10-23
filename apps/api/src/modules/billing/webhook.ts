@@ -5,6 +5,7 @@ import {
   ENTITLEMENT_REVOKE_EVENTS,
   normalizePlanTier,
   tierFromEntitlementIds,
+  type BillingPeriodType,
   type RevenueCatEvent,
 } from '@langx/shared'
 import { MongoServerError, type Db } from 'mongodb'
@@ -25,6 +26,12 @@ export interface SubscriptionRecord {
   productId: string
   expiresAt: Date | null
   environment: string
+  /**
+   * `trial`, `intro` or `normal` when RevenueCat said. The log is the only
+   * record of an event once it is applied, and an `INITIAL_PURCHASE` is both
+   * a charge and the start of a free week — this is what tells them apart.
+   */
+  periodType?: BillingPeriodType
   createdAt: Date
 }
 
@@ -72,6 +79,8 @@ export async function processRevenueCatWebhook(
     environment: event.environment ?? 'PRODUCTION',
     createdAt: new Date(),
   }
+  const recordedPeriod = periodTypeOf(event.period_type)
+  if (recordedPeriod) record.periodType = recordedPeriod
 
   try {
     await db.collection<SubscriptionRecord>(COLLECTIONS.subscriptions).insertOne(record)
@@ -135,7 +144,7 @@ export async function processRevenueCatWebhook(
      * a trial ending has to fire on a positive answer or it goes to
      * subscribers.
      */
-    const periodType = periodTypeOf(event.period_type)
+    const periodType = record.periodType
 
     if (client && (await reconciledIfHeld(db, client, userId))) {
       if (periodType) {
