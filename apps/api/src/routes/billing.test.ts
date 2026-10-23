@@ -598,6 +598,81 @@ describe('Faz 7 — billing', () => {
       expect(stored?.entitlement).toMatchObject({ tier: 'pro', periodType: 'trial' })
     })
 
+    /*
+     * The same purchase, with RevenueCat out of reach at onboarding: the
+     * webhook's own log is the only record left, and it decides.
+     */
+    async function webhookThenOnboard(
+      email: string,
+      events: { id: string; type: string; expiresInMs: number }[],
+    ): Promise<Profile | null> {
+      const user = await signUpAndSignIn(app, emailSender, {
+        email,
+        password: PASSWORD,
+        name: 'Test',
+      })
+      fakeRevenueCat.unavailable = true
+      try {
+        for (const event of events) {
+          const webhook = await app.inject({
+            method: 'POST',
+            url: '/webhooks/revenuecat',
+            headers: { authorization: WEBHOOK_SECRET },
+            payload: {
+              event: {
+                id: event.id,
+                type: event.type,
+                app_user_id: user.userId,
+                store: 'PLAY_STORE',
+                period_type: 'TRIAL',
+                expiration_at_ms: Date.now() + event.expiresInMs,
+              },
+            },
+          })
+          expect(webhook.statusCode, webhook.body).toBe(200)
+        }
+        const onboarding = await app.inject({
+          method: 'POST',
+          url: '/profiles',
+          headers: { cookie: user.cookie },
+          payload: onboardingBody(),
+        })
+        expect(onboarding.statusCode, onboarding.body).toBe(201)
+      } finally {
+        fakeRevenueCat.unavailable = false
+      }
+      return handle.db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: user.userId })
+    }
+
+    it('falls back to the logged event when RevenueCat cannot be asked', async () => {
+      const week = 7 * 24 * 60 * 60 * 1000
+      const stored = await webhookThenOnboard('logged-before-onboarding@example.com', [
+        { id: 'evt-logged-grant', type: 'INITIAL_PURCHASE', expiresInMs: week },
+      ])
+      expect(stored?.entitlement).toMatchObject({
+        tier: 'pro',
+        willRenew: true,
+        periodType: 'trial',
+        store: 'PLAY_STORE',
+      })
+    })
+
+    it('records a logged cancellation as not renewing', async () => {
+      const week = 7 * 24 * 60 * 60 * 1000
+      const stored = await webhookThenOnboard('logged-cancel-before-onboarding@example.com', [
+        { id: 'evt-logged-grant-2', type: 'INITIAL_PURCHASE', expiresInMs: week },
+        { id: 'evt-logged-cancel-2', type: 'CANCELLATION', expiresInMs: week },
+      ])
+      expect(stored?.entitlement).toMatchObject({ tier: 'pro', willRenew: false })
+    })
+
+    it('ignores a logged grant that has already run out', async () => {
+      const stored = await webhookThenOnboard('logged-expired-before-onboarding@example.com', [
+        { id: 'evt-logged-grant-3', type: 'INITIAL_PURCHASE', expiresInMs: -60_000 },
+      ])
+      expect(stored?.entitlement?.tier).toBe('free')
+    })
+
     it('leaves somebody who bought nothing on free', async () => {
       fakeRevenueCat.unavailable = false
       const user = await newUser('nothing-before-onboarding@example.com')
