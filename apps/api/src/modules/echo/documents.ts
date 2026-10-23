@@ -9,6 +9,7 @@ import type {
   EchoSrsDto,
   PeriodType,
 } from '@langx/shared'
+import { shortDisplayName } from '@langx/shared'
 import type { ObjectId } from 'mongodb'
 
 /**
@@ -123,6 +124,17 @@ export function toEchoSrs(srs: EchoSrs): EchoSrsDto {
   }
 }
 
+/**
+ * A recording copied from a post or a chat names a member, and cards made
+ * before names were shortened stored the whole of it. Shortened on the way
+ * out as well as on the way in, so those cards stop sending the surname
+ * without a backfill. A pack's speaker is a credit we wrote, not a member.
+ */
+function withShortSpeaker(audio: EchoAudio): EchoAudio {
+  if (!audio.speakerName || (audio.origin !== 'post' && audio.origin !== 'chat')) return audio
+  return { ...audio, speakerName: shortDisplayName(audio.speakerName) }
+}
+
 export function toEchoCard(doc: EchoCardDoc): EchoCard {
   return {
     _id: doc._id.toHexString(),
@@ -133,8 +145,8 @@ export function toEchoCard(doc: EchoCardDoc): EchoCard {
     lang: doc.lang,
     ...(doc.backLang ? { backLang: doc.backLang } : {}),
     source: doc.source,
-    ...(doc.audio ? { audio: doc.audio } : {}),
-    ...(doc.audios?.length ? { audios: doc.audios } : {}),
+    ...(doc.audio ? { audio: withShortSpeaker(doc.audio) } : {}),
+    ...(doc.audios?.length ? { audios: doc.audios.map(withShortSpeaker) } : {}),
     ...(doc.voices?.length ? { voices: doc.voices } : {}),
     ...(doc.image ? { image: doc.image } : {}),
     ...(doc.askedPostId ? { askedPostId: doc.askedPostId } : {}),

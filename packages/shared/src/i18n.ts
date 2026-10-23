@@ -134,9 +134,13 @@ function selectPlural(plural: Plural, locale: Locale, count: number): string {
  */
 function interpolate(text: string, params?: MessageParams): string {
   if (!params) return text
-  return text.replace(/\{(\w+)\}/g, (match, name: string) => {
+  return text.replace(/\{(\w+)\}(\.?)/g, (match, name: string, stop: string) => {
     const value = params[name]
-    return value === undefined ? match : String(value)
+    if (value === undefined) return match
+    const shown = String(value)
+    // A name ends in a dot now ("Ada L."), and so does many a sentence that
+    // closes on one: "Among them: Ada L.." is the result unless one goes.
+    return shown.endsWith('.') ? shown : shown + stop
   })
 }
 

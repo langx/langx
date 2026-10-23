@@ -8,6 +8,7 @@ import {
   type PostCorrection,
   type Media,
   type PronunciationAnswer,
+  shortDisplayName,
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -49,7 +50,7 @@ export function authorDto(profile: Profile | undefined, id: string): FeedPost['a
     // A post outlives the account that wrote it — `deletedWithAccount` on
     // `messages` exists for the same reason — so the shape has to survive a
     // missing profile rather than dropping the row.
-    displayName: profile?.displayName ?? 'Deleted account',
+    displayName: profile?.displayName ? shortDisplayName(profile.displayName) : 'Deleted account',
     ...(profile?.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
   }
 }

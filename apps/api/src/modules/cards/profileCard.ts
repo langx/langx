@@ -1,4 +1,4 @@
-import { partnerHueIndex, type ProfileCardInput } from '@langx/shared'
+import { partnerHueIndex, type ProfileCardInput, shortDisplayName } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { FACE_OWNER_FIELDS } from '../avatars/surfaces'
@@ -32,7 +32,7 @@ export async function profileCardContent(
   const avatar =
     (await fetchCardAvatar(profile?.avatarUrl, input.storage)) ??
     (profile ? await drawnCardAvatar(profile) : undefined)
-  const displayName = drawableName(profile?.displayName)
+  const displayName = drawableName(profile?.displayName && shortDisplayName(profile.displayName))
   return {
     ...(displayName ? { displayName } : {}),
     handle: input.handle,

@@ -5,6 +5,7 @@ import {
   type EchoLeaderboard,
   type EchoLeaderboardEntry,
   type PeriodType,
+  shortDisplayName,
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -83,7 +84,7 @@ export async function getEchoLeaderboard(
       rank,
       userId: row.userId,
       handle: profile.handle,
-      displayName: profile.displayName ?? profile.handle,
+      displayName: shortDisplayName(profile.displayName ?? profile.handle),
       reviews: row.reviews,
       isViewer: row.userId === viewerId,
     }

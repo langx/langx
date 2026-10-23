@@ -1052,12 +1052,12 @@ describe('Faz 5 — conversation/message history REST', () => {
 
     expect(partnerOf(shy.userId)).toMatchObject({
       _id: shy.userId,
-      displayName: 'Shy One',
+      displayName: 'Shy O.',
       isOnline: false,
       accountStatus: 'active',
     })
     expect(partnerOf(gone.userId)).toMatchObject({
-      displayName: 'Gone One',
+      displayName: 'Gone O.',
       accountStatus: 'deleted',
     })
     // Nothing a row does not draw: the list is not a second profile endpoint.

@@ -108,7 +108,8 @@ describe('the unread-message digest', () => {
     expect(await runDailyDigestPass(handle.db, ctx, now)).toMatchObject({ sent: 1 })
     const message = sender.messages[0]
     expect(message?.subject).toContain('2')
-    expect(message?.html).toContain('Ada Lovelace')
+    expect(message?.html).toContain('Ada L.')
+    expect(message?.html).not.toContain('Lovelace')
     // The one thing a digest must never carry.
     expect(message?.text).not.toContain('a secret nobody should see')
     expect(message?.html).not.toContain('a secret nobody should see')

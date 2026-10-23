@@ -7,6 +7,7 @@ import {
   shiftDayKey,
   utcDayKey,
   type ModerationListQuery,
+  shortDisplayName,
 } from '@langx/shared'
 import { type Db, type Filter, type ObjectId } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -212,7 +213,7 @@ export async function viewSummarySince(
     const profile = byId.get(view.viewerId)
     if (!profile || profile.guest) continue
     named.add(view.viewerId)
-    viewers.push({ displayName: profile.displayName || profile.handle })
+    viewers.push({ displayName: shortDisplayName(profile.displayName || profile.handle) })
   }
   return { count, viewers }
 }
@@ -425,7 +426,7 @@ export async function getViewers(
       handle: profile.handle,
       // `||`, not `??`: a stored empty string is "no name", and the handle is
       // always a better answer than nothing.
-      displayName: profile.displayName || profile.handle,
+      displayName: shortDisplayName(profile.displayName || profile.handle),
       lastViewedAt: view.lastViewedAt.toISOString(),
       viewCount: view.count ?? 1,
     }

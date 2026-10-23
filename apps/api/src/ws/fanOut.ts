@@ -3,7 +3,12 @@ import type { ObjectId } from 'mongodb'
 import type { Message } from '../modules/chat/conversations'
 import { toMessageView } from '../modules/chat/messageView'
 import { countUnread, markDelivered, missedCallPreview, previewOf } from '../modules/chat/messages'
-import { notificationsAllowed, PUSH_CATEGORY_MESSAGE, stripFormatting } from '@langx/shared'
+import {
+  notificationsAllowed,
+  PUSH_CATEGORY_MESSAGE,
+  stripFormatting,
+  shortDisplayName,
+} from '@langx/shared'
 import { respondAsOfficial } from '../modules/official/assistant'
 import { devicesFor, devicesToPush, sendPush } from '../modules/push/devices'
 import { userRoom, type AppServer } from './types'
@@ -176,7 +181,7 @@ async function deliver(
       // After this message's own $inc has landed, so the icon shows the
       // number the Chats tab will show when the app is opened.
       badge: await countUnread(app.mongo.db, recipientId),
-      title: sender?.displayName ?? sender?.handle ?? 'LangX',
+      title: shortDisplayName(sender?.displayName ?? sender?.handle ?? 'LangX'),
       // A caption-less attachment used to push an empty line: `previewFor` is
       // what the chat list has always shown for one, and the notification has
       // no more reason to be blank than the list does.

@@ -9509,3 +9509,35 @@ docs alike, and never ticked as if every buyer gets it.
 The qualifier is one phrase so it can be changed in one sweep: `paywall.betaTag`
 in every locale (read through `pendingTag`, which the plan page shares), the
 website's copy and the docs' Copilot page.
+
+## Other people see a first name and an initial
+
+**22 October 2026.** "Behic Sakar" is "Behic S." to everybody but Behic. The
+surname is cut by the API, at the DTO and serialization layer, never by the
+client: an app that shortens what it was sent still received the surname, the
+2.9 builds in the stores would keep showing it, and the web build is one
+devtools tab away from the raw response. Done on the server, the change reaches
+every build at once.
+
+- **The rule** is `shortDisplayName` in `packages/shared`: trim and collapse
+  spaces; one word stays as it is; otherwise every word but the last, then the
+  first grapheme of the last and a dot ("Ana Maria Silva" → "Ana Maria S.",
+  "محمد علي" → "محمد ع."). A name already ending in an initial is left alone,
+  and so is anything in Chinese, Japanese or Korean script, which puts the
+  family name first — cutting the last word there would hide the wrong half.
+- **Where it applies:** every place another member's name leaves the server —
+  profiles (`toPublicProfile`, the signed-out shared profile), Discover and
+  search, the chat list, calls, followers and visitors, posts, comments and
+  likes, testimonials, polls, sticker gifts, referrals, the leaderboards,
+  push titles and bodies, digest and notification mails, share cards, and the
+  speaker on an Echo card (shortened when it is read too, so cards copied
+  before this stop sending the surname without a backfill).
+- **The exceptions:** the owner — `GET /profiles/me`, the edit screen, and
+  `GET /profiles/:id` when it is their own id — and the operator panel and
+  the operator's mails, which are read by us rather than by other members.
+- **Search is unchanged.** `nameTokens` still holds every word, so typing the
+  whole name finds the person and a surname alone still matches. That lets
+  somebody who already knows a surname confirm it — and, since every word
+  matches as a prefix, spell one out a letter at a time at the search's 60 a
+  minute. Accepted for now: the point is that a stranger is not shown it, not
+  that a name somebody already half knows cannot be looked up.

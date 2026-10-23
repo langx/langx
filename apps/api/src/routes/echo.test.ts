@@ -2246,7 +2246,7 @@ describe('echo', () => {
       expect(audio?.url).toContain('fast.m4a')
       expect(audio?.slowUrl).toContain('slow.m4a')
       expect(audio?.origin).toBe('post')
-      expect(audio?.speakerName).toBe('Test User')
+      expect(audio?.speakerName).toBe('Test U.')
     })
 
     /*

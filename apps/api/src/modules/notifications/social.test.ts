@@ -79,7 +79,8 @@ describe('the feed reacting to somebody', () => {
 
       await notifyFollowed(handle.db, senders, { followerId: follower, followeeId: followee })
       expect(push.sent).toHaveLength(1)
-      expect(push.sent[0]?.title).toContain('Ada Lovelace')
+      expect(push.sent[0]?.title).toContain('Ada L.')
+      expect(push.sent[0]?.title).not.toContain('Lovelace')
       expect(push.sent[0]?.data.kind).toBe('social')
       // The tap opens the person who did it.
       expect(push.sent[0]?.data.handle).toBeDefined()
@@ -112,7 +113,7 @@ describe('the feed reacting to somebody', () => {
         testimonialId,
       })
       expect(push.sent).toHaveLength(1)
-      expect(push.sent[0]?.title).toBe('Ada Lovelace wrote a review on your profile')
+      expect(push.sent[0]?.title).toBe('Ada L. wrote a review on your profile')
       expect(push.sent[0]?.data).toEqual({ kind: 'social', testimonialId })
 
       // Deleted and written again is a new review, but not a second buzz.

@@ -6,6 +6,7 @@ import {
   type Leaderboard,
   type LeaderboardEntry,
   type PeriodType,
+  shortDisplayName,
 } from '@langx/shared'
 import type { Db, Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -179,7 +180,7 @@ export async function getLeaderboard(
       rank,
       userId: row.userId,
       handle: profile.handle,
-      displayName: profile.displayName ?? profile.handle,
+      displayName: shortDisplayName(profile.displayName ?? profile.handle),
       tokens: row.tokens,
       // Read defensively. A single profile document missing `streak` — an
       // ETL-imported row, a partially written one — must not be able to 500

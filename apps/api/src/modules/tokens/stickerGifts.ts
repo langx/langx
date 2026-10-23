@@ -17,6 +17,7 @@ import {
   type StickerGiftPartnerState,
   type StickerGiftRefusal,
   type StickerGiftResult,
+  shortDisplayName,
 } from '@langx/shared'
 import { MongoServerError, ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -564,7 +565,7 @@ export async function getStickerGiftOptions(
     partners.push({
       userId: other,
       conversationId: conversation._id.toHexString(),
-      displayName: person.displayName ?? person.handle,
+      displayName: shortDisplayName(person.displayName ?? person.handle),
       handle: person.handle,
       avatarUrl: person.avatarUrl ?? null,
       state,

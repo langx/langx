@@ -32,6 +32,7 @@ import {
   type DiscoveryQuery,
   type NewProfilesPage,
   type PlanTier,
+  shortDisplayName,
 } from '@langx/shared'
 import type { Db, Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -431,7 +432,7 @@ function toDiscoveryItem(
   const item: DiscoveryItem = {
     _id: doc._id,
     handle: doc.handle,
-    displayName: doc.displayName,
+    displayName: shortDisplayName(doc.displayName),
     gender: doc.gender,
     age: ageFromBirthDate(doc.birthDate, now),
     // Stored values were already validated against languageCodeSchema/cefrLevelSchema

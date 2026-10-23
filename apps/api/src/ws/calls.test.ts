@@ -328,6 +328,27 @@ describe('calls over Socket.io', () => {
       expect(session.resumeKey.length).toBeGreaterThan(16)
     })
 
+    /**
+     * The socket is held to the REST rule: whoever is rung learns the
+     * caller's first name and an initial, never the surname.
+     */
+    it('names the caller with an initial, never the surname', async () => {
+      const { alice, bob, conversationId } = await pair(['Sofia Lopez', 'Bob Brown'])
+      const aliceSocket = await connect(alice, 'alice-phone')
+      const bobSocket = await connect(bob, 'bob-phone')
+
+      const incoming = waitForEvent<CallIncoming>(bobSocket, CALL_EVENTS.incoming)
+      await ok<CallSession>(aliceSocket, CALL_EVENTS.start, {
+        callId: randomUUID(),
+        conversationId,
+        media: 'audio',
+      })
+
+      const rung = await incoming
+      expect(rung.caller.displayName).toBe('Sofia L.')
+      expect(JSON.stringify(rung)).not.toContain('Lopez')
+    })
+
     it('never rings a build that did not say it can take a call', async () => {
       const { alice, bob, conversationId } = await pair()
       const aliceSocket = await connect(alice, 'alice-phone')

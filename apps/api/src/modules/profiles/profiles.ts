@@ -39,6 +39,7 @@ import {
   type StoredPlanTier,
   type UpdateProfileInput,
   type DefaultAvatar,
+  shortDisplayName,
 } from '@langx/shared'
 import { MongoServerError, type Db, type ObjectId, type UpdateFilter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -1766,13 +1767,21 @@ export function toPublicProfile(
   now: Date = new Date(),
   /** Set when the viewer and this person already have a thread. */
   conversationId?: string,
+  /**
+   * Who is asking. Only the profile's owner gets the whole `displayName`;
+   * everybody else, absent included, gets `shortDisplayName` of it.
+   */
+  viewerId?: string,
 ): PublicProfile {
   const lastActiveAt = profile.stats?.lastActiveAt ?? profile.createdAt
   const hidden = hidesOnlineStatus(profile)
   const result: PublicProfile = {
     _id: profile._id,
     handle: profile.handle,
-    displayName: profile.displayName ?? profile.handle,
+    displayName:
+      viewerId === profile._id
+        ? (profile.displayName ?? profile.handle)
+        : shortDisplayName(profile.displayName ?? profile.handle),
     photos: (profile.photos ?? []).map((p) => ({ url: p.url })),
     gender: profile.gender,
     nativeLanguages: profile.nativeLanguages ?? [],
@@ -1883,7 +1892,7 @@ export function toConversationPartner(
   const partner: ConversationPartner = {
     _id: profile._id,
     handle: profile.handle,
-    displayName: profile.displayName ?? profile.handle,
+    displayName: shortDisplayName(profile.displayName ?? profile.handle),
     isOnline: hidesOnlineStatus(profile) ? false : isOnlineAt(lastActiveAt, now),
     accountStatus: profile.deletedAt
       ? 'deleted'

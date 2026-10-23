@@ -3,6 +3,7 @@ import {
   type FollowState,
   type ListFollowsQuery,
   type PeoplePage,
+  shortDisplayName,
 } from '@langx/shared'
 import { ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -245,7 +246,7 @@ async function listEdges(
       {
         _id: profile._id,
         handle: profile.handle,
-        displayName: profile.displayName ?? profile.handle,
+        displayName: shortDisplayName(profile.displayName ?? profile.handle),
         ...(profile.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
       },
     ]

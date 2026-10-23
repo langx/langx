@@ -4,6 +4,7 @@ import {
   MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES,
   isUnansweredOutcome,
   type CallPeer,
+  shortDisplayName,
 } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -55,7 +56,7 @@ export function toCallPeer(
   const peer: CallPeer = {
     _id: profile._id,
     handle: profile.handle,
-    displayName: profile.displayName ?? profile.handle,
+    displayName: shortDisplayName(profile.displayName ?? profile.handle),
   }
   if (profile.avatarUrl !== undefined) peer.avatarUrl = profile.avatarUrl
   // Only with the gender read: without it the face would be the neutral

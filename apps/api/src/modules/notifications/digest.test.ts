@@ -185,8 +185,8 @@ describe('the one notification email of the day', () => {
     // The subject comes from the first section that survived — the one that
     // cannot wait, which is somebody waiting for an answer.
     expect(mail?.subject).toContain('2')
-    expect(mail?.html).toContain('Ada Lovelace')
-    expect(mail?.html).toContain('Bo Diddley')
+    expect(mail?.html).toContain('Ada L.')
+    expect(mail?.html).toContain('Bo D.')
     expect(mail?.html).toContain('7')
     // One letter, and it says how to stop all of them.
     expect(mail?.headers?.['List-Unsubscribe-Post']).toBe('List-Unsubscribe=One-Click')
@@ -242,7 +242,7 @@ describe('the one notification email of the day', () => {
       await poolPaid(reader, 7)
 
       expect(await runDailyDigestPass(handle.db, ctx, EVENING)).toMatchObject({ sent: 1 })
-      expect(sender.messages[0]?.html).toContain('Cy Twombly')
+      expect(sender.messages[0]?.html).toContain('Cy T.')
     })
 
     it('does not offer somebody they are already talking to', async () => {
@@ -256,7 +256,7 @@ describe('the one notification email of the day', () => {
       const html = sender.messages[0]?.html ?? ''
       // She is in the mail once, as the person who wrote — and not a second
       // time under the suggestions, which link to a profile.
-      expect(html).toContain('Fay Weldon')
+      expect(html).toContain('Fay W.')
       expect(html.split(fayHandle)).toHaveLength(2)
     })
   })

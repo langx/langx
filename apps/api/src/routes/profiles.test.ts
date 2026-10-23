@@ -2778,4 +2778,81 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       })
     })
   })
+  /**
+   * Other people see "Sofia L."; Sofia sees "Sofia Lopez". The surname is
+   * cut on the server, so these read the wire itself: an assertion on
+   * `displayName` alone would pass with the surname still elsewhere in the
+   * body, which is why each one also searches the raw JSON for it.
+   */
+  describe('names other people see', () => {
+    async function person(email: string, handleName: string, displayName: string) {
+      const user = await newUser(email)
+      const response = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle: handleName, displayName }),
+      })
+      expect(response.statusCode, response.body).toBe(201)
+      return user
+    }
+
+    async function get(user: SignedUpUser, url: string) {
+      const response = await app.inject({ method: 'GET', url, headers: { cookie: user.cookie } })
+      expect(response.statusCode, response.body).toBe(200)
+      return response
+    }
+
+    it('sends the owner the whole name and everybody else an initial', async () => {
+      const sofia = await person('names-owner@example.com', 'namesofia', 'Sofia Maria Lopez')
+      const viewer = await person('names-viewer@example.com', 'nameviewer', 'Viewer Person')
+
+      const own = await get(sofia, '/profiles/me')
+      expect(own.json<{ displayName: string }>().displayName).toBe('Sofia Maria Lopez')
+      const ownPublic = await get(sofia, `/profiles/${sofia.userId}`)
+      expect(ownPublic.json<{ displayName: string }>().displayName).toBe('Sofia Maria Lopez')
+
+      const seen = await get(viewer, `/profiles/${sofia.userId}`)
+      expect(seen.json<{ displayName: string }>().displayName).toBe('Sofia Maria L.')
+      expect(seen.body).not.toContain('Lopez')
+
+      const shared = await app.inject({ method: 'GET', url: '/public/profiles/namesofia' })
+      expect(shared.statusCode).toBe(200)
+      expect(shared.json<{ displayName: string }>().displayName).toBe('Sofia Maria L.')
+      expect(shared.body).not.toContain('Lopez')
+    })
+
+    /**
+     * The search still matches on the whole name — `nameTokens` is left as it
+     * was — but what it answers with is the short form.
+     */
+    it('finds somebody by their whole name and shows the initial', async () => {
+      const sofia = await person('names-search@example.com', 'namesearch', 'Sofia Searchable')
+      const viewer = await person('names-searcher@example.com', 'namesearcher', 'Viewer Two')
+
+      const found = await get(viewer, '/discovery/handles?q=Sofia%20Searchable')
+      const items = found.json<{ items: { _id: string; displayName: string }[] }>().items
+      expect(items.find((item) => item._id === sofia.userId)?.displayName).toBe('Sofia S.')
+      expect(found.body).not.toContain('Searchable')
+    })
+
+    it('shows the partner in the chat list with an initial', async () => {
+      const sofia = await person('names-chat@example.com', 'namechat', 'Sofia Chatterton')
+      const viewer = await person('names-chatter@example.com', 'namechatter', 'Viewer Three')
+      const started = await app.inject({
+        method: 'POST',
+        url: '/conversations',
+        headers: { cookie: viewer.cookie },
+        payload: { toUserId: sofia.userId, body: 'hi' },
+      })
+      expect(started.statusCode, started.body).toBe(201)
+
+      for (const user of [viewer, sofia]) {
+        const list = await get(user, '/conversations')
+        expect(list.body).not.toContain('Chatterton')
+      }
+      const list = await get(viewer, '/conversations')
+      expect(list.body).toContain('Sofia C.')
+    })
+  })
 })
