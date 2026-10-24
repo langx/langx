@@ -4656,4 +4656,14 @@ export const ru: Localized<EnMessages> = {
     settingsOffConfirm: 'Выключить',
     settingsOffDone: 'Copilot выключен.',
   },
+  venus: {
+    playerA11y: 'Venus, день {day}',
+    tapForSound: 'Нажми, чтобы включить звук',
+    play: 'Смотреть',
+    pause: 'Пауза',
+    share: 'Поделиться',
+    downloaded: 'Видео скачано',
+    shareFailed: 'Не удалось поделиться видео. Попробуй ещё раз.',
+    watchAgain: 'Смотреть видео дня',
+  },
 }

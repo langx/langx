@@ -295,6 +295,13 @@ export const FLAG_KEYS = {
    * week after it was closed; `photoNudge.ts` owns the rule and bounds the map.
    */
   photoNudgeDismissed: 'photoNudgeDismissed',
+  /**
+   * JSON: `{ [accountId]: day }`, the last counted day whose Venus video
+   * opened by itself for each account on this device. Per account for the
+   * reason `firstReplyCardShown` is; `venusStory.ts` owns the rule and bounds
+   * the map. Losing it costs one extra auto-open, never the replay.
+   */
+  venusStorySeen: 'venusStorySeen',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]

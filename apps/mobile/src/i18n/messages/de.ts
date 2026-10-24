@@ -4056,4 +4056,14 @@ export const de: Localized<EnMessages> = {
     settingsOffConfirm: 'Ausschalten',
     settingsOffDone: 'Copilot ist aus.',
   },
+  venus: {
+    playerA11y: 'Venus, Tag {day}',
+    tapForSound: 'Für Ton tippen',
+    play: 'Abspielen',
+    pause: 'Pausieren',
+    share: 'Teilen',
+    downloaded: 'Video heruntergeladen',
+    shareFailed: 'Das Video konnte nicht geteilt werden. Versuch es noch einmal.',
+    watchAgain: 'Heutiges Video ansehen',
+  },
 }

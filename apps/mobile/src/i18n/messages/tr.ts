@@ -3952,4 +3952,14 @@ export const tr: Localized<EnMessages> = {
     settingsOffConfirm: 'Kapat',
     settingsOffDone: 'Copilot kapalı.',
   },
+  venus: {
+    playerA11y: 'Venus, {day}. gün',
+    tapForSound: 'Ses için dokun',
+    play: 'Oynat',
+    pause: 'Duraklat',
+    share: 'Paylaş',
+    downloaded: 'Video indirildi',
+    shareFailed: 'Video paylaşılamadı. Tekrar dene.',
+    watchAgain: 'Bugünün videosunu izle',
+  },
 }

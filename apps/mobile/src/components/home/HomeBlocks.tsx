@@ -99,13 +99,30 @@ export function HomeStreakRow({
   title,
   subtitle,
   onPress,
+  play,
 }: {
   title: string
   subtitle?: string | undefined
   onPress: () => void
+  /**
+   * Today's Venus video, when there is one (`flags.venusStories`): the flame
+   * becomes its own button that plays it again, with a play mark on it, and
+   * the rest of the row still opens the streak screen.
+   */
+  play?: { label: string; onPress: () => void } | undefined
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
+  const flame = (
+    <View style={[styles.disc, { backgroundColor: v3.hues.tangerine }]}>
+      <FlameGlyph size={v3.icon.lg} color={v3.colors.ink} />
+      {play ? (
+        <View style={styles.discPlay}>
+          <Feather name="play" size={10} color={v3.hues.tangerine} />
+        </View>
+      ) : null}
+    </View>
+  )
   return (
     <PressableScale
       accessibilityRole="button"
@@ -113,9 +130,18 @@ export function HomeStreakRow({
       onPress={onPress}
       style={styles.row}
     >
-      <View style={[styles.disc, { backgroundColor: v3.hues.tangerine }]}>
-        <FlameGlyph size={v3.icon.lg} color={v3.colors.ink} />
-      </View>
+      {play ? (
+        <PressableScale
+          accessibilityRole="button"
+          accessibilityLabel={play.label}
+          onPress={play.onPress}
+          hitSlop={6}
+        >
+          {flame}
+        </PressableScale>
+      ) : (
+        flame
+      )}
       <View style={styles.rowText}>
         <Text style={styles.rowTitle}>{title}</Text>
         {subtitle ? <Text style={styles.rowSub}>{subtitle}</Text> : null}
@@ -347,6 +373,19 @@ const useStyles = makeStyles(({ v3 }) => ({
     height: 44,
     justifyContent: 'center',
     width: 44,
+  },
+  discPlay: {
+    alignItems: 'center',
+    // Ink in both schemes, so the mark reads on the tangerine either way.
+    backgroundColor: v3.colors.ink,
+    borderRadius: v3.radius.pill,
+    bottom: -2,
+    end: -2,
+    height: 18,
+    justifyContent: 'center',
+    paddingStart: 1,
+    position: 'absolute',
+    width: 18,
   },
   rowText: { flex: 1, minWidth: 0 },
   rowTitle: { ...v3.type.headline, color: v3.colors.fg },

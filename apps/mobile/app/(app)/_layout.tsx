@@ -5,6 +5,7 @@ import { OfflineBanner } from '../../src/components/OfflineBanner'
 import { ProWelcomeHost } from '../../src/components/ProWelcomeHost'
 import { ProWeekRecapHost } from '../../src/components/ProWeekRecapHost'
 import { UpdateBanner } from '../../src/components/UpdateBanner'
+import { VenusStoryHost } from '../../src/components/VenusStoryHost'
 import { useTheme } from '../../src/lib/theme'
 import { useNotificationRouting } from '../../src/hooks/useNotificationRouting'
 import { usePushRegistration } from '../../src/hooks/usePushRegistration'
@@ -206,6 +207,8 @@ export default function AppLayout() {
       <ProWelcomeHost enabled={!isGuest} />
       {/* The Pro Week's last-day recap, beside it for the same reason. */}
       <ProWeekRecapHost enabled={!isGuest} />
+      {/* Venus's daily streak story, for the same reason: the day counts anywhere. */}
+      <VenusStoryHost enabled={!isGuest} />
     </View>
   )
 }

@@ -4409,6 +4409,21 @@ export const en = {
     settingsOffConfirm: 'Turn off',
     settingsOffDone: 'Copilot is off.',
   },
+  /**
+   * Venus's daily streak story (`flags.venusStories`): the full-screen player
+   * that opens when the day's streak counts. `playerA11y` names the video by
+   * the streak day it is for, a label rather than a count, so it is no plural.
+   */
+  venus: {
+    playerA11y: 'Venus, day {day}',
+    tapForSound: 'Tap for sound',
+    play: 'Play',
+    pause: 'Pause',
+    share: 'Share',
+    downloaded: 'Video downloaded',
+    shareFailed: 'Couldn’t share the video. Try again.',
+    watchAgain: 'Watch today’s video',
+  },
 } as const
 
 export type EnMessages = typeof en

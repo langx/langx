@@ -194,6 +194,16 @@ export const appConfigSchema = z.object({
      * the button. Gifts already given stay given whatever this says.
      */
     stickerGifts: z.boolean(),
+    /**
+     * Venus's daily streak story: the first time today's streak counts, a
+     * full-screen video of Venus for that day opens once, and the streak
+     * flame plays it again until midnight (`lib/venusStory.ts`). Starts off
+     * because the videos are not in the bucket yet — and with the flag on and
+     * no file, nothing is drawn — and because a full-screen video opening by
+     * itself is a product decision, made by switching this on rather than by
+     * a merge.
+     */
+    venusStories: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -226,6 +236,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     newcomerHello: false,
     promoPaywallLinks: false,
     stickerGifts: false,
+    venusStories: false,
   },
 }
 
