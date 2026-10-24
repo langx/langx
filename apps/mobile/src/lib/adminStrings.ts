@@ -754,6 +754,8 @@ export const ADMIN = {
         'The "free limits" and "plan ended" nudges open the paywall instead of Settings → Subscription and Discover.',
       stickerGifts:
         'Giving a sticker pack to a chat partner — tokens spent on another person’s account.',
+      venusStories:
+        'Venus’s daily streak video opens full screen once a day when the streak counts; the flame replays it. Nothing shows for a day with no file.',
     } satisfies Record<AdminFlagName, string>,
     /**
      * Flags whose pull requests asked for a condition before they go on
@@ -765,6 +767,8 @@ export const ADMIN = {
         'Asked for first (#1832): narrow the limits nudge so it no longer fires after refusals Pro does not lift.',
       stickerGifts:
         'Asked for first: the Terms gifting section. Terms §7 still says tokens are not transferable.',
+      venusStories:
+        'Asked for first: the videos and manifest.json uploaded under venus/v1/ in the media bucket.',
     } satisfies Partial<Record<AdminFlagName, string>>,
   },
 

@@ -4032,4 +4032,14 @@ export const es: Localized<EnMessages> = {
     settingsOffConfirm: 'Desactivar',
     settingsOffDone: 'Copilot está desactivado.',
   },
+  venus: {
+    playerA11y: 'Venus, día {day}',
+    tapForSound: 'Toca para activar el sonido',
+    play: 'Reproducir',
+    pause: 'Pausar',
+    share: 'Compartir',
+    downloaded: 'Video descargado',
+    shareFailed: 'No se pudo compartir el video. Inténtalo de nuevo.',
+    watchAgain: 'Ver el video de hoy',
+  },
 }

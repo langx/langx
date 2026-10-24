@@ -23,6 +23,7 @@ import { Screen } from '../components/ui/Screen'
 import { Skeleton } from '../components/ui/Skeleton'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
+import { useVenusStory } from '../hooks/useVenusStory'
 import { useLocale, useT } from '../i18n'
 import type { TranslateFn } from '../i18n/runtime'
 import { activityGrid } from '../lib/activityMap'
@@ -38,6 +39,7 @@ import { streakShareText } from '../lib/shareText'
 import { buildStoreOffers, repairsUsedFor } from '../lib/storeOffers'
 import { brokenStreakRepair, streakLadder, type StreakRung } from '../lib/streakV3'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../lib/theme'
+import { requestVenusReplay } from '../lib/venusStory'
 import { showToast } from '../lib/toast'
 import { plain, tokenAmountLabel, tokenButton, tokenSentence, tokenSlot } from '../lib/tokenAmount'
 
@@ -85,6 +87,7 @@ function MemberStreak() {
   const tokens = useTokens()
   const wallet = useWallet()
   const me = useMe()
+  const venus = useVenusStory()
   // A day past UTC's date. `today` is the profile's day, and east of UTC it
   // is already tomorrow there before UTC midnight; ending the range on the
   // UTC date left today's row out, so a day already checked in read as
@@ -244,6 +247,7 @@ function MemberStreak() {
             longest={t('streak.heroLongest', { count: streak.longest })}
             week={weekDays}
             weekLabel={t('streak.weekA11y', { count: doneThisWeek })}
+            play={venus ? { label: t('venus.watchAgain'), onPress: requestVenusReplay } : undefined}
           />
         ) : (
           <StreakEmptyHero

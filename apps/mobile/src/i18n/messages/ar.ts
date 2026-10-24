@@ -5083,4 +5083,14 @@ export const ar: Localized<EnMessages> = {
     settingsOffConfirm: 'إيقاف',
     settingsOffDone: 'Copilot متوقف.',
   },
+  venus: {
+    playerA11y: 'Venus، اليوم {day}',
+    tapForSound: 'اضغط لتشغيل الصوت',
+    play: 'تشغيل',
+    pause: 'إيقاف مؤقت',
+    share: 'مشاركة',
+    downloaded: 'تم تنزيل الفيديو',
+    shareFailed: 'تعذّرت مشاركة الفيديو. حاول مرة أخرى.',
+    watchAgain: 'شاهد فيديو اليوم',
+  },
 }
