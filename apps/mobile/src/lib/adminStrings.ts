@@ -754,6 +754,8 @@ export const ADMIN = {
         'The "free limits" and "plan ended" nudges open the paywall instead of Settings → Subscription and Discover.',
       stickerGifts:
         'Giving a sticker pack to a chat partner — tokens spent on another person’s account.',
+      whatsappStickers:
+        '"Add to WhatsApp" on a sticker pack that has a WhatsApp export (Venus). Needs a build with the module.',
     } satisfies Record<AdminFlagName, string>,
     /**
      * Flags whose pull requests asked for a condition before they go on

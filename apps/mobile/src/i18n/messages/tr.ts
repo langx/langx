@@ -2715,6 +2715,8 @@ export const tr: Localized<EnMessages> = {
     shortBy: 'Şimdi {balance} · {missing} eksik',
     buy: '{title} satın al',
     owned: 'Senin. Her sohbetten gönderebilirsin.',
+    addToWhatsApp: 'WhatsApp’a ekle',
+    addToWhatsAppFailed: 'WhatsApp açılmadı. Birazdan yeniden dene.',
     seePack: 'Paketi gör',
   },
 

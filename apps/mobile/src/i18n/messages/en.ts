@@ -3035,6 +3035,8 @@ export const en = {
     shortBy: '{balance} now · {missing} to go',
     buy: 'Buy {title}',
     owned: 'Yours. Send them from any chat.',
+    addToWhatsApp: 'Add to WhatsApp',
+    addToWhatsAppFailed: 'WhatsApp did not open. Try again in a moment.',
     seePack: 'See the pack',
   },
 

@@ -15,6 +15,7 @@
     "android": "expo run:android",
     "gen:strings": "tsx scripts/generate-xcstrings.ts",
     "gen:names": "tsx scripts/build-display-names.ts",
+    "gen:whatsapp-stickers": "tsx scripts/build-whatsapp-stickers.ts",
     "typecheck": "tsc --noEmit && tsc --noEmit -p functions",
     "test": "vitest run"
   },

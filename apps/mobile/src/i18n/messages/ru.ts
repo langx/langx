@@ -3212,6 +3212,8 @@ export const ru: Localized<EnMessages> = {
     shortBy: 'Сейчас {balance} · не хватает {missing}',
     buy: 'Купить «{title}»',
     owned: 'Он твой. Отправляй из любого чата.',
+    addToWhatsApp: 'Добавить в WhatsApp',
+    addToWhatsAppFailed: 'WhatsApp не открылся. Попробуй ещё раз чуть позже.',
     seePack: 'Посмотреть набор',
   },
 

@@ -3458,6 +3458,8 @@ export const ar: Localized<EnMessages> = {
     shortBy: 'الآن {balance} · ينقصك {missing}',
     buy: 'شراء {title}',
     owned: 'إنها لك. أرسلها من أي محادثة.',
+    addToWhatsApp: 'أضِف إلى واتساب',
+    addToWhatsAppFailed: 'لم يُفتح واتساب. حاول مرة أخرى بعد قليل.',
     seePack: 'عرض الحزمة',
   },
 

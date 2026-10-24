@@ -2739,6 +2739,8 @@ export const ptBR: Localized<EnMessages> = {
     shortBy: '{balance} agora · faltam {missing}',
     buy: 'Comprar {title}',
     owned: 'É seu. Envie de qualquer conversa.',
+    addToWhatsApp: 'Adicionar ao WhatsApp',
+    addToWhatsAppFailed: 'O WhatsApp não abriu. Tente de novo daqui a pouco.',
     seePack: 'Ver o pacote',
   },
 
