@@ -32,7 +32,7 @@ export function PoolScreenV3() {
   useScreenInteractive()
   const styles = useStyles()
   const { v3 } = useTheme()
-  const unitIcon = useTokenIconMetrics(v3.type.numeral.fontSize)
+  const unitIcon = useTokenIconMetrics(v3.type.numeral.fontSize, AMOUNT_MAX_SCALE)
   const t = useT()
   const { locale } = useLocale()
   const black = useV3Fonts()
@@ -101,8 +101,8 @@ export function PoolScreenV3() {
                 >
                   <Text
                     style={[styles.amount, !black && styles.amountFallback]}
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
+                    // A figure in a fixed block, capped like the wallet's balance.
+                    maxFontSizeMultiplier={AMOUNT_MAX_SCALE}
                   >
                     {t('tokens.shareAmount', { count: lastPayout.amount })}
                   </Text>
@@ -208,6 +208,9 @@ export function PoolScreenV3() {
   )
 }
 
+/** How far the share may grow with the reader's text size; its mark follows. */
+const AMOUNT_MAX_SCALE = 1.4
+
 function Tile({ value, label, tone }: { value: number; label: string; tone?: string }) {
   const styles = useStyles()
   const { locale } = useLocale()
@@ -257,6 +260,9 @@ const useStyles = makeStyles(({ v3 }) => ({
   kicker: { ...v3.type.callout, color: v3.colors.ink, flexShrink: 1, fontWeight: '700' },
   amountRow: { alignItems: 'baseline', flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
   // Not set solid: Nunito's digits stand taller than the em box.
+  // No adjustsFontSizeToFit, for the reason the gift's amount gives: iOS drew
+  // "+148" a few points tall beside a full-size mark. A share is capped at
+  // `maxShareOfPool`, a few digits the numeral fits at full size.
   amount: {
     ...v3.type.numeral,
     color: v3.colors.ink,

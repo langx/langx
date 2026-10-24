@@ -43,6 +43,15 @@ describe('labels that must shrink rather than truncate, on the web too', () => {
   })
 })
 
+describe('the v3 pool share', () => {
+  it('draws at full size, not shrunk to fit — iOS shrank it to a few points', () => {
+    const pool = read('screens/me/PoolScreenV3.tsx')
+    // The prop, not the comment that says why it is gone.
+    expect(pool).not.toMatch(/adjustsFontSizeToFit[\s=>]/)
+    expect(pool).toContain('maxFontSizeMultiplier={AMOUNT_MAX_SCALE}')
+  })
+})
+
 describe('the v3 age slider', () => {
   it('makes each handle its own adjustable control with steps', () => {
     const slider = read('components/ui/RangeSlider.tsx')
