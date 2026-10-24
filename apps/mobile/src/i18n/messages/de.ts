@@ -2802,6 +2802,8 @@ export const de: Localized<EnMessages> = {
     buy: '{title} kaufen',
     free: 'Für alle kostenlos. Schick sie aus jedem Chat.',
     owned: 'Gehört dir. Schick sie aus jedem Chat.',
+    addToWhatsApp: 'Zu WhatsApp hinzufügen',
+    addToWhatsAppFailed: 'WhatsApp hat sich nicht geöffnet. Versuch es gleich noch einmal.',
     seePack: 'Paket ansehen',
   },
 

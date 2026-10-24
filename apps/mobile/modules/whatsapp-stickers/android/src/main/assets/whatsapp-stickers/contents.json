@@ -1,0 +1,198 @@
+{
+  "android_play_store_link": "https://play.google.com/store/apps/details?id=tech.newchapter.languageXchange",
+  "ios_app_store_link": "https://itunes.apple.com/app/id6474187141",
+  "sticker_packs": [
+    {
+      "identifier": "venus",
+      "name": "Venus",
+      "publisher": "LangX",
+      "tray_image_file": "tray.png",
+      "publisher_website": "https://langx.io",
+      "privacy_policy_website": "https://langx.io/privacy-policy",
+      "license_agreement_website": "https://langx.io/terms",
+      "image_data_version": "5782b85f9b1c",
+      "stickers": [
+        {
+          "image_file": "01-hi.webp",
+          "emojis": [
+            "👋"
+          ]
+        },
+        {
+          "image_file": "02-love.webp",
+          "emojis": [
+            "❤️"
+          ]
+        },
+        {
+          "image_file": "03-lol.webp",
+          "emojis": [
+            "😂"
+          ]
+        },
+        {
+          "image_file": "04-ok.webp",
+          "emojis": [
+            "👌"
+          ]
+        },
+        {
+          "image_file": "05-no.webp",
+          "emojis": [
+            "🙅"
+          ]
+        },
+        {
+          "image_file": "06-sorry.webp",
+          "emojis": [
+            "🥺"
+          ]
+        },
+        {
+          "image_file": "07-crying.webp",
+          "emojis": [
+            "😭"
+          ]
+        },
+        {
+          "image_file": "08-shocked.webp",
+          "emojis": [
+            "😱"
+          ]
+        },
+        {
+          "image_file": "09-thinking.webp",
+          "emojis": [
+            "🤔"
+          ]
+        },
+        {
+          "image_file": "10-celebrate.webp",
+          "emojis": [
+            "🎉"
+          ]
+        },
+        {
+          "image_file": "11-proud.webp",
+          "emojis": [
+            "😎"
+          ]
+        },
+        {
+          "image_file": "12-slow-blink.webp",
+          "emojis": [
+            "😌"
+          ]
+        },
+        {
+          "image_file": "13-squint.webp",
+          "emojis": [
+            "🤨"
+          ]
+        },
+        {
+          "image_file": "14-blep.webp",
+          "emojis": [
+            "😛"
+          ]
+        },
+        {
+          "image_file": "15-typing.webp",
+          "emojis": [
+            "💬"
+          ]
+        },
+        {
+          "image_file": "16-boop.webp",
+          "emojis": [
+            "🐾"
+          ]
+        },
+        {
+          "image_file": "17-sleepy.webp",
+          "emojis": [
+            "😴"
+          ]
+        },
+        {
+          "image_file": "18-diva.webp",
+          "emojis": [
+            "💅"
+          ]
+        },
+        {
+          "image_file": "19-word-hi-tr.webp",
+          "emojis": [
+            "👋"
+          ]
+        },
+        {
+          "image_file": "20-word-hi-en.webp",
+          "emojis": [
+            "👋"
+          ]
+        },
+        {
+          "image_file": "21-word-thanks-tr.webp",
+          "emojis": [
+            "🙏"
+          ]
+        },
+        {
+          "image_file": "22-word-thanks-en.webp",
+          "emojis": [
+            "🙏"
+          ]
+        },
+        {
+          "image_file": "23-word-ok-tr.webp",
+          "emojis": [
+            "👌"
+          ]
+        },
+        {
+          "image_file": "24-word-ok-en.webp",
+          "emojis": [
+            "👌"
+          ]
+        },
+        {
+          "image_file": "25-word-morning-tr.webp",
+          "emojis": [
+            "☀️"
+          ]
+        },
+        {
+          "image_file": "26-word-morning-en.webp",
+          "emojis": [
+            "☀️"
+          ]
+        },
+        {
+          "image_file": "27-word-night-tr.webp",
+          "emojis": [
+            "🌙"
+          ]
+        },
+        {
+          "image_file": "28-word-night-en.webp",
+          "emojis": [
+            "🌙"
+          ]
+        },
+        {
+          "image_file": "29-word-practise-tr.webp",
+          "emojis": [
+            "🗣"
+          ]
+        },
+        {
+          "image_file": "30-word-practise-en.webp",
+          "emojis": [
+            "🗣"
+          ]
+        }
+      ]
+    }
+  ]
+}

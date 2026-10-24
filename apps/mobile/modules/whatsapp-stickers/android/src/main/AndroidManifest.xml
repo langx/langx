@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  What WhatsApp needs from us, merged into the app's manifest by `prebuild`.
+
+  The provider is WhatsApp's door into the pack: exported, because the caller
+  is WhatsApp, and readable only with `com.whatsapp.sticker.READ`, the
+  permission WhatsApp holds — the official sample declares it exactly so.
+  The authority is the application id plus a suffix, and
+  `StickerContentProvider.authority` builds the same string; WhatsApp
+  remembers a pack as authority + identifier, so neither may change once a
+  pack has been added somewhere.
+
+  `queries` because Android 11+ hides other apps unless they are named:
+  without it the installed check is always false and the button never shows.
+  WhatsApp Business takes sticker packs too.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <application>
+    <provider
+      android:name="expo.modules.whatsappstickers.StickerContentProvider"
+      android:authorities="${applicationId}.whatsappstickers"
+      android:enabled="true"
+      android:exported="true"
+      android:readPermission="com.whatsapp.sticker.READ" />
+  </application>
+
+  <queries>
+    <package android:name="com.whatsapp" />
+    <package android:name="com.whatsapp.w4b" />
+  </queries>
+</manifest>

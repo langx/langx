@@ -3460,6 +3460,8 @@ export const ar: Localized<EnMessages> = {
     buy: 'شراء {title}',
     free: 'مجانية للجميع. أرسلها من أي محادثة.',
     owned: 'إنها لك. أرسلها من أي محادثة.',
+    addToWhatsApp: 'أضِف إلى واتساب',
+    addToWhatsAppFailed: 'لم يُفتح واتساب. حاول مرة أخرى بعد قليل.',
     seePack: 'عرض الحزمة',
   },
 
