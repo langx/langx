@@ -1,7 +1,13 @@
 /**
  * Turns a finished sticker set into the files the WhatsApp export ships.
  *
- *   pnpm --filter @langx/mobile gen:whatsapp-stickers <set-dir> [--pack stickers.venus]
+ *   cd <folder holding the set>
+ *   npx tsx <repo>/apps/mobile/scripts/build-whatsapp-stickers.ts <set-dir> [--pack stickers.venus]
+ *
+ * `<set-dir>` must sit below the folder the command runs in. It is read and
+ * nothing else is, so the one path the script takes from its arguments is held
+ * to where it was started — what CodeQL's path-injection check asks for, and
+ * cheap for a script that is only ever run by hand.
  *
  * `<set-dir>` is the folder the sticker generator writes: a `stickers.json`
  * listing `{ file, emoji }` in pack order, and the 512 px transparent PNGs
@@ -100,13 +106,19 @@ function toTray(png: string, tmp: string): Uint8Array {
 }
 
 function main(): void {
-  const setDir = process.argv[2]
+  const setArg = process.argv[2]
   const cosmeticId = arg('--pack') ?? 'stickers.venus'
   const info = WHATSAPP_PACKS[cosmeticId]
-  if (!setDir || setDir.startsWith('--')) {
+  if (!setArg || setArg.startsWith('--')) {
     throw new Error('usage: build-whatsapp-stickers.ts <set-dir> [--pack stickers.venus]')
   }
   if (!info) throw new Error(`${cosmeticId} is not in WHATSAPP_PACKS`)
+
+  const root = path.resolve(process.cwd())
+  const setDir = path.resolve(root, setArg)
+  if (!setDir.startsWith(root + path.sep)) {
+    throw new Error(`${setArg} is outside ${root}: run this from the folder that holds the set`)
+  }
 
   const listing = path.join(setDir, 'stickers.json')
   if (!fs.existsSync(listing))
