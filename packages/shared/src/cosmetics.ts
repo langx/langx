@@ -155,10 +155,58 @@ export const COSMETICS: readonly Cosmetic[] = [
   { id: 'title.legend', kind: 'title', label: 'Legend', price: 100_000 },
   /*
    * The sticker packs, in the order the store and the sticker keyboard show
-   * them. `starter` and `practice` cost 1,000 as the two entry packs and every
-   * other pack 1,500; none is a rung above another — `isLadderKind` leaves
+   * them. `venus` is free and owned by everyone, `starter` and `practice`
+   * cost 1,000 as the two entry packs and every other pack 1,500; none is a
+   * rung above another — `isLadderKind` leaves
    * stickers out.
    */
+  /**
+   * Venus, LangX's cat, and the one pack nobody buys: priced 0, which means
+   * every account owns it from the start (`ownedCosmetics`). First in the
+   * list so the sticker keyboard opens on something everybody can send.
+   *
+   * Thirty die-cut renders of the polished vector rig — no photos of the real
+   * cat — and the same art as the public Telegram set. Six of them carry a
+   * word, each once in Turkish and once in English.
+   */
+  {
+    id: 'stickers.venus',
+    kind: 'stickers',
+    label: 'Venus',
+    price: 0,
+    stickers: [
+      'hi',
+      'love',
+      'lol',
+      'ok',
+      'no',
+      'sorry',
+      'crying',
+      'shocked',
+      'thinking',
+      'celebrate',
+      'proud',
+      'blink',
+      'squint',
+      'blep',
+      'typing',
+      'boop',
+      'sleepy',
+      'diva',
+      'merhaba',
+      'hello',
+      'tesekkurler',
+      'thanks',
+      'tamam',
+      'okay',
+      'gunaydin',
+      'morning',
+      'iyigeceler',
+      'goodnight',
+      'pratik',
+      'practise',
+    ],
+  },
   /**
    * The starter pack: Pip, a speech bubble with a face, saying the everyday
    * things — hello, I am listening, I get it, thank you.
@@ -453,6 +501,32 @@ export const COSMETICS: readonly Cosmetic[] = [
     ],
   },
 ]
+
+/**
+ * Whether everybody owns this without buying it: a price of 0.
+ *
+ * Sticker packs only — a free frame or title would be a rung everyone stands
+ * on, which `ladderOpen` was never written for — and `cosmetics.test.ts`
+ * holds the catalogue to that.
+ */
+export function isIncludedCosmetic(cosmetic: Cosmetic): boolean {
+  return cosmetic.kind === 'stickers' && cosmetic.price === 0
+}
+
+/**
+ * What an account owns: what it bought or was given (`profiles.cosmetics`),
+ * plus every included pack.
+ *
+ * Derived on read rather than written to each profile, so a pack made free
+ * later reaches every account at once, with no backfill to run and no
+ * account created before it left out. Every check of ownership — the wallet
+ * the app draws, the sticker send gate, a purchase, a gift — goes through
+ * this.
+ */
+export function ownedCosmetics(stored: readonly string[]): string[] {
+  const included = COSMETICS.filter(isIncludedCosmetic).map((c) => c.id)
+  return [...stored, ...included.filter((id) => !stored.includes(id))]
+}
 
 /** Progress against a gate: what the client draws and the server checks. */
 export interface CosmeticProgress {

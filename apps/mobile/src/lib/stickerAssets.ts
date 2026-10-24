@@ -131,8 +131,71 @@ import tableBaklava from '../../assets/stickers/table/baklava.svg'
 import tableMochi from '../../assets/stickers/table/mochi.svg'
 import tablePaella from '../../assets/stickers/table/paella.svg'
 import tableCheers from '../../assets/stickers/table/cheers.svg'
+import venusHi from '../../assets/stickers/venus/hi.webp'
+import venusLove from '../../assets/stickers/venus/love.webp'
+import venusLol from '../../assets/stickers/venus/lol.webp'
+import venusOk from '../../assets/stickers/venus/ok.webp'
+import venusNo from '../../assets/stickers/venus/no.webp'
+import venusSorry from '../../assets/stickers/venus/sorry.webp'
+import venusCrying from '../../assets/stickers/venus/crying.webp'
+import venusShocked from '../../assets/stickers/venus/shocked.webp'
+import venusThinking from '../../assets/stickers/venus/thinking.webp'
+import venusCelebrate from '../../assets/stickers/venus/celebrate.webp'
+import venusProud from '../../assets/stickers/venus/proud.webp'
+import venusBlink from '../../assets/stickers/venus/blink.webp'
+import venusSquint from '../../assets/stickers/venus/squint.webp'
+import venusBlep from '../../assets/stickers/venus/blep.webp'
+import venusTyping from '../../assets/stickers/venus/typing.webp'
+import venusBoop from '../../assets/stickers/venus/boop.webp'
+import venusSleepy from '../../assets/stickers/venus/sleepy.webp'
+import venusDiva from '../../assets/stickers/venus/diva.webp'
+import venusMerhaba from '../../assets/stickers/venus/merhaba.webp'
+import venusHello from '../../assets/stickers/venus/hello.webp'
+import venusTesekkurler from '../../assets/stickers/venus/tesekkurler.webp'
+import venusThanks from '../../assets/stickers/venus/thanks.webp'
+import venusTamam from '../../assets/stickers/venus/tamam.webp'
+import venusOkay from '../../assets/stickers/venus/okay.webp'
+import venusGunaydin from '../../assets/stickers/venus/gunaydin.webp'
+import venusMorning from '../../assets/stickers/venus/morning.webp'
+import venusIyigeceler from '../../assets/stickers/venus/iyigeceler.webp'
+import venusGoodnight from '../../assets/stickers/venus/goodnight.webp'
+import venusPratik from '../../assets/stickers/venus/pratik.webp'
+import venusPractise from '../../assets/stickers/venus/practise.webp'
 
 export const STICKER_ASSETS: Record<string, Record<string, number>> = {
+  // WebP rather than SVG: see the raster rule in `stickerAssets.test.ts`.
+  'stickers.venus': {
+    hi: venusHi,
+    love: venusLove,
+    lol: venusLol,
+    ok: venusOk,
+    no: venusNo,
+    sorry: venusSorry,
+    crying: venusCrying,
+    shocked: venusShocked,
+    thinking: venusThinking,
+    celebrate: venusCelebrate,
+    proud: venusProud,
+    blink: venusBlink,
+    squint: venusSquint,
+    blep: venusBlep,
+    typing: venusTyping,
+    boop: venusBoop,
+    sleepy: venusSleepy,
+    diva: venusDiva,
+    merhaba: venusMerhaba,
+    hello: venusHello,
+    tesekkurler: venusTesekkurler,
+    thanks: venusThanks,
+    tamam: venusTamam,
+    okay: venusOkay,
+    gunaydin: venusGunaydin,
+    morning: venusMorning,
+    iyigeceler: venusIyigeceler,
+    goodnight: venusGoodnight,
+    pratik: venusPratik,
+    practise: venusPractise,
+  },
   'stickers.paper': {
     // Renamed on import only, as `thinking` is below: `starter` has a `book`.
     book: paperBook,
