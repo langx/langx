@@ -14,9 +14,12 @@ describe('sticker pack gifts', () => {
 
   it('gives sticker packs only, and nothing with a condition', () => {
     for (const cosmetic of COSMETICS) {
-      expect(isGiftableCosmetic(cosmetic)).toBe(cosmetic.kind === 'stickers' && !cosmetic.requires)
+      expect(isGiftableCosmetic(cosmetic)).toBe(
+        cosmetic.kind === 'stickers' && !cosmetic.requires && cosmetic.price > 0,
+      )
     }
     expect(COSMETICS.some(isGiftableCosmetic)).toBe(true)
+    expect(isGiftableCosmetic(COSMETICS.find((c) => c.id === 'stickers.venus')!)).toBe(false)
   })
 
   it('opens a thread only when each side has talked, for long enough', () => {

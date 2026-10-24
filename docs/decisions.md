@@ -9541,3 +9541,28 @@ every build at once.
   matches as a prefix, spell one out a letter at a time at the search's 60 a
   minute. Accepted for now: the point is that a stranger is not shown it, not
   that a name somebody already half knows cannot be looked up.
+
+## Venus is a free sticker pack, owned by everybody
+
+**23 October 2026.** `stickers.venus` — thirty stickers of LangX's cat — is
+priced 0, and a price of 0 means "included": every account owns it without
+buying it. Nothing is written to profiles. `ownedCosmetics` adds the included
+packs whenever ownership is read: the wallet the app draws, the sticker send
+gate, the purchase check (buying it is refused as already owned) and the store
+and keyboards on the client. A pack made free later reaches every account at
+once, with no backfill and nobody left out.
+
+- **Not giftable.** `isGiftableCosmetic` refuses it as `notGiftable`: the
+  other person already has it, and a gift of nothing would still use up the
+  giver's week and the recipient's month.
+- **Sticker packs only.** A free frame or title would be a rung everybody
+  stands on, and `ladderOpen` was never written for that; a test holds the
+  catalogue to it. "Twelve stickers a pack" is a promise about what token
+  buys, so the included pack is exempt from it.
+- **Raster, not SVG.** The art is the polished mascot rig, die-cut with a
+  white border and a soft shadow, which an outlined SVG would lose. 384 px
+  WebP, under 32 KB each, about 650 KB for the pack. Vector renders only:
+  photos of the real cat stay out of every repo.
+- **The same art is a public Telegram set**, `t.me/addstickers/venus_langx_by_langxio_bot`,
+  published from the admin bot. The Telegram set is 512 px PNG and is not
+  generated from this repo.

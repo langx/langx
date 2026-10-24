@@ -369,6 +369,15 @@ describe('giving a sticker pack', () => {
     await nothingHappened(giver, recipient)
   })
 
+  it('refuses the free pack, which everybody already owns', async () => {
+    const { giver, recipient, conversation } = await pair()
+    expect(await refusal(give(giver, conversation, id(), 'stickers.venus'))).toBe('notGiftable')
+    expect((await getStickerGiftOptions(handle.db, giver, 'stickers.venus')).refusal).toBe(
+      'notGiftable',
+    )
+    await nothingHappened(giver, recipient)
+  })
+
   it('refuses a recipient who blocked the giver, and one the giver blocked', async () => {
     for (const direction of ['theyBlocked', 'iBlocked'] as const) {
       const { giver, recipient, conversation } = await pair()

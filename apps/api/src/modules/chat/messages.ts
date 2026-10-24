@@ -19,6 +19,7 @@ import {
   type SendAward,
   storedLocationPoint,
   findCosmetic,
+  ownedCosmetics,
   hasFeature,
   stripFormatting,
   type SendTextMessageInput,
@@ -792,7 +793,7 @@ export async function sendSticker(
   const profile = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .findOne({ _id: senderId }, { projection: { cosmetics: 1 } })
-  if (!profile?.cosmetics?.includes(input.packId)) {
+  if (!profile || !ownedCosmetics(profile.cosmetics ?? []).includes(input.packId)) {
     throw new ApiError(ERROR_CODES.FORBIDDEN, `You do not own ${input.packId}`)
   }
 

@@ -1,6 +1,7 @@
 import {
   COSMETICS,
   meetsRequirement,
+  ownedCosmetics,
   ladderOpen,
   previousCosmetic,
   type CosmeticKind,
@@ -247,13 +248,16 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
     corrections: input.lifetimeCorrections,
   }
 
+  // The server's wallet already counts the included packs; this covers one
+  // that predates them, so a free pack is never offered for sale.
+  const owned = ownedCosmetics(input.owned)
   for (const item of COSMETICS) {
     const offer = priced(
       item.id,
       t(cosmeticKey(item.id)),
       t(KIND_SUBTITLE[item.kind]),
       item.price,
-      input.owned.includes(item.id),
+      owned.includes(item.id),
     )
     offer.kind = item.kind
     if (item.tone) offer.tone = item.tone

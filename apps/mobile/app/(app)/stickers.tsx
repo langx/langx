@@ -1,4 +1,4 @@
-import { COSMETICS, type Cosmetic } from '@langx/shared'
+import { COSMETICS, type Cosmetic, ownedCosmetics } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
 import { Image } from 'expo-image'
 import { Pressable, ScrollView, Text, View } from 'react-native'
@@ -42,7 +42,8 @@ function StickersScreen() {
   const { id: conversationId } = useLocalSearchParams<{ id: string }>()
   const wallet = useWallet()
   const purchase = usePurchase()
-  const owned = wallet.data?.owned ?? []
+  // Included packs too, even from a wallet that predates them: see `ownedCosmetics`.
+  const owned = ownedCosmetics(wallet.data?.owned ?? [])
   const balance = wallet.data?.balance ?? 0
 
   const back = (): void => goBackTo(`/(app)/chat/${conversationId}`)

@@ -7,10 +7,12 @@ import {
   COSMETIC_TONES,
   PRO_WELCOME_PACKS,
   findCosmetic,
+  isIncludedCosmetic,
   isLadderKind,
   ladderOpen,
   ladderOpeners,
   meetsRequirement,
+  ownedCosmetics,
   previousCosmetic,
   welcomePackDelta,
   UNKNOWN_FRAME_TONE,
@@ -19,9 +21,27 @@ import {
 } from './cosmetics'
 
 describe('the catalogue', () => {
-  it('has no duplicate ids and prices every item', () => {
+  it('has no duplicate ids and prices every item but the included packs', () => {
     expect(new Set(COSMETICS.map((c) => c.id)).size).toBe(COSMETICS.length)
-    for (const c of COSMETICS) expect(c.price, c.id).toBeGreaterThan(0)
+    for (const c of COSMETICS) {
+      if (isIncludedCosmetic(c)) continue
+      expect(c.price, c.id).toBeGreaterThan(0)
+    }
+  })
+
+  /** A free frame or title would be a rung everybody stands on; see `isIncludedCosmetic`. */
+  it('makes only sticker packs free, and nothing else', () => {
+    for (const c of COSMETICS.filter((c) => c.price === 0)) expect(c.kind, c.id).toBe('stickers')
+    expect(COSMETICS.filter((c) => c.price < 0)).toEqual([])
+  })
+
+  it('counts the included packs as owned by everybody, once', () => {
+    expect(ownedCosmetics([])).toEqual(['stickers.venus'])
+    expect(ownedCosmetics(['frame.slate', 'stickers.venus'])).toEqual([
+      'frame.slate',
+      'stickers.venus',
+    ])
+    expect(ownedCosmetics(['stickers.paper'])).toEqual(['stickers.paper', 'stickers.venus'])
   })
 
   it('gives every frame a tone and no title one', () => {
@@ -60,7 +80,9 @@ describe('the catalogue', () => {
   })
 
   it('keeps an entry cheap enough to be a first purchase', () => {
-    const cheapest = Math.min(...COSMETICS.map((c) => c.price))
+    const cheapest = Math.min(
+      ...COSMETICS.filter((c) => !isIncludedCosmetic(c)).map((c) => c.price),
+    )
     expect(cheapest).toBeGreaterThan(TOKEN_RULES.signupBonus)
     expect(cheapest).toBeLessThanOrEqual(2000)
   })
@@ -101,9 +123,16 @@ describe('previousCosmetic', () => {
    * "Twelve stickers" is a promise the store, the token site and the docs all
    * make in words, and the token site's rule check counts on it; a pack of
    * eleven or a repeated id would quietly make all of them wrong.
+   *
+   * The promise is about what token buys. An included pack is not sold, so it
+   * is held to distinct ids only — Venus has thirty.
    */
   it('puts twelve different stickers in every pack', () => {
     for (const pack of COSMETICS.filter((c) => c.kind === 'stickers')) {
+      if (isIncludedCosmetic(pack)) {
+        expect(new Set(pack.stickers).size, pack.id).toBe(pack.stickers?.length)
+        continue
+      }
       expect(new Set(pack.stickers).size, pack.id).toBe(12)
       expect(pack.stickers, pack.id).toHaveLength(12)
     }

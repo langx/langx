@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { COSMETICS, type Cosmetic } from '@langx/shared'
+import { COSMETICS, isIncludedCosmetic, type Cosmetic } from '@langx/shared'
 import { Image } from 'expo-image'
 import { useState } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
@@ -173,7 +173,10 @@ export function StickerPackScreenV3({ pack }: { pack: Cosmetic }) {
       accessibilityLabel={t('store.ownedAccessibility', { title })}
     >
       <Feather name="check" size={v3.icon.md} color={v3.colors.correction} />
-      <Text style={styles.ownedText}>{t('stickerPack.owned')}</Text>
+      {/* An included pack was never bought, so "Yours" would claim a purchase. */}
+      <Text style={styles.ownedText}>
+        {t(isIncludedCosmetic(pack) ? 'stickerPack.free' : 'stickerPack.owned')}
+      </Text>
     </View>
   ) : (
     <>
