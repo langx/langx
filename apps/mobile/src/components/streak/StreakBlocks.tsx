@@ -58,12 +58,19 @@ export function StreakHero({
   longest,
   week,
   weekLabel,
+  play,
 }: {
   count: number
   unit: string
   longest: string
   week: readonly WeekDayView[]
   weekLabel: string
+  /**
+   * Today's Venus video, when there is one (`flags.venusStories`): the flame
+   * and the number become the button that plays it again, with a small play
+   * mark so the tap is discoverable. Absent, the hero is as it was.
+   */
+  play?: { label: string; onPress: () => void } | undefined
 }) {
   const styles = useStyles()
   const reduce = useReduceMotion()
@@ -89,24 +96,45 @@ export function StreakHero({
     transform: [{ scale: 0.6 + 0.4 * disc.get() }],
   }))
   const flameMotion = useAnimatedStyle(() => ({ transform: [{ scale: flame.get() }] }))
+  const { v3 } = useTheme()
+
+  const top = (
+    <>
+      <Animated.View style={flameMotion}>
+        <StreakFlame count={count} size="hero" on="hue" />
+      </Animated.View>
+      <View style={styles.heroWords}>
+        <Text
+          style={styles.heroUnit}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+        >
+          {unit}
+        </Text>
+        <Text style={styles.heroLongest}>{longest}</Text>
+      </View>
+      {play ? (
+        <View style={styles.heroPlay}>
+          <Feather name="play" size={v3.icon.md} color={v3.hues.tangerine} />
+        </View>
+      ) : null}
+    </>
+  )
 
   return (
     <View style={styles.hero}>
-      <View style={styles.heroTop}>
-        <Animated.View style={flameMotion}>
-          <StreakFlame count={count} size="hero" on="hue" />
-        </Animated.View>
-        <View style={styles.heroWords}>
-          <Text
-            style={styles.heroUnit}
-            accessibilityElementsHidden
-            importantForAccessibility="no-hide-descendants"
-          >
-            {unit}
-          </Text>
-          <Text style={styles.heroLongest}>{longest}</Text>
-        </View>
-      </View>
+      {play ? (
+        <PressableScale
+          accessibilityRole="button"
+          accessibilityLabel={play.label}
+          onPress={play.onPress}
+          style={styles.heroTop}
+        >
+          {top}
+        </PressableScale>
+      ) : (
+        <View style={styles.heroTop}>{top}</View>
+      )}
       {/* No days when the activity could not be read: no strip, rather than
           a week of rings that says nothing was done. */}
       {week.length > 0 ? (
@@ -480,6 +508,17 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   heroTop: { alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[14] },
   heroWords: { flexShrink: 1, gap: v3.space[2] },
+  heroPlay: {
+    alignItems: 'center',
+    // Ink on the tangerine in both schemes, like the number beside it.
+    backgroundColor: v3.colors.ink,
+    borderRadius: v3.radius.pill,
+    height: 36,
+    justifyContent: 'center',
+    marginStart: 'auto',
+    paddingStart: 2,
+    width: 36,
+  },
   heroUnit: { ...v3.type.headline, color: v3.colors.ink },
   heroLongest: { ...v3.type.callout, color: v3.colors.ink, fontWeight: '600' },
   week: { flexDirection: 'row', gap: v3.space[4] },

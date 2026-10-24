@@ -34,6 +34,7 @@ import { useProfileCache } from '../../../src/hooks/useProfileCache'
 import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
+import { useVenusStory } from '../../../src/hooks/useVenusStory'
 import { useDisplayNames, useLocale, useT } from '../../../src/i18n'
 import { authClient } from '../../../src/lib/auth-client'
 import { deviceDayKey } from '../../../src/lib/deviceDay'
@@ -52,6 +53,7 @@ import { openPaywall } from '../../../src/lib/paywall'
 import { requireAccount } from '../../../src/lib/requireAccount'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../../src/lib/theme'
 import { partnerHueFor } from '../../../src/lib/theme/partnerHue'
+import { requestVenusReplay } from '../../../src/lib/venusStory'
 
 const HERE = '/(app)/(tabs)/home'
 
@@ -117,6 +119,7 @@ function MemberHome() {
   // Discover's own first request, so the two share one cache entry.
   const discovery = useDiscovery({ sort: 'recommended' })
   const tier = useEffectiveTier()
+  const venus = useVenusStory()
 
   const pull = usePullToRefresh(() =>
     Promise.all([
@@ -292,6 +295,7 @@ function MemberHome() {
                 : undefined
             }
             onPress={() => router.push('/(app)/streak')}
+            play={venus ? { label: t('venus.watchAgain'), onPress: requestVenusReplay } : undefined}
           />
         ) : null}
 

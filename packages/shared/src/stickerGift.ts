@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { clientMessageIdSchema, stickerIdSchema } from './chat'
 import type { Cosmetic } from './cosmetics'
-import { walletSchema } from './cosmetics'
+import { isIncludedCosmetic, walletSchema } from './cosmetics'
 
 /**
  * Giving a sticker pack to a chat partner, behind `flags.stickerGifts`.
@@ -50,10 +50,12 @@ export const STICKER_GIFT_RULES = {
  * A sticker pack with no condition beyond its price. A frame or a title is a
  * rank and is not given in this step; anything with `requires` describes an
  * achievement of the person who holds it, and nobody else's tokens can buy
- * that for them.
+ * that for them. An included pack (`isIncludedCosmetic`) is not given
+ * either: the other person already has it, and a gift of nothing would still
+ * use up a week's send and a month's receive.
  */
 export function isGiftableCosmetic(cosmetic: Cosmetic): boolean {
-  return cosmetic.kind === 'stickers' && !cosmetic.requires
+  return cosmetic.kind === 'stickers' && !cosmetic.requires && !isIncludedCosmetic(cosmetic)
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000

@@ -141,6 +141,30 @@ describe('Faz 5 — conversation/message history REST', () => {
    * suite's app is built with no storage and no voice service — which is
    * itself what the last test here checks.
    */
+  describe('sending a sticker', () => {
+    it('sends from the free pack without buying it, and refuses a pack not owned', async () => {
+      const { sendSticker } = await import('../modules/chat/messages')
+      const sender = await newUser('sticker-free-a@example.com')
+      const other = await newUser('sticker-free-b@example.com')
+      const conversationId = (await startConversation(sender, other.userId, 'hey'))._id
+
+      const sent = await sendSticker(handle.db, sender.userId, {
+        conversationId,
+        packId: 'stickers.venus',
+        stickerId: 'hi',
+      })
+      expect(sent.message.sticker).toEqual({ packId: 'stickers.venus', stickerId: 'hi' })
+
+      await expect(
+        sendSticker(handle.db, sender.userId, {
+          conversationId,
+          packId: 'stickers.paper',
+          stickerId: 'hola',
+        }),
+      ).rejects.toThrow('You do not own stickers.paper')
+    })
+  })
+
   describe('reading a message aloud', () => {
     const BUCKET = 'https://media.test'
 

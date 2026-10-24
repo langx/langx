@@ -3016,6 +3016,8 @@ export const en = {
     taglineNightowl: 'For chatting across time zones, when it is morning for one of you.',
     taglineQalam: 'Ink and the tools of writing, from a reed pen to a wax seal.',
     taglineTable: 'Twelve dishes you would describe to a partner from somewhere else.',
+    taglineVenus:
+      'LangX’s own cat, free for everyone: thirty stickers for hello, thanks, lol and good night.',
     count: {
       one: '{count} sticker',
       other: '{count} stickers',
@@ -3034,6 +3036,7 @@ export const en = {
     afterBuying: '{balance} now · {after} after',
     shortBy: '{balance} now · {missing} to go',
     buy: 'Buy {title}',
+    free: 'Free for everyone. Send them from any chat.',
     owned: 'Yours. Send them from any chat.',
     addToWhatsApp: 'Add to WhatsApp',
     addToWhatsAppFailed: 'WhatsApp did not open. Try again in a moment.',
@@ -3202,6 +3205,36 @@ export const en = {
     tableMochi: 'Mochi',
     tablePaella: 'Paella',
     tableCheers: "Tea's up",
+    venusHi: 'Hi',
+    venusLove: 'Love',
+    venusLol: 'Laughing',
+    venusOk: 'OK',
+    venusNo: 'No',
+    venusSorry: 'Sorry',
+    venusCrying: 'Crying',
+    venusShocked: 'Shocked',
+    venusThinking: 'Thinking',
+    venusCelebrate: 'Celebrate',
+    venusProud: 'Proud in her bag',
+    venusBlink: 'Slow blink',
+    venusSquint: 'Suspicious squint',
+    venusBlep: 'Blep',
+    venusTyping: 'Typing…',
+    venusBoop: 'Boop',
+    venusSleepy: 'Sleepy',
+    venusDiva: 'Diva in a hoodie',
+    venusMerhaba: 'Merhaba!',
+    venusHello: 'Hi!',
+    venusTesekkurler: 'Teşekkürler!',
+    venusThanks: 'Thanks!',
+    venusTamam: 'Tamam!',
+    venusOkay: 'OK!',
+    venusGunaydin: 'Günaydın!',
+    venusMorning: 'Good morning!',
+    venusIyigeceler: 'İyi geceler',
+    venusGoodnight: 'Good night',
+    venusPratik: 'Pratik yapalım!',
+    venusPractise: 'Let’s practise!',
   },
 
   cosmetics: {
@@ -3215,6 +3248,7 @@ export const en = {
     stickersNightowl: 'Night Owl',
     stickersQalam: 'Qalam stickers',
     stickersTable: 'Shared Table',
+    stickersVenus: 'Venus',
     frameSlate: 'Papel Picado',
     frameWashi: 'Washi Tape',
     frameBronze: 'Running Stitch',
@@ -4410,6 +4444,21 @@ export const en = {
       'Nothing more of yours goes to the AI provider. Copilot asks again the next time you use it.',
     settingsOffConfirm: 'Turn off',
     settingsOffDone: 'Copilot is off.',
+  },
+  /**
+   * Venus's daily streak story (`flags.venusStories`): the full-screen player
+   * that opens when the day's streak counts. `playerA11y` names the video by
+   * the streak day it is for, a label rather than a count, so it is no plural.
+   */
+  venus: {
+    playerA11y: 'Venus, day {day}',
+    tapForSound: 'Tap for sound',
+    play: 'Play',
+    pause: 'Pause',
+    share: 'Share',
+    downloaded: 'Video downloaded',
+    shareFailed: 'Couldn’t share the video. Try again.',
+    watchAgain: 'Watch today’s video',
   },
 } as const
 

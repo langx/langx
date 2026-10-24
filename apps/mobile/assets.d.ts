@@ -21,6 +21,15 @@ declare module '*.svg' {
 }
 
 /**
+ * The same, for WebP: the Venus sticker pack. Metro's default `assetExts`
+ * carries `webp`, and `expo-image` decodes it on all three platforms.
+ */
+declare module '*.webp' {
+  const asset: number
+  export default asset
+}
+
+/**
  * The same, for the launch film. Metro's default `assetExts` carries `mp4`,
  * and `expo-video` takes the asset id as a source on all three platforms.
  */

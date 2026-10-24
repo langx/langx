@@ -8,6 +8,7 @@ import {
   ladderOpeners,
   previousCosmetic,
   meetsRequirement,
+  ownedCosmetics,
   localDayKey,
   periodKeys,
   shiftDayKey,
@@ -37,7 +38,8 @@ export function walletOf(profile: Profile, earned: number): Wallet {
     spent,
     balance: earned - spent,
     streakFreezes: profile.streakFreezes ?? 0,
-    owned: profile.cosmetics ?? [],
+    // Included packs as well as bought ones: the app only ever asks `owned`.
+    owned: ownedCosmetics(profile.cosmetics ?? []),
     ...(profile.equipped ? { equipped: profile.equipped } : {}),
     // On the wallet rather than behind its own request: the store draws the
     // gift card from the same fetch as the balance beside it.
@@ -88,7 +90,8 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
   }
   const price = isFreeze ? TOKEN_RULES.sinks.streakFreeze : (cosmetic?.price ?? 0)
 
-  if (!isFreeze && (profile.cosmetics ?? []).includes(sku)) {
+  // An included pack counts: buying it would charge nothing and write a spend row for nothing.
+  if (!isFreeze && ownedCosmetics(profile.cosmetics ?? []).includes(sku)) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You already own this item')
   }
 

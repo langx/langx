@@ -64,16 +64,19 @@ describe('sticker assets', () => {
  */
 describe('sticker files', () => {
   const root = fileURLToPath(new URL('../../assets/stickers/', import.meta.url))
-  const files = readdirSync(root)
-    .filter((dir) => statSync(join(root, dir)).isDirectory())
-    .flatMap((dir) =>
-      readdirSync(join(root, dir))
-        .filter((file) => file.endsWith('.svg'))
-        .map((file) => `${dir}/${file}`),
-    )
+  const onDisk = (ext: string): string[] =>
+    readdirSync(root)
+      .filter((dir) => statSync(join(root, dir)).isDirectory())
+      .flatMap((dir) =>
+        readdirSync(join(root, dir))
+          .filter((file) => file.endsWith(ext))
+          .map((file) => `${dir}/${file}`),
+      )
+  const files = onDisk('.svg')
+  const rasters = onDisk('.webp')
 
   it('finds every pack on disk', () => {
-    expect(files.length).toBe(
+    expect(files.length + rasters.length).toBe(
       COSMETICS.filter((c) => c.kind === 'stickers').reduce(
         (n, pack) => n + (pack.stickers?.length ?? 0),
         0,
@@ -90,5 +93,19 @@ describe('sticker files', () => {
     expect(svg).not.toMatch(
       /<(text|filter|linearGradient|radialGradient|mask|clipPath|use|image|style|foreignObject)\b/i,
     )
+  })
+
+  /**
+   * Venus is the one raster pack: die-cut renders of the mascot rig, which
+   * has soft shading an outlined SVG would lose. WebP, because `expo-image`
+   * decodes it on all three platforms and it is a third of the PNG's size;
+   * square, so the bubble's 112 pt box crops nothing; and capped, since
+   * thirty of them ship in the bundle and every OTA.
+   */
+  it.each(rasters)('%s is a small square WebP', (file) => {
+    const bytes = readFileSync(join(root, file))
+    expect(bytes.length, 'over 32 KB').toBeLessThanOrEqual(32 * 1024)
+    expect(bytes.subarray(0, 4).toString('latin1')).toBe('RIFF')
+    expect(bytes.subarray(8, 12).toString('latin1')).toBe('WEBP')
   })
 })

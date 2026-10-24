@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { COSMETICS, type Cosmetic } from '@langx/shared'
+import { COSMETICS, isIncludedCosmetic, type Cosmetic } from '@langx/shared'
 import { Image } from 'expo-image'
 import { useState } from 'react'
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
@@ -7,6 +7,7 @@ import Svg, { Circle, Path } from 'react-native-svg'
 import { useMe, usePurchase, useStickerGiftOptions, useWallet } from '../api/queries'
 import { LoadFailed } from '../components/LoadFailed'
 import { StickerGiftSheet } from '../components/StickerGiftSheet'
+import { WhatsAppStickerButton } from '../components/WhatsAppStickerButton'
 import { useBlackFont } from '../components/onboarding/WizardV3'
 import { Button } from '../components/ui/Button'
 import { IconButton } from '../components/ui/IconButton'
@@ -173,7 +174,10 @@ export function StickerPackScreenV3({ pack }: { pack: Cosmetic }) {
       accessibilityLabel={t('store.ownedAccessibility', { title })}
     >
       <Feather name="check" size={v3.icon.md} color={v3.colors.correction} />
-      <Text style={styles.ownedText}>{t('stickerPack.owned')}</Text>
+      {/* An included pack was never bought, so "Yours" would claim a purchase. */}
+      <Text style={styles.ownedText}>
+        {t(isIncludedCosmetic(pack) ? 'stickerPack.free' : 'stickerPack.owned')}
+      </Text>
     </View>
   ) : (
     <>
@@ -350,6 +354,7 @@ export function StickerPackScreenV3({ pack }: { pack: Cosmetic }) {
 
       <View style={styles.footer}>
         {footer}
+        <WhatsAppStickerButton packId={pack.id} />
         {canOfferGift && wallet.data ? (
           <Button
             variant="secondary"

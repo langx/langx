@@ -1417,6 +1417,15 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       expect(rankAfter.rank).toBe(rankBefore.rank)
     })
 
+    it('owns the free pack from the start, and will not sell it', async () => {
+      const user = await newUser()
+      expect((await wallet(user)).owned).toContain('stickers.venus')
+      const response = await buy(user, 'stickers.venus')
+      expect(response.statusCode).toBe(400)
+      expect(response.json<{ message: string }>().message).toContain('already own')
+      expect((await wallet(user)).spent).toBe(0)
+    })
+
     it('refuses a purchase the balance cannot cover', async () => {
       const user = await newUser()
       const priciest = COSMETICS.reduce((a, b) => (a.price > b.price ? a : b))
