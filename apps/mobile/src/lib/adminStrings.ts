@@ -765,8 +765,6 @@ export const ADMIN = {
     cautions: {
       promoPaywallLinks:
         'Asked for first (#1832): narrow the limits nudge so it no longer fires after refusals Pro does not lift.',
-      stickerGifts:
-        'Asked for first: the Terms gifting section. Terms §7 still says tokens are not transferable.',
       venusStories:
         'Asked for first: the videos and manifest.json uploaded under venus/v1/ in the media bucket.',
     } satisfies Partial<Record<AdminFlagName, string>>,
