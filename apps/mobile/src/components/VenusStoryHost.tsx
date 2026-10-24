@@ -301,7 +301,7 @@ const useStyles = makeStyles(({ v3 }) => ({
    * itself, and a replaced element pinned at all four edges keeps its
    * intrinsic 1080 × 1920 rather than stretching to them.
    */
-  video: { height: '100%', left: 0, position: 'absolute', top: 0, width: '100%' },
+  video: { height: '100%', position: 'absolute', start: 0, top: 0, width: '100%' },
   centre: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
   playDisc: {
     alignItems: 'center',

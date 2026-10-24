@@ -7,12 +7,12 @@ import { parseVenusManifest, venusVideoFor, type VenusVideo } from '../lib/venus
 import { useAppConfig } from './useAppConfig'
 
 /**
- * The bucket's address. `EXPO_PUBLIC_VENUS_MEDIA_URL` points a dev build at a
- * local folder or the dev bucket; every other build reads the shared config.
+ * The bucket's address, from the shared config only. An environment override
+ * for dev builds was tried and dropped: CodeQL reads any outside value in a
+ * fetch URL as request forgery, and a dev build can point the config at a
+ * local folder just as well.
  */
-export const VENUS_MEDIA_URL = (
-  process.env.EXPO_PUBLIC_VENUS_MEDIA_URL || VENUS_STORY_MEDIA.baseUrl
-).replace(/\/+$/, '')
+export const VENUS_MEDIA_URL = VENUS_STORY_MEDIA.baseUrl.replace(/\/+$/, '')
 
 /**
  * Today's Venus video for the signed-in person, or `null` — with the flag
