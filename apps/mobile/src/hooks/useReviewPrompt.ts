@@ -13,6 +13,7 @@ import {
   type ReviewPromptState,
   type ReviewTrigger,
 } from '../lib/reviewPrompt'
+import { isVenusStoryOpen, venusStoryClosed } from '../lib/venusStory'
 import { appVersion } from './useAppConfig'
 
 /**
@@ -37,6 +38,10 @@ function hydrate(): Promise<void> {
     hydrated = true
   })
   return hydrating
+}
+
+function settle(): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, SETTLE_MS))
 }
 
 function publish(next: ReviewPromptState): void {
@@ -77,7 +82,14 @@ export function useReviewPrompt(): { request: (trigger: ReviewTrigger) => void }
           // later would spend the same ration twice.
           publish(markAsked(state, now, version))
           track({ name: 'review_prompted', properties: { trigger: trigger.kind } })
-          await new Promise((resolve) => setTimeout(resolve, SETTLE_MS))
+          await settle()
+          // A milestone day opens Venus's story from the same check-in, and
+          // the store's sheet dropped over her mid-sentence. It waits for the
+          // story to close, then settles again over the screen underneath.
+          if (isVenusStoryOpen()) {
+            await venusStoryClosed()
+            await settle()
+          }
           await StoreReview.requestReview()
         } catch {
           // No module on this binary, or the OS declined. Nothing to show.

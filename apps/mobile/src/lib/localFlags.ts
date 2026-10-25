@@ -302,6 +302,13 @@ export const FLAG_KEYS = {
    * the map. Losing it costs one extra auto-open, never the replay.
    */
   venusStorySeen: 'venusStorySeen',
+  /**
+   * JSON: `{ [accountId]: day }`, the last counted day whose Venus video each
+   * account on this device watched to its end — so a replay from the flame
+   * keeps Share on screen from the start (`hasWatchedVenus`). Bounded like
+   * `venusStorySeen`.
+   */
+  venusStoryWatched: 'venusStoryWatched',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]

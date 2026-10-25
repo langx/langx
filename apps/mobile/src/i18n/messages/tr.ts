@@ -4075,5 +4075,11 @@ export const tr: Localized<EnMessages> = {
     watchAgain: 'Bugünün videosunu izle',
     homeTitle: 'Venus, {day}. gün',
     homeBody: 'Bugünün videosu · İzlemek için dokun',
+    endStreak: { one: '{count} günlük seri', other: '{count} günlük seri' },
+    endTitle: 'Venus ile {day}. gün',
+    endBody: 'Hikâyene ekle ya da bir arkadaşına gönder.',
+    shareVideo: 'Videoyu paylaş',
+    downloadVideo: 'Videoyu indir',
+    replay: 'Tekrar izle',
   },
 }

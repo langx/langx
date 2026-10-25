@@ -4106,5 +4106,11 @@ export const ptBR: Localized<EnMessages> = {
     watchAgain: 'Ver o vídeo de hoje',
     homeTitle: 'Venus, dia {day}',
     homeBody: 'O vídeo de hoje · Toque para assistir',
+    endStreak: { one: 'Sequência de {count} dia', other: 'Sequência de {count} dias' },
+    endTitle: 'Dia {day} com a Venus',
+    endBody: 'Poste no seu story ou mande para um amigo.',
+    shareVideo: 'Compartilhar vídeo',
+    downloadVideo: 'Baixar vídeo',
+    replay: 'Ver de novo',
   },
 }

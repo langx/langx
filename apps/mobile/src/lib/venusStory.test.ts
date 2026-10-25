@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
+  hasWatchedVenus,
   isVenusAutoOpenPath,
+  isVenusStoryOpen,
   markVenusSeen,
   parseVenusManifest,
   requestVenusReplay,
@@ -8,7 +10,13 @@ import {
   subscribeToVenusReplay,
   venusCutFor,
   venusFileName,
+  setVenusStoryOpen,
+  VENUS_ASPECT,
+  VENUS_MAX_SIDE_CROP,
+  venusFrameFor,
   venusReplayRequests,
+  venusShareFileName,
+  venusStoryClosed,
   venusVideoFor,
   type VenusStreak,
 } from './venusStory'
@@ -20,7 +28,7 @@ const manifest = parseVenusManifest({
   videos: [
     { day: 1, lang: 'tr', file: 'out/tr/venus-day001-tr.mp4' },
     { day: 1, lang: 'tr', file: 'out/tr/venus-day001-return-tr.mp4' },
-    { day: 7, lang: 'tr', file: 'out/tr/venus-day007-tr.mp4' },
+    { day: 7, lang: 'tr', file: 'out/tr/venus-day007-tr.mp4', cover: 'out/tr/venus-day007-tr.jpg' },
     { day: 1, lang: 'en', file: 'out/en/venus-day001-en.mp4' },
     { day: 2, lang: 'pt-BR' },
   ],
@@ -40,6 +48,27 @@ describe('parseVenusManifest', () => {
     expect(manifest.has('tr/venus-day001-return-tr.mp4')).toBe(true)
     // No `file`: the plain cut of its day.
     expect(manifest.has('pt-BR/venus-day002-pt-BR.mp4')).toBe(true)
+  })
+
+  it('keeps each video’s cover by its name in the bucket, or null', () => {
+    expect(manifest.get('tr/venus-day007-tr.mp4')).toBe('venus-day007-tr.jpg')
+    expect(manifest.get('tr/venus-day001-tr.mp4')).toBeNull()
+    expect(manifest.get('pt-BR/venus-day002-pt-BR.mp4')).toBeNull()
+  })
+
+  it('costs a malformed cover only the cover', () => {
+    const parsed = parseVenusManifest({
+      videos: [
+        { day: 3, lang: 'tr', cover: 42 },
+        { day: 4, lang: 'tr', cover: 'out/tr/' },
+        { day: 5, lang: 'tr', cover: '' },
+      ],
+    })
+    expect([...parsed]).toEqual([
+      ['tr/venus-day003-tr.mp4', null],
+      ['tr/venus-day004-tr.mp4', null],
+      ['tr/venus-day005-tr.mp4', null],
+    ])
   })
 
   it('reads anything malformed as nothing rather than throwing', () => {
@@ -83,6 +112,7 @@ describe('venusVideoFor', () => {
       dayKey: TODAY,
       fileName: 'venus-day007-tr.mp4',
       url: `${BASE}/tr/venus-day007-tr.mp4`,
+      coverUrl: `${BASE}/tr/venus-day007-tr.jpg`,
     })
     const trailing = venusVideoFor({
       streak: streak(),
@@ -92,6 +122,10 @@ describe('venusVideoFor', () => {
       deviceToday: TODAY,
     })
     expect(trailing?.url).toBe(`${BASE}/tr/venus-day007-tr.mp4`)
+  })
+
+  it('has no cover URL for a day the manifest lists none for', () => {
+    expect(video({ current: 1, longest: 1 })?.coverUrl).toBeNull()
   })
 
   it('picks the intro or the comeback file for day 1', () => {
@@ -204,5 +238,74 @@ describe('requestVenusReplay', () => {
     requestVenusReplay()
     expect(heard).toBe(2)
     expect(venusReplayRequests()).toBe(before + 3)
+  })
+})
+
+describe('hasWatchedVenus', () => {
+  it('is true only for the same account and the same counted day', () => {
+    const watched = markVenusSeen(null, 'a', TODAY)
+    expect(hasWatchedVenus(watched, 'a', TODAY)).toBe(true)
+    expect(hasWatchedVenus(watched, 'a', '2026-10-24')).toBe(false)
+    expect(hasWatchedVenus(watched, 'b', TODAY)).toBe(false)
+    expect(hasWatchedVenus(null, 'a', TODAY)).toBe(false)
+    expect(hasWatchedVenus(watched, undefined, TODAY)).toBe(false)
+  })
+})
+
+describe('venusFrameFor', () => {
+  it('shows the whole picture, centred, on a screen as wide as 9:16 or wider', () => {
+    expect(venusFrameFor(1080, 1920)).toEqual({ width: 1080, height: 1920, left: 0, top: 0 })
+    const desktop = venusFrameFor(1440, 900)
+    expect(desktop.height).toBe(900)
+    expect(desktop.width).toBeCloseTo(900 * VENUS_ASPECT)
+    expect(desktop.left).toBeCloseTo((1440 - 900 * VENUS_ASPECT) / 2)
+  })
+
+  it('fills a tall phone without cutting more than the cap off either side', () => {
+    const phone = venusFrameFor(402, 874)
+    expect(phone.width / phone.height).toBeCloseTo(VENUS_ASPECT)
+    expect(phone.width).toBeGreaterThan(402)
+    // Each side loses at most the cap of the picture's width.
+    expect(-phone.left / phone.width).toBeCloseTo(VENUS_MAX_SIDE_CROP)
+    // Pinned to the foot: what is left over is one strip, at the top.
+    expect(phone.top + phone.height).toBeCloseTo(874)
+    expect(phone.top).toBeGreaterThan(0)
+  })
+
+  it('fills completely when the cap is not reached', () => {
+    // A touch taller than 9:16: under the cap, so cover-fit exactly.
+    const phone = venusFrameFor(390, 720)
+    expect(phone.height).toBeCloseTo(720)
+    expect(phone.top).toBeCloseTo(0)
+  })
+
+  it('draws nothing before the screen has a size', () => {
+    expect(venusFrameFor(0, 0)).toEqual({ width: 0, height: 0, left: 0, top: 0 })
+  })
+})
+
+describe('venusShareFileName', () => {
+  it('names the file by its title, without what a file system refuses', () => {
+    expect(venusShareFileName('Day 7 with Venus')).toBe('Day 7 with Venus.mp4')
+    expect(venusShareFileName('Venus: 7/10?')).toBe('Venus 7 10.mp4')
+    expect(venusShareFileName('Venus ile 7. gün')).toBe('Venus ile 7. gün.mp4')
+    expect(venusShareFileName(' / ')).toBe('Venus.mp4')
+  })
+})
+
+describe('venusStoryClosed', () => {
+  it('resolves at once while the story is closed, and on closing otherwise', async () => {
+    await venusStoryClosed()
+    setVenusStoryOpen(true)
+    expect(isVenusStoryOpen()).toBe(true)
+    let resolved = false
+    const waiting = venusStoryClosed().then(() => {
+      resolved = true
+    })
+    await Promise.resolve()
+    expect(resolved).toBe(false)
+    setVenusStoryOpen(false)
+    await waiting
+    expect(resolved).toBe(true)
   })
 })
