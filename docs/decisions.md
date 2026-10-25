@@ -9614,8 +9614,8 @@ app, not hired, so the role is built as a narrow door that an operator can see
 through rather than a smaller admin flag.
 
 - **A field, not a list.** `profiles.moderator: { since, by }`, written only by
-  `POST /admin/users/:userId/moderator`. An operator, an official account, a
-  suspended or a deleted one cannot be made one. `requireModerator` refuses a
+  `POST /admin/users/:userId/moderator`. An official account, a suspended or a
+  deleted one cannot be made one; an operator can, for the chip and the list. `requireModerator` refuses a
   suspended moderator before it looks at the role, so nobody can moderate
   their own suspension away.
 - **Their own routes.** `/mod/*` rather than `/admin/*` with a role check per

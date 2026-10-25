@@ -181,11 +181,12 @@ export function toModReportDetail(detail: AdminReportDetail): ModReportDetail {
 
 export type GrantModeratorResult =
   | { ok: true; changed: boolean }
-  | { ok: false; refusal: 'not_found' | 'admin' | 'official' | 'suspended' | 'deleted' }
+  | { ok: false; refusal: 'not_found' | 'official' | 'suspended' | 'deleted' }
 
 /**
- * Making somebody a moderator. Refused for an operator, who already can do
- * all of it, for an official account, which is not a person, and for an
+ * Making somebody a moderator. An operator may hold the role too — they can
+ * already do all of it, so it only adds the MOD chip and a place in the public
+ * list. Refused for an official account, which is not a person, and for an
  * account that is suspended or leaving.
  */
 export async function grantModerator(
@@ -195,10 +196,9 @@ export async function grantModerator(
 ): Promise<GrantModeratorResult> {
   const profile = await profiles(db).findOne(
     { _id: userId },
-    { projection: { admin: 1, official: 1, suspension: 1, deletedAt: 1, moderator: 1 } },
+    { projection: { official: 1, suspension: 1, deletedAt: 1, moderator: 1 } },
   )
   if (!profile) return { ok: false, refusal: 'not_found' }
-  if (profile.admin) return { ok: false, refusal: 'admin' }
   if (profile.official) return { ok: false, refusal: 'official' }
   if (profile.deletedAt) return { ok: false, refusal: 'deleted' }
   if (profile.suspension && new Date(profile.suspension.until).getTime() > Date.now()) {
