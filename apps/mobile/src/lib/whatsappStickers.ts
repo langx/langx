@@ -59,24 +59,31 @@ export interface WhatsAppPackInfo {
   licenseAgreementWebsite: string
 }
 
+const LANGX_PACK = {
+  publisher: 'LangX',
+  publisherWebsite: 'https://langx.io',
+  privacyPolicyWebsite: 'https://langx.io/privacy-policy',
+  licenseAgreementWebsite: 'https://langx.io/terms',
+} as const
+
 /**
  * The packs this build can hand to WhatsApp, by catalogue id. A pack page
- * shows the button only for an id listed here.
+ * shows one button per entry, and none for an id not listed here.
+ *
+ * A list because WhatsApp stops at 30 stickers a pack and Venus has sixty:
+ * one catalogue pack becomes two WhatsApp packs. The first keeps the
+ * identifier the 30-sticker export had, so it stays the same pack.
  */
-export const WHATSAPP_PACKS: Readonly<Record<string, WhatsAppPackInfo>> = {
-  'stickers.venus': {
-    identifier: 'venus',
-    name: 'Venus',
-    publisher: 'LangX',
-    publisherWebsite: 'https://langx.io',
-    privacyPolicyWebsite: 'https://langx.io/privacy-policy',
-    licenseAgreementWebsite: 'https://langx.io/terms',
-  },
+export const WHATSAPP_PACKS: Readonly<Record<string, readonly WhatsAppPackInfo[]>> = {
+  'stickers.venus': [
+    { identifier: 'venus', name: 'Venus', ...LANGX_PACK },
+    { identifier: 'venus-2', name: 'Venus 2', ...LANGX_PACK },
+  ],
 }
 
-/** The WhatsApp identifier for a catalogue pack id, or `undefined` when it has no export. */
-export function whatsAppPackFor(cosmeticId: string): string | undefined {
-  return WHATSAPP_PACKS[cosmeticId]?.identifier
+/** The WhatsApp identifiers for a catalogue pack id, in order; empty when it has no export. */
+export function whatsAppPacksFor(cosmeticId: string): string[] {
+  return (WHATSAPP_PACKS[cosmeticId] ?? []).map((p) => p.identifier)
 }
 
 export interface StickerFile {

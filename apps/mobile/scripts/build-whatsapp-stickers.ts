@@ -10,15 +10,18 @@
  * cheap for a script that is only ever run by hand.
  *
  * `<set-dir>` is the folder the sticker generator writes: a `stickers.json`
- * listing `{ file, emoji }` in pack order, and the 512 px transparent PNGs
- * under `png/`. Only drawn art goes through here — the pack is public in the
+ * listing `{ file, emoji, whatsapp }` in pack order, and the 512 px
+ * transparent PNGs under `png/`. `whatsapp` names the WhatsApp pack an entry
+ * goes to — one of the identifiers `WHATSAPP_PACKS` lists for `--pack` — and
+ * an entry without it goes to the first, since a set over 30 has to be split
+ * and only the person drawing it knows where the seam belongs. Only drawn art goes through here — the pack is public in the
  * repository and in two stores' binaries.
  *
  * Writes, replacing what was there:
  *   - `modules/whatsapp-stickers/android/src/main/assets/whatsapp-stickers/`
- *     `contents.json` and `<identifier>/` with one `.webp` per sticker and
- *     `tray.png` — what `StickerContentProvider.kt` serves to WhatsApp;
- *   - `modules/whatsapp-stickers/ios/Packs/<identifier>.json` — the
+ *     `contents.json` and, per WhatsApp pack, `<identifier>/` with one `.webp`
+ *     per sticker and `tray.png` — what `StickerContentProvider.kt` serves;
+ *   - `modules/whatsapp-stickers/ios/Packs/<identifier>.json` per pack — the
  *     pasteboard payload Swift hands to WhatsApp unchanged.
  *
  * Every picture is re-encoded to WebP at the highest quality that stays under
@@ -65,6 +68,7 @@ interface SetEntry {
   file: string
   emoji?: string
   emojis?: string[]
+  whatsapp?: string
 }
 
 function arg(name: string): string | undefined {
@@ -108,11 +112,11 @@ function toTray(png: string, tmp: string): Uint8Array {
 function main(): void {
   const setArg = process.argv[2]
   const cosmeticId = arg('--pack') ?? 'stickers.venus'
-  const info = WHATSAPP_PACKS[cosmeticId]
+  const infos = WHATSAPP_PACKS[cosmeticId]
   if (!setArg || setArg.startsWith('--')) {
     throw new Error('usage: build-whatsapp-stickers.ts <set-dir> [--pack stickers.venus]')
   }
-  if (!info) throw new Error(`${cosmeticId} is not in WHATSAPP_PACKS`)
+  if (!infos?.length) throw new Error(`${cosmeticId} is not in WHATSAPP_PACKS`)
 
   const root = path.resolve(process.cwd())
   const setDir = path.resolve(root, setArg)
@@ -126,53 +130,67 @@ function main(): void {
   const entries = JSON.parse(fs.readFileSync(listing, 'utf8')) as SetEntry[]
   const pngDir = fs.existsSync(path.join(setDir, 'png')) ? path.join(setDir, 'png') : setDir
 
+  for (const e of entries) {
+    if (e.whatsapp !== undefined && !infos.some((i) => i.identifier === e.whatsapp)) {
+      throw new Error(`${e.file} names WhatsApp pack "${e.whatsapp}", not one of ${cosmeticId}'s`)
+    }
+  }
+
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'wa-stickers-'))
   try {
-    const stickers: StickerFile[] = entries.map((e) => ({
-      file: e.file.replace(/\.png$/i, '.webp'),
-      emojis: e.emojis ?? (e.emoji ? [e.emoji] : []),
-      bytes: toWebp(path.join(pngDir, e.file), tmp),
-    }))
-    // The first sticker is the pack's face in WhatsApp's tray, as it is the
-    // cover in the store.
-    const tray = toTray(path.join(pngDir, entries[0]!.file), tmp)
+    const packs = infos.map((info): BuiltPack => {
+      const mine = entries.filter((e) => (e.whatsapp ?? infos[0]!.identifier) === info.identifier)
+      if (mine.length === 0) throw new Error(`no sticker in the set goes to ${info.identifier}`)
+      const stickers: StickerFile[] = mine.map((e) => ({
+        file: e.file.replace(/\.png$/i, '.webp'),
+        emojis: e.emojis ?? (e.emoji ? [e.emoji] : []),
+        bytes: toWebp(path.join(pngDir, e.file), tmp),
+      }))
+      // Each pack's first sticker is its face in WhatsApp's tray, as the
+      // set's first is the cover in the store.
+      const tray = toTray(path.join(pngDir, mine[0]!.file), tmp)
 
-    const hash = createHash('sha256').update(tray)
-    for (const s of stickers) hash.update(s.file).update(s.emojis.join(',')).update(s.bytes)
-    const pack: BuiltPack = {
-      info,
-      tray,
-      stickers,
-      imageDataVersion: hash.digest('hex').slice(0, 12),
+      const hash = createHash('sha256').update(tray)
+      for (const s of stickers) hash.update(s.file).update(s.emojis.join(',')).update(s.bytes)
+      const pack: BuiltPack = {
+        info,
+        tray,
+        stickers,
+        imageDataVersion: hash.digest('hex').slice(0, 12),
+      }
+      const problems = validatePack(pack)
+      if (problems.length > 0) {
+        throw new Error(`WhatsApp would refuse ${info.identifier}:\n- ${problems.join('\n- ')}`)
+      }
+      return pack
+    })
+
+    for (const pack of packs) {
+      const packDir = path.join(ANDROID_ASSETS, pack.info.identifier)
+      fs.rmSync(packDir, { recursive: true, force: true })
+      fs.mkdirSync(packDir, { recursive: true })
+      fs.writeFileSync(path.join(packDir, TRAY_FILE), pack.tray)
+      for (const s of pack.stickers) fs.writeFileSync(path.join(packDir, s.file), s.bytes)
+
+      fs.mkdirSync(IOS_PACKS, { recursive: true })
+      fs.writeFileSync(
+        path.join(IOS_PACKS, `${pack.info.identifier}.json`),
+        JSON.stringify(iosPasteboardPayload(pack)),
+      )
+
+      const total = pack.stickers.reduce((n, s) => n + s.bytes.length, 0)
+      const largest = Math.max(...pack.stickers.map((s) => s.bytes.length))
+      console.log(
+        `${pack.info.identifier}: ${pack.stickers.length} stickers, ${(total / 1024).toFixed(0)} KB, ` +
+          `largest ${(largest / 1024).toFixed(1)} KB, tray ${(pack.tray.length / 1024).toFixed(1)} KB, ` +
+          `version ${pack.imageDataVersion}`,
+      )
     }
-
-    const problems = validatePack(pack)
-    if (problems.length > 0)
-      throw new Error(`WhatsApp would refuse this pack:\n- ${problems.join('\n- ')}`)
-
-    const packDir = path.join(ANDROID_ASSETS, info.identifier)
-    fs.rmSync(packDir, { recursive: true, force: true })
-    fs.mkdirSync(packDir, { recursive: true })
-    fs.writeFileSync(path.join(packDir, TRAY_FILE), tray)
-    for (const s of stickers) fs.writeFileSync(path.join(packDir, s.file), s.bytes)
-    // One pack today. A second one means listing both here.
+    // Every pack of the one catalogue pack exported so far. A second
+    // catalogue pack means listing its packs here too.
     fs.writeFileSync(
       path.join(ANDROID_ASSETS, 'contents.json'),
-      `${JSON.stringify(androidContents([pack]), null, 2)}\n`,
-    )
-
-    fs.mkdirSync(IOS_PACKS, { recursive: true })
-    fs.writeFileSync(
-      path.join(IOS_PACKS, `${info.identifier}.json`),
-      JSON.stringify(iosPasteboardPayload(pack)),
-    )
-
-    const total = stickers.reduce((n, s) => n + s.bytes.length, 0)
-    const largest = Math.max(...stickers.map((s) => s.bytes.length))
-    console.log(
-      `${info.identifier}: ${stickers.length} stickers, ${(total / 1024).toFixed(0)} KB, ` +
-        `largest ${(largest / 1024).toFixed(1)} KB, tray ${(tray.length / 1024).toFixed(1)} KB, ` +
-        `version ${pack.imageDataVersion}`,
+      `${JSON.stringify(androidContents(packs), null, 2)}\n`,
     )
   } finally {
     fs.rmSync(tmp, { recursive: true, force: true })

@@ -2719,6 +2719,7 @@ export const tr: Localized<EnMessages> = {
     free: 'Herkese ücretsiz. Her sohbetten gönderebilirsin.',
     owned: 'Senin. Her sohbetten gönderebilirsin.',
     addToWhatsApp: 'WhatsApp’a ekle',
+    addPartToWhatsApp: '{part}. kısmı WhatsApp’a ekle',
     addToWhatsAppFailed: 'WhatsApp açılmadı. Birazdan yeniden dene.',
     seePack: 'Paketi gör',
   },

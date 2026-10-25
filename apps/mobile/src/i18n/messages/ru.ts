@@ -3216,6 +3216,7 @@ export const ru: Localized<EnMessages> = {
     free: 'Бесплатно для всех. Отправляй из любого чата.',
     owned: 'Он твой. Отправляй из любого чата.',
     addToWhatsApp: 'Добавить в WhatsApp',
+    addPartToWhatsApp: 'Добавить часть {part} в WhatsApp',
     addToWhatsAppFailed: 'WhatsApp не открылся. Попробуй ещё раз чуть позже.',
     seePack: 'Посмотреть набор',
   },

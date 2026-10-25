@@ -4,11 +4,13 @@ import { addStickerPackToWhatsApp, isWhatsAppInstalled } from '../../modules/wha
 import { useAppConfig } from '../hooks/useAppConfig'
 import { useT } from '../i18n'
 import { showToast } from '../lib/toast'
-import { whatsAppPackFor } from '../lib/whatsappStickers'
+import { whatsAppPacksFor } from '../lib/whatsappStickers'
 import { Button } from './ui/Button'
 
 /**
- * "Add to WhatsApp" for a sticker pack, behind `flags.whatsappStickers`.
+ * "Add to WhatsApp" for a sticker pack, behind `flags.whatsappStickers` — one
+ * button per WhatsApp pack, since WhatsApp stops at 30 and a bigger pack is
+ * exported in parts. A single part keeps the plain label.
  *
  * Draws nothing unless every one of these holds, so it can sit on any pack's
  * page: the flag is on, this is not the web, the pack has a WhatsApp export
@@ -23,10 +25,10 @@ import { Button } from './ui/Button'
 export function WhatsAppStickerButton({ packId }: { packId: string }) {
   const t = useT()
   const flagOn = useAppConfig().data?.flags.whatsappStickers === true
-  const identifier = whatsAppPackFor(packId)
-  const eligible = Platform.OS !== 'web' && flagOn && identifier !== undefined
+  const identifiers = whatsAppPacksFor(packId)
+  const eligible = Platform.OS !== 'web' && flagOn && identifiers.length > 0
   const [installed, setInstalled] = useState(false)
-  const [opening, setOpening] = useState(false)
+  const [opening, setOpening] = useState<string | null>(null)
 
   useEffect(() => {
     if (!eligible) return
@@ -46,26 +48,35 @@ export function WhatsAppStickerButton({ packId }: { packId: string }) {
     }
   }, [eligible])
 
-  if (!eligible || !installed || identifier === undefined) return null
+  if (!eligible || !installed) return null
 
   async function add(id: string): Promise<void> {
-    setOpening(true)
+    setOpening(id)
     try {
       await addStickerPackToWhatsApp(id)
     } catch {
       showToast(t('stickerPack.addToWhatsAppFailed'))
     } finally {
-      setOpening(false)
+      setOpening(null)
     }
   }
 
   return (
-    <Button
-      variant="secondary"
-      label={t('stickerPack.addToWhatsApp')}
-      loading={opening}
-      disabled={opening}
-      onPress={() => add(identifier)}
-    />
+    <>
+      {identifiers.map((id, i) => (
+        <Button
+          key={id}
+          variant="secondary"
+          label={
+            identifiers.length > 1
+              ? t('stickerPack.addPartToWhatsApp', { part: i + 1 })
+              : t('stickerPack.addToWhatsApp')
+          }
+          loading={opening === id}
+          disabled={opening !== null}
+          onPress={() => add(id)}
+        />
+      ))}
+    </>
   )
 }

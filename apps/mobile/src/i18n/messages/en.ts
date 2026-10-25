@@ -3039,6 +3039,7 @@ export const en = {
     free: 'Free for everyone. Send them from any chat.',
     owned: 'Yours. Send them from any chat.',
     addToWhatsApp: 'Add to WhatsApp',
+    addPartToWhatsApp: 'Add part {part} to WhatsApp',
     addToWhatsAppFailed: 'WhatsApp did not open. Try again in a moment.',
     seePack: 'See the pack',
   },
