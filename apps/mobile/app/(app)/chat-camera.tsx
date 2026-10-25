@@ -481,7 +481,12 @@ function SnapCamera({
   /** Per lens: the front and back cameras offer different sizes. */
   const [pictureSizes, setPictureSizes] = useState<Partial<Record<CameraType, string | null>>>({})
   const reduce = useReduceMotion()
-  const zoom = useCameraZoom({ flipEnabled: !recording, onDoubleTap: () => flip() })
+  const zoom = useCameraZoom({
+    flipEnabled: !recording,
+    onDoubleTap: () => flip(),
+    onShutterDown: () => onPressIn(),
+    onShutterUp: () => onPressOut(),
+  })
   /** 1 while a flip's lens switch is under way: the picture dims over it. */
   const dim = useSharedValue(0)
   const dimTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -835,6 +840,7 @@ function SnapCamera({
         onFlip={flip}
         onPressIn={onPressIn}
         onPressOut={onPressOut}
+        shutterGesture={zoom.shutterGesture}
         filterStrip={onFilter ? <FilterStrip filter={filter} onFilter={onFilter} /> : undefined}
       />
     )
