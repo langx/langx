@@ -420,8 +420,8 @@ function Found({ data }: { data: AdminUserDto }) {
         onPress={() => run('sign-out', ADMIN.users.confirmSignOut(who))}
       />
 
-      {/* ── the moderator role; an operator already holds all of it ── */}
-      {user.admin || user.official ? null : (
+      {/* ── the moderator role; an operator may hold it for the chip ── */}
+      {user.official ? null : (
         <>
           <AdminHeadingV3 title={ADMIN.users.moderator.title} />
           <AdminBlockV3 style={styles.toggleRow}>

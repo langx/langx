@@ -151,8 +151,9 @@ describe('moderators', () => {
 
       // Nobody but an operator can make somebody a moderator.
       expect((await post(member, `/admin/users/${member.userId}/moderator`)).statusCode).toBe(403)
-      // An operator already holds all of it.
-      expect((await post(admin, `/admin/users/${admin.userId}/moderator`)).statusCode).toBe(400)
+      // An operator may wear the chip too; the role adds nothing they lack.
+      expect((await post(admin, `/admin/users/${admin.userId}/moderator`)).statusCode).toBe(200)
+      expect((await del(admin, `/admin/users/${admin.userId}/moderator`)).statusCode).toBe(200)
 
       const mod = await newModerator()
       expect((await get(mod, '/mod/reports')).statusCode).toBe(200)

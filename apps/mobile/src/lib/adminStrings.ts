@@ -370,7 +370,7 @@ export const ADMIN = {
       hint: 'Works the report queue: warn, hide, dismiss, suspend up to a month. Never Pro, tokens or appeals. Every decision comes to you for review.',
       granted: 'Now a moderator',
       revoked: 'No longer a moderator',
-      refused: 'Operators and official accounts cannot be moderators',
+      refused: 'Official accounts cannot be moderators',
     },
     gift: {
       title: 'Give Pro',
