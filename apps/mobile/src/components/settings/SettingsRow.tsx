@@ -782,6 +782,14 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
           onPress={() => router.push('/(app)/legal')}
         />
       )
+    case 'about.moderators':
+      return (
+        <ListRow
+          title={t('settings.moderators')}
+          last={last}
+          onPress={() => router.push('/(app)/settings/moderators')}
+        />
+      )
     case 'about.voices':
       // Whose recordings read messages aloud. A row rather than a paragraph in
       // Legal because ten of the voices are CC-BY: crediting them is a licence

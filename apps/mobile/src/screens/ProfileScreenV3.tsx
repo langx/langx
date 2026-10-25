@@ -43,6 +43,7 @@ import { FrameSweep } from '../components/ui/FrameSweep'
 import { IconButton } from '../components/ui/IconButton'
 import { LevelBars } from '../components/ui/LevelBars'
 import { PressableScale } from '../components/ui/PressableScale'
+import { ModBadge } from '../components/ui/ModBadge'
 import { ProBadge } from '../components/ui/ProBadge'
 import { FlameGlyph } from '../components/ui/StreakFlame'
 import { TitleBadge } from '../components/ui/TitleBadge'
@@ -541,6 +542,7 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
                       <ProBadge fontSize={v3.type.title.fontSize} on="hue" />
                     </Pressable>
                   ) : null}
+                  {user.moderator ? <ModBadge fontSize={v3.type.title.fontSize} on="hue" /> : null}
                   {/* An official account has no age, and wears its tick there.
                       Otherwise the server's age, as today — absent means none. */}
                   {user.official ? (

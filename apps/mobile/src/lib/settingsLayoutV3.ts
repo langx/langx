@@ -88,7 +88,7 @@ export const SETTINGS_V3_LAYOUT: Record<SettingsSectionId, readonly SettingsGrou
   about: [
     { ids: ['about.legal', 'about.voices'] },
     { ids: ['about.reportBug', 'about.requestFeature'] },
-    { ids: ['about.community', 'about.rate'] },
+    { ids: ['about.community', 'about.moderators', 'about.rate'] },
     { ids: ['about.intro', 'about.tour'] },
   ],
 }
@@ -127,6 +127,7 @@ export const V3_ROW_IDS = [
   'about.reportBug',
   'about.requestFeature',
   'about.community',
+  'about.moderators',
   'about.rate',
   'about.intro',
   'about.tour',

@@ -119,6 +119,15 @@ export function SettingsScreenV3() {
                   />
                 )
               })}
+              {/* The moderator's queue, for a moderator only — in their own language. */}
+              {index === GROUPS.length - 1 && model.profile?.moderator ? (
+                <SettingsItemV3
+                  icon="shield"
+                  hue="aqua"
+                  title={t('moderation.title')}
+                  onPress={() => router.push('/(app)/moderation')}
+                />
+              ) : null}
               {/* The operator panel, for an admin only, under About — English by design. */}
               {index === GROUPS.length - 1 && model.profile?.admin ? (
                 <SettingsItemV3

@@ -234,6 +234,11 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
         bodyKey: 'feedback.featureRowBody',
       },
       { id: 'about.community', titleKey: 'kitchen.title', bodyKey: 'kitchen.intro' },
+      {
+        id: 'about.moderators',
+        titleKey: 'settings.moderators',
+        bodyKey: 'settings.moderatorsBody',
+      },
       { id: 'about.intro', titleKey: 'settings.showIntro' },
       { id: 'about.tour', titleKey: 'settings.showTour' },
       { id: 'about.rate', titleKey: 'settings.rateApp' },

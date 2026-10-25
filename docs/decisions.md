@@ -9566,3 +9566,43 @@ once, with no backfill and nobody left out.
 - **The same art is a public Telegram set**, `t.me/addstickers/venus_langx_by_langxio_bot`,
   published from the admin bot. The Telegram set is 512 px PNG and is not
   generated from this repo.
+
+## Moderators are members, so every decision is reviewed
+
+**25 October 2026.** Moderators are picked from among the people using the
+app, not hired, so the role is built as a narrow door that an operator can see
+through rather than a smaller admin flag.
+
+- **A field, not a list.** `profiles.moderator: { since, by }`, written only by
+  `POST /admin/users/:userId/moderator`. An operator, an official account, a
+  suspended or a deleted one cannot be made one. `requireModerator` refuses a
+  suspended moderator before it looks at the role, so nobody can moderate
+  their own suspension away.
+- **Their own routes.** `/mod/*` rather than `/admin/*` with a role check per
+  route: `requireAdmin` stays exactly as it was, so a moderator cannot reach a
+  gift, a reward, a bounty, an unfreeze or anything added to the panel later.
+  The decision itself still goes through `applyReviewDecision`, so it is the
+  same decision the panel and the emailed link make.
+- **A smaller queue.** Open reports only, and never one about an operator, an
+  official account, another moderator or the moderator themself. The
+  reporter's identity is never sent: a member deciding about another member
+  should not learn who reported whom, and the thread labels its two sides
+  rather than naming them.
+- **Timed suspensions with a reason.** At most `MOD_SUSPENSION_MAX_DAYS`, and
+  a note of `MOD_NOTE_MIN` characters or more, refused by the schema rather
+  than by the form. No permanent ban, no lifting, no appeals, no bulk action.
+- **Prepared words only.** A moderator's warning is one of `REPORT_WARNINGS`,
+  sent from @langx; the body is a reason, and the server writes the text.
+  Nobody speaks as @langx in their own words without being an operator.
+- **Every decision is a row.** `moderatorActions` is the operator's queue:
+  approve, undo or thank. Undo claims the row atomically, lifts a suspension
+  only while it is still that decision's — a newer one from somebody else is
+  left alone — unhides what was hidden and reopens the report. A warning
+  cannot be unsent; undoing one only marks it.
+- **Thanks per decision, ranked.** The reward is `moderatorReward`, paid with
+  the decision's id as `refId`, so the ledger's unique index pays each decision
+  once. It is not in `TOKEN_GRANT_KINDS`: _The leaderboard counts every reward_
+  applies, and a moderator's thanks is earned like a report's.
+- **Visible to everyone.** Settings → Moderators lists them, and a MOD chip
+  sits beside PRO on their profile. A role somebody exercises over others
+  should not be secret. The signed-out shared profile does not carry it yet.
