@@ -21,6 +21,12 @@ export type SaveMediaResult = 'saved' | 'denied'
  * has none on the web, so a static import would break the web build the
  * moment any screen with a viewer loaded.
  *
+ * On iOS the saved copy is dated the moment it was saved, not the day the
+ * file says it was taken: `patches/expo-media-library@57.0.5.patch` sets the
+ * asset's `creationDate`. Without it Photos files an old picture weeks back in
+ * the grid and only "Recently Saved" shows it. Bumping the package means
+ * carrying that patch to the new version.
+ *
  * Resolves `'denied'` when the person said no, and throws for everything else
  * — a failed download, a full disk — so the caller can tell the two apart.
  */

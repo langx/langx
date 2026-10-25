@@ -48,7 +48,7 @@ import { messagePreviewKey } from '../lib/messagePreview'
 import { saveMediaToDevice } from '../lib/saveMedia'
 import { makeStyles, spacing, useTheme } from '../lib/theme'
 import { DURATION, EASE_OUT, SPRING, unlessReduced } from '../lib/theme/motion'
-import { IconButton } from './ui/IconButton'
+import { ICON_BUTTON_TARGET, IconButton } from './ui/IconButton'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
 
@@ -678,10 +678,10 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
         <Animated.View style={[styles.chrome, chromeStyle]} pointerEvents="box-none">
           {v3Look ? (
             // The kit's dark disc, dark in both schemes as the scrim is: the
-            // platform's minimum target in place of a 36pt disc and its slop.
+            // platform's minimum target, the same size as the save disc across from it.
             <IconButton
               icon="x"
-              iconSize={22}
+              iconSize={DISC_GLYPH}
               look="hue"
               accessibilityLabel={t('photo.close')}
               onPress={onClose}
@@ -717,6 +717,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
             disabled={savePhase !== null}
             style={({ pressed }) => [
               styles.disc,
+              v3Look && styles.discInk,
               styles.save,
               { top: insets.top + spacing.sm },
               pressed && styles.discPressed,
@@ -729,7 +730,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
             ) : (
               <Feather
                 name={savePhase === 'saved' ? 'check' : 'download'}
-                size={18}
+                size={DISC_GLYPH}
                 color={colors.onScrim}
               />
             )}
@@ -746,7 +747,8 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
                 <IconButton
                   // The row reverses under RTL, so "previous" sits on the right.
                   icon={isRtl ? 'chevron-right' : 'chevron-left'}
-                  color={colors.onScrim}
+                  iconSize={DISC_GLYPH}
+                  look="hue"
                   accessibilityLabel={t('photo.previous')}
                   onPress={() => turn(-1)}
                   hitSlop={12}
@@ -757,6 +759,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
                   accessibilityLabel={t('photo.previous')}
                   onPress={() => turn(-1)}
                   hitSlop={12}
+                  style={({ pressed }) => [styles.pagerDisc, pressed && styles.discPressed]}
                 >
                   <Text style={styles.pagerArrow}>‹</Text>
                 </Pressable>
@@ -767,7 +770,8 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
               {v3Look ? (
                 <IconButton
                   icon={isRtl ? 'chevron-left' : 'chevron-right'}
-                  color={colors.onScrim}
+                  iconSize={DISC_GLYPH}
+                  look="hue"
                   accessibilityLabel={t('photo.next')}
                   onPress={() => turn(1)}
                   hitSlop={12}
@@ -778,6 +782,7 @@ export function PhotoViewer({ photos, index, onClose, onIndexChange }: PhotoView
                   accessibilityLabel={t('photo.next')}
                   onPress={() => turn(1)}
                   hitSlop={12}
+                  style={({ pressed }) => [styles.pagerDisc, pressed && styles.discPressed]}
                 >
                   <Text style={styles.pagerArrow}>›</Text>
                 </Pressable>
@@ -805,11 +810,16 @@ const DISMISS_SCALE = 0.9
 /** How far the scrim fades while the finger is still down (v3). */
 const DISMISS_SCRIM = 0.3
 
-/** A disc's diameter and the slop around it; 36 + 12 + 12 is the platform's 44pt target and then some. */
-const DISC_SIZE = 36
+/**
+ * A disc is the platform's whole target on its own, not 36pt made up to it with
+ * slop: at 36 with an 18pt glyph the save button was easy to miss over a busy
+ * photo. The slop stays, so the press area did not shrink.
+ */
+const DISC_SIZE = ICON_BUTTON_TARGET
+const DISC_GLYPH = 22
 const DISC_HIT_SLOP = 12
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
+const useStyles = makeStyles(({ colors, font, spacing, v3 }) => ({
   // `relative`, so the chrome's z-order is decided against this and not
   // against whatever stacking context the transformed stage creates on web.
   backdrop: {
@@ -838,11 +848,12 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   full: { flex: 1, minHeight: 0, width: '100%' },
   /*
    * A disc on a scrim rather than a bare glyph: over a light photo the glyph
-   * alone disappeared. 36pt plus the hit slop is the platform's 44pt target.
+   * alone disappeared. The strong scrim, not the sheet one: at 45% black the
+   * disc still went grey and faint over a bright picture.
    */
   disc: {
     alignItems: 'center',
-    backgroundColor: colors.scrim,
+    backgroundColor: colors.scrimStrong,
     borderRadius: DISC_SIZE / 2,
     height: DISC_SIZE,
     justifyContent: 'center',
@@ -850,11 +861,13 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     width: DISC_SIZE,
   },
   discPressed: { opacity: 0.7 },
+  // Under v3 the save disc is the kit's dark disc, so it matches ✕ across from it.
+  discInk: { backgroundColor: v3.colors.ink },
   // Only the placing: the kit's target draws its own disc.
   discV3: { position: 'absolute' },
   close: { end: spacing.lg },
   save: { start: spacing.lg },
-  closeText: { color: colors.onScrim, fontSize: 18, fontWeight: '600' },
+  closeText: { color: colors.onScrim, fontSize: DISC_GLYPH, fontWeight: '600' },
   pager: {
     alignItems: 'center',
     bottom: 0,
@@ -865,6 +878,15 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     position: 'absolute',
     right: 0,
   },
-  pagerArrow: { color: colors.onScrim, fontSize: 32 },
+  // The arrows get a disc too: as bare glyphs they vanished over a light photo.
+  pagerDisc: {
+    alignItems: 'center',
+    backgroundColor: colors.scrimStrong,
+    borderRadius: DISC_SIZE / 2,
+    height: DISC_SIZE,
+    justifyContent: 'center',
+    width: DISC_SIZE,
+  },
+  pagerArrow: { color: colors.onScrim, fontSize: 32, lineHeight: 34 },
   pagerCount: { ...font.caption, color: colors.onScrim, fontVariant: ['tabular-nums'] },
 }))
