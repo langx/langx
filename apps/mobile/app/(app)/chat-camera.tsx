@@ -40,7 +40,6 @@ import {
   type CameraFilterId,
 } from '../../src/lib/cameraFilters'
 import { impact, notification, selection } from '../../src/lib/haptics'
-import { FLAG_KEYS, readFlag, writeFlag } from '../../src/lib/localFlags'
 import { goBackTo } from '../../src/lib/navigation'
 import { pickMediaAssets } from '../../src/lib/pickMediaAsset'
 import { saveMediaToDevice } from '../../src/lib/saveMedia'
@@ -51,7 +50,6 @@ import { TIMING } from '../../src/lib/theme/motion'
 import { showToast } from '../../src/lib/toast'
 import {
   DEFAULT_SNAP_MODE,
-  parseSnapMode,
   pickSixteenNineSize,
   SNAP_MODES,
   viewOnceForMode,
@@ -72,6 +70,8 @@ import {
 } from '../../src/screens/chat/SnapCameraV3'
 import { SnapPreviewV3 } from '../../src/screens/chat/SnapPreviewV3'
 import { useCameraZoom } from '../../src/screens/chat/useCameraZoom'
+import { FilteredVideoV3 } from '../../src/screens/chat/FilteredVideoV3'
+import { canFilterVideo, filterVideo } from '../../modules/video-filter'
 
 /*
  * Literal colours, as in `scan.tsx`: a camera is dark whichever scheme the app
@@ -145,15 +145,12 @@ export default function SnapScreen() {
   /** The shot came from the library, which already holds it: no Save. */
   const [fromLibrary, setFromLibrary] = useState(false)
   const [mode, setMode] = useState<SnapMode>(DEFAULT_SNAP_MODE)
-  // The stored choice arrives after the first render; a tap made before it
-  // lands is newer and wins.
-  const modePicked = useRef(false)
   const [saving, setSaving] = useState(false)
   /*
    * The filter, chosen on the viewfinder and still changeable on the preview,
    * v3 only and native only: the web has no camera to shoot with, and would
-   * need CanvasKit's WebAssembly for Skia. A photo is baked with it on the way
-   * out (`outgoing`); a video never is, so the strip goes while recording.
+   * need CanvasKit's WebAssembly for Skia. What was shot is baked with it on
+   * the way out (`outgoing`): a photo by Skia, a clip by `filterVideo`.
    */
   const filtersOn = v3Look && Platform.OS !== 'web'
   const [filter, setFilter] = useState<CameraFilterId>(DEFAULT_CAMERA_FILTER)
@@ -162,7 +159,7 @@ export default function SnapScreen() {
   const [sending, setSending] = useState(false)
   /**
    * The last bake, kept as its promise, so a Save and then a Send draw the
-   * photo once even when the second tap lands while the first is drawing.
+   * shot once even when the second tap lands while the first is drawing.
    */
   const baked = useRef<{
     from: string
@@ -174,8 +171,16 @@ export default function SnapScreen() {
    * and a PNG its transparency in the JPEG the bake writes. The camera's own
    * shots are always JPEG.
    */
-  const filterable =
+  const photoFilterable =
     filtersOn && captured?.kind === 'image' && captured.contentType === 'image/jpeg'
+  /*
+   * Only a clip this camera recorded: one from the library may be HEVC, HDR
+   * or longer than a re-encode should keep someone waiting, and it opens
+   * without a filter anyway. And only in a build that carries the module.
+   */
+  const videoFilterable =
+    filtersOn && captured?.kind === 'video' && !fromLibrary && canFilterVideo()
+  const filterable = photoFilterable || videoFilterable
 
   function pickFilter(next: CameraFilterId): void {
     if (next === filter) return
@@ -207,19 +212,11 @@ export default function SnapScreen() {
     onFilter: pickFilter,
   })
 
-  useEffect(() => {
-    void readFlag(FLAG_KEYS.snapMode).then((raw) => {
-      if (!modePicked.current) setMode(parseSnapMode(raw))
-    })
-  }, [])
-
   function pickMode(next: SnapMode): void {
     // The send already read the mode; a change now would not be what goes.
     if (sending) return
-    modePicked.current = true
     if (next !== mode) void selection()
     setMode(next)
-    void writeFlag(FLAG_KEYS.snapMode, next)
   }
 
   const frame = frameFor(window.width, window.height - insets.top - insets.bottom)
@@ -294,16 +291,27 @@ export default function SnapScreen() {
     if (!last || last.from !== captured.uri || last.filter !== filter) {
       discardBake()
       const from = captured.uri
+      const { matrix } = cameraFilter(filter)
       baked.current = {
         from,
         filter,
-        done: bakeCameraFilter(from, cameraFilter(filter).matrix).then((out) => ({
-          kind: 'image',
-          uri: out.uri,
-          contentType: 'image/jpeg',
-          width: out.width,
-          height: out.height,
-        })),
+        done:
+          captured.kind === 'video'
+            ? filterVideo(from, matrix, VIDEO_BITRATE).then((uri): PickedMedia => ({
+                kind: 'video',
+                uri,
+                contentType: 'video/mp4',
+                ...(captured.durationSeconds !== undefined
+                  ? { durationSeconds: captured.durationSeconds }
+                  : {}),
+              }))
+            : bakeCameraFilter(from, matrix).then((out): PickedMedia => ({
+                kind: 'image',
+                uri: out.uri,
+                contentType: 'image/jpeg',
+                width: out.width,
+                height: out.height,
+              })),
       }
     }
     const bake = baked.current
@@ -397,7 +405,11 @@ export default function SnapScreen() {
                       if (event.nativeEvent.actionName === 'decrement') stepFilter(-1)
                     }}
                   >
-                    <FilteredPhotoV3 uri={captured.uri} matrix={cameraFilter(filter).matrix} />
+                    {captured.kind === 'video' ? (
+                      <FilteredVideoV3 uri={captured.uri} matrix={cameraFilter(filter).matrix} />
+                    ) : (
+                      <FilteredPhotoV3 uri={captured.uri} matrix={cameraFilter(filter).matrix} />
+                    )}
                     <FilterNameFlash filter={filter} token={filterToken} />
                   </View>
                 </GestureDetector>
@@ -496,10 +508,10 @@ function SnapCamera({
   /*
    * The viewfinder's filter is only a tint laid over the picture: expo-camera
    * hands no frames to JavaScript for a real colour transform to run on. The
-   * preview and the photo that is sent get the exact matrix. Gone while
-   * recording, because a clip is never filtered.
+   * preview and what is sent get the exact matrix. Kept while recording where
+   * the clip will take the filter too, gone where it cannot (`canFilterVideo`).
    */
-  const tint = onFilter && !recording ? cameraFilter(filter).tint : null
+  const tint = onFilter && (!recording || canFilterVideo()) ? cameraFilter(filter).tint : null
 
   const holding = useRef(false)
   const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null)

@@ -220,7 +220,7 @@ describe('the chat camera filters a photo', () => {
   it('bakes only a JPEG, only with a filter on, and never sends unfiltered on failure', () => {
     expect(ROUTE).toContain("captured?.kind === 'image' && captured.contentType === 'image/jpeg'")
     expect(ROUTE).toContain('if (!filterable || isOriginal(filter)) return captured')
-    expect(ROUTE).toContain('bakeCameraFilter(from, cameraFilter(filter).matrix)')
+    expect(ROUTE).toContain('bakeCameraFilter(from, matrix)')
     expect(ROUTE).toMatch(/showToast\(t\('viewOnce\.filterFailed'\)\)\s*return null/)
   })
 
@@ -230,11 +230,26 @@ describe('the chat camera filters a photo', () => {
     expect(ROUTE).toContain('enabled: filterable && !sending && !saving,')
   })
 
-  it('is v3 and native only, and drops the tint and the swipe while recording', () => {
+  it('is v3 and native only, and keeps the tint while recording only where a clip takes it', () => {
     expect(ROUTE).toContain("const filtersOn = v3Look && Platform.OS !== 'web'")
-    expect(ROUTE).toContain(
-      'const tint = onFilter && !recording ? cameraFilter(filter).tint : null',
+    expect(ROUTE).toMatch(
+      /const tint =\s*onFilter && \(!recording \|\| canFilterVideo\(\)\) \? cameraFilter\(filter\)\.tint : null/,
     )
     expect(ROUTE).toContain('enabled: onFilter !== undefined && !recording,')
+  })
+})
+
+describe('the chat camera filters a clip', () => {
+  it('filters only a clip this camera recorded, in a build with the module', () => {
+    expect(ROUTE).toMatch(
+      /filtersOn && captured\?\.kind === 'video' && !fromLibrary && canFilterVideo\(\)/,
+    )
+  })
+
+  it('bakes the clip natively at the camera bitrate and previews it with the same matrix', () => {
+    expect(ROUTE).toContain('filterVideo(from, matrix, VIDEO_BITRATE)')
+    expect(ROUTE).toContain(
+      '<FilteredVideoV3 uri={captured.uri} matrix={cameraFilter(filter).matrix} />',
+    )
   })
 })
