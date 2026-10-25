@@ -5,8 +5,7 @@ import { errorCodeOf, errorStatusOf } from './errors'
  * What a Copilot surface does with a refusal.
  *
  * - `off` — Copilot is not for this person after all: the operator's switch
- *   went off, or the account left the allow-list. The card
- *   closes and the button goes, rather than leaving a sentence about a
+ *   went off, or the key went. The card closes and the button goes, rather than leaving a sentence about a
  *   feature the thread no longer offers.
  * - `consent` — the agreement is gone (withdrawn on another device, or given
  *   to an older version of the sheet). The sheet comes back, and nothing is

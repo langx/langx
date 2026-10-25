@@ -18,7 +18,7 @@ import { SettingsGroupV3, SettingsItemV3 } from './SettingsKitV3'
  *
  * Drawn only behind the thread's own gate (`copilotGate`): the deployment's
  * `copilotService` and the server's "available for you". For everybody else
- * — the switch off, no key, not on the allow-list, a guest — there is no row
+ * — the switch off, no key, a guest — there is no row
  * at all, the same nothing the thread draws. Not in `SETTINGS_SECTIONS` for
  * that reason: the search would find a row most people's page does not have.
  *

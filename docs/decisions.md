@@ -5663,6 +5663,8 @@ Copilot's calls; the assistant keeps its own reasoning for not sending one.
 
 ## Copilot v1: an allow-list per account, Say it, and Explain on a partner's text
 
+> **Amended 25 October 2026 — the allow-list is gone. See _Copilot opens to every account; the flag is the off switch_ below.**
+
 _20 October 2026._ Behic asked for a simple Copilot first, one he can turn on
 for some people rather than for everybody, connected straight to the Claude
 API. Everything in the entry above still holds: the flag, the key, the exact
@@ -9485,6 +9487,8 @@ account can always spend its own allowance.
 
 ## Copilot is sold as a beta, rolling out
 
+> **Amended 25 October 2026 — there is no allow-list any more; the qualifier stays. See _Copilot opens to every account; the flag is the off switch_ below.**
+
 **21 October 2026.** Copilot works, so the paywall stops calling it "Soon" —
 but it answers only accounts on the operator's allow-list, so a buyer may not
 get it on the day they pay. Wherever Pro is listed it is therefore named with
@@ -9572,3 +9576,32 @@ once, with no backfill and nobody left out.
   morning, good night, let's practise — and eight stickers say hello, one in
   each language the app speaks. The six retired ids still draw, as the
   sticker that replaced them, because sent messages keep their ids.
+
+## Copilot opens to every account; the flag is the off switch
+
+**25 October 2026.** Behic asked for the per-account allow-list to go:
+Copilot is a beta already, it should reach everybody, and if something goes
+wrong he switches it off. So `profiles.copilotAccess`, the operator routes that
+set and listed it (`POST /admin/users/:userId/copilot`,
+`GET /admin/copilot/access`) and the panel's Copilot access switches are
+removed. What decides is what decided before the list was added: the
+operator's `flags.copilotEnabled`, a key, and the person's own consent.
+
+- **The off switch is `copilotEnabled` on the Flags page.** It reaches every
+  client within about ten seconds, the app hides Copilot exactly as it does for
+  no key, and nobody is asked anything. There is no smaller lever any more:
+  the switch is for everybody or for nobody.
+- **The bill is still bounded.** `copilotPer24h` per person and
+  `COPILOT_RULES.globalCallsPerDay` for everybody together are unchanged, so
+  more people means the day's calls run out sooner, not a larger bill.
+- **A report needs the consent instead.** Reporting an answer was limited to
+  allow-listed accounts so it could not be a free-text door into the
+  operators' queue. Nobody is shown an answer before agreeing to the sheet, so
+  the consent is now that line.
+- **Nothing on the profiles is cleaned up.** The `copilotAccess` values already
+  written stay where they are and nothing reads them. The audit actions
+  `copilot.allow` and `copilot.revoke` stay in `ADMIN_ACTIONS` for the rows
+  that carry them.
+- **The paywall keeps "Beta, rolling out".** Copilot is drawn only in the v3
+  look, so a buyer on an older build still does not get it, and the qualifier
+  is a separate copy decision (_Copilot is sold as a beta, rolling out_).

@@ -7,7 +7,6 @@ import { COLLECTIONS } from '../../db/collections'
 import { ensureIndexes } from '../../db/indexes'
 import type { ApiError } from '../../lib/ApiError'
 import type { StructuredProvider, StructuredRequest } from '../official/assistantProvider'
-import { setCopilotAccess } from './access'
 import { claimCopilotCall, copilotCallsToday } from './budget'
 import { recordCopilotConsent, withdrawCopilotConsent } from './consent'
 import { askCopilot, getCopilotStatus, type CopilotDeps, type CopilotQuestion } from './copilot'
@@ -77,7 +76,6 @@ describe('Copilot', () => {
       birthDate?: string
       tier?: 'free' | 'pro'
       consent?: number
-      access?: boolean
     } = {},
   ) {
     await handle.db.collection(COLLECTIONS.profiles).insertOne({
@@ -92,7 +90,6 @@ describe('Copilot', () => {
       ...(overrides.consent !== undefined
         ? { copilotConsent: { version: overrides.consent, at: NOW } }
         : {}),
-      ...(overrides.access === false ? {} : { copilotAccess: { at: NOW } }),
     })
   }
 
@@ -195,52 +192,10 @@ describe('Copilot', () => {
     })
   })
 
-  describe('the allow-list', () => {
-    it('is off for an account the operator has not allowed, and asks nothing', async () => {
-      await setCopilotAccess(handle.db, me, false)
-      const error = await refusal(askCopilot(deps, me, 'en', check(), NOW))
-      expect(error.code).toBe('COPILOT_UNAVAILABLE')
-      expect(error.reason).toBe('off')
-      expect(model.asked).toHaveLength(0)
-      expect(await quotaUsed(me)).toBe(0)
-      expect(await getCopilotStatus(deps, me)).toMatchObject({
-        available: false,
-        reason: 'off',
-      })
-    })
-
-    it('is not granted by being an admin', async () => {
-      await setCopilotAccess(handle.db, me, false)
-      await handle.db
-        .collection(COLLECTIONS.profiles)
-        .updateOne({ _id: me as never }, { $set: { admin: true } })
-      expect((await refusal(askCopilot(deps, me, 'en', check(), NOW))).reason).toBe('off')
-    })
-
-    it('opens when allowed, and keeps the first date when allowed twice', async () => {
-      await setCopilotAccess(handle.db, me, false)
-      expect(await setCopilotAccess(handle.db, me, true, NOW)).toBe(true)
-      expect(await setCopilotAccess(handle.db, me, true, new Date('2026-10-19T00:00:00Z'))).toBe(
-        true,
-      )
-      const row = await handle.db
-        .collection<{ copilotAccess?: { at: Date } }>(COLLECTIONS.profiles)
-        .findOne({ _id: me as never })
-      expect(row?.copilotAccess?.at).toEqual(NOW)
-      await recordCopilotConsent(handle.db, me, COPILOT_RULES.consentVersion, NOW)
+  describe('who it answers', () => {
+    it('answers any account that agreed, with no step of the operator', async () => {
       expect((await askCopilot(deps, me, 'en', check(), NOW)).source).toBe('ai')
-      expect(await setCopilotAccess(handle.db, 'nobody', true, NOW)).toBe(false)
-    })
-
-    it('takes the consent with the access, so allowing again asks again', async () => {
-      expect((await getCopilotStatus(deps, me)).consented).toBe(true)
-      await setCopilotAccess(handle.db, me, false)
-      await setCopilotAccess(handle.db, me, true, NOW)
-
-      expect((await getCopilotStatus(deps, me)).consented).toBe(false)
-      const error = await refusal(askCopilot(deps, me, 'en', check(), NOW))
-      expect(error.code).toBe('COPILOT_CONSENT_REQUIRED')
-      expect(model.asked).toHaveLength(0)
+      expect(await getCopilotStatus(deps, me)).toMatchObject({ available: true, reason: null })
     })
   })
 

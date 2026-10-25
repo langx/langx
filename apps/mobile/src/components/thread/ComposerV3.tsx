@@ -220,9 +220,8 @@ export function ComposerV3({
   const showMic = composerShowsMic({ value, recording: recording !== null })
   const sendLive = canSend && !busy
   /*
-   * Only for a typed draft, and only when this person has Copilot at all — an
-   * account off the allow-list or on a deployment with no key sees
-   * no trace of it. The menu folds when the draft empties, and when a row is
+   * Only for a typed draft, and only when this person has Copilot at all — on
+   * a deployment with the switch off or no key nobody sees a trace of it. The menu folds when the draft empties, and when a row is
    * picked.
    */
   const [copilotMenu, setCopilotMenu] = useState(false)

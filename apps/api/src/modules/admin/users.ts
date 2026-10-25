@@ -22,7 +22,6 @@ import {
   listProGifts,
   type ProGift,
 } from '../billing/proGifts'
-import { hasCopilotAccess } from '../copilot/access'
 import { findProfileByHandleOrId, type Profile } from '../profiles/profiles'
 
 /**
@@ -81,11 +80,6 @@ export interface AdminUserView {
   tokenFrozenAt: string | null
   suspension: Profile['suspension'] | null
   counts: { reportsAgainst: number; reportsFiled: number; blockedBy: number }
-  /**
-   * On the operator's Copilot allow-list. Only the per-account switch: the
-   * flag, the key, the age floor and the person's consent still decide.
-   */
-  copilotAccess: boolean
   /** What has been done to this account, and by whom. */
   actions: AdminAction[]
 }
@@ -282,7 +276,6 @@ async function toAdminUserView(db: Db, profile: Profile): Promise<AdminUserView>
     tokenFrozenAt: profile.tokenFrozenAt ? new Date(profile.tokenFrozenAt).toISOString() : null,
     suspension: profile.suspension ?? null,
     counts: { reportsAgainst, reportsFiled, blockedBy },
-    copilotAccess: hasCopilotAccess(profile),
     actions,
   }
 }

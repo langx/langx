@@ -66,8 +66,8 @@ export interface MessageActionContext {
   /**
    * Copilot is on for this reader: the deployment offers it and the server
    * said it is available to them (`copilotGate` is not `off`). Hidden by
-   * default, like `canSpeak` — it is an allow-listed trial, and most readers
-   * never see the row.
+   * default, like `canSpeak` — it is a beta behind the operator's switch, and
+   * a reader on a deployment without it never sees the row.
    */
   canExplain?: boolean
   /** Characters the service would be asked to read. The cap is its own. */

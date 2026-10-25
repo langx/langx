@@ -185,9 +185,8 @@ export const copilotStatusSchema = z.object({
   /** True when an answer could be asked for right now, consent aside. */
   available: z.boolean(),
   /**
-   * Why not, when not: `off` for the operator's switch, no key, or an
-   * account the operator has not allowed — the app hides Copilot for all
-   * three alike.
+   * Why not, when not: `off` for the operator's switch or no key — the app
+   * hides Copilot for both alike.
    */
   reason: z.enum(['off']).nullable(),
   /** Agreed to the current version of the consent sheet. */
@@ -201,23 +200,6 @@ export const copilotStatusSchema = z.object({
   }),
 })
 export type CopilotStatus = z.infer<typeof copilotStatusSchema>
-
-/**
- * Allowing one account to use Copilot, or taking it back — the operator
- * panel's per-account switch. It opens nothing by itself: the flag, a key
- * and the person's own consent all still apply.
- */
-export const adminCopilotAccessRequestSchema = z.object({ allowed: z.boolean() })
-export type AdminCopilotAccessRequest = z.infer<typeof adminCopilotAccessRequestSchema>
-
-/** One allowed account, as `GET /admin/copilot/access` lists it. */
-export interface AdminCopilotAccessRow {
-  userId: string
-  username: string
-  displayName: string
-  /** When access was given, as an ISO string. */
-  at: string
-}
 
 /**
  * The longest answer a report may carry. Well past anything the model writes

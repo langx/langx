@@ -26,8 +26,8 @@ import type { PartnerHue } from './theme/tokens'
  * back and flip it, which is what happened to `nearby` and `copilot`.
  *
  * `beta` is the step between: the feature works, but not for every account
- * that buys the plan yet — Copilot answers only accounts on the operator's
- * allow-list. So it is named with its qualifier wherever it is listed, never
+ * that buys the plan yet — Copilot is drawn only in the v3 look, and the
+ * operator's switch can take it from everybody at once. So it is named with its qualifier wherever it is listed, never
  * ticked as if every buyer gets it, and never the reason the paywall says a
  * refused feature "is part of Pro".
  *
@@ -204,7 +204,7 @@ export function benefitsHeld(
  * paywall over a feature that has not shipped or is in beta — Copilot says
  * "off" to an account it does not answer — but the feature is a route param,
  * so a hand-typed or stale link can still carry one, and "Copilot is part of
- * Pro" promises it to a buyer the allow-list may not hold. Such a link gets
+ * Pro" promises it to a buyer whose build or whose day may not have it. Such a link gets
  * the general page, where the table already qualifies it.
  */
 export function sellableFeature(feature: PlanFeature | null): PlanFeature | null {

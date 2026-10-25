@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import {
-  adminCopilotAccessRequestSchema,
   copilotResultSchema,
   COPILOT_RULES,
   copilotSayItRequestSchema,
@@ -67,12 +66,5 @@ describe('Say it', () => {
     expect(
       copilotResultSchema.safeParse({ action: 'sayIt', options: [{ text: 'x' }] }).success,
     ).toBe(false)
-  })
-})
-
-describe('the operator allow-list', () => {
-  it('takes a yes or a no, and nothing else', () => {
-    expect(adminCopilotAccessRequestSchema.safeParse({ allowed: true }).success).toBe(true)
-    expect(adminCopilotAccessRequestSchema.safeParse({ allowed: 'yes' }).success).toBe(false)
   })
 })
