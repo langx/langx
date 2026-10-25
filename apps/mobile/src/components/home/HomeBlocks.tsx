@@ -3,6 +3,7 @@ import { Image } from 'expo-image'
 import { Pressable, Text, View } from 'react-native'
 import venusHead from '../../../assets/venus/head.png'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { PRESS_SCALE_GLYPH } from '../../lib/theme/motionValues'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
 import { PressableScale } from '../ui/PressableScale'
@@ -96,89 +97,121 @@ export function HomeToday({
   )
 }
 
-/** The streak, its next reward, and the way into the streak screen. */
+/**
+ * The streak, its next reward, and the way into the streak screen.
+ *
+ * With today's Venus video (`flags.venusStories`) the same row carries it:
+ * her face in a story's ring of the streak's tangerine, with the flame as a
+ * badge on it so the row still reads as the streak, and a play button at the
+ * end where the chevron was. The face and the button play the video; the
+ * words between them still open the streak screen. One row, so the day is
+ * said once rather than by two rows stacked one above the other.
+ *
+ * Three siblings rather than buttons inside a button: a screen reader cannot
+ * reach a button nested in another one on iOS, and this way it finds two —
+ * the streak, and play. The face is left out of that, being a second way to
+ * the same video for a thumb that goes for the picture.
+ */
 export function HomeStreakRow({
   title,
   subtitle,
   onPress,
+  venus,
 }: {
   title: string
   subtitle?: string | undefined
   onPress: () => void
+  /** Today's video, when there is one: what its button says and does. */
+  venus?: { label: string; onPress: () => void } | undefined
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
+  const label = subtitle ? `${title}. ${subtitle}` : title
+  const words = (
+    <View style={styles.rowText}>
+      <Text style={styles.rowTitle}>{title}</Text>
+      {subtitle ? <Text style={styles.rowSub}>{subtitle}</Text> : null}
+    </View>
+  )
+  if (!venus) {
+    return (
+      <PressableScale
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        onPress={onPress}
+        style={styles.row}
+      >
+        <View style={[styles.disc, { backgroundColor: v3.hues.tangerine }]}>
+          <FlameGlyph size={v3.icon.lg} color={v3.colors.ink} />
+        </View>
+        {words}
+        <Feather name="chevron-right" size={v3.icon.md} color={v3.colors.fg} />
+      </PressableScale>
+    )
+  }
   return (
-    <PressableScale
-      accessibilityRole="button"
-      accessibilityLabel={subtitle ? `${title}. ${subtitle}` : title}
-      onPress={onPress}
-      style={styles.row}
-    >
-      <View style={[styles.disc, { backgroundColor: v3.hues.tangerine }]}>
-        <FlameGlyph size={v3.icon.lg} color={v3.colors.ink} />
-      </View>
-      <View style={styles.rowText}>
-        <Text style={styles.rowTitle}>{title}</Text>
-        {subtitle ? <Text style={styles.rowSub}>{subtitle}</Text> : null}
-      </View>
-      <Feather name="chevron-right" size={v3.icon.md} color={v3.colors.fg} />
-    </PressableScale>
+    <View style={styles.row}>
+      <PressableScale
+        onPress={venus.onPress}
+        scaleTo={PRESS_SCALE_GLYPH}
+        // Out of the screen reader's and the keyboard's way: play, at the
+        // row's end, is the same button with a name.
+        accessible={false}
+        aria-hidden
+        tabIndex={-1}
+      >
+        <VenusFace />
+      </PressableScale>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        onPress={onPress}
+        style={({ pressed }) => [styles.streakWords, pressed && styles.pressed]}
+      >
+        {words}
+      </Pressable>
+      <PressableScale
+        accessibilityRole="button"
+        accessibilityLabel={venus.label}
+        onPress={venus.onPress}
+        scaleTo={PRESS_SCALE_GLYPH}
+        // 40 drawn, 48 to the touch.
+        hitSlop={4}
+      >
+        <View style={styles.venusPlay}>
+          {/* Nudged a point forward: a triangle's weight sits behind its middle. */}
+          <Feather
+            name="play"
+            size={v3.icon.md}
+            color={v3.colors.pillText}
+            style={styles.venusPlayGlyph}
+          />
+        </View>
+      </PressableScale>
+    </View>
   )
 }
 
 /**
- * Venus's button (`flags.venusStories`): her face in a ring of the streak's
- * tangerine — a story's ring, the way every app with stories marks one there
- * to watch — the day, and a play button. A tap plays today's video.
+ * Venus's face in the streak's ring, with the flame on it as a badge.
  *
  * Her ears rise out of the disc. The picture has the disc's lower half cut
  * into it already (`assets/venus/head.png`, drawn from the 2D rig), so only
  * the ears and the crown stand over the ring; the disc under it is drawn here,
  * in the scheme's sky.
  */
-export function HomeVenusRow({
-  title,
-  body,
-  onPress,
-}: {
-  title: string
-  body: string
-  onPress: () => void
-}) {
+function VenusFace() {
   const styles = useStyles()
   const { v3 } = useTheme()
   return (
-    <PressableScale
-      accessibilityRole="button"
-      accessibilityLabel={`${title}. ${body}`}
-      onPress={onPress}
-      style={styles.row}
-    >
-      <View style={styles.venus}>
-        <View style={[styles.venusRing, { borderColor: v3.hues.tangerine }]} />
-        <View style={[styles.venusDisc, { backgroundColor: v3.hues.sky }]} />
-        <Image
-          source={venusHead}
-          style={styles.venusFace}
-          contentFit="contain"
-          accessible={false}
-        />
+    <View style={styles.venus}>
+      <View style={[styles.venusRing, { borderColor: v3.hues.tangerine }]} />
+      <View style={[styles.venusDisc, { backgroundColor: v3.hues.sky }]} />
+      <Image source={venusHead} style={styles.venusFace} contentFit="contain" accessible={false} />
+      <View style={[styles.venusFlame, { backgroundColor: v3.hues.tangerine }]}>
+        <FlameGlyph size={14} color={v3.colors.ink} />
       </View>
-      <View style={styles.rowText}>
-        <Text style={styles.rowTitle}>{title}</Text>
-        <Text style={styles.rowSub}>{body}</Text>
-      </View>
-      <View style={styles.venusPlay}>
-        {/* Nudged a point forward: a triangle's weight sits behind its middle. */}
-        <Feather
-          name="play"
-          size={v3.icon.md}
-          color={v3.colors.pillText}
-          style={styles.venusPlayGlyph}
-        />
-      </View>
-    </PressableScale>
+    </View>
   )
 }
 
@@ -429,6 +462,35 @@ const useStyles = makeStyles(({ v3 }) => ({
     width: 44,
   },
   venusFace: { height: 56, position: 'absolute', start: 0, top: 0, width: 56 },
+  /*
+   * The flame on her ring's lower corner, edged in the row's own ground so it
+   * reads as a badge laid over the ring rather than a dent in it.
+   */
+  venusFlame: {
+    alignItems: 'center',
+    borderColor: v3.colors.surface,
+    borderRadius: v3.radius.pill,
+    borderWidth: 2,
+    bottom: 0,
+    end: 0,
+    height: 24,
+    justifyContent: 'center',
+    position: 'absolute',
+    width: 24,
+  },
+  /*
+   * The streak's own button between the face and play: as tall as the row,
+   * its padding taken back, so a tap above or below the words still lands.
+   */
+  streakWords: {
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    flex: 1,
+    flexDirection: 'row',
+    marginVertical: -v3.space[12],
+    minWidth: 0,
+    paddingVertical: v3.space[12],
+  },
   venusPlay: {
     alignItems: 'center',
     backgroundColor: v3.colors.pill,

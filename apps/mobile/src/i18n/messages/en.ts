@@ -4570,8 +4570,6 @@ export const en = {
     downloaded: 'Video downloaded',
     shareFailed: 'Couldn’t share the video. Try again.',
     watchAgain: 'Watch today’s video',
-    homeTitle: 'Venus, day {day}',
-    homeBody: 'Today’s video · Tap to watch',
     /** The panel when the video ends: the streak, the day, and what to do with it. */
     endStreak: { one: '{count}-day streak', other: '{count}-day streak' },
     endTitle: 'Day {day} with Venus',
@@ -4580,6 +4578,8 @@ export const en = {
     /** The same button in a browser that cannot share a file, where it downloads instead. */
     downloadVideo: 'Download video',
     replay: 'Watch again',
+    /** Home's streak row, until today's video has been watched to its end. */
+    homeReady: 'Venus’s video for today is ready',
   },
 } as const
 

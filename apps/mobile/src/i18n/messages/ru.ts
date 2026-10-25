@@ -4821,8 +4821,6 @@ export const ru: Localized<EnMessages> = {
     downloaded: 'Видео скачано',
     shareFailed: 'Не удалось поделиться видео. Попробуй ещё раз.',
     watchAgain: 'Смотреть видео дня',
-    homeTitle: 'Venus, день {day}',
-    homeBody: 'Видео дня · Нажми, чтобы посмотреть',
     endStreak: {
       one: 'Серия: {count} день',
       few: 'Серия: {count} дня',
@@ -4834,5 +4832,6 @@ export const ru: Localized<EnMessages> = {
     shareVideo: 'Поделиться видео',
     downloadVideo: 'Скачать видео',
     replay: 'Смотреть снова',
+    homeReady: 'Видео от Venus на сегодня готово',
   },
 }

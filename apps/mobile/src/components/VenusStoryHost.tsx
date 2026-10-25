@@ -26,6 +26,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useTourOpen } from '../hooks/useTour'
 import { useVenusStory } from '../hooks/useVenusStory'
+import { noteVenusWatched } from '../hooks/useVenusWatched'
 import { useT } from '../i18n'
 import { authClient } from '../lib/auth-client'
 import { showAlert } from '../lib/alert'
@@ -258,9 +259,8 @@ function VenusStoryPlayer({
     // Once per day per run, and not for a day already watched through here.
     if (!watchedBefore && claimCelebration(`venus:${video.dayKey}`)) void notification('success')
     if (!accountId) return
-    void readJsonFlag<VenusSeen>(FLAG_KEYS.venusStoryWatched).then((map) =>
-      writeJsonFlag(FLAG_KEYS.venusStoryWatched, markVenusSeen(map, accountId, video.dayKey)),
-    )
+    // Through the store, so Home's streak row under this hears it at once.
+    void noteVenusWatched(accountId, video.dayKey)
   })
 
   // A file that is listed but will not play closes quietly: an error toast

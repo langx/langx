@@ -24,7 +24,6 @@ import {
   HomeProCard,
   HomeStreakRow,
   HomeToday,
-  HomeVenusRow,
   type HomeGoal,
   type HomePerson,
 } from '../../../src/components/home/HomeBlocks'
@@ -36,6 +35,7 @@ import { usePullToRefresh } from '../../../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useV3HomeDecision } from '../../../src/hooks/useV3Home'
 import { useVenusStory } from '../../../src/hooks/useVenusStory'
+import { useVenusWatched } from '../../../src/hooks/useVenusWatched'
 import { useDisplayNames, useLocale, useT } from '../../../src/i18n'
 import { authClient } from '../../../src/lib/auth-client'
 import { deviceDayKey } from '../../../src/lib/deviceDay'
@@ -55,6 +55,7 @@ import { requireAccount } from '../../../src/lib/requireAccount'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../../src/lib/theme'
 import { partnerHueFor } from '../../../src/lib/theme/partnerHue'
 import { requestVenusReplay } from '../../../src/lib/venusStory'
+import { streakRowVenus } from '../../../src/lib/venusStreakRow'
 
 const HERE = '/(app)/(tabs)/home'
 
@@ -120,7 +121,7 @@ function MemberHome() {
   // Discover's own first request, so the two share one cache entry.
   const discovery = useDiscovery({ sort: 'recommended' })
   const tier = useEffectiveTier()
-  const venus = useVenusStory()
+  const venusRow = streakRowVenus(useVenusStory(), useVenusWatched(), session?.user.id)
 
   const pull = usePullToRefresh(() =>
     Promise.all([
@@ -281,34 +282,31 @@ function MemberHome() {
         ) : null}
 
         {/*
-          Venus beside the streak she is the reward for, once today counts and
-          the bucket holds its video — which, with the launch check-in, is as
-          soon as the app is open. Nothing at all otherwise (`venusVideoFor`).
-        */}
-        {venus ? (
-          <HomeVenusRow
-            title={t('venus.homeTitle', { day: venus.day })}
-            body={t('venus.homeBody')}
-            onPress={requestVenusReplay}
-          />
-        ) : null}
-
-        {/*
           Not for a streak of nothing: a new account is not shown a zero. Once
-          today counts, the row is there even at one day.
+          today counts, the row is there even at one day — and carries Venus,
+          the streak's reward, once the bucket holds today's video: her face
+          and a play button, and until it is watched to the end, a subtitle
+          saying so in place of the next reward (`streakRowVenus`).
         */}
         {streak && (streak.current > 0 || streak.qualifiedToday) ? (
           <HomeStreakRow
             title={t('home.streakDays', { count: streak.current })}
             subtitle={
-              milestone
-                ? t('home.streakNext', {
-                    count: milestone.day - streak.current,
-                    day: milestone.day,
-                  })
-                : undefined
+              venusRow === 'ready'
+                ? t('venus.homeReady')
+                : milestone
+                  ? t('home.streakNext', {
+                      count: milestone.day - streak.current,
+                      day: milestone.day,
+                    })
+                  : undefined
             }
             onPress={() => router.push('/(app)/streak')}
+            venus={
+              venusRow === 'none'
+                ? undefined
+                : { label: t('venus.watchAgain'), onPress: requestVenusReplay }
+            }
           />
         ) : null}
 

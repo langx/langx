@@ -305,8 +305,10 @@ export const FLAG_KEYS = {
   /**
    * JSON: `{ [accountId]: day }`, the last counted day whose Venus video each
    * account on this device watched to its end — so a replay from the flame
-   * keeps Share on screen from the start (`hasWatchedVenus`). Bounded like
-   * `venusStorySeen`.
+   * keeps Share on screen from the start (`hasWatchedVenus`), and Home's
+   * streak row goes back from "Venus's video for today is ready" to the next
+   * reward (`venusStreakRow.ts`). Written through `noteVenusWatched`, so a
+   * mounted Home hears it. Bounded like `venusStorySeen`.
    */
   venusStoryWatched: 'venusStoryWatched',
 } as const

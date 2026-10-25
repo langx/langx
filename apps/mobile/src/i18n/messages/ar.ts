@@ -5227,8 +5227,6 @@ export const ar: Localized<EnMessages> = {
     downloaded: 'تم تنزيل الفيديو',
     shareFailed: 'تعذّرت مشاركة الفيديو. حاول مرة أخرى.',
     watchAgain: 'شاهد فيديو اليوم',
-    homeTitle: 'Venus، اليوم {day}',
-    homeBody: 'فيديو اليوم · اضغط للمشاهدة',
     endStreak: {
       zero: 'سلسلة {count} يوم',
       one: 'سلسلة يوم واحد',
@@ -5242,5 +5240,6 @@ export const ar: Localized<EnMessages> = {
     shareVideo: 'مشاركة الفيديو',
     downloadVideo: 'تنزيل الفيديو',
     replay: 'شاهد مجددًا',
+    homeReady: 'فيديو Venus لهذا اليوم جاهز',
   },
 }
