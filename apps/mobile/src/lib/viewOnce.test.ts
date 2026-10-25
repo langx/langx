@@ -4,7 +4,6 @@ import {
   pickSixteenNineSize,
   viewOnceBubbleLabel,
   viewOnceForMode,
-  parseSnapMode,
   DEFAULT_SNAP_MODE,
   withoutViewOnceFallback,
 } from './viewOnce'
@@ -98,17 +97,8 @@ describe('the send modes', () => {
   })
 })
 
-describe('the remembered send mode', () => {
-  it('starts on keep in chat', () => {
-    expect(DEFAULT_SNAP_MODE).toBe('keep')
-    expect(parseSnapMode(null)).toBe('keep')
-  })
-
-  it('returns a stored mode and refuses anything else', () => {
-    expect(parseSnapMode('once')).toBe('once')
-    expect(parseSnapMode('replay')).toBe('replay')
-    expect(parseSnapMode('keep')).toBe('keep')
-    expect(parseSnapMode('forever')).toBe('keep')
-    expect(parseSnapMode('')).toBe('keep')
+describe('the send mode', () => {
+  it('starts on replay', () => {
+    expect(DEFAULT_SNAP_MODE).toBe('replay')
   })
 })

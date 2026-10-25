@@ -50,16 +50,16 @@ function clamp01(value: number): number {
  *
  * Only this step has a v3 drawing; the viewfinder, the permission screen and
  * the web's library-only screen stay `chat-camera.tsx`'s, as do the mode that
- * is remembered, the send and the retake — this is handed all of them. The
+ * is chosen, the send and the retake — this is handed all of them. The
  * three modes are the same three, stacked so each can carry a plain line,
  * and Retake is the old corner ✕ made a button.
  *
  * The panel folds down to a chip naming the chosen mode, because the three
  * stacked options cover most of a portrait photo and the person wants to see
- * what they shot before sending it. Retake and Send stay out either way: the
- * fold hides a choice already made, never the way forward. Folded or not is
- * this screen's alone and is not remembered, so the next shot opens with the
- * options showing.
+ * what they shot before sending it. It opens folded, on replay
+ * (`DEFAULT_SNAP_MODE`): the shot fills the screen, and the chip is one tap
+ * from the other two. Retake and Send stay out either way: the fold hides a
+ * choice already made, never the way forward.
  *
  * Save, at the top end, is the story camera's download: the shot into the
  * phone's own photos (or the browser's downloads) before it goes, which a
@@ -103,9 +103,9 @@ export function SnapPreviewV3({
     keep: { title: t('viewOnce.modeKeep'), body: t('viewOnce.modeKeepBody') },
   }
 
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   // 1 open, 0 folded; the options' height and both header layers follow it.
-  const shown = useSharedValue(1)
+  const shown = useSharedValue(0)
   // The options' own height once laid out. 0 until then, when the block is
   // left to size itself rather than being clamped to nothing.
   const fullHeight = useSharedValue(0)

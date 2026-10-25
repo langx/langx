@@ -117,8 +117,9 @@ export function SnapViewfinderV3({
   /** The finger holding the shutter moved: the slide up that zooms (`useCameraZoom.slide`). */
   onSlide: (translationY: number, startY: number) => void
   /**
-   * The filters' names, above the shutter. Faded out while recording: a
-   * filter is baked into photos only, so a clip would not keep it.
+   * The filters' names, above the shutter. Faded out while recording, as
+   * the gallery and flip are: the filter is changed before or after a clip,
+   * by swiping the preview, not during it.
    */
   filterStrip?: ReactNode
 }) {

@@ -274,14 +274,6 @@ export const FLAG_KEYS = {
    */
   firstReplyCardShown: 'firstReplyCardShown',
   /**
-   * The chat camera's send mode last picked here: `once`, `replay` or `keep`.
-   *
-   * Device-level like the reaction row: it is a habit of whoever holds this
-   * phone. `parseSnapMode` turns anything else, a missing value included,
-   * into the default, so a lost or stale value costs one extra tap.
-   */
-  snapMode: 'snapMode',
-  /**
    * JSON `{ userId, ids }`: the earned badges this device has already shown,
    * so each is New and celebrated once. Per account — see `badgeSeen.ts`.
    */

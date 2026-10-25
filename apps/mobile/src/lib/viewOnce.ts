@@ -97,19 +97,11 @@ export const SNAP_MODES = ['once', 'replay', 'keep'] as const
 export type SnapMode = (typeof SNAP_MODES)[number]
 
 /**
- * What the preview starts on before this phone has a choice of its own.
- *
- * An ordinary message, not view once: a photo that vanishes is the surprising
- * outcome, so it has to be picked rather than fallen into.
+ * What the preview starts on, every time: view once with one replay,
+ * Instagram's default, with the options folded away. Not remembered — a
+ * choice made for one shot is not a standing order for the next.
  */
-export const DEFAULT_SNAP_MODE: SnapMode = 'keep'
-
-/** The stored choice, or the default for anything that is not one of the modes. */
-export function parseSnapMode(raw: string | null): SnapMode {
-  return (SNAP_MODES as readonly string[]).includes(raw ?? '')
-    ? (raw as SnapMode)
-    : DEFAULT_SNAP_MODE
-}
+export const DEFAULT_SNAP_MODE: SnapMode = 'replay'
 
 /** What a send carries for a mode: `null` is an ordinary photo or video. */
 export function viewOnceForMode(mode: SnapMode): { replay: boolean } | null {
