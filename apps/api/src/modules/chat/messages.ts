@@ -1635,6 +1635,7 @@ export async function listConversations(
     // A call they placed and both of them took is not something left
     // unanswered. The same clause `toConversationView` applies per row.
     base['lastMessage.call.outcome'] = { $ne: 'completed' }
+    base['lastMessage.reacted'] = { $ne: true }
   }
 
   const pinnedPath = `pinnedBy.${userId}`

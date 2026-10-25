@@ -40,6 +40,13 @@ export interface Conversation {
      * rest of `lastMessage` by the next message, so it never outlives its row.
      */
     call?: Pick<MessageCall, 'media' | 'outcome' | 'durationSeconds'>
+    /**
+     * The person it was written to has a reaction on it. A thread with only
+     * two people, so that is always the one whose turn it would otherwise be:
+     * an emoji back is an answer, and the thread stops waiting on them.
+     * Replaced with the rest of `lastMessage` by the next message.
+     */
+    reacted?: true
   }
   unread: Record<string, number>
   /**

@@ -25,8 +25,7 @@ export interface ChatsPage<T> {
  */
 export type ChatsListItem<T> =
   | { kind: 'heading'; heading: 'waiting' | 'others' }
-  /** `lead` is the first block: the big one, with the screen's yellow. */
-  | { kind: 'waiting'; thread: T; lead: boolean }
+  | { kind: 'waiting'; thread: T }
   | { kind: 'row'; thread: T }
 
 /**
@@ -65,7 +64,7 @@ export function chatsListItems<T extends ChatsThread>(
   const items: ChatsListItem<T>[] = []
   if (waiting.length > 0) {
     items.push({ kind: 'heading', heading: 'waiting' })
-    waiting.forEach((thread, index) => items.push({ kind: 'waiting', thread, lead: index === 0 }))
+    for (const thread of waiting) items.push({ kind: 'waiting', thread })
     if (rows.length > 0) items.push({ kind: 'heading', heading: 'others' })
   }
   for (const thread of rows) items.push({ kind: 'row', thread })

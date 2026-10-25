@@ -117,6 +117,53 @@ export function applyMessageEdit(
 }
 
 /**
+ * A reaction from me on their newest message, written into its row: the
+ * server counts an emoji back as an answer (`lastMessage.reacted`), so the
+ * thread stops waiting on me, and taking the reaction off puts it back.
+ *
+ * Matched on the same `createdAt` and `senderId` pair as an edit, and only on
+ * their messages — a reaction to my own answers nobody. Every
+ * `message:updated` passes through here, so a row whose `unreplied` already
+ * agrees is left as the same object.
+ */
+export function applyReaction(
+  data: unknown,
+  reaction: {
+    conversationId: string
+    senderId: string
+    createdAt: string
+    meId: string
+    reactedByMe: boolean
+  },
+): unknown {
+  const unrepliedFor = (row: ConversationDto): boolean =>
+    !reaction.reactedByMe && row.lastMessage.call?.outcome !== 'completed'
+  const stale = (row: ConversationDto): boolean =>
+    row._id === reaction.conversationId &&
+    reaction.senderId !== reaction.meId &&
+    row.lastMessage.senderId === reaction.senderId &&
+    row.lastMessage.createdAt === reaction.createdAt &&
+    row.unreplied !== unrepliedFor(row)
+  const patch = (row: ConversationDto): ConversationDto =>
+    stale(row) ? { ...row, unreplied: unrepliedFor(row) } : row
+
+  if (isPagedList(data)) {
+    const found = findConversation(data, reaction.conversationId)
+    if (!found || !stale(found.conversation)) return data
+    return {
+      ...data,
+      pages: data.pages.map((page) => ({
+        ...page,
+        items: page.items.map(patch),
+        pinned: page.pinned.map(patch),
+      })),
+    }
+  }
+  const row = data as ConversationDto | undefined
+  return row?._id === reaction.conversationId && row.lastMessage ? patch(row) : data
+}
+
+/**
  * What the chat list row says for a message that just arrived over the socket.
  *
  * The server stores `body || previewOf(message)` as the row's line, so the

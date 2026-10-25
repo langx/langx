@@ -4,6 +4,7 @@ import type { ConversationDto } from '../api/queries'
 import {
   applyIncomingMessage,
   applyMessageEdit,
+  applyReaction,
   cachedConversation,
   type ConversationPageDto,
   listPreviewOf,
@@ -383,5 +384,36 @@ describe('applyMessageEdit', () => {
     expect(applyMessageEdit(data, { ...edit, body: 'old c1' })).toBe(data)
     expect(applyMessageEdit(data, { ...edit, conversationId: 'elsewhere' })).toBe(data)
     expect(applyMessageEdit(undefined, edit)).toBeUndefined()
+  })
+})
+
+describe('applyReaction', () => {
+  const reaction = {
+    conversationId: 'c1',
+    senderId: THEM,
+    createdAt: '2026-08-01T00:00:00.000Z',
+    meId: ME,
+    reactedByMe: true,
+  }
+
+  it('stops a thread waiting on me once I react to their last message', () => {
+    const data = pages([[conversation('c0'), conversation('c1')]])
+    const next = applyReaction(data, reaction) as InfiniteData<ConversationPageDto>
+    expect(next.pages[0]?.items[1]?.unreplied).toBe(false)
+    expect(next.pages[0]?.items[0]?.unreplied).toBe(true)
+  })
+
+  it('puts it back when the reaction comes off', () => {
+    const answered = { ...conversation('c1'), unreplied: false }
+    const next = applyReaction(answered, { ...reaction, reactedByMe: false }) as ConversationDto
+    expect(next.unreplied).toBe(true)
+  })
+
+  it('leaves a row alone for an older message, my own message, or no change', () => {
+    const data = pages([[conversation('c1')]])
+    expect(applyReaction(data, { ...reaction, createdAt: '2026-07-31T00:00:00.000Z' })).toBe(data)
+    expect(applyReaction(data, { ...reaction, senderId: ME })).toBe(data)
+    expect(applyReaction(data, { ...reaction, reactedByMe: false })).toBe(data)
+    expect(applyReaction(undefined, reaction)).toBeUndefined()
   })
 })

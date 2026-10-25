@@ -45,6 +45,13 @@ describe('toConversationView', () => {
     expect(toConversationView(withCall('missed'), 'a').unreplied).toBe(false)
   })
 
+  it('counts an emoji back on their message as an answer', () => {
+    const thread = conversation('😘😘')
+    expect(toConversationView(thread, 'b').unreplied).toBe(true)
+    thread.lastMessage.reacted = true
+    expect(toConversationView(thread, 'b').unreplied).toBe(false)
+  })
+
   it('carries what the call was, so each reader can word it for themselves', () => {
     const thread = conversation('📹 Video call')
     thread.lastMessage.call = { media: 'video', outcome: 'completed', durationSeconds: 192 }
