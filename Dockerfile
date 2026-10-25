@@ -42,7 +42,10 @@ RUN pnpm --filter @langx/api run build
 # symlink layout keeps a .pnpm store that carries the *whole* workspace —
 # Expo, React Native and the Hermes compiler included, none of which the API
 # has any use for, and which cost about 700MB of image.
-RUN pnpm --filter @langx/api deploy --prod --legacy --config.node-linker=hoisted /out
+# allow-unused-patches because the root's patchedDependencies are the mobile
+# app's: the API never installs the patched package, and pnpm treats a patch
+# that applied to nothing as an error.
+RUN pnpm --filter @langx/api deploy --prod --legacy --config.node-linker=hoisted --config.allow-unused-patches=true /out
 
 FROM node:24-slim AS runtime
 ENV NODE_ENV=production
