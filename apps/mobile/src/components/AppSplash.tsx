@@ -41,10 +41,14 @@ import { makeStyles } from '../lib/theme'
  * the night cut); change them together or not at all.
  *
  * Dark is the app's dark `bg`: a full yellow screen at night was a glare.
+ *
+ * `paper` is what the film ends on: the card from the end of Venus's videos,
+ * on the app's own `bg`. In light the yellow closes into the badge and white
+ * opens round it, so the two differ; see `IntroFilm` for where that shows.
  */
 const LAUNCH = {
-  light: { ground: '#ffc409', film: introFilm, badge },
-  dark: { ground: '#1c1f24', film: introFilmDark, badge: badgeDark },
+  light: { ground: '#ffc409', paper: '#ffffff', film: introFilm, badge },
+  dark: { ground: '#1c1f24', paper: '#1c1f24', film: introFilmDark, badge: badgeDark },
 } as const
 
 /**
@@ -74,11 +78,13 @@ const WEB_GROUND = {
 } as unknown as ViewStyle
 
 /**
- * Only for reduced motion, where there is no film: the mark on its ground,
- * which is exactly the cut's `ground`, so only the mark shows. `badge-dark.png`
- * is the dark film's last frame, cropped.
+ * Only for reduced motion, where there is no film: the film's last frame
+ * without its halo — Venus peeking over the badge — drawn on the cut's
+ * `ground` rather than the card's, so the square's edges vanish into it
+ * (`snap.mjs --still`). Larger than the bare mark it replaced, because the
+ * badge is now two-thirds of the square and Venus is the rest.
  */
-const MARK_SIZE = 160
+const MARK_SIZE = 240
 /** `intro.mp4` is 1080 by 1920. */
 const FILM_ASPECT = 1080 / 1920
 
@@ -94,14 +100,16 @@ const FILM_ASPECT = 1080 / 1920
  * because it sits above the navigator rather than inside a screen.
  *
  * The sequence: the plain yellow the OS drew, and on it, as soon as the native
- * splash is gone, a film of the hellos streaming in and bending into the mark
- * (`intro.mp4`, whose first frame is the same yellow). When the film is over
- * and the app is ready, the whole layer fades off the app. There used to be a
- * badge on white first and a yellow disc growing out of it; the owner saw that
- * as two openings, one after the other, and asked for only this one.
+ * splash is gone, a film of the closing card of Venus's streak videos building
+ * itself (`intro.mp4`, whose first frame is the same yellow): the yellow closes
+ * into the badge, the wordmark rises, and Venus drops in from the top and
+ * slow-blinks. When the film is over and the app is ready, the whole layer
+ * fades off the app. There used to be a badge on white first and a yellow
+ * disc growing out of it; the owner saw that as two openings, one after the
+ * other, and asked for only this one.
  *
- * With reduced motion there is no film: the mark sits still on the yellow and
- * dissolves.
+ * With reduced motion there is no film: the last frame sits still on the
+ * yellow and dissolves.
  *
  * The film is played to its end on the device's first launch only; every
  * launch after that leaves as soon as the app is ready, and a tap leaves early
@@ -313,6 +321,7 @@ export function AppSplash() {
         <IntroFilm
           source={cut.film}
           ground={cut.ground}
+          paper={cut.paper}
           covered={nativeGone}
           onFirstFrame={showFilm}
           onDone={finishIntro}
@@ -353,19 +362,28 @@ export function AppSplash() {
  * `textureView` on Android because a `SurfaceView` draws into a surface of its
  * own behind the window, which a parent's opacity does not reliably reach: the
  * film could cut out at the end of the exit instead of dissolving with
- * everything else. No ExoPlayer shutter, or the frame before the first one is
+ * everything else.
+ *
+ * Where the frame is narrower than the screen (`contain`) the bars beside it
+ * are this view's own colour, and the light film does not end on the colour
+ * it starts on: its yellow closes into the badge and leaves white. So the bars
+ * turn from `ground` to `paper` as it plays, over the same `PAPER_MS` the
+ * yellow takes to close; they would otherwise stand yellow either side of a
+ * white card. Under a `cover` film the paper is never seen. No ExoPlayer shutter, or the frame before the first one is
  * black. `playsInline` is for Safari on an iPhone, which otherwise takes a
  * playing video fullscreen.
  */
 function IntroFilm({
   source,
   ground,
+  paper,
   covered,
   onFirstFrame,
   onDone,
 }: {
   source: number
   ground: string
+  paper: string
   covered: boolean
   onFirstFrame: () => void
   onDone: () => void
@@ -385,6 +403,7 @@ function IntroFilm({
   const { status } = useEvent(player, 'statusChange', { status: player.status })
   const [playing, setPlaying] = useState(false)
   const started = useRef(false)
+  const paperIn = useRef(new Animated.Value(0)).current
 
   useEventListener(player, 'playToEnd', onDone)
   useEventListener(player, 'statusChange', ({ status: next }) => {
@@ -413,6 +432,16 @@ function IntroFilm({
     return () => clearTimeout(timer)
   }, [playing, onDone])
 
+  useEffect(() => {
+    if (!playing || paper === ground) return
+    Animated.timing(paperIn, {
+      toValue: 1,
+      duration: SPLASH_TIMING.PAPER_MS,
+      easing: Easing.inOut(Easing.sin),
+      useNativeDriver: true,
+    }).start()
+  }, [playing, paper, ground, paperIn])
+
   return (
     <View
       pointerEvents="none"
@@ -420,16 +449,29 @@ function IntroFilm({
       importantForAccessibility="no-hide-descendants"
       style={[StyleSheet.absoluteFill, { backgroundColor: ground }]}
     >
-      <VideoView
-        player={player}
-        style={styles.film}
-        contentFit={fit}
-        nativeControls={false}
-        surfaceType="textureView"
-        useExoShutter={false}
-        playsInline
-        onFirstFrameRender={onFirstFrame}
-      />
+      {paper !== ground && (
+        <Animated.View
+          style={[StyleSheet.absoluteFill, { backgroundColor: paper, opacity: paperIn }]}
+        />
+      )}
+      {/*
+       * In a layer of its own, after the paper. On the web the paper is an
+       * absolutely positioned box and the `<video>` is not, and CSS paints
+       * positioned boxes over unpositioned ones whatever their order: the
+       * paper faded in over the film and the card vanished under white.
+       */}
+      <View style={StyleSheet.absoluteFill}>
+        <VideoView
+          player={player}
+          style={styles.film}
+          contentFit={fit}
+          nativeControls={false}
+          surfaceType="textureView"
+          useExoShutter={false}
+          playsInline
+          onFirstFrameRender={onFirstFrame}
+        />
+      </View>
     </View>
   )
 }

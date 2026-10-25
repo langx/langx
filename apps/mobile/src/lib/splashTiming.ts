@@ -32,11 +32,22 @@ export const SPLASH_TIMING = {
    */
   TIMEOUT_MS: 5000,
   /**
-   * The film's own length: `assets/splash/intro.mp4`, 108 frames at 60 fps.
+   * The film's own length: `assets/splash/intro.mp4`, 144 frames at 60 fps.
    * A test reads the file and holds this to it, because the stall guard below
    * is measured from it.
+   *
+   * Longer than the 1.8 s hellos film it replaced: Venus dropping in and
+   * slow-blinking needs the extra 0.6 s, and only the device's first launch
+   * waits the film out (`launchFilm.ts`); every later one leaves as soon as
+   * the app is ready, wherever the film has got to.
    */
-  INTRO_MS: 1800,
+  INTRO_MS: 2400,
+  /**
+   * How long the light film's yellow takes to close into the badge, leaving
+   * the white card round it (`T.close` in `tools/showreel/src/splash/splash.js`).
+   * The bars beside a `contain` film turn white over the same time.
+   */
+  PAPER_MS: 460,
   /**
    * How long the yellow waits, once the native splash has gone, for the film
    * to start playing before giving up on it and leaving from the yellow

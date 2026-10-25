@@ -6,7 +6,7 @@ ends on the logo lockup, which is also the frame it rests on. The same page
 renders frame by frame to an MP4.
 
 This is the long version, for the website, a store listing, a talk or a reel.
-The app's launch animation is cut from its finale by the same runtime; see
+The app's launch animation is rendered by the same runtime; see
 [The launch animation](#the-launch-animation).
 
 ## Looking at it
@@ -56,24 +56,34 @@ Everything they write goes to `out/`, which git ignores.
 
 ## The launch animation
 
-`src/splash.html` plays one scene, `src/splash/splash.js`: two rails of hellos
-stream in along the Cut, bend into the arcs, turn 540° and lock into the mark
-on the yellow — 08's finale with no hairline, wordmark or tagline. It sets
-`window.REEL_PLAN` before `core.js` loads, has no score, and is laid out for the
-9:16 frame. The app plays the result as `apps/mobile/assets/splash/intro.mp4`,
-from `AppSplash.tsx`.
+`src/splash.html` plays one scene, `src/splash/splash.js`: the closing card of
+Venus's streak videos, building itself out of the launch ground. In light the
+yellow the OS drew closes down into the badge and white opens round it; in dark
+the badge pops out of the dark ground. The halo breathes out of the badge, the
+wordmark rises, and Venus drops in from the top, lands behind the badge,
+flicks an ear and slow-blinks. The layout and eases are the end card's
+(the Venus generator's `endcard.mjs`, style `splash`); there is no slogan and
+no URL, so nothing in it needs translating. It sets `window.REEL_PLAN` before
+`core.js` loads, has no score, and is laid out for the 9:16 frame. The app
+plays the result as `apps/mobile/assets/splash/intro.mp4`, from `AppSplash.tsx`.
+
+Venus is drawn by `src/splash/venus-rig.js`, a copy of the polished 2D rig the
+videos use (the drawing is unchanged; its header says what is). 2D vector only.
 
 `--theme dark` is the night cut, `intro-dark.mp4`, which a device in dark mode
-plays: the app's dark ground `#1c1f24`, the black arc and its rail in yellow,
-a black hard shadow. `assets/splash/badge-dark.png` (the reduced-motion still)
-is its last frame, cropped.
+plays: the app's dark ground `#1c1f24` throughout and the wordmark in `#f2f3f5`.
+`--still` writes the reduced-motion mark, `assets/splash/badge.png` and
+`badge-dark.png`: the last frame without the halo, on the launch ground, cropped
+square round the badge.
 
 ```bash
 node tools/showreel/snap.mjs --page splash --format vertical --n 24
-node tools/showreel/render.mjs --page splash --format vertical --fps 60 \
+node tools/showreel/render.mjs --page splash --format vertical --fps 60 --crf 20 \
   --out apps/mobile/assets/splash/intro.mp4
-node tools/showreel/render.mjs --page splash --format vertical --fps 60 --theme dark \
+node tools/showreel/render.mjs --page splash --format vertical --fps 60 --crf 20 --theme dark \
   --out apps/mobile/assets/splash/intro-dark.mp4
+node tools/showreel/snap.mjs --page splash --still apps/mobile/assets/splash/badge.png
+node tools/showreel/snap.mjs --page splash --theme dark --still apps/mobile/assets/splash/badge-dark.png
 ```
 
 What the app relies on, and what `render.mjs --page splash` produces:
@@ -84,12 +94,13 @@ What the app relies on, and what `render.mjs --page splash` produces:
   transfer. Check a re-render with `ffprobe`; the reason for the transfer tag
   is in `render.mjs`.
 - **The length.** `SPLASH_TIMING.INTRO_MS` in `apps/mobile/src/lib/splashTiming.ts`
-  must equal the film's; a test reads the file and fails if it does not.
+  must equal the film's; a test reads the file and fails if it does not. The
+  light film's yellow closes over `SPLASH_TIMING.PAPER_MS`; change both together.
 - **No audio track**, `+faststart`, and a few hundred KB: it ships in every
-  over-the-air update.
+  over-the-air update. CRF 20 keeps the 2.4 s film under the old 1.8 s one's size.
 
-The scene copies 08's geometry instead of sharing it, so the reel can change
-without moving the app's opening.
+The scene copies the end card's numbers instead of sharing them with the
+generator, so the videos can change without moving the app's opening.
 
 ## How it is built
 
