@@ -106,7 +106,10 @@ export function VenusStoryHost({ enabled }: { enabled: boolean }) {
 /**
  * The player: full screen, like a story. A progress bar along the top, the
  * close ✕ at the top's end, Share at the bottom — the one button on the
- * screen, because sending it on is what the video is for.
+ * screen, because sending it on is what the video is for. It appears only
+ * once the video has played to its end, and stays for a replay: a button
+ * over the picture from the first frame pulls the eye off Venus before her
+ * line lands, and asked at the end it is the natural next step.
  *
  * A tap anywhere else pauses and resumes. On the web the video starts muted,
  * because a browser refuses to start one with sound that the person did not
@@ -146,11 +149,14 @@ function VenusStoryPlayer({
   const { status } = useEvent(player, 'statusChange', { status: player.status })
   const [progress, setProgress] = useState(0)
   const [ended, setEnded] = useState(false)
+  // Unlike `ended`, never goes back to false, so a replay keeps Share on screen.
+  const [watched, setWatched] = useState(false)
   useEventListener(player, 'timeUpdate', ({ currentTime }) => {
     if (player.duration > 0) setProgress(Math.min(1, currentTime / player.duration))
   })
   useEventListener(player, 'playToEnd', () => {
     setEnded(true)
+    setWatched(true)
     setProgress(1)
   })
 
@@ -277,18 +283,20 @@ function VenusStoryPlayer({
           </View>
         </View>
 
-        <View
-          style={[styles.bottom, { paddingBottom: insets.bottom + 16 }]}
-          pointerEvents="box-none"
-        >
-          <Button
-            variant="primary"
-            icon="share"
-            label={t('venus.share')}
-            loading={sharing}
-            onPress={() => void onShare()}
-          />
-        </View>
+        {watched ? (
+          <View
+            style={[styles.bottom, { paddingBottom: insets.bottom + 16 }]}
+            pointerEvents="box-none"
+          >
+            <Button
+              variant="primary"
+              icon="share"
+              label={t('venus.share')}
+              loading={sharing}
+              onPress={() => void onShare()}
+            />
+          </View>
+        ) : null}
       </View>
     </Modal>
   )
