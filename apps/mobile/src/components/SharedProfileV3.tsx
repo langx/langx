@@ -7,6 +7,7 @@ import { partnerHueFor } from '../lib/theme/partnerHue'
 import { AuthBrandV3 } from './auth/AuthKitV3'
 import { useBlackFont } from './onboarding/WizardV3'
 import { OfficialMark } from './OfficialMark'
+import { ModBadge } from './ui/ModBadge'
 import { PhotoViewer } from './PhotoViewer'
 import { Avatar } from './ui/Avatar'
 import { Button } from './ui/Button'
@@ -143,6 +144,7 @@ export function SharedProfileV3({
                 {user.displayName}
               </Text>
               {user.official ? <OfficialMark size={22} /> : null}
+              {user.moderator ? <ModBadge fontSize={v3.type.display.fontSize} on="hue" /> : null}
             </View>
             <Text style={styles.handle} numberOfLines={1}>
               @{user.handle}

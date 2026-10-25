@@ -111,6 +111,9 @@ function Decision({ row }: { row: AdminModActionDto }) {
   const [amount, setAmount] = useState(String(BOUNTY_MIN))
   const tokens = Math.min(BOUNTY_MAX, Math.max(BOUNTY_MIN, Number.parseInt(amount, 10) || 0))
   const moderator = who(row.moderator.handle, row.moderator.userId)
+  // One hook serves three buttons; only the one pressed should spin.
+  const pending = (verb: 'approve' | 'revert' | 'reward') =>
+    review.isPending && review.variables?.verb === verb
 
   async function approve() {
     try {
@@ -183,7 +186,8 @@ function Decision({ row }: { row: AdminModActionDto }) {
               label={ADMIN.moderators.approve}
               variant="ink"
               onPress={approve}
-              loading={review.isPending}
+              loading={pending('approve')}
+              disabled={review.isPending}
             />
           ) : null}
           {row.review?.status === 'reverted' ? null : (
@@ -191,7 +195,8 @@ function Decision({ row }: { row: AdminModActionDto }) {
               label={ADMIN.moderators.revert}
               variant="danger"
               onPress={revert}
-              loading={review.isPending}
+              loading={pending('revert')}
+              disabled={review.isPending}
             />
           )}
           <Button
@@ -217,7 +222,8 @@ function Decision({ row }: { row: AdminModActionDto }) {
             label={ADMIN.moderators.reward(tokens)}
             variant="neutral"
             onPress={reward}
-            loading={review.isPending}
+            loading={pending('reward')}
+            disabled={review.isPending}
           />
         </>
       )}

@@ -4323,9 +4323,9 @@ export function useAdminReviewModAction() {
         `/admin/mod-actions/${input.id}/${input.verb}`,
         input.amount === undefined ? {} : { amount: input.amount },
       ),
-    onSuccess: () => {
-      void client.invalidateQueries({ queryKey: ['admin'] })
-    },
+    // Returned, so the press resolves after the tabs have refetched: the row
+    // moves when the toast says it did, rather than a beat later.
+    onSuccess: () => client.invalidateQueries({ queryKey: ['admin'] }),
   })
 }
 
@@ -4392,9 +4392,9 @@ export function useModDecision() {
         ...(input.days === undefined ? {} : { days: input.days }),
         ...(input.note === undefined ? {} : { note: input.note }),
       }),
-    onSuccess: () => {
-      void client.invalidateQueries({ queryKey: ['mod'] })
-    },
+    // Returned, so the screen goes back to a queue that has already dropped
+    // the report, not to the cached one with it still at the top.
+    onSuccess: () => client.invalidateQueries({ queryKey: ['mod'] }),
   })
 }
 
@@ -4406,9 +4406,8 @@ export function useModWarn() {
       api.post<{ warned: boolean; emailed: boolean }>(`/mod/reports/${input.id}/warn`, {
         reason: input.reason,
       }),
-    onSuccess: () => {
-      void client.invalidateQueries({ queryKey: ['mod'] })
-    },
+    // As `useModDecision`: the queue has refetched before the screen leaves.
+    onSuccess: () => client.invalidateQueries({ queryKey: ['mod'] }),
   })
 }
 
