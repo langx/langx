@@ -1,8 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
 import { MAX_VIDEO_SECONDS } from '@langx/shared'
-import { useEffect, useMemo, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { Text, View } from 'react-native'
-import { Gesture, GestureDetector, type PanGesture } from 'react-native-gesture-handler'
 import Animated, {
   cancelAnimation,
   Easing,
@@ -98,7 +97,7 @@ export function SnapViewfinderV3({
   onFlip,
   onPressIn,
   onPressOut,
-  shutterGesture,
+  onSlide,
   filterStrip,
 }: {
   /** The route's `CameraView`, filling the frame. */
@@ -115,8 +114,8 @@ export function SnapViewfinderV3({
   /** Tap for a photo, hold for a video; for a screen reader, whose tap is an action. */
   onPressIn: () => void
   onPressOut: () => void
-  /** The finger on the shutter: the press, and the slide up that zooms (`useCameraZoom`). */
-  shutterGesture: PanGesture
+  /** The finger holding the shutter moved: the slide up that zooms (`useCameraZoom.slide`). */
+  onSlide: (translationY: number, startY: number) => void
   /**
    * The filters' names, above the shutter. Faded out while recording: a
    * filter is baked into photos only, so a clip would not keep it.
@@ -198,7 +197,7 @@ export function SnapViewfinderV3({
             elapsed={elapsed}
             onPressIn={onPressIn}
             onPressOut={onPressOut}
-            gesture={shutterGesture}
+            onSlide={onSlide}
           />
           <FadesWhileRecording recording={recording}>
             <IconButton
@@ -258,39 +257,40 @@ function FadesWhileRecording({
  *
  * Not a `PressableScale`: the finger that holds it may slide up the screen to
  * zoom, and a `Pressable` ends its press once the finger leaves it, which
- * would stop the clip. `gesture` owns the touch instead, and the face shrinks
- * as `PressableScale`'s does, from a second pan that only watches.
+ * would stop the clip. Nor a gesture-handler pan, which did the same on an
+ * iPhone: the clip stopped as the finger rose, while Android kept recording.
+ * The shutter takes the touch as React Native's responder instead and
+ * refuses to hand it over, so the press ends only when the finger lifts.
+ * The face shrinks as `PressableScale`'s does.
  */
 function Shutter({
   recording,
   elapsed,
   onPressIn,
   onPressOut,
-  gesture,
+  onSlide,
 }: {
   recording: boolean
   /** Whole seconds since recording began. */
   elapsed: number
   onPressIn: () => void
   onPressOut: () => void
-  gesture: PanGesture
+  onSlide: (translationY: number, startY: number) => void
 }) {
   const t = useT()
   const styles = useStyles()
   const reduce = useReduceMotion()
   // 1 while the finger is down: the face shrinks, or with reduce motion dims.
   const pressed = useSharedValue(0)
-  const touch = useMemo(() => {
-    const feedback = Gesture.Pan()
-      .minDistance(0)
-      .onBegin(() => {
-        pressed.set(withTiming(1, { duration: DURATION.press }))
-      })
-      .onFinalize(() => {
-        pressed.set(withTiming(0, { duration: DURATION.release }))
-      })
-    return Gesture.Simultaneous(gesture, feedback)
-  }, [gesture, pressed])
+  /** Where the finger came down, in the window's coordinates; null when no finger is down. */
+  const startY = useRef<number | null>(null)
+
+  function release(): void {
+    if (startY.current === null) return
+    startY.current = null
+    pressed.set(withTiming(0, { duration: DURATION.release }))
+    onPressOut()
+  }
   // Both properties always, so the face never gains a transform mid-press:
   // see `PressableScale` on what that does to Android's Fabric.
   const face = useAnimatedStyle(() => ({
@@ -339,48 +339,61 @@ function Shutter({
   }))
 
   return (
-    <GestureDetector gesture={touch}>
-      <Animated.View
-        collapsable={false}
-        accessible
-        accessibilityRole="button"
-        accessibilityLabel={t('viewOnce.shutter')}
-        accessibilityHint={t('viewOnce.hint')}
-        // A screen reader's double-tap is an action, not a touch: a press and
-        // a release at once, which the route's timing reads as a photo. A
-        // double-tap and hold still reaches `gesture` as a real touch.
-        accessibilityActions={[{ name: 'activate' }]}
-        onAccessibilityAction={() => {
-          onPressIn()
-          onPressOut()
-        }}
-        style={[styles.shutterTouch, styles.shutter, face]}
-      >
-        <Animated.View style={[styles.shutterRing, ring]}>
-          <Animated.View style={[styles.shutterCore, core]} />
-          {recording ? (
-            <Svg
-              width={SHUTTER_RECORDING}
-              height={SHUTTER_RECORDING}
-              style={styles.shutterArc}
-              pointerEvents="none"
-            >
-              <AnimatedCircle
-                cx={SHUTTER_RECORDING / 2}
-                cy={SHUTTER_RECORDING / 2}
-                r={ARC_RADIUS}
-                stroke={RECORDING}
-                strokeWidth={RING_WIDTH}
-                strokeLinecap="round"
-                fill="none"
-                strokeDasharray={ARC_LENGTH}
-                animatedProps={arc}
-              />
-            </Svg>
-          ) : null}
-        </Animated.View>
+    <Animated.View
+      collapsable={false}
+      onStartShouldSetResponder={() => true}
+      onResponderGrant={(event) => {
+        startY.current = event.nativeEvent.pageY
+        pressed.set(withTiming(1, { duration: DURATION.press }))
+        onPressIn()
+      }}
+      onResponderMove={(event) => {
+        if (startY.current === null) return
+        onSlide(event.nativeEvent.pageY - startY.current, startY.current)
+      }}
+      onResponderRelease={release}
+      // Kept to the end: nothing on this screen may take the finger over.
+      onResponderTerminationRequest={() => false}
+      // Should the system take it anyway (a call coming in), the clip ends there.
+      onResponderTerminate={release}
+      accessible
+      accessibilityRole="button"
+      accessibilityLabel={t('viewOnce.shutter')}
+      accessibilityHint={t('viewOnce.hint')}
+      // A screen reader's double-tap is an action, not a touch: a press and
+      // a release at once, which the route's timing reads as a photo. A
+      // double-tap and hold still arrives as a real touch.
+      accessibilityActions={[{ name: 'activate' }]}
+      onAccessibilityAction={() => {
+        onPressIn()
+        onPressOut()
+      }}
+      style={[styles.shutterTouch, styles.shutter, face]}
+    >
+      <Animated.View style={[styles.shutterRing, ring]}>
+        <Animated.View style={[styles.shutterCore, core]} />
+        {recording ? (
+          <Svg
+            width={SHUTTER_RECORDING}
+            height={SHUTTER_RECORDING}
+            style={styles.shutterArc}
+            pointerEvents="none"
+          >
+            <AnimatedCircle
+              cx={SHUTTER_RECORDING / 2}
+              cy={SHUTTER_RECORDING / 2}
+              r={ARC_RADIUS}
+              stroke={RECORDING}
+              strokeWidth={RING_WIDTH}
+              strokeLinecap="round"
+              fill="none"
+              strokeDasharray={ARC_LENGTH}
+              animatedProps={arc}
+            />
+          </Svg>
+        ) : null}
       </Animated.View>
-    </GestureDetector>
+    </Animated.View>
   )
 }
 
