@@ -165,11 +165,16 @@ export const COSMETICS: readonly Cosmetic[] = [
    * every account owns it from the start (`ownedCosmetics`). First in the
    * list so the sticker keyboard opens on something everybody can send.
    *
-   * Thirty die-cut renders of the polished vector rig — no photos of the real
-   * cat — and the same art as the public Telegram set. Four carry an English
-   * word (thanks, good morning, good night, let's practise) and eight say
-   * hello, one in each of the app's languages: an international app's free
-   * pack should not lean on any one of them.
+   * Sixty die-cut renders of the polished vector rig — no photos of the real
+   * cat — and the same art as the public Telegram set. Thirty-eight have no
+   * words, so they read in any chat. Of the rest, eight say hello and eight
+   * say thanks, one of each in every language the app speaks, and six more
+   * carry an English word (good morning, good night, let's practise, well
+   * done, miss you, oops): an international app's free pack should not lean
+   * on any one language, and English is the one most partners share.
+   *
+   * Ordered as the keyboard shows them: the wordless ones first, then the
+   * English words, then hello and thanks language by language.
    */
   {
     id: 'stickers.venus',
@@ -195,10 +200,33 @@ export const COSMETICS: readonly Cosmetic[] = [
       'boop',
       'sleepy',
       'diva',
+      'hamsi',
+      'treat',
+      'emptybowl',
+      'chicken',
+      'knockoff',
+      'boxhide',
+      'bellyup',
+      'zoomies',
+      'meantit',
+      'yuck',
+      'notes',
+      'knead',
+      'startle',
+      'hunt',
+      'gift',
+      'groom',
+      'offended',
+      'wasntme',
+      'shy',
+      'listening',
       'thanks',
       'morning',
       'goodnight',
       'practise',
+      'welldone',
+      'missyou',
+      'oops',
       'hello',
       'hola',
       'ola',
@@ -207,6 +235,13 @@ export const COSMETICS: readonly Cosmetic[] = [
       'merhaba',
       'privet',
       'marhaban',
+      'gracias',
+      'obrigada',
+      'merci',
+      'danke',
+      'tesekkurler',
+      'spasibo',
+      'shukran',
     ],
   },
   /**

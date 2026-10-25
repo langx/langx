@@ -161,6 +161,36 @@ import venusHallo from '../../assets/stickers/venus/hallo.webp'
 import venusMerhaba from '../../assets/stickers/venus/merhaba.webp'
 import venusPrivet from '../../assets/stickers/venus/privet.webp'
 import venusMarhaban from '../../assets/stickers/venus/marhaban.webp'
+import venusHamsi from '../../assets/stickers/venus/hamsi.webp'
+import venusTreat from '../../assets/stickers/venus/treat.webp'
+import venusEmptybowl from '../../assets/stickers/venus/emptybowl.webp'
+import venusChicken from '../../assets/stickers/venus/chicken.webp'
+import venusKnockoff from '../../assets/stickers/venus/knockoff.webp'
+import venusBoxhide from '../../assets/stickers/venus/boxhide.webp'
+import venusBellyup from '../../assets/stickers/venus/bellyup.webp'
+import venusZoomies from '../../assets/stickers/venus/zoomies.webp'
+import venusMeantit from '../../assets/stickers/venus/meantit.webp'
+import venusYuck from '../../assets/stickers/venus/yuck.webp'
+import venusNotes from '../../assets/stickers/venus/notes.webp'
+import venusKnead from '../../assets/stickers/venus/knead.webp'
+import venusStartle from '../../assets/stickers/venus/startle.webp'
+import venusHunt from '../../assets/stickers/venus/hunt.webp'
+import venusGift from '../../assets/stickers/venus/gift.webp'
+import venusGroom from '../../assets/stickers/venus/groom.webp'
+import venusOffended from '../../assets/stickers/venus/offended.webp'
+import venusWasntme from '../../assets/stickers/venus/wasntme.webp'
+import venusShy from '../../assets/stickers/venus/shy.webp'
+import venusListening from '../../assets/stickers/venus/listening.webp'
+import venusWelldone from '../../assets/stickers/venus/welldone.webp'
+import venusMissyou from '../../assets/stickers/venus/missyou.webp'
+import venusOops from '../../assets/stickers/venus/oops.webp'
+import venusGracias from '../../assets/stickers/venus/gracias.webp'
+import venusObrigada from '../../assets/stickers/venus/obrigada.webp'
+import venusMerci from '../../assets/stickers/venus/merci.webp'
+import venusDanke from '../../assets/stickers/venus/danke.webp'
+import venusTesekkurler from '../../assets/stickers/venus/tesekkurler.webp'
+import venusSpasibo from '../../assets/stickers/venus/spasibo.webp'
+import venusShukran from '../../assets/stickers/venus/shukran.webp'
 
 export const STICKER_ASSETS: Record<string, Record<string, number>> = {
   // WebP rather than SVG: see the raster rule in `stickerAssets.test.ts`.
@@ -195,6 +225,36 @@ export const STICKER_ASSETS: Record<string, Record<string, number>> = {
     merhaba: venusMerhaba,
     privet: venusPrivet,
     marhaban: venusMarhaban,
+    hamsi: venusHamsi,
+    treat: venusTreat,
+    emptybowl: venusEmptybowl,
+    chicken: venusChicken,
+    knockoff: venusKnockoff,
+    boxhide: venusBoxhide,
+    bellyup: venusBellyup,
+    zoomies: venusZoomies,
+    meantit: venusMeantit,
+    yuck: venusYuck,
+    notes: venusNotes,
+    knead: venusKnead,
+    startle: venusStartle,
+    hunt: venusHunt,
+    gift: venusGift,
+    groom: venusGroom,
+    offended: venusOffended,
+    wasntme: venusWasntme,
+    shy: venusShy,
+    listening: venusListening,
+    welldone: venusWelldone,
+    missyou: venusMissyou,
+    oops: venusOops,
+    gracias: venusGracias,
+    obrigada: venusObrigada,
+    merci: venusMerci,
+    danke: venusDanke,
+    tesekkurler: venusTesekkurler,
+    spasibo: venusSpasibo,
+    shukran: venusShukran,
   },
   'stickers.paper': {
     // Renamed on import only, as `thinking` is below: `starter` has a `book`.
@@ -349,10 +409,13 @@ export const STICKER_ASSETS: Record<string, Record<string, number>> = {
  * Venus shipped with a Turkish copy of six words; the pack is international
  * now, but messages already sent still name the old ids, and an id with no
  * picture draws as the word "Sticker" in somebody's chat history.
+ *
+ * `tesekkurler` is not here: it came back as a live id when every language
+ * got its own thanks, so a message that sent the old one draws the new
+ * Turkish thanks — the same word, redrawn.
  */
 const RETIRED_STICKERS: Record<string, Record<string, string>> = {
   'stickers.venus': {
-    tesekkurler: 'thanks',
     tamam: 'ok',
     okay: 'ok',
     gunaydin: 'morning',

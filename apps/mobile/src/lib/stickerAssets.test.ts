@@ -24,11 +24,19 @@ describe('sticker assets', () => {
   })
 
   /**
-   * Venus's six Turkish word stickers left the pack; messages that sent them
-   * still have to draw something.
+   * Every id Venus ever shipped must keep drawing: messages keep their ids.
+   * Five Turkish word stickers left the pack; `tesekkurler` left and came
+   * back as the Turkish thanks.
    */
-  it('still draws the Venus stickers that left the pack', () => {
-    for (const id of ['tesekkurler', 'tamam', 'okay', 'gunaydin', 'iyigeceler', 'pratik']) {
+  it('still draws every Venus sticker that ever shipped', () => {
+    const shipped = [
+      ...['tesekkurler', 'tamam', 'okay', 'gunaydin', 'iyigeceler', 'pratik'],
+      ...['hi', 'love', 'lol', 'ok', 'no', 'sorry', 'crying', 'shocked', 'thinking'],
+      ...['celebrate', 'proud', 'blink', 'squint', 'blep', 'typing', 'boop', 'sleepy'],
+      ...['diva', 'thanks', 'morning', 'goodnight', 'practise', 'hello', 'hola', 'ola'],
+      ...['bonjour', 'hallo', 'merhaba', 'privet', 'marhaban'],
+    ]
+    for (const id of shipped) {
       expect(stickerAsset('stickers.venus', id), id).toBeDefined()
     }
     expect(stickerAsset('stickers.venus', 'nothing')).toBeUndefined()
