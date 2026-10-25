@@ -60,6 +60,8 @@ interface WaitingBlockProps {
   thread: ConversationDto
   /** Always there: `waitingThreads` keeps only threads whose partner is known. */
   partner: NonNullable<ConversationDto['partner']>
+  /** The first block: bigger, with their words quoted whole and the yellow Reply. */
+  lead: boolean
   /** Its thread is the one in the panel, on a wide window. */
   selected: boolean
   /** The screen's clock, in ms, that the time is read against. */
@@ -79,6 +81,7 @@ interface WaitingBlockProps {
 export const WaitingBlock = memo(function WaitingBlock({
   thread,
   partner,
+  lead,
   selected,
   now,
   handlers,
@@ -102,6 +105,7 @@ export const WaitingBlock = memo(function WaitingBlock({
       onLongPress={() => handlers.menu(thread, name)}
       style={[
         styles.block,
+        lead ? styles.blockLead : styles.blockCompact,
         { backgroundColor: v3.hues[partnerHueFor(partner._id)] },
         selected && styles.blockSelected,
       ]}
@@ -112,7 +116,7 @@ export const WaitingBlock = memo(function WaitingBlock({
           name={name}
           seed={partner._id}
           defaultAvatarRev={partner.defaultAvatarRev}
-          slot={BLOCK_AVATAR}
+          slot={lead ? LEAD_AVATAR : BLOCK_AVATAR}
           frame={partner.frame}
         />
         <View style={styles.blockNames}>
@@ -135,31 +139,45 @@ export const WaitingBlock = memo(function WaitingBlock({
         />
       </View>
 
-      {/*
-        Every block the compact one: a big lead block with the screen's
-        yellow pushed the rest of the list below the fold for one thread.
-        Ink, not yellow, so it does not shout over the list it sits on.
-      */}
-      <View style={styles.blockFoot}>
-        <View style={styles.grow}>
+      {lead ? (
+        <>
           {callLabel && call ? (
             <CallLine call={call} label={t(callLabel.title)} />
           ) : quote ? (
-            <Text style={styles.quoteCompact} numberOfLines={2}>
-              {quote}
+            <Text style={styles.quoteLead} numberOfLines={3}>
+              “{quote}”
             </Text>
           ) : null}
+          <Button
+            label={t('home.replyTo', { name })}
+            icon="corner-up-left"
+            haptic="press"
+            onPress={reply}
+          />
+        </>
+      ) : (
+        <View style={styles.blockFoot}>
+          <View style={styles.grow}>
+            {callLabel && call ? (
+              <CallLine call={call} label={t(callLabel.title)} />
+            ) : quote ? (
+              <Text style={styles.quoteCompact} numberOfLines={2}>
+                {quote}
+              </Text>
+            ) : null}
+          </View>
+          {/* Ink, not yellow: the yellow is the lead block's, once a screen. */}
+          <Button
+            variant="ink"
+            size="small"
+            label={t('messageActions.reply')}
+            accessibilityLabel={t('home.replyTo', { name })}
+            icon="corner-up-left"
+            onPress={reply}
+            style={styles.replySmall}
+          />
         </View>
-        <Button
-          variant="ink"
-          size="small"
-          label={t('messageActions.reply')}
-          accessibilityLabel={t('home.replyTo', { name })}
-          icon="corner-up-left"
-          onPress={reply}
-          style={styles.replySmall}
-        />
-      </View>
+      )}
     </Pressable>
   )
 })
@@ -432,7 +450,8 @@ export function ChatRowSkeletonV3() {
  * 40 px cut, the master sheet's cut for list faces.
  */
 const FRAMED_FACE = 40
-/** The drawing's faces: 48 on a row, 44 on a block. */
+/** The drawing's faces: 48 on the lead block and on a row, 44 on a smaller block. */
+const LEAD_AVATAR = 48
 const BLOCK_AVATAR = 44
 const ROW_AVATAR = 48
 /** The ink ring round the block whose thread is in the panel. */
@@ -457,7 +476,16 @@ const useStyles = makeStyles(({ v3 }) => ({
   block: {
     borderColor: 'transparent',
     borderWidth: BLOCK_RING,
+    gap: v3.space[10],
     marginBottom: v3.space[10],
+  },
+  blockLead: {
+    borderRadius: v3.radius.block,
+    paddingBottom: v3.space[16] - BLOCK_RING,
+    paddingHorizontal: v3.space[16] - BLOCK_RING,
+    paddingTop: v3.space[14] - BLOCK_RING,
+  },
+  blockCompact: {
     borderRadius: v3.radius.badge,
     gap: v3.space[8],
     paddingBottom: v3.space[12] - BLOCK_RING,
@@ -480,6 +508,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingVertical: v3.space[6],
   },
   chipLabel: { ...v3.type.label, color: v3.colors.onBlue },
+  quoteLead: { ...v3.type.body, color: v3.colors.ink, fontWeight: '500' },
   quoteCompact: { ...v3.type.callout, color: v3.colors.ink, fontWeight: '500' },
   blockFoot: { alignItems: 'center', flexDirection: 'row', gap: v3.space[10] },
   replySmall: { flexShrink: 0, width: 'auto' },

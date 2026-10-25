@@ -33,7 +33,7 @@ function shape(items: ChatsListItem<ChatsThread>[]): string[] {
     item.kind === 'heading'
       ? `# ${item.heading}`
       : item.kind === 'waiting'
-        ? `block ${item.thread._id}`
+        ? `${item.lead ? 'LEAD' : 'block'} ${item.thread._id}`
         : `row ${item.thread._id}`,
   )
 }
@@ -50,7 +50,7 @@ describe('chatsListItems', () => {
     ])
   })
 
-  it('puts the people waiting first, newest first, then the rest', () => {
+  it('puts the people waiting first, the newest as the lead, then the rest', () => {
     const items = chatsListItems([
       page([
         thread('mine', 1),
@@ -61,7 +61,7 @@ describe('chatsListItems', () => {
     ])
     expect(shape(items)).toEqual([
       '# waiting',
-      'block anna',
+      'LEAD anna',
       'block elif',
       '# others',
       'row mine',
@@ -71,7 +71,7 @@ describe('chatsListItems', () => {
 
   it('has no second heading when everybody is waiting', () => {
     const items = chatsListItems([page([thread('a', 1, { unreplied: true })])])
-    expect(shape(items)).toEqual(['# waiting', 'block a'])
+    expect(shape(items)).toEqual(['# waiting', 'LEAD a'])
   })
 
   /** The rule that keeps the list still while a page loads under the thumb. */
@@ -80,7 +80,7 @@ describe('chatsListItems', () => {
       page([thread('a', 1, { unreplied: true }), thread('b', 2)]),
       page([thread('c', 30, { unreplied: true })]),
     ])
-    expect(shape(items)).toEqual(['# waiting', 'block a', '# others', 'row b', 'row c'])
+    expect(shape(items)).toEqual(['# waiting', 'LEAD a', '# others', 'row b', 'row c'])
   })
 
   it('takes a pinned thread that is waiting into the blocks, by recency', () => {
@@ -91,7 +91,7 @@ describe('chatsListItems', () => {
     ])
     expect(shape(items)).toEqual([
       '# waiting',
-      'block new',
+      'LEAD new',
       'block pin',
       '# others',
       'row pinq',
@@ -139,14 +139,14 @@ describe('chatsListItems', () => {
 describe('chatsListKey', () => {
   it('names the kind, so a block that becomes a row is a new cell', () => {
     const a = thread('a', 1)
-    expect(chatsListKey({ kind: 'waiting', thread: a })).toBe('waiting:a')
+    expect(chatsListKey({ kind: 'waiting', thread: a, lead: true })).toBe('waiting:a')
     expect(chatsListKey({ kind: 'row', thread: a })).toBe('row:a')
     expect(chatsListKey({ kind: 'heading', heading: 'others' })).toBe('heading:others')
   })
 })
 
 describe('coachThread', () => {
-  it('opens the first block when somebody is waiting', () => {
+  it('opens the lead block when somebody is waiting', () => {
     const items = chatsListItems([page([thread('a', 1), thread('w', 2, { unreplied: true })])])
     expect(coachThread(items)?._id).toBe('w')
   })
