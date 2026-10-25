@@ -9598,8 +9598,9 @@ operator's `flags.copilotEnabled`, a key, and the person's own consent.
   allow-listed accounts so it could not be a free-text door into the
   operators' queue. Nobody is shown an answer before agreeing to the sheet, so
   the consent is now that line.
-- **Nothing on the profiles is cleaned up.** The `copilotAccess` values already
-  written stay where they are and nothing reads them. The audit actions
+- **The old dates are gone.** The three profiles that carried `copilotAccess`
+  had it unset in production the same day, after the change merged; their
+  consent was left as it was. The audit actions
   `copilot.allow` and `copilot.revoke` stay in `ADMIN_ACTIONS` for the rows
   that carry them.
 - **The paywall keeps "Beta, rolling out".** Copilot is drawn only in the v3
