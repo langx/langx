@@ -16,6 +16,11 @@ import type { ColorMatrix } from '../../src/lib/cameraFilters'
  * `requireOptionalNativeModule`, as the other local modules: the web, and a
  * binary built before this module, get `null`, and `canFilterVideo` says so,
  * so the camera offers filters on photos only there.
+ *
+ * Until 3.1 every build is one of those: the native half (ios/, android/,
+ * expo-module.config.json) is parked on `keep/video-filter-native`, because a
+ * native module changes the runtime fingerprint and no OTA would reach 3.0
+ * while it was on main. Bring it back with the 3.1 native build.
  */
 interface VideoFilterNativeModule {
   apply: (uri: string, matrix: number[], bitrate: number) => Promise<string>
