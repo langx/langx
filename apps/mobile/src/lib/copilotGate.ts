@@ -4,8 +4,7 @@ import { COPILOT_RULES, learningTargetFor, type CopilotStatus } from '@langx/sha
  * What the app does when somebody reaches for Copilot.
  *
  * - `off` — say Copilot is off, and nothing else. The operator's switch is
- *   off, there is no key, the account is not on the operator's allow-list,
- *   or the API predates Copilot. Nothing breaks
+ *   off, there is no key, or the API predates Copilot. Nothing breaks
  *   and nothing is asked; the v3 thread draws no Copilot control at all.
  * - `consent` — show the consent sheet first. Nothing is sent before it.
  * - `ready` — ask.

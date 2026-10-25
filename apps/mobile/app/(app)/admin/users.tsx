@@ -12,7 +12,6 @@ import {
   useAdminDecision,
   useAdminUser,
   useAdminUserAction,
-  useSetAdminCopilotAccess,
   useAdminSetModerator,
   type AdminUserDto,
 } from '../../../src/api/queries'
@@ -103,7 +102,6 @@ function Found({ data }: { data: AdminUserDto }) {
   const wide = useAdminWide()
   const action = useAdminUserAction()
   const decide = useAdminDecision()
-  const copilot = useSetAdminCopilotAccess()
   const moderator = useAdminSetModerator()
   const [message, setMessage] = useState('')
   const [days, setDays] = useState('7')
@@ -221,15 +219,6 @@ function Found({ data }: { data: AdminUserDto }) {
       showToast(
         name === 'sign-out' ? ADMIN.users.signedOut(result.sessions ?? 0) : ADMIN.users.unfrozen,
       )
-    } catch {
-      showToast(ADMIN.common.failed)
-    }
-  }
-
-  async function setCopilot(allowed: boolean) {
-    try {
-      await copilot.mutateAsync({ userId: user.userId, allowed })
-      showToast(allowed ? ADMIN.users.copilot.allowed : ADMIN.users.copilot.revoked)
     } catch {
       showToast(ADMIN.common.failed)
     }
@@ -430,18 +419,6 @@ function Found({ data }: { data: AdminUserDto }) {
         variant="neutral"
         onPress={() => run('sign-out', ADMIN.users.confirmSignOut(who))}
       />
-
-      {/* ── Copilot, per account ── */}
-      <AdminHeadingV3 title={ADMIN.users.copilot.title} />
-      <AdminBlockV3 style={styles.toggleRow}>
-        <Text style={styles.toggleText}>{ADMIN.users.copilot.hint}</Text>
-        <Toggle
-          value={user.copilotAccess}
-          onValueChange={(next) => void setCopilot(next)}
-          busy={copilot.isPending}
-          accessibilityLabel={ADMIN.users.copilot.title}
-        />
-      </AdminBlockV3>
 
       {/* ── the moderator role; an operator already holds all of it ── */}
       {user.admin || user.official ? null : (

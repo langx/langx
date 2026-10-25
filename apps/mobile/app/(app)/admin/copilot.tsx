@@ -1,6 +1,5 @@
 import { COPILOT_RULES, type CopilotResponse } from '@langx/shared'
-import { router } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Text, View } from 'react-native'
 import {
   useAskCopilot,
@@ -9,14 +8,7 @@ import {
   type CopilotAsk,
 } from '../../../src/api/copilot'
 import { ApiRequestError } from '../../../src/api/client'
-import {
-  useAdminCopilotAccess,
-  useAdminUser,
-  useMe,
-  useSetAdminCopilotAccess,
-  useMessages,
-  type ConversationDto,
-} from '../../../src/api/queries'
+import { useMessages, type ConversationDto } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
 import {
   AdminBlockV3,
@@ -25,7 +17,6 @@ import {
   AdminFieldV3,
   AdminHeadingV3,
   AdminNoteV3,
-  AdminRowV3,
   AdminRowsV3,
   AdminScreenV3,
   AdminSplitV3,
@@ -36,10 +27,8 @@ import { CopilotLabel } from '../../../src/components/CopilotLabel'
 import { Button } from '../../../src/components/ui/Button'
 import { useAppConfig } from '../../../src/hooks/useAppConfig'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
-import { adminLookupKey, adminLookupState } from '../../../src/lib/adminLookup'
 import { ADMIN } from '../../../src/lib/adminStrings'
 import { makeStyles } from '../../../src/lib/theme'
-import { showToast } from '../../../src/lib/toast'
 
 const L = ADMIN.copilot
 
@@ -73,14 +62,13 @@ function ExplainNewest({
 }
 
 /**
- * The Copilot lab: the one way into Copilot in the app until its screens
- * exist, and only for an operator.
+ * The Copilot lab: an operator trying Copilot on their own account.
  *
  * It is here so the plumbing can be tried end to end — the consent sheet the
  * person will see, the allowance, the cache, the label — on a real build,
- * against the operator's own chats, before anybody else can reach it. It is
- * not where Copilot is switched on: that is a script, on purpose, and the
- * screen says so.
+ * against the operator's own chats. It is not where Copilot is switched on or
+ * off: that is `copilotEnabled` on the Flags page, for everybody at once, and
+ * the screen says so.
  */
 export default function AdminCopilotScreen() {
   useScreenInteractive()
@@ -89,44 +77,6 @@ export default function AdminCopilotScreen() {
   const status = useCopilotStatus(true)
   const withdraw = useWithdrawCopilotConsent()
   const ask = useAskCopilot()
-  const me = useMe()
-  const allowed = useAdminCopilotAccess()
-  const allowedUsers = allowed.data?.users ?? []
-  const setAccess = useSetAdminCopilotAccess()
-  const meAllowed = allowedUsers.some((row) => row.userId === me.data?._id)
-
-  // Adding from here, not only from Find someone: the switch at the foot of a
-  // user's page was the only way in, and it was not found. Typed, then looked
-  // up after a pause — Find someone's reason: submit does not fire on web.
-  const [handle, setHandle] = useState('')
-  const [lookup, setLookup] = useState('')
-  const found = useAdminUser(lookup)
-  useEffect(() => {
-    const timer = setTimeout(() => setLookup(adminLookupKey(handle)), 400)
-    return () => clearTimeout(timer)
-  }, [handle])
-  const lookupState = adminLookupState({
-    typed: handle,
-    lookup,
-    hasData: found.data !== undefined,
-    isFetching: found.isFetching,
-    error: found.error,
-  })
-  // Which account a button is pressing for, so only that one spins. Every
-  // other button waits too: `variables` only knows the latest press.
-  const pendingId = setAccess.isPending ? setAccess.variables?.userId : undefined
-
-  const allow = (userId: string, next: boolean): void => {
-    setAccess.mutate(
-      { userId, allowed: next },
-      {
-        onSuccess: () =>
-          showToast(next ? ADMIN.users.copilot.allowed : ADMIN.users.copilot.revoked),
-        onError: () => showToast(ADMIN.common.failed),
-      },
-    )
-  }
-
   const [sheet, setSheet] = useState(false)
   const [picking, setPicking] = useState(false)
   const [chat, setChat] = useState<ConversationDto | null>(null)
@@ -239,97 +189,6 @@ export default function AdminCopilotScreen() {
 
   const list = (
     <>
-      <AdminHeadingV3 title={L.allowedTitle} />
-      <AdminFactsV3
-        rows={[
-          {
-            key: 'you',
-            label: L.you,
-            value:
-              !allowed.data || !me.data
-                ? ADMIN.common.loading
-                : meAllowed
-                  ? L.youAllowed
-                  : L.youNotAllowed,
-          },
-        ]}
-      />
-      {allowed.data && me.data && !meAllowed ? (
-        <Button
-          label={L.allowMe}
-          loading={pendingId === me.data._id}
-          disabled={setAccess.isPending}
-          onPress={() => me.data && allow(me.data._id, true)}
-        />
-      ) : null}
-      <AdminFieldV3
-        label={L.addLabel}
-        placeholder={L.addPlaceholder}
-        value={handle}
-        onChangeText={setHandle}
-        autoCapitalize="none"
-        autoCorrect={false}
-      />
-      {lookupState === 'found' && found.data ? (
-        <>
-          <AdminRowsV3>
-            <AdminRowV3
-              title={`${found.data.user.displayName} @${found.data.user.handle}`}
-              subtitle={found.data.user.copilotAccess ? L.youAllowed : L.notAllowed}
-              mark={{ id: found.data.user.userId, label: found.data.user.displayName }}
-            />
-          </AdminRowsV3>
-          <Button
-            label={found.data.user.copilotAccess ? L.remove : L.allow}
-            variant={found.data.user.copilotAccess ? 'secondary' : 'primary'}
-            loading={pendingId === found.data.user.userId}
-            disabled={setAccess.isPending}
-            onPress={() =>
-              found.data && allow(found.data.user.userId, !found.data.user.copilotAccess)
-            }
-          />
-        </>
-      ) : lookupState === 'searching' ? (
-        <AdminCaptionV3>{L.addSearching}</AdminCaptionV3>
-      ) : lookupState === 'notFound' ? (
-        <AdminCaptionV3>{L.addNone}</AdminCaptionV3>
-      ) : lookupState === 'error' ? (
-        <>
-          <AdminNoteV3 tone="danger" icon="alert-triangle">
-            {L.addFailed}
-          </AdminNoteV3>
-          <Button label={L.addRetry} variant="secondary" onPress={() => void found.refetch()} />
-        </>
-      ) : null}
-      {allowed.data && allowedUsers.length === 0 ? (
-        <AdminCaptionV3>{L.allowedEmpty}</AdminCaptionV3>
-      ) : allowedUsers.length > 0 ? (
-        <AdminRowsV3>
-          {allowedUsers.map((row) => (
-            <AdminRowV3
-              key={row.userId}
-              title={`${row.displayName} @${row.username}`}
-              subtitle={L.allowedSince(row.at.slice(0, 10))}
-              mark={{ id: row.userId, label: row.displayName }}
-              onPress={() =>
-                router.push(`/(app)/admin/users?q=${encodeURIComponent(row.username)}`)
-              }
-              action={
-                <Button
-                  label={L.removeShort}
-                  variant="secondary"
-                  size="small"
-                  style={styles.rowAction}
-                  loading={pendingId === row.userId}
-                  disabled={setAccess.isPending}
-                  onPress={() => allow(row.userId, false)}
-                />
-              }
-            />
-          ))}
-        </AdminRowsV3>
-      ) : null}
-
       {/* Numbered, because every one of them has to hold at once. */}
       <AdminHeadingV3 title={L.whoTitle} />
       <AdminRowsV3>
@@ -371,8 +230,6 @@ export default function AdminCopilotScreen() {
 
 const useStyles = makeStyles(({ v3 }) => ({
   muted: { ...v3.type.caption, color: v3.colors.muted },
-  // In a row, the button is as wide as its word rather than the column.
-  rowAction: { width: 'auto' },
   // Copilot's own blue, as everywhere a suggestion is drawn.
   answer: {
     backgroundColor: v3.colors.echoTint,

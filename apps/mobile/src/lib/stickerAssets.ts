@@ -149,18 +149,18 @@ import venusTyping from '../../assets/stickers/venus/typing.webp'
 import venusBoop from '../../assets/stickers/venus/boop.webp'
 import venusSleepy from '../../assets/stickers/venus/sleepy.webp'
 import venusDiva from '../../assets/stickers/venus/diva.webp'
-import venusMerhaba from '../../assets/stickers/venus/merhaba.webp'
-import venusHello from '../../assets/stickers/venus/hello.webp'
-import venusTesekkurler from '../../assets/stickers/venus/tesekkurler.webp'
 import venusThanks from '../../assets/stickers/venus/thanks.webp'
-import venusTamam from '../../assets/stickers/venus/tamam.webp'
-import venusOkay from '../../assets/stickers/venus/okay.webp'
-import venusGunaydin from '../../assets/stickers/venus/gunaydin.webp'
 import venusMorning from '../../assets/stickers/venus/morning.webp'
-import venusIyigeceler from '../../assets/stickers/venus/iyigeceler.webp'
 import venusGoodnight from '../../assets/stickers/venus/goodnight.webp'
-import venusPratik from '../../assets/stickers/venus/pratik.webp'
 import venusPractise from '../../assets/stickers/venus/practise.webp'
+import venusHello from '../../assets/stickers/venus/hello.webp'
+import venusHola from '../../assets/stickers/venus/hola.webp'
+import venusOla from '../../assets/stickers/venus/ola.webp'
+import venusBonjour from '../../assets/stickers/venus/bonjour.webp'
+import venusHallo from '../../assets/stickers/venus/hallo.webp'
+import venusMerhaba from '../../assets/stickers/venus/merhaba.webp'
+import venusPrivet from '../../assets/stickers/venus/privet.webp'
+import venusMarhaban from '../../assets/stickers/venus/marhaban.webp'
 
 export const STICKER_ASSETS: Record<string, Record<string, number>> = {
   // WebP rather than SVG: see the raster rule in `stickerAssets.test.ts`.
@@ -183,18 +183,18 @@ export const STICKER_ASSETS: Record<string, Record<string, number>> = {
     boop: venusBoop,
     sleepy: venusSleepy,
     diva: venusDiva,
-    merhaba: venusMerhaba,
-    hello: venusHello,
-    tesekkurler: venusTesekkurler,
     thanks: venusThanks,
-    tamam: venusTamam,
-    okay: venusOkay,
-    gunaydin: venusGunaydin,
     morning: venusMorning,
-    iyigeceler: venusIyigeceler,
     goodnight: venusGoodnight,
-    pratik: venusPratik,
     practise: venusPractise,
+    hello: venusHello,
+    hola: venusHola,
+    ola: venusOla,
+    bonjour: venusBonjour,
+    hallo: venusHallo,
+    merhaba: venusMerhaba,
+    privet: venusPrivet,
+    marhaban: venusMarhaban,
   },
   'stickers.paper': {
     // Renamed on import only, as `thinking` is below: `starter` has a `book`.
@@ -344,8 +344,26 @@ export const STICKER_ASSETS: Record<string, Record<string, number>> = {
   },
 }
 
+/*
+ * Stickers a pack no longer offers, drawn as the one that replaced them.
+ * Venus shipped with a Turkish copy of six words; the pack is international
+ * now, but messages already sent still name the old ids, and an id with no
+ * picture draws as the word "Sticker" in somebody's chat history.
+ */
+const RETIRED_STICKERS: Record<string, Record<string, string>> = {
+  'stickers.venus': {
+    tesekkurler: 'thanks',
+    tamam: 'ok',
+    okay: 'ok',
+    gunaydin: 'morning',
+    iyigeceler: 'goodnight',
+    pratik: 'practise',
+  },
+}
+
 export function stickerAsset(packId: string, stickerId: string): number | undefined {
-  return STICKER_ASSETS[packId]?.[stickerId]
+  const pictures = STICKER_ASSETS[packId]
+  return pictures?.[stickerId] ?? pictures?.[RETIRED_STICKERS[packId]?.[stickerId] ?? '']
 }
 
 /** `stickers.paper` → `Paper`: the pack's half of its message keys. */

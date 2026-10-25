@@ -7,7 +7,7 @@ import {
 } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
-import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
@@ -15,8 +15,8 @@ import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { invalidateAppConfigCache, updateAppConfig } from '../modules/appConfig/appConfig'
-import { setCopilotAccess } from '../modules/copilot/access'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
+import { recordCopilotConsent } from '../modules/copilot/consent'
 import type { StructuredProvider, StructuredRequest } from '../modules/official/assistantProvider'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn } from '../testSupport/authFlow'
@@ -123,7 +123,6 @@ describe('Copilot over HTTP', () => {
       createdAt: new Date(),
     })
     conversationId = conversation.insertedId.toHexString()
-    await setCopilotAccess(handle.db, user.userId, true)
   }, 120_000)
 
   afterEach(async () => {
@@ -163,21 +162,6 @@ describe('Copilot over HTTP', () => {
     expect(response.statusCode).toBe(503)
     expect(response.json()).toMatchObject({ code: 'COPILOT_UNAVAILABLE', reason: 'off' })
     expect(model.asked).toHaveLength(0)
-  })
-
-  it('is off for an account not on the allow-list, with the switch on', async () => {
-    await setFlag(true)
-    await setCopilotAccess(handle.db, userId, false)
-    try {
-      const status = await app.inject({ method: 'GET', url: '/copilot', headers: { cookie } })
-      expect(status.json()).toMatchObject({ available: false, reason: 'off' })
-      const response = await check()
-      expect(response.statusCode).toBe(503)
-      expect(response.json()).toMatchObject({ code: 'COPILOT_UNAVAILABLE', reason: 'off' })
-      expect(model.asked).toHaveLength(0)
-    } finally {
-      await setCopilotAccess(handle.db, userId, true)
-    }
   })
 
   // Counted whether or not anything is answered: the switch is off here, and
@@ -276,6 +260,12 @@ describe('Copilot over HTTP', () => {
     }
     const feedback = () => handle.db.collection(COLLECTIONS.feedback)
 
+    // The test above withdraws its consent; somebody reporting an answer has
+    // agreed to the sheet that showed it.
+    beforeEach(async () => {
+      await recordCopilotConsent(handle.db, userId, COPILOT_RULES.consentVersion)
+    })
+
     afterEach(async () => {
       await feedback().deleteMany({})
       await handle.db
@@ -289,15 +279,13 @@ describe('Copilot over HTTP', () => {
       expect(await feedback().countDocuments()).toBe(0)
     })
 
-    it('is refused for an account not on the allow-list', async () => {
-      await setCopilotAccess(handle.db, userId, false)
-      try {
-        const response = await report({ action: 'explain', answer: 'It means hello.' })
-        expect(response.statusCode).toBe(403)
-        expect(await feedback().countDocuments()).toBe(0)
-      } finally {
-        await setCopilotAccess(handle.db, userId, true)
-      }
+    it('is refused for an account that never agreed to Copilot', async () => {
+      await handle.db
+        .collection(COLLECTIONS.profiles)
+        .updateOne({ _id: userId as never }, { $unset: { copilotConsent: '' } })
+      const response = await report({ action: 'explain', answer: 'It means hello.' })
+      expect(response.statusCode).toBe(403)
+      expect(await feedback().countDocuments()).toBe(0)
     })
 
     it('validates the report', async () => {

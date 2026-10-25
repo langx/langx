@@ -292,8 +292,7 @@ export interface PlanLimits {
    * (`architecture.md:425`).
    *
    * Paid: unlike nearby, a copilot call has a real per-request cost. **In
-   * beta** — it answers only accounts on the operator's allow-list, behind
-   * `flags.copilotEnabled`, and what it meters is `copilotPer24h`, which gives
+   * beta** — it answers every account, behind `flags.copilotEnabled`, and what it meters is `copilotPer24h`, which gives
    * the free tier a small taste. This flag is what the paywall copy reads; the
    * app's `BenefitCopy.beta` is what makes it say "Beta, rolling out" instead
    * of a tick until every Pro account gets it.

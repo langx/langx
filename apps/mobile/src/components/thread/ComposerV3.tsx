@@ -47,15 +47,17 @@ const BIG = 56
 const FIELD_MAX = 140
 
 /**
- * What Correct, Translate and Echo do to the other person's newest message
- * (`latestToActOn`). Each is absent when it does not apply — Translate once
- * the translation is showing, Echo once the sentence is kept.
+ * What Correct, Translate, Echo and Explain do to the other person's newest
+ * message (`latestToActOn`). Each is absent when it does not apply — Translate
+ * once the translation is showing, Echo once the sentence is kept, Explain
+ * while Copilot is off for this person.
  */
 export interface LatestActions {
   correct: () => void
   translate?: (() => void) | undefined
   translating: boolean
   echo?: (() => void) | undefined
+  explain?: (() => void) | undefined
 }
 
 /**
@@ -220,9 +222,8 @@ export function ComposerV3({
   const showMic = composerShowsMic({ value, recording: recording !== null })
   const sendLive = canSend && !busy
   /*
-   * Only for a typed draft, and only when this person has Copilot at all — an
-   * account off the allow-list or on a deployment with no key sees
-   * no trace of it. The menu folds when the draft empties, and when a row is
+   * Only for a typed draft, and only when this person has Copilot at all — on
+   * a deployment with the switch off or no key nobody sees a trace of it. The menu folds when the draft empties, and when a row is
    * picked.
    */
   const [copilotMenu, setCopilotMenu] = useState(false)
@@ -366,7 +367,7 @@ export function ComposerV3({
 
       {showLatest && latest ? (
         <View style={styles.chips}>
-          {/* The hero: outlined in the text colour, where the other two are grey. */}
+          {/* The hero: outlined in the text colour, where the others are grey. */}
           <Chip
             hero
             icon="edit-2"
@@ -390,6 +391,14 @@ export function ComposerV3({
               accessibilityLabel={t('messageActions.echo')}
               hint={latestHint}
               onPress={latest.echo}
+            />
+          ) : null}
+          {latest.explain ? (
+            <Chip
+              icon="cpu"
+              label={t('copilot.explainAction')}
+              hint={latestHint}
+              onPress={latest.explain}
             />
           ) : null}
         </View>

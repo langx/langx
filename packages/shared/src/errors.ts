@@ -215,8 +215,7 @@ export const ERROR_CODES = {
   /**
    * Copilot did not answer, and nothing was spent. `reason` is one of
    * `COPILOT_UNAVAILABLE_REASONS`: `off` (no key, the operator's switch is
-   * off — `/app-config` says so first — or the account is not on the
-   * operator's allow-list), `busy` (today's global ceiling is spent) or
+   * off — `/app-config` says so first), `busy` (today's global ceiling is spent) or
    * `no_answer` (the model declined or failed; the unit was given back).
    * One code, because the client's answer is one shape — a sentence, never
    * the paywall — and only the sentence differs.

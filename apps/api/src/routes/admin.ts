@@ -7,7 +7,6 @@ import {
   adminMinVersionSchema,
   adminCaptchaRequiredSchema,
   adminFlagSchema,
-  adminCopilotAccessRequestSchema,
   adminMemberListQuerySchema,
   adminMessageSchema,
   adminReportListQuerySchema,
@@ -98,7 +97,6 @@ import { warnReported } from '../modules/moderation/warn'
 import { deliverOfficialMessage } from '../modules/official/deliver'
 import { emailOfficialNote } from '../modules/official/noteEmail'
 import { getProfile, removeAvatar, type Profile } from '../modules/profiles/profiles'
-import { listCopilotAccess, setCopilotAccess } from '../modules/copilot/access'
 import { fanOutMessage } from '../ws/fanOut'
 import { userRoom } from '../ws/types'
 
@@ -912,38 +910,6 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       return reply.send({ thawed: result.modifiedCount > 0 })
     },
   )
-
-  /**
-   * Allows one account to use Copilot, or takes it back — the per-account
-   * switch on top of `flags.copilotEnabled` and a key, never what turns it on
-   * for anybody by itself. An under-18 account stays refused by the age gate
-   * whatever this says.
-   */
-  app.post(
-    '/admin/users/:userId/copilot',
-    {
-      preHandler: requireAdmin,
-      schema: { params: z.object({ userId: z.string() }), body: adminCopilotAccessRequestSchema },
-      config: { rateLimit: limit(60, '1 minute') },
-    },
-    async (request, reply) => {
-      const { allowed } = request.body
-      const found = await setCopilotAccess(app.mongo.db, request.params.userId, allowed)
-      if (!found) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such account')
-
-      await recordAdminAction(app.mongo.db, request.log, {
-        adminId: request.userId,
-        action: allowed ? 'copilot.allow' : 'copilot.revoke',
-        subjectUserId: request.params.userId,
-      })
-      return reply.send({ allowed })
-    },
-  )
-
-  /** Everybody allowed to use Copilot, newest first. A read, so nothing is recorded. */
-  app.get('/admin/copilot/access', { preHandler: requireAdmin }, async (_request, reply) => {
-    return reply.send({ users: await listCopilotAccess(app.mongo.db) })
-  })
 
   /**
    * Signs one account out everywhere — for the compromised account, where the

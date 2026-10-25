@@ -168,11 +168,11 @@ failed call, because by then the account itself is gone
 asynchronously, so the privacy policy should say the data is _requested for
 deletion_ at that point rather than erased the same second.
 
-## Copilot — an AI provider, live for allow-listed accounts
+## Copilot — an AI provider, live for every account
 
-**Live in production.** `flags.copilotEnabled` is on, and Copilot answers only
-an account on the operator's allow-list (`profiles.copilotAccess`), with an
-`ANTHROPIC_API_KEY`, after that person's consent — a key alone never turns it
+**Live in production.** `flags.copilotEnabled` is on, and Copilot answers any
+account, with an `ANTHROPIC_API_KEY`, after that person's consent (the
+per-account allow-list was removed on 25 October 2026) — a key alone never turns it
 on (`docs/decisions.md` → _Copilot ships dark, behind two switches and a
 consent_). The privacy policy says so since 22 October 2026 (langx.io §2.6,
 with §5, §6, §10.7 and §11). The two store forms are Behic's to update; the
@@ -204,9 +204,8 @@ and no metadata naming one. Text only, by construction
 keeps its own copy of the sentence it corrected, so Explain on a correction
 can send a sentence whose original message was deleted since.
 
-Taking an account off the allow-list clears its consent as well (#1948), so a
-re-allowed account is asked again; while it is off the list the Settings row
-is not drawn, and the policy offers hi@langx.io for withdrawing meanwhile.
+While `copilotEnabled` is off the Settings row is not drawn, and the policy
+offers hi@langx.io for withdrawing meanwhile.
 
 **Withdrawing and reporting.** Settings → Privacy → **Copilot** shows whether
 it is on and turns it off; that removes `profiles.copilotConsent`

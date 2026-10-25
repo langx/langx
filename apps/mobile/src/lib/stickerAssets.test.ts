@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { COSMETICS } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { en } from '../i18n/messages/en'
-import { packTaglineKey, STICKER_ASSETS, stickerNameKey } from './stickerAssets'
+import { packTaglineKey, STICKER_ASSETS, stickerAsset, stickerNameKey } from './stickerAssets'
 
 describe('sticker assets', () => {
   /**
@@ -21,6 +21,17 @@ describe('sticker assets', () => {
       expect(pictures, `${pack.id} has no pictures`).toBeDefined()
       expect([...(pack.stickers ?? [])].sort()).toEqual(Object.keys(pictures ?? {}).sort())
     }
+  })
+
+  /**
+   * Venus's six Turkish word stickers left the pack; messages that sent them
+   * still have to draw something.
+   */
+  it('still draws the Venus stickers that left the pack', () => {
+    for (const id of ['tesekkurler', 'tamam', 'okay', 'gunaydin', 'iyigeceler', 'pratik']) {
+      expect(stickerAsset('stickers.venus', id), id).toBeDefined()
+    }
+    expect(stickerAsset('stickers.venus', 'nothing')).toBeUndefined()
   })
 
   it('ships pictures only for packs the catalogue knows about', () => {
