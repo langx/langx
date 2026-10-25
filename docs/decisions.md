@@ -9576,6 +9576,16 @@ once, with no backfill and nobody left out.
   morning, good night, let's practise — and eight stickers say hello, one in
   each language the app speaks. The six retired ids still draw, as the
   sticker that replaced them, because sent messages keep their ids.
+- **Sixty, mostly wordless** (25 October 2026). The pack doubled to sixty
+  from the mascot's new faces, poses and inventory — her fish, the treat
+  tube, the box, the notes she sits on. Thirty-eight carry no words, so they
+  read in any chat at sticker size. Every language gets the same greetings,
+  hello and thanks, eight of each; English alone adds six more words,
+  because it is the language most partners share. Turkish gets exactly what
+  the others get. `tesekkurler` is a live id again, as the Turkish thanks,
+  so it left `RETIRED_STICKERS`. About 1.3 MB for the pack now, still under
+  32 KB a sticker. WhatsApp stops at thirty a pack, so its export is two
+  packs, `venus` and `venus-2`.
 
 ## Copilot opens to every account; the flag is the off switch
 
