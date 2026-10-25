@@ -38,6 +38,15 @@ export const ZOOM = {
   rearm: 1.05,
   /** What a screen reader's swipe up or down multiplies or divides by. */
   step: 2,
+  /**
+   * How far the finger on the shutter must rise before the slide zooms, so a
+   * hold that wobbles a little does not.
+   */
+  slideDeadZone: 12,
+  /** Where above the screen's top the slide reaches the stop: just under the top bar. */
+  slideTopMargin: 96,
+  /** The shortest slide that reaches the stop, for a shutter drawn high on a squat window. */
+  slideMinRange: 160,
 } as const
 
 export type ZoomPlatform = 'ios' | 'android'
@@ -87,6 +96,40 @@ export function atZoomEdge(factor: number, os: ZoomPlatform): boolean {
 export function clearOfZoomEdge(factor: number, os: ZoomPlatform): boolean {
   'worklet'
   return factor >= ZOOM.rearm && factor <= zoomStop(os) / ZOOM.rearm
+}
+
+/**
+ * How far up a slide from the shutter has to go to reach the stop: from where
+ * the finger came down to just under the top bar. Measured per press, so on
+ * every phone the stop is at the top of the screen, as it is on Instagram.
+ */
+export function slideRange(startY: number): number {
+  'worklet'
+  return Math.max(ZOOM.slideMinRange, startY - ZOOM.slideTopMargin)
+}
+
+/**
+ * The factor for a finger held on the shutter and slid up, Instagram's
+ * one-handed zoom while recording. `base` is the zoom when the finger came
+ * down, `translationY` how far it has moved since (negative is up).
+ *
+ * Geometric, like the pinch: each stretch of the slide multiplies the zoom by
+ * the same amount, so 1x→2x takes as long as 4x→8x. The whole range ends at
+ * the stop, whatever the zoom it started from, and coming back down returns
+ * to `base` — never below it: the slide only zooms in, a pinch zooms out.
+ */
+export function slideFactor(
+  base: number,
+  translationY: number,
+  range: number,
+  os: ZoomPlatform,
+): number {
+  'worklet'
+  const stop = zoomStop(os)
+  const rise = -translationY - ZOOM.slideDeadZone
+  if (rise <= 0 || base >= stop) return Math.min(stop, base)
+  const progress = Math.min(1, rise / range)
+  return Math.min(stop, base * Math.pow(stop / base, progress))
 }
 
 /** A screen reader's increment (+1) or decrement (−1): one `step`, clamped. */

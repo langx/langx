@@ -45,6 +45,15 @@ describe('the v3 chat camera keeps the current camera’s words', () => {
     expect(V3).toMatch(/onPressIn=\{onPressIn\}/)
     expect(V3).toMatch(/onPressOut=\{onPressOut\}/)
   })
+
+  it('lets the finger on the shutter slide up to zoom without ending the press', () => {
+    // A `Pressable` ends the press when the finger leaves it, which would stop the clip.
+    expect(V3).toMatch(/<GestureDetector gesture=\{touch\}>/)
+    expect(V3).toMatch(/shutterGesture=\{zoom\.shutterGesture\}|gesture=\{shutterGesture\}/)
+    expect(ROUTE).toMatch(/shutterGesture=\{zoom\.shutterGesture\}/)
+    expect(ROUTE).toMatch(/onShutterDown: \(\) => onPressIn\(\)/)
+    expect(ROUTE).toMatch(/onShutterUp: \(\) => onPressOut\(\)/)
+  })
 })
 
 describe('the v3 chat camera is only a drawing', () => {
@@ -125,12 +134,13 @@ describe('the chat camera zooms and flips from the picture', () => {
     expect(ZOOM_HOOK).toContain('Gesture.Pinch()')
     expect(ZOOM_HOOK).toContain('.numberOfTaps(2)')
     expect(ZOOM_HOOK).toContain('.enabled(flipEnabled)')
-    expect(ROUTE).toContain('useCameraZoom({ flipEnabled: !recording,')
+    expect(ROUTE).toMatch(/useCameraZoom\(\{\s*flipEnabled: !recording,/)
   })
 
   it('zooms on the UI thread, with no render per frame', () => {
     expect(ZOOM_HOOK).toMatch(/useAnimatedProps\(/)
-    expect(ZOOM_HOOK).toMatch(/\.onChange\(\(event\) => \{\s*const next = pinchFactor/)
+    expect(ZOOM_HOOK).toMatch(/\.onChange\(\(event\) => \{\s*moveTo\(pinchFactor/)
+    expect(ZOOM_HOOK).toMatch(/moveTo\(next\)/)
     // React hears only where a pinch came to rest.
     expect(ZOOM_HOOK).toMatch(/\.onEnd\(\(\) => \{[^}]*runOnJS\(setSettled\)/)
     expect(ROUTE).toContain('animatedProps={zoom.animatedProps}')
