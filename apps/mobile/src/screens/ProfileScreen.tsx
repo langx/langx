@@ -34,6 +34,7 @@ import { PhotoViewer } from '../components/PhotoViewer'
 import { PresenceLine } from '../components/PresenceLine'
 import { ProfileTestimonials } from '../components/testimonials/ProfileTestimonials'
 import { ProMark } from '../components/ProMark'
+import { ModBadge } from '../components/ui/ModBadge'
 import { WhatsProSheet } from '../components/WhatsProSheet'
 import { WeeklyChart } from '../components/WeeklyChart'
 import { BadgeStrip } from '../components/BadgeStrip'
@@ -368,6 +369,7 @@ function ProfileScreenCurrent({ handle, from, embedded = false, onClose }: Profi
         <View style={styles.heroText}>
           <View style={styles.nameRow}>
             <Text style={styles.name}>{user.displayName}</Text>
+            {user.moderator ? <ModBadge fontSize={16} /> : null}
             {/*
               An official account has no age to show — the server omits it
               rather than deriving one from a placeholder birth date — and

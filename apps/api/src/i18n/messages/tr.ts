@@ -31,6 +31,11 @@ export const tr: Localized<ServerMessages> = {
       other: "LangX'i güvende tuttuğun için {count} jeton 🛡️",
     },
     reportRewardBody: 'Bildirdiğin şeyi inceledik. Teşekkürler.',
+    moderatorRewardTitle: {
+      one: 'Moderasyonun için {count} jeton 🛡️',
+      other: 'Moderasyonun için {count} jeton 🛡️',
+    },
+    moderatorRewardBody: 'Bir yönetici kararlarından birini inceledi. Teşekkürler.',
     /** The same nudges on the phone, under the same switches. */
     promo: {
       addPhotoTitle: 'Bir fotoğraf ekle',
@@ -644,6 +649,11 @@ export const tr: Localized<ServerMessages> = {
       one: "Bildirimin için teşekkürler. İnceledik ve LangX'i öğrenmek için iyi bir yer olarak tutmaya yardım ettiğin için cüzdanına {count} jeton ekledik. Bildirdiğin kişiye, onu kimin bildirdiği asla söylenmez.",
       other:
         "Bildirimin için teşekkürler. İnceledik ve LangX'i öğrenmek için iyi bir yer olarak tutmaya yardım ettiğin için cüzdanına {count} jeton ekledik. Bildirdiğin kişiye, onu kimin bildirdiği asla söylenmez.",
+    },
+    moderatorReward: {
+      one: 'Moderatörlüğün için teşekkürler. Bir yönetici kararlarından birini inceledi ve cüzdanına {count} jeton ekledi.',
+      other:
+        'Moderatörlüğün için teşekkürler. Bir yönetici kararlarından birini inceledi ve cüzdanına {count} jeton ekledi.',
     },
     suspensionEnded:
       'Askıya alma süren doldu ve hesabın yeniden açık. 👋 Profilin yeniden Keşfet’te ve aramada görünüyor, sohbetlerin de bıraktığın yerde duruyor.\n\nLütfen LangX’i öğrenmek için iyi bir yer olarak tutmaya yardım et — doğrulanan bir bildirim daha hesabın kalıcı olarak kapanmasına yol açabilir. Bir şeylerin yanlış gittiğini düşünüyorsan Ayarlar → Hakkında → Geri bildirim bir insana ulaşır.',

@@ -137,6 +137,13 @@ export default function AdminHomeScreen() {
           count={queue?.feedback ?? 0}
           onPress={() => router.push('/(app)/admin/feedback')}
         />
+        <AdminNavRowV3
+          icon="shield"
+          hue="mint"
+          title={ADMIN.home.moderators}
+          count={queue?.modActions ?? 0}
+          onPress={() => router.push('/(app)/admin/moderators')}
+        />
       </AdminRowsV3>
       <AdminRowsV3>
         <AdminNavRowV3

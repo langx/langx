@@ -88,6 +88,7 @@ carrying every kind cannot honestly offer to stop one of them.
 | **Finish your profile** (reminder) | signed up, no profile, 24 h–7 days old             | email                         | ledger `onboardingReminder:<id>:once`           |
 | Bounty paid                        | a report is confirmed                              | @langx message + push + email | the ledger's unique `{userId, kind, refId}`     |
 | **Thanks for a report**            | an operator rewards whoever reported somebody      | @langx message + push         | the ledger's unique `{userId, kind, refId}`     |
+| **Thanks for moderating**          | an operator rewards one moderator decision         | @langx message + push         | the ledger's unique `{userId, kind, refId}`     |
 | **The v1 lifetime gift**           | a restore grants a lifetime tier                   | @langx message + push + email | ledger `lifetimeGift:<id>:once`                 |
 | **Welcome back from v1**           | first session on a `precreatedFromV1` row          | @langx message                | `sender_client_id_unique` on `welcomeback:<id>` |
 | **Where did you hear about us?**   | onboarding completes, right after the @langx hello | @langx message (poll)         | `sender_client_id_unique` on `heard-about:<id>` |
@@ -180,6 +181,15 @@ thread is the durable record either way. Its push carries `bountyPaid`, which
 every installed app already opens on the wallet. Neither says what was decided:
 that belongs to the person the report was about, as the reporter's name is
 kept from them.
+
+**Thanks for moderating** is the same receipt for a moderator, paid per
+decision from the operator panel's Moderators screen
+(`moderation/moderatorActions.ts`): kind `moderatorReward`, the decision's id
+as `refId`, and `moderatorReward:<id>` as the message's `clientId`. A
+moderator cannot send it, nor any other token. Undoing a moderator's
+suspension from the same screen sends the suspended person the appeal path's
+"suspension updated" mail with the lift wording — the only mail a moderator
+decision can cause after the fact — and nothing to the moderator.
 
 ### Security — the same class, and never gated
 

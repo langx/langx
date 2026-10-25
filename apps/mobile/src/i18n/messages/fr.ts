@@ -1658,6 +1658,79 @@ export const fr: Localized<EnMessages> = {
     weeksAgo: { one: 'il y a {count} semaine', other: 'il y a {count} semaines' },
   },
 
+  moderation: {
+    title: 'Modération',
+    lead: 'Les signalements ouverts sur lesquels tu peux décider. L’équipe LangX examine chaque décision, avec la raison que tu donnes.',
+    empty: 'Aucun signalement ouvert pour le moment. Merci d’avoir regardé.',
+    aboutPost: 'Publication',
+    aboutComment: 'Commentaire',
+    aboutReview: 'Avis',
+    aboutProfile: 'Profil',
+    warnedTag: 'Averti',
+    reported: 'Personne signalée',
+    details: 'Ce que la personne qui signale a écrit',
+    noDetails: 'Aucun détail donné.',
+    content: 'Ce qui a été signalé',
+    thread: 'Leurs derniers messages',
+    fromReported: 'Personne signalée',
+    fromReporter: 'Personne qui signale',
+    deleted: 'Supprimé',
+    files: {
+      one: '{count} fichier',
+      other: '{count} fichiers',
+    },
+    history: 'Avant ce signalement',
+    earlierWarnings: {
+      one: 'Déjà averti {count} fois',
+      other: 'Déjà averti {count} fois',
+    },
+    otherOpen: {
+      one: '{count} autre signalement ouvert',
+      other: '{count} autres signalements ouverts',
+    },
+    suspendedNow: 'Suspendu en ce moment',
+    hideHeading: 'Masquer ce qui a été signalé',
+    hidePost: 'Masquer la publication',
+    unhidePost: 'Afficher à nouveau la publication',
+    hideComment: 'Masquer le commentaire',
+    unhideComment: 'Afficher à nouveau le commentaire',
+    hideReview: 'Masquer l’avis',
+    unhideReview: 'Afficher à nouveau l’avis',
+    warnHeading: 'Avertir depuis @langx',
+    warnLead:
+      'Un message préparé en anglais, envoyé depuis @langx et par e-mail. Tu ne peux pas en changer les mots.',
+    sendWarning: 'Envoyer cet avertissement',
+    warned: 'Avertissement envoyé',
+    alreadyWarned: 'Ce signalement a déjà un avertissement',
+    suspendHeading: 'Suspendre',
+    days: {
+      one: '{count} jour',
+      other: '{count} jours',
+    },
+    note: 'Pourquoi ? L’équipe le lit',
+    notePlaceholder: 'Ce que tu as vu qui enfreint les règles',
+    noteMin: {
+      one: 'Au moins {count} caractère',
+      other: 'Au moins {count} caractères',
+    },
+    suspend: {
+      one: 'Suspendre {count} jour',
+      other: 'Suspendre {count} jours',
+    },
+    confirmSuspend: {
+      one: 'Suspendre pour {count} jour ?',
+      other: 'Suspendre pour {count} jours ?',
+    },
+    suspended: 'Suspendu',
+    dismissHeading: 'Rien d’anormal ici',
+    dismiss: 'Classer le signalement',
+    confirmDismiss: 'Classer ce signalement ?',
+    dismissed: 'Classé',
+    done: 'Terminé',
+    gone: 'Une décision a déjà été prise sur ce signalement.',
+    failed: 'Ça n’a pas marché. Réessaie.',
+  },
+
   report: {
     messageQuestion: 'Pourquoi signalez-vous ce message ?',
     profileQuestion: 'Pourquoi signalez-vous ce profil ?',
@@ -1856,6 +1929,7 @@ export const fr: Localized<EnMessages> = {
 
   profile: {
     proBadge: 'Membre Pro',
+    modBadge: 'Modérateur',
     proSheetTitle: 'Qu’est-ce que {plan} ?',
     proSheetBody: '{name} a {plan}. Voici ce que ça ajoute au forfait gratuit :',
     official: 'Compte officiel',
@@ -2339,6 +2413,10 @@ export const fr: Localized<EnMessages> = {
     showWeekChartBody:
       'Les jours où vous avez envoyé des messages et des corrections, sur votre profil.',
     voiceCredits: 'Voix et licences',
+    moderators: 'Modérateurs',
+    moderatorsBody:
+      'Des membres qui aident à garder LangX sûr. L’équipe LangX examine chacune de leurs décisions.',
+    moderatorsEmpty: 'Pas encore de modérateurs.',
     voiceCreditsBody:
       'Les messages sont lus à voix haute par des modèles vocaux libres. La plupart ne nous demandent rien ; ceux ci-dessous sont sous licence à condition que nous créditions les personnes qui les ont enregistrés.',
     voiceCreditsEngines: 'Les moteurs sont Kokoro-82M et Piper, tous deux libres.',
@@ -2747,6 +2825,7 @@ export const fr: Localized<EnMessages> = {
     gift: 'Cadeau de l’heure',
     bounty: 'Prime de bug',
     reportReward: 'Prime de signalement',
+    moderatorReward: 'Prime de modération',
     echo: 'Séance Echo',
   },
 

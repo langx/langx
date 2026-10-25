@@ -72,6 +72,8 @@ export interface AdminUserView {
   >[]
   official: boolean
   admin: boolean
+  /** Since when, or `null` for somebody who is not a moderator. */
+  moderatorSince: string | null
   guest: boolean
   /** The point of a support lookup, and the reason this view is admin-only. */
   email: string | null
@@ -269,6 +271,7 @@ async function toAdminUserView(db: Db, profile: Profile): Promise<AdminUserView>
     })),
     official: profile.official === true,
     admin: profile.admin === true,
+    moderatorSince: profile.moderator ? profile.moderator.since.toISOString() : null,
     guest: profile.guest === true,
     email: address?.email ?? null,
     emailVerified: address?.verified === true,

@@ -269,7 +269,7 @@ describe('the operator panel', () => {
       expect(stats.audience.activeDaily.at(-1)!.day > stats.audience.activeDaily[0]!.day).toBe(true)
 
       // Nothing has been reported, appealed, sent, suspended or paid here.
-      expect(stats.queue).toEqual({ reports: 0, appeals: 0, feedback: 0 })
+      expect(stats.queue).toEqual({ reports: 0, appeals: 0, feedback: 0, modActions: 0 })
       expect(stats.money.pool).toBeNull()
       expect(stats.system.suppressions.total).toBe(0)
       expect(stats.system.campaigns).toEqual([])

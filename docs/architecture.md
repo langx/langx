@@ -716,10 +716,21 @@ set by `scripts/grant-admin.ts` and by nothing else. It exists because the
 mailbox could only ever answer one report at a time and could not answer
 "what is still open".
 
-Both call `moderation/decide.ts`, which is the body of the emailed page's POST
+The third is the moderator panel (`routes/moderator.ts`, and
+`app/(app)/moderation/` in the app), behind `requireModerator` — a
+`profiles.moderator` field that only `POST /admin/users/:userId/moderator`
+writes. It is the narrow door: open reports only, never one about an operator,
+an official account, another moderator or the moderator themself, and never
+the reporter's name. A moderator can hide, dismiss, send one of the prepared
+@langx warnings, or suspend for at most `MOD_SUSPENSION_MAX_DAYS` with a
+written reason; a permanent ban, lifting, appeals, plans and tokens stay
+behind `requireAdmin`. Every decision also writes a `moderatorActions` row,
+which the operator panel approves, undoes or thanks with tokens.
+
+All three call `moderation/decide.ts`, which is the body of the emailed page's POST
 with the HTML taken off. That is what keeps them one decision rather than two
 that drift: the only difference in what they write is `suspension.by`, which
-the panel knows and a capability token cannot.
+the panels know and a capability token cannot, and a moderator's `note`.
 
 The state is one field. `suspension.until > now` is the whole of "suspended",
 computed on every check, so expiry needs no cron and nothing to sweep;

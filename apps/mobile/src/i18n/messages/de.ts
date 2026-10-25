@@ -1682,6 +1682,79 @@ export const de: Localized<EnMessages> = {
     weeksAgo: { one: 'vor {count} Woche', other: 'vor {count} Wochen' },
   },
 
+  moderation: {
+    title: 'Moderation',
+    lead: 'Offene Meldungen, über die du entscheiden kannst. Das LangX-Team prüft jede Entscheidung mit deiner Begründung.',
+    empty: 'Gerade gibt es keine offenen Meldungen. Danke fürs Nachsehen.',
+    aboutPost: 'Beitrag',
+    aboutComment: 'Kommentar',
+    aboutReview: 'Bewertung',
+    aboutProfile: 'Profil',
+    warnedTag: 'Verwarnt',
+    reported: 'Gemeldete Person',
+    details: 'Was die meldende Person geschrieben hat',
+    noDetails: 'Keine Details angegeben.',
+    content: 'Was gemeldet wurde',
+    thread: 'Ihre letzten Nachrichten',
+    fromReported: 'Gemeldete Person',
+    fromReporter: 'Meldende Person',
+    deleted: 'Gelöscht',
+    files: {
+      one: '{count} Datei',
+      other: '{count} Dateien',
+    },
+    history: 'Vor dieser Meldung',
+    earlierWarnings: {
+      one: 'Schon {count}-mal verwarnt',
+      other: 'Schon {count}-mal verwarnt',
+    },
+    otherOpen: {
+      one: '{count} weitere offene Meldung',
+      other: '{count} weitere offene Meldungen',
+    },
+    suspendedNow: 'Gerade gesperrt',
+    hideHeading: 'Gemeldeten Inhalt ausblenden',
+    hidePost: 'Beitrag ausblenden',
+    unhidePost: 'Beitrag wieder zeigen',
+    hideComment: 'Kommentar ausblenden',
+    unhideComment: 'Kommentar wieder zeigen',
+    hideReview: 'Bewertung ausblenden',
+    unhideReview: 'Bewertung wieder zeigen',
+    warnHeading: 'Von @langx verwarnen',
+    warnLead:
+      'Eine vorbereitete Nachricht auf Englisch, von @langx und per E-Mail. Den Text kannst du nicht ändern.',
+    sendWarning: 'Diese Verwarnung senden',
+    warned: 'Verwarnung gesendet',
+    alreadyWarned: 'Zu dieser Meldung gibt es schon eine Verwarnung',
+    suspendHeading: 'Sperren',
+    days: {
+      one: '{count} Tag',
+      other: '{count} Tage',
+    },
+    note: 'Warum? Das Team liest das',
+    notePlaceholder: 'Was du gesehen hast, das gegen die Regeln verstößt',
+    noteMin: {
+      one: 'Mindestens {count} Zeichen',
+      other: 'Mindestens {count} Zeichen',
+    },
+    suspend: {
+      one: 'Für {count} Tag sperren',
+      other: 'Für {count} Tage sperren',
+    },
+    confirmSuspend: {
+      one: 'Für {count} Tag sperren?',
+      other: 'Für {count} Tage sperren?',
+    },
+    suspended: 'Gesperrt',
+    dismissHeading: 'Hier ist nichts falsch',
+    dismiss: 'Meldung verwerfen',
+    confirmDismiss: 'Diese Meldung verwerfen?',
+    dismissed: 'Verworfen',
+    done: 'Fertig',
+    gone: 'Über diese Meldung wurde schon entschieden.',
+    failed: 'Das hat nicht geklappt. Versuch es noch einmal.',
+  },
+
   report: {
     messageQuestion: 'Warum meldest du diese Nachricht?',
     profileQuestion: 'Warum meldest du dieses Profil?',
@@ -1882,6 +1955,7 @@ export const de: Localized<EnMessages> = {
 
   profile: {
     proBadge: 'Pro-Mitglied',
+    modBadge: 'Moderator',
     proSheetTitle: 'Was ist {plan}?',
     proSheetBody: '{name} hat {plan}. Das kommt zum kostenlosen Tarif dazu:',
     official: 'Offizielles Konto',
@@ -2360,6 +2434,10 @@ export const de: Localized<EnMessages> = {
     showWeekChartBody:
       'An welchen Tagen du Nachrichten und Korrekturen geschickt hast, auf deinem Profil.',
     voiceCredits: 'Stimmen und Lizenzen',
+    moderators: 'Moderatoren',
+    moderatorsBody:
+      'Mitglieder, die helfen, LangX sicher zu halten. Das LangX-Team prüft jede ihrer Entscheidungen.',
+    moderatorsEmpty: 'Noch keine Moderatoren.',
     voiceCreditsBody:
       'Nachrichten werden von quelloffenen Sprachmodellen vorgelesen. Die meisten verlangen nichts von uns; die unten stehenden sind unter der Bedingung lizenziert, dass wir die Menschen nennen, die sie aufgenommen haben.',
     voiceCreditsEngines: 'Die Engines sind Kokoro-82M und Piper, beide quelloffen.',
@@ -2764,6 +2842,7 @@ export const de: Localized<EnMessages> = {
     gift: 'Stündliches Geschenk',
     bounty: 'Fehlerprämie',
     reportReward: 'Meldeprämie',
+    moderatorReward: 'Moderationsprämie',
     echo: 'Echo-Einheit',
   },
 

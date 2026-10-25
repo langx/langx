@@ -12,10 +12,12 @@ import {
   useAdminDecision,
   useAdminUser,
   useAdminUserAction,
+  useAdminSetModerator,
   type AdminUserDto,
 } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
 import {
+  AdminBlockV3,
   AdminCaptionV3,
   AdminFactsV3,
   AdminFieldV3,
@@ -28,6 +30,7 @@ import { LinkedAccounts } from '../../../src/components/admin/LinkedAccounts'
 import { MoneyTimeline } from '../../../src/components/admin/MoneyTimeline'
 import { Button } from '../../../src/components/ui/Button'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
+import { Toggle } from '../../../src/components/ui/Toggle'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { ADMIN, WARNINGS } from '../../../src/lib/adminStrings'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
@@ -99,6 +102,7 @@ function Found({ data }: { data: AdminUserDto }) {
   const wide = useAdminWide()
   const action = useAdminUserAction()
   const decide = useAdminDecision()
+  const moderator = useAdminSetModerator()
   const [message, setMessage] = useState('')
   const [days, setDays] = useState('7')
   const [giftMonths, setGiftMonths] = useState<ProGiftMonths>(1)
@@ -217,6 +221,15 @@ function Found({ data }: { data: AdminUserDto }) {
       )
     } catch {
       showToast(ADMIN.common.failed)
+    }
+  }
+
+  async function setModerator(next: boolean) {
+    try {
+      await moderator.mutateAsync({ userId: user.userId, moderator: next })
+      showToast(next ? ADMIN.users.moderator.granted : ADMIN.users.moderator.revoked)
+    } catch {
+      showToast(next ? ADMIN.users.moderator.refused : ADMIN.common.failed)
     }
   }
 
@@ -406,6 +419,22 @@ function Found({ data }: { data: AdminUserDto }) {
         variant="neutral"
         onPress={() => run('sign-out', ADMIN.users.confirmSignOut(who))}
       />
+
+      {/* ── the moderator role; an operator already holds all of it ── */}
+      {user.admin || user.official ? null : (
+        <>
+          <AdminHeadingV3 title={ADMIN.users.moderator.title} />
+          <AdminBlockV3 style={styles.toggleRow}>
+            <Text style={styles.toggleText}>{ADMIN.users.moderator.hint}</Text>
+            <Toggle
+              value={user.moderatorSince !== null}
+              onValueChange={(next) => void setModerator(next)}
+              busy={moderator.isPending}
+              accessibilityLabel={ADMIN.users.moderator.title}
+            />
+          </AdminBlockV3>
+        </>
+      )}
     </>
   )
 
@@ -536,4 +565,6 @@ const useStyles = makeStyles(({ v3 }) => ({
   row: { ...v3.type.callout, color: v3.colors.fg, paddingHorizontal: v3.space[4] },
   presets: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
   preset: { width: 'auto' },
+  toggleRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[12] },
+  toggleText: { ...v3.type.callout, color: v3.colors.fg, flex: 1 },
 }))

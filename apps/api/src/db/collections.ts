@@ -314,6 +314,11 @@ export const COLLECTIONS = {
   /** Every mutating decision an operator made in the panel, append-only. */
   adminActions: 'adminActions',
   /**
+   * Every decision a moderator made, with the reason they gave and what an
+   * operator later made of it. See `modules/moderation/moderatorActions.ts`.
+   */
+  moderatorActions: 'moderatorActions',
+  /**
    * One row per UTC minute: how many people were in the app then.
    *
    * Written by every API instance and keyed on the minute itself, so the two

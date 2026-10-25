@@ -65,6 +65,8 @@ export interface SuspendInput {
    * that can answer it at all.
    */
   byAdminId?: string
+  /** Set when `byAdminId` is a moderator: the reason they wrote, kept beside it. */
+  moderatorNote?: string
 }
 
 /**
@@ -94,6 +96,7 @@ export async function suspendUser(db: Db, input: SuspendInput): Promise<Date> {
           reason: input.reason,
           ...(input.reportId ? { reportId: input.reportId } : {}),
           ...(input.byAdminId ? { by: input.byAdminId } : {}),
+          ...(input.moderatorNote ? { byModerator: true, note: input.moderatorNote } : {}),
         },
       },
     },

@@ -44,6 +44,11 @@ export const ERROR_CODES = {
    */
   ADMIN_REQUIRED: 'ADMIN_REQUIRED',
   /**
+   * The same refusal one rung down: a signed-in account that is neither a
+   * moderator nor an operator asked for something under `/mod`.
+   */
+  MODERATOR_REQUIRED: 'MODERATOR_REQUIRED',
+  /**
    * A sign-up with an address on a known throwaway mail domain. Its own code
    * because the fix is specific — use another address — and the sign-up form
    * can only say so if it can tell this apart from a malformed address.
@@ -361,6 +366,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   UNDERAGE: 403,
   ACCOUNT_SUSPENDED: 403,
   ADMIN_REQUIRED: 403,
+  MODERATOR_REQUIRED: 403,
   DISPOSABLE_EMAIL: 400,
   SIGN_UP_LIMIT_REACHED: 429,
   UPGRADE_REQUIRED: 403,

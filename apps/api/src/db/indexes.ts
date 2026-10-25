@@ -1317,6 +1317,16 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { subjectUserId: 1, at: -1 }, name: 'subject_recent' },
     { key: { at: -1 }, name: 'recent' },
   ],
+  [COLLECTIONS.moderatorActions]: [
+    /*
+     * The operator's review queue, one tab per state. `review.status` is
+     * missing on a row nobody has reviewed yet, and an equality match on
+     * `null` uses this index for exactly those.
+     */
+    { key: { 'review.status': 1, _id: -1 }, name: 'review_recent' },
+    // One moderator's own record, for the counts beside their name.
+    { key: { moderatorId: 1, at: -1 }, name: 'moderator_recent' },
+  ],
   [COLLECTIONS.presenceSamples]: [
     /*
      * The read is "the last day, oldest first", and the TTL is the retention:

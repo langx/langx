@@ -108,6 +108,14 @@ export interface Profile {
    * until somebody names it.
    */
   admin?: true
+  /**
+   * A moderator: a member picked to work the report queue, with less power
+   * than `admin` and every decision reviewed — see `routes/moderator.ts`.
+   * Written only by the operator panel's grant route, never by a form, for
+   * `admin`'s reasons. Unlike `admin` it is public: `toPublicProfile` names it,
+   * because the MOD chip is how members know who is moderating them.
+   */
+  moderator?: { since: Date; by: string }
   handle: string
   /**
    * The handle this account held before its last change — see
@@ -570,6 +578,12 @@ export interface Profile {
     /** The one appeal. Its presence is what refuses a second. */
     /** The moderator who decided it, when the decision came from the panel. */
     by?: string
+    /**
+     * Set when `by` is a moderator rather than an operator, with the reason
+     * they were made to write. Both are what the operator reviewing it reads.
+     */
+    byModerator?: true
+    note?: string
     /**
      * `decidedAt` is what takes an appeal out of the queue. Answering with
      * `lift` removes this whole sub-document and needs nothing; `keep` and
@@ -1709,6 +1723,8 @@ export interface PublicProfile {
   follow: FollowState
   /** Draws the tick beside the display name. See `Profile.official`. */
   official?: true
+  /** Draws the MOD chip beside the name. See `Profile.moderator`. */
+  moderator?: true
   /**
    * Whether this account takes messages. Absent for a person, who always does;
    * present and `false` on a channel, which the chat screen reads to draw no
@@ -1837,6 +1853,7 @@ export function toPublicProfile(
       ? OFFICIAL_WRITABLE[profile.handle]
       : true
   } else result.age = ageFromBirthDate(profile.birthDate, now)
+  if (profile.moderator) result.moderator = true
   // Spelled out here rather than read from `modules/calls`, which imports
   // `modules/official`, which imports this file. `assertCallAllowed` is the
   // rule; this is the hint that keeps a button from promising otherwise.

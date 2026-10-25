@@ -125,6 +125,13 @@ function SettingsScreen() {
            * `model.profile` is `useMe()`'s data, already loaded — so no extra
            * request — and the flag only ever appears on your own profile.
            */}
+          {model.profile?.moderator ? (
+            <ListRow
+              title={t('moderation.title')}
+              onPress={() => router.push('/(app)/moderation')}
+              last={!model.profile.admin}
+            />
+          ) : null}
           {model.profile?.admin ? (
             <ListRow title={ADMIN.entryRow} onPress={() => router.push('/(app)/admin')} last />
           ) : null}

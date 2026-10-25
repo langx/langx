@@ -1827,6 +1827,83 @@ export const en = {
     weeksAgo: { one: '{count} week ago', other: '{count} weeks ago' },
   },
 
+  /**
+   * The moderator's own screens. Read by members we picked, in their own
+   * language — unlike the operator panel, which is English by design.
+   */
+  moderation: {
+    title: 'Moderation',
+    lead: 'Open reports you can decide. The LangX team reviews every decision, with the reason you give.',
+    empty: 'No open reports right now. Thank you for looking.',
+    aboutPost: 'Post',
+    aboutComment: 'Comment',
+    aboutReview: 'Review',
+    aboutProfile: 'Profile',
+    warnedTag: 'Warned',
+    reported: 'Reported person',
+    details: 'What the reporter wrote',
+    noDetails: 'No details given.',
+    content: 'What was reported',
+    thread: 'Their latest messages',
+    fromReported: 'Reported person',
+    fromReporter: 'Reporter',
+    deleted: 'Deleted',
+    files: {
+      one: '{count} file',
+      other: '{count} files',
+    },
+    history: 'Before this report',
+    earlierWarnings: {
+      one: 'Warned {count} time before',
+      other: 'Warned {count} times before',
+    },
+    otherOpen: {
+      one: '{count} other open report',
+      other: '{count} other open reports',
+    },
+    suspendedNow: 'Suspended right now',
+    hideHeading: 'Hide what was reported',
+    hidePost: 'Hide the post',
+    unhidePost: 'Show the post again',
+    hideComment: 'Hide the comment',
+    unhideComment: 'Show the comment again',
+    hideReview: 'Hide the review',
+    unhideReview: 'Show the review again',
+    warnHeading: 'Warn from @langx',
+    warnLead:
+      'A prepared message in English, sent from @langx and by email. You cannot change the words.',
+    sendWarning: 'Send this warning',
+    warned: 'Warning sent',
+    alreadyWarned: 'This report already has a warning',
+    suspendHeading: 'Suspend',
+    days: {
+      one: '{count} day',
+      other: '{count} days',
+    },
+    note: 'Why? The team reads this',
+    notePlaceholder: 'What you saw that breaks the rules',
+    noteMin: {
+      one: 'At least {count} character',
+      other: 'At least {count} characters',
+    },
+    suspend: {
+      one: 'Suspend for {count} day',
+      other: 'Suspend for {count} days',
+    },
+    confirmSuspend: {
+      one: 'Suspend them for {count} day?',
+      other: 'Suspend them for {count} days?',
+    },
+    suspended: 'Suspended',
+    dismissHeading: 'Nothing wrong here',
+    dismiss: 'Dismiss the report',
+    confirmDismiss: 'Dismiss this report?',
+    dismissed: 'Dismissed',
+    done: 'Done',
+    gone: 'This report has already been decided.',
+    failed: "That didn't work. Try again.",
+  },
+
   report: {
     messageQuestion: 'Why are you reporting this message?',
     profileQuestion: 'Why are you reporting this profile?',
@@ -2051,6 +2128,7 @@ export const en = {
 
   profile: {
     proBadge: 'Pro member',
+    modBadge: 'Moderator',
     /** The sheet behind the PRO badge on somebody's profile. */
     proSheetTitle: 'What’s {plan}?',
     proSheetBody: '{name} has {plan}. Here’s what it adds to the free plan:',
@@ -2568,6 +2646,10 @@ export const en = {
     showWeekChart: 'Show this week’s chart',
     showWeekChartBody: 'Which days you sent messages and corrections, on your profile.',
     voiceCredits: 'Voices and licences',
+    moderators: 'Moderators',
+    moderatorsBody:
+      'Members who help keep LangX safe. The LangX team reviews every decision they make.',
+    moderatorsEmpty: 'No moderators yet.',
     voiceCreditsBody:
       'Messages are read aloud by open-source voice models. Most ask nothing of us; the ones below are licensed on the condition that we credit the people who recorded them.',
     voiceCreditsEngines: 'The engines are Kokoro-82M and Piper, both open source.',
@@ -3001,6 +3083,7 @@ export const en = {
     gift: 'Hourly gift',
     bounty: 'Bug bounty',
     reportReward: 'Report reward',
+    moderatorReward: 'Moderator reward',
     echo: 'Echo session',
   },
 

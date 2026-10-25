@@ -1635,6 +1635,79 @@ export const ptBR: Localized<EnMessages> = {
     weeksAgo: { one: 'há {count} semana', other: 'há {count} semanas' },
   },
 
+  moderation: {
+    title: 'Moderação',
+    lead: 'Denúncias abertas sobre as quais você pode decidir. A equipe do LangX analisa cada decisão, com o motivo que você der.',
+    empty: 'Nenhuma denúncia aberta agora. Obrigado por olhar.',
+    aboutPost: 'Publicação',
+    aboutComment: 'Comentário',
+    aboutReview: 'Avaliação',
+    aboutProfile: 'Perfil',
+    warnedTag: 'Advertido',
+    reported: 'Pessoa denunciada',
+    details: 'O que quem denunciou escreveu',
+    noDetails: 'Nenhum detalhe.',
+    content: 'O que foi denunciado',
+    thread: 'As últimas mensagens',
+    fromReported: 'Pessoa denunciada',
+    fromReporter: 'Quem denunciou',
+    deleted: 'Apagada',
+    files: {
+      one: '{count} arquivo',
+      other: '{count} arquivos',
+    },
+    history: 'Antes desta denúncia',
+    earlierWarnings: {
+      one: 'Advertido {count} vez antes',
+      other: 'Advertido {count} vezes antes',
+    },
+    otherOpen: {
+      one: 'Mais {count} denúncia aberta',
+      other: 'Mais {count} denúncias abertas',
+    },
+    suspendedNow: 'Suspenso agora',
+    hideHeading: 'Ocultar o que foi denunciado',
+    hidePost: 'Ocultar a publicação',
+    unhidePost: 'Mostrar a publicação de novo',
+    hideComment: 'Ocultar o comentário',
+    unhideComment: 'Mostrar o comentário de novo',
+    hideReview: 'Ocultar a avaliação',
+    unhideReview: 'Mostrar a avaliação de novo',
+    warnHeading: 'Advertir pelo @langx',
+    warnLead:
+      'Uma mensagem pronta em inglês, enviada pelo @langx e por e-mail. Você não pode mudar as palavras.',
+    sendWarning: 'Enviar esta advertência',
+    warned: 'Advertência enviada',
+    alreadyWarned: 'Esta denúncia já tem uma advertência',
+    suspendHeading: 'Suspender',
+    days: {
+      one: '{count} dia',
+      other: '{count} dias',
+    },
+    note: 'Por quê? A equipe lê isto',
+    notePlaceholder: 'O que você viu que quebra as regras',
+    noteMin: {
+      one: 'Pelo menos {count} caractere',
+      other: 'Pelo menos {count} caracteres',
+    },
+    suspend: {
+      one: 'Suspender por {count} dia',
+      other: 'Suspender por {count} dias',
+    },
+    confirmSuspend: {
+      one: 'Suspender por {count} dia?',
+      other: 'Suspender por {count} dias?',
+    },
+    suspended: 'Suspenso',
+    dismissHeading: 'Nada de errado aqui',
+    dismiss: 'Descartar a denúncia',
+    confirmDismiss: 'Descartar esta denúncia?',
+    dismissed: 'Descartada',
+    done: 'Pronto',
+    gone: 'Já foi decidido sobre esta denúncia.',
+    failed: 'Não deu certo. Tente de novo.',
+  },
+
   report: {
     messageQuestion: 'Por que você está denunciando esta mensagem?',
     profileQuestion: 'Por que você está denunciando este perfil?',
@@ -1831,6 +1904,7 @@ export const ptBR: Localized<EnMessages> = {
 
   profile: {
     proBadge: 'Membro Pro',
+    modBadge: 'Moderador',
     proSheetTitle: 'O que é o {plan}?',
     proSheetBody: '{name} tem o {plan}. Veja o que ele acrescenta ao plano gratuito:',
     official: 'Conta oficial',
@@ -2299,6 +2373,10 @@ export const ptBR: Localized<EnMessages> = {
     showWeekChart: 'Mostrar o gráfico da semana',
     showWeekChartBody: 'Em quais dias você enviou mensagens e correções, no seu perfil.',
     voiceCredits: 'Vozes e licenças',
+    moderators: 'Moderadores',
+    moderatorsBody:
+      'Membros que ajudam a manter o LangX seguro. A equipe do LangX analisa cada decisão deles.',
+    moderatorsEmpty: 'Ainda não há moderadores.',
     voiceCreditsBody:
       'As mensagens são lidas em voz alta por modelos de voz de código aberto. A maioria não nos pede nada; os de baixo são licenciados com a condição de creditarmos quem os gravou.',
     voiceCreditsEngines: 'Os motores são Kokoro-82M e Piper, ambos de código aberto.',
@@ -2704,6 +2782,7 @@ export const ptBR: Localized<EnMessages> = {
     gift: 'Presente de cada hora',
     bounty: 'Recompensa por erro',
     reportReward: 'Recompensa por denúncia',
+    moderatorReward: 'Recompensa de moderação',
     echo: 'Sessão do Echo',
   },
 

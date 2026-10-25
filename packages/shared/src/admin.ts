@@ -274,6 +274,11 @@ export const ADMIN_ACTIONS = [
   'appConfig.minVersion',
   'appConfig.captchaRequired',
   'appConfig.flag',
+  'moderator.grant',
+  'moderator.revoke',
+  'modAction.approve',
+  'modAction.revert',
+  'modAction.reward',
 ] as const
 export type AdminActionName = (typeof ADMIN_ACTIONS)[number]
 

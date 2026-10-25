@@ -373,6 +373,15 @@ export function SettingsRowV3({ id, model }: { id: string; model: SettingsModel 
           onPress={() => router.push('/(app)/legal')}
         />
       )
+    case 'about.moderators':
+      return (
+        <SettingsItemV3
+          icon={icon}
+          hue={hue}
+          title={t('settings.moderators')}
+          onPress={() => router.push('/(app)/settings/moderators')}
+        />
+      )
     case 'about.voices':
       return (
         <SettingsItemV3
@@ -663,6 +672,7 @@ const ROW_LOOK: Record<V3RowId, { icon: Glyph; hue?: PartnerHue }> = {
   'about.reportBug': { icon: 'alert-circle', hue: 'tangerine' },
   'about.requestFeature': { icon: 'zap', hue: 'lime' },
   'about.community': { icon: 'coffee', hue: 'mint' },
+  'about.moderators': { icon: 'shield', hue: 'aqua' },
   'about.rate': { icon: 'heart', hue: 'lime' },
   'about.intro': { icon: 'play-circle', hue: 'sky' },
   'about.tour': { icon: 'compass', hue: 'sky' },

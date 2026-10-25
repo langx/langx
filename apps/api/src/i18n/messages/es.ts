@@ -37,6 +37,11 @@ export const es: Localized<ServerMessages> = {
       other: '{count} fichas por ayudar a que LangX sea seguro 🛡️',
     },
     reportRewardBody: 'Revisamos lo que denunciaste. Gracias.',
+    moderatorRewardTitle: {
+      one: '{count} ficha por moderar LangX 🛡️',
+      other: '{count} fichas por moderar LangX 🛡️',
+    },
+    moderatorRewardBody: 'Un operador revisó una de tus decisiones. Gracias.',
     /** The same nudges on the phone, under the same switches. */
     promo: {
       addPhotoTitle: 'Añade una foto',
@@ -664,6 +669,11 @@ export const es: Localized<ServerMessages> = {
       one: 'Gracias por tu denuncia. La revisamos y añadimos {count} ficha a tu cartera por ayudar a que LangX siga siendo un buen lugar para aprender. La persona a la que denunciaste nunca sabrá quién lo hizo.',
       other:
         'Gracias por tu denuncia. La revisamos y añadimos {count} fichas a tu cartera por ayudar a que LangX siga siendo un buen lugar para aprender. La persona a la que denunciaste nunca sabrá quién lo hizo.',
+    },
+    moderatorReward: {
+      one: 'Gracias por moderar. Un operador revisó una de tus decisiones y añadió {count} ficha a tu cartera.',
+      other:
+        'Gracias por moderar. Un operador revisó una de tus decisiones y añadió {count} fichas a tu cartera.',
     },
     suspensionEnded:
       'Tu suspensión ha terminado y tu cuenta vuelve a estar abierta. 👋 Tu perfil vuelve a verse en Descubrir y en la búsqueda, y tus chats están donde los dejaste.\n\nPor favor, ayuda a que LangX siga siendo un buen lugar para aprender: otra denuncia confirmada podría cerrar la cuenta para siempre. Si crees que algo ha salido mal, Ajustes → Información → Comentarios llega a una persona.',
