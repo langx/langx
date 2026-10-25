@@ -5199,5 +5199,18 @@ export const ar: Localized<EnMessages> = {
     watchAgain: 'شاهد فيديو اليوم',
     homeTitle: 'Venus، اليوم {day}',
     homeBody: 'فيديو اليوم · اضغط للمشاهدة',
+    endStreak: {
+      zero: 'سلسلة {count} يوم',
+      one: 'سلسلة يوم واحد',
+      two: 'سلسلة يومين',
+      few: 'سلسلة {count} أيام',
+      many: 'سلسلة {count} يومًا',
+      other: 'سلسلة {count} يوم',
+    },
+    endTitle: 'اليوم {day} مع Venus',
+    endBody: 'انشره في قصتك أو أرسله إلى صديق.',
+    shareVideo: 'مشاركة الفيديو',
+    downloadVideo: 'تنزيل الفيديو',
+    replay: 'شاهد مجددًا',
   },
 }

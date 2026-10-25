@@ -29,15 +29,17 @@ export function useVenusStory(): VenusVideo | null {
   const tokens = useTokens()
   const { locale } = useLocale()
   const manifest = useQuery({
-    queryKey: ['venus-manifest', VENUS_MEDIA_URL],
+    // `2`: the entries carry their cover since it was added, and a cache
+    // written to disk by a build before that holds a bare list of names.
+    queryKey: ['venus-manifest', 2, VENUS_MEDIA_URL],
     queryFn: async () => {
       const response = await fetch(`${VENUS_MEDIA_URL}/${VENUS_STORY_MEDIA.manifest}`)
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
-      // A list in the cache, a set to read: the query cache may be written to
-      // disk as JSON, where a `Set` would come back as `{}`.
+      // A list in the cache, a map to read: the query cache may be written to
+      // disk as JSON, where a `Map` would come back as `{}`.
       return [...parseVenusManifest(await response.json())]
     },
-    select: (names: string[]) => new Set(names),
+    select: (entries: [string, string | null][]) => new Map(entries),
     enabled: on,
     retry: false,
     // A new day's file is uploaded once, far ahead of anybody reaching it.

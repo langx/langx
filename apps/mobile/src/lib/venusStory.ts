@@ -25,6 +25,12 @@ export interface VenusVideo {
   dayKey: string
   fileName: string
   url: string
+  /**
+   * The day's still, `venus-day007-tr.jpg` beside the video, or `null` when
+   * the manifest lists none. Shown before the first frame plays and again
+   * when the video ends; without one, the player holds the last frame.
+   */
+  coverUrl: string | null
 }
 
 /** The streak as `GET /me/tokens` sends it. */
@@ -36,32 +42,45 @@ export interface VenusStreak {
 }
 
 /**
- * The (locale, file) pairs the bucket holds, as `<locale>/<file name>`.
+ * The videos the bucket holds, keyed `<locale>/<file name>`, each with the
+ * file name of its cover, or `null` when it has none.
  *
  * Read from `manifest.json`, which `venus/gen/batch.mjs` writes as
- * `{ videos: [{ day, lang, file }] }` with `file` a path on the machine that
- * rendered it — only its last segment is the name in the bucket. An entry
- * without `file` stands for the plain cut of its day. Anything unreadable is
- * skipped rather than thrown: a half-broken manifest should cost the days it
- * spoils, not every day.
+ * `{ videos: [{ day, lang, file, cover }] }` with `file` — and `cover`, the
+ * day's still — paths on the machine that rendered them: only the last
+ * segment is the name in the bucket, and the cover sits in the same folder as
+ * its video. An entry without `file` stands for the plain cut of its day.
+ * Anything unreadable is skipped rather than thrown: a half-broken manifest
+ * should cost the days it spoils, not every day — and an unreadable `cover`
+ * costs only the cover.
  */
-export type VenusManifest = ReadonlySet<string>
+export type VenusManifest = ReadonlyMap<string, string | null>
+
+function lastSegment(path: unknown): string | null {
+  if (typeof path !== 'string') return null
+  const name = path.slice(path.lastIndexOf('/') + 1)
+  return name.length > 0 ? name : null
+}
 
 export function parseVenusManifest(json: unknown): VenusManifest {
-  const found = new Set<string>()
+  const found = new Map<string, string | null>()
   const videos = (json as { videos?: unknown } | null)?.videos
   if (!Array.isArray(videos)) return found
   for (const entry of videos as unknown[]) {
     if (typeof entry !== 'object' || entry === null) continue
-    const { day, lang, file } = entry as { day?: unknown; lang?: unknown; file?: unknown }
+    const { day, lang, file, cover } = entry as {
+      day?: unknown
+      lang?: unknown
+      file?: unknown
+      cover?: unknown
+    }
     if (typeof lang !== 'string' || lang.length === 0) continue
     const name =
-      typeof file === 'string' && file.length > 0
-        ? file.slice(file.lastIndexOf('/') + 1)
-        : typeof day === 'number' && Number.isInteger(day) && day > 0
-          ? venusFileName(day, lang, 'day')
-          : null
-    if (name) found.add(`${lang}/${name}`)
+      lastSegment(file) ??
+      (typeof day === 'number' && Number.isInteger(day) && day > 0
+        ? venusFileName(day, lang, 'day')
+        : null)
+    if (name) found.set(`${lang}/${name}`, lastSegment(cover))
   }
   return found
 }
@@ -117,14 +136,18 @@ export function venusVideoFor(input: {
 
   const cut = venusCutFor(streak)
   const fileName = venusFileName(streak.current, locale, cut)
-  if (!manifest.has(`${locale}/${fileName}`)) return null
+  const key = `${locale}/${fileName}`
+  if (!manifest.has(key)) return null
+  const folder = `${baseUrl.replace(/\/+$/, '')}/${locale}`
+  const cover = manifest.get(key) ?? null
   return {
     day: streak.current,
     locale,
     cut,
     dayKey,
     fileName,
-    url: `${baseUrl.replace(/\/+$/, '')}/${locale}/${fileName}`,
+    url: `${folder}/${fileName}`,
+    coverUrl: cover ? `${folder}/${cover}` : null,
   }
 }
 
@@ -162,6 +185,81 @@ export function markVenusSeen(
   const rest = Object.entries(seen ?? {}).filter(([id]) => id !== accountId)
   const kept = limit > 1 ? rest.slice(-(limit - 1)) : []
   return Object.fromEntries([...kept, [accountId, dayKey]])
+}
+
+/**
+ * Whether this account has already watched `video` to its end on this device
+ * (`FLAG_KEYS.venusStoryWatched`, the same per-account map as the seen one,
+ * written with `markVenusSeen`). A replay from the flame then keeps Share on
+ * screen from its first frame: the person has seen the video through, and
+ * what they are back for is as likely the button as the picture.
+ */
+export function hasWatchedVenus(
+  watched: VenusSeen | null,
+  accountId: string | undefined,
+  dayKey: string,
+): boolean {
+  return !!accountId && watched?.[accountId] === dayKey
+}
+
+/** The videos' shape: rendered 1080 × 1920. */
+export const VENUS_ASPECT = 9 / 16
+
+/**
+ * How much of the picture's width the player may cut off, per side, to fill a
+ * phone taller than 9:16. The captions are burned in, and their bubble — a
+ * fixed width, set a little left of centre — comes to about 6% of the left
+ * edge, so a deeper cut would run it into the screen's edge. A 19.5:9 phone
+ * would need about 9% to fill completely; what the cap leaves over is a strip
+ * at the top a little taller than the status bar, which sits there anyway.
+ */
+export const VENUS_MAX_SIDE_CROP = 0.05
+
+export interface VenusFrame {
+  width: number
+  height: number
+  left: number
+  top: number
+}
+
+/**
+ * Where the video is drawn on a screen of `width` × `height`.
+ *
+ * On a screen as wide as 9:16 or wider — a tablet, a desktop browser — the
+ * whole picture, as tall as the screen and centred. On a taller phone, as
+ * tall as it can be without cutting more than `VENUS_MAX_SIDE_CROP` off each
+ * side, and pinned to the bottom: what is left over goes to the top, under
+ * the status bar, rather than splitting into two bars, and the picture's foot
+ * — where Venus stands — meets the screen's.
+ */
+export function venusFrameFor(width: number, height: number): VenusFrame {
+  if (width <= 0 || height <= 0) return { width: 0, height: 0, left: 0, top: 0 }
+  if (width / height >= VENUS_ASPECT) {
+    const frameWidth = height * VENUS_ASPECT
+    return { width: frameWidth, height, left: (width - frameWidth) / 2, top: 0 }
+  }
+  const frameWidth = Math.min(height * VENUS_ASPECT, width / (1 - 2 * VENUS_MAX_SIDE_CROP))
+  const frameHeight = frameWidth / VENUS_ASPECT
+  return {
+    width: frameWidth,
+    height: frameHeight,
+    left: (width - frameWidth) / 2,
+    top: height - frameHeight,
+  }
+}
+
+/**
+ * The name the shared file goes out under. iOS titles its share sheet with
+ * the file's name, so the bucket's `venus-day007-tr` was the first thing a
+ * person read there; this is the localised title instead, with the characters
+ * a file system refuses taken out.
+ */
+export function venusShareFileName(title: string): string {
+  const safe = title
+    .replace(/[\\/:*?"<>|]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return `${safe || 'Venus'}.mp4`
 }
 
 /**
@@ -212,4 +310,42 @@ export function subscribeToVenusReplay(listener: Listener): () => void {
   return () => {
     replayListeners.delete(listener)
   }
+}
+
+/*
+ * Whether the player is on screen — a latch like `proWelcome.ts`, read by the
+ * store-review prompt. A milestone day both opens the story and asks for a
+ * review, from the same check-in, and the store's sheet landed on top of
+ * Venus mid-sentence. The review waits for the story to close instead.
+ */
+let storyOpen = false
+const openListeners = new Set<Listener>()
+
+export function setVenusStoryOpen(open: boolean): void {
+  if (storyOpen === open) return
+  storyOpen = open
+  for (const listener of openListeners) listener()
+}
+
+export function isVenusStoryOpen(): boolean {
+  return storyOpen
+}
+
+export function subscribeToVenusStoryOpen(listener: Listener): () => void {
+  openListeners.add(listener)
+  return () => {
+    openListeners.delete(listener)
+  }
+}
+
+/** Resolves at once when the story is not open, and when it closes otherwise. */
+export function venusStoryClosed(): Promise<void> {
+  if (!storyOpen) return Promise.resolve()
+  return new Promise((resolve) => {
+    const unsubscribe = subscribeToVenusStoryOpen(() => {
+      if (storyOpen) return
+      unsubscribe()
+      resolve()
+    })
+  })
 }

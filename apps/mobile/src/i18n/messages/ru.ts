@@ -4793,5 +4793,16 @@ export const ru: Localized<EnMessages> = {
     watchAgain: 'Смотреть видео дня',
     homeTitle: 'Venus, день {day}',
     homeBody: 'Видео дня · Нажми, чтобы посмотреть',
+    endStreak: {
+      one: 'Серия: {count} день',
+      few: 'Серия: {count} дня',
+      many: 'Серия: {count} дней',
+      other: 'Серия: {count} дня',
+    },
+    endTitle: 'День {day} с Venus',
+    endBody: 'Выложи в сторис или отправь другу.',
+    shareVideo: 'Поделиться видео',
+    downloadVideo: 'Скачать видео',
+    replay: 'Смотреть снова',
   },
 }

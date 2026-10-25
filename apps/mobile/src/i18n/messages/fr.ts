@@ -4165,5 +4165,11 @@ export const fr: Localized<EnMessages> = {
     watchAgain: 'Voir la vidéo du jour',
     homeTitle: 'Venus, jour {day}',
     homeBody: 'La vidéo du jour · Touche pour regarder',
+    endStreak: { one: 'Série de {count} jour', other: 'Série de {count} jours' },
+    endTitle: 'Jour {day} avec Venus',
+    endBody: 'Mets-la dans ta story ou envoie-la à un ami.',
+    shareVideo: 'Partager la vidéo',
+    downloadVideo: 'Télécharger la vidéo',
+    replay: 'Revoir',
   },
 }
