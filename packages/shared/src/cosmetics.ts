@@ -166,8 +166,10 @@ export const COSMETICS: readonly Cosmetic[] = [
    * list so the sticker keyboard opens on something everybody can send.
    *
    * Thirty die-cut renders of the polished vector rig — no photos of the real
-   * cat — and the same art as the public Telegram set. Six of them carry a
-   * word, each once in Turkish and once in English.
+   * cat — and the same art as the public Telegram set. Four carry an English
+   * word (thanks, good morning, good night, let's practise) and eight say
+   * hello, one in each of the app's languages: an international app's free
+   * pack should not lean on any one of them.
    */
   {
     id: 'stickers.venus',
@@ -193,18 +195,18 @@ export const COSMETICS: readonly Cosmetic[] = [
       'boop',
       'sleepy',
       'diva',
-      'merhaba',
-      'hello',
-      'tesekkurler',
       'thanks',
-      'tamam',
-      'okay',
-      'gunaydin',
       'morning',
-      'iyigeceler',
       'goodnight',
-      'pratik',
       'practise',
+      'hello',
+      'hola',
+      'ola',
+      'bonjour',
+      'hallo',
+      'merhaba',
+      'privet',
+      'marhaban',
     ],
   },
   /**

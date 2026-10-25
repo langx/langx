@@ -9570,6 +9570,12 @@ once, with no backfill and nobody left out.
 - **The same art is a public Telegram set**, `t.me/addstickers/venus_langx_by_langxio_bot`,
   published from the admin bot. The Telegram set is 512 px PNG and is not
   generated from this repo.
+- **No one language leads it** (25 October 2026). It first shipped six word
+  stickers twice, in Turkish and in English. For an app in eight languages
+  that read as a Turkish pack, so the words are English now — thanks, good
+  morning, good night, let's practise — and eight stickers say hello, one in
+  each language the app speaks. The six retired ids still draw, as the
+  sticker that replaced them, because sent messages keep their ids.
 
 ## Copilot opens to every account; the flag is the off switch
 

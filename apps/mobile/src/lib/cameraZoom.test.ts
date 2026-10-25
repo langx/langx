@@ -4,6 +4,8 @@ import {
   clearOfZoomEdge,
   pinchFactor,
   settleFactor,
+  slideFactor,
+  slideRange,
   stepFactor,
   ZOOM,
   zoomProp,
@@ -105,5 +107,53 @@ describe('stepFactor', () => {
     expect(stepFactor(1, -1, 'android')).toBe(1)
     expect(stepFactor(8, 1, 'ios')).toBe(ZOOM.iosStop)
     expect(stepFactor(4, 1, 'android')).toBe(zoomStop('android'))
+  })
+})
+
+describe('slideFactor', () => {
+  const range = 400
+
+  it('does nothing until the finger has risen past the dead zone', () => {
+    expect(slideFactor(1, 0, range, 'ios')).toBe(1)
+    expect(slideFactor(2, -ZOOM.slideDeadZone, range, 'ios')).toBe(2)
+  })
+
+  it('never zooms out: sliding down holds the zoom it started from', () => {
+    expect(slideFactor(3, 200, range, 'ios')).toBe(3)
+  })
+
+  it('reaches the stop at the top of the range, from any start', () => {
+    const top = -(range + ZOOM.slideDeadZone)
+    expect(slideFactor(1, top, range, 'ios')).toBeCloseTo(zoomStop('ios'), 12)
+    expect(slideFactor(4, top, range, 'ios')).toBeCloseTo(zoomStop('ios'), 12)
+    expect(slideFactor(1, top * 2, range, 'android')).toBeCloseTo(zoomStop('android'), 12)
+  })
+
+  it('multiplies evenly along the way', () => {
+    const half = -(range / 2 + ZOOM.slideDeadZone)
+    expect(slideFactor(1, half, range, 'ios')).toBeCloseTo(Math.sqrt(zoomStop('ios')), 12)
+  })
+
+  it('rises steadily with the finger', () => {
+    let last = 1
+    for (let y = -20; y >= -400; y -= 20) {
+      const next = slideFactor(1, y, range, 'ios')
+      expect(next).toBeGreaterThan(last)
+      last = next
+    }
+  })
+
+  it('stays at the stop when it starts there', () => {
+    expect(slideFactor(zoomStop('ios'), -100, range, 'ios')).toBe(zoomStop('ios'))
+  })
+})
+
+describe('slideRange', () => {
+  it('runs from the finger to just under the top bar', () => {
+    expect(slideRange(700)).toBe(700 - ZOOM.slideTopMargin)
+  })
+
+  it('is never too short to aim with', () => {
+    expect(slideRange(150)).toBe(ZOOM.slideMinRange)
   })
 })
