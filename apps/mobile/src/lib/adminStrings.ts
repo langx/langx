@@ -21,7 +21,7 @@
  *
  * If you are here to "finish the translations": this is finished.
  */
-import type { AdminFlagName, ReportReason } from '@langx/shared'
+import { REPORT_WARNINGS, type AdminFlagName } from '@langx/shared'
 
 /**
  * One decimal, and an em dash rather than a `0%` when there is nothing to take
@@ -34,39 +34,12 @@ export function adminPercent(part: number, whole: number): string {
 }
 
 /**
- * The first warning for a reported account, in the shape the hand-written
- * ones of 28 Sept took. @langx is one way, so it names where a reply goes.
- */
-function warning(what: string): string {
-  return `Hi, this is the LangX Team.
-
-We've received a report that your account ${what}. This goes against our community rules, so this is a warning.
-
-Please review our Terms: https://langx.io/terms-conditions
-
-If it happens again, your account may be suspended. Questions: hi@langx.io`
-}
-
-/**
  * One warning per report reason, which the report screen fills in from the
- * report and the search-box screen offers as buttons. In English whatever the
- * reader's language, like everything typed into the panel. Keyed by the
- * reason, so a reason added to `REPORT_REASONS` does not compile without one.
+ * report and the search-box screen offers as buttons. The words live in
+ * `@langx/shared` since moderators arrived, because for a moderator the server
+ * has to be the one that picks them; the panel still lets an operator edit.
  */
-export const WARNINGS: Record<ReportReason, string> = {
-  spam: warning('has been sending spam or unwanted promotion'),
-  scam: warning('has been asking other users for money'),
-  harassment: warning('has been harassing other users'),
-  hate_speech: warning('has been attacking people for who they are'),
-  inappropriate_content: warning('has been sharing inappropriate content'),
-  fake_profile: warning('is using a fake or misleading profile'),
-  underage: `Hi, this is the LangX Team.
-
-We've received a report that you may be under 16. LangX is only for people aged 16 and over.
-
-If this is a mistake, please write to hi@langx.io. Otherwise your account may be suspended.`,
-  other: warning('has broken our community rules'),
-}
+export const WARNINGS = REPORT_WARNINGS
 
 export const ADMIN = {
   entryRow: 'Operator panel',
@@ -84,6 +57,7 @@ export const ADMIN = {
     measure: 'Measurement',
     flags: 'Flags',
     system: 'System',
+    moderators: 'Moderators',
     waiting: 'waiting',
     sections: {
       queue: 'Waiting',
@@ -391,6 +365,13 @@ export const ADMIN = {
     blockedBy: 'blocked by',
     history: 'What we have done',
     noHistory: 'Nothing yet.',
+    moderator: {
+      title: 'Moderator',
+      hint: 'Works the report queue: warn, hide, dismiss, suspend up to a month. Never Pro, tokens or appeals. Every decision comes to you for review.',
+      granted: 'Now a moderator',
+      revoked: 'No longer a moderator',
+      refused: 'Operators and official accounts cannot be moderators',
+    },
     copilot: {
       title: 'Copilot access',
       hint: 'Uses Copilot when the switch is on and they agree.',
@@ -1009,6 +990,43 @@ export const ADMIN = {
       'the account is on the list above',
       'they agreed to the current consent sheet, asked on their first tap',
     ],
+  },
+
+  moderators: {
+    title: 'Moderators',
+    hint: 'Members who work the report queue. Make somebody one from their account under Find someone.',
+    empty: 'Nobody is a moderator yet.',
+    since: (date: string) => `since ${date}`,
+    record: (total: number, pending: number) => `${total} decided · ${pending} to review`,
+    undone: (n: number) => `${n} undone`,
+    rewarded: (n: number) => `${n} tokens paid`,
+    decisions: 'Their decisions',
+    allDecisions: 'Every decision',
+    tabs: { pending: 'To review', approved: 'Approved', reverted: 'Undone' },
+    emptyTab: 'Nothing here.',
+    action: (days: number | null, action: string) =>
+      action === 'suspend'
+        ? `Suspended for ${days ?? '?'} day${days === 1 ? '' : 's'}`
+        : action === 'warn'
+          ? 'Warned from @langx'
+          : action.replace(/_/g, ' '),
+    by: (who: string) => `by ${who}`,
+    about: (who: string, reason: string) => `${who} · reported for ${reason}`,
+    warnedFor: (reason: string) => `Prepared warning: ${reason}`,
+    noNote: 'No reason given.',
+    openReport: 'Open the report',
+    approve: 'Approve',
+    revert: 'Undo',
+    confirmRevert:
+      'Undo this decision? A suspension is lifted and the person is mailed, hidden content comes back, and the report returns to the open queue. A warning cannot be unsent.',
+    approved: 'Approved',
+    reverted: 'Undone — the report is open again',
+    alreadyReviewed: 'Already reviewed',
+    amount: 'Tokens',
+    reward: (n: number) => `Thank with ${n}`,
+    confirmReward: (n: number, who: string) => `Send ${n} tokens to ${who}?`,
+    rewarded1: (n: number) => `Thanked with ${n} tokens`,
+    alreadyRewarded: 'Already thanked for this one',
   },
 
   common: {

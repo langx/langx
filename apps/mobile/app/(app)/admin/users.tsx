@@ -13,6 +13,7 @@ import {
   useAdminUser,
   useAdminUserAction,
   useSetAdminCopilotAccess,
+  useAdminSetModerator,
   type AdminUserDto,
 } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
@@ -103,6 +104,7 @@ function Found({ data }: { data: AdminUserDto }) {
   const action = useAdminUserAction()
   const decide = useAdminDecision()
   const copilot = useSetAdminCopilotAccess()
+  const moderator = useAdminSetModerator()
   const [message, setMessage] = useState('')
   const [days, setDays] = useState('7')
   const [giftMonths, setGiftMonths] = useState<ProGiftMonths>(1)
@@ -230,6 +232,15 @@ function Found({ data }: { data: AdminUserDto }) {
       showToast(allowed ? ADMIN.users.copilot.allowed : ADMIN.users.copilot.revoked)
     } catch {
       showToast(ADMIN.common.failed)
+    }
+  }
+
+  async function setModerator(next: boolean) {
+    try {
+      await moderator.mutateAsync({ userId: user.userId, moderator: next })
+      showToast(next ? ADMIN.users.moderator.granted : ADMIN.users.moderator.revoked)
+    } catch {
+      showToast(next ? ADMIN.users.moderator.refused : ADMIN.common.failed)
     }
   }
 
@@ -431,6 +442,22 @@ function Found({ data }: { data: AdminUserDto }) {
           accessibilityLabel={ADMIN.users.copilot.title}
         />
       </AdminBlockV3>
+
+      {/* ── the moderator role; an operator already holds all of it ── */}
+      {user.admin || user.official ? null : (
+        <>
+          <AdminHeadingV3 title={ADMIN.users.moderator.title} />
+          <AdminBlockV3 style={styles.toggleRow}>
+            <Text style={styles.toggleText}>{ADMIN.users.moderator.hint}</Text>
+            <Toggle
+              value={user.moderatorSince !== null}
+              onValueChange={(next) => void setModerator(next)}
+              busy={moderator.isPending}
+              accessibilityLabel={ADMIN.users.moderator.title}
+            />
+          </AdminBlockV3>
+        </>
+      )}
     </>
   )
 

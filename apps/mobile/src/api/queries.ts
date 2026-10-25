@@ -85,6 +85,10 @@ import {
   type AdminMeasure,
   type HeardAboutView,
   type AdminMoneyTimeline,
+  type ModeratorDecision,
+  type ModeratorListItem,
+  type ModActionTab,
+  type ReportReason,
   CONVERSATION_SEARCH_MIN_LENGTH,
   MEDIA_LIMITS,
 } from '@langx/shared'
@@ -378,6 +382,12 @@ export const keys = {
   adminMoney: (userId: string) => ['admin', 'money', userId] as const,
   adminMembers: (tier: string) => ['admin', 'members', tier] as const,
   adminCopilotAccess: ['admin', 'copilot', 'access'] as const,
+  adminModerators: ['admin', 'moderators'] as const,
+  adminModActions: (status: string, moderatorId: string | null) =>
+    ['admin', 'modActions', status, moderatorId] as const,
+  modReports: ['mod', 'reports'] as const,
+  modReport: (id: string) => ['mod', 'report', id] as const,
+  moderators: ['moderators'] as const,
 }
 
 /**
@@ -621,6 +631,11 @@ export interface MeProfile {
    * `scripts/grant-admin.ts` on the server.
    */
   admin?: true
+  /**
+   * Set when this account is a moderator: the queue in Settings is theirs.
+   * Granted from the operator panel; public too, as the MOD chip.
+   */
+  moderator?: { since: string; by: string }
   /** The username this account held before its last change, still resolvable. */
   previousHandle?: string
   /**
@@ -3469,7 +3484,7 @@ export function useRevokeOtherSessions() {
 /** Every day in here is a UTC day — see the note at the top of `modules/admin/stats.ts`. */
 export interface AdminStatsDto {
   generatedAt: string
-  queue: { reports: number; appeals: number; feedback: number }
+  queue: { reports: number; appeals: number; feedback: number; modActions: number }
   audience: {
     profiles: number
     messages: number
@@ -3713,6 +3728,9 @@ export interface AdminUserDto {
       note?: string
     }[]
     admin: boolean
+    official: boolean
+    /** Since when, or `null` for somebody who is not a moderator. */
+    moderatorSince: string | null
     email: string | null
     emailVerified: boolean
     deletedAt: string | null
@@ -4277,6 +4295,156 @@ export function useAdminUserAction() {
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
     },
+  })
+}
+
+/** A moderator, with the record the operator judges them by. */
+export interface AdminModeratorDto extends AdminPartyDto {
+  since: string
+  total: number
+  pending: number
+  approved: number
+  reverted: number
+  rewarded: number
+}
+
+/** One decision a moderator made, as the operator reviews it. */
+export interface AdminModActionDto {
+  id: string
+  action: string
+  days: number | null
+  note: string | null
+  warningReason: string | null
+  at: string
+  reportId: string
+  reportReason: string | null
+  moderator: AdminPartyDto
+  subject: AdminPartyDto
+  review: { status: 'approved' | 'reverted'; at: string } | null
+  reward: { amount: number; at: string } | null
+}
+
+export function useAdminModerators() {
+  return useQuery({
+    queryKey: keys.adminModerators,
+    queryFn: () => api.get<{ items: AdminModeratorDto[] }>('/admin/moderators'),
+  })
+}
+
+export function useAdminModActions(status: ModActionTab, moderatorId: string | null) {
+  return useQuery({
+    queryKey: keys.adminModActions(status, moderatorId),
+    queryFn: () =>
+      api.get<{ items: AdminModActionDto[]; nextCursor: string | null }>(
+        `/admin/mod-actions?status=${status}&limit=50${moderatorId ? `&moderatorId=${moderatorId}` : ''}`,
+      ),
+  })
+}
+
+/** Approve, undo or thank — one hook, the whole `['admin']` prefix, like every panel write. */
+export function useAdminReviewModAction() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; verb: 'approve' | 'revert' | 'reward'; amount?: number }) =>
+      api.post<{ approved?: boolean; reverted?: boolean; awarded?: boolean; amount?: number }>(
+        `/admin/mod-actions/${input.id}/${input.verb}`,
+        input.amount === undefined ? {} : { amount: input.amount },
+      ),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+    },
+  })
+}
+
+/** Making somebody a moderator, or unmaking them, from the account screen. */
+export function useAdminSetModerator() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { userId: string; moderator: boolean }) =>
+      input.moderator
+        ? api.post<{ changed: boolean }>(`/admin/users/${input.userId}/moderator`, {})
+        : api.delete<{ changed: boolean }>(`/admin/users/${input.userId}/moderator`),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin'] })
+      void client.invalidateQueries({ queryKey: keys.moderators })
+    },
+  })
+}
+
+/**
+ * A report as a moderator sees it: the admin shape without the reporter, with
+ * every message labelled by side rather than by account.
+ */
+export type ModReportRowDto = Omit<
+  AdminReportDto,
+  'reporter' | 'message' | 'thread' | 'testimonial' | 'reward' | 'suspension'
+>
+
+export interface ModReportDto extends ModReportRowDto {
+  message:
+    | (Omit<NonNullable<AdminReportDto['message']>, 'senderId'> & { from: 'reported' | 'reporter' })
+    | null
+  thread: {
+    messages: (Omit<NonNullable<AdminReportDto['thread']>['messages'][number], 'senderId'> & {
+      from: 'reported' | 'reporter'
+    })[]
+  } | null
+  testimonial: { id: string; body: string; hidden: boolean } | null
+  suspension: { until: string | null; permanent: boolean } | null
+}
+
+export function useModReports() {
+  return useQuery({
+    queryKey: keys.modReports,
+    queryFn: () => api.get<{ items: ModReportRowDto[] }>('/mod/reports?limit=50'),
+  })
+}
+
+export function useModReport(id: string) {
+  return useQuery({
+    queryKey: keys.modReport(id),
+    queryFn: () => api.get<ModReportDto>(`/mod/reports/${id}`),
+    enabled: id.length > 0,
+    retry: false,
+  })
+}
+
+/** A moderator's decision. Invalidates the whole `['mod']` prefix: it leaves the queue. */
+export function useModDecision() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string } & ModeratorDecision) =>
+      api.post<unknown>(`/mod/reports/${input.id}/decision`, {
+        action: input.action,
+        ...(input.days === undefined ? {} : { days: input.days }),
+        ...(input.note === undefined ? {} : { note: input.note }),
+      }),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['mod'] })
+    },
+  })
+}
+
+/** A prepared warning from @langx. The reason is all the body carries. */
+export function useModWarn() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; reason: ReportReason }) =>
+      api.post<{ warned: boolean; emailed: boolean }>(`/mod/reports/${input.id}/warn`, {
+        reason: input.reason,
+      }),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['mod'] })
+    },
+  })
+}
+
+/** Who moderates, for the list in Settings. */
+export function useModerators() {
+  return useQuery({
+    queryKey: keys.moderators,
+    queryFn: () => api.get<{ items: ModeratorListItem[] }>('/moderators'),
+    staleTime: 10 * 60 * 1000,
   })
 }
 

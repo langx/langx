@@ -45,6 +45,7 @@ const KIND_LOOK: Record<TokenKind, { icon: Glyph | 'flame'; hue: PartnerHue | nu
   referralWelcome: { icon: 'user-plus', hue: 'tangerine' },
   bounty: { icon: 'tool', hue: null },
   reportReward: { icon: 'shield', hue: null },
+  moderatorReward: { icon: 'shield', hue: null },
   adjustment: { icon: 'sliders', hue: null },
   spend: { icon: 'shopping-bag', hue: null },
 }
