@@ -369,7 +369,7 @@ function ProfileScreenCurrent({ handle, from, embedded = false, onClose }: Profi
         <View style={styles.heroText}>
           <View style={styles.nameRow}>
             <Text style={styles.name}>{user.displayName}</Text>
-            {user.moderator ? <ModBadge fontSize={16} /> : null}
+            {user.moderator ? <ModBadge fontSize={26} /> : null}
             {/*
               An official account has no age to show — the server omits it
               rather than deriving one from a placeholder birth date — and
