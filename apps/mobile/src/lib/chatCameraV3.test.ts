@@ -46,13 +46,15 @@ describe('the v3 chat camera keeps the current camera’s words', () => {
     expect(V3).toMatch(/onPressOut=\{onPressOut\}/)
   })
 
-  it('lets the finger on the shutter slide up to zoom without ending the press', () => {
-    // A `Pressable` ends the press when the finger leaves it, which would stop the clip.
-    expect(V3).toMatch(/<GestureDetector gesture=\{touch\}>/)
-    expect(V3).toMatch(/shutterGesture=\{zoom\.shutterGesture\}|gesture=\{shutterGesture\}/)
-    expect(ROUTE).toMatch(/shutterGesture=\{zoom\.shutterGesture\}/)
-    expect(ROUTE).toMatch(/onShutterDown: \(\) => onPressIn\(\)/)
-    expect(ROUTE).toMatch(/onShutterUp: \(\) => onPressOut\(\)/)
+  it('ends the press only when the finger lifts, however far it slides', () => {
+    // A `Pressable` ends the press when the finger leaves it, and a gesture-handler
+    // pan was seen to on an iPhone: either stopped the clip as the finger rose.
+    expect(V3).not.toMatch(/GestureDetector/)
+    expect(V3).toMatch(/onResponderTerminationRequest=\{\(\) => false\}/)
+    expect(V3).toMatch(/onResponderRelease=\{release\}/)
+    expect(V3).toMatch(/onSlide\(event\.nativeEvent\.pageY - startY\.current, startY\.current\)/)
+    expect(ROUTE).toMatch(/onSlide=\{zoom\.slide\}/)
+    expect(ROUTE).toMatch(/holding\.current = false\s*zoom\.endSlide\(\)/)
   })
 })
 
@@ -139,8 +141,8 @@ describe('the chat camera zooms and flips from the picture', () => {
 
   it('zooms on the UI thread, with no render per frame', () => {
     expect(ZOOM_HOOK).toMatch(/useAnimatedProps\(/)
-    expect(ZOOM_HOOK).toMatch(/\.onChange\(\(event\) => \{\s*moveTo\(pinchFactor/)
-    expect(ZOOM_HOOK).toMatch(/moveTo\(next\)/)
+    expect(ZOOM_HOOK).toMatch(/\.onChange\(\(event\) => \{\s*if \(moveTo\(pinchFactor/)
+    expect(ZOOM_HOOK).toMatch(/moveTo\(next\)\) buzz\(\)/)
     // React hears only where a pinch came to rest.
     expect(ZOOM_HOOK).toMatch(/\.onEnd\(\(\) => \{[^}]*runOnJS\(setSettled\)/)
     expect(ROUTE).toContain('animatedProps={zoom.animatedProps}')

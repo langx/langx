@@ -10,7 +10,6 @@ import {
   slideFactor,
   slideRange,
   stepFactor,
-  ZOOM,
   zoomProp,
   type ZoomPlatform,
 } from '../../lib/cameraZoom'
@@ -35,7 +34,7 @@ function buzz(): void {
 
 /**
  * The chat camera's zoom gestures: pinch the picture, double-tap it to flip,
- * or hold the shutter and slide up (`shutterGesture`).
+ * or hold the shutter and slide up (`slide`).
  *
  * The zoom lives on the UI thread. `factor` is a shared value the pinch
  * multiplies on every frame, and `animatedProps` carries it to the
@@ -49,36 +48,27 @@ function buzz(): void {
  * tap fails, and a one-finger double-tap never waits on the pinch to fail,
  * which `Exclusive` would make it do.
  *
- * The shutter's own gesture is here too, because the slide is a zoom: the
- * finger that holds for a video keeps zooming as it rises, on the same
- * `factor` the pinch moves. It owns the whole press — a `Pressable` would
- * end the press as the finger left it, which a slide up the screen always
- * does — and hands its start and end to the route's hold-to-record timing.
+ * The shutter's slide is here too, because it is a zoom: the finger that
+ * holds for a video keeps zooming as it rises (`slide`), on the same
+ * `factor` the pinch moves. The shutter reports the finger from the JS
+ * thread, not as a gesture-handler gesture: see `Shutter` in `SnapCameraV3`.
  */
 export function useCameraZoom({
   flipEnabled,
   onDoubleTap,
-  onShutterDown,
-  onShutterUp,
 }: {
   /** Off while recording: a clip keeps its lens. */
   flipEnabled: boolean
   /** Flips the camera, and puts the zoom back to 1 with `reset`. */
   onDoubleTap: () => void
-  /** The finger came down on the shutter. */
-  onShutterDown: () => void
-  /** It lifted, or the system took the touch away. */
-  onShutterUp: () => void
 }) {
   const factor = useSharedValue(1)
   /** The next arrival at either end of the range buzzes. */
   const armed = useSharedValue(false)
   const nudge = useSharedValue(0)
   const [settled, setSettled] = useState(1)
-  /** The zoom when the finger came down on the shutter, and how far it may slide. */
-  const slideBase = useSharedValue(1)
-  const slideSpan = useSharedValue<number>(ZOOM.slideMinRange)
-  const slid = useSharedValue(false)
+  /** The zoom when the finger on the shutter began to move, and how far it may slide. */
+  const sliding = useRef<{ base: number; span: number } | null>(null)
 
   const animatedProps = useAnimatedProps(() => ({
     zoom: Math.max(0, zoomProp(factor.get(), OS) - nudge.get()),
@@ -87,21 +77,21 @@ export function useCameraZoom({
   // The latest handler, read at tap time, so the gestures need not be rebuilt for it.
   const onDoubleTapRef = useRef(onDoubleTap)
   onDoubleTapRef.current = onDoubleTap
-  const onShutterDownRef = useRef(onShutterDown)
-  onShutterDownRef.current = onShutterDown
-  const onShutterUpRef = useRef(onShutterUp)
-  onShutterUpRef.current = onShutterUp
 
-  /** Sets the zoom; one tick on reaching 1x or the stop, not a rattle while the finger hovers there. */
-  function moveTo(next: number): void {
+  /**
+   * Sets the zoom, and says whether this arrival at 1x or the stop should
+   * buzz: once per arrival, not a rattle while the finger hovers there. A
+   * worklet for the pinch, and a plain function for the shutter's slide.
+   */
+  function moveTo(next: number): boolean {
     'worklet'
     factor.set(next)
     if (armed.get() && atZoomEdge(next, OS)) {
       armed.set(false)
-      runOnJS(buzz)()
-    } else if (!armed.get() && clearOfZoomEdge(next, OS)) {
-      armed.set(true)
+      return true
     }
+    if (!armed.get() && clearOfZoomEdge(next, OS)) armed.set(true)
+    return false
   }
 
   /*
@@ -115,7 +105,7 @@ export function useCameraZoom({
         armed.set(!atZoomEdge(factor.get(), OS))
       })
       .onChange((event) => {
-        moveTo(pinchFactor(factor.get(), event.scaleChange, OS))
+        if (moveTo(pinchFactor(factor.get(), event.scaleChange, OS))) runOnJS(buzz)()
       })
       .onEnd(() => {
         const rest = settleFactor(factor.get())
@@ -138,44 +128,29 @@ export function useCameraZoom({
     return Gesture.Race(pinch, doubleTap)
   }, [flipEnabled, armed, factor])
 
-  const shutterGesture = useMemo(
-    () =>
-      Gesture.Pan()
-        // Active from the first touch, so no other gesture can take it from
-        // the shutter; a tap is a pan that never moved.
-        .minDistance(0)
-        .maxPointers(1)
-        .onBegin((event) => {
-          slideBase.set(factor.get())
-          slideSpan.set(slideRange(event.absoluteY))
-          slid.set(false)
-          armed.set(!atZoomEdge(factor.get(), OS))
-          runOnJS(shutterDown)()
-        })
-        .onChange((event) => {
-          const next = slideFactor(slideBase.get(), event.translationY, slideSpan.get(), OS)
-          if (next === factor.get()) return
-          slid.set(true)
-          moveTo(next)
-        })
-        .onFinalize(() => {
-          if (slid.get()) {
-            const rest = settleFactor(factor.get())
-            factor.set(rest)
-            runOnJS(setSettled)(rest)
-          }
-          runOnJS(shutterUp)()
-        }),
-    // `moveTo` and the two callers read only shared values and refs, which are stable.
-    [armed, factor, slideBase, slideSpan, slid],
-  )
-
-  function shutterDown(): void {
-    onShutterDownRef.current()
+  /**
+   * The finger on the shutter, `translationY` from where it came down at
+   * `startY` (negative is up). The zoom it starts from is the one when it
+   * first moves, so a pinch made before the press is kept.
+   */
+  function slide(translationY: number, startY: number): void {
+    let from = sliding.current
+    if (!from) {
+      from = { base: factor.get(), span: slideRange(startY) }
+      sliding.current = from
+      armed.set(!atZoomEdge(from.base, OS))
+    }
+    const next = slideFactor(from.base, translationY, from.span, OS)
+    if (next !== factor.get() && moveTo(next)) buzz()
   }
 
-  function shutterUp(): void {
-    onShutterUpRef.current()
+  /** The finger lifted: React hears where the zoom came to rest, as after a pinch. */
+  function endSlide(): void {
+    if (!sliding.current) return
+    sliding.current = null
+    const rest = settleFactor(factor.get())
+    factor.set(rest)
+    setSettled(rest)
   }
 
   /**
@@ -207,13 +182,14 @@ export function useCameraZoom({
 
   return {
     gesture,
-    shutterGesture,
     animatedProps,
     /** The prop React passes, for renders between pinches. */
     zoom: zoomProp(settled, OS),
     zoomed: settled > 1,
     reset,
     step,
+    slide,
+    endSlide,
     resend,
   }
 }
