@@ -391,12 +391,6 @@ export const ADMIN = {
     blockedBy: 'blocked by',
     history: 'What we have done',
     noHistory: 'Nothing yet.',
-    copilot: {
-      title: 'Copilot access',
-      hint: 'Uses Copilot when the switch is on and they agree.',
-      allowed: 'Copilot allowed',
-      revoked: 'Copilot access removed',
-    },
     gift: {
       title: 'Give Pro',
       hint: 'A RevenueCat grant with an end date. They get a message from @langx, a push and a mail in their language.',
@@ -951,15 +945,15 @@ export const ADMIN = {
 
   /**
    * The Copilot lab: an operator trying Copilot on their own account, against
-   * their own chats — the only way into it in the app until its screens
-   * exist. What it asks is real: the consent sheet, the allowance, the cache.
+   * their own chats. What it asks is real: the consent sheet, the allowance,
+   * the cache.
    */
   copilot: {
     entryRow: 'Copilot lab',
     title: 'Copilot lab',
     hint: 'Copilot on your own account, in your own chats. Every answer the model writes is a real call: it spends one of your units and one of the day’s calls for everybody. An answer from the cache spends neither.',
     switchNote:
-      'Turning it on for everybody is not on this screen. It is `scripts/maintenance.ts flag copilotEnabled true`, and only after the privacy policy and both store forms name the provider and a spend limit is set on the key.',
+      'Copilot is on for every account while copilotEnabled is. To take it away from everybody at once, switch copilotEnabled off on the Flags page.',
     service: 'Service',
     serviceOn: 'On — a key, and flags.copilotEnabled',
     serviceOff: 'Off — no key, or flags.copilotEnabled is off',
@@ -985,28 +979,10 @@ export const ADMIN = {
     cached: 'From the cache — nothing spent',
     fresh: 'Written now',
     refused: (code: string, reason?: string) => `Refused: ${code}${reason ? ` (${reason})` : ''}`,
-    allowedTitle: 'Allowed accounts',
-    allowedEmpty: 'Nobody yet. Allow yourself or add an account above.',
-    allowMe: 'Allow me',
-    addLabel: 'Add an account',
-    addPlaceholder: '@handle, id or email',
-    addSearching: 'Looking…',
-    addNone: 'No account with that handle, id or email.',
-    addFailed: 'The lookup failed, so this says nothing about whether the account exists.',
-    addRetry: 'Look again',
-    notAllowed: 'Not on the list',
-    allow: 'Allow Copilot',
-    remove: 'Take Copilot away',
-    removeShort: 'Remove',
-    allowedSince: (date: string) => `Since ${date}`,
-    you: 'You',
-    youAllowed: 'On the list',
-    youNotAllowed: 'Not on the list. Being an admin does not count: use Allow me.',
     whoTitle: 'Who sees Copilot',
     whoRules: [
       'flags.copilotEnabled is on',
       'the API has a key',
-      'the account is on the list above',
       'they agreed to the current consent sheet, asked on their first tap',
     ],
   },

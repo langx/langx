@@ -161,7 +161,7 @@ messaging rules that keep it that way are in `docs/token-messaging-brief.md`.
 ## 7. Copilot — live, and the two forms still to update
 
 **The flag is on.** `flags.copilotEnabled` is on in production and Copilot
-answers allow-listed accounts only (`privacy-data-safety.md` → _Copilot_). The
+answers every account that agrees to it (`privacy-data-safety.md` → _Copilot_). The
 privacy policy came first and is published; the two forms below are Behic's to
 transcribe. No new data type appears on either: chat text is already
 collected, and what changes is that a processor (Anthropic) sees some of it.
@@ -243,7 +243,7 @@ adds none.
 - [ ] **A spend limit** on the key's workspace with the provider —
       `COPILOT_RULES.globalCallsPerDay` is our ceiling; that one is theirs.
 - [x] **Then the flag:** `scripts/maintenance.ts flag copilotEnabled true`.
-      On in production, allow-listed accounts only.
+      On in production, for every account since 25 October 2026.
 
 ## Reference — the rest of the Play form
 

@@ -26,8 +26,7 @@ describe('copilotGate', () => {
   /*
    * The whole table: the deployment's switch, then this person's answer.
    * Every "not available" reads as off, whatever the reason — the server says
-   * so for an account off the allow-list or with no key — and the
-   * thread draws nothing for it.
+   * so for the switch off or no key — and the thread draws nothing for it.
    */
   it.each([
     [false, true, true, 'off'],

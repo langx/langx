@@ -361,7 +361,7 @@ stored tier is always read through `normalizePlanTier` / `effectivePlanTier`.
 | Incognito                           | —                                            | **Yes**              |
 | Send in their language, deck export | —                                            | **Yes**              |
 | Hiding that you are online          | **Yes**                                      | **Yes**              |
-| AI copilot (allow-listed accounts)  | Beta: **3** per rolling 24h                  | Beta: **24**         |
+| AI copilot                          | Beta: **3** per rolling 24h                  | Beta: **24**         |
 
 The @langx assistant answers everybody the same number of times a day,
 `OFFICIAL_ASSISTANT.maxRepliesPerDay`; it is no longer a plan row.

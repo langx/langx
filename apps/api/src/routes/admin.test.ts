@@ -1157,60 +1157,6 @@ describe('the operator panel', () => {
     })
   })
 
-  describe('Copilot access', () => {
-    it('is switched per account, audited, listed, and refused to a non-admin', async () => {
-      const admin = await newUser()
-      await makeAdmin(admin)
-      const target = await newUser()
-      const member = await newUser()
-
-      // An admin is not allowed by being one.
-      const own = await get(admin, `/admin/users/${admin.userId}`)
-      expect(own.json<{ user: { copilotAccess: boolean } }>().user.copilotAccess).toBe(false)
-
-      const refused = await post(member, `/admin/users/${target.userId}/copilot`, {
-        allowed: true,
-      })
-      expect(refused.statusCode).toBe(403)
-      expect((await get(member, '/admin/copilot/access')).statusCode).toBe(403)
-
-      const bad = await post(admin, `/admin/users/${target.userId}/copilot`, { allowed: 'yes' })
-      expect(bad.statusCode).toBe(400)
-      const nobody = await post(admin, '/admin/users/nobody/copilot', { allowed: true })
-      expect(nobody.statusCode).toBe(404)
-
-      const allowed = await post(admin, `/admin/users/${target.userId}/copilot`, {
-        allowed: true,
-      })
-      expect(allowed.statusCode).toBe(200)
-      expect(allowed.json()).toEqual({ allowed: true })
-      const detail = await get(admin, `/admin/users/${target.userId}`)
-      expect(detail.json<{ user: { copilotAccess: boolean } }>().user.copilotAccess).toBe(true)
-
-      const list = await get(admin, '/admin/copilot/access')
-      const users = list.json<{ users: { userId: string; username: string; at: string }[] }>().users
-      expect(users.map((row) => row.userId)).toContain(target.userId)
-      expect(users.find((row) => row.userId === target.userId)?.username).toMatch(/^adminuser/)
-
-      const revoked = await post(admin, `/admin/users/${target.userId}/copilot`, {
-        allowed: false,
-      })
-      expect(revoked.json()).toEqual({ allowed: false })
-      const after = await get(admin, '/admin/copilot/access')
-      expect(
-        after.json<{ users: { userId: string }[] }>().users.map((row) => row.userId),
-      ).not.toContain(target.userId)
-
-      const audit = await handle.db
-        .collection<{ action: string; adminId: string }>(COLLECTIONS.adminActions)
-        .find({ subjectUserId: target.userId })
-        .sort({ at: 1 })
-        .toArray()
-      expect(audit.map((row) => row.action)).toEqual(['copilot.allow', 'copilot.revoke'])
-      expect(audit.every((row) => row.adminId === admin.userId)).toBe(true)
-    })
-  })
-
   describe('bug reports', () => {
     it('is the same object as the link in the mail, and pays once across both', async () => {
       const admin = await newUser()

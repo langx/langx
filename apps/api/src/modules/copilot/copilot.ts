@@ -25,7 +25,6 @@ import { loadMutableMessage } from '../chat/mutations'
 import type { StructuredProvider } from '../official/assistantProvider'
 import { effectiveTier } from '../profiles/entitlement'
 import { getProfile, type Profile } from '../profiles/profiles'
-import { hasCopilotAccess } from './access'
 import { claimCopilotCall, releaseCopilotCall } from './budget'
 import { copilotCacheKey, lookupCopilotResult, rememberCopilotResult } from './cache'
 import { hasCopilotConsent } from './consent'
@@ -46,8 +45,9 @@ import {
  * configured; `enabled` is the operator's `flags.copilotEnabled`, which starts
  * off. The key is shared with the @langx assistant, so a key alone must never
  * be what turns Copilot on — that is a decision about the privacy policy and
- * the store forms, not about credentials. On top of both, each account needs
- * the operator's `copilotAccess` (`./access.ts`).
+ * the store forms, not about credentials. Nothing is decided per account:
+ * with both on, Copilot is there for everybody who agrees to its sheet, and
+ * the flag is the way to take it away from all of them at once.
  */
 export interface CopilotDeps {
   db: Db
@@ -79,9 +79,7 @@ export async function getCopilotStatus(
   userId: string,
 ): Promise<CopilotStatus> {
   const profile = await loadProfile(deps.db, userId)
-  // No access reads exactly like the switch being off: the app hides
-  // Copilot either way, and has nothing different to say to the person.
-  const on = deps.enabled && deps.provider !== null && hasCopilotAccess(profile)
+  const on = deps.enabled && deps.provider !== null
   const quota = await getQuotaStatus(deps.db, userId, effectiveTier(profile), 'copilot')
   return {
     available: on,
@@ -325,9 +323,8 @@ async function prepare(
  * reaching the next:
  *
  * 1. **The service** — the operator's switch and a key. Off, nothing is read.
- * 2. **The person** — on the operator's allow-list, and agreed to the
- *    current consent sheet. Nothing of theirs is read for the model, let
- *    alone sent, before both. No age of its own: the app's minimum applies.
+ * 2. **The person** — agreed to the current consent sheet. Nothing of
+ *    theirs is read for the model, let alone sent, before that. No age of its own: the app's minimum applies.
  * 3. **The question** — through the chat's own access checks.
  * 4. **The cache** — an answer somebody already paid for costs nothing.
  * 5. **The person's allowance**, then **everybody's** — in that order, so a
@@ -389,7 +386,6 @@ async function answer(
   if (!deps.enabled || !provider) throw unavailable('off', 'Copilot is off')
 
   const profile = await loadProfile(db, userId)
-  if (!hasCopilotAccess(profile)) throw unavailable('off', 'Copilot is off')
   if (!hasCopilotConsent(profile)) {
     throw new ApiError(ERROR_CODES.COPILOT_CONSENT_REQUIRED, 'Agree to the Copilot sheet first')
   }

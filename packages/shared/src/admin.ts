@@ -250,6 +250,8 @@ export const ADMIN_ACTIONS = [
   'user.removeAvatar',
   'user.message',
   'user.giftPro',
+  // No longer written: Copilot's per-account allow-list was removed on 25
+  // October 2026. Kept because the rows already in the log still carry them.
   'copilot.allow',
   'copilot.revoke',
   'giftCode.create',

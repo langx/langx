@@ -1,7 +1,5 @@
 import {
   type AccountDeletionReason,
-  type AdminCopilotAccessRequest,
-  type AdminCopilotAccessRow,
   type CopilotAction,
   type GiftCodeRedeemResult,
   type FeedbackInput,
@@ -377,7 +375,6 @@ export const keys = {
   adminHeardAbout: () => ['admin', 'heard-about'] as const,
   adminMoney: (userId: string) => ['admin', 'money', userId] as const,
   adminMembers: (tier: string) => ['admin', 'members', tier] as const,
-  adminCopilotAccess: ['admin', 'copilot', 'access'] as const,
 }
 
 /**
@@ -3719,8 +3716,6 @@ export interface AdminUserDto {
     tokenFrozenAt: string | null
     suspension: { until: string; permanent: boolean; reason: string } | null
     counts: { reportsAgainst: number; reportsFiled: number; blockedBy: number }
-    /** On the operator's Copilot allow-list. */
-    copilotAccess: boolean
     actions: { action: string; adminId: string; at: string }[]
   }
   discovery: {
@@ -4240,28 +4235,6 @@ export function useAdminBulkSuspend() {
   return useMutation({
     mutationFn: (input: AdminBulkSuspendInput) =>
       api.post<AdminBulkSuspendResponse>('/admin/users/suspend-bulk', input),
-    onSuccess: () => {
-      void client.invalidateQueries({ queryKey: ['admin'] })
-    },
-  })
-}
-
-/** Everybody the operator allowed to use Copilot, newest first. */
-export function useAdminCopilotAccess() {
-  return useQuery({
-    queryKey: keys.adminCopilotAccess,
-    queryFn: () => api.get<{ users: AdminCopilotAccessRow[] }>('/admin/copilot/access'),
-  })
-}
-
-/** The per-account Copilot switch. The whole `['admin']` prefix, like every panel write. */
-export function useSetAdminCopilotAccess() {
-  const client = useQueryClient()
-  return useMutation({
-    mutationFn: (input: { userId: string } & AdminCopilotAccessRequest) =>
-      api.post<AdminCopilotAccessRequest>(`/admin/users/${input.userId}/copilot`, {
-        allowed: input.allowed,
-      }),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ['admin'] })
     },

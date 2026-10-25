@@ -12,12 +12,10 @@ import {
   useAdminDecision,
   useAdminUser,
   useAdminUserAction,
-  useSetAdminCopilotAccess,
   type AdminUserDto,
 } from '../../../src/api/queries'
 import { AdminGate } from '../../../src/components/AdminGate'
 import {
-  AdminBlockV3,
   AdminCaptionV3,
   AdminFactsV3,
   AdminFieldV3,
@@ -30,7 +28,6 @@ import { LinkedAccounts } from '../../../src/components/admin/LinkedAccounts'
 import { MoneyTimeline } from '../../../src/components/admin/MoneyTimeline'
 import { Button } from '../../../src/components/ui/Button'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
-import { Toggle } from '../../../src/components/ui/Toggle'
 import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { ADMIN, WARNINGS } from '../../../src/lib/adminStrings'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
@@ -102,7 +99,6 @@ function Found({ data }: { data: AdminUserDto }) {
   const wide = useAdminWide()
   const action = useAdminUserAction()
   const decide = useAdminDecision()
-  const copilot = useSetAdminCopilotAccess()
   const [message, setMessage] = useState('')
   const [days, setDays] = useState('7')
   const [giftMonths, setGiftMonths] = useState<ProGiftMonths>(1)
@@ -219,15 +215,6 @@ function Found({ data }: { data: AdminUserDto }) {
       showToast(
         name === 'sign-out' ? ADMIN.users.signedOut(result.sessions ?? 0) : ADMIN.users.unfrozen,
       )
-    } catch {
-      showToast(ADMIN.common.failed)
-    }
-  }
-
-  async function setCopilot(allowed: boolean) {
-    try {
-      await copilot.mutateAsync({ userId: user.userId, allowed })
-      showToast(allowed ? ADMIN.users.copilot.allowed : ADMIN.users.copilot.revoked)
     } catch {
       showToast(ADMIN.common.failed)
     }
@@ -419,18 +406,6 @@ function Found({ data }: { data: AdminUserDto }) {
         variant="neutral"
         onPress={() => run('sign-out', ADMIN.users.confirmSignOut(who))}
       />
-
-      {/* ── Copilot, per account ── */}
-      <AdminHeadingV3 title={ADMIN.users.copilot.title} />
-      <AdminBlockV3 style={styles.toggleRow}>
-        <Text style={styles.toggleText}>{ADMIN.users.copilot.hint}</Text>
-        <Toggle
-          value={user.copilotAccess}
-          onValueChange={(next) => void setCopilot(next)}
-          busy={copilot.isPending}
-          accessibilityLabel={ADMIN.users.copilot.title}
-        />
-      </AdminBlockV3>
     </>
   )
 
@@ -561,6 +536,4 @@ const useStyles = makeStyles(({ v3 }) => ({
   row: { ...v3.type.callout, color: v3.colors.fg, paddingHorizontal: v3.space[4] },
   presets: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
   preset: { width: 'auto' },
-  toggleRow: { alignItems: 'center', flexDirection: 'row', gap: v3.space[12] },
-  toggleText: { ...v3.type.callout, color: v3.colors.fg, flex: 1 },
 }))
