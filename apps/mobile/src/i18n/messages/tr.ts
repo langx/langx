@@ -4073,5 +4073,7 @@ export const tr: Localized<EnMessages> = {
     downloaded: 'Video indirildi',
     shareFailed: 'Video paylaşılamadı. Tekrar dene.',
     watchAgain: 'Bugünün videosunu izle',
+    homeTitle: 'Venus, {day}. gün',
+    homeBody: 'Bugünün videosu · İzlemek için dokun',
   },
 }

@@ -4120,5 +4120,7 @@ export const es: Localized<EnMessages> = {
     downloaded: 'Video descargado',
     shareFailed: 'No se pudo compartir el video. Inténtalo de nuevo.',
     watchAgain: 'Ver el video de hoy',
+    homeTitle: 'Venus, día {day}',
+    homeBody: 'El video de hoy · Toca para verlo',
   },
 }

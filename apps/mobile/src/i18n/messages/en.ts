@@ -4540,6 +4540,8 @@ export const en = {
     downloaded: 'Video downloaded',
     shareFailed: 'Couldn’t share the video. Try again.',
     watchAgain: 'Watch today’s video',
+    homeTitle: 'Venus, day {day}',
+    homeBody: 'Today’s video · Tap to watch',
   },
 } as const
 

@@ -1,5 +1,7 @@
 import Feather from '@expo/vector-icons/Feather'
+import { Image } from 'expo-image'
 import { Pressable, Text, View } from 'react-native'
+import venusHead from '../../../assets/venus/head.png'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
@@ -99,30 +101,13 @@ export function HomeStreakRow({
   title,
   subtitle,
   onPress,
-  play,
 }: {
   title: string
   subtitle?: string | undefined
   onPress: () => void
-  /**
-   * Today's Venus video, when there is one (`flags.venusStories`): the flame
-   * becomes its own button that plays it again, with a play mark on it, and
-   * the rest of the row still opens the streak screen.
-   */
-  play?: { label: string; onPress: () => void } | undefined
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
-  const flame = (
-    <View style={[styles.disc, { backgroundColor: v3.hues.tangerine }]}>
-      <FlameGlyph size={v3.icon.lg} color={v3.colors.ink} />
-      {play ? (
-        <View style={styles.discPlay}>
-          <Feather name="play" size={10} color={v3.hues.tangerine} />
-        </View>
-      ) : null}
-    </View>
-  )
   return (
     <PressableScale
       accessibilityRole="button"
@@ -130,23 +115,69 @@ export function HomeStreakRow({
       onPress={onPress}
       style={styles.row}
     >
-      {play ? (
-        <PressableScale
-          accessibilityRole="button"
-          accessibilityLabel={play.label}
-          onPress={play.onPress}
-          hitSlop={6}
-        >
-          {flame}
-        </PressableScale>
-      ) : (
-        flame
-      )}
+      <View style={[styles.disc, { backgroundColor: v3.hues.tangerine }]}>
+        <FlameGlyph size={v3.icon.lg} color={v3.colors.ink} />
+      </View>
       <View style={styles.rowText}>
         <Text style={styles.rowTitle}>{title}</Text>
         {subtitle ? <Text style={styles.rowSub}>{subtitle}</Text> : null}
       </View>
       <Feather name="chevron-right" size={v3.icon.md} color={v3.colors.fg} />
+    </PressableScale>
+  )
+}
+
+/**
+ * Venus's button (`flags.venusStories`): her face in a ring of the streak's
+ * tangerine — a story's ring, the way every app with stories marks one there
+ * to watch — the day, and a play button. A tap plays today's video.
+ *
+ * Her ears rise out of the disc. The picture has the disc's lower half cut
+ * into it already (`assets/venus/head.png`, drawn from the 2D rig), so only
+ * the ears and the crown stand over the ring; the disc under it is drawn here,
+ * in the scheme's sky.
+ */
+export function HomeVenusRow({
+  title,
+  body,
+  onPress,
+}: {
+  title: string
+  body: string
+  onPress: () => void
+}) {
+  const styles = useStyles()
+  const { v3 } = useTheme()
+  return (
+    <PressableScale
+      accessibilityRole="button"
+      accessibilityLabel={`${title}. ${body}`}
+      onPress={onPress}
+      style={styles.row}
+    >
+      <View style={styles.venus}>
+        <View style={[styles.venusRing, { borderColor: v3.hues.tangerine }]} />
+        <View style={[styles.venusDisc, { backgroundColor: v3.hues.sky }]} />
+        <Image
+          source={venusHead}
+          style={styles.venusFace}
+          contentFit="contain"
+          accessible={false}
+        />
+      </View>
+      <View style={styles.rowText}>
+        <Text style={styles.rowTitle}>{title}</Text>
+        <Text style={styles.rowSub}>{body}</Text>
+      </View>
+      <View style={styles.venusPlay}>
+        {/* Nudged a point forward: a triangle's weight sits behind its middle. */}
+        <Feather
+          name="play"
+          size={v3.icon.md}
+          color={v3.colors.pillText}
+          style={styles.venusPlayGlyph}
+        />
+      </View>
     </PressableScale>
   )
 }
@@ -374,19 +405,39 @@ const useStyles = makeStyles(({ v3 }) => ({
     justifyContent: 'center',
     width: 44,
   },
-  discPlay: {
-    alignItems: 'center',
-    // Ink in both schemes, so the mark reads on the tangerine either way.
-    backgroundColor: v3.colors.ink,
+  /*
+   * The face's box: 56 wide, and 4 taller than the face so the ring's lower
+   * edge has room. The disc (44) sits in the ring (52) with a 2pt gap of the
+   * row's own ground between them, and the face's bottom edge on the disc's.
+   */
+  venus: { height: 60, width: 56 },
+  venusRing: {
     borderRadius: v3.radius.pill,
-    bottom: -2,
-    end: -2,
-    height: 18,
-    justifyContent: 'center',
-    paddingStart: 1,
+    borderWidth: 2,
+    bottom: 0,
+    height: 52,
+    start: 2,
     position: 'absolute',
-    width: 18,
+    width: 52,
   },
+  venusDisc: {
+    borderRadius: v3.radius.pill,
+    bottom: 4,
+    height: 44,
+    start: 6,
+    position: 'absolute',
+    width: 44,
+  },
+  venusFace: { height: 56, position: 'absolute', start: 0, top: 0, width: 56 },
+  venusPlay: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.pill,
+    borderRadius: v3.radius.pill,
+    height: 40,
+    justifyContent: 'center',
+    width: 40,
+  },
+  venusPlayGlyph: { transform: [{ translateX: 1 }] },
   rowText: { flex: 1, minWidth: 0 },
   rowTitle: { ...v3.type.headline, color: v3.colors.fg },
   rowSub: { ...v3.type.caption, color: v3.colors.muted },

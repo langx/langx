@@ -24,6 +24,7 @@ import {
   HomeProCard,
   HomeStreakRow,
   HomeToday,
+  HomeVenusRow,
   type HomeGoal,
   type HomePerson,
 } from '../../../src/components/home/HomeBlocks'
@@ -280,6 +281,19 @@ function MemberHome() {
         ) : null}
 
         {/*
+          Venus beside the streak she is the reward for, once today counts and
+          the bucket holds its video — which, with the launch check-in, is as
+          soon as the app is open. Nothing at all otherwise (`venusVideoFor`).
+        */}
+        {venus ? (
+          <HomeVenusRow
+            title={t('venus.homeTitle', { day: venus.day })}
+            body={t('venus.homeBody')}
+            onPress={requestVenusReplay}
+          />
+        ) : null}
+
+        {/*
           Not for a streak of nothing: a new account is not shown a zero. Once
           today counts, the row is there even at one day.
         */}
@@ -295,7 +309,6 @@ function MemberHome() {
                 : undefined
             }
             onPress={() => router.push('/(app)/streak')}
-            play={venus ? { label: t('venus.watchAgain'), onPress: requestVenusReplay } : undefined}
           />
         ) : null}
 

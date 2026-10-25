@@ -4178,5 +4178,7 @@ export const de: Localized<EnMessages> = {
     downloaded: 'Video heruntergeladen',
     shareFailed: 'Das Video konnte nicht geteilt werden. Versuch es noch einmal.',
     watchAgain: 'Heutiges Video ansehen',
+    homeTitle: 'Venus, Tag {day}',
+    homeBody: 'Heutiges Video · Zum Ansehen tippen',
   },
 }
