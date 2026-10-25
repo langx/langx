@@ -9663,7 +9663,10 @@ through rather than a smaller admin flag.
   The decision itself still goes through `applyReviewDecision`, so it is the
   same decision the panel and the emailed link make.
 - **A smaller queue.** Open reports only, and never one about an operator, an
-  official account, another moderator or the moderator themself. The
+  official account, another moderator or the moderator themself. A report
+  the moderator filed is in it, so what they spot they report and then
+  decide; the operator reviews that decision like any other, and deciding
+  never pays a reporter's reward. The
   reporter's identity is never sent: a member deciding about another member
   should not learn who reported whom, and the thread labels its two sides
   rather than naming them.

@@ -219,7 +219,7 @@ describe('moderators', () => {
   })
 
   describe('the queue', () => {
-    it('leaves out reports about protected accounts and never names a reporter', async () => {
+    it('leaves out reports about protected accounts, keeps their own, and never names a reporter', async () => {
       const mod = await newModerator()
       const otherMod = await newModerator()
       const { id: visible } = await newReport()
@@ -236,8 +236,8 @@ describe('moderators', () => {
       const reported = queue.items.map((item) => item.reported.userId)
       expect(reported).not.toContain(otherMod.userId)
       expect(reported).not.toContain(admin.userId)
-      // Their own report is not theirs to decide.
-      expect(reported).not.toContain(reporter.userId)
+      // What they spotted and reported themselves is theirs to decide.
+      expect(reported).toContain(reporter.userId)
       for (const item of queue.items) expect(item).not.toHaveProperty('reporter')
 
       const detail = await get(mod, `/mod/reports/${visible}`)

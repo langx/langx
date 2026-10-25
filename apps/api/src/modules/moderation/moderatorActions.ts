@@ -95,14 +95,14 @@ async function protectedIds(db: Db): Promise<string[]> {
 }
 
 /**
- * The open reports a moderator may see. Not one about themselves, nor one they
- * filed — deciding your own report is not reviewing it — nor one about a
- * protected account.
+ * The open reports a moderator may see. Not one about themselves, nor one about
+ * a protected account. One they filed is in it: a moderator who spots
+ * something reports it and then decides it, and the operator reviews that
+ * decision like any other — a reporter's reward is never paid by deciding.
  */
 export async function moderatorReportScope(db: Db, moderatorId: string): Promise<Filter<Report>> {
   return {
     status: 'open',
-    reporterId: { $ne: moderatorId },
     reportedId: { $nin: [...(await protectedIds(db)), moderatorId] },
   }
 }
