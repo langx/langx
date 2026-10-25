@@ -46,6 +46,7 @@ const ROUTE_RESERVED = [
   'levels',
   'likes',
   'me',
+  'moderation',
   'notifications',
   'paywall',
   'photo',

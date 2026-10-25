@@ -6,7 +6,7 @@ import {
   type PostAsk,
   type ReportStatus,
 } from '@langx/shared'
-import { ObjectId, type Db } from 'mongodb'
+import { ObjectId, type Db, type Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { pairKeyFor, type Conversation, type Message } from '../chat/conversations'
 import type { Report } from '../moderation/blocks'
@@ -221,7 +221,11 @@ function party(userId: string, profile: Profile | null, now: Date): AdminParty {
  * reads. The same `$in` shape `pool.ts` was rewritten into for the same
  * reason.
  */
-async function partiesFor(db: Db, ids: string[], now: Date): Promise<Map<string, AdminParty>> {
+export async function partiesFor(
+  db: Db,
+  ids: string[],
+  now: Date,
+): Promise<Map<string, AdminParty>> {
   const unique = [...new Set(ids)]
   const rows = await db
     .collection<Profile>(COLLECTIONS.profiles)
@@ -245,12 +249,15 @@ export async function listReports(
   db: Db,
   query: AdminReportListQuery,
   now: Date = new Date(),
+  /** Narrows the queue further — the moderator's, which leaves some reports out. */
+  scope: Filter<Report> = {},
 ): Promise<Page<AdminReportRow>> {
   const cursor = query.cursor ? toObjectId(query.cursor) : null
   const rows = await db
     .collection<Report>(COLLECTIONS.reports)
     .find({
       status: query.status,
+      ...scope,
       ...(cursor ? { _id: { $lt: cursor } } : {}),
     })
     .sort({ _id: -1 })

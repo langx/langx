@@ -58,6 +58,11 @@ export const en = {
       other: '{count} tokens for keeping LangX safe 🛡️',
     },
     reportRewardBody: 'We looked into what you reported. Thank you.',
+    moderatorRewardTitle: {
+      one: '{count} token for moderating LangX 🛡️',
+      other: '{count} tokens for moderating LangX 🛡️',
+    },
+    moderatorRewardBody: 'An operator reviewed one of your decisions. Thank you.',
     /** The same nudges on the phone, under the same switches. */
     promo: {
       addPhotoTitle: 'Add a photo',
@@ -837,6 +842,15 @@ export const en = {
       one: 'Thank you for your report. We looked into it and added {count} token to your wallet for helping keep LangX a good place to learn. The person you reported is never told who sent it.',
       other:
         'Thank you for your report. We looked into it and added {count} tokens to your wallet for helping keep LangX a good place to learn. The person you reported is never told who sent it.',
+    },
+    /**
+     * Thanking a moderator for a decision an operator reviewed, beside the
+     * tokens. It names neither the decision nor the person it was about.
+     */
+    moderatorReward: {
+      one: 'Thank you for moderating. An operator reviewed one of your decisions and added {count} token to your wallet.',
+      other:
+        'Thank you for moderating. An operator reviewed one of your decisions and added {count} tokens to your wallet.',
     },
     /**
      * The other end of the suspension mail, which named the date. A timed

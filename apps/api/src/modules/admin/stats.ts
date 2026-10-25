@@ -67,6 +67,8 @@ export interface AdminStats {
     reports: number
     appeals: number
     feedback: number
+    /** Moderators' decisions no operator has reviewed yet. */
+    modActions: number
   }
   audience: {
     /** Metadata counts, not scans — close enough for a headline, free to read. */
@@ -127,6 +129,7 @@ async function computeAdminStats(db: Db, now: Date): Promise<AdminStats> {
     reports,
     appeals,
     feedback,
+    modActions,
     profileCount,
     messageCount,
     activeDaily,
@@ -153,6 +156,7 @@ async function computeAdminStats(db: Db, now: Date): Promise<AdminStats> {
       'suspension.appeal.decidedAt': { $exists: false },
     }),
     db.collection(COLLECTIONS.feedback).countDocuments({ status: 'open' }),
+    db.collection(COLLECTIONS.moderatorActions).countDocuments({ 'review.status': null }),
     profiles.estimatedDocumentCount(),
     db.collection(COLLECTIONS.messages).estimatedDocumentCount(),
     Promise.all(
@@ -181,7 +185,7 @@ async function computeAdminStats(db: Db, now: Date): Promise<AdminStats> {
 
   return {
     generatedAt: now.toISOString(),
-    queue: { reports, appeals, feedback },
+    queue: { reports, appeals, feedback, modActions },
     audience: {
       profiles: profileCount,
       messages: messageCount,

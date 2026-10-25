@@ -2,6 +2,7 @@ import {
   ERROR_CODES,
   adminLatestVersionSchema,
   adminListQuerySchema,
+  adminModActionListQuerySchema,
   adminMeasureQuerySchema,
   adminMinVersionSchema,
   adminCaptchaRequiredSchema,
@@ -84,6 +85,15 @@ import {
 import { setPostHidden } from '../modules/feed/feed'
 import { applyReviewDecision, type ReviewRefusal } from '../modules/moderation/decide'
 import { rewardReporter } from '../modules/moderation/reward'
+import {
+  approveModAction,
+  grantModerator,
+  listModActions,
+  listModeratorSummaries,
+  revertModAction,
+  revokeModerator,
+  rewardModAction,
+} from '../modules/moderation/moderatorActions'
 import { warnReported } from '../modules/moderation/warn'
 import { deliverOfficialMessage } from '../modules/official/deliver'
 import { emailOfficialNote } from '../modules/official/noteEmail'
@@ -532,6 +542,156 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         })
       }
       return reply.send({ warned: result.warned, emailed })
+    },
+  )
+
+  // ── moderators ───────────────────────────────────────────────────────────
+
+  /**
+   * Making somebody a moderator, and unmaking them. The role is a member's,
+   * so it is handed out here rather than by a script: it changes as often as
+   * people do. See `grantModerator` for who cannot hold it.
+   */
+  app.post(
+    '/admin/users/:userId/moderator',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ userId: z.string() }) },
+      config: { rateLimit: limit(30, '1 minute') },
+    },
+    async (request, reply) => {
+      const result = await grantModerator(app.mongo.db, request.params.userId, request.userId)
+      if (!result.ok) {
+        if (result.refusal === 'not_found') {
+          throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such account')
+        }
+        throw new ApiError(
+          ERROR_CODES.VALIDATION_FAILED,
+          `This account cannot be a moderator (${result.refusal})`,
+        )
+      }
+      if (result.changed) {
+        await recordAdminAction(app.mongo.db, request.log, {
+          adminId: request.userId,
+          action: 'moderator.grant',
+          subjectUserId: request.params.userId,
+        })
+      }
+      return reply.send({ moderator: true, changed: result.changed })
+    },
+  )
+
+  app.delete(
+    '/admin/users/:userId/moderator',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ userId: z.string() }) },
+      config: { rateLimit: limit(30, '1 minute') },
+    },
+    async (request, reply) => {
+      const changed = await revokeModerator(app.mongo.db, request.params.userId)
+      if (changed) {
+        await recordAdminAction(app.mongo.db, request.log, {
+          adminId: request.userId,
+          action: 'moderator.revoke',
+          subjectUserId: request.params.userId,
+        })
+      }
+      return reply.send({ moderator: false, changed })
+    },
+  )
+
+  /** Every moderator, with how many of their decisions wait, stood and were undone. */
+  app.get('/admin/moderators', { preHandler: requireAdmin }, async (_request, reply) => {
+    return reply.send({ items: await listModeratorSummaries(app.mongo.db) })
+  })
+
+  /** Every report a moderator acted on, a tab per review state. */
+  app.get(
+    '/admin/mod-actions',
+    { preHandler: requireAdmin, schema: { querystring: adminModActionListQuerySchema } },
+    async (request, reply) => {
+      return reply.send(await listModActions(app.mongo.db, request.query))
+    },
+  )
+
+  app.post(
+    '/admin/mod-actions/:id/approve',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ id: z.string() }) },
+      config: { rateLimit: limit(120, '1 minute') },
+    },
+    async (request, reply) => {
+      const result = await approveModAction(app.mongo.db, request.params.id, request.userId)
+      if (result === 'not_found') throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such decision')
+      if (result === 'approved') {
+        await recordAdminAction(app.mongo.db, request.log, {
+          adminId: request.userId,
+          action: 'modAction.approve',
+          refId: request.params.id,
+        })
+      }
+      return reply.send({ approved: result === 'approved' })
+    },
+  )
+
+  /**
+   * Undoing what a moderator decided. The report goes back to the open queue,
+   * so the decision that should have been made is made from the same screen
+   * as any other — see `revertModAction`.
+   */
+  app.post(
+    '/admin/mod-actions/:id/revert',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ id: z.string() }) },
+      config: { rateLimit: limit(60, '1 minute') },
+    },
+    async (request, reply) => {
+      const result = await revertModAction(app, request.params.id, request.userId)
+      if (!result.ok) {
+        if (result.refusal === 'not_found') {
+          throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such decision')
+        }
+        return reply.send({ reverted: false })
+      }
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: 'modAction.revert',
+        subjectUserId: result.action.subjectUserId,
+        refId: request.params.id,
+        payload: { action: result.action.action, moderatorId: result.action.moderatorId },
+      })
+      return reply.send({ reverted: true })
+    },
+  )
+
+  /** Thanking a moderator for one decision. Once per decision — see `rewardModAction`. */
+  app.post(
+    '/admin/mod-actions/:id/reward',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ id: z.string() }), body: bountyAwardSchema },
+      config: { rateLimit: limit(30, '1 hour') },
+    },
+    async (request, reply) => {
+      const result = await rewardModAction(app, {
+        id: request.params.id,
+        amount: request.body.amount,
+        byAdminId: request.userId,
+      })
+      if (!result) throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such decision')
+      if (result.awarded) {
+        await recordAdminAction(app.mongo.db, request.log, {
+          adminId: request.userId,
+          action: 'modAction.reward',
+          subjectUserId: result.moderatorId,
+          refId: request.params.id,
+          payload: { amount: result.amount },
+        })
+      }
+      return reply.send({ awarded: result.awarded, amount: result.amount })
     },
   )
 
@@ -1514,7 +1674,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
   }
 }
 
-function refuse(
+export function refuse(
   reply: { code: (status: number) => { send: (body: unknown) => unknown } },
   refusal: ReviewRefusal,
 ) {

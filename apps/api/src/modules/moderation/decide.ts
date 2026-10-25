@@ -88,6 +88,11 @@ export interface ReviewDecisionInput extends ReviewDecision {
    * the person is about to be told which one it was.
    */
   reason?: string
+  /**
+   * The reason a moderator wrote, when `byAdminId` is one. Stored on the
+   * suspension so the operator reviewing it reads it beside what was decided.
+   */
+  moderatorNote?: string
 }
 
 export async function applyReviewDecision(
@@ -240,6 +245,7 @@ export async function applyReviewDecision(
       ...(permanent ? { permanent: true } : { days: days ?? 1 }),
       ...(reportId ? { reportId } : {}),
       ...(byAdminId ? { byAdminId } : {}),
+      ...(input.moderatorNote ? { moderatorNote: input.moderatorNote } : {}),
     })
     /*
      * Whatever call they are in ends with the account's access. The socket's

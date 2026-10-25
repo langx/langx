@@ -27,6 +27,8 @@ declare module 'fastify' {
      * `false` on the two a suspended account may still reach.
      */
     isAdmin: boolean
+    /** The same, for `Profile.moderator`. An admin is not also a moderator here. */
+    isModerator: boolean
   }
 }
 
@@ -65,6 +67,7 @@ export async function requireAuth(request: FastifyRequest, reply: FastifyReply):
    * route, and a suspended admin is refused by the branch under it anyway.
    */
   request.isAdmin = false
+  request.isModerator = false
 
   /*
    * Suspension is enforced here rather than route by route, because "every
@@ -84,7 +87,7 @@ export async function requireAuth(request: FastifyRequest, reply: FastifyReply):
 
   const profile = await request.server.mongo.db
     .collection<Profile>(COLLECTIONS.profiles)
-    .findOne({ _id: request.userId }, { projection: { suspension: 1, admin: 1 } })
+    .findOne({ _id: request.userId }, { projection: { suspension: 1, admin: 1, moderator: 1 } })
   const suspension = profile?.suspension
   /*
    * One more field on a read that was already being made, rather than a
@@ -92,6 +95,7 @@ export async function requireAuth(request: FastifyRequest, reply: FastifyReply):
    * and the flag cannot be true for an account this guard has not just seen.
    */
   request.isAdmin = profile?.admin === true
+  request.isModerator = profile?.moderator !== undefined
 
   if (suspension && isSuspended(profile)) {
     const body: ApiErrorBody = {
@@ -200,5 +204,24 @@ export async function requireAdmin(request: FastifyRequest, reply: FastifyReply)
   if (!request.isAdmin) {
     const body: ApiErrorBody = { code: ERROR_CODES.ADMIN_REQUIRED, message: 'Not available' }
     return reply.code(ERROR_STATUS.ADMIN_REQUIRED).send(body)
+  }
+}
+
+/**
+ * The moderator's door: a moderator, or an operator, who can do everything a
+ * moderator can. The same order of refusals as `requireAdmin`, for the same
+ * reason — a suspended moderator is told they are suspended, so nobody can
+ * moderate their way out of a suspension.
+ */
+export async function requireModerator(
+  request: FastifyRequest,
+  reply: FastifyReply,
+): Promise<void> {
+  await requireAuth(request, reply)
+  if (reply.sent) return
+
+  if (!request.isAdmin && !request.isModerator) {
+    const body: ApiErrorBody = { code: ERROR_CODES.MODERATOR_REQUIRED, message: 'Not available' }
+    return reply.code(ERROR_STATUS.MODERATOR_REQUIRED).send(body)
   }
 }

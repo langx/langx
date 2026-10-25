@@ -37,6 +37,11 @@ export const de: Localized<ServerMessages> = {
       other: '{count} Token, weil du LangX sicher hältst 🛡️',
     },
     reportRewardBody: 'Wir haben uns deine Meldung angesehen. Danke.',
+    moderatorRewardTitle: {
+      one: '{count} Token fürs Moderieren von LangX 🛡️',
+      other: '{count} Token fürs Moderieren von LangX 🛡️',
+    },
+    moderatorRewardBody: 'Ein Operator hat eine deiner Entscheidungen geprüft. Danke.',
     /** The same nudges on the phone, under the same switches. */
     promo: {
       addPhotoTitle: 'Füge ein Foto hinzu',
@@ -663,6 +668,11 @@ export const de: Localized<ServerMessages> = {
       one: 'Danke für deine Meldung. Wir haben sie uns angesehen und dir {count} Token gutgeschrieben, weil du hilfst, LangX zu einem guten Ort zum Lernen zu machen. Die gemeldete Person erfährt nie, wer sie gemeldet hat.',
       other:
         'Danke für deine Meldung. Wir haben sie uns angesehen und dir {count} Token gutgeschrieben, weil du hilfst, LangX zu einem guten Ort zum Lernen zu machen. Die gemeldete Person erfährt nie, wer sie gemeldet hat.',
+    },
+    moderatorReward: {
+      one: 'Danke fürs Moderieren. Ein Operator hat eine deiner Entscheidungen geprüft und dir {count} Token gutgeschrieben.',
+      other:
+        'Danke fürs Moderieren. Ein Operator hat eine deiner Entscheidungen geprüft und dir {count} Token gutgeschrieben.',
     },
     suspensionEnded:
       'Deine Sperre ist abgelaufen und dein Konto ist wieder offen. 👋 Dein Profil ist wieder in Entdecken und in der Suche zu sehen, und deine Chats sind da, wo du sie gelassen hast.\n\nBitte hilf mit, LangX einen guten Ort zum Lernen zu halten — eine weitere bestätigte Meldung kann das Konto dauerhaft schließen. Wenn du denkst, dass etwas schiefgelaufen ist, erreicht Einstellungen → Info → Feedback einen Menschen.',

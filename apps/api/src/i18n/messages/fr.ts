@@ -37,6 +37,11 @@ export const fr: Localized<ServerMessages> = {
       other: '{count} jetons pour avoir aidé à protéger LangX 🛡️',
     },
     reportRewardBody: 'Nous avons examiné ton signalement. Merci.',
+    moderatorRewardTitle: {
+      one: '{count} jeton pour avoir modéré LangX 🛡️',
+      other: '{count} jetons pour avoir modéré LangX 🛡️',
+    },
+    moderatorRewardBody: 'Un opérateur a examiné l’une de tes décisions. Merci.',
     /** The same nudges on the phone, under the same switches. */
     promo: {
       addPhotoTitle: 'Ajoutez une photo',
@@ -670,6 +675,11 @@ export const fr: Localized<ServerMessages> = {
       one: 'Merci pour ton signalement. Nous l’avons examiné et ajouté {count} jeton à ton portefeuille, pour avoir aidé à faire de LangX un bon endroit pour apprendre. La personne signalée ne saura jamais qui l’a signalée.',
       other:
         'Merci pour ton signalement. Nous l’avons examiné et ajouté {count} jetons à ton portefeuille, pour avoir aidé à faire de LangX un bon endroit pour apprendre. La personne signalée ne saura jamais qui l’a signalée.',
+    },
+    moderatorReward: {
+      one: 'Merci de modérer LangX. Un opérateur a examiné l’une de tes décisions et ajouté {count} jeton à ton portefeuille.',
+      other:
+        'Merci de modérer LangX. Un opérateur a examiné l’une de tes décisions et ajouté {count} jetons à ton portefeuille.',
     },
     suspensionEnded:
       'Ta suspension est terminée et ton compte est de nouveau ouvert. 👋 Ton profil est de retour dans Découvrir et dans la recherche, et tes conversations sont là où tu les as laissées.\n\nAide-nous à garder LangX comme un bon endroit pour apprendre : un autre signalement confirmé pourrait fermer le compte pour de bon. Si tu penses que quelque chose a mal tourné, Réglages → À propos → Commentaires arrive chez une vraie personne.',

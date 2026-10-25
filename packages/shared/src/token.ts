@@ -112,6 +112,14 @@ export const TOKEN_KINDS = [
    */
   'reportReward',
   /**
+   * Paid to a moderator for one decision an operator reviewed, from the
+   * operator panel. `reportReward`'s bargain one step along: the amount is a
+   * person's judgement within `BOUNTY_MIN`–`BOUNTY_MAX`, and `refId` is the
+   * decision's id in `moderatorActions`, so the unique index pays one decision
+   * once. Ranks in every period, for the reason `bounty` does.
+   */
+  'moderatorReward',
+  /**
    * The only kind with a negative `amount`. Spends are recorded in the ledger
    * for audit but deliberately do **not** touch `tokenAggregates`: the
    * leaderboard ranks token *earned*, so buying a frame must never drop someone
