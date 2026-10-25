@@ -273,7 +273,6 @@ function MemberChats() {
           <WaitingBlock
             thread={thread}
             partner={withShownFace(thread.partner, shown.get(thread.partner._id))}
-            lead={item.lead}
             selected={isSelected}
             now={now}
             handlers={handlers}

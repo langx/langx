@@ -186,6 +186,29 @@ export async function reactToMessage(
     })
   if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Message not found')
 
+  /*
+   * A reaction to their newest message answers it, so the thread stops
+   * waiting on the reactor; clearing the reaction puts it back. Conditional on
+   * the pair an edit uses: if something newer arrived, this is no longer the
+   * last message and the filter matches nothing. A reaction to your own
+   * message answers nobody.
+   */
+  if (message.senderId !== userId) {
+    const stillReacted = Object.values(updated.reactions ?? {}).some((users) =>
+      users.includes(userId),
+    )
+    await db.collection<Conversation>(COLLECTIONS.conversations).updateOne(
+      {
+        _id: conversation._id,
+        'lastMessage.createdAt': message.createdAt,
+        'lastMessage.senderId': message.senderId,
+      },
+      stillReacted
+        ? { $set: { 'lastMessage.reacted': true } }
+        : { $unset: { 'lastMessage.reacted': '' } },
+    )
+  }
+
   return { message: updated, conversation, audience: 'both' }
 }
 

@@ -24,6 +24,7 @@ import {
 import {
   applyIncomingMessage,
   applyMessageEdit,
+  applyReaction,
   cachedConversation,
   type ConversationPageDto,
   listPreviewOf,
@@ -367,6 +368,20 @@ export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void 
               senderId: message.senderId,
               createdAt: message.createdAt,
               body: listPreviewOf(message),
+            }),
+          )
+        }
+        const meId = queryClient.getQueryData<{ _id: string }>(keys.me)?._id
+        if (meId && !message.deleted) {
+          queryClient.setQueriesData({ queryKey: ['conversations'] }, (old: unknown) =>
+            applyReaction(old, {
+              conversationId,
+              senderId: message.senderId,
+              createdAt: message.createdAt,
+              meId,
+              reactedByMe: Object.values(message.reactions ?? {}).some((users) =>
+                users.includes(meId),
+              ),
             }),
           )
         }

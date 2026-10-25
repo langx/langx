@@ -89,7 +89,9 @@ export function toConversationView(conversation: Conversation, viewerId: string)
       conversation.lastMessage.senderId !== viewerId &&
       // A call both of them were on is nobody's turn. `senderId` there is only
       // who placed it, which is not the same thing as who spoke last.
-      conversation.lastMessage.call?.outcome !== 'completed',
+      conversation.lastMessage.call?.outcome !== 'completed' &&
+      // An emoji back on their message is an answer too.
+      conversation.lastMessage.reacted !== true,
     bothSpoke: conversation.bothSpoke,
     mediaLockedFor: mediaLockedFor(conversation, viewerId),
     updatedAt: conversation.updatedAt,
