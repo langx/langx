@@ -3170,8 +3170,8 @@ export function ChatScreen({
     startersDue(threadItems[0]?.createdAt, Date.now())
 
   /*
-   * The v3 composer's Correct, Translate and Echo: the long-press menu's own
-   * three rows, for the other person's newest message. Not in a window opened
+   * The v3 composer's Correct, Translate, Echo and Explain: the long-press
+   * menu's own four rows, for the other person's newest message. Not in a window opened
    * on an old message, whose "newest" is only the newest loaded. The composer
    * decides when to draw them; this decides what they would do.
    */
@@ -3191,6 +3191,9 @@ export function ChatScreen({
               : undefined,
           translating: translating === theirLatest._id,
           echo: theirLatest.echoed === true ? undefined : () => void addEcho(theirLatest),
+          // The menu's own gate: `latestToActOn` has already narrowed this to
+          // their text, and `readOnly` keeps it out of a channel.
+          explain: copilot.canExplain ? () => copilot.explain(theirLatest) : undefined,
         }
       : null
   /**
