@@ -1310,7 +1310,7 @@ intro in front of it.
   lets the look follow the flag while the splash still covers the screen,
   then fixes it for the launch the moment the splash goes, so nobody sees a
   screen change look in front of them and no wizard changes look halfway
-  through. With motion on, the launch film (1.8 s) outlasts the flag's own
+  through. With motion on, the launch film (2.4 s) outlasts the flag's own
   ceiling (`V3_HOME_WAIT_MS`), so the answer is nearly always in. With
   reduce motion the splash can lift at its 0.8 s floor, and a slower answer
   means today's look on every launch-path screen until the next launch.
@@ -6983,6 +6983,35 @@ _through_ the logo — and the badge fades on `Easing.in`, so it is still at a
 third of its opacity most of the way through. `EXIT_GROUND_DELAY_MS` is
 `EXIT_TILE_MS`, the same constant rather than a number that happens to match,
 and a test in `splashTiming.test.ts` holds the two together.
+
+## The opening is the end card of Venus's videos
+
+The launch film used to be two rails of hellos bending into the mark. It is
+now the closing card of the Venus streak videos, built from the ground the OS
+draws: the yellow closes down into the badge with white opening round it (in
+dark the badge pops out of the dark ground instead), the halo from the section
+above breathes out of it, the wordmark rises, and Venus drops in from the top,
+lands behind the badge hard enough to dent it, stares as if she meant that,
+flicks an ear and slow-blinks. Same layout, eases and colours as the card, so
+the first thing the app shows and the last thing every video shows are one
+piece. There are no words in it — the wordmark is outlines — so nothing needs
+translating.
+
+- **2.4 s, up from 1.8.** The drop and the blink need the time. Only the
+  device's first launch waits the film out (`launchFilm.ts`); later launches
+  cut it whenever the app is ready, so most of them never reach Venus. That
+  is the price of not making every cold start wait for her.
+- **The light film ends on white, not on the yellow it starts on.** Under a
+  `cover` film that is invisible, but a `contain` one (a tablet, a desktop
+  browser) has bars beside it in the layer's own colour, which would stand
+  yellow either side of a white card. They turn white over `PAPER_MS`, the
+  time the yellow takes to close.
+- **The reduced-motion still keeps a rim in light.** It is the last frame on
+  the launch ground, and on yellow the yellow badge has no edge: Venus was
+  peeking over nothing. A thin ring in the yellow's shade gives her the edge.
+- **The rig is a copy.** `tools/showreel/src/splash/venus-rig.js` is the 2D
+  rig the videos are drawn with, so the film renders from this repo. Venus is
+  2D vector only; nothing photographic goes into the film or the repo.
 
 ## A machine may read a line, but it may not choose what a line means
 

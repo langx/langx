@@ -2,24 +2,7 @@
 <title>LangX Launch</title>
 <meta
   name="description"
-  content="The app's launch animation: two rails of hellos bend into the mark."
-/>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<!--
-  Nunito carries Latin and Cyrillic. The other scripts come from Noto; the CJK
-  faces are subset with `text=` to the greetings the reel actually sets,
-  because a full Japanese or Chinese face is several megabytes for ten glyphs.
-  Arabic, Devanagari and Thai are loaded whole: a `text=` subset keeps the
-  characters but can drop the contextual forms and conjuncts they shape into.
--->
-<link
-  rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800;1,900&family=Noto+Sans+Arabic:wght@500;800&family=Noto+Sans+Devanagari:wght@500;800&family=Noto+Sans+Thai:wght@500;800&family=Noto+Sans+Hebrew:wght@500;800&display=block"
-/>
-<link
-  rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;800&family=Noto+Sans+KR:wght@500;800&family=Noto+Sans+SC:wght@500;800&family=Noto+Sans:wght@500;800&text=%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF%E3%81%82%E3%82%8A%E3%81%8C%E3%81%A8%E3%81%86%EC%95%88%EB%85%95%ED%95%98%EC%84%B8%EC%9A%94%EA%B0%90%EC%82%AC%ED%95%A9%EB%8B%88%EB%8B%A4%E4%BD%A0%E5%A5%BD%E8%B0%A2%CE%93%CE%B5%CE%B9%CE%AC%20%CF%83%CE%BF%CF%85&display=block"
+  content="The app's launch animation: the Venus end card builds, and Venus drops in."
 />
 <style>
   :root {
@@ -245,7 +228,8 @@
   One scene, no score: the app's launch animation, rendered to
   apps/mobile/assets/splash/intro.mp4. The plan is set before core.js loads,
   which is the runtime's documented way in for a cut other than the reel's.
-  Its length is in beats at 120 BPM, so 3.6 is 1.8 s.
+  Its length is in beats at 120 BPM, so 4.8 is 2.4 s. It sets no text, so it
+  loads no fonts: the wordmark is outlines.
 -->
 <script>
   // `?theme=dark` is the night cut: the app's dark ground instead of the yellow.
@@ -254,12 +238,13 @@
       id: 'splash',
       title: 'Launch',
       start: 0,
-      dur: 3.6,
+      dur: 4.8,
       ground: new URLSearchParams(location.search).get('theme') === 'dark' ? '#1c1f24' : '#ffc409',
     },
   ]
 </script>
 <script src="core.js"></script>
+<script src="splash/venus-rig.js"></script>
 <script src="splash/splash.js"></script>
 <script>
   window.REEL.boot()

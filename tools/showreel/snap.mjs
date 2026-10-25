@@ -14,6 +14,10 @@
  *   add --format vertical to any of them for the 9:16 cut
  *   add --page splash to look at the app's launch animation instead of the reel
  *
+ *   node tools/showreel/snap.mjs --page splash --still apps/mobile/assets/splash/badge.png
+ *   (add --theme dark for badge-dark.png) — the reduced-motion mark: the film's last
+ *   frame drawn on the launch ground without the halo, cropped square round the badge
+ *
  * Prints the sheet's path and any build or draw error the page reported.
  */
 import { execFileSync } from 'node:child_process'
@@ -62,6 +66,7 @@ export async function openReel({
   format = 'wide',
   page: name = 'index',
   theme = 'light',
+  still = false,
 }) {
   const chromium = await loadChromium()
   const browser = await chromium.launch({ channel: process.env.REEL_CHANNEL ?? 'chrome' })
@@ -72,7 +77,8 @@ export async function openReel({
       logs.push(`${msg.type()}: ${msg.text()}`)
   })
   page.on('pageerror', (error) => logs.push(`pageerror: ${error.message}`))
-  await page.goto(`${pageUrl(name)}?capture&format=${format}&theme=${theme}${tc ? '&tc' : ''}`, {
+  const query = `capture&format=${format}&theme=${theme}${tc ? '&tc' : ''}${still ? '&still' : ''}`
+  await page.goto(`${pageUrl(name)}?${query}`, {
     waitUntil: 'load',
   })
   await page.waitForFunction(() => document.documentElement.dataset.ready === 'true', null, {
@@ -86,8 +92,48 @@ export async function openReel({
   return { browser, page, logs, info }
 }
 
+/*
+ * The square the reduced-motion mark is cut from, in the 1080x1920 frame:
+ * Venus's ear tips to just under the badge (centre 540,875, radius 205), so
+ * the badge sits low in it and she has room above.
+ */
+const STILL_CLIP = { x: 220, y: 466, width: 640, height: 640 }
+
+async function still(a) {
+  const theme = a.theme === 'dark' ? 'dark' : 'light'
+  const { browser, page, logs, info } = await openReel({
+    width: 1080,
+    height: 1920,
+    tc: false,
+    format: 'vertical',
+    page: 'splash',
+    theme,
+    still: true,
+  })
+  const dir = join(HERE, 'out', 'snap', `still-${theme}`)
+  mkdirSync(dir, { recursive: true })
+  const raw = join(dir, 'still.png')
+  await page.evaluate((time) => window.REEL.seek(time), info.duration - 1 / 60)
+  await page.screenshot({ path: raw, clip: STILL_CLIP })
+  await browser.close()
+  execFileSync('ffmpeg', [
+    '-loglevel',
+    'error',
+    '-y',
+    '-i',
+    raw,
+    '-vf',
+    'scale=512:512:flags=lanczos',
+    String(a.still),
+  ])
+  console.log(String(a.still))
+  const problems = [...info.errors, ...logs]
+  if (problems.length) console.log(`page reported:\n  ${problems.join('\n  ')}`)
+}
+
 async function main() {
   const a = args()
+  if (typeof a.still === 'string') return still(a)
   const full = Boolean(a.full)
   const format = a.format === 'vertical' ? 'vertical' : 'wide'
   const [W, H] = format === 'vertical' ? [1080, 1920] : [1920, 1080]
