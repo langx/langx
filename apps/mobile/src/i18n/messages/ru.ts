@@ -4699,5 +4699,7 @@ export const ru: Localized<EnMessages> = {
     downloaded: 'Видео скачано',
     shareFailed: 'Не удалось поделиться видео. Попробуй ещё раз.',
     watchAgain: 'Смотреть видео дня',
+    homeTitle: 'Venus, день {day}',
+    homeBody: 'Видео дня · Нажми, чтобы посмотреть',
   },
 }

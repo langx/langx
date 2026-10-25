@@ -4025,5 +4025,7 @@ export const ptBR: Localized<EnMessages> = {
     downloaded: 'Vídeo baixado',
     shareFailed: 'Não foi possível compartilhar o vídeo. Tente de novo.',
     watchAgain: 'Ver o vídeo de hoje',
+    homeTitle: 'Venus, dia {day}',
+    homeBody: 'O vídeo de hoje · Toque para assistir',
   },
 }
