@@ -427,7 +427,7 @@ function Found({ data }: { data: AdminUserDto }) {
           <AdminBlockV3 style={styles.toggleRow}>
             <Text style={styles.toggleText}>{ADMIN.users.moderator.hint}</Text>
             <Toggle
-              value={user.moderatorSince !== null}
+              value={user.moderatorSince != null}
               onValueChange={(next) => void setModerator(next)}
               busy={moderator.isPending}
               accessibilityLabel={ADMIN.users.moderator.title}
