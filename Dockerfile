@@ -22,9 +22,10 @@ COPY packages/shared/package.json packages/shared/
 # Never built here, but --frozen-lockfile compares the lockfile against every
 # workspace project and fails on a missing one.
 COPY apps/mobile/package.json apps/mobile/
-# pnpm hashes every patchedDependencies file at install time, even one for a
-# package this filter never installs, so the patches have to be in the context.
-COPY patches patches
+# The root package.json's patchedDependencies name files here, and pnpm hashes
+# every one of them before it installs anything — even a patch for a mobile-only
+# package the filter leaves out. Without them the install stops with ENOENT.
+COPY patches patches/
 RUN pnpm install --frozen-lockfile --filter @langx/api...
 
 COPY tsconfig.base.json ./
