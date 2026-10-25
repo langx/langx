@@ -218,7 +218,7 @@ export default function ModerationReportScreen() {
             <Button
               label={hide.label}
               variant="neutral"
-              loading={decide.isPending}
+              loading={decide.isPending && decide.variables?.action === hide.action}
               disabled={busy}
               onPress={() => void run(hide.action, t('moderation.done'))}
             />
@@ -271,7 +271,7 @@ export default function ModerationReportScreen() {
         <Button
           label={t('moderation.suspend', { count: days })}
           variant="danger"
-          loading={decide.isPending}
+          loading={decide.isPending && decide.variables?.action === 'suspend'}
           disabled={busy || !noteReady}
           onPress={() => void onSuspend()}
         />

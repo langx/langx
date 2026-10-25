@@ -161,6 +161,11 @@ describe('moderators', () => {
       // The chip is public; the admin flag beside it never was.
       const asMember = (await get(member, `/profiles/${mod.userId}`)).json<{ moderator?: true }>()
       expect(asMember.moderator).toBe(true)
+      // And on the page a shared link opens, which needs no session.
+      const modHandle = (await profiles().findOne({ _id: mod.userId }))!.handle
+      const shared = await app.inject({ method: 'GET', url: `/public/profiles/${modHandle}` })
+      expect(shared.json<{ moderator?: true }>().moderator).toBe(true)
+      expect(shared.json()).not.toHaveProperty('admin')
       expect((await get(member, `/profiles/${member.userId}`)).json()).not.toHaveProperty(
         'moderator',
       )

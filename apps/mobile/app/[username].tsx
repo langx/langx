@@ -28,6 +28,7 @@ import { useDisplayNames, useLocale, useT } from '../src/i18n'
 import { usePullToRefresh } from '../src/hooks/usePullToRefresh'
 import { useScreenInteractive } from '../src/hooks/useScreenInteractive'
 import { OfficialMark } from '../src/components/OfficialMark'
+import { ModBadge } from '../src/components/ui/ModBadge'
 import { SharedProfileV3 } from '../src/components/SharedProfileV3'
 import { useV3LaunchLook } from '../src/hooks/useV3LaunchLook'
 
@@ -198,6 +199,7 @@ export default function SharedProfileScreen() {
           <View style={styles.nameRow}>
             <Text style={styles.name}>{user.displayName}</Text>
             {user.official ? <OfficialMark size={18} /> : null}
+            {user.moderator ? <ModBadge fontSize={26} /> : null}
           </View>
           <Text style={styles.handle} numberOfLines={1}>
             @{user.handle}

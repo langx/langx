@@ -569,5 +569,7 @@ export const sharedProfileSchema = z.object({
   learning: z.array(z.object({ code: z.string(), level: languageLevelSchema })),
   /** Draws the tick, and hides the language pair a program does not have. */
   official: z.literal(true).optional(),
+  /** Draws the MOD chip, as on the signed-in profile. */
+  moderator: z.literal(true).optional(),
 })
 export type SharedProfile = z.infer<typeof sharedProfileSchema>

@@ -9655,4 +9655,5 @@ through rather than a smaller admin flag.
   applies, and a moderator's thanks is earned like a report's.
 - **Visible to everyone.** Settings → Moderators lists them, and a MOD chip
   sits beside PRO on their profile. A role somebody exercises over others
-  should not be secret. The signed-out shared profile does not carry it yet.
+  should not be secret. The page a shared link opens carries the chip too,
+  as `moderator: true` and nothing about who granted it or when.

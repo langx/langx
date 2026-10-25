@@ -75,6 +75,7 @@ export async function getSharedProfile(db: Db, handle: string): Promise<SharedPr
         nativeLanguages: 1,
         learning: 1,
         official: 1,
+        moderator: 1,
       },
     },
   )
@@ -105,6 +106,8 @@ export async function getSharedProfile(db: Db, handle: string): Promise<SharedPr
     ...(profile.pronouns ? { pronouns: profile.pronouns } : {}),
     ...(profile.country ? { country: profile.country } : {}),
     ...(profile.official ? { official: true as const } : {}),
+    // The chip, never the record behind it: who granted it and when stay ours.
+    ...(profile.moderator ? { moderator: true as const } : {}),
     nativeLanguages: (profile.nativeLanguages ?? []).map((l) => ({ code: l.code })),
     learning: (profile.learning ?? []).map((l) => ({
       code: l.code,
