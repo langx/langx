@@ -2832,6 +2832,9 @@ export const es: Localized<EnMessages> = {
     buy: 'Comprar {title}',
     free: 'Gratis para todos. Envíalos desde cualquier chat.',
     owned: 'Es tuyo. Envíalos desde cualquier chat.',
+    addToWhatsApp: 'Añadir a WhatsApp',
+    addPartToWhatsApp: 'Añadir la parte {part} a WhatsApp',
+    addToWhatsAppFailed: 'WhatsApp no se abrió. Inténtalo de nuevo en un momento.',
     seePack: 'Ver el paquete',
   },
 

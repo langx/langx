@@ -2821,6 +2821,9 @@ export const ptBR: Localized<EnMessages> = {
     buy: 'Comprar {title}',
     free: 'Grátis para todos. Envie de qualquer conversa.',
     owned: 'É seu. Envie de qualquer conversa.',
+    addToWhatsApp: 'Adicionar ao WhatsApp',
+    addPartToWhatsApp: 'Adicionar a parte {part} ao WhatsApp',
+    addToWhatsAppFailed: 'O WhatsApp não abriu. Tente de novo daqui a pouco.',
     seePack: 'Ver o pacote',
   },
 

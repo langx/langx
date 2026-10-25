@@ -195,6 +195,16 @@ export const appConfigSchema = z.object({
      */
     stickerGifts: z.boolean(),
     /**
+     * "Add to WhatsApp" on a sticker pack's page, for the packs the build
+     * carries a WhatsApp export of (`WHATSAPP_PACKS` in the mobile app).
+     * Starts off because it puts LangX art in another company's app under our
+     * name — a publishing decision, made by switching this on rather than by a
+     * merge. It also needs a binary that has `modules/whatsapp-stickers`; on
+     * an older one, and on the web, the button never draws whatever this
+     * says. Packs already added to WhatsApp stay there.
+     */
+    whatsappStickers: z.boolean(),
+    /**
      * Venus's daily streak story: the first time today's streak counts, a
      * full-screen video of Venus for that day opens once, and the streak
      * flame plays it again until midnight (`lib/venusStory.ts`). Starts off
@@ -236,6 +246,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     newcomerHello: false,
     promoPaywallLinks: false,
     stickerGifts: false,
+    whatsappStickers: false,
     venusStories: false,
   },
 }
