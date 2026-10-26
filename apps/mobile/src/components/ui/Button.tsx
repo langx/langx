@@ -72,6 +72,11 @@ interface ButtonProps {
    * icon is silent, and without this the reader would hear a bare number.
    */
   accessibilityLabel?: string
+  /**
+   * How far the label grows with the reader's text size, where a screen caps
+   * it — the product hero's action. Unset, it grows in full.
+   */
+  maxFontSizeMultiplier?: number
   style?: ViewStyle
 }
 
@@ -128,6 +133,7 @@ export function Button({
   iconPosition = 'start',
   haptic,
   accessibilityLabel,
+  maxFontSizeMultiplier,
   style,
 }: ButtonProps) {
   const { v3 } = useTheme()
@@ -226,6 +232,7 @@ export function Button({
           {iconPosition === 'start' ? iconNode : null}
           <Text
             style={[size === 'small' ? styles.labelSmall : styles.label, { color: look.label }]}
+            maxFontSizeMultiplier={maxFontSizeMultiplier}
           >
             {/* A price ("Protect · 200 ✦") carries the token icon where the
                 label marks it; every other label is drawn as it is. */}
@@ -234,6 +241,7 @@ export function Button({
                   label,
                   (size === 'small' ? v3.type.buttonSmall : v3.type.button).fontSize,
                   look.label,
+                  maxFontSizeMultiplier,
                 )
               : label}
           </Text>
@@ -300,16 +308,25 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[16],
     paddingVertical: v3.space[6],
   },
+  /*
+   * `maxWidth` here and `minWidth: 0` on the labels are for the web. There a
+   * centred row is never narrower than its longest word, and a flex item will
+   * not shrink below it either, so at the largest text sizes one long word —
+   * "introduction", or any German compound — pushed the glyph and both ends
+   * of the label out of the pill. Held to the pill, the label breaks the word
+   * inside it, as native already does.
+   */
   content: {
     alignItems: 'center',
     flexDirection: 'row',
     flexShrink: 1,
     gap: v3.space[10],
     justifyContent: 'center',
+    maxWidth: '100%',
   },
   contentSmall: { gap: v3.space[8] },
   hidden: { opacity: 0 },
-  label: { ...v3.type.button, flexShrink: 1, textAlign: 'center' },
-  labelSmall: { ...v3.type.buttonSmall, flexShrink: 1, textAlign: 'center' },
+  label: { ...v3.type.button, flexShrink: 1, minWidth: 0, textAlign: 'center' },
+  labelSmall: { ...v3.type.buttonSmall, flexShrink: 1, minWidth: 0, textAlign: 'center' },
   spinner: { bottom: 0, end: 0, position: 'absolute', start: 0, top: 0 },
 }))

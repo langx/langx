@@ -9,23 +9,31 @@ import { useToneColors, type ProductTone } from './tone'
 
 type Glyph = keyof typeof Feather.glyphMap
 
-interface FeatureCardProps {
+/**
+ * `children` or `onPress`, never both — a card that is itself one target
+ * cannot also hold targets of its own. A union rather than a note, so a page
+ * that passes both is refused by the compiler instead of losing its example.
+ */
+type FeatureCardProps = {
   tone: ProductTone
   icon: Glyph
   title: string
   body: string
-  /**
-   * Drawn under the words: a worked example, a small diagram, a pair of
-   * buttons. Not with `onPress` — a card that is itself one target cannot
-   * also hold targets of its own.
-   */
-  children?: ReactNode
-  /**
-   * The card is a way somewhere — a spending item to its place in the store.
-   * It becomes one target and gains a chevron.
-   */
-  onPress?: () => void
-}
+} & (
+  | {
+      /** Drawn under the words: a worked example, a small diagram, a pair of buttons. */
+      children?: ReactNode
+      onPress?: never
+    }
+  | {
+      /**
+       * The card is a way somewhere — a spending item to its place in the
+       * store. It becomes one target and gains a chevron.
+       */
+      onPress: () => void
+      children?: never
+    }
+)
 
 /**
  * One thing a product does, or one thing that is true of it: Copilot's four

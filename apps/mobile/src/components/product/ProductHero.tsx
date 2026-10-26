@@ -18,6 +18,14 @@ type Glyph = keyof typeof Feather.glyphMap
  */
 const TITLE_MAX_SCALE = 2
 
+/**
+ * The action's label stops at the same 2×. At the largest size "introduction"
+ * alone is wider than the pill on a 375pt phone and breaks in the middle; at
+ * 2× it fits whole. A longer word — a German compound — still breaks, inside
+ * the pill rather than past it (`Button`).
+ */
+const ACTION_MAX_SCALE = 2
+
 interface ProductHeroProps {
   tone: ProductTone
   /**
@@ -96,6 +104,7 @@ export function ProductHero({ tone, mark, title, tags, body, note, action }: Pro
           variant="hue"
           size="medium"
           {...(action.icon ? { icon: action.icon } : {})}
+          maxFontSizeMultiplier={ACTION_MAX_SCALE}
           onPress={action.onPress}
         />
       ) : null}
@@ -133,9 +142,13 @@ const useStyles = makeStyles(({ v3 }) => ({
   // block, as the call stage draws its own.
   // `maxWidth`: at the largest text sizes one fact is wider than the block,
   // and it should wrap inside its pill rather than run off the hero's edge.
+  // `radius.icon` rather than `pill` for the same case: 12 is half a one-line
+  // tag at the default size (a 16pt line, 4 above and below), so there it is
+  // the same pill, but a fact wrapped onto two lines keeps rounded corners
+  // instead of becoming a stadium whose curves crowd its first and last letters.
   tag: {
     backgroundColor: v3.colors.hueWash,
-    borderRadius: v3.radius.pill,
+    borderRadius: v3.radius.icon,
     maxWidth: '100%',
     paddingHorizontal: v3.space[10],
     paddingVertical: v3.space[4],
