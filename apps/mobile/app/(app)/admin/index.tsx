@@ -22,8 +22,8 @@ import {
   AdminSubheadingV3,
   useAdminWide,
 } from '../../../src/components/admin/AdminKitV3'
-import { BarList, type BarListRow } from '../../../src/components/admin/BarList'
-import { Columns, type ColumnPoint } from '../../../src/components/admin/Columns'
+import { BarList, type BarListRow } from '../../../src/components/charts/BarList'
+import { Columns, type ColumnPoint } from '../../../src/components/charts/Columns'
 import { ProgressBar } from '../../../src/components/ui/ProgressBar'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
