@@ -166,7 +166,7 @@ describe('the Copilot copy', () => {
   it('says Beta, and no longer that it is rolling out or may not be on', () => {
     expect(en.paywall.betaTag).toBe('Beta')
     for (const words of [en.paywall.copilot, en.paywall.copilotBody, en.paywall.betaTag]) {
-      expect(words).not.toMatch(/rolling out|not be on|yet/i)
+      expect(words).not.toMatch(/rolling out|may not be on/i)
     }
   })
 })

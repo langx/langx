@@ -4651,7 +4651,8 @@ export const ar: Localized<EnMessages> = {
     incognitoBody: 'اطّلع على الملفات دون أن تترك أثرًا.',
     nearby: 'قريبون',
     nearbyBody: 'رتّب حسب المسافة. يُقرَّب موقعك، ولا يرى الآخرون إلا مسافة تقريبية.',
-    copilot: 'إجابات أكثر من Copilot',
+    // Not "إجابات أكثر من Copilot": "أكثر من" is "more than", so it read "answers more than Copilot".
+    copilot: 'مزيد من إجابات Copilot',
     copilotBody: 'يساعدك على صياغة الرسائل وفهمها أثناء الكتابة. {count} يوميًا في الخطة المجانية.',
     quotaNotice:
       'استخدمت محادثاتك الجديدة الـ {count} لهذا اليوم. ما زال بإمكانك الرد على كل ما يصلك بلا حدود.',
