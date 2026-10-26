@@ -1,6 +1,6 @@
 # Redesign v3 — tracker
 
-**Status (20 October 2026):** Every route has its v3 screen merged behind `v3Home`, and Behic is testing internal TestFlight builds of 3.0 with the flag forced on. What is left is the old look in shared components (the audit's nine batches), the new art (badges, sticker packs, app icons, default avatars), Copilot v1, the operator panel and the website — see _Round 4_ — and then the 3.0 release round. The money and promise items stay behind flags that start off. Everything ships together as app 3.0; until then nobody sees a half-done screen.
+**Status (26 October 2026):** The redesign shipped as app 3.0. iOS build 198 was submitted on 23 October with v3 store screenshots in all eight locales and is waiting for review; Android 3.0 (179) is on internal testing while Play still reviews 2.9. `v3Home` has been on in production since 22 October. `proWeek`, `giveAWeek`, `newcomerHello` and `stickerGifts` stay off, because the store copy claims only live features. Native follow-ups that change the runtime fingerprint (WhatsApp stickers, the video-filter module, the saved-media date patch, China with CallKit) wait for the 3.1 store build on `release/3.1`; nothing native merges to main before it, or OTAs stop reaching 3.0. The board canvases are claude.ai artifacts, not files in this repository.
 
 This is the one page that says where the v3 redesign stands. Any session that
 continues the work reads it right after CLAUDE.md. Only the session that
@@ -480,14 +480,15 @@ The 3.0 release round, in one checklist:
 - [ ] **A one-week free trial on monthly and yearly** in every store console
       (Behic), and the app reading it from the store; then the sibling copies
       on langx.io and the docs.
-- [ ] **Yearly prices end in .99** in every storefront (App Store, Play,
+- [x] **Yearly prices end in .99** in every storefront (App Store, Play,
       RevenueCat web), now that the yearly total is the headline price.
       Behic operates the store consoles; the repo records follow
       (`planSaving.test.ts`, `docs/release-runbook.md`, `docs/decisions.md`).
-- [ ] **Bump the app to 3.0** in the same round. The binary also carries the
+- [x] **Bump the app to 3.0** in the same round. The binary also carries the
       new app icons, which cannot ship by OTA.
 - [ ] **New store screenshots** for iOS and Android in the v3 look — a gate
-      for the submission.
+      for the submission. iOS is done (from `tools/store-shots`); Play waits
+      until its open 2.9 review ends.
 - [ ] **langx.io v3 merges on release day**, with the app.
 - **After the code work, the visuals.** Redo the branding repository's visuals
   in the v3 look, folding in the open drafts langx/branding#24–#27, and shoot
