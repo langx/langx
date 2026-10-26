@@ -213,6 +213,8 @@ async function buildAudio(plan, sc, A, voice, out) {
 }
 
 // ------------------------------------------------------------------ picture
+// fit: her scale about the ground line (fitUnderLabel). probe: for the frames in `at`, only her
+// figure in rig units, { fig } with what she wears and sits on, { bare } without.
 export function frameSvgs(
   plan,
   sc,
@@ -220,7 +222,7 @@ export function frameSvgs(
   cap,
   ec,
   endStyle,
-  { strip = 0, at = null, items = null, cover = false } = {},
+  { strip = 0, at = null, items = null, cover = false, fit = 1, probe = false } = {},
 ) {
   const T = sc.T,
     n = Math.round(sc.duration * FPS)
@@ -264,17 +266,28 @@ export function frameSvgs(
       }
       P.head.pitch += 3.5 * e * k
     }
+    const P0 = probe ? V.clone(P) : null
     applyItemPose(IT, t, P, sc)
     // frame 0 is always composed: the end card hands back to it (the loop)
     const skip = (strip && f % strip) || (at && !at.some((a) => Math.round(a * FPS) === f))
     if (skip && f !== 0) continue
+    if (probe) {
+      // air toys (the wand's stick, the moth) are not hers, so they do not count
+      if (!skip)
+        out.push({
+          t,
+          fig: itemLayers({ ...IT, air: null }, t, P, V.draw(P), sc),
+          bare: V.draw(P0),
+        })
+      continue
+    }
     // camera: the zoom keeps her face where it is on screen
     let z = L.trk(sc.cam.z, t)
     for (const b of sc.cam.bumps)
       if (t >= b && t < b + 0.35) z *= 1 + 0.06 * Math.sin(((t - b) / 0.35) * Math.PI)
-    const s = BASE * z
+    const s = BASE * z * fit
     let cx = 540 + (sc.cam.dx ? L.trk(sc.cam.dx, t) : 0),
-      cy = G + HEAD_H * BASE * (z - 1) - (sc.cam.lift ? L.trk(sc.cam.lift, t) : 0)
+      cy = G + HEAD_H * BASE * fit * (z - 1) - (sc.cam.lift ? L.trk(sc.cam.lift, t) : 0)
     for (const sh of sc.cam.shakes) {
       const u = t - sh
       if (u >= 0 && u < 0.3) {
@@ -328,6 +341,39 @@ export function frameSvgs(
   return out
 }
 
+// ------------------------------------------------------------------ room under the number
+// The stage under the number is laid out for her own height, ears included. What she wears or sits
+// on can reach higher: day 30's party hat on a cushion that lifts her, day 50's balloon. On such a
+// day she is drawn smaller, about the ground line, just enough that her highest point stays under
+// the label: the full-size label on the cover and while the number lands, the badge's for the rest
+// of the film. Her height is measured in the cover's pose (sitting, facing the lens), so a nap on
+// the cushion needs no room. A day whose items reach no higher than she does is drawn as before.
+const LABEL_GAP = 12 // px between the label's lowest point and her highest
+export async function fitUnderLabel(B, plan, sc, A, cap, ec, endStyle, items) {
+  const [p] = frameSvgs(plan, sc, A, cap, ec, endStyle, { at: [coverTime(sc)], items, probe: true })
+  // rig units, the ground at 0; the box is wider and taller than she ever is
+  const [top, own] = await B.tops([p.fig, p.bare], [-700, -1100, 1400, 1200])
+  if (!(top < own - 1)) return 1
+  const text = formatNumber(plan.day, plan.lang)
+  // the scale that keeps her top under `line` at zoom z (frameSvgs: y = G - fit * (G - y at fit 1))
+  const fitAt = (line, z) => {
+    const y = G + BASE * (HEAD_H * (z - 1) + top * z) // her top on screen at fit 1
+    return Math.min(1, (G - line - LABEL_GAP) / (G - y))
+  }
+  const zMax = (t0, t1) => {
+    let m = 0
+    for (let t = t0; t <= t1; t += 1 / FPS) m = Math.max(m, L.trk(sc.cam.z, t))
+    return m
+  }
+  const badge = sc.T.v - 0.45 + 0.32 // frameSvgs: the number starts for the badge at T.v - 0.45
+  const fit = Math.min(
+    fitAt(L.labelBottom(text), L.trk(sc.cam.z, coverTime(sc))),
+    fitAt(L.labelBottom(text), zMax(sc.R, badge)),
+    fitAt(L.labelBottom(text, true), zMax(badge, sc.endAt)),
+  )
+  return Math.floor(fit * 1000) / 1000 // so a measuring hair's difference never changes a frame
+}
+
 // ------------------------------------------------------------------ one video
 export async function renderVideo({
   day,
@@ -367,6 +413,8 @@ export async function renderVideo({
       bl.words = bl.words.map((w) => ({ ...w, t0: w.t0 + sc.T.v, t1: w.t1 + sc.T.v }))
     const tag = `${lang}-${day}${VARIANT_SUFFIX[variant]}-${process.pid}`
     const ec = await EC.prepare(B, lang)
+    const fit = await fitUnderLabel(B, plan, sc, A, cap, ec, endStyle, items)
+    if (fit < 1) log(`  day ${day} ${lang}: drawn at ${fit} to keep her items under the label`)
     const tmp = path.join(WORK, `frames-${tag}`)
     fs.rmSync(tmp, { recursive: true, force: true })
     // the cover still (see coverTime): a JPEG beside the mp4, and the mp4's attached picture
@@ -376,6 +424,7 @@ export async function renderVideo({
         at: [coverTime(sc)],
         items,
         cover: true,
+        fit,
       })
       const png = path.join(WORK, `cover-${tag}.png`)
       await B.render([{ svg: cv.svg, w: L.W, h: L.H, out: png }], 1)
@@ -384,7 +433,7 @@ export async function renderVideo({
       fs.rmSync(png, { force: true })
       if (cover) return { cover: path.relative(GEN, jpg), plan, sc }
     }
-    const svgs = frameSvgs(plan, sc, A, cap, ec, endStyle, { strip, at, items })
+    const svgs = frameSvgs(plan, sc, A, cap, ec, endStyle, { strip, at, items, fit })
     await B.render(
       svgs.map((x) => ({
         svg: x.svg,

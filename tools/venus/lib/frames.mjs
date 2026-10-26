@@ -72,6 +72,38 @@ export async function openBrowser() {
         [strings, css],
       )
     },
+    // the highest painted point (y) of each SVG fragment inside the box [x, y, w, h] of its own
+    // units, one unit a pixel. It draws them: getBBox would count the geometry the rig keeps
+    // hidden under its clips, well above her ears.
+    async tops(fragments, box) {
+      mpage = mpage || (await newPage())
+      return mpage.evaluate(
+        async ([list, [x0, y0, w, h]]) => {
+          const cv = document.createElement('canvas')
+          cv.width = w
+          cv.height = h
+          const g = cv.getContext('2d', { willReadFrequently: true })
+          const ys = []
+          for (const s of list) {
+            const img = document.createElement('img')
+            img.src =
+              'data:image/svg+xml;charset=utf-8,' +
+              encodeURIComponent(
+                `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="${x0} ${y0} ${w} ${h}">${s}</svg>`,
+              )
+            await img.decode()
+            g.clearRect(0, 0, w, h)
+            g.drawImage(img, 0, 0)
+            const a = g.getImageData(0, 0, w, h).data
+            let i = 3
+            while (i < a.length && a[i] < 16) i += 4
+            ys.push(y0 + Math.floor((i >> 2) / w))
+          }
+          return ys
+        },
+        [fragments, box],
+      )
+    },
     // items: [{ svg, w, h, out, transparent }]
     async render(items, pages = 4) {
       const per = Math.ceil(items.length / pages)
