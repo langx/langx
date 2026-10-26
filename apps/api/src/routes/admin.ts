@@ -14,6 +14,9 @@ import {
   adminGiftCodeCreateSchema,
   adminGiftCodeUpdateSchema,
   adminGiftProSchema,
+  adminSocialPostActionSchema,
+  adminSocialPostsQuerySchema,
+  type AdminSocialPostsDto,
   adminBulkSuspendSchema,
   adminSuspendSchema,
   adminUserSearchSchema,
@@ -97,6 +100,8 @@ import { warnReported } from '../modules/moderation/warn'
 import { deliverOfficialMessage } from '../modules/official/deliver'
 import { emailOfficialNote } from '../modules/official/noteEmail'
 import { getProfile, removeAvatar, type Profile } from '../modules/profiles/profiles'
+import { socialConnected } from '../modules/social/adapters'
+import { applySocialPostAction, listSocialPosts, toSocialPostDto } from '../modules/social/posts'
 import { fanOutMessage } from '../ws/fanOut'
 import { userRoom } from '../ws/types'
 
@@ -1066,6 +1071,67 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
         },
       })
       return reply.send({ created: true, gift: granted })
+    },
+  )
+
+  // ── social posts ─────────────────────────────────────────────────────────
+
+  /**
+   * Venus's day videos on our own accounts — see `modules/social`. The list
+   * says whether the switch is on and which platforms have credentials,
+   * because "approved and due but nothing went out" has exactly those two
+   * answers, and the operator should not have to go looking for either.
+   */
+  app.get(
+    '/admin/social-posts',
+    { preHandler: requireAdmin, schema: { querystring: adminSocialPostsQuerySchema } },
+    async (request, reply) => {
+      const db = app.mongo.db
+      const [config, lists] = await Promise.all([
+        getAppConfig(db),
+        listSocialPosts(db, request.query.platform),
+      ])
+      const body: AdminSocialPostsDto = {
+        enabled: config.flags.socialAutopost,
+        connected: socialConnected(app.env),
+        upcoming: lists.upcoming.map(toSocialPostDto),
+        recent: lists.recent.map(toSocialPostDto),
+      }
+      return reply.send(body)
+    },
+  )
+
+  /**
+   * Approve, skip or retry one row. A row that has moved on since the list
+   * was drawn — claimed, posted — answers 404 like one that does not exist,
+   * rather than a silent success, so the button that lost the race says so.
+   */
+  app.post(
+    '/admin/social-posts/:id',
+    {
+      preHandler: requireAdmin,
+      schema: { params: z.object({ id: z.string() }), body: adminSocialPostActionSchema },
+      config: { rateLimit: limit(120, '1 minute') },
+    },
+    async (request, reply) => {
+      const { action } = request.body
+      const row = await applySocialPostAction(
+        app.mongo.db,
+        request.params.id,
+        action,
+        request.userId,
+      )
+      if (!row) {
+        throw new ApiError(ERROR_CODES.NOT_FOUND, 'No such post in a state that allows that')
+      }
+
+      await recordAdminAction(app.mongo.db, request.log, {
+        adminId: request.userId,
+        action: `socialPost.${action}`,
+        refId: row._id.toHexString(),
+        payload: { platform: row.platform, dayOffset: row.dayOffset, status: row.status },
+      })
+      return reply.send(toSocialPostDto(row))
     },
   )
 

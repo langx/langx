@@ -489,6 +489,20 @@ export const COLLECTIONS = {
    * PushKit token, and should still ring. See `modules/calls/endpoints.ts`.
    */
   callEndpoints: 'callEndpoints',
+  /**
+   * Venus's day videos on our own social accounts: one row per calendar slot
+   * per platform, from draft to posted. The unique `{calendarVersion,
+   * dayOffset, platform}` in `indexes.ts` is what makes a slot impossible to
+   * post twice. See `modules/social/posts.ts`.
+   */
+  socialPosts: 'socialPosts',
+  /**
+   * OAuth tokens a platform hands back in place of the ones it was given —
+   * TikTok's refresh token may change on every refresh, and the one in the
+   * environment then stops working. One document per platform, keyed by its
+   * name. See `modules/social/tokens.ts`.
+   */
+  socialTokens: 'socialTokens',
 } as const
 
 export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS]

@@ -87,6 +87,10 @@ import {
   type ModeratorListItem,
   type ModActionTab,
   type ReportReason,
+  type AdminSocialPostsDto,
+  type SocialPlatform,
+  type SocialPostAction,
+  type SocialPostDto,
   CONVERSATION_SEARCH_MIN_LENGTH,
   MEDIA_LIMITS,
 } from '@langx/shared'
@@ -382,6 +386,8 @@ export const keys = {
   adminModerators: ['admin', 'moderators'] as const,
   adminModActions: (status: string, moderatorId: string | null) =>
     ['admin', 'modActions', status, moderatorId] as const,
+  adminSocialPosts: (platform: SocialPlatform | null) =>
+    ['admin', 'socialPosts', platform] as const,
   modReports: ['mod', 'reports'] as const,
   modReport: (id: string) => ['mod', 'report', id] as const,
   moderators: ['moderators'] as const,
@@ -4325,6 +4331,25 @@ export function useAdminReviewModAction() {
       ),
     // Returned, so the press resolves after the tabs have refetched: the row
     // moves when the toast says it did, rather than a beat later.
+    onSuccess: () => client.invalidateQueries({ queryKey: ['admin'] }),
+  })
+}
+
+/** Venus's calendar on our own social accounts: what is coming, what went out. */
+export function useAdminSocialPosts(platform: SocialPlatform | null) {
+  return useQuery({
+    queryKey: keys.adminSocialPosts(platform),
+    queryFn: () =>
+      api.get<AdminSocialPostsDto>(`/admin/social-posts${platform ? `?platform=${platform}` : ''}`),
+  })
+}
+
+/** Approve, skip or retry one row; the whole `['admin']` prefix, like every panel write. */
+export function useAdminSocialPostAction() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { id: string; action: SocialPostAction }) =>
+      api.post<SocialPostDto>(`/admin/social-posts/${input.id}`, { action: input.action }),
     onSuccess: () => client.invalidateQueries({ queryKey: ['admin'] }),
   })
 }

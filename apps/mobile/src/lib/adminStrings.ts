@@ -58,6 +58,7 @@ export const ADMIN = {
     flags: 'Flags',
     system: 'System',
     moderators: 'Moderators',
+    social: 'Social posts',
     waiting: 'waiting',
     sections: {
       queue: 'Waiting',
@@ -733,6 +734,8 @@ export const ADMIN = {
         '"Add to WhatsApp" on a sticker pack that has a WhatsApp export (Venus). Needs a build with the module.',
       venusStories:
         'Venus’s daily streak video opens full screen once a day when the streak counts; the flame replays it. Nothing shows for a day with no file.',
+      socialAutopost:
+        'The API posts every approved row of Venus’s social calendar at its time, to the accounts it has credentials for. Off, nothing posts; a post already uploading finishes.',
     } satisfies Record<AdminFlagName, string>,
     /**
      * Flags whose pull requests asked for a condition before they go on
@@ -744,6 +747,8 @@ export const ADMIN = {
         'Asked for first (#1832): narrow the limits nudge so it no longer fires after refusals Pro does not lift.',
       venusStories:
         'Asked for first: the videos and manifest.json uploaded under venus/v1/ in the media bucket.',
+      socialAutopost:
+        'Asked for first: the calendar imported and approved, and each platform’s credentials set on the API. Check Social posts for both.',
     } satisfies Partial<Record<AdminFlagName, string>>,
   },
 
@@ -1005,6 +1010,59 @@ export const ADMIN = {
     confirmReward: (n: number, who: string) => `Send ${n} tokens to ${who}?`,
     rewarded1: (n: number) => `Thanked with ${n} tokens`,
     alreadyRewarded: 'Already thanked for this one',
+  },
+
+  /**
+   * Venus's day videos on our own accounts. The page reads and nudges the
+   * calendar; importing and approving it whole is the script's job
+   * (`apps/api/scripts/social-calendar.ts`), and posting is the API's.
+   */
+  social: {
+    title: 'Social posts',
+    hint: 'Venus’s day videos on our Instagram, Facebook, YouTube and TikTok. While the switch is on, the API posts each approved row at its time. The calendar is imported and approved with the social-calendar script; see docs/social-autoposting.md.',
+    switchOff:
+      'The switch is off: nothing posts, whatever is approved. It is socialAutopost under Flags.',
+    switchOn: 'The switch is on: approved rows post at their time.',
+    notConnected: (platforms: string) =>
+      `No credentials on the API for ${platforms}. Their rows fail as not connected until they are set.`,
+    all: 'All',
+    platforms: {
+      instagram: 'Instagram',
+      facebook: 'Facebook',
+      youtube: 'YouTube',
+      tiktok: 'TikTok',
+    },
+    statuses: {
+      draft: 'Draft',
+      approved: 'Approved',
+      publishing: 'Posting now',
+      published: 'Posted',
+      failed: 'Failed',
+      skipped: 'Skipped',
+    },
+    upcoming: 'Coming up',
+    upcomingHint: 'Soonest first, in this device’s time.',
+    recent: 'Recent',
+    emptyUpcoming: 'Nothing coming up. Import a calendar with the script first.',
+    emptyRecent: 'Nothing has gone out yet.',
+    day: (day: number, video: number) => `Day ${day} · video ${video}`,
+    attempts: (n: number) => `${n} attempt${n === 1 ? '' : 's'}`,
+    nativeCheck: (what: string) =>
+      `Waiting for a native check (${what}). Approve it here once read, or switch it to its English alternate with the script.`,
+    firstComment: (text: string) => `First comment: ${text}`,
+    openPost: 'Open the post',
+    watch: 'Watch the video',
+    approve: 'Approve',
+    skip: 'Skip',
+    retry: 'Post it now',
+    confirmSkip: 'Skip this post? It does not go out unless it is approved again.',
+    confirmRetry:
+      'Post this now? Look at the account first: a post that failed half-way may already be up.',
+    approved: 'Approved',
+    skipped: 'Skipped',
+    retried: 'Queued — it goes out within a minute while the switch is on',
+    moved: 'That row has moved on since the list was drawn',
+    failedToLoad: 'Could not load the calendar.',
   },
 
   common: {

@@ -167,6 +167,11 @@ export default function AdminHomeScreen() {
           onPress={() => router.push('/(app)/admin/measure')}
         />
         <AdminNavRowV3
+          icon="film"
+          title={ADMIN.home.social}
+          onPress={() => router.push('/(app)/admin/social')}
+        />
+        <AdminNavRowV3
           icon="toggle-right"
           title={ADMIN.home.flags}
           onPress={() => router.push('/(app)/admin/flags')}
