@@ -2154,6 +2154,11 @@ export const ptBR: Localized<EnMessages> = {
     security: 'Segurança',
     opensInBrowser: 'Cada um abre no navegador.',
   },
+  productPage: {
+    questions: 'Perguntas e respostas',
+    step: 'Etapa {step} de {total}',
+    opensInBrowser: 'Abre no navegador',
+  },
   feedback: {
     bugTitle: 'Relatar um erro',
     featureTitle: 'Pedir um recurso',

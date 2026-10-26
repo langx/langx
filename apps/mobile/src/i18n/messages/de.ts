@@ -2206,6 +2206,11 @@ export const de: Localized<EnMessages> = {
     security: 'Sicherheit',
     opensInBrowser: 'Jeder Link öffnet sich im Browser.',
   },
+  productPage: {
+    questions: 'Fragen und Antworten',
+    step: 'Schritt {step} von {total}',
+    opensInBrowser: 'Öffnet sich im Browser',
+  },
   feedback: {
     bugTitle: 'Fehler melden',
     featureTitle: 'Funktion vorschlagen',

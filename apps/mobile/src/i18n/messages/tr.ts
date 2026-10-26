@@ -2134,6 +2134,11 @@ export const tr: Localized<EnMessages> = {
     security: 'Güvenlik',
     opensInBrowser: 'Her biri tarayıcıda açılır.',
   },
+  productPage: {
+    questions: 'Sorular ve cevaplar',
+    step: 'Adım {step} / {total}',
+    opensInBrowser: 'Tarayıcıda açılır',
+  },
   feedback: {
     bugTitle: 'Hata bildir',
     featureTitle: 'Özellik iste',

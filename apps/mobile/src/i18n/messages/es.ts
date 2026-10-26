@@ -2162,6 +2162,11 @@ export const es: Localized<EnMessages> = {
     security: 'Seguridad',
     opensInBrowser: 'Cada uno se abre en el navegador.',
   },
+  productPage: {
+    questions: 'Preguntas y respuestas',
+    step: 'Paso {step} de {total}',
+    opensInBrowser: 'Se abre en el navegador',
+  },
   feedback: {
     bugTitle: 'Informar de un error',
     featureTitle: 'Pedir una función',

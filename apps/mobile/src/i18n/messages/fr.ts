@@ -2185,6 +2185,11 @@ export const fr: Localized<EnMessages> = {
     security: 'Sécurité',
     opensInBrowser: 'Chacun s’ouvre dans le navigateur.',
   },
+  productPage: {
+    questions: 'Questions et réponses',
+    step: 'Étape {step} sur {total}',
+    opensInBrowser: 'S’ouvre dans le navigateur',
+  },
   feedback: {
     bugTitle: 'Signaler un bug',
     featureTitle: 'Proposer une fonctionnalité',
