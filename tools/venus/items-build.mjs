@@ -7,7 +7,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { createRequire } from 'node:module'
-import { fileURLToPath } from 'node:url'
 import {
   REGISTRY,
   ITEMS,
@@ -215,7 +214,7 @@ async function catalog({
   console.log('wrote', out, Wd + 'x' + Ht)
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (import.meta.main) {
   const all = !process.argv.slice(2).some((a) => a.startsWith('--'))
   if (all || process.argv.includes('--doc')) {
     fs.mkdirSync(path.dirname(DOC), { recursive: true })

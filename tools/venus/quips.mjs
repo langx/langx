@@ -2005,7 +2005,8 @@ const json = {
 writeFileSync(join(HERE, 'data/quips.json'), JSON.stringify(json, null, 2) + '\n')
 
 // ---------------------------------------------------------------- markdown
-const esc = (s) => s.replace(/\|/g, '\\|')
+// backslashes first, so an escaped pipe cannot be undone by a backslash already in the text
+const esc = (s) => s.replace(/\\/g, '\\\\').replace(/\|/g, '\\|')
 const table = (rows, cols, head) =>
   [
     `| ${head.join(' | ')} |`,

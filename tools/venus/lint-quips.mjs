@@ -18,14 +18,21 @@ import { CHARACTER } from './lib/character.mjs'
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 export const QUIPS_FILE = path.join(HERE, 'data/quips.json')
 
+// names a JSON key could use to reach Object.prototype instead of adding an entry
+const UNSAFE_KEY = new Set(['__proto__', 'constructor', 'prototype'])
+const usable = (name) => {
+  if (UNSAFE_KEY.has(name)) throw new Error(`"${name}" cannot name a lint category or locale`)
+  return name
+}
+
 // category -> locale -> [RegExp]; 'all' is merged into every locale
 export function compileRules(character = CHARACTER) {
-  const out = {}
+  const out = Object.create(null)
   for (const [cat, def] of Object.entries(character.lint.categories)) {
-    out[cat] = { why: def.why, scope: def.scope ?? 'line', byLocale: {} }
+    out[usable(cat)] = { why: def.why, scope: def.scope ?? 'line', byLocale: Object.create(null) }
     for (const [k, list] of Object.entries(def)) {
       if (['why', 'scope'].includes(k)) continue
-      out[cat].byLocale[k] = list.map((s) => new RegExp(s, 'iu'))
+      out[cat].byLocale[usable(k)] = list.map((s) => new RegExp(s, 'iu'))
     }
   }
   return out
@@ -142,11 +149,13 @@ export function lintIntroLines(lines) {
   return errors
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (import.meta.main) {
+  // another quips file (a draft, say) can be named, as long as it lives inside this tool
   const file = process.argv[2] ? path.resolve(process.argv[2]) : QUIPS_FILE
+  if (!file.startsWith(HERE + path.sep)) throw new Error(`lint a file inside ${HERE}`)
   const { errors, stats } = lintQuips(JSON.parse(fs.readFileSync(file, 'utf8')))
-  // the intro module pulls in the score, so it is only loaded by the CLI
-  if (!process.argv[2]) errors.push(...lintIntroLines((await import('./lib/intro.mjs')).LINES))
+  // the intro lines go with the real bank; the intro module pulls in the score, so only the CLI loads it
+  if (file === QUIPS_FILE) errors.push(...lintIntroLines((await import('./lib/intro.mjs')).LINES))
   if (errors.length) {
     console.error(errors.join('\n'))
     console.error(`\n${errors.length} problem(s) in ${file}`)

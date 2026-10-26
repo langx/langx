@@ -18,8 +18,8 @@
 import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { ffStderr, probeDuration } from './say.mjs'
+import { GEN } from '../paths.mjs'
 
 const ff = (args) =>
   execFileSync('ffmpeg', ['-hide_banner', '-nostats', '-loglevel', 'error', '-y', ...args], {
@@ -188,9 +188,12 @@ export async function mix({
   return { out, ...m, target: { lufs, truePeak } }
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
-  // node mix.mjs spec.json  — the spec is the object mix() takes.
-  const spec = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'))
+if (import.meta.main) {
+  // node lib/synth/mix.mjs spec.json  — the spec is the object mix() takes, kept inside this tool
+  // (work/ is the place for it)
+  const file = path.resolve(process.argv[2] ?? '')
+  if (!file.startsWith(GEN + path.sep)) throw new Error(`the spec must be a file inside ${GEN}`)
+  const spec = JSON.parse(fs.readFileSync(file, 'utf8'))
   mix(spec).then(
     (r) => console.log(JSON.stringify(r, null, 2)),
     (e) => {

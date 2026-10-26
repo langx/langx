@@ -2059,6 +2059,12 @@ export { END_LEN }
 // VT is the voice's own timing (seconds from the start of the voice file); the score decides when
 // the line starts (v) and shifts it. tight (0..1) trims the reaction and payoff of a long line;
 // pad stretches the payoff hold of a short one.
+// The plan names each part; only a function registered in its own table is ever called.
+const part = (table, name, what) => {
+  if (!Object.hasOwn(table, name) || typeof table[name] !== 'function')
+    throw new Error(`no ${what} called "${name}"`)
+  return table[name]
+}
 export function buildScore(plan, VT, { pad = 0, tight = 0, endStyle } = {}) {
   const c = {
     plan,
@@ -2079,7 +2085,7 @@ export function buildScore(plan, VT, { pad = 0, tight = 0, endStyle } = {}) {
     cam: { shakes: [], bumps: [] },
   }
   // entrance
-  const entEnd = ENTRANCES[plan.entrance](c)
+  const entEnd = part(ENTRANCES, plan.entrance, 'entrance')(c)
   const R = Math.max(1.9, entEnd + 0.08)
   const v = +Math.max(3.0 - tight * 0.25, R + 1.05 - tight * 0.2).toFixed(3)
   const sh = (x) => x + v
@@ -2133,7 +2139,7 @@ export function buildScore(plan, VT, { pad = 0, tight = 0, endStyle } = {}) {
   // reaction: from just after the reveal to just before the line
   const r0 = R + 0.1 + (mode === 'slam' ? 0.1 : 0),
     m0 = T.v - 0.3
-  REACTIONS[plan.reaction](c, r0, m0 - 0.05)
+  part(REACTIONS, plan.reaction, 'reaction')(c, r0, m0 - 0.05)
   // outfit: a poof hides the change (on the word for the hoodie line, before the line otherwise)
   if (plan.outfit) {
     const at = plan.quip.id === 'ms-10-a' && T.sents.length > 1 ? T.sents[1].t0 - 0.05 : m0 - 0.1
@@ -2145,7 +2151,7 @@ export function buildScore(plan, VT, { pad = 0, tight = 0, endStyle } = {}) {
   const face0 = FACE[plan.quip.expression] || 'neutral'
   const face = NOT_AT_VIEWER.has(face0) ? 'neutral' : face0
   c.ex.push({ t: m0 + 0.05, name: face, ms: 260 })
-  MOVE_IMPL[plan.move](c, T, m0)
+  part(MOVE_IMPL, plan.move, 'move')(c, T, m0)
   if (T.sents.length > 1 && !['slow-blink', 'blep', 'innocent-stare'].includes(plan.move)) {
     const warm = CHARACTER.schedule.stingPools.includes(plan.quip.pool)
       ? TEASE_CLOSE[plan.quip.target] || 'proud'
@@ -2180,7 +2186,7 @@ export function buildScore(plan, VT, { pad = 0, tight = 0, endStyle } = {}) {
   }
   // payoff
   const pay = T.e + 0.2 - tight * 0.1
-  const b = PAYOFFS[plan.payoff](c, pay)
+  const b = part(PAYOFFS, plan.payoff, 'payoff')(c, pay)
   for (const s of ['L', 'R'])
     c.k.seq(`ears.${s}.fold`, [
       [b - 0.05],
@@ -2201,7 +2207,7 @@ export function buildScore(plan, VT, { pad = 0, tight = 0, endStyle } = {}) {
     (t) => t > (plan.entrance === 'wake-up' ? 0.7 : 0.3),
   )
   // camera
-  const cam = CAMERAS[plan.camera](c, R, T, b, endAt)
+  const cam = part(CAMERAS, plan.camera, 'camera')(c, R, T, b, endAt)
   if (whisperAt < Infinity)
     cam.z = [
       ...cam.z.filter((k) => k[0] < whisperAt - 0.35),

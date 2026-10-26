@@ -1,13 +1,14 @@
 // Venus's chat stickers: 12 text-free die-cut PNGs (transparent, white border, soft shadow) drawn
 // from the polished rig, plus one sheet. Output: out/stickers/.
 //   node stickers.mjs
-// The die-cut recipe: the white border is grown from a render without whiskers, so it hugs the body
-// and not the hairs.
+// The die-cut recipe (lib/diecut.mjs): the white border is grown from a render without whiskers, so
+// it hugs the body and not the hairs.
 import fs from 'node:fs'
 import path from 'node:path'
-import { execSync } from 'node:child_process'
+import { execFileSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { openBrowser } from './lib/frames.mjs'
+import { dieCut } from './lib/diecut.mjs'
 import { EXTRA_EXPR } from './lib/score.mjs'
 import { RIG, OUT_ROOT, WORK } from './lib/paths.mjs'
 const V = createRequire(import.meta.url)(path.join(RIG, 'venus-rig.js'))
@@ -171,13 +172,12 @@ for (const [n, p, sc, cx, cy, over = ''] of S) {
 }
 await B.render(jobs, 4)
 await B.close()
-for (const [n] of S) {
-  const out = `${OUTD}/venus-${n}.png`
-  execSync(
-    `magick ${WK}/st-${n}.png -bordercolor none -border 40 \\( ${WK}/stm-${n}.png -bordercolor none -border 40 -alpha extract -morphology Dilate Disk:18 -background white -alpha shape \\) +swap -compose over -composite \\( +clone -background '#14161B' -shadow 35x8+0+8 \\) +swap -background none -layers merge +repage -trim +repage -resize 492x492 -gravity center -background none -extent 512x512 ${out}`,
-  )
-}
-execSync(
-  `magick montage ${S.map(([n]) => `${OUTD}/venus-${n}.png`).join(' ')} -tile 4x3 -geometry 512x512+24+24 -background '#F4F1EA' ${OUTD}/sheet.png`,
-)
+const sticker = (n) => path.join(OUTD, `venus-${n}.png`)
+for (const [n] of S) dieCut(path.join(WK, `st-${n}.png`), path.join(WK, `stm-${n}.png`), sticker(n))
+execFileSync('magick', [
+  'montage',
+  ...S.map(([n]) => sticker(n)),
+  ...['-tile', '4x3', '-geometry', '512x512+24+24', '-background', '#F4F1EA'],
+  path.join(OUTD, 'sheet.png'),
+])
 console.log('wrote', S.length, 'stickers and sheet.png to', OUTD)

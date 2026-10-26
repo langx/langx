@@ -345,7 +345,7 @@ export const LIBRARY_DAYS = [
 ]
 export const isRoast = (plan) => ROAST(plan.quip.id)
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (import.meta.main) {
   const [from = 1, to = 14] = process.argv
     .slice(2)
     .filter((a) => /^\d+$/.test(a))

@@ -12,17 +12,20 @@ import { REPO } from './paths.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const DATA = path.join(HERE, '../data/streak-unit.json')
-// the checkout this tool lives in, unless LANGX_APP names another one
-export const APP = process.env.LANGX_APP || REPO
+// the app's catalogues, in the checkout this tool lives in
+const MESSAGES = path.join(REPO, 'apps/mobile/src/i18n/messages')
 const LOCALES = ['tr', 'en', 'es', 'fr', 'de', 'ru', 'ar', 'pt-BR']
+const PLURAL = new Set(['zero', 'one', 'two', 'few', 'many', 'other'])
 
 function readHeroUnit(lang) {
-  const src = fs.readFileSync(path.join(APP, 'apps/mobile/src/i18n/messages', `${lang}.ts`), 'utf8')
+  if (!LOCALES.includes(lang)) throw new Error(`unknown locale "${lang}"`)
+  const src = fs.readFileSync(path.join(MESSAGES, `${lang}.ts`), 'utf8')
   const i = src.indexOf('heroUnit:')
   if (i < 0) throw new Error(`${lang}: no streak.heroUnit`)
   const body = src.slice(src.indexOf('{', i) + 1, src.indexOf('}', i))
   const out = {}
-  for (const m of body.matchAll(/(\w+):\s*'([^']*)'/g)) out[m[1]] = m[2]
+  // only the CLDR plural categories are copied, so no other key from the file is ever written
+  for (const m of body.matchAll(/(\w+):\s*'([^']*)'/g)) if (PLURAL.has(m[1])) out[m[1]] = m[2]
   return out
 }
 
@@ -55,7 +58,7 @@ export function streakUnit(n, lang) {
 export const streakLabel = (n, lang) => streakUnit(n, lang).toLocaleUpperCase(lang)
 export const isRTL = (lang) => lang === 'ar'
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (import.meta.main) {
   if (process.argv.includes('--sync')) console.log('wrote', DATA, sync().units)
   for (const l of LOCALES)
     console.log(

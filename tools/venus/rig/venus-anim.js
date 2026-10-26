@@ -38,14 +38,19 @@
   }
   const ease = (n) => EASE[n] || EASE.inOut
   const get = (o, p) => p.split('.').reduce((a, k) => (a == null ? a : a[k]), o)
+  // a dotted path into a pose; a segment that would walk onto a prototype ends the write
   function set(o, p, v) {
     const ks = p.split('.')
     let a = o
-    for (let i = 0; i < ks.length - 1; i++) {
-      if (a[ks[i]] == null) a[ks[i]] = {}
-      a = a[ks[i]]
+    for (let i = 0; i < ks.length; i++) {
+      const k = ks[i]
+      if (k === '__proto__' || k === 'constructor' || k === 'prototype') return
+      if (i === ks.length - 1) a[k] = v
+      else {
+        if (a[k] == null) a[k] = {}
+        a = a[k]
+      }
     }
-    a[ks[ks.length - 1]] = v
   }
   function trk(keys, t) {
     if (t <= keys[0][0]) return keys[0][1]

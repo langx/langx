@@ -1,14 +1,14 @@
 // Venus · LangX sticker pack: chat-emotion die-cut stickers (512 px PNG, transparent) drawn from the
 // polished rig, 18 text-free, 4 English word stickers and "Hello" in the app's eight languages. Output: out/stickers/pack/.
 //   node sticker-pack.mjs [--only id,id]
-// Same die-cut recipe as stickers.mjs. The rig is the pack's own copy (rig/venus-rig-pack.js) with one
-// addition: paw.at = [wrist, paw] targets, so a wave can rise clear of the body instead of sitting
-// on the chest where the outline swallows it.
+// Same die-cut recipe as stickers.mjs (lib/diecut.mjs). The rig is the pack's own copy
+// (rig/venus-rig-pack.js) with one addition: paw.at = [wrist, paw] targets, so a wave can rise clear
+// of the body instead of sitting on the chest where the outline swallows it.
 import fs from 'node:fs'
 import path from 'node:path'
-import { execSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { openBrowser } from './lib/frames.mjs'
+import { dieCut } from './lib/diecut.mjs'
 import { EXTRA_EXPR } from './lib/score.mjs'
 import { RIG, OUT_ROOT, WORK } from './lib/paths.mjs'
 const V = createRequire(import.meta.url)(path.join(RIG, 'venus-rig-pack.js'))
@@ -425,12 +425,10 @@ await B.render(jobs, 6)
 await B.close()
 const files = []
 S.forEach(([n], i) => {
-  const out = `${PNG}/${String(i + 1).padStart(2, '0')}-${n}.png`
+  const out = path.join(PNG, `${String(i + 1).padStart(2, '0')}-${n}.png`)
   files.push(out)
   if (only && !only.includes(n)) return
-  execSync(
-    `magick ${WK}/st-${n}.png -bordercolor none -border 40 \\( ${WK}/stm-${n}.png -bordercolor none -border 40 -alpha extract -morphology Dilate Disk:18 -background white -alpha shape \\) +swap -compose over -composite \\( +clone -background '#14161B' -shadow 35x8+0+8 \\) +swap -background none -layers merge +repage -trim +repage -resize 492x492 -gravity center -background none -extent 512x512 -strip ${out}`,
-  )
+  dieCut(path.join(WK, `st-${n}.png`), path.join(WK, `stm-${n}.png`), out, { strip: true })
 })
 fs.writeFileSync(
   path.join(PACK, 'stickers.json'),

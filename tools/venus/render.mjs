@@ -17,7 +17,6 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { execFileSync } from 'node:child_process'
 import { createRequire } from 'node:module'
-import { fileURLToPath } from 'node:url'
 import { planVideo, VARIANT_SUFFIX } from './lib/intro.mjs'
 import { buildScore, EXTRA_EXPR } from './lib/score.mjs'
 import { voiceFor, sentences, startsWithPurr, WHISPER_LAST } from './lib/voice.mjs'
@@ -535,7 +534,7 @@ export async function renderVideo({
   }
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (import.meta.main) {
   const arg = (k, d) => {
     const i = process.argv.indexOf('--' + k)
     return i > 0 ? process.argv[i + 1] : d
