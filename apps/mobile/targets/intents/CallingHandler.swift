@@ -16,12 +16,32 @@ import Intents
  collects `/chat/<id>?call=…`, and the thread places the call through the same
  gate its call button uses, so a thread that is still locked says so rather
  than ringing.
+
+ **Not in China.** Siri's "call" is not CallKit, but a phone where CallKit is
+ off gets no system calling surface at all, so a reviewer on the Chinese
+ storefront meets one rule rather than a line between two frameworks. The app
+ decides (`CallCenter.callKitAllowed`) and leaves the answer in the App Group;
+ this refuses unless it finds a yes, so an extension running before the app
+ ever has refuses too.
  */
 final class CallingHandler: NSObject, INStartCallIntentHandling {
+  /// Must match `app.config.ts` and `ConversationDirectory.appGroup`.
+  private static let appGroup = "group.tech.newchapter.languageXchange"
+  /// Written by `CallCenter`; must match its `allowedKey`.
+  private static let allowedKey = "callKitAllowed"
+
+  private var callingAllowed: Bool {
+    UserDefaults(suiteName: Self.appGroup)?.bool(forKey: Self.allowedKey) ?? false
+  }
+
   func resolveContacts(
     for intent: INStartCallIntent,
     with completion: @escaping ([INStartCallContactResolutionResult]) -> Void
   ) {
+    guard callingAllowed else {
+      completion([INStartCallContactResolutionResult.unsupported()])
+      return
+    }
     guard let contacts = intent.contacts, !contacts.isEmpty else {
       completion([INStartCallContactResolutionResult.needsValue()])
       return
@@ -60,7 +80,8 @@ final class CallingHandler: NSObject, INStartCallIntentHandling {
   func handle(
     intent: INStartCallIntent, completion: @escaping (INStartCallIntentResponse) -> Void
   ) {
-    guard let contact = intent.contacts?.first,
+    guard callingAllowed,
+      let contact = intent.contacts?.first,
       let conversationId = contact.customIdentifier
         ?? MessagingHandler.matches(for: contact, in: ConversationDirectory.load()).first?.id
     else {

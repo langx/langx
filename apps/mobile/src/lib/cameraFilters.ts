@@ -141,12 +141,23 @@ export const SWIPE_DISTANCE = 48
 export const SWIPE_VELOCITY = 600
 
 /**
+ * `step` places on from `index` in a ring of `count`: past the last is the
+ * first again, before the first is the last. The filters are a loop, as
+ * Instagram's are, so no swipe ever meets an end that does nothing.
+ */
+export function wrapIndex(index: number, step: number, count: number): number {
+  if (count <= 0) return 0
+  // `%` keeps the sign of the left side in JavaScript; adding `count` first
+  // turns -1 into the last place rather than -1.
+  return (((index + step) % count) + count) % count
+}
+
+/**
  * Where a sideways swipe on the picture lands, as Instagram's: a swipe
  * towards the reading start (left, in English) is the next filter, the other
- * way the one before. One step per swipe, however long, and it stops at
- * either end rather than wrapping, so a swipe never jumps from Film back to
- * Original unasked. In a right-to-left language the strip runs the other
- * way, and so does the swipe.
+ * way the one before. One step per swipe, however long, and round the ends
+ * (`wrapIndex`): after Film comes Original, before Original comes Film. In a
+ * right-to-left language the strip runs the other way, and so does the swipe.
  */
 export function filterIndexAfterSwipe({
   index,
@@ -166,6 +177,5 @@ export function filterIndexAfterSwipe({
   if (Math.abs(translationX) >= SWIPE_DISTANCE) direction = Math.sign(translationX)
   else if (Math.abs(velocityX) >= SWIPE_VELOCITY) direction = Math.sign(velocityX)
   if (direction === 0) return index
-  const next = index + (direction === towardsEnd ? 1 : -1)
-  return Math.min(count - 1, Math.max(0, next))
+  return wrapIndex(index, direction === towardsEnd ? 1 : -1, count)
 }

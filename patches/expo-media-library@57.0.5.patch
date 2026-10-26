@@ -1,0 +1,18 @@
+diff --git a/ios/next/repository/AssetRepository.swift b/ios/next/repository/AssetRepository.swift
+index 0eeffcc3b97a2aeacecd33a50bfab11f4e7f9aa2..b9e65927ac15cc8a070a679d6a48cd9864a1b8f7 100644
+--- a/ios/next/repository/AssetRepository.swift
++++ b/ios/next/repository/AssetRepository.swift
+@@ -80,7 +80,12 @@ final class AssetRepository {
+   private func makeCreationRequest(for filePath: URL) throws -> PHAssetChangeRequest {
+     let mediaType = detectMediaType(for: filePath)
+     try ensureMediaTypeIsSupported(mediaType, filePath: filePath)
+-    return try createAssetChangeRequest(for: filePath, mediaType: mediaType)
++    let request = try createAssetChangeRequest(for: filePath, mediaType: mediaType)
++    // LangX: Photos sorts its library by the date read from the file's own
++    // metadata, so a picture taken weeks ago landed weeks back in the grid and
++    // only "Recently Saved" showed it. Saving is the event, so date it now.
++    request.creationDate = Date()
++    return request
+   }
+ 
+   private func detectMediaType(for filePath: URL) -> PHAssetMediaType {

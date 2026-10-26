@@ -42,7 +42,7 @@ export const FILTER_LABEL: Record<CameraFilterId, MessageKey> = {
 
 /**
  * A one-finger sideways swipe on the picture: the next filter or the one
- * before (`filterIndexAfterSwipe`). It only starts once the finger has
+ * before, round the ends (`filterIndexAfterSwipe`). It only starts once the finger has
  * clearly gone sideways and gives up if it goes up or down first, and a
  * second finger makes it the pinch's instead, so it races the zoom's
  * gestures without taking either from them.

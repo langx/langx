@@ -392,6 +392,12 @@ const config: ExpoConfig = {
      */
     './plugins/withCalls',
     /*
+     * `whatsapp` in `LSApplicationQueriesSchemes`, so the sticker pack page
+     * can tell whether to offer "Add to WhatsApp". The module itself is
+     * `modules/whatsapp-stickers`. See `plugins/withWhatsAppStickers.js`.
+     */
+    './plugins/withWhatsAppStickers',
+    /*
      * The Android half of the same feature, and it needs no targets: an
      * Android widget is drawn by the app's own JavaScript in a headless task,
      * so the views live in `widgets/` as TSX and the plugin only has to write

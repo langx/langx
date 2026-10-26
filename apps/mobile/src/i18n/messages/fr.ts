@@ -2866,6 +2866,8 @@ export const fr: Localized<EnMessages> = {
     buy: 'Acheter {title}',
     free: 'Gratuit pour tout le monde. Envoie-les depuis n’importe quelle discussion.',
     owned: 'Il est à toi. Envoie-les depuis n’importe quelle discussion.',
+    addToWhatsApp: 'Ajouter à WhatsApp',
+    addToWhatsAppFailed: 'WhatsApp ne s’est pas ouvert. Réessaie dans un instant.',
     seePack: 'Voir le pack',
   },
 

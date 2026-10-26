@@ -1,0 +1,23 @@
+// `expo-module-gradle-plugin` for the reasons `modules/wear-link` gives.
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'expo.modules.videofilter'
+version = '1.0.0'
+
+android {
+  namespace 'expo.modules.videofilter'
+  defaultConfig {
+    versionCode 1
+    versionName '1.0.0'
+  }
+}
+
+dependencies {
+  // The same Media3 as expo-video's player, so the app carries one copy of it.
+  implementation 'androidx.media3:media3-transformer:1.9.0'
+  implementation 'androidx.media3:media3-effect:1.9.0'
+  implementation 'androidx.media3:media3-common:1.9.0'
+}

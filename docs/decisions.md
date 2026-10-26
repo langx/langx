@@ -9614,8 +9614,10 @@ once, with no backfill and nobody left out.
   because it is the language most partners share. Turkish gets exactly what
   the others get. `tesekkurler` is a live id again, as the Turkish thanks,
   so it left `RETIRED_STICKERS`. About 1.3 MB for the pack now, still under
-  32 KB a sticker. WhatsApp stops at thirty a pack, so its export is two
-  packs, `venus` and `venus-2`.
+  32 KB a sticker. WhatsApp stops at thirty a pack, and Behic wanted one
+  pack there, not two parts, so the export stays `venus` with thirty chosen
+  from the sixty: one per meaning, wordless where a wordless one says it.
+  The choice is the `stickers` list in `WHATSAPP_PACKS`.
 
 ## Copilot opens to every account; the flag is the off switch
 

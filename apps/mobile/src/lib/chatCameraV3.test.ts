@@ -163,6 +163,22 @@ describe('the chat camera zooms and flips from the picture', () => {
     )
   })
 
+  it('rests in video on iOS, so the first hold does not rebuild the session', () => {
+    // A picture-to-video switch adds the movie output and the microphone to a
+    // running iPhone session, which blanks the preview: the first-hold flicker.
+    expect(ROUTE).toContain(
+      "const RESTING_MODE: 'picture' | 'video' = Platform.OS === 'ios' ? 'video' : 'picture'",
+    )
+    expect(ROUTE).toContain("useState<'picture' | 'video'>(RESTING_MODE)")
+    expect(ROUTE).toMatch(
+      /if \(cameraMode === 'video'\) void record\(\)\s*else setCameraMode\('video'\)/,
+    )
+    expect(ROUTE).not.toContain("setCameraMode('picture')")
+    // Never unmuted before the microphone is allowed, nor built before that is known.
+    expect(ROUTE).toContain('mute={!microphone.granted}')
+    expect(ROUTE).toContain('if (!permission || !microphone) {')
+  })
+
   it('builds the gestures once, not on every tick of the recording clock', () => {
     expect(HOOK).toMatch(/const gesture = useMemo\(\(\) => \{/)
     expect(HOOK).toContain('}, [flipEnabled, armed, factor])')
@@ -251,5 +267,11 @@ describe('the chat camera filters a clip', () => {
     expect(ROUTE).toContain(
       '<FilteredVideoV3 uri={captured.uri} matrix={cameraFilter(filter).matrix} />',
     )
+  })
+})
+
+describe('the first hold to record keeps the picture still on iOS', () => {
+  it('leaves stabilization off, so starting a recording does not rebuild the session', () => {
+    expect(ROUTE).toContain('videoStabilizationMode="off"')
   })
 })
