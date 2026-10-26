@@ -5,11 +5,12 @@ day. **Status: planned, nothing built.** Every decision below was asked and
 answered before this was written; the open points are listed at the end of
 each section that has one.
 
-Eight items. One is native and belongs to the 3.1 store build; the other seven
-are JavaScript only and ship over the air.
+Nine items, the first of them first. One is native and belongs to the 3.1
+store build; the rest are JavaScript and configuration and ship over the air.
 
 | #   | Work                                                                  | Native | Ships                       |
 | --- | --------------------------------------------------------------------- | ------ | --------------------------- |
+| 0   | Copilot open to everybody, as a beta — **before everything else**     | no     | `main` → OTA, then into 3.1 |
 | 1   | Saved photos and videos dated the moment they are saved               | yes    | `release/3.1` only          |
 | 2   | Venus's story closes on a swipe down                                  | no     | `main` → OTA, then into 3.1 |
 | 3   | Venus page, and Venus's videos on the streak page                     | no     | `main` → OTA, then into 3.1 |
@@ -18,6 +19,64 @@ are JavaScript only and ship over the air.
 | 6   | LangX Token page, and the shared design of the product pages          | no     | with 3                      |
 | 7   | Questions and answers on every product page                           | no     | with 3                      |
 | 8   | Transparency page (public stats, open source, trust) and Home section | no     | with 3                      |
+
+## 0. Copilot open to everybody, as a beta
+
+Asked for first: Copilot should reach every account now, as a beta, with no
+invitation. The quotas already bound it — `copilotPer24h` is 3 for Free and 24
+for Pro (`PLAN_LIMITS`), and `COPILOT_RULES.globalCallsPerDay` caps everybody
+together — so more people means the day's calls run out sooner, not a larger
+bill.
+
+**The invitation is already gone.** The per-account allow-list
+(`profiles.copilotAccess`, `POST /admin/users/:userId/copilot`,
+`GET /admin/copilot/access`, the panel's switches) was removed on 25 October
+2026 (`d75edd924`; `decisions.md` → _Copilot opens to every account; the flag
+is the off switch_). Nothing of it is left on `main` or `release/3.1` except
+the audit action names `copilot.allow` / `copilot.revoke`, kept for the rows
+that carry them. There is no invitation code to delete.
+
+What still stands between an account and Copilot, and what happens to each:
+
+| Gate                                                    | Where                                                          | Plan                                                                                                                |
+| ------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `flags.copilotEnabled` and the provider key             | operator's Flags page, API secrets                             | **Switched on in production.** The off switch stays: one flag, everybody or nobody, within about ten seconds.       |
+| `flags.v3Home` — Copilot is drawn only in the v3 thread | `ChatScreen.tsx` passes `enabled: v3Thread && !readOnly`       | **Open question** below.                                                                                            |
+| The consent sheet                                       | `CopilotConsentSheet`, `COPILOT_RULES.consentVersion`          | **Stays.** It is what the privacy policy and the store forms rely on; nobody gets an answer without agreeing to it. |
+| Guests                                                  | `useThreadCopilot` (`shouldGateGuest`), `GET /copilot` refuses | **Stays.** A quota and a consent need an account. The Copilot page (item 5) tells a guest to sign up to try it.     |
+
+Before the flag goes on, the conditions `decisions.md` → _Copilot ships dark,
+behind two switches and a consent_ attaches to it: the privacy policy and both
+store data forms name the AI provider, and a spend limit is set on the key
+where it lives. Each is checked, not assumed; any that is not true is reported
+before the switch.
+
+**Copy that says otherwise:**
+
+- The paywall's `paywall.betaTag`, "Beta, rolling out", becomes "Beta" — it is
+  not rolling out any more. `decisions.md` → _Copilot is sold as a beta,
+  rolling out_ is superseded by a new entry, not edited.
+- The paywall's Copilot benefit stops reading as Pro-only: Pro is **more**
+  answers (24 a day against 3), read from `PLAN_LIMITS`, not a different
+  feature. `PLAN_LIMITS.free.copilot` (`false`) is what the paywall copy reads;
+  it changes only if the copy needs it to, and its comment says why.
+- copilot.langx.io says "In the LangX app now, part of Pro" and has a Pro
+  section. In `langx/copilot`, one PR with the FAQ change of item 5: free with
+  a daily allowance, more with Pro, still a beta.
+- `CLAUDE.md`'s rule: a change in what a plan includes is mirrored on the
+  website's plans page and in the GitBook docs, by hand. Checked in
+  `langx/website` and `langx/docs`; changed where they say Copilot is Pro-only.
+
+Tests: the API's Copilot routes already test `off`, consent and the quotas
+(`routes/copilot.test.ts`); a Free account answering until its third unit and
+refusing the fourth gets a test if none exists. App: `paywallBenefits.test.ts`
+for the new copy.
+
+**Open question:** with `flags.v3Home` off, a thread asks nothing of Copilot
+and draws none of it. If v3 is not on for everybody in production, "everybody"
+means everybody on v3. Either switch v3 on for everybody, or let the old thread
+draw Copilot too. The second is real work in a look that is being retired;
+the first is a flag, if v3 is ready to be everybody's.
 
 ## 1. Saved media lands at the end of the gallery
 
@@ -312,21 +371,55 @@ video, the card is Venus.
 
 ## Order and shipping
 
-1. Item 2, its own PR, to `main`.
-2. The product work as a series of PRs to `main`, each shipping by OTA:
+1. **Item 0, before anything else**: the copy PR to `main`, the conditions
+   checked, then the flag switched on in production; the Copilot site PR
+   beside it.
+2. Item 2, its own PR, to `main`.
+3. The product work as a series of PRs to `main`, each shipping by OTA:
    shared components and the chart move; Transparency; Token; Copilot; Venus
    and the streak page; Home. Screenshots of the first — light and dark, small
    and large phone, largest text size — go to review before the rest is
    filled in.
-3. Item 1 on `release/3.1`.
-4. `main` merged into `release/3.1`.
-5. The sites: the Copilot FAQ PR in `langx/copilot`; the Venus page in
-   `langx/website`, after which the Venus link card is drawn.
-6. The 3.1 test builds, below.
+4. Item 1 on `release/3.1`.
+5. `main` merged into `release/3.1`.
+6. The sites: the Venus page in `langx/website`, after which the Venus link
+   card is drawn.
+7. The 3.1 test builds, below.
 
 Every PR: `pnpm -r typecheck`, `pnpm lint`, `format:check`, `pnpm test`; every
 new string in all eight locales, counts as plural entries; no hard-coded
 threshold.
+
+## Who does the work: agents and subagents
+
+The work may be handed to agents. One session stays the coordinator: it
+holds this plan, briefs each agent, reviews what comes back against the plan
+and the code, and is the only one that merges, switches flags or touches a
+store. An agent's report is a claim to check, not a result.
+
+- **One agent per PR, each in its own git worktree, each with its own
+  `pnpm install`.** `CLAUDE.md` → _Every worktree needs its own
+  `pnpm install`_: a worktree pointed at another's `node_modules` tests the
+  other branch's `packages/shared` and passes while doing it.
+- **What can run side by side** — nothing here shares files:
+  - item 0's copy PR; item 2 (the story swipe); item 1 on `release/3.1`;
+  - the site PRs in `langx/copilot` and `langx/website`;
+  - read-only research for the pages — every claim on the Token, Copilot,
+    Venus and Transparency pages traced to its source in code or docs,
+    returned as a checklist the page PRs are written from.
+- **What waits:** the four pages and Home wait for the shared components and
+  the chart move, since all of them import those. After that, the four pages
+  can be built in parallel — one agent each, each touching only its own route,
+  screen and message keys — and Home comes last, because it links all four.
+  The eight locale files are the one place they collide: each agent adds only
+  its own namespace (`venus.page.*`, `copilot.page.*`, …), and the coordinator
+  merges them in sequence, resolving the locale files by keeping both sides.
+- **Review before merge.** Each PR gets an independent review pass — a fresh
+  agent given the diff and this plan, not the author's summary — and the
+  screenshots above before it is merged.
+- **Never delegated:** switching `copilotEnabled` or any production flag,
+  anything in App Store Connect or Play Console, and starting the 3.1 builds.
+  Those wait for a person.
 
 ## Last: 3.1 test builds, iOS and Android together
 
