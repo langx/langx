@@ -322,7 +322,59 @@ video, the card is Venus.
 4. `main` merged into `release/3.1`.
 5. The sites: the Copilot FAQ PR in `langx/copilot`; the Venus page in
    `langx/website`, after which the Venus link card is drawn.
+6. The 3.1 test builds, below.
 
 Every PR: `pnpm -r typecheck`, `pnpm lint`, `format:check`, `pnpm test`; every
 new string in all eight locales, counts as plural entries; no hard-coded
 threshold.
+
+## Last: 3.1 test builds, iOS and Android together
+
+When everything above is on `release/3.1`, build 3.1 for both platforms and
+submit both to **testing only**. Neither goes to review.
+
+| Platform | Where it lands                            | Must not happen                        |
+| -------- | ----------------------------------------- | -------------------------------------- |
+| iOS      | App Store Connect → **TestFlight**        | "Submit for Review" on the 3.1 version |
+| Android  | Play Console → **Internal testing** track | anything sent to Google's review       |
+
+**Why Android is the careful one.** A Play submission is already waiting in
+review, and has been for a long time. `release-runbook.md` records that a
+submission sent while another is in review **restarts** the review. Losing
+that place in the queue is the one outcome this step must not have.
+
+What exists: `apps/mobile/.eas/workflows/release.yml` on expo.dev, started by
+hand per platform — the `production` build profile, then `eas submit` with
+`eas.json`'s `production` submit profile. That profile already sends Android
+to `track: internal`, and iOS's `eas submit` only uploads to App Store Connect;
+it does not submit the version for review.
+
+Steps:
+
+1. **Before anything is built, check Play Console's publishing overview** and
+   confirm that an upload to internal testing will not be sent for review with
+   the pending submission: managed publishing on, and nothing queued that a
+   new release would carry along. If that cannot be confirmed, stop and ask.
+2. **Make "not for review" explicit for Android** in the submit profile used
+   for this build — `changesNotSentForReview: true` beside `track: internal` —
+   so the upload leaves changes waiting rather than sending them. Check
+   against the Play Console state from step 1 that the API accepts the flag
+   there; it refuses it in some publishing modes. On `release/3.1` only.
+3. **Preflight**, before spending builds (the free plan is 15 per platform a
+   month): `apps/mobile/package.json` is `3.1.0`; the iOS patch and Android
+   date change from item 1 and the video-filter and WhatsApp native modules
+   are on the branch; `EXPO_PUBLIC_API_URL` in the `production` profile is the
+   production API, not localhost; typecheck, lint, format and tests pass on
+   `release/3.1`.
+4. **Build and submit both** from `release/3.1` — `release.yml` once with
+   `android` and once with `ios`, or `eas build --platform all --profile
+production` followed by `eas submit`. Started on expo.dev with the
+   project's credentials: this container has no Expo token, so the run is
+   started by someone signed in to EAS.
+5. **Check where each landed**: iOS build processed and visible in TestFlight
+   (internal testers, no Beta App Review); Android release on the Internal
+   testing track, and the pending review in Play Console **unchanged**.
+6. **Do not**: press "Submit for Review" in App Store Connect, promote the
+   Android release to closed, open or production testing, or file Play's
+   declarations for 3.1 — each of those is a review, and they wait until the
+   pending one is decided.
