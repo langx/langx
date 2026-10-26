@@ -57,33 +57,73 @@ export interface WhatsAppPackInfo {
   publisherWebsite: string
   privacyPolicyWebsite: string
   licenseAgreementWebsite: string
+  /**
+   * The set's pictures this pack takes, by file name without extension. The
+   * build script exports these and no others, in the set's order.
+   */
+  stickers: readonly string[]
 }
-
-const LANGX_PACK = {
-  publisher: 'LangX',
-  publisherWebsite: 'https://langx.io',
-  privacyPolicyWebsite: 'https://langx.io/privacy-policy',
-  licenseAgreementWebsite: 'https://langx.io/terms',
-} as const
 
 /**
  * The packs this build can hand to WhatsApp, by catalogue id. A pack page
- * shows one button per entry, and none for an id not listed here.
- *
- * A list because WhatsApp stops at 30 stickers a pack and Venus has sixty:
- * one catalogue pack becomes two WhatsApp packs. The first keeps the
- * identifier the 30-sticker export had, so it stays the same pack.
+ * shows the button only for an id listed here.
  */
-export const WHATSAPP_PACKS: Readonly<Record<string, readonly WhatsAppPackInfo[]>> = {
-  'stickers.venus': [
-    { identifier: 'venus', name: 'Venus', ...LANGX_PACK },
-    { identifier: 'venus-2', name: 'Venus 2', ...LANGX_PACK },
-  ],
+export const WHATSAPP_PACKS: Readonly<Record<string, WhatsAppPackInfo>> = {
+  'stickers.venus': {
+    identifier: 'venus',
+    name: 'Venus',
+    publisher: 'LangX',
+    publisherWebsite: 'https://langx.io',
+    privacyPolicyWebsite: 'https://langx.io/privacy-policy',
+    licenseAgreementWebsite: 'https://langx.io/terms',
+    /*
+     * Venus has sixty and WhatsApp takes thirty a pack. One pack, not two, so
+     * these are the thirty: one per meaning, no near-duplicates, the wordless
+     * picture where there is one. That leaves out the eight hellos (01-hi
+     * says it without words), the thanks in seven languages (39-thanks-en
+     * stays, as the words most people read), good night (17-sleepy), well
+     * done (10-celebrate), oops (06-sorry), and poses that repeat a mood
+     * already here. Swap a sticker by editing this list and re-running the
+     * script; 01-hi stays first, as it draws the tray icon.
+     */
+    stickers: [
+      '01-hi',
+      '02-love',
+      '03-lol',
+      '04-ok',
+      '05-no',
+      '06-sorry',
+      '07-crying',
+      '08-shocked',
+      '09-thinking',
+      '10-celebrate',
+      '13-squint',
+      '14-blep',
+      '15-typing',
+      '16-boop',
+      '17-sleepy',
+      '18-diva',
+      '19-hamsi',
+      '21-empty-bowl',
+      '23-knock-off',
+      '24-box-hide',
+      '25-belly-up',
+      '26-zoomies',
+      '28-yuck',
+      '33-gift',
+      '35-offended',
+      '36-wasnt-me',
+      '37-shy',
+      '39-thanks-en',
+      '40-good-morning',
+      '42-practise',
+    ],
+  },
 }
 
-/** The WhatsApp identifiers for a catalogue pack id, in order; empty when it has no export. */
-export function whatsAppPacksFor(cosmeticId: string): string[] {
-  return (WHATSAPP_PACKS[cosmeticId] ?? []).map((p) => p.identifier)
+/** The WhatsApp identifier for a catalogue pack id, or `undefined` when it has no export. */
+export function whatsAppPackFor(cosmeticId: string): string | undefined {
+  return WHATSAPP_PACKS[cosmeticId]?.identifier
 }
 
 export interface StickerFile {

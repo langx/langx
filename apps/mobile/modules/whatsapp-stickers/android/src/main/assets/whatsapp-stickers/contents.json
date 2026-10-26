@@ -10,7 +10,7 @@
       "publisher_website": "https://langx.io",
       "privacy_policy_website": "https://langx.io/privacy-policy",
       "license_agreement_website": "https://langx.io/terms",
-      "image_data_version": "22b634dc6288",
+      "image_data_version": "acfbd0b17cd0",
       "stickers": [
         {
           "image_file": "01-hi.webp",
@@ -73,18 +73,6 @@
           ]
         },
         {
-          "image_file": "11-proud.webp",
-          "emojis": [
-            "😎"
-          ]
-        },
-        {
-          "image_file": "12-slow-blink.webp",
-          "emojis": [
-            "😌"
-          ]
-        },
-        {
           "image_file": "13-squint.webp",
           "emojis": [
             "🤨"
@@ -121,99 +109,9 @@
           ]
         },
         {
-          "image_file": "39-thanks-en.webp",
-          "emojis": [
-            "🙏"
-          ]
-        },
-        {
-          "image_file": "40-good-morning.webp",
-          "emojis": [
-            "☀️"
-          ]
-        },
-        {
-          "image_file": "41-good-night.webp",
-          "emojis": [
-            "🌙"
-          ]
-        },
-        {
-          "image_file": "42-practise.webp",
-          "emojis": [
-            "🗣"
-          ]
-        },
-        {
-          "image_file": "46-hello-en.webp",
-          "emojis": [
-            "👋"
-          ]
-        },
-        {
-          "image_file": "47-hello-es.webp",
-          "emojis": [
-            "👋"
-          ]
-        },
-        {
-          "image_file": "48-hello-pt-BR.webp",
-          "emojis": [
-            "👋"
-          ]
-        },
-        {
-          "image_file": "49-hello-fr.webp",
-          "emojis": [
-            "👋"
-          ]
-        },
-        {
-          "image_file": "50-hello-de.webp",
-          "emojis": [
-            "👋"
-          ]
-        },
-        {
-          "image_file": "51-hello-tr.webp",
-          "emojis": [
-            "👋"
-          ]
-        },
-        {
-          "image_file": "52-hello-ru.webp",
-          "emojis": [
-            "👋"
-          ]
-        },
-        {
-          "image_file": "53-hello-ar.webp",
-          "emojis": [
-            "👋"
-          ]
-        }
-      ]
-    },
-    {
-      "identifier": "venus-2",
-      "name": "Venus 2",
-      "publisher": "LangX",
-      "tray_image_file": "tray.png",
-      "publisher_website": "https://langx.io",
-      "privacy_policy_website": "https://langx.io/privacy-policy",
-      "license_agreement_website": "https://langx.io/terms",
-      "image_data_version": "e38b0fbaadfb",
-      "stickers": [
-        {
           "image_file": "19-hamsi.webp",
           "emojis": [
             "🐟",
-            "😋"
-          ]
-        },
-        {
-          "image_file": "20-treat.webp",
-          "emojis": [
             "😋"
           ]
         },
@@ -222,13 +120,6 @@
           "emojis": [
             "🥣",
             "😾"
-          ]
-        },
-        {
-          "image_file": "22-chicken.webp",
-          "emojis": [
-            "🍗",
-            "🤤"
           ]
         },
         {
@@ -257,51 +148,15 @@
           ]
         },
         {
-          "image_file": "27-meant-it.webp",
-          "emojis": [
-            "😌"
-          ]
-        },
-        {
           "image_file": "28-yuck.webp",
           "emojis": [
             "🤢"
           ]
         },
         {
-          "image_file": "29-notes.webp",
-          "emojis": [
-            "📚"
-          ]
-        },
-        {
-          "image_file": "30-knead.webp",
-          "emojis": [
-            "🥰"
-          ]
-        },
-        {
-          "image_file": "31-startle.webp",
-          "emojis": [
-            "🙀"
-          ]
-        },
-        {
-          "image_file": "32-hunt.webp",
-          "emojis": [
-            "🎯"
-          ]
-        },
-        {
           "image_file": "33-gift.webp",
           "emojis": [
             "🎁"
-          ]
-        },
-        {
-          "image_file": "34-groom.webp",
-          "emojis": [
-            "😏"
           ]
         },
         {
@@ -323,69 +178,21 @@
           ]
         },
         {
-          "image_file": "38-listening.webp",
-          "emojis": [
-            "🎧"
-          ]
-        },
-        {
-          "image_file": "43-well-done.webp",
-          "emojis": [
-            "🌟"
-          ]
-        },
-        {
-          "image_file": "44-miss-you.webp",
-          "emojis": [
-            "🥹"
-          ]
-        },
-        {
-          "image_file": "45-oops.webp",
-          "emojis": [
-            "🙈"
-          ]
-        },
-        {
-          "image_file": "54-thanks-es.webp",
+          "image_file": "39-thanks-en.webp",
           "emojis": [
             "🙏"
           ]
         },
         {
-          "image_file": "55-thanks-pt-BR.webp",
+          "image_file": "40-good-morning.webp",
           "emojis": [
-            "🙏"
+            "☀️"
           ]
         },
         {
-          "image_file": "56-thanks-fr.webp",
+          "image_file": "42-practise.webp",
           "emojis": [
-            "🙏"
-          ]
-        },
-        {
-          "image_file": "57-thanks-de.webp",
-          "emojis": [
-            "🙏"
-          ]
-        },
-        {
-          "image_file": "58-thanks-tr.webp",
-          "emojis": [
-            "🙏"
-          ]
-        },
-        {
-          "image_file": "59-thanks-ru.webp",
-          "emojis": [
-            "🙏"
-          ]
-        },
-        {
-          "image_file": "60-thanks-ar.webp",
-          "emojis": [
-            "🙏"
+            "🗣"
           ]
         }
       ]

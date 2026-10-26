@@ -15,7 +15,7 @@ import {
   webpInfo,
   WHATSAPP_LIMITS,
   WHATSAPP_PACKS,
-  whatsAppPacksFor,
+  whatsAppPackFor,
 } from './whatsappStickers'
 
 /*
@@ -45,11 +45,9 @@ const contents = JSON.parse(
   fs.readFileSync(path.join(ASSETS, 'contents.json'), 'utf8'),
 ) as ContentsJson
 
-const EXPORTED = Object.values(WHATSAPP_PACKS).flat()
-
 function shipped(identifier: string): BuiltPack {
   const entry = contents.sticker_packs.find((p) => p.identifier === identifier)!
-  const info = EXPORTED.find((p) => p.identifier === identifier)!
+  const info = Object.values(WHATSAPP_PACKS).find((p) => p.identifier === identifier)!
   const read = (file: string) =>
     new Uint8Array(fs.readFileSync(path.join(ASSETS, identifier, file)))
   return {
@@ -67,22 +65,20 @@ function shipped(identifier: string): BuiltPack {
 describe('the shipped WhatsApp packs', () => {
   it('lists every exported pack and nothing else', () => {
     expect(contents.sticker_packs.map((p) => p.identifier).sort()).toEqual(
-      EXPORTED.map((p) => p.identifier).sort(),
+      Object.values(WHATSAPP_PACKS)
+        .map((p) => p.identifier)
+        .sort(),
     )
   })
 
-  it('gives Android the same contents.json the script would write', () => {
-    expect(contents).toEqual(androidContents(EXPORTED.map((p) => shipped(p.identifier))))
-  })
-
-  it('puts each picture in one pack only', () => {
-    const files = EXPORTED.flatMap((p) => shipped(p.identifier).stickers.map((s) => s.file))
-    expect(new Set(files).size).toBe(files.length)
-  })
-
-  for (const info of EXPORTED) {
+  for (const info of Object.values(WHATSAPP_PACKS)) {
     describe(info.identifier, () => {
       const pack = shipped(info.identifier)
+
+      it('ships the stickers WHATSAPP_PACKS chooses, in order', () => {
+        // Editing the list without re-running the script would ship the old choice.
+        expect(pack.stickers.map((s) => s.file.replace(/\.webp$/, ''))).toEqual(info.stickers)
+      })
 
       it('passes every rule WhatsApp checks', () => {
         expect(validatePack(pack)).toEqual([])
@@ -109,6 +105,10 @@ describe('the shipped WhatsApp packs', () => {
         expect(fs.readdirSync(path.join(ASSETS, info.identifier)).sort()).toEqual(
           [...listed].sort(),
         )
+      })
+
+      it('gives Android the same contents.json the script would write', () => {
+        expect(contents).toEqual(androidContents([pack]))
       })
 
       it('gives iOS the pasteboard payload WhatsApp reads, from the same files', () => {
@@ -149,10 +149,8 @@ describe('WHATSAPP_PACKS', () => {
   })
 
   it('maps the Venus pack and nothing it does not know', () => {
-    // `venus` first and unchanged: it is the identifier the 30-sticker
-    // export had, and WhatsApp treats a new identifier as a new pack.
-    expect(whatsAppPacksFor('stickers.venus')).toEqual(['venus', 'venus-2'])
-    expect(whatsAppPacksFor('stickers.paper')).toEqual([])
+    expect(whatsAppPackFor('stickers.venus')).toBe('venus')
+    expect(whatsAppPackFor('stickers.paper')).toBeUndefined()
   })
 
   it('only names catalogue ids shaped like a sticker pack', () => {
