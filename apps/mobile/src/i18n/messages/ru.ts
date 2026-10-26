@@ -4317,9 +4317,9 @@ export const ru: Localized<EnMessages> = {
     nearby: 'Рядом',
     nearbyBody:
       'Сортируй по расстоянию. Местоположение округляется; другие видят лишь примерное расстояние.',
-    copilot: 'ИИ-помощник',
+    copilot: 'Больше ответов Copilot',
     copilotBody:
-      'Помогает составлять и понимать сообщения прямо во время письма. В твоём аккаунте он может быть ещё не включён.',
+      'Помогает составлять и понимать сообщения прямо во время письма. {count} в день на бесплатном тарифе.',
     quotaNotice:
       'Ты израсходовал {count} новых чатов на сегодня. Отвечать на всё входящее по-прежнему можно без ограничений.',
     manageNotice: 'У тебя {plan}. Управлять или отменить можно в аккаунте магазина.',
@@ -4437,10 +4437,10 @@ export const ru: Localized<EnMessages> = {
     compareNewChats: 'Новых чатов в день',
     compareTranslations: 'Переводов в день',
     compareLanguages: 'Изучаемые языки',
+    compareCopilot: 'Ответов Copilot в день',
     compareUnlimited: 'Без лимита',
     compareSoon: 'Скоро',
-    compareBeta: 'Бета',
-    betaTag: 'Бета, открываем постепенно',
+    betaTag: 'Бета',
     compareIncluded: 'Есть',
     compareNotIncluded: 'Нет',
     yearlyBadge: '{perMonth} · {saving}',

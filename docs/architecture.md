@@ -130,7 +130,7 @@ This is communication work, and it is part of the delivery:
 | **Match model**     | **None.** No like/match/swipe — a direct "message" CTA on every profile and list row. Access is governed purely by quota: Pro unlimited, free 5 new conversations per rolling 24h. No `matches` collection, and no like/match/swipe **gate**. A `likes` collection does exist, but it is a signal on feed _content_ (`targetType: 'post' \| 'correction' \| 'answer'`) — never on a person, and it opens no channel |
 | Billing             | RevenueCat as the single entitlement system: StoreKit/Play Billing natively, RevenueCat Web + **our own Stripe Billing account** on the web                                                                                                                                                                                                                                                                         |
 | Free quota          | **5 new conversations per rolling 24 hours**; replying is **unlimited**                                                                                                                                                                                                                                                                                                                                             |
-| Pro bundle          | One paid plan since 28 September 2026 (Fluent and Polyglot merged): unlimited conversations · advanced filters (gender, city) · boosted profile on Discover · who viewed me + incognito · unlimited translations (fair use) · 5 languages learned, 5 spoken · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (beta, rolling out)                                                |
+| Pro bundle          | One paid plan since 28 September 2026 (Fluent and Polyglot merged): unlimited conversations · advanced filters (gender, city) · boosted profile on Discover · who viewed me + incognito · unlimited translations (fair use) · 5 languages learned, 5 spoken · **Nearby** (distance-sorted discovery; sharing a location stays free) · more Copilot answers a day (Copilot itself is a beta on every plan)           |
 | Pricing             | Monthly + yearly, one free week on both, regional pricing; the yearly plan is sold as "N months free", computed from the store's prices                                                                                                                                                                                                                                                                             |
 | **Product promise** | **Changes** — langx.io + Terms + privacy + store listings get rewritten (section above)                                                                                                                                                                                                                                                                                                                             |
 | Message correction  | **P0**, and **unlimited for everyone** (no quota)                                                                                                                                                                                                                                                                                                                                                                   |
@@ -755,10 +755,12 @@ indistinguishable from an unread one and the queue could only grow.
 
 ### Copilot
 
-The only paid feature ever promised publicly. The plan keeps it as a **P1 Pro
+The only paid feature ever promised publicly. The plan kept it as a **P1 Pro
 feature**. For the integrity of that promise it should land close to the v2
 launch; it does not block the MVP, but it is what the monetization story ought
-to be built around.
+to be built around. (Since 26 October 2026 it is a beta on every plan, and Pro
+is more answers a day rather than the feature itself — `decisions.md` →
+_Copilot is a beta on every plan; Pro is more answers_.)
 
 Verified live in v1: the chat screen header has a robot-icon toggle that checks
 what you are typing for grammar and phrasing errors in real time and suggests a

@@ -4058,9 +4058,9 @@ export const en = {
     nearby: 'Nearby',
     nearbyBody:
       'Sort people by distance. Your location is rounded; others see only a rough distance.',
-    copilot: 'AI copilot',
+    copilot: 'More Copilot answers',
     copilotBody:
-      'Help composing and understanding messages as you write them. It may not be on for your account yet.',
+      'Help composing and understanding messages as you write them. {count} a day on the free plan.',
     quotaNotice:
       'You’ve used today’s {count} new chats. You can still reply to everything you receive, with no limit.',
     manageNotice: 'You’re on {plan}. Manage or cancel it in your store account.',
@@ -4165,12 +4165,11 @@ export const en = {
     compareNewChats: 'New chats a day',
     compareTranslations: 'Translations a day',
     compareLanguages: 'Languages you learn',
+    compareCopilot: 'Copilot answers a day',
     compareUnlimited: 'Unlimited',
     compareSoon: 'Soon',
-    /** Pro's cell in the comparison for a feature in beta: works, but not for every account yet. */
-    compareBeta: 'Beta',
-    /** Beside a beta feature's name on the paywall and the plan page. One phrasing everywhere, the website and the docs included. */
-    betaTag: 'Beta, rolling out',
+    /** Beside a beta feature's name on the paywall, in its comparison row and on the plan page. One phrasing everywhere, the website and the docs included. */
+    betaTag: 'Beta',
     compareIncluded: 'Included',
     compareNotIncluded: 'Not included',
     yearlyBadge: '{perMonth} · {saving}',

@@ -21,8 +21,8 @@ interface CompareTableProps {
  * table answers is "what do I not have", and a column of crosses answers it
  * at a glance. Numbers stay numbers — "5" against "Unlimited" — because the
  * limit is the part of the promise worth keeping visible. A feature that has
- * not shipped reads "Soon" in the Pro column, and one in beta "Beta" — never
- * a tick, since neither is on for every buyer.
+ * not shipped reads "Soon" in the Pro column, never a tick. One in beta has
+ * its numbers like any other row, and "Beta" beside its label.
  *
  * Each row is one element to a screen reader, read as a sentence, since a
  * tick has no words of its own.
@@ -46,8 +46,6 @@ export function CompareTable({ rows, lead, expanded, onToggle }: CompareTablePro
         return t('paywall.compareUnlimited')
       case 'soon':
         return t('paywall.compareSoon')
-      case 'beta':
-        return t('paywall.compareBeta')
     }
   }
 
@@ -70,14 +68,18 @@ export function CompareTable({ rows, lead, expanded, onToggle }: CompareTablePro
       </View>
       {shown.map((row) => {
         const label = t(row.label)
+        const tag = row.tag ? t(row.tag) : null
         return (
           <View
             key={row.benefit}
             accessible
-            accessibilityLabel={`${label}. ${TIER_NAMES.free}: ${spoken(row.free)}. ${TIER_NAMES.pro}: ${spoken(row.pro)}`}
+            accessibilityLabel={`${tag ? `${label}, ${tag}` : label}. ${TIER_NAMES.free}: ${spoken(row.free)}. ${TIER_NAMES.pro}: ${spoken(row.pro)}`}
             style={styles.row}
           >
-            <Text style={[styles.label, styles.labelCell]}>{label}</Text>
+            <Text style={[styles.label, styles.labelCell]}>
+              {label}
+              {tag ? <Text style={styles.tag}> · {tag}</Text> : null}
+            </Text>
             <View style={styles.freeCell}>
               <Cell cell={row.free} muted />
             </View>
@@ -135,8 +137,6 @@ function Cell({ cell, muted = false }: { cell: CompareCell; muted?: boolean }) {
       )
     case 'soon':
       return <Text style={styles.soon}>{t('paywall.compareSoon')}</Text>
-    case 'beta':
-      return <Text style={styles.soon}>{t('paywall.compareBeta')}</Text>
   }
 }
 
@@ -183,6 +183,8 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingVertical: v3.space[6],
   },
   label: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '600' },
+  // Quieter than the label it follows: a qualifier, not part of the name.
+  tag: { color: v3.colors.muted, fontWeight: '400' },
   mark: {
     alignItems: 'center',
     borderRadius: v3.radius.pill,

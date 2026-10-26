@@ -21,9 +21,9 @@ export function copilotTime(iso: string | null | undefined, locale: string): str
  *
  * Nothing at all for an unlimited plan (`limit: null`): a count that never
  * goes down is not information, and nothing here ever offers an upgrade —
- * Pro users must never be sold Pro, and the paywall sells Copilot only as a
- * beta that may not be on for them. Nothing either before `GET /copilot` has
- * answered.
+ * Pro users must never be sold Pro, and the paywall never names Copilot as a
+ * feature it unlocks (`sellableFeature`). Nothing either before `GET /copilot`
+ * has answered.
  */
 export function CopilotAllowance({ quota }: { quota: CopilotStatus['quota'] | undefined }) {
   const styles = useStyles()
