@@ -18,22 +18,20 @@ import { CHARACTER } from './lib/character.mjs'
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 export const QUIPS_FILE = path.join(HERE, 'data/quips.json')
 
-// names a JSON key could use to reach Object.prototype instead of adding an entry
-const UNSAFE_KEY = new Set(['__proto__', 'constructor', 'prototype'])
-const usable = (name) => {
-  if (UNSAFE_KEY.has(name)) throw new Error(`"${name}" cannot name a lint category or locale`)
-  return name
-}
-
-// category -> locale -> [RegExp]; 'all' is merged into every locale
+// category -> locale -> [RegExp]; 'all' is merged into every locale. Maps, so a name read from the
+// JSON is only ever a key, never a property that could reach a prototype.
 export function compileRules(character = CHARACTER) {
-  const out = Object.create(null)
+  const out = new Map()
   for (const [cat, def] of Object.entries(character.lint.categories)) {
-    out[usable(cat)] = { why: def.why, scope: def.scope ?? 'line', byLocale: Object.create(null) }
+    const byLocale = new Map()
     for (const [k, list] of Object.entries(def)) {
       if (['why', 'scope'].includes(k)) continue
-      out[cat].byLocale[usable(k)] = list.map((s) => new RegExp(s, 'iu'))
+      byLocale.set(
+        k,
+        list.map((s) => new RegExp(s, 'iu')),
+      )
     }
+    out.set(cat, { why: def.why, scope: def.scope ?? 'line', byLocale })
   }
   return out
 }
@@ -41,9 +39,9 @@ export function compileRules(character = CHARACTER) {
 // one text against the rules; returns [{ category, pattern }]
 export function checkText(text, locale, { target = null, rules = compileRules() } = {}) {
   const hits = []
-  for (const [cat, r] of Object.entries(rules)) {
+  for (const [cat, r] of rules) {
     if (r.scope === 'habit' && target !== 'habit') continue
-    for (const re of [...(r.byLocale.all ?? []), ...(r.byLocale[locale] ?? [])])
+    for (const re of [...(r.byLocale.get('all') ?? []), ...(r.byLocale.get(locale) ?? [])])
       if (re.test(text)) hits.push({ category: cat, pattern: re.source })
   }
   return hits
