@@ -214,6 +214,17 @@ export const appConfigSchema = z.object({
      * a merge.
      */
     venusStories: z.boolean(),
+    /**
+     * Venus's day videos, posted by the API to LangX's own Instagram,
+     * Facebook Page, YouTube channel and TikTok at the times of the approved
+     * calendar (`modules/social`). Starts off because it publishes under our
+     * name on four platforms — a decision made by switching this on rather
+     * than by a merge — and off is the kill switch: no row is claimed while
+     * it is, whatever is approved. Nothing reaches a client; it rides here
+     * because this is where every switch lives. See
+     * `docs/social-autoposting.md`.
+     */
+    socialAutopost: z.boolean(),
   }),
   updatedAt: z.string(),
 })
@@ -248,6 +259,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     stickerGifts: false,
     whatsappStickers: false,
     venusStories: false,
+    socialAutopost: false,
   },
 }
 

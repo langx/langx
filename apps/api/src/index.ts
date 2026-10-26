@@ -28,6 +28,8 @@ import { startScheduledMessageScheduler } from './modules/chat/scheduledSender'
 import { startStreakReminderScheduler } from './modules/push/reminderScheduler'
 import { startNotificationScheduler, type OfficialFanOut } from './modules/notifications/scheduler'
 import { startDailyPoolScheduler } from './modules/tokens/poolScheduler'
+import { createSocialAdapters } from './modules/social/adapters'
+import { startSocialAutopostScheduler } from './modules/social/autopost'
 import { fanOutMessage } from './ws/fanOut'
 
 async function main(): Promise<void> {
@@ -148,6 +150,9 @@ async function main(): Promise<void> {
     // and written to its thread.
     startCallSweeper(app),
     startLegacyImportScheduler(db, app.log),
+    // Does nothing until `flags.socialAutopost` is on, and a platform with no
+    // credentials has no adapter — see `modules/social/adapters.ts`.
+    startSocialAutopostScheduler(db, createSocialAdapters(env, db), app.log),
     /*
      * Not a scheduled *job* — it writes no ledger and claims no period. Every
      * instance samples, because what it records is one number read from the
