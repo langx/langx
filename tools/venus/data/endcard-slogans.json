@@ -1,0 +1,45 @@
+{
+  "_note": "End-card slogans, one line under the LangX wordmark. 'speak' is the app's own onboarding headline (intro.slide1Title in apps/mobile/src/i18n/messages/*.ts), copied verbatim, so its eight translations already ship and the first screen after install says the same thing. The other two are new copy and want a native read before use. None claims a number, a result or a speed.",
+  "recommended": "practice",
+  "candidates": {
+    "practice": {
+      "why": "Behic's line (23 Oct). Three beats; on the splash card each comma group rises in turn. Only en and tr are written; every other locale falls back to its 'speak' line.",
+      "fallback": "speak",
+      "en": "Practice, learn, succeed.",
+      "tr": "Pratik yap, öğren, başar."
+    },
+    "speak": {
+      "why": "The exchange in four words: you teach your language, you practise theirs. Already the app's first onboarding slide in all eight locales.",
+      "en": "Speak yours, practise theirs",
+      "tr": "Seninkini konuş, onlarınkini çalış",
+      "es": "Habla el tuyo, practica el suyo",
+      "de": "Sprich deine, üb ihre",
+      "fr": "Parle la tienne, pratique la leur",
+      "pt-BR": "Fale a sua, pratique a deles",
+      "ru": "Говори на своём, практикуй их",
+      "ar": "تكلّم لغتك ومارس لغتهم"
+    },
+    "natives": {
+      "why": "The plainest true sentence: every match is a native speaker of what you are learning (the matching rule in intro.slide1Body). Clearest for someone who has never heard of LangX.",
+      "en": "Practise with native speakers",
+      "tr": "Ana dili konuşanlarla pratik yap",
+      "es": "Practica con hablantes nativos",
+      "de": "Übe mit Muttersprachlern",
+      "fr": "Pratique avec des natifs",
+      "pt-BR": "Pratique com falantes nativos",
+      "ru": "Практикуйся с носителями языка",
+      "ar": "تدرّب مع متحدثين أصليين"
+    },
+    "exchange": {
+      "why": "Names the category people search for (language exchange) and the difference from course and AI apps (a person on the other side).",
+      "en": "Language exchange, person to person",
+      "tr": "Dil değişimi, insandan insana",
+      "es": "Intercambio de idiomas, de tú a tú",
+      "de": "Sprachaustausch von Mensch zu Mensch",
+      "fr": "L’échange linguistique, d’humain à humain",
+      "pt-BR": "Intercâmbio de idiomas, de pessoa para pessoa",
+      "ru": "Языковой обмен — от человека к человеку",
+      "ar": "تبادل لغوي من إنسان إلى إنسان"
+    }
+  }
+}

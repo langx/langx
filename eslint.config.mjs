@@ -316,6 +316,31 @@ export default tseslint.config(
   },
   {
     /*
+     * Venus's streak-story generator and its uploader: Node, linted without type information like
+     * the pipelines above. The callbacks handed to `page.evaluate` run in the browser, hence
+     * `document`.
+     */
+    files: ['tools/venus/**/*.mjs'],
+    languageOptions: {
+      sourceType: 'module',
+      globals: {
+        Buffer: 'readonly',
+        console: 'readonly',
+        process: 'readonly',
+        setTimeout: 'readonly',
+        URL: 'readonly',
+        document: 'readonly',
+      },
+    },
+  },
+  {
+    // Venus's rig: a classic script that hangs itself on `window` in a page and exports itself
+    // under require() in Node, where the CommonJS block above already applies.
+    files: ['tools/venus/rig/*.js'],
+    languageOptions: { globals: { window: 'readonly' } },
+  },
+  {
+    /*
      * The store screenshots: Node scripts, plus a seed run by tsx that is in
      * no package's tsconfig — it imports the API's modules by path — so it is
      * linted without type information, like the scripts beside it.

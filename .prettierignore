@@ -20,6 +20,17 @@ apps/api/src/email/inlineAssets.ts
 # one-line diff; prettier would spread each face over twenty.
 apps/api/assets/avatars/faces.json
 
+# Venus's generator data, one entry per line so a change is a one-line diff (prettier would spread
+# each item over twenty), and the files its scripts write: quips.mjs writes quips.json,
+# items-build.mjs writes inventory.md, and a test compares that one byte for byte. Its renders and
+# voice takes stay out of git and out of prettier's way.
+tools/venus/data/
+tools/venus/inventory.md
+tools/venus/out/
+tools/venus/work/
+tools/venus/cache/
+tools/venus/voice/
+
 # Generated audio and the model that makes it — see tools/echo-content/tts.
 tools/echo-content/tts/out/
 tools/echo-content/tts/*.onnx

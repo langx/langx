@@ -1,0 +1,6 @@
+# Renders, frames, synthesised music and SFX, and the voice takes: see README.md.
+# The finished videos live on the media bucket, the takes outside the repo.
+out/
+work/
+cache/
+voice/
