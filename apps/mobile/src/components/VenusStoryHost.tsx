@@ -15,7 +15,10 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native'
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler'
 import Animated, {
+  interpolate,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -34,9 +37,10 @@ import { claimCelebration } from '../lib/celebration'
 import { notification } from '../lib/haptics'
 import { isLaunchOver, subscribeToLaunchOver } from '../lib/launchOver'
 import { FLAG_KEYS, readJsonFlag, writeJsonFlag } from '../lib/localFlags'
+import { AXIS_LOCK_PX, DISMISS_SCALE, DISMISS_SCRIM, dismissProgress } from '../lib/pinch'
 import { isProWelcomeOpen, subscribeToProWelcomeOpen } from '../lib/proWelcome'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../lib/theme'
-import { SPRING, STAGGER, TIMING } from '../lib/theme/motion'
+import { SPRING, STAGGER, TIMING, unlessReduced } from '../lib/theme/motion'
 import {
   canShareVenusFile,
   prepareVenusShare,
@@ -45,6 +49,7 @@ import {
   type VenusShareCopy,
 } from '../lib/venusShare'
 import {
+  closesVenusStory,
   hasWatchedVenus,
   isVenusAutoOpenPath,
   markVenusSeen,
@@ -175,11 +180,18 @@ export function VenusStoryHost({ enabled }: { enabled: boolean }) {
  * turns the sound on instead and says so in the pill. Native starts with
  * sound, as a story does.
  *
- * With reduce motion on, nothing moves: the screen and the panel appear
- * without a transition, and an automatic opening waits on the cover for a
+ * **A drag down closes it**, as it closes the photo viewer and at the same
+ * line (`closesVenusStory`), besides the ✕ and Android's back. The story
+ * follows the finger and the ground fades, so the screen it opened over shows
+ * through; let go short of the line and it springs home. Either way out goes
+ * through the same `onClose`, so what closing does is the same for each.
+ *
+ * With reduce motion on, nothing moves by itself: the screen and the panel
+ * appear without a transition, an automatic opening waits on the cover for a
  * tap — a moving picture that starts by itself is exactly what that setting
- * asks not to get. A tap on the flame is a request to watch, and plays at
- * once either way.
+ * asks not to get — and a drag past the line closes the story where it is
+ * rather than throwing it off the screen. A tap on the flame is a request to
+ * watch, and plays at once either way.
  */
 function VenusStoryPlayer({
   video,
@@ -316,6 +328,83 @@ function VenusStoryPlayer({
     transform: [{ scale: 0.6 + 0.4 * pop.get() }],
   }))
 
+  /*
+   * The drag down, done the way `PhotoViewer` does it so the two feel like
+   * one gesture: the story follows the finger — sideways at a third — and
+   * eases back from the screen as the ground fades by `dismissProgress`;
+   * past the line it is thrown off the bottom over `TIMING.exit` and then
+   * closed. Down only: an upward pull leaves it where it is.
+   */
+  const dragX = useSharedValue(0)
+  const dragY = useSharedValue(0)
+  /**
+   * 0 until a close is committed, then 1 over the throw: the ground finishes
+   * fading on it, so the story leaves the screen it opened over behind rather
+   * than a stage that vanishes a frame after it.
+   */
+  const leaving = useSharedValue(0)
+  /**
+   * Whether the pointer now down has turned into a drag, on the web only.
+   * There the browser still sends the picture's press a click when a mouse
+   * is let go after dragging, and a story pulled and let back took that for
+   * a tap — paused, or turned the sound on. Native cancels the press itself
+   * once the pan takes the touch, so there it stays false and cannot swallow
+   * a later press that no touch began, such as a screen reader's.
+   */
+  const dragged = useSharedValue(false)
+  const screenHeight = screen.height
+  // Memoised: the player re-renders ten times a second for the progress bar,
+  // and every fresh gesture object is its config and callbacks handed to the
+  // native handler again, mid-drag included.
+  const swipeDown = useMemo(
+    () =>
+      Gesture.Pan()
+        // Only downwards, and only once the finger has travelled, so a tap
+        // still pauses and plays.
+        .activeOffsetY(AXIS_LOCK_PX)
+        .onBegin(() => {
+          dragged.set(false)
+        })
+        .onStart(() => {
+          if (CLICK_AFTER_DRAG) dragged.set(true)
+        })
+        .onChange((event) => {
+          dragX.set(event.translationX / 3)
+          dragY.set(Math.max(0, event.translationY))
+        })
+        .onEnd((event, success) => {
+          if (success && closesVenusStory(event.translationY, event.velocityY)) {
+            if (reduce) {
+              runOnJS(onClose)()
+              return
+            }
+            leaving.set(withTiming(1, TIMING.exit))
+            // Closed whether or not the throw finished: a finger landing
+            // mid-throw must not strand an empty player on screen.
+            dragY.set(withTiming(screenHeight, TIMING.exit, () => runOnJS(onClose)()))
+            return
+          }
+          const home = (to: number): number => withSpring(to, SPRING.snap)
+          dragX.set(unlessReduced(reduce, 0, home))
+          dragY.set(unlessReduced(reduce, 0, home))
+        }),
+    [reduce, screenHeight, onClose, dragX, dragY, leaving, dragged],
+  )
+  const storyStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: dragX.get() },
+      { translateY: dragY.get() },
+      {
+        scale: interpolate(dismissProgress(dragY.get(), screenHeight), [0, 1], [1, DISMISS_SCALE]),
+      },
+    ],
+  }))
+  const groundStyle = useAnimatedStyle(() => ({
+    opacity:
+      interpolate(dismissProgress(dragY.get(), screenHeight), [0, 1], [1, DISMISS_SCRIM]) *
+      (1 - leaving.get()),
+  }))
+
   function replay(): void {
     setEnded(false)
     setProgress(0)
@@ -388,201 +477,238 @@ function VenusStoryPlayer({
   return (
     <Modal
       visible
+      // Transparent rather than full-screen: a drag down fades the ground to
+      // show the screen the story opened over, and an opaque window would
+      // show its own blank background there instead. At rest the ground
+      // covers everything, as before.
+      transparent
       animationType={reduce ? 'none' : 'fade'}
-      presentationStyle="fullScreen"
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <View
-        style={[styles.root, { backgroundColor: colors.stage }]}
-        accessibilityViewIsModal
-        accessibilityLabel={t('venus.playerA11y', { day: video.day })}
-      >
-        <View
-          style={[
-            styles.frame,
-            { height: frame.height, left: frame.left, top: frame.top, width: frame.width },
-            frame.top > 0 && styles.frameBelowBar,
-          ]}
+      {/*
+        A root of its own: a `Modal` is a separate native window, outside the
+        `GestureHandlerRootView` in `app/_layout.tsx`, and without one here
+        Android delivers the drag to nothing at all — as `PhotoViewer` found.
+      */}
+      <GestureHandlerRootView style={styles.root}>
+        <Animated.View
           pointerEvents="none"
+          style={[StyleSheet.absoluteFill, { backgroundColor: colors.stage }, groundStyle]}
+        />
+        <Animated.View
+          style={[styles.root, storyStyle]}
+          accessibilityViewIsModal
+          accessibilityLabel={t('venus.playerA11y', { day: video.day })}
         >
-          <VideoView
-            player={player}
-            style={styles.fill}
-            contentFit="cover"
-            nativeControls={false}
-            allowsVideoFrameAnalysis={false}
-            onFirstFrameRender={() => setFirstFrame(true)}
-          />
-          {video.coverUrl && cover !== 'failed' ? (
-            <Animated.View style={[StyleSheet.absoluteFill, coverStyle]}>
-              <Image
-                source={video.coverUrl}
-                style={styles.fill}
-                contentFit="cover"
-                accessible={false}
-                onLoad={() => setCover('ready')}
-                onError={() => setCover('failed')}
-              />
-            </Animated.View>
-          ) : null}
-        </View>
-
-        <Pressable
-          style={StyleSheet.absoluteFill}
-          onPress={onTap}
-          accessibilityRole="button"
-          accessibilityLabel={
-            muted
-              ? t('venus.tapForSound')
-              : ended
-                ? t('venus.replay')
-                : isPlaying
-                  ? t('venus.pause')
-                  : t('venus.play')
-          }
-        >
-          {paused ? (
-            <View style={styles.centre} pointerEvents="none">
-              <View style={[styles.disc, styles.playDisc, { backgroundColor: colors.scrim }]}>
-                <Feather name="play" size={36} color={colors.onScrim} />
-              </View>
-            </View>
-          ) : null}
-        </Pressable>
-
-        <View
-          style={[
-            styles.top,
-            {
-              left: visibleLeft,
-              top: Math.max(insets.top, frame.top) + v3.space[8],
-              width: visibleWidth,
-            },
-          ]}
-          pointerEvents="box-none"
-        >
-          <View style={styles.track} pointerEvents="none">
-            <View
-              style={[
-                styles.progress,
-                { backgroundColor: colors.onScrim, width: `${Math.round(progress * 1000) / 10}%` },
-              ]}
-            />
-          </View>
-          <View style={styles.topRow} pointerEvents="box-none">
-            {muted ? (
-              <Pressable
-                onPress={onTap}
-                accessibilityRole="button"
-                style={[styles.pill, { backgroundColor: colors.scrim }]}
+          {/*
+            Only the picture and its tap take the drag. The ✕, Share and the
+            end panel sit outside it, as they do in `PhotoViewer` and the
+            recap, so a touch that starts on a button is always that button.
+          */}
+          <GestureDetector gesture={swipeDown}>
+            <View style={StyleSheet.absoluteFill}>
+              <View
+                style={[
+                  styles.frame,
+                  { height: frame.height, left: frame.left, top: frame.top, width: frame.width },
+                  frame.top > 0 && styles.frameBelowBar,
+                ]}
+                pointerEvents="none"
               >
-                <Feather name="volume-x" size={16} color={colors.onScrim} />
-                <Text style={[styles.pillText, { color: colors.onScrim }]}>
-                  {t('venus.tapForSound')}
-                </Text>
-              </Pressable>
-            ) : (
-              <View />
-            )}
-            <View style={styles.corner} pointerEvents="box-none">
-              {shareInBar ? (
-                <Pressable
-                  onPress={() => void onShare()}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('venus.share')}
-                  accessibilityState={{ busy: sharing }}
-                  hitSlop={8}
-                  style={[styles.disc, { backgroundColor: colors.scrim }]}
-                >
-                  {sharing ? (
-                    <ActivityIndicator color={colors.onScrim} />
-                  ) : (
-                    <Feather
-                      name={canShareFile ? 'share' : 'download'}
-                      size={20}
-                      color={colors.onScrim}
+                <VideoView
+                  player={player}
+                  style={styles.fill}
+                  contentFit="cover"
+                  nativeControls={false}
+                  allowsVideoFrameAnalysis={false}
+                  onFirstFrameRender={() => setFirstFrame(true)}
+                />
+                {video.coverUrl && cover !== 'failed' ? (
+                  <Animated.View style={[StyleSheet.absoluteFill, coverStyle]}>
+                    <Image
+                      source={video.coverUrl}
+                      style={styles.fill}
+                      contentFit="cover"
+                      accessible={false}
+                      onLoad={() => setCover('ready')}
+                      onError={() => setCover('failed')}
                     />
-                  )}
-                </Pressable>
-              ) : null}
+                  </Animated.View>
+                ) : null}
+              </View>
+
               <Pressable
-                onPress={onClose}
+                style={StyleSheet.absoluteFill}
+                onPress={() => {
+                  // Pulled and let back: not a tap. See `dragged`.
+                  if (dragged.get()) {
+                    dragged.set(false)
+                    return
+                  }
+                  onTap()
+                }}
                 accessibilityRole="button"
-                accessibilityLabel={t('common.close')}
-                hitSlop={12}
-                style={[styles.disc, { backgroundColor: colors.scrim }]}
+                accessibilityLabel={
+                  muted
+                    ? t('venus.tapForSound')
+                    : ended
+                      ? t('venus.replay')
+                      : isPlaying
+                        ? t('venus.pause')
+                        : t('venus.play')
+                }
               >
-                <Feather name="x" size={22} color={colors.onScrim} />
+                {paused ? (
+                  <View style={styles.centre} pointerEvents="none">
+                    <View style={[styles.disc, styles.playDisc, { backgroundColor: colors.scrim }]}>
+                      <Feather name="play" size={36} color={colors.onScrim} />
+                    </View>
+                  </View>
+                ) : null}
               </Pressable>
             </View>
-          </View>
-        </View>
+          </GestureDetector>
 
-        {ended ? (
-          <Animated.View
-            style={[styles.panelWrap, { left: visibleLeft, width: visibleWidth }, panelStyle]}
+          <View
+            style={[
+              styles.top,
+              {
+                left: visibleLeft,
+                top: Math.max(insets.top, frame.top) + v3.space[8],
+                width: visibleWidth,
+              },
+            ]}
             pointerEvents="box-none"
           >
-            <View style={[styles.panel, { paddingBottom: insets.bottom + v3.space[16] }]}>
-              <Animated.View
-                style={[styles.chip, { backgroundColor: v3.hues.tangerine }, chipStyle]}
-              >
-                <FlameGlyph size={v3.icon.xs} color={v3.colors.ink} />
-                <Text style={styles.chipText}>{t('venus.endStreak', { count: video.day })}</Text>
-              </Animated.View>
-              <Text
-                accessibilityRole="header"
-                style={[styles.title, !black && styles.titleFallback]}
-              >
-                {copy.title}
-              </Text>
-              <Text style={styles.body}>{t('venus.endBody')}</Text>
-              <View style={styles.actions}>
-                <Button
-                  variant="primary"
-                  icon={canShareFile ? 'share' : 'download'}
-                  label={
-                    done?.button === 'share'
-                      ? done.label
-                      : canShareFile
-                        ? t('venus.shareVideo')
-                        : t('venus.downloadVideo')
-                  }
-                  loading={sharing}
-                  success={done?.button === 'share'}
-                  onPress={() => void onShare()}
-                />
-                <View style={styles.row}>
-                  {canShareFile ? (
+            <View style={styles.track} pointerEvents="none">
+              <View
+                style={[
+                  styles.progress,
+                  {
+                    backgroundColor: colors.onScrim,
+                    width: `${Math.round(progress * 1000) / 10}%`,
+                  },
+                ]}
+              />
+            </View>
+            <View style={styles.topRow} pointerEvents="box-none">
+              {muted ? (
+                <Pressable
+                  onPress={onTap}
+                  accessibilityRole="button"
+                  style={[styles.pill, { backgroundColor: colors.scrim }]}
+                >
+                  <Feather name="volume-x" size={16} color={colors.onScrim} />
+                  <Text style={[styles.pillText, { color: colors.onScrim }]}>
+                    {t('venus.tapForSound')}
+                  </Text>
+                </Pressable>
+              ) : (
+                <View />
+              )}
+              <View style={styles.corner} pointerEvents="box-none">
+                {shareInBar ? (
+                  <Pressable
+                    onPress={() => void onShare()}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('venus.share')}
+                    accessibilityState={{ busy: sharing }}
+                    hitSlop={8}
+                    style={[styles.disc, { backgroundColor: colors.scrim }]}
+                  >
+                    {sharing ? (
+                      <ActivityIndicator color={colors.onScrim} />
+                    ) : (
+                      <Feather
+                        name={canShareFile ? 'share' : 'download'}
+                        size={20}
+                        color={colors.onScrim}
+                      />
+                    )}
+                  </Pressable>
+                ) : null}
+                <Pressable
+                  onPress={onClose}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('common.close')}
+                  hitSlop={12}
+                  style={[styles.disc, { backgroundColor: colors.scrim }]}
+                >
+                  <Feather name="x" size={22} color={colors.onScrim} />
+                </Pressable>
+              </View>
+            </View>
+          </View>
+
+          {ended ? (
+            <Animated.View
+              style={[styles.panelWrap, { left: visibleLeft, width: visibleWidth }, panelStyle]}
+              pointerEvents="box-none"
+            >
+              <View style={[styles.panel, { paddingBottom: insets.bottom + v3.space[16] }]}>
+                <Animated.View
+                  style={[styles.chip, { backgroundColor: v3.hues.tangerine }, chipStyle]}
+                >
+                  <FlameGlyph size={v3.icon.xs} color={v3.colors.ink} />
+                  <Text style={styles.chipText}>{t('venus.endStreak', { count: video.day })}</Text>
+                </Animated.View>
+                <Text
+                  accessibilityRole="header"
+                  style={[styles.title, !black && styles.titleFallback]}
+                >
+                  {copy.title}
+                </Text>
+                <Text style={styles.body}>{t('venus.endBody')}</Text>
+                <View style={styles.actions}>
+                  <Button
+                    variant="primary"
+                    icon={canShareFile ? 'share' : 'download'}
+                    label={
+                      done?.button === 'share'
+                        ? done.label
+                        : canShareFile
+                          ? t('venus.shareVideo')
+                          : t('venus.downloadVideo')
+                    }
+                    loading={sharing}
+                    success={done?.button === 'share'}
+                    onPress={() => void onShare()}
+                  />
+                  <View style={styles.row}>
+                    {canShareFile ? (
+                      <Button
+                        style={styles.half}
+                        variant="secondary"
+                        size="medium"
+                        icon="download"
+                        label={done?.button === 'save' ? done.label : t('photo.save')}
+                        loading={saving}
+                        success={done?.button === 'save'}
+                        onPress={() => void onSave()}
+                      />
+                    ) : null}
                     <Button
                       style={styles.half}
                       variant="secondary"
                       size="medium"
-                      icon="download"
-                      label={done?.button === 'save' ? done.label : t('photo.save')}
-                      loading={saving}
-                      success={done?.button === 'save'}
-                      onPress={() => void onSave()}
+                      icon="rotate-ccw"
+                      label={t('venus.replay')}
+                      onPress={replay}
                     />
-                  ) : null}
-                  <Button
-                    style={styles.half}
-                    variant="secondary"
-                    size="medium"
-                    icon="rotate-ccw"
-                    label={t('venus.replay')}
-                    onPress={replay}
-                  />
+                  </View>
                 </View>
               </View>
-            </View>
-          </Animated.View>
-        ) : null}
-      </View>
+            </Animated.View>
+          ) : null}
+        </Animated.View>
+      </GestureHandlerRootView>
     </Modal>
   )
 }
+
+/** See `dragged`. */
+const CLICK_AFTER_DRAG = Platform.OS === 'web'
 
 const useStyles = makeStyles(({ v3 }) => ({
   root: { flex: 1, overflow: 'hidden' },

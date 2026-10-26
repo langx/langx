@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
+import { DISMISS_DRAG_PX } from './pinch'
+import { SHEET } from './theme/motionValues'
 import {
+  closesVenusStory,
   hasWatchedVenus,
   isVenusAutoOpenPath,
   isVenusStoryOpen,
@@ -281,6 +284,28 @@ describe('venusFrameFor', () => {
 
   it('draws nothing before the screen has a size', () => {
     expect(venusFrameFor(0, 0)).toEqual({ width: 0, height: 0, left: 0, top: 0 })
+  })
+})
+
+describe('closesVenusStory', () => {
+  it("closes on a drag down past the photo viewer's line, and not short of it", () => {
+    expect(closesVenusStory(DISMISS_DRAG_PX + 1, 0)).toBe(true)
+    expect(closesVenusStory(DISMISS_DRAG_PX, 0)).toBe(false)
+    expect(closesVenusStory(40, 0)).toBe(false)
+  })
+
+  it('closes on a short flick down', () => {
+    expect(closesVenusStory(30, SHEET.dismissVelocity + 1)).toBe(true)
+    expect(closesVenusStory(30, SHEET.dismissVelocity)).toBe(false)
+  })
+
+  it('never closes upwards, however far or fast', () => {
+    expect(closesVenusStory(-(DISMISS_DRAG_PX + 200), 0)).toBe(false)
+    expect(closesVenusStory(-30, -(SHEET.dismissVelocity + 400))).toBe(false)
+  })
+
+  it('stays open when a drag down is pulled back up fast', () => {
+    expect(closesVenusStory(60, -(SHEET.dismissVelocity + 400))).toBe(false)
   })
 })
 

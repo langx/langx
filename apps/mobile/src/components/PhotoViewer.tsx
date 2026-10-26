@@ -27,6 +27,8 @@ import { useLocale, useT } from '../i18n'
 import { chooseAlert, showAlert } from '../lib/alert'
 import {
   AXIS_LOCK_PX,
+  DISMISS_SCALE,
+  DISMISS_SCRIM,
   DOUBLE_TAP_MS,
   DOUBLE_TAP_SCALE,
   MIN_SCALE,
@@ -804,11 +806,6 @@ const PAN_DISMISS: PanMode = 3
 
 /** See `longPress`. */
 const SHEET_ON_RELEASE = Platform.OS === 'web'
-
-/** How small the picture gets as it is pulled towards closing (v3). */
-const DISMISS_SCALE = 0.9
-/** How far the scrim fades while the finger is still down (v3). */
-const DISMISS_SCRIM = 0.3
 
 /**
  * A disc is the platform's whole target on its own, not 36pt made up to it with
