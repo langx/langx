@@ -3712,9 +3712,9 @@ export const ptBR: Localized<EnMessages> = {
     nearby: 'Por perto',
     nearbyBody:
       'Ordene por distância. Sua localização é arredondada; os outros só veem uma distância aproximada.',
-    copilot: 'Copiloto com IA',
+    copilot: 'Mais respostas do Copilot',
     copilotBody:
-      'Ajuda a redigir e a entender as mensagens enquanto você escreve. Pode ainda não estar ativo na sua conta.',
+      'Ajuda a redigir e a entender as mensagens enquanto você escreve. {count} por dia no plano gratuito.',
     quotaNotice:
       'Você usou suas {count} conversas novas de hoje. Ainda pode responder a tudo que receber, sem limite.',
     manageNotice: 'Você está no {plan}. Gerencie ou cancele na sua conta da loja.',
@@ -3812,10 +3812,10 @@ export const ptBR: Localized<EnMessages> = {
     compareNewChats: 'Conversas novas por dia',
     compareTranslations: 'Traduções por dia',
     compareLanguages: 'Idiomas que você aprende',
+    compareCopilot: 'Respostas do Copilot por dia',
     compareUnlimited: 'Sem limite',
     compareSoon: 'Em breve',
-    compareBeta: 'Beta',
-    betaTag: 'Beta, liberado aos poucos',
+    betaTag: 'Beta',
     compareIncluded: 'Incluído',
     compareNotIncluded: 'Não incluído',
     yearlyBadge: '{perMonth} · {saving}',

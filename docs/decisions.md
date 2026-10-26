@@ -9516,6 +9516,7 @@ account can always spend its own allowance.
 
 ## Copilot is sold as a beta, rolling out
 
+> **Superseded 26 October 2026 — it is not rolling out any more, and it is not Pro's. See _Copilot is a beta on every plan; Pro is more answers_ below.**
 > **Amended 25 October 2026 — there is no allow-list any more; the qualifier stays. See _Copilot opens to every account; the flag is the off switch_ below.**
 
 **21 October 2026.** Copilot works, so the paywall stops calling it "Soon" —
@@ -9618,6 +9619,8 @@ once, with no backfill and nobody left out.
 
 ## Copilot opens to every account; the flag is the off switch
 
+> **Amended 26 October 2026 — the paywall says "Beta" now, not "Beta, rolling out". See _Copilot is a beta on every plan; Pro is more answers_ below.**
+
 **25 October 2026.** Behic asked for the per-account allow-list to go:
 Copilot is a beta already, it should reach everybody, and if something goes
 wrong he switches it off. So `profiles.copilotAccess`, the operator routes that
@@ -9689,3 +9692,39 @@ through rather than a smaller admin flag.
   sits beside PRO on their profile. A role somebody exercises over others
   should not be secret. The page a shared link opens carries the chip too,
   as `moderator: true` and nothing about who granted it or when.
+
+## Copilot is a beta on every plan; Pro is more answers
+
+**26 October 2026.** Supersedes _Copilot is sold as a beta, rolling out_. That
+entry qualified Copilot because a buyer might not get it; with the allow-list
+gone (_Copilot opens to every account; the flag is the off switch_) whoever the
+switch reaches has it, on either plan. Behic asked for it to reach every
+account now, as a beta, with no invitation
+(`docs/plans/products-and-transparency.md`, item 0). The words follow.
+
+- **The qualifier is "Beta".** `paywall.betaTag` in every locale, read through
+  `pendingTag` by the paywall's rows, its comparison and the plan page. "Rolling
+  out" and "it may not be on for your account yet" are gone. The chip on every
+  answer stays "Copilot · Beta", and the consent sheet is unchanged.
+- **Pro is more answers, not the feature.** The paywall's Copilot row reads
+  `PLAN_LIMITS.copilotPer24h` for both columns, under "Copilot answers a day",
+  the way translations read theirs: the free plan's allowance against Pro's.
+  Its title is "More Copilot answers" and its body quotes the free number. So a
+  benefit in beta no longer blanks its Pro cell: `CompareCell`'s `beta` kind
+  and `paywall.compareBeta` are gone, and "Beta" sits beside the row's label
+  (`CompareRow.tag`).
+- **`PLAN_LIMITS.*.copilot` is left as it was.** Nothing reads it to refuse
+  anybody, and the paywall no longer reads it for this row. `true` on free
+  would take `copilot` out of `PRO_FEATURES`, and with it the paywall's
+  `feature` param and its analytics, for no change anybody sees; its comment
+  says so.
+- **Still never "part of Pro".** `sellableFeature` keeps refusing to name a
+  beta as the feature the paywall opened over, now for a second reason as
+  well: the free plan has Copilot too. "What you have" keeps its "Beta" tag,
+  and the "What's Pro?" sheet still leaves it out of "And N more".
+- **v3 decides who sees it.** The old thread draws no Copilot, so "every plan"
+  is every account on v3 (`flags.v3Home`). Switching `copilotEnabled` on in
+  production waits for v3 to be on for everybody, and is a person's job.
+- **The other copies** — the website's plans page, the GitBook docs and
+  copilot.langx.io — say the same in their own repos, by `CLAUDE.md`'s rule
+  that a change in what a plan includes is mirrored by hand.
