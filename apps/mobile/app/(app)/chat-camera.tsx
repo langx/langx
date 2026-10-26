@@ -37,6 +37,7 @@ import {
   cameraFilter,
   DEFAULT_CAMERA_FILTER,
   isOriginal,
+  wrapIndex,
   type CameraFilterId,
 } from '../../src/lib/cameraFilters'
 import { impact, notification, selection } from '../../src/lib/haptics'
@@ -191,9 +192,12 @@ export default function SnapScreen() {
     AccessibilityInfo.announceForAccessibility(t(FILTER_LABEL[next]))
   }
 
-  /** A screen reader's swipe up or down on the preview: the next filter or the one before. */
+  /**
+   * A screen reader's swipe up or down on the preview: the next filter or the
+   * one before, round the ends as the sideways swipe goes (`wrapIndex`).
+   */
   function stepFilter(direction: 1 | -1): void {
-    const index = CAMERA_FILTER_IDS.indexOf(filter) + direction
+    const index = wrapIndex(CAMERA_FILTER_IDS.indexOf(filter), direction, CAMERA_FILTER_IDS.length)
     const next = CAMERA_FILTER_IDS[index]
     if (next) pickFilter(next)
   }
