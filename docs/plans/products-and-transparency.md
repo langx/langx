@@ -72,11 +72,23 @@ Tests: the API's Copilot routes already test `off`, consent and the quotas
 refusing the fourth gets a test if none exists. App: `paywallBenefits.test.ts`
 for the new copy.
 
-**Open question:** with `flags.v3Home` off, a thread asks nothing of Copilot
-and draws none of it. If v3 is not on for everybody in production, "everybody"
-means everybody on v3. Either switch v3 on for everybody, or let the old thread
-draw Copilot too. The second is real work in a look that is being retired;
-the first is a flag, if v3 is ready to be everybody's.
+**v3 decides who sees it.** With `flags.v3Home` off, a thread asks nothing of
+Copilot and draws none of it, so "everybody" is everybody on v3. Planned:
+switch v3 on for everybody rather than teach the old thread Copilot, which
+would be real work in a look that is being retired.
+
+**The switch-on is a person's job, not an agent's.** In order, on the
+operator's Flags page, once the copy PR is merged and its OTA is out:
+
+1. Confirm `flags.v3Home` is on for everybody; if it is not, switch it on
+   first and watch it for a day.
+2. Confirm the three conditions above — provider named in the privacy policy
+   and both store forms, a spend limit on the key.
+3. Switch `flags.copilotEnabled` on.
+4. Check from a Free account and a Pro account on the current build: the
+   Copilot button in a thread, the consent sheet, an answer, "n left today".
+
+If anything goes wrong, `copilotEnabled` off is the whole rollback.
 
 ## 1. Saved media lands at the end of the gallery
 
