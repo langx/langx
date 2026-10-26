@@ -11,6 +11,7 @@ import {
   saturation,
   SWIPE_DISTANCE,
   SWIPE_VELOCITY,
+  wrapIndex,
   type ColorMatrix,
 } from './cameraFilters'
 
@@ -132,13 +133,59 @@ describe('filterIndexAfterSwipe', () => {
     expect(filterIndexAfterSwipe({ ...base, translationX: -900, velocityX: -5000 })).toBe(3)
   })
 
-  it('stops at either end rather than wrapping', () => {
-    expect(filterIndexAfterSwipe({ ...base, index: 5, translationX: -200 })).toBe(5)
-    expect(filterIndexAfterSwipe({ ...base, index: 0, translationX: 200 })).toBe(0)
+  it('goes round the ends: after the last the first, before the first the last', () => {
+    expect(filterIndexAfterSwipe({ ...base, index: 5, translationX: -200 })).toBe(0)
+    expect(filterIndexAfterSwipe({ ...base, index: 0, translationX: 200 })).toBe(5)
+    expect(filterIndexAfterSwipe({ ...base, index: 5, translationX: -10, velocityX: -900 })).toBe(0)
+  })
+
+  it('goes round the ends the other way in a right-to-left language', () => {
+    expect(filterIndexAfterSwipe({ ...base, index: 5, translationX: 200, rtl: true })).toBe(0)
+    expect(filterIndexAfterSwipe({ ...base, index: 0, translationX: -200, rtl: true })).toBe(5)
+  })
+
+  it('a drag too short to count stays put at either end too', () => {
+    expect(filterIndexAfterSwipe({ ...base, index: 0, translationX: 10 })).toBe(0)
+    expect(filterIndexAfterSwipe({ ...base, index: 5, translationX: -10 })).toBe(5)
   })
 
   it('runs the other way in a right-to-left language', () => {
     expect(filterIndexAfterSwipe({ ...base, translationX: 200, rtl: true })).toBe(3)
     expect(filterIndexAfterSwipe({ ...base, translationX: -200, rtl: true })).toBe(1)
+  })
+})
+
+describe('wrapIndex', () => {
+  it('steps within the ring', () => {
+    expect(wrapIndex(2, 1, 6)).toBe(3)
+    expect(wrapIndex(2, -1, 6)).toBe(1)
+    expect(wrapIndex(2, 0, 6)).toBe(2)
+  })
+
+  it('goes from the last to the first and from the first to the last', () => {
+    expect(wrapIndex(5, 1, 6)).toBe(0)
+    expect(wrapIndex(0, -1, 6)).toBe(5)
+  })
+
+  it('goes round any number of times, either way', () => {
+    expect(wrapIndex(0, 13, 6)).toBe(1)
+    expect(wrapIndex(0, -13, 6)).toBe(5)
+  })
+
+  it('a ring of one never moves, and an empty one answers 0', () => {
+    expect(wrapIndex(0, 1, 1)).toBe(0)
+    expect(wrapIndex(0, -1, 1)).toBe(0)
+    expect(wrapIndex(3, 1, 0)).toBe(0)
+  })
+
+  it('every filter is reachable going one way round from the first', () => {
+    const seen = new Set<number>()
+    let index = 0
+    for (let step = 0; step < CAMERA_FILTER_IDS.length; step++) {
+      seen.add(index)
+      index = wrapIndex(index, 1, CAMERA_FILTER_IDS.length)
+    }
+    expect(seen.size).toBe(CAMERA_FILTER_IDS.length)
+    expect(index).toBe(0)
   })
 })
