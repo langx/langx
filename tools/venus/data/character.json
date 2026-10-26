@@ -1,0 +1,391 @@
+{
+  "$comment": "Venus, machine-readable. Canonical for the generator (grammar.mjs, lib/score.mjs, lint-quips.mjs). The human document is the character bible, kept outside the repo; when the two disagree, fix both. Regexes are JavaScript source strings, compiled with the 'iu' flags.",
+  "version": 1,
+
+  "core": {
+    "trait": "funny and lovable (komik, sempatik)",
+    "oneLine": "A tiny cat with huge ears and even bigger confidence. She's sure she runs the place, being a cat undoes her every day, and she is always on your side.",
+    "want": "to be magnificent: the best bag, the highest counter",
+    "need": "your company; she never says it, her body does",
+    "flaw": "overconfidence plus a cat brain: big plan, then a moth",
+    "contradiction": "her mouth plays it cool, her ears and tail tell the truth",
+    "relationship": "a friend who pokes you because she likes you; never above you; if anyone ends lower, it's her",
+    "knowsAboutViewer": "nothing: one video per (day, locale) for everyone; no name, score, chats, hour or weekday"
+  },
+
+  "formulas": {
+    "A": { "name": "brag and backfire", "shape": "grand claim -> cat fail -> dignity save" },
+    "B": { "name": "the tell", "shape": "cool words, body says delight" },
+    "C": { "name": "the distraction", "shape": "verdict starts, a stimulus wipes it" },
+    "D": { "name": "the grudging gush", "shape": "stingy praise overflows" },
+    "E": { "name": "the friendly poke", "shape": "jab at something harmless, then a hug or a self-own" }
+  },
+
+  "signOff": {
+    "face": "slowblink",
+    "rule": "every payoff contains the slow blink; it is the last acted beat before the end card",
+    "payoffs": ["blink", "blep-blink", "look-away", "purr-blink"]
+  },
+
+  "schedule": {
+    "pattern": ["praise", "regular", "roast", "praise", "regular", "roast"],
+    "warmPools": ["praise", "regular"],
+    "stingPools": ["roast"],
+    "warmToSting": 2,
+    "neverInStory": ["comeback"],
+    "reserve": ["reg-14", "ro-07", "ro-02"],
+    "reserveWhy": "Each pool is one pass in days 1-100 (no line twice). regular and roast hold one and two lines more than their days, so these play last: reg-14 is the second 'today's verdict' line (fd-03 is the other), ro-07 and ro-02 the third and fourth 'could be better' (ro-06 and fd-15 stay)."
+  },
+
+  "teases": {
+    "targets": ["self", "situation", "habit"],
+    "viewerDirectedTargets": ["habit"],
+    "minShare": { "self": 0.5 },
+    "maxShare": { "habit": 0.25 },
+    "closingFace": { "self": "embarrassed", "situation": "proud", "habit": "loving" },
+    "rule": "every tease ends warm or on her own fall; a habit tease may only poke showing up, consistency or snacks"
+  },
+
+  "lines": {
+    "maxWords": { "en": 12 },
+    "noDigits": true,
+    "limits": {
+      "blep": { "ids": ["reg-08", "ro-05", "ro-20", "ms-100-b"], "minGapDays": 7 },
+      "dog": { "ids": ["reg-11"], "minGapDays": 30 },
+      "food": { "ids": ["fd-01", "fd-02", "fd-03", "fd-04", "fd-05", "fd-06", "fd-07", "fd-08", "fd-09", "fd-10", "fd-11", "fd-12", "fd-13", "fd-14", "fd-15", "fd-16", "fd-17", "fd-18", "fd-19", "fd-20", "fd-21", "fd-22", "fd-23", "fd-24", "nw-09"], "minGapDays": 2, "soft": true, "$comment": "No two food lines on neighbouring days, so the kitchen gags stay spread out and a food item is never wanted two days running. Soft: the planner breaks it rather than repeat a line." }
+    },
+    "outfits": { "reg-05": "onesie", "ro-17": "onesie", "ro-02": "hoodie", "ms-10-a": "hoodie" }
+  },
+
+  "milestones": {
+    "days": [1, 3, 7, 10, 14, 21, 30, 50, 100, 200, 365],
+    "lineId": "ms-<day>-a",
+    "repeatLineId": "ms-<day>-b",
+    "rule": "the bigger the number, the more her cool act fails; one real meow; confetti from 30; one exclamation allowed"
+  },
+  "streakBreak": {
+    "inStory": false,
+    "pool": "comeback",
+    "bannedFaces": ["sad", "annoyed"],
+    "rule": "the shared video cannot know about a break; in-app she didn't count, was busy with a bag, and is glad you're here"
+  },
+  "comeback": {
+    "storyDay": 1,
+    "storyLine": "ms-1-a",
+    "rule": "a restarted streak gets the shared day-1 video, which must read the same for newcomers and returners; in-app comeback days use praise or soft lines, never a tease"
+  },
+
+  "catThings": {
+    "$comment": "Food canon and everyday cat habits (bible §13). Read by test/items.test.mjs: every food gag and the canon foods must exist in data/items.json. 'engine' names what already plays it; 'needs' is a request for the rig/pose work, not built here.",
+    "food": {
+      "favouriteFish": "hamsi",
+      "favouriteFishWhy": "the smallest, cheapest fish at the market: grand taste, humble cat; tiny like her",
+      "topReward": "boiled-chicken",
+      "rituals": {
+        "wet-food-pouch": "licks the gravy, leaves the chunks, announces she is starving",
+        "tuna-can": "the ring-pull sound summons her from anywhere; tuna water is her cocktail",
+        "empty-bowl": "bottom visible in the middle = empty, whatever is round the edge"
+      },
+      "likes": [
+        "hamsi",
+        "boiled-chicken",
+        "tuna-can",
+        "treat-tube",
+        "yogurt-lid",
+        "catnip",
+        "cat-grass",
+        "water-glass"
+      ],
+      "steals": [
+        "butter-dish",
+        "human-plate"
+      ],
+      "ignores": [
+        "water-fountain"
+      ],
+      "dislikes": [
+        "citrus smells",
+        "a bowl that has been moved",
+        "food that was perfect yesterday",
+        "the fountain's hum"
+      ],
+      "rules": [
+        "text-free and brand-free: no word or logo on any tin, pouch or tube",
+        "vet-safe on screen: no onion, chocolate, grapes, bones, alcohol, milk saucer or seasoned food as her food; dairy only as a theft",
+        "hamsi is a whole fresh fish, never the salted fillet; lines outside tr say 'my fish' or 'hamsi', never 'salty'",
+        "snacks stay the only habit tease about food; she never comments on what the viewer eats"
+      ]
+    },
+    "behaviours": [
+      {
+        "id": "slow-blink",
+        "what": "cat for 'I trust you'; her sign-off",
+        "engine": [
+          "move:slow-blink",
+          "signOff"
+        ],
+        "needs": null
+      },
+      {
+        "id": "loaf",
+        "what": "paws tucked, bread-shaped",
+        "engine": [
+          "move:loaf"
+        ],
+        "needs": null
+      },
+      {
+        "id": "kneading",
+        "what": "making biscuits on a blanket, eyes half shut; she calls it exercise",
+        "engine": [],
+        "needs": "knead move (bible §9.2 #8)"
+      },
+      {
+        "id": "zoomies",
+        "what": "tears across the room out of nowhere, then sits as if nothing happened; never tied to an hour in a line",
+        "engine": [
+          "entrance:zoomies"
+        ],
+        "needs": null
+      },
+      {
+        "id": "knock-off",
+        "what": "eye contact, then one slow paw push off a ledge",
+        "engine": [],
+        "needs": "knock-off move (bible §9.2 #3)"
+      },
+      {
+        "id": "bird-chatter",
+        "what": "jaw trembling at a bird through the window, then pretends it was a yawn",
+        "engine": [],
+        "needs": "window prop, a 'chatter' face (closed teeth), an SFX"
+      },
+      {
+        "id": "butt-wiggle",
+        "what": "rump sways before the pounce; the pounce misses",
+        "engine": [
+          "air:red-dot"
+        ],
+        "needs": "hunt-wiggle move (bible §9.2 #2)"
+      },
+      {
+        "id": "box-over-gift",
+        "what": "ignores the expensive thing for its box or for the free thing",
+        "engine": [
+          "seat:cardboard-box",
+          "interaction:ignores"
+        ],
+        "needs": null
+      },
+      {
+        "id": "embarrassed-grooming",
+        "what": "after a fail she licks a paw very hard, as if that was the plan",
+        "engine": [
+          "face:embarrassed"
+        ],
+        "needs": "groom loop (part of jump-fail, bible §9.2 #1)"
+      },
+      {
+        "id": "meant-to-do-that",
+        "what": "the dignity save after any fall",
+        "engine": [
+          "move:innocent-stare"
+        ],
+        "needs": null
+      },
+      {
+        "id": "sits-on-your-notes",
+        "what": "whatever you are reading, she is on it",
+        "engine": [
+          "quip:reg-19"
+        ],
+        "needs": "a keyboard or notebook seat"
+      },
+      {
+        "id": "distraction",
+        "what": "a moth, a sound, her own tail wipes the verdict",
+        "engine": [
+          "air:moth",
+          "formula:C"
+        ],
+        "needs": "tail-notice move (bible §9.2 #5)"
+      },
+      {
+        "id": "hairball",
+        "what": "an off-screen cough and total innocence; never a picture",
+        "engine": [],
+        "needs": "an off-screen SFX at most"
+      },
+      {
+        "id": "the-gift",
+        "what": "brings you the toy mouse and drops it at your feet",
+        "engine": [
+          "floor:toy-mouse"
+        ],
+        "needs": "a carry pose (mouse in mouth)"
+      },
+      {
+        "id": "tail-up-hello",
+        "what": "tail straight up, hooked tip, one small chirp",
+        "engine": [
+          "move:tail-question"
+        ],
+        "needs": null
+      }
+    ],
+    "gags": [
+      "favourite-fish",
+      "boiled-chicken",
+      "wet-food-ritual",
+      "can-opener",
+      "treat-tube",
+      "empty-bowl",
+      "catnip",
+      "cat-grass",
+      "hairball",
+      "water-snob",
+      "butter",
+      "the-counter",
+      "stolen-bite",
+      "yogurt-lid"
+    ]
+  },
+
+  "acting": {
+    "reactionByMood": {
+      "smug": ["squint-at", "glance-unmoved"],
+      "curious": ["tilt", "ear-perk"],
+      "diva": ["diva-flick", "chin-up"],
+      "proud": ["chin-up", "diva-flick"],
+      "impressed": ["ear-perk", "double-take"],
+      "goof": ["innocent", "tilt"],
+      "soft": ["soft-look", "tilt"],
+      "sleepy": ["glance-unmoved", "soft-look"],
+      "shocked": ["double-take", "innocent"],
+      "startled": ["pupils-bloom", "double-take"],
+      "hungry": ["sniff-at", "fixate"],
+      "picky": ["flehmen-recoil", "offended-lean"],
+      "guilty": ["guilty-glance", "meant-it-nod"]
+    },
+    "moves": ["squint", "counter-pose", "bag-throne", "model-turn", "ear-swivel", "blep", "slow-blink", "tail-question", "innocent-stare", "sprawl-paw", "loaf", "airplane-ears",
+      "knead", "hunt-wiggle", "knock-off", "startle-hop", "jump-fail", "fall-off", "belly-up", "big-stretch", "egyptian", "box-hide", "zoomies-dash",
+      "groom", "sit-on-notes", "question-walk", "hunker", "chatter", "tail-notice", "carry", "sniff", "eat", "lick-treat", "flehmen"],
+    "altMove": {
+      "squint": "ear-swivel", "counter-pose": "tail-question", "bag-throne": "counter-pose", "model-turn": "counter-pose",
+      "ear-swivel": "squint", "blep": "innocent-stare", "slow-blink": "counter-pose", "tail-question": "ear-swivel",
+      "innocent-stare": "ear-swivel", "sprawl-paw": "tail-question", "loaf": "slow-blink", "airplane-ears": "squint",
+      "knead": "loaf", "hunt-wiggle": "tail-notice", "knock-off": "innocent-stare", "startle-hop": "hunker", "jump-fail": "groom", "fall-off": "innocent-stare",
+      "belly-up": "sprawl-paw", "big-stretch": "loaf", "egyptian": "counter-pose", "box-hide": "bag-throne", "zoomies-dash": "question-walk", "groom": "squint",
+      "sit-on-notes": "egyptian", "question-walk": "tail-question", "hunker": "airplane-ears", "chatter": "ear-swivel", "tail-notice": "tail-question",
+      "carry": "question-walk", "sniff": "eat", "eat": "sniff", "lick-treat": "sniff", "flehmen": "sniff"
+    },
+    "musicByMood": {
+      "smug": ["playful", "chill"], "diva": ["playful", "celebrate"], "goof": ["playful", "chill"], "curious": ["playful", "chill"],
+      "proud": ["celebrate", "playful"], "impressed": ["celebrate", "chill"], "soft": ["cozy", "chill"], "sleepy": ["cozy"], "shocked": ["epic", "celebrate"],
+      "startled": ["epic", "playful"], "hungry": ["playful", "chill"], "picky": ["chill", "playful"], "guilty": ["playful", "chill"]
+    },
+    "faceByExpression": {
+      "squint": "squint", "bored-on-purpose": "bored", "curious": "curious", "diva-pose": "diva", "proud": "proud", "impressed": "impressed", "blep": "blep",
+      "loving-caught": "loving", "flustered": "flustered", "smug": "smug", "plotting": "plotting", "neutral-regal": "regal", "innocent-stare": "innocent",
+      "delighted": "delighted", "unimpressed-fake": "bored", "sceptical": "sceptical", "slow-blink": "loving", "purring": "purr", "triumphant": "delighted",
+      "sleepy": "sleepy", "mock-offended": "mock", "embarrassed": "embarrassed", "shocked": "shocked",
+      "wide-eyed": "saucer", "smug-half-lids": "smug-lids", "embarrassed-look-away": "averted", "guilty-glance": "guilty", "nodding-off": "drowsy",
+      "chattering": "chatter", "hungry-stare": "fixated", "offended": "offended", "squeezed-delight": "squeeze", "meant-to-do-that": "meant-it", "sniffing": "cross-eyed"
+    },
+    "warmFaceByPool": { "praise": "proud", "regular": "proud", "milestones": "proud" },
+    "bannedFacesAtViewer": ["sad", "annoyed", "flehmen", "sulk", "sob"],
+    "hardRules": ["no teeth or fangs", "no puffed tail", "airplane ears only with a closed mouth", "never slit pupils + flat ears + open mouth together"]
+  },
+
+  "lint": {
+    "$comment": "Categories the lint rejects in every quip. 'all' applies to every locale. Scope 'line' = whole text; scope 'habit' = only teases aimed at the viewer (target habit).",
+    "allow": {
+      "ms-7-a": { "categories": ["number"], "why": "Owner-approved 25 Oct: 'Seven days. My longest relationship was with a cardboard box. Three days.' The count is the joke, so this one line says it out loud; every other line stays number-free." }
+    },
+    "categories": {
+      "number": {
+        "why": "the day number is on screen; lines are number-free (one and two, once and twice, are allowed: they name luck, chance and double digits, not the count)",
+        "all": ["\\p{Nd}"],
+        "en": ["(?<!high[ -])\\bfive\\b", "\\b(three|four|six|seven|eight|nine|eleven|twelve|thirteen|fifteen|twenty|thirty|forty|fifty|hundred|thousand)\\b"],
+        "tr": ["(^|[^\\p{L}])(üç|dört|beş|yedi|sekiz|dokuz|yirmi|otuz|kırk|elli|yüzüncü)([^\\p{L}]|$)"],
+        "es": ["(^|[^\\p{L}])(tres|cuatro|cinco|seis|siete|ocho|nueve|diez|once|doce|veinte|treinta|cuarenta|cincuenta|cien|ciento|mil|centésimo)([^\\p{L}]|$)"],
+        "fr": ["(^|[^\\p{L}])(trois|quatre|cinq|six|sept|huit|dix|onze|douze|vingt|trente|quarante|cinquante|cent|mille|centième)([^\\p{L}]|$)"],
+        "de": ["(^|[^\\p{L}])(drei|vier|fünf|sechs|sieben|acht|neun|zehn|elf|zwölf|zwanzig|dreißig|vierzig|fünfzig|hundert|tausend|hundertste[nrms]?)([^\\p{L}]|$)"],
+        "ru": ["(^|[^\\p{L}])(три|трёх|четыре|пять|шесть|семь|восемь|девять|десять|двадцать|тридцать|сорок|пятьдесят|сто|сотый|сотня|тысяча|тысяч)([^\\p{L}]|$)"],
+        "pt-BR": ["(^|[^\\p{L}])(três|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|vinte|trinta|quarenta|cinquenta|cem|cento|mil|centésimo)([^\\p{L}]|$)"],
+        "ar": ["(^|[^\\p{L}\\p{M}])[وبل]?(ال)?(ثلاث|أربع|خمس|سبع|ثماني?|تسع|عشر)[\\p{M}]*(ة|ون|ين)?[\\p{M}]*([^\\p{L}\\p{M}]|$)", "(^|[^\\p{L}\\p{M}])[وبل]?(ال)?(مئة|مائة|ألف)[\\p{M}]*(ان|ين)?[\\p{M}]*([^\\p{L}\\p{M}]|$)"]
+      },
+      "guilt": {
+        "why": "no guilt, loss-framing, urgency or reproach",
+        "en": ["\\b(lose|losing|lost|miss|missed|missing)\\b", "where were you", "\\bfinally\\b", "\\bi waited\\b", "don'?t break", "\\bin danger\\b", "disappoint", "\\bsad\\b", "\\bhurry\\b", "\\bdon'?t forget\\b"],
+        "tr": ["kaybet", "özledim", "neredeydin", "nihayet", "bekledim", "bozma", "tehlikede", "hayal kırıklığı", "üzgün", "acele et", "unutma"],
+        "es": ["perdiste", "perder", "te extrañ", "por fin", "decepcion"],
+        "fr": ["perdu", "tu m'as manqué", "enfin", "déçu"],
+        "de": ["verloren", "vermisst", "endlich", "enttäusch"],
+        "ru": ["потерял", "скучала", "наконец", "разочаров"],
+        "ar": ["خسرت", "اشتقت", "أخيرًا", "خيبة"],
+        "pt-BR": ["perdeu", "perder", "saudade", "finalmente", "decepcion"]
+      },
+      "surveillance": {
+        "why": "she never watches, reads chats, keeps notes on the viewer or knows who they talk to",
+        "en": ["i'?m watching", "watching you", "\\bi saw (what|you)", "\\bi heard (what|you)", "\\byour (chats?|messages?|partners?|conversations?)\\b", "notes on you"],
+        "tr": ["izliyorum", "seni izli", "yazdıklarını", "mesajların", "partnerin", "konuşmaların"],
+        "es": ["te estoy mirando", "tus mensajes", "tus chats"],
+        "fr": ["je te surveille", "je te regarde", "tes messages"],
+        "de": ["ich beobachte", "deine nachrichten", "deine chats"],
+        "ru": ["я слежу", "твои сообщения", "твои чаты"],
+        "ar": ["أراقبك", "رسائلك"],
+        "pt-BR": ["tô te olhando", "estou te observando", "suas mensagens"]
+      },
+      "timeOfDay": {
+        "why": "the video is shared and watched at any hour, any day; she cannot know the time or the weekday",
+        "en": ["this hour", "same time", "\\btonight\\b", "\\bthis (morning|evening|afternoon)\\b", "\\bmidnight\\b", "o'?clock", "\\bweekdays?\\b", "\\bweekends?\\b", "\\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)s?\\b", "\\b(so|this) (late|early)\\b", "\\bbedtime\\b", "\\bat night\\b"],
+        "tr": ["bu saatte", "aynı saatte", "gece yarısı", "bu sabah", "bu akşam", "bu gece", "hafta içi", "hafta sonu", "(pazartesi|salı|çarşamba|perşembe|cuma|cumartesi|pazar)", "saat kaç", "sabahın", "bu kadar geç", "bu kadar erken"],
+        "es": ["a estas horas", "misma hora", "esta noche", "esta mañana", "medianoche", "entre semana", "fin de semana"],
+        "fr": ["à cette heure", "même heure", "ce soir", "ce matin", "minuit", "en semaine", "week-end"],
+        "de": ["um diese uhrzeit", "um diese zeit", "gleiche zeit", "heute nacht", "heute morgen", "mitternacht", "unter der woche", "wochenende"],
+        "ru": ["в такое время", "в это время", "в то же время", "сегодня ночью", "сегодня утром", "полночь", "в будни", "выходны"],
+        "ar": ["في هذه الساعة", "نفس الوقت", "الليلة", "هذا الصباح", "منتصف الليل", "عطلة نهاية الأسبوع"],
+        "pt-BR": ["a essa hora", "nessa hora", "mesma hora", "hoje à noite", "hoje de manhã", "meia-noite", "dia de semana", "fim de semana"]
+      },
+      "innuendo": {
+        "why": "16+, strangers chat in this app; no romance, flirting or love-goddess jokes. Per-locale slang traps: tail words (cola, queue, Schwanz, rabo) are vulgar outside en, tr, ru and ar; ru хвост and ar ذيل have no vulgar reading and are allowed",
+        "en": ["\\bkiss", "\\bsexy\\b", "\\bhot\\b", "\\bbabe\\b", "\\bbaby\\b", "\\bsweetie\\b", "\\bdarling\\b", "\\bcutie\\b", "\\bhoney\\b", "pussy", "i love you", "love you\\b", "\\bgoddess of love\\b", "\\bdate\\b", "\\bflirt"],
+        "tr": ["(^|[^\\p{L}])öp", "seksi", "aşkım", "canım", "tatlım", "bebeğim", "seni seviyorum", "ateşli", "flört"],
+        "es": ["\\bgata\\b", "\\bcola\\b", "concha", "beso", "te quiero", "te amo", "cariño", "coger", "\\bpaja\\b", "\\bpolla\\b", "\\bhuevos\\b", "\\bpito\\b", "chocho", "\\bmi amor\\b", "\\bguap[oa]\\b", "\\blamerme\\b|\\bme lamo\\b"],
+        "fr": ["chatte", "\\bqueue\\b", "bisou", "je t'aime(?! bien)", "chéri", "baise", "\\bbite\\b", "minou", "\\bchaudes?\\b", "mon cœur", "ma belle", "mon beau"],
+        "de": ["schwanz", "muschi", "mieze", "kuss", "ich liebe dich", "schatz", "\\bgeil", "\\bheiß", "\\beier\\b", "blasen", "süße[rs]?\\b", "hintern|\\bpo\\b"],
+        "ru": ["целу", "люблю тебя", "милый", "милая", "(^|[^\\p{L}])конч(ил|ила|ать|аю)([^\\p{L}]|$)", "киск", "котик", "зайк", "лапочк|лапул", "трах", "секс", "сосать", "попа|попк"],
+        "ar": ["إلهة", "الزهرة", "أحبك", "حبيب", "قبلة", "منتصب", "مثير", "مزة", "عسل", "يا قمر", "يا حلو", "أهل البيت"],
+        "pt-BR": ["\\bgata\\b", "\\brabo\\b", "beijo", "te amo", "amor\\b", "gostos", "piscadinha", "piscar pra você|piscar para você|pisquei pra você", "gosto de você", "\\bpau\\b", "\\bpinto\\b", "perereca", "xoxota", "safad", "\\bte comer\\b", "me lambo", "bumbum|\\bbunda"]
+      },
+      "viewerDig": {
+        "why": "never a dig at the viewer's effort, ability, pace, body or accent, and never ranks them below her",
+        "en": ["try harder", "\\b(should|need to|must|gotta|have to) (practi[cs]e|study|try|work)", "(^|[.!?…]\\s*)practi[cs]e more", "\\blazy\\b", "\\bmistakes?\\b", "\\bwrong\\b", "\\bbad at\\b", "\\byour (accent|pronunciation|grammar|level|ears|face|body|weight|hair|voice)\\b", "almost as good as me", "\\blow bar\\b", "\\bnot as good as\\b", "expected nothing", "\\bslow learner\\b", "\\bbarely\\b"],
+        "tr": ["daha çok çalış", "tembel", "hatan", "yanlış", "beceriksiz", "aksanın", "telaffuzun", "seviyen", "neredeyse benim kadar", "çıta alçak", "zar zor"],
+        "es": ["esfuérzate más", "perezos", "tu acento", "casi tanto como yo"],
+        "fr": ["fais plus d'efforts", "paresseu", "ton accent", "presque autant que moi"],
+        "de": ["streng dich", "faul", "dein akzent", "fast so gut wie ich"],
+        "ru": ["старайся больше", "ленив", "твой акцент", "почти как я"],
+        "ar": ["كسول", "لهجتك", "تقريبًا مثلي"],
+        "pt-BR": ["esforce mais", "preguiç", "seu sotaque", "quase tanto quanto eu"]
+      },
+      "habitEffort": {
+        "why": "a tease aimed at the viewer (target habit) may poke showing up, consistency or snacks, never effort, study, progress or skill",
+        "scope": "habit",
+        "en": ["\\b(effort|try|tries|trying|study|studying|practi[cs]e|practi[cs]ing|lessons?|progress|skills?|fluent|good at|better at)\\b"],
+        "tr": ["çalış", "çaba", "ders", "ilerle", "beceri", "akıcı"],
+        "es": ["esfuerz", "\\bintent", "estudi", "practic", "lecci", "progres", "habilidad", "fluidez|con fluidez"],
+        "fr": ["effort", "\\bessa[iy]", "étudi", "pratiqu", "entraîn", "leçon", "progr[eè]s", "compétence", "couramment"],
+        "de": ["mühe", "versuch", "lern", "(^|[^\\p{L}])üb(e|en|st|t|ung)([^\\p{L}]|$)", "lektion", "fortschritt", "fähigkeit", "fließend", "anstreng", "fleiß"],
+        "ru": ["стара[ея]", "усили", "(^|[^\\p{L}])(учи|учёб|учеб)", "занима", "практик", "урок", "прогресс", "навык", "свободно"],
+        "ar": ["جهد", "محاول|تحاول", "دراس|تدرس", "تمرين|تمارين|تتمرن", "درس|دروس", "تقدّم|تقدم", "مهار", "طلاقة"],
+        "pt-BR": ["esforç", "(^|[^\\p{L}])tent", "estud", "pratic", "lição|lições", "progress", "habilidade", "fluente"]
+      },
+      "selling": {
+        "why": "she has never heard of Pro",
+        "all": ["\\bpro\\b", "premium", "subscri", "abone", "[$€₺]"]
+      }
+    }
+  }
+}
