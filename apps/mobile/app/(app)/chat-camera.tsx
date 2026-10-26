@@ -835,6 +835,13 @@ function SnapCamera({
           // 16:9 still the picture mode would give, at the same zoom scale.
           videoQuality="1080p"
           videoBitrate={VIDEO_BITRATE}
+          // Off, not expo-camera's 'auto': iOS applies it to the recording's
+          // connection as `recordAsync` starts, and the first change from the
+          // connection's own 'off' rebuilds the capture graph — a black frame
+          // and a crop of the picture a third of a second into the first hold
+          // (TestFlight 204). Later holds found it already set, so only the
+          // first one showed it.
+          videoStabilizationMode="off"
           // Where the last pinch came to rest, so a render between pinches
           // carries the zoom rather than expo-camera's default of 0; while the
           // fingers move, `animatedProps` carries it without a render.

@@ -269,3 +269,9 @@ describe('the chat camera filters a clip', () => {
     )
   })
 })
+
+describe('the first hold to record keeps the picture still on iOS', () => {
+  it('leaves stabilization off, so starting a recording does not rebuild the session', () => {
+    expect(ROUTE).toContain('videoStabilizationMode="off"')
+  })
+})
