@@ -2811,6 +2811,8 @@ export const ar: Localized<EnMessages> = {
         many: '{amount} عضوًا',
         other: '{amount} عضو',
       },
+      venusBody: 'لدى قطة LangX فيديو قصير لأيام سلسلتك.',
+      venusBodySoon: 'فيديوهات قصيرة من قطة LangX لأيام سلسلتك قادمة قريبًا.',
       trustTitle: 'بياناتك وأمانك',
       auditTitle: 'القواعد مكتوبة في الشيفرة',
       auditBody:
@@ -3711,6 +3713,17 @@ export const ar: Localized<EnMessages> = {
         few: '{amount} ألقاب لتضعها في ملفك',
         many: '{amount} لقبًا لتضعه في ملفك',
         other: '{amount} لقب لتضعه في ملفك',
+      },
+      giftTitle: 'هدية لشخص ما',
+      giftBody:
+        'اشترِ حزمة ملصقات لشخص تتحدث معه، ابتداءً من {amount}. يحصل على الحزمة، لا على رموز.',
+      giftWeekly: {
+        zero: 'حتى {amount} هدية في الأسبوع.',
+        one: 'هدية واحدة في الأسبوع.',
+        two: 'حتى هديتين في الأسبوع.',
+        few: 'حتى {amount} هدايا في الأسبوع.',
+        many: 'حتى {amount} هدية في الأسبوع.',
+        other: 'حتى {amount} هدية في الأسبوع.',
       },
       venusTitle: 'حزمة Venus',
       venusBody: {

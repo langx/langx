@@ -2270,6 +2270,8 @@ export const ptBR: Localized<EnMessages> = {
       active: 'Em sequência',
       activeBody: 'Membros cuja sequência ainda não acabou — não só quem veio hoje.',
       activeValue: { one: '{amount} membro', other: '{amount} membros' },
+      venusBody: 'A gata da LangX tem um vídeo curto para os dias da sua sequência.',
+      venusBodySoon: 'A gata da LangX está preparando vídeos curtos para os dias da sua sequência.',
       trustTitle: 'Seus dados e sua segurança',
       auditTitle: 'As regras estão no código',
       auditBody:
@@ -2879,6 +2881,10 @@ export const ptBR: Localized<EnMessages> = {
         one: '{amount} título para usar no seu perfil',
         other: '{amount} títulos para usar no seu perfil',
       },
+      giftTitle: 'Um presente para alguém',
+      giftBody:
+        'Compre um pacote de stickers para alguém com quem você conversa, a partir de {amount}. A pessoa recebe o pacote, não fichas.',
+      giftWeekly: { one: 'Um por semana.', other: 'Até {amount} por semana.' },
       venusTitle: 'Pacote da Venus',
       venusBody: {
         one: '{amount} sticker, grátis para todos',

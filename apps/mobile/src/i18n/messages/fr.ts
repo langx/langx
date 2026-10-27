@@ -2310,6 +2310,8 @@ export const fr: Localized<EnMessages> = {
       activeBody:
         'Les membres dont la série n’est pas encore terminée — pas seulement ceux venus aujourd’hui.',
       activeValue: { one: '{amount} membre', other: '{amount} membres' },
+      venusBody: 'La chatte de LangX a une courte vidéo pour les jours de ta série.',
+      venusBodySoon: 'La chatte de LangX prépare de courtes vidéos pour les jours de ta série.',
       trustTitle: 'Tes données et ta sécurité',
       auditTitle: 'Les règles sont dans le code',
       auditBody:
@@ -2938,6 +2940,10 @@ export const fr: Localized<EnMessages> = {
         one: '{amount} titre à afficher sur ton profil',
         other: '{amount} titres à afficher sur ton profil',
       },
+      giftTitle: 'Un cadeau pour quelqu’un',
+      giftBody:
+        'Offre un pack de stickers à quelqu’un avec qui tu parles, dès {amount}. Cette personne reçoit le pack, pas des jetons.',
+      giftWeekly: { one: 'Un par semaine.', other: 'Jusqu’à {amount} par semaine.' },
       venusTitle: 'Pack de Venus',
       venusBody: {
         one: '{amount} sticker, gratuit pour tout le monde',

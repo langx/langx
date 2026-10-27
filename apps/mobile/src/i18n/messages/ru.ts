@@ -2648,6 +2648,8 @@ export const ru: Localized<EnMessages> = {
         many: '{amount} участников',
         other: '{amount} участника',
       },
+      venusBody: 'У кошки LangX есть короткое видео для дней твоей серии.',
+      venusBodySoon: 'Кошка LangX готовит короткие видео для дней твоей серии.',
       trustTitle: 'Твои данные и твоя безопасность',
       auditTitle: 'Правила — в коде',
       auditBody:
@@ -3426,6 +3428,15 @@ export const ru: Localized<EnMessages> = {
         few: '{amount} титула для вашего профиля',
         many: '{amount} титулов для вашего профиля',
         other: '{amount} титула для вашего профиля',
+      },
+      giftTitle: 'Подарок кому-то',
+      giftBody:
+        'Купите набор стикеров тому, с кем вы общаетесь, — от {amount}. Человек получает набор, а не жетоны.',
+      giftWeekly: {
+        one: 'Один в неделю.',
+        few: 'До {amount} в неделю.',
+        many: 'До {amount} в неделю.',
+        other: 'До {amount} в неделю.',
       },
       venusTitle: 'Набор Venus',
       venusBody: {

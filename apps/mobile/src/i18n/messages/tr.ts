@@ -2250,6 +2250,8 @@ export const tr: Localized<EnMessages> = {
       active: 'Serisi süren',
       activeBody: 'Serisi henüz bitmemiş üyeler — yalnızca bugün gelenler değil.',
       activeValue: { one: '{amount} üye', other: '{amount} üye' },
+      venusBody: 'LangX’in kedisinin seri günlerin için kısa bir videosu var.',
+      venusBodySoon: 'LangX’in kedisi seri günlerin için kısa videolar hazırlıyor.',
       trustTitle: 'Verilerin ve güvenliğin',
       auditTitle: 'Kurallar kodda yazılı',
       auditBody:
@@ -2856,6 +2858,10 @@ export const tr: Localized<EnMessages> = {
         one: 'Profilinde taşıyacağın {amount} unvan',
         other: 'Profilinde taşıyacağın {amount} unvan',
       },
+      giftTitle: 'Birine hediye',
+      giftBody:
+        'Konuştuğun birine en az {amount} karşılığında bir sticker paketi al. Ona jeton değil, paket gider.',
+      giftWeekly: { one: 'Haftada bir.', other: 'Haftada en fazla {amount}.' },
       venusTitle: 'Venus paketi',
       venusBody: {
         one: 'Herkese ücretsiz {amount} sticker',
