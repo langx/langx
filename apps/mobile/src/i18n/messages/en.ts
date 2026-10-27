@@ -2407,6 +2407,19 @@ export const en = {
     /** Under the v3 list: every row leaves the app. */
     opensInBrowser: 'Each one opens in the browser.',
   },
+  /**
+   * The words every product page shares — Venus, Copilot, LangX Token and
+   * Transparency (`components/product/`). A page's own words are in its own
+   * namespace; only what all four say the same way is here.
+   */
+  productPage: {
+    /** The heading over the questions at the foot of every product page. */
+    questions: 'Questions and answers',
+    /** Read before each step of a page's how-to, so the step is heard as one item. */
+    step: 'Step {step} of {total}',
+    /** Said after a page's link out to the product's own site. */
+    opensInBrowser: 'Opens in your browser',
+  },
   feedback: {
     bugTitle: 'Report a bug',
     featureTitle: 'Request a feature',

@@ -243,8 +243,8 @@ say the same thing. The site's README makes every claim come from the app.
 The rules are `docs/token-messaging-brief.md`, and the page does not move off
 them by a word: an in-app point; not transferable, not purchasable, not
 withdrawable, not tradable, not on a chain, unlocks no part of a paid plan.
-Feather `award` / `gift`, never a coin. Called "LangX Token". This is the App
-Review 3.1.5(b) question.
+Its mark is the app's own spark (`TokenIcon`), never a coin. Called "LangX
+Token". This is the App Review 3.1.5(b) question.
 
 The page (`app/(app)/token.tsx`, `screens/TokenScreenV3.tsx`), drawing on
 token.langx.io (`langx/token-website`):
@@ -265,12 +265,22 @@ line for a guest.
 **One family.** Venus, Copilot, Token and Transparency share a skeleton and
 differ in colour, mark and words:
 
-| Page         | Colour                          | Mark           | Link out            |
-| ------------ | ------------------------------- | -------------- | ------------------- |
-| Venus        | `sky`, `tangerine`              | Venus's face   | langx.io Venus page |
-| Copilot      | Copilot's blue                  | Copilot's mark | copilot.langx.io    |
-| LangX Token  | a warm v3 hue, not a money gold | `award`        | token.langx.io      |
-| Transparency | a green or teal v3 hue          | `bar-chart-2`  | insight.langx.io    |
+| Page         | Colour               | Mark                               | Link out            |
+| ------------ | -------------------- | ---------------------------------- | ------------------- |
+| Venus        | `sky`                | Her face (`assets/venus/head.png`) | langx.io Venus page |
+| Copilot      | Copilot's blue       | The chip (Feather `cpu`)           | copilot.langx.io    |
+| LangX Token  | `lime`, the wallet's | The spark (`TokenIcon`)            | token.langx.io      |
+| Transparency | `mint`               | `bar-chart-2`                      | insight.langx.io    |
+
+Token's lime was decided against a warm hue: it is the colour of the wallet
+the page leads to, and gold or orange reads as money. token.langx.io and
+langx.io draw the token in warm colours of their own (yellow and orange, and
+`tangerine`); those sites are not changed here, so the app and the sites
+differ until someone decides they should not (`tone.ts`).
+
+Every page's mark is drawn by `ProductMark` — in the header, and again on the
+link card at the bottom, so no stock glyph stands for a product anywhere in
+the family.
 
 Shared pieces in `components/product/`: `ProductHero`, `ProductSection`,
 `FeatureCard`, `StepList`, `ProductFaq`, `ExternalLinkCard` (through
