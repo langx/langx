@@ -1,6 +1,7 @@
 import type { CopilotResult, CopilotStatus } from '@langx/shared'
+import { router } from 'expo-router'
 import { useMemo } from 'react'
-import { Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { useLocale, useT } from '../../i18n'
 import type { CopilotErrorKey } from '../../lib/copilotErrors'
 import { diffCorrection } from '../../lib/correctionDiff'
@@ -37,6 +38,10 @@ export type CopilotAnswerState =
  * the person still reads it and presses send themselves. The two answers to
  * Check are the same size: taking the machine's word must not be easier than
  * keeping your own.
+ *
+ * Its foot carries the allowance and a quiet "What is this?" to the Copilot
+ * page: one line of link-coloured words, for whoever meets the card before
+ * they have met Copilot, and no louder than the allowance beside it.
  */
 export function CopilotCard({
   state,
@@ -72,7 +77,18 @@ export function CopilotCard({
         />
       </View>
       <CopilotAnswerBody state={state} onUse={onUse} onKeep={onClose} />
-      {showsAllowance(state) ? <CopilotAllowance quota={quota} /> : null}
+      <View style={styles.foot}>
+        {showsAllowance(state) ? <CopilotAllowance quota={quota} /> : null}
+        <Pressable
+          accessibilityRole="link"
+          onPress={() => router.push('/(app)/copilot')}
+          // The words are a caption; the slop makes them a whole target.
+          hitSlop={12}
+          style={({ pressed }) => [styles.about, pressed && styles.pressed]}
+        >
+          <Text style={styles.aboutText}>{t('copilot.whatIsThis')}</Text>
+        </Pressable>
+      </View>
     </View>
   )
 }
@@ -262,6 +278,19 @@ const useStyles = makeStyles(({ colors, v3 }) => ({
     paddingTop: v3.space[4],
   },
   header: { alignItems: 'center', flexDirection: 'row', marginEnd: -v3.space[10] },
+  // The allowance at the start and the link at the end, as the label and the
+  // close sit in the header; wrapped, the link keeps to the end on its own line.
+  foot: {
+    alignItems: 'center',
+    columnGap: v3.space[12],
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    rowGap: v3.space[2],
+  },
+  about: { marginStart: 'auto' },
+  // `echoText`, the palette's blue for words, as the changed words above are.
+  aboutText: { ...v3.type.caption, color: v3.colors.echoText, fontWeight: '700' },
+  pressed: { opacity: 0.6 },
   grow: { flex: 1 },
   skeleton: { gap: v3.space[8], paddingVertical: v3.space[4] },
   title: { ...v3.type.label, color: v3.colors.muted },

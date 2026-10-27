@@ -5549,6 +5549,7 @@ export const ar: Localized<EnMessages> = {
       other: 'تبقّت {count} إجابة اليوم',
     },
     moreAt: 'المزيد عند {time}',
+    whatIsThis: 'ما هذا؟',
     errQuota: 'استخدمت إجابات Copilot لهذا اليوم. المزيد عند {time}.',
     errQuotaNoTime: 'استخدمت إجابات Copilot لهذا اليوم.',
     errBusy: 'Copilot مشغول. حاول لاحقًا.',
@@ -5582,6 +5583,7 @@ export const ar: Localized<EnMessages> = {
       'لن يُرسل أي شيء آخر منك إلى مزوّد الذكاء الاصطناعي. سيسألك Copilot مجددًا في المرة القادمة التي تستخدمه فيها.',
     settingsOffConfirm: 'إيقاف',
     settingsOffDone: 'Copilot متوقف.',
+    settingsAbout: 'ماذا يفعل Copilot',
     page: {
       tagline: 'مساعد ذكاء اصطناعي داخل محادثاتك. لا يرسل كلمة واحدة نيابةً عنك.',
       allowance: 'الإجابات يوميًا: {free} في الخطة المجانية، و{pro} مع Pro.',

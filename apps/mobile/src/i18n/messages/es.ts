@@ -4355,6 +4355,7 @@ export const es: Localized<EnMessages> = {
     loading: 'Copilot está escribiendo…',
     left: { one: 'Te queda {count} hoy', other: 'Te quedan {count} hoy' },
     moreAt: 'Más a las {time}',
+    whatIsThis: '¿Qué es esto?',
     errQuota: 'Ya usaste las respuestas de Copilot de hoy. Más a las {time}.',
     errQuotaNoTime: 'Ya usaste las respuestas de Copilot de hoy.',
     errBusy: 'Copilot está ocupado. Inténtalo más tarde.',
@@ -4382,6 +4383,7 @@ export const es: Localized<EnMessages> = {
       'No se enviará nada más tuyo al proveedor de IA. Copilot te volverá a preguntar la próxima vez que lo uses.',
     settingsOffConfirm: 'Desactivar',
     settingsOffDone: 'Copilot está desactivado.',
+    settingsAbout: 'Qué hace Copilot',
     page: {
       tagline: 'Un asistente de IA dentro de tus chats. Nunca envía ni una palabra por ti.',
       allowance: 'Respuestas al día: {free} en el plan gratuito, {pro} con Pro.',

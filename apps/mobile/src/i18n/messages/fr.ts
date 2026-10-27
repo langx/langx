@@ -4406,6 +4406,7 @@ export const fr: Localized<EnMessages> = {
     loading: 'Copilot écrit…',
     left: { one: 'Encore {count} aujourd’hui', other: 'Encore {count} aujourd’hui' },
     moreAt: 'D’autres à {time}',
+    whatIsThis: 'Qu’est-ce que c’est ?',
     errQuota: 'Tu as utilisé les réponses Copilot du jour. D’autres à {time}.',
     errQuotaNoTime: 'Tu as utilisé les réponses Copilot du jour.',
     errBusy: 'Copilot est occupé. Réessaie plus tard.',
@@ -4433,6 +4434,7 @@ export const fr: Localized<EnMessages> = {
       'Plus rien de toi n’ira au fournisseur d’IA. Copilot te redemandera la prochaine fois que tu l’utiliseras.',
     settingsOffConfirm: 'Désactiver',
     settingsOffDone: 'Copilot est désactivé.',
+    settingsAbout: 'Ce que fait Copilot',
     page: {
       tagline: 'Un assistant IA dans tes discussions. Il n’envoie jamais un mot à ta place.',
       allowance: 'Réponses par jour : {free} sur le forfait gratuit, {pro} avec Pro.',

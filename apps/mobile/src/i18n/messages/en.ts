@@ -4796,6 +4796,8 @@ export const en = {
     left: { one: '{count} left today', other: '{count} left today' },
     /** At 0 left: when the next answer frees up, as a time of day. */
     moreAt: 'More at {time}',
+    /** On the card above the composer, after the allowance: a quiet link to the Copilot page. */
+    whatIsThis: 'What is this?',
     errQuota: 'You’ve used today’s Copilot answers. More at {time}.',
     /** The same, when the server did not say when. */
     errQuotaNoTime: 'You’ve used today’s Copilot answers.',
@@ -4838,6 +4840,8 @@ export const en = {
       'Nothing more of yours goes to the AI provider. Copilot asks again the next time you use it.',
     settingsOffConfirm: 'Turn off',
     settingsOffDone: 'Copilot is off.',
+    /** Under the switch on the Privacy page: opens the Copilot page. */
+    settingsAbout: 'What Copilot does',
     /**
      * The Copilot page (`screens/CopilotScreenV3.tsx`), shown to everybody,
      * whether Copilot is on for them or not. Every sentence here was checked
@@ -4853,7 +4857,10 @@ export const en = {
       allowance: 'Answers a day: {free} on the free plan, {pro} with Pro.',
       /** The page's one action, when Copilot answers this person. Opens the Chats tab. */
       tryIt: 'Try it in a chat',
-      /** The action for a guest where Copilot is on: a quota and a consent need an account. */
+      /**
+       * The action for a guest where Copilot is on: a quota and a consent need
+       * an account. In the hero, and again as the button at the page's foot.
+       */
       signUp: 'Sign up to try it',
       helpsTitle: 'What it does',
       helpsIntro: 'One tap asks one question. Nothing is asked in the background.',

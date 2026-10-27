@@ -4414,6 +4414,7 @@ export const de: Localized<EnMessages> = {
     loading: 'Copilot schreibt …',
     left: { one: 'Heute noch {count}', other: 'Heute noch {count}' },
     moreAt: 'Mehr um {time}',
+    whatIsThis: 'Was ist das?',
     errQuota: 'Du hast die Copilot-Antworten für heute aufgebraucht. Mehr um {time}.',
     errQuotaNoTime: 'Du hast die Copilot-Antworten für heute aufgebraucht.',
     errBusy: 'Copilot ist gerade ausgelastet. Versuch es später noch mal.',
@@ -4441,6 +4442,7 @@ export const de: Localized<EnMessages> = {
       'Von dir geht nichts mehr an den KI-Anbieter. Copilot fragt beim nächsten Mal erneut.',
     settingsOffConfirm: 'Ausschalten',
     settingsOffDone: 'Copilot ist aus.',
+    settingsAbout: 'Was Copilot kann',
     page: {
       tagline: 'Ein KI-Helfer in deinen Chats. Er sendet nie ein Wort für dich.',
       allowance: 'Antworten am Tag: {free} im kostenlosen Tarif, {pro} mit Pro.',

@@ -1,3 +1,4 @@
+import { router } from 'expo-router'
 import { useState } from 'react'
 import { useCopilotStatus, useWithdrawCopilotConsent } from '../../../api/copilot'
 import { useAppConfig } from '../../../hooks/useAppConfig'
@@ -26,6 +27,9 @@ import { SettingsGroupV3, SettingsItemV3 } from './SettingsKitV3'
  * more of theirs reaches the provider, and the next Copilot tap asks again.
  * On opens the same consent sheet the thread does — the only place consent is
  * ever recorded.
+ *
+ * Under the switch, the way to the Copilot page: a person deciding whether to
+ * keep it on is the one who most wants to know what it does.
  */
 export function CopilotSettingsV3() {
   const t = useT()
@@ -71,6 +75,11 @@ export function CopilotSettingsV3() {
               onValueChange={(next) => (next ? setConsenting(true) : void turnOff())}
             />
           }
+        />
+        <SettingsItemV3
+          icon="info"
+          title={t('copilot.settingsAbout')}
+          onPress={() => router.push('/(app)/copilot')}
         />
       </SettingsGroupV3>
       <CopilotConsentSheet visible={consenting} onClose={() => setConsenting(false)} />

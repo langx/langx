@@ -5099,6 +5099,7 @@ export const ru: Localized<EnMessages> = {
       other: 'Сегодня осталось {count} ответа',
     },
     moreAt: 'Ещё в {time}',
+    whatIsThis: 'Что это?',
     errQuota: 'Ответы Copilot на сегодня закончились. Ещё в {time}.',
     errQuotaNoTime: 'Ответы Copilot на сегодня закончились.',
     errBusy: 'Copilot занят. Попробуй позже.',
@@ -5132,6 +5133,7 @@ export const ru: Localized<EnMessages> = {
       'Больше ничего вашего не уйдёт поставщику ИИ. В следующий раз Copilot спросит снова.',
     settingsOffConfirm: 'Выключить',
     settingsOffDone: 'Copilot выключен.',
+    settingsAbout: 'Что умеет Copilot',
     page: {
       tagline: 'ИИ-помощник внутри твоих чатов. Он никогда не отправляет за тебя ни слова.',
       allowance: 'Ответов в день: {free} на бесплатном тарифе, {pro} с Pro.',
