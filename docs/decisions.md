@@ -7326,6 +7326,48 @@ this app over once, and a save button does not need it.
 at all until a build carrying it ships. This is the same constraint
 `expo-video` had, and it belongs in the release note.
 
+## Android keeps a saved file's own date, and iOS does not
+
+**On iOS the save is the date.** Photos files an asset by the date in the file
+itself, so a picture taken weeks ago landed weeks back in the grid and only
+"Recently Saved" showed it. `patches/expo-media-library@57.0.5.patch` sets the
+asset's `creationDate` to now. It waited for the 3.1 binary, because a patch to
+a native module changes the runtime fingerprint (#2057).
+
+**Android gets no date write, because Android does not keep one.** The plan in
+#2067 was to do the same in the same patch: set `DATE_TAKEN` to now when the row
+goes into MediaStore. On Android 11 and later, expo-media-library 57.0.5 saves in three
+steps (`AssetModernFactory`): insert a pending row (`IS_PENDING = 1`), copy the
+bytes in, publish it (`IS_PENDING = 0`). Publishing makes MediaProvider scan
+the file there and then, and the scan clears `DATE_TAKEN` and fills it again
+from the file alone. A value put in with the insert does not survive the scan,
+and one written after the publish is dropped, with "Ignoring mutation of" in
+the log. On Android 10 and below the library inserts no row of its own
+(`AssetLegacyFactory`): it copies the file into a public folder and has the
+media scanner index it, so the row is the scanner's from the start. Nothing was
+measured there. Shipping the write anyway would have put native code in 3.1
+that does nothing, under a comment saying it fixed this.
+
+**What was measured, on 26 October 2026,** on an Android 16 emulator, reading
+and writing MediaStore rows with `adb shell content`: a file that carries its
+own date keeps that date, and a file that carries none ends with `DATE_TAKEN`
+empty, which Google Photos then files at the moment it was saved. The plan
+named two cases, a weeks-old photo and a Venus video. The Venus videos carry no
+date: ten sampled across six locales, all muxed by ffmpeg (Lavf 62.3.100), have
+no `creation_time`, so on Android they should already land at the end. The
+weeks-old photo still lands weeks back if its EXIF says so, and that date is
+the file telling the truth.
+
+**What would change it is a repro first, not a write.** A named device and
+gallery app (Samsung's Gallery was not tested and may sort differently from
+Google Photos), the file that was saved, and where it landed. The plan's
+Android premise was inferred, not observed, and the next change should start
+from an observation. If a dated file must land at save time, the only lever left is
+rewriting the date inside the file before it is handed over, EXIF for a photo
+and `creation_time` for a video, which the plan ruled out as separate code per
+format. Either way it is not a MediaStore write, and editing the patch is a
+fingerprint change that waits for the next store build.
+
 ## A yearly price is a `.99` month times twelve, plus 0.11
 
 > **Amended 21 October 2026 — see _The yearly price ends in 9.99_ below.**
