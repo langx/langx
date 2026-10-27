@@ -39,7 +39,9 @@ contradicted the screen it sits on. It says what is actually true and actually
 load-bearing: no chain, no contract, no market, cannot be bought, cannot be
 traded, cannot unlock a paid plan.
 
-New screens use Feather `award`/`gift`, never a coin.
+New screens draw LangX Token with the app's own spark (`TokenIcon`, the mark
+the wallet draws beside every balance), never a coin. Feather `award`/`gift`
+stay for other glyphs on those screens, such as the hourly gift.
 
 Call it **"LangX Token"**. Drop "Test Token" — v1 used that because the token
 was framed as a preview of something real, and there is nothing to preview any

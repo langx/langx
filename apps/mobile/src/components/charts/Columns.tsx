@@ -30,9 +30,12 @@ interface ColumnsProps {
  * `WeekBars` is the member-facing version of this and stays where it is: it
  * draws exactly seven days, stacks a second series, and labels its columns
  * with weekday initials in the reader's own locale. This one takes any number
- * of slots, carries no second series, and is read by an operator — so its
- * labels arrive as strings from the caller rather than being derived, and the
- * panel stays English without this file knowing that it does.
+ * of slots and carries no second series, and its labels arrive as strings from
+ * the caller rather than being derived. That is what lets the English operator
+ * panel and the translated Transparency page draw the same chart without this
+ * file knowing which language either is in. It lives here rather than under
+ * `admin/` so that a public page never has to reach into the operator
+ * panel's folder for anything.
  *
  * A slot with no reading is a gap and draws nothing. A slot with a zero draws
  * the same hairline trace `WeekBars` uses. The two must not look alike: one

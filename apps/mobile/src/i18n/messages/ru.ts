@@ -2479,6 +2479,11 @@ export const ru: Localized<EnMessages> = {
     security: 'Безопасность',
     opensInBrowser: 'Каждая ссылка откроется в браузере.',
   },
+  productPage: {
+    questions: 'Вопросы и ответы',
+    step: 'Шаг {step} из {total}',
+    opensInBrowser: 'Откроется в браузере',
+  },
   feedback: {
     bugTitle: 'Сообщить об ошибке',
     featureTitle: 'Предложить функцию',
