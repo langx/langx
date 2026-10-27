@@ -620,7 +620,7 @@ export const ar: Localized<EnMessages> = {
     closesRingTokens: {
       zero: 'يُكمل الدائرة الثالثة لليوم · +{count} رمز',
       one: 'يُكمل الدائرة الثالثة لليوم · +{count} رمز',
-      two: 'يُكمل الدائرة الثالثة لليوم · +{count} رمز',
+      two: 'يُكمل الدائرة الثالثة لليوم · +{count} رمزان',
       few: 'يُكمل الدائرة الثالثة لليوم · +{count} رموز',
       many: 'يُكمل الدائرة الثالثة لليوم · +{count} رمزًا',
       other: 'يُكمل الدائرة الثالثة لليوم · +{count} رمز',
@@ -711,7 +711,7 @@ export const ar: Localized<EnMessages> = {
     tokensEarned: {
       zero: '+{count} رمز',
       one: '+{count} رمز',
-      two: '+{count} رمز',
+      two: '+{count} رمزان',
       few: '+{count} رموز',
       many: '+{count} رمزًا',
       other: '+{count} رمز',
@@ -1685,7 +1685,7 @@ export const ar: Localized<EnMessages> = {
     tokensPerMessage: {
       zero: '+{count} رمز / رسالة',
       one: '+{count} رمز / رسالة',
-      two: '+{count} رمز / رسالة',
+      two: '+{count} رمزان / رسالة',
       few: '+{count} رموز / رسالة',
       many: '+{count} رمزًا / رسالة',
       other: '+{count} رمز / رسالة',
@@ -3532,7 +3532,7 @@ export const ar: Localized<EnMessages> = {
     tokensUnit: {
       zero: 'رمز',
       one: 'رمز',
-      two: 'رمز',
+      two: 'رمزان',
       few: 'رموز',
       many: 'رمزًا',
       other: 'رمز',
@@ -3818,7 +3818,7 @@ export const ar: Localized<EnMessages> = {
     },
     totalsEarned: {
       one: 'رمز',
-      two: 'رمز',
+      two: 'رمزان',
       few: 'رموز',
       many: 'رمزًا',
       other: 'رمز',
@@ -4256,7 +4256,7 @@ export const ar: Localized<EnMessages> = {
     rowTokens: {
       zero: '{rank}. {name}، {amount} رمز',
       one: '{rank}. {name}، {amount} رمز',
-      two: '{rank}. {name}، {amount} رمز',
+      two: '{rank}. {name}، {amount} رمزان',
       few: '{rank}. {name}، {amount} رموز',
       many: '{rank}. {name}، {amount} رمزًا',
       other: '{rank}. {name}، {amount} رمز',
