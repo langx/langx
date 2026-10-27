@@ -240,6 +240,7 @@ function MemberMe() {
             onPress: () => router.push('/(app)/streak'),
           }
         : undefined,
+    edit: { label: t('me.editProfile'), onPress: () => router.push('/(app)/edit-profile') },
     bell: {
       label: t('inbox.bell'),
       count: unreadBadge(unread.data),
