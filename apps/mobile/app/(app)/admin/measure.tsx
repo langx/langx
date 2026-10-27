@@ -10,7 +10,7 @@ import {
   AdminNoteV3,
   AdminScreenV3,
 } from '../../../src/components/admin/AdminKitV3'
-import { BarList, type BarListRow } from '../../../src/components/admin/BarList'
+import { BarList, type BarListRow } from '../../../src/components/charts/BarList'
 import { StatTable } from '../../../src/components/admin/StatTable'
 import { SegmentedControl } from '../../../src/components/ui/SegmentedControl'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
