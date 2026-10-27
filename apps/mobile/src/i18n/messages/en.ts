@@ -4569,6 +4569,139 @@ export const en = {
       'Nothing more of yours goes to the AI provider. Copilot asks again the next time you use it.',
     settingsOffConfirm: 'Turn off',
     settingsOffDone: 'Copilot is off.',
+    /**
+     * The Copilot page (`screens/CopilotScreenV3.tsx`), shown to everybody,
+     * whether Copilot is on for them or not. Every sentence here was checked
+     * against the code it describes, and says what copilot.langx.io says.
+     * Numbers arrive as params from `PLAN_LIMITS` and `COPILOT_RULES`; the
+     * names of buttons arrive as params from the keys the chat itself uses,
+     * so the page names what the person will see there.
+     */
+    page: {
+      /** Under "Copilot · Beta", the page's name. The site's opening line. */
+      tagline: 'An AI helper inside your chats. It never sends a word for you.',
+      /** Under the tagline, for everybody: the beta is on both plans, and Pro is more answers. */
+      allowance: 'Answers a day: {free} on the free plan, {pro} with Pro.',
+      /** The page's one action, when Copilot answers this person. Opens the Chats tab. */
+      tryIt: 'Try it in a chat',
+      /** The action for a guest where Copilot is on: a quota and a consent need an account. */
+      signUp: 'Sign up to try it',
+      helpsTitle: 'What it does',
+      helpsIntro: 'One tap asks one question. Nothing is asked in the background.',
+      /** Say it's name where no language is named; the chat's menu row is `menuSayIt`. */
+      sayIt: 'Say it',
+      checkBody:
+        'Before you send, it checks your sentence and gives one reason for what it changes.',
+      sayItBody: {
+        one: 'Write it in your own language and get up to {count} way to say it in the one you are learning.',
+        other:
+          'Write it in your own language and get up to {count} ways to say it in the one you are learning.',
+      },
+      explainBody:
+        'Hold their message or a correction to see what it means, or what changed and why.',
+      replyIdeasBody: {
+        one: 'When their message is waiting, get up to {count} short reply to change and send yourself.',
+        other:
+          'When their message is waiting, get up to {count} short replies to change and send yourself.',
+      },
+      /**
+       * The worked examples under each help. Drawn by the page, never written
+       * by the AI, and labelled so. The learner's sentences are in a language
+       * the reader is learning — Spanish here, English in the other seven —
+       * and the reasons are in the reader's own, as Copilot writes them.
+       */
+      example: {
+        label: 'Illustration, not a real answer',
+        /** What is in the message box, not sent. */
+        draft: 'Your draft',
+        partner: 'Your partner',
+        checkDraft: 'Me gusta mucho los perros.',
+        checkFixed: 'Me gustan mucho los perros.',
+        checkReason: 'With a plural like “los perros”, the verb is “gustan”.',
+        sayItAsked: 'Can we talk tomorrow instead?',
+        sayItOption1: '¿Y si mejor hablamos mañana?',
+        sayItGloss1: 'casual',
+        sayItOption2: '¿Podríamos hablar mañana?',
+        sayItGloss2: 'more polite',
+        explainOriginal: 'Ayer yo voy al cine.',
+        explainCorrected: 'Ayer fui al cine.',
+        explainAnswer:
+          '“Ayer” (yesterday) puts it in the past, so “voy” (I go) becomes “fui” (I went).',
+        replyTheirs: '¿Y tú qué haces este finde?',
+        replyIdea1: 'Voy a la playa con unos amigos.',
+        replyIdea2: 'Todavía no lo sé. ¿Y tú?',
+      },
+      whenTitle: 'When it helps',
+      /** Each moment is a question, and its line names the help that answers it. */
+      whenCheck: 'Not sure a sentence is right?',
+      whenCheckBody: 'Ask “{check}” before you send it.',
+      whenSayIt: 'Know what to say, but not how?',
+      whenSayItBody: 'Write it in your language and ask “{sayIt}”.',
+      whenExplain: 'Lost in a message or a correction?',
+      whenExplainBody: 'Hold it and choose “{explain}”.',
+      whenReplyIdeas: 'Stuck for a reply?',
+      whenReplyIdeasBody: 'Tap “{replyIdeas}”, then make one your own.',
+      howTitle: 'How to use it',
+      step1: 'Open a chat',
+      step1Body: 'Copilot works inside a conversation you already have.',
+      step2: 'Tap the help you want',
+      step2Body:
+        'Type, then tap the blue button beside Send for “{check}” or “{sayIt}”. Hold their message or a correction for “{explain}”. When their message is waiting, “{replyIdeas}” sits above the empty box.',
+      step3: 'Agree, the first time',
+      step3Body: 'A sheet says what is sent and to whom. Nothing is sent before you agree.',
+      step4: 'Read it, then decide',
+      step4Body: 'Use it, change it or close it. Only Send sends, and only you press it.',
+      trustTitle: 'You stay in charge',
+      trustPartner: 'Your partner never sees it',
+      trustPartnerBody: 'Answers show on your screen, never in the chat.',
+      trustSend: 'Nothing is sent for you',
+      trustSendBody: '“{useThis}” and a reply idea only fill your message box.',
+      trustOff: 'You can turn it off',
+      /** The path to the switch, from the names its screens carry: Settings → Privacy → Copilot. */
+      trustOffBody:
+        '{settings} → {privacy} → {copilot}. Nothing more of yours goes to the AI provider.',
+      trustReport: 'You can report an answer',
+      trustReportBody:
+        'Tap “{report}” on any answer. The LangX team sees it; your partner does not.',
+      /** The official @copilot account, which does not take messages yet (`OFFICIAL_WRITABLE`). */
+      accountTitle: 'The Copilot account',
+      /** The grey badge on its card, drawn only while it is closed. */
+      accountSoon: 'Coming soon',
+      accountClosed:
+        'A chat of its own, for questions about the app. It takes no messages yet; for now, Copilot works inside your chats with people.',
+      /** Once `OFFICIAL_WRITABLE.copilot` is true: what the assistant behind it answers. */
+      accountOpen: 'A chat of its own, for questions about the app, a bug or an idea.',
+      faq: {
+        personQ: 'Is Copilot a person or a tutor?',
+        personA:
+          'Neither. It is an AI helper inside a chat with a real person. You tap one of its helps, and it answers that one question.',
+        wrongQ: 'Can it be wrong?',
+        wrongA:
+          'Yes, in any language. Read each answer as a suggestion, keep your own words when you prefer them, and tap “{report}” on an answer that is wrong.',
+        partnerQ: 'Can my partner see that I used it?',
+        partnerA:
+          'No. Your partner sees none of your Copilot answers. What you send is your own message, whether or not Copilot helped.',
+        allowanceQ: 'How many answers do I get?',
+        /** Rolling, not daily: each answer comes back a day after it was used (`QUOTA_WINDOW_MS`). */
+        allowanceA:
+          '{free} a day on the free plan and {pro} with Pro, shared by all its helps. Each one comes back a day after you used it, not all at midnight. An answer counts only when Copilot writes a new one: a question asked recently, or one it could not answer, costs nothing.',
+        sentQ: 'What is sent to the AI?',
+        /** Followed by the consent sheet's own two sentences, `consentSends` and `consentNever`. */
+        sentA: 'Nothing until you agree, and then only when you ask.',
+        languagesQ: 'Which languages does it work in?',
+        languagesA:
+          'It explains in the language your app is set to. “{check}” reads the language you wrote in, “{sayIt}” writes in the language you are learning, and reply ideas come in the language of the chat.',
+        hiddenQ: 'Why don’t I see it?',
+        hiddenA:
+          'It works inside a conversation you already have, and its button shows once you type. It is not in chats with accounts that take no messages, such as @langx, and it needs an account with a verified email. As a beta, it can also be switched off for everyone.',
+        accountQ: 'Can I chat with @copilot?',
+        accountClosedA:
+          'Not yet. The @copilot account is coming soon. For now it takes no messages, and Copilot works inside your chats with people.',
+        accountOpenA: 'Yes. Write to @copilot as you would to anyone, and ask it about the app.',
+      },
+      /** The link card at the foot, over copilot.langx.io. */
+      siteTitle: 'Every detail, on Copilot’s own site',
+    },
   },
   /**
    * Venus's daily streak story (`flags.venusStories`): the full-screen player

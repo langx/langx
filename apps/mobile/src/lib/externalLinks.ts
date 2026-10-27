@@ -51,6 +51,12 @@ export const TERMS_URL = `${SITE}/terms-conditions`
 export const APPLE_EULA_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'
 
 /**
+ * Copilot's own site (`langx/copilot`), where the Copilot page sends anyone
+ * who wants more than its questions answer. English only, so no locale path.
+ */
+export const COPILOT_SITE_URL = 'https://copilot.langx.io/'
+
+/**
  * The five the stores and the law expect to be reachable from inside the app,
  * plus the one nobody requires: the community guidelines. They go first
  * because they are the only row here somebody might read by choice.
