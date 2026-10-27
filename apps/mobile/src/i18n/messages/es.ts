@@ -1051,7 +1051,7 @@ export const es: Localized<EnMessages> = {
     socialBody:
       'Seguidores, comentarios, correcciones y grabaciones en tus publicaciones, y me gusta.',
     wallet: 'Tokens',
-    walletBody: 'El reparto diario y tu regalo por hora.',
+    walletBody: 'El reparto del fondo diario y tu regalo por hora.',
     promotions: 'Novedades y ofertas',
     promotionsBody: 'De vez en cuando, lo nuevo. Un toque para parar.',
     echo: 'Echo',
@@ -1779,8 +1779,8 @@ export const es: Localized<EnMessages> = {
     testimonial: '{name} escribió una reseña en tu perfil',
     badgeEarned: 'Ganaste una insignia nueva',
     walletPool: {
-      one: 'El bote de ayer te pagó {count} ficha',
-      other: 'El bote de ayer te pagó {count} fichas',
+      one: 'El fondo de ayer te pagó {count} ficha',
+      other: 'El fondo de ayer te pagó {count} fichas',
     },
     profileVisits: {
       one: '{count} persona vio tu perfil',
@@ -2820,7 +2820,7 @@ export const es: Localized<EnMessages> = {
   tokens: {
     intro:
       'Se ganan escribiendo mensajes y corrigiendo a otras personas. Enseñar pesa más que hablar.',
-    poolTitle: 'Bote diario',
+    poolTitle: 'Fondo diario',
     shareAmount: '+{count}',
     noShareYet: 'Aún no hay parte: el fondo reparte tras tu primer día completo.',
     firstShareAt: 'Tu primera parte llegará el {when}.',
@@ -2835,7 +2835,7 @@ export const es: Localized<EnMessages> = {
     activityScore: { one: '{count} de actividad', other: '{count} de actividad' },
     todayBreakdown: '{messages}, {corrections}, {partners}.',
     poolParticipants: { one: '{n} activo ese día', other: '{n} activos ese día' },
-    poolShareOfPool: '{percent} del bote diario',
+    poolShareOfPool: '{percent} del fondo diario',
     poolActiveToday: { one: '{n} activo hoy', other: '{n} activos hoy' },
     todayMessages: { one: 'mensaje', other: 'mensajes' },
     todayCorrections: { one: 'corrección', other: 'correcciones' },

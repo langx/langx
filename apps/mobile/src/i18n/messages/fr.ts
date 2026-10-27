@@ -1064,7 +1064,7 @@ export const fr: Localized<EnMessages> = {
     socialBody:
       'Abonnements, commentaires, corrections et enregistrements sur vos publications, et mentions J’aime.',
     wallet: 'Jetons',
-    walletBody: 'La distribution quotidienne et votre cadeau horaire.',
+    walletBody: 'Le versement du pot commun et votre cadeau horaire.',
     promotions: 'Actualités et offres',
     promotionsBody: 'De temps en temps, les nouveautés. Un geste pour arrêter.',
     echo: 'Echo',
@@ -1794,8 +1794,8 @@ export const fr: Localized<EnMessages> = {
     testimonial: '{name} a laissé un avis sur ton profil',
     badgeEarned: 'Vous avez obtenu un nouveau badge',
     walletPool: {
-      one: 'La cagnotte d’hier vous a versé {count} jeton',
-      other: 'La cagnotte d’hier vous a versé {count} jetons',
+      one: 'Le pot commun d’hier vous a versé {count} jeton',
+      other: 'Le pot commun d’hier vous a versé {count} jetons',
     },
     profileVisits: {
       one: '{count} personne a consulté votre profil',
@@ -2858,9 +2858,9 @@ export const fr: Localized<EnMessages> = {
 
   tokens: {
     intro: 'Gagnés en écrivant et en corrigeant les autres. Enseigner compte plus que parler.',
-    poolTitle: 'Cagnotte du jour',
+    poolTitle: 'Pot commun du jour',
     shareAmount: '+{count}',
-    noShareYet: 'Pas encore de part : la cagnotte paie après votre première journée complète.',
+    noShareYet: 'Pas encore de part : le pot commun paie après votre première journée complète.',
     firstShareAt: 'Votre première part arrivera le {when}.',
     poolCap: 'Plafond de {cap} par jour. Votre part évolue avec celle des autres.',
     poolPaidAt: 'Versé chaque nuit à {hour}:00 UTC.',
@@ -2873,7 +2873,7 @@ export const fr: Localized<EnMessages> = {
     activityScore: { one: '{count} d’activité', other: '{count} d’activité' },
     todayBreakdown: '{messages}, {corrections}, {partners}.',
     poolParticipants: { one: '{n} actif ce jour-là', other: '{n} actifs ce jour-là' },
-    poolShareOfPool: '{percent} de la cagnotte du jour',
+    poolShareOfPool: '{percent} du pot commun du jour',
     poolActiveToday: { one: '{n} actif aujourd’hui', other: '{n} actifs aujourd’hui' },
     todayMessages: { one: 'message', other: 'messages' },
     todayCorrections: { one: 'correction', other: 'corrections' },
@@ -3051,7 +3051,7 @@ export const fr: Localized<EnMessages> = {
     message: 'Messages',
     correction: 'Corrections',
     streak: 'Bonus de série',
-    dailyPool: 'Part de la cagnotte',
+    dailyPool: 'Part du pot commun',
     adjustment: 'Ajustement',
     legacyTokenConversion: 'Solde v1',
     welcomeBack: 'Bonus de retour',

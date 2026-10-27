@@ -101,8 +101,8 @@ export const ptBR: Localized<ServerMessages> = {
 
     wallet: {
       poolTitle: {
-        one: 'O rateio de ontem te pagou 1 token',
-        other: 'O rateio de ontem te pagou {count} tokens',
+        one: 'O fundo de ontem te pagou 1 token',
+        other: 'O fundo de ontem te pagou {count} tokens',
       },
 
       poolBody: 'Toque para abrir sua carteira.',

@@ -101,8 +101,8 @@ export const es: Localized<ServerMessages> = {
 
     wallet: {
       poolTitle: {
-        one: 'El reparto de ayer te dio 1 token',
-        other: 'El reparto de ayer te dio {count} tokens',
+        one: 'El fondo de ayer te dio 1 token',
+        other: 'El fondo de ayer te dio {count} tokens',
       },
 
       poolBody: 'Toca para abrir tu cartera.',

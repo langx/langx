@@ -1045,7 +1045,7 @@ export const ptBR: Localized<EnMessages> = {
     social: 'O feed e quem está nele',
     socialBody: 'Seguidores, comentários, correções e gravações nas suas publicações, e curtidas.',
     wallet: 'Tokens',
-    walletBody: 'O rateio diário e seu presente por hora.',
+    walletBody: 'O rateio do fundo diário e seu presente por hora.',
     promotions: 'Novidades e ofertas',
     promotionsBody: 'De vez em quando, o que há de novo. Um toque para parar.',
     echo: 'Echo',
@@ -1770,8 +1770,8 @@ export const ptBR: Localized<EnMessages> = {
     testimonial: '{name} escreveu uma avaliação no seu perfil',
     badgeEarned: 'Você ganhou uma nova insígnia',
     walletPool: {
-      one: 'O bolo de ontem pagou {count} ficha a você',
-      other: 'O bolo de ontem pagou {count} fichas a você',
+      one: 'O fundo de ontem pagou {count} ficha a você',
+      other: 'O fundo de ontem pagou {count} fichas a você',
     },
     profileVisits: {
       one: '{count} pessoa viu seu perfil',
@@ -2805,7 +2805,7 @@ export const ptBR: Localized<EnMessages> = {
   tokens: {
     intro:
       'Ganhas ao enviar mensagens e ao corrigir outras pessoas. Ensinar pesa mais do que conversar.',
-    poolTitle: 'Bolo diário',
+    poolTitle: 'Fundo diário',
     shareAmount: '+{count}',
     noShareYet: 'Ainda sem parte — o fundo paga depois do seu primeiro dia completo.',
     firstShareAt: 'Sua primeira parte chega em {when}.',
@@ -2820,7 +2820,7 @@ export const ptBR: Localized<EnMessages> = {
     activityScore: { one: '{count} de atividade', other: '{count} de atividade' },
     todayBreakdown: '{messages}, {corrections}, {partners}.',
     poolParticipants: { one: '{n} ativo naquele dia', other: '{n} ativos naquele dia' },
-    poolShareOfPool: '{percent} do bolo diário',
+    poolShareOfPool: '{percent} do fundo diário',
     poolActiveToday: { one: '{n} ativo hoje', other: '{n} ativos hoje' },
     todayMessages: { one: 'mensagem', other: 'mensagens' },
     todayCorrections: { one: 'correção', other: 'correções' },

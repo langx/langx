@@ -3902,7 +3902,7 @@ export const tr: Localized<EnMessages> = {
     whoViewedBody: 'Sadece sayı değil — kim olduklarını gör.',
     incognito: 'Gizli gezinme',
     incognitoBody: 'Profillere iz bırakmadan bak.',
-    nearby: 'Yakında',
+    nearby: 'Yakındakiler',
     nearbyBody:
       'Kişileri mesafeye göre sırala. Konumun yuvarlanır; başkaları yalnızca kaba bir mesafe görür.',
     copilot: 'Daha çok Copilot yanıtı',
