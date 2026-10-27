@@ -27,6 +27,12 @@ export type SaveMediaResult = 'saved' | 'denied'
  * the grid and only "Recently Saved" shows it. Bumping the package means
  * carrying that patch to the new version.
  *
+ * Android gets no such write, on purpose: MediaProvider rescans the file when
+ * the save is published and takes the date from the file alone, so a date the
+ * app sets does not stick, and a file with no date of its own already lands at
+ * save time. `docs/decisions.md` has what was measured, under "Android keeps
+ * a saved file's own date".
+ *
  * Resolves `'denied'` when the person said no, and throws for everything else
  * — a failed download, a full disk — so the caller can tell the two apart.
  */
