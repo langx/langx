@@ -94,7 +94,6 @@ export const tr: Localized<EnMessages> = {
       venusReady: 'Bugünün videosu hazır',
     },
     products: {
-      title: 'LangX',
       copilot: 'Copilot',
       members: { one: '{amount} üye', other: '{amount} üye' },
     },
@@ -2276,6 +2275,9 @@ export const tr: Localized<EnMessages> = {
       securityBody: 'Herkese açık bir issue yerine gizlice bildir. Bir hafta içinde dönüş alırsın.',
       securityLink: 'Güvenlik politikası',
       supportTitle: 'LangX’i destekle',
+      rateTitle: 'LangX’i puanla ve yorumla',
+      rateBody: 'Vereceğin puan ve birkaç cümle, başkalarının bizi bulmasına yardım eder.',
+      rateAction: 'Puanla',
       proTitle: 'Pro’ya geç',
       proBody: 'Sunucuların parasını ödeyen ve LangX’i ayakta tutan Pro.',
       proTitleMember: 'Pro’dasın',

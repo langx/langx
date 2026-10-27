@@ -111,7 +111,6 @@ export const ru: Localized<EnMessages> = {
       venusReady: 'Видео дня готово',
     },
     products: {
-      title: 'LangX',
       copilot: 'Copilot',
       members: {
         one: '{amount} участник',
@@ -2698,6 +2697,9 @@ export const ru: Localized<EnMessages> = {
       securityBody: 'Сообщи о ней лично, а не в публичной задаче. Ответ придёт в течение недели.',
       securityLink: 'Политика безопасности',
       supportTitle: 'Поддержать LangX',
+      rateTitle: 'Оценить LangX и оставить отзыв',
+      rateBody: 'Твоя оценка и пара слов помогут другим найти нас.',
+      rateAction: 'Оценить',
       proTitle: 'Перейти на Pro',
       proBody: 'Pro оплачивает серверы и помогает LangX жить дальше.',
       proTitleMember: 'У тебя Pro',

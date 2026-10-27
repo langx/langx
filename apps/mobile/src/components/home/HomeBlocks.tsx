@@ -144,7 +144,7 @@ export function HomeToday({
  * its end.
  *
  * Venus is not on it. She had a card beside it for a while, with today's
- * video on it; now her card in the "LangX" section carries the video
+ * video on it; now her card among the product cards carries the video
  * (`HomeProducts`), so this card is only the streak and says the day once.
  *
  * At the larger text sizes (`useStacked`) the flame and the chevron share a

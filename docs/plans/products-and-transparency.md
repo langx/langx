@@ -391,6 +391,33 @@ its colour, mark, name and one live line ("30 stickers · Day 12", "Beta",
 when it will not fit. Venus is in both places on purpose: the row is today's
 video, the card is Venus.
 
+## 9. Added on 27 Oct
+
+Three more, asked for on the evening of 27 October, once the items above were
+under way. None of them needs native code.
+
+**The Venus introduction film.** "Watch the introduction" on the Venus page
+plays day 1 today. It gets a film of its own instead: the introduction to
+Venus, showing everything she and the video pipeline can do, at whatever
+length that takes. The first cut is picture only, with burned-in subtitles in
+all eight languages and no voice: ElevenLabs credits are low, so nothing is
+voiced until Behic has approved the cut. Once he has, it is voiced, uploaded to
+the bucket beside the day videos, and "Watch the introduction" plays it instead
+of day 1. Nothing reaches the bucket or the app before that approval.
+
+**Rate and review, on Transparency.** "Support LangX" opens with a "Rate and
+review" button, at the very top of the section and before Pro, that opens the
+store's rating and review page. What it asks for is five stars and a few
+words, within the stores' rules: nothing is given in return for a review, and
+Play forbids leading questions around a review prompt ("rate us 5 stars"), so
+the five stars may be drawn but the words ask for a rating and a review, never
+for five.
+
+**Home without the "LangX" heading.** The four product cards of item 8 lose
+the "LangX" heading over them, for members and guests alike. The cards
+themselves do not change; they sit in Home's stack at the same gap as every
+other block, and `home.products.title` leaves the eight locales.
+
 ## Order and shipping
 
 1. **Item 0, before anything else**: the copy PR to `main`, the conditions

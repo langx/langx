@@ -42,6 +42,26 @@ const ALWAYS = [
 /** The one key the phrase may appear in. */
 const ASKS_ABOUT_IT = 'qE2E'
 
+/**
+ * "Five" in each language, and any digit. The rating row draws five stars
+ * and its words never count them: Google Play forbids leading questions such
+ * as "Would you rate us 5 stars?" around a review prompt, so a translation
+ * must not bring one in (decision 21 of plan #2067).
+ */
+const COUNTS_STARS = [
+  /[0-9٠-٩]/,
+  /\bfive\b/i,
+  /\bfünf/i,
+  /\bcinco\b/i,
+  /\bcinq\b/i,
+  /пят/i,
+  /\bbeş/i,
+  /خمس/,
+]
+
+/** The rating row's words, its button's included. */
+const RATE_KEYS = ['rateTitle', 'rateBody', 'rateAction']
+
 function leaves(node: Catalog | string, prefix = ''): [string, string][] {
   if (typeof node === 'string') return [[prefix, node]]
   return Object.entries(node).flatMap(([key, value]) =>
@@ -69,6 +89,13 @@ describe.each(SUPPORTED_LOCALES)('the Transparency page in %s', (locale) => {
 
   it('claims no "100%", names no host, and says nothing of where the data lives', () => {
     const said = words.filter(([, text]) => ALWAYS.some((pattern) => pattern.test(text)))
+    expect(said).toEqual([])
+  })
+
+  it('asks for a rating without counting the stars', () => {
+    const rate = words.filter(([key]) => RATE_KEYS.includes(key))
+    expect(rate).toHaveLength(RATE_KEYS.length)
+    const said = rate.filter(([, text]) => COUNTS_STARS.some((pattern) => pattern.test(text)))
     expect(said).toEqual([])
   })
 })

@@ -88,7 +88,6 @@ export const fr: Localized<EnMessages> = {
       venusReady: 'La vidéo du jour est prête',
     },
     products: {
-      title: 'LangX',
       copilot: 'Copilot',
       members: { one: '{amount} membre', other: '{amount} membres' },
     },
@@ -2338,6 +2337,9 @@ export const fr: Localized<EnMessages> = {
         'Signale-la en privé, pas dans un ticket public. Tu as une réponse sous une semaine.',
       securityLink: 'Politique de sécurité',
       supportTitle: 'Soutenir LangX',
+      rateTitle: 'Noter et commenter LangX',
+      rateBody: 'Une note et quelques mots de ta part aident d’autres personnes à nous trouver.',
+      rateAction: 'Noter',
       proTitle: 'Passer à Pro',
       proBody: 'Pro paie les serveurs et fait vivre LangX.',
       proTitleMember: 'Tu es Pro',

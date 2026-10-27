@@ -52,6 +52,15 @@ describe('the Transparency page', () => {
     ])
   })
 
+  it('sends a rating to the store’s review form, never the rationed in-app sheet', () => {
+    const source = read('src/screens/TransparencyScreenV3.tsx')
+    const screen = imports(source)
+    expect(screen).toContainEqual({ from: '../lib/storeListing', names: ['openStoreReview'] })
+    expect(screen.map(({ from }) => from)).not.toContain('../hooks/useReviewPrompt')
+    // The web has no store to send anyone to, as Settings › About knows.
+    expect(source).toContain("Platform.OS === 'web' ? null : <RateRow />")
+  })
+
   it('asks the public endpoint, and parses the answer with the shared schema', () => {
     const hook = read('src/api/publicStats.ts')
     expect(hook).toContain("'/public/stats'")

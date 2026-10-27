@@ -1,7 +1,7 @@
 import { hasWatchedVenus, type VenusSeen, type VenusVideo } from './venusStory'
 
 /**
- * What Home makes of today's Venus video — her card in the "LangX" section
+ * What Home makes of today's Venus video — her card among the product cards
  * (`homeVenusCard`), and the streak page's strip, whose dot comes and goes
  * with the card's (`useVenusArchive`). Named for the streak row, which
  * carried the video first.

@@ -122,7 +122,6 @@ export const ar: Localized<EnMessages> = {
       venusReady: 'فيديو اليوم جاهز',
     },
     products: {
-      title: 'LangX',
       copilot: 'Copilot',
       members: {
         zero: '{amount} عضو',
@@ -2847,6 +2846,9 @@ export const ar: Localized<EnMessages> = {
       securityBody: 'أبلغ عنها بشكل خاص، لا في بلاغ عام. يصلك رد خلال أسبوع.',
       securityLink: 'سياسة الأمان',
       supportTitle: 'ادعم LangX',
+      rateTitle: 'قيّم LangX واكتب مراجعة',
+      rateBody: 'تقييمك وبضع كلمات منك تساعد الآخرين على العثور علينا.',
+      rateAction: 'قيّم',
       proTitle: 'اشترك في Pro',
       proBody: 'Pro هو ما يدفع تكلفة الخوادم ويُبقي LangX مستمرًا.',
       proTitleMember: 'أنت مشترك في Pro',
