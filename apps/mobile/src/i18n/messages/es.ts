@@ -91,7 +91,6 @@ export const es: Localized<EnMessages> = {
       venusReady: 'El video de hoy está listo',
     },
     products: {
-      title: 'LangX',
       copilot: 'Copilot',
       members: { one: '{amount} miembro', other: '{amount} miembros' },
     },

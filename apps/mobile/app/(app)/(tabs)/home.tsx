@@ -87,7 +87,7 @@ const PEOPLE_TILES = 2
  * adds no endpoint and, once those screens have been opened, no request. A
  * block with nothing to do is not drawn.
  *
- * The public stats are the one answer only Home's "LangX" section waits on,
+ * The public stats are the one answer only Home's product cards wait on,
  * and nothing waits for it: the Transparency card says "Open source" until
  * the count arrives. The server recounts at most every ten minutes and the
  * query keeps its answer as long, so Home asks at most that often.
@@ -327,7 +327,6 @@ function MemberHome() {
           dot and a line saying so (`streakRowVenus`).
         */}
         <HomeProducts
-          title={t('home.products.title')}
           cards={productCards(
             t,
             homeProductLines(t, locale, {
@@ -450,7 +449,6 @@ function GuestHome() {
           account starts with instead.
         */}
         <HomeProducts
-          title={t('home.products.title')}
           cards={productCards(
             t,
             homeProductLines(t, locale, {
@@ -465,7 +463,7 @@ function GuestHome() {
 }
 
 /**
- * The "LangX" section's four cards, in `HOME_PRODUCTS`' order, each opening
+ * Home's four product cards, in `HOME_PRODUCTS`' order, each opening
  * its page; `extra` is what a card carries beyond that — Venus's dot and ▶.
  */
 function productCards(

@@ -48,11 +48,18 @@ export interface HomeProductCard {
 }
 
 /**
- * Home's "LangX" section (plan #2067, §8): a card for each product page,
+ * Home's product cards (plan #2067, §8): a card for each product page,
  * two by two while their words fit and one to a row when they do not
  * (`HomeCardRows`). Each card is the product's mark in its own colour, its
  * name and one live line, and opens its page — the colour and mark the page
  * itself opens with, so the card and the page read as one thing.
+ *
+ * No heading over them (plan #2067, decision 22 of 27 Oct): it said
+ * "LangX", inside LangX, and the four cards already say what they are. Nor
+ * does a screen reader need one in its place — each card is a button named
+ * for its product and its line, found the way the streak row and the gift
+ * row are, without a heading of their own — so the cards sit in Home's
+ * stack like any other block, with the stack's gap above them.
  *
  * Venus's card is also where today's video is (plan #2067, decision 1 of
  * 27 Oct): a ▶ on its corner plays it, and until it has been watched to its
@@ -65,40 +72,22 @@ export interface HomeProductCard {
  * with reduce motion on they are simply there. Dumb like Home's other
  * blocks: the screen chooses the words.
  */
-export function HomeProducts({
-  title,
-  cards,
-}: {
-  title: string
-  cards: readonly HomeProductCard[]
-}) {
+export function HomeProducts({ cards }: { cards: readonly HomeProductCard[] }) {
   const styles = useStyles()
-  const { isRtl } = useLocale()
   return (
-    <View style={styles.section}>
-      <View style={styles.sectionHead}>
-        <Text
-          style={[styles.sectionTitle, isRtl ? styles.rtl : styles.ltr]}
-          accessibilityRole="header"
-          maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.heading}
-        >
-          {title}
-        </Text>
-      </View>
-      <HomeCardRows
-        texts={cards.flatMap((card) => [
-          { text: card.name, style: styles.name, maxScale: PRODUCT_TEXT_SCALE.rowTitle },
-          { text: card.line, style: styles.line, maxScale: PRODUCT_TEXT_SCALE.text },
-        ])}
-        render={({ beside, cell }) =>
-          cards.map((card, index) => (
-            <Arrive key={card.key} index={index} style={cell}>
-              <ProductCard card={card} beside={beside} />
-            </Arrive>
-          ))
-        }
-      />
-    </View>
+    <HomeCardRows
+      texts={cards.flatMap((card) => [
+        { text: card.name, style: styles.name, maxScale: PRODUCT_TEXT_SCALE.rowTitle },
+        { text: card.line, style: styles.line, maxScale: PRODUCT_TEXT_SCALE.text },
+      ])}
+      render={({ beside, cell }) =>
+        cards.map((card, index) => (
+          <Arrive key={card.key} index={index} style={cell}>
+            <ProductCard card={card} beside={beside} />
+          </Arrive>
+        ))
+      }
+    />
   )
 }
 
@@ -242,9 +231,6 @@ function Arrive({
 }
 
 const useStyles = makeStyles(({ v3 }) => ({
-  section: { gap: v3.space[8] },
-  sectionHead: { paddingHorizontal: v3.space[6] },
-  sectionTitle: { ...v3.type.headline, color: v3.colors.fg },
   grow: { flexGrow: 1 },
   card: {
     backgroundColor: v3.colors.surface,
@@ -278,9 +264,9 @@ const useStyles = makeStyles(({ v3 }) => ({
   wordsRow: { flex: 1 },
   name: { ...v3.type.button, color: v3.colors.fg },
   line: { ...v3.type.caption, color: v3.colors.muted },
-  // The paragraph's direction is the layout's: "LangX" and "Copilot" have no
-  // Arabic letters, so the web build's `dir="auto"` read them left to right
-  // and pinned them to the left in Arabic.
+  // The paragraph's direction is the layout's: "Copilot" has no Arabic
+  // letters, so the web build's `dir="auto"` read it left to right and
+  // pinned it to the left in Arabic.
   rtl: { writingDirection: 'rtl' },
   ltr: { writingDirection: 'ltr' },
 }))
