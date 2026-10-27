@@ -4,6 +4,7 @@ import { useFonts } from 'expo-font'
 import { Redirect, router } from 'expo-router'
 import { useMemo } from 'react'
 import { Text, View } from 'react-native'
+import { usePublicStats } from '../../../src/api/publicStats'
 import {
   useConversations,
   useDiscovery,
@@ -22,12 +23,13 @@ import {
   HomeLinkRow,
   HomePeople,
   HomeProCard,
-  HomeStreakRow,
+  HomeStreakPair,
   HomeToday,
   type HomeGoal,
   type HomePerson,
 } from '../../../src/components/home/HomeBlocks'
 import { HomeHero, type HomeHeroView } from '../../../src/components/home/HomeHero'
+import { HomeProducts, type HomeProductCard } from '../../../src/components/home/HomeProducts'
 import { Screen } from '../../../src/components/ui/Screen'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useProfileCache } from '../../../src/hooks/useProfileCache'
@@ -48,6 +50,13 @@ import {
   planHome,
   type HomeHero as HomeHeroPlan,
 } from '../../../src/lib/homePlan'
+import {
+  HOME_PRODUCT_LOOK,
+  HOME_PRODUCT_NAMES,
+  HOME_PRODUCTS,
+  homeProductLines,
+  homeVenusCard,
+} from '../../../src/lib/homeProducts'
 import { loadState } from '../../../src/lib/loadState'
 import { openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
@@ -71,8 +80,14 @@ const PEOPLE_TILES = 2
  *
  * Every block is built from a query some other screen already makes — the
  * chat list, the upcoming calls, the streak, the wallet, Echo's due count,
- * Discover's first page — so Home adds no endpoint and, once those screens
- * have been opened, no request. A block with nothing to do is not drawn.
+ * Discover's first page, and the Transparency page's public stats — so Home
+ * adds no endpoint and, once those screens have been opened, no request. A
+ * block with nothing to do is not drawn.
+ *
+ * The public stats are the one answer only Home's "LangX" section waits on,
+ * and nothing waits for it: the Transparency card says "Open source" until
+ * the count arrives. The server recounts at most every ten minutes and the
+ * query keeps its answer as long, so Home asks at most that often.
  */
 export default function HomeRoute() {
   const v3Home = useV3HomeDecision()
@@ -121,7 +136,9 @@ function MemberHome() {
   // Discover's own first request, so the two share one cache entry.
   const discovery = useDiscovery({ sort: 'recommended' })
   const tier = useEffectiveTier()
-  const venusRow = streakRowVenus(useVenusStory(), useVenusWatched(), session?.user.id)
+  const venusVideo = useVenusStory()
+  const venusCard = homeVenusCard(streakRowVenus(venusVideo, useVenusWatched(), session?.user.id))
+  const stats = usePublicStats()
 
   const pull = usePullToRefresh(() =>
     Promise.all([
@@ -283,32 +300,47 @@ function MemberHome() {
 
         {/*
           Not for a streak of nothing: a new account is not shown a zero. Once
-          today counts, the row is there even at one day — and carries Venus,
-          the streak's reward, once the bucket holds today's video: her face
-          and a play button, and until it is watched to the end, a subtitle
-          saying so in place of the next reward (`streakRowVenus`).
+          today counts, the pair is there even at one day: the streak and its
+          next reward, and beside it Venus, the streak's reward — with ▶ and,
+          until it is watched to the end, the unwatched dot once the bucket
+          holds today's video (`streakRowVenus`), and every day her page.
         */}
         {streak && (streak.current > 0 || streak.qualifiedToday) ? (
-          <HomeStreakRow
-            title={t('home.streakDays', { count: streak.current })}
-            subtitle={
-              venusRow === 'ready'
-                ? t('venus.homeReady')
-                : milestone
-                  ? t('home.streakNext', {
-                      count: milestone.day - streak.current,
-                      day: milestone.day,
-                    })
-                  : undefined
-            }
-            onPress={() => router.push('/(app)/streak')}
-            venus={
-              venusRow === 'none'
-                ? undefined
-                : { label: t('venus.watchAgain'), onPress: requestVenusReplay }
-            }
+          <HomeStreakPair
+            streak={{
+              title: t('home.streakDays', { count: streak.current }),
+              line: milestone
+                ? t('home.streakNext', {
+                    count: milestone.day - streak.current,
+                    day: milestone.day,
+                  })
+                : undefined,
+              onPress: () => router.push('/(app)/streak'),
+            }}
+            venus={{
+              name: t(HOME_PRODUCT_NAMES.venus),
+              line: t(venusCard.line),
+              dot: venusCard.dot,
+              play: venusCard.play
+                ? { label: t('venus.watchAgain'), onPress: requestVenusReplay }
+                : undefined,
+              onPress: () => router.push(HOME_PRODUCT_LOOK.venus.route),
+            }}
           />
         ) : null}
+
+        <HomeProducts
+          title={t('home.products.title')}
+          cards={productCards(
+            t,
+            homeProductLines(t, locale, {
+              member: true,
+              venusDay: venusVideo?.day,
+              balance: wallet.data?.balance,
+              members: stats.data?.totals.members,
+            }),
+          )}
+        />
 
         {gift?.ready ? (
           <HomeLinkRow
@@ -370,11 +402,13 @@ function MemberHome() {
 function GuestHome() {
   useScreenInteractive()
   const t = useT()
+  const { locale } = useLocale()
   const names = useDisplayNames()
   const { v3 } = useTheme()
   const styles = useStyles()
   const { data: session } = authClient.useSession()
   const discovery = useDiscovery({ sort: 'recommended' })
+  const stats = usePublicStats()
   const [blackLoaded] = useFonts({ Nunito_900Black })
   const pull = usePullToRefresh(() => discovery.refetch())
   const tiles = (discovery.data?.pages[0]?.items ?? []).slice(0, PEOPLE_TILES)
@@ -404,9 +438,42 @@ function GuestHome() {
             )}
           />
         ) : null}
+        {/*
+          Every page is open to a guest, so every card is too — with what is
+          true for somebody without an account: no balance, and what an
+          account starts with instead.
+        */}
+        <HomeProducts
+          title={t('home.products.title')}
+          cards={productCards(
+            t,
+            homeProductLines(t, locale, {
+              member: false,
+              members: stats.data?.totals.members,
+            }),
+          )}
+        />
       </View>
     </Screen>
   )
+}
+
+/** The "LangX" section's four cards, in `HOME_PRODUCTS`' order, each opening its page. */
+function productCards(
+  t: ReturnType<typeof useT>,
+  lines: ReturnType<typeof homeProductLines>,
+): HomeProductCard[] {
+  return HOME_PRODUCTS.map((product) => {
+    const { tone, mark, route } = HOME_PRODUCT_LOOK[product]
+    return {
+      key: product,
+      tone,
+      mark,
+      name: t(HOME_PRODUCT_NAMES[product]),
+      line: lines[product],
+      onPress: () => router.push(route),
+    }
+  })
 }
 
 const GREETING_KEYS = {

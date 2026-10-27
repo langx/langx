@@ -1,15 +1,19 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Image } from 'expo-image'
-import { Pressable, Text, View } from 'react-native'
+import { Pressable, Text, View, type ViewStyle } from 'react-native'
 import venusHead from '../../../assets/venus/head.png'
+import { useLocale } from '../../i18n'
+import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
-import { PRESS_SCALE_GLYPH } from '../../lib/theme/motionValues'
+import { PRESS_SCALE_CARD, PRESS_SCALE_GLYPH } from '../../lib/theme/motionValues'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
 import { PressableScale } from '../ui/PressableScale'
+import { BALANCED, useGlyphScale, useStacked } from '../product/ProductGroup'
 import { ProBadge } from '../ui/ProBadge'
 import { ProgressRing } from '../ui/ProgressRing'
 import { FlameGlyph } from '../ui/StreakFlame'
+import { CARD_INSET, HomeCardRows, type CardText } from './HomeCards'
 
 /*
  * The blocks under Home's hero, drawn from `V-Home`. Each is dumb: the screen
@@ -98,118 +102,208 @@ export function HomeToday({
 }
 
 /**
- * The streak, its next reward, and the way into the streak screen.
+ * The streak and Venus, as two equal cards (plan #2067, §4): the streak's
+ * flame on its tangerine, opening the streak page, and Venus's face on her
+ * sky, opening her page. They were one row once, whose middle looked like
+ * Venus and went to the streak; now each card is one target, named for what
+ * it opens.
  *
- * With today's Venus video (`flags.venusStories`) the same row carries it:
- * her face in a story's ring of the streak's tangerine, with the flame as a
- * badge on it so the row still reads as the streak, and a play button at the
- * end where the chevron was. The face and the button play the video; the
- * words between them still open the streak screen. One row, so the day is
- * said once rather than by two rows stacked one above the other.
+ * Today's video keeps its ▶ in the Venus card's corner, playing it straight
+ * away. It is a sibling laid over the card rather than a button inside it: a
+ * screen reader cannot reach a button nested in another one on iOS, and this
+ * way it finds three — the streak, Venus, and play. With no video the card
+ * has no ▶ and still opens her page.
  *
- * Three siblings rather than buttons inside a button: a screen reader cannot
- * reach a button nested in another one on iOS, and this way it finds two —
- * the streak, and play. The face is left out of that, being a second way to
- * the same video for a thumb that goes for the picture.
+ * Side by side while their words fit, one above the other when they do not
+ * (`HomeCardRows`). One above the other, each card is a row again — the
+ * picture, the words, and the chevron or ▶ at its end — except at the larger
+ * text sizes, where each stays a tile, its picture over its words, so a long
+ * word in the title has the card's whole width.
  */
-export function HomeStreakRow({
-  title,
-  subtitle,
-  onPress,
+export function HomeStreakPair({
+  streak,
   venus,
 }: {
-  title: string
-  subtitle?: string | undefined
-  onPress: () => void
-  /** Today's video, when there is one: what its button says and does. */
-  venus?: { label: string; onPress: () => void } | undefined
+  streak: { title: string; line?: string | undefined; onPress: () => void }
+  venus: {
+    name: string
+    line: string
+    /** Today's video not yet watched to its end (`streakRowVenus`'s `ready`). */
+    dot: boolean
+    /** Today's video, when there is one: what its ▶ says and does. */
+    play?: { label: string; onPress: () => void } | undefined
+    onPress: () => void
+  }
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
-  const label = subtitle ? `${title}. ${subtitle}` : title
-  const words = (
-    <View style={styles.rowText}>
-      <Text style={styles.rowTitle}>{title}</Text>
-      {subtitle ? <Text style={styles.rowSub}>{subtitle}</Text> : null}
-    </View>
+  const { isRtl } = useLocale()
+  const stacked = useStacked()
+  const glyph = useGlyphScale()
+  const size = pairSizes(glyph, v3.space[CARD_INSET], v3.space[12])
+  const chevron = (
+    <Feather
+      name={isRtl ? 'chevron-left' : 'chevron-right'}
+      size={Math.round(v3.icon.md * glyph)}
+      color={v3.colors.fg}
+    />
   )
-  if (!venus) {
-    return (
-      <PressableScale
-        accessibilityRole="button"
-        accessibilityLabel={label}
-        onPress={onPress}
-        style={styles.row}
-      >
-        <View style={[styles.disc, { backgroundColor: v3.hues.tangerine }]}>
-          <FlameGlyph size={v3.icon.lg} color={v3.colors.ink} />
-        </View>
-        {words}
-        <Feather name="chevron-right" size={v3.icon.md} color={v3.colors.fg} />
-      </PressableScale>
-    )
-  }
+  const title = { style: styles.cardTitle, maxScale: PRODUCT_TEXT_SCALE.heading }
+  const line = { style: styles.cardLine, maxScale: PRODUCT_TEXT_SCALE.text }
+  const texts: CardText[] = [
+    { text: streak.title, ...title },
+    { text: streak.line ?? '', ...line },
+    { text: venus.name, ...title },
+    { text: venus.line, ...line },
+  ]
+
   return (
-    <View style={styles.row}>
-      <PressableScale
-        onPress={venus.onPress}
-        scaleTo={PRESS_SCALE_GLYPH}
-        // Out of the screen reader's and the keyboard's way: play, at the
-        // row's end, is the same button with a name.
-        accessible={false}
-        aria-hidden
-        tabIndex={-1}
+    <HomeCardRows
+      texts={texts}
+      render={({ beside, cell }) => {
+        const tile = beside || stacked
+        return (
+          <>
+            <View style={cell}>
+              <PressableScale
+                accessibilityRole="button"
+                accessibilityLabel={streak.line ? `${streak.title}. ${streak.line}` : streak.title}
+                onPress={streak.onPress}
+                scaleTo={PRESS_SCALE_CARD}
+                touchStyle={styles.grow}
+                style={[styles.card, tile ? styles.cardTile : styles.cardRow]}
+              >
+                <View style={[styles.pictureBox, size.box]}>
+                  <View style={[styles.disc, size.disc, { backgroundColor: v3.hues.tangerine }]}>
+                    <FlameGlyph size={Math.round(v3.icon.lg * glyph)} color={v3.colors.ink} />
+                  </View>
+                </View>
+                <CardWords title={streak.title} line={streak.line} row={!tile} />
+                {tile ? null : chevron}
+              </PressableScale>
+            </View>
+            <View style={cell}>
+              <PressableScale
+                accessibilityRole="button"
+                accessibilityLabel={`${venus.name}. ${venus.line}`}
+                onPress={venus.onPress}
+                scaleTo={PRESS_SCALE_CARD}
+                touchStyle={styles.grow}
+                style={[styles.card, tile ? styles.cardTile : styles.cardRow]}
+              >
+                <VenusFace dot={venus.dot} size={size} />
+                <CardWords
+                  title={venus.name}
+                  line={venus.line}
+                  row={!tile}
+                  {...(!tile && venus.play ? { style: size.beforePlay } : {})}
+                />
+                {tile || venus.play ? null : chevron}
+              </PressableScale>
+              {venus.play ? (
+                <View
+                  style={[
+                    styles.playSpot,
+                    tile ? [styles.playCorner, size.playCorner] : styles.playEnd,
+                  ]}
+                >
+                  <PressableScale
+                    accessibilityRole="button"
+                    accessibilityLabel={venus.play.label}
+                    onPress={venus.play.onPress}
+                    scaleTo={PRESS_SCALE_GLYPH}
+                    // 40 drawn, 48 to the touch.
+                    hitSlop={4}
+                  >
+                    <View style={[styles.venusPlay, size.play]}>
+                      {/* Nudged a point forward: a triangle's weight sits behind its middle. */}
+                      <Feather
+                        name="play"
+                        size={Math.round(v3.icon.md * glyph)}
+                        color={v3.colors.pillText}
+                        style={styles.venusPlayGlyph}
+                      />
+                    </View>
+                  </PressableScale>
+                </View>
+              ) : null}
+            </View>
+          </>
+        )
+      }}
+    />
+  )
+}
+
+/** A card's name and its one line under it; as a row, taking the room between its ends. */
+function CardWords({
+  title,
+  line,
+  row,
+  style,
+}: {
+  title: string
+  line?: string | undefined
+  row: boolean
+  style?: ViewStyle
+}) {
+  const styles = useStyles()
+  const { isRtl } = useLocale()
+  // The paragraph's direction is the layout's: "Venus" has no Arabic letters,
+  // so the web build's `dir="auto"` read it left to right and pinned it to
+  // the left in Arabic.
+  const direction = isRtl ? styles.rtl : styles.ltr
+  return (
+    <View style={[styles.cardWords, row && styles.cardWordsRow, style]}>
+      {/* Headline-sized, so capped as a heading is: the order of sizes holds at every setting. */}
+      <Text
+        style={[styles.cardTitle, direction]}
+        maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.heading}
       >
-        <VenusFace />
-      </PressableScale>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={label}
-        onPress={onPress}
-        style={({ pressed }) => [styles.streakWords, pressed && styles.pressed]}
-      >
-        {words}
-      </Pressable>
-      <PressableScale
-        accessibilityRole="button"
-        accessibilityLabel={venus.label}
-        onPress={venus.onPress}
-        scaleTo={PRESS_SCALE_GLYPH}
-        // 40 drawn, 48 to the touch.
-        hitSlop={4}
-      >
-        <View style={styles.venusPlay}>
-          {/* Nudged a point forward: a triangle's weight sits behind its middle. */}
-          <Feather
-            name="play"
-            size={v3.icon.md}
-            color={v3.colors.pillText}
-            style={styles.venusPlayGlyph}
-          />
-        </View>
-      </PressableScale>
+        {title}
+      </Text>
+      {line ? (
+        // Balanced, as a product row's line is: in half a row, "30-day" broke at
+        // its hyphen with one word left on the last line.
+        <Text
+          style={[styles.cardLine, direction, BALANCED]}
+          maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+          textBreakStrategy="balanced"
+          lineBreakStrategyIOS="push-out"
+        >
+          {line}
+        </Text>
+      ) : null}
     </View>
   )
 }
 
 /**
- * Venus's face in the streak's ring, with the flame on it as a badge.
+ * Venus's face on her sky, with the unwatched dot when today's video waits.
  *
  * Her ears rise out of the disc. The picture has the disc's lower half cut
  * into it already (`assets/venus/head.png`, drawn from the 2D rig), so only
- * the ears and the crown stand over the ring; the disc under it is drawn here,
- * in the scheme's sky.
+ * the ears and the crown stand over it; the disc under it is drawn here. The
+ * dot sits where a badge sits on an avatar, edged in the card's own ground so
+ * it reads as laid over the disc, in the streak's tangerine — the colour the
+ * streak page's strip rings today's unwatched video in.
  */
-function VenusFace() {
+function VenusFace({ dot, size }: { dot: boolean; size: PairSizes }) {
   const styles = useStyles()
   const { v3 } = useTheme()
   return (
-    <View style={styles.venus}>
-      <View style={[styles.venusRing, { borderColor: v3.hues.tangerine }]} />
-      <View style={[styles.venusDisc, { backgroundColor: v3.hues.sky }]} />
-      <Image source={venusHead} style={styles.venusFace} contentFit="contain" accessible={false} />
-      <View style={[styles.venusFlame, { backgroundColor: v3.hues.tangerine }]}>
-        <FlameGlyph size={14} color={v3.colors.ink} />
+    <View style={[styles.pictureBox, size.box]}>
+      <View style={size.venus}>
+        <View style={[styles.venusDisc, size.venusDisc, { backgroundColor: v3.hues.sky }]} />
+        <Image
+          source={venusHead}
+          style={[styles.venusFace, size.venus]}
+          contentFit="contain"
+          accessible={false}
+        />
+        {dot ? (
+          <View style={[styles.venusDot, size.venusDot, { backgroundColor: v3.hues.tangerine }]} />
+        ) : null}
       </View>
     </View>
   )
@@ -401,6 +495,42 @@ export function HomeAccountCard({
   )
 }
 
+/** Venus's face with her ears, and the box both pictures of the pair stand in. */
+const FACE = 56
+/** The disc under the flame and under her face. */
+const DISC = 44
+/** Today's video's ▶: 40 drawn, 48 to the touch. */
+const PLAY = 40
+/** The unwatched dot, edge and all. */
+const DOT = 16
+
+/**
+ * The pair's pictures at the reader's text size (`useGlyphScale`): they grow
+ * with the words as a product row's square does, so at the largest size the
+ * flame and Venus are not specks over a 44pt title — and every offset that
+ * places the face, the dot and the ▶ grows with them. `inset` is the card's
+ * own (`CARD_INSET`), `gap` a row's between its words and its end.
+ */
+function pairSizes(glyph: number, inset: number, gap: number) {
+  const face = FACE * glyph
+  const disc = DISC * glyph
+  const play = PLAY * glyph
+  const dot = DOT * glyph
+  return {
+    box: { height: face },
+    disc: { height: disc, width: disc },
+    venus: { height: face, width: face },
+    venusDisc: { height: disc, start: (face - disc) / 2, width: disc },
+    venusDot: { end: (face - disc) / 2 - 2, height: dot, width: dot },
+    play: { height: play, width: play },
+    // The ▶ as a tile: in the top corner, centred on the disc beside it.
+    playCorner: { top: inset + face - disc + (disc - play) / 2 },
+    // Room at a row's end for the ▶ laid over it, and the row's own gap before it.
+    beforePlay: { paddingEnd: play + gap },
+  }
+}
+type PairSizes = ReturnType<typeof pairSizes>
+
 const useStyles = makeStyles(({ v3 }) => ({
   pressed: { opacity: 0.7 },
   today: {
@@ -422,87 +552,58 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   goalLabel: { ...v3.type.buttonSmall, color: v3.colors.fg, textAlign: 'center' },
   goalStatus: { ...v3.type.caption, color: v3.colors.muted, fontWeight: '600' },
-  row: {
-    alignItems: 'center',
+  /*
+   * A card of the streak pair: the surface, inset by `CARD_INSET` — the
+   * number `HomeCardRows` measures the room inside against. As a tile its
+   * picture stands over its words; as a row, beside them.
+   */
+  card: {
     backgroundColor: v3.colors.surface,
-    borderRadius: v3.radius.badge,
-    flexDirection: 'row',
-    gap: v3.space[12],
-    paddingHorizontal: v3.space[14],
-    paddingVertical: v3.space[12],
+    borderRadius: v3.radius.tile,
+    padding: v3.space[CARD_INSET],
   },
-  disc: {
-    alignItems: 'center',
-    borderRadius: v3.radius.pill,
-    height: 44,
-    justifyContent: 'center',
-    width: 44,
-  },
+  cardTile: { flexGrow: 1, gap: v3.space[10] },
+  cardRow: { alignItems: 'center', flexDirection: 'row', flexGrow: 1, gap: v3.space[12] },
+  // The touch area fills its cell, so a pair's shorter card is as tall as its neighbour.
+  grow: { flexGrow: 1 },
+  cardWords: { gap: v3.space[2], minWidth: 0 },
+  cardWordsRow: { flex: 1 },
+  cardTitle: { ...v3.type.headline, color: v3.colors.fg },
+  cardLine: { ...v3.type.caption, color: v3.colors.muted },
+  rtl: { writingDirection: 'rtl' },
+  ltr: { writingDirection: 'ltr' },
   /*
-   * The face's box: 56 wide, and 4 taller than the face so the ring's lower
-   * edge has room. The disc (44) sits in the ring (52) with a 2pt gap of the
-   * row's own ground between them, and the face's bottom edge on the disc's.
+   * The picture's box, as tall as Venus's face with her ears, so the streak's
+   * disc and hers stand on one line and the words under them start level.
    */
-  venus: { height: 60, width: 56 },
-  venusRing: {
-    borderRadius: v3.radius.pill,
-    borderWidth: 2,
-    bottom: 0,
-    height: 52,
-    start: 2,
-    position: 'absolute',
-    width: 52,
-  },
-  venusDisc: {
-    borderRadius: v3.radius.pill,
-    bottom: 4,
-    height: 44,
-    start: 6,
-    position: 'absolute',
-    width: 44,
-  },
-  venusFace: { height: 56, position: 'absolute', start: 0, top: 0, width: 56 },
+  pictureBox: { justifyContent: 'flex-end' },
+  disc: { alignItems: 'center', borderRadius: v3.radius.pill, justifyContent: 'center' },
   /*
-   * The flame on her ring's lower corner, edged in the row's own ground so it
-   * reads as a badge laid over the ring rather than a dent in it.
+   * The face (56) over the disc (44), the face's bottom edge on the disc's
+   * and its ears standing clear above it.
    */
-  venusFlame: {
-    alignItems: 'center',
+  venusDisc: { borderRadius: v3.radius.pill, bottom: 0, position: 'absolute' },
+  venusFace: { position: 'absolute', start: 0, top: 0 },
+  venusDot: {
     borderColor: v3.colors.surface,
     borderRadius: v3.radius.pill,
     borderWidth: 2,
     bottom: 0,
-    end: 0,
-    height: 24,
-    justifyContent: 'center',
     position: 'absolute',
-    width: 24,
   },
-  /*
-   * The streak's own button between the face and play: as tall as the row,
-   * its padding taken back, so a tap above or below the words still lands.
-   */
-  streakWords: {
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    flex: 1,
-    flexDirection: 'row',
-    marginVertical: -v3.space[12],
-    minWidth: 0,
-    paddingVertical: v3.space[12],
-  },
+  // Over the card, never inside it: it takes touches only on the ▶ itself.
+  playSpot: { pointerEvents: 'box-none', position: 'absolute' },
+  // As a tile, in the top corner (`pairSizes` sets how far down).
+  playCorner: { end: v3.space[CARD_INSET] },
+  // As a row, at its end where the chevron would be, centred top to bottom.
+  playEnd: { bottom: 0, end: v3.space[CARD_INSET], justifyContent: 'center', top: 0 },
   venusPlay: {
     alignItems: 'center',
     backgroundColor: v3.colors.pill,
     borderRadius: v3.radius.pill,
-    height: 40,
     justifyContent: 'center',
-    width: 40,
   },
   venusPlayGlyph: { transform: [{ translateX: 1 }] },
-  rowText: { flex: 1, minWidth: 0 },
-  rowTitle: { ...v3.type.headline, color: v3.colors.fg },
-  rowSub: { ...v3.type.caption, color: v3.colors.muted },
   linkRow: {
     alignItems: 'center',
     backgroundColor: v3.colors.surface,

@@ -118,6 +118,23 @@ export const ar: Localized<EnMessages> = {
     inviteTitle: 'تعلّم مع صديق',
     guestTitle: 'اجعل LangX لك',
     guestBody: 'بحساب يمكنك مراسلة الناس والحفاظ على سلسلتك وحفظ ما تتعلمه في صدى.',
+    streakRow: {
+      venusReady: 'فيديو اليوم جاهز',
+      venusWatched: 'شاهدت فيديو اليوم',
+      venusMeet: 'تعرّف على قطة LangX',
+    },
+    products: {
+      title: 'LangX',
+      copilot: 'Copilot',
+      members: {
+        zero: '{amount} عضو',
+        one: 'عضو واحد',
+        two: 'عضوان',
+        few: '{amount} أعضاء',
+        many: '{amount} عضوًا',
+        other: '{amount} عضو',
+      },
+    },
   },
 
   composer: {
@@ -2890,6 +2907,7 @@ export const ar: Localized<EnMessages> = {
     title: 'سلسلتك',
     historyBody: 'كل يوم في الشهرين الأخيرين وما احتُسب',
     leaderboardBody: 'من لديه أطول سلسلة الآن وعلى الإطلاق',
+    tokenBody: 'الرموز التي تكسبها من المحطات، وكيف تنفقها',
     protectTitle: 'احمِ سلسلتك',
     protectBody: {
       zero: 'التجميد يغطي اليوم التالي الذي تفوّته. أما اليوم الفائت فيمكن استرجاعه من الخريطة أعلاه خلال {count} يوم من فواته.',
@@ -5799,6 +5817,5 @@ export const ar: Localized<EnMessages> = {
     shareVideo: 'مشاركة الفيديو',
     downloadVideo: 'تنزيل الفيديو',
     replay: 'شاهد مجددًا',
-    homeReady: 'فيديو Venus لهذا اليوم جاهز',
   },
 }

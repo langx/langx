@@ -361,6 +361,12 @@ function MemberStreak() {
             subtitle={t('venus.strip.linkBody')}
             onPress={() => router.push('/(app)/venus')}
           />
+          {/* What the milestones above pay, and where it is spent. */}
+          <StreakLinkRow
+            title={t('tokens.page.title')}
+            subtitle={t('streak.tokenBody')}
+            onPress={() => router.push('/(app)/token')}
+          />
         </View>
       </View>
       <ShareCardSheet request={card} onClose={() => setCard(null)} />

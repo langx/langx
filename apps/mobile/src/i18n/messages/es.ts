@@ -87,6 +87,16 @@ export const es: Localized<EnMessages> = {
     guestTitle: 'Haz tuyo LangX',
     guestBody:
       'Con una cuenta puedes escribir a la gente, mantener una racha y guardar lo que aprendes en Echo.',
+    streakRow: {
+      venusReady: 'El video de hoy está listo',
+      venusWatched: 'Ya viste el video de hoy',
+      venusMeet: 'Conoce a la gata de LangX',
+    },
+    products: {
+      title: 'LangX',
+      copilot: 'Copilot',
+      members: { one: '{amount} miembro', other: '{amount} miembros' },
+    },
   },
 
   composer: {
@@ -2351,6 +2361,7 @@ export const es: Localized<EnMessages> = {
     title: 'Tu racha',
     historyBody: 'Cada día de los últimos dos meses y qué contó',
     leaderboardBody: 'Quién tiene la racha más larga ahora y de siempre',
+    tokenBody: 'Las fichas que ganan tus metas, y cómo gastarlas',
     protectTitle: 'Protege tu racha',
     protectBody: {
       one: 'Un protector cubre el próximo día que te saltes. Un día ya perdido se puede recuperar en el mapa de arriba hasta {count} día después.',
@@ -4574,6 +4585,5 @@ export const es: Localized<EnMessages> = {
     shareVideo: 'Compartir video',
     downloadVideo: 'Descargar video',
     replay: 'Ver de nuevo',
-    homeReady: 'El video de hoy de Venus está listo',
   },
 }
