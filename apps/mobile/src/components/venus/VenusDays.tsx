@@ -23,6 +23,7 @@ import {
 } from '../../lib/venusStory'
 import { Button } from '../ui/Button'
 import { PressableScale } from '../ui/PressableScale'
+import { GUTTER } from '../ui/Screen'
 
 /*
  * Venus's days as covers: the strip on the streak page and the grid on the
@@ -49,12 +50,6 @@ const STRIP_TILE = 88
 
 /** How many covers a row of the grid holds on a phone. */
 const GRID_COLUMNS = 4
-
-/**
- * The screen's side gutter, which the strip runs out to so a cover sliding
- * off the edge says "there is more this way". `Screen`'s own `GUTTER`.
- */
-const GUTTER = 20
 
 /** How far a locked cover is blurred: past recognising, still her colours. */
 const LOCKED_BLUR = 16
@@ -286,6 +281,8 @@ const useStyles = makeStyles(({ v3 }) => ({
   // The ladder's heading, so the strip reads as a section of the same page.
   stripTitle: { ...v3.type.headline, color: v3.colors.fg, flex: 1, minWidth: 0 },
   seeAll: { ...v3.type.callout, color: v3.colors.muted, fontWeight: '600' },
+  // Out to the screen's edge, so a cover sliding off it says "there is more
+  // this way".
   bleed: { marginHorizontal: -GUTTER },
   bleedContent: { gap: v3.space[10], paddingHorizontal: GUTTER },
   gridBlock: { gap: v3.space[12] },

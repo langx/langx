@@ -4163,6 +4163,11 @@ export const tr: Localized<EnMessages> = {
         other:
           'Telefonunda WhatsApp varsa yukarıdaki düğme {count} tanesini oraya ekler. LangX’te her biri her sohbette çalışır.',
       },
+      aOtherAppsWhatsAppPhone: {
+        one: 'WhatsApp yüklü bir telefonda, LangX uygulamasındaki bu sayfada {count} tanesini WhatsApp’a ekleyen bir düğme var. LangX’te her biri her sohbette çalışır.',
+        other:
+          'WhatsApp yüklü bir telefonda, LangX uygulamasındaki bu sayfada {count} tanesini WhatsApp’a ekleyen bir düğme var. LangX’te her biri her sohbette çalışır.',
+      },
       aOtherAppsChats: 'Uygulamadan henüz değil. LangX’te her biri her sohbette çalışır.',
     },
     strip: {

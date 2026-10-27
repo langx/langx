@@ -19,7 +19,7 @@ import { ProductSection } from '../components/product/ProductSection'
 import { useToneColors } from '../components/product/tone'
 import { FlameGlyph } from '../components/ui/StreakFlame'
 import { VenusArchiveGrid } from '../components/venus/VenusDays'
-import { WhatsAppStickerButton } from '../components/WhatsAppStickerButton'
+import { useWhatsAppStickerPack, WhatsAppStickerButton } from '../components/WhatsAppStickerButton'
 import { useAppConfig } from '../hooks/useAppConfig'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
@@ -101,6 +101,7 @@ function VenusPage({
   const flags = useAppConfig().data?.flags
   const videos = flags?.venusStories === true
   const whatsApp = flags?.whatsappStickers === true
+  const whatsAppButton = useWhatsAppStickerPack(PACK_ID) !== undefined
   const count = STICKERS.length
   const intro = archive?.days.find((day) => day.day === 1)?.clip ?? null
 
@@ -190,7 +191,16 @@ function VenusPage({
         <WhatsAppStickerButton packId={PACK_ID} />
       </ProductSection>
 
-      <ProductFaq key="faq" items={questions(t, { videos, whatsApp, count })} />
+      <ProductFaq
+        key="faq"
+        items={questions(t, {
+          videos,
+          playable: archive !== null,
+          whatsApp,
+          whatsAppButton,
+          count,
+        })}
+      />
 
       <ExternalLinkCard
         key="link"
@@ -209,15 +219,33 @@ function VenusPage({
  */
 function questions(
   t: TranslateFn,
-  { videos, whatsApp, count }: { videos: boolean; whatsApp: boolean; count: number },
+  {
+    videos,
+    playable,
+    whatsApp,
+    whatsAppButton,
+    count,
+  }: {
+    videos: boolean
+    /** The archive is drawn: the bucket holds her days in the app's language. */
+    playable: boolean
+    whatsApp: boolean
+    /** "Add to WhatsApp" is on this page, by the button's own test. */
+    whatsAppButton: boolean
+    count: number
+  },
 ): ProductQuestion[] {
   const whatsAppCount = WHATSAPP_PACKS[PACK_ID]?.stickers.length ?? 0
+  // Three answers, because the button draws only on a phone with WhatsApp:
+  // pointing at it from the web, where it never draws, would be false, and
+  // so would "not from the app" while the phone app does it.
   const otherApps: ProductQuestion = {
     key: 'otherApps',
     question: t('venus.page.qOtherApps'),
-    answer:
-      whatsApp && whatsAppCount > 0
-        ? t('venus.page.aOtherAppsWhatsApp', { count: whatsAppCount })
+    answer: whatsAppButton
+      ? t('venus.page.aOtherAppsWhatsApp', { count: whatsAppCount })
+      : whatsApp && whatsAppCount > 0
+        ? t('venus.page.aOtherAppsWhatsAppPhone', { count: whatsAppCount })
         : t('venus.page.aOtherAppsChats'),
   }
   const free: ProductQuestion = {
@@ -244,7 +272,17 @@ function questions(
     { key: 'missed', question: t('venus.page.qMissed'), answer: t('venus.page.aMissed') },
     { key: 'breaks', question: t('venus.page.qBreaks'), answer: t('venus.page.aBreaks') },
     { key: 'share', question: t('venus.page.qShare'), answer: t('venus.page.aShare') },
-    { key: 'language', question: t('venus.page.qLanguage'), answer: t('venus.page.aLanguage') },
+    // Only where a video in the app's language is there to play: the flag
+    // alone does not say the bucket holds this locale.
+    ...(playable
+      ? [
+          {
+            key: 'language',
+            question: t('venus.page.qLanguage'),
+            answer: t('venus.page.aLanguage'),
+          },
+        ]
+      : []),
     free,
     otherApps,
   ]

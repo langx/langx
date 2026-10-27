@@ -4645,6 +4645,15 @@ export const en = {
         other:
           'If WhatsApp is on your phone, the button above adds {count} of them to it. In LangX, every one works in every chat.',
       },
+      /**
+       * Where the button above is not drawn — the web, or a phone without
+       * WhatsApp — while the phone app does have it.
+       */
+      aOtherAppsWhatsAppPhone: {
+        one: 'On a phone with WhatsApp, this page in the LangX app has a button that adds {count} sticker to WhatsApp. In LangX, every one works in every chat.',
+        other:
+          'On a phone with WhatsApp, this page in the LangX app has a button that adds {count} of them to WhatsApp. In LangX, every one works in every chat.',
+      },
       aOtherAppsChats: 'Not from the app yet. In LangX, every one works in every chat.',
     },
     /**

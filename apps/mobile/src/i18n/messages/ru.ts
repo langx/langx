@@ -4892,6 +4892,13 @@ export const ru: Localized<EnMessages> = {
         other:
           'Если на телефоне есть WhatsApp, кнопка выше добавит туда {count} стикера. В LangX каждый работает в любом чате.',
       },
+      aOtherAppsWhatsAppPhone: {
+        one: 'В приложении LangX на телефоне с WhatsApp здесь есть кнопка, которая добавит в WhatsApp {count} стикер. В LangX каждый работает в любом чате.',
+        few: 'В приложении LangX на телефоне с WhatsApp здесь есть кнопка, которая добавит в WhatsApp {count} стикера. В LangX каждый работает в любом чате.',
+        many: 'В приложении LangX на телефоне с WhatsApp здесь есть кнопка, которая добавит в WhatsApp {count} стикеров. В LangX каждый работает в любом чате.',
+        other:
+          'В приложении LangX на телефоне с WhatsApp здесь есть кнопка, которая добавит в WhatsApp {count} стикера. В LangX каждый работает в любом чате.',
+      },
       aOtherAppsChats: 'Из приложения пока нет. В LangX каждый работает в любом чате.',
     },
     strip: {

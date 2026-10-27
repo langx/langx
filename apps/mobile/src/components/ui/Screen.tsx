@@ -119,9 +119,10 @@ export function Screen({
 /**
  * v3's gutter is 20, not the 16 of the spacing scale: the rows run edge to
  * edge inside it, and at 16 a hairline divider sits too close to the bezel to
- * read as part of the content.
+ * read as part of the content. Exported for a strip that bleeds out to the
+ * screen's edge, so its bleed follows this number rather than a copy of it.
  */
-const GUTTER = 20
+export const GUTTER = 20
 
 const useStyles = makeStyles(({ colors, layout }) => ({
   root: { backgroundColor: colors.bg, flex: 1 },

@@ -4212,6 +4212,11 @@ export const es: Localized<EnMessages> = {
         other:
           'Si tienes WhatsApp en el teléfono, el botón de arriba le añade {count}. En LangX, todos funcionan en todos los chats.',
       },
+      aOtherAppsWhatsAppPhone: {
+        one: 'En un teléfono con WhatsApp, esta página de la app de LangX tiene un botón que añade {count} sticker a WhatsApp. En LangX, todos funcionan en todos los chats.',
+        other:
+          'En un teléfono con WhatsApp, esta página de la app de LangX tiene un botón que añade {count} de ellos a WhatsApp. En LangX, todos funcionan en todos los chats.',
+      },
       aOtherAppsChats: 'Desde la app, todavía no. En LangX, todos funcionan en todos los chats.',
     },
     strip: {

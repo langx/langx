@@ -4270,6 +4270,11 @@ export const de: Localized<EnMessages> = {
         other:
           'Wenn WhatsApp auf deinem Handy ist, fügt der Button oben {count} davon hinzu. In LangX funktioniert jeder in jedem Chat.',
       },
+      aOtherAppsWhatsAppPhone: {
+        one: 'Auf einem Handy mit WhatsApp hat diese Seite in der LangX-App einen Button, der {count} Sticker zu WhatsApp hinzufügt. In LangX funktioniert jeder in jedem Chat.',
+        other:
+          'Auf einem Handy mit WhatsApp hat diese Seite in der LangX-App einen Button, der {count} davon zu WhatsApp hinzufügt. In LangX funktioniert jeder in jedem Chat.',
+      },
       aOtherAppsChats: 'Aus der App noch nicht. In LangX funktioniert jeder in jedem Chat.',
     },
     strip: {
