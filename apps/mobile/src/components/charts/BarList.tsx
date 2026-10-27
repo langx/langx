@@ -1,6 +1,8 @@
 import { Text, View } from 'react-native'
 import { englishBarLabel, englishCount } from '../../lib/chartWords'
+import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { useStacked } from '../product/ProductGroup'
 
 export interface BarListRow {
   key: string
@@ -58,6 +60,7 @@ export function BarList({
 }: BarListProps) {
   const { v3 } = useTheme()
   const styles = useStyles()
+  const stacked = useStacked()
 
   const top = scale ?? Math.max(...rows.map((row) => row.value), 0)
 
@@ -68,7 +71,7 @@ export function BarList({
       {rows.map((row) => (
         <View
           key={row.key}
-          style={styles.row}
+          style={[styles.row, stacked && styles.stacked]}
           accessibilityRole="text"
           accessibilityLabel={rowLabel(row, format(row.value))}
         >
@@ -83,13 +86,28 @@ export function BarList({
               },
             ]}
           />
-          <View style={styles.text}>
-            <Text numberOfLines={1} style={styles.label}>
+          <View style={stacked ? styles.textStacked : styles.text}>
+            {/*
+              Capped where a product page caps a row's title: uncapped, a
+              language name at the largest size outgrew the section heading
+              above it (see PRODUCT_TEXT_SCALE).
+            */}
+            <Text
+              numberOfLines={stacked ? undefined : 1}
+              style={styles.label}
+              maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}
+            >
               {row.label}
             </Text>
-            {row.hint ? <Text style={styles.hint}>{row.hint}</Text> : null}
+            {row.hint ? (
+              <Text style={styles.hint} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+                {row.hint}
+              </Text>
+            ) : null}
           </View>
-          <Text style={styles.value}>{format(row.value)}</Text>
+          <Text style={styles.value} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}>
+            {format(row.value)}
+          </Text>
         </View>
       ))}
     </View>
@@ -114,6 +132,14 @@ const useStyles = makeStyles(({ v3 }) => ({
    */
   fill: { bottom: 0, opacity: 0.22, position: 'absolute', start: 0, top: 0 },
   text: { flex: 1, gap: v3.space[2] },
+  /*
+   * At the larger text sizes the value goes under the label rather than
+   * beside it, and the label may wrap: beside the number a language name was
+   * down to "Spa…" at the largest size. The same switch as a product page's
+   * rows (`useStacked`).
+   */
+  stacked: { alignItems: 'flex-start', flexDirection: 'column', gap: v3.space[2] },
+  textStacked: { alignSelf: 'stretch', gap: v3.space[2] },
   label: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '600' },
   hint: { ...v3.type.caption, color: v3.colors.muted },
   // Tabular: these are a column of numbers, and they have to line up.

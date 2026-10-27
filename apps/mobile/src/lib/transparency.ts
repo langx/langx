@@ -13,8 +13,9 @@ import { allExternalLinks, type ExternalLink } from './externalLinks'
 
 /**
  * A count in the reader's own way of writing numbers — `12,345`, `12.345`,
- * `12 345`, `١٢٬٣٤٥`. Never shortened: the page exists to say exactly how
- * many, and `12k` would round the one thing it promises away.
+ * `12 345` — as the platform's locale data has it. Never shortened: the page
+ * exists to say exactly how many, and `12k` would round the one thing it
+ * promises away.
  */
 export function formatCount(value: number, locale: string): string {
   return value.toLocaleString(locale)

@@ -130,7 +130,13 @@ export function TransparencyScreenV3() {
   }
 
   const numbers = failed
-    ? [<LoadFailed key="failed" onRetry={() => void stats.refetch()} />]
+    ? [
+        // Under the section's own title, so "could not load this" says what
+        // "this" is: the numbers, and nothing else on the page.
+        <ProductSection key="numbers" title={t('transparency.page.numbersTitle')}>
+          <LoadFailed onRetry={() => void stats.refetch()} />
+        </ProductSection>,
+      ]
     : [
         <ProductSection
           key="numbers"
@@ -382,51 +388,86 @@ function Totals({ totals }: { totals: PublicStats['totals'] | undefined }) {
  * The last thirty days of one series at a time — new members, messages, or
  * post corrections — with the window's sum written over the columns, since
  * a column chart says the shape and only a number says how many.
+ *
+ * At the larger text sizes all three, one under another, and no switch: a
+ * third of a phone holds one letter of each label there, and a choice that
+ * reads "M… M… C…" is not one anybody can make.
  */
 function Days({ stats }: { stats: PublicStats }) {
+  const t = useT()
+  const stacked = useStacked()
+  // Messages first: the series with the most in it, so the chart opens on a
+  // shape rather than on a row of quiet days.
+  const [metric, setMetric] = useState<TransparencyMetric>('messages')
+  const last = TRANSPARENCY_METRICS[TRANSPARENCY_METRICS.length - 1]
+
+  return (
+    <ProductSection title={t('transparency.page.daysTitle', { count: stats.days })}>
+      {stacked
+        ? TRANSPARENCY_METRICS.map((each) => (
+            <DayChart key={each} stats={stats} metric={each} caption={each === last} />
+          ))
+        : [
+            <SegmentedControl
+              key="pick"
+              options={TRANSPARENCY_METRICS.map((value) => ({
+                value,
+                label: t(SEGMENT_KEYS[value]),
+              }))}
+              selected={[metric]}
+              onToggle={setMetric}
+              accessibilityLabel={t('transparency.page.daysPick')}
+            />,
+            <DayChart key="chart" stats={stats} metric={metric} caption />,
+          ]}
+    </ProductSection>
+  )
+}
+
+/** One series' card: its sum, its thirty columns, and — once a page — how to read them. */
+function DayChart({
+  stats,
+  metric,
+  caption,
+}: {
+  stats: PublicStats
+  metric: TransparencyMetric
+  caption: boolean
+}) {
   const t = useT()
   const { locale } = useLocale()
   const styles = useStyles()
   const { v3 } = useTheme()
-  // Messages first: the series with the most in it, so the chart opens on a
-  // shape rather than on a row of quiet days.
-  const [metric, setMetric] = useState<TransparencyMetric>('messages')
 
   const sum = seriesTotal(stats.daily, metric)
   const sumText = t(SUM_KEYS[metric], { count: sum, amount: formatCount(sum, locale) })
 
   return (
-    <ProductSection title={t('transparency.page.daysTitle', { count: stats.days })}>
-      <SegmentedControl
-        options={TRANSPARENCY_METRICS.map((value) => ({ value, label: t(SEGMENT_KEYS[value]) }))}
-        selected={[metric]}
-        onToggle={setMetric}
-        accessibilityLabel={t('transparency.page.daysPick')}
+    <View style={styles.card}>
+      <Text
+        style={styles.sum}
+        maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}
+        // The chart below says this and more; heard once is enough.
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+      >
+        {sumText}
+      </Text>
+      <Columns
+        points={seriesOf(stats.daily, metric)}
+        color={v3.hues[TONE]}
+        height={CHART_HEIGHT}
+        accessibilityLabel={t('transparency.page.chartA11y', {
+          count: stats.days,
+          total: sumText,
+        })}
       />
-      <View style={styles.card}>
-        <Text
-          style={styles.sum}
-          maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}
-          // The chart below says this and more; heard once is enough.
-          accessibilityElementsHidden
-          importantForAccessibility="no-hide-descendants"
-        >
-          {sumText}
-        </Text>
-        <Columns
-          points={seriesOf(stats.daily, metric)}
-          color={v3.hues[TONE]}
-          height={CHART_HEIGHT}
-          accessibilityLabel={t('transparency.page.chartA11y', {
-            count: stats.days,
-            total: sumText,
-          })}
-        />
+      {caption ? (
         <Text style={styles.caption} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
           {t('transparency.page.daysCaption')}
         </Text>
-      </View>
-    </ProductSection>
+      ) : null}
+    </View>
   )
 }
 
