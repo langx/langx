@@ -111,7 +111,6 @@ export const ru: Localized<EnMessages> = {
       venusReady: 'Видео дня готово',
     },
     products: {
-      title: 'LangX',
       copilot: 'Copilot',
       members: {
         one: '{amount} участник',

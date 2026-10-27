@@ -88,7 +88,6 @@ export const ptBR: Localized<EnMessages> = {
       venusReady: 'O vídeo de hoje está pronto',
     },
     products: {
-      title: 'LangX',
       copilot: 'Copilot',
       members: { one: '{amount} membro', other: '{amount} membros' },
     },

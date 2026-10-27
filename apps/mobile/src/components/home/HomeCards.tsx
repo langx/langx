@@ -19,7 +19,7 @@ export interface CardText {
 }
 
 /**
- * Home's equal cards — the four products of the "LangX" section — two to a
+ * Home's equal cards — the four product cards — two to a
  * row while they fit, one to a row when they do not.
  *
  * "Fit" is measured rather than guessed from the phone's width, because it

@@ -29,7 +29,7 @@ const SCREENS = {
   transparency: 'src/screens/TransparencyScreenV3.tsx',
 } as const
 
-describe('the LangX section', () => {
+describe('Home’s product cards', () => {
   it('has the four products, in the plan’s order', () => {
     expect(HOME_PRODUCTS).toEqual(['venus', 'copilot', 'token', 'transparency'])
   })
@@ -61,7 +61,6 @@ describe('the LangX section', () => {
         const key = HOME_PRODUCT_NAMES[product]
         expect(t(key), `${locale} ${key}`).not.toBe(key)
       }
-      expect(t('home.products.title')).not.toBe('home.products.title')
     }
   })
 })

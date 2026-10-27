@@ -122,7 +122,6 @@ export const ar: Localized<EnMessages> = {
       venusReady: 'فيديو اليوم جاهز',
     },
     products: {
-      title: 'LangX',
       copilot: 'Copilot',
       members: {
         zero: '{amount} عضو',

@@ -8,7 +8,7 @@ import { formatCount } from './transparency'
 import type { StreakRowVenus } from './venusStreakRow'
 
 /*
- * Home's "LangX" section (plan #2067, §8): a card for each product page,
+ * Home's product cards (plan #2067, §8): a card for each product page,
  * Venus's carrying today's video (decision 1 of 27 Oct). What each card says
  * is decided here, apart from the screen, so vitest can read it in every
  * language.
@@ -107,7 +107,7 @@ export function homeProductLines(
 }
 
 /**
- * What Venus's card in the "LangX" section does with today's video, from
+ * What Venus's card among the product cards does with today's video, from
  * `streakRowVenus`'s reading of today and no rule of its own:
  *
  * - `ready` — a video not yet watched to its end: ▶ on the card's corner, the

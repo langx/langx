@@ -94,7 +94,6 @@ export const tr: Localized<EnMessages> = {
       venusReady: 'Bugünün videosu hazır',
     },
     products: {
-      title: 'LangX',
       copilot: 'Copilot',
       members: { one: '{amount} üye', other: '{amount} üye' },
     },

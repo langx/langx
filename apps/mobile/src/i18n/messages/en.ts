@@ -107,16 +107,15 @@ export const en = {
     guestBody:
       'With an account you can write to people, keep a streak and save what you learn in Echo.',
     /**
-     * Venus's card in the "LangX" section, the line under her name while
+     * Venus's card among Home's product cards, the line under her name while
      * today's video waits to be watched to its end; any other time the card
      * keeps her own line. (Named for the streak row, where it was first.)
      */
     streakRow: {
       venusReady: 'Today’s video is ready',
     },
-    /** The "LangX" section under the streak: a card for each product page. */
+    /** Home's product cards under the streak, one for each product page; no heading over them. */
     products: {
-      title: 'LangX',
       /** Copilot's card. Its page's title, `copilot.label`, carries the "Beta" the card's own line says. */
       copilot: 'Copilot',
       /** The Transparency card's line: `GET /public/stats`'s member total, in the reader's digits. */
