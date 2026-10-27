@@ -180,6 +180,14 @@ describe('homeVenusCard', () => {
     })
   })
 
+  it('says neither seen nor ready until the device has said what was watched', () => {
+    expect(homeVenusCard(streakRowVenus(video, undefined, 'me'))).toEqual({
+      line: 'home.streakRow.venusMeet',
+      play: true,
+      dot: false,
+    })
+  })
+
   it('is there without a video, with no ▶, inviting a person to meet her', () => {
     expect(homeVenusCard(streakRowVenus(null, {}, 'me'))).toEqual({
       line: 'home.streakRow.venusMeet',
@@ -191,7 +199,7 @@ describe('homeVenusCard', () => {
   it('says each state in every language', () => {
     for (const locale of SUPPORTED_LOCALES) {
       const t = createTranslate(locale)
-      for (const state of ['ready', 'watched', 'none'] as const) {
+      for (const state of ['ready', 'watched', 'unknown', 'none'] as const) {
         const { line } = homeVenusCard(state)
         expect(t(line), `${locale} ${state}`).not.toBe(line)
       }

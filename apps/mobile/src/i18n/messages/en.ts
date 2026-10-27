@@ -109,7 +109,8 @@ export const en = {
     /**
      * The streak row, split (plan #2067 §4): the Venus card beside the
      * streak's, the line under her name. `venusMeet` is the line on a day
-     * with no video to play; the card still opens her page.
+     * with no video to play, and while the device has not yet said whether
+     * today's was watched; the card still opens her page.
      */
     streakRow: {
       venusReady: 'Today’s video is ready',

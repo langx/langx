@@ -107,6 +107,9 @@ export function homeProductLines(
  * - `ready` — a video not yet watched to its end: ▶ in the corner, the
  *   unwatched dot, and "Today's video is ready".
  * - `watched` — ▶ stays, for a replay; the dot goes.
+ * - `unknown` — a video, but not yet whether it was watched: ▶ and no dot,
+ *   with the line of a day without one, which claims nothing either way, so
+ *   the card never says "seen" or "ready" and then changes its mind.
  * - `none` — no video (flag off, today not counted, no file): no ▶, and the
  *   card invites a person to meet her. It is drawn every day all the same,
  *   and always opens her page.
@@ -123,6 +126,8 @@ export function homeVenusCard(state: StreakRowVenus): HomeVenusCard {
       return { line: 'home.streakRow.venusReady', play: true, dot: true }
     case 'watched':
       return { line: 'home.streakRow.venusWatched', play: true, dot: false }
+    case 'unknown':
+      return { line: 'home.streakRow.venusMeet', play: true, dot: false }
     case 'none':
       return { line: 'home.streakRow.venusMeet', play: false, dot: false }
   }
