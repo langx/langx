@@ -2714,6 +2714,105 @@ export const es: Localized<EnMessages> = {
     todayCorrections: { one: 'corrección', other: 'correcciones' },
     todayPeople: { one: 'persona', other: 'personas' },
     seeHistory: 'Ver tu historial',
+    page: {
+      title: 'LangX Token',
+      tagline: 'Puntos que ganas hablando y enseñando, y que gastas dentro de LangX.',
+      factPoints: 'Puntos de la app',
+      factBought: 'No se compran',
+      factTraded: 'No se intercambian',
+      yours: 'Tus fichas',
+      walletBody: 'Tu saldo, tu historial y la tienda',
+      todayFallback: 'Tu día hasta ahora y el fondo diario',
+      rank: '#{rank}',
+      rankBody: 'Gastar nunca te hace bajar.',
+      rankNone: 'Gana fichas esta semana para entrar en la tabla.',
+      guestTitle: { one: 'Empieza con {amount} ficha', other: 'Empieza con {amount} fichas' },
+      guestBody: 'Crea una cuenta para ganar fichas y gastarlas.',
+      earn: 'Cómo se ganan',
+      messagesBody: 'Hasta {perDay} al día, y {perPartner} con una misma persona.',
+      correctionsBody:
+        'Enseñar cuenta más que hablar. Hasta {perPartner} al día con las frases de una persona.',
+      pronunciationBody: 'Graba una frase para alguien que preguntó cómo suena.',
+      mutualTitle: 'Conversaciones de ida y vuelta',
+      mutualBody:
+        'Una vez por conversación, cuando las dos personas han escrito. Las dos lo ganan.',
+      echoBody: 'Una sesión de repaso terminada, hasta {perDay} al día.',
+      streakBody: {
+        one: 'Una bonificación en los hitos, de {first} a {last} día seguido.',
+        other: 'Una bonificación en los hitos, de {first} a {last} días seguidos.',
+      },
+      inviteBody:
+        'Cuando alguien a quien invitas tiene una conversación de verdad. Con su bono de registro, empieza con {amount}.',
+      pool: 'El fondo diario',
+      poolIntro: {
+        one: 'Además, cada día se reparte {amount} ficha.',
+        other: 'Además, cada día se reparten {amount} fichas.',
+      },
+      poolTakePart: 'Participa',
+      poolTakePartBody:
+        'Cuentan las conversaciones, las correcciones, los mensajes y las personas con las que hablas.',
+      poolShared: 'El fondo se reparte',
+      poolSharedBody: 'Según lo activa que estuvo cada persona ese día.',
+      poolArrives: 'Llega tu parte',
+      poolArrivesBody: 'A tu cartera a las {hour}:00 UTC, hasta {cap} por persona.',
+      spend: 'Gástalas en',
+      freezeBody: 'Cubre el próximo día que te saltes.',
+      freezeKeep: {
+        one: 'Puedes guardar una a la vez.',
+        other: 'Puedes guardar hasta {amount} a la vez.',
+      },
+      repairTitle: 'Recupera un día perdido',
+      repairWindow: {
+        one: 'Completa un día que te saltaste, del último {amount} día.',
+        other: 'Completa un día que te saltaste, de los últimos {amount} días.',
+      },
+      repairMonthly: { one: 'Una al mes.', other: 'Hasta {amount} al mes.' },
+      titlesBody: {
+        one: '{amount} título para lucir en tu perfil',
+        other: '{amount} títulos para lucir en tu perfil',
+      },
+      venusTitle: 'Pack de Venus',
+      venusBody: {
+        one: '{amount} sticker, gratis para todos',
+        other: '{amount} stickers, gratis para todos',
+      },
+      free: 'Gratis',
+      not: 'Lo que no es',
+      notSale: 'No está a la venta',
+      notSaleBody: 'Nadie puede comprarlas, ni con dinero ni con nada.',
+      notCash: 'No es dinero',
+      notCashBody: 'No se pueden vender, convertir en dinero ni enviar a nadie.',
+      notCrypto: 'No es una criptomoneda',
+      notCryptoBody: 'No hay cadena ni mercado. Se quedan en LangX.',
+      notPro: 'No sirve para pagar Pro',
+      notProBody: 'Pro es una suscripción. Las fichas no desbloquean ninguna parte.',
+      faq: {
+        crypto: '¿Es una criptomoneda?',
+        cryptoAnswer:
+          'No. Es un punto que ganas y gastas dentro de LangX. No se puede comprar, vender, intercambiar, hacer staking ni retirar, y nunca se podrá.',
+        price: '¿Tiene precio? ¿Puedo comprarlas?',
+        priceAnswer:
+          'No. No tienen precio y no hay forma de comprar fichas, ni con dinero ni con nada. Las ganas.',
+        send: '¿Puedo vender fichas o enviárselas a alguien?',
+        sendAnswer:
+          'No. No se pueden vender, convertir en dinero ni enviar a nadie. Las gastas en la tienda y en ningún otro sitio.',
+        spend: '¿En qué puedo gastarlas?',
+        spendAnswer:
+          'Congelaciones de racha, días perdidos, marcos de perfil, títulos y packs de stickers, todo en la tienda. Nada más.',
+        pro: '¿Puedo pagar Pro con fichas?',
+        proAnswer: 'No. Pro es una suscripción y las fichas no desbloquean ninguna parte.',
+        day: '¿Cuánto puedo ganar al día?',
+        dayAnswer:
+          'No hay un total diario único. Los mensajes cuentan hasta {messages} al día, las sesiones de Echo hasta {sessions} al día, y una parte del fondo es como mucho {cap}. Las correcciones no tienen total, solo {corrections} al día con las frases de una misma persona.',
+        rank: '¿Gastar me hace bajar en la clasificación?',
+        rankAnswer:
+          'No. Las clasificaciones cuentan lo que ganaste, así que gastar nunca te hace bajar.',
+        before: 'Usé LangX antes. ¿Mis fichas vinieron conmigo?',
+        beforeAnswer:
+          'Sí. Tu saldo llega dividido entre {divisor} para encajar en la nueva app, así que menos de {divisor} queda en nada. Además recibes un bono de bienvenida de {bonus}.',
+      },
+      link: 'Todas las reglas, explicadas',
+    },
   },
 
   invite: {

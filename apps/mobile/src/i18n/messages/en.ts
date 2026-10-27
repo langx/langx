@@ -3003,6 +3003,115 @@ export const en = {
     todayCorrections: { one: 'correction', other: 'corrections' },
     todayPeople: { one: 'person', other: 'people' },
     seeHistory: 'See your history',
+    /**
+     * LangX Token's page (`TokenScreenV3`, built by `lib/tokenPage.ts`). Held
+     * to `docs/token-messaging-brief.md` word for word: an in-app point that
+     * is earned and spent here and nowhere else. Every number arrives from
+     * `TOKEN_RULES` or the catalogue as `{amount}`, never typed, and
+     * `tokenPage.test.ts` keeps the brief's banned words off every line —
+     * the negations the brief itself uses are named there one by one.
+     */
+    page: {
+      title: 'LangX Token',
+      tagline: 'Points you earn by talking and teaching, and spend inside LangX.',
+      factPoints: 'In-app points',
+      factBought: 'Can’t be bought',
+      factTraded: 'Can’t be traded',
+      yours: 'Yours',
+      walletBody: 'Your balance, history and store',
+      /** The "today" row while today's counts have not arrived. */
+      todayFallback: 'Your day so far, and the daily pool',
+      /** Your place on this week's board, in your digits. */
+      rank: '#{rank}',
+      rankBody: 'Spending never moves you down.',
+      rankNone: 'Earn tokens this week to be on the board.',
+      /** A guest's line in place of "Yours": the sign-up bonus they would start with. */
+      guestTitle: { one: 'Start with {amount} token', other: 'Start with {amount} tokens' },
+      guestBody: 'Create an account to earn tokens and spend them.',
+      earn: 'How you earn',
+      messagesBody: 'Up to {perDay} a day, and {perPartner} with any one person.',
+      correctionsBody:
+        'Teaching counts more than talking. Up to {perPartner} a day on one person’s sentences.',
+      pronunciationBody: 'Record a sentence for someone who asked how it sounds.',
+      mutualTitle: 'Two-way conversations',
+      mutualBody: 'Once a conversation, when you have both written. You both earn it.',
+      echoBody: 'A finished review session, up to {perDay} a day.',
+      streakBody: {
+        one: 'A bonus at milestones, from {first} to {last} day in a row.',
+        other: 'A bonus at milestones, from {first} to {last} days in a row.',
+      },
+      /** The brief's wording: the invitee's total, and when — never "for joining". */
+      inviteBody:
+        'Once a friend you invite has a real conversation. With the bonus every new account gets, they start with {amount}.',
+      pool: 'The daily pool',
+      poolIntro: {
+        one: 'On top of that, {amount} token is shared out every day.',
+        other: 'On top of that, {amount} tokens are shared out every day.',
+      },
+      poolTakePart: 'Take part',
+      poolTakePartBody:
+        'Conversations, corrections, messages and the people you talk to all count.',
+      poolShared: 'The pool is shared',
+      poolSharedBody: 'By how active each person was that day.',
+      poolArrives: 'Your share arrives',
+      poolArrivesBody: 'In your wallet at {hour}:00 UTC, up to {cap} each.',
+      spend: 'Spend them on',
+      freezeBody: 'Covers the next day you miss.',
+      freezeKeep: { one: 'Keep one at a time.', other: 'Keep up to {amount} at a time.' },
+      repairTitle: 'A missed day back',
+      repairWindow: {
+        one: 'Fill in a day you missed, from the last {amount} day.',
+        other: 'Fill in a day you missed, from the last {amount} days.',
+      },
+      repairMonthly: { one: 'One a month.', other: 'Up to {amount} a month.' },
+      titlesBody: {
+        one: '{amount} title to wear on your profile',
+        other: '{amount} titles to wear on your profile',
+      },
+      venusTitle: 'Venus’s pack',
+      venusBody: {
+        one: '{amount} sticker, free for everyone',
+        other: '{amount} stickers, free for everyone',
+      },
+      /** The readout where a price would be, on a pack that costs nothing. */
+      free: 'Free',
+      not: 'What it isn’t',
+      notSale: 'Not for sale',
+      notSaleBody: 'No one can buy it, with money or anything else.',
+      notCash: 'Not cash',
+      notCashBody: 'It can’t be sold, swapped for money or sent to anyone.',
+      notCrypto: 'Not a cryptocurrency',
+      notCryptoBody: 'There’s no chain and no market. It stays in LangX.',
+      notPro: 'Not a way to pay for Pro',
+      notProBody: 'Pro is a subscription. Tokens don’t unlock any part of it.',
+      faq: {
+        crypto: 'Is it a cryptocurrency?',
+        /** The brief's one-line version, as an answer. */
+        cryptoAnswer:
+          'No. It’s a point you earn and spend inside LangX. It can’t be bought, sold, traded, staked or withdrawn, and it never will be.',
+        price: 'Does it have a price? Can I buy it?',
+        priceAnswer:
+          'No. There’s no price and no way to buy tokens, with money or anything else. You earn them.',
+        send: 'Can I sell tokens or send them to someone?',
+        sendAnswer:
+          'No. They can’t be sold, swapped for money or sent to anyone. You spend them in the store, and nowhere else.',
+        spend: 'What can I spend them on?',
+        spendAnswer:
+          'Streak freezes, missed days, profile frames, titles and sticker packs, all in the store. Nothing else.',
+        pro: 'Can tokens pay for Pro?',
+        proAnswer: 'No. Pro is a subscription, and tokens unlock no part of it.',
+        day: 'How much can I earn a day?',
+        dayAnswer:
+          'There’s no single daily total. Messages count up to {messages} a day, Echo sessions up to {sessions} a day, and a pool share is at most {cap}. Corrections have no total, only {corrections} a day on any one person’s sentences.',
+        rank: 'Does spending lower my rank?',
+        rankAnswer: 'No. Leaderboards count what you earned, so spending never moves you down.',
+        before: 'I used LangX before. Did my tokens come with me?',
+        beforeAnswer:
+          'Yes. Your balance comes over divided by {divisor}, to fit the new app, so less than {divisor} comes to nothing. You also get a bonus of {bonus} for coming back.',
+      },
+      /** The link out to token.langx.io, in the reader's language where the site has it. */
+      link: 'Every rule, explained',
+    },
   },
 
   /** One per `TOKEN_KINDS`; `kindKey()` builds the key from the kind itself. */

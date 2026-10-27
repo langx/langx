@@ -2680,6 +2680,103 @@ export const tr: Localized<EnMessages> = {
     todayCorrections: { one: 'düzeltme', other: 'düzeltme' },
     todayPeople: { one: 'kişi', other: 'kişi' },
     seeHistory: 'Geçmişini gör',
+    page: {
+      title: 'LangX Token',
+      tagline: 'Konuşarak ve öğreterek kazandığın, LangX içinde harcadığın puanlar.',
+      factPoints: 'Uygulama içi puan',
+      factBought: 'Satın alınamaz',
+      factTraded: 'Takas edilemez',
+      yours: 'Senin jetonların',
+      walletBody: 'Bakiyen, geçmişin ve mağaza',
+      todayFallback: 'Bugünün özeti ve günlük havuz',
+      rank: '#{rank}',
+      rankBody: 'Harcamak seni asla aşağı düşürmez.',
+      rankNone: 'Tabloya girmek için bu hafta jeton kazan.',
+      guestTitle: { one: '{amount} jetonla başla', other: '{amount} jetonla başla' },
+      guestBody: 'Jeton kazanıp harcamak için bir hesap oluştur.',
+      earn: 'Nasıl kazanırsın',
+      messagesBody: 'Günde en fazla {perDay}, tek bir kişiyle en fazla {perPartner}.',
+      correctionsBody:
+        'Öğretmek, konuşmaktan daha çok sayılır. Bir kişinin cümlelerinden günde en fazla {perPartner}.',
+      pronunciationBody: 'Nasıl okunduğunu soran biri için bir cümle kaydet.',
+      mutualTitle: 'Karşılıklı sohbetler',
+      mutualBody: 'Sohbet başına bir kez, ikiniz de yazdığınızda. İkiniz de kazanırsınız.',
+      echoBody: 'Tamamlanan bir tekrar oturumu, günde en fazla {perDay}.',
+      streakBody: {
+        one: 'Kilometre taşlarında bonus: art arda {first} günden {last} güne kadar.',
+        other: 'Kilometre taşlarında bonus: art arda {first} günden {last} güne kadar.',
+      },
+      inviteBody:
+        'Davet ettiğin arkadaşın gerçek bir sohbet yaptığında. Kayıt bonusuyla birlikte {amount} jetonla başlar.',
+      pool: 'Günlük havuz',
+      poolIntro: {
+        one: 'Bunun üstüne her gün {amount} jeton paylaştırılır.',
+        other: 'Bunun üstüne her gün {amount} jeton paylaştırılır.',
+      },
+      poolTakePart: 'Katıl',
+      poolTakePartBody: 'Sohbetler, düzeltmeler, mesajlar ve konuştuğun kişiler sayılır.',
+      poolShared: 'Havuz paylaştırılır',
+      poolSharedBody: 'O gün herkesin ne kadar etkin olduğuna göre.',
+      poolArrives: 'Payın gelir',
+      poolArrivesBody: 'Saat {hour}:00 UTC’de cüzdanına, kişi başı en fazla {cap}.',
+      spend: 'Şunlara harca',
+      freezeBody: 'Kaçırdığın bir sonraki günü kapatır.',
+      freezeKeep: {
+        one: 'Aynı anda bir tane tutabilirsin.',
+        other: 'Aynı anda en fazla {amount} tane tutabilirsin.',
+      },
+      repairTitle: 'Kaçırılan günü geri al',
+      repairWindow: {
+        one: 'Son {amount} gün içinde kaçırdığın bir günü doldur.',
+        other: 'Son {amount} gün içinde kaçırdığın bir günü doldur.',
+      },
+      repairMonthly: { one: 'Ayda bir.', other: 'Ayda en fazla {amount}.' },
+      titlesBody: {
+        one: 'Profilinde taşıyacağın {amount} unvan',
+        other: 'Profilinde taşıyacağın {amount} unvan',
+      },
+      venusTitle: 'Venus paketi',
+      venusBody: {
+        one: 'Herkese ücretsiz {amount} sticker',
+        other: 'Herkese ücretsiz {amount} sticker',
+      },
+      free: 'Ücretsiz',
+      not: 'Ne değildir',
+      notSale: 'Satılık değil',
+      notSaleBody: 'Kimse satın alamaz; ne parayla ne de başka bir şeyle.',
+      notCash: 'Para değil',
+      notCashBody: 'Satılamaz, paraya dönüştürülemez, kimseye gönderilemez.',
+      notCrypto: 'Kripto para değil',
+      notCryptoBody: 'Zincir yok, piyasa yok. LangX’in içinde kalır.',
+      notPro: 'Pro için ödeme yolu değil',
+      notProBody: 'Pro bir abonelik. Jetonlar onun hiçbir kısmını açmaz.',
+      faq: {
+        crypto: 'Kripto para mı?',
+        cryptoAnswer:
+          'Hayır. LangX içinde kazanıp harcadığın bir puan. Satın alınamaz, satılamaz, takas edilemez, stake edilemez ya da çekilemez, ve bu hiçbir zaman değişmeyecek.',
+        price: 'Bir fiyatı var mı? Satın alabilir miyim?',
+        priceAnswer:
+          'Hayır. Fiyatı yok ve jeton satın almanın bir yolu yok; ne parayla ne de başka bir şeyle. Jetonları kazanırsın.',
+        send: 'Jetonları satabilir ya da birine gönderebilir miyim?',
+        sendAnswer:
+          'Hayır. Satılamaz, paraya dönüştürülemez, kimseye gönderilemez. Onları yalnızca mağazada harcarsın.',
+        spend: 'Onları neye harcayabilirim?',
+        spendAnswer:
+          'Seri dondurma, kaçırılan günler, profil çerçeveleri, unvanlar ve sticker paketleri; hepsi mağazada. Başka hiçbir şey.',
+        pro: 'Jetonlarla Pro alınabilir mi?',
+        proAnswer: 'Hayır. Pro bir abonelik ve jetonlar onun hiçbir kısmını açmaz.',
+        day: 'Günde ne kadar kazanabilirim?',
+        dayAnswer:
+          'Tek bir günlük toplam yok. Mesajlar günde en fazla {messages}, Echo oturumları günde en fazla {sessions} sayılır; havuz payı en fazla {cap} olur. Düzeltmelerin toplamı yok, yalnızca bir kişinin cümlelerinden günde {corrections}.',
+        rank: 'Harcamak sıramı düşürür mü?',
+        rankAnswer:
+          'Hayır. Sıralamalar kazandığını sayar, bu yüzden harcamak seni asla aşağı düşürmez.',
+        before: 'LangX’i daha önce kullandım. Jetonlarım benimle geldi mi?',
+        beforeAnswer:
+          'Evet. Bakiyen yeni uygulamaya uysun diye bölünerek gelir; bölen {divisor}. Bu yüzden {divisor} jetonun altı sıfıra iner. Ayrıca {bonus} jetonluk bir tekrar hoş geldin bonusu alırsın.',
+      },
+      link: 'Tüm kurallar, açıklamalarıyla',
+    },
   },
 
   invite: {
