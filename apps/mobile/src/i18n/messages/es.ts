@@ -4479,6 +4479,87 @@ export const es: Localized<EnMessages> = {
     },
   },
   venus: {
+    page: {
+      title: 'Venus',
+      tagline: 'La gata de LangX. Sus stickers son gratis para todos.',
+      factVideos: 'Videos de racha',
+      factVideosSoon: 'Videos muy pronto',
+      factFree: 'Gratis',
+      watchIntro: 'Ver la presentación',
+      whoTitle: 'Quién es',
+      whoBody: 'Venus es la gata y la mascota de LangX. Sus stickers cuentan el resto.',
+      doesTitle: 'Qué hace',
+      videosTitle: 'Un video para tu día',
+      videosBody:
+        'En cuanto tu día cuenta, Venus tiene un video corto para él. Se abre solo la primera vez y puedes volver a verlo todo el día.',
+      comebackTitle: 'Bienvenida de vuelta',
+      comebackBody:
+        'Empieza de nuevo cuando termine una racha y tu primer día de vuelta tendrá su propio video.',
+      keepTitle: 'Los días que alcanzas quedan abiertos',
+      keepBody:
+        'Cada día hasta tu racha más larga se queda aquí para volver a verlo. Los días que aún no alcanzaste están bloqueados.',
+      videosSoonTitle: 'Los videos están en camino',
+      videosSoonBody:
+        'Venus está preparando videos cortos para tus días de racha. Mientras tanto, sus stickers funcionan en todos los chats.',
+      archiveTitle: 'Sus videos',
+      archiveIntro:
+        'Los días hasta tu racha más larga están abiertos. Toca uno para volver a verlo.',
+      showAll: { one: 'Mostrar {count} día', other: 'Mostrar los {count} días' },
+      showFewer: 'Mostrar menos',
+      stickersTitle: 'Sus stickers',
+      stickersIntro: {
+        one: '{count} sticker, gratis para todos. Funciona en todos los chats.',
+        other: '{count} stickers, gratis para todos. Funcionan en todos los chats.',
+      },
+      linkTitle: 'Más sobre Venus en langx.io',
+      qWho: '¿Quién es Venus?',
+      aWho: 'La gata y la mascota de LangX. Su paquete de stickers viene con cada cuenta, así que está en tu teclado de stickers desde el principio.',
+      qWhenSoon: '¿Cuándo llegan los videos?',
+      aWhenSoon:
+        'Todavía no han salido. Cuando salgan, los encontrarás aquí y en tu página de racha.',
+      qWhen: '¿Cuándo llega un video nuevo?',
+      aWhen:
+        'En cuanto tu día cuenta. Un día cuenta cuando abres LangX o practicas. El video se abre solo la primera vez y se queda en tu página de racha el resto del día. Una racha muy larga puede pasar del último día para el que tiene video.',
+      qMissed: '¿Puedo ver los días que me perdí?',
+      aMissed:
+        'Cualquier día hasta tu racha más larga, desde esta página. Los días que aún no alcanzaste siguen bloqueados hasta que llegues.',
+      qBreaks: '¿Y si se rompe mi racha?',
+      aBreaks:
+        'Los días que alcanzaste siguen abiertos aquí. Cuando empieces de nuevo, tu primer día de vuelta tiene un video de bienvenida.',
+      qShare: '¿Puedo compartir un video?',
+      aShare:
+        'Sí. Cuando termina un video, súbelo a tu historia, envíaselo a un amigo o guárdalo. En un navegador que no puede compartir archivos, se descarga.',
+      qLanguage: '¿Los videos están en mi idioma?',
+      aLanguage: 'Sí. Se reproducen en el idioma en que tienes LangX.',
+      qFree: '¿Sus stickers son gratis?',
+      aFree: {
+        one: 'Sí. Su {count} sticker viene con cada cuenta desde el principio.',
+        other: 'Sí. Los {count} vienen con cada cuenta desde el principio.',
+      },
+      qOtherApps: '¿Puedo usar sus stickers en otras apps?',
+      aOtherAppsWhatsApp: {
+        one: 'Si tienes WhatsApp en el teléfono, el botón de arriba le añade {count} sticker. En LangX, todos funcionan en todos los chats.',
+        other:
+          'Si tienes WhatsApp en el teléfono, el botón de arriba le añade {count}. En LangX, todos funcionan en todos los chats.',
+      },
+      aOtherAppsWhatsAppPhone: {
+        one: 'En un teléfono con WhatsApp, esta página de la app de LangX tiene un botón que añade {count} sticker a WhatsApp. En LangX, todos funcionan en todos los chats.',
+        other:
+          'En un teléfono con WhatsApp, esta página de la app de LangX tiene un botón que añade {count} de ellos a WhatsApp. En LangX, todos funcionan en todos los chats.',
+      },
+      aOtherAppsChats: 'Desde la app, todavía no. En LangX, todos funcionan en todos los chats.',
+    },
+    strip: {
+      title: 'Los videos de Venus',
+      seeAll: 'Ver todo',
+      linkBody: 'La gata de LangX y lo que hace por tu racha',
+      today: 'Hoy',
+      day: 'Día {day}',
+      todayNew: 'Video de hoy, día {day}, sin ver',
+      todayA11y: 'Video de hoy, día {day}',
+      lockedA11y: 'Día {day}, bloqueado hasta que tu racha llegue',
+      watchDay: 'Ver el día {day}',
+    },
     playerA11y: 'Venus, día {day}',
     tapForSound: 'Toca para activar el sonido',
     play: 'Reproducir',

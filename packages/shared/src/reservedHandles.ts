@@ -71,6 +71,7 @@ const ROUTE_RESERVED = [
   'testimonials',
   'tokens',
   'transparency',
+  'venus',
   'viewers',
   'welcome',
   'wallet',

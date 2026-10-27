@@ -78,6 +78,12 @@ export const TOKEN_SITE = 'https://token.langx.io'
 export const COPILOT_SITE_URL = 'https://copilot.langx.io/'
 
 /**
+ * Venus's page on langx.io — who she is, at more length than the app's own
+ * page says, which links here at its foot. English only on the site.
+ */
+export const VENUS_PAGE_URL = `${SITE}/venus`
+
+/**
  * The five the stores and the law expect to be reachable from inside the app,
  * plus the one nobody requires: the community guidelines. They go first
  * because they are the only row here somebody might read by choice.

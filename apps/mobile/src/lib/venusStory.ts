@@ -3,7 +3,8 @@ import { dismissDirection } from './pinch'
 
 /*
  * Venus's daily streak story (`flags.venusStories`), as pure rules: which
- * file is today's, whether it opens by itself, and where it may open. The
+ * file is today's, whether it opens by itself, where it may open, and which
+ * days of her archive are open to watch again. The
  * player and the share sheet are `VenusStoryHost`; everything a test can
  * check is here, because none of it is visible in a screenshot — "is this the
  * comeback cut or the introduction", "did it already open today".
@@ -17,13 +18,15 @@ import { dismissDirection } from './pinch'
  */
 export type VenusCut = 'intro' | 'return' | 'day'
 
-export interface VenusVideo {
+/**
+ * One file in the bucket and what the player needs to play it: any day's
+ * video, today's or one from the archive (`venusArchive`).
+ */
+export interface VenusClip {
   /** The streak count the video is for. */
   day: number
   locale: string
   cut: VenusCut
-  /** The profile's day that counted, `YYYY-MM-DD` — what "once a day" is keyed by. */
-  dayKey: string
   fileName: string
   url: string
   /**
@@ -32,6 +35,12 @@ export interface VenusVideo {
    * when the video ends; without one, the player holds the last frame.
    */
   coverUrl: string | null
+}
+
+/** Today's video: a clip tied to the day that counted. */
+export interface VenusVideo extends VenusClip {
+  /** The profile's day that counted, `YYYY-MM-DD` — what "once a day" is keyed by. */
+  dayKey: string
 }
 
 /** The streak as `GET /me/tokens` sends it. */
@@ -135,21 +144,142 @@ export function venusVideoFor(input: {
   if (!dayKey || streak.current < 1) return null
   if (dayKey < shiftDayKey(deviceToday, -1) || dayKey > shiftDayKey(deviceToday, 1)) return null
 
-  const cut = venusCutFor(streak)
-  const fileName = venusFileName(streak.current, locale, cut)
+  const clip = venusClipFor({
+    day: streak.current,
+    cut: venusCutFor(streak),
+    locale,
+    manifest,
+    baseUrl,
+  })
+  return clip ? { ...clip, dayKey } : null
+}
+
+/** One day's cut in `locale`, or `null` when the bucket does not hold it. */
+export function venusClipFor(input: {
+  day: number
+  cut: VenusCut
+  locale: string
+  manifest: VenusManifest
+  baseUrl: string
+}): VenusClip | null {
+  const { day, cut, locale, manifest, baseUrl } = input
+  const fileName = venusFileName(day, locale, cut)
   const key = `${locale}/${fileName}`
   if (!manifest.has(key)) return null
   const folder = `${baseUrl.replace(/\/+$/, '')}/${locale}`
   const cover = manifest.get(key) ?? null
   return {
-    day: streak.current,
+    day,
     locale,
     cut,
-    dayKey,
     fileName,
     url: `${folder}/${fileName}`,
     coverUrl: cover ? `${folder}/${cover}` : null,
   }
+}
+
+/**
+ * How many of Venus's days are open to watch again: day 1 through this one.
+ *
+ * Up to the **longest** streak, not the current one, so a streak that ends
+ * takes back nothing already reached — somebody back on day 2 after a run of
+ * forty keeps the forty. `current` is in the maximum only as a guard against
+ * an answer whose `longest` has not caught up with today yet.
+ *
+ * Day 1 is open to everybody, with no streak at all: it is the introduction,
+ * Venus saying who she is, and the Venus page offers it to anyone who opens it.
+ * Leaving it locked in the archive under a button that plays it would be the
+ * page contradicting itself.
+ */
+export function venusUnlockedDays(
+  streak: Pick<VenusStreak, 'current' | 'longest'> | undefined,
+): number {
+  const reached = Math.max(streak?.current ?? 0, streak?.longest ?? 0)
+  return Number.isFinite(reached) ? Math.max(1, Math.floor(reached)) : 1
+}
+
+/** One day of the archive: its clip, and whether it is open yet. */
+export interface VenusArchiveDay {
+  day: number
+  open: boolean
+  clip: VenusClip
+}
+
+/**
+ * Every day the bucket holds in `locale`, in order, each as its plain cut —
+ * day 1 is the introduction, never the comeback, which belongs to the day it
+ * was made for. Days are read off the manifest rather than counted up to a
+ * number, so the archive is exactly what the bucket holds: a day with no file
+ * is not listed, and nothing promises a day that would not play.
+ */
+export function venusArchive(input: {
+  manifest: VenusManifest
+  locale: string
+  baseUrl: string
+  unlocked: number
+}): VenusArchiveDay[] {
+  const { manifest, locale, baseUrl, unlocked } = input
+  const prefix = `${locale}/`
+  const days = new Set<number>()
+  for (const key of manifest.keys()) {
+    if (!key.startsWith(prefix)) continue
+    const match = /^venus-day(\d+)-/.exec(key.slice(prefix.length))
+    const day = match ? Number(match[1]) : 0
+    if (day > 0) days.add(day)
+  }
+  return [...days]
+    .sort((a, b) => a - b)
+    .flatMap((day) => {
+      const clip = venusClipFor({
+        day,
+        cut: day === 1 ? 'intro' : 'day',
+        locale,
+        manifest,
+        baseUrl,
+      })
+      return clip ? [{ day, open: day <= unlocked, clip }] : []
+    })
+}
+
+/**
+ * How much of the archive the streak page's strip and the Venus page's grid
+ * show before "See all": `size` days at most, of which up to `locked` are the
+ * next ones still shut. A preview, so it never sends a person through a
+ * hundred blurred covers, nor downloads them — each is a full-size still.
+ */
+export const VENUS_SHELF = { size: 12, locked: 3 } as const
+
+/**
+ * The days to draw, in order: the open days nearest the edge of what has been
+ * reached, then the next few still locked, so the newest days and the ones
+ * coming up are side by side rather than a scroll apart. `size` may be
+ * `Infinity` for every open day.
+ */
+export function venusShelf(
+  days: readonly VenusArchiveDay[],
+  { size, locked }: { size: number; locked: number } = VENUS_SHELF,
+): VenusArchiveDay[] {
+  const shut = days.filter((day) => !day.open).slice(0, Math.max(0, locked))
+  const room = Math.max(0, size - shut.length)
+  const open = days.filter((day) => day.open)
+  return [...(room > 0 ? open.slice(-room) : []), ...shut]
+}
+
+/**
+ * The streak page's strip: today's video first, when there is one, then the
+ * shelf without today's day — today's cover already stands for it, and day 1
+ * twice (the comeback today, the introduction beside it) would read as a
+ * mistake.
+ */
+export function venusStrip(
+  days: readonly VenusArchiveDay[],
+  todayDay: number | null,
+): VenusArchiveDay[] {
+  if (todayDay === null) return venusShelf(days)
+  return venusShelf(
+    days.filter((day) => day.day !== todayDay),
+    { size: VENUS_SHELF.size - 1, locked: VENUS_SHELF.locked },
+  )
 }
 
 /**
@@ -309,11 +439,36 @@ export function isVenusAutoOpenPath(pathname: string): boolean {
 type Listener = () => void
 
 let replayRequests = 0
+let requestedClip: VenusClip | null = null
 const replayListeners = new Set<Listener>()
 
-export function requestVenusReplay(): void {
+function emitReplay(): void {
   replayRequests += 1
   for (const listener of replayListeners) listener()
+}
+
+/**
+ * Today's video, again. Takes no argument on purpose: it is handed straight
+ * to `onPress`, which would pass its event as one.
+ */
+export function requestVenusReplay(): void {
+  requestedClip = null
+  emitReplay()
+}
+
+/**
+ * Any other day's video — one from the archive, or the introduction. The
+ * player plays it as it plays today's, but records nothing against today:
+ * watching day 5 again must not mark today's video watched.
+ */
+export function requestVenusClip(clip: VenusClip): void {
+  requestedClip = clip
+  emitReplay()
+}
+
+/** The clip the latest request asked for, or `null` when it asked for today's. */
+export function venusRequestedClip(): VenusClip | null {
+  return requestedClip
 }
 
 /** A counter rather than a boolean, so two taps are two requests. */

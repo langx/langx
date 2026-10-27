@@ -4960,6 +4960,102 @@ export const en = {
    * the streak day it is for, a label rather than a count, so it is no plural.
    */
   venus: {
+    /**
+     * Her page (`/venus`). The words about the videos come in two sets, one
+     * for each side of `flags.venusStories`; the "Soon" keys are the ones
+     * shown while it is off. No count of days is written anywhere: how many
+     * videos there are is whatever the bucket's manifest holds.
+     */
+    page: {
+      title: 'Venus',
+      tagline: 'LangX’s own cat. Her stickers are free for everyone.',
+      factVideos: 'Streak videos',
+      factVideosSoon: 'Videos coming soon',
+      factFree: 'Free',
+      watchIntro: 'Watch the introduction',
+      whoTitle: 'Who she is',
+      whoBody: 'Venus is LangX’s cat and mascot. Her stickers say the rest.',
+      doesTitle: 'What she does',
+      videosTitle: 'A video for your day',
+      videosBody:
+        'Once your day counts, Venus has a short video for it. It opens by itself the first time, and you can watch it again all day.',
+      comebackTitle: 'A welcome back',
+      comebackBody:
+        'Start again after a streak ends, and your first day back has a video of its own.',
+      keepTitle: 'Days you reach stay open',
+      keepBody:
+        'Every day up to your longest streak stays here to watch again. Days you have not reached yet are locked.',
+      videosSoonTitle: 'Videos are on the way',
+      videosSoonBody:
+        'Venus is getting short videos for your streak days. Until then, her stickers work in every chat.',
+      archiveTitle: 'Her videos',
+      archiveIntro: 'Days up to your longest streak are open. Tap one to watch it again.',
+      /** The archive's button; the count is every day it will show, locked ones too. */
+      showAll: { one: 'Show {count} day', other: 'Show all {count} days' },
+      showFewer: 'Show fewer',
+      stickersTitle: 'Her stickers',
+      stickersIntro: {
+        one: '{count} sticker, free for everyone. It works in every chat.',
+        other: '{count} stickers, free for everyone. They work in every chat.',
+      },
+      linkTitle: 'More about Venus on langx.io',
+      qWho: 'Who is Venus?',
+      aWho: 'LangX’s cat and mascot. Her sticker pack comes with every account, so she is in your sticker keyboard from the start.',
+      qWhenSoon: 'When do the videos come?',
+      aWhenSoon:
+        'They are not out yet. When they are, you will find them here and on your streak page.',
+      qWhen: 'When does a new video come?',
+      aWhen:
+        'As soon as your day counts. A day counts when you open LangX or practise. The video opens by itself the first time, and stays on your streak page for the rest of the day. A very long streak can go past the last day she has a video for.',
+      qMissed: 'Can I watch days I missed?',
+      aMissed:
+        'Any day up to your longest streak, from this page. Days you have not reached yet stay locked until you get there.',
+      qBreaks: 'What if my streak breaks?',
+      aBreaks:
+        'The days you reached stay open here. When you start again, your first day back has a welcome-back video.',
+      qShare: 'Can I share a video?',
+      aShare:
+        'Yes. When a video ends, share it to your story or send it to a friend, or save it. In a browser that cannot share a file, it downloads instead.',
+      qLanguage: 'Are the videos in my language?',
+      aLanguage: 'Yes. They play in the language LangX is set to.',
+      qFree: 'Are her stickers free?',
+      aFree: {
+        one: 'Yes. Its {count} sticker comes with every account, from the start.',
+        other: 'Yes. All {count} come with every account, from the start.',
+      },
+      qOtherApps: 'Can I use her stickers in other apps?',
+      aOtherAppsWhatsApp: {
+        one: 'If WhatsApp is on your phone, the button above adds {count} sticker to it. In LangX, every one works in every chat.',
+        other:
+          'If WhatsApp is on your phone, the button above adds {count} of them to it. In LangX, every one works in every chat.',
+      },
+      /**
+       * Where the button above is not drawn — the web, or a phone without
+       * WhatsApp — while the phone app does have it.
+       */
+      aOtherAppsWhatsAppPhone: {
+        one: 'On a phone with WhatsApp, this page in the LangX app has a button that adds {count} sticker to WhatsApp. In LangX, every one works in every chat.',
+        other:
+          'On a phone with WhatsApp, this page in the LangX app has a button that adds {count} of them to WhatsApp. In LangX, every one works in every chat.',
+      },
+      aOtherAppsChats: 'Not from the app yet. In LangX, every one works in every chat.',
+    },
+    /**
+     * The strip of her days on the streak page, and the cover tiles it shares
+     * with her page. `day` is a label for which day a video is for, not a
+     * count, so it is no plural.
+     */
+    strip: {
+      title: 'Venus’s videos',
+      seeAll: 'See all',
+      linkBody: 'LangX’s cat, and what she does for your streak',
+      today: 'Today',
+      day: 'Day {day}',
+      todayNew: 'Today’s video, day {day}, not watched yet',
+      todayA11y: 'Today’s video, day {day}',
+      lockedA11y: 'Day {day}, locked until your streak gets there',
+      watchDay: 'Watch day {day}',
+    },
     playerA11y: 'Venus, day {day}',
     tapForSound: 'Tap for sound',
     play: 'Play',

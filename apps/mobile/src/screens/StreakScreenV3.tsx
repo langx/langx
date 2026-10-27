@@ -21,8 +21,10 @@ import {
 import { IconButton } from '../components/ui/IconButton'
 import { Screen } from '../components/ui/Screen'
 import { Skeleton } from '../components/ui/Skeleton'
+import { VenusStrip } from '../components/venus/VenusDays'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
+import { useVenusArchive } from '../hooks/useVenusArchive'
 import { useVenusStory } from '../hooks/useVenusStory'
 import { useLocale, useT } from '../i18n'
 import type { TranslateFn } from '../i18n/runtime'
@@ -70,6 +72,11 @@ const HOME = '/(app)/(tabs)/home'
  * Every block reads a query today's streak screen already makes:
  * `/me/tokens`, `/me/wallet` and `/me/activity`. The ladder's Pro reads
  * `streak.proGiftRungs`, the one field this added.
+ *
+ * Venus's days sit under the hero as a strip of covers (`VenusStrip`), with
+ * `flags.venusStories` on and the bucket holding videos in the app's
+ * language; a row beside history and the leaderboard reaches her page
+ * whether or not the strip is drawn.
  */
 export function StreakScreenV3() {
   const { data: session } = authClient.useSession()
@@ -88,6 +95,7 @@ function MemberStreak() {
   const wallet = useWallet()
   const me = useMe()
   const venus = useVenusStory()
+  const venusDays = useVenusArchive()
   // A day past UTC's date. `today` is the profile's day, and east of UTC it
   // is already tomorrow there before UTC midnight; ending the range on the
   // UTC date left today's row out, so a day already checked in read as
@@ -260,6 +268,14 @@ function MemberStreak() {
           />
         )}
 
+        {venusDays ? (
+          <VenusStrip
+            archive={venusDays}
+            title={t('venus.strip.title')}
+            onOpenPage={() => router.push('/(app)/venus')}
+          />
+        ) : null}
+
         {repairOffer?.repairDay && rejoined !== null && activity.data ? (
           <StreakRepairCard
             title={t('streak.repairTitle', {
@@ -339,6 +355,11 @@ function MemberStreak() {
             title={t('leaderboard.streakTitle')}
             subtitle={t('streak.leaderboardBody')}
             onPress={() => router.push('/(app)/streak/leaderboard')}
+          />
+          <StreakLinkRow
+            title={t('venus.page.title')}
+            subtitle={t('venus.strip.linkBody')}
+            onPress={() => router.push('/(app)/venus')}
           />
         </View>
       </View>
