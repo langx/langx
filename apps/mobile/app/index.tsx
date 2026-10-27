@@ -5,6 +5,7 @@ import { SplashFill } from '../src/components/AppSplash'
 import { LoadFailed } from '../src/components/LoadFailed'
 import { Screen } from '../src/components/ui/Screen'
 import { useSignalAppReady } from '../src/hooks/useAppReady'
+import { takeGuestReturnPage } from '../src/hooks/useGuestSessionReset'
 import { useV3HomeDecision } from '../src/hooks/useV3Home'
 import { useMe } from '../src/api/queries'
 import { getDraft, hydrateDraft, isDraftHydrated } from '../src/hooks/useOnboardingDraft'
@@ -44,6 +45,9 @@ export default function Index() {
   // reads "no profile" off a 404, which a signed-out request never gets to.
   const { data: profile, isPending, error, refetch, fetchStatus } = useMe(signedIn)
   const [draftReady, setDraftReady] = useState(isDraftHydrated)
+  // Taken as this screen mounts, which is the moment after the guest reset
+  // that set it: whichever way this visit ends, the next one is not its.
+  const [guestReturnPage] = useState(takeGuestReturnPage)
   /*
    * Which tab a signed-in launch lands on is `flags.v3Home`'s to say, so the
    * splash also waits for the config — one attempt of it, which runs beside
@@ -151,6 +155,14 @@ export default function Index() {
   if (profile.restoredFromV1 && !profile.restoredFromV1.acknowledgedAt) {
     return <Redirect href="/(onboarding)/welcome-back" />
   }
+
+  /*
+   * A guest who opened one of the public product pages lands on it. Only a
+   * guest's launch sets this, and only for those four pages (`GUEST_LINK_PAGES`);
+   * a member's link never comes through here, because nothing takes the
+   * navigator down from under it.
+   */
+  if (guestReturnPage && shouldGateGuest(session?.user)) return <Redirect href={guestReturnPage} />
 
   return <Redirect href={v3Home ? '/(app)/(tabs)/home' : '/(app)/(tabs)/discover'} />
 }

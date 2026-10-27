@@ -1,7 +1,31 @@
+import * as Linking from 'expo-linking'
 import { useEffect, useRef, useState } from 'react'
 import { ApiRequestError, api } from '../api/client'
 import { authClient } from '../lib/auth-client'
 import { isRestoredGuestSession } from '../lib/guestGate'
+import { guestLinkPage, type GuestLinkPage } from '../lib/guestLinkPage'
+
+/** See `takeGuestReturnPage`. */
+let returnPage: GuestLinkPage | null = null
+
+/**
+ * The public page a kept guest's launch opened, once — then null.
+ *
+ * The reset below draws the launch spinner in place of the navigator, and the
+ * navigator had already opened the address the launch asked for. Built again
+ * afterwards it starts at `/`, so the gate sent every guest who opened a link
+ * to Home. For the four pages in `GUEST_LINK_PAGES` that link is the whole
+ * reason they came, so the gate takes them back to it; every other address
+ * still lands on Home.
+ *
+ * Taken rather than read, so it applies to the launch that set it and to no
+ * later visit to the gate.
+ */
+export function takeGuestReturnPage(): GuestLinkPage | null {
+  const page = returnPage
+  returnPage = null
+  return page
+}
 
 /**
  * Deletes a guest who left before answering anything.
@@ -44,8 +68,17 @@ export function useGuestSessionReset(): { resetting: boolean } {
     if (!restored) return
 
     setResetting(true)
+    // Asked now, while the web build's address is still the one that was
+    // opened: on the web this reads `location`, which the navigator coming
+    // down is about to change. On a phone it is the link that launched the app.
+    // Caught here rather than where it is awaited: the branch that ends the
+    // session never awaits it, and a rejection there would go unhandled.
+    const opened = Linking.getInitialURL().catch(() => null)
     void (async () => {
-      if (await answeredSomething()) return
+      if (await answeredSomething()) {
+        returnPage = guestLinkPage(await opened)
+        return
+      }
       await endGuestSession()
       /*
        * The session the client holds has to agree with the server, and

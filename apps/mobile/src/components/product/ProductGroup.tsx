@@ -29,6 +29,31 @@ const OUT_DISC = 32
 export const BALANCED =
   Platform.OS === 'web' ? ({ textWrap: 'balance' } as unknown as TextStyle) : undefined
 
+const RTL: TextStyle = { writingDirection: 'rtl' }
+const LTR: TextStyle = { writingDirection: 'ltr' }
+
+/**
+ * The style that sets a line in the layout's direction rather than its first
+ * letter's: every line of a product page, and rows elsewhere that show one of
+ * the products' names.
+ *
+ * The web build draws each `Text` with `dir="auto"`, which takes the direction
+ * from the first letter, so in Arabic a name written only in Latin letters —
+ * "Copilot", "LangX Token", the address "token.langx.io/ar" — ran left to
+ * right and sat at the left edge, under a heading on the right. That much was
+ * seen on the web. On a phone it has not been checked: iOS is expected to read
+ * the style as the paragraph's direction to the same end, and Android to
+ * ignore it and align a line by the layout whatever its letters.
+ *
+ * What Android is not expected to do is order an Arabic sentence that opens
+ * with a Latin word ("Pro …") by the layout: it takes that paragraph's
+ * direction from the first letter, so such a line keeps its leading
+ * right-to-left mark in the catalogue, as do the Latin names themselves.
+ */
+export function useTextDirection(): TextStyle {
+  return useLocale().isRtl ? RTL : LTR
+}
+
 /**
  * How much bigger a glyph and the shape round it are drawn, for the reader's
  * text size: the square, the chevron, the link's arrow, a step's disc. They
@@ -167,9 +192,14 @@ export function ProductRow({
   const styles = useStyles()
   const { v3 } = useTheme()
   const { isRtl } = useLocale()
+  const direction = useTextDirection()
   const stacked = useStacked()
   const glyph = useGlyphScale()
 
+  // Not given the page's direction (`useTextDirection`): a readout such as
+  // "+10 ✦" has no letters, and set right to left its sign would move to the
+  // other end of the number on the web, and is expected to on iOS, while
+  // Android kept it.
   const readout = value ? (
     <Text
       style={[styles.value, !stacked && styles.valueBeside]}
@@ -209,12 +239,12 @@ export function ProductRow({
       {leading && !stacked ? <View style={styles.leading}>{leading}</View> : null}
       <View style={styles.words}>
         {leading && stacked ? <View style={styles.leadingAbove}>{leading}</View> : null}
-        <Text style={styles.title} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}>
+        <Text style={[styles.title, direction]} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}>
           {title}
         </Text>
         {body && external ? (
           <Text
-            style={styles.body}
+            style={[styles.body, direction]}
             maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.address}
             // On a phone the address shrinks to its line rather than break
             // inside a word on a narrow screen; the web has no shrink-to-fit,
@@ -227,7 +257,7 @@ export function ProductRow({
           </Text>
         ) : body ? (
           <Text
-            style={[styles.body, BALANCED]}
+            style={[styles.body, direction, BALANCED]}
             maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
             textBreakStrategy="balanced"
             lineBreakStrategyIOS="push-out"

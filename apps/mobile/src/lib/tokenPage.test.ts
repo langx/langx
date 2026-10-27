@@ -419,10 +419,15 @@ describe('the "Yours" rows', () => {
 
 describe('the Arabic page', () => {
   /*
-   * On web each line takes its direction from its first letter, so an Arabic
-   * line that opens with "Pro" or "LangX" lays out left to right, hugs the
-   * wrong edge, and puts that word at the wrong end of the sentence. The
-   * catalogue's answer, used elsewhere too, is a leading right-to-left mark.
+   * A line that opens with "Pro" or "LangX" takes its direction from that
+   * first letter wherever nothing else sets it: the web build draws a `Text`
+   * with `dir="auto"`, and Android is expected to order a paragraph by its
+   * first letter whatever the style says. In Arabic such a line lays out left
+   * to right, hugs the wrong edge, and puts that word at the wrong end of the
+   * sentence. The page's own components set the layout's direction
+   * (`useTextDirection`), but these strings travel beyond them — the title
+   * also heads a row on Streak and a card on Home — so the catalogue's
+   * answer stays a leading right-to-left mark on every such line.
    */
   it('opens every line right to left', () => {
     const latinFirst = pageLines('ar')

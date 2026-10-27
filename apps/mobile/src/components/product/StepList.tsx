@@ -2,7 +2,7 @@ import { Text, useWindowDimensions, View } from 'react-native'
 import { useLocale, useT } from '../../i18n'
 import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
-import { BALANCED, ProductGroup, ROW_SQUARE, useGlyphScale } from './ProductGroup'
+import { BALANCED, ProductGroup, ROW_SQUARE, useGlyphScale, useTextDirection } from './ProductGroup'
 import { useToneColors, type ProductTone } from './tone'
 
 export interface ProductStep {
@@ -38,6 +38,7 @@ export function StepList({ tone, steps }: { tone: ProductTone; steps: readonly P
   const t = useT()
   const { locale } = useLocale()
   const styles = useStyles()
+  const direction = useTextDirection()
   const { v3 } = useTheme()
   const { ground, on } = useToneColors(tone)
   const { fontScale } = useWindowDimensions()
@@ -83,12 +84,15 @@ export function StepList({ tone, steps }: { tone: ProductTone; steps: readonly P
                 {last ? null : <View style={[styles.line, { backgroundColor: ground }]} />}
               </View>
               <View style={[styles.words, { paddingTop: titleDrop }, !last && styles.wordsSpaced]}>
-                <Text style={styles.title} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}>
+                <Text
+                  style={[styles.title, direction]}
+                  maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}
+                >
                   {step.title}
                 </Text>
                 {step.body ? (
                   <Text
-                    style={[styles.body, BALANCED]}
+                    style={[styles.body, direction, BALANCED]}
                     maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
                     textBreakStrategy="balanced"
                     lineBreakStrategyIOS="push-out"

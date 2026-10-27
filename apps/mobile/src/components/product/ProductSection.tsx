@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Text, View } from 'react-native'
 import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles } from '../../lib/theme'
-import { BALANCED } from './ProductGroup'
+import { BALANCED, useTextDirection } from './ProductGroup'
 
 /**
  * One section of a product page: a heading, a line on what it covers, and
@@ -22,11 +22,12 @@ export function ProductSection({
   children: ReactNode
 }) {
   const styles = useStyles()
+  const direction = useTextDirection()
   return (
     <View style={styles.section}>
       <View style={styles.head}>
         <Text
-          style={styles.title}
+          style={[styles.title, direction]}
           accessibilityRole="header"
           // Just short of the product's name over it and over the rows under
           // it, at every text size (`PRODUCT_TEXT_SCALE`).
@@ -36,7 +37,7 @@ export function ProductSection({
         </Text>
         {intro ? (
           <Text
-            style={[styles.intro, BALANCED]}
+            style={[styles.intro, direction, BALANCED]}
             maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
             textBreakStrategy="balanced"
             lineBreakStrategyIOS="push-out"
