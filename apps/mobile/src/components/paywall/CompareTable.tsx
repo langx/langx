@@ -1,9 +1,11 @@
 import Feather from '@expo/vector-icons/Feather'
 import { TIER_NAMES } from '@langx/shared'
-import { Pressable, Text, View } from 'react-native'
+import { Pressable, Text, useWindowDimensions, View } from 'react-native'
 import { useT } from '../../i18n'
 import type { CompareCell, CompareRow } from '../../lib/paywallBenefits'
+import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { useGlyphScale } from '../product/ProductGroup'
 import { ICON_BUTTON_TARGET } from '../ui/IconButton'
 
 interface CompareTableProps {
@@ -26,13 +28,25 @@ interface CompareTableProps {
  *
  * Each row is one element to a screen reader, read as a sentence, since a
  * tick has no words of its own.
+ *
+ * Past the default text size it stacks: a row's name goes on a line of its
+ * own and the two cells share the line under it, half each, under a header
+ * split the same way. That is sooner than a product page stacks
+ * (`useStacked`, from 1.2×), because the columns are drawn for the default
+ * size with nothing to spare — German's "Unbegrenzt" fills the Pro column
+ * there — so side by side, any bigger size ran it past its column, and at
+ * 200% past the table's edge, while the names were squeezed to a word a line.
  */
 export function CompareTable({ rows, lead, expanded, onToggle }: CompareTableProps) {
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
+  const stacked = useWindowDimensions().fontScale > 1
+  const glyph = useGlyphScale()
   const shown = expanded ? rows : rows.slice(0, lead)
   const hidden = rows.length - lead
+  const freeCell = stacked ? styles.half : styles.freeCell
+  const proCell = stacked ? styles.half : styles.proCell
 
   function spoken(cell: CompareCell): string {
     switch (cell.kind) {
@@ -52,17 +66,28 @@ export function CompareTable({ rows, lead, expanded, onToggle }: CompareTablePro
   return (
     <View style={styles.table}>
       <View
-        style={styles.head}
+        style={[styles.head, stacked && styles.stacked]}
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
       >
-        <Text style={[styles.headLabel, styles.labelCell]}>{t('paywall.compareHeading')}</Text>
-        <View style={styles.freeCell}>
-          <Text style={styles.headFree}>{TIER_NAMES.free}</Text>
-        </View>
-        <View style={styles.proCell}>
-          <View style={styles.proPill}>
-            <Text style={styles.proPillText}>{TIER_NAMES.pro}</Text>
+        <Text
+          style={[styles.headLabel, !stacked && styles.labelCell]}
+          maxFontSizeMultiplier={COLUMN_TEXT_SCALE}
+        >
+          {t('paywall.compareHeading')}
+        </Text>
+        <View style={styles.cells}>
+          <View style={freeCell}>
+            <Text style={styles.headFree} maxFontSizeMultiplier={COLUMN_TEXT_SCALE}>
+              {TIER_NAMES.free}
+            </Text>
+          </View>
+          <View style={proCell}>
+            <View style={styles.proPill}>
+              <Text style={styles.proPillText} maxFontSizeMultiplier={COLUMN_TEXT_SCALE}>
+                {TIER_NAMES.pro}
+              </Text>
+            </View>
           </View>
         </View>
       </View>
@@ -74,17 +99,22 @@ export function CompareTable({ rows, lead, expanded, onToggle }: CompareTablePro
             key={row.benefit}
             accessible
             accessibilityLabel={`${tag ? `${label}, ${tag}` : label}. ${TIER_NAMES.free}: ${spoken(row.free)}. ${TIER_NAMES.pro}: ${spoken(row.pro)}`}
-            style={styles.row}
+            style={[styles.row, stacked && styles.stacked]}
           >
-            <Text style={[styles.label, styles.labelCell]}>
+            <Text
+              style={[styles.label, !stacked && styles.labelCell]}
+              maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+            >
               {label}
               {tag ? <Text style={styles.tag}> · {tag}</Text> : null}
             </Text>
-            <View style={styles.freeCell}>
-              <Cell cell={row.free} muted />
-            </View>
-            <View style={styles.proCell}>
-              <Cell cell={row.pro} />
+            <View style={styles.cells}>
+              <View style={freeCell}>
+                <Cell cell={row.free} muted />
+              </View>
+              <View style={proCell}>
+                <Cell cell={row.pro} />
+              </View>
             </View>
           </View>
         )
@@ -96,12 +126,12 @@ export function CompareTable({ rows, lead, expanded, onToggle }: CompareTablePro
           onPress={onToggle}
           style={({ pressed }) => [styles.more, pressed && styles.pressed]}
         >
-          <Text style={styles.moreText}>
+          <Text style={styles.moreText} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
             {expanded ? t('paywall.showLess') : t('paywall.andMore', { count: hidden })}
           </Text>
           <Feather
             name={expanded ? 'chevron-up' : 'chevron-down'}
-            size={v3.icon.md}
+            size={Math.round(v3.icon.md * glyph)}
             color={v3.colors.fg}
           />
         </Pressable>
@@ -128,15 +158,29 @@ function Cell({ cell, muted = false }: { cell: CompareCell; muted?: boolean }) {
         </View>
       )
     case 'count':
-      return <Text style={[styles.figure, muted && styles.figureMuted]}>{cell.count}</Text>
+      return (
+        <Text
+          style={[styles.figure, muted && styles.figureMuted]}
+          maxFontSizeMultiplier={COLUMN_TEXT_SCALE}
+        >
+          {cell.count}
+        </Text>
+      )
     case 'unlimited':
       return (
-        <Text style={[styles.figure, muted && styles.figureMuted]}>
+        <Text
+          style={[styles.figure, muted && styles.figureMuted]}
+          maxFontSizeMultiplier={COLUMN_TEXT_SCALE}
+        >
           {t('paywall.compareUnlimited')}
         </Text>
       )
     case 'soon':
-      return <Text style={styles.soon}>{t('paywall.compareSoon')}</Text>
+      return (
+        <Text style={styles.soon} maxFontSizeMultiplier={COLUMN_TEXT_SCALE}>
+          {t('paywall.compareSoon')}
+        </Text>
+      )
   }
 }
 
@@ -145,6 +189,17 @@ const FREE_COLUMN = 76
 const PRO_COLUMN = 96
 /** The tick's disc: the drawing's 30, big enough to read from arm's length. */
 const MARK = 30
+/**
+ * How far the header's words and every cell's figure grow with the reader's
+ * text size. German's "Unbegrenzt", the longest figure, is 94pt at the
+ * default size and must fit half a stacked row on a 375pt phone, 159pt; at
+ * 1.6× it is 151. A row's name and the "And N more" line are Callout and stop
+ * where a product page's Callout does (`PRODUCT_TEXT_SCALE.text`, 2×): German's
+ * "Willkommenspaket", the longest word of any name, is 144pt at the default
+ * size and 288 there, inside the 319pt a stacked name has. At a row title's
+ * 2.4× it broke in the middle.
+ */
+const COLUMN_TEXT_SCALE = 1.6
 
 const useStyles = makeStyles(({ v3 }) => ({
   table: {
@@ -163,8 +218,13 @@ const useStyles = makeStyles(({ v3 }) => ({
   labelCell: { flex: 1 },
   headLabel: { ...v3.type.label, color: v3.colors.muted },
   headFree: { ...v3.type.label, color: v3.colors.fg },
+  // The two cells in a row of their own, so stacking moves them under the name as one.
+  cells: { alignItems: 'center', flexDirection: 'row' },
   freeCell: { alignItems: 'center', justifyContent: 'center', width: FREE_COLUMN },
   proCell: { alignItems: 'center', justifyContent: 'center', width: PRO_COLUMN },
+  // Stacked: the header or row turns into a column, and each cell takes half its width.
+  stacked: { alignItems: 'stretch', flexDirection: 'column', gap: v3.space[6] },
+  half: { alignItems: 'center', flex: 1, justifyContent: 'center' },
   proPill: {
     backgroundColor: v3.colors.pill,
     borderRadius: v3.radius.pill,
