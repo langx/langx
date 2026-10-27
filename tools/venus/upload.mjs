@@ -147,7 +147,8 @@ const ready = (mp4) => {
     return false
   }
 }
-// every mp4 that is ready, with its cover: "<lang>/<name>" pairs
+// every mp4 that is ready, with its cover: "<lang>/<name>" pairs. A re-cut of a published video
+// goes up under a new name (venus-day030-en-r2.mp4), never over the old one: v1 is immutable.
 const readyPairs = () =>
   fs
     .readdirSync(V1, { withFileTypes: true })
@@ -155,7 +156,7 @@ const readyPairs = () =>
     .flatMap((d) =>
       fs
         .readdirSync(path.join(V1, d.name))
-        .filter((f) => /^venus-day\d{3}(-return)?-[A-Za-z-]+\.mp4$/.test(f))
+        .filter((f) => /^venus-day\d{3}(-return)?-[A-Za-z-]+(-r\d+)?\.mp4$/.test(f))
         .filter((f) => ready(path.join(V1, d.name, f)))
         .flatMap((f) => [`${d.name}/${f}`, `${d.name}/${f.replace(/\.mp4$/, '.jpg')}`]),
     )

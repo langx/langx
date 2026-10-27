@@ -65,6 +65,12 @@ when every move has handed her back sitting and facing the lens, with two change
 at full size rather than the small badge it has shrunk to by then, and the small langx mark sits
 where the caption was. So a gallery of covers says which day each one is.
 
+**Room under the number.** The stage under the number is laid out for Venus's own height, ears
+included. When what she wears or sits on reaches higher (day 30's party hat, day 50's balloon, a
+cushion she sits up on), `render.mjs` draws her smaller about the ground line, just enough to keep
+it all under the label on the cover and through the film, and logs the scale. Every other day
+renders exactly as before.
+
 ## Publishing
 
 The library lives on the media bucket, beside its manifest:
@@ -76,7 +82,11 @@ venus/v1/manifest.json
 ```
 
 `v1` is immutable. The mp4s and jpgs go up with a one-year `immutable` cache, so a cut that changes
-what a day shows is never uploaded over them: it is rendered into, and published as, `v2`.
+what a day shows is never uploaded over them: it is rendered into, and published as, `v2`. A
+single re-cut can also go up beside the original under a new name, `venus-day030-en-r2.mp4` and
+its `.jpg`; `media` takes those too. The app still plays the plain name it builds for the day
+(`apps/mobile/src/lib/venusStory.ts`) and only when the manifest lists that name, so a re-cut
+reaches the links that name it, not the app.
 
 ```bash
 node upload.mjs media --dry   # what would go up

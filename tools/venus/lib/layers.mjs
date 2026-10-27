@@ -224,6 +224,12 @@ function numText(text, F, st, fill) {
     `<text ${base} x="0" y="${y}" fill="${fill}" stroke="${INK}" stroke-width="${n1(F * 0.075)}" stroke-linejoin="round" paint-order="stroke">${text}</text>`
   )
 }
+// How far down the label reaches (px), under the full-size number or under the badge it shrinks
+// to; the 14 px below its baseline are the descenders (Russian Д, the Arabic letters).
+export const labelBottom = (text, badge = false) =>
+  badge
+    ? BADGE_Y + (NUM_SIZE(text) * 0.35 + 92 + 14) * 0.75
+    : NUM_Y + NUM_SIZE(text) * 0.35 + 92 + 14
 // num: { at, text, label, labelW (measured px at 54), mode: pop|slam|count, from, countFrom }
 export function number(look, t, num, toBadgeAt) {
   const st = LOOKS[look].num,
