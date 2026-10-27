@@ -1,3 +1,4 @@
+import type { Href } from 'expo-router'
 import type { MessageKey } from '../i18n/runtime'
 
 /**
@@ -22,6 +23,13 @@ export interface ExternalLink {
   /** Anything a translator would change. Exactly one of these two is set. */
   labelKey?: MessageKey
   url: string
+  /**
+   * A page in the app that says what `url` says, opened instead of it. The
+   * Insights row has one: the Transparency page draws insight.langx.io's
+   * numbers in the reader's own language and links out to the site at its
+   * foot. `url` stays, so this table is still the one place the address is.
+   */
+  route?: Href
 }
 
 export interface LinkSection {
@@ -31,6 +39,13 @@ export interface LinkSection {
 
 const SITE = 'https://langx.io'
 const REPO = 'https://github.com/langx/langx'
+
+/**
+ * The repository itself, for the Transparency page's "Read the code". No row
+ * below opens it: the GitHub row is the organisation, and the rest are files
+ * and pages inside it.
+ */
+export const REPO_URL = REPO
 
 /**
  * The two documents a purchase is made under, named separately because they
@@ -49,6 +64,18 @@ export const TERMS_URL = `${SITE}/terms-conditions`
  * description, so the iOS paywall links it beside the terms.
  */
 export const APPLE_EULA_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'
+
+/**
+ * LangX Token's own site (`langx/token-website`): the Kitchen's row, and the
+ * token page's link out, which adds the reader's language (`tokenSiteUrl`).
+ */
+export const TOKEN_SITE = 'https://token.langx.io'
+
+/**
+ * Copilot's own site (`langx/copilot`), where the Copilot page sends anyone
+ * who wants more than its questions answer. English only, so no locale path.
+ */
+export const COPILOT_SITE_URL = 'https://copilot.langx.io/'
 
 /**
  * Venus's page on langx.io — who she is, at more length than the app's own
@@ -104,7 +131,7 @@ export const KITCHEN_SECTIONS: readonly LinkSection[] = [
   {
     titleKey: 'kitchen.token',
     rows: [
-      { icon: 'circle', labelKey: 'kitchen.tokenWebsite', url: 'https://token.langx.io' },
+      { icon: 'circle', labelKey: 'kitchen.tokenWebsite', url: TOKEN_SITE },
       { icon: 'file-text', labelKey: 'kitchen.litepaper', url: 'https://docs.langx.io' },
     ],
   },
@@ -112,7 +139,12 @@ export const KITCHEN_SECTIONS: readonly LinkSection[] = [
     titleKey: 'kitchen.about',
     rows: [
       { icon: 'globe', labelKey: 'kitchen.website', url: SITE },
-      { icon: 'bar-chart-2', labelKey: 'kitchen.insights', url: 'https://insight.langx.io' },
+      {
+        icon: 'bar-chart-2',
+        labelKey: 'kitchen.insights',
+        url: 'https://insight.langx.io',
+        route: '/(app)/transparency',
+      },
       { icon: 'list', labelKey: 'kitchen.backlog', url: 'https://backlog.langx.io' },
       { icon: 'github', label: 'GitHub', url: 'https://github.com/langx' },
       { icon: 'tag', labelKey: 'kitchen.releases', url: `${REPO}/releases` },

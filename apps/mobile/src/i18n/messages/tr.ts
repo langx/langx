@@ -2193,6 +2193,127 @@ export const tr: Localized<EnMessages> = {
     codeOfConduct: 'Davranış kuralları',
     moreContributors: '+{count}',
   },
+  transparency: {
+    page: {
+      title: 'Şeffaflık',
+      tagline: 'LangX açıkta yapılıyor: kod herkese açık, rakamlar da öyle.',
+      factOpenSource: 'Açık kaynak',
+      factOpenNumbers: 'Açık rakamlar',
+      factTotals: 'Yalnızca toplamlar',
+      countedNow: 'Az önce sayıldı',
+      countedMinutes: { one: '{count} dakika önce sayıldı', other: '{count} dakika önce sayıldı' },
+      countedHours: { one: '{count} saat önce sayıldı', other: '{count} saat önce sayıldı' },
+      countedDays: { one: '{count} gün önce sayıldı', other: '{count} gün önce sayıldı' },
+      openTitle: 'Açık kaynak',
+      openIntro:
+        'Uygulama, sunucu ve bu rakamları sayan kod, BSD-3 lisansıyla tek bir herkese açık depoda.',
+      readCode: 'Kodu oku',
+      contribute: 'Katkıda bulun',
+      numbersTitle: 'Rakamlar',
+      numbersIntro: {
+        one: 'LangX’in kendi veritabanından, en fazla {count} dakikada bir sayılır.',
+        other: 'LangX’in kendi veritabanından, en fazla {count} dakikada bir sayılır.',
+      },
+      totalA11y: '{label}: {amount}. {hint}',
+      members: 'Üyeler',
+      membersHint: 'Şu anda var olan hesaplar. Misafirler ve silinmekte olan hesaplar sayılmaz.',
+      messages: 'Mesajlar',
+      messagesHint:
+        'Sohbetlerde gönderilenler; sohbette yapılan düzeltmeler dahil. Aramalar sayılmaz.',
+      corrections: 'Gönderi düzeltmeleri',
+      correctionsHint: 'Akıştaki gönderilere yazılan düzeltmeler.',
+      languages: 'Diller',
+      languagesHint: 'Üyelerin öğrendiği farklı diller.',
+      daysTitle: { one: 'Son {count} gün', other: 'Son {count} gün' },
+      daysPick: 'Gösterilecek rakam',
+      dayMembers: 'Üyeler',
+      dayMessages: 'Mesajlar',
+      dayCorrections: 'Düzeltmeler',
+      sumMembers: { one: '{amount} yeni üye', other: '{amount} yeni üye' },
+      sumMessages: { one: '{amount} mesaj', other: '{amount} mesaj' },
+      sumCorrections: { one: '{amount} gönderi düzeltmesi', other: '{amount} gönderi düzeltmesi' },
+      chartA11y: {
+        one: 'Son {count} günde {total}, günde bir sütun',
+        other: 'Son {count} günde {total}, günde bir sütun',
+      },
+      daysCaption:
+        'Her gün için bir sütun, UTC gününe göre. Sonuncusu bugünün şu ana kadarki kısmı.',
+      languagesTitle: 'Diller',
+      learning: 'En çok öğrenilenler',
+      native: 'En çok ana dil olarak konuşulanlar',
+      languageRow: { one: '{language}: {amount} üye', other: '{language}: {amount} üye' },
+      noLanguages: 'Henüz dil eklenmedi.',
+      streaksTitle: 'Seriler',
+      longest: 'En uzun seri',
+      longestBody: 'Bugün hesabı olan birinin şimdiye kadar yaptığı en uzun seri.',
+      longestValue: { one: '{amount} gün', other: '{amount} gün' },
+      active: 'Serisi süren',
+      activeBody: 'Serisi henüz bitmemiş üyeler — yalnızca bugün gelenler değil.',
+      activeValue: { one: '{amount} üye', other: '{amount} üye' },
+      trustTitle: 'Verilerin ve güvenliğin',
+      auditTitle: 'Kurallar kodda yazılı',
+      auditBody:
+        'Limitler, plan kontrolleri ve token kuralları okunabilir; her biri sunucuda uygulanır — bir kuralı bilmek kimseye onu aşma imkânı vermez.',
+      dataTitle: 'Verilerin senin',
+      dataBody: {
+        one: 'Uygulamanın senin hakkında tuttuğu her şeyi dışa aktar ya da hesabını sil: {count} gün sonra tamamen gider.',
+        other:
+          'Uygulamanın senin hakkında tuttuğu her şeyi dışa aktar ya da hesabını sil: {count} gün sonra tamamen gider.',
+      },
+      boundedTitle: 'Bu sayfanın sınırları var',
+      boundedBody: 'Yalnızca toplamlar ve günler, asla bir kişi. En küçük grup koca bir dil.',
+      securityTitle: 'Bir açık mı buldun?',
+      securityBody: 'Herkese açık bir issue yerine gizlice bildir. Bir hafta içinde dönüş alırsın.',
+      securityLink: 'Güvenlik politikası',
+      supportTitle: 'LangX’i destekle',
+      proTitle: 'Pro’ya geç',
+      proBody: 'Sunucuların parasını ödeyen ve LangX’i ayakta tutan Pro.',
+      proTitleMember: 'Pro’dasın',
+      proBodyMember: 'Teşekkürler. Sunucuların parasını ödeyen ve LangX’i ayakta tutan Pro.',
+      qReal: 'Rakamlar gerçek mi?',
+      aReal:
+        'Evet. LangX’in kendi veritabanından, herkesin okuyabildiği bir kodla sayılıyorlar — bu sayfayı yanıtlayan kodun ta kendisiyle. Kimse elle girmiyor ve hiçbiri yuvarlanmıyor.',
+      qRevenue: 'Neden burada gelir yok?',
+      aRevenue:
+        'Çünkü yayımlanan bir rakam geri alınamaz. Gelir, abonelikler, dönüşüm, elde tutma ve üyelerin nereden geldiği, planlarımızı soran herkese verirdi; bu yüzden bu sayfada hiçbir zaman yer almazlar.',
+      qGuests: 'Misafirler sayılıyor mu?',
+      aGuests:
+        'Hayır. Misafir, hesabı olmadan etrafa bakan biridir ve misafirleri saymak her rakamı şişirirdi. Üyeler, diller ve seriler yalnızca şu anda var olan hesapları sayar — misafir yok, silinmeyi bekleyen hesap da yok.',
+      qUpdates: 'Ne sıklıkla güncelleniyor?',
+      aUpdates: {
+        one: 'En fazla {count} dakikada bir: rakamlar bir saate göre değil, ondan sonraki ilk ziyarette yeniden sayılır. Sana gelirken yolda tutulan bir kopya bir o kadar daha eski olabilir; sayfanın üstünde ne zaman sayıldığının yazması bu yüzden.',
+        other:
+          'En fazla {count} dakikada bir: rakamlar bir saate göre değil, ondan sonraki ilk ziyarette yeniden sayılır. Sana gelirken yolda tutulan bir kopya bir o kadar daha eski olabilir; sayfanın üstünde ne zaman sayıldığının yazması bu yüzden.',
+      },
+      qMine: 'Verilerim bu sayfada mı?',
+      aMine:
+        'Yalnızca toplamların içinde. Üyelerden birisin ve eklediğin her dilde bir kişi olarak sayılırsın, ama sayfada isim, profil ya da mesaj yok ve en küçük grubu koca bir dil — üzerindeki hiçbir şey sana kadar daraltılamaz.',
+      qOpen: 'LangX gerçekten açık kaynak mı?',
+      aOpen:
+        'Evet. Uygulama, sunucu ve bu sayfanın arkasındaki kod, BSD-3 lisansıyla tek bir herkese açık depoda: lisans notu yanında kaldığı sürece herkes okuyabilir, kendi kopyasını çalıştırabilir ve üzerine inşa edebilir.',
+      qSafe: 'Kod herkese açıksa güvenli mi?',
+      aSafe:
+        'Açık kod zayıf nokta değil, çünkü hiçbir şey onun gizli kalmasına dayanmıyor. Her limit ve her izin sunucuda denetlenir; nasıl çalıştığını bilmek kimseye onları aşma imkânı vermez ve kodda hiçbir zaman şifre ya da anahtar bulunmaz.',
+      qE2E: 'Mesajlarım uçtan uca şifreli mi?',
+      aE2E: 'Hayır. Mesajlar LangX’in sunucularında LangX’in okuyabileceği biçimde tutulur: bir sohbet şikâyet edildiğinde moderatörler oraya varan mesajları okur. Onları koruyan şey şu: bir sohbeti yalnızca içindeki iki kişi açabilir — sunucu bunu her istekte ve her canlı güncellemede, bir engellemeden sonra da yeniden denetler — ve uygulamayla sunucu arasındaki her şey HTTPS üzerinden gider.',
+      qExport: 'Verilerimi dışa aktarabilir ya da silebilir miyim?',
+      aExport: {
+        one: 'Evet, ikisini de, {settings} › {account} altında. {exportData}, uygulamanın senin hakkında tuttuğu her şeyi tek bir dosyada verir. {deleteAccount}, onayladığın anda hesabını gizler ve {count} gün sonra tamamen siler; o süre dolmadan tekrar giriş yaparsan iptal olur. Gönderdiğin mesajlar karşı tarafın sohbetinde, metinleri silinmiş olarak kalır.',
+        other:
+          'Evet, ikisini de, {settings} › {account} altında. {exportData}, uygulamanın senin hakkında tuttuğu her şeyi tek bir dosyada verir. {deleteAccount}, onayladığın anda hesabını gizler ve {count} gün sonra tamamen siler; o süre dolmadan tekrar giriş yaparsan iptal olur. Gönderdiğin mesajlar karşı tarafın sohbetinde, metinleri silinmiş olarak kalır.',
+      },
+      qContribute: 'Nasıl katkıda bulunurum?',
+      aContribute:
+        'Yukarıdaki “{contribute}” ile başla: LangX’i kendi bilgisayarında nasıl çalıştıracağını ve bir değişikliğin gönderilmeden önce neye ihtiyacı olduğunu anlatıyor. “{issues}” açık olanları listeler.',
+      qSupport: 'LangX’i nasıl desteklerim?',
+      aSupport:
+        'En çok Pro’ya geçmek yardımcı olur: sunucuların parasını ödeyen ve LangX’i ayakta tutan abonelik. Ayrıca GitHub’da sponsor olabilir, patron olabilir ya da Discord’da aramıza katılabilirsin — bağlantılar yukarıda.',
+      qVulnerability: 'Bir güvenlik açığı buldum. Ne yapmalıyım?',
+      aVulnerability:
+        'Teşekkürler. Herkese açık bir issue yerine e-postayla gizlice bildir — adres yukarıdaki “{policy}” bağlantısında. Bir hafta içinde dönüş alırsın; kabul edilen bir bildirim bir sonraki güvenlik güncellemesinde düzeltilir.',
+      linkTitle: 'Aynı rakamlar, web’de',
+    },
+  },
   streak: {
     title: 'Serin',
     historyBody: 'Son iki ayın her günü ve neyin sayıldığı',
@@ -2680,6 +2801,103 @@ export const tr: Localized<EnMessages> = {
     todayCorrections: { one: 'düzeltme', other: 'düzeltme' },
     todayPeople: { one: 'kişi', other: 'kişi' },
     seeHistory: 'Geçmişini gör',
+    page: {
+      title: 'LangX Token',
+      tagline: 'Konuşarak ve öğreterek kazandığın, LangX içinde harcadığın puanlar.',
+      factPoints: 'Uygulama içi puan',
+      factBought: 'Satın alınamaz',
+      factTraded: 'Takas edilemez',
+      yours: 'Senin jetonların',
+      walletBody: 'Bakiyen, geçmişin ve mağaza',
+      todayFallback: 'Bugünün özeti ve günlük havuz',
+      rank: '#{rank}',
+      rankBody: 'Harcamak seni asla aşağı düşürmez.',
+      rankNone: 'Tabloya girmek için bu hafta jeton kazan.',
+      guestTitle: { one: '{amount} jetonla başla', other: '{amount} jetonla başla' },
+      guestBody: 'Jeton kazanıp harcamak için bir hesap oluştur.',
+      earn: 'Nasıl kazanırsın',
+      messagesBody: 'Günde en fazla {perDay}, tek bir kişiyle en fazla {perPartner}.',
+      correctionsBody:
+        'Öğretmek, konuşmaktan daha çok sayılır. Bir kişinin cümlelerinden günde en fazla {perPartner}.',
+      pronunciationBody: 'Nasıl okunduğunu soran biri için bir cümle kaydet.',
+      mutualTitle: 'Karşılıklı sohbetler',
+      mutualBody: 'Sohbet başına bir kez, ikiniz de yazdığınızda. İkiniz de kazanırsınız.',
+      echoBody: 'Tamamlanan bir tekrar oturumu, günde en fazla {perDay}.',
+      streakBody: {
+        one: 'Kilometre taşlarında bonus: art arda {first} günden {last} güne kadar.',
+        other: 'Kilometre taşlarında bonus: art arda {first} günden {last} güne kadar.',
+      },
+      inviteBody:
+        'Davet ettiğin arkadaşın gerçek bir sohbet yaptığında. Kayıt bonusuyla birlikte {amount} jetonla başlar.',
+      pool: 'Günlük havuz',
+      poolIntro: {
+        one: 'Bunun üstüne her gün {amount} jeton paylaştırılır.',
+        other: 'Bunun üstüne her gün {amount} jeton paylaştırılır.',
+      },
+      poolTakePart: 'Katıl',
+      poolTakePartBody: 'Sohbetler, düzeltmeler, mesajlar ve konuştuğun kişiler sayılır.',
+      poolShared: 'Havuz paylaştırılır',
+      poolSharedBody: 'O gün herkesin ne kadar etkin olduğuna göre.',
+      poolArrives: 'Payın gelir',
+      poolArrivesBody: 'Saat {hour}:00 UTC’de cüzdanına, kişi başı en fazla {cap}.',
+      spend: 'Şunlara harca',
+      freezeBody: 'Kaçırdığın bir sonraki günü kapatır.',
+      freezeKeep: {
+        one: 'Aynı anda bir tane tutabilirsin.',
+        other: 'Aynı anda en fazla {amount} tane tutabilirsin.',
+      },
+      repairTitle: 'Kaçırılan günü geri al',
+      repairWindow: {
+        one: 'Son {amount} gün içinde kaçırdığın bir günü doldur.',
+        other: 'Son {amount} gün içinde kaçırdığın bir günü doldur.',
+      },
+      repairMonthly: { one: 'Ayda bir.', other: 'Ayda en fazla {amount}.' },
+      titlesBody: {
+        one: 'Profilinde taşıyacağın {amount} unvan',
+        other: 'Profilinde taşıyacağın {amount} unvan',
+      },
+      venusTitle: 'Venus paketi',
+      venusBody: {
+        one: 'Herkese ücretsiz {amount} sticker',
+        other: 'Herkese ücretsiz {amount} sticker',
+      },
+      free: 'Ücretsiz',
+      not: 'Ne değildir',
+      notSale: 'Satılık değil',
+      notSaleBody: 'Kimse satın alamaz; ne parayla ne de başka bir şeyle.',
+      notCash: 'Para değil',
+      notCashBody: 'Satılamaz, paraya dönüştürülemez, kimseye gönderilemez.',
+      notCrypto: 'Kripto para değil',
+      notCryptoBody: 'Zincir yok, piyasa yok. LangX’in içinde kalır.',
+      notPro: 'Pro için ödeme yolu değil',
+      notProBody: 'Pro bir abonelik. Jetonlar onun hiçbir kısmını açmaz.',
+      faq: {
+        crypto: 'Kripto para mı?',
+        cryptoAnswer:
+          'Hayır. LangX içinde kazanıp harcadığın bir puan. Satın alınamaz, satılamaz, takas edilemez, stake edilemez ya da çekilemez, ve bu hiçbir zaman değişmeyecek.',
+        price: 'Bir fiyatı var mı? Satın alabilir miyim?',
+        priceAnswer:
+          'Hayır. Fiyatı yok ve jeton satın almanın bir yolu yok; ne parayla ne de başka bir şeyle. Jetonları kazanırsın.',
+        send: 'Jetonları satabilir ya da birine gönderebilir miyim?',
+        sendAnswer:
+          'Hayır. Satılamaz, paraya dönüştürülemez, kimseye gönderilemez. Onları yalnızca mağazada harcarsın.',
+        spend: 'Onları neye harcayabilirim?',
+        spendAnswer:
+          'Seri dondurma, kaçırılan günler, profil çerçeveleri, unvanlar ve sticker paketleri; hepsi mağazada. Başka hiçbir şey.',
+        pro: 'Jetonlarla Pro alınabilir mi?',
+        proAnswer: 'Hayır. Pro bir abonelik ve jetonlar onun hiçbir kısmını açmaz.',
+        day: 'Günde ne kadar kazanabilirim?',
+        dayAnswer:
+          'Tek bir günlük toplam yok. Mesajlar günde en fazla {messages}, Echo oturumları günde en fazla {sessions} sayılır; havuz payı en fazla {cap} olur. Düzeltmelerin toplamı yok, yalnızca bir kişinin cümlelerinden günde {corrections}.',
+        rank: 'Harcamak sıramı düşürür mü?',
+        rankAnswer:
+          'Hayır. Sıralamalar kazandığını sayar, bu yüzden harcamak seni asla aşağı düşürmez.',
+        before: 'LangX’i daha önce kullandım. Jetonlarım benimle geldi mi?',
+        beforeAnswer:
+          'Evet. Bakiyen yeni uygulamaya uysun diye bölünerek gelir; bölen {divisor}. Bu yüzden {divisor} jetonun altı sıfıra iner. Ayrıca {bonus} jetonluk bir tekrar hoş geldin bonusu alırsın.',
+      },
+      link: 'Tüm kurallar, açıklamalarıyla',
+    },
   },
 
   invite: {
@@ -4100,6 +4318,112 @@ export const tr: Localized<EnMessages> = {
       'Artık senden hiçbir şey yapay zekâ sağlayıcısına gitmez. Copilot bir dahaki kullanımında yeniden sorar.',
     settingsOffConfirm: 'Kapat',
     settingsOffDone: 'Copilot kapalı.',
+    page: {
+      tagline: 'Sohbetlerinin içinde bir yapay zekâ yardımcısı. Senin yerine tek kelime göndermez.',
+      allowance: 'Günlük yanıt: ücretsiz planda {free}, Pro ile {pro}.',
+      tryIt: 'Bir sohbette dene',
+      signUp: 'Denemek için kaydol',
+      helpsTitle: 'Ne yapar',
+      helpsIntro: 'Bir dokunuş bir soru sorar. Arka planda hiçbir şey sorulmaz.',
+      sayIt: 'Nasıl söylenir',
+      checkBody: 'Göndermeden önce cümleni kontrol eder ve değiştirdiği şey için bir neden söyler.',
+      sayItBody: {
+        one: 'Kendi dilinde yaz; öğrendiğin dilde söylemenin en fazla {count} yolunu gör.',
+        other: 'Kendi dilinde yaz; öğrendiğin dilde söylemenin en fazla {count} yolunu gör.',
+      },
+      explainBody:
+        'Onun mesajına ya da bir düzeltmeye basılı tut; ne anlama geldiğini ya da neyin neden değiştiğini gör.',
+      replyIdeasBody: {
+        one: 'Onun mesajı yanıt beklerken, değiştirip kendin göndereceğin en fazla {count} kısa yanıt al.',
+        other:
+          'Onun mesajı yanıt beklerken, değiştirip kendin göndereceğin en fazla {count} kısa yanıt al.',
+      },
+      example: {
+        label: 'Örnek, gerçek bir yanıt değil',
+        draft: 'Taslağın',
+        partner: 'Partnerin',
+        checkDraft: 'She don’t like coffee.',
+        checkFixed: 'She doesn’t like coffee.',
+        checkReason: '“She” ile fiil “don’t” değil, “doesn’t” olur.',
+        sayItAsked: 'Konuşmayı yarına alabilir miyiz?',
+        sayItOption1: 'How about tomorrow instead?',
+        sayItGloss1: 'samimi',
+        sayItOption2: 'Could we talk tomorrow instead?',
+        sayItGloss2: 'daha kibar',
+        explainOriginal: 'Yesterday I go to the cinema.',
+        explainCorrected: 'Yesterday I went to the cinema.',
+        explainAnswer:
+          '“Yesterday” (dün) cümleyi geçmişe taşır, bu yüzden “go” (giderim) “went” (gittim) olur.',
+        replyTheirs: 'What are you doing this weekend?',
+        replyIdea1: 'I’m going to the beach with friends.',
+        replyIdea2: 'Not sure yet. And you?',
+      },
+      whenTitle: 'Ne zaman işe yarar',
+      whenCheck: 'Bir cümlenin doğru olduğundan emin değil misin?',
+      whenCheckBody: 'Göndermeden önce “{check}” seçeneğine dokun.',
+      whenSayIt: 'Ne diyeceğini biliyor ama nasıl diyeceğini bilmiyor musun?',
+      whenSayItBody: 'Kendi dilinde yaz ve “{sayIt}” seçeneğine dokun.',
+      whenExplain: 'Bir mesajda ya da düzeltmede kayboldun mu?',
+      whenExplainBody: 'Ona basılı tut ve “{explain}” seç.',
+      whenReplyIdeas: 'Ne yanıt vereceğini bilemiyor musun?',
+      whenReplyIdeasBody: '“{replyIdeas}” seçeneğine dokun, sonra birini kendine göre değiştir.',
+      howTitle: 'Nasıl kullanılır',
+      step1: 'Bir sohbet aç',
+      step1Body: 'Copilot zaten var olan bir konuşmanın içinde çalışır.',
+      step2: 'İstediğin yardıma dokun',
+      step2Body:
+        'Yaz, sonra “{check}” ya da “{sayIt}” için Gönder’in yanındaki mavi düğmeye dokun. “{explain}” için onun mesajına ya da bir düzeltmeye basılı tut. Onun mesajı yanıt beklerken “{replyIdeas}” boş kutunun üstünde durur.',
+      step3: 'İlk seferde onay ver',
+      step3Body:
+        'Bir pencere neyin kime gönderildiğini söyler. Sen onay vermeden hiçbir şey gönderilmez.',
+      step4: 'Oku, sonra karar ver',
+      step4Body:
+        'Kullan, değiştir ya da kapat. Yalnızca Gönder gönderir ve ona yalnızca sen basarsın.',
+      trustTitle: 'Kontrol sende',
+      trustPartner: 'Partnerin onu asla görmez',
+      trustPartnerBody: 'Yanıtlar sohbette değil, yalnızca senin ekranında görünür.',
+      trustSend: 'Senin yerine hiçbir şey gönderilmez',
+      trustSendBody: '“{useThis}” ve bir yanıt fikri yalnızca mesaj kutunu doldurur.',
+      trustOff: 'Kapatabilirsin',
+      trustOffBody:
+        '{settings} → {privacy} → {copilot}. Artık senden hiçbir şey yapay zekâ sağlayıcısına gitmez.',
+      trustReport: 'Bir yanıtı bildirebilirsin',
+      trustReportBody:
+        'Herhangi bir yanıtta “{report}” seçeneğine dokun. LangX ekibi görür; partnerin görmez.',
+      accountTitle: 'Copilot hesabı',
+      accountSoon: 'Yakında',
+      accountClosed:
+        'Uygulamayla ilgili sorular için kendine ait bir sohbet. Henüz mesaj almıyor; şimdilik Copilot insanlarla sohbetlerinin içinde çalışıyor.',
+      accountOpen:
+        'Uygulamayla ilgili sorular, bir hata ya da bir fikir için kendine ait bir sohbet.',
+      faq: {
+        personQ: 'Copilot bir insan mı, bir öğretmen mi?',
+        personA:
+          'İkisi de değil. Gerçek bir insanla yaptığın sohbetin içinde bir yapay zekâ yardımcısı. Yardımlarından birine dokunursun ve yalnızca o soruyu yanıtlar.',
+        wrongQ: 'Yanılabilir mi?',
+        wrongA:
+          'Evet, her dilde. Her yanıtı bir öneri olarak oku, istediğinde kendi sözlerini koru ve yanlış bir yanıtta “{report}” seçeneğine dokun.',
+        partnerQ: 'Partnerim onu kullandığımı görebilir mi?',
+        partnerA:
+          'Hayır. Partnerin Copilot yanıtlarının hiçbirini görmez. Gönderdiğin şey, Copilot yardım etsin ya da etmesin, senin kendi mesajındır.',
+        allowanceQ: 'Kaç yanıt alırım?',
+        allowanceA:
+          'Ücretsiz planda günde {free}, Pro ile {pro}; tüm yardımlar bunu paylaşır. Her biri, kullandıktan bir gün sonra geri gelir, hepsi gece yarısı değil. Bir yanıt yalnızca Copilot yeni bir tane yazdığında sayılır: kısa süre önce sorulmuş bir soru ya da yanıtlayamadığı bir soru hiçbir şeye mal olmaz.',
+        sentQ: 'Yapay zekâya ne gönderilir?',
+        sentA: 'Sen onay verene kadar hiçbir şey; sonra da yalnızca sen istediğinde.',
+        languagesQ: 'Hangi dillerde çalışır?',
+        languagesA:
+          'Uygulamanın dilinde açıklar. “{check}” yazdığın dili okur, “{sayIt}” öğrendiğin dilde yazar, yanıt fikirleri de sohbetin dilinde gelir.',
+        hiddenQ: 'Neden göremiyorum?',
+        hiddenA:
+          'Zaten var olan bir konuşmanın içinde çalışır ve düğmesi sen yazınca görünür. @langx gibi mesaj almayan hesaplarla sohbetlerde yoktur ve e-postası doğrulanmış bir hesap gerektirir. Bir beta olduğu için herkes için kapatılabilir de.',
+        accountQ: '@copilot ile sohbet edebilir miyim?',
+        accountClosedA:
+          'Henüz değil. @copilot hesabı yakında geliyor. Şimdilik mesaj almıyor ve Copilot insanlarla sohbetlerinin içinde çalışıyor.',
+        accountOpenA: 'Evet. @copilot’a herkese yazdığın gibi yaz ve ona uygulamayı sor.',
+      },
+      siteTitle: 'Tüm ayrıntılar, Copilot’un kendi sitesinde',
+    },
   },
   venus: {
     page: {

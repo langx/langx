@@ -1,10 +1,10 @@
-import { ERROR_CODES } from '@langx/shared'
+import { ERROR_CODES, PUBLIC_STATS_TTL_MS } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { Resend } from 'resend'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
 import { INSIGHT_IMAGES, readInsightImage, readInsightPage } from '../modules/insight/page'
-import { PUBLIC_STATS_TTL_MS, readPublicStats } from '../modules/insight/publicStats'
+import { readPublicStats } from '../modules/insight/publicStats'
 import { readContributors } from '../modules/kitchen/contributors'
 import { getLeaderboard } from '../modules/tokens/leaderboard'
 

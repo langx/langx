@@ -2244,6 +2244,138 @@ export const fr: Localized<EnMessages> = {
     codeOfConduct: 'Code de conduite',
     moreContributors: '+{count}',
   },
+  transparency: {
+    page: {
+      title: 'Transparence',
+      tagline: 'LangX se fait au grand jour : le code est public, et les chiffres aussi.',
+      factOpenSource: 'Code ouvert',
+      factOpenNumbers: 'Chiffres ouverts',
+      factTotals: 'Totaux seulement',
+      countedNow: 'Compté à l’instant',
+      countedMinutes: {
+        one: 'Compté il y a {count} minute',
+        other: 'Compté il y a {count} minutes',
+      },
+      countedHours: { one: 'Compté il y a {count} heure', other: 'Compté il y a {count} heures' },
+      countedDays: { one: 'Compté il y a {count} jour', other: 'Compté il y a {count} jours' },
+      openTitle: 'Code ouvert',
+      openIntro:
+        'L’app, le serveur et le code qui compte ces chiffres forment un seul dépôt public, sous licence BSD-3.',
+      readCode: 'Lire le code',
+      contribute: 'Contribuer',
+      numbersTitle: 'Les chiffres',
+      numbersIntro: {
+        one: 'Comptés dans la base de données de LangX, au plus une fois par minute.',
+        other:
+          'Comptés dans la base de données de LangX, au plus une fois toutes les {count} minutes.',
+      },
+      totalA11y: '{label} : {amount}. {hint}',
+      members: 'Membres',
+      membersHint:
+        'Les comptes qui existent aujourd’hui. Les invités et les comptes en cours de suppression ne sont pas comptés.',
+      messages: 'Messages',
+      messagesHint:
+        'Envoyés dans les discussions, corrections faites dans une discussion comprises. Les appels ne sont pas comptés.',
+      corrections: 'Corrections de publications',
+      correctionsHint: 'Corrections écrites sur des publications du fil.',
+      languages: 'Langues',
+      languagesHint: 'Langues différentes que les membres apprennent.',
+      daysTitle: { one: 'Le dernier jour', other: 'Les {count} derniers jours' },
+      daysPick: 'Chiffre affiché',
+      dayMembers: 'Membres',
+      dayMessages: 'Messages',
+      dayCorrections: 'Corrections',
+      sumMembers: { one: '{amount} nouveau membre', other: '{amount} nouveaux membres' },
+      sumMessages: { one: '{amount} message', other: '{amount} messages' },
+      sumCorrections: {
+        one: '{amount} correction de publication',
+        other: '{amount} corrections de publications',
+      },
+      chartA11y: {
+        one: '{total} sur le dernier jour, une colonne par jour',
+        other: '{total} sur les {count} derniers jours, une colonne par jour',
+      },
+      daysCaption:
+        'Une colonne par jour, selon le jour UTC. La dernière, c’est aujourd’hui jusqu’ici.',
+      languagesTitle: 'Langues',
+      learning: 'Les plus apprises',
+      native: 'Les plus parlées en langue maternelle',
+      languageRow: { one: '{language} : {amount} membre', other: '{language} : {amount} membres' },
+      noLanguages: 'Aucune langue indiquée pour l’instant.',
+      streaksTitle: 'Séries',
+      longest: 'Plus longue série',
+      longestBody: 'La plus longue qu’ait eue une personne qui a un compte aujourd’hui.',
+      longestValue: { one: '{amount} jour', other: '{amount} jours' },
+      active: 'En série',
+      activeBody:
+        'Les membres dont la série n’est pas encore terminée — pas seulement ceux venus aujourd’hui.',
+      activeValue: { one: '{amount} membre', other: '{amount} membres' },
+      trustTitle: 'Tes données et ta sécurité',
+      auditTitle: 'Les règles sont dans le code',
+      auditBody:
+        'Limites, vérifications d’offre et règles des tokens sont toutes lisibles, et chacune est appliquée sur le serveur : connaître une règle ne permet pas de la contourner.',
+      dataTitle: 'Tes données t’appartiennent',
+      dataBody: {
+        one: 'Exporte tout ce que l’app garde sur toi, ou supprime ton compte : il disparaît pour de bon {count} jour plus tard.',
+        other:
+          'Exporte tout ce que l’app garde sur toi, ou supprime ton compte : il disparaît pour de bon {count} jours plus tard.',
+      },
+      boundedTitle: 'Cette page a des limites',
+      boundedBody:
+        'Des totaux et des jours, jamais une personne. Le plus petit groupe est une langue entière.',
+      securityTitle: 'Une faille ?',
+      securityBody:
+        'Signale-la en privé, pas dans un ticket public. Tu as une réponse sous une semaine.',
+      securityLink: 'Politique de sécurité',
+      supportTitle: 'Soutenir LangX',
+      proTitle: 'Passer à Pro',
+      proBody: 'Pro paie les serveurs et fait vivre LangX.',
+      proTitleMember: 'Tu es Pro',
+      proBodyMember: 'Merci. Pro paie les serveurs et fait vivre LangX.',
+      qReal: 'Les chiffres sont-ils réels ?',
+      aReal:
+        'Oui. Ils sont comptés dans la base de données de LangX par du code que tout le monde peut lire — le même code qui répond à cette page. Personne ne les saisit, et aucun n’est arrondi.',
+      qRevenue: 'Pourquoi le chiffre d’affaires n’y est-il pas ?',
+      aRevenue:
+        'Parce qu’un chiffre publié ne se retire pas. Le chiffre d’affaires, les abonnements, la conversion, la rétention et l’origine des membres livreraient nos projets à quiconque le demanderait : ils ne sont donc jamais sur cette page.',
+      qGuests: 'Les invités sont-ils comptés ?',
+      aGuests:
+        'Non. Un invité regarde sans compte, et compter les invités gonflerait chaque chiffre. Membres, langues et séries ne comptent que les comptes qui existent aujourd’hui — pas d’invités, ni de compte en attente de suppression.',
+      qUpdates: 'À quelle fréquence est-ce mis à jour ?',
+      aUpdates: {
+        one: 'Au plus une fois par minute : les chiffres sont recomptés à la première visite qui suit, pas à heure fixe. Une copie gardée en chemin peut avoir le même âge en plus, c’est pourquoi le haut de la page indique quand ils ont été comptés.',
+        other:
+          'Au plus une fois toutes les {count} minutes : les chiffres sont recomptés à la première visite qui suit, pas à heure fixe. Une copie gardée en chemin peut avoir le même âge en plus, c’est pourquoi le haut de la page indique quand ils ont été comptés.',
+      },
+      qMine: 'Mes données sont-elles sur cette page ?',
+      aMine:
+        'Seulement dans les totaux. Tu es l’un des membres, et tu comptes dans chaque langue que tu indiques, mais la page ne contient ni noms, ni profils, ni messages, et son plus petit groupe est une langue entière : rien ne permet de remonter jusqu’à toi.',
+      qOpen: 'LangX est-il vraiment open source ?',
+      aOpen:
+        'Oui. L’app, le serveur et le code de cette page sont dans un seul dépôt public sous licence BSD-3 : tout le monde peut le lire, faire tourner sa propre copie et s’en servir pour construire, tant que la mention de licence l’accompagne.',
+      qSafe: 'Si le code est public, est-ce sûr ?',
+      aSafe:
+        'Le code public n’est pas le point faible, car rien ne dépend de son secret. Chaque limite et chaque permission est vérifiée sur le serveur : savoir comment ça marche ne permet pas de les contourner, et aucun mot de passe ni aucune clé ne figure jamais dans le code.',
+      qE2E: 'Mes messages sont-ils chiffrés de bout en bout ?',
+      aE2E: 'Non. Les messages sont gardés sur les serveurs de LangX sous une forme que LangX peut lire : quand une conversation est signalée, les modérateurs lisent les messages qui y ont mené. Ce qui les protège : seules les deux personnes d’une conversation peuvent l’ouvrir — le serveur le vérifie à chaque requête et à chaque mise à jour en direct, et de nouveau après un blocage — et tout ce qui passe entre l’app et le serveur circule en HTTPS.',
+      qExport: 'Puis-je exporter ou supprimer mes données ?',
+      aExport: {
+        one: 'Oui, les deux, dans {settings} › {account}. {exportData} te donne un fichier avec tout ce que l’app garde sur toi. {deleteAccount}, une fois confirmé, masque ton compte aussitôt et le supprime pour de bon au bout de {count} jour ; te reconnecter avant annule la suppression. Les messages que tu as envoyés restent dans la discussion de l’autre personne, sans leur texte.',
+        other:
+          'Oui, les deux, dans {settings} › {account}. {exportData} te donne un fichier avec tout ce que l’app garde sur toi. {deleteAccount}, une fois confirmé, masque ton compte aussitôt et le supprime pour de bon au bout de {count} jours ; te reconnecter avant annule la suppression. Les messages que tu as envoyés restent dans la discussion de l’autre personne, sans leur texte.',
+      },
+      qContribute: 'Comment contribuer ?',
+      aContribute:
+        'Commence par « {contribute} », plus haut : on y explique comment lancer LangX sur ton ordinateur et ce qu’il faut à une modification avant de l’envoyer. « {issues} » liste ce qui est ouvert.',
+      qSupport: 'Comment soutenir LangX ?',
+      aSupport:
+        'Passer à Pro aide le plus : l’abonnement paie les serveurs et fait vivre LangX. Tu peux aussi nous sponsoriser sur GitHub, devenir mécène ou nous rejoindre sur Discord — les liens sont plus haut.',
+      qVulnerability: 'J’ai trouvé une vulnérabilité. Que faire ?',
+      aVulnerability:
+        'Merci. Signale-la en privé par e-mail, pas dans un ticket public — l’adresse est plus haut, dans « {policy} ». Tu as une réponse sous une semaine, et un signalement accepté est corrigé dans la prochaine mise à jour de sécurité.',
+      linkTitle: 'Les mêmes chiffres, sur le web',
+    },
+  },
   streak: {
     title: 'Ta série',
     historyBody: 'Chaque jour des deux derniers mois, et ce qui a compté',
@@ -2747,6 +2879,108 @@ export const fr: Localized<EnMessages> = {
     todayCorrections: { one: 'correction', other: 'corrections' },
     todayPeople: { one: 'personne', other: 'personnes' },
     seeHistory: 'Voir ton historique',
+    page: {
+      title: 'LangX Token',
+      tagline:
+        'Des points que tu gagnes en parlant et en enseignant, et que tu dépenses dans LangX.',
+      factPoints: 'Points internes à l’app',
+      factBought: 'Impossible à acheter',
+      factTraded: 'Impossible à échanger',
+      yours: 'Tes jetons',
+      walletBody: 'Ton solde, ton historique et la boutique',
+      todayFallback: 'Ta journée jusqu’ici, et le pot commun du jour',
+      rank: '#{rank}',
+      rankBody: 'Dépenser ne te fait jamais descendre.',
+      rankNone: 'Gagne des jetons cette semaine pour entrer au classement.',
+      guestTitle: { one: 'Commence avec {amount} jeton', other: 'Commence avec {amount} jetons' },
+      guestBody: 'Crée un compte pour gagner des jetons et les dépenser.',
+      earn: 'Comment en gagner',
+      messagesBody: 'Jusqu’à {perDay} par jour, et {perPartner} avec une même personne.',
+      correctionsBody:
+        'Enseigner compte plus que parler. Jusqu’à {perPartner} par jour sur les phrases d’une même personne.',
+      pronunciationBody:
+        'Enregistre une phrase pour quelqu’un qui a demandé comment elle se prononce.',
+      mutualTitle: 'Conversations dans les deux sens',
+      mutualBody:
+        'Une fois par conversation, quand vous avez écrit tous les deux. Vous le gagnez tous les deux.',
+      echoBody: 'Une séance de révision terminée, jusqu’à {perDay} par jour.',
+      streakBody: {
+        one: 'Un bonus à chaque palier, de {first} à {last} jour d’affilée.',
+        other: 'Un bonus à chaque palier, de {first} à {last} jours d’affilée.',
+      },
+      inviteBody:
+        'Quand une personne que tu invites a une vraie conversation. Avec son bonus d’inscription, elle commence avec {amount}.',
+      pool: 'Le pot commun du jour',
+      poolIntro: {
+        one: 'En plus, {amount} jeton est partagé chaque jour.',
+        other: 'En plus, {amount} jetons sont partagés chaque jour.',
+      },
+      poolTakePart: 'Participe',
+      poolTakePartBody:
+        'Les conversations, les corrections, les messages et les personnes à qui tu parles comptent tous.',
+      poolShared: 'Le pot commun est partagé',
+      poolSharedBody: 'Selon l’activité de chacun ce jour-là.',
+      poolArrives: 'Ta part arrive',
+      poolArrivesBody: 'Dans ton portefeuille à {hour}:00 UTC, jusqu’à {cap} chacun.',
+      spend: 'Dépense-les pour',
+      freezeBody: 'Couvre le prochain jour que tu manques.',
+      freezeKeep: {
+        one: 'Tu peux en garder un à la fois.',
+        other: 'Tu peux en garder jusqu’à {amount} à la fois.',
+      },
+      repairTitle: 'Un jour manqué rattrapé',
+      repairWindow: {
+        one: 'Rattrape un jour manqué parmi le dernier {amount} jour.',
+        other: 'Rattrape un jour manqué parmi les {amount} derniers jours.',
+      },
+      repairMonthly: { one: 'Un par mois.', other: 'Jusqu’à {amount} par mois.' },
+      titlesBody: {
+        one: '{amount} titre à afficher sur ton profil',
+        other: '{amount} titres à afficher sur ton profil',
+      },
+      venusTitle: 'Pack de Venus',
+      venusBody: {
+        one: '{amount} sticker, gratuit pour tout le monde',
+        other: '{amount} stickers, gratuits pour tout le monde',
+      },
+      free: 'Gratuit',
+      not: 'Ce que ce n’est pas',
+      notSale: 'Pas à vendre',
+      notSaleBody: 'Personne ne peut en acheter, ni avec de l’argent ni avec autre chose.',
+      notCash: 'Pas de l’argent',
+      notCashBody:
+        'Les jetons ne peuvent être ni vendus, ni convertis en argent, ni envoyés à quelqu’un.',
+      notCrypto: 'Pas une cryptomonnaie',
+      notCryptoBody: 'Pas de chaîne, pas de marché. Tout reste dans LangX.',
+      notPro: 'Pas un moyen de payer Pro',
+      notProBody: 'Pro est un abonnement. Les jetons n’en débloquent aucune partie.',
+      faq: {
+        crypto: 'Est-ce une cryptomonnaie ?',
+        cryptoAnswer:
+          'Non. C’est un point que tu gagnes et dépenses dans LangX. Il ne peut être ni acheté, ni vendu, ni échangé, ni staké, ni retiré, et il ne le sera jamais.',
+        price: 'Est-ce que ça a un prix ? Puis-je en acheter ?',
+        priceAnswer:
+          'Non. Il n’y a pas de prix ni aucun moyen d’acheter des jetons, avec de l’argent ou autre chose. Tu les gagnes.',
+        send: 'Puis-je vendre des jetons ou en envoyer à quelqu’un ?',
+        sendAnswer:
+          'Non. Ils ne peuvent être ni vendus, ni convertis en argent, ni envoyés à quelqu’un. Tu les dépenses dans la boutique, et nulle part ailleurs.',
+        spend: 'Sur quoi puis-je les dépenser ?',
+        spendAnswer:
+          'Gels de série, jours manqués, cadres de profil, titres et packs de stickers, tout dans la boutique. Rien d’autre.',
+        pro: 'Les jetons peuvent-ils payer Pro ?',
+        proAnswer: 'Non. Pro est un abonnement, et les jetons n’en débloquent aucune partie.',
+        day: 'Combien puis-je gagner par jour ?',
+        dayAnswer:
+          'Il n’y a pas de total quotidien unique. Les messages comptent jusqu’à {messages} par jour, les séances Echo jusqu’à {sessions} par jour, et une part du pot commun vaut au plus {cap}. Les corrections n’ont pas de total, seulement {corrections} par jour sur les phrases d’une même personne.',
+        rank: 'Dépenser fait-il baisser mon rang ?',
+        rankAnswer:
+          'Non. Les classements comptent ce que tu as gagné, donc dépenser ne te fait jamais descendre.',
+        before: 'J’utilisais LangX avant. Mes jetons m’ont-ils suivi ?',
+        beforeAnswer:
+          'Oui. Ton solde arrive divisé par {divisor} pour s’adapter à la nouvelle app, donc moins de {divisor} donne zéro. Tu reçois aussi un bonus de retour de {bonus}.',
+      },
+      link: 'Toutes les règles, expliquées',
+    },
   },
 
   invite: {
@@ -4190,6 +4424,114 @@ export const fr: Localized<EnMessages> = {
       'Plus rien de toi n’ira au fournisseur d’IA. Copilot te redemandera la prochaine fois que tu l’utiliseras.',
     settingsOffConfirm: 'Désactiver',
     settingsOffDone: 'Copilot est désactivé.',
+    page: {
+      tagline: 'Un assistant IA dans tes discussions. Il n’envoie jamais un mot à ta place.',
+      allowance: 'Réponses par jour : {free} sur le forfait gratuit, {pro} avec Pro.',
+      tryIt: 'L’essayer dans une discussion',
+      signUp: 'S’inscrire pour l’essayer',
+      helpsTitle: 'Ce qu’il fait',
+      helpsIntro: 'Un appui pose une question. Rien n’est demandé en arrière-plan.',
+      sayIt: 'Le dire',
+      checkBody: 'Avant l’envoi, il vérifie ta phrase et donne une raison pour ce qu’il change.',
+      sayItBody: {
+        one: 'Écris-le dans ta langue et obtiens jusqu’à {count} façon de le dire dans celle que tu apprends.',
+        other:
+          'Écris-le dans ta langue et obtiens jusqu’à {count} façons de le dire dans celle que tu apprends.',
+      },
+      explainBody:
+        'Appuie longuement sur son message ou sur une correction pour voir ce qu’il veut dire, ou ce qui a changé et pourquoi.',
+      replyIdeasBody: {
+        one: 'Quand son message attend une réponse, obtiens jusqu’à {count} réponse courte à modifier et envoyer toi-même.',
+        other:
+          'Quand son message attend une réponse, obtiens jusqu’à {count} réponses courtes à modifier et envoyer toi-même.',
+      },
+      example: {
+        label: 'Illustration, pas une vraie réponse',
+        draft: 'Ton brouillon',
+        partner: 'Ton partenaire',
+        checkDraft: 'She don’t like coffee.',
+        checkFixed: 'She doesn’t like coffee.',
+        checkReason: 'Avec « she », le verbe prend « doesn’t », pas « don’t ».',
+        sayItAsked: 'On peut plutôt parler demain ?',
+        sayItOption1: 'How about tomorrow instead?',
+        sayItGloss1: 'familier',
+        sayItOption2: 'Could we talk tomorrow instead?',
+        sayItGloss2: 'plus poli',
+        explainOriginal: 'Yesterday I go to the cinema.',
+        explainCorrected: 'Yesterday I went to the cinema.',
+        explainAnswer:
+          '« Yesterday » (hier) place la phrase dans le passé, donc « go » (je vais) devient « went » (je suis allé).',
+        replyTheirs: 'What are you doing this weekend?',
+        replyIdea1: 'I’m going to the beach with friends.',
+        replyIdea2: 'Not sure yet. And you?',
+      },
+      whenTitle: 'Quand il aide',
+      whenCheck: 'Pas sûr qu’une phrase soit juste ?',
+      whenCheckBody: 'Touche « {check} » avant de l’envoyer.',
+      whenSayIt: 'Tu sais quoi dire, mais pas comment ?',
+      whenSayItBody: 'Écris-le dans ta langue et touche « {sayIt} ».',
+      whenExplain: 'Perdu dans un message ou une correction ?',
+      whenExplainBody: 'Appuie longuement dessus et choisis « {explain} ».',
+      whenReplyIdeas: 'Tu ne sais pas quoi répondre ?',
+      whenReplyIdeasBody: 'Touche « {replyIdeas} », puis fais-en une à ta façon.',
+      howTitle: 'Comment l’utiliser',
+      step1: 'Ouvre une discussion',
+      step1Body: 'Copilot fonctionne dans une conversation que tu as déjà.',
+      step2: 'Touche l’aide que tu veux',
+      step2Body:
+        'Écris, puis touche le bouton bleu à côté d’Envoyer pour « {check} » ou « {sayIt} ». Appuie longuement sur son message ou sur une correction pour « {explain} ». Quand son message attend une réponse, « {replyIdeas} » apparaît au-dessus de la zone vide.',
+      step3: 'Accepte, la première fois',
+      step3Body:
+        'Une fenêtre dit ce qui est envoyé et à qui. Rien n’est envoyé avant que tu acceptes.',
+      step4: 'Lis, puis décide',
+      step4Body:
+        'Utilise-la, modifie-la ou ferme-la. Seul Envoyer envoie, et toi seul appuies dessus.',
+      trustTitle: 'Tu gardes la main',
+      trustPartner: 'Ton partenaire ne le voit jamais',
+      trustPartnerBody: 'Les réponses s’affichent sur ton écran, jamais dans la discussion.',
+      trustSend: 'Rien n’est envoyé à ta place',
+      trustSendBody:
+        '« {useThis} » et une idée de réponse remplissent seulement ta zone de message.',
+      trustOff: 'Tu peux le désactiver',
+      trustOffBody:
+        '{settings} → {privacy} → {copilot}. Plus rien de toi n’ira au fournisseur d’IA.',
+      trustReport: 'Tu peux signaler une réponse',
+      trustReportBody:
+        'Touche « {report} » sur n’importe quelle réponse. L’équipe LangX la voit ; ton partenaire, non.',
+      accountTitle: 'Le compte Copilot',
+      accountSoon: 'Bientôt',
+      accountClosed:
+        'Une discussion à lui, pour les questions sur l’app. Il ne reçoit pas encore de messages ; pour l’instant, Copilot fonctionne dans tes discussions avec des personnes.',
+      accountOpen: 'Une discussion à lui, pour les questions sur l’app, un bug ou une idée.',
+      faq: {
+        personQ: 'Copilot est-il une personne ou un prof ?',
+        personA:
+          'Ni l’un ni l’autre. C’est un assistant IA dans une discussion avec une vraie personne. Tu touches l’une de ses aides, et il répond à cette question-là.',
+        wrongQ: 'Peut-il se tromper ?',
+        wrongA:
+          'Oui, dans n’importe quelle langue. Lis chaque réponse comme une suggestion, garde tes propres mots quand tu les préfères, et touche « {report} » sur une réponse fausse.',
+        partnerQ: 'Mon partenaire peut-il voir que je l’ai utilisé ?',
+        partnerA:
+          'Non. Ton partenaire ne voit aucune de tes réponses Copilot. Ce que tu envoies est ton propre message, que Copilot t’ait aidé ou non.',
+        allowanceQ: 'Combien de réponses ai-je ?',
+        allowanceA:
+          '{free} par jour sur le forfait gratuit et {pro} avec Pro, partagées entre toutes ses aides. Chacune revient un jour après que tu l’as utilisée, pas toutes à minuit. Une réponse ne compte que quand Copilot en écrit une nouvelle : une question posée récemment, ou une à laquelle il n’a pas pu répondre, ne coûte rien.',
+        sentQ: 'Qu’est-ce qui est envoyé à l’IA ?',
+        sentA: 'Rien tant que tu n’as pas accepté, puis seulement quand tu le demandes.',
+        languagesQ: 'Dans quelles langues fonctionne-t-il ?',
+        languagesA:
+          'Il explique dans la langue de ton app. « {check} » lit la langue dans laquelle tu as écrit, « {sayIt} » écrit dans la langue que tu apprends, et les idées de réponse arrivent dans la langue de la discussion.',
+        hiddenQ: 'Pourquoi je ne le vois pas ?',
+        hiddenA:
+          'Il fonctionne dans une conversation que tu as déjà, et son bouton apparaît dès que tu écris. Il n’est pas dans les discussions avec des comptes qui ne reçoivent pas de messages, comme @langx, et il faut un compte avec une adresse e-mail vérifiée. Comme c’est une bêta, il peut aussi être désactivé pour tout le monde.',
+        accountQ: 'Puis-je discuter avec @copilot ?',
+        accountClosedA:
+          'Pas encore. Le compte @copilot arrive bientôt. Pour l’instant, il ne reçoit pas de messages, et Copilot fonctionne dans tes discussions avec des personnes.',
+        accountOpenA:
+          'Oui. Écris à @copilot comme à n’importe qui, et pose-lui tes questions sur l’app.',
+      },
+      siteTitle: 'Tous les détails, sur le site de Copilot',
+    },
   },
   venus: {
     page: {

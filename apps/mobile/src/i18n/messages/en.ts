@@ -2474,6 +2474,148 @@ export const en = {
     codeOfConduct: 'Code of conduct',
     moreContributors: '+{count}',
   },
+  /**
+   * The Transparency page (`screens/TransparencyScreenV3.tsx`): the project's
+   * code, and the public numbers of `GET /public/stats` and nothing else.
+   * Every sentence was checked against the code, and each number is named
+   * for exactly what it counts (`publicStatsSchema`). A correction made in a
+   * chat is a message, so "corrections" here are the feed's alone; a streak
+   * is only reset once it is three days stale, so the streak count is "on a
+   * streak", never "today". "End-to-end encrypted" appears once, in the
+   * question that answers it with a plain no (`transparencyWords.test.ts`).
+   */
+  transparency: {
+    page: {
+      title: 'Transparency',
+      tagline: 'LangX is made in the open: the code is public, and so are the numbers.',
+      factOpenSource: 'Open source',
+      factOpenNumbers: 'Open numbers',
+      factTotals: 'Totals only',
+      /** The hero's note: from when the server counted, not from when the answer arrived. */
+      countedNow: 'Counted just now',
+      countedMinutes: { one: 'Counted {count} minute ago', other: 'Counted {count} minutes ago' },
+      countedHours: { one: 'Counted {count} hour ago', other: 'Counted {count} hours ago' },
+      countedDays: { one: 'Counted {count} day ago', other: 'Counted {count} days ago' },
+      openTitle: 'Open source',
+      openIntro:
+        'The app, the server and the code that counts these numbers are one public repository, under the BSD-3 licence.',
+      readCode: 'Read the code',
+      contribute: 'Contribute',
+      numbersTitle: 'The numbers',
+      /** `{count}` is `PUBLIC_STATS_TTL_MS` in minutes. */
+      numbersIntro: {
+        one: 'Counted from LangX’s own database, at most once every {count} minute.',
+        other: 'Counted from LangX’s own database, at most once every {count} minutes.',
+      },
+      /** One total read as one item: its name, the number, then what it counts. */
+      totalA11y: '{label}: {amount}. {hint}',
+      members: 'Members',
+      membersHint: 'Accounts that exist now. Guests and accounts being deleted are not counted.',
+      messages: 'Messages',
+      messagesHint: 'Sent in chats, corrections made in a chat included. Calls are not counted.',
+      corrections: 'Post corrections',
+      correctionsHint: 'Corrections written on feed posts.',
+      languages: 'Languages',
+      languagesHint: 'Different languages members are learning.',
+      daysTitle: { one: 'The last {count} day', other: 'The last {count} days' },
+      /** The switch's name for a screen reader. */
+      daysPick: 'Number to show',
+      /** The switch's three segments, a third of a phone each; the line under it names each in full. */
+      dayMembers: 'Members',
+      dayMessages: 'Messages',
+      dayCorrections: 'Corrections',
+      sumMembers: { one: '{amount} new member', other: '{amount} new members' },
+      sumMessages: { one: '{amount} message', other: '{amount} messages' },
+      sumCorrections: { one: '{amount} post correction', other: '{amount} post corrections' },
+      /** The chart for a screen reader. `{total}` is one of the three lines above. */
+      chartA11y: {
+        one: '{total} over the last {count} day, one column a day',
+        other: '{total} over the last {count} days, one column a day',
+      },
+      daysCaption: 'One column a day, by UTC day. The last is today so far.',
+      languagesTitle: 'Languages',
+      learning: 'Most learned',
+      native: 'Most spoken natively',
+      languageRow: { one: '{language}: {amount} member', other: '{language}: {amount} members' },
+      noLanguages: 'No languages listed yet.',
+      streaksTitle: 'Streaks',
+      longest: 'Longest streak',
+      longestBody: 'The longest that anyone with an account today has had.',
+      longestValue: { one: '{amount} day', other: '{amount} days' },
+      active: 'On a streak',
+      activeBody: 'Members whose streak has not ended yet — not only those who came today.',
+      activeValue: { one: '{amount} member', other: '{amount} members' },
+      trustTitle: 'Your data and your safety',
+      auditTitle: 'The rules are in the code',
+      auditBody:
+        'Limits, plan checks and token rules can all be read, and each one is enforced on the server — knowing a rule does not get anyone around it.',
+      dataTitle: 'Your data is yours',
+      /** `{count}` is `ACCOUNT_DELETION_GRACE_DAYS`. */
+      dataBody: {
+        one: 'Export everything the app holds about you, or delete your account: it is gone for good {count} day later.',
+        other:
+          'Export everything the app holds about you, or delete your account: it is gone for good {count} days later.',
+      },
+      boundedTitle: 'This page has limits',
+      boundedBody: 'Totals and days only, never a person. The smallest group is a whole language.',
+      securityTitle: 'Found a hole?',
+      securityBody: 'Report it privately, not in a public issue. You hear back within a week.',
+      securityLink: 'Security policy',
+      supportTitle: 'Support LangX',
+      proTitle: 'Go Pro',
+      proBody: 'Pro is what pays for the servers and keeps LangX going.',
+      proTitleMember: 'You are on Pro',
+      proBodyMember: 'Thank you. Pro is what pays for the servers and keeps LangX going.',
+      qReal: 'Are the numbers real?',
+      aReal:
+        'Yes. They are counted from LangX’s own database by code anyone can read — the same code that answers this page. Nobody types them in, and none of them is rounded.',
+      qRevenue: 'Why is there no revenue here?',
+      aRevenue:
+        'Because a number that has been published cannot be taken back. Revenue, subscriptions, conversion, retention and where members come from would hand our plans to anyone who asked, so they are never on this page.',
+      qGuests: 'Are guests counted?',
+      aGuests:
+        'No. A guest is someone looking around without an account, and counting them would inflate every number. Members, languages and streaks count only accounts that exist now — no guests, and no account waiting to be deleted.',
+      qUpdates: 'How often does it update?',
+      /** `{count}` is `PUBLIC_STATS_TTL_MS` in minutes. */
+      aUpdates: {
+        one: 'At most once every {count} minute: the numbers are counted again on the first visit after that, not on a clock. A copy kept on the way to you can be as old again, which is why the top of the page says when they were counted.',
+        other:
+          'At most once every {count} minutes: the numbers are counted again on the first visit after that, not on a clock. A copy kept on the way to you can be as old again, which is why the top of the page says when they were counted.',
+      },
+      qMine: 'Is my data on this page?',
+      aMine:
+        'Only inside the totals. You are one of the members, and one in each language you list, but the page holds no names, no profiles and no messages, and its smallest group is a whole language — nothing on it narrows down to you.',
+      qOpen: 'Is LangX really open source?',
+      aOpen:
+        'Yes. The app, the server and the code behind this page are in one public repository under the BSD-3 licence: anyone can read it, run their own copy and build on it, as long as the licence’s notice goes with it.',
+      qSafe: 'If the code is public, is it safe?',
+      aSafe:
+        'Public code is not the weak point, because nothing depends on it being secret. Every limit and permission is checked on the server, so reading how it works does not get anyone around it, and no password or key is ever in the code.',
+      /** The one place the phrase may appear: the question, answered with a plain no. */
+      qE2E: 'Are my messages end-to-end encrypted?',
+      aE2E: 'No. Messages are kept on LangX’s servers in a form LangX can read: when a conversation is reported, moderators read the messages that led up to it. What protects them is that only the two people in a conversation can open it — the server checks that on every request and every live update, and again after a block — and that everything between the app and the server travels over HTTPS.',
+      qExport: 'Can I export or delete my data?',
+      /** `{settings}` › `{account}` is where both are. `{count}` is `ACCOUNT_DELETION_GRACE_DAYS`. */
+      aExport: {
+        one: 'Yes, both, in {settings} › {account}. {exportData} gives you one file with everything the app holds about you. {deleteAccount}, once you confirm it, hides your account at once and removes it for good after {count} day; signing back in before then cancels it. Messages you sent stay in the other person’s chat, with their words removed.',
+        other:
+          'Yes, both, in {settings} › {account}. {exportData} gives you one file with everything the app holds about you. {deleteAccount}, once you confirm it, hides your account at once and removes it for good after {count} days; signing back in before then cancels it. Messages you sent stay in the other person’s chat, with their words removed.',
+      },
+      qContribute: 'How do I contribute?',
+      /** `{contribute}` and `{issues}` are the names of the two rows above. */
+      aContribute:
+        'Start with {contribute}, above: it shows how to run LangX on your own computer and what a change needs before you send it. {issues} lists what is open.',
+      qSupport: 'How can I support LangX?',
+      aSupport:
+        'Going Pro helps most: the subscription is what pays for the servers and keeps LangX going. You can also sponsor us on GitHub, become a patron, or join us on Discord — the links are above.',
+      qVulnerability: 'I found a vulnerability. What do I do?',
+      /** `{policy}` is the name of the row above that opens the security policy. */
+      aVulnerability:
+        'Thank you. Report it privately by email, not in a public issue — {policy}, above, has the address. You hear back within a week, and a report that is accepted is fixed in the next security update.',
+      /** The link out to the web page that draws the same numbers. */
+      linkTitle: 'The same numbers, on the web',
+    },
+  },
   streak: {
     title: 'Your streak',
     historyBody: 'Every day of the last two months, and what counted',
@@ -3003,6 +3145,115 @@ export const en = {
     todayCorrections: { one: 'correction', other: 'corrections' },
     todayPeople: { one: 'person', other: 'people' },
     seeHistory: 'See your history',
+    /**
+     * LangX Token's page (`TokenScreenV3`, built by `lib/tokenPage.ts`). Held
+     * to `docs/token-messaging-brief.md` word for word: an in-app point that
+     * is earned and spent here and nowhere else. Every number arrives from
+     * `TOKEN_RULES` or the catalogue as `{amount}`, never typed, and
+     * `tokenPage.test.ts` keeps the brief's banned words off every line —
+     * the negations the brief itself uses are named there one by one.
+     */
+    page: {
+      title: 'LangX Token',
+      tagline: 'Points you earn by talking and teaching, and spend inside LangX.',
+      factPoints: 'In-app points',
+      factBought: 'Can’t be bought',
+      factTraded: 'Can’t be traded',
+      yours: 'Yours',
+      walletBody: 'Your balance, history and store',
+      /** The "today" row while today's counts have not arrived. */
+      todayFallback: 'Your day so far, and the daily pool',
+      /** Your place on this week's board, in your digits. */
+      rank: '#{rank}',
+      rankBody: 'Spending never moves you down.',
+      rankNone: 'Earn tokens this week to be on the board.',
+      /** A guest's line in place of "Yours": the sign-up bonus they would start with. */
+      guestTitle: { one: 'Start with {amount} token', other: 'Start with {amount} tokens' },
+      guestBody: 'Create an account to earn tokens and spend them.',
+      earn: 'How you earn',
+      messagesBody: 'Up to {perDay} a day, and {perPartner} with any one person.',
+      correctionsBody:
+        'Teaching counts more than talking. Up to {perPartner} a day on one person’s sentences.',
+      pronunciationBody: 'Record a sentence for someone who asked how it sounds.',
+      mutualTitle: 'Two-way conversations',
+      mutualBody: 'Once a conversation, when you have both written. You both earn it.',
+      echoBody: 'A finished review session, up to {perDay} a day.',
+      streakBody: {
+        one: 'A bonus at milestones, from {first} to {last} day in a row.',
+        other: 'A bonus at milestones, from {first} to {last} days in a row.',
+      },
+      /** The brief's wording: the invitee's total, and when — never "for joining". */
+      inviteBody:
+        'Once a friend you invite has a real conversation. With the bonus every new account gets, they start with {amount}.',
+      pool: 'The daily pool',
+      poolIntro: {
+        one: 'On top of that, {amount} token is shared out every day.',
+        other: 'On top of that, {amount} tokens are shared out every day.',
+      },
+      poolTakePart: 'Take part',
+      poolTakePartBody:
+        'Conversations, corrections, messages and the people you talk to all count.',
+      poolShared: 'The pool is shared',
+      poolSharedBody: 'By how active each person was that day.',
+      poolArrives: 'Your share arrives',
+      poolArrivesBody: 'In your wallet at {hour}:00 UTC, up to {cap} each.',
+      spend: 'Spend them on',
+      freezeBody: 'Covers the next day you miss.',
+      freezeKeep: { one: 'Keep one at a time.', other: 'Keep up to {amount} at a time.' },
+      repairTitle: 'A missed day back',
+      repairWindow: {
+        one: 'Fill in a day you missed, from the last {amount} day.',
+        other: 'Fill in a day you missed, from the last {amount} days.',
+      },
+      repairMonthly: { one: 'One a month.', other: 'Up to {amount} a month.' },
+      titlesBody: {
+        one: '{amount} title to wear on your profile',
+        other: '{amount} titles to wear on your profile',
+      },
+      venusTitle: 'Venus’s pack',
+      venusBody: {
+        one: '{amount} sticker, free for everyone',
+        other: '{amount} stickers, free for everyone',
+      },
+      /** The readout where a price would be, on a pack that costs nothing. */
+      free: 'Free',
+      not: 'What it isn’t',
+      notSale: 'Not for sale',
+      notSaleBody: 'No one can buy it, with money or anything else.',
+      notCash: 'Not cash',
+      notCashBody: 'It can’t be sold, swapped for money or sent to anyone.',
+      notCrypto: 'Not a cryptocurrency',
+      notCryptoBody: 'There’s no chain and no market. It stays in LangX.',
+      notPro: 'Not a way to pay for Pro',
+      notProBody: 'Pro is a subscription. Tokens don’t unlock any part of it.',
+      faq: {
+        crypto: 'Is it a cryptocurrency?',
+        /** The brief's one-line version, as an answer. */
+        cryptoAnswer:
+          'No. It’s a point you earn and spend inside LangX. It can’t be bought, sold, traded, staked or withdrawn, and it never will be.',
+        price: 'Does it have a price? Can I buy it?',
+        priceAnswer:
+          'No. There’s no price and no way to buy tokens, with money or anything else. You earn them.',
+        send: 'Can I sell tokens or send them to someone?',
+        sendAnswer:
+          'No. They can’t be sold, swapped for money or sent to anyone. You spend them in the store, and nowhere else.',
+        spend: 'What can I spend them on?',
+        spendAnswer:
+          'Streak freezes, missed days, profile frames, titles and sticker packs, all in the store. Nothing else.',
+        pro: 'Can tokens pay for Pro?',
+        proAnswer: 'No. Pro is a subscription, and tokens unlock no part of it.',
+        day: 'How much can I earn a day?',
+        dayAnswer:
+          'There’s no single daily total. Messages count up to {messages} a day, Echo sessions up to {sessions} a day, and a pool share is at most {cap}. Corrections have no total, only {corrections} a day on any one person’s sentences.',
+        rank: 'Does spending lower my rank?',
+        rankAnswer: 'No. Leaderboards count what you earned, so spending never moves you down.',
+        before: 'I used LangX before. Did my tokens come with me?',
+        beforeAnswer:
+          'Yes. Your balance comes over divided by {divisor}, to fit the new app, so less than {divisor} comes to nothing. You also get a bonus of {bonus} for coming back.',
+      },
+      /** The link out to token.langx.io, in the reader's language where the site has it. */
+      link: 'Every rule, explained',
+    },
   },
 
   /** One per `TOKEN_KINDS`; `kindKey()` builds the key from the kind itself. */
@@ -4569,6 +4820,139 @@ export const en = {
       'Nothing more of yours goes to the AI provider. Copilot asks again the next time you use it.',
     settingsOffConfirm: 'Turn off',
     settingsOffDone: 'Copilot is off.',
+    /**
+     * The Copilot page (`screens/CopilotScreenV3.tsx`), shown to everybody,
+     * whether Copilot is on for them or not. Every sentence here was checked
+     * against the code it describes, and says what copilot.langx.io says.
+     * Numbers arrive as params from `PLAN_LIMITS` and `COPILOT_RULES`; the
+     * names of buttons arrive as params from the keys the chat itself uses,
+     * so the page names what the person will see there.
+     */
+    page: {
+      /** Under "Copilot · Beta", the page's name. The site's opening line. */
+      tagline: 'An AI helper inside your chats. It never sends a word for you.',
+      /** Under the tagline, for everybody: the beta is on both plans, and Pro is more answers. */
+      allowance: 'Answers a day: {free} on the free plan, {pro} with Pro.',
+      /** The page's one action, when Copilot answers this person. Opens the Chats tab. */
+      tryIt: 'Try it in a chat',
+      /** The action for a guest where Copilot is on: a quota and a consent need an account. */
+      signUp: 'Sign up to try it',
+      helpsTitle: 'What it does',
+      helpsIntro: 'One tap asks one question. Nothing is asked in the background.',
+      /** Say it's name where no language is named; the chat's menu row is `menuSayIt`. */
+      sayIt: 'Say it',
+      checkBody:
+        'Before you send, it checks your sentence and gives one reason for what it changes.',
+      sayItBody: {
+        one: 'Write it in your own language and get up to {count} way to say it in the one you are learning.',
+        other:
+          'Write it in your own language and get up to {count} ways to say it in the one you are learning.',
+      },
+      explainBody:
+        'Hold their message or a correction to see what it means, or what changed and why.',
+      replyIdeasBody: {
+        one: 'When their message is waiting, get up to {count} short reply to change and send yourself.',
+        other:
+          'When their message is waiting, get up to {count} short replies to change and send yourself.',
+      },
+      /**
+       * The worked examples under each help. Drawn by the page, never written
+       * by the AI, and labelled so. The learner's sentences are in a language
+       * the reader is learning — Spanish here, English in the other seven —
+       * and the reasons are in the reader's own, as Copilot writes them.
+       */
+      example: {
+        label: 'Illustration, not a real answer',
+        /** What is in the message box, not sent. */
+        draft: 'Your draft',
+        partner: 'Your partner',
+        checkDraft: 'Me gusta mucho los perros.',
+        checkFixed: 'Me gustan mucho los perros.',
+        checkReason: 'With a plural like “los perros”, the verb is “gustan”.',
+        sayItAsked: 'Can we talk tomorrow instead?',
+        sayItOption1: '¿Y si mejor hablamos mañana?',
+        sayItGloss1: 'casual',
+        sayItOption2: '¿Podríamos hablar mañana?',
+        sayItGloss2: 'more polite',
+        explainOriginal: 'Ayer yo voy al cine.',
+        explainCorrected: 'Ayer fui al cine.',
+        explainAnswer:
+          '“Ayer” (yesterday) puts it in the past, so “voy” (I go) becomes “fui” (I went).',
+        replyTheirs: '¿Y tú qué haces este finde?',
+        replyIdea1: 'Voy a la playa con unos amigos.',
+        replyIdea2: 'Todavía no lo sé. ¿Y tú?',
+      },
+      whenTitle: 'When it helps',
+      /** Each moment is a question, and its line names the help that answers it. */
+      whenCheck: 'Not sure a sentence is right?',
+      whenCheckBody: 'Ask “{check}” before you send it.',
+      whenSayIt: 'Know what to say, but not how?',
+      whenSayItBody: 'Write it in your language and ask “{sayIt}”.',
+      whenExplain: 'Lost in a message or a correction?',
+      whenExplainBody: 'Hold it and choose “{explain}”.',
+      whenReplyIdeas: 'Stuck for a reply?',
+      whenReplyIdeasBody: 'Tap “{replyIdeas}”, then make one your own.',
+      howTitle: 'How to use it',
+      step1: 'Open a chat',
+      step1Body: 'Copilot works inside a conversation you already have.',
+      step2: 'Tap the help you want',
+      step2Body:
+        'Type, then tap the blue button beside Send for “{check}” or “{sayIt}”. Hold their message or a correction for “{explain}”. When their message is waiting, “{replyIdeas}” sits above the empty box.',
+      step3: 'Agree, the first time',
+      step3Body: 'A sheet says what is sent and to whom. Nothing is sent before you agree.',
+      step4: 'Read it, then decide',
+      step4Body: 'Use it, change it or close it. Only Send sends, and only you press it.',
+      trustTitle: 'You stay in charge',
+      trustPartner: 'Your partner never sees it',
+      trustPartnerBody: 'Answers show on your screen, never in the chat.',
+      trustSend: 'Nothing is sent for you',
+      trustSendBody: '“{useThis}” and a reply idea only fill your message box.',
+      trustOff: 'You can turn it off',
+      /** The path to the switch, from the names its screens carry: Settings → Privacy → Copilot. */
+      trustOffBody:
+        '{settings} → {privacy} → {copilot}. Nothing more of yours goes to the AI provider.',
+      trustReport: 'You can report an answer',
+      trustReportBody:
+        'Tap “{report}” on any answer. The LangX team sees it; your partner does not.',
+      /** The official @copilot account, which does not take messages yet (`OFFICIAL_WRITABLE`). */
+      accountTitle: 'The Copilot account',
+      /** The grey badge on its card, drawn only while it is closed. */
+      accountSoon: 'Coming soon',
+      accountClosed:
+        'A chat of its own, for questions about the app. It takes no messages yet; for now, Copilot works inside your chats with people.',
+      /** Once `OFFICIAL_WRITABLE.copilot` is true: what the assistant behind it answers. */
+      accountOpen: 'A chat of its own, for questions about the app, a bug or an idea.',
+      faq: {
+        personQ: 'Is Copilot a person or a tutor?',
+        personA:
+          'Neither. It is an AI helper inside a chat with a real person. You tap one of its helps, and it answers that one question.',
+        wrongQ: 'Can it be wrong?',
+        wrongA:
+          'Yes, in any language. Read each answer as a suggestion, keep your own words when you prefer them, and tap “{report}” on an answer that is wrong.',
+        partnerQ: 'Can my partner see that I used it?',
+        partnerA:
+          'No. Your partner sees none of your Copilot answers. What you send is your own message, whether or not Copilot helped.',
+        allowanceQ: 'How many answers do I get?',
+        /** Rolling, not daily: each answer comes back a day after it was used (`QUOTA_WINDOW_MS`). */
+        allowanceA:
+          '{free} a day on the free plan and {pro} with Pro, shared by all its helps. Each one comes back a day after you used it, not all at midnight. An answer counts only when Copilot writes a new one: a question asked recently, or one it could not answer, costs nothing.',
+        sentQ: 'What is sent to the AI?',
+        /** Followed by the consent sheet's own two sentences, `consentSends` and `consentNever`. */
+        sentA: 'Nothing until you agree, and then only when you ask.',
+        languagesQ: 'Which languages does it work in?',
+        languagesA:
+          'It explains in the language your app is set to. “{check}” reads the language you wrote in, “{sayIt}” writes in the language you are learning, and reply ideas come in the language of the chat.',
+        hiddenQ: 'Why don’t I see it?',
+        hiddenA:
+          'It works inside a conversation you already have, and its button shows once you type. It is not in chats with accounts that take no messages, such as @langx, and it needs an account with a verified email. As a beta, it can also be switched off for everyone.',
+        accountQ: 'Can I chat with @copilot?',
+        accountClosedA:
+          'Not yet. The @copilot account is coming soon. For now it takes no messages, and Copilot works inside your chats with people.',
+        accountOpenA: 'Yes. Write to @copilot as you would to anyone, and ask it about the app.',
+      },
+      /** The link card at the foot, over copilot.langx.io. */
+      siteTitle: 'Every detail, on Copilot’s own site',
+    },
   },
   /**
    * Venus's daily streak story (`flags.venusStories`): the full-screen player

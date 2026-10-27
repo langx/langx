@@ -1,4 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
+import { router } from 'expo-router'
 import { Pressable, Text, View } from 'react-native'
 import { useContributors } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
@@ -8,7 +9,7 @@ import { KITCHEN_SECTIONS } from '../../src/lib/externalLinks'
 import { goBackTo } from '../../src/lib/navigation'
 import { openExternal } from '../../src/lib/openExternal'
 import { makeStyles, useTheme } from '../../src/lib/theme'
-import { useT } from '../../src/i18n'
+import { useLocale, useT } from '../../src/i18n'
 import { useScreenInteractive } from '../../src/hooks/useScreenInteractive'
 import { useV3Home } from '../../src/hooks/useV3Home'
 import { KitchenScreenV3 } from '../../src/screens/settings/KitchenScreenV3'
@@ -32,6 +33,7 @@ function KitchenScreen() {
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
+  const { isRtl } = useLocale()
   const contributors = useContributors().data
   // The contributors page is already a row in `KITCHEN_SECTIONS`; the strip
   // opens the same address rather than carrying a second copy of it.
@@ -80,13 +82,21 @@ function KitchenScreen() {
           {section.rows.map((row) => (
             <Pressable
               key={`${section.titleKey}-${row.label ?? row.labelKey}`}
-              accessibilityRole="link"
-              onPress={() => void openExternal(row.url)}
+              accessibilityRole={row.route ? 'button' : 'link'}
+              onPress={() => (row.route ? router.push(row.route) : void openExternal(row.url))}
               style={({ pressed }) => [styles.row, pressed && styles.pressed]}
             >
               <Text style={styles.rowTitle}>{row.label ?? t(row.labelKey as never)}</Text>
-              {/* One glyph for every row — they all leave the app — rather than the table's own. */}
-              <Feather name="share" size={16} color={colors.textFaint} />
+              {/*
+                One glyph for every row that leaves the app, rather than the
+                table's own; a row with a page of its own here (Insights) has
+                the chevron of a row that stays.
+              */}
+              <Feather
+                name={row.route ? (isRtl ? 'chevron-left' : 'chevron-right') : 'share'}
+                size={16}
+                color={colors.textFaint}
+              />
             </Pressable>
           ))}
         </View>

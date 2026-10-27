@@ -5,6 +5,7 @@ import {
   type FeedbackInput,
   type LinkPreviewResponse,
   type SharedProfile,
+  type PublicStats,
   type ConversationFilter,
   type EquippableKind,
   type Equipped,
@@ -3531,17 +3532,10 @@ export interface AdminStatsDto {
    * The public counters, read rather than recomputed — `/public/stats` already
    * caches these for ten minutes and already runs the three scans behind them.
    * Nothing on this half may move the other way: `modules/insight/publicStats`
-   * says what may be published and what may not.
+   * says what may be published and what may not. The shared type rather than
+   * a copy of it, for the reason `config` gives.
    */
-  public: {
-    generatedAt: string
-    days: number
-    totals: { members: number; messages: number; corrections: number; languages: number }
-    streaks: { longest: number; active: number }
-    daily: { day: string; members: number; messages: number; corrections: number }[]
-    learning: { code: string; name: string; count: number }[]
-    native: { code: string; name: string; count: number }[]
-  }
+  public: PublicStats
 }
 
 /** How many people are in the app right now, and the day behind it. */

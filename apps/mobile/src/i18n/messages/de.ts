@@ -2265,6 +2265,135 @@ export const de: Localized<EnMessages> = {
     codeOfConduct: 'Verhaltenskodex',
     moreContributors: '+{count}',
   },
+  transparency: {
+    page: {
+      title: 'Transparenz',
+      tagline: 'LangX entsteht offen: Der Code ist öffentlich, und die Zahlen sind es auch.',
+      factOpenSource: 'Open Source',
+      factOpenNumbers: 'Offene Zahlen',
+      factTotals: 'Nur Summen',
+      countedNow: 'Gerade eben gezählt',
+      countedMinutes: { one: 'Vor {count} Minute gezählt', other: 'Vor {count} Minuten gezählt' },
+      countedHours: { one: 'Vor {count} Stunde gezählt', other: 'Vor {count} Stunden gezählt' },
+      countedDays: { one: 'Vor {count} Tag gezählt', other: 'Vor {count} Tagen gezählt' },
+      openTitle: 'Open Source',
+      openIntro:
+        'Die App, der Server und der Code, der diese Zahlen zählt, liegen in einem öffentlichen Repository, unter der BSD-3-Lizenz.',
+      readCode: 'Code ansehen',
+      contribute: 'Mitmachen',
+      numbersTitle: 'Die Zahlen',
+      numbersIntro: {
+        one: 'Aus der eigenen Datenbank von LangX gezählt, höchstens einmal pro Minute.',
+        other:
+          'Aus der eigenen Datenbank von LangX gezählt, höchstens einmal alle {count} Minuten.',
+      },
+      totalA11y: '{label}: {amount}. {hint}',
+      members: 'Mitglieder',
+      membersHint: 'Konten, die es jetzt gibt. Gäste und Konten in Löschung zählen nicht.',
+      messages: 'Nachrichten',
+      messagesHint: 'In Chats gesendet, Korrekturen im Chat eingeschlossen. Anrufe zählen nicht.',
+      corrections: 'Korrekturen an Beiträgen',
+      correctionsHint: 'Korrekturen, die unter Beiträgen im Feed geschrieben wurden.',
+      languages: 'Sprachen',
+      languagesHint: 'Verschiedene Sprachen, die Mitglieder lernen.',
+      daysTitle: { one: 'Der letzte Tag', other: 'Die letzten {count} Tage' },
+      daysPick: 'Angezeigte Zahl',
+      dayMembers: 'Mitglieder',
+      dayMessages: 'Nachrichten',
+      dayCorrections: 'Korrekturen',
+      sumMembers: { one: '{amount} neues Mitglied', other: '{amount} neue Mitglieder' },
+      sumMessages: { one: '{amount} Nachricht', other: '{amount} Nachrichten' },
+      sumCorrections: {
+        one: '{amount} Korrektur an Beiträgen',
+        other: '{amount} Korrekturen an Beiträgen',
+      },
+      chartA11y: {
+        one: '{total} am letzten Tag, eine Säule pro Tag',
+        other: '{total} in den letzten {count} Tagen, eine Säule pro Tag',
+      },
+      daysCaption: 'Eine Säule pro Tag, nach UTC-Tag. Die letzte ist der heutige Tag bis jetzt.',
+      languagesTitle: 'Sprachen',
+      learning: 'Am meisten gelernt',
+      native: 'Am häufigsten Muttersprache',
+      languageRow: {
+        one: '{language}: {amount} Mitglied',
+        other: '{language}: {amount} Mitglieder',
+      },
+      noLanguages: 'Noch keine Sprachen angegeben.',
+      streaksTitle: 'Serien',
+      longest: 'Längste Serie',
+      longestBody: 'Die längste, die jemand hatte, der heute ein Konto hat.',
+      longestValue: { one: '{amount} Tag', other: '{amount} Tage' },
+      active: 'In einer Serie',
+      activeBody:
+        'Mitglieder, deren Serie noch nicht zu Ende ist — nicht nur die, die heute da waren.',
+      activeValue: { one: '{amount} Mitglied', other: '{amount} Mitglieder' },
+      trustTitle: 'Deine Daten und deine Sicherheit',
+      auditTitle: 'Die Regeln stehen im Code',
+      auditBody:
+        'Limits, Tarifprüfungen und Token-Regeln sind alle lesbar, und jede wird auf dem Server durchgesetzt — wer eine Regel kennt, kommt trotzdem nicht an ihr vorbei.',
+      dataTitle: 'Deine Daten gehören dir',
+      dataBody: {
+        one: 'Exportiere alles, was die App über dich gespeichert hat, oder lösche dein Konto: {count} Tag später ist es endgültig weg.',
+        other:
+          'Exportiere alles, was die App über dich gespeichert hat, oder lösche dein Konto: {count} Tage später ist es endgültig weg.',
+      },
+      boundedTitle: 'Diese Seite hat Grenzen',
+      boundedBody:
+        'Nur Summen und Tage, nie eine Person. Die kleinste Gruppe ist eine ganze Sprache.',
+      securityTitle: 'Eine Lücke gefunden?',
+      securityBody:
+        'Melde sie privat, nicht in einem öffentlichen Issue. Du hörst innerhalb einer Woche von uns.',
+      securityLink: 'Sicherheitsrichtlinie',
+      supportTitle: 'LangX unterstützen',
+      proTitle: 'Pro holen',
+      proBody: 'Pro bezahlt die Server und hält LangX am Laufen.',
+      proTitleMember: 'Du hast Pro',
+      proBodyMember: 'Danke. Pro bezahlt die Server und hält LangX am Laufen.',
+      qReal: 'Sind die Zahlen echt?',
+      aReal:
+        'Ja. Sie werden aus der eigenen Datenbank von LangX gezählt, von Code, den jeder lesen kann — demselben Code, der diese Seite beantwortet. Niemand tippt sie ein, und keine ist gerundet.',
+      qRevenue: 'Warum steht hier kein Umsatz?',
+      aRevenue:
+        'Weil eine veröffentlichte Zahl nicht zurückgenommen werden kann. Umsatz, Abos, Conversion, Bindung und woher Mitglieder kommen würden unsere Pläne jedem verraten, der fragt — deshalb stehen sie nie auf dieser Seite.',
+      qGuests: 'Werden Gäste gezählt?',
+      aGuests:
+        'Nein. Ein Gast schaut sich ohne Konto um, und Gäste zu zählen würde jede Zahl aufblähen. Mitglieder, Sprachen und Serien zählen nur Konten, die es jetzt gibt — keine Gäste und kein Konto, das auf seine Löschung wartet.',
+      qUpdates: 'Wie oft wird das aktualisiert?',
+      aUpdates: {
+        one: 'Höchstens einmal pro Minute: Gezählt wird beim ersten Besuch danach, nicht nach der Uhr. Eine Kopie auf dem Weg zu dir kann noch einmal so alt sein — deshalb steht oben, wann gezählt wurde.',
+        other:
+          'Höchstens einmal alle {count} Minuten: Gezählt wird beim ersten Besuch danach, nicht nach der Uhr. Eine Kopie auf dem Weg zu dir kann noch einmal so alt sein — deshalb steht oben, wann gezählt wurde.',
+      },
+      qMine: 'Sind meine Daten auf dieser Seite?',
+      aMine:
+        'Nur in den Summen. Du bist eines der Mitglieder und zählst bei jeder Sprache mit, die du angibst, aber die Seite enthält keine Namen, keine Profile und keine Nachrichten, und ihre kleinste Gruppe ist eine ganze Sprache — nichts darauf lässt sich auf dich eingrenzen.',
+      qOpen: 'Ist LangX wirklich Open Source?',
+      aOpen:
+        'Ja. Die App, der Server und der Code hinter dieser Seite liegen in einem öffentlichen Repository unter der BSD-3-Lizenz: Jeder kann ihn lesen, eine eigene Kopie betreiben und darauf aufbauen, solange der Lizenzhinweis dabei bleibt.',
+      qSafe: 'Ist öffentlicher Code denn sicher?',
+      aSafe:
+        'Öffentlicher Code ist nicht die Schwachstelle, denn nichts hängt davon ab, dass er geheim bleibt. Jedes Limit und jede Berechtigung wird auf dem Server geprüft, wer weiß, wie es funktioniert, kommt also nicht daran vorbei — und kein Passwort und kein Schlüssel steht je im Code.',
+      qE2E: 'Sind meine Nachrichten Ende-zu-Ende-verschlüsselt?',
+      aE2E: 'Nein. Nachrichten liegen auf den Servern von LangX in einer Form, die LangX lesen kann: Wird ein Gespräch gemeldet, lesen Moderatoren die Nachrichten, die dazu geführt haben. Geschützt sind sie dadurch, dass nur die zwei Personen eines Gesprächs es öffnen können — der Server prüft das bei jeder Anfrage und jedem Live-Update und nach einer Blockierung erneut —, und dadurch, dass alles zwischen App und Server über HTTPS läuft.',
+      qExport: 'Kann ich meine Daten exportieren oder löschen?',
+      aExport: {
+        one: 'Ja, beides, unter {settings} › {account}. {exportData} gibt dir eine Datei mit allem, was die App über dich gespeichert hat. {deleteAccount} blendet dein Konto aus, sobald du es bestätigst, und entfernt es nach {count} Tag endgültig; meldest du dich vorher wieder an, wird es abgebrochen. Nachrichten, die du gesendet hast, bleiben im Chat der anderen Person, ohne ihren Text.',
+        other:
+          'Ja, beides, unter {settings} › {account}. {exportData} gibt dir eine Datei mit allem, was die App über dich gespeichert hat. {deleteAccount} blendet dein Konto aus, sobald du es bestätigst, und entfernt es nach {count} Tagen endgültig; meldest du dich vorher wieder an, wird es abgebrochen. Nachrichten, die du gesendet hast, bleiben im Chat der anderen Person, ohne ihren Text.',
+      },
+      qContribute: 'Wie kann ich mitmachen?',
+      aContribute:
+        'Fang oben mit „{contribute}“ an: Dort steht, wie du LangX auf deinem eigenen Computer startest und was eine Änderung braucht, bevor du sie einreichst. „{issues}“ zeigt, was offen ist.',
+      qSupport: 'Wie kann ich LangX unterstützen?',
+      aSupport:
+        'Am meisten hilft Pro: Das Abo bezahlt die Server und hält LangX am Laufen. Du kannst uns auch auf GitHub sponsern, Patron werden oder auf Discord dazukommen — die Links stehen oben.',
+      qVulnerability: 'Ich habe eine Sicherheitslücke gefunden. Was tun?',
+      aVulnerability:
+        'Danke. Melde sie privat per E-Mail, nicht in einem öffentlichen Issue — die Adresse steht oben unter „{policy}“. Du hörst innerhalb einer Woche von uns, und eine angenommene Meldung wird im nächsten Sicherheitsupdate behoben.',
+      linkTitle: 'Dieselben Zahlen im Web',
+    },
+  },
   streak: {
     title: 'Deine Serie',
     historyBody: 'Jeder Tag der letzten zwei Monate und was gezählt hat',
@@ -2764,6 +2893,104 @@ export const de: Localized<EnMessages> = {
     todayCorrections: { one: 'Korrektur', other: 'Korrekturen' },
     todayPeople: { one: 'Person', other: 'Personen' },
     seeHistory: 'Deinen Verlauf ansehen',
+    page: {
+      title: 'LangX Token',
+      tagline: 'Punkte, die du mit Reden und Lehren verdienst und in LangX ausgibst.',
+      factPoints: 'In-App-Punkte',
+      factBought: 'Nicht käuflich',
+      factTraded: 'Nicht handelbar',
+      yours: 'Deine Token',
+      walletBody: 'Dein Guthaben, dein Verlauf und der Shop',
+      todayFallback: 'Dein bisheriger Tag und der tägliche Pool',
+      rank: '#{rank}',
+      rankBody: 'Ausgeben lässt dich nie absteigen.',
+      rankNone: 'Verdiene diese Woche Token, um auf die Liste zu kommen.',
+      guestTitle: { one: 'Starte mit {amount} Token', other: 'Starte mit {amount} Token' },
+      guestBody: 'Erstelle ein Konto, um Token zu verdienen und auszugeben.',
+      earn: 'So verdienst du',
+      messagesBody: 'Bis zu {perDay} am Tag und {perPartner} mit einer einzelnen Person.',
+      correctionsBody:
+        'Lehren zählt mehr als Reden. Bis zu {perPartner} am Tag für die Sätze einer Person.',
+      pronunciationBody: 'Nimm einen Satz für jemanden auf, der gefragt hat, wie er klingt.',
+      mutualTitle: 'Gespräche in beide Richtungen',
+      mutualBody: 'Einmal pro Gespräch, wenn ihr beide geschrieben habt. Ihr verdient es beide.',
+      echoBody: 'Eine abgeschlossene Wiederholungsrunde, bis zu {perDay} am Tag.',
+      streakBody: {
+        one: 'Ein Bonus bei Meilensteinen, von {first} bis {last} Tag in Folge.',
+        other: 'Ein Bonus bei Meilensteinen, von {first} bis {last} Tagen in Folge.',
+      },
+      inviteBody:
+        'Sobald jemand, den du einlädst, ein echtes Gespräch führt. Mit dem Startbonus fängt diese Person bei {amount} an.',
+      pool: 'Der tägliche Pool',
+      poolIntro: {
+        one: 'Dazu wird jeden Tag {amount} Token verteilt.',
+        other: 'Dazu werden jeden Tag {amount} Token verteilt.',
+      },
+      poolTakePart: 'Mitmachen',
+      poolTakePartBody:
+        'Gespräche, Korrekturen, Nachrichten und die Menschen, mit denen du sprichst, zählen alle.',
+      poolShared: 'Der Pool wird geteilt',
+      poolSharedBody: 'Danach, wie aktiv jede Person an dem Tag war.',
+      poolArrives: 'Dein Anteil kommt an',
+      poolArrivesBody: 'Um {hour}:00 UTC in deiner Geldbörse, bis zu {cap} pro Person.',
+      spend: 'Gib sie aus für',
+      freezeBody: 'Deckt den nächsten Tag ab, den du verpasst.',
+      freezeKeep: {
+        one: 'Du kannst einen auf einmal haben.',
+        other: 'Du kannst bis zu {amount} auf einmal haben.',
+      },
+      repairTitle: 'Ein verpasster Tag zurück',
+      repairWindow: {
+        one: 'Hol einen verpassten Tag aus dem letzten {amount} Tag nach.',
+        other: 'Hol einen verpassten Tag aus den letzten {amount} Tagen nach.',
+      },
+      repairMonthly: { one: 'Einmal im Monat.', other: 'Bis zu {amount} im Monat.' },
+      titlesBody: {
+        one: '{amount} Titel für dein Profil',
+        other: '{amount} Titel für dein Profil',
+      },
+      venusTitle: 'Venus-Paket',
+      venusBody: {
+        one: '{amount} Sticker, kostenlos für alle',
+        other: '{amount} Sticker, kostenlos für alle',
+      },
+      free: 'Kostenlos',
+      not: 'Was es nicht ist',
+      notSale: 'Nicht zu kaufen',
+      notSaleBody: 'Niemand kann Token kaufen, weder mit Geld noch mit etwas anderem.',
+      notCash: 'Kein Geld',
+      notCashBody: 'Token lassen sich nicht verkaufen, in Geld umwandeln oder an andere schicken.',
+      notCrypto: 'Keine Kryptowährung',
+      notCryptoBody: 'Es gibt keine Chain und keinen Markt. Token bleiben in LangX.',
+      notPro: 'Kein Zahlungsmittel für Pro',
+      notProBody: 'Pro ist ein Abo. Token schalten keinen Teil davon frei.',
+      faq: {
+        crypto: 'Ist das eine Kryptowährung?',
+        cryptoAnswer:
+          'Nein. Es ist ein Punkt, den du in LangX verdienst und ausgibst. Er lässt sich nicht kaufen, verkaufen, handeln, staken oder auszahlen, und das wird sich nie ändern.',
+        price: 'Hat es einen Preis? Kann ich es kaufen?',
+        priceAnswer:
+          'Nein. Es gibt keinen Preis und keine Möglichkeit, Token zu kaufen, weder mit Geld noch mit etwas anderem. Du verdienst sie.',
+        send: 'Kann ich Token verkaufen oder jemandem schicken?',
+        sendAnswer:
+          'Nein. Sie lassen sich nicht verkaufen, in Geld umwandeln oder an andere schicken. Du gibst sie im Shop aus und nirgendwo sonst.',
+        spend: 'Wofür kann ich sie ausgeben?',
+        spendAnswer:
+          'Serienschutz, verpasste Tage, Profilrahmen, Titel und Stickerpakete, alles im Shop. Sonst nichts.',
+        pro: 'Kann ich Pro mit Token bezahlen?',
+        proAnswer: 'Nein. Pro ist ein Abo, und Token schalten keinen Teil davon frei.',
+        day: 'Wie viel kann ich am Tag verdienen?',
+        dayAnswer:
+          'Es gibt keine einzelne Tagessumme. Nachrichten zählen bis zu {messages} am Tag, Echo-Einheiten bis zu {sessions} am Tag, und ein Pool-Anteil beträgt höchstens {cap}. Korrekturen haben keine Summe, nur {corrections} am Tag für die Sätze einer Person.',
+        rank: 'Senkt Ausgeben meinen Rang?',
+        rankAnswer:
+          'Nein. Bestenlisten zählen, was du verdient hast, darum lässt dich Ausgeben nie absteigen.',
+        before: 'Ich habe LangX früher genutzt. Sind meine Token mitgekommen?',
+        beforeAnswer:
+          'Ja. Dein Guthaben kommt durch {divisor} geteilt mit, damit es zur neuen App passt; weniger als {divisor} wird zu null. Dazu bekommst du einen Willkommen-zurück-Bonus von {bonus}.',
+      },
+      link: 'Alle Regeln, erklärt',
+    },
   },
 
   invite: {
@@ -4205,6 +4432,113 @@ export const de: Localized<EnMessages> = {
       'Von dir geht nichts mehr an den KI-Anbieter. Copilot fragt beim nächsten Mal erneut.',
     settingsOffConfirm: 'Ausschalten',
     settingsOffDone: 'Copilot ist aus.',
+    page: {
+      tagline: 'Ein KI-Helfer in deinen Chats. Er sendet nie ein Wort für dich.',
+      allowance: 'Antworten am Tag: {free} im kostenlosen Tarif, {pro} mit Pro.',
+      tryIt: 'In einem Chat ausprobieren',
+      signUp: 'Registrieren und ausprobieren',
+      helpsTitle: 'Was er kann',
+      helpsIntro: 'Ein Tippen stellt eine Frage. Im Hintergrund wird nichts gefragt.',
+      sayIt: 'Sagen',
+      checkBody:
+        'Vor dem Senden prüft er deinen Satz und nennt einen Grund für das, was er ändert.',
+      sayItBody: {
+        one: 'Schreib es in deiner Sprache und bekomm bis zu {count} Möglichkeit, es in der Sprache zu sagen, die du lernst.',
+        other:
+          'Schreib es in deiner Sprache und bekomm bis zu {count} Möglichkeiten, es in der Sprache zu sagen, die du lernst.',
+      },
+      explainBody:
+        'Halte die Nachricht deines Gegenübers oder eine Korrektur gedrückt, um zu sehen, was sie bedeutet oder was sich geändert hat und warum.',
+      replyIdeasBody: {
+        one: 'Wartet die Nachricht deines Gegenübers auf Antwort, bekommst du bis zu {count} kurze Antwort, die du änderst und selbst sendest.',
+        other:
+          'Wartet die Nachricht deines Gegenübers auf Antwort, bekommst du bis zu {count} kurze Antworten, die du änderst und selbst sendest.',
+      },
+      example: {
+        label: 'Illustration, keine echte Antwort',
+        draft: 'Dein Entwurf',
+        partner: 'Dein Gegenüber',
+        checkDraft: 'She don’t like coffee.',
+        checkFixed: 'She doesn’t like coffee.',
+        checkReason: 'Mit „she“ heißt das Verb „doesn’t“, nicht „don’t“.',
+        sayItAsked: 'Können wir lieber morgen reden?',
+        sayItOption1: 'How about tomorrow instead?',
+        sayItGloss1: 'locker',
+        sayItOption2: 'Could we talk tomorrow instead?',
+        sayItGloss2: 'höflicher',
+        explainOriginal: 'Yesterday I go to the cinema.',
+        explainCorrected: 'Yesterday I went to the cinema.',
+        explainAnswer:
+          '„Yesterday“ (gestern) setzt den Satz in die Vergangenheit, also wird „go“ (gehe) zu „went“ (ging).',
+        replyTheirs: 'What are you doing this weekend?',
+        replyIdea1: 'I’m going to the beach with friends.',
+        replyIdea2: 'Not sure yet. And you?',
+      },
+      whenTitle: 'Wann er hilft',
+      whenCheck: 'Unsicher, ob ein Satz stimmt?',
+      whenCheckBody: 'Tippe vor dem Senden auf „{check}“.',
+      whenSayIt: 'Du weißt, was du sagen willst, aber nicht wie?',
+      whenSayItBody: 'Schreib es in deiner Sprache und tippe auf „{sayIt}“.',
+      whenExplain: 'Eine Nachricht oder Korrektur nicht verstanden?',
+      whenExplainBody: 'Halte sie gedrückt und wähle „{explain}“.',
+      whenReplyIdeas: 'Dir fällt keine Antwort ein?',
+      whenReplyIdeasBody: 'Tippe auf „{replyIdeas}“ und mach eine davon zu deiner.',
+      howTitle: 'So benutzt du ihn',
+      step1: 'Öffne einen Chat',
+      step1Body: 'Copilot arbeitet in einem Gespräch, das du schon hast.',
+      step2: 'Tippe auf die Hilfe, die du willst',
+      step2Body:
+        'Schreib, dann tippe für „{check}“ oder „{sayIt}“ auf den blauen Button neben Senden. Halte für „{explain}“ die Nachricht deines Gegenübers oder eine Korrektur gedrückt. Wartet seine Nachricht auf Antwort, steht „{replyIdeas}“ über dem leeren Feld.',
+      step3: 'Stimm beim ersten Mal zu',
+      step3Body:
+        'Ein Fenster sagt, was an wen gesendet wird. Vor deiner Zustimmung wird nichts gesendet.',
+      step4: 'Lies, dann entscheide',
+      step4Body:
+        'Übernimm sie, ändere sie oder schließ sie. Nur Senden sendet, und nur du tippst darauf.',
+      trustTitle: 'Du behältst die Kontrolle',
+      trustPartner: 'Dein Gegenüber sieht es nie',
+      trustPartnerBody: 'Antworten erscheinen auf deinem Bildschirm, nie im Chat.',
+      trustSend: 'Nichts wird für dich gesendet',
+      trustSendBody: '„{useThis}“ und eine Antwortidee füllen nur dein Nachrichtenfeld.',
+      trustOff: 'Du kannst ihn ausschalten',
+      trustOffBody:
+        '{settings} → {privacy} → {copilot}. Von dir geht nichts mehr an den KI-Anbieter.',
+      trustReport: 'Du kannst eine Antwort melden',
+      trustReportBody:
+        'Tippe bei jeder Antwort auf „{report}“. Das LangX-Team sieht sie, dein Gegenüber nicht.',
+      accountTitle: 'Das Copilot-Konto',
+      accountSoon: 'Bald verfügbar',
+      accountClosed:
+        'Ein eigener Chat für Fragen zur App. Er nimmt noch keine Nachrichten an; bis dahin arbeitet Copilot in deinen Chats mit Menschen.',
+      accountOpen: 'Ein eigener Chat für Fragen zur App, einen Fehler oder eine Idee.',
+      faq: {
+        personQ: 'Ist Copilot ein Mensch oder ein Lehrer?',
+        personA:
+          'Weder noch. Er ist ein KI-Helfer in einem Chat mit einem echten Menschen. Du tippst auf eine seiner Hilfen, und er beantwortet genau diese eine Frage.',
+        wrongQ: 'Kann er sich irren?',
+        wrongA:
+          'Ja, in jeder Sprache. Lies jede Antwort als Vorschlag, behalte deine eigenen Worte, wenn sie dir lieber sind, und tippe bei einer falschen Antwort auf „{report}“.',
+        partnerQ: 'Sieht mein Gegenüber, dass ich ihn benutzt habe?',
+        partnerA:
+          'Nein. Dein Gegenüber sieht keine deiner Copilot-Antworten. Was du sendest, ist deine eigene Nachricht, ob Copilot geholfen hat oder nicht.',
+        allowanceQ: 'Wie viele Antworten bekomme ich?',
+        allowanceA:
+          '{free} am Tag im kostenlosen Tarif und {pro} mit Pro, geteilt von allen seinen Hilfen. Jede kommt einen Tag, nachdem du sie genutzt hast, zurück, nicht alle um Mitternacht. Eine Antwort zählt nur, wenn Copilot eine neue schreibt: Eine kürzlich gestellte Frage oder eine, die er nicht beantworten konnte, kostet nichts.',
+        sentQ: 'Was wird an die KI gesendet?',
+        sentA: 'Nichts, bis du zustimmst, und dann nur, wenn du fragst.',
+        languagesQ: 'In welchen Sprachen funktioniert er?',
+        languagesA:
+          'Er erklärt in der Sprache deiner App. „{check}“ liest die Sprache, in der du geschrieben hast, „{sayIt}“ schreibt in der Sprache, die du lernst, und Antwortideen kommen in der Sprache des Chats.',
+        hiddenQ: 'Warum sehe ich ihn nicht?',
+        hiddenA:
+          'Er arbeitet in einem Gespräch, das du schon hast, und sein Button erscheint, sobald du schreibst. In Chats mit Konten, die keine Nachrichten annehmen, wie @langx, gibt es ihn nicht, und er braucht ein Konto mit bestätigter E-Mail. Als Beta kann er auch für alle ausgeschaltet werden.',
+        accountQ: 'Kann ich mit @copilot chatten?',
+        accountClosedA:
+          'Noch nicht. Das Konto @copilot kommt bald. Bis dahin nimmt es keine Nachrichten an, und Copilot arbeitet in deinen Chats mit Menschen.',
+        accountOpenA: 'Ja. Schreib @copilot wie jedem anderen und frag ihn zur App.',
+      },
+      siteTitle: 'Alle Details auf der Website von Copilot',
+    },
   },
   venus: {
     page: {
