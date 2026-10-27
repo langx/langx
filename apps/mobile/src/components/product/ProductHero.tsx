@@ -211,7 +211,7 @@ function FactStrip({ facts }: { facts: readonly string[] }) {
   return (
     <View style={styles.strip}>
       {facts.map((fact, index) => (
-        <View key={fact} style={[styles.cell, index > 0 && styles.cellDivided]}>
+        <View key={`fact${index}`} style={[styles.cell, index > 0 && styles.cellDivided]}>
           <Text
             style={[styles.factText, styles.factCentred]}
             maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
@@ -243,7 +243,7 @@ function FactLine({ facts }: { facts: readonly string[] }) {
     <View style={styles.line}>
       {facts.map((fact, index) => (
         <View
-          key={fact}
+          key={`fact${index}`}
           style={styles.lineFact}
           onLayout={(event: LayoutChangeEvent) => {
             const y = Math.round(event.nativeEvent.layout.y)
