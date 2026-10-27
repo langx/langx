@@ -1,4 +1,9 @@
-import { getLanguage } from '@langx/shared'
+import {
+  getLanguage,
+  PUBLIC_STATS_TTL_MS,
+  type PublicLanguageCount,
+  type PublicStats,
+} from '@langx/shared'
 import type { Db, Document, Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 
@@ -23,41 +28,6 @@ export const WINDOW_DAYS = 30
 /** Rows per top list. Eight fits the two columns without a scrollbar. */
 const TOP_LANGUAGES = 8
 const DAY_MS = 24 * 60 * 60 * 1000
-
-/**
- * How long an answer is reused. Every field here is a collection scan, the
- * page is public and cacheable by anyone, and nothing on it is worth a
- * database pass per visitor: ten minutes bounds the cost to six passes an
- * hour however many people are reading.
- */
-export const PUBLIC_STATS_TTL_MS = 10 * 60 * 1000
-
-export interface LanguageCount {
-  code: string
-  /** The English name, resolved here so the page needs no language table. */
-  name: string
-  count: number
-}
-
-export interface DailyPoint {
-  /** `YYYY-MM-DD`, UTC. */
-  day: string
-  members: number
-  messages: number
-  corrections: number
-}
-
-export interface PublicStats {
-  /** When the numbers were computed, not when they were served. */
-  generatedAt: string
-  days: number
-  totals: { members: number; messages: number; corrections: number; languages: number }
-  streaks: { longest: number; active: number }
-  /** One entry per day of the window, zeros included — a chart needs the gaps. */
-  daily: DailyPoint[]
-  learning: LanguageCount[]
-  native: LanguageCount[]
-}
 
 /**
  * A real account, still here. Guests are browsing sessions with no account
@@ -111,7 +81,7 @@ async function perDay(
 async function topLanguages(
   db: Db,
   field: 'learning' | 'nativeLanguages',
-): Promise<LanguageCount[]> {
+): Promise<PublicLanguageCount[]> {
   const rows = await db
     .collection(COLLECTIONS.profiles)
     .aggregate<{ _id: string; n: number }>([
@@ -162,6 +132,11 @@ async function streakTotals(db: Db): Promise<{ longest: number; active: number }
   return { longest: row?.longest ?? 0, active: row?.active ?? 0 }
 }
 
+/**
+ * The shape is `publicStatsSchema` in `@langx/shared`: the app parses this
+ * answer with it, so a field changed here without it fails a test rather than
+ * a reader.
+ */
 async function computePublicStats(db: Db, now: Date): Promise<PublicStats> {
   const since = windowStart(now, WINDOW_DAYS)
   const keys = dayKeys(since, WINDOW_DAYS)

@@ -1,4 +1,5 @@
 import { Text, View } from 'react-native'
+import { englishBarLabel, englishCount } from '../../lib/chartWords'
 import { makeStyles, useTheme } from '../../lib/theme'
 
 export interface BarListRow {
@@ -20,6 +21,19 @@ interface BarListProps {
    */
   scale?: number
   empty: string
+  /**
+   * How a value is written. Left out, English grouping — the operator panel,
+   * which is English by design. A page read in the reader's own language
+   * passes its locale's (`formatCount`).
+   */
+  format?: (value: number) => string
+  /**
+   * What a screen reader hears for a row, given the value as `format` wrote
+   * it. Left out, the panel's English "label: value". A translated page
+   * passes a sentence from its own catalogue, so a row is not read half in
+   * one language and half in another.
+   */
+  rowLabel?: (row: BarListRow, shown: string) => string
 }
 
 /**
@@ -34,7 +48,14 @@ interface BarListProps {
  * behind it carries the identity, and a label painted in a chart hue is
  * illegible at the light end of any palette.
  */
-export function BarList({ rows, color, scale, empty }: BarListProps) {
+export function BarList({
+  rows,
+  color,
+  scale,
+  empty,
+  format = englishCount,
+  rowLabel = englishBarLabel,
+}: BarListProps) {
   const { v3 } = useTheme()
   const styles = useStyles()
 
@@ -49,7 +70,7 @@ export function BarList({ rows, color, scale, empty }: BarListProps) {
           key={row.key}
           style={styles.row}
           accessibilityRole="text"
-          accessibilityLabel={`${row.label}: ${row.value}${row.hint ? `, ${row.hint}` : ''}`}
+          accessibilityLabel={rowLabel(row, format(row.value))}
         >
           <View
             style={[
@@ -68,7 +89,7 @@ export function BarList({ rows, color, scale, empty }: BarListProps) {
             </Text>
             {row.hint ? <Text style={styles.hint}>{row.hint}</Text> : null}
           </View>
-          <Text style={styles.value}>{row.value.toLocaleString('en')}</Text>
+          <Text style={styles.value}>{format(row.value)}</Text>
         </View>
       ))}
     </View>

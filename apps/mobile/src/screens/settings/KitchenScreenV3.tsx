@@ -1,4 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
+import { router } from 'expo-router'
 import { Pressable, Text, View } from 'react-native'
 import { useContributors } from '../../api/queries'
 import {
@@ -121,8 +122,10 @@ export function KitchenScreenV3() {
                   icon={row.icon as Glyph}
                   hue={HUES[section.titleKey]}
                   title={row.label ?? t(row.labelKey as never)}
-                  external
-                  onPress={() => void openExternal(row.url)}
+                  // Insights opens its page in the app (`ExternalLink.route`),
+                  // so it carries the chevron of a row that stays.
+                  external={!row.route}
+                  onPress={() => (row.route ? router.push(row.route) : void openExternal(row.url))}
                 />
               ))}
             </SettingsGroupV3>

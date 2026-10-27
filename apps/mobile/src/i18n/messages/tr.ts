@@ -2193,6 +2193,127 @@ export const tr: Localized<EnMessages> = {
     codeOfConduct: 'Davranış kuralları',
     moreContributors: '+{count}',
   },
+  transparency: {
+    page: {
+      title: 'Şeffaflık',
+      tagline: 'LangX açıkta yapılıyor: kod herkese açık, rakamlar da öyle.',
+      factOpenSource: 'Açık kaynak',
+      factOpenNumbers: 'Açık rakamlar',
+      factTotals: 'Yalnızca toplamlar',
+      countedNow: 'Az önce sayıldı',
+      countedMinutes: { one: '{count} dakika önce sayıldı', other: '{count} dakika önce sayıldı' },
+      countedHours: { one: '{count} saat önce sayıldı', other: '{count} saat önce sayıldı' },
+      countedDays: { one: '{count} gün önce sayıldı', other: '{count} gün önce sayıldı' },
+      openTitle: 'Açık kaynak',
+      openIntro:
+        'Uygulama, sunucu ve bu rakamları sayan kod, BSD-3 lisansıyla tek bir herkese açık depoda.',
+      readCode: 'Kodu oku',
+      contribute: 'Katkıda bulun',
+      numbersTitle: 'Rakamlar',
+      numbersIntro: {
+        one: 'LangX’in kendi veritabanından, en fazla {count} dakikada bir sayılır.',
+        other: 'LangX’in kendi veritabanından, en fazla {count} dakikada bir sayılır.',
+      },
+      totalA11y: '{label}: {amount}. {hint}',
+      members: 'Üyeler',
+      membersHint: 'Şu anda var olan hesaplar. Misafirler ve silinmekte olan hesaplar sayılmaz.',
+      messages: 'Mesajlar',
+      messagesHint:
+        'Sohbetlerde gönderilenler; sohbette yapılan düzeltmeler dahil. Aramalar sayılmaz.',
+      corrections: 'Gönderi düzeltmeleri',
+      correctionsHint: 'Akıştaki gönderilere yazılan düzeltmeler.',
+      languages: 'Diller',
+      languagesHint: 'Üyelerin öğrendiği farklı diller.',
+      daysTitle: { one: 'Son {count} gün', other: 'Son {count} gün' },
+      daysPick: 'Gösterilecek rakam',
+      dayMembers: 'Üyeler',
+      dayMessages: 'Mesajlar',
+      dayCorrections: 'Düzeltmeler',
+      sumMembers: { one: '{amount} yeni üye', other: '{amount} yeni üye' },
+      sumMessages: { one: '{amount} mesaj', other: '{amount} mesaj' },
+      sumCorrections: { one: '{amount} gönderi düzeltmesi', other: '{amount} gönderi düzeltmesi' },
+      chartA11y: {
+        one: 'Son {count} günde {total}, günde bir sütun',
+        other: 'Son {count} günde {total}, günde bir sütun',
+      },
+      daysCaption:
+        'Her gün için bir sütun, UTC gününe göre. Sonuncusu bugünün şu ana kadarki kısmı.',
+      languagesTitle: 'Diller',
+      learning: 'En çok öğrenilenler',
+      native: 'En çok ana dil olarak konuşulanlar',
+      languageRow: { one: '{language}: {amount} üye', other: '{language}: {amount} üye' },
+      noLanguages: 'Henüz dil eklenmedi.',
+      streaksTitle: 'Seriler',
+      longest: 'En uzun seri',
+      longestBody: 'Bugün hesabı olan birinin şimdiye kadar yaptığı en uzun seri.',
+      longestValue: { one: '{amount} gün', other: '{amount} gün' },
+      active: 'Serisi süren',
+      activeBody: 'Serisi henüz bitmemiş üyeler — yalnızca bugün gelenler değil.',
+      activeValue: { one: '{amount} üye', other: '{amount} üye' },
+      trustTitle: 'Verilerin ve güvenliğin',
+      auditTitle: 'Kurallar kodda yazılı',
+      auditBody:
+        'Limitler, plan kontrolleri ve token kuralları okunabilir; her biri sunucuda uygulanır — bir kuralı bilmek kimseye onu aşma imkânı vermez.',
+      dataTitle: 'Verilerin senin',
+      dataBody: {
+        one: 'Uygulamanın senin hakkında tuttuğu her şeyi dışa aktar ya da hesabını sil: {count} gün sonra tamamen gider.',
+        other:
+          'Uygulamanın senin hakkında tuttuğu her şeyi dışa aktar ya da hesabını sil: {count} gün sonra tamamen gider.',
+      },
+      boundedTitle: 'Bu sayfanın sınırları var',
+      boundedBody: 'Yalnızca toplamlar ve günler, asla bir kişi. En küçük grup koca bir dil.',
+      securityTitle: 'Bir açık mı buldun?',
+      securityBody: 'Herkese açık bir issue yerine gizlice bildir. Bir hafta içinde dönüş alırsın.',
+      securityLink: 'Güvenlik politikası',
+      supportTitle: 'LangX’i destekle',
+      proTitle: 'Pro’ya geç',
+      proBody: 'Sunucuların parasını ödeyen ve LangX’i ayakta tutan Pro.',
+      proTitleMember: 'Pro’dasın',
+      proBodyMember: 'Teşekkürler. Sunucuların parasını ödeyen ve LangX’i ayakta tutan Pro.',
+      qReal: 'Rakamlar gerçek mi?',
+      aReal:
+        'Evet. LangX’in kendi veritabanından, herkesin okuyabildiği bir kodla sayılıyorlar — bu sayfayı yanıtlayan kodun ta kendisiyle. Kimse elle girmiyor ve hiçbiri yuvarlanmıyor.',
+      qRevenue: 'Neden burada gelir yok?',
+      aRevenue:
+        'Çünkü yayımlanan bir rakam geri alınamaz. Gelir, abonelikler, dönüşüm, elde tutma ve üyelerin nereden geldiği, planlarımızı soran herkese verirdi; bu yüzden bu sayfada hiçbir zaman yer almazlar.',
+      qGuests: 'Misafirler sayılıyor mu?',
+      aGuests:
+        'Hayır. Misafir, hesabı olmadan etrafa bakan biridir ve misafirleri saymak her rakamı şişirirdi. Üyeler, diller ve seriler yalnızca şu anda var olan hesapları sayar — misafir yok, silinmeyi bekleyen hesap da yok.',
+      qUpdates: 'Ne sıklıkla güncelleniyor?',
+      aUpdates: {
+        one: 'En fazla {count} dakikada bir: rakamlar bir saate göre değil, ondan sonraki ilk ziyarette yeniden sayılır. Sana gelirken yolda tutulan bir kopya bir o kadar daha eski olabilir; sayfanın üstünde ne zaman sayıldığının yazması bu yüzden.',
+        other:
+          'En fazla {count} dakikada bir: rakamlar bir saate göre değil, ondan sonraki ilk ziyarette yeniden sayılır. Sana gelirken yolda tutulan bir kopya bir o kadar daha eski olabilir; sayfanın üstünde ne zaman sayıldığının yazması bu yüzden.',
+      },
+      qMine: 'Verilerim bu sayfada mı?',
+      aMine:
+        'Yalnızca toplamların içinde. Üyelerden birisin ve eklediğin her dilde bir kişi olarak sayılırsın, ama sayfada isim, profil ya da mesaj yok ve en küçük grubu koca bir dil — üzerindeki hiçbir şey sana kadar daraltılamaz.',
+      qOpen: 'LangX gerçekten açık kaynak mı?',
+      aOpen:
+        'Evet. Uygulama, sunucu ve bu sayfanın arkasındaki kod, BSD-3 lisansıyla tek bir herkese açık depoda: lisans notu yanında kaldığı sürece herkes okuyabilir, kendi kopyasını çalıştırabilir ve üzerine inşa edebilir.',
+      qSafe: 'Kod herkese açıksa güvenli mi?',
+      aSafe:
+        'Açık kod zayıf nokta değil, çünkü hiçbir şey onun gizli kalmasına dayanmıyor. Her limit ve her izin sunucuda denetlenir; nasıl çalıştığını bilmek kimseye onları aşma imkânı vermez ve kodda hiçbir zaman şifre ya da anahtar bulunmaz.',
+      qE2E: 'Mesajlarım uçtan uca şifreli mi?',
+      aE2E: 'Hayır. Mesajlar LangX’in sunucularında LangX’in okuyabileceği biçimde tutulur: bir sohbet şikâyet edildiğinde moderatörler oraya varan mesajları okur. Onları koruyan şey şu: bir sohbeti yalnızca içindeki iki kişi açabilir — sunucu bunu her istekte ve her canlı güncellemede, bir engellemeden sonra da yeniden denetler — ve uygulamayla sunucu arasındaki her şey HTTPS üzerinden gider.',
+      qExport: 'Verilerimi dışa aktarabilir ya da silebilir miyim?',
+      aExport: {
+        one: 'Evet, ikisini de, {settings} › {account} altında. {exportData}, uygulamanın senin hakkında tuttuğu her şeyi tek bir dosyada verir. {deleteAccount}, onayladığın anda hesabını gizler ve {count} gün sonra tamamen siler; o süre dolmadan tekrar giriş yaparsan iptal olur. Gönderdiğin mesajlar karşı tarafın sohbetinde, metinleri silinmiş olarak kalır.',
+        other:
+          'Evet, ikisini de, {settings} › {account} altında. {exportData}, uygulamanın senin hakkında tuttuğu her şeyi tek bir dosyada verir. {deleteAccount}, onayladığın anda hesabını gizler ve {count} gün sonra tamamen siler; o süre dolmadan tekrar giriş yaparsan iptal olur. Gönderdiğin mesajlar karşı tarafın sohbetinde, metinleri silinmiş olarak kalır.',
+      },
+      qContribute: 'Nasıl katkıda bulunurum?',
+      aContribute:
+        'Yukarıdaki “{contribute}” ile başla: LangX’i kendi bilgisayarında nasıl çalıştıracağını ve bir değişikliğin gönderilmeden önce neye ihtiyacı olduğunu anlatıyor. “{issues}” açık olanları listeler.',
+      qSupport: 'LangX’i nasıl desteklerim?',
+      aSupport:
+        'En çok Pro’ya geçmek yardımcı olur: sunucuların parasını ödeyen ve LangX’i ayakta tutan abonelik. Ayrıca GitHub’da sponsor olabilir, patron olabilir ya da Discord’da aramıza katılabilirsin — bağlantılar yukarıda.',
+      qVulnerability: 'Bir güvenlik açığı buldum. Ne yapmalıyım?',
+      aVulnerability:
+        'Teşekkürler. Herkese açık bir issue yerine e-postayla gizlice bildir — adres yukarıdaki “{policy}” bağlantısında. Bir hafta içinde dönüş alırsın; kabul edilen bir bildirim bir sonraki güvenlik güncellemesinde düzeltilir.',
+      linkTitle: 'Aynı rakamlar, web’de',
+    },
+  },
   streak: {
     title: 'Serin',
     historyBody: 'Son iki ayın her günü ve neyin sayıldığı',

@@ -22,12 +22,12 @@ route, the module and this file are named for it in the singular. Do not
 
 ## The line
 
-| On the page                                                | Never on the page                                       |
-| ---------------------------------------------------------- | ------------------------------------------------------- |
-| Members, messages, corrections, languages                  | Revenue, subscriptions, plan mix                        |
-| New members / messages / corrections per day, last 30 days | Conversion, retention, funnel steps, churn              |
-| The most-learned and most-spoken languages                 | Channels, campaigns, where installs come from           |
-| Longest streak ever, how many members are on one today     | Anything keyed to a person: handles, ids, cities, dates |
+| On the page                                                     | Never on the page                                       |
+| --------------------------------------------------------------- | ------------------------------------------------------- |
+| Members, messages, post corrections, languages                  | Revenue, subscriptions, plan mix                        |
+| New members / messages / post corrections per day, last 30 days | Conversion, retention, funnel steps, churn              |
+| The most-learned and most-spoken languages                      | Channels, campaigns, where installs come from           |
+| Longest streak of anyone here now, how many are on a streak     | Anything keyed to a person: handles, ids, cities, dates |
 
 The right-hand column is not a backlog. Publishing it hands pricing and channel
 strategy to anyone who asks, permanently — a share link can be switched off,
@@ -42,9 +42,30 @@ published by that act alone. Add a private number to the admin module. The
 admin module reads this one rather than recomputing beside it.
 
 Everything on the left is a count over a whole collection. No document is read
-out, the smallest group is a language, and guests and deleted accounts are
-excluded from every number — a guest is a browsing session with no account
-behind it, and would inflate all of them.
+out, and the smallest group is a language. Guests and deleted accounts are left
+out of every count of people — members, languages and streaks: a guest is a
+browsing session with no account behind it, and would inflate all of them.
+Messages and post corrections count rows, not people, so a deleted account's
+messages are still in them; they stay in the other person's thread with their
+words removed.
+
+Two of those numbers are narrower than their names, and both pages word them
+by what is counted:
+
+- **Corrections are the feed's.** `corrections` counts `postCorrections`. A
+  correction made in a chat is a message (`type: 'correction'`) and is counted
+  in `messages`. So there is no corrections-against-messages ratio on either
+  page: it would understate the teaching and overstate the talking.
+- **"On a streak" is not "today".** `streaks.active` counts every streak above
+  zero, and a streak is only reset once it is three days stale, so it includes
+  runs last fed yesterday and the day before. `streaks.longest` is the longest
+  any account that exists now has had; a deleted account's takes its record
+  with it.
+
+The app draws the same numbers on its Transparency page
+(`apps/mobile/src/screens/TransparencyScreenV3.tsx`), in the reader's own
+language. It reads this endpoint and nothing else, and parses the answer with
+`publicStatsSchema` from `packages/shared`, the type the API writes it in.
 
 ## Where it lives
 

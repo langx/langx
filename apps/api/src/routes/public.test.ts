@@ -1,4 +1,4 @@
-import { aggregateId } from '@langx/shared'
+import { aggregateId, publicStatsSchema } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -247,6 +247,28 @@ describe('the routes anybody can call', () => {
       // Quoted, because `ada` is a substring of a language name (Kannada) and
       // a bare match would fail on a body that leaked nothing.
       expect(JSON.stringify(body)).not.toMatch(/"ada"|handle|displayName/)
+    })
+
+    /*
+     * The app's Transparency page parses this answer with the shared schema
+     * and shows "Couldn't load" for anything that does not fit it, so a field
+     * renamed or retyped here has to fail a test, not the page.
+     */
+    it('answers in the shape the app parses', async () => {
+      await handle.db.collection(COLLECTIONS.messages).insertOne({
+        senderId: 'ada',
+        type: 'text',
+        createdAt: new Date(),
+      })
+      await handle.db
+        .collection(COLLECTIONS.postCorrections)
+        .insertOne({ authorId: 'bo', createdAt: new Date() })
+
+      const response = await app.inject({ method: 'GET', url: '/public/stats' })
+      expect(response.statusCode).toBe(200)
+      const parsed = publicStatsSchema.safeParse(response.json())
+      expect(parsed.error?.issues ?? []).toEqual([])
+      expect(parsed.data?.daily).toHaveLength(parsed.data?.days ?? -1)
     })
 
     it('serves the page that draws them', async () => {
