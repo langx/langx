@@ -106,9 +106,11 @@ that damages trust.
 - The store also holds an **hourly gift** (added 5 September 2026): once an
   hour, for free, a small random number of tokens — 0 to 250, most of them a
   handful, the top of the range rare. Say it as a gift, and say the shape
-  honestly: "most hold a few tokens; a few hold more". Gift tokens go to the
-  all-time balance only and never move a leaderboard, so it cannot be
-  described as a way to climb one. Never "win", "prize", "lucky", "jackpot",
+  honestly: "most hold a few tokens; a few hold more". Since 8 October 2026
+  gift tokens count like any other reward — in the balance and on every
+  leaderboard, weekly, monthly, yearly and all-time — but do not describe the
+  gift as a way to climb one: it is free, random and mostly a handful of
+  tokens. Never "win", "prize", "lucky", "jackpot",
   "spin" or "chance" — that is the vocabulary of a game of chance, and this is
   a free gift with no stake, nothing bought and nothing redeemable. The
   Feather `gift` icon, never a box that looks like a slot or a wheel.
