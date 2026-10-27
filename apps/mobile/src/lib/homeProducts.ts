@@ -8,10 +8,10 @@ import { formatCount } from './transparency'
 import type { StreakRowVenus } from './venusStreakRow'
 
 /*
- * Home's two new blocks (plan #2067, §4 and §8): the streak row split into a
- * Streak card and a Venus card, and under it the "LangX" section — a card for
- * each product page. What each card says is decided here, apart from the
- * screen, so vitest can read it in every language.
+ * Home's "LangX" section (plan #2067, §8): a card for each product page,
+ * Venus's carrying today's video (decision 1 of 27 Oct). What each card says
+ * is decided here, apart from the screen, so vitest can read it in every
+ * language.
  */
 
 /** The section's cards, in the plan's order. */
@@ -52,6 +52,8 @@ export interface HomeProductFacts {
   member: boolean
   /** The day of today's Venus video, when the bucket holds one for today. */
   venusDay?: number | undefined
+  /** What Home makes of today's Venus video (`streakRowVenus`); none for a guest. */
+  venus?: StreakRowVenus | undefined
   /** The wallet's balance, once it has arrived. */
   balance?: number | undefined
   /** `GET /public/stats`'s count of members, once it has arrived. */
@@ -64,7 +66,9 @@ export interface HomeProductFacts {
  * stats — and while a number is on its way, or for a guest who has none, the
  * line is something true without it rather than a zero or a skeleton:
  *
- * - Venus: her pack's size, and today's video's day once there is one.
+ * - Venus: "Today's video is ready" while it waits to be watched
+ *   (`homeVenusCard`); otherwise her pack's size, and today's video's day
+ *   once there is one.
  * - Copilot: "Beta", in the paywall's phrasing (`paywall.betaTag`).
  * - LangX Token: an account's balance; for a guest, what an account starts
  *   with, as the Token page tells one.
@@ -78,9 +82,11 @@ export function homeProductLines(
 ): Record<HomeProduct, string> {
   const stickers = t('stickerPack.count', { count: VENUS_STICKERS })
   return {
-    venus: facts.venusDay
-      ? `${stickers} · ${t('venus.strip.day', { day: facts.venusDay })}`
-      : stickers,
+    venus: homeVenusCard(facts.venus ?? 'none').ready
+      ? t('home.streakRow.venusReady')
+      : facts.venusDay
+        ? `${stickers} · ${t('venus.strip.day', { day: facts.venusDay })}`
+        : stickers,
     copilot: t('paywall.betaTag'),
     token: !facts.member
       ? t('tokens.page.guestTitle', {
@@ -101,36 +107,28 @@ export function homeProductLines(
 }
 
 /**
- * The Venus card beside the streak, from `streakRowVenus`'s reading of today
- * and no rule of its own:
+ * What Venus's card in the "LangX" section does with today's video, from
+ * `streakRowVenus`'s reading of today and no rule of its own:
  *
- * - `ready` — a video not yet watched to its end: ▶ in the corner, the
- *   unwatched dot, and "Today's video is ready".
- * - `watched` — ▶ stays, for a replay; the dot goes.
- * - `unknown` — a video, but not yet whether it was watched: ▶ and no dot,
- *   with the line of a day without one, which claims nothing either way, so
- *   the card never says "seen" or "ready" and then changes its mind.
- * - `none` — no video (flag off, today not counted, no file): no ▶, and the
- *   card invites a person to meet her. It is drawn every day all the same,
- *   and always opens her page.
+ * - `ready` — a video not yet watched to its end: ▶ on the card's corner, the
+ *   unwatched dot on her mark, and "Today's video is ready" in place of her
+ *   line.
+ * - `watched` — ▶ stays, for a replay; the dot goes and her line comes back.
+ * - `unknown` — a video, but not yet whether it was watched: drawn as
+ *   `watched` is, which claims nothing either way, so the card never says
+ *   "ready" and then changes its mind.
+ * - `none` — no video (flag off, today not counted, no file): no ▶, no dot,
+ *   her line. The card opens her page whatever the state.
  */
 export interface HomeVenusCard {
-  line: MessageKey
+  /** A ▶ on the card's corner that plays today's video. */
   play: boolean
-  dot: boolean
+  /** The unwatched dot on her mark, and "Today's video is ready" for her line. */
+  ready: boolean
 }
 
 export function homeVenusCard(state: StreakRowVenus): HomeVenusCard {
-  switch (state) {
-    case 'ready':
-      return { line: 'home.streakRow.venusReady', play: true, dot: true }
-    case 'watched':
-      return { line: 'home.streakRow.venusWatched', play: true, dot: false }
-    case 'unknown':
-      return { line: 'home.streakRow.venusMeet', play: true, dot: false }
-    case 'none':
-      return { line: 'home.streakRow.venusMeet', play: false, dot: false }
-  }
+  return { play: state !== 'none', ready: state === 'ready' }
 }
 
 /**

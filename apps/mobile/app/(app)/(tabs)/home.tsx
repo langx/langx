@@ -23,13 +23,14 @@ import {
   HomeLinkRow,
   HomePeople,
   HomeProCard,
-  HomeStreakPair,
+  HomeStreakRow,
   HomeToday,
   type HomeGoal,
   type HomePerson,
 } from '../../../src/components/home/HomeBlocks'
 import { HomeHero, type HomeHeroView } from '../../../src/components/home/HomeHero'
 import { HomeProducts, type HomeProductCard } from '../../../src/components/home/HomeProducts'
+import { BALANCED, useStacked } from '../../../src/components/product/ProductGroup'
 import { Screen } from '../../../src/components/ui/Screen'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useProfileCache } from '../../../src/hooks/useProfileCache'
@@ -56,11 +57,13 @@ import {
   HOME_PRODUCTS,
   homeProductLines,
   homeVenusCard,
+  type HomeProduct,
 } from '../../../src/lib/homeProducts'
 import { loadState } from '../../../src/lib/loadState'
 import { openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { requireAccount } from '../../../src/lib/requireAccount'
+import { PRODUCT_TEXT_SCALE } from '../../../src/lib/productPage'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../../src/lib/theme'
 import { partnerHueFor } from '../../../src/lib/theme/partnerHue'
 import { requestVenusReplay } from '../../../src/lib/venusStory'
@@ -137,7 +140,8 @@ function MemberHome() {
   const discovery = useDiscovery({ sort: 'recommended' })
   const tier = useEffectiveTier()
   const venusVideo = useVenusStory()
-  const venusCard = homeVenusCard(streakRowVenus(venusVideo, useVenusWatched(), session?.user.id))
+  const venusState = streakRowVenus(venusVideo, useVenusWatched(), session?.user.id)
+  const venusCard = homeVenusCard(venusState)
   const stats = usePublicStats()
 
   const pull = usePullToRefresh(() =>
@@ -300,45 +304,47 @@ function MemberHome() {
 
         {/*
           Not for a streak of nothing: a new account is not shown a zero. Once
-          today counts, the pair is there even at one day: the streak and its
-          next reward, and beside it Venus, the streak's reward — with ▶ and,
-          until it is watched to the end, the unwatched dot once the bucket
-          holds today's video (`streakRowVenus`), and every day her page.
+          today counts, the row is there even at one day.
         */}
         {streak && (streak.current > 0 || streak.qualifiedToday) ? (
-          <HomeStreakPair
-            streak={{
-              title: t('home.streakDays', { count: streak.current }),
-              line: milestone
+          <HomeStreakRow
+            title={t('home.streakDays', { count: streak.current })}
+            subtitle={
+              milestone
                 ? t('home.streakNext', {
                     count: milestone.day - streak.current,
                     day: milestone.day,
                   })
-                : undefined,
-              onPress: () => router.push('/(app)/streak'),
-            }}
-            venus={{
-              name: t(HOME_PRODUCT_NAMES.venus),
-              line: t(venusCard.line),
-              dot: venusCard.dot,
-              play: venusCard.play
-                ? { label: t('venus.watchAgain'), onPress: requestVenusReplay }
-                : undefined,
-              onPress: () => router.push(HOME_PRODUCT_LOOK.venus.route),
-            }}
+                : undefined
+            }
+            onPress={() => router.push('/(app)/streak')}
           />
         ) : null}
 
+        {/*
+          Venus's card is where today's video is: ▶ on its corner once the
+          bucket holds it, and until it is watched to the end, the unwatched
+          dot and a line saying so (`streakRowVenus`).
+        */}
         <HomeProducts
           title={t('home.products.title')}
           cards={productCards(
             t,
             homeProductLines(t, locale, {
               member: true,
+              venus: venusState,
               venusDay: venusVideo?.day,
               balance: wallet.data?.balance,
               members: stats.data?.totals.members,
             }),
+            {
+              venus: {
+                dot: venusCard.ready,
+                play: venusCard.play
+                  ? { label: t('venus.watchAgain'), onPress: requestVenusReplay }
+                  : undefined,
+              },
+            },
           )}
         />
 
@@ -458,10 +464,14 @@ function GuestHome() {
   )
 }
 
-/** The "LangX" section's four cards, in `HOME_PRODUCTS`' order, each opening its page. */
+/**
+ * The "LangX" section's four cards, in `HOME_PRODUCTS`' order, each opening
+ * its page; `extra` is what a card carries beyond that — Venus's dot and ▶.
+ */
 function productCards(
   t: ReturnType<typeof useT>,
   lines: ReturnType<typeof homeProductLines>,
+  extra: Partial<Record<HomeProduct, Pick<HomeProductCard, 'dot' | 'play'>>> = {},
 ): HomeProductCard[] {
   return HOME_PRODUCTS.map((product) => {
     const { tone, mark, route } = HOME_PRODUCT_LOOK[product]
@@ -472,6 +482,7 @@ function productCards(
       name: t(HOME_PRODUCT_NAMES[product]),
       line: lines[product],
       onPress: () => router.push(route),
+      ...extra[product],
     }
   })
 }
@@ -493,16 +504,30 @@ function HomeHeader({
   black: boolean
 }) {
   const styles = useStyles()
+  const stacked = useStacked()
   return (
     <View style={styles.header}>
+      {/*
+        Capped as a product page's name is, the same Title size: past it,
+        "evening," no longer fitted a line and two lines cut it to "eve…".
+        At the larger text sizes it is never cut short, and its lines are
+        balanced.
+      */}
       <Text
-        style={[styles.title, !black && styles.titleFallback]}
+        style={[styles.title, !black && styles.titleFallback, stacked && BALANCED]}
         accessibilityRole="header"
-        numberOfLines={2}
+        maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.name}
+        {...(stacked
+          ? ({ textBreakStrategy: 'balanced', lineBreakStrategyIOS: 'push-out' } as const)
+          : { numberOfLines: 2 })}
       >
         {title}
       </Text>
-      {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+      {subtitle ? (
+        <Text style={styles.subtitle} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+          {subtitle}
+        </Text>
+      ) : null}
     </View>
   )
 }

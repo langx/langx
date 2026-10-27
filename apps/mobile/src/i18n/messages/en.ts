@@ -107,17 +107,14 @@ export const en = {
     guestBody:
       'With an account you can write to people, keep a streak and save what you learn in Echo.',
     /**
-     * The streak row, split (plan #2067 §4): the Venus card beside the
-     * streak's, the line under her name. `venusMeet` is the line on a day
-     * with no video to play, and while the device has not yet said whether
-     * today's was watched; the card still opens her page.
+     * Venus's card in the "LangX" section, the line under her name while
+     * today's video waits to be watched to its end; any other time the card
+     * keeps her own line. (Named for the streak row, where it was first.)
      */
     streakRow: {
       venusReady: 'Today’s video is ready',
-      venusWatched: 'You’ve seen today’s video',
-      venusMeet: 'Meet LangX’s cat',
     },
-    /** The "LangX" section under it: a card for each product page. */
+    /** The "LangX" section under the streak: a card for each product page. */
     products: {
       title: 'LangX',
       /** Copilot's card. Its page's title, `copilot.label`, carries the "Beta" the card's own line says. */

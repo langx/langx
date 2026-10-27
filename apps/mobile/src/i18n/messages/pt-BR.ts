@@ -86,8 +86,6 @@ export const ptBR: Localized<EnMessages> = {
       'Com uma conta, você pode escrever para as pessoas, manter uma sequência e salvar o que aprende no Echo.',
     streakRow: {
       venusReady: 'O vídeo de hoje está pronto',
-      venusWatched: 'Você já viu o vídeo de hoje',
-      venusMeet: 'Conheça a gata da LangX',
     },
     products: {
       title: 'LangX',

@@ -109,8 +109,6 @@ export const ru: Localized<EnMessages> = {
     guestBody: 'С аккаунтом можно писать людям, держать серию и сохранять выученное в Эхо.',
     streakRow: {
       venusReady: 'Видео дня готово',
-      venusWatched: 'Видео дня просмотрено',
-      venusMeet: 'Познакомься с кошкой LangX',
     },
     products: {
       title: 'LangX',

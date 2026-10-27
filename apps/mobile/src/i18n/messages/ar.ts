@@ -120,8 +120,6 @@ export const ar: Localized<EnMessages> = {
     guestBody: 'بحساب يمكنك مراسلة الناس والحفاظ على سلسلتك وحفظ ما تتعلمه في صدى.',
     streakRow: {
       venusReady: 'فيديو اليوم جاهز',
-      venusWatched: 'شاهدت فيديو اليوم',
-      venusMeet: 'تعرّف على قطة LangX',
     },
     products: {
       title: 'LangX',

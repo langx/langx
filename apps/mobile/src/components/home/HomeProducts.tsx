@@ -11,7 +11,13 @@ import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useLocale } from '../../i18n'
 import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
-import { PRESS_SCALE_CARD, SPRING, STAGGER, unlessReduced } from '../../lib/theme/motion'
+import {
+  PRESS_SCALE_CARD,
+  PRESS_SCALE_GLYPH,
+  SPRING,
+  STAGGER,
+  unlessReduced,
+} from '../../lib/theme/motion'
 import { BALANCED, ROW_SQUARE, useGlyphScale, useStacked } from '../product/ProductGroup'
 import { ProductMark, type ProductMarkName } from '../product/ProductMark'
 import type { ProductTone } from '../product/tone'
@@ -21,6 +27,12 @@ import { CARD_INSET, HomeCardRows } from './HomeCards'
 /** How far a card rises as it arrives: enough to read as arriving, not as travelling. */
 const RISE = 8
 
+/** Today's video's ▶: as tall as the mark beside it, 40 drawn and 48 to the touch. */
+const PLAY = ROW_SQUARE
+
+/** The unwatched dot on Venus's mark, edge and all. */
+const DOT = 14
+
 export interface HomeProductCard {
   key: string
   tone: ProductTone
@@ -29,6 +41,10 @@ export interface HomeProductCard {
   /** One live line: a count, a balance, a state. */
   line: string
   onPress: () => void
+  /** Venus's: today's video not yet watched to its end, a dot on her mark. */
+  dot?: boolean | undefined
+  /** Venus's: today's video, when there is one — a ▶ on the card's corner that plays it. */
+  play?: { label: string; onPress: () => void } | undefined
 }
 
 /**
@@ -37,6 +53,13 @@ export interface HomeProductCard {
  * (`HomeCardRows`). Each card is the product's mark in its own colour, its
  * name and one live line, and opens its page — the colour and mark the page
  * itself opens with, so the card and the page read as one thing.
+ *
+ * Venus's card is also where today's video is (plan #2067, decision 1 of
+ * 27 Oct): a ▶ on its corner plays it, and until it has been watched to its
+ * end her mark wears the unwatched dot. The ▶ is a sibling laid over the
+ * card rather than a button inside it — a screen reader cannot reach a
+ * button nested in another one on iOS — so it is found as a target of its
+ * own after the card, named for what it does.
  *
  * The cards arrive one after another, once, the first time Home draws them;
  * with reduce motion on they are simply there. Dumb like Home's other
@@ -90,42 +113,96 @@ function ProductCard({ card, beside }: { card: HomeProductCard; beside: boolean 
   // beside the mark and a chevron, "Transparência" and "Прозрачность" broke
   // in the middle at the largest size.
   const tile = beside || stacked
+  // The mark, the dot and the ▶ grow with the words, as every row's square does.
+  const square = ROW_SQUARE * glyph
+  const play = PLAY * glyph
+  const dot = DOT * glyph
   return (
-    <PressableScale
-      accessibilityRole="button"
-      accessibilityLabel={`${card.name}. ${card.line}`}
-      onPress={card.onPress}
-      scaleTo={PRESS_SCALE_CARD}
-      touchStyle={styles.grow}
-      style={[styles.card, tile ? styles.tile : styles.row]}
-    >
-      {/* A row's square, growing with the words as every row's square does. */}
-      <ProductMark tone={card.tone} mark={card.mark} size={ROW_SQUARE * glyph} />
-      <View style={[styles.words, !tile && styles.wordsRow]}>
-        <Text
-          style={[styles.name, isRtl ? styles.rtl : styles.ltr]}
-          maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}
+    <>
+      <PressableScale
+        accessibilityRole="button"
+        accessibilityLabel={`${card.name}. ${card.line}`}
+        onPress={card.onPress}
+        scaleTo={PRESS_SCALE_CARD}
+        touchStyle={styles.grow}
+        style={[styles.card, tile ? styles.tile : styles.row]}
+      >
+        <View style={tile ? styles.markTile : null}>
+          <ProductMark tone={card.tone} mark={card.mark} size={square} />
+          {/*
+            Where a badge sits on an avatar, edged in the card's own ground so
+            it reads as laid over the mark, in the streak's tangerine — the
+            colour the streak page's strip rings today's unwatched video in.
+          */}
+          {card.dot ? (
+            <View
+              style={[
+                styles.dot,
+                {
+                  backgroundColor: v3.hues.tangerine,
+                  bottom: -dot / 4,
+                  end: -dot / 4,
+                  height: dot,
+                  width: dot,
+                },
+              ]}
+            />
+          ) : null}
+        </View>
+        <View
+          style={[
+            styles.words,
+            !tile && styles.wordsRow,
+            // As a row, room at its end for the ▶ laid over it, and the row's gap before it.
+            !tile && card.play ? { paddingEnd: play + v3.space[12] } : null,
+          ]}
         >
-          {card.name}
-        </Text>
-        {/* Balanced, as a product row's line is: "Start with 250 / tokens" left a word alone. */}
-        <Text
-          style={[styles.line, isRtl ? styles.rtl : styles.ltr, BALANCED]}
-          maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
-          textBreakStrategy="balanced"
-          lineBreakStrategyIOS="push-out"
-        >
-          {card.line}
-        </Text>
-      </View>
-      {tile ? null : (
-        <Feather
-          name={isRtl ? 'chevron-left' : 'chevron-right'}
-          size={Math.round(v3.icon.md * glyph)}
-          color={v3.colors.muted}
-        />
-      )}
-    </PressableScale>
+          <Text
+            style={[styles.name, isRtl ? styles.rtl : styles.ltr]}
+            maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}
+          >
+            {card.name}
+          </Text>
+          {/* Balanced, as a product row's line is: "Start with 250 / tokens" left a word alone. */}
+          <Text
+            style={[styles.line, isRtl ? styles.rtl : styles.ltr, BALANCED]}
+            maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+            textBreakStrategy="balanced"
+            lineBreakStrategyIOS="push-out"
+          >
+            {card.line}
+          </Text>
+        </View>
+        {tile || card.play ? null : (
+          <Feather
+            name={isRtl ? 'chevron-left' : 'chevron-right'}
+            size={Math.round(v3.icon.md * glyph)}
+            color={v3.colors.muted}
+          />
+        )}
+      </PressableScale>
+      {card.play ? (
+        <View style={[styles.playSpot, tile ? styles.playCorner : styles.playEnd]}>
+          <PressableScale
+            accessibilityRole="button"
+            accessibilityLabel={card.play.label}
+            onPress={card.play.onPress}
+            scaleTo={PRESS_SCALE_GLYPH}
+            hitSlop={4}
+          >
+            <View style={[styles.play, { height: play, width: play }]}>
+              {/* Nudged a point forward: a triangle's weight sits behind its middle. */}
+              <Feather
+                name="play"
+                size={Math.round(v3.icon.md * glyph)}
+                color={v3.colors.pillText}
+                style={styles.playGlyph}
+              />
+            </View>
+          </PressableScale>
+        </View>
+      ) : null}
+    </>
   )
 }
 
@@ -176,6 +253,27 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   tile: { flexGrow: 1, gap: v3.space[10] },
   row: { alignItems: 'center', flexDirection: 'row', flexGrow: 1, gap: v3.space[12] },
+  // The mark's box, for the dot laid over its corner: as a tile, only as wide as the mark.
+  markTile: { alignSelf: 'flex-start' },
+  dot: {
+    borderColor: v3.colors.surface,
+    borderRadius: v3.radius.pill,
+    borderWidth: 2,
+    position: 'absolute',
+  },
+  // Over the card, never inside it: it takes touches only on the ▶ itself.
+  playSpot: { pointerEvents: 'box-none', position: 'absolute' },
+  // As a tile, in the top corner level with the mark, which is the ▶'s height.
+  playCorner: { end: v3.space[CARD_INSET], top: v3.space[CARD_INSET] },
+  // As a row, at its end where the chevron would be, centred top to bottom.
+  playEnd: { bottom: 0, end: v3.space[CARD_INSET], justifyContent: 'center', top: 0 },
+  play: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.pill,
+    borderRadius: v3.radius.pill,
+    justifyContent: 'center',
+  },
+  playGlyph: { transform: [{ translateX: 1 }] },
   words: { gap: v3.space[2], minWidth: 0 },
   wordsRow: { flex: 1 },
   name: { ...v3.type.button, color: v3.colors.fg },

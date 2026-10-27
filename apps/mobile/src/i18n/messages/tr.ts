@@ -92,8 +92,6 @@ export const tr: Localized<EnMessages> = {
       'Bir hesapla insanlara yazabilir, serini sürdürebilir ve öğrendiklerini Echo’ya kaydedebilirsin.',
     streakRow: {
       venusReady: 'Bugünün videosu hazır',
-      venusWatched: 'Bugünün videosunu izledin',
-      venusMeet: 'LangX’in kedisiyle tanış',
     },
     products: {
       title: 'LangX',

@@ -19,8 +19,8 @@ export interface CardText {
 }
 
 /**
- * Home's equal cards — the streak and Venus, and the four products — two to
- * a row while they fit, one to a row when they do not.
+ * Home's equal cards — the four products of the "LangX" section — two to a
+ * row while they fit, one to a row when they do not.
  *
  * "Fit" is measured rather than guessed from the phone's width, because it
  * depends on the words as much as on the room: every word the cards print is

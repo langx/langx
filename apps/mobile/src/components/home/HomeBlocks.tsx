@@ -1,11 +1,8 @@
 import Feather from '@expo/vector-icons/Feather'
-import { Image } from 'expo-image'
-import { Pressable, Text, View, type ViewStyle } from 'react-native'
-import venusHead from '../../../assets/venus/head.png'
+import { Pressable, Text, View } from 'react-native'
 import { useLocale } from '../../i18n'
 import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
-import { PRESS_SCALE_CARD, PRESS_SCALE_GLYPH } from '../../lib/theme/motionValues'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
 import { PressableScale } from '../ui/PressableScale'
@@ -13,7 +10,6 @@ import { BALANCED, useGlyphScale, useStacked } from '../product/ProductGroup'
 import { ProBadge } from '../ui/ProBadge'
 import { ProgressRing } from '../ui/ProgressRing'
 import { FlameGlyph } from '../ui/StreakFlame'
-import { CARD_INSET, HomeCardRows, type CardText } from './HomeCards'
 
 /*
  * The blocks under Home's hero, drawn from `V-Home`. Each is dumb: the screen
@@ -38,6 +34,13 @@ export interface HomeGoal {
  *
  * A goal is done or not, so each ring is full or empty. The ring is hidden
  * from screen readers — the goal's own label already says "Done" or not.
+ *
+ * Three columns, each a ring over its words — until the larger text sizes
+ * (`useStacked`), where a third of the block is too narrow for one word
+ * ("Write", "someone" and "sentence" all broke in the middle, under an
+ * ellipsis). There each goal is a row of its own, the ring at its start and
+ * its words beside it, and the count goes under the heading instead of
+ * beside it.
  */
 export function HomeToday({
   title,
@@ -50,97 +53,126 @@ export function HomeToday({
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
+  const stacked = useStacked()
   return (
     <View style={styles.today}>
-      <View style={styles.sectionHead}>
-        <Text style={styles.sectionTitle} accessibilityRole="header">
+      <View style={[styles.sectionHead, stacked && styles.sectionHeadStacked]}>
+        {/* Headline-sized, so capped as a heading is: the order of sizes holds at every setting. */}
+        <Text
+          style={styles.sectionTitle}
+          accessibilityRole="header"
+          maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.heading}
+        >
           {title}
         </Text>
-        <Text style={styles.todayCount}>{count}</Text>
+        <Text style={styles.todayCount} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+          {count}
+        </Text>
       </View>
-      <View style={styles.goals}>
-        {goals.map((goal) => (
-          <Pressable
-            key={goal.key}
-            accessibilityRole="button"
-            accessibilityLabel={`${goal.label}. ${goal.status}`}
-            accessibilityState={{ checked: goal.done }}
-            onPress={goal.onPress}
-            style={({ pressed }) => [styles.goal, pressed && styles.pressed]}
-          >
-            <ProgressRing
-              progress={goal.done ? 1 : 0}
-              color={v3.colors.correction}
-              {...(goal.echo ? { trackColor: v3.colors.echoTint } : {})}
+      <View style={stacked ? styles.goalsStacked : styles.goals}>
+        {goals.map((goal) => {
+          const label = (
+            <Text
+              style={stacked ? styles.goalLabelRow : styles.goalLabel}
+              maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+              // A row has the block's width, so nothing is cut short there.
+              {...(stacked ? {} : { numberOfLines: 2 })}
             >
-              <Feather
-                name={goal.done ? 'check' : goal.icon}
-                size={v3.icon.lg}
-                color={
-                  goal.done ? v3.colors.correction : goal.echo ? v3.colors.echoText : v3.colors.fg
-                }
-              />
-            </ProgressRing>
-            <Text style={styles.goalLabel} numberOfLines={2}>
               {goal.label}
             </Text>
+          )
+          const status = (
             <Text
               style={[
                 styles.goalStatus,
                 goal.done && { color: v3.colors.correction },
                 !goal.done && goal.echo && { color: v3.colors.echoText },
               ]}
-              numberOfLines={1}
+              maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+              {...(stacked ? {} : { numberOfLines: 1 })}
             >
               {goal.status}
             </Text>
-          </Pressable>
-        ))}
+          )
+          return (
+            <Pressable
+              key={goal.key}
+              accessibilityRole="button"
+              accessibilityLabel={`${goal.label}. ${goal.status}`}
+              accessibilityState={{ checked: goal.done }}
+              onPress={goal.onPress}
+              style={({ pressed }) => [
+                stacked ? styles.goalRow : styles.goal,
+                pressed && styles.pressed,
+              ]}
+            >
+              <ProgressRing
+                progress={goal.done ? 1 : 0}
+                color={v3.colors.correction}
+                {...(goal.echo ? { trackColor: v3.colors.echoTint } : {})}
+              >
+                <Feather
+                  name={goal.done ? 'check' : goal.icon}
+                  size={v3.icon.lg}
+                  color={
+                    goal.done ? v3.colors.correction : goal.echo ? v3.colors.echoText : v3.colors.fg
+                  }
+                />
+              </ProgressRing>
+              {stacked ? (
+                <View style={styles.goalWords}>
+                  {label}
+                  {status}
+                </View>
+              ) : (
+                <>
+                  {label}
+                  {status}
+                </>
+              )}
+            </Pressable>
+          )
+        })}
       </View>
     </View>
   )
 }
 
 /**
- * The streak and Venus, as two equal cards (plan #2067, §4): the streak's
- * flame on its tangerine, opening the streak page, and Venus's face on her
- * sky, opening her page. They were one row once, whose middle looked like
- * Venus and went to the streak; now each card is one target, named for what
- * it opens.
+ * The streak, its next reward, and the way into the streak screen: one card
+ * and one target, the flame on its tangerine at its start and a chevron at
+ * its end.
  *
- * Today's video keeps its ▶ in the Venus card's corner, playing it straight
- * away. It is a sibling laid over the card rather than a button inside it: a
- * screen reader cannot reach a button nested in another one on iOS, and this
- * way it finds three — the streak, Venus, and play. With no video the card
- * has no ▶ and still opens her page.
+ * Venus is not on it. She had a card beside it for a while, with today's
+ * video on it; now her card in the "LangX" section carries the video
+ * (`HomeProducts`), so this card is only the streak and says the day once.
  *
- * Side by side while their words fit, one above the other when they do not
- * (`HomeCardRows`). One above the other, each card is a row again — the
- * picture, the words, and the chevron or ▶ at its end — except at the larger
- * text sizes, where each stays a tile, its picture over its words, so a long
- * word in the title has the card's whole width.
+ * At the larger text sizes (`useStacked`) the flame and the chevron share a
+ * line over the words, so the title has the card's whole width: beside a
+ * flame and a chevron grown with the text, "12-day" was left a column too
+ * narrow for it.
  */
-export function HomeStreakPair({
-  streak,
-  venus,
+export function HomeStreakRow({
+  title,
+  subtitle,
+  onPress,
 }: {
-  streak: { title: string; line?: string | undefined; onPress: () => void }
-  venus: {
-    name: string
-    line: string
-    /** Today's video not yet watched to its end (`streakRowVenus`'s `ready`). */
-    dot: boolean
-    /** Today's video, when there is one: what its ▶ says and does. */
-    play?: { label: string; onPress: () => void } | undefined
-    onPress: () => void
-  }
+  title: string
+  subtitle?: string | undefined
+  onPress: () => void
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
   const { isRtl } = useLocale()
   const stacked = useStacked()
+  // The flame and the chevron grow with the words, as a product row's square does.
   const glyph = useGlyphScale()
-  const size = pairSizes(glyph, v3.space[CARD_INSET], v3.space[12])
+  const disc = DISC * glyph
+  const flame = (
+    <View style={[styles.disc, { backgroundColor: v3.hues.tangerine, height: disc, width: disc }]}>
+      <FlameGlyph size={Math.round(v3.icon.lg * glyph)} color={v3.colors.ink} />
+    </View>
+  )
   const chevron = (
     <Feather
       name={isRtl ? 'chevron-left' : 'chevron-right'}
@@ -148,168 +180,48 @@ export function HomeStreakPair({
       color={v3.colors.fg}
     />
   )
-  const title = { style: styles.cardTitle, maxScale: PRODUCT_TEXT_SCALE.heading }
-  const line = { style: styles.cardLine, maxScale: PRODUCT_TEXT_SCALE.text }
-  const texts: CardText[] = [
-    { text: streak.title, ...title },
-    { text: streak.line ?? '', ...line },
-    { text: venus.name, ...title },
-    { text: venus.line, ...line },
-  ]
-
   return (
-    <HomeCardRows
-      texts={texts}
-      render={({ beside, cell }) => {
-        const tile = beside || stacked
-        return (
-          <>
-            <View style={cell}>
-              <PressableScale
-                accessibilityRole="button"
-                accessibilityLabel={streak.line ? `${streak.title}. ${streak.line}` : streak.title}
-                onPress={streak.onPress}
-                scaleTo={PRESS_SCALE_CARD}
-                touchStyle={styles.grow}
-                style={[styles.card, tile ? styles.cardTile : styles.cardRow]}
-              >
-                <View style={[styles.pictureBox, size.box]}>
-                  <View style={[styles.disc, size.disc, { backgroundColor: v3.hues.tangerine }]}>
-                    <FlameGlyph size={Math.round(v3.icon.lg * glyph)} color={v3.colors.ink} />
-                  </View>
-                </View>
-                <CardWords title={streak.title} line={streak.line} row={!tile} />
-                {tile ? null : chevron}
-              </PressableScale>
-            </View>
-            <View style={cell}>
-              <PressableScale
-                accessibilityRole="button"
-                accessibilityLabel={`${venus.name}. ${venus.line}`}
-                onPress={venus.onPress}
-                scaleTo={PRESS_SCALE_CARD}
-                touchStyle={styles.grow}
-                style={[styles.card, tile ? styles.cardTile : styles.cardRow]}
-              >
-                <VenusFace dot={venus.dot} size={size} />
-                <CardWords
-                  title={venus.name}
-                  line={venus.line}
-                  row={!tile}
-                  {...(!tile && venus.play ? { style: size.beforePlay } : {})}
-                />
-                {tile || venus.play ? null : chevron}
-              </PressableScale>
-              {venus.play ? (
-                <View
-                  style={[
-                    styles.playSpot,
-                    tile ? [styles.playCorner, size.playCorner] : styles.playEnd,
-                  ]}
-                >
-                  <PressableScale
-                    accessibilityRole="button"
-                    accessibilityLabel={venus.play.label}
-                    onPress={venus.play.onPress}
-                    scaleTo={PRESS_SCALE_GLYPH}
-                    // 40 drawn, 48 to the touch.
-                    hitSlop={4}
-                  >
-                    <View style={[styles.venusPlay, size.play]}>
-                      {/* Nudged a point forward: a triangle's weight sits behind its middle. */}
-                      <Feather
-                        name="play"
-                        size={Math.round(v3.icon.md * glyph)}
-                        color={v3.colors.pillText}
-                        style={styles.venusPlayGlyph}
-                      />
-                    </View>
-                  </PressableScale>
-                </View>
-              ) : null}
-            </View>
-          </>
-        )
-      }}
-    />
-  )
-}
-
-/** A card's name and its one line under it; as a row, taking the room between its ends. */
-function CardWords({
-  title,
-  line,
-  row,
-  style,
-}: {
-  title: string
-  line?: string | undefined
-  row: boolean
-  style?: ViewStyle
-}) {
-  const styles = useStyles()
-  const { isRtl } = useLocale()
-  // The paragraph's direction is the layout's: "Venus" has no Arabic letters,
-  // so the web build's `dir="auto"` read it left to right and pinned it to
-  // the left in Arabic.
-  const direction = isRtl ? styles.rtl : styles.ltr
-  return (
-    <View style={[styles.cardWords, row && styles.cardWordsRow, style]}>
-      {/* Headline-sized, so capped as a heading is: the order of sizes holds at every setting. */}
-      <Text
-        style={[styles.cardTitle, direction]}
-        maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.heading}
-      >
-        {title}
-      </Text>
-      {line ? (
-        // Balanced, as a product row's line is: in half a row, "30-day" broke at
-        // its hyphen with one word left on the last line.
-        <Text
-          style={[styles.cardLine, direction, BALANCED]}
-          maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
-          textBreakStrategy="balanced"
-          lineBreakStrategyIOS="push-out"
-        >
-          {line}
+    <PressableScale
+      accessibilityRole="button"
+      accessibilityLabel={subtitle ? `${title}. ${subtitle}` : title}
+      onPress={onPress}
+      style={[styles.row, stacked && styles.rowStacked]}
+    >
+      {stacked ? (
+        <View style={styles.rowHead}>
+          {flame}
+          {chevron}
+        </View>
+      ) : (
+        flame
+      )}
+      <View style={stacked ? styles.rowTextStacked : styles.rowText}>
+        {/* Headline-sized, so capped as a heading is: the order of sizes holds at every setting. */}
+        <Text style={styles.rowTitle} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.heading}>
+          {title}
         </Text>
-      ) : null}
-    </View>
+        {subtitle ? (
+          // Balanced, as a product card's line is: under a large title, "reward" was left alone.
+          <Text
+            style={[styles.rowSub, BALANCED]}
+            maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+            textBreakStrategy="balanced"
+            lineBreakStrategyIOS="push-out"
+          >
+            {subtitle}
+          </Text>
+        ) : null}
+      </View>
+      {stacked ? null : chevron}
+    </PressableScale>
   )
 }
 
 /**
- * Venus's face on her sky, with the unwatched dot when today's video waits.
- *
- * Her ears rise out of the disc. The picture has the disc's lower half cut
- * into it already (`assets/venus/head.png`, drawn from the 2D rig), so only
- * the ears and the crown stand over it; the disc under it is drawn here. The
- * dot sits where a badge sits on an avatar, edged in the card's own ground so
- * it reads as laid over the disc, in the streak's tangerine — the colour the
- * streak page's strip rings today's unwatched video in.
+ * A one-line row: the ready gift. Its words are capped as a sentence is on a
+ * product page, and its glyphs grow with them: at the largest size
+ * "Stündliches" ran out of the row beside a gift and a chevron left small.
  */
-function VenusFace({ dot, size }: { dot: boolean; size: PairSizes }) {
-  const styles = useStyles()
-  const { v3 } = useTheme()
-  return (
-    <View style={[styles.pictureBox, size.box]}>
-      <View style={size.venus}>
-        <View style={[styles.venusDisc, size.venusDisc, { backgroundColor: v3.hues.sky }]} />
-        <Image
-          source={venusHead}
-          style={[styles.venusFace, size.venus]}
-          contentFit="contain"
-          accessible={false}
-        />
-        {dot ? (
-          <View style={[styles.venusDot, size.venusDot, { backgroundColor: v3.hues.tangerine }]} />
-        ) : null}
-      </View>
-    </View>
-  )
-}
-
-/** A one-line row: the ready gift. */
 export function HomeLinkRow({
   icon,
   label,
@@ -321,11 +233,20 @@ export function HomeLinkRow({
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
+  const { isRtl } = useLocale()
+  const glyph = useGlyphScale()
   return (
     <PressableScale accessibilityRole="button" onPress={onPress} style={styles.linkRow}>
-      <Feather name={icon} size={v3.icon.lg} color={v3.colors.fg} />
-      <Text style={styles.linkLabel}>{label}</Text>
-      <Feather name="chevron-right" size={v3.icon.md} color={v3.colors.fg} />
+      <Feather name={icon} size={Math.round(v3.icon.lg * glyph)} color={v3.colors.fg} />
+      <Text style={styles.linkLabel} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+        {label}
+      </Text>
+      {/* Onward is the reading direction: in Arabic the row ends on the left, pointing left. */}
+      <Feather
+        name={isRtl ? 'chevron-left' : 'chevron-right'}
+        size={Math.round(v3.icon.md * glyph)}
+        color={v3.colors.fg}
+      />
     </PressableScale>
   )
 }
@@ -407,6 +328,10 @@ export function HomePeople({
 /**
  * The Pro card, for a free account only. Its button is the screen's yellow
  * when no next step owns it, and an outline when one does (D6a).
+ *
+ * At the larger text sizes (`useStacked`) the badge stands over the title
+ * rather than beside it, and grows with it: beside the badge, "further" ran
+ * out of the card at the largest size.
  */
 export function HomeProCard({
   title,
@@ -423,27 +348,42 @@ export function HomeProCard({
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
+  const stacked = useStacked()
+  const glyph = useGlyphScale()
   return (
     <View style={styles.pro}>
-      <View style={styles.proHead}>
-        <ProBadge fontSize={v3.type.headline.fontSize} />
-        <Text style={styles.proTitle} accessibilityRole="header">
+      <View style={[styles.proHead, stacked && styles.proHeadStacked]}>
+        <ProBadge fontSize={v3.type.headline.fontSize * glyph} />
+        <Text
+          style={styles.proTitle}
+          accessibilityRole="header"
+          maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.heading}
+        >
           {title}
         </Text>
       </View>
-      <Text style={styles.body}>{body}</Text>
+      <Text style={styles.body} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+        {body}
+      </Text>
       <Button
         label={button}
         icon="star"
         variant={yellow ? 'primary' : 'secondary'}
         size="medium"
         onPress={onPress}
+        maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
       />
     </View>
   )
 }
 
-/** A colour block with a title, a line and one ink button: the invite. */
+/**
+ * A colour block with a title, a line and one ink button: the invite.
+ *
+ * Its words are capped as a product page's are — the title as a heading, the
+ * line as a sentence — so at the largest text size "conversation" fits the
+ * block's width instead of breaking before its last letter.
+ */
 export function HomeColourCard({
   ground,
   title,
@@ -462,16 +402,32 @@ export function HomeColourCard({
   const styles = useStyles()
   return (
     <View style={[styles.colour, { backgroundColor: ground }]}>
-      <Text style={styles.colourTitle} accessibilityRole="header">
+      <Text
+        style={styles.colourTitle}
+        accessibilityRole="header"
+        maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.heading}
+      >
         {title}
       </Text>
-      <Text style={styles.colourBody}>{body}</Text>
-      <Button label={button} icon={icon} variant="hue" size="medium" onPress={onPress} />
+      <Text style={styles.colourBody} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+        {body}
+      </Text>
+      <Button
+        label={button}
+        icon={icon}
+        variant="hue"
+        size="medium"
+        onPress={onPress}
+        maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+      />
     </View>
   )
 }
 
-/** A guest's next step: the account, on the screen's one yellow. */
+/**
+ * A guest's next step: the account, on the screen's one yellow. Capped as
+ * the invite is, so at the largest text size "öğrendiklerini" stays whole.
+ */
 export function HomeAccountCard({
   title,
   body,
@@ -486,50 +442,28 @@ export function HomeAccountCard({
   const styles = useStyles()
   return (
     <View style={styles.account}>
-      <Text style={styles.accountTitle} accessibilityRole="header">
+      <Text
+        style={styles.accountTitle}
+        accessibilityRole="header"
+        maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.heading}
+      >
         {title}
       </Text>
-      <Text style={styles.body}>{body}</Text>
-      <Button label={button} icon="user-plus" onPress={onPress} />
+      <Text style={styles.body} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+        {body}
+      </Text>
+      <Button
+        label={button}
+        icon="user-plus"
+        onPress={onPress}
+        maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+      />
     </View>
   )
 }
 
-/** Venus's face with her ears, and the box both pictures of the pair stand in. */
-const FACE = 56
-/** The disc under the flame and under her face. */
+/** The disc under the streak's flame, as tall as a row's square is wide. */
 const DISC = 44
-/** Today's video's ▶: 40 drawn, 48 to the touch. */
-const PLAY = 40
-/** The unwatched dot, edge and all. */
-const DOT = 16
-
-/**
- * The pair's pictures at the reader's text size (`useGlyphScale`): they grow
- * with the words as a product row's square does, so at the largest size the
- * flame and Venus are not specks over a 44pt title — and every offset that
- * places the face, the dot and the ▶ grows with them. `inset` is the card's
- * own (`CARD_INSET`), `gap` a row's between its words and its end.
- */
-function pairSizes(glyph: number, inset: number, gap: number) {
-  const face = FACE * glyph
-  const disc = DISC * glyph
-  const play = PLAY * glyph
-  const dot = DOT * glyph
-  return {
-    box: { height: face },
-    disc: { height: disc, width: disc },
-    venus: { height: face, width: face },
-    venusDisc: { height: disc, start: (face - disc) / 2, width: disc },
-    venusDot: { end: (face - disc) / 2 - 2, height: dot, width: dot },
-    play: { height: play, width: play },
-    // The ▶ as a tile: in the top corner, centred on the disc beside it.
-    playCorner: { top: inset + face - disc + (disc - play) / 2 },
-    // Room at a row's end for the ▶ laid over it, and the row's own gap before it.
-    beforePlay: { paddingEnd: play + gap },
-  }
-}
-type PairSizes = ReturnType<typeof pairSizes>
 
 const useStyles = makeStyles(({ v3 }) => ({
   pressed: { opacity: 0.7 },
@@ -552,58 +486,35 @@ const useStyles = makeStyles(({ v3 }) => ({
   },
   goalLabel: { ...v3.type.buttonSmall, color: v3.colors.fg, textAlign: 'center' },
   goalStatus: { ...v3.type.caption, color: v3.colors.muted, fontWeight: '600' },
-  /*
-   * A card of the streak pair: the surface, inset by `CARD_INSET` — the
-   * number `HomeCardRows` measures the room inside against. As a tile its
-   * picture stands over its words; as a row, beside them.
-   */
-  card: {
-    backgroundColor: v3.colors.surface,
-    borderRadius: v3.radius.tile,
-    padding: v3.space[CARD_INSET],
-  },
-  cardTile: { flexGrow: 1, gap: v3.space[10] },
-  cardRow: { alignItems: 'center', flexDirection: 'row', flexGrow: 1, gap: v3.space[12] },
-  // The touch area fills its cell, so a pair's shorter card is as tall as its neighbour.
-  grow: { flexGrow: 1 },
-  cardWords: { gap: v3.space[2], minWidth: 0 },
-  cardWordsRow: { flex: 1 },
-  cardTitle: { ...v3.type.headline, color: v3.colors.fg },
-  cardLine: { ...v3.type.caption, color: v3.colors.muted },
-  rtl: { writingDirection: 'rtl' },
-  ltr: { writingDirection: 'ltr' },
-  /*
-   * The picture's box, as tall as Venus's face with her ears, so the streak's
-   * disc and hers stand on one line and the words under them start level.
-   */
-  pictureBox: { justifyContent: 'flex-end' },
-  disc: { alignItems: 'center', borderRadius: v3.radius.pill, justifyContent: 'center' },
-  /*
-   * The face (56) over the disc (44), the face's bottom edge on the disc's
-   * and its ears standing clear above it.
-   */
-  venusDisc: { borderRadius: v3.radius.pill, bottom: 0, position: 'absolute' },
-  venusFace: { position: 'absolute', start: 0, top: 0 },
-  venusDot: {
-    borderColor: v3.colors.surface,
-    borderRadius: v3.radius.pill,
-    borderWidth: 2,
-    bottom: 0,
-    position: 'absolute',
-  },
-  // Over the card, never inside it: it takes touches only on the ▶ itself.
-  playSpot: { pointerEvents: 'box-none', position: 'absolute' },
-  // As a tile, in the top corner (`pairSizes` sets how far down).
-  playCorner: { end: v3.space[CARD_INSET] },
-  // As a row, at its end where the chevron would be, centred top to bottom.
-  playEnd: { bottom: 0, end: v3.space[CARD_INSET], justifyContent: 'center', top: 0 },
-  venusPlay: {
+  // The larger text sizes: one goal to a row, the ring at its start.
+  goalsStacked: { gap: v3.space[6] },
+  goalRow: {
     alignItems: 'center',
-    backgroundColor: v3.colors.pill,
-    borderRadius: v3.radius.pill,
-    justifyContent: 'center',
+    borderRadius: v3.radius.card,
+    flexDirection: 'row',
+    gap: v3.space[12],
+    paddingHorizontal: v3.space[2],
+    paddingVertical: v3.space[6],
   },
-  venusPlayGlyph: { transform: [{ translateX: 1 }] },
+  goalWords: { flex: 1, gap: v3.space[2], minWidth: 0 },
+  goalLabelRow: { ...v3.type.buttonSmall, color: v3.colors.fg },
+  row: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.surface,
+    borderRadius: v3.radius.badge,
+    flexDirection: 'row',
+    gap: v3.space[12],
+    paddingHorizontal: v3.space[14],
+    paddingVertical: v3.space[12],
+  },
+  // The larger text sizes: the flame and the chevron on one line, the words under them.
+  rowStacked: { alignItems: 'stretch', flexDirection: 'column', gap: v3.space[10] },
+  rowHead: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
+  disc: { alignItems: 'center', borderRadius: v3.radius.pill, justifyContent: 'center' },
+  rowText: { flex: 1, minWidth: 0 },
+  rowTextStacked: { minWidth: 0 },
+  rowTitle: { ...v3.type.headline, color: v3.colors.fg },
+  rowSub: { ...v3.type.caption, color: v3.colors.muted },
   linkRow: {
     alignItems: 'center',
     backgroundColor: v3.colors.surface,
@@ -622,6 +533,8 @@ const useStyles = makeStyles(({ v3 }) => ({
     justifyContent: 'space-between',
     paddingHorizontal: v3.space[6],
   },
+  // The larger text sizes: the count under the heading, where it has the width to stay whole.
+  sectionHeadStacked: { alignItems: 'flex-start', flexDirection: 'column', gap: v3.space[2] },
   sectionTitle: { ...v3.type.headline, color: v3.colors.fg, flexShrink: 1 },
   seeAll: { justifyContent: 'center', minHeight: 44, paddingHorizontal: v3.space[4] },
   seeAllLabel: {
@@ -652,6 +565,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingTop: v3.space[14],
   },
   proHead: { alignItems: 'center', flexDirection: 'row', gap: v3.space[8] },
+  proHeadStacked: { alignItems: 'flex-start', flexDirection: 'column' },
   proTitle: { ...v3.type.headline, color: v3.colors.fg, flexShrink: 1 },
   body: { ...v3.type.callout, color: v3.colors.muted },
   colour: {

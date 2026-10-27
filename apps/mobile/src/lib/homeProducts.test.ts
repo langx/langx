@@ -141,6 +141,7 @@ describe('homeProductLines', () => {
       const t = createTranslate(locale)
       for (const facts of [
         { member: true, venusDay: 12, balance: 1240, members: 12345 },
+        { member: true, venus: 'ready' as const, venusDay: 12 },
         { member: true },
         { member: false, members: 2 },
       ]) {
@@ -153,7 +154,7 @@ describe('homeProductLines', () => {
   })
 })
 
-describe('homeVenusCard', () => {
+describe('Venus’s card', () => {
   const video: VenusVideo = {
     day: 12,
     locale: 'en',
@@ -163,46 +164,40 @@ describe('homeVenusCard', () => {
     url: 'https://media.example/venus/en/venus-day012-en.mp4',
     coverUrl: null,
   }
+  const stickers = en('stickerPack.count', { count: STICKERS })
+  const line = (venus: ReturnType<typeof streakRowVenus>) =>
+    homeProductLines(en, 'en', { member: true, venus, venusDay: video.day }).venus
 
-  it('offers today’s video, with the dot, until it is watched', () => {
-    expect(homeVenusCard(streakRowVenus(video, {}, 'me'))).toEqual({
-      line: 'home.streakRow.venusReady',
-      play: true,
-      dot: true,
-    })
+  it('offers today’s video with the dot, and says it is ready, until it is watched', () => {
+    const venus = streakRowVenus(video, {}, 'me')
+    expect(homeVenusCard(venus)).toEqual({ play: true, ready: true })
+    expect(line(venus)).toBe('Today’s video is ready')
   })
 
-  it('keeps ▶ for a replay once it is watched, and drops the dot', () => {
-    expect(homeVenusCard(streakRowVenus(video, { me: video.dayKey }, 'me'))).toEqual({
-      line: 'home.streakRow.venusWatched',
-      play: true,
-      dot: false,
-    })
+  it('keeps ▶ for a replay once it is watched, and goes back to her own line', () => {
+    const venus = streakRowVenus(video, { me: video.dayKey }, 'me')
+    expect(homeVenusCard(venus)).toEqual({ play: true, ready: false })
+    expect(line(venus)).toBe(`${stickers} · Day 12`)
   })
 
-  it('says neither seen nor ready until the device has said what was watched', () => {
-    expect(homeVenusCard(streakRowVenus(video, undefined, 'me'))).toEqual({
-      line: 'home.streakRow.venusMeet',
-      play: true,
-      dot: false,
-    })
+  it('claims nothing about watching until the device has said what was watched', () => {
+    const venus = streakRowVenus(video, undefined, 'me')
+    expect(homeVenusCard(venus)).toEqual({ play: true, ready: false })
+    expect(line(venus)).toBe(`${stickers} · Day 12`)
   })
 
-  it('is there without a video, with no ▶, inviting a person to meet her', () => {
-    expect(homeVenusCard(streakRowVenus(null, {}, 'me'))).toEqual({
-      line: 'home.streakRow.venusMeet',
-      play: false,
-      dot: false,
-    })
+  it('has no ▶ and no dot without a video, and keeps her line', () => {
+    const venus = streakRowVenus(null, {}, 'me')
+    expect(homeVenusCard(venus)).toEqual({ play: false, ready: false })
+    expect(homeProductLines(en, 'en', { member: true, venus }).venus).toBe(stickers)
   })
 
-  it('says each state in every language', () => {
+  it('says the video is ready in every language', () => {
     for (const locale of SUPPORTED_LOCALES) {
       const t = createTranslate(locale)
-      for (const state of ['ready', 'watched', 'unknown', 'none'] as const) {
-        const { line } = homeVenusCard(state)
-        expect(t(line), `${locale} ${state}`).not.toBe(line)
-      }
+      const ready = homeProductLines(t, locale, { member: true, venus: 'ready', venusDay: 12 })
+      expect(ready.venus, locale).toBe(t('home.streakRow.venusReady'))
+      expect(ready.venus, locale).not.toBe('home.streakRow.venusReady')
     }
   })
 })

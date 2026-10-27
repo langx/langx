@@ -86,8 +86,6 @@ export const de: Localized<EnMessages> = {
       'Mit einem Konto kannst du Leuten schreiben, eine Serie halten und Gelerntes in Echo speichern.',
     streakRow: {
       venusReady: 'Das heutige Video ist da',
-      venusWatched: 'Du hast das heutige Video gesehen',
-      venusMeet: 'Lerne die Katze von LangX kennen',
     },
     products: {
       title: 'LangX',
