@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
-import { useT } from '../../i18n'
+import { useLocale, useT } from '../../i18n'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { TIMING, unlessReduced } from '../../lib/theme/motion'
 import { Reveal } from '../paywall/Reveal'
+import { ProductGroup } from './ProductGroup'
 import { ProductSection } from './ProductSection'
 
 export interface ProductQuestion {
@@ -20,12 +21,13 @@ export interface ProductQuestion {
  * The questions at the foot of every product page (plan item 7): six to eight,
  * then the product's own site for the rest.
  *
- * One open at a time. Opening a second closes the first, so the page never
- * grows into a wall of answers the reader has to scroll back past. Each
- * question is a button whose expanded state the platform announces — "collapsed",
- * "expanded" — so no words of ours are needed for it. The answer rises in
- * under its question and the chevron turns; with reduce motion on, neither
- * moves and the answer is simply there.
+ * One block of disclosure rows, as a settings list draws them: the question,
+ * and a chevron pointing onward that turns down when its answer opens under
+ * it. One open at a time — opening a second closes the first, so the block
+ * never grows into a wall of answers the reader has to scroll back past.
+ * Each question is a button whose expanded state the platform announces, so
+ * no words of ours are needed for it. With reduce motion on, neither the
+ * chevron nor the answer moves; the answer is simply there.
  */
 export function ProductFaq({
   items,
@@ -36,22 +38,20 @@ export function ProductFaq({
   title?: string
 }) {
   const t = useT()
-  const styles = useStyles()
   const [open, setOpen] = useState<string | null>(null)
 
   return (
     <ProductSection title={title ?? t('productPage.questions')}>
-      <View style={styles.group}>
-        {items.map((item, index) => (
+      <ProductGroup>
+        {items.map((item) => (
           <QuestionRow
             key={item.key}
             item={item}
             open={open === item.key}
-            divided={index > 0}
             onToggle={() => setOpen((current) => (current === item.key ? null : item.key))}
           />
         ))}
-      </View>
+      </ProductGroup>
     </ProductSection>
   )
 }
@@ -59,16 +59,15 @@ export function ProductFaq({
 function QuestionRow({
   item,
   open,
-  divided,
   onToggle,
 }: {
   item: ProductQuestion
   open: boolean
-  divided: boolean
   onToggle: () => void
 }) {
   const styles = useStyles()
   const { v3 } = useTheme()
+  const { isRtl } = useLocale()
   const reduce = useReduceMotion()
   const turn = useSharedValue(open ? 1 : 0)
 
@@ -77,22 +76,32 @@ function QuestionRow({
     turn.set(unlessReduced(reduce, open ? 1 : 0, (to) => withTiming(to, TIMING.fill)))
   }, [open, reduce, turn])
 
+  // Onward is the reading direction's end, so the quarter turn down goes the
+  // other way in a right-to-left language.
+  const quarter = isRtl ? -90 : 90
   const chevron = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${turn.get() * 180}deg` }],
+    transform: [{ rotate: `${turn.get() * quarter}deg` }],
   }))
 
   return (
-    <View style={divided && styles.divided}>
+    <View style={styles.item}>
       <Pressable
         accessibilityRole="button"
         accessibilityState={{ expanded: open }}
+        // The same state again for the web build, where react-native-web
+        // reads only `aria-*` and drops `accessibilityState` without a word.
+        aria-expanded={open}
         accessibilityLabel={item.question}
         onPress={onToggle}
         style={({ pressed }) => [styles.question, pressed && styles.pressed]}
       >
         <Text style={styles.questionText}>{item.question}</Text>
         <Animated.View style={chevron}>
-          <Feather name="chevron-down" size={v3.icon.md} color={v3.colors.muted} />
+          <Feather
+            name={isRtl ? 'chevron-left' : 'chevron-right'}
+            size={v3.icon.md}
+            color={v3.colors.muted}
+          />
         </Animated.View>
       </Pressable>
       {open ? (
@@ -105,21 +114,21 @@ function QuestionRow({
 }
 
 const useStyles = makeStyles(({ v3 }) => ({
-  group: { backgroundColor: v3.colors.surface, borderRadius: v3.radius.tile, overflow: 'hidden' },
-  divided: { borderTopColor: v3.colors.line, borderTopWidth: 1 },
+  // The hairline above each question, as every row in a `ProductGroup` draws.
+  item: { borderTopColor: v3.colors.line, borderTopWidth: 1 },
+  // 52 rather than a feature row's 62: a question has no square to make room
+  // for, and eight of them should fit a thumb's scroll.
   question: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: v3.space[12],
-    minHeight: 56,
+    minHeight: 52,
     paddingHorizontal: v3.space[14],
     paddingVertical: v3.space[12],
   },
-  // The grey rows' own press, as `MeRows` draws it: a row dims its ground and
-  // does not shrink.
   pressed: { backgroundColor: v3.colors.line },
   // `minWidth: 0` lets a word longer than the row break instead of pushing
-  // the chevron off the card — on the web a flex item will not shrink below
+  // the chevron off the block — on the web a flex item will not shrink below
   // its longest word without it, and at the largest text sizes one is.
   questionText: {
     ...v3.type.callout,

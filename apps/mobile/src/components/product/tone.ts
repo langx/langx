@@ -2,7 +2,8 @@ import { useTheme, type PartnerHue } from '../../lib/theme'
 
 /**
  * A product page's colour: Copilot's blue, or one of the partner hues —
- * Venus's sky, LangX Token's warm hue, Transparency's green.
+ * Venus's sky, LangX Token's lime (the wallet's, which its spark already
+ * stands on), Transparency's green.
  *
  * Only these, so that a page cannot bring a colour of its own: the family
  * shares the palette the rest of the app is drawn in, and differs in which
