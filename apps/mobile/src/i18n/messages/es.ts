@@ -2220,6 +2220,133 @@ export const es: Localized<EnMessages> = {
     codeOfConduct: 'Código de conducta',
     moreContributors: '+{count}',
   },
+  transparency: {
+    page: {
+      title: 'Transparencia',
+      tagline: 'LangX se hace a la vista: el código es público, y los números también.',
+      factOpenSource: 'Código abierto',
+      factOpenNumbers: 'Números abiertos',
+      factTotals: 'Solo totales',
+      countedNow: 'Contado ahora mismo',
+      countedMinutes: { one: 'Contado hace {count} minuto', other: 'Contado hace {count} minutos' },
+      countedHours: { one: 'Contado hace {count} hora', other: 'Contado hace {count} horas' },
+      countedDays: { one: 'Contado hace {count} día', other: 'Contado hace {count} días' },
+      openTitle: 'Código abierto',
+      openIntro:
+        'La app, el servidor y el código que cuenta estos números forman un único repositorio público, con licencia BSD-3.',
+      readCode: 'Leer el código',
+      contribute: 'Contribuir',
+      numbersTitle: 'Los números',
+      numbersIntro: {
+        one: 'Contados en la propia base de datos de LangX, como mucho una vez por minuto.',
+        other:
+          'Contados en la propia base de datos de LangX, como mucho una vez cada {count} minutos.',
+      },
+      totalA11y: '{label}: {amount}. {hint}',
+      members: 'Miembros',
+      membersHint:
+        'Cuentas que existen ahora. No cuentan los invitados ni las cuentas que se están borrando.',
+      messages: 'Mensajes',
+      messagesHint:
+        'Enviados en chats, incluidas las correcciones hechas en un chat. Las llamadas no cuentan.',
+      corrections: 'Correcciones en publicaciones',
+      correctionsHint: 'Correcciones escritas en publicaciones del muro.',
+      languages: 'Idiomas',
+      languagesHint: 'Idiomas distintos que aprenden los miembros.',
+      daysTitle: { one: 'El último día', other: 'Los últimos {count} días' },
+      daysPick: 'Número que mostrar',
+      dayMembers: 'Miembros',
+      dayMessages: 'Mensajes',
+      dayCorrections: 'Correcciones',
+      sumMembers: { one: '{amount} miembro nuevo', other: '{amount} miembros nuevos' },
+      sumMessages: { one: '{amount} mensaje', other: '{amount} mensajes' },
+      sumCorrections: {
+        one: '{amount} corrección en publicaciones',
+        other: '{amount} correcciones en publicaciones',
+      },
+      chartA11y: {
+        one: '{total} en el último día, una columna por día',
+        other: '{total} en los últimos {count} días, una columna por día',
+      },
+      daysCaption: 'Una columna por día, según el día UTC. La última es lo que va de hoy.',
+      languagesTitle: 'Idiomas',
+      learning: 'Los más aprendidos',
+      native: 'Los más hablados como lengua materna',
+      languageRow: { one: '{language}: {amount} miembro', other: '{language}: {amount} miembros' },
+      noLanguages: 'Todavía no hay idiomas.',
+      streaksTitle: 'Rachas',
+      longest: 'Racha más larga',
+      longestBody: 'La más larga que ha tenido alguien que hoy tiene cuenta.',
+      longestValue: { one: '{amount} día', other: '{amount} días' },
+      active: 'En racha',
+      activeBody: 'Miembros cuya racha aún no ha terminado, no solo quienes han venido hoy.',
+      activeValue: { one: '{amount} miembro', other: '{amount} miembros' },
+      trustTitle: 'Tus datos y tu seguridad',
+      auditTitle: 'Las reglas están en el código',
+      auditBody:
+        'Los límites, las comprobaciones de plan y las reglas de tokens se pueden leer, y cada una se aplica en el servidor: conocer una regla no permite saltársela.',
+      dataTitle: 'Tus datos son tuyos',
+      dataBody: {
+        one: 'Exporta todo lo que la app guarda sobre ti, o borra tu cuenta: desaparece del todo {count} día después.',
+        other:
+          'Exporta todo lo que la app guarda sobre ti, o borra tu cuenta: desaparece del todo {count} días después.',
+      },
+      boundedTitle: 'Esta página tiene límites',
+      boundedBody:
+        'Solo totales y días, nunca una persona. El grupo más pequeño es un idioma entero.',
+      securityTitle: '¿Has encontrado un fallo?',
+      securityBody:
+        'Avísanos en privado, no en una incidencia pública. Te respondemos en una semana.',
+      securityLink: 'Política de seguridad',
+      supportTitle: 'Apoya LangX',
+      proTitle: 'Hazte Pro',
+      proBody: 'Pro es lo que paga los servidores y mantiene LangX en marcha.',
+      proTitleMember: 'Tienes Pro',
+      proBodyMember: 'Gracias. Pro es lo que paga los servidores y mantiene LangX en marcha.',
+      qReal: '¿Son reales los números?',
+      aReal:
+        'Sí. Se cuentan en la propia base de datos de LangX con código que cualquiera puede leer, el mismo que responde a esta página. Nadie los escribe a mano y ninguno está redondeado.',
+      qRevenue: '¿Por qué no aparecen los ingresos?',
+      aRevenue:
+        'Porque un número publicado no se puede retirar. Los ingresos, las suscripciones, la conversión, la retención y de dónde vienen los miembros darían nuestros planes a cualquiera que preguntara, así que nunca están en esta página.',
+      qGuests: '¿Se cuentan los invitados?',
+      aGuests:
+        'No. Un invitado es alguien que mira sin cuenta, y contarlos inflaría todos los números. Miembros, idiomas y rachas solo cuentan cuentas que existen ahora: ni invitados ni cuentas a la espera de borrarse.',
+      qUpdates: '¿Cada cuánto se actualiza?',
+      aUpdates: {
+        one: 'Como mucho una vez por minuto: los números se vuelven a contar en la primera visita después, no a una hora fija. Una copia guardada por el camino puede tener esa misma antigüedad, por eso arriba pone cuándo se contaron.',
+        other:
+          'Como mucho una vez cada {count} minutos: los números se vuelven a contar en la primera visita después, no a una hora fija. Una copia guardada por el camino puede tener esa misma antigüedad, por eso arriba pone cuándo se contaron.',
+      },
+      qMine: '¿Están mis datos en esta página?',
+      aMine:
+        'Solo dentro de los totales. Eres uno de los miembros y cuentas en cada idioma que indicas, pero la página no tiene nombres, ni perfiles, ni mensajes, y su grupo más pequeño es un idioma entero: nada en ella lleva hasta ti.',
+      qOpen: '¿LangX es de verdad de código abierto?',
+      aOpen:
+        'Sí. La app, el servidor y el código de esta página están en un único repositorio público con licencia BSD-3: cualquiera puede leerlo, tener su propia copia y construir sobre él, siempre que conserve el aviso de la licencia.',
+      qSafe: 'Si el código es público, ¿es seguro?',
+      aSafe:
+        'El código público no es el punto débil, porque nada depende de que sea secreto. Cada límite y cada permiso se comprueba en el servidor, así que saber cómo funciona no permite saltárselo, y nunca hay contraseñas ni claves en el código.',
+      qE2E: '¿Mis mensajes están cifrados de extremo a extremo?',
+      aE2E: 'No. Los mensajes se guardan en los servidores de LangX de forma que LangX puede leerlos: cuando se denuncia una conversación, los moderadores leen los mensajes que llevaron a ella. Los protege que solo las dos personas de una conversación pueden abrirla —el servidor lo comprueba en cada petición y en cada actualización en directo, y otra vez tras un bloqueo— y que todo lo que va entre la app y el servidor viaja por HTTPS.',
+      qExport: '¿Puedo exportar o borrar mis datos?',
+      aExport: {
+        one: 'Sí, las dos cosas, en {settings} › {account}. {exportData} te da un archivo con todo lo que la app guarda sobre ti. {deleteAccount}, una vez confirmado, oculta tu cuenta al momento y la borra del todo pasado {count} día; si vuelves a entrar antes, se cancela. Los mensajes que enviaste se quedan en el chat de la otra persona, sin su texto.',
+        other:
+          'Sí, las dos cosas, en {settings} › {account}. {exportData} te da un archivo con todo lo que la app guarda sobre ti. {deleteAccount}, una vez confirmado, oculta tu cuenta al momento y la borra del todo pasados {count} días; si vuelves a entrar antes, se cancela. Los mensajes que enviaste se quedan en el chat de la otra persona, sin su texto.',
+      },
+      qContribute: '¿Cómo puedo contribuir?',
+      aContribute:
+        'Empieza por «{contribute}», arriba: explica cómo ejecutar LangX en tu propio ordenador y qué necesita un cambio antes de enviarlo. «{issues}» muestra lo que está abierto.',
+      qSupport: '¿Cómo puedo apoyar LangX?',
+      aSupport:
+        'Lo que más ayuda es hacerse Pro: la suscripción paga los servidores y mantiene LangX en marcha. También puedes patrocinarnos en GitHub, hacerte mecenas o unirte en Discord; los enlaces están arriba.',
+      qVulnerability: 'He encontrado una vulnerabilidad. ¿Qué hago?',
+      aVulnerability:
+        'Gracias. Avísanos en privado por correo, no en una incidencia pública: la dirección está arriba, en «{policy}». Te respondemos en una semana, y si se acepta, se corrige en la siguiente actualización de seguridad.',
+      linkTitle: 'Los mismos números, en la web',
+    },
+  },
   streak: {
     title: 'Tu racha',
     historyBody: 'Cada día de los últimos dos meses y qué contó',

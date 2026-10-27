@@ -410,7 +410,7 @@
             <dd id="t-messages">—</dd>
           </div>
           <div class="tile">
-            <dt>Corrections</dt>
+            <dt>Post corrections</dt>
             <dd id="t-corrections">—</dd>
           </div>
           <div class="tile">
@@ -426,7 +426,7 @@
             <button type="button" data-metric="members" aria-pressed="true">New members</button>
             <button type="button" data-metric="messages" aria-pressed="false">Messages</button>
             <button type="button" data-metric="corrections" aria-pressed="false">
-              Corrections
+              Post corrections
             </button>
           </div>
           <div class="chart">
@@ -442,7 +442,7 @@
                   <th>Day</th>
                   <th>New members</th>
                   <th>Messages</th>
-                  <th>Corrections</th>
+                  <th>Post corrections</th>
                 </tr>
               </thead>
               <tbody id="table"></tbody>
@@ -467,10 +467,8 @@
           <h2>Streaks</h2>
           <p class="hint">A streak is a day somebody showed up and did something</p>
           <p class="strip">
-            <span><span class="dot">●</span> Longest ever: <b id="s-longest">—</b> days</span>
-            <span
-              ><span class="dot">●</span> On a streak today: <b id="s-active">—</b> members</span
-            >
+            <span><span class="dot">●</span> Longest: <b id="s-longest">—</b> days</span>
+            <span><span class="dot">●</span> On a streak: <b id="s-active">—</b> members</span>
           </p>
         </section>
       </div>
@@ -485,7 +483,7 @@
           >.
         </p>
         <p>
-          Recomputed every ten minutes · last updated <span id="updated">—</span> ·
+          Recomputed at most every ten minutes · last updated <span id="updated">—</span> ·
           <a href="/public/stats">the raw JSON</a> ·
           <a href="https://github.com/langx/langx">source</a>
         </p>
@@ -498,7 +496,7 @@
       const METRICS = {
         members: { title: 'New members', word: 'new members' },
         messages: { title: 'Messages', word: 'messages' },
-        corrections: { title: 'Corrections', word: 'corrections' },
+        corrections: { title: 'Post corrections', word: 'post corrections' },
       }
 
       const el = (id) => document.getElementById(id)

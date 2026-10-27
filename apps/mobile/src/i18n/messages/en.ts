@@ -2474,6 +2474,148 @@ export const en = {
     codeOfConduct: 'Code of conduct',
     moreContributors: '+{count}',
   },
+  /**
+   * The Transparency page (`screens/TransparencyScreenV3.tsx`): the project's
+   * code, and the public numbers of `GET /public/stats` and nothing else.
+   * Every sentence was checked against the code, and each number is named
+   * for exactly what it counts (`publicStatsSchema`). A correction made in a
+   * chat is a message, so "corrections" here are the feed's alone; a streak
+   * is only reset once it is three days stale, so the streak count is "on a
+   * streak", never "today". "End-to-end encrypted" appears once, in the
+   * question that answers it with a plain no (`transparencyWords.test.ts`).
+   */
+  transparency: {
+    page: {
+      title: 'Transparency',
+      tagline: 'LangX is made in the open: the code is public, and so are the numbers.',
+      factOpenSource: 'Open source',
+      factOpenNumbers: 'Open numbers',
+      factTotals: 'Totals only',
+      /** The hero's note: from when the server counted, not from when the answer arrived. */
+      countedNow: 'Counted just now',
+      countedMinutes: { one: 'Counted {count} minute ago', other: 'Counted {count} minutes ago' },
+      countedHours: { one: 'Counted {count} hour ago', other: 'Counted {count} hours ago' },
+      countedDays: { one: 'Counted {count} day ago', other: 'Counted {count} days ago' },
+      openTitle: 'Open source',
+      openIntro:
+        'The app, the server and the code that counts these numbers are one public repository, under the BSD-3 licence.',
+      readCode: 'Read the code',
+      contribute: 'Contribute',
+      numbersTitle: 'The numbers',
+      /** `{count}` is `PUBLIC_STATS_TTL_MS` in minutes. */
+      numbersIntro: {
+        one: 'Counted from LangX’s own database, at most once every {count} minute.',
+        other: 'Counted from LangX’s own database, at most once every {count} minutes.',
+      },
+      /** One total read as one item: its name, the number, then what it counts. */
+      totalA11y: '{label}: {amount}. {hint}',
+      members: 'Members',
+      membersHint: 'Accounts that exist now. Guests and accounts being deleted are not counted.',
+      messages: 'Messages',
+      messagesHint: 'Sent in chats, corrections made in a chat included. Calls are not counted.',
+      corrections: 'Post corrections',
+      correctionsHint: 'Corrections written on feed posts.',
+      languages: 'Languages',
+      languagesHint: 'Different languages members are learning.',
+      daysTitle: { one: 'The last {count} day', other: 'The last {count} days' },
+      /** The switch's name for a screen reader. */
+      daysPick: 'Number to show',
+      /** The switch's three segments, a third of a phone each; the line under it names each in full. */
+      dayMembers: 'Members',
+      dayMessages: 'Messages',
+      dayCorrections: 'Corrections',
+      sumMembers: { one: '{amount} new member', other: '{amount} new members' },
+      sumMessages: { one: '{amount} message', other: '{amount} messages' },
+      sumCorrections: { one: '{amount} post correction', other: '{amount} post corrections' },
+      /** The chart for a screen reader. `{total}` is one of the three lines above. */
+      chartA11y: {
+        one: '{total} over the last {count} day, one column a day',
+        other: '{total} over the last {count} days, one column a day',
+      },
+      daysCaption: 'One column a day, by UTC day. The last is today so far.',
+      languagesTitle: 'Languages',
+      learning: 'Most learned',
+      native: 'Most spoken natively',
+      languageRow: { one: '{language}: {amount} member', other: '{language}: {amount} members' },
+      noLanguages: 'No languages listed yet.',
+      streaksTitle: 'Streaks',
+      longest: 'Longest streak',
+      longestBody: 'The longest that anyone with an account today has had.',
+      longestValue: { one: '{amount} day', other: '{amount} days' },
+      active: 'On a streak',
+      activeBody: 'Members whose streak has not ended yet — not only those who came today.',
+      activeValue: { one: '{amount} member', other: '{amount} members' },
+      trustTitle: 'Your data and your safety',
+      auditTitle: 'The rules are in the code',
+      auditBody:
+        'Limits, plan checks and token rules can all be read, and each one is enforced on the server — knowing a rule does not get anyone around it.',
+      dataTitle: 'Your data is yours',
+      /** `{count}` is `ACCOUNT_DELETION_GRACE_DAYS`. */
+      dataBody: {
+        one: 'Export everything the app holds about you, or delete your account: it is gone for good {count} day later.',
+        other:
+          'Export everything the app holds about you, or delete your account: it is gone for good {count} days later.',
+      },
+      boundedTitle: 'This page has limits',
+      boundedBody: 'Totals and days only, never a person. The smallest group is a whole language.',
+      securityTitle: 'Found a hole?',
+      securityBody: 'Report it privately, not in a public issue. You hear back within a week.',
+      securityLink: 'Security policy',
+      supportTitle: 'Support LangX',
+      proTitle: 'Go Pro',
+      proBody: 'Pro is what pays for the servers and keeps LangX going.',
+      proTitleMember: 'You are on Pro',
+      proBodyMember: 'Thank you. Pro is what pays for the servers and keeps LangX going.',
+      qReal: 'Are the numbers real?',
+      aReal:
+        'Yes. They are counted from LangX’s own database by code anyone can read — the same code that answers this page. Nobody types them in, and none of them is rounded.',
+      qRevenue: 'Why is there no revenue here?',
+      aRevenue:
+        'Because a number that has been published cannot be taken back. Revenue, subscriptions, conversion, retention and where members come from would hand our plans to anyone who asked, so they are never on this page.',
+      qGuests: 'Are guests counted?',
+      aGuests:
+        'No. A guest is someone looking around without an account, and counting them would inflate every number. Members, languages and streaks count only accounts that exist now — no guests, and no account waiting to be deleted.',
+      qUpdates: 'How often does it update?',
+      /** `{count}` is `PUBLIC_STATS_TTL_MS` in minutes. */
+      aUpdates: {
+        one: 'At most once every {count} minute: the numbers are counted again on the first visit after that, not on a clock. A copy kept on the way to you can be as old again, which is why the top of the page says when they were counted.',
+        other:
+          'At most once every {count} minutes: the numbers are counted again on the first visit after that, not on a clock. A copy kept on the way to you can be as old again, which is why the top of the page says when they were counted.',
+      },
+      qMine: 'Is my data on this page?',
+      aMine:
+        'Only inside the totals. You are one of the members, and one in each language you list, but the page holds no names, no profiles and no messages, and its smallest group is a whole language — nothing on it narrows down to you.',
+      qOpen: 'Is LangX really open source?',
+      aOpen:
+        'Yes. The app, the server and the code behind this page are in one public repository under the BSD-3 licence: anyone can read it, run their own copy and build on it, as long as the licence’s notice goes with it.',
+      qSafe: 'If the code is public, is it safe?',
+      aSafe:
+        'Public code is not the weak point, because nothing depends on it being secret. Every limit and permission is checked on the server, so reading how it works does not get anyone around it, and no password or key is ever in the code.',
+      /** The one place the phrase may appear: the question, answered with a plain no. */
+      qE2E: 'Are my messages end-to-end encrypted?',
+      aE2E: 'No. Messages are kept on LangX’s servers in a form LangX can read: when a conversation is reported, moderators read the messages that led up to it. What protects them is that only the two people in a conversation can open it — the server checks that on every request and every live update, and again after a block — and that everything between the app and the server travels over HTTPS.',
+      qExport: 'Can I export or delete my data?',
+      /** `{settings}` › `{account}` is where both are. `{count}` is `ACCOUNT_DELETION_GRACE_DAYS`. */
+      aExport: {
+        one: 'Yes, both, in {settings} › {account}. {exportData} gives you one file with everything the app holds about you. {deleteAccount}, once you confirm it, hides your account at once and removes it for good after {count} day; signing back in before then cancels it. Messages you sent stay in the other person’s chat, with their words removed.',
+        other:
+          'Yes, both, in {settings} › {account}. {exportData} gives you one file with everything the app holds about you. {deleteAccount}, once you confirm it, hides your account at once and removes it for good after {count} days; signing back in before then cancels it. Messages you sent stay in the other person’s chat, with their words removed.',
+      },
+      qContribute: 'How do I contribute?',
+      /** `{contribute}` and `{issues}` are the names of the two rows above. */
+      aContribute:
+        'Start with {contribute}, above: it shows how to run LangX on your own computer and what a change needs before you send it. {issues} lists what is open.',
+      qSupport: 'How can I support LangX?',
+      aSupport:
+        'Going Pro helps most: the subscription is what pays for the servers and keeps LangX going. You can also sponsor us on GitHub, become a patron, or join us on Discord — the links are above.',
+      qVulnerability: 'I found a vulnerability. What do I do?',
+      /** `{policy}` is the name of the row above that opens the security policy. */
+      aVulnerability:
+        'Thank you. Report it privately by email, not in a public issue — {policy}, above, has the address. You hear back within a week, and a report that is accepted is fixed in the next security update.',
+      /** The link out to the web page that draws the same numbers. */
+      linkTitle: 'The same numbers, on the web',
+    },
+  },
   streak: {
     title: 'Your streak',
     historyBody: 'Every day of the last two months, and what counted',

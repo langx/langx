@@ -61,6 +61,7 @@ const PAGE_TITLES: Readonly<Record<string, MessageKey>> = {
   '/streak/leaderboard': 'leaderboard.streakTitle',
   '/testimonials': 'testimonials.title',
   '/translate-language': 'settings.translateTo',
+  '/transparency': 'transparency.page.title',
   '/viewers': 'viewers.title',
   '/wallet': 'wallet.title',
   '/wallet/history': 'tokens.history',

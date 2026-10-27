@@ -119,6 +119,26 @@ describe('public stats', () => {
     expect(stats.streaks).toEqual({ longest: 9, active: 1 })
   })
 
+  /*
+   * A correction sent in a chat is a message (`type: 'correction'`), so it
+   * belongs to the messages total and not to `corrections`, which counts the
+   * ones written on posts. The Transparency page and the insight page label
+   * the two that way, and this holds the labels to the counting.
+   */
+  it('counts a chat correction as a message, not as a correction', async () => {
+    const { insertedId } = await handle.db
+      .collection(COLLECTIONS.messages)
+      .insertOne({ senderId: 'ada', type: 'correction', createdAt: YESTERDAY })
+    try {
+      resetPublicStatsCache()
+      const stats = await readPublicStats(handle.db, NOW)
+      expect(stats.totals.messages).toBe(4)
+      expect(stats.totals.corrections).toBe(1)
+    } finally {
+      await handle.db.collection(COLLECTIONS.messages).deleteOne({ _id: insertedId })
+    }
+  })
+
   /** Last, because it writes: everything above reads the same fixture. */
   it('serves the kept answer until it is dropped', async () => {
     resetPublicStatsCache()

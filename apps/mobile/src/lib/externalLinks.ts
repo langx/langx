@@ -1,3 +1,4 @@
+import type { Href } from 'expo-router'
 import type { MessageKey } from '../i18n/runtime'
 
 /**
@@ -22,6 +23,13 @@ export interface ExternalLink {
   /** Anything a translator would change. Exactly one of these two is set. */
   labelKey?: MessageKey
   url: string
+  /**
+   * A page in the app that says what `url` says, opened instead of it. The
+   * Insights row has one: the Transparency page draws insight.langx.io's
+   * numbers in the reader's own language and links out to the site at its
+   * foot. `url` stays, so this table is still the one place the address is.
+   */
+  route?: Href
 }
 
 export interface LinkSection {
@@ -31,6 +39,13 @@ export interface LinkSection {
 
 const SITE = 'https://langx.io'
 const REPO = 'https://github.com/langx/langx'
+
+/**
+ * The repository itself, for the Transparency page's "Read the code". No row
+ * below opens it: the GitHub row is the organisation, and the rest are files
+ * and pages inside it.
+ */
+export const REPO_URL = REPO
 
 /**
  * The two documents a purchase is made under, named separately because they
@@ -118,7 +133,12 @@ export const KITCHEN_SECTIONS: readonly LinkSection[] = [
     titleKey: 'kitchen.about',
     rows: [
       { icon: 'globe', labelKey: 'kitchen.website', url: SITE },
-      { icon: 'bar-chart-2', labelKey: 'kitchen.insights', url: 'https://insight.langx.io' },
+      {
+        icon: 'bar-chart-2',
+        labelKey: 'kitchen.insights',
+        url: 'https://insight.langx.io',
+        route: '/(app)/transparency',
+      },
       { icon: 'list', labelKey: 'kitchen.backlog', url: 'https://backlog.langx.io' },
       { icon: 'github', label: 'GitHub', url: 'https://github.com/langx' },
       { icon: 'tag', labelKey: 'kitchen.releases', url: `${REPO}/releases` },
