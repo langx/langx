@@ -3145,6 +3145,115 @@ export const en = {
     todayCorrections: { one: 'correction', other: 'corrections' },
     todayPeople: { one: 'person', other: 'people' },
     seeHistory: 'See your history',
+    /**
+     * LangX Token's page (`TokenScreenV3`, built by `lib/tokenPage.ts`). Held
+     * to `docs/token-messaging-brief.md` word for word: an in-app point that
+     * is earned and spent here and nowhere else. Every number arrives from
+     * `TOKEN_RULES` or the catalogue as `{amount}`, never typed, and
+     * `tokenPage.test.ts` keeps the brief's banned words off every line —
+     * the negations the brief itself uses are named there one by one.
+     */
+    page: {
+      title: 'LangX Token',
+      tagline: 'Points you earn by talking and teaching, and spend inside LangX.',
+      factPoints: 'In-app points',
+      factBought: 'Can’t be bought',
+      factTraded: 'Can’t be traded',
+      yours: 'Yours',
+      walletBody: 'Your balance, history and store',
+      /** The "today" row while today's counts have not arrived. */
+      todayFallback: 'Your day so far, and the daily pool',
+      /** Your place on this week's board, in your digits. */
+      rank: '#{rank}',
+      rankBody: 'Spending never moves you down.',
+      rankNone: 'Earn tokens this week to be on the board.',
+      /** A guest's line in place of "Yours": the sign-up bonus they would start with. */
+      guestTitle: { one: 'Start with {amount} token', other: 'Start with {amount} tokens' },
+      guestBody: 'Create an account to earn tokens and spend them.',
+      earn: 'How you earn',
+      messagesBody: 'Up to {perDay} a day, and {perPartner} with any one person.',
+      correctionsBody:
+        'Teaching counts more than talking. Up to {perPartner} a day on one person’s sentences.',
+      pronunciationBody: 'Record a sentence for someone who asked how it sounds.',
+      mutualTitle: 'Two-way conversations',
+      mutualBody: 'Once a conversation, when you have both written. You both earn it.',
+      echoBody: 'A finished review session, up to {perDay} a day.',
+      streakBody: {
+        one: 'A bonus at milestones, from {first} to {last} day in a row.',
+        other: 'A bonus at milestones, from {first} to {last} days in a row.',
+      },
+      /** The brief's wording: the invitee's total, and when — never "for joining". */
+      inviteBody:
+        'Once a friend you invite has a real conversation. With the bonus every new account gets, they start with {amount}.',
+      pool: 'The daily pool',
+      poolIntro: {
+        one: 'On top of that, {amount} token is shared out every day.',
+        other: 'On top of that, {amount} tokens are shared out every day.',
+      },
+      poolTakePart: 'Take part',
+      poolTakePartBody:
+        'Conversations, corrections, messages and the people you talk to all count.',
+      poolShared: 'The pool is shared',
+      poolSharedBody: 'By how active each person was that day.',
+      poolArrives: 'Your share arrives',
+      poolArrivesBody: 'In your wallet at {hour}:00 UTC, up to {cap} each.',
+      spend: 'Spend them on',
+      freezeBody: 'Covers the next day you miss.',
+      freezeKeep: { one: 'Keep one at a time.', other: 'Keep up to {amount} at a time.' },
+      repairTitle: 'A missed day back',
+      repairWindow: {
+        one: 'Fill in a day you missed, from the last {amount} day.',
+        other: 'Fill in a day you missed, from the last {amount} days.',
+      },
+      repairMonthly: { one: 'One a month.', other: 'Up to {amount} a month.' },
+      titlesBody: {
+        one: '{amount} title to wear on your profile',
+        other: '{amount} titles to wear on your profile',
+      },
+      venusTitle: 'Venus’s pack',
+      venusBody: {
+        one: '{amount} sticker, free for everyone',
+        other: '{amount} stickers, free for everyone',
+      },
+      /** The readout where a price would be, on a pack that costs nothing. */
+      free: 'Free',
+      not: 'What it isn’t',
+      notSale: 'Not for sale',
+      notSaleBody: 'No one can buy it, with money or anything else.',
+      notCash: 'Not cash',
+      notCashBody: 'It can’t be sold, swapped for money or sent to anyone.',
+      notCrypto: 'Not a cryptocurrency',
+      notCryptoBody: 'There’s no chain and no market. It stays in LangX.',
+      notPro: 'Not a way to pay for Pro',
+      notProBody: 'Pro is a subscription. Tokens don’t unlock any part of it.',
+      faq: {
+        crypto: 'Is it a cryptocurrency?',
+        /** The brief's one-line version, as an answer. */
+        cryptoAnswer:
+          'No. It’s a point you earn and spend inside LangX. It can’t be bought, sold, traded, staked or withdrawn, and it never will be.',
+        price: 'Does it have a price? Can I buy it?',
+        priceAnswer:
+          'No. There’s no price and no way to buy tokens, with money or anything else. You earn them.',
+        send: 'Can I sell tokens or send them to someone?',
+        sendAnswer:
+          'No. They can’t be sold, swapped for money or sent to anyone. You spend them in the store, and nowhere else.',
+        spend: 'What can I spend them on?',
+        spendAnswer:
+          'Streak freezes, missed days, profile frames, titles and sticker packs, all in the store. Nothing else.',
+        pro: 'Can tokens pay for Pro?',
+        proAnswer: 'No. Pro is a subscription, and tokens unlock no part of it.',
+        day: 'How much can I earn a day?',
+        dayAnswer:
+          'There’s no single daily total. Messages count up to {messages} a day, Echo sessions up to {sessions} a day, and a pool share is at most {cap}. Corrections have no total, only {corrections} a day on any one person’s sentences.',
+        rank: 'Does spending lower my rank?',
+        rankAnswer: 'No. Leaderboards count what you earned, so spending never moves you down.',
+        before: 'I used LangX before. Did my tokens come with me?',
+        beforeAnswer:
+          'Yes. Your balance comes over divided by {divisor}, to fit the new app, so less than {divisor} comes to nothing. You also get a bonus of {bonus} for coming back.',
+      },
+      /** The link out to token.langx.io, in the reader's language where the site has it. */
+      link: 'Every rule, explained',
+    },
   },
 
   /** One per `TOKEN_KINDS`; `kindKey()` builds the key from the kind itself. */
@@ -4711,6 +4820,139 @@ export const en = {
       'Nothing more of yours goes to the AI provider. Copilot asks again the next time you use it.',
     settingsOffConfirm: 'Turn off',
     settingsOffDone: 'Copilot is off.',
+    /**
+     * The Copilot page (`screens/CopilotScreenV3.tsx`), shown to everybody,
+     * whether Copilot is on for them or not. Every sentence here was checked
+     * against the code it describes, and says what copilot.langx.io says.
+     * Numbers arrive as params from `PLAN_LIMITS` and `COPILOT_RULES`; the
+     * names of buttons arrive as params from the keys the chat itself uses,
+     * so the page names what the person will see there.
+     */
+    page: {
+      /** Under "Copilot · Beta", the page's name. The site's opening line. */
+      tagline: 'An AI helper inside your chats. It never sends a word for you.',
+      /** Under the tagline, for everybody: the beta is on both plans, and Pro is more answers. */
+      allowance: 'Answers a day: {free} on the free plan, {pro} with Pro.',
+      /** The page's one action, when Copilot answers this person. Opens the Chats tab. */
+      tryIt: 'Try it in a chat',
+      /** The action for a guest where Copilot is on: a quota and a consent need an account. */
+      signUp: 'Sign up to try it',
+      helpsTitle: 'What it does',
+      helpsIntro: 'One tap asks one question. Nothing is asked in the background.',
+      /** Say it's name where no language is named; the chat's menu row is `menuSayIt`. */
+      sayIt: 'Say it',
+      checkBody:
+        'Before you send, it checks your sentence and gives one reason for what it changes.',
+      sayItBody: {
+        one: 'Write it in your own language and get up to {count} way to say it in the one you are learning.',
+        other:
+          'Write it in your own language and get up to {count} ways to say it in the one you are learning.',
+      },
+      explainBody:
+        'Hold their message or a correction to see what it means, or what changed and why.',
+      replyIdeasBody: {
+        one: 'When their message is waiting, get up to {count} short reply to change and send yourself.',
+        other:
+          'When their message is waiting, get up to {count} short replies to change and send yourself.',
+      },
+      /**
+       * The worked examples under each help. Drawn by the page, never written
+       * by the AI, and labelled so. The learner's sentences are in a language
+       * the reader is learning — Spanish here, English in the other seven —
+       * and the reasons are in the reader's own, as Copilot writes them.
+       */
+      example: {
+        label: 'Illustration, not a real answer',
+        /** What is in the message box, not sent. */
+        draft: 'Your draft',
+        partner: 'Your partner',
+        checkDraft: 'Me gusta mucho los perros.',
+        checkFixed: 'Me gustan mucho los perros.',
+        checkReason: 'With a plural like “los perros”, the verb is “gustan”.',
+        sayItAsked: 'Can we talk tomorrow instead?',
+        sayItOption1: '¿Y si mejor hablamos mañana?',
+        sayItGloss1: 'casual',
+        sayItOption2: '¿Podríamos hablar mañana?',
+        sayItGloss2: 'more polite',
+        explainOriginal: 'Ayer yo voy al cine.',
+        explainCorrected: 'Ayer fui al cine.',
+        explainAnswer:
+          '“Ayer” (yesterday) puts it in the past, so “voy” (I go) becomes “fui” (I went).',
+        replyTheirs: '¿Y tú qué haces este finde?',
+        replyIdea1: 'Voy a la playa con unos amigos.',
+        replyIdea2: 'Todavía no lo sé. ¿Y tú?',
+      },
+      whenTitle: 'When it helps',
+      /** Each moment is a question, and its line names the help that answers it. */
+      whenCheck: 'Not sure a sentence is right?',
+      whenCheckBody: 'Ask “{check}” before you send it.',
+      whenSayIt: 'Know what to say, but not how?',
+      whenSayItBody: 'Write it in your language and ask “{sayIt}”.',
+      whenExplain: 'Lost in a message or a correction?',
+      whenExplainBody: 'Hold it and choose “{explain}”.',
+      whenReplyIdeas: 'Stuck for a reply?',
+      whenReplyIdeasBody: 'Tap “{replyIdeas}”, then make one your own.',
+      howTitle: 'How to use it',
+      step1: 'Open a chat',
+      step1Body: 'Copilot works inside a conversation you already have.',
+      step2: 'Tap the help you want',
+      step2Body:
+        'Type, then tap the blue button beside Send for “{check}” or “{sayIt}”. Hold their message or a correction for “{explain}”. When their message is waiting, “{replyIdeas}” sits above the empty box.',
+      step3: 'Agree, the first time',
+      step3Body: 'A sheet says what is sent and to whom. Nothing is sent before you agree.',
+      step4: 'Read it, then decide',
+      step4Body: 'Use it, change it or close it. Only Send sends, and only you press it.',
+      trustTitle: 'You stay in charge',
+      trustPartner: 'Your partner never sees it',
+      trustPartnerBody: 'Answers show on your screen, never in the chat.',
+      trustSend: 'Nothing is sent for you',
+      trustSendBody: '“{useThis}” and a reply idea only fill your message box.',
+      trustOff: 'You can turn it off',
+      /** The path to the switch, from the names its screens carry: Settings → Privacy → Copilot. */
+      trustOffBody:
+        '{settings} → {privacy} → {copilot}. Nothing more of yours goes to the AI provider.',
+      trustReport: 'You can report an answer',
+      trustReportBody:
+        'Tap “{report}” on any answer. The LangX team sees it; your partner does not.',
+      /** The official @copilot account, which does not take messages yet (`OFFICIAL_WRITABLE`). */
+      accountTitle: 'The Copilot account',
+      /** The grey badge on its card, drawn only while it is closed. */
+      accountSoon: 'Coming soon',
+      accountClosed:
+        'A chat of its own, for questions about the app. It takes no messages yet; for now, Copilot works inside your chats with people.',
+      /** Once `OFFICIAL_WRITABLE.copilot` is true: what the assistant behind it answers. */
+      accountOpen: 'A chat of its own, for questions about the app, a bug or an idea.',
+      faq: {
+        personQ: 'Is Copilot a person or a tutor?',
+        personA:
+          'Neither. It is an AI helper inside a chat with a real person. You tap one of its helps, and it answers that one question.',
+        wrongQ: 'Can it be wrong?',
+        wrongA:
+          'Yes, in any language. Read each answer as a suggestion, keep your own words when you prefer them, and tap “{report}” on an answer that is wrong.',
+        partnerQ: 'Can my partner see that I used it?',
+        partnerA:
+          'No. Your partner sees none of your Copilot answers. What you send is your own message, whether or not Copilot helped.',
+        allowanceQ: 'How many answers do I get?',
+        /** Rolling, not daily: each answer comes back a day after it was used (`QUOTA_WINDOW_MS`). */
+        allowanceA:
+          '{free} a day on the free plan and {pro} with Pro, shared by all its helps. Each one comes back a day after you used it, not all at midnight. An answer counts only when Copilot writes a new one: a question asked recently, or one it could not answer, costs nothing.',
+        sentQ: 'What is sent to the AI?',
+        /** Followed by the consent sheet's own two sentences, `consentSends` and `consentNever`. */
+        sentA: 'Nothing until you agree, and then only when you ask.',
+        languagesQ: 'Which languages does it work in?',
+        languagesA:
+          'It explains in the language your app is set to. “{check}” reads the language you wrote in, “{sayIt}” writes in the language you are learning, and reply ideas come in the language of the chat.',
+        hiddenQ: 'Why don’t I see it?',
+        hiddenA:
+          'It works inside a conversation you already have, and its button shows once you type. It is not in chats with accounts that take no messages, such as @langx, and it needs an account with a verified email. As a beta, it can also be switched off for everyone.',
+        accountQ: 'Can I chat with @copilot?',
+        accountClosedA:
+          'Not yet. The @copilot account is coming soon. For now it takes no messages, and Copilot works inside your chats with people.',
+        accountOpenA: 'Yes. Write to @copilot as you would to anyone, and ask it about the app.',
+      },
+      /** The link card at the foot, over copilot.langx.io. */
+      siteTitle: 'Every detail, on Copilot’s own site',
+    },
   },
   /**
    * Venus's daily streak story (`flags.venusStories`): the full-screen player

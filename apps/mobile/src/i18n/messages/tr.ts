@@ -2801,6 +2801,103 @@ export const tr: Localized<EnMessages> = {
     todayCorrections: { one: 'düzeltme', other: 'düzeltme' },
     todayPeople: { one: 'kişi', other: 'kişi' },
     seeHistory: 'Geçmişini gör',
+    page: {
+      title: 'LangX Token',
+      tagline: 'Konuşarak ve öğreterek kazandığın, LangX içinde harcadığın puanlar.',
+      factPoints: 'Uygulama içi puan',
+      factBought: 'Satın alınamaz',
+      factTraded: 'Takas edilemez',
+      yours: 'Senin jetonların',
+      walletBody: 'Bakiyen, geçmişin ve mağaza',
+      todayFallback: 'Bugünün özeti ve günlük havuz',
+      rank: '#{rank}',
+      rankBody: 'Harcamak seni asla aşağı düşürmez.',
+      rankNone: 'Tabloya girmek için bu hafta jeton kazan.',
+      guestTitle: { one: '{amount} jetonla başla', other: '{amount} jetonla başla' },
+      guestBody: 'Jeton kazanıp harcamak için bir hesap oluştur.',
+      earn: 'Nasıl kazanırsın',
+      messagesBody: 'Günde en fazla {perDay}, tek bir kişiyle en fazla {perPartner}.',
+      correctionsBody:
+        'Öğretmek, konuşmaktan daha çok sayılır. Bir kişinin cümlelerinden günde en fazla {perPartner}.',
+      pronunciationBody: 'Nasıl okunduğunu soran biri için bir cümle kaydet.',
+      mutualTitle: 'Karşılıklı sohbetler',
+      mutualBody: 'Sohbet başına bir kez, ikiniz de yazdığınızda. İkiniz de kazanırsınız.',
+      echoBody: 'Tamamlanan bir tekrar oturumu, günde en fazla {perDay}.',
+      streakBody: {
+        one: 'Kilometre taşlarında bonus: art arda {first} günden {last} güne kadar.',
+        other: 'Kilometre taşlarında bonus: art arda {first} günden {last} güne kadar.',
+      },
+      inviteBody:
+        'Davet ettiğin arkadaşın gerçek bir sohbet yaptığında. Kayıt bonusuyla birlikte {amount} jetonla başlar.',
+      pool: 'Günlük havuz',
+      poolIntro: {
+        one: 'Bunun üstüne her gün {amount} jeton paylaştırılır.',
+        other: 'Bunun üstüne her gün {amount} jeton paylaştırılır.',
+      },
+      poolTakePart: 'Katıl',
+      poolTakePartBody: 'Sohbetler, düzeltmeler, mesajlar ve konuştuğun kişiler sayılır.',
+      poolShared: 'Havuz paylaştırılır',
+      poolSharedBody: 'O gün herkesin ne kadar etkin olduğuna göre.',
+      poolArrives: 'Payın gelir',
+      poolArrivesBody: 'Saat {hour}:00 UTC’de cüzdanına, kişi başı en fazla {cap}.',
+      spend: 'Şunlara harca',
+      freezeBody: 'Kaçırdığın bir sonraki günü kapatır.',
+      freezeKeep: {
+        one: 'Aynı anda bir tane tutabilirsin.',
+        other: 'Aynı anda en fazla {amount} tane tutabilirsin.',
+      },
+      repairTitle: 'Kaçırılan günü geri al',
+      repairWindow: {
+        one: 'Son {amount} gün içinde kaçırdığın bir günü doldur.',
+        other: 'Son {amount} gün içinde kaçırdığın bir günü doldur.',
+      },
+      repairMonthly: { one: 'Ayda bir.', other: 'Ayda en fazla {amount}.' },
+      titlesBody: {
+        one: 'Profilinde taşıyacağın {amount} unvan',
+        other: 'Profilinde taşıyacağın {amount} unvan',
+      },
+      venusTitle: 'Venus paketi',
+      venusBody: {
+        one: 'Herkese ücretsiz {amount} sticker',
+        other: 'Herkese ücretsiz {amount} sticker',
+      },
+      free: 'Ücretsiz',
+      not: 'Ne değildir',
+      notSale: 'Satılık değil',
+      notSaleBody: 'Kimse satın alamaz; ne parayla ne de başka bir şeyle.',
+      notCash: 'Para değil',
+      notCashBody: 'Satılamaz, paraya dönüştürülemez, kimseye gönderilemez.',
+      notCrypto: 'Kripto para değil',
+      notCryptoBody: 'Zincir yok, piyasa yok. LangX’in içinde kalır.',
+      notPro: 'Pro için ödeme yolu değil',
+      notProBody: 'Pro bir abonelik. Jetonlar onun hiçbir kısmını açmaz.',
+      faq: {
+        crypto: 'Kripto para mı?',
+        cryptoAnswer:
+          'Hayır. LangX içinde kazanıp harcadığın bir puan. Satın alınamaz, satılamaz, takas edilemez, stake edilemez ya da çekilemez, ve bu hiçbir zaman değişmeyecek.',
+        price: 'Bir fiyatı var mı? Satın alabilir miyim?',
+        priceAnswer:
+          'Hayır. Fiyatı yok ve jeton satın almanın bir yolu yok; ne parayla ne de başka bir şeyle. Jetonları kazanırsın.',
+        send: 'Jetonları satabilir ya da birine gönderebilir miyim?',
+        sendAnswer:
+          'Hayır. Satılamaz, paraya dönüştürülemez, kimseye gönderilemez. Onları yalnızca mağazada harcarsın.',
+        spend: 'Onları neye harcayabilirim?',
+        spendAnswer:
+          'Seri dondurma, kaçırılan günler, profil çerçeveleri, unvanlar ve sticker paketleri; hepsi mağazada. Başka hiçbir şey.',
+        pro: 'Jetonlarla Pro alınabilir mi?',
+        proAnswer: 'Hayır. Pro bir abonelik ve jetonlar onun hiçbir kısmını açmaz.',
+        day: 'Günde ne kadar kazanabilirim?',
+        dayAnswer:
+          'Tek bir günlük toplam yok. Mesajlar günde en fazla {messages}, Echo oturumları günde en fazla {sessions} sayılır; havuz payı en fazla {cap} olur. Düzeltmelerin toplamı yok, yalnızca bir kişinin cümlelerinden günde {corrections}.',
+        rank: 'Harcamak sıramı düşürür mü?',
+        rankAnswer:
+          'Hayır. Sıralamalar kazandığını sayar, bu yüzden harcamak seni asla aşağı düşürmez.',
+        before: 'LangX’i daha önce kullandım. Jetonlarım benimle geldi mi?',
+        beforeAnswer:
+          'Evet. Bakiyen yeni uygulamaya uysun diye bölünerek gelir; bölen {divisor}. Bu yüzden {divisor} jetonun altı sıfıra iner. Ayrıca {bonus} jetonluk bir tekrar hoş geldin bonusu alırsın.',
+      },
+      link: 'Tüm kurallar, açıklamalarıyla',
+    },
   },
 
   invite: {
@@ -4221,6 +4318,112 @@ export const tr: Localized<EnMessages> = {
       'Artık senden hiçbir şey yapay zekâ sağlayıcısına gitmez. Copilot bir dahaki kullanımında yeniden sorar.',
     settingsOffConfirm: 'Kapat',
     settingsOffDone: 'Copilot kapalı.',
+    page: {
+      tagline: 'Sohbetlerinin içinde bir yapay zekâ yardımcısı. Senin yerine tek kelime göndermez.',
+      allowance: 'Günlük yanıt: ücretsiz planda {free}, Pro ile {pro}.',
+      tryIt: 'Bir sohbette dene',
+      signUp: 'Denemek için kaydol',
+      helpsTitle: 'Ne yapar',
+      helpsIntro: 'Bir dokunuş bir soru sorar. Arka planda hiçbir şey sorulmaz.',
+      sayIt: 'Nasıl söylenir',
+      checkBody: 'Göndermeden önce cümleni kontrol eder ve değiştirdiği şey için bir neden söyler.',
+      sayItBody: {
+        one: 'Kendi dilinde yaz; öğrendiğin dilde söylemenin en fazla {count} yolunu gör.',
+        other: 'Kendi dilinde yaz; öğrendiğin dilde söylemenin en fazla {count} yolunu gör.',
+      },
+      explainBody:
+        'Onun mesajına ya da bir düzeltmeye basılı tut; ne anlama geldiğini ya da neyin neden değiştiğini gör.',
+      replyIdeasBody: {
+        one: 'Onun mesajı yanıt beklerken, değiştirip kendin göndereceğin en fazla {count} kısa yanıt al.',
+        other:
+          'Onun mesajı yanıt beklerken, değiştirip kendin göndereceğin en fazla {count} kısa yanıt al.',
+      },
+      example: {
+        label: 'Örnek, gerçek bir yanıt değil',
+        draft: 'Taslağın',
+        partner: 'Partnerin',
+        checkDraft: 'She don’t like coffee.',
+        checkFixed: 'She doesn’t like coffee.',
+        checkReason: '“She” ile fiil “don’t” değil, “doesn’t” olur.',
+        sayItAsked: 'Konuşmayı yarına alabilir miyiz?',
+        sayItOption1: 'How about tomorrow instead?',
+        sayItGloss1: 'samimi',
+        sayItOption2: 'Could we talk tomorrow instead?',
+        sayItGloss2: 'daha kibar',
+        explainOriginal: 'Yesterday I go to the cinema.',
+        explainCorrected: 'Yesterday I went to the cinema.',
+        explainAnswer:
+          '“Yesterday” (dün) cümleyi geçmişe taşır, bu yüzden “go” (giderim) “went” (gittim) olur.',
+        replyTheirs: 'What are you doing this weekend?',
+        replyIdea1: 'I’m going to the beach with friends.',
+        replyIdea2: 'Not sure yet. And you?',
+      },
+      whenTitle: 'Ne zaman işe yarar',
+      whenCheck: 'Bir cümlenin doğru olduğundan emin değil misin?',
+      whenCheckBody: 'Göndermeden önce “{check}” seçeneğine dokun.',
+      whenSayIt: 'Ne diyeceğini biliyor ama nasıl diyeceğini bilmiyor musun?',
+      whenSayItBody: 'Kendi dilinde yaz ve “{sayIt}” seçeneğine dokun.',
+      whenExplain: 'Bir mesajda ya da düzeltmede kayboldun mu?',
+      whenExplainBody: 'Ona basılı tut ve “{explain}” seç.',
+      whenReplyIdeas: 'Ne yanıt vereceğini bilemiyor musun?',
+      whenReplyIdeasBody: '“{replyIdeas}” seçeneğine dokun, sonra birini kendine göre değiştir.',
+      howTitle: 'Nasıl kullanılır',
+      step1: 'Bir sohbet aç',
+      step1Body: 'Copilot zaten var olan bir konuşmanın içinde çalışır.',
+      step2: 'İstediğin yardıma dokun',
+      step2Body:
+        'Yaz, sonra “{check}” ya da “{sayIt}” için Gönder’in yanındaki mavi düğmeye dokun. “{explain}” için onun mesajına ya da bir düzeltmeye basılı tut. Onun mesajı yanıt beklerken “{replyIdeas}” boş kutunun üstünde durur.',
+      step3: 'İlk seferde onay ver',
+      step3Body:
+        'Bir pencere neyin kime gönderildiğini söyler. Sen onay vermeden hiçbir şey gönderilmez.',
+      step4: 'Oku, sonra karar ver',
+      step4Body:
+        'Kullan, değiştir ya da kapat. Yalnızca Gönder gönderir ve ona yalnızca sen basarsın.',
+      trustTitle: 'Kontrol sende',
+      trustPartner: 'Partnerin onu asla görmez',
+      trustPartnerBody: 'Yanıtlar sohbette değil, yalnızca senin ekranında görünür.',
+      trustSend: 'Senin yerine hiçbir şey gönderilmez',
+      trustSendBody: '“{useThis}” ve bir yanıt fikri yalnızca mesaj kutunu doldurur.',
+      trustOff: 'Kapatabilirsin',
+      trustOffBody:
+        '{settings} → {privacy} → {copilot}. Artık senden hiçbir şey yapay zekâ sağlayıcısına gitmez.',
+      trustReport: 'Bir yanıtı bildirebilirsin',
+      trustReportBody:
+        'Herhangi bir yanıtta “{report}” seçeneğine dokun. LangX ekibi görür; partnerin görmez.',
+      accountTitle: 'Copilot hesabı',
+      accountSoon: 'Yakında',
+      accountClosed:
+        'Uygulamayla ilgili sorular için kendine ait bir sohbet. Henüz mesaj almıyor; şimdilik Copilot insanlarla sohbetlerinin içinde çalışıyor.',
+      accountOpen:
+        'Uygulamayla ilgili sorular, bir hata ya da bir fikir için kendine ait bir sohbet.',
+      faq: {
+        personQ: 'Copilot bir insan mı, bir öğretmen mi?',
+        personA:
+          'İkisi de değil. Gerçek bir insanla yaptığın sohbetin içinde bir yapay zekâ yardımcısı. Yardımlarından birine dokunursun ve yalnızca o soruyu yanıtlar.',
+        wrongQ: 'Yanılabilir mi?',
+        wrongA:
+          'Evet, her dilde. Her yanıtı bir öneri olarak oku, istediğinde kendi sözlerini koru ve yanlış bir yanıtta “{report}” seçeneğine dokun.',
+        partnerQ: 'Partnerim onu kullandığımı görebilir mi?',
+        partnerA:
+          'Hayır. Partnerin Copilot yanıtlarının hiçbirini görmez. Gönderdiğin şey, Copilot yardım etsin ya da etmesin, senin kendi mesajındır.',
+        allowanceQ: 'Kaç yanıt alırım?',
+        allowanceA:
+          'Ücretsiz planda günde {free}, Pro ile {pro}; tüm yardımlar bunu paylaşır. Her biri, kullandıktan bir gün sonra geri gelir, hepsi gece yarısı değil. Bir yanıt yalnızca Copilot yeni bir tane yazdığında sayılır: kısa süre önce sorulmuş bir soru ya da yanıtlayamadığı bir soru hiçbir şeye mal olmaz.',
+        sentQ: 'Yapay zekâya ne gönderilir?',
+        sentA: 'Sen onay verene kadar hiçbir şey; sonra da yalnızca sen istediğinde.',
+        languagesQ: 'Hangi dillerde çalışır?',
+        languagesA:
+          'Uygulamanın dilinde açıklar. “{check}” yazdığın dili okur, “{sayIt}” öğrendiğin dilde yazar, yanıt fikirleri de sohbetin dilinde gelir.',
+        hiddenQ: 'Neden göremiyorum?',
+        hiddenA:
+          'Zaten var olan bir konuşmanın içinde çalışır ve düğmesi sen yazınca görünür. @langx gibi mesaj almayan hesaplarla sohbetlerde yoktur ve e-postası doğrulanmış bir hesap gerektirir. Bir beta olduğu için herkes için kapatılabilir de.',
+        accountQ: '@copilot ile sohbet edebilir miyim?',
+        accountClosedA:
+          'Henüz değil. @copilot hesabı yakında geliyor. Şimdilik mesaj almıyor ve Copilot insanlarla sohbetlerinin içinde çalışıyor.',
+        accountOpenA: 'Evet. @copilot’a herkese yazdığın gibi yaz ve ona uygulamayı sor.',
+      },
+      siteTitle: 'Tüm ayrıntılar, Copilot’un kendi sitesinde',
+    },
   },
   venus: {
     playerA11y: 'Venus, {day}. gün',

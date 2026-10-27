@@ -2893,6 +2893,104 @@ export const de: Localized<EnMessages> = {
     todayCorrections: { one: 'Korrektur', other: 'Korrekturen' },
     todayPeople: { one: 'Person', other: 'Personen' },
     seeHistory: 'Deinen Verlauf ansehen',
+    page: {
+      title: 'LangX Token',
+      tagline: 'Punkte, die du mit Reden und Lehren verdienst und in LangX ausgibst.',
+      factPoints: 'In-App-Punkte',
+      factBought: 'Nicht käuflich',
+      factTraded: 'Nicht handelbar',
+      yours: 'Deine Token',
+      walletBody: 'Dein Guthaben, dein Verlauf und der Shop',
+      todayFallback: 'Dein bisheriger Tag und der tägliche Pool',
+      rank: '#{rank}',
+      rankBody: 'Ausgeben lässt dich nie absteigen.',
+      rankNone: 'Verdiene diese Woche Token, um auf die Liste zu kommen.',
+      guestTitle: { one: 'Starte mit {amount} Token', other: 'Starte mit {amount} Token' },
+      guestBody: 'Erstelle ein Konto, um Token zu verdienen und auszugeben.',
+      earn: 'So verdienst du',
+      messagesBody: 'Bis zu {perDay} am Tag und {perPartner} mit einer einzelnen Person.',
+      correctionsBody:
+        'Lehren zählt mehr als Reden. Bis zu {perPartner} am Tag für die Sätze einer Person.',
+      pronunciationBody: 'Nimm einen Satz für jemanden auf, der gefragt hat, wie er klingt.',
+      mutualTitle: 'Gespräche in beide Richtungen',
+      mutualBody: 'Einmal pro Gespräch, wenn ihr beide geschrieben habt. Ihr verdient es beide.',
+      echoBody: 'Eine abgeschlossene Wiederholungsrunde, bis zu {perDay} am Tag.',
+      streakBody: {
+        one: 'Ein Bonus bei Meilensteinen, von {first} bis {last} Tag in Folge.',
+        other: 'Ein Bonus bei Meilensteinen, von {first} bis {last} Tagen in Folge.',
+      },
+      inviteBody:
+        'Sobald jemand, den du einlädst, ein echtes Gespräch führt. Mit dem Startbonus fängt diese Person bei {amount} an.',
+      pool: 'Der tägliche Pool',
+      poolIntro: {
+        one: 'Dazu wird jeden Tag {amount} Token verteilt.',
+        other: 'Dazu werden jeden Tag {amount} Token verteilt.',
+      },
+      poolTakePart: 'Mitmachen',
+      poolTakePartBody:
+        'Gespräche, Korrekturen, Nachrichten und die Menschen, mit denen du sprichst, zählen alle.',
+      poolShared: 'Der Pool wird geteilt',
+      poolSharedBody: 'Danach, wie aktiv jede Person an dem Tag war.',
+      poolArrives: 'Dein Anteil kommt an',
+      poolArrivesBody: 'Um {hour}:00 UTC in deiner Geldbörse, bis zu {cap} pro Person.',
+      spend: 'Gib sie aus für',
+      freezeBody: 'Deckt den nächsten Tag ab, den du verpasst.',
+      freezeKeep: {
+        one: 'Du kannst einen auf einmal haben.',
+        other: 'Du kannst bis zu {amount} auf einmal haben.',
+      },
+      repairTitle: 'Ein verpasster Tag zurück',
+      repairWindow: {
+        one: 'Hol einen verpassten Tag aus dem letzten {amount} Tag nach.',
+        other: 'Hol einen verpassten Tag aus den letzten {amount} Tagen nach.',
+      },
+      repairMonthly: { one: 'Einmal im Monat.', other: 'Bis zu {amount} im Monat.' },
+      titlesBody: {
+        one: '{amount} Titel für dein Profil',
+        other: '{amount} Titel für dein Profil',
+      },
+      venusTitle: 'Venus-Paket',
+      venusBody: {
+        one: '{amount} Sticker, kostenlos für alle',
+        other: '{amount} Sticker, kostenlos für alle',
+      },
+      free: 'Kostenlos',
+      not: 'Was es nicht ist',
+      notSale: 'Nicht zu kaufen',
+      notSaleBody: 'Niemand kann Token kaufen, weder mit Geld noch mit etwas anderem.',
+      notCash: 'Kein Geld',
+      notCashBody: 'Token lassen sich nicht verkaufen, in Geld umwandeln oder an andere schicken.',
+      notCrypto: 'Keine Kryptowährung',
+      notCryptoBody: 'Es gibt keine Chain und keinen Markt. Token bleiben in LangX.',
+      notPro: 'Kein Zahlungsmittel für Pro',
+      notProBody: 'Pro ist ein Abo. Token schalten keinen Teil davon frei.',
+      faq: {
+        crypto: 'Ist das eine Kryptowährung?',
+        cryptoAnswer:
+          'Nein. Es ist ein Punkt, den du in LangX verdienst und ausgibst. Er lässt sich nicht kaufen, verkaufen, handeln, staken oder auszahlen, und das wird sich nie ändern.',
+        price: 'Hat es einen Preis? Kann ich es kaufen?',
+        priceAnswer:
+          'Nein. Es gibt keinen Preis und keine Möglichkeit, Token zu kaufen, weder mit Geld noch mit etwas anderem. Du verdienst sie.',
+        send: 'Kann ich Token verkaufen oder jemandem schicken?',
+        sendAnswer:
+          'Nein. Sie lassen sich nicht verkaufen, in Geld umwandeln oder an andere schicken. Du gibst sie im Shop aus und nirgendwo sonst.',
+        spend: 'Wofür kann ich sie ausgeben?',
+        spendAnswer:
+          'Serienschutz, verpasste Tage, Profilrahmen, Titel und Stickerpakete, alles im Shop. Sonst nichts.',
+        pro: 'Kann ich Pro mit Token bezahlen?',
+        proAnswer: 'Nein. Pro ist ein Abo, und Token schalten keinen Teil davon frei.',
+        day: 'Wie viel kann ich am Tag verdienen?',
+        dayAnswer:
+          'Es gibt keine einzelne Tagessumme. Nachrichten zählen bis zu {messages} am Tag, Echo-Einheiten bis zu {sessions} am Tag, und ein Pool-Anteil beträgt höchstens {cap}. Korrekturen haben keine Summe, nur {corrections} am Tag für die Sätze einer Person.',
+        rank: 'Senkt Ausgeben meinen Rang?',
+        rankAnswer:
+          'Nein. Bestenlisten zählen, was du verdient hast, darum lässt dich Ausgeben nie absteigen.',
+        before: 'Ich habe LangX früher genutzt. Sind meine Token mitgekommen?',
+        beforeAnswer:
+          'Ja. Dein Guthaben kommt durch {divisor} geteilt mit, damit es zur neuen App passt; weniger als {divisor} wird zu null. Dazu bekommst du einen Willkommen-zurück-Bonus von {bonus}.',
+      },
+      link: 'Alle Regeln, erklärt',
+    },
   },
 
   invite: {
@@ -4334,6 +4432,113 @@ export const de: Localized<EnMessages> = {
       'Von dir geht nichts mehr an den KI-Anbieter. Copilot fragt beim nächsten Mal erneut.',
     settingsOffConfirm: 'Ausschalten',
     settingsOffDone: 'Copilot ist aus.',
+    page: {
+      tagline: 'Ein KI-Helfer in deinen Chats. Er sendet nie ein Wort für dich.',
+      allowance: 'Antworten am Tag: {free} im kostenlosen Tarif, {pro} mit Pro.',
+      tryIt: 'In einem Chat ausprobieren',
+      signUp: 'Registrieren und ausprobieren',
+      helpsTitle: 'Was er kann',
+      helpsIntro: 'Ein Tippen stellt eine Frage. Im Hintergrund wird nichts gefragt.',
+      sayIt: 'Sagen',
+      checkBody:
+        'Vor dem Senden prüft er deinen Satz und nennt einen Grund für das, was er ändert.',
+      sayItBody: {
+        one: 'Schreib es in deiner Sprache und bekomm bis zu {count} Möglichkeit, es in der Sprache zu sagen, die du lernst.',
+        other:
+          'Schreib es in deiner Sprache und bekomm bis zu {count} Möglichkeiten, es in der Sprache zu sagen, die du lernst.',
+      },
+      explainBody:
+        'Halte die Nachricht deines Gegenübers oder eine Korrektur gedrückt, um zu sehen, was sie bedeutet oder was sich geändert hat und warum.',
+      replyIdeasBody: {
+        one: 'Wartet die Nachricht deines Gegenübers auf Antwort, bekommst du bis zu {count} kurze Antwort, die du änderst und selbst sendest.',
+        other:
+          'Wartet die Nachricht deines Gegenübers auf Antwort, bekommst du bis zu {count} kurze Antworten, die du änderst und selbst sendest.',
+      },
+      example: {
+        label: 'Illustration, keine echte Antwort',
+        draft: 'Dein Entwurf',
+        partner: 'Dein Gegenüber',
+        checkDraft: 'She don’t like coffee.',
+        checkFixed: 'She doesn’t like coffee.',
+        checkReason: 'Mit „she“ heißt das Verb „doesn’t“, nicht „don’t“.',
+        sayItAsked: 'Können wir lieber morgen reden?',
+        sayItOption1: 'How about tomorrow instead?',
+        sayItGloss1: 'locker',
+        sayItOption2: 'Could we talk tomorrow instead?',
+        sayItGloss2: 'höflicher',
+        explainOriginal: 'Yesterday I go to the cinema.',
+        explainCorrected: 'Yesterday I went to the cinema.',
+        explainAnswer:
+          '„Yesterday“ (gestern) setzt den Satz in die Vergangenheit, also wird „go“ (gehe) zu „went“ (ging).',
+        replyTheirs: 'What are you doing this weekend?',
+        replyIdea1: 'I’m going to the beach with friends.',
+        replyIdea2: 'Not sure yet. And you?',
+      },
+      whenTitle: 'Wann er hilft',
+      whenCheck: 'Unsicher, ob ein Satz stimmt?',
+      whenCheckBody: 'Tippe vor dem Senden auf „{check}“.',
+      whenSayIt: 'Du weißt, was du sagen willst, aber nicht wie?',
+      whenSayItBody: 'Schreib es in deiner Sprache und tippe auf „{sayIt}“.',
+      whenExplain: 'Eine Nachricht oder Korrektur nicht verstanden?',
+      whenExplainBody: 'Halte sie gedrückt und wähle „{explain}“.',
+      whenReplyIdeas: 'Dir fällt keine Antwort ein?',
+      whenReplyIdeasBody: 'Tippe auf „{replyIdeas}“ und mach eine davon zu deiner.',
+      howTitle: 'So benutzt du ihn',
+      step1: 'Öffne einen Chat',
+      step1Body: 'Copilot arbeitet in einem Gespräch, das du schon hast.',
+      step2: 'Tippe auf die Hilfe, die du willst',
+      step2Body:
+        'Schreib, dann tippe für „{check}“ oder „{sayIt}“ auf den blauen Button neben Senden. Halte für „{explain}“ die Nachricht deines Gegenübers oder eine Korrektur gedrückt. Wartet seine Nachricht auf Antwort, steht „{replyIdeas}“ über dem leeren Feld.',
+      step3: 'Stimm beim ersten Mal zu',
+      step3Body:
+        'Ein Fenster sagt, was an wen gesendet wird. Vor deiner Zustimmung wird nichts gesendet.',
+      step4: 'Lies, dann entscheide',
+      step4Body:
+        'Übernimm sie, ändere sie oder schließ sie. Nur Senden sendet, und nur du tippst darauf.',
+      trustTitle: 'Du behältst die Kontrolle',
+      trustPartner: 'Dein Gegenüber sieht es nie',
+      trustPartnerBody: 'Antworten erscheinen auf deinem Bildschirm, nie im Chat.',
+      trustSend: 'Nichts wird für dich gesendet',
+      trustSendBody: '„{useThis}“ und eine Antwortidee füllen nur dein Nachrichtenfeld.',
+      trustOff: 'Du kannst ihn ausschalten',
+      trustOffBody:
+        '{settings} → {privacy} → {copilot}. Von dir geht nichts mehr an den KI-Anbieter.',
+      trustReport: 'Du kannst eine Antwort melden',
+      trustReportBody:
+        'Tippe bei jeder Antwort auf „{report}“. Das LangX-Team sieht sie, dein Gegenüber nicht.',
+      accountTitle: 'Das Copilot-Konto',
+      accountSoon: 'Bald verfügbar',
+      accountClosed:
+        'Ein eigener Chat für Fragen zur App. Er nimmt noch keine Nachrichten an; bis dahin arbeitet Copilot in deinen Chats mit Menschen.',
+      accountOpen: 'Ein eigener Chat für Fragen zur App, einen Fehler oder eine Idee.',
+      faq: {
+        personQ: 'Ist Copilot ein Mensch oder ein Lehrer?',
+        personA:
+          'Weder noch. Er ist ein KI-Helfer in einem Chat mit einem echten Menschen. Du tippst auf eine seiner Hilfen, und er beantwortet genau diese eine Frage.',
+        wrongQ: 'Kann er sich irren?',
+        wrongA:
+          'Ja, in jeder Sprache. Lies jede Antwort als Vorschlag, behalte deine eigenen Worte, wenn sie dir lieber sind, und tippe bei einer falschen Antwort auf „{report}“.',
+        partnerQ: 'Sieht mein Gegenüber, dass ich ihn benutzt habe?',
+        partnerA:
+          'Nein. Dein Gegenüber sieht keine deiner Copilot-Antworten. Was du sendest, ist deine eigene Nachricht, ob Copilot geholfen hat oder nicht.',
+        allowanceQ: 'Wie viele Antworten bekomme ich?',
+        allowanceA:
+          '{free} am Tag im kostenlosen Tarif und {pro} mit Pro, geteilt von allen seinen Hilfen. Jede kommt einen Tag, nachdem du sie genutzt hast, zurück, nicht alle um Mitternacht. Eine Antwort zählt nur, wenn Copilot eine neue schreibt: Eine kürzlich gestellte Frage oder eine, die er nicht beantworten konnte, kostet nichts.',
+        sentQ: 'Was wird an die KI gesendet?',
+        sentA: 'Nichts, bis du zustimmst, und dann nur, wenn du fragst.',
+        languagesQ: 'In welchen Sprachen funktioniert er?',
+        languagesA:
+          'Er erklärt in der Sprache deiner App. „{check}“ liest die Sprache, in der du geschrieben hast, „{sayIt}“ schreibt in der Sprache, die du lernst, und Antwortideen kommen in der Sprache des Chats.',
+        hiddenQ: 'Warum sehe ich ihn nicht?',
+        hiddenA:
+          'Er arbeitet in einem Gespräch, das du schon hast, und sein Button erscheint, sobald du schreibst. In Chats mit Konten, die keine Nachrichten annehmen, wie @langx, gibt es ihn nicht, und er braucht ein Konto mit bestätigter E-Mail. Als Beta kann er auch für alle ausgeschaltet werden.',
+        accountQ: 'Kann ich mit @copilot chatten?',
+        accountClosedA:
+          'Noch nicht. Das Konto @copilot kommt bald. Bis dahin nimmt es keine Nachrichten an, und Copilot arbeitet in deinen Chats mit Menschen.',
+        accountOpenA: 'Ja. Schreib @copilot wie jedem anderen und frag ihn zur App.',
+      },
+      siteTitle: 'Alle Details auf der Website von Copilot',
+    },
   },
   venus: {
     playerA11y: 'Venus, Tag {day}',

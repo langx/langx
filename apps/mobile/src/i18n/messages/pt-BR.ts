@@ -2826,6 +2826,101 @@ export const ptBR: Localized<EnMessages> = {
     todayCorrections: { one: 'correção', other: 'correções' },
     todayPeople: { one: 'pessoa', other: 'pessoas' },
     seeHistory: 'Ver seu histórico',
+    page: {
+      title: 'LangX Token',
+      tagline: 'Pontos que você ganha conversando e ensinando, e gasta dentro do LangX.',
+      factPoints: 'Pontos do app',
+      factBought: 'Não se compra',
+      factTraded: 'Não se negocia',
+      yours: 'Suas fichas',
+      walletBody: 'Seu saldo, seu histórico e a loja',
+      todayFallback: 'Seu dia até agora e o fundo diário',
+      rank: '#{rank}',
+      rankBody: 'Gastar nunca faz você cair.',
+      rankNone: 'Ganhe fichas nesta semana para entrar na tabela.',
+      guestTitle: { one: 'Comece com {amount} ficha', other: 'Comece com {amount} fichas' },
+      guestBody: 'Crie uma conta para ganhar fichas e gastá-las.',
+      earn: 'Como ganhar',
+      messagesBody: 'Até {perDay} por dia, e {perPartner} com uma mesma pessoa.',
+      correctionsBody:
+        'Ensinar conta mais do que conversar. Até {perPartner} por dia nas frases de uma pessoa.',
+      pronunciationBody: 'Grave uma frase para alguém que perguntou como ela soa.',
+      mutualTitle: 'Conversas de mão dupla',
+      mutualBody: 'Uma vez por conversa, quando vocês dois escreveram. Os dois ganham.',
+      echoBody: 'Uma sessão de revisão concluída, até {perDay} por dia.',
+      streakBody: {
+        one: 'Um bônus nos marcos, de {first} a {last} dia seguido.',
+        other: 'Um bônus nos marcos, de {first} a {last} dias seguidos.',
+      },
+      inviteBody:
+        'Quando alguém que você convidou tem uma conversa de verdade. Com o bônus de cadastro, a pessoa começa com {amount}.',
+      pool: 'O fundo diário',
+      poolIntro: {
+        one: 'Além disso, {amount} ficha é dividida todo dia.',
+        other: 'Além disso, {amount} fichas são divididas todo dia.',
+      },
+      poolTakePart: 'Participe',
+      poolTakePartBody:
+        'Conversas, correções, mensagens e as pessoas com quem você fala, tudo conta.',
+      poolShared: 'O fundo é dividido',
+      poolSharedBody: 'Conforme o quanto cada pessoa foi ativa naquele dia.',
+      poolArrives: 'Sua parte chega',
+      poolArrivesBody: 'Na sua carteira às {hour}:00 UTC, até {cap} por pessoa.',
+      spend: 'Gaste com',
+      freezeBody: 'Cobre o próximo dia que você perder.',
+      freezeKeep: { one: 'Guarde um por vez.', other: 'Guarde até {amount} por vez.' },
+      repairTitle: 'Um dia perdido de volta',
+      repairWindow: {
+        one: 'Preencha um dia que você perdeu, do último {amount} dia.',
+        other: 'Preencha um dia que você perdeu, dos últimos {amount} dias.',
+      },
+      repairMonthly: { one: 'Um por mês.', other: 'Até {amount} por mês.' },
+      titlesBody: {
+        one: '{amount} título para usar no seu perfil',
+        other: '{amount} títulos para usar no seu perfil',
+      },
+      venusTitle: 'Pacote da Venus',
+      venusBody: {
+        one: '{amount} sticker, grátis para todos',
+        other: '{amount} stickers, grátis para todos',
+      },
+      free: 'Grátis',
+      not: 'O que não é',
+      notSale: 'Não está à venda',
+      notSaleBody: 'Ninguém pode comprar, nem com dinheiro nem com outra coisa.',
+      notCash: 'Não é dinheiro',
+      notCashBody: 'Não pode ser vendida, convertida em dinheiro nem enviada a ninguém.',
+      notCrypto: 'Não é uma criptomoeda',
+      notCryptoBody: 'Não há cadeia nem mercado. Fica no LangX.',
+      notPro: 'Não paga o Pro',
+      notProBody: 'Pro é uma assinatura. As fichas não desbloqueiam nenhuma parte dele.',
+      faq: {
+        crypto: 'É uma criptomoeda?',
+        cryptoAnswer:
+          'Não. É um ponto que você ganha e gasta dentro do LangX. Não pode ser comprado, vendido, negociado, usado em staking nem sacado, e nunca poderá.',
+        price: 'Tem preço? Posso comprar?',
+        priceAnswer:
+          'Não. Não há preço nem forma de comprar fichas, com dinheiro ou qualquer outra coisa. Você as ganha.',
+        send: 'Posso vender fichas ou enviá-las para alguém?',
+        sendAnswer:
+          'Não. Elas não podem ser vendidas, convertidas em dinheiro nem enviadas a ninguém. Você as gasta na loja, e em nenhum outro lugar.',
+        spend: 'Com o que posso gastá-las?',
+        spendAnswer:
+          'Congelamentos de sequência, dias perdidos, molduras de perfil, títulos e pacotes de stickers, tudo na loja. Nada mais.',
+        pro: 'Fichas pagam o Pro?',
+        proAnswer: 'Não. Pro é uma assinatura, e as fichas não desbloqueiam nenhuma parte dele.',
+        day: 'Quanto posso ganhar por dia?',
+        dayAnswer:
+          'Não existe um total diário único. Mensagens contam até {messages} por dia, sessões do Echo até {sessions} por dia, e uma parte do fundo é no máximo {cap}. Correções não têm total, só {corrections} por dia nas frases de uma mesma pessoa.',
+        rank: 'Gastar baixa minha posição?',
+        rankAnswer:
+          'Não. As classificações contam o que você ganhou, então gastar nunca faz você cair.',
+        before: 'Eu já usava o LangX. Minhas fichas vieram comigo?',
+        beforeAnswer:
+          'Sim. Seu saldo chega dividido por {divisor} para caber no novo app, então menos de {divisor} vira nada. Você também ganha um bônus de boas-vindas de volta de {bonus}.',
+      },
+      link: 'Todas as regras, explicadas',
+    },
   },
 
   invite: {
@@ -4253,6 +4348,112 @@ export const ptBR: Localized<EnMessages> = {
       'Nada mais seu vai para o provedor de IA. O Copilot pergunta de novo na próxima vez que você usar.',
     settingsOffConfirm: 'Desativar',
     settingsOffDone: 'O Copilot está desativado.',
+    page: {
+      tagline:
+        'Um assistente de IA dentro das suas conversas. Ele nunca envia uma palavra no seu lugar.',
+      allowance: 'Respostas por dia: {free} no plano gratuito, {pro} com o Pro.',
+      tryIt: 'Experimente em uma conversa',
+      signUp: 'Cadastre-se para experimentar',
+      helpsTitle: 'O que ele faz',
+      helpsIntro: 'Um toque faz uma pergunta. Nada é perguntado em segundo plano.',
+      sayIt: 'Dizer',
+      checkBody: 'Antes de você enviar, ele revisa sua frase e dá um motivo para o que muda.',
+      sayItBody: {
+        one: 'Escreva no seu idioma e receba até {count} jeito de dizer isso no idioma que você está aprendendo.',
+        other:
+          'Escreva no seu idioma e receba até {count} jeitos de dizer isso no idioma que você está aprendendo.',
+      },
+      explainBody:
+        'Toque e segure a mensagem do seu parceiro ou uma correção para ver o que significa, ou o que mudou e por quê.',
+      replyIdeasBody: {
+        one: 'Quando a mensagem dele espera resposta, receba até {count} resposta curta para mudar e enviar você mesmo.',
+        other:
+          'Quando a mensagem dele espera resposta, receba até {count} respostas curtas para mudar e enviar você mesmo.',
+      },
+      example: {
+        label: 'Ilustração, não uma resposta real',
+        draft: 'Seu rascunho',
+        partner: 'Seu parceiro',
+        checkDraft: 'She don’t like coffee.',
+        checkFixed: 'She doesn’t like coffee.',
+        checkReason: 'Com “she”, o verbo fica “doesn’t”, não “don’t”.',
+        sayItAsked: 'Podemos conversar amanhã em vez disso?',
+        sayItOption1: 'How about tomorrow instead?',
+        sayItGloss1: 'informal',
+        sayItOption2: 'Could we talk tomorrow instead?',
+        sayItGloss2: 'mais educado',
+        explainOriginal: 'Yesterday I go to the cinema.',
+        explainCorrected: 'Yesterday I went to the cinema.',
+        explainAnswer:
+          '“Yesterday” (ontem) coloca a frase no passado, então “go” (vou) vira “went” (fui).',
+        replyTheirs: 'What are you doing this weekend?',
+        replyIdea1: 'I’m going to the beach with friends.',
+        replyIdea2: 'Not sure yet. And you?',
+      },
+      whenTitle: 'Quando ele ajuda',
+      whenCheck: 'Não tem certeza se uma frase está certa?',
+      whenCheckBody: 'Toque em “{check}” antes de enviar.',
+      whenSayIt: 'Sabe o que dizer, mas não como?',
+      whenSayItBody: 'Escreva no seu idioma e toque em “{sayIt}”.',
+      whenExplain: 'Perdido numa mensagem ou numa correção?',
+      whenExplainBody: 'Toque e segure e escolha “{explain}”.',
+      whenReplyIdeas: 'Sem ideia do que responder?',
+      whenReplyIdeasBody: 'Toque em “{replyIdeas}” e deixe uma delas do seu jeito.',
+      howTitle: 'Como usar',
+      step1: 'Abra uma conversa',
+      step1Body: 'O Copilot funciona dentro de uma conversa que você já tem.',
+      step2: 'Toque na ajuda que quiser',
+      step2Body:
+        'Escreva e toque no botão azul ao lado de Enviar para “{check}” ou “{sayIt}”. Toque e segure a mensagem do seu parceiro ou uma correção para “{explain}”. Quando a mensagem dele espera resposta, “{replyIdeas}” aparece acima da caixa vazia.',
+      step3: 'Aceite, na primeira vez',
+      step3Body:
+        'Uma janela diz o que é enviado e para quem. Nada é enviado antes de você aceitar.',
+      step4: 'Leia e decida',
+      step4Body: 'Use, mude ou feche. Só o Enviar envia, e só você toca nele.',
+      trustTitle: 'Você no controle',
+      trustPartner: 'Seu parceiro nunca vê',
+      trustPartnerBody: 'As respostas aparecem na sua tela, nunca na conversa.',
+      trustSend: 'Nada é enviado no seu lugar',
+      trustSendBody: '“{useThis}” e uma ideia de resposta só preenchem sua caixa de mensagem.',
+      trustOff: 'Você pode desativar',
+      trustOffBody: '{settings} → {privacy} → {copilot}. Nada mais seu vai para o provedor de IA.',
+      trustReport: 'Você pode denunciar uma resposta',
+      trustReportBody:
+        'Toque em “{report}” em qualquer resposta. A equipe do LangX vê; seu parceiro, não.',
+      accountTitle: 'A conta do Copilot',
+      accountSoon: 'Em breve',
+      accountClosed:
+        'Uma conversa própria, para perguntas sobre o app. Ainda não recebe mensagens; por enquanto, o Copilot funciona dentro das suas conversas com pessoas.',
+      accountOpen: 'Uma conversa própria, para perguntas sobre o app, um bug ou uma ideia.',
+      faq: {
+        personQ: 'O Copilot é uma pessoa ou um professor?',
+        personA:
+          'Nenhum dos dois. É um assistente de IA dentro de uma conversa com uma pessoa real. Você toca em uma das ajudas dele, e ele responde a essa pergunta.',
+        wrongQ: 'Ele pode errar?',
+        wrongA:
+          'Sim, em qualquer idioma. Leia cada resposta como uma sugestão, mantenha suas próprias palavras quando preferir e toque em “{report}” numa resposta errada.',
+        partnerQ: 'Meu parceiro pode ver que eu usei?',
+        partnerA:
+          'Não. Seu parceiro não vê nenhuma das suas respostas do Copilot. O que você envia é sua própria mensagem, com ou sem a ajuda do Copilot.',
+        allowanceQ: 'Quantas respostas eu tenho?',
+        allowanceA:
+          '{free} por dia no plano gratuito e {pro} com o Pro, divididas entre todas as ajudas. Cada uma volta um dia depois de usada, não todas à meia-noite. Uma resposta só conta quando o Copilot escreve uma nova: uma pergunta feita há pouco, ou uma que ele não conseguiu responder, não custa nada.',
+        sentQ: 'O que é enviado para a IA?',
+        sentA: 'Nada até você aceitar, e depois só quando você pede.',
+        languagesQ: 'Em quais idiomas ele funciona?',
+        languagesA:
+          'Ele explica no idioma do seu app. “{check}” lê o idioma em que você escreveu, “{sayIt}” escreve no idioma que você está aprendendo e as ideias de resposta vêm no idioma da conversa.',
+        hiddenQ: 'Por que eu não vejo?',
+        hiddenA:
+          'Ele funciona dentro de uma conversa que você já tem, e o botão aparece quando você digita. Não aparece em conversas com contas que não recebem mensagens, como @langx, e precisa de uma conta com e-mail verificado. Por ser beta, também pode ser desativado para todo mundo.',
+        accountQ: 'Posso conversar com o @copilot?',
+        accountClosedA:
+          'Ainda não. A conta @copilot chega em breve. Por enquanto ela não recebe mensagens, e o Copilot funciona dentro das suas conversas com pessoas.',
+        accountOpenA:
+          'Sim. Escreva para o @copilot como para qualquer pessoa e pergunte sobre o app.',
+      },
+      siteTitle: 'Todos os detalhes, no site do Copilot',
+    },
   },
   venus: {
     playerA11y: 'Venus, dia {day}',
