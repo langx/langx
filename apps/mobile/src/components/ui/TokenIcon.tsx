@@ -57,16 +57,18 @@ export function useTokenIconMetrics(
 /** One inline mark, sized from its sentence's font. */
 function InlineTokenIcon({
   fontSize,
+  maxScale,
   color,
   gapStart,
   gapEnd,
 }: {
   fontSize: number
+  maxScale: number
   color: string
   gapStart: boolean
   gapEnd: boolean
 }) {
-  const { size, gap, drop } = useTokenIconMetrics(fontSize)
+  const { size, gap, drop } = useTokenIconMetrics(fontSize, maxScale)
   return (
     <View
       style={{
@@ -85,15 +87,23 @@ function InlineTokenIcon({
  * The pieces of a sentence with `TOKEN_MARK`s in it, for a `Text` to hold: the
  * words as they are, and an inline icon wherever a marker was, sized from the
  * sentence's font and sat on its baseline. For a component that owns its own
- * `Text` and label (`Button`); everything else wants `TokenText`.
+ * `Text` and label (`Button`); everything else wants `TokenText`. `maxScale`
+ * is that `Text`'s `maxFontSizeMultiplier`, when it caps its growth, so the
+ * icon stops growing where the words do.
  */
-export function tokenMarkChildren(text: string, fontSize: number, color: string): ReactNode {
+export function tokenMarkChildren(
+  text: string,
+  fontSize: number,
+  color: string,
+  maxScale = Infinity,
+): ReactNode {
   const parts = splitTokenMarks(text)
   return parts.map((part, index) => (
     <Fragment key={index}>
       {index > 0 ? (
         <InlineTokenIcon
           fontSize={fontSize}
+          maxScale={maxScale}
           color={color}
           // The gap goes on whichever side touches the number, not a word's space.
           gapStart={/\S$/.test(parts[index - 1] ?? '')}
