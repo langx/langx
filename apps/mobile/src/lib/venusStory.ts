@@ -283,6 +283,29 @@ export function venusStrip(
 }
 
 /**
+ * The Venus page's grid before "Show all": the shelf, with today's day always
+ * on it. The shelf's open days are the newest reached, which on an unbroken
+ * run ends on today; after a break it ends on the longest run instead — days
+ * 32 to 40 for somebody back on day 2 — and today's video, the one thing the
+ * reader came for, waited behind "Show all". Then today's day takes the
+ * oldest of those places and stands in its own, by day, so the grid stays the
+ * shelf's size.
+ */
+export function venusGrid(
+  days: readonly VenusArchiveDay[],
+  todayDay: number | null,
+): VenusArchiveDay[] {
+  const shelf = venusShelf(days)
+  const today = days.find((day) => day.day === todayDay)
+  if (!today || shelf.includes(today)) return shelf
+  const rest = venusShelf(
+    days.filter((day) => day !== today),
+    { size: VENUS_SHELF.size - 1, locked: VENUS_SHELF.locked },
+  )
+  return [...rest, today].sort((a, b) => a.day - b.day)
+}
+
+/**
  * Which account opened which day's video by itself on this device, stored as
  * `FLAG_KEYS.venusStorySeen`. Per account, like `firstReplyCardShown`: a
  * second account on the same phone keeps a streak of its own.

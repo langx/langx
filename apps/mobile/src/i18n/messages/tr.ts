@@ -90,6 +90,14 @@ export const tr: Localized<EnMessages> = {
     guestTitle: 'LangX’i kendine göre kur',
     guestBody:
       'Bir hesapla insanlara yazabilir, serini sürdürebilir ve öğrendiklerini Echo’ya kaydedebilirsin.',
+    streakRow: {
+      venusReady: 'Bugünün videosu hazır',
+    },
+    products: {
+      title: 'LangX',
+      copilot: 'Copilot',
+      members: { one: '{amount} üye', other: '{amount} üye' },
+    },
   },
 
   composer: {
@@ -2250,6 +2258,8 @@ export const tr: Localized<EnMessages> = {
       active: 'Serisi süren',
       activeBody: 'Serisi henüz bitmemiş üyeler — yalnızca bugün gelenler değil.',
       activeValue: { one: '{amount} üye', other: '{amount} üye' },
+      venusBody: 'LangX’in kedisinin seri günlerin için kısa bir videosu var.',
+      venusBodySoon: 'LangX’in kedisi seri günlerin için kısa videolar hazırlıyor.',
       trustTitle: 'Verilerin ve güvenliğin',
       auditTitle: 'Kurallar kodda yazılı',
       auditBody:
@@ -2318,6 +2328,7 @@ export const tr: Localized<EnMessages> = {
     title: 'Serin',
     historyBody: 'Son iki ayın her günü ve neyin sayıldığı',
     leaderboardBody: 'Şu an ve tüm zamanların en uzun serileri',
+    tokenBody: 'Kilometre taşlarının kazandırdığı jetonlar ve nasıl harcanacakları',
     protectTitle: 'Serini koru',
     protectBody: {
       one: 'Dondurma, kaçıracağın bir sonraki günü kapatır. Kaçırılmış bir gün ise, kaçırıldıktan sonra en fazla {count} gün boyunca yukarıdaki haritadan geri alınabilir.',
@@ -2856,6 +2867,10 @@ export const tr: Localized<EnMessages> = {
         one: 'Profilinde taşıyacağın {amount} unvan',
         other: 'Profilinde taşıyacağın {amount} unvan',
       },
+      giftTitle: 'Birine hediye',
+      giftBody:
+        'Konuştuğun birine en az {amount} karşılığında bir sticker paketi al. Ona jeton değil, paket gider.',
+      giftWeekly: { one: 'Haftada bir.', other: 'Haftada en fazla {amount}.' },
       venusTitle: 'Venus paketi',
       venusBody: {
         one: 'Herkese ücretsiz {amount} sticker',
@@ -3902,7 +3917,7 @@ export const tr: Localized<EnMessages> = {
     whoViewedBody: 'Sadece sayı değil — kim olduklarını gör.',
     incognito: 'Gizli gezinme',
     incognitoBody: 'Profillere iz bırakmadan bak.',
-    nearby: 'Yakında',
+    nearby: 'Yakındakiler',
     nearbyBody:
       'Kişileri mesafeye göre sırala. Konumun yuvarlanır; başkaları yalnızca kaba bir mesafe görür.',
     copilot: 'Daha çok Copilot yanıtı',
@@ -4291,6 +4306,7 @@ export const tr: Localized<EnMessages> = {
     loading: 'Copilot yazıyor…',
     left: { one: 'Bugün {count} hak kaldı', other: 'Bugün {count} hak kaldı' },
     moreAt: 'Yenisi saat {time}',
+    whatIsThis: 'Bu nedir?',
     errQuota: 'Bugünkü Copilot yanıtlarını kullandın. Yenisi saat {time}.',
     errQuotaNoTime: 'Bugünkü Copilot yanıtlarını kullandın.',
     errBusy: 'Copilot şu an meşgul. Daha sonra tekrar dene.',
@@ -4318,6 +4334,7 @@ export const tr: Localized<EnMessages> = {
       'Artık senden hiçbir şey yapay zekâ sağlayıcısına gitmez. Copilot bir dahaki kullanımında yeniden sorar.',
     settingsOffConfirm: 'Kapat',
     settingsOffDone: 'Copilot kapalı.',
+    settingsAbout: 'Copilot neler yapar',
     page: {
       tagline: 'Sohbetlerinin içinde bir yapay zekâ yardımcısı. Senin yerine tek kelime göndermez.',
       allowance: 'Günlük yanıt: ücretsiz planda {free}, Pro ile {pro}.',
@@ -4519,6 +4536,5 @@ export const tr: Localized<EnMessages> = {
     shareVideo: 'Videoyu paylaş',
     downloadVideo: 'Videoyu indir',
     replay: 'Tekrar izle',
-    homeReady: 'Bugünün Venus videosu hazır',
   },
 }

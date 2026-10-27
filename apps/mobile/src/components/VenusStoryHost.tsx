@@ -2,6 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { useEvent, useEventListener } from 'expo'
 import { Image } from 'expo-image'
 import { usePathname } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import {
@@ -522,6 +523,13 @@ function VenusStoryPlayer({
         Android delivers the drag to nothing at all — as `PhotoViewer` found.
       */}
       <GestureHandlerRootView style={styles.root}>
+        {/*
+          The clock and battery in light over the stage, in either scheme, as
+          the call screen and the recap set theirs: in light mode the app's
+          are dark, and on the stage they all but vanished. Unmounted with the
+          player, the app's own come back.
+        */}
+        <StatusBar style="light" />
         <Animated.View
           pointerEvents="none"
           style={[StyleSheet.absoluteFill, { backgroundColor: colors.stage }, groundStyle]}

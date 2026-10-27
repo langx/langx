@@ -87,6 +87,14 @@ export const es: Localized<EnMessages> = {
     guestTitle: 'Haz tuyo LangX',
     guestBody:
       'Con una cuenta puedes escribir a la gente, mantener una racha y guardar lo que aprendes en Echo.',
+    streakRow: {
+      venusReady: 'El video de hoy está listo',
+    },
+    products: {
+      title: 'LangX',
+      copilot: 'Copilot',
+      members: { one: '{amount} miembro', other: '{amount} miembros' },
+    },
   },
 
   composer: {
@@ -1051,7 +1059,7 @@ export const es: Localized<EnMessages> = {
     socialBody:
       'Seguidores, comentarios, correcciones y grabaciones en tus publicaciones, y me gusta.',
     wallet: 'Tokens',
-    walletBody: 'El reparto diario y tu regalo por hora.',
+    walletBody: 'El reparto del fondo diario y tu regalo por hora.',
     promotions: 'Novedades y ofertas',
     promotionsBody: 'De vez en cuando, lo nuevo. Un toque para parar.',
     echo: 'Echo',
@@ -1779,8 +1787,8 @@ export const es: Localized<EnMessages> = {
     testimonial: '{name} escribió una reseña en tu perfil',
     badgeEarned: 'Ganaste una insignia nueva',
     walletPool: {
-      one: 'El bote de ayer te pagó {count} ficha',
-      other: 'El bote de ayer te pagó {count} fichas',
+      one: 'El fondo de ayer te pagó {count} ficha',
+      other: 'El fondo de ayer te pagó {count} fichas',
     },
     profileVisits: {
       one: '{count} persona vio tu perfil',
@@ -2281,6 +2289,8 @@ export const es: Localized<EnMessages> = {
       active: 'En racha',
       activeBody: 'Miembros cuya racha aún no ha terminado, no solo quienes han venido hoy.',
       activeValue: { one: '{amount} miembro', other: '{amount} miembros' },
+      venusBody: 'La gata de LangX tiene un video corto para los días de tu racha.',
+      venusBodySoon: 'La gata de LangX está preparando videos cortos para los días de tu racha.',
       trustTitle: 'Tus datos y tu seguridad',
       auditTitle: 'Las reglas están en el código',
       auditBody:
@@ -2351,6 +2361,7 @@ export const es: Localized<EnMessages> = {
     title: 'Tu racha',
     historyBody: 'Cada día de los últimos dos meses y qué contó',
     leaderboardBody: 'Quién tiene la racha más larga ahora y de siempre',
+    tokenBody: 'Las fichas que ganan tus metas, y cómo gastarlas',
     protectTitle: 'Protege tu racha',
     protectBody: {
       one: 'Un protector cubre el próximo día que te saltes. Un día ya perdido se puede recuperar en el mapa de arriba hasta {count} día después.',
@@ -2820,7 +2831,7 @@ export const es: Localized<EnMessages> = {
   tokens: {
     intro:
       'Se ganan escribiendo mensajes y corrigiendo a otras personas. Enseñar pesa más que hablar.',
-    poolTitle: 'Bote diario',
+    poolTitle: 'Fondo diario',
     shareAmount: '+{count}',
     noShareYet: 'Aún no hay parte: el fondo reparte tras tu primer día completo.',
     firstShareAt: 'Tu primera parte llegará el {when}.',
@@ -2835,7 +2846,7 @@ export const es: Localized<EnMessages> = {
     activityScore: { one: '{count} de actividad', other: '{count} de actividad' },
     todayBreakdown: '{messages}, {corrections}, {partners}.',
     poolParticipants: { one: '{n} activo ese día', other: '{n} activos ese día' },
-    poolShareOfPool: '{percent} del bote diario',
+    poolShareOfPool: '{percent} del fondo diario',
     poolActiveToday: { one: '{n} activo hoy', other: '{n} activos hoy' },
     todayMessages: { one: 'mensaje', other: 'mensajes' },
     todayCorrections: { one: 'corrección', other: 'correcciones' },
@@ -2898,6 +2909,10 @@ export const es: Localized<EnMessages> = {
         one: '{amount} título para lucir en tu perfil',
         other: '{amount} títulos para lucir en tu perfil',
       },
+      giftTitle: 'Un regalo para alguien',
+      giftBody:
+        'Cómprale un pack de stickers a alguien con quien hablas, desde {amount}. Recibe el pack, no fichas.',
+      giftWeekly: { one: 'Uno a la semana.', other: 'Hasta {amount} a la semana.' },
       venusTitle: 'Pack de Venus',
       venusBody: {
         one: '{amount} sticker, gratis para todos',
@@ -4346,6 +4361,7 @@ export const es: Localized<EnMessages> = {
     loading: 'Copilot está escribiendo…',
     left: { one: 'Te queda {count} hoy', other: 'Te quedan {count} hoy' },
     moreAt: 'Más a las {time}',
+    whatIsThis: '¿Qué es esto?',
     errQuota: 'Ya usaste las respuestas de Copilot de hoy. Más a las {time}.',
     errQuotaNoTime: 'Ya usaste las respuestas de Copilot de hoy.',
     errBusy: 'Copilot está ocupado. Inténtalo más tarde.',
@@ -4373,6 +4389,7 @@ export const es: Localized<EnMessages> = {
       'No se enviará nada más tuyo al proveedor de IA. Copilot te volverá a preguntar la próxima vez que lo uses.',
     settingsOffConfirm: 'Desactivar',
     settingsOffDone: 'Copilot está desactivado.',
+    settingsAbout: 'Qué hace Copilot',
     page: {
       tagline: 'Un asistente de IA dentro de tus chats. Nunca envía ni una palabra por ti.',
       allowance: 'Respuestas al día: {free} en el plan gratuito, {pro} con Pro.',
@@ -4574,6 +4591,5 @@ export const es: Localized<EnMessages> = {
     shareVideo: 'Compartir video',
     downloadVideo: 'Descargar video',
     replay: 'Ver de nuevo',
-    homeReady: 'El video de hoy de Venus está listo',
   },
 }

@@ -17,6 +17,7 @@ import {
   requestVenusReplay,
   VENUS_ASPECT,
   VENUS_SHELF,
+  venusGrid,
   venusShelf,
   venusStrip,
   type VenusArchiveDay,
@@ -28,14 +29,14 @@ import { GUTTER } from '../ui/Screen'
 /*
  * Venus's days as covers: the strip on the streak page and the grid on the
  * Venus page. Both draw the same tile and order the days by the same rules
- * (`venusStrip`, `venusShelf` in `lib/venusStory.ts`); only the layout
- * differs. Every cover already prints its day large, in the video's own
- * language, so a tile adds words only where the picture cannot say it. A
+ * (`venusStrip`, `venusGrid`, `venusShelf` in `lib/venusStory.ts`); only the
+ * layout differs. Every cover already prints its day large, in the video's
+ * own language, so a tile adds words only where the picture cannot say it. A
  * tile is one of three things:
  *
  * - **today** — today's video, tagged "Today", with the streak's tangerine
- *   ring round it until it has been watched to its end, as Home's streak row
- *   rings Venus's face. Plays through `requestVenusReplay`, so it is today's
+ *   ring round it until it has been watched to its end, as Home's Venus card
+ *   wears its tangerine dot until then. Plays through `requestVenusReplay`, so it is today's
  *   video in every way: watching it through marks it watched.
  * - **open** — a day up to the longest streak (`venusUnlockedDays`), the
  *   cover alone. Plays through `requestVenusClip`, which records nothing
@@ -157,9 +158,10 @@ export function VenusStrip({
 
 /**
  * The archive on the Venus page: the strip's days as a grid, today's in its
- * place among them. A dozen at first (`VENUS_SHELF`), then every open day on
- * request — each cover is a full-size still, and a hundred of them is a
- * download nobody asked for by opening the page.
+ * place among them. A dozen at first (`VENUS_SHELF`), today's always one of
+ * them (`venusGrid`), then every open day on request — each cover is a
+ * full-size still, and a hundred of them is a download nobody asked for by
+ * opening the page.
  */
 export function VenusArchiveGrid({ archive }: { archive: VenusArchiveView }) {
   const t = useT()
@@ -167,7 +169,7 @@ export function VenusArchiveGrid({ archive }: { archive: VenusArchiveView }) {
   const { v3 } = useTheme()
   const [width, setWidth] = useState(0)
   const [all, setAll] = useState(false)
-  const shelf = venusShelf(archive.days)
+  const shelf = venusGrid(archive.days, archive.today?.day ?? null)
   const full = venusShelf(archive.days, { size: Infinity, locked: VENUS_SHELF.locked })
   const shown = all ? full : shelf
   const today = todayTile(archive)

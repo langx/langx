@@ -84,6 +84,14 @@ export const ptBR: Localized<EnMessages> = {
     guestTitle: 'Deixe o LangX com a sua cara',
     guestBody:
       'Com uma conta, você pode escrever para as pessoas, manter uma sequência e salvar o que aprende no Echo.',
+    streakRow: {
+      venusReady: 'O vídeo de hoje está pronto',
+    },
+    products: {
+      title: 'LangX',
+      copilot: 'Copilot',
+      members: { one: '{amount} membro', other: '{amount} membros' },
+    },
   },
 
   composer: {
@@ -1045,7 +1053,7 @@ export const ptBR: Localized<EnMessages> = {
     social: 'O feed e quem está nele',
     socialBody: 'Seguidores, comentários, correções e gravações nas suas publicações, e curtidas.',
     wallet: 'Tokens',
-    walletBody: 'O rateio diário e seu presente por hora.',
+    walletBody: 'O rateio do fundo diário e seu presente por hora.',
     promotions: 'Novidades e ofertas',
     promotionsBody: 'De vez em quando, o que há de novo. Um toque para parar.',
     echo: 'Echo',
@@ -1770,8 +1778,8 @@ export const ptBR: Localized<EnMessages> = {
     testimonial: '{name} escreveu uma avaliação no seu perfil',
     badgeEarned: 'Você ganhou uma nova insígnia',
     walletPool: {
-      one: 'O bolo de ontem pagou {count} ficha a você',
-      other: 'O bolo de ontem pagou {count} fichas a você',
+      one: 'O fundo de ontem pagou {count} ficha a você',
+      other: 'O fundo de ontem pagou {count} fichas a você',
     },
     profileVisits: {
       one: '{count} pessoa viu seu perfil',
@@ -2270,6 +2278,8 @@ export const ptBR: Localized<EnMessages> = {
       active: 'Em sequência',
       activeBody: 'Membros cuja sequência ainda não acabou — não só quem veio hoje.',
       activeValue: { one: '{amount} membro', other: '{amount} membros' },
+      venusBody: 'A gata da LangX tem um vídeo curto para os dias da sua sequência.',
+      venusBodySoon: 'A gata da LangX está preparando vídeos curtos para os dias da sua sequência.',
       trustTitle: 'Seus dados e sua segurança',
       auditTitle: 'As regras estão no código',
       auditBody:
@@ -2339,6 +2349,7 @@ export const ptBR: Localized<EnMessages> = {
     title: 'Sua sequência',
     historyBody: 'Cada dia dos últimos dois meses e o que contou',
     leaderboardBody: 'Quem tem a maior sequência agora e de todos os tempos',
+    tokenBody: 'As fichas que seus marcos rendem, e como gastá-las',
     protectTitle: 'Proteja sua sequência',
     protectBody: {
       one: 'Um congelamento cobre o próximo dia que você perder. Um dia já perdido pode ser recuperado no mapa acima até {count} dia depois.',
@@ -2805,7 +2816,7 @@ export const ptBR: Localized<EnMessages> = {
   tokens: {
     intro:
       'Ganhas ao enviar mensagens e ao corrigir outras pessoas. Ensinar pesa mais do que conversar.',
-    poolTitle: 'Bolo diário',
+    poolTitle: 'Fundo diário',
     shareAmount: '+{count}',
     noShareYet: 'Ainda sem parte — o fundo paga depois do seu primeiro dia completo.',
     firstShareAt: 'Sua primeira parte chega em {when}.',
@@ -2820,7 +2831,7 @@ export const ptBR: Localized<EnMessages> = {
     activityScore: { one: '{count} de atividade', other: '{count} de atividade' },
     todayBreakdown: '{messages}, {corrections}, {partners}.',
     poolParticipants: { one: '{n} ativo naquele dia', other: '{n} ativos naquele dia' },
-    poolShareOfPool: '{percent} do bolo diário',
+    poolShareOfPool: '{percent} do fundo diário',
     poolActiveToday: { one: '{n} ativo hoje', other: '{n} ativos hoje' },
     todayMessages: { one: 'mensagem', other: 'mensagens' },
     todayCorrections: { one: 'correção', other: 'correções' },
@@ -2879,6 +2890,10 @@ export const ptBR: Localized<EnMessages> = {
         one: '{amount} título para usar no seu perfil',
         other: '{amount} títulos para usar no seu perfil',
       },
+      giftTitle: 'Um presente para alguém',
+      giftBody:
+        'Compre um pacote de stickers para alguém com quem você conversa, a partir de {amount}. A pessoa recebe o pacote, não fichas.',
+      giftWeekly: { one: 'Um por semana.', other: 'Até {amount} por semana.' },
       venusTitle: 'Pacote da Venus',
       venusBody: {
         one: '{amount} sticker, grátis para todos',
@@ -4321,6 +4336,7 @@ export const ptBR: Localized<EnMessages> = {
     loading: 'O Copilot está escrevendo…',
     left: { one: 'Resta {count} hoje', other: 'Restam {count} hoje' },
     moreAt: 'Mais às {time}',
+    whatIsThis: 'O que é isso?',
     errQuota: 'Você usou as respostas do Copilot de hoje. Mais às {time}.',
     errQuotaNoTime: 'Você usou as respostas do Copilot de hoje.',
     errBusy: 'O Copilot está ocupado. Tente mais tarde.',
@@ -4348,6 +4364,7 @@ export const ptBR: Localized<EnMessages> = {
       'Nada mais seu vai para o provedor de IA. O Copilot pergunta de novo na próxima vez que você usar.',
     settingsOffConfirm: 'Desativar',
     settingsOffDone: 'O Copilot está desativado.',
+    settingsAbout: 'O que o Copilot faz',
     page: {
       tagline:
         'Um assistente de IA dentro das suas conversas. Ele nunca envia uma palavra no seu lugar.',
@@ -4550,6 +4567,5 @@ export const ptBR: Localized<EnMessages> = {
     shareVideo: 'Compartilhar vídeo',
     downloadVideo: 'Baixar vídeo',
     replay: 'Ver de novo',
-    homeReady: 'O vídeo de hoje da Venus está pronto',
   },
 }
