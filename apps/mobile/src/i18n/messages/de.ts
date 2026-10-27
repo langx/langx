@@ -2764,6 +2764,104 @@ export const de: Localized<EnMessages> = {
     todayCorrections: { one: 'Korrektur', other: 'Korrekturen' },
     todayPeople: { one: 'Person', other: 'Personen' },
     seeHistory: 'Deinen Verlauf ansehen',
+    page: {
+      title: 'LangX Token',
+      tagline: 'Punkte, die du mit Reden und Lehren verdienst und in LangX ausgibst.',
+      factPoints: 'In-App-Punkte',
+      factBought: 'Nicht käuflich',
+      factTraded: 'Nicht handelbar',
+      yours: 'Deine Token',
+      walletBody: 'Dein Guthaben, dein Verlauf und der Shop',
+      todayFallback: 'Dein bisheriger Tag und der tägliche Pool',
+      rank: '#{rank}',
+      rankBody: 'Ausgeben lässt dich nie absteigen.',
+      rankNone: 'Verdiene diese Woche Token, um auf die Liste zu kommen.',
+      guestTitle: { one: 'Starte mit {amount} Token', other: 'Starte mit {amount} Token' },
+      guestBody: 'Erstelle ein Konto, um Token zu verdienen und auszugeben.',
+      earn: 'So verdienst du',
+      messagesBody: 'Bis zu {perDay} am Tag und {perPartner} mit einer einzelnen Person.',
+      correctionsBody:
+        'Lehren zählt mehr als Reden. Bis zu {perPartner} am Tag für die Sätze einer Person.',
+      pronunciationBody: 'Nimm einen Satz für jemanden auf, der gefragt hat, wie er klingt.',
+      mutualTitle: 'Gespräche in beide Richtungen',
+      mutualBody: 'Einmal pro Gespräch, wenn ihr beide geschrieben habt. Ihr verdient es beide.',
+      echoBody: 'Eine abgeschlossene Wiederholungsrunde, bis zu {perDay} am Tag.',
+      streakBody: {
+        one: 'Ein Bonus bei Meilensteinen, von {first} bis {last} Tag in Folge.',
+        other: 'Ein Bonus bei Meilensteinen, von {first} bis {last} Tagen in Folge.',
+      },
+      inviteBody:
+        'Sobald jemand, den du einlädst, ein echtes Gespräch führt. Mit dem Startbonus fängt diese Person bei {amount} an.',
+      pool: 'Der tägliche Pool',
+      poolIntro: {
+        one: 'Dazu wird jeden Tag {amount} Token verteilt.',
+        other: 'Dazu werden jeden Tag {amount} Token verteilt.',
+      },
+      poolTakePart: 'Mitmachen',
+      poolTakePartBody:
+        'Gespräche, Korrekturen, Nachrichten und die Menschen, mit denen du sprichst, zählen alle.',
+      poolShared: 'Der Pool wird geteilt',
+      poolSharedBody: 'Danach, wie aktiv jede Person an dem Tag war.',
+      poolArrives: 'Dein Anteil kommt an',
+      poolArrivesBody: 'Um {hour}:00 UTC in deiner Geldbörse, bis zu {cap} pro Person.',
+      spend: 'Gib sie aus für',
+      freezeBody: 'Deckt den nächsten Tag ab, den du verpasst.',
+      freezeKeep: {
+        one: 'Du kannst einen auf einmal haben.',
+        other: 'Du kannst bis zu {amount} auf einmal haben.',
+      },
+      repairTitle: 'Ein verpasster Tag zurück',
+      repairWindow: {
+        one: 'Hol einen verpassten Tag aus dem letzten {amount} Tag nach.',
+        other: 'Hol einen verpassten Tag aus den letzten {amount} Tagen nach.',
+      },
+      repairMonthly: { one: 'Einmal im Monat.', other: 'Bis zu {amount} im Monat.' },
+      titlesBody: {
+        one: '{amount} Titel für dein Profil',
+        other: '{amount} Titel für dein Profil',
+      },
+      venusTitle: 'Venus-Paket',
+      venusBody: {
+        one: '{amount} Sticker, kostenlos für alle',
+        other: '{amount} Sticker, kostenlos für alle',
+      },
+      free: 'Kostenlos',
+      not: 'Was es nicht ist',
+      notSale: 'Nicht zu kaufen',
+      notSaleBody: 'Niemand kann Token kaufen, weder mit Geld noch mit etwas anderem.',
+      notCash: 'Kein Geld',
+      notCashBody: 'Token lassen sich nicht verkaufen, in Geld umwandeln oder an andere schicken.',
+      notCrypto: 'Keine Kryptowährung',
+      notCryptoBody: 'Es gibt keine Chain und keinen Markt. Token bleiben in LangX.',
+      notPro: 'Kein Zahlungsmittel für Pro',
+      notProBody: 'Pro ist ein Abo. Token schalten keinen Teil davon frei.',
+      faq: {
+        crypto: 'Ist das eine Kryptowährung?',
+        cryptoAnswer:
+          'Nein. Es ist ein Punkt, den du in LangX verdienst und ausgibst. Er lässt sich nicht kaufen, verkaufen, handeln, staken oder auszahlen, und das wird sich nie ändern.',
+        price: 'Hat es einen Preis? Kann ich es kaufen?',
+        priceAnswer:
+          'Nein. Es gibt keinen Preis und keine Möglichkeit, Token zu kaufen, weder mit Geld noch mit etwas anderem. Du verdienst sie.',
+        send: 'Kann ich Token verkaufen oder jemandem schicken?',
+        sendAnswer:
+          'Nein. Sie lassen sich nicht verkaufen, in Geld umwandeln oder an andere schicken. Du gibst sie im Shop aus und nirgendwo sonst.',
+        spend: 'Wofür kann ich sie ausgeben?',
+        spendAnswer:
+          'Serienschutz, verpasste Tage, Profilrahmen, Titel und Stickerpakete, alles im Shop. Sonst nichts.',
+        pro: 'Kann ich Pro mit Token bezahlen?',
+        proAnswer: 'Nein. Pro ist ein Abo, und Token schalten keinen Teil davon frei.',
+        day: 'Wie viel kann ich am Tag verdienen?',
+        dayAnswer:
+          'Es gibt keine einzelne Tagessumme. Nachrichten zählen bis zu {messages} am Tag, Echo-Einheiten bis zu {sessions} am Tag, und ein Pool-Anteil beträgt höchstens {cap}. Korrekturen haben keine Summe, nur {corrections} am Tag für die Sätze einer Person.',
+        rank: 'Senkt Ausgeben meinen Rang?',
+        rankAnswer:
+          'Nein. Bestenlisten zählen, was du verdient hast, darum lässt dich Ausgeben nie absteigen.',
+        before: 'Ich habe LangX früher genutzt. Sind meine Token mitgekommen?',
+        beforeAnswer:
+          'Ja. Dein Guthaben kommt durch {divisor} geteilt mit, damit es zur neuen App passt; weniger als {divisor} wird zu null. Dazu bekommst du einen Willkommen-zurück-Bonus von {bonus}.',
+      },
+      link: 'Alle Regeln, erklärt',
+    },
   },
 
   invite: {

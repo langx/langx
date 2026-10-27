@@ -2747,6 +2747,108 @@ export const fr: Localized<EnMessages> = {
     todayCorrections: { one: 'correction', other: 'corrections' },
     todayPeople: { one: 'personne', other: 'personnes' },
     seeHistory: 'Voir ton historique',
+    page: {
+      title: 'LangX Token',
+      tagline:
+        'Des points que tu gagnes en parlant et en enseignant, et que tu dépenses dans LangX.',
+      factPoints: 'Points internes à l’app',
+      factBought: 'Impossible à acheter',
+      factTraded: 'Impossible à échanger',
+      yours: 'Tes jetons',
+      walletBody: 'Ton solde, ton historique et la boutique',
+      todayFallback: 'Ta journée jusqu’ici, et le pot commun du jour',
+      rank: '#{rank}',
+      rankBody: 'Dépenser ne te fait jamais descendre.',
+      rankNone: 'Gagne des jetons cette semaine pour entrer au classement.',
+      guestTitle: { one: 'Commence avec {amount} jeton', other: 'Commence avec {amount} jetons' },
+      guestBody: 'Crée un compte pour gagner des jetons et les dépenser.',
+      earn: 'Comment en gagner',
+      messagesBody: 'Jusqu’à {perDay} par jour, et {perPartner} avec une même personne.',
+      correctionsBody:
+        'Enseigner compte plus que parler. Jusqu’à {perPartner} par jour sur les phrases d’une même personne.',
+      pronunciationBody:
+        'Enregistre une phrase pour quelqu’un qui a demandé comment elle se prononce.',
+      mutualTitle: 'Conversations dans les deux sens',
+      mutualBody:
+        'Une fois par conversation, quand vous avez écrit tous les deux. Vous le gagnez tous les deux.',
+      echoBody: 'Une séance de révision terminée, jusqu’à {perDay} par jour.',
+      streakBody: {
+        one: 'Un bonus à chaque palier, de {first} à {last} jour d’affilée.',
+        other: 'Un bonus à chaque palier, de {first} à {last} jours d’affilée.',
+      },
+      inviteBody:
+        'Quand une personne que tu invites a une vraie conversation. Avec son bonus d’inscription, elle commence avec {amount}.',
+      pool: 'Le pot commun du jour',
+      poolIntro: {
+        one: 'En plus, {amount} jeton est partagé chaque jour.',
+        other: 'En plus, {amount} jetons sont partagés chaque jour.',
+      },
+      poolTakePart: 'Participe',
+      poolTakePartBody:
+        'Les conversations, les corrections, les messages et les personnes à qui tu parles comptent tous.',
+      poolShared: 'Le pot commun est partagé',
+      poolSharedBody: 'Selon l’activité de chacun ce jour-là.',
+      poolArrives: 'Ta part arrive',
+      poolArrivesBody: 'Dans ton portefeuille à {hour}:00 UTC, jusqu’à {cap} chacun.',
+      spend: 'Dépense-les pour',
+      freezeBody: 'Couvre le prochain jour que tu manques.',
+      freezeKeep: {
+        one: 'Tu peux en garder un à la fois.',
+        other: 'Tu peux en garder jusqu’à {amount} à la fois.',
+      },
+      repairTitle: 'Un jour manqué rattrapé',
+      repairWindow: {
+        one: 'Rattrape un jour manqué parmi le dernier {amount} jour.',
+        other: 'Rattrape un jour manqué parmi les {amount} derniers jours.',
+      },
+      repairMonthly: { one: 'Un par mois.', other: 'Jusqu’à {amount} par mois.' },
+      titlesBody: {
+        one: '{amount} titre à afficher sur ton profil',
+        other: '{amount} titres à afficher sur ton profil',
+      },
+      venusTitle: 'Pack de Venus',
+      venusBody: {
+        one: '{amount} sticker, gratuit pour tout le monde',
+        other: '{amount} stickers, gratuits pour tout le monde',
+      },
+      free: 'Gratuit',
+      not: 'Ce que ce n’est pas',
+      notSale: 'Pas à vendre',
+      notSaleBody: 'Personne ne peut en acheter, ni avec de l’argent ni avec autre chose.',
+      notCash: 'Pas de l’argent',
+      notCashBody:
+        'Les jetons ne peuvent être ni vendus, ni convertis en argent, ni envoyés à quelqu’un.',
+      notCrypto: 'Pas une cryptomonnaie',
+      notCryptoBody: 'Pas de chaîne, pas de marché. Tout reste dans LangX.',
+      notPro: 'Pas un moyen de payer Pro',
+      notProBody: 'Pro est un abonnement. Les jetons n’en débloquent aucune partie.',
+      faq: {
+        crypto: 'Est-ce une cryptomonnaie ?',
+        cryptoAnswer:
+          'Non. C’est un point que tu gagnes et dépenses dans LangX. Il ne peut être ni acheté, ni vendu, ni échangé, ni staké, ni retiré, et il ne le sera jamais.',
+        price: 'Est-ce que ça a un prix ? Puis-je en acheter ?',
+        priceAnswer:
+          'Non. Il n’y a pas de prix ni aucun moyen d’acheter des jetons, avec de l’argent ou autre chose. Tu les gagnes.',
+        send: 'Puis-je vendre des jetons ou en envoyer à quelqu’un ?',
+        sendAnswer:
+          'Non. Ils ne peuvent être ni vendus, ni convertis en argent, ni envoyés à quelqu’un. Tu les dépenses dans la boutique, et nulle part ailleurs.',
+        spend: 'Sur quoi puis-je les dépenser ?',
+        spendAnswer:
+          'Gels de série, jours manqués, cadres de profil, titres et packs de stickers, tout dans la boutique. Rien d’autre.',
+        pro: 'Les jetons peuvent-ils payer Pro ?',
+        proAnswer: 'Non. Pro est un abonnement, et les jetons n’en débloquent aucune partie.',
+        day: 'Combien puis-je gagner par jour ?',
+        dayAnswer:
+          'Il n’y a pas de total quotidien unique. Les messages comptent jusqu’à {messages} par jour, les séances Echo jusqu’à {sessions} par jour, et une part du pot commun vaut au plus {cap}. Les corrections n’ont pas de total, seulement {corrections} par jour sur les phrases d’une même personne.',
+        rank: 'Dépenser fait-il baisser mon rang ?',
+        rankAnswer:
+          'Non. Les classements comptent ce que tu as gagné, donc dépenser ne te fait jamais descendre.',
+        before: 'J’utilisais LangX avant. Mes jetons m’ont-ils suivi ?',
+        beforeAnswer:
+          'Oui. Ton solde arrive divisé par {divisor} pour s’adapter à la nouvelle app, donc moins de {divisor} donne zéro. Tu reçois aussi un bonus de retour de {bonus}.',
+      },
+      link: 'Toutes les règles, expliquées',
+    },
   },
 
   invite: {
