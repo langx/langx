@@ -84,6 +84,14 @@ export const de: Localized<EnMessages> = {
     guestTitle: 'Mach LangX zu deinem',
     guestBody:
       'Mit einem Konto kannst du Leuten schreiben, eine Serie halten und Gelerntes in Echo speichern.',
+    streakRow: {
+      venusReady: 'Das heutige Video ist da',
+    },
+    products: {
+      title: 'LangX',
+      copilot: 'Copilot',
+      members: { one: '{amount} Mitglied', other: '{amount} Mitglieder' },
+    },
   },
 
   composer: {
@@ -2328,6 +2336,8 @@ export const de: Localized<EnMessages> = {
       activeBody:
         'Mitglieder, deren Serie noch nicht zu Ende ist — nicht nur die, die heute da waren.',
       activeValue: { one: '{amount} Mitglied', other: '{amount} Mitglieder' },
+      venusBody: 'Die Katze von LangX hat ein kurzes Video für die Tage deiner Serie.',
+      venusBodySoon: 'Die Katze von LangX bekommt kurze Videos für die Tage deiner Serie.',
       trustTitle: 'Deine Daten und deine Sicherheit',
       auditTitle: 'Die Regeln stehen im Code',
       auditBody:
@@ -2398,6 +2408,7 @@ export const de: Localized<EnMessages> = {
     title: 'Deine Serie',
     historyBody: 'Jeder Tag der letzten zwei Monate und was gezählt hat',
     leaderboardBody: 'Wer gerade und überhaupt die längste Serie hat',
+    tokenBody: 'Token für deine Meilensteine, und wofür du sie ausgibst',
     protectTitle: 'Schütze deine Serie',
     protectBody: {
       one: 'Ein Schutz deckt den nächsten Tag ab, den du verpasst. Ein bereits verpasster Tag lässt sich bis zu {count} Tag danach oben in der Karte zurückkaufen.',
@@ -2949,6 +2960,10 @@ export const de: Localized<EnMessages> = {
         one: '{amount} Titel für dein Profil',
         other: '{amount} Titel für dein Profil',
       },
+      giftTitle: 'Ein Geschenk für jemanden',
+      giftBody:
+        'Kauf jemandem, mit dem du schreibst, ein Stickerpaket, ab {amount}. Die Person bekommt das Paket, keine Token.',
+      giftWeekly: { one: 'Einmal pro Woche.', other: 'Bis zu {amount} pro Woche.' },
       venusTitle: 'Venus-Paket',
       venusBody: {
         one: '{amount} Sticker, kostenlos für alle',
@@ -4405,6 +4420,7 @@ export const de: Localized<EnMessages> = {
     loading: 'Copilot schreibt …',
     left: { one: 'Heute noch {count}', other: 'Heute noch {count}' },
     moreAt: 'Mehr um {time}',
+    whatIsThis: 'Was ist das?',
     errQuota: 'Du hast die Copilot-Antworten für heute aufgebraucht. Mehr um {time}.',
     errQuotaNoTime: 'Du hast die Copilot-Antworten für heute aufgebraucht.',
     errBusy: 'Copilot ist gerade ausgelastet. Versuch es später noch mal.',
@@ -4432,6 +4448,7 @@ export const de: Localized<EnMessages> = {
       'Von dir geht nichts mehr an den KI-Anbieter. Copilot fragt beim nächsten Mal erneut.',
     settingsOffConfirm: 'Ausschalten',
     settingsOffDone: 'Copilot ist aus.',
+    settingsAbout: 'Was Copilot kann',
     page: {
       tagline: 'Ein KI-Helfer in deinen Chats. Er sendet nie ein Wort für dich.',
       allowance: 'Antworten am Tag: {free} im kostenlosen Tarif, {pro} mit Pro.',
@@ -4636,6 +4653,5 @@ export const de: Localized<EnMessages> = {
     shareVideo: 'Video teilen',
     downloadVideo: 'Video herunterladen',
     replay: 'Nochmal ansehen',
-    homeReady: 'Das heutige Video von Venus ist da',
   },
 }

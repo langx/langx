@@ -19,8 +19,8 @@ export interface VenusArchiveView {
   today: VenusVideo | null
   /**
    * Today's video has not been watched to its end on this device — Home's
-   * streak row's own reading (`streakRowVenus`), so the dot on the strip and
-   * the line on Home come and go together.
+   * own reading (`streakRowVenus`), so the dot on the strip and the dot on
+   * Home's Venus card come and go together.
    */
   todayUnwatched: boolean
 }

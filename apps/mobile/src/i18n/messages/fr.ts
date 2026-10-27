@@ -84,6 +84,14 @@ export const fr: Localized<EnMessages> = {
     guestTitle: 'Fais de LangX le tien',
     guestBody:
       'Avec un compte, tu peux écrire aux gens, garder une série et enregistrer ce que tu apprends dans Echo.',
+    streakRow: {
+      venusReady: 'La vidéo du jour est prête',
+    },
+    products: {
+      title: 'LangX',
+      copilot: 'Copilot',
+      members: { one: '{amount} membre', other: '{amount} membres' },
+    },
   },
 
   composer: {
@@ -1064,7 +1072,7 @@ export const fr: Localized<EnMessages> = {
     socialBody:
       'Abonnements, commentaires, corrections et enregistrements sur vos publications, et mentions J’aime.',
     wallet: 'Jetons',
-    walletBody: 'La distribution quotidienne et votre cadeau horaire.',
+    walletBody: 'Le versement du pot commun et votre cadeau horaire.',
     promotions: 'Actualités et offres',
     promotionsBody: 'De temps en temps, les nouveautés. Un geste pour arrêter.',
     echo: 'Echo',
@@ -1794,8 +1802,8 @@ export const fr: Localized<EnMessages> = {
     testimonial: '{name} a laissé un avis sur ton profil',
     badgeEarned: 'Vous avez obtenu un nouveau badge',
     walletPool: {
-      one: 'La cagnotte d’hier vous a versé {count} jeton',
-      other: 'La cagnotte d’hier vous a versé {count} jetons',
+      one: 'Le pot commun d’hier vous a versé {count} jeton',
+      other: 'Le pot commun d’hier vous a versé {count} jetons',
     },
     profileVisits: {
       one: '{count} personne a consulté votre profil',
@@ -2310,6 +2318,8 @@ export const fr: Localized<EnMessages> = {
       activeBody:
         'Les membres dont la série n’est pas encore terminée — pas seulement ceux venus aujourd’hui.',
       activeValue: { one: '{amount} membre', other: '{amount} membres' },
+      venusBody: 'La chatte de LangX a une courte vidéo pour les jours de ta série.',
+      venusBodySoon: 'La chatte de LangX prépare de courtes vidéos pour les jours de ta série.',
       trustTitle: 'Tes données et ta sécurité',
       auditTitle: 'Les règles sont dans le code',
       auditBody:
@@ -2380,6 +2390,7 @@ export const fr: Localized<EnMessages> = {
     title: 'Ta série',
     historyBody: 'Chaque jour des deux derniers mois, et ce qui a compté',
     leaderboardBody: 'Qui a la plus longue série en ce moment, et de tous les temps',
+    tokenBody: 'Les jetons que rapportent tes paliers, et comment les dépenser',
     protectTitle: 'Protège ta série',
     protectBody: {
       one: 'Un gel couvre le prochain jour manqué. Un jour déjà manqué peut être racheté sur la carte ci-dessus jusqu’à {count} jour après.',
@@ -2858,9 +2869,9 @@ export const fr: Localized<EnMessages> = {
 
   tokens: {
     intro: 'Gagnés en écrivant et en corrigeant les autres. Enseigner compte plus que parler.',
-    poolTitle: 'Cagnotte du jour',
+    poolTitle: 'Pot commun du jour',
     shareAmount: '+{count}',
-    noShareYet: 'Pas encore de part : la cagnotte paie après votre première journée complète.',
+    noShareYet: 'Pas encore de part : le pot commun paie après votre première journée complète.',
     firstShareAt: 'Votre première part arrivera le {when}.',
     poolCap: 'Plafond de {cap} par jour. Votre part évolue avec celle des autres.',
     poolPaidAt: 'Versé chaque nuit à {hour}:00 UTC.',
@@ -2873,7 +2884,7 @@ export const fr: Localized<EnMessages> = {
     activityScore: { one: '{count} d’activité', other: '{count} d’activité' },
     todayBreakdown: '{messages}, {corrections}, {partners}.',
     poolParticipants: { one: '{n} actif ce jour-là', other: '{n} actifs ce jour-là' },
-    poolShareOfPool: '{percent} de la cagnotte du jour',
+    poolShareOfPool: '{percent} du pot commun du jour',
     poolActiveToday: { one: '{n} actif aujourd’hui', other: '{n} actifs aujourd’hui' },
     todayMessages: { one: 'message', other: 'messages' },
     todayCorrections: { one: 'correction', other: 'corrections' },
@@ -2938,6 +2949,10 @@ export const fr: Localized<EnMessages> = {
         one: '{amount} titre à afficher sur ton profil',
         other: '{amount} titres à afficher sur ton profil',
       },
+      giftTitle: 'Un cadeau pour quelqu’un',
+      giftBody:
+        'Offre un pack de stickers à quelqu’un avec qui tu parles, dès {amount}. Cette personne reçoit le pack, pas des jetons.',
+      giftWeekly: { one: 'Un par semaine.', other: 'Jusqu’à {amount} par semaine.' },
       venusTitle: 'Pack de Venus',
       venusBody: {
         one: '{amount} sticker, gratuit pour tout le monde',
@@ -3051,7 +3066,7 @@ export const fr: Localized<EnMessages> = {
     message: 'Messages',
     correction: 'Corrections',
     streak: 'Bonus de série',
-    dailyPool: 'Part de la cagnotte',
+    dailyPool: 'Part du pot commun',
     adjustment: 'Ajustement',
     legacyTokenConversion: 'Solde v1',
     welcomeBack: 'Bonus de retour',
@@ -4397,6 +4412,7 @@ export const fr: Localized<EnMessages> = {
     loading: 'Copilot écrit…',
     left: { one: 'Encore {count} aujourd’hui', other: 'Encore {count} aujourd’hui' },
     moreAt: 'D’autres à {time}',
+    whatIsThis: 'Qu’est-ce que c’est ?',
     errQuota: 'Tu as utilisé les réponses Copilot du jour. D’autres à {time}.',
     errQuotaNoTime: 'Tu as utilisé les réponses Copilot du jour.',
     errBusy: 'Copilot est occupé. Réessaie plus tard.',
@@ -4424,6 +4440,7 @@ export const fr: Localized<EnMessages> = {
       'Plus rien de toi n’ira au fournisseur d’IA. Copilot te redemandera la prochaine fois que tu l’utiliseras.',
     settingsOffConfirm: 'Désactiver',
     settingsOffDone: 'Copilot est désactivé.',
+    settingsAbout: 'Ce que fait Copilot',
     page: {
       tagline: 'Un assistant IA dans tes discussions. Il n’envoie jamais un mot à ta place.',
       allowance: 'Réponses par jour : {free} sur le forfait gratuit, {pro} avec Pro.',
@@ -4631,6 +4648,5 @@ export const fr: Localized<EnMessages> = {
     shareVideo: 'Partager la vidéo',
     downloadVideo: 'Télécharger la vidéo',
     replay: 'Revoir',
-    homeReady: 'La vidéo du jour de Venus est prête',
   },
 }

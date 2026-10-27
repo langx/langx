@@ -107,6 +107,19 @@ export const ru: Localized<EnMessages> = {
     inviteTitle: 'Учись с другом',
     guestTitle: 'Сделай LangX своим',
     guestBody: 'С аккаунтом можно писать людям, держать серию и сохранять выученное в Эхо.',
+    streakRow: {
+      venusReady: 'Видео дня готово',
+    },
+    products: {
+      title: 'LangX',
+      copilot: 'Copilot',
+      members: {
+        one: '{amount} участник',
+        few: '{amount} участника',
+        many: '{amount} участников',
+        other: '{amount} участника',
+      },
+    },
   },
 
   composer: {
@@ -2648,6 +2661,8 @@ export const ru: Localized<EnMessages> = {
         many: '{amount} участников',
         other: '{amount} участника',
       },
+      venusBody: 'У кошки LangX есть короткое видео для дней твоей серии.',
+      venusBodySoon: 'Кошка LangX готовит короткие видео для дней твоей серии.',
       trustTitle: 'Твои данные и твоя безопасность',
       auditTitle: 'Правила — в коде',
       auditBody:
@@ -2722,6 +2737,7 @@ export const ru: Localized<EnMessages> = {
     title: 'Твоя серия',
     historyBody: 'Каждый день за два месяца и что засчиталось',
     leaderboardBody: 'У кого самая длинная серия сейчас и за всё время',
+    tokenBody: 'Жетоны за рубежи и на что их тратить',
     protectTitle: 'Защити серию',
     protectBody: {
       one: 'Заморозка закрывает следующий пропущенный день. Уже пропущенный день можно выкупить на карте выше в течение {count} дня после пропуска.',
@@ -3426,6 +3442,15 @@ export const ru: Localized<EnMessages> = {
         few: '{amount} титула для вашего профиля',
         many: '{amount} титулов для вашего профиля',
         other: '{amount} титула для вашего профиля',
+      },
+      giftTitle: 'Подарок кому-то',
+      giftBody:
+        'Купите набор стикеров тому, с кем вы общаетесь, — от {amount}. Человек получает набор, а не жетоны.',
+      giftWeekly: {
+        one: 'Один в неделю.',
+        few: 'До {amount} в неделю.',
+        many: 'До {amount} в неделю.',
+        other: 'До {amount} в неделю.',
       },
       venusTitle: 'Набор Venus',
       venusBody: {
@@ -5085,6 +5110,7 @@ export const ru: Localized<EnMessages> = {
       other: 'Сегодня осталось {count} ответа',
     },
     moreAt: 'Ещё в {time}',
+    whatIsThis: 'Что это?',
     errQuota: 'Ответы Copilot на сегодня закончились. Ещё в {time}.',
     errQuotaNoTime: 'Ответы Copilot на сегодня закончились.',
     errBusy: 'Copilot занят. Попробуй позже.',
@@ -5118,6 +5144,7 @@ export const ru: Localized<EnMessages> = {
       'Больше ничего вашего не уйдёт поставщику ИИ. В следующий раз Copilot спросит снова.',
     settingsOffConfirm: 'Выключить',
     settingsOffDone: 'Copilot выключен.',
+    settingsAbout: 'Что умеет Copilot',
     page: {
       tagline: 'ИИ-помощник внутри твоих чатов. Он никогда не отправляет за тебя ни слова.',
       allowance: 'Ответов в день: {free} на бесплатном тарифе, {pro} с Pro.',
@@ -5342,6 +5369,5 @@ export const ru: Localized<EnMessages> = {
     shareVideo: 'Поделиться видео',
     downloadVideo: 'Скачать видео',
     replay: 'Смотреть снова',
-    homeReady: 'Видео от Venus на сегодня готово',
   },
 }

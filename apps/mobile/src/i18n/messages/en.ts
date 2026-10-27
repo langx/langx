@@ -106,6 +106,22 @@ export const en = {
     guestTitle: 'Make LangX yours',
     guestBody:
       'With an account you can write to people, keep a streak and save what you learn in Echo.',
+    /**
+     * Venus's card in the "LangX" section, the line under her name while
+     * today's video waits to be watched to its end; any other time the card
+     * keeps her own line. (Named for the streak row, where it was first.)
+     */
+    streakRow: {
+      venusReady: 'Today’s video is ready',
+    },
+    /** The "LangX" section under the streak: a card for each product page. */
+    products: {
+      title: 'LangX',
+      /** Copilot's card. Its page's title, `copilot.label`, carries the "Beta" the card's own line says. */
+      copilot: 'Copilot',
+      /** The Transparency card's line: `GET /public/stats`'s member total, in the reader's digits. */
+      members: { one: '{amount} member', other: '{amount} members' },
+    },
   },
 
   composer: {
@@ -2545,6 +2561,9 @@ export const en = {
       active: 'On a streak',
       activeBody: 'Members whose streak has not ended yet — not only those who came today.',
       activeValue: { one: '{amount} member', other: '{amount} members' },
+      /** Venus's row under the streaks, one line for each side of `flags.venusStories`. */
+      venusBody: 'LangX’s cat has a short video for your streak days.',
+      venusBodySoon: 'LangX’s cat is getting short videos for your streak days.',
       trustTitle: 'Your data and your safety',
       auditTitle: 'The rules are in the code',
       auditBody:
@@ -2620,6 +2639,8 @@ export const en = {
     title: 'Your streak',
     historyBody: 'Every day of the last two months, and what counted',
     leaderboardBody: 'Who has the longest run right now, and ever',
+    /** The streak page's row into LangX Token's page, beside History, Leaderboard and Venus. */
+    tokenBody: 'Tokens your milestones earn, and how to spend them',
     protectTitle: 'Protect your streak',
     protectBody: {
       one: 'A freeze covers the next day you miss. A day already missed can be bought back on the map above, up to {count} day after you miss it.',
@@ -3210,6 +3231,15 @@ export const en = {
         one: '{amount} title to wear on your profile',
         other: '{amount} titles to wear on your profile',
       },
+      /**
+       * Giving a sticker pack, drawn only while `flags.stickerGifts` is on. A
+       * gift is a pack bought for someone, never tokens sent to them, so the
+       * brief's "not transferable" stays true — and the body says as much.
+       */
+      giftTitle: 'A gift for someone',
+      giftBody:
+        'Buy someone you talk to a sticker pack, from {amount}. They get the pack, not tokens.',
+      giftWeekly: { one: 'One a week.', other: 'Up to {amount} a week.' },
       venusTitle: 'Venus’s pack',
       venusBody: {
         one: '{amount} sticker, free for everyone',
@@ -4778,6 +4808,8 @@ export const en = {
     left: { one: '{count} left today', other: '{count} left today' },
     /** At 0 left: when the next answer frees up, as a time of day. */
     moreAt: 'More at {time}',
+    /** On the card above the composer, after the allowance: a quiet link to the Copilot page. */
+    whatIsThis: 'What is this?',
     errQuota: 'You’ve used today’s Copilot answers. More at {time}.',
     /** The same, when the server did not say when. */
     errQuotaNoTime: 'You’ve used today’s Copilot answers.',
@@ -4820,6 +4852,8 @@ export const en = {
       'Nothing more of yours goes to the AI provider. Copilot asks again the next time you use it.',
     settingsOffConfirm: 'Turn off',
     settingsOffDone: 'Copilot is off.',
+    /** Under the switch on the Privacy page: opens the Copilot page. */
+    settingsAbout: 'What Copilot does',
     /**
      * The Copilot page (`screens/CopilotScreenV3.tsx`), shown to everybody,
      * whether Copilot is on for them or not. Every sentence here was checked
@@ -4835,7 +4869,10 @@ export const en = {
       allowance: 'Answers a day: {free} on the free plan, {pro} with Pro.',
       /** The page's one action, when Copilot answers this person. Opens the Chats tab. */
       tryIt: 'Try it in a chat',
-      /** The action for a guest where Copilot is on: a quota and a consent need an account. */
+      /**
+       * The action for a guest where Copilot is on: a quota and a consent need
+       * an account. In the hero, and again as the button at the page's foot.
+       */
       signUp: 'Sign up to try it',
       helpsTitle: 'What it does',
       helpsIntro: 'One tap asks one question. Nothing is asked in the background.',
@@ -5072,8 +5109,6 @@ export const en = {
     /** The same button in a browser that cannot share a file, where it downloads instead. */
     downloadVideo: 'Download video',
     replay: 'Watch again',
-    /** Home's streak row, until today's video has been watched to its end. */
-    homeReady: 'Venus’s video for today is ready',
   },
 } as const
 

@@ -104,8 +104,8 @@ export const fr: Localized<ServerMessages> = {
 
     wallet: {
       poolTitle: {
-        one: 'La distribution d’hier vous a versé 1 jeton',
-        other: 'La distribution d’hier vous a versé {count} jetons',
+        one: 'Le pot commun d’hier vous a versé 1 jeton',
+        other: 'Le pot commun d’hier vous a versé {count} jetons',
       },
 
       poolBody: 'Touchez pour ouvrir votre portefeuille.',
@@ -316,7 +316,7 @@ export const fr: Localized<ServerMessages> = {
 
     /** Yesterday's pool, as a paragraph rather than the letter it never was. */
     walletBody:
-      "Ils sont déjà dans votre portefeuille. La cagnotte est partagée chaque nuit entre celles et ceux qui ont aidé quelqu'un la veille.",
+      "Ils sont déjà dans votre portefeuille. Le pot commun est partagé chaque nuit entre celles et ceux qui ont aidé quelqu'un la veille.",
 
     walletButton: 'Ouvrir mon portefeuille',
 

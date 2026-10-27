@@ -72,6 +72,12 @@ interface ButtonProps {
    * icon is silent, and without this the reader would hear a bare number.
    */
   accessibilityLabel?: string
+  /**
+   * The most the label grows with the reader's text size; uncapped unless
+   * set. For a button inside a card, narrower than the screen, whose
+   * longest word would otherwise run out of the pill at the largest sizes.
+   */
+  maxFontSizeMultiplier?: number
   style?: ViewStyle
 }
 
@@ -128,6 +134,7 @@ export function Button({
   iconPosition = 'start',
   haptic,
   accessibilityLabel,
+  maxFontSizeMultiplier,
   style,
 }: ButtonProps) {
   const { v3 } = useTheme()
@@ -226,6 +233,7 @@ export function Button({
           {iconPosition === 'start' ? iconNode : null}
           <Text
             style={[size === 'small' ? styles.labelSmall : styles.label, { color: look.label }]}
+            {...(maxFontSizeMultiplier === undefined ? {} : { maxFontSizeMultiplier })}
           >
             {/* A price ("Protect · 200 ✦") carries the token icon where the
                 label marks it; every other label is drawn as it is. */}

@@ -9,6 +9,7 @@ import { ProductHero } from '../components/product/ProductHero'
 import { ProductScreen } from '../components/product/ProductScreen'
 import { ProductSection } from '../components/product/ProductSection'
 import { StepList } from '../components/product/StepList'
+import { useAppConfig } from '../hooks/useAppConfig'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useLocale, useT } from '../i18n'
@@ -123,7 +124,8 @@ function TokenPage({
   useScreenInteractive()
   const t = useT()
   const { locale } = useLocale()
-  const copy = tokenPageCopy(t, locale)
+  const stickerGifts = useAppConfig().data?.flags.stickerGifts === true
+  const copy = tokenPageCopy(t, locale, { stickerGifts })
 
   return (
     <ProductScreen {...(onRefresh ? { onRefresh, refreshing: refreshing ?? false } : {})}>
