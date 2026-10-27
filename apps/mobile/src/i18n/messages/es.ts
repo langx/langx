@@ -4246,6 +4246,110 @@ export const es: Localized<EnMessages> = {
       'No se enviará nada más tuyo al proveedor de IA. Copilot te volverá a preguntar la próxima vez que lo uses.',
     settingsOffConfirm: 'Desactivar',
     settingsOffDone: 'Copilot está desactivado.',
+    page: {
+      tagline: 'Un asistente de IA dentro de tus chats. Nunca envía ni una palabra por ti.',
+      allowance: 'Respuestas al día: {free} en el plan gratuito, {pro} con Pro.',
+      tryIt: 'Pruébalo en un chat',
+      signUp: 'Regístrate para probarlo',
+      helpsTitle: 'Qué hace',
+      helpsIntro: 'Un toque hace una pregunta. No se pregunta nada en segundo plano.',
+      sayIt: 'Decirlo',
+      checkBody: 'Antes de enviar, revisa tu frase y da un motivo para lo que cambia.',
+      sayItBody: {
+        one: 'Escríbelo en tu idioma y recibe hasta {count} forma de decirlo en el que aprendes.',
+        other:
+          'Escríbelo en tu idioma y recibe hasta {count} formas de decirlo en el que aprendes.',
+      },
+      explainBody:
+        'Mantén pulsado su mensaje o una corrección para ver qué significa, o qué cambió y por qué.',
+      replyIdeasBody: {
+        one: 'Cuando su mensaje espera respuesta, recibe hasta {count} respuesta corta para cambiarla y enviarla tú.',
+        other:
+          'Cuando su mensaje espera respuesta, recibe hasta {count} respuestas cortas para cambiarlas y enviarlas tú.',
+      },
+      example: {
+        label: 'Ilustración, no una respuesta real',
+        draft: 'Tu borrador',
+        partner: 'Tu compañero',
+        checkDraft: 'She don’t like coffee.',
+        checkFixed: 'She doesn’t like coffee.',
+        checkReason: 'Con «she», el verbo lleva «doesn’t», no «don’t».',
+        sayItAsked: '¿Mejor hablamos mañana?',
+        sayItOption1: 'How about tomorrow instead?',
+        sayItGloss1: 'informal',
+        sayItOption2: 'Could we talk tomorrow instead?',
+        sayItGloss2: 'más cortés',
+        explainOriginal: 'Yesterday I go to the cinema.',
+        explainCorrected: 'Yesterday I went to the cinema.',
+        explainAnswer:
+          '«Yesterday» (ayer) lo sitúa en el pasado, así que «go» (voy) pasa a ser «went» (fui).',
+        replyTheirs: 'What are you doing this weekend?',
+        replyIdea1: 'I’m going to the beach with friends.',
+        replyIdea2: 'Not sure yet. And you?',
+      },
+      whenTitle: 'Cuándo ayuda',
+      whenCheck: '¿No sabes si una frase está bien?',
+      whenCheckBody: 'Toca «{check}» antes de enviarla.',
+      whenSayIt: '¿Sabes qué decir, pero no cómo?',
+      whenSayItBody: 'Escríbelo en tu idioma y toca «{sayIt}».',
+      whenExplain: '¿Te pierdes en un mensaje o una corrección?',
+      whenExplainBody: 'Mantenlo pulsado y elige «{explain}».',
+      whenReplyIdeas: '¿No sabes qué responder?',
+      whenReplyIdeasBody: 'Toca «{replyIdeas}» y haz tuya una de ellas.',
+      howTitle: 'Cómo usarlo',
+      step1: 'Abre un chat',
+      step1Body: 'Copilot funciona dentro de una conversación que ya tienes.',
+      step2: 'Toca la ayuda que quieras',
+      step2Body:
+        'Escribe y toca el botón azul junto a Enviar para «{check}» o «{sayIt}». Mantén pulsado su mensaje o una corrección para «{explain}». Cuando su mensaje espera respuesta, «{replyIdeas}» aparece sobre la caja vacía.',
+      step3: 'Acepta, la primera vez',
+      step3Body: 'Una hoja te dice qué se envía y a quién. No se envía nada antes de que aceptes.',
+      step4: 'Léelo y decide',
+      step4Body: 'Úsalo, cámbialo o ciérralo. Solo Enviar envía, y solo tú lo pulsas.',
+      trustTitle: 'Tú tienes el control',
+      trustPartner: 'Tu compañero nunca lo ve',
+      trustPartnerBody: 'Las respuestas aparecen en tu pantalla, nunca en el chat.',
+      trustSend: 'No se envía nada por ti',
+      trustSendBody: '«{useThis}» y una idea de respuesta solo llenan tu caja de mensaje.',
+      trustOff: 'Puedes desactivarlo',
+      trustOffBody:
+        '{settings} → {privacy} → {copilot}. No se enviará nada más tuyo al proveedor de IA.',
+      trustReport: 'Puedes reportar una respuesta',
+      trustReportBody:
+        'Toca «{report}» en cualquier respuesta. La ve el equipo de LangX; tu compañero, no.',
+      accountTitle: 'La cuenta de Copilot',
+      accountSoon: 'Próximamente',
+      accountClosed:
+        'Un chat propio, para preguntas sobre la app. Aún no recibe mensajes; por ahora, Copilot funciona dentro de tus chats con personas.',
+      accountOpen: 'Un chat propio, para preguntas sobre la app, un error o una idea.',
+      faq: {
+        personQ: '¿Copilot es una persona o un profesor?',
+        personA:
+          'Ninguna de las dos cosas. Es un asistente de IA dentro de un chat con una persona real. Tocas una de sus ayudas y responde a esa pregunta.',
+        wrongQ: '¿Puede equivocarse?',
+        wrongA:
+          'Sí, en cualquier idioma. Lee cada respuesta como una sugerencia, quédate con tus propias palabras cuando las prefieras y toca «{report}» en una respuesta que esté mal.',
+        partnerQ: '¿Mi compañero puede ver que lo usé?',
+        partnerA:
+          'No. Tu compañero no ve ninguna de tus respuestas de Copilot. Lo que envías es tu propio mensaje, te haya ayudado Copilot o no.',
+        allowanceQ: '¿Cuántas respuestas tengo?',
+        allowanceA:
+          '{free} al día en el plan gratuito y {pro} con Pro, compartidas entre todas sus ayudas. Cada una vuelve un día después de usarla, no todas a medianoche. Una respuesta solo cuenta cuando Copilot escribe una nueva: una pregunta hecha hace poco, o una que no pudo responder, no cuesta nada.',
+        sentQ: '¿Qué se envía a la IA?',
+        sentA: 'Nada hasta que aceptas, y después solo cuando lo pides.',
+        languagesQ: '¿En qué idiomas funciona?',
+        languagesA:
+          'Explica en el idioma de tu app. «{check}» lee el idioma en que escribiste, «{sayIt}» escribe en el idioma que aprendes y las ideas de respuesta llegan en el idioma del chat.',
+        hiddenQ: '¿Por qué no lo veo?',
+        hiddenA:
+          'Funciona dentro de una conversación que ya tienes, y su botón aparece cuando escribes. No está en chats con cuentas que no reciben mensajes, como @langx, y necesita una cuenta con el correo verificado. Como es una beta, también se puede desactivar para todos.',
+        accountQ: '¿Puedo chatear con @copilot?',
+        accountClosedA:
+          'Todavía no. La cuenta @copilot llegará pronto. Por ahora no recibe mensajes, y Copilot funciona dentro de tus chats con personas.',
+        accountOpenA: 'Sí. Escribe a @copilot como a cualquiera y pregúntale sobre la app.',
+      },
+      siteTitle: 'Todos los detalles, en el sitio de Copilot',
+    },
   },
   venus: {
     playerA11y: 'Venus, día {day}',

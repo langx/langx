@@ -4197,6 +4197,112 @@ export const tr: Localized<EnMessages> = {
       'Artık senden hiçbir şey yapay zekâ sağlayıcısına gitmez. Copilot bir dahaki kullanımında yeniden sorar.',
     settingsOffConfirm: 'Kapat',
     settingsOffDone: 'Copilot kapalı.',
+    page: {
+      tagline: 'Sohbetlerinin içinde bir yapay zekâ yardımcısı. Senin yerine tek kelime göndermez.',
+      allowance: 'Günlük yanıt: ücretsiz planda {free}, Pro ile {pro}.',
+      tryIt: 'Bir sohbette dene',
+      signUp: 'Denemek için kaydol',
+      helpsTitle: 'Ne yapar',
+      helpsIntro: 'Bir dokunuş bir soru sorar. Arka planda hiçbir şey sorulmaz.',
+      sayIt: 'Nasıl söylenir',
+      checkBody: 'Göndermeden önce cümleni kontrol eder ve değiştirdiği şey için bir neden söyler.',
+      sayItBody: {
+        one: 'Kendi dilinde yaz; öğrendiğin dilde söylemenin en fazla {count} yolunu gör.',
+        other: 'Kendi dilinde yaz; öğrendiğin dilde söylemenin en fazla {count} yolunu gör.',
+      },
+      explainBody:
+        'Onun mesajına ya da bir düzeltmeye basılı tut; ne anlama geldiğini ya da neyin neden değiştiğini gör.',
+      replyIdeasBody: {
+        one: 'Onun mesajı yanıt beklerken, değiştirip kendin göndereceğin en fazla {count} kısa yanıt al.',
+        other:
+          'Onun mesajı yanıt beklerken, değiştirip kendin göndereceğin en fazla {count} kısa yanıt al.',
+      },
+      example: {
+        label: 'Örnek, gerçek bir yanıt değil',
+        draft: 'Taslağın',
+        partner: 'Partnerin',
+        checkDraft: 'She don’t like coffee.',
+        checkFixed: 'She doesn’t like coffee.',
+        checkReason: '“She” ile fiil “don’t” değil, “doesn’t” olur.',
+        sayItAsked: 'Konuşmayı yarına alabilir miyiz?',
+        sayItOption1: 'How about tomorrow instead?',
+        sayItGloss1: 'samimi',
+        sayItOption2: 'Could we talk tomorrow instead?',
+        sayItGloss2: 'daha kibar',
+        explainOriginal: 'Yesterday I go to the cinema.',
+        explainCorrected: 'Yesterday I went to the cinema.',
+        explainAnswer:
+          '“Yesterday” (dün) cümleyi geçmişe taşır, bu yüzden “go” (giderim) “went” (gittim) olur.',
+        replyTheirs: 'What are you doing this weekend?',
+        replyIdea1: 'I’m going to the beach with friends.',
+        replyIdea2: 'Not sure yet. And you?',
+      },
+      whenTitle: 'Ne zaman işe yarar',
+      whenCheck: 'Bir cümlenin doğru olduğundan emin değil misin?',
+      whenCheckBody: 'Göndermeden önce “{check}” seçeneğine dokun.',
+      whenSayIt: 'Ne diyeceğini biliyor ama nasıl diyeceğini bilmiyor musun?',
+      whenSayItBody: 'Kendi dilinde yaz ve “{sayIt}” seçeneğine dokun.',
+      whenExplain: 'Bir mesajda ya da düzeltmede kayboldun mu?',
+      whenExplainBody: 'Ona basılı tut ve “{explain}” seç.',
+      whenReplyIdeas: 'Ne yanıt vereceğini bilemiyor musun?',
+      whenReplyIdeasBody: '“{replyIdeas}” seçeneğine dokun, sonra birini kendine göre değiştir.',
+      howTitle: 'Nasıl kullanılır',
+      step1: 'Bir sohbet aç',
+      step1Body: 'Copilot zaten var olan bir konuşmanın içinde çalışır.',
+      step2: 'İstediğin yardıma dokun',
+      step2Body:
+        'Yaz, sonra “{check}” ya da “{sayIt}” için Gönder’in yanındaki mavi düğmeye dokun. “{explain}” için onun mesajına ya da bir düzeltmeye basılı tut. Onun mesajı yanıt beklerken “{replyIdeas}” boş kutunun üstünde durur.',
+      step3: 'İlk seferde onay ver',
+      step3Body:
+        'Bir pencere neyin kime gönderildiğini söyler. Sen onay vermeden hiçbir şey gönderilmez.',
+      step4: 'Oku, sonra karar ver',
+      step4Body:
+        'Kullan, değiştir ya da kapat. Yalnızca Gönder gönderir ve ona yalnızca sen basarsın.',
+      trustTitle: 'Kontrol sende',
+      trustPartner: 'Partnerin onu asla görmez',
+      trustPartnerBody: 'Yanıtlar sohbette değil, yalnızca senin ekranında görünür.',
+      trustSend: 'Senin yerine hiçbir şey gönderilmez',
+      trustSendBody: '“{useThis}” ve bir yanıt fikri yalnızca mesaj kutunu doldurur.',
+      trustOff: 'Kapatabilirsin',
+      trustOffBody:
+        '{settings} → {privacy} → {copilot}. Artık senden hiçbir şey yapay zekâ sağlayıcısına gitmez.',
+      trustReport: 'Bir yanıtı bildirebilirsin',
+      trustReportBody:
+        'Herhangi bir yanıtta “{report}” seçeneğine dokun. LangX ekibi görür; partnerin görmez.',
+      accountTitle: 'Copilot hesabı',
+      accountSoon: 'Yakında',
+      accountClosed:
+        'Uygulamayla ilgili sorular için kendine ait bir sohbet. Henüz mesaj almıyor; şimdilik Copilot insanlarla sohbetlerinin içinde çalışıyor.',
+      accountOpen:
+        'Uygulamayla ilgili sorular, bir hata ya da bir fikir için kendine ait bir sohbet.',
+      faq: {
+        personQ: 'Copilot bir insan mı, bir öğretmen mi?',
+        personA:
+          'İkisi de değil. Gerçek bir insanla yaptığın sohbetin içinde bir yapay zekâ yardımcısı. Yardımlarından birine dokunursun ve yalnızca o soruyu yanıtlar.',
+        wrongQ: 'Yanılabilir mi?',
+        wrongA:
+          'Evet, her dilde. Her yanıtı bir öneri olarak oku, istediğinde kendi sözlerini koru ve yanlış bir yanıtta “{report}” seçeneğine dokun.',
+        partnerQ: 'Partnerim onu kullandığımı görebilir mi?',
+        partnerA:
+          'Hayır. Partnerin Copilot yanıtlarının hiçbirini görmez. Gönderdiğin şey, Copilot yardım etsin ya da etmesin, senin kendi mesajındır.',
+        allowanceQ: 'Kaç yanıt alırım?',
+        allowanceA:
+          'Ücretsiz planda günde {free}, Pro ile {pro}; tüm yardımlar bunu paylaşır. Her biri, kullandıktan bir gün sonra geri gelir, hepsi gece yarısı değil. Bir yanıt yalnızca Copilot yeni bir tane yazdığında sayılır: kısa süre önce sorulmuş bir soru ya da yanıtlayamadığı bir soru hiçbir şeye mal olmaz.',
+        sentQ: 'Yapay zekâya ne gönderilir?',
+        sentA: 'Sen onay verene kadar hiçbir şey; sonra da yalnızca sen istediğinde.',
+        languagesQ: 'Hangi dillerde çalışır?',
+        languagesA:
+          'Uygulamanın dilinde açıklar. “{check}” yazdığın dili okur, “{sayIt}” öğrendiğin dilde yazar, yanıt fikirleri de sohbetin dilinde gelir.',
+        hiddenQ: 'Neden göremiyorum?',
+        hiddenA:
+          'Zaten var olan bir konuşmanın içinde çalışır ve düğmesi sen yazınca görünür. @langx gibi mesaj almayan hesaplarla sohbetlerde yoktur ve e-postası doğrulanmış bir hesap gerektirir. Bir beta olduğu için herkes için kapatılabilir de.',
+        accountQ: '@copilot ile sohbet edebilir miyim?',
+        accountClosedA:
+          'Henüz değil. @copilot hesabı yakında geliyor. Şimdilik mesaj almıyor ve Copilot insanlarla sohbetlerinin içinde çalışıyor.',
+        accountOpenA: 'Evet. @copilot’a herkese yazdığın gibi yaz ve ona uygulamayı sor.',
+      },
+      siteTitle: 'Tüm ayrıntılar, Copilot’un kendi sitesinde',
+    },
   },
   venus: {
     playerA11y: 'Venus, {day}. gün',
