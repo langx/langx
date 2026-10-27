@@ -65,6 +65,8 @@ export interface MeHeroView {
   camera?: { label: string; busy: boolean; onPress: () => void } | undefined
   /** The streak's ink pill, or a new account's "New here". */
   pill?: { label: string; a11y: string; flame: boolean; onPress?: () => void } | undefined
+  /** The pencil beside the bell: Edit profile, one tap from the top. */
+  edit: { label: string; onPress: () => void }
   bell?: { label: string; count?: string | undefined; onPress: () => void } | undefined
   settings: { label: string; onPress: () => void }
   /** Whether Nunito Black has arrived; until then the name is ExtraBold. */
@@ -73,7 +75,7 @@ export interface MeHeroView {
 
 /**
  * The person, on their own colour: the face with the camera that changes it,
- * the name, the streak, and the two corner controls.
+ * the name, the streak, and the corner controls.
  *
  * The hue is the one everybody else sees them in (`partnerHueFor` on their
  * own id), so the colour of a person's profile is the colour of that person
@@ -110,6 +112,18 @@ export function MeHero({ view }: { view: MeHeroView }) {
           </View>
         ) : null}
         <View style={styles.spacer} />
+        {/*
+          Edit profile was a row below the hero, under the fold on a phone;
+          up here it is one tap from the top. Before the bell rather than
+          after it, so the bell and the cog stay where people already reach.
+        */}
+        <IconButton
+          look="hue"
+          icon="edit-3"
+          iconSize={v3.icon.lg}
+          accessibilityLabel={view.edit.label}
+          onPress={view.edit.onPress}
+        />
         {view.bell ? (
           <IconButton
             look="hue"
