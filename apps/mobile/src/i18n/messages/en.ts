@@ -2580,6 +2580,14 @@ export const en = {
       securityBody: 'Report it privately, not in a public issue. You hear back within a week.',
       securityLink: 'Security policy',
       supportTitle: 'Support LangX',
+      /**
+       * The rating row's words. Store rules: ask for a rating and a few words,
+       * never for a number of stars, and offer nothing for it.
+       */
+      rateTitle: 'Rate and review LangX',
+      rateBody: 'A rating and a few words from you help others find us.',
+      /** The button, beside five drawn stars: the verb alone, since the title names LangX. */
+      rateAction: 'Rate',
       proTitle: 'Go Pro',
       proBody: 'Pro is what pays for the servers and keeps LangX going.',
       proTitleMember: 'You are on Pro',

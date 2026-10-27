@@ -8,7 +8,8 @@ import {
 import { useFonts } from 'expo-font'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Text, View } from 'react-native'
+import { Platform, Text, View } from 'react-native'
+import Svg, { Path } from 'react-native-svg'
 import { usePublicStats } from '../api/publicStats'
 import { useIsPro } from '../api/queries'
 import { BarList, type BarListRow } from '../components/charts/BarList'
@@ -28,6 +29,7 @@ import { ProductHero } from '../components/product/ProductHero'
 import { ProductScreen } from '../components/product/ProductScreen'
 import { ProductSection } from '../components/product/ProductSection'
 import type { ProductTone } from '../components/product/tone'
+import { Button } from '../components/ui/Button'
 import { CountUp } from '../components/ui/CountUp'
 import { SegmentedControl } from '../components/ui/SegmentedControl'
 import { Skeleton } from '../components/ui/Skeleton'
@@ -44,6 +46,7 @@ import { openExternal } from '../lib/openExternal'
 import { openPaywall } from '../lib/paywall'
 import { PRODUCT_TEXT_SCALE } from '../lib/productPage'
 import { requireAccount } from '../lib/requireAccount'
+import { openStoreReview } from '../lib/storeListing'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../lib/theme'
 import {
   COUNTED_EVERY_MINUTES,
@@ -235,7 +238,14 @@ export function TransparencyScreenV3() {
       <ProductSection key="support" title={t('transparency.page.supportTitle')}>
         <ProductGroup>
           {/*
-            Pro first: it is what pays for the servers. A call to support,
+            The rating first: it costs nobody anything, so it is the one
+            thing in the section every reader can do. Nowhere to send a
+            browser, so not on the web, as Settings › About › Rate LangX is
+            not.
+          */}
+          {Platform.OS === 'web' ? null : <RateRow />}
+          {/*
+            Then Pro: it is what pays for the servers. A call to support,
             with no counts beside it — how many pay is on the private side of
             `docs/insight.md`'s line.
           */}
@@ -273,6 +283,75 @@ export function TransparencyScreenV3() {
         />
       ) : null}
     </ProductScreen>
+  )
+}
+
+/**
+ * The store's rating and review, asked for (decision 21 of plan #2067).
+ *
+ * The listing's review form, not the OS's in-app sheet (`useReviewPrompt`):
+ * the OS rations that sheet and may show nothing, and a button somebody
+ * presses on purpose has to lead somewhere every time. iOS opens the App
+ * Store on its write-review form; Android opens the Play listing, where the
+ * stars are (`openStoreReview`).
+ *
+ * The stores bound the words. Apple allows a lasting link to the review form
+ * but never a reward for a review, and Google Play forbids leading questions
+ * around a review prompt — "Do you like the app?", "Would you rate us 5
+ * stars?". So the words ask only for a rating and a few words, warmly, with
+ * nothing offered in return, and the five stars on the button say the rest.
+ * The stars are inside the button, not above it, so that a finger that goes
+ * for them presses it rather than landing on a picture.
+ */
+function RateRow() {
+  const t = useT()
+  const styles = useStyles()
+  const { v3 } = useTheme()
+  return (
+    <FeatureCard
+      tone={TONE}
+      icon="edit-3"
+      title={t('transparency.page.rateTitle')}
+      body={t('transparency.page.rateBody')}
+    >
+      <Button
+        variant="ink"
+        size="small"
+        label={t('transparency.page.rateAction')}
+        icon={<FiveStars color={v3.colors.pillText} />}
+        maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+        onPress={() => void openStoreReview()}
+        style={styles.rate}
+      />
+    </FeatureCard>
+  )
+}
+
+/** Feather's star, filled: the outline Pro wears, solid. */
+const STAR =
+  'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'
+
+/**
+ * Five filled stars at the small button's glyph size. They do not grow with
+ * the reader's text size, as the button's own glyph does not: at the largest
+ * sizes the label needs the pill's width more than the stars do.
+ */
+function FiveStars({ color }: { color: string }) {
+  const styles = useStyles()
+  const { v3 } = useTheme()
+  const size = v3.icon.sm
+  return (
+    <View
+      style={styles.stars}
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+    >
+      {[0, 1, 2, 3, 4].map((index) => (
+        <Svg key={index} width={size} height={size} viewBox="0 0 24 24">
+          <Path d={STAR} fill={color} stroke={color} strokeWidth={2} strokeLinejoin="round" />
+        </Svg>
+      ))}
+    </View>
   )
 }
 
@@ -610,4 +689,8 @@ const useStyles = makeStyles(({ v3 }) => ({
   cardTitle: { ...v3.type.button, color: v3.colors.fg },
   sum: { ...v3.type.button, color: v3.colors.fg },
   caption: { ...v3.type.caption, color: v3.colors.muted },
+  // Hugging its words under the row's line, as an in-row pill does, not
+  // spanning the column as a form's button would.
+  rate: { alignSelf: 'flex-start', marginTop: v3.space[8], width: 'auto' },
+  stars: { flexDirection: 'row', gap: v3.space[2] },
 }))
