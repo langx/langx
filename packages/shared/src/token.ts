@@ -397,7 +397,8 @@ export interface TokenRules {
    * server rolls the amount from `tiers` and refuses a second claim inside
    * `cooldownMs`. The weights are shaped so that most opens give a handful
    * and the top of the range is rare — a small, frequent pleasure rather than
-   * a way to earn. Gift token credits the all-time bucket only.
+   * a way to earn. Its tokens count in every leaderboard period like any
+   * other reward (#1758); see the `gift` kind above.
    */
   gift: {
     /** One claim per window, measured from the last successful claim. */
