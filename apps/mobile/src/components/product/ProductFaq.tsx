@@ -20,6 +20,10 @@ export interface ProductQuestion {
  * The questions at the foot of every product page (plan item 7): six to eight,
  * then the product's own site for the rest.
  *
+ * A list between hairlines, on the ground like the rest of the page: the
+ * rules are what make a stack of questions scannable, and a grey block round
+ * them would add nothing the rules do not.
+ *
  * One open at a time. Opening a second closes the first, so the page never
  * grows into a wall of answers the reader has to scroll back past. Each
  * question is a button whose expanded state the platform announces — "collapsed",
@@ -41,13 +45,12 @@ export function ProductFaq({
 
   return (
     <ProductSection title={title ?? t('productPage.questions')}>
-      <View style={styles.group}>
-        {items.map((item, index) => (
+      <View style={styles.list}>
+        {items.map((item) => (
           <QuestionRow
             key={item.key}
             item={item}
             open={open === item.key}
-            divided={index > 0}
             onToggle={() => setOpen((current) => (current === item.key ? null : item.key))}
           />
         ))}
@@ -59,12 +62,10 @@ export function ProductFaq({
 function QuestionRow({
   item,
   open,
-  divided,
   onToggle,
 }: {
   item: ProductQuestion
   open: boolean
-  divided: boolean
   onToggle: () => void
 }) {
   const styles = useStyles()
@@ -82,7 +83,7 @@ function QuestionRow({
   }))
 
   return (
-    <View style={divided && styles.divided}>
+    <View style={styles.row}>
       <Pressable
         accessibilityRole="button"
         accessibilityState={{ expanded: open }}
@@ -105,30 +106,32 @@ function QuestionRow({
 }
 
 const useStyles = makeStyles(({ v3 }) => ({
-  group: { backgroundColor: v3.colors.surface, borderRadius: v3.radius.tile, overflow: 'hidden' },
-  divided: { borderTopColor: v3.colors.line, borderTopWidth: 1 },
+  // A rule under the heading and under every row, so the first question is
+  // fenced like the rest and the list visibly ends.
+  list: { borderTopColor: v3.colors.line, borderTopWidth: 1 },
+  row: { borderBottomColor: v3.colors.line, borderBottomWidth: 1 },
   question: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: v3.space[12],
     minHeight: 56,
-    paddingHorizontal: v3.space[14],
-    paddingVertical: v3.space[12],
+    paddingVertical: v3.space[14],
   },
-  // The grey rows' own press, as `MeRows` draws it: a row dims its ground and
-  // does not shrink.
-  pressed: { backgroundColor: v3.colors.line },
+  // A row on the ground dims rather than shrinks, as Me's lines on the ground do.
+  pressed: { opacity: 0.7 },
   // `minWidth: 0` lets a word longer than the row break instead of pushing
-  // the chevron off the card — on the web a flex item will not shrink below
+  // the chevron off the screen — on the web a flex item will not shrink below
   // its longest word without it, and at the largest text sizes one is.
   questionText: {
-    ...v3.type.callout,
+    ...v3.type.body,
     color: v3.colors.fg,
     flex: 1,
     fontWeight: '600',
     minWidth: 0,
   },
-  answer: { paddingBottom: v3.space[14], paddingHorizontal: v3.space[14] },
+  // Clear of the chevron's column, so an answer never runs under the mark
+  // that closes it.
+  answer: { paddingBottom: v3.space[16], paddingEnd: v3.space[32] },
   // In ink, not muted: the answer is what the row was opened to read.
   answerText: { ...v3.type.callout, color: v3.colors.fg },
 }))

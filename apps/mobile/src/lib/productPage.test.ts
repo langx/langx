@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { linkAddress } from './productPage'
+import { linkAddress, toneWash } from './productPage'
 
 describe('linkAddress', () => {
   it('drops the scheme and keeps the host', () => {
@@ -16,5 +16,20 @@ describe('linkAddress', () => {
 
   it('leaves an address with no scheme as it is', () => {
     expect(linkAddress('langx.io')).toBe('langx.io')
+  })
+})
+
+describe('toneWash', () => {
+  it('appends the strength as two hex digits', () => {
+    expect(toneWash('#ff9f52', 0.18)).toBe('#ff9f522e')
+  })
+
+  it('pads a faint wash to two digits, so the colour stays eight long', () => {
+    expect(toneWash('#3b6cf6', 0.02)).toBe('#3b6cf605')
+  })
+
+  it('holds the strength between nothing and the full colour', () => {
+    expect(toneWash('#5fdc98', -1)).toBe('#5fdc9800')
+    expect(toneWash('#5fdc98', 2)).toBe('#5fdc98ff')
   })
 })

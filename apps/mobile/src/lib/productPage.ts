@@ -11,3 +11,14 @@
 export function linkAddress(url: string): string {
   return url.replace(/^[a-z][a-z0-9+.-]*:\/\//i, '').replace(/\/+$/, '')
 }
+
+/**
+ * A product's colour washed thin, as `#rrggbbaa`: the quiet field its mark
+ * stands on. Laid over the ground, so it is the palette's own hue at a
+ * fraction rather than a new colour to keep in step — the form
+ * `inkTrack` already draws a track in.
+ */
+export function toneWash(hex: string, strength: number): string {
+  const alpha = Math.round(Math.min(Math.max(strength, 0), 1) * 255)
+  return `${hex}${alpha.toString(16).padStart(2, '0')}`
+}

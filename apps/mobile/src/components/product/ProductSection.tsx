@@ -4,10 +4,14 @@ import { makeStyles } from '../../lib/theme'
 
 /**
  * One section of a product page: a heading, a line on what it covers, and
- * the blocks under it.
+ * the rows under it.
+ *
+ * The rows sit on the ground, not in a grey block: on a page that is read top
+ * to bottom, a box around every group is a frame around every paragraph, and
+ * the space between sections already says where one ends.
  *
  * The heading is a header to a screen reader, so a person can move through a
- * long page section by section rather than block by block.
+ * long page section by section rather than row by row.
  */
 export function ProductSection({
   title,
@@ -15,7 +19,7 @@ export function ProductSection({
   children,
 }: {
   title: string
-  /** A line under the heading, for a section whose blocks need a sentence of setup. */
+  /** A line under the heading, for a section whose rows need a sentence of setup. */
   intro?: string
   children: ReactNode
 }) {
@@ -28,16 +32,17 @@ export function ProductSection({
         </Text>
         {intro ? <Text style={styles.intro}>{intro}</Text> : null}
       </View>
-      {children}
+      <View style={styles.rows}>{children}</View>
     </View>
   )
 }
 
 const useStyles = makeStyles(({ v3 }) => ({
-  section: { gap: v3.space[10] },
-  // Indented by the blocks' own corner, so the heading starts where the text
-  // inside the blocks starts rather than at their rounded edge.
-  head: { gap: v3.space[4], paddingHorizontal: v3.space[6] },
+  section: { gap: v3.space[16] },
+  head: { gap: v3.space[4] },
   title: { ...v3.type.headline, color: v3.colors.fg },
   intro: { ...v3.type.callout, color: v3.colors.muted },
+  // Wider than a row's own gap between its name and its line, so each row
+  // reads as one thing without a rule between them.
+  rows: { gap: v3.space[20] },
 }))
