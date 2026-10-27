@@ -2561,6 +2561,9 @@ export const en = {
       active: 'On a streak',
       activeBody: 'Members whose streak has not ended yet — not only those who came today.',
       activeValue: { one: '{amount} member', other: '{amount} members' },
+      /** Venus's row under the streaks, one line for each side of `flags.venusStories`. */
+      venusBody: 'LangX’s cat has a short video for your streak days.',
+      venusBodySoon: 'LangX’s cat is getting short videos for your streak days.',
       trustTitle: 'Your data and your safety',
       auditTitle: 'The rules are in the code',
       auditBody:
@@ -3228,6 +3231,15 @@ export const en = {
         one: '{amount} title to wear on your profile',
         other: '{amount} titles to wear on your profile',
       },
+      /**
+       * Giving a sticker pack, drawn only while `flags.stickerGifts` is on. A
+       * gift is a pack bought for someone, never tokens sent to them, so the
+       * brief's "not transferable" stays true — and the body says as much.
+       */
+      giftTitle: 'A gift for someone',
+      giftBody:
+        'Buy someone you talk to a sticker pack, from {amount}. They get the pack, not tokens.',
+      giftWeekly: { one: 'One a week.', other: 'Up to {amount} a week.' },
       venusTitle: 'Venus’s pack',
       venusBody: {
         one: '{amount} sticker, free for everyone',

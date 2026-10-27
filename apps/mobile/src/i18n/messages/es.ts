@@ -2289,6 +2289,8 @@ export const es: Localized<EnMessages> = {
       active: 'En racha',
       activeBody: 'Miembros cuya racha aún no ha terminado, no solo quienes han venido hoy.',
       activeValue: { one: '{amount} miembro', other: '{amount} miembros' },
+      venusBody: 'La gata de LangX tiene un video corto para los días de tu racha.',
+      venusBodySoon: 'La gata de LangX está preparando videos cortos para los días de tu racha.',
       trustTitle: 'Tus datos y tu seguridad',
       auditTitle: 'Las reglas están en el código',
       auditBody:
@@ -2907,6 +2909,10 @@ export const es: Localized<EnMessages> = {
         one: '{amount} título para lucir en tu perfil',
         other: '{amount} títulos para lucir en tu perfil',
       },
+      giftTitle: 'Un regalo para alguien',
+      giftBody:
+        'Cómprale un pack de stickers a alguien con quien hablas, desde {amount}. Recibe el pack, no fichas.',
+      giftWeekly: { one: 'Uno a la semana.', other: 'Hasta {amount} a la semana.' },
       venusTitle: 'Pack de Venus',
       venusBody: {
         one: '{amount} sticker, gratis para todos',

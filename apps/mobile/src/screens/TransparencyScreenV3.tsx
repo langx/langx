@@ -31,6 +31,7 @@ import type { ProductTone } from '../components/product/tone'
 import { CountUp } from '../components/ui/CountUp'
 import { SegmentedControl } from '../components/ui/SegmentedControl'
 import { Skeleton } from '../components/ui/Skeleton'
+import { useAppConfig } from '../hooks/useAppConfig'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
@@ -536,10 +537,14 @@ function Languages({ stats }: { stats: PublicStats }) {
 /**
  * The longest streak of anyone with an account now, and how many streaks are
  * alive. Through to the reader's own streak for an account; a guest has none.
+ * Then Venus, whose page is open to everybody: her line follows
+ * `flags.venusStories`, as her own page's words do, so with the videos off it
+ * says they are coming rather than that they are there.
  */
 function Streaks({ stats, guest }: { stats: PublicStats; guest: boolean }) {
   const t = useT()
   const { locale } = useLocale()
+  const videos = useAppConfig().data?.flags.venusStories === true
   const { longest, active } = stats.streaks
 
   return (
@@ -570,6 +575,12 @@ function Streaks({ stats, guest }: { stats: PublicStats; guest: boolean }) {
             onPress={() => router.push('/(app)/streak')}
           />
         )}
+        <ProductRow
+          leading={<RowSquare tone={TONE} icon="film" />}
+          title={t('venus.strip.title')}
+          body={t(videos ? 'transparency.page.venusBody' : 'transparency.page.venusBodySoon')}
+          onPress={() => router.push('/(app)/venus')}
+        />
       </ProductGroup>
     </ProductSection>
   )

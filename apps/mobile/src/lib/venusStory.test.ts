@@ -21,6 +21,7 @@ import {
   VENUS_ASPECT,
   VENUS_MAX_SIDE_CROP,
   venusFrameFor,
+  venusGrid,
   venusReplayRequests,
   venusRequestedClip,
   venusShareFileName,
@@ -305,6 +306,29 @@ describe('venusShelf', () => {
 
   it('has nothing to show for an empty archive', () => {
     expect(venusShelf([])).toEqual([])
+  })
+})
+
+describe('venusGrid', () => {
+  it('keeps today among the first tiles when the longest streak ended far ahead of it', () => {
+    // Back on day 2 after a run of forty: the shelf alone is days 32 to 43.
+    const grid = venusGrid(shelfDays(100, 40), 2)
+    expect(dayNumbers(grid)).toEqual([2, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43])
+    expect(grid).toHaveLength(VENUS_SHELF.size)
+    expect(grid.filter((day) => !day.open)).toHaveLength(VENUS_SHELF.locked)
+  })
+
+  it('keeps a comeback day 1 first, in its own place', () => {
+    expect(dayNumbers(venusGrid(shelfDays(100, 40), 1))[0]).toBe(1)
+  })
+
+  it('is the shelf when today is already on it', () => {
+    expect(venusGrid(shelfDays(100, 12), 12)).toEqual(venusShelf(shelfDays(100, 12)))
+    expect(venusGrid(shelfDays(100, 40), 35)).toEqual(venusShelf(shelfDays(100, 40)))
+  })
+
+  it('is the shelf when there is no video today', () => {
+    expect(venusGrid(shelfDays(100, 40), null)).toEqual(venusShelf(shelfDays(100, 40)))
   })
 })
 

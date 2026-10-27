@@ -1,8 +1,10 @@
 import type Feather from '@expo/vector-icons/Feather'
 import {
   COSMETICS,
+  STICKER_GIFT_RULES,
   TOKEN_RULES,
   findCosmetic,
+  isGiftableCosmetic,
   type CosmeticKind,
   type Locale,
   type TokenSummary,
@@ -90,8 +92,18 @@ function countOf(kind: CosmeticKind): number {
   return COSMETICS.filter((cosmetic) => cosmetic.kind === kind).length
 }
 
-/** Everything on the page that is the same for every reader. */
-export function tokenPageCopy(t: TranslateFn, locale: Locale): TokenPageCopy {
+/**
+ * Everything on the page that is the same for every reader.
+ *
+ * `stickerGifts` is the flag of that name: the row on giving a pack is drawn
+ * only while it is on, because with it off no pack page has a Give button and
+ * the row would offer something the app does not do.
+ */
+export function tokenPageCopy(
+  t: TranslateFn,
+  locale: Locale,
+  { stickerGifts = false }: { stickerGifts?: boolean } = {},
+): TokenPageCopy {
   const n = (value: number) => value.toLocaleString(locale)
   // A token amount as a readout: the number beside the spark, and the words
   // a screen reader says instead.
@@ -115,6 +127,28 @@ export function tokenPageCopy(t: TranslateFn, locale: Locale): TokenPageCopy {
   const frames = countOf('frame')
   const titles = countOf('title')
   const packs = countOf('stickers')
+  // A gift is a new copy bought at the pack's own price, so what one costs
+  // at the least is the cheapest pack that can be given.
+  const giftPrices = COSMETICS.filter(isGiftableCosmetic).map((cosmetic) => cosmetic.price)
+
+  /**
+   * Giving a pack: onward to the packs, where each one's page has the Give
+   * button. The price is in the words, as the packs' own row leaves it to
+   * each pack: "from 1,000" as a readout took half the row and left the
+   * sentence a word a line.
+   */
+  function giftRow(from: number): TokenPageRow {
+    const { sendsPerWeek } = STICKER_GIFT_RULES
+    return {
+      key: 'giftPack',
+      icon: 'gift',
+      title: t('tokens.page.giftTitle'),
+      body: `${t('tokens.page.giftBody', {
+        amount: tokenAmountLabel(t, from, locale),
+      })} ${t('tokens.page.giftWeekly', { count: sendsPerWeek, amount: n(sendsPerWeek) })}`,
+      to: 'stickers',
+    }
+  }
 
   const spendRows: TokenPageRow[] = [
     {
@@ -163,6 +197,7 @@ export function tokenPageCopy(t: TranslateFn, locale: Locale): TokenPageCopy {
       body: t('storeHome.packsBody', { count: packs }),
       to: 'stickers',
     },
+    ...(stickerGifts && giftPrices.length > 0 ? [giftRow(Math.min(...giftPrices))] : []),
     {
       key: 'venus',
       icon: 'heart',

@@ -1,4 +1,11 @@
-import { SUPPORTED_LOCALES, TOKEN_RULES, type Locale } from '@langx/shared'
+import {
+  COSMETICS,
+  isGiftableCosmetic,
+  STICKER_GIFT_RULES,
+  SUPPORTED_LOCALES,
+  TOKEN_RULES,
+  type Locale,
+} from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { catalogs } from '../i18n/catalogs'
 import { createTranslate } from '../i18n/runtime'
@@ -22,7 +29,8 @@ import {
 /** Every line a reader can see or hear on the page, labelled with where it sits. */
 function pageLines(locale: Locale): { where: string; text: string }[] {
   const t = createTranslate(locale)
-  const copy = tokenPageCopy(t, locale)
+  // With every row the page can draw, the gift row's flag included.
+  const copy = tokenPageCopy(t, locale, { stickerGifts: true })
   const lines: { where: string; text: string }[] = []
   const add = (where: string, text: string) => lines.push({ where, text })
   const rows = (where: string, list: readonly TokenPageRow[]) => {
@@ -363,6 +371,27 @@ describe('the token page’s numbers', () => {
     expect(poolShareCap()).toBe(Math.floor(pool.total * pool.maxShareOfPool))
     expect(copy.pool.steps.at(-1)?.body).toContain(`${String(pool.payoutHourUtc)}:00 UTC`)
     expect(tokenGuestRow(t, 'en').title).toContain(String(TOKEN_RULES.signupBonus))
+  })
+})
+
+describe('the gift row', () => {
+  const t = createTranslate('en')
+  const gift = (stickerGifts: boolean) =>
+    tokenPageCopy(t, 'en', { stickerGifts }).spend.rows.find((row) => row.key === 'giftPack')
+
+  it('is drawn only while flags.stickerGifts is on', () => {
+    expect(gift(false)).toBeUndefined()
+    expect(tokenPageCopy(t, 'en').spend.rows.map((row) => row.key)).not.toContain('giftPack')
+    expect(gift(true)?.to).toBe('stickers')
+  })
+
+  it('prices a gift from the cheapest pack that can be given, and says the weekly cap', () => {
+    const cheapest = Math.min(...COSMETICS.filter(isGiftableCosmetic).map((pack) => pack.price))
+    expect(gift(true)?.body).toContain(`from ${cheapest.toLocaleString('en')} tokens`)
+    const weekly = STICKER_GIFT_RULES.sendsPerWeek
+    expect(gift(true)?.body).toContain(
+      t('tokens.page.giftWeekly', { count: weekly, amount: weekly.toLocaleString('en') }),
+    )
   })
 })
 
