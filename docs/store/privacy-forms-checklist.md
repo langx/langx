@@ -161,21 +161,29 @@ messaging rules that keep it that way are in `docs/token-messaging-brief.md`.
 ## 7. Copilot — live, and the two forms still to update
 
 **The flag is on.** `flags.copilotEnabled` is on in production and Copilot
-answers every account that agrees to it (`privacy-data-safety.md` → _Copilot_). The
+answers every account with a verified email address that agrees to it; a
+guest account cannot use it (`privacy-data-safety.md` → _Copilot_). The
 privacy policy came first and is published; the two forms below are Behic's to
 transcribe. No new data type appears on either: chat text is already
 collected, and what changes is that a processor (Anthropic) sees some of it.
 
 - [x] **Privacy policy (langx.io), first.** Published 22 October 2026
-      (langx/website #292): §2.6 names Anthropic as processor and model
-      provider and says, per help, what it receives and what it never does;
-      the training and 30-day retention terms Anthropic publishes; our 7-day
-      answer cache, linked to no account; consent on first use, versioned,
-      withdrawn in Settings → Privacy → Copilot; what a report carries; beta,
-      allow-list only, may be wrong; no age rule beyond the app's 16+. §5,
-      §6, §10.7 and §11 carry the matching lines. (An earlier draft of this
-      item said 16- and 17-year-olds were excluded; that has not been true
-      since #1927.)
+      (langx/website #292) and revised on 25 and 26 October (#294, #299); the
+      text in force is dated 26 October 2026. §2.6 names Anthropic as
+      processor and model provider and says, per help, what it receives and
+      what it never does; the training and 30-day retention terms Anthropic
+      publishes; our 7-day answer cache, linked to no account; the daily
+      limit's answer times, kept for 24 hours, and the time the limit was
+      reached, kept for 3 days; server logs that never hold the text, and a
+      failed answer's error sent to Sentry with the user id; consent on first
+      use, versioned, withdrawn in Settings → Privacy → Copilot; what a report
+      carries; a beta open to every account with a verified email address,
+      not to guests, whose answers can be wrong and which can be switched off
+      for everyone; no age rule beyond the app's 16+. §5, §6, §10.7 and §11
+      carry the matching lines. (Until 27 October this item quoted the policy
+      as "beta, allow-list only"; the allow-list was removed on 25 October
+      2026, and the policy's sentence with it. An earlier draft said 16- and
+      17-year-olds were excluded; that has not been true since #1927.)
 
 ### Play Data Safety — answers to paste
 
