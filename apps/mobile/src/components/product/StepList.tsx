@@ -1,6 +1,8 @@
+import { Nunito_900Black } from '@expo-google-fonts/nunito/900Black'
+import { useFonts } from 'expo-font'
 import { Text, View } from 'react-native'
 import { useLocale, useT } from '../../i18n'
-import { makeStyles } from '../../lib/theme'
+import { DISPLAY_FONT, makeStyles } from '../../lib/theme'
 import { useToneColors, type ProductTone } from './tone'
 
 export interface ProductStep {
@@ -14,21 +16,31 @@ export interface ProductStep {
  * fixed disc, as the streak ladder's figures do; the step's words beside it
  * grow in full and say the same number to a screen reader.
  */
-const NUMBER_MAX_SCALE = 1.4
+const NUMBER_MAX_SCALE = 1.2
+
+/** The step's disc: big enough to read as a stop on a path, not a list bullet. */
+const DISC = 48
+
+/** The path between two discs: thick enough to read as one road, not a rule. */
+const PATH = 4
 
 /**
- * How to use something, in order: Copilot's four steps.
+ * How it works, in order: Copilot's four steps, the token's talk → correct →
+ * keep the streak → spend.
  *
- * Numbered discs in the page's colour, joined by a line, so the order reads
- * at a glance and not only from the numbers. The numbers are in the reader's
- * own digits. A screen reader hears each step as one item — "Step 2 of 4",
- * then its words — rather than a bare digit and two loose lines.
+ * A path, drawn straight on the page: big numbered discs in the page's colour,
+ * joined by a thick line in the same colour, so the order reads at a glance
+ * and as one journey rather than four rows. No grey block round it — the path
+ * is the structure. The numbers are in the reader's own digits. A screen
+ * reader hears each step as one item — "Step 2 of 4", then its words —
+ * rather than a bare digit and two loose lines.
  */
 export function StepList({ tone, steps }: { tone: ProductTone; steps: readonly ProductStep[] }) {
   const t = useT()
   const { locale } = useLocale()
   const styles = useStyles()
   const { ground, on } = useToneColors(tone)
+  const [black] = useFonts({ Nunito_900Black })
 
   return (
     <View style={styles.list}>
@@ -45,13 +57,13 @@ export function StepList({ tone, steps }: { tone: ProductTone; steps: readonly P
             <View style={styles.rail}>
               <View style={[styles.disc, { backgroundColor: ground }]}>
                 <Text
-                  style={[styles.number, { color: on }]}
+                  style={[styles.number, !black && styles.numberFallback, { color: on }]}
                   maxFontSizeMultiplier={NUMBER_MAX_SCALE}
                 >
                   {(index + 1).toLocaleString(locale)}
                 </Text>
               </View>
-              {last ? null : <View style={styles.line} />}
+              {last ? null : <View style={[styles.path, { backgroundColor: ground }]} />}
             </View>
             <View style={[styles.words, !last && styles.wordsSpaced]}>
               <Text style={styles.title}>{step.title}</Text>
@@ -64,16 +76,10 @@ export function StepList({ tone, steps }: { tone: ProductTone; steps: readonly P
   )
 }
 
-const DISC = 32
-
 const useStyles = makeStyles(({ v3 }) => ({
-  list: {
-    backgroundColor: v3.colors.surface,
-    borderRadius: v3.radius.tile,
-    paddingHorizontal: v3.space[14],
-    paddingVertical: v3.space[16],
-  },
-  step: { flexDirection: 'row', gap: v3.space[12] },
+  // Indented by the heading's own indent, so the discs line up under it.
+  list: { paddingHorizontal: v3.space[6] },
+  step: { flexDirection: 'row', gap: v3.space[14] },
   rail: { alignItems: 'center', width: DISC },
   disc: {
     alignItems: 'center',
@@ -82,22 +88,22 @@ const useStyles = makeStyles(({ v3 }) => ({
     justifyContent: 'center',
     width: DISC,
   },
-  number: v3.type.label,
-  // `track`, not `line`: the rail sits on the grey block, where `line` all
-  // but vanishes.
-  // A floor on its length: a step with no second line is barely taller than
-  // its disc, and without one the rail between two short steps vanished.
-  line: {
-    backgroundColor: v3.colors.track,
-    flex: 1,
-    marginVertical: v3.space[4],
-    minHeight: v3.space[12],
-    width: 2,
-  },
+  // The headline's size in the heaviest face: a figure, not a label.
+  number: { ...v3.type.headline, fontFamily: v3.type.title.fontFamily },
+  numberFallback: { fontFamily: DISPLAY_FONT },
+  // Butts onto the discs above and below, so the path is unbroken. A floor
+  // on its length: a step with no second line is barely taller than its
+  // disc, and without one the path between two short steps vanished.
+  path: { flex: 1, minHeight: v3.space[16], width: PATH },
   // The title's first line centres on the disc beside it.
-  words: { flex: 1, gap: v3.space[2], minWidth: 0, paddingTop: v3.space[4] },
-  // The air between steps is inside the words, so the rail runs through it.
-  wordsSpaced: { paddingBottom: v3.space[16] },
+  words: {
+    flex: 1,
+    gap: v3.space[2],
+    minWidth: 0,
+    paddingTop: (DISC - v3.type.button.lineHeight) / 2,
+  },
+  // The air between steps is inside the words, so the path runs through it.
+  wordsSpaced: { paddingBottom: v3.space[20] },
   title: { ...v3.type.button, color: v3.colors.fg },
   body: { ...v3.type.callout, color: v3.colors.muted },
 }))

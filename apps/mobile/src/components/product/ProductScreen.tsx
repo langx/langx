@@ -75,7 +75,8 @@ const useStyles = makeStyles(({ v3 }) => ({
   // The glyph's own target hangs into the gutter, so the chevron lines up
   // with the hero's edge rather than sitting a target's padding inside it.
   header: { flexDirection: 'row', marginStart: -v3.space[10], paddingBottom: v3.space[6] },
-  // Wider between blocks than inside one: a section's own rows sit at 10, so
-  // 24 here is what makes each section read as its own.
-  stack: { gap: v3.space[24], paddingBottom: v3.space[16] },
+  // Wider between blocks than inside one: a section's own blocks sit at 12,
+  // and 32 here gives each section a beat of its own — one idea, then air,
+  // then the next, rather than one long list.
+  stack: { gap: v3.space[32], paddingBottom: v3.space[24] },
 }))

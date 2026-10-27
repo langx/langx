@@ -3,6 +3,14 @@ import { Text, View } from 'react-native'
 import { makeStyles } from '../../lib/theme'
 
 /**
+ * How far a section's heading grows with the reader's text size. At 2× it is
+ * 44pt, the hero name's own size; at the largest sizes one word of a heading —
+ * "Questions" — would be wider than a 375pt phone. The intro line under it
+ * grows in full.
+ */
+const TITLE_MAX_SCALE = 2
+
+/**
  * One section of a product page: a heading, a line on what it covers, and
  * the blocks under it.
  *
@@ -23,7 +31,11 @@ export function ProductSection({
   return (
     <View style={styles.section}>
       <View style={styles.head}>
-        <Text style={styles.title} accessibilityRole="header">
+        <Text
+          style={styles.title}
+          accessibilityRole="header"
+          maxFontSizeMultiplier={TITLE_MAX_SCALE}
+        >
           {title}
         </Text>
         {intro ? <Text style={styles.intro}>{intro}</Text> : null}
@@ -34,7 +46,7 @@ export function ProductSection({
 }
 
 const useStyles = makeStyles(({ v3 }) => ({
-  section: { gap: v3.space[10] },
+  section: { gap: v3.space[12] },
   // Indented by the blocks' own corner, so the heading starts where the text
   // inside the blocks starts rather than at their rounded edge.
   head: { gap: v3.space[4], paddingHorizontal: v3.space[6] },
