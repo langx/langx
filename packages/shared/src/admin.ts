@@ -279,6 +279,9 @@ export const ADMIN_ACTIONS = [
   'modAction.approve',
   'modAction.revert',
   'modAction.reward',
+  'socialPost.approve',
+  'socialPost.skip',
+  'socialPost.retry',
 ] as const
 export type AdminActionName = (typeof ADMIN_ACTIONS)[number]
 

@@ -1,0 +1,23 @@
+/*
+ * `expo-module-gradle-plugin` for the reason `modules/wear-link` gives: R8
+ * breaks a hand-written module's definition in release builds.
+ *
+ * The packs live in `src/main/assets/whatsapp-stickers/`, written by
+ * `scripts/build-whatsapp-stickers.ts`; a library's assets merge into the
+ * app's, which is how the provider in this module can open them.
+ */
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'expo.modules.whatsappstickers'
+version = '1.0.0'
+
+android {
+  namespace 'expo.modules.whatsappstickers'
+  defaultConfig {
+    versionCode 1
+    versionName '1.0.0'
+  }
+}

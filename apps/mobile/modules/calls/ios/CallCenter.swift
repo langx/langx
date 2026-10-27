@@ -18,9 +18,19 @@ import StoreKit
  * JavaScript: answering in the app tells CallKit the call was answered,
  * turning it down or the caller giving up ends CallKit's call.
  *
- * **Not in China.** CallKit is not allowed on the App Store there. An iPhone
- * on the Chinese storefront never starts PushKit, registers no token, and is
- * rung by the ordinary notification the API sends to phones without one.
+ * **Not in China.** CallKit is not allowed on the App Store there, and App
+ * Review rejected 2.9 twice for it even though PushKit was already skipped,
+ * so the rule is now one decision with two doors behind it. `callKitAllowed`
+ * is settled once, in `init`, and never reconsidered while the app runs. When
+ * it is false, `startPushKit` creates no registry, so no VoIP push can
+ * arrive, and `reportIncoming` — the only place a `Call` is ever made — is
+ * shut as well. `provider` and `controller` are `lazy` and every use of them
+ * needs a `Call`, so on such a phone no CallKit object is ever created. The
+ * phone registers `callKit: false` and is rung by the ordinary notification
+ * the API sends to phones without a VoIP token, and the call screen is the
+ * app's own. The Intents extension reads the same decision from the App
+ * Group and refuses Siri's "call" there too (`CallingHandler`).
+ * `callKitChina.test.ts` holds this file to that shape.
  */
 final class CallCenter: NSObject {
   static let shared = CallCenter()
@@ -35,7 +45,7 @@ final class CallCenter: NSObject {
 
   private(set) var voipToken: String?
   private var registry: PKPushRegistry?
-  private let controller = CXCallController()
+  private lazy var controller = CXCallController()
   private lazy var provider: CXProvider = {
     let configuration = CXProviderConfiguration()
     configuration.supportsVideo = true
@@ -62,12 +72,51 @@ final class CallCenter: NSObject {
   private var answeringInApp = false
   private var ringTimeout: DispatchWorkItem?
 
-  // MARK: - Registration
+  // MARK: - China
 
-  var callKitAllowed: Bool {
-    if SKPaymentQueue.default().storefront?.countryCode == "CHN" { return false }
-    return Locale.current.regionCode != "CN"
+  /// Must match `app.config.ts` and `CompanionSnapshot.appGroup`.
+  private static let appGroup = "group.tech.newchapter.languageXchange"
+  /// Read by the Intents extension's `CallingHandler`; must match it.
+  private static let allowedKey = "callKitAllowed"
+  /// The last storefront this phone was seen in, for a launch that cannot ask.
+  private static let storefrontKey = "callKitStorefront"
+
+  let callKitAllowed: Bool
+
+  override init() {
+    let defaults = UserDefaults(suiteName: Self.appGroup)
+    let known = SKPaymentQueue.default().storefront?.countryCode
+    if let known { defaults?.set(known, forKey: Self.storefrontKey) }
+    let storefront = known ?? defaults?.string(forKey: Self.storefrontKey)
+    let region = Locale.current.regionCode
+    callKitAllowed = Self.allows(storefront: storefront, region: region)
+    super.init()
+    defaults?.set(callKitAllowed, forKey: Self.allowedKey)
+    NSLog(
+      "[Calls] CallKit %@ (storefront %@, region %@)", callKitAllowed ? "on" : "off",
+      storefront ?? "unknown", region ?? "unknown")
+    if known == nil { learnStorefront() }
   }
+
+  /**
+   * A storefront nobody knows yet counts as China's: the cost is one launch
+   * rung by notification, against CallKit running on the one storefront
+   * where it must not.
+   */
+  static func allows(storefront: String?, region: String?) -> Bool {
+    guard let storefront else { return false }
+    return storefront != "CHN" && region != "CN"
+  }
+
+  /** StoreKit 1 can answer nil this early; StoreKit 2 asks, for the next launch. */
+  private func learnStorefront() {
+    Task {
+      guard let code = await Storefront.current?.countryCode else { return }
+      UserDefaults(suiteName: Self.appGroup)?.set(code, forKey: Self.storefrontKey)
+    }
+  }
+
+  // MARK: - Registration
 
   /** Development builds get their tokens from Apple's sandbox, store builds from production. */
   private var environment: String {
@@ -132,6 +181,12 @@ final class CallCenter: NSObject {
   // MARK: - Ringing
 
   fileprivate func reportIncoming(_ data: [String: Any], completion: @escaping () -> Void) {
+    // Unreachable without a registry, which `startPushKit` never makes here.
+    // Shut anyway: this is where a `Call` is made, and so CallKit's one door.
+    guard callKitAllowed else {
+      completion()
+      return
+    }
     guard let callId = data["callId"] as? String, let uuid = UUID(uuidString: callId) else {
       // Malformed, but iOS still has to be shown a call. Show one and end it.
       let uuid = UUID()

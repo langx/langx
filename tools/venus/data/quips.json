@@ -1,0 +1,2055 @@
+{
+  "version": 1,
+  "character": "Venus",
+  "generatedBy": "tools/quips.mjs",
+  "localeStatus": {
+    "en": "author-checked",
+    "tr": "author-checked",
+    "es": "needs native check",
+    "fr": "needs native check",
+    "de": "needs native check",
+    "ru": "needs native check",
+    "ar": "needs native check",
+    "pt-BR": "needs native check"
+  },
+  "counts": {
+    "en": 123,
+    "tr": 123,
+    "es": 104,
+    "fr": 104,
+    "de": 104,
+    "ru": 104,
+    "ar": 104,
+    "pt-BR": 104
+  },
+  "redLines": [
+    "no guilt, loss-framing, urgency or \"where were you\"",
+    "never mocks ability, level, accent, pronunciation, body, age or nationality",
+    "roasts land on herself, the situation or the habit, never the person (field target)",
+    "teases like a friend: never superior to the viewer, never grades the viewer below her (the character bible)",
+    "no romance, flirting or innuendo; no love-goddess jokes",
+    "no violence, threats, teeth or fangs",
+    "never implies she reads chats, knows scores or reports on people",
+    "never sells Pro, never mentions price or buying",
+    "number-free: the day number is on screen"
+  ],
+  "localeNotes": {
+    "all": "Number-free: the day number is on screen, never in the line. No digits anywhere. Second person stays singular and informal (tu/du/ты/tú/você).",
+    "en": "Checked by the author. Spoken length: 12 words or fewer.",
+    "tr": "Checked by the author (not a native speaker; Behic should still read it once). Informal 'sen'. 'Laf sokmak' lines live in the roast pool and always turn on Venus or the situation.",
+    "es": "Needs native check. Neutral Spanish for Spain and Latin America, tú. Never 'gata' (es-MX: also a slur for a maid; elsewhere 'hot girl'). No 'cola' (tail = vulgar slang), so ro-08 uses her ears. The counter is 'la mesa' ('encimera' is Spain-only); 'tomar el pelo' for teasing ('vacilar' is Spain-only); 'nevera' stays (Mexico 'refri', Argentina 'heladera'). She is feminine ('orgullosa'); the viewer is never gendered ('qué sospechoso', 'vamos creciendo', not 'las dos').",
+    "fr": "Needs native check. Never 'chatte' (vulgar). No 'queue' (tail = vulgar slang), so ro-08 uses her ears. Tutoiement. She is feminine ('fière'); the viewer is never gendered (nouns 'de la constance', 'te revoilà', 'louche').",
+    "de": "Needs native check. No 'Schwanz' (tail = vulgar slang), so ro-08 uses her ears; never 'Muschi'/'Mieze' as a self-reference. Duzen. The app's streak label is 'Tage in Folge'; lines say 'Serie' as people do in speech.",
+    "ru": "Needs native check. She is feminine (отдала, решила, облизнула). Never gender the viewer: no past-tense verbs with 'you' as subject, no 'мы обе/оба' (hence 'Победа за тобой', 'Растём'). 'Ты мне нравишься' can read as a crush, so day one says 'мы подружимся'. 'Хвост' has no vulgar reading and is allowed (ro-08, intro-return); no form of 'кончить'.",
+    "ar": "Needs native check. Light Modern Standard Arabic. Arabic second person is gendered: no imperatives and no 2nd-person verbs or adjectives for 'you' (use noun phrases, the ـك suffix, unvowelled 'أحسنت', 'بلا أسئلة', 'الفوز لك', 'سرّ بيننا'). No 'goddess' (إلهة) and no Venus/al-Zuhara mythology: in reg-02 she is named after a planet, on day 365 she is a queen (ملكة). 'أحبك' never (reads romantic); she says 'we'll be friends'. The streak is 'الأيام المتتالية' where the line names it, as in the app. Write her name فينوس.",
+    "pt-BR": "Needs native check. Brazilian usage, você, colloquial 'tô/tá/pra' on purpose: she is casual. Never 'gata' (= 'hot girl'). No 'rabo' (tail = vulgar slang), so ro-08 uses her ears. The slow blink is 'piscar lento' or 'fechar os olhos devagar': 'piscadinha' and 'piscar pra você' read as a flirty wink. 'Gosto de você' can read as a crush, so day one says 'vou com a sua cara'. Never 'pro' for 'para o' (the selling lint bans 'pro')."
+  },
+  "schedule": {
+    "rule": "Streak days (not milestones) cycle through a 6-day pattern keyed by streak day n: slot = (n - 1) % 6 -> [praise, regular, roast, praise, regular, roast]. 4 warm : 2 sting = 2:1, and never two roasts in a row. Within a pool, pick index = hash(day, pool) % pool size, stepping +1 while the line was used in the last 30 days for that locale. Milestone days use ms-<day>-a (variant b when the same milestone repeats after a reset). Comeback lines are for in-app and notifications, never the shared story video.",
+    "pattern": [
+      "praise",
+      "regular",
+      "roast",
+      "praise",
+      "regular",
+      "roast"
+    ],
+    "localeFallback": "A locale with no translation for the picked id walks the same pool to the next id it has. All six non-checked locales hold the same subset, so they stay in step with each other.",
+    "limits": {
+      "dogJokes": "reg-11 at most once a month",
+      "blepLines": "at most one blep line (reg-08, ro-05, ro-20, ms-100-b) per 7 days"
+    }
+  },
+  "pools": {
+    "regular": [
+      {
+        "id": "reg-01",
+        "mood": "smug",
+        "expression": "squint",
+        "move": "squint",
+        "text": {
+          "en": "Mrrr… acceptable. …My ears say 'amazing'. Ignore them.",
+          "tr": "Mırr… kabul edilebilir. …Kulaklarım 'harika' diyor. Takma onları.",
+          "es": "Mrrr… aceptable. …Mis orejas dicen «increíble». No les hagas caso.",
+          "fr": "Mrrr… acceptable. …Mes oreilles disent « génial ». Ignore-les.",
+          "de": "Mrrr… akzeptabel. …Meine Ohren sagen „großartig“. Ignorier sie.",
+          "ru": "Мррр… приемлемо. …Мои уши говорят «потрясающе». Не слушай их.",
+          "ar": "مرررر… مقبول. …أذناي تقولان «مذهل». تجاهُلهما أفضل.",
+          "pt-BR": "Mrrr… aceitável. …Minhas orelhas dizem 'incrível'. Ignora elas."
+        }
+      },
+      {
+        "id": "reg-02",
+        "mood": "smug",
+        "expression": "bored-on-purpose",
+        "move": "counter-pose",
+        "text": {
+          "en": "Named after a goddess. Working as a streak counter. Humbling.",
+          "tr": "Adım bir tanrıçadan geliyor. İşim seri saymak. Hayat işte.",
+          "es": "Tengo nombre de diosa. Y trabajo contando rachas. Qué humildad.",
+          "fr": "Un nom de déesse. Un boulot de compteuse de séries. Ça calme.",
+          "de": "Name einer Göttin. Job: Serien zählen. Demütigend.",
+          "ru": "Имя как у богини. Работа — считать серии. Жизнь такая.",
+          "ar": "اسمي اسم كوكب. ووظيفتي عدّ الأيام. يا للتواضع.",
+          "pt-BR": "Tenho nome de deusa. Trabalho contando sequência. Que humildade."
+        }
+      },
+      {
+        "id": "reg-03",
+        "mood": "curious",
+        "expression": "curious",
+        "move": "bag-throne",
+        "text": {
+          "en": "I found a new bag today. Anyway. Well done.",
+          "tr": "Bugün yeni bir poşet buldum. Neyse. Aferin.",
+          "es": "Hoy encontré una bolsa nueva. En fin. Bien hecho.",
+          "fr": "J'ai trouvé un nouveau sac aujourd'hui. Bref. Bravo.",
+          "de": "Ich hab heute eine neue Tüte gefunden. Egal. Gut gemacht.",
+          "ru": "Сегодня нашла новый пакет. Ну да ладно. Молодец.",
+          "ar": "وجدتُ كيسًا جديدًا اليوم. على كل حال. أحسنت.",
+          "pt-BR": "Achei uma sacola nova hoje. Enfim. Mandou bem."
+        }
+      },
+      {
+        "id": "reg-04",
+        "mood": "diva",
+        "expression": "diva-pose",
+        "move": "model-turn",
+        "text": {
+          "en": "This is my good side. They're all my good side.",
+          "tr": "Bu benim iyi tarafım. Hepsi benim iyi tarafım.",
+          "es": "Este es mi lado bueno. Todos son mi lado bueno.",
+          "fr": "C'est mon meilleur profil. Ils le sont tous.",
+          "de": "Das ist meine gute Seite. Ich hab nur gute Seiten.",
+          "ru": "Это моя лучшая сторона. У меня все стороны лучшие.",
+          "ar": "هذا جانبي الجميل. كل جوانبي جميلة.",
+          "pt-BR": "Esse é o meu lado bom. Todos são o meu lado bom."
+        }
+      },
+      {
+        "id": "reg-05",
+        "mood": "diva",
+        "expression": "diva-pose",
+        "move": "model-turn",
+        "text": {
+          "en": "I'm not wearing the onesie. The onesie is wearing me.",
+          "tr": "Tulumu ben giymiyorum. Tulum beni giyiyor.",
+          "es": "No llevo el pijama. El pijama me lleva a mí.",
+          "fr": "Ce n'est pas moi qui porte la grenouillère. C'est elle qui me porte.",
+          "de": "Ich trage nicht den Strampler. Der Strampler trägt mich.",
+          "ru": "Это не я ношу комбинезон. Это он носит меня.",
+          "ar": "لا أرتدي البيجامة. البيجامة ترتديني.",
+          "pt-BR": "Não sou eu que visto o macacão. É o macacão que me veste."
+        }
+      },
+      {
+        "id": "reg-06",
+        "mood": "goof",
+        "expression": "embarrassed",
+        "move": "innocent-stare",
+        "text": {
+          "en": "I tried to jump on the fridge for you. …Next time.",
+          "tr": "Senin için buzdolabına zıplamayı denedim. …Bir dahaki sefere.",
+          "es": "Intenté subirme a la nevera por ti. …La próxima.",
+          "fr": "J'ai essayé de sauter sur le frigo pour toi. …La prochaine fois.",
+          "de": "Ich wollte für dich auf den Kühlschrank springen. …Nächstes Mal.",
+          "ru": "Хотела запрыгнуть ради тебя на холодильник. …В следующий раз.",
+          "ar": "حاولتُ القفز إلى الثلاجة من أجلك. …في المرة القادمة.",
+          "pt-BR": "Tentei pular na geladeira por você. …Fica pra próxima."
+        }
+      },
+      {
+        "id": "reg-07",
+        "mood": "curious",
+        "expression": "curious",
+        "move": "ear-swivel",
+        "text": {
+          "en": "Ears up. Something's happening. …Oh, it's you. Good.",
+          "tr": "Kulaklarım dikildi. Bir şey oluyor. …Aa, sen gelmişsin. İyi.",
+          "es": "Orejas arriba. Algo pasa. …Ah, eres tú. Bien.",
+          "fr": "Oreilles dressées. Il se passe un truc. …Ah, c'est toi. Bien.",
+          "de": "Ohren hoch. Da passiert was. …Ach, du bist's. Gut.",
+          "ru": "Уши торчком. Шум. …А, это ты. Хорошо.",
+          "ar": "أذناي مرفوعتان. …آه، هذا أنت. جيد.",
+          "pt-BR": "Orelhas em pé. Tem algo aí. …Ah, é você. Que bom."
+        }
+      },
+      {
+        "id": "reg-08",
+        "mood": "goof",
+        "expression": "blep",
+        "move": "blep",
+        "text": {
+          "en": "My tongue is out. I'm aware. Let's move on.",
+          "tr": "Dilim dışarıda. Farkındayım. Devam edelim.",
+          "es": "Tengo la lengua afuera. Lo sé. Sigamos.",
+          "fr": "J'ai la langue qui dépasse. Je sais. On passe à autre chose.",
+          "de": "Meine Zunge hängt raus. Ich weiß. Weiter im Text.",
+          "ru": "У меня язык наружу. Я в курсе. Едем дальше.",
+          "ar": "لساني خارج فمي. أعلم. لنكمل.",
+          "pt-BR": "Minha língua tá pra fora. Eu sei. Próximo assunto."
+        }
+      },
+      {
+        "id": "reg-09",
+        "mood": "soft",
+        "expression": "loving-caught",
+        "move": "slow-blink",
+        "text": {
+          "en": "I just slow-blinked at you. Look it up. Don't make it weird.",
+          "tr": "Sana yavaşça göz kırptım. Kedice bir şey. Büyütme.",
+          "es": "Te hice un parpadeo lento. Cosa de gatos. No te emociones.",
+          "fr": "Je t'ai fait le clignement lent. Truc de chat. Pas de quoi en faire un plat.",
+          "de": "Hab dich langsam angeblinzelt. Katzensache. Mach kein Ding draus.",
+          "ru": "Я медленно тебе моргнула. Это по-кошачьи. Не раздувай.",
+          "ar": "رمشتُ لك ببطء. لغة القطط. لا داعي للمبالغة.",
+          "pt-BR": "Fechei os olhos devagar pra você. Coisa de gato. Sem drama."
+        }
+      },
+      {
+        "id": "reg-10",
+        "mood": "goof",
+        "expression": "embarrassed",
+        "move": "ear-swivel",
+        "text": {
+          "en": "Ears this big. Still fall off the sofa. Daily.",
+          "tr": "Bu kadar büyük kulaklar. Yine de her gün kanepeden düşüyorum.",
+          "es": "Orejas enormes. Igual me caigo del sofá. A diario.",
+          "fr": "Des oreilles pareilles. Et je tombe quand même du canapé. Tous les jours.",
+          "de": "So große Ohren. Und trotzdem fall ich vom Sofa. Täglich.",
+          "ru": "Такие уши. А всё равно падаю с дивана. Ежедневно.",
+          "ar": "أذنان بهذا الحجم. وأسقط عن الكنبة يوميًا.",
+          "pt-BR": "Orelhas desse tamanho. E mesmo assim eu caio do sofá. Todo dia."
+        }
+      },
+      {
+        "id": "reg-11",
+        "mood": "smug",
+        "expression": "smug",
+        "move": "tail-question",
+        "text": {
+          "en": "Somewhere a dog is impressed. I'm… fine with it.",
+          "tr": "Bir yerlerde bir köpek etkilendi. Ben… idare eder buldum.",
+          "es": "Algún perro estará impresionado. Yo… lo llevo bien.",
+          "fr": "Quelque part, un chien est impressionné. Moi… je fais avec.",
+          "de": "Irgendwo ist ein Hund beeindruckt. Ich… kann damit leben.",
+          "ru": "Где-то сейчас впечатлилась собака. Я… это переживу.",
+          "ar": "في مكان ما كلب منبهر. وأنا… لا بأس.",
+          "pt-BR": "Algum cachorro ficou impressionado. Eu… tô de boa."
+        }
+      },
+      {
+        "id": "reg-12",
+        "mood": "goof",
+        "expression": "plotting",
+        "move": "counter-pose",
+        "text": {
+          "en": "I knocked something off the counter in your honour.",
+          "tr": "Şerefine tezgâhtan bir şey düşürdüm.",
+          "es": "Tiré algo de la mesa en tu honor.",
+          "fr": "J'ai fait tomber un truc du plan de travail en ton honneur.",
+          "de": "Ich hab dir zu Ehren was von der Arbeitsplatte geschubst.",
+          "ru": "В твою честь я сбросила что-то со столешницы.",
+          "ar": "أسقطتُ شيئًا عن طاولة المطبخ تكريمًا لك.",
+          "pt-BR": "Derrubei uma coisa da bancada em sua homenagem."
+        }
+      },
+      {
+        "id": "reg-13",
+        "mood": "diva",
+        "expression": "neutral-regal",
+        "move": "bag-throne",
+        "text": {
+          "en": "Another day on my throne. It's a bag. Don't ask.",
+          "tr": "Tahtımda bir gün daha. Poşet. Sorma.",
+          "es": "Otro día en mi trono. Es una bolsa. No preguntes.",
+          "fr": "Encore un jour sur mon trône. C'est un sac. Ne demande pas.",
+          "de": "Noch ein Tag auf meinem Thron. Eine Tüte. Frag nicht.",
+          "ru": "Ещё один день на троне. Это пакет. Не спрашивай.",
+          "ar": "يوم آخر على عرشي. كيس. بلا أسئلة.",
+          "pt-BR": "Mais um dia no meu trono. É uma sacola. Nem pergunta."
+        }
+      },
+      {
+        "id": "reg-14",
+        "mood": "smug",
+        "expression": "squint",
+        "move": "squint",
+        "text": {
+          "en": "Today's verdict: purr. With conditions.",
+          "tr": "Bugünkü karar: mırr. Şartlı.",
+          "es": "Veredicto de hoy: ronroneo. Con condiciones.",
+          "fr": "Verdict du jour : ronron. Sous conditions.",
+          "de": "Urteil des Tages: Schnurren. Unter Vorbehalt.",
+          "ru": "Вердикт дня: мур. С оговорками.",
+          "ar": "حكم اليوم: خرخرة. بشروط.",
+          "pt-BR": "Veredito de hoje: ronrom. Com condições."
+        }
+      },
+      {
+        "id": "reg-15",
+        "mood": "curious",
+        "expression": "innocent-stare",
+        "move": "innocent-stare",
+        "text": {
+          "en": "On my planet a day outlasts a year. Yours flew by.",
+          "tr": "Benim gezegenimde bir gün, bir yıldan uzun. Seninki uçtu geçti.",
+          "es": "En mi planeta, un día dura más que un año. El tuyo voló.",
+          "fr": "Sur ma planète, un jour dure plus qu'un an. Le tien a filé.",
+          "de": "Auf meinem Planeten ist ein Tag länger als ein Jahr. Deiner verflog.",
+          "ru": "На моей планете день длиннее года. А твой пролетел.",
+          "ar": "على كوكبي اليوم أطول من السنة. يومك طار.",
+          "pt-BR": "No meu planeta, um dia dura mais que um ano. O seu voou."
+        }
+      },
+      {
+        "id": "reg-16",
+        "mood": "goof",
+        "expression": "delighted",
+        "move": "sprawl-paw",
+        "text": {
+          "en": "High five? I only give paws to cameras. Here.",
+          "tr": "Çak mı? Patimi sadece kameraya veririm. Al.",
+          "es": "¿Chócala? Solo le doy la pata a las cámaras. Toma.",
+          "fr": "Tope là ? Je ne donne la patte qu'aux caméras. Tiens.",
+          "de": "Abklatschen? Pfote gibt's nur für Kameras. Hier.",
+          "ru": "Отбить ладошку? Лапу даю только камерам. Держи.",
+          "ar": "كفًّا بكفّ؟ لا أمدّ كفّي إلا للكاميرات. ها هي.",
+          "pt-BR": "Toca aqui? Só dou a pata pra câmera. Toma."
+        }
+      },
+      {
+        "id": "reg-17",
+        "mood": "proud",
+        "expression": "neutral-regal",
+        "move": "counter-pose",
+        "text": {
+          "en": "Back again. Very cat of you. Cats love a routine.",
+          "tr": "Yine geldin. Çok kedice. Kediler rutini sever.",
+          "es": "Aquí otra vez. Muy de gato. A los gatos nos encanta la rutina.",
+          "fr": "Encore là. Très chat, ça. Les chats adorent la routine.",
+          "de": "Schon wieder da. Sehr katzig von dir. Katzen lieben Routine.",
+          "ru": "Снова тут. Очень по-кошачьи. Кошки любят режим.",
+          "ar": "عودة؟ تصرّف قططي. القطط تعشق الروتين.",
+          "pt-BR": "De novo aqui. Bem coisa de gato. Gato ama rotina."
+        }
+      },
+      {
+        "id": "reg-18",
+        "mood": "smug",
+        "expression": "unimpressed-fake",
+        "move": "loaf",
+        "text": {
+          "en": "I don't clap. This is me clapping.",
+          "tr": "Ben alkışlamam. Bu, benim alkışım.",
+          "es": "Yo no aplaudo. Esto es mi aplauso.",
+          "fr": "Je n'applaudis pas. Ça, c'est moi qui applaudis.",
+          "de": "Ich klatsche nicht. Das hier ist mein Klatschen.",
+          "ru": "Я не хлопаю. Вот это — мои аплодисменты.",
+          "ar": "أنا لا أصفّق. هذا هو تصفيقي.",
+          "pt-BR": "Eu não bato palma. Isso aqui sou eu batendo palma."
+        }
+      },
+      {
+        "id": "reg-19",
+        "mood": "goof",
+        "expression": "sceptical",
+        "move": "ear-swivel",
+        "text": {
+          "en": "Let me check my notes. …I sat on my notes. Nice, probably.",
+          "tr": "Notlarıma bakayım. …Üstlerine oturmuşum. Güzel herhalde.",
+          "es": "Miro mis notas. …Me senté encima. Bien, supongo.",
+          "fr": "Je regarde mes notes. …Je me suis assise dessus. Bien, sûrement.",
+          "de": "Ich schau in meine Notizen. …Sitze drauf. Gut, vermutlich.",
+          "ru": "Гляну в заметки. …Я на них сижу. Наверное, хорошо.",
+          "ar": "ملاحظاتي؟ …جلستُ عليها. جيد، غالبًا.",
+          "pt-BR": "Vou ver minhas anotações. …Sentei nelas. Bom, acho."
+        }
+      },
+      {
+        "id": "reg-20",
+        "mood": "soft",
+        "expression": "loving-caught",
+        "move": "slow-blink",
+        "text": {
+          "en": "No, I won't slow-blink at you. …Ugh. Fine. Once.",
+          "tr": "Hayır, sana yavaşça göz kırpmam. …Of. Tamam. Bir kere.",
+          "es": "No te haré el parpadeo lento. …Uf. Bueno. Una vez.",
+          "fr": "Non, je ne te ferai pas le clignement lent. …Pff. Bon. Une fois.",
+          "de": "Nein, kein langsames Blinzeln. …Pff. Na gut. Einmal.",
+          "ru": "Нет, медленно моргать не буду. …Эх. Ладно. Разок.",
+          "ar": "لن أرمش لك ببطء. …أف. حسنًا. مرة.",
+          "pt-BR": "Não vou fazer o piscar lento. …Ai. Tá bom. Uma vez."
+        }
+      },
+      {
+        "id": "fd-01",
+        "mood": "guilty",
+        "expression": "guilty-glance",
+        "move": "innocent-stare",
+        "text": {
+          "en": "Saved you a hamsi. …Saved is a strong word.",
+          "tr": "Sana bir hamsi ayırdım. …Ayırdım dediysem.",
+          "es": "Te guardé un pescadito. …«Guardé» es mucho decir.",
+          "fr": "Je t'ai gardé un poisson. …« Gardé », c'est beaucoup dire.",
+          "de": "Hab dir einen Fisch aufgehoben. …Na ja, fast.",
+          "ru": "Оставила тебе рыбку. …«Оставила» — громко сказано.",
+          "ar": "خبّأتُ لك سمكة. …«خبّأتُ» كلمة كبيرة.",
+          "pt-BR": "Guardei um peixinho pra você. …'Guardei' é exagero."
+        }
+      },
+      {
+        "id": "fd-03",
+        "mood": "startled",
+        "expression": "wide-eyed",
+        "move": "startle-hop",
+        "text": {
+          "en": "Today's verdict is… was that a can opening?",
+          "tr": "Bugünkü karar şu ki… Konserve mi açıldı o?",
+          "es": "El veredicto de hoy es… ¿eso fue una lata?",
+          "fr": "Le verdict du jour est… c'était une boîte, ça ?",
+          "de": "Das heutige Urteil lautet… war das eine Dose?",
+          "ru": "Сегодняшний вердикт… это банка открылась?",
+          "ar": "حكم اليوم هو… هل فُتحت علبة؟",
+          "pt-BR": "O veredito de hoje é… isso foi uma lata?"
+        }
+      },
+      {
+        "id": "fd-06",
+        "mood": "smug",
+        "expression": "unimpressed-fake",
+        "move": "lick-treat",
+        "text": {
+          "en": "Treat tube? Nah. …Ignore my ears. And my tail.",
+          "tr": "Krema ödül mü? Hıh. …Kulaklarıma bakma. Kuyruğuma da.",
+          "es": "¿Premio en tubo? Bah. …Ignora mis orejas. Y mis bigotes.",
+          "fr": "Le tube de friandise ? Bof. …Ignore mes oreilles. Et mes moustaches.",
+          "de": "Leckerli-Tube? Pff. …Ohren ignorieren. Schnurrhaare auch.",
+          "ru": "Тюбик с лакомством? Пф. …Не смотри на уши. И на хвост.",
+          "ar": "أنبوب المكافأة؟ همم. …تجاهُل أذنيّ أفضل. وذيلي.",
+          "pt-BR": "Sachê de petisco? Pff. …Ignora as orelhas. E os bigodes."
+        }
+      },
+      {
+        "id": "fd-10",
+        "mood": "goof",
+        "expression": "squeezed-delight",
+        "move": "sprawl-paw",
+        "text": {
+          "en": "Catnip. One tiny sniff. …I live on the floor now.",
+          "tr": "Kedi otu. Ufacık bir koklama. …Artık yerde yaşıyorum.",
+          "es": "Hierba gatera. Solo una olida. …Ahora vivo en el suelo.",
+          "fr": "Herbe à chat. Une petite reniflette. …Je vis par terre, maintenant.",
+          "de": "Katzenminze. Einmal geschnuppert. …Ich wohne jetzt unten.",
+          "ru": "Кошачья мята. Разок понюхала. …Теперь живу на полу.",
+          "ar": "نعناع القطط. شمّة صغيرة. …صرتُ أعيش على الأرض.",
+          "pt-BR": "Erva-de-gato. Uma cheiradinha. …Agora eu moro no chão."
+        }
+      },
+      {
+        "id": "fd-12",
+        "mood": "smug",
+        "expression": "smug",
+        "move": "eat",
+        "text": {
+          "en": "Gourmet food. I licked the sauce. The rest is yours.",
+          "tr": "Gurme mama. Sosunu yaladım. Gerisi senin.",
+          "es": "Comida gourmet. Lamí la salsa. El resto es tuyo.",
+          "fr": "Pâtée gourmet. J'ai léché la sauce. Le reste est pour toi.",
+          "de": "Gourmetfutter. Soße abgeleckt. Der Rest gehört dir.",
+          "ru": "Гурманский корм. Соус я слизала. Остальное — тебе.",
+          "ar": "طعام فاخر. لعقتُ الصلصة. والباقي لك.",
+          "pt-BR": "Comida gourmet. Lambi o molho. O resto é seu."
+        }
+      },
+      {
+        "id": "fd-14",
+        "mood": "diva",
+        "expression": "neutral-regal",
+        "move": "egyptian",
+        "text": {
+          "en": "The yogurt lid is mine. That's not greed. That's tradition.",
+          "tr": "Yoğurt kapağı benim. Açgözlülük değil bu. Gelenek.",
+          "es": "La tapa del yogur es mía. No es glotonería. Es tradición.",
+          "fr": "Le couvercle du yaourt est à moi. Pas par gourmandise. Par tradition.",
+          "de": "Der Joghurtdeckel gehört mir. Keine Gier. Tradition.",
+          "ru": "Крышка от йогурта — моя. Это не жадность. Традиция.",
+          "ar": "غطاء الزبادي لي. ليس طمعًا. إنه تقليد.",
+          "pt-BR": "A tampa do iogurte é minha. Não é gula. É tradição."
+        }
+      },
+      {
+        "id": "fd-16",
+        "mood": "goof",
+        "expression": "triumphant",
+        "move": "zoomies-dash",
+        "text": {
+          "en": "I did the zoomies in your honour. Hit the sofa. Worth it.",
+          "tr": "Senin şerefine koşturdum. Kanepeye çarptım. Değdi.",
+          "es": "Carrera loca en tu honor. Choqué con el sofá. Valió la pena.",
+          "fr": "J'ai fait la folle en ton honneur. Percuté le canapé. Ça valait le coup.",
+          "de": "Dir zu Ehren durchgedreht. Sofa gerammt. Hat sich gelohnt.",
+          "ru": "Тыгыдык в твою честь. Врезалась в диван. Стоило того.",
+          "ar": "ركضتُ بجنون على شرفك. اصطدمتُ بالكنبة. يستحق.",
+          "pt-BR": "Corrida maluca em sua homenagem. Bati no sofá. Valeu."
+        }
+      },
+      {
+        "id": "fd-18",
+        "mood": "curious",
+        "expression": "chattering",
+        "move": "chatter",
+        "text": {
+          "en": "Ooh, a moth. Ekekek. …I was yawning. Continue.",
+          "tr": "Aa, bir güve. Ekekek. …Esniyordum sadece. Devam.",
+          "es": "Uy, una polilla. Ekekek. …Estaba bostezando. Sigue.",
+          "fr": "Oh, un papillon de nuit. Ekekek. …Je bâillais. Continue.",
+          "de": "Oh, eine Motte. Ekekek. …Ich hab gegähnt. Weiter.",
+          "ru": "Ой, моль. Кекекек. …Я просто зевала. Продолжай.",
+          "ar": "أوه، عثّة. إكإكإك. …كنتُ أتثاءب فقط. نكمل.",
+          "pt-BR": "Opa, uma mariposa. Ekekek. …Eu tava bocejando. Continua."
+        }
+      },
+      {
+        "id": "fd-20",
+        "mood": "smug",
+        "expression": "smug-half-lids",
+        "move": "sit-on-notes",
+        "text": {
+          "en": "I sat on the important paper. It's my paper now.",
+          "tr": "Önemli kâğıdın üstüne oturdum. Artık benim kâğıdım.",
+          "es": "Me senté en el papel importante. Ahora es mi papel.",
+          "fr": "Assise sur la feuille importante. C'est ma feuille, maintenant.",
+          "de": "Ich sitze auf dem wichtigen Zettel. Jetzt ist es meiner.",
+          "ru": "Я села на важную бумажку. Теперь она моя.",
+          "ar": "جلستُ على الورقة المهمة. صارت ورقتي.",
+          "pt-BR": "Sentei no papel importante. Agora o papel é meu."
+        }
+      },
+      {
+        "id": "fd-23",
+        "mood": "sleepy",
+        "expression": "nodding-off",
+        "move": "loaf",
+        "text": {
+          "en": "I'm a loaf now. Bread-shaped. Fully committed.",
+          "tr": "Şu an somunum. Ekmek biçiminde. Tamamen kararlıyım.",
+          "es": "Modo pan. Forma de hogaza. Sin vuelta atrás.",
+          "fr": "Je suis une miche. En forme de pain. Totalement engagée.",
+          "de": "Ich bin jetzt ein Katzenbrot. Laibförmig. Voll dabei.",
+          "ru": "Я теперь буханочка. Хлебной формы. Всё серьёзно.",
+          "ar": "أنا رغيف الآن. على شكل خبزة. وبكل التزام.",
+          "pt-BR": "Agora sou um pãozinho. Formato de pão. Comprometida."
+        }
+      },
+      {
+        "id": "nw-07",
+        "mood": "goof",
+        "expression": "plotting",
+        "move": "hunt-wiggle",
+        "text": {
+          "en": "The red dot is back. Watch this. …Not caught. On purpose.",
+          "tr": "Kırmızı nokta geri geldi. İzle. …Bilerek kaçırdım.",
+          "es": "Volvió el puntito rojo. Mira esto. …Fallé a propósito.",
+          "fr": "Le point rouge est revenu. Regarde. …Raté exprès.",
+          "de": "Der rote Punkt ist zurück. Pass auf. …Absichtlich daneben.",
+          "ru": "Красная точка вернулась. Смотри. …Промахнулась нарочно.",
+          "ar": "النقطة الحمراء عادت. …أخطأتُها عمدًا.",
+          "pt-BR": "O pontinho vermelho voltou. Olha só. …Errei de propósito."
+        }
+      }
+    ],
+    "praise": [
+      {
+        "id": "pr-01",
+        "mood": "impressed",
+        "expression": "impressed",
+        "move": "ear-swivel",
+        "text": {
+          "en": "Look at you. Showing up like it's nothing.",
+          "tr": "Şuna bak. Hiçbir şey değilmiş gibi geliyorsun.",
+          "es": "Mírate. Llegas como si nada.",
+          "fr": "Regarde-toi. Tu reviens comme si de rien n'était.",
+          "de": "Sieh dich an. Kommst einfach so, als wär's nichts.",
+          "ru": "Ты только посмотри. Приходишь, как будто это пустяк.",
+          "ar": "حضورٌ يومي وكأنه أسهل شيء. مدهش.",
+          "pt-BR": "Olha só. Aparecendo como se não fosse nada."
+        }
+      },
+      {
+        "id": "pr-02",
+        "mood": "soft",
+        "expression": "loving-caught",
+        "move": "slow-blink",
+        "text": {
+          "en": "Honestly? I'm a little proud. Tell no one.",
+          "tr": "Açıkçası? Biraz gururluyum. Kimseye söyleme.",
+          "es": "¿Sinceramente? Estoy algo orgullosa. Ni una palabra.",
+          "fr": "Franchement ? Je suis un peu fière. Ne le dis à personne.",
+          "de": "Ehrlich? Ich bin ein bisschen stolz. Sag's keinem.",
+          "ru": "Честно? Я немножко горжусь. Только никому.",
+          "ar": "بصراحة؟ أنا فخورة قليلًا. سرّ بيننا.",
+          "pt-BR": "Sinceramente? Tô um pouquinho orgulhosa. Não conta pra ninguém."
+        }
+      },
+      {
+        "id": "pr-03",
+        "mood": "impressed",
+        "expression": "impressed",
+        "move": "model-turn",
+        "text": {
+          "en": "Consistent. Elegant. Is there a cat in you?",
+          "tr": "İstikrarlı. Zarif. Sende biraz kedi mi var?",
+          "es": "Constante. Elegante. ¿Tienes algo de gato?",
+          "fr": "De la constance. De l'élégance. Tu caches un chat, non ?",
+          "de": "Beständig. Elegant. Steckt in dir eine Katze?",
+          "ru": "Стабильно. Элегантно. В тебе точно нет кошки?",
+          "ar": "ثبات. أناقة. هل في داخلك قطة؟",
+          "pt-BR": "Constante. Elegante. Tem um gato aí dentro, né?"
+        }
+      },
+      {
+        "id": "pr-04",
+        "mood": "proud",
+        "expression": "proud",
+        "move": "counter-pose",
+        "text": {
+          "en": "Now that's a streak with posture.",
+          "tr": "İşte duruşu olan bir seri.",
+          "es": "Eso sí es una racha con porte.",
+          "fr": "Ça, c'est une série qui a de l'allure.",
+          "de": "Das ist mal eine Serie mit Haltung.",
+          "ru": "Вот это серия с осанкой.",
+          "ar": "هذه سلسلة تمشي مرفوعة الرأس.",
+          "pt-BR": "Isso sim é uma sequência com postura."
+        }
+      },
+      {
+        "id": "pr-05",
+        "mood": "soft",
+        "expression": "loving-caught",
+        "move": "slow-blink",
+        "text": {
+          "en": "You came back. Cats notice. We just pretend we don't.",
+          "tr": "Yine geldin. Kediler bunu fark eder. Sadece belli etmeyiz.",
+          "es": "Volviste. Los gatos lo notamos. Solo fingimos que no.",
+          "fr": "Te revoilà. Les chats remarquent tout. On fait juste semblant.",
+          "de": "Du bist wieder da. Katzen merken das. Wir tun nur so, als ob nicht.",
+          "ru": "Ты снова тут. Кошки это замечают. Просто не подают вида.",
+          "ar": "عودة جديدة. القطط تلاحظ. لكننا نتظاهر بالعكس.",
+          "pt-BR": "Você voltou. Gato percebe. A gente só finge que não."
+        }
+      },
+      {
+        "id": "pr-06",
+        "mood": "smug",
+        "expression": "smug",
+        "move": "tail-question",
+        "text": {
+          "en": "Small steps. I invented those. Well done.",
+          "tr": "Küçük adımlar. Onları ben icat ettim. Aferin.",
+          "es": "Pasos pequeños. Los inventé yo. Bien hecho.",
+          "fr": "Les petits pas. C'est moi qui les ai inventés. Bravo.",
+          "de": "Kleine Schritte. Hab ich erfunden. Gut gemacht.",
+          "ru": "Маленькие шаги. Их придумала я. Молодец.",
+          "ar": "خطوات صغيرة. أنا من اخترعها. أحسنت.",
+          "pt-BR": "Passos pequenos. Fui eu que inventei. Mandou bem."
+        }
+      },
+      {
+        "id": "pr-07",
+        "mood": "soft",
+        "expression": "slow-blink",
+        "move": "slow-blink",
+        "text": {
+          "en": "This deserves a slow blink.",
+          "tr": "Bu, yavaş bir göz kırpmayı hak ediyor.",
+          "es": "Esto merece un parpadeo lento.",
+          "fr": "Ça mérite un clignement lent.",
+          "de": "Das verdient ein langsames Blinzeln.",
+          "ru": "Это заслуживает медленного моргания.",
+          "ar": "هذا يستحق رمشة بطيئة.",
+          "pt-BR": "Isso merece um piscar lento."
+        }
+      },
+      {
+        "id": "pr-08",
+        "mood": "proud",
+        "expression": "delighted",
+        "move": "innocent-stare",
+        "text": {
+          "en": "Gold star. Well, gold-green. Like my eyes.",
+          "tr": "Altın yıldız. Yani altın-yeşil. Gözlerim gibi.",
+          "es": "Estrella de oro. Bueno, oro verdoso. Como mis ojos.",
+          "fr": "Une étoile d'or. Bon, vert doré. Comme mes yeux.",
+          "de": "Goldstern. Na ja, goldgrün. Wie meine Augen.",
+          "ru": "Золотая звезда. Ну, зелёно-золотая. Как мои глаза.",
+          "ar": "نجمة ذهبية. بل ذهبية خضراء. مثل عينيّ.",
+          "pt-BR": "Estrela dourada. Bom, verde-dourada. Tipo meus olhos."
+        }
+      },
+      {
+        "id": "pr-09",
+        "mood": "impressed",
+        "expression": "impressed",
+        "move": "ear-swivel",
+        "text": {
+          "en": "Not everyone keeps going. You do. Noted.",
+          "tr": "Herkes devam etmiyor. Sen ediyorsun. Not ettim.",
+          "es": "No todo el mundo sigue. Tú sí. Tomo nota.",
+          "fr": "Tout le monde ne continue pas. Toi, si. C'est noté.",
+          "de": "Nicht jeder bleibt dran. Du schon. Notiert.",
+          "ru": "Не все продолжают. А ты — да. Записала.",
+          "ar": "ليس الجميع يستمر. أما أنت فنعم. سجّلتُ.",
+          "pt-BR": "Nem todo mundo continua. Você continua. Anotado."
+        }
+      },
+      {
+        "id": "pr-10",
+        "mood": "soft",
+        "expression": "purring",
+        "move": "loaf",
+        "text": {
+          "en": "You're becoming a regular. I like regulars.",
+          "tr": "Müdavim oluyorsun. Müdavimleri severim.",
+          "es": "Ya eres de la casa. Me caen bien los de la casa.",
+          "fr": "Tu fais partie des meubles. J'aime bien les meubles.",
+          "de": "Du wirst zum Stammgast. Ich mag Stammgäste.",
+          "ru": "Ты тут уже свой человек. Люблю своих.",
+          "ar": "صرت من الوجوه المألوفة. وأنا أحب الوجوه المألوفة.",
+          "pt-BR": "Você já é de casa. Eu gosto de quem é de casa."
+        }
+      },
+      {
+        "id": "pr-11",
+        "mood": "soft",
+        "expression": "flustered",
+        "move": "bag-throne",
+        "text": {
+          "en": "I'd give you my bag. …Almost.",
+          "tr": "Sana poşetimi verirdim. …Neredeyse.",
+          "es": "Te daría mi bolsa. …Casi.",
+          "fr": "Je te donnerais mon sac. …Presque.",
+          "de": "Ich würde dir meine Tüte geben. …Fast.",
+          "ru": "Я бы отдала тебе свой пакет. …Почти.",
+          "ar": "كنت سأعطيك كيسي. …تقريبًا.",
+          "pt-BR": "Eu te daria minha sacola. …Quase."
+        }
+      },
+      {
+        "id": "pr-12",
+        "mood": "proud",
+        "expression": "neutral-regal",
+        "move": "counter-pose",
+        "text": {
+          "en": "Slow and steady. Ask any cat on a windowsill.",
+          "tr": "Yavaş ama emin. Pencere önündeki herhangi bir kediye sor.",
+          "es": "Lento pero seguro. Pregúntale a cualquier gato en la ventana.",
+          "fr": "Rien ne sert de courir. Demande à n'importe quel chat au soleil.",
+          "de": "Langsam, aber stetig. Frag irgendeine Katze am Fenster.",
+          "ru": "Тише едешь — дальше будешь. Спроси любую кошку на подоконнике.",
+          "ar": "ببطء وثبات. وكل قطة على النافذة تشهد.",
+          "pt-BR": "Devagar e sempre. Pergunta pra qualquer gato na janela."
+        }
+      },
+      {
+        "id": "pr-13",
+        "mood": "soft",
+        "expression": "purring",
+        "move": "slow-blink",
+        "text": {
+          "en": "Somewhere, future you just purred.",
+          "tr": "Bir yerlerde gelecekteki sen mırladı.",
+          "es": "En algún lugar, tu yo futuro acaba de ronronear.",
+          "fr": "Quelque part, le toi du futur vient de ronronner.",
+          "de": "Irgendwo hat dein Zukunfts-Ich gerade geschnurrt.",
+          "ru": "Где-то твоё будущее «я» сейчас мурлычет.",
+          "ar": "في مكان ما، نسختك المستقبلية تخرخر الآن.",
+          "pt-BR": "Em algum lugar, seu eu do futuro acabou de ronronar."
+        }
+      },
+      {
+        "id": "pr-14",
+        "mood": "proud",
+        "expression": "proud",
+        "move": "tail-question",
+        "text": {
+          "en": "See? Showing up is the whole trick.",
+          "tr": "Gördün mü? Bütün sır gelmekte.",
+          "es": "¿Ves? El truco es venir.",
+          "fr": "Tu vois ? Venir, c'est tout le secret.",
+          "de": "Siehst du? Der ganze Trick: einfach da sein.",
+          "ru": "Видишь? Весь секрет в том, чтобы приходить.",
+          "ar": "أرأيت؟ الحضور هو السر كله.",
+          "pt-BR": "Viu? O segredo é só aparecer."
+        }
+      },
+      {
+        "id": "pr-15",
+        "mood": "impressed",
+        "expression": "impressed",
+        "move": "ear-swivel",
+        "text": {
+          "en": "Both ears fully up. That's my standing ovation.",
+          "tr": "İki kulak birden dik. Bu benim ayakta alkışım.",
+          "es": "Las dos orejas bien arriba. Es mi ovación de pie.",
+          "fr": "Les deux oreilles bien droites. C'est ma standing ovation.",
+          "de": "Beide Ohren ganz oben. Das sind meine Standing Ovations.",
+          "ru": "Оба уха торчком. Это мои овации стоя.",
+          "ar": "أذناي مرفوعتان تمامًا. هذا تصفيقي وقوفًا.",
+          "pt-BR": "As duas orelhas lá em cima. É meu aplauso de pé."
+        }
+      },
+      {
+        "id": "pr-16",
+        "mood": "diva",
+        "expression": "proud",
+        "move": "model-turn",
+        "text": {
+          "en": "You make it look easy. I make everything look easy. Team.",
+          "tr": "Sen kolay gösteriyorsun. Ben her şeyi kolay gösteririm. Ekibiz.",
+          "es": "Tú lo haces fácil. Yo lo hago todo fácil. Equipo.",
+          "fr": "Tu fais ça l'air de rien. Moi, je fais tout l'air de rien. On fait la paire.",
+          "de": "Bei dir wirkt’s leicht. Bei mir wirkt alles leicht. Team.",
+          "ru": "У тебя выходит легко. У меня всё легко. Команда.",
+          "ar": "معك يبدو سهلًا. ومعي كل شيء سهل. فريق.",
+          "pt-BR": "Você deixa fácil. Eu deixo tudo fácil. Time."
+        }
+      },
+      {
+        "id": "pr-17",
+        "mood": "impressed",
+        "expression": "impressed",
+        "move": "squint",
+        "text": {
+          "en": "Mrrr. Yes. That one I'd frame.",
+          "tr": "Mırr. Evet. Bunu çerçeveletirim.",
+          "es": "Mrrr. Sí. Esto lo enmarco.",
+          "fr": "Mrrr. Oui. Celui-là, je l'encadre.",
+          "de": "Mrrr. Ja. Das rahme ich ein.",
+          "ru": "Мррр. Да. Это я повешу в рамочку.",
+          "ar": "مرررر. نعم. هذا يستحق إطارًا.",
+          "pt-BR": "Mrrr. Sim. Essa eu emolduro."
+        }
+      },
+      {
+        "id": "pr-18",
+        "mood": "soft",
+        "expression": "embarrassed",
+        "move": "slow-blink",
+        "text": {
+          "en": "Proud of you. That was hard to say. Move along.",
+          "tr": "Seninle gurur duyuyorum. Söylemesi zordu. Geç.",
+          "es": "Estoy orgullosa de ti. Me costó decirlo. Sigamos.",
+          "fr": "Je suis fière de toi. C'était dur à dire. Circulez.",
+          "de": "Ich bin stolz auf dich. Das war schwer. Weiter geht's.",
+          "ru": "Я тобой горжусь. Сказать было непросто. Идём дальше.",
+          "ar": "أنا فخورة بك. لم يكن قولها سهلًا. لنكمل.",
+          "pt-BR": "Tenho orgulho de você. Foi difícil dizer. Segue o jogo."
+        }
+      },
+      {
+        "id": "pr-19",
+        "mood": "soft",
+        "expression": "purring",
+        "move": "loaf",
+        "text": {
+          "en": "Quiet effort. My favourite kind. After napping.",
+          "tr": "Sessiz emek. En sevdiğim tür. Şekerlemeden sonra.",
+          "es": "Esfuerzo callado. Mi favorito. Después de la siesta.",
+          "fr": "Un effort discret. Mon préféré. Après la sieste.",
+          "de": "Stiller Fleiß. Meine Lieblingssorte. Nach Nickerchen.",
+          "ru": "Тихое усердие. Мой любимый вид. После дрёмы.",
+          "ar": "جهد هادئ. نوعي المفضل. بعد القيلولة.",
+          "pt-BR": "Esforço quietinho. Meu tipo favorito. Depois da soneca."
+        }
+      },
+      {
+        "id": "pr-20",
+        "mood": "proud",
+        "expression": "triumphant",
+        "move": "sprawl-paw",
+        "text": {
+          "en": "Full marks today. From me. That basically never happens.",
+          "tr": "Bugün tam not. Benden. Bu neredeyse hiç olmaz.",
+          "es": "Hoy, nota máxima. De mi parte. Eso casi nunca pasa.",
+          "fr": "Note maximale aujourd'hui. De ma part. Ça n'arrive presque jamais.",
+          "de": "Volle Punktzahl heute. Von mir. Das kommt quasi nie vor.",
+          "ru": "Сегодня высший балл. От меня. Такого почти не бывает.",
+          "ar": "علامة كاملة. مني أنا. وهذا نادرًا ما يحدث.",
+          "pt-BR": "Nota máxima. Vinda de mim. Isso quase nunca acontece."
+        }
+      },
+      {
+        "id": "fd-02",
+        "mood": "proud",
+        "expression": "proud",
+        "move": "slow-blink",
+        "text": {
+          "en": "Boiled chicken level. My highest honour. Don't get used to it.",
+          "tr": "Haşlanmış tavuk seviyesi. En büyük nişanım. Alışma.",
+          "es": "Nivel pollo hervido. Mi mayor honor. No te acostumbres.",
+          "fr": "Niveau poulet bouilli. Ma plus haute distinction. T'habitue pas.",
+          "de": "Hühnchen-Niveau. Meine höchste Ehre. Nicht dran gewöhnen.",
+          "ru": "Уровень: варёная курочка. Высшая честь. Не привыкай.",
+          "ar": "مستوى الدجاج المسلوق. أعلى وسام. ونادر.",
+          "pt-BR": "Nível frango cozido. Minha maior honra. Não se acostuma."
+        }
+      },
+      {
+        "id": "fd-09",
+        "mood": "proud",
+        "expression": "loving-caught",
+        "move": "slow-blink",
+        "text": {
+          "en": "Proud of you. Hamsi proud. That's the big one.",
+          "tr": "Seninle gurur duyuyorum. Hamsi kadar. Bu büyük laf.",
+          "es": "Orgullosa de ti. Orgullo de pescadito. Es lo máximo.",
+          "fr": "Fière de toi. Fière comme devant un poisson. C'est énorme.",
+          "de": "Stolz auf dich. Fisch-stolz. Das ist das Höchste.",
+          "ru": "Горжусь тобой. Как рыбкой. Это очень много.",
+          "ar": "فخورة بك. كفخري بالسمك. وهذا كثير.",
+          "pt-BR": "Orgulho de você. Orgulho nível peixinho. É o máximo."
+        }
+      },
+      {
+        "id": "fd-13",
+        "mood": "impressed",
+        "expression": "impressed",
+        "move": "ear-swivel",
+        "text": {
+          "en": "Mrrr… acceptable. …Boiled-chicken acceptable. That's rare.",
+          "tr": "Mırr… kabul edilebilir. …Haşlanmış tavuk ayarında. Nadir.",
+          "es": "Mrrr… aceptable. …Aceptable nivel pollo. Eso es raro.",
+          "fr": "Mrrr… acceptable. …Acceptable façon poulet. C'est rare.",
+          "de": "Mrrr… akzeptabel. …Hühnchen-akzeptabel. Selten.",
+          "ru": "Мррр… приемлемо. …На уровне курочки. Редкость.",
+          "ar": "مرررر… مقبول. …بمستوى الدجاج. نادر.",
+          "pt-BR": "Mrrr… aceitável. …Aceitável nível frango. Raro."
+        }
+      },
+      {
+        "id": "fd-17",
+        "mood": "soft",
+        "expression": "purring",
+        "move": "knead",
+        "text": {
+          "en": "I'm making biscuits. It means I'm happy. Don't tell anyone.",
+          "tr": "Pati pati yoğuruyorum. Mutluyum demek. Kimseye söyleme.",
+          "es": "Estoy amasando. Es que estoy feliz. Ni una palabra.",
+          "fr": "Je pétris. Ça veut dire que je suis contente. Motus.",
+          "de": "Ich trete Milch. Bedeutet: Ich bin glücklich. Sag’s keinem.",
+          "ru": "Я мну лапками. Значит, я счастлива. Только никому.",
+          "ar": "أعجن بكفوفي. يعني أنني سعيدة. سرّ بيننا.",
+          "pt-BR": "Tô amassando o pãozinho. Quer dizer que tô feliz. Segredo."
+        }
+      },
+      {
+        "id": "fd-22",
+        "mood": "startled",
+        "expression": "wide-eyed",
+        "move": "ear-swivel",
+        "text": {
+          "en": "A can opening? Ears up. …Oh, it's just you. Even better.",
+          "tr": "Konserve mi açıldı? Kulaklar dik. …Aa, senmişsin. Daha iyi.",
+          "es": "¿Una lata? Orejas arriba. …Ah, eres tú. Mejor aún.",
+          "fr": "Une boîte de thon ? Oreilles dressées. …Ah, c'est toi. Encore mieux.",
+          "de": "Eine Dose? Ohren hoch. …Ach, du bist’s. Noch besser.",
+          "ru": "Банка открылась? Уши торчком. …А, это ты. Ещё лучше.",
+          "ar": "علبة تُفتح؟ …آه، هذا أنت. أفضل بكثير.",
+          "pt-BR": "Uma lata? Orelhas em pé. …Ah, é você. Melhor ainda."
+        }
+      },
+      {
+        "id": "nw-01",
+        "mood": "soft",
+        "expression": "delighted",
+        "move": "carry",
+        "text": {
+          "en": "Brought you my mouse. It's a gift. …I want it back.",
+          "tr": "Sana faremi getirdim. Hediye. …Ama geri istiyorum.",
+          "es": "Te traje mi ratón. Es un regalo. …Lo quiero de vuelta.",
+          "fr": "Je t'ai apporté ma souris. Cadeau. …Rends-la-moi, quand même.",
+          "de": "Meine Maus, für dich. Ein Geschenk. …Ich will sie zurück.",
+          "ru": "Принесла тебе мышку. Это подарок. …Верни потом.",
+          "ar": "أحضرتُ لك فأري. هدية. …وأريد استعادته.",
+          "pt-BR": "Trouxe meu ratinho pra você. É presente. …Quero de volta."
+        }
+      },
+      {
+        "id": "nw-02",
+        "mood": "soft",
+        "expression": "proud",
+        "move": "big-stretch",
+        "text": {
+          "en": "A big stretch, for you. Front paws, back paws. Applause.",
+          "tr": "Senin için koca bir gerinme. Ön pati, arka pati. Alkış.",
+          "es": "Estirón en tu honor. Patas delante, patas atrás. Aplauso.",
+          "fr": "Un grand étirement, pour toi. Pattes avant, pattes arrière. Bravo.",
+          "de": "Großes Strecken für dich. Vorne, hinten. Applaus.",
+          "ru": "Потягушки в твою честь. Лапы вперёд, лапы назад. Браво.",
+          "ar": "تمطّط كبير لأجلك. كفوف أمامية وخلفية. تصفيق.",
+          "pt-BR": "Alongamento pra você. Pata da frente, pata de trás. Palmas."
+        }
+      },
+      {
+        "id": "nw-04",
+        "mood": "diva",
+        "expression": "neutral-regal",
+        "move": "egyptian",
+        "text": {
+          "en": "Statue pose. Of me. In your honour. Very rare.",
+          "tr": "Heykel pozu. Kendi heykelim. Şerefine. Çok nadir.",
+          "es": "Pose de estatua. De mí misma. En tu honor. Muy raro.",
+          "fr": "Pose de statue. De moi. En ton honneur. Très rare.",
+          "de": "Statuenpose. Von mir selbst. Dir zu Ehren. Sehr selten.",
+          "ru": "Поза статуи. Меня. В твою честь. Редкость.",
+          "ar": "وضعية تمثال. تمثالي أنا. على شرفك. نادر جدًا.",
+          "pt-BR": "Pose de estátua. De mim mesma. Em sua homenagem. Raríssimo."
+        }
+      },
+      {
+        "id": "nw-05",
+        "mood": "soft",
+        "expression": "delighted",
+        "move": "question-walk",
+        "text": {
+          "en": "Tail up, one little chirp. Cat for 'oh good, it's you'.",
+          "tr": "Kuyruk dik, minik bir cıvıltı. Kedice 'iyi ki geldin'.",
+          "es": "Paseíto y un gorjeo. En gato: «qué bien, eres tú».",
+          "fr": "Petit tour et un trille. En chat : « chouette, c'est toi ».",
+          "de": "Eine Runde, ein Trillern. Katzisch für „ah, du bist’s“.",
+          "ru": "Хвост трубой, тихое «мрр». По-кошачьи: «о, это ты».",
+          "ar": "ذيل مرفوع وزقزقة. بالقططية: «هذا أنت، جميل».",
+          "pt-BR": "Voltinha e um trinado. Em gatês: 'oba, é você'."
+        }
+      },
+      {
+        "id": "nw-03",
+        "mood": "proud",
+        "expression": "proud",
+        "move": "belly-up",
+        "text": {
+          "en": "Belly out. That's how proud I am. …It's a trap.",
+          "tr": "Göbeğim açık. O kadar gururluyum. …Bu arada tuzak.",
+          "es": "Panza arriba. Así de orgullosa. …Es una trampa, ojo.",
+          "fr": "Ventre à l'air. Tellement je suis fière. …C'est un piège, au fait.",
+          "de": "Bauch nach oben. So stolz bin ich. …Ist übrigens eine Falle.",
+          "ru": "Пузо кверху. Вот как я горжусь. …Кстати, это ловушка.",
+          "ar": "بطني للأعلى. هكذا أفخر. …وهذا فخ بالمناسبة.",
+          "pt-BR": "Barriga pra cima. De tanto orgulho. …É uma armadilha, aliás."
+        }
+      }
+    ],
+    "roast": [
+      {
+        "id": "ro-01",
+        "mood": "goof",
+        "expression": "squint",
+        "move": "squint",
+        "target": "self",
+        "text": {
+          "en": "I've seen better. …In the mirror. It copied me. Rude.",
+          "tr": "Daha iyisini gördüm. …Aynada. Beni taklit etti. Ayıp.",
+          "es": "Vi algo mejor. …En el espejo. Me copiaba. Qué descaro.",
+          "fr": "J'ai vu mieux. …Dans le miroir. Il m'imitait. Culotté.",
+          "de": "Schon Besseres gesehen. …Im Spiegel. Er äffte mich nach. Frech.",
+          "ru": "Видала получше. …В зеркале. Оно дразнилось. Наглость.",
+          "ar": "رأيتُ أفضل. …في المرآة. قلّدتني. وقاحة.",
+          "pt-BR": "Já vi melhor. …No espelho. Ele me imitava. Que folga."
+        }
+      },
+      {
+        "id": "ro-02",
+        "mood": "smug",
+        "expression": "sceptical",
+        "move": "model-turn",
+        "target": "self",
+        "text": {
+          "en": "Could've been better. So could my outfits.",
+          "tr": "Daha iyisi olabilirdi. Benim kıyafetlerim de öyle.",
+          "es": "Podría haber sido mejor. Mi ropa también.",
+          "fr": "Ça aurait pu être mieux. Mes tenues aussi.",
+          "de": "Hätte besser sein können. Meine Outfits auch.",
+          "ru": "Могло быть и лучше. Как и мои наряды.",
+          "ar": "كان يمكن أن يكون أفضل. وملابسي أيضًا.",
+          "pt-BR": "Podia ter sido melhor. Minhas roupas também."
+        }
+      },
+      {
+        "id": "ro-03",
+        "mood": "smug",
+        "expression": "sceptical",
+        "move": "ear-swivel",
+        "target": "habit",
+        "text": {
+          "en": "Back again? Suspicious. Keep being suspicious.",
+          "tr": "Yine mi sen? Şüpheli. Şüpheli kalmaya devam.",
+          "es": "¿Otra vez tú? Qué sospechoso. Sigue así.",
+          "fr": "Encore toi ? Louche. Continue d'être louche.",
+          "de": "Schon wieder du? Verdächtig. Bleib verdächtig.",
+          "ru": "Опять ты? Подозрительно. Продолжай в том же духе.",
+          "ar": "أنت مجددًا؟ أمر مريب. فليبقَ مريبًا.",
+          "pt-BR": "Você de novo? Que suspeito. Continua assim."
+        }
+      },
+      {
+        "id": "ro-04",
+        "mood": "sleepy",
+        "expression": "sleepy",
+        "move": "loaf",
+        "target": "self",
+        "text": {
+          "en": "I cut my nap short for this. …Worth it. Respect.",
+          "tr": "Bunun için şekerlememi yarıda kestim. …Değdi. Saygı.",
+          "es": "Interrumpí mi siesta por esto. …Valió la pena. Respeto.",
+          "fr": "J'ai écourté ma sieste pour ça. …Ça valait le coup. Respect.",
+          "de": "Dafür mein Nickerchen abgebrochen. …Hat sich gelohnt. Respekt.",
+          "ru": "Ради этого прервала дрёму. …Того стоило. Уважаю.",
+          "ar": "قطعتُ قيلولتي من أجل هذا. …كان يستحق. احترامي.",
+          "pt-BR": "Cortei meu cochilo por isso. …Valeu a pena. Respeito."
+        }
+      },
+      {
+        "id": "ro-05",
+        "mood": "goof",
+        "expression": "blep",
+        "move": "blep",
+        "target": "self",
+        "text": {
+          "en": "You practise more than I groom. And I groom constantly.",
+          "tr": "Sen benim tüy yalamamdan çok çalışıyorsun. Ben de durmadan yalıyorum.",
+          "es": "Practicas más de lo que yo me acicalo. Y eso es mucho decir.",
+          "fr": "Tu t'entraînes plus que je ne fais ma toilette. Et je la fais tout le temps.",
+          "de": "Du übst mehr, als ich mich putze. Und ich putze mich ständig.",
+          "ru": "Занимаешься больше, чем я умываюсь. А я умываюсь всегда.",
+          "ar": "تمارينك أكثر من تنظيف فروي. وأنا أنظّفه دائمًا.",
+          "pt-BR": "Você pratica mais do que eu me arrumo. E olha que eu me arrumo muito."
+        }
+      },
+      {
+        "id": "ro-06",
+        "mood": "smug",
+        "expression": "mock-offended",
+        "move": "airplane-ears",
+        "target": "habit",
+        "text": {
+          "en": "Could be better. …Could involve snacks. Just saying.",
+          "tr": "Daha iyisi olabilirdi. …Mama da olabilirdi. Söylüyorum yani.",
+          "es": "Podría ser mejor. …Podría haber golosinas. Solo digo.",
+          "fr": "Ça pourrait être mieux. …Avec des friandises, par exemple. Je dis ça, je dis rien.",
+          "de": "Könnte besser sein. …Mit Leckerlis, zum Beispiel. Ich sag ja nur.",
+          "ru": "Могло быть и лучше. …Со вкусняшками. Я так, к слову.",
+          "ar": "كان يمكن أن يكون أفضل. …بالمكافآت مثلًا. ملاحظة.",
+          "pt-BR": "Podia ser melhor. …Podia ter petisco. Só tô falando."
+        }
+      },
+      {
+        "id": "ro-07",
+        "mood": "smug",
+        "expression": "unimpressed-fake",
+        "move": "squint",
+        "target": "situation",
+        "text": {
+          "en": "Could be better. I say that to the sun too.",
+          "tr": "Daha iyisi olabilirdi. Bunu güneşe de söylüyorum.",
+          "es": "Podría ser mejor. Eso también se lo digo al sol.",
+          "fr": "Ça pourrait être mieux. Je dis ça au soleil aussi.",
+          "de": "Könnte besser sein. Sag ich der Sonne auch.",
+          "ru": "Могло быть и лучше. Солнцу я говорю то же самое.",
+          "ar": "كان يمكن أن يكون أفضل. أقولها للشمس أيضًا.",
+          "pt-BR": "Podia ser melhor. Falo isso para o sol também."
+        }
+      },
+      {
+        "id": "ro-08",
+        "mood": "impressed",
+        "expression": "flustered",
+        "move": "tail-question",
+        "target": "self",
+        "text": {
+          "en": "I planned to look unimpressed. My tail didn't get the memo.",
+          "tr": "Etkilenmemiş görünecektim. Kuyruğum haberi almamış.",
+          "es": "Iba a hacerme la indiferente. Mis orejas no se enteraron.",
+          "fr": "Je voulais avoir l'air blasée. Mes oreilles n'ont pas eu le mémo.",
+          "de": "Ich wollte unbeeindruckt wirken. Meine Ohren haben's nicht mitgekriegt.",
+          "ru": "Я собиралась выглядеть невозмутимо. Хвосту забыли сообщить.",
+          "ar": "خططتُ لأبدو غير مبالية. ذيلي لم يصله الخبر.",
+          "pt-BR": "Eu ia fingir que não liguei. Minhas orelhas não ficaram sabendo."
+        }
+      },
+      {
+        "id": "ro-09",
+        "mood": "goof",
+        "expression": "curious",
+        "move": "bag-throne",
+        "target": "self",
+        "text": {
+          "en": "Was going to roast you. Saw a bag. You win.",
+          "tr": "Sana laf sokacaktım. Bir poşet gördüm, unuttum. Sen kazandın.",
+          "es": "Iba a tomarte el pelo. Vi una bolsa. Ganas tú.",
+          "fr": "J'allais te taquiner. J'ai vu un sac. Tu gagnes.",
+          "de": "Ich wollte dich aufziehen. Dann kam eine Tüte. Du gewinnst.",
+          "ru": "Собиралась тебя подколоть. Увидела пакет. Победа за тобой.",
+          "ar": "كنت سأمازحك. ثم رأيت كيسًا. الفوز لك.",
+          "pt-BR": "Eu ia te zoar. Vi uma sacola. Você ganhou."
+        }
+      },
+      {
+        "id": "ro-10",
+        "mood": "soft",
+        "expression": "loving-caught",
+        "move": "ear-swivel",
+        "target": "habit",
+        "text": {
+          "en": "You again. My favourite interruption.",
+          "tr": "Yine sen. Beni en güzel rahatsız eden.",
+          "es": "Otra vez tú. Mi interrupción favorita.",
+          "fr": "Encore toi. Mon interruption préférée.",
+          "de": "Schon wieder du. Meine liebste Unterbrechung.",
+          "ru": "Снова ты. Моя любимая помеха.",
+          "ar": "أنت مجددًا. مقاطعتي المفضلة.",
+          "pt-BR": "Você de novo. Minha interrupção favorita."
+        }
+      },
+      {
+        "id": "ro-11",
+        "mood": "goof",
+        "expression": "innocent-stare",
+        "move": "bag-throne",
+        "target": "self",
+        "text": {
+          "en": "Some learn languages. I learned 'bag'. We're both growing.",
+          "tr": "Bazıları dil öğreniyor. Ben 'poşet'i öğrendim. İkimiz de gelişiyoruz.",
+          "es": "Unos aprenden idiomas. Yo aprendí «bolsa». Vamos creciendo.",
+          "fr": "Certains apprennent des langues. Moi, j'ai appris « sac ». On progresse.",
+          "de": "Manche lernen Sprachen. Ich hab „Tüte“ gelernt. Wir wachsen beide.",
+          "ru": "Кто-то учит языки. Я выучила «пакет». Растём.",
+          "ar": "البعض يتعلم لغات. أنا تعلمتُ «كيس». نتطور.",
+          "pt-BR": "Tem gente que aprende idiomas. Eu aprendi 'sacola'. Evoluindo."
+        }
+      },
+      {
+        "id": "ro-12",
+        "mood": "goof",
+        "expression": "innocent-stare",
+        "move": "innocent-stare",
+        "target": "self",
+        "text": {
+          "en": "Your streak outlasts my attention span. …Ooh, a moth. What?",
+          "tr": "Serin benim dikkat süremden uzun. …Aa, sinek! Ne diyordum?",
+          "es": "Tu racha dura más que mi atención. …Uy, una polilla. ¿Qué?",
+          "fr": "Ta série dure plus longtemps que mon attention. …Oh, une mite. Je disais ?",
+          "de": "Deine Serie hält länger als mein Fokus. …Oh, Motte. Was?",
+          "ru": "Серия длиннее моего внимания. …Ой, моль. О чём я?",
+          "ar": "أيامك أطول من انتباهي. …أوه، عثّة. ماذا كنتُ أقول؟",
+          "pt-BR": "Sua sequência dura mais que minha atenção. …Opa, mariposa. Quê?"
+        }
+      },
+      {
+        "id": "ro-13",
+        "mood": "smug",
+        "expression": "sceptical",
+        "move": "squint",
+        "target": "situation",
+        "text": {
+          "en": "Fine, you're consistent. I'll judge the weather instead.",
+          "tr": "Tamam, istikrarlısın. Ben de havayı yargılarım.",
+          "es": "Bueno, eres constante. Mejor juzgo el clima.",
+          "fr": "Bon, la constance, c'est toi. Je vais juger la météo, alors.",
+          "de": "Na gut, du bist beständig. Dann bewerte ich eben das Wetter.",
+          "ru": "Ладно, стабильность налицо. Пойду судить погоду.",
+          "ar": "حسنًا، الثبات واضح. سأحكم على الطقس إذن.",
+          "pt-BR": "Tá, você é constante. Vou julgar o clima, então."
+        }
+      },
+      {
+        "id": "ro-14",
+        "mood": "goof",
+        "expression": "embarrassed",
+        "move": "bag-throne",
+        "target": "self",
+        "text": {
+          "en": "Not bad. Almost 'me in a bag' good. …I'm stuck, though.",
+          "tr": "Fena değil. Neredeyse 'poşetteki ben' kadar. …Bu arada sıkıştım.",
+          "es": "No está mal. Casi como «yo en una bolsa». …Me atasqué.",
+          "fr": "Pas mal. Presque « moi dans un sac ». …Par contre, je suis coincée.",
+          "de": "Nicht schlecht. Fast „ich in der Tüte“. …Ich stecke fest.",
+          "ru": "Неплохо. Почти как «я в пакете». …Только я застряла.",
+          "ar": "ليس سيئًا. يضاهي «أنا في كيس». …لكنني عالقة.",
+          "pt-BR": "Nada mal. Quase 'eu numa sacola'. …Aliás, tô presa."
+        }
+      },
+      {
+        "id": "ro-15",
+        "mood": "impressed",
+        "expression": "flustered",
+        "move": "ear-swivel",
+        "target": "self",
+        "text": {
+          "en": "I'd roll my eyes, but I'm impressed. Annoying.",
+          "tr": "Göz devirecektim ama etkilendim. Sinir bozucu.",
+          "es": "Quería poner los ojos en blanco. Me impresionó. Qué fastidio.",
+          "fr": "J'allais lever les yeux au ciel, mais je suis impressionnée. Agaçant.",
+          "de": "Ich wollte die Augen verdrehen. Bin aber beeindruckt. Ärgerlich.",
+          "ru": "Я бы закатила глаза, но я впечатлена. Досадно.",
+          "ar": "كنت سأقلب عينيّ، لكنني منبهرة. مزعج.",
+          "pt-BR": "Eu ia revirar os olhos, mas fiquei impressionada. Que raiva."
+        }
+      },
+      {
+        "id": "ro-16",
+        "mood": "goof",
+        "expression": "plotting",
+        "move": "counter-pose",
+        "target": "self",
+        "text": {
+          "en": "Who taught you discipline? Not me. I'm on the counter.",
+          "tr": "Sana disiplini kim öğretti? Ben değil. Ben tezgâhtayım.",
+          "es": "¿Quién te enseñó disciplina? Yo no. Yo estoy subida a la mesa.",
+          "fr": "Qui t'a appris la discipline ? Pas moi. Moi, je suis sur le plan de travail.",
+          "de": "Wer brachte dir Disziplin bei? Ich nicht. Ich sitze auf der Arbeitsplatte.",
+          "ru": "Кто научил тебя дисциплине? Не я. Я сижу на столешнице.",
+          "ar": "من علّمك الانضباط؟ لستُ أنا. أنا على طاولة المطبخ.",
+          "pt-BR": "Quem te ensinou disciplina? Eu não. Eu tô na bancada."
+        }
+      },
+      {
+        "id": "ro-17",
+        "mood": "diva",
+        "expression": "diva-pose",
+        "move": "model-turn",
+        "target": "self",
+        "text": {
+          "en": "We both showed up. Only one of us is wearing a onesie.",
+          "tr": "İkimiz de geldik. Tulum giyen sadece birimiz.",
+          "es": "Aquí estamos tú y yo. Pero el pijama lo llevo yo.",
+          "fr": "On est là, toi et moi. Mais la grenouillère, c'est moi.",
+          "de": "Wir sind beide da. Den Strampler trag aber nur ich.",
+          "ru": "Мы тут вдвоём. Но в комбинезоне только я.",
+          "ar": "كلانا هنا. لكن البيجامة عليّ وحدي.",
+          "pt-BR": "A gente veio. Mas só eu tô de macacão."
+        }
+      },
+      {
+        "id": "ro-18",
+        "mood": "goof",
+        "expression": "bored-on-purpose",
+        "move": "bag-throne",
+        "target": "self",
+        "text": {
+          "en": "Must be nice, having hobbies. Mine is this bag.",
+          "tr": "Hobisi olmak güzel olmalı. Benimki bu poşet.",
+          "es": "Debe estar bien tener hobbies. El mío es esta bolsa.",
+          "fr": "Ça doit être sympa, d'avoir des loisirs. Le mien, c'est ce sac.",
+          "de": "Muss schön sein, Hobbys zu haben. Meins ist diese Tüte.",
+          "ru": "Хорошо, наверное, иметь хобби. Моё — вот этот пакет.",
+          "ar": "لا بد أن الهوايات ممتعة. هوايتي هذا الكيس.",
+          "pt-BR": "Deve ser bom ter hobby. O meu é essa sacola."
+        }
+      },
+      {
+        "id": "ro-19",
+        "mood": "smug",
+        "expression": "smug",
+        "move": "squint",
+        "target": "situation",
+        "text": {
+          "en": "Practising on a day like this? That's just showing off.",
+          "tr": "Böyle bir günde çalışmak? Düpedüz hava atmak.",
+          "es": "¿Practicar en un día así? Eso ya es presumir.",
+          "fr": "Pratiquer un jour pareil ? C'est de la frime, là.",
+          "de": "An so einem Tag üben? Das ist doch Angeberei.",
+          "ru": "Заниматься в такой день? Это уже просто показуха.",
+          "ar": "التمرين في يوم كهذا؟ هذا استعراض لا أكثر.",
+          "pt-BR": "Praticar num dia desses? Aí já é se exibir."
+        }
+      },
+      {
+        "id": "ro-20",
+        "mood": "goof",
+        "expression": "embarrassed",
+        "move": "blep",
+        "target": "self",
+        "text": {
+          "en": "I had a whole speech. Then I licked my nose. Gone.",
+          "tr": "Koca bir konuşma hazırlamıştım. Burnumu yaladım. Gitti.",
+          "es": "Tenía todo un discurso. Me lamí la nariz. Adiós discurso.",
+          "fr": "J'avais tout un discours. Je me suis léché le nez. Envolé.",
+          "de": "Ich hatte eine ganze Rede. Dann hab ich mir die Nase geleckt. Weg.",
+          "ru": "У меня была целая речь. Я облизнула нос. Речи нет.",
+          "ar": "كان عندي خطاب كامل. ثم لعقت أنفي. ضاع.",
+          "pt-BR": "Eu tinha um discurso inteiro. Lambi o nariz. Sumiu."
+        }
+      },
+      {
+        "id": "fd-04",
+        "mood": "shocked",
+        "expression": "shocked",
+        "move": "sniff",
+        "target": "self",
+        "text": {
+          "en": "My bowl is empty. …It's half full. The bottom shows. Same thing.",
+          "tr": "Kabım boş. …Yarısı dolu. Ama dibi görünüyor. Aynı şey.",
+          "es": "Plato vacío. …Medio lleno. Se ve el fondo. Es lo mismo.",
+          "fr": "Ma gamelle est vide. …À moitié pleine. On voit le fond. Pareil.",
+          "de": "Napf leer. …Halb voll. Aber man sieht den Boden. Also leer.",
+          "ru": "Миска пуста. …Наполовину. Но дно видно. Пуста.",
+          "ar": "صحني فارغ. …نصفه ممتلئ. القاع ظاهر. فارغ.",
+          "pt-BR": "Tigela vazia. …Meio cheia. Dá pra ver o fundo. Vazia."
+        }
+      },
+      {
+        "id": "fd-05",
+        "mood": "diva",
+        "expression": "diva-pose",
+        "move": "model-turn",
+        "target": "self",
+        "text": {
+          "en": "They bought me a fountain. I drink from your glass. Obviously.",
+          "tr": "Bana su çeşmesi aldılar. Ben senin bardağından içerim. Tabii ki.",
+          "es": "Me compraron una fuente. Yo bebo de tu vaso. Obvio.",
+          "fr": "On m'a offert une fontaine. Je bois dans ton verre. Évidemment.",
+          "de": "Neuer Trinkbrunnen. Ich trink aus deinem Glas. Logisch.",
+          "ru": "Мне подарили фонтанчик. Пью из твоего стакана. Конечно.",
+          "ar": "اشتروا لي نافورة. وأنا أشرب من كوبك. طبعًا.",
+          "pt-BR": "Me deram uma fonte. Eu bebo do seu copo. Óbvio."
+        }
+      },
+      {
+        "id": "fd-07",
+        "mood": "guilty",
+        "expression": "guilty-glance",
+        "move": "groom",
+        "target": "self",
+        "text": {
+          "en": "Someone licked the butter. A mystery. …My whiskers are greasy. Unrelated.",
+          "tr": "Tereyağını biri yalamış. Esrarengiz. …Bıyıklarım yağlı. Alakası yok.",
+          "es": "Lamieron la mantequilla. …Mis bigotes brillan. Casualidad.",
+          "fr": "Le beurre a été léché. Mystère. …Moustaches grasses. Aucun rapport.",
+          "de": "Butter angeleckt. Rätselhaft. …Schnurrhaare fettig. Zufall.",
+          "ru": "Масло кто-то лизнул. …Усы жирные. Совпадение.",
+          "ar": "أحدهم لعق الزبدة. لغز. …شواربي دهنية. صدفة.",
+          "pt-BR": "Lamberam a manteiga. …Meu bigode brilha. Coincidência."
+        }
+      },
+      {
+        "id": "fd-08",
+        "mood": "goof",
+        "expression": "plotting",
+        "move": "counter-pose",
+        "target": "habit",
+        "text": {
+          "en": "No snacks for me? I took a bite of yours. Sharing.",
+          "tr": "Bana atıştırmalık yok mu? Seninkinden bir ısırık aldım. Paylaşıyoruz.",
+          "es": "¿Nada para mí? Le di un mordisco a lo tuyo. Compartimos.",
+          "fr": "Rien pour moi ? J'ai goûté ton assiette. On partage.",
+          "de": "Nichts für mich? Hab bei dir abgebissen. Wir teilen.",
+          "ru": "Мне ничего? Я откусила от твоего. Делимся.",
+          "ar": "لا شيء لي؟ أخذتُ قضمة من صحنك. نتقاسم.",
+          "pt-BR": "Nada pra mim? Dei uma mordida no seu. A gente divide."
+        }
+      },
+      {
+        "id": "fd-11",
+        "mood": "goof",
+        "expression": "embarrassed",
+        "move": "eat",
+        "target": "self",
+        "text": {
+          "en": "I eat grass now. Very healthy. …Excuse me a moment.",
+          "tr": "Artık ot yiyorum. Çok sağlıklı. …Bir dakika müsaade.",
+          "es": "Ahora como hierba. Muy sana. …Disculpa un momento.",
+          "fr": "Je mange de l'herbe. Très sain. …Excuse-moi un instant.",
+          "de": "Ich esse jetzt Gras. Sehr gesund. …Entschuldige mich kurz.",
+          "ru": "Теперь я ем траву. Очень полезно. …Минуточку.",
+          "ar": "صرتُ آكل العشب. صحي جدًا. …لحظة من فضلك.",
+          "pt-BR": "Agora como grama. Saudável. …Com licença, um minutinho."
+        }
+      },
+      {
+        "id": "fd-15",
+        "mood": "smug",
+        "expression": "sceptical",
+        "move": "squint",
+        "target": "situation",
+        "text": {
+          "en": "Could be better. …Could be chicken.",
+          "tr": "Daha iyisi olabilirdi. …Tavuk olabilirdi.",
+          "es": "Podría ser mejor. …Podría ser pollo.",
+          "fr": "Ça pourrait être mieux. …Ça pourrait être du poulet.",
+          "de": "Könnte besser sein. …Könnte Hühnchen sein.",
+          "ru": "Могло быть и лучше. …Могла быть курочка.",
+          "ar": "كان يمكن أن يكون أفضل. …دجاجًا مثلًا.",
+          "pt-BR": "Podia ser melhor. …Podia ser frango."
+        }
+      },
+      {
+        "id": "fd-19",
+        "mood": "goof",
+        "expression": "meant-to-do-that",
+        "move": "jump-fail",
+        "target": "self",
+        "text": {
+          "en": "That fall was planned. I'm grooming now. Also planned.",
+          "tr": "O düşüş planlıydı. Şimdi yalanıyorum. O da planlı.",
+          "es": "Caída planeada. Ahora me acicalo. También planeado.",
+          "fr": "Cette chute était prévue. Je fais ma toilette. Prévu aussi.",
+          "de": "Der Sturz war geplant. Jetzt putz ich mich. Auch geplant.",
+          "ru": "Падение было по плану. Теперь умываюсь. Тоже по плану.",
+          "ar": "السقوط كان مخططًا. والآن أنظّف فروي. مخطط أيضًا.",
+          "pt-BR": "Queda planejada. Agora me limpo. Também planejado."
+        }
+      },
+      {
+        "id": "fd-21",
+        "mood": "goof",
+        "expression": "innocent-stare",
+        "move": "box-hide",
+        "target": "self",
+        "text": {
+          "en": "An expensive toy arrived. I live in its box now.",
+          "tr": "Pahalı bir oyuncak geldi. Kutusunda yaşıyorum.",
+          "es": "Llegó un juguete caro. Ahora vivo en su caja.",
+          "fr": "Un jouet hors de prix est arrivé. Je vis dans sa boîte.",
+          "de": "Teures Spielzeug geliefert. Ich wohne im Karton.",
+          "ru": "Привезли дорогую игрушку. Я живу в её коробке.",
+          "ar": "وصلت لعبة غالية. أعيش في علبتها الآن.",
+          "pt-BR": "Chegou um brinquedo caro. Agora moro na caixa."
+        }
+      },
+      {
+        "id": "fd-24",
+        "mood": "goof",
+        "expression": "embarrassed",
+        "move": "eat",
+        "target": "self",
+        "text": {
+          "en": "One hamsi each, I said. …Cats can't count.",
+          "tr": "Herkese bir hamsi dedim. …Kediler sayamaz ki.",
+          "es": "Un pescadito por cabeza, dije. …Los gatos no contamos.",
+          "fr": "Un poisson chacun, j'avais dit. …Les chats ne savent pas compter.",
+          "de": "Jedem einen Fisch, hab ich gesagt. …Katzen können nicht zählen.",
+          "ru": "По рыбке каждому, сказала я. …Кошки не умеют считать.",
+          "ar": "لكلٍّ سمكة، قلتُ. …القطط لا تعرف العدّ.",
+          "pt-BR": "Um peixinho pra cada, eu disse. …Gato não sabe contar."
+        }
+      },
+      {
+        "id": "nw-09",
+        "mood": "goof",
+        "expression": "offended",
+        "move": "flehmen",
+        "target": "self",
+        "text": {
+          "en": "This food is different. …It's the same food. Still offended.",
+          "tr": "Bu mama farklı. …Aynı mamaymış. Yine de alındım.",
+          "es": "Esta comida es distinta. …Es la misma. Igual me ofendo.",
+          "fr": "Cette pâtée est différente. …C'est la même. Je suis vexée quand même.",
+          "de": "Das Futter ist anders. …Ist dasselbe. Trotzdem beleidigt.",
+          "ru": "Этот корм другой. …Тот же самый. Всё равно обиделась.",
+          "ar": "هذا الطعام مختلف. …إنه نفسه. ما زلتُ مستاءة.",
+          "pt-BR": "Essa comida tá diferente. …É a mesma. Ofendida mesmo assim."
+        }
+      }
+    ],
+    "comeback": [
+      {
+        "id": "cb-01",
+        "mood": "soft",
+        "expression": "loving-caught",
+        "move": "bag-throne",
+        "text": {
+          "en": "Oh. You. …I kept the bag warm.",
+          "tr": "Aa. Sen. …Poşeti sıcak tuttum.",
+          "es": "Ah. Tú. …Te guardé la bolsa calentita.",
+          "fr": "Oh. Toi. …J'ai gardé le sac au chaud.",
+          "de": "Oh. Du. …Ich hab die Tüte warm gehalten.",
+          "ru": "О. Ты. …Я грела для тебя пакет.",
+          "ar": "أوه. أنت. …أبقيتُ الكيس دافئًا.",
+          "pt-BR": "Ah. Você. …Guardei a sacola quentinha."
+        }
+      },
+      {
+        "id": "cb-02",
+        "mood": "smug",
+        "expression": "bored-on-purpose",
+        "move": "loaf",
+        "text": {
+          "en": "There you are. I was busy anyway. Welcome back.",
+          "tr": "İşte buradasın. Ben zaten meşguldüm. Hoş geldin."
+        }
+      },
+      {
+        "id": "cb-03",
+        "mood": "curious",
+        "expression": "curious",
+        "move": "ear-swivel",
+        "text": {
+          "en": "Look who's here. My ears noticed first.",
+          "tr": "Bak kim gelmiş. Önce kulaklarım fark etti."
+        }
+      },
+      {
+        "id": "cb-04",
+        "mood": "soft",
+        "expression": "slow-blink",
+        "move": "slow-blink",
+        "text": {
+          "en": "No questions. Just a slow blink. Welcome back.",
+          "tr": "Soru yok. Sadece yavaş bir göz kırpma. Hoş geldin."
+        }
+      },
+      {
+        "id": "cb-05",
+        "mood": "goof",
+        "expression": "sleepy",
+        "move": "loaf",
+        "text": {
+          "en": "Fresh start. I love those. I do one after every nap.",
+          "tr": "Yeni başlangıç. Bayılırım. Her şekerlemeden sonra bir tane yaparım."
+        }
+      },
+      {
+        "id": "cb-06",
+        "mood": "diva",
+        "expression": "proud",
+        "move": "counter-pose",
+        "text": {
+          "en": "Back? Good. The counter needed an audience.",
+          "tr": "Döndün mü? İyi. Tezgâhın seyirciye ihtiyacı vardı."
+        }
+      },
+      {
+        "id": "cb-07",
+        "mood": "proud",
+        "expression": "delighted",
+        "move": "tail-question",
+        "text": {
+          "en": "Day one, again. Day one is my favourite day.",
+          "tr": "Yine ilk gün. İlk gün en sevdiğim gün.",
+          "es": "Día uno, otra vez. El día uno es mi favorito.",
+          "fr": "Premier jour, encore. C'est mon jour préféré.",
+          "de": "Wieder Tag eins. Tag eins ist mein Lieblingstag.",
+          "ru": "Снова первый день. Первый день — мой любимый.",
+          "ar": "اليوم الأول من جديد. اليوم الأول هو المفضّل عندي.",
+          "pt-BR": "Dia um, de novo. Dia um é meu dia favorito."
+        }
+      },
+      {
+        "id": "cb-08",
+        "mood": "goof",
+        "expression": "innocent-stare",
+        "move": "innocent-stare",
+        "text": {
+          "en": "I didn't count. Cats can't count. Hi.",
+          "tr": "Saymadım. Kediler sayamaz. Selam."
+        }
+      },
+      {
+        "id": "cb-09",
+        "mood": "soft",
+        "expression": "purring",
+        "move": "sprawl-paw",
+        "text": {
+          "en": "Welcome back. I saved you the good side of the sofa.",
+          "tr": "Hoş geldin. Kanepenin iyi tarafını sana ayırdım."
+        }
+      },
+      {
+        "id": "cb-10",
+        "mood": "diva",
+        "expression": "triumphant",
+        "move": "model-turn",
+        "text": {
+          "en": "Every comeback needs a dramatic entrance. This is mine.",
+          "tr": "Her dönüş görkemli bir giriş ister. İşte benimki."
+        }
+      }
+    ],
+    "milestones": [
+      {
+        "id": "ms-1-a",
+        "day": 1,
+        "mood": "soft",
+        "expression": "loving-caught",
+        "move": "slow-blink",
+        "text": {
+          "en": "First day. I've already decided I like you.",
+          "tr": "İlk gün. Seni sevmeye çoktan karar verdim.",
+          "es": "Primer día. Ya decidí que me caes bien.",
+          "fr": "Premier jour. J'ai déjà décidé que je t'aime bien.",
+          "de": "Erster Tag. Ich hab schon beschlossen, dich zu mögen.",
+          "ru": "Первый день. Я уже решила, что мы подружимся.",
+          "ar": "اليوم الأول. قررتُ بالفعل أننا سنصبح أصدقاء.",
+          "pt-BR": "Primeiro dia. Já decidi que vou com a sua cara."
+        }
+      },
+      {
+        "id": "ms-1-b",
+        "day": 1,
+        "mood": "goof",
+        "expression": "embarrassed",
+        "move": "counter-pose",
+        "text": {
+          "en": "Hello. I'm Venus. Mostly ears. Some cat.",
+          "tr": "Merhaba. Ben Venüs. Çoğu kulak. Biraz da kedi."
+        }
+      },
+      {
+        "id": "ms-3-a",
+        "day": 3,
+        "mood": "smug",
+        "expression": "sceptical",
+        "move": "ear-swivel",
+        "text": {
+          "en": "Once is luck. Twice is chance. This is a habit.",
+          "tr": "Bir kere şans. İki kere tesadüf. Bu artık alışkanlık.",
+          "es": "Una vez, suerte. Dos, casualidad. Esto, costumbre.",
+          "fr": "Une fois, la chance. Deux, le hasard. Là, une habitude.",
+          "de": "Einmal Glück. Zweimal Zufall. Das hier: Gewohnheit.",
+          "ru": "Раз — удача. Два — случай. Это — привычка.",
+          "ar": "مرة حظ. مرتان صدفة. وهذه عادة.",
+          "pt-BR": "Uma vez é sorte. Duas, coincidência. Isso é hábito."
+        }
+      },
+      {
+        "id": "ms-3-b",
+        "day": 3,
+        "mood": "curious",
+        "expression": "curious",
+        "move": "bag-throne",
+        "text": {
+          "en": "A pattern is forming. I love patterns. And bags.",
+          "tr": "Bir düzen oluşuyor. Düzenleri severim. Poşetleri de."
+        }
+      },
+      {
+        "id": "ms-7-a",
+        "day": 7,
+        "mood": "diva",
+        "expression": "diva-pose",
+        "move": "model-turn",
+        "text": {
+          "en": "Seven days. My longest relationship was with a cardboard box. Three days.",
+          "tr": "Yedi gün. Benim en uzun ilişkim bir karton kutuyla. Üç gün sürdü.",
+          "es": "Siete días. Mi relación más larga: una caja. Tres días.",
+          "fr": "Sept jours. Ma plus longue relation : un carton. Trois jours.",
+          "de": "Sieben Tage. Meine längste Beziehung: ein Karton. Drei Tage.",
+          "ru": "Семь дней. Самые долгие отношения — с коробкой. Три дня.",
+          "ar": "سبعة أيام. أطول صداقة لي: صندوق. ثلاثة أيام.",
+          "pt-BR": "Sete dias. Minha relação mais longa: uma caixa. Três dias."
+        }
+      },
+      {
+        "id": "ms-7-b",
+        "day": 7,
+        "mood": "shocked",
+        "expression": "shocked",
+        "move": "innocent-stare",
+        "text": {
+          "en": "A week! My ears just stood up on their own.",
+          "tr": "Bir hafta! Kulaklarım kendiliğinden dikildi."
+        }
+      },
+      {
+        "id": "ms-10-a",
+        "day": 10,
+        "mood": "diva",
+        "expression": "proud",
+        "move": "model-turn",
+        "text": {
+          "en": "Double digits. I'm putting on the hoodie for this.",
+          "tr": "Çift hane. Bunun için kapüşonluyu giyiyorum.",
+          "es": "Dos cifras. Para esto me pongo la sudadera.",
+          "fr": "Deux chiffres. Pour ça, je mets le sweat à capuche.",
+          "de": "Zweistellig. Dafür ziehe ich den Hoodie an.",
+          "ru": "Двузначное число. Ради такого надену худи.",
+          "ar": "رقم من خانتين. سألبس الهودي لهذه المناسبة.",
+          "pt-BR": "Dois dígitos. Pra isso eu visto o moletom."
+        }
+      },
+      {
+        "id": "ms-10-b",
+        "day": 10,
+        "mood": "proud",
+        "expression": "triumphant",
+        "move": "bag-throne",
+        "text": {
+          "en": "This calls for the good bag.",
+          "tr": "Bu, iyi poşeti hak ediyor."
+        }
+      },
+      {
+        "id": "ms-14-a",
+        "day": 14,
+        "mood": "goof",
+        "expression": "sleepy",
+        "move": "loaf",
+        "text": {
+          "en": "I measure time in naps. That's a lot of naps.",
+          "tr": "Zamanı şekerlemeyle ölçerim. Bu çok şekerleme eder.",
+          "es": "Mido el tiempo en siestas. Eso son muchas siestas.",
+          "fr": "Je compte le temps en siestes. Ça fait beaucoup de siestes.",
+          "de": "Ich messe Zeit in Nickerchen. Das sind viele Nickerchen.",
+          "ru": "Я меряю время дрёмами. Это очень много дрём.",
+          "ar": "أقيس الوقت بالقيلولات. هذه قيلولات كثيرة.",
+          "pt-BR": "Eu meço o tempo em sonecas. Isso dá muita soneca."
+        }
+      },
+      {
+        "id": "ms-14-b",
+        "day": 14,
+        "mood": "soft",
+        "expression": "loving-caught",
+        "move": "slow-blink",
+        "text": {
+          "en": "Two weeks. I've changed bags twice. You stayed.",
+          "tr": "İki hafta. Ben iki kere poşet değiştirdim. Sen kaldın."
+        }
+      },
+      {
+        "id": "ms-21-a",
+        "day": 21,
+        "mood": "smug",
+        "expression": "smug",
+        "move": "squint",
+        "text": {
+          "en": "They say this makes a habit. 'They' is me.",
+          "tr": "Alışkanlık böyle oluşurmuş diyorlar. Diyen benim.",
+          "es": "Dicen que así nace un hábito. ¿Quién lo dice? Yo.",
+          "fr": "On dit qu'une habitude naît comme ça. « On », c'est moi.",
+          "de": "So wird’s zur Gewohnheit, sagt man. „Man“ bin ich.",
+          "ru": "Говорят, так рождается привычка. Говорю это я.",
+          "ar": "يقولون هكذا تولد العادة. ومن يقول؟ أنا.",
+          "pt-BR": "Dizem que é assim que nasce um hábito. Quem diz sou eu."
+        }
+      },
+      {
+        "id": "ms-21-b",
+        "day": 21,
+        "mood": "impressed",
+        "expression": "impressed",
+        "move": "ear-swivel",
+        "text": {
+          "en": "Even my ears are impressed. And they are huge.",
+          "tr": "Kulaklarım bile etkilendi. Ve onlar kocaman."
+        }
+      },
+      {
+        "id": "ms-30-a",
+        "day": 30,
+        "mood": "soft",
+        "expression": "slow-blink",
+        "move": "slow-blink",
+        "text": {
+          "en": "A whole month. I'm doing the slow blink. Brace yourself.",
+          "tr": "Koca bir ay. Yavaşça göz kırpıyorum. Hazır ol.",
+          "es": "Un mes entero. Toca parpadeo lento. Prepárate.",
+          "fr": "Un mois entier. Clignement lent en approche. Accroche-toi.",
+          "de": "Ein ganzer Monat. Zeit fürs langsame Blinzeln. Festhalten.",
+          "ru": "Целый месяц. Сейчас будет медленное моргание. Держись.",
+          "ar": "شهر كامل. رمشة بطيئة. لحظة تاريخية.",
+          "pt-BR": "Um mês inteiro. Lá vem o piscar lento. Se segura."
+        }
+      },
+      {
+        "id": "ms-30-b",
+        "day": 30,
+        "mood": "diva",
+        "expression": "triumphant",
+        "move": "bag-throne",
+        "text": {
+          "en": "A month! I'm wearing my fanciest bag.",
+          "tr": "Bir ay! En şık poşetimi giydim."
+        }
+      },
+      {
+        "id": "ms-50-a",
+        "day": 50,
+        "mood": "diva",
+        "expression": "diva-pose",
+        "move": "counter-pose",
+        "text": {
+          "en": "This one deserves the counter pose. Hold on.",
+          "tr": "Bu, tezgâh pozunu hak ediyor. Bekle.",
+          "es": "Esto merece mi pose sobre la mesa. Un momento.",
+          "fr": "Celui-là mérite la pose du plan de travail. Attends.",
+          "de": "Das verdient die Arbeitsplatten-Pose. Moment.",
+          "ru": "Это заслуживает позы на столешнице. Секунду.",
+          "ar": "هذا يستحق وقفتي على طاولة المطبخ. لحظة.",
+          "pt-BR": "Essa merece a pose na bancada. Peraí."
+        }
+      },
+      {
+        "id": "ms-50-b",
+        "day": 50,
+        "mood": "shocked",
+        "expression": "shocked",
+        "move": "innocent-stare",
+        "text": {
+          "en": "Halfway to something huge. I'm already on the counter.",
+          "tr": "Büyük bir şeyin yarısı. Ben çoktan tezgâha çıktım."
+        }
+      },
+      {
+        "id": "ms-100-a",
+        "day": 100,
+        "mood": "shocked",
+        "expression": "shocked",
+        "move": "innocent-stare",
+        "text": {
+          "en": "Mrrr… more than acceptable. That's never happened.",
+          "tr": "Mırr… kabul edilebilirin de üstünde. Bu hiç olmamıştı.",
+          "es": "Mrrr… más que aceptable. Primera vez.",
+          "fr": "Mrrr… plus qu'acceptable. Jamais vu ça.",
+          "de": "Mrrr… mehr als akzeptabel. Premiere.",
+          "ru": "Мррр… более чем приемлемо. Впервые.",
+          "ar": "مرررر… أكثر من مقبول. لأول مرة.",
+          "pt-BR": "Mrrr… mais que aceitável. Inédito."
+        }
+      },
+      {
+        "id": "ms-100-b",
+        "day": 100,
+        "mood": "goof",
+        "expression": "blep",
+        "move": "blep",
+        "text": {
+          "en": "I'm speechless. Tongue's out, but speechless.",
+          "tr": "Dilim tutuldu. Dışarıda ama tutuldu."
+        }
+      },
+      {
+        "id": "ms-200-a",
+        "day": 200,
+        "mood": "impressed",
+        "expression": "flustered",
+        "move": "ear-swivel",
+        "text": {
+          "en": "I've run out of verdicts. Fine: magnificent.",
+          "tr": "Kararlarım bitti. Peki: muhteşem.",
+          "es": "Me quedé sin veredictos. Bueno: magnífico.",
+          "fr": "Je n'ai plus de verdicts. Bon : magnifique.",
+          "de": "Mir gehen die Urteile aus. Na gut: großartig.",
+          "ru": "У меня закончились вердикты. Ладно: великолепно.",
+          "ar": "نفدت أحكامي. حسنًا: مُبهِر.",
+          "pt-BR": "Acabaram meus veredictos. Tá bom: magnífico."
+        }
+      },
+      {
+        "id": "ms-200-b",
+        "day": 200,
+        "mood": "goof",
+        "expression": "embarrassed",
+        "move": "counter-pose",
+        "text": {
+          "en": "I practised a bow for this. Fell over. Still counts.",
+          "tr": "Bunun için reverans çalıştım. Devrildim. Yine de sayılır."
+        }
+      },
+      {
+        "id": "ms-365-a",
+        "day": 365,
+        "mood": "proud",
+        "expression": "triumphant",
+        "move": "model-turn",
+        "text": {
+          "en": "A whole year. Even a queen bows. Briefly.",
+          "tr": "Koca bir yıl. Kraliçe bile eğilir. Kısacık.",
+          "es": "Un año entero. Hasta una reina se inclina. Un poquito.",
+          "fr": "Une année entière. Même une reine s'incline. Brièvement.",
+          "de": "Ein ganzes Jahr. Sogar eine Königin verneigt sich. Kurz.",
+          "ru": "Целый год. Даже королева кланяется. Ненадолго.",
+          "ar": "سنة كاملة. حتى الملكة تنحني. للحظة.",
+          "pt-BR": "Um ano inteiro. Até uma rainha faz reverência. Rapidinho."
+        }
+      },
+      {
+        "id": "ms-365-b",
+        "day": 365,
+        "mood": "soft",
+        "expression": "loving-caught",
+        "move": "bag-throne",
+        "text": {
+          "en": "A year of you. The bag is yours now. Probably.",
+          "tr": "Bir yıl seninle. Poşet artık senin. Galiba."
+        }
+      }
+    ]
+  },
+  "stickers": [
+    {
+      "id": "st-judge",
+      "from": "photo 9",
+      "pose": "The Squint from below: head tilted, half lids, slit pupils, one ear swivelled.",
+      "use": "\"hmm\", \"really?\", reacting to a bold claim"
+    },
+    {
+      "id": "st-blep",
+      "from": "photo 14",
+      "pose": "Tongue tip out, eyes wide, completely unaware.",
+      "use": "oops, silly, \"I forgot what I was saying\""
+    },
+    {
+      "id": "st-throne",
+      "from": "photos 15, 16",
+      "pose": "Sitting bolt upright in the yellow bag, handles tied like a crown frame, chin up.",
+      "use": "queen energy, \"I have arrived\", flex"
+    },
+    {
+      "id": "st-beans",
+      "from": "photo 18",
+      "pose": "Sprawled sideways, one paw shoved at the camera, pink beans filling a third of the sticker.",
+      "use": "high five, \"stop\", \"gimme\""
+    },
+    {
+      "id": "st-innocent",
+      "from": "photo 19",
+      "pose": "Loaf on the sofa crease, perfectly still, pupils huge and round.",
+      "use": "\"who, me?\", innocent, listening hard"
+    },
+    {
+      "id": "st-onesie",
+      "from": "photo 11",
+      "pose": "Crouched in the pink elephant onesie, ears at full height, dead serious.",
+      "use": "dignity under pressure, awkward but fine"
+    },
+    {
+      "id": "st-hoodie",
+      "from": "photo 20",
+      "pose": "Standing in the red snowflake hoodie, long neck, looking up at the viewer.",
+      "use": "seasonal (New Year, winter holidays), cosy"
+    },
+    {
+      "id": "st-counter",
+      "from": "photo 21",
+      "pose": "Sitting tall on a ledge, paws together, tail hanging with a curled tip.",
+      "use": "waiting, \"well?\", patient judge"
+    },
+    {
+      "id": "st-question",
+      "from": "photo 13",
+      "pose": "Side-on walk, long legs, tail up in a question mark.",
+      "use": "curious, \"what is this?\", on my way"
+    },
+    {
+      "id": "st-perch",
+      "from": "photo 17",
+      "pose": "Leaning off the sofa edge, front paw reaching down, eyes locked upward on something.",
+      "use": "focus, \"something moved\", hunting a word"
+    },
+    {
+      "id": "st-slowblink",
+      "from": "personality.md (universal cat)",
+      "pose": "Eyes gently closed, head lowered, tiny sparkle above one ear.",
+      "use": "thank you, cat \"I love you\" (friendly, never romantic)"
+    },
+    {
+      "id": "st-bagnap",
+      "from": "photos 15, 16 + loaf",
+      "pose": "Asleep in the bag, only the ears and the dark tail tip showing above the rim.",
+      "use": "goodnight, offline, \"later\""
+    }
+  ]
+}

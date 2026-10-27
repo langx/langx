@@ -2796,6 +2796,8 @@ export const tr: Localized<EnMessages> = {
     buy: '{title} satın al',
     free: 'Herkese ücretsiz. Her sohbetten gönderebilirsin.',
     owned: 'Senin. Her sohbetten gönderebilirsin.',
+    addToWhatsApp: 'WhatsApp’a ekle',
+    addToWhatsAppFailed: 'WhatsApp açılmadı. Birazdan yeniden dene.',
     seePack: 'Paketi gör',
   },
 
@@ -3680,9 +3682,9 @@ export const tr: Localized<EnMessages> = {
     nearby: 'Yakında',
     nearbyBody:
       'Kişileri mesafeye göre sırala. Konumun yuvarlanır; başkaları yalnızca kaba bir mesafe görür.',
-    copilot: 'Yapay zekâ yardımcısı',
+    copilot: 'Daha çok Copilot yanıtı',
     copilotBody:
-      'Yazarken mesajları kurmana ve anlamana yardım eder. Hesabında henüz açık olmayabilir.',
+      'Yazarken mesajları kurmana ve anlamana yardım eder. Ücretsiz planda günde {count} tane.',
     quotaNotice:
       'Bugünkü {count} yeni sohbet hakkını kullandın. Sana gelen her mesaja sınırsız cevap vermeye devam edebilirsin.',
     manageNotice: '{plan} kullanıyorsun. Mağaza hesabından yönetebilir ya da iptal edebilirsin.',
@@ -3781,10 +3783,10 @@ export const tr: Localized<EnMessages> = {
     compareNewChats: 'Günlük yeni sohbet',
     compareTranslations: 'Günlük çeviri',
     compareLanguages: 'Öğrendiğin diller',
+    compareCopilot: 'Günlük Copilot yanıtı',
     compareUnlimited: 'Sınırsız',
     compareSoon: 'Yakında',
-    compareBeta: 'Beta',
-    betaTag: 'Beta, kademeli açılıyor',
+    betaTag: 'Beta',
     compareIncluded: 'Dahil',
     compareNotIncluded: 'Dahil değil',
     yearlyBadge: '{perMonth} · {saving}',

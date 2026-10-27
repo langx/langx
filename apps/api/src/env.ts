@@ -166,6 +166,46 @@ const envSchema = z.object({
   IG_PAGE_TOKEN: emptyToUndefined(z.string().optional()),
   IG_ACCOUNT_ID: emptyToUndefined(z.string().optional()),
   /**
+   * Venus's day videos on our own accounts (`modules/social`,
+   * `docs/social-autoposting.md`). Instagram needs nothing new: it posts
+   * with `IG_PAGE_TOKEN` above, once that token has been granted
+   * `instagram_business_content_publish`.
+   *
+   * `FB_PAGE_ID` and `FB_PAGE_TOKEN` are the LangX Facebook Page's id and a
+   * Page access token with `pages_manage_posts`, `pages_read_engagement` and
+   * `pages_show_list` — Graph API Explorer → the Page → "Get Page Access
+   * Token", from a long-lived user token so it never expires.
+   *
+   * The `YOUTUBE_*` three are an OAuth client of a Google Cloud project with
+   * the YouTube Data API v3 enabled, and the refresh token the channel's
+   * owner granted it with the `youtube.upload` scope.
+   *
+   * The `TIKTOK_*` three are a TikTok for Developers app's client key and
+   * secret and the refresh token the account granted it — `video.upload`,
+   * plus `video.publish` for direct posting. TikTok may hand back a new
+   * refresh token on each refresh; the newest is kept in `socialTokens`, and
+   * this one is only where it starts.
+   *
+   * Each platform is optional on its own: without its keys it has no
+   * adapter, its rows fail as "not connected" when due, and nothing else is
+   * touched. And none of it posts anything until `flags.socialAutopost` is on.
+   */
+  FB_PAGE_ID: emptyToUndefined(z.string().optional()),
+  FB_PAGE_TOKEN: emptyToUndefined(z.string().optional()),
+  YOUTUBE_CLIENT_ID: emptyToUndefined(z.string().optional()),
+  YOUTUBE_CLIENT_SECRET: emptyToUndefined(z.string().optional()),
+  YOUTUBE_REFRESH_TOKEN: emptyToUndefined(z.string().optional()),
+  TIKTOK_CLIENT_KEY: emptyToUndefined(z.string().optional()),
+  TIKTOK_CLIENT_SECRET: emptyToUndefined(z.string().optional()),
+  TIKTOK_REFRESH_TOKEN: emptyToUndefined(z.string().optional()),
+  /**
+   * `inbox` uploads each TikTok as a draft Behic posts with one tap — the
+   * only public route for an app TikTok has not audited, which may direct
+   * post `SELF_ONLY` and nothing else. `direct` posts it publicly, and is
+   * for after the audit. See `modules/social/tiktok.ts`.
+   */
+  TIKTOK_POST_MODE: z.enum(['inbox', 'direct']).default('inbox'),
+  /**
    * The Reply-To on campaign mail, for a deployment sending from a
    * `no-reply@`: campaigns say "reply to this email, it reaches a human" and
    * that needs somewhere to go. langx.io leaves it unset, because

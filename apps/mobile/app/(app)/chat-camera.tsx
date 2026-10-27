@@ -37,6 +37,7 @@ import {
   cameraFilter,
   DEFAULT_CAMERA_FILTER,
   isOriginal,
+  wrapIndex,
   type CameraFilterId,
 } from '../../src/lib/cameraFilters'
 import { impact, notification, selection } from '../../src/lib/haptics'
@@ -86,11 +87,27 @@ const RECORDING = '#ff3b30'
 /** How long a press has to last before it is a video rather than a photo. */
 const HOLD_MS = 260
 /**
- * How long the camera is given to switch to video before recording starts.
- * Android rebinds the whole camera for the switch, iOS only adds an output to
- * a running session; `onCameraReady` starts it sooner where it fires again.
+ * The mode the camera sits in between clips.
+ *
+ * On iOS that is video, the whole time the viewfinder is open. expo-camera's
+ * photo output stays in the session in either mode, so a tap still takes the
+ * same 1920x1080 still (`videoQuality` and `pictureSize` are one preset); but
+ * a switch from picture to video adds a movie output and, the first time, the
+ * microphone's input to the running session in one reconfiguration, and
+ * iPhone blanks or freezes the preview while the capture graph is rebuilt and
+ * the audio session moves to recording. That was the black flicker on the
+ * first hold of every camera opening. Resting in video, the session is built
+ * once, before its first frame is shown, and a hold just starts the file.
+ *
+ * Android cannot: expo-camera binds CameraX's still capture only in picture
+ * mode, so a photo needs it, and each clip still rebinds the camera.
  */
-const MODE_SETTLE_MS = Platform.OS === 'android' ? 700 : 250
+const RESTING_MODE: 'picture' | 'video' = Platform.OS === 'ios' ? 'video' : 'picture'
+/**
+ * How long Android's camera is given to rebind for video before recording
+ * starts; `onCameraReady` starts it sooner where it fires again.
+ */
+const MODE_SETTLE_MS = 700
 /**
  * Five megabits. A phone's default for 1080p is about three times that, which
  * puts a full minute at well over `MAX_VIDEO_BYTES`; at this rate the minute
@@ -191,9 +208,12 @@ export default function SnapScreen() {
     AccessibilityInfo.announceForAccessibility(t(FILTER_LABEL[next]))
   }
 
-  /** A screen reader's swipe up or down on the preview: the next filter or the one before. */
+  /**
+   * A screen reader's swipe up or down on the preview: the next filter or the
+   * one before, round the ends as the sideways swipe goes (`wrapIndex`).
+   */
   function stepFilter(direction: 1 | -1): void {
-    const index = CAMERA_FILTER_IDS.indexOf(filter) + direction
+    const index = wrapIndex(CAMERA_FILTER_IDS.indexOf(filter), direction, CAMERA_FILTER_IDS.length)
     const next = CAMERA_FILTER_IDS[index]
     if (next) pickFilter(next)
   }
@@ -486,8 +506,7 @@ function SnapCamera({
   const camera = useRef<CameraView>(null)
   const [facing, setFacing] = useState<CameraType>('back')
   const [flash, setFlash] = useState<'off' | 'on'>('off')
-  const [cameraMode, setCameraMode] = useState<'picture' | 'video'>('picture')
-  const [muted, setMuted] = useState(false)
+  const [cameraMode, setCameraMode] = useState<'picture' | 'video'>(RESTING_MODE)
   const [recording, setRecording] = useState(false)
   const [elapsed, setElapsed] = useState(0)
   /** Per lens: the front and back cameras offer different sizes. */
@@ -638,17 +657,20 @@ function SnapCamera({
     void impact('medium')
     // Asked on the first hold, not when the camera opens: a photo needs no
     // microphone, and asking for one up front would be asking for nothing.
-    // Refused, the video is still recorded — without its sound.
-    let withoutSound = false
+    // Refused, the video is still recorded — without its sound (`mute`).
     if (!microphone?.granted) {
       const answer = await requestMicrophone()
-      withoutSound = !answer.granted
+      // Granted just now: the prompt took the finger off the shutter, and the
+      // session takes the microphone in as the answer lands, a reconfiguration
+      // of its own. Hold again, on a picture that has settled.
+      if (answer.granted) return
     }
     // A permission prompt takes the finger off the shutter. Hold again.
     if (!holding.current) return
-    setMuted(withoutSound)
     wantsRecording.current = true
-    setCameraMode('video')
+    // Already there on iOS (`RESTING_MODE`): nothing to wait for.
+    if (cameraMode === 'video') void record()
+    else setCameraMode('video')
   }
 
   async function record(): Promise<void> {
@@ -656,7 +678,7 @@ function SnapCamera({
     wantsRecording.current = false
     const view = camera.current
     if (!holding.current || !view) {
-      setCameraMode('picture')
+      setCameraMode(RESTING_MODE)
       return
     }
     recordingNow.current = true
@@ -690,7 +712,7 @@ function SnapCamera({
     } finally {
       recordingNow.current = false
       setRecording(false)
-      setCameraMode('picture')
+      setCameraMode(RESTING_MODE)
     }
   }
 
@@ -712,7 +734,10 @@ function SnapCamera({
     if (recordingNow.current) camera.current?.stopRecording()
   }
 
-  if (!permission) {
+  // The microphone's answer too, before the camera is built: `mute` follows
+  // it, and on iOS a `mute` that changed after the session started would
+  // reconfigure it, the very flicker `RESTING_MODE` keeps off the picture.
+  if (!permission || !microphone) {
     return (
       <View style={styles.centre}>
         <ActivityIndicator color={ON_STAGE} />
@@ -799,14 +824,24 @@ function SnapCamera({
           flash={flash}
           enableTorch={recording && flash === 'on'}
           mirror={facing === 'front'}
-          mute={muted}
+          // Unmuted only with the microphone already allowed: on iOS, resting in
+          // video, an unmuted session takes the microphone in as it is built,
+          // and creating that input unasked would put up the system's prompt
+          // on opening. Refused, clips are recorded without sound.
+          mute={!microphone.granted}
           // On iOS this is the same session preset as the still's 1920x1080
-          // `pictureSize`, so a switch to video keeps the capture format, and
-          // with it the zoom's scale: the prop means the same magnification in
-          // both modes. Only before the sizes are known (or where a camera has
-          // no 16:9 size) do the two presets differ.
+          // `pictureSize`, and since the camera rests in video there
+          // (`RESTING_MODE`) it is the preset stills are taken at too: the
+          // 16:9 still the picture mode would give, at the same zoom scale.
           videoQuality="1080p"
           videoBitrate={VIDEO_BITRATE}
+          // Off, not expo-camera's 'auto': iOS applies it to the recording's
+          // connection as `recordAsync` starts, and the first change from the
+          // connection's own 'off' rebuilds the capture graph — a black frame
+          // and a crop of the picture a third of a second into the first hold
+          // (TestFlight 204). Later holds found it already set, so only the
+          // first one showed it.
+          videoStabilizationMode="off"
           // Where the last pinch came to rest, so a render between pinches
           // carries the zoom rather than expo-camera's default of 0; while the
           // fingers move, `animatedProps` carries it without a render.

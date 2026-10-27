@@ -1,5 +1,6 @@
 import { PLAN_LIMITS, PRO_BENEFITS, type PlanLimits, type PlanTier } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
+import { en } from '../i18n/messages/en'
 import {
   BENEFIT_COPY,
   COMPARE_LEAD,
@@ -62,19 +63,42 @@ describe('compareRows', () => {
     }
   })
 
-  it('never ticks a feature that is not on for every buyer, and puts it last', () => {
+  it('puts a feature in beta or not shipped last, and never ticks one that has not shipped', () => {
     const rows = compareRows()
     const partial = PRO_BENEFITS.filter((benefit) => !fullyOn(BENEFIT_COPY[benefit]))
     expect(partial).toContain('copilot')
     for (const benefit of partial) {
-      expect(row(benefit).pro).toEqual({ kind: BENEFIT_COPY[benefit].shipped ? 'beta' : 'soon' })
+      if (!BENEFIT_COPY[benefit].shipped) expect(row(benefit).pro).toEqual({ kind: 'soon' })
     }
     expect(rows.slice(-partial.length).map((r) => r.benefit)).toEqual(partial)
+    for (const benefit of PRO_BENEFITS.filter((b) => fullyOn(BENEFIT_COPY[b]))) {
+      expect(row(benefit).tag).toBeNull()
+    }
   })
 
-  it('reads Copilot as a beta, not as coming', () => {
+  it('reads Copilot as both plans’ allowance, with Beta beside it', () => {
     expect(BENEFIT_COPY.copilot).toMatchObject({ shipped: true, beta: true })
-    expect(row('copilot').pro).toEqual({ kind: 'beta' })
+    expect(row('copilot')).toEqual({
+      benefit: 'copilot',
+      label: 'paywall.compareCopilot',
+      tag: 'paywall.betaTag',
+      free: { kind: 'count', count: PLAN_LIMITS.free.copilotPer24h },
+      pro: { kind: 'count', count: PLAN_LIMITS.pro.copilotPer24h },
+    })
+  })
+
+  it('never reads Copilot as Pro-only, whatever its capability flag says', () => {
+    const cells = row('copilot')
+    expect(cells.free).not.toEqual({ kind: 'no' })
+    expect(cells.pro).not.toEqual({ kind: 'yes' })
+    const changed: Record<PlanTier, PlanLimits> = {
+      free: { ...PLAN_LIMITS.free, copilotPer24h: 5 },
+      pro: { ...PLAN_LIMITS.pro, copilotPer24h: 40 },
+    }
+    expect(row('copilot', changed)).toMatchObject({
+      free: { kind: 'count', count: 5 },
+      pro: { kind: 'count', count: 40 },
+    })
   })
 
   it('gives the welcome pack to Pro only', () => {
@@ -130,6 +154,20 @@ describe('benefitsHeld', () => {
     expect(gift).not.toContain('welcomePack')
     expect(gift).toHaveLength(PRO_BENEFITS.length - 1)
     expect(benefitsHeld({})).toEqual(gift)
+  })
+})
+
+describe('the Copilot copy', () => {
+  it('quotes the free plan’s allowance from PLAN_LIMITS', () => {
+    expect(BENEFIT_COPY.copilot.vars).toEqual({ count: PLAN_LIMITS.free.copilotPer24h })
+    expect(en.paywall.copilotBody).toContain('{count}')
+  })
+
+  it('says Beta, and no longer that it is rolling out or may not be on', () => {
+    expect(en.paywall.betaTag).toBe('Beta')
+    for (const words of [en.paywall.copilot, en.paywall.copilotBody, en.paywall.betaTag]) {
+      expect(words).not.toMatch(/rolling out|may not be on/i)
+    }
   })
 })
 

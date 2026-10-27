@@ -1,6 +1,6 @@
 {
   "name": "langx",
-  "version": "3.0",
+  "version": "3.1",
   "private": true,
   "description": "LangX v2 \u2014 language exchange app (Expo mobile/web + Fastify API + MongoDB Atlas)",
   "license": "BSD-3-Clause",
@@ -46,6 +46,9 @@
       "fast-uri@>=4.0.0 <4.1.5": "^4.1.5",
       "ip-address@<10.7.1": "^10.7.1",
       "engine.io@>=6.6.0 <6.6.10": "^6.6.10"
+    },
+    "patchedDependencies": {
+      "expo-media-library@57.0.5": "patches/expo-media-library@57.0.5.patch"
     }
   }
 }

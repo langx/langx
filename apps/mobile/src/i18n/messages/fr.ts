@@ -2866,6 +2866,8 @@ export const fr: Localized<EnMessages> = {
     buy: 'Acheter {title}',
     free: 'Gratuit pour tout le monde. Envoie-les depuis n’importe quelle discussion.',
     owned: 'Il est à toi. Envoie-les depuis n’importe quelle discussion.',
+    addToWhatsApp: 'Ajouter à WhatsApp',
+    addToWhatsAppFailed: 'WhatsApp ne s’est pas ouvert. Réessaie dans un instant.',
     seePack: 'Voir le pack',
   },
 
@@ -3766,9 +3768,9 @@ export const fr: Localized<EnMessages> = {
     nearby: 'À proximité',
     nearbyBody:
       'Trie par distance. Ta position est arrondie ; les autres ne voient qu’une distance approximative.',
-    copilot: 'Copilote IA',
+    copilot: 'Plus de réponses de Copilot',
     copilotBody:
-      'T’aide à formuler et à comprendre les messages pendant que tu écris. Il n’est peut-être pas encore activé sur ton compte.',
+      'T’aide à formuler et à comprendre les messages pendant que tu écris. {count} par jour sur le forfait gratuit.',
     quotaNotice:
       'Tu as utilisé tes {count} nouvelles discussions du jour. Tu peux toujours répondre à tout ce que tu reçois, sans limite.',
     manageNotice: 'Tu es sur {plan}. Gère-le ou annule-le depuis ton compte du store.',
@@ -3868,10 +3870,10 @@ export const fr: Localized<EnMessages> = {
     compareNewChats: 'Nouvelles discussions par jour',
     compareTranslations: 'Traductions par jour',
     compareLanguages: 'Langues apprises',
+    compareCopilot: 'Réponses de Copilot par jour',
     compareUnlimited: 'Sans limite',
     compareSoon: 'Bientôt',
-    compareBeta: 'Bêta',
-    betaTag: 'Bêta, déploiement progressif',
+    betaTag: 'Bêta',
     compareIncluded: 'Inclus',
     compareNotIncluded: 'Non inclus',
     yearlyBadge: '{perMonth} · {saving}',

@@ -1358,6 +1358,24 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { createdAt: 1 }, name: 'ttl_60s', expireAfterSeconds: 60 },
   ],
 
+  [COLLECTIONS.socialPosts]: [
+    /**
+     * One row per slot per platform, ever. An import run twice, two imports
+     * racing, or a hand-written insert all meet this rather than a second
+     * row the scheduler would post a second time. The claim from `approved`
+     * to `publishing` keeps one row to one poster; this keeps one slot to
+     * one row.
+     */
+    {
+      key: { calendarVersion: 1, dayOffset: 1, platform: 1 },
+      name: 'calendar_slot_platform_unique',
+      unique: true,
+    },
+    // The scheduler's question — what is approved and due — and the stale
+    // claims it puts right, both by status first.
+    { key: { status: 1, dueAt: 1 }, name: 'status_due_at' },
+  ],
+
   [COLLECTIONS.shareCards]: [
     // The purge reads this to find a deleted account's cards; without it that
     // is a collection scan per deletion.

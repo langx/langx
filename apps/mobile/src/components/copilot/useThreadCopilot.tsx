@@ -391,8 +391,11 @@ function answerOf(ideas: readonly string[]): CopilotAnswerState {
 
 const useStyles = makeStyles(({ v3 }) => ({
   // The composer's own gutter and ground, so the card reads as part of it.
+  // Padded below as well as above: the composer opens on a hairline, and
+  // without the gap the chip or card sits flush on it.
   cardSlot: {
     backgroundColor: v3.colors.bg,
+    paddingBottom: v3.space[8],
     paddingHorizontal: v3.space[12],
     paddingTop: v3.space[8],
   },

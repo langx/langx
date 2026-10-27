@@ -1,0 +1,44 @@
+{
+  "source": "apps/mobile/src/i18n/messages/<locale>.ts → streak.heroUnit",
+  "copiedAt": "2026-10-23",
+  "units": {
+    "tr": {
+      "one": "günlük seri",
+      "other": "günlük seri"
+    },
+    "en": {
+      "one": "day streak",
+      "other": "day streak"
+    },
+    "es": {
+      "one": "día de racha",
+      "other": "días de racha"
+    },
+    "fr": {
+      "one": "jour de série",
+      "other": "jours de série"
+    },
+    "de": {
+      "one": "Tag in Folge",
+      "other": "Tage in Folge"
+    },
+    "ru": {
+      "one": "день подряд",
+      "few": "дня подряд",
+      "many": "дней подряд",
+      "other": "дня подряд"
+    },
+    "ar": {
+      "zero": "يوم متتالٍ",
+      "one": "يوم متتالٍ",
+      "two": "يومان متتاليان",
+      "few": "أيام متتالية",
+      "many": "يومًا متتاليًا",
+      "other": "يوم متتالٍ"
+    },
+    "pt-BR": {
+      "one": "dia de sequência",
+      "other": "dias de sequência"
+    }
+  }
+}

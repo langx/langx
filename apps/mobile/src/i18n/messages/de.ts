@@ -2881,6 +2881,8 @@ export const de: Localized<EnMessages> = {
     buy: '{title} kaufen',
     free: 'Für alle kostenlos. Schick sie aus jedem Chat.',
     owned: 'Gehört dir. Schick sie aus jedem Chat.',
+    addToWhatsApp: 'Zu WhatsApp hinzufügen',
+    addToWhatsAppFailed: 'WhatsApp hat sich nicht geöffnet. Versuch es gleich noch einmal.',
     seePack: 'Paket ansehen',
   },
 
@@ -3782,9 +3784,9 @@ export const de: Localized<EnMessages> = {
     nearby: 'In der Nähe',
     nearbyBody:
       'Sortiere nach Entfernung. Dein Standort wird gerundet; andere sehen nur eine grobe Entfernung.',
-    copilot: 'KI-Copilot',
+    copilot: 'Mehr Copilot-Antworten',
     copilotBody:
-      'Hilft beim Formulieren und Verstehen von Nachrichten, während du schreibst. Für dein Konto ist er vielleicht noch nicht aktiv.',
+      'Hilft beim Formulieren und Verstehen von Nachrichten, während du schreibst. {count} am Tag im kostenlosen Tarif.',
     quotaNotice:
       'Du hast deine {count} neuen Chats für heute aufgebraucht. Auf alles, was du bekommst, kannst du weiter unbegrenzt antworten.',
     manageNotice: 'Du hast {plan}. Verwalte oder kündige es in deinem Store-Konto.',
@@ -3884,10 +3886,10 @@ export const de: Localized<EnMessages> = {
     compareNewChats: 'Neue Chats pro Tag',
     compareTranslations: 'Übersetzungen pro Tag',
     compareLanguages: 'Sprachen, die du lernst',
+    compareCopilot: 'Copilot-Antworten pro Tag',
     compareUnlimited: 'Unbegrenzt',
     compareSoon: 'Bald',
-    compareBeta: 'Beta',
-    betaTag: 'Beta, schrittweise verfügbar',
+    betaTag: 'Beta',
     compareIncluded: 'Enthalten',
     compareNotIncluded: 'Nicht enthalten',
     yearlyBadge: '{perMonth} · {saving}',

@@ -291,11 +291,15 @@ export interface PlanLimits {
    * The AI language copilot — the one paid feature v1 ever promised publicly
    * (`architecture.md:425`).
    *
-   * Paid: unlike nearby, a copilot call has a real per-request cost. **In
-   * beta** — it answers every account, behind `flags.copilotEnabled`, and what it meters is `copilotPer24h`, which gives
-   * the free tier a small taste. This flag is what the paywall copy reads; the
-   * app's `BenefitCopy.beta` is what makes it say "Beta, rolling out" instead
-   * of a tick until every Pro account gets it.
+   * **Not a gate, and nothing reads it to refuse anybody.** Copilot is a beta
+   * on every plan: it answers every account behind `flags.copilotEnabled` and
+   * the person's consent, and the plans differ only in `copilotPer24h`, which
+   * is what the paywall sells — more answers a day, not a different feature.
+   * It stays `false` on free because `true` would mean taking `copilot` out of
+   * `PRO_FEATURES` — every entry there is false on free, and `rules.test.ts`
+   * holds it — and with it out of the paywall's `feature` param and its
+   * analytics, for no change anybody sees: the paywall never names it as part
+   * of Pro (`sellableFeature`).
    */
   copilot: boolean
   /**
@@ -487,6 +491,7 @@ export const PRO_FEATURES = [
   'profileViewerIdentities',
   'incognito',
   'nearby',
+  // Not enforced: every plan has Copilot. See `PlanLimits.copilot`.
   'copilot',
   'sendTranslation',
   'deckExport',

@@ -1,0 +1,316 @@
+{
+  "$comment": "DRAFT food and cat-habit quips (tr + en only). NOT wired into planDay: grammar.mjs reads data/quips.json, never this file. Nothing here is voiced. Lint: node lint-food-draft.mjs. Each line names the food item it would call for ('item', to go in that item's quips list) or the cat behaviour it needs.",
+  "status": "draft, 25 Oct 2026, awaiting Behic",
+  "pools": {
+    "praise": [
+      {
+        "id": "fd-02",
+        "formula": "D",
+        "mood": "proud",
+        "expression": "proud",
+        "move": "slow-blink",
+        "item": "boiled-chicken",
+        "text": {
+          "tr": "Haşlanmış tavuk seviyesi. En büyük nişanım. Alışma.",
+          "en": "Boiled chicken level. My highest honour. Don't get used to it."
+        }
+      },
+      {
+        "id": "fd-09",
+        "formula": "D",
+        "mood": "proud",
+        "expression": "loving-caught",
+        "move": "slow-blink",
+        "item": "hamsi",
+        "text": {
+          "tr": "Seninle gurur duyuyorum. Hamsi kadar. Bu büyük laf.",
+          "en": "Proud of you. Hamsi proud. That's the big one."
+        }
+      },
+      {
+        "id": "fd-13",
+        "formula": "B",
+        "mood": "impressed",
+        "expression": "impressed",
+        "move": "ear-swivel",
+        "item": "boiled-chicken",
+        "text": {
+          "tr": "Mırr… kabul edilebilir. …Haşlanmış tavuk ayarında. Nadir.",
+          "en": "Mrrr… acceptable. …Boiled-chicken acceptable. That's rare."
+        }
+      },
+      {
+        "id": "fd-17",
+        "formula": "D",
+        "mood": "soft",
+        "expression": "purring",
+        "move": "loaf",
+        "item": null,
+        "needs": "behaviour kneading: needs the knead move",
+        "text": {
+          "tr": "Pati pati yoğuruyorum. Mutluyum demek. Kimseye söyleme.",
+          "en": "I'm making biscuits. It means I'm happy. Don't tell anyone."
+        }
+      },
+      {
+        "id": "fd-22",
+        "formula": "B",
+        "mood": "impressed",
+        "expression": "delighted",
+        "move": "ear-swivel",
+        "item": "tuna-can",
+        "text": {
+          "tr": "Konserve mi açıldı? Kulaklar dik. …Aa, senmişsin. Daha iyi.",
+          "en": "A can opening? Ears up. …Oh, it's just you. Even better."
+        }
+      }
+    ],
+    "regular": [
+      {
+        "id": "fd-01",
+        "formula": "A",
+        "mood": "smug",
+        "expression": "smug",
+        "move": "innocent-stare",
+        "item": "hamsi",
+        "text": {
+          "tr": "Sana bir hamsi ayırdım. …Ayırdım dediysem.",
+          "en": "Saved you a hamsi. …Saved is a strong word."
+        }
+      },
+      {
+        "id": "fd-03",
+        "formula": "C",
+        "mood": "curious",
+        "expression": "curious",
+        "move": "ear-swivel",
+        "item": "tuna-can",
+        "text": {
+          "tr": "Bugünkü karar şu ki… Konserve mi açıldı o?",
+          "en": "Today's verdict is… was that a can opening?"
+        }
+      },
+      {
+        "id": "fd-06",
+        "formula": "B",
+        "mood": "smug",
+        "expression": "unimpressed-fake",
+        "move": "tail-question",
+        "item": "treat-tube",
+        "text": {
+          "tr": "Krema ödül mü? Hıh. …Kulaklarıma bakma. Kuyruğuma da.",
+          "en": "Treat tube? Meh. …Ignore my ears. And my tail."
+        }
+      },
+      {
+        "id": "fd-10",
+        "formula": "C",
+        "mood": "goof",
+        "expression": "flustered",
+        "move": "blep",
+        "item": "catnip",
+        "text": {
+          "tr": "Konuşma hazırlamıştım. Sonra kedi otunu kokladım. …Merhaba.",
+          "en": "I prepared a speech. Then I smelled the catnip. …Hello."
+        }
+      },
+      {
+        "id": "fd-12",
+        "formula": "E",
+        "mood": "smug",
+        "expression": "smug",
+        "move": "counter-pose",
+        "item": "wet-food-pouch",
+        "text": {
+          "tr": "Gurme mama. Sosunu yaladım. Gerisi senin.",
+          "en": "Gourmet food. I licked the sauce. The rest is yours."
+        }
+      },
+      {
+        "id": "fd-14",
+        "formula": "A",
+        "mood": "diva",
+        "expression": "neutral-regal",
+        "move": "model-turn",
+        "item": "yogurt-lid",
+        "text": {
+          "tr": "Yoğurt kapağı benim. Açgözlülük değil bu. Gelenek.",
+          "en": "The yogurt lid is mine. That's not greed. That's tradition."
+        }
+      },
+      {
+        "id": "fd-16",
+        "formula": "A",
+        "mood": "goof",
+        "expression": "triumphant",
+        "move": "innocent-stare",
+        "item": null,
+        "needs": "behaviour zoomies (entrance zoomies exists)",
+        "text": {
+          "tr": "Senin şerefine koşturdum. Kanepeye çarptım. Değdi.",
+          "en": "I did the zoomies in your honour. Hit the sofa. Worth it."
+        }
+      },
+      {
+        "id": "fd-18",
+        "formula": "C",
+        "mood": "curious",
+        "expression": "curious",
+        "move": "ear-swivel",
+        "item": null,
+        "needs": "behaviour bird-chatter: needs a window prop and a chatter face",
+        "text": {
+          "tr": "Dışarıda kuş var. Ekekek. …Esniyordum sadece. Devam.",
+          "en": "There's a bird outside. Ekekek. …I was yawning. Continue."
+        }
+      },
+      {
+        "id": "fd-20",
+        "formula": "E",
+        "mood": "smug",
+        "expression": "smug",
+        "move": "counter-pose",
+        "item": null,
+        "needs": "behaviour sits-on-your-notes",
+        "text": {
+          "tr": "Önemli kâğıdın üstüne oturdum. Artık benim kâğıdım.",
+          "en": "I sat on the important paper. It's my paper now."
+        }
+      },
+      {
+        "id": "fd-23",
+        "formula": "A",
+        "mood": "sleepy",
+        "expression": "sleepy",
+        "move": "loaf",
+        "item": null,
+        "needs": "behaviour loaf (move loaf exists)",
+        "text": {
+          "tr": "Şu an somunum. Ekmek biçiminde. Tamamen kararlıyım.",
+          "en": "I'm a loaf now. Bread-shaped. Fully committed."
+        }
+      }
+    ],
+    "roast": [
+      {
+        "id": "fd-04",
+        "formula": "A",
+        "mood": "shocked",
+        "expression": "shocked",
+        "move": "innocent-stare",
+        "item": "empty-bowl",
+        "target": "self",
+        "text": {
+          "tr": "Kabım boş. …Yarısı dolu. Ama dibi görünüyor. Aynı şey.",
+          "en": "My bowl is empty. …It's half full. The bottom shows. Same thing."
+        }
+      },
+      {
+        "id": "fd-05",
+        "formula": "E",
+        "mood": "diva",
+        "expression": "diva-pose",
+        "move": "model-turn",
+        "item": "water-fountain",
+        "target": "self",
+        "text": {
+          "tr": "Bana su çeşmesi aldılar. Ben senin bardağından içerim. Tabii ki.",
+          "en": "They bought me a fountain. I drink from your glass. Obviously."
+        }
+      },
+      {
+        "id": "fd-07",
+        "formula": "A",
+        "mood": "goof",
+        "expression": "innocent-stare",
+        "move": "innocent-stare",
+        "item": "butter-dish",
+        "target": "self",
+        "text": {
+          "tr": "Tereyağını biri yalamış. Esrarengiz. …Bıyıklarım yağlı. Alakası yok.",
+          "en": "Someone licked the butter. A mystery. …My whiskers are greasy. Unrelated."
+        }
+      },
+      {
+        "id": "fd-08",
+        "formula": "E",
+        "mood": "goof",
+        "expression": "plotting",
+        "move": "counter-pose",
+        "item": "human-plate",
+        "target": "habit",
+        "text": {
+          "tr": "Bana atıştırmalık yok mu? Seninkinden bir ısırık aldım. Paylaşıyoruz.",
+          "en": "No snacks for me? I took a bite of yours. Sharing."
+        }
+      },
+      {
+        "id": "fd-11",
+        "formula": "A",
+        "mood": "goof",
+        "expression": "embarrassed",
+        "move": "innocent-stare",
+        "item": "cat-grass",
+        "target": "self",
+        "text": {
+          "tr": "Artık ot yiyorum. Çok sağlıklı. …Bir dakika müsaade.",
+          "en": "I eat grass now. Very healthy. …Excuse me a moment."
+        }
+      },
+      {
+        "id": "fd-15",
+        "formula": "E",
+        "mood": "smug",
+        "expression": "sceptical",
+        "move": "squint",
+        "item": null,
+        "target": "situation",
+        "text": {
+          "tr": "Daha iyisi olabilirdi. …Tavuk olabilirdi.",
+          "en": "Could be better. …Could be chicken."
+        }
+      },
+      {
+        "id": "fd-19",
+        "formula": "A",
+        "mood": "goof",
+        "expression": "embarrassed",
+        "move": "innocent-stare",
+        "item": null,
+        "target": "self",
+        "needs": "behaviour embarrassed-grooming: needs the groom loop",
+        "text": {
+          "tr": "O düşüş planlıydı. Şimdi yalanıyorum. O da planlı.",
+          "en": "That fall was planned. I'm grooming now. Also planned."
+        }
+      },
+      {
+        "id": "fd-21",
+        "formula": "A",
+        "mood": "goof",
+        "expression": "innocent-stare",
+        "move": "bag-throne",
+        "item": null,
+        "target": "self",
+        "needs": "behaviour box-over-gift (cardboard-box seat exists)",
+        "text": {
+          "tr": "Bana pahalı bir oyuncak aldılar. Kutusunda yaşıyorum.",
+          "en": "They bought me an expensive toy. I live in its box now."
+        }
+      },
+      {
+        "id": "fd-24",
+        "formula": "A",
+        "mood": "goof",
+        "expression": "embarrassed",
+        "move": "blep",
+        "item": "hamsi",
+        "target": "self",
+        "text": {
+          "tr": "Herkese bir hamsi dedim. …Kediler sayamaz ki.",
+          "en": "One hamsi each, I said. …Cats can't count."
+        }
+      }
+    ]
+  }
+}

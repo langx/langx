@@ -3565,6 +3565,8 @@ export const ar: Localized<EnMessages> = {
     buy: 'شراء {title}',
     free: 'مجانية للجميع. أرسلها من أي محادثة.',
     owned: 'إنها لك. أرسلها من أي محادثة.',
+    addToWhatsApp: 'أضِف إلى واتساب',
+    addToWhatsAppFailed: 'لم يُفتح واتساب. حاول مرة أخرى بعد قليل.',
     seePack: 'عرض الحزمة',
   },
 
@@ -4651,8 +4653,9 @@ export const ar: Localized<EnMessages> = {
     incognitoBody: 'اطّلع على الملفات دون أن تترك أثرًا.',
     nearby: 'قريبون',
     nearbyBody: 'رتّب حسب المسافة. يُقرَّب موقعك، ولا يرى الآخرون إلا مسافة تقريبية.',
-    copilot: 'مساعد ذكي',
-    copilotBody: 'يساعدك على صياغة الرسائل وفهمها أثناء الكتابة. قد لا يكون مفعّلًا لحسابك بعد.',
+    // Not "إجابات أكثر من Copilot": "أكثر من" is "more than", so it read "answers more than Copilot".
+    copilot: 'مزيد من إجابات Copilot',
+    copilotBody: 'يساعدك على صياغة الرسائل وفهمها أثناء الكتابة. {count} يوميًا في الخطة المجانية.',
     quotaNotice:
       'استخدمت محادثاتك الجديدة الـ {count} لهذا اليوم. ما زال بإمكانك الرد على كل ما يصلك بلا حدود.',
     manageNotice: 'أنت على {plan}. أدرها أو ألغِها من حساب المتجر.',
@@ -4789,10 +4792,10 @@ export const ar: Localized<EnMessages> = {
     compareNewChats: 'محادثات جديدة يوميًا',
     compareTranslations: 'ترجمات يوميًا',
     compareLanguages: 'اللغات التي تتعلمها',
+    compareCopilot: 'إجابات Copilot يوميًا',
     compareUnlimited: 'بلا حدود',
     compareSoon: 'قريبًا',
-    compareBeta: 'تجريبي',
-    betaTag: 'تجريبي، يُتاح تدريجيًا',
+    betaTag: 'تجريبي',
     compareIncluded: 'مشمول',
     compareNotIncluded: 'غير مشمول',
     yearlyBadge: '{perMonth} · {saving}',
