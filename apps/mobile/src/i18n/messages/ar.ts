@@ -2620,6 +2620,11 @@ export const ar: Localized<EnMessages> = {
     security: 'الأمان',
     opensInBrowser: 'يُفتح كل رابط في المتصفح.',
   },
+  productPage: {
+    questions: 'أسئلة وأجوبة',
+    step: 'الخطوة {step} من {total}',
+    opensInBrowser: 'يُفتح في المتصفح',
+  },
   feedback: {
     bugTitle: 'الإبلاغ عن خلل',
     featureTitle: 'اقتراح ميزة',
