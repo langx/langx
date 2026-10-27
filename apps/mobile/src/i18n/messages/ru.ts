@@ -107,6 +107,19 @@ export const ru: Localized<EnMessages> = {
     inviteTitle: 'Учись с другом',
     guestTitle: 'Сделай LangX своим',
     guestBody: 'С аккаунтом можно писать людям, держать серию и сохранять выученное в Эхо.',
+    streakRow: {
+      venusReady: 'Видео дня готово',
+    },
+    products: {
+      title: 'LangX',
+      copilot: 'Copilot',
+      members: {
+        one: '{amount} участник',
+        few: '{amount} участника',
+        many: '{amount} участников',
+        other: '{amount} участника',
+      },
+    },
   },
 
   composer: {
@@ -2722,6 +2735,7 @@ export const ru: Localized<EnMessages> = {
     title: 'Твоя серия',
     historyBody: 'Каждый день за два месяца и что засчиталось',
     leaderboardBody: 'У кого самая длинная серия сейчас и за всё время',
+    tokenBody: 'Жетоны за рубежи и на что их тратить',
     protectTitle: 'Защити серию',
     protectBody: {
       one: 'Заморозка закрывает следующий пропущенный день. Уже пропущенный день можно выкупить на карте выше в течение {count} дня после пропуска.',
@@ -5342,6 +5356,5 @@ export const ru: Localized<EnMessages> = {
     shareVideo: 'Поделиться видео',
     downloadVideo: 'Скачать видео',
     replay: 'Смотреть снова',
-    homeReady: 'Видео от Venus на сегодня готово',
   },
 }

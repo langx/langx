@@ -37,9 +37,9 @@ const MARKS = {
     <Feather name="cpu" size={Math.round(tile * GLYPH_SHARE)} color={color} />
   ),
   /**
-   * Her face from Home's streak row (`assets/venus/head.png`), filling the
+   * Her face (`assets/venus/head.png`, drawn from the 2D rig), filling the
    * tile and stood on its foot: her ears clear the top corners and her neck
-   * runs off the bottom edge, as it runs out of the ring on Home.
+   * runs off the bottom edge.
    */
   venus: ({ tile }) => (
     <Image

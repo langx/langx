@@ -13,7 +13,7 @@ const video: VenusVideo = {
 }
 
 describe('streakRowVenus', () => {
-  it('is the plain row without a video, whatever was watched', () => {
+  it('has nothing to play without a video, whatever was watched', () => {
     expect(streakRowVenus(null, null, 'me')).toBe('none')
     expect(streakRowVenus(null, { me: '2026-10-25' }, 'me')).toBe('none')
     expect(streakRowVenus(null, undefined, undefined)).toBe('none')
@@ -24,7 +24,7 @@ describe('streakRowVenus', () => {
     expect(streakRowVenus(video, {}, 'me')).toBe('ready')
   })
 
-  it('goes back to the reward once today’s video was watched to the end', () => {
+  it('is watched once today’s video was watched to the end', () => {
     expect(streakRowVenus(video, { me: '2026-10-25' }, 'me')).toBe('watched')
   })
 
@@ -36,8 +36,9 @@ describe('streakRowVenus', () => {
     expect(streakRowVenus(video, { other: '2026-10-25' }, 'me')).toBe('ready')
   })
 
-  it('does not announce the video before the device has said what was watched', () => {
-    expect(streakRowVenus(video, undefined, 'me')).toBe('watched')
-    expect(streakRowVenus(video, null, undefined)).toBe('watched')
+  it('claims nothing about watching before the device has said what was watched', () => {
+    expect(streakRowVenus(video, undefined, 'me')).toBe('unknown')
+    expect(streakRowVenus(video, null, undefined)).toBe('unknown')
+    expect(streakRowVenus(video, { me: '2026-10-25' }, undefined)).toBe('unknown')
   })
 })

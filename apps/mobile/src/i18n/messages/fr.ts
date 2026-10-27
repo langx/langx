@@ -84,6 +84,14 @@ export const fr: Localized<EnMessages> = {
     guestTitle: 'Fais de LangX le tien',
     guestBody:
       'Avec un compte, tu peux écrire aux gens, garder une série et enregistrer ce que tu apprends dans Echo.',
+    streakRow: {
+      venusReady: 'La vidéo du jour est prête',
+    },
+    products: {
+      title: 'LangX',
+      copilot: 'Copilot',
+      members: { one: '{amount} membre', other: '{amount} membres' },
+    },
   },
 
   composer: {
@@ -2380,6 +2388,7 @@ export const fr: Localized<EnMessages> = {
     title: 'Ta série',
     historyBody: 'Chaque jour des deux derniers mois, et ce qui a compté',
     leaderboardBody: 'Qui a la plus longue série en ce moment, et de tous les temps',
+    tokenBody: 'Les jetons que rapportent tes paliers, et comment les dépenser',
     protectTitle: 'Protège ta série',
     protectBody: {
       one: 'Un gel couvre le prochain jour manqué. Un jour déjà manqué peut être racheté sur la carte ci-dessus jusqu’à {count} jour après.',
@@ -4631,6 +4640,5 @@ export const fr: Localized<EnMessages> = {
     shareVideo: 'Partager la vidéo',
     downloadVideo: 'Télécharger la vidéo',
     replay: 'Revoir',
-    homeReady: 'La vidéo du jour de Venus est prête',
   },
 }

@@ -90,6 +90,14 @@ export const tr: Localized<EnMessages> = {
     guestTitle: 'LangX’i kendine göre kur',
     guestBody:
       'Bir hesapla insanlara yazabilir, serini sürdürebilir ve öğrendiklerini Echo’ya kaydedebilirsin.',
+    streakRow: {
+      venusReady: 'Bugünün videosu hazır',
+    },
+    products: {
+      title: 'LangX',
+      copilot: 'Copilot',
+      members: { one: '{amount} üye', other: '{amount} üye' },
+    },
   },
 
   composer: {
@@ -2318,6 +2326,7 @@ export const tr: Localized<EnMessages> = {
     title: 'Serin',
     historyBody: 'Son iki ayın her günü ve neyin sayıldığı',
     leaderboardBody: 'Şu an ve tüm zamanların en uzun serileri',
+    tokenBody: 'Kilometre taşlarının kazandırdığı jetonlar ve nasıl harcanacakları',
     protectTitle: 'Serini koru',
     protectBody: {
       one: 'Dondurma, kaçıracağın bir sonraki günü kapatır. Kaçırılmış bir gün ise, kaçırıldıktan sonra en fazla {count} gün boyunca yukarıdaki haritadan geri alınabilir.',
@@ -4519,6 +4528,5 @@ export const tr: Localized<EnMessages> = {
     shareVideo: 'Videoyu paylaş',
     downloadVideo: 'Videoyu indir',
     replay: 'Tekrar izle',
-    homeReady: 'Bugünün Venus videosu hazır',
   },
 }

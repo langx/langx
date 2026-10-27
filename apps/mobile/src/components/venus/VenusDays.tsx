@@ -34,8 +34,8 @@ import { GUTTER } from '../ui/Screen'
  * tile is one of three things:
  *
  * - **today** — today's video, tagged "Today", with the streak's tangerine
- *   ring round it until it has been watched to its end, as Home's streak row
- *   rings Venus's face. Plays through `requestVenusReplay`, so it is today's
+ *   ring round it until it has been watched to its end, as Home's Venus card
+ *   wears its tangerine dot until then. Plays through `requestVenusReplay`, so it is today's
  *   video in every way: watching it through marks it watched.
  * - **open** — a day up to the longest streak (`venusUnlockedDays`), the
  *   cover alone. Plays through `requestVenusClip`, which records nothing

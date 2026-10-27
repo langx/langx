@@ -106,6 +106,22 @@ export const en = {
     guestTitle: 'Make LangX yours',
     guestBody:
       'With an account you can write to people, keep a streak and save what you learn in Echo.',
+    /**
+     * Venus's card in the "LangX" section, the line under her name while
+     * today's video waits to be watched to its end; any other time the card
+     * keeps her own line. (Named for the streak row, where it was first.)
+     */
+    streakRow: {
+      venusReady: 'Today’s video is ready',
+    },
+    /** The "LangX" section under the streak: a card for each product page. */
+    products: {
+      title: 'LangX',
+      /** Copilot's card. Its page's title, `copilot.label`, carries the "Beta" the card's own line says. */
+      copilot: 'Copilot',
+      /** The Transparency card's line: `GET /public/stats`'s member total, in the reader's digits. */
+      members: { one: '{amount} member', other: '{amount} members' },
+    },
   },
 
   composer: {
@@ -2620,6 +2636,8 @@ export const en = {
     title: 'Your streak',
     historyBody: 'Every day of the last two months, and what counted',
     leaderboardBody: 'Who has the longest run right now, and ever',
+    /** The streak page's row into LangX Token's page, beside History, Leaderboard and Venus. */
+    tokenBody: 'Tokens your milestones earn, and how to spend them',
     protectTitle: 'Protect your streak',
     protectBody: {
       one: 'A freeze covers the next day you miss. A day already missed can be bought back on the map above, up to {count} day after you miss it.',
@@ -5072,8 +5090,6 @@ export const en = {
     /** The same button in a browser that cannot share a file, where it downloads instead. */
     downloadVideo: 'Download video',
     replay: 'Watch again',
-    /** Home's streak row, until today's video has been watched to its end. */
-    homeReady: 'Venus’s video for today is ready',
   },
 } as const
 
