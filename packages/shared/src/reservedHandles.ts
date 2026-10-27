@@ -70,6 +70,7 @@ const ROUTE_RESERVED = [
   'store',
   'testimonials',
   'tokens',
+  'venus',
   'viewers',
   'welcome',
   'wallet',

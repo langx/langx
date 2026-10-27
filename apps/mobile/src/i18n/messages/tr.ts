@@ -4102,6 +4102,80 @@ export const tr: Localized<EnMessages> = {
     settingsOffDone: 'Copilot kapalı.',
   },
   venus: {
+    page: {
+      title: 'Venus',
+      tagline: 'LangX’in kendi kedisi. Stickerları herkese ücretsiz.',
+      factVideos: 'Seri videoları',
+      factVideosSoon: 'Videolar yakında',
+      factFree: 'Ücretsiz',
+      watchIntro: 'Tanıtımı izle',
+      whoTitle: 'O kim',
+      whoBody: 'Venus, LangX’in kedisi ve maskotu. Gerisini stickerları anlatıyor.',
+      doesTitle: 'Ne yapıyor',
+      videosTitle: 'Günün için bir video',
+      videosBody:
+        'Günün sayıldığı anda Venus’un o gün için kısa bir videosu olur. İlk seferinde kendiliğinden açılır, gün boyunca tekrar izleyebilirsin.',
+      comebackTitle: 'Tekrar hoş geldin',
+      comebackBody:
+        'Bir serin bittikten sonra yeniden başla; dönüşteki ilk gününün kendine ait bir videosu olur.',
+      keepTitle: 'Ulaştığın günler açık kalır',
+      keepBody:
+        'En uzun serine kadar her gün, tekrar izlemen için burada durur. Henüz ulaşmadığın günler kilitli.',
+      videosSoonTitle: 'Videolar yolda',
+      videosSoonBody:
+        'Venus seri günlerin için kısa videolar hazırlıyor. O zamana kadar stickerları her sohbette çalışır.',
+      archiveTitle: 'Videoları',
+      archiveIntro: 'En uzun serine kadar olan günler açık. Tekrar izlemek için birine dokun.',
+      showAll: { one: '{count} günü göster', other: '{count} günün hepsini göster' },
+      showFewer: 'Daha az göster',
+      stickersTitle: 'Stickerları',
+      stickersIntro: {
+        one: '{count} sticker, herkese ücretsiz. Her sohbette çalışır.',
+        other: '{count} sticker, herkese ücretsiz. Her sohbette çalışır.',
+      },
+      linkTitle: 'langx.io’da Venus hakkında daha fazlası',
+      qWho: 'Venus kim?',
+      aWho: 'LangX’in kedisi ve maskotu. Sticker paketi her hesapla birlikte gelir; yani en baştan sticker klavyende.',
+      qWhenSoon: 'Videolar ne zaman geliyor?',
+      aWhenSoon: 'Henüz çıkmadılar. Çıktıklarında onları burada ve seri sayfanda bulacaksın.',
+      qWhen: 'Yeni video ne zaman gelir?',
+      aWhen:
+        'Günün sayıldığı anda. LangX’i açtığın ya da pratik yaptığın gün sayılır. Video ilk seferinde kendiliğinden açılır ve günün geri kalanında seri sayfanda durur. Çok uzun bir seri, videosu olan son günü geçebilir.',
+      qMissed: 'Kaçırdığım günleri izleyebilir miyim?',
+      aMissed:
+        'En uzun serine kadar her günü, bu sayfadan. Henüz ulaşmadığın günler sen oraya varana kadar kilitli kalır.',
+      qBreaks: 'Serim bozulursa ne olur?',
+      aBreaks:
+        'Ulaştığın günler burada açık kalır. Yeniden başladığında, dönüşteki ilk gününün bir hoş geldin videosu olur.',
+      qShare: 'Bir videoyu paylaşabilir miyim?',
+      aShare:
+        'Evet. Video bittiğinde hikâyene ekle, bir arkadaşına gönder ya da kaydet. Dosya paylaşamayan bir tarayıcıda video bunun yerine indirilir.',
+      qLanguage: 'Videolar benim dilimde mi?',
+      aLanguage: 'Evet. LangX hangi dildeyse o dilde oynarlar.',
+      qFree: 'Stickerları ücretsiz mi?',
+      aFree: {
+        one: 'Evet. {count} sticker en baştan her hesapla birlikte gelir.',
+        other: 'Evet. {count} stickerın hepsi en baştan her hesapla birlikte gelir.',
+      },
+      qOtherApps: 'Stickerlarını başka uygulamalarda kullanabilir miyim?',
+      aOtherAppsWhatsApp: {
+        one: 'Telefonunda WhatsApp varsa yukarıdaki düğme {count} tanesini oraya ekler. LangX’te her biri her sohbette çalışır.',
+        other:
+          'Telefonunda WhatsApp varsa yukarıdaki düğme {count} tanesini oraya ekler. LangX’te her biri her sohbette çalışır.',
+      },
+      aOtherAppsChats: 'Uygulamadan henüz değil. LangX’te her biri her sohbette çalışır.',
+    },
+    strip: {
+      title: 'Venus’un videoları',
+      seeAll: 'Tümünü gör',
+      linkBody: 'LangX’in kedisi ve serin için yaptıkları',
+      today: 'Bugün',
+      day: '{day}. gün',
+      todayNew: 'Bugünün videosu, {day}. gün, henüz izlenmedi',
+      todayA11y: 'Bugünün videosu, {day}. gün',
+      lockedA11y: '{day}. gün, serin oraya varana kadar kilitli',
+      watchDay: '{day}. günü izle',
+    },
     playerA11y: 'Venus, {day}. gün',
     tapForSound: 'Ses için dokun',
     play: 'Oynat',

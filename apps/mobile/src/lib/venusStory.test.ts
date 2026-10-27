@@ -8,9 +8,13 @@ import {
   isVenusStoryOpen,
   markVenusSeen,
   parseVenusManifest,
+  requestVenusClip,
   requestVenusReplay,
   shouldAutoOpenVenus,
   subscribeToVenusReplay,
+  VENUS_SHELF,
+  venusArchive,
+  venusClipFor,
   venusCutFor,
   venusFileName,
   setVenusStoryOpen,
@@ -18,9 +22,14 @@ import {
   VENUS_MAX_SIDE_CROP,
   venusFrameFor,
   venusReplayRequests,
+  venusRequestedClip,
   venusShareFileName,
+  venusShelf,
   venusStoryClosed,
+  venusStrip,
+  venusUnlockedDays,
   venusVideoFor,
+  type VenusArchiveDay,
   type VenusStreak,
 } from './venusStory'
 
@@ -179,6 +188,143 @@ describe('venusVideoFor', () => {
   })
 })
 
+describe('venusClipFor', () => {
+  it('is the same file venusVideoFor plays, without the day key', () => {
+    const today = video()
+    const clip = venusClipFor({ day: 7, cut: 'day', locale: 'tr', manifest, baseUrl: BASE })
+    expect(clip).toEqual({ ...today, dayKey: undefined })
+    expect(clip && 'dayKey' in clip).toBe(false)
+  })
+
+  it('has nothing for a cut the bucket does not hold', () => {
+    expect(
+      venusClipFor({ day: 1, cut: 'return', locale: 'en', manifest, baseUrl: BASE }),
+    ).toBeNull()
+  })
+})
+
+describe('venusUnlockedDays', () => {
+  it('opens every day up to the longest streak, so a broken one takes nothing back', () => {
+    expect(venusUnlockedDays({ current: 2, longest: 40 })).toBe(40)
+    expect(venusUnlockedDays({ current: 0, longest: 40 })).toBe(40)
+  })
+
+  it('follows the current streak when the longest has not caught up yet', () => {
+    expect(venusUnlockedDays({ current: 13, longest: 12 })).toBe(13)
+  })
+
+  it('always opens day 1, the introduction', () => {
+    expect(venusUnlockedDays(undefined)).toBe(1)
+    expect(venusUnlockedDays({ current: 0, longest: 0 })).toBe(1)
+  })
+
+  it('reads a malformed answer as day 1 only', () => {
+    expect(venusUnlockedDays({ current: Number.NaN, longest: 3 })).toBe(1)
+    expect(venusUnlockedDays({ current: -4, longest: 2.7 })).toBe(2)
+  })
+})
+
+describe('venusArchive', () => {
+  const library = parseVenusManifest({
+    videos: [
+      { day: 3, lang: 'tr', file: 'tr/venus-day003-tr.mp4', cover: 'tr/venus-day003-tr.jpg' },
+      { day: 1, lang: 'tr', file: 'tr/venus-day001-tr.mp4' },
+      { day: 1, lang: 'tr', file: 'tr/venus-day001-return-tr.mp4' },
+      { day: 2, lang: 'tr', file: 'tr/venus-day002-tr.mp4' },
+      { day: 2, lang: 'en', file: 'en/venus-day002-en.mp4' },
+      { day: 5, lang: 'pt-BR', file: 'pt-BR/venus-day005-pt-BR.mp4' },
+    ],
+  })
+
+  it('lists the days the bucket holds in the locale, in order, each once', () => {
+    const days = venusArchive({ manifest: library, locale: 'tr', baseUrl: BASE, unlocked: 2 })
+    expect(days.map((day) => [day.day, day.open])).toEqual([
+      [1, true],
+      [2, true],
+      [3, false],
+    ])
+    expect(days[2]?.clip.coverUrl).toBe(`${BASE}/tr/venus-day003-tr.jpg`)
+  })
+
+  it('plays the introduction for day 1, never the comeback', () => {
+    const [first] = venusArchive({ manifest: library, locale: 'tr', baseUrl: BASE, unlocked: 9 })
+    expect(first?.clip.cut).toBe('intro')
+    expect(first?.clip.fileName).toBe('venus-day001-tr.mp4')
+  })
+
+  it('leaves out a day 1 that only has the comeback cut', () => {
+    const only = parseVenusManifest({
+      videos: [{ day: 1, lang: 'de', file: 'de/venus-day001-return-de.mp4' }],
+    })
+    expect(venusArchive({ manifest: only, locale: 'de', baseUrl: BASE, unlocked: 9 })).toEqual([])
+  })
+
+  it('keeps a locale with a region apart from the others', () => {
+    const days = venusArchive({ manifest: library, locale: 'pt-BR', baseUrl: BASE, unlocked: 9 })
+    expect(days.map((day) => day.clip.url)).toEqual([`${BASE}/pt-BR/venus-day005-pt-BR.mp4`])
+    expect(venusArchive({ manifest: library, locale: 'de', baseUrl: BASE, unlocked: 9 })).toEqual(
+      [],
+    )
+  })
+})
+
+/** Days 1 to `count`, the first `open` of them open. */
+function shelfDays(count: number, open: number): VenusArchiveDay[] {
+  return Array.from({ length: count }, (_, index) => {
+    const day = index + 1
+    const clip = { day, locale: 'tr', cut: 'day' as const, fileName: '', url: '', coverUrl: null }
+    return { day, open: day <= open, clip }
+  })
+}
+
+const dayNumbers = (days: readonly VenusArchiveDay[]) => days.map((day) => day.day)
+
+describe('venusShelf', () => {
+  it('shows the newest open days, then the next few still locked', () => {
+    expect(dayNumbers(venusShelf(shelfDays(100, 40)))).toEqual([
+      32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
+    ])
+    expect(venusShelf(shelfDays(100, 40)).filter((day) => !day.open)).toHaveLength(
+      VENUS_SHELF.locked,
+    )
+  })
+
+  it('shows every open day when there are few, without padding the locked ones', () => {
+    expect(dayNumbers(venusShelf(shelfDays(100, 2)))).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('ends on the last day once everything is open', () => {
+    expect(dayNumbers(venusShelf(shelfDays(100, 100)))).toEqual([
+      89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100,
+    ])
+  })
+
+  it('lists every open day when asked for all of them', () => {
+    expect(venusShelf(shelfDays(100, 40), { size: Infinity, locked: 3 })).toHaveLength(43)
+  })
+
+  it('has nothing to show for an empty archive', () => {
+    expect(venusShelf([])).toEqual([])
+  })
+})
+
+describe('venusStrip', () => {
+  it('leaves today out of the shelf, since its own cover goes first', () => {
+    const strip = venusStrip(shelfDays(100, 12), 12)
+    expect(dayNumbers(strip)).toEqual([4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15])
+    // With today's cover, the strip is the shelf's size.
+    expect(strip.length + 1).toBe(VENUS_SHELF.size)
+  })
+
+  it('is the shelf when there is no video today', () => {
+    expect(venusStrip(shelfDays(100, 12), null)).toEqual(venusShelf(shelfDays(100, 12)))
+  })
+
+  it('drops the introduction on a comeback day 1, which today’s cover stands for', () => {
+    expect(dayNumbers(venusStrip(shelfDays(100, 30), 1))).not.toContain(1)
+  })
+})
+
 describe('shouldAutoOpenVenus', () => {
   const today = video()
 
@@ -241,6 +387,17 @@ describe('requestVenusReplay', () => {
     requestVenusReplay()
     expect(heard).toBe(2)
     expect(venusReplayRequests()).toBe(before + 3)
+  })
+
+  it('carries the day a request asks for, and forgets it on a request for today', () => {
+    const clip = venusClipFor({ day: 7, cut: 'day', locale: 'tr', manifest, baseUrl: BASE })
+    if (!clip) throw new Error('fixture has day 7')
+    const before = venusReplayRequests()
+    requestVenusClip(clip)
+    expect(venusRequestedClip()).toBe(clip)
+    expect(venusReplayRequests()).toBe(before + 1)
+    requestVenusReplay()
+    expect(venusRequestedClip()).toBeNull()
   })
 })
 

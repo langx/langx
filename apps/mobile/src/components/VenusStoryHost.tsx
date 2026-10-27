@@ -58,9 +58,10 @@ import {
   subscribeToVenusReplay,
   venusFrameFor,
   venusReplayRequests,
+  venusRequestedClip,
   venusShareFileName,
+  type VenusClip,
   type VenusSeen,
-  type VenusVideo,
 } from '../lib/venusStory'
 import { useBlackFont } from './onboarding/WizardV3'
 import { Button } from './ui/Button'
@@ -82,6 +83,11 @@ import { FlameGlyph } from './ui/StreakFlame'
  *
  * With no file for the day — which, until the bucket is filled, is every day
  * — `useVenusStory` answers `null` and nothing here draws or says anything.
+ *
+ * It also plays any other day on request (`requestVenusClip`): a day from the
+ * archive on the streak page or the Venus page, or the introduction. Such a
+ * day has no `dayKey` — it is not the day that counted — so nothing about it
+ * is recorded against today (see `VenusStoryPlayer`).
  */
 export function VenusStoryHost({ enabled }: { enabled: boolean }) {
   const video = useVenusStory()
@@ -100,7 +106,12 @@ export function VenusStoryHost({ enabled }: { enabled: boolean }) {
     venusReplayRequests,
     venusReplayRequests,
   )
-  const [open, setOpen] = useState<{ video: VenusVideo; auto: boolean } | null>(null)
+  const [open, setOpen] = useState<{
+    video: VenusClip
+    /** Today's counted day, or `null` for any other day's video. */
+    dayKey: string | null
+    auto: boolean
+  } | null>(null)
 
   // The seen map is read once per account: the auto-open has to wait for it,
   // or a cold start would open the video before learning it already had.
@@ -125,21 +136,29 @@ export function VenusStoryHost({ enabled }: { enabled: boolean }) {
     const map = markVenusSeen(seenMap.map, accountId, video.dayKey)
     setSeen({ accountId, map })
     void writeJsonFlag(FLAG_KEYS.venusStorySeen, map)
-    setOpen({ video, auto: true })
+    setOpen({ video, dayKey: video.dayKey, auto: true })
   }, [canOpen, open, seenMap, accountId, pathname, video])
 
-  // A tap on the flame. Only the requests made after this mounted count.
+  // A tap on the flame, or on a day in the archive. Only the requests made
+  // after this mounted count.
   const handledReplays = useRef(replays)
   useEffect(() => {
     if (replays === handledReplays.current) return
     handledReplays.current = replays
-    if (enabled && video) setOpen({ video, auto: false })
+    if (!enabled) return
+    const clip = venusRequestedClip()
+    if (clip) setOpen({ video: clip, dayKey: null, auto: false })
+    else if (video) setOpen({ video, dayKey: video.dayKey, auto: false })
   }, [replays, enabled, video])
 
   if (!open) return null
   return (
     <VenusStoryPlayer
+      // A new day asked for while one is open starts a new player, rather
+      // than handing a playing one a different file.
+      key={open.video.url}
       video={open.video}
+      dayKey={open.dayKey}
       autoOpened={open.auto}
       accountId={accountId}
       onClose={() => setOpen(null)}
@@ -192,14 +211,21 @@ export function VenusStoryHost({ enabled }: { enabled: boolean }) {
  * asks not to get — and a drag past the line closes the story where it is
  * rather than throwing it off the screen. A tap on the flame is a request to
  * watch, and plays at once either way.
+ *
+ * **Another day's video** (`dayKey` null) — the archive's, the introduction —
+ * plays the same way, but is not today's: watching it through records nothing
+ * and celebrates nothing, and its end panel carries no streak chip, since the
+ * day it shows is not the streak the person is on.
  */
 function VenusStoryPlayer({
   video,
+  dayKey,
   autoOpened,
   accountId,
   onClose,
 }: {
-  video: VenusVideo
+  video: VenusClip
+  dayKey: string | null
   autoOpened: boolean
   accountId: string | undefined
   onClose: () => void
@@ -247,14 +273,15 @@ function VenusStoryPlayer({
   }, [])
 
   useEffect(() => {
+    if (!dayKey) return
     let cancelled = false
     void readJsonFlag<VenusSeen>(FLAG_KEYS.venusStoryWatched).then((map) => {
-      if (!cancelled && hasWatchedVenus(map, accountId, video.dayKey)) setWatchedBefore(true)
+      if (!cancelled && hasWatchedVenus(map, accountId, dayKey)) setWatchedBefore(true)
     })
     return () => {
       cancelled = true
     }
-  }, [accountId, video.dayKey])
+  }, [accountId, dayKey])
 
   useEffect(() => {
     if (firstFrame && isPlaying) setRolling(true)
@@ -268,11 +295,14 @@ function VenusStoryPlayer({
     setProgress(1)
     if (watched) return
     setWatched(true)
+    // Another day's video is not today's, so it neither celebrates nor marks
+    // today's as watched.
+    if (!dayKey) return
     // Once per day per run, and not for a day already watched through here.
-    if (!watchedBefore && claimCelebration(`venus:${video.dayKey}`)) void notification('success')
+    if (!watchedBefore && claimCelebration(`venus:${dayKey}`)) void notification('success')
     if (!accountId) return
     // Through the store, so Home's streak row under this hears it at once.
-    void noteVenusWatched(accountId, video.dayKey)
+    void noteVenusWatched(accountId, dayKey)
   })
 
   // A file that is listed but will not play closes quietly: an error toast
@@ -647,12 +677,16 @@ function VenusStoryPlayer({
               pointerEvents="box-none"
             >
               <View style={[styles.panel, { paddingBottom: insets.bottom + v3.space[16] }]}>
-                <Animated.View
-                  style={[styles.chip, { backgroundColor: v3.hues.tangerine }, chipStyle]}
-                >
-                  <FlameGlyph size={v3.icon.xs} color={v3.colors.ink} />
-                  <Text style={styles.chipText}>{t('venus.endStreak', { count: video.day })}</Text>
-                </Animated.View>
+                {dayKey ? (
+                  <Animated.View
+                    style={[styles.chip, { backgroundColor: v3.hues.tangerine }, chipStyle]}
+                  >
+                    <FlameGlyph size={v3.icon.xs} color={v3.colors.ink} />
+                    <Text style={styles.chipText}>
+                      {t('venus.endStreak', { count: video.day })}
+                    </Text>
+                  </Animated.View>
+                ) : null}
                 <Text
                   accessibilityRole="header"
                   style={[styles.title, !black && styles.titleFallback]}
