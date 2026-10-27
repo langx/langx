@@ -2,8 +2,14 @@ import { useTheme, type PartnerHue } from '../../lib/theme'
 
 /**
  * A product page's colour: Copilot's blue, or one of the partner hues —
- * Venus's sky, LangX Token's lime (the wallet's, which its spark already
- * stands on), Transparency's green.
+ * Venus's sky, LangX Token's lime, Transparency's mint.
+ *
+ * Token's lime is a decision, not a default: it is the wallet's, which the
+ * spark already stands on, so the page and the place it leads to look like
+ * one thing; and a warm gold or orange reads as money, which the brief says
+ * a token must never look like. token.langx.io and the website draw the
+ * token in their own warm colours. That is theirs to change; it is not a
+ * reason for this page to follow them.
  *
  * Only these, so that a page cannot bring a colour of its own: the family
  * shares the palette the rest of the app is drawn in, and differs in which

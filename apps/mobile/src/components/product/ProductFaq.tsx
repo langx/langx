@@ -4,10 +4,11 @@ import { Pressable, Text, View } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useLocale, useT } from '../../i18n'
+import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { TIMING, unlessReduced } from '../../lib/theme/motion'
 import { Reveal } from '../paywall/Reveal'
-import { ProductGroup } from './ProductGroup'
+import { BALANCED, ProductGroup, useGlyphScale } from './ProductGroup'
 import { ProductSection } from './ProductSection'
 
 export interface ProductQuestion {
@@ -69,6 +70,7 @@ function QuestionRow({
   const { v3 } = useTheme()
   const { isRtl } = useLocale()
   const reduce = useReduceMotion()
+  const glyph = useGlyphScale()
   const turn = useSharedValue(open ? 1 : 0)
 
   // Started from an effect, never from render: see `lib/theme/motion`.
@@ -95,18 +97,32 @@ function QuestionRow({
         onPress={onToggle}
         style={({ pressed }) => [styles.question, pressed && styles.pressed]}
       >
-        <Text style={styles.questionText}>{item.question}</Text>
+        <Text
+          style={[styles.questionText, BALANCED]}
+          maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+          textBreakStrategy="balanced"
+          lineBreakStrategyIOS="push-out"
+        >
+          {item.question}
+        </Text>
         <Animated.View style={chevron}>
           <Feather
             name={isRtl ? 'chevron-left' : 'chevron-right'}
-            size={v3.icon.md}
+            size={Math.round(v3.icon.md * glyph)}
             color={v3.colors.muted}
           />
         </Animated.View>
       </Pressable>
       {open ? (
         <Reveal index={0} style={styles.answer}>
-          <Text style={styles.answerText}>{item.answer}</Text>
+          <Text
+            style={[styles.answerText, BALANCED]}
+            maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+            textBreakStrategy="balanced"
+            lineBreakStrategyIOS="push-out"
+          >
+            {item.answer}
+          </Text>
         </Reveal>
       ) : null}
     </View>

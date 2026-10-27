@@ -59,10 +59,13 @@ export type ProductMarkName = keyof typeof MARKS
 /**
  * The product's mark on a rounded square in its colour — the way an app's
  * icon stands beside its name in a store listing. The same tile at any size:
- * the page's header draws it large, a row or a grid on Home small.
+ * the page's header draws it large, and the link out at the page's foot at a
+ * row square's size, so the page ends on the mark it opened with.
  *
- * Not text, so it keeps its size whatever the reader's text size; and hidden
- * from a screen reader, since the product's name beside it says the same.
+ * Drawn at the size it is given: the header's keeps its size whatever the
+ * reader's text size, and the link row's grows with the words beside it, as
+ * every row's square does. Hidden from a screen reader, since the product's
+ * name beside it says the same.
  */
 export function ProductMark({
   tone,

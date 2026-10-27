@@ -1,7 +1,8 @@
 import Feather from '@expo/vector-icons/Feather'
 import type { ReactNode } from 'react'
-import { Pressable, Text, useWindowDimensions, View } from 'react-native'
+import { Platform, Pressable, Text, useWindowDimensions, View, type TextStyle } from 'react-native'
 import { useLocale } from '../../i18n'
+import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { tokenMarkChildren } from '../ui/TokenIcon'
 import { useToneColors, type ProductTone } from './tone'
@@ -14,13 +15,40 @@ type Glyph = keyof typeof Feather.glyphMap
  */
 export const ROW_SQUARE = 40
 
+/** The disc at the end of a row that leaves the app, round the arrow that says so. */
+const OUT_DISC = 32
+
+/**
+ * A short line set in lines of near-equal length, rather than a full line
+ * and one word left under it ("…only for / you."), in every language. The
+ * web's half: `text-wrap: balance`, which React Native's types do not know.
+ * A `Text` that takes it also passes `textBreakStrategy="balanced"` for
+ * Android and `lineBreakStrategyIOS="push-out"` for iOS, which moves a word
+ * down to keep a last one company.
+ */
+export const BALANCED =
+  Platform.OS === 'web' ? ({ textWrap: 'balance' } as unknown as TextStyle) : undefined
+
+/**
+ * How much bigger a glyph and the shape round it are drawn, for the reader's
+ * text size: the square, the chevron, the link's arrow, a step's disc. They
+ * grow with the words beside them, as the token's spark does inside a
+ * sentence (`useTokenIconMetrics`), up to `PRODUCT_TEXT_SCALE.glyph`, and
+ * never shrink below their own size at the smaller text sizes — a 40pt
+ * square is already the smallest Settings draws.
+ */
+export function useGlyphScale(): number {
+  const { fontScale } = useWindowDimensions()
+  return Math.min(Math.max(fontScale, 1), PRODUCT_TEXT_SCALE.glyph)
+}
+
 /**
  * The text size from which a product page stops setting things side by side:
- * the header's mark goes above the name, its facts become a list, and a row's
- * square and readout go above and under its words. iOS makes the same switch
- * at its larger sizes. Beside a 64pt mark on a 375pt phone "Transparency" in
- * the title face fills its column at about 1.3×, and three facts side by side
- * run out of room for "gehandelt" a little before that.
+ * the header's mark goes above the name, and a row's square and readout go
+ * above and under its words. iOS makes the same switch at its larger sizes.
+ * Past it, the tagline beside an 88pt mark on a 375pt phone is down to two
+ * or three words a line. The header also stacks sooner when its name's
+ * longest word will not fit beside the mark, which `ProductHero` measures.
  */
 const STACK_FROM_SCALE = 1.2
 
@@ -46,14 +74,30 @@ export function ProductGroup({ children }: { children: ReactNode }) {
   )
 }
 
-/** The 40pt square at the start of a row: a glyph on the page's colour. */
+/**
+ * The 40pt square at the start of a row: a glyph on the page's colour. It
+ * grows with the reader's text size (`useGlyphScale`), corner and all, so a
+ * large square is the same shape as a small one.
+ */
 export function RowSquare({ tone, icon }: { tone: ProductTone; icon: Glyph }) {
   const styles = useStyles()
   const { v3 } = useTheme()
   const { ground, on } = useToneColors(tone)
+  const scale = useGlyphScale()
+  const side = ROW_SQUARE * scale
   return (
-    <View style={[styles.square, { backgroundColor: ground }]}>
-      <Feather name={icon} size={v3.icon.lg} color={on} />
+    <View
+      style={[
+        styles.square,
+        {
+          backgroundColor: ground,
+          borderRadius: v3.radius.icon * scale,
+          height: side,
+          width: side,
+        },
+      ]}
+    >
+      <Feather name={icon} size={Math.round(v3.icon.lg * scale)} color={on} />
     </View>
   )
 }
@@ -87,7 +131,11 @@ type ProductRowProps = {
   | {
       /** The row goes somewhere: it becomes one target and gains a chevron. */
       onPress: () => void
-      /** It leaves the app: a link, with the glyph that says so in place of the chevron. */
+      /**
+       * It leaves the app: a link, with an arrow on a disc in place of the
+       * chevron, and its `body` is the address it opens — one string with no
+       * space to wrap at, so it grows only to `PRODUCT_TEXT_SCALE.address`.
+       */
       external?: boolean
       accessibilityHint?: string
       children?: never
@@ -120,32 +168,78 @@ export function ProductRow({
   const { v3 } = useTheme()
   const { isRtl } = useLocale()
   const stacked = useStacked()
+  const glyph = useGlyphScale()
 
   const readout = value ? (
-    <Text style={[styles.value, !stacked && styles.valueBeside]} numberOfLines={stacked ? 0 : 1}>
-      {tokenMarkChildren(value, v3.type.callout.fontSize, v3.colors.muted)}
+    <Text
+      style={[styles.value, !stacked && styles.valueBeside]}
+      numberOfLines={stacked ? 0 : 1}
+      maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+    >
+      {tokenMarkChildren(value, v3.type.callout.fontSize, v3.colors.muted, PRODUCT_TEXT_SCALE.text)}
     </Text>
   ) : null
+
+  // The way out, drawn as the way out: an arrow leaning off the page on an
+  // ink disc, where an onward row has its chevron. Both lean towards the
+  // reading direction's end.
+  const end = !onPress ? null : external ? (
+    <View
+      style={[
+        styles.outDisc,
+        { borderRadius: (OUT_DISC * glyph) / 2, height: OUT_DISC * glyph, width: OUT_DISC * glyph },
+      ]}
+    >
+      <Feather
+        name={isRtl ? 'arrow-up-left' : 'arrow-up-right'}
+        size={Math.round(v3.icon.sm * glyph)}
+        color={v3.colors.pillText}
+      />
+    </View>
+  ) : (
+    <Feather
+      name={isRtl ? 'chevron-left' : 'chevron-right'}
+      size={Math.round(v3.icon.md * glyph)}
+      color={v3.colors.muted}
+    />
+  )
 
   const face = (
     <>
       {leading && !stacked ? <View style={styles.leading}>{leading}</View> : null}
       <View style={styles.words}>
         {leading && stacked ? <View style={styles.leadingAbove}>{leading}</View> : null}
-        <Text style={styles.title}>{title}</Text>
-        {body ? <Text style={styles.body}>{body}</Text> : null}
+        <Text style={styles.title} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}>
+          {title}
+        </Text>
+        {body && external ? (
+          <Text
+            style={styles.body}
+            maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.address}
+            // On a phone the address shrinks to its line rather than break
+            // inside a word on a narrow screen; the web has no shrink-to-fit,
+            // and there the cap alone keeps it whole on a 375pt phone.
+            {...(Platform.OS === 'web'
+              ? {}
+              : { numberOfLines: 1, adjustsFontSizeToFit: true, minimumFontScale: 0.5 })}
+          >
+            {body}
+          </Text>
+        ) : body ? (
+          <Text
+            style={[styles.body, BALANCED]}
+            maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+            textBreakStrategy="balanced"
+            lineBreakStrategyIOS="push-out"
+          >
+            {body}
+          </Text>
+        ) : null}
         {stacked ? readout : null}
         {children}
       </View>
       {stacked ? null : readout}
-      {onPress ? (
-        <Feather
-          // Points onward, so it turns with the reading direction.
-          name={external ? 'external-link' : isRtl ? 'chevron-left' : 'chevron-right'}
-          size={v3.icon.md}
-          color={v3.colors.muted}
-        />
-      ) : null}
+      {end}
     </>
   )
 
@@ -197,13 +291,11 @@ const useStyles = makeStyles(({ v3 }) => ({
   // where centring would have put it.
   leading: { alignSelf: 'flex-start' },
   leadingAbove: { alignSelf: 'flex-start', paddingBottom: v3.space[6] },
-  square: {
-    alignItems: 'center',
-    borderRadius: v3.radius.icon,
-    height: ROW_SQUARE,
-    justifyContent: 'center',
-    width: ROW_SQUARE,
-  },
+  // Sized where it is drawn, with the reader's text size (`useGlyphScale`).
+  square: { alignItems: 'center', justifyContent: 'center' },
+  // The ink pill's colours, which invert with the ground: the one dark mark
+  // on a grey row in light, and a light one after dark.
+  outDisc: { alignItems: 'center', backgroundColor: v3.colors.pill, justifyContent: 'center' },
   // `minWidth: 0` lets a word longer than the row break inside it rather
   // than push the chevron off the block — on the web a flex item will not
   // shrink below its longest word without it.

@@ -1,14 +1,8 @@
 import type { ReactNode } from 'react'
 import { Text, View } from 'react-native'
+import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles } from '../../lib/theme'
-
-/**
- * How far a section's heading grows with the reader's text size: to 44pt,
- * just short of the product's name over it (`ProductHero`, 48pt at most), so
- * at the largest sizes a heading never outgrows the page it divides. The
- * lines under it grow in full.
- */
-const HEADING_MAX_SCALE = 2
+import { BALANCED } from './ProductGroup'
 
 /**
  * One section of a product page: a heading, a line on what it covers, and
@@ -34,11 +28,22 @@ export function ProductSection({
         <Text
           style={styles.title}
           accessibilityRole="header"
-          maxFontSizeMultiplier={HEADING_MAX_SCALE}
+          // Just short of the product's name over it and over the rows under
+          // it, at every text size (`PRODUCT_TEXT_SCALE`).
+          maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.heading}
         >
           {title}
         </Text>
-        {intro ? <Text style={styles.intro}>{intro}</Text> : null}
+        {intro ? (
+          <Text
+            style={[styles.intro, BALANCED]}
+            maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+            textBreakStrategy="balanced"
+            lineBreakStrategyIOS="push-out"
+          >
+            {intro}
+          </Text>
+        ) : null}
       </View>
       {children}
     </View>
