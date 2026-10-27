@@ -71,10 +71,12 @@ export function useGuestSessionReset(): { resetting: boolean } {
     // Asked now, while the web build's address is still the one that was
     // opened: on the web this reads `location`, which the navigator coming
     // down is about to change. On a phone it is the link that launched the app.
-    const opened = Linking.getInitialURL()
+    // Caught here rather than where it is awaited: the branch that ends the
+    // session never awaits it, and a rejection there would go unhandled.
+    const opened = Linking.getInitialURL().catch(() => null)
     void (async () => {
       if (await answeredSomething()) {
-        returnPage = guestLinkPage(await opened.catch(() => null))
+        returnPage = guestLinkPage(await opened)
         return
       }
       await endGuestSession()

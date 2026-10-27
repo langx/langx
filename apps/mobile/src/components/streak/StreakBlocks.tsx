@@ -14,6 +14,7 @@ import { useLocale } from '../../i18n'
 import { claimCelebration } from '../../lib/celebration'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { SPRING, TIMING } from '../../lib/theme/motion'
+import { useTextDirection } from '../product/ProductGroup'
 import { Button } from '../ui/Button'
 import { PressableScale } from '../ui/PressableScale'
 import { ProgressBar } from '../ui/ProgressBar'
@@ -474,6 +475,10 @@ export function StreakLinkRow({
   const styles = useStyles()
   const { v3 } = useTheme()
   const { isRtl } = useLocale()
+  // Two of these titles are product names in Latin letters ("Venus",
+  // "LangX Token"), which the web would otherwise set left to right in
+  // Arabic, at the left edge under a caption on the right.
+  const direction = useTextDirection()
   return (
     <PressableScale
       accessibilityRole="button"
@@ -482,8 +487,8 @@ export function StreakLinkRow({
       style={styles.linkRow}
     >
       <View style={styles.freezeWords}>
-        <Text style={styles.linkTitle}>{title}</Text>
-        <Text style={styles.caption}>{subtitle}</Text>
+        <Text style={[styles.linkTitle, direction]}>{title}</Text>
+        <Text style={[styles.caption, direction]}>{subtitle}</Text>
       </View>
       {/* Points onward, so it turns with the reading direction. */}
       <Feather

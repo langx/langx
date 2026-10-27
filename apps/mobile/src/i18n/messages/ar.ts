@@ -3643,7 +3643,7 @@ export const ar: Localized<EnMessages> = {
     },
     seeHistory: 'عرض سجلّك',
     page: {
-      title: 'LangX Token',
+      title: '‏LangX Token',
       tagline: 'نقاط تكسبها بالمحادثة والتعليم، وتنفقها داخل LangX.',
       factPoints: 'نقاط داخل التطبيق',
       factBought: 'لا تُشترى',

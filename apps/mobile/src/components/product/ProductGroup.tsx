@@ -33,20 +33,22 @@ const RTL: TextStyle = { writingDirection: 'rtl' }
 const LTR: TextStyle = { writingDirection: 'ltr' }
 
 /**
- * The style that sets a product page's line in the layout's direction rather
- * than its first letter's.
+ * The style that sets a line in the layout's direction rather than its first
+ * letter's: every line of a product page, and rows elsewhere that show one of
+ * the products' names.
  *
  * The web build draws each `Text` with `dir="auto"`, which takes the direction
  * from the first letter, so in Arabic a name written only in Latin letters —
  * "Copilot", "LangX Token", the address "token.langx.io/ar" — ran left to
- * right and sat at the left edge, under a heading on the right. iOS reads the
- * style as the paragraph's direction to the same end. Android ignores it, and
- * needs nothing: it aligns a line by the layout whatever its letters.
+ * right and sat at the left edge, under a heading on the right. That much was
+ * seen on the web. On a phone it has not been checked: iOS is expected to read
+ * the style as the paragraph's direction to the same end, and Android to
+ * ignore it and align a line by the layout whatever its letters.
  *
- * What Android does not do is order an Arabic sentence that opens with a
- * Latin word ("Pro …"): it takes that paragraph's direction from the first
- * letter, so such a line keeps its leading right-to-left mark in the
- * catalogue.
+ * What Android is not expected to do is order an Arabic sentence that opens
+ * with a Latin word ("Pro …") by the layout: it takes that paragraph's
+ * direction from the first letter, so such a line keeps its leading
+ * right-to-left mark in the catalogue, as do the Latin names themselves.
  */
 export function useTextDirection(): TextStyle {
   return useLocale().isRtl ? RTL : LTR
@@ -196,7 +198,8 @@ export function ProductRow({
 
   // Not given the page's direction (`useTextDirection`): a readout such as
   // "+10 ✦" has no letters, and set right to left its sign would move to the
-  // other end of the number on the web and iOS while Android kept it.
+  // other end of the number on the web, and is expected to on iOS, while
+  // Android kept it.
   const readout = value ? (
     <Text
       style={[styles.value, !stacked && styles.valueBeside]}
