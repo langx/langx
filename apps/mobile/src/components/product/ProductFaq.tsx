@@ -8,7 +8,7 @@ import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { TIMING, unlessReduced } from '../../lib/theme/motion'
 import { Reveal } from '../paywall/Reveal'
-import { BALANCED, ProductGroup, useGlyphScale } from './ProductGroup'
+import { BALANCED, ProductGroup, useGlyphScale, useTextDirection } from './ProductGroup'
 import { ProductSection } from './ProductSection'
 
 export interface ProductQuestion {
@@ -67,6 +67,7 @@ function QuestionRow({
   onToggle: () => void
 }) {
   const styles = useStyles()
+  const direction = useTextDirection()
   const { v3 } = useTheme()
   const { isRtl } = useLocale()
   const reduce = useReduceMotion()
@@ -98,7 +99,7 @@ function QuestionRow({
         style={({ pressed }) => [styles.question, pressed && styles.pressed]}
       >
         <Text
-          style={[styles.questionText, BALANCED]}
+          style={[styles.questionText, direction, BALANCED]}
           maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
           textBreakStrategy="balanced"
           lineBreakStrategyIOS="push-out"
@@ -116,7 +117,7 @@ function QuestionRow({
       {open ? (
         <Reveal index={0} style={styles.answer}>
           <Text
-            style={[styles.answerText, BALANCED]}
+            style={[styles.answerText, direction, BALANCED]}
             maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
             textBreakStrategy="balanced"
             lineBreakStrategyIOS="push-out"

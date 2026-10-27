@@ -6,7 +6,7 @@ import { Text, View, type LayoutChangeEvent, type StyleProp, type TextStyle } fr
 import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
 import { PressableScale } from '../ui/PressableScale'
-import { BALANCED, useGlyphScale, useStacked } from './ProductGroup'
+import { BALANCED, useGlyphScale, useStacked, useTextDirection } from './ProductGroup'
 import { ProductMark, type ProductMarkName } from './ProductMark'
 import type { ProductTone } from './tone'
 
@@ -76,10 +76,11 @@ export function ProductHero({ tone, mark, title, body, facts, note, action }: Pr
   // a cold start should not wait for a face most launches never show.
   const [black] = useFonts({ Nunito_900Black })
   const largeText = useStacked()
+  const direction = useTextDirection()
   const [width, setWidth] = useState(0)
   const [measured, setMeasured] = useState<Readonly<Record<string, number>>>({})
 
-  const titleStyle = [styles.title, !black && styles.titleFallback]
+  const titleStyle = [styles.title, direction, !black && styles.titleFallback]
   const words = title.split(/\s+/).filter(Boolean)
   const wordKeys = words.map((_, index) => `word${index}`)
   const factList = facts ?? []
@@ -134,7 +135,7 @@ export function ProductHero({ tone, mark, title, body, facts, note, action }: Pr
             {title}
           </Text>
           <Text
-            style={[styles.body, BALANCED]}
+            style={[styles.body, direction, BALANCED]}
             maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
             // Never a lone last word under a full line (`BALANCED`).
             textBreakStrategy="balanced"
@@ -143,7 +144,7 @@ export function ProductHero({ tone, mark, title, body, facts, note, action }: Pr
             {body}
           </Text>
           {note ? (
-            <Text style={styles.note} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+            <Text style={[styles.note, direction]} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
               {note}
             </Text>
           ) : null}
@@ -208,12 +209,13 @@ function Measure({
  */
 function FactStrip({ facts }: { facts: readonly string[] }) {
   const styles = useStyles()
+  const direction = useTextDirection()
   return (
     <View style={styles.strip}>
       {facts.map((fact, index) => (
         <View key={`fact${index}`} style={[styles.cell, index > 0 && styles.cellDivided]}>
           <Text
-            style={[styles.factText, styles.factCentred]}
+            style={[styles.factText, styles.factCentred, direction]}
             maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
           >
             {fact}
@@ -238,6 +240,7 @@ function FactStrip({ facts }: { facts: readonly string[] }) {
  */
 function FactLine({ facts }: { facts: readonly string[] }) {
   const styles = useStyles()
+  const direction = useTextDirection()
   const [lines, setLines] = useState<readonly number[]>([])
   return (
     <View style={styles.line}>
@@ -261,7 +264,7 @@ function FactLine({ facts }: { facts: readonly string[] }) {
             </View>
           ) : null}
           <Text
-            style={[styles.factText, styles.factCentred]}
+            style={[styles.factText, styles.factCentred, direction]}
             maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
           >
             {fact}
@@ -283,6 +286,7 @@ function HeroAction({ action }: { action: NonNullable<ProductHeroProps['action']
   const styles = useStyles()
   const { v3 } = useTheme()
   const glyph = useGlyphScale()
+  const direction = useTextDirection()
   return (
     <PressableScale
       accessibilityRole="button"
@@ -298,7 +302,7 @@ function HeroAction({ action }: { action: NonNullable<ProductHeroProps['action']
           color={v3.colors.echoText}
         />
       ) : null}
-      <Text style={styles.actionLabel} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+      <Text style={[styles.actionLabel, direction]} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
         {action.label}
       </Text>
     </PressableScale>
