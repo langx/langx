@@ -74,7 +74,14 @@ export const ar: Localized<ServerMessages> = {
       trialEndingBody: 'الاحتفاظ بها نقرة واحدة.',
       winBackTitle: 'انتهت خطتك',
       winBackBody: 'كل ما أنشأته ما زال هنا.',
-      tokensWaitingTitle: { one: '{count} رمز في الانتظار', other: '{count} رمزاً في الانتظار' },
+      tokensWaitingTitle: {
+        zero: '{count} رمز في الانتظار',
+        one: '{count} رمز في الانتظار',
+        two: 'رمزان في الانتظار',
+        few: '{count} رموز في الانتظار',
+        many: '{count} رمزًا في الانتظار',
+        other: '{count} رمز في الانتظار',
+      },
       tokensWaitingBody: 'افتح محفظتك.',
       inviteFriendTitle: 'ادعُ صديقاً',
       inviteFriendBody: 'ستحصلان كلاكما على رموز.',
@@ -115,7 +122,14 @@ export const ar: Localized<ServerMessages> = {
     /** Tokens arriving. */
 
     wallet: {
-      poolTitle: { one: 'منحك توزيع الأمس رمزاً واحداً', other: 'منحك توزيع الأمس {count} رمزاً' },
+      poolTitle: {
+        zero: 'منحك توزيع الأمس {count} رمز',
+        one: 'منحك توزيع الأمس رمزًا واحدًا',
+        two: 'منحك توزيع الأمس رمزين',
+        few: 'منحك توزيع الأمس {count} رموز',
+        many: 'منحك توزيع الأمس {count} رمزًا',
+        other: 'منحك توزيع الأمس {count} رمز',
+      },
 
       poolBody: 'انقر لفتح محفظتك.',
 
@@ -398,8 +412,12 @@ export const ar: Localized<ServerMessages> = {
       winBackButton: 'اطّلع على الخطط',
 
       tokensWaitingSubject: {
+        zero: 'لديك {count} رمز في الانتظار',
         one: 'لديك {count} رمز في الانتظار',
-        other: 'لديك {count} رمزاً في الانتظار',
+        two: 'لديك رمزان في الانتظار',
+        few: 'لديك {count} رموز في الانتظار',
+        many: 'لديك {count} رمزًا في الانتظار',
+        other: 'لديك {count} رمز في الانتظار',
       },
 
       tokensWaitingBody:

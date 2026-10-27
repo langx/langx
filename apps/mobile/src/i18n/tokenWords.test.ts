@@ -53,3 +53,54 @@ describe.each(Object.entries(POOL_WORD))('the pool in %s', (locale, word) => {
     expect(tokens.poolTitle).toMatch(word)
   })
 })
+
+/**
+ * The case the token noun takes after an Arabic number. A missing category
+ * falls back to `other`, the singular رمز, which is right only for 0 and 100+:
+ * 2 takes the dual رمزان / رمزين, 3–10 the plural رموز and 11–99 the accusative
+ * رمزًا. When توكن became رمز, six `two` forms kept the singular after the
+ * number ("+2 رمز"), on the hourly gift's reveal among them.
+ *
+ * An entry counts tokens when a placeholder stands right before the noun, or
+ * when the plural رموز stands on its own. "تمنح رموزًا" (pays tokens) counts
+ * sessions or people, not tokens, and is left alone. The server's catalogue
+ * has the same check in apps/api/src/i18n/tokenWords.test.ts.
+ */
+const COUNTS_TOKENS = /\{\w+\}\s*رم(?:ز|وز)|رموز(?![\p{L}\p{M}])/u
+const CASE = {
+  two: /رمز(?:ان|ين)(?![\p{L}\p{M}])/u,
+  few: /رموز(?![\p{L}\p{M}])/u,
+  many: /رمز(?:ًا|اً)(?![\p{L}\p{M}])/u,
+}
+const CATEGORIES = new Set(['zero', 'one', 'two', 'few', 'many', 'other'])
+
+function plurals(node: Catalog, prefix = ''): [string, Record<string, string>][] {
+  return Object.entries(node).flatMap(([key, value]): [string, Record<string, string>][] => {
+    const path = prefix ? `${prefix}.${key}` : key
+    if (typeof value === 'string') return []
+    if (Object.keys(value).every((category) => CATEGORIES.has(category)))
+      return [[path, value as Record<string, string>]]
+    return plurals(value as Catalog, path)
+  })
+}
+
+describe('Arabic token counts', () => {
+  const counted = plurals(catalogs.ar).filter(([, forms]) =>
+    Object.values(forms).some((form) => COUNTS_TOKENS.test(form)),
+  )
+
+  it('finds the entries it checks, and refuses the shape it was written for', () => {
+    expect(counted.map(([path]) => path)).toContain('gift.tokensUnit')
+    expect(counted.length).toBeGreaterThan(20)
+    expect(CASE.two.test('+{count} رمز')).toBe(false)
+  })
+
+  it('puts the noun in the case each number takes', () => {
+    const wrong = counted.flatMap(([path, forms]) =>
+      Object.entries(CASE)
+        .filter(([category, pattern]) => !pattern.test(forms[category] ?? ''))
+        .map(([category]) => `${path}.${category}: ${forms[category] ?? '(missing)'}`),
+    )
+    expect(wrong).toEqual([])
+  })
+})
