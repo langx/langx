@@ -1,4 +1,5 @@
 import { shiftDayKey } from '@langx/shared'
+import { dismissDirection } from './pinch'
 
 /*
  * Venus's daily streak story (`flags.venusStories`), as pure rules: which
@@ -246,6 +247,21 @@ export function venusFrameFor(width: number, height: number): VenusFrame {
     left: (width - frameWidth) / 2,
     top: height - frameHeight,
   }
+}
+
+/**
+ * Whether a released drag closes the story: the photo viewer's own line
+ * (`dismissDirection` — far enough, or flicked fast enough), so the app's two
+ * full-screen viewers let go at the same point, but downwards only. A story
+ * is closed by pulling it down; a drag that ends up above where it began is
+ * somebody changing their mind.
+ *
+ * `'worklet'`: the player's pan calls it on the UI thread — see `lib/pinch.ts`
+ * for why that is not optional.
+ */
+export function closesVenusStory(dy: number, vy: number): boolean {
+  'worklet'
+  return dismissDirection(dy, vy) === 1
 }
 
 /**

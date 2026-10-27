@@ -33,6 +33,14 @@ export const DISMISS_DRAG_PX = 120
  * on its way out, and the rest of the travel is the throw's.
  */
 export const DISMISS_FADE_FRACTION = 0.5
+/**
+ * How small the picture gets as it is pulled towards closing, and how far
+ * the ground behind it fades while the finger is still down. Here rather than
+ * in `PhotoViewer` because Venus's story is dismissed the same way and has to
+ * feel the same, so the two cannot be allowed to drift apart.
+ */
+export const DISMISS_SCALE = 0.9
+export const DISMISS_SCRIM = 0.3
 /** How far a sideways drag at life size has to go to turn the page. */
 export const PAGE_SWIPE_PX = 60
 /** Or how fast, in px/ms: a short flick pages too. */
