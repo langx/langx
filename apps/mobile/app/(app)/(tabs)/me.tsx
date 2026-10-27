@@ -266,6 +266,17 @@ function MeScreen() {
           a number appears, not a place you live, so it gets no tab.
         */}
         <View style={styles.topRow}>
+          {/*
+            Edit profile, one tap from the top: the button at the bottom of
+            the tab is a long scroll away. First, so the bell and the ≡ keep
+            the places people already reach for.
+          */}
+          <IconButton
+            icon="edit-3"
+            accessibilityLabel={t('me.editProfile')}
+            hitSlop={8}
+            onPress={() => router.push('/(app)/edit-profile')}
+          />
           <IconButton
             icon="bell"
             accessibilityLabel={t('inbox.bell')}
