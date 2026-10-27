@@ -4291,6 +4291,7 @@ export const tr: Localized<EnMessages> = {
     loading: 'Copilot yazıyor…',
     left: { one: 'Bugün {count} hak kaldı', other: 'Bugün {count} hak kaldı' },
     moreAt: 'Yenisi saat {time}',
+    whatIsThis: 'Bu nedir?',
     errQuota: 'Bugünkü Copilot yanıtlarını kullandın. Yenisi saat {time}.',
     errQuotaNoTime: 'Bugünkü Copilot yanıtlarını kullandın.',
     errBusy: 'Copilot şu an meşgul. Daha sonra tekrar dene.',
@@ -4318,6 +4319,7 @@ export const tr: Localized<EnMessages> = {
       'Artık senden hiçbir şey yapay zekâ sağlayıcısına gitmez. Copilot bir dahaki kullanımında yeniden sorar.',
     settingsOffConfirm: 'Kapat',
     settingsOffDone: 'Copilot kapalı.',
+    settingsAbout: 'Copilot neler yapar',
     page: {
       tagline: 'Sohbetlerinin içinde bir yapay zekâ yardımcısı. Senin yerine tek kelime göndermez.',
       allowance: 'Günlük yanıt: ücretsiz planda {free}, Pro ile {pro}.',
