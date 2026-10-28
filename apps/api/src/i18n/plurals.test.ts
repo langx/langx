@@ -100,3 +100,21 @@ describe('the Russian pushes and emails the review found', () => {
     expect(ru('email.meetingsBody', { count: 21 })).toBe('Вы договорились о 21 звонке на завтра.')
   })
 })
+
+describe('the Arabic digest', () => {
+  const ar = translator('ar')
+
+  // Arabic counts 3–10 with a plural noun, 11–99 and 100 with a singular one,
+  // and 2 with the dual and no number. The subjects had only `one` and
+  // `other`, so 2 and 11 read with the noun 3–10 take.
+  it('counts unread messages and replies in the form each number takes', () => {
+    expect(ar('email.digestSubject', { count: 2 })).toBe('رسالتان غير مقروءتين في LangX')
+    expect(ar('email.digestSubject', { count: 3 })).toBe('3 رسائل غير مقروءة في LangX')
+    expect(ar('email.digestSubject', { count: 11 })).toBe('11 رسالة غير مقروءة في LangX')
+    expect(ar('email.digestBody', { count: 100, names: 'Ana' })).toBe(
+      'لديك 100 رسالة غير مقروءة من Ana.',
+    )
+    expect(ar('email.feedDigestSubject', { count: 2 })).toBe('ردّان على ما نشرته اليوم')
+    expect(ar('email.feedDigestSubject', { count: 11 })).toBe('11 ردًّا على ما نشرته اليوم')
+  })
+})

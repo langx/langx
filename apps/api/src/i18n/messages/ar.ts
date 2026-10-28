@@ -225,12 +225,18 @@ export const ar: Localized<ServerMessages> = {
 
     digestSubject: {
       one: 'رسالة واحدة غير مقروءة في LangX',
-      other: '{count} رسائل غير مقروءة في LangX',
+      two: 'رسالتان غير مقروءتين في LangX',
+      few: '{count} رسائل غير مقروءة في LangX',
+      many: '{count} رسالة غير مقروءة في LangX',
+      other: '{count} رسالة غير مقروءة في LangX',
     },
     digestPreheader: 'هناك من ينتظر ردّك',
     digestBody: {
       one: 'راسلك {names} أثناء غيابك.',
-      other: 'لديك {count} رسائل غير مقروءة من {names}.',
+      two: 'لديك رسالتان غير مقروءتين من {names}.',
+      few: 'لديك {count} رسائل غير مقروءة من {names}.',
+      many: 'لديك {count} رسالة غير مقروءة من {names}.',
+      other: 'لديك {count} رسالة غير مقروءة من {names}.',
     },
     digestMore: { one: 'ومحادثة أخرى.', other: 'و{count} محادثات أخرى.' },
     digestButton: 'اقرأ وردّ',
@@ -299,7 +305,10 @@ export const ar: Localized<ServerMessages> = {
 
     feedDigestSubject: {
       one: 'رد واحد على ما نشرته اليوم',
-      other: '{count} ردود على ما نشرته اليوم',
+      two: 'ردّان على ما نشرته اليوم',
+      few: '{count} ردود على ما نشرته اليوم',
+      many: '{count} ردًّا على ما نشرته اليوم',
+      other: '{count} ردّ على ما نشرته اليوم',
     },
 
     feedDigestPreheader: 'ردّ الناس على ما نشرته',
