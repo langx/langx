@@ -99,7 +99,7 @@ Alternative", which named a competitor (App Review guideline 2.3.7).
 >
 > **Echo keeps what you learn.** Press and hold a message to add it to Echo, and it comes back for review: tomorrow, in three days, then in a week.
 >
-> **Copilot, in beta.** An AI helper in your chats: check a sentence before you send it, see how to say something in the language you're learning, get a message explained, or ask for reply ideas. Nothing is sent unless you send it. Copilot is in beta and rolling out gradually.
+> **Copilot, in beta.** An AI helper in your chats: check a sentence before you send it, see how to say something in the language you're learning, get a message explained, or ask for reply ideas. Nothing is sent unless you send it. Copilot is open to every account: a few answers a day on the free plan, more with Pro.
 >
 > **A reason to come back.** Keep a daily streak, earn tokens for talking and teaching, collect badges, see where you land on the weekly, monthly, yearly and all-time boards, and spend your tokens on sticker packs and profile frames.
 >
@@ -520,18 +520,18 @@ The App Store copy in `3.0-metadata.json`, all eight languages, claims only
 what was on for everyone in production when it was written (22 October 2026,
 `GET https://api.langx.io/app-config`), checked against the code on main:
 
-| Claim                                                             | Switch                                 | What it rests on                                                                                                                                                                      |
-| ----------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| The new look; Home, Chats, Echo, People, Me                       | `v3Home` (on)                          | `useV3Home`; the Home strings in `en.ts` (`home.*`): who is waiting, the streak, the Echo cards ready                                                                                 |
-| Copilot, beta, rolling out gradually                              | `copilotEnabled` (on)                  | `COPILOT_RULES`; `decisions.md` → _Copilot is sold as a beta, rolling out_. No age is claimed: Copilot has no age rule of its own since 21 October                                    |
-| A chat camera with filters                                        | `v3Home` (on)                          | `CAMERA_FILTER_IDS` in `apps/mobile/src/lib/cameraFilters.ts`; `chat-camera.tsx` offers them in the v3 look on native only, which is all the App Store ships                          |
-| New badges                                                        | `v3Home` (on)                          | `V3_BADGE_KINDS` in `packages/shared/src/badges.ts`, served to the v3 shelf. Run `scripts/seed-v3-badge-notices.ts --apply` first, or the first evening round-up announces old badges |
-| 17 app icons, nine with Pro                                       | none                                   | `APP_ICONS` and `PRO_ICONS` in `appIconList.ts`, and the 16 alternates in `app.config.ts` (native, so only in the 3.0 binary)                                                         |
-| Calls in the new look                                             | `v3Home` (on)                          | #1874                                                                                                                                                                                 |
-| Echo: add a message, it comes back tomorrow, in 3 days, in a week | none                                   | `echo.emptyBody` in `en.ts`                                                                                                                                                           |
-| Three invited friends who start talking earn a month of Pro       | `giveAWeek` off, so `referral` applies | `PRO_GIFT_RULES.referral`                                                                                                                                                             |
-| A 7-day streak earns a week of Pro                                | none                                   | `PRO_GIFT_RULES.streak`, live since 7 October (the 2.9 copy left it out)                                                                                                              |
-| A free week on the first yearly subscription                      | store consoles                         | The yearly offer, set up in September 2026. The monthly plan's free week is planned for 3.0 but could not be checked from the repo, so the copy names the yearly plan only            |
+| Claim                                                             | Switch                                 | What it rests on                                                                                                                                                                                                                                                                               |
+| ----------------------------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The new look; Home, Chats, Echo, People, Me                       | `v3Home` (on)                          | `useV3Home`; the Home strings in `en.ts` (`home.*`): who is waiting, the streak, the Echo cards ready                                                                                                                                                                                          |
+| Copilot, beta, open to every account                              | `copilotEnabled` (on)                  | `COPILOT_RULES`, `PLAN_LIMITS.*.copilotPer24h`; `decisions.md` → _Copilot is a beta on every plan; Pro is more answers_. Until 28 October 2026 this line said "rolling out gradually", from before the allow-list went. No age is claimed: Copilot has no age rule of its own since 21 October |
+| A chat camera with filters                                        | `v3Home` (on)                          | `CAMERA_FILTER_IDS` in `apps/mobile/src/lib/cameraFilters.ts`; `chat-camera.tsx` offers them in the v3 look on native only, which is all the App Store ships                                                                                                                                   |
+| New badges                                                        | `v3Home` (on)                          | `V3_BADGE_KINDS` in `packages/shared/src/badges.ts`, served to the v3 shelf. Run `scripts/seed-v3-badge-notices.ts --apply` first, or the first evening round-up announces old badges                                                                                                          |
+| 17 app icons, nine with Pro                                       | none                                   | `APP_ICONS` and `PRO_ICONS` in `appIconList.ts`, and the 16 alternates in `app.config.ts` (native, so only in the 3.0 binary)                                                                                                                                                                  |
+| Calls in the new look                                             | `v3Home` (on)                          | #1874                                                                                                                                                                                                                                                                                          |
+| Echo: add a message, it comes back tomorrow, in 3 days, in a week | none                                   | `echo.emptyBody` in `en.ts`                                                                                                                                                                                                                                                                    |
+| Three invited friends who start talking earn a month of Pro       | `giveAWeek` off, so `referral` applies | `PRO_GIFT_RULES.referral`                                                                                                                                                                                                                                                                      |
+| A 7-day streak earns a week of Pro                                | none                                   | `PRO_GIFT_RULES.streak`, live since 7 October (the 2.9 copy left it out)                                                                                                                                                                                                                       |
+| A free week on the first yearly subscription                      | store consoles                         | The yearly offer, set up in September 2026. The monthly plan's free week is planned for 3.0 but could not be checked from the repo, so the copy names the yearly plan only                                                                                                                     |
 
 **Not claimed, because the switch is off in production:** the Pro Week
 (`proWeek`), give a week get a week (`giveAWeek`), the free hello to a newcomer
@@ -545,14 +545,14 @@ release before: see _2.9_ below.
 
 **App Store promotional text (170)**
 
-> LangX 3.0 is a whole new look. Home opens on who is waiting for your reply, your streak and your Echo cards. Copilot, our AI helper, is in beta and rolling out gradually.
+> LangX 3.0 is a whole new look. Home opens on who is waiting for your reply, your streak and your Echo cards. Copilot, our AI helper, is in beta for every account.
 
 **App Store release notes**
 
 > LangX 3.0: a whole new look, from start to finish.
 > • Home opens on what matters most: who is waiting for your reply, your streak and the Echo cards that are ready.
 > • Chats, Echo, People and Me, redrawn from scratch.
-> • Copilot (beta): check your sentence, get a message explained or get reply ideas. It's rolling out gradually.
+> • Copilot (beta): check your sentence, get a message explained or get reply ideas.
 > • A new chat camera with filters, new badges and 17 app icons to choose from.
 > • Calls get the new look too, plus lots of fixes and speed-ups.
 >
@@ -566,7 +566,7 @@ Week and give a week get a week; they have not been rewritten.
 > LangX 3.0: a new look, everywhere. Home opens on who is waiting for your reply, your streak and your Echo cards.
 > New and 18+? Your first week comes with Pro.
 > Invite a friend: when they start talking, you each get a week of Pro.
-> Copilot, our AI helper, is in beta and rolling out.
+> Copilot, our AI helper, is in beta for every account.
 > New sticker packs, badges and app icons.
 >
 > Coming back from the old app? Sign up with the email you used before - your username is waiting for you.
