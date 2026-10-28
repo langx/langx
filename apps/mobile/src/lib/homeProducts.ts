@@ -139,6 +139,8 @@ export function homeVenusCard(state: StreakRowVenus): HomeVenusCard {
  * row leaves a card once its padding is taken. Until anything is measured the answer is "side
  * by side", the layout of nearly every phone, so measuring only ever takes
  * room away and the cards do not move on a phone where they fit.
+ *
+ * Today's three asks the same of its goals, with `inner` a third of the row.
  */
 export function homeCardsBeside({
   stacked,

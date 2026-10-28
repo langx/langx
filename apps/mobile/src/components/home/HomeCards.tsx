@@ -47,6 +47,41 @@ export function HomeCardRows({
   const { v3 } = useTheme()
   const stacked = useStacked()
   const [width, setWidth] = useState(0)
+  // Only while the layout is still a question: one to a row is final.
+  const { widths, measure } = useWordWidths(texts, stacked)
+  const beside = homeCardsBeside({
+    stacked,
+    inner: width > 0 ? (width - v3.space[CARD_GAP]) / 2 - 2 * v3.space[CARD_INSET] : 0,
+    words: widths,
+  })
+
+  return (
+    <View
+      style={styles.rows}
+      onLayout={(event: LayoutChangeEvent) => setWidth(event.nativeEvent.layout.width)}
+    >
+      {measure}
+      {render({ beside, cell: beside ? styles.half : styles.whole })}
+    </View>
+  )
+}
+
+/**
+ * Every word `texts` print, each drawn once, unseen, at its real size and
+ * face — the view that draws them, for the caller to place anywhere inside
+ * its block, and the widths measured so far. Home's cards and Today's three
+ * both ask whether their longest word fits the room a column leaves.
+ *
+ * Only the words measured so far are counted: one still on its way is not
+ * counted against the layout until it has a width, so a line that changes (a
+ * balance arriving) cannot flip a layout and back for a frame. With `skip`
+ * nothing is drawn: the layout is no longer a question.
+ */
+export function useWordWidths(
+  texts: readonly CardText[],
+  skip: boolean,
+): { widths: readonly number[]; measure: ReactNode } {
+  const styles = useStyles()
   const [measured, setMeasured] = useState<Readonly<Record<string, number>>>({})
 
   const words = texts.flatMap((item, index) =>
@@ -55,51 +90,35 @@ export function HomeCardRows({
       .filter(Boolean)
       .map((word, at) => ({ key: `${index}:${at}:${word}`, word, item })),
   )
-  // Only the words measured so far: one still on its way is not counted
-  // against the layout until it has a width, so a line that changes (a
-  // balance arriving) cannot flip the cards to a pair and back for a frame.
   const widths = words.flatMap((word) => {
     const value = measured[word.key]
     return value === undefined ? [] : [value]
-  })
-  const beside = homeCardsBeside({
-    stacked,
-    inner: width > 0 ? (width - v3.space[CARD_GAP]) / 2 - 2 * v3.space[CARD_INSET] : 0,
-    words: widths,
   })
 
   const onWord = (key: string, value: number) =>
     setMeasured((current) => (current[key] === value ? current : { ...current, [key]: value }))
 
-  return (
+  const measure = skip ? null : (
     <View
-      style={styles.rows}
-      onLayout={(event: LayoutChangeEvent) => setWidth(event.nativeEvent.layout.width)}
+      style={styles.measure}
+      aria-hidden
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
     >
-      {/* Only while the layout is still a question: one to a row is final. */}
-      {stacked ? null : (
+      {words.map(({ key, word, item }) => (
         <View
-          style={styles.measure}
-          aria-hidden
-          accessibilityElementsHidden
-          importantForAccessibility="no-hide-descendants"
+          key={key}
+          style={styles.measured}
+          onLayout={(event: LayoutChangeEvent) => onWord(key, event.nativeEvent.layout.width)}
         >
-          {words.map(({ key, word, item }) => (
-            <View
-              key={key}
-              style={styles.measured}
-              onLayout={(event: LayoutChangeEvent) => onWord(key, event.nativeEvent.layout.width)}
-            >
-              <Text style={item.style} maxFontSizeMultiplier={item.maxScale}>
-                {word}
-              </Text>
-            </View>
-          ))}
+          <Text style={item.style} maxFontSizeMultiplier={item.maxScale}>
+            {word}
+          </Text>
         </View>
-      )}
-      {render({ beside, cell: beside ? styles.half : styles.whole })}
+      ))}
     </View>
   )
+  return { widths, measure }
 }
 
 /**

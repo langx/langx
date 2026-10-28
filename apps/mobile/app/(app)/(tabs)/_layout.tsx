@@ -6,6 +6,7 @@ import {
   Platform,
   StyleSheet,
   View,
+  useWindowDimensions,
   type ColorValue,
   type PressableProps,
   type StyleProp,
@@ -152,6 +153,24 @@ const V3_PILL = { width: 56, height: 32 } as const
 /** The bar above the bottom inset: the pill, the word and the padding round them. */
 const V3_BAR_HEIGHT = 62
 
+/**
+ * How far the bar's words grow with the reader's text size, and the bar with
+ * them, by what the word's line grows.
+ *
+ * Uncapped, the words grew into a bar of fixed height: at 200% they ran 8
+ * points under its bottom edge, and at the largest size each was wider than
+ * its tab, so on the web build, where nothing clips them, the five ran into
+ * one another. At 1.25× the widest of them in English, German, Russian and
+ * Arabic ("Главная") still fits a fifth of a 375-point phone. In Spanish,
+ * French, Portuguese and Turkish one word nearly fills its tab at the default
+ * size ("Discussions" overfills it), so a phone still cuts that word short
+ * once it grows, as it did before — but by less, since it grows no further.
+ *
+ * iOS never grows them, as the bar's own label does not: a long press on a
+ * tab shows the large-content viewer instead.
+ */
+const V3_LABEL_MAX_SCALE = 1.25
+
 /** A badge in the redesign's bar: the count as drawn, and the number behind it. */
 interface V3Badge {
   text: string | undefined
@@ -271,8 +290,13 @@ function V3TabBadge({ text, count, look, hidden }: V3Badge & { hidden: boolean }
   return (
     <Animated.Text
       numberOfLines={1}
-      // As the bar's own badge: iOS shows the large-content viewer instead.
-      allowFontScaling={Platform.OS === 'ios' ? false : undefined}
+      /*
+       * Never grown, as the bar's own badge is not on iOS, which shows the
+       * large-content viewer instead. Its pill is a fixed `TAB_BADGE_SIZE`
+       * tall over a glyph that does not grow either, and a count grown with
+       * the text size, as Android grew it, was cut off at its top and bottom.
+       */
+      allowFontScaling={false}
       accessibilityElementsHidden={hidden}
       importantForAccessibility={hidden ? 'no-hide-descendants' : 'auto'}
       aria-hidden={hidden}
@@ -377,6 +401,18 @@ export default function TabsLayout() {
   const t = useT()
   const v3Home = useV3Home()
   const insets = useSafeAreaInsets()
+  const { fontScale } = useWindowDimensions()
+  /*
+   * The redesign's words at the reader's size, up to `V3_LABEL_MAX_SCALE`.
+   * Set here, with the bar's own scaling off, because the bar takes no cap
+   * for its words and its height has to know how tall they are.
+   */
+  const labelScale = Platform.OS === 'ios' ? 1 : Math.min(fontScale, V3_LABEL_MAX_SCALE)
+  const v3Label = {
+    ...v3.type.label,
+    fontSize: v3.type.label.fontSize * labelScale,
+    lineHeight: v3.type.label.lineHeight * labelScale,
+  }
   const { data: session } = authClient.useSession()
   // A guest has no conversations, so asking for a total would be a request
   // that can only ever answer zero.
@@ -424,7 +460,8 @@ export default function TabsLayout() {
           tabBarActiveTintColor: v3.colors.fg,
           tabBarInactiveTintColor: v3.colors.muted,
           tabBarShowLabel: true,
-          tabBarLabelStyle: v3.type.label,
+          tabBarAllowFontScaling: false,
+          tabBarLabelStyle: v3Label,
           tabBarLabelPosition: 'below-icon',
           tabBarIconStyle: V3_PILL,
           tabBarButton: (props) => <V3TabButton {...props} />,
@@ -437,12 +474,17 @@ export default function TabsLayout() {
           /*
            * Taller than the bar's own 49: the pill is 32 and the word under it
            * 16, which the default height clips. A custom height replaces the
-           * bar's whole sum, so the bottom inset is added back here.
+           * bar's whole sum, so the bottom inset is added back here, and so is
+           * whatever the word's line has grown by. A smaller text size leaves
+           * the bar as it is.
            */
           tabBarStyle: {
             backgroundColor: v3.colors.bg,
             borderTopColor: v3.colors.line,
-            height: V3_BAR_HEIGHT + insets.bottom,
+            height:
+              V3_BAR_HEIGHT +
+              v3.type.label.lineHeight * Math.max(labelScale - 1, 0) +
+              insets.bottom,
           },
         }}
       >

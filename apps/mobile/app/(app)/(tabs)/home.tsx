@@ -421,7 +421,7 @@ function GuestHome() {
   return (
     <Screen scroll tabbed ground={v3.colors.bg} {...pull}>
       <View style={styles.stack}>
-        <HomeHeader title={t('welcome.title')} black={blackLoaded} />
+        <HomeHeader title={t('welcome.title')} black={blackLoaded} whole />
         <HomeAccountCard
           title={t('home.guestTitle')}
           body={t('home.guestBody')}
@@ -495,27 +495,35 @@ function HomeHeader({
   title,
   subtitle,
   black,
+  whole = false,
 }: {
   title: string
   subtitle?: string | undefined
   /** Whether Nunito Black has arrived; until then the title is ExtraBold. */
   black: boolean
+  /**
+   * Never cut short, at any size: the guest's title is a sentence of ours,
+   * not a greeting round a name, and two lines left it "Practise with
+   * someone who is …".
+   */
+  whole?: boolean
 }) {
   const styles = useStyles()
   const stacked = useStacked()
+  const balanced = stacked || whole
   return (
     <View style={styles.header}>
       {/*
         Capped as a product page's name is, the same Title size: past it,
         "evening," no longer fitted a line and two lines cut it to "eve…".
-        At the larger text sizes it is never cut short, and its lines are
-        balanced.
+        At the larger text sizes, and for a title that must be read whole, it
+        is never cut short, and its lines are balanced.
       */}
       <Text
-        style={[styles.title, !black && styles.titleFallback, stacked && BALANCED]}
+        style={[styles.title, !black && styles.titleFallback, balanced && BALANCED]}
         accessibilityRole="header"
         maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.name}
-        {...(stacked
+        {...(balanced
           ? ({ textBreakStrategy: 'balanced', lineBreakStrategyIOS: 'push-out' } as const)
           : { numberOfLines: 2 })}
       >

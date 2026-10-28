@@ -39,6 +39,12 @@ export interface PressableScaleProps extends Omit<PressableProps, 'style' | 'chi
   touchStyle?: StyleProp<ViewStyle>
   /** How far it shrinks. `PRESS_SCALE` unless the thing pressed is far bigger or smaller than a button. */
   scaleTo?: number
+  /**
+   * The value the face's scale runs on, for something drawn over the face
+   * but outside the button that has to shrink with it — Home's Venus card
+   * hands its ▶ the same one. Its own when not given.
+   */
+  pressScale?: Animated.Value
 }
 
 /**
@@ -79,6 +85,7 @@ export function PressableScaleBase({
   style,
   touchStyle,
   scaleTo = PRESS_SCALE,
+  pressScale,
   reduceMotion,
   onPressIn,
   onPressOut,
@@ -86,7 +93,8 @@ export function PressableScaleBase({
   ...rest
 }: PressableScaleProps & { reduceMotion: boolean }) {
   const styles = useStyles()
-  const scale = useRef(new Animated.Value(1)).current
+  const own = useRef(new Animated.Value(1)).current
+  const scale = pressScale ?? own
 
   const settle = (toValue: number, duration: number): void => {
     // A new timing on the same value stops the one in flight, so a tap that
