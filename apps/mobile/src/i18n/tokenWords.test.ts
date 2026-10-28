@@ -3,6 +3,21 @@ import { describe, expect, it } from 'vitest'
 import { catalogs } from './catalogs'
 
 /**
+ * Turkish "token" anywhere but in the product's name, LangX Token, and in a
+ * placeholder such as `{tokens}`.
+ */
+const TR_TOKEN = /(?<![\p{L}{])(?<!LangX )token/iu
+
+/**
+ * Two Turkish lines still say token: invite.step2 and shared.inviteBody count
+ * tokens in a plain string, and the change that gives them plural entries
+ * rewrites them in every language, the Turkish word with it. The paths name
+ * the plain strings, so the exception lapses by itself once they are plurals
+ * (`invite.step2.one`, …) and the rule then holds them too.
+ */
+const NOT_YET: ReadonlySet<string> = new Set(['tr:invite.step2', 'tr:shared.inviteBody'])
+
+/**
  * What the token and the daily pool are called, on every line of the app —
  * not only on the token page, which `lib/tokenPage.test.ts` holds to the
  * messaging brief.
@@ -15,6 +30,9 @@ import { catalogs } from './catalogs'
  * - Russian, Spanish and Portuguese call it what token.langx.io calls it:
  *   токен, tokens. Both catalogues had grown a second word beside it —
  *   жетон, fichas — sometimes on the same screen.
+ * - Turkish calls it jeton, as token.langx.io does; the catalogue said token
+ *   almost as often. The product's name, LangX Token, stays as the site's
+ *   title writes it.
  *
  * Letter lookarounds rather than `\b`, which treats "ã" as a word boundary.
  */
@@ -30,6 +48,7 @@ const NEVER: Partial<Record<Locale, { pattern: RegExp; old: string }[]>> = {
   fr: [{ pattern: /cagnotte/iu, old: 'La cagnotte d’hier' }],
   ru: [{ pattern: /жетон/iu, old: 'Не хватает жетонов' }],
   ar: [{ pattern: /توكن/u, old: '+3 توكنات' }],
+  tr: [{ pattern: TR_TOKEN, old: 'Bu paket için yeterli token’ın yok.' }],
 }
 
 /** The pool's own name on its screen, in the three languages that changed it. */
@@ -52,9 +71,16 @@ describe.each(Object.entries(NEVER))('the %s catalogue', (locale, rules) => {
   })
 
   it.each(rules)('never uses the word in $old', (rule) => {
-    const said = leaves(catalogs[locale as Locale]).filter(([, text]) => rule.pattern.test(text))
+    const said = leaves(catalogs[locale as Locale]).filter(
+      ([path, text]) => rule.pattern.test(text) && !NOT_YET.has(`${locale}:${path}`),
+    )
     expect(said).toEqual([])
   })
+})
+
+it('lets LangX Token through in Turkish, the name the token page carries', () => {
+  expect(TR_TOKEN.test('LangX Token')).toBe(false)
+  expect((catalogs.tr.tokens as Catalog).page).toMatchObject({ title: 'LangX Token' })
 })
 
 describe.each(Object.entries(POOL_WORD))('the pool in %s', (locale, word) => {
