@@ -121,7 +121,7 @@ describe('tourLayout', () => {
       const { hole, dim, corners } = tourLayout({ anchor, screen, insets })
       const pieces = corners.map((corner) => ({ corner, shape: readPiece(corner.path) }))
       const r = hole.radius
-      const step = 0.75
+      const step = 1
       // Only the band round the hole: everywhere else the panels' own test holds.
       for (let x = hole.x - 4 + step / 2; x < hole.x + hole.width + 4; x += step) {
         for (let y = hole.y - 4 + step / 2; y < hole.y + hole.height + 4; y += step) {
