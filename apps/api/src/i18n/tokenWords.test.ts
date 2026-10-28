@@ -17,6 +17,9 @@ import { catalogs } from './catalogs'
  * - Turkish calls it jeton, as token.langx.io does; pushes and emails said
  *   token almost as often. The product's name, LangX Token, would keep its
  *   English word, as the site's title does.
+ * - French calls it jeton, as token.langx.io/fr does. The server already
+ *   did; the app said "tokens" on about one line in four, so the word is
+ *   held here too. The product's name, LangX Token, is not the word.
  *
  * Letter lookarounds rather than `\b`, which treats "ã" as a word boundary.
  */
@@ -29,7 +32,14 @@ const NEVER: Partial<Record<Locale, { pattern: RegExp; old: string }[]>> = {
     { pattern: /(?<!\p{L})bol(?:os?|ão|ões)(?!\p{L})/iu, old: 'O bolo de ontem' },
     { pattern: /(?<!\p{L})fichas?(?!\p{L})/iu, old: 'Suas fichas' },
   ],
-  fr: [{ pattern: /cagnotte/iu, old: 'La cagnotte d’hier' }],
+  fr: [
+    { pattern: /cagnotte/iu, old: 'La cagnotte d’hier' },
+    {
+      // Not the product's name, LangX Token, nor a `{tokens}` placeholder.
+      pattern: /(?<![\p{L}{])(?<!LangX )tokens?(?![\p{L}}])/iu,
+      old: '{count} tokens pour ton signalement',
+    },
+  ],
   ru: [{ pattern: /жетон/iu, old: 'Не хватает жетонов' }],
   ar: [{ pattern: /توكن/u, old: '+3 توكنات' }],
   tr: [{ pattern: /(?<![\p{L}{])(?<!LangX )token/iu, old: '{count} token’ın bekliyor' }],

@@ -9,14 +9,20 @@ import { catalogs } from './catalogs'
 const TR_TOKEN = /(?<![\p{L}{])(?<!LangX )token/iu
 
 /**
- * Two Turkish lines still say token: invite.step2 and shared.inviteBody count
- * tokens in a plain string, and the change that gives them plural entries
- * rewrites them in every language, the Turkish word with it. The paths name
- * the plain strings, so the rule holds the plurals (`invite.step2.one`, …) as
- * soon as they exist, and the last test below fails until an entry that no
+ * Two lines still say token in Turkish and tokens in French: invite.step2
+ * and shared.inviteBody count tokens in a plain string, and the change that
+ * gives them plural entries rewrites them in every language, the word with
+ * it. The paths name the plain strings, so the rule holds the plurals
+ * (`invite.step2.one`, …) as soon as they exist, and the last test below
+ * fails until an entry that no
  * longer needs its exception is taken off this list.
  */
-const NOT_YET: ReadonlySet<string> = new Set(['tr:invite.step2', 'tr:shared.inviteBody'])
+const NOT_YET: ReadonlySet<string> = new Set([
+  'tr:invite.step2',
+  'tr:shared.inviteBody',
+  'fr:invite.step2',
+  'fr:shared.inviteBody',
+])
 
 /**
  * What the token and the daily pool are called, on every line of the app —
@@ -34,9 +40,16 @@ const NOT_YET: ReadonlySet<string> = new Set(['tr:invite.step2', 'tr:shared.invi
  * - Turkish calls it jeton, as token.langx.io does; the catalogue said token
  *   almost as often. The product's name, LangX Token, stays as the site's
  *   title writes it.
+ * - French calls it jeton, as token.langx.io/fr does. The catalogue said
+ *   "tokens" on about one line in four — Echo, invites, the hourly gift,
+ *   sticker gifts — and "jetons" on the rest. The product's name, LangX
+ *   Token, stays as it is in English and on the site.
  *
  * Letter lookarounds rather than `\b`, which treats "ã" as a word boundary.
  */
+/** "token" anywhere but in the product's name and a `{tokens}` placeholder. */
+const FR_TOKEN = /(?<![\p{L}{])(?<!LangX )tokens?(?![\p{L}}])/iu
+
 const NEVER: Partial<Record<Locale, { pattern: RegExp; old: string }[]>> = {
   es: [
     { pattern: /(?<!\p{L})botes?(?!\p{L})/iu, old: 'El bote de ayer' },
@@ -46,7 +59,10 @@ const NEVER: Partial<Record<Locale, { pattern: RegExp; old: string }[]>> = {
     { pattern: /(?<!\p{L})bol(?:os?|ão|ões)(?!\p{L})/iu, old: 'O bolo de ontem' },
     { pattern: /(?<!\p{L})fichas?(?!\p{L})/iu, old: 'Suas fichas' },
   ],
-  fr: [{ pattern: /cagnotte/iu, old: 'La cagnotte d’hier' }],
+  fr: [
+    { pattern: /cagnotte/iu, old: 'La cagnotte d’hier' },
+    { pattern: FR_TOKEN, old: 'Tu n’as pas assez de tokens pour ce pack.' },
+  ],
   ru: [{ pattern: /жетон/iu, old: 'Не хватает жетонов' }],
   ar: [{ pattern: /توكن/u, old: '+3 توكنات' }],
   tr: [{ pattern: TR_TOKEN, old: 'Bu paket için yeterli token’ın yok.' }],
@@ -91,6 +107,14 @@ it('lets through only lines that still say the old word', () => {
 it('lets LangX Token through in Turkish, the name the token page carries', () => {
   expect(TR_TOKEN.test('LangX Token')).toBe(false)
   expect((catalogs.tr.tokens as Catalog).page).toMatchObject({ title: 'LangX Token' })
+})
+
+describe('the French token', () => {
+  it('keeps its product name', () => {
+    expect(FR_TOKEN.test('LangX Token')).toBe(false)
+    const title = leaves(catalogs.fr).find(([key]) => key === 'tokens.page.title')?.[1]
+    expect(title).toBe('LangX Token')
+  })
 })
 
 describe.each(Object.entries(POOL_WORD))('the pool in %s', (locale, word) => {
