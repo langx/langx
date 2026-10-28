@@ -137,17 +137,26 @@ export const de: Localized<ServerMessages> = {
 
     deleteSubject: 'Bestätige die Löschung deines LangX-Kontos',
     deletePreheader: 'Ein letzter Schritt, um dein LangX-Konto zu löschen',
-    deleteBody:
-      'Du hast die Löschung deines LangX-Kontos angefordert. Bestätige unten, dann wird es zur Löschung vorgemerkt — du hast 30 Tage, es dir anders zu überlegen: melde dich einfach wieder an.',
+    deleteBody: {
+      one: 'Du hast die Löschung deines LangX-Kontos angefordert. Bestätige unten, dann wird es zur Löschung vorgemerkt — du hast {count} Tag, es dir anders zu überlegen: melde dich einfach wieder an.',
+      other:
+        'Du hast die Löschung deines LangX-Kontos angefordert. Bestätige unten, dann wird es zur Löschung vorgemerkt — du hast {count} Tage, es dir anders zu überlegen: melde dich einfach wieder an.',
+    },
     deleteButton: 'Mein Konto löschen',
     deleteText: 'Bestätige die Löschung deines LangX-Kontos: {url}',
     deleteInvalid: 'Dieser Link ist abgelaufen oder wurde bereits verwendet.',
     deleteConfirmTitle: 'LangX-Konto löschen',
-    deleteConfirmBody:
-      'Damit wird dein Konto zur Löschung vorgemerkt. Eine Anmeldung binnen 30 Tagen bricht das ab.',
+    deleteConfirmBody: {
+      one: 'Damit wird dein Konto zur Löschung vorgemerkt. Eine Anmeldung binnen {count} Tag bricht das ab.',
+      other:
+        'Damit wird dein Konto zur Löschung vorgemerkt. Eine Anmeldung binnen {count} Tagen bricht das ab.',
+    },
     deleteConfirmButton: 'Ja, mein Konto löschen',
     deleteDoneTitle: 'Dein Konto ist zur Löschung vorgemerkt',
-    deleteDoneBody: 'Melde dich binnen {days} Tagen an, und alles ist wieder da.',
+    deleteDoneBody: {
+      one: 'Melde dich binnen {count} Tag an, und alles ist wieder da.',
+      other: 'Melde dich binnen {count} Tagen an, und alles ist wieder da.',
+    },
     deleteDonePurge: 'Die Daten werden am {date} entfernt.',
 
     verifySubject: 'Bestätige deine LangX-E-Mail',

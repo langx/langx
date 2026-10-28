@@ -388,7 +388,10 @@ export const tr: Localized<EnMessages> = {
     addFailedTitle: 'Bu kart eklenemedi',
     removeFailedTitle: 'Bu kart çıkarılamadı',
     limitTitle: 'Günlük Echo sınırına ulaşıldı',
-    limitBody: 'Günde {count} kart saklayabilirsin. Yarın sıfırlanır.',
+    limitBody: {
+      one: 'Günde {count} kart saklayabilirsin. Yarın sıfırlanır.',
+      other: 'Günde {count} kart saklayabilirsin. Yarın sıfırlanır.',
+    },
     fromYourChats: 'Sohbetlerinden',
     fromAPost: 'Bir gönderiden',
     fromYourself: 'Kendi yazdığın',
@@ -484,7 +487,10 @@ export const tr: Localized<EnMessages> = {
     voiceSynthesised: 'Sentetik',
     readAloud: 'Sesli oku',
     readAloudFailedTitle: 'Bu kart seslendirilemedi',
-    readAloudLimitBody: 'Günde {count} kart seslendirebilirsin. Yarın sıfırlanır.',
+    readAloudLimitBody: {
+      one: 'Günde {count} kart seslendirebilirsin. Yarın sıfırlanır.',
+      other: 'Günde {count} kart seslendirebilirsin. Yarın sıfırlanır.',
+    },
     spokenBy: '{name} seslendirdi',
     keepOnCard: 'Kartıma ekle',
     audioAlreadyKept: 'Kartında',
@@ -861,8 +867,8 @@ export const tr: Localized<EnMessages> = {
     resetBody: 'Kayıt olduğun e-postayı gir, sana bir sıfırlama bağlantısı gönderelim.',
     confirmPassword: 'Parolayı tekrar gir',
     passwordsDoNotMatch: 'İki parola aynı değil.',
-    passwordTooShort: 'En az {min} karakter.',
-    passwordRule: 'En az {min} karakter',
+    passwordTooShort: { one: 'En az {count} karakter.', other: 'En az {count} karakter.' },
+    passwordRule: { one: 'En az {count} karakter', other: 'En az {count} karakter' },
     welcomeBack: 'Tekrar hoş geldin',
     email: 'E-posta',
     password: 'Parola',
@@ -880,7 +886,10 @@ export const tr: Localized<EnMessages> = {
     justLooking: 'Sadece bakıyor musun?',
     haveAccount: 'Zaten hesabın var mı? ',
     createAccount: 'Hesabını oluştur',
-    minimumAge: 'LangX’i kullanmak için {age} yaşından büyük olmalısın.',
+    minimumAge: {
+      one: 'LangX’i kullanmak için {count} yaşından büyük olmalısın.',
+      other: 'LangX’i kullanmak için {count} yaşından büyük olmalısın.',
+    },
     acceptTerms: 'Okudum ve kabul ediyorum:',
     acceptTermsAnd: ' ve ',
     acceptTermsLabel: 'Şartlar ve gizlilik politikası',
@@ -951,7 +960,10 @@ export const tr: Localized<EnMessages> = {
     displayName: 'Görünen ad',
     nameFromSignUp: 'Kayıt olurken verdiğin ad. İstersen değiştir.',
     aboutYouOptional: 'Senin hakkında (isteğe bağlı)',
-    tooYoung: 'LangX {age} yaş ve üzeri içindir.',
+    tooYoung: {
+      one: 'LangX {count} yaş ve üzeri içindir.',
+      other: 'LangX {count} yaş ve üzeri içindir.',
+    },
     photo: {
       picker: { title: 'Ya da başka bir çizilmiş yüz seç', keep: 'Bu yüzle devam et' },
     },
@@ -1225,8 +1237,11 @@ export const tr: Localized<EnMessages> = {
     pickTitle: 'Açık sohbet yok',
     pickBody: 'Listeden birini seç, burada açılsın.',
     emptyTitle: 'Henüz sohbet yok',
-    emptyBody:
-      'Keşfet’ten birine yaz. Ücretsiz planda günde {count} yeni sohbet başlatabilirsin — sana gelen mesaplara cevap vermek her zaman sınırsız.',
+    emptyBody: {
+      one: 'Keşfet’ten birine yaz. Ücretsiz planda günde {count} yeni sohbet başlatabilirsin — sana gelen mesajlara cevap vermek her zaman sınırsız.',
+      other:
+        'Keşfet’ten birine yaz. Ücretsiz planda günde {count} yeni sohbet başlatabilirsin — sana gelen mesajlara cevap vermek her zaman sınırsız.',
+    },
     goToDiscover: 'Keşfet’e git',
     youPrefix: 'Sen:',
     starredMessages: 'Yıldızlı mesajlar',
@@ -1384,19 +1399,21 @@ export const tr: Localized<EnMessages> = {
     rewardChip: '{amount} · {reason}',
     rewardCorrected: '{name} adlı kişiyi düzelttin',
     rewardBothWrote: 'ikiniz de yazdınız',
-    rewardBothAmount: { other: 'ikinize de +{count}' },
-    rewardStreak: { other: '{count} günlük seri' },
-    celebrateStreakBody: { other: 'LangX’te {count} gün üst üste pratik yaptın.' },
-    celebrateStreakNote: { other: 'token, bu seri için' },
+    rewardBothAmount: { one: 'ikinize de +{count}', other: 'ikinize de +{count}' },
+    rewardStreak: { one: '{count} günlük seri', other: '{count} günlük seri' },
+    celebrateStreakBody: {
+      one: 'LangX’te {count} gün üst üste pratik yaptın.',
+      other: 'LangX’te {count} gün üst üste pratik yaptın.',
+    },
+    celebrateStreakNote: { one: 'token, bu seri için', other: 'token, bu seri için' },
     rewardAnnounceJoin: '{said}. {next}',
-    rewardLabel: { other: '{count} token: {reason}' },
+    rewardLabel: { one: '{count} token: {reason}', other: '{count} token: {reason}' },
     rewardBothLabel: {
+      one: 'Sana {count}, {name} adlı kişiye {count} token: ikiniz de yazdınız',
       other: 'Sana {count}, {name} adlı kişiye {count} token: ikiniz de yazdınız',
     },
     them: 'karşı taraf',
-    tokensPerMessage: {
-      other: '+{count} token / mesaj',
-    },
+    tokensPerMessage: { one: '+{count} token / mesaj', other: '+{count} token / mesaj' },
     voiceMessage: 'Sesli mesaj',
     voiceNeedsEmptyComposer: 'Önce eki gönder — sesli not tek başına gider.',
     playbackRate: '{rate}×',
@@ -2057,15 +2074,24 @@ export const tr: Localized<EnMessages> = {
     aboutYouPlaceholder: 'Ne konuşmayı seversin?',
     country: 'Ülke',
     gender: 'Cinsiyet',
-    genderOnce: 'Bunu {days} günde bir değiştirebilirsin.',
+    genderOnce: {
+      one: 'Bunu {count} günde bir değiştirebilirsin.',
+      other: 'Bunu {count} günde bir değiştirebilirsin.',
+    },
     genderCooldown: 'Yeniden değiştirebileceğin tarih: {date}.',
-    usernameEvery: 'Bunu her {days} günde bir değiştirebilirsin.',
+    usernameEvery: {
+      one: 'Bunu her {count} günde bir değiştirebilirsin.',
+      other: 'Bunu her {count} günde bir değiştirebilirsin.',
+    },
     usernameCooldown: 'Yeniden değiştirebileceğin tarih: {date}.',
     pronouns: 'Zamirler',
     pronounsPlaceholder: 'o, she/her, they/them…',
     pronounsHint: 'İsteğe bağlı, profilinde görünür. Kendi dilinde nasıl yazılıyorsa öyle yaz.',
     genderConfirmTitle: 'Cinsiyetin belirlensin mi?',
-    genderConfirmBody: 'Profilinde {gender} yazacak. {days} gün sonra tekrar değiştirebilirsin.',
+    genderConfirmBody: {
+      one: 'Profilinde {gender} yazacak. {count} gün sonra tekrar değiştirebilirsin.',
+      other: 'Profilinde {gender} yazacak. {count} gün sonra tekrar değiştirebilirsin.',
+    },
     languages: 'Diller',
     holdPhotoHint:
       'Sırasını değiştirmek için bir fotoğrafa basılı tutup sürükle. Kıpırdatmadan bırakırsan kaldırırsın.',
@@ -2079,8 +2105,14 @@ export const tr: Localized<EnMessages> = {
     photoUploading: 'Fotoğraf yükleniyor, %{percent}',
     photoRetry: 'Bu fotoğraf yüklenemedi. Yeniden denemek için dokun, kaldırmak için basılı tut.',
     photoRetryShort: 'Yeniden dene',
-    photoLimit: 'En fazla {max} fotoğraf ekleyebilirsin.',
-    photosTrimmed: 'Galerinde {max} fotoğraf yeri var, bu yüzden hepsi eklenmedi.',
+    photoLimit: {
+      one: 'En fazla {count} fotoğraf ekleyebilirsin.',
+      other: 'En fazla {count} fotoğraf ekleyebilirsin.',
+    },
+    photosTrimmed: {
+      one: 'Galerinde {count} fotoğraf yeri var, bu yüzden hepsi eklenmedi.',
+      other: 'Galerinde {count} fotoğraf yeri var, bu yüzden hepsi eklenmedi.',
+    },
     photoUpdated: 'Fotoğraf güncellendi.',
     saved: 'Profil kaydedildi.',
     saveFailed: 'Profilin kaydedilemedi.',
@@ -2410,21 +2442,30 @@ export const tr: Localized<EnMessages> = {
     signInSetPasswordFailed: 'Şifren belirlenemedi. Tekrar dene.',
     signInPasswordAlready: 'Bu hesabın zaten bir şifresi var.',
     username: 'Kullanıcı adı',
-    usernameBody: 'Her {days} günde bir değiştir',
+    usernameBody: {
+      one: 'Her {count} günde bir değiştir',
+      other: 'Her {count} günde bir değiştir',
+    },
     usernameTitle: 'Kullanıcı adını değiştir',
     usernameIntro: 'Şu an @{handle} sensin. Yerine istediğin kullanıcı adını seç.',
     usernameIntroV1:
       'Eski LangX’e katıldığında sana @{handle} adını o verdi. Bunu sen seçmedin, şimdi seçebilirsin.',
     usernameHint: 'Harf, rakam ve alt çizgi. İnsanlar seni böyle bulur.',
-    usernameEvery:
-      'Bunu her {days} günde bir değiştirebilirsin. Eski kullanıcı adını taşıyan bağlantılar ve QR kodları, bir sonraki değişikliğe kadar çalışmaya devam eder.',
+    usernameEvery: {
+      one: 'Bunu her {count} günde bir değiştirebilirsin. Eski kullanıcı adını taşıyan bağlantılar ve QR kodları, bir sonraki değişikliğe kadar çalışmaya devam eder.',
+      other:
+        'Bunu her {count} günde bir değiştirebilirsin. Eski kullanıcı adını taşıyan bağlantılar ve QR kodları, bir sonraki değişikliğe kadar çalışmaya devam eder.',
+    },
     usernameSave: 'Kullanıcı adını değiştir',
     usernameSaved: 'Artık @{handle} sensin.',
     usernameFailed: 'Kullanıcı adın değiştirilemedi. Tekrar dene.',
     usernameReserved: '@{handle} eski LangX’teki başka bir hesaba ait.',
     usernameCooldown: 'Şu an @{handle} sensin. Yeniden değiştirebileceğin tarih: {date}.',
     usernameConfirmTitle: 'Kullanıcı adın değişsin mi?',
-    usernameConfirmBody: 'Artık @{handle} olacaksın. {days} gün geçmeden tekrar değiştiremezsin.',
+    usernameConfirmBody: {
+      one: 'Artık @{handle} olacaksın. {count} gün geçmeden tekrar değiştiremezsin.',
+      other: 'Artık @{handle} olacaksın. {count} gün geçmeden tekrar değiştiremezsin.',
+    },
     password: 'Şifre',
     passwordBody: 'Belirle veya değiştir',
     changePassword: 'Şifreyi değiştir',
@@ -2546,14 +2587,23 @@ export const tr: Localized<EnMessages> = {
     exportDataFailed: 'Verilerin dışa aktarılamadı',
     exportDataSaved: 'Verilerin {file} olarak kaydedildi',
     deleteAccount: 'Hesabı sil',
-    deleteAccountBody: '{days} gün içinde tekrar giriş yaparsan iptal olur.',
+    deleteAccountBody: {
+      one: '{count} gün içinde tekrar giriş yaparsan iptal olur.',
+      other: '{count} gün içinde tekrar giriş yaparsan iptal olur.',
+    },
     deleteConfirmTitle: 'Hesabını sil',
-    deleteExplain:
-      'Profilin, mesajların ve fotoğrafların silinmek üzere sıraya alınır. {days} gün içinde tekrar giriş yaparsan her şey geri gelir; sonrasında kalıcı olarak gider.',
+    deleteExplain: {
+      one: 'Profilin, mesajların ve fotoğrafların silinmek üzere sıraya alınır. {count} gün içinde tekrar giriş yaparsan her şey geri gelir; sonrasında kalıcı olarak gider.',
+      other:
+        'Profilin, mesajların ve fotoğrafların silinmek üzere sıraya alınır. {count} gün içinde tekrar giriş yaparsan her şey geri gelir; sonrasında kalıcı olarak gider.',
+    },
     deleteTypeHandle: 'Devam etmek için kullanıcı adını yaz: {handle}',
     deleteCheckEmail: '{email} adresine bak. Silmeyi başlatan şey o mesajdaki bağlantı.',
     deleteNothingYet: 'Hesabına henüz bir şey olmadı.',
-    deleted: 'Hesap silindi. {days} gün içinde tekrar giriş yaparsan iptal olur.',
+    deleted: {
+      one: 'Hesap silindi. {count} gün içinde tekrar giriş yaparsan iptal olur.',
+      other: 'Hesap silindi. {count} gün içinde tekrar giriş yaparsan iptal olur.',
+    },
     deleteFailed: 'Silinemedi',
     signOut: 'Çıkış yap',
     signOutConfirm: 'Bu cihazda tekrar giriş yapman gerekecek.',
@@ -2635,9 +2685,15 @@ export const tr: Localized<EnMessages> = {
     ownedAccessibility: '{title}, sende var',
     locked: 'Kilitli',
     lockedAccessibility: '{title}, kilitli',
-    lockedStreak: '{threshold} günün {current} günü',
+    lockedStreak: {
+      one: '{threshold} günün {current} günü',
+      other: '{threshold} günün {current} günü',
+    },
     lockedNeeds: 'Önce {title} al',
-    lockedCorrections: '{threshold} düzeltmenin {current} tanesi',
+    lockedCorrections: {
+      one: '{threshold} düzeltmenin {current} tanesi',
+      other: '{threshold} düzeltmenin {current} tanesi',
+    },
     frameKind: 'Profil çerçevesi',
     stickerKind: 'Sticker paketi',
     titleKind: 'Unvan',
@@ -2671,8 +2727,11 @@ export const tr: Localized<EnMessages> = {
       one: 'Her sohbette gönderebileceğin {count} paket',
       other: 'Her sohbette gönderebileceğin {count} paket',
     },
-    auroraGate:
-      'Aurora Glass koşulu: en uzun seri {streak}/{streakGoal} gün, düzeltme {corrections}/{correctionsGoal}',
+    auroraGate: {
+      one: 'Aurora Glass koşulu: en uzun seri {streak}/{streakGoal} gün, düzeltme {corrections}/{correctionsGoal}',
+      other:
+        'Aurora Glass koşulu: en uzun seri {streak}/{streakGoal} gün, düzeltme {corrections}/{correctionsGoal}',
+    },
     withinReach: 'Alabileceğin',
     leftAfter: { one: 'Sonra {amount} kalır', other: 'Sonra {amount} kalır' },
     leftAfterBuying: {
@@ -3921,7 +3980,10 @@ export const tr: Localized<EnMessages> = {
     translationQuota: 'Sınırsız çeviri',
     translationQuotaBody: 'Ücretsiz planda günde {count} tane.',
     learningLanguages: 'Aynı anda daha çok dil',
-    learningLanguagesBody: 'Bir yerine {count} dili yan yana öğren.',
+    learningLanguagesBody: {
+      one: 'Aynı anda {count} dil öğren.',
+      other: 'Bir yerine {count} dili yan yana öğren.',
+    },
     whoViewed: 'Sana kim baktı',
     whoViewedBody: 'Sadece sayı değil — kim olduklarını gör.',
     incognito: 'Gizli gezinme',
@@ -3932,8 +3994,11 @@ export const tr: Localized<EnMessages> = {
     copilot: 'Daha çok Copilot yanıtı',
     copilotBody:
       'Yazarken mesajları kurmana ve anlamana yardım eder. Ücretsiz planda günde {count} tane.',
-    quotaNotice:
-      'Bugünkü {count} yeni sohbet hakkını kullandın. Sana gelen her mesaja sınırsız cevap vermeye devam edebilirsin.',
+    quotaNotice: {
+      one: 'Bugünkü {count} yeni sohbet hakkını kullandın. Sana gelen her mesaja sınırsız cevap vermeye devam edebilirsin.',
+      other:
+        'Bugünkü {count} yeni sohbet hakkını kullandın. Sana gelen her mesaja sınırsız cevap vermeye devam edebilirsin.',
+    },
     manageNotice: '{plan} kullanıyorsun. Mağaza hesabından yönetebilir ya da iptal edebilirsin.',
     lifetimeNotice: '{plan} ömür boyu senin. Yenilenen ya da ödenen bir şey yok.',
     giftNotice:
@@ -4117,7 +4182,7 @@ export const tr: Localized<EnMessages> = {
   pickers: {
     searchCountries: 'Ülke ara',
     noCountryMatch: '“{query}” ile eşleşen ülke yok',
-    searchLanguages: '{count} dil içinde ara',
+    searchLanguages: { one: '{count} dil içinde ara', other: '{count} dil içinde ara' },
   },
 
   weekly: {

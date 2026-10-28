@@ -398,7 +398,10 @@ export const de: Localized<EnMessages> = {
     addFailedTitle: 'Karte konnte nicht hinzugefügt werden',
     removeFailedTitle: 'Karte konnte nicht entfernt werden',
     limitTitle: 'Tageslimit für Echo erreicht',
-    limitBody: 'Du kannst {count} Karten pro Tag behalten. Morgen geht es weiter.',
+    limitBody: {
+      one: 'Du kannst {count} Karte pro Tag behalten. Morgen geht es weiter.',
+      other: 'Du kannst {count} Karten pro Tag behalten. Morgen geht es weiter.',
+    },
     fromYourChats: 'Aus deinen Chats',
     fromAPost: 'Aus einem Beitrag',
     fromYourself: 'Von dir geschrieben',
@@ -494,8 +497,10 @@ export const de: Localized<EnMessages> = {
     voiceSynthesised: 'Synthetisch',
     readAloud: 'Vorlesen',
     readAloudFailedTitle: 'Diese Karte konnte nicht vorgelesen werden',
-    readAloudLimitBody:
-      'Du kannst dir {count} Karten pro Tag vorlesen lassen. Morgen geht es weiter.',
+    readAloudLimitBody: {
+      one: 'Du kannst dir {count} Karte pro Tag vorlesen lassen. Morgen geht es weiter.',
+      other: 'Du kannst dir {count} Karten pro Tag vorlesen lassen. Morgen geht es weiter.',
+    },
     spokenBy: 'Gesprochen von {name}',
     keepOnCard: 'Auf meiner Karte behalten',
     audioAlreadyKept: 'Auf deiner Karte',
@@ -876,8 +881,8 @@ export const de: Localized<EnMessages> = {
       'Gib die E-Mail-Adresse deiner Registrierung ein und wir schicken dir einen Link zum Zurücksetzen.',
     confirmPassword: 'Passwort bestätigen',
     passwordsDoNotMatch: 'Die beiden Passwörter sind unterschiedlich.',
-    passwordTooShort: 'Mindestens {min} Zeichen.',
-    passwordRule: 'Mindestens {min} Zeichen',
+    passwordTooShort: { one: 'Mindestens {count} Zeichen.', other: 'Mindestens {count} Zeichen.' },
+    passwordRule: { one: 'Mindestens {count} Zeichen', other: 'Mindestens {count} Zeichen' },
     welcomeBack: 'Willkommen zurück',
     email: 'E-Mail',
     password: 'Passwort',
@@ -895,7 +900,10 @@ export const de: Localized<EnMessages> = {
     justLooking: 'Nur schauen?',
     haveAccount: 'Schon ein Konto? ',
     createAccount: 'Erstelle dein Konto',
-    minimumAge: 'Du musst {age} oder älter sein, um LangX zu nutzen.',
+    minimumAge: {
+      one: 'Du musst {count} oder älter sein, um LangX zu nutzen.',
+      other: 'Du musst {count} oder älter sein, um LangX zu nutzen.',
+    },
     acceptTerms: 'Ich habe gelesen und stimme zu:',
     acceptTermsAnd: ' und ',
     acceptTermsLabel: 'Nutzungsbedingungen und Datenschutz',
@@ -969,7 +977,10 @@ export const de: Localized<EnMessages> = {
     displayName: 'Anzeigename',
     nameFromSignUp: 'Aus deiner Anmeldung. Ändere ihn, wenn du magst.',
     aboutYouOptional: 'Über dich (optional)',
-    tooYoung: 'LangX ist für Menschen ab {age} Jahren.',
+    tooYoung: {
+      one: 'LangX ist für Menschen ab {count} Jahr.',
+      other: 'LangX ist für Menschen ab {count} Jahren.',
+    },
     photo: {
       picker: {
         title: 'Oder wähle ein anderes gezeichnetes Gesicht',
@@ -1260,8 +1271,11 @@ export const de: Localized<EnMessages> = {
     pickTitle: 'Keine Unterhaltung geöffnet',
     pickBody: 'Wähle eine aus der Liste, sie öffnet sich hier.',
     emptyTitle: 'Noch keine Chats',
-    emptyBody:
-      'Schreib jemandem aus Entdecken. Im kostenlosen Tarif kannst du {count} neue Chats am Tag beginnen — auf Nachrichten zu antworten ist immer unbegrenzt.',
+    emptyBody: {
+      one: 'Schreib jemandem aus Entdecken. Im kostenlosen Tarif kannst du {count} neuen Chat am Tag beginnen — auf Nachrichten zu antworten ist immer unbegrenzt.',
+      other:
+        'Schreib jemandem aus Entdecken. Im kostenlosen Tarif kannst du {count} neue Chats am Tag beginnen — auf Nachrichten zu antworten ist immer unbegrenzt.',
+    },
     goToDiscover: 'Zu Entdecken',
     youPrefix: 'Du:',
     starredMessages: 'Markierte Nachrichten',
@@ -2125,17 +2139,25 @@ export const de: Localized<EnMessages> = {
     aboutYouPlaceholder: 'Worüber redest du gern?',
     country: 'Land',
     gender: 'Geschlecht',
-    genderOnce: 'Du kannst das alle {days} Tage einmal ändern.',
+    genderOnce: {
+      one: 'Du kannst das einmal am Tag ändern.',
+      other: 'Du kannst das alle {count} Tage einmal ändern.',
+    },
     genderCooldown: 'Du kannst es am {date} wieder ändern.',
-    usernameEvery: 'Du kannst das alle {days} Tage ändern.',
+    usernameEvery: {
+      one: 'Du kannst das einmal am Tag ändern.',
+      other: 'Du kannst das alle {count} Tage ändern.',
+    },
     usernameCooldown: 'Du kannst es am {date} wieder ändern.',
     pronouns: 'Pronomen',
     pronounsPlaceholder: 'sie/ihr, er/ihm, dey/demm…',
     pronounsHint:
       'Optional, wird in deinem Profil angezeigt. Schreib sie so, wie deine Sprache es tut.',
     genderConfirmTitle: 'Geschlecht festlegen?',
-    genderConfirmBody:
-      'In deinem Profil steht dann {gender}. In {days} Tagen kannst du es wieder ändern.',
+    genderConfirmBody: {
+      one: 'In deinem Profil steht dann {gender}. In {count} Tag kannst du es wieder ändern.',
+      other: 'In deinem Profil steht dann {gender}. In {count} Tagen kannst du es wieder ändern.',
+    },
     languages: 'Sprachen',
     holdPhotoHint:
       'Halte ein Foto gedrückt und zieh es, um die Reihenfolge zu ändern. Lässt du es los, ohne es zu bewegen, entfernst du es.',
@@ -2150,8 +2172,14 @@ export const de: Localized<EnMessages> = {
     photoRetry:
       'Dieses Foto wurde nicht hochgeladen. Tippe, um es erneut zu versuchen, oder halte es gedrückt, um es zu entfernen.',
     photoRetryShort: 'Erneut',
-    photoLimit: 'Du kannst bis zu {max} Fotos hinzufügen.',
-    photosTrimmed: 'Deine Galerie fasst {max} Fotos, deshalb wurden nicht alle hinzugefügt.',
+    photoLimit: {
+      one: 'Du kannst {count} Foto hinzufügen.',
+      other: 'Du kannst bis zu {count} Fotos hinzufügen.',
+    },
+    photosTrimmed: {
+      one: 'Deine Galerie fasst {count} Foto, deshalb wurden nicht alle hinzugefügt.',
+      other: 'Deine Galerie fasst {count} Fotos, deshalb wurden nicht alle hinzugefügt.',
+    },
     photoUpdated: 'Foto aktualisiert.',
     saved: 'Profil gespeichert.',
     saveFailed: 'Dein Profil konnte nicht gespeichert werden.',
@@ -2503,22 +2531,27 @@ export const de: Localized<EnMessages> = {
     signInSetPasswordFailed: 'Passwort konnte nicht festgelegt werden. Versuch es noch einmal.',
     signInPasswordAlready: 'Dieses Konto hat bereits ein Passwort.',
     username: 'Benutzername',
-    usernameBody: 'Alle {days} Tage änderbar',
+    usernameBody: { one: 'Einmal am Tag änderbar', other: 'Alle {count} Tage änderbar' },
     usernameTitle: 'Benutzernamen ändern',
     usernameIntro: 'Du bist @{handle}. Wähle den Benutzernamen, den du stattdessen möchtest.',
     usernameIntroV1:
       'Als du zum alten LangX kamst, hat es dich @{handle} genannt. Das hast du nie ausgesucht — jetzt kannst du es.',
     usernameHint: 'Buchstaben, Zahlen und Unterstriche. So finden dich andere.',
-    usernameEvery:
-      'Du kannst das alle {days} Tage ändern. Links und QR-Codes mit deinem alten Benutzernamen funktionieren weiter, bis du ihn erneut änderst.',
+    usernameEvery: {
+      one: 'Du kannst das einmal am Tag ändern. Links und QR-Codes mit deinem alten Benutzernamen funktionieren weiter, bis du ihn erneut änderst.',
+      other:
+        'Du kannst das alle {count} Tage ändern. Links und QR-Codes mit deinem alten Benutzernamen funktionieren weiter, bis du ihn erneut änderst.',
+    },
     usernameSave: 'Benutzernamen ändern',
     usernameSaved: 'Du bist jetzt @{handle}.',
     usernameFailed: 'Dein Benutzername konnte nicht geändert werden. Versuch es noch einmal.',
     usernameReserved: '@{handle} gehört einem anderen Konto aus dem alten LangX.',
     usernameCooldown: 'Du bist @{handle}. Du kannst ihn am {date} wieder ändern.',
     usernameConfirmTitle: 'Benutzernamen ändern?',
-    usernameConfirmBody:
-      'Du wirst @{handle} sein. Du kannst ihn erst in {days} Tagen wieder ändern.',
+    usernameConfirmBody: {
+      one: 'Du wirst @{handle} sein. Du kannst ihn erst in {count} Tag wieder ändern.',
+      other: 'Du wirst @{handle} sein. Du kannst ihn erst in {count} Tagen wieder ändern.',
+    },
     password: 'Passwort',
     passwordBody: 'Festlegen oder ändern',
     changePassword: 'Passwort ändern',
@@ -2643,15 +2676,24 @@ export const de: Localized<EnMessages> = {
     exportDataFailed: 'Deine Daten konnten nicht exportiert werden',
     exportDataSaved: 'Deine Daten wurden als {file} gespeichert',
     deleteAccount: 'Konto löschen',
-    deleteAccountBody: 'Meldest du dich innerhalb von {days} Tagen wieder an, wird es abgebrochen.',
+    deleteAccountBody: {
+      one: 'Meldest du dich innerhalb von {count} Tag wieder an, wird es abgebrochen.',
+      other: 'Meldest du dich innerhalb von {count} Tagen wieder an, wird es abgebrochen.',
+    },
     deleteConfirmTitle: 'Dein Konto löschen',
-    deleteExplain:
-      'Dein Profil, deine Nachrichten und Fotos werden zur Löschung vorgemerkt. Melde dich binnen {days} Tagen wieder an, und alles ist zurück; danach ist es endgültig weg.',
+    deleteExplain: {
+      one: 'Dein Profil, deine Nachrichten und Fotos werden zur Löschung vorgemerkt. Melde dich binnen {count} Tag wieder an, und alles ist zurück; danach ist es endgültig weg.',
+      other:
+        'Dein Profil, deine Nachrichten und Fotos werden zur Löschung vorgemerkt. Melde dich binnen {count} Tagen wieder an, und alles ist zurück; danach ist es endgültig weg.',
+    },
     deleteTypeHandle: 'Gib deinen Namen, {handle}, ein, um fortzufahren.',
     deleteCheckEmail: 'Sieh in {email} nach. Der Link in dieser Nachricht startet die Löschung.',
     deleteNothingYet: 'Mit deinem Konto ist noch nichts passiert.',
-    deleted:
-      'Konto gelöscht. Meldest du dich innerhalb von {days} Tagen wieder an, wird es abgebrochen.',
+    deleted: {
+      one: 'Konto gelöscht. Meldest du dich innerhalb von {count} Tag wieder an, wird es abgebrochen.',
+      other:
+        'Konto gelöscht. Meldest du dich innerhalb von {count} Tagen wieder an, wird es abgebrochen.',
+    },
     deleteFailed: 'Löschen fehlgeschlagen',
     signOut: 'Abmelden',
     signOutConfirm: 'Du musst dich auf diesem Gerät neu anmelden.',
@@ -2733,9 +2775,15 @@ export const de: Localized<EnMessages> = {
     ownedAccessibility: '{title}, bereits vorhanden',
     locked: 'Gesperrt',
     lockedAccessibility: '{title}, gesperrt',
-    lockedStreak: '{current} von {threshold} Tagen',
+    lockedStreak: {
+      one: '{current} von {threshold} Tag',
+      other: '{current} von {threshold} Tagen',
+    },
     lockedNeeds: 'Erst {title} kaufen',
-    lockedCorrections: '{current} von {threshold} Korrekturen',
+    lockedCorrections: {
+      one: '{current} von {threshold} Korrektur',
+      other: '{current} von {threshold} Korrekturen',
+    },
     frameKind: 'Profilrahmen',
     stickerKind: 'Stickerpaket',
     titleKind: 'Titel',
@@ -2769,8 +2817,11 @@ export const de: Localized<EnMessages> = {
       one: '{count} Paket für jeden Chat',
       other: '{count} Pakete für jeden Chat',
     },
-    auroraGate:
-      'Aurora Glass: längste Serie {streak} von {streakGoal} Tagen, Korrekturen {corrections} von {correctionsGoal}',
+    auroraGate: {
+      one: 'Aurora Glass: längste Serie {streak} von {streakGoal} Tag, Korrekturen {corrections} von {correctionsGoal}',
+      other:
+        'Aurora Glass: längste Serie {streak} von {streakGoal} Tagen, Korrekturen {corrections} von {correctionsGoal}',
+    },
     withinReach: 'In Reichweite',
     leftAfter: { one: 'danach {amount} übrig', other: 'danach {amount} übrig' },
     leftAfterBuying: { one: 'Nach dem Kauf {amount} übrig', other: 'Nach dem Kauf {amount} übrig' },
@@ -4033,7 +4084,10 @@ export const de: Localized<EnMessages> = {
     translationQuota: 'Unbegrenzte Übersetzungen',
     translationQuotaBody: '{count} am Tag im kostenlosen Tarif.',
     learningLanguages: 'Mehr Sprachen gleichzeitig',
-    learningLanguagesBody: 'Lerne {count} Sprachen nebeneinander statt einer.',
+    learningLanguagesBody: {
+      one: 'Lerne {count} Sprache auf einmal.',
+      other: 'Lerne {count} Sprachen nebeneinander statt einer.',
+    },
     whoViewed: 'Wer dich angesehen hat',
     whoViewedBody: 'Nicht nur die Zahl — sieh, wer es war.',
     incognito: 'Inkognito surfen',
@@ -4044,8 +4098,11 @@ export const de: Localized<EnMessages> = {
     copilot: 'Mehr Copilot-Antworten',
     copilotBody:
       'Hilft beim Formulieren und Verstehen von Nachrichten, während du schreibst. {count} am Tag im kostenlosen Tarif.',
-    quotaNotice:
-      'Du hast deine {count} neuen Chats für heute aufgebraucht. Auf alles, was du bekommst, kannst du weiter unbegrenzt antworten.',
+    quotaNotice: {
+      one: 'Du hast deinen neuen Chat für heute aufgebraucht. Auf alles, was du bekommst, kannst du weiter unbegrenzt antworten.',
+      other:
+        'Du hast deine {count} neuen Chats für heute aufgebraucht. Auf alles, was du bekommst, kannst du weiter unbegrenzt antworten.',
+    },
     manageNotice: 'Du hast {plan}. Verwalte oder kündige es in deinem Store-Konto.',
     lifetimeNotice: 'Du hast {plan} auf Lebenszeit. Nichts verlängert sich, nichts wird berechnet.',
     giftNotice:
@@ -4231,7 +4288,7 @@ export const de: Localized<EnMessages> = {
   pickers: {
     searchCountries: 'Länder suchen',
     noCountryMatch: 'Kein Land passt zu „{query}“',
-    searchLanguages: 'In {count} Sprachen suchen',
+    searchLanguages: { one: 'In {count} Sprache suchen', other: 'In {count} Sprachen suchen' },
   },
 
   weekly: {

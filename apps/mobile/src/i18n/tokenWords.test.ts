@@ -63,10 +63,11 @@ describe.each(Object.entries(POOL_WORD))('the pool in %s', (locale, word) => {
  *
  * An entry counts tokens when a placeholder stands right before the noun, or
  * when the plural رموز stands on its own. "تمنح رموزًا" (pays tokens) counts
- * sessions or people, not tokens, and is left alone. The server's catalogue
- * has the same check in apps/api/src/i18n/tokenWords.test.ts.
+ * sessions or people, not tokens, and is left alone, as is "رموز QR" (QR
+ * codes) in a sentence that counts days. The server's catalogue has the same
+ * check in apps/api/src/i18n/tokenWords.test.ts.
  */
-const COUNTS_TOKENS = /\{\w+\}\s*رم(?:ز|وز)|رموز(?![\p{L}\p{M}])/u
+const COUNTS_TOKENS = /\{\w+\}\s*رم(?:ز|وز)|رموز(?![\p{L}\p{M}])(?!\s*QR)/u
 const CASE = {
   two: /رمز(?:ان|ين)(?![\p{L}\p{M}])/u,
   few: /رموز(?![\p{L}\p{M}])/u,

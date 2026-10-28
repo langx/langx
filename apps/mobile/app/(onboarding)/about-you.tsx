@@ -73,7 +73,7 @@ export default function AboutYouStep() {
   // is an accusation nobody has earned yet.
   const ageError =
     draft.birthDate.length === 10 && !valid
-      ? t('onboarding.tooYoung', { age: MINIMUM_AGE })
+      ? t('onboarding.tooYoung', { count: MINIMUM_AGE })
       : undefined
 
   /*
@@ -98,7 +98,7 @@ export default function AboutYouStep() {
         nameFromAccount={accountName.length > 0 && draft.displayName.trim() === accountName}
         birthDate={draft.birthDate}
         onBirthDate={(birthDate) => updateDraft({ birthDate })}
-        ageHint={t('onboarding.tooYoung', { age: MINIMUM_AGE })}
+        ageHint={t('onboarding.tooYoung', { count: MINIMUM_AGE })}
         ageError={ageError}
         gender={draft.gender}
         genderOptions={genderOptions}

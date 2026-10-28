@@ -58,7 +58,7 @@ export default function ResetPassword() {
         onChangeNewPassword={setNewPassword}
         confirmation={confirmation}
         onChangeConfirmation={setConfirmation}
-        confirmationError={issue ? t(issue, { min: PASSWORD_MIN_LENGTH }) : error}
+        confirmationError={issue ? t(issue, { count: PASSWORD_MIN_LENGTH }) : error}
         loading={loading}
         canSubmit={!loading && passwordPairReady(newPassword, confirmation)}
         onSubmit={onSubmit}
@@ -109,7 +109,7 @@ export default function ResetPassword() {
         secureTextEntry
         textContentType="newPassword"
         autoComplete="password-new"
-        error={issue ? t(issue, { min: PASSWORD_MIN_LENGTH }) : error}
+        error={issue ? t(issue, { count: PASSWORD_MIN_LENGTH }) : error}
       />
       <Button
         label={t('auth.updatePassword')}

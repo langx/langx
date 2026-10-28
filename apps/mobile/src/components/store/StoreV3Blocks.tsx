@@ -197,6 +197,7 @@ export function FeaturedFramesCard({
             style={styles.gateMini}
             accessible
             accessibilityLabel={t('storeHome.auroraGate', {
+              count: gate.streakGoal,
               streak: gate.streak.toLocaleString(locale),
               streakGoal: gate.streakGoal.toLocaleString(locale),
               corrections: gate.corrections.toLocaleString(locale),

@@ -118,7 +118,7 @@ export default function SignUp() {
         onChangeEmail={setEmail}
         password={password}
         onChangePassword={setPassword}
-        passwordError={issue ? t(issue, { min: PASSWORD_MIN_LENGTH }) : error}
+        passwordError={issue ? t(issue, { count: PASSWORD_MIN_LENGTH }) : error}
         accepted={accepted}
         onChangeAccepted={setAccepted}
         termsUrl={TERMS_LINK.url}
@@ -141,7 +141,7 @@ export default function SignUp() {
 
       <View>
         <Text style={styles.title}>{t('auth.createAccount')}</Text>
-        <Text style={styles.subtitle}>{t('auth.minimumAge', { age: MINIMUM_AGE })}</Text>
+        <Text style={styles.subtitle}>{t('auth.minimumAge', { count: MINIMUM_AGE })}</Text>
       </View>
 
       {/*
@@ -175,11 +175,13 @@ export default function SignUp() {
             secureTextEntry
             textContentType="newPassword"
             autoComplete="password-new"
-            error={issue ? t(issue, { min: PASSWORD_MIN_LENGTH }) : error}
+            error={issue ? t(issue, { count: PASSWORD_MIN_LENGTH }) : error}
           />
           {/* The rule, until it is broken — then the field's own error says so. */}
           {issue ? null : (
-            <Text style={styles.hint}>{t('auth.passwordRule', { min: PASSWORD_MIN_LENGTH })}</Text>
+            <Text style={styles.hint}>
+              {t('auth.passwordRule', { count: PASSWORD_MIN_LENGTH })}
+            </Text>
           )}
         </View>
 
