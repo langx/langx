@@ -46,6 +46,10 @@ export async function openBrowser() {
   // parsed and decoded once per page instead of once per frame
   const newPage = async (defs = '') => {
     const page = await browser.newPage({ deviceScaleFactor: 1 })
+    // Playwright's 30 s default is for web pages. A film frame on a loaded machine (two locales
+    // rendering at once, swiftshader on the CPU) can take longer, and a timeout there kills a
+    // render an hour in.
+    page.setDefaultTimeout(300_000)
     await page.setContent(
       `<!doctype html><html><head><style>${FONT_CSS_ALL}html,body{margin:0;padding:0;background:transparent}#s{display:block}</style></head><body><div id="s"></div>${defs ? `<svg width="0" height="0" style="position:absolute;left:-9px;top:-9px" aria-hidden="true"><defs>${defs}</defs></svg>` : ''}</body></html>`,
     )
