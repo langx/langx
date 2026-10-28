@@ -321,7 +321,7 @@ export const tr: Localized<EnMessages> = {
       'Bu ekrandaki herkes senin öğrendiğin dili konuşuyor ve senin bildiğin bir dili öğreniyor. Değiştirmek için çiftin üstüne dokun.',
     discoverSortsTitle: 'Üç farklı bakış',
     discoverSortsBody:
-      'Sana özel dillerine göre eşleştirir, Aktif az önce buradan ayrılanları gösterir, Yakında ise konumunu paylaştığında çalışır.',
+      'Sana özel dillerine göre eşleştirir, Aktif az önce buradan ayrılanları gösterir, Yakındakiler ise konumunu paylaştığında çalışır.',
     discoverCardTitle: 'Buradan başla',
     discoverCardBody:
       'Profilini okumak için birine dokun. LangX’teki neredeyse her değişim önce selam vermekle başlıyor.',
@@ -1129,7 +1129,7 @@ export const tr: Localized<EnMessages> = {
     forYou: 'Sana özel',
     title: 'Keşfet',
     active: 'Aktif',
-    nearby: 'Yakında',
+    nearby: 'Yakındakiler',
     filters: 'Filtreler ✦',
     filtersWithCount: 'Filtreler · {count}',
     locationOffTitle: 'Konum paylaşımı kapalı',
@@ -1142,7 +1142,7 @@ export const tr: Localized<EnMessages> = {
       'Burada sadece konum paylaşımını açmış kişiler görünür. Yarıçapı genişletmeyi ya da diğer sekmeleri dene.',
     nobodySharingTitle: 'Konumunu paylaşan yok',
     nobodySharingBody:
-      'Yakında yalnızca konum paylaşımını açmış kişileri gösterebilir. Diğer sekmeleri dene.',
+      'Yakındakiler yalnızca konum paylaşımını açmış kişileri gösterebilir. Diğer sekmeleri dene.',
     nearbyNeedsPermissionTitle: 'Yakındakiler için konum gerekiyor',
     nearbyNeedsPermissionBody:
       'Konum izni verilmemiş, dolayısıyla mesafeye göre sıralanacak bir şey yok.',
@@ -1177,7 +1177,7 @@ export const tr: Localized<EnMessages> = {
     country: 'Ülke',
     distance: 'Mesafe',
     distanceBody:
-      'Yakında’nın ne kadar uzağa bakacağını sınırlar. Seçilmezse en yakından başlayıp dışa doğru gider.',
+      'Yakındakiler’in ne kadar uzağa bakacağını sınırlar. Seçilmezse en yakından başlayıp dışa doğru gider.',
     distanceKm: '{km} km',
     practiseBody:
       'Kendi dillerinden hangisini pratik etmek istiyorsun. Buradaki herkes onu zaten ana dili olarak konuşuyor.',
@@ -2038,7 +2038,7 @@ export const tr: Localized<EnMessages> = {
       'LangX’i her gün açmak serini ayakta tutar. Konuşmak ve öğretmek jeton kazandırır; bunları seri dondurmaya ya da profilin için yeni bir görünüme harcayabilirsin.',
     discoverTitle: 'Partner bul',
     discoverBody:
-      'Keşfet’teki herkes senin öğrendiğin bir dili konuşuyor ve senin konuştuğun bir dili öğreniyor. Sana özel dillerine göre eşleşir, Aktif az önce buralarda olanları gösterir, Yakında ise konumunu paylaştığında çalışır. Bir profil aç ve merhaba de — buradaki neredeyse her değişim böyle başlar.',
+      'Keşfet’teki herkes senin öğrendiğin bir dili konuşuyor ve senin konuştuğun bir dili öğreniyor. Sana özel dillerine göre eşleşir, Aktif az önce buralarda olanları gösterir, Yakındakiler ise konumunu paylaştığında çalışır. Bir profil aç ve merhaba de — buradaki neredeyse her değişim böyle başlar.',
     plusTitle: '+ düğmesi',
     plusBody:
       'Mesaj kutusunun yanındaki +’ya dokun. Fotoğraf ve sesli notun yanı sıra düzeltilmeyi isteyebilir, bir şeyin nasıl söylendiğini sorup sesli not olarak yanıt alabilir, bir ifadeyi anlamıyla birlikte kaydedebilir, konuşmak için bir saat önerebilir ya da tek doğru cevaplı bir soru gönderebilirsin.',
