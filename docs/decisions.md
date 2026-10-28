@@ -9772,3 +9772,7 @@ account now, as a beta, with no invitation
 - **The other copies** — the website's plans page, the GitBook docs and
   copilot.langx.io — say the same in their own repos, by `CLAUDE.md`'s rule
   that a change in what a plan includes is mirrored by hand.
+
+> **Note, 28 October 2026.** The switch-on above has happened: production's
+> `GET /app-config` reports `flags.copilotEnabled` on, with `flags.v3Home` on
+> beside it. When it was switched on was not recorded.
