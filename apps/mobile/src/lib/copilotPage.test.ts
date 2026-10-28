@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
 import { COPILOT_ACTIONS, PLAN_LIMITS } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { COPILOT_PAGE_HELPS, copilotAllowances, copilotPageAction } from './copilotPage'
@@ -70,5 +72,21 @@ describe('copilotPageAction', () => {
     expect(
       copilotPageAction({ v3: true, session: 'none', service: true, status: ready }),
     ).toBeNull()
+  })
+})
+
+/**
+ * The screen draws `signUp` once, in the hero. It once had a second copy at
+ * the foot as well, and a guest saw the same button twice (#2084). Read from
+ * the source, as `homeProducts.test.ts` reads the product screens, since the
+ * screen cannot be rendered under vitest.
+ */
+describe('CopilotScreenV3', () => {
+  const source = readFileSync(path.resolve(__dirname, '../screens/CopilotScreenV3.tsx'), 'utf8')
+  const count = (needle: string) => source.split(needle).length - 1
+
+  it('asks a guest to sign up in one place, with one call to the sign-up', () => {
+    expect(count("'copilot.page.signUp'"), 'the sign-up label').toBe(1)
+    expect(count('requireAccount('), 'calls to requireAccount').toBe(1)
   })
 })

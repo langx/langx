@@ -27,7 +27,6 @@ import { ProductScreen } from '../components/product/ProductScreen'
 import { ProductSection } from '../components/product/ProductSection'
 import { StepList } from '../components/product/StepList'
 import { Avatar } from '../components/ui/Avatar'
-import { Button } from '../components/ui/Button'
 import { useAppConfig } from '../hooks/useAppConfig'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useV3Home } from '../hooks/useV3Home'
@@ -83,7 +82,6 @@ export function CopilotScreenV3() {
   const status = useCopilotStatus(v3 && session === 'member' && service === true)
   const action = copilotPageAction({ v3, session, service, status: status.data })
   const allowances = copilotAllowances()
-  const signUp = (): void => void requireAccount(user, { action: 'other' })
 
   const names = {
     check: t('copilot.menuCheck'),
@@ -236,10 +234,19 @@ export function CopilotScreenV3() {
             }
           : action === 'signUp'
             ? {
+                // A guest's only way to Copilot, asked once, and here rather
+                // than at the foot: it is in the first screen, under what
+                // Copilot is and how many answers a day it gives, so a guest
+                // who came for it need not read seven sections to find it;
+                // and it stands where a member's "Try it in a chat" does and
+                // where every product page keeps its one action, so the page
+                // has one shape for both. A second copy at the foot read as
+                // the same button twice (#2084); `copilotPage.test.ts` holds
+                // the screen to one.
                 action: {
                   label: t('copilot.page.signUp'),
                   icon: 'user-plus' as const,
-                  onPress: signUp,
+                  onPress: () => void requireAccount(user, { action: 'other' }),
                 },
               }
             : {})}
@@ -303,12 +310,6 @@ export function CopilotScreenV3() {
         title={t('copilot.page.siteTitle')}
         url={COPILOT_SITE_URL}
       />
-      {action === 'signUp' ? (
-        // Asked again at the foot, where a guest who has read the page ends
-        // up: the hero's pill is several screens back by then. The button
-        // every guest prompt in the app wears, to the same sign-up.
-        <Button key="signUp" label={t('copilot.page.signUp')} icon="user-plus" onPress={signUp} />
-      ) : null}
     </ProductScreen>
   )
 }
