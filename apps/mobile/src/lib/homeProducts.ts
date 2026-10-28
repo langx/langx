@@ -165,15 +165,15 @@ export function homeCardsBeside({
  * Russian's "кому-нибудь" is drawn as "кому-" over "нибудь" in a column too
  * narrow for the whole of it, and is measured that way.
  *
- * Only between letters: a leading hyphen, or one before a figure ("COVID-19",
- * "-5"), is not a place a line breaks, so it stays in one piece, the wider
- * and so the safer of the two readings.
+ * Only between letters: a leading hyphen, or one before a figure in any
+ * script ("COVID-19", "-5", "كوفيد-١٩"), is not a place a line breaks, so it
+ * stays in one piece, the wider and so the safer of the two readings.
  */
 export function measuredWords(text: string): string[] {
   return text
     .split(/\s+/)
     .filter(Boolean)
-    .flatMap((word) => word.replace(/([^\s\d-]-)(?=[^\s\d-])/g, '$1\n').split('\n'))
+    .flatMap((word) => word.replace(/(\p{L}-)(?=\p{L})/gu, '$1\n').split('\n'))
 }
 
 /**

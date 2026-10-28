@@ -268,8 +268,9 @@ describe('measuredWords', () => {
   })
 
   it('leaves whole a hyphen no line breaks at', () => {
-    // Before a figure, leading, doubled, or at the end.
+    // Before a figure in any script, leading, doubled, or at the end.
     expect(measuredWords('COVID-19')).toEqual(['COVID-19'])
+    expect(measuredWords('كوفيد-١٩')).toEqual(['كوفيد-١٩'])
     expect(measuredWords('-5')).toEqual(['-5'])
     expect(measuredWords('a--b')).toEqual(['a--b'])
     expect(measuredWords('Audio-')).toEqual(['Audio-'])
@@ -285,13 +286,24 @@ describe('measuredWords', () => {
     expect(homeCardsBeside({ stacked: false, inner, words: [...others, 45.7, 57] })).toBe(true)
   })
 
-  it('splits no word in any locale’s goals but at a space or such a hyphen', () => {
+  it('cuts every locale’s goals after each hyphen between letters, and nowhere else', () => {
     for (const locale of SUPPORTED_LOCALES) {
       const t = createTranslate(locale)
       for (const key of ['home.streakChats', 'home.todayCorrect', 'home.streakEcho'] as const) {
-        const label = t(key)
-        // Put back together, the pieces are the label without its spaces.
-        expect(measuredWords(label).join(''), `${locale} ${key}`).toBe(label.replace(/\s+/g, ''))
+        const where = `${locale} ${key}`
+        const words = t(key).split(/\s+/).filter(Boolean)
+        expect(measuredWords(t(key)), where).toEqual(words.flatMap((word) => measuredWords(word)))
+        for (const word of words) {
+          const pieces = measuredWords(word)
+          expect(pieces.join(''), where).toBe(word)
+          pieces.forEach((piece, at) => {
+            // No piece still holds a place a line breaks…
+            expect(piece, where).not.toMatch(/\p{L}-\p{L}/u)
+            // …and every cut is one: after a letter's hyphen, before a letter.
+            if (at < pieces.length - 1) expect(piece, where).toMatch(/\p{L}-$/u)
+            if (at > 0) expect(piece, where).toMatch(/^\p{L}/u)
+          })
+        }
       }
     }
   })
