@@ -1315,7 +1315,8 @@ Object.assign(MOVE_IMPL, {
   // frame, then slides down it for `slide` s; licks: false keeps her tongue in after the landing.
   // With top, the leap's profile reaches `top` on the frame before `back` (the hit); from `back` she
   // is crumpled against it (the scrabble pose, still in profile and leaning) and turns to the lens
-  // over 0.2 s; pin: [[t, rise], ...] holds her against it meanwhile (film.mjs measures it)
+  // over 0.2 s; pin: [[t, rise], ...] holds her against it meanwhile (film.mjs measures it). She
+  // stays there, scrabbling, until the last 0.3 s, and falls.
   'jump-fail': (c, T, m0, { top = null, slide = 0.5, licks = true, pin = null } = {}) => {
     const j = m0 + 0.45,
       back = top === null ? Math.max(j + 0.75, beat(T, 0.55)) : j + 0.3,
@@ -1357,7 +1358,9 @@ Object.assign(MOVE_IMPL, {
       const held = pin || [[back, top]]
       c.k.set('rise', held[0][0], held[0][1])
       for (const [t, v] of held.slice(1)) c.k.key('rise', t, v, 'linear')
-      c.k.seq('rise', [[held[held.length - 1][0] + 0.04], [land, 0, 'in']])
+      // she hangs on the edge, scrabbling, then drops: a fall, not a float down past nothing
+      const hang = held[held.length - 1][0] + 0.04
+      c.k.seq('rise', [[Math.max(hang, land - 0.3)], [land, 0, 'in']])
     }
     c.k.seq('paw.kamt', [
       [back, 1],

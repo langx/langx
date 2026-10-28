@@ -218,11 +218,14 @@ export function vtt(caps) {
     return `${p(Math.floor(ms / 3600000))}:${p(Math.floor(ms / 60000) % 60)}:${p(Math.floor(ms / 1000) % 60)}.${p(ms % 1000, 3)}`
   }
   const cues = []
+  // when a block's first words show: a block that opens on a held-back sentence (the whisper
+  // after a "…") is an empty bubble until then, and the cue before it runs on to meet it
+  const firstShown = (b, show) => Math.min(...b.sents.map((s) => Math.max(show, b.start, s.at)))
   for (const c of caps) {
     const parts = []
     c.blocks.forEach((b, i) => {
       const a = i === 0 ? c.show : Math.max(c.show, b.start),
-        z = i < c.blocks.length - 1 ? Math.max(c.show, c.blocks[i + 1].start) : c.hide
+        z = i < c.blocks.length - 1 ? firstShown(c.blocks[i + 1], c.show) : c.hide
       const at = [...new Set(b.sents.map((s) => Math.max(a, s.at)))].sort((x, y) => x - y)
       at.forEach((t0, j) => {
         const t1 = j < at.length - 1 ? at[j + 1] : z

@@ -278,7 +278,7 @@
         "en": "…Up to this one.",
         "tr": "…Tam buna kadar.",
         "de": "…Bis zu diesem hier.",
-        "es": "…Hasta este de aquí.",
+        "es": "…Hasta este día.",
         "fr": "…Jusqu’à celui-ci.",
         "pt-BR": "…Até este aqui.",
         "ru": "…Вплоть до этого дня.",
@@ -317,7 +317,7 @@
         "de": "Erreichte Tage bleiben offen. Der Rest bleibt gesperrt.",
         "es": "Los días que alcanzas quedan abiertos. El resto, bloqueado.",
         "fr": "Les jours atteints restent ouverts. Le reste, verrouillé.",
-        "pt-BR": "Os dias que você alcança ficam abertos. O resto fica bloqueado.",
+        "pt-BR": "Os dias que você alcança ficam abertos. O resto, bloqueado.",
         "ru": "Пройденные дни остаются открытыми. Остальные закрыты.",
         "ar": "الأيام التي تبلغها تبقى مفتوحة. والباقي مقفل."
       }
@@ -432,7 +432,7 @@
         "de": "Abgemacht? Du tauchst auf. Ich glänze.",
         "es": "¿Trato? Tú apareces. Yo presumo.",
         "fr": "Marché conclu ? Tu viens. Je brille.",
-        "pt-BR": "Fechado? Você aparece. Eu me exibo.",
+        "pt-BR": "Fechado? Você aparece. Eu arraso.",
         "ru": "Договорились? Ты приходишь. Я блистаю.",
         "ar": "اتفقنا؟ أنت تحضر. وأنا أتألق."
       }
@@ -446,14 +446,14 @@
         [87.24, 89.17],
         [89.62, 90.91]
       ],
-      "note": "\"co-star\" = a film co-star, never romantic (tr \"rol arkadaşı\", never \"partner\"). Sentence 3 is whispered. Keep three sentences.",
+      "note": "\"co-star\" = a film co-star, never romantic (tr \"rol arkadaşı\", never \"partner\"). Sentence 3 is whispered. Keep three sentences. The co-star is the viewer: address them in the language's generic form, as the app does (es \"El mejor coprotagonista … el único\", pt-BR \"O melhor coprotagonista … o único\", de \"der einzige\"); the feminine forms are for Venus only.",
       "text": {
         "en": "Honestly? Best co-star I’ve ever had. …Also the only one.",
         "tr": "Dürüst olayım mı? Gelmiş geçmiş en iyi rol arkadaşım. …Hem de tek.",
         "de": "Ehrlich? Bester Co-Star, den ich je hatte. …Auch der einzige.",
-        "es": "¿Sinceramente? La mejor coprotagonista que he tenido. …Y la única.",
+        "es": "¿Sinceramente? El mejor coprotagonista que he tenido. …Y el único.",
         "fr": "Franchement ? Meilleure co-vedette de ma carrière. …Et la seule.",
-        "pt-BR": "Sinceramente? Melhor coprotagonista que já tive. …E a única.",
+        "pt-BR": "Sinceramente? O melhor coprotagonista que já tive. …E o único.",
         "ru": "Честно? Лучший партнёр по съёмкам за всю карьеру. …И единственный.",
         "ar": "بصراحة؟ أفضل زميل تمثيل عرفته. …والوحيد أيضًا."
       }

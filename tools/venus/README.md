@@ -92,8 +92,9 @@ The cover (`.jpg`, also the mp4's cover art) is the title card. The preview is 7
 line burned in as a subtitle and in the `.vtt`; the film never voices a line itself, not even with
 `say`. The `.vtt` holds back what the bubble holds back: a sentence after a "…", and each "Bag." of
 the bag run, starts a cue of its own when it appears, so the caption file never pre-reads a
-punchline. Each section's music is a loop at a fixed tempo laid from its first beat; the cold open
-before the title has a faint room tone instead.
+punchline. Each section's music is a loop at a fixed tempo laid from its first beat; wherever
+there is no music (the cold open, the empty set, the breath before day 100, the bonk) a faint room
+tone sits under the sound effects instead, so a silent cut never plays its captions over a dropout.
 
 **The board and the clock.** `data/film-intro.json` holds the 22 lines in the eight locales and
 every sentence's time on the English silent cut (the board). `lib/film-clock.mjs` turns it into a
@@ -116,8 +117,11 @@ just small enough that her ears stay under the number's label (measured in the b
 `fitUnderLabel` measures a day); on the bag days, and in the bag-hop entrance that plants the gag,
 the camera also pulls back and up (`BAG_CAM`), and in the comeback it rises while the bag is the
 joke, so the bag clears the caption. In the bonk her leap's last frame meets the
-locked day's bottom edge and she stays pressed to it, turning to the lens, before she slides (the
-heights are measured, not guessed). The wall is made of the
+locked day's bottom edge and she stays pressed to it, turning to the lens and scrabbling, until
+she drops in the last 0.3 s (the heights are measured, not guessed). The photo-booth print lands as
+a big blep sticker above her for "It's a sticker now.", and only takes its place in the ring as the
+slaps begin. On the title card a two-line tagline (de, es, fr, pt-BR, ru) lowers the stage under it,
+so the pill clears her ears on the cover. The wall is made of the
 published covers, read from the CDN once into `cache/intro-covers/`. `lib/film-layers.mjs` draws
 what only the film has (the title, pills, the clapper, the photo print, stickers, the wall tiles),
 and `lib/endcard.mjs` closes it (`--end handoff`, the default, or `splash`).
@@ -126,7 +130,9 @@ and `lib/endcard.mjs` closes it (`--end handoff`, the default, or `splash`).
 browser and checks the timing (the English clock is the board, takes re-time it, pushes stay on the
 beat), the lines (sentence shape, no digits, the character lint) and the screen: one caption at a
 time, a sentence after a "…" on a line of its own, never clearing within a quarter second of a cut
-(a bubble that clears on a cut is gone on its frame), a dash or a lone "?" never starting a line, no
+(a bubble that clears on a cut is gone on its frame), a dash or a lone "?" never starting a line, a
+little word ("по", "a") left at a line's end only when no smaller size avoids it, no gap between a
+line's WebVTT cues, the co-star (the viewer) in the generic form in es and pt-BR, no
 face she never aims at the viewer, and
 flashes at least 0.5 s apart with at most three flashes or cuts in any second. Each flash washes at
 most 20% white.

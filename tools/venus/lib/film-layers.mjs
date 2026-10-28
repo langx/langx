@@ -32,13 +32,21 @@ const popK = (u, len = 0.24) =>
 // or one more line (a sentence after a "…" is not drawn until it is said, so it never waits at the
 // end of a line); `prefer` are the other sentence starts, where a break goes when one can. `only`:
 // no break but between sentences. A line that ends on a word of one or two letters ("in", "en",
-// "по", "في") counts as SHORT_END px wider, so the little word goes down with the words it belongs to.
+// "по", "في") counts as SHORT_END px wider, so the little word goes down with the words it belongs to;
+// shortEnd: false refuses such a line outright (film.mjs falls back to it when a layout still
+// leaves one hanging, so a size step down wins over a hanging "по").
 const SHORT_END = 120
-const shortWord = (x) => !/[.,!?…:;»]$/u.test(x) && [...x].length <= 2
+export const shortWord = (x) => !/[.,!?…:;»]$/u.test(x) && [...x].length <= 2
 // a word that is only a dash or closing punctuation (Russian "— своё", French "ça ?") never starts
 // a line: it stays with the word before it, as a no-break space would keep it
 const gluedBack = (x) => /^[—–?!:;»]+$/u.test(x)
-export function wrap(ws, m, maxW, maxLines, { prefer = [], must = [], only = false } = {}) {
+export function wrap(
+  ws,
+  m,
+  maxW,
+  maxLines,
+  { prefer = [], must = [], only = false, shortEnd = true } = {},
+) {
   const sp = m[' ']
   const w = (a) => a.reduce((s, x, i) => s + m[x] + (i ? sp : 0), 0)
   let best = null
@@ -47,6 +55,7 @@ export function wrap(ws, m, maxW, maxLines, { prefer = [], must = [], only = fal
     if (cuts.length === n - 1) {
       if (!must.every((i) => cuts.includes(i))) return
       if (only && !cuts.every((i) => prefer.includes(i) || must.includes(i))) return
+      if (!shortEnd && cuts.some((i) => shortWord(ws[i - 1]))) return
       const at = [0, ...cuts, ws.length]
       const lines = cuts.concat(ws.length).map((b, k) => ws.slice(at[k], b))
       const widest = Math.max(...lines.map(w))

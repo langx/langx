@@ -267,6 +267,58 @@ test('captions: a sentence after a "…" starts a line; other breaks go to a sen
   assert.deepEqual(joined(wrap(c, m(c), 760, 2, { prefer: [1] })), ['Bag. Bag.'])
 })
 
+test('captions: shortEnd false never leaves a little word hanging at a line end', () => {
+  const m = (ws) => Object.fromEntries([[' ', 14], ...ws.map((x) => [x, [...x].length * 30])])
+  const ws = 'Лучший партнёр по съёмкам за всю карьеру.'.split(' ')
+  // narrow enough that the only two-line break that fits leaves "по" at the end of line one
+  const soft = wrap(ws, m(ws), 700, 2)
+  assert.equal(soft[0][soft[0].length - 1], 'по')
+  assert.equal(wrap(ws, m(ws), 700, 2, { shortEnd: false }), null)
+  const strict = wrap(ws, m(ws), 700, 3, { shortEnd: false })
+  for (const ln of strict.slice(0, -1)) assert.notEqual(ln[ln.length - 1], 'по')
+})
+
+test('lines: the co-star (the viewer) is addressed in the generic form, not the feminine', () => {
+  const L = FILM.lines.find((x) => x.id === 'intro-22')
+  assert.match(L.text.es, /\bEl mejor coprotagonista\b.*\bel único\./u)
+  assert.match(L.text['pt-BR'], /\bO melhor coprotagonista\b.*\bo único\./u)
+  for (const lang of ['es', 'pt-BR']) assert.doesNotMatch(L.text[lang], /\b(la|a) única\b/u)
+})
+
+test('captions: a line split into blocks leaves no gap between its WebVTT cues', () => {
+  const parse = (text) =>
+    text
+      .split('\n\n')
+      .slice(1)
+      .map((c) => {
+        const [id, span] = c.trim().split('\n')
+        const [a, b] = span.split(' --> ').map((x) => {
+          const [h, mm, sec] = x.split(':')
+          return +h * 3600 + +mm * 60 + +sec
+        })
+        return { id, a, b }
+      })
+  // intro-22 as film.mjs lays it out: the said sentences, then the whisper in a block of its own
+  const { clock, shots } = performed.get('en')
+  const L = captionTimes(clock, flashesAndCuts(shots).cuts).find((x) => x.id === 'intro-22')
+  const sent = (s) => ({ text: s.text, at: shownAt(s) })
+  const w = L.sents[2]
+  const cues = parse(
+    vtt([
+      {
+        ...L,
+        blocks: [
+          { start: L.show, sents: L.sents.slice(0, 2).map(sent) },
+          { start: w.t0 - 0.14, sents: [sent(w)] },
+        ],
+      },
+    ]),
+  )
+  assert.equal(cues.length, 2)
+  assert.ok(near(cues[0].b, cues[1].a, 1e-3), `${cues[0].b} -> ${cues[1].a}`)
+  assert.ok(near(cues[1].a, shownAt(w), 2e-3))
+})
+
 test('photosensitivity: flashes at least 0.5 s apart, at most 3 flashes or cuts in any second', () => {
   for (const lang of LOCALES) {
     const { shots } = performed.get(lang)

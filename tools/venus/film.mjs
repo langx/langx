@@ -45,7 +45,7 @@ import {
   HELLO,
   END_BOARD,
   PRINT,
-  BLEP_AT,
+  BLEP_HERO,
   BONK_FRAME,
   BONK_CAM,
   BAG_CAM,
@@ -118,7 +118,9 @@ async function layoutCaptions(B, clock, cuts, lang) {
   // A caption of sentences: breaks only between them, down to 54 px on three lines if need be;
   // else every sentence still starts a line, one of them broken too (54 px, three lines); and only
   // then the house sizes with a break anywhere. A line never ends one sentence and starts the next
-  // while a size allows otherwise.
+  // while a size allows otherwise. And when the layout found leaves a little word ("по", "a")
+  // hanging at a line's end, the same breaks a size down, then the looser tries, go without it
+  // first ("Лучший партнёр / по съёмкам", not "Лучший партнёр по / съёмкам").
   const fit = async (ws, br) => {
     const sentences = br.prefer.length || br.must.length
     const each = { must: [...br.must, ...br.prefer].sort((a, b) => a - b) }
@@ -129,9 +131,18 @@ async function layoutCaptions(B, clock, cuts, lang) {
           ...SIZES.map(([F, n]) => [F, n, br]),
         ]
       : SIZES.map(([F, n]) => [F, n, br])
-    for (const [F, n, opt] of tries) {
+    const hangs = (lines) => lines.slice(0, -1).some((ln) => FL.shortWord(ln[ln.length - 1]))
+    for (let i = 0; i < tries.length; i++) {
+      const [F, n, opt] = tries[i]
       const lines = FL.wrap(ws, await measured(F, ws), MAXW, n, opt)
-      if (lines) return { F, lines }
+      if (!lines) continue
+      if (!hangs(lines)) return { F, lines }
+      const smaller = SIZES.filter(([F2]) => F2 < F).map(([F2, n2]) => [F2, Math.max(n, n2), opt])
+      for (const [F2, n2, o2] of [...smaller, ...tries.slice(i + 1)]) {
+        const l2 = FL.wrap(ws, await measured(F2, ws), MAXW, n2, { ...o2, shortEnd: false })
+        if (l2) return { F: F2, lines: l2 }
+      }
+      return { F, lines }
     }
     return null
   }
@@ -542,6 +553,7 @@ export async function buildFilm({
     tagline,
     // under the title, clear of its outline
     taglineY: FL.TITLE_Y + titleF * 0.35 + 40 + pillH / 2,
+    taglineBottom: FL.TITLE_Y + titleF * 0.35 + 40 + pillH,
     free,
     counter: (v, at) => ({
       at,
@@ -586,6 +598,7 @@ export async function buildFilm({
     if (sh.day || sh.wall) continue
     const S = shotClock(sh, clock)
     if (sh.id === 'bonk') Object.assign(S, await bonkTop(B, sh, S))
+    if (sh.id === 'title') S.pillBottom = F.taglineBottom
     // a shot with a counter: small enough that her ears stay under its label once it is up
     const fit = sh.labelAt !== undefined ? await shotLabelFit(B, sh, S, F) : 1
     Object.assign(sh, performShot(sh, S), { fit })
@@ -876,7 +889,7 @@ function frameSvg(film, f, dayCache, { cover = false } = {}) {
         freezeAt: fr.at,
         flyAt: fr.live,
         flyEnd: fr.flyEnd,
-        to: { x: BLEP_AT[0], y: BLEP_AT[1], size: BLEP_AT[2], rot: BLEP_AT[3] },
+        to: { x: BLEP_HERO[0], y: BLEP_HERO[1], size: BLEP_HERO[2], rot: BLEP_HERO[3] },
         id: 'st-blep',
       })
       scene = d.ta < fr.live ? print + d.top : scene + print
@@ -902,6 +915,16 @@ const MUSIC = [
   { mood: 'celebrate', from: 75.0, to: 86.0, bpm: 120, seed: 46 },
   { mood: 'cozy', from: 86.0, to: null, bpm: 80, seed: 47 },
 ]
+// the board spans with no music bed: before the first and between beds that do not meet
+function quietSpans() {
+  const spans = []
+  let at = 0
+  for (const m of MUSIC) {
+    if (m.from > at + 1e-6) spans.push([at, m.from])
+    at = m.to === null ? Infinity : Math.max(at, m.to)
+  }
+  return spans
+}
 function musicStem(film, out, voiced) {
   const { W, duration, clock } = film
   const N = Math.round((duration + 0.5) * SR)
@@ -910,20 +933,24 @@ function musicStem(film, out, voiced) {
   // sample (a fractional index writes nothing, and the whole bed went missing that way)
   const XF = 2 * Math.round(0.125 * SR),
     HARD = Math.round(0.03 * SR)
-  // room tone under the cold open, where there is no music yet: a faint low hum of air, so the
-  // shutters sit in a room and not in a dropout
-  const roomEnd = Math.min(N, Math.round(W(10.6) * SR)),
-    roomFade = Math.round(0.4 * SR)
+  // room tone wherever there is no music (the cold open, the empty set, the breath before day 100,
+  // the bonk): a faint low hum of air, so the shutters and the bonk sit in a room and a silent
+  // cut's captions never play over a dropout
   let seed = 0x2f6b1,
     yl0 = 0,
     yr0 = 0
   const rnd = () => ((seed = (seed * 1103515245 + 12345) >>> 0) / 2 ** 32) * 2 - 1
-  for (let i = 0; i < roomEnd; i++) {
-    const k = 0.01 * Math.min(1, i / roomFade, (roomEnd - i) / roomFade)
-    yl0 += 0.08 * (rnd() - yl0)
-    yr0 += 0.08 * (rnd() - yr0)
-    OL[i] += yl0 * k
-    OR[i] += yr0 * k
+  for (const [from, to] of quietSpans()) {
+    const i0 = Math.round(W(from) * SR),
+      i1 = Math.min(N, Math.round(W(to) * SR)),
+      fade = Math.min(Math.round(0.4 * SR), Math.round((i1 - i0) / 4))
+    for (let i = i0; i < i1; i++) {
+      const k = 0.016 * Math.min(1, (i - i0 + 1) / fade, (i1 - i) / fade)
+      yl0 += 0.08 * (rnd() - yl0)
+      yr0 += 0.08 * (rnd() - yr0)
+      OL[i] += yl0 * k
+      OR[i] += yr0 * k
+    }
   }
   for (const m of MUSIC) {
     const loop = path.join(CACHE, `intro-music-${m.mood}-${m.bpm}-${m.seed}.wav`)

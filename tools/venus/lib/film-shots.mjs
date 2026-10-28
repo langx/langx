@@ -172,11 +172,14 @@ export const SHOTS = [
       )
       c.fx.sparkles.push([S.at(11.2), 540, 640])
     },
+    // a two-line tagline (de, es, fr, pt-BR, ru) comes down to her ears: the stage drops with her
+    // until they clear it by TITLE_EARS_GAP on the cover
     cam: (S) => ({
       z: [
         [0, 1],
         [S.len, 1.04, 'linear'],
       ],
+      lift: [[0, -Math.max(0, Math.round((S.pillBottom ?? 0) + TITLE_EARS_GAP - TITLE_EARS_Y))]],
     }),
     over(t, S, F) {
       return (
@@ -467,7 +470,13 @@ export const SHOTS = [
     over(t, S, F) {
       let s = FL.clapper(t, 0)
       const fr = S.c.freeze
-      if (t >= S.at(33.2) - 0.001) s += FL.sticker(t, S.at(33.2) - 0.2, 'st-blep', ...BLEP_AT)
+      // the blep lands big above her, the punchline of "It's a sticker now.", and only takes its
+      // place in the ring as the slaps begin
+      if (t >= S.at(33.2) - 0.001) {
+        const v = L.EASE.inOut(L.clamp((t - S.at(35.45)) / 0.4))
+        const [x, y, size, rot] = BLEP_HERO.map((h, i) => h + (BLEP_AT[i] - h) * v)
+        s += FL.sticker(t, S.at(33.2) - 0.2, 'st-blep', x, y, size, rot)
+      }
       for (const sl of SLAPS)
         s += FL.sticker(t, S.at(sl.b), `st-${sl.id}`, sl.x, sl.y, sl.size, sl.rot)
       s += FL.pill(t, S.at(37.4), F.free, 540, L.BADGE_Y, { fill: L.YELLOW, rtl: F.rtl })
@@ -816,7 +825,13 @@ export const SLAPS = [
   { b: 37.9, id: 'boxhide', x: 855, y: 470, size: 240, rot: 8 },
   { b: 38.4, id: 'hamsi', x: 540, y: 570, size: 240, rot: 0 },
 ]
+// her ear tips on the title card's cover frame (12.40) without a lift, and the room the tagline
+// pill keeps above them
+export const TITLE_EARS_Y = 690
+export const TITLE_EARS_GAP = 70
 export const BLEP_AT = [215, 790, 240, -8]
+// where the print lands first: big, over her head (her ears top out near y 735), under the header
+export const BLEP_HERO = [540, 520, 400, -6]
 // the print: a square round her face at the booth's zoom
 export const PRINT = [190, 690, 700]
 // the hello ring of B17: seven slots in two columns either side of her, then the viewer's own,
