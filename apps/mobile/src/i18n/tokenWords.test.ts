@@ -15,9 +15,16 @@ import { catalogs } from './catalogs'
  * - Russian, Spanish and Portuguese call it what token.langx.io calls it:
  *   токен, tokens. Both catalogues had grown a second word beside it —
  *   жетон, fichas — sometimes on the same screen.
+ * - French calls it jeton, as token.langx.io/fr does. The catalogue said
+ *   "tokens" on about one line in four — Echo, invites, the hourly gift,
+ *   sticker gifts — and "jetons" on the rest. The product's name, LangX
+ *   Token, stays as it is in English and on the site.
  *
  * Letter lookarounds rather than `\b`, which treats "ã" as a word boundary.
  */
+/** "token" anywhere but in the product's name and a `{tokens}` placeholder. */
+const FR_TOKEN = /(?<![\p{L}{])(?<!LangX )tokens?(?![\p{L}}])/iu
+
 const NEVER: Partial<Record<Locale, { pattern: RegExp; old: string }[]>> = {
   es: [
     { pattern: /(?<!\p{L})botes?(?!\p{L})/iu, old: 'El bote de ayer' },
@@ -27,9 +34,22 @@ const NEVER: Partial<Record<Locale, { pattern: RegExp; old: string }[]>> = {
     { pattern: /(?<!\p{L})bol(?:os?|ão|ões)(?!\p{L})/iu, old: 'O bolo de ontem' },
     { pattern: /(?<!\p{L})fichas?(?!\p{L})/iu, old: 'Suas fichas' },
   ],
-  fr: [{ pattern: /cagnotte/iu, old: 'La cagnotte d’hier' }],
+  fr: [
+    { pattern: /cagnotte/iu, old: 'La cagnotte d’hier' },
+    { pattern: FR_TOKEN, old: 'Tu n’as pas assez de tokens pour ce pack.' },
+  ],
   ru: [{ pattern: /жетон/iu, old: 'Не хватает жетонов' }],
   ar: [{ pattern: /توكن/u, old: '+3 توكنات' }],
+}
+
+/**
+ * Lines that keep the old word until another change lands: invite.step2 and
+ * shared.inviteBody are being reworded in every locale, to take their numbers
+ * from config, by a change that owns them. Each one is checked to still need
+ * its place here, so the list empties itself once they say the new word.
+ */
+const WAITING: Partial<Record<Locale, string[]>> = {
+  fr: ['invite.step2', 'shared.inviteBody'],
 }
 
 /** The pool's own name on its screen, in the three languages that changed it. */
@@ -52,8 +72,26 @@ describe.each(Object.entries(NEVER))('the %s catalogue', (locale, rules) => {
   })
 
   it.each(rules)('never uses the word in $old', (rule) => {
-    const said = leaves(catalogs[locale as Locale]).filter(([, text]) => rule.pattern.test(text))
+    const waiting = WAITING[locale as Locale] ?? []
+    const said = leaves(catalogs[locale as Locale]).filter(
+      ([path, text]) => !waiting.includes(path) && rule.pattern.test(text),
+    )
     expect(said).toEqual([])
+  })
+})
+
+describe.each(Object.entries(WAITING))('the %s lines left for later', (locale, paths) => {
+  it.each(paths)('%s still says the old word', (path) => {
+    const text = leaves(catalogs[locale as Locale]).find(([key]) => key === path)?.[1] ?? ''
+    expect(NEVER[locale as Locale]?.some((rule) => rule.pattern.test(text))).toBe(true)
+  })
+})
+
+describe('the French token', () => {
+  it('keeps its product name', () => {
+    expect(FR_TOKEN.test('LangX Token')).toBe(false)
+    const title = leaves(catalogs.fr).find(([key]) => key === 'tokens.page.title')?.[1]
+    expect(title).toBe('LangX Token')
   })
 })
 
