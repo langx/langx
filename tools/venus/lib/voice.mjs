@@ -64,6 +64,13 @@ export function sentences(text) {
     while (b > a && /\s/.test(text[b - 1])) b--
     if (b > a) parts.push({ a, b })
   }
+  // a "…" that opens the text belongs to the first sentence ("…Almost everything."): the pattern
+  // above never starts a part on one, so without this the caption and the bubble dropped it
+  if (parts.length && /^[…\s]+$/u.test(text.slice(0, parts[0].a))) {
+    let a = 0
+    while (/\s/.test(text[a])) a++
+    parts[0].a = a
+  }
   // a part made only of "…" belongs to the next one ("…In the mirror.")
   for (let i = 0; i < parts.length - 1; i++)
     if (/^[…\s]+$/u.test(text.slice(parts[i].a, parts[i].b))) {

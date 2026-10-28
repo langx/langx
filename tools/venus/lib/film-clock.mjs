@@ -14,9 +14,16 @@
 //                 the day renderer's shape) replaces the silent clock for that line. The film places
 //                 each sentence of the take on its own, so the board's gaps between sentences stay.
 //   the warp      a sentence that runs longer than on the board pushes everything after its end
-//                 later by the difference (W). Inside the 120 bpm sections the push is rounded up
-//                 to whole beats (0.5 s), so every cut and every slap stays on the music's grid. A
-//                 shorter sentence pushes nothing: the film never runs faster than the board.
+//                 later by the difference (W). Before the title (bar 0 of the score) the push is
+//                 exact; from it on, what has been pushed so far is rounded up to whole beats
+//                 (0.5 s), so every board beat stays on a beat of the one 120 bpm score. The overruns
+//                 add up before they are rounded: rounding each one wasted a quarter beat a sentence,
+//                 seven seconds of dead air in the English cut. A shorter sentence pushes nothing:
+//                 the film never runs faster than the board.
+//   the anchors   the title slam is bar 0; day 100's slam (B) and "I show off" (C) must land on a
+//                 downbeat too. A locale whose pushes left one of them a beat or three off waits
+//                 that long at the anchor's hold point (the board's `anchors`), so the crash and the
+//                 sting stay on the one.
 //
 // Pure: no browser, no audio. The film (film.mjs) reads the takes' loudness itself, for lip sync.
 import fs from 'node:fs'
@@ -35,16 +42,14 @@ export const CLOCK = {
   cutGuard: 0.25, // a bubble never clears this close to a cut
   swapGap: 0.3, // a shorter gap to the next line swaps the text instead of closing the bubble
 }
-// The board's beat-grid sections, in English seconds: the four 120 bpm beds (title to the zoomies,
-// looks to the sticker slaps, the race and the wall, the hello ring to the deal)
-export const GRID = [
-  [10.6, 19.1],
-  [21.4, 40.9],
-  [40.9, 52.4],
-  [52.9, 63.7],
-  [75.0, 86.0],
-]
+// The score's anchors on the board: A, the title slam, is bar 0; B and C wait for a downbeat
+export const ANCHORS = FILM.anchors
+export const BAR0 = ANCHORS.A.at
+export const BAR = 4 * CLOCK.beat
+// The board's beat grid, in English seconds: one score from the title slam to the end
+export const GRID = [[BAR0, Infinity]]
 export const inGrid = (t) => GRID.some(([a, b]) => t >= a && t < b)
+const beatUp = (x) => Math.ceil(x / CLOCK.beat - 1e-6) * CLOCK.beat
 const r3 = (x) => Math.round(x * 1000) / 1000
 
 // Caption words: split at plain spaces only, and a lone "?" or "!" (French spacing) rides with the
@@ -139,20 +144,46 @@ export function buildClock(lang, { voiceDir = null, film = FILM } = {}) {
       const nat = take ? take.spans[i].t1 - take.spans[i].t0 : silentSeconds(p.text)
       // the board is written to the hundredth, so a few milliseconds over is no push at all
       const over = nat - (b - a) > 0.015 ? nat - (b - a) : 0
-      const push = inGrid(a) && over > 0 ? Math.ceil(over / CLOCK.beat - 1e-6) * CLOCK.beat : over
-      all.push({ id: L.id, i, a, b, nat, push, p })
+      all.push({ id: L.id, i, a, b, nat, over, p })
     })
   }
   const lines = Object.fromEntries(entries)
-  // W: board time -> film time. A push lands at its sentence's board end, and moves what starts
-  // right there too: the bag run's "Bag."s and their day cuts sit back to back on the board, so a
-  // push that skipped its own end would leave the next "Bag." on top of a longer first one.
-  const pushes = all.filter((s) => s.push > 0).map((s) => [s.b, s.push])
-  const W = (t) => {
+  // The pushes, as [board time, seconds]. A push lands at its sentence's board end, and moves what
+  // starts right there too: the bag run's "Bag."s and their day cuts sit back to back on the board,
+  // so a push that skipped its own end would leave the next "Bag." on top of a longer first one.
+  // From bar 0 on, the shift so far (D) is the overruns so far (sum) rounded up to whole beats, and
+  // never less than keeps the next sentence clear of this one's end: a gap shorter than the beat
+  // the rounding saved would otherwise have two sentences overlap.
+  const pushes = []
+  let sum = 0,
+    D = 0
+  all.forEach((s, k) => {
+    if (!inGrid(s.a)) {
+      if (s.over > 0) pushes.push([s.b, r3(s.over)])
+      return
+    }
+    sum += s.over
+    const next = all[k + 1]
+    const clear = next ? D + s.over - (next.a - s.b) : 0
+    const D1 = Math.max(D, beatUp(sum), beatUp(clear))
+    if (D1 > D + 1e-9) pushes.push([s.b, r3(D1 - D)])
+    D = D1
+  })
+  const shift = (list) => (t) => {
     let d = 0
-    for (const [b, p] of pushes) if (b <= t + 1e-9) d += p
+    for (const [b, p] of list) if (b <= t + 1e-9) d += p
     return r3(t + d)
   }
+  // The holds: anchor B, then C (whose wait counts B's), each to the next downbeat after bar 0
+  const holds = []
+  for (const id of ['B', 'C']) {
+    const W0 = shift([...pushes, ...holds])
+    const beats = Math.round((W0(ANCHORS[id].at) - W0(BAR0)) / CLOCK.beat)
+    const wait = (((4 - (beats % 4)) % 4) * CLOCK.beat) % BAR
+    if (wait > 0) holds.push([ANCHORS[id].hold, wait])
+  }
+  // W: board time -> film time
+  const W = shift([...pushes, ...holds])
   for (const s of all) {
     const L = lines[s.id],
       F = film.lines.find((x) => x.id === s.id)
@@ -173,7 +204,9 @@ export function buildClock(lang, { voiceDir = null, film = FILM } = {}) {
       words: wordsOf(L.text, s.p, t0, t1, L.take, offset),
     })
   }
-  return { lang, W, lines, pushes, film }
+  const bar0 = W(BAR0)
+  const anchors = Object.fromEntries(Object.keys(ANCHORS).map((k) => [k, W(ANCHORS[k].at)]))
+  return { lang, W, lines, pushes, holds, bar0, anchors, film }
 }
 
 // Bubble times for every line: { show, hide, swapIn } on each clock line. cuts: film times.

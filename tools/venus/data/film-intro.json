@@ -1,5 +1,5 @@
 {
-  "$comment": "The introduction film (film.mjs): its 22 lines in the eight locales, and the words drawn outside the bubble. `at` is each sentence on the English board, in seconds of the English silent cut; every locale is re-timed from its own text (lib/film-clock.mjs). Keep each line's sentence count and every \"…\" where it is: the beats hit sentences by position. en and tr are final; the other six want a native read before the film is voiced.",
+  "$comment": "The introduction film (film.mjs): its 21 lines in the eight locales, and the words drawn outside the bubble. `at` is each sentence on the English board, in seconds of the English silent cut; every locale is re-timed from its own text (lib/film-clock.mjs). Keep each line’s sentence count and every \"…\" where it is: the beats hit sentences by position. `anchors` are the board times the score lands on downbeats: A is bar 0, and B and C wait (`hold`, 0-3 beats) for the next downbeat in a locale whose lines pushed them off it. en and tr are final; the other six want a native read before the film is voiced.",
   "check": {
     "en": "final",
     "tr": "final",
@@ -18,7 +18,7 @@
       "es": "PROTAGONIZADA POR ELLA MISMA",
       "fr": "DANS SON PROPRE RÔLE",
       "pt-BR": "ESTRELANDO: ELA MESMA",
-      "ru": "В\u00a0ГЛАВНОЙ\u00a0РОЛИ\u00a0— ОНА\u00a0САМА",
+      "ru": "В ГЛАВНОЙ РОЛИ — ОНА САМА",
       "ar": "بطولة: هي نفسها"
     },
     "free": {
@@ -30,6 +30,22 @@
       "pt-BR": "Grátis",
       "ru": "Бесплатно",
       "ar": "مجانًا"
+    }
+  },
+  "anchors": {
+    "A": {
+      "at": 10.7,
+      "what": "the title slam: bar 0 of the score"
+    },
+    "B": {
+      "at": 48.7,
+      "hold": 48.7,
+      "what": "day 100 slams in"
+    },
+    "C": {
+      "at": 80.7,
+      "hold": 78.7,
+      "what": "“I show off.”"
     }
   },
   "lines": [
@@ -99,8 +115,8 @@
       "beat": "B05",
       "modes": ["vo", "on"],
       "at": [
-        [14.6, 16.67],
-        [17.2, 18.13]
+        [13.4, 15.47],
+        [17.3, 18.23]
       ],
       "note": "\"star\" = a film star; \"entrance\" = making an entrance. Sentence 1 is voice-over, sentence 2 on camera.",
       "text": {
@@ -115,27 +131,10 @@
       }
     },
     {
-      "id": "intro-05",
-      "beat": "B06",
-      "modes": ["vo"],
-      "at": [[19.55, 20.69]],
-      "note": "\"edited\" = film editing (tr kurguladı, de geschnitten, fr monté, es editó, pt-BR editou, ru монтировал, ar مَنتَج), never \"wrote\".",
-      "text": {
-        "en": "…Who edited this?",
-        "tr": "…Bunu kim kurguladı?",
-        "de": "…Wer hat das geschnitten?",
-        "es": "…¿Quién editó esto?",
-        "fr": "…Qui a monté ça ?",
-        "pt-BR": "…Quem editou isso?",
-        "ru": "…Кто это монтировал?",
-        "ar": "…من قام بمونتاج هذا؟"
-      }
-    },
-    {
       "id": "intro-06",
       "beat": "B07",
       "modes": ["on"],
-      "at": [[21.95, 23.81]],
+      "at": [[19.75, 21.61]],
       "note": "Feminine forms where the language marks them.",
       "text": {
         "en": "I look good in everything.",
@@ -153,8 +152,8 @@
       "beat": "B07",
       "modes": ["on", "on"],
       "at": [
-        [25.35, 26.64],
-        [26.84, 27.84]
+        [23.15, 24.44],
+        [24.64, 25.64]
       ],
       "note": "\"queen\" = regal, never slang. The crown lands on this word: keep it last in sentence 2 if the grammar allows.",
       "text": {
@@ -173,8 +172,8 @@
       "beat": "B09",
       "modes": ["on", "on"],
       "at": [
-        [32.5, 33.64],
-        [34.09, 35.45]
+        [28.6, 29.74],
+        [30.19, 31.55]
       ],
       "note": "\"Delete\" = delete a photo. \"sticker\" = the app's own word for sticker in each locale.",
       "text": {
@@ -193,8 +192,8 @@
       "beat": "B10",
       "modes": ["on", "on"],
       "at": [
-        [37.4, 38.69],
-        [38.89, 40.31]
+        [33.7, 34.99],
+        [35.19, 36.61]
       ],
       "note": "Reuse each locale's app wording for \"free for everyone\" and \"every chat\" (venus.page.tagline, venus.page.stickersIntro).",
       "text": {
@@ -213,8 +212,8 @@
       "beat": "B11",
       "modes": ["on", "on"],
       "at": [
-        [41.45, 42.81],
-        [43.01, 43.86]
+        [37.75, 39.11],
+        [39.31, 40.16]
       ],
       "note": "\"show\" = a performance. \"streak\" = the app's streak word (ru: серия).",
       "text": {
@@ -232,7 +231,7 @@
       "id": "intro-11",
       "beat": "B12",
       "modes": ["vo"],
-      "at": [[44.45, 47.02]],
+      "at": [[40.75, 43.32]],
       "note": "ru: the clip is \"видео\" or \"выпуск\", never \"серия\" (серия is the streak). Must stay paired with intro-13: \"every streak day\" is only true together with \"up to this one\" (day 100).",
       "text": {
         "en": "Every streak day gets its own video.",
@@ -251,10 +250,10 @@
       "modes": ["vo", "vo", "vo", "vo"],
       "reveal": "append",
       "at": [
-        [48.4, 48.9],
-        [48.9, 49.4],
-        [49.4, 49.9],
-        [50.35, 51.35]
+        [44.7, 45.2],
+        [45.2, 45.7],
+        [45.7, 46.2],
+        [46.65, 47.65]
       ],
       "note": "Exactly four sentences; the first three are one word each. The bag word: tr Poşet, de Tüte, es Bolsa, fr Sac, pt-BR Sacola, ru Пакет, ar كيس. \"Different bag\" = another kind of bag.",
       "text": {
@@ -272,7 +271,7 @@
       "id": "intro-13",
       "beat": "B12",
       "modes": ["vo"],
-      "at": [[53.35, 54.42]],
+      "at": [[49.15, 50.22]],
       "note": "\"this one\" = this day (day 100 is on screen). No digits, no number words.",
       "text": {
         "en": "…Up to this one.",
@@ -289,7 +288,7 @@
       "id": "intro-14",
       "beat": "B13",
       "modes": ["vo"],
-      "at": [[56.85, 57.92]],
+      "at": [[52.65, 53.72]],
       "note": "\"busy\" = she has been working a lot.",
       "text": {
         "en": "…I’ve been busy.",
@@ -307,8 +306,8 @@
       "beat": "B14",
       "modes": ["vo", "vo"],
       "at": [
-        [58.45, 60.24],
-        [60.44, 61.94]
+        [54.25, 56.04],
+        [56.54, 58.04]
       ],
       "note": "Sentence 1: reuse venus.page.keepTitle where it fits. Sentence 2 mirrors keepBody's \"locked\".",
       "text": {
@@ -326,7 +325,7 @@
       "id": "intro-16",
       "beat": "B15",
       "modes": ["on"],
-      "at": [[65.25, 66.11]],
+      "at": [[60.9, 61.76]],
       "note": "The lock applies to her too.",
       "text": {
         "en": "…Even for me.",
@@ -344,8 +343,8 @@
       "beat": "B16",
       "modes": ["on", "on"],
       "at": [
-        [67.1, 68.1],
-        [68.55, 70.05]
+        [63.6, 64.6],
+        [65.05, 66.55]
       ],
       "note": "A pun: a streak breaking and taking a break. If it does not survive, keep \"pauses happen\" without blame, loss or urgency. \"in a bag\" uses the bag word.",
       "text": {
@@ -363,7 +362,7 @@
       "id": "intro-18",
       "beat": "B16",
       "modes": ["on"],
-      "at": [[70.55, 73.34]],
+      "at": [[67.05, 69.84]],
       "note": "Mirror venus.page.comebackBody.",
       "text": {
         "en": "Your first day back gets its own video.",
@@ -381,8 +380,8 @@
       "beat": "B17",
       "modes": ["on", "on"],
       "at": [
-        [75.5, 77.36],
-        [77.83, 78.33]
+        [71.7, 73.56],
+        [74.03, 74.53]
       ],
       "note": "Mirror langx.io/venus \"she speaks your language\". \"See?\" points at the hello sticker in the viewer's language.",
       "text": {
@@ -401,8 +400,8 @@
       "beat": "B18",
       "modes": ["on", "on"],
       "at": [
-        [79.3, 80.8],
-        [81, 82.29]
+        [75.5, 77],
+        [77.2, 78.49]
       ],
       "note": "\"story\" = the social-media story, the word venus.endBody uses in each locale. \"photograph well\" = look good in photos.",
       "text": {
@@ -421,9 +420,9 @@
       "beat": "B19",
       "modes": ["on", "on", "on"],
       "at": [
-        [83, 83.5],
-        [83.7, 84.56],
-        [84.76, 85.54]
+        [78.94, 79.44],
+        [79.64, 80.5],
+        [80.7, 81.48]
       ],
       "note": "\"show up\" = keep turning up (a habit poke, never effort or skill); \"show off\" = flaunt. The wordplay may change; keep three sentences.",
       "text": {
@@ -442,9 +441,9 @@
       "beat": "B20",
       "modes": ["on", "on", "whisper"],
       "at": [
-        [86.4, 87.04],
-        [87.24, 89.17],
-        [89.62, 90.91]
+        [82.34, 82.98],
+        [83.18, 85.11],
+        [85.56, 86.85]
       ],
       "note": "\"co-star\" = a film co-star, never romantic (tr \"rol arkadaşı\", never \"partner\"). Sentence 3 is whispered. Keep three sentences. The co-star is the viewer: address them in the language's generic form, as the app does (es \"El mejor coprotagonista … el único\", pt-BR \"O melhor coprotagonista … o único\", de \"der einzige\"); the feminine forms are for Venus only.",
       "text": {
