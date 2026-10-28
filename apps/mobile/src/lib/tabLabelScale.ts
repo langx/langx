@@ -8,11 +8,8 @@
  * one another. At 1.25× the widest of them in English, German, Russian and
  * Arabic ("Главная") still fits a fifth of a 375-point phone. In Spanish,
  * French, Portuguese and Turkish one word nearly fills its tab at the default
- * size, so a phone still cuts that word short once it grows, as it did
- * before — but by less, since it grows no further. French's tab was
- * "Discussions", which no scale here could fit: it is 72 points at the
- * default size and a tab leaves its word 65 on a 375-point phone, so the tab
- * says "Messages" instead.
+ * size ("Discussions" overfills it), so a phone still cuts that word short
+ * once it grows, as it did before — but by less, since it grows no further.
  *
  * The trade: past 1.25× an Android reader's tab words stop growing, and
  * Android has no large-content viewer to stand in for them. The tab's glyph

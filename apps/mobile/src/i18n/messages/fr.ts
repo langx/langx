@@ -36,7 +36,7 @@ export const fr: Localized<EnMessages> = {
 
   tabs: {
     discover: 'Découvrir',
-    chats: 'Messages',
+    chats: 'Discussions',
     echo: 'Echo',
     feed: 'Fil',
     me: 'Moi',
@@ -2777,7 +2777,7 @@ export const fr: Localized<EnMessages> = {
     rarityRare: 'Rare',
     rarityEpic: 'Épique',
     rarityLegendary: 'Légendaire',
-    inChats: 'Comme tes partenaires te voient dans Messages',
+    inChats: 'Comme tes partenaires te voient dans Discussions',
     details: 'Détails',
     detailsA11y: 'Détails sur {title}',
     buyFor: 'Acheter pour {amount}',
@@ -2790,7 +2790,7 @@ export const fr: Localized<EnMessages> = {
     afterGates: 'une fois les deux atteints',
     othersSee: 'Les autres le voient sur',
     onProfile: 'Ton profil',
-    onChats: 'Messages',
+    onChats: 'Discussions',
     onDiscover: 'Découvrir',
     backToFrames: 'Retour aux cadres',
     gateIntro: 'Les jetons ne l’ouvrent pas. Ta série et tes corrections, oui.',
