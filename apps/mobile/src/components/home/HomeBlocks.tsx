@@ -1,8 +1,10 @@
 import Feather from '@expo/vector-icons/Feather'
-import { Pressable, Text, View } from 'react-native'
+import { useState } from 'react'
+import { Pressable, Text, View, type LayoutChangeEvent } from 'react-native'
 import { useLocale } from '../../i18n'
+import { columnInner, homeCardsBeside } from '../../lib/homeProducts'
 import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
-import { makeStyles, useTheme } from '../../lib/theme'
+import { makeStyles, useTheme, type V3Tokens } from '../../lib/theme'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
 import { PressableScale } from '../ui/PressableScale'
@@ -10,6 +12,7 @@ import { BALANCED, useGlyphScale, useStacked } from '../product/ProductGroup'
 import { ProBadge } from '../ui/ProBadge'
 import { ProgressRing } from '../ui/ProgressRing'
 import { FlameGlyph } from '../ui/StreakFlame'
+import { useWordWidths } from './HomeCards'
 
 /*
  * The blocks under Home's hero, drawn from `V-Home`. Each is dumb: the screen
@@ -35,12 +38,21 @@ export interface HomeGoal {
  * A goal is done or not, so each ring is full or empty. The ring is hidden
  * from screen readers — the goal's own label already says "Done" or not.
  *
- * Three columns, each a ring over its words — until the larger text sizes
- * (`useStacked`), where a third of the block is too narrow for one word
- * ("Write", "someone" and "sentence" all broke in the middle, under an
- * ellipsis). There each goal is a row of its own, the ring at its start and
- * its words beside it, and the count goes under the heading instead of
- * beside it.
+ * Three columns, each a ring over its words, while every word the goals
+ * print fits a third of the block — measured, as Home's cards are
+ * (`useWordWidths`), so a word is never broken in the middle or cut short in
+ * any language. A column's words wrap at their spaces to as many lines as
+ * they need: two lines cut "Написать кому-нибудь" to "кому-…", and "Karten
+ * wiederholen" to "wiederhol…", though that word fits a third of a 375pt
+ * phone — by a few points, and by less than one on the web build.
+ *
+ * When a word does not fit, each goal is a row of its own, the ring at its
+ * start and its words beside it, and the count goes under the heading
+ * instead of beside it. At the default size that is Russian on a 375pt
+ * phone ("кому-нибудь" is wider than a third of it) and German on a phone
+ * narrower than about 360pt; English keeps its columns. At
+ * the larger text sizes (`useStacked`) it is every language: there "Write",
+ * "someone" and "sentence" broke in the middle.
  */
 export function HomeToday({
   title,
@@ -54,9 +66,26 @@ export function HomeToday({
   const styles = useStyles()
   const { v3 } = useTheme()
   const stacked = useStacked()
+  const [width, setWidth] = useState(0)
+  // Only while the layout is still a question: one to a row is final.
+  const { widths, measure } = useWordWidths(
+    goals.flatMap((goal) => [
+      { text: goal.label, style: styles.goalLabel, maxScale: PRODUCT_TEXT_SCALE.text },
+      { text: goal.status, style: styles.goalStatus, maxScale: PRODUCT_TEXT_SCALE.text },
+    ]),
+    stacked,
+  )
+  const column = columnInner({
+    width,
+    columns: goals.length,
+    gap: v3.space[GOAL_GAP],
+    inset: v3.space[GOAL_INSET],
+  })
+  const rows = !homeCardsBeside({ stacked, inner: column, words: widths })
   return (
     <View style={styles.today}>
-      <View style={[styles.sectionHead, stacked && styles.sectionHeadStacked]}>
+      {measure}
+      <View style={[styles.sectionHead, rows && styles.sectionHeadStacked]}>
         {/* Headline-sized, so capped as a heading is: the order of sizes holds at every setting. */}
         <Text
           style={styles.sectionTitle}
@@ -69,14 +98,15 @@ export function HomeToday({
           {count}
         </Text>
       </View>
-      <View style={stacked ? styles.goalsStacked : styles.goals}>
+      <View
+        style={rows ? styles.goalsStacked : styles.goals}
+        onLayout={(event: LayoutChangeEvent) => setWidth(event.nativeEvent.layout.width)}
+      >
         {goals.map((goal) => {
           const label = (
             <Text
-              style={stacked ? styles.goalLabelRow : styles.goalLabel}
+              style={rows ? styles.goalLabelRow : styles.goalLabel}
               maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
-              // A row has the block's width, so nothing is cut short there.
-              {...(stacked ? {} : { numberOfLines: 2 })}
             >
               {goal.label}
             </Text>
@@ -89,7 +119,6 @@ export function HomeToday({
                 !goal.done && goal.echo && { color: v3.colors.echoText },
               ]}
               maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
-              {...(stacked ? {} : { numberOfLines: 1 })}
             >
               {goal.status}
             </Text>
@@ -102,7 +131,7 @@ export function HomeToday({
               accessibilityState={{ checked: goal.done }}
               onPress={goal.onPress}
               style={({ pressed }) => [
-                stacked ? styles.goalRow : styles.goal,
+                rows ? styles.goalRow : styles.goal,
                 pressed && styles.pressed,
               ]}
             >
@@ -119,7 +148,7 @@ export function HomeToday({
                   }
                 />
               </ProgressRing>
-              {stacked ? (
+              {rows ? (
                 <View style={styles.goalWords}>
                   {label}
                   {status}
@@ -137,6 +166,12 @@ export function HomeToday({
     </View>
   )
 }
+
+/** Between two of Today's three columns, as a step of `v3.space`. */
+const GOAL_GAP = 6 satisfies keyof V3Tokens['space']
+
+/** Inside a column on each side, so its words and the room measured for them are one number. */
+const GOAL_INSET = 2 satisfies keyof V3Tokens['space']
 
 /**
  * The streak, its next reward, and the way into the streak screen: one card
@@ -331,7 +366,8 @@ export function HomePeople({
  *
  * At the larger text sizes (`useStacked`) the badge stands over the title
  * rather than beside it, and grows with it: beside the badge, "further" ran
- * out of the card at the largest size.
+ * out of the card at the largest size. The button's star grows with the
+ * button's words too (`glyphScale`), up to their cap.
  */
 export function HomeProCard({
   title,
@@ -372,6 +408,7 @@ export function HomeProCard({
         size="medium"
         onPress={onPress}
         maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+        glyphScale={glyph}
       />
     </View>
   )
@@ -382,7 +419,9 @@ export function HomeProCard({
  *
  * Its words are capped as a product page's are — the title as a heading, the
  * line as a sentence — so at the largest text size "conversation" fits the
- * block's width instead of breaking before its last letter.
+ * block's width instead of breaking before its last letter. The button's
+ * glyph grows with the button's words, up to the same cap: left at its own
+ * size, it sat as a speck beside a grown "Invite a friend".
  */
 export function HomeColourCard({
   ground,
@@ -400,6 +439,7 @@ export function HomeColourCard({
   onPress: () => void
 }) {
   const styles = useStyles()
+  const glyph = useGlyphScale()
   return (
     <View style={[styles.colour, { backgroundColor: ground }]}>
       <Text
@@ -419,6 +459,7 @@ export function HomeColourCard({
         size="medium"
         onPress={onPress}
         maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+        glyphScale={glyph}
       />
     </View>
   )
@@ -426,7 +467,8 @@ export function HomeColourCard({
 
 /**
  * A guest's next step: the account, on the screen's one yellow. Capped as
- * the invite is, so at the largest text size "öğrendiklerini" stays whole.
+ * the invite is, glyph and all, so at the largest text size
+ * "öğrendiklerini" stays whole.
  */
 export function HomeAccountCard({
   title,
@@ -440,6 +482,7 @@ export function HomeAccountCard({
   onPress: () => void
 }) {
   const styles = useStyles()
+  const glyph = useGlyphScale()
   return (
     <View style={styles.account}>
       <Text
@@ -457,6 +500,7 @@ export function HomeAccountCard({
         icon="user-plus"
         onPress={onPress}
         maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+        glyphScale={glyph}
       />
     </View>
   )
@@ -474,19 +518,19 @@ const useStyles = makeStyles(({ v3 }) => ({
     padding: v3.space[14],
   },
   todayCount: { ...v3.type.caption, color: v3.colors.muted, fontWeight: '700' },
-  goals: { flexDirection: 'row', gap: v3.space[6] },
+  goals: { flexDirection: 'row', gap: v3.space[GOAL_GAP] },
   goal: {
     alignItems: 'center',
     borderRadius: v3.radius.card,
     flex: 1,
     gap: v3.space[6],
     minWidth: 0,
-    paddingHorizontal: v3.space[2],
+    paddingHorizontal: v3.space[GOAL_INSET],
     paddingVertical: v3.space[6],
   },
   goalLabel: { ...v3.type.buttonSmall, color: v3.colors.fg, textAlign: 'center' },
   goalStatus: { ...v3.type.caption, color: v3.colors.muted, fontWeight: '600' },
-  // The larger text sizes: one goal to a row, the ring at its start.
+  // A word too wide for a column, or the larger text sizes: one goal to a row, the ring at its start.
   goalsStacked: { gap: v3.space[6] },
   goalRow: {
     alignItems: 'center',
@@ -533,7 +577,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     justifyContent: 'space-between',
     paddingHorizontal: v3.space[6],
   },
-  // The larger text sizes: the count under the heading, where it has the width to stay whole.
+  // One goal to a row: the count under the heading, where it has the width to stay whole.
   sectionHeadStacked: { alignItems: 'flex-start', flexDirection: 'column', gap: v3.space[2] },
   sectionTitle: { ...v3.type.headline, color: v3.colors.fg, flexShrink: 1 },
   seeAll: { justifyContent: 'center', minHeight: 44, paddingHorizontal: v3.space[4] },

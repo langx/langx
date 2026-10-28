@@ -7,6 +7,7 @@ import {
   HOME_PRODUCT_LOOK,
   HOME_PRODUCT_NAMES,
   HOME_PRODUCTS,
+  columnInner,
   homeCardsBeside,
   homeProductLines,
   homeVenusCard,
@@ -214,5 +215,30 @@ describe('homeCardsBeside', () => {
   it('stacks them once any word would not fit half a row', () => {
     expect(homeCardsBeside({ stacked: false, inner: 130, words: [60, 129.5] })).toBe(true)
     expect(homeCardsBeside({ stacked: false, inner: 130, words: [60, 131] })).toBe(false)
+  })
+})
+
+describe('columnInner', () => {
+  it('is 0 until the row is measured, which keeps the columns', () => {
+    const inner = columnInner({ width: 0, columns: 3, gap: 6, inset: 2 })
+    expect(inner).toBe(0)
+    expect(homeCardsBeside({ stacked: false, inner, words: [500] })).toBe(true)
+  })
+
+  it('shares the row out less the gaps, then takes each column’s inset', () => {
+    // Home's cards: two halves with a 10pt gap and 14pt of padding.
+    expect(columnInner({ width: 343, columns: 2, gap: 10, inset: 14 })).toBe(138.5)
+    // Today's three: a 375pt phone leaves the goals a 315pt row.
+    expect(columnInner({ width: 315, columns: 3, gap: 6, inset: 2 })).toBe(97)
+  })
+
+  it('puts Today’s three in rows only once a goal’s word is wider than a column', () => {
+    const inner = columnInner({ width: 315, columns: 3, gap: 6, inset: 2 })
+    // A word with room to spare, and one a point too wide.
+    expect(homeCardsBeside({ stacked: false, inner, words: [60, 93] })).toBe(true)
+    expect(homeCardsBeside({ stacked: false, inner, words: [60, 98] })).toBe(false)
+    // The same words, a narrower phone: the 93pt word no longer fits.
+    const narrow = columnInner({ width: 290, columns: 3, gap: 6, inset: 2 })
+    expect(homeCardsBeside({ stacked: false, inner: narrow, words: [60, 93] })).toBe(false)
   })
 })

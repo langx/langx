@@ -6,6 +6,7 @@ import {
   Platform,
   StyleSheet,
   View,
+  useWindowDimensions,
   type ColorValue,
   type PressableProps,
   type StyleProp,
@@ -22,6 +23,7 @@ import { shouldGateGuest } from '../../../src/lib/guestGate'
 import { syncIconBadge } from '../../../src/lib/iconBadge'
 import { TAB_BADGE_SIZE, badgeGrew, v3TabBadgeStyle } from '../../../src/lib/countBadge'
 import { unreadBadge } from '../../../src/lib/unreadBadge'
+import { v3TabBarHeight, v3TabLabelScale } from '../../../src/lib/tabLabelScale'
 import { useV3Home } from '../../../src/hooks/useV3Home'
 import { useReduceMotion } from '../../../src/hooks/useReduceMotion'
 import { PressableScale } from '../../../src/components/ui/PressableScale'
@@ -271,8 +273,13 @@ function V3TabBadge({ text, count, look, hidden }: V3Badge & { hidden: boolean }
   return (
     <Animated.Text
       numberOfLines={1}
-      // As the bar's own badge: iOS shows the large-content viewer instead.
-      allowFontScaling={Platform.OS === 'ios' ? false : undefined}
+      /*
+       * Never grown, as the bar's own badge is not on iOS, which shows the
+       * large-content viewer instead. Its pill is a fixed `TAB_BADGE_SIZE`
+       * tall over a glyph that does not grow either, and a count grown with
+       * the text size, as Android grew it, was cut off at its top and bottom.
+       */
+      allowFontScaling={false}
       accessibilityElementsHidden={hidden}
       importantForAccessibility={hidden ? 'no-hide-descendants' : 'auto'}
       aria-hidden={hidden}
@@ -377,6 +384,18 @@ export default function TabsLayout() {
   const t = useT()
   const v3Home = useV3Home()
   const insets = useSafeAreaInsets()
+  const { fontScale } = useWindowDimensions()
+  /*
+   * The redesign's words at the reader's size, up to `V3_LABEL_MAX_SCALE`.
+   * Set here, with the bar's own scaling off, because the bar takes no cap
+   * for its words and its height has to know how tall they are.
+   */
+  const labelScale = v3TabLabelScale(Platform.OS, fontScale)
+  const v3Label = {
+    ...v3.type.label,
+    fontSize: v3.type.label.fontSize * labelScale,
+    lineHeight: v3.type.label.lineHeight * labelScale,
+  }
   const { data: session } = authClient.useSession()
   // A guest has no conversations, so asking for a total would be a request
   // that can only ever answer zero.
@@ -424,7 +443,8 @@ export default function TabsLayout() {
           tabBarActiveTintColor: v3.colors.fg,
           tabBarInactiveTintColor: v3.colors.muted,
           tabBarShowLabel: true,
-          tabBarLabelStyle: v3.type.label,
+          tabBarAllowFontScaling: false,
+          tabBarLabelStyle: v3Label,
           tabBarLabelPosition: 'below-icon',
           tabBarIconStyle: V3_PILL,
           tabBarButton: (props) => <V3TabButton {...props} />,
@@ -437,12 +457,19 @@ export default function TabsLayout() {
           /*
            * Taller than the bar's own 49: the pill is 32 and the word under it
            * 16, which the default height clips. A custom height replaces the
-           * bar's whole sum, so the bottom inset is added back here.
+           * bar's whole sum, so the bottom inset is added back here, and so is
+           * whatever the word's line has grown by. A smaller text size leaves
+           * the bar as it is.
            */
           tabBarStyle: {
             backgroundColor: v3.colors.bg,
             borderTopColor: v3.colors.line,
-            height: V3_BAR_HEIGHT + insets.bottom,
+            height: v3TabBarHeight({
+              base: V3_BAR_HEIGHT,
+              lineHeight: v3.type.label.lineHeight,
+              labelScale,
+              bottomInset: insets.bottom,
+            }),
           },
         }}
       >

@@ -3,6 +3,7 @@ import { useEffect, useRef, type ReactElement } from 'react'
 import { ActivityIndicator, Animated, Platform, Text, View, type ViewStyle } from 'react-native'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useV3LaunchLook } from '../../hooks/useV3LaunchLook'
+import { buttonGlyphSize } from '../../lib/buttonGlyph'
 import { impact, notification } from '../../lib/haptics'
 import { makeStyles, useTheme, type V3Colors } from '../../lib/theme'
 import { disabledButtonLook, FILLED_BUTTON_VARIANTS } from '../../lib/theme/buttonDisabledLook'
@@ -78,6 +79,14 @@ interface ButtonProps {
    * longest word would otherwise run out of the pill at the largest sizes.
    */
   maxFontSizeMultiplier?: number
+  /**
+   * How much larger than its size's own the glyph is drawn: the reader's text
+   * size as a row's glyphs take it (`useGlyphScale`), for a button whose
+   * label grows inside a card, where a glyph left at its own size sat as a
+   * speck beside the grown words. Never more than `maxFontSizeMultiplier`,
+   * so the glyph does not outgrow its label. 1 unless set.
+   */
+  glyphScale?: number
   style?: ViewStyle
 }
 
@@ -135,6 +144,7 @@ export function Button({
   haptic,
   accessibilityLabel,
   maxFontSizeMultiplier,
+  glyphScale = 1,
   style,
 }: ButtonProps) {
   const { v3 } = useTheme()
@@ -157,7 +167,11 @@ export function Button({
     (FILLED_BUTTON_VARIANTS as readonly Variant[]).includes(variant)
   const faded = v3Look ? disabled && !greyed : isDisabled
   const look = greyed ? disabledButtonLook(v3.colors) : lookFor(v3.colors, variant)
-  const glyphSize = size === 'small' ? v3.icon.sm : size === 'medium' ? v3.icon.md : v3.icon.lg
+  const glyphSize = buttonGlyphSize(
+    size === 'small' ? v3.icon.sm : size === 'medium' ? v3.icon.md : v3.icon.lg,
+    glyphScale,
+    maxFontSizeMultiplier,
+  )
 
   // The check's pop, and the success haptic, on the change rather than on
   // every render that still has `success` set.

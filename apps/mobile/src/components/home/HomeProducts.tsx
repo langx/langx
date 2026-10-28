@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
-import { useEffect, type ReactNode } from 'react'
-import { Text, View, type StyleProp, type ViewStyle } from 'react-native'
+import { useEffect, useRef, type ReactNode } from 'react'
+import { Animated as RNAnimated, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -66,7 +66,9 @@ export interface HomeProductCard {
  * end her mark wears the unwatched dot. The ▶ is a sibling laid over the
  * card rather than a button inside it — a screen reader cannot reach a
  * button nested in another one on iOS — so it is found as a target of its
- * own after the card, named for what it does.
+ * own after the card, named for what it does. Being outside the card, it
+ * does not shrink with the card's face on its own; it is handed the face's
+ * press scale (`pressScale`), so a held card takes its ▶ with it.
  *
  * The cards arrive one after another, once, the first time Home draws them;
  * with reduce motion on they are simply there. Dumb like Home's other
@@ -106,6 +108,8 @@ function ProductCard({ card, beside }: { card: HomeProductCard; beside: boolean 
   const square = ROW_SQUARE * glyph
   const play = PLAY * glyph
   const dot = DOT * glyph
+  // The card's press scale, shared with the ▶ laid over it.
+  const press = useRef(new RNAnimated.Value(1)).current
   return (
     <>
       <PressableScale
@@ -113,6 +117,7 @@ function ProductCard({ card, beside }: { card: HomeProductCard; beside: boolean 
         accessibilityLabel={`${card.name}. ${card.line}`}
         onPress={card.onPress}
         scaleTo={PRESS_SCALE_CARD}
+        pressScale={press}
         touchStyle={styles.grow}
         style={[styles.card, tile ? styles.tile : styles.row]}
       >
@@ -171,25 +176,36 @@ function ProductCard({ card, beside }: { card: HomeProductCard; beside: boolean 
         )}
       </PressableScale>
       {card.play ? (
-        <View style={[styles.playSpot, tile ? styles.playCorner : styles.playEnd]}>
-          <PressableScale
-            accessibilityRole="button"
-            accessibilityLabel={card.play.label}
-            onPress={card.play.onPress}
-            scaleTo={PRESS_SCALE_GLYPH}
-            hitSlop={4}
-          >
-            <View style={[styles.play, { height: play, width: play }]}>
-              {/* Nudged a point forward: a triangle's weight sits behind its middle. */}
-              <Feather
-                name="play"
-                size={Math.round(v3.icon.md * glyph)}
-                color={v3.colors.pillText}
-                style={styles.playGlyph}
-              />
-            </View>
-          </PressableScale>
-        </View>
+        /*
+          The card's whole box, scaled by the card's own press value: the face
+          fills the same box, so both shrink about the same centre and the ▶
+          keeps its place on the corner. A real view with its transform from
+          the first render, for the Fabric reason in `PressableScale`.
+        */
+        <RNAnimated.View
+          collapsable={false}
+          style={[styles.over, { transform: [{ scale: press }] }]}
+        >
+          <View style={[styles.playSpot, tile ? styles.playCorner : styles.playEnd]}>
+            <PressableScale
+              accessibilityRole="button"
+              accessibilityLabel={card.play.label}
+              onPress={card.play.onPress}
+              scaleTo={PRESS_SCALE_GLYPH}
+              hitSlop={4}
+            >
+              <View style={[styles.play, { height: play, width: play }]}>
+                {/* Nudged a point forward: a triangle's weight sits behind its middle. */}
+                <Feather
+                  name="play"
+                  size={Math.round(v3.icon.md * glyph)}
+                  color={v3.colors.pillText}
+                  style={styles.playGlyph}
+                />
+              </View>
+            </PressableScale>
+          </View>
+        </RNAnimated.View>
       ) : null}
     </>
   )
@@ -248,6 +264,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     position: 'absolute',
   },
   // Over the card, never inside it: it takes touches only on the ▶ itself.
+  over: { bottom: 0, end: 0, pointerEvents: 'box-none', position: 'absolute', start: 0, top: 0 },
   playSpot: { pointerEvents: 'box-none', position: 'absolute' },
   // As a tile, in the top corner level with the mark, which is the ▶'s height.
   playCorner: { end: v3.space[CARD_INSET], top: v3.space[CARD_INSET] },
