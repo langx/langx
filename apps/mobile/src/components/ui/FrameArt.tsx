@@ -104,7 +104,14 @@ interface FrameArtProps {
  */
 export function FrameArt({ art, size, scheme, sweep: Sweep }: FrameArtProps) {
   const helloId = `hello${useId().replace(/:/g, '')}`
-  const nodes = nodesFor(art, cutFor(size), scheme)
+  const cut = cutFor(size)
+  const nodes = nodesFor(art, cut, scheme)
+  // Keys the drawings below, so another frame mounts fresh instead of being
+  // patched over this one node by node: react-native-svg leaves a prop the new
+  // node no longer passes (Seal's `strokeLinejoin`, the glass's `fillOpacity`)
+  // set natively, and the store's preview kept the old frame's marks until a
+  // reload.
+  const drawing = `${art}:${cut}:${scheme}`
   const box = size * BOX_SCALE
   // Only Aurora Glass at the full cut has a highlight to move. Without a
   // sweep to move it, it is drawn where it rests, at 30°.
@@ -122,12 +129,12 @@ export function FrameArt({ art, size, scheme, sweep: Sweep }: FrameArtProps) {
       importantForAccessibility="no-hide-descendants"
       style={[styles.box, { top: inset, bottom: inset, start: inset, end: inset }]}
     >
-      <Svg width={box} height={box} viewBox={VIEW_BOX}>
+      <Svg key={drawing} width={box} height={box} viewBox={VIEW_BOX}>
         {draw(still, helloId)}
       </Svg>
       {Sweep && moving.length > 0 ? (
         <Sweep box={box}>
-          <Svg width={box} height={box} viewBox={VIEW_BOX}>
+          <Svg key={drawing} width={box} height={box} viewBox={VIEW_BOX}>
             {draw(moving, helloId)}
           </Svg>
         </Sweep>
