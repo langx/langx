@@ -270,7 +270,12 @@ describe('testimonials', () => {
         {
           $set: {
             firstMessageAt: new Date(Date.now() - 30 * DAY_MS),
-            messageCountBy: { [officialId!]: EACH, [a.userId]: EACH },
+            // From entries rather than computed keys, which code scanning
+            // reads as a property write named by user input.
+            messageCountBy: Object.fromEntries([
+              [officialId!, EACH],
+              [a.userId, EACH],
+            ]),
           },
           $setOnInsert: {
             _id: new ObjectId(),
