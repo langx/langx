@@ -1,4 +1,4 @@
-import { translate, type Catalog, type Locale, type Plural } from '@langx/shared'
+import { SUPPORTED_LOCALES, translate, type Catalog, type Locale, type Plural } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { catalogs } from './catalogs'
 import { createTranslate } from './runtime'
@@ -124,19 +124,62 @@ describe('counts that vary with user data inflect', () => {
   })
 })
 
+describe('numbers the app is configured with', () => {
+  // Each of these sentences used to carry its number as plain text. The
+  // number comes from config, and the noun beside it only agreed with the
+  // value of the day — or not even that: Russian Pro learns 5 languages.
+  it('words the Pro language allowance for five', () => {
+    const ru = createTranslate('ru')
+    expect(ru('paywall.learningLanguagesBody', { count: 5 })).toBe(
+      'Учи 5 языков одновременно, а не один.',
+    )
+    expect(ru('paywall.learningLanguagesBody', { count: 3 })).toBe(
+      'Учи 3 языка одновременно, а не один.',
+    )
+  })
+
+  it('counts a year-long streak gate in the accusative Arabic takes after 11', () => {
+    const ar = createTranslate('ar')
+    const gate = (threshold: number) =>
+      ar('store.lockedStreak', { count: threshold, current: '12', threshold: String(threshold) })
+    expect(gate(365)).toBe('‏12 من 365 يومًا')
+    expect(gate(100)).toBe('‏12 من 100 يوم')
+    expect(gate(7)).toBe('‏12 من 7 أيام')
+  })
+
+  it('agrees the free plan and account settings with their numbers', () => {
+    const ru = createTranslate('ru')
+    expect(ru('chats.emptyBody', { count: 5 })).toContain('начинать 5 новых чатов в день')
+    expect(ru('chats.emptyBody', { count: 21 })).toContain('начинать 21 новый чат в день')
+    expect(ru('auth.passwordRule', { count: 6 })).toBe('Не менее 6 символов')
+    expect(ru('auth.passwordRule', { count: 21 })).toBe('Не менее 21 символа')
+    expect(ru('settings.usernameBody', { count: 7 })).toBe('Можно менять раз в 7 дней')
+    expect(ru('settings.usernameBody', { count: 2 })).toBe('Можно менять раз в 2 дня')
+
+    const ar = createTranslate('ar')
+    expect(ar('auth.passwordRule', { count: 6 })).toBe('6 أحرف على الأقل')
+    expect(ar('auth.passwordRule', { count: 12 })).toBe('12 حرفًا على الأقل')
+    expect(ar('editProfile.genderOnce', { count: 180 })).toBe('يمكنك تغيير هذا مرة كل 180 يومًا.')
+    expect(ar('editProfile.genderOnce', { count: 200 })).toBe('يمكنك تغيير هذا مرة كل 200 يوم.')
+    expect(ar('settings.usernameBody', { count: 2 })).toBe('غيّره مرة كل يومين')
+  })
+})
+
 /**
- * Every Russian plural has every form a whole number can pick.
+ * Every plural has exactly the forms its language picks for a whole number.
  *
- * A missing form falls back to `other`, and Russian keeps `other` for
- * fractions: an entry with only `one` and `other` gave 25 the noun 2–4 take.
- * And `one` is 21, 31 and 101 as much as 1, so a `one` that wrote "1" where
- * the count belongs told someone with 21 of something that they had 1. The
- * server's catalogue is held to the same in apps/api/src/i18n/plurals.test.ts.
+ * A missing form falls back to `other`, and `other` is rarely the form a
+ * missing one would have said. Russian keeps it for fractions, so an entry
+ * with only `one` and `other` gave 25 the noun 2–4 take; Arabic keeps it for
+ * 100–102, so 5 and 11 read like a hundred; and Turkish keeps nothing else, so
+ * a Turkish entry without `one` is merely relying on the fallback to agree. A
+ * form the language never picks is dead text a translator still has to keep
+ * up. The server's catalogue is held to the same in
+ * apps/api/src/i18n/plurals.test.ts.
  *
- * Russian only, for now: some Turkish and Arabic plurals still lean on the
- * fallback. A locale joins `HELD` once its catalogue passes.
+ * The forms come off the table `translate` uses (`pluralRules.ts`), not off
+ * `Intl`: Hermes has no `Intl.PluralRules`, and the phone is what reads these.
  */
-const HELD: Locale[] = ['ru']
 
 /**
  * `one` forms that leave the number out on purpose. Each count is a product
@@ -172,65 +215,102 @@ function plurals(node: Catalog, prefix = ''): [string, Plural][] {
 }
 
 /**
- * The forms `locale` picks for 0–1000, read off the real rule through
- * `translate` rather than restated here. The range stays below the exact
- * millions Spanish, French and Portuguese call `many`, which fall back to
- * `other` by design.
+ * The whole numbers 0–1000 each form of `locale` takes, read off the real
+ * rule through `translate` rather than restated here. The range stays below
+ * the exact millions Spanish, French and Portuguese call `many`, which fall
+ * back to `other` by design.
  */
-function wholeNumberForms(locale: Locale): string[] {
+function wholeNumbers(locale: Locale): Map<keyof Plural, number[]> {
   const probe: Catalog = {
     probe: { zero: 'zero', one: 'one', two: 'two', few: 'few', many: 'many', other: 'other' },
   }
-  const forms = new Set(['other'])
-  for (let n = 0; n <= 1000; n++) forms.add(translate(probe, probe, locale, 'probe', { count: n }))
-  return [...forms].sort()
+  const forms = new Map<keyof Plural, number[]>([['other', []]])
+  for (let n = 0; n <= 1000; n++) {
+    const form = translate(probe, probe, locale, 'probe', { count: n }) as keyof Plural
+    forms.set(form, [...(forms.get(form) ?? []), n])
+  }
+  return forms
 }
 
 function placeholders(text: string): Set<string> {
   return new Set([...text.matchAll(/\{(\w+)\}/g)].map((match) => match[1]!))
 }
 
-/** True when `one` leaves out a placeholder — the count, by whatever name — that `other` shows. */
-function dropsCount(plural: Plural): boolean {
-  if (plural.one === undefined) return false
-  const one = placeholders(plural.one)
-  return [...placeholders(plural.other)].some((name) => !one.has(name))
+/**
+ * The forms that must show the count: those more than one number from 1 up
+ * picks. Russian `one` is 1, 21 and 31; Arabic `few` is 3–10 and 103–110.
+ * English `one`, or Arabic `one` and `two`, is a single number, so "one
+ * correction" and "تصحيحان" may say it in words. Zero is left out because
+ * French and Portuguese file it under `one` with 1, and their `one` sentences
+ * are written for one.
+ */
+function countedForms(locale: Locale): (keyof Plural)[] {
+  return [...wholeNumbers(locale)]
+    .filter(([form, numbers]) => form !== 'other' && numbers.filter((n) => n > 0).length > 1)
+    .map(([form]) => form)
+}
+
+/** The forms of `plural` that leave out a placeholder — the count, by whatever name — that `other` shows. */
+function dropsCount(plural: Plural, forms: (keyof Plural)[]): (keyof Plural)[] {
+  const shown = [...placeholders(plural.other)]
+  return forms.filter((form) => {
+    const text = plural[form]
+    return text !== undefined && shown.some((name) => !placeholders(text).has(name))
+  })
 }
 
 it('reads the forms a locale needs off its rule', () => {
-  expect(wholeNumberForms('ru')).toEqual(['few', 'many', 'one', 'other'])
-  expect(wholeNumberForms('en')).toEqual(['one', 'other'])
+  const forms = (locale: Locale) => [...wholeNumbers(locale).keys()].sort()
+  expect(forms('ru')).toEqual(['few', 'many', 'one', 'other'])
+  expect(forms('ar')).toEqual(['few', 'many', 'one', 'other', 'two', 'zero'])
+  expect(forms('en')).toEqual(['one', 'other'])
+  expect(forms('fr')).toEqual(['one', 'other'])
+  expect(countedForms('ru').sort()).toEqual(['few', 'many', 'one'])
+  expect(countedForms('ar').sort()).toEqual(['few', 'many'])
+  expect(countedForms('fr')).toEqual([])
 })
 
-describe.each(HELD)('%s plurals', (locale) => {
+describe.each(SUPPORTED_LOCALES)('%s plurals', (locale) => {
   const entries = plurals(catalogs[locale])
+  const forms = [...wholeNumbers(locale).keys()]
   const allowed = new Set(EXACTLY_ONE[locale] ?? [])
 
   it('fill every form a whole number picks', () => {
     // Found at all — a walk that matched nothing would pass every check below.
     expect(entries.length).toBeGreaterThan(100)
-    const forms = wholeNumberForms(locale) as (keyof Plural)[]
     const missing = entries.flatMap(([path, plural]) =>
       forms.filter((form) => plural[form] === undefined).map((form) => `${path}.${form}`),
     )
     expect(missing).toEqual([])
   })
 
-  it('show the count in `one` wherever `other` shows it', () => {
+  it('fill no form a whole number never picks', () => {
+    const extra = entries.flatMap(([path, plural]) =>
+      Object.keys(plural)
+        .filter((form) => !forms.includes(form as keyof Plural))
+        .map((form) => `${path}.${form}`),
+    )
+    expect(extra).toEqual([])
+  })
+
+  it('show the count in every form more than one number reads', () => {
     // A key may pass the number as {amount} or {formatted}; it is held to that
     // name. A unit word drawn beside a number the screen renders itself
     // ("карточка ждёт") has no placeholder in any form, so this cannot tell
     // whether its `one` still holds at 21; the recap line is pinned above.
-    const dropped = entries
-      .filter(([path, plural]) => !allowed.has(path) && dropsCount(plural))
-      .map(([path, plural]) => `${path}: ${plural.one}`)
+    const counted = countedForms(locale)
+    const dropped = entries.flatMap(([path, plural]) =>
+      dropsCount(plural, counted)
+        .filter((form) => !(form === 'one' && allowed.has(path)))
+        .map((form) => `${path}.${form}: ${plural[form]}`),
+    )
     expect(dropped).toEqual([])
   })
 
   it('allows only `one` forms that still leave the number out', () => {
     const stale = [...allowed].filter((path) => {
       const plural = entries.find(([key]) => key === path)?.[1]
-      return plural === undefined || !dropsCount(plural)
+      return plural === undefined || !dropsCount(plural, ['one']).length
     })
     expect(stale).toEqual([])
   })

@@ -170,7 +170,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         picked.refused.reason === 'tooLarge'
           ? t('errors.attachmentTooLarge')
           : picked.refused.reason === 'tooMany'
-            ? t('editProfile.photosTrimmed', { max: PLAN_LIMITS[tier].maxPhotos })
+            ? t('editProfile.photosTrimmed', { count: PLAN_LIMITS[tier].maxPhotos })
             : t('errors.attachmentUnsupported'),
       )
     }
@@ -212,7 +212,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
       title: t('editProfile.genderConfirmTitle'),
       message: t('editProfile.genderConfirmBody', {
         gender: genderLabel(t, gender),
-        days: GENDER_CHANGE_COOLDOWN_DAYS,
+        count: GENDER_CHANGE_COOLDOWN_DAYS,
       }),
       confirmLabel: t('common.continue'),
     })
@@ -344,7 +344,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
           reads as a bug rather than a limit.
         */}
         <Text style={styles.hint}>
-          {t('editProfile.photoLimit', { max: PLAN_LIMITS[tier].maxPhotos })}
+          {t('editProfile.photoLimit', { count: PLAN_LIMITS[tier].maxPhotos })}
         </Text>
 
         {/*
@@ -379,7 +379,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
           <Text style={styles.note}>
             {handleFreeAt
               ? t('editProfile.usernameCooldown', { date: handleFreeAt.toLocaleDateString(locale) })
-              : t('editProfile.usernameEvery', { days: HANDLE_CHANGE_COOLDOWN_DAYS })}
+              : t('editProfile.usernameEvery', { count: HANDLE_CHANGE_COOLDOWN_DAYS })}
           </Text>
         </View>
 
@@ -527,7 +527,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
                 ))}
               </View>
               <Text style={styles.note}>
-                {t('editProfile.genderOnce', { days: GENDER_CHANGE_COOLDOWN_DAYS })}
+                {t('editProfile.genderOnce', { count: GENDER_CHANGE_COOLDOWN_DAYS })}
               </Text>
             </>
           )}

@@ -80,7 +80,7 @@ export function ResetPasswordV3({
       <View style={styles.fields}>
         <AuthPasswordFieldV3
           label={t('auth.newPassword')}
-          hint={t('auth.passwordRule', { min: PASSWORD_MIN_LENGTH })}
+          hint={t('auth.passwordRule', { count: PASSWORD_MIN_LENGTH })}
           returnKeyType="next"
           value={newPassword}
           onChangeText={onChangeNewPassword}

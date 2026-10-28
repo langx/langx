@@ -156,7 +156,7 @@ function EditProfileFormV3({ profile }: { profile: MeProfile }) {
         picked.refused.reason === 'tooLarge'
           ? t('errors.attachmentTooLarge')
           : picked.refused.reason === 'tooMany'
-            ? t('editProfile.photosTrimmed', { max: PLAN_LIMITS[tier].maxPhotos })
+            ? t('editProfile.photosTrimmed', { count: PLAN_LIMITS[tier].maxPhotos })
             : t('errors.attachmentUnsupported'),
       )
     }
@@ -185,7 +185,7 @@ function EditProfileFormV3({ profile }: { profile: MeProfile }) {
       title: t('editProfile.genderConfirmTitle'),
       message: t('editProfile.genderConfirmBody', {
         gender: genderLabel(t, gender),
-        days: GENDER_CHANGE_COOLDOWN_DAYS,
+        count: GENDER_CHANGE_COOLDOWN_DAYS,
       }),
       confirmLabel: t('common.continue'),
     })
@@ -316,7 +316,7 @@ function EditProfileFormV3({ profile }: { profile: MeProfile }) {
           </View>
           {/* Said always, as today: a "+" that vanishes without a word reads as a bug. */}
           <Text style={styles.onHueStrong}>
-            {t('editProfile.photoLimit', { max: PLAN_LIMITS[tier].maxPhotos })}
+            {t('editProfile.photoLimit', { count: PLAN_LIMITS[tier].maxPhotos })}
           </Text>
         </View>
 
@@ -345,7 +345,7 @@ function EditProfileFormV3({ profile }: { profile: MeProfile }) {
           <Text style={styles.note}>
             {handleFreeAt
               ? t('editProfile.usernameCooldown', { date: handleFreeAt.toLocaleDateString(locale) })
-              : t('editProfile.usernameEvery', { days: HANDLE_CHANGE_COOLDOWN_DAYS })}
+              : t('editProfile.usernameEvery', { count: HANDLE_CHANGE_COOLDOWN_DAYS })}
           </Text>
         </View>
 
@@ -463,7 +463,7 @@ function EditProfileFormV3({ profile }: { profile: MeProfile }) {
                 ))}
               </View>
               <Text style={styles.note}>
-                {t('editProfile.genderOnce', { days: GENDER_CHANGE_COOLDOWN_DAYS })}
+                {t('editProfile.genderOnce', { count: GENDER_CHANGE_COOLDOWN_DAYS })}
               </Text>
             </>
           )}

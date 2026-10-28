@@ -191,7 +191,7 @@ export const emailRoutes: FastifyPluginAsyncZod = async (app) => {
       page(
         locale,
         t('email.deleteConfirmTitle'),
-        `<p>${escapeHtml(t('email.deleteConfirmBody'))}</p>
+        `<p>${escapeHtml(t('email.deleteConfirmBody', { count: ACCOUNT_DELETION_GRACE_DAYS }))}</p>
          <form method="post" action="/account/delete/confirm?token=${encodeURIComponent(token ?? '')}">
            <button type="submit" style="background:#c0392b;color:#fff;border:0;border-radius:8px;padding:12px 20px;font-weight:600;font-size:15px;cursor:pointer;">
              ${escapeHtml(t('email.deleteConfirmButton'))}
@@ -239,7 +239,7 @@ export const emailRoutes: FastifyPluginAsyncZod = async (app) => {
         page(
           locale,
           t('email.deleteDoneTitle'),
-          `<p>${escapeHtml(t('email.deleteDoneBody', { days: String(ACCOUNT_DELETION_GRACE_DAYS) }))}</p>
+          `<p>${escapeHtml(t('email.deleteDoneBody', { count: ACCOUNT_DELETION_GRACE_DAYS }))}</p>
            <p style="color:#888;font-size:13px;">${escapeHtml(
              t('email.deleteDonePurge', { date: status.purgeAt?.slice(0, 10) ?? '' }),
            )}</p>`,

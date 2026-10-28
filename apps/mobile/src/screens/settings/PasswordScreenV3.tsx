@@ -136,7 +136,7 @@ function SetForm({
       <SettingsLeadV3>{t('settings.signInSetPasswordBody')}</SettingsLeadV3>
       <PasswordFieldV3
         label={t('auth.newPassword')}
-        hint={t('auth.passwordRule', { min: PASSWORD_MIN_LENGTH })}
+        hint={t('auth.passwordRule', { count: PASSWORD_MIN_LENGTH })}
         value={password}
         onChangeText={setPassword_}
         autoComplete="new-password"
@@ -211,7 +211,7 @@ function ChangeForm({ title, onDone }: { title: string; onDone: () => void }) {
       />
       <PasswordFieldV3
         label={t('auth.newPassword')}
-        hint={t('auth.passwordRule', { min: PASSWORD_MIN_LENGTH })}
+        hint={t('auth.passwordRule', { count: PASSWORD_MIN_LENGTH })}
         value={next}
         onChangeText={setNext}
         autoComplete="new-password"

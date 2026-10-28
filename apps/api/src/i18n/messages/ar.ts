@@ -24,10 +24,24 @@ export const ar: Localized<ServerMessages> = {
       other: '{count} بطاقة جاهزة',
     },
     echoBody: 'دقائق قليلة الآن، وتبقى معك.',
-    profileVisitsTitle: { one: 'شخص واحد اطّلع على ملفك', other: '{count} أشخاص اطّلعوا على ملفك' },
+    profileVisitsTitle: {
+      zero: '{count} شخص اطّلعوا على ملفك',
+      one: 'شخص واحد اطّلع على ملفك',
+      two: 'شخصان اطّلعا على ملفك',
+      few: '{count} أشخاص اطّلعوا على ملفك',
+      many: '{count} شخصًا اطّلعوا على ملفك',
+      other: '{count} شخص اطّلعوا على ملفك',
+    },
     profileVisitsBody: 'اضغط لترى مَن.',
     badgeOneTitle: 'شارة جديدة: {label} 🏅',
-    badgeManyTitle: { one: 'حصلت على شارة جديدة 🏅', other: 'حصلت على {count} شارات جديدة 🏅' },
+    badgeManyTitle: {
+      zero: 'حصلت على {count} شارة جديدة 🏅',
+      one: 'حصلت على شارة جديدة 🏅',
+      two: 'حصلت على شارتين جديدتين 🏅',
+      few: 'حصلت على {count} شارات جديدة 🏅',
+      many: 'حصلت على {count} شارة جديدة 🏅',
+      other: 'حصلت على {count} شارة جديدة 🏅',
+    },
     badgeBody: 'عمل رائع. واصل.',
     meetingTitle: 'تبادلك اللغوي بعد ساعة',
     meetingBody: 'اضغط لفتح المحادثة.',
@@ -114,7 +128,14 @@ export const ar: Localized<ServerMessages> = {
 
       testimonialBody: 'انقر لقراءتها.',
 
-      likesTitle: { one: 'حصل منشورك على إعجاب واحد', other: 'حصل منشورك على {count} إعجاباً' },
+      likesTitle: {
+        zero: 'حصل منشورك على {count} إعجاب',
+        one: 'حصل منشورك على إعجاب واحد',
+        two: 'حصل منشورك على إعجابين',
+        few: 'حصل منشورك على {count} إعجابات',
+        many: 'حصل منشورك على {count} إعجاباً',
+        other: 'حصل منشورك على {count} إعجاب',
+      },
 
       likesBody: 'أعجب أحدهم بمنشورك.',
     },
@@ -170,16 +191,37 @@ export const ar: Localized<ServerMessages> = {
 
     deleteSubject: 'أكّد رغبتك في حذف حساب LangX',
     deletePreheader: 'خطوة أخيرة لحذف حساب LangX',
-    deleteBody:
-      'طلبت حذف حساب LangX. أكّد أدناه وسيُجدول الحساب للحذف — أمامك 30 يومًا لتغيير رأيك بتسجيل الدخول من جديد.',
+    deleteBody: {
+      zero: 'طلبت حذف حساب LangX. أكّد أدناه وسيُجدول الحساب للحذف — أمامك {count} يوم لتغيير رأيك بتسجيل الدخول من جديد.',
+      one: 'طلبت حذف حساب LangX. أكّد أدناه وسيُجدول الحساب للحذف — أمامك يوم واحد لتغيير رأيك بتسجيل الدخول من جديد.',
+      two: 'طلبت حذف حساب LangX. أكّد أدناه وسيُجدول الحساب للحذف — أمامك يومان لتغيير رأيك بتسجيل الدخول من جديد.',
+      few: 'طلبت حذف حساب LangX. أكّد أدناه وسيُجدول الحساب للحذف — أمامك {count} أيام لتغيير رأيك بتسجيل الدخول من جديد.',
+      many: 'طلبت حذف حساب LangX. أكّد أدناه وسيُجدول الحساب للحذف — أمامك {count} يومًا لتغيير رأيك بتسجيل الدخول من جديد.',
+      other:
+        'طلبت حذف حساب LangX. أكّد أدناه وسيُجدول الحساب للحذف — أمامك {count} يوم لتغيير رأيك بتسجيل الدخول من جديد.',
+    },
     deleteButton: 'حذف حسابي',
     deleteText: 'أكّد حذف حساب LangX: {url}',
     deleteInvalid: 'انتهت صلاحية هذا الرابط أو استُخدم من قبل.',
     deleteConfirmTitle: 'حذف حساب LangX',
-    deleteConfirmBody: 'هذا يجدول حسابك للحذف. تسجيل الدخول خلال 30 يومًا يلغي ذلك.',
+    deleteConfirmBody: {
+      zero: 'هذا يجدول حسابك للحذف. تسجيل الدخول خلال {count} يوم يلغي ذلك.',
+      one: 'هذا يجدول حسابك للحذف. تسجيل الدخول خلال يوم واحد يلغي ذلك.',
+      two: 'هذا يجدول حسابك للحذف. تسجيل الدخول خلال يومين يلغي ذلك.',
+      few: 'هذا يجدول حسابك للحذف. تسجيل الدخول خلال {count} أيام يلغي ذلك.',
+      many: 'هذا يجدول حسابك للحذف. تسجيل الدخول خلال {count} يومًا يلغي ذلك.',
+      other: 'هذا يجدول حسابك للحذف. تسجيل الدخول خلال {count} يوم يلغي ذلك.',
+    },
     deleteConfirmButton: 'نعم، احذف حسابي',
     deleteDoneTitle: 'حسابك مُجدول للحذف',
-    deleteDoneBody: 'سجّل الدخول خلال {days} يومًا ويعود كل شيء.',
+    deleteDoneBody: {
+      zero: 'سجّل الدخول خلال {count} يوم ويعود كل شيء.',
+      one: 'سجّل الدخول خلال يوم واحد ويعود كل شيء.',
+      two: 'سجّل الدخول خلال يومين ويعود كل شيء.',
+      few: 'سجّل الدخول خلال {count} أيام ويعود كل شيء.',
+      many: 'سجّل الدخول خلال {count} يومًا ويعود كل شيء.',
+      other: 'سجّل الدخول خلال {count} يوم ويعود كل شيء.',
+    },
     deleteDonePurge: 'تُحذف البيانات في {date}.',
 
     verifySubject: 'تأكيد بريدك في LangX',
@@ -224,32 +266,62 @@ export const ar: Localized<ServerMessages> = {
     openChats: 'أرسل رسالة',
 
     digestSubject: {
+      zero: '{count} رسالة غير مقروءة في LangX',
       one: 'رسالة واحدة غير مقروءة في LangX',
-      other: '{count} رسائل غير مقروءة في LangX',
+      two: 'رسالتان غير مقروءتين في LangX',
+      few: '{count} رسائل غير مقروءة في LangX',
+      many: '{count} رسالة غير مقروءة في LangX',
+      other: '{count} رسالة غير مقروءة في LangX',
     },
     digestPreheader: 'هناك من ينتظر ردّك',
     digestBody: {
+      zero: 'لديك {count} رسالة غير مقروءة من {names}.',
       one: 'راسلك {names} أثناء غيابك.',
-      other: 'لديك {count} رسائل غير مقروءة من {names}.',
+      two: 'لديك رسالتان غير مقروءتين من {names}.',
+      few: 'لديك {count} رسائل غير مقروءة من {names}.',
+      many: 'لديك {count} رسالة غير مقروءة من {names}.',
+      other: 'لديك {count} رسالة غير مقروءة من {names}.',
     },
-    digestMore: { one: 'ومحادثة أخرى.', other: 'و{count} محادثات أخرى.' },
+    digestMore: {
+      zero: 'و{count} محادثة أخرى.',
+      one: 'ومحادثة أخرى.',
+      two: 'ومحادثتان أخريان.',
+      few: 'و{count} محادثات أخرى.',
+      many: 'و{count} محادثة أخرى.',
+      other: 'و{count} محادثة أخرى.',
+    },
     digestButton: 'اقرأ وردّ',
 
     visitsSubject: {
+      zero: 'اطّلع على ملفك {count} شخص هذا الأسبوع',
       one: 'اطّلع على ملفك شخص واحد هذا الأسبوع',
-      other: 'اطّلع على ملفك {count} أشخاص هذا الأسبوع',
+      two: 'اطّلع على ملفك شخصان هذا الأسبوع',
+      few: 'اطّلع على ملفك {count} أشخاص هذا الأسبوع',
+      many: 'اطّلع على ملفك {count} شخصًا هذا الأسبوع',
+      other: 'اطّلع على ملفك {count} شخص هذا الأسبوع',
     },
     visitsPreheader: 'ملفك يلفت الانتباه',
     visitsBody: {
+      zero: 'خلال الأسبوع الماضي اطّلع على ملفك {count} شخص.',
       one: 'خلال الأسبوع الماضي اطّلع على ملفك شخص واحد.',
-      other: 'خلال الأسبوع الماضي اطّلع على ملفك {count} أشخاص.',
+      two: 'خلال الأسبوع الماضي اطّلع على ملفك شخصان.',
+      few: 'خلال الأسبوع الماضي اطّلع على ملفك {count} أشخاص.',
+      many: 'خلال الأسبوع الماضي اطّلع على ملفك {count} شخصًا.',
+      other: 'خلال الأسبوع الماضي اطّلع على ملفك {count} شخص.',
     },
     visitsNames: 'منهم: {names}.',
     visitsLocked: 'ارتقِ بخطتك لترى مَن كانوا.',
     visitsButton: 'شاهد مَن زار ملفك',
 
     badgeOneSubject: 'شارة جديدة: {label}',
-    badgeManySubject: { one: 'حصلت على شارة جديدة', other: 'حصلت على {count} شارات جديدة' },
+    badgeManySubject: {
+      zero: 'حصلت على {count} شارة جديدة',
+      one: 'حصلت على شارة جديدة',
+      two: 'حصلت على شارتين جديدتين',
+      few: 'حصلت على {count} شارات جديدة',
+      many: 'حصلت على {count} شارة جديدة',
+      other: 'حصلت على {count} شارة جديدة',
+    },
     badgeBody: 'صارت على ملفك الآن، يراها كل من يزوره.',
     badgeButton: 'اطّلع على شاراتك',
 
@@ -298,24 +370,60 @@ export const ar: Localized<ServerMessages> = {
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {
+      zero: '{count} رد على ما نشرته اليوم',
       one: 'رد واحد على ما نشرته اليوم',
-      other: '{count} ردود على ما نشرته اليوم',
+      two: 'ردّان على ما نشرته اليوم',
+      few: '{count} ردود على ما نشرته اليوم',
+      many: '{count} ردًا على ما نشرته اليوم',
+      other: '{count} رد على ما نشرته اليوم',
     },
 
     feedDigestPreheader: 'ردّ الناس على ما نشرته',
 
     feedDigestBody: {
+      zero: 'ردّ {count} شخص اليوم على ما نشرته.',
       one: 'ردّ أحدهم اليوم على شيء نشرته.',
-      other: 'ردّ {count} أشخاص اليوم على ما نشرته.',
+      two: 'ردّ شخصان اليوم على ما نشرته.',
+      few: 'ردّ {count} أشخاص اليوم على ما نشرته.',
+      many: 'ردّ {count} شخصًا اليوم على ما نشرته.',
+      other: 'ردّ {count} شخص اليوم على ما نشرته.',
     },
 
-    feedDigestCorrections: { one: 'تصحيح واحد', other: '{count} تصحيحات' },
+    feedDigestCorrections: {
+      zero: '{count} تصحيح',
+      one: 'تصحيح واحد',
+      two: 'تصحيحان',
+      few: '{count} تصحيحات',
+      many: '{count} تصحيحًا',
+      other: '{count} تصحيح',
+    },
 
-    feedDigestAnswers: { one: 'تسجيل واحد', other: '{count} تسجيلات' },
+    feedDigestAnswers: {
+      zero: '{count} تسجيل',
+      one: 'تسجيل واحد',
+      two: 'تسجيلان',
+      few: '{count} تسجيلات',
+      many: '{count} تسجيلًا',
+      other: '{count} تسجيل',
+    },
 
-    feedDigestComments: { one: 'تعليق واحد', other: '{count} تعليقات' },
+    feedDigestComments: {
+      zero: '{count} تعليق',
+      one: 'تعليق واحد',
+      two: 'تعليقان',
+      few: '{count} تعليقات',
+      many: '{count} تعليقًا',
+      other: '{count} تعليق',
+    },
 
-    feedDigestMore: { one: 'ومنشور واحد آخر.', other: 'و{count} منشورات أخرى.' },
+    feedDigestMore: {
+      zero: 'و{count} منشور آخر.',
+      one: 'ومنشور واحد آخر.',
+      two: 'ومنشوران آخران.',
+      few: 'و{count} منشورات أخرى.',
+      many: 'و{count} منشورًا آخر.',
+      other: 'و{count} منشور آخر.',
+    },
 
     feedDigestButton: 'اقرأ الردود',
 
@@ -339,15 +447,23 @@ export const ar: Localized<ServerMessages> = {
 
     /** Tomorrow's diary. The hour-before reminder is still a push. */
     meetingsSubject: {
+      zero: 'لديك {count} مكالمة غدًا',
       one: 'لديك مكالمة غدًا',
-      other: 'لديك {count} مكالمات غدًا',
+      two: 'لديك مكالمتان غدًا',
+      few: 'لديك {count} مكالمات غدًا',
+      many: 'لديك {count} مكالمة غدًا',
+      other: 'لديك {count} مكالمة غدًا',
     },
 
     meetingsPreheader: 'ما ينتظرك غدًا',
 
     meetingsBody: {
+      zero: 'اتفقت على {count} مكالمة غدًا.',
       one: 'اتفقت على مكالمة واحدة غدًا.',
-      other: 'اتفقت على {count} مكالمات غدًا.',
+      two: 'اتفقت على مكالمتين غدًا.',
+      few: 'اتفقت على {count} مكالمات غدًا.',
+      many: 'اتفقت على {count} مكالمة غدًا.',
+      other: 'اتفقت على {count} مكالمة غدًا.',
     },
 
     meetingsButton: 'افتح محادثاتي',
@@ -369,8 +485,12 @@ export const ar: Localized<ServerMessages> = {
       addPhotoButton: 'أضف صورتي',
 
       streakBrokeSubject: {
-        one: 'انقطعت سلسلتك البالغة {count} يوم',
-        other: 'انقطعت سلسلتك البالغة {count} يوماً',
+        zero: 'انقطعت سلسلتك البالغة {count} يوم',
+        one: 'انقطعت سلسلتك البالغة يومًا واحدًا',
+        two: 'انقطعت سلسلتك البالغة يومين',
+        few: 'انقطعت سلسلتك البالغة {count} أيام',
+        many: 'انقطعت سلسلتك البالغة {count} يوماً',
+        other: 'انقطعت سلسلتك البالغة {count} يوم',
       },
 
       streakBrokeBody: 'فاتك يوم أمس. إصلاح من المتجر يعيد اليوم وتستمر السلسلة.',
@@ -646,12 +766,12 @@ export const ar: Localized<ServerMessages> = {
       other: '🎉 أول محادثة حقيقية لك على LangX! انضممت بدعوة، لذلك {count} أسبوع من Pro لك.',
     },
     introStreak: {
-      zero: '🔥 {days} يومًا على التوالي، هذا مذهل! تقديرًا لك، {count} شهر من Pro هدية منّا.',
-      one: '🔥 {days} يومًا على التوالي، هذا مذهل! تقديرًا لك، شهر من Pro هدية منّا.',
-      two: '🔥 {days} يومًا على التوالي، هذا مذهل! تقديرًا لك، شهران من Pro هدية منّا.',
-      few: '🔥 {days} يومًا على التوالي، هذا مذهل! تقديرًا لك، {count} أشهر من Pro هدية منّا.',
-      many: '🔥 {days} يومًا على التوالي، هذا مذهل! تقديرًا لك، {count} شهرًا من Pro هدية منّا.',
-      other: '🔥 {days} يومًا على التوالي، هذا مذهل! تقديرًا لك، {count} شهر من Pro هدية منّا.',
+      zero: '🔥 سلسلتك وصلت إلى {days}، هذا مذهل! تقديرًا لك، {count} شهر من Pro هدية منّا.',
+      one: '🔥 سلسلتك وصلت إلى {days}، هذا مذهل! تقديرًا لك، شهر من Pro هدية منّا.',
+      two: '🔥 سلسلتك وصلت إلى {days}، هذا مذهل! تقديرًا لك، شهران من Pro هدية منّا.',
+      few: '🔥 سلسلتك وصلت إلى {days}، هذا مذهل! تقديرًا لك، {count} أشهر من Pro هدية منّا.',
+      many: '🔥 سلسلتك وصلت إلى {days}، هذا مذهل! تقديرًا لك، {count} شهرًا من Pro هدية منّا.',
+      other: '🔥 سلسلتك وصلت إلى {days}، هذا مذهل! تقديرًا لك، {count} شهر من Pro هدية منّا.',
     },
     introStreakWeeks: {
       zero: '🔥 سلسلتك وصلت إلى {days}، أحسنت! تقديرًا لك، {count} أسبوع من Pro هدية منّا.',

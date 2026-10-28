@@ -364,7 +364,7 @@ function DeleteBlock({ model }: { model: SettingsModel }) {
         onPress={() => router.push('/(app)/settings/delete-account')}
       />
       <Text style={[styles.caption, styles.centred]}>
-        {t('settings.deleteAccountBody', { days: ACCOUNT_DELETION_GRACE_DAYS })}
+        {t('settings.deleteAccountBody', { count: ACCOUNT_DELETION_GRACE_DAYS })}
       </Text>
     </View>
   )
