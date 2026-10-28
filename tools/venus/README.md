@@ -74,8 +74,8 @@ renders exactly as before.
 ## The introduction film
 
 `film.mjs` makes "Venus: Starring Herself", the film behind the Venus page's "Watch the
-introduction": one cut per locale, 1080×1920, 30 fps, about 97 s in English and up to about 111 s
-in the longest locale (fr). Like the days it is shared, one file per locale. It is not in the
+introduction": one cut per locale, 1080×1920, 30 fps, about 109 s in English and up to about 113 s
+in the longest locale (de). Like the days it is shared, one file per locale. It is not in the
 manifest: `node upload.mjs intro` puts each locale's mp4 and cover beside the days, as
 `venus/v1/<lang>/venus-intro-<lang>.mp4`. The app plays a smaller copy of it, made by hand (below).
 

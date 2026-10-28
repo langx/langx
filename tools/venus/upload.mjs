@@ -235,8 +235,8 @@ async function verify() {
 }
 
 async function intro() {
-  // The film sits beside the days, under the name the app builds for a locale
-  // (venus-intro-<lang>.mp4), and is not in the manifest: the app plays it by that name and falls
+  // The film sits beside the days as venus-intro-<lang>.mp4, the master, and is not in the
+  // manifest. The app plays a smaller copy put up by hand under a suffix (see the README) and falls
   // back to day 1 when it does not load. All locales or none: a missing or unfinished cut stops the
   // run before anything goes up. And never over an object already there, not even an identical
   // one: a key that exists means somebody published a cut, and a changed cut goes up under a
