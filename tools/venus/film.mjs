@@ -104,14 +104,14 @@ async function layoutCaptions(B, clock, cuts, lang) {
     }
     return widths[k]
   }
-  const fit = async (ws) => {
+  const fit = async (ws, br) => {
     for (const [F, n] of [
       [64, 2],
       [58, 2],
       [54, 3],
       [48, 3],
     ]) {
-      const lines = FL.wrap(ws, await measured(F, ws), MAXW, n)
+      const lines = FL.wrap(ws, await measured(F, ws), MAXW, n, br)
       if (lines) return { F, lines }
     }
     return null
@@ -126,11 +126,25 @@ async function layoutCaptions(B, clock, cuts, lang) {
       else groups.push([i])
     })
     const blocks = []
+    // where the sentences of a block start, as word indices (FL.wrap)
+    const breaks = (g) => {
+      const prefer = [],
+        must = []
+      let k = 0
+      g.forEach((i, j) => {
+        if (j) (/^…/u.test(S[i].text) ? must : prefer).push(k)
+        k += S[i].words.length
+      })
+      return { prefer, must }
+    }
     const place = async (g) => {
       const words = g.flatMap((i) =>
         S[i].words.map((w) => ({ ...w, hideUntil: S[i].hidden ? S[i].t0 - 0.02 : -Infinity })),
       )
-      const f = await fit(words.map((w) => w.text))
+      const f = await fit(
+        words.map((w) => w.text),
+        breaks(g),
+      )
       if (f) {
         let wi = 0
         blocks.push({
@@ -148,7 +162,12 @@ async function layoutCaptions(B, clock, cuts, lang) {
       // the longest run of sentences that fits goes first
       for (let k = g.length - 1; k >= 1; k--) {
         const head = g.slice(0, k)
-        if (await fit(head.flatMap((i) => S[i].words.map((w) => w.text)))) {
+        if (
+          await fit(
+            head.flatMap((i) => S[i].words.map((w) => w.text)),
+            breaks(head),
+          )
+        ) {
           await place(head)
           await place(g.slice(k))
           return
@@ -245,6 +264,7 @@ function silentVT(text) {
 // One window of the race: the day as it ships (its plan, look, items, number), scored without its
 // line, entered where the film needs it: half a second before the number lands (align R), on the
 // slam (day 100), or with its bag popping 0.12 s after the cut or on a line (the bag days).
+const BAG_CAM = { z: 0.8, lift: 160 }
 async function dayWindow(B, w, ctx) {
   const { W, lang, ec, endStyle } = ctx
   let plan = planVideo(w.day, lang)
@@ -267,11 +287,21 @@ async function dayWindow(B, w, ctx) {
   }
   start = Math.round(start * FPS) / FPS
   // the number stays full size through a window (its badge would start mid-race), except on the
-  // bag days, whose bag arrives under the badge; and no day's own flash (the house 55% wash) gets in
+  // bag days, whose bag arrives under the badge; and no day's own flash (the house 55% wash) gets in.
+  // On a bag day the camera pulls back (the zoom keeps her face where it is) and tilts down: the
+  // film's line sits where the day has none, and the bag is the joke, so it has to clear the bubble.
+  const bag = w.align === 'bag'
   const scX = {
     ...sc,
     fx: { ...sc.fx, flashes: [] },
-    T: w.align === 'bag' ? sc.T : { ...sc.T, v: 1e9 },
+    T: bag ? sc.T : { ...sc.T, v: 1e9 },
+    cam: bag
+      ? {
+          ...sc.cam,
+          z: sc.cam.z.map(([t, v, ...e]) => [t, v * BAG_CAM.z, ...e]),
+          lift: (sc.cam.lift || [[0, 0]]).map(([t, v, ...e]) => [t, v + BAG_CAM.lift, ...e]),
+        }
+      : sc.cam,
   }
   const f0 = Math.round(T0 * FPS),
     f1 = Math.round(T1 * FPS)
@@ -486,7 +516,7 @@ export async function buildFilm({
   for (const sh of shots) {
     if (sh.day || sh.wall) continue
     const S = shotClock(sh, clock)
-    if (sh.id === 'bonk') S.top = await bonkTop(B, sh, S)
+    if (sh.id === 'bonk') Object.assign(S, await bonkTop(B, sh, S))
     Object.assign(sh, performShot(sh, S))
     for (const x of sh.c.sfx) {
       const at = x.at - sh.off + sh.T0
@@ -520,20 +550,31 @@ export async function buildFilm({
     scene0: '',
   }
 }
-// The bonk's height: at the hit her top has to meet the locked frame's bottom edge. Her pose there
-// is drawn at a trial height and measured (as fitUnderLabel measures her), and the height corrected.
+// The bonk: her top meets the locked frame's bottom edge where the jump's top is highest, which is a
+// few frames after the rise peaks (the startle pose stretches up as it comes in), and the hit (the
+// thud, the stars, the rattle) is on that frame. The poses there are drawn at a trial height and
+// measured (as fitUnderLabel measures her); the height is corrected, and checked once more, since
+// the slide down the wall has begun by then.
 async function bonkTop(B, sh, S) {
-  const trial = 200
-  const { anim } = performShot(sh, { ...S, top: trial })
-  const hit = Math.ceil(S.at(64.0) * FPS)
-  let P = null
-  for (let f = 0; f <= hit; f++) P = anim.at(f)
-  const [top] = await B.tops([V.draw(P)], [-700, -2600, 1400, 2800])
+  const from = Math.round(S.at(64.0) * FPS)
   const z = 0.8,
     s = BASE * z,
     cy = G + HEAD_H * BASE * (z - 1)
   const want = (BONK_FRAME[1] + BONK_FRAME[2] - 6 - cy) / s // rig units, the ground at 0
-  return Math.round(trial + (top - want))
+  let top = 200,
+    hit = null
+  for (let pass = 0; pass < 2; pass++) {
+    const { anim } = performShot(sh, { ...S, top, hit: hit === null ? null : hit / FPS })
+    const frags = []
+    for (let f = 0; f <= from + 12; f++) {
+      const P = anim.at(f)
+      if (f >= from) frags.push(V.draw(P))
+    }
+    const tops = await B.tops(frags, [-700, -2600, 1400, 2800])
+    if (hit === null) hit = from + tops.indexOf(Math.min(...tops))
+    top = Math.round(top + (tops[hit - from] - want))
+  }
+  return { top, hit: hit / FPS }
 }
 function wallSfx(clock) {
   const W = clock.W

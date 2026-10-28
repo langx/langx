@@ -104,7 +104,8 @@ land on sentences by position; `en` and `tr` are final, the other six want a nat
 
 **The shots.** `lib/film-shots.mjs` is what Venus does, written with the days' own vocabulary
 (`lib/score.mjs` entrances, reactions and moves, the rig, `lib/items.mjs`). The race through the
-days is the days themselves, drawn by `render.mjs` with her mouth shut. The wall is made of the
+days is the days themselves, drawn by `render.mjs` with her mouth shut (on the bag days the camera
+pulls back, so the bag clears the caption). The wall is made of the
 published covers, read from the CDN once into `cache/intro-covers/`. `lib/film-layers.mjs` draws
 what only the film has (the title, pills, the clapper, the photo print, stickers, the wall tiles),
 and `lib/endcard.mjs` closes it (`--end handoff`, the default, or `splash`).
@@ -112,7 +113,7 @@ and `lib/endcard.mjs` closes it (`--end handoff`, the default, or `splash`).
 **Red lines the tests hold.** `test/film.test.mjs` performs every shot in every locale without a
 browser and checks the timing (the English clock is the board, takes re-time it, pushes stay on the
 beat), the lines (sentence shape, no digits, the character lint) and the screen: one caption at a
-time, never clearing within a quarter second of a cut, no face she never aims at the viewer, and
+time, a sentence after a "…" on a line of its own, never clearing within a quarter second of a cut, no face she never aims at the viewer, and
 flashes at least 0.5 s apart with at most three flashes or cuts in any second. Each flash washes at
 most 20% white.
 

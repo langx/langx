@@ -26,32 +26,31 @@ const popK = (u, len = 0.24) =>
         : 1.12 - 0.12 * EASE.inOut((u / len - 0.6) / 0.4)
 
 // ------------------------------------------------------------------ text layout (measured)
-// Wraps words into at most `maxLines` lines no wider than maxW, balanced when two lines do. m: the
-// measured width of each word and of ' ' at one size. null when it does not fit.
-export function wrap(ws, m, maxW, maxLines) {
+// Wraps words into as few lines as fit, at most `maxLines`, none wider than maxW and the widest as
+// narrow as it can be. m: the measured width of each word and of ' ' at one size. null when it does
+// not fit. Sentences (word indices): each of `must` starts a line whatever it costs, a smaller size
+// or one more line (a sentence after a "…" is not drawn until it is said, so it never waits at the
+// end of a line); `prefer` are the other sentence starts, where a break goes when one can.
+export function wrap(ws, m, maxW, maxLines, { prefer = [], must = [] } = {}) {
   const sp = m[' ']
   const w = (a) => a.reduce((s, x, i) => s + m[x] + (i ? sp : 0), 0)
-  if (w(ws) <= maxW) return [ws]
-  if (maxLines >= 2) {
-    let best = null
-    for (let i = 1; i < ws.length; i++) {
-      const a = ws.slice(0, i),
-        b = ws.slice(i),
-        mx = Math.max(w(a), w(b))
-      if (mx <= maxW && (!best || mx < best.mx)) best = { mx, lines: [a, b] }
+  let best = null
+  // every way to cut the words into n lines (n - 1 cuts, all of `must` among them)
+  const cut = (n, from, cuts) => {
+    if (cuts.length === n - 1) {
+      if (!must.every((i) => cuts.includes(i))) return
+      const at = [0, ...cuts, ws.length]
+      const lines = cuts.concat(ws.length).map((b, k) => ws.slice(at[k], b))
+      const widest = Math.max(...lines.map(w))
+      if (widest > maxW) return
+      const score = widest - 1e6 * cuts.filter((i) => prefer.includes(i)).length
+      if (!best || score < best.score) best = { score, lines }
+      return
     }
-    if (best) return best.lines
+    for (let i = from; i < ws.length; i++) cut(n, i + 1, [...cuts, i])
   }
-  if (maxLines >= 3) {
-    const lines = [[]]
-    for (const x of ws) {
-      const cur = lines[lines.length - 1]
-      if (cur.length && w([...cur, x]) > maxW) lines.push([x])
-      else cur.push(x)
-    }
-    if (lines.length <= maxLines && lines.every((l) => w(l) <= maxW)) return lines
-  }
-  return null
+  for (let n = 1; n <= maxLines && !best; n++) cut(n, 1, [])
+  return best ? best.lines : null
 }
 
 // ------------------------------------------------------------------ the title card

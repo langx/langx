@@ -356,7 +356,6 @@ export const SHOTS = [
         ...swaps.slice(0, 3).map((b) => ({ t: S.at(b), at: 'head' })),
         { t: S.at(24.4), at: 'body' },
         { t: S.at(24.9), at: 'body', big: true },
-        { t: crown - 0.06, at: 'head' },
       ]
     },
     cam: (S) => ({
@@ -540,13 +539,15 @@ export const SHOTS = [
         [after + 0.37, 0, 'in'],
       ])
       // the bonk: the jump's own whoosh, ticks and landing thud stay; its off-screen thud goes
+      // (film.mjs bonkTop finds the frame she reaches the frame on: S.hit)
+      const hit = S.hit ?? S.at(64.0)
       c.sfx = c.sfx.filter((x) => !(x.kind === 'thud' && Math.abs(x.at - (m0 + 0.87)) < 0.01))
       c.sfx.push(
-        { kind: 'thud', at: S.at(64.0), gainDb: 0 },
-        { kind: 'boing', at: S.at(64.0) + 0.02, gainDb: -8 },
+        { kind: 'thud', at: hit, gainDb: 0 },
+        { kind: 'boing', at: hit + 0.02, gainDb: -8 },
       )
-      c.cam.shakes.push(S.at(64.0))
-      c.bonk = S.at(64.0)
+      c.cam.shakes.push(hit)
+      c.bonk = hit
     },
     cam: () => ({ z: [[0, 0.8]] }),
     under(t, S) {
@@ -597,10 +598,11 @@ export const SHOTS = [
       face(c, a2.t0 - 0.05, 'smug-lids', 220)
       c.k.seq('y', [[a2.t0 - 0.05], [a2.t0 + 0.25, 46, 'inOut']])
       c.k.seq('y', [[r.t0 - 0.1], [r.t0 + 0.2, 0, 'inOut']])
-      // the counter at one: bored face, the flag tail quivering anyway
+      // the counter at one: bored face, the flag tail quivering anyway (a shorter flag: the full
+      // one would cross the counter's label)
       const one = S.at(70.5)
       face(c, one, 'bored', 220)
-      tailTo(c, one, one + 0.3, FLAG)
+      tailTo(c, one, one + 0.3, [...FLAG.slice(0, 5), 1.4])
       c.k.seq('tail.wave', [[one], [one + 0.3, 10]])
       // she notices the tail and swats it, then looks innocent
       const t1 = S.at(73.75)
@@ -664,7 +666,7 @@ export const SHOTS = [
         { kind: 'pop', at: S.at(79.1), gainDb: -6 },
       )
       c.poofs = [{ t: S.at(79.1) - 0.04, at: 'head' }]
-      c.fx.sparkles.push([S.at(77.85), 540, 450])
+      c.fx.sparkles.push([S.at(77.85), HELLO_AT[0], HELLO_AT[1]])
     },
     items: (S) => [[S.at(79.1) + 0.02, { wear: 'sunglasses' }]],
     over(t, S) {
@@ -673,12 +675,18 @@ export const SHOTS = [
       let s = ''
       others.forEach((l, i) => {
         const [x, y] = RING[i]
-        s += FL.sticker(t, S.at(75.5 + i / 6), `st-${HELLO[l]}`, x, y, 165, ((i * 37) % 17) - 8, {
-          leave,
-          dir: [Math.sign(x - 540), (y - 820) / 600],
-        })
+        s += FL.sticker(
+          t,
+          S.at(75.5 + i / 6),
+          `st-${HELLO[l]}`,
+          x,
+          y,
+          RING_SIZE,
+          ((i * 37) % 17) - 8,
+          { leave, dir: [Math.sign(x - 540), (y - 820) / 600] },
+        )
       })
-      s += FL.sticker(t, S.at(77.83), `st-${HELLO[S.lang]}`, 540, 450, 264, 0, {
+      s += FL.sticker(t, S.at(77.83), `st-${HELLO[S.lang]}`, ...HELLO_AT, 0, {
         leave,
         dir: [0, -1],
       })
@@ -766,28 +774,32 @@ export const SHOTS = [
     },
   },
 ]
-// the sticker ring of B10, round her and clear of her head (x 340-740, y 735-1270 at zoom 1)
+// the sticker ring of B10, round her and clear of her head (x 340-740, y 735-1270 at zoom 1), and
+// inside the frame's safe area (x 90-990, y 290-1240): stickers at a size a phone reads
 export const SLAPS = [
-  { b: 35.9, id: 'hi', x: 850, y: 790, size: 210, rot: 7 },
-  { b: 36.4, id: 'diva', x: 222, y: 1090, size: 210, rot: 6 },
-  { b: 36.9, id: 'meantit', x: 858, y: 1100, size: 210, rot: -6 },
-  { b: 37.4, id: 'zoomies', x: 230, y: 470, size: 210, rot: -5 },
-  { b: 37.9, id: 'boxhide', x: 850, y: 470, size: 210, rot: 8 },
-  { b: 38.4, id: 'hamsi', x: 540, y: 590, size: 200, rot: 0 },
+  { b: 35.9, id: 'hi', x: 868, y: 800, size: 240, rot: 7 },
+  { b: 36.4, id: 'diva', x: 212, y: 1100, size: 240, rot: 6 },
+  { b: 36.9, id: 'meantit', x: 868, y: 1110, size: 240, rot: -6 },
+  { b: 37.4, id: 'zoomies', x: 225, y: 470, size: 240, rot: -5 },
+  { b: 37.9, id: 'boxhide', x: 855, y: 470, size: 240, rot: 8 },
+  { b: 38.4, id: 'hamsi', x: 540, y: 570, size: 240, rot: 0 },
 ]
-export const BLEP_AT = [250, 760, 230, -8]
+export const BLEP_AT = [215, 790, 240, -8]
 // the print: a square round her face at the booth's zoom
 export const PRINT = [190, 690, 700]
-// the hello ring of B17: seven slots, then the viewer's own top centre
+// the hello ring of B17: seven slots in two columns either side of her, then the viewer's own,
+// biggest, top centre (HELLO_AT)
 export const RING = [
-  [215, 400],
-  [865, 400],
-  [160, 690],
-  [920, 690],
-  [170, 980],
-  [910, 980],
-  [860, 1170],
+  [205, 410],
+  [875, 530],
+  [205, 650],
+  [875, 770],
+  [205, 890],
+  [875, 1010],
+  [205, 1125],
 ]
+export const RING_SIZE = 250
+export const HELLO_AT = [540, 480, 380]
 // the locked cover the bonk hits: the wall's tile 31, pushed into until it is this square
 export const BONK_FRAME = [380, 290, 320]
 

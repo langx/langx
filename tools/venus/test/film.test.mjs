@@ -31,6 +31,7 @@ import { RIG } from '../lib/paths.mjs'
 import { CHARACTER } from '../lib/character.mjs'
 import { sentences } from '../lib/voice.mjs'
 import { lintIntroLines } from '../lint-quips.mjs'
+import { wrap } from '../lib/film-layers.mjs'
 
 const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps
 const isBeat = (x) => near(x / CLOCK.beat, Math.round(x / CLOCK.beat), 1e-6)
@@ -230,6 +231,34 @@ test('captions: one bubble at a time, never clearing just before or after a cut'
       assert.ok(L.hide - L.show >= Math.min(1.2, readChars(L.text) / 15), `${lang} ${L.id}`)
     }
   }
+})
+
+test('captions: a sentence after a "…" starts a line; other breaks go to a sentence end', () => {
+  // every character 30 px wide, a space 14
+  const words = (text) => text.split(' ')
+  const m = (ws) => Object.fromEntries([[' ', 14], ...ws.map((x) => [x, [...x].length * 30])])
+  const joined = (lines) => lines && lines.map((l) => l.join(' '))
+  const a = words('Every star needs an entrance. …I have a few.')
+  // the "…" sentence on its own line leaves the first too long for two lines: three, balanced
+  assert.equal(wrap(a, m(a), 760, 2, { must: [5] }), null)
+  assert.deepEqual(joined(wrap(a, m(a), 760, 3, { must: [5] })), [
+    'Every star needs',
+    'an entrance.',
+    '…I have a few.',
+  ])
+  // without the rule the same words balance across the sentence boundary
+  assert.deepEqual(joined(wrap(a, m(a), 760, 2)), [
+    'Every star needs an',
+    'entrance. …I have a few.',
+  ])
+  const b = words("Honestly? Best co-star I've ever had.")
+  assert.deepEqual(joined(wrap(b, m(b), 760, 2, { prefer: [1] })), [
+    'Honestly?',
+    "Best co-star I've ever had.",
+  ])
+  // what fits on one line stays on one
+  const c = words('Bag. Bag.')
+  assert.deepEqual(joined(wrap(c, m(c), 760, 2, { prefer: [1] })), ['Bag. Bag.'])
 })
 
 test('photosensitivity: flashes at least 0.5 s apart, at most 3 flashes or cuts in any second', () => {
