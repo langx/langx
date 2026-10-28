@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { tourLayout } from './tourLayout'
+import { tourCornerPath, tourLayout, type TourCorner } from './tourLayout'
 
 const screen = { width: 390, height: 844 }
 const insets = { top: 59, bottom: 34 }
@@ -56,7 +56,7 @@ describe('tourLayout', () => {
   /**
    * The corner pieces are the whole of the difference between a square hole
    * and a round one: each is a square of the radius, in a corner of the hole,
-   * with the corner pointing inwards rounded away by the renderer.
+   * less the quarter disc round its inner corner (`tourCornerPath`).
    */
   it('fills the hole back in at the corners, and only when it is round', () => {
     const { hole, corners } = tourLayout({
@@ -78,6 +78,85 @@ describe('tourLayout', () => {
 
     const square = tourLayout({ anchor: { x: 20, y: 300, width: 200, height: 40 }, screen, insets })
     expect(square.corners).toEqual([])
+  })
+
+  /**
+   * The corner piece's outline, read back as geometry: where it starts, and
+   * the centre of its arc as SVG would place it from the two end points, the
+   * radius and the sweep flag. A piece must start at the hole's outer corner
+   * and bite its quarter disc out round the inner one — the other way round is
+   * the inside-out corner this builder replaced.
+   */
+  it('draws each corner piece round the corner that points into the hole', () => {
+    const size = 10
+    const expected = {
+      topLeft: { outer: [0, 0], centre: [10, 10] },
+      topRight: { outer: [10, 0], centre: [0, 10] },
+      bottomLeft: { outer: [0, 10], centre: [10, 0] },
+      bottomRight: { outer: [10, 10], centre: [0, 0] },
+    } as const
+    for (const at of Object.keys(expected) as TourCorner['at'][]) {
+      const piece = readPiece(tourCornerPath(at, size))
+      expect(piece.start).toEqual(expected[at].outer)
+      expect(piece.radius).toBe(size)
+      expect(piece.centre[0]).toBeCloseTo(expected[at].centre[0])
+      expect(piece.centre[1]).toBeCloseTo(expected[at].centre[1])
+    }
+  })
+
+  /**
+   * The whole dim, panels and corner pieces together, against the shape the
+   * ring draws: a rounded rectangle. Every point inside it lit, every point
+   * outside it dimmed exactly once — for a square hole, a softly rounded one,
+   * a tab's circle and a pill.
+   */
+  it('leaves exactly the rounded hole lit, whatever its shape', () => {
+    const anchors = [
+      { x: 40, y: 300, width: 120, height: 60 },
+      { x: 40, y: 300, width: 120, height: 60, radius: 14 },
+      { x: 20, y: 760, width: 50, height: 50, radius: 999 },
+      { x: 30, y: 120, width: 300, height: 34, radius: 999 },
+    ]
+    for (const anchor of anchors) {
+      const { hole, dim, corners } = tourLayout({ anchor, screen, insets })
+      const pieces = corners.map((corner) => ({ corner, shape: readPiece(corner.path) }))
+      const r = hole.radius
+      const step = 1
+      // Only the band round the hole: everywhere else the panels' own test holds.
+      for (let x = hole.x - 4 + step / 2; x < hole.x + hole.width + 4; x += step) {
+        for (let y = hole.y - 4 + step / 2; y < hole.y + hole.height + 4; y += step) {
+          const cx = clamp(x, hole.x + r, hole.x + hole.width - r)
+          const cy = clamp(y, hole.y + r, hole.y + hole.height - r)
+          const inside =
+            x > hole.x &&
+            x < hole.x + hole.width &&
+            y > hole.y &&
+            y < hole.y + hole.height &&
+            Math.hypot(x - cx, y - cy) <= r
+          // Too near the arc to call either way, as a renderer's edge would be.
+          if (r && Math.abs(Math.hypot(x - cx, y - cy) - r) < 0.01) continue
+          const panels = dim.filter(
+            (panel) =>
+              x >= panel.left &&
+              x < panel.left + panel.width &&
+              y >= panel.top &&
+              y < panel.top + panel.height,
+          ).length
+          const filled = pieces.filter(({ corner, shape }) => {
+            const px = x - corner.left
+            const py = y - corner.top
+            return (
+              px >= 0 &&
+              px < corner.size &&
+              py >= 0 &&
+              py < corner.size &&
+              Math.hypot(px - shape.centre[0], py - shape.centre[1]) > shape.radius
+            )
+          }).length
+          expect(panels + filled, `${JSON.stringify(anchor)} at ${x},${y}`).toBe(inside ? 0 : 1)
+        }
+      }
+    }
   })
 
   it('is square unless the element asks for a corner, and bounds that to a pill', () => {
@@ -164,3 +243,48 @@ describe('tourLayout', () => {
     }
   })
 })
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max)
+}
+
+/**
+ * Reads `M x y`, one straight move, `A r r 0 0 sweep x y`, `Z` — the only
+ * outline `tourCornerPath` draws — and finds the arc's centre the way SVG
+ * does: of the two circles of that radius through both end points, the one
+ * round which a short arc turns the way the sweep flag says.
+ */
+function readPiece(path: string): {
+  start: [number, number]
+  radius: number
+  centre: [number, number]
+} {
+  const match = /^M(\S+) (\S+)([HV])(\S+)A(\S+) \S+ 0 0 ([01]) (\S+) (\S+)Z$/.exec(path)
+  if (!match) throw new Error(`unexpected path ${path}`)
+  const [x0, y0, along, radius, sweep, x2, y2] = [
+    Number(match[1]),
+    Number(match[2]),
+    match[3],
+    Number(match[5]),
+    Number(match[6]),
+    Number(match[7]),
+    Number(match[8]),
+  ] as const
+  const x1 = along === 'H' ? Number(match[4]) : x0
+  const y1 = along === 'V' ? Number(match[4]) : y0
+  const chord = Math.hypot(x2 - x1, y2 - y1)
+  const rise = Math.sqrt(Math.max(0, radius * radius - (chord / 2) ** 2))
+  const [nx, ny] = [-(y2 - y1) / chord, (x2 - x1) / chord]
+  const [mx, my] = [(x1 + x2) / 2, (y1 + y2) / 2]
+  const candidates: [number, number][] = [
+    [mx + nx * rise, my + ny * rise],
+    [mx - nx * rise, my - ny * rise],
+  ]
+  // A positive turn from the first end to the second is sweep 1, in SVG's y-down axes.
+  const centre = candidates.find(([cx, cy]) => {
+    const turn = (x1 - cx) * (y2 - cy) - (y1 - cy) * (x2 - cx)
+    return sweep === 1 ? turn > 0 : turn < 0
+  })
+  if (!centre) throw new Error(`no centre for ${path}`)
+  return { start: [x0, y0], radius, centre }
+}

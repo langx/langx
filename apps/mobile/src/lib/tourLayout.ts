@@ -8,11 +8,13 @@ import type { TourRect } from './tour'
  * every other, which is exactly what a test can hold still and a simulator
  * cannot.
  *
- * **There is no mask here, and no SVG.** `react-native-svg` is a native module
- * — a new binary and no way to send this over the air — so the dim is built
- * out of plain views: four rectangles butted against the hole's four straight
- * edges, and a small square at each corner with its inner corner rounded away.
- * Eight boxes, none of them unusual.
+ * **There is no mask here.** The dim is built out of plain views — four
+ * rectangles butted against the hole's four straight edges — and a small
+ * piece at each corner of a rounded hole that fills the corner back in. Eight
+ * boxes, none of them unusual. The corner pieces are `react-native-svg` paths
+ * (`tourCornerPath`): a view can only round its own corners convexly, and the
+ * piece a rounded hole needs is a square with a quarter disc bitten *out* of
+ * it.
  *
  * **It was one box, and that is the bug this replaced.** A single view with a
  * border thick enough to reach every screen edge leaves a hole of any radius
@@ -71,16 +73,46 @@ export interface TourPanel {
 /**
  * One corner of the hole, filled back in so the corner reads as round.
  *
- * A square of `hole.radius` sitting in a corner of the hole, with the corner
- * pointing *into* the hole rounded away by its own width — which leaves
- * exactly the square minus a quarter disc, and that is the difference between
- * a square hole and a rounded one.
+ * A square of `hole.radius` sitting in a corner of the hole, minus the quarter
+ * disc of that radius centred on the square's inner corner — the one pointing
+ * into the hole. What is left hugs the hole's outer corner, and that is the
+ * difference between a square hole and a rounded one.
  */
 export interface TourCorner {
   at: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight'
   left: number
   top: number
   size: number
+  /** The piece's outline, in its own box from (0, 0) to (size, size). */
+  path: string
+}
+
+/**
+ * The outline of one corner piece, in the piece's own box.
+ *
+ * From the hole's outer corner along one edge of the box, then the quarter
+ * circle round the box's inner corner to the other edge, and back. Every arc
+ * has the same sweep flag: each piece is the first one turned by a quarter,
+ * and turning a shape does not change which way round its outline runs.
+ *
+ * This replaces a square with its inner corner rounded away by its own width
+ * — which looks like the same shape and is its complement: a view's rounded
+ * corner keeps the quarter disc *round the opposite corner* and drops the
+ * rest, so every rounded hole had its corners drawn inside out, a four-point
+ * star on the round tab holes and a spike at each end of a pill.
+ */
+export function tourCornerPath(at: TourCorner['at'], size: number): string {
+  const s = size
+  switch (at) {
+    case 'topLeft':
+      return `M0 0H${s}A${s} ${s} 0 0 0 0 ${s}Z`
+    case 'topRight':
+      return `M${s} 0V${s}A${s} ${s} 0 0 0 0 0Z`
+    case 'bottomLeft':
+      return `M0 ${s}V0A${s} ${s} 0 0 0 ${s} ${s}Z`
+    case 'bottomRight':
+      return `M${s} ${s}H0A${s} ${s} 0 0 0 ${s} 0Z`
+  }
 }
 
 export interface TourLayout {
@@ -170,12 +202,20 @@ export function tourLayout({ anchor, screen, insets }: TourLayoutInput): TourLay
   ]
 
   const corners: TourCorner[] = radius
-    ? [
-        { at: 'topLeft', left, top, size: radius },
-        { at: 'topRight', left: right - radius, top, size: radius },
-        { at: 'bottomLeft', left, top: bottom - radius, size: radius },
-        { at: 'bottomRight', left: right - radius, top: bottom - radius, size: radius },
-      ]
+    ? (
+        [
+          ['topLeft', left, top],
+          ['topRight', right - radius, top],
+          ['bottomLeft', left, bottom - radius],
+          ['bottomRight', right - radius, bottom - radius],
+        ] as const
+      ).map(([at, x, y]) => ({
+        at,
+        left: x,
+        top: y,
+        size: radius,
+        path: tourCornerPath(at, radius),
+      }))
     : []
 
   /*
