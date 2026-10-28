@@ -79,6 +79,11 @@ export const SHOTS = {
    * The PPO lead: today's video itself, opening on Home as it does the first
    * time a day counts, held on the frame where Venus is saying her line (the
    * line is the video's own, in the locale's language).
+   *
+   * `tabletShowTo`: on a tablet tile the phone is wide enough to run Venus's
+   * subtitle bubble off the bottom edge, so it shrinks, from its top edge,
+   * until this fraction of the capture (the bubble ends at about 0.79) sits
+   * above a margin at the foot of the tile. Phone tiles already show it.
    */
   venusLead: {
     ground: 'tangerine',
@@ -86,6 +91,7 @@ export const SHOTS = {
     venusPlayer: true,
     wait: 9000,
     steps: [{ seek: 5.5 }],
+    tabletShowTo: 0.8,
   },
   /*
    * Shot 9 ships without prices (Behic, 21 Oct 2026): a listing is read in

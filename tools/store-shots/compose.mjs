@@ -130,6 +130,8 @@ function tileHtml({ slot, id, locale, caption, capture, cut, store }) {
   // A shot without prices: the phone is lowered until the cut line meets the
   // tile's bottom, so the purchase area is off the tile.
   const lowerTo = cut ? statusH + cut * capH : null
+  // How much of the screen, from its top, must stay on a tablet tile.
+  const showTo = tablet && shot.tabletShowTo ? bez + statusH + shot.tabletShowTo * capH : null
   return `<!doctype html><html lang="${locale}" dir="${rtl ? 'rtl' : 'ltr'}"><head><meta charset="utf-8">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=block">
 <style>${fontFaces}
@@ -176,6 +178,14 @@ ${
     const capBox = cap.getBoundingClientRect()
     const centred = (top - capBox.height) / 2
     if (centred > capBox.top) cap.style.top = centred + 'px'
+  }
+  // A shot that must show its screen to a point shrinks, from the phone's top
+  // edge, until that point sits 4.5% of the tile's height above its foot.
+  const showTo = ${showTo === null ? 'null' : showTo}
+  if (showTo !== null) {
+    const k = Math.min(1, (${slot.h * 0.955} - top) / showTo)
+    phone.style.transformOrigin = '50% 0'
+    phone.style.transform = 'scale(' + k + ')'
   }
   phone.style.top = top + 'px'
   // The status bar takes the colour of the screen's first row, and its text
