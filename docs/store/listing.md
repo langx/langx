@@ -47,10 +47,11 @@ either.
 `docs/store/3.0-metadata.json` is the 3.0 draft in the same form. Its `asc`
 section has all eight App Store languages; its `cpp` section has the
 promotional text of the nine custom product pages (see
-[`app-store-growth.md`](app-store-growth.md)), and its `play` section is still
-English only and still the earlier draft. It is a draft: Behic uploads it
-himself. What each claim in the App Store copy rests on, and what was left out
-because its switch is off, is under _3.0 (draft)_ in _What's new_ below.
+[`app-store-growth.md`](app-store-growth.md)), and its `play` section is
+English only and is the App Store's en-US copy fitted to Play. It is a draft:
+Behic uploads it himself. What each claim in the App Store copy rests on — the
+Play copy makes the same claims — and what was left out because its switch is
+off, is under _3.0 (draft)_ in _What's new_ below.
 
 Why each language's App Store keywords are what they are, and the custom
 product pages, the Product Page Optimization test and the screenshot order
@@ -558,16 +559,26 @@ release before: see _2.9_ below.
 >
 > Coming back from the old app? Sign up with the email you used before - your username is waiting for you.
 
-The Play release notes below are the earlier draft and still claim the Pro
-Week and give a week get a week; they have not been rewritten.
+The Play copy in `3.0-metadata.json` is this App Store copy, so the table
+above covers it too; every row holds on Android, where the camera filters and
+the alternate icons are native as they are on iOS, and where the free week is
+likewise the yearly plan's only. It differs only where Play does: the full
+description is the en-US App Store description without the Apple EULA line,
+and the release notes below are the App Store's cut to Play's 500 characters
+(491) — the Home line takes the promotional text's wording, and the first line
+loses "from start to finish". The short description is unchanged. Until 28
+October 2026 the Play copy was an earlier draft that claimed the Pro Week, give
+a week get a week and the free hello to a newcomer, all three still off in
+production that day.
 
 **Play release notes (500)**, en-US and en-GB
 
-> LangX 3.0: a new look, everywhere. Home opens on who is waiting for your reply, your streak and your Echo cards.
-> New and 18+? Your first week comes with Pro.
-> Invite a friend: when they start talking, you each get a week of Pro.
-> Copilot, our AI helper, is in beta for every account.
-> New sticker packs, badges and app icons.
+> LangX 3.0: a whole new look.
+> • Home opens on who is waiting for your reply, your streak and your Echo cards.
+> • Chats, Echo, People and Me, redrawn from scratch.
+> • Copilot (beta): check your sentence, get a message explained or get reply ideas.
+> • A new chat camera with filters, new badges and 17 app icons to choose from.
+> • Calls get the new look too, plus lots of fixes and speed-ups.
 >
 > Coming back from the old app? Sign up with the email you used before - your username is waiting for you.
 
