@@ -27,7 +27,7 @@ import type { TourRect } from './tour'
 /** Between the hole and the bubble, and between the bubble and the screen edge. */
 const GAP = 12
 /** How far the hole is grown past the element, so the ring does not clip it. */
-const PAD = 6
+export const PAD = 6
 /**
  * Square, unless the element asks for something else.
  *
