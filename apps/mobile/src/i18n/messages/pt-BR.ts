@@ -2817,7 +2817,7 @@ export const ptBR: Localized<EnMessages> = {
 
   tokens: {
     intro:
-      'Ganhas ao enviar mensagens e ao corrigir outras pessoas. Ensinar pesa mais do que conversar.',
+      'Ganhos ao enviar mensagens e ao corrigir outras pessoas. Ensinar pesa mais do que conversar.',
     poolTitle: 'Fundo diário',
     shareAmount: '+{count}',
     noShareYet: 'Ainda sem parte — o fundo paga depois do seu primeiro dia completo.',
