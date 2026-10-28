@@ -131,17 +131,26 @@ export const tr: Localized<ServerMessages> = {
 
     deleteSubject: 'LangX hesabını silmek istediğini onayla',
     deletePreheader: 'LangX hesabını silmek için son bir adım',
-    deleteBody:
-      'LangX hesabını silmeyi istedin. Aşağıdan onayla, hesabın silinmek üzere sıraya alınsın — fikrini değiştirmek için 30 günün var, tekrar giriş yapman yeterli.',
+    deleteBody: {
+      one: 'LangX hesabını silmeyi istedin. Aşağıdan onayla, hesabın silinmek üzere sıraya alınsın — fikrini değiştirmek için {count} günün var, tekrar giriş yapman yeterli.',
+      other:
+        'LangX hesabını silmeyi istedin. Aşağıdan onayla, hesabın silinmek üzere sıraya alınsın — fikrini değiştirmek için {count} günün var, tekrar giriş yapman yeterli.',
+    },
     deleteButton: 'Hesabımı sil',
     deleteText: 'LangX hesabının silinmesini onayla: {url}',
     deleteInvalid: 'Bu bağlantının süresi dolmuş ya da zaten kullanılmış.',
     deleteConfirmTitle: 'LangX hesabını sil',
-    deleteConfirmBody:
-      'Bu, hesabını silinmek üzere sıraya alır. 30 gün içinde tekrar giriş yaparsan iptal olur.',
+    deleteConfirmBody: {
+      one: 'Bu, hesabını silinmek üzere sıraya alır. {count} gün içinde tekrar giriş yaparsan iptal olur.',
+      other:
+        'Bu, hesabını silinmek üzere sıraya alır. {count} gün içinde tekrar giriş yaparsan iptal olur.',
+    },
     deleteConfirmButton: 'Evet, hesabımı sil',
     deleteDoneTitle: 'Hesabın silinmek üzere sıraya alındı',
-    deleteDoneBody: '{days} gün içinde tekrar giriş yap, her şey geri gelsin.',
+    deleteDoneBody: {
+      one: '{count} gün içinde tekrar giriş yap, her şey geri gelsin.',
+      other: '{count} gün içinde tekrar giriş yap, her şey geri gelsin.',
+    },
     deleteDonePurge: 'Veriler {date} tarihinde siliniyor.',
 
     verifySubject: 'LangX e-posta adresini doğrula',

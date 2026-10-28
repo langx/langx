@@ -300,7 +300,7 @@ export function SettingsRowV3({ id, model }: { id: string; model: SettingsModel 
           icon={icon}
           hue={hue}
           title={t('settings.username')}
-          subtitle={t('settings.usernameBody', { days: HANDLE_CHANGE_COOLDOWN_DAYS })}
+          subtitle={t('settings.usernameBody', { count: HANDLE_CHANGE_COOLDOWN_DAYS })}
           value={profile ? `@${profile.handle}` : undefined}
           onPress={() => router.push('/(app)/settings/username')}
         />

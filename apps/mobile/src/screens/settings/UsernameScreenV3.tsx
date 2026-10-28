@@ -96,7 +96,7 @@ function ChangeForm({ profile, onDone }: { profile: MeProfile; onDone: () => voi
     if (!canSubmit) return
     const ok = await confirmAlert({
       title: t('settings.usernameConfirmTitle'),
-      message: t('settings.usernameConfirmBody', { handle, days: HANDLE_CHANGE_COOLDOWN_DAYS }),
+      message: t('settings.usernameConfirmBody', { handle, count: HANDLE_CHANGE_COOLDOWN_DAYS }),
       confirmLabel: t('settings.usernameSave'),
     })
     if (!ok) return
@@ -190,7 +190,7 @@ function ChangeForm({ profile, onDone }: { profile: MeProfile; onDone: () => voi
       {/* Said before the tap, not only in the dialog: the cooldown is the part
           that cannot be taken back. */}
       <SettingsNoteV3 icon="clock" hue="tangerine">
-        {t('settings.usernameEvery', { days: HANDLE_CHANGE_COOLDOWN_DAYS })}
+        {t('settings.usernameEvery', { count: HANDLE_CHANGE_COOLDOWN_DAYS })}
       </SettingsNoteV3>
     </SettingsFormScreenV3>
   )

@@ -101,7 +101,7 @@ function PasswordHints({ mismatch }: { mismatch: boolean }) {
   return (
     <>
       {mismatch ? <Text style={styles.mismatch}>{t('auth.passwordsDoNotMatch')}</Text> : null}
-      <Text style={styles.rule}>{t('auth.passwordRule', { min: PASSWORD_MIN_LENGTH })}</Text>
+      <Text style={styles.rule}>{t('auth.passwordRule', { count: PASSWORD_MIN_LENGTH })}</Text>
     </>
   )
 }

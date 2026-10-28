@@ -143,17 +143,26 @@ export const fr: Localized<ServerMessages> = {
 
     deleteSubject: 'Confirmez la suppression de votre compte LangX',
     deletePreheader: 'Une dernière étape pour supprimer votre compte LangX',
-    deleteBody:
-      'Vous avez demandé la suppression de votre compte LangX. Confirmez ci-dessous et il sera programmé pour suppression — vous avez 30 jours pour changer d’avis en vous reconnectant.',
+    deleteBody: {
+      one: 'Vous avez demandé la suppression de votre compte LangX. Confirmez ci-dessous et il sera programmé pour suppression — vous avez {count} jour pour changer d’avis en vous reconnectant.',
+      other:
+        'Vous avez demandé la suppression de votre compte LangX. Confirmez ci-dessous et il sera programmé pour suppression — vous avez {count} jours pour changer d’avis en vous reconnectant.',
+    },
     deleteButton: 'Supprimer mon compte',
     deleteText: 'Confirmez la suppression de votre compte LangX : {url}',
     deleteInvalid: 'Ce lien a expiré ou a déjà été utilisé.',
     deleteConfirmTitle: 'Supprimer votre compte LangX',
-    deleteConfirmBody:
-      'Votre compte sera programmé pour suppression. Vous reconnecter sous 30 jours l’annule.',
+    deleteConfirmBody: {
+      one: 'Votre compte sera programmé pour suppression. Vous reconnecter sous {count} jour l’annule.',
+      other:
+        'Votre compte sera programmé pour suppression. Vous reconnecter sous {count} jours l’annule.',
+    },
     deleteConfirmButton: 'Oui, supprimer mon compte',
     deleteDoneTitle: 'Votre compte est programmé pour suppression',
-    deleteDoneBody: 'Reconnectez-vous sous {days} jours et tout revient.',
+    deleteDoneBody: {
+      one: 'Reconnectez-vous sous {count} jour et tout revient.',
+      other: 'Reconnectez-vous sous {count} jours et tout revient.',
+    },
     deleteDonePurge: 'Les données sont supprimées le {date}.',
 
     verifySubject: 'Vérifiez votre e-mail LangX',

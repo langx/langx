@@ -440,7 +440,10 @@ export const en = {
      * this alert offers nothing to buy and must never open the upgrade screen.
      */
     limitTitle: 'Daily Echo limit reached',
-    limitBody: 'You can keep {count} cards a day. It resets tomorrow.',
+    limitBody: {
+      one: 'You can keep {count} card a day. It resets tomorrow.',
+      other: 'You can keep {count} cards a day. It resets tomorrow.',
+    },
 
     // The tab.
     fromYourChats: 'From your chats',
@@ -568,7 +571,10 @@ export const en = {
     /** The server voice, on a card of the member's own. */
     readAloud: 'Read it aloud',
     readAloudFailedTitle: 'Could not read this card aloud',
-    readAloudLimitBody: 'You can have {count} cards read aloud a day. It resets tomorrow.',
+    readAloudLimitBody: {
+      one: 'You can have {count} card read aloud a day. It resets tomorrow.',
+      other: 'You can have {count} cards read aloud a day. It resets tomorrow.',
+    },
     spokenBy: 'Spoken by {name}',
     /** On an answer, when the card that asked has no recording yet. */
     keepOnCard: 'Keep on my card',
@@ -1004,8 +1010,8 @@ export const en = {
   auth: {
     confirmPassword: 'Confirm password',
     passwordsDoNotMatch: 'The two passwords are different.',
-    passwordTooShort: 'At least {min} characters.',
-    passwordRule: 'At least {min} characters',
+    passwordTooShort: { one: 'At least {count} character.', other: 'At least {count} characters.' },
+    passwordRule: { one: 'At least {count} character', other: 'At least {count} characters' },
     welcomeBackSubtitle: 'Sign in to pick up where you left off.',
     resetBody: "Enter the email you signed up with and we'll send you a reset link.",
     welcomeBack: 'Welcome back',
@@ -1025,7 +1031,10 @@ export const en = {
     justLooking: 'Just looking?',
     haveAccount: 'Already have an account? ',
     createAccount: 'Create your account',
-    minimumAge: 'You must be {age}+ to use LangX.',
+    minimumAge: {
+      one: 'You must be {count}+ to use LangX.',
+      other: 'You must be {count}+ to use LangX.',
+    },
     acceptTerms: 'I have read and agree to the',
     acceptTermsAnd: ' and the ',
     acceptTermsLabel: 'Terms and privacy policy',
@@ -1098,7 +1107,10 @@ export const en = {
     /** Under the display name while it still holds the one the account was made with. */
     nameFromSignUp: 'From your sign-up. Change it if you like.',
     aboutYouOptional: 'About you (optional)',
-    tooYoung: 'LangX is for people aged {age} and over.',
+    tooYoung: {
+      one: 'LangX is for people aged {count} and over.',
+      other: 'LangX is for people aged {count} and over.',
+    },
     photo: {
       picker: { title: 'Or pick another drawn face', keep: 'Keep this face' },
     },
@@ -1405,8 +1417,11 @@ export const en = {
     pickTitle: 'No conversation open',
     pickBody: 'Pick one from the list and it opens here.',
     emptyTitle: 'No chats yet',
-    emptyBody:
-      'Message someone from Discover. On the free plan you can start {count} new chats a day — replying to messages you receive is always unlimited.',
+    emptyBody: {
+      one: 'Message someone from Discover. On the free plan you can start {count} new chat a day — replying to messages you receive is always unlimited.',
+      other:
+        'Message someone from Discover. On the free plan you can start {count} new chats a day — replying to messages you receive is always unlimited.',
+    },
     goToDiscover: 'Go to Discover',
     youPrefix: 'You:',
     starredMessages: 'Starred messages',
@@ -2327,15 +2342,24 @@ export const en = {
     aboutYouPlaceholder: 'What do you like talking about?',
     country: 'Country',
     gender: 'Gender',
-    genderOnce: 'You can change this once every {days} days.',
+    genderOnce: {
+      one: 'You can change this once a day.',
+      other: 'You can change this once every {count} days.',
+    },
     genderCooldown: 'You can change this again on {date}.',
-    usernameEvery: 'You can change this once every {days} days.',
+    usernameEvery: {
+      one: 'You can change this once a day.',
+      other: 'You can change this once every {count} days.',
+    },
     usernameCooldown: 'You can change this again on {date}.',
     pronouns: 'Pronouns',
     pronounsPlaceholder: 'she/her, they/them, o…',
     pronounsHint: 'Optional, and shown on your profile. Write them however your language does.',
     genderConfirmTitle: 'Set your gender?',
-    genderConfirmBody: 'Your profile will say {gender}. You can change it again in {days} days.',
+    genderConfirmBody: {
+      one: 'Your profile will say {gender}. You can change it again in {count} day.',
+      other: 'Your profile will say {gender}. You can change it again in {count} days.',
+    },
     languages: 'Languages',
     holdPhotoHint:
       'Hold a photo and drag it to change the order. Let go without moving it to remove it.',
@@ -2349,8 +2373,11 @@ export const en = {
     photoUploading: 'Uploading photo, {percent}%',
     photoRetry: 'That photo didn’t upload. Tap to try again, or press and hold to remove it.',
     photoRetryShort: 'Retry',
-    photoLimit: 'You can add up to {max} photos.',
-    photosTrimmed: 'Your gallery holds {max} photos, so not all of those were added.',
+    photoLimit: { one: 'You can add {count} photo.', other: 'You can add up to {count} photos.' },
+    photosTrimmed: {
+      one: 'Your gallery holds {count} photo, so not all of those were added.',
+      other: 'Your gallery holds {count} photos, so not all of those were added.',
+    },
     photoUpdated: 'Photo updated.',
     saved: 'Profile saved.',
     saveFailed: 'Could not save your profile.',
@@ -2752,22 +2779,27 @@ export const en = {
     signInSetPasswordFailed: 'Could not set your password. Try again.',
     signInPasswordAlready: 'This account already has a password.',
     username: 'Username',
-    usernameBody: 'Change it once every {days} days',
+    usernameBody: { one: 'Change it once a day', other: 'Change it once every {count} days' },
     usernameTitle: 'Change your username',
     usernameIntro: 'You are @{handle}. Pick the username you want instead.',
     usernameIntroV1:
       'When you joined the old LangX it named you @{handle}. You never picked that, so you can pick one now.',
     usernameHint: 'Letters, numbers and underscores. This is how people find you.',
-    usernameEvery:
-      'You can change this once every {days} days. Links and QR codes with your old username keep working until you change it again.',
+    usernameEvery: {
+      one: 'You can change this once a day. Links and QR codes with your old username keep working until you change it again.',
+      other:
+        'You can change this once every {count} days. Links and QR codes with your old username keep working until you change it again.',
+    },
     usernameSave: 'Change username',
     usernameSaved: 'You are @{handle} now.',
     usernameFailed: 'Could not change your username. Try again.',
     usernameReserved: '@{handle} belongs to another account from the old LangX.',
     usernameCooldown: 'You are @{handle}. You can change it again on {date}.',
     usernameConfirmTitle: 'Change your username?',
-    usernameConfirmBody:
-      'You will be @{handle}. You can change it again in {days} days, not before.',
+    usernameConfirmBody: {
+      one: 'You will be @{handle}. You can change it again in {count} day, not before.',
+      other: 'You will be @{handle}. You can change it again in {count} days, not before.',
+    },
     password: 'Password',
     passwordBody: 'Set or change it',
     changePassword: 'Change password',
@@ -2889,14 +2921,23 @@ export const en = {
     exportDataFailed: 'Couldn’t export your data',
     exportDataSaved: 'Saved your data as {file}',
     deleteAccount: 'Delete account',
-    deleteAccountBody: 'Signing back in within {days} days cancels it.',
+    deleteAccountBody: {
+      one: 'Signing back in within {count} day cancels it.',
+      other: 'Signing back in within {count} days cancels it.',
+    },
     deleteConfirmTitle: 'Delete your account',
-    deleteExplain:
-      'Your profile, messages and photos are scheduled for deletion. Sign back in within {days} days and everything comes back; after that it is gone for good.',
+    deleteExplain: {
+      one: 'Your profile, messages and photos are scheduled for deletion. Sign back in within {count} day and everything comes back; after that it is gone for good.',
+      other:
+        'Your profile, messages and photos are scheduled for deletion. Sign back in within {count} days and everything comes back; after that it is gone for good.',
+    },
     deleteTypeHandle: 'Type your handle, {handle}, to continue.',
     deleteCheckEmail: 'Check {email}. The link in that message is what schedules the deletion.',
     deleteNothingYet: 'Nothing has happened to your account yet.',
-    deleted: 'Account deleted. Signing back in within {days} days cancels it.',
+    deleted: {
+      one: 'Account deleted. Signing back in within {count} day cancels it.',
+      other: 'Account deleted. Signing back in within {count} days cancels it.',
+    },
     deleteFailed: 'Could not delete',
     signOut: 'Sign out',
     signOutConfirm: 'You will need to sign in again on this device.',
@@ -2981,9 +3022,12 @@ export const en = {
     ownedAccessibility: '{title}, owned',
     locked: 'Locked',
     lockedAccessibility: '{title}, locked',
-    lockedStreak: '{current} of {threshold} days',
+    lockedStreak: { one: '{current} of {threshold} day', other: '{current} of {threshold} days' },
     lockedNeeds: 'Buy {title} first',
-    lockedCorrections: '{current} of {threshold} corrections',
+    lockedCorrections: {
+      one: '{current} of {threshold} correction',
+      other: '{current} of {threshold} corrections',
+    },
     frameKind: 'Profile frame',
     stickerKind: 'Sticker pack',
     titleKind: 'Title',
@@ -3023,8 +3067,11 @@ export const en = {
       one: '{count} pack to send in any chat',
       other: '{count} packs to send in any chat',
     },
-    auroraGate:
-      'Aurora Glass gate: longest streak {streak} of {streakGoal} days, corrections {corrections} of {correctionsGoal}',
+    auroraGate: {
+      one: 'Aurora Glass gate: longest streak {streak} of {streakGoal} day, corrections {corrections} of {correctionsGoal}',
+      other:
+        'Aurora Glass gate: longest streak {streak} of {streakGoal} days, corrections {corrections} of {correctionsGoal}',
+    },
     withinReach: 'Within reach',
     leftAfter: { one: '{amount} left after', other: '{amount} left after' },
     leftAfterBuying: { one: '{amount} left after buying', other: '{amount} left after buying' },
@@ -4365,7 +4412,10 @@ export const en = {
     translationQuota: 'Unlimited translations',
     translationQuotaBody: '{count} a day on the free plan.',
     learningLanguages: 'More languages at once',
-    learningLanguagesBody: 'Learn {count} languages side by side, not one.',
+    learningLanguagesBody: {
+      one: 'Learn {count} language at a time.',
+      other: 'Learn {count} languages side by side, not one.',
+    },
     whoViewed: 'Who viewed you',
     whoViewedBody: 'Not just the count — see who they are.',
     incognito: 'Incognito browsing',
@@ -4376,8 +4426,11 @@ export const en = {
     copilot: 'More Copilot answers',
     copilotBody:
       'Help composing and understanding messages as you write them. {count} a day on the free plan.',
-    quotaNotice:
-      'You’ve used today’s {count} new chats. You can still reply to everything you receive, with no limit.',
+    quotaNotice: {
+      one: 'You’ve used today’s new chat. You can still reply to everything you receive, with no limit.',
+      other:
+        'You’ve used today’s {count} new chats. You can still reply to everything you receive, with no limit.',
+    },
     manageNotice: 'You’re on {plan}. Manage or cancel it in your store account.',
     lifetimeNotice: 'You have {plan} for life. Nothing renews and nothing is charged.',
     giftNotice:
@@ -4581,7 +4634,7 @@ export const en = {
   pickers: {
     searchCountries: 'Search countries',
     noCountryMatch: 'No country matches “{query}”',
-    searchLanguages: 'Search {count} languages',
+    searchLanguages: { one: 'Search {count} language', other: 'Search {count} languages' },
   },
 
   weekly: {

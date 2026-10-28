@@ -1,4 +1,5 @@
 import {
+  ACCOUNT_DELETION_GRACE_DAYS,
   isImageContentType,
   isVideoContentType,
   paywallPath,
@@ -383,7 +384,7 @@ export function deleteAccountEmail(url: string, locale: Locale): Email {
     html: wrap(
       locale,
       t('email.deletePreheader'),
-      `<p>${t('email.deleteBody')}</p>
+      `<p>${t('email.deleteBody', { count: ACCOUNT_DELETION_GRACE_DAYS })}</p>
        <p>${button(url, t('email.deleteButton'))}</p>
        <p style="font-size: 12px; color: #9aa1a9;">${t('email.orPaste', { url })}</p>`,
     ),

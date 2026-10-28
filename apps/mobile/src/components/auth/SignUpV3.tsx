@@ -83,7 +83,7 @@ export function SignUpV3({
     >
       <AuthTitleV3
         title={t('auth.createAccount')}
-        body={t('auth.minimumAge', { age: MINIMUM_AGE })}
+        body={t('auth.minimumAge', { count: MINIMUM_AGE })}
       />
 
       <View style={styles.providers}>
@@ -111,7 +111,7 @@ export function SignUpV3({
           textContentType="newPassword"
           autoComplete="password-new"
           // The rule until it is broken — then the error says so instead.
-          hint={t('auth.passwordRule', { min: PASSWORD_MIN_LENGTH })}
+          hint={t('auth.passwordRule', { count: PASSWORD_MIN_LENGTH })}
           error={passwordError}
         />
 

@@ -653,7 +653,7 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
       return (
         <ListRow
           title={t('settings.username')}
-          subtitle={t('settings.usernameBody', { days: HANDLE_CHANGE_COOLDOWN_DAYS })}
+          subtitle={t('settings.usernameBody', { count: HANDLE_CHANGE_COOLDOWN_DAYS })}
           last={last}
           onPress={() => router.push('/(app)/settings/username')}
         />
@@ -734,7 +734,7 @@ export function SettingsRow({ id, model, last = false }: SettingsRowProps) {
       return (
         <ListRow
           title={t('settings.deleteAccount')}
-          subtitle={t('settings.deleteAccountBody', { days: ACCOUNT_DELETION_GRACE_DAYS })}
+          subtitle={t('settings.deleteAccountBody', { count: ACCOUNT_DELETION_GRACE_DAYS })}
           destructive
           last={last}
           // A screen, not a dialog: `AlertHost` draws buttons and no text

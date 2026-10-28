@@ -169,17 +169,26 @@ export const en = {
 
     deleteSubject: 'Confirm you want to delete your LangX account',
     deletePreheader: 'One more step to delete your LangX account',
-    deleteBody:
-      'You asked to delete your LangX account. Confirm below and it will be scheduled for deletion — you have 30 days to change your mind by signing back in.',
+    deleteBody: {
+      one: 'You asked to delete your LangX account. Confirm below and it will be scheduled for deletion — you have {count} day to change your mind by signing back in.',
+      other:
+        'You asked to delete your LangX account. Confirm below and it will be scheduled for deletion — you have {count} days to change your mind by signing back in.',
+    },
     deleteButton: 'Delete my account',
     deleteText: 'Confirm deleting your LangX account: {url}',
     deleteInvalid: 'This link has expired or has already been used.',
     deleteConfirmTitle: 'Delete your LangX account',
-    deleteConfirmBody:
-      'This schedules your account for deletion. Signing back in within 30 days cancels it.',
+    deleteConfirmBody: {
+      one: 'This schedules your account for deletion. Signing back in within {count} day cancels it.',
+      other:
+        'This schedules your account for deletion. Signing back in within {count} days cancels it.',
+    },
     deleteConfirmButton: 'Yes, delete my account',
     deleteDoneTitle: 'Your account is scheduled for deletion',
-    deleteDoneBody: 'Sign back in within {days} days and everything comes back.',
+    deleteDoneBody: {
+      one: 'Sign back in within {count} day and everything comes back.',
+      other: 'Sign back in within {count} days and everything comes back.',
+    },
     deleteDonePurge: 'The data is removed on {date}.',
 
     verifySubject: 'Verify your LangX email',

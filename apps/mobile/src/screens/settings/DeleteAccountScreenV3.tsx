@@ -64,7 +64,7 @@ export function DeleteAccountScreenV3() {
     await syncIconBadge(0)
     await authClient.signOut()
     router.replace(authLandingHref())
-    showToast(t('settings.deleted', { days: ACCOUNT_DELETION_GRACE_DAYS }))
+    showToast(t('settings.deleted', { count: ACCOUNT_DELETION_GRACE_DAYS }))
   }
 
   async function submit(): Promise<void> {
@@ -188,7 +188,7 @@ export function DeleteAccountScreenV3() {
       }
     >
       <Text style={styles.explain}>
-        {t('settings.deleteExplain', { days: ACCOUNT_DELETION_GRACE_DAYS })}
+        {t('settings.deleteExplain', { count: ACCOUNT_DELETION_GRACE_DAYS })}
       </Text>
       {/* Said before anything is typed: the box is what says none has happened. */}
       <SettingsNoteV3 icon="info" tone="danger">
