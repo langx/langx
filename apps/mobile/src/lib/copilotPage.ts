@@ -38,8 +38,8 @@ export const COPILOT_PAGE_HELPS = [
  *   `consent`), so the page sends them to their chats, where it lives. The
  *   consent sheet is the thread's to show, at the first tap, as it always is.
  * - `signUp` — a guest, on a deployment where Copilot is on: a quota and a
- *   consent need an account, so the way to it is an account. The one action
- *   drawn twice: in the hero, and as a button at the page's foot.
+ *   consent need an account, so the way to it is an account. Drawn once, in
+ *   the hero, as the other action is (`CopilotScreenV3` says why).
  * - `null` — Copilot is off for this person, or the thread they would land in
  *   draws none of it. The page still describes it; it only has no button.
  *
