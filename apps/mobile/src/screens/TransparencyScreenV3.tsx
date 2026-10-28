@@ -8,7 +8,7 @@ import {
 import { useFonts } from 'expo-font'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Platform, Text, View } from 'react-native'
+import { Platform, Text, View, type StyleProp, type TextStyle } from 'react-native'
 import Svg, { Path } from 'react-native-svg'
 import { usePublicStats } from '../api/publicStats'
 import { useIsPro } from '../api/queries'
@@ -28,6 +28,8 @@ import {
 import { ProductHero } from '../components/product/ProductHero'
 import { ProductScreen } from '../components/product/ProductScreen'
 import { ProductSection } from '../components/product/ProductSection'
+import { useWordFit } from '../components/product/WidestWord'
+import { WordFitText } from '../components/product/WordFitText'
 import type { ProductTone } from '../components/product/tone'
 import { Button } from '../components/ui/Button'
 import { CountUp } from '../components/ui/CountUp'
@@ -76,7 +78,8 @@ const HERE = '/(app)/transparency'
 /**
  * How far a total grows with the reader's text size. Beside another total,
  * no further than its half of the phone holds (`TOTALS_TITLE_CHARS`); on its
- * own row, as far as the product's name does.
+ * own row, as far as the product's name does. Either way no further than the
+ * widest of the four fits its tile (`Totals`).
  */
 const NUMERAL_SCALE = { beside: 1.2, stacked: PRODUCT_TEXT_SCALE.name } as const
 
@@ -416,9 +419,19 @@ function Totals({ totals }: { totals: PublicStats['totals'] | undefined }) {
   // the ExtraBold every screen has stands in, as the hero's name does.
   const numeral = [step, styles.numeral, !black && step === v3.type.title && styles.fallback]
   const rows = stacked ? tiles.map((tile) => [tile]) : [tiles.slice(0, 2), tiles.slice(2)]
+  // The caps were set by counting characters on a 375pt phone, and a digit
+  // is not a character's width in every face nor a tile that width on every
+  // phone: on a 320pt one, "49,756" outgrew its half at 1.2× and was cut
+  // short. So the four are measured too, and stop where the widest fills
+  // its tile — all four at one size, as they are drawn.
+  const fit = useWordFit(stacked ? NUMERAL_SCALE.stacked : NUMERAL_SCALE.beside)
+  const shown = tiles.map((tile) => tile.shown).filter(Boolean)
 
   return (
     <View style={styles.grid}>
+      {shown.length > 0 ? (
+        <WidestTotal shown={shown} style={numeral} onWidth={fit.setWidest} />
+      ) : null}
       {rows.map((row) => (
         <View key={row.map((tile) => tile.key).join()} style={styles.gridRow}>
           {row.map((tile) => (
@@ -444,21 +457,53 @@ function Totals({ totals }: { totals: PublicStats['totals'] | undefined }) {
                   locale={locale}
                   reduce={reduce}
                   style={numeral}
-                  maxFontSizeMultiplier={stacked ? NUMERAL_SCALE.stacked : NUMERAL_SCALE.beside}
+                  maxFontSizeMultiplier={fit.scale}
+                  // Every tile in a layout is one width, so any one says it.
+                  onLayout={(event) => fit.setLine(event.nativeEvent.layout.width)}
                 />
               )}
-              <Text style={styles.tileLabel} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}>
+              <WordFitText style={styles.tileLabel} cap={PRODUCT_TEXT_SCALE.rowTitle}>
                 {tile.label}
-              </Text>
-              <Text
-                style={[styles.tileHint, BALANCED]}
-                maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
-              >
+              </WordFitText>
+              <WordFitText style={[styles.tileHint, BALANCED]} cap={PRODUCT_TEXT_SCALE.text}>
                 {tile.hint}
-              </Text>
+              </WordFitText>
             </View>
           ))}
         </View>
+      ))}
+    </View>
+  )
+}
+
+/**
+ * The totals once more, at the default size, unseen and out of the layout,
+ * one to a line, so the box round them is as wide as the widest. Not
+ * `WidestWord`, which splits at spaces: French and Russian group a number's
+ * digits with one ("49 850"), and it is one word to the eye.
+ */
+function WidestTotal({
+  shown,
+  style,
+  onWidth,
+}: {
+  shown: readonly string[]
+  style: StyleProp<TextStyle>
+  onWidth: (width: number) => void
+}) {
+  const styles = useStyles()
+  return (
+    <View
+      style={styles.measure}
+      aria-hidden
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+      onLayout={(event) => onWidth(event.nativeEvent.layout.width)}
+    >
+      {shown.map((text, index) => (
+        <Text key={index} style={style} allowFontScaling={false} numberOfLines={1}>
+          {text}
+        </Text>
       ))}
     </View>
   )
@@ -524,15 +569,15 @@ function DayChart({
 
   return (
     <View style={styles.card}>
-      <Text
+      <WordFitText
         style={styles.sum}
-        maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}
+        cap={PRODUCT_TEXT_SCALE.rowTitle}
         // The chart below says this and more; heard once is enough.
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
       >
         {sumText}
-      </Text>
+      </WordFitText>
       <Columns
         points={seriesOf(stats.daily, metric)}
         color={v3.hues[TONE]}
@@ -543,9 +588,9 @@ function DayChart({
         })}
       />
       {caption ? (
-        <Text style={styles.caption} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+        <WordFitText style={styles.caption} cap={PRODUCT_TEXT_SCALE.text}>
           {t('transparency.page.daysCaption')}
-        </Text>
+        </WordFitText>
       ) : null}
     </View>
   )
@@ -586,13 +631,13 @@ function Languages({ stats }: { stats: PublicStats }) {
     <ProductSection title={t('transparency.page.languagesTitle')}>
       {lists.map((list, index) => (
         <View key={list.key} style={styles.card}>
-          <Text
+          <WordFitText
             style={styles.cardTitle}
             accessibilityRole="header"
-            maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}
+            cap={PRODUCT_TEXT_SCALE.rowTitle}
           >
             {list.title}
-          </Text>
+          </WordFitText>
           <BarList
             rows={list.rows}
             // Two hues, so the two lists are never read as one ranking.
@@ -667,6 +712,18 @@ function Streaks({ stats, guest }: { stats: PublicStats; guest: boolean }) {
 
 const useStyles = makeStyles(({ v3 }) => ({
   grid: { gap: v3.space[8] },
+  // Held in a box of no height that clips, as `WidestWord` is, so it never
+  // makes the page longer on the web; its width is the widest line's.
+  measure: {
+    alignItems: 'flex-start',
+    height: 0,
+    opacity: 0,
+    overflow: 'hidden',
+    pointerEvents: 'none',
+    position: 'absolute',
+    start: 0,
+    top: 0,
+  },
   gridRow: { flexDirection: 'row', gap: v3.space[8] },
   tile: {
     backgroundColor: v3.colors.surface,

@@ -9,6 +9,7 @@ import { PressableScale } from '../ui/PressableScale'
 import { BALANCED, useGlyphScale, useStacked, useTextDirection } from './ProductGroup'
 import { ProductMark, type ProductMarkName } from './ProductMark'
 import type { ProductTone } from './tone'
+import { WordFitText } from './WordFitText'
 
 type Glyph = keyof typeof Feather.glyphMap
 
@@ -127,26 +128,27 @@ export function ProductHero({ tone, mark, title, body, facts, note, action }: Pr
       <View style={[styles.header, !stacked && styles.headerBeside]}>
         <ProductMark tone={tone} mark={mark} size={MARK} />
         <View style={[styles.words, !stacked && styles.wordsBeside]}>
-          <Text
-            style={titleStyle}
-            accessibilityRole="header"
-            maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.name}
-          >
+          {/*
+            Stacked, the name has the whole width and may still not hold its
+            longest word at the name's cap: "Прозрачность" at 48pt is wider
+            than a 375pt phone's column.
+          */}
+          <WordFitText style={titleStyle} accessibilityRole="header" cap={PRODUCT_TEXT_SCALE.name}>
             {title}
-          </Text>
-          <Text
+          </WordFitText>
+          <WordFitText
             style={[styles.body, direction, BALANCED]}
-            maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+            cap={PRODUCT_TEXT_SCALE.text}
             // Never a lone last word under a full line (`BALANCED`).
             textBreakStrategy="balanced"
             lineBreakStrategyIOS="push-out"
           >
             {body}
-          </Text>
+          </WordFitText>
           {note ? (
-            <Text style={[styles.note, direction]} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+            <WordFitText style={[styles.note, direction]} cap={PRODUCT_TEXT_SCALE.text}>
               {note}
-            </Text>
+            </WordFitText>
           ) : null}
           {action ? <HeroAction action={action} /> : null}
         </View>

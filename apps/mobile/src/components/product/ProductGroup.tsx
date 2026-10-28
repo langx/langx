@@ -6,6 +6,7 @@ import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { tokenMarkChildren } from '../ui/TokenIcon'
 import { useToneColors, type ProductTone } from './tone'
+import { WordFitText } from './WordFitText'
 
 type Glyph = keyof typeof Feather.glyphMap
 
@@ -239,9 +240,9 @@ export function ProductRow({
       {leading && !stacked ? <View style={styles.leading}>{leading}</View> : null}
       <View style={styles.words}>
         {leading && stacked ? <View style={styles.leadingAbove}>{leading}</View> : null}
-        <Text style={[styles.title, direction]} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}>
+        <WordFitText style={[styles.title, direction]} cap={PRODUCT_TEXT_SCALE.rowTitle}>
           {title}
-        </Text>
+        </WordFitText>
         {body && external ? (
           <Text
             style={[styles.body, direction]}
@@ -256,14 +257,14 @@ export function ProductRow({
             {body}
           </Text>
         ) : body ? (
-          <Text
+          <WordFitText
             style={[styles.body, direction, BALANCED]}
-            maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+            cap={PRODUCT_TEXT_SCALE.text}
             textBreakStrategy="balanced"
             lineBreakStrategyIOS="push-out"
           >
             {body}
-          </Text>
+          </WordFitText>
         ) : null}
         {stacked ? readout : null}
         {children}
