@@ -1015,7 +1015,8 @@ function musicStem(film, out, voiced) {
   }
   // ducks, as one gain curve: the onesie's beat (-6 dB), and her lines (-3 dB under the on-camera
   // ones while the cut is silent, so the bed already breathes where the voice will sit; the house
-  // -10 dB under every line once it is voiced)
+  // -10 dB under every line once it is voiced, up to 4 dB deeper under a soft one: lifted to her
+  // median level, a whisper still sat 2-3 dB nearer the bed than her normal lines did)
   const gain = new Float32Array(N).fill(1)
   const duck = (t0, t1, db, pre, post) => {
     const d = 1 - Math.pow(10, -db / 20)
@@ -1027,9 +1028,10 @@ function musicStem(film, out, voiced) {
     }
   }
   duck(W(24.9), W(24.9) + 0.5, 6, 0.03, 0.03)
+  const lifts = voiced ? voiceLifts(film) : null
   for (const Ln of Object.values(clock.lines))
     for (const s of Ln.sents)
-      if (voiced) duck(s.t0, s.t1, 10, 0.15, 0.35)
+      if (voiced) duck(s.t0, s.t1, 10 + Math.min(4, (lifts.get(s) || 0) / 3), 0.15, 0.35)
       else if (s.mode !== 'vo') duck(s.t0, s.t1, 3, 0.15, 0.35)
   // A 15 kHz low-pass (two-pole, Butterworth) over the beds: the music box's attacks jump almost
   // full scale from one sample to the next, and AAC rings on that, a one-sample spike up to 5 dB
@@ -1068,13 +1070,66 @@ function musicStem(film, out, voiced) {
   writeWav(out, [OL, OR])
   return out
 }
+// K-weighting at 48 kHz (BS.1770: the shelf, then the high-pass), as [b0, b1, b2, a1, a2]
+const KW = [
+  [1.53512485958697, -2.69169618940638, 1.19839281085285, -1.69065929318241, 0.73248077421585],
+  [1, -2, 1, -1.99004745483398, 0.99007225036621],
+]
+// One sentence's level in dB: K-weighted 50 ms blocks, the ones within 15 dB of its loudest
+// (so the silence at a window's edges does not count), power-averaged.
+function activeLevel(x, from, to) {
+  let y = x.subarray(Math.max(0, Math.round(from * 48000)), Math.round(to * 48000))
+  for (const [b0, b1, b2, a1, a2] of KW) {
+    const o = new Float32Array(y.length)
+    let x1 = 0,
+      x2 = 0,
+      y1 = 0,
+      y2 = 0
+    for (let i = 0; i < y.length; i++) {
+      o[i] = b0 * y[i] + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2
+      x2 = x1
+      x1 = y[i]
+      y2 = y1
+      y1 = o[i]
+    }
+    y = o
+  }
+  const B = Math.min(2400, y.length),
+    e = []
+  for (let i = 0; i + B <= y.length; i += B / 2) {
+    let s = 0
+    for (let j = i; j < i + B; j++) s += y[j] * y[j]
+    e.push(s / B)
+  }
+  const top = Math.max(...e),
+    on = e.filter((v) => v >= top / 10 ** 1.5)
+  return 10 * Math.log10(on.reduce((a, v) => a + v, 0) / on.length + 1e-12)
+}
+// Each voiced sentence's lift in dB, keyed by the clock's sentence: up to the film's median
+// sentence, never down. A [whispers] or [softly] take comes out 10-15 dB under her normal lines,
+// and with the bed ducked by one flat 10 dB those lines sat level with the music and were lost
+// under it. Worked out once per film; the voice and the music stems both read it.
+function voiceLifts(film) {
+  if (film.lifts) return film.lifts
+  const level = new Map()
+  for (const Ln of Object.values(film.clock.lines))
+    if (Ln.take) {
+      const x = decode(Ln.take.wav, { rate: 48000 })[0]
+      for (const s of Ln.sents) level.set(s, activeLevel(x, s.take.from, s.take.to))
+    }
+  const sorted = [...level.values()].sort((a, b) => a - b)
+  const target = sorted[Math.floor(sorted.length / 2)]
+  film.lifts = new Map([...level].map(([s, l]) => [s, Math.max(0, target - l)]))
+  return film.lifts
+}
 // The voice, when there are takes: each sentence of each take placed at its own time (the clock
-// places sentences, not whole takes, so the board's gaps stay). Null without takes.
+// places sentences, not whole takes, so the board's gaps stay), at its lift. Null without takes.
 // A sentence's window ends in the silence before the next one of its take, never past where that
 // one's window opens: a pushed sentence plays apart from the next, so any overlap would be heard
 // twice. Both edges fade, so a cut that still lands on sound is not a click.
 function voiceStem(film, out) {
   const parts = []
+  const lifts = voiceLifts(film)
   for (const Ln of Object.values(film.clock.lines))
     if (Ln.take) {
       const S = Ln.sents.map((s) => s.take)
@@ -1088,13 +1143,14 @@ function voiceStem(film, out) {
             Math.min(t.to + 0.12, i < S.length - 1 ? S[i + 1].from - pre[i + 1] : Infinity),
           ),
           at: t.at - pre[i],
+          lift: lifts.get(Ln.sents[i]),
         }),
       )
     }
   if (!parts.length) return null
   const chains = parts.map(
     (p, i) =>
-      `[${i}:a]aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=mono,atrim=${r3(p.from)}:${r3(p.to)},asetpts=N/SR/TB,afade=t=in:d=0.01,afade=t=out:st=${r3(Math.max(0, p.to - p.from - 0.015))}:d=0.015,adelay=${Math.round(p.at * 1000)}:all=1[v${i}]`,
+      `[${i}:a]aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=mono,atrim=${r3(p.from)}:${r3(p.to)},asetpts=N/SR/TB,volume=${p.lift.toFixed(2)}dB,afade=t=in:d=0.01,afade=t=out:st=${r3(Math.max(0, p.to - p.from - 0.015))}:d=0.015,adelay=${Math.round(p.at * 1000)}:all=1[v${i}]`,
   )
   chains.push(
     `${parts.map((_, i) => `[v${i}]`).join('')}amix=inputs=${parts.length}:normalize=0:duration=longest[out]`,
