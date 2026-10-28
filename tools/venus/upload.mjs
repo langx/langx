@@ -20,12 +20,11 @@ import { REPO, OUT, OUT_ROOT } from './lib/paths.mjs'
 
 const V1 = OUT
 const PREFIX = 'venus/v1'
-const mode = process.argv[2],
+// What this run is, decided once from the command line and switched on at the bottom; a failure sets
+// the exit code rather than exiting, so no condition on the command line ends the process (as in
+// film.mjs)
+const mode = ['media', 'manifest', 'verify', 'intro'].find((m) => m === process.argv[2]) ?? 'usage',
   dry = process.argv.includes('--dry')
-if (!['media', 'manifest', 'verify', 'intro'].includes(mode)) {
-  console.error('usage: node upload.mjs media|manifest|verify|intro [--dry]')
-  process.exit(2)
-}
 
 const readEnv = (f) => {
   const o = {}
@@ -44,16 +43,12 @@ const env = {
   ...readEnv(path.join(REPO, '.env.prod')),
   ...fromProcess,
 }
-for (const k of [
+const unset = [
   'STORAGE_ENDPOINT',
   'STORAGE_BUCKET',
   'STORAGE_ACCESS_KEY_ID',
   'STORAGE_SECRET_ACCESS_KEY',
-])
-  if (!env[k]) {
-    console.error(`missing ${k}`)
-    process.exit(1)
-  }
+].filter((k) => !env[k])
 
 const req = createRequire(path.join(REPO, 'apps/api/package.json'))
 const { S3Client, PutObjectCommand, HeadObjectCommand, ListObjectsV2Command } =
@@ -163,7 +158,7 @@ const readyPairs = () =>
         .flatMap((f) => [`${d.name}/${f}`, `${d.name}/${f.replace(/\.mp4$/, '.jpg')}`]),
     )
 
-if (mode === 'media') {
+async function media() {
   const files = readyPairs()
   const tally = {}
   let n = 0,
@@ -182,7 +177,10 @@ if (mode === 'media') {
     }),
   )
   console.log(`media: ${files.length} files`, JSON.stringify(tally), `bytes=${bytes}`)
-} else if (mode === 'verify') {
+  return 0
+}
+
+async function verify() {
   const remote = new Map()
   let ContinuationToken
   do {
@@ -233,8 +231,10 @@ if (mode === 'media') {
     ['extra', extra],
   ])
     for (const f of l.slice(0, 20)) console.log(k, f)
-  if (missing.length || differ.length) process.exitCode = 1
-} else if (mode === 'intro') {
+  return missing.length || differ.length ? 1 : 0
+}
+
+async function intro() {
   // The film sits beside the days, under the name the app builds for a locale
   // (venus-intro-<lang>.mp4), and is not in the manifest: the app plays it by that name and falls
   // back to day 1 when it does not load. All locales or none: a missing or unfinished cut stops the
@@ -253,7 +253,7 @@ if (mode === 'media') {
   const unready = langs.filter((lang) => !ready(path.join(FILM, lang, `venus-intro-${lang}.mp4`)))
   if (langs.length === 0 || unready.length) {
     console.error(`intro: not ready: ${unready.join(', ') || 'no locale rendered'}`)
-    process.exit(1)
+    return 1
   }
   const there = []
   let ContinuationToken
@@ -266,13 +266,16 @@ if (mode === 'media') {
   } while (ContinuationToken)
   if (there.length) {
     console.error(`intro: already in the bucket, nothing uploaded:\n${there.join('\n')}`)
-    process.exit(1)
+    return 1
   }
   for (const rel of files) {
     const r = await put(path.join(FILM, rel), `${PREFIX}/${rel}`)
     console.log(r, `${PREFIX}/${rel}`, fs.statSync(path.join(FILM, rel)).size)
   }
-} else {
+  return 0
+}
+
+async function manifest() {
   // the app reads { videos: [{ day, lang, file, cover }] } (apps/mobile/src/lib/venusStory.ts): the last
   // path segment of file and cover is the name in the bucket, beside each other in <lang>/
   const src = JSON.parse(fs.readFileSync(path.join(V1, 'manifest.json'), 'utf8'))
@@ -291,7 +294,7 @@ if (mode === 'media') {
     console.error(
       `${missingCover.length} entries without a cover file, e.g. ${missingCover[0].file}`,
     )
-    process.exit(1)
+    return 1
   }
   const out = path.join(V1, 'manifest.public.json')
   fs.writeFileSync(
@@ -304,4 +307,19 @@ if (mode === 'media') {
     }) + '\n',
   )
   console.log(`manifest: ${videos.length} videos ->`, await put(out, `${PREFIX}/manifest.json`))
+  return 0
+}
+
+switch (mode) {
+  case 'usage':
+    console.error('usage: node upload.mjs media|manifest|verify|intro [--dry]')
+    process.exitCode = 2
+    break
+  default:
+    if (unset.length) {
+      console.error(`missing ${unset.join(', ')}`)
+      process.exitCode = 1
+      break
+    }
+    process.exitCode = await { media, manifest, verify, intro }[mode]()
 }
