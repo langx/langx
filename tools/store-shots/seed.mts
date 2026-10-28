@@ -42,7 +42,7 @@ const { hashPassword } = (await import(
   apiRequire.resolve('better-auth/crypto')
 )) as typeof AuthCrypto
 
-const [uri, dbArg] = process.argv.slice(2)
+const [uri, dbArg, timezone = 'UTC'] = process.argv.slice(2)
 if (!uri || !/^mongodb:\/\/(127\.0\.0\.1|localhost)[:/]/.test(uri)) {
   throw new Error('seed.ts writes only to a loopback MongoDB (the isolated stack)')
 }
@@ -50,7 +50,14 @@ const dbName = resolveDbName(['--db', dbArg ?? ''], '')
 
 const DAY = 86_400_000
 const now = Date.now()
-const dayKey = (daysAgo: number) => new Date(now - daysAgo * DAY).toISOString().slice(0, 10)
+// Days in the run's zone (`TIMEZONE` in stack.mjs), the one the browser is put in.
+const dayFormat = new Intl.DateTimeFormat('en-CA', {
+  timeZone: timezone,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+})
+const dayKey = (daysAgo: number) => dayFormat.format(new Date(now - daysAgo * DAY))
 
 type Hue = ReturnType<typeof partnerHueFor>
 interface Person extends OnboardingProfileInput {
@@ -188,18 +195,29 @@ async function makeAccount(person: Person, daysOld: number): Promise<string> {
       createdAt: at,
       lastActiveAt: new Date(now - 10 * 60_000),
       defaultAvatar: face,
+      timezone,
     },
   })
   return String(id)
 }
 
-// The v3 look is a flag; the shots are of the look that ships with 3.0.
+/*
+ * The flags production runs with (read from `/app-config` on 27 Oct 2026):
+ * the v3 look, Copilot, Venus's videos and her WhatsApp pack. Everything else
+ * stays at its default, off — a store picture shows only what everybody gets.
+ */
 await db.collection('appConfig').replaceOne(
   { _id: 'current' } as never,
   {
     ...structuredClone(shared.DEFAULT_APP_CONFIG),
     _id: 'current',
-    flags: { ...(shared.DEFAULT_APP_CONFIG.flags ?? {}), v3Home: true },
+    flags: {
+      ...(shared.DEFAULT_APP_CONFIG.flags ?? {}),
+      v3Home: true,
+      copilotEnabled: true,
+      venusStories: true,
+      whatsappStickers: true,
+    },
     updatedAt: new Date(),
   },
   { upsert: true },
@@ -373,8 +391,7 @@ await db
 
 /*
  * Shots 4, 7, 8: a member of fourteen months with a 34-day streak, a banked
- * freeze, a balance of 2,340 after three frames and a sticker pack, and the
- * counters seventeen badges are read from.
+ * freeze, and a balance of 2,340 after three frames and a sticker pack.
  */
 const frames = shared.COSMETICS.filter((c) => c.kind === 'frame')
   .slice(0, 3)
@@ -419,21 +436,12 @@ await db.collection(COLLECTIONS.profiles).updateOne({ _id: sofia } as never, {
     cosmetics: owned,
     equipped: { frame: frames[0] },
     'streak.current': 34,
-    // Past 180, so Bonfire is earned: shot 8 shows it as the new one.
+    // Past 100, the last of Venus's days, so shot 8 has every one of them open.
     'streak.longest': 190,
     'streak.lastQualifiedDay': dayKey(0),
     'streak.lastActionDay': dayKey(0),
-    'stats.messagesSent': 1240,
   },
 })
-await db.collection('postCorrections').insertMany(
-  Array.from({ length: 120 }, () => ({
-    _id: new ObjectId(),
-    postId: new ObjectId(),
-    authorId: sofia,
-    createdAt: new Date(now - 30 * DAY),
-  })) as never[],
-)
 
 console.log(
   JSON.stringify({

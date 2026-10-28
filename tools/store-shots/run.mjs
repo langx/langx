@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * The 3.0 store screenshots, end to end, in one command:
+ * The store screenshots, end to end, in one command:
  *
  *   node tools/store-shots/run.mjs --out <dir> [--locales en,tr] [--reuse-web] [--skip-capture]
  *
@@ -10,6 +10,9 @@
  * 4. composes every slot at its exact size, plus the Play feature graphic;
  * 5. checks every file (size, PNG, no alpha, count per slot) and writes
  *    `manifest.json` and a contact sheet per locale.
+ *
+ * The PPO shots (`PPO` in shots.config.mjs) come out beside the listing, for
+ * the App Store slots, under `<locale>/ppo/`.
  *
  * Nothing is uploaded anywhere. See README.md.
  */
@@ -25,6 +28,7 @@ import {
   ORDER,
   PLAY_LOCALES,
   PLAY_SKIPS,
+  PPO,
   SLOTS,
   captionsFor,
 } from './shots.config.mjs'
@@ -99,6 +103,7 @@ if (!values['skip-capture']) {
 const manifest = {
   generatedAt: new Date().toISOString(),
   order: ORDER,
+  ppo: PPO,
   playSkips: PLAY_SKIPS,
   locales: {},
 }
@@ -118,31 +123,43 @@ await composeFeatureGraphic(out)
 const problems = []
 const sizes = new Set()
 for (const locale of locales) {
-  for (const slot of SLOTS) {
-    if (slot.store === 'play' && !PLAY_LOCALES.includes(locale)) continue
-    const dir = join(out, locale, slot.dir)
+  // Each listing slot, then each App Store slot's PPO shots.
+  const sets = SLOTS.filter((s) => s.store !== 'play' || PLAY_LOCALES.includes(locale))
+    .map((slot) => ({
+      slot,
+      key: slot.dir,
+      want: slot.store === 'play' ? ORDER.length - PLAY_SKIPS.length : ORDER.length,
+    }))
+    .concat(
+      SLOTS.filter((s) => s.store === 'ios').map((slot) => ({
+        slot,
+        key: `ppo/${slot.dir}`,
+        want: PPO.length,
+      })),
+    )
+  for (const { slot, key, want } of sets) {
+    const dir = join(out, locale, key)
     const files = readdirSync(dir).filter((f) => f.endsWith('.png'))
-    const want = slot.store === 'play' ? ORDER.length - PLAY_SKIPS.length : ORDER.length
     if (files.length !== want)
-      problems.push(`${locale}/${slot.dir}: ${files.length} files, want ${want}`)
+      problems.push(`${locale}/${key}: ${files.length} files, want ${want}`)
     if (files.length > (slot.store === 'play' ? 8 : 10))
-      problems.push(`${locale}/${slot.dir}: over the store's limit`)
+      problems.push(`${locale}/${key}: over the store's limit`)
     for (const f of files) {
       const info = pngInfo(join(dir, f))
       if (info.w !== slot.w || info.h !== slot.h)
-        problems.push(`${locale}/${slot.dir}/${f}: ${info.w}×${info.h}`)
-      if (info.alpha) problems.push(`${locale}/${slot.dir}/${f}: has alpha`)
+        problems.push(`${locale}/${key}/${f}: ${info.w}×${info.h}`)
+      if (info.alpha) problems.push(`${locale}/${key}/${f}: has alpha`)
       sizes.add(`${slot.dir} ${info.w}×${info.h}`)
     }
   }
   // One page per locale to look at in full before anything goes up.
-  const imgs = SLOTS.filter((s) => s.store !== 'play' || PLAY_LOCALES.includes(locale))
-    .map((s) => {
-      const dir = join(out, locale, s.dir)
+  const imgs = sets
+    .map(({ slot, key }) => {
+      const dir = join(out, locale, key)
       const files = readdirSync(dir)
         .filter((f) => f.endsWith('.png'))
         .sort()
-      return `<h2>${s.dir} · ${s.w}×${s.h}</h2><div>${files.map((f) => `<img src="${s.dir}/${f}" title="${f}">`).join('')}</div>`
+      return `<h2>${key} · ${slot.w}×${slot.h}</h2><div>${files.map((f) => `<img src="${key}/${f}" title="${f}">`).join('')}</div>`
     })
     .join('')
   writeFileSync(
