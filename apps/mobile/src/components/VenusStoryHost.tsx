@@ -333,7 +333,7 @@ function VenusStoryPlayer({
     player.play()
   }, [status, holdFirstFrame, player])
 
-  // Not for the introduction film: at ~50 MB, fetching it ahead would double
+  // Not for the introduction film: at ~24 MB, fetching it ahead would double
   // what the web downloads on every open and keep it in memory for the
   // session. Sharing it still works; it fetches when asked.
   useEffect(() => {
