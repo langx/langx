@@ -485,13 +485,13 @@ export const ru: Localized<EnMessages> = {
       one: '{count} карточка в архиве',
       few: '{count} карточки в архиве',
       many: '{count} карточек в архиве',
-      other: '{count} карточек в архиве',
+      other: '{count} карточки в архиве',
     },
     restoredToast: {
       one: '{count} карточка вернулась',
       few: '{count} карточки вернулись',
       many: '{count} карточек вернулось',
-      other: '{count} карточек вернулось',
+      other: '{count} карточки вернулось',
     },
     searchPlaceholder: 'Поиск по карточкам',
     searchNoneTitle: 'Ничего не найдено',
@@ -852,12 +852,16 @@ export const ru: Localized<EnMessages> = {
       'Этот формат фото не поддерживается. Используй изображение JPEG, PNG или WebP.',
     attachmentTooLarge: 'Этот файл слишком большой для отправки.',
     videoTooLong: {
-      one: 'Видео может длиться не больше одной секунды.',
-      other: 'Видео может длиться не больше {count} секунд.',
+      one: 'Видео может длиться не больше {count} секунды.',
+      few: 'Видео может длиться не больше {count} секунд.',
+      many: 'Видео может длиться не больше {count} секунд.',
+      other: 'Видео может длиться не больше {count} секунды.',
     },
     tooManyAttachments: {
-      one: 'Можно прикрепить один файл.',
-      other: 'Можно прикрепить до {count} файлов.',
+      one: 'Можно прикрепить {count} файл.',
+      few: 'Можно прикрепить до {count} файлов.',
+      many: 'Можно прикрепить до {count} файлов.',
+      other: 'Можно прикрепить до {count} файла.',
     },
     userExists:
       'Для этого e-mail уже есть аккаунт. Войдите, пришлите себе ссылку для входа, сбросьте пароль или продолжите через Google или Apple.',
@@ -932,7 +936,9 @@ export const ru: Localized<EnMessages> = {
     appealPlaceholder: 'Напишите, в чём мы ошиблись.',
     appealTooShort: {
       one: 'Минимум {count} символ.',
-      other: 'Минимум {count} символов.',
+      few: 'Минимум {count} символа.',
+      many: 'Минимум {count} символов.',
+      other: 'Минимум {count} символа.',
     },
     send: 'Отправить апелляцию',
     sending: 'Отправляем…',
@@ -1370,7 +1376,12 @@ export const ru: Localized<EnMessages> = {
     deleteTitle: 'Удалить этот чат?',
     deleteBody: 'У собеседника он останется и вернётся сюда, если он напишет снова.',
     deleted: 'Чат удалён',
-    unreadNew: { one: '{count} новое', other: '{count} новых' },
+    unreadNew: {
+      one: '{count} новое',
+      few: '{count} новых',
+      many: '{count} новых',
+      other: '{count} нового',
+    },
     tab_all: 'Все',
     tab_unreplied: 'Без ответа',
     tab_archived: 'Архив',
@@ -1634,7 +1645,9 @@ export const ru: Localized<EnMessages> = {
     voiceMessageUnavailable: 'Это голосовое сообщение не воспроизводится на этом устройстве.',
     mediaLockedTitle: 'Пока нет',
     mediaLocked: {
-      one: 'Фото, видео, голосовые и геопозиция откроются, когда собеседник напишет ещё одно сообщение.',
+      one: 'Фото, видео, голосовые и геопозиция откроются, когда собеседник напишет ещё {count} сообщение.',
+      few: 'Фото, видео, голосовые и геопозиция откроются, когда собеседник напишет ещё {count} сообщения.',
+      many: 'Фото, видео, голосовые и геопозиция откроются, когда собеседник напишет ещё {count} сообщений.',
       other:
         'Фото, видео, голосовые и геопозиция откроются, когда собеседник напишет ещё {count} сообщения.',
     },
@@ -1647,7 +1660,9 @@ export const ru: Localized<EnMessages> = {
     romanizeFailed: 'Попробуй ещё раз через минуту.',
     speakLimit: {
       one: 'Ты использовал {count} прочтение на сегодня. Лимит обновится через 24 часа.',
-      other: 'Ты использовал {count} прочтений на сегодня. Лимит обновится через 24 часа.',
+      few: 'Ты использовал {count} прочтения на сегодня. Лимит обновится через 24 часа.',
+      many: 'Ты использовал {count} прочтений на сегодня. Лимит обновится через 24 часа.',
+      other: 'Ты использовал {count} прочтения на сегодня. Лимит обновится через 24 часа.',
     },
     showText: 'Показать текст',
     transcribing: 'Расшифровываем…',
@@ -2068,7 +2083,7 @@ export const ru: Localized<EnMessages> = {
       one: '{count} отметка «Нравится»',
       few: '{count} отметки «Нравится»',
       many: '{count} отметок «Нравится»',
-      other: '{count} отметок «Нравится»',
+      other: '{count} отметки «Нравится»',
     },
     like: 'Нравится',
     unlike: 'Больше не нравится',
@@ -2206,13 +2221,13 @@ export const ru: Localized<EnMessages> = {
       one: '{count} подписчик',
       few: '{count} подписчика',
       many: '{count} подписчиков',
-      other: '{count} подписчиков',
+      other: '{count} подписчика',
     },
     followingCount: {
       one: '{count} подписка',
       few: '{count} подписки',
       many: '{count} подписок',
-      other: '{count} подписок',
+      other: '{count} подписки',
     },
     followersTitle: 'Подписчики',
     rankLabel: 'На этой неделе',
@@ -2516,8 +2531,10 @@ export const ru: Localized<EnMessages> = {
     failed: 'Отправить не удалось. Попробуйте ещё раз через минуту.',
     tooMany: 'Вы уже отправили несколько. Попробуйте снова через час.',
     tooShort: {
-      one: 'Ещё немного — минимум один символ.',
-      other: 'Ещё немного — минимум {count} символов.',
+      one: 'Ещё немного — минимум {count} символ.',
+      few: 'Ещё немного — минимум {count} символа.',
+      many: 'Ещё немного — минимум {count} символов.',
+      other: 'Ещё немного — минимум {count} символа.',
     },
   },
   kitchen: {
@@ -2814,13 +2831,13 @@ export const ru: Localized<EnMessages> = {
     milestones: 'Рубежи',
     rungTokens: '+{amount}',
     rungWeeksOfPro: {
-      one: '+{amount} и неделя Pro',
+      one: '+{amount} и {count} неделя Pro',
       few: '+{amount} и {count} недели Pro',
       many: '+{amount} и {count} недель Pro',
       other: '+{amount} и {count} недели Pro',
     },
     rungMonthsOfPro: {
-      one: '+{amount} и месяц Pro',
+      one: '+{amount} и {count} месяц Pro',
       few: '+{amount} и {count} месяца Pro',
       many: '+{amount} и {count} месяцев Pro',
       other: '+{amount} и {count} месяца Pro',
@@ -3042,7 +3059,7 @@ export const ru: Localized<EnMessages> = {
     pushThisDeviceBody: 'Выключите здесь — на других устройствах они продолжат приходить.',
     accountSection: 'Аккаунт',
     translationsLeft: {
-      one: 'Сегодня осталось {count} бесплатный перевод',
+      one: 'Сегодня остался {count} бесплатный перевод',
       few: 'Сегодня осталось {count} бесплатных перевода',
       many: 'Сегодня осталось {count} бесплатных переводов',
       other: 'Сегодня осталось {count} бесплатного перевода',
@@ -3191,8 +3208,13 @@ export const ru: Localized<EnMessages> = {
       many: '{count} для коллекции',
       other: '{count} для коллекции',
     },
+    /**
+     * A shelf of 21 reads `one` as well as a shelf of 1, and "Уже ваше" hid
+     * the 21 while "Все 1 ваши" is not Russian — `ownedOf`'s wording reads
+     * right for both.
+     */
     allOwned: {
-      one: 'Уже ваше',
+      one: 'У вас {count} из {count}',
       few: 'Все {count} ваши',
       many: 'Все {count} ваши',
       other: 'Все {count} ваши',
@@ -3284,7 +3306,7 @@ export const ru: Localized<EnMessages> = {
     failed: 'Не удалось открыть подарок',
     done: 'Готово',
     openAccessibility: 'Открыть ежечасный подарок',
-    tokensUnit: { one: 'токен', few: 'токена', many: 'токенов', other: 'токенов' },
+    tokensUnit: { one: 'токен', few: 'токена', many: 'токенов', other: 'токена' },
     anotherInAnHour: 'Следующий — через час.',
     openLabel: 'Открыть',
     someEmpty: 'Некоторые подарки пустые. Следующий — через час.',
@@ -3421,7 +3443,7 @@ export const ru: Localized<EnMessages> = {
       spend: 'На что потратить',
       freezeBody: 'Прикрывает следующий пропущенный день.',
       freezeKeep: {
-        one: 'Можно держать одну за раз.',
+        one: 'Можно держать {amount} за раз.',
         few: 'Можно держать до {amount} за раз.',
         many: 'Можно держать до {amount} за раз.',
         other: 'Можно держать до {amount} за раз.',
@@ -3434,10 +3456,10 @@ export const ru: Localized<EnMessages> = {
         other: 'Восполните пропущенный день за последние {amount} дня.',
       },
       repairMonthly: {
-        one: 'Один раз в месяц.',
+        one: '{amount} раз в месяц.',
         few: 'До {amount} раз в месяц.',
         many: 'До {amount} раз в месяц.',
-        other: 'До {amount} раз в месяц.',
+        other: 'До {amount} раза в месяц.',
       },
       titlesBody: {
         one: '{amount} титул для вашего профиля',
@@ -3449,7 +3471,7 @@ export const ru: Localized<EnMessages> = {
       giftBody:
         'Купите набор стикеров тому, с кем вы общаетесь, — от {amount}. Человек получает набор, а не жетоны.',
       giftWeekly: {
-        one: 'Один в неделю.',
+        one: '{amount} в неделю.',
         few: 'До {amount} в неделю.',
         many: 'До {amount} в неделю.',
         other: 'До {amount} в неделю.',
@@ -3531,7 +3553,7 @@ export const ru: Localized<EnMessages> = {
       one: 'токен',
       few: 'токена',
       many: 'токенов',
-      other: 'токенов',
+      other: 'токена',
     },
     statusPending: 'Разговора пока нет',
     statusActivated: 'Активен',
@@ -3951,7 +3973,7 @@ export const ru: Localized<EnMessages> = {
       one: '{rank}. {name}, {amount} токен',
       few: '{rank}. {name}, {amount} токена',
       many: '{rank}. {name}, {amount} токенов',
-      other: '{rank}. {name}, {amount} токенов',
+      other: '{rank}. {name}, {amount} токена',
     },
     rowDays: {
       one: '{rank}. {name}, {amount} день подряд',
@@ -4499,7 +4521,7 @@ export const ru: Localized<EnMessages> = {
     refusedYou: 'У тебя отключены звонки. Включить их можно в разделе Настройки → Приватность.',
     lockedShort: 'Звонки в этом чате пока закрыты',
     locked: {
-      one: 'Звонки откроются, когда собеседник напишет ещё одно сообщение.',
+      one: 'Звонки откроются, когда собеседник напишет ещё {count} сообщение.',
       few: 'Звонки откроются, когда собеседник напишет ещё {count} сообщения.',
       many: 'Звонки откроются, когда собеседник напишет ещё {count} сообщений.',
       other: 'Звонки откроются, когда собеседник напишет ещё {count} сообщения.',
@@ -5006,8 +5028,14 @@ export const ru: Localized<EnMessages> = {
         other: 'предложения исправлено для тех, кто учит твой язык',
       },
       echoKicker: 'Память',
+      /**
+       * The slide draws the month's reviews above this line, and `one` is 21
+       * and 31 as well as 1, so its clause cannot be about a single word:
+       * "21 карточка Echo повторена — это слово уже твоё" was 21 reviews, then
+       * one word.
+       */
       echoLine: {
-        one: 'карточка Echo повторена — это слово уже твоё',
+        one: 'карточка Echo повторена — это уже твоё',
         few: 'карточки Echo повторены — эти слова уже твои',
         many: 'карточек Echo повторено — эти слова уже твои',
         other: 'карточки Echo повторено — эти слова уже твои',

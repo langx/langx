@@ -25,13 +25,17 @@ export const ru: Localized<ServerMessages> = {
     },
     echoBody: 'Несколько минут сейчас — и они останутся с вами.',
     profileVisitsTitle: {
-      one: '1 человек посмотрел ваш профиль',
+      one: '{count} человек посмотрел ваш профиль',
+      few: 'Ваш профиль посмотрели: {count}',
+      many: 'Ваш профиль посмотрели: {count}',
       other: 'Ваш профиль посмотрели: {count}',
     },
     profileVisitsBody: 'Нажмите, чтобы увидеть кто.',
     badgeOneTitle: 'Новый значок: {label} 🏅',
     badgeManyTitle: {
-      one: 'Вы получили 1 новый значок 🏅',
+      one: 'Вы получили {count} новый значок 🏅',
+      few: 'Вы получили новых значков: {count} 🏅',
+      many: 'Вы получили новых значков: {count} 🏅',
       other: 'Вы получили новых значков: {count} 🏅',
     },
     badgeBody: 'Отличная работа. Так держать.',
@@ -74,7 +78,12 @@ export const ru: Localized<ServerMessages> = {
       trialEndingBody: 'Продлить — одно касание.',
       winBackTitle: 'Ваш тариф закончился',
       winBackBody: 'Всё созданное на месте.',
-      tokensWaitingTitle: { one: 'Ждёт {count} токен', other: 'Ждут {count} токенов' },
+      tokensWaitingTitle: {
+        one: 'Ждёт {count} токен',
+        few: 'Ждут {count} токена',
+        many: 'Ждут {count} токенов',
+        other: 'Ждут {count} токена',
+      },
       tokensWaitingBody: 'Откройте кошелёк.',
       inviteFriendTitle: 'Пригласите знакомого',
       inviteFriendBody: 'Токены получите оба.',
@@ -107,7 +116,12 @@ export const ru: Localized<ServerMessages> = {
 
       testimonialBody: 'Нажмите, чтобы прочитать.',
 
-      likesTitle: { one: 'Ваш пост получил 1 лайк', other: 'Ваш пост получил {count} лайков' },
+      likesTitle: {
+        one: 'Ваш пост получил {count} лайк',
+        few: 'Ваш пост получил {count} лайка',
+        many: 'Ваш пост получил {count} лайков',
+        other: 'Ваш пост получил {count} лайка',
+      },
 
       likesBody: 'Кому-то понравился ваш пост.',
     },
@@ -116,8 +130,10 @@ export const ru: Localized<ServerMessages> = {
 
     wallet: {
       poolTitle: {
-        one: 'Вчерашний пул принёс вам 1 токен',
-        other: 'Вчерашний пул принёс вам {count} токенов',
+        one: 'Вчерашний пул принёс вам {count} токен',
+        few: 'Вчерашний пул принёс вам {count} токена',
+        many: 'Вчерашний пул принёс вам {count} токенов',
+        other: 'Вчерашний пул принёс вам {count} токена',
       },
 
       poolBody: 'Нажмите, чтобы открыть кошелёк.',
@@ -212,24 +228,42 @@ export const ru: Localized<ServerMessages> = {
     openChats: 'Отправить сообщение',
 
     digestSubject: {
-      one: '1 непрочитанное сообщение в LangX',
+      one: '{count} непрочитанное сообщение в LangX',
+      few: 'Непрочитанных сообщений в LangX: {count}',
+      many: 'Непрочитанных сообщений в LangX: {count}',
       other: 'Непрочитанных сообщений в LangX: {count}',
     },
     digestPreheader: 'Вам ждут ответа',
+    /**
+     * `one` is 21 and 31 unread too, often from several people, so it takes
+     * the other forms' sentence — "{names} написал(а) вам" was one person
+     * writing once.
+     */
     digestBody: {
-      one: '{names} написал(а) вам, пока вас не было.',
-      other: 'У вас {count} непрочитанных сообщений — от {names}.',
+      one: 'У вас {count} непрочитанное сообщение — от {names}.',
+      few: 'У вас {count} непрочитанных сообщения — от {names}.',
+      many: 'У вас {count} непрочитанных сообщений — от {names}.',
+      other: 'У вас {count} непрочитанного сообщения — от {names}.',
     },
-    digestMore: { one: 'И ещё один диалог.', other: 'И ещё диалогов: {count}.' },
+    digestMore: {
+      one: 'И ещё {count} диалог.',
+      few: 'И ещё диалогов: {count}.',
+      many: 'И ещё диалогов: {count}.',
+      other: 'И ещё диалогов: {count}.',
+    },
     digestButton: 'Прочитать и ответить',
 
     visitsSubject: {
-      one: 'На этой неделе ваш профиль посмотрел 1 человек',
+      one: 'На этой неделе ваш профиль посмотрел {count} человек',
+      few: 'На этой неделе ваш профиль посмотрели: {count}',
+      many: 'На этой неделе ваш профиль посмотрели: {count}',
       other: 'На этой неделе ваш профиль посмотрели: {count}',
     },
     visitsPreheader: 'Ваш профиль замечают',
     visitsBody: {
-      one: 'За последнюю неделю ваш профиль посмотрел 1 человек.',
+      one: 'За последнюю неделю ваш профиль посмотрел {count} человек.',
+      few: 'За последнюю неделю ваш профиль посмотрели: {count}.',
+      many: 'За последнюю неделю ваш профиль посмотрели: {count}.',
       other: 'За последнюю неделю ваш профиль посмотрели: {count}.',
     },
     visitsNames: 'Среди них: {names}.',
@@ -238,7 +272,9 @@ export const ru: Localized<ServerMessages> = {
 
     badgeOneSubject: 'Новый значок: {label}',
     badgeManySubject: {
-      one: 'Вы получили 1 новый значок',
+      one: 'Вы получили {count} новый значок',
+      few: 'Вы получили новых значков: {count}',
+      many: 'Вы получили новых значков: {count}',
       other: 'Вы получили новых значков: {count}',
     },
     badgeBody: 'Он уже в вашем профиле — его видно всем.',
@@ -290,25 +326,54 @@ export const ru: Localized<ServerMessages> = {
 
     /** The day's replies to somebody's posts, in one letter. */
 
+    /**
+     * `one` is also 21, 31… replies, often to several posts from several
+     * people, so subject and body keep the number and the plural "посты" the
+     * other forms use — "1 ответ на ваш пост" was true of exactly one.
+     */
     feedDigestSubject: {
-      one: '1 ответ на ваш пост сегодня',
-      other: '{count} ответов на ваши посты сегодня',
+      one: '{count} ответ на ваши посты сегодня',
+      few: '{count} ответа на ваши посты сегодня',
+      many: '{count} ответов на ваши посты сегодня',
+      other: '{count} ответа на ваши посты сегодня',
     },
 
     feedDigestPreheader: 'На ваши посты ответили',
 
     feedDigestBody: {
-      one: 'Сегодня кто-то ответил на ваш пост.',
-      other: 'Сегодня на ваши посты ответили {count} человек.',
+      one: 'Сегодня на ваши посты ответил {count} человек.',
+      few: 'Сегодня на ваши посты ответили {count} человека.',
+      many: 'Сегодня на ваши посты ответили {count} человек.',
+      other: 'Сегодня на ваши посты ответили {count} человека.',
     },
 
-    feedDigestCorrections: { one: '1 исправление', other: '{count} исправлений' },
+    feedDigestCorrections: {
+      one: '{count} исправление',
+      few: '{count} исправления',
+      many: '{count} исправлений',
+      other: '{count} исправления',
+    },
 
-    feedDigestAnswers: { one: '1 запись', other: '{count} записей' },
+    feedDigestAnswers: {
+      one: '{count} запись',
+      few: '{count} записи',
+      many: '{count} записей',
+      other: '{count} записи',
+    },
 
-    feedDigestComments: { one: '1 комментарий', other: '{count} комментариев' },
+    feedDigestComments: {
+      one: '{count} комментарий',
+      few: '{count} комментария',
+      many: '{count} комментариев',
+      other: '{count} комментария',
+    },
 
-    feedDigestMore: { one: 'И ещё 1 пост.', other: 'И ещё {count} постов.' },
+    feedDigestMore: {
+      one: 'И ещё {count} пост.',
+      few: 'И ещё {count} поста.',
+      many: 'И ещё {count} постов.',
+      other: 'И ещё {count} поста.',
+    },
 
     feedDigestButton: 'Читать ответы',
 
@@ -333,15 +398,24 @@ export const ru: Localized<ServerMessages> = {
 
     /** Tomorrow's diary. The hour-before reminder is still a push. */
     meetingsSubject: {
-      one: 'Завтра у вас звонок',
-      other: 'Завтра у вас {count} звонков',
+      one: 'Завтра у вас {count} звонок',
+      few: 'Завтра у вас {count} звонка',
+      many: 'Завтра у вас {count} звонков',
+      other: 'Завтра у вас {count} звонка',
     },
 
     meetingsPreheader: 'Что у вас запланировано на завтра',
 
+    /**
+     * Prepositional after "о": "о 21 звонке", but "о 2 звонках", "о 5 звонках".
+     * `other` is the fraction form, which keeps the genitive singular in every
+     * case: "о 1,5 звонка".
+     */
     meetingsBody: {
-      one: 'Вы договорились об одном звонке на завтра.',
-      other: 'Вы договорились о {count} звонках на завтра.',
+      one: 'Вы договорились о {count} звонке на завтра.',
+      few: 'Вы договорились о {count} звонках на завтра.',
+      many: 'Вы договорились о {count} звонках на завтра.',
+      other: 'Вы договорились о {count} звонка на завтра.',
     },
 
     meetingsButton: 'Открыть чаты',
@@ -364,7 +438,9 @@ export const ru: Localized<ServerMessages> = {
 
       streakBrokeSubject: {
         one: 'Серия из {count} дня прервалась',
-        other: 'Серия из {count} дней прервалась',
+        few: 'Серия из {count} дней прервалась',
+        many: 'Серия из {count} дней прервалась',
+        other: 'Серия из {count} дня прервалась',
       },
 
       streakBrokeBody: 'Вчера пропущено. Починка из магазина вернёт день, и серия продолжится.',
@@ -405,7 +481,12 @@ export const ru: Localized<ServerMessages> = {
 
       winBackButton: 'Посмотреть тарифы',
 
-      tokensWaitingSubject: { one: 'Вас ждёт {count} токен', other: 'Вас ждут {count} токенов' },
+      tokensWaitingSubject: {
+        one: 'Вас ждёт {count} токен',
+        few: 'Вас ждут {count} токена',
+        many: 'Вас ждут {count} токенов',
+        other: 'Вас ждут {count} токена',
+      },
 
       tokensWaitingBody:
         'За токены покупают заморозки серии, починку дней, рамки и титулы. Ваши лежат уже две недели.',
