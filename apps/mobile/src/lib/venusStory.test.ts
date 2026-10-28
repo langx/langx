@@ -23,6 +23,7 @@ import {
   venusFrameFor,
   venusGrid,
   venusIntroFilm,
+  isVenusIntroFilm,
   venusReplayRequests,
   venusRequestedClip,
   venusShareFileName,
@@ -229,6 +230,12 @@ describe('venusIntroFilm', () => {
       coverUrl: `${BASE}/tr/venus-intro-tr.jpg`,
       fallback: intro,
     })
+  })
+
+  it('is told apart from day 1, which shares its day and cut', () => {
+    const intro = dayOne('en')
+    expect(isVenusIntroFilm(venusIntroFilm(intro, BASE))).toBe(true)
+    expect(isVenusIntroFilm(intro)).toBe(false)
   })
 
   it('has a cut in each of the app’s eight locales, pt-BR as the bucket spells it', () => {

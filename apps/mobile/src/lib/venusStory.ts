@@ -237,6 +237,11 @@ export function venusIntroFilm(dayOne: VenusClip, baseUrl: string): VenusClip {
   }
 }
 
+/** Whether a clip is the introduction film rather than one of her days. */
+export function isVenusIntroFilm(clip: VenusClip): boolean {
+  return clip.fileName.startsWith('venus-intro-')
+}
+
 /**
  * How many of Venus's days are open to watch again: day 1 through this one.
  *

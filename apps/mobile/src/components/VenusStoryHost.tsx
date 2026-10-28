@@ -53,6 +53,7 @@ import {
   closesVenusStory,
   hasWatchedVenus,
   isVenusAutoOpenPath,
+  isVenusIntroFilm,
   markVenusSeen,
   setVenusStoryOpen,
   shouldAutoOpenVenus,
@@ -332,9 +333,12 @@ function VenusStoryPlayer({
     player.play()
   }, [status, holdFirstFrame, player])
 
+  // Not for the introduction film: at ~50 MB, fetching it ahead would double
+  // what the web downloads on every open and keep it in memory for the
+  // session. Sharing it still works; it fetches when asked.
   useEffect(() => {
-    prepareVenusShare(video.url)
-  }, [video.url])
+    if (!isVenusIntroFilm(video)) prepareVenusShare(video.url)
+  }, [video])
 
   // The cover dissolves into the first frame and back over the last.
   const showCover = cover !== 'failed' && (!rolling || ended)
