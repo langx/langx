@@ -1,6 +1,7 @@
 import {
   TESTIMONIAL_UNLOCK_MESSAGES_EACH,
   TESTIMONIAL_UNLOCK_MIN_DAYS,
+  testimonialUnlocked,
   type ReceivedTestimonialsPage,
   type TestimonialPage,
   type TestimonialWriteResult,
@@ -17,7 +18,7 @@ import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { encodeDateIdCursor } from '../lib/dateIdCursor'
-import { pairKeyFor } from '../modules/chat/conversations'
+import { pairKeyFor, type Conversation } from '../modules/chat/conversations'
 import { ensureOfficialAccounts, officialIds } from '../modules/official/accounts'
 import { LoggingPushSender } from '../modules/push/devices'
 import {
@@ -254,20 +255,53 @@ describe('testimonials', () => {
       const a = await newUser()
       const officialId = officialIds().get('langx')
       expect(officialId).toBeDefined()
-      await handle.db.collection(COLLECTIONS.conversations).insertOne({
-        _id: new ObjectId(),
-        pairKey: pairKeyFor(a.userId, officialId!),
-        participants: [officialId!, a.userId],
-        lastMessage: { body: 'hi', senderId: officialId!, createdAt: new Date() },
-        unread: {},
-        firstMessageBy: officialId!,
-        firstMessageAt: new Date(Date.now() - 30 * DAY_MS),
-        bothSpoke: true,
-        messageCount: EACH * 2,
-        messageCountBy: { [officialId!]: EACH, [a.userId]: EACH },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
+      /*
+       * An upsert, not an insert. Onboarding sends @langx's hello unawaited,
+       * so the thread with @langx may already exist by now — or appear a
+       * moment later. Inserting raced it: whenever the hello landed first,
+       * `pair_key_unique` refused this write and the test failed with E11000.
+       * Whichever side wins, there is one thread, and the gate's two inputs
+       * are the ones set here; the hello can only raise the counts after.
+       */
+      const conversations = handle.db.collection<Conversation>(COLLECTIONS.conversations)
+      const pairKey = pairKeyFor(a.userId, officialId!)
+      await conversations.updateOne(
+        { pairKey },
+        {
+          $set: {
+            firstMessageAt: new Date(Date.now() - 30 * DAY_MS),
+            // From entries rather than computed keys, which code scanning
+            // reads as a property write named by user input.
+            messageCountBy: Object.fromEntries([
+              [officialId!, EACH],
+              [a.userId, EACH],
+            ]),
+          },
+          $setOnInsert: {
+            _id: new ObjectId(),
+            participants: [officialId!, a.userId],
+            lastMessage: { body: 'hi', senderId: officialId!, createdAt: new Date() },
+            unread: {},
+            firstMessageBy: officialId!,
+            bothSpoke: true,
+            messageCount: EACH * 2,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        },
+        { upsert: true },
+      )
+      // By the numbers this thread is open, so the refusal below can only be
+      // the official account's.
+      const thread = await conversations.findOne({ pairKey })
+      expect(
+        testimonialUnlocked({
+          participants: thread!.participants,
+          messageCountBy: thread!.messageCountBy,
+          firstMessageAt: thread!.firstMessageAt,
+          now: new Date(),
+        }),
+      ).toBe(true)
       const refused = await write(a, officialId!)
       expect(refused.statusCode).toBe(409)
       expect(refused.json<{ code: string }>().code).toBe('TESTIMONIAL_LOCKED')
