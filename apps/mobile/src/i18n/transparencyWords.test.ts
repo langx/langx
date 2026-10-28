@@ -99,3 +99,22 @@ describe.each(SUPPORTED_LOCALES)('the Transparency page in %s', (locale) => {
     expect(said).toEqual([])
   })
 })
+
+describe('the Transparency page in Arabic', () => {
+  /*
+   * A line that opens with a Latin word ("Pro …") takes its direction from
+   * that first letter wherever nothing else sets it, and Android is expected
+   * to order a paragraph by its first letter whatever the style says
+   * (`useTextDirection`). There the Pro row's line ran left to right, hugged
+   * the chevron's edge rather than the title's, and put "Pro" at the wrong
+   * end of the sentence. So such a line opens with a right-to-left mark, as
+   * the Token page's do. A placeholder is not a word the reader sees, and the
+   * readouts it leads ("{amount} …") are set apart on purpose.
+   */
+  it('opens every line right to left', () => {
+    const latinFirst = pageWords('ar').filter(([, text]) =>
+      /^[^\p{L}‏]*\p{Script=Latin}/u.test(text.replace(/\{[^}]*\}/g, '')),
+    )
+    expect(latinFirst).toEqual([])
+  })
+})

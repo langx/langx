@@ -3,6 +3,7 @@ import { englishBarLabel, englishCount } from '../../lib/chartWords'
 import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { useStacked } from '../product/ProductGroup'
+import { WordFitText } from '../product/WordFitText'
 
 export interface BarListRow {
   key: string
@@ -90,15 +91,23 @@ export function BarList({
             {/*
               Capped where a product page caps a row's title: uncapped, a
               language name at the largest size outgrew the section heading
-              above it (see PRODUCT_TEXT_SCALE).
+              above it (see PRODUCT_TEXT_SCALE). Stacked, the name may wrap,
+              and so may grow no further than keeps its longest word whole:
+              on a 320pt phone "португальский" broke in the middle.
             */}
-            <Text
-              numberOfLines={stacked ? undefined : 1}
-              style={styles.label}
-              maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}
-            >
-              {row.label}
-            </Text>
+            {stacked ? (
+              <WordFitText style={styles.label} cap={PRODUCT_TEXT_SCALE.rowTitle}>
+                {row.label}
+              </WordFitText>
+            ) : (
+              <Text
+                numberOfLines={1}
+                style={styles.label}
+                maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}
+              >
+                {row.label}
+              </Text>
+            )}
             {row.hint ? (
               <Text style={styles.hint} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
                 {row.hint}

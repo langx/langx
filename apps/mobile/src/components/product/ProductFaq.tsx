@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { useEffect, useState } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { Pressable, View } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useLocale, useT } from '../../i18n'
@@ -10,6 +10,7 @@ import { TIMING, unlessReduced } from '../../lib/theme/motion'
 import { Reveal } from '../paywall/Reveal'
 import { BALANCED, ProductGroup, useGlyphScale, useTextDirection } from './ProductGroup'
 import { ProductSection } from './ProductSection'
+import { WordFitText } from './WordFitText'
 
 export interface ProductQuestion {
   key: string
@@ -98,14 +99,14 @@ function QuestionRow({
         onPress={onToggle}
         style={({ pressed }) => [styles.question, pressed && styles.pressed]}
       >
-        <Text
+        <WordFitText
           style={[styles.questionText, direction, BALANCED]}
-          maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+          cap={PRODUCT_TEXT_SCALE.text}
           textBreakStrategy="balanced"
           lineBreakStrategyIOS="push-out"
         >
           {item.question}
-        </Text>
+        </WordFitText>
         <Animated.View style={chevron}>
           <Feather
             name={isRtl ? 'chevron-left' : 'chevron-right'}
@@ -116,14 +117,14 @@ function QuestionRow({
       </Pressable>
       {open ? (
         <Reveal index={0} style={styles.answer}>
-          <Text
+          <WordFitText
             style={[styles.answerText, direction, BALANCED]}
-            maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+            cap={PRODUCT_TEXT_SCALE.text}
             textBreakStrategy="balanced"
             lineBreakStrategyIOS="push-out"
           >
             {item.answer}
-          </Text>
+          </WordFitText>
         </Reveal>
       ) : null}
     </View>

@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react'
-import { Text, View } from 'react-native'
+import { View } from 'react-native'
 import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles } from '../../lib/theme'
 import { BALANCED, useTextDirection } from './ProductGroup'
+import { WordFitText } from './WordFitText'
 
 /**
  * One section of a product page: a heading, a line on what it covers, and
@@ -26,24 +27,24 @@ export function ProductSection({
   return (
     <View style={styles.section}>
       <View style={styles.head}>
-        <Text
+        <WordFitText
           style={[styles.title, direction]}
           accessibilityRole="header"
           // Just short of the product's name over it and over the rows under
           // it, at every text size (`PRODUCT_TEXT_SCALE`).
-          maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.heading}
+          cap={PRODUCT_TEXT_SCALE.heading}
         >
           {title}
-        </Text>
+        </WordFitText>
         {intro ? (
-          <Text
+          <WordFitText
             style={[styles.intro, direction, BALANCED]}
-            maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+            cap={PRODUCT_TEXT_SCALE.text}
             textBreakStrategy="balanced"
             lineBreakStrategyIOS="push-out"
           >
             {intro}
-          </Text>
+          </WordFitText>
         ) : null}
       </View>
       {children}

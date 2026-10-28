@@ -2850,7 +2850,7 @@ export const ar: Localized<EnMessages> = {
       rateBody: 'تقييمك وبضع كلمات منك تساعد الآخرين على العثور علينا.',
       rateAction: 'قيّم',
       proTitle: 'اشترك في Pro',
-      proBody: 'Pro هو ما يدفع تكلفة الخوادم ويُبقي LangX مستمرًا.',
+      proBody: '‏Pro هو ما يدفع تكلفة الخوادم ويُبقي LangX مستمرًا.',
       proTitleMember: 'أنت مشترك في Pro',
       proBodyMember: 'شكرًا لك. Pro هو ما يدفع تكلفة الخوادم ويُبقي LangX مستمرًا.',
       qReal: 'هل الأرقام حقيقية؟',
