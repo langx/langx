@@ -110,14 +110,22 @@ async function layoutCaptions(B, clock, cuts, lang) {
     [54, 3],
     [48, 3],
   ]
-  // sentences break between them, a size smaller if need be, before one breaks inside a sentence
+  // A caption of sentences: breaks only between them, down to 54 px on three lines if need be;
+  // else every sentence still starts a line, one of them broken too (54 px, three lines); and only
+  // then the house sizes with a break anywhere. A line never ends one sentence and starts the next
+  // while a size allows otherwise.
   const fit = async (ws, br) => {
-    const tries =
-      br.prefer.length || br.must.length
-        ? [...SIZES.slice(0, 2).map(([F, n]) => [F, n, true]), ...SIZES]
-        : SIZES
-    for (const [F, n, only = false] of tries) {
-      const lines = FL.wrap(ws, await measured(F, ws), MAXW, n, { ...br, only })
+    const sentences = br.prefer.length || br.must.length
+    const each = { must: [...br.must, ...br.prefer].sort((a, b) => a - b) }
+    const tries = sentences
+      ? [
+          ...SIZES.slice(0, 3).map(([F, n]) => [F, n, { ...br, only: true }]),
+          [54, 3, each],
+          ...SIZES.map(([F, n]) => [F, n, br]),
+        ]
+      : SIZES.map(([F, n]) => [F, n, br])
+    for (const [F, n, opt] of tries) {
+      const lines = FL.wrap(ws, await measured(F, ws), MAXW, n, opt)
       if (lines) return { F, lines }
     }
     return null

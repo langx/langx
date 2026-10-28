@@ -31,7 +31,10 @@ const popK = (u, len = 0.24) =>
 // not fit. Sentences (word indices): each of `must` starts a line whatever it costs, a smaller size
 // or one more line (a sentence after a "…" is not drawn until it is said, so it never waits at the
 // end of a line); `prefer` are the other sentence starts, where a break goes when one can. `only`:
-// no break but between sentences.
+// no break but between sentences. A line that ends on a word of one or two letters ("in", "en",
+// "по", "في") counts as SHORT_END px wider, so the little word goes down with the words it belongs to.
+const SHORT_END = 120
+const shortWord = (x) => !/[.,!?…:;»]$/u.test(x) && [...x].length <= 2
 export function wrap(ws, m, maxW, maxLines, { prefer = [], must = [], only = false } = {}) {
   const sp = m[' ']
   const w = (a) => a.reduce((s, x, i) => s + m[x] + (i ? sp : 0), 0)
@@ -45,7 +48,10 @@ export function wrap(ws, m, maxW, maxLines, { prefer = [], must = [], only = fal
       const lines = cuts.concat(ws.length).map((b, k) => ws.slice(at[k], b))
       const widest = Math.max(...lines.map(w))
       if (widest > maxW) return
-      const score = widest - 1e6 * cuts.filter((i) => prefer.includes(i)).length
+      const score =
+        widest +
+        SHORT_END * cuts.filter((i) => shortWord(ws[i - 1])).length -
+        1e6 * cuts.filter((i) => prefer.includes(i)).length
       if (!best || score < best.score) best = { score, lines }
       return
     }

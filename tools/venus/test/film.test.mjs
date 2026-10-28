@@ -246,11 +246,13 @@ test('captions: a sentence after a "…" starts a line; other breaks go to a sen
     'an entrance.',
     '…I have a few.',
   ])
-  // without the rule the same words balance across the sentence boundary
+  // without the rule the same words balance across the sentence boundary, and no line ends on "an"
   assert.deepEqual(joined(wrap(a, m(a), 760, 2)), [
-    'Every star needs an',
-    'entrance. …I have a few.',
+    'Every star needs',
+    'an entrance. …I have a few.',
   ])
+  const d = words('I look good in everything.')
+  assert.deepEqual(joined(wrap(d, m(d), 500, 2)), ['I look good', 'in everything.'])
   const b = words("Honestly? Best co-star I've ever had.")
   assert.deepEqual(joined(wrap(b, m(b), 760, 2, { prefer: [1] })), [
     'Honestly?',
