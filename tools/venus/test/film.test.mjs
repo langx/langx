@@ -205,6 +205,56 @@ test('the warp: voice takes re-time the film, sentence by sentence', () => {
   }
 })
 
+test('the warp: no two voiced sentences overlap, back-to-back ones (the bag run) included', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'venus-film-'))
+  try {
+    // every line voiced, every sentence 0.4 s longer than its board time, 0.2 s apart in the take
+    fs.mkdirSync(path.join(dir, 'en'))
+    for (const L of FILM.lines) {
+      const text = L.text.en,
+        st = new Array(text.length).fill(0),
+        en = new Array(text.length).fill(0)
+      let u = 0.1
+      sentences(text).forEach((p, i) => {
+        const d = L.at[i][1] - L.at[i][0] + 0.4
+        for (let k = p.a; k < p.b; k++) {
+          st[k] = +(u + (d * (k - p.a)) / (p.b - p.a)).toFixed(3)
+          en[k] = +(u + (d * (k + 1 - p.a)) / (p.b - p.a)).toFixed(3)
+        }
+        for (let k = p.b; k < text.length; k++) st[k] = en[k] = en[p.b - 1]
+        u += d + 0.2
+      })
+      fs.writeFileSync(path.join(dir, 'en', `${L.id}.wav`), '')
+      fs.writeFileSync(
+        path.join(dir, 'en', `${L.id}.json`),
+        JSON.stringify({
+          alignment: {
+            characters: [...text],
+            character_start_times_seconds: st,
+            character_end_times_seconds: en,
+          },
+        }),
+      )
+    }
+    const C = buildClock('en', { voiceDir: dir })
+    const all = FILM.lines.flatMap((L) => C.lines[L.id].sents.map((s) => ({ id: L.id, ...s })))
+    for (let k = 1; k < all.length; k++)
+      assert.ok(
+        all[k].t0 >= all[k - 1].t1 - 1e-6,
+        `${all[k].id}[${all[k].i}] starts ${all[k].t0}, ${all[k - 1].id}[${all[k - 1].i}] ends ${all[k - 1].t1}`,
+      )
+    // and each day of the bag run cuts after its "Bag." is said
+    const bag = C.lines['intro-12'].sents
+    for (const [i, id] of [
+      [0, 'd59'],
+      [1, 'd66'],
+    ])
+      assert.ok(C.W(SHOTS.find((s) => s.id === id).from) >= bag[i].t1 - 1e-6, id)
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true })
+  }
+})
+
 test('captions: one bubble at a time, never clearing just before or after a cut', () => {
   for (const lang of LOCALES) {
     const { clock, shots } = performed.get(lang)

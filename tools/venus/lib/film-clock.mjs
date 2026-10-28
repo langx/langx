@@ -144,11 +144,13 @@ export function buildClock(lang, { voiceDir = null, film = FILM } = {}) {
     })
   }
   const lines = Object.fromEntries(entries)
-  // W: board time -> film time. A push lands at its sentence's board end.
+  // W: board time -> film time. A push lands at its sentence's board end, and moves what starts
+  // right there too: the bag run's "Bag."s and their day cuts sit back to back on the board, so a
+  // push that skipped its own end would leave the next "Bag." on top of a longer first one.
   const pushes = all.filter((s) => s.push > 0).map((s) => [s.b, s.push])
   const W = (t) => {
     let d = 0
-    for (const [b, p] of pushes) if (b < t - 1e-9) d += p
+    for (const [b, p] of pushes) if (b <= t + 1e-9) d += p
     return r3(t + d)
   }
   for (const s of all) {
