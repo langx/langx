@@ -331,7 +331,7 @@ export const COUPLE = [
 ]
 
 // tail shapes: [pitch, yaw, side, curl, hook, len]
-const TAIL = {
+export const TAIL = {
   question: [70, 95, -20, 100, 120, 1.15],
   walkQ: [80, 0, 0, 10, 150, 1.0],
   wrap: [0, 80, 230, 0, 0, 1.2],
@@ -347,7 +347,7 @@ const TAIL = {
   notice: [62, -95, 30, 70, 130, 1.15],
   streak: [12, 0, 0, 0, 20, 1.1],
 }
-const TP = ['pitch', 'yaw', 'side', 'curl', 'hook', 'len']
+export const TP = ['pitch', 'yaw', 'side', 'curl', 'hook', 'len']
 
 // ------------------------------------------------------------------ track builders
 const DEF = {
@@ -400,7 +400,7 @@ function trk(keys, t) {
   return keys[keys.length - 1][1]
 }
 // absolute keys, written in time order per parameter
-class Keys {
+export class Keys {
   constructor() {
     this.k = {}
   }
@@ -438,7 +438,7 @@ class Keys {
   }
 }
 // additive layers: any number may overlap; summed and resampled at 60 Hz at the end
-class Adds {
+export class Adds {
   constructor() {
     this.L = {}
   }
@@ -482,7 +482,7 @@ class Adds {
 }
 
 // a hop that turns into a sitting pose at x 0: anticipation, lift, mode switch at the top, landing squash
-function hopToSit(c, t0, { rise = 86, fromYaw = 90 } = {}) {
+export function hopToSit(c, t0, { rise = 86, fromYaw = 90 } = {}) {
   const k = c.k
   k.seq('crouch', [
     [t0 - 0.02],
@@ -522,7 +522,7 @@ function hopToSit(c, t0, { rise = 86, fromYaw = 90 } = {}) {
   return t0 + 0.78
 }
 // a quick squash on the spot (landing, settling, a flop)
-function squash(c, t, amt = 0.14, len = 0.36) {
+export function squash(c, t, amt = 0.14, len = 0.36) {
   c.k.seq('sy', [
     [t],
     [t + len * 0.2, 1 - amt, 'out'],
@@ -536,7 +536,7 @@ function squash(c, t, amt = 0.14, len = 0.36) {
     [t + len, 1, 'inOut'],
   ])
 }
-const walkKeys = (c, t0, t1, x0, x1, steps, amt = 1.2) => {
+export const walkKeys = (c, t0, t1, x0, x1, steps, amt = 1.2) => {
   c.k.seq('x', [
     [t0, x0],
     [t1, x1, 'linear'],
@@ -1145,9 +1145,10 @@ export const MOVE_IMPL = {
 // sitting, centred and facing the lens by the payoff (pay = T.e + 0.2), so all four payoffs work.
 // Props a move needs go to c.fx.props (drawn by lib/layers.mjs moveProps).
 const prop = (c, o) => (c.fx.props = c.fx.props || []).push(o)
-const setTail = (c, t, shape) => TP.forEach((q, i) => c.k.set('tail.' + q, t, TAIL[shape][i]))
+export const setTail = (c, t, shape) =>
+  TP.forEach((q, i) => c.k.set('tail.' + q, t, TAIL[shape][i]))
 // a cut back to the plain sitting pose, landed with a squash
-function settle(c, t, amt = 0.12) {
+export function settle(c, t, amt = 0.12) {
   c.k.set('mode', t, 'sit')
   c.k.set('yaw', t, 0)
   c.k.set('flip', t, 1)
@@ -1310,10 +1311,16 @@ Object.assign(MOVE_IMPL, {
   },
   // the fridge: crouch, wiggle, leap out of the top of the frame... slide back down scrabbling,
   // land, groom a paw very hard. "Meant that."
-  'jump-fail': (c, T, m0) => {
+  // opt (the introduction film's bonk): top, a height she hits something at instead of leaving the
+  // frame, then slides down it for `slide` s; licks: false keeps her tongue in after the landing.
+  // With top, the leap's profile reaches `top` on the frame before `back` (the hit); from `back` she
+  // is crumpled against it (the scrabble pose, still in profile and leaning) and turns to the lens
+  // over 0.2 s; pin: [[t, rise], ...] holds her against it meanwhile (film.mjs measures it). She
+  // stays there, scrabbling, until the last 0.3 s, and falls.
+  'jump-fail': (c, T, m0, { top = null, slide = 0.5, licks = true, pin = null } = {}) => {
     const j = m0 + 0.45,
-      back = Math.max(j + 0.75, beat(T, 0.55)),
-      land = back + 0.5
+      back = top === null ? Math.max(j + 0.75, beat(T, 0.55)) : j + 0.3,
+      land = back + (top === null ? 0.5 : slide)
     c.k.seq('crouch', [[m0 - 0.12], [m0 - 0.02, 0.6, 'in']])
     c.k.set('mode', m0, 'crouch')
     c.k.seq('crouch', [[m0 + 0.01, 0]])
@@ -1327,17 +1334,34 @@ Object.assign(MOVE_IMPL, {
     c.k.set('head.yaw', j, -20)
     setTail(c, j, 'streak')
     c.k.seq('lean', [[j], [j + 0.1, -50, 'out']])
-    c.k.seq('rise', [[j], [j + 0.3, 1300, 'in']])
-    // back down the "fridge door", fore paws scrabbling
-    c.k.set('mode', back, 'startle')
-    c.k.set('yaw', back, 0)
-    c.k.set('head.yaw', back, 0)
-    c.k.set('lean', back, 0)
-    setTail(c, back, 'straight')
-    c.k.seq('rise', [
-      [back, 900],
-      [land, 0, 'in'],
-    ])
+    if (top === null) {
+      c.k.seq('rise', [[j], [j + 0.3, 1300, 'in']])
+      // back down the "fridge door", fore paws scrabbling
+      c.k.set('mode', back, 'startle')
+      c.k.set('yaw', back, 0)
+      c.k.set('head.yaw', back, 0)
+      c.k.set('lean', back, 0)
+      setTail(c, back, 'straight')
+      c.k.seq('rise', [
+        [back, 900],
+        [land, 0, 'in'],
+      ])
+    } else {
+      const turn = 0.2
+      c.k.seq('rise', [[j], [back - 1 / 30, top, 'out']])
+      c.k.set('mode', back, 'startle')
+      c.k.set('lean', back, -35)
+      c.k.seq('lean', [[back + turn, 0, 'inOut']])
+      c.k.seq('yaw', [[back], [back + turn, 0, 'inOut']])
+      c.k.seq('head.yaw', [[back], [back + turn, 0, 'inOut']])
+      setTail(c, back, 'straight')
+      const held = pin || [[back, top]]
+      c.k.set('rise', held[0][0], held[0][1])
+      for (const [t, v] of held.slice(1)) c.k.key('rise', t, v, 'linear')
+      // she hangs on the edge, scrabbling, then drops: a fall, not a float down past nothing
+      const hang = held[held.length - 1][0] + 0.04
+      c.k.seq('rise', [[Math.max(hang, land - 0.3)], [land, 0, 'in']])
+    }
     c.k.seq('paw.kamt', [
       [back, 1],
       [land - 0.05, 1],
@@ -1355,13 +1379,14 @@ Object.assign(MOVE_IMPL, {
       [T.e + 0.05],
       [T.e + 0.3, 0, 'inOut'],
     ])
-    c.k.seq('mouth.tongue', [
-      [land + 0.3],
-      ...[0, 1, 2].flatMap((i) => [
-        [land + 0.36 + i * 0.22, 1, 'out'],
-        [land + 0.46 + i * 0.22, 0, 'in'],
-      ]),
-    ])
+    if (licks)
+      c.k.seq('mouth.tongue', [
+        [land + 0.3],
+        ...[0, 1, 2].flatMap((i) => [
+          [land + 0.36 + i * 0.22, 1, 'out'],
+          [land + 0.46 + i * 0.22, 0, 'in'],
+        ]),
+      ])
     c.add.pulse('head.pitch', land + 0.2, land + 0.4, T.e, T.e + 0.3, 10)
     c.ex.push({ t: land + 0.2, name: 'meant-it', ms: 200 })
     c.sfx.push(
@@ -1530,7 +1555,9 @@ Object.assign(MOVE_IMPL, {
   },
   // 3 a.m. energy (never said aloud): gone in a streak, the line plays to an empty set, she screeches
   // back in from the other side and sits as if nothing happened, ears askew
-  'zoomies-dash': (c, T, m0) => {
+  // opt (the introduction film): sit: false skids to a stop on her feet and turns to the lens
+  // standing (a 3/4 turn over 0.2 s) instead of cutting to the sitting pose
+  'zoomies-dash': (c, T, m0, { sit = true } = {}) => {
     const ret = Math.max(m0 + 1.0, T.e - 0.65),
       stop = ret + 0.42
     c.k.set('mode', m0, 'stand')
@@ -1570,7 +1597,11 @@ Object.assign(MOVE_IMPL, {
         [stop, 0, 'out'],
       ],
     })
-    settle(c, stop + 0.02, 0.16)
+    if (sit) settle(c, stop + 0.02, 0.16)
+    else {
+      c.k.seq('yaw', [[stop + 0.04], [stop + 0.24, 32, 'inOut']])
+      c.k.seq('head.yaw', [[stop + 0.02], [stop + 0.2, 0, 'inOut']])
+    }
     c.k.seq('x', [[stop + 0.05], [stop + 0.3, 0, 'out']])
     c.add.pulse('ears.L.rot', stop, stop + 0.06, T.e + 0.5, T.e + 0.9, 26)
     c.add.pulse('ears.R.rot', stop, stop + 0.06, T.e + 0.5, T.e + 0.9, -12)

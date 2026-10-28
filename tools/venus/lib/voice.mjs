@@ -123,7 +123,7 @@ function sayPart(text, lang, out, { whisper = false, tempo = 1 } = {}) {
   return probe(out)
 }
 
-const weight = (c) =>
+export const weight = (c) =>
   /\s/.test(c)
     ? 0.6
     : /[.,!?…؟،]/u.test(c)

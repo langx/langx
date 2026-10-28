@@ -279,10 +279,21 @@ function makeMotif(r, mood) {
   return { onsets, degrees }
 }
 
-export function renderMusic({ mood = 'celebrate', seconds = 12, seed = 1, outPath }) {
+// bpm (with bars, default 8): a fixed tempo instead of one fitted to `seconds`, for a bed that has to
+// keep a beat grid (the introduction film cuts on it)
+export function renderMusic({
+  mood = 'celebrate',
+  seconds = 12,
+  seed = 1,
+  outPath,
+  bpm: fixed,
+  bars: nBars = 8,
+}) {
   const M = MOODS[mood] || MOODS.celebrate
   const r = rng(seed)
-  const { bars, bpm, dur } = fitTempo(M.bpm, seconds)
+  const { bars, bpm, dur } = fixed
+    ? { bars: nBars, bpm: fixed, dur: (nBars * 4 * 60) / fixed }
+    : fitTempo(M.bpm, seconds)
   const beat = 60 / bpm
   const N = Math.round(dur * SR)
   const drums = stereo(N),

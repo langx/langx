@@ -318,7 +318,7 @@ export default tseslint.config(
     /*
      * Venus's streak-story generator and its uploader: Node, linted without type information like
      * the pipelines above. The callbacks handed to `page.evaluate` run in the browser, hence
-     * `document`.
+     * `document`, `Image` and `requestAnimationFrame`; `fetch` is Node's own.
      */
     files: ['tools/venus/**/*.mjs'],
     languageOptions: {
@@ -329,7 +329,10 @@ export default tseslint.config(
         process: 'readonly',
         setTimeout: 'readonly',
         URL: 'readonly',
+        fetch: 'readonly',
         document: 'readonly',
+        Image: 'readonly',
+        requestAnimationFrame: 'readonly',
       },
     },
   },

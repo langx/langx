@@ -42,10 +42,12 @@ export async function openBrowser() {
     executablePath: CHROME,
     args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
   })
-  const newPage = async () => {
+  // defs: SVG definitions every frame on the page can <use> (the film's stickers and wall tiles),
+  // parsed and decoded once per page instead of once per frame
+  const newPage = async (defs = '') => {
     const page = await browser.newPage({ deviceScaleFactor: 1 })
     await page.setContent(
-      `<!doctype html><html><head><style>${FONT_CSS_ALL}html,body{margin:0;padding:0;background:transparent}#s{display:block}</style></head><body><div id="s"></div></body></html>`,
+      `<!doctype html><html><head><style>${FONT_CSS_ALL}html,body{margin:0;padding:0;background:transparent}#s{display:block}</style></head><body><div id="s"></div>${defs ? `<svg width="0" height="0" style="position:absolute;left:-9px;top:-9px" aria-hidden="true"><defs>${defs}</defs></svg>` : ''}</body></html>`,
     )
     await page.evaluate(() =>
       Promise.all([
@@ -53,6 +55,11 @@ export async function openBrowser() {
         document.fonts.load('800 40px Nunito'),
         document.fonts.load('700 40px Nunito'),
         document.fonts.load("700 40px 'Noto Sans Arabic'", 'تكلّم'),
+        ...[...document.querySelectorAll('defs image')].map((im) => {
+          const img = new Image()
+          img.src = im.getAttribute('href')
+          return img.decode().catch(() => null)
+        }),
       ]),
     )
     return page
@@ -105,19 +112,24 @@ export async function openBrowser() {
       )
     },
     // items: [{ svg, w, h, out, transparent }]
-    async render(items, pages = 4) {
+    async render(items, pages = 4, { defs = '' } = {}) {
       const per = Math.ceil(items.length / pages)
       await Promise.all(
         Array.from({ length: pages }, async (_, i) => {
           const mine = items.slice(i * per, (i + 1) * per)
           if (!mine.length) return
-          const page = await newPage()
+          const page = await newPage(defs)
           let size = ''
           for (const it of mine) {
             const sz = it.w + 'x' + it.h
             if (sz !== size) {
               await page.setViewportSize({ width: it.w, height: it.h })
               size = sz
+              // the first screenshot after a resize can come from a stale, shorter surface: its
+              // bottom rows repeat the frame's top. Two animation frames let the compositor catch up.
+              await page.evaluate(
+                () => new Promise((ok) => requestAnimationFrame(() => requestAnimationFrame(ok))),
+              )
             }
             await page.evaluate(
               (h) => {

@@ -3,6 +3,8 @@
 //   node upload.mjs media      every mp4 + jpg in out/v1/<lang>/ (skips objects already there, same size + md5)
 //   node upload.mjs manifest   writes out/v1/manifest.public.json and uploads it as venus/v1/manifest.json
 //   node upload.mjs verify     lists venus/v1/ in the bucket and compares it with the local pairs (size + md5)
+//   node upload.mjs intro      the introduction film (film.mjs): every locale's mp4 + jpg in out/intro/<lang>/
+//                              to venus/v1/<lang>/, and nothing at all if any venus-intro object is already there
 //   add --dry to list what would go up without uploading
 //
 // The library is read from VENUS_OUT/v1 when VENUS_OUT is set (lib/paths.mjs).
@@ -14,16 +16,15 @@ import path from 'node:path'
 import crypto from 'node:crypto'
 import { createRequire } from 'node:module'
 import { execFileSync } from 'node:child_process'
-import { REPO, OUT } from './lib/paths.mjs'
+import { REPO, OUT, OUT_ROOT } from './lib/paths.mjs'
 
 const V1 = OUT
 const PREFIX = 'venus/v1'
-const mode = process.argv[2],
+// What this run is, decided once from the command line and switched on at the bottom; a failure sets
+// the exit code rather than exiting, so no condition on the command line ends the process (as in
+// film.mjs)
+const mode = ['media', 'manifest', 'verify', 'intro'].find((m) => m === process.argv[2]) ?? 'usage',
   dry = process.argv.includes('--dry')
-if (!['media', 'manifest', 'verify'].includes(mode)) {
-  console.error('usage: node upload.mjs media|manifest|verify [--dry]')
-  process.exit(2)
-}
 
 const readEnv = (f) => {
   const o = {}
@@ -42,16 +43,12 @@ const env = {
   ...readEnv(path.join(REPO, '.env.prod')),
   ...fromProcess,
 }
-for (const k of [
+const unset = [
   'STORAGE_ENDPOINT',
   'STORAGE_BUCKET',
   'STORAGE_ACCESS_KEY_ID',
   'STORAGE_SECRET_ACCESS_KEY',
-])
-  if (!env[k]) {
-    console.error(`missing ${k}`)
-    process.exit(1)
-  }
+].filter((k) => !env[k])
 
 const req = createRequire(path.join(REPO, 'apps/api/package.json'))
 const { S3Client, PutObjectCommand, HeadObjectCommand, ListObjectsV2Command } =
@@ -161,7 +158,7 @@ const readyPairs = () =>
         .flatMap((f) => [`${d.name}/${f}`, `${d.name}/${f.replace(/\.mp4$/, '.jpg')}`]),
     )
 
-if (mode === 'media') {
+async function media() {
   const files = readyPairs()
   const tally = {}
   let n = 0,
@@ -180,7 +177,10 @@ if (mode === 'media') {
     }),
   )
   console.log(`media: ${files.length} files`, JSON.stringify(tally), `bytes=${bytes}`)
-} else if (mode === 'verify') {
+  return 0
+}
+
+async function verify() {
   const remote = new Map()
   let ContinuationToken
   do {
@@ -231,8 +231,51 @@ if (mode === 'media') {
     ['extra', extra],
   ])
     for (const f of l.slice(0, 20)) console.log(k, f)
-  if (missing.length || differ.length) process.exitCode = 1
-} else {
+  return missing.length || differ.length ? 1 : 0
+}
+
+async function intro() {
+  // The film sits beside the days, under the name the app builds for a locale
+  // (venus-intro-<lang>.mp4), and is not in the manifest: the app plays it by that name and falls
+  // back to day 1 when it does not load. All locales or none: a missing or unfinished cut stops the
+  // run before anything goes up. And never over an object already there, not even an identical
+  // one: a key that exists means somebody published a cut, and a changed cut goes up as -r2.
+  const FILM = path.join(OUT_ROOT, 'intro')
+  const langs = fs
+    .readdirSync(FILM, { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => d.name)
+    .sort()
+  const files = langs.flatMap((lang) => [
+    `${lang}/venus-intro-${lang}.mp4`,
+    `${lang}/venus-intro-${lang}.jpg`,
+  ])
+  const unready = langs.filter((lang) => !ready(path.join(FILM, lang, `venus-intro-${lang}.mp4`)))
+  if (langs.length === 0 || unready.length) {
+    console.error(`intro: not ready: ${unready.join(', ') || 'no locale rendered'}`)
+    return 1
+  }
+  const there = []
+  let ContinuationToken
+  do {
+    const r = await s3.send(
+      new ListObjectsV2Command({ Bucket, Prefix: `${PREFIX}/`, ContinuationToken }),
+    )
+    for (const o of r.Contents || []) if (o.Key.includes('venus-intro')) there.push(o.Key)
+    ContinuationToken = r.IsTruncated ? r.NextContinuationToken : undefined
+  } while (ContinuationToken)
+  if (there.length) {
+    console.error(`intro: already in the bucket, nothing uploaded:\n${there.join('\n')}`)
+    return 1
+  }
+  for (const rel of files) {
+    const r = await put(path.join(FILM, rel), `${PREFIX}/${rel}`)
+    console.log(r, `${PREFIX}/${rel}`, fs.statSync(path.join(FILM, rel)).size)
+  }
+  return 0
+}
+
+async function manifest() {
   // the app reads { videos: [{ day, lang, file, cover }] } (apps/mobile/src/lib/venusStory.ts): the last
   // path segment of file and cover is the name in the bucket, beside each other in <lang>/
   const src = JSON.parse(fs.readFileSync(path.join(V1, 'manifest.json'), 'utf8'))
@@ -251,7 +294,7 @@ if (mode === 'media') {
     console.error(
       `${missingCover.length} entries without a cover file, e.g. ${missingCover[0].file}`,
     )
-    process.exit(1)
+    return 1
   }
   const out = path.join(V1, 'manifest.public.json')
   fs.writeFileSync(
@@ -264,4 +307,19 @@ if (mode === 'media') {
     }) + '\n',
   )
   console.log(`manifest: ${videos.length} videos ->`, await put(out, `${PREFIX}/manifest.json`))
+  return 0
+}
+
+switch (mode) {
+  case 'usage':
+    console.error('usage: node upload.mjs media|manifest|verify|intro [--dry]')
+    process.exitCode = 2
+    break
+  default:
+    if (unset.length) {
+      console.error(`missing ${unset.join(', ')}`)
+      process.exitCode = 1
+      break
+    }
+    process.exitCode = await { media, manifest, verify, intro }[mode]()
 }
