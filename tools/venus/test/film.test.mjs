@@ -45,14 +45,14 @@ function perform(lang) {
     if (sh.day || sh.wall) continue
     const S = shotClock(sh, clock)
     // film.mjs measures the bonk's height in the browser; any height performs the same faces
-    if (sh.id === 'bonk') S.top = 200
+    if (sh.id === 'bonk') S.top = 300
     Object.assign(sh, performShot(sh, S))
   }
   return { clock, shots }
 }
 const performed = new Map(LOCALES.map((l) => [l, perform(l)]))
 
-test('the board: the English silent clock reproduces it, and the film is 96.6 s', () => {
+test('the board: the English silent clock reproduces it, and the film is 97.2 s', () => {
   const C = buildClock('en')
   assert.deepEqual(C.pushes, [])
   for (const L of FILM.lines)
@@ -61,10 +61,10 @@ test('the board: the English silent clock reproduces it, and the film is 96.6 s'
       assert.equal(s.t0, a, `${L.id}[${i}] starts on the board`)
       assert.ok(Math.abs(s.t1 - b) <= 0.015, `${L.id}[${i}] ends ${s.t1}, the board says ${b}`)
     })
-  assert.equal(C.W(96.6), 96.6)
+  assert.equal(C.W(97.2), 97.2)
   const shots = placeShots(C)
   assert.equal(shots[shots.length - 1].T1, +(END_BOARD + END_LEN).toFixed(3))
-  assert.equal(shots[shots.length - 1].T1, 96.6)
+  assert.equal(shots[shots.length - 1].T1, 97.2)
 })
 
 test('the board: sentences are in order, never overlap, and fit their modes', () => {
@@ -127,7 +127,7 @@ test('the warp: a longer locale pushes whole beats inside the grid, and never ru
         }
     // monotone, and never earlier than the board
     let prev = -1
-    for (let t = 0; t <= 96.6; t += 0.05) {
+    for (let t = 0; t <= 97.2; t += 0.05) {
       const w = C.W(t)
       assert.ok(w >= t - 1e-6 && w >= prev, `${lang}: W(${t}) = ${w}`)
       prev = w
@@ -310,4 +310,25 @@ test('shots: every one of hers performs in every locale, inside its own length',
       for (let f = 0; f < Math.round((sh.T1 - sh.T0 + sh.off) * 30); f += 15) sh.anim.at(f)
     }
   }
+})
+
+test('captions: a dash or a lone "?" never starts a line', () => {
+  const words = (text) => text.split(' ')
+  const m = (ws) => Object.fromEntries([[' ', 14], ...ws.map((x) => [x, [...x].length * 30])])
+  const joined = (lines) => lines && lines.map((l) => l.join(' '))
+  // the narrowest balance would put the dash first on line two; it stays with "РОЛИ"
+  const a = words('В ГЛАВНОЙ РОЛИ — ОНА САМА')
+  for (const line of joined(wrap(a, m(a), 420, 2)).slice(1)) assert.ok(!/^—/.test(line), line)
+  const b = words('Qui a monté ça ?')
+  for (const line of joined(wrap(b, m(b), 330, 2)).slice(1)) assert.ok(!/^\?/.test(line), line)
+})
+
+test('captions: clear on a cut once the line is said, and the bag run opens on its first word', () => {
+  const C = buildClock('en')
+  const { cuts } = flashesAndCuts(performed.get('en').shots)
+  const caps = captionTimes(C, cuts)
+  const by = Object.fromEntries(caps.map((x) => [x.id, x]))
+  // "…I made a film." is said by 10.22: the bubble clears on the title's cut, not after it
+  assert.equal(by['intro-03'].hide, 10.6)
+  assert.equal(by['intro-12'].show, by['intro-12'].sents[0].t0)
 })

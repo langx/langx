@@ -35,8 +35,8 @@ export const HELLO = {
   ru: 'privet',
   ar: 'marhaban',
 }
-// where the end card starts: her slow blink, on the board
-export const END_BOARD = 92.8
+// where the end card starts: after her slow blink (92.0) has had its moment, on the board
+export const END_BOARD = 93.4
 
 // A context like buildScore's, for one continuous shot; the vocabulary writes into it
 function newCtx(plan = {}) {
@@ -301,7 +301,12 @@ export const SHOTS = [
       face(c, 0, 'delighted', 1)
       // she is gone at the music's hard stop and back, skidding, on the board's 20.70
       const m0 = S.at(19.1)
-      MOVE_IMPL['zoomies-dash'](c, { e: S.at(20.7) + 0.65 }, m0)
+      MOVE_IMPL['zoomies-dash'](c, { e: S.at(20.7) + 0.65 }, m0, { sit: false })
+      // the skid: a puff of dust at her feet as she brakes
+      c.poofs = [{ t: S.at(20.7) + 0.26, at: 'feet' }]
+      // saucer-eyed as she streaks back in, "meant that" once she has stopped and turned
+      face(c, S.at(20.7) + 0.08, 'saucer', 80, 'out')
+      face(c, S.at(20.7) + 0.5, 'meant-it', 200)
       tailTo(c, S.at(21.0), S.at(21.0) + 0.3, 'straight')
       c.sfx.push(
         { kind: 'whoosh', at: 0.02, gainDb: -4 },
@@ -466,6 +471,7 @@ export const SHOTS = [
     to: 44.4,
     look: 'stage',
     numAt: 43.01,
+    labelAt: 43.01,
     build(c, S) {
       const a = S.s('intro-10', 0),
         b = S.s('intro-10', 1)
@@ -523,10 +529,11 @@ export const SHOTS = [
           [S.at(63.7) + 0.1, 0, 'out'],
         ])
       c.k.key('tail.wave', 0, 12)
-      const m0 = S.at(63.25)
+      const { m0, back } = bonkClock(S)
       MOVE_IMPL['jump-fail'](c, { e: s.t1 + 0.45, sents: [s], v: s.t0 }, m0, {
-        top: S.top ?? 200,
-        slide: S.at(64.8) - S.at(64.0),
+        top: S.top ?? 300,
+        pin: S.pin ?? null,
+        slide: S.at(64.8) - back,
         licks: false,
       })
       // the licks wait for the line: two after it
@@ -538,9 +545,10 @@ export const SHOTS = [
         [after + 0.27, 0.75, 'out'],
         [after + 0.37, 0, 'in'],
       ])
-      // the bonk: the jump's own whoosh, ticks and landing thud stay; its off-screen thud goes
-      // (film.mjs bonkTop finds the frame she reaches the frame on: S.hit)
-      const hit = S.hit ?? S.at(64.0)
+      // the bonk: the jump's own whoosh, ticks and landing thud stay; its off-screen thud goes.
+      // The hit is the leap's last frame, her head on the locked frame's bottom edge (film.mjs
+      // bonkTop sets the height, and pins her there while she turns)
+      const hit = back - 1 / FPS
       c.sfx = c.sfx.filter((x) => !(x.kind === 'thud' && Math.abs(x.at - (m0 + 0.87)) < 0.01))
       c.sfx.push(
         { kind: 'thud', at: hit, gainDb: 0 },
@@ -549,17 +557,19 @@ export const SHOTS = [
       c.cam.shakes.push(hit)
       c.bonk = hit
     },
-    cam: () => ({ z: [[0, 0.8]] }),
+    // pulled back and set down, so the jump to the frame is a real one and her face stays clear
+    // of the bubble once she is back on the ground
+    cam: () => ({ z: [[0, BONK_CAM.z]], lift: [[0, BONK_CAM.lift]] }),
     under(t, S) {
-      // the locked cover, high on the wall: it rattles when she hits it
+      // the locked day, high on the wall: it rattles when she hits it
       const u = t - S.c.bonk
       const rot = u > 0 && u < 0.6 ? 3.5 * Math.sin(u * 40) * Math.exp(-u * 6) : 0
       const [x, y, w] = BONK_FRAME
-      return `<g transform="rotate(${r3(rot)} ${x + w / 2} ${y})">${FL.tile(31, [x, y, w], { frost: 1 })}</g>`
+      return `<g transform="rotate(${r3(rot)} ${x + w / 2} ${y})">${FL.lockedFrame(31, x, y, w)}</g>`
     },
     over(t, S) {
       const [x, y, w] = BONK_FRAME
-      return L.impact(t, S.c.bonk, x + w / 2, y + w + 40)
+      return L.impact(t, S.c.bonk, x + w / 2, y + w)
     },
   },
   // ---------------------------------------------------------------- B16 the comeback
@@ -568,6 +578,7 @@ export const SHOTS = [
     from: 66.8,
     to: 75.0,
     look: 'sky-clouds',
+    labelAt: 70.5,
     build(c, S) {
       const a1 = S.s('intro-17', 0),
         a2 = S.s('intro-17', 1),
@@ -744,15 +755,16 @@ export const SHOTS = [
           [away + 0.62, 0, 'out'],
         ])
       const b = S.at(92.0)
+      // the eyes stay shut a good half second, and she holds the look after it before the card
       face(c, b, 'slowblink', 420, 'in')
-      face(c, b + 0.75, 'happy', 380, 'out')
-      c.add.pulse('head.pitch', b, b + 0.4, b + 0.6, b + 1.0, 5)
+      face(c, b + 0.95, 'happy', 380, 'out')
+      c.add.pulse('head.pitch', b, b + 0.4, b + 0.8, b + 1.2, 5)
       for (const sd of ['L', 'R'])
         c.k.seq(`ears.${sd}.fold`, [
           [b - 0.05],
           [b + 0.25, 0.25, 'out'],
-          [b + 0.7],
-          [b + 1.0, 0, 'inOut'],
+          [b + 0.9],
+          [b + 1.2, 0, 'inOut'],
         ])
       c.sfx.push(
         { kind: 'purr', at: b, seconds: 1.6, gainDb: -4 },
@@ -800,8 +812,16 @@ export const RING = [
 ]
 export const RING_SIZE = 250
 export const HELLO_AT = [540, 480, 380]
-// the locked cover the bonk hits: the wall's tile 31, pushed into until it is this square
-export const BONK_FRAME = [380, 290, 320]
+// the locked cover the bonk hits: the wall's tile 31, pushed into until it is this square (x 300-780,
+// y 300-780: as big as the board's, and high enough over her that the jump to it reads)
+export const BONK_FRAME = [300, 300, 480]
+export const BONK_CAM = { z: 0.62, lift: -140 }
+// the bonk's beats in the shot's clock: the crouch at m0, the leap's last frame (the hit) just before
+// `back`, which falls on a frame so the hit is one; the board's leap is 63.70 and the hit 64.00
+export function bonkClock(S) {
+  const back = Math.round((S.at(63.25) + 0.75) * FPS) / FPS
+  return { m0: back - 0.75, back }
+}
 
 // ------------------------------------------------------------------ placing and performing
 // Every shot in film time: T0, T1 (the next shot's start; the last runs to the end of the card),

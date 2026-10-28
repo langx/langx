@@ -1312,8 +1312,11 @@ Object.assign(MOVE_IMPL, {
   // the fridge: crouch, wiggle, leap out of the top of the frame... slide back down scrabbling,
   // land, groom a paw very hard. "Meant that."
   // opt (the introduction film's bonk): top, a height she hits something at instead of leaving the
-  // frame, then slides down it for `slide` s; licks: false keeps her tongue in after the landing
-  'jump-fail': (c, T, m0, { top = null, slide = 0.5, licks = true } = {}) => {
+  // frame, then slides down it for `slide` s; licks: false keeps her tongue in after the landing.
+  // With top, the leap's profile reaches `top` on the frame before `back` (the hit); from `back` she
+  // is crumpled against it (the scrabble pose, still in profile and leaning) and turns to the lens
+  // over 0.2 s; pin: [[t, rise], ...] holds her against it meanwhile (film.mjs measures it)
+  'jump-fail': (c, T, m0, { top = null, slide = 0.5, licks = true, pin = null } = {}) => {
     const j = m0 + 0.45,
       back = top === null ? Math.max(j + 0.75, beat(T, 0.55)) : j + 0.3,
       land = back + (top === null ? 0.5 : slide)
@@ -1330,17 +1333,32 @@ Object.assign(MOVE_IMPL, {
     c.k.set('head.yaw', j, -20)
     setTail(c, j, 'streak')
     c.k.seq('lean', [[j], [j + 0.1, -50, 'out']])
-    c.k.seq('rise', [[j], [j + 0.3, top ?? 1300, top === null ? 'in' : 'out']])
-    // back down the "fridge door", fore paws scrabbling
-    c.k.set('mode', back, 'startle')
-    c.k.set('yaw', back, 0)
-    c.k.set('head.yaw', back, 0)
-    c.k.set('lean', back, 0)
-    setTail(c, back, 'straight')
-    c.k.seq('rise', [
-      [back, top ?? 900],
-      [land, 0, 'in'],
-    ])
+    if (top === null) {
+      c.k.seq('rise', [[j], [j + 0.3, 1300, 'in']])
+      // back down the "fridge door", fore paws scrabbling
+      c.k.set('mode', back, 'startle')
+      c.k.set('yaw', back, 0)
+      c.k.set('head.yaw', back, 0)
+      c.k.set('lean', back, 0)
+      setTail(c, back, 'straight')
+      c.k.seq('rise', [
+        [back, 900],
+        [land, 0, 'in'],
+      ])
+    } else {
+      const turn = 0.2
+      c.k.seq('rise', [[j], [back - 1 / 30, top, 'out']])
+      c.k.set('mode', back, 'startle')
+      c.k.set('lean', back, -35)
+      c.k.seq('lean', [[back + turn, 0, 'inOut']])
+      c.k.seq('yaw', [[back], [back + turn, 0, 'inOut']])
+      c.k.seq('head.yaw', [[back], [back + turn, 0, 'inOut']])
+      setTail(c, back, 'straight')
+      const held = pin || [[back, top]]
+      c.k.set('rise', held[0][0], held[0][1])
+      for (const [t, v] of held.slice(1)) c.k.key('rise', t, v, 'linear')
+      c.k.seq('rise', [[held[held.length - 1][0] + 0.04], [land, 0, 'in']])
+    }
     c.k.seq('paw.kamt', [
       [back, 1],
       [land - 0.05, 1],
@@ -1534,7 +1552,9 @@ Object.assign(MOVE_IMPL, {
   },
   // 3 a.m. energy (never said aloud): gone in a streak, the line plays to an empty set, she screeches
   // back in from the other side and sits as if nothing happened, ears askew
-  'zoomies-dash': (c, T, m0) => {
+  // opt (the introduction film): sit: false skids to a stop on her feet and turns to the lens
+  // standing (a 3/4 turn over 0.2 s) instead of cutting to the sitting pose
+  'zoomies-dash': (c, T, m0, { sit = true } = {}) => {
     const ret = Math.max(m0 + 1.0, T.e - 0.65),
       stop = ret + 0.42
     c.k.set('mode', m0, 'stand')
@@ -1574,7 +1594,11 @@ Object.assign(MOVE_IMPL, {
         [stop, 0, 'out'],
       ],
     })
-    settle(c, stop + 0.02, 0.16)
+    if (sit) settle(c, stop + 0.02, 0.16)
+    else {
+      c.k.seq('yaw', [[stop + 0.04], [stop + 0.24, 32, 'inOut']])
+      c.k.seq('head.yaw', [[stop + 0.02], [stop + 0.2, 0, 'inOut']])
+    }
     c.k.seq('x', [[stop + 0.05], [stop + 0.3, 0, 'out']])
     c.add.pulse('ears.L.rot', stop, stop + 0.06, T.e + 0.5, T.e + 0.9, 26)
     c.add.pulse('ears.R.rot', stop, stop + 0.06, T.e + 0.5, T.e + 0.9, -12)

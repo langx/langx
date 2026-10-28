@@ -35,6 +35,9 @@ const popK = (u, len = 0.24) =>
 // "по", "في") counts as SHORT_END px wider, so the little word goes down with the words it belongs to.
 const SHORT_END = 120
 const shortWord = (x) => !/[.,!?…:;»]$/u.test(x) && [...x].length <= 2
+// a word that is only a dash or closing punctuation (Russian "— своё", French "ça ?") never starts
+// a line: it stays with the word before it, as a no-break space would keep it
+const gluedBack = (x) => /^[—–?!:;»]+$/u.test(x)
 export function wrap(ws, m, maxW, maxLines, { prefer = [], must = [], only = false } = {}) {
   const sp = m[' ']
   const w = (a) => a.reduce((s, x, i) => s + m[x] + (i ? sp : 0), 0)
@@ -55,7 +58,7 @@ export function wrap(ws, m, maxW, maxLines, { prefer = [], must = [], only = fal
       if (!best || score < best.score) best = { score, lines }
       return
     }
-    for (let i = from; i < ws.length; i++) cut(n, i + 1, [...cuts, i])
+    for (let i = from; i < ws.length; i++) if (!gluedBack(ws[i])) cut(n, i + 1, [...cuts, i])
   }
   for (let n = 1; n <= maxLines && !best; n++) cut(n, 1, [])
   return best ? best.lines : null
@@ -159,7 +162,9 @@ export function bubble(look, t, a) {
   const F = B.F,
     lineH = Math.round(F * 1.2),
     pad = 32
-  const { top, tailX } = L.BUB
+  const { x0, x1, top, tailX } = L.BUB
+  // the text is centred on the bubble itself (x 70..930), not on the frame
+  const mid = (x0 + x1) / 2
   const bottom = top + B.lines.length * lineH + pad * 2 - 12
   let s = a.scale
   if (s <= 0.01) return ''
@@ -199,10 +204,10 @@ export function bubble(look, t, a) {
         now = said && t < w.t1 + 0.08
       spans += `<tspan fill="${now ? BLUE : INK}" fill-opacity="${hidden ? 0 : said ? 1 : 0.26}">${esc(w.text)}${j < line.length - 1 ? ' ' : ''}</tspan>`
     })
-    g += `<text x="540" y="${n1(y)}" font-family="${FILM_FONT}" font-weight="${B.whisper ? 800 : 900}" font-size="${F}" text-anchor="middle"${rtl ? ' direction="rtl"' : ''} xml:space="preserve">${spans}</text>`
+    g += `<text x="${mid}" y="${n1(y)}" font-family="${FILM_FONT}" font-weight="${B.whisper ? 800 : 900}" font-size="${F}" text-anchor="middle"${rtl ? ' direction="rtl"' : ''} xml:space="preserve">${spans}</text>`
   })
   // it grows from the tail's root, or from the middle of its top edge when there is no tail
-  const ox = tail > 0.5 ? tailX : 540
+  const ox = tail > 0.5 ? tailX : mid
   return `<g transform="translate(${ox} ${top}) scale(${n3(s)}) translate(${-ox} ${-top})">${g}</g>`
 }
 
@@ -305,6 +310,27 @@ export function tile(i, rect, { pop = 1, frost = 0, glint = -1 } = {}) {
   s += `</g><rect x="0" y="0" width="${w}" height="${w}" rx="10" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.9"/>`
   if (frost > 0.5) s += lock(c, c + 4, 42 * EASE.outBack(clamp((frost - 0.5) / 0.5)))
   return `<g transform="translate(${n1(x + c)} ${n1(y + c)}) scale(${n3(k)}) translate(${-c} ${-c})">${s}</g>`
+}
+
+// The bonk's target: one locked day, big, at (x, y), w px square. Its cover behind frosted glass
+// (the clear cover with the frosted copy over it, so her pose and number still show through), a
+// white frame with an ink edge and a drop shadow, and a lock badge a phone reads.
+export function lockedFrame(i, x, y, w) {
+  const sc = w / 256,
+    c = w / 2,
+    r = 22
+  let s = `<rect x="6" y="14" width="${w}" height="${w}" rx="${r}" fill="${INK}" opacity="0.35"/>`
+  s += `<clipPath id="lkf"><rect width="${w}" height="${w}" rx="${r}"/></clipPath><g clip-path="url(#lkf)">`
+  s += `<g transform="scale(${n3(sc)})"><use href="#tc-${i}"/><use href="#tf-${i}" opacity="0.72"/></g>`
+  s += `<rect width="${w}" height="${w}" fill="#ffffff" opacity="0.18"/>`
+  // the glass's sheen
+  s += `<path d="M${n1(w * 0.08)} ${w}L${n1(w * 0.5)} 0L${n1(w * 0.66)} 0L${n1(w * 0.24)} ${w}Z" fill="#ffffff" opacity="0.16"/></g>`
+  s += `<rect width="${w}" height="${w}" rx="${r}" fill="none" stroke="${INK}" stroke-width="22"/>`
+  s += `<rect width="${w}" height="${w}" rx="${r}" fill="none" stroke="#ffffff" stroke-width="12"/>`
+  // the badge: a white disc with the padlock, 120 px across
+  s += `<circle cx="${c}" cy="${c + 6}" r="66" fill="${INK}" opacity="0.3"/><circle cx="${c}" cy="${c}" r="66" fill="#ffffff" stroke="${INK}" stroke-width="7"/>`
+  s += lock(c, c + 2, 96)
+  return `<g transform="translate(${n1(x)} ${n1(y)})">${s}</g>`
 }
 
 // ------------------------------------------------------------------ small things

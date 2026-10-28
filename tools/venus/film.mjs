@@ -45,6 +45,8 @@ import {
   PRINT,
   BLEP_AT,
   BONK_FRAME,
+  BONK_CAM,
+  bonkClock,
 } from './lib/film-shots.mjs'
 import { buildScore, EXTRA_EXPR } from './lib/score.mjs'
 import { planVideo } from './lib/intro.mjs'
@@ -59,7 +61,7 @@ import { RIG, REPO, OUT_ROOT, WORK, CACHE, VOICE_DIR } from './lib/paths.mjs'
 import * as L from './lib/layers.mjs'
 import * as FL from './lib/film-layers.mjs'
 import * as EC from './lib/endcard.mjs'
-import { applyItemPose, itemLayers } from './lib/items.mjs'
+import { applyItemPose, itemLayers, itemsFor } from './lib/items.mjs'
 
 const req = createRequire(import.meta.url)
 const V = req(path.join(RIG, 'venus-rig.js'))
@@ -83,7 +85,7 @@ const COVER_AT = 12.4
 export const KEY_BEATS = [
   0.3, 2.0, 5.5, 9.6, 12.4, 14.6, 15.6, 16.9, 17.9, 20.0, 20.95, 23.5, 25.2, 27.4, 30.4, 31.95,
   32.8, 35.0, 38.6, 43.4, 44.9, 46.9, 49.1, 50.6, 53.6, 55.6, 59.5, 61.6, 62.7, 64.0, 65.6, 68.9,
-  71.0, 74.3, 76.8, 78.0, 80.2, 84.9, 88.0, 90.3, 92.4, 93.6, 95.2,
+  71.0, 74.3, 76.8, 78.0, 80.2, 84.9, 88.0, 90.3, 92.5, 94.0, 95.8,
 ]
 
 // ------------------------------------------------------------------ captions
@@ -193,10 +195,13 @@ async function layoutCaptions(B, clock, cuts, lang) {
   }
   return caps
 }
-function captionAt(caps, t, look, rtl) {
+function captionAt(caps, t, look, rtl, cuts = []) {
   let Ln = null
   for (const x of caps) if (x.show <= t + 1e-9) Ln = x
   if (!Ln || t > Ln.hide + 0.2) return ''
+  // a bubble that closes on a cut (or shrinking into one) is gone on the cut's frame: its shrink
+  // never plays over the next shot
+  if (t >= Ln.hide - 1e-9 && cuts.some((c) => c >= Ln.hide - 1e-6 && c <= t + 1e-9)) return ''
   let k = 0
   for (let i = 1; i < Ln.blocks.length; i++) if (t >= Ln.blocks[i].start) k = i
   const bl = Ln.blocks[k]
@@ -275,9 +280,43 @@ function silentVT(text) {
   })
   return { words, sents, purr: null, whisper: null, end: sents[sents.length - 1].t1 }
 }
+// When a day shows everything it ships: its number landed and a milestone's items popped in
+// (lib/items.mjs popIn: R + 0.15, 0.32 s), its seat up (the bag beat), its outfit on and the poof
+// that brought it gone. A one-second window that starts any earlier spends itself on the entrance.
+function settledAt(sc, IT) {
+  const first = (p, ok) => (sc.keys[p] || []).find(([t, v]) => t > 0 && ok(v))?.[0]
+  let t = sc.R + 0.5
+  const bag = IT.seat && IT.seatMode !== 'always' ? first('bag', (v) => v >= 1) : undefined
+  if (bag !== undefined) t = Math.max(t, bag + 0.12)
+  const outfit = first('outfit', (v) => !!v)
+  if (outfit !== undefined) t = Math.max(t, outfit + 0.1)
+  if (sc.fx.poof !== null && sc.fx.poof !== undefined) t = Math.max(t, sc.fx.poof + 0.4)
+  return t
+}
+// How small she must be drawn (about the ground line, as render.mjs fitUnderLabel draws a day) so
+// her highest point stays LABEL_CLEAR px under the full-size number's label in every probed frame.
+// probes: [{ fig (rig units, the ground at 0), z, lift }]; only what is under the label counts (hw:
+// the label's half width on screen), so a balloon off to the side does not shrink her.
+const LABEL_CLEAR = 10
+async function labelFit(B, probes, line, hw) {
+  if (!probes.length) return 1
+  const half = Math.ceil(hw / (BASE * Math.min(...probes.map((p) => p.z))))
+  const tops = await B.tops(
+    probes.map((p) => p.fig),
+    [-half, -2600, 2 * half, 2800],
+  )
+  let fit = 1
+  probes.forEach((p, i) => {
+    const D = HEAD_H * (p.z - 1) + tops[i] * p.z // her top above the ground at fit 1, rig units
+    if (D < 0) fit = Math.min(fit, (G - p.lift - line - LABEL_CLEAR) / (-BASE * D))
+  })
+  return Math.floor(fit * 1000) / 1000
+}
+const labelHalf = (labelW) => Math.min(labelW, 820) / 2 + 12
 // One window of the race: the day as it ships (its plan, look, items, number), scored without its
-// line, entered where the film needs it: half a second before the number lands (align R), on the
-// slam (day 100), or with its bag popping 0.12 s after the cut or on a line (the bag days).
+// line. A short window opens on the day already settled (settledAt): everything it ships is on, and
+// its number pops on the cut; day 100 opens on its slam, the bag days with their bag popping 0.12 s
+// after the cut or on a line.
 const BAG_CAM = { z: 0.78, lift: 125 }
 async function dayWindow(B, w, ctx) {
   const { W, lang, ec, endStyle } = ctx
@@ -292,7 +331,7 @@ async function dayWindow(B, w, ctx) {
   const T0 = W(w.from),
     T1 = W(w.runOn ?? w.to)
   let start
-  if (w.align === 'R') start = sc.R - 0.5
+  if (w.align === 'R') start = settledAt(sc, itemsFor(plan))
   else if (w.align === 'slam') start = sc.R - 0.05
   else {
     const bagAt = sc.T.v - 0.3 + 0.28 // bag-throne: the bag pops at m0 + 0.28
@@ -307,6 +346,8 @@ async function dayWindow(B, w, ctx) {
   const bag = w.align === 'bag'
   const scX = {
     ...sc,
+    // a short window's number is already the day's: it pops on the cut, no count from N - 1
+    num: w.align === 'R' ? { ...sc.num, at: start - 2 / FPS, mode: 'pop' } : sc.num,
     fx: { ...sc.fx, flashes: [] },
     T: bag ? sc.T : { ...sc.T, v: 1e9 },
     cam: bag
@@ -320,6 +361,21 @@ async function dayWindow(B, w, ctx) {
   const f0 = Math.round(T0 * FPS),
     f1 = Math.round(T1 * FPS)
   const local = (f) => start + (f - f0) / FPS
+  // the number stays full size through the window, so she is drawn small enough that her ears
+  // stay under its label in every frame of it (the day itself only needs that while it lands)
+  const probeAt = []
+  for (let f = f0; f < f1; f += 2) probeAt.push(local(f))
+  const probes = frameSvgs(plan, scX, A, cap, ec, endStyle, { at: probeAt, probe: true }).map(
+    (p) => ({
+      fig: p.fig,
+      z: L.trk(scX.cam.z, p.t),
+      lift: scX.cam.lift ? L.trk(scX.cam.lift, p.t) : 0,
+    }),
+  )
+  const winFit = Math.min(
+    fit,
+    await labelFit(B, probes, L.labelBottom(formatNumber(plan.day, lang)), labelHalf(labelW)),
+  )
   const len = W(w.to) - T0
   const sfx = []
   for (const s of sc.sfx) {
@@ -336,6 +392,7 @@ async function dayWindow(B, w, ctx) {
     plan,
     look: plan.look,
     start,
+    fit: winFit,
     f0,
     f1,
     sfx,
@@ -344,7 +401,7 @@ async function dayWindow(B, w, ctx) {
       const want = frames.filter((f) => f >= f0 && f < f1)
       const m = new Map()
       if (!want.length) return m
-      const out = frameSvgs(plan, scX, A, cap, ec, endStyle, { at: want.map(local), fit })
+      const out = frameSvgs(plan, scX, A, cap, ec, endStyle, { at: want.map(local), fit: winFit })
       for (const x of out)
         m.set(
           f0 + Math.round((x.t - start) * FPS),
@@ -450,6 +507,11 @@ export async function buildFilm({
     duration = shots[shots.length - 1].T1,
     n = Math.round(duration * FPS)
   const cuts = shots.slice(1).map((s) => s.T0)
+  // the dolly from day 100 into the wall is one continuous move, not a cut
+  const hardCuts = shots
+    .slice(1)
+    .filter((s) => !s.wall)
+    .map((s) => s.T0)
   const caps = await layoutCaptions(B, clock, cuts, lang)
   // the header text, measured in the browser that draws it
   const [w100] = await B.measure(['VENUS'], `900 100px Nunito`)
@@ -531,7 +593,9 @@ export async function buildFilm({
     if (sh.day || sh.wall) continue
     const S = shotClock(sh, clock)
     if (sh.id === 'bonk') Object.assign(S, await bonkTop(B, sh, S))
-    Object.assign(sh, performShot(sh, S))
+    // a shot with a counter: small enough that her ears stay under its label once it is up
+    const fit = sh.labelAt !== undefined ? await shotLabelFit(B, sh, S, F) : 1
+    Object.assign(sh, performShot(sh, S), { fit })
     for (const x of sh.c.sfx) {
       const at = x.at - sh.off + sh.T0
       if (at >= sh.T0 - 0.05 && at < sh.T1) sfx.push({ ...x, at })
@@ -551,6 +615,7 @@ export async function buildFilm({
     W,
     caps,
     shots,
+    hardCuts,
     F,
     ctx,
     env,
@@ -564,31 +629,49 @@ export async function buildFilm({
     scene0: '',
   }
 }
-// The bonk: her top meets the locked frame's bottom edge where the jump's top is highest, which is a
-// few frames after the rise peaks (the startle pose stretches up as it comes in), and the hit (the
-// thud, the stars, the rattle) is on that frame. The poses there are drawn at a trial height and
-// measured (as fitUnderLabel measures her); the height is corrected, and checked once more, since
-// the slide down the wall has begun by then.
+// The bonk: on the leap's last frame (the hit) her top meets the locked frame's bottom edge, and
+// from the next one, crumpled against it and turning to the lens, she is held there (pin) until she
+// slides. Rise only moves her up and down, so one drawing at a trial height, measured (as
+// fitUnderLabel measures her), gives the height of every one of those frames exactly.
 async function bonkTop(B, sh, S) {
-  const from = Math.round(S.at(64.0) * FPS)
-  const z = 0.8,
+  const { back } = bonkClock(S)
+  const z = BONK_CAM.z,
     s = BASE * z,
-    cy = G + HEAD_H * BASE * (z - 1)
-  const want = (BONK_FRAME[1] + BONK_FRAME[2] - 6 - cy) / s // rig units, the ground at 0
-  let top = 200,
-    hit = null
-  for (let pass = 0; pass < 2; pass++) {
-    const { anim } = performShot(sh, { ...S, top, hit: hit === null ? null : hit / FPS })
-    const frags = []
-    for (let f = 0; f <= from + 12; f++) {
-      const P = anim.at(f)
-      if (f >= from) frags.push(V.draw(P))
-    }
-    const tops = await B.tops(frags, [-700, -2600, 1400, 2800])
-    if (hit === null) hit = from + tops.indexOf(Math.min(...tops))
-    top = Math.round(top + (tops[hit - from] - want))
+    cy = G + HEAD_H * BASE * (z - 1) - BONK_CAM.lift
+  const want = (BONK_FRAME[1] + BONK_FRAME[2] - 4 - cy) / s // rig units, the ground at 0
+  const hitF = Math.round(back * FPS) - 1,
+    n = Math.round(0.26 * FPS)
+  const trial = 300
+  const times = Array.from({ length: n + 1 }, (_, i) => r3(back + i / FPS))
+  const { anim } = performShot(sh, { ...S, top: trial, pin: times.map((t) => [t, trial]) })
+  const frags = []
+  for (let f = 0; f <= hitF + n + 1; f++) {
+    const P = anim.at(f)
+    if (f >= hitF) frags.push(V.draw(P))
   }
-  return { top, hit: hit / FPS }
+  const tops = await B.tops(frags, [-700, -2600, 1400, 2800])
+  return {
+    top: Math.round(trial + (tops[0] - want)),
+    pin: times.map((t, i) => [t, Math.round(trial + (tops[i + 1] - want))]),
+  }
+}
+async function shotLabelFit(B, sh, S, F) {
+  const { anim, cam } = performShot(sh, { ...S })
+  const from = Math.round(S.at(sh.labelAt) * FPS),
+    to = Math.round(S.len * FPS)
+  const probes = []
+  for (let f = 0; f < to; f++) {
+    const P = anim.at(f)
+    if (f < from || (f - from) % 2) continue
+    const ta = f / FPS
+    probes.push({ fig: V.draw(P), z: L.trk(cam.z, ta), lift: cam.lift ? L.trk(cam.lift, ta) : 0 })
+  }
+  return labelFit(
+    B,
+    probes,
+    L.labelBottom(formatNumber(1, sh.lang)),
+    labelHalf(F.counter(1, 0).labelW),
+  )
 }
 function wallSfx(clock) {
   const W = clock.W
@@ -675,9 +758,10 @@ function drawShot(film, sh, f) {
   let z = L.trk(cam.z, ta)
   for (const b of cam.bumps)
     if (ta >= b && ta < b + 0.35) z *= 1 + 0.06 * Math.sin(((ta - b) / 0.35) * Math.PI)
-  const s = BASE * z
+  const fit = sh.fit ?? 1
+  const s = BASE * z * fit
   let cx = 540 + (cam.dx ? L.trk(cam.dx, ta) : 0),
-    cy = G + HEAD_H * BASE * (z - 1) - (cam.lift ? L.trk(cam.lift, ta) : 0)
+    cy = G + HEAD_H * BASE * fit * (z - 1) - (cam.lift ? L.trk(cam.lift, ta) : 0)
   for (const sk of cam.shakes) {
     const u = ta - sk
     if (u >= 0 && u < 0.3) {
@@ -706,7 +790,9 @@ function drawShot(film, sh, f) {
       ? L.poof(ta, p.t, cx, cy - 200 * s)
       : p.at === 'head'
         ? FL.quickPoof(ta, p.t, hx, hy - 40 * s)
-        : FL.quickPoof(ta, p.t, cx, cy - 200 * s)
+        : p.at === 'feet'
+          ? FL.quickPoof(ta, p.t, cx + P.x * s - 150 * s, cy - 20 * s, 0.35, 0.38)
+          : FL.quickPoof(ta, p.t, cx, cy - 200 * s)
   const flash = c.fx.flashes.length ? L.flashes(ta, c.fx.flashes, { wash: 0.2 }) : ''
   return { under, fig, over, flash, top, freeze, ta, hx, hy, cx, cy }
 }
@@ -806,7 +892,7 @@ function frameSvg(film, f, dayCache, { cover = false } = {}) {
   if (f === 0) film.scene0 = scene
   let body = scene
   if (cover) body += EC.badge(540, 1790, 44)
-  else if (!(E && E.cover)) body += captionAt(film.caps, t, sh.look, film.rtl)
+  else if (!(E && E.cover)) body += captionAt(film.caps, t, sh.look, film.rtl, film.hardCuts)
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${L.W}" height="${L.H}" viewBox="0 0 ${L.W} ${L.H}">${body}${E ? E.over : ''}</svg>`
 }
 

@@ -175,7 +175,8 @@ export function captionTimes(clock, cuts = []) {
   for (const L of order) {
     const first = L.sents[0],
       last = L.sents[L.sents.length - 1]
-    L.show = r3(first.t0 - CLOCK.captionLead)
+    // an appended line (the bag run) opens with its first word: there is nothing to show before it
+    L.show = r3(first.t0 - (L.reveal === 'append' ? 0 : CLOCK.captionLead))
     const chars = readChars(L.text)
     L.hide = r3(Math.max(last.t1 + CLOCK.captionHold, L.show + Math.max(1.2, chars / 15 + 0.4)))
     L.swapIn = false
@@ -183,12 +184,14 @@ export function captionTimes(clock, cuts = []) {
   for (let k = 0; k < order.length; k++) {
     const L = order[k],
       N = order[k + 1]
-    // a cut close by: clear on it, or hold past it
+    // a cut close by: clear on it (when the last word is done by then and the line has had its
+    // minimum), or hold past it
     const c = near(L.hide)
-    if (c !== undefined) L.hide = r3(L.hide < c ? c : c + CLOCK.cutGuard)
+    const lastEnd = L.sents[L.sents.length - 1].t1
+    if (c !== undefined)
+      L.hide = r3(L.hide < c || (c >= lastEnd + 0.15 && c >= L.show + 1.2) ? c : c + CLOCK.cutGuard)
     if (N && N.show - L.hide < CLOCK.swapGap) {
       // swap the text instead of closing and reopening; on a cut, if one falls between the lines
-      const lastEnd = L.sents[L.sents.length - 1].t1
       const cut = cuts.find(
         (x) => x >= lastEnd + 0.1 && x <= N.sents[0].t0 && Math.abs(x - N.show) <= CLOCK.swapGap,
       )

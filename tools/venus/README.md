@@ -104,8 +104,13 @@ land on sentences by position; `en` and `tr` are final, the other six want a nat
 
 **The shots.** `lib/film-shots.mjs` is what Venus does, written with the days' own vocabulary
 (`lib/score.mjs` entrances, reactions and moves, the rig, `lib/items.mjs`). The race through the
-days is the days themselves, drawn by `render.mjs` with her mouth shut (on the bag days the camera
-pulls back, so the bag clears the caption). The wall is made of the
+days is the days themselves, drawn by `render.mjs` with her mouth shut. A one-second window opens on
+its day already settled (its number popping on the cut, its seat, outfit and items on), and every
+window, like every shot with a counter, draws her just small enough that her ears stay under the
+number's label (measured in the browser, as `fitUnderLabel` measures a day); on the bag days the
+camera also pulls back, so the bag clears the caption. In the bonk her leap's last frame meets the
+locked day's bottom edge and she stays pressed to it, turning to the lens, before she slides (the
+heights are measured, not guessed). The wall is made of the
 published covers, read from the CDN once into `cache/intro-covers/`. `lib/film-layers.mjs` draws
 what only the film has (the title, pills, the clapper, the photo print, stickers, the wall tiles),
 and `lib/endcard.mjs` closes it (`--end handoff`, the default, or `splash`).
@@ -113,7 +118,9 @@ and `lib/endcard.mjs` closes it (`--end handoff`, the default, or `splash`).
 **Red lines the tests hold.** `test/film.test.mjs` performs every shot in every locale without a
 browser and checks the timing (the English clock is the board, takes re-time it, pushes stay on the
 beat), the lines (sentence shape, no digits, the character lint) and the screen: one caption at a
-time, a sentence after a "…" on a line of its own, never clearing within a quarter second of a cut, no face she never aims at the viewer, and
+time, a sentence after a "…" on a line of its own, never clearing within a quarter second of a cut
+(a bubble that clears on a cut is gone on its frame), a dash or a lone "?" never starting a line, no
+face she never aims at the viewer, and
 flashes at least 0.5 s apart with at most three flashes or cuts in any second. Each flash washes at
 most 20% white.
 
