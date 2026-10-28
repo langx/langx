@@ -30,8 +30,9 @@ const popK = (u, len = 0.24) =>
 // narrow as it can be. m: the measured width of each word and of ' ' at one size. null when it does
 // not fit. Sentences (word indices): each of `must` starts a line whatever it costs, a smaller size
 // or one more line (a sentence after a "…" is not drawn until it is said, so it never waits at the
-// end of a line); `prefer` are the other sentence starts, where a break goes when one can.
-export function wrap(ws, m, maxW, maxLines, { prefer = [], must = [] } = {}) {
+// end of a line); `prefer` are the other sentence starts, where a break goes when one can. `only`:
+// no break but between sentences.
+export function wrap(ws, m, maxW, maxLines, { prefer = [], must = [], only = false } = {}) {
   const sp = m[' ']
   const w = (a) => a.reduce((s, x, i) => s + m[x] + (i ? sp : 0), 0)
   let best = null
@@ -39,6 +40,7 @@ export function wrap(ws, m, maxW, maxLines, { prefer = [], must = [] } = {}) {
   const cut = (n, from, cuts) => {
     if (cuts.length === n - 1) {
       if (!must.every((i) => cuts.includes(i))) return
+      if (only && !cuts.every((i) => prefer.includes(i) || must.includes(i))) return
       const at = [0, ...cuts, ws.length]
       const lines = cuts.concat(ws.length).map((b, k) => ws.slice(at[k], b))
       const widest = Math.max(...lines.map(w))

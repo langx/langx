@@ -256,6 +256,8 @@ test('captions: a sentence after a "…" starts a line; other breaks go to a sen
     'Honestly?',
     "Best co-star I've ever had.",
   ])
+  // only between sentences: none when a sentence alone is too wide
+  assert.equal(wrap(b, m(b), 700, 2, { prefer: [1], only: true }), null)
   // what fits on one line stays on one
   const c = words('Bag. Bag.')
   assert.deepEqual(joined(wrap(c, m(c), 760, 2, { prefer: [1] })), ['Bag. Bag.'])

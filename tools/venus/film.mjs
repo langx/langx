@@ -104,14 +104,20 @@ async function layoutCaptions(B, clock, cuts, lang) {
     }
     return widths[k]
   }
+  const SIZES = [
+    [64, 2],
+    [58, 2],
+    [54, 3],
+    [48, 3],
+  ]
+  // sentences break between them, a size smaller if need be, before one breaks inside a sentence
   const fit = async (ws, br) => {
-    for (const [F, n] of [
-      [64, 2],
-      [58, 2],
-      [54, 3],
-      [48, 3],
-    ]) {
-      const lines = FL.wrap(ws, await measured(F, ws), MAXW, n, br)
+    const tries =
+      br.prefer.length || br.must.length
+        ? [...SIZES.slice(0, 2).map(([F, n]) => [F, n, true]), ...SIZES]
+        : SIZES
+    for (const [F, n, only = false] of tries) {
+      const lines = FL.wrap(ws, await measured(F, ws), MAXW, n, { ...br, only })
       if (lines) return { F, lines }
     }
     return null
