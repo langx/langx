@@ -928,10 +928,16 @@ export const fr: Localized<EnMessages> = {
     signInLinkBody:
       'Saisis ton e-mail ou ton nom d’utilisateur et on t’envoie un lien qui te connecte — sans mot de passe.',
     sendSignInLink: 'Envoyer le lien de connexion',
-    signInLinkSentBody:
-      'S’il existe un compte pour {email}, un lien de connexion est en route. Il fonctionne une fois et expire dans 15 minutes.',
-    signInLinkExpiredBody:
-      'Ce lien de connexion a déjà servi ou a expiré. Demandes-en un nouveau et touche-le dans les 15 minutes.',
+    signInLinkSentBody: {
+      one: 'S’il existe un compte pour {email}, un lien de connexion est en route. Il fonctionne une fois et expire dans {count} minute.',
+      other:
+        'S’il existe un compte pour {email}, un lien de connexion est en route. Il fonctionne une fois et expire dans {count} minutes.',
+    },
+    signInLinkExpiredBody: {
+      one: 'Ce lien de connexion a déjà servi ou a expiré. Demandes-en un nouveau et touche-le dans la minute.',
+      other:
+        'Ce lien de connexion a déjà servi ou a expiré. Demandes-en un nouveau et touche-le dans les {count} minutes.',
+    },
     openLinkTitle: 'Se connecter à LangX',
     openLinkBody:
       'Tu as suivi un lien de connexion. Touche le bouton pour terminer la connexion sur cet appareil.',
@@ -951,8 +957,11 @@ export const fr: Localized<EnMessages> = {
     verificationFailedBody:
       'Ce lien est invalide ou a expiré. Connecte-toi et demandes-en un nouveau.',
     signInWithCode: 'Se connecter avec un code d’un autre appareil',
-    signInLinkNote:
-      'Il fonctionne une seule fois et expire au bout de 15 minutes. Il marche aussi si tu avais un compte dans l’ancienne appli.',
+    signInLinkNote: {
+      one: 'Il fonctionne une seule fois et expire au bout de {count} minute. Il marche aussi si tu avais un compte dans l’ancienne appli.',
+      other:
+        'Il fonctionne une seule fois et expire au bout de {count} minutes. Il marche aussi si tu avais un compte dans l’ancienne appli.',
+    },
   },
 
   onboarding: {
@@ -1466,9 +1475,10 @@ export const fr: Localized<EnMessages> = {
     romanizeUnavailable: 'Impossible de l’afficher en lettres latines',
     romanizeFailed: 'Réessaie dans un instant.',
     speakLimit: {
-      one: 'Tu as utilisé la {count} lecture du jour. Elle se renouvelle sous 24 heures.',
-      other: 'Tu as utilisé les {count} lectures du jour. Elles se renouvellent sous 24 heures.',
+      one: 'Tu as utilisé la {count} lecture du jour. Elle se renouvelle {window}.',
+      other: 'Tu as utilisé les {count} lectures du jour. Elles se renouvellent {window}.',
     },
+    limitWindow: { one: 'sous {count} heure', other: 'sous {count} heures' },
     showText: 'Afficher le texte',
     transcribing: 'Transcription…',
     transcriptEmpty: 'Aucun mot entendu dans ce message.',
@@ -1765,7 +1775,7 @@ export const fr: Localized<EnMessages> = {
       'Attaques visant ce qu’une personne est, y compris son orientation sexuelle et son identité de genre',
     inappropriateContent: 'Contenu inapproprié',
     fakeProfile: 'Faux profil',
-    underage: 'Moins de 16 ans',
+    underage: { one: 'Moins de {count} an', other: 'Moins de {count} ans' },
     other: 'Autre chose',
     details: 'Que s’est-il passé ?',
     detailsPlaceholder: 'Facultatif. Tout ce qui peut nous aider à comprendre.',
@@ -3064,8 +3074,11 @@ export const fr: Localized<EnMessages> = {
     shareMessage: 'Pratique les langues avec moi sur LangX : {url}',
     howTitle: 'Comment ça marche',
     step1: 'Envoie ton lien à quelqu’un qui apprend ta langue.',
-    step2:
-      'La personne s’inscrit et a une vraie conversation : quelqu’un d’autre que toi lui répond. Là, tu gagnes {activation} tokens.',
+    step2: {
+      one: 'La personne s’inscrit et a une vraie conversation : quelqu’un d’autre que toi lui répond. Là, tu gagnes {activation} token.',
+      other:
+        'La personne s’inscrit et a une vraie conversation : quelqu’un d’autre que toi lui répond. Là, tu gagnes {activation} tokens.',
+    },
     step3:
       'Si elle prend un jour une formule payante, tu gagnes {subscription} de plus. {max} au total, par personne.',
     step4:
@@ -3778,8 +3791,11 @@ export const fr: Localized<EnMessages> = {
     missingBody: 'Aucun profil LangX ne répond à @{handle}.',
     ctaBody: '{name} pratique des langues sur LangX. Rejoins pour dire bonjour.',
     ctaLabel: 'Ouvrir LangX',
-    inviteBody:
-      '{name} t’a invité. Inscris-toi et discute vraiment avec quelqu’un : tu démarres avec {total} tokens ; {name} en gagne {activation} — jusqu’à {max} si un jour tu prends un abonnement. Inscription gratuite.',
+    inviteBody: {
+      one: '{name} t’invite. Inscris-toi et discute vraiment avec quelqu’un : tu démarres avec {total} token ; {name} en gagne {activation} — jusqu’à {max} si un jour tu prends un abonnement. Inscription gratuite.',
+      other:
+        '{name} t’invite. Inscris-toi et discute vraiment avec quelqu’un : tu démarres avec {total} tokens ; {name} en gagne {activation} — jusqu’à {max} si un jour tu prends un abonnement. Inscription gratuite.',
+    },
   },
 
   shareProfile: {

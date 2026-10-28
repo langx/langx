@@ -180,10 +180,16 @@ export const fr: Localized<ServerMessages> = {
     resetText: 'Réinitialisez votre mot de passe LangX : {url}',
     magicLinkSubject: 'Votre lien de connexion LangX',
     magicLinkPreheader: 'Touchez pour vous connecter à LangX',
-    magicLinkBody:
-      'Touchez le bouton pour vous connecter. Le lien fonctionne une fois et expire dans 15 minutes.',
+    magicLinkBody: {
+      one: 'Touche le bouton pour te connecter. Le lien fonctionne une fois et expire dans {count} minute.',
+      other:
+        'Touche le bouton pour te connecter. Le lien fonctionne une fois et expire dans {count} minutes.',
+    },
     magicLinkButton: 'Se connecter à LangX',
-    magicLinkText: 'Connectez-vous à LangX (valable une fois, expire dans 15 minutes) : {url}',
+    magicLinkText: {
+      one: 'Connecte-toi à LangX (valable une fois, expire dans {count} minute) : {url}',
+      other: 'Connecte-toi à LangX (valable une fois, expire dans {count} minutes) : {url}',
+    },
 
     existingSubject: 'Vous avez déjà un compte LangX',
     existingPreheader: 'Vous avez déjà un compte LangX',
@@ -192,10 +198,16 @@ export const fr: Localized<ServerMessages> = {
     existingButton: 'Réinitialiser le mot de passe',
     existingText: 'Vous avez déjà un compte LangX. Réinitialisez votre mot de passe ici : {url}',
 
-    existingLinkBody:
-      'Quelqu’un a tenté de s’inscrire avec cet e-mail, mais vous avez déjà un compte ici, avec votre profil dessus. Touchez pour vous connecter — aucun mot de passe à retenir. Le lien fonctionne une fois et expire dans 15 minutes.',
-    existingLinkText:
-      'Vous avez déjà un compte LangX. Connectez-vous ici (valable une fois, expire dans 15 minutes) : {url}',
+    existingLinkBody: {
+      one: 'Quelqu’un a tenté de s’inscrire avec cet e-mail, mais tu as déjà un compte ici, avec ton profil dessus. Touche pour te connecter — aucun mot de passe à retenir. Le lien fonctionne une fois et expire dans {count} minute.',
+      other:
+        'Quelqu’un a tenté de s’inscrire avec cet e-mail, mais tu as déjà un compte ici, avec ton profil dessus. Touche pour te connecter — aucun mot de passe à retenir. Le lien fonctionne une fois et expire dans {count} minutes.',
+    },
+    existingLinkText: {
+      one: 'Tu as déjà un compte LangX. Connecte-toi ici (valable une fois, expire dans {count} minute) : {url}',
+      other:
+        'Tu as déjà un compte LangX. Connecte-toi ici (valable une fois, expire dans {count} minutes) : {url}',
+    },
 
     whyThisMail: 'Vous recevez ceci en raison de vos réglages de notifications LangX.',
     unsubscribeLink: 'Désactiver ces e-mails',
@@ -289,15 +301,15 @@ export const fr: Localized<ServerMessages> = {
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {
-      one: '1 réponse à ce que vous avez publié aujourd’hui',
-      other: '{count} réponses à ce que vous avez publié aujourd’hui',
+      one: '{count} réponse aujourd’hui à ce que tu as publié',
+      other: '{count} réponses aujourd’hui à ce que tu as publié',
     },
 
     feedDigestPreheader: 'On a répondu à vos publications',
 
     feedDigestBody: {
-      one: 'Quelqu’un a répondu à ce que vous avez publié aujourd’hui.',
-      other: 'Ce que vous avez publié aujourd’hui a reçu {count} réponses.',
+      one: 'Quelqu’un a répondu aujourd’hui à ce que tu as publié.',
+      other: 'Ce que tu as publié a reçu {count} réponses aujourd’hui.',
     },
 
     feedDigestCorrections: { one: '1 correction', other: '{count} corrections' },
@@ -653,7 +665,7 @@ export const fr: Localized<ServerMessages> = {
     hateSpeech: 'Discours haineux',
     inappropriateContent: 'Contenu inapproprié',
     fakeProfile: 'Faux profil',
-    underage: 'Moins de 16 ans',
+    underage: { one: 'Moins de {count} an', other: 'Moins de {count} ans' },
     other: 'Autre chose',
   },
   official: {

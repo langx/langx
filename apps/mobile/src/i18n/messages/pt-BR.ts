@@ -916,10 +916,16 @@ export const ptBR: Localized<EnMessages> = {
     signInLinkBody:
       'Digite seu e-mail ou nome de usuário e enviamos um link que faz seu login — sem senha.',
     sendSignInLink: 'Enviar link de acesso',
-    signInLinkSentBody:
-      'Se existir uma conta para {email}, um link de acesso está a caminho. Ele funciona uma vez e expira em 15 minutos.',
-    signInLinkExpiredBody:
-      'Esse link de acesso já foi usado ou expirou. Peça um novo e toque nele em até 15 minutos.',
+    signInLinkSentBody: {
+      one: 'Se existir uma conta para {email}, um link de acesso está a caminho. Ele funciona uma vez e expira em {count} minuto.',
+      other:
+        'Se existir uma conta para {email}, um link de acesso está a caminho. Ele funciona uma vez e expira em {count} minutos.',
+    },
+    signInLinkExpiredBody: {
+      one: 'Esse link de acesso já foi usado ou expirou. Peça um novo e toque nele em até {count} minuto.',
+      other:
+        'Esse link de acesso já foi usado ou expirou. Peça um novo e toque nele em até {count} minutos.',
+    },
     openLinkTitle: 'Entrar no LangX',
     openLinkBody:
       'Você abriu um link de acesso. Toque no botão para concluir o login neste aparelho.',
@@ -938,8 +944,11 @@ export const ptBR: Localized<EnMessages> = {
     verificationFailedTitle: 'Não deu para confirmar',
     verificationFailedBody: 'Esse link é inválido ou expirou. Entre e peça um novo.',
     signInWithCode: 'Entrar com um código de outro dispositivo',
-    signInLinkNote:
-      'Funciona uma vez e expira em 15 minutos. Também funciona se você tinha uma conta no app anterior.',
+    signInLinkNote: {
+      one: 'Funciona uma vez e expira em {count} minuto. Também funciona se você tinha uma conta no app anterior.',
+      other:
+        'Funciona uma vez e expira em {count} minutos. Também funciona se você tinha uma conta no app anterior.',
+    },
   },
 
   onboarding: {
@@ -1449,9 +1458,10 @@ export const ptBR: Localized<EnMessages> = {
     romanizeUnavailable: 'Não foi possível mostrar em letras latinas',
     romanizeFailed: 'Tente de novo daqui a pouco.',
     speakLimit: {
-      one: 'Você usou a {count} leitura de hoje. Ela volta em 24 horas.',
-      other: 'Você usou as {count} leituras de hoje. Elas voltam em 24 horas.',
+      one: 'Você usou a {count} leitura de hoje. Ela volta {window}.',
+      other: 'Você usou as {count} leituras de hoje. Elas voltam {window}.',
     },
+    limitWindow: { one: 'em {count} hora', other: 'em {count} horas' },
     showText: 'Mostrar texto',
     transcribing: 'Transcrevendo…',
     transcriptEmpty: 'Nenhuma palavra foi ouvida nesta mensagem.',
@@ -1744,7 +1754,7 @@ export const ptBR: Localized<EnMessages> = {
     hateSpeechHint: 'Ataques a quem a pessoa é, incluindo orientação sexual e identidade de gênero',
     inappropriateContent: 'Conteúdo inadequado',
     fakeProfile: 'Perfil falso',
-    underage: 'Menor de 16 anos',
+    underage: { one: 'Menor de {count} ano', other: 'Menor de {count} anos' },
     other: 'Outra coisa',
     details: 'O que aconteceu?',
     detailsPlaceholder: 'Opcional. Qualquer coisa que nos ajude a entender.',
@@ -3004,8 +3014,11 @@ export const ptBR: Localized<EnMessages> = {
     shareMessage: 'Pratique idiomas comigo no LangX: {url}',
     howTitle: 'Como funciona',
     step1: 'Mande seu link para alguém que está aprendendo a sua língua.',
-    step2:
-      'A pessoa entra e tem uma conversa de verdade: alguém que não é você responde. É aí que você ganha {activation} tokens.',
+    step2: {
+      one: 'A pessoa entra e tem uma conversa de verdade: alguém que não é você responde. É aí que você ganha {activation} token.',
+      other:
+        'A pessoa entra e tem uma conversa de verdade: alguém que não é você responde. É aí que você ganha {activation} tokens.',
+    },
     step3:
       'Se um dia ela assinar um plano pago, você ganha mais {subscription}. {max} no total, por pessoa.',
     step4:
@@ -3714,8 +3727,11 @@ export const ptBR: Localized<EnMessages> = {
     missingBody: 'Nenhum perfil do LangX atende por @{handle}.',
     ctaBody: '{name} pratica idiomas no LangX. Entre para dizer oi.',
     ctaLabel: 'Abrir o LangX',
-    inviteBody:
-      '{name} convidou você. Cadastre-se e tenha uma conversa de verdade com alguém: você começa com {total} tokens; {name} ganha {activation} — até {max} se um dia você assinar um plano. Entrar é grátis.',
+    inviteBody: {
+      one: '{name} convidou você. Cadastre-se e tenha uma conversa de verdade com alguém: você começa com {total} token; {name} ganha {activation} — até {max} se um dia você assinar um plano. Entrar é grátis.',
+      other:
+        '{name} convidou você. Cadastre-se e tenha uma conversa de verdade com alguém: você começa com {total} tokens; {name} ganha {activation} — até {max} se um dia você assinar um plano. Entrar é grátis.',
+    },
   },
 
   shareProfile: {

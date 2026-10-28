@@ -204,9 +204,16 @@ export const en = {
     resetText: 'Reset your LangX password: {url}',
     magicLinkSubject: 'Your LangX sign-in link',
     magicLinkPreheader: 'Tap to sign in to LangX',
-    magicLinkBody: 'Tap the button to sign in. The link works once and expires in 15 minutes.',
+    /** `{count}` here and in the three below is `MAGIC_LINK_TTL_MINUTES`. */
+    magicLinkBody: {
+      one: 'Tap the button to sign in. The link works once and expires in {count} minute.',
+      other: 'Tap the button to sign in. The link works once and expires in {count} minutes.',
+    },
     magicLinkButton: 'Sign in to LangX',
-    magicLinkText: 'Sign in to LangX (works once, expires in 15 minutes): {url}',
+    magicLinkText: {
+      one: 'Sign in to LangX (works once, expires in {count} minute): {url}',
+      other: 'Sign in to LangX (works once, expires in {count} minutes): {url}',
+    },
 
     existingSubject: 'You already have a LangX account',
     existingPreheader: 'You already have a LangX account',
@@ -220,10 +227,16 @@ export const en = {
      * `legacyPrecreate.ts` opened. Carries a sign-in link, because "reset your
      * password" is strange advice for a password that was never set.
      */
-    existingLinkBody:
-      'Someone tried to sign up with this email, but you already have an account here, with your profile on it. Tap to sign in — there is no password to remember. The link works once and expires in 15 minutes.',
-    existingLinkText:
-      'You already have a LangX account. Sign in here (works once, expires in 15 minutes): {url}',
+    existingLinkBody: {
+      one: 'Someone tried to sign up with this email, but you already have an account here, with your profile on it. Tap to sign in — there is no password to remember. The link works once and expires in {count} minute.',
+      other:
+        'Someone tried to sign up with this email, but you already have an account here, with your profile on it. Tap to sign in — there is no password to remember. The link works once and expires in {count} minutes.',
+    },
+    existingLinkText: {
+      one: 'You already have a LangX account. Sign in here (works once, expires in {count} minute): {url}',
+      other:
+        'You already have a LangX account. Sign in here (works once, expires in {count} minutes): {url}',
+    },
 
     /*
      * The footer every notification email carries, and the page its link
@@ -312,18 +325,25 @@ export const en = {
 
     newsletterSeeMonth: 'See your month',
 
-    /** The day's replies to somebody's posts, in one letter. */
+    /**
+     * The day's replies to somebody's posts, in one letter.
+     *
+     * `{count}` is every correction, recording and comment of the last 24
+     * hours, on posts of any age, and they may all be on one post. So "today"
+     * goes with the replies, never with the posting, and the posts are "what
+     * you posted" rather than "your posts".
+     */
 
     feedDigestSubject: {
-      one: '1 reply to what you posted today',
-      other: '{count} replies to what you posted today',
+      one: '1 reply today to what you posted',
+      other: '{count} replies today to what you posted',
     },
 
     feedDigestPreheader: 'People answered what you posted',
 
     feedDigestBody: {
-      one: 'Somebody answered something you posted today.',
-      other: 'What you posted today got {count} replies.',
+      one: 'Somebody replied today to something you posted.',
+      other: 'What you posted got {count} replies today.',
     },
 
     feedDigestCorrections: { one: '1 correction', other: '{count} corrections' },
@@ -780,7 +800,8 @@ export const en = {
     hateSpeech: 'Hate speech',
     inappropriateContent: 'Inappropriate content',
     fakeProfile: 'Fake profile',
-    underage: 'Under 16',
+    /** `{count}` is `MINIMUM_AGE`. */
+    underage: { one: 'Under {count}', other: 'Under {count}' },
     other: 'Something else',
   },
   /**

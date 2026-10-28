@@ -32,3 +32,15 @@ import { webUrl } from './appIdentity'
 export function verifyEmailUrl(token: string): string {
   return webUrl(`/verify-email?token=${encodeURIComponent(token)}`)
 }
+
+/**
+ * How long an emailed sign-in link stays valid, in minutes.
+ *
+ * The API hands it to Better Auth's magic-link plugin (`auth.ts`), and the
+ * mails and the app's sign-in screens quote it as `{count}`. It was a literal
+ * in the plugin config and a "15" in seven sentences per language, in both
+ * catalogues, so a change to one would have left the other telling people
+ * the wrong deadline. Here, beside the link it times, rather than in
+ * `magicLinkUrl`'s `appIdentity.ts`, which is a fingerprint input.
+ */
+export const MAGIC_LINK_TTL_MINUTES = 15

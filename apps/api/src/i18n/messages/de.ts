@@ -173,10 +173,16 @@ export const de: Localized<ServerMessages> = {
     resetText: 'Setze dein LangX-Passwort zurück: {url}',
     magicLinkSubject: 'Dein LangX-Anmeldelink',
     magicLinkPreheader: 'Tippe, um dich bei LangX anzumelden',
-    magicLinkBody:
-      'Tippe auf den Button, um dich anzumelden. Der Link funktioniert einmal und läuft in 15 Minuten ab.',
+    magicLinkBody: {
+      one: 'Tippe auf den Button, um dich anzumelden. Der Link funktioniert einmal und läuft in {count} Minute ab.',
+      other:
+        'Tippe auf den Button, um dich anzumelden. Der Link funktioniert einmal und läuft in {count} Minuten ab.',
+    },
     magicLinkButton: 'Bei LangX anmelden',
-    magicLinkText: 'Bei LangX anmelden (einmal gültig, läuft in 15 Minuten ab): {url}',
+    magicLinkText: {
+      one: 'Bei LangX anmelden (einmal gültig, läuft in {count} Minute ab): {url}',
+      other: 'Bei LangX anmelden (einmal gültig, läuft in {count} Minuten ab): {url}',
+    },
 
     existingSubject: 'Du hast bereits ein LangX-Konto',
     existingPreheader: 'Du hast bereits ein LangX-Konto',
@@ -185,10 +191,16 @@ export const de: Localized<ServerMessages> = {
     existingButton: 'Passwort zurücksetzen',
     existingText: 'Du hast bereits ein LangX-Konto. Setze dein Passwort hier zurück: {url}',
 
-    existingLinkBody:
-      'Jemand hat versucht, sich mit dieser E-Mail zu registrieren, aber du hast hier bereits ein Konto, mit deinem Profil darauf. Tippe, um dich anzumelden — es gibt kein Passwort zu merken. Der Link funktioniert einmal und läuft in 15 Minuten ab.',
-    existingLinkText:
-      'Du hast bereits ein LangX-Konto. Melde dich hier an (einmal gültig, läuft in 15 Minuten ab): {url}',
+    existingLinkBody: {
+      one: 'Jemand hat versucht, sich mit dieser E-Mail zu registrieren, aber du hast hier bereits ein Konto, mit deinem Profil darauf. Tippe, um dich anzumelden — es gibt kein Passwort zu merken. Der Link funktioniert einmal und läuft in {count} Minute ab.',
+      other:
+        'Jemand hat versucht, sich mit dieser E-Mail zu registrieren, aber du hast hier bereits ein Konto, mit deinem Profil darauf. Tippe, um dich anzumelden — es gibt kein Passwort zu merken. Der Link funktioniert einmal und läuft in {count} Minuten ab.',
+    },
+    existingLinkText: {
+      one: 'Du hast bereits ein LangX-Konto. Melde dich hier an (einmal gültig, läuft in {count} Minute ab): {url}',
+      other:
+        'Du hast bereits ein LangX-Konto. Melde dich hier an (einmal gültig, läuft in {count} Minuten ab): {url}',
+    },
 
     whyThisMail: 'Du bekommst das wegen deiner LangX-Benachrichtigungseinstellungen.',
     unsubscribeLink: 'Diese E-Mails abstellen',
@@ -282,15 +294,15 @@ export const de: Localized<ServerMessages> = {
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {
-      one: '1 Antwort auf deinen Beitrag heute',
-      other: '{count} Antworten auf deine Beiträge heute',
+      one: 'Heute 1 Antwort auf das, was du gepostet hast',
+      other: 'Heute {count} Antworten auf das, was du gepostet hast',
     },
 
     feedDigestPreheader: 'Man hat auf deine Beiträge geantwortet',
 
     feedDigestBody: {
-      one: 'Jemand hat heute auf einen deiner Beiträge geantwortet.',
-      other: 'Deine Beiträge haben heute {count} Antworten bekommen.',
+      one: 'Jemand hat heute auf etwas geantwortet, das du gepostet hast.',
+      other: 'Du hast heute {count} Antworten auf das bekommen, was du gepostet hast.',
     },
 
     feedDigestCorrections: { one: '1 Korrektur', other: '{count} Korrekturen' },
@@ -646,7 +658,7 @@ export const de: Localized<ServerMessages> = {
     hateSpeech: 'Hassrede',
     inappropriateContent: 'Unangemessener Inhalt',
     fakeProfile: 'Fake-Profil',
-    underage: 'Unter 16',
+    underage: { one: 'Unter {count}', other: 'Unter {count}' },
     other: 'Etwas anderes',
   },
   official: {

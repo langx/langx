@@ -1,4 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
+import { MAGIC_LINK_TTL_MINUTES } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
@@ -91,7 +92,9 @@ export default function SignInLink() {
           <Feather name="mail" size={30} color={colors.accent} />
         </View>
         <Text style={styles.centredTitle}>{t('auth.checkEmailTitle')}</Text>
-        <Text style={styles.centredBody}>{t('auth.signInLinkSentBody', { email })}</Text>
+        <Text style={styles.centredBody}>
+          {t('auth.signInLinkSentBody', { email, count: MAGIC_LINK_TTL_MINUTES })}
+        </Text>
         <View style={styles.centredActions}>
           <Button label={t('auth.goToSignIn')} onPress={() => router.push('/(auth)/sign-in')} />
         </View>
@@ -130,7 +133,7 @@ export default function SignInLink() {
       {!!email.trim() && captcha.checking ? (
         <Text style={styles.checking}>{t('auth.captchaChecking')}</Text>
       ) : null}
-      <Text style={styles.note}>{t('auth.signInLinkNote')}</Text>
+      <Text style={styles.note}>{t('auth.signInLinkNote', { count: MAGIC_LINK_TTL_MINUTES })}</Text>
     </Screen>
   )
 }

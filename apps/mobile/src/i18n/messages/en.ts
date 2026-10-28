@@ -1058,10 +1058,17 @@ export const en = {
     signInLinkBody:
       'Enter your email or username and we will send you a link that signs you in — no password needed.',
     sendSignInLink: 'Send sign-in link',
-    signInLinkSentBody:
-      'If an account exists for {email}, a sign-in link is on its way. It works once and expires in 15 minutes.',
-    signInLinkExpiredBody:
-      'That sign-in link has already been used or has expired. Ask for a new one and tap it within 15 minutes.',
+    /** `{count}` here, below and in `signInLinkNote` is `MAGIC_LINK_TTL_MINUTES`. */
+    signInLinkSentBody: {
+      one: 'If an account exists for {email}, a sign-in link is on its way. It works once and expires in {count} minute.',
+      other:
+        'If an account exists for {email}, a sign-in link is on its way. It works once and expires in {count} minutes.',
+    },
+    signInLinkExpiredBody: {
+      one: 'That sign-in link has already been used or has expired. Ask for a new one and tap it within {count} minute.',
+      other:
+        'That sign-in link has already been used or has expired. Ask for a new one and tap it within {count} minutes.',
+    },
     openLinkTitle: 'Sign in to LangX',
     openLinkBody:
       'You followed a sign-in link. Tap the button to finish signing in on this device.',
@@ -1080,8 +1087,11 @@ export const en = {
     verificationFailedTitle: 'Verification failed',
     verificationFailedBody: 'That link is invalid or has expired. Sign in and request a new one.',
     signInWithCode: 'Sign in with a code from another device',
-    signInLinkNote:
-      'It works once and expires in 15 minutes. It also works if you had an account in the previous app.',
+    signInLinkNote: {
+      one: 'It works once and expires in {count} minute. It also works if you had an account in the previous app.',
+      other:
+        'It works once and expires in {count} minutes. It also works if you had an account in the previous app.',
+    },
   },
 
   onboarding: {
@@ -1629,9 +1639,15 @@ export const en = {
     romanizeUnavailable: 'Couldn’t show it in Latin letters',
     romanizeFailed: 'Try again in a moment.',
     speakLimit: {
-      one: 'You’ve used today’s {count} reading. It resets in 24 hours.',
-      other: 'You’ve used today’s {count} readings. They reset in 24 hours.',
+      one: 'You’ve used today’s {count} reading. It resets {window}.',
+      other: 'You’ve used today’s {count} readings. They reset {window}.',
     },
+    /**
+     * When a chat allowance comes back: the rolling window the server counts
+     * in (`QUOTA_WINDOW_MS`), in hours. `{window}` in `chat.speakLimit`; a
+     * phrase of its own because that sentence is already plural on the readings.
+     */
+    limitWindow: { one: 'in {count} hour', other: 'in {count} hours' },
     showText: 'Show text',
     transcribing: 'Writing it out…',
     transcriptEmpty: 'No words heard in this note.',
@@ -1946,7 +1962,8 @@ export const en = {
       'Attacks based on who someone is, including sexual orientation and gender identity',
     inappropriateContent: 'Inappropriate content',
     fakeProfile: 'Fake profile',
-    underage: 'Under 16',
+    /** `{count}` is `MINIMUM_AGE`; `reportReasonLabel` passes it to every reason. */
+    underage: { one: 'Under {count}', other: 'Under {count}' },
     other: 'Something else',
     details: 'What happened?',
     detailsPlaceholder: 'Optional. Anything that helps us understand.',
@@ -3351,8 +3368,16 @@ export const en = {
     shareMessage: 'Practise languages with me on LangX: {url}',
     howTitle: 'How it works',
     step1: 'Send your link to somebody learning your language.',
-    step2:
-      'They sign up and have a real conversation — somebody other than you writes back. That is when you earn {activation} tokens.',
+    /**
+     * `count` picks the form and `{activation}` shows the same number in the
+     * reader's digits ("1,000"); `shared.inviteBody` does the same with
+     * `{total}`.
+     */
+    step2: {
+      one: 'They sign up and have a real conversation — somebody other than you writes back. That is when you earn {activation} token.',
+      other:
+        'They sign up and have a real conversation — somebody other than you writes back. That is when you earn {activation} tokens.',
+    },
     step3:
       'If they ever start a paid plan, you earn {subscription} more. {max} in total, per person.',
     step4:
@@ -4093,8 +4118,11 @@ export const en = {
     missingBody: 'No LangX profile answers to @{handle}.',
     ctaBody: '{name} practises languages on LangX. Join to say hello.',
     ctaLabel: 'Open LangX',
-    inviteBody:
-      '{name} invited you. Sign up and have a real conversation with someone, and you start with {total} tokens; {name} earns {activation} — up to {max} if you ever go paid. Free to join.',
+    inviteBody: {
+      one: '{name} invited you. Sign up and have a real conversation with someone, and you start with {total} token; {name} earns {activation} — up to {max} if you ever go paid. Free to join.',
+      other:
+        '{name} invited you. Sign up and have a real conversation with someone, and you start with {total} tokens; {name} earns {activation} — up to {max} if you ever go paid. Free to join.',
+    },
   },
 
   shareProfile: {

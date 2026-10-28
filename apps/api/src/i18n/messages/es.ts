@@ -175,10 +175,16 @@ export const es: Localized<ServerMessages> = {
     resetText: 'Restablece tu contraseña de LangX: {url}',
     magicLinkSubject: 'Tu enlace para entrar en LangX',
     magicLinkPreheader: 'Toca para entrar en LangX',
-    magicLinkBody:
-      'Toca el botón para iniciar sesión. El enlace funciona una vez y caduca en 15 minutos.',
+    magicLinkBody: {
+      one: 'Toca el botón para iniciar sesión. El enlace funciona una vez y caduca en {count} minuto.',
+      other:
+        'Toca el botón para iniciar sesión. El enlace funciona una vez y caduca en {count} minutos.',
+    },
     magicLinkButton: 'Entrar en LangX',
-    magicLinkText: 'Entra en LangX (funciona una vez, caduca en 15 minutos): {url}',
+    magicLinkText: {
+      one: 'Entra en LangX (funciona una vez, caduca en {count} minuto): {url}',
+      other: 'Entra en LangX (funciona una vez, caduca en {count} minutos): {url}',
+    },
 
     existingSubject: 'Ya tienes una cuenta de LangX',
     existingPreheader: 'Ya tienes una cuenta de LangX',
@@ -187,10 +193,16 @@ export const es: Localized<ServerMessages> = {
     existingButton: 'Restablecer contraseña',
     existingText: 'Ya tienes una cuenta de LangX. Restablece tu contraseña aquí: {url}',
 
-    existingLinkBody:
-      'Alguien ha intentado registrarse con este correo, pero ya tienes una cuenta aquí, con tu perfil en ella. Toca para entrar: no hay contraseña que recordar. El enlace funciona una vez y caduca en 15 minutos.',
-    existingLinkText:
-      'Ya tienes una cuenta de LangX. Entra aquí (funciona una vez, caduca en 15 minutos): {url}',
+    existingLinkBody: {
+      one: 'Alguien ha intentado registrarse con este correo, pero ya tienes una cuenta aquí, con tu perfil en ella. Toca para entrar: no hay contraseña que recordar. El enlace funciona una vez y caduca en {count} minuto.',
+      other:
+        'Alguien ha intentado registrarse con este correo, pero ya tienes una cuenta aquí, con tu perfil en ella. Toca para entrar: no hay contraseña que recordar. El enlace funciona una vez y caduca en {count} minutos.',
+    },
+    existingLinkText: {
+      one: 'Ya tienes una cuenta de LangX. Entra aquí (funciona una vez, caduca en {count} minuto): {url}',
+      other:
+        'Ya tienes una cuenta de LangX. Entra aquí (funciona una vez, caduca en {count} minutos): {url}',
+    },
 
     whyThisMail: 'Recibes esto por tus ajustes de notificaciones de LangX.',
     unsubscribeLink: 'Desactivar estos correos',
@@ -284,15 +296,15 @@ export const es: Localized<ServerMessages> = {
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {
-      one: '1 respuesta a lo que publicaste hoy',
-      other: '{count} respuestas a lo que publicaste hoy',
+      one: '1 respuesta hoy a lo que publicaste',
+      other: '{count} respuestas hoy a lo que publicaste',
     },
 
     feedDigestPreheader: 'Respondieron a lo que publicaste',
 
     feedDigestBody: {
-      one: 'Alguien respondió a algo que publicaste hoy.',
-      other: 'Lo que publicaste hoy recibió {count} respuestas.',
+      one: 'Alguien respondió hoy a algo que publicaste.',
+      other: 'Lo que publicaste recibió {count} respuestas hoy.',
     },
 
     feedDigestCorrections: { one: '1 corrección', other: '{count} correcciones' },
@@ -647,7 +659,7 @@ export const es: Localized<ServerMessages> = {
     hateSpeech: 'Discurso de odio',
     inappropriateContent: 'Contenido inapropiado',
     fakeProfile: 'Perfil falso',
-    underage: 'Menor de 16 años',
+    underage: { one: 'Menor de {count} año', other: 'Menor de {count} años' },
     other: 'Otra cosa',
   },
   official: {

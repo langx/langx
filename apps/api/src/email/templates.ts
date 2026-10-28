@@ -2,6 +2,8 @@ import {
   ACCOUNT_DELETION_GRACE_DAYS,
   isImageContentType,
   isVideoContentType,
+  MAGIC_LINK_TTL_MINUTES,
+  MINIMUM_AGE,
   paywallPath,
   postUrl,
   profileUrl,
@@ -348,9 +350,9 @@ export function resetPasswordEmail(url: string, locale: Locale): Email {
 /**
  * The one-tap way in. `url` is `magicLinkUrl(token)` — a page on the web
  * host, so a phone with the app opens the app and a mail scanner opens
- * nothing. The token works once and for a quarter of an hour; the body says
- * so, because a link that has stopped working with no explanation reads as
- * the app being broken.
+ * nothing. The token works once and for `MAGIC_LINK_TTL_MINUTES`, the number
+ * `auth.ts` gives the plugin; the body says so, because a link that has
+ * stopped working with no explanation reads as the app being broken.
  */
 export function magicLinkEmail(url: string, locale: Locale): Email {
   const t = translator(locale)
@@ -359,11 +361,11 @@ export function magicLinkEmail(url: string, locale: Locale): Email {
     html: wrap(
       locale,
       t('email.magicLinkPreheader'),
-      `<p>${t('email.magicLinkBody')}</p>
+      `<p>${t('email.magicLinkBody', { count: MAGIC_LINK_TTL_MINUTES })}</p>
        <p>${button(url, t('email.magicLinkButton'))}</p>
        <p style="font-size: 12px; color: #9aa1a9;">${t('email.orPaste', { url })}</p>`,
     ),
-    text: t('email.magicLinkText', { url }),
+    text: t('email.magicLinkText', { url, count: MAGIC_LINK_TTL_MINUTES }),
   }
 }
 
@@ -441,11 +443,11 @@ export function existingAccountLinkEmail(url: string, locale: Locale): Email {
     html: wrap(
       locale,
       t('email.existingPreheader'),
-      `<p>${t('email.existingLinkBody')}</p>
+      `<p>${t('email.existingLinkBody', { count: MAGIC_LINK_TTL_MINUTES })}</p>
        <p>${button(url, t('email.magicLinkButton'))}</p>
        <p style="font-size: 12px; color: #9aa1a9;">${t('email.orPaste', { url })}</p>`,
     ),
-    text: t('email.existingLinkText', { url }),
+    text: t('email.existingLinkText', { url, count: MAGIC_LINK_TTL_MINUTES }),
   }
 }
 
@@ -1637,7 +1639,9 @@ export function reportEmail(input: {
  */
 function reasonLabel(t: ReturnType<typeof translator>, reason: string): string {
   const key = reason.replace(/_(.)/g, (_, c: string) => c.toUpperCase())
-  return t(`reportReason.${key}` as Parameters<typeof t>[0])
+  // `underage` quotes the age floor and is worded per number; every other
+  // reason has no placeholder and ignores the count.
+  return t(`reportReason.${key}` as Parameters<typeof t>[0], { count: MINIMUM_AGE })
 }
 
 /**

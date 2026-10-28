@@ -174,9 +174,15 @@ export const ptBR: Localized<ServerMessages> = {
     resetText: 'Redefina sua senha do LangX: {url}',
     magicLinkSubject: 'Seu link de acesso ao LangX',
     magicLinkPreheader: 'Toque para entrar no LangX',
-    magicLinkBody: 'Toque no botão para entrar. O link funciona uma vez e expira em 15 minutos.',
+    magicLinkBody: {
+      one: 'Toque no botão para entrar. O link funciona uma vez e expira em {count} minuto.',
+      other: 'Toque no botão para entrar. O link funciona uma vez e expira em {count} minutos.',
+    },
     magicLinkButton: 'Entrar no LangX',
-    magicLinkText: 'Entre no LangX (funciona uma vez, expira em 15 minutos): {url}',
+    magicLinkText: {
+      one: 'Entre no LangX (funciona uma vez, expira em {count} minuto): {url}',
+      other: 'Entre no LangX (funciona uma vez, expira em {count} minutos): {url}',
+    },
 
     existingSubject: 'Você já tem uma conta no LangX',
     existingPreheader: 'Você já tem uma conta no LangX',
@@ -185,10 +191,16 @@ export const ptBR: Localized<ServerMessages> = {
     existingButton: 'Redefinir senha',
     existingText: 'Você já tem uma conta no LangX. Redefina sua senha aqui: {url}',
 
-    existingLinkBody:
-      'Alguém tentou se cadastrar com este e-mail, mas você já tem uma conta aqui, com o seu perfil nela. Toque para entrar — não há senha para lembrar. O link funciona uma vez e expira em 15 minutos.',
-    existingLinkText:
-      'Você já tem uma conta no LangX. Entre aqui (funciona uma vez, expira em 15 minutos): {url}',
+    existingLinkBody: {
+      one: 'Alguém tentou se cadastrar com este e-mail, mas você já tem uma conta aqui, com o seu perfil nela. Toque para entrar — não há senha para lembrar. O link funciona uma vez e expira em {count} minuto.',
+      other:
+        'Alguém tentou se cadastrar com este e-mail, mas você já tem uma conta aqui, com o seu perfil nela. Toque para entrar — não há senha para lembrar. O link funciona uma vez e expira em {count} minutos.',
+    },
+    existingLinkText: {
+      one: 'Você já tem uma conta no LangX. Entre aqui (funciona uma vez, expira em {count} minuto): {url}',
+      other:
+        'Você já tem uma conta no LangX. Entre aqui (funciona uma vez, expira em {count} minutos): {url}',
+    },
 
     whyThisMail: 'Você recebe isto por causa das suas configurações de notificações do LangX.',
     unsubscribeLink: 'Desativar estes e-mails',
@@ -281,15 +293,15 @@ export const ptBR: Localized<ServerMessages> = {
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {
-      one: '1 resposta ao que você publicou hoje',
-      other: '{count} respostas ao que você publicou hoje',
+      one: '{count} resposta hoje ao que você publicou',
+      other: '{count} respostas hoje ao que você publicou',
     },
 
     feedDigestPreheader: 'Responderam ao que você publicou',
 
     feedDigestBody: {
-      one: 'Alguém respondeu a algo que você publicou hoje.',
-      other: 'O que você publicou hoje recebeu {count} respostas.',
+      one: 'Alguém respondeu hoje a algo que você publicou.',
+      other: 'O que você publicou recebeu {count} respostas hoje.',
     },
 
     feedDigestCorrections: { one: '1 correção', other: '{count} correções' },
@@ -641,7 +653,7 @@ export const ptBR: Localized<ServerMessages> = {
     hateSpeech: 'Discurso de ódio',
     inappropriateContent: 'Conteúdo inadequado',
     fakeProfile: 'Perfil falso',
-    underage: 'Menor de 16 anos',
+    underage: { one: 'Menor de {count} ano', other: 'Menor de {count} anos' },
     other: 'Outra coisa',
   },
   official: {

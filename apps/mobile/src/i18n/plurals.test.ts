@@ -163,6 +163,57 @@ describe('numbers the app is configured with', () => {
     expect(ar('editProfile.genderOnce', { count: 200 })).toBe('يمكنك تغيير هذا مرة كل 200 يوم.')
     expect(ar('settings.usernameBody', { count: 2 })).toBe('غيّره مرة كل يومين')
   })
+
+  it('words the sign-in link’s lifetime for any number of minutes', () => {
+    // MAGIC_LINK_TTL_MINUTES, which the API also hands the magic-link plugin.
+    // "через" takes the accusative and "в течение" the genitive, so 21 reads
+    // two ways; Arabic counts 11–99 in the singular, written bare as the
+    // catalogue's other minute counts are, so today's 15 reads as it did.
+    const ru = createTranslate('ru')
+    expect(ru('auth.signInLinkNote', { count: 15 })).toContain('действует 15 минут.')
+    expect(ru('auth.signInLinkNote', { count: 21 })).toContain('действует 21 минуту.')
+    expect(ru('auth.signInLinkNote', { count: 3 })).toContain('действует 3 минуты.')
+    expect(ru('auth.signInLinkExpiredBody', { count: 15 })).toMatch(/в течение 15 минут\.$/)
+    expect(ru('auth.signInLinkExpiredBody', { count: 21 })).toMatch(/в течение 21 минуты\.$/)
+    const ar = createTranslate('ar')
+    expect(ar('auth.signInLinkSentBody', { count: 15, email: 'a@b.c' })).toMatch(/خلال 15 دقيقة\.$/)
+    expect(ar('auth.signInLinkSentBody', { count: 5, email: 'a@b.c' })).toMatch(/خلال 5 دقائق\.$/)
+    expect(ar('auth.signInLinkSentBody', { count: 2, email: 'a@b.c' })).toMatch(/خلال دقيقتين\.$/)
+  })
+
+  it('names the age floor in the report reason for any age', () => {
+    const ru = createTranslate('ru')
+    expect(ru('report.underage', { count: 16 })).toBe('Младше 16 лет')
+    expect(ru('report.underage', { count: 21 })).toBe('Младше 21 года')
+    const ar = createTranslate('ar')
+    expect(ar('report.underage', { count: 16 })).toBe('أقل من 16 عامًا')
+    expect(ar('report.underage', { count: 5 })).toBe('أقل من 5 أعوام')
+    expect(ar('report.underage', { count: 100 })).toBe('أقل من 100 عام')
+  })
+
+  it('agrees the token noun in the invite steps with the referral rules', () => {
+    // `count` picks the form; the shown number is the reader's digits.
+    const ru = createTranslate('ru')
+    expect(ru('invite.step2', { count: 1000, activation: '1 000' })).toMatch(
+      /получаешь 1 000 токенов\.$/,
+    )
+    expect(ru('invite.step2', { count: 21, activation: '21' })).toMatch(/получаешь 21 токен\.$/)
+    // "с" takes the genitive: с 21 токена, с 1000 токенов.
+    const invite = (count: number) =>
+      ru('shared.inviteBody', {
+        count,
+        total: String(count),
+        name: 'Ana',
+        activation: '1',
+        max: '5',
+      })
+    expect(invite(1000)).toContain('ты начнёшь с 1000 токенов;')
+    expect(invite(21)).toContain('ты начнёшь с 21 токена;')
+    const ar = createTranslate('ar')
+    expect(ar('invite.step2', { count: 1000, activation: '1000' })).toMatch(/تكسب 1000 رمز\.$/)
+    expect(ar('invite.step2', { count: 2, activation: '2' })).toMatch(/تكسب رمزين\.$/)
+    expect(ar('invite.step2', { count: 50, activation: '50' })).toMatch(/تكسب 50 رمزًا\.$/)
+  })
 })
 
 /**
