@@ -1070,23 +1070,31 @@ function musicStem(film, out, voiced) {
 }
 // The voice, when there are takes: each sentence of each take placed at its own time (the clock
 // places sentences, not whole takes, so the board's gaps stay). Null without takes.
+// A sentence's window ends in the silence before the next one of its take, never past where that
+// one's window opens: a pushed sentence plays apart from the next, so any overlap would be heard
+// twice. Both edges fade, so a cut that still lands on sound is not a click.
 function voiceStem(film, out) {
   const parts = []
   for (const Ln of Object.values(film.clock.lines))
-    if (Ln.take)
-      for (const s of Ln.sents) {
-        const pre = Math.min(0.03, s.take.from)
+    if (Ln.take) {
+      const S = Ln.sents.map((s) => s.take)
+      const pre = S.map((t, i) => Math.min(0.03, t.from, i ? (t.from - S[i - 1].to) / 2 : 0.03))
+      S.forEach((t, i) =>
         parts.push({
           wav: Ln.take.wav,
-          from: s.take.from - pre,
-          to: s.take.to + 0.12,
-          at: s.take.at - pre,
-        })
-      }
+          from: t.from - pre[i],
+          to: Math.max(
+            t.to,
+            Math.min(t.to + 0.12, i < S.length - 1 ? S[i + 1].from - pre[i + 1] : Infinity),
+          ),
+          at: t.at - pre[i],
+        }),
+      )
+    }
   if (!parts.length) return null
   const chains = parts.map(
     (p, i) =>
-      `[${i}:a]aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=mono,atrim=${r3(p.from)}:${r3(p.to)},asetpts=N/SR/TB,afade=t=in:d=0.01,adelay=${Math.round(p.at * 1000)}:all=1[v${i}]`,
+      `[${i}:a]aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=mono,atrim=${r3(p.from)}:${r3(p.to)},asetpts=N/SR/TB,afade=t=in:d=0.01,afade=t=out:st=${r3(Math.max(0, p.to - p.from - 0.015))}:d=0.015,adelay=${Math.round(p.at * 1000)}:all=1[v${i}]`,
   )
   chains.push(
     `${parts.map((_, i) => `[v${i}]`).join('')}amix=inputs=${parts.length}:normalize=0:duration=longest[out]`,
