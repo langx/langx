@@ -1380,7 +1380,7 @@ export const ru: Localized<EnMessages> = {
       one: '{count} новое',
       few: '{count} новых',
       many: '{count} новых',
-      other: '{count} новых',
+      other: '{count} нового',
     },
     tab_all: 'Все',
     tab_unreplied: 'Без ответа',
@@ -3459,7 +3459,7 @@ export const ru: Localized<EnMessages> = {
         one: '{amount} раз в месяц.',
         few: 'До {amount} раз в месяц.',
         many: 'До {amount} раз в месяц.',
-        other: 'До {amount} раз в месяц.',
+        other: 'До {amount} раза в месяц.',
       },
       titlesBody: {
         one: '{amount} титул для вашего профиля',
@@ -5028,8 +5028,14 @@ export const ru: Localized<EnMessages> = {
         other: 'предложения исправлено для тех, кто учит твой язык',
       },
       echoKicker: 'Память',
+      /**
+       * The slide draws the month's reviews above this line, and `one` is 21
+       * and 31 as well as 1, so its clause cannot be about a single word:
+       * "21 карточка Echo повторена — это слово уже твоё" was 21 reviews, then
+       * one word.
+       */
       echoLine: {
-        one: 'карточка Echo повторена — это слово уже твоё',
+        one: 'карточка Echo повторена — это уже твоё',
         few: 'карточки Echo повторены — эти слова уже твои',
         many: 'карточек Echo повторено — эти слова уже твои',
         other: 'карточки Echo повторено — эти слова уже твои',

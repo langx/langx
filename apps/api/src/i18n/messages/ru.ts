@@ -406,12 +406,16 @@ export const ru: Localized<ServerMessages> = {
 
     meetingsPreheader: 'Что у вас запланировано на завтра',
 
-    /** Prepositional after "о": "о 21 звонке", but "о 2 звонках", "о 5 звонках". */
+    /**
+     * Prepositional after "о": "о 21 звонке", but "о 2 звонках", "о 5 звонках".
+     * `other` is the fraction form, which keeps the genitive singular in every
+     * case: "о 1,5 звонка".
+     */
     meetingsBody: {
       one: 'Вы договорились о {count} звонке на завтра.',
       few: 'Вы договорились о {count} звонках на завтра.',
       many: 'Вы договорились о {count} звонках на завтра.',
-      other: 'Вы договорились о {count} звонках на завтра.',
+      other: 'Вы договорились о {count} звонка на завтра.',
     },
 
     meetingsButton: 'Открыть чаты',

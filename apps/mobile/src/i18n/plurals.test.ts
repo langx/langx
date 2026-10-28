@@ -108,6 +108,20 @@ describe('counts that vary with user data inflect', () => {
     expect(ru('chat.mediaLocked', { count: 5 })).toMatch(/ещё 5 сообщений\.$/)
     expect(ru('chat.mediaLocked', { count: 21 })).toMatch(/ещё 21 сообщение\.$/)
   })
+
+  it('keeps the Echo recap line true for 21 reviews as well as 1', () => {
+    // The slide draws the count above the line, so no form has a placeholder
+    // and the completeness check below cannot see a `one` written for a single
+    // item. It read "это слово уже твоё" under 21 reviews.
+    const ru = createTranslate('ru')
+    expect(ru('recap.story.echoLine', { count: 21 })).toBe('карточка Echo повторена — это уже твоё')
+    expect(ru('recap.story.echoLine', { count: 22 })).toBe(
+      'карточки Echo повторены — эти слова уже твои',
+    )
+    expect(ru('recap.story.echoLine', { count: 25 })).toBe(
+      'карточек Echo повторено — эти слова уже твои',
+    )
+  })
 })
 
 /**
@@ -205,7 +219,8 @@ describe.each(HELD)('%s plurals', (locale) => {
   it('show the count in `one` wherever `other` shows it', () => {
     // A key may pass the number as {amount} or {formatted}; it is held to that
     // name. A unit word drawn beside a number the screen renders itself
-    // ("карточка ждёт") has no placeholder in any form, and 21 still agrees.
+    // ("карточка ждёт") has no placeholder in any form, so this cannot tell
+    // whether its `one` still holds at 21; the recap line is pinned above.
     const dropped = entries
       .filter(([path, plural]) => !allowed.has(path) && dropsCount(plural))
       .map(([path, plural]) => `${path}: ${plural.one}`)
