@@ -1,6 +1,7 @@
 import type { Catalog, Locale } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { catalogs } from './catalogs'
+import { NATIVE_KEYS } from './nativeKeys'
 
 /**
  * Russian and French address the reader as «ты» and « tu », as the headers of
@@ -11,7 +12,15 @@ import { catalogs } from './catalogs'
  * The plural is still right where the sentence means two people: the reader
  * and a partner ("you both wrote", "you won't see each other"). Those lines
  * say so in words, and only they may use it.
+ *
+ * The keys in `NATIVE_KEYS` wait for the next native build. The generator
+ * copies them into the widget, watch, Wear and notification resources, and
+ * those files are part of the runtime fingerprint: changing them in an update
+ * would give the update a runtime no installed binary has, and stop every
+ * update after it from reaching the 3.1 builds. They keep «вы» / « vous »
+ * until a build ships them.
  */
+const NATIVE: ReadonlySet<string> = new Set(NATIVE_KEYS)
 const FORMAL: Partial<Record<Locale, { pattern: RegExp; plural: RegExp; old: string }>> = {
   ru: {
     pattern: /(?<!\p{L})(?:вы|вас|вам|вами|ваш\p{L}*)(?!\p{L})/iu,
@@ -41,7 +50,9 @@ describe.each(Object.entries(FORMAL))('the %s catalogue', (locale, rule) => {
 
   it('addresses one reader informally', () => {
     const formal = leaves(catalogs[locale as Locale])
-      .filter(([, text]) => rule.pattern.test(text) && !rule.plural.test(text))
+      .filter(
+        ([path, text]) => !NATIVE.has(path) && rule.pattern.test(text) && !rule.plural.test(text),
+      )
       .map(([path, text]) => `${path}: ${text}`)
     expect(formal).toEqual([])
   })
