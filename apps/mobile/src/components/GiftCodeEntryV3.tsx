@@ -1,6 +1,7 @@
 import { Pressable, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useT } from '../i18n'
+import { PRODUCT_TEXT_SCALE } from '../lib/productPage'
 import { makeStyles, useTheme } from '../lib/theme'
 import { FieldV3 } from './onboarding/WizardV3'
 import { Button } from './ui/Button'
@@ -20,7 +21,10 @@ export function GiftCodeLinkV3({ onPress }: { onPress: () => void }) {
       onPress={onPress}
       style={({ pressed }) => [styles.link, pressed && styles.pressed]}
     >
-      <Text style={styles.linkText}>{t('giftCode.link')}</Text>
+      {/* Small print, grown as far as a product page's sentences. */}
+      <Text style={styles.linkText} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+        {t('giftCode.link')}
+      </Text>
     </Pressable>
   )
 }
@@ -115,7 +119,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     minHeight: 44,
     paddingHorizontal: v3.space[10],
   },
-  linkText: { ...v3.type.label, color: v3.colors.muted },
+  linkText: { ...v3.type.label, color: v3.colors.muted, textAlign: 'center' },
   pressed: { opacity: 0.6 },
   backdrop: { ...v3.elevation.overlay, flex: 1, justifyContent: 'flex-end' },
   // A phone-width column even on a wide window, like the kit's other sheets.

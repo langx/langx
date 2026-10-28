@@ -251,7 +251,10 @@ adds none.
 - [ ] **A spend limit** on the key's workspace with the provider —
       `COPILOT_RULES.globalCallsPerDay` is our ceiling; that one is theirs.
 - [x] **Then the flag:** `scripts/maintenance.ts flag copilotEnabled true`.
-      On in production, for every account since 25 October 2026.
+      On in production (`GET /app-config`, read on 27 October 2026). Until
+      25 October 2026 it reached allow-listed accounts only; since then,
+      every account with a verified email address. A guest account cannot
+      use it.
 
 ## Reference — the rest of the Play form
 

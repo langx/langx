@@ -29,6 +29,8 @@ import { CompareTable } from '../../src/components/paywall/CompareTable'
 import { PlanCard } from '../../src/components/paywall/PlanCard'
 import { Reveal } from '../../src/components/paywall/Reveal'
 import { TrialTimeline, type TrialStep } from '../../src/components/paywall/TrialTimeline'
+import { useGlyphScale, useStacked } from '../../src/components/product/ProductGroup'
+import { useWordFit, WidestWord } from '../../src/components/product/WidestWord'
 import { Button } from '../../src/components/ui/Button'
 import { ICON_BUTTON_TARGET, IconButton } from '../../src/components/ui/IconButton'
 import { Screen } from '../../src/components/ui/Screen'
@@ -58,6 +60,7 @@ import {
   type PaywallRoad,
 } from '../../src/lib/paywallRoad'
 import { planPrice } from '../../src/lib/planPrice'
+import { PRODUCT_TEXT_SCALE } from '../../src/lib/productPage'
 import {
   getOffers,
   isPurchasesAvailable,
@@ -211,6 +214,13 @@ export default function PaywallScreen() {
   const [pickedPeriod, setPickedPeriod] = useState<BillingPeriod | null>(null)
   const [showAll, setShowAll] = useState(false)
   const [storeWaitOver, setStoreWaitOver] = useState(false)
+  // The larger text sizes, as a product page reads them (`useStacked`).
+  const stacked = useStacked()
+  const glyph = useGlyphScale()
+  // How far the headline and the links grow: their caps, or less where a
+  // word would not fit its line whole (`useWordFit`).
+  const headlineFit = useWordFit(PRODUCT_TEXT_SCALE.name)
+  const linksFit = useWordFit(PRODUCT_TEXT_SCALE.text)
 
   useEffect(() => {
     let cancelled = false
@@ -558,6 +568,167 @@ export default function PaywallScreen() {
     })
   }
 
+  /*
+   * The free promise, the terms, the button and the small print. Pinned under
+   * the page at the default sizes, so the button is on screen whatever the
+   * scroll. From the larger text sizes (`useStacked`) the block scrolls with
+   * the page instead, straight after the plans it buys: pinned, at the
+   * largest size it was taller than a 375×812 phone — the promise alone took
+   * half of it, the button sat below the screen's edge where nothing could
+   * scroll to it, and the page above had no height left. Capping its words
+   * was not enough on its own: at a sentence's 2× the block is still two
+   * thirds of that screen. In the page it keeps its order, so the trial's
+   * terms still sit right above the button.
+   */
+  const purchase = (
+    <View style={styles.footerColumn}>
+      {/* In the footer, beside the button, because that is where the eye is after a tap. */}
+      {notice ? (
+        <Text
+          style={styles.notice}
+          accessibilityLiveRegion="polite"
+          maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+        >
+          {notice}
+        </Text>
+      ) : null}
+      {/*
+        The free plan's promise, pinned beside the button rather than
+        scrolled with the page: it is on screen whatever the window's
+        height, next to the plans it is about — and at the larger text
+        sizes, in the page right under them (see above). Not said to
+        somebody who already pays.
+      */}
+      {isCurrent ? null : (
+        <View style={styles.promise}>
+          <Feather
+            name="check"
+            size={Math.round(v3.icon.md * glyph)}
+            color={v3.colors.correction}
+          />
+          <Text style={styles.promiseText} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+            {t('paywall.freePromise')}
+          </Text>
+        </View>
+      )}
+      {terms ? (
+        <Text style={styles.terms} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+          {emphasisRuns(terms).map((run, index) =>
+            run.strong ? (
+              <Text key={index} style={styles.termsBilled}>
+                {run.text}
+              </Text>
+            ) : (
+              run.text
+            ),
+          )}
+        </Text>
+      ) : null}
+      <Button
+        label={
+          // The plan held, said plainly, rather than a greyed-out "Start".
+          // A free week says so on the button, which is what the tap starts.
+          isCurrent
+            ? t('paywall.currentPlan')
+            : trialWeeks !== null
+              ? t('paywall.startTrial', { count: trialWeeks })
+              : trialDays !== null
+                ? t('paywall.startFreeTrial')
+                : t('paywall.subscribe')
+        }
+        loading={(offers === null && !isCurrent) || busyOfferId !== null}
+        disabled={isCurrent || offer === undefined}
+        onPress={() => (offer ? buy(offer.id, change) : undefined)}
+        // Drawn in a row title's type, and grown as far: "weitermachen" and
+        // "Продолжить" still fit the pill on a 375pt phone.
+        maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}
+      />
+      {/*
+        Named rather than deflected: "No thanks" and "Maybe later" both
+        imply the free app is a consolation. It is the product. On the
+        onboarding exposure, and where the chat allowance sent somebody —
+        the same size as the purchase, because replying is still free and
+        going back to it has to be as easy as paying.
+      */}
+      {source === 'onboarding' || road === 'chatLimit' ? (
+        <Button
+          variant="secondary"
+          label={t('paywall.continueFree')}
+          onPress={dismiss}
+          maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.rowTitle}
+        />
+      ) : null}
+      <View
+        style={styles.links}
+        // A link's line is the row less its own padding either side.
+        onLayout={(event) => linksFit.setLine(event.nativeEvent.layout.width - 2 * v3.space[10])}
+      >
+        {/*
+          Required by Apple on any screen that sells a subscription, and it
+          has to work for someone reinstalling on a new device — so it
+          runs a real SDK restore, not only the server-side reconcile.
+        */}
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => void restore()}
+          disabled={restoring}
+          style={styles.link}
+        >
+          <Text style={styles.linkText} maxFontSizeMultiplier={linksFit.scale}>
+            {restoring || refresh.isPending ? t('common.checking') : t('paywall.restorePurchases')}
+          </Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="link"
+          onPress={() => void Linking.openURL(TERMS_URL)}
+          style={styles.link}
+        >
+          <Text style={styles.linkText} maxFontSizeMultiplier={linksFit.scale}>
+            {t('paywall.terms')}
+          </Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="link"
+          onPress={() => void Linking.openURL(PRIVACY_URL)}
+          style={styles.link}
+        >
+          <Text style={styles.linkText} maxFontSizeMultiplier={linksFit.scale}>
+            {t('paywall.privacy')}
+          </Text>
+        </Pressable>
+        {/* App Store subscriptions are sold under Apple's own EULA. */}
+        {Platform.OS === 'ios' ? (
+          <Pressable
+            accessibilityRole="link"
+            onPress={() => void Linking.openURL(APPLE_EULA_URL)}
+            style={styles.link}
+          >
+            <Text style={styles.linkText} maxFontSizeMultiplier={linksFit.scale}>
+              {t('paywall.eula')}
+            </Text>
+          </Pressable>
+        ) : null}
+        {/*
+          One size for every link, grown no further than keeps the widest
+          word of any of them whole: a link's name is often a single word
+          with nowhere to wrap, and Russian's "Конфиденциальность" broke in
+          the middle on a 320pt screen at a sentence's 2×.
+        */}
+        <WidestWord
+          text={[
+            t('paywall.restorePurchases'),
+            t('common.checking'),
+            t('paywall.terms'),
+            t('paywall.privacy'),
+            ...(Platform.OS === 'ios' ? [t('paywall.eula')] : []),
+          ].join(' ')}
+          style={styles.linkText}
+          onWidth={linksFit.setWidest}
+        />
+      </View>
+    </View>
+  )
+
   return (
     <Screen fluid style={styles.screen}>
       <View style={styles.header}>
@@ -569,8 +740,10 @@ export default function PaywallScreen() {
         />
         <View style={styles.spacer} />
         <View style={styles.planMark}>
-          <Feather name="star" size={v3.icon.xs} color={v3.colors.pillText} />
-          <Text style={styles.planMarkText}>{t('paywall.planMark', { plan: TIER_NAMES.pro })}</Text>
+          <Feather name="star" size={Math.round(v3.icon.xs * glyph)} color={v3.colors.pillText} />
+          <Text style={styles.planMarkText} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+            {t('paywall.planMark', { plan: TIER_NAMES.pro })}
+          </Text>
         </View>
       </View>
 
@@ -580,9 +753,16 @@ export default function PaywallScreen() {
             <Reveal index={0} ready={ready} style={styles.context}>
               {contextLines.map((line) => (
                 <View key={line.icon} style={styles.contextLine}>
-                  <Feather name={line.icon} size={v3.icon.md} color={v3.colors.fg} />
+                  <Feather
+                    name={line.icon}
+                    size={Math.round(v3.icon.md * glyph)}
+                    color={v3.colors.fg}
+                  />
                   <View style={styles.contextBody}>
-                    <Text style={styles.contextText}>
+                    <Text
+                      style={styles.contextText}
+                      maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+                    >
                       {emphasisRuns(line.text).map((run, index) =>
                         run.strong ? (
                           <Text key={index} style={styles.contextStrong}>
@@ -597,8 +777,17 @@ export default function PaywallScreen() {
                       <View style={styles.chips}>
                         {LOCKED_FILTERS.map((key) => (
                           <View key={key} style={styles.chip}>
-                            <Feather name="lock" size={v3.icon.xs} color={v3.colors.muted} />
-                            <Text style={styles.chipText}>{t(key)}</Text>
+                            <Feather
+                              name="lock"
+                              size={Math.round(v3.icon.xs * glyph)}
+                              color={v3.colors.muted}
+                            />
+                            <Text
+                              style={styles.chipText}
+                              maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}
+                            >
+                              {t(key)}
+                            </Text>
                           </View>
                         ))}
                       </View>
@@ -610,10 +799,27 @@ export default function PaywallScreen() {
           ) : null}
 
           <Reveal index={1} ready={ready} style={styles.hero}>
-            <Text style={styles.headline} accessibilityRole="header">
+            {/*
+              As far as a product page's name grows, but never so far that a
+              word breaks in the middle ("furth/er" at the largest size): the
+              cap is measured (`useWordFit`), because the chat road's
+              headline carries a language's name, and "«португальский»" is
+              wider than any word the catalogue wrote.
+            */}
+            <Text
+              style={styles.headline}
+              accessibilityRole="header"
+              maxFontSizeMultiplier={headlineFit.scale}
+              onLayout={(event) => headlineFit.setLine(event.nativeEvent.layout.width)}
+            >
               {headline}
             </Text>
-            {trialLine ? <Text style={styles.trialLine}>{trialLine}</Text> : null}
+            {trialLine ? (
+              <Text style={styles.trialLine} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+                {trialLine}
+              </Text>
+            ) : null}
+            <WidestWord text={headline} style={styles.headline} onWidth={headlineFit.setWidest} />
           </Reveal>
 
           <Reveal index={2} ready={ready} style={styles.benefits}>
@@ -654,12 +860,18 @@ export default function PaywallScreen() {
                   })}
                 </View>
               ) : (
-                <Text style={styles.unavailable}>
+                <Text style={styles.unavailable} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
                   {t(isPurchasesAvailable() ? 'paywall.noPlans' : 'paywall.notSetUp')}
                 </Text>
               )}
             </Reveal>
           )}
+
+          {stacked ? (
+            <Reveal index={3} ready={ready}>
+              {purchase}
+            </Reveal>
+          ) : null}
 
           {gated ? (
             <Reveal index={4} ready={ready}>
@@ -678,7 +890,7 @@ export default function PaywallScreen() {
               A web purchase is held by RevenueCat's own store, not by Apple or
               Google, and is cancelled from the portal behind Settings.
             */}
-            <Text style={styles.legal}>
+            <Text style={styles.legal} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
               {t(Platform.OS === 'web' ? 'paywall.legalWeb' : 'paywall.legal')}
             </Text>
             {/*
@@ -691,110 +903,7 @@ export default function PaywallScreen() {
         </View>
       </ScrollView>
 
-      <View style={styles.footer}>
-        <View style={styles.footerColumn}>
-          {/* In the footer, beside the button, because that is where the eye is after a tap. */}
-          {notice ? (
-            <Text style={styles.notice} accessibilityLiveRegion="polite">
-              {notice}
-            </Text>
-          ) : null}
-          {/*
-            The free plan's promise, pinned beside the button rather than
-            scrolled with the page: it is on screen whatever the window's
-            height, next to the plans it is about. Not said to somebody who
-            already pays.
-          */}
-          {isCurrent ? null : (
-            <View style={styles.promise}>
-              <Feather name="check" size={v3.icon.md} color={v3.colors.correction} />
-              <Text style={styles.promiseText}>{t('paywall.freePromise')}</Text>
-            </View>
-          )}
-          {terms ? (
-            <Text style={styles.terms}>
-              {emphasisRuns(terms).map((run, index) =>
-                run.strong ? (
-                  <Text key={index} style={styles.termsBilled}>
-                    {run.text}
-                  </Text>
-                ) : (
-                  run.text
-                ),
-              )}
-            </Text>
-          ) : null}
-          <Button
-            label={
-              // The plan held, said plainly, rather than a greyed-out "Start".
-              // A free week says so on the button, which is what the tap starts.
-              isCurrent
-                ? t('paywall.currentPlan')
-                : trialWeeks !== null
-                  ? t('paywall.startTrial', { count: trialWeeks })
-                  : trialDays !== null
-                    ? t('paywall.startFreeTrial')
-                    : t('paywall.subscribe')
-            }
-            loading={(offers === null && !isCurrent) || busyOfferId !== null}
-            disabled={isCurrent || offer === undefined}
-            onPress={() => (offer ? buy(offer.id, change) : undefined)}
-          />
-          {/*
-            Named rather than deflected: "No thanks" and "Maybe later" both
-            imply the free app is a consolation. It is the product. On the
-            onboarding exposure, and where the chat allowance sent somebody —
-            the same size as the purchase, because replying is still free and
-            going back to it has to be as easy as paying.
-          */}
-          {source === 'onboarding' || road === 'chatLimit' ? (
-            <Button variant="secondary" label={t('paywall.continueFree')} onPress={dismiss} />
-          ) : null}
-          <View style={styles.links}>
-            {/*
-              Required by Apple on any screen that sells a subscription, and it
-              has to work for someone reinstalling on a new device — so it
-              runs a real SDK restore, not only the server-side reconcile.
-            */}
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => void restore()}
-              disabled={restoring}
-              style={styles.link}
-            >
-              <Text style={styles.linkText}>
-                {restoring || refresh.isPending
-                  ? t('common.checking')
-                  : t('paywall.restorePurchases')}
-              </Text>
-            </Pressable>
-            <Pressable
-              accessibilityRole="link"
-              onPress={() => void Linking.openURL(TERMS_URL)}
-              style={styles.link}
-            >
-              <Text style={styles.linkText}>{t('paywall.terms')}</Text>
-            </Pressable>
-            <Pressable
-              accessibilityRole="link"
-              onPress={() => void Linking.openURL(PRIVACY_URL)}
-              style={styles.link}
-            >
-              <Text style={styles.linkText}>{t('paywall.privacy')}</Text>
-            </Pressable>
-            {/* App Store subscriptions are sold under Apple's own EULA. */}
-            {Platform.OS === 'ios' ? (
-              <Pressable
-                accessibilityRole="link"
-                onPress={() => void Linking.openURL(APPLE_EULA_URL)}
-                style={styles.link}
-              >
-                <Text style={styles.linkText}>{t('paywall.eula')}</Text>
-              </Pressable>
-            ) : null}
-          </View>
-        </View>
-      </View>
+      {stacked ? null : <View style={styles.footer}>{purchase}</View>}
     </Screen>
   )
 }
@@ -845,23 +954,61 @@ function cardCopy(
  * the number it comes with underneath — the limit is the part of the promise
  * worth keeping visible. A not-yet-shipped or beta feature keeps its name and
  * body but says so.
+ *
+ * At the larger text sizes the tile stands over the words and the tag drops
+ * under them, so the words get the row's whole width, as a product page's row
+ * does (`ProductRow`); the tile grows with them (`useGlyphScale`).
  */
 function BenefitRow({ copy }: { copy: BenefitCopy }) {
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
   const tag = pendingTag(copy)
+  const stacked = useStacked()
+  const glyph = useGlyphScale()
+  const side = BENEFIT_TILE * glyph
+
+  const tile = (
+    <View
+      style={[
+        styles.benefitIcon,
+        {
+          backgroundColor: v3.hues[copy.hue],
+          borderRadius: v3.radius.icon * glyph,
+          height: side,
+          width: side,
+        },
+        stacked && styles.benefitIconAbove,
+      ]}
+    >
+      <Feather name={copy.icon} size={Math.round(v3.icon.lg * glyph)} color={v3.colors.ink} />
+    </View>
+  )
+  const pending = tag ? (
+    <Text style={styles.soonTag} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+      {t(tag)}
+    </Text>
+  ) : null
 
   return (
     <View style={styles.benefit}>
-      <View style={[styles.benefitIcon, { backgroundColor: v3.hues[copy.hue] }]}>
-        <Feather name={copy.icon} size={v3.icon.lg} color={v3.colors.ink} />
-      </View>
+      {stacked ? null : tile}
       <View style={styles.benefitText}>
-        <Text style={styles.benefitTitle}>{t(copy.title)}</Text>
-        <Text style={styles.benefitBody}>{t(copy.body, copy.vars)}</Text>
+        {stacked ? tile : null}
+        {/*
+          Grown as far as a sentence (`text`), not a row title's 2.4×:
+          German's "Willkommenspaket" broke in the middle there, as it did in
+          the comparison table.
+        */}
+        <Text style={styles.benefitTitle} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+          {t(copy.title)}
+        </Text>
+        <Text style={styles.benefitBody} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+          {t(copy.body, copy.vars)}
+        </Text>
+        {stacked ? pending : null}
       </View>
-      {tag ? <Text style={styles.soonTag}>{t(tag)}</Text> : null}
+      {stacked ? null : pending}
     </View>
   )
 }
@@ -920,16 +1067,22 @@ const useStyles = makeStyles(({ v3 }) => ({
   contextText: { ...v3.type.callout, color: v3.colors.fg },
   contextStrong: { fontWeight: '700' },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: v3.space[8] },
+  // `maxWidth` and the words' `flexShrink` wrap a chip wider than its line
+  // inside it: "Nur mein Geschlecht" ran past the screen at the largest size.
+  // The padding is air round words grown past the 32pt minimum; under it,
+  // the minimum still sets the height.
   chip: {
     alignItems: 'center',
     backgroundColor: v3.colors.bg,
     borderRadius: v3.radius.pill,
     flexDirection: 'row',
     gap: v3.space[6],
+    maxWidth: '100%',
     minHeight: 32,
     paddingHorizontal: v3.space[12],
+    paddingVertical: v3.space[4],
   },
-  chipText: { ...v3.type.label, color: v3.colors.fg },
+  chipText: { ...v3.type.label, color: v3.colors.fg, flexShrink: 1 },
 
   hero: { gap: v3.space[6] },
   headline: { ...v3.type.title, color: v3.colors.fg },
@@ -946,6 +1099,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     justifyContent: 'center',
     width: BENEFIT_TILE,
   },
+  benefitIconAbove: { marginBottom: v3.space[6] },
   benefitText: { flex: 1 },
   benefitTitle: { ...v3.type.button, color: v3.colors.fg },
   benefitBody: { ...v3.type.caption, color: v3.colors.muted },
@@ -982,10 +1136,14 @@ const useStyles = makeStyles(({ v3 }) => ({
   links: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' },
   // A target a thumb can find, on words set small: the platform's minimum,
   // 48dp on Android rather than iOS's 44.
+  // `maxWidth` wraps a link wider than the line inside it, rather than past
+  // the screen's edges: "Restore purchases" at the largest size did, and the
+  // page scrolled sideways.
   link: {
     justifyContent: 'center',
+    maxWidth: '100%',
     minHeight: ICON_BUTTON_TARGET,
     paddingHorizontal: v3.space[10],
   },
-  linkText: { ...v3.type.label, color: v3.colors.muted },
+  linkText: { ...v3.type.label, color: v3.colors.muted, textAlign: 'center' },
 }))
