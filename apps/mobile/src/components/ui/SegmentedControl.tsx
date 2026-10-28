@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import { useChangeHaptic } from '../../hooks/useChangeHaptic'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
-import { makeStyles } from '../../lib/theme'
+import { makeStyles, useTheme, type V3Tokens } from '../../lib/theme'
 import { EASE_OUT } from '../../lib/theme/motionAnimated'
 import { DURATION } from '../../lib/theme/motionValues'
 
@@ -26,11 +26,22 @@ interface SegmentedControlProps<T extends string> {
 const SEGMENT_HEIGHT = Platform.select({ android: 48, default: 44 })
 
 /**
- * How far a label may shrink to fit before it truncates instead — on iOS and
- * Android; the web build truncates. A German or Russian label is often a word
- * too long for a third of a phone.
+ * How far a label may shrink to fit before it truncates instead. A German or
+ * Russian label is often a word too long for a third of a phone.
  */
 const MIN_FONT_SCALE = 0.8
+
+/**
+ * A segment's inset on each side, as a step of `v3.space`: the room a label
+ * has is the segment's width less two of these.
+ */
+const SEGMENT_INSET = 6 satisfies keyof V3Tokens['space']
+
+/**
+ * A fitted size is rounded down to a tenth of a point, so a label sized to the
+ * exact room is never cut to an ellipsis by a rounding.
+ */
+const FIT_STEP = 10
 
 type Size = { width: number; height: number }
 
@@ -64,19 +75,48 @@ export function SegmentedControl<T extends string>({
   accessibilityLabel,
 }: SegmentedControlProps<T>) {
   const styles = useStyles()
+  const { v3 } = useTheme()
   const reduce = useReduceMotion()
   const markPress = useChangeHaptic(selected.join('\n'))
   const index = selected.length === 1 ? options.findIndex((o) => o.value === selected[0]) : -1
   // Two or three segments take the drawings' 16pt; four or more have a
   // quarter of a phone each, and a word like "Non-binary" only fits that at
   // the label step.
-  const label = options.length > 3 ? styles.labelCompact : styles.label
+  const compact = options.length > 3
+  const label = compact ? styles.labelCompact : styles.label
 
   const [track, setTrack] = useState<Size | null>(null)
   const [frames, setFrames] = useState<Record<number, LayoutRectangle>>({})
   const first = frames[0]
   const measured = track !== null && options.every((_, at) => frames[at] !== undefined)
   const sliding = index >= 0 && measured && first !== undefined
+
+  /*
+   * The web build has no `adjustsFontSizeToFit`: react-native-web drops it,
+   * and a label too long for its segment was cut to an ellipsis at full size
+   * while the phones shrank the same word to fit — "Correcciones" and
+   * "Исправления" on Transparency's chart. So on the web each label is drawn
+   * once more, unseen and unwrapped, its width taken, and its size set to
+   * what fits the segment, down to the same floor. A label that fits keeps
+   * its size exactly.
+   */
+  const fitOnWeb = Platform.OS === 'web'
+  const [natural, setNatural] = useState<Readonly<Record<string, number>>>({})
+  const baseSize = (compact ? v3.type.label : v3.type.buttonSmall).fontSize
+  const fitted = (at: number) => {
+    const option = options[at]
+    const width = option === undefined ? undefined : natural[option.label]
+    const frame = frames[at]
+    if (!fitOnWeb || width === undefined || frame === undefined || width <= 0) return null
+    const room = frame.width - 2 * v3.space[SEGMENT_INSET]
+    if (width <= room) return null
+    const scale = Math.max(MIN_FONT_SCALE, room / width)
+    return { fontSize: Math.floor(baseSize * scale * FIT_STEP) / FIT_STEP }
+  }
+  const onNatural = (text: string) => (event: LayoutChangeEvent) => {
+    const { width } = event.nativeEvent.layout
+    setNatural((current) => (current[text] === width ? current : { ...current, [text]: width }))
+  }
 
   /** The chosen segment's index, as a number that can be between two. */
   const position = useRef(new Animated.Value(Math.max(0, index))).current
@@ -158,13 +198,13 @@ export function SegmentedControl<T extends string>({
             { transform: [{ translateX: Animated.multiply(slide, -1) }] },
           ]}
         >
-          {options.map((option) => (
+          {options.map((option, at) => (
             <View key={option.value} style={styles.segment}>
               <Text
                 numberOfLines={1}
                 adjustsFontSizeToFit
                 minimumFontScale={MIN_FONT_SCALE}
-                style={[label, styles.labelOn]}
+                style={[label, styles.labelOn, fitted(at)]}
               >
                 {option.label}
               </Text>
@@ -208,13 +248,25 @@ export function SegmentedControl<T extends string>({
               numberOfLines={1}
               adjustsFontSizeToFit
               minimumFontScale={MIN_FONT_SCALE}
-              style={[label, ownPill ? styles.labelOn : styles.labelOff]}
+              style={[label, ownPill ? styles.labelOn : styles.labelOff, fitted(at)]}
             >
               {option.label}
             </Text>
           </Pressable>
         )
       })}
+      {fitOnWeb ? (
+        // Out of the layout and unseen; each label hugs its own width. As wide
+        // as the track allows, which is more than any segment has, so a label
+        // that would wrap here is past the floor anyway.
+        <View style={styles.measure} aria-hidden>
+          {options.map((option) => (
+            <View key={option.value} style={styles.measured} onLayout={onNatural(option.label)}>
+              <Text style={label}>{option.label}</Text>
+            </View>
+          ))}
+        </View>
+      ) : null}
       {/* After the segments, so it covers the label under it; it takes no
           touches, so the segment under it still does. */}
       {pill}
@@ -236,7 +288,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     flex: 1,
     justifyContent: 'center',
     minHeight: SEGMENT_HEIGHT,
-    paddingHorizontal: v3.space[6],
+    paddingHorizontal: v3.space[SEGMENT_INSET],
   },
   segmentOn: { backgroundColor: v3.colors.pill },
   pill: {
@@ -257,6 +309,15 @@ const useStyles = makeStyles(({ v3 }) => ({
     start: -v3.space[4],
     top: -v3.space[4],
   },
+  measure: {
+    alignItems: 'flex-start',
+    opacity: 0,
+    pointerEvents: 'none',
+    position: 'absolute',
+    start: 0,
+    top: 0,
+  },
+  measured: { alignSelf: 'flex-start' },
   pressed: { opacity: 0.6 },
   label: { ...v3.type.buttonSmall, textAlign: 'center' },
   labelCompact: { ...v3.type.label, textAlign: 'center' },

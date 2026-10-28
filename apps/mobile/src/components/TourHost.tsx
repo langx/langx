@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import Svg, { Path } from 'react-native-svg'
 import { useReduceMotion } from '../hooks/useReduceMotion'
 import { useV3Home } from '../hooks/useV3Home'
 import { useT, type MessageKey } from '../i18n'
@@ -58,21 +59,6 @@ const MEASURE_RETRIES = 8
 const RETRY_MS = 150
 
 /**
- * Which corner of a corner piece is rounded away.
- *
- * A piece sits in one corner of the hole and the corner that has to disappear
- * is the one pointing *into* it — the diagonal opposite. Rounded by the
- * piece's own width, which turns the square into everything but a quarter
- * disc; see `TourCorner`.
- */
-const ROUND_AWAY = {
-  topLeft: 'borderBottomRightRadius',
-  topRight: 'borderBottomLeftRadius',
-  bottomLeft: 'borderTopRightRadius',
-  bottomRight: 'borderTopLeftRadius',
-} as const
-
-/**
  * Draws whatever run `src/lib/tour.ts` has open: the screen dimmed, one real
  * element left lit, and a bubble beside it.
  *
@@ -91,7 +77,8 @@ export function TourHost() {
   const currentStyles = useStyles()
   const v3Styles = useStylesV3()
   const styles = v3Look ? v3Styles : currentStyles
-  const { scheme } = useTheme()
+  const { scheme, colors, v3 } = useTheme()
+  const scrim = v3Look ? v3.colors.scrim : colors.scrim
   const t = useT()
   const screen = useWindowDimensions()
   const insets = useSafeAreaInsets()
@@ -294,16 +281,20 @@ export function TourHost() {
           : null}
         {layout ? (
           <>
+            {/* The dim's own colour, so a piece and the panel beside it are one surface. */}
             {layout.corners.map((corner) => (
-              <View
+              <Svg
                 key={corner.at}
                 pointerEvents="none"
+                width={corner.size}
+                height={corner.size}
                 style={[
-                  styles.dim,
+                  styles.corner,
                   { left: corner.left, top: corner.top, width: corner.size, height: corner.size },
-                  { [ROUND_AWAY[corner.at]]: corner.size },
                 ]}
-              />
+              >
+                <Path d={corner.path} fill={scrim} />
+              </Svg>
             ))}
             <Animated.View
               pointerEvents="none"
@@ -384,6 +375,7 @@ export function TourHost() {
 
 const useStyles = makeStyles(({ colors, radius, spacing }) => ({
   dim: { backgroundColor: colors.scrim, position: 'absolute' },
+  corner: { position: 'absolute' },
   /**
    * A ring, not a fill: the element underneath is the real one, still drawn by
    * the screen below — this only says which one it is.
@@ -421,6 +413,7 @@ const useStyles = makeStyles(({ colors, radius, spacing }) => ({
  */
 const useStylesV3 = makeStyles(({ v3 }) => ({
   dim: { backgroundColor: v3.colors.scrim, position: 'absolute' },
+  corner: { position: 'absolute' },
   ring: { borderColor: v3.colors.blue, borderWidth: 2, position: 'absolute' },
   bubble: {
     backgroundColor: v3.colors.bg,
