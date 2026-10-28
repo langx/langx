@@ -769,12 +769,15 @@ rebuilds the same function under the name **Copilot**, as part of the chat
 module: Check, Reply ideas and Explain. Quota: a small free taste and a finite
 Pro ceiling (`PLAN_LIMITS.copilotPer24h`).
 
-The server side exists and **ships dark** (`modules/copilot`, `routes/copilot.ts`):
-it answers only with a key **and** `flags.copilotEnabled`, which starts off, and
-only for people who agreed to its consent sheet. It has no age rule beyond the
-app's 16+ minimum. No screen offers it yet but the
-operator panel's Copilot lab. See `decisions.md` → _Copilot ships dark, behind two
-switches and a consent_.
+The server side (`modules/copilot`, `routes/copilot.ts`) answers only with a
+key **and** `flags.copilotEnabled`, which starts off. It answers only an
+account with a verified email address — every route is behind
+`requireVerifiedEmail`, which refuses a guest with `GUEST_ACCOUNT` — and only
+after that person agreed to its consent sheet. It has no age rule beyond the
+app's 16+ minimum. The app offers it in a chat in the v3 look, the Copilot page
+describes it, and the operator panel has a Copilot lab. See `decisions.md` →
+_Copilot ships dark, behind two switches and a consent_ and _Copilot opens to
+every account; the flag is the off switch_.
 
 The **account** exists already, and the feature does not. `@copilot` is created
 at boot alongside `@langx` so the handle cannot be claimed by somebody else in

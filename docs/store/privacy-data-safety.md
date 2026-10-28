@@ -168,15 +168,24 @@ failed call, because by then the account itself is gone
 asynchronously, so the privacy policy should say the data is _requested for
 deletion_ at that point rather than erased the same second.
 
-## Copilot — an AI provider, live for every account
+## Copilot — an AI provider, live for every account with a verified email
 
-**Live in production.** `flags.copilotEnabled` is on, and Copilot answers any
-account, with an `ANTHROPIC_API_KEY`, after that person's consent (the
-per-account allow-list was removed on 25 October 2026) — a key alone never turns it
-on (`docs/decisions.md` → _Copilot ships dark, behind two switches and a
-consent_). The privacy policy says so since 22 October 2026 (langx.io §2.6,
-with §5, §6, §10.7 and §11). The two store forms are Behic's to update; the
-answers to paste are in
+**Live in production.** `flags.copilotEnabled` is on (`GET /app-config`, read
+on 27 October 2026), and with an `ANTHROPIC_API_KEY` Copilot answers every
+account with a verified email address, after that person's consent — a key
+alone never turns it on (`docs/decisions.md` → _Copilot ships dark, behind two
+switches and a consent_). A guest account cannot use it: every Copilot route
+is behind `requireVerifiedEmail`, which refuses a guest with `GUEST_ACCOUNT`,
+and the app does not offer it to one. Until 25 October 2026 it answered only
+accounts on the operator's allow-list (`decisions.md` → _Copilot opens to
+every account; the flag is the off switch_).
+
+The privacy policy has named Anthropic since 22 October 2026 (langx/website
+#292); it described the allow-list until 25 October (#294), and the text in
+force, dated 26 October 2026 (#299), says Copilot is a beta open to every
+account with a verified email address and that guest accounts cannot use it
+(langx.io §2.6, with §5, §6, §10.7 and §11). The two store forms are Behic's
+to update; the answers to paste are in
 [`privacy-forms-checklist.md`](privacy-forms-checklist.md) §7.
 
 What reaches the provider (Anthropic, which runs the model), and only after the
