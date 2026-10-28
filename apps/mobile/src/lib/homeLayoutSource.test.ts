@@ -126,3 +126,27 @@ describe('the paywall’s comparison keeps each figure inside its cell', () => {
     for (const tag of cells) expect(tag).toMatch(/\btable=\{tableFit\}/)
   })
 })
+
+describe('the paywall’s comparison stacks when a name’s word would not fit beside the cells', () => {
+  const table = read('src/components/paywall/CompareTable.tsx')
+  const body = fn(table, 'CompareTable')
+
+  it('measures every row’s name, shown or not, in the pieces a line breaks into', () => {
+    expect(body).toMatch(/\{rows\.map\(\(row\) => \(\s*<WidestWord/)
+    const [name] = tags(body, 'WidestWord')
+    expect(name).toContain('measuredWords(')
+    expect(name).toContain('style={styles.label}')
+  })
+
+  it('weighs them against the column a row leaves its name', () => {
+    expect(body).toMatch(/const stacked = compareStacked\(\{\s*fontScale,/)
+    expect(body).toContain('width - ROW_START - ROW_END - FREE_COLUMN - PRO_COLUMN')
+    expect(body).toMatch(/<View style=\{styles\.table\} onLayout=\{\(event\) => setWidth\(/)
+    // The insets taken off are the ones the header and every row are drawn with.
+    for (const style of ['head', 'row']) {
+      const block = table.match(new RegExp(`\\n  ${style}: \\{[\\s\\S]*?\\n  \\}`))?.[0] ?? ''
+      expect(block).toContain('paddingEnd: ROW_END')
+      expect(block).toContain('paddingStart: ROW_START')
+    }
+  })
+})
