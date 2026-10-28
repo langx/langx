@@ -78,19 +78,19 @@ const RU_DAYS: Record<number, string> = {
   1095: '# дней',
 }
 const RU_TOKENS: Record<number, string> = {
-  1: '+# жетон',
-  2: '+# жетона',
-  3: '+# жетона',
-  11: '+# жетонов',
-  21: '+# жетон',
-  50: '+# жетонов',
-  100: '+# жетонов',
-  250: '+# жетонов',
-  1000: '+# жетонов',
-  1500: '+# жетонов',
-  5000: '+# жетонов',
-  12000: '+# жетонов',
-  25000: '+# жетонов',
+  1: '+# токен',
+  2: '+# токена',
+  3: '+# токена',
+  11: '+# токенов',
+  21: '+# токен',
+  50: '+# токенов',
+  100: '+# токенов',
+  250: '+# токенов',
+  1000: '+# токенов',
+  1500: '+# токенов',
+  5000: '+# токенов',
+  12000: '+# токенов',
+  25000: '+# токенов',
 }
 
 function phrase(table: Record<number, string>, locale: Locale, n: number): string {
@@ -146,15 +146,15 @@ describe('streak milestone sentences', () => {
     const one: Partial<Record<Locale, string>> = {
       de: 'Der Meilenstein für eine Serie von 1 Tag bringt +1 Token.',
       fr: 'Le palier de 1 jour de série rapporte +1 jeton.',
-      es: 'El hito de 1 día de racha suma +1 ficha.',
-      'pt-BR': 'O marco de 1 dia de sequência rende +1 ficha.',
+      es: 'El hito de 1 día de racha suma +1 token.',
+      'pt-BR': 'O marco de 1 dia de sequência rende +1 token.',
       tr: '1 günlük seri dönüm noktası +1 token ekler.',
     }
     const two: Partial<Record<Locale, string>> = {
       de: 'Der Meilenstein für eine Serie von 2 Tagen bringt +2 Token.',
       fr: 'Le palier de 2 jours de série rapporte +2 jetons.',
-      es: 'El hito de 2 días de racha suma +2 fichas.',
-      'pt-BR': 'O marco de 2 dias de sequência rende +2 fichas.',
+      es: 'El hito de 2 días de racha suma +2 tokens.',
+      'pt-BR': 'O marco de 2 dias de sequência rende +2 tokens.',
       tr: '2 günlük seri dönüm noktası +2 token ekler.',
     }
     for (const locale of Object.keys(one) as Locale[]) {
