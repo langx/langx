@@ -29,6 +29,7 @@ import {
 import { DISPLAY_FONT, makeStyles, useTheme } from '../../lib/theme'
 import { EASE_OUT } from '../../lib/theme/motionAnimated'
 import { DURATION } from '../../lib/theme/motionValues'
+import { PAD as TOUR_HOLE_PAD } from '../../lib/tourLayout'
 import { LoadFailed } from '../LoadFailed'
 import { PeopleSearch, PeopleSearchResults } from '../PeopleSearch'
 import { Tip } from '../Tip'
@@ -44,6 +45,15 @@ import { dedupeGrounds } from '../../lib/avatarViewport'
 import { NEWCOMER_TILE_WIDTH, NewcomerTile, PersonCard } from './PersonCard'
 
 const FROM = '/(app)/(tabs)/discover'
+
+/*
+ * The tour's hole around the sort pills: their own curve grown by the hole's
+ * padding, not a pill. Nearby wraps onto a second row on a 375-point phone in
+ * German, French, Portuguese, Russian and Turkish, and a pill's round ends
+ * drawn around two rows dimmed the corners of the chips inside it. On one row
+ * this is the same pill as before — half the hole's height.
+ */
+const SORTS_HOLE_RADIUS = BUTTON_FACE.small / 2 + TOUR_HOLE_PAD
 
 /** A panel in the list's place, worded by the screen that knows why. */
 export interface PeoplePanel {
@@ -324,7 +334,7 @@ export function PeopleV3(props: PeopleV3Props) {
           </TourTarget>
         ) : null}
         {props.searching ? null : (
-          <TourTarget id="discoverSorts" radius={v3.radius.pill} style={styles.sortsTarget}>
+          <TourTarget id="discoverSorts" radius={SORTS_HOLE_RADIUS} style={styles.sortsTarget}>
             <View
               accessibilityRole="radiogroup"
               accessibilityLabel={t('discover.sortLabel')}
