@@ -81,7 +81,7 @@ describe('the Pro welcome, stored', () => {
   beforeAll(async () => {
     server = await MongoMemoryServer.create()
     handle = await connectToDatabase(server.getUri(), 'langx_pro_welcome_test')
-  }, 60_000)
+  })
 
   afterAll(async () => {
     await handle?.close()

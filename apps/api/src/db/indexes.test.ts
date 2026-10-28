@@ -18,7 +18,7 @@ describe('Faz 1 — indexes on the Better Auth collections', () => {
     replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
     handle = await connectToDatabase(replSet.getUri(), DB_NAME)
     await ensureIndexes(handle.db)
-  }, 60_000)
+  })
 
   afterAll(async () => {
     await handle?.close()
@@ -114,7 +114,7 @@ describe('Echo — the invariants', () => {
     replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
     handle = await connectToDatabase(replSet.getUri(), 'langx_echo_indexes_test')
     await ensureIndexes(handle.db)
-  }, 60_000)
+  })
 
   afterAll(async () => {
     await handle?.close()

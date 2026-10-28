@@ -53,7 +53,7 @@ describe('translateText', () => {
   beforeAll(async () => {
     server = await MongoMemoryServer.create()
     handle = await connectToDatabase(server.getUri(), 'langx_translate_test')
-  }, 60_000)
+  })
 
   afterAll(async () => {
     await handle?.close()
