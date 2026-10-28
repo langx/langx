@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useEchoSummary, useNotificationUnread, useUnreadTotal } from '../../../src/api/queries'
 import { TourTarget } from '../../../src/components/TourTarget'
 import type { TourTargetId } from '../../../src/lib/tour'
+import { PAD } from '../../../src/lib/tourLayout'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { useT } from '../../../src/i18n'
 import { authClient } from '../../../src/lib/auth-client'
@@ -174,12 +175,10 @@ interface V3Badge {
 function V3TabIcon({
   name,
   focused,
-  tour,
   badge,
 }: {
   name: keyof typeof Feather.glyphMap
   focused: boolean
-  tour?: TourTargetId
   badge?: V3Badge
 }) {
   const styles = useV3Styles()
@@ -221,13 +220,7 @@ function V3TabIcon({
   )
   return (
     <View style={styles.pill}>
-      {tour ? (
-        <TourTarget id={tour} pad={4} radius={v3.radius.pill}>
-          {pill}
-        </TourTarget>
-      ) : (
-        pill
-      )}
+      {pill}
       {/*
         The bar draws this twice; only the active copy's count is read out,
         or a screen reader says it twice.
@@ -322,11 +315,17 @@ type V3TabButtonProps = Omit<PressableProps, 'style' | 'children'> & {
   href?: string
   pressOpacity?: number
   hoverEffect?: unknown
+  /**
+   * The id the first-run tour points at, on the two tabs it introduces.
+   * People has none: it is the tab the tour plays on.
+   */
+  tour?: TourTargetId
 }
 
 function V3TabButton({
   children,
   style,
+  tour,
   href: _href,
   pressOpacity: _pressOpacity,
   hoverEffect: _hoverEffect,
@@ -335,12 +334,37 @@ function V3TabButton({
 }: V3TabButtonProps) {
   return (
     <PressableScale {...rest} touchStyle={style} style={TAB_FACE} scaleTo={PRESS_SCALE_GLYPH}>
-      {children}
+      {/*
+        The tour points at the face's whole content, the icon and its word,
+        not at the icon: a hole cut round the pill left the word underneath
+        it, with the ring running through the word. Measured rather than
+        worked out, so the hole is as wide as the wider of the pill and the
+        word and as tall as both, at whatever size the word is drawn
+        (`v3TabLabelScale`) and in either direction. The wrapper is the face's
+        only child and centres the two as the face did, so the bar lays out
+        as it did without it.
+      */}
+      {tour ? (
+        <TourTarget id={tour} pad={V3_TOUR_PAD} radius={V3_TOUR_RADIUS} style={TAB_FACE}>
+          {children}
+        </TourTarget>
+      ) : (
+        children
+      )}
     </PressableScale>
   )
 }
 
 const TAB_FACE = { alignItems: 'center' } as const
+
+/**
+ * How far the tour's hole on a tab reaches past the icon and its word, before
+ * the hole's own `PAD`; and its corner, the pill's own end radius carried out
+ * by both, so the ring runs as far from the pill round its ends as along its
+ * top.
+ */
+const V3_TOUR_PAD = 4
+const V3_TOUR_RADIUS = V3_PILL.height / 2 + V3_TOUR_PAD + PAD
 
 const useV3Styles = makeStyles(({ v3 }) => ({
   pill: {
@@ -490,10 +514,10 @@ export default function TabsLayout() {
               <V3TabIcon
                 name="message-square"
                 focused={focused}
-                tour="tabChats"
                 badge={{ text: badge, count: unread.data, look: 'blue' }}
               />
             ),
+            tabBarButton: (props) => <V3TabButton {...props} tour="tabChats" />,
           }}
         />
         <Tabs.Screen
@@ -504,10 +528,10 @@ export default function TabsLayout() {
               <V3TabIcon
                 name="repeat"
                 focused={focused}
-                tour="tabEcho"
                 badge={{ text: echoBadge, count: echoDue, look: 'pill' }}
               />
             ),
+            tabBarButton: (props) => <V3TabButton {...props} tour="tabEcho" />,
           }}
         />
         <Tabs.Screen
