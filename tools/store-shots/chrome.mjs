@@ -41,10 +41,13 @@ export async function launchChrome(port, extraArgs = []) {
     ],
     { stdio: 'ignore', shell: false },
   )
+  const exited = new Promise((resolve) => chrome.once('exit', resolve))
   const close = async () => {
     chrome.kill()
-    await sleep(500)
-    rmSync(profile, { recursive: true, force: true })
+    // A browser that played video is still flushing its media cache half a
+    // second after the kill, and removing the profile under it fails.
+    await Promise.race([exited, sleep(5000)])
+    rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 })
   }
 
   let target
@@ -66,11 +69,14 @@ export async function launchChrome(port, extraArgs = []) {
   await new Promise((r) => ws.addEventListener('open', r, { once: true }))
   let seq = 0
   const pending = new Map()
+  const listeners = new Map()
   ws.addEventListener('message', (e) => {
     const m = JSON.parse(e.data)
     if (m.id && pending.has(m.id)) {
       pending.get(m.id)(m)
       pending.delete(m.id)
+    } else if (m.method) {
+      for (const listener of listeners.get(m.method) ?? []) listener(m.params)
     }
   })
   const send = (method, params = {}) =>
@@ -94,9 +100,16 @@ export async function launchChrome(port, extraArgs = []) {
     return res.result?.result?.value
   }
 
+  /** Calls `listener(params)` for every event of `method` (e.g. `Fetch.requestPaused`). */
+  const on = (method, listener) => {
+    if (!listeners.has(method)) listeners.set(method, [])
+    listeners.get(method).push(listener)
+  }
+
   return {
     send,
     call,
+    on,
     async close() {
       ws.close()
       await close()

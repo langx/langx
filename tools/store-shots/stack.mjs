@@ -32,6 +32,16 @@ export const PORTS = {
 // Fixture databases must end in `_dev`; see `apps/api/scripts/testAccounts.ts`.
 const DB_NAME = 'storeshots_dev'
 
+/*
+ * The run's clock: a fixed-offset zone where it is about 20:00 when the run
+ * starts. The seed's days, the API's "today" and the browser's have to be one
+ * day, and Home greets by the hour — on the machine's own zone a run that
+ * crossed midnight or 05:00 photographed some locales in one state and the
+ * rest in another. Evening lasts until 05:00, so a run has nine hours.
+ */
+const offset = ((20 - new Date().getUTCHours() + 36) % 24) - 12
+export const TIMEZONE = offset === 0 ? 'UTC' : `Etc/GMT${offset > 0 ? '-' : '+'}${Math.abs(offset)}`
+
 function portTaken(port) {
   return new Promise((resolve) => {
     const socket = createConnection({ port, host: '127.0.0.1' })
@@ -84,14 +94,16 @@ export async function startStack({ log = console.log } = {}) {
   const { MongoMemoryReplSet } = await import(apiRequire.resolve('mongodb-memory-server'))
   const replSet = await MongoMemoryReplSet.create({
     replSet: { count: 1, name: 'rs0' },
-    instanceOpts: [{ port: PORTS.mongo }],
+    // A fresh mongod per locale; on a busy machine one takes longer than the
+    // library's 10 s to start, and the whole run used to die on it.
+    instanceOpts: [{ port: PORTS.mongo, launchTimeout: 60_000 }],
   })
   const uri = `mongodb://127.0.0.1:${PORTS.mongo}/?replicaSet=rs0&directConnection=true`
   log(`mongo  :${PORTS.mongo}`)
 
   const seedOut = await run(
     join(API_DIR, 'node_modules/.bin/tsx'),
-    [join(HERE, 'seed.mts'), uri, DB_NAME],
+    [join(HERE, 'seed.mts'), uri, DB_NAME, TIMEZONE],
     { cwd: API_DIR, env: { PATH: process.env.PATH, HOME: process.env.HOME } },
   )
   const world = JSON.parse(seedOut.trim().split('\n').at(-1))

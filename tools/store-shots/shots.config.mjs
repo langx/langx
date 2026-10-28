@@ -1,5 +1,5 @@
 /**
- * The 3.0 store set: what each shot is, how it is captured, what it says, and
+ * The 3.1 store set: what each shot is, how it is captured, what it says, and
  * every size it is delivered at. The composer and the capture both read this
  * file and nothing else, so a change of order or wording is one edit here.
  *
@@ -16,9 +16,17 @@ export const ORDER = [
   'calls',
   'home',
   'store',
-  'badges',
+  'venus',
   'pro',
 ]
+
+/**
+ * Shots for a product page optimization treatment, not for the listing: each
+ * is composed for the App Store slots only, into a tree of its own
+ * (`<locale>/ppo/ios/…`), so a listing slot still holds exactly `ORDER`.
+ * `venusLead` is the lead of a Venus-led treatment.
+ */
+export const PPO = ['venusLead']
 
 /** Play takes eight per slot; Home is App Store only. */
 export const PLAY_SKIPS = ['home']
@@ -41,7 +49,11 @@ export const HUES = {
  * `path` may name `{anna}` (Sofia's thread with Anna). `steps` run after the
  * screen settles: `{ scroll: px }` scrolls the screen's own list, `{ ring:
  * 'video' }` has Anna start a real call through the socket, `{ tap: text }`
- * presses the last element whose text is exactly that.
+ * presses the last element whose text is exactly that, `{ reveal: { src,
+ * top } }` scrolls until the first image whose address holds `src` is `top`
+ * px down, and `{ seek: s }` holds every video on the frame `s` seconds in.
+ * `venusPlayer: true` lets today's Venus video open by itself; every other
+ * shot has it marked as already seen.
  */
 export const SHOTS = {
   partners: { ground: 'sky', path: '/discover' },
@@ -51,9 +63,36 @@ export const SHOTS = {
   calls: { ground: 'aqua', path: '/home', steps: [{ ring: 'video' }] },
   home: { ground: 'paper', path: '/home' },
   store: { ground: 'ink', path: '/wallet/store' },
-  // The new-badge sheet, with its Share button, sits at the foot of the
-  // screen: `fit: 'whole'` draws the phone small enough to show all of it.
-  badges: { ground: 'lime', path: '/badges', newBadge: 'streak.180', fit: 'whole' },
+  /*
+   * 3.1's addition, in the place Badges had in 3.0 (a sheet over a dimmed
+   * screen, and the shot that said least about LangX). Venus's page at her
+   * videos: today's, then the newest days reached. `reveal` scrolls to the
+   * first cover, so the grid sits at the same height in every locale however
+   * the words above it wrap; the wait is for the covers to load.
+   */
+  venus: {
+    ground: 'lime',
+    path: '/venus',
+    steps: [{ reveal: { src: 'venus-day', top: 100 }, wait: 6000 }],
+  },
+  /*
+   * The PPO lead: today's video itself, opening on Home as it does the first
+   * time a day counts, held on the frame where Venus is saying her line (the
+   * line is the video's own, in the locale's language).
+   *
+   * `tabletShowTo`: on a tablet tile the phone is wide enough to run Venus's
+   * subtitle bubble off the bottom edge, so it shrinks, from its top edge,
+   * until this fraction of the capture (the bubble ends at about 0.79) sits
+   * above a margin at the foot of the tile. Phone tiles already show it.
+   */
+  venusLead: {
+    ground: 'tangerine',
+    path: '/home',
+    venusPlayer: true,
+    wait: 9000,
+    steps: [{ seek: 5.5 }],
+    tabletShowTo: 0.8,
+  },
   /*
    * Shot 9 ships without prices (Behic, 21 Oct 2026): a listing is read in
    * every storefront, and a price on it is one storefront's. `noPrices`
@@ -119,9 +158,13 @@ export const CAPTIONS = {
       'Dress up with what you earn',
       'Frames, titles and stickers, paid for in points you earn by taking part.',
     ],
-    badges: [
-      'Badges for what you really do',
-      'Corrections, calls, reviews, streaks. Share the ones you like.',
+    venus: [
+      'Your streak, cheered on by Venus',
+      'A short video from LangX’s cat for each day your streak counts.',
+    ],
+    venusLead: [
+      'Practise every day with Venus',
+      'Swap languages with real people. Venus has a video for each streak day.',
     ],
     pro: [
       'More room with Pro',
@@ -149,9 +192,10 @@ export const CAPTIONS = {
       'Kazandığınla profilini süsle',
       'Çerçeveler, unvanlar ve stickerlar; katılarak kazandığın puanlarla.',
     ],
-    badges: [
-      'Yaptıkların için rozetler',
-      'Düzeltmeler, aramalar, tekrarlar, seriler. Beğendiklerini paylaş.',
+    venus: ['Venus serini kutluyor', 'Serindeki her gün için LangX’in kedisinden kısa bir video.'],
+    venusLead: [
+      'Venus’la her gün pratik yap',
+      'Gerçek insanlarla dil takası. Serindeki her gün için Venus’tan bir video.',
     ],
     pro: [
       'Pro ile daha fazla alan',
@@ -185,9 +229,13 @@ export const CAPTIONS = {
       'Viste tu perfil con lo que ganas',
       'Marcos, títulos y stickers que pagas con puntos que ganas participando.',
     ],
-    badges: [
-      'Insignias por lo que haces',
-      'Correcciones, llamadas, repasos, rachas. Comparte las que te gusten.',
+    venus: [
+      'Venus celebra tu racha',
+      'Un vídeo corto de la gata de LangX por cada día de tu racha.',
+    ],
+    venusLead: [
+      'Aprende cada día con Venus',
+      'Practica idiomas con gente real. Venus te deja un vídeo cada día de racha.',
     ],
     pro: [
       'Más espacio con Pro',
@@ -221,9 +269,13 @@ export const CAPTIONS = {
       'Украшайте профиль заработанным',
       'Рамки, титулы и стикеры — за баллы, которые вы получаете за участие.',
     ],
-    badges: [
-      'Значки за реальные дела',
-      'Исправления, звонки, повторения, серии. Делитесь любимыми.',
+    venus: [
+      'Venus болеет за вашу серию',
+      'Короткое видео от кошки LangX за каждый день вашей серии.',
+    ],
+    venusLead: [
+      'Практика каждый день с Venus',
+      'Обмен языками с живыми людьми. За каждый день серии — видео от Venus.',
     ],
     pro: [
       'Больше возможностей с Pro',
@@ -239,7 +291,11 @@ export const CAPTIONS = {
     calls: ['اتصل حين تكون مستعدًا', 'صوت وفيديو من داخل المحادثة. مجاني في كل الخطط.'],
     home: ['خطوة تالية واحدة كل يوم', 'من ينتظرك، وثلاثة أشياء صغيرة لليوم.'],
     store: ['زيّن ملفك بما تكسبه', 'إطارات وألقاب وملصقات، تدفع ثمنها بنقاط تكسبها بالمشاركة.'],
-    badges: ['شارات لما تفعله حقًا', 'تصحيحات، مكالمات، مراجعات، سلاسل. شارك ما يعجبك منها.'],
+    venus: ['Venus تشجّعك على سلسلتك', 'فيديو قصير من قطة LangX لكل يوم في سلسلتك.'],
+    venusLead: [
+      'تدرّب كل يوم مع Venus',
+      'تبادل اللغات مع أشخاص حقيقيين، ولكل يوم في سلسلتك فيديو من Venus.',
+    ],
     pro: ['مساحة أكبر مع Pro', 'محادثات جديدة وترجمات بلا حدود. الردود والتصحيحات تبقى مجانية.'],
   },
   fr: {
@@ -272,9 +328,13 @@ export const CAPTIONS = {
       'Habillez votre profil',
       'Cadres, titres et stickers, payés avec les points gagnés en participant.',
     ],
-    badges: [
-      'Des badges bien mérités',
-      'Corrections, appels, révisions, séries. Partagez ceux qui vous plaisent.',
+    venus: [
+      'Venus encourage votre série',
+      'Une courte vidéo de la chatte de LangX pour chaque jour de série.',
+    ],
+    venusLead: [
+      'Pratiquez chaque jour avec Venus',
+      'Échangez avec des gens réels. Venus a une vidéo pour chaque jour de série.',
     ],
     pro: [
       'Plus de place avec Pro',
@@ -311,9 +371,13 @@ export const CAPTIONS = {
       'Mit Verdientem schmücken',
       'Rahmen, Titel und Sticker für Punkte, die du beim Mitmachen sammelst.',
     ],
-    badges: [
-      'Abzeichen für das, was du tust',
-      'Korrekturen, Anrufe, Wiederholungen, Serien. Teile, was dir gefällt.',
+    venus: [
+      'Venus feuert deine Serie an',
+      'Ein kurzes Video von der LangX-Katze für jeden Tag deiner Serie.',
+    ],
+    venusLead: [
+      'Jeden Tag üben mit Venus',
+      'Sprachtausch mit echten Menschen. Venus hat ein Video für jeden Serientag.',
     ],
     pro: [
       'Mehr Raum mit Pro',
@@ -350,9 +414,13 @@ export const CAPTIONS = {
       'Enfeite-se com o que ganha',
       'Molduras, títulos e stickers pagos com pontos que você ganha participando.',
     ],
-    badges: [
-      'Medalhas pelo que você faz',
-      'Correções, chamadas, revisões, sequências. Compartilhe as que curtir.',
+    venus: [
+      'A Venus torce pela sua sequência',
+      'Um vídeo curtinho da gata da LangX para cada dia da sua sequência.',
+    ],
+    venusLead: [
+      'Pratique todo dia com a Venus',
+      'Converse com pessoas reais. A Venus manda um vídeo a cada dia de sequência.',
     ],
     pro: [
       'Mais espaço com o Pro',
@@ -365,7 +433,7 @@ export const CAPTIONS = {
 export function captionsFor(locale) {
   const table = CAPTIONS[locale]
   if (!table) throw new Error(`no captions for ${locale}`)
-  for (const id of ORDER) {
+  for (const id of [...ORDER, ...PPO]) {
     const pair = table[id]
     if (!Array.isArray(pair) || pair.length !== 2 || !pair[0] || !pair[1]) {
       throw new Error(`captions.${locale}.${id} is missing a headline or a support line`)

@@ -23,6 +23,7 @@ import {
   HUES,
   ORDER,
   PLAY_SKIPS,
+  PPO,
   RTL,
   SHOTS,
   SLOTS,
@@ -129,6 +130,8 @@ function tileHtml({ slot, id, locale, caption, capture, cut, store }) {
   // A shot without prices: the phone is lowered until the cut line meets the
   // tile's bottom, so the purchase area is off the tile.
   const lowerTo = cut ? statusH + cut * capH : null
+  // How much of the screen, from its top, must stay on a tablet tile.
+  const showTo = tablet && shot.tabletShowTo ? bez + statusH + shot.tabletShowTo * capH : null
   return `<!doctype html><html lang="${locale}" dir="${rtl ? 'rtl' : 'ltr'}"><head><meta charset="utf-8">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=block">
 <style>${fontFaces}
@@ -176,11 +179,11 @@ ${
     const centred = (top - capBox.height) / 2
     if (centred > capBox.top) cap.style.top = centred + 'px'
   }
-  // fit: 'whole' — the phone shrinks, from its top edge, until all of it
-  // fits under the caption.
-  if (${shot.fit === 'whole'}) {
-    const room = ${slot.h} - top - ${0.04 * W}
-    const k = Math.min(1, room / phone.offsetHeight)
+  // A shot that must show its screen to a point shrinks, from the phone's top
+  // edge, until that point sits 4.5% of the tile's height above its foot.
+  const showTo = ${showTo === null ? 'null' : showTo}
+  if (showTo !== null) {
+    const k = Math.min(1, (${slot.h * 0.955} - top) / showTo)
     phone.style.transformOrigin = '50% 0'
     phone.style.transform = 'scale(' + k + ')'
   }
@@ -214,7 +217,7 @@ function featureGraphicHtml() {
  */
 export async function composeLocale({ locale, rawDir, outDir, playLocale, cdpPort = 9371 }) {
   const captions = captionsFor(locale)
-  for (const id of ORDER) {
+  for (const id of [...ORDER, ...PPO]) {
     const [h, s] = captions[id]
     if (h.length > BUDGET.headline || s.length > BUDGET.support) {
       console.warn(
@@ -227,11 +230,18 @@ export async function composeLocale({ locale, rawDir, outDir, playLocale, cdpPor
   mkdirSync(work, { recursive: true })
   const browser = await openChrome(cdpPort)
   const manifest = {}
+  // Every listing slot in store order, then the PPO shots for the App Store
+  // slots under `ppo/`, where they never count towards a listing.
+  const jobs = SLOTS.filter((slot) => slot.store !== 'play' || playLocale).map((slot) => ({
+    slot,
+    key: slot.dir,
+    ids: slot.store === 'play' ? ORDER.filter((id) => !PLAY_SKIPS.includes(id)) : ORDER,
+  }))
+  for (const slot of SLOTS.filter((s) => s.store === 'ios'))
+    jobs.push({ slot, key: `ppo/${slot.dir}`, ids: PPO })
   try {
-    for (const slot of SLOTS) {
-      if (slot.store === 'play' && !playLocale) continue
-      const ids = slot.store === 'play' ? ORDER.filter((id) => !PLAY_SKIPS.includes(id)) : ORDER
-      const dir = join(outDir, locale, slot.dir)
+    for (const { slot, key, ids } of jobs) {
+      const dir = join(outDir, locale, key)
       mkdirSync(dir, { recursive: true })
       for (const [index, id] of ids.entries()) {
         const file = join(rawDir, `${id}.png`)
@@ -242,7 +252,7 @@ export async function composeLocale({ locale, rawDir, outDir, playLocale, cdpPor
         if (SHOTS[id].noPrices && cut === null) {
           throw new Error(`${locale}/${id}: no cut line found, so prices could show`)
         }
-        const html = join(work, `${slot.dir.replace('/', '-')}-${name}.html`)
+        const html = join(work, `${key.replaceAll('/', '-')}-${name}.html`)
         writeFileSync(
           html,
           tileHtml({
@@ -256,13 +266,13 @@ export async function composeLocale({ locale, rawDir, outDir, playLocale, cdpPor
           }),
         )
         await photograph(browser, html, join(dir, name), slot.w, slot.h)
-        ;(manifest[slot.dir] ??= {})[name] = {
+        ;(manifest[key] ??= {})[name] = {
           id,
           headline: captions[id][0],
           support: captions[id][1],
         }
       }
-      console.log(`  composed ${locale} ${slot.dir} (${slot.w}×${slot.h})`)
+      console.log(`  composed ${locale} ${key} (${slot.w}×${slot.h})`)
     }
   } finally {
     await browser.close()
