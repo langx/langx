@@ -9,6 +9,7 @@ import {
   badgeGoal,
   badgeName,
   badgeNote,
+  milestoneCounts,
 } from '../../i18n/badgeWords'
 import { useLocale, useT } from '../../i18n'
 import { badgeAction, rungProgress, type Rung, type Shelf } from '../../lib/badgeShelves'
@@ -86,10 +87,10 @@ export function BadgeDetailSheet({
             badge.kind === 'streak' &&
             !badge.earned &&
             badge.threshold in TOKEN_RULES.streakMilestones
-              ? t('badgesV3.milestonePays', {
-                  days: badge.threshold.toLocaleString(locale),
-                  tokens: streakMilestoneBonus(badge.threshold).toLocaleString(locale),
-                })
+              ? t(
+                  'badgesV3.milestonePays',
+                  milestoneCounts(words, badge.threshold, streakMilestoneBonus(badge.threshold)),
+                )
               : null
           const chip =
             rung.state === 'earned'

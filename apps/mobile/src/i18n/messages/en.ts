@@ -3775,10 +3775,22 @@ export const en = {
     nextKicker: 'Next to earn',
     of: '{current} of {total}',
     toGo: '{amount} to go.',
-    streakReward: 'The {days}-day streak milestone adds +{tokens} tokens.',
+    /**
+     * Frames with two counts in them. Each count is a plural of its own,
+     * `milestoneDays` and `milestoneTokens`, filled in by `milestoneCounts`:
+     * one plain string cannot agree with both.
+     */
+    streakReward: 'The {days} streak milestone adds {tokens}.',
     noTokens: 'The badge itself pays no tokens.',
-    milestonePays:
-      'The badge itself pays nothing; the {days}-day streak milestone adds +{tokens} tokens.',
+    milestonePays: 'The badge itself pays nothing; the {days} streak milestone adds {tokens}.',
+    milestoneDays: {
+      one: '{formatted}-day',
+      other: '{formatted}-day',
+    },
+    milestoneTokens: {
+      one: '+{formatted} token',
+      other: '+{formatted} tokens',
+    },
     earnedOn: 'Earned {date}',
     earned: 'Earned',
     locked: 'Locked',

@@ -3367,10 +3367,17 @@ export const tr: Localized<EnMessages> = {
     nextKicker: 'Sıradaki',
     of: '{current}/{total}',
     toGo: '{amount} kaldı.',
-    streakReward: '{days} günlük seri dönüm noktası +{tokens} token ekler.',
+    streakReward: '{days} seri dönüm noktası {tokens} ekler.',
     noTokens: 'Rozetin kendisi token kazandırmaz.',
-    milestonePays:
-      'Rozetin kendisi bir şey kazandırmaz; {days} günlük seri dönüm noktası +{tokens} token ekler.',
+    milestonePays: 'Rozetin kendisi bir şey kazandırmaz; {days} seri dönüm noktası {tokens} ekler.',
+    milestoneDays: {
+      one: '{formatted} günlük',
+      other: '{formatted} günlük',
+    },
+    milestoneTokens: {
+      one: '+{formatted} token',
+      other: '+{formatted} token',
+    },
     earnedOn: '{date} tarihinde kazanıldı',
     earned: 'Kazanıldı',
     locked: 'Kilitli',

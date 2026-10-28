@@ -16,7 +16,7 @@ import { Screen } from '../../components/ui/Screen'
 import { useNewBadges } from '../../hooks/useNewBadges'
 import { usePullToRefresh } from '../../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../../hooks/useScreenInteractive'
-import { badgeAmount, badgeName } from '../../i18n/badgeWords'
+import { badgeAmount, badgeName, milestoneCounts } from '../../i18n/badgeWords'
 import { useLocale, useT } from '../../i18n'
 import { celebrated } from '../../lib/badgeSeen'
 import {
@@ -284,10 +284,10 @@ function NextCard({ next: n }: { next: NonNullable<BadgeSummary['next']> }) {
   })
   const reward =
     n.kind === 'streak' && n.reward > 0
-      ? t('badgesV3.streakReward', {
-          days: n.threshold.toLocaleString(locale),
-          tokens: streakMilestoneBonus(n.threshold).toLocaleString(locale),
-        })
+      ? t(
+          'badgesV3.streakReward',
+          milestoneCounts(words, n.threshold, streakMilestoneBonus(n.threshold)),
+        )
       : null
   const action = badgeAction(n.kind)
   return (

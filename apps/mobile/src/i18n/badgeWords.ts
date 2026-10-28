@@ -117,3 +117,28 @@ export function badgeGoal({ t, locale }: Words, kind: BadgeKind, threshold: numb
 export function badgeNote({ t }: Words, kind: BadgeKind): string {
   return t(NOTE[kind])
 }
+
+/**
+ * The two counts of a streak milestone sentence — "the 7-day streak milestone
+ * adds +50 tokens" — each worded by a plural of its own, for
+ * `badgesV3.streakReward` and `badgesV3.milestonePays` to put in their frame.
+ *
+ * One plain string cannot carry two counts. Arabic says 7 أيام but 30 يومًا
+ * and 100 يوم, and +50 رمزًا but +1,000 رمز; a single wording was right for
+ * at most one of the milestones and read "7 يومًا … +50 رمز" on the first.
+ * The token amount is passed in rather than looked up so the caller's own
+ * `streakMilestoneBonus` stays the one source of it.
+ */
+export function milestoneCounts(
+  { t, locale }: Words,
+  days: number,
+  tokens: number,
+): { days: string; tokens: string } {
+  return {
+    days: t('badgesV3.milestoneDays', { count: days, formatted: days.toLocaleString(locale) }),
+    tokens: t('badgesV3.milestoneTokens', {
+      count: tokens,
+      formatted: tokens.toLocaleString(locale),
+    }),
+  }
+}

@@ -3392,10 +3392,18 @@ export const ptBR: Localized<EnMessages> = {
     nextKicker: 'A próxima',
     of: '{current} de {total}',
     toGo: 'Faltam {amount}.',
-    streakReward: 'O marco de {days} dias de sequência rende +{tokens} fichas.',
+    streakReward: 'O marco de {days} de sequência rende {tokens}.',
     noTokens: 'A insígnia em si não rende fichas.',
     milestonePays:
-      'A insígnia em si não rende nada; o marco de {days} dias de sequência rende +{tokens} fichas.',
+      'A insígnia em si não rende nada; o marco de {days} de sequência rende {tokens}.',
+    milestoneDays: {
+      one: '{formatted} dia',
+      other: '{formatted} dias',
+    },
+    milestoneTokens: {
+      one: '+{formatted} ficha',
+      other: '+{formatted} fichas',
+    },
     earnedOn: 'Conquistada em {date}',
     earned: 'Conquistada',
     locked: 'Bloqueada',

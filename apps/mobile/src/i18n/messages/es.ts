@@ -3411,10 +3411,17 @@ export const es: Localized<EnMessages> = {
     nextKicker: 'La siguiente',
     of: '{current} de {total}',
     toGo: 'Faltan {amount}.',
-    streakReward: 'El hito de {days} días de racha suma +{tokens} fichas.',
+    streakReward: 'El hito de {days} de racha suma {tokens}.',
     noTokens: 'La insignia en sí no da fichas.',
-    milestonePays:
-      'La insignia en sí no da nada; el hito de {days} días de racha suma +{tokens} fichas.',
+    milestonePays: 'La insignia en sí no da nada; el hito de {days} de racha suma {tokens}.',
+    milestoneDays: {
+      one: '{formatted} día',
+      other: '{formatted} días',
+    },
+    milestoneTokens: {
+      one: '+{formatted} ficha',
+      other: '+{formatted} fichas',
+    },
     earnedOn: 'Conseguida el {date}',
     earned: 'Conseguida',
     locked: 'Bloqueada',
