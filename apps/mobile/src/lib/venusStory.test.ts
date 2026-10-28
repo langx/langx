@@ -225,9 +225,9 @@ describe('venusIntroFilm', () => {
       day: 1,
       locale: 'tr',
       cut: 'intro',
-      fileName: 'venus-intro-tr.mp4',
-      url: `${BASE}/tr/venus-intro-tr.mp4`,
-      coverUrl: `${BASE}/tr/venus-intro-tr.jpg`,
+      fileName: 'venus-intro-tr-r2.mp4',
+      url: `${BASE}/tr/venus-intro-tr-r2.mp4`,
+      coverUrl: `${BASE}/tr/venus-intro-tr-r2.jpg`,
       fallback: intro,
     })
   })
@@ -241,7 +241,7 @@ describe('venusIntroFilm', () => {
   it('has a cut in each of the app’s eight locales, pt-BR as the bucket spells it', () => {
     for (const locale of ['en', 'tr', 'de', 'es', 'fr', 'pt-BR', 'ru', 'ar']) {
       expect(venusIntroFilm(dayOne(locale), BASE).url).toBe(
-        `${BASE}/${locale}/venus-intro-${locale}.mp4`,
+        `${BASE}/${locale}/venus-intro-${locale}-r2.mp4`,
       )
     }
   })
@@ -249,14 +249,14 @@ describe('venusIntroFilm', () => {
   it('plays in English for a locale the film has no cut in, and falls back to that locale’s day 1', () => {
     const intro = dayOne('ja')
     const film = venusIntroFilm(intro, BASE)
-    expect(film.url).toBe(`${BASE}/en/venus-intro-en.mp4`)
-    expect(film.coverUrl).toBe(`${BASE}/en/venus-intro-en.jpg`)
+    expect(film.url).toBe(`${BASE}/en/venus-intro-en-r2.mp4`)
+    expect(film.coverUrl).toBe(`${BASE}/en/venus-intro-en-r2.jpg`)
     expect(film.locale).toBe('en')
     expect(film.fallback).toBe(intro)
   })
 
   it('takes a base URL with or without its trailing slash', () => {
-    expect(venusIntroFilm(dayOne('de'), `${BASE}/`).url).toBe(`${BASE}/de/venus-intro-de.mp4`)
+    expect(venusIntroFilm(dayOne('de'), `${BASE}/`).url).toBe(`${BASE}/de/venus-intro-de-r2.mp4`)
   })
 
   it('leaves day 1 itself without a fallback, so a day that will not load closes', () => {

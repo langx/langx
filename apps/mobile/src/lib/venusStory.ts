@@ -192,17 +192,21 @@ export function venusClipFor(input: {
  * and her lines as subtitles in the picture. The bucket's `v1` is immutable
  * and cached for a year, so a cut that changes — voicing one of the four —
  * goes up under a new name, and the change here is that locale's line
- * (`fr: 'venus-intro-fr-r2'`).
+ * (`fr: 'venus-intro-fr-r3'`).
+ *
+ * `-r2` is the same cut re-encoded at about 1.7 Mbit/s: ~24 MB instead of
+ * ~50 MB, for phones on mobile data, with the same picture size and the
+ * same audio. The first upload, without a suffix, stays in the bucket unused.
  */
 const VENUS_INTRO_FILES = {
-  en: 'venus-intro-en',
-  tr: 'venus-intro-tr',
-  de: 'venus-intro-de',
-  es: 'venus-intro-es',
-  fr: 'venus-intro-fr',
-  'pt-BR': 'venus-intro-pt-BR',
-  ru: 'venus-intro-ru',
-  ar: 'venus-intro-ar',
+  en: 'venus-intro-en-r2',
+  tr: 'venus-intro-tr-r2',
+  de: 'venus-intro-de-r2',
+  es: 'venus-intro-es-r2',
+  fr: 'venus-intro-fr-r2',
+  'pt-BR': 'venus-intro-pt-BR-r2',
+  ru: 'venus-intro-ru-r2',
+  ar: 'venus-intro-ar-r2',
 } as const
 
 function hasIntroCut(locale: string): locale is keyof typeof VENUS_INTRO_FILES {

@@ -79,6 +79,16 @@ in the longest locale (fr). Like the days it is shared, one file per locale. It 
 manifest: `node upload.mjs intro` puts each locale's mp4 and cover beside the days, as
 `venus/v1/<lang>/venus-intro-<lang>.mp4`, and the app plays it by that name (see Publishing).
 
+The app plays `venus-intro-<lang>-r2.mp4`, not the master: the same cut re-encoded for phones on
+mobile data, about 24 MB instead of about 50, with the picture size and the audio unchanged
+(SSIM 0.997 against the master), and its cover copied under the same name. A suffix rather than
+a replacement because `v1` is cached for a year and nothing there is overwritten:
+
+```bash
+ffmpeg -i venus-intro-<lang>.mp4 -c:v libx264 -preset slow -b:v 1700k -maxrate 2200k \
+  -bufsize 4000k -pix_fmt yuv420p -c:a copy -movflags +faststart venus-intro-<lang>-r2.mp4
+```
+
 ```bash
 node film.mjs --lang tr                  # $VENUS_OUT/intro/tr/venus-intro-tr.mp4, .jpg, .vtt, -preview.mp4
 node film.mjs --lang tr --at 12.4,64     # full-size stills at those board times, in work/
