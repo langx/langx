@@ -20,9 +20,9 @@ describe('counts that vary with user data inflect', () => {
     expect(t('format.messages', { count: 1 })).toBe('1 сообщение')
     expect(t('format.messages', { count: 3 })).toBe('3 сообщения')
     expect(t('format.messages', { count: 11 })).toBe('11 сообщений')
-    expect(t('welcomeBack.tokensCarried', { count: 1 })).toBe('1 жетон')
-    expect(t('welcomeBack.tokensCarried', { count: 22 })).toBe('22 жетона')
-    expect(t('welcomeBack.tokensCarried', { count: 25 })).toBe('25 жетонов')
+    expect(t('welcomeBack.tokensCarried', { count: 1 })).toBe('1 токен')
+    expect(t('welcomeBack.tokensCarried', { count: 22 })).toBe('22 токена')
+    expect(t('welcomeBack.tokensCarried', { count: 25 })).toBe('25 токенов')
   })
 
   it('arabic distinguishes one, two and the 3-10 band', () => {

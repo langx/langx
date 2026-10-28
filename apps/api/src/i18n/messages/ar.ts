@@ -381,12 +381,12 @@ export const ar: Localized<ServerMessages> = {
     feedDigestPreheader: 'ردّ الناس على ما نشرته',
 
     feedDigestBody: {
-      zero: 'ردّ {count} شخص اليوم على ما نشرته.',
+      zero: 'وصلك اليوم {count} رد على ما نشرته.',
       one: 'ردّ أحدهم اليوم على شيء نشرته.',
-      two: 'ردّ شخصان اليوم على ما نشرته.',
-      few: 'ردّ {count} أشخاص اليوم على ما نشرته.',
-      many: 'ردّ {count} شخصًا اليوم على ما نشرته.',
-      other: 'ردّ {count} شخص اليوم على ما نشرته.',
+      two: 'وصلك اليوم ردّان على ما نشرته.',
+      few: 'وصلتك اليوم {count} ردود على ما نشرته.',
+      many: 'وصلك اليوم {count} ردًا على ما نشرته.',
+      other: 'وصلك اليوم {count} رد على ما نشرته.',
     },
 
     feedDigestCorrections: {
