@@ -75,8 +75,9 @@ renders exactly as before.
 
 `film.mjs` makes "Venus: Starring Herself", the film behind the Venus page's "Watch the
 introduction": one cut per locale, 1080×1920, 30 fps, about 97 s in English and up to about 111 s
-in the longest locale (fr). Like the days it is shared, one file per locale. It is not part of the `v1`
-library: nothing here uploads it, and the app does not play it yet.
+in the longest locale (fr). Like the days it is shared, one file per locale. It is not in the
+manifest: `node upload.mjs intro` puts each locale's mp4 and cover beside the days, as
+`venus/v1/<lang>/venus-intro-<lang>.mp4`, and the app plays it by that name (see Publishing).
 
 ```bash
 node film.mjs --lang tr                  # $VENUS_OUT/intro/tr/venus-intro-tr.mp4, .jpg, .vtt, -preview.mp4
@@ -159,6 +160,8 @@ node upload.mjs media --dry   # what would go up
 node upload.mjs media         # every finished mp4 + jpg pair not already there (same size + md5)
 node upload.mjs verify        # the bucket against the local files, size + md5
 node upload.mjs manifest      # last: out/v1/manifest.public.json -> venus/v1/manifest.json
+node upload.mjs intro --dry   # the film: every locale's venus-intro mp4 + jpg from $VENUS_OUT/intro/
+node upload.mjs intro         # all of them, or nothing if a venus-intro object is already there
 ```
 
 The manifest goes up last, once `verify` is clean, because it is what tells the app a video
