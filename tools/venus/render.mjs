@@ -33,7 +33,7 @@ const V = req(path.join(RIG, 'venus-rig.js')),
   VA = req(path.join(RIG, 'venus-anim.js'))
 Object.assign(V.EXPR, EXTRA_EXPR)
 export const FPS = 30
-const G = 1500,
+export const G = 1500,
   BASE = 1.4,
   HEAD_H = 320 // ground line (px), rig scale, head centre above the ground (rig units, sitting)
 const ff = (args) =>

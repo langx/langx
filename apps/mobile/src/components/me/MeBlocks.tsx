@@ -11,6 +11,7 @@ import { Avatar } from '../ui/Avatar'
 import { FrameSweep } from '../ui/FrameSweep'
 import { Button } from '../ui/Button'
 import { IconButton } from '../ui/IconButton'
+import { ModBadge } from '../ui/ModBadge'
 import { PressableScale } from '../ui/PressableScale'
 import { ProBadge } from '../ui/ProBadge'
 import { ProgressRing } from '../ui/ProgressRing'
@@ -45,6 +46,7 @@ export interface MeHeroView {
   /** "Spanish · learning English" */
   languagesLine?: string | undefined
   pro: boolean
+  moderator: boolean
   /** The worn title's id, drawn as its badge. */
   titleId?: string | undefined
   /** "Hide my city" is on: the mark under the name, and the setting behind it. */
@@ -185,7 +187,7 @@ export function MeHero({ view }: { view: MeHeroView }) {
         </View>
 
         <View style={styles.heroText}>
-          {/* The plan on the name's line at the name's size, as on the profile. */}
+          {/* The plan and the role on the name's line at the name's size, as on the profile. */}
           <View style={styles.nameRow}>
             <Text
               style={[styles.name, !view.black && styles.nameFallback]}
@@ -195,6 +197,7 @@ export function MeHero({ view }: { view: MeHeroView }) {
               {view.name}
             </Text>
             {view.pro ? <ProBadge fontSize={v3.type.title.fontSize} on="hue" /> : null}
+            {view.moderator ? <ModBadge fontSize={v3.type.title.fontSize} on="hue" /> : null}
           </View>
           <Text style={styles.handle} numberOfLines={2}>
             {view.handleLine}

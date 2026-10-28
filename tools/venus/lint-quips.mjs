@@ -2,7 +2,8 @@
 //   node lint-quips.mjs            exits 1 and lists every problem, or prints a summary
 //   import { lintQuips } from './lint-quips.mjs'   -> { errors: [...], stats }
 //
-// The CLI also checks the day-1 intro and return lines (lib/intro.mjs) with the same text rules.
+// The CLI also checks the day-1 intro and return lines (lib/intro.mjs) and the introduction film's
+// lines and on-screen words (data/film-intro.json) with the same text rules.
 //
 // What it rejects (data/character.json -> lint.categories): numbers, guilt, surveillance ("I'm
 // watching"), time-of-day or weekday assumptions, innuendo, digs at the viewer's effort, ability,
@@ -153,7 +154,12 @@ if (import.meta.main) {
   if (!file.startsWith(HERE + path.sep)) throw new Error(`lint a file inside ${HERE}`)
   const { errors, stats } = lintQuips(JSON.parse(fs.readFileSync(file, 'utf8')))
   // the intro lines go with the real bank; the intro module pulls in the score, so only the CLI loads it
-  if (file === QUIPS_FILE) errors.push(...lintIntroLines((await import('./lib/intro.mjs')).LINES))
+  if (file === QUIPS_FILE) {
+    errors.push(...lintIntroLines((await import('./lib/intro.mjs')).LINES))
+    const { FILM } = await import('./lib/film-clock.mjs')
+    errors.push(...lintIntroLines(FILM.lines))
+    errors.push(...lintIntroLines(Object.entries(FILM.screen).map(([id, text]) => ({ id, text }))))
+  }
   if (errors.length) {
     console.error(errors.join('\n'))
     console.error(`\n${errors.length} problem(s) in ${file}`)
