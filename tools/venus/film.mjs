@@ -982,12 +982,35 @@ function musicStem(film, out, voiced) {
     for (const s of Ln.sents)
       if (voiced) duck(s.t0, s.t1, 10, 0.15, 0.35)
       else if (s.mode !== 'vo') duck(s.t0, s.t1, 3, 0.15, 0.35)
-  let peak = 0
-  for (let i = 0; i < N; i++) {
-    OL[i] *= gain[i]
-    OR[i] *= gain[i]
-    peak = Math.max(peak, Math.abs(OL[i]), Math.abs(OR[i]))
+  // A 15 kHz low-pass (two-pole, Butterworth) over the beds: the music box's attacks jump almost
+  // full scale from one sample to the next, and AAC rings on that, a one-sample spike up to 5 dB
+  // over the limiter (es and fr went over -1 dBTP whatever the ceiling). Nothing of the beds lives
+  // up there.
+  const w0 = (2 * Math.PI * 15000) / SR,
+    al = Math.sin(w0) / (2 * Math.SQRT1_2),
+    cw = Math.cos(w0),
+    a0 = 1 + al
+  const b0 = (1 - cw) / 2 / a0,
+    b1 = (1 - cw) / a0,
+    a1 = (-2 * cw) / a0,
+    a2 = (1 - al) / a0
+  for (const X of [OL, OR]) {
+    let x1 = 0,
+      x2 = 0,
+      y1 = 0,
+      y2 = 0
+    for (let i = 0; i < N; i++) {
+      const x = X[i] * gain[i]
+      const y = b0 * x + b1 * x1 + b0 * x2 - a1 * y1 - a2 * y2
+      x2 = x1
+      x1 = x
+      y2 = y1
+      y1 = y
+      X[i] = y
+    }
   }
+  let peak = 0
+  for (let i = 0; i < N; i++) peak = Math.max(peak, Math.abs(OL[i]), Math.abs(OR[i]))
   if (peak > 0.89)
     for (let i = 0; i < N; i++) {
       OL[i] *= 0.89 / peak
