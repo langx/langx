@@ -102,10 +102,11 @@ export interface TourStep {
  * because a card is the thing to actually do and the run should leave them
  * looking at one.
  *
- * The anchor on a tab step stays the **tab-bar icon**, not something on the
- * screen that was just opened. The bar is mounted whatever tab is showing, so
- * there is nothing to wait for and nothing to race; the screen behind is the
- * explanation, and the circle says which button brought them there.
+ * The anchor on a tab step stays the **tab-bar button** — the icon, and in
+ * the redesign's bar the word under it too — not something on the screen that
+ * was just opened. The bar is mounted whatever tab is showing, so there is
+ * nothing to wait for and nothing to race; the screen behind is the
+ * explanation, and the ring says which button brought them there.
  */
 export const TOUR_STEPS: readonly TourStep[] = [
   { target: 'discoverPair' },
