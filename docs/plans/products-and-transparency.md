@@ -90,6 +90,10 @@ operator's Flags page, once the copy PR is merged and its OTA is out:
 
 If anything goes wrong, `copilotEnabled` off is the whole rollback.
 
+> **Note, 28 October 2026.** Step 3 is done: production's `GET /app-config`
+> reports `flags.copilotEnabled` on, with `flags.v3Home` on beside it. When it
+> was switched on was not recorded.
+
 ## 1. Saved media lands at the end of the gallery
 
 Every save to the phone goes through one function, `saveMediaToDevice` in
