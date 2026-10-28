@@ -120,7 +120,9 @@ export function buildClock(lang, { voiceDir = null, film = FILM } = {}) {
   if (!LOCALES.includes(lang)) throw new Error(`unknown locale ${lang}`)
   // every sentence in board order, with how much later it pushes what follows
   const all = []
-  const lines = {}
+  // the lines by id, built from entries rather than by assignment: an id is data from the board,
+  // and fromEntries makes even "__proto__" an own key instead of calling the prototype setter
+  const entries = []
   for (const L of film.lines) {
     const text = L.text[lang]
     if (!text) throw new Error(`${L.id} has no ${lang} text`)
@@ -128,7 +130,10 @@ export function buildClock(lang, { voiceDir = null, film = FILM } = {}) {
     if (parts.length !== L.at.length)
       throw new Error(`${L.id} ${lang}: ${parts.length} sentences, the board has ${L.at.length}`)
     const take = voiceDir ? readTake(voiceDir, lang, L.id, text) : null
-    lines[L.id] = { id: L.id, beat: L.beat, text, take, reveal: L.reveal || 'karaoke', sents: [] }
+    entries.push([
+      L.id,
+      { id: L.id, beat: L.beat, text, take, reveal: L.reveal || 'karaoke', sents: [] },
+    ])
     parts.forEach((p, i) => {
       const [a, b] = L.at[i]
       const nat = take ? take.spans[i].t1 - take.spans[i].t0 : silentSeconds(p.text)
@@ -138,6 +143,7 @@ export function buildClock(lang, { voiceDir = null, film = FILM } = {}) {
       all.push({ id: L.id, i, a, b, nat, push, p })
     })
   }
+  const lines = Object.fromEntries(entries)
   // W: board time -> film time. A push lands at its sentence's board end.
   const pushes = all.filter((s) => s.push > 0).map((s) => [s.b, s.push])
   const W = (t) => {

@@ -73,9 +73,20 @@ const { EASE, clamp } = L
 const r3 = (x) => Math.round(x * 1000) / 1000
 export const FILM_DIR = path.join(OUT_ROOT, 'intro')
 const STICKERS = path.join(REPO, 'apps/mobile/assets/stickers/venus')
-// the published day covers the wall is made of (read only; nothing is ever written there)
-const COVER_URL = (lang, d) =>
-  `https://media.langx.io/venus/v1/${lang}/venus-day${String(d).padStart(3, '0')}-${lang}.jpg`
+// the published day covers the wall is made of (read only; nothing is ever written there). The
+// locale in the URL is the LOCALES entry, never the string the command line passed, and a URL that
+// is not on the media origin is refused, so no argument can point this fetch anywhere else.
+const MEDIA_ORIGIN = 'https://media.langx.io'
+function coverUrl(lang, d, ext = 'jpg') {
+  const l = LOCALES.find((x) => x === lang)
+  if (!l || !Number.isInteger(d) || d < 1 || d > 100) throw new Error(`no day cover ${lang} ${d}`)
+  const day = String(d).padStart(3, '0')
+  const url = new URL(`/venus/v1/${l}/venus-day${day}-${l}.${ext}`, MEDIA_ORIGIN)
+  if (url.origin !== MEDIA_ORIGIN) throw new Error(`${url.href} is not on ${MEDIA_ORIGIN}`)
+  return url.href
+}
+// a JPEG starts FF D8 FF: an error page or a truncated body is not handed on as a cover
+const isJpeg = (b) => b.length > 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff
 const ff = (args) =>
   execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', ...args], {
     stdio: ['ignore', 'ignore', 'inherit'],
@@ -429,7 +440,7 @@ async function wallTiles(lang, log) {
     if (!fs.existsSync(out[d].tc) || !fs.existsSync(out[d].tf)) missing.push(d)
   }
   if (missing.length) log(`  ${lang}: fetching ${missing.length} day covers for the wall`)
-  const magick = (args) => execFileSync('magick', args)
+  const magick = (args, input) => execFileSync('magick', args, input ? { input } : undefined)
   // the CDN answers a burst with the odd 5xx: a few tries, a little apart
   const get = async (url) => {
     for (let k = 0; ; k++) {
@@ -439,39 +450,47 @@ async function wallTiles(lang, log) {
       await new Promise((ok) => setTimeout(ok, 800 * (k + 1)))
     }
   }
+  // The downloaded cover goes straight into magick on stdin and only the tiles are kept: nothing
+  // fetched is written to disk by this process, so there is no check-then-write to race either.
+  const cover = async (d) => {
+    try {
+      const jpg = await get(coverUrl(lang, d))
+      if (!isJpeg(jpg)) throw new Error(`${coverUrl(lang, d)}: not a JPEG`)
+      return jpg
+    } catch (e) {
+      // a cover the CDN keeps refusing is also the video's attached picture
+      log(`  ${lang}: ${e.message}; taking day ${d}'s cover from its video`)
+      // the attached picture as it is stored (stream copy), on stdout
+      const jpg = execFileSync(
+        'ffmpeg',
+        [
+          ...['-hide_banner', '-loglevel', 'error', '-i', coverUrl(lang, d, 'mp4')],
+          ...['-map', '0:v:1', '-c', 'copy', '-frames:v', '1', '-f', 'image2pipe', 'pipe:1'],
+        ],
+        { stdio: ['ignore', 'pipe', 'inherit'], maxBuffer: 64 << 20 },
+      )
+      if (!isJpeg(jpg)) throw new Error(`day ${d}: the video's cover is not a JPEG`, { cause: e })
+      return jpg
+    }
+  }
   for (let i = 0; i < missing.length; i += 6)
     await Promise.all(
       missing.slice(i, i + 6).map(async (d) => {
-        const src = path.join(dir, `cover-${d}.jpg`)
-        if (!fs.existsSync(src))
-          try {
-            fs.writeFileSync(src, await get(COVER_URL(lang, d)))
-          } catch (e) {
-            // a cover the CDN keeps refusing is also the video's attached picture
-            log(`  ${lang}: ${e.message}; taking day ${d}'s cover from its video`)
-            ff([
-              '-i',
-              COVER_URL(lang, d).replace(/\.jpg$/, '.mp4'),
-              '-map',
-              '0:v:1',
-              '-c',
-              'copy',
-              '-frames:v',
-              '1',
-              src,
-            ])
-          }
-        magick([
-          src,
-          '-crop',
-          '1080x1080+0+250',
-          '+repage',
-          '-resize',
-          '256x256',
-          '-quality',
-          '86',
-          out[d].tc,
-        ])
+        const jpg = await cover(d)
+        magick(
+          [
+            'jpeg:-',
+            '-crop',
+            '1080x1080+0+250',
+            '+repage',
+            '-resize',
+            '256x256',
+            '-quality',
+            '86',
+            out[d].tc,
+          ],
+          jpg,
+        )
         magick([out[d].tc, '-blur', '0x9', '-modulate', '100,55', '-quality', '80', out[d].tf])
       }),
     )
@@ -522,11 +541,14 @@ export async function buildFilm({
   const titleF = Math.min(230, Math.floor(800 / (w100 / 100 - 0.15)))
   const pillLay = async (text, steps, maxW, maxLines) => {
     for (const F of steps) {
-      const ws = text.split(' '),
-        m = {}
+      const ws = text.split(' ')
       const r = await B.measure([...ws, ' '], `900 ${F}px ${FL.FILM_FONT}`)
-      ws.forEach((w, i) => (m[w] = r[i] + F * 0.04 * [...w].length))
-      m[' '] = r[r.length - 1]
+      // the widths keyed by word, built from entries rather than by assignment: a word is data,
+      // and fromEntries makes even "__proto__" an own key instead of calling the prototype setter
+      const m = Object.fromEntries([
+        ...ws.map((w, i) => [w, r[i] + F * 0.04 * [...w].length]),
+        [' ', r[r.length - 1]],
+      ])
       const lines = FL.wrap(ws, m, maxW - 1.24 * F, maxLines)
       if (lines) {
         const txt = lines.map((l) => l.join(' '))
@@ -1352,66 +1374,82 @@ if (import.meta.main) {
     const i = process.argv.indexOf('--' + k)
     return i > 0 ? process.argv[i + 1] : d
   }
-  if (arg('script')) {
-    fs.writeFileSync(arg('script'), JSON.stringify(voiceScript(), null, 2) + '\n')
-    console.log('wrote', arg('script'))
-  } else if (process.argv.includes('--all')) {
-    // every locale in its own process: one browser each (separate browsers scale, pages do not)
-    const jobs = +arg('jobs', 4)
-    const pass = process.argv
-      .slice(2)
-      .filter((x, i, a) => x !== '--all' && x !== '--jobs' && a[i - 1] !== '--jobs')
-    const queue = [...LOCALES],
-      results = [],
-      failed = []
-    await Promise.all(
-      Array.from({ length: jobs }, async () => {
-        while (queue.length) {
-          const lang = queue.shift()
-          const p = spawn(
-            process.execPath,
-            [fileURLToPath(import.meta.url), '--lang', lang, ...pass],
-            { stdio: ['ignore', 'pipe', 'inherit'] },
-          )
-          let text = ''
-          p.stdout.on('data', (d) => {
-            text += d
-            process.stdout.write(d)
-          })
-          const code = await new Promise((r) => p.on('close', r))
-          // one locale failing (a CDN hiccup, say) must not take the others' pipes down with it
-          if (code !== 0) {
-            failed.push(lang)
-            continue
+  // What this run is, decided once from which flags are present, never from a flag's value; and a
+  // failure sets the exit code rather than exiting, so no branch on the command line ends the process
+  const mode = process.argv.includes('--script')
+    ? 'script'
+    : process.argv.includes('--all')
+      ? 'all'
+      : 'one'
+  switch (mode) {
+    case 'script': {
+      const file = arg('script')
+      fs.writeFileSync(file, JSON.stringify(voiceScript(), null, 2) + '\n')
+      console.log('wrote', file)
+      break
+    }
+    case 'all': {
+      // every locale in its own process: one browser each (separate browsers scale, pages do not)
+      const jobs = +arg('jobs', 4)
+      const pass = process.argv
+        .slice(2)
+        .filter((x, i, a) => x !== '--all' && x !== '--jobs' && a[i - 1] !== '--jobs')
+      const queue = [...LOCALES],
+        results = [],
+        failed = []
+      await Promise.all(
+        Array.from({ length: jobs }, async () => {
+          while (queue.length) {
+            const lang = queue.shift()
+            const p = spawn(
+              process.execPath,
+              [fileURLToPath(import.meta.url), '--lang', lang, ...pass],
+              { stdio: ['ignore', 'pipe', 'inherit'] },
+            )
+            let text = ''
+            p.stdout.on('data', (d) => {
+              text += d
+              process.stdout.write(d)
+            })
+            const code = await new Promise((r) => p.on('close', r))
+            // one locale failing (a CDN hiccup, say) must not take the others' pipes down with it
+            if (code !== 0) {
+              failed.push(lang)
+              continue
+            }
+            const line = text.split('\n').find((l) => l.startsWith('RESULT '))
+            if (line) results.push(JSON.parse(line.slice(7)))
           }
-          const line = text.split('\n').find((l) => l.startsWith('RESULT '))
-          if (line) results.push(JSON.parse(line.slice(7)))
-        }
-      }),
-    )
-    console.log('ALL ' + JSON.stringify(results))
-    if (failed.length) {
-      console.error(`failed: ${failed.join(' ')}`)
-      process.exit(1)
-    }
-  } else {
-    const lang = arg('lang')
-    if (!LOCALES.includes(lang)) {
-      console.error(
-        'usage: node film.mjs --lang xx [--strip N | --at 12.4,64] [--sheets dir] | --all | --script f',
+        }),
       )
-      process.exit(2)
+      console.log('ALL ' + JSON.stringify(results))
+      if (failed.length) {
+        console.error(`failed: ${failed.join(' ')}`)
+        process.exitCode = 1
+      }
+      break
     }
-    const res = await renderFilm({
-      lang,
-      pages: +arg('pages', 4),
-      strip: +arg('strip', 0),
-      at: arg('at') ? arg('at').split(',').map(Number) : null,
-      endStyle: EC.styleOf(arg('end', 'handoff')),
-      sheets: arg('sheets', null),
-    })
-    if (res.strip) console.log('strip', res.strip)
-    if (res.stills) console.log('stills', res.stills.join(' '))
-    console.log('RESULT ' + JSON.stringify(res))
+    case 'one': {
+      const lang = arg('lang')
+      if (!LOCALES.includes(lang)) {
+        console.error(
+          'usage: node film.mjs --lang xx [--strip N | --at 12.4,64] [--sheets dir] | --all | --script f',
+        )
+        process.exitCode = 2
+        break
+      }
+      const res = await renderFilm({
+        lang,
+        pages: +arg('pages', 4),
+        strip: +arg('strip', 0),
+        at: arg('at') ? arg('at').split(',').map(Number) : null,
+        endStyle: EC.styleOf(arg('end', 'handoff')),
+        sheets: arg('sheets', null),
+      })
+      if (res.strip) console.log('strip', res.strip)
+      if (res.stills) console.log('stills', res.stills.join(' '))
+      console.log('RESULT ' + JSON.stringify(res))
+      break
+    }
   }
 }
