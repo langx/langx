@@ -31,6 +31,8 @@ import { fileURLToPath } from 'node:url'
 import {
   buildClock,
   captionTimes,
+  shownAt,
+  vtt,
   syntheticMouth,
   LOCALES,
   FILM,
@@ -46,6 +48,7 @@ import {
   BLEP_AT,
   BONK_FRAME,
   BONK_CAM,
+  BAG_CAM,
   bonkClock,
 } from './lib/film-shots.mjs'
 import { buildScore, EXTRA_EXPR } from './lib/score.mjs'
@@ -154,9 +157,7 @@ async function layoutCaptions(B, clock, cuts, lang) {
       return { prefer, must }
     }
     const place = async (g) => {
-      const words = g.flatMap((i) =>
-        S[i].words.map((w) => ({ ...w, hideUntil: S[i].hidden ? S[i].t0 - 0.02 : -Infinity })),
-      )
+      const words = g.flatMap((i) => S[i].words.map((w) => ({ ...w, hideUntil: shownAt(S[i]) })))
       const f = await fit(
         words.map((w) => w.text),
         breaks(g),
@@ -171,6 +172,9 @@ async function layoutCaptions(B, clock, cuts, lang) {
           tails: g.map((i) => ({ t: S[i].t0, on: S[i].mode !== 'vo' })),
           start: S[g[0]].t0 - 0.14,
           text: g.map((i) => S[i].text).join(' '),
+          // when each sentence shows: a held-back one (after a "…", or the bag run's appends) on
+          // the frame its words do, the others with the bubble
+          sents: g.map((i) => ({ text: S[i].text, at: shownAt(S[i]) })),
         })
         return
       }
@@ -219,25 +223,6 @@ function captionAt(caps, t, look, rtl, cuts = []) {
   if (t > Ln.hide) s *= 1 - EASE.in(clamp((t - Ln.hide) / 0.2))
   return FL.bubble(look, t, { block: bl, rtl, scale: s })
 }
-// WebVTT: one cue per bubble, from when it opens to when it changes or closes, so a sentence held
-// back for its "…" is not in a cue before it is said
-export function vtt(caps) {
-  const ts = (t) => {
-    const ms = Math.max(0, Math.round(t * 1000)),
-      p = (v, n = 2) => String(v).padStart(n, '0')
-    return `${p(Math.floor(ms / 3600000))}:${p(Math.floor(ms / 60000) % 60)}:${p(Math.floor(ms / 1000) % 60)}.${p(ms % 1000, 3)}`
-  }
-  const cues = []
-  for (const c of caps)
-    c.blocks.forEach((b, i) => {
-      const a = i === 0 ? c.show : Math.max(c.show, b.start),
-        z = i < c.blocks.length - 1 ? Math.max(c.show, c.blocks[i + 1].start) : c.hide
-      const id = c.blocks.length > 1 ? `${c.id}-${i + 1}` : c.id
-      cues.push(`${id}\n${ts(a)} --> ${ts(z)}\n${b.text}\n`)
-    })
-  return 'WEBVTT\n\n' + cues.join('\n')
-}
-
 // ------------------------------------------------------------------ the voice script
 // What a voicing session needs: every line, its text in each locale and the characters it bills.
 export function voiceScript(film = FILM) {
@@ -315,9 +300,10 @@ async function labelFit(B, probes, line, hw) {
 const labelHalf = (labelW) => Math.min(labelW, 820) / 2 + 12
 // One window of the race: the day as it ships (its plan, look, items, number), scored without its
 // line. A short window opens on the day already settled (settledAt): everything it ships is on, and
-// its number pops on the cut; day 100 opens on its slam, the bag days with their bag popping 0.12 s
-// after the cut or on a line.
-const BAG_CAM = { z: 0.78, lift: 125 }
+// its number pops on the cut. The bag days open with the bag already under her (each "Bag." lands
+// with its bag, on the cut, to a crinkle), except the one whose bag lands on a line ("…Different
+// bag."); day 100 opens on the frame its slammed number hits, so the cut, the music's return, the
+// thud and the shake are one frame.
 async function dayWindow(B, w, ctx) {
   const { W, lang, ec, endStyle } = ctx
   let plan = planVideo(w.day, lang)
@@ -331,12 +317,14 @@ async function dayWindow(B, w, ctx) {
   const T0 = W(w.from),
     T1 = W(w.runOn ?? w.to)
   let start
+  // the slam's number falls for 0.13 s and hits (layers.mjs number, score.mjs reveal)
+  const SLAM_HIT = 0.13
   if (w.align === 'R') start = settledAt(sc, itemsFor(plan))
-  else if (w.align === 'slam') start = sc.R - 0.05
+  else if (w.align === 'slam') start = sc.R + SLAM_HIT
   else {
-    const bagAt = sc.T.v - 0.3 + 0.28 // bag-throne: the bag pops at m0 + 0.28
-    const cue = w.on ? ctx.clock.lines[w.on[0]].sents[w.on[1]].t0 + 0.1 : T0 + 0.12
-    start = bagAt - (cue - T0)
+    const bagAt = sc.T.v - 0.3 + 0.28 // bag-throne: the bag pops at m0 + 0.28, full 0.16 s later
+    if (w.on) start = bagAt - (ctx.clock.lines[w.on[0]].sents[w.on[1]].t0 + 0.1 - T0)
+    else start = bagAt + 0.17
   }
   start = Math.round(start * FPS) / FPS
   // the number stays full size through a window (its badge would start mid-race), except on the
@@ -378,16 +366,21 @@ async function dayWindow(B, w, ctx) {
   )
   const len = W(w.to) - T0
   const sfx = []
+  // day 100's confetti burst at the reveal, a frame or four before the hit the window opens on,
+  // still sounds (on the cut); the slam's fall (its whoosh) is not in the picture, so not in the mix
+  const early = w.align === 'slam' ? SLAM_HIT + 0.02 : 0.02
   for (const s of sc.sfx) {
-    if (s.kind === 'shutter') continue
+    if (s.kind === 'shutter' || (w.align === 'slam' && s.kind === 'whoosh')) continue
     if (s.kind === 'counter') {
       const ticks = s.ticks
         .filter(([t]) => t >= start && t < start + len)
         .map(([t, k]) => [t - start + T0, k])
       if (ticks.length) sfx.push({ ...s, ticks, gainDb: (s.gainDb ?? 0) - 4 })
-    } else if (s.at >= start - 0.02 && s.at < start + len)
-      sfx.push({ ...s, at: s.at - start + T0, gainDb: (s.gainDb ?? 0) - 4 })
+    } else if (s.at >= start - early && s.at < start + len)
+      sfx.push({ ...s, at: Math.max(T0, s.at - start + T0), gainDb: (s.gainDb ?? 0) - 4 })
   }
+  // the bag lands before the window: its crinkle comes on the cut
+  if (bag && !w.on) sfx.push({ kind: 'crinkle', at: T0, gainDb: -7 })
   return {
     plan,
     look: plan.look,
@@ -606,7 +599,7 @@ export async function buildFilm({
     Object.assign(sh, await dayWindow(B, sh, ctx))
     sfx.push(...sh.sfx)
   }
-  sfx.push({ kind: 'sting', at: W(52.9) + 0.18, gainDb: -3 }, ...wallSfx(clock))
+  sfx.push({ kind: 'sting', at: W(52.9), gainDb: -3 }, ...wallSfx(clock))
   sfx.push(...EC.endSfx(endStyle, endAt))
   return {
     lang,
@@ -913,8 +906,25 @@ function musicStem(film, out, voiced) {
   const { W, duration, clock } = film
   const N = Math.round((duration + 0.5) * SR)
   const [OL, OR] = stereo(N)
-  const XF = Math.round(0.25 * SR),
+  // the crossfade in whole samples, and even: a bed that starts half of it early must start on a
+  // sample (a fractional index writes nothing, and the whole bed went missing that way)
+  const XF = 2 * Math.round(0.125 * SR),
     HARD = Math.round(0.03 * SR)
+  // room tone under the cold open, where there is no music yet: a faint low hum of air, so the
+  // shutters sit in a room and not in a dropout
+  const roomEnd = Math.min(N, Math.round(W(10.6) * SR)),
+    roomFade = Math.round(0.4 * SR)
+  let seed = 0x2f6b1,
+    yl0 = 0,
+    yr0 = 0
+  const rnd = () => ((seed = (seed * 1103515245 + 12345) >>> 0) / 2 ** 32) * 2 - 1
+  for (let i = 0; i < roomEnd; i++) {
+    const k = 0.01 * Math.min(1, i / roomFade, (roomEnd - i) / roomFade)
+    yl0 += 0.08 * (rnd() - yl0)
+    yr0 += 0.08 * (rnd() - yr0)
+    OL[i] += yl0 * k
+    OR[i] += yr0 * k
+  }
   for (const m of MUSIC) {
     const loop = path.join(CACHE, `intro-music-${m.mood}-${m.bpm}-${m.seed}.wav`)
     if (!fs.existsSync(loop)) {

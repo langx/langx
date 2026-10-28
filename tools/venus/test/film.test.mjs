@@ -16,6 +16,8 @@ import {
   buildClock,
   captionTimes,
   readChars,
+  shownAt,
+  vtt,
 } from '../lib/film-clock.mjs'
 import {
   SHOTS,
@@ -331,4 +333,63 @@ test('captions: clear on a cut once the line is said, and the bag run opens on i
   // "…I made a film." is said by 10.22: the bubble clears on the title's cut, not after it
   assert.equal(by['intro-03'].hide, 10.6)
   assert.equal(by['intro-12'].show, by['intro-12'].sents[0].t0)
+})
+
+test('captions: the WebVTT never shows a sentence before the bubble does', () => {
+  // one block per line (film.mjs may split a long line into more; each splits the same way)
+  const parse = (text) =>
+    text
+      .split('\n\n')
+      .slice(1)
+      .map((c) => {
+        const [id, span, ...words] = c.trim().split('\n')
+        const [a, b] = span.split(' --> ').map((x) => {
+          const [h, m, sec] = x.split(':')
+          return +h * 3600 + +m * 60 + +sec
+        })
+        return { id, a, b, text: words.join(' ') }
+      })
+  for (const lang of LOCALES) {
+    const { clock, shots } = performed.get(lang)
+    const caps = captionTimes(clock, flashesAndCuts(shots).cuts).map((L) => ({
+      ...L,
+      blocks: [{ start: L.show, sents: L.sents.map((s) => ({ text: s.text, at: shownAt(s) })) }],
+    }))
+    const cues = parse(vtt(caps))
+    for (const L of caps) {
+      const mine = cues.filter((c) => c.id === L.id || c.id.startsWith(L.id + '-'))
+      assert.ok(near(mine[0].a, L.show, 1e-3), `${lang} ${L.id} opens`)
+      // every cue says exactly what the bubble shows when it starts: nothing held back yet
+      for (const c of mine)
+        assert.equal(
+          c.text,
+          L.sents
+            .filter((s) => shownAt(s) <= c.a + 1e-3)
+            .map((s) => s.text)
+            .join(' '),
+          `${lang} ${c.id} at ${c.a}`,
+        )
+      for (const s of L.sents) {
+        // and a held-back sentence opens a cue of its own, on the frame it shows
+        if (s.hidden && s !== L.sents[0])
+          assert.ok(
+            mine.some((c) => Math.abs(c.a - shownAt(s)) < 2e-3 && c.text.endsWith(s.text)),
+            `${lang} ${L.id}: no cue for "${s.text}"`,
+          )
+      }
+    }
+  }
+  // the English board: the bag run is four cues, one per "Bag."
+  const en = parse(
+    vtt(
+      captionTimes(buildClock('en'), flashesAndCuts(performed.get('en').shots).cuts).map((L) => ({
+        ...L,
+        blocks: [{ start: L.show, sents: L.sents.map((s) => ({ text: s.text, at: shownAt(s) })) }],
+      })),
+    ),
+  )
+  assert.deepEqual(
+    en.filter((c) => c.id.startsWith('intro-12')).map((c) => c.text),
+    ['Bag.', 'Bag. Bag.', 'Bag. Bag. Bag.', 'Bag. Bag. Bag. …Different bag.'],
+  )
 })

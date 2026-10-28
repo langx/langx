@@ -222,7 +222,7 @@ export function sticker(
   y,
   size,
   rot = 0,
-  { leave = null, dir = [0, -1], op = 1 } = {},
+  { leave = null, dir = [0, -1], op = 1, minTop = null } = {},
 ) {
   const u = t - t0
   if (u < 0) return ''
@@ -232,6 +232,9 @@ export function sticker(
       : u < 0.2
         ? 0.92 + 0.08 * EASE.outBack((u - 0.1) / 0.1)
         : 1
+  // minTop: the slap's overshoot stops where the art's top (the die-cut fills about 88% of its
+  // square) would cross that line
+  if (minTop !== null) k = Math.min(k, Math.max(1, (y - minTop) / (size * 0.44)))
   let o = clamp(u / 0.05) * op,
     dx = 0,
     dy = 0,

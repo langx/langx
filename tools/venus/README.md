@@ -75,7 +75,7 @@ renders exactly as before.
 
 `film.mjs` makes "Venus: Starring Herself", the film behind the Venus page's "Watch the
 introduction": one cut per locale, 1080×1920, 30 fps, about 97 s in English and up to about 111 s
-in the longest locale. Like the days it is shared, one file per locale. It is not part of the `v1`
+in the longest locale (fr). Like the days it is shared, one file per locale. It is not part of the `v1`
 library: nothing here uploads it, and the app does not play it yet.
 
 ```bash
@@ -90,7 +90,10 @@ node film.mjs --script voice-script.json # every line, its text and its characte
 The cover (`.jpg`, also the mp4's cover art) is the title card. The preview is 720×1280 and under
 8 MB, for review. Until the lines are voiced the cut has music and sound effects only, with every
 line burned in as a subtitle and in the `.vtt`; the film never voices a line itself, not even with
-`say`.
+`say`. The `.vtt` holds back what the bubble holds back: a sentence after a "…", and each "Bag." of
+the bag run, starts a cue of its own when it appears, so the caption file never pre-reads a
+punchline. Each section's music is a loop at a fixed tempo laid from its first beat; the cold open
+before the title has a faint room tone instead.
 
 **The board and the clock.** `data/film-intro.json` holds the 22 lines in the eight locales and
 every sentence's time on the English silent cut (the board). `lib/film-clock.mjs` turns it into a
@@ -105,10 +108,14 @@ land on sentences by position; `en` and `tr` are final, the other six want a nat
 **The shots.** `lib/film-shots.mjs` is what Venus does, written with the days' own vocabulary
 (`lib/score.mjs` entrances, reactions and moves, the rig, `lib/items.mjs`). The race through the
 days is the days themselves, drawn by `render.mjs` with her mouth shut. A one-second window opens on
-its day already settled (its number popping on the cut, its seat, outfit and items on), and every
-window, like every shot with a counter, draws her just small enough that her ears stay under the
-number's label (measured in the browser, as `fitUnderLabel` measures a day); on the bag days the
-camera also pulls back, so the bag clears the caption. In the bonk her leap's last frame meets the
+its day already settled (its number popping on the cut, its seat, outfit and items on); the three
+half-second bag days open with the bag already under her, so each "Bag." lands with its bag, and day
+93's kraft bag lands on "…Different bag."; day 100 opens on the frame its slammed number hits, with
+the music's return, the thud and the shake. Every window, like every shot with a counter, draws her
+just small enough that her ears stay under the number's label (measured in the browser, as
+`fitUnderLabel` measures a day); on the bag days, and in the bag-hop entrance that plants the gag,
+the camera also pulls back and up (`BAG_CAM`), and in the comeback it rises while the bag is the
+joke, so the bag clears the caption. In the bonk her leap's last frame meets the
 locked day's bottom edge and she stays pressed to it, turning to the lens, before she slides (the
 heights are measured, not guessed). The wall is made of the
 published covers, read from the CDN once into `cache/intro-covers/`. `lib/film-layers.mjs` draws

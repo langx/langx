@@ -228,6 +228,9 @@ export const SHOTS = [
       ENTRANCES['bag-hop'](c)
       face(c, 1.62, 'regal', 260)
     },
+    // the race's bag-day framing (BAG_CAM): pulled back and set up, so the hop and the bag it lands
+    // in (the film's running gag, planted here) clear the caption bubble, logo and all
+    cam: () => ({ z: [[0, BAG_CAM.z]], lift: [[0, BAG_CAM.lift]] }),
   },
   {
     // her ears, then her eyes over the ledge; she says the second sentence from there
@@ -363,11 +366,18 @@ export const SHOTS = [
         { t: S.at(24.9), at: 'body', big: true },
       ]
     },
+    // the onesie is the joke of "…Almost everything.": the camera rises with it, so the bubble
+    // under that line leaves the onesie in view, not just its collar
     cam: (S) => ({
       z: [
         [0, 1],
         [S.at(21.9), 1, 'linear'],
         [S.len, 1.1, 'inOut'],
+      ],
+      lift: [
+        [0, 0],
+        [S.at(24.9), 0],
+        [S.at(24.9) + 0.35, 150, 'inOut'],
       ],
     }),
     items: (S) => {
@@ -630,6 +640,9 @@ export const SHOTS = [
         { kind: 'boing', at: t1 + 0.45, gainDb: -6 },
       )
     },
+    // set up while "Breaks happen. …I take mine in a bag." is on, so the bag (the gag's payoff)
+    // and her sinking into it show over the bubble; down again under the counter as it pops, by
+    // which time she is out of the bag (her ears then have to clear its label)
     cam: (S) => ({
       z: [
         [0, 1.02],
@@ -638,6 +651,11 @@ export const SHOTS = [
       dx: [
         [0, -30],
         [S.len, 30, 'linear'],
+      ],
+      lift: [
+        [0, COMEBACK_LIFT],
+        [S.at(70.5) - 0.4, COMEBACK_LIFT],
+        [S.at(70.5), 0, 'inOut'],
       ],
     }),
     over(t, S, F) {
@@ -697,9 +715,11 @@ export const SHOTS = [
           { leave, dir: [Math.sign(x - 540), (y - 820) / 600] },
         )
       })
+      // the biggest one's pop never overshoots into the player's chrome (y < 270)
       s += FL.sticker(t, S.at(77.83), `st-${HELLO[S.lang]}`, ...HELLO_AT, 0, {
         leave,
         dir: [0, -1],
+        minTop: 280,
       })
       return s
     },
@@ -811,11 +831,16 @@ export const RING = [
   [205, 1125],
 ]
 export const RING_SIZE = 250
-export const HELLO_AT = [540, 480, 380]
+export const HELLO_AT = [540, 500, 380]
 // the locked cover the bonk hits: the wall's tile 31, pushed into until it is this square (x 300-780,
 // y 300-780: as big as the board's, and high enough over her that the jump to it reads)
 export const BONK_FRAME = [300, 300, 480]
 export const BONK_CAM = { z: 0.62, lift: -140 }
+// the race's bag days (film.mjs dayWindow) and the bag-hop entrance: pulled back and set up so the
+// bag clears the caption bubble
+export const BAG_CAM = { z: 0.78, lift: 125 }
+// the comeback's rise while its bag is the joke
+const COMEBACK_LIFT = 170
 // the bonk's beats in the shot's clock: the crouch at m0, the leap's last frame (the hit) just before
 // `back`, which falls on a frame so the hit is one; the board's leap is 63.70 and the hit 64.00
 export function bonkClock(S) {

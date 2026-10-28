@@ -204,6 +204,40 @@ export function captionTimes(clock, cuts = []) {
   return order
 }
 
+// When a sentence shows in its bubble: a held-back one (after a "…", or each of the bag run's
+// appends) on the frame its words do, any other with the bubble
+export const shownAt = (s) => (s.hidden ? s.t0 - 0.02 : -Infinity)
+
+// WebVTT: a cue per bubble, from when it opens to when it changes or closes, and a new one each
+// time a held-back sentence appears in it (after a "…", or each "Bag." of the bag run), carrying the
+// sentences shown so far: a caption file never pre-reads a punchline the picture holds back
+export function vtt(caps) {
+  const ts = (t) => {
+    const ms = Math.max(0, Math.round(t * 1000)),
+      p = (v, n = 2) => String(v).padStart(n, '0')
+    return `${p(Math.floor(ms / 3600000))}:${p(Math.floor(ms / 60000) % 60)}:${p(Math.floor(ms / 1000) % 60)}.${p(ms % 1000, 3)}`
+  }
+  const cues = []
+  for (const c of caps) {
+    const parts = []
+    c.blocks.forEach((b, i) => {
+      const a = i === 0 ? c.show : Math.max(c.show, b.start),
+        z = i < c.blocks.length - 1 ? Math.max(c.show, c.blocks[i + 1].start) : c.hide
+      const at = [...new Set(b.sents.map((s) => Math.max(a, s.at)))].sort((x, y) => x - y)
+      at.forEach((t0, j) => {
+        const t1 = j < at.length - 1 ? at[j + 1] : z
+        const text = b.sents.filter((s) => Math.max(a, s.at) <= t0).map((s) => s.text)
+        if (t1 - t0 > 1e-3 && text.length) parts.push({ t0, t1, text: text.join(' ') })
+      })
+    })
+    parts.forEach((p, i) => {
+      const id = parts.length > 1 ? `${c.id}-${i + 1}` : c.id
+      cues.push(`${id}\n${ts(p.t0)} --> ${ts(p.t1)}\n${p.text}\n`)
+    })
+  }
+  return 'WEBVTT\n\n' + cues.join('\n')
+}
+
 // A mouth for the silent cut: one opening per syllable (a vowel group) of every word she says on
 // camera, brighter on i/e, rounder on o/u. Per frame, 0..1, the shape lib/audio.mjs analyseVoice
 // returns for a recording, so the lip sync is the same code either way.
