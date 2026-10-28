@@ -3462,10 +3462,18 @@ export const de: Localized<EnMessages> = {
     nextKicker: 'Als Nächstes',
     of: '{current} von {total}',
     toGo: 'Noch {amount}.',
-    streakReward: 'Der Meilenstein für {days} Tage Serie bringt +{tokens} Token.',
+    streakReward: 'Der Meilenstein für eine Serie von {days} bringt {tokens}.',
     noTokens: 'Das Abzeichen selbst bringt keine Token.',
     milestonePays:
-      'Das Abzeichen selbst bringt nichts; der Meilenstein für {days} Tage Serie bringt +{tokens} Token.',
+      'Das Abzeichen selbst bringt nichts; der Meilenstein für eine Serie von {days} bringt {tokens}.',
+    milestoneDays: {
+      one: '{formatted} Tag',
+      other: '{formatted} Tagen',
+    },
+    milestoneTokens: {
+      one: '+{formatted} Token',
+      other: '+{formatted} Token',
+    },
     earnedOn: 'Verdient am {date}',
     earned: 'Verdient',
     locked: 'Gesperrt',

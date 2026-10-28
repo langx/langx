@@ -3455,10 +3455,18 @@ export const fr: Localized<EnMessages> = {
     nextKicker: 'Prochain à gagner',
     of: '{current} sur {total}',
     toGo: 'Encore {amount}.',
-    streakReward: 'Le palier de {days} jours de série rapporte +{tokens} jetons.',
+    streakReward: 'Le palier de {days} de série rapporte {tokens}.',
     noTokens: 'Le badge lui-même ne rapporte pas de jetons.',
     milestonePays:
-      'Le badge lui-même ne rapporte rien ; le palier de {days} jours de série rapporte +{tokens} jetons.',
+      'Le badge lui-même ne rapporte rien ; le palier de {days} de série rapporte {tokens}.',
+    milestoneDays: {
+      one: '{formatted} jour',
+      other: '{formatted} jours',
+    },
+    milestoneTokens: {
+      one: '+{formatted} jeton',
+      other: '+{formatted} jetons',
+    },
     earnedOn: 'Gagné le {date}',
     earned: 'Gagné',
     locked: 'Verrouillé',
