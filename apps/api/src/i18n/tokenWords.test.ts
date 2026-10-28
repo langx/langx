@@ -11,14 +11,24 @@ import { catalogs } from './catalogs'
  * - es "bote", pt-BR "bolo" and fr "cagnotte" are what a lottery's prize pot
  *   is called. The pool is "fondo", "fundo" and "pot commun".
  * - Arabic calls the token رمز / رموز, not the loanword توكن.
+ * - Russian, Spanish and Portuguese call it what token.langx.io calls it:
+ *   токен, tokens. Both catalogues had grown a second word beside it —
+ *   жетон, fichas — sometimes on the same screen.
  *
  * Letter lookarounds rather than `\b`, which treats "ã" as a word boundary.
  */
-const NEVER: Partial<Record<Locale, { pattern: RegExp; old: string }>> = {
-  es: { pattern: /(?<!\p{L})botes?(?!\p{L})/iu, old: 'El bote de ayer' },
-  'pt-BR': { pattern: /(?<!\p{L})bol(?:os?|ão|ões)(?!\p{L})/iu, old: 'O bolo de ontem' },
-  fr: { pattern: /cagnotte/iu, old: 'La cagnotte d’hier' },
-  ar: { pattern: /توكن/u, old: '+3 توكنات' },
+const NEVER: Partial<Record<Locale, { pattern: RegExp; old: string }[]>> = {
+  es: [
+    { pattern: /(?<!\p{L})botes?(?!\p{L})/iu, old: 'El bote de ayer' },
+    { pattern: /(?<!\p{L})fichas?(?!\p{L})/iu, old: 'Tus fichas' },
+  ],
+  'pt-BR': [
+    { pattern: /(?<!\p{L})bol(?:os?|ão|ões)(?!\p{L})/iu, old: 'O bolo de ontem' },
+    { pattern: /(?<!\p{L})fichas?(?!\p{L})/iu, old: 'Suas fichas' },
+  ],
+  fr: [{ pattern: /cagnotte/iu, old: 'La cagnotte d’hier' }],
+  ru: [{ pattern: /жетон/iu, old: 'Не хватает жетонов' }],
+  ar: [{ pattern: /توكن/u, old: '+3 توكنات' }],
 }
 
 /** The nightly pool push names the pool, as the app's inbox row does. */
@@ -35,12 +45,12 @@ function leaves(node: Catalog | string, prefix = ''): [string, string][] {
   )
 }
 
-describe.each(Object.entries(NEVER))('the %s server catalogue', (locale, rule) => {
-  it('recognises the word it keeps out', () => {
+describe.each(Object.entries(NEVER))('the %s server catalogue', (locale, rules) => {
+  it.each(rules)('recognises $old, the word it keeps out', (rule) => {
     expect(rule.pattern.test(rule.old)).toBe(true)
   })
 
-  it('never uses it', () => {
+  it.each(rules)('never uses the word in $old', (rule) => {
     const said = leaves(catalogs[locale as Locale]).filter(([, text]) => rule.pattern.test(text))
     expect(said).toEqual([])
   })
