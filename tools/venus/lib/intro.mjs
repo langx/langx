@@ -183,7 +183,7 @@ const eyes = (c, axis, keys) => {
 // a tail shape outside score.mjs's set: [pitch, yaw, side, curl, hook, len]
 const TP = ['pitch', 'yaw', 'side', 'curl', 'hook', 'len']
 // the flag: up beside her head with a hooked tip, long enough to show above the bag and the caption
-const FLAG = [50, 90, -140, 0, 80, 1.85]
+export const FLAG = [50, 90, -140, 0, 80, 1.85]
 const tailTo = (c, t0, t1, shape, e = 'inOut') =>
   TP.forEach((q, i) => c.k.to('tail.' + q, t0, t1, shape[i], e))
 const byRole = (T, roles) =>
