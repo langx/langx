@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Animated as RNAnimated, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, {
   useAnimatedStyle,
@@ -12,6 +12,7 @@ import { useLocale } from '../../i18n'
 import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
 import {
+  PRESS_DIM,
   PRESS_SCALE_CARD,
   PRESS_SCALE_GLYPH,
   SPRING,
@@ -68,7 +69,8 @@ export interface HomeProductCard {
  * button nested in another one on iOS — so it is found as a target of its
  * own after the card, named for what it does. Being outside the card, it
  * does not shrink with the card's face on its own; it is handed the face's
- * press scale (`pressScale`), so a held card takes its ▶ with it.
+ * press scale (`pressScale`), so a held card takes its ▶ with it — and with
+ * reduce motion on, where the face dims instead, the ▶ dims with it.
  *
  * The cards arrive one after another, once, the first time Home draws them;
  * with reduce motion on they are simply there. Dumb like Home's other
@@ -110,6 +112,10 @@ function ProductCard({ card, beside }: { card: HomeProductCard; beside: boolean 
   const dot = DOT * glyph
   // The card's press scale, shared with the ▶ laid over it.
   const press = useRef(new RNAnimated.Value(1)).current
+  // With reduce motion on a held card dims instead of shrinking, and the ▶
+  // over it has to be told: it is outside the face, so the face's dim misses it.
+  const reduceMotion = useReduceMotion()
+  const [held, setHeld] = useState(false)
   return (
     <>
       <PressableScale
@@ -118,6 +124,8 @@ function ProductCard({ card, beside }: { card: HomeProductCard; beside: boolean 
         onPress={card.onPress}
         scaleTo={PRESS_SCALE_CARD}
         pressScale={press}
+        onPressIn={() => setHeld(true)}
+        onPressOut={() => setHeld(false)}
         touchStyle={styles.grow}
         style={[styles.card, tile ? styles.tile : styles.row]}
       >
@@ -184,7 +192,11 @@ function ProductCard({ card, beside }: { card: HomeProductCard; beside: boolean 
         */
         <RNAnimated.View
           collapsable={false}
-          style={[styles.over, { transform: [{ scale: press }] }]}
+          style={[
+            styles.over,
+            { transform: [{ scale: press }] },
+            reduceMotion && held ? styles.dimmed : null,
+          ]}
         >
           <View style={[styles.playSpot, tile ? styles.playCorner : styles.playEnd]}>
             <PressableScale
@@ -277,6 +289,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     justifyContent: 'center',
   },
   playGlyph: { transform: [{ translateX: 1 }] },
+  dimmed: { opacity: PRESS_DIM },
   words: { gap: v3.space[2], minWidth: 0 },
   wordsRow: { flex: 1 },
   name: { ...v3.type.button, color: v3.colors.fg },

@@ -123,3 +123,10 @@ export const PRESS_SCALE_GLYPH = 0.88
  * and do not shrink: see the press-feedback policy in `ui/PressableScale`.
  */
 export const PRESS_OPACITY = 0.6
+
+/**
+ * How far a `PressableScale` face dims while held with reduce motion on, in
+ * place of the shrink — and anything laid over the face that shrinks with it
+ * (Home's ▶ on Venus's card) dims by the same.
+ */
+export const PRESS_DIM = 0.7

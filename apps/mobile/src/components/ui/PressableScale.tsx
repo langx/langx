@@ -8,7 +8,7 @@
  *      for a card or tile, `PRESS_SCALE_GLYPH` (0.88) for a lone glyph.
  *    - Timing: `DURATION.press` (120 ms) in, `DURATION.release` (150 ms)
  *      out, on `EASE_OUT`, on the native driver.
- *    - With reduce motion on: no scale, the face dims to 0.7 while held.
+ *    - With reduce motion on: no scale, the face dims to `PRESS_DIM` (0.7) while held.
  * 2. Rows, list cells and text links dim to `PRESS_OPACITY` (0.6) and do
  *    not shrink: a whole row moving under the thumb reads as the list
  *    jumping.
@@ -29,7 +29,7 @@ import {
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { makeStyles } from '../../lib/theme'
 import { EASE_OUT } from '../../lib/theme/motionAnimated'
-import { DURATION, PRESS_SCALE } from '../../lib/theme/motionValues'
+import { DURATION, PRESS_DIM, PRESS_SCALE } from '../../lib/theme/motionValues'
 
 export interface PressableScaleProps extends Omit<PressableProps, 'style' | 'children'> {
   children: ReactNode
@@ -135,5 +135,5 @@ export function PressableScaleBase({
 }
 
 const useStyles = makeStyles(() => ({
-  dimmed: { opacity: 0.7 },
+  dimmed: { opacity: PRESS_DIM },
 }))
