@@ -13,8 +13,11 @@ import { NATIVE_KEYS } from './nativeKeys'
  *
  * What this can see is the gender next to the word for the reader: «ты» or
  * «я» with a past-tense verb or a short adjective («ты уже использовал»,
- * «Я прочитал(а)», «Ты — один из», «пока ты сам не решишь»), and a verb in
- * the second person with one («Отвечаешь сам себе», «Когда будешь готов»).
+ * «Я прочитал(а)», «Ты — один из», «пока ты сам не решишь»), a verb in
+ * the second person with one («Отвечаешь сам себе», «Когда будешь готов»),
+ * and «сам» in the dative after an infinitive, whose subject is the reader
+ * («отправить его самому»). A past tense ends in «-л» for most verbs, but in
+ * «-ос», «-ёз», «-ёк» for some («ты вырос», «привёз», «испёк»).
  * A sentence with no such word — «Забыл?», «Скажи первым» — carries the
  * gender in the verb alone, and no pattern tells «Скажи первым» from
  * «исправление может стать первым»; those were found by reading.
@@ -22,7 +25,7 @@ import { NATIVE_KEYS } from './nativeKeys'
  * The server's catalogue is held to the same in
  * apps/api/src/i18n/readerForms.test.ts.
  */
-const PAST = String.raw`\p{L}+(?:л|ла|лся|лась|ёл|ог)(?:\(а\))?`
+const PAST = String.raw`\p{L}+(?:л|ла|лся|лась|ёл|ог|ёг|ос|ёс|ез|ёз|ёк)(?:\(а\))?`
 const SHORT = String.raw`(?:сам|сама|один из|одна из|уверен|уверена|готов|готова|рад|рада|должен|должна|согласен|согласна|первым|первой)`
 const BETWEEN = String.raw`(?:\s+(?:—|уже|ещё|это|не|бы|тоже|только|раньше|им|его|её|их|сам|сама))*`
 const GENDERED = [
@@ -32,6 +35,12 @@ const GENDERED = [
   new RegExp(String.raw`(?<!\p{L})(?:что|как|где|когда)\s+${PAST}\s+(?:ты|я)(?!\p{L})`, 'iu'),
   // The second person with no pronoun. «лишь» only looks like one.
   new RegExp(String.raw`(?<!\p{L})(?!лишь)\p{L}+(?:ешь|ишь|ёшь)\s+${SHORT}(?!\p{L})`, 'iu'),
+  // «отправить его самому»: «самой» to a woman. «к самому новому» has no
+  // infinitive before it.
+  new RegExp(
+    String.raw`(?<!\p{L})\p{L}+(?:ть|ти|чь)(?:\s+(?:его|её|их|это|один|одну))?\s+(?:самому|самой)(?!\p{L})`,
+    'iu',
+  ),
 ]
 
 /**
@@ -62,6 +71,8 @@ const OLD = [
   'Что о тебе пишут собеседники и что написал ты',
   'Отвечаешь сам себе',
   'Когда будешь готов',
+  'Языки, на которых ты вырос.',
+  'чтобы изменить и отправить его самому.',
 ]
 const NEUTRAL = [
   'Звезда наверху открывает все отмеченные тобой сообщения из всех чатов.',
@@ -71,6 +82,9 @@ const NEUTRAL = [
   'Какой фильм или сериал ты мне посоветуешь?',
   'Твоё исправление может стать первым.',
   'Если бы у тебя могла быть одна суперспособность, какая бы это была?',
+  'Языки, на которых ты говоришь с детства.',
+  'Перейти к самому новому сообщению',
+  'выбери один, поправь под себя и отправь.',
 ]
 
 function leaves(node: Catalog | string, prefix = ''): [string, string][] {
