@@ -32,7 +32,7 @@ MOODS.playful = MOODS.playful || {
 }
 
 // ------------------------------------------------------------------ decode
-function decode(file, { rate = SR, ch = 1 } = {}) {
+export function decode(file, { rate = SR, ch = 1 } = {}) {
   const buf = execFileSync(
     'ffmpeg',
     [
@@ -211,7 +211,23 @@ export function purr(seconds, seed = 5) {
   return out
 }
 
-// Build one stereo SFX bus for the whole video. Returns the wav path.
+// a kind's buffer played faster (up) or slower (down) by `semi` semitones, as a sampler would
+function pitched(chs, semi) {
+  const r = Math.pow(2, semi / 12)
+  return chs.map((x) => {
+    const n = Math.floor((x.length - 1) / r),
+      y = new Float32Array(n)
+    for (let i = 0; i < n; i++) {
+      const p = i * r,
+        k = Math.floor(p)
+      y[i] = x[k] + (x[k + 1] - x[k]) * (p - k)
+    }
+    return y
+  })
+}
+
+// Build one stereo SFX bus for the whole video. Returns the wav path. An entry's `pitch` (semitones,
+// the generated kinds only) is for runs that climb: the film's sticker slaps.
 export function sfxBus(list, duration, out, dir) {
   const bus = stereo(S(duration + 0.5)),
     r = rng(11)
@@ -251,7 +267,7 @@ export function sfxBus(list, duration, out, dir) {
         }
       continue
     }
-    const [L, R] = kindBuf(s.kind, dir)
+    const [L, R] = s.pitch ? pitched(kindBuf(s.kind, dir), s.pitch) : kindBuf(s.kind, dir)
     for (let i = 0; i < L.length; i++) {
       const j = S(s.at) + i
       if (j >= bus[0].length) break
