@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { useState } from 'react'
 import { Pressable, Text, View, type LayoutChangeEvent } from 'react-native'
 import { useLocale } from '../../i18n'
-import { homeCardsBeside } from '../../lib/homeProducts'
+import { columnInner, homeCardsBeside } from '../../lib/homeProducts'
 import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme, type V3Tokens } from '../../lib/theme'
 import { Avatar } from '../ui/Avatar'
@@ -43,14 +43,16 @@ export interface HomeGoal {
  * (`useWordWidths`), so a word is never broken in the middle or cut short in
  * any language. A column's words wrap at their spaces to as many lines as
  * they need: two lines cut "Написать кому-нибудь" to "кому-…", and "Karten
- * wiederholen" to "wiederhol…", whose longest word is wider than a third of
- * a 375pt phone.
+ * wiederholen" to "wiederhol…", though that word fits a third of a 375pt
+ * phone — by a few points, and by less than one on the web build.
  *
- * When a word does not fit — German and Russian at the default size, every
- * language at the larger text sizes (`useStacked`), where "Write", "someone"
- * and "sentence" broke in the middle — each goal is a row of its own, the
- * ring at its start and its words beside it, and the count goes under the
- * heading instead of beside it.
+ * When a word does not fit, each goal is a row of its own, the ring at its
+ * start and its words beside it, and the count goes under the heading
+ * instead of beside it. At the default size that is Russian on a 375pt
+ * phone ("кому-нибудь" is wider than a third of it) and German on a phone
+ * narrower than about 360pt; English keeps its columns. At
+ * the larger text sizes (`useStacked`) it is every language: there "Write",
+ * "someone" and "sentence" broke in the middle.
  */
 export function HomeToday({
   title,
@@ -73,11 +75,12 @@ export function HomeToday({
     ]),
     stacked,
   )
-  // A column's inside: the row shared out, less the gaps between and each column's own inset.
-  const column =
-    width > 0
-      ? (width - (goals.length - 1) * v3.space[GOAL_GAP]) / goals.length - 2 * v3.space[GOAL_INSET]
-      : 0
+  const column = columnInner({
+    width,
+    columns: goals.length,
+    gap: v3.space[GOAL_GAP],
+    inset: v3.space[GOAL_INSET],
+  })
   const rows = !homeCardsBeside({ stacked, inner: column, words: widths })
   return (
     <View style={styles.today}>

@@ -3,6 +3,7 @@ import { useEffect, useRef, type ReactElement } from 'react'
 import { ActivityIndicator, Animated, Platform, Text, View, type ViewStyle } from 'react-native'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
 import { useV3LaunchLook } from '../../hooks/useV3LaunchLook'
+import { buttonGlyphSize } from '../../lib/buttonGlyph'
 import { impact, notification } from '../../lib/haptics'
 import { makeStyles, useTheme, type V3Colors } from '../../lib/theme'
 import { disabledButtonLook, FILLED_BUTTON_VARIANTS } from '../../lib/theme/buttonDisabledLook'
@@ -166,9 +167,10 @@ export function Button({
     (FILLED_BUTTON_VARIANTS as readonly Variant[]).includes(variant)
   const faded = v3Look ? disabled && !greyed : isDisabled
   const look = greyed ? disabledButtonLook(v3.colors) : lookFor(v3.colors, variant)
-  const glyphSize = Math.round(
-    (size === 'small' ? v3.icon.sm : size === 'medium' ? v3.icon.md : v3.icon.lg) *
-      Math.min(glyphScale, maxFontSizeMultiplier ?? glyphScale),
+  const glyphSize = buttonGlyphSize(
+    size === 'small' ? v3.icon.sm : size === 'medium' ? v3.icon.md : v3.icon.lg,
+    glyphScale,
+    maxFontSizeMultiplier,
   )
 
   // The check's pop, and the success haptic, on the change rather than on

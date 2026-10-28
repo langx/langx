@@ -140,7 +140,8 @@ export function homeVenusCard(state: StreakRowVenus): HomeVenusCard {
  * by side", the layout of nearly every phone, so measuring only ever takes
  * room away and the cards do not move on a phone where they fit.
  *
- * Today's three asks the same of its goals, with `inner` a third of the row.
+ * Today's three asks the same of its goals, with `inner` a third of the row
+ * (`columnInner`).
  */
 export function homeCardsBeside({
   stacked,
@@ -154,4 +155,26 @@ export function homeCardsBeside({
   if (stacked) return false
   if (inner <= 0 || words.length === 0) return true
   return words.every((width) => width <= inner)
+}
+
+/**
+ * The inside of one of `columns` equal columns sharing a row `width` wide:
+ * the row less the gaps between them, shared out, less each column's own
+ * `inset` on both sides — the room a column's longest word has to fit
+ * (`homeCardsBeside`). 0 until the row has been measured, which
+ * `homeCardsBeside` reads as "not yet a question".
+ */
+export function columnInner({
+  width,
+  columns,
+  gap,
+  inset,
+}: {
+  width: number
+  columns: number
+  gap: number
+  inset: number
+}): number {
+  if (width <= 0) return 0
+  return (width - (columns - 1) * gap) / columns - 2 * inset
 }

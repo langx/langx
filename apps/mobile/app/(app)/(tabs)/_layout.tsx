@@ -23,6 +23,7 @@ import { shouldGateGuest } from '../../../src/lib/guestGate'
 import { syncIconBadge } from '../../../src/lib/iconBadge'
 import { TAB_BADGE_SIZE, badgeGrew, v3TabBadgeStyle } from '../../../src/lib/countBadge'
 import { unreadBadge } from '../../../src/lib/unreadBadge'
+import { v3TabBarHeight, v3TabLabelScale } from '../../../src/lib/tabLabelScale'
 import { useV3Home } from '../../../src/hooks/useV3Home'
 import { useReduceMotion } from '../../../src/hooks/useReduceMotion'
 import { PressableScale } from '../../../src/components/ui/PressableScale'
@@ -152,24 +153,6 @@ const V3_PILL = { width: 56, height: 32 } as const
 
 /** The bar above the bottom inset: the pill, the word and the padding round them. */
 const V3_BAR_HEIGHT = 62
-
-/**
- * How far the bar's words grow with the reader's text size, and the bar with
- * them, by what the word's line grows.
- *
- * Uncapped, the words grew into a bar of fixed height: at 200% they ran 8
- * points under its bottom edge, and at the largest size each was wider than
- * its tab, so on the web build, where nothing clips them, the five ran into
- * one another. At 1.25× the widest of them in English, German, Russian and
- * Arabic ("Главная") still fits a fifth of a 375-point phone. In Spanish,
- * French, Portuguese and Turkish one word nearly fills its tab at the default
- * size ("Discussions" overfills it), so a phone still cuts that word short
- * once it grows, as it did before — but by less, since it grows no further.
- *
- * iOS never grows them, as the bar's own label does not: a long press on a
- * tab shows the large-content viewer instead.
- */
-const V3_LABEL_MAX_SCALE = 1.25
 
 /** A badge in the redesign's bar: the count as drawn, and the number behind it. */
 interface V3Badge {
@@ -407,7 +390,7 @@ export default function TabsLayout() {
    * Set here, with the bar's own scaling off, because the bar takes no cap
    * for its words and its height has to know how tall they are.
    */
-  const labelScale = Platform.OS === 'ios' ? 1 : Math.min(fontScale, V3_LABEL_MAX_SCALE)
+  const labelScale = v3TabLabelScale(Platform.OS, fontScale)
   const v3Label = {
     ...v3.type.label,
     fontSize: v3.type.label.fontSize * labelScale,
@@ -481,10 +464,12 @@ export default function TabsLayout() {
           tabBarStyle: {
             backgroundColor: v3.colors.bg,
             borderTopColor: v3.colors.line,
-            height:
-              V3_BAR_HEIGHT +
-              v3.type.label.lineHeight * Math.max(labelScale - 1, 0) +
-              insets.bottom,
+            height: v3TabBarHeight({
+              base: V3_BAR_HEIGHT,
+              lineHeight: v3.type.label.lineHeight,
+              labelScale,
+              bottomInset: insets.bottom,
+            }),
           },
         }}
       >

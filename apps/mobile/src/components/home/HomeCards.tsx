@@ -7,7 +7,7 @@ import {
   type TextStyle,
   type ViewStyle,
 } from 'react-native'
-import { homeCardsBeside } from '../../lib/homeProducts'
+import { columnInner, homeCardsBeside } from '../../lib/homeProducts'
 import { makeStyles, useTheme, type V3Tokens } from '../../lib/theme'
 import { useStacked } from '../product/ProductGroup'
 
@@ -51,7 +51,12 @@ export function HomeCardRows({
   const { widths, measure } = useWordWidths(texts, stacked)
   const beside = homeCardsBeside({
     stacked,
-    inner: width > 0 ? (width - v3.space[CARD_GAP]) / 2 - 2 * v3.space[CARD_INSET] : 0,
+    inner: columnInner({
+      width,
+      columns: 2,
+      gap: v3.space[CARD_GAP],
+      inset: v3.space[CARD_INSET],
+    }),
     words: widths,
   })
 
