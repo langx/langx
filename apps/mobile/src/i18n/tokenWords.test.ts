@@ -12,8 +12,9 @@ const TR_TOKEN = /(?<![\p{L}{])(?<!LangX )token/iu
  * Two Turkish lines still say token: invite.step2 and shared.inviteBody count
  * tokens in a plain string, and the change that gives them plural entries
  * rewrites them in every language, the Turkish word with it. The paths name
- * the plain strings, so the exception lapses by itself once they are plurals
- * (`invite.step2.one`, …) and the rule then holds them too.
+ * the plain strings, so the rule holds the plurals (`invite.step2.one`, …) as
+ * soon as they exist, and the last test below fails until an entry that no
+ * longer needs its exception is taken off this list.
  */
 const NOT_YET: ReadonlySet<string> = new Set(['tr:invite.step2', 'tr:shared.inviteBody'])
 
@@ -76,6 +77,15 @@ describe.each(Object.entries(NEVER))('the %s catalogue', (locale, rules) => {
     )
     expect(said).toEqual([])
   })
+})
+
+it('lets through only lines that still say the old word', () => {
+  const stale = [...NOT_YET].filter((id) => {
+    const [locale, path] = id.split(':') as [Locale, string]
+    const text = new Map(leaves(catalogs[locale])).get(path)
+    return !(text && NEVER[locale]?.some((rule) => rule.pattern.test(text)))
+  })
+  expect(stale).toEqual([])
 })
 
 it('lets LangX Token through in Turkish, the name the token page carries', () => {
