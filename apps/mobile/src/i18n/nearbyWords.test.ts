@@ -67,3 +67,14 @@ describe.each(SUPPORTED_LOCALES)('Nearby in %s', (locale) => {
     expect(text(locale, 'paywall.nearby')).toBe(text(locale, 'discover.nearby'))
   })
 })
+
+describe('the Arabic tour', () => {
+  // It once named the sorts in words of its own — the singular «القريب» for a
+  // tab called «قريبون» — so a reader looked for a tab that was not there.
+  it.each(['discover.forYou', 'discover.active', 'discover.nearby'])(
+    'names %s as the tab does',
+    (path) => {
+      expect(text('ar', 'tour.discoverSortsBody')).toContain(`«${text('ar', path)}»`)
+    },
+  )
+})
