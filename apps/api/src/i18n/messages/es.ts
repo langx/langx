@@ -28,18 +28,18 @@ export const es: Localized<ServerMessages> = {
     callIncomingVoice: 'Llamada de voz entrante',
     callIncomingVideo: 'Videollamada entrante',
     bountyTitle: {
-      one: '{count} ficha por tu aviso 🎉',
-      other: '{count} fichas por tu aviso 🎉',
+      one: '{count} token por tu aviso 🎉',
+      other: '{count} tokens por tu aviso 🎉',
     },
     bountyBody: 'Leímos lo que nos enviaste y valió la pena.',
     reportRewardTitle: {
-      one: '{count} ficha por ayudar a que LangX sea seguro 🛡️',
-      other: '{count} fichas por ayudar a que LangX sea seguro 🛡️',
+      one: '{count} token por ayudar a que LangX sea seguro 🛡️',
+      other: '{count} tokens por ayudar a que LangX sea seguro 🛡️',
     },
     reportRewardBody: 'Revisamos lo que denunciaste. Gracias.',
     moderatorRewardTitle: {
-      one: '{count} ficha por moderar LangX 🛡️',
-      other: '{count} fichas por moderar LangX 🛡️',
+      one: '{count} token por moderar LangX 🛡️',
+      other: '{count} tokens por moderar LangX 🛡️',
     },
     moderatorRewardBody: 'Un operador revisó una de tus decisiones. Gracias.',
     /** The same nudges on the phone, under the same switches. */
@@ -121,8 +121,8 @@ export const es: Localized<ServerMessages> = {
     billingTrialEndingBody: 'Toca para ver tu plan y cómo cancelar.',
     lifetimeGiftTitle: '{plan}, de por vida 🎉',
     lifetimeGiftBody: {
-      one: 'Te lo ganó tu {total} ficha de v1.',
-      other: 'Te lo ganaron tus {total} fichas de v1.',
+      one: 'Te lo ganó tu {total} token de v1.',
+      other: 'Te lo ganaron tus {total} tokens de v1.',
     },
     securityBody: 'Abre LangX si no fuiste tú.',
     securityBodyDevice: 'Desde {device}. Abre LangX si no fuiste tú.',
@@ -283,7 +283,7 @@ export const es: Localized<ServerMessages> = {
 
     feedDigestBody: {
       one: 'Alguien respondió a algo que publicaste hoy.',
-      other: '{count} personas respondieron a lo que publicaste hoy.',
+      other: 'Lo que publicaste hoy recibió {count} respuestas.',
     },
 
     feedDigestCorrections: { one: '1 corrección', other: '{count} correcciones' },
@@ -519,19 +519,19 @@ export const es: Localized<ServerMessages> = {
       v1contact: 'el único mensaje sobre el nuevo LangX',
     },
     bountySubject: {
-      one: 'Ganaste {count} ficha por tu aviso',
-      other: 'Ganaste {count} fichas por tu aviso',
+      one: 'Ganaste {count} token por tu aviso',
+      other: 'Ganaste {count} tokens por tu aviso',
     },
     bountyPreheader: 'Gracias por avisarnos.',
     bountyBody: {
-      one: 'Leímos lo que nos enviaste y añadimos {count} ficha a tu cartera. Así es como mejora la app: gracias.',
+      one: 'Leímos lo que nos enviaste y añadimos {count} token a tu cartera. Así es como mejora la app: gracias.',
       other:
-        'Leímos lo que nos enviaste y añadimos {count} fichas a tu cartera. Así es como mejora la app: gracias.',
+        'Leímos lo que nos enviaste y añadimos {count} tokens a tu cartera. Así es como mejora la app: gracias.',
     },
     bountyButton: 'Abrir mi cartera',
     bountyText: {
-      one: 'Se añadió {count} ficha a tu cartera por el aviso que enviaste: {url}',
-      other: 'Se añadieron {count} fichas a tu cartera por el aviso que enviaste: {url}',
+      one: 'Se añadió {count} token a tu cartera por el aviso que enviaste: {url}',
+      other: 'Se añadieron {count} tokens a tu cartera por el aviso que enviaste: {url}',
     },
 
     suspendedSubject: 'Tu cuenta de LangX ha sido suspendida',
@@ -565,14 +565,14 @@ export const es: Localized<ServerMessages> = {
   lifetimeGift: {
     intro: 'Enhorabuena: tienes {plan} de por vida.',
     earned: {
-      one: 'Terminaste v1 con {total} ficha. Eso es lo que lo ganó: el regalo fue para las cuentas que construyeron el LangX antiguo. No caduca nunca y no hay nada que pagar.',
+      one: 'Terminaste v1 con {total} token. Eso es lo que lo ganó: el regalo fue para las cuentas que construyeron el LangX antiguo. No caduca nunca y no hay nada que pagar.',
       other:
-        'Terminaste v1 con {total} fichas. Eso es lo que lo ganó: el regalo fue para las cuentas que construyeron el LangX antiguo. No caduca nunca y no hay nada que pagar.',
+        'Terminaste v1 con {total} tokens. Eso es lo que lo ganó: el regalo fue para las cuentas que construyeron el LangX antiguo. No caduca nunca y no hay nada que pagar.',
     },
     wallet: {
-      one: 'Tu saldo antiguo se convirtió a razón de cien fichas de v1 por una, así que {carried} de ellas están en tu nueva cartera. Hoy tiene {balance} ficha.',
+      one: 'Tu saldo antiguo se convirtió a razón de cien tokens de v1 por uno, así que {carried} de ellos están en tu nueva cartera. Hoy tiene {balance} token.',
       other:
-        'Tu saldo antiguo se convirtió a razón de cien fichas de v1 por una, así que {carried} de ellas están en tu nueva cartera. Hoy tiene {balance} fichas.',
+        'Tu saldo antiguo se convirtió a razón de cien tokens de v1 por uno, así que {carried} de ellos están en tu nueva cartera. Hoy tiene {balance} tokens.',
     },
   },
   proGift: {
@@ -666,14 +666,14 @@ export const es: Localized<ServerMessages> = {
       other: 'En otro sitio',
     },
     reportReward: {
-      one: 'Gracias por tu denuncia. La revisamos y añadimos {count} ficha a tu cartera por ayudar a que LangX siga siendo un buen lugar para aprender. La persona a la que denunciaste nunca sabrá quién lo hizo.',
+      one: 'Gracias por tu denuncia. La revisamos y añadimos {count} token a tu cartera por ayudar a que LangX siga siendo un buen lugar para aprender. La persona a la que denunciaste nunca sabrá quién lo hizo.',
       other:
-        'Gracias por tu denuncia. La revisamos y añadimos {count} fichas a tu cartera por ayudar a que LangX siga siendo un buen lugar para aprender. La persona a la que denunciaste nunca sabrá quién lo hizo.',
+        'Gracias por tu denuncia. La revisamos y añadimos {count} tokens a tu cartera por ayudar a que LangX siga siendo un buen lugar para aprender. La persona a la que denunciaste nunca sabrá quién lo hizo.',
     },
     moderatorReward: {
-      one: 'Gracias por moderar. Un operador revisó una de tus decisiones y añadió {count} ficha a tu cartera.',
+      one: 'Gracias por moderar. Un operador revisó una de tus decisiones y añadió {count} token a tu cartera.',
       other:
-        'Gracias por moderar. Un operador revisó una de tus decisiones y añadió {count} fichas a tu cartera.',
+        'Gracias por moderar. Un operador revisó una de tus decisiones y añadió {count} tokens a tu cartera.',
     },
     suspensionEnded:
       'Tu suspensión ha terminado y tu cuenta vuelve a estar abierta. 👋 Tu perfil vuelve a verse en Descubrir y en la búsqueda, y tus chats están donde los dejaste.\n\nPor favor, ayuda a que LangX siga siendo un buen lugar para aprender: otra denuncia confirmada podría cerrar la cuenta para siempre. Si crees que algo ha salido mal, Ajustes → Información → Comentarios llega a una persona.',
@@ -731,8 +731,8 @@ export const es: Localized<ServerMessages> = {
       other: '{formatted} mensajes',
     },
     tokensEarned: {
-      one: '{formatted} ficha ganada',
-      other: '{formatted} fichas ganadas',
+      one: '{formatted} token ganado',
+      other: '{formatted} tokens ganados',
     },
     memberDays: {
       one: '{formatted} día como miembro',

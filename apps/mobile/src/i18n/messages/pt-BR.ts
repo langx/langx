@@ -834,7 +834,7 @@ export const ptBR: Localized<EnMessages> = {
       'Arrume a frase de alguém e a pessoa vê exatamente o que mudou. Correções são ilimitadas em todos os planos — é disso que se trata.',
     slide3Title: 'Apareça, e vai somando',
     slide3Body:
-      'Abrir o app todo dia mantém sua sequência viva. Ganhe fichas conversando e ensinando, e gaste em um congelamento de sequência ou num visual para o perfil.',
+      'Abrir o app todo dia mantém sua sequência viva. Ganhe tokens conversando e ensinando, e gaste em um congelamento de sequência ou num visual para o perfil.',
     getStarted: 'Começar',
     skip: 'Pular',
     next: 'Avançar',
@@ -1017,9 +1017,9 @@ export const ptBR: Localized<EnMessages> = {
     },
     conversationsBody:
       'As conversas em que a outra pessoa também voltou. O resto chega se e quando voltarem.',
-    tokensCarried: { one: '{count} ficha', other: '{count} fichas' },
+    tokensCarried: { one: '{count} token', other: '{count} tokens' },
     tokensCarriedBody: '{carried} vieram do seu saldo antigo, mais {bonus} por ter voltado.',
-    tokensBonus: { one: '{count} ficha', other: '{count} fichas' },
+    tokensBonus: { one: '{count} token', other: '{count} tokens' },
     tokensBonusBody: 'Um bônus de boas-vindas para começar. Ganhe mais conversando e corrigindo.',
     streak: {
       one: 'sequência de {count} dia, ainda viva',
@@ -1627,7 +1627,7 @@ export const ptBR: Localized<EnMessages> = {
     filled: 'Dia preenchido',
     fillFailed: 'Não deu para preencher esse dia',
     noRepairsTitle: 'Sem reparos restantes',
-    notEnoughTokensTitle: 'Fichas insuficientes',
+    notEnoughTokensTitle: 'Tokens insuficientes',
     notEnoughTokensBody: 'Preencher um dia custa {price}. Você tem {balance}.',
     streakChange: {
       one: 'Sua sequência vai de {before} para {count} dia.',
@@ -1777,8 +1777,8 @@ export const ptBR: Localized<EnMessages> = {
     testimonial: '{name} escreveu uma avaliação no seu perfil',
     badgeEarned: 'Você ganhou uma nova insígnia',
     walletPool: {
-      one: 'O fundo de ontem pagou {count} ficha a você',
-      other: 'O fundo de ontem pagou {count} fichas a você',
+      one: 'O fundo de ontem pagou {count} token a você',
+      other: 'O fundo de ontem pagou {count} tokens a você',
     },
     profileVisits: {
       one: '{count} pessoa viu seu perfil',
@@ -1858,8 +1858,8 @@ export const ptBR: Localized<EnMessages> = {
     correctionPlaceholder: 'Reescreva a frase do jeito que você diria…',
     startFromOriginal: 'Começar do original',
     correctionReward: {
-      one: '+{count} ficha',
-      other: '+{count} fichas',
+      one: '+{count} token',
+      other: '+{count} tokens',
     },
     voiceNote: 'Áudio',
     top: 'Destaque',
@@ -2053,9 +2053,9 @@ export const ptBR: Localized<EnMessages> = {
     feedTitle: 'O Feed',
     feedBody:
       'Compartilhe uma foto, um vídeo ou uma frase. Quer ajuda? Marque Preciso de correção ou Preciso da pronúncia e um falante nativo vai responder. Depois faça o mesmo por outra pessoa.',
-    streakTitle: 'Sequências e fichas',
+    streakTitle: 'Sequências e tokens',
     streakBody:
-      'Abrir o LangX todo dia mantém sua sequência viva. Conversar e ensinar rendem fichas, que você pode gastar em um congelamento de sequência ou num visual novo para o perfil.',
+      'Abrir o LangX todo dia mantém sua sequência viva. Conversar e ensinar rendem tokens, que você pode gastar em um congelamento de sequência ou num visual novo para o perfil.',
     discoverTitle: 'Encontre um parceiro',
     discoverBody:
       'Todo mundo em Descobrir fala um idioma que você aprende e aprende um que você fala. Para você combina com seus idiomas, Ativos mostra quem passou por aqui há pouco e Por perto usa sua localização quando você a compartilha. Abra um perfil e diga oi — é assim que quase toda troca aqui começa.',
@@ -2169,14 +2169,14 @@ export const ptBR: Localized<EnMessages> = {
   feedback: {
     bugTitle: 'Relatar um erro',
     featureTitle: 'Pedir um recurso',
-    bugRowBody: 'Algo quebrado? Conte pra gente e ganhe fichas por isso.',
+    bugRowBody: 'Algo quebrado? Conte pra gente e ganhe tokens por isso.',
     featureRowBody: 'Está faltando algo? Conte o que você usaria.',
     bugIntro:
       'Conte o que aconteceu, o que você esperava no lugar disso e como fazer acontecer de novo. Quanto mais exato, mais rápido a gente corrige.',
     featureIntro:
       'Conte o que você gostaria de conseguir fazer e para que usaria. O porquê é o que decide o que vai ser construído.',
     reward:
-      'Se confirmarmos, você ganha fichas por isso — quantas depende do quanto acabou valendo.',
+      'Se confirmarmos, você ganha tokens por isso — quantos depende do quanto acabou valendo.',
     bugPlaceholder: 'O que aconteceu e o que você esperava…',
     featurePlaceholder: 'O que você gostaria e para que usaria…',
     hint: 'Uma captura ou gravação de tela ajuda mais do que qualquer outra coisa. Respondemos por e-mail, e o que você escrever pode virar uma issue pública no GitHub — sem o seu nome.',
@@ -2351,7 +2351,7 @@ export const ptBR: Localized<EnMessages> = {
     title: 'Sua sequência',
     historyBody: 'Cada dia dos últimos dois meses e o que contou',
     leaderboardBody: 'Quem tem a maior sequência agora e de todos os tempos',
-    tokenBody: 'As fichas que seus marcos rendem, e como gastá-las',
+    tokenBody: 'Os tokens que seus marcos rendem, e como gastá-los',
     protectTitle: 'Proteja sua sequência',
     protectBody: {
       one: 'Um congelamento cobre o próximo dia que você perder. Um dia já perdido pode ser recuperado no mapa acima até {count} dia depois.',
@@ -2360,7 +2360,7 @@ export const ptBR: Localized<EnMessages> = {
     },
     longest: 'A maior',
     missed: 'Perdido',
-    bought: 'Preenchido com fichas',
+    bought: 'Preenchido com tokens',
     openedOnly: 'Abriu o app',
     checkedInUnknownTime: 'Ativo',
     checkedInAt: {
@@ -2379,18 +2379,18 @@ export const ptBR: Localized<EnMessages> = {
     freezesFull: 'Seu estoque está cheio. Um é usado na próxima vez que você perder um dia.',
     protectShort: 'Proteger · {amount}',
     protectA11y: {
-      one: 'Comprar um congelamento de sequência por {count} ficha',
-      other: 'Comprar um congelamento de sequência por {count} fichas',
+      one: 'Comprar um congelamento de sequência por {count} token',
+      other: 'Comprar um congelamento de sequência por {count} tokens',
     },
-    freezeShort: { one: 'Você tem {count} ficha.', other: 'Você tem {count} fichas.' },
+    freezeShort: { one: 'Você tem {count} token.', other: 'Você tem {count} tokens.' },
     repairTitle: '{day} · Perdido',
     repairBody: {
       one: 'Recupere e sua sequência volta a {count} dia.',
       other: 'Recupere e sua sequência volta a {count} dias.',
     },
     repairButton: {
-      one: 'Recuperar o dia · {count} ficha',
-      other: 'Recuperar o dia · {count} fichas',
+      one: 'Recuperar o dia · {count} token',
+      other: 'Recuperar o dia · {count} tokens',
     },
     repairShort: 'Recuperar o dia · {amount}',
     milestones: 'Marcos',
@@ -2672,7 +2672,7 @@ export const ptBR: Localized<EnMessages> = {
     repairDay: 'Recupere um dia',
     repairDayBody: 'Preenche um dia perdido · restam {left} neste mês',
     bought: '{title} é seu',
-    notEnoughTitle: 'Fichas insuficientes',
+    notEnoughTitle: 'Tokens insuficientes',
     notEnoughBody: '{title} custa {price}. Você tem {balance}.',
     buyFailed: 'Não foi possível comprar',
     equipFailed: 'Não foi possível alterar',
@@ -2682,7 +2682,7 @@ export const ptBR: Localized<EnMessages> = {
     wear: 'Usar',
     owned: 'Você já tem',
     wearing: 'Em uso',
-    price: { one: '{count} ficha', other: '{count} fichas' },
+    price: { one: '{count} token', other: '{count} tokens' },
     buyAccessibility: 'Comprar {title} por {price}',
   },
 
@@ -2731,7 +2731,7 @@ export const ptBR: Localized<EnMessages> = {
     detailsA11y: 'Detalhes de {title}',
     buyFor: 'Comprar por {amount}',
     buyTitle: 'Comprar {title}',
-    moreTokens: { one: 'Falta {amount} ficha', other: 'Faltam {amount} fichas' },
+    moreTokens: { one: 'Falta {amount} token', other: 'Faltam {amount} tokens' },
     moreNeeded: 'Precisa de mais {amount}',
     opensAfter: 'Abre quando você tiver {title}',
     notYet: 'Ainda não desbloqueada',
@@ -2742,7 +2742,7 @@ export const ptBR: Localized<EnMessages> = {
     onChats: 'Conversas',
     onDiscover: 'Descobrir',
     backToFrames: 'Voltar às molduras',
-    gateIntro: 'Fichas não abrem esta. Sua sequência e suas correções abrem.',
+    gateIntro: 'Os tokens não abrem esta. Sua sequência e suas correções abrem.',
     gateStreak: { one: 'Sequência de {amount} dia', other: 'Sequência de {amount} dias' },
     gateCorrections: { one: '{amount} correção', other: '{amount} correções' },
     gateProgress: '{current} / {threshold}',
@@ -2797,7 +2797,7 @@ export const ptBR: Localized<EnMessages> = {
   wallet: {
     title: 'Carteira',
     balance: 'Saldo',
-    earnedSpent: '{earned} ganhas · {spent} gastas',
+    earnedSpent: '{earned} ganhos · {spent} gastos',
     streakFreezes: 'Congelamentos de sequência',
     itemsOwned: 'Itens',
     storeTitle: 'Loja',
@@ -2805,14 +2805,14 @@ export const ptBR: Localized<EnMessages> = {
     leaderboardBody: 'Quem ganhou mais nesta semana, neste mês e neste ano',
     poolBody: 'Como a parte da noite é calculada',
     storeBody: 'Congelamentos de sequência, dias perdidos e cosméticos',
-    nextRung: { one: '{title}: falta {amount} ficha', other: '{title}: faltam {amount} fichas' },
+    nextRung: { one: '{title}: falta {amount} token', other: '{title}: faltam {amount} tokens' },
     nextRungShort: '{title}: mais {amount}',
     nextRungReady: '{title}: já dá para comprar',
     countOf: '{current} de {total}',
     giftOpen: 'Abrir',
-    price: { one: '{amount} ficha', other: '{amount} fichas' },
+    price: { one: '{amount} token', other: '{amount} tokens' },
     disclaimer:
-      'As fichas são pontos dentro do app. Não podem ser compradas, trocadas, sacadas nem usadas para desbloquear um plano pago — apenas congelamentos de sequência, dias perdidos e cosméticos. Não há cadeia, contrato nem mercado.',
+      'Os tokens são pontos dentro do app. Não podem ser comprados, trocados, sacados nem usados para desbloquear um plano pago — apenas congelamentos de sequência, dias perdidos e cosméticos. Não há cadeia, contrato nem mercado.',
   },
 
   tokens: {
@@ -2845,14 +2845,14 @@ export const ptBR: Localized<EnMessages> = {
       factPoints: 'Pontos do app',
       factBought: 'Não se compra',
       factTraded: 'Não se negocia',
-      yours: 'Suas fichas',
+      yours: 'Seus tokens',
       walletBody: 'Seu saldo, seu histórico e a loja',
       todayFallback: 'Seu dia até agora e o fundo diário',
       rank: '#{rank}',
       rankBody: 'Gastar nunca faz você cair.',
-      rankNone: 'Ganhe fichas nesta semana para entrar na tabela.',
-      guestTitle: { one: 'Comece com {amount} ficha', other: 'Comece com {amount} fichas' },
-      guestBody: 'Crie uma conta para ganhar fichas e gastá-las.',
+      rankNone: 'Ganhe tokens nesta semana para entrar na tabela.',
+      guestTitle: { one: 'Comece com {amount} token', other: 'Comece com {amount} tokens' },
+      guestBody: 'Crie uma conta para ganhar tokens e gastá-los.',
       earn: 'Como ganhar',
       messagesBody: 'Até {perDay} por dia, e {perPartner} com uma mesma pessoa.',
       correctionsBody:
@@ -2869,8 +2869,8 @@ export const ptBR: Localized<EnMessages> = {
         'Quando alguém que você convidou tem uma conversa de verdade. Com o bônus de cadastro, a pessoa começa com {amount}.',
       pool: 'O fundo diário',
       poolIntro: {
-        one: 'Além disso, {amount} ficha é dividida todo dia.',
-        other: 'Além disso, {amount} fichas são divididas todo dia.',
+        one: 'Além disso, {amount} token é dividido todo dia.',
+        other: 'Além disso, {amount} tokens são divididos todo dia.',
       },
       poolTakePart: 'Participe',
       poolTakePartBody:
@@ -2894,7 +2894,7 @@ export const ptBR: Localized<EnMessages> = {
       },
       giftTitle: 'Um presente para alguém',
       giftBody:
-        'Compre um pacote de stickers para alguém com quem você conversa, a partir de {amount}. A pessoa recebe o pacote, não fichas.',
+        'Compre um pacote de stickers para alguém com quem você conversa, a partir de {amount}. A pessoa recebe o pacote, não tokens.',
       giftWeekly: { one: 'Um por semana.', other: 'Até {amount} por semana.' },
       venusTitle: 'Pacote da Venus',
       venusBody: {
@@ -2906,33 +2906,33 @@ export const ptBR: Localized<EnMessages> = {
       notSale: 'Não está à venda',
       notSaleBody: 'Ninguém pode comprar, nem com dinheiro nem com outra coisa.',
       notCash: 'Não é dinheiro',
-      notCashBody: 'Não pode ser vendida, convertida em dinheiro nem enviada a ninguém.',
+      notCashBody: 'Não pode ser vendido, convertido em dinheiro nem enviado a ninguém.',
       notCrypto: 'Não é uma criptomoeda',
       notCryptoBody: 'Não há cadeia nem mercado. Fica no LangX.',
       notPro: 'Não paga o Pro',
-      notProBody: 'Pro é uma assinatura. As fichas não desbloqueiam nenhuma parte dele.',
+      notProBody: 'Pro é uma assinatura. Os tokens não desbloqueiam nenhuma parte dele.',
       faq: {
         crypto: 'É uma criptomoeda?',
         cryptoAnswer:
           'Não. É um ponto que você ganha e gasta dentro do LangX. Não pode ser comprado, vendido, negociado, usado em staking nem sacado, e nunca poderá.',
         price: 'Tem preço? Posso comprar?',
         priceAnswer:
-          'Não. Não há preço nem forma de comprar fichas, com dinheiro ou qualquer outra coisa. Você as ganha.',
-        send: 'Posso vender fichas ou enviá-las para alguém?',
+          'Não. Não há preço nem forma de comprar tokens, com dinheiro ou qualquer outra coisa. Você os ganha.',
+        send: 'Posso vender tokens ou enviá-los para alguém?',
         sendAnswer:
-          'Não. Elas não podem ser vendidas, convertidas em dinheiro nem enviadas a ninguém. Você as gasta na loja, e em nenhum outro lugar.',
-        spend: 'Com o que posso gastá-las?',
+          'Não. Eles não podem ser vendidos, convertidos em dinheiro nem enviados a ninguém. Você os gasta na loja, e em nenhum outro lugar.',
+        spend: 'Com o que posso gastá-los?',
         spendAnswer:
           'Congelamentos de sequência, dias perdidos, molduras de perfil, títulos e pacotes de stickers, tudo na loja. Nada mais.',
-        pro: 'Fichas pagam o Pro?',
-        proAnswer: 'Não. Pro é uma assinatura, e as fichas não desbloqueiam nenhuma parte dele.',
+        pro: 'Os tokens pagam o Pro?',
+        proAnswer: 'Não. Pro é uma assinatura, e os tokens não desbloqueiam nenhuma parte dele.',
         day: 'Quanto posso ganhar por dia?',
         dayAnswer:
           'Não existe um total diário único. Mensagens contam até {messages} por dia, sessões do Echo até {sessions} por dia, e uma parte do fundo é no máximo {cap}. Correções não têm total, só {corrections} por dia nas frases de uma mesma pessoa.',
         rank: 'Gastar baixa minha posição?',
         rankAnswer:
           'Não. As classificações contam o que você ganhou, então gastar nunca faz você cair.',
-        before: 'Eu já usava o LangX. Minhas fichas vieram comigo?',
+        before: 'Eu já usava o LangX. Meus tokens vieram comigo?',
         beforeAnswer:
           'Sim. Seu saldo chega dividido por {divisor} para caber no novo app, então menos de {divisor} vira nada. Você também ganha um bônus de boas-vindas de volta de {bonus}.',
       },
@@ -3330,12 +3330,12 @@ export const ptBR: Localized<EnMessages> = {
     periodPicker: 'Período da classificação',
     emptyTitle: 'Ainda não tem nada aqui',
     emptyBody:
-      'Mande mensagens e escreva correções — seja o primeiro a ganhar fichas neste período.',
+      'Mande mensagens e escreva correções — seja o primeiro a ganhar tokens neste período.',
     week: 'Semana',
     month: 'Mês',
     year: 'Ano',
     badges: 'Insígnias',
-    pays: { one: 'Paga {amount} ficha', other: 'Paga {amount} fichas' },
+    pays: { one: 'Paga {amount} token', other: 'Paga {amount} tokens' },
     paysShort: 'Paga {amount}',
     you: 'Você',
     streakTitle: 'Classificação',
@@ -3353,14 +3353,14 @@ export const ptBR: Localized<EnMessages> = {
     columnWeek: 'Esta semana',
     columnMonth: 'Este mês',
     columnYear: 'Este ano',
-    columnTokens: 'Fichas ganhas',
+    columnTokens: 'Tokens ganhos',
     columnNow: 'Agora',
     columnEver: 'A mais longa',
     columnDays: 'Dias seguidos',
     placeWeek: 'Sua posição nesta semana',
     placeMonth: 'Sua posição neste mês',
     placeYear: 'Sua posição neste ano',
-    rowTokens: { one: '{rank}. {name}, {amount} ficha', other: '{rank}. {name}, {amount} fichas' },
+    rowTokens: { one: '{rank}. {name}, {amount} token', other: '{rank}. {name}, {amount} tokens' },
     rowDays: {
       one: '{rank}. {name}, {amount} dia seguido',
       other: '{rank}. {name}, {amount} dias seguidos',
@@ -3374,7 +3374,7 @@ export const ptBR: Localized<EnMessages> = {
     firstCorrection: 'Primeira correção',
     streakDays: { one: '{formatted} dia', other: '{formatted} dias' },
     messagesSent: { one: '{formatted} mensagem', other: '{formatted} mensagens' },
-    tokensEarned: { one: '{formatted} ficha ganha', other: '{formatted} fichas ganhas' },
+    tokensEarned: { one: '{formatted} token ganho', other: '{formatted} tokens ganhos' },
     memberDays: { one: '{formatted} dia como membro', other: '{formatted} dias como membro' },
     corrections: { one: '{formatted} correção', other: '{formatted} correções' },
     earlyAdopter: 'Usuário pioneiro',
@@ -3393,7 +3393,7 @@ export const ptBR: Localized<EnMessages> = {
     of: '{current} de {total}',
     toGo: 'Faltam {amount}.',
     streakReward: 'O marco de {days} de sequência rende {tokens}.',
-    noTokens: 'A insígnia em si não rende fichas.',
+    noTokens: 'A insígnia em si não rende tokens.',
     milestonePays:
       'A insígnia em si não rende nada; o marco de {days} de sequência rende {tokens}.',
     milestoneDays: {
@@ -3401,8 +3401,8 @@ export const ptBR: Localized<EnMessages> = {
       other: '{formatted} dias',
     },
     milestoneTokens: {
-      one: '+{formatted} ficha',
-      other: '+{formatted} fichas',
+      one: '+{formatted} token',
+      other: '+{formatted} tokens',
     },
     earnedOn: 'Conquistada em {date}',
     earned: 'Conquistada',
@@ -3446,8 +3446,8 @@ export const ptBR: Localized<EnMessages> = {
         other: '{formatted} mensagens',
       },
       tokens: {
-        one: '{formatted} ficha',
-        other: '{formatted} fichas',
+        one: '{formatted} token',
+        other: '{formatted} tokens',
       },
       veteran: {
         one: '{formatted} dia',
@@ -3556,7 +3556,7 @@ export const ptBR: Localized<EnMessages> = {
         body: 'Mensagens que você envia.',
       },
       tokens: {
-        title: 'Fichas ganhas',
+        title: 'Tokens ganhos',
         body: 'Tudo o que você ganhou. Gastar nunca tira nada.',
       },
       veteran: {

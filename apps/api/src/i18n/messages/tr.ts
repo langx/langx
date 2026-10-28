@@ -266,7 +266,7 @@ export const tr: Localized<ServerMessages> = {
 
     feedDigestBody: {
       one: 'Bugün paylaştığın bir şeye cevap verildi.',
-      other: 'Bugün paylaştıklarına {count} kişi cevap verdi.',
+      other: 'Bugün paylaştıklarına {count} yanıt geldi.',
     },
 
     feedDigestCorrections: { one: '1 düzeltme', other: '{count} düzeltme' },

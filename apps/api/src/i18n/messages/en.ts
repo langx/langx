@@ -314,7 +314,7 @@ export const en = {
 
     feedDigestBody: {
       one: 'Somebody answered something you posted today.',
-      other: '{count} people answered what you posted today.',
+      other: 'Your posts got {count} replies today.',
     },
 
     feedDigestCorrections: { one: '1 correction', other: '{count} corrections' },

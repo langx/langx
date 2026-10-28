@@ -306,7 +306,10 @@ export const ar: Localized<ServerMessages> = {
 
     feedDigestBody: {
       one: 'ردّ أحدهم اليوم على شيء نشرته.',
-      other: 'ردّ {count} أشخاص اليوم على ما نشرته.',
+      two: 'وصلك اليوم ردّان على ما نشرته.',
+      few: 'وصلتك اليوم {count} ردود على ما نشرته.',
+      many: 'وصلك اليوم {count} ردًّا على ما نشرته.',
+      other: 'وصلك اليوم {count} ردّ على ما نشرته.',
     },
 
     feedDigestCorrections: { one: 'تصحيح واحد', other: '{count} تصحيحات' },

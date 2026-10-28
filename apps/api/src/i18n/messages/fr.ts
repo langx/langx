@@ -288,7 +288,7 @@ export const fr: Localized<ServerMessages> = {
 
     feedDigestBody: {
       one: 'Quelqu’un a répondu à ce que vous avez publié aujourd’hui.',
-      other: '{count} personnes ont répondu à ce que vous avez publié aujourd’hui.',
+      other: 'Ce que vous avez publié aujourd’hui a reçu {count} réponses.',
     },
 
     feedDigestCorrections: { one: '1 correction', other: '{count} corrections' },
