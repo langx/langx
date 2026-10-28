@@ -71,6 +71,73 @@ cushion she sits up on), `render.mjs` draws her smaller about the ground line, j
 it all under the label on the cover and through the film, and logs the scale. Every other day
 renders exactly as before.
 
+## The introduction film
+
+`film.mjs` makes "Venus: Starring Herself", the film behind the Venus page's "Watch the
+introduction": one cut per locale, 1080×1920, 30 fps, about 97 s in English and up to about 111 s
+in the longest locale (fr). Like the days it is shared, one file per locale. It is not in the
+manifest: `node upload.mjs intro` puts each locale's mp4 and cover beside the days, as
+`venus/v1/<lang>/venus-intro-<lang>.mp4`, and the app plays it by that name (see Publishing).
+
+```bash
+node film.mjs --lang tr                  # $VENUS_OUT/intro/tr/venus-intro-tr.mp4, .jpg, .vtt, -preview.mp4
+node film.mjs --lang tr --at 12.4,64     # full-size stills at those board times, in work/
+node film.mjs --lang tr --strip 15       # a contact sheet of every 15th frame, in work/
+node film.mjs --lang tr --sheets <dir>   # with the render: a frame every 0.5 s, and the key beats
+node film.mjs --all --jobs 3             # every locale, one process each
+node film.mjs --script voice-script.json # every line, its text and its characters per locale
+```
+
+The cover (`.jpg`, also the mp4's cover art) is the title card. The preview is 720×1280 and under
+8 MB, for review. Until the lines are voiced the cut has music and sound effects only, with every
+line burned in as a subtitle and in the `.vtt`; the film never voices a line itself, not even with
+`say`. The `.vtt` holds back what the bubble holds back: a sentence after a "…", and each "Bag." of
+the bag run, starts a cue of its own when it appears, so the caption file never pre-reads a
+punchline. Each section's music is a loop at a fixed tempo laid from its first beat; wherever
+there is no music (the cold open, the empty set, the breath before day 100, the bonk) a faint room
+tone sits under the sound effects instead, so a silent cut never plays its captions over a dropout.
+
+**The board and the clock.** `data/film-intro.json` holds the 22 lines in the eight locales and
+every sentence's time on the English silent cut (the board). `lib/film-clock.mjs` turns it into a
+locale's clock: a sentence that runs longer than its board time, at 14 characters a second or as
+its take is said, pushes everything after it later, by whole beats inside the 120 bpm sections so
+cuts stay on the music; a shorter one pushes nothing. Every cut, move, sound and caption is a board
+time mapped through that clock, so voicing the film is dropping the takes in and rendering again:
+`voice/<lang>/intro-NN.wav` with its ElevenLabs alignment as `intro-NN.json` (or under
+`VENUS_VOICE`). The lines keep their sentence count and every "…" in every locale, because beats
+land on sentences by position; `en` and `tr` are final, the other six want a native read.
+
+**The shots.** `lib/film-shots.mjs` is what Venus does, written with the days' own vocabulary
+(`lib/score.mjs` entrances, reactions and moves, the rig, `lib/items.mjs`). The race through the
+days is the days themselves, drawn by `render.mjs` with her mouth shut. A one-second window opens on
+its day already settled (its number popping on the cut, its seat, outfit and items on); the three
+half-second bag days open with the bag already under her, so each "Bag." lands with its bag, and day
+93's kraft bag lands on "…Different bag."; day 100 opens on the frame its slammed number hits, with
+the music's return, the thud and the shake. Every window, like every shot with a counter, draws her
+just small enough that her ears stay under the number's label (measured in the browser, as
+`fitUnderLabel` measures a day); on the bag days, and in the bag-hop entrance that plants the gag,
+the camera also pulls back and up (`BAG_CAM`), and in the comeback it rises while the bag is the
+joke, so the bag clears the caption. In the bonk her leap's last frame meets the
+locked day's bottom edge and she stays pressed to it, turning to the lens and scrabbling, until
+she drops in the last 0.3 s (the heights are measured, not guessed). The photo-booth print lands as
+a big blep sticker above her for "It's a sticker now.", and only takes its place in the ring as the
+slaps begin. On the title card a two-line tagline (de, es, fr, pt-BR, ru) lowers the stage under it,
+so the pill clears her ears on the cover. The wall is made of the
+published covers, read from the CDN once into `cache/intro-covers/`. `lib/film-layers.mjs` draws
+what only the film has (the title, pills, the clapper, the photo print, stickers, the wall tiles),
+and `lib/endcard.mjs` closes it (`--end handoff`, the default, or `splash`).
+
+**Red lines the tests hold.** `test/film.test.mjs` performs every shot in every locale without a
+browser and checks the timing (the English clock is the board, takes re-time it, pushes stay on the
+beat), the lines (sentence shape, no digits, the character lint) and the screen: one caption at a
+time, a sentence after a "…" on a line of its own, never clearing within a quarter second of a cut
+(a bubble that clears on a cut is gone on its frame), a dash or a lone "?" never starting a line, a
+little word ("по", "a") left at a line's end only when no smaller size avoids it, no gap between a
+line's WebVTT cues, the co-star (the viewer) in the generic form in es and pt-BR, no
+face she never aims at the viewer, and
+flashes at least 0.5 s apart with at most three flashes or cuts in any second. Each flash washes at
+most 20% white.
+
 ## Publishing
 
 The library lives on the media bucket, beside its manifest:
@@ -93,6 +160,8 @@ node upload.mjs media --dry   # what would go up
 node upload.mjs media         # every finished mp4 + jpg pair not already there (same size + md5)
 node upload.mjs verify        # the bucket against the local files, size + md5
 node upload.mjs manifest      # last: out/v1/manifest.public.json -> venus/v1/manifest.json
+node upload.mjs intro --dry   # the film: every locale's venus-intro mp4 + jpg from $VENUS_OUT/intro/
+node upload.mjs intro         # all of them, or nothing if a venus-intro object is already there
 ```
 
 The manifest goes up last, once `verify` is clean, because it is what tells the app a video
@@ -119,8 +188,8 @@ them (file, id, the in-app id, emoji, keywords): 18 text-free poses, four Englis
 ## Checks
 
 ```bash
-node --test test/*.test.mjs   # grammar, items, character rules, day-1 cuts, the acting vocabulary
-node lint-quips.mjs           # the character lint on every line in every locale
+node --test test/*.test.mjs   # grammar, items, character rules, day-1 cuts, the acting vocabulary, the film
+node lint-quips.mjs           # the character lint on every line in every locale, the film's too
 ```
 
 The bible check in `test/items.test.mjs` needs `VENUS_BIBLE`, the character bible, which is kept
@@ -128,23 +197,24 @@ outside the repo; without it the test is skipped.
 
 ## What is where
 
-| Path                                 | What                                                                         |
-| ------------------------------------ | ---------------------------------------------------------------------------- |
-| `render.mjs`, `batch.mjs`            | One video; many in parallel, with the manifest                               |
-| `grammar.mjs`                        | The plan for a (day, locale)                                                 |
-| `lib/score.mjs`, `lib/intro.mjs`     | The acting, timed from the measured voice; the two day-1 cuts                |
-| `lib/layers.mjs`, `lib/endcard.mjs`  | Grounds, the number, the caption bubble, effects; the end card               |
-| `lib/items.mjs`, `lib/items-art.mjs` | Her props: the per-day picks and their drawings (`items-build.mjs`)          |
-| `lib/voice.mjs`, `lib/audio.mjs`     | Takes and placeholders; voice analysis, SFX, music and the mix               |
-| `lib/synth/`                         | The offline audio kit: DSP, synthesised SFX and music beds, `say`, the mix   |
-| `rig/`                               | The polished 2D vector rig and its animator                                  |
-| `data/`                              | Lines, character rules, items, end-card slogans, the streak label            |
-| `assets/`                            | Item SVGs (generated), the brand mark and wordmark, the Arabic end-card face |
-| `quips.mjs`, `lint-quips.mjs`        | The lines' source; the character lint                                        |
-| `upload.mjs`, `sync-loop.sh`         | Publishing to the bucket                                                     |
-| `sticker-pack.mjs`, `stickers.mjs`   | Stickers, with the die-cut in `lib/diecut.mjs`                               |
-| `inventory.md`                       | Every item, generated by `node items-build.mjs --doc`                        |
-| `out/`, `work/`, `cache/`, `voice/`  | Not committed                                                                |
+| Path                                 | What                                                                          |
+| ------------------------------------ | ----------------------------------------------------------------------------- |
+| `render.mjs`, `batch.mjs`            | One video; many in parallel, with the manifest                                |
+| `grammar.mjs`                        | The plan for a (day, locale)                                                  |
+| `lib/score.mjs`, `lib/intro.mjs`     | The acting, timed from the measured voice; the two day-1 cuts                 |
+| `lib/layers.mjs`, `lib/endcard.mjs`  | Grounds, the number, the caption bubble, effects; the end card                |
+| `lib/items.mjs`, `lib/items-art.mjs` | Her props: the per-day picks and their drawings (`items-build.mjs`)           |
+| `lib/voice.mjs`, `lib/audio.mjs`     | Takes and placeholders; voice analysis, SFX, music and the mix                |
+| `lib/synth/`                         | The offline audio kit: DSP, synthesised SFX and music beds, `say`, the mix    |
+| `rig/`                               | The polished 2D vector rig and its animator                                   |
+| `data/`                              | Lines, character rules, items, end-card slogans, the streak label             |
+| `assets/`                            | Item SVGs (generated), the brand mark and wordmark, the Arabic end-card face  |
+| `quips.mjs`, `lint-quips.mjs`        | The lines' source; the character lint                                         |
+| `upload.mjs`, `sync-loop.sh`         | Publishing to the bucket                                                      |
+| `film.mjs`, `lib/film-*.mjs`         | The introduction film: its clock, shots and drawings (`data/film-intro.json`) |
+| `sticker-pack.mjs`, `stickers.mjs`   | Stickers, with the die-cut in `lib/diecut.mjs`                                |
+| `inventory.md`                       | Every item, generated by `node items-build.mjs --doc`                         |
+| `out/`, `work/`, `cache/`, `voice/`  | Not committed                                                                 |
 
 | Variable           | Default               |                                                           |
 | ------------------ | --------------------- | --------------------------------------------------------- |
