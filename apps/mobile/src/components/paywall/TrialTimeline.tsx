@@ -1,6 +1,8 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Text, View } from 'react-native'
+import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { useGlyphScale } from '../product/ProductGroup'
 
 export interface TrialStep {
   icon: keyof typeof Feather.glyphMap
@@ -21,14 +23,24 @@ export interface TrialStep {
  *
  * The first step is filled and the rest outlined: today is the only one that
  * has happened.
+ *
+ * Its words stop growing where a product page's do, and the discs grow with
+ * them (`useGlyphScale`), as a product page's steps do (`StepList`). The rail
+ * stays beside the words at every size: it is what joins the days.
  */
 export function TrialTimeline({ title, steps }: { title: string; steps: readonly TrialStep[] }) {
   const styles = useStyles()
   const { v3 } = useTheme()
+  const glyph = useGlyphScale()
+  const node = NODE * glyph
 
   return (
     <View style={styles.box}>
-      <Text style={styles.heading} accessibilityRole="header">
+      <Text
+        style={styles.heading}
+        accessibilityRole="header"
+        maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.heading}
+      >
         {title}
       </Text>
       <View>
@@ -37,19 +49,29 @@ export function TrialTimeline({ title, steps }: { title: string; steps: readonly
           const last = index === steps.length - 1
           return (
             <View key={step.title} style={styles.step}>
-              <View style={styles.rail}>
-                <View style={[styles.node, first ? styles.nodeNow : null]}>
+              <View style={[styles.rail, { width: node }]}>
+                <View
+                  style={[
+                    styles.node,
+                    { height: node, width: node },
+                    first ? styles.nodeNow : null,
+                  ]}
+                >
                   <Feather
                     name={step.icon}
-                    size={v3.icon.xs}
+                    size={Math.round(v3.icon.xs * glyph)}
                     color={first ? v3.colors.pillText : v3.colors.muted}
                   />
                 </View>
                 {last ? null : <View style={[styles.line, first ? styles.lineNow : null]} />}
               </View>
               <View style={[styles.text, last ? null : styles.textSpaced]}>
-                <Text style={styles.title}>{step.title}</Text>
-                <Text style={styles.body}>{step.body}</Text>
+                <Text style={styles.title} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+                  {step.title}
+                </Text>
+                <Text style={styles.body} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+                  {step.body}
+                </Text>
               </View>
             </View>
           )

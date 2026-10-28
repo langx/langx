@@ -59,3 +59,30 @@ export const PRODUCT_TEXT_SCALE = {
    */
   glyph: 2,
 } as const
+
+/**
+ * How far a line may grow with the reader's text size
+ * (`maxFontSizeMultiplier`): up to `cap`, and no further than keeps its widest
+ * word whole on a line `room` wide. `widest` is that word's width at the
+ * default size, which grows in step with the text (`useWordFit`).
+ *
+ * For the lines a fixed cap cannot be right for, because their words come
+ * from data or the room is narrower than a 375pt phone's: the paywall's
+ * headline carries a language's name — "«португальский»" is wider than any
+ * word the catalogue wrote — a plan's price is the store's own string, and
+ * on a 320pt screen Russian's "Конфиденциальность" outgrew its link. Each
+ * broke in the middle at the cap its role has.
+ *
+ * A word measured at one size can come out a hair wider drawn at another,
+ * as each platform rounds letters its own way, and a hair is all it takes
+ * for the line to break inside the word: the fit keeps 2% in hand. Never
+ * below 1, so the default size is never touched, and `cap` until both widths
+ * are known, the roomy guess, as `ProductHero` makes it.
+ */
+export function wordFitScale(room: number, widest: number, cap: number): number {
+  if (room <= 0 || widest <= 0) return cap
+  return Math.min(cap, Math.max(1, (room * WORD_FIT_SLACK) / widest))
+}
+
+/** The share of the line a word measured whole may fill (`wordFitScale`). */
+const WORD_FIT_SLACK = 0.98

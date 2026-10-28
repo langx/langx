@@ -8,8 +8,11 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { useReduceMotion } from '../../hooks/useReduceMotion'
+import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { SPRING, TIMING, unlessReduced } from '../../lib/theme/motion'
+import { useGlyphScale, useStacked } from '../product/ProductGroup'
+import { useWordFit, WidestWord } from '../product/WidestWord'
 import { PressableScale } from '../ui/PressableScale'
 
 interface PlanCardProps {
@@ -43,6 +46,15 @@ interface PlanCardProps {
  * border is the same width either way, so picking a card never moves a pixel
  * of the layout around it. The check is the one thing that springs: it is the
  * part the finger just caused. With reduced motion it is simply there.
+ *
+ * At the larger text sizes the radio stands over the words, so the price gets
+ * the card's whole width, as a product page's row puts its square
+ * (`ProductRow`); it grows with them (`useGlyphScale`). Every line stops
+ * growing where a product page's does, the price at a heading's 2×, so it
+ * stays the largest figure on the card and on the screen — or sooner, where
+ * a word of it would not fit the card whole (`useWordFit`): the price is the
+ * store's own string, and Russian's "единоразово" ran out of a 320pt
+ * screen's card at 2×.
  */
 export function PlanCard({
   selected,
@@ -56,6 +68,9 @@ export function PlanCard({
   const styles = useStyles()
   const { v3 } = useTheme()
   const reduceMotion = useReduceMotion()
+  const stacked = useStacked()
+  const glyph = useGlyphScale()
+  const priceFit = useWordFit(PRODUCT_TEXT_SCALE.heading)
   const on = useSharedValue(selected ? 1 : 0)
 
   useEffect(() => {
@@ -73,6 +88,20 @@ export function PlanCard({
     transform: [{ scale: 0.6 + 0.4 * on.get() }],
   }))
 
+  const radio = (
+    <View
+      style={[
+        styles.radio,
+        { height: RADIO * glyph, width: RADIO * glyph },
+        stacked && styles.radioAbove,
+      ]}
+    >
+      <Animated.View style={[styles.check, checkStyle]}>
+        <Feather name="check" size={Math.round(v3.icon.xs * glyph)} color={v3.colors.onBlue} />
+      </Animated.View>
+    </View>
+  )
+
   return (
     <PressableScale
       accessibilityRole="radio"
@@ -81,21 +110,32 @@ export function PlanCard({
       onPress={onSelect}
       style={[styles.card, selected ? styles.cardSelected : null]}
     >
-      <View style={styles.radio}>
-        <Animated.View style={[styles.check, checkStyle]}>
-          <Feather name="check" size={v3.icon.xs} color={v3.colors.onBlue} />
-        </Animated.View>
-      </View>
-      <View style={styles.text}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.price}>{price}</Text>
-        {detail ? <Text style={styles.detail}>{detail}</Text> : null}
+      {stacked ? null : radio}
+      <View
+        style={styles.text}
+        onLayout={(event) => priceFit.setLine(event.nativeEvent.layout.width)}
+      >
+        {stacked ? radio : null}
+        <Text style={styles.title} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+          {title}
+        </Text>
+        <Text style={styles.price} maxFontSizeMultiplier={priceFit.scale}>
+          {price}
+        </Text>
+        {detail ? (
+          <Text style={styles.detail} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+            {detail}
+          </Text>
+        ) : null}
         {/* Wraps rather than truncates, so a long translation never hides a figure. */}
         {badge ? (
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{badge}</Text>
+          <View style={[styles.badge, stacked && styles.badgeStacked]}>
+            <Text style={styles.badgeText} maxFontSizeMultiplier={PRODUCT_TEXT_SCALE.text}>
+              {badge}
+            </Text>
           </View>
         ) : null}
+        <WidestWord text={price} style={styles.price} onWidth={priceFit.setWidest} />
       </View>
     </PressableScale>
   )
@@ -129,6 +169,7 @@ const useStyles = makeStyles(({ v3 }) => ({
     justifyContent: 'center',
     width: RADIO,
   },
+  radioAbove: { marginBottom: v3.space[6] },
   // Over the ring, filling it: picked reads as a blue disc with a tick, not
   // as a dot inside an outline.
   check: {
@@ -153,5 +194,10 @@ const useStyles = makeStyles(({ v3 }) => ({
     paddingHorizontal: v3.space[10],
     paddingVertical: v3.space[2],
   },
+  // A row's corner rather than a pill's at the larger sizes: still a pill on
+  // one line, since a corner never exceeds half the height, and a rounded
+  // block once the figures wrap, where a pill's ends ran into the first and
+  // last letters.
+  badgeStacked: { borderRadius: v3.radius.row },
   badgeText: { ...v3.type.label, color: v3.colors.ink },
 }))
