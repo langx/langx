@@ -24,6 +24,7 @@ import { useAppConfig } from '../hooks/useAppConfig'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
 import { useScreenInteractive } from '../hooks/useScreenInteractive'
 import { useVenusArchive, type VenusArchiveView } from '../hooks/useVenusArchive'
+import { VENUS_MEDIA_URL } from '../hooks/useVenusStory'
 import { useT } from '../i18n'
 import type { TranslateFn } from '../i18n/runtime'
 import { authClient } from '../lib/auth-client'
@@ -34,7 +35,7 @@ import { openStickerPack } from '../lib/navigation'
 import { PRODUCT_TEXT_SCALE } from '../lib/productPage'
 import { stickerAsset, stickerNameKey } from '../lib/stickerAssets'
 import { makeStyles, useTheme } from '../lib/theme'
-import { requestVenusClip, type VenusStreak } from '../lib/venusStory'
+import { requestVenusClip, venusIntroFilm, type VenusStreak } from '../lib/venusStory'
 import { WHATSAPP_PACKS } from '../lib/whatsappStickers'
 
 const PACK_ID = 'stickers.venus'
@@ -123,7 +124,7 @@ function VenusPage({
               action: {
                 label: t('venus.page.watchIntro'),
                 icon: 'play' as const,
-                onPress: () => requestVenusClip(intro),
+                onPress: () => requestVenusClip(venusIntroFilm(intro, VENUS_MEDIA_URL)),
               },
             }
           : {})}

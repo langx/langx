@@ -53,6 +53,7 @@ import {
   closesVenusStory,
   hasWatchedVenus,
   isVenusAutoOpenPath,
+  isVenusIntroFilm,
   markVenusSeen,
   setVenusStoryOpen,
   shouldAutoOpenVenus,
@@ -86,9 +87,10 @@ import { FlameGlyph } from './ui/StreakFlame'
  * — `useVenusStory` answers `null` and nothing here draws or says anything.
  *
  * It also plays any other day on request (`requestVenusClip`): a day from the
- * archive on the streak page or the Venus page, or the introduction. Such a
- * day has no `dayKey` — it is not the day that counted — so nothing about it
- * is recorded against today (see `VenusStoryPlayer`).
+ * archive on the streak page or the Venus page, or the introduction film,
+ * which gives way to day 1 when its file will not load. Such a day has no
+ * `dayKey` — it is not the day that counted — so nothing about it is
+ * recorded against today (see `VenusStoryPlayer`).
  */
 export function VenusStoryHost({ enabled }: { enabled: boolean }) {
   const video = useVenusStory()
@@ -163,6 +165,9 @@ export function VenusStoryHost({ enabled }: { enabled: boolean }) {
       autoOpened={open.auto}
       accountId={accountId}
       onClose={() => setOpen(null)}
+      // The introduction film falls back to day 1 (`venusIntroFilm`); any
+      // other file that will not load closes the player.
+      onFail={() => setOpen(open.video.fallback ? { ...open, video: open.video.fallback } : null)}
     />
   )
 }
@@ -224,12 +229,15 @@ function VenusStoryPlayer({
   autoOpened,
   accountId,
   onClose,
+  onFail,
 }: {
   video: VenusClip
   dayKey: string | null
   autoOpened: boolean
   accountId: string | undefined
   onClose: () => void
+  /** The file will not play. */
+  onFail: () => void
 }) {
   const t = useT()
   const styles = useStyles()
@@ -306,11 +314,12 @@ function VenusStoryPlayer({
     void noteVenusWatched(accountId, dayKey)
   })
 
-  // A file that is listed but will not play closes quietly: an error toast
-  // over a missing video is the one thing this feature must never show.
+  // A file that is listed but will not play closes quietly, or gives way to
+  // its fallback: an error toast over a missing video is the one thing this
+  // feature must never show.
   useEffect(() => {
-    if (status === 'error') onClose()
-  }, [status, onClose])
+    if (status === 'error') onFail()
+  }, [status, onFail])
 
   /*
    * Started again once the file is ready. On the web the `play()` in the
@@ -324,9 +333,12 @@ function VenusStoryPlayer({
     player.play()
   }, [status, holdFirstFrame, player])
 
+  // Not for the introduction film: at ~50 MB, fetching it ahead would double
+  // what the web downloads on every open and keep it in memory for the
+  // session. Sharing it still works; it fetches when asked.
   useEffect(() => {
-    prepareVenusShare(video.url)
-  }, [video.url])
+    if (!isVenusIntroFilm(video)) prepareVenusShare(video.url)
+  }, [video])
 
   // The cover dissolves into the first frame and back over the last.
   const showCover = cover !== 'failed' && (!rolling || ended)

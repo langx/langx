@@ -216,7 +216,8 @@ export function ledge(look, G) {
 export const NUM_Y = 470,
   BADGE_Y = 392
 const NUM_SIZE = (txt) => (txt.length <= 1 ? 430 : txt.length === 2 ? 390 : 330)
-function numText(text, F, st, fill) {
+// the number's type: Nunito 900 with a drop shadow and an ink outline (the title card uses it too)
+export function numText(text, F, st, fill) {
   const base = `font-family="Nunito" font-weight="900" font-size="${F}" text-anchor="middle" letter-spacing="${-F * 0.03}"`
   const y = n1(F * 0.35)
   return (
@@ -238,7 +239,7 @@ export function number(look, t, num, toBadgeAt) {
   const lw = num.labelW || 600,
     lsc = Math.min(1, 820 / lw)
   const label = (op) =>
-    `<text x="0" y="${n1(F * 0.35 + 92)}" font-family="${FONT}" font-weight="900" font-size="${n1(54 * lsc)}" letter-spacing="${n1(6 * lsc)}" text-anchor="middle" fill="${st.label}" opacity="${op}"${num.rtl ? ' direction="rtl"' : ''}>${esc(num.label)}</text>`
+    `<text x="0" y="${n1(F * 0.35 + 92)}" font-family="${num.font || FONT}" font-weight="900" font-size="${n1(54 * lsc)}" letter-spacing="${n1(6 * lsc)}" text-anchor="middle" fill="${st.label}" opacity="${op}"${num.rtl ? ' direction="rtl"' : ''}>${esc(num.label)}</text>`
   if (t < num.at) {
     if (num.mode !== 'count' || t < num.countFrom) return ''
     // the hook: a counter racing up, slowing as it nears the day
@@ -292,6 +293,18 @@ export function number(look, t, num, toBadgeAt) {
 // ------------------------------------------------------------------ caption bubble
 // blocks: [{ lines: [[word, ...], ...], words: [{ t0, t1 }], whisper, F }]
 export const BUB = { x0: 70, x1: 930, top: 1290, tailX: 600 }
+// the bubble's outline down to `bottom`, moved down by dy (its shadow); tail: the point up at her
+// mouth, or a scale 0..1 of it (the film's voice-over lines have none)
+export function bubbleBox(bottom, dy, fill, stroke, tail = 1) {
+  const { x0, x1, top, tailX } = BUB
+  const tip =
+    tail >= 1
+      ? `H${tailX - 22}L${tailX + 10} ${top - 46 + dy}L${tailX + 40} ${top + dy}`
+      : tail > 0
+        ? `H${tailX - 22}L${n1(tailX - 22 + 32 * tail)} ${n1(top - 46 * tail + dy)}L${tailX + 40} ${top + dy}`
+        : ''
+  return `<path d="M${x0} ${top + 34 + dy}Q${x0} ${top + dy} ${x0 + 34} ${top + dy}${tip}H${x1 - 34}Q${x1} ${top + dy} ${x1} ${top + 34 + dy}V${bottom - 34 + dy}Q${x1} ${bottom + dy} ${x1 - 34} ${bottom + dy}H${x0 + 34}Q${x0} ${bottom + dy} ${x0} ${bottom - 34 + dy}Z" fill="${fill}" ${stroke}/>`
+}
 export function bubble(look, t, blocks, hideAt, rtl) {
   let k = -1
   for (let i = 0; i < blocks.length; i++) if (t >= blocks[i].words[0].t0 - 0.14) k = i
@@ -301,7 +314,7 @@ export function bubble(look, t, blocks, hideAt, rtl) {
   const F = B.F,
     lineH = Math.round(F * 1.2),
     pad = 32
-  const { x0, x1, top, tailX } = BUB
+  const { top, tailX } = BUB
   const h = B.lines.length * lineH + pad * 2 - 12,
     bottom = top + h
   const uIn = t - first,
@@ -312,8 +325,7 @@ export function bubble(look, t, blocks, hideAt, rtl) {
   if (uOut > 0) s *= 1 - EASE.in(clamp(uOut / 0.2))
   if (s <= 0.01) return ''
   const shadow = LOOKS[look].bubble
-  const box = (dy, fill, stroke) =>
-    `<path d="M${x0} ${top + 34 + dy}Q${x0} ${top + dy} ${x0 + 34} ${top + dy}H${tailX - 22}L${tailX + 10} ${top - 46 + dy}L${tailX + 40} ${top + dy}H${x1 - 34}Q${x1} ${top + dy} ${x1} ${top + 34 + dy}V${bottom - 34 + dy}Q${x1} ${bottom + dy} ${x1 - 34} ${bottom + dy}H${x0 + 34}Q${x0} ${bottom + dy} ${x0} ${bottom - 34 + dy}Z" fill="${fill}" ${stroke}/>`
+  const box = (dy, fill, stroke) => bubbleBox(bottom, dy, fill, stroke)
   let g = B.whisper
     ? box(8, shadow, '') +
       box(
@@ -364,7 +376,8 @@ export function confetti(t, t0, seed = 7, ox = 540, oy = 470) {
   }
   return s
 }
-export function flashes(t, times) {
+// wash: the white over the whole frame at the flash's peak (the introduction film caps it at 0.2)
+export function flashes(t, times, { wash = 0.55 } = {}) {
   let s = ''
   const spots = [
     [170, 620],
@@ -380,7 +393,7 @@ export function flashes(t, times) {
     const k = 1 - u / 0.28,
       [x, y] = spots[i % spots.length],
       R = 150 * (0.5 + 0.5 * k)
-    s += `<rect width="${W}" height="${H}" fill="#fff" opacity="${n1(55 * Math.pow(k, 3)) / 100}"/>`
+    s += `<rect width="${W}" height="${H}" fill="#fff" opacity="${n1(wash * 100 * Math.pow(k, 3)) / 100}"/>`
     s += `<g transform="translate(${x} ${y}) rotate(${n1(u * 120)})" opacity="${n1(k * 100) / 100}">${star(R)}<circle r="${n1(R * 0.22)}" fill="#fff"/></g>`
   })
   return s
