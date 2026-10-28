@@ -138,6 +138,40 @@ describe('the Russian pushes and emails the review found', () => {
   })
 })
 
+describe('the Arabic digest', () => {
+  const ar = translator('ar')
+
+  // Arabic counts 3–10 with a plural noun, 11–99 and 100 with a singular one,
+  // and 2 with the dual and no number. The subjects had only `one` and
+  // `other`, so 2 and 11 read with the noun 3–10 take.
+  it('counts unread messages and replies in the form each number takes', () => {
+    expect(ar('email.digestSubject', { count: 2 })).toBe('رسالتان غير مقروءتين في LangX')
+    expect(ar('email.digestSubject', { count: 3 })).toBe('3 رسائل غير مقروءة في LangX')
+    expect(ar('email.digestSubject', { count: 11 })).toBe('11 رسالة غير مقروءة في LangX')
+    expect(ar('email.digestBody', { count: 100, names: 'Ana' })).toBe(
+      'لديك 100 رسالة غير مقروءة من Ana.',
+    )
+    expect(ar('email.feedDigestSubject', { count: 2 })).toBe('ردّان على ما نشرته اليوم')
+    expect(ar('email.feedDigestSubject', { count: 11 })).toBe('11 ردًا على ما نشرته اليوم')
+  })
+
+  // The letter is sent with corrections + answers + comments as its count, so
+  // every form counts replies. The body once said "{count} people replied",
+  // and one person can leave several.
+  it('counts replies in the feed digest body, never the people who left them', () => {
+    expect(ar('email.feedDigestBody', { count: 0 })).toBe('وصلك اليوم 0 رد على ما نشرته.')
+    expect(ar('email.feedDigestBody', { count: 2 })).toBe('وصلك اليوم ردّان على ما نشرته.')
+    expect(ar('email.feedDigestBody', { count: 3 })).toBe('وصلتك اليوم 3 ردود على ما نشرته.')
+    expect(ar('email.feedDigestBody', { count: 11 })).toBe('وصلك اليوم 11 ردًا على ما نشرته.')
+    expect(ar('email.feedDigestBody', { count: 100 })).toBe('وصلك اليوم 100 رد على ما نشرته.')
+    // 0–120 reaches all six forms, 100 and up included.
+    const people = Array.from({ length: 121 }, (_, count) =>
+      ar('email.feedDigestBody', { count }),
+    ).filter((text) => /شخص|أشخاص/.test(text))
+    expect(people).toEqual([])
+  })
+})
+
 describe('the Arabic pushes and emails that leaned on the fallback', () => {
   const ar = translator('ar')
 
