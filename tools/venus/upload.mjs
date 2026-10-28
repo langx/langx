@@ -239,7 +239,8 @@ async function intro() {
   // (venus-intro-<lang>.mp4), and is not in the manifest: the app plays it by that name and falls
   // back to day 1 when it does not load. All locales or none: a missing or unfinished cut stops the
   // run before anything goes up. And never over an object already there, not even an identical
-  // one: a key that exists means somebody published a cut, and a changed cut goes up as -r2.
+  // one: a key that exists means somebody published a cut, and a changed cut goes up under a
+  // suffix not used yet (see the README).
   const FILM = path.join(OUT_ROOT, 'intro')
   const langs = fs
     .readdirSync(FILM, { withFileTypes: true })

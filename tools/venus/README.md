@@ -77,17 +77,22 @@ renders exactly as before.
 introduction": one cut per locale, 1080×1920, 30 fps, about 97 s in English and up to about 111 s
 in the longest locale (fr). Like the days it is shared, one file per locale. It is not in the
 manifest: `node upload.mjs intro` puts each locale's mp4 and cover beside the days, as
-`venus/v1/<lang>/venus-intro-<lang>.mp4`, and the app plays it by that name (see Publishing).
+`venus/v1/<lang>/venus-intro-<lang>.mp4`. The app plays a smaller copy of it, made by hand (below).
 
-The app plays `venus-intro-<lang>-r2.mp4`, not the master: the same cut re-encoded for phones on
+The app plays `venus-intro-<lang>-r3.mp4`, not the master: the same cut re-encoded for phones on
 mobile data, about 24 MB instead of about 50, with the picture size and the audio unchanged
 (SSIM 0.997 against the master), and its cover copied under the same name. A suffix rather than
 a replacement because `v1` is cached for a year and nothing there is overwritten:
 
 ```bash
-ffmpeg -i venus-intro-<lang>.mp4 -c:v libx264 -preset slow -b:v 1700k -maxrate 2200k \
-  -bufsize 4000k -pix_fmt yuv420p -c:a copy -movflags +faststart venus-intro-<lang>-r2.mp4
+ffmpeg -i venus-intro-<lang>.mp4 -c:v libx264 -preset slow -profile:v high -level:v 4.1 \
+  -b:v 1700k -maxrate 2200k -bufsize 4000k -pix_fmt yuv420p -c:a copy -movflags +faststart \
+  venus-intro-<lang>-r3.mp4
 ```
+
+Keep `-level:v 4.1`, the level of the master and the days. Without it, `-preset slow` uses five
+reference frames, which at 1080×1920 makes the stream level 5.0, and a phone's decoder may refuse
+a level it does not list. That is why `-r2`, the first copy, is in the bucket and unused.
 
 ```bash
 node film.mjs --lang tr                  # $VENUS_OUT/intro/tr/venus-intro-tr.mp4, .jpg, .vtt, -preview.mp4
