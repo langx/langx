@@ -22,6 +22,7 @@ import {
   VENUS_MAX_SIDE_CROP,
   venusFrameFor,
   venusGrid,
+  venusIntroFilm,
   venusReplayRequests,
   venusRequestedClip,
   venusShareFileName,
@@ -201,6 +202,58 @@ describe('venusClipFor', () => {
     expect(
       venusClipFor({ day: 1, cut: 'return', locale: 'en', manifest, baseUrl: BASE }),
     ).toBeNull()
+  })
+})
+
+describe('venusIntroFilm', () => {
+  function dayOne(locale: string) {
+    const clip = venusClipFor({
+      day: 1,
+      cut: 'intro',
+      locale,
+      manifest: parseVenusManifest({ videos: [{ day: 1, lang: locale }] }),
+      baseUrl: BASE,
+    })
+    if (!clip) throw new Error(`fixture has day 1 in ${locale}`)
+    return clip
+  }
+
+  it('is the film in the locale of day 1, beside the days, with its cover', () => {
+    const intro = dayOne('tr')
+    expect(venusIntroFilm(intro, BASE)).toEqual({
+      day: 1,
+      locale: 'tr',
+      cut: 'intro',
+      fileName: 'venus-intro-tr.mp4',
+      url: `${BASE}/tr/venus-intro-tr.mp4`,
+      coverUrl: `${BASE}/tr/venus-intro-tr.jpg`,
+      fallback: intro,
+    })
+  })
+
+  it('has a cut in each of the app’s eight locales, pt-BR as the bucket spells it', () => {
+    for (const locale of ['en', 'tr', 'de', 'es', 'fr', 'pt-BR', 'ru', 'ar']) {
+      expect(venusIntroFilm(dayOne(locale), BASE).url).toBe(
+        `${BASE}/${locale}/venus-intro-${locale}.mp4`,
+      )
+    }
+  })
+
+  it('plays in English for a locale the film has no cut in, and falls back to that locale’s day 1', () => {
+    const intro = dayOne('ja')
+    const film = venusIntroFilm(intro, BASE)
+    expect(film.url).toBe(`${BASE}/en/venus-intro-en.mp4`)
+    expect(film.coverUrl).toBe(`${BASE}/en/venus-intro-en.jpg`)
+    expect(film.locale).toBe('en')
+    expect(film.fallback).toBe(intro)
+  })
+
+  it('takes a base URL with or without its trailing slash', () => {
+    expect(venusIntroFilm(dayOne('de'), `${BASE}/`).url).toBe(`${BASE}/de/venus-intro-de.mp4`)
+  })
+
+  it('leaves day 1 itself without a fallback, so a day that will not load closes', () => {
+    expect(dayOne('es').fallback).toBeUndefined()
   })
 })
 

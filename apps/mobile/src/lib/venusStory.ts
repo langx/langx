@@ -35,6 +35,12 @@ export interface VenusClip {
    * when the video ends; without one, the player holds the last frame.
    */
   coverUrl: string | null
+  /**
+   * What the player opens instead when this file will not load — the
+   * introduction film's day 1 (`venusIntroFilm`). Without one, a file that
+   * will not load closes the player.
+   */
+  fallback?: VenusClip
 }
 
 /** Today's video: a clip tied to the day that counted. */
@@ -175,6 +181,59 @@ export function venusClipFor(input: {
     fileName,
     url: `${folder}/${fileName}`,
     coverUrl: cover ? `${folder}/${cover}` : null,
+  }
+}
+
+/**
+ * The introduction film ("Venus: Starring Herself", `tools/venus/film.mjs`)
+ * in each locale it has a cut in: the file's name without `.mp4`, beside that
+ * locale's days, with its `.jpg` cover under the same name. en, tr, de and es
+ * are voiced; fr, pt-BR, ru and ar are the silent cut — music, sound effects
+ * and her lines as subtitles in the picture. The bucket's `v1` is immutable
+ * and cached for a year, so a cut that changes — voicing one of the four —
+ * goes up under a new name, and the change here is that locale's line
+ * (`fr: 'venus-intro-fr-r2'`).
+ */
+const VENUS_INTRO_FILES = {
+  en: 'venus-intro-en',
+  tr: 'venus-intro-tr',
+  de: 'venus-intro-de',
+  es: 'venus-intro-es',
+  fr: 'venus-intro-fr',
+  'pt-BR': 'venus-intro-pt-BR',
+  ru: 'venus-intro-ru',
+  ar: 'venus-intro-ar',
+} as const
+
+function hasIntroCut(locale: string): locale is keyof typeof VENUS_INTRO_FILES {
+  return Object.prototype.hasOwnProperty.call(VENUS_INTRO_FILES, locale)
+}
+
+/**
+ * The introduction film behind the Venus page's "Watch the introduction", in
+ * the locale of `dayOne` — the archive's day 1, which says the bucket holds
+ * Venus in the app's language — or in English when the film has no cut in
+ * it. The film is not in the manifest, which lists days, so nothing here can
+ * tell that its file is there: `dayOne` comes along as the fallback, and a
+ * film that will not load plays day 1 instead, the page's introduction
+ * before the film existed.
+ *
+ * Day 1 as far as the player is concerned — "Day 1 with Venus" on the end
+ * panel, the share file's name — because the film is her introduction, and
+ * that is what day 1 is too.
+ */
+export function venusIntroFilm(dayOne: VenusClip, baseUrl: string): VenusClip {
+  const locale = hasIntroCut(dayOne.locale) ? dayOne.locale : 'en'
+  const name = VENUS_INTRO_FILES[locale]
+  const folder = `${baseUrl.replace(/\/+$/, '')}/${locale}`
+  return {
+    day: 1,
+    locale,
+    cut: 'intro',
+    fileName: `${name}.mp4`,
+    url: `${folder}/${name}.mp4`,
+    coverUrl: `${folder}/${name}.jpg`,
+    fallback: dayOne,
   }
 }
 
