@@ -208,6 +208,7 @@ function MemberMe() {
       .join(' · '),
     languagesLine: languages,
     pro: Boolean(TIER_BADGES[tier]),
+    moderator: Boolean(profile.moderator),
     titleId: wornTitle?.id,
     hidden:
       profile.privacy.hideCity && profile.cityName
