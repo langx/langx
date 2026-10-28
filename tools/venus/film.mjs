@@ -270,7 +270,7 @@ function silentVT(text) {
 // One window of the race: the day as it ships (its plan, look, items, number), scored without its
 // line, entered where the film needs it: half a second before the number lands (align R), on the
 // slam (day 100), or with its bag popping 0.12 s after the cut or on a line (the bag days).
-const BAG_CAM = { z: 0.8, lift: 160 }
+const BAG_CAM = { z: 0.78, lift: 125 }
 async function dayWindow(B, w, ctx) {
   const { W, lang, ec, endStyle } = ctx
   let plan = planVideo(w.day, lang)
