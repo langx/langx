@@ -1,0 +1,666 @@
+{
+  "$comment": "The introduction film (film.mjs): its 22 lines in the eight locales, and the words drawn outside the bubble. `at` is each sentence on the English board, in seconds of the English silent cut; every locale is re-timed from its own text (lib/film-clock.mjs). Keep each line's sentence count and every \"…\" where it is: the beats hit sentences by position. en and tr are final; the other six want a native read before the film is voiced.",
+  "check": {
+    "en": "final",
+    "tr": "final",
+    "de": "needs native read",
+    "es": "needs native read",
+    "fr": "needs native read",
+    "pt-BR": "needs native read",
+    "ru": "needs native read",
+    "ar": "needs native read"
+  },
+  "screen": {
+    "tagline": {
+      "en": "STARRING HERSELF",
+      "tr": "BAŞROLDE: KENDİSİ",
+      "de": "IN DER HAUPTROLLE: SIE SELBST",
+      "es": "PROTAGONIZADA POR ELLA MISMA",
+      "fr": "DANS SON PROPRE RÔLE",
+      "pt-BR": "ESTRELANDO: ELA MESMA",
+      "ru": "В ГЛАВНОЙ РОЛИ — ОНА САМА",
+      "ar": "بطولة: هي نفسها"
+    },
+    "free": {
+      "en": "Free",
+      "tr": "Ücretsiz",
+      "de": "Kostenlos",
+      "es": "Gratis",
+      "fr": "Gratuit",
+      "pt-BR": "Grátis",
+      "ru": "Бесплатно",
+      "ar": "مجانًا"
+    }
+  },
+  "lines": [
+    {
+      "id": "intro-01",
+      "beat": "B01",
+      "modes": [
+        "on",
+        "on",
+        "on"
+      ],
+      "at": [
+        [
+          1.1,
+          1.6
+        ],
+        [
+          1.8,
+          2.3
+        ],
+        [
+          2.5,
+          3.64
+        ]
+      ],
+      "note": "\"posing\" = holding a pose for photos. Three short sentences.",
+      "text": {
+        "en": "Oh. Hi. I wasn't posing.",
+        "tr": "Aa. Selam. Poz vermiyordum.",
+        "de": "Oh. Hallo. Ich hab nicht posiert.",
+        "es": "Oh. Hola. No estaba posando.",
+        "fr": "Oh. Salut. Je ne posais pas.",
+        "pt-BR": "Ah. Oi. Eu não estava posando.",
+        "ru": "О. Привет. Я не позировала.",
+        "ar": "أوه. مرحبًا. لم أكن أقف للكاميرا."
+      }
+    },
+    {
+      "id": "intro-02",
+      "beat": "B02",
+      "modes": [
+        "on",
+        "on"
+      ],
+      "at": [
+        [
+          4.3,
+          5.01
+        ],
+        [
+          5.21,
+          6.07
+        ]
+      ],
+      "note": "\"Venus\" and \"LangX\" stay in Latin letters in every locale, as the app writes them. fr: avoid \"chatte\" here (spoken aloud later, it reads as slang); \"la mascotte de LangX\" or \"le chat de LangX\" — native call.",
+      "text": {
+        "en": "I'm Venus. LangX's cat.",
+        "tr": "Ben Venus. LangX'in kedisi.",
+        "de": "Ich bin Venus. Die LangX-Katze.",
+        "es": "Soy Venus. La mascota de LangX.",
+        "fr": "Moi, c'est Venus. La mascotte de LangX.",
+        "pt-BR": "Sou a Venus. A mascote da LangX.",
+        "ru": "Я Venus. Кошка LangX.",
+        "ar": "أنا Venus. قطة LangX."
+      }
+    },
+    {
+      "id": "intro-03",
+      "beat": "B03",
+      "modes": [
+        "on",
+        "on"
+      ],
+      "at": [
+        [
+          6.7,
+          8.77
+        ],
+        [
+          9.22,
+          10.22
+        ]
+      ],
+      "note": "\"intro\" = a short introduction video; \"film\" = a movie. Keep the pause before the second sentence.",
+      "text": {
+        "en": "They asked for a short intro. …I made a film.",
+        "tr": "Kısa bir tanıtım istediler. …Ben film çektim.",
+        "de": "Sie wollten ein kurzes Intro. …Ich hab einen Film gedreht.",
+        "es": "Pidieron una intro corta. …Hice una película.",
+        "fr": "On voulait une courte intro. …J'ai fait un film.",
+        "pt-BR": "Pediram uma intro curta. …Eu fiz um filme.",
+        "ru": "Просили короткое интро. …Я сняла фильм.",
+        "ar": "طلبوا مقدمة قصيرة. …فصنعتُ فيلمًا."
+      }
+    },
+    {
+      "id": "intro-04",
+      "beat": "B05",
+      "modes": [
+        "vo",
+        "on"
+      ],
+      "at": [
+        [
+          14.6,
+          16.67
+        ],
+        [
+          17.2,
+          18.13
+        ]
+      ],
+      "note": "\"star\" = a film star; \"entrance\" = making an entrance. Sentence 1 is voice-over, sentence 2 on camera.",
+      "text": {
+        "en": "Every star needs an entrance. …I have a few.",
+        "tr": "Her yıldızın bir girişi vardır. …Benim birkaç tane var.",
+        "de": "Ein Star braucht einen Auftritt. …Ich hab ein paar.",
+        "es": "Toda estrella necesita una entrada. …Tengo unas cuantas.",
+        "fr": "Toute star a besoin d'une entrée. …J'en ai plusieurs.",
+        "pt-BR": "Toda estrela precisa de uma entrada. …Eu tenho várias.",
+        "ru": "Звезде нужен выход. …У меня их несколько.",
+        "ar": "كل نجمة تحتاج إلى إطلالة. …ولديّ الكثير منها."
+      }
+    },
+    {
+      "id": "intro-05",
+      "beat": "B06",
+      "modes": [
+        "vo"
+      ],
+      "at": [
+        [
+          19.55,
+          20.69
+        ]
+      ],
+      "note": "\"edited\" = film editing (tr kurguladı, de geschnitten, fr monté, es editó, pt-BR editou, ru монтировал, ar مَنتَج), never \"wrote\".",
+      "text": {
+        "en": "…Who edited this?",
+        "tr": "…Bunu kim kurguladı?",
+        "de": "…Wer hat das geschnitten?",
+        "es": "…¿Quién editó esto?",
+        "fr": "…Qui a monté ça ?",
+        "pt-BR": "…Quem editou isso?",
+        "ru": "…Кто это монтировал?",
+        "ar": "…من مَنتَج هذا؟"
+      }
+    },
+    {
+      "id": "intro-06",
+      "beat": "B07",
+      "modes": [
+        "on"
+      ],
+      "at": [
+        [
+          21.95,
+          23.81
+        ]
+      ],
+      "note": "Feminine forms where the language marks them.",
+      "text": {
+        "en": "I look good in everything.",
+        "tr": "Her şey bana yakışıyor.",
+        "de": "Mir steht einfach alles.",
+        "es": "Todo me queda bien.",
+        "fr": "Tout me va à merveille.",
+        "pt-BR": "Eu fico bem com tudo.",
+        "ru": "Мне идёт абсолютно всё.",
+        "ar": "كل شيء يليق بي."
+      }
+    },
+    {
+      "id": "intro-07",
+      "beat": "B07",
+      "modes": [
+        "on",
+        "on"
+      ],
+      "at": [
+        [
+          25.35,
+          26.64
+        ],
+        [
+          26.84,
+          27.84
+        ]
+      ],
+      "note": "\"queen\" = regal, never slang. The crown lands on this word: keep it last in sentence 2 if the grammar allows.",
+      "text": {
+        "en": "…Almost everything. Still a queen.",
+        "tr": "…Neredeyse her şey. Hâlâ kraliçeyim.",
+        "de": "…Fast alles. Trotzdem eine Königin.",
+        "es": "…Casi todo. Sigo siendo una reina.",
+        "fr": "…Presque tout. Toujours une reine.",
+        "pt-BR": "…Quase tudo. Continuo uma rainha.",
+        "ru": "…Почти всё. Но всё равно королева.",
+        "ar": "…تقريبًا كل شيء. ما زلتُ ملكة."
+      }
+    },
+    {
+      "id": "intro-08",
+      "beat": "B09",
+      "modes": [
+        "on",
+        "on"
+      ],
+      "at": [
+        [
+          32.5,
+          33.64
+        ],
+        [
+          34.09,
+          35.45
+        ]
+      ],
+      "note": "\"Delete\" = delete a photo. \"sticker\" = the app's own word for sticker in each locale.",
+      "text": {
+        "en": "Delete that one. …It's a sticker now.",
+        "tr": "Şunu sil. …Artık sticker oldu.",
+        "de": "Lösch das. …Das ist jetzt ein Sticker.",
+        "es": "Borra esa. …Ahora es un sticker.",
+        "fr": "Efface celle-là. …C'est un sticker, maintenant.",
+        "pt-BR": "Apaga essa. …Agora é um sticker.",
+        "ru": "Удали это. …Теперь это стикер.",
+        "ar": "احذف هذه. …صارت ملصقًا الآن."
+      }
+    },
+    {
+      "id": "intro-09",
+      "beat": "B10",
+      "modes": [
+        "on",
+        "on"
+      ],
+      "at": [
+        [
+          37.4,
+          38.69
+        ],
+        [
+          38.89,
+          40.31
+        ]
+      ],
+      "note": "Reuse each locale's app wording for \"free for everyone\" and \"every chat\" (venus.page.tagline, venus.page.stickersIntro).",
+      "text": {
+        "en": "Free for everyone. In every LangX chat.",
+        "tr": "Herkese ücretsiz. Her LangX sohbetinde.",
+        "de": "Für alle kostenlos. In jedem LangX-Chat.",
+        "es": "Gratis para todos. En cada chat de LangX.",
+        "fr": "Gratuits pour tous. Dans chaque discussion LangX.",
+        "pt-BR": "Grátis para todos. Em toda conversa da LangX.",
+        "ru": "Бесплатно для всех. В любом чате LangX.",
+        "ar": "مجانية للجميع. في كل محادثة على LangX."
+      }
+    },
+    {
+      "id": "intro-10",
+      "beat": "B11",
+      "modes": [
+        "on",
+        "on"
+      ],
+      "at": [
+        [
+          41.45,
+          42.81
+        ],
+        [
+          43.01,
+          43.86
+        ]
+      ],
+      "note": "\"show\" = a performance. \"streak\" = the app's streak word (ru: серия).",
+      "text": {
+        "en": "Now, the real show. Your streak.",
+        "tr": "Şimdi asıl gösteri. Senin serin.",
+        "de": "Jetzt die echte Show. Deine Serie.",
+        "es": "Ahora, el verdadero show. Tu racha.",
+        "fr": "Et maintenant, le vrai spectacle. Ta série.",
+        "pt-BR": "Agora, o show de verdade. Sua sequência.",
+        "ru": "А теперь — главное шоу. Твоя серия.",
+        "ar": "والآن، العرض الحقيقي. سلسلتك."
+      }
+    },
+    {
+      "id": "intro-11",
+      "beat": "B12",
+      "modes": [
+        "vo"
+      ],
+      "at": [
+        [
+          44.45,
+          47.02
+        ]
+      ],
+      "note": "ru: the clip is \"видео\" or \"выпуск\", never \"серия\" (серия is the streak). Must stay paired with intro-13: \"every streak day\" is only true together with \"up to this one\" (day 100).",
+      "text": {
+        "en": "Every streak day gets its own video.",
+        "tr": "Her seri gününün kendi videosu var.",
+        "de": "Jeder Serientag bekommt sein eigenes Video.",
+        "es": "Cada día de racha tiene su propio video.",
+        "fr": "Chaque jour de série a sa propre vidéo.",
+        "pt-BR": "Cada dia da sequência tem seu próprio vídeo.",
+        "ru": "У каждого дня серии своё видео.",
+        "ar": "لكل يوم في السلسلة فيديو خاص به."
+      }
+    },
+    {
+      "id": "intro-12",
+      "beat": "B12",
+      "modes": [
+        "vo",
+        "vo",
+        "vo",
+        "vo"
+      ],
+      "reveal": "append",
+      "at": [
+        [
+          48.4,
+          48.9
+        ],
+        [
+          48.9,
+          49.4
+        ],
+        [
+          49.4,
+          49.9
+        ],
+        [
+          50.35,
+          51.35
+        ]
+      ],
+      "note": "Exactly four sentences; the first three are one word each. The bag word: tr Poşet, de Tüte, es Bolsa, fr Sac, pt-BR Sacola, ru Пакет, ar كيس. \"Different bag\" = another kind of bag.",
+      "text": {
+        "en": "Bag. Bag. Bag. …Different bag.",
+        "tr": "Poşet. Poşet. Poşet. …Başka poşet.",
+        "de": "Tüte. Tüte. Tüte. …Andere Tüte.",
+        "es": "Bolsa. Bolsa. Bolsa. …Otra bolsa.",
+        "fr": "Sac. Sac. Sac. …Autre sac.",
+        "pt-BR": "Sacola. Sacola. Sacola. …Outra sacola.",
+        "ru": "Пакет. Пакет. Пакет. …Другой пакет.",
+        "ar": "كيس. كيس. كيس. …كيس مختلف."
+      }
+    },
+    {
+      "id": "intro-13",
+      "beat": "B12",
+      "modes": [
+        "vo"
+      ],
+      "at": [
+        [
+          53.35,
+          54.42
+        ]
+      ],
+      "note": "\"this one\" = this day (day 100 is on screen). No digits, no number words.",
+      "text": {
+        "en": "…Up to this one.",
+        "tr": "…Tam buna kadar.",
+        "de": "…Bis zu diesem hier.",
+        "es": "…Hasta este de aquí.",
+        "fr": "…Jusqu'à celui-ci.",
+        "pt-BR": "…Até este aqui.",
+        "ru": "…Вплоть до этого.",
+        "ar": "…حتى هذا اليوم."
+      }
+    },
+    {
+      "id": "intro-14",
+      "beat": "B13",
+      "modes": [
+        "vo"
+      ],
+      "at": [
+        [
+          56.85,
+          57.92
+        ]
+      ],
+      "note": "\"busy\" = she has been working a lot.",
+      "text": {
+        "en": "…I've been busy.",
+        "tr": "…Çok meşguldüm.",
+        "de": "…Ich war beschäftigt.",
+        "es": "…He estado ocupada.",
+        "fr": "…J'ai été occupée.",
+        "pt-BR": "…Eu andei ocupada.",
+        "ru": "…Я была занята.",
+        "ar": "…كنتُ مشغولة."
+      }
+    },
+    {
+      "id": "intro-15",
+      "beat": "B14",
+      "modes": [
+        "vo",
+        "vo"
+      ],
+      "at": [
+        [
+          58.45,
+          60.24
+        ],
+        [
+          60.44,
+          61.94
+        ]
+      ],
+      "note": "Sentence 1: reuse venus.page.keepTitle where it fits. Sentence 2 mirrors keepBody's \"locked\".",
+      "text": {
+        "en": "Days you reach stay open. The rest stay locked.",
+        "tr": "Ulaştığın günler açık kalır. Gerisi kilitli kalır.",
+        "de": "Erreichte Tage bleiben offen. Der Rest bleibt gesperrt.",
+        "es": "Los días que alcanzas quedan abiertos. El resto, bloqueados.",
+        "fr": "Les jours atteints restent ouverts. Le reste, verrouillé.",
+        "pt-BR": "Os dias que você alcança ficam abertos. O resto fica bloqueado.",
+        "ru": "Пройденные дни остаются открытыми. Остальные закрыты.",
+        "ar": "الأيام التي تبلغها تبقى مفتوحة. والباقي مقفل."
+      }
+    },
+    {
+      "id": "intro-16",
+      "beat": "B15",
+      "modes": [
+        "on"
+      ],
+      "at": [
+        [
+          65.25,
+          66.11
+        ]
+      ],
+      "note": "The lock applies to her too.",
+      "text": {
+        "en": "…Even for me.",
+        "tr": "…Benim için bile.",
+        "de": "…Sogar für mich.",
+        "es": "…Incluso para mí.",
+        "fr": "…Même pour moi.",
+        "pt-BR": "…Até para mim.",
+        "ru": "…Даже для меня.",
+        "ar": "…حتى بالنسبة لي."
+      }
+    },
+    {
+      "id": "intro-17",
+      "beat": "B16",
+      "modes": [
+        "on",
+        "on"
+      ],
+      "at": [
+        [
+          67.1,
+          68.1
+        ],
+        [
+          68.55,
+          70.05
+        ]
+      ],
+      "note": "A pun: a streak breaking and taking a break. If it does not survive, keep \"pauses happen\" without blame, loss or urgency. \"in a bag\" uses the bag word.",
+      "text": {
+        "en": "Breaks happen. …I take mine in a bag.",
+        "tr": "Bazen ara verilir. …Ben aramı poşette veririm.",
+        "de": "Pausen gibt es. …Meine mache ich in der Tüte.",
+        "es": "Las pausas existen. …Yo las tomo en una bolsa.",
+        "fr": "Les pauses, ça arrive. …Moi, je les prends dans un sac.",
+        "pt-BR": "Pausas acontecem. …Eu tiro as minhas numa sacola.",
+        "ru": "Перерывы бывают. …Свой я провожу в пакете.",
+        "ar": "الاستراحات تحدث. …وأنا أقضي استراحتي في كيس."
+      }
+    },
+    {
+      "id": "intro-18",
+      "beat": "B16",
+      "modes": [
+        "on"
+      ],
+      "at": [
+        [
+          70.55,
+          73.34
+        ]
+      ],
+      "note": "Mirror venus.page.comebackBody.",
+      "text": {
+        "en": "Your first day back gets its own video.",
+        "tr": "Dönüşteki ilk gününün de kendi videosu var.",
+        "de": "Dein erster Tag zurück bekommt ein eigenes Video.",
+        "es": "Tu primer día de vuelta tiene su propio video.",
+        "fr": "Ton premier jour de retour a sa propre vidéo.",
+        "pt-BR": "Seu primeiro dia de volta tem um vídeo só dele.",
+        "ru": "У первого дня возвращения — своё видео.",
+        "ar": "ويومك الأول بعد العودة له فيديو خاص به."
+      }
+    },
+    {
+      "id": "intro-19",
+      "beat": "B17",
+      "modes": [
+        "on",
+        "on"
+      ],
+      "at": [
+        [
+          75.5,
+          77.36
+        ],
+        [
+          77.83,
+          78.33
+        ]
+      ],
+      "note": "Mirror langx.io/venus \"she speaks your language\". \"See?\" points at the hello sticker in the viewer's language.",
+      "text": {
+        "en": "And I speak your language. …See?",
+        "tr": "Üstelik senin dilini konuşurum. …Gördün mü?",
+        "de": "Und ich spreche deine Sprache. …Siehst du?",
+        "es": "Y hablo tu idioma. …¿Ves?",
+        "fr": "Et je parle ta langue. …Tu vois ?",
+        "pt-BR": "E eu falo a sua língua. …Viu?",
+        "ru": "И я говорю на твоём языке. …Видишь?",
+        "ar": "وأتكلم لغتك. …أرأيت؟"
+      }
+    },
+    {
+      "id": "intro-20",
+      "beat": "B18",
+      "modes": [
+        "on",
+        "on"
+      ],
+      "at": [
+        [
+          79.3,
+          80.8
+        ],
+        [
+          81,
+          82.29
+        ]
+      ],
+      "note": "\"story\" = the social-media story, the word venus.endBody uses in each locale. \"photograph well\" = look good in photos.",
+      "text": {
+        "en": "Put me in your story. I photograph well.",
+        "tr": "Beni hikâyene ekle. Fotoğrafta iyi çıkarım.",
+        "de": "Pack mich in deine Story. Ich bin sehr fotogen.",
+        "es": "Ponme en tu historia. Salgo bien en las fotos.",
+        "fr": "Mets-moi dans ta story. Je suis photogénique.",
+        "pt-BR": "Me coloca no seu story. Eu saio bem em foto.",
+        "ru": "Добавь меня в сторис. Я фотогенична.",
+        "ar": "ضعني في قصتك. أبدو رائعة في الصور."
+      }
+    },
+    {
+      "id": "intro-21",
+      "beat": "B19",
+      "modes": [
+        "on",
+        "on",
+        "on"
+      ],
+      "at": [
+        [
+          83,
+          83.5
+        ],
+        [
+          83.7,
+          84.56
+        ],
+        [
+          84.76,
+          85.54
+        ]
+      ],
+      "note": "\"show up\" = keep turning up (a habit poke, never effort or skill); \"show off\" = flaunt. The wordplay may change; keep three sentences.",
+      "text": {
+        "en": "Deal? You show up. I show off.",
+        "tr": "Anlaştık mı? Sen gelirsin. Ben şov yaparım.",
+        "de": "Abgemacht? Du bist da. Ich glänze.",
+        "es": "¿Trato? Tú apareces. Yo presumo.",
+        "fr": "Marché conclu ? Tu viens. Je brille.",
+        "pt-BR": "Fechado? Você aparece. Eu me exibo.",
+        "ru": "Договорились? Ты приходишь. Я блистаю.",
+        "ar": "اتفقنا؟ أنت تحضر. وأنا أتألق."
+      }
+    },
+    {
+      "id": "intro-22",
+      "beat": "B20",
+      "modes": [
+        "on",
+        "on",
+        "whisper"
+      ],
+      "at": [
+        [
+          86.4,
+          87.04
+        ],
+        [
+          87.24,
+          89.17
+        ],
+        [
+          89.62,
+          90.91
+        ]
+      ],
+      "note": "\"co-star\" = a film co-star, never romantic (tr \"rol arkadaşı\", never \"partner\"). Sentence 3 is whispered. Keep three sentences.",
+      "text": {
+        "en": "Honestly? Best co-star I've ever had. …Also the only one.",
+        "tr": "Dürüst olayım mı? Gelmiş geçmiş en iyi rol arkadaşım. …Hem de tek.",
+        "de": "Ehrlich? Bester Co-Star, den ich je hatte. …Auch der einzige.",
+        "es": "¿Sinceramente? La mejor coestrella que he tenido. …Y la única.",
+        "fr": "Franchement ? Meilleure co-vedette de ma carrière. …Et la seule.",
+        "pt-BR": "Sinceramente? Melhor coestrela que já tive. …E a única.",
+        "ru": "Честно? Лучший партнёр по кадру за всю карьеру. …И единственный.",
+        "ar": "بصراحة؟ أفضل زميل تمثيل عرفته. …والوحيد أيضًا."
+      }
+    }
+  ]
+}
