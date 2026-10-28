@@ -94,3 +94,35 @@ describe('Venus’s ▶ shrinks with its card', () => {
     )
   })
 })
+
+describe('the cards measure the pieces a line breaks into', () => {
+  it('splits every text the way a line does, after a hyphen too', () => {
+    const words = fn(read('src/components/home/HomeCards.tsx'), 'useWordWidths')
+    expect(words).toContain('measuredWords(item.text)')
+    expect(words).not.toMatch(/\.split\(/)
+  })
+})
+
+describe('the paywall’s comparison keeps each figure inside its cell', () => {
+  const table = read('src/components/paywall/CompareTable.tsx')
+
+  it('grows a cell’s word no further than fits the cell, as a plan card’s price', () => {
+    const cell = fn(table, 'Cell')
+    expect(cell).toContain('useWordFit(COLUMN_TEXT_SCALE)')
+    expect(cell).toMatch(/<WidestWord text=\{text\}/)
+    expect(cell).toMatch(/onLayout=\{\(event\) => fit\.setLine/)
+  })
+
+  it('draws every cell’s word at one size, the least any cell allows', () => {
+    const cell = fn(table, 'Cell')
+    expect(cell).toContain('report(fitKey, fit.scale)')
+    expect(cell).toContain('maxFontSizeMultiplier={table.scale}')
+    expect(fn(table, 'useTableFit')).toContain(
+      'Math.min(COLUMN_TEXT_SCALE, ...Object.values(reaches))',
+    )
+    // Both cells of every row share the one table's fit.
+    const cells = tags(fn(table, 'CompareTable'), 'Cell')
+    expect(cells).toHaveLength(2)
+    for (const tag of cells) expect(tag).toMatch(/\btable=\{tableFit\}/)
+  })
+})

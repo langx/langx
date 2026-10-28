@@ -7,7 +7,7 @@ import {
   type TextStyle,
   type ViewStyle,
 } from 'react-native'
-import { columnInner, homeCardsBeside } from '../../lib/homeProducts'
+import { columnInner, homeCardsBeside, measuredWords } from '../../lib/homeProducts'
 import { makeStyles, useTheme, type V3Tokens } from '../../lib/theme'
 import { useStacked } from '../product/ProductGroup'
 
@@ -72,7 +72,8 @@ export function HomeCardRows({
 }
 
 /**
- * Every word `texts` print, each drawn once, unseen, at its real size and
+ * Every word `texts` print — split after a hyphen as a line is
+ * (`measuredWords`) — each drawn once, unseen, at its real size and
  * face — the view that draws them, for the caller to place anywhere inside
  * its block, and the widths measured so far. Home's cards and Today's three
  * both ask whether their longest word fits the room a column leaves.
@@ -90,10 +91,7 @@ export function useWordWidths(
   const [measured, setMeasured] = useState<Readonly<Record<string, number>>>({})
 
   const words = texts.flatMap((item, index) =>
-    item.text
-      .split(/\s+/)
-      .filter(Boolean)
-      .map((word, at) => ({ key: `${index}:${at}:${word}`, word, item })),
+    measuredWords(item.text).map((word, at) => ({ key: `${index}:${at}:${word}`, word, item })),
   )
   const widths = words.flatMap((word) => {
     const value = measured[word.key]

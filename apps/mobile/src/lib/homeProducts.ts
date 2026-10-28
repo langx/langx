@@ -158,6 +158,25 @@ export function homeCardsBeside({
 }
 
 /**
+ * The pieces of `text` a line may not break inside, as the cards measure
+ * them (`useWordWidths`): its words, and each word cut after a hyphen that
+ * joins two letters, the hyphen kept with the piece before it. A line breaks
+ * there as readily as at a space, on the phone and on the web alike, so
+ * Russian's "кому-нибудь" is drawn as "кому-" over "нибудь" in a column too
+ * narrow for the whole of it, and is measured that way.
+ *
+ * Only between letters: a leading hyphen, or one before a figure in any
+ * script ("COVID-19", "-5", "كوفيد-١٩"), is not a place a line breaks, so it
+ * stays in one piece, the wider and so the safer of the two readings.
+ */
+export function measuredWords(text: string): string[] {
+  return text
+    .split(/\s+/)
+    .filter(Boolean)
+    .flatMap((word) => word.replace(/(\p{L}-)(?=\p{L})/gu, '$1\n').split('\n'))
+}
+
+/**
  * The inside of one of `columns` equal columns sharing a row `width` wide:
  * the row less the gaps between them, shared out, less each column's own
  * `inset` on both sides — the room a column's longest word has to fit
