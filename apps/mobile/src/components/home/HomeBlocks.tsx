@@ -41,16 +41,19 @@ export interface HomeGoal {
  * Three columns, each a ring over its words, while every word the goals
  * print fits a third of the block — measured, as Home's cards are
  * (`useWordWidths`), so a word is never broken in the middle or cut short in
- * any language. A column's words wrap at their spaces to as many lines as
- * they need: two lines cut "Написать кому-нибудь" to "кому-…", and "Karten
- * wiederholen" to "wiederhol…", though that word fits a third of a 375pt
- * phone — by a few points, and by less than one on the web build.
+ * any language. A column's words wrap at their spaces, and after a hyphen
+ * between letters (`measuredWords`), to as many lines as they need: two
+ * lines cut "Написать кому-нибудь" to "кому-…", and "Karten wiederholen" to
+ * "wiederhol…", though that word fits a third of a 375pt phone — by a few
+ * points, and by less than one on the web build. "кому-нибудь" whole is
+ * wider than a third of a 375pt phone, "кому-" and "нибудь" are not, so
+ * Russian keeps its columns there, on three lines.
  *
  * When a word does not fit, each goal is a row of its own, the ring at its
  * start and its words beside it, and the count goes under the heading
- * instead of beside it. At the default size that is Russian on a 375pt
- * phone ("кому-нибудь" is wider than a third of it) and German on a phone
- * narrower than about 360pt; English keeps its columns. At
+ * instead of beside it. At the default size that is German on a phone
+ * narrower than about 365pt and Russian on one narrower than about 340pt
+ * ("Повторить"); English keeps its columns. At
  * the larger text sizes (`useStacked`) it is every language: there "Write",
  * "someone" and "sentence" broke in the middle.
  */
@@ -517,7 +520,10 @@ const useStyles = makeStyles(({ v3 }) => ({
     gap: v3.space[10],
     padding: v3.space[14],
   },
-  todayCount: { ...v3.type.caption, color: v3.colors.muted, fontWeight: '700' },
+  // Whole beside the heading, which wraps instead: Russian's heading and count
+  // share a 375pt line only that way, and the web build, where a text shrinks
+  // unless told not to, broke the count before its last figure.
+  todayCount: { ...v3.type.caption, color: v3.colors.muted, flexShrink: 0, fontWeight: '700' },
   goals: { flexDirection: 'row', gap: v3.space[GOAL_GAP] },
   goal: {
     alignItems: 'center',

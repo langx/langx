@@ -1,11 +1,20 @@
 import Feather from '@expo/vector-icons/Feather'
 import { TIER_NAMES } from '@langx/shared'
-import { Pressable, Text, useWindowDimensions, View } from 'react-native'
+import {
+  Pressable,
+  Text,
+  useWindowDimensions,
+  View,
+  type StyleProp,
+  type TextStyle,
+  type ViewStyle,
+} from 'react-native'
 import { useT } from '../../i18n'
 import type { CompareCell, CompareRow } from '../../lib/paywallBenefits'
 import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { useGlyphScale } from '../product/ProductGroup'
+import { useWordFit, WidestWord } from '../product/WidestWord'
 import { ICON_BUTTON_TARGET } from '../ui/IconButton'
 
 interface CompareTableProps {
@@ -109,12 +118,8 @@ export function CompareTable({ rows, lead, expanded, onToggle }: CompareTablePro
               {tag ? <Text style={styles.tag}> · {tag}</Text> : null}
             </Text>
             <View style={styles.cells}>
-              <View style={freeCell}>
-                <Cell cell={row.free} muted />
-              </View>
-              <View style={proCell}>
-                <Cell cell={row.pro} />
-              </View>
+              <Cell cell={row.free} style={freeCell} muted />
+              <Cell cell={row.pro} style={proCell} />
             </View>
           </View>
         )
@@ -140,47 +145,63 @@ export function CompareTable({ rows, lead, expanded, onToggle }: CompareTablePro
   )
 }
 
-function Cell({ cell, muted = false }: { cell: CompareCell; muted?: boolean }) {
+/**
+ * One of a row's two cells, in the box `style` gives it: a tick, a cross, or
+ * a word or figure that grows with the reader's text size up to
+ * `COLUMN_TEXT_SCALE` and no further than keeps it whole inside its cell
+ * (`useWordFit`), as a plan card's price does. The cap alone is set for the
+ * longest word on a 375pt phone; German's "Unbegrenzt" ran to the table's
+ * edge on a 320pt one.
+ */
+function Cell({
+  cell,
+  style,
+  muted = false,
+}: {
+  cell: CompareCell
+  style: StyleProp<ViewStyle>
+  muted?: boolean
+}) {
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
+  const fit = useWordFit(COLUMN_TEXT_SCALE)
+
+  function word(text: string, textStyle: StyleProp<TextStyle>) {
+    return (
+      <View style={style} onLayout={(event) => fit.setLine(event.nativeEvent.layout.width)}>
+        <Text style={textStyle} maxFontSizeMultiplier={fit.scale}>
+          {text}
+        </Text>
+        <WidestWord text={text} style={textStyle} onWidth={fit.setWidest} />
+      </View>
+    )
+  }
+
+  const figure = [styles.figure, muted && styles.figureMuted]
   switch (cell.kind) {
     case 'yes':
       return (
-        <View style={[styles.mark, styles.yes]}>
-          <Feather name="check" size={v3.icon.sm} color={v3.colors.bg} />
+        <View style={style}>
+          <View style={[styles.mark, styles.yes]}>
+            <Feather name="check" size={v3.icon.sm} color={v3.colors.bg} />
+          </View>
         </View>
       )
     case 'no':
       return (
-        <View style={[styles.mark, styles.no]}>
-          <Feather name="x" size={v3.icon.sm} color={v3.colors.muted} />
+        <View style={style}>
+          <View style={[styles.mark, styles.no]}>
+            <Feather name="x" size={v3.icon.sm} color={v3.colors.muted} />
+          </View>
         </View>
       )
     case 'count':
-      return (
-        <Text
-          style={[styles.figure, muted && styles.figureMuted]}
-          maxFontSizeMultiplier={COLUMN_TEXT_SCALE}
-        >
-          {cell.count}
-        </Text>
-      )
+      return word(String(cell.count), figure)
     case 'unlimited':
-      return (
-        <Text
-          style={[styles.figure, muted && styles.figureMuted]}
-          maxFontSizeMultiplier={COLUMN_TEXT_SCALE}
-        >
-          {t('paywall.compareUnlimited')}
-        </Text>
-      )
+      return word(t('paywall.compareUnlimited'), figure)
     case 'soon':
-      return (
-        <Text style={styles.soon} maxFontSizeMultiplier={COLUMN_TEXT_SCALE}>
-          {t('paywall.compareSoon')}
-        </Text>
-      )
+      return word(t('paywall.compareSoon'), styles.soon)
   }
 }
 
@@ -193,7 +214,8 @@ const MARK = 30
  * How far the header's words and every cell's figure grow with the reader's
  * text size. German's "Unbegrenzt", the longest figure, is 94pt at the
  * default size and must fit half a stacked row on a 375pt phone, 159pt; at
- * 1.6× it is 151. A row's name and the "And N more" line are Callout and stop
+ * 1.6× it is 151. On a narrower phone a cell's figure stops sooner, where it
+ * would no longer fit its cell whole (`Cell`). A row's name and the "And N more" line are Callout and stop
  * where a product page's Callout does (`PRODUCT_TEXT_SCALE.text`, 2×): German's
  * "Willkommenspaket", the longest word of any name, is 144pt at the default
  * size and 288 there, inside the 319pt a stacked name has. At a row title's

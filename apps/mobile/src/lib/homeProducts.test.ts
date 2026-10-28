@@ -11,6 +11,7 @@ import {
   homeCardsBeside,
   homeProductLines,
   homeVenusCard,
+  measuredWords,
 } from './homeProducts'
 import { VENUS_PACK_ID } from './tokenPage'
 import { formatCount } from './transparency'
@@ -240,5 +241,58 @@ describe('columnInner', () => {
     // The same words, a narrower phone: the 93pt word no longer fits.
     const narrow = columnInner({ width: 290, columns: 3, gap: 6, inset: 2 })
     expect(homeCardsBeside({ stacked: false, inner: narrow, words: [60, 93] })).toBe(false)
+  })
+})
+
+describe('measuredWords', () => {
+  it('splits at spaces, as before', () => {
+    expect(measuredWords('  Karten   wiederholen ')).toEqual(['Karten', 'wiederholen'])
+    expect(measuredWords('')).toEqual([])
+  })
+
+  it('splits Russian’s goal after its hyphen, where a line breaks it', () => {
+    // The goal itself, from the catalogue, so a new wording is still covered.
+    const label = createTranslate('ru')('home.streakChats')
+    expect(label).toContain('кому-нибудь')
+    expect(measuredWords(label)).toEqual(['Написать', 'кому-', 'нибудь'])
+  })
+
+  it('keeps every hyphen with the piece before it', () => {
+    expect(measuredWords('Ende-zu-Ende-verschlüsselt')).toEqual([
+      'Ende-',
+      'zu-',
+      'Ende-',
+      'verschlüsselt',
+    ])
+    expect(measuredWords('E-Mail-Adresse')).toEqual(['E-', 'Mail-', 'Adresse'])
+  })
+
+  it('leaves whole a hyphen no line breaks at', () => {
+    // Before a figure, leading, doubled, or at the end.
+    expect(measuredWords('COVID-19')).toEqual(['COVID-19'])
+    expect(measuredWords('-5')).toEqual(['-5'])
+    expect(measuredWords('a--b')).toEqual(['a--b'])
+    expect(measuredWords('Audio-')).toEqual(['Audio-'])
+  })
+
+  it('keeps Today’s three in columns in Russian once the word is measured in two', () => {
+    // A 375pt phone's goals row, as above, and the Russian goals' words as
+    // the web build draws them: "кому-нибудь" whole is wider than a column,
+    // "кому-" and "нибудь" are not, and "Повторить" is now the widest.
+    const inner = columnInner({ width: 315, columns: 3, gap: 6, inset: 2 })
+    const others = [75.3, 61.3, 61.1, 85.6, 74.4]
+    expect(homeCardsBeside({ stacked: false, inner, words: [...others, 102.7] })).toBe(false)
+    expect(homeCardsBeside({ stacked: false, inner, words: [...others, 45.7, 57] })).toBe(true)
+  })
+
+  it('splits no word in any locale’s goals but at a space or such a hyphen', () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      const t = createTranslate(locale)
+      for (const key of ['home.streakChats', 'home.todayCorrect', 'home.streakEcho'] as const) {
+        const label = t(key)
+        // Put back together, the pieces are the label without its spaces.
+        expect(measuredWords(label).join(''), `${locale} ${key}`).toBe(label.replace(/\s+/g, ''))
+      }
+    }
   })
 })

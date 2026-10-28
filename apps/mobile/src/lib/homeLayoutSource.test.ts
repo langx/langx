@@ -94,3 +94,23 @@ describe('Venus’s ▶ shrinks with its card', () => {
     )
   })
 })
+
+describe('the cards measure the pieces a line breaks into', () => {
+  it('splits every text the way a line does, after a hyphen too', () => {
+    const words = fn(read('src/components/home/HomeCards.tsx'), 'useWordWidths')
+    expect(words).toContain('measuredWords(item.text)')
+    expect(words).not.toMatch(/\.split\(/)
+  })
+})
+
+describe('the paywall’s comparison keeps each figure inside its cell', () => {
+  const table = read('src/components/paywall/CompareTable.tsx')
+
+  it('grows a cell’s word no further than fits the cell, as a plan card’s price', () => {
+    const cell = fn(table, 'Cell')
+    expect(cell).toContain('useWordFit(COLUMN_TEXT_SCALE)')
+    expect(cell).toContain('maxFontSizeMultiplier={fit.scale}')
+    expect(cell).toMatch(/<WidestWord text=\{text\}/)
+    expect(cell).toMatch(/onLayout=\{\(event\) => fit\.setLine/)
+  })
+})
