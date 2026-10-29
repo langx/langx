@@ -235,6 +235,13 @@ describe('compareStacked', () => {
     )
   })
 
+  it('scales the 1× words down to the size a smaller text setting draws', () => {
+    // German at Small (0.85) on a 360dp Android phone: "Willkommenspaket"
+    // is 144.2 at 1× and drawn at about 122.6 in a 132 column.
+    expect(compareStacked({ fontScale: 0.85, column: 132, words: [144.2] })).toBe(false)
+    expect(compareStacked({ fontScale: 0.85, column: 120, words: [144.2] })).toBe(true)
+  })
+
   it('keeps a word exactly as wide as its column beside the cells', () => {
     expect(compareStacked({ fontScale: 1, column: 92, words: [92] })).toBe(false)
     expect(compareStacked({ fontScale: 1, column: 92, words: [92.1] })).toBe(true)
