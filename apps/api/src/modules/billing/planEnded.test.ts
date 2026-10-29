@@ -41,7 +41,7 @@ describe('the letter that waits for the renewal that never came', () => {
   beforeAll(async () => {
     mongo = await MongoMemoryServer.create()
     handle = await connectToDatabase(mongo.getUri(), 'plan_ended_test')
-  }, 60_000)
+  })
 
   afterAll(async () => {
     await handle.close()
