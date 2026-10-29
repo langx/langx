@@ -42,16 +42,6 @@ const NEVER: Partial<Record<Locale, { pattern: RegExp; old: string }[]>> = {
   ar: [{ pattern: /توكن/u, old: '+3 توكنات' }],
 }
 
-/**
- * Lines that keep the old word until another change lands: invite.step2 and
- * shared.inviteBody are being reworded in every locale, to take their numbers
- * from config, by a change that owns them. Each one is checked to still need
- * its place here, so the list empties itself once they say the new word.
- */
-const WAITING: Partial<Record<Locale, string[]>> = {
-  fr: ['invite.step2', 'shared.inviteBody'],
-}
-
 /** The pool's own name on its screen, in the three languages that changed it. */
 const POOL_WORD: Partial<Record<Locale, RegExp>> = {
   es: /^Fondo /,
@@ -72,18 +62,8 @@ describe.each(Object.entries(NEVER))('the %s catalogue', (locale, rules) => {
   })
 
   it.each(rules)('never uses the word in $old', (rule) => {
-    const waiting = WAITING[locale as Locale] ?? []
-    const said = leaves(catalogs[locale as Locale]).filter(
-      ([path, text]) => !waiting.includes(path) && rule.pattern.test(text),
-    )
+    const said = leaves(catalogs[locale as Locale]).filter(([, text]) => rule.pattern.test(text))
     expect(said).toEqual([])
-  })
-})
-
-describe.each(Object.entries(WAITING))('the %s lines left for later', (locale, paths) => {
-  it.each(paths)('%s still says the old word', (path) => {
-    const text = leaves(catalogs[locale as Locale]).find(([key]) => key === path)?.[1] ?? ''
-    expect(NEVER[locale as Locale]?.some((rule) => rule.pattern.test(text))).toBe(true)
   })
 })
 

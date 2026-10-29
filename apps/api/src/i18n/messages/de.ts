@@ -298,7 +298,7 @@ export const de: Localized<ServerMessages> = {
       other: 'Heute {count} Antworten auf das, was du gepostet hast',
     },
 
-    feedDigestPreheader: 'Man hat auf deine Beiträge geantwortet',
+    feedDigestPreheader: 'Man hat auf das geantwortet, was du gepostet hast',
 
     feedDigestBody: {
       one: 'Jemand hat heute auf etwas geantwortet, das du gepostet hast.',

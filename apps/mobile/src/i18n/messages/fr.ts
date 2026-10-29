@@ -3079,9 +3079,9 @@ export const fr: Localized<EnMessages> = {
     howTitle: 'Comment ça marche',
     step1: 'Envoie ton lien à quelqu’un qui apprend ta langue.',
     step2: {
-      one: 'La personne s’inscrit et a une vraie conversation : quelqu’un d’autre que toi lui répond. Là, tu gagnes {activation} token.',
+      one: 'La personne s’inscrit et a une vraie conversation : quelqu’un d’autre que toi lui répond. Là, tu gagnes {activation} jeton.',
       other:
-        'La personne s’inscrit et a une vraie conversation : quelqu’un d’autre que toi lui répond. Là, tu gagnes {activation} tokens.',
+        'La personne s’inscrit et a une vraie conversation : quelqu’un d’autre que toi lui répond. Là, tu gagnes {activation} jetons.',
     },
     step3:
       'Si elle prend un jour une formule payante, tu gagnes {subscription} de plus. {max} au total, par personne.',
@@ -3796,9 +3796,9 @@ export const fr: Localized<EnMessages> = {
     ctaBody: '{name} pratique des langues sur LangX. Rejoins pour dire bonjour.',
     ctaLabel: 'Ouvrir LangX',
     inviteBody: {
-      one: '{name} t’invite. Inscris-toi et discute vraiment avec quelqu’un : tu démarres avec {total} token ; {name} en gagne {activation} — jusqu’à {max} si un jour tu prends un abonnement. Inscription gratuite.',
+      one: '{name} t’invite. Inscris-toi et discute vraiment avec quelqu’un : tu démarres avec {total} jeton ; {name} en gagne {activation} — jusqu’à {max} si un jour tu prends un abonnement. Inscription gratuite.',
       other:
-        '{name} t’invite. Inscris-toi et discute vraiment avec quelqu’un : tu démarres avec {total} tokens ; {name} en gagne {activation} — jusqu’à {max} si un jour tu prends un abonnement. Inscription gratuite.',
+        '{name} t’invite. Inscris-toi et discute vraiment avec quelqu’un : tu démarres avec {total} jetons ; {name} en gagne {activation} — jusqu’à {max} si un jour tu prends un abonnement. Inscription gratuite.',
     },
   },
 

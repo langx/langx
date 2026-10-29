@@ -140,6 +140,8 @@ describe('the feed digest', () => {
       return Array.from({ length: 121 }, (_, count) => [
         t('email.feedDigestSubject', { count }),
         t('email.feedDigestBody', { count }),
+        // Turkish's preheader is the Turkish change's to word.
+        ...(locale === 'tr' ? [] : [t('email.feedDigestPreheader')]),
       ])
         .flat()
         .filter((text) => plural.test(text))
@@ -155,6 +157,10 @@ describe('the feed digest', () => {
  * places; the lines rewritten for the numbers above are held to the informal
  * form here, the same signs `apps/mobile/src/i18n/addressForm.test.ts` looks
  * for: the pronoun, and a plural imperative where an imperative stands.
+ *
+ * Except the Russian sign-in mails: their subject, preheader and «Или вставьте»
+ * line are «вы», shared with other mails, so the body and text part of those
+ * two mails stay «вы» with them until the whole server catalogue moves to «ты».
  */
 const FORMAL: Partial<Record<Locale, RegExp[]>> = {
   ru: [
@@ -167,13 +173,20 @@ const FORMAL: Partial<Record<Locale, RegExp[]>> = {
   ],
 }
 
+const STILL_FORMAL: Partial<Record<Locale, ServerMessageKey[]>> = {
+  ru: ['email.magicLinkBody', 'email.existingLinkBody', 'email.existingLinkText'],
+}
+
 describe.each(Object.entries(FORMAL))('the %s lines rewritten here', (locale, signs) => {
   it('address one reader informally', () => {
-    const keys: ServerMessageKey[] = [
-      ...CONFIGURED,
-      'email.feedDigestSubject',
-      'email.feedDigestBody',
-    ]
+    const keys = (
+      [
+        ...CONFIGURED,
+        'email.feedDigestSubject',
+        'email.feedDigestBody',
+        'email.feedDigestPreheader',
+      ] satisfies ServerMessageKey[]
+    ).filter((key: ServerMessageKey) => !STILL_FORMAL[locale as Locale]?.includes(key))
     const formal = keys.flatMap((key) =>
       forms(locale as Locale, key)
         .filter((text) => signs.some((sign) => sign.test(text)))
