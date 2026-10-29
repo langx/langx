@@ -925,19 +925,22 @@ function wallPushed(film, s, v) {
 }
 // The wall, at film frame f. Its last move is the push into tile 31, eased in and out so it settles
 // on the bonk's framing; while it settles the stage floor comes up under it (the wall becomes the
-// bonk's backdrop flat) and the big locked frame fades in over the tile, so the match into the bonk
-// changes nothing on screen.
+// bonk's backdrop flat). Only once it has settled does the big locked frame fade in over the tile:
+// faded in over a wall still zooming, it showed as a second, misregistered tile 31 beside the first.
+// So the match into the bonk changes nothing on screen.
+const MATCH_FADE = 0.3
 function drawWall(film, sh, f, d100) {
   const t = f / FPS
   const s = wallBody(film, t, d100)
-  const p0 = film.W(WALL_TIMES.push)
+  const p0 = film.W(WALL_TIMES.push),
+    p1 = sh.T1 - MATCH_FADE
   if (t <= p0) return s
-  const v = EASE.inOut(clamp((t - p0) / (sh.T1 - p0)))
+  const v = EASE.inOut(clamp((t - p0) / (p1 - p0)))
   const floorY = film.bonkCy - 80
   let out =
     FL.stageGround(t, film.bonkCy, film.bursts) +
     FL.flat(wallPushed(film, s, v), 0, L.H - (L.H - floorY) * v, 'wfl')
-  const k = clamp((t - (sh.T1 - 0.3)) / 0.3)
+  const k = clamp((t - p1) / MATCH_FADE)
   if (k > 0) out += `<g opacity="${r3(k)}">${FL.lockedFrame(31, ...BONK_FRAME)}</g>`
   return out
 }
@@ -1135,6 +1138,29 @@ function voiceStem(film, out) {
   ])
   return out
 }
+// The voice's own peak control, before it meets the bed. mix() ends in one limiter over the whole
+// sum, so a stressed syllable that reaches it turns the music down with it: the bed dipped up to
+// 9 dB on her loud words, the ride the static bed gain exists to avoid. Compressing and limiting
+// the voice alone keeps those peaks under the master limiter, which then has nothing to pull.
+// Levels are set with the voice at the house -16 LUFS, the level mix() takes it at.
+const VOICE_COMP = { threshold: -18, ratio: 3, attack: 5, release: 120 }
+const VOICE_CEILING = -9
+function voiceBus(raw, out) {
+  const comp = out.replace(/\.wav$/, '.comp.wav')
+  const c = VOICE_COMP
+  ff([
+    ...['-i', raw, '-af'],
+    `volume=${(-16 - measure(raw).lufs).toFixed(2)}dB,acompressor=threshold=${c.threshold}dB:ratio=${c.ratio}:attack=${c.attack}:release=${c.release}:knee=4`,
+    ...['-c:a', 'pcm_f32le', '-ar', '48000', comp],
+  ])
+  ff([
+    ...['-i', comp, '-af'],
+    `volume=${(-16 - measure(comp).lufs).toFixed(2)}dB,alimiter=limit=${Math.pow(10, VOICE_CEILING / 20).toFixed(4)}:attack=3:release=80:level=disabled:latency=1`,
+    ...['-c:a', 'pcm_f32le', '-ar', '48000', out],
+  ])
+  fs.rmSync(comp, { force: true })
+  return out
+}
 // integrated loudness of the part of a file from a to b seconds
 function spanLufs(file, a, b) {
   const out = ffStderr([
@@ -1202,7 +1228,9 @@ async function filmAudio(film, out, tag, { keep = false } = {}) {
     path.join(dir, `sfx-${tag}.wav`),
     CACHE,
   )
-  const voice = voiceStem(film, path.join(dir, `voice-${tag}.wav`))
+  const dry = voiceStem(film, path.join(dir, `voice-dry-${tag}.wav`))
+  const voice = dry && voiceBus(dry, path.join(dir, `voice-${tag}.wav`))
+  if (dry && !keep) fs.rmSync(dry, { force: true })
   const score = musicStem(film, path.join(dir, `music-${tag}.wav`))
   const music = score.out
   // one gain for the bed, from the voice (lib/film-score.mjs bedGain), checked sentence by sentence

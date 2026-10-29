@@ -10,7 +10,8 @@
 //                 i-th sentence of a line there ({ t0, t1, words })
 //   cam(S, c)     { z, dx, lift } keyed in the shot's clock (the zoom keeps her face in place)
 //   items(S)      [[t, { wear, neck }], ...] what she wears from t on
-//   over(t, S, F, ft)  what the film draws over her (F: film.mjs's measured text; ft: film time)
+//   over(t, S, F, ft, flats)  what the film draws over her (F: film.mjs's measured text; ft: film
+//                 time; flats: the backdrop's flats this frame, film-layers.mjs flatsAt)
 // A shot with `day` is a day window (the race), with `wall` the wall; neither has her own animator.
 //
 // tx, the only ways one shot follows another (there is no bare cut):
@@ -73,7 +74,8 @@ const STICKER_AT = 29.5
 const FREE_AT = 33.7
 export const SHOW_AT = 37.2 // the mint flat flies, the stickers on it: the dark stage again
 export const COUNTER_AT = 39.31
-const WALL_PUSH = 57.9
+// the push into the locked tile, on "The rest stay locked.": 0.9 s to settle, then 0.3 s held
+const WALL_PUSH = 57.3
 const BONK = 58.5
 const BONK_STOP = 59.1
 const LEAP = 59.4
@@ -580,7 +582,7 @@ export const SHOTS = [
         ],
       }
     },
-    over(t, S, F, ft) {
+    over(t, S, F, ft, flats = []) {
       let s = ''
       // the blep lands big above her, the punchline of "It's a sticker now.", and only takes its
       // place in the ring as the slaps begin
@@ -592,10 +594,13 @@ export const SHOTS = [
       for (const sl of SLAPS)
         s += FL.sticker(t, S.at(sl.b), `st-${sl.id}`, sl.x, sl.y, sl.size, sl.rot)
       s += FL.pill(t, S.at(FREE_AT), F.free, 540, L.BADGE_Y, { fill: L.YELLOW, rtl: F.rtl })
-      // they are on the mint flat, and leave with it
-      const dy = F.flatDy ? F.flatDy('mint-halftone', ft) : 0
-      if (dy <= -L.H) s = ''
-      else if (dy < 0) s = `<g transform="translate(0 ${Math.round(dy)})">${s}</g>`
+      // they are on the mint flat, and leave with it: carried up as it flies (flats: the backdrop's
+      // flats as drawn this frame), gone once it is out. Left behind, they hung over the dark stage.
+      if (t >= S.at(SHOW_AT) - 1e-6) {
+        const mint = flats.find((f) => f.look === 'mint-halftone')
+        if (!mint) s = ''
+        else if (mint.dy < 0) s = `<g transform="translate(0 ${Math.round(mint.dy)})">${s}</g>`
+      }
       s += L.number('stage', t, F.counter(1, S.at(COUNTER_AT)), Infinity)
       return { s, freeze: S.c.freeze }
     },
