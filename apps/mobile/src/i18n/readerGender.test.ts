@@ -45,13 +45,6 @@ const GENDERED: { pattern: RegExp; old: string }[] = [
   },
 ]
 
-/**
- * Lines another change is rewording in every locale, to take their numbers
- * from config, and that keep their old words until it lands. Each is checked
- * to still need its place here, so the list empties itself.
- */
-const WAITING = ['shared.inviteBody']
-
 function leaves(node: Catalog | string, prefix = ''): [string, string][] {
   if (typeof node === 'string') return [[prefix, node]]
   return Object.entries(node).flatMap(([key, value]) =>
@@ -81,13 +74,7 @@ describe('the French catalogue', () => {
   })
 
   it('assumes no gender for the reader', () => {
-    const found = all
-      .filter(([path, text]) => !WAITING.includes(path) && gendered(text))
-      .map(([path, text]) => `${path}: ${text}`)
+    const found = all.filter(([, text]) => gendered(text)).map(([path, text]) => `${path}: ${text}`)
     expect(found).toEqual([])
-  })
-
-  it.each(WAITING)('%s still waits for its own change', (path) => {
-    expect(all.some(([key, text]) => key === path && gendered(text))).toBe(true)
   })
 })

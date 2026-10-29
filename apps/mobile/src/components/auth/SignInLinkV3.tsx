@@ -1,3 +1,4 @@
+import { MAGIC_LINK_TTL_MINUTES } from '@langx/shared'
 import { router } from 'expo-router'
 import type { ReactNode } from 'react'
 import { useT } from '../../i18n'
@@ -41,7 +42,7 @@ export function SignInLinkV3({
         hue="sky"
         icon="mail"
         title={t('auth.checkEmailTitle')}
-        body={t('auth.signInLinkSentBody', { email })}
+        body={t('auth.signInLinkSentBody', { email, count: MAGIC_LINK_TTL_MINUTES })}
       >
         <Button
           variant="blue"
@@ -75,7 +76,7 @@ export function SignInLinkV3({
       <FieldV3
         label={t('auth.emailOrHandle')}
         // The note is the field's hint until something goes wrong.
-        hint={t('auth.signInLinkNote')}
+        hint={t('auth.signInLinkNote', { count: MAGIC_LINK_TTL_MINUTES })}
         error={error}
         returnKeyType="go"
         onSubmitEditing={() => canSubmit && void onSubmit()}

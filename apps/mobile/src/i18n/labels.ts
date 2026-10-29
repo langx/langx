@@ -1,6 +1,7 @@
 import {
   accountAge,
   lastSeen,
+  MINIMUM_AGE,
   type AccountDeletionReason,
   INTEREST_SUGGESTIONS,
   type BadgeKind,
@@ -83,7 +84,9 @@ export function levelShortLabel(t: TranslateFn, level: LanguageLevel): string {
  */
 export function reportReasonLabel(t: TranslateFn, reason: ReportReason): string {
   const key = reason.replace(/_(.)/g, (_, c: string) => c.toUpperCase())
-  return t(`report.${key}` as MessageKey)
+  // `underage` quotes the age floor and is worded per number; every other
+  // reason has no placeholder and ignores the count.
+  return t(`report.${key}` as MessageKey, { count: MINIMUM_AGE })
 }
 
 /** A reason for leaving, the same camel-casing `reportReasonLabel` does. */

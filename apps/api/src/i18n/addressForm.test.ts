@@ -42,23 +42,6 @@ const FORMAL: Partial<
   },
 }
 
-/**
- * Lines another change is rewording in every locale, which keep « vous » until
- * it lands: the sign-in link's lifetime moves into config, and the feed digest
- * counts its replies. That change owns them. Each is checked to still need its
- * place here, so the list empties itself once they speak like the rest.
- */
-const WAITING: Partial<Record<Locale, string[]>> = {
-  fr: [
-    'email.magicLinkBody',
-    'email.magicLinkText',
-    'email.existingLinkBody',
-    'email.existingLinkText',
-    'email.feedDigestSubject',
-    'email.feedDigestBody',
-  ],
-}
-
 function leaves(node: Catalog | string, prefix = ''): [string, string][] {
   if (typeof node === 'string') return [[prefix, node]]
   return Object.entries(node).flatMap(([key, value]) =>
@@ -66,12 +49,8 @@ function leaves(node: Catalog | string, prefix = ''): [string, string][] {
   )
 }
 
-/** A plural's forms are leaves under its key: `email.feedDigestBody.one`. */
-const under = (key: string) => (path: string) => path === key || path.startsWith(`${key}.`)
-
 describe.each(Object.entries(FORMAL))('the %s server catalogue', (locale, rule) => {
   const formal = (text: string) => rule.pattern.test(text) || rule.imperative.test(text)
-  const waiting = WAITING[locale as Locale] ?? []
   const all = leaves(catalogs[locale as Locale])
 
   it('recognises the formal address', () => {
@@ -81,13 +60,8 @@ describe.each(Object.entries(FORMAL))('the %s server catalogue', (locale, rule) 
 
   it('addresses one reader informally', () => {
     const found = all
-      .filter(([path]) => !waiting.some((key) => under(key)(path)))
       .filter(([, text]) => formal(text) && !rule.plural.test(text))
       .map(([path, text]) => `${path}: ${text}`)
     expect(found).toEqual([])
-  })
-
-  it.each(waiting)('%s still waits for its own change', (key) => {
-    expect(all.some(([path, text]) => under(key)(path) && formal(text))).toBe(true)
   })
 })

@@ -1,3 +1,4 @@
+import { MAGIC_LINK_TTL_MINUTES } from '@langx/shared'
 import { router } from 'expo-router'
 import { useT } from '../../i18n'
 import { Button } from '../ui/Button'
@@ -32,7 +33,7 @@ export function MagicLinkV3({
         hue="tangerine"
         icon="clock"
         title={t('auth.linkExpiredTitle')}
-        body={error ?? t('auth.signInLinkExpiredBody')}
+        body={error ?? t('auth.signInLinkExpiredBody', { count: MAGIC_LINK_TTL_MINUTES })}
       >
         <Button
           icon="send"

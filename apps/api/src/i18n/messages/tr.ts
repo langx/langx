@@ -166,10 +166,16 @@ export const tr: Localized<ServerMessages> = {
     resetText: 'LangX parolanı sıfırla: {url}',
     magicLinkSubject: 'LangX giriş bağlantın',
     magicLinkPreheader: 'LangX’e girmek için dokun',
-    magicLinkBody:
-      'Giriş yapmak için düğmeye dokun. Bağlantı bir kez çalışır ve 15 dakika içinde geçersiz olur.',
+    magicLinkBody: {
+      one: 'Giriş yapmak için düğmeye dokun. Bağlantı bir kez çalışır ve {count} dakika içinde geçersiz olur.',
+      other:
+        'Giriş yapmak için düğmeye dokun. Bağlantı bir kez çalışır ve {count} dakika içinde geçersiz olur.',
+    },
     magicLinkButton: 'LangX’e gir',
-    magicLinkText: 'LangX’e gir (bir kez çalışır, 15 dakikada geçersiz olur): {url}',
+    magicLinkText: {
+      one: 'LangX’e gir (bir kez çalışır, {count} dakikada geçersiz olur): {url}',
+      other: 'LangX’e gir (bir kez çalışır, {count} dakikada geçersiz olur): {url}',
+    },
 
     existingSubject: 'Zaten bir LangX hesabın var',
     existingPreheader: 'Zaten bir LangX hesabın var',
@@ -178,10 +184,16 @@ export const tr: Localized<ServerMessages> = {
     existingButton: 'Parolayı sıfırla',
     existingText: 'Zaten bir LangX hesabın var. Parolanı buradan sıfırla: {url}',
 
-    existingLinkBody:
-      'Biri bu e-posta ile kayıt olmayı denedi ama burada zaten bir hesabın var ve profilin onun üzerinde duruyor. Girmek için dokun — hatırlaman gereken bir parola yok. Bağlantı bir kez çalışır ve 15 dakika içinde geçersiz olur.',
-    existingLinkText:
-      'Zaten bir LangX hesabın var. Buradan gir (bir kez çalışır, 15 dakikada geçersiz olur): {url}',
+    existingLinkBody: {
+      one: 'Biri bu e-posta ile kayıt olmayı denedi ama burada zaten bir hesabın var ve profilin onun üzerinde duruyor. Girmek için dokun — hatırlaman gereken bir parola yok. Bağlantı bir kez çalışır ve {count} dakika içinde geçersiz olur.',
+      other:
+        'Biri bu e-posta ile kayıt olmayı denedi ama burada zaten bir hesabın var ve profilin onun üzerinde duruyor. Girmek için dokun — hatırlaman gereken bir parola yok. Bağlantı bir kez çalışır ve {count} dakika içinde geçersiz olur.',
+    },
+    existingLinkText: {
+      one: 'Zaten bir LangX hesabın var. Buradan gir (bir kez çalışır, {count} dakikada geçersiz olur): {url}',
+      other:
+        'Zaten bir LangX hesabın var. Buradan gir (bir kez çalışır, {count} dakikada geçersiz olur): {url}',
+    },
 
     whyThisMail: 'Bunu LangX bildirim ayarların yüzünden alıyorsun.',
     unsubscribeLink: 'Bu e-postaları kapat',
@@ -267,15 +279,15 @@ export const tr: Localized<ServerMessages> = {
     /** The day's replies to somebody's posts, in one letter. */
 
     feedDigestSubject: {
-      one: 'Bugün paylaştığına 1 yanıt geldi',
-      other: 'Bugün paylaştığına {count} yanıt geldi',
+      one: 'Paylaştığına bugün 1 yanıt geldi',
+      other: 'Paylaştığına bugün {count} yanıt geldi',
     },
 
     feedDigestPreheader: 'Paylaştıklarına cevap verdiler',
 
     feedDigestBody: {
-      one: 'Bugün paylaştığın bir şeye cevap verildi.',
-      other: 'Bugün paylaştıklarına {count} yanıt geldi.',
+      one: 'Paylaştığın bir şeye bugün yanıt geldi.',
+      other: 'Paylaştığına bugün toplam {count} yanıt geldi.',
     },
 
     feedDigestCorrections: { one: '1 düzeltme', other: '{count} düzeltme' },
@@ -627,7 +639,7 @@ export const tr: Localized<ServerMessages> = {
     hateSpeech: 'Nefret söylemi',
     inappropriateContent: 'Uygunsuz içerik',
     fakeProfile: 'Sahte profil',
-    underage: '16 yaşından küçük',
+    underage: { one: '{count} yaşından küçük', other: '{count} yaşından küçük' },
     other: 'Başka bir şey',
   },
   official: {

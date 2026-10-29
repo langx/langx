@@ -912,10 +912,16 @@ export const tr: Localized<EnMessages> = {
     signInLinkBody:
       'E-postanı ya da kullanıcı adını gir, sana seni giriş yaptıran bir bağlantı gönderelim — şifre gerekmez.',
     sendSignInLink: 'Giriş bağlantısı gönder',
-    signInLinkSentBody:
-      '{email} için bir hesap varsa giriş bağlantısı yolda. Bir kez çalışır ve 15 dakika içinde geçersiz olur.',
-    signInLinkExpiredBody:
-      'Bu giriş bağlantısı kullanılmış ya da süresi dolmuş. Yenisini iste ve 15 dakika içinde dokun.',
+    signInLinkSentBody: {
+      one: '{email} için bir hesap varsa giriş bağlantısı yolda. Bir kez çalışır ve {count} dakika içinde geçersiz olur.',
+      other:
+        '{email} için bir hesap varsa giriş bağlantısı yolda. Bir kez çalışır ve {count} dakika içinde geçersiz olur.',
+    },
+    signInLinkExpiredBody: {
+      one: 'Bu giriş bağlantısı kullanılmış ya da süresi dolmuş. Yenisini iste ve {count} dakika içinde dokun.',
+      other:
+        'Bu giriş bağlantısı kullanılmış ya da süresi dolmuş. Yenisini iste ve {count} dakika içinde dokun.',
+    },
     openLinkTitle: 'LangX’e gir',
     openLinkBody: 'Bir giriş bağlantısı açtın. Bu cihazda girişi bitirmek için düğmeye dokun.',
     openLinkButton: 'Giriş yap',
@@ -933,8 +939,11 @@ export const tr: Localized<EnMessages> = {
     verificationFailedTitle: 'Doğrulanamadı',
     verificationFailedBody: 'Bu bağlantı geçersiz ya da süresi dolmuş. Giriş yapıp yenisini iste.',
     signInWithCode: 'Başka bir cihazdaki kodla giriş yap',
-    signInLinkNote:
-      'Bir kez çalışır ve 15 dakika içinde geçerliliğini yitirir. Önceki uygulamada hesabın varsa onunla da çalışır.',
+    signInLinkNote: {
+      one: 'Bir kez çalışır ve {count} dakika içinde geçerliliğini yitirir. Önceki uygulamada hesabın varsa onunla da çalışır.',
+      other:
+        'Bir kez çalışır ve {count} dakika içinde geçerliliğini yitirir. Önceki uygulamada hesabın varsa onunla da çalışır.',
+    },
   },
 
   onboarding: {
@@ -1434,9 +1443,10 @@ export const tr: Localized<EnMessages> = {
     romanizeUnavailable: 'Latin harfleriyle gösterilemedi',
     romanizeFailed: 'Birazdan tekrar dene.',
     speakLimit: {
-      one: 'Bugünkü {count} okumanı kullandın. 24 saat içinde yenilenir.',
-      other: 'Bugünkü {count} okumanı kullandın. 24 saat içinde yenilenir.',
+      one: 'Bugünkü {count} okumanı kullandın. {window} yenilenir.',
+      other: 'Bugünkü {count} okumanı kullandın. {window} yenilenir.',
     },
+    limitWindow: { one: '{count} saat içinde', other: '{count} saat içinde' },
     showText: 'Metni göster',
     transcribing: 'Yazıya dökülüyor…',
     transcriptEmpty: 'Bu notta kelime duyulmadı.',
@@ -1730,7 +1740,7 @@ export const tr: Localized<EnMessages> = {
       'Cinsel yönelim ve cinsiyet kimliği dahil, kişinin kimliğine yönelik saldırılar',
     inappropriateContent: 'Uygunsuz içerik',
     fakeProfile: 'Sahte profil',
-    underage: '16 yaşından küçük',
+    underage: { one: '{count} yaşından küçük', other: '{count} yaşından küçük' },
     other: 'Başka bir şey',
     details: 'Ne oldu?',
     detailsPlaceholder: 'İsteğe bağlı. Anlamamıza yardımcı olacak her şey.',
@@ -2986,8 +2996,11 @@ export const tr: Localized<EnMessages> = {
     shareMessage: 'LangX’te benimle dil pratiği yap: {url}',
     howTitle: 'Nasıl çalışıyor',
     step1: 'Linkini, senin dilini öğrenen birine gönder.',
-    step2:
-      'Kaydolup gerçek bir sohbet etsin — senden başka biri ona cevap yazsın. {activation} token o zaman geliyor.',
+    step2: {
+      one: 'Kaydolup gerçek bir sohbet etsin — senden başka biri ona cevap yazsın. {activation} jeton o zaman geliyor.',
+      other:
+        'Kaydolup gerçek bir sohbet etsin — senden başka biri ona cevap yazsın. {activation} jeton o zaman geliyor.',
+    },
     step3: 'Ücretli bir plana geçerse {subscription} jeton daha. Kişi başına toplam {max}.',
     step4:
       'Onlar da kazanır: aynı anda {invitee} jeton daha, yani kayıt bonusuyla {total} ile başlarlar.',
@@ -3693,8 +3706,11 @@ export const tr: Localized<EnMessages> = {
     missingBody: '@{handle} adında bir LangX profili yok.',
     ctaBody: "{name} LangX'te dil pratiği yapıyor. Merhaba demek için katıl.",
     ctaLabel: "LangX'i aç",
-    inviteBody:
-      '{name} seni davet etti. Kaydol, biriyle gerçek bir sohbet et, {total} token ile başla; {name} {activation} kazanır — ücretli plana geçersen toplam {max}. Katılmak ücretsiz.',
+    inviteBody: {
+      one: '{name} seni davet etti. Kaydol, biriyle gerçek bir sohbet et, {total} jetonla başla; {name} {activation} kazanır — ücretli plana geçersen toplam {max}. Katılmak ücretsiz.',
+      other:
+        '{name} seni davet etti. Kaydol, biriyle gerçek bir sohbet et, {total} jetonla başla; {name} {activation} kazanır — ücretli plana geçersen toplam {max}. Katılmak ücretsiz.',
+    },
   },
 
   shareProfile: {

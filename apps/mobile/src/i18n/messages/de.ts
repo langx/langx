@@ -927,10 +927,16 @@ export const de: Localized<EnMessages> = {
     signInLinkBody:
       'Gib deine E-Mail oder deinen Benutzernamen ein, und wir schicken dir einen Link, der dich anmeldet — ohne Passwort.',
     sendSignInLink: 'Anmeldelink senden',
-    signInLinkSentBody:
-      'Falls es ein Konto für {email} gibt, ist ein Anmeldelink unterwegs. Er funktioniert einmal und läuft in 15 Minuten ab.',
-    signInLinkExpiredBody:
-      'Dieser Anmeldelink wurde schon benutzt oder ist abgelaufen. Fordere einen neuen an und tippe innerhalb von 15 Minuten darauf.',
+    signInLinkSentBody: {
+      one: 'Falls es ein Konto für {email} gibt, ist ein Anmeldelink unterwegs. Er funktioniert einmal und läuft in {count} Minute ab.',
+      other:
+        'Falls es ein Konto für {email} gibt, ist ein Anmeldelink unterwegs. Er funktioniert einmal und läuft in {count} Minuten ab.',
+    },
+    signInLinkExpiredBody: {
+      one: 'Dieser Anmeldelink wurde schon benutzt oder ist abgelaufen. Fordere einen neuen an und tippe innerhalb von {count} Minute darauf.',
+      other:
+        'Dieser Anmeldelink wurde schon benutzt oder ist abgelaufen. Fordere einen neuen an und tippe innerhalb von {count} Minuten darauf.',
+    },
     openLinkTitle: 'Bei LangX anmelden',
     openLinkBody:
       'Du bist einem Anmeldelink gefolgt. Tippe auf den Button, um die Anmeldung auf diesem Gerät abzuschließen.',
@@ -950,8 +956,11 @@ export const de: Localized<EnMessages> = {
     verificationFailedBody:
       'Dieser Link ist ungültig oder abgelaufen. Melde dich an und fordere einen neuen an.',
     signInWithCode: 'Mit einem Code von einem anderen Gerät anmelden',
-    signInLinkNote:
-      'Er funktioniert einmal und läuft nach 15 Minuten ab. Er funktioniert auch, wenn du in der alten App ein Konto hattest.',
+    signInLinkNote: {
+      one: 'Er funktioniert einmal und läuft nach {count} Minute ab. Er funktioniert auch, wenn du in der alten App ein Konto hattest.',
+      other:
+        'Er funktioniert einmal und läuft nach {count} Minuten ab. Er funktioniert auch, wenn du in der alten App ein Konto hattest.',
+    },
   },
 
   onboarding: {
@@ -1489,10 +1498,10 @@ export const de: Localized<EnMessages> = {
     romanizeUnavailable: 'Konnte nicht in lateinischen Buchstaben angezeigt werden',
     romanizeFailed: 'Versuch es gleich noch einmal.',
     speakLimit: {
-      one: 'Du hast die {count} Lesung für heute verbraucht. In 24 Stunden gibt es wieder neue.',
-      other:
-        'Du hast die {count} Lesungen für heute verbraucht. In 24 Stunden gibt es wieder neue.',
+      one: 'Du hast die {count} Lesung für heute verbraucht. Neue gibt es wieder {window}.',
+      other: 'Du hast die {count} Lesungen für heute verbraucht. Neue gibt es wieder {window}.',
     },
+    limitWindow: { one: 'in {count} Stunde', other: 'in {count} Stunden' },
     showText: 'Text anzeigen',
     transcribing: 'Wird aufgeschrieben…',
     transcriptEmpty: 'In dieser Nachricht waren keine Worte zu hören.',
@@ -1788,7 +1797,7 @@ export const de: Localized<EnMessages> = {
       'Angriffe darauf, wer jemand ist — auch auf sexuelle Orientierung und Geschlechtsidentität',
     inappropriateContent: 'Unangemessener Inhalt',
     fakeProfile: 'Fake-Profil',
-    underage: 'Unter 16',
+    underage: { one: 'Unter {count}', other: 'Unter {count}' },
     other: 'Etwas anderes',
     details: 'Was ist passiert?',
     detailsPlaceholder: 'Optional. Alles, was uns beim Verstehen hilft.',
@@ -3071,8 +3080,11 @@ export const de: Localized<EnMessages> = {
     shareMessage: 'Übe Sprachen mit mir auf LangX: {url}',
     howTitle: 'So funktioniert es',
     step1: 'Schick deinen Link jemandem, der deine Sprache lernt.',
-    step2:
-      'Sie melden sich an und führen ein echtes Gespräch — jemand anderes als du schreibt zurück. Dann gibt es {activation} Token.',
+    step2: {
+      one: 'Sie melden sich an und führen ein echtes Gespräch — jemand anderes als du schreibt zurück. Dann gibt es {activation} Token.',
+      other:
+        'Sie melden sich an und führen ein echtes Gespräch — jemand anderes als du schreibt zurück. Dann gibt es {activation} Token.',
+    },
     step3:
       'Starten sie irgendwann ein bezahltes Abo, gibt es {subscription} mehr. {max} insgesamt, pro Person.',
     step4:
@@ -3782,8 +3794,11 @@ export const de: Localized<EnMessages> = {
     missingBody: 'Kein LangX-Profil hört auf @{handle}.',
     ctaBody: '{name} übt Sprachen auf LangX. Komm dazu und sag Hallo.',
     ctaLabel: 'LangX öffnen',
-    inviteBody:
-      '{name} hat dich eingeladen. Melde dich an und führe ein echtes Gespräch mit jemandem, dann startest du mit {total} Token; {name} verdient {activation} — bis zu {max}, falls du je ein Abo nimmst. Kostenlos.',
+    inviteBody: {
+      one: '{name} hat dich eingeladen. Melde dich an und führe ein echtes Gespräch mit jemandem, dann startest du mit {total} Token; {name} verdient {activation} — bis zu {max}, falls du je ein Abo nimmst. Kostenlos.',
+      other:
+        '{name} hat dich eingeladen. Melde dich an und führe ein echtes Gespräch mit jemandem, dann startest du mit {total} Token; {name} verdient {activation} — bis zu {max}, falls du je ein Abo nimmst. Kostenlos.',
+    },
   },
 
   shareProfile: {

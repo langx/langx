@@ -9,22 +9,6 @@ import { catalogs } from './catalogs'
 const TR_TOKEN = /(?<![\p{L}{])(?<!LangX )token/iu
 
 /**
- * Two lines still say token in Turkish and tokens in French: invite.step2
- * and shared.inviteBody count tokens in a plain string, and the change that
- * gives them plural entries rewrites them in every language, the word with
- * it. The paths name the plain strings, so the rule holds the plurals
- * (`invite.step2.one`, …) as soon as they exist, and the last test below
- * fails until an entry that no
- * longer needs its exception is taken off this list.
- */
-const NOT_YET: ReadonlySet<string> = new Set([
-  'tr:invite.step2',
-  'tr:shared.inviteBody',
-  'fr:invite.step2',
-  'fr:shared.inviteBody',
-])
-
-/**
  * What the token and the daily pool are called, on every line of the app —
  * not only on the token page, which `lib/tokenPage.test.ts` holds to the
  * messaging brief.
@@ -88,20 +72,9 @@ describe.each(Object.entries(NEVER))('the %s catalogue', (locale, rules) => {
   })
 
   it.each(rules)('never uses the word in $old', (rule) => {
-    const said = leaves(catalogs[locale as Locale]).filter(
-      ([path, text]) => rule.pattern.test(text) && !NOT_YET.has(`${locale}:${path}`),
-    )
+    const said = leaves(catalogs[locale as Locale]).filter(([, text]) => rule.pattern.test(text))
     expect(said).toEqual([])
   })
-})
-
-it('lets through only lines that still say the old word', () => {
-  const stale = [...NOT_YET].filter((id) => {
-    const [locale, path] = id.split(':') as [Locale, string]
-    const text = new Map(leaves(catalogs[locale])).get(path)
-    return !(text && NEVER[locale]?.some((rule) => rule.pattern.test(text)))
-  })
-  expect(stale).toEqual([])
 })
 
 it('lets LangX Token through in Turkish, the name the token page carries', () => {

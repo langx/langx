@@ -233,6 +233,7 @@ export default function SharedProfileScreen() {
           {invited
             ? t('shared.inviteBody', {
                 name: user.displayName,
+                count: TOKEN_RULES.referral.inviteeTotal,
                 total: n(TOKEN_RULES.referral.inviteeTotal),
                 activation: n(TOKEN_RULES.referral.activation),
                 max: n(TOKEN_RULES.referral.maxPerInvitee),
