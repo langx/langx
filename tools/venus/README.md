@@ -79,15 +79,16 @@ in the longest locale (de). Like the days it is shared, one file per locale. It 
 manifest: `node upload.mjs intro` puts each locale's mp4 and cover beside the days, as
 `venus/v1/<lang>/venus-intro-<lang>.mp4`. The app plays a smaller copy of it, made by hand (below).
 
-The app plays `venus-intro-<lang>-r3.mp4`, not the master: the same cut re-encoded for phones on
-mobile data, about 24 MB instead of about 50, with the picture size and the audio unchanged
-(SSIM 0.997 against the master), and its cover copied under the same name. A suffix rather than
-a replacement because `v1` is cached for a year and nothing there is overwritten:
+The app plays `venus-intro-<lang>-r4.mp4`, not the master: this cut (v2) re-encoded for phones
+on mobile data, about 24 MB instead of about 50, with the picture size and the audio unchanged,
+and its cover copied under the same name. A suffix rather than a replacement because `v1` is
+cached for a year and nothing there is overwritten. The first cut is still there, unused: its
+master without a suffix, `-r2` and `-r3`; v2's master is not uploaded. The next cut takes `-r5`:
 
 ```bash
 ffmpeg -i venus-intro-<lang>.mp4 -c:v libx264 -preset slow -profile:v high -level:v 4.1 \
   -b:v 1700k -maxrate 2200k -bufsize 4000k -pix_fmt yuv420p -c:a copy -movflags +faststart \
-  venus-intro-<lang>-r3.mp4
+  venus-intro-<lang>-r4.mp4
 ```
 
 Keep `-level:v 4.1`, the level of the master and the days. Without it, `-preset slow` uses five
