@@ -1,7 +1,7 @@
 // What the introduction film draws that a day video does not: the title card, the header pills,
-// the clapperboard, the film's caption bubble (voice-over and whisper modes, sentences that stay
-// hidden until said, a text swap instead of a flicker), the stickers, the photo-booth print, the
-// wall of covers and its lock. Pure functions of time; SVG strings out, like lib/layers.mjs, whose
+// the backdrop flats and the join poof, the film's caption bubble (voice-over and whisper modes,
+// sentences that stay hidden until said, a text swap instead of a flicker), the stickers, the
+// photo-booth print, the wall of covers and its lock. Pure functions of time; SVG strings out, like lib/layers.mjs, whose
 // pieces (the number's type, the bubble's outline, the poof) they reuse.
 //
 // Sticker and tile pictures are not inlined per frame: film.mjs hands frames.mjs one set of <defs>
@@ -126,41 +126,6 @@ export function pill(
   return `<g transform="translate(${n1(cx)} ${n1(cy)}) scale(${n3(k)})">${s}</g>`
 }
 
-// ------------------------------------------------------------------ the clapperboard
-// A chapter card without words: it pops in open on the beat, snaps shut 0.06 s later (the sound's
-// thud), holds, and leaves upwards. Drawn in the header slot.
-export function clapper(t, t0) {
-  const u = t - t0
-  if (u < 0 || u > 0.56) return ''
-  const k = u < 0.07 ? 0.7 + 0.3 * EASE.outBack(u / 0.07) : 1
-  const ang =
-    u < 0.06
-      ? -30 * (1 - EASE.in(u / 0.06))
-      : u < 0.16
-        ? 4 * Math.sin(((u - 0.06) / 0.1) * Math.PI)
-        : 0
-  const lift = 520 * EASE.in(clamp((u - 0.4) / 0.16))
-  const W = 330,
-    stripes = (x0, y, h) => {
-      let s = ''
-      for (let i = -1; i < 7; i++) {
-        const x = x0 + i * 56
-        s += `<path d="M${x} ${y + h}L${x + 26} ${y}L${x + 52} ${y}L${x + 26} ${y + h}Z" fill="#ffffff"/>`
-      }
-      return s
-    }
-  const body =
-    `<rect x="${-W / 2}" y="-40" width="${W}" height="190" rx="18" fill="${INK}" stroke="#ffffff" stroke-width="7"/>` +
-    `<clipPath id="clb"><rect x="${-W / 2}" y="-40" width="${W}" height="44"/></clipPath><g clip-path="url(#clb)">${stripes(-W / 2, -40, 44)}</g>` +
-    `<path d="M${-W / 2 + 26} 50H${W / 2 - 26}M${-W / 2 + 26} 100H${W / 2 - 26}M0 50V150" stroke="#ffffff" stroke-width="7" stroke-linecap="round" opacity="0.85"/>`
-  const stick =
-    `<g transform="translate(${-W / 2} -46) rotate(${n1(ang)})">` +
-    `<rect x="0" y="-44" width="${W}" height="44" rx="10" fill="${INK}" stroke="#ffffff" stroke-width="7"/>` +
-    `<clipPath id="cls"><rect x="0" y="-44" width="${W}" height="44" rx="10"/></clipPath><g clip-path="url(#cls)">${stripes(0, -44, 44)}</g>` +
-    `<circle cx="22" cy="-22" r="9" fill="#ffffff"/></g>`
-  return `<g transform="translate(540 ${n1(430 - lift)}) scale(${n3(k)})">${body}${stick}</g>`
-}
-
 // ------------------------------------------------------------------ the caption bubble
 // block: { lines: [[word index, ...]], F, words: [{ text, t0, t1, hideUntil }], whisper, tails:
 // [{ t, on }] } laid out by film.mjs. Unlike the day videos' bubble it has no tail while she is
@@ -283,7 +248,10 @@ export function print(t, { scene, rect, freezeAt, flyAt, flyEnd, to, id }) {
     rot = to.rot * q
   const fade = clamp((v - 0.55) / 0.45)
   const card = `${clip}<g clip-path="url(#prc)">${scene}</g>${border}`
+  // the dim lifts over 0.3 s as she comes back to life: dropped in one frame it read as a cut
+  const dim = 0.55 * (1 - clamp((t - flyAt) / 0.3))
   return (
+    (dim > 0 ? `<rect width="${L.W}" height="${L.H}" fill="${INK}" opacity="${n3(dim)}"/>` : '') +
     `<g transform="translate(${n1(cx)} ${n1(cy)}) rotate(${n1(rot)}) scale(${n3(k)}) translate(${n1(-(x + w / 2))} ${n1(-(y + w / 2))})" opacity="${n3(1 - fade)}">${card}</g>` +
     (fade > 0 ? sticker(flyEnd, flyEnd - 1, id, to.x, to.y, to.size, to.rot, { op: fade }) : '')
   )
@@ -351,14 +319,71 @@ export function quickPoof(t, t0, x, y, len = 0.25, k = 0.6) {
   const s = L.poof(t0 + ((t - t0) * 0.45) / len, t0, 0, 0)
   return s ? `<g transform="translate(${n1(x)} ${n1(y)}) scale(${n3(k)})">${s}</g>` : ''
 }
-// the stage look with its yellow burst, fading out from `fadeAt` (the deal's pose breaks)
-export function burstFade(t, G, ctx, fadeAt) {
-  const on = L.ground('stage', t, G, { ...ctx, numAt: -1 })
-  const k = clamp((t - fadeAt) / 0.4)
-  if (k <= 0) return on
-  return (
-    on +
-    `<g opacity="${n3(EASE.inOut(k))}">${L.ground('stage', t, G, { ...ctx, numAt: Infinity })}</g>`
-  )
+// The stage, its yellow burst behind the header while one of `bursts` ([on, off], film time) is up:
+// it grows in from `on` and fades out over 0.4 s from `off`. Drawn at film time, so the rays turn on
+// through every join instead of starting over.
+export function stageGround(t, G, bursts) {
+  let on = null
+  for (const b of bursts) if (t >= b[0]) on = b
+  const plain = () => L.ground('stage', t, G, { seed: 7, numAt: Infinity })
+  if (!on) return plain()
+  const k = clamp((t - on[1]) / 0.4)
+  if (k >= 1) return plain()
+  const lit = L.ground('stage', t, G, { seed: 7, numAt: on[0] })
+  return k <= 0 ? lit : lit + `<g opacity="${n3(EASE.inOut(k))}">${plain()}</g>`
+}
+
+// ------------------------------------------------------------------ the set: flats
+// A backdrop is a flat hung over the stage: it drops in from the flies (0.5 s, 3% past its mark and
+// back) and flies out again (0.45 s, easing in). It only ever covers what is above the floor line,
+// so the stage floor stays under her; its bottom edge is a dark batten.
+export const DROP = 0.5,
+  FLY = 0.45
+const dropK = (u) =>
+  u < 0.75 ? 1.03 * EASE.out(u / 0.75) : 1.03 - 0.03 * EASE.inOut((u - 0.75) / 0.25)
+// The flats up at t, bottom to top, each { look, dy } (dy 0 at rest, negative while it moves).
+// events: [[film time, look, 'drop' | 'fly' | 'set']] in time order; D: how far a flat travels.
+// A flat that has landed takes the place of everything hung before it: flying it out later shows
+// the stage, not the flat it covered.
+export function flatsAt(t, events, D) {
+  let stack = []
+  for (const [T, look, kind] of events) {
+    if (T > t + 1e-9) break
+    if (kind === 'set') stack = [{ look, T }]
+    else if (kind === 'drop') {
+      const f = { look, T, drop: true }
+      stack = t >= T + DROP ? [f] : [...stack, f]
+    } else {
+      const f = [...stack].reverse().find((x) => x.look === look && x.fly === undefined)
+      if (f) f.fly = T
+    }
+  }
+  const out = []
+  for (const f of stack) {
+    let dy = f.drop && t < f.T + DROP ? -D * (1 - dropK((t - f.T) / DROP)) : 0
+    if (f.fly !== undefined) {
+      const u = (t - f.fly) / FLY
+      if (u >= 1) continue
+      dy = Math.min(dy, -D * EASE.in(clamp(u)))
+    }
+    out.push({ look: f.look, dy })
+  }
+  return out
+}
+// one flat: `content` drawn full frame, moved by dy and cut off at its bottom edge and the floor line
+export function flat(content, dy, floorY, id) {
+  const bottom = Math.min(floorY, floorY + dy)
+  if (bottom <= 0) return ''
+  return `<clipPath id="${id}"><rect width="${L.W}" height="${n1(bottom)}"/></clipPath><g clip-path="url(#${id})"><g transform="translate(0 ${n1(dy)})">${content}</g><rect y="${n1(bottom - 10)}" width="${L.W}" height="10" fill="${INK}" opacity="0.8"/></g>`
+}
+
+// ------------------------------------------------------------------ the join poof
+// A big poof over her that hides a change of shot: it swells in over the 0.12 s before the join,
+// is at its fullest on the join's frame, and has blown away 0.45 s after (lib/layers.mjs poof)
+export function bigPoof(t, T0, x, y, k = 1.8) {
+  if (t < T0 - 0.12 || t > T0 + 0.45) return ''
+  const g = t < T0 ? 0.35 + 0.65 * EASE.out((t - (T0 - 0.12)) / 0.12) : 1
+  const s = L.poof(Math.max(t, T0), T0, 0, 0)
+  return s ? `<g transform="translate(${n1(x)} ${n1(y)}) scale(${n3(k * g)})">${s}</g>` : ''
 }
 export { YELLOW }

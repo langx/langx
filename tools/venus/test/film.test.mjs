@@ -21,6 +21,8 @@ import {
 } from '../lib/film-clock.mjs'
 import {
   SHOTS,
+  TX,
+  TITLE_HIT,
   END_BOARD,
   placeShots,
   shotClock,
@@ -34,6 +36,7 @@ import { CHARACTER } from '../lib/character.mjs'
 import { sentences } from '../lib/voice.mjs'
 import { lintIntroLines } from '../lint-quips.mjs'
 import { wrap } from '../lib/film-layers.mjs'
+import { trk } from '../lib/layers.mjs'
 
 const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps
 const isBeat = (x) => near(x / CLOCK.beat, Math.round(x / CLOCK.beat), 1e-6)
@@ -54,7 +57,7 @@ function perform(lang) {
 }
 const performed = new Map(LOCALES.map((l) => [l, perform(l)]))
 
-test('the board: the English silent clock reproduces it, and the film is 97.2 s', () => {
+test('the board: the English silent clock reproduces it, and the film is 93.14 s', () => {
   const C = buildClock('en')
   assert.deepEqual(C.pushes, [])
   for (const L of FILM.lines)
@@ -63,10 +66,10 @@ test('the board: the English silent clock reproduces it, and the film is 97.2 s'
       assert.equal(s.t0, a, `${L.id}[${i}] starts on the board`)
       assert.ok(Math.abs(s.t1 - b) <= 0.015, `${L.id}[${i}] ends ${s.t1}, the board says ${b}`)
     })
-  assert.equal(C.W(97.2), 97.2)
+  assert.equal(C.W(END_BOARD), END_BOARD)
   const shots = placeShots(C)
   assert.equal(shots[shots.length - 1].T1, +(END_BOARD + END_LEN).toFixed(3))
-  assert.equal(shots[shots.length - 1].T1, 97.2)
+  assert.equal(shots[shots.length - 1].T1, 93.14)
 })
 
 test('the board: sentences are in order, never overlap, and fit their modes', () => {
@@ -104,6 +107,18 @@ test('lines: every locale keeps the sentences and every "…" where the beats ex
     for (const lang of LOCALES) assert.ok(by[lang] && !/\d/.test(by[lang]), `screen.${k} ${lang}`)
 })
 
+// The bubble and the .vtt are built from the clock's sentences, so the sentences must add up to
+// the line: a "…" that opens a line ("…Almost everything.") used to fall between them unseen
+test('lines: the sentences add up to the line, character for character, "…" and NBSP included', () => {
+  for (const lang of LOCALES)
+    for (const L of Object.values(buildClock(lang).lines))
+      assert.equal(
+        L.sents.map((s) => s.text).join(' '),
+        L.text,
+        `${L.id} ${lang}: ${L.sents.map((s) => s.text).join(' | ')}`,
+      )
+})
+
 test('lines: every locale passes the character lint', () => {
   assert.deepEqual(lintIntroLines(FILM.lines), [])
   assert.deepEqual(
@@ -129,7 +144,7 @@ test('the warp: a longer locale pushes whole beats inside the grid, and never ru
         }
     // monotone, and never earlier than the board
     let prev = -1
-    for (let t = 0; t <= 97.2; t += 0.05) {
+    for (let t = 0; t <= END_BOARD + END_LEN; t += 0.05) {
       const w = C.W(t)
       assert.ok(w >= t - 1e-6 && w >= prev, `${lang}: W(${t}) = ${w}`)
       prev = w
@@ -408,7 +423,7 @@ test('shots: every one of hers performs in every locale, inside its own length',
     for (let i = 1; i < shots.length; i++)
       assert.ok(shots[i].T0 > shots[i - 1].T0 && near(shots[i - 1].T1, shots[i].T0), shots[i].id)
     for (const sh of shots) {
-      if (sh.day || sh.wall || sh.empty) continue
+      if (sh.day || sh.wall) continue
       assert.ok(sh.anim, `${lang} ${sh.id}`)
       // the animator steps forward through the whole shot without throwing
       for (let f = 0; f < Math.round((sh.T1 - sh.T0 + sh.off) * 30); f += 15) sh.anim.at(f)
@@ -427,13 +442,15 @@ test('captions: a dash or a lone "?" never starts a line', () => {
   for (const line of joined(wrap(b, m(b), 330, 2)).slice(1)) assert.ok(!/^\?/.test(line), line)
 })
 
-test('captions: clear on a cut once the line is said, and the bag run opens on its first word', () => {
+test('captions: the opening line clears before the title slam, and the bag run opens on its first word', () => {
   const C = buildClock('en')
   const { cuts } = flashesAndCuts(performed.get('en').shots)
   const caps = captionTimes(C, cuts)
   const by = Object.fromEntries(caps.map((x) => [x.id, x]))
-  // "…I made a film." is said by 10.22: the bubble clears on the title's cut, not after it
-  assert.equal(by['intro-03'].hide, 10.6)
+  // "…I made a film." is said by 10.22 and held 0.4 s: gone before VENUS lands over her (no cut there
+  // any more, the camera pulls back onto the title in the same shot)
+  assert.equal(by['intro-03'].hide, 10.62)
+  assert.ok(by['intro-03'].hide <= TITLE_HIT)
   assert.equal(by['intro-12'].show, by['intro-12'].sents[0].t0)
 })
 
@@ -494,4 +511,113 @@ test('captions: the WebVTT never shows a sentence before the bubble does', () =>
     en.filter((c) => c.id.startsWith('intro-12')).map((c) => c.text),
     ['Bag.', 'Bag. Bag.', 'Bag. Bag. Bag.', 'Bag. Bag. Bag. …Different bag.'],
   )
+})
+
+test('lines: 21 of them, and intro-05 is gone from the board', () => {
+  assert.equal(FILM.lines.length, 21)
+  assert.ok(!FILM.lines.some((L) => L.id === 'intro-05'))
+  for (const lang of LOCALES)
+    assert.ok(!Object.keys(buildClock(lang).lines).includes('intro-05'), lang)
+})
+
+test('joins: every shot says how it is entered, and only a day of the race swipes in', () => {
+  for (const lang of LOCALES)
+    performed.get(lang).shots.forEach((sh, i) => {
+      assert.ok(TX.includes(sh.tx), `${lang} ${sh.id}: ${sh.tx}`)
+      assert.equal(sh.tx === 'first', i === 0, `${lang} ${sh.id}`)
+      // a swipe is the one join that changes the whole picture: the race's, nowhere else
+      assert.equal(sh.tx === 'swipe', !!sh.day, `${lang} ${sh.id}`)
+    })
+})
+
+// her camera at shot time u, as film.mjs drawShot moves it (the hit's shake aside)
+function camAt(cam, u) {
+  let z = trk(cam.z, u)
+  for (const b of cam.bumps || [])
+    if (u >= b && u < b + 0.35) z *= 1 + 0.06 * Math.sin(((u - b) / 0.35) * Math.PI)
+  return { z, lift: cam.lift ? trk(cam.lift, u) : 0, dx: cam.dx ? trk(cam.dx, u) : 0 }
+}
+
+test('camera: no snaps, the zoom never faster than 1.2 a second, and a cont join keeps the frame', () => {
+  for (const lang of LOCALES) {
+    const { shots } = performed.get(lang)
+    for (const sh of shots) {
+      if (!sh.cam) continue
+      // the first cut snapped in 0.14 s and 0.1 s; every move now takes at least 0.3 s
+      for (const k of ['z', 'lift', 'dx'])
+        (sh.cam[k] || []).forEach((key, i, keys) => {
+          if (i && key[1] !== keys[i - 1][1])
+            assert.ok(key[0] - keys[i - 1][0] >= 0.3 - 1e-6, `${lang} ${sh.id} ${k} at ${key[0]}`)
+        })
+      for (let u = sh.off; u < sh.off + sh.T1 - sh.T0; u += 1 / 30) {
+        const rate = Math.abs(camAt(sh.cam, u + 1 / 30).z - camAt(sh.cam, u).z) * 30
+        assert.ok(rate <= 1.2, `${lang} ${sh.id}: z moves ${rate.toFixed(2)} a second at ${u}`)
+      }
+    }
+    for (let i = 1; i < shots.length; i++) {
+      const a = shots[i - 1],
+        b = shots[i]
+      if (b.tx !== 'cont') continue
+      const x = camAt(a.cam, a.off + a.T1 - a.T0),
+        y = camAt(b.cam, b.off)
+      assert.ok(Math.abs(x.z - y.z) <= 0.03, `${lang} ${b.id}: z ${x.z} -> ${y.z}`)
+      assert.ok(Math.abs(x.lift - y.lift) <= 10, `${lang} ${b.id}: lift ${x.lift} -> ${y.lift}`)
+      assert.ok(Math.abs(x.dx - y.dx) <= 10, `${lang} ${b.id}: dx ${x.dx} -> ${y.dx}`)
+    }
+  }
+})
+
+// what she has on at shot time u: the outfit, the bag (0 away, 1 up), and the items worn so far
+function wearing(sh, u) {
+  const last = (keys, d) => (keys || []).filter((k) => k[0] <= u + 1e-6).reduce((v, k) => k[1], d)
+  const w = { outfit: last(sh.c.k.k.outfit, null), bag: last(sh.c.k.k.bag, 0) }
+  for (const [t, it] of sh.items) if (t <= u + 1e-6) Object.assign(w, it)
+  return w
+}
+
+test('wardrobe: nothing she wears changes without a poof or a flash on it', () => {
+  for (const lang of LOCALES) {
+    const { shots } = performed.get(lang)
+    for (const sh of shots) {
+      if (!sh.c) continue
+      const covers = [...(sh.c.poofs || []).map((p) => p.t), ...sh.c.fx.flashes]
+      const changes = sh.items.map(([t, it]) => [JSON.stringify(it), t])
+      for (const k of ['outfit', 'bag'])
+        (sh.c.k.k[k] || []).forEach((key, i, keys) => {
+          // a number (the bag) starts moving at the key before; a name (the outfit) swaps on its key
+          if (i && key[1] !== keys[i - 1][1])
+            changes.push([k, typeof key[1] === 'number' ? keys[i - 1][0] : key[0]])
+        })
+      for (const [what, t] of changes)
+        assert.ok(
+          covers.some((x) => Math.abs(x - t) <= 0.1 + 1e-6),
+          `${lang} ${sh.id}: ${what} at ${t}, no poof or flash within 0.1 s`,
+        )
+    }
+    // a join that is not a poof keeps what she has on
+    for (let i = 1; i < shots.length; i++) {
+      const a = shots[i - 1],
+        b = shots[i]
+      if (!a.c || !b.c || b.tx === 'poof') continue
+      assert.deepEqual(wearing(a, a.off + a.T1 - a.T0), wearing(b, b.off), `${lang} ${b.id}`)
+    }
+  }
+})
+
+test('pacing: no shot outside the race under 1.2 s, no wordless stretch over 3.5 s', () => {
+  for (const lang of LOCALES) {
+    const { clock, shots } = performed.get(lang)
+    for (const sh of shots)
+      if (!sh.day) assert.ok(sh.T1 - sh.T0 >= 1.2 - 1e-6, `${lang} ${sh.id}: ${sh.T1 - sh.T0}`)
+    // from the first frame to the end card (which has its own minute of quiet)
+    const ss = Object.values(clock.lines)
+      .flatMap((L) => L.sents)
+      .sort((a, b) => a.t0 - b.t0)
+    let t = 0
+    for (const s of ss) {
+      assert.ok(s.t0 - t <= 3.5, `${lang}: nothing said from ${t} to ${s.t0}`)
+      t = Math.max(t, s.t1)
+    }
+    assert.ok(clock.W(END_BOARD) - t <= 3.5, `${lang}: nothing said from ${t} to the end card`)
+  }
 })

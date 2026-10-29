@@ -23,7 +23,7 @@ import {
   writeWav,
 } from './dsp.mjs'
 
-const CHORD = {
+export const CHORD = {
   maj: [0, 4, 7],
   min: [0, 3, 7],
   maj7: [0, 4, 7, 11],
@@ -236,14 +236,36 @@ function musicbox(f) {
   )
   return mul(s, expDecay(n, 0.55, 0.002))
 }
-function softPad(f, len) {
-  const n = S(len + 0.9)
-  const s = mix(osc('tri', f, n), osc('tri', f * 1.004, n), mul(osc('saw', f * 0.998, n), 0.25))
-  return mul(svf(s, 'lp', 1300, 0.7), adsr(n, 0.35, 0.4, 0.75, 0.9, len))
+// env: [attack, decay, sustain, release]; detune: the second voice's ratio. The film's score holds
+// its chords level, lets each ring under the next and plays the pad alone in places, where the
+// default chorus beats at about 1 Hz and its loudness swings 3 LU with it
+function softPad(f, len, env = [0.35, 0.4, 0.75, 0.9], detune = 1.004) {
+  const n = S(len + env[3])
+  const s = mix(osc('tri', f, n), osc('tri', f * detune, n), mul(osc('saw', f * 0.998, n), 0.25))
+  return mul(svf(s, 'lp', 1300, 0.7), adsr(n, ...env, len))
+}
+
+// the introduction film's score (lib/film-score.mjs) plays these same instruments on its own bar
+// grid, so the film and the day videos share one sound
+export const INSTRUMENTS = {
+  kick,
+  snare,
+  clap,
+  hat,
+  shaker,
+  rim,
+  crash,
+  riser,
+  bassNote,
+  sawStack,
+  rhodes,
+  bell,
+  musicbox,
+  softPad,
 }
 
 // ---------- arrangement ----------
-function voiceChord(rootPc, quality) {
+export function voiceChord(rootPc, quality) {
   const iv = CHORD[quality]
   // Keep every tone within G3..G4 so consecutive chords move by small steps.
   const notes = iv

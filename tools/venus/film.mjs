@@ -6,6 +6,9 @@
 //                                            the title card), .vtt, -preview.mp4 (720x1280, < 8 MB)
 //   node film.mjs --lang en --strip 15    a contact sheet of every 15th frame (work/), no video
 //   node film.mjs --lang en --at 12.4,64  full-size stills at those BOARD times (work/)
+//   node film.mjs --lang en --audio       the sound alone, no frames: work/audio/film-en.m4a, the
+//                                         stems it was mixed from ({voice,music,sfx}-en.wav) and
+//                                         film-en.json (sentences, SFX, the score's plan, the gains)
 //   node film.mjs --all [--jobs 4]        every locale, in parallel processes
 //   node film.mjs --script <file>         the voice script: every line, its text and its characters
 //                                         per locale (what a voicing session is billed by)
@@ -14,8 +17,9 @@
 //            key beats as another, into <dir>)
 //
 // The board is data/film-intro.json: every line and its sentences' times on the English silent cut.
-// lib/film-clock.mjs turns that into this locale's clock (a longer sentence pushes what follows, by
-// whole beats inside the 120 bpm sections), and a take in VENUS_VOICE/<lang>/intro-NN.wav (+ .json
+// lib/film-clock.mjs turns that into this locale's clock (a longer sentence pushes what follows, from
+// the title slam on by whole beats of the one 120 bpm score), and a take in
+// VENUS_VOICE/<lang>/intro-NN.wav (+ .json
 // alignment) replaces the silent timing of its line. Nothing here is timed to a sound file: every beat
 // is a board time or a sentence, mapped through the clock, so re-running with takes in place is the
 // whole re-timing job. The film never voices a line itself: no take, no voice.
@@ -49,6 +53,9 @@ import {
   BONK_FRAME,
   BONK_CAM,
   BAG_CAM,
+  FLATS,
+  BURSTS,
+  WALL_TIMES,
   bonkClock,
 } from './lib/film-shots.mjs'
 import { buildScore, EXTRA_EXPR } from './lib/score.mjs'
@@ -57,8 +64,8 @@ import { frameSvgs, fitUnderLabel, FPS, G, BASE, HEAD_H } from './render.mjs'
 import { sentences } from './lib/voice.mjs'
 import { openBrowser } from './lib/frames.mjs'
 import { sfxBus, mix, measure, decode, analyseVoice } from './lib/audio.mjs'
-import { renderMusic } from './lib/synth/music-synth.mjs'
-import { SR, stereo, writeWav } from './lib/synth/dsp.mjs'
+import { planScore, renderScore, bedGain, bedLower } from './lib/film-score.mjs'
+import { ffStderr } from './lib/synth/say.mjs'
 import { formatNumber, streakLabel, isRTL } from './lib/i18n.mjs'
 import { RIG, REPO, OUT_ROOT, WORK, CACHE, VOICE_DIR } from './lib/paths.mjs'
 import * as L from './lib/layers.mjs'
@@ -97,9 +104,10 @@ export const filmFile = (lang, suffix = '.mp4') =>
 const COVER_AT = 12.4
 // the beats a review sheet shows, on the board
 export const KEY_BEATS = [
-  0.3, 2.0, 5.5, 9.6, 12.4, 14.6, 15.6, 16.9, 17.9, 20.0, 20.95, 23.5, 25.2, 27.4, 30.4, 31.95,
-  32.8, 35.0, 38.6, 43.4, 44.9, 46.9, 49.1, 50.6, 53.6, 55.6, 59.5, 61.6, 62.7, 64.0, 65.6, 68.9,
-  71.0, 74.3, 76.8, 78.0, 80.2, 84.9, 88.0, 90.3, 92.5, 94.0, 95.8,
+  0.3, 2.0, 5.5, 7.8, 9.6, 10.9, 12.4, 13.4, 14.2, 15.2, 16.4, 17.6, 19.0, 20.9, 22.4, 23.0, 25.2,
+  26.4, 27.4, 28.4, 29.2, 30.4, 33.0, 34.8, 37.4, 38.4, 39.6, 41.0, 43.0, 45.0, 46.9, 48.9, 50.0,
+  51.4, 53.0, 55.0, 57.6, 58.4, 59.0, 60.1, 61.5, 62.9, 64.5, 67.2, 70.0, 71.5, 72.8, 74.3, 76.0,
+  77.3, 78.9, 80.8, 82.2, 85.0, 87.3, 88.3, 90.5,
 ]
 
 // ------------------------------------------------------------------ captions
@@ -411,9 +419,10 @@ async function dayWindow(B, w, ctx) {
     f0,
     f1,
     sfx,
-    // the day's own frames, drawn by its own renderer, for the film frames asked for
+    // the day's own frames, drawn by its own renderer, for the film frames asked for: a few either
+    // side of the window too, for the swipes that bring it in and take it away
     svgs(frames) {
-      const want = frames.filter((f) => f >= f0 && f < f1)
+      const want = frames.filter((f) => f >= f0 - SWIPE_F && f < f1 + SWIPE_F)
       const m = new Map()
       if (!want.length) return m
       const out = frameSvgs(plan, scX, A, cap, ec, endStyle, { at: want.map(local), fit: winFit })
@@ -529,13 +538,13 @@ export async function buildFilm({
   const endAt = W(END_BOARD),
     duration = shots[shots.length - 1].T1,
     n = Math.round(duration * FPS)
-  const cuts = shots.slice(1).map((s) => s.T0)
-  // the dolly from day 100 into the wall is one continuous move, not a cut
-  const hardCuts = shots
-    .slice(1)
-    .filter((s) => !s.wall)
-    .map((s) => s.T0)
+  // the joins a bubble treats as cuts: a whole new picture (the race's swipes, the dolly out of day
+  // 100). Across a poof, a flat or the match it is the same place, and the bubble stays up.
+  const cuts = shots.filter((s) => s.tx === 'swipe' || s.tx === 'dolly').map((s) => s.T0)
   const caps = await layoutCaptions(B, clock, cuts, lang)
+  // the backdrop flats and the stage's bursts, in film time
+  const flats = FLATS.map(([b, look, kind]) => [W(b), look, kind])
+  const bursts = BURSTS.map(([a, b]) => [W(a), W(b)])
   // the header text, measured in the browser that draws it
   const [w100] = await B.measure(['VENUS'], `900 100px Nunito`)
   const titleF = Math.min(230, Math.floor(800 / (w100 / 100 - 0.15)))
@@ -619,8 +628,8 @@ export async function buildFilm({
   for (const sh of shots) {
     if (sh.day || sh.wall) continue
     const S = shotClock(sh, clock)
+    S.pillBottom = F.taglineBottom
     if (sh.id === 'bonk') Object.assign(S, await bonkTop(B, sh, S))
-    if (sh.id === 'title') S.pillBottom = F.taglineBottom
     // a shot with a counter: small enough that her ears stay under its label once it is up
     const fit = sh.labelAt !== undefined ? await shotLabelFit(B, sh, S, F) : 1
     Object.assign(sh, performShot(sh, S), { fit })
@@ -629,21 +638,46 @@ export async function buildFilm({
       if (at >= sh.T0 - 0.05 && at < sh.T1) sfx.push({ ...x, at })
     }
   }
+  // the poof over every poof join: centred on her body as the incoming shot frames it, a soft pop
+  const joinPoofs = shots
+    .filter((sh) => sh.tx === 'poof')
+    .map((sh) => {
+      const ta = sh.off
+      const z = L.trk(sh.cam.z, ta),
+        s = BASE * z
+      const cy = G + HEAD_H * BASE * (z - 1) - (sh.cam.lift ? L.trk(sh.cam.lift, ta) : 0)
+      sfx.push({ kind: 'pop', at: sh.T0 - 0.02, gainDb: -10 })
+      // over her whole sitting figure, ears to paws (she is about 520 px tall at zoom 1)
+      return {
+        T0: sh.T0,
+        x: 540 + (sh.cam.dx ? L.trk(sh.cam.dx, ta) : 0),
+        y: cy - 270 * s,
+        k: 1.9 * z,
+      }
+    })
   // the race, and the wall it dollies out to
   for (const sh of shots.filter((s) => s.day)) {
     Object.assign(sh, await dayWindow(B, sh, ctx))
     sfx.push(...sh.sfx)
   }
-  sfx.push({ kind: 'sting', at: W(52.9), gainDb: -3 }, ...wallSfx(clock))
+  // day 100's slam is anchor B: the sting on the downbeat, with the score's crash
+  sfx.push({ kind: 'sting', at: clock.anchors.B, gainDb: -3 }, ...wallSfx(clock))
+  // a flat moving is heard, just: a soft whoosh
+  for (const [t, , kind] of flats)
+    if (kind !== 'set') sfx.push({ kind: 'whoosh', at: t, gainDb: -16 })
   sfx.push(...EC.endSfx(endStyle, endAt))
-  return {
+  const bonk = shots.find((s) => s.id === 'bonk')
+  const film = {
     lang,
     rtl,
     clock,
     W,
     caps,
     shots,
-    hardCuts,
+    cuts,
+    flats,
+    bursts,
+    joinPoofs,
     F,
     ctx,
     env,
@@ -655,7 +689,11 @@ export async function buildFilm({
     n,
     endStyle,
     scene0: '',
+    // the bonk in film time, and the floor its first frame stands on (the wall's push settles on it)
+    bonkHit: bonk.c.bonk - bonk.off + bonk.T0,
+    bonkCy: G + HEAD_H * BASE * (BONK_CAM.z - 1) - BONK_CAM.lift,
   }
+  return film
 }
 // The bonk: on the leap's last frame (the hit) her top meets the locked frame's bottom edge, and
 // from the next one, crumpled against it and turning to the lens, she is held there (pin) until she
@@ -703,45 +741,48 @@ async function shotLabelFit(B, sh, S, F) {
 }
 function wallSfx(clock) {
   const W = clock.W
-  const a = W(54.9),
-    b = W(56.4)
+  const a = W(WALL_TIMES.a),
+    b = W(WALL_TIMES.b)
   const ticks = []
   for (let i = 1; i <= 99; i++) ticks.push([a + ((i - 1) / 99) * (b - a) * 0.92, i / 99])
   return [
     { kind: 'counter', ticks, gainDb: -9 },
-    { kind: 'sparkle', at: W(58.45), gainDb: -7 },
+    { kind: 'sparkle', at: W(WALL_TIMES.glint), gainDb: -7 },
     { kind: 'blip', at: clock.lines['intro-15'].sents[1].t0, gainDb: -6 },
-    { kind: 'whoosh', at: W(62.4), gainDb: -6 },
+    { kind: 'whoosh', at: W(WALL_TIMES.push), gainDb: -6 },
   ]
 }
 
 // ------------------------------------------------------------------ one frame
 const shotAt = (film, t) =>
   film.shots.find((s) => t >= s.T0 - 1e-9 && t < s.T1 - 1e-9) || film.shots[film.shots.length - 1]
+// a swipe takes 0.24 s, centred on its join
+const SWIPE = 0.24,
+  SWIPE_F = Math.ceil((SWIPE / 2) * FPS) + 1
+// The backdrop behind her at film time t: the stage (its floor always under her), and the flats up
+// over it, clipped to above the floor line. The look on top sets the bubble's shadow.
+function backdrop(film, t, cy) {
+  const floorY = cy - 80
+  const flats = FL.flatsAt(t, film.flats, Math.max(1500, floorY + 20))
+  let s = FL.stageGround(t, cy, film.bursts)
+  flats.forEach((fl, i) => {
+    const content =
+      fl.look === 'wall'
+        ? wallFlat(film, t)
+        : L.LOOKS[fl.look].bg(t, cy, { seed: 7, numAt: Infinity })
+    s += FL.flat(content, fl.dy, floorY, `fl${i}`)
+  })
+  let look = 'stage'
+  for (const fl of flats) if (floorY + fl.dy > floorY / 2 && fl.look !== 'wall') look = fl.look
+  return { s, flats, look }
+}
 // Her, in one of her shots, at film frame f, in the parts the end card and the photo print need:
-// under (the ground and what stands behind her), fig, over (effects), flash, top (titles, stickers)
+// under (the backdrop and what stands behind her), fig, over (effects), flash, top (titles, stickers)
 function drawShot(film, sh, f) {
   const t = f / FPS,
     ta = t - sh.T0 + sh.off
   const S = sh.S,
     c = sh.c
-  const ctxG = { numAt: sh.numAt !== undefined ? S.at(sh.numAt) : Infinity, seed: 7 }
-  let top = sh.over ? sh.over(ta, S, film.F) : '',
-    freeze = null
-  if (top && typeof top === 'object') ({ s: top, freeze } = top)
-  if (sh.empty)
-    return {
-      under: L.ground(sh.look, ta, G, ctxG),
-      fig: '',
-      over: '',
-      flash: '',
-      top,
-      ta,
-      hx: 540,
-      hy: 1052,
-      cx: 540,
-      cy: G,
-    }
   const P = sh.anim.at(Math.max(0, Math.round(ta * FPS)))
   // lip sync (render.mjs's): loudness opens the mouth, brightness widens it
   const e = film.env[f]
@@ -786,7 +827,12 @@ function drawShot(film, sh, f) {
   let z = L.trk(cam.z, ta)
   for (const b of cam.bumps)
     if (ta >= b && ta < b + 0.35) z *= 1 + 0.06 * Math.sin(((ta - b) / 0.35) * Math.PI)
-  const fit = sh.fit ?? 1
+  // a shot with a counter has her small enough for its label: she eases to that size over the 0.4 s
+  // before it pops, not from the shot's first frame
+  const fit =
+    sh.fit === undefined || sh.fit >= 1
+      ? 1
+      : 1 + (sh.fit - 1) * EASE.inOut(clamp((ta - (S.at(sh.labelAt) - 0.4)) / 0.4))
   const s = BASE * z * fit
   let cx = 540 + (cam.dx ? L.trk(cam.dx, ta) : 0),
     cy = G + HEAD_H * BASE * fit * (z - 1) - (cam.lift ? L.trk(cam.lift, ta) : 0)
@@ -798,10 +844,10 @@ function drawShot(film, sh, f) {
       cy += Math.cos(ta * 83) * a
     }
   }
-  const under =
-    (sh.burstFade !== undefined
-      ? FL.burstFade(ta, cy, ctxG, S.at(sh.burstFade))
-      : L.ground(sh.look, ta, cy, ctxG)) + (sh.under ? sh.under(ta, S, film.F) : '')
+  const bd = backdrop(film, t, cy)
+  let top = sh.over ? sh.over(ta, S, film.F, t, bd.flats) : '',
+    freeze = null
+  if (top && typeof top === 'object') ({ s: top, freeze } = top)
   let body = itemLayers(IT, ta, P, V.draw(P), fake)
   const MP = c.fx.props
   if (MP.length)
@@ -810,7 +856,7 @@ function drawShot(film, sh, f) {
   const hx = cx + P.x * s,
     hy = cy - HEAD_H * s
   let over = ''
-  if (c.fx.ledge && P.y > 30) over += L.ledge(sh.look, cy)
+  if (c.fx.ledge && P.y > 30) over += L.ledge('stage', cy)
   for (const im of c.fx.impacts) over += L.impact(ta, im, cx, cy)
   for (const sp of c.fx.sparkles) over += L.sparkles(ta, sp[0], sp[1], sp[2], 7)
   for (const p of c.poofs || [])
@@ -820,25 +866,26 @@ function drawShot(film, sh, f) {
         ? FL.quickPoof(ta, p.t, hx, hy - 40 * s)
         : p.at === 'feet'
           ? FL.quickPoof(ta, p.t, cx + P.x * s - 150 * s, cy - 20 * s, 0.35, 0.38)
-          : FL.quickPoof(ta, p.t, cx, cy - 200 * s)
+          : p.at === 'seat'
+            ? FL.quickPoof(ta, p.t, cx + P.x * s, cy - 50 * s, 0.3, 0.8)
+            : FL.quickPoof(ta, p.t, cx, cy - 200 * s)
   const flash = c.fx.flashes.length ? L.flashes(ta, c.fx.flashes, { wash: 0.2 }) : ''
-  return { under, fig, over, flash, top, freeze, ta, hx, hy, cx, cy }
+  return { under: bd.s, look: bd.look, fig, over, flash, top, freeze, ta, hx, hy, cx, cy }
 }
-// The wall, at film frame f: the dimmed stage, the covers rippling in, the live day-100 frame
-// (d100: its svg, while the dolly lasts) shrinking into its tile, the glint, the frost and locks,
-// and at the end the push into tile 31 that the bonk's locked frame matches on the cut.
-function drawWall(film, sh, f, d100) {
+// The wall at film time t, as it stands before any push: the dimmed stage, the covers rippling in,
+// the live day-100 frame (d100: its svg, while the dolly lasts) shrinking into its tile, the glint,
+// the frost and the locks. skip: a tile not to draw (the bonk's locked frame stands in for it).
+function wallBody(film, t, d100, skip = 0) {
   const { W, rtl, clock } = film.ctx
-  const t = f / FPS
-  const a = W(54.9),
-    b = W(56.4)
+  const a = W(WALL_TIMES.a),
+    b = W(WALL_TIMES.b)
   let s =
-    L.ground('stage', t - sh.T0, G, { numAt: Infinity, seed: 7 }) +
+    L.ground('stage', t, G, { numAt: Infinity, seed: 7 }) +
     `<rect width="${L.W}" height="${L.H}" fill="${L.INK}" opacity="0.5"/>`
-  const glintAt = W(58.45),
+  const glintAt = W(WALL_TIMES.glint),
     lockAt = clock.lines['intro-15'].sents[1].t0
   for (let i = 1; i <= 100; i++) {
-    if (i === 100 && t < b) continue
+    if ((i === 100 && t < b) || i === skip) continue
     const pop = i === 100 ? 1 : clamp((t - (a + ((i - 1) / 99) * (b - a) * 0.92)) / 0.16)
     const glint = i <= 30 ? (t - (glintAt + (i - 1) * 0.025)) / 0.35 : -1
     const frost = i > 30 ? clamp((t - (lockAt + ((i - 31) / 69) * 0.6)) / 0.3) : 0
@@ -865,211 +912,136 @@ function drawWall(film, sh, f, d100) {
     const [gx, gy] = FL.tileRect(rtl ? 10 : 1, rtl)
     s += L.sparkles(t, glintAt, rtl ? gx - 374 : gx + 460, gy + 130, 11, 7, 420)
   }
-  const p0 = W(62.4)
-  if (t > p0) {
-    const [tx, ty, tw] = FL.tileRect(31, rtl)
-    const [X1, Y1, W1] = BONK_FRAME
-    const v = EASE.in(clamp((t - p0) / (sh.T1 - p0)))
-    const kEnd = W1 / tw,
-      k = Math.exp(Math.log(kEnd) * v),
-      q = (k - 1) / (kEnd - 1)
-    s = `<g transform="translate(${r3(tx + (X1 - tx) * q - tx * k)} ${r3(ty + (Y1 - ty) * q - ty * k)}) scale(${r3(k)})">${s}</g>`
-  }
   return s
+}
+// the push into tile 31, v 0..1: one exponential zoom that lands the tile on BONK_FRAME
+function wallPushed(film, s, v) {
+  const [tx, ty, tw] = FL.tileRect(31, film.rtl)
+  const [X1, Y1, W1] = BONK_FRAME
+  const kEnd = W1 / tw,
+    k = Math.exp(Math.log(kEnd) * v),
+    q = (k - 1) / (kEnd - 1)
+  return `<g transform="translate(${r3(tx + (X1 - tx) * q - tx * k)} ${r3(ty + (Y1 - ty) * q - ty * k)}) scale(${r3(k)})">${s}</g>`
+}
+// The wall, at film frame f. Its last move is the push into tile 31, eased in and out so it settles
+// on the bonk's framing; while it settles the stage floor comes up under it (the wall becomes the
+// bonk's backdrop flat). Only once it has settled does the big locked frame fade in over the tile:
+// faded in over a wall still zooming, it showed as a second, misregistered tile 31 beside the first.
+// So the match into the bonk changes nothing on screen.
+const MATCH_FADE = 0.3
+function drawWall(film, sh, f, d100) {
+  const t = f / FPS
+  const s = wallBody(film, t, d100)
+  const p0 = film.W(WALL_TIMES.push),
+    p1 = sh.T1 - MATCH_FADE
+  if (t <= p0) return s
+  const v = EASE.inOut(clamp((t - p0) / (p1 - p0)))
+  const floorY = film.bonkCy - 80
+  let out =
+    FL.stageGround(t, film.bonkCy, film.bursts) +
+    FL.flat(wallPushed(film, s, v), 0, L.H - (L.H - floorY) * v, 'wfl')
+  const k = clamp((t - p1) / MATCH_FADE)
+  if (k > 0) out += `<g opacity="${r3(k)}">${FL.lockedFrame(31, ...BONK_FRAME)}</g>`
+  return out
+}
+// The wall as the bonk's backdrop: held as the push left it, tile 31 drawn as the big locked frame,
+// which rattles when she hits it
+function wallFlat(film, t) {
+  if (!film.wallFrozen) {
+    const wall = film.shots.find((s) => s.wall)
+    film.wallFrozen = wallPushed(film, wallBody(film, wall.T1, null, 31), 1)
+  }
+  const u = t - film.bonkHit
+  const rot = u > 0 && u < 0.6 ? 3.5 * Math.sin(u * 40) * Math.exp(-u * 6) : 0
+  const [x, y, w] = BONK_FRAME
+  return (
+    film.wallFrozen +
+    `<g transform="rotate(${r3(rot)} ${x + w / 2} ${y})">${FL.lockedFrame(31, x, y, w)}</g>`
+  )
+}
+// One shot's picture at film frame f (the days' from dayCache), with the end card over the last
+function sceneOf(film, sh, f, dayCache) {
+  const t = f / FPS
+  if (sh.day) return { scene: dayCache.get(`${sh.id}:${f}`) ?? '', look: sh.look, E: null }
+  if (sh.wall)
+    return { scene: drawWall(film, sh, f, dayCache.get(`d100:${f}`)), look: 'stage', E: null }
+  const d = drawShot(film, sh, f)
+  let E = null
+  if (sh === film.shots[film.shots.length - 1] && t >= film.endAt && f > 0)
+    E = EC.frame(film.endStyle, {
+      u: t - film.endAt,
+      t,
+      hx: d.hx,
+      hy: d.hy,
+      cx: d.cx,
+      cy: d.cy,
+      V,
+      ec: film.ctx.ec,
+      scene0: film.scene0,
+    })
+  const fig = E && E.fig ? `<g transform="${E.fig}">${d.fig}</g>` : d.fig
+  let scene = E && E.cover ? '' : d.under + fig + d.over + d.flash + d.top
+  // the photo booth: the frame freezes into a print (without the flash that took it), which then
+  // flies to its sticker over the live picture
+  if (d.freeze && d.ta >= d.freeze.at - 1e-6 && d.ta < d.freeze.flyEnd + 0.01) {
+    const fr = d.freeze
+    if (!sh.frozen) sh.frozen = d.under + d.fig + d.over
+    const print = FL.print(d.ta, {
+      scene: sh.frozen,
+      rect: PRINT,
+      freezeAt: fr.at,
+      flyAt: fr.live,
+      flyEnd: fr.flyEnd,
+      to: { x: BLEP_HERO[0], y: BLEP_HERO[1], size: BLEP_HERO[2], rot: BLEP_HERO[3] },
+      id: 'st-blep',
+    })
+    // the bubble stays above the print, and above the dim while it lifts
+    scene = d.ta < fr.live ? print + d.top : d.under + fig + d.over + d.flash + print + d.top
+  }
+  return { scene, look: d.look, E }
+}
+// Two pictures in one frame (a swipe) must not share ids: the incoming one's are renamed
+function prefixIds(svg, p) {
+  const ids = new Set([...svg.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]))
+  if (!ids.size) return svg
+  const ref = (m, pre, id, post) => (ids.has(id) ? `${pre}${p}-${id}${post}` : m)
+  return svg
+    .replace(/\bid="([^"]+)"/g, (m, id) => `id="${p}-${id}"`)
+    .replace(/(url\(#)([^)]+)(\))/g, ref)
+    .replace(/(href="#)([^"]+)(")/g, ref)
 }
 function frameSvg(film, f, dayCache, { cover = false } = {}) {
   const t = f / FPS
   const sh = shotAt(film, t)
-  let scene,
-    E = null
-  if (sh.day) scene = dayCache.get(f) ?? ''
-  else if (sh.wall) scene = drawWall(film, sh, f, dayCache.get(f))
-  else {
-    const d = drawShot(film, sh, f)
-    if (sh === film.shots[film.shots.length - 1] && t >= film.endAt && f > 0)
-      E = EC.frame(film.endStyle, {
-        u: t - film.endAt,
-        t,
-        hx: d.hx,
-        hy: d.hy,
-        cx: d.cx,
-        cy: d.cy,
-        V,
-        ec: film.ctx.ec,
-        scene0: film.scene0,
-      })
-    const fig = E && E.fig ? `<g transform="${E.fig}">${d.fig}</g>` : d.fig
-    scene = E && E.cover ? '' : d.under + fig + d.over + d.flash + d.top
-    // the photo booth: the frame freezes into a print (without the flash that took it), which then
-    // flies to its sticker over the live picture
-    if (d.freeze && d.ta >= d.freeze.at - 1e-6 && d.ta < d.freeze.flyEnd + 0.01) {
-      const fr = d.freeze
-      if (!sh.frozen) sh.frozen = d.under + d.fig + d.over
-      const print = FL.print(d.ta, {
-        scene: sh.frozen,
-        rect: PRINT,
-        freezeAt: fr.at,
-        flyAt: fr.live,
-        flyEnd: fr.flyEnd,
-        to: { x: BLEP_HERO[0], y: BLEP_HERO[1], size: BLEP_HERO[2], rot: BLEP_HERO[3] },
-        id: 'st-blep',
-      })
-      scene = d.ta < fr.live ? print + d.top : scene + print
-    }
+  let { scene, look, E } = sceneOf(film, sh, f, dayCache)
+  // a swipe: the old picture slides up and away as the new one comes in from below
+  const k = film.shots.findIndex(
+    (s, i) => i > 0 && s.tx === 'swipe' && Math.abs(t - s.T0) < SWIPE / 2 - 1e-9,
+  )
+  if (k > 0) {
+    const inc = film.shots[k],
+      before = sh !== inc
+    const other = sceneOf(film, before ? inc : film.shots[k - 1], f, dayCache).scene
+    const [a, b] = before ? [scene, other] : [other, scene]
+    const u = EASE.inOut(clamp((t - (inc.T0 - SWIPE / 2)) / SWIPE))
+    scene = `<g transform="translate(0 ${r3(-u * L.H)})">${a}</g><g transform="translate(0 ${r3((1 - u) * L.H)})">${prefixIds(b, 'sw')}</g>`
   }
+  // the poof over a poof join
+  for (const p of film.joinPoofs) scene += FL.bigPoof(t, p.T0, p.x, p.y, p.k)
   if (f === 0) film.scene0 = scene
   let body = scene
   if (cover) body += EC.badge(540, 1790, 44)
-  else if (!(E && E.cover)) body += captionAt(film.caps, t, sh.look, film.rtl, film.hardCuts)
+  else if (!(E && E.cover)) body += captionAt(film.caps, t, look, film.rtl, film.cuts)
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${L.W}" height="${L.H}" viewBox="0 0 ${L.W} ${L.H}">${body}${E ? E.over : ''}</svg>`
 }
 
 // ------------------------------------------------------------------ sound
-// The music: one bed per section, each a loop rendered at a fixed tempo and laid from the section's
-// first beat, so the cuts stay on its grid; hard stops (30 ms), the crossfade on the 40.90 clapper,
-// the low-pass sweep under the lock, the onesie's one-beat duck, and the duck under her lines.
-const MUSIC = [
-  { mood: 'epic', from: 10.6, to: 19.1, bpm: 120, seed: 41 },
-  { mood: 'celebrate', from: 21.4, to: 40.9, bpm: 120, seed: 42, xOut: true },
-  { mood: 'epic', from: 40.9, to: 52.4, bpm: 120, seed: 43, xIn: true },
-  { mood: 'celebrate', from: 52.9, to: 63.7, bpm: 120, seed: 44, sweep: 60.44 },
-  { mood: 'chill', from: 66.8, to: 75.0, bpm: 90, seed: 45, fadeIn: 0.3 },
-  { mood: 'celebrate', from: 75.0, to: 86.0, bpm: 120, seed: 46 },
-  { mood: 'cozy', from: 86.0, to: null, bpm: 80, seed: 47 },
-]
-// the board spans with no music bed: before the first and between beds that do not meet
-function quietSpans() {
-  const spans = []
-  let at = 0
-  for (const m of MUSIC) {
-    if (m.from > at + 1e-6) spans.push([at, m.from])
-    at = m.to === null ? Infinity : Math.max(at, m.to)
-  }
-  return spans
-}
-function musicStem(film, out, voiced) {
-  const { W, duration, clock } = film
-  const N = Math.round((duration + 0.5) * SR)
-  const [OL, OR] = stereo(N)
-  // the crossfade in whole samples, and even: a bed that starts half of it early must start on a
-  // sample (a fractional index writes nothing, and the whole bed went missing that way)
-  const XF = 2 * Math.round(0.125 * SR),
-    HARD = Math.round(0.03 * SR)
-  // room tone wherever there is no music (the cold open, the empty set, the breath before day 100,
-  // the bonk): a faint low hum of air, so the shutters and the bonk sit in a room and a silent
-  // cut's captions never play over a dropout
-  let seed = 0x2f6b1,
-    yl0 = 0,
-    yr0 = 0
-  const rnd = () => ((seed = (seed * 1103515245 + 12345) >>> 0) / 2 ** 32) * 2 - 1
-  for (const [from, to] of quietSpans()) {
-    const i0 = Math.round(W(from) * SR),
-      i1 = Math.min(N, Math.round(W(to) * SR)),
-      fade = Math.min(Math.round(0.4 * SR), Math.round((i1 - i0) / 4))
-    for (let i = i0; i < i1; i++) {
-      const k = 0.016 * Math.min(1, (i - i0 + 1) / fade, (i1 - i) / fade)
-      yl0 += 0.08 * (rnd() - yl0)
-      yr0 += 0.08 * (rnd() - yr0)
-      OL[i] += yl0 * k
-      OR[i] += yr0 * k
-    }
-  }
-  for (const m of MUSIC) {
-    const loop = path.join(CACHE, `intro-music-${m.mood}-${m.bpm}-${m.seed}.wav`)
-    if (!fs.existsSync(loop)) {
-      fs.mkdirSync(CACHE, { recursive: true })
-      renderMusic({ mood: m.mood, seed: m.seed, outPath: loop, bpm: m.bpm, bars: 8 })
-    }
-    const g = Math.pow(10, (-16 - measure(loop).lufs) / 20)
-    const [LL, LR] = decode(loop, { rate: SR, ch: 2 })
-    const len = LL.length
-    const a = Math.round(W(m.from) * SR),
-      b = m.to === null ? N : Math.round(W(m.to) * SR)
-    const start = m.xIn ? a - XF / 2 : a,
-      end = m.xOut ? b + XF / 2 : b
-    const fin = m.xIn ? XF : m.fadeIn ? Math.round(m.fadeIn * SR) : Math.round(0.005 * SR)
-    const fout = m.xOut ? XF : m.to === null ? 1 : HARD
-    // the sweep: a one-pole low-pass whose cutoff falls 16 kHz -> 400 Hz to the section's end
-    const sw = m.sweep ? Math.round(W(m.sweep) * SR) : Infinity
-    let yl = 0,
-      yr = 0
-    for (let i = Math.max(0, start); i < Math.min(N, end); i++) {
-      const j = (((i - a) % len) + len) % len
-      const k = g * Math.min(1, (i - start) / fin, (end - i) / fout)
-      let l = LL[j] * k,
-        r = LR[j] * k
-      if (i >= sw) {
-        const u = (i - sw) / Math.max(1, b - sw)
-        const al = 1 - Math.exp((-2 * Math.PI * 16000 * Math.pow(400 / 16000, u)) / SR)
-        yl += al * (l - yl)
-        yr += al * (r - yr)
-        l = yl
-        r = yr
-      } else {
-        yl = l
-        yr = r
-      }
-      OL[i] += l
-      OR[i] += r
-    }
-  }
-  // ducks, as one gain curve: the onesie's beat (-6 dB), and her lines (-3 dB under the on-camera
-  // ones while the cut is silent, so the bed already breathes where the voice will sit; the house
-  // -10 dB under every line once it is voiced, up to 4 dB deeper under a soft one: lifted to her
-  // median level, a whisper still sat 2-3 dB nearer the bed than her normal lines did)
-  const gain = new Float32Array(N).fill(1)
-  const duck = (t0, t1, db, pre, post) => {
-    const d = 1 - Math.pow(10, -db / 20)
-    const i1 = Math.min(N, Math.round((t1 + post) * SR))
-    for (let i = Math.max(0, Math.round((t0 - pre) * SR)); i < i1; i++) {
-      const t = i / SR
-      const k = clamp(Math.min((t - (t0 - pre)) / pre, (t1 + post - t) / post))
-      gain[i] = Math.min(gain[i], 1 - d * k)
-    }
-  }
-  duck(W(24.9), W(24.9) + 0.5, 6, 0.03, 0.03)
-  const lifts = voiced ? voiceLifts(film) : null
-  for (const Ln of Object.values(clock.lines))
-    for (const s of Ln.sents)
-      if (voiced) duck(s.t0, s.t1, 10 + Math.min(4, (lifts.get(s) || 0) / 3), 0.15, 0.35)
-      else if (s.mode !== 'vo') duck(s.t0, s.t1, 3, 0.15, 0.35)
-  // A 15 kHz low-pass (two-pole, Butterworth) over the beds: the music box's attacks jump almost
-  // full scale from one sample to the next, and AAC rings on that, a one-sample spike up to 5 dB
-  // over the limiter (es and fr went over -1 dBTP whatever the ceiling). Nothing of the beds lives
-  // up there.
-  const w0 = (2 * Math.PI * 15000) / SR,
-    al = Math.sin(w0) / (2 * Math.SQRT1_2),
-    cw = Math.cos(w0),
-    a0 = 1 + al
-  const b0 = (1 - cw) / 2 / a0,
-    b1 = (1 - cw) / a0,
-    a1 = (-2 * cw) / a0,
-    a2 = (1 - al) / a0
-  for (const X of [OL, OR]) {
-    let x1 = 0,
-      x2 = 0,
-      y1 = 0,
-      y2 = 0
-    for (let i = 0; i < N; i++) {
-      const x = X[i] * gain[i]
-      const y = b0 * x + b1 * x1 + b0 * x2 - a1 * y1 - a2 * y2
-      x2 = x1
-      x1 = x
-      y2 = y1
-      y1 = y
-      X[i] = y
-    }
-  }
-  let peak = 0
-  for (let i = 0; i < N; i++) peak = Math.max(peak, Math.abs(OL[i]), Math.abs(OR[i]))
-  if (peak > 0.89)
-    for (let i = 0; i < N; i++) {
-      OL[i] *= 0.89 / peak
-      OR[i] *= 0.89 / peak
-    }
-  writeWav(out, [OL, OR])
-  return out
-}
+// The music is one score for the whole film (lib/film-score.mjs): one key, one tempo, one bar grid,
+// every section at one loudness and nothing ever stopping. It sits at one gain under her voice from
+// the first frame to the last. The first cut ducked it under every line and laid a new bed at every
+// cut, and the music rose and fell every few seconds: the film sounded like separate pieces.
+const musicStem = (film, out) =>
+  renderScore(planScore(film.clock, { endAt: film.endAt, duration: film.duration }), out)
 // K-weighting at 48 kHz (BS.1770: the shelf, then the high-pass), as [b0, b1, b2, a1, a2]
 const KW = [
   [1.53512485958697, -2.69169618940638, 1.19839281085285, -1.69065929318241, 0.73248077421585],
@@ -1107,8 +1079,7 @@ function activeLevel(x, from, to) {
 }
 // Each voiced sentence's lift in dB, keyed by the clock's sentence: up to the film's median
 // sentence, never down. A [whispers] or [softly] take comes out 10-15 dB under her normal lines,
-// and with the bed ducked by one flat 10 dB those lines sat level with the music and were lost
-// under it. Worked out once per film; the voice and the music stems both read it.
+// and those lines sat level with the music and were lost under it. Worked out once per film.
 function voiceLifts(film) {
   if (film.lifts) return film.lifts
   const level = new Map()
@@ -1167,7 +1138,88 @@ function voiceStem(film, out) {
   ])
   return out
 }
-async function filmAudio(film, out, tag) {
+// The voice's own peak control, before it meets the bed. mix() ends in one limiter over the whole
+// sum, so a stressed syllable that reaches it turns the music down with it: the bed dipped up to
+// 9 dB on her loud words, the ride the static bed gain exists to avoid. Compressing and limiting
+// the voice alone keeps those peaks under the master limiter, which then has nothing to pull.
+// Levels are set with the voice at the house -16 LUFS, the level mix() takes it at.
+const VOICE_COMP = { threshold: -18, ratio: 3, attack: 5, release: 120 }
+const VOICE_CEILING = -9
+function voiceBus(raw, out) {
+  const comp = out.replace(/\.wav$/, '.comp.wav')
+  const c = VOICE_COMP
+  ff([
+    ...['-i', raw, '-af'],
+    `volume=${(-16 - measure(raw).lufs).toFixed(2)}dB,acompressor=threshold=${c.threshold}dB:ratio=${c.ratio}:attack=${c.attack}:release=${c.release}:knee=4`,
+    ...['-c:a', 'pcm_f32le', '-ar', '48000', comp],
+  ])
+  ff([
+    ...['-i', comp, '-af'],
+    `volume=${(-16 - measure(comp).lufs).toFixed(2)}dB,alimiter=limit=${Math.pow(10, VOICE_CEILING / 20).toFixed(4)}:attack=3:release=80:level=disabled:latency=1`,
+    ...['-c:a', 'pcm_f32le', '-ar', '48000', out],
+  ])
+  fs.rmSync(comp, { force: true })
+  return out
+}
+// integrated loudness of the part of a file from a to b seconds
+function spanLufs(file, a, b) {
+  const out = ffStderr([
+    ...['-i', file, '-af', `atrim=${r3(a)}:${r3(b)},ebur128=framelog=quiet`],
+    ...['-f', 'null', '-'],
+  ])
+  return +out.slice(out.lastIndexOf('Summary:')).match(/I:\s+(-?[\d.]+) LUFS/)[1]
+}
+// Voice over music for each voiced sentence, in dB, as both reach the mix (gv, gm: their gains):
+// K-weighted, over its active speech, 50 ms blocks within 20 dB of its loudest
+function voiceOverMusic(film, voice, music, gv, gm) {
+  const kw = (x) => {
+    let y = x
+    for (const [b0, b1, b2, a1, a2] of KW) {
+      const o = new Float32Array(y.length)
+      let x1 = 0,
+        x2 = 0,
+        y1 = 0,
+        y2 = 0
+      for (let i = 0; i < y.length; i++) {
+        o[i] = b0 * y[i] + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2
+        x2 = x1
+        x1 = y[i]
+        y2 = y1
+        y1 = o[i]
+      }
+      y = o
+    }
+    return y
+  }
+  const v = kw(decode(voice, { rate: 48000 })[0]),
+    m = kw(decode(music, { rate: 48000 })[0])
+  const rows = []
+  for (const Ln of Object.values(film.clock.lines)) {
+    if (!Ln.take) continue
+    for (const s of Ln.sents) {
+      const a = Math.round(s.t0 * 48000),
+        b = Math.min(v.length, m.length, Math.round(s.t1 * 48000))
+      const blk = []
+      for (let i = a; i + 2400 <= b; i += 1200) {
+        let x = 0,
+          y = 0
+        for (let j = i; j < i + 2400; j++) {
+          x += v[j] * v[j]
+          y += m[j] * m[j]
+        }
+        blk.push([x, y])
+      }
+      if (!blk.length) continue
+      const top = Math.max(...blk.map((q) => q[0])),
+        on = blk.filter((q) => q[0] >= top / 100)
+      const ev = on.reduce((t, q) => t + q[0], 0),
+        em = on.reduce((t, q) => t + q[1], 0)
+      rows.push({ id: `${Ln.id}[${s.i}]`, t0: s.t0, db: 10 * Math.log10(ev / em) + gv - gm })
+    }
+  }
+  return rows
+}
+async function filmAudio(film, out, tag, { keep = false } = {}) {
   const dir = path.join(WORK, 'audio')
   fs.mkdirSync(dir, { recursive: true })
   const sfxWav = sfxBus(
@@ -1176,24 +1228,55 @@ async function filmAudio(film, out, tag) {
     path.join(dir, `sfx-${tag}.wav`),
     CACHE,
   )
-  const voice = voiceStem(film, path.join(dir, `voice-${tag}.wav`))
-  const music = musicStem(film, path.join(dir, `music-${tag}.wav`), !!voice)
+  const dry = voiceStem(film, path.join(dir, `voice-dry-${tag}.wav`))
+  const voice = dry && voiceBus(dry, path.join(dir, `voice-${tag}.wav`))
+  if (dry && !keep) fs.rmSync(dry, { force: true })
+  const score = musicStem(film, path.join(dir, `music-${tag}.wav`))
+  const music = score.out
+  // one gain for the bed, from the voice (lib/film-score.mjs bedGain), checked sentence by sentence
+  const Lm = measure(music).lufs
+  const gv = voice ? -16 - measure(voice).lufs : null
+  let gainDb = bedGain({
+      voiced: !!voice,
+      wholeLufs: Lm,
+      spanLufs: voice ? spanLufs(music, film.clock.bar0 + 2, film.endAt) : null,
+    }),
+    lower = 0,
+    check = null
+  if (voice) {
+    const at = (g) => voiceOverMusic(film, voice, music, gv, g + (-16 - Lm))
+    check = at(gainDb)
+    lower = bedLower(Math.min(...check.map((r) => r.db)))
+    if (lower) {
+      gainDb -= lower
+      check = at(gainDb)
+    }
+  }
   const r = await mix({
     out,
     duration: film.duration,
-    music: { path: music, gainDb: -4, loop: false },
+    music: { path: music, gainDb: +gainDb.toFixed(2), loop: false },
     sfx: [
-      { path: sfxWav, at: 0, gainDb: -6 },
+      { path: sfxWav, at: 0, gainDb: -9 },
       // the voice stem at the house -16 LUFS reference, like mix() does for a single take
-      ...(voice ? [{ path: voice, at: 0, gainDb: +(-16 - measure(voice).lufs).toFixed(2) }] : []),
+      ...(voice ? [{ path: voice, at: 0, gainDb: +gv.toFixed(2) }] : []),
     ],
     fadeOut: 0.9,
     // the finished mp4 (the same AAC, muxed and cut to the picture) measures up to 0.2 dB hotter
     // than the mix did on its own, so the mix aims under the house -1 dBTP
     truePeak: -1.4,
   })
-  for (const f of [sfxWav, music, voice]) if (f) fs.rmSync(f, { force: true })
-  return { ...r, voiced: !!voice }
+  if (!keep) for (const f of [sfxWav, music, voice]) if (f) fs.rmSync(f, { force: true })
+  const dbs = (check || []).map((x) => x.db).sort((x, y) => x - y)
+  return {
+    ...r,
+    voiced: !!voice,
+    music: { gainDb: +gainDb.toFixed(2), lower: +lower.toFixed(2), levels: score.levels },
+    voiceOverMusic: dbs.length
+      ? { min: +dbs[0].toFixed(1), median: +dbs[dbs.length >> 1].toFixed(1), rows: check }
+      : null,
+    gains: { music: +gainDb.toFixed(2), voice: gv === null ? null : +gv.toFixed(2), sfx: -9 },
+  }
 }
 
 // ------------------------------------------------------------------ render
@@ -1246,6 +1329,7 @@ export async function renderFilm({
   endStyle = 'handoff',
   voiceDir = VOICE_DIR,
   sheets = null,
+  audio: audioOnly = false,
   log = console.log,
 }) {
   const t0 = Date.now()
@@ -1253,6 +1337,7 @@ export async function renderFilm({
   try {
     const film = await buildFilm({ lang, B, voiceDir, endStyle, log })
     const { n, W } = film
+    if (audioOnly) return await audioRun(film)
     const tag = `intro-${lang}-${process.pid}`
     const tmp = path.join(WORK, `frames-${tag}`)
     fs.rmSync(tmp, { recursive: true, force: true })
@@ -1281,12 +1366,14 @@ export async function renderFilm({
         if (keep(f) || f === 0 || (full && f === coverF)) frames.push(f)
       if (!frames.length) continue
       for (const sh of film.shots)
-        if (sh.day)
-          for (const [f, s] of sh.svgs(frames.filter((x) => !dayCache.has(x)))) dayCache.set(f, s)
+        if (sh.day) for (const [f, s] of sh.svgs(frames)) dayCache.set(`${sh.id}:${f}`, s)
       const items = [],
         defs = new Set()
       for (const f of frames) {
-        for (const k of shotAt(film, f / FPS).defs || []) defs.add(k)
+        // a swipe or a poof shows the shots either side of its join
+        for (const sh of film.shots)
+          if (f / FPS >= sh.T0 - 0.2 && f / FPS < sh.T1 + 0.2)
+            for (const k of sh.defs || []) defs.add(k)
         const svg = frameSvg(film, f, dayCache)
         if (keep(f)) items.push({ svg, w: L.W, h: L.H, out: png(f) })
         if (full && f === coverF)
@@ -1296,7 +1383,7 @@ export async function renderFilm({
             h: L.H,
             out: path.join(tmp, 'cover.png'),
           })
-        dayCache.delete(f)
+        for (const sh of film.shots) if (sh.day) dayCache.delete(`${sh.id}:${f}`)
       }
       await B.render(items, pages, { defs: defsFor([...defs], film.ctx) })
       if (enc)
@@ -1363,11 +1450,71 @@ export async function renderFilm({
     await B.close()
   }
 }
+// --audio: the sound alone, no frames. The finished m4a, the three stems it was mixed from as they
+// went in (before their gains), and a JSON of what they need to be measured against: her
+// sentences, the SFX events, the score's plan and the gains.
+async function audioRun(film) {
+  const dir = path.join(WORK, 'audio')
+  const lang = film.lang
+  const m4a = path.join(dir, `film-${lang}.m4a`)
+  const sound = await filmAudio(film, m4a, lang, { keep: true })
+  const plan = planScore(film.clock, { endAt: film.endAt, duration: film.duration })
+  const sents = []
+  for (const Ln of Object.values(film.clock.lines))
+    for (const s of Ln.sents)
+      sents.push({ id: `${Ln.id}[${s.i}]`, t0: s.t0, t1: s.t1, mode: s.mode, take: !!Ln.take })
+  sents.sort((a, b) => a.t0 - b.t0)
+  const info = {
+    lang,
+    duration: film.duration,
+    endAt: film.endAt,
+    bar0: film.clock.bar0,
+    anchors: film.clock.anchors,
+    // the three hits: the title slam, the day-100 slam, the bonk
+    hits: [film.clock.anchors.A, film.clock.anchors.B, film.bonkHit],
+    sents,
+    sfx: film.sfx
+      .filter((s) => s.kind === 'counter' || (s.at >= 0 && s.at < film.duration))
+      .map((s) => ({
+        kind: s.kind,
+        at: s.at ?? s.ticks[0][0],
+        gainDb: s.gainDb ?? 0,
+        ...(s.ticks ? { to: s.ticks[s.ticks.length - 1][0] } : {}),
+      })),
+    score: {
+      joins: plan.joins,
+      sections: plan.sections,
+      end: plan.end,
+      levels: sound.music.levels,
+    },
+    gains: sound.gains,
+    lower: sound.music.lower,
+    voiceOverMusic: sound.voiceOverMusic,
+    lufs: sound.lufs,
+    truePeak: sound.truePeak,
+  }
+  fs.writeFileSync(path.join(dir, `film-${lang}.json`), JSON.stringify(info, null, 1))
+  const vom = sound.voiceOverMusic
+  console.log(
+    `${lang}: ${m4a} ${sound.lufs} LUFS ${sound.truePeak} dBTP; music ${sound.gains.music} dB` +
+      (vom ? `, voice over music min ${vom.min} median ${vom.median} dB` : ', silent'),
+  )
+  return { lang, audio: m4a, lufs: sound.lufs, truePeak: sound.truePeak, voiced: sound.voiced }
+}
 // The preview: 720x1280 and under 8 MB whatever the locale's length, so two passes at the bitrate
 // the length allows (7.6 MB for picture and sound)
 function makePreview(src, out) {
   const dur = measure(src).seconds
-  const kbps = Math.floor((7.6 * 8e6) / dur / 1000) - 64
+  // The master's audio goes in as it is. A 64k AAC re-encode kept the loudness but overshot the
+  // true peak by up to 2 dB, past 0 dBTP in two locales, so the preview no longer met the master's
+  // -1 dBTP; copying costs ~130 kbps of picture, which is what the budget below takes off.
+  const audioKbps = Math.ceil(
+    +execFileSync('ffprobe', [
+      ...['-v', 'error', '-select_streams', 'a:0'],
+      ...['-show_entries', 'stream=bit_rate', '-of', 'csv=p=0', src],
+    ]) / 1000,
+  )
+  const kbps = Math.floor((7.6 * 8e6) / dur / 1000) - audioKbps
   const passlog = out.replace(/\.mp4$/, '')
   const base = [
     ...['-i', src, '-map', '0:v:0', '-vf', 'scale=720:1280:flags=lanczos'],
@@ -1383,20 +1530,7 @@ function makePreview(src, out) {
     ...['-passlogfile', passlog],
   ]
   ff([...base, '-pass', '1', '-an', '-f', 'mp4', '/dev/null'])
-  ff([
-    ...base,
-    '-pass',
-    '2',
-    '-map',
-    '0:a:0',
-    '-c:a',
-    'aac',
-    '-b:a',
-    '64k',
-    '-movflags',
-    '+faststart',
-    out,
-  ])
+  ff([...base, '-pass', '2', '-map', '0:a:0', '-c:a', 'copy', '-movflags', '+faststart', out])
   const dir = path.dirname(out)
   for (const f of fs.readdirSync(dir))
     if (f.startsWith(path.basename(passlog)) && /\.log(\.mbtree)?$/.test(f))
@@ -1497,7 +1631,7 @@ if (import.meta.main) {
       const lang = arg('lang')
       if (!LOCALES.includes(lang)) {
         console.error(
-          'usage: node film.mjs --lang xx [--strip N | --at 12.4,64] [--sheets dir] | --all | --script f',
+          'usage: node film.mjs --lang xx [--strip N | --at 12.4,64 | --audio] [--sheets dir] | --all | --script f',
         )
         process.exitCode = 2
         break
@@ -1509,6 +1643,7 @@ if (import.meta.main) {
         at: arg('at') ? arg('at').split(',').map(Number) : null,
         endStyle: EC.styleOf(arg('end', 'handoff')),
         sheets: arg('sheets', null),
+        audio: process.argv.includes('--audio'),
       })
       if (res.strip) console.log('strip', res.strip)
       if (res.stills) console.log('stills', res.stills.join(' '))

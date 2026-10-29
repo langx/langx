@@ -74,20 +74,21 @@ renders exactly as before.
 ## The introduction film
 
 `film.mjs` makes "Venus: Starring Herself", the film behind the Venus page's "Watch the
-introduction": one cut per locale, 1080×1920, 30 fps, about 109 s in English and up to about 113 s
+introduction": one cut per locale, 1080×1920, 30 fps, about 100 s in English and up to about 105 s
 in the longest locale (de). Like the days it is shared, one file per locale. It is not in the
 manifest: `node upload.mjs intro` puts each locale's mp4 and cover beside the days, as
 `venus/v1/<lang>/venus-intro-<lang>.mp4`. The app plays a smaller copy of it, made by hand (below).
 
-The app plays `venus-intro-<lang>-r3.mp4`, not the master: the same cut re-encoded for phones on
-mobile data, about 24 MB instead of about 50, with the picture size and the audio unchanged
-(SSIM 0.997 against the master), and its cover copied under the same name. A suffix rather than
-a replacement because `v1` is cached for a year and nothing there is overwritten:
+The app plays `venus-intro-<lang>-r4.mp4`, not the master: this cut (v2) re-encoded for phones
+on mobile data, about 24 MB instead of about 50, with the picture size and the audio unchanged,
+and its cover copied under the same name. A suffix rather than a replacement because `v1` is
+cached for a year and nothing there is overwritten. The first cut is still there, unused: its
+master without a suffix, `-r2` and `-r3`; v2's master is not uploaded. The next cut takes `-r5`:
 
 ```bash
 ffmpeg -i venus-intro-<lang>.mp4 -c:v libx264 -preset slow -profile:v high -level:v 4.1 \
   -b:v 1700k -maxrate 2200k -bufsize 4000k -pix_fmt yuv420p -c:a copy -movflags +faststart \
-  venus-intro-<lang>-r3.mp4
+  venus-intro-<lang>-r4.mp4
 ```
 
 Keep `-level:v 4.1`, the level of the master and the days. Without it, `-preset slow` uses five
@@ -99,6 +100,7 @@ node film.mjs --lang tr                  # $VENUS_OUT/intro/tr/venus-intro-tr.mp
 node film.mjs --lang tr --at 12.4,64     # full-size stills at those board times, in work/
 node film.mjs --lang tr --strip 15       # a contact sheet of every 15th frame, in work/
 node film.mjs --lang tr --sheets <dir>   # with the render: a frame every 0.5 s, and the key beats
+node film.mjs --lang tr --audio          # the sound alone: work/audio/film-tr.m4a, its stems, the plan
 node film.mjs --all --jobs 3             # every locale, one process each
 node film.mjs --script voice-script.json # every line, its text and its characters per locale
 ```
@@ -108,15 +110,31 @@ The cover (`.jpg`, also the mp4's cover art) is the title card. The preview is 7
 line burned in as a subtitle and in the `.vtt`; the film never voices a line itself, not even with
 `say`. The `.vtt` holds back what the bubble holds back: a sentence after a "…", and each "Bag." of
 the bag run, starts a cue of its own when it appears, so the caption file never pre-reads a
-punchline. Each section's music is a loop at a fixed tempo laid from its first beat; wherever
-there is no music (the cold open, the empty set, the breath before day 100, the bonk) a faint room
-tone sits under the sound effects instead, so a silent cut never plays its captions over a dropout.
+punchline.
 
-**The board and the clock.** `data/film-intro.json` holds the 22 lines in the eight locales and
+**One stage, one score, one mix.** The first cut was 24 hard cuts between separate sketches, each
+with its own loop, tempo and level, and room tone where the music stopped: the music rose and fell
+every few seconds and nothing joined. Now:
+
+- Every shot says how it is entered (`tx`: `first`, `cont`, `poof`, `swipe`, `dolly`, `match`), and
+  only the race's days swipe in. She stays on one stage; the backdrop changes are flats flown in and
+  out over it (`FLATS`), never a cut. The camera eases every move over at least 0.3 s.
+- The music is one piece (`lib/film-score.mjs`): G major at 120 bpm, a chord a bar (Gadd9, D, Em7,
+  Cmaj7), from the first frame to the last, with the day videos' instruments. Bar 0 is the title
+  slam; the clock holds the race's day 100 (B) and "I show off." (C) until they land on a downbeat
+  too, in every locale. Its six sections only change which instruments play, every change sits on
+  a bar line and ramps over at least a bar, each section is brought to one loudness, and the house
+  motif runs through it on a music box. The bell and the music box keep to her pauses.
+- The bed goes under the voice at one gain for the whole film, never a ride: the music over the
+  film sits 11 LU under her voice, and if a sentence clears it by less than 8 dB the whole bed comes
+  down, at most 2 dB. A silent cut keeps the music where it always was against the effects.
+
+**The board and the clock.** `data/film-intro.json` holds the 21 lines in the eight locales and
 every sentence's time on the English silent cut (the board). `lib/film-clock.mjs` turns it into a
 locale's clock: a sentence that runs longer than its board time, at 14 characters a second or as
-its take is said, pushes everything after it later, by whole beats inside the 120 bpm sections so
-cuts stay on the music; a shorter one pushes nothing. Every cut, move, sound and caption is a board
+its take is said, pushes everything after it later; from the title slam on, what has been pushed
+so far is rounded up to whole beats, so every beat of the board stays on a beat of the score. A
+shorter one pushes nothing. Every cut, move, sound and caption is a board
 time mapped through that clock, so voicing the film is dropping the takes in and rendering again:
 `voice/<lang>/intro-NN.wav` with its ElevenLabs alignment as `intro-NN.json` (or under
 `VENUS_VOICE`). The lines keep their sentence count and every "…" in every locale, because beats
@@ -127,8 +145,8 @@ land on sentences by position; `en` and `tr` are final, the other six want a nat
 days is the days themselves, drawn by `render.mjs` with her mouth shut. A one-second window opens on
 its day already settled (its number popping on the cut, its seat, outfit and items on); the three
 half-second bag days open with the bag already under her, so each "Bag." lands with its bag, and day
-93's kraft bag lands on "…Different bag."; day 100 opens on the frame its slammed number hits, with
-the music's return, the thud and the shake. Every window, like every shot with a counter, draws her
+93's kraft bag lands on "…Different bag."; day 100 opens on the frame its slammed number hits, on a
+downbeat, with the crash, the thud and the shake. Every window, like every shot with a counter, draws her
 just small enough that her ears stay under the number's label (measured in the browser, as
 `fitUnderLabel` measures a day); on the bag days, and in the bag-hop entrance that plants the gag,
 the camera also pulls back and up (`BAG_CAM`), and in the comeback it rises while the bag is the
@@ -139,7 +157,7 @@ a big blep sticker above her for "It's a sticker now.", and only takes its place
 slaps begin. On the title card a two-line tagline (de, es, fr, pt-BR, ru) lowers the stage under it,
 so the pill clears her ears on the cover. The wall is made of the
 published covers, read from the CDN once into `cache/intro-covers/`. `lib/film-layers.mjs` draws
-what only the film has (the title, pills, the clapper, the photo print, stickers, the wall tiles),
+what only the film has (the title, pills, the flats, the photo print, stickers, the wall tiles),
 and `lib/endcard.mjs` closes it (`--end handoff`, the default, or `splash`).
 
 **Red lines the tests hold.** `test/film.test.mjs` performs every shot in every locale without a
@@ -150,8 +168,14 @@ time, a sentence after a "…" on a line of its own, never clearing within a qua
 little word ("по", "a") left at a line's end only when no smaller size avoids it, no gap between a
 line's WebVTT cues, the co-star (the viewer) in the generic form in es and pt-BR, no
 face she never aims at the viewer, and
-flashes at least 0.5 s apart with at most three flashes or cuts in any second. Each flash washes at
-most 20% white.
+flashes at least 0.5 s apart with at most three flashes or cuts (the race's swipes) in any second.
+Each flash washes at most 20% white. They also hold the flow: every join declared, no camera move
+under 0.3 s or faster than 1.2× a second and none across a `cont` join, nothing she wears changing
+without a poof or a flash on it, no shot outside the race under 1.2 s, and no more than 3.5 s
+without a word before the end card. `test/film-score.test.mjs` holds the score: every note in G
+major, the roots G, D, E and C, bars of 2 s to the sample, at most six sections, every change on a
+bar line and every ramp a bar or more, the anchors on downbeats in every locale and with takes of
+any length, the melody out of her sentences, and the bed's one gain.
 
 ## Publishing
 
