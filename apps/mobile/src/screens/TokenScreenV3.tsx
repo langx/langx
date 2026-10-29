@@ -43,6 +43,7 @@ const GO: Record<TokenPageTarget, () => void> = {
   titles: () => openCollection('title'),
   stickers: () => openCollection('stickers'),
   venus: () => openStickerPack(VENUS_PACK_ID),
+  invite: () => router.push('/(app)/invite'),
 }
 
 /**

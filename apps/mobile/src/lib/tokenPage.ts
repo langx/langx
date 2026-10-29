@@ -33,7 +33,15 @@ type Glyph = keyof typeof Feather.glyphMap
 
 /** Where a row goes. The screen owns the routes; this says only which. */
 export type TokenPageTarget =
-  'wallet' | 'pool' | 'leaderboard' | 'store' | 'frames' | 'titles' | 'stickers' | 'venus'
+  | 'wallet'
+  | 'pool'
+  | 'leaderboard'
+  | 'store'
+  | 'frames'
+  | 'titles'
+  | 'stickers'
+  | 'venus'
+  | 'invite'
 
 export interface TokenPageRow {
   key: string
@@ -277,6 +285,7 @@ export function tokenPageCopy(
           title: t('tokenKind.referral'),
           body: t('tokens.page.inviteBody', { amount: n(referral.inviteeTotal) }),
           ...earned(referral.activation),
+          to: 'invite',
         },
         {
           key: 'gift',
