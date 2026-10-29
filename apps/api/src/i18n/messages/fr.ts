@@ -1,28 +1,32 @@
 import type { Localized } from '@langx/shared'
 import type { ServerMessages } from './en'
 
+/**
+ * French, addressing the reader as "tu", as the app does, and without guessing
+ * their gender (`addressForm.test.ts`, `readerGender.test.ts`).
+ */
 export const fr: Localized<ServerMessages> = {
   push: {
     streakTitle: { one: 'Série de {count} jour ! 🔥', other: 'Série de {count} jours ! 🔥' },
-    streakBody: 'Ouvrez LangX aujourd’hui pour la conserver.',
-    streakRepairTitle: 'Reprenez votre série',
-    streakRepairBody: 'Une réparation comble la journée d’hier, et votre série continue.',
+    streakBody: 'Ouvre LangX aujourd’hui pour la conserver.',
+    streakRepairTitle: 'Reprends ta série',
+    streakRepairBody: 'Une réparation comble la journée d’hier, et ta série continue.',
     echoTitle: {
       one: '1 carte est prête',
       other: '{count} cartes sont prêtes',
     },
     echoBody: 'Quelques minutes maintenant, et elles restent.',
     profileVisitsTitle: {
-      one: '1 personne a consulté votre profil',
-      other: '{count} personnes ont consulté votre profil',
+      one: '1 personne a consulté ton profil',
+      other: '{count} personnes ont consulté ton profil',
     },
-    profileVisitsBody: 'Touchez pour voir qui.',
+    profileVisitsBody: 'Touche pour voir qui.',
     badgeOneTitle: 'Nouveau badge : {label} 🏅',
     badgeManyTitle: {
-      one: 'Vous avez gagné 1 nouveau badge 🏅',
-      other: 'Vous avez gagné {count} nouveaux badges 🏅',
+      one: 'Tu as gagné 1 nouveau badge 🏅',
+      other: 'Tu as gagné {count} nouveaux badges 🏅',
     },
-    badgeBody: 'Beau travail. Continuez.',
+    badgeBody: 'Beau travail. Continue.',
     meetingTitle: 'Ton échange linguistique est dans une heure',
     meetingBody: 'Touche pour ouvrir la conversation.',
     callIncomingVoice: 'Appel vocal entrant',
@@ -44,166 +48,166 @@ export const fr: Localized<ServerMessages> = {
     moderatorRewardBody: 'Un opérateur a examiné l’une de tes décisions. Merci.',
     /** The same nudges on the phone, under the same switches. */
     promo: {
-      addPhotoTitle: 'Ajoutez une photo',
+      addPhotoTitle: 'Ajoute une photo',
       addPhotoBody: 'Les profils avec un visage reçoivent plus de réponses.',
       awayTitle: 'Les gens sont toujours là',
       awayBody: 'De nouvelles personnes pour pratiquer.',
-      awayLongTitle: 'Nous serons là quand vous voudrez',
-      awayLongBody: 'Votre série et vos jetons attendent.',
-      limitReachedTitle: 'Vous butez souvent sur les limites',
+      awayLongTitle: 'Nous serons là quand tu voudras',
+      awayLongBody: 'Ta série et tes jetons attendent.',
+      limitReachedTitle: 'Tu butes souvent sur les limites',
       limitReachedBody: 'Une formule les lève.',
-      trialEndingTitle: 'Votre semaine gratuite se termine dans deux jours',
+      trialEndingTitle: 'Ta semaine gratuite se termine dans deux jours',
       trialEndingBody: 'La garder tient en un geste.',
-      winBackTitle: 'Votre formule a pris fin',
-      winBackBody: 'Tout ce que vous avez créé est toujours là.',
+      winBackTitle: 'Ta formule a pris fin',
+      winBackBody: 'Tout ce que tu as créé est toujours là.',
       tokensWaitingTitle: {
-        one: '{count} jeton vous attend',
-        other: '{count} jetons vous attendent',
+        one: '{count} jeton t’attend',
+        other: '{count} jetons t’attendent',
       },
-      tokensWaitingBody: 'Ouvrez votre portefeuille.',
-      inviteFriendTitle: 'Invitez quelqu’un',
+      tokensWaitingBody: 'Ouvre ton portefeuille.',
+      inviteFriendTitle: 'Invite quelqu’un',
       inviteFriendBody: 'Vous gagnez tous les deux des jetons.',
     },
 
     /** The feed reacting to something somebody left in it. */
 
     social: {
-      followTitle: '{name} vous suit',
+      followTitle: '{name} te suit',
 
-      followBody: 'Touchez pour voir son profil.',
+      followBody: 'Touche pour voir son profil.',
 
-      correctionTitle: '{name} a corrigé votre phrase',
+      correctionTitle: '{name} a corrigé ta phrase',
 
-      correctionBody: 'Touchez pour lire la correction.',
+      correctionBody: 'Touche pour lire la correction.',
 
-      answerTitle: '{name} a enregistré votre phrase',
+      answerTitle: '{name} a enregistré ta phrase',
 
-      answerBody: 'Touchez pour écouter.',
+      answerBody: 'Touche pour écouter.',
 
-      commentTitle: '{name} a commenté votre publication',
+      commentTitle: '{name} a commenté ta publication',
 
-      commentBody: 'Touchez pour la lire.',
+      commentBody: 'Touche pour la lire.',
 
-      commentReplyTitle: '{name} a répondu à votre commentaire',
+      commentReplyTitle: '{name} a répondu à ton commentaire',
 
-      commentReplyBody: 'Touchez pour lire la réponse.',
+      commentReplyBody: 'Touche pour lire la réponse.',
 
-      testimonialTitle: '{name} a écrit un avis sur votre profil',
+      testimonialTitle: '{name} a écrit un avis sur ton profil',
 
-      testimonialBody: 'Touchez pour le lire.',
+      testimonialBody: 'Touche pour le lire.',
 
       likesTitle: {
-        one: 'Votre publication a 1 j’aime',
-        other: 'Votre publication a {count} j’aime',
+        one: 'Ta publication a 1 j’aime',
+        other: 'Ta publication a {count} j’aime',
       },
 
-      likesBody: 'Quelqu’un a aimé votre publication.',
+      likesBody: 'Quelqu’un a aimé ta publication.',
     },
 
     /** Tokens arriving. */
 
     wallet: {
       poolTitle: {
-        one: 'Le pot commun d’hier vous a versé 1 jeton',
-        other: 'Le pot commun d’hier vous a versé {count} jetons',
+        one: 'Le pot commun d’hier t’a versé 1 jeton',
+        other: 'Le pot commun d’hier t’a versé {count} jetons',
       },
 
-      poolBody: 'Touchez pour ouvrir votre portefeuille.',
+      poolBody: 'Touche pour ouvrir ton portefeuille.',
 
-      giftTitle: 'Votre cadeau horaire est prêt',
+      giftTitle: 'Ton cadeau horaire est prêt',
 
-      giftBody: 'Ouvrez le portefeuille et récupérez-le.',
+      giftBody: 'Ouvre le portefeuille et récupère-le.',
     },
 
     /** Security, which no preference can switch off. */
     /** Billing, which no preference gates either. */
-    billingFailedTitle: 'Votre paiement n’a pas abouti',
-    billingEndedTitle: 'Votre formule a pris fin',
-    billingBody: 'Touchez pour vérifier votre formule.',
-    billingTrialEndingTitle: 'Votre essai gratuit se termine le {date}',
-    billingTrialEndingBody: 'Touchez pour voir votre formule et comment résilier.',
+    billingFailedTitle: 'Ton paiement n’a pas abouti',
+    billingEndedTitle: 'Ta formule a pris fin',
+    billingBody: 'Touche pour vérifier ta formule.',
+    billingTrialEndingTitle: 'Ton essai gratuit se termine le {date}',
+    billingTrialEndingBody: 'Touche pour voir ta formule et comment résilier.',
     lifetimeGiftTitle: '{plan}, à vie 🎉',
     lifetimeGiftBody: {
       one: 'Ton {total} jeton de v1 te l’a valu.',
       other: 'Tes {total} jetons de v1 te l’ont valu.',
     },
-    securityBody: 'Ouvrez LangX si ce n’était pas vous.',
-    securityBodyDevice: 'Depuis {device}. Ouvrez LangX si ce n’était pas vous.',
+    securityBody: 'Ouvre LangX si ce n’était pas toi.',
+    securityBodyDevice: 'Depuis {device}. Ouvre LangX si ce n’était pas toi.',
     security: {
-      newSignInTitle: 'Nouvelle connexion à votre compte',
-      passwordChangedTitle: 'Votre mot de passe a été modifié',
+      newSignInTitle: 'Nouvelle connexion à ton compte',
+      passwordChangedTitle: 'Ton mot de passe a été modifié',
       methodLinkedTitle: 'Méthode de connexion ajoutée',
       methodUnlinkedTitle: 'Méthode de connexion retirée',
     },
   },
 
   email: {
-    ignore: 'Si vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail.',
-    orPaste: 'Ou collez ce lien : {url}',
+    ignore: 'Si tu n’es pas à l’origine de cette demande, ignore cet e-mail.',
+    orPaste: 'Ou colle ce lien : {url}',
 
-    deleteSubject: 'Confirmez la suppression de votre compte LangX',
-    deletePreheader: 'Une dernière étape pour supprimer votre compte LangX',
+    deleteSubject: 'Confirme la suppression de ton compte LangX',
+    deletePreheader: 'Une dernière étape pour supprimer ton compte LangX',
     deleteBody: {
-      one: 'Vous avez demandé la suppression de votre compte LangX. Confirmez ci-dessous et il sera programmé pour suppression — vous avez {count} jour pour changer d’avis en vous reconnectant.',
+      one: 'Tu as demandé la suppression de ton compte LangX. Confirme ci-dessous et il sera programmé pour suppression — tu as {count} jour pour changer d’avis en te reconnectant.',
       other:
-        'Vous avez demandé la suppression de votre compte LangX. Confirmez ci-dessous et il sera programmé pour suppression — vous avez {count} jours pour changer d’avis en vous reconnectant.',
+        'Tu as demandé la suppression de ton compte LangX. Confirme ci-dessous et il sera programmé pour suppression — tu as {count} jours pour changer d’avis en te reconnectant.',
     },
     deleteButton: 'Supprimer mon compte',
-    deleteText: 'Confirmez la suppression de votre compte LangX : {url}',
+    deleteText: 'Confirme la suppression de ton compte LangX : {url}',
     deleteInvalid: 'Ce lien a expiré ou a déjà été utilisé.',
-    deleteConfirmTitle: 'Supprimer votre compte LangX',
+    deleteConfirmTitle: 'Supprimer ton compte LangX',
     deleteConfirmBody: {
-      one: 'Votre compte sera programmé pour suppression. Vous reconnecter sous {count} jour l’annule.',
+      one: 'Ton compte sera programmé pour suppression. Si tu te reconnectes sous {count} jour, c’est annulé.',
       other:
-        'Votre compte sera programmé pour suppression. Vous reconnecter sous {count} jours l’annule.',
+        'Ton compte sera programmé pour suppression. Si tu te reconnectes sous {count} jours, c’est annulé.',
     },
     deleteConfirmButton: 'Oui, supprimer mon compte',
-    deleteDoneTitle: 'Votre compte est programmé pour suppression',
+    deleteDoneTitle: 'Ton compte est programmé pour suppression',
     deleteDoneBody: {
-      one: 'Reconnectez-vous sous {count} jour et tout revient.',
-      other: 'Reconnectez-vous sous {count} jours et tout revient.',
+      one: 'Reconnecte-toi sous {count} jour et tout revient.',
+      other: 'Reconnecte-toi sous {count} jours et tout revient.',
     },
     deleteDonePurge: 'Les données sont supprimées le {date}.',
 
-    verifySubject: 'Vérifiez votre e-mail LangX',
-    verifyPreheader: 'Vérifiez votre e-mail pour terminer la configuration de LangX',
+    verifySubject: 'Vérifie ton e-mail LangX',
+    verifyPreheader: 'Vérifie ton e-mail pour terminer la configuration de LangX',
     verifyBody:
-      'Confirmez qu’il s’agit bien de votre adresse pour terminer la création de votre compte.',
+      'Confirme qu’il s’agit bien de ton adresse pour terminer la création de ton compte.',
     verifyButton: 'Vérifier l’e-mail',
-    verifyText: 'Vérifiez votre e-mail LangX : {url}',
+    verifyText: 'Vérifie ton e-mail LangX : {url}',
 
-    resetSubject: 'Réinitialisez votre mot de passe LangX',
-    resetPreheader: 'Réinitialisez votre mot de passe LangX',
+    resetSubject: 'Réinitialise ton mot de passe LangX',
+    resetPreheader: 'Réinitialise ton mot de passe LangX',
     resetBody:
-      'Quelqu’un a demandé la réinitialisation du mot de passe de ce compte. S’il s’agit de vous :',
+      'Quelqu’un a demandé la réinitialisation du mot de passe de ce compte. Si c’était toi :',
     resetButton: 'Réinitialiser le mot de passe',
-    resetText: 'Réinitialisez votre mot de passe LangX : {url}',
-    magicLinkSubject: 'Votre lien de connexion LangX',
-    magicLinkPreheader: 'Touchez pour vous connecter à LangX',
+    resetText: 'Réinitialise ton mot de passe LangX : {url}',
+    magicLinkSubject: 'Ton lien de connexion LangX',
+    magicLinkPreheader: 'Touche pour te connecter à LangX',
     magicLinkBody:
       'Touchez le bouton pour vous connecter. Le lien fonctionne une fois et expire dans 15 minutes.',
     magicLinkButton: 'Se connecter à LangX',
     magicLinkText: 'Connectez-vous à LangX (valable une fois, expire dans 15 minutes) : {url}',
 
-    existingSubject: 'Vous avez déjà un compte LangX',
-    existingPreheader: 'Vous avez déjà un compte LangX',
+    existingSubject: 'Tu as déjà un compte LangX',
+    existingPreheader: 'Tu as déjà un compte LangX',
     existingBody:
-      'Quelqu’un a tenté de s’inscrire avec cet e-mail, mais un compte existe déjà pour cette adresse. Pour vous connecter, réinitialisez votre mot de passe ou connectez-vous avec Google ou Apple avec cette adresse.',
+      'Quelqu’un a tenté de s’inscrire avec cet e-mail, mais un compte existe déjà pour cette adresse. Pour te connecter, réinitialise ton mot de passe ou connecte-toi avec Google ou Apple avec cette adresse.',
     existingButton: 'Réinitialiser le mot de passe',
-    existingText: 'Vous avez déjà un compte LangX. Réinitialisez votre mot de passe ici : {url}',
+    existingText: 'Tu as déjà un compte LangX. Réinitialise ton mot de passe ici : {url}',
 
     existingLinkBody:
       'Quelqu’un a tenté de s’inscrire avec cet e-mail, mais vous avez déjà un compte ici, avec votre profil dessus. Touchez pour vous connecter — aucun mot de passe à retenir. Le lien fonctionne une fois et expire dans 15 minutes.',
     existingLinkText:
       'Vous avez déjà un compte LangX. Connectez-vous ici (valable une fois, expire dans 15 minutes) : {url}',
 
-    whyThisMail: 'Vous recevez ceci en raison de vos réglages de notifications LangX.',
+    whyThisMail: 'Tu reçois ceci en raison de tes réglages de notifications LangX.',
     unsubscribeLink: 'Désactiver ces e-mails',
     unsubscribeText: 'Désactiver ces e-mails : {url}',
     managePrefs: 'Tous les réglages de notifications',
     /** The dark panel under every mail: the QR to get.langx.io. */
-    getApp: 'Téléchargez l’app',
-    getAppScan: 'Scannez avec votre téléphone ou ouvrez',
+    getApp: 'Télécharge l’app',
+    getAppScan: 'Scanne avec ton téléphone ou ouvre',
     getAppPlatforms: 'iPhone · Android · Navigateur',
     /** The one button a streak email has. */
     openChats: 'Envoyer un message',
@@ -212,58 +216,58 @@ export const fr: Localized<ServerMessages> = {
       one: '1 message non lu sur LangX',
       other: '{count} messages non lus sur LangX',
     },
-    digestPreheader: 'On attend votre réponse',
+    digestPreheader: 'On attend ta réponse',
     digestBody: {
-      one: '{names} vous a écrit pendant votre absence.',
-      other: 'Vous avez {count} messages non lus, de {names}.',
+      one: '{names} t’a écrit pendant ton absence.',
+      other: 'Tu as {count} messages non lus, de {names}.',
     },
     digestMore: { one: 'Et une autre conversation.', other: 'Et {count} autres conversations.' },
     digestButton: 'Lire et répondre',
 
     visitsSubject: {
-      one: '1 personne a consulté votre profil cette semaine',
-      other: '{count} personnes ont consulté votre profil cette semaine',
+      one: '1 personne a consulté ton profil cette semaine',
+      other: '{count} personnes ont consulté ton profil cette semaine',
     },
-    visitsPreheader: 'Votre profil attire l’attention',
+    visitsPreheader: 'Ton profil attire l’attention',
     visitsBody: {
-      one: '1 personne a regardé votre profil cette semaine.',
-      other: '{count} personnes ont regardé votre profil cette semaine.',
+      one: '1 personne a regardé ton profil cette semaine.',
+      other: '{count} personnes ont regardé ton profil cette semaine.',
     },
     visitsNames: 'Parmi elles : {names}.',
-    visitsLocked: 'Passez à l’offre supérieure pour voir qui.',
-    visitsButton: 'Voir qui vous a consulté',
+    visitsLocked: 'Passe à l’offre supérieure pour voir qui.',
+    visitsButton: 'Voir qui a consulté ton profil',
 
     badgeOneSubject: 'Nouveau badge : {label}',
     badgeManySubject: {
-      one: 'Vous avez gagné 1 nouveau badge',
-      other: 'Vous avez gagné {count} nouveaux badges',
+      one: 'Tu as gagné 1 nouveau badge',
+      other: 'Tu as gagné {count} nouveaux badges',
     },
-    badgeBody: 'Il est sur votre profil, visible par tous.',
-    badgeButton: 'Voir vos badges',
+    badgeBody: 'Il est sur ton profil, visible par tous.',
+    badgeButton: 'Voir tes badges',
 
     unsubscribeTitle: 'Désactiver ces e-mails ?',
     unsubscribeBody:
-      'Vous ne recevrez plus {kind} par e-mail. Les notifications sur votre téléphone ne changent pas.',
+      'Tu ne recevras plus {kind} par e-mail. Les notifications sur ton téléphone ne changent pas.',
     unsubscribeConfirm: 'Les désactiver',
     unsubscribeAll: 'Ou désactiver tous les e-mails de LangX',
-    unsubscribedTitle: 'C’est fait — vous n’en recevrez plus.',
+    unsubscribedTitle: 'C’est fait — tu n’en recevras plus.',
     unsubscribedBody:
-      'Vous pouvez les réactiver à tout moment dans LangX, sous Réglages → Notifications.',
+      'Tu peux les réactiver à tout moment dans LangX, sous Réglages → Notifications.',
     unsubscribeInvalid:
-      'Ce lien n’est pas valide. Ouvrez LangX et modifiez-le dans Réglages → Notifications.',
+      'Ce lien n’est pas valide. Ouvre LangX et modifie-le dans Réglages → Notifications.',
 
     /** The monthly recap. Two halves: the reader's numbers and everybody's. */
 
-    newsletterSubject: 'Votre {month} sur LangX',
+    newsletterSubject: 'Ton {month} sur LangX',
 
-    newsletterPreheader: 'Le mois en chiffres, le vôtre et celui de tous',
+    newsletterPreheader: 'Le mois en chiffres, le tien et celui de tous',
 
-    newsletterYours: 'Votre mois',
+    newsletterYours: 'Ton mois',
 
     newsletterEverybody: 'Le mois de tous',
 
     newsletterQuiet:
-      'Vous avez été silencieux ce mois-ci : aucun message, aucune correction. Les personnes ci-dessous ne l’ont pas été, et elles sont toujours là.',
+      'Un mois calme pour toi : aucun message, aucune correction. Les personnes ci-dessous ne sont pas restées silencieuses, et elles sont toujours là.',
 
     newsletterMessages: 'Messages envoyés',
 
@@ -284,7 +288,7 @@ export const fr: Localized<ServerMessages> = {
 
     newsletterButton: 'Ouvrir LangX',
 
-    newsletterSeeMonth: 'Voir votre mois',
+    newsletterSeeMonth: 'Voir ton mois',
 
     /** The day's replies to somebody's posts, in one letter. */
 
@@ -293,7 +297,7 @@ export const fr: Localized<ServerMessages> = {
       other: '{count} réponses à ce que vous avez publié aujourd’hui',
     },
 
-    feedDigestPreheader: 'On a répondu à vos publications',
+    feedDigestPreheader: 'On a répondu à tes publications',
 
     feedDigestBody: {
       one: 'Quelqu’un a répondu à ce que vous avez publié aujourd’hui.',
@@ -310,22 +314,22 @@ export const fr: Localized<ServerMessages> = {
 
     feedDigestButton: 'Lire les réponses',
 
-    feedDigestPhoto: 'Votre photo',
+    feedDigestPhoto: 'Ta photo',
 
-    feedDigestVideo: 'Votre vidéo',
+    feedDigestVideo: 'Ta vidéo',
 
     /** The digest's one passenger: people the reader has never spoken to. */
     matchesSubject: 'Des personnes avec qui pratiquer',
 
-    matchesPreheader: 'De nouvelles personnes dont les langues correspondent aux vôtres',
+    matchesPreheader: 'De nouvelles personnes dont les langues correspondent aux tiennes',
 
-    matchesBody: '{names} parlent les langues que vous apprenez — et apprennent la vôtre.',
+    matchesBody: '{names} parlent les langues que tu apprends — et apprennent la tienne.',
 
     matchesButton: 'Voir qui est là',
 
     /** Yesterday's pool, as a paragraph rather than the letter it never was. */
     walletBody:
-      "Ils sont déjà dans votre portefeuille. Le pot commun est partagé chaque nuit entre celles et ceux qui ont aidé quelqu'un la veille.",
+      "Ils sont déjà dans ton portefeuille. Le pot commun est partagé chaque nuit entre celles et ceux qui ont aidé quelqu'un la veille.",
 
     walletButton: 'Ouvrir mon portefeuille',
 
@@ -335,11 +339,11 @@ export const fr: Localized<ServerMessages> = {
       other: '{count} appels demain',
     },
 
-    meetingsPreheader: 'Ce qui vous attend demain',
+    meetingsPreheader: 'Ce qui t’attend demain',
 
     meetingsBody: {
-      one: 'Vous avez accepté un appel pour demain.',
-      other: 'Vous avez accepté {count} appels pour demain.',
+      one: 'Tu as accepté un appel pour demain.',
+      other: 'Tu as accepté {count} appels pour demain.',
     },
 
     meetingsButton: 'Ouvrir mes discussions',
@@ -353,16 +357,16 @@ export const fr: Localized<ServerMessages> = {
      */
 
     promo: {
-      addPhotoSubject: 'Ajoutez une photo, on vous trouvera',
+      addPhotoSubject: 'Ajoute une photo, on te trouvera',
 
       addPhotoBody:
-        'Les profils avec un visage reçoivent bien plus de réponses. Dix secondes, et vous pouvez la changer quand vous voulez.',
+        'Les profils avec un visage reçoivent bien plus de réponses. Dix secondes, et tu peux la changer quand tu veux.',
 
       addPhotoButton: 'Ajouter ma photo',
 
       streakBrokeSubject: {
-        one: 'Votre série de {count} jour est rompue',
-        other: 'Votre série de {count} jours est rompue',
+        one: 'Ta série de {count} jour est rompue',
+        other: 'Ta série de {count} jours est rompue',
       },
 
       streakBrokeBody:
@@ -370,55 +374,55 @@ export const fr: Localized<ServerMessages> = {
 
       streakBrokeButton: 'Réparer hier',
 
-      awaySubject: 'On continue à pratiquer sans vous',
+      awaySubject: 'On continue à pratiquer sans toi',
 
       awayBody:
-        'Une semaine a passé. Il y a de nouvelles personnes à qui parler, et vos langues n’ont pas changé.',
+        'Une semaine a passé. Il y a de nouvelles personnes à qui parler, et tes langues n’ont pas changé.',
 
       awayButton: 'Voir qui est là',
 
       awayLongSubject: 'Après cela, nous n’écrirons plus',
 
       awayLongBody:
-        'Un mois, c’est long. Votre compte, votre série et vos jetons sont toujours là si vous les voulez — et c’est la dernière fois que nous en parlons.',
+        'Un mois, c’est long. Ton compte, ta série et tes jetons sont toujours là si tu les veux — et c’est la dernière fois que nous en parlons.',
 
       awayLongButton: 'Ouvrir LangX',
 
-      limitReachedSubject: 'Vous butez sur les limites gratuites',
+      limitReachedSubject: 'Tu butes sur les limites gratuites',
 
       limitReachedBody:
-        'Vous avez atteint une limite quotidienne trois fois ces derniers jours. Une formule les lève : plus de conversations et plus de traductions, chaque jour.',
+        'Tu as atteint une limite quotidienne trois fois ces derniers jours. Une formule les lève : plus de conversations et plus de traductions, chaque jour.',
 
       limitReachedButton: 'Voir les formules',
 
-      trialEndingSubject: 'Votre semaine gratuite se termine dans deux jours',
+      trialEndingSubject: 'Ta semaine gratuite se termine dans deux jours',
 
       trialEndingBody:
-        'Ensuite, votre compte revient à la formule gratuite. Tout ce que vous avez créé reste ; les limites reviennent. La garder tient en un geste.',
+        'Ensuite, ton compte revient à la formule gratuite. Tout ce que tu as créé reste ; les limites reviennent. La garder tient en un geste.',
 
       trialEndingButton: 'Garder ma formule',
 
-      winBackSubject: 'Votre formule a pris fin il y a une semaine',
+      winBackSubject: 'Ta formule a pris fin il y a une semaine',
 
       winBackBody:
-        'Rien n’a été retiré : votre série, vos jetons et tout ce que vous avez écrit sont là où vous les avez laissés. Ce sont les limites payantes qui se sont arrêtées.',
+        'Rien n’a été retiré : ta série, tes jetons et tout ce que tu as écrit sont là où tu les as laissés. Ce sont les limites payantes qui se sont arrêtées.',
 
       winBackButton: 'Voir les formules',
 
       tokensWaitingSubject: {
-        one: '{count} jeton vous attend',
-        other: '{count} jetons vous attendent',
+        one: '{count} jeton t’attend',
+        other: '{count} jetons t’attendent',
       },
 
       tokensWaitingBody:
-        'Les jetons achètent des gels de série, des réparations, des cadres et des titres. Les vôtres dorment depuis quinze jours.',
+        'Les jetons achètent des gels de série, des réparations, des cadres et des titres. Les tiens dorment depuis quinze jours.',
 
       tokensWaitingButton: 'Ouvrir mon portefeuille',
 
       inviteFriendSubject: 'On pratique mieux à deux',
 
       inviteFriendBody:
-        'Invitez quelqu’un : vous gagnez tous les deux des jetons quand il arrive. Votre lien est dans les Réglages.',
+        'Invite quelqu’un : vous gagnez tous les deux des jetons quand il arrive. Ton lien est dans les Réglages.',
 
       inviteFriendButton: 'Voir mon lien',
     },
@@ -427,61 +431,61 @@ export const fr: Localized<ServerMessages> = {
 
     welcomeSubject: 'Bienvenue sur LangX',
 
-    welcomePreheader: 'Votre première conversation est à un geste',
+    welcomePreheader: 'Ta première conversation est à un geste',
 
     welcomeTitle: 'Bienvenue, {name}',
 
-    welcomeBody: 'Votre profil est en ligne sur {handle}. Voici ce que les gens font en premier :',
+    welcomeBody: 'Ton profil est en ligne sur {handle}. Voici ce que les gens font en premier :',
 
-    welcomeStep1: 'Trouvez quelqu’un qui parle la langue que vous apprenez et dites bonjour.',
+    welcomeStep1: 'Trouve quelqu’un qui parle la langue que tu apprends et dis bonjour.',
 
     welcomeStep2:
-      'Partagez un moment de votre journée dans le Fil — et demandez une correction si vous le souhaitez.',
+      'Partage un moment de ta journée dans le Fil — et demande une correction si tu le souhaites.',
 
-    welcomeStep3: 'Revenez demain — deux jours d’affilée lancent une série.',
+    welcomeStep3: 'Reviens demain — deux jours d’affilée lancent une série.',
 
     welcomeButton: 'Trouver quelqu’un pour pratiquer',
 
     /** A day later, for an address nobody confirmed. */
 
-    verifyReminderSubject: 'Confirmez votre adresse e-mail',
+    verifyReminderSubject: 'Confirme ton adresse e-mail',
 
-    verifyReminderPreheader: 'Un geste et votre compte est prêt',
+    verifyReminderPreheader: 'Un geste et ton compte est prêt',
 
     verifyReminderBody:
-      'Il ne manque qu’une chose à votre compte LangX : la preuve que cette adresse est la vôtre. Le lien ci-dessous s’en charge.',
+      'Il ne manque qu’une chose à ton compte LangX : la preuve que cette adresse est la tienne. Le lien ci-dessous s’en charge.',
 
-    verifyReminderText: 'Confirmez votre adresse e-mail : {url}',
+    verifyReminderText: 'Confirme ton adresse e-mail : {url}',
 
     /** Money, so no switch — see `billingEmail`. */
 
     billingPlan: 'Formule : {tier}',
 
     billing: {
-      paymentFailedTitle: 'Votre paiement LangX n’a pas abouti',
+      paymentFailedTitle: 'Ton paiement LangX n’a pas abouti',
 
       paymentFailedBody:
-        'La boutique n’a pas pu prélever votre abonnement. Elle réessaiera, et votre formule reste active entre-temps.',
+        'La boutique n’a pas pu prélever ton abonnement. Elle réessaiera, et ta formule reste active entre-temps.',
 
       paymentFailedButton: 'Vérifier ma formule',
 
-      planEndedTitle: 'Votre formule LangX a pris fin',
+      planEndedTitle: 'Ta formule LangX a pris fin',
 
       planEndedBody:
-        'Votre abonnement a pris fin et votre compte est revenu à la formule gratuite. Tout ce que vous avez créé est toujours là.',
+        'Ton abonnement a pris fin et ton compte est revenu à la formule gratuite. Tout ce que tu as créé est toujours là.',
 
       planEndedButton: 'Voir les formules',
-      trialEndingTitle: 'Votre essai de LangX Pro se termine le {date}',
+      trialEndingTitle: 'Ton essai de LangX Pro se termine le {date}',
       trialEndingBody:
-        'Si vous le gardez, la boutique où vous vous êtes abonné facturera le {date} la formule choisie, au prix qu’elle vous a indiqué, puis la renouvellera jusqu’à résiliation. Résiliez avant et vous ne payez rien ; Pro reste actif jusqu’au {date}.',
+        'Si tu le gardes, la boutique où tu as pris ton abonnement facturera le {date} la formule choisie, au prix qu’elle t’a indiqué, puis la renouvellera jusqu’à résiliation. Résilie avant et tu ne paies rien ; Pro reste actif jusqu’au {date}.',
       trialEndingCancelAppStore:
-        'Pour résilier sur iPhone ou iPad : Réglages → votre nom → Abonnements → LangX → Annuler l’abonnement. Apple le demande au moins un jour avant la fin de l’essai.',
+        'Pour résilier sur iPhone ou iPad : Réglages → ton nom → Abonnements → LangX → Annuler l’abonnement. Apple le demande au moins un jour avant la fin de l’essai.',
       trialEndingCancelPlayStore:
-        'Pour résilier sur Android : Google Play → votre photo de profil → Paiements et abonnements → Abonnements → LangX → Résilier l’abonnement.',
+        'Pour résilier sur Android : Google Play → ta photo de profil → Paiements et abonnements → Abonnements → LangX → Résilier l’abonnement.',
       trialEndingCancelWeb:
         'Pour résilier : LangX sur le web → Réglages → Abonnement → Gérer ou résilier.',
       trialEndingCancelOther:
-        'Pour résilier, ouvrez la page des abonnements de la boutique où vous vous êtes abonné.',
+        'Pour résilier, ouvre la page des abonnements de la boutique où tu as pris ton abonnement.',
       trialEndingButton: 'Voir ma formule',
     },
 
@@ -500,27 +504,27 @@ export const fr: Localized<ServerMessages> = {
     securityWhen: 'Quand',
 
     securityNotYou:
-      'Si ce n’était pas vous, changez votre mot de passe maintenant : cela déconnecte tous les autres appareils.',
+      'Si ce n’était pas toi, change ton mot de passe maintenant : cela déconnecte tous les autres appareils.',
 
     securityButton: 'Changer mon mot de passe',
 
     security: {
-      newSignInTitle: 'Nouvelle connexion à votre compte LangX',
+      newSignInTitle: 'Nouvelle connexion à ton compte LangX',
 
       newSignInBody:
-        'Quelqu’un s’est connecté à votre compte depuis un appareil que nous n’avions jamais vu.',
+        'Quelqu’un s’est connecté à ton compte depuis un appareil que nous n’avions jamais vu.',
 
-      passwordChangedTitle: 'Votre mot de passe LangX a été modifié',
+      passwordChangedTitle: 'Ton mot de passe LangX a été modifié',
 
-      passwordChangedBody: 'Le mot de passe de votre compte vient d’être modifié.',
+      passwordChangedBody: 'Le mot de passe de ton compte vient d’être modifié.',
 
-      methodLinkedTitle: 'Une méthode de connexion a été ajoutée à votre compte LangX',
+      methodLinkedTitle: 'Une méthode de connexion a été ajoutée à ton compte LangX',
 
-      methodLinkedBody: 'La connexion avec Google ou Apple a été associée à votre compte.',
+      methodLinkedBody: 'La connexion avec Google ou Apple a été associée à ton compte.',
 
-      methodUnlinkedTitle: 'Une méthode de connexion a été retirée de votre compte LangX',
+      methodUnlinkedTitle: 'Une méthode de connexion a été retirée de ton compte LangX',
 
-      methodUnlinkedBody: 'Une façon de vous connecter a été déconnectée.',
+      methodUnlinkedBody: 'Une façon de te connecter a été déconnectée.',
     },
 
     kind: {
@@ -753,7 +757,7 @@ export const fr: Localized<ServerMessages> = {
       one: '{formatted} jour de membre',
       other: '{formatted} jours de membre',
     },
-    earlyAdopter: 'Utilisateur de la première heure',
+    earlyAdopter: 'Membre de la première heure',
     languages: {
       one: '{formatted} langue',
       other: '{formatted} langues',

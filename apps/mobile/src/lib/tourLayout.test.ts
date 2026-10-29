@@ -1,5 +1,10 @@
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { tourCornerPath, tourLayout, type TourCorner } from './tourLayout'
+import { V3_LABEL_MAX_SCALE, v3TabBarHeight } from './tabLabelScale'
+import { v3Type } from './theme/tokens'
+import type { TourRect } from './tour'
+import { PAD, tourCornerPath, tourLayout, type TourCorner } from './tourLayout'
 
 const screen = { width: 390, height: 844 }
 const insets = { top: 59, bottom: 34 }
@@ -172,6 +177,83 @@ describe('tourLayout', () => {
     expect(plain.hole.radius).toBe(0)
   })
 
+  /**
+   * A tab step in the redesign's bar. The tab's face, the 56 by 32 pill and
+   * the word under it, is measured as one box: as wide as the wider of the
+   * two and as tall as both. The tab grows it by 4, with a corner that is the
+   * pill's own end radius carried out by that 4 and by `PAD`. The hole used to
+   * be the pill's alone, and its ring ran through the word.
+   *
+   * Every corner of the pill's box and of the word's has to sit inside the
+   * ring's inner edge, rounded corners included. Checked for a short word and
+   * one as wide as the tab allows, at the word's own size and at its cap, on
+   * the Chats tab from either end of the bar (second of five left to right,
+   * fourth right to left), on the web's screens with no inset and on an
+   * iPhone's.
+   */
+  it('takes in a tab’s icon and its word, as one rounded shape', () => {
+    const ring = 2
+    const pill = { width: 56, height: 32 }
+    const pad = 4
+    const radius = pill.height / 2 + pad + PAD
+    const line = v3Type.label.lineHeight
+    const phones = [
+      { screen: { width: 320, height: 640 }, insets: { top: 0, bottom: 0 } },
+      { screen: { width: 375, height: 812 }, insets: { top: 0, bottom: 0 } },
+      { screen, insets },
+    ]
+    for (const phone of phones) {
+      const tab = phone.screen.width / 5
+      for (const scale of [1, V3_LABEL_MAX_SCALE]) {
+        const bar = v3TabBarHeight({
+          base: 62,
+          lineHeight: line,
+          labelScale: scale,
+          bottomInset: phone.insets.bottom,
+        })
+        // Under the bar item's own 5-point padding.
+        const top = phone.screen.height - bar + 5
+        for (const slot of [1, 3]) {
+          const centre = tab * slot + tab / 2
+          for (const wordWidth of [30, tab - 10]) {
+            const icon = { x: centre - pill.width / 2, y: top, ...pill }
+            const word = {
+              x: centre - wordWidth / 2,
+              y: top + pill.height,
+              width: wordWidth,
+              height: line * scale,
+            }
+            const face = union(icon, word)
+            const { hole, corners } = tourLayout({
+              anchor: { ...grow(face, pad), radius },
+              screen: phone.screen,
+              insets: phone.insets,
+            })
+            expect(hole.radius).toBe(radius)
+            expect(corners).toHaveLength(4)
+            for (const box of [icon, word]) {
+              for (const [x, y] of cornersOf(box)) {
+                expect(
+                  insideRing(hole, x, y, ring),
+                  `${JSON.stringify({ phone: phone.screen, scale, slot, wordWidth })} at ${x},${y}`,
+                ).toBe(true)
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // The pill's own hole, for the record: the word's bottom edge was outside it.
+    const pillTop = 812 - 62 + 5
+    const old = tourLayout({
+      anchor: { ...grow({ x: 75 + 9.5, y: pillTop, ...pill }, pad), radius: 999 },
+      screen: { width: 375, height: 812 },
+      insets: { top: 0, bottom: 0 },
+    })
+    expect(insideRing(old.hole, 112.5, pillTop + pill.height + line, ring)).toBe(false)
+  })
+
   it('puts the bubble under an element in the top half', () => {
     const { hole, bubble } = tourLayout({
       anchor: { x: 20, y: 120, width: 200, height: 40 },
@@ -244,8 +326,80 @@ describe('tourLayout', () => {
   })
 })
 
+/**
+ * The tab bar hands the tour the face's whole content — the test above holds
+ * the geometry of that box still, and this holds that it is the box measured.
+ */
+describe('the redesign’s tab bar', () => {
+  const source = readFileSync(path.resolve(__dirname, '../../app/(app)/(tabs)/_layout.tsx'), 'utf8')
+
+  it('offers the tour the icon and its word together, not the icon alone', () => {
+    const icon = source.slice(
+      source.indexOf('function V3TabIcon'),
+      source.indexOf('function V3TabBadge'),
+    )
+    expect(icon).not.toContain('<TourTarget')
+    const button = source.slice(source.indexOf('function V3TabButton'))
+    expect(button.slice(0, button.indexOf('</PressableScale>'))).toMatch(
+      /<TourTarget[^>]*>\s*\{children\}\s*<\/TourTarget>/,
+    )
+    expect(source).toContain('<V3TabButton {...props} tour="tabChats" />')
+    expect(source).toContain('<V3TabButton {...props} tour="tabEcho" />')
+  })
+})
+
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max)
+}
+
+type Box = Omit<TourRect, 'radius'>
+
+function union(a: Box, b: Box): Box {
+  const x = Math.min(a.x, b.x)
+  const y = Math.min(a.y, b.y)
+  return {
+    x,
+    y,
+    width: Math.max(a.x + a.width, b.x + b.width) - x,
+    height: Math.max(a.y + a.height, b.y + b.height) - y,
+  }
+}
+
+/** What `TourTarget`'s `pad` does to the measured box. */
+function grow(box: Box, by: number): Box {
+  return { x: box.x - by, y: box.y - by, width: box.width + by * 2, height: box.height + by * 2 }
+}
+
+function cornersOf(box: Box): [number, number][] {
+  const right = box.x + box.width
+  const bottom = box.y + box.height
+  return [
+    [box.x, box.y],
+    [right, box.y],
+    [box.x, bottom],
+    [right, bottom],
+  ]
+}
+
+/**
+ * Inside the ring's inner edge: the hole drawn in by the ring's width, with a
+ * corner that much tighter, which is how a border's inner corner is drawn.
+ */
+function insideRing(
+  hole: TourRect & { radius: number },
+  x: number,
+  y: number,
+  ring: number,
+): boolean {
+  const left = hole.x + ring
+  const right = hole.x + hole.width - ring
+  const top = hole.y + ring
+  const bottom = hole.y + hole.height - ring
+  const r = Math.max(0, hole.radius - ring)
+  if (x < left || x > right || y < top || y > bottom) return false
+  const cx = clamp(x, left + r, right - r)
+  const cy = clamp(y, top + r, bottom - r)
+  return Math.hypot(x - cx, y - cy) <= r
 }
 
 /**
