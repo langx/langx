@@ -283,7 +283,7 @@ export const tr: Localized<ServerMessages> = {
       other: 'Paylaştığına bugün {count} yanıt geldi',
     },
 
-    feedDigestPreheader: 'Paylaştıklarına cevap verdiler',
+    feedDigestPreheader: 'Paylaştığına yanıt geldi',
 
     feedDigestBody: {
       one: 'Paylaştığın bir şeye bugün yanıt geldi.',

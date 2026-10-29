@@ -140,8 +140,7 @@ describe('the feed digest', () => {
       return Array.from({ length: 121 }, (_, count) => [
         t('email.feedDigestSubject', { count }),
         t('email.feedDigestBody', { count }),
-        // Turkish's preheader is the Turkish change's to word.
-        ...(locale === 'tr' ? [] : [t('email.feedDigestPreheader')]),
+        t('email.feedDigestPreheader'),
       ])
         .flat()
         .filter((text) => plural.test(text))
