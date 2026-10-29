@@ -1,6 +1,7 @@
+import { MINIMUM_AGE, REPORT_REASONS, SUPPORTED_LOCALES } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 import { createTranslate } from './runtime'
-import { lastSeenLabel, packLabel } from './labels'
+import { lastSeenLabel, packLabel, reportReasonLabel } from './labels'
 
 const NOW = new Date('2026-08-31T12:00:00Z')
 const MINUTE = 60_000
@@ -59,5 +60,20 @@ describe('packLabel', () => {
     expect(packLabel(t, { level: 'intermediate', hsk: 3 })).toBe('HSK 3')
     expect(packLabel(t, { level: 'absoluteBeginner', jlpt: 5 })).toBe('JLPT N5')
     expect(packLabel(t, { level: 'beginner' })).toBe(t('level.beginner'))
+  })
+})
+
+describe('reportReasonLabel', () => {
+  // "Under 16" was written into eight catalogues beside MINIMUM_AGE.
+  it.each(SUPPORTED_LOCALES)('quotes the age floor from config in %s', (locale) => {
+    const t = createTranslate(locale)
+    const label = reportReasonLabel(t, 'underage')
+    expect(label).toBe(t('report.underage', { count: MINIMUM_AGE }))
+    expect(label).toContain(String(MINIMUM_AGE))
+  })
+
+  it('words every reason in full', () => {
+    const t = createTranslate('ru')
+    for (const reason of REPORT_REASONS) expect(reportReasonLabel(t, reason)).not.toMatch(/[{}]/)
   })
 })

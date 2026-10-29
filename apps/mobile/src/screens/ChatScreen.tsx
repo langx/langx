@@ -141,6 +141,7 @@ import { messagePreviewKey } from '../lib/messagePreview'
 import { openMessageMenu, type AnchorRect, type MessageMenuRequest } from '../lib/messageMenu'
 import { goBackTo, openProfile } from '../lib/navigation'
 import {
+  chatVoiceLimitText,
   isTranslationFairUse,
   offersPlansAtTranslationLimit,
   translationQuotaText,
@@ -2291,10 +2292,7 @@ export function ChatScreen({
         // A ceiling, not a gate: `chatVoicesPerDay` is finite on every tier,
         // so there is nothing to sell here. The same stance `ReadAloud` takes
         // on an Echo card.
-        await showAlert(
-          t('chat.speakUnavailable'),
-          t('chat.speakLimit', { count: PLAN_LIMITS.free.chatVoicesPerDay ?? 0 }),
-        )
+        await showAlert(t('chat.speakUnavailable'), chatVoiceLimitText(t))
       } else {
         await showAlert(t('chat.speakUnavailable'), t('chat.speakFailed'))
       }

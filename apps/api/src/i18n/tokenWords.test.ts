@@ -14,6 +14,9 @@ import { catalogs } from './catalogs'
  * - Russian, Spanish and Portuguese call it what token.langx.io calls it:
  *   токен, tokens. Both catalogues had grown a second word beside it —
  *   жетон, fichas — sometimes on the same screen.
+ * - Turkish calls it jeton, as token.langx.io does; pushes and emails said
+ *   token almost as often. The product's name, LangX Token, would keep its
+ *   English word, as the site's title does.
  * - French calls it jeton, as token.langx.io/fr does. The server already
  *   did; the app said "tokens" on about one line in four, so the word is
  *   held here too. The product's name, LangX Token, is not the word.
@@ -39,6 +42,7 @@ const NEVER: Partial<Record<Locale, { pattern: RegExp; old: string }[]>> = {
   ],
   ru: [{ pattern: /жетон/iu, old: 'Не хватает жетонов' }],
   ar: [{ pattern: /توكن/u, old: '+3 توكنات' }],
+  tr: [{ pattern: /(?<![\p{L}{])(?<!LangX )token/iu, old: '{count} token’ın bekliyor' }],
 }
 
 /** The nightly pool push names the pool, as the app's inbox row does. */

@@ -148,14 +148,14 @@ describe('streak milestone sentences', () => {
       fr: 'Le palier de 1 jour de série rapporte +1 jeton.',
       es: 'El hito de 1 día de racha suma +1 token.',
       'pt-BR': 'O marco de 1 dia de sequência rende +1 token.',
-      tr: '1 günlük seri dönüm noktası +1 token ekler.',
+      tr: '1 günlük seri dönüm noktası +1 jeton ekler.',
     }
     const two: Partial<Record<Locale, string>> = {
       de: 'Der Meilenstein für eine Serie von 2 Tagen bringt +2 Token.',
       fr: 'Le palier de 2 jours de série rapporte +2 jetons.',
       es: 'El hito de 2 días de racha suma +2 tokens.',
       'pt-BR': 'O marco de 2 dias de sequência rende +2 tokens.',
-      tr: '2 günlük seri dönüm noktası +2 token ekler.',
+      tr: '2 günlük seri dönüm noktası +2 jeton ekler.',
     }
     for (const locale of Object.keys(one) as Locale[]) {
       expect(sentences(locale, 1, 1).reward).toBe(one[locale])

@@ -13,6 +13,7 @@ import { describe, expect, it } from 'vitest'
 import { catalogs } from '../i18n/catalogs'
 import { createTranslate } from '../i18n/runtime'
 import {
+  chatVoiceLimitText,
   isTranslationFairUse,
   offersPlansAtTranslationLimit,
   streakProtectText,
@@ -94,13 +95,28 @@ describe.each(SUPPORTED_LOCALES)('%s', (locale) => {
     expect(text).not.toMatch(/[{}]/)
   })
 
+  it('quotes the read-aloud allowance and the window it comes back in', () => {
+    const text = chatVoiceLimitText(t)
+    expect(text).toContain(String(PLAN_LIMITS.free.chatVoicesPerDay))
+    expect(text).toContain(t('chat.limitWindow', { count: windowHours }))
+    expect(text).toContain(String(windowHours))
+    expect(text).not.toMatch(/[{}]/)
+  })
+
   /**
    * Pro's translations have no number to quote, and the fair-use ceiling is
    * not one to plan around — a digit in either is a number that has gone
-   * stale, or one Pro does not have.
+   * stale, or one Pro does not have. The read-aloud limit said "24 hours" in
+   * every language, beside the window the server counts in.
    */
   it('writes no number of its own, so a config change cannot leave a stale one behind', () => {
-    for (const key of ['chat.translationQuota', 'chat.translationFairUse', 'streak.protectBody']) {
+    for (const key of [
+      'chat.translationQuota',
+      'chat.translationFairUse',
+      'streak.protectBody',
+      'chat.speakLimit',
+      'chat.limitWindow',
+    ]) {
       for (const form of forms(locale, key)) expect(form, `${locale} ${key}`).not.toMatch(/\d/)
     }
   })
@@ -135,6 +151,12 @@ describe('english', () => {
     expect(streakProtectText(t)).not.toMatch(/month/i)
   })
 
+  it('says when the read-aloud allowance comes back', () => {
+    expect(chatVoiceLimitText(t)).toBe(
+      `You’ve used today’s ${PLAN_LIMITS.free.chatVoicesPerDay} readings. They reset in ${windowHours} hours.`,
+    )
+  })
+
   it('calls the ceiling fair use, and names no plan in it', () => {
     const text = translationQuotaText(t, true)
     expect(text).toBe(
@@ -152,6 +174,9 @@ describe('the count inflects where the language needs it', () => {
     expect(t('streak.protectBody', { count: 14 })).toContain('14 дней')
     expect(t('chat.translationFairUse', { count: 1 })).toContain('в течение 1 часа')
     expect(t('chat.translationFairUse', { count: 24 })).toContain('в течение 24 часов')
+    expect(t('chat.limitWindow', { count: 1 })).toBe('через 1 час')
+    expect(t('chat.limitWindow', { count: 24 })).toBe('через 24 часа')
+    expect(t('chat.limitWindow', { count: 12 })).toBe('через 12 часов')
   })
 
   it('arabic has a form for each band', () => {
@@ -162,6 +187,9 @@ describe('the count inflects where the language needs it', () => {
     expect(t('streak.protectBody', { count: 14 })).toContain('14 يومًا')
     expect(t('chat.translationFairUse', { count: 2 })).toContain('خلال ساعتين')
     expect(t('chat.translationFairUse', { count: 24 })).toContain('خلال 24 ساعةً')
+    expect(t('chat.limitWindow', { count: 2 })).toBe('خلال ساعتين')
+    expect(t('chat.limitWindow', { count: 6 })).toBe('خلال 6 ساعات')
+    expect(t('chat.limitWindow', { count: 24 })).toBe('خلال 24 ساعةً')
   })
 
   it('english says "1 day", not "1 days"', () => {

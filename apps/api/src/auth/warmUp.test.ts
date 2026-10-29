@@ -13,7 +13,7 @@ describe('Faz 1 — auth collection warm-up', () => {
   beforeAll(async () => {
     replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
     handle = await connectToDatabase(replSet.getUri(), 'langx_warmup_test')
-  }, 60_000)
+  })
 
   afterAll(async () => {
     await handle?.close()

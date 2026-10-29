@@ -1,5 +1,6 @@
 import {
   isPaidTier,
+  PLAN_LIMITS,
   QUOTA_WINDOW_MS,
   TOKEN_RULES,
   type PlanLimits,
@@ -53,6 +54,21 @@ export function translationQuotaText(t: TranslateFn, fairUse: boolean): string {
   return fairUse
     ? t('chat.translationFairUse', { count: QUOTA_WINDOW_MS / HOUR_MS })
     : t('chat.translationQuota')
+}
+
+/**
+ * Said when a read-aloud in a chat is refused: the day's allowance, and when
+ * it comes back. `chatVoicesPerDay` is finite on every tier and the free one
+ * is what the sentence quotes, as it always has; the window is the rolling one
+ * the server counts in. Two numbers, so the window is a phrase of its own
+ * (`chat.limitWindow`) and the sentence is plural on the readings — Arabic
+ * had "24 ساعة" written into every one of its six forms.
+ */
+export function chatVoiceLimitText(t: TranslateFn): string {
+  return t('chat.speakLimit', {
+    count: PLAN_LIMITS.free.chatVoicesPerDay ?? 0,
+    window: t('chat.limitWindow', { count: QUOTA_WINDOW_MS / HOUR_MS }),
+  })
 }
 
 /** The streak page's note on what a freeze and a repair each cover. */

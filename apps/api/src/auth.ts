@@ -2,6 +2,7 @@ import {
   APP_SCHEMES,
   ERROR_CODES,
   IOS_BUNDLE_ID,
+  MAGIC_LINK_TTL_MINUTES,
   magicLinkUrl,
   PASSWORD_MIN_LENGTH,
   UNLINK_FRESH_SESSION_SECONDS,
@@ -896,8 +897,12 @@ export async function createAuth({
         disableSignUp: true,
         /** Stored hashed, like a password: a copy of the database is not a stack of live links. */
         storeToken: 'hashed',
-        /** A quarter of an hour: mail delay, a scanner or two, and a walk to the phone. Single-use anyway. */
-        expiresIn: 15 * 60,
+        /**
+         * A quarter of an hour: mail delay, a scanner or two, and a walk to the
+         * phone. Single-use anyway. In seconds here; the mail and the app quote
+         * the same constant in minutes.
+         */
+        expiresIn: MAGIC_LINK_TTL_MINUTES * 60,
         sendMagicLink: async ({ email, token, metadata }, ctx) => {
           const user = await db
             .collection<{ _id: ObjectId; email: string; isAnonymous?: boolean }>('user')

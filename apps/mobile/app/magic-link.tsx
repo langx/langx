@@ -1,3 +1,4 @@
+import { MAGIC_LINK_TTL_MINUTES } from '@langx/shared'
 import { Image } from 'expo-image'
 import logo from '../assets/brand/logo-rounded.png'
 import { router, useLocalSearchParams } from 'expo-router'
@@ -116,7 +117,9 @@ export default function MagicLinkScreen() {
       <Screen fluid style={styles.root}>
         <Brand />
         <Text style={styles.title}>{t('auth.linkExpiredTitle')}</Text>
-        <Text style={styles.body}>{error ?? t('auth.signInLinkExpiredBody')}</Text>
+        <Text style={styles.body}>
+          {error ?? t('auth.signInLinkExpiredBody', { count: MAGIC_LINK_TTL_MINUTES })}
+        </Text>
         <Button
           label={t('auth.requestNewLink')}
           onPress={() => router.replace('/(auth)/sign-in-link')}

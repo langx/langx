@@ -48,13 +48,18 @@ export interface ProBadgeArt {
   o: string
 }
 
-const r2 = (n: number) => Math.round(n * 100) / 100
+export const r2 = (n: number) => Math.round(n * 100) / 100
+
+/*
+ * Exported where `modBadge.ts` draws the MOD badge on the same pill, so the
+ * two stand as one line of facts: same height, same strokes, same O.
+ */
 
 /** The pill's own inset from the box: it is 22 units high, its ends half-circles. */
-const INSET = 1
+export const INSET = 1
 /** Pill edge to the star's tip; the O's side, being round, takes more. */
-const LEAD = 5.6
-const TAIL = 6
+export const LEAD = 5.6
+export const TAIL = 6
 /** The star: points and waist from its centre, and the stroke that rounds it. */
 const STAR_OUTER = 5.4
 const STAR_INNER = 2.7
@@ -62,16 +67,31 @@ const STAR_ROUND = 1.2
 /** Star ink to P's ink. */
 const STAR_GAP = 2.6
 /** Letter ink to letter ink. */
-const TRACK = 1.7
+export const TRACK = 1.7
 /** The letters' stroke centrelines at the top and bottom of the capitals. */
-const CAP_TOP = 7.6
-const CAP_BOTTOM = 16.4
+export const CAP_TOP = 7.6
+export const CAP_BOTTOM = 16.4
 /** Where P's and R's bowls close, as a share of the capital's height. */
 const BOWL_AT = 0.58
 /** The straight run of P's and R's bowls before they turn. */
 const BOWL_RUN = 2.2
 /** O's centreline width. */
-const O_WIDTH = 6
+export const O_WIDTH = 6
+
+/** The letters' stroke for a badge `height` points high. */
+export function badgeStroke(height: number): number {
+  return height <= PRO_BADGE_SMALL ? 3.3 : 2.9
+}
+
+/** An O whose centreline starts at `ox`, across the capitals. */
+export function badgeO(ox: number): string {
+  const oc = ox + O_WIDTH / 2
+  const ory = (CAP_BOTTOM - CAP_TOP) / 2
+  return (
+    `M${r2(oc)} ${r2(CAP_TOP)}A${r2(O_WIDTH / 2)} ${r2(ory)} 0 0 1 ${r2(oc)} ${r2(CAP_BOTTOM)}` +
+    `A${r2(O_WIDTH / 2)} ${r2(ory)} 0 0 1 ${r2(oc)} ${r2(CAP_TOP)}Z`
+  )
+}
 
 /**
  * A five-point star around (`cx`, `cy`). Its lower points stand nearer the
@@ -95,7 +115,7 @@ function starPath(cx: number, cy: number): string {
  * again for the thicker small cut rather than scaled.
  */
 export function proBadgeArt(height: number): ProBadgeArt {
-  const sw = height <= PRO_BADGE_SMALL ? 3.3 : 2.9
+  const sw = badgeStroke(height)
   const top = CAP_TOP
   const bottom = CAP_BOTTOM
   const mid = top + (bottom - top) * BOWL_AT
@@ -114,11 +134,7 @@ export function proBadgeArt(height: number): ProBadgeArt {
   const rx = p + BOWL_RUN + r + sw + TRACK
   const leg = `M${r2(rx + BOWL_RUN - 0.2)} ${r2(mid)}L${r2(rx + BOWL_RUN + r + 0.3)} ${r2(bottom)}`
   const ox = rx + BOWL_RUN + r + 0.3 + sw + TRACK
-  const oc = ox + O_WIDTH / 2
-  const ory = (bottom - top) / 2
-  const o =
-    `M${r2(oc)} ${r2(top)}A${r2(O_WIDTH / 2)} ${r2(ory)} 0 0 1 ${r2(oc)} ${r2(bottom)}` +
-    `A${r2(O_WIDTH / 2)} ${r2(ory)} 0 0 1 ${r2(oc)} ${r2(top)}Z`
+  const o = badgeO(ox)
   const end = ox + O_WIDTH + sw / 2
 
   return {
@@ -132,6 +148,6 @@ export function proBadgeArt(height: number): ProBadgeArt {
 }
 
 /** Points wide, for `art` drawn `height` points high. */
-export function proBadgeWidth(art: ProBadgeArt, height: number): number {
+export function proBadgeWidth(art: { width: number }, height: number): number {
   return r2((art.width * height) / PRO_BADGE_ART_HEIGHT)
 }

@@ -163,7 +163,7 @@ describe('reply-first discovery', () => {
   }
 
   describe('with the switch off', () => {
-    it('orders exactly as before: partners in, the dormant by score, no reply line', async () => {
+    it('keeps partners in, adds no dormant bucket and no reply line', async () => {
       await seed(
         person('partner'),
         person('dormantMutual', {
@@ -177,7 +177,10 @@ describe('reply-first discovery', () => {
       const items = await list()
       const ids = items.map((item) => item._id)
       expect(ids).toContain('partner')
-      expect(ids.indexOf('dormantMutual')).toBeLessThan(ids.indexOf('activeOneSided'))
+      // Not the dormant bucket, which stays behind the switch: the recency
+      // term in the score, which does not. The better fit gone for weeks
+      // used to lead here.
+      expect(ids.indexOf('activeOneSided')).toBeLessThan(ids.indexOf('dormantMutual'))
       expect(items.some((item) => item.repliesWithinDay)).toBe(false)
       expect(await strip()).toEqual([])
     })
@@ -221,7 +224,8 @@ describe('reply-first discovery', () => {
           interests: ['music', 'films'],
           stats: { ...idle(DISCOVERY_DORMANT_DAYS + 1), messagesSent: 0 },
         }),
-        // Mutual, but only just inside the line.
+        // Mutual, but only just inside the line — and so far down the
+        // recency term that a one-sided fit here an hour ago leads it.
         person('quietMutual', { stats: { ...idle(DISCOVERY_DORMANT_DAYS - 1), messagesSent: 0 } }),
         person('activeOneSided', oneSided),
         // Online now: the online bucket still leads everything.
@@ -236,8 +240,8 @@ describe('reply-first discovery', () => {
 
       expect(await order()).toEqual([
         'onlineOneSided',
-        'quietMutual',
         'activeOneSided',
+        'quietMutual',
         'dormantBestFit',
       ])
     })

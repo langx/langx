@@ -124,17 +124,17 @@ describe('the Russian pushes and emails the review found', () => {
   const ru = translator('ru')
 
   it('tells someone the pool paid 21 tokens that it paid 21', () => {
-    expect(ru('push.wallet.poolTitle', { count: 1 })).toBe('Вчерашний пул принёс вам 1 токен')
-    expect(ru('push.wallet.poolTitle', { count: 21 })).toBe('Вчерашний пул принёс вам 21 токен')
-    expect(ru('push.wallet.poolTitle', { count: 22 })).toBe('Вчерашний пул принёс вам 22 токена')
-    expect(ru('push.wallet.poolTitle', { count: 25 })).toBe('Вчерашний пул принёс вам 25 токенов')
+    expect(ru('push.wallet.poolTitle', { count: 1 })).toBe('Вчерашний пул принёс тебе 1 токен')
+    expect(ru('push.wallet.poolTitle', { count: 21 })).toBe('Вчерашний пул принёс тебе 21 токен')
+    expect(ru('push.wallet.poolTitle', { count: 22 })).toBe('Вчерашний пул принёс тебе 22 токена')
+    expect(ru('push.wallet.poolTitle', { count: 25 })).toBe('Вчерашний пул принёс тебе 25 токенов')
   })
 
   it('counts the digest in the case each number takes', () => {
     expect(ru('email.digestSubject', { count: 21 })).toBe('21 непрочитанное сообщение в LangX')
     expect(ru('email.feedDigestCorrections', { count: 3 })).toBe('3 исправления')
     expect(ru('email.feedDigestCorrections', { count: 25 })).toBe('25 исправлений')
-    expect(ru('email.meetingsBody', { count: 21 })).toBe('Вы договорились о 21 звонке на завтра.')
+    expect(ru('email.meetingsBody', { count: 21 })).toBe('На завтра у тебя назначен 21 звонок.')
   })
 })
 
@@ -142,8 +142,8 @@ describe('the Arabic digest', () => {
   const ar = translator('ar')
 
   // Arabic counts 3–10 with a plural noun, 11–99 and 100 with a singular one,
-  // and 2 with the dual and no number. The subjects had only `one` and
-  // `other`, so 2 and 11 read with the noun 3–10 take.
+  // and 2 with the dual and no number. Each subject is pinned at the numbers
+  // where those forms change, so none can fall back to another's noun.
   it('counts unread messages and replies in the form each number takes', () => {
     expect(ar('email.digestSubject', { count: 2 })).toBe('رسالتان غير مقروءتين في LangX')
     expect(ar('email.digestSubject', { count: 3 })).toBe('3 رسائل غير مقروءة في LangX')
@@ -151,8 +151,8 @@ describe('the Arabic digest', () => {
     expect(ar('email.digestBody', { count: 100, names: 'Ana' })).toBe(
       'لديك 100 رسالة غير مقروءة من Ana.',
     )
-    expect(ar('email.feedDigestSubject', { count: 2 })).toBe('ردّان على ما نشرته اليوم')
-    expect(ar('email.feedDigestSubject', { count: 11 })).toBe('11 ردًا على ما نشرته اليوم')
+    expect(ar('email.feedDigestSubject', { count: 2 })).toBe('ردّان اليوم على ما نشرته')
+    expect(ar('email.feedDigestSubject', { count: 11 })).toBe('11 ردًا اليوم على ما نشرته')
   })
 
   // The letter is sent with corrections + answers + comments as its count, so
@@ -161,7 +161,7 @@ describe('the Arabic digest', () => {
   it('counts replies in the feed digest body, never the people who left them', () => {
     expect(ar('email.feedDigestBody', { count: 0 })).toBe('وصلك اليوم 0 رد على ما نشرته.')
     expect(ar('email.feedDigestBody', { count: 2 })).toBe('وصلك اليوم ردّان على ما نشرته.')
-    expect(ar('email.feedDigestBody', { count: 3 })).toBe('وصلتك اليوم 3 ردود على ما نشرته.')
+    expect(ar('email.feedDigestBody', { count: 3 })).toBe('وصلك اليوم 3 ردود على ما نشرته.')
     expect(ar('email.feedDigestBody', { count: 11 })).toBe('وصلك اليوم 11 ردًا على ما نشرته.')
     expect(ar('email.feedDigestBody', { count: 100 })).toBe('وصلك اليوم 100 رد على ما نشرته.')
     // 0–120 reaches all six forms, 100 and up included.
@@ -169,6 +169,18 @@ describe('the Arabic digest', () => {
       ar('email.feedDigestBody', { count }),
     ).filter((text) => /شخص|أشخاص/.test(text))
     expect(people).toEqual([])
+  })
+
+  // The letter counts the last 24 hours of replies to posts of any age, so
+  // "today" (اليوم) goes with the replies: "ما نشرته اليوم" said the posts were
+  // today's. And one verb throughout: وصلك, as every other form has it.
+  it('says the replies came today, not the posts', () => {
+    const lines = Array.from({ length: 121 }, (_, count) => [
+      ar('email.feedDigestSubject', { count }),
+      ar('email.feedDigestBody', { count }),
+    ]).flat()
+    expect(lines.filter((text) => text.includes('نشرته اليوم'))).toEqual([])
+    expect(lines.filter((text) => text.includes('وصلتك'))).toEqual([])
   })
 })
 
@@ -202,7 +214,7 @@ describe('the Arabic pushes and emails that leaned on the fallback', () => {
       'سجّل الدخول خلال 30 يومًا ويعود كل شيء.',
     )
     expect(translator('ru')('email.deleteDoneBody', { count: 30 })).toBe(
-      'Войдите в течение 30 дней — и всё вернётся.',
+      'Войди в течение 30 дней — и всё вернётся.',
     )
   })
 })

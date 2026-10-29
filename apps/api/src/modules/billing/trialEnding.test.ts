@@ -39,7 +39,7 @@ describe('the trial-ending reminder', () => {
     mongo = await MongoMemoryServer.create()
     handle = await connectToDatabase(mongo.getUri(), 'trial_ending_test')
     await ensureIndexes(handle.db)
-  }, 60_000)
+  })
 
   afterAll(async () => {
     await handle.close()

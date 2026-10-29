@@ -106,7 +106,7 @@ export function InviteScreenV3() {
 
   const steps = [
     t('invite.step1'),
-    t('invite.step2', { activation: n(RULES.activation) }),
+    t('invite.step2', { count: RULES.activation, activation: n(RULES.activation) }),
     t('invite.step3', { subscription: n(RULES.subscription), max: n(RULES.maxPerInvitee) }),
     t('invite.step4', { invitee: n(RULES.inviteeActivation), total: n(RULES.inviteeTotal) }),
   ]
