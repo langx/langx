@@ -1293,6 +1293,57 @@ describe('Faz 3 — discovery aggregation', () => {
       const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
       expect(handles.indexOf(sharedInterest.handle)).toBeLessThan(handles.indexOf(noOverlap.handle))
     })
+
+    /**
+     * The report this exists for: somebody who opened the app once a month
+     * ago sat at the top of For you, because last activity only broke ties.
+     */
+    it('sort=recommended puts a one-sided fit here yesterday ahead of a mutual fit gone a month', async () => {
+      const viewer = await newUser('recency-viewer@example.com', {
+        nativeLanguages: [{ code: 'fi' }],
+        learning: [{ code: 'cs', level: 'intermediate', priority: 1 }],
+      })
+      const mutualGone = await newUser('recency-mutual-gone@example.com', {
+        nativeLanguages: [{ code: 'cs' }],
+        learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
+      })
+      const oneSidedRecent = await newUser('recency-one-sided@example.com', {
+        nativeLanguages: [{ code: 'cs' }],
+        learning: [{ code: 'sk', level: 'intermediate', priority: 1 }],
+      })
+      await setLastActiveAt(mutualGone.userId, new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))
+      await setLastActiveAt(oneSidedRecent.userId, new Date(Date.now() - 24 * 60 * 60 * 1000))
+
+      const response = await discover(viewer, 'sort=recommended')
+      const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
+      expect(handles.indexOf(oneSidedRecent.handle)).toBeGreaterThanOrEqual(0)
+      expect(handles.indexOf(oneSidedRecent.handle)).toBeLessThan(
+        handles.indexOf(mutualGone.handle),
+      )
+    })
+
+    it('sort=recommended still lets fit decide between people seen on the same day', async () => {
+      const viewer = await newUser('recency-tie-viewer@example.com', {
+        nativeLanguages: [{ code: 'lt' }],
+        learning: [{ code: 'lv', level: 'intermediate', priority: 1 }],
+      })
+      const mutual = await newUser('recency-tie-mutual@example.com', {
+        nativeLanguages: [{ code: 'lv' }],
+        learning: [{ code: 'lt', level: 'intermediate', priority: 1 }],
+      })
+      const oneSided = await newUser('recency-tie-one-sided@example.com', {
+        nativeLanguages: [{ code: 'lv' }],
+        learning: [{ code: 'et', level: 'intermediate', priority: 1 }],
+      })
+      // The one-sided fit an hour more recent, so only the fit can put the mutual one first.
+      await setLastActiveAt(mutual.userId, new Date(Date.now() - 3 * 60 * 60 * 1000))
+      await setLastActiveAt(oneSided.userId, new Date(Date.now() - 2 * 60 * 60 * 1000))
+
+      const response = await discover(viewer, 'sort=recommended')
+      const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
+      expect(handles.indexOf(mutual.handle)).toBeGreaterThanOrEqual(0)
+      expect(handles.indexOf(mutual.handle)).toBeLessThan(handles.indexOf(oneSided.handle))
+    })
   })
 
   /**

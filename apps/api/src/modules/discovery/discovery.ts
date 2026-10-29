@@ -10,6 +10,8 @@ import {
   DISCOVERY_DORMANT_DAYS,
   DISCOVERY_NEW_DAYS,
   DISCOVERY_NEW_LIMIT,
+  DISCOVERY_RECENCY_HALF_LIFE_DAYS,
+  DISCOVERY_RECENCY_WEIGHT,
   DISCOVERY_REPLY_SIGNAL_MIN_RATE,
   DISCOVERY_REPLY_SIGNAL_MIN_SAMPLE,
   DISCOVERY_RESPONSIVENESS_WEIGHT,
@@ -405,6 +407,37 @@ const RESPONSIVENESS: Document = {
 }
 
 /**
+ * `DISCOVERY_RECENCY_WEIGHT`, halved per half-life of absence.
+ *
+ * Age is measured from the moment page one was served — the pinned online
+ * cutoff plus its window — not from this request, or every score would drift
+ * between pages under a `$skip` already handed out. Somebody active since then
+ * clamps to age zero rather than scoring above the weight. A missing
+ * `lastActiveAt` reads as the epoch, which decays to nothing instead of
+ * turning the whole sum null.
+ */
+function recencyTerm(onlineCutoff: Date): Document {
+  const servedAt = new Date(onlineCutoff.getTime() + ONLINE_WINDOW_MS)
+  const ageDays = {
+    $max: [
+      0,
+      {
+        $divide: [
+          { $subtract: [servedAt, { $ifNull: ['$stats.lastActiveAt', new Date(0)] }] },
+          DAY_MS,
+        ],
+      },
+    ],
+  }
+  return {
+    $multiply: [
+      DISCOVERY_RECENCY_WEIGHT,
+      { $pow: [0.5, { $divide: [ageDays, DISCOVERY_RECENCY_HALF_LIFE_DAYS] }] },
+    ],
+  }
+}
+
+/**
  * "Usually replies within a day", decided from the raw counters past a
  * minimum sample — no prior here: the line is a claim about a person, and it
  * should rest on what they did rather than on what everybody is assumed to.
@@ -680,6 +713,7 @@ export async function discoverProfiles(
     if (rankReplyFirst) {
       scoreTerms.push({ $multiply: [DISCOVERY_RESPONSIVENESS_WEIGHT, RESPONSIVENESS] })
     }
+    if (onlineCutoff) scoreTerms.push(recencyTerm(onlineCutoff))
 
     pipeline.push(
       {

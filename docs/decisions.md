@@ -9776,3 +9776,29 @@ account now, as a beta, with no invitation
 > **Note, 28 October 2026.** The switch-on above has happened: production's
 > `GET /app-config` reports `flags.copilotEnabled` on, with `flags.v3Home` on
 > beside it. When it was switched on was not recorded.
+
+## For you weighs how lately somebody was here
+
+**28 October 2026.** Amends _Discovery puts the people who answer first, behind
+a switch_. With that switch off — as it is in production — last activity only
+broke ties in `recommended`, after the language fit and shared interests. So an
+account opened once a month ago and fitting well sat at the top of For you,
+ahead of everybody who was here yesterday and fitted a little less: the first
+rows went to people unlikely to answer. Behic saw exactly that.
+
+The score now carries a recency term, on or off the switch:
+`DISCOVERY_RECENCY_WEIGHT` halved every `DISCOVERY_RECENCY_HALF_LIFE_DAYS` of
+absence — two points today, one after three days, under a tenth after two
+weeks. Two points is a mutual fit's worth, chosen so that a one-sided fit here
+today leads a mutual fit gone a month, a mutual fit from three days ago draws
+level with it, and between people seen on the same day the fit still decides.
+A term rather than the dormant bucket switched on alone: a bucket is a cliff at
+one age and says nothing inside it, which is why a 13-day-idle mutual fit
+still led somebody here an hour ago under the switch.
+
+Age is measured from page one's moment, read off the pinned online cutoff, so
+the score holds still across pages under the offset cursor. Online-first still
+leads, and the dormant bucket still sits in front of the score when the switch
+is on. `active` and `nearby` are untouched — they answer a question the reader
+asked. The claim in the reply-first entry that a mutual fit "always leads a
+one-sided one" inside a bucket now holds only between people seen as recently.
