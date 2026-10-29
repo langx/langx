@@ -115,12 +115,31 @@ export const DISCOVERY_PRO_FILTER_KEYS = ['gender', 'cityId'] as const
  *
  * Nothing orders the two kinds apart, because nothing has to —
  * `recommended`'s score already sums both intersections, so a mutual fit
- * scores above a one-sided one on its own.
+ * scores above a one-sided one seen as recently.
  *
  * Flip to `false` once there are enough profiles for the honest rule to fill
  * a page, and delete the tests that pin the relaxed behaviour with it.
  */
 export const DISCOVERY_CROSS_MATCH_FALLBACK: boolean = true
+
+/**
+ * How much having been here lately counts in the recommended score.
+ *
+ * The term is this weight halved every `DISCOVERY_RECENCY_HALF_LIFE_DAYS` of
+ * absence: two points for somebody here today, one after three days, under a
+ * tenth after a fortnight. Before it, last activity only broke ties, so
+ * somebody who opened the app once a month ago and fitted well led everybody
+ * who was here yesterday and fitted a little less — the top of For you was
+ * people unlikely to answer.
+ *
+ * Two points is a mutual fit's worth, on purpose: a one-sided fit here today
+ * leads a mutual fit gone for a month, and a mutual fit from three days ago
+ * draws level with it. Fit still decides between people seen on the same day.
+ */
+export const DISCOVERY_RECENCY_WEIGHT = 2
+
+/** The recency term's half-life, in days. */
+export const DISCOVERY_RECENCY_HALF_LIFE_DAYS = 3
 
 /*
  * Reply-first discovery — every number below is read only while
@@ -144,8 +163,8 @@ export const DISCOVERY_DORMANT_DAYS = 14
  * `(answered + 1) / (received + 2)`, so somebody nobody has written to yet
  * sits at one half, exactly where everybody sat before the counters existed.
  * At a weight of one the whole spread is less than one language side, so a
- * mutual fit still always leads a one-sided one, and it is worth about two
- * shared interests.
+ * mutual fit still leads a one-sided one seen as recently, and it is worth
+ * about two shared interests.
  */
 export const DISCOVERY_RESPONSIVENESS_WEIGHT = 1
 
