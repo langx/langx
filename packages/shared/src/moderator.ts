@@ -123,9 +123,6 @@ export const adminModActionListQuerySchema = adminListQuerySchema.extend({
 })
 export type AdminModActionListQuery = z.infer<typeof adminModActionListQuerySchema>
 
-/** The chip beside a moderator's name, next to `TIER_BADGES`' PRO. */
-export const MOD_BADGE = 'MOD'
-
 /** One row of the public list of moderators in Settings. */
 export interface ModeratorListItem {
   userId: string
