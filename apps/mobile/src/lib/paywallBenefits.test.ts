@@ -7,6 +7,7 @@ import {
   HIGHLIGHT_COUNT,
   benefitsHeld,
   compareRows,
+  compareStacked,
   fullyOn,
   highlightsFor,
   pendingTag,
@@ -184,5 +185,77 @@ describe('pendingTag', () => {
   it('says Soon for one that has not shipped, beta or not', () => {
     expect(pendingTag({ ...base, shipped: false })).toBe('paywall.compareSoon')
     expect(pendingTag({ ...base, shipped: false, beta: true })).toBe('paywall.compareSoon')
+  })
+})
+
+describe('compareStacked', () => {
+  /*
+   * Measured on the web build at the default size: the column a row's name
+   * has beside the two cells on a 320pt and a 375pt phone, and the widest
+   * word of each language's widest name, hidden rows included.
+   */
+  const COLUMN = { 320: 92, 375: 147 }
+  const WIDEST = {
+    // "Übersetzungen pro Tag", a lead row; behind "And N more", "Ein Willkommenspaket".
+    de: { lead: 116.7, all: 144.2 },
+    // "Translations a day": a point over the column at 320, so it stacks there too.
+    en: { lead: 93, all: 93 },
+    // "Emporte tes expressions", a point under it.
+    fr: { lead: 90.3, all: 91 },
+  }
+
+  it('stacks past the default text size, whatever fits', () => {
+    expect(compareStacked({ fontScale: 1.01, column: COLUMN[375], words: [WIDEST.en.all] })).toBe(
+      true,
+    )
+    expect(compareStacked({ fontScale: 3.571, column: 0, words: [] })).toBe(true)
+  })
+
+  it('stacks at the default size when a name’s word is wider than its column', () => {
+    expect(
+      compareStacked({ fontScale: 1, column: COLUMN[320], words: [44.4, WIDEST.de.lead] }),
+    ).toBe(true)
+    expect(compareStacked({ fontScale: 1, column: COLUMN[320], words: [WIDEST.en.all] })).toBe(true)
+  })
+
+  it('stays side by side where every word fits, as it always was', () => {
+    // German at 375, every row counted: "Willkommenspaket" is 3pt inside.
+    expect(compareStacked({ fontScale: 1, column: COLUMN[375], words: [WIDEST.de.all] })).toBe(
+      false,
+    )
+    expect(compareStacked({ fontScale: 1, column: COLUMN[375], words: [WIDEST.en.all] })).toBe(
+      false,
+    )
+    expect(compareStacked({ fontScale: 1, column: COLUMN[320], words: [WIDEST.fr.all] })).toBe(
+      false,
+    )
+    // Below the default size too: what fits at 1× fits smaller.
+    expect(compareStacked({ fontScale: 0.85, column: COLUMN[320], words: [WIDEST.fr.all] })).toBe(
+      false,
+    )
+  })
+
+  it('scales the 1× words down to the size a smaller text setting draws', () => {
+    // German at Small (0.85) on a 360dp Android phone: "Willkommenspaket"
+    // is 144.2 at 1× and drawn at about 122.6 in a 132 column.
+    expect(compareStacked({ fontScale: 0.85, column: 132, words: [144.2] })).toBe(false)
+    expect(compareStacked({ fontScale: 0.85, column: 120, words: [144.2] })).toBe(true)
+  })
+
+  it('keeps a word exactly as wide as its column beside the cells', () => {
+    expect(compareStacked({ fontScale: 1, column: 92, words: [92] })).toBe(false)
+    expect(compareStacked({ fontScale: 1, column: 92, words: [92.1] })).toBe(true)
+  })
+
+  it('counts one row alone, whichever it is', () => {
+    const fits = [40, 60, 80]
+    expect(compareStacked({ fontScale: 1, column: 92, words: fits })).toBe(false)
+    expect(compareStacked({ fontScale: 1, column: 92, words: [...fits, 93] })).toBe(true)
+    expect(compareStacked({ fontScale: 1, column: 92, words: [93, ...fits] })).toBe(true)
+  })
+
+  it('stays side by side until the column and the words are measured', () => {
+    expect(compareStacked({ fontScale: 1, column: 0, words: [WIDEST.de.all] })).toBe(false)
+    expect(compareStacked({ fontScale: 1, column: COLUMN[320], words: [] })).toBe(false)
   })
 })

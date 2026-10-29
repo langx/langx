@@ -11,9 +11,10 @@ import {
   type ViewStyle,
 } from 'react-native'
 import { useT } from '../../i18n'
-import type { CompareCell, CompareRow } from '../../lib/paywallBenefits'
+import { measuredWords } from '../../lib/homeProducts'
+import { compareStacked, type CompareCell, type CompareRow } from '../../lib/paywallBenefits'
 import { PRODUCT_TEXT_SCALE } from '../../lib/productPage'
-import { makeStyles, useTheme } from '../../lib/theme'
+import { makeStyles, useTheme, v3Space } from '../../lib/theme'
 import { useGlyphScale } from '../product/ProductGroup'
 import { useWordFit, WidestWord } from '../product/WidestWord'
 import { ICON_BUTTON_TARGET } from '../ui/IconButton'
@@ -46,12 +47,27 @@ interface CompareTableProps {
  * size with nothing to spare — German's "Unbegrenzt" fills the Pro column
  * there — so side by side, any bigger size ran it past its column, and at
  * 200% past the table's edge, while the names were squeezed to a word a line.
+ * It stacks at the default size too when a word of any row's name, shown or
+ * not, is wider than the column the names have (`compareStacked`), as
+ * German's "Übersetzungen" is on a 320pt phone. Every row counts, so "And N
+ * more" never changes how the rows above it are laid out.
  */
 export function CompareTable({ rows, lead, expanded, onToggle }: CompareTableProps) {
   const styles = useStyles()
   const { v3 } = useTheme()
   const t = useT()
-  const stacked = useWindowDimensions().fontScale > 1
+  const { fontScale } = useWindowDimensions()
+  const [width, setWidth] = useState(0)
+  const [names, setNames] = useState<Readonly<Record<string, number>>>({})
+  const measureName = useCallback((benefit: string, widest: number) => {
+    setNames((old) => (old[benefit] === widest ? old : { ...old, [benefit]: widest }))
+  }, [])
+  const stacked = compareStacked({
+    fontScale,
+    // What a row leaves its name beside the two cells (`styles.row`).
+    column: width > 0 ? width - ROW_START - ROW_END - FREE_COLUMN - PRO_COLUMN : 0,
+    words: Object.values(names),
+  })
   const glyph = useGlyphScale()
   const shown = expanded ? rows : rows.slice(0, lead)
   const hidden = rows.length - lead
@@ -75,7 +91,15 @@ export function CompareTable({ rows, lead, expanded, onToggle }: CompareTablePro
   }
 
   return (
-    <View style={styles.table}>
+    <View style={styles.table} onLayout={(event) => setWidth(event.nativeEvent.layout.width)}>
+      {rows.map((row) => (
+        <WidestWord
+          key={row.benefit}
+          text={measuredWords(row.tag ? `${t(row.label)} · ${t(row.tag)}` : t(row.label)).join(' ')}
+          style={styles.label}
+          onWidth={(widest) => measureName(row.benefit, widest)}
+        />
+      ))}
       <View
         style={[styles.head, stacked && styles.stacked]}
         accessibilityElementsHidden
@@ -255,6 +279,9 @@ function Cell({
 /** The two columns' widths: wide enough for "Unlimited" in the longer languages, at the drawing's proportions. */
 const FREE_COLUMN = 76
 const PRO_COLUMN = 96
+/** A row's insets, on the name's side and the far one; the name has the rest beside the two columns. */
+const ROW_START = v3Space[16]
+const ROW_END = v3Space[8]
 /** The tick's disc: the drawing's 30, big enough to read from arm's length. */
 const MARK = 30
 /**
@@ -281,8 +308,8 @@ const useStyles = makeStyles(({ v3 }) => ({
   head: {
     alignItems: 'center',
     flexDirection: 'row',
-    paddingEnd: v3.space[8],
-    paddingStart: v3.space[16],
+    paddingEnd: ROW_END,
+    paddingStart: ROW_START,
     paddingVertical: v3.space[6],
   },
   labelCell: { flex: 1 },
@@ -308,8 +335,8 @@ const useStyles = makeStyles(({ v3 }) => ({
     borderTopWidth: 1,
     flexDirection: 'row',
     minHeight: 46,
-    paddingEnd: v3.space[8],
-    paddingStart: v3.space[16],
+    paddingEnd: ROW_END,
+    paddingStart: ROW_START,
     paddingVertical: v3.space[6],
   },
   label: { ...v3.type.callout, color: v3.colors.fg, fontWeight: '600' },

@@ -347,3 +347,37 @@ export function compareRows(limits: Record<PlanTier, PlanLimits> = PLAN_LIMITS):
     }
   })
 }
+
+/**
+ * Whether the comparison stacks, each row's name on a line of its own over
+ * its two cells (`CompareTable`): past the default text size always, and at
+ * it when a word of any row's name is wider than the column the name has
+ * beside the cells. `words` is each name's widest word and `column` that
+ * column's width, both measured, so the answer follows the reader's language
+ * and screen rather than a list of either. Side by side, a word wider than
+ * its column broke in the middle on a phone, and on the web pushed its row's
+ * cells past the table's edge: German's "Übersetzungen", 117pt, in the 92pt
+ * a 320pt phone leaves the column.
+ *
+ * Measured and drawn at the same size, so no slack: German's
+ * "Willkommenspaket", 144pt, fits the 147pt a 375pt phone leaves, and stays
+ * side by side. Side by side until both are measured, as it always was.
+ *
+ * The words are measured at 1× (`WidestWord` ignores the text size), but a
+ * name below the default size is drawn smaller — `maxFontSizeMultiplier`
+ * only caps above 1 — so they are scaled down to what is drawn. Otherwise a
+ * phone set to Small would stack rows that fit whole beside their cells.
+ */
+export function compareStacked({
+  fontScale,
+  column,
+  words,
+}: {
+  fontScale: number
+  column: number
+  words: readonly number[]
+}): boolean {
+  if (fontScale > 1) return true
+  if (column <= 0) return false
+  return words.some((width) => width * fontScale > column)
+}
