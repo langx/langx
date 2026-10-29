@@ -49,7 +49,7 @@ describe('the note when a suspension runs out', () => {
     handle = await connectToDatabase(server.getUri(), 'langx_suspension_ended_test')
     // `sender_client_id_unique` is half of what makes this once-only.
     await ensureIndexes(handle.db)
-  }, 60_000)
+  })
 
   afterAll(async () => {
     await handle.close()

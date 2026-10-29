@@ -3,6 +3,12 @@ import { describe, expect, it } from 'vitest'
 import { catalogs } from './catalogs'
 
 /**
+ * Turkish "token" anywhere but in the product's name, LangX Token, and in a
+ * placeholder such as `{tokens}`.
+ */
+const TR_TOKEN = /(?<![\p{L}{])(?<!LangX )token/iu
+
+/**
  * What the token and the daily pool are called, on every line of the app —
  * not only on the token page, which `lib/tokenPage.test.ts` holds to the
  * messaging brief.
@@ -15,6 +21,9 @@ import { catalogs } from './catalogs'
  * - Russian, Spanish and Portuguese call it what token.langx.io calls it:
  *   токен, tokens. Both catalogues had grown a second word beside it —
  *   жетон, fichas — sometimes on the same screen.
+ * - Turkish calls it jeton, as token.langx.io does; the catalogue said token
+ *   almost as often. The product's name, LangX Token, stays as the site's
+ *   title writes it.
  * - French calls it jeton, as token.langx.io/fr does. The catalogue said
  *   "tokens" on about one line in four — Echo, invites, the hourly gift,
  *   sticker gifts — and "jetons" on the rest. The product's name, LangX
@@ -40,6 +49,7 @@ const NEVER: Partial<Record<Locale, { pattern: RegExp; old: string }[]>> = {
   ],
   ru: [{ pattern: /жетон/iu, old: 'Не хватает жетонов' }],
   ar: [{ pattern: /توكن/u, old: '+3 توكنات' }],
+  tr: [{ pattern: TR_TOKEN, old: 'Bu paket için yeterli token’ın yok.' }],
 }
 
 /** The pool's own name on its screen, in the three languages that changed it. */
@@ -65,6 +75,11 @@ describe.each(Object.entries(NEVER))('the %s catalogue', (locale, rules) => {
     const said = leaves(catalogs[locale as Locale]).filter(([, text]) => rule.pattern.test(text))
     expect(said).toEqual([])
   })
+})
+
+it('lets LangX Token through in Turkish, the name the token page carries', () => {
+  expect(TR_TOKEN.test('LangX Token')).toBe(false)
+  expect((catalogs.tr.tokens as Catalog).page).toMatchObject({ title: 'LangX Token' })
 })
 
 describe('the French token', () => {

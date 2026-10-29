@@ -561,8 +561,8 @@ export const tr: Localized<EnMessages> = {
     dueUnit: { one: 'kart bekliyor', other: 'kart bekliyor' },
     closesRing: 'Bugünün üçüncü halkasını kapatır',
     closesRingTokens: {
-      one: 'Bugünün üçüncü halkasını kapatır · +{count} token',
-      other: 'Bugünün üçüncü halkasını kapatır · +{count} token',
+      one: 'Bugünün üçüncü halkasını kapatır · +{count} jeton',
+      other: 'Bugünün üçüncü halkasını kapatır · +{count} jeton',
     },
     aboutMinutes: { one: 'yaklaşık {count} dakika', other: 'yaklaşık {count} dakika' },
     gradeInMinutes: {
@@ -589,7 +589,7 @@ export const tr: Localized<EnMessages> = {
     reviewedWeek: { one: 'bu hafta tekrarlandı', other: 'bu hafta tekrarlandı' },
     emptyLine: 'Henüz kart yok. Bir sohbette mesaja basılı tut ve Echo’ya ekle’yi seç.',
     rememberedCount: { one: '{count} hatırlandı', other: '{count} hatırlandı' },
-    tokensEarned: { one: '+{count} token', other: '+{count} token' },
+    tokensEarned: { one: '+{count} jeton', other: '+{count} jeton' },
     streakKept: 'Seri korundu · {day}. gün',
     sessionOf: 'Bugünkü oturum: {done} / {total}',
     sessionsAllDone: {
@@ -597,8 +597,8 @@ export const tr: Localized<EnMessages> = {
       other: 'Bugünkü {count} oturumun hepsi tamam',
     },
     sessionsEarn: {
-      one: 'Her gün ilk oturumun token kazandırır.',
-      other: 'Her gün ilk {count} oturumun token kazandırır.',
+      one: 'Her gün ilk oturumun jeton kazandırır.',
+      other: 'Her gün ilk {count} oturumun jeton kazandırır.',
     },
     oneMore: 'Bir oturum daha',
     sourceOpensChat: 'Sohbetini bu mesajda açar',
@@ -1065,7 +1065,7 @@ export const tr: Localized<EnMessages> = {
       'İkinizin de kabul ettiği bir görüşmeden bir saat önce. Akşam maili yarın ne olduğunu söyler.',
     social: 'Akış ve oradaki insanlar',
     socialBody: 'Takipler, gönderilerine gelen yorumlar, düzeltmeler ve kayıtlar, beğeniler.',
-    wallet: 'Token’lar',
+    wallet: 'Jetonlar',
     walletBody: 'Günlük havuzun ödemesi ve saatlik hediyen.',
     promotions: 'Haberler ve kampanyalar',
     promotionsBody: 'Arada yeniliklerden haber. Tek dokunuşla durur.',
@@ -1327,7 +1327,7 @@ export const tr: Localized<EnMessages> = {
     pollThanks: 'Teşekkürler!',
     stickers: 'Stickerlar',
     stickersHint: 'Göndermek için bir stickera dokun.',
-    stickerBuy: '{price} token ile aç',
+    stickerBuy: '{price} jetonla aç',
     stickerUnlock: '{price} ile aç',
     quizAddOption: 'Seçenek ekle',
     sendQuiz: 'Soru sor',
@@ -1414,15 +1414,15 @@ export const tr: Localized<EnMessages> = {
       one: 'LangX’te {count} gün üst üste pratik yaptın.',
       other: 'LangX’te {count} gün üst üste pratik yaptın.',
     },
-    celebrateStreakNote: { one: 'token, bu seri için', other: 'token, bu seri için' },
+    celebrateStreakNote: { one: 'jeton, bu seri için', other: 'jeton, bu seri için' },
     rewardAnnounceJoin: '{said}. {next}',
-    rewardLabel: { one: '{count} token: {reason}', other: '{count} token: {reason}' },
+    rewardLabel: { one: '{count} jeton: {reason}', other: '{count} jeton: {reason}' },
     rewardBothLabel: {
-      one: 'Sana {count}, {name} adlı kişiye {count} token: ikiniz de yazdınız',
-      other: 'Sana {count}, {name} adlı kişiye {count} token: ikiniz de yazdınız',
+      one: 'Sana {count}, {name} adlı kişiye {count} jeton: ikiniz de yazdınız',
+      other: 'Sana {count}, {name} adlı kişiye {count} jeton: ikiniz de yazdınız',
     },
     them: 'karşı taraf',
-    tokensPerMessage: { one: '+{count} token / mesaj', other: '+{count} token / mesaj' },
+    tokensPerMessage: { one: '+{count} jeton / mesaj', other: '+{count} jeton / mesaj' },
     voiceMessage: 'Sesli mesaj',
     voiceNeedsEmptyComposer: 'Önce eki gönder — sesli not tek başına gider.',
     playbackRate: '{rate}×',
@@ -1867,7 +1867,7 @@ export const tr: Localized<EnMessages> = {
     deleteAnswer: 'Kaydı sil',
     deleteConfirmTitle: 'Silinsin mi?',
     deletePostConfirmBody:
-      'Düzeltmeleri, kayıtları ve yorumları da gider. Kazanılan tokenlar sahiplerinde kalır.',
+      'Düzeltmeleri, kayıtları ve yorumları da gider. Kazanılan jetonlar sahiplerinde kalır.',
     deleted: 'Silindi.',
     correctionPlaceholder: 'Cümleyi sen nasıl söylerdin, öyle yaz…',
     startFromOriginal: 'Orijinalden başla',
@@ -1984,7 +1984,7 @@ export const tr: Localized<EnMessages> = {
     shareMessage: "LangX'te benimle dil pratiği yap: {url}",
     badges: 'Rozetler',
     invite: 'Arkadaşını davet et',
-    inviteBody: 'Arkadaşın LangX’te gerçek bir sohbet edince token kazan',
+    inviteBody: 'Arkadaşın LangX’te gerçek bir sohbet edince jeton kazan',
     dayStreak: 'Günlük seri',
     followsTitle: 'Takipçiler ve takip edilenler',
     nextBadge: 'Sıradaki: {label}',
@@ -2226,7 +2226,7 @@ export const tr: Localized<EnMessages> = {
     sponsor: 'GitHub’da sponsor ol',
     followX: 'X’te bizi takip et',
     token: 'LangX Token',
-    tokenWebsite: 'Token sitesi',
+    tokenWebsite: 'Jeton sitesi',
     litepaper: 'Litepaper',
     about: 'Hakkımızda',
     website: 'Web sitesi',
@@ -2304,7 +2304,7 @@ export const tr: Localized<EnMessages> = {
       trustTitle: 'Verilerin ve güvenliğin',
       auditTitle: 'Kurallar kodda yazılı',
       auditBody:
-        'Limitler, plan kontrolleri ve token kuralları okunabilir; her biri sunucuda uygulanır — bir kuralı bilmek kimseye onu aşma imkânı vermez.',
+        'Limitler, plan kontrolleri ve jeton kuralları okunabilir; her biri sunucuda uygulanır — bir kuralı bilmek kimseye onu aşma imkânı vermez.',
       dataTitle: 'Verilerin senin',
       dataBody: {
         one: 'Uygulamanın senin hakkında tuttuğu her şeyi dışa aktar ya da hesabını sil: {count} gün sonra tamamen gider.',
@@ -2819,7 +2819,7 @@ export const tr: Localized<EnMessages> = {
 
   gift: {
     title: 'Saatlik hediye',
-    body: 'Her saat ücretsiz küçük bir hediye. Çoğunda birkaç token var; bazılarında daha fazla.',
+    body: 'Her saat ücretsiz küçük bir hediye. Çoğunda birkaç jeton var; bazılarında daha fazla.',
     ready: 'Açılmaya hazır',
     nextIn: 'Sonraki {minutes} dk sonra',
     shakeHint: 'Açmak için telefonu salla',
@@ -2829,7 +2829,7 @@ export const tr: Localized<EnMessages> = {
     failed: 'Hediye açılamadı',
     done: 'Tamam',
     openAccessibility: 'Saatlik hediyeyi aç',
-    tokensUnit: { one: 'token', other: 'token' },
+    tokensUnit: { one: 'jeton', other: 'jeton' },
     anotherInAnHour: 'Bir saat sonra bir tane daha.',
     openLabel: 'Aç',
     someEmpty: 'Bazı hediyeler boş çıkar. Bir saat sonra yenisi gelir.',
@@ -2988,7 +2988,7 @@ export const tr: Localized<EnMessages> = {
 
   invite: {
     title: 'Arkadaşını davet et',
-    body: 'Linkini paylaş. Davet ettiğin biri kaydolup biriyle gerçek bir sohbet ettiğinde ikiniz de token kazanırsınız.',
+    body: 'Linkini paylaş. Davet ettiğin biri kaydolup biriyle gerçek bir sohbet ettiğinde ikiniz de jeton kazanırsınız.',
     code: 'Davet kodun',
     share: 'Linki paylaş',
     copy: 'Linki kopyala',
@@ -2997,13 +2997,13 @@ export const tr: Localized<EnMessages> = {
     howTitle: 'Nasıl çalışıyor',
     step1: 'Linkini, senin dilini öğrenen birine gönder.',
     step2: {
-      one: 'Kaydolup gerçek bir sohbet etsin — senden başka biri ona cevap yazsın. {activation} token o zaman geliyor.',
+      one: 'Kaydolup gerçek bir sohbet etsin — senden başka biri ona cevap yazsın. {activation} jeton o zaman geliyor.',
       other:
-        'Kaydolup gerçek bir sohbet etsin — senden başka biri ona cevap yazsın. {activation} token o zaman geliyor.',
+        'Kaydolup gerçek bir sohbet etsin — senden başka biri ona cevap yazsın. {activation} jeton o zaman geliyor.',
     },
-    step3: 'Ücretli bir plana geçerse {subscription} token daha. Kişi başına toplam {max}.',
+    step3: 'Ücretli bir plana geçerse {subscription} jeton daha. Kişi başına toplam {max}.',
     step4:
-      'Onlar da kazanır: aynı anda {invitee} token daha, yani kayıt bonusuyla {total} ile başlarlar.',
+      'Onlar da kazanır: aynı anda {invitee} jeton daha, yani kayıt bonusuyla {total} ile başlarlar.',
     totalsInvited: {
       one: 'davet',
       other: 'davet',
@@ -3013,8 +3013,8 @@ export const tr: Localized<EnMessages> = {
       other: 'aktif',
     },
     totalsEarned: {
-      one: 'token',
-      other: 'token',
+      one: 'jeton',
+      other: 'jeton',
     },
     statusPending: 'Henüz sohbet yok',
     statusActivated: 'Aktif',
@@ -3022,10 +3022,10 @@ export const tr: Localized<EnMessages> = {
     emptyTitle: 'Henüz kimse yok',
     emptyBody: 'Linkini paylaş, katılanlar burada görünsün.',
     disclaimer:
-      'Tokenlar uygulama içi puandır. Kayıt için hiçbir şey ödenmez — davet, ancak davet ettiğin kişi senden başka biriyle gerçek bir sohbet ettiğinde kazandırır.',
+      'Jetonlar uygulama içi puandır. Kayıt için hiçbir şey ödenmez — davet, ancak davet ettiğin kişi senden başka biriyle gerçek bir sohbet ettiğinde kazandırır.',
     monthlyLimit: {
-      one: 'Davetler ayda en fazla {count} kişi için token kazandırır.',
-      other: 'Davetler ayda en fazla {count} kişi için token kazandırır.',
+      one: 'Davetler ayda en fazla {count} kişi için jeton kazandırır.',
+      other: 'Davetler ayda en fazla {count} kişi için jeton kazandırır.',
     },
     weekTitle: {
       one: 'Bir hafta Pro hediye et, bir hafta kazan',
@@ -3130,14 +3130,14 @@ export const tr: Localized<EnMessages> = {
     rowAccessibility: '{name}, {state}',
     confirmTitle: '{title} paketi {name} için mi?',
     honesty:
-      'Paket artık onun olur. Hediye geri alınamaz, başkasına verilemez, iade edilemez ve harcanan token geri gelmez.',
+      'Paket artık onun olur. Hediye geri alınamaz, başkasına verilemez, iade edilemez ve harcanan jeton geri gelmez.',
     confirm: '{price} karşılığında hediye et',
     sent: '{title} artık {name} kişisinde',
     failedTitle: 'Hediye gönderilemedi',
     refusalKeepTalking: 'Biraz daha konuşun, sonra yeniden dene.',
     refusalOwns: 'Bu paket zaten onda var.',
     refusalWeekly: 'Bu haftanın hediyesini verdin.',
-    refusalTokens: 'Bu paket için yeterli token’ın yok.',
+    refusalTokens: 'Bu paket için yeterli jetonun yok.',
     refusalUnavailable: 'Bu kişi şu an hediye alamıyor.',
     refusalGeneric: 'Bir şeyler ters gitti. Birazdan yeniden dene.',
     cardFromThem: '{name} sana bir çıkartma paketi hediye etti',
@@ -3420,7 +3420,7 @@ export const tr: Localized<EnMessages> = {
     firstCorrection: 'İlk düzeltme',
     streakDays: { one: '{formatted} gün', other: '{formatted} gün' },
     messagesSent: { one: '{formatted} mesaj', other: '{formatted} mesaj' },
-    tokensEarned: { one: '{formatted} token kazanıldı', other: '{formatted} token kazanıldı' },
+    tokensEarned: { one: '{formatted} jeton kazanıldı', other: '{formatted} jeton kazanıldı' },
     memberDays: { one: '{formatted} gün üye', other: '{formatted} gün üye' },
     corrections: { one: '{formatted} düzeltme', other: '{formatted} düzeltme' },
     earlyAdopter: 'İlk kullanıcılardan',
@@ -3440,15 +3440,15 @@ export const tr: Localized<EnMessages> = {
     of: '{current}/{total}',
     toGo: '{amount} kaldı.',
     streakReward: '{days} seri dönüm noktası {tokens} ekler.',
-    noTokens: 'Rozetin kendisi token kazandırmaz.',
+    noTokens: 'Rozetin kendisi jeton kazandırmaz.',
     milestonePays: 'Rozetin kendisi bir şey kazandırmaz; {days} seri dönüm noktası {tokens} ekler.',
     milestoneDays: {
       one: '{formatted} günlük',
       other: '{formatted} günlük',
     },
     milestoneTokens: {
-      one: '+{formatted} token',
-      other: '+{formatted} token',
+      one: '+{formatted} jeton',
+      other: '+{formatted} jeton',
     },
     earnedOn: '{date} tarihinde kazanıldı',
     earned: 'Kazanıldı',
@@ -3492,8 +3492,8 @@ export const tr: Localized<EnMessages> = {
         other: '{formatted} mesaj',
       },
       tokens: {
-        one: '{formatted} token',
-        other: '{formatted} token',
+        one: '{formatted} jeton',
+        other: '{formatted} jeton',
       },
       veteran: {
         one: '{formatted} gün',
@@ -3602,7 +3602,7 @@ export const tr: Localized<EnMessages> = {
         body: 'Gönderdiğin mesajlar.',
       },
       tokens: {
-        title: 'Kazanılan tokenler',
+        title: 'Kazanılan jetonlar',
         body: 'Kazandığın her şey. Harcamak hiçbirini geri almaz.',
       },
       veteran: {
@@ -3707,9 +3707,9 @@ export const tr: Localized<EnMessages> = {
     ctaBody: "{name} LangX'te dil pratiği yapıyor. Merhaba demek için katıl.",
     ctaLabel: "LangX'i aç",
     inviteBody: {
-      one: '{name} seni davet etti. Kaydol, biriyle gerçek bir sohbet et, {total} token ile başla; {name} {activation} kazanır — ücretli plana geçersen toplam {max}. Katılmak ücretsiz.',
+      one: '{name} seni davet etti. Kaydol, biriyle gerçek bir sohbet et, {total} jetonla başla; {name} {activation} kazanır — ücretli plana geçersen toplam {max}. Katılmak ücretsiz.',
       other:
-        '{name} seni davet etti. Kaydol, biriyle gerçek bir sohbet et, {total} token ile başla; {name} {activation} kazanır — ücretli plana geçersen toplam {max}. Katılmak ücretsiz.',
+        '{name} seni davet etti. Kaydol, biriyle gerçek bir sohbet et, {total} jetonla başla; {name} {activation} kazanır — ücretli plana geçersen toplam {max}. Katılmak ücretsiz.',
     },
   },
 
@@ -4365,8 +4365,8 @@ export const tr: Localized<EnMessages> = {
         other: 'günlük seri, sürüyor',
       },
       tokens: {
-        one: 'token kazanıldı',
-        other: 'token kazanıldı',
+        one: 'jeton kazanıldı',
+        other: 'jeton kazanıldı',
       },
     },
   },

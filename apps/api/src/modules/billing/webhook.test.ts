@@ -43,7 +43,7 @@ describe('processRevenueCatWebhook', () => {
     await handle.db
       .collection(COLLECTIONS.subscriptions)
       .createIndex({ eventId: 1 }, { unique: true })
-  }, 60_000)
+  })
 
   afterAll(async () => {
     await handle?.close()
