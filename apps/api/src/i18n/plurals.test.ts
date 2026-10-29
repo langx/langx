@@ -124,17 +124,17 @@ describe('the Russian pushes and emails the review found', () => {
   const ru = translator('ru')
 
   it('tells someone the pool paid 21 tokens that it paid 21', () => {
-    expect(ru('push.wallet.poolTitle', { count: 1 })).toBe('Вчерашний пул принёс вам 1 токен')
-    expect(ru('push.wallet.poolTitle', { count: 21 })).toBe('Вчерашний пул принёс вам 21 токен')
-    expect(ru('push.wallet.poolTitle', { count: 22 })).toBe('Вчерашний пул принёс вам 22 токена')
-    expect(ru('push.wallet.poolTitle', { count: 25 })).toBe('Вчерашний пул принёс вам 25 токенов')
+    expect(ru('push.wallet.poolTitle', { count: 1 })).toBe('Вчерашний пул принёс тебе 1 токен')
+    expect(ru('push.wallet.poolTitle', { count: 21 })).toBe('Вчерашний пул принёс тебе 21 токен')
+    expect(ru('push.wallet.poolTitle', { count: 22 })).toBe('Вчерашний пул принёс тебе 22 токена')
+    expect(ru('push.wallet.poolTitle', { count: 25 })).toBe('Вчерашний пул принёс тебе 25 токенов')
   })
 
   it('counts the digest in the case each number takes', () => {
     expect(ru('email.digestSubject', { count: 21 })).toBe('21 непрочитанное сообщение в LangX')
     expect(ru('email.feedDigestCorrections', { count: 3 })).toBe('3 исправления')
     expect(ru('email.feedDigestCorrections', { count: 25 })).toBe('25 исправлений')
-    expect(ru('email.meetingsBody', { count: 21 })).toBe('Вы договорились о 21 звонке на завтра.')
+    expect(ru('email.meetingsBody', { count: 21 })).toBe('На завтра у тебя назначен 21 звонок.')
   })
 })
 
@@ -214,7 +214,7 @@ describe('the Arabic pushes and emails that leaned on the fallback', () => {
       'سجّل الدخول خلال 30 يومًا ويعود كل شيء.',
     )
     expect(translator('ru')('email.deleteDoneBody', { count: 30 })).toBe(
-      'Войдите в течение 30 дней — и всё вернётся.',
+      'Войди в течение 30 дней — и всё вернётся.',
     )
   })
 })
