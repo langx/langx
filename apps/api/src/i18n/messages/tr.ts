@@ -43,17 +43,17 @@ export const tr: Localized<ServerMessages> = {
       awayTitle: 'İnsanlar hâlâ burada',
       awayBody: 'Pratik yapacak yeni insanlar var.',
       awayLongTitle: 'Sen gelene kadar buradayız',
-      awayLongBody: 'Serin ve token’ların bekliyor.',
+      awayLongBody: 'Serin ve jetonların bekliyor.',
       limitReachedTitle: 'Ücretsiz sınırlara takılıp duruyorsun',
       limitReachedBody: 'Bir plan bunları kaldırır.',
       trialEndingTitle: 'Ücretsiz haftan iki gün sonra bitiyor',
       trialEndingBody: 'Sürdürmek tek dokunuş.',
       winBackTitle: 'Planın bir hafta önce bitti',
       winBackBody: 'Oluşturduğun her şey hâlâ burada.',
-      tokensWaitingTitle: { one: '{count} token bekliyor', other: '{count} token bekliyor' },
+      tokensWaitingTitle: { one: '{count} jeton bekliyor', other: '{count} jeton bekliyor' },
       tokensWaitingBody: 'Cüzdanını aç.',
       inviteFriendTitle: 'Bir arkadaşını davet et',
-      inviteFriendBody: 'O katılınca ikiniz de token kazanırsınız.',
+      inviteFriendBody: 'O katılınca ikiniz de jeton kazanırsınız.',
     },
 
     /** The feed reacting to something somebody left in it. */
@@ -92,8 +92,8 @@ export const tr: Localized<ServerMessages> = {
 
     wallet: {
       poolTitle: {
-        one: 'Dünkü havuz sana 1 token ödedi',
-        other: 'Dünkü havuz sana {count} token ödedi',
+        one: 'Dünkü havuz sana 1 jeton ödedi',
+        other: 'Dünkü havuz sana {count} jeton ödedi',
       },
 
       poolBody: 'Cüzdanını açmak için dokun.',
@@ -248,7 +248,7 @@ export const tr: Localized<ServerMessages> = {
     newsletterCorrections: 'Yapılan düzeltme',
     newsletterPosts: 'Paylaşılan gönderi',
 
-    newsletterTokens: 'Kazanılan token',
+    newsletterTokens: 'Kazanılan jeton',
 
     newsletterStreak: 'Bugünkü seri',
 
@@ -258,7 +258,7 @@ export const tr: Localized<ServerMessages> = {
 
     newsletterCorrectionsMade: 'Yapılan düzeltme',
 
-    newsletterTokensGiven: 'Dağıtılan token',
+    newsletterTokensGiven: 'Dağıtılan jeton',
 
     newsletterButton: 'LangX’i aç',
 
@@ -356,7 +356,7 @@ export const tr: Localized<ServerMessages> = {
       awayLongSubject: 'Bundan sonra yazmayacağız',
 
       awayLongBody:
-        'Bir ay uzun bir süre. Hesabın, serin ve token’ların hâlâ burada — istersen diye. Bu konuda son yazışımız.',
+        'Bir ay uzun bir süre. Hesabın, serin ve jetonların hâlâ burada — istersen diye. Bu konuda son yazışımız.',
 
       awayLongButton: 'LangX’i aç',
 
@@ -377,24 +377,24 @@ export const tr: Localized<ServerMessages> = {
       winBackSubject: 'Planın bir hafta önce sona erdi',
 
       winBackBody:
-        'Hiçbir şey alınmadı — serin, token’ların ve yazdığın her şey bıraktığın yerde. Duran şey ücretli sınırlar.',
+        'Hiçbir şey alınmadı — serin, jetonların ve yazdığın her şey bıraktığın yerde. Duran şey ücretli sınırlar.',
 
       winBackButton: 'Planlara bak',
 
       tokensWaitingSubject: {
-        one: '{count} token’ın bekliyor',
-        other: '{count} token’ın bekliyor',
+        one: '{count} jetonun bekliyor',
+        other: '{count} jetonun bekliyor',
       },
 
       tokensWaitingBody:
-        'Token’lar seri dondurma, gün onarımı, çerçeve ve unvan alır. Seninkiler iki haftadır duruyor.',
+        'Jetonlar seri dondurma, gün onarımı, çerçeve ve unvan alır. Seninkiler iki haftadır duruyor.',
 
       tokensWaitingButton: 'Cüzdanımı aç',
 
       inviteFriendSubject: 'Tanıdığınla pratik daha iyi',
 
       inviteFriendBody:
-        'Bir arkadaşını davet et, o katılınca ikiniz de token kazanın. Davet bağlantın Ayarlar’da.',
+        'Bir arkadaşını davet et, o katılınca ikiniz de jeton kazanırsınız. Davet bağlantın Ayarlar’da.',
 
       inviteFriendButton: 'Davet bağlantımı al',
     },
@@ -501,7 +501,7 @@ export const tr: Localized<ServerMessages> = {
       streak: 'streak hatırlatmaları',
       profileVisits: 'profil ziyareti özetleri',
       social: 'akış bildirimleri',
-      wallet: 'token haberleri',
+      wallet: 'jeton haberleri',
       promotions: 'haberler ve kampanyalar',
       all: 'LangX’ten gelen e-postalar',
       v1contact: 'yeni LangX hakkındaki tek mesaj',
@@ -720,8 +720,8 @@ export const tr: Localized<ServerMessages> = {
       other: '{formatted} mesaj',
     },
     tokensEarned: {
-      one: '{formatted} token kazanıldı',
-      other: '{formatted} token kazanıldı',
+      one: '{formatted} jeton kazanıldı',
+      other: '{formatted} jeton kazanıldı',
     },
     memberDays: {
       one: '{formatted} gün üye',

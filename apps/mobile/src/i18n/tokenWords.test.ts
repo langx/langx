@@ -3,6 +3,28 @@ import { describe, expect, it } from 'vitest'
 import { catalogs } from './catalogs'
 
 /**
+ * Turkish "token" anywhere but in the product's name, LangX Token, and in a
+ * placeholder such as `{tokens}`.
+ */
+const TR_TOKEN = /(?<![\p{L}{])(?<!LangX )token/iu
+
+/**
+ * Two lines still say token in Turkish and tokens in French: invite.step2
+ * and shared.inviteBody count tokens in a plain string, and the change that
+ * gives them plural entries rewrites them in every language, the word with
+ * it. The paths name the plain strings, so the rule holds the plurals
+ * (`invite.step2.one`, …) as soon as they exist, and the last test below
+ * fails until an entry that no
+ * longer needs its exception is taken off this list.
+ */
+const NOT_YET: ReadonlySet<string> = new Set([
+  'tr:invite.step2',
+  'tr:shared.inviteBody',
+  'fr:invite.step2',
+  'fr:shared.inviteBody',
+])
+
+/**
  * What the token and the daily pool are called, on every line of the app —
  * not only on the token page, which `lib/tokenPage.test.ts` holds to the
  * messaging brief.
@@ -15,6 +37,9 @@ import { catalogs } from './catalogs'
  * - Russian, Spanish and Portuguese call it what token.langx.io calls it:
  *   токен, tokens. Both catalogues had grown a second word beside it —
  *   жетон, fichas — sometimes on the same screen.
+ * - Turkish calls it jeton, as token.langx.io does; the catalogue said token
+ *   almost as often. The product's name, LangX Token, stays as the site's
+ *   title writes it.
  * - French calls it jeton, as token.langx.io/fr does. The catalogue said
  *   "tokens" on about one line in four — Echo, invites, the hourly gift,
  *   sticker gifts — and "jetons" on the rest. The product's name, LangX
@@ -40,16 +65,7 @@ const NEVER: Partial<Record<Locale, { pattern: RegExp; old: string }[]>> = {
   ],
   ru: [{ pattern: /жетон/iu, old: 'Не хватает жетонов' }],
   ar: [{ pattern: /توكن/u, old: '+3 توكنات' }],
-}
-
-/**
- * Lines that keep the old word until another change lands: invite.step2 and
- * shared.inviteBody are being reworded in every locale, to take their numbers
- * from config, by a change that owns them. Each one is checked to still need
- * its place here, so the list empties itself once they say the new word.
- */
-const WAITING: Partial<Record<Locale, string[]>> = {
-  fr: ['invite.step2', 'shared.inviteBody'],
+  tr: [{ pattern: TR_TOKEN, old: 'Bu paket için yeterli token’ın yok.' }],
 }
 
 /** The pool's own name on its screen, in the three languages that changed it. */
@@ -72,19 +88,25 @@ describe.each(Object.entries(NEVER))('the %s catalogue', (locale, rules) => {
   })
 
   it.each(rules)('never uses the word in $old', (rule) => {
-    const waiting = WAITING[locale as Locale] ?? []
     const said = leaves(catalogs[locale as Locale]).filter(
-      ([path, text]) => !waiting.includes(path) && rule.pattern.test(text),
+      ([path, text]) => rule.pattern.test(text) && !NOT_YET.has(`${locale}:${path}`),
     )
     expect(said).toEqual([])
   })
 })
 
-describe.each(Object.entries(WAITING))('the %s lines left for later', (locale, paths) => {
-  it.each(paths)('%s still says the old word', (path) => {
-    const text = leaves(catalogs[locale as Locale]).find(([key]) => key === path)?.[1] ?? ''
-    expect(NEVER[locale as Locale]?.some((rule) => rule.pattern.test(text))).toBe(true)
+it('lets through only lines that still say the old word', () => {
+  const stale = [...NOT_YET].filter((id) => {
+    const [locale, path] = id.split(':') as [Locale, string]
+    const text = new Map(leaves(catalogs[locale])).get(path)
+    return !(text && NEVER[locale]?.some((rule) => rule.pattern.test(text)))
   })
+  expect(stale).toEqual([])
+})
+
+it('lets LangX Token through in Turkish, the name the token page carries', () => {
+  expect(TR_TOKEN.test('LangX Token')).toBe(false)
+  expect((catalogs.tr.tokens as Catalog).page).toMatchObject({ title: 'LangX Token' })
 })
 
 describe('the French token', () => {
