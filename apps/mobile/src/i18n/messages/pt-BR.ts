@@ -4631,8 +4631,8 @@ export const ptBR: Localized<EnMessages> = {
       showFewer: 'Mostrar menos',
       stickersTitle: 'Os stickers dela',
       stickersIntro: {
-        one: '{count} sticker, grátis para todos. Funciona em toda conversa.',
-        other: '{count} stickers, grátis para todos. Funcionam em toda conversa.',
+        one: '{count} sticker em toda conta. Funciona em toda conversa.',
+        other: '{count} stickers em toda conta. Funcionam em toda conversa.',
       },
       linkTitle: 'Mais sobre a Venus em langx.io',
       qWho: 'Quem é a Venus?',

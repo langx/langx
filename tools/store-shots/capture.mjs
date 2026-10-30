@@ -123,7 +123,7 @@ function tapText(text) {
   if (el) el.click()
 }
 /*
- * Where shot 9's no-prices variant cuts the screen, as a fraction of its
+ * Where a `noPrices` shot cuts the screen, as a fraction of its
  * height: the first price on screen (a currency sign next to a digit), or,
  * where the build shows none (the web build sells nothing), just under the
  * compare table — the first tall filled block in the top half.

@@ -4719,9 +4719,8 @@ export const fr: Localized<EnMessages> = {
       showFewer: 'Afficher moins',
       stickersTitle: 'Ses stickers',
       stickersIntro: {
-        one: '{count} sticker, gratuit pour tout le monde. Il marche dans toutes les discussions.',
-        other:
-          '{count} stickers, gratuits pour tout le monde. Ils marchent dans toutes les discussions.',
+        one: '{count} sticker dans chaque compte. Il marche dans toutes les discussions.',
+        other: '{count} stickers dans chaque compte. Ils marchent dans toutes les discussions.',
       },
       linkTitle: 'En savoir plus sur Venus sur langx.io',
       qWho: 'Qui est Venus ?',

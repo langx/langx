@@ -4647,8 +4647,8 @@ export const es: Localized<EnMessages> = {
       showFewer: 'Mostrar menos',
       stickersTitle: 'Sus stickers',
       stickersIntro: {
-        one: '{count} sticker, gratis para todos. Funciona en todos los chats.',
-        other: '{count} stickers, gratis para todos. Funcionan en todos los chats.',
+        one: '{count} sticker en cada cuenta. Funciona en todos los chats.',
+        other: '{count} stickers en cada cuenta. Funcionan en todos los chats.',
       },
       linkTitle: 'Más sobre Venus en langx.io',
       qWho: '¿Quién es Venus?',

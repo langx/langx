@@ -4605,8 +4605,8 @@ export const tr: Localized<EnMessages> = {
       showFewer: 'Daha az göster',
       stickersTitle: 'Stickerları',
       stickersIntro: {
-        one: '{count} sticker, herkese ücretsiz. Her sohbette çalışır.',
-        other: '{count} sticker, herkese ücretsiz. Her sohbette çalışır.',
+        one: '{count} sticker, her hesapta. Her sohbette çalışır.',
+        other: '{count} sticker, her hesapta. Her sohbette çalışır.',
       },
       linkTitle: 'langx.io’da Venus hakkında daha fazlası',
       qWho: 'Venus kim?',
