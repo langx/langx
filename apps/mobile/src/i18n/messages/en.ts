@@ -5176,8 +5176,8 @@ export const en = {
       showFewer: 'Show fewer',
       stickersTitle: 'Her stickers',
       stickersIntro: {
-        one: '{count} sticker, free for everyone. It works in every chat.',
-        other: '{count} stickers, free for everyone. They work in every chat.',
+        one: '{count} sticker in every account. It works in every chat.',
+        other: '{count} stickers in every account. They work in every chat.',
       },
       linkTitle: 'More about Venus on langx.io',
       qWho: 'Who is Venus?',

@@ -17,7 +17,6 @@ export const ORDER = [
   'home',
   'store',
   'venus',
-  'pro',
 ]
 
 /**
@@ -28,7 +27,7 @@ export const ORDER = [
  */
 export const PPO = ['venusLead']
 
-/** Play takes eight per slot; Home is App Store only. */
+/** Play takes up to eight per slot; Home is App Store only. */
 export const PLAY_SKIPS = ['home']
 
 export const HUES = {
@@ -94,12 +93,11 @@ export const SHOTS = {
     tabletShowTo: 0.8,
   },
   /*
-   * Shot 9 ships without prices (Behic, 21 Oct 2026): a listing is read in
-   * every storefront, and a price on it is one storefront's. `noPrices`
-   * lowers the phone until the purchase area — the first price on screen,
-   * or the end of the compare table where none shows — is off the tile.
+   * No Pro shot. 3.0 and the first 3.1 set ended on the paywall (shot 9),
+   * cut above its prices; Apple rejected 3.1 under guideline 2.3.7 on 30 Oct
+   * 2026 for "free" in the screenshots, and the paywall's compare table has a
+   * Free column, which counts. No caption names a price or the word free.
    */
-  pro: { ground: 'blue', path: '/paywall', noPrices: true },
 }
 
 /**
@@ -130,7 +128,7 @@ export const BUDGET = { headline: 32, support: 75 }
  * The words. English is the source; every other locale is unreviewed until a
  * native speaker reads it (Turkish: Behic). Where a caption names something
  * on screen it uses that locale's own word for it from
- * `apps/mobile/src/i18n/messages/<locale>.ts` (Echo, Pro, the freeze).
+ * `apps/mobile/src/i18n/messages/<locale>.ts` (Echo, the freeze).
  *
  * `streak` names nothing done with a partner: the 3.0 streak screen has no
  * pair streaks (see `StreakScreenV3.tsx`), and a caption claims only what the
@@ -145,18 +143,21 @@ export const CAPTIONS = {
     ],
     corrections: [
       'Fix each other’s sentences',
-      'Hold a message to correct it. Free on every plan.',
+      'Hold a message to correct it. They see exactly what changed.',
     ],
     echo: [
       'Your chats become flashcards',
       'Save a line or a fix to Echo. It comes back before you’d forget it.',
     ],
     streak: ['Keep your streak going', 'Write a little every day. A freeze covers a day you miss.'],
-    calls: ['Call when you’re ready', 'Voice and video, right from the chat. Free on every plan.'],
+    calls: [
+      'Call when you’re ready',
+      'Voice and video calls, right from the chat with your partner.',
+    ],
     home: ['One next step, every day', 'Who is waiting for you, and three small things for today.'],
     store: [
       'Dress up with what you earn',
-      'Frames, titles and stickers, paid for in points you earn by taking part.',
+      'Frames, titles and stickers, for points you earn by taking part.',
     ],
     venus: [
       'Your streak, cheered on by Venus',
@@ -166,10 +167,6 @@ export const CAPTIONS = {
       'Practise every day with Venus',
       'Swap languages with real people. Venus has a video for each streak day.',
     ],
-    pro: [
-      'More room with Pro',
-      'Unlimited new chats and translations. Replies and corrections stay free.',
-    ],
   },
   tr: {
     reviewed: false,
@@ -177,16 +174,16 @@ export const CAPTIONS = {
       'Gerçek insanlarla dil takası',
       'Öğrendiğin dili konuşuyorlar, konuştuğun dili öğreniyorlar.',
     ],
-    corrections: ['Birbirinizi düzeltin', 'Düzeltmek için mesaja basılı tut. Her planda ücretsiz.'],
+    corrections: [
+      'Birbirinizi düzeltin',
+      'Düzeltmek için mesaja basılı tut. Partnerin neyin değiştiğini görür.',
+    ],
     echo: [
       'Sohbetlerin kartlara dönüşür',
       'Bir cümleyi ya da düzeltmeyi Echo’ya kaydet. Unutmadan geri gelir.',
     ],
     streak: ['Serini sürdür', 'Her gün biraz yaz. Kaçırdığın bir günü dondurma kurtarır.'],
-    calls: [
-      'Hazır olduğunda ara',
-      'Sohbetin içinden sesli ve görüntülü arama. Her planda ücretsiz.',
-    ],
+    calls: ['Hazır olduğunda ara', 'Partnerinle sohbetin içinden sesli ve görüntülü arama.'],
     home: ['Her gün tek bir sonraki adım', 'Seni kim bekliyor, bir de bugün için üç küçük şey.'],
     store: [
       'Kazandığınla profilini süsle',
@@ -197,10 +194,6 @@ export const CAPTIONS = {
       'Venus’la her gün pratik yap',
       'Gerçek insanlarla dil takası. Serindeki her gün için Venus’tan bir video.',
     ],
-    pro: [
-      'Pro ile daha fazla alan',
-      'Sınırsız yeni sohbet ve çeviri. Yanıtlar ve düzeltmeler ücretsiz kalır.',
-    ],
   },
   es: {
     reviewed: false,
@@ -210,7 +203,7 @@ export const CAPTIONS = {
     ],
     corrections: [
       'Corrige y te corrigen',
-      'Mantén pulsado un mensaje para corregirlo. Gratis en todos los planes.',
+      'Mantén pulsado un mensaje para corregirlo. Tu compañero verá qué cambió.',
     ],
     echo: [
       'Tus chats se vuelven tarjetas',
@@ -222,12 +215,12 @@ export const CAPTIONS = {
     ],
     calls: [
       'Llama cuando estés listo',
-      'Voz y vídeo, desde el mismo chat. Gratis en todos los planes.',
+      'Llamadas de voz y vídeo, desde el mismo chat con tu compañero.',
     ],
     home: ['Un siguiente paso, cada día', 'Quién te espera y tres cosas pequeñas para hoy.'],
     store: [
       'Viste tu perfil con lo que ganas',
-      'Marcos, títulos y stickers que pagas con puntos que ganas participando.',
+      'Marcos, títulos y stickers a cambio de puntos que ganas participando.',
     ],
     venus: [
       'Venus celebra tu racha',
@@ -236,10 +229,6 @@ export const CAPTIONS = {
     venusLead: [
       'Aprende cada día con Venus',
       'Practica idiomas con gente real. Venus te deja un vídeo cada día de racha.',
-    ],
-    pro: [
-      'Más espacio con Pro',
-      'Chats nuevos y traducciones ilimitados. Responder y corregir sigue gratis.',
     ],
   },
   ru: {
@@ -250,20 +239,17 @@ export const CAPTIONS = {
     ],
     corrections: [
       'Исправляйте друг друга',
-      'Удерживайте сообщение, чтобы исправить. Бесплатно на любом тарифе.',
+      'Удерживайте сообщение, чтобы исправить. Собеседник увидит, что изменилось.',
     ],
     echo: [
       'Чаты превращаются в карточки',
-      'Сохраните фразу или исправление в Echo — оно вернётся до того, как забудется.',
+      'Сохраните фразу или исправление в Echo — оно вернётся, пока не забылось.',
     ],
     streak: [
       'Не прерывайте серию',
       'Пишите понемногу каждый день. Заморозка спасёт пропущенный день.',
     ],
-    calls: [
-      'Звоните, когда будете готовы',
-      'Голос и видео прямо из чата. Бесплатно на любом тарифе.',
-    ],
+    calls: ['Звоните, когда будете готовы', 'Аудио- и видеозвонки прямо из чата с собеседником.'],
     home: ['Один следующий шаг каждый день', 'Кто вас ждёт — и три небольших дела на сегодня.'],
     store: [
       'Украшайте профиль заработанным',
@@ -277,26 +263,24 @@ export const CAPTIONS = {
       'Практика каждый день с Venus',
       'Обмен языками с живыми людьми. За каждый день серии — видео от Venus.',
     ],
-    pro: [
-      'Больше возможностей с Pro',
-      'Безлимитные новые чаты и переводы. Ответы и исправления — бесплатно.',
-    ],
   },
   ar: {
     reviewed: false,
     partners: ['تبادل اللغات مع أشخاص حقيقيين', 'يتحدثون ما تتعلمه، ويتعلمون ما تتحدثه.'],
-    corrections: ['صحّحوا جمل بعضكم', 'اضغط مطولًا على رسالة لتصحيحها. مجاني في كل الخطط.'],
+    corrections: [
+      'صحّحوا جمل بعضكم',
+      'اضغط مطولًا على رسالة لتصحيحها. سيرى شريكك بالضبط ما الذي تغيّر.',
+    ],
     echo: ['محادثاتك تصبح بطاقات', 'احفظ جملة أو تصحيحًا في Echo. يعود إليك قبل أن تنساه.'],
     streak: ['حافظ على سلسلتك', 'اكتب قليلًا كل يوم. التجميد يغطي يومًا تفوّته.'],
-    calls: ['اتصل حين تكون مستعدًا', 'صوت وفيديو من داخل المحادثة. مجاني في كل الخطط.'],
+    calls: ['اتصل حين تكون مستعدًا', 'مكالمات صوتية ومكالمات فيديو من داخل المحادثة مع شريكك.'],
     home: ['خطوة تالية واحدة كل يوم', 'من ينتظرك، وثلاثة أشياء صغيرة لليوم.'],
-    store: ['زيّن ملفك بما تكسبه', 'إطارات وألقاب وملصقات، تدفع ثمنها بنقاط تكسبها بالمشاركة.'],
+    store: ['زيّن ملفك بما تكسبه', 'إطارات وألقاب وملصقات مقابل نقاط تكسبها بالمشاركة.'],
     venus: ['Venus تشجّعك على سلسلتك', 'فيديو قصير من قطة LangX لكل يوم في سلسلتك.'],
     venusLead: [
       'تدرّب كل يوم مع Venus',
       'تبادل اللغات مع أشخاص حقيقيين، ولكل يوم في سلسلتك فيديو من Venus.',
     ],
-    pro: ['مساحة أكبر مع Pro', 'محادثات جديدة وترجمات بلا حدود. الردود والتصحيحات تبقى مجانية.'],
   },
   fr: {
     reviewed: false,
@@ -306,7 +290,7 @@ export const CAPTIONS = {
     ],
     corrections: [
       'Corrigez-vous l’un l’autre',
-      'Appui long sur un message pour le corriger. Gratuit pour tous.',
+      'Appui long sur un message pour le corriger. L’autre voit ce qui a changé.',
     ],
     echo: [
       'Vos chats deviennent des fiches',
@@ -318,7 +302,7 @@ export const CAPTIONS = {
     ],
     calls: [
       'Appelez quand vous le sentez',
-      'Voix et vidéo, depuis la conversation. Gratuit dans toutes les formules.',
+      'Appels vocaux et vidéo, depuis la conversation avec votre partenaire.',
     ],
     home: [
       'Une prochaine étape, chaque jour',
@@ -326,7 +310,7 @@ export const CAPTIONS = {
     ],
     store: [
       'Habillez votre profil',
-      'Cadres, titres et stickers, payés avec les points gagnés en participant.',
+      'Cadres, titres et stickers, contre des points gagnés en participant.',
     ],
     venus: [
       'Venus encourage votre série',
@@ -335,10 +319,6 @@ export const CAPTIONS = {
     venusLead: [
       'Pratiquez chaque jour avec Venus',
       'Échangez avec des gens réels. Venus a une vidéo pour chaque jour de série.',
-    ],
-    pro: [
-      'Plus de place avec Pro',
-      'Chats et traductions illimités. Répondre et corriger reste gratuit.',
     ],
   },
   de: {
@@ -349,7 +329,7 @@ export const CAPTIONS = {
     ],
     corrections: [
       'Korrigiert euch gegenseitig',
-      'Nachricht gedrückt halten und korrigieren. In jedem Tarif kostenlos.',
+      'Nachricht gedrückt halten, korrigieren. Dein Gegenüber sieht jede Änderung.',
     ],
     echo: [
       'Aus Chats werden Lernkarten',
@@ -361,7 +341,7 @@ export const CAPTIONS = {
     ],
     calls: [
       'Ruf an, wenn du so weit bist',
-      'Sprach- und Videoanrufe direkt im Chat. In jedem Tarif kostenlos.',
+      'Sprach- und Videoanrufe direkt im Chat mit deinem Gegenüber.',
     ],
     home: [
       'Jeden Tag ein nächster Schritt',
@@ -379,10 +359,6 @@ export const CAPTIONS = {
       'Jeden Tag üben mit Venus',
       'Sprachtausch mit echten Menschen. Venus hat ein Video für jeden Serientag.',
     ],
-    pro: [
-      'Mehr Raum mit Pro',
-      'Unbegrenzt neue Chats und Übersetzungen. Antworten und Korrigieren gratis.',
-    ],
   },
   'pt-BR': {
     reviewed: false,
@@ -392,7 +368,7 @@ export const CAPTIONS = {
     ],
     corrections: [
       'Corrijam as frases um do outro',
-      'Toque e segure uma mensagem para corrigir. Grátis em todos os planos.',
+      'Toque e segure uma mensagem para corrigir. A pessoa vê o que mudou.',
     ],
     echo: [
       'Suas conversas viram flashcards',
@@ -404,7 +380,7 @@ export const CAPTIONS = {
     ],
     calls: [
       'Ligue quando estiver pronto',
-      'Voz e vídeo, direto do chat. Grátis em todos os planos.',
+      'Chamadas de voz e vídeo, direto do chat com seu parceiro.',
     ],
     home: [
       'Um próximo passo, todo dia',
@@ -412,7 +388,7 @@ export const CAPTIONS = {
     ],
     store: [
       'Enfeite-se com o que ganha',
-      'Molduras, títulos e stickers pagos com pontos que você ganha participando.',
+      'Molduras, títulos e stickers em troca de pontos ganhos participando.',
     ],
     venus: [
       'A Venus torce pela sua sequência',
@@ -421,10 +397,6 @@ export const CAPTIONS = {
     venusLead: [
       'Pratique todo dia com a Venus',
       'Converse com pessoas reais. A Venus manda um vídeo a cada dia de sequência.',
-    ],
-    pro: [
-      'Mais espaço com o Pro',
-      'Novos chats e traduções ilimitados. Respostas e correções seguem grátis.',
     ],
   },
 }

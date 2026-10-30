@@ -61,20 +61,21 @@ the covers and videos load as plain media.
   android-feature-graphic.png              1024 × 500
   manifest.json                            number → id → caption, per locale and slot
   <locale>/contact.html
-  <locale>/ios/6.9/01.png … 09.png         1320 × 2868
-  <locale>/ios/6.3/01.png … 09.png         1206 × 2622
-  <locale>/ios/5.5/01.png … 09.png         1242 × 2208
-  <locale>/ios/13/01.png  … 09.png         2064 × 2752
-  <locale>/android/phone/01.png … 08.png   1440 × 2560   (Play locales only)
+  <locale>/ios/6.9/01.png … 08.png         1320 × 2868
+  <locale>/ios/6.3/01.png … 08.png         1206 × 2622
+  <locale>/ios/5.5/01.png … 08.png         1242 × 2208
+  <locale>/ios/13/01.png  … 08.png         2064 × 2752
+  <locale>/android/phone/01.png … 07.png   1440 × 2560   (Play locales only)
   <locale>/android/7tablet/…               1080 × 1920
   <locale>/android/10tablet/…              1440 × 2560
   <locale>/ppo/ios/<slot>/01.png …         PPO shots (`PPO`), App Store slots only
 ```
 
 Numbers are store order, zero-padded so a plain sort is the order. Play skips
-`home`, so Play's 06 is `store`. Shot 9 (Pro) shows no prices: the phone is
-lowered until the purchase area runs off the tile, so the listing never
-carries one storefront's price into the others.
+`home`, so Play's 06 is `store` and each Play slot holds seven. There is no
+Pro shot: Apple rejected 3.1 under guideline 2.3.7 (30 Oct 2026) for "free"
+in the screenshots, and the paywall's compare table has a Free column. No
+caption may name a price or say free, in any locale.
 
 Shot 8 is Venus's page at her videos (3.0 had Badges there). The `ppo/` tree
 holds shots made for a product page optimization treatment rather than the
@@ -90,6 +91,11 @@ rsync -a --exclude .work ../store-shots-3.1/ ../branding/3.x/
 node apps/mobile/scripts/collect-store-screenshots.mjs   # then fastlane deliver
 node apps/mobile/scripts/collect-play-screenshots.mjs    # then fastlane android play
 ```
+
+`rsync -a` adds and replaces but never removes, and the collect scripts upload
+every PNG they find. A slot that held 3.1's first set still has its `09.png`
+(the Pro shot) after the copy, and would send it again: delete the old
+`NN.png` files in the target before copying a set with fewer shots.
 
 ## Sizes, and where they come from
 
