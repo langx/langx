@@ -710,6 +710,8 @@ export const de: Localized<ServerMessages> = {
     feature: 'Hallo! Danke für die Idee — wir haben sie gelesen, und sie steht auf unserer Liste.',
     copilot:
       'Hallo! Danke, dass du diese Copilot-Antwort gemeldet hast — wir haben sie gelesen, und Meldungen wie deine helfen uns, Copilot besser zu machen.',
+    modApplication:
+      'Hallo! Danke für deine Bewerbung als Moderator — wir lesen jede Antwort und melden uns hier, sobald wir entschieden haben.',
     issue: 'Hier kannst du den Stand verfolgen: {url}',
   },
   cards: {

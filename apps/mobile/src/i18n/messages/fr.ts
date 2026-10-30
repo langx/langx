@@ -1963,11 +1963,56 @@ export const fr: Localized<EnMessages> = {
     helpName: 'Aider {name}',
   },
 
+  modApplication: {
+    title: 'Devenir modérateur',
+    intro:
+      'Quelques questions pour faire connaissance. On lit chaque candidature nous-mêmes, et on répond dans tous les cas.',
+    questions: {
+      why: 'Pourquoi veux-tu devenir modérateur ?',
+      experience: 'As-tu déjà modéré une communauté ? Raconte-nous.',
+      situation:
+        'Quelqu’un signale un membre pour des messages grossiers. Que ferais-tu en premier ?',
+      time: 'Combien de temps pourrais-tu y consacrer par semaine ?',
+    },
+    tooShort: {
+      one: 'Encore un peu — au moins un caractère.',
+      other: 'Encore un peu — au moins {count} caractères.',
+    },
+    send: 'Envoyer la candidature',
+    sending: 'Envoi…',
+    sent: 'Candidature envoyée. On te répondra.',
+    notEligible: 'Tu ne peux pas postuler avec ce compte pour le moment.',
+    failed: 'Ça n’est pas parti. Réessaie dans un instant.',
+  },
   profile: {
     proBadge: 'Membre Pro',
     modBadge: 'Modérateur',
     proSheetTitle: 'Qu’est-ce que {plan} ?',
     proSheetBody: '{name} a {plan}. Voici ce que ça ajoute au forfait gratuit :',
+    modSheetTitle: 'C’est quoi, un modérateur ?',
+    modSheetBody:
+      '{name} est modérateur — un membre qui aide à garder LangX bienveillant. Voici ce qu’il fait :',
+    modSheetReportsTitle: 'Examiner les signalements',
+    modSheetReportsBody: 'Il lit ce que les membres signalent et décide de la suite.',
+    modSheetSuspendTitle: 'Avertir et suspendre',
+    modSheetSuspendBody: {
+      one: 'Un avertissement, ou une pause de {count} jour au plus.',
+      other: 'Un avertissement, ou une pause de {count} jours au plus.',
+    },
+    modSheetHideTitle: 'Masquer publications et commentaires',
+    modSheetHideBody: 'Tout ce qui enfreint les règles de la communauté.',
+    modSheetReviewed: 'Chaque décision d’un modérateur est revue par l’équipe LangX.',
+    modSheetApply: 'Envie de devenir modérateur ?',
+    modSheetRequirement: {
+      one: 'Pour postuler, il faut une série de {count} jour.',
+      other: 'Pour postuler, il faut une série de {count} jours.',
+    },
+    modSheetStreakNow: {
+      one: 'Tu en es au jour {count}.',
+      other: 'Tu en es au jour {count}.',
+    },
+    modSheetSent: 'Ta candidature est arrivée — on te répondra.',
+    modSheetYours: 'Tu es modérateur, toi aussi.',
     official: 'Compte officiel',
     suspendedTag: 'Suspendu',
     deletedTag: 'Compte supprimé',

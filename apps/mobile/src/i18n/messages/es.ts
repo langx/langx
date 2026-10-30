@@ -1942,11 +1942,55 @@ export const es: Localized<EnMessages> = {
     helpName: 'Ayudar a {name}',
   },
 
+  modApplication: {
+    title: 'Ser moderador',
+    intro:
+      'Unas preguntas para conocerte. Leemos cada solicitud nosotros mismos y te respondemos en cualquier caso.',
+    questions: {
+      why: '¿Por qué quieres ser moderador?',
+      experience: '¿Has moderado alguna comunidad antes? Cuéntanos.',
+      situation: 'Alguien reporta a un miembro por mensajes groseros. ¿Qué harías primero?',
+      time: '¿Cuánto tiempo podrías dedicarle cada semana?',
+    },
+    tooShort: {
+      one: 'Un poco más — al menos un carácter.',
+      other: 'Un poco más — al menos {count} caracteres.',
+    },
+    send: 'Enviar solicitud',
+    sending: 'Enviando…',
+    sent: 'Solicitud enviada. Te escribiremos.',
+    notEligible: 'No puedes postularte con esta cuenta ahora mismo.',
+    failed: 'No se pudo enviar. Inténtalo de nuevo en un momento.',
+  },
   profile: {
     proBadge: 'Miembro Pro',
     modBadge: 'Moderador',
     proSheetTitle: '¿Qué es {plan}?',
     proSheetBody: '{name} tiene {plan}. Esto es lo que añade al plan gratuito:',
+    modSheetTitle: '¿Qué es un moderador?',
+    modSheetBody:
+      '{name} es moderador — un miembro que ayuda a que LangX siga siendo amable. Esto es lo que hace:',
+    modSheetReportsTitle: 'Revisa reportes',
+    modSheetReportsBody: 'Lee lo que reportan los miembros y decide qué pasa después.',
+    modSheetSuspendTitle: 'Advierte y suspende',
+    modSheetSuspendBody: {
+      one: 'Una advertencia, o una pausa de hasta {count} día.',
+      other: 'Una advertencia, o una pausa de hasta {count} días.',
+    },
+    modSheetHideTitle: 'Oculta publicaciones y comentarios',
+    modSheetHideBody: 'Todo lo que rompa las normas de la comunidad.',
+    modSheetReviewed: 'El equipo de LangX revisa cada decisión de un moderador.',
+    modSheetApply: '¿Quieres ser moderador?',
+    modSheetRequirement: {
+      one: 'Para postularte necesitas una racha de {count} día.',
+      other: 'Para postularte necesitas una racha de {count} días.',
+    },
+    modSheetStreakNow: {
+      one: 'Vas por el día {count}.',
+      other: 'Vas por el día {count}.',
+    },
+    modSheetSent: 'Tu solicitud nos llegó — te escribiremos.',
+    modSheetYours: 'Tú también eres moderador.',
     official: 'Cuenta oficial',
     suspendedTag: 'Suspendida',
     deletedTag: 'Cuenta eliminada',

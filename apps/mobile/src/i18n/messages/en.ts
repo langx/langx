@@ -2173,12 +2173,56 @@ export const en = {
     helpName: 'Help {name}',
   },
 
+  modApplication: {
+    title: 'Become a moderator',
+    intro:
+      'A few questions so we can get to know you. We read every application ourselves, and we write back either way.',
+    questions: {
+      why: 'Why do you want to be a moderator?',
+      experience: 'Have you moderated a community before? Tell us about it.',
+      situation: 'Someone reports a member for rude messages. What would you do first?',
+      time: 'How much time could you give to it each week?',
+    },
+    tooShort: {
+      one: 'A little more — at least one character.',
+      other: 'A little more — at least {count} characters.',
+    },
+    send: 'Send application',
+    sending: 'Sending…',
+    sent: 'Application sent. We’ll write back.',
+    notEligible: 'You can’t apply from this account right now.',
+    failed: 'That didn’t go. Try again in a moment.',
+  },
   profile: {
     proBadge: 'Pro member',
     modBadge: 'Moderator',
     /** The sheet behind the PRO badge on somebody's profile. */
     proSheetTitle: 'What’s {plan}?',
     proSheetBody: '{name} has {plan}. Here’s what it adds to the free plan:',
+    modSheetTitle: 'What’s a moderator?',
+    modSheetBody:
+      '{name} is a moderator — a member who helps keep LangX kind. Here’s what they do:',
+    modSheetReportsTitle: 'Review reports',
+    modSheetReportsBody: 'They read what members report and decide what happens next.',
+    modSheetSuspendTitle: 'Warn and suspend',
+    modSheetSuspendBody: {
+      one: 'A warning, or a pause of up to {count} day.',
+      other: 'A warning, or a pause of up to {count} days.',
+    },
+    modSheetHideTitle: 'Hide posts and comments',
+    modSheetHideBody: 'Anything that breaks the community rules.',
+    modSheetReviewed: 'Every decision a moderator makes is reviewed by the LangX team.',
+    modSheetApply: 'Want to become a mod?',
+    modSheetRequirement: {
+      one: 'Applying takes a {count}-day streak.',
+      other: 'Applying takes a {count}-day streak.',
+    },
+    modSheetStreakNow: {
+      one: 'You’re on day {count}.',
+      other: 'You’re on day {count}.',
+    },
+    modSheetSent: 'Your application is in — we’ll write back.',
+    modSheetYours: 'You’re a moderator too.',
     /** Screen-reader label for the tick beside @langx and @copilot. */
     official: 'Official account',
     suspendedTag: 'Suspended',

@@ -705,6 +705,8 @@ export const ptBR: Localized<ServerMessages> = {
     feature: 'Oi! Obrigado pela ideia — a gente leu e ela já está na nossa lista.',
     copilot:
       'Oi! Obrigado por avisar sobre esta resposta do Copilot — a gente leu, e avisos como o seu ajudam a melhorar o Copilot.',
+    modApplication:
+      'Oi! Obrigado por se candidatar a moderador — a gente lê cada resposta e vai te escrever aqui quando decidir.',
     issue: 'Você pode acompanhar aqui: {url}',
   },
   cards: {

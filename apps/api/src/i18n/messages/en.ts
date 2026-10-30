@@ -920,6 +920,8 @@ export const en = {
     feature: 'Hi! Thanks for the idea — we read it, and it’s on our list.',
     copilot:
       'Hi! Thanks for reporting this Copilot answer — we read it, and reports like yours help us make Copilot better.',
+    modApplication:
+      'Hi! Thanks for applying to be a moderator — we read every answer, and we’ll write back here once we’ve decided.',
     issue: 'You can follow it here: {url}',
   },
   cards: {

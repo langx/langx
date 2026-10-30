@@ -691,6 +691,8 @@ export const tr: Localized<ServerMessages> = {
     feature: 'Merhaba! Fikrin için teşekkürler — okuduk, listemize ekledik.',
     copilot:
       'Merhaba! Bu Copilot yanıtını bildirdiğin için teşekkürler — okuduk; böyle bildirimler Copilot’u iyileştirmemize yardım ediyor.',
+    modApplication:
+      'Merhaba! Moderatör olmak için başvurduğun için teşekkürler — her cevabı okuyoruz, karar verdiğimizde buradan yazacağız.',
     issue: 'Buradan takip edebilirsin: {url}',
   },
   cards: {

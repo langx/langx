@@ -3,6 +3,8 @@ import {
   type CopilotAction,
   type GiftCodeRedeemResult,
   type FeedbackInput,
+  type ModApplicationInput,
+  type ModApplicationStatus,
   type LinkPreviewResponse,
   type SharedProfile,
   type PublicStats,
@@ -392,6 +394,7 @@ export const keys = {
   modReports: ['mod', 'reports'] as const,
   modReport: (id: string) => ['mod', 'report', id] as const,
   moderators: ['moderators'] as const,
+  modApplication: ['modApplication'] as const,
 }
 
 /**
@@ -3017,6 +3020,26 @@ export function useSendFeedback() {
   })
 }
 
+/** Whether the viewer has an application to moderate still waiting. */
+export function useModApplication(enabled: boolean) {
+  return useQuery({
+    queryKey: keys.modApplication,
+    queryFn: () => api.get<ModApplicationStatus>('/mod-application'),
+    enabled,
+  })
+}
+
+/** Asking to moderate: a row in the operators' queue, read and answered by hand. */
+export function useApplyToModerate() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: ModApplicationInput) => api.post<{ ok: true }>('/mod-application', input),
+    onSuccess: () => {
+      client.setQueryData<ModApplicationStatus>(keys.modApplication, { open: true })
+    },
+  })
+}
+
 export interface TranslationDto {
   translatedText: string
   sourceLang: string
@@ -3659,10 +3682,15 @@ export interface AdminAppealDto {
 
 export interface AdminFeedbackDto {
   _id: string
-  /** `copilot` is a reported AI answer: `body` is the answer, `copilot` the rest. */
-  kind: 'bug' | 'feature' | 'copilot'
+  /**
+   * `copilot` is a reported AI answer: `body` is the answer, `copilot` the
+   * rest. `modApplication` is somebody asking to moderate; the answers are in
+   * `modApplication`.
+   */
+  kind: 'bug' | 'feature' | 'copilot' | 'modApplication'
   body: string
   copilot?: { action: CopilotAction; question?: string }
+  modApplication?: { streak: number; answers: ModApplicationInput['answers'] }
   attachmentUrls: string[]
   issueUrl?: string
   status: 'open' | 'triaged' | 'closed'
