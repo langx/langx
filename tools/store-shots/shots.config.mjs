@@ -176,7 +176,7 @@ export const CAPTIONS = {
     ],
     corrections: [
       'Birbirinizi düzeltin',
-      'Düzeltmek için mesaja basılı tut. Neyin değiştiğini tam olarak görür.',
+      'Düzeltmek için mesaja basılı tut. Partnerin neyin değiştiğini görür.',
     ],
     echo: [
       'Sohbetlerin kartlara dönüşür',
@@ -203,7 +203,7 @@ export const CAPTIONS = {
     ],
     corrections: [
       'Corrige y te corrigen',
-      'Mantén pulsado un mensaje para corregirlo. Verá exactamente qué cambió.',
+      'Mantén pulsado un mensaje para corregirlo. Tu compañero verá qué cambió.',
     ],
     echo: [
       'Tus chats se vuelven tarjetas',

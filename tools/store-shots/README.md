@@ -92,6 +92,11 @@ node apps/mobile/scripts/collect-store-screenshots.mjs   # then fastlane deliver
 node apps/mobile/scripts/collect-play-screenshots.mjs    # then fastlane android play
 ```
 
+`rsync -a` adds and replaces but never removes, and the collect scripts upload
+every PNG they find. A slot that held 3.1's first set still has its `09.png`
+(the Pro shot) after the copy, and would send it again: delete the old
+`NN.png` files in the target before copying a set with fewer shots.
+
 ## Sizes, and where they come from
 
 Checked 21 Oct 2026.
