@@ -269,6 +269,14 @@ export const ADMIN = {
     copilotAnswer: 'Copilot answered',
     copilotNoQuestion: 'Their question was not sent.',
     copilotClose: 'Close',
+    /** Somebody asking to moderate. Appointing is on the Moderators page. */
+    modApplication: (streak: number) => `Moderator application · ${streak}-day streak`,
+    modQuestions: {
+      why: 'Why they want to moderate',
+      experience: 'Moderated before',
+      situation: 'A rude-messages report — what first',
+      time: 'Time each week',
+    },
   },
 
   broadcast: {

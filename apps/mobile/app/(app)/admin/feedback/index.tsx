@@ -1,6 +1,11 @@
 import { useState } from 'react'
 import { FlatList, Linking, Text, View } from 'react-native'
-import { BOUNTY_MAX, BOUNTY_MIN, COPILOT_OWN_QUESTION_ACTIONS } from '@langx/shared'
+import {
+  BOUNTY_MAX,
+  BOUNTY_MIN,
+  COPILOT_OWN_QUESTION_ACTIONS,
+  MOD_APPLICATION_QUESTIONS,
+} from '@langx/shared'
 import {
   useAdminCloseFeedback,
   useAdminFeedback,
@@ -104,6 +109,7 @@ function Row({ row }: { row: AdminFeedbackDto }) {
   const [reply, setReply] = useState<string | null>(null)
 
   const who = row.sender.handle ? `@${row.sender.handle}` : row.sender.userId
+  const application = row.modApplication
   const tokens = Math.min(BOUNTY_MAX, Math.max(BOUNTY_MIN, Number.parseInt(amount, 10) || 0))
 
   async function onPay() {
@@ -153,8 +159,12 @@ function Row({ row }: { row: AdminFeedbackDto }) {
   return (
     <AdminBlockV3>
       <Text style={styles.meta}>
-        {row.copilot ? ADMIN.feedback.copilotAction(row.copilot.action) : row.kind} ·{' '}
-        {ADMIN.feedback.from} {who} · {row.createdAt.slice(0, 10)}
+        {row.copilot
+          ? ADMIN.feedback.copilotAction(row.copilot.action)
+          : application
+            ? ADMIN.feedback.modApplication(application.streak)
+            : row.kind}{' '}
+        · {ADMIN.feedback.from} {who} · {row.createdAt.slice(0, 10)}
       </Text>
       {/* Explain and Reply ideas never carry a question, so they say nothing about one. */}
       {row.copilot && COPILOT_OWN_QUESTION_ACTIONS.includes(row.copilot.action) ? (
@@ -168,7 +178,17 @@ function Row({ row }: { row: AdminFeedbackDto }) {
         </>
       ) : null}
       {row.copilot ? <Text style={styles.meta}>{ADMIN.feedback.copilotAnswer}</Text> : null}
-      <AdminQuoteV3>{row.body}</AdminQuoteV3>
+      {/* An application is its answers, each under the question it answers. */}
+      {application ? (
+        MOD_APPLICATION_QUESTIONS.map((key) => (
+          <View key={key}>
+            <Text style={styles.meta}>{ADMIN.feedback.modQuestions[key]}</Text>
+            <AdminQuoteV3>{application.answers[key]}</AdminQuoteV3>
+          </View>
+        ))
+      ) : (
+        <AdminQuoteV3>{row.body}</AdminQuoteV3>
+      )}
 
       {row.attachmentUrls.length > 0 ? (
         <Text style={styles.meta}>
@@ -180,7 +200,8 @@ function Row({ row }: { row: AdminFeedbackDto }) {
        * A reported AI answer is not paid for: a bounty on every answer
        * somebody disliked would be a reason to dislike them. Close only.
        */}
-      {row.copilot ? (
+      {/* Nor is an application: a bounty would be a reason to apply. */}
+      {row.copilot || application ? (
         <AdminActionsV3>
           <Button
             label={ADMIN.feedback.copilotClose}

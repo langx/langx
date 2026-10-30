@@ -721,6 +721,8 @@ export const fr: Localized<ServerMessages> = {
     feature: 'Bonjour ! Merci pour l’idée — on l’a lue et elle est sur notre liste.',
     copilot:
       'Bonjour ! Merci d’avoir signalé cette réponse de Copilot — on l’a lue, et les signalements comme le tien nous aident à améliorer Copilot.',
+    modApplication:
+      'Bonjour ! Merci pour ta candidature comme modérateur — on lit chaque réponse, et on t’écrit ici dès qu’on a décidé.',
     issue: 'Tu peux suivre ça ici : {url}',
   },
   cards: {

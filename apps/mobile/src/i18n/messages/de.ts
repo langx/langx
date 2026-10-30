@@ -1983,11 +1983,57 @@ export const de: Localized<EnMessages> = {
     helpName: '{name} helfen',
   },
 
+  modApplication: {
+    title: 'Moderator werden',
+    intro:
+      'Ein paar Fragen, damit wir dich kennenlernen. Wir lesen jede Bewerbung selbst und antworten in jedem Fall.',
+    questions: {
+      why: 'Warum möchtest du Moderator werden?',
+      experience: 'Hast du schon einmal eine Community moderiert? Erzähl uns davon.',
+      situation:
+        'Jemand meldet ein Mitglied wegen unhöflicher Nachrichten. Was würdest du zuerst tun?',
+      time: 'Wie viel Zeit könntest du pro Woche dafür aufbringen?',
+    },
+    tooShort: {
+      one: 'Ein bisschen mehr — mindestens ein Zeichen.',
+      other: 'Ein bisschen mehr — mindestens {count} Zeichen.',
+    },
+    send: 'Bewerbung senden',
+    sending: 'Wird gesendet…',
+    sent: 'Bewerbung gesendet. Wir melden uns.',
+    notEligible: 'Mit diesem Konto kannst du dich gerade nicht bewerben.',
+    failed: 'Das hat nicht geklappt. Versuch es gleich noch einmal.',
+  },
   profile: {
     proBadge: 'Pro-Mitglied',
     modBadge: 'Moderator',
     proSheetTitle: 'Was ist {plan}?',
     proSheetBody: '{name} hat {plan}. Das kommt zum kostenlosen Tarif dazu:',
+    modSheetTitle: 'Was ist ein Moderator?',
+    modSheetBody:
+      '{name} ist Moderator — ein Mitglied, das hilft, LangX freundlich zu halten. Das machen Moderatoren:',
+    modSheetReportsTitle: 'Meldungen prüfen',
+    modSheetReportsBody:
+      'Sie lesen, was Mitglieder melden, und entscheiden, was als Nächstes passiert.',
+    modSheetSuspendTitle: 'Verwarnen und sperren',
+    modSheetSuspendBody: {
+      one: 'Eine Verwarnung oder eine Pause von bis zu {count} Tag.',
+      other: 'Eine Verwarnung oder eine Pause von bis zu {count} Tagen.',
+    },
+    modSheetHideTitle: 'Beiträge und Kommentare ausblenden',
+    modSheetHideBody: 'Alles, was gegen die Community-Regeln verstößt.',
+    modSheetReviewed: 'Jede Entscheidung eines Moderators wird vom LangX-Team geprüft.',
+    modSheetApply: 'Willst du Moderator werden?',
+    modSheetRequirement: {
+      one: 'Bewerben kannst du dich ab einer Serie von {count} Tag.',
+      other: 'Bewerben kannst du dich ab einer Serie von {count} Tagen.',
+    },
+    modSheetStreakNow: {
+      one: 'Du bist bei Tag {count}.',
+      other: 'Du bist bei Tag {count}.',
+    },
+    modSheetSent: 'Deine Bewerbung ist da — wir melden uns.',
+    modSheetYours: 'Du bist auch Moderator.',
     official: 'Offizielles Konto',
     suspendedTag: 'Gesperrt',
     deletedTag: 'Konto gelöscht',

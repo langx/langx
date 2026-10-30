@@ -1922,11 +1922,55 @@ export const tr: Localized<EnMessages> = {
     helpName: '{name} adlı kişiye yardım et',
   },
 
+  modApplication: {
+    title: 'Moderatör ol',
+    intro:
+      'Seni tanımamız için birkaç soru. Her başvuruyu kendimiz okuyoruz ve sonuç ne olursa olsun sana yazıyoruz.',
+    questions: {
+      why: 'Neden moderatör olmak istiyorsun?',
+      experience: 'Daha önce bir topluluğu yönettin mi? Bize anlat.',
+      situation: 'Biri bir üyeyi kaba mesajlar yüzünden bildiriyor. İlk ne yapardın?',
+      time: 'Buna haftada ne kadar zaman ayırabilirsin?',
+    },
+    tooShort: {
+      one: 'Biraz daha — en az bir karakter.',
+      other: 'Biraz daha — en az {count} karakter.',
+    },
+    send: 'Başvuruyu gönder',
+    sending: 'Gönderiliyor…',
+    sent: 'Başvurun gönderildi. Sana yazacağız.',
+    notEligible: 'Bu hesapla şu an başvuramazsın.',
+    failed: 'Gönderilemedi. Birazdan tekrar dene.',
+  },
   profile: {
     proBadge: 'Pro üye',
     modBadge: 'Moderatör',
     proSheetTitle: '{plan} nedir?',
     proSheetBody: '{name}, {plan} kullanıyor. {plan} ücretsiz plana şunları ekler:',
+    modSheetTitle: 'Moderatör nedir?',
+    modSheetBody:
+      '{name} bir moderatör — LangX’i nazik tutmaya yardım eden bir üye. Yaptıkları şunlar:',
+    modSheetReportsTitle: 'Bildirimleri inceler',
+    modSheetReportsBody: 'Üyelerin bildirdiklerini okur ve sonra ne olacağına karar verir.',
+    modSheetSuspendTitle: 'Uyarır ve askıya alır',
+    modSheetSuspendBody: {
+      one: 'Bir uyarı ya da en fazla {count} günlük bir ara.',
+      other: 'Bir uyarı ya da en fazla {count} günlük bir ara.',
+    },
+    modSheetHideTitle: 'Gönderi ve yorumları gizler',
+    modSheetHideBody: 'Topluluk kurallarını çiğneyen her şeyi.',
+    modSheetReviewed: 'Bir moderatörün verdiği her karar LangX ekibi tarafından incelenir.',
+    modSheetApply: 'Moderatör olmak ister misin?',
+    modSheetRequirement: {
+      one: 'Başvurmak için {count} günlük seri gerekir.',
+      other: 'Başvurmak için {count} günlük seri gerekir.',
+    },
+    modSheetStreakNow: {
+      one: 'Şu an {count}. gündesin.',
+      other: 'Şu an {count}. gündesin.',
+    },
+    modSheetSent: 'Başvurun bize ulaştı — sana yazacağız.',
+    modSheetYours: 'Sen de bir moderatörsün.',
     official: 'Resmî hesap',
     suspendedTag: 'Askıya alındı',
     deletedTag: 'Hesap silindi',

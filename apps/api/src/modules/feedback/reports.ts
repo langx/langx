@@ -6,6 +6,7 @@ import {
   type CopilotReportRequest,
   type FeedbackKind,
   type Locale,
+  type ModApplicationInput,
 } from '@langx/shared'
 import { randomUUID } from 'node:crypto'
 import type { Db } from 'mongodb'
@@ -45,6 +46,12 @@ export interface FeedbackReport {
   /** Only on a `copilot` row: which help answered, and the draft, when they chose to send it. */
   copilot?: { action: CopilotAction; question?: string }
   /**
+   * Only on a `modApplication` row: the answers, and the streak they applied
+   * on — the requirement is checked at the door, and the panel should not have
+   * to take that on trust weeks later when the streak may have moved.
+   */
+  modApplication?: { streak: number; answers: ModApplicationInput['answers'] }
+  /**
    * The prefilled GitHub new-issue link at submit; replaced with the real
    * issue's URL once somebody files it.
    */
@@ -66,8 +73,10 @@ export interface FeedbackReport {
  * `copilot` is a reported AI answer, which only `POST /copilot/report` writes
  * — never a choice on the feedback form, and never a GitHub issue, because
  * the tracker is public and an answer is about somebody's chat.
+ * `modApplication` is somebody asking to moderate, which only
+ * `POST /mod-application` writes, and is no issue for the same reason.
  */
-export type FeedbackRowKind = FeedbackKind | 'copilot'
+export type FeedbackRowKind = FeedbackKind | 'copilot' | 'modApplication'
 
 export type FeedbackStatus = 'open' | 'triaged' | 'closed'
 export type FeedbackCloseReason = 'fixed' | 'shipped' | 'wontfix' | 'duplicate' | 'invalid'

@@ -1292,6 +1292,10 @@ export const adminRoutes: FastifyPluginAsyncZod = async (app) => {
       if (row.kind === 'copilot') {
         throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'A Copilot report is not paid for')
       }
+      // Nor is asking to moderate: a bounty would be a reason to ask.
+      if (row.kind === 'modApplication') {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'An application is not paid for')
+      }
 
       const result = await payBounty(app, {
         userId: row.userId,

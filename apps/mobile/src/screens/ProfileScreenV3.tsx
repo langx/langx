@@ -20,6 +20,7 @@ import {
   useBlockUser,
   useEffectiveTier,
   useMe,
+  useModApplication,
   useProfile,
   usePublicSummary,
   useSetFollow,
@@ -36,6 +37,7 @@ import { ProfileSkeleton } from '../components/skeletons/ProfileSkeleton'
 import { ProfileTestimonialsV3 } from '../components/testimonials/ProfileTestimonialsV3'
 import { WebTitle } from '../components/WebTitle'
 import { WeeklyChartV3 } from '../components/WeeklyChartV3'
+import { WhatsModSheet } from '../components/WhatsModSheet'
 import { WhatsProSheet } from '../components/WhatsProSheet'
 import { Avatar } from '../components/ui/Avatar'
 import { Button } from '../components/ui/Button'
@@ -59,6 +61,7 @@ import { selection } from '../lib/haptics'
 import { goBackTo, openBadges, openFollows, openPostCorrections } from '../lib/navigation'
 import { openPaywall } from '../lib/paywall'
 import { placeLabel } from '../lib/placeLabel'
+import { modSheetEnd } from '../lib/modSheet'
 import { badgeSheetEnd } from '../lib/proRoads'
 import { requireAccount } from '../lib/requireAccount'
 import { shareLink } from '../lib/share'
@@ -115,6 +118,15 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
   // The viewer's own plan, which decides how that sheet ends — never the
   // profile's, which is whose badge it is.
   const viewerTier = useEffectiveTier()
+  /** "What's a moderator?", behind the MOD badge. */
+  const [modSheetOpen, setModSheetOpen] = useState(false)
+  // Asked only once that sheet is open, and only by somebody who could apply.
+  const modApplication = useModApplication(
+    modSheetOpen &&
+      me.data !== undefined &&
+      me.data.moderator === undefined &&
+      !shouldGateGuest(session?.user),
+  )
   /** Choosing the thread this profile is about to be sent into. */
   const [sending, setSending] = useState(false)
   // Both queries or neither, for the current screen's reason.
@@ -542,7 +554,18 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
                       <ProBadge fontSize={v3.type.title.fontSize} on="hue" />
                     </Pressable>
                   ) : null}
-                  {user.moderator ? <ModBadge fontSize={v3.type.title.fontSize} on="hue" /> : null}
+                  {user.moderator ? (
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel={t('profile.modBadge')}
+                      accessibilityHint={t('profile.modSheetTitle')}
+                      hitSlop={14}
+                      onPress={() => setModSheetOpen(true)}
+                      style={({ pressed }) => pressed && styles.pressed}
+                    >
+                      <ModBadge fontSize={v3.type.title.fontSize} on="hue" />
+                    </Pressable>
+                  ) : null}
                   {/* An official account has no age, and wears its tick there.
                       Otherwise the server's age, as today — absent means none. */}
                   {user.official ? (
@@ -815,6 +838,25 @@ export function ProfileScreenV3({ handle, from, embedded = false, onClose }: Pro
             openPaywall(undefined, here, 'pro_badge')
           }}
           onClose={() => setProSheetOpen(false)}
+        />
+      ) : null}
+      {user.moderator ? (
+        <WhatsModSheet
+          visible={modSheetOpen}
+          name={user.displayName}
+          end={modSheetEnd({
+            loaded: me.data !== undefined,
+            guest: shouldGateGuest(session?.user),
+            moderator: me.data?.moderator !== undefined,
+            streak: me.data?.streak.current ?? 0,
+            open: modApplication.data?.open,
+          })}
+          streak={me.data?.streak.current ?? 0}
+          onApply={() => {
+            setModSheetOpen(false)
+            router.push('/(app)/mod-application')
+          }}
+          onClose={() => setModSheetOpen(false)}
         />
       ) : null}
       {sending ? (
