@@ -24,6 +24,13 @@ const AVATAR_COMPACT = 36
 interface ThreadHeaderV3Props {
   /** Undefined while the profile loads, and for an account that is gone. */
   partner: PublicProfileDto | undefined
+  /**
+   * Said in place of presence when it is not `active`. The thread passes what
+   * it knows, which can be newer than the profile — a refused send — or the
+   * only thing it knows, for an account purged with its profile. Absent means
+   * the profile's own.
+   */
+  accountStatus?: 'active' | 'suspended' | 'deleted' | undefined
   loading: boolean
   typing: boolean
   /** Absent in a panel, where the list beside the thread is the way back. */
@@ -72,6 +79,7 @@ interface ThreadHeaderV3Props {
  */
 export function ThreadHeaderV3({
   partner,
+  accountStatus = partner?.accountStatus,
   loading,
   typing,
   onBack,
@@ -167,6 +175,7 @@ export function ThreadHeaderV3({
             lastActiveAt={partner?.lastActiveAt}
             timezone={partner?.timezone}
             onHue={onHue}
+            accountStatus={accountStatus}
           />
         )}
         {compact ? null : flame}

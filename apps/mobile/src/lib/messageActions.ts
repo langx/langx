@@ -113,6 +113,13 @@ export interface MessageActionContext {
    */
   channel?: boolean
   /**
+   * Only for Forward, which sends to somebody else: the thread is one of our
+   * channels, which the server will not forward from. A suspended or deleted
+   * partner's thread is `channel` — nothing goes back to them — but not this,
+   * since the copy goes to a third person. Absent means the same as `channel`.
+   */
+  fromChannel?: boolean
+  /**
    * Passed in rather than reached for: this stays a pure function the tests
    * call directly, and the labels are the reader's language rather than the
    * module's import-time language.
@@ -461,7 +468,7 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
    * tombstone. Not from a channel, where the server refuses it.
    */
   if (
-    !context.channel &&
+    !(context.fromChannel ?? context.channel) &&
     isForwardableType(context.type) &&
     (context.type === 'text' ? context.hasBody : context.hasMedia)
   ) {

@@ -1327,6 +1327,7 @@ export const fr: Localized<EnMessages> = {
     },
     channelOnly: 'Ce compte publie des nouveautés et des annonces. Tu ne peux pas y répondre.',
     suspendedOnly: 'Ce compte est suspendu. Tu ne peux pas lui envoyer de messages.',
+    deletedOnly: 'Ce compte a été supprimé. Tu ne peux pas lui envoyer de messages.',
     sendingAttachment: 'Envoi…',
     title: 'Discussion',
     typing: 'écrit…',

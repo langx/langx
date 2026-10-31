@@ -48,6 +48,7 @@ function NewChatScreen() {
     partner,
     partnerLoading,
     suspended,
+    deleted,
     refused,
     draft,
     setDraft,
@@ -98,7 +99,11 @@ function NewChatScreen() {
                   <Text style={styles.headerName} numberOfLines={1}>
                     {partner?.displayName ?? t('chat.title')}
                   </Text>
-                  <PresenceLine lastActiveAt={partner?.lastActiveAt} timezone={partner?.timezone} />
+                  <PresenceLine
+                    lastActiveAt={partner?.lastActiveAt}
+                    timezone={partner?.timezone}
+                    accountStatus={partner?.accountStatus}
+                  />
                 </>
               )}
             </View>
@@ -164,9 +169,11 @@ function NewChatScreen() {
           ) : null}
         </View>
 
-        {suspended ? (
+        {suspended || deleted ? (
           <View style={styles.suspendedNote}>
-            <Text style={styles.suspendedNoteText}>{t('chat.suspendedOnly')}</Text>
+            <Text style={styles.suspendedNoteText}>
+              {t(deleted ? 'chat.deletedOnly' : 'chat.suspendedOnly')}
+            </Text>
           </View>
         ) : refused ? (
           <View style={styles.suspendedNote}>

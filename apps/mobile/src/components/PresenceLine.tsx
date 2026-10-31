@@ -29,6 +29,13 @@ interface PresenceLineProps {
    * light hues to read, and "Online" is told apart by weight instead.
    */
   onHue?: boolean
+  /**
+   * Said instead of presence for an account that is gone or suspended. Only
+   * the chat headers pass it: "Last seen 1 day ago" under somebody who has
+   * deleted their account reads as somebody who might still answer. The
+   * profile has its own tag beside the line, so it does not.
+   */
+  accountStatus?: 'active' | 'suspended' | 'deleted' | undefined
 }
 
 /** For callers that pass no zone: nothing to tick for, so no timer at all. */
@@ -54,7 +61,12 @@ const neverTicks = () => () => {}
  * are separate switches. One line still, cut from the end: the header is
  * narrow, and presence is the half worth keeping when something has to go.
  */
-export function PresenceLine({ lastActiveAt, timezone, onHue = false }: PresenceLineProps) {
+export function PresenceLine({
+  lastActiveAt,
+  timezone,
+  onHue = false,
+  accountStatus,
+}: PresenceLineProps) {
   const t = useT()
   const styles = useStyles()
   const { locale } = useLocale()
@@ -75,6 +87,14 @@ export function PresenceLine({ lastActiveAt, timezone, onHue = false }: Presence
     () => theirLocalTime(new Date(minute * 60_000), timezone, ownZone, locale),
     [minute, timezone, ownZone, locale],
   )
+
+  if (accountStatus === 'deleted' || accountStatus === 'suspended') {
+    return (
+      <Text style={onHue ? styles.onHue : styles.lastSeen} numberOfLines={1}>
+        {t(accountStatus === 'deleted' ? 'profile.deletedTag' : 'profile.suspendedTag')}
+      </Text>
+    )
+  }
 
   const at = lastActiveAt ? new Date(lastActiveAt) : undefined
   const known = at !== undefined && !Number.isNaN(at.getTime())

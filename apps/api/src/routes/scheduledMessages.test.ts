@@ -191,6 +191,28 @@ describe('scheduled messages', () => {
     expect((await schedule({ sendAt: inHours(2) }, carol)).statusCode).toBe(404)
   })
 
+  // Refused now rather than failing overnight, with the codes a live send gets.
+  it('refuses a partner who is deleted or suspended now', async () => {
+    const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+    try {
+      await profiles.updateOne(
+        { _id: bob.userId },
+        { $set: { 'suspension.until': new Date(Date.now() + 48 * HOUR) } },
+      )
+      const suspended = await schedule({ sendAt: inHours(2) })
+      expect(suspended.statusCode).toBe(403)
+      expect(suspended.json()).toMatchObject({ code: 'RECIPIENT_SUSPENDED' })
+
+      await profiles.updateOne({ _id: bob.userId }, { $set: { deletedAt: new Date() } })
+      const deleted = await schedule({ sendAt: inHours(2) })
+      expect(deleted.statusCode).toBe(403)
+      expect(deleted.json()).toMatchObject({ code: 'RECIPIENT_DELETED' })
+    } finally {
+      await profiles.updateOne({ _id: bob.userId }, { $unset: { suspension: '', deletedAt: '' } })
+    }
+    expect(await list()).toHaveLength(0)
+  })
+
   describe('in their morning', () => {
     it("resolves to nine o'clock on the partner's clock", async () => {
       await handle.db
@@ -305,6 +327,22 @@ describe('scheduled messages', () => {
       }
       expect(await messages().countDocuments({ body: 'Suspended by then' })).toBe(0)
       expect(await list()).toMatchObject([{ status: 'failed', failureReason: 'ACCOUNT_SUSPENDED' }])
+    })
+
+    it('fails when the partner has deleted their account since', async () => {
+      await schedule({ sendAt: inHours(1), body: 'Deleted by then' })
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: bob.userId }, { $set: { deletedAt: new Date() } })
+      try {
+        await runScheduledMessageTick(app, new Date(Date.now() + 2 * HOUR))
+      } finally {
+        await handle.db
+          .collection<Profile>(COLLECTIONS.profiles)
+          .updateOne({ _id: bob.userId }, { $unset: { deletedAt: '' } })
+      }
+      expect(await messages().countDocuments({ body: 'Deleted by then' })).toBe(0)
+      expect(await list()).toMatchObject([{ status: 'failed', failureReason: 'RECIPIENT_DELETED' }])
     })
 
     it('retries a claim that died once, without sending twice', async () => {

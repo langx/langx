@@ -21,7 +21,11 @@ import {
   requireMember,
   requireVerifiedEmail,
 } from '../middleware/requireAuth'
-import { assertConversationAccess, assertMediaUnlocked } from '../modules/chat/access'
+import {
+  assertConversationAccess,
+  assertMediaUnlocked,
+  assertRecipientReachable,
+} from '../modules/chat/access'
 import { recordPendingUpload } from '../modules/chat/pendingUploads'
 import { objectExtension } from '../modules/media/objectExtension'
 import { addPhoto, removePhoto, reorderPhotos, setAvatarUrl } from '../modules/profiles/profiles'
@@ -137,6 +141,9 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
       // message, so refusing at send time would refuse a message pointing at a
       // photograph we had already stored.
       await assertMediaUnlocked(app.mongo.db, conversation, request.userId)
+      // And nobody to send it to: a deleted or suspended recipient refuses the
+      // message, and by then the bytes would be stored.
+      await assertRecipientReachable(app.mongo.db, conversation, request.userId)
 
       const { kind, contentType, sizeBytes } = request.body
       if (mediaKindOfContentType(contentType) !== kind) {

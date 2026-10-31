@@ -793,9 +793,40 @@ export function ChatScreen({
    * everything that would send is gone, and a line under the history says
    * why. The history itself stays; it is what somebody opening this came for.
    */
-  const suspended = partner?.accountStatus === 'suspended'
+  /**
+   * What the server last said when it refused a send here, kept for this
+   * thread. The profile is the usual source and normally catches up once
+   * `recheckPartner` reads it again — but a purged account has no profile to
+   * read (404, the same answer a block gets, so a 404 alone proves nothing),
+   * and the refusal is then the only word there is. It is safe to believe:
+   * both codes are only sent after the block check has passed.
+   */
+  const [refusal, setRefusal] = useState<{
+    conversationId: string
+    code: 'RECIPIENT_SUSPENDED' | 'RECIPIENT_DELETED'
+    at: number
+  } | null>(null)
+  /*
+   * Until the profile is read again after it: then the profile is the newer
+   * word — somebody who signed back in inside the grace period, or whose
+   * suspension ended. A purged account's read fails, which moves nothing, so
+   * the refusal stands for it. Read off the cache during render; the profile
+   * query above is what re-renders this when the answer lands.
+   */
+  const profileReadAt = queryClient.getQueryState(keys.profile(partnerId))?.dataUpdatedAt ?? 0
+  const refusedAs =
+    refusal?.conversationId === conversationId && profileReadAt <= refusal.at ? refusal.code : null
+  const suspended = partner?.accountStatus === 'suspended' || refusedAs === 'RECIPIENT_SUSPENDED'
+  /**
+   * Nor does a deleted one — `RECIPIENT_DELETED` — with its own line. It used
+   * to keep its composer, and a message to somebody who had left showed
+   * "Sent" under it and never an answer.
+   */
+  const deleted = partner?.accountStatus === 'deleted' || refusedAs === 'RECIPIENT_DELETED'
   /** Nothing sent from here would arrive. The one fact the four places below read. */
-  const readOnly = channel || suspended
+  const readOnly = channel || suspended || deleted
+  /** What the header says in place of presence — the refusal included. */
+  const partnerStatus = deleted ? 'deleted' : suspended ? 'suspended' : partner?.accountStatus
   /**
    * Copilot, on the v3 thread only: the button beside send, its card, and
    * Explain in the long-press menu. Off for everybody the server has not
@@ -828,7 +859,7 @@ export function ChatScreen({
   const callGate = callAvailability({
     callService,
     engineSupported: engineSupported(),
-    readOnly: readOnly || partner?.accountStatus === 'deleted',
+    readOnly,
     // The thread's first page as well as the profile: until it is in, the
     // gate's number reads 0, and a locked thread would draw as an open one.
     partnerKnown: partner !== undefined && messages.data !== undefined,
@@ -1480,7 +1511,8 @@ export function ChatScreen({
         ...(reply ? { replyToMessageId: reply._id } : {}),
       })
       if (reply) setReplyingTo(null)
-    } catch {
+    } catch (error) {
+      recheckPartner(error)
       void showAlert(t('chat.couldNotSend'))
     }
   }
@@ -1806,13 +1838,17 @@ export function ChatScreen({
   )
 
   /**
-   * A send refused because the other account was suspended after this screen
-   * last read their profile — it is cached for minutes. Reading it again is
-   * what swaps the composer for the line that says so; what was typed stays
-   * behind as an unsent row, where it can still be copied.
+   * A send refused because the other account was suspended or deleted after
+   * this screen last read their profile — it is cached for minutes. The
+   * refusal is kept at once, and that is what swaps the composer for the line
+   * that says so; the profile is read again so the header and the tag catch
+   * up, where there is still a profile to read. What was typed stays behind as
+   * an unsent row, where it can still be copied.
    */
   function recheckPartner(error: unknown): void {
-    if (errorCodeOf(error) === 'RECIPIENT_SUSPENDED') {
+    const code = errorCodeOf(error)
+    if (code === 'RECIPIENT_SUSPENDED' || code === 'RECIPIENT_DELETED') {
+      setRefusal({ conversationId, code, at: Date.now() })
       void queryClient.invalidateQueries({ queryKey: keys.profile(partnerId) })
     }
   }
@@ -2111,9 +2147,20 @@ export function ChatScreen({
       setDraft('')
       notifyTyping(false)
     } catch (caught) {
+      recheckPartner(caught)
+      const code = errorCodeOf(caught)
+      // Nothing to pick a time for any more: the thread has gone read-only.
+      if (code === 'RECIPIENT_DELETED' || code === 'RECIPIENT_SUSPENDED') {
+        setPickingSendTime(false)
+        void showAlert(
+          t('chat.couldNotSend'),
+          t(code === 'RECIPIENT_DELETED' ? 'chat.deletedOnly' : 'chat.suspendedOnly'),
+        )
+        return
+      }
       void showAlert(
         t('chat.couldNotSend'),
-        errorCodeOf(caught) === ERROR_CODES.QUOTA_EXCEEDED
+        code === ERROR_CODES.QUOTA_EXCEEDED
           ? t('chat.scheduleTooMany', { count: MAX_SCHEDULED_PER_CONVERSATION })
           : t('chat.scheduleFailed'),
       )
@@ -2161,7 +2208,8 @@ export function ChatScreen({
       noteAward(saved._id, award, 'correction')
       track({ name: 'message_sent', properties: { kind: 'correction', reply: false } })
       review.request({ kind: 'correction' })
-    } catch {
+    } catch (error) {
+      recheckPartner(error)
       setCorrecting(target)
       // Put back with it, or the retry would correct the whole message
       // against what was written for one sentence of it.
@@ -2401,11 +2449,14 @@ export function ChatScreen({
       alreadyTranslated,
       // Evaluated here rather than in the menu, so the row and the server
       // agree on one rule from `@langx/shared` instead of two copies of it.
-      canEdit: canEditMessage(message, me.data?._id ?? '', new Date()),
+      // Not where the composer an edit opens is not drawn.
+      canEdit: !readOnly && canEditMessage(message, me.data?._id ?? '', new Date()),
       corrected: message.corrected === true,
       // The menu's rule is "drop every row that sends", which is exactly what
-      // a suspended account needs too.
+      // a suspended or deleted account needs too — except Forward, which
+      // sends to somebody else and is refused only out of a real channel.
       channel: readOnly,
+      fromChannel: channel,
       starred: message.starred === true,
       pinned: pinned?.messageId === message._id,
       // Strict, like `corrected` above: an unknown shape reads as "not kept"
@@ -3360,9 +3411,7 @@ export function ChatScreen({
             conversationId={conversationId}
             partnerId={partnerId}
             partnerName={partnerName}
-            partnerIsPerson={
-              partner.official !== true && !readOnly && partner.accountStatus !== 'deleted'
-            }
+            partnerIsPerson={partner.official !== true && !readOnly}
             messages={items}
             hasOlder={jumpAnchor !== null || messages.hasNextPage}
           />
@@ -3632,6 +3681,7 @@ export function ChatScreen({
         {v3Thread ? (
           <ThreadHeaderV3
             partner={partner}
+            accountStatus={partnerStatus}
             loading={partnerLoading}
             typing={partnerTyping}
             onBack={embedded ? undefined : () => goBackTo('/(app)/(tabs)/chats')}
@@ -3700,7 +3750,11 @@ export function ChatScreen({
                 {partnerLoading ? null : partnerTyping ? (
                   <Text style={styles.typing}>{t('chat.typing')}</Text>
                 ) : (
-                  <PresenceLine lastActiveAt={partner?.lastActiveAt} timezone={partner?.timezone} />
+                  <PresenceLine
+                    lastActiveAt={partner?.lastActiveAt}
+                    timezone={partner?.timezone}
+                    accountStatus={partnerStatus}
+                  />
                 )}
               </View>
             </Pressable>
@@ -3934,7 +3988,13 @@ export function ChatScreen({
           {readOnly ? (
             <View style={styles.channelNote}>
               <Text style={[styles.channelNoteText, v3Thread && rowsV3.channelNoteText]}>
-                {t(suspended ? 'chat.suspendedOnly' : 'chat.channelOnly')}
+                {t(
+                  deleted
+                    ? 'chat.deletedOnly'
+                    : suspended
+                      ? 'chat.suspendedOnly'
+                      : 'chat.channelOnly',
+                )}
               </Text>
             </View>
           ) : v3Thread ? (

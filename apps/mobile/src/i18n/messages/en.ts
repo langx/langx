@@ -1486,6 +1486,8 @@ export const en = {
     channelOnly: 'This account posts news and announcements. You can’t reply to it.',
     /** In place of the composer, when the other person's account is suspended. */
     suspendedOnly: 'This account is suspended. You can’t send it messages.',
+    /** In place of the composer, when the other person deleted their account. */
+    deletedOnly: 'This account was deleted. You can’t send it messages.',
     sendingAttachment: 'Sending…',
     title: 'Chat',
     typing: 'typing…',

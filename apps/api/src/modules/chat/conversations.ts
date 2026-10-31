@@ -419,10 +419,13 @@ export async function startConversation(
 
   /*
    * After the block, so a blocked viewer learns nothing about a suspension
-   * their 404 on the profile already keeps from them. Before the quota, so a
-   * refused first message costs no slot. `recordMessage` refuses every later
-   * send the same way.
+   * or a deletion their 404 on the profile already keeps from them. Before
+   * the quota, so a refused first message costs no slot. `recordMessage`
+   * refuses every later send the same way, deletion first as it is here.
    */
+  if (recipient.deletedAt) {
+    throw new ApiError(ERROR_CODES.RECIPIENT_DELETED, 'This account was deleted')
+  }
   if (isSuspended(recipient)) {
     throw new ApiError(ERROR_CODES.RECIPIENT_SUSPENDED, 'This account is suspended')
   }

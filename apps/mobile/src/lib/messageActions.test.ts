@@ -348,6 +348,12 @@ describe('messageActionsFor', () => {
 
     it('is not offered in a channel', () => {
       expect(ids({ channel: true })).not.toContain('forward')
+      expect(ids({ channel: true, fromChannel: true })).not.toContain('forward')
+    })
+
+    // A suspended or deleted partner's thread: nothing goes back, a copy may go on.
+    it('is offered where nothing can be sent back but the thread is not a channel', () => {
+      expect(ids({ channel: true, fromChannel: false })).toContain('forward')
     })
   })
 

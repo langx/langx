@@ -1395,7 +1395,9 @@ export const MessageBubble = memo(function MessageBubble({
         inside it: the sentence is what they wrote, and this is a note about
         it. Only the other person is offered the button — you cannot correct
         your own attempt, and being shown a control that does nothing is worse
-        than being shown none.
+        than being shown none. Nor where nothing can be sent (`canReply`): the
+        answer is a correction or a voice note, and a read-only thread has no
+        composer to open.
       */}
       {message.ask ? (
         <View style={styles.askRow}>
@@ -1409,7 +1411,7 @@ export const MessageBubble = memo(function MessageBubble({
               ? t('chat.askBadgeCorrection')
               : t('chat.askBadgePronunciation')}
           </Text>
-          {!mine && !askAnswered ? (
+          {!mine && !askAnswered && canReply ? (
             <Pressable
               accessibilityRole="button"
               hitSlop={8}

@@ -2601,6 +2601,43 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(response.statusCode).toBe(404)
     })
 
+    /*
+     * Refused before the bytes. A refusal from `recordMessage` alone came after
+     * the upload was claimed, and left the file in the bucket with nothing to
+     * name it and no row for the sweep.
+     */
+    it('will not sign an upload URL, or claim a file, for a deleted account', async () => {
+      const { a, b, conversationId } = await pair('media-deleted')
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: b.userId }, { $set: { deletedAt: new Date() } })
+
+      const signing = await app.inject({
+        method: 'POST',
+        url: '/messages/upload-url',
+        headers: { cookie: a.cookie },
+        payload: { conversationId, kind: 'image', contentType: 'image/jpeg' },
+      })
+      expect(signing.statusCode).toBe(403)
+      expect(signing.json()).toMatchObject({ code: 'RECIPIENT_DELETED' })
+
+      // A URL signed a moment before the deletion: the sweep keeps its row.
+      const { recordPendingUpload } = await import('../modules/chat/pendingUploads')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+      const file = image(conversationId)
+      await recordPendingUpload(handle.db, {
+        url: file.url,
+        key: `messages/${conversationId}/a.jpg`,
+      })
+      await expect(
+        sendMediaMessage(handle.db, a.userId, { conversationId, attachments: [file] }, BUCKET),
+      ).rejects.toMatchObject({ code: 'RECIPIENT_DELETED' })
+      const pending = handle.db.collection<{ _id: string }>(COLLECTIONS.pendingUploads)
+      expect(await pending.countDocuments({ _id: file.url })).toBe(1)
+      // The sweep's own tests count every row in the collection.
+      await pending.deleteOne({ _id: file.url })
+    })
+
     it('sends a video and labels it in the chat list', async () => {
       const { a, conversationId } = await pair('media-video')
       const { sendMediaMessage } = await import('../modules/chat/messages')
@@ -4277,6 +4314,63 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(history.json<{ items: { body: string }[] }>().items.map((m) => m.body)).toEqual([
         'hey',
       ])
+    })
+
+    /*
+     * The same check for an account its owner deleted. It was missing: the
+     * message was written, the thread said "Sent", and nobody was there to
+     * read it. Deletion wins over a suspension, as it does in `accountStatus`.
+     */
+    it('refuses a message to a deleted account, and leaves the history readable', async () => {
+      const { a, b, conversationId } = await pair('rest-send-deleted')
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: b.userId },
+        {
+          $set: {
+            deletedAt: new Date(),
+            suspension: {
+              at: new Date(),
+              until: new Date(Date.now() + 24 * 60 * 60 * 1000),
+              permanent: false,
+              reason: 'spam',
+            },
+          },
+        },
+      )
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+        payload: { body: 'are you there?' },
+      })
+      expect(response.statusCode).toBe(403)
+      expect(response.json()).toMatchObject({ code: 'RECIPIENT_DELETED' })
+
+      const history = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+      })
+      expect(history.statusCode).toBe(200)
+      expect(history.json<{ items: { body: string }[] }>().items.map((m) => m.body)).toEqual([
+        'hey',
+      ])
+    })
+
+    // Past the grace period the profile is gone and the thread is left behind.
+    it('refuses a message to a purged account', async () => {
+      const { a, b, conversationId } = await pair('rest-send-purged')
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).deleteOne({ _id: b.userId })
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+        payload: { body: 'are you there?' },
+      })
+      expect(response.statusCode).toBe(403)
+      expect(response.json()).toMatchObject({ code: 'RECIPIENT_DELETED' })
     })
 
     it('refuses an empty body, as the schema does on the socket', async () => {

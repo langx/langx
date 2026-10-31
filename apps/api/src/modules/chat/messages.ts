@@ -39,10 +39,9 @@ import { consumeQuota } from '../../lib/quota'
 import { assertAttachmentsAllowed } from '../media/assertMedia'
 import type { AttachmentNormalizer } from '../media/transcodeAudio'
 import { blockedUserIds } from '../moderation/blocks'
-import { isSuspended } from '../moderation/suspension'
-import { acceptsMessages, isOfficialId, unwritableOfficialIds } from '../official/accounts'
+import { acceptsMessages, unwritableOfficialIds } from '../official/accounts'
 import { awardForSend } from '../tokens/awards'
-import { assertConversationAccess, assertMediaUnlocked } from './access'
+import { assertConversationAccess, assertMediaUnlocked, assertRecipientReachable } from './access'
 import { captureReceivedCorrection } from '../echo/correctionCapture'
 import { readEchoedMessageIds } from '../echo/echoed'
 import { mirrorPhraseToEcho } from '../echo/phraseMirror'
@@ -213,30 +212,9 @@ export async function recordMessage(
     throw new ApiError(ERROR_CODES.FORBIDDEN, 'This account does not take messages')
   }
 
-  /*
-   * Nor does a suspended account. It cannot sign in to read what arrives, and
-   * the person writing is owed that answer rather than a thread that looks
-   * alive and never replies. Here rather than in `assertConversationAccess`,
-   * which reads as well as writes: the history stays readable, only the next
-   * message is refused. The suspended side needs no check of its own —
-   * `requireAuth` and the socket handshake already refuse everything it asks.
-   *
-   * One keyed read per send, projected to the one field. `acceptsMessages`
-   * above is a map lookup; this cannot be, because a suspension is decided
-   * while the recipient's thread is open.
-   *
-   * Our own accounts are exempt. A receipt or a note from @langx is not what
-   * a suspension protects anybody from, and the panel's one message to a
-   * person is how somebody we suspended can be told something before a lift.
-   */
-  if (recipientId !== undefined && !isOfficialId(message.senderId)) {
-    const recipient = await db
-      .collection<Profile>(COLLECTIONS.profiles)
-      .findOne({ _id: recipientId }, { projection: { suspension: 1 } })
-    if (isSuspended(recipient)) {
-      throw new ApiError(ERROR_CODES.RECIPIENT_SUSPENDED, 'This account is suspended')
-    }
-  }
+  // Nor does an account that was deleted or is suspended — see
+  // `assertRecipientReachable`. Every message of every type lands here.
+  await assertRecipientReachable(db, conversation, message.senderId)
 
   await db.collection<Message>(COLLECTIONS.messages).insertOne(message)
   const conversations = db.collection<Conversation>(COLLECTIONS.conversations)
@@ -994,6 +972,9 @@ export async function sendMediaMessage(
   // fifth message was deleted would otherwise still land, and any future
   // transport that forgets the first check lands here instead of nowhere.
   await assertMediaUnlocked(db, conversation, senderId)
+  // Before the upload is claimed: `recordMessage` refusing after the claim
+  // would leave the file in the bucket with nothing to sweep it.
+  await assertRecipientReachable(db, conversation, senderId)
 
   // Shared with the feed — see `assertMediaAllowed`. The ceilings are the real
   // cost control, and there must be exactly one copy of them. The kind comes
@@ -1138,6 +1119,7 @@ export async function forwardMessage(
 
   const conversation = await assertConversationAccess(db, input.conversationId, senderId)
   await assertMediaUnlocked(db, conversation, senderId)
+  await assertRecipientReachable(db, conversation, senderId)
   /*
    * No `assertAttachmentsAllowed`: it proves that a URL a *client* named is a
    * file uploaded for this thread, and nothing here came from a client. These

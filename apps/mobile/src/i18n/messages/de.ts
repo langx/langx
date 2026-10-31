@@ -1344,6 +1344,7 @@ export const de: Localized<EnMessages> = {
     channelOnly:
       'Dieses Konto postet Neuigkeiten und Ankündigungen. Antworten ist hier nicht möglich.',
     suspendedOnly: 'Dieses Konto ist gesperrt. Du kannst ihm keine Nachrichten schicken.',
+    deletedOnly: 'Dieses Konto wurde gelöscht. Du kannst ihm keine Nachrichten schicken.',
     sendingAttachment: 'Wird gesendet…',
     title: 'Chat',
     typing: 'schreibt…',
