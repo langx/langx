@@ -2632,11 +2632,10 @@ describe('Faz 5 — conversation/message history REST', () => {
       await expect(
         sendMediaMessage(handle.db, a.userId, { conversationId, attachments: [file] }, BUCKET),
       ).rejects.toMatchObject({ code: 'RECIPIENT_DELETED' })
-      expect(
-        await handle.db
-          .collection<{ _id: string }>(COLLECTIONS.pendingUploads)
-          .countDocuments({ _id: file.url }),
-      ).toBe(1)
+      const pending = handle.db.collection<{ _id: string }>(COLLECTIONS.pendingUploads)
+      expect(await pending.countDocuments({ _id: file.url })).toBe(1)
+      // The sweep's own tests count every row in the collection.
+      await pending.deleteOne({ _id: file.url })
     })
 
     it('sends a video and labels it in the chat list', async () => {
