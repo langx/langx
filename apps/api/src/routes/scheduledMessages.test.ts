@@ -307,6 +307,22 @@ describe('scheduled messages', () => {
       expect(await list()).toMatchObject([{ status: 'failed', failureReason: 'ACCOUNT_SUSPENDED' }])
     })
 
+    it('fails when the partner has deleted their account since', async () => {
+      await schedule({ sendAt: inHours(1), body: 'Deleted by then' })
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: bob.userId }, { $set: { deletedAt: new Date() } })
+      try {
+        await runScheduledMessageTick(app, new Date(Date.now() + 2 * HOUR))
+      } finally {
+        await handle.db
+          .collection<Profile>(COLLECTIONS.profiles)
+          .updateOne({ _id: bob.userId }, { $unset: { deletedAt: '' } })
+      }
+      expect(await messages().countDocuments({ body: 'Deleted by then' })).toBe(0)
+      expect(await list()).toMatchObject([{ status: 'failed', failureReason: 'RECIPIENT_DELETED' }])
+    })
+
     it('retries a claim that died once, without sending twice', async () => {
       const id = new ObjectId(
         (await schedule({ sendAt: inHours(1), body: 'Died mid-send' })).json<ScheduledMessageDto>()

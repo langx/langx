@@ -42,12 +42,15 @@ export function useNewChat() {
    * suspension, or a link, still can.
    */
   const suspended = partner?.accountStatus === 'suspended'
+  /** Nor to a deleted one, for the same reasons and with its own line. */
+  const deleted = partner?.accountStatus === 'deleted'
   /*
    * The same for somebody who takes messages only from people they already
    * talk to. Not while a conversation exists — the effect below hands that
    * one to its thread, where writing is still open.
    */
-  const refused = !suspended && partner?.acceptsNewChats === false && !partner.conversationId
+  const refused =
+    !suspended && !deleted && partner?.acceptsNewChats === false && !partner.conversationId
   const [draft, setDraft] = useState('')
   /**
    * The sentence, drawn as its own bubble the moment Send is pressed, exactly
@@ -68,7 +71,7 @@ export function useNewChat() {
    * are always on offer until the first send — seeded by the partner, there
    * being no conversation id to seed them by.
    */
-  const offerTopics = !suspended && !refused && !sending && partnerId !== ''
+  const offerTopics = !suspended && !deleted && !refused && !sending && partnerId !== ''
   /**
    * They are new, so this hello will not count against the day's new chats —
    * said before it is written, because it is the reason to write it now. Only
@@ -190,6 +193,12 @@ export function useNewChat() {
           void queryClient.invalidateQueries({ queryKey: keys.profile(partnerId) })
           return
         }
+        // Deleted since then — same answer, its own line.
+        if (caught.code === 'RECIPIENT_DELETED') {
+          showToast(t('chat.deletedOnly'))
+          void queryClient.invalidateQueries({ queryKey: keys.profile(partnerId) })
+          return
+        }
         // Switched new chats off since the profile was read — same answer.
         if (caught.code === 'NEW_CHATS_REFUSED') {
           showToast(t('profile.newChatsRefused', { name: partner?.displayName ?? '' }))
@@ -210,6 +219,7 @@ export function useNewChat() {
     partner,
     partnerLoading,
     suspended,
+    deleted,
     refused,
     draft,
     setDraft,

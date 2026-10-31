@@ -47,6 +47,7 @@ export function NewChatScreenV3() {
     partner,
     partnerLoading,
     suspended,
+    deleted,
     refused,
     draft,
     setDraft,
@@ -205,11 +206,15 @@ export function NewChatScreenV3() {
            * way to a line, and not for a newcomer hello, whose own line says
            * it costs nothing.
            */}
-          {sending || suspended || refused || freeHello || guest ? null : <ChatsLeftCard />}
+          {sending || suspended || deleted || refused || freeHello || guest ? null : (
+            <ChatsLeftCard />
+          )}
         </ScrollView>
 
-        {suspended ? (
-          <Text style={styles.closed}>{t('chat.suspendedOnly')}</Text>
+        {suspended || deleted ? (
+          <Text style={styles.closed}>
+            {t(deleted ? 'chat.deletedOnly' : 'chat.suspendedOnly')}
+          </Text>
         ) : refused ? (
           <Text style={styles.closed}>
             {t('profile.newChatsRefused', { name: partner?.displayName ?? '' })}

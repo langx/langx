@@ -243,6 +243,37 @@ describe('Faz 4 — starting a conversation', () => {
     expect(threads).toBe(0)
   })
 
+  /*
+   * `GET /profiles/:id` still answers for a deleting account — "Account
+   * deleted" over "Profile not found" — so a link or a cached profile can
+   * still reach the first-message screen. The start has to refuse it itself:
+   * it writes its own message and never passes through `recordMessage`.
+   */
+  it('refuses a first message to a deleted account, and spends no slot on it', async () => {
+    const viewer = await newUser('convo-to-deleted@example.com')
+    const deleted = await newUser('convo-deleted@example.com')
+    await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ _id: deleted.userId }, { $set: { deletedAt: new Date() } })
+
+    const response = await startConversation(viewer, deleted.userId)
+    expect(response.statusCode).toBe(403)
+    expect(response.json()).toMatchObject({ code: 'RECIPIENT_DELETED' })
+
+    const quota = await app.inject({
+      method: 'GET',
+      url: '/me/quota',
+      headers: { cookie: viewer.cookie },
+    })
+    expect(quota.json()).toMatchObject({
+      initiations: { remaining: PLAN_LIMITS.free.initiationsPer24h },
+    })
+    const threads = await handle.db
+      .collection(COLLECTIONS.conversations)
+      .countDocuments({ participants: deleted.userId })
+    expect(threads).toBe(0)
+  })
+
   describe('somebody who takes no new chats', () => {
     /**
      * Through the real PATCH rather than the database, because the schema

@@ -4279,6 +4279,63 @@ describe('Faz 5 — conversation/message history REST', () => {
       ])
     })
 
+    /*
+     * The same check for an account its owner deleted. It was missing: the
+     * message was written, the thread said "Sent", and nobody was there to
+     * read it. Deletion wins over a suspension, as it does in `accountStatus`.
+     */
+    it('refuses a message to a deleted account, and leaves the history readable', async () => {
+      const { a, b, conversationId } = await pair('rest-send-deleted')
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: b.userId },
+        {
+          $set: {
+            deletedAt: new Date(),
+            suspension: {
+              at: new Date(),
+              until: new Date(Date.now() + 24 * 60 * 60 * 1000),
+              permanent: false,
+              reason: 'spam',
+            },
+          },
+        },
+      )
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+        payload: { body: 'are you there?' },
+      })
+      expect(response.statusCode).toBe(403)
+      expect(response.json()).toMatchObject({ code: 'RECIPIENT_DELETED' })
+
+      const history = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+      })
+      expect(history.statusCode).toBe(200)
+      expect(history.json<{ items: { body: string }[] }>().items.map((m) => m.body)).toEqual([
+        'hey',
+      ])
+    })
+
+    // Past the grace period the profile is gone and the thread is left behind.
+    it('refuses a message to a purged account', async () => {
+      const { a, b, conversationId } = await pair('rest-send-purged')
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).deleteOne({ _id: b.userId })
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+        payload: { body: 'are you there?' },
+      })
+      expect(response.statusCode).toBe(403)
+      expect(response.json()).toMatchObject({ code: 'RECIPIENT_DELETED' })
+    })
+
     it('refuses an empty body, as the schema does on the socket', async () => {
       const { a, conversationId } = await pair('rest-send-empty')
 

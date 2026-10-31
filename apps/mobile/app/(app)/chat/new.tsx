@@ -48,6 +48,7 @@ function NewChatScreen() {
     partner,
     partnerLoading,
     suspended,
+    deleted,
     refused,
     draft,
     setDraft,
@@ -164,9 +165,11 @@ function NewChatScreen() {
           ) : null}
         </View>
 
-        {suspended ? (
+        {suspended || deleted ? (
           <View style={styles.suspendedNote}>
-            <Text style={styles.suspendedNoteText}>{t('chat.suspendedOnly')}</Text>
+            <Text style={styles.suspendedNoteText}>
+              {t(deleted ? 'chat.deletedOnly' : 'chat.suspendedOnly')}
+            </Text>
           </View>
         ) : refused ? (
           <View style={styles.suspendedNote}>

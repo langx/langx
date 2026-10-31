@@ -232,7 +232,18 @@ export async function recordMessage(
   if (recipientId !== undefined && !isOfficialId(message.senderId)) {
     const recipient = await db
       .collection<Profile>(COLLECTIONS.profiles)
-      .findOne({ _id: recipientId }, { projection: { suspension: 1 } })
+      .findOne({ _id: recipientId }, { projection: { suspension: 1, deletedAt: 1 } })
+    /*
+     * Nor a deleted one, for the same reason and first: `deletedAt` wins over
+     * a suspension, as it does in `accountStatus`. Its sessions were destroyed
+     * when it was written, so nothing sent now is read — and a purged account,
+     * whose profile is gone and whose threads are left behind, is the same
+     * answer a month later. This used to be missing, and a message to
+     * somebody who had left showed "Sent" and never an answer.
+     */
+    if (!recipient || recipient.deletedAt) {
+      throw new ApiError(ERROR_CODES.RECIPIENT_DELETED, 'This account was deleted')
+    }
     if (isSuspended(recipient)) {
       throw new ApiError(ERROR_CODES.RECIPIENT_SUSPENDED, 'This account is suspended')
     }

@@ -794,8 +794,14 @@ export function ChatScreen({
    * why. The history itself stays; it is what somebody opening this came for.
    */
   const suspended = partner?.accountStatus === 'suspended'
+  /**
+   * Nor does a deleted one — `RECIPIENT_DELETED` — with its own line. It used
+   * to keep its composer, and a message to somebody who had left showed
+   * "Sent" under it and never an answer.
+   */
+  const deleted = partner?.accountStatus === 'deleted'
   /** Nothing sent from here would arrive. The one fact the four places below read. */
-  const readOnly = channel || suspended
+  const readOnly = channel || suspended || deleted
   /**
    * Copilot, on the v3 thread only: the button beside send, its card, and
    * Explain in the long-press menu. Off for everybody the server has not
@@ -828,7 +834,7 @@ export function ChatScreen({
   const callGate = callAvailability({
     callService,
     engineSupported: engineSupported(),
-    readOnly: readOnly || partner?.accountStatus === 'deleted',
+    readOnly,
     // The thread's first page as well as the profile: until it is in, the
     // gate's number reads 0, and a locked thread would draw as an open one.
     partnerKnown: partner !== undefined && messages.data !== undefined,
@@ -1806,13 +1812,14 @@ export function ChatScreen({
   )
 
   /**
-   * A send refused because the other account was suspended after this screen
-   * last read their profile — it is cached for minutes. Reading it again is
-   * what swaps the composer for the line that says so; what was typed stays
-   * behind as an unsent row, where it can still be copied.
+   * A send refused because the other account was suspended or deleted after
+   * this screen last read their profile — it is cached for minutes. Reading it
+   * again is what swaps the composer for the line that says so; what was typed
+   * stays behind as an unsent row, where it can still be copied.
    */
   function recheckPartner(error: unknown): void {
-    if (errorCodeOf(error) === 'RECIPIENT_SUSPENDED') {
+    const code = errorCodeOf(error)
+    if (code === 'RECIPIENT_SUSPENDED' || code === 'RECIPIENT_DELETED') {
       void queryClient.invalidateQueries({ queryKey: keys.profile(partnerId) })
     }
   }
@@ -3360,9 +3367,7 @@ export function ChatScreen({
             conversationId={conversationId}
             partnerId={partnerId}
             partnerName={partnerName}
-            partnerIsPerson={
-              partner.official !== true && !readOnly && partner.accountStatus !== 'deleted'
-            }
+            partnerIsPerson={partner.official !== true && !readOnly}
             messages={items}
             hasOlder={jumpAnchor !== null || messages.hasNextPage}
           />
@@ -3934,7 +3939,13 @@ export function ChatScreen({
           {readOnly ? (
             <View style={styles.channelNote}>
               <Text style={[styles.channelNoteText, v3Thread && rowsV3.channelNoteText]}>
-                {t(suspended ? 'chat.suspendedOnly' : 'chat.channelOnly')}
+                {t(
+                  deleted
+                    ? 'chat.deletedOnly'
+                    : suspended
+                      ? 'chat.suspendedOnly'
+                      : 'chat.channelOnly',
+                )}
               </Text>
             </View>
           ) : v3Thread ? (

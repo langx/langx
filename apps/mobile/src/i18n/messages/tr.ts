@@ -1296,6 +1296,7 @@ export const tr: Localized<EnMessages> = {
     },
     channelOnly: 'Bu hesap haber ve duyuru paylaşır. Buraya yanıt yazamazsın.',
     suspendedOnly: 'Bu hesap askıya alındı. Mesaj gönderemezsin.',
+    deletedOnly: 'Bu hesap silindi. Mesaj gönderemezsin.',
     sendingAttachment: 'Gönderiliyor…',
     title: 'Sohbet',
     typing: 'yazıyor…',

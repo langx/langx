@@ -97,6 +97,19 @@ export const ERROR_CODES = {
    * composer away), and it can only give it if this is its own code.
    */
   RECIPIENT_SUSPENDED: 'RECIPIENT_SUSPENDED',
+  /**
+   * A message to an account its owner deleted — inside the grace period
+   * (`deletedAt` set) or after it (the profile purged, the thread left
+   * behind).
+   *
+   * Its own code rather than `RECIPIENT_SUSPENDED` because the sentence is
+   * different and both are true of somebody: "suspended" about an account
+   * that was deleted would tell the sender something false about why it went
+   * quiet. Not `NOT_FOUND` either, which the client cannot tell apart from a
+   * thread that vanished — and the answer here is specific: say the account
+   * is gone, and put the composer away.
+   */
+  RECIPIENT_DELETED: 'RECIPIENT_DELETED',
   /** A conversation between these two already exists — see `conversations.pairKey`. */
   CONVERSATION_EXISTS: 'CONVERSATION_EXISTS',
   /**
@@ -382,6 +395,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   HANDLE_CHANGE_TOO_SOON: 409,
   BLOCKED: 403,
   RECIPIENT_SUSPENDED: 403,
+  RECIPIENT_DELETED: 403,
   CONVERSATION_EXISTS: 409,
   NEW_CHATS_REFUSED: 403,
   GENDER_CHANGE_TOO_SOON: 409,
