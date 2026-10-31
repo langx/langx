@@ -3542,6 +3542,7 @@ export const en = {
     owned: 'Yours. Send them from any chat.',
     addToWhatsApp: 'Add to WhatsApp',
     addToWhatsAppFailed: 'WhatsApp did not open. Try again in a moment.',
+    addToTelegram: 'Add to Telegram',
     seePack: 'See the pack',
   },
 
@@ -5207,20 +5208,24 @@ export const en = {
         other: 'Yes. All {count} come with every account, from the start.',
       },
       qOtherApps: 'Can I use her stickers in other apps?',
-      aOtherAppsWhatsApp: {
-        one: 'If WhatsApp is on your phone, the button above adds {count} sticker to it. In LangX, every one works in every chat.',
-        other:
-          'If WhatsApp is on your phone, the button above adds {count} of them to it. In LangX, every one works in every chat.',
-      },
+      aOtherAppsBoth:
+        'The buttons above add her stickers to WhatsApp and Telegram. In LangX, every one works in every chat.',
+      aOtherAppsWhatsApp:
+        'If WhatsApp is on your phone, the button above adds her stickers to it. In LangX, every one works in every chat.',
       /**
-       * Where the button above is not drawn — the web, or a phone without
+       * Where the WhatsApp button is not drawn — the web, or a phone without
        * WhatsApp — while the phone app does have it.
        */
-      aOtherAppsWhatsAppPhone: {
-        one: 'On a phone with WhatsApp, this page in the LangX app has a button that adds {count} sticker to WhatsApp. In LangX, every one works in every chat.',
-        other:
-          'On a phone with WhatsApp, this page in the LangX app has a button that adds {count} of them to WhatsApp. In LangX, every one works in every chat.',
-      },
+      aOtherAppsWhatsAppPhone:
+        'On a phone with WhatsApp, this page in the LangX app has a button that adds her stickers to WhatsApp. In LangX, every one works in every chat.',
+      aOtherAppsTelegram:
+        'The button above adds her stickers to Telegram. In LangX, every one works in every chat.',
+      /**
+       * Where the WhatsApp button is not drawn — the web, or a phone without
+       * WhatsApp — while the phone app does have it.
+       */
+      aOtherAppsTelegramWhatsAppPhone:
+        'The button above adds her stickers to Telegram. On a phone with WhatsApp, this page in the LangX app has one for WhatsApp too. In LangX, every one works in every chat.',
       aOtherAppsChats: 'Not from the app yet. In LangX, every one works in every chat.',
     },
     /**

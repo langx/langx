@@ -3241,6 +3241,7 @@ export const fr: Localized<EnMessages> = {
     owned: 'Il est à toi. Envoie-les depuis n’importe quelle discussion.',
     addToWhatsApp: 'Ajouter à WhatsApp',
     addToWhatsAppFailed: 'WhatsApp ne s’est pas ouvert. Réessaie dans un instant.',
+    addToTelegram: 'Ajouter à Telegram',
     seePack: 'Voir le pack',
   },
 
@@ -4749,16 +4750,16 @@ export const fr: Localized<EnMessages> = {
         other: 'Oui. Les {count} sont inclus dans chaque compte, dès le départ.',
       },
       qOtherApps: 'Puis-je utiliser ses stickers dans d’autres apps ?',
-      aOtherAppsWhatsApp: {
-        one: 'Si WhatsApp est sur ton téléphone, le bouton ci-dessus y ajoute {count} sticker. Dans LangX, chacun marche dans toutes les discussions.',
-        other:
-          'Si WhatsApp est sur ton téléphone, le bouton ci-dessus y en ajoute {count}. Dans LangX, chacun marche dans toutes les discussions.',
-      },
-      aOtherAppsWhatsAppPhone: {
-        one: 'Sur un téléphone avec WhatsApp, cette page de l’app LangX a un bouton qui ajoute {count} sticker à WhatsApp. Dans LangX, chacun marche dans toutes les discussions.',
-        other:
-          'Sur un téléphone avec WhatsApp, cette page de l’app LangX a un bouton qui en ajoute {count} à WhatsApp. Dans LangX, chacun marche dans toutes les discussions.',
-      },
+      aOtherAppsBoth:
+        'Les boutons ci-dessus ajoutent ses stickers à WhatsApp et à Telegram. Dans LangX, chacun marche dans toutes les discussions.',
+      aOtherAppsWhatsApp:
+        'Si WhatsApp est sur ton téléphone, le bouton ci-dessus y ajoute ses stickers. Dans LangX, chacun marche dans toutes les discussions.',
+      aOtherAppsWhatsAppPhone:
+        'Sur un téléphone avec WhatsApp, cette page de l’app LangX a un bouton qui ajoute ses stickers à WhatsApp. Dans LangX, chacun marche dans toutes les discussions.',
+      aOtherAppsTelegram:
+        'Le bouton ci-dessus ajoute ses stickers à Telegram. Dans LangX, chacun marche dans toutes les discussions.',
+      aOtherAppsTelegramWhatsAppPhone:
+        'Le bouton ci-dessus ajoute ses stickers à Telegram. Sur un téléphone avec WhatsApp, cette page de l’app LangX en a aussi un pour WhatsApp. Dans LangX, chacun marche dans toutes les discussions.',
       aOtherAppsChats:
         'Pas encore depuis l’app. Dans LangX, chacun marche dans toutes les discussions.',
     },
