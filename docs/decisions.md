@@ -9639,9 +9639,14 @@ once, with no backfill and nobody left out.
   white border and a soft shadow, which an outlined SVG would lose. 384 px
   WebP, under 32 KB each, about 650 KB for the pack. Vector renders only:
   photos of the real cat stay out of every repo.
-- **The same art is a public Telegram set**, `t.me/addstickers/venus_langx_by_langxio_bot`,
-  published from the admin bot. The Telegram set is 512 px PNG and is not
-  generated from this repo.
+- **The same art is a public Telegram set**, `t.me/addstickers/venus_langx`,
+  published from the admin bot — the link langx.io's Venus page uses. The
+  Telegram set is 512 px PNG and is not generated from this repo. "Add to
+  Telegram" on the pack page (31 October 2026) only opens that link, so it
+  needs no native module and ships over the air, behind `telegramStickers`
+  for the same reason `whatsappStickers` is a flag. Neither button, nor the
+  questions on Venus's page, says how many stickers go across: WhatsApp takes
+  thirty of the sixty, and Behic asked for no number on either.
 - **No one language leads it** (25 October 2026). It first shipped six word
   stickers twice, in Turkish and in English. For an app in eight languages
   that read as a Turkish pack, so the words are English now — thanks, good

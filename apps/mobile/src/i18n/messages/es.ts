@@ -3187,6 +3187,7 @@ export const es: Localized<EnMessages> = {
     owned: 'Es tuyo. Envíalos desde cualquier chat.',
     addToWhatsApp: 'Añadir a WhatsApp',
     addToWhatsAppFailed: 'WhatsApp no se abrió. Inténtalo de nuevo en un momento.',
+    addToTelegram: 'Añadir a Telegram',
     seePack: 'Ver el paquete',
   },
 
@@ -4677,16 +4678,16 @@ export const es: Localized<EnMessages> = {
         other: 'Sí. Los {count} vienen con cada cuenta desde el principio.',
       },
       qOtherApps: '¿Puedo usar sus stickers en otras apps?',
-      aOtherAppsWhatsApp: {
-        one: 'Si tienes WhatsApp en el teléfono, el botón de arriba le añade {count} sticker. En LangX, todos funcionan en todos los chats.',
-        other:
-          'Si tienes WhatsApp en el teléfono, el botón de arriba le añade {count}. En LangX, todos funcionan en todos los chats.',
-      },
-      aOtherAppsWhatsAppPhone: {
-        one: 'En un teléfono con WhatsApp, esta página de la app de LangX tiene un botón que añade {count} sticker a WhatsApp. En LangX, todos funcionan en todos los chats.',
-        other:
-          'En un teléfono con WhatsApp, esta página de la app de LangX tiene un botón que añade {count} de ellos a WhatsApp. En LangX, todos funcionan en todos los chats.',
-      },
+      aOtherAppsBoth:
+        'Los botones de arriba añaden sus stickers a WhatsApp y a Telegram. En LangX, todos funcionan en todos los chats.',
+      aOtherAppsWhatsApp:
+        'Si tienes WhatsApp en el teléfono, el botón de arriba le añade sus stickers. En LangX, todos funcionan en todos los chats.',
+      aOtherAppsWhatsAppPhone:
+        'En un teléfono con WhatsApp, esta página de la app de LangX tiene un botón que añade sus stickers a WhatsApp. En LangX, todos funcionan en todos los chats.',
+      aOtherAppsTelegram:
+        'El botón de arriba añade sus stickers a Telegram. En LangX, todos funcionan en todos los chats.',
+      aOtherAppsTelegramWhatsAppPhone:
+        'El botón de arriba añade sus stickers a Telegram. En un teléfono con WhatsApp, esta página de la app de LangX también tiene uno para WhatsApp. En LangX, todos funcionan en todos los chats.',
       aOtherAppsChats: 'Desde la app, todavía no. En LangX, todos funcionan en todos los chats.',
     },
     strip: {

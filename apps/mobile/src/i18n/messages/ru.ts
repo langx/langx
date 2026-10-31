@@ -3849,6 +3849,7 @@ export const ru: Localized<EnMessages> = {
     owned: 'Он твой. Отправляй из любого чата.',
     addToWhatsApp: 'Добавить в WhatsApp',
     addToWhatsAppFailed: 'WhatsApp не открылся. Попробуй ещё раз чуть позже.',
+    addToTelegram: 'Добавить в Telegram',
     seePack: 'Посмотреть набор',
   },
 
@@ -5572,20 +5573,16 @@ export const ru: Localized<EnMessages> = {
         other: 'Да. Все {count} есть в каждом аккаунте с самого начала.',
       },
       qOtherApps: 'Можно использовать её стикеры в других приложениях?',
-      aOtherAppsWhatsApp: {
-        one: 'Если на телефоне есть WhatsApp, кнопка выше добавит туда {count} стикер. В LangX каждый работает в любом чате.',
-        few: 'Если на телефоне есть WhatsApp, кнопка выше добавит туда {count} стикера. В LangX каждый работает в любом чате.',
-        many: 'Если на телефоне есть WhatsApp, кнопка выше добавит туда {count} стикеров. В LangX каждый работает в любом чате.',
-        other:
-          'Если на телефоне есть WhatsApp, кнопка выше добавит туда {count} стикера. В LangX каждый работает в любом чате.',
-      },
-      aOtherAppsWhatsAppPhone: {
-        one: 'В приложении LangX на телефоне с WhatsApp здесь есть кнопка, которая добавит в WhatsApp {count} стикер. В LangX каждый работает в любом чате.',
-        few: 'В приложении LangX на телефоне с WhatsApp здесь есть кнопка, которая добавит в WhatsApp {count} стикера. В LangX каждый работает в любом чате.',
-        many: 'В приложении LangX на телефоне с WhatsApp здесь есть кнопка, которая добавит в WhatsApp {count} стикеров. В LangX каждый работает в любом чате.',
-        other:
-          'В приложении LangX на телефоне с WhatsApp здесь есть кнопка, которая добавит в WhatsApp {count} стикера. В LangX каждый работает в любом чате.',
-      },
+      aOtherAppsBoth:
+        'Кнопки выше добавят её стикеры в WhatsApp и Telegram. В LangX каждый работает в любом чате.',
+      aOtherAppsWhatsApp:
+        'Если на телефоне есть WhatsApp, кнопка выше добавит туда её стикеры. В LangX каждый работает в любом чате.',
+      aOtherAppsWhatsAppPhone:
+        'В приложении LangX на телефоне с WhatsApp здесь есть кнопка, которая добавит её стикеры в WhatsApp. В LangX каждый работает в любом чате.',
+      aOtherAppsTelegram:
+        'Кнопка выше добавит её стикеры в Telegram. В LangX каждый работает в любом чате.',
+      aOtherAppsTelegramWhatsAppPhone:
+        'Кнопка выше добавит её стикеры в Telegram. В приложении LangX на телефоне с WhatsApp здесь есть такая же кнопка и для WhatsApp. В LangX каждый работает в любом чате.',
       aOtherAppsChats: 'Из приложения пока нет. В LangX каждый работает в любом чате.',
     },
     strip: {

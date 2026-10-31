@@ -3155,6 +3155,7 @@ export const tr: Localized<EnMessages> = {
     owned: 'Senin. Her sohbetten gönderebilirsin.',
     addToWhatsApp: 'WhatsApp’a ekle',
     addToWhatsAppFailed: 'WhatsApp açılmadı. Birazdan yeniden dene.',
+    addToTelegram: 'Telegram’a ekle',
     seePack: 'Paketi gör',
   },
 
@@ -4634,16 +4635,16 @@ export const tr: Localized<EnMessages> = {
         other: 'Evet. {count} stickerın hepsi en baştan her hesapla birlikte gelir.',
       },
       qOtherApps: 'Stickerlarını başka uygulamalarda kullanabilir miyim?',
-      aOtherAppsWhatsApp: {
-        one: 'Telefonunda WhatsApp varsa yukarıdaki düğme {count} tanesini oraya ekler. LangX’te her biri her sohbette çalışır.',
-        other:
-          'Telefonunda WhatsApp varsa yukarıdaki düğme {count} tanesini oraya ekler. LangX’te her biri her sohbette çalışır.',
-      },
-      aOtherAppsWhatsAppPhone: {
-        one: 'WhatsApp yüklü bir telefonda, LangX uygulamasındaki bu sayfada {count} tanesini WhatsApp’a ekleyen bir düğme var. LangX’te her biri her sohbette çalışır.',
-        other:
-          'WhatsApp yüklü bir telefonda, LangX uygulamasındaki bu sayfada {count} tanesini WhatsApp’a ekleyen bir düğme var. LangX’te her biri her sohbette çalışır.',
-      },
+      aOtherAppsBoth:
+        'Yukarıdaki düğmeler stickerlarını WhatsApp’a ve Telegram’a ekler. LangX’te her biri her sohbette çalışır.',
+      aOtherAppsWhatsApp:
+        'Telefonunda WhatsApp varsa yukarıdaki düğme stickerlarını oraya ekler. LangX’te her biri her sohbette çalışır.',
+      aOtherAppsWhatsAppPhone:
+        'WhatsApp yüklü bir telefonda, LangX uygulamasındaki bu sayfada stickerlarını WhatsApp’a ekleyen bir düğme var. LangX’te her biri her sohbette çalışır.',
+      aOtherAppsTelegram:
+        'Yukarıdaki düğme stickerlarını Telegram’a ekler. LangX’te her biri her sohbette çalışır.',
+      aOtherAppsTelegramWhatsAppPhone:
+        'Yukarıdaki düğme stickerlarını Telegram’a ekler. WhatsApp yüklü bir telefonda, LangX uygulamasındaki bu sayfada WhatsApp için de bir düğme var. LangX’te her biri her sohbette çalışır.',
       aOtherAppsChats: 'Uygulamadan henüz değil. LangX’te her biri her sohbette çalışır.',
     },
     strip: {
