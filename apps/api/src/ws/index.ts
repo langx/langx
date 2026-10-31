@@ -36,7 +36,11 @@ import { effectiveTier } from '../modules/profiles/entitlement'
 import { getProfile, type Profile } from '../modules/profiles/profiles'
 import { isSuspended } from '../modules/moderation/suspension'
 import { COLLECTIONS } from '../db/collections'
-import { assertConversationAccess, assertMediaUnlocked } from '../modules/chat/access'
+import {
+  assertConversationAccess,
+  assertMediaUnlocked,
+  assertRecipientReachable,
+} from '../modules/chat/access'
 import { assertAttachmentsAllowed } from '../modules/media/assertMedia'
 import { toMessageView } from '../modules/chat/messageView'
 import {
@@ -475,6 +479,7 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
             userId,
           )
           await assertMediaUnlocked(app.mongo.db, conversation, userId)
+          await assertRecipientReachable(app.mongo.db, conversation, userId)
 
           /*
            * And the files themselves, for the same reason and one step later

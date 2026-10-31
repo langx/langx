@@ -9824,17 +9824,25 @@ partner "deleted since" refused a scheduled send; nothing made that true.
   reaches the first-message screen. In both, deletion is asked before
   suspension, the order `accountStatus` already uses.
 - **A purged account is the same answer.** After the grace period the profile
-  is gone and the thread is left behind, so `recordMessage` treats a missing
-  recipient profile as deleted. Our own accounts writing out stay exempt, as
-  they are from the suspension check.
+  is gone and the thread is left behind, so a missing recipient profile reads
+  as deleted. Our own accounts writing out stay exempt, as they are from the
+  suspension check. Both halves are one function, `assertRecipientReachable`.
+- **Media is refused before the bytes**: at the upload URL, and in
+  `message:media` before the unit is spent and the upload claimed. Refused
+  only at the write, the claim had already taken the file off the sweep's
+  list, and nothing named it any more.
 - **Scheduling refuses it up front**, with the same two codes, rather than
   queueing a message that would fail at nine.
 - **The thread reads like a suspended one**: `readOnly`, every control that
   would send gone (the "Correct it" / "Say it" answer under a sentence
-  included), and `chat.deletedOnly` where the composer was. The header says
+  included, and Edit, whose composer is gone), and `chat.deletedOnly` where
+  the composer was. Forward stays: it sends to somebody else. The header says
   "Account deleted" or "Suspended" where it said "Last seen".
 - **A refusal is believed.** The profile is cached for minutes, and a purged
   account has none to read again — its 404 is the same answer a block gets,
-  so it cannot be read as "deleted". So any send this thread has refused with
-  either code makes it read-only at once, for as long as it is open. Both
-  codes are only sent after the block check, so believing them leaks nothing.
+  so it cannot be read as "deleted". So a send from the thread's own composer
+  or menus refused with either code makes it read-only at once, until the
+  profile is next read successfully — a purged one never is. Both codes are
+  only sent after the block check, so believing them leaks nothing. The
+  sticker, time, quiz and phrase screens do not feed this yet; inside the
+  cache window they say only that the send failed.

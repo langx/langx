@@ -2601,6 +2601,44 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(response.statusCode).toBe(404)
     })
 
+    /*
+     * Refused before the bytes. A refusal from `recordMessage` alone came after
+     * the upload was claimed, and left the file in the bucket with nothing to
+     * name it and no row for the sweep.
+     */
+    it('will not sign an upload URL, or claim a file, for a deleted account', async () => {
+      const { a, b, conversationId } = await pair('media-deleted')
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: b.userId }, { $set: { deletedAt: new Date() } })
+
+      const signing = await app.inject({
+        method: 'POST',
+        url: '/messages/upload-url',
+        headers: { cookie: a.cookie },
+        payload: { conversationId, kind: 'image', contentType: 'image/jpeg' },
+      })
+      expect(signing.statusCode).toBe(403)
+      expect(signing.json()).toMatchObject({ code: 'RECIPIENT_DELETED' })
+
+      // A URL signed a moment before the deletion: the sweep keeps its row.
+      const { recordPendingUpload } = await import('../modules/chat/pendingUploads')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+      const file = image(conversationId)
+      await recordPendingUpload(handle.db, {
+        url: file.url,
+        key: `messages/${conversationId}/a.jpg`,
+      })
+      await expect(
+        sendMediaMessage(handle.db, a.userId, { conversationId, attachments: [file] }, BUCKET),
+      ).rejects.toMatchObject({ code: 'RECIPIENT_DELETED' })
+      expect(
+        await handle.db
+          .collection<{ _id: string }>(COLLECTIONS.pendingUploads)
+          .countDocuments({ _id: file.url }),
+      ).toBe(1)
+    })
+
     it('sends a video and labels it in the chat list', async () => {
       const { a, conversationId } = await pair('media-video')
       const { sendMediaMessage } = await import('../modules/chat/messages')

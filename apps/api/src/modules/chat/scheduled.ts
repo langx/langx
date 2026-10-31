@@ -13,7 +13,7 @@ import { ApiError } from '../../lib/ApiError'
 import { isSuspended } from '../moderation/suspension'
 import { acceptsMessages } from '../official/accounts'
 import type { Profile } from '../profiles/profiles'
-import { assertConversationAccess } from './access'
+import { assertConversationAccess, assertRecipientReachable } from './access'
 import type { Message } from './conversations'
 
 export interface ScheduledMessage {
@@ -105,17 +105,8 @@ export async function createScheduledMessage(
   if (partnerId === undefined || !acceptsMessages(partnerId)) {
     throw new ApiError(ERROR_CODES.FORBIDDEN, 'This account does not take messages')
   }
-  // A partner who is gone or suspended now would refuse it at nine as well,
-  // and with the same codes `recordMessage` uses, deletion first.
-  const partner = await db
-    .collection<Profile>(COLLECTIONS.profiles)
-    .findOne({ _id: partnerId }, { projection: { suspension: 1, deletedAt: 1 } })
-  if (!partner || partner.deletedAt) {
-    throw new ApiError(ERROR_CODES.RECIPIENT_DELETED, 'This account was deleted')
-  }
-  if (isSuspended(partner)) {
-    throw new ApiError(ERROR_CODES.RECIPIENT_SUSPENDED, 'This account is suspended')
-  }
+  // A partner who is gone or suspended now would refuse it at nine as well.
+  await assertRecipientReachable(db, conversation, senderId)
 
   const already = await collection(db).findOne({ senderId, clientId: input.clientId })
   if (already) return already

@@ -804,8 +804,18 @@ export function ChatScreen({
   const [refusal, setRefusal] = useState<{
     conversationId: string
     code: 'RECIPIENT_SUSPENDED' | 'RECIPIENT_DELETED'
+    at: number
   } | null>(null)
-  const refusedAs = refusal?.conversationId === conversationId ? refusal.code : null
+  /*
+   * Until the profile is read again after it: then the profile is the newer
+   * word — somebody who signed back in inside the grace period, or whose
+   * suspension ended. A purged account's read fails, which moves nothing, so
+   * the refusal stands for it. Read off the cache during render; the profile
+   * query above is what re-renders this when the answer lands.
+   */
+  const profileReadAt = queryClient.getQueryState(keys.profile(partnerId))?.dataUpdatedAt ?? 0
+  const refusedAs =
+    refusal?.conversationId === conversationId && profileReadAt <= refusal.at ? refusal.code : null
   const suspended = partner?.accountStatus === 'suspended' || refusedAs === 'RECIPIENT_SUSPENDED'
   /**
    * Nor does a deleted one — `RECIPIENT_DELETED` — with its own line. It used
@@ -815,6 +825,8 @@ export function ChatScreen({
   const deleted = partner?.accountStatus === 'deleted' || refusedAs === 'RECIPIENT_DELETED'
   /** Nothing sent from here would arrive. The one fact the four places below read. */
   const readOnly = channel || suspended || deleted
+  /** What the header says in place of presence — the refusal included. */
+  const partnerStatus = deleted ? 'deleted' : suspended ? 'suspended' : partner?.accountStatus
   /**
    * Copilot, on the v3 thread only: the button beside send, its card, and
    * Explain in the long-press menu. Off for everybody the server has not
@@ -1827,14 +1839,16 @@ export function ChatScreen({
 
   /**
    * A send refused because the other account was suspended or deleted after
-   * this screen last read their profile — it is cached for minutes. Reading it
-   * again is what swaps the composer for the line that says so; what was typed
-   * stays behind as an unsent row, where it can still be copied.
+   * this screen last read their profile — it is cached for minutes. The
+   * refusal is kept at once, and that is what swaps the composer for the line
+   * that says so; the profile is read again so the header and the tag catch
+   * up, where there is still a profile to read. What was typed stays behind as
+   * an unsent row, where it can still be copied.
    */
   function recheckPartner(error: unknown): void {
     const code = errorCodeOf(error)
     if (code === 'RECIPIENT_SUSPENDED' || code === 'RECIPIENT_DELETED') {
-      setRefusal({ conversationId, code })
+      setRefusal({ conversationId, code, at: Date.now() })
       void queryClient.invalidateQueries({ queryKey: keys.profile(partnerId) })
     }
   }
@@ -2134,9 +2148,19 @@ export function ChatScreen({
       notifyTyping(false)
     } catch (caught) {
       recheckPartner(caught)
+      const code = errorCodeOf(caught)
+      // Nothing to pick a time for any more: the thread has gone read-only.
+      if (code === 'RECIPIENT_DELETED' || code === 'RECIPIENT_SUSPENDED') {
+        setPickingSendTime(false)
+        void showAlert(
+          t('chat.couldNotSend'),
+          t(code === 'RECIPIENT_DELETED' ? 'chat.deletedOnly' : 'chat.suspendedOnly'),
+        )
+        return
+      }
       void showAlert(
         t('chat.couldNotSend'),
-        errorCodeOf(caught) === ERROR_CODES.QUOTA_EXCEEDED
+        code === ERROR_CODES.QUOTA_EXCEEDED
           ? t('chat.scheduleTooMany', { count: MAX_SCHEDULED_PER_CONVERSATION })
           : t('chat.scheduleFailed'),
       )
@@ -2425,11 +2449,14 @@ export function ChatScreen({
       alreadyTranslated,
       // Evaluated here rather than in the menu, so the row and the server
       // agree on one rule from `@langx/shared` instead of two copies of it.
-      canEdit: canEditMessage(message, me.data?._id ?? '', new Date()),
+      // Not where the composer an edit opens is not drawn.
+      canEdit: !readOnly && canEditMessage(message, me.data?._id ?? '', new Date()),
       corrected: message.corrected === true,
       // The menu's rule is "drop every row that sends", which is exactly what
-      // a suspended account needs too.
+      // a suspended or deleted account needs too — except Forward, which
+      // sends to somebody else and is refused only out of a real channel.
       channel: readOnly,
+      fromChannel: channel,
       starred: message.starred === true,
       pinned: pinned?.messageId === message._id,
       // Strict, like `corrected` above: an unknown shape reads as "not kept"
@@ -3654,6 +3681,7 @@ export function ChatScreen({
         {v3Thread ? (
           <ThreadHeaderV3
             partner={partner}
+            accountStatus={partnerStatus}
             loading={partnerLoading}
             typing={partnerTyping}
             onBack={embedded ? undefined : () => goBackTo('/(app)/(tabs)/chats')}
@@ -3725,7 +3753,7 @@ export function ChatScreen({
                   <PresenceLine
                     lastActiveAt={partner?.lastActiveAt}
                     timezone={partner?.timezone}
-                    accountStatus={partner?.accountStatus}
+                    accountStatus={partnerStatus}
                   />
                 )}
               </View>

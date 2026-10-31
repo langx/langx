@@ -2,6 +2,9 @@ import { ERROR_CODES, MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES } from '@langx/share
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
+import { isSuspended } from '../moderation/suspension'
+import { isOfficialId } from '../official/accounts'
+import type { Profile } from '../profiles/profiles'
 import type { Conversation, Message } from './conversations'
 
 /**
@@ -109,4 +112,52 @@ export async function assertMediaUnlocked(
     `Photos and voice notes unlock after ${MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES} messages from them`,
     { max: MEDIA_UNLOCKS_AFTER_RECEIVED_MESSAGES },
   )
+}
+
+/**
+ * Refuses a message to somebody who cannot read it: an account that was
+ * deleted, then one that is suspended.
+ *
+ * A suspended account cannot sign in to read what arrives, and the person
+ * writing is owed that answer rather than a thread that looks alive and never
+ * replies. A deleted one is the same and asked first — `deletedAt` wins over
+ * a suspension, as it does in `accountStatus`. Its sessions were destroyed
+ * when it was written, and a purged account, whose profile is gone and whose
+ * threads are left behind, is the same answer a month later. The deleted half
+ * used to be missing, and a message to somebody who had left showed "Sent"
+ * and never an answer.
+ *
+ * Not part of `assertConversationAccess`, which reads as well as writes: the
+ * history stays readable, only the next message is refused. The suspended
+ * side needs no check of its own — `requireAuth` and the socket handshake
+ * already refuse everything it asks.
+ *
+ * `recordMessage` asks on every send, so nothing gets past it. The media
+ * paths ask again *before* the bytes: the upload URL, and the unit and the
+ * upload claim in `message:media` — a refusal after the claim left the file in
+ * the bucket with nothing left to name it or sweep it.
+ *
+ * Our own accounts are exempt. A receipt or a note from @langx is not what a
+ * suspension protects anybody from, and the panel's one message to a person
+ * is how somebody we suspended can be told something before a lift.
+ */
+export async function assertRecipientReachable(
+  db: Db,
+  conversation: Conversation,
+  senderId: string,
+): Promise<void> {
+  if (isOfficialId(senderId)) return
+  const recipientId = conversation.participants.find((id) => id !== senderId)
+  if (recipientId === undefined) return
+  // One keyed read, projected to the two fields: unlike `acceptsMessages`,
+  // both are decided while the recipient's thread is open.
+  const recipient = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne({ _id: recipientId }, { projection: { suspension: 1, deletedAt: 1 } })
+  if (!recipient || recipient.deletedAt) {
+    throw new ApiError(ERROR_CODES.RECIPIENT_DELETED, 'This account was deleted')
+  }
+  if (isSuspended(recipient)) {
+    throw new ApiError(ERROR_CODES.RECIPIENT_SUSPENDED, 'This account is suspended')
+  }
 }
