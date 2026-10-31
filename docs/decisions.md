@@ -9827,7 +9827,14 @@ partner "deleted since" refused a scheduled send; nothing made that true.
   is gone and the thread is left behind, so `recordMessage` treats a missing
   recipient profile as deleted. Our own accounts writing out stay exempt, as
   they are from the suspension check.
+- **Scheduling refuses it up front**, with the same two codes, rather than
+  queueing a message that would fail at nine.
 - **The thread reads like a suspended one**: `readOnly`, every control that
-  would send gone, and `chat.deletedOnly` where the composer was. A send
-  refused because the profile was cached from before the deletion re-reads
-  it, which swaps the composer for the line.
+  would send gone (the "Correct it" / "Say it" answer under a sentence
+  included), and `chat.deletedOnly` where the composer was. The header says
+  "Account deleted" or "Suspended" where it said "Last seen".
+- **A refusal is believed.** The profile is cached for minutes, and a purged
+  account has none to read again — its 404 is the same answer a block gets,
+  so it cannot be read as "deleted". So any send this thread has refused with
+  either code makes it read-only at once, for as long as it is open. Both
+  codes are only sent after the block check, so believing them leaks nothing.

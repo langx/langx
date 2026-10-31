@@ -191,6 +191,28 @@ describe('scheduled messages', () => {
     expect((await schedule({ sendAt: inHours(2) }, carol)).statusCode).toBe(404)
   })
 
+  // Refused now rather than failing overnight, with the codes a live send gets.
+  it('refuses a partner who is deleted or suspended now', async () => {
+    const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+    try {
+      await profiles.updateOne(
+        { _id: bob.userId },
+        { $set: { 'suspension.until': new Date(Date.now() + 48 * HOUR) } },
+      )
+      const suspended = await schedule({ sendAt: inHours(2) })
+      expect(suspended.statusCode).toBe(403)
+      expect(suspended.json()).toMatchObject({ code: 'RECIPIENT_SUSPENDED' })
+
+      await profiles.updateOne({ _id: bob.userId }, { $set: { deletedAt: new Date() } })
+      const deleted = await schedule({ sendAt: inHours(2) })
+      expect(deleted.statusCode).toBe(403)
+      expect(deleted.json()).toMatchObject({ code: 'RECIPIENT_DELETED' })
+    } finally {
+      await profiles.updateOne({ _id: bob.userId }, { $unset: { suspension: '', deletedAt: '' } })
+    }
+    expect(await list()).toHaveLength(0)
+  })
+
   describe('in their morning', () => {
     it("resolves to nine o'clock on the partner's clock", async () => {
       await handle.db

@@ -167,6 +167,7 @@ export function ThreadHeaderV3({
             lastActiveAt={partner?.lastActiveAt}
             timezone={partner?.timezone}
             onHue={onHue}
+            accountStatus={partner?.accountStatus}
           />
         )}
         {compact ? null : flame}

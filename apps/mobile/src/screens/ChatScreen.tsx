@@ -793,13 +793,26 @@ export function ChatScreen({
    * everything that would send is gone, and a line under the history says
    * why. The history itself stays; it is what somebody opening this came for.
    */
-  const suspended = partner?.accountStatus === 'suspended'
+  /**
+   * What the server last said when it refused a send here, kept for this
+   * thread. The profile is the usual source and normally catches up once
+   * `recheckPartner` reads it again — but a purged account has no profile to
+   * read (404, the same answer a block gets, so a 404 alone proves nothing),
+   * and the refusal is then the only word there is. It is safe to believe:
+   * both codes are only sent after the block check has passed.
+   */
+  const [refusal, setRefusal] = useState<{
+    conversationId: string
+    code: 'RECIPIENT_SUSPENDED' | 'RECIPIENT_DELETED'
+  } | null>(null)
+  const refusedAs = refusal?.conversationId === conversationId ? refusal.code : null
+  const suspended = partner?.accountStatus === 'suspended' || refusedAs === 'RECIPIENT_SUSPENDED'
   /**
    * Nor does a deleted one — `RECIPIENT_DELETED` — with its own line. It used
    * to keep its composer, and a message to somebody who had left showed
    * "Sent" under it and never an answer.
    */
-  const deleted = partner?.accountStatus === 'deleted'
+  const deleted = partner?.accountStatus === 'deleted' || refusedAs === 'RECIPIENT_DELETED'
   /** Nothing sent from here would arrive. The one fact the four places below read. */
   const readOnly = channel || suspended || deleted
   /**
@@ -1486,7 +1499,8 @@ export function ChatScreen({
         ...(reply ? { replyToMessageId: reply._id } : {}),
       })
       if (reply) setReplyingTo(null)
-    } catch {
+    } catch (error) {
+      recheckPartner(error)
       void showAlert(t('chat.couldNotSend'))
     }
   }
@@ -1820,6 +1834,7 @@ export function ChatScreen({
   function recheckPartner(error: unknown): void {
     const code = errorCodeOf(error)
     if (code === 'RECIPIENT_SUSPENDED' || code === 'RECIPIENT_DELETED') {
+      setRefusal({ conversationId, code })
       void queryClient.invalidateQueries({ queryKey: keys.profile(partnerId) })
     }
   }
@@ -2118,6 +2133,7 @@ export function ChatScreen({
       setDraft('')
       notifyTyping(false)
     } catch (caught) {
+      recheckPartner(caught)
       void showAlert(
         t('chat.couldNotSend'),
         errorCodeOf(caught) === ERROR_CODES.QUOTA_EXCEEDED
@@ -2168,7 +2184,8 @@ export function ChatScreen({
       noteAward(saved._id, award, 'correction')
       track({ name: 'message_sent', properties: { kind: 'correction', reply: false } })
       review.request({ kind: 'correction' })
-    } catch {
+    } catch (error) {
+      recheckPartner(error)
       setCorrecting(target)
       // Put back with it, or the retry would correct the whole message
       // against what was written for one sentence of it.
@@ -3705,7 +3722,11 @@ export function ChatScreen({
                 {partnerLoading ? null : partnerTyping ? (
                   <Text style={styles.typing}>{t('chat.typing')}</Text>
                 ) : (
-                  <PresenceLine lastActiveAt={partner?.lastActiveAt} timezone={partner?.timezone} />
+                  <PresenceLine
+                    lastActiveAt={partner?.lastActiveAt}
+                    timezone={partner?.timezone}
+                    accountStatus={partner?.accountStatus}
+                  />
                 )}
               </View>
             </Pressable>
