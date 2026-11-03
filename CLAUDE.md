@@ -71,7 +71,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 # Working in this repo
 
-LangX v2 — a language-exchange app. Expo (iOS/Android/web) + Fastify + MongoDB,
+LangX — a language-exchange app. Expo (iOS/Android/web) + Fastify + MongoDB,
 in a pnpm workspace. Open source, BSD-3, and **the repo is public**.
 
 Start with [`docs/architecture.md`](docs/architecture.md) for the design,

@@ -1,4 +1,4 @@
-# LangX v2 API — built from the workspace root, not from apps/api.
+# LangX API — built from the workspace root, not from apps/api.
 #
 # The bundle is produced from workspace sources and pnpm needs the whole
 # workspace to honour the lockfile, so the build context is the entire repo.

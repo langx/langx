@@ -1,4 +1,4 @@
-# Self-hosting LangX v2
+# Self-hosting LangX
 
 LangX is BSD-3 licensed and runs on infrastructure you control. This is the
 whole list — there is no hosted control plane you have to sign up for, and

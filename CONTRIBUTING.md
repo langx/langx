@@ -1,4 +1,4 @@
-# Contributing to LangX v2
+# Contributing to LangX
 
 Thanks for helping out. LangX is BSD-3 licensed and stays open source.
 
