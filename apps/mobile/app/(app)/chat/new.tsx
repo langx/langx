@@ -1,10 +1,12 @@
 import Feather from '@expo/vector-icons/Feather'
+import { Image } from 'expo-image'
 import { Animated, Pressable, Text, View } from 'react-native'
 import { ChatComposer } from '../../../src/components/ChatComposer'
 import { ComposerHint } from '../../../src/components/ComposerHint'
 import { MessageBubble } from '../../../src/components/MessageBubble'
 import { PresenceLine } from '../../../src/components/PresenceLine'
 import { Avatar } from '../../../src/components/ui/Avatar'
+import { Button } from '../../../src/components/ui/Button'
 import { Screen } from '../../../src/components/ui/Screen'
 import { Skeleton } from '../../../src/components/ui/Skeleton'
 import { useKeyboardInset } from '../../../src/hooks/useKeyboardInset'
@@ -12,9 +14,10 @@ import { useScreenInteractive } from '../../../src/hooks/useScreenInteractive'
 import { useV3Home } from '../../../src/hooks/useV3Home'
 import { useLocale, useT } from '../../../src/i18n'
 import { goBackTo, openProfile } from '../../../src/lib/navigation'
+import { stickerAsset } from '../../../src/lib/stickerAssets'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 import { NewChatScreenV3 } from '../../../src/screens/chat/NewChatScreenV3'
-import { useNewChat } from '../../../src/screens/chat/useNewChat'
+import { useNewChat, WAVE_STICKER } from '../../../src/screens/chat/useNewChat'
 
 /**
  * A conversation that does not exist yet, drawn as the one it is about to be.
@@ -56,8 +59,12 @@ function NewChatScreen() {
     offerTopics,
     freeHello,
     send,
+    wave,
     busy,
   } = useNewChat()
+  // Venus's hello, as on the v3 page: offered with the starters, gone once
+  // the field has text so a half-typed sentence is never dropped for it.
+  const canWave = offerTopics && draft === ''
 
   return (
     <Screen fluid style={styles.screen}>
@@ -120,6 +127,30 @@ function NewChatScreen() {
             starters they are the invitation. Once a send is on its way the
             tip comes back, as it will be in the thread that replaces this. */}
           {offerTopics ? null : <ComposerHint slot="chat" style={styles.threadTip} />}
+          {canWave ? (
+            <View style={styles.wave}>
+              {/* The picture sends too; the button is what a screen reader hears. */}
+              <Pressable
+                onPress={() => void wave()}
+                disabled={busy}
+                accessibilityElementsHidden
+                importantForAccessibility="no-hide-descendants"
+              >
+                <Image
+                  source={stickerAsset(WAVE_STICKER.packId, WAVE_STICKER.stickerId) ?? null}
+                  style={styles.waveSticker}
+                  contentFit="contain"
+                />
+              </Pressable>
+              <Button
+                label={t('chat.waveHello')}
+                onPress={wave}
+                variant="blue"
+                size="small"
+                disabled={busy}
+              />
+            </View>
+          ) : null}
           {sending ? (
             /*
               At the bottom of the column, which is where the thread that
@@ -238,6 +269,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   headerName: { ...font.heading, color: colors.text, fontSize: 17 },
   headerSkeletonGap: { marginTop: 6 },
   thread: { flex: 1, paddingHorizontal: spacing.lg, paddingTop: spacing.lg },
+  wave: { alignItems: 'center', gap: spacing.md, paddingTop: spacing.lg },
+  waveSticker: { height: 132, width: 132 },
   // Pushed to the bottom of the column — see the note at the call site.
   sending: { marginTop: 'auto' },
   // The thread's `channelNote`, so the two lines read as one rule.
