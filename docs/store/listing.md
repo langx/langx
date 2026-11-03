@@ -514,6 +514,44 @@ Alternative", which named a competitor (App Review guideline 2.3.7).
 
 ## What's new (release notes)
 
+### 3.2
+
+3.2 is a small release on top of 3.1 for the App Store, and the first release
+Play has seen since 20 September 2026: 2.9 waited three weeks in Play review
+and was then rejected on the Android Auto car-quality checklist (versionCode
+178, 2 November 2026). 3.2 drops the Android Auto declaration — see
+`docs/plans/iphone-watch-and-carplay.md` → _Phase 5_ — and goes to Play
+production in its place. The copy is in `3.2-metadata.json`; descriptions and
+promotional text are 3.1's, unchanged.
+
+What 3.2 adds over 3.1, every line checked against main on 2 November 2026:
+the MOD badge's "What's a moderator?" sheet and the application behind it
+(#2128, `MOD_APPLICATION_MIN_STREAK`), the read-only thread for a deleted
+account (#2130) and the Invite bonus row opening the invite page (#2126).
+
+**App Store release notes**
+
+> LangX 3.2
+> • Moderators: tap the MOD badge on a profile to see what moderators do. Reach a 60-day streak and you can apply to become one.
+> • If an account has been deleted, its chat now says so, so you no longer write messages nobody will read.
+> • On the LangX Token page, the Invite bonus row opens your invite page.
+> • Plus fixes and speed-ups.
+
+**Play release notes (500)**, en-US and en-GB
+
+Play users are coming from a 20 September build, so their notes are the
+release's headline features since then rather than 3.2's three lines, each a
+claim the 3.0 and 3.1 tables below already cover (440 characters).
+
+> LangX 3.2: a whole new look.
+> • Home opens on who is waiting for your reply, your streak and your Echo cards.
+> • Voice and video calls with the people you chat with.
+> • A chat camera with filters, for photos and videos.
+> • Copilot (beta): check a sentence, get a message explained or get reply ideas.
+> • Venus, LangX's cat, with stickers you can add to WhatsApp.
+> • Tap the MOD badge to see what moderators do.
+> • Plus lots of fixes and speed-ups.
+
 ### 3.0 (draft)
 
 3.0 is the redesign release: every screen in the v3 look (`flags.v3Home`).

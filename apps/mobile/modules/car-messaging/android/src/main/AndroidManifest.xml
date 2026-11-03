@@ -1,12 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <application>
     <!--
-      The car looks for this before it shows anything of ours. See
-      res/xml/automotive_app_desc.xml for what it declares and what that costs.
+      No `com.google.android.gms.car.application` meta-data, on purpose. It is
+      what opts the app into Android Auto, and with it comes Play's car-quality
+      review of every production bundle. That review rejected 2.9 (versionCode
+      178, 2 Nov 2026: "not able to receive incoming messages") after three
+      weeks in the queue, and it blocks the phone release with it. The
+      MessagingStyle presenter below stays: phones and watches use it too.
+      Bring the declaration back only after the car has been exercised on the
+      Desktop Head Unit with a second account writing in; the plan has it under
+      Phase 5 in docs/plans/iphone-watch-and-carplay.md.
     -->
-    <meta-data
-      android:name="com.google.android.gms.car.application"
-      android:resource="@xml/automotive_app_desc" />
 
     <!--
       How a message notification comes to be built here rather than by

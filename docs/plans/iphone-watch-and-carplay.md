@@ -970,6 +970,15 @@ does notifications in the car; without `MessagingStyle` behind it the car
 shows something it cannot read out or answer, which is a car-quality failure
 on a checklist that blocks the whole release.
 
+**Withdrawn on 2 November 2026.** Play rejected 2.9 (versionCode 178) on that
+checklist anyway — "your app is not able to receive incoming messages" — after
+the release had waited three weeks for review. The meta-data and
+`automotive_app_desc.xml` came out in 3.2, so the app no longer declares
+Android Auto and the car review no longer gates the phone. The presenter and
+the two actions stay. Re-adding the declaration is the two files above, after
+a Desktop Head Unit run in which a second account writes in and the car reads
+the message out and sends the spoken reply.
+
 Sources: [Notifications for Android Auto](https://developer.android.com/training/cars/communication/notification-messaging).
 
 **Built on 20 September, as the four items above.**
