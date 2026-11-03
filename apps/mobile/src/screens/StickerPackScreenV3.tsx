@@ -7,6 +7,7 @@ import Svg, { Circle, Path } from 'react-native-svg'
 import { useMe, usePurchase, useStickerGiftOptions, useWallet } from '../api/queries'
 import { LoadFailed } from '../components/LoadFailed'
 import { StickerGiftSheet } from '../components/StickerGiftSheet'
+import { TelegramStickerButton } from '../components/TelegramStickerButton'
 import { WhatsAppStickerButton } from '../components/WhatsAppStickerButton'
 import { useBlackFont } from '../components/onboarding/WizardV3'
 import { Button } from '../components/ui/Button'
@@ -355,6 +356,7 @@ export function StickerPackScreenV3({ pack }: { pack: Cosmetic }) {
       <View style={styles.footer}>
         {footer}
         <WhatsAppStickerButton packId={pack.id} />
+        <TelegramStickerButton packId={pack.id} />
         {canOfferGift && wallet.data ? (
           <Button
             variant="secondary"

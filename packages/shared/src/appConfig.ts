@@ -205,6 +205,15 @@ export const appConfigSchema = z.object({
      */
     whatsappStickers: z.boolean(),
     /**
+     * "Add to Telegram" on a sticker pack's page, for the packs with a public
+     * Telegram set (`TELEGRAM_PACKS` in the mobile app). Only a link to the
+     * set, so it needs no native module and draws on the web too. Starts off
+     * for the same reason as `whatsappStickers`: pointing people at our art in
+     * another company's app is a publishing decision, made by switching this
+     * on rather than by a merge.
+     */
+    telegramStickers: z.boolean(),
+    /**
      * Venus's daily streak story: the first time today's streak counts, a
      * full-screen video of Venus for that day opens once, and the streak
      * flame plays it again until midnight (`lib/venusStory.ts`). Starts off
@@ -258,6 +267,7 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
     promoPaywallLinks: false,
     stickerGifts: false,
     whatsappStickers: false,
+    telegramStickers: false,
     venusStories: false,
     socialAutopost: false,
   },

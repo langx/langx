@@ -740,6 +740,8 @@ export const ADMIN = {
         'Giving a sticker pack to a chat partner — tokens spent on another person’s account.',
       whatsappStickers:
         '"Add to WhatsApp" on a sticker pack that has a WhatsApp export (Venus). Needs a build with the module.',
+      telegramStickers:
+        '"Add to Telegram" on a sticker pack that has a public Telegram set (Venus). A link, so every build and the web show it.',
       venusStories:
         'Venus’s daily streak video opens full screen once a day when the streak counts; the flame replays it. Nothing shows for a day with no file.',
       socialAutopost:

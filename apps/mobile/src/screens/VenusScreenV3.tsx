@@ -19,6 +19,7 @@ import { ProductSection } from '../components/product/ProductSection'
 import { useToneColors } from '../components/product/tone'
 import { FlameGlyph } from '../components/ui/StreakFlame'
 import { VenusArchiveGrid } from '../components/venus/VenusDays'
+import { TelegramStickerButton, useTelegramStickerPack } from '../components/TelegramStickerButton'
 import { useWhatsAppStickerPack, WhatsAppStickerButton } from '../components/WhatsAppStickerButton'
 import { useAppConfig } from '../hooks/useAppConfig'
 import { usePullToRefresh } from '../hooks/usePullToRefresh'
@@ -36,7 +37,6 @@ import { PRODUCT_TEXT_SCALE } from '../lib/productPage'
 import { stickerAsset, stickerNameKey } from '../lib/stickerAssets'
 import { makeStyles, useTheme } from '../lib/theme'
 import { requestVenusClip, venusIntroFilm, type VenusStreak } from '../lib/venusStory'
-import { WHATSAPP_PACKS } from '../lib/whatsappStickers'
 
 const PACK_ID = 'stickers.venus'
 const PACK = COSMETICS.find((cosmetic) => cosmetic.id === PACK_ID)
@@ -103,6 +103,7 @@ function VenusPage({
   const videos = flags?.venusStories === true
   const whatsApp = flags?.whatsappStickers === true
   const whatsAppButton = useWhatsAppStickerPack(PACK_ID) !== undefined
+  const telegramButton = useTelegramStickerPack(PACK_ID) !== undefined
   const count = STICKERS.length
   const intro = archive?.days.find((day) => day.day === 1)?.clip ?? null
 
@@ -190,6 +191,7 @@ function VenusPage({
         </ProductGroup>
         {/* Draws itself only where the flag, the platform and WhatsApp allow. */}
         <WhatsAppStickerButton packId={PACK_ID} />
+        <TelegramStickerButton packId={PACK_ID} />
       </ProductSection>
 
       <ProductFaq
@@ -199,6 +201,7 @@ function VenusPage({
           playable: archive !== null,
           whatsApp,
           whatsAppButton,
+          telegramButton,
           count,
         })}
       />
@@ -225,6 +228,7 @@ function questions(
     playable,
     whatsApp,
     whatsAppButton,
+    telegramButton,
     count,
   }: {
     videos: boolean
@@ -233,21 +237,31 @@ function questions(
     whatsApp: boolean
     /** "Add to WhatsApp" is on this page, by the button's own test. */
     whatsAppButton: boolean
+    /** "Add to Telegram" is on this page. */
+    telegramButton: boolean
     count: number
   },
 ): ProductQuestion[] {
-  const whatsAppCount = WHATSAPP_PACKS[PACK_ID]?.stickers.length ?? 0
-  // Three answers, because the button draws only on a phone with WhatsApp:
-  // pointing at it from the web, where it never draws, would be false, and
-  // so would "not from the app" while the phone app does it.
+  // The WhatsApp button draws only on a phone with WhatsApp: pointing at it
+  // from the web, where it never draws, would be false, and so would "not
+  // from the app" while the phone app does it. The Telegram button draws
+  // wherever its flag is on. No answer says how many stickers go across:
+  // WhatsApp takes part of the pack, and a number here is one more to drift.
+  const whatsAppElsewhere = !whatsAppButton && whatsApp
   const otherApps: ProductQuestion = {
     key: 'otherApps',
     question: t('venus.page.qOtherApps'),
-    answer: whatsAppButton
-      ? t('venus.page.aOtherAppsWhatsApp', { count: whatsAppCount })
-      : whatsApp && whatsAppCount > 0
-        ? t('venus.page.aOtherAppsWhatsAppPhone', { count: whatsAppCount })
-        : t('venus.page.aOtherAppsChats'),
+    answer: telegramButton
+      ? whatsAppButton
+        ? t('venus.page.aOtherAppsBoth')
+        : whatsAppElsewhere
+          ? t('venus.page.aOtherAppsTelegramWhatsAppPhone')
+          : t('venus.page.aOtherAppsTelegram')
+      : whatsAppButton
+        ? t('venus.page.aOtherAppsWhatsApp')
+        : whatsAppElsewhere
+          ? t('venus.page.aOtherAppsWhatsAppPhone')
+          : t('venus.page.aOtherAppsChats'),
   }
   const free: ProductQuestion = {
     key: 'free',
