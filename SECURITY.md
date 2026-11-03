@@ -2,12 +2,13 @@
 
 ## Supported versions
 
-v2 is pre-release. Only `main` receives security updates until v2 ships.
+Only `main` receives security updates; every store build, the web app and the
+API are cut from it. `langx-angular` and the other archived repositories do not.
 
-| Component                  | Supported                                     |
-| -------------------------- | --------------------------------------------- |
-| `main`                     | :white_check_mark:                            |
-| LangX v1 (`langx-angular`) | :white_check_mark: until v2 rollout completes |
+| Component                               | Supported          |
+| --------------------------------------- | ------------------ |
+| `main`                                  | :white_check_mark: |
+| Archived repos (`langx-angular`, `api`) | :x:                |
 
 ## Reporting a vulnerability
 

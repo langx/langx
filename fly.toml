@@ -1,4 +1,4 @@
-# LangX v2 API on Fly.io.
+# LangX API on Fly.io.
 #
 # Secrets are NOT here — this file is committed and the repo is public. Set them
 # with `fly secrets set`; see docs/self-host.md. Only values that are safe in

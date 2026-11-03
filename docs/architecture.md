@@ -1,4 +1,4 @@
-# LangX v2 — architecture and design
+# LangX — architecture and design
 
 This is the plan v2 was built from, kept as a record of _why_ the system looks
 the way it does. Decisions taken during implementation — including the places

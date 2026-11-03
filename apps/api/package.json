@@ -3,7 +3,7 @@
   "version": "3.2.0",
   "private": true,
   "license": "BSD-3-Clause",
-  "description": "LangX v2 API — Better Auth + REST + Socket.io in one Fastify process",
+  "description": "LangX API — Better Auth + REST + Socket.io in one Fastify process",
   "type": "module",
   "main": "./src/index.ts",
   "scripts": {
