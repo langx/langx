@@ -9846,3 +9846,23 @@ partner "deleted since" refused a scheduled send; nothing made that true.
   only sent after the block check, so believing them leaks nothing. The
   sticker, time, quiz and phrase screens do not feed this yet; inside the
   cache window they say only that the send failed.
+
+## A first message can be a wave
+
+The empty thread offers Venus's `hello` sticker under her picture, and one tap
+sends it as the whole first message — the wave other language-exchange apps
+put there, for somebody who has nothing to say to a stranger yet.
+
+- **`POST /conversations` takes a sentence or a sticker**, never both. A
+  sticker is the one kind besides text: only an id travels, so the
+  first-message media gate has nothing to protect anyone from, and every
+  other kind a thread can carry presumes somebody is already listening.
+- **It is a first message like any other.** It spends a new chat (or the
+  newcomer hello), passes the same refusals in the same order, and is
+  announced and paid out the same way. Ownership is checked by
+  `assertCanSendSticker`, the guard `sendSticker` uses, so opening a thread is
+  not a way round buying a pack.
+- **From Venus's pack** because it is priced 0 and so owned by every account:
+  the wave never has to ask whether it can be sent.
+- **Gone once the field has text**, as the starters are, so a sentence half
+  typed is never dropped for a wave.

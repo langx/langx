@@ -38,15 +38,43 @@ export const MAX_MESSAGE_LENGTH = 2000
 export const messageBodySchema = z.string().trim().min(1).max(MAX_MESSAGE_LENGTH)
 
 /**
+ * One sticker from a pack the sender owns.
+ *
+ * Only the id travels; the picture is in the bundle. That is also why a
+ * sticker is not media: nothing is uploaded, nothing is stored, and the media
+ * gate — which exists to stop a first message being a photograph nobody
+ * consented to — has nothing to protect anyone from here. They are still
+ * reportable, because a curated picture can still be used unkindly.
+ */
+export const stickerIdSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(64)
+  .regex(/^[a-z0-9.-]+$/, 'Not a sticker id')
+
+/**
  * Body of `POST /conversations` — there is no match gate, so "starting a
  * conversation" and "sending its first message" are the same request. A
  * second call for the same pair fails on `conversations.pairKey`'s unique
  * index (surfaced as `CONVERSATION_EXISTS`), not a second write here.
+ *
+ * The first message is a sentence or a sticker. The sticker is the empty
+ * thread's wave — a hello for somebody who does not yet know what to say —
+ * and it is the only kind besides text: a sticker is no media (see above), so
+ * the first-message media gate has nothing to weigh, and everything else a
+ * thread can carry presumes somebody is already listening.
  */
-export const startConversationSchema = z.object({
-  toUserId: z.string().trim().min(1),
-  body: messageBodySchema,
-})
+export const startConversationSchema = z.union([
+  z.object({
+    toUserId: z.string().trim().min(1),
+    body: messageBodySchema,
+  }),
+  z.object({
+    toUserId: z.string().trim().min(1),
+    sticker: z.object({ packId: stickerIdSchema, stickerId: stickerIdSchema }),
+  }),
+])
 export type StartConversationInput = z.infer<typeof startConversationSchema>
 
 export const quotaStatusSchema = z.object({
@@ -383,22 +411,6 @@ export const answerQuizSchema = z.object({
     .max(QUIZ_MAX_OPTIONS - 1),
 })
 export type AnswerQuizInput = z.infer<typeof answerQuizSchema>
-
-/**
- * One sticker from a pack the sender owns.
- *
- * Only the id travels; the picture is in the bundle. That is also why a
- * sticker is not media: nothing is uploaded, nothing is stored, and the media
- * gate — which exists to stop a first message being a photograph nobody
- * consented to — has nothing to protect anyone from here. They are still
- * reportable, because a curated picture can still be used unkindly.
- */
-export const stickerIdSchema = z
-  .string()
-  .trim()
-  .min(1)
-  .max(64)
-  .regex(/^[a-z0-9.-]+$/, 'Not a sticker id')
 
 export const sendStickerSchema = z.object({
   conversationId: z.string().trim().min(1),

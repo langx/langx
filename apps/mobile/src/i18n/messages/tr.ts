@@ -1281,6 +1281,7 @@ export const tr: Localized<EnMessages> = {
   chat: {
     newChatStarts: 'Bu sohbet senin ilk mesajınla başlar.',
     pickFirstLine: 'İlk cümleyi seç',
+    waveHello: "Venus'la merhaba de",
     meetingLede:
       'Karşı taraf kabul edebilir ya da reddedebilir. İkiniz de kendi saatinizde görürsünüz.',
     meetingDay: 'Gün',

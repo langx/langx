@@ -1579,6 +1579,7 @@ export const ar: Localized<EnMessages> = {
   chat: {
     newChatStarts: 'تبدأ هذه المحادثة برسالتك الأولى.',
     pickFirstLine: 'اختر جملة أولى',
+    waveHello: 'ألقِ التحية مع Venus',
     meetingLede: 'يمكن للطرف الآخر القبول أو الرفض. يرى كل منكما الموعد بتوقيته.',
     meetingDay: 'اليوم',
     meetingTime: 'الوقت',

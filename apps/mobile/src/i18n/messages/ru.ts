@@ -1504,6 +1504,7 @@ export const ru: Localized<EnMessages> = {
   chat: {
     newChatStarts: 'Этот чат начнётся с твоего первого сообщения.',
     pickFirstLine: 'Выбери первую фразу',
+    waveHello: 'Поздороваться с Venus',
     meetingLede:
       'Собеседник может принять или отклонить. Каждый видит время в своём часовом поясе.',
     meetingDay: 'День',

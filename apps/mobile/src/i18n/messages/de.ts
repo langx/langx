@@ -1327,6 +1327,7 @@ export const de: Localized<EnMessages> = {
   chat: {
     newChatStarts: 'Dieser Chat beginnt mit deiner ersten Nachricht.',
     pickFirstLine: 'Wähle einen ersten Satz',
+    waveHello: 'Mit Venus Hallo sagen',
     meetingLede:
       'Die andere Person kann annehmen oder ablehnen. Ihr seht die Zeit jeweils in eurer eigenen Zeitzone.',
     meetingDay: 'Tag',

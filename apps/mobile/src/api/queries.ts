@@ -68,6 +68,7 @@ import {
   type AdminCaptchaRequiredInput,
   type AdminFlagInput,
   type AppConfig,
+  type StartConversationInput,
   ERROR_CODES,
   type MessageSpeech,
   type MessageRomanization,
@@ -2497,7 +2498,7 @@ interface StartedConversationDto {
 export function useStartConversation() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (input: { toUserId: string; body: string }) =>
+    mutationFn: (input: StartConversationInput) =>
       api.post<StartedConversationDto>('/conversations', input),
     onSuccess: (conversation) => {
       // Starting a conversation spends quota and earns tokens — both visible

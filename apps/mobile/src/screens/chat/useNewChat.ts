@@ -15,6 +15,15 @@ import { addUnsent, newClientId } from '../../lib/unsentMessages'
 import { loadUnsent, saveUnsent } from '../../lib/unsentStore'
 
 /**
+ * The empty thread's wave: Venus saying hello, sent as the whole first
+ * message. From her pack because everybody owns it (priced 0), so the wave
+ * is there for every account without asking whether it can be sent.
+ */
+export const WAVE_STICKER = { packId: 'stickers.venus', stickerId: 'hello' } as const
+
+type Opening = { body: string } | { sticker: { packId: string; stickerId: string } }
+
+/**
  * Everything `chat/new` does, apart from drawing it: who the partner is,
  * whether they can be written to, the draft, the stand-in bubble and the
  * first send with each of its refusals. One hook for both looks — the current
@@ -124,47 +133,62 @@ export function useNewChat() {
       router.replace('/(app)/(tabs)/chats')
       return
     }
-    // Added to what is stored rather than written over it: a thread reached
-    // this way can already be holding rows from a tunnel.
-    const stored = await loadUnsent(userId, conversationId)
-    await saveUnsent(
-      userId,
-      conversationId,
-      addUnsent(stored, {
-        clientId: newClientId(Date.now(), Math.random()),
-        body,
-        failedAt: new Date().toISOString(),
-      }),
-    )
+    // A wave has no words to keep: the thread is the whole answer to it.
+    if (body) {
+      // Added to what is stored rather than written over it: a thread reached
+      // this way can already be holding rows from a tunnel.
+      const stored = await loadUnsent(userId, conversationId)
+      await saveUnsent(
+        userId,
+        conversationId,
+        addUnsent(stored, {
+          clientId: newClientId(Date.now(), Math.random()),
+          body,
+          failedAt: new Date().toISOString(),
+        }),
+      )
+    }
     router.replace(`/(app)/chat/${conversationId}`)
   }
 
   async function send(): Promise<void> {
     const body = draft.trim()
-    if (!body || !partnerId || startConversation.isPending) return
+    if (!body) return
+    await start({ body })
+  }
+
+  /** Opens the conversation with `WAVE_STICKER` instead of a sentence. */
+  async function wave(): Promise<void> {
+    await start({ sticker: WAVE_STICKER })
+  }
+
+  async function start(opening: Opening): Promise<void> {
+    if (!partnerId || startConversation.isPending) return
     // The gate at the call site, where the screen knows what was being tried;
     // the transport catches a forgotten one only as a duller version of this.
     if (!requireAccount(session?.user, { action: 'message', toUserId: partnerId })) return
+    const body = 'body' in opening ? opening.body : ''
     // Cleared at once, like a send in a thread. Put back if the send fails,
     // so nothing typed is lost to a cap or a dropped connection.
-    setDraft('')
+    if (body) setDraft('')
     setSending({
       _id: outgoingId(newClientId(Date.now(), Math.random())),
       // No conversation to belong to yet — that is what this request creates.
       conversationId: '',
       senderId: session?.user.id ?? '',
-      type: 'text',
-      body,
+      ...('sticker' in opening
+        ? { type: 'sticker', body: '', sticker: opening.sticker }
+        : { type: 'text', body }),
       createdAt: new Date().toISOString(),
     })
     try {
-      const conversation = await startConversation.mutateAsync({ toUserId: partnerId, body })
+      const conversation = await startConversation.mutateAsync({ toUserId: partnerId, ...opening })
       // `inPlace`: the thread takes this screen's place without the stack's
       // slide — this screen was drawn as that thread, and a second screen
       // sliding in over it reads as the app opening the chat twice.
       router.replace(`/(app)/chat/${conversation._id}?inPlace=1`)
     } catch (caught) {
-      setDraft(body)
+      if (body) setDraft(body)
       // The words are back in the composer, so the bubble holding them would
       // be a second copy of a message that was not sent.
       setSending(null)
@@ -227,6 +251,7 @@ export function useNewChat() {
     offerTopics,
     freeHello,
     send,
+    wave,
     busy: startConversation.isPending,
   }
 }

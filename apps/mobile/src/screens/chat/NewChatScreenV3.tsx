@@ -1,4 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
+import { Image } from 'expo-image'
 import { useIsFocused } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { useState } from 'react'
@@ -17,10 +18,11 @@ import { authClient } from '../../lib/auth-client'
 import { chatsLeft } from '../../lib/chatsLeft'
 import { pickStarters } from '../../lib/conversationStarters'
 import { shouldGateGuest } from '../../lib/guestGate'
+import { stickerAsset } from '../../lib/stickerAssets'
 import { goBackTo, openProfile } from '../../lib/navigation'
 import { makeStyles, useTheme } from '../../lib/theme'
 import { partnerHueFor } from '../../lib/theme/partnerHue'
-import { useNewChat } from './useNewChat'
+import { useNewChat, WAVE_STICKER } from './useNewChat'
 
 /**
  * A conversation that does not exist yet, in the redesign's look
@@ -32,6 +34,11 @@ import { useNewChat } from './useNewChat'
  * no tray, no mic. The board's one change is the starters: rows in the
  * thread, under "Pick a first line", rather than chips over the field, and
  * gone once the field has text.
+ *
+ * The opening picture is Venus waving hello, and tapping her sends that
+ * sticker as the first message: a hello for somebody who has nothing to say
+ * yet. Offered when the starters are and gone with them, so a sentence half
+ * typed is never dropped for a wave.
  */
 export function NewChatScreenV3() {
   useScreenInteractive()
@@ -55,6 +62,7 @@ export function NewChatScreenV3() {
     offerTopics,
     freeHello,
     send,
+    wave,
     busy,
   } = useNewChat()
   const { data: session } = authClient.useSession()
@@ -64,6 +72,7 @@ export function NewChatScreenV3() {
     offerTopics && draft === ''
       ? pickStarters(partnerId, topicRound, undefined, partner?.interests)
       : []
+  const canWave = offerTopics && draft === ''
 
   return (
     /*
@@ -94,30 +103,49 @@ export function NewChatScreenV3() {
         >
           {sending ? null : (
             <View style={styles.opening}>
-              <View
-                style={styles.art}
-                accessibilityElementsHidden
-                importantForAccessibility="no-hide-descendants"
-              >
-                <View
-                  style={[
-                    styles.theirs,
-                    {
-                      backgroundColor: partner
-                        ? v3.hues[partnerHueFor(partner._id)]
-                        : v3.colors.line,
-                    },
-                  ]}
+              {canWave ? (
+                <PressableScale
+                  accessibilityRole="button"
+                  accessibilityLabel={t('chat.waveHello')}
+                  onPress={() => void wave()}
+                  disabled={busy}
+                  style={styles.wave}
                 >
-                  <View style={styles.dot} />
-                  <View style={styles.dot} />
-                  <View style={styles.dot} />
+                  <Image
+                    source={stickerAsset(WAVE_STICKER.packId, WAVE_STICKER.stickerId) ?? null}
+                    style={styles.waveSticker}
+                    contentFit="contain"
+                  />
+                  <View style={styles.waveButton}>
+                    <Text style={styles.waveText}>{t('chat.waveHello')}</Text>
+                  </View>
+                </PressableScale>
+              ) : (
+                <View
+                  style={styles.art}
+                  accessibilityElementsHidden
+                  importantForAccessibility="no-hide-descendants"
+                >
+                  <View
+                    style={[
+                      styles.theirs,
+                      {
+                        backgroundColor: partner
+                          ? v3.hues[partnerHueFor(partner._id)]
+                          : v3.colors.line,
+                      },
+                    ]}
+                  >
+                    <View style={styles.dot} />
+                    <View style={styles.dot} />
+                    <View style={styles.dot} />
+                  </View>
+                  <View style={styles.mine}>
+                    <View style={[styles.bar, styles.barLong]} />
+                    <View style={[styles.bar, styles.barShort]} />
+                  </View>
                 </View>
-                <View style={styles.mine}>
-                  <View style={[styles.bar, styles.barLong]} />
-                  <View style={[styles.bar, styles.barShort]} />
-                </View>
-              </View>
+              )}
               <Text style={styles.openingText}>{t('chat.newChatStarts')}</Text>
             </View>
           )}
@@ -319,6 +347,17 @@ const useStyles = makeStyles(({ v3 }) => ({
   bar: { backgroundColor: v3.colors.onBlue, borderRadius: v3.radius.pill, height: 5 },
   barLong: { width: 52 },
   barShort: { opacity: 0.7, width: 30 },
+  wave: { alignItems: 'center', gap: v3.space[8] },
+  waveSticker: { height: 132, width: 132 },
+  waveButton: {
+    alignItems: 'center',
+    backgroundColor: v3.colors.blue,
+    borderRadius: v3.radius.pill,
+    justifyContent: 'center',
+    minHeight: 44,
+    paddingHorizontal: v3.space[20],
+  },
+  waveText: { ...v3.type.button, color: v3.colors.onBlue },
   openingText: { ...v3.type.caption, color: v3.colors.muted, fontSize: 15, textAlign: 'center' },
   threadTip: {
     ...v3.type.caption,

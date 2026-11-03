@@ -1,5 +1,6 @@
 import {
   ERROR_CODES,
+  previewOf,
   type MeetingStatus,
   type MessageAsk,
   type MessageCall,
@@ -22,6 +23,7 @@ import { isSuspended } from '../moderation/suspension'
 import { acceptsMessages } from '../official/accounts'
 import { awardForSend } from '../tokens/awards'
 import { claimNewcomerHello, newcomerHelloIsFree, releaseNewcomerHello } from './newcomerHello'
+import { assertCanSendSticker } from './stickers'
 
 export interface Conversation {
   _id: ObjectId
@@ -390,6 +392,12 @@ export async function startConversation(
   if (!viewer) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
   if (!recipient) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Recipient not found')
 
+  // Before the quota, like every refusal below, so a sticker the sender does
+  // not own costs no slot.
+  if ('sticker' in input) {
+    await assertCanSendSticker(db, viewerId, input.sticker.packId, input.sticker.stickerId)
+  }
+
   // A channel takes no messages, so it cannot be the start of a conversation
   // either. In practice the welcome has already opened that thread, so this is
   // the second lock rather than the first.
@@ -501,11 +509,21 @@ export async function startConversation(
   }
 
   const now = new Date()
+  // A sticker has no words, so the chat list shows its label, as it does for
+  // one sent into a thread (`recordMessage`).
+  const opening: Pick<Message, 'type' | 'body' | 'sticker'> =
+    'sticker' in input
+      ? { type: 'sticker', body: '', sticker: input.sticker }
+      : { type: 'text', body: input.body }
   const conversation: Conversation = {
     _id: new ObjectId(),
     pairKey,
     participants: [viewerId, recipient._id],
-    lastMessage: { body: input.body, senderId: viewerId, createdAt: now },
+    lastMessage: {
+      body: opening.body || previewOf(opening),
+      senderId: viewerId,
+      createdAt: now,
+    },
     /**
      * The recipient's id is read off the profile that was just loaded, not off
      * the request that named it — even though the two are equal by the time
@@ -574,8 +592,7 @@ export async function startConversation(
     _id: new ObjectId(),
     conversationId: conversation._id,
     senderId: viewerId,
-    type: 'text',
-    body: input.body,
+    ...opening,
     createdAt: now,
   }
   await db.collection<Message>(COLLECTIONS.messages).insertOne(message)

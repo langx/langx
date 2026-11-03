@@ -18,8 +18,6 @@ import {
   type SendLocationInput,
   type SendAward,
   storedLocationPoint,
-  findCosmetic,
-  ownedCosmetics,
   hasFeature,
   stripFormatting,
   type SendTextMessageInput,
@@ -48,6 +46,7 @@ import { mirrorPhraseToEcho } from '../echo/phraseMirror'
 import { toMessageView, type MessageView } from './messageView'
 import type { Conversation, Message } from './conversations'
 import { claimPendingUploads } from './pendingUploads'
+import { assertCanSendSticker } from './stickers'
 import { conversationPartners, getProfile, type Profile } from '../profiles/profiles'
 import { effectiveTier } from '../profiles/entitlement'
 import { mediaLockedFor, toConversationView, type ConversationView } from './conversationView'
@@ -748,11 +747,7 @@ export async function answerQuiz(
 }
 
 /**
- * A sticker from a pack the sender owns.
- *
- * Ownership is checked here, not trusted from the client: the pack is the
- * thing token buys, and a send that skipped the check would make buying one
- * optional. `assertOwnsCosmetic` is the same guard equipping a frame uses.
+ * A sticker from a pack the sender owns — see `assertCanSendSticker`.
  *
  * No media quota and no media gate. Nothing is uploaded and nothing is
  * stored — only an id travels — so neither has anything to weigh or protect.
@@ -764,16 +759,7 @@ export async function sendSticker(
 ): Promise<SendResult> {
   const conversation = await assertConversationAccess(db, input.conversationId, senderId)
 
-  const pack = findCosmetic(input.packId)
-  if (!pack || pack.kind !== 'stickers' || !pack.stickers?.includes(input.stickerId)) {
-    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'No such sticker')
-  }
-  const profile = await db
-    .collection<Profile>(COLLECTIONS.profiles)
-    .findOne({ _id: senderId }, { projection: { cosmetics: 1 } })
-  if (!profile || !ownedCosmetics(profile.cosmetics ?? []).includes(input.packId)) {
-    throw new ApiError(ERROR_CODES.FORBIDDEN, `You do not own ${input.packId}`)
-  }
+  await assertCanSendSticker(db, senderId, input.packId, input.stickerId)
 
   if (input.clientId) {
     const already = await db

@@ -1291,6 +1291,7 @@ export const ptBR: Localized<EnMessages> = {
   chat: {
     newChatStarts: 'Esta conversa começa com a sua primeira mensagem.',
     pickFirstLine: 'Escolha uma primeira frase',
+    waveHello: 'Diga oi com a Venus',
     meetingLede: 'A outra pessoa pode aceitar ou recusar. Cada um vê no próprio horário.',
     meetingDay: 'Dia',
     meetingTime: 'Horário',
