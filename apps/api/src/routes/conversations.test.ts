@@ -485,6 +485,69 @@ describe('Faz 4 — starting a conversation', () => {
     expect(body.firstPage).toEqual(fetched.json())
   })
 
+  describe('a sticker as the first message', () => {
+    function startWithSticker(
+      user: SignedUpUser,
+      toUserId: string,
+      packId: string,
+      stickerId: string,
+    ) {
+      return app.inject({
+        method: 'POST',
+        url: '/conversations',
+        headers: { cookie: user.cookie },
+        payload: { toUserId, sticker: { packId, stickerId } },
+      })
+    }
+
+    async function initiationsLeft(user: SignedUpUser): Promise<number> {
+      const quota = await app.inject({
+        method: 'GET',
+        url: '/me/quota',
+        headers: { cookie: user.cookie },
+      })
+      return quota.json<{ initiations: { remaining: number } }>().initiations.remaining
+    }
+
+    it('opens the thread with it, labelled in the chat list, at the cost of one new chat', async () => {
+      const viewer = await newUser('convo-sticker@example.com')
+      const recipient = await newUser('convo-sticker-to@example.com')
+
+      const response = await startWithSticker(viewer, recipient.userId, 'stickers.venus', 'hello')
+      expect(response.statusCode, response.body).toBe(201)
+      const body = response.json<{
+        lastMessage: { body: string; senderId: string }
+        firstPage: { items: { type: string; body: string; sticker?: unknown }[] }
+      }>()
+      expect(body.lastMessage).toMatchObject({ body: '🩷 Sticker', senderId: viewer.userId })
+      expect(body.firstPage.items).toHaveLength(1)
+      expect(body.firstPage.items[0]).toMatchObject({
+        type: 'sticker',
+        body: '',
+        sticker: { packId: 'stickers.venus', stickerId: 'hello' },
+      })
+      expect(await initiationsLeft(viewer)).toBe((PLAN_LIMITS.free.initiationsPer24h ?? 0) - 1)
+    })
+
+    it('refuses a pack the sender does not own, and spends no slot on it', async () => {
+      const viewer = await newUser('convo-sticker-unowned@example.com')
+      const recipient = await newUser('convo-sticker-unowned-to@example.com')
+
+      const response = await startWithSticker(viewer, recipient.userId, 'stickers.starter', 'wave')
+      expect(response.statusCode, response.body).toBe(403)
+      expect(await initiationsLeft(viewer)).toBe(PLAN_LIMITS.free.initiationsPer24h)
+    })
+
+    it('refuses a sticker that is not in the pack', async () => {
+      const viewer = await newUser('convo-sticker-missing@example.com')
+      const recipient = await newUser('convo-sticker-missing-to@example.com')
+
+      const response = await startWithSticker(viewer, recipient.userId, 'stickers.venus', 'nope')
+      expect(response.statusCode, response.body).toBe(400)
+      expect(response.json()).toMatchObject({ code: 'VALIDATION_FAILED' })
+    })
+  })
+
   it('rejects a second conversation between the same pair — pairKey is the real guard', async () => {
     const viewer = await newUser('convo-dupe-viewer@example.com')
     const recipient = await newUser('convo-dupe-recipient@example.com')

@@ -1468,6 +1468,7 @@ export const en = {
   chat: {
     newChatStarts: 'This chat starts with your first message.',
     pickFirstLine: 'Pick a first line',
+    waveHello: 'Say hi with Venus',
     meetingLede: 'They can accept or decline. Each of you sees it in your own time.',
     meetingDay: 'Day',
     meetingTime: 'Time',
