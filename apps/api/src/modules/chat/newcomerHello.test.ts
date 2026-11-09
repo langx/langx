@@ -47,17 +47,16 @@ function newcomer(id: string, fields: Partial<Profile> = {}): Profile {
 }
 
 /**
- * `YYYY-MM-DD` for `years` ago today (UTC), plus `extraDays`. A 29 February
- * today becomes the 28th in a year without one, for `replyFirst.test.ts`'s
- * reason: rolling into March would make "eighteen today" seventeen.
+ * `YYYY-MM-DD` for `years` ago today (UTC). A 29 February today becomes the
+ * 28th in a year without one, so the person is exactly `years` old.
  */
-function bornYearsAgo(years: number, extraDays = 0): string {
+function bornYearsAgo(years: number): string {
   const today = new Date()
   const year = today.getUTCFullYear() - years
   const month = today.getUTCMonth()
   const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate()
   const day = Math.min(today.getUTCDate(), lastDayOfMonth)
-  return new Date(Date.UTC(year, month, day + extraDays)).toISOString().slice(0, 10)
+  return new Date(Date.UTC(year, month, day)).toISOString().slice(0, 10)
 }
 
 /** `count` timestamps inside the last day: a free account with that many new chats spent. */
@@ -243,24 +242,24 @@ describe('the newcomer hello', () => {
       expect(after.hellos.map((h) => h.to)).toEqual(['justNew'])
     })
 
-    it('never reaches a 16- or 17-year-old, at either end', async () => {
+    // No age rule beyond the sign-up floor, at either end.
+    it('reaches a 16- or 17-year-old like anybody, at either end', async () => {
       await seed(
         person('me'),
-        newcomer('seventeen', { birthDate: bornYearsAgo(18, 1) }),
-        newcomer('eighteen', { birthDate: bornYearsAgo(18) }),
-        person('minor', { birthDate: bornYearsAgo(17) }),
+        newcomer('seventeen', { birthDate: bornYearsAgo(17) }),
+        person('sixteen', { birthDate: bornYearsAgo(16) }),
         newcomer('nina'),
       )
 
-      // Eighteen tomorrow is seventeen today: counted.
       await start('me', 'seventeen')
-      expect((await spent('me')).chats).toBe(1)
-      // Eighteen today is an adult: free.
-      await start('me', 'eighteen')
-      expect((await spent('me')).chats).toBe(1)
-      // A minor's own first messages count as they always have.
-      await start('minor', 'nina')
-      expect(await spent('minor')).toEqual({ chats: 1, hellos: [] })
+      const mine = await spent('me')
+      expect(mine.chats).toBe(0)
+      expect(mine.hellos.map((h) => h.to)).toEqual(['seventeen'])
+
+      await start('sixteen', 'nina')
+      const theirs = await spent('sixteen')
+      expect(theirs.chats).toBe(0)
+      expect(theirs.hellos.map((h) => h.to)).toEqual(['nina'])
     })
 
     it('never applies to a guest, at either end', async () => {

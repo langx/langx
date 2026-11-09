@@ -9871,3 +9871,33 @@ put there, for somebody who has nothing to say to a stranger yet.
   the wave never has to ask whether it can be sent.
 - **Gone once the field has text**, as the starters are, so a sentence half
   typed is never dropped for a wave.
+
+## No feature has an age rule of its own beyond the sign-up floor
+
+_9 November 2026._ Behic removed every adult-only rule (`ADULT_AGE`, 18) that
+sat on top of the sign-up floor (`MINIMUM_AGE`, 16). The app already decides
+who may hold an account, at sign-up; whoever it admits now gets every feature
+on the same terms. This is the decision _Copilot has no age rule of its own,
+and 24 a day for Pro_ made for one feature, taken for the rest:
+
+- **"New on LangX"** (`GET /discovery/new`) and the **New sort**
+  (`sort=new`) list 16- and 17-year-olds, and are shown to them. A guest
+  viewer gets the strip too: the guest check existed only because a guest's
+  `1900-01-01` would have passed the age check.
+- **The newcomer hello** is free to and from a 16- or 17-year-old.
+- **Sticker gifts** can be given by and to a 16- or 17-year-old.
+- **The Pro Week** goes to a new 16- or 17-year-old account like any other;
+  the `minor` refusal is gone.
+
+`ADULT_AGE`, `adultBornOnOrBefore` and `isAdult` are deleted with them. The
+entries that introduced each rule — _Discovery puts the people who answer
+first, behind a switch_, _A hello to a newcomer is free, behind a switch_, _A
+sticker pack can be given to a chat partner, behind a switch_ and _The Pro
+Week: a week of Pro at sign-up, behind a switch_ — still say why they were
+written; this entry is what changed since.
+
+**Not touched here: the streak repair push.** It skips readers under
+`STREAK_REPAIR_PUSH_MIN_AGE` (18) because the EU's guidance on minors under
+DSA Article 28 asks for streak pushes to be off by default for them. That is a
+rule about what is pushed at a minor rather than about who can reach one, so
+it is a separate decision and this change leaves it as it was.

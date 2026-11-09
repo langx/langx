@@ -466,8 +466,8 @@ what is left and when the next slot opens.
 
 **The newcomer hello** (`flags.newcomerHello`, off by default) exempts one
 kind of first message: to an account in its first
-`NEWCOMER_HELLO_RULES.newForDays`, once per recipient, adults only at both
-ends, never a guest, and at most `perSenderPer24h` a day. It is a second
+`NEWCOMER_HELLO_RULES.newForDays`, once per recipient, never a guest, and at
+most `perSenderPer24h` a day. It is a second
 conditional write of the same shape, on `profiles.newcomerHellos`, tried
 before `consumeQuota` in `startConversation`; a start that fails gives it back.
 `decisions.md` → _A hello to a newcomer is free, behind a switch_.
@@ -1017,17 +1017,14 @@ $sort:     onlineBucket desc, score desc, lastActiveAt desc  → cursor paginati
 with, adds `dormantBucket` (idle past `DISCOVERY_DORMANT_DAYS`) between
 `onlineBucket` and `score`, and adds `(answered + 1) / (received + 2)` from
 `stats.openersReceived` / `openersAnswered` to the score; cards may carry
-`repliesWithinDay`. `GET /discovery/new` is "New on LangX": adults only at
-both ends, the same scope, newest first. `decisions.md` → _Discovery puts the
+`repliesWithinDay`. `GET /discovery/new` is "New on LangX": the same scope,
+newest first. `decisions.md` → _Discovery puts the
 people who answer first, behind a switch_.
 
 **`sort=new`** is that question asked of the whole list, and it is not behind
 the switch: the same scope, newest account first by `createdAt`, keyset-paged
-like `active` (`<createdAt>|<id>`), no online bucket and no score. It keeps the
-strip's adults-only rule at both ends, because it is the strip's exposure
-without the strip's cap — a viewer not known to be 18 gets an empty page, and
-the app does not offer them the chip. The boosted strip above it runs newest
-first too.
+like `active` (`<createdAt>|<id>`), no online bucket and no score. The boosted
+strip above it runs newest first too.
 
 `discoverable: false` reaches past this aggregation: it also keeps somebody off
 the leaderboards and out of other people's follower and following lists.

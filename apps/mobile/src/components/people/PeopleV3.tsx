@@ -460,8 +460,8 @@ function ChatsLeftLine() {
 
 /**
  * "New on LangX" — S2's strip, as the server answers it: empty while
- * `flags.discoveryReplyFirst` is off, for anybody under 18 and for a guest,
- * and then nothing is drawn, not even the heading. At most
+ * `flags.discoveryReplyFirst` is off, and then nothing is drawn, not even the
+ * heading. At most
  * `DISCOVERY_NEW_LIMIT` tiles, so a bounded row rather than a second list.
  */
 function NewcomerStrip({

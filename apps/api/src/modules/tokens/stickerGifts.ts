@@ -3,7 +3,6 @@ import {
   STICKER_GIFT_PARTNERS_MAX,
   STICKER_GIFT_RULES,
   findCosmetic,
-  isAdult,
   isGiftableCosmetic,
   monthKey,
   periodKeys,
@@ -74,7 +73,6 @@ const PERSON_PROJECTION = {
   handle: 1,
   displayName: 1,
   avatarUrl: 1,
-  birthDate: 1,
   createdAt: 1,
   guest: 1,
   official: 1,
@@ -88,15 +86,12 @@ const PERSON_PROJECTION = {
 /**
  * Why the giver may not give at all, or `null`.
  *
- * Adults only, by the exact birthday — the newcomer hello's rule, and for a
- * stronger reason here: a gift is a known way for an adult to start a
- * relationship with a 16- or 17-year-old. A frozen account is under review
- * for farming, and a gift is the one place farmed tokens could leave it.
+ * A frozen account is under review for farming, and a gift is the one place
+ * farmed tokens could leave it.
  */
 function giverRefusal(profile: Profile | null, now: Date): StickerGiftRefusal | null {
   if (!profile || profile.guest || profile.deletedAt || profile.official) return 'notEligible'
   if (isSuspended(profile, now) || profile.tokenFrozenAt) return 'notEligible'
-  if (!isAdult(profile.birthDate, now)) return 'notEligible'
   if (now.getTime() - profile.createdAt.getTime() < STICKER_GIFT_RULES.minGiverAccountDays * DAY_MS)
     return 'notEligible'
   return null
@@ -111,7 +106,7 @@ function recipientClosed(profile: Profile | null, now: Date): boolean {
   if (!profile || profile.guest || profile.deletedAt || profile.official) return true
   if (isOfficialId(profile._id)) return true
   if (isSuspended(profile, now) || profile.tokenFrozenAt) return true
-  return !isAdult(profile.birthDate, now)
+  return false
 }
 
 /**

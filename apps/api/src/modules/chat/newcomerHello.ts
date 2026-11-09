@@ -1,4 +1,4 @@
-import { NEWCOMER_HELLO_RULES, QUOTA_WINDOW_MS, isAdult, quotaLimit } from '@langx/shared'
+import { NEWCOMER_HELLO_RULES, QUOTA_WINDOW_MS, quotaLimit } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { getAppConfig } from '../appConfig/appConfig'
@@ -20,18 +20,10 @@ import type { Profile } from '../profiles/profiles'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
-type Sender = Pick<Profile, 'entitlement' | 'guest' | 'official' | 'birthDate' | 'newcomerHellos'>
+type Sender = Pick<Profile, 'entitlement' | 'guest' | 'official' | 'newcomerHellos'>
 type Recipient = Pick<
   Profile,
-  | '_id'
-  | 'guest'
-  | 'official'
-  | 'birthDate'
-  | 'createdAt'
-  | 'settings'
-  | 'privacy'
-  | 'deletedAt'
-  | 'suspension'
+  '_id' | 'guest' | 'official' | 'createdAt' | 'settings' | 'privacy' | 'deletedAt' | 'suspension'
 >
 
 /**
@@ -52,14 +44,6 @@ export function newcomerHelloOpen(sender: Sender, recipient: Recipient, now: Dat
   if (sender.guest === true || recipient.guest === true) return false
   // Writing to an official account costs nothing anyway.
   if (sender.official === true || recipient.official === true) return false
-  /*
-   * Adults only, at both ends, by the exact birthday — the rule the "New on
-   * LangX" strip keeps, and for its reason: a fresh account is the one
-   * strangers write to first, and making that cheaper must never reach a 16-
-   * or 17-year-old, nor be handed to one. A minor's first messages count
-   * exactly as they always have.
-   */
-  if (!isAdult(sender.birthDate, now) || !isAdult(recipient.birthDate, now)) return false
   /*
    * Somebody who has hidden from Discover asked not to be found, and a hello
    * made cheaper is a way of being found. Suspended, deleting and "only people

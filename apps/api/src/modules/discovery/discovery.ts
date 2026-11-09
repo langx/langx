@@ -1,7 +1,5 @@
 import {
-  adultBornOnOrBefore,
   ageFromBirthDate,
-  isAdult,
   LANGUAGE_LEVELS,
   levelRank,
   bucketDistanceKm,
@@ -542,17 +540,7 @@ export async function discoverProfiles(
     }
   }
 
-  /*
-   * `new` is the "New on LangX" strip without its cap, so it keeps the strip's
-   * rule at both ends — see `newProfiles`. A viewer not known to be an adult
-   * gets an empty list rather than a 403: the app hides the chip from them,
-   * and anything that asks anyway is owed nothing it can act on.
-   */
   const now = new Date()
-  const newcomers = query.sort === 'new'
-  if (newcomers && (viewer.guest === true || !isAdult(viewer.birthDate, now))) {
-    return { items: [], nextCursor: null }
-  }
 
   /**
    * `$geoNear` must be the pipeline's **first** stage — a MongoDB rule, not a
@@ -580,11 +568,8 @@ export async function discoverProfiles(
    * spread would replace it.
    */
   const partnerIds = rankReplyFirst ? await conversationPartnerIds(db, viewerId) : []
-  const narrowed: Document[] = []
-  if (partnerIds.length > 0) narrowed.push({ _id: { $nin: partnerIds } })
-  // Under `$and` too: an age filter has already put a `birthDate` in the scope.
-  if (newcomers) narrowed.push({ birthDate: { $lte: adultBornOnOrBefore(now) } })
-  const eligible: Document = narrowed.length > 0 ? { $and: [match, ...narrowed] } : match
+  const eligible: Document =
+    partnerIds.length > 0 ? { $and: [match, { _id: { $nin: partnerIds } }] } : match
 
   const pipeline: Document[] =
     query.sort === 'nearby' && viewer.location
@@ -823,9 +808,7 @@ const BOOSTED_STORED_TIERS = STORED_PLAN_TIERS.filter(
  * it answers the same question: under Active it runs most-recently-seen
  * first, under Nearby nearest first, under New newest account first, and only
  * under the default feed does it turn on its own — one order per viewer per
- * hour, see `orderBoosted`. Under New it does not take the list's adults-only
- * rule: who is in the strip is the subscription's question, and it is the
- * same strip on every sort.
+ * hour, see `orderBoosted`.
  *
  * There used to be a tier band outside all three orders — Polyglot above
  * Fluent. With one paid plan there is nothing to band.
@@ -974,13 +957,6 @@ export async function boostedProfiles(
  * the stores draws what that one returns under a "Boosted" label, so a
  * newcomer sent down it would be called a paying member on every old phone.
  *
- * **Adults only, at both ends.** A fresh account is the one a stranger is most
- * likely to write to first, which is what the strip is for and exactly why a
- * 16- or 17-year-old is never on it; and a minor viewer gets an empty strip,
- * because a row of brand-new strangers is not what their Discover should lead
- * with. The exact birthday, not the year arithmetic the age on a card uses —
- * see `adultBornOnOrBefore`. A missing birth date matches nothing.
- *
  * Off with the rest of reply-first: an empty strip, which the app hides. The
  * cursor, limit and sort of the shared querystring are ignored, as on the
  * boosted strip — one size, one order. People the viewer already talks to are
@@ -996,12 +972,8 @@ export async function newProfiles(
 ): Promise<NewProfilesPage> {
   if (!(await getAppConfig(db)).flags.discoveryReplyFirst) return { items: [] }
 
-  const { viewer, match } = await resolveDiscoveryScope(db, viewerId, query)
+  const { match } = await resolveDiscoveryScope(db, viewerId, query)
   const now = new Date()
-  // A guest's `1900-01-01` is a placeholder, not an age: nobody has asked
-  // them one yet, so they are not known to be an adult and get the empty strip.
-  if (viewer.guest === true || !isAdult(viewer.birthDate, now)) return { items: [] }
-
   const partnerIds = await conversationPartnerIds(db, viewerId)
 
   const docs = await db
@@ -1025,13 +997,12 @@ export function newProfilesPipeline(
     {
       $match: {
         // `$and`, for `boostedProfiles`' reason: the scope carries an `_id`
-        // and, under an age filter, a `birthDate` of its own.
+        // of its own.
         $and: [
           match,
           {
             _id: { $nin: [...partnerIds] },
             createdAt: { $gte: new Date(now.getTime() - DISCOVERY_NEW_DAYS * DAY_MS) },
-            birthDate: { $lte: adultBornOnOrBefore(now) },
           },
         ],
       },

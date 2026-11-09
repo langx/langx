@@ -1,4 +1,4 @@
-import { countryFlag, formatDistance, isAdult, type DiscoverySort } from '@langx/shared'
+import { countryFlag, formatDistance, type DiscoverySort } from '@langx/shared'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { openProfile } from '../../../src/lib/navigation'
 import { track } from '../../../src/lib/analytics'
@@ -376,15 +376,6 @@ function DiscoverScreen({ people }: { people?: ReactNode } = {}) {
   const tips = useTips()
   const { data: session } = authClient.useSession()
   /*
-   * New is adults-only at both ends, and the server answers anyone else with
-   * an empty list — see `discoverProfiles`. Hidden rather than left to show
-   * that, because an empty New says nobody has joined, which is not true. A
-   * guest's birth date is a placeholder, so a guest is not known to be one.
-   */
-  const showsNew =
-    !shouldGateGuest(session?.user) && me.data !== undefined && isAdult(me.data.birthDate)
-  const sorts = showsNew ? SORTS : SORTS.filter((option) => option.key !== 'new')
-  /*
    * Over a list that has settled, whatever it settled on — not only one with
    * rows in it.
    *
@@ -431,7 +422,7 @@ function DiscoverScreen({ people }: { people?: ReactNode } = {}) {
       }
       onOpenFilters={() => router.push({ pathname: '/(app)/filters', params })}
       pair={pair}
-      sorts={sorts.map((option) => ({
+      sorts={SORTS.map((option) => ({
         value: option.key,
         label: t(option.label),
         pro: option.key === 'nearby' && !canUseNearby,
@@ -551,7 +542,7 @@ function DiscoverScreen({ people }: { people?: ReactNode } = {}) {
         {searching ? null : (
           <TourTarget id="discoverSorts" style={styles.segmented}>
             <SegmentedControl
-              options={sorts.map((option) => ({
+              options={SORTS.map((option) => ({
                 value: option.key,
                 label:
                   option.key === 'nearby' && !canUseNearby

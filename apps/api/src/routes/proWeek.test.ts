@@ -126,12 +126,13 @@ describe('POST /profiles and the Pro Week', () => {
     expect(await weeks(user)).toBe(0)
   })
 
-  it('gives no week to a 16- or 17-year-old', async () => {
+  // No age rule beyond the sign-up floor: the youngest account the app admits
+  // gets the week like any other.
+  it('gives the week to a 16- or 17-year-old like anybody', async () => {
     await setFlag(true)
     const year = new Date().getUTCFullYear() - 17
     const user = await onboard({ supportsProWeek: true, birthDate: `${year}-12-31` })
-    expect((await stored(user))?.entitlement.tier).toBe('free')
-    expect(await weeks(user)).toBe(0)
+    expect(await weeks(user)).toBe(1)
   })
 
   it('starts the week for an adult on an app that declares it, and answers with it', async () => {

@@ -3,7 +3,6 @@ import {
   PRO_WEEK_RULES,
   chatsBeyondAllowance,
   effectivePlanTier,
-  isAdult,
   localDayKey,
   pausedLanguageCodes,
   practiceRunEndingOn,
@@ -43,18 +42,13 @@ function profiles(db: Db) {
 }
 
 /** Why this account is not given the week, or `null` when it is. */
-export type ProWeekRefusal = 'guest' | 'official' | 'deleted' | 'minor' | 'pro' | 'returning'
+export type ProWeekRefusal = 'guest' | 'official' | 'deleted' | 'pro' | 'returning'
 
 /**
- * Who the week is for: a new adult account, free, and new to LangX.
+ * Who the week is for: a new account, free, and new to LangX.
  *
  * - **Never a guest.** A guest has no account to hold Pro on, and every
  *   paywall road is closed to one anyway.
- * - **Never under 18.** The gift path has no age rule of its own — a 16- or
- *   17-year-old is given a streak's week, a code's month or an operator's
- *   gift like anybody — and this one is different because it reaches every
- *   new account unasked, with a recap and a "Keep Pro" at its end. Minors
- *   keep the end of onboarding they have today.
  * - **Never somebody already on Pro**, which at sign-up means a v1 lifetime.
  * - **Never a returning v1 account.** `cameFromV1` is the row the migration
  *   opened before its owner came back: the account is years old, only its v2
@@ -64,13 +58,11 @@ export type ProWeekRefusal = 'guest' | 'official' | 'deleted' | 'minor' | 'pro' 
  */
 export async function proWeekRefusal(
   db: Db,
-  profile: Pick<Profile, '_id' | 'guest' | 'official' | 'deletedAt' | 'birthDate' | 'entitlement'>,
-  now: Date,
+  profile: Pick<Profile, '_id' | 'guest' | 'official' | 'deletedAt' | 'entitlement'>,
 ): Promise<ProWeekRefusal | null> {
   if (profile.guest) return 'guest'
   if (profile.official) return 'official'
   if (profile.deletedAt) return 'deleted'
-  if (!isAdult(profile.birthDate, now)) return 'minor'
   if (effectivePlanTier(profile.entitlement.tier, profile.entitlement.expiresAt) !== 'free') {
     return 'pro'
   }
@@ -97,7 +89,7 @@ export async function startProWeek(
   profile: Parameters<typeof proWeekRefusal>[1],
   now: Date = new Date(),
 ): Promise<boolean> {
-  if (await proWeekRefusal(db, profile, now)) return false
+  if (await proWeekRefusal(db, profile)) return false
 
   let created: boolean
   try {
