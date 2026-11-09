@@ -322,9 +322,9 @@ export const es: Localized<EnMessages> = {
     discoverPairTitle: 'Coincidencia en ambos sentidos',
     discoverPairBody:
       'Todas las personas de esta pantalla hablan el idioma que aprendes y aprenden uno que tú hablas. Toca el par para cambiarlo.',
-    discoverSortsTitle: 'Tres formas de mirar',
+    discoverSortsTitle: 'Cuatro formas de mirar',
     discoverSortsBody:
-      'Para ti se ajusta a tus idiomas, Activos muestra a quien acaba de estar aquí y Cerca funciona cuando compartes tu ubicación.',
+      'Para ti se ajusta a tus idiomas, Activos muestra a quien acaba de estar aquí, Cerca funciona cuando compartes tu ubicación y Nuevos muestra a quien acaba de unirse.',
     discoverCardTitle: 'Empieza aquí',
     discoverCardBody:
       'Abre a cualquiera para leer su perfil. Saludar primero es como empieza casi todo intercambio en LangX.',
@@ -1166,6 +1166,7 @@ export const es: Localized<EnMessages> = {
     title: 'Descubrir',
     active: 'Activos',
     nearby: 'Cerca',
+    new: 'Nuevos',
     filters: 'Filtros ✦',
     filtersWithCount: 'Filtros · {count}',
     locationOffTitle: 'La ubicación está desactivada',
@@ -2137,7 +2138,7 @@ export const es: Localized<EnMessages> = {
       'Abrir LangX cada día mantiene viva tu racha. Hablar y enseñar dan tokens, que puedes gastar en congelar la racha o en un nuevo detalle para tu perfil.',
     discoverTitle: 'Encuentra un compañero',
     discoverBody:
-      'Todas las personas en Descubrir hablan un idioma que aprendes y aprenden uno que tú hablas. Para ti se ajusta a tus idiomas, Activos muestra quién acaba de pasar por aquí y Cerca usa tu ubicación cuando la compartes. Abre un perfil y saluda: así empieza casi cada intercambio aquí.',
+      'Todas las personas en Descubrir hablan un idioma que aprendes y aprenden uno que tú hablas. Para ti se ajusta a tus idiomas, Activos muestra quién acaba de pasar por aquí, Cerca usa tu ubicación cuando la compartes y Nuevos muestra quién acaba de unirse. Abre un perfil y saluda: así empieza casi cada intercambio aquí.',
     plusTitle: 'El botón +',
     plusBody:
       'Toca + junto al cuadro de mensaje. Además de fotos y audios, puedes pedir que te corrijan, preguntar cómo se dice algo y recibir un audio, guardar una expresión con su significado, proponer una hora para hablar o hacer una pregunta con una sola respuesta correcta.',

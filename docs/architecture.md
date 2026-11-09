@@ -1021,6 +1021,14 @@ with, adds `dormantBucket` (idle past `DISCOVERY_DORMANT_DAYS`) between
 both ends, the same scope, newest first. `decisions.md` → _Discovery puts the
 people who answer first, behind a switch_.
 
+**`sort=new`** is that question asked of the whole list, and it is not behind
+the switch: the same scope, newest account first by `createdAt`, keyset-paged
+like `active` (`<createdAt>|<id>`), no online bucket and no score. It keeps the
+strip's adults-only rule at both ends, because it is the strip's exposure
+without the strip's cap — a viewer not known to be 18 gets an empty page, and
+the app does not offer them the chip. The boosted strip above it runs newest
+first too.
+
 `discoverable: false` reaches past this aggregation: it also keeps somebody off
 the leaderboards and out of other people's follower and following lists.
 

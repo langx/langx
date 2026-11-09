@@ -359,9 +359,9 @@ export const en = {
     discoverPairTitle: 'Matched both ways',
     discoverPairBody:
       'Everyone on this screen speaks the language you are learning and is learning one you speak. Tap the pair to change it.',
-    discoverSortsTitle: 'Three ways to look',
+    discoverSortsTitle: 'Four ways to look',
     discoverSortsBody:
-      'For you is matched to your languages, Active is who has just been here, and Nearby uses your location once you share it.',
+      'For you is matched to your languages, Active is who has just been here, Nearby uses your location once you share it, and New is who has just joined.',
     discoverCardTitle: 'Start here',
     discoverCardBody:
       'Open anyone to read their profile. Saying hello first is how almost every exchange on LangX begins.',
@@ -1319,6 +1319,7 @@ export const en = {
     title: 'Discover',
     active: 'Active',
     nearby: 'Nearby',
+    new: 'New',
     filters: 'Filters ✦',
     filtersWithCount: 'Filters · {count}',
     locationOffTitle: 'Location sharing is off',
@@ -2387,7 +2388,7 @@ export const en = {
       'Opening LangX each day keeps your streak alive. Talking and teaching earn tokens, which you can spend on a streak freeze or a new look for your profile.',
     discoverTitle: 'Find a partner',
     discoverBody:
-      'Everyone in Discover speaks a language you are learning and is learning one you speak. For you is matched to your languages, Active is who has just been around, and Nearby uses your location once you share it. Open a profile and say hello — that is how almost every exchange here begins.',
+      'Everyone in Discover speaks a language you are learning and is learning one you speak. For you is matched to your languages, Active is who has just been around, Nearby uses your location once you share it, and New is who has just joined. Open a profile and say hello — that is how almost every exchange here begins.',
     plusTitle: 'The + button',
     plusBody:
       'Tap + beside the message box. As well as photos and voice notes, you can ask to be corrected, ask how something is said and get a voice note back, save a phrase with what it means, propose a time to talk, or send a quiz with one right answer.',

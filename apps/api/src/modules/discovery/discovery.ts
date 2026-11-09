@@ -65,19 +65,25 @@ import { orderBoosted } from './boostedOrder'
  * the same distance. Ties are the normal case rather than the rare one, and a
  * keyset that resumes after a tied value either repeats a whole cell or skips
  * one; resuming *at* it never terminates.
+ *
+ * `new` has the same keyset shape over `createdAt`, which never moves once
+ * written — so unlike `active`, nobody can jump pages while somebody scrolls.
  */
-function encodeActiveCursor(lastActiveAt: Date, id: string): string {
-  return `${lastActiveAt.toISOString()}|${id}`
+function encodeKeysetCursor(at: Date, id: string): string {
+  return `${at.toISOString()}|${id}`
 }
 
-function decodeActiveCursor(cursor: string): { lastActiveAt: Date; id: string } {
+function decodeKeysetCursor(cursor: string): { at: Date; id: string } {
   const [iso, id] = cursor.split('|')
-  const lastActiveAt = iso ? new Date(iso) : null
-  if (!lastActiveAt || Number.isNaN(lastActiveAt.getTime()) || !id) {
+  const at = iso ? new Date(iso) : null
+  if (!at || Number.isNaN(at.getTime()) || !id) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed cursor')
   }
-  return { lastActiveAt, id }
+  return { at, id }
 }
+
+/** The field each keyset sort orders by, newest first with `_id` breaking ties. */
+const KEYSET_FIELD = { active: 'stats.lastActiveAt', new: 'createdAt' } as const
 
 function decodeOffsetCursor(cursor: string): number {
   const offset = Number.parseInt(cursor, 10)
@@ -536,6 +542,18 @@ export async function discoverProfiles(
     }
   }
 
+  /*
+   * `new` is the "New on LangX" strip without its cap, so it keeps the strip's
+   * rule at both ends — see `newProfiles`. A viewer not known to be an adult
+   * gets an empty list rather than a 403: the app hides the chip from them,
+   * and anything that asks anyway is owed nothing it can act on.
+   */
+  const now = new Date()
+  const newcomers = query.sort === 'new'
+  if (newcomers && (viewer.guest === true || !isAdult(viewer.birthDate, now))) {
+    return { items: [], nextCursor: null }
+  }
+
   /**
    * `$geoNear` must be the pipeline's **first** stage — a MongoDB rule, not a
    * preference — which is what made a distance filter look impossible next to
@@ -562,8 +580,11 @@ export async function discoverProfiles(
    * spread would replace it.
    */
   const partnerIds = rankReplyFirst ? await conversationPartnerIds(db, viewerId) : []
-  const eligible: Document =
-    partnerIds.length > 0 ? { $and: [match, { _id: { $nin: partnerIds } }] } : match
+  const narrowed: Document[] = []
+  if (partnerIds.length > 0) narrowed.push({ _id: { $nin: partnerIds } })
+  // Under `$and` too: an age filter has already put a `birthDate` in the scope.
+  if (newcomers) narrowed.push({ birthDate: { $lte: adultBornOnOrBefore(now) } })
+  const eligible: Document = narrowed.length > 0 ? { $and: [match, ...narrowed] } : match
 
   const pipeline: Document[] =
     query.sort === 'nearby' && viewer.location
@@ -613,11 +634,10 @@ export async function discoverProfiles(
    * never be indexed, and this is a blocking in-memory sort. It used to be
    * paid only by whoever turned the chip on; every default request pays it now.
    */
-  const now = new Date()
 
   /*
-   * Three sorts, three cursor shapes, and each is now decoded only by the sort
-   * that writes it.
+   * Four sorts, three cursor shapes — `new` shares `active`'s keyset — and each
+   * is now decoded only by the sort that writes it.
    *
    * That was a live bug: every cursor went through `decodeOnlineOffsetCursor`,
    * including `active`'s keyset `<iso>|<userId>`. It contains a `|`, so it took
@@ -665,19 +685,22 @@ export async function discoverProfiles(
     })
   }
 
-  if (query.sort === 'active') {
+  if (query.sort === 'active' || query.sort === 'new') {
+    /*
+     * `new` is purely the order the accounts were made in. Not online-first
+     * and not scored: the reader asked who just arrived, and a newcomer is
+     * the answer whether or not they are around this minute.
+     */
+    const field = KEYSET_FIELD[query.sort]
     if (query.cursor) {
-      const { lastActiveAt, id } = decodeActiveCursor(query.cursor)
+      const { at, id } = decodeKeysetCursor(query.cursor)
       pipeline.push({
         $match: {
-          $or: [
-            { 'stats.lastActiveAt': { $lt: lastActiveAt } },
-            { 'stats.lastActiveAt': lastActiveAt, _id: { $gt: id } },
-          ],
+          $or: [{ [field]: { $lt: at } }, { [field]: at, _id: { $gt: id } }],
         },
       })
     }
-    pipeline.push({ $sort: { 'stats.lastActiveAt': -1, _id: 1 } })
+    pipeline.push({ $sort: { [field]: -1, _id: 1 } })
   } else if (query.sort === 'nearby') {
     /*
      * No `$sort` at all: `$geoNear` already emits nearest-first, and
@@ -762,12 +785,14 @@ export async function discoverProfiles(
       const nextOffset = page.length + skipOffset
       nextCursor =
         query.sort === 'active'
-          ? encodeActiveCursor(new Date(last.stats.lastActiveAt), last._id)
-          : onlineCutoff
-            ? // The cutoff rides along so page two measures its offset against
-              // the same boundary page one did.
-              encodeOnlineOffsetCursor(onlineCutoff, nextOffset)
-            : String(nextOffset)
+          ? encodeKeysetCursor(new Date(last.stats.lastActiveAt), last._id)
+          : query.sort === 'new'
+            ? encodeKeysetCursor(new Date(last.createdAt), last._id)
+            : onlineCutoff
+              ? // The cutoff rides along so page two measures its offset against
+                // the same boundary page one did.
+                encodeOnlineOffsetCursor(onlineCutoff, nextOffset)
+              : String(nextOffset)
     }
   }
 
@@ -796,8 +821,11 @@ const BOOSTED_STORED_TIERS = STORED_PLAN_TIERS.filter(
  * `sort` is not ignored, and that is the one thing here worth reading twice.
  * The strip sits at the top of a list the reader has asked a question of, so
  * it answers the same question: under Active it runs most-recently-seen
- * first, under Nearby nearest first, and only under the default feed does it
- * turn on its own — one order per viewer per hour, see `orderBoosted`.
+ * first, under Nearby nearest first, under New newest account first, and only
+ * under the default feed does it turn on its own — one order per viewer per
+ * hour, see `orderBoosted`. Under New it does not take the list's adults-only
+ * rule: who is in the strip is the subscription's question, and it is the
+ * same strip on every sort.
  *
  * There used to be a tier band outside all three orders — Polyglot above
  * Fluent. With one paid plan there is nothing to band.
@@ -867,7 +895,7 @@ export async function boostedProfiles(
     query.sort === 'nearby' && hasFeature(tier, 'nearby') && viewer.location !== undefined
 
   /*
-   * Two of the three orders are now entirely MQL, so the cut and the
+   * Every order but the default feed's is now entirely MQL, so the cut and the
    * presentation are the same sort and the candidate ceiling has nothing left
    * to do — `$limit` is the strip's own size.
    *
@@ -876,7 +904,7 @@ export async function boostedProfiles(
    * the sort below decides only the truncation: recency, because a ceiling has
    * to cut somewhere and cutting by natural order would be arbitrary.
    */
-  const rotates = !byDistance && query.sort !== 'active'
+  const rotates = !byDistance && query.sort !== 'active' && query.sort !== 'new'
 
   const docs = await profiles
     .aggregate<Profile & { distanceMeters?: number }>([
@@ -913,7 +941,11 @@ export async function boostedProfiles(
        * new index for this.
        */
       {
-        $sort: byDistance ? { distanceMeters: 1, _id: 1 } : { 'stats.lastActiveAt': -1, _id: 1 },
+        $sort: byDistance
+          ? { distanceMeters: 1, _id: 1 }
+          : query.sort === 'new'
+            ? { createdAt: -1, _id: 1 }
+            : { 'stats.lastActiveAt': -1, _id: 1 },
       },
       { $limit: rotates ? DISCOVERY_BOOSTED_CANDIDATE_MAX : DISCOVERY_BOOSTED_LIMIT },
     ])

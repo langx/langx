@@ -22,8 +22,15 @@ import { z } from 'zod'
  * "New Users" came back as a strip rather than a sort — `GET /discovery/new`,
  * behind `flags.discoveryReplyFirst` — and the `createdAt` index it needed
  * already existed by then (`joined`).
+ *
+ * Then as a sort as well, `new`: everyone in scope, newest account first, for
+ * as long as somebody scrolls. The strip is a glance at the last few days
+ * above For you; the sort is the whole list asked that question. It is free,
+ * not behind the reply-first flag, and it keeps the strip's one safety rule —
+ * adults only, at both ends (`ADULT_AGE`) — because a list of the newest
+ * accounts is the strip's exposure with no cap on its length.
  */
-export const DISCOVERY_SORTS = ['recommended', 'active', 'nearby'] as const
+export const DISCOVERY_SORTS = ['recommended', 'active', 'nearby', 'new'] as const
 export type DiscoverySort = (typeof DISCOVERY_SORTS)[number]
 export const discoverySortSchema = z.enum(DISCOVERY_SORTS)
 
