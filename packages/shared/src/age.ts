@@ -82,9 +82,9 @@ export function meetsMinimumAge(birthDate: string, now: Date = new Date()): bool
 
 /**
  * The age a surface asks for when it puts a *new* account in front of
- * strangers — "New on LangX" today. A fresh account is the one a stranger is
- * most likely to write to first, and a 16- or 17-year-old should not be shown
- * there, nor be shown it.
+ * strangers — the "New on LangX" strip and the `new` discovery sort. A fresh
+ * account is the one a stranger is most likely to write to first, and a 16- or
+ * 17-year-old should not be shown there, nor be shown it.
  */
 export const ADULT_AGE = 18
 

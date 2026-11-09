@@ -328,9 +328,9 @@ export const de: Localized<EnMessages> = {
     discoverPairTitle: 'Beide Richtungen passen',
     discoverPairBody:
       'Alle auf diesem Bildschirm sprechen die Sprache, die du lernst, und lernen eine, die du sprichst. Tippe auf das Paar, um es zu ändern.',
-    discoverSortsTitle: 'Drei Blickwinkel',
+    discoverSortsTitle: 'Vier Blickwinkel',
     discoverSortsBody:
-      'Für dich richtet sich nach deinen Sprachen, Aktiv zeigt, wer gerade hier war, und In der Nähe wirkt, sobald du deinen Standort teilst.',
+      'Für dich richtet sich nach deinen Sprachen, Aktiv zeigt, wer gerade hier war, In der Nähe wirkt, sobald du deinen Standort teilst, und Neu zeigt, wer gerade erst dazugekommen ist.',
     discoverCardTitle: 'Fang hier an',
     discoverCardBody:
       'Öffne jemanden, um das Profil zu lesen. Zuerst Hallo zu sagen, so beginnt fast jeder Austausch auf LangX.',
@@ -1183,6 +1183,7 @@ export const de: Localized<EnMessages> = {
     title: 'Entdecken',
     active: 'Aktiv',
     nearby: 'In der Nähe',
+    new: 'Neu',
     filters: 'Filter ✦',
     filtersWithCount: 'Filter · {count}',
     locationOffTitle: 'Standortfreigabe ist aus',
@@ -2177,7 +2178,7 @@ export const de: Localized<EnMessages> = {
       'LangX jeden Tag zu öffnen hält deine Serie am Leben. Reden und Unterrichten bringen Token, die du für einen Serienschutz oder einen neuen Look für dein Profil ausgeben kannst.',
     discoverTitle: 'Einen Partner finden',
     discoverBody:
-      'Alle unter Entdecken sprechen eine Sprache, die du lernst, und lernen eine, die du sprichst. Für dich passt zu deinen Sprachen, Aktiv zeigt, wer gerade da war, und In der Nähe nutzt deinen Standort, sobald du ihn teilst. Öffne ein Profil und sag Hallo — so beginnt hier fast jeder Austausch.',
+      'Alle unter Entdecken sprechen eine Sprache, die du lernst, und lernen eine, die du sprichst. Für dich passt zu deinen Sprachen, Aktiv zeigt, wer gerade da war, In der Nähe nutzt deinen Standort, sobald du ihn teilst, und Neu zeigt, wer gerade erst dazugekommen ist. Öffne ein Profil und sag Hallo — so beginnt hier fast jeder Austausch.',
     plusTitle: 'Der +-Knopf',
     plusBody:
       'Tippe auf + neben dem Eingabefeld. Außer Fotos und Sprachnachrichten kannst du um Korrektur bitten, fragen, wie etwas ausgesprochen wird, und eine Sprachnachricht zurückbekommen, eine Wendung mit ihrer Bedeutung speichern, eine Zeit zum Reden vorschlagen oder eine Quizfrage mit einer richtigen Antwort stellen.',

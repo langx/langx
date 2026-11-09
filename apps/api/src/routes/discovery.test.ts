@@ -67,6 +67,12 @@ describe('Faz 3 — discovery aggregation', () => {
       .updateOne({ _id: userId }, { $set: { 'stats.lastActiveAt': date } })
   }
 
+  async function setCreatedAt(userId: string, date: Date) {
+    await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ _id: userId }, { $set: { createdAt: date } })
+  }
+
   /**
    * A photo and a bio, written straight in — the upload routes assert the URL
    * points into our own bucket, and this is a fixture, not a test of that.
@@ -1272,6 +1278,123 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(seen.sort()).toEqual(candidates.map((c) => c.handle).sort())
     })
 
+    /*
+     * `ak` / `bm`. The accounts were made in the opposite order to the one
+     * they were last seen in, so an `active` order cannot pass for this one,
+     * and two share a `createdAt` exactly so the `_id` tie-break is exercised
+     * across a page boundary.
+     */
+    it('sort=new pages through newest account first, with no duplicates or gaps', async () => {
+      const viewer = await newUser('new-sort-viewer@example.com', {
+        nativeLanguages: [{ code: 'ak' }],
+        learning: [{ code: 'bm', level: 'intermediate', priority: 1 }],
+      })
+      const now = Date.now()
+      const joinedDaysAgo = [0, 1, 1, 2, 3]
+      const candidates = []
+      for (const [i, days] of joinedDaysAgo.entries()) {
+        const c = await newUser(`new-sort-${i}@example.com`, {
+          nativeLanguages: [{ code: 'bm' }],
+          learning: [{ code: 'ak', level: 'intermediate', priority: 1 }],
+        })
+        const createdAt = new Date(now - days * 24 * 60 * 60 * 1000)
+        await setCreatedAt(c.userId, createdAt)
+        await setLastActiveAt(c.userId, new Date(now - (joinedDaysAgo.length - i) * 1000))
+        candidates.push({ ...c, createdAt })
+      }
+
+      const seen: string[] = []
+      let cursor: string | undefined
+      for (let page = 0; page < 5; page++) {
+        const qs = new URLSearchParams({ sort: 'new', limit: '2' })
+        if (cursor) qs.set('cursor', cursor)
+        const response = await discover(viewer, qs.toString())
+        expect(response.statusCode).toBe(200)
+        const body = response.json<DiscoveryPage>()
+        seen.push(...body.items.map((i) => i.handle))
+        if (!body.nextCursor) break
+        cursor = body.nextCursor
+      }
+
+      const expected = [...candidates]
+        .sort(
+          (a, b) => b.createdAt.getTime() - a.createdAt.getTime() || (a.userId < b.userId ? -1 : 1),
+        )
+        .map((c) => c.handle)
+      expect(seen).toEqual(expected)
+    })
+
+    /*
+     * `ce` / `cv`. The minor is a real candidate — Active shows them — and is
+     * left out of New only. The age filter is the case that matters most: it
+     * writes a `birthDate` range of its own, and had the adult line been
+     * spread beside it rather than put under `$and`, one would have replaced
+     * the other and a filter naming 16–17 would have listed exactly the people
+     * this rule exists to keep off.
+     */
+    it('sort=new lists only adults, even under an age filter that names minors', async () => {
+      const minorBirthDate = `${new Date().getUTCFullYear() - 17}-01-01`
+      const viewer = await newUser('new-adults-viewer@example.com', {
+        nativeLanguages: [{ code: 'ce' }],
+        learning: [{ code: 'cv', level: 'intermediate', priority: 1 }],
+      })
+      const options = {
+        nativeLanguages: [{ code: 'cv' }],
+        learning: [{ code: 'ce', level: 'intermediate', priority: 1 }],
+      }
+      const adult = await newUser('new-adults-adult@example.com', options)
+      const minor = await newUser('new-adults-minor@example.com', {
+        ...options,
+        birthDate: minorBirthDate,
+      })
+
+      const handles = async (qs: string) =>
+        (await discover(viewer, qs)).json<DiscoveryPage>().items.map((i) => i.handle)
+
+      expect(await handles('sort=active')).toEqual(
+        expect.arrayContaining([adult.handle, minor.handle]),
+      )
+      const newest = await handles('sort=new')
+      expect(newest).toContain(adult.handle)
+      expect(newest).not.toContain(minor.handle)
+
+      expect(await handles('sort=active&ageMin=16&ageMax=17')).toEqual([minor.handle])
+      expect(await handles('sort=new&ageMin=16&ageMax=17')).toEqual([])
+    })
+
+    /*
+     * `dv` / `dz`. The other end of the same rule: a 17-year-old is not shown
+     * a list of brand-new strangers, and neither is a guest, whose `1900-01-01`
+     * is a placeholder rather than an age.
+     */
+    it('sort=new is empty for a viewer under 18 and for a guest', async () => {
+      const options = {
+        nativeLanguages: [{ code: 'dv' }],
+        learning: [{ code: 'dz', level: 'intermediate', priority: 1 }],
+      }
+      const minorViewer = await newUser('new-minor-viewer@example.com', {
+        ...options,
+        birthDate: `${new Date().getUTCFullYear() - 17}-01-01`,
+      })
+      const guestViewer = await newUser('new-guest-viewer@example.com', options)
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: guestViewer.userId }, { $set: { guest: true, birthDate: '1900-01-01' } })
+      const candidate = await newUser('new-minor-viewer-candidate@example.com', {
+        nativeLanguages: [{ code: 'dz' }],
+        learning: [{ code: 'dv', level: 'intermediate', priority: 1 }],
+      })
+
+      const active = await discover(minorViewer, 'sort=active')
+      expect(active.json<DiscoveryPage>().items.map((i) => i.handle)).toContain(candidate.handle)
+
+      for (const viewer of [minorViewer, guestViewer]) {
+        const response = await discover(viewer, 'sort=new')
+        expect(response.statusCode).toBe(200)
+        expect(response.json<DiscoveryPage>()).toEqual({ items: [], nextCursor: null })
+      }
+    })
+
     it('sort=recommended favours a shared-interest candidate over one with no overlap', async () => {
       const viewer = await newUser('recommend-viewer@example.com', {
         nativeLanguages: [{ code: 'el' }],
@@ -1924,6 +2047,43 @@ describe('Faz 3 — discovery aggregation', () => {
         proNewest.handle,
         plusRecent.handle,
         plusDormant.handle,
+      ])
+    })
+
+    /**
+     * Its own pair (`eo` / `ee`). Under New the strip runs newest account
+     * first, like the list below it — not by the clock and not by rotation.
+     * Last seen in the opposite order, so an `active` order cannot pass.
+     */
+    it('orders by newest account under sort=new', async () => {
+      const viewer = await newUser('boost-new-viewer@example.com', {
+        nativeLanguages: [{ code: 'eo' }],
+        learning: [{ code: 'ee', level: 'intermediate', priority: 1 }],
+      })
+      const options = {
+        nativeLanguages: [{ code: 'ee' }],
+        learning: [{ code: 'eo', level: 'intermediate', priority: 1 }],
+      }
+      const oldest = await newUser('boost-new-oldest@example.com', options)
+      const middle = await newUser('boost-new-middle@example.com', options)
+      const newest = await newUser('boost-new-newest@example.com', options)
+
+      const now = Date.now()
+      const day = 24 * 60 * 60 * 1000
+      for (const [user, joinedDaysAgo, seenMinutesAgo] of [
+        [oldest, 30, 0],
+        [middle, 10, 5],
+        [newest, 1, 60],
+      ] as const) {
+        await setTier(user.userId, 'pro')
+        await setCreatedAt(user.userId, new Date(now - joinedDaysAgo * day))
+        await setLastActiveAt(user.userId, new Date(now - seenMinutesAgo * 60 * 1000))
+      }
+
+      expect(handlesOf(await boosted(viewer, 'sort=new'))).toEqual([
+        newest.handle,
+        middle.handle,
+        oldest.handle,
       ])
     })
 

@@ -1,4 +1,4 @@
-import { countryFlag, formatDistance, type DiscoverySort } from '@langx/shared'
+import { countryFlag, formatDistance, isAdult, type DiscoverySort } from '@langx/shared'
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { openProfile } from '../../../src/lib/navigation'
 import { track } from '../../../src/lib/analytics'
@@ -55,6 +55,7 @@ const SORTS: { key: DiscoverySort; label: MessageKey }[] = [
   { key: 'recommended', label: 'discover.forYou' },
   { key: 'active', label: 'discover.active' },
   { key: 'nearby', label: 'discover.nearby' },
+  { key: 'new', label: 'discover.new' },
 ]
 
 /**
@@ -356,7 +357,7 @@ function DiscoverScreen({ people }: { people?: ReactNode } = {}) {
   /*
    * The strip gets the sort too, and therefore a cache entry per sort. That is
    * the point rather than the cost: its order now follows the section it sits
-   * in, so the three sorts are three different answers.
+   * in, so each sort is a different answer.
    */
   const boostedParams = { ...sortParams, ...filterParams }
   const pull = usePullToRefresh(() => query.refetch())
@@ -374,6 +375,15 @@ function DiscoverScreen({ people }: { people?: ReactNode } = {}) {
   const count = activeCount(effective)
   const tips = useTips()
   const { data: session } = authClient.useSession()
+  /*
+   * New is adults-only at both ends, and the server answers anyone else with
+   * an empty list — see `discoverProfiles`. Hidden rather than left to show
+   * that, because an empty New says nobody has joined, which is not true. A
+   * guest's birth date is a placeholder, so a guest is not known to be one.
+   */
+  const showsNew =
+    !shouldGateGuest(session?.user) && me.data !== undefined && isAdult(me.data.birthDate)
+  const sorts = showsNew ? SORTS : SORTS.filter((option) => option.key !== 'new')
   /*
    * Over a list that has settled, whatever it settled on — not only one with
    * rows in it.
@@ -421,7 +431,7 @@ function DiscoverScreen({ people }: { people?: ReactNode } = {}) {
       }
       onOpenFilters={() => router.push({ pathname: '/(app)/filters', params })}
       pair={pair}
-      sorts={SORTS.map((option) => ({
+      sorts={sorts.map((option) => ({
         value: option.key,
         label: t(option.label),
         pro: option.key === 'nearby' && !canUseNearby,
@@ -467,7 +477,8 @@ function DiscoverScreen({ people }: { people?: ReactNode } = {}) {
       }}
       loadingMore={query.isFetchingNextPage}
       boostedParams={boostedParams}
-      // The newcomers are For you's: Active and Nearby answer other questions.
+      // The newcomers are For you's: Active and Nearby answer other questions,
+      // and under New the strip would only repeat the top of the list.
       newParams={sort === 'recommended' ? filterParams : null}
       radiusKm={radiusKm}
       twoPane={twoPane}
@@ -540,7 +551,7 @@ function DiscoverScreen({ people }: { people?: ReactNode } = {}) {
         {searching ? null : (
           <TourTarget id="discoverSorts" style={styles.segmented}>
             <SegmentedControl
-              options={SORTS.map((option) => ({
+              options={sorts.map((option) => ({
                 value: option.key,
                 label:
                   option.key === 'nearby' && !canUseNearby

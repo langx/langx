@@ -333,9 +333,9 @@ export const fr: Localized<EnMessages> = {
     discoverPairTitle: 'Une correspondance mutuelle',
     discoverPairBody:
       'Toutes les personnes de cet écran parlent la langue que tu apprends et apprennent une langue que tu parles. Touche la paire pour la changer.',
-    discoverSortsTitle: 'Trois façons de regarder',
+    discoverSortsTitle: 'Quatre façons de regarder',
     discoverSortsBody:
-      'Pour toi suit tes langues, Actifs montre qui vient de passer, et À proximité fonctionne dès que tu partages ta position.',
+      'Pour toi suit tes langues, Actifs montre qui vient de passer, À proximité fonctionne dès que tu partages ta position, et Nouveaux montre qui vient d’arriver.',
     discoverCardTitle: 'Commence ici',
     discoverCardBody:
       'Ouvre le profil de quelqu’un pour le lire. Dire bonjour en premier, c’est ainsi que commence presque chaque échange sur LangX.',
@@ -1183,6 +1183,7 @@ export const fr: Localized<EnMessages> = {
     title: 'Découvrir',
     active: 'Actifs',
     nearby: 'À proximité',
+    new: 'Nouveaux',
     filters: 'Filtres ✦',
     filtersWithCount: 'Filtres · {count}',
     locationOffTitle: 'Le partage de position est désactivé',
@@ -2160,7 +2161,7 @@ export const fr: Localized<EnMessages> = {
       'Ouvrir LangX chaque jour garde ta série en vie. Parler et enseigner rapportent des jetons, à dépenser en gel de série ou en nouveau style pour ton profil.',
     discoverTitle: 'Trouver un partenaire',
     discoverBody:
-      'Tout le monde dans Découvrir parle une langue que tu apprends et apprend une langue que tu parles. Pour toi suit tes langues, Actifs montre qui vient de passer, et À proximité utilise ta position une fois que tu la partages. Ouvre un profil et dis bonjour — c’est ainsi que commence presque chaque échange ici.',
+      'Tout le monde dans Découvrir parle une langue que tu apprends et apprend une langue que tu parles. Pour toi suit tes langues, Actifs montre qui vient de passer, À proximité utilise ta position une fois que tu la partages, et Nouveaux montre qui vient d’arriver. Ouvre un profil et dis bonjour — c’est ainsi que commence presque chaque échange ici.',
     plusTitle: 'Le bouton +',
     plusBody:
       'Touche + à côté de la zone de message. En plus des photos et des vocaux, tu peux demander une correction, demander comment se dit quelque chose et recevoir un vocal en retour, enregistrer une expression avec son sens, proposer un créneau pour parler ou poser une question à une seule bonne réponse.',
