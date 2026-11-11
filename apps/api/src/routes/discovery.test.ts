@@ -1325,74 +1325,44 @@ describe('Faz 3 — discovery aggregation', () => {
     })
 
     /*
-     * `ce` / `cv`. The minor is a real candidate — Active shows them — and is
-     * left out of New only. The age filter is the case that matters most: it
-     * writes a `birthDate` range of its own, and had the adult line been
-     * spread beside it rather than put under `$and`, one would have replaced
-     * the other and a filter naming 16–17 would have listed exactly the people
-     * this rule exists to keep off.
+     * `ce` / `cv`. No age rule beyond the sign-up floor: a 17-year-old is on
+     * New like anybody, an age filter naming 16–17 finds them there, and a
+     * 17-year-old viewer is shown the list as anybody is.
      */
-    it('sort=new lists only adults, even under an age filter that names minors', async () => {
-      const minorBirthDate = `${new Date().getUTCFullYear() - 17}-01-01`
-      const viewer = await newUser('new-adults-viewer@example.com', {
+    it('sort=new lists, and is shown to, a 17-year-old like anybody', async () => {
+      const seventeen = `${new Date().getUTCFullYear() - 17}-01-01`
+      const searcher = {
         nativeLanguages: [{ code: 'ce' }],
         learning: [{ code: 'cv', level: 'intermediate', priority: 1 }],
-      })
-      const options = {
+      }
+      const candidate = {
         nativeLanguages: [{ code: 'cv' }],
         learning: [{ code: 'ce', level: 'intermediate', priority: 1 }],
       }
-      const adult = await newUser('new-adults-adult@example.com', options)
-      const minor = await newUser('new-adults-minor@example.com', {
-        ...options,
-        birthDate: minorBirthDate,
+      const viewer = await newUser('new-ages-viewer@example.com', searcher)
+      const teenViewer = await newUser('new-ages-teen-viewer@example.com', {
+        ...searcher,
+        birthDate: seventeen,
+      })
+      const adult = await newUser('new-ages-adult@example.com', candidate)
+      const teen = await newUser('new-ages-teen@example.com', {
+        ...candidate,
+        birthDate: seventeen,
       })
 
-      const handles = async (qs: string) =>
-        (await discover(viewer, qs)).json<DiscoveryPage>().items.map((i) => i.handle)
-
-      expect(await handles('sort=active')).toEqual(
-        expect.arrayContaining([adult.handle, minor.handle]),
-      )
-      const newest = await handles('sort=new')
-      expect(newest).toContain(adult.handle)
-      expect(newest).not.toContain(minor.handle)
-
-      expect(await handles('sort=active&ageMin=16&ageMax=17')).toEqual([minor.handle])
-      expect(await handles('sort=new&ageMin=16&ageMax=17')).toEqual([])
-    })
-
-    /*
-     * `dv` / `dz`. The other end of the same rule: a 17-year-old is not shown
-     * a list of brand-new strangers, and neither is a guest, whose `1900-01-01`
-     * is a placeholder rather than an age.
-     */
-    it('sort=new is empty for a viewer under 18 and for a guest', async () => {
-      const options = {
-        nativeLanguages: [{ code: 'dv' }],
-        learning: [{ code: 'dz', level: 'intermediate', priority: 1 }],
-      }
-      const minorViewer = await newUser('new-minor-viewer@example.com', {
-        ...options,
-        birthDate: `${new Date().getUTCFullYear() - 17}-01-01`,
-      })
-      const guestViewer = await newUser('new-guest-viewer@example.com', options)
-      await handle.db
-        .collection<Profile>(COLLECTIONS.profiles)
-        .updateOne({ _id: guestViewer.userId }, { $set: { guest: true, birthDate: '1900-01-01' } })
-      const candidate = await newUser('new-minor-viewer-candidate@example.com', {
-        nativeLanguages: [{ code: 'dz' }],
-        learning: [{ code: 'dv', level: 'intermediate', priority: 1 }],
-      })
-
-      const active = await discover(minorViewer, 'sort=active')
-      expect(active.json<DiscoveryPage>().items.map((i) => i.handle)).toContain(candidate.handle)
-
-      for (const viewer of [minorViewer, guestViewer]) {
-        const response = await discover(viewer, 'sort=new')
+      const handles = async (user: SignedUpUser, qs: string) => {
+        const response = await discover(user, qs)
         expect(response.statusCode).toBe(200)
-        expect(response.json<DiscoveryPage>()).toEqual({ items: [], nextCursor: null })
+        return response.json<DiscoveryPage>().items.map((i) => i.handle)
       }
+
+      expect(await handles(viewer, 'sort=new')).toEqual(
+        expect.arrayContaining([adult.handle, teen.handle]),
+      )
+      expect(await handles(viewer, 'sort=new&ageMin=16&ageMax=17')).toEqual([teen.handle])
+      expect(await handles(teenViewer, 'sort=new')).toEqual(
+        expect.arrayContaining([adult.handle, teen.handle]),
+      )
     })
 
     it('sort=recommended favours a shared-interest candidate over one with no overlap', async () => {

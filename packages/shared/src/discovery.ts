@@ -25,10 +25,10 @@ import { z } from 'zod'
  *
  * Then as a sort as well, `new`: everyone in scope, newest account first, for
  * as long as somebody scrolls. The strip is a glance at the last few days
- * above For you; the sort is the whole list asked that question. It is free,
- * not behind the reply-first flag, and it keeps the strip's one safety rule —
- * adults only, at both ends (`ADULT_AGE`) — because a list of the newest
- * accounts is the strip's exposure with no cap on its length.
+ * above For you; the sort is the whole list asked that question. It is free
+ * and not behind the reply-first flag. Like every other sort it shows whoever
+ * the app admits — see `docs/decisions.md` → _No feature has an age rule of
+ * its own beyond the sign-up floor_.
  */
 export const DISCOVERY_SORTS = ['recommended', 'active', 'nearby', 'new'] as const
 export type DiscoverySort = (typeof DISCOVERY_SORTS)[number]

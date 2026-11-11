@@ -161,18 +161,16 @@ describe('the Pro Week', () => {
       expect(await giftsOf(sofia._id)).toHaveLength(1)
     })
 
-    it('never goes to a guest, a minor, a Pro account or a returning v1 account', async () => {
+    it('never goes to a guest, a Pro account or a returning v1 account', async () => {
       const now = new Date()
-      const seventeen = `${now.getUTCFullYear() - 17}-01-01`
       const cases: [Partial<Profile>, Record<string, unknown>, string][] = [
         [{ guest: true }, {}, 'guest'],
-        [{ birthDate: seventeen }, {}, 'minor'],
         [{ entitlement: { tier: 'pro', store: 'promotional', updatedAt: now } }, {}, 'pro'],
         [{}, { precreatedFromV1: { at: now } }, 'returning'],
       ]
       for (const [fields, user, why] of cases) {
         const row = await person(fields, user)
-        expect(await proWeekRefusal(db, row, now), why).toBe(why)
+        expect(await proWeekRefusal(db, row), why).toBe(why)
         expect(await startProWeek(db, deps, row, now), why).toBe(false)
         expect(await giftsOf(row._id), why).toEqual([])
         expect((await read(row._id))?.proWeek, why).toBeUndefined()

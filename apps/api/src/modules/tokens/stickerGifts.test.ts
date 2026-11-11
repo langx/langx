@@ -341,7 +341,6 @@ describe('giving a sticker pack', () => {
 
   it('says keep talking, not unavailable, while the thread is unopened', async () => {
     for (const fields of [
-      { birthDate: bornYearsAgo(17) },
       { suspension: { until: new Date(Date.now() + DAY) } } as Partial<Profile>,
       { tokenFrozenAt: new Date() },
     ]) {
@@ -432,16 +431,16 @@ describe('giving a sticker pack', () => {
     await nothingHappened(young.giver, young.recipient)
   })
 
-  it('refuses a minor at either end', async () => {
-    const minorRecipient = await pair({}, { birthDate: bornYearsAgo(17) })
-    expect(await refusal(give(minorRecipient.giver, minorRecipient.conversation))).toBe(
-      'unavailable',
-    )
-    await nothingHappened(minorRecipient.giver, minorRecipient.recipient)
+  // No age rule beyond the sign-up floor: a 17-year-old gives and is given to
+  // like anybody else the app admits.
+  it('gives to and from a 17-year-old like anybody', async () => {
+    const toSeventeen = await pair({}, { birthDate: bornYearsAgo(17) })
+    expect((await give(toSeventeen.giver, toSeventeen.conversation)).created).toBe(true)
+    expect((await profiles().findOne({ _id: toSeventeen.recipient }))?.cosmetics).toContain(PACK)
 
-    const minorGiver = await pair({ birthDate: bornYearsAgo(17) })
-    expect(await refusal(give(minorGiver.giver, minorGiver.conversation))).toBe('notEligible')
-    await nothingHappened(minorGiver.giver, minorGiver.recipient)
+    const fromSeventeen = await pair({ birthDate: bornYearsAgo(17) })
+    expect((await give(fromSeventeen.giver, fromSeventeen.conversation)).created).toBe(true)
+    expect((await profiles().findOne({ _id: fromSeventeen.recipient }))?.cosmetics).toContain(PACK)
   })
 
   it('refuses a suspended, deleted or frozen recipient', async () => {
@@ -566,20 +565,20 @@ describe('giving a sticker pack', () => {
 
   it('lists partners with what a gift to each would meet', async () => {
     const giver = id()
-    const [ready, owns, quiet, minor] = [id(), id(), id(), id()]
+    const [ready, owns, quiet, seventeen] = [id(), id(), id(), id()]
     await profiles().insertMany([
       person(giver),
       person(ready),
       person(owns, { cosmetics: [PACK] }),
       person(quiet),
-      person(minor, { birthDate: bornYearsAgo(17) }),
+      person(seventeen, { birthDate: bornYearsAgo(17) }),
     ])
     await earn(giver, 10_000)
     await conversations().insertMany([
       thread(giver, ready),
       thread(giver, owns),
       thread(giver, quiet, { each: 3 }),
-      thread(giver, minor),
+      thread(giver, seventeen),
     ])
 
     const options = await getStickerGiftOptions(handle.db, giver, PACK)
@@ -590,7 +589,7 @@ describe('giving a sticker pack', () => {
       [ready]: 'ready',
       [owns]: 'recipientOwns',
       [quiet]: 'keepTalking',
-      [minor]: 'unavailable',
+      [seventeen]: 'ready',
     })
   })
 })

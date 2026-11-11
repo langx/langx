@@ -199,8 +199,8 @@ export interface BoostedProfilesPage {
 
 /**
  * `GET /discovery/new` — the "New on LangX" strip. Empty while
- * `flags.discoveryReplyFirst` is off, for a viewer under 18, and for a guest;
- * no cursor, capped server-side at `DISCOVERY_NEW_LIMIT`.
+ * `flags.discoveryReplyFirst` is off; no cursor, capped server-side at
+ * `DISCOVERY_NEW_LIMIT`.
  */
 export interface NewProfilesPage {
   items: DiscoveryItem[]

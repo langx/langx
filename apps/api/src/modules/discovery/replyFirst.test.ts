@@ -70,19 +70,16 @@ function stats(fields: Partial<Profile['stats']>): Pick<Profile, 'stats'> {
 }
 
 /**
- * `YYYY-MM-DD` for `years` ago today (UTC), plus `extraDays`, counted on the
- * calendar. A 29 February today becomes the 28th in a year without one —
- * the latest day that year somebody can have been born and be `years` old
- * now — rather than rolling into March, which would make "eighteen today"
- * seventeen for one day every four years.
+ * `YYYY-MM-DD` for `years` ago today (UTC). A 29 February today becomes the
+ * 28th in a year without one, so the person is exactly `years` old.
  */
-function bornYearsAgo(years: number, extraDays = 0): string {
+function bornYearsAgo(years: number): string {
   const today = new Date()
   const year = today.getUTCFullYear() - years
   const month = today.getUTCMonth()
   const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate()
   const day = Math.min(today.getUTCDate(), lastDayOfMonth)
-  return new Date(Date.UTC(year, month, day + extraDays)).toISOString().slice(0, 10)
+  return new Date(Date.UTC(year, month, day)).toISOString().slice(0, 10)
 }
 
 describe('reply-first discovery', () => {
@@ -398,11 +395,12 @@ describe('reply-first discovery', () => {
 
     const joined = (days: number) => ({ createdAt: new Date(Date.now() - days * DAY) })
 
-    it('shows adults who joined recently, newest first, and nobody else', async () => {
+    // A 17-year-old is on it like anybody: no age rule beyond the sign-up floor.
+    it('shows whoever joined recently, newest first, and nobody else', async () => {
       await seed(
         person('newest', { ...joined(1), birthDate: '2000-01-01' }),
+        person('seventeen', { ...joined(2), birthDate: bornYearsAgo(17) }),
         person('older', { ...joined(3), birthDate: '1990-05-05' }),
-        person('minor', { ...joined(1), birthDate: bornYearsAgo(17) }),
         person('longAgo', { ...joined(DISCOVERY_NEW_DAYS + 1) }),
         person('hidden', {
           ...joined(1),
@@ -416,33 +414,21 @@ describe('reply-first discovery', () => {
         .collection(COLLECTIONS.blocks)
         .insertOne({ blockerId: 'viewer', blockedId: 'blocker', createdAt: new Date() })
 
-      expect(await strip()).toEqual(['newest', 'older'])
+      expect(await strip()).toEqual(['newest', 'seventeen', 'older'])
     })
 
-    it('draws the adult line on the birthday itself, not on the year', async () => {
-      await seed(
-        person('eighteenToday', { ...joined(1), birthDate: bornYearsAgo(18) }),
-        person('eighteenTomorrow', { ...joined(1), birthDate: bornYearsAgo(18, 1) }),
+    it('is shown to a 17-year-old viewer, and to a guest, as the list is', async () => {
+      await seed(person('newcomer', joined(1)))
+      const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+
+      await profiles.updateOne({ _id: 'viewer' }, { $set: { birthDate: bornYearsAgo(17) } })
+      expect(await strip()).toEqual(['newcomer'])
+
+      await profiles.updateOne(
+        { _id: 'viewer' },
+        { $set: { guest: true, birthDate: '1900-01-01' } },
       )
-      expect(await strip()).toEqual(['eighteenToday'])
-    })
-
-    it('is empty for a viewer under 18', async () => {
-      await seed(person('newcomer', joined(1)))
-      await handle.db
-        .collection<Profile>(COLLECTIONS.profiles)
-        .updateOne({ _id: 'viewer' }, { $set: { birthDate: bornYearsAgo(17) } })
-      expect(await strip()).toEqual([])
-    })
-
-    // A guest's birth date is the `1900-01-01` placeholder `createGuestProfile`
-    // writes, which the age check alone would read as somebody very old.
-    it('is empty for a guest, whose age nobody has asked', async () => {
-      await seed(person('newcomer', joined(1)))
-      await handle.db
-        .collection<Profile>(COLLECTIONS.profiles)
-        .updateOne({ _id: 'viewer' }, { $set: { guest: true, birthDate: '1900-01-01' } })
-      expect(await strip()).toEqual([])
+      expect(await strip()).toEqual(['newcomer'])
     })
 
     it('is empty with the switch off', async () => {
