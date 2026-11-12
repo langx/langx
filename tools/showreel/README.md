@@ -61,7 +61,7 @@ Venus's streak videos, building itself out of the launch ground. In light the
 yellow the OS drew closes down into the badge and white opens round it; in dark
 the badge pops out of the dark ground. The halo breathes out of the badge, the
 wordmark rises, and Venus drops in from the top, lands behind the badge,
-flicks an ear and slow-blinks. The layout and eases are the end card's
+stares, slow-blinks and flicks an ear, and holds. The layout and eases are the end card's
 (the Venus generator's `endcard.mjs`, style `splash`); there is no slogan and
 no URL, so nothing in it needs translating. It sets `window.REEL_PLAN` before
 `core.js` loads, has no score, and is laid out for the 9:16 frame. The app
@@ -96,8 +96,12 @@ What the app relies on, and what `render.mjs --page splash` produces:
 - **The length.** `SPLASH_TIMING.INTRO_MS` in `apps/mobile/src/lib/splashTiming.ts`
   must equal the film's; a test reads the file and fails if it does not. The
   light film's yellow closes over `SPLASH_TIMING.PAPER_MS`; change both together.
+- **A new film, a new "seen" flag.** Only a device's first launch plays the
+  film through, and it remembers that under `FLAG_KEYS.launchFilmSeen`
+  (`apps/mobile/src/lib/localFlags.ts`). Change that key's stored name with
+  the film, or every existing device has already "seen" the new one.
 - **No audio track**, `+faststart`, and a few hundred KB: it ships in every
-  over-the-air update. CRF 20 keeps the 2.4 s film under the old 1.8 s one's size.
+  over-the-air update. At CRF 20 the 3.4 s film is about 500 KB.
 
 The scene copies the end card's numbers instead of sharing them with the
 generator, so the videos can change without moving the app's opening.
