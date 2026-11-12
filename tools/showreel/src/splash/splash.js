@@ -12,7 +12,7 @@
  *
  * Then Venus falls in from above the frame, legs everywhere, lands behind the
  * badge hard enough to dent it, bobs up, looks at you as if that was the
- * plan, flicks an ear and slow-blinks: her sign-off in every video.
+ * plan, slow-blinks and flicks an ear: her sign-off in every video.
  *
  * The card's layout, eases and timings are the end card's
  * (`venus/gen/lib/endcard.mjs`, style `splash`), moved 140 px down so the
@@ -73,7 +73,9 @@ REEL.scene('splash', (ctx) => {
    * The beats, in seconds. The build is the end card's own (badge by 0.46,
    * the wordmark rising from 0.40, the halo from 0.46); Venus's landing is
    * put on 0.993, the second halo ring's birth, so the ring reads as the
-   * shock of it.
+   * shock of it. The blink and the flick are the end card's own times
+   * (`blinkAt`, `flickAt`): before them she stares, after the flick she
+   * holds, so she is on screen long enough to be seen.
    */
   const T = {
     close: [0, 0.46], // light: the yellow closing down to the badge
@@ -84,8 +86,8 @@ REEL.scene('splash', (ctx) => {
     land: SP.halo / 3 + 0.46,
     sink: 0, // set below: the lowest point of the landing
     up: 0, // back at rest
-    flick: 1.38,
-    blink: 1.56,
+    blink: 2.0,
+    flick: 2.95,
   }
   T.sink = T.land + 0.08
   T.up = T.sink + 0.24

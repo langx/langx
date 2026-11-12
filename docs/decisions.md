@@ -1310,7 +1310,7 @@ intro in front of it.
   lets the look follow the flag while the splash still covers the screen,
   then fixes it for the launch the moment the splash goes, so nobody sees a
   screen change look in front of them and no wizard changes look halfway
-  through. With motion on, the launch film (2.4 s) outlasts the flag's own
+  through. With motion on, the launch film (3.4 s) outlasts the flag's own
   ceiling (`V3_HOME_WAIT_MS`), so the answer is nearly always in. With
   reduce motion the splash can lift at its 0.8 s floor, and a slower answer
   means today's look on every launch-path screen until the next launch.
@@ -6992,15 +6992,23 @@ draws: the yellow closes down into the badge with white opening round it (in
 dark the badge pops out of the dark ground instead), the halo from the section
 above breathes out of it, the wordmark rises, and Venus drops in from the top,
 lands behind the badge hard enough to dent it, stares as if she meant that,
-flicks an ear and slow-blinks. Same layout, eases and colours as the card, so
+slow-blinks and flicks an ear. Same layout, eases and colours as the card, so
 the first thing the app shows and the last thing every video shows are one
 piece. There are no words in it — the wordmark is outlines — so nothing needs
 translating.
 
-- **2.4 s, up from 1.8.** The drop and the blink need the time. Only the
-  device's first launch waits the film out (`launchFilm.ts`); later launches
-  cut it whenever the app is ready, so most of them never reach Venus. That
-  is the price of not making every cold start wait for her.
+- **3.4 s, up from 1.8.** The first cut was 2.4 s, and Venus was on screen
+  for barely a second and a half: watched in the hand, she went by before
+  anyone had looked at her. Now she stares, blinks and flicks an ear at the
+  videos' own times and holds there. Only the device's first launch waits the
+  film out (`launchFilm.ts`); later launches cut it whenever the app is
+  ready, so most of them never reach Venus. That is the price of not making
+  every cold start wait for her.
+- **The film's "seen" flag is renamed with the film.** `launchFilmSeen`
+  shipped a few hours before Venus did, so the devices that opened the app in
+  between had the old film marked as seen and never got her first launch.
+  The key's stored name changes whenever the film does, so every device gets
+  one full showing of the new one.
 - **The light film ends on white, not on the yellow it starts on.** Under a
   `cover` film that is invisible, but a `contain` one (a tablet, a desktop
   browser) has bars beside it in the layer's own colour, which would stand

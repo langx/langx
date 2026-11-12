@@ -30,8 +30,13 @@ export const FLAG_KEYS = {
    * The opening film has played on this device, so later launches leave as
    * soon as the app is ready instead of waiting it out (`lib/launchFilm.ts`).
    * Not `introSeen`, which is the welcome screens, not the film.
+   *
+   * The stored name changes when the film does. The flag shipped a few hours
+   * before Venus's film, so every device that opened the app in between had
+   * marked the old 1.8 s film as seen and never saw her through once. A new
+   * name gives every device one more full first launch.
    */
-  launchFilmSeen: 'launchFilmSeen',
+  launchFilmSeen: 'launchFilmSeenVenus',
   /**
    * Somebody has watched a launch on this device, film or no film. Only the
    * reduced-motion floor reads it (`exitDelayMs`): `launchFilmSeen` is never
