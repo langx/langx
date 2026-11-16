@@ -26,15 +26,21 @@ export interface MenuLayout {
   /** Where the *menu* went. The strip always takes the opposite side. */
   placement: 'below' | 'above'
   strip: { top: number; left: number }
-  menu: { top: number; left: number }
   /**
-   * Where to draw the copy of the bubble.
+   * `height` is the input's unless not even the menu fits the safe area — a
+   * short browser window — and then the caller has to let the rows scroll.
+   */
+  menu: { top: number; left: number; height: number }
+  /**
+   * Where to draw the copy of the bubble, and how much of it.
    *
    * An output, not the measured rect it came in as: when neither arrangement
    * fits — a tall bubble on a short screen — the whole stack is centred in the
-   * safe area, and the bubble has to move with it.
+   * safe area, and the bubble has to move with it. When the stack is taller
+   * than the safe area the copy is also cut to the room between the strip and
+   * the menu, so the caller has to clip it to `height`.
    */
-  bubble: { top: number; left: number }
+  bubble: { top: number; left: number; height: number }
 }
 
 const GUTTER = 12
@@ -44,6 +50,11 @@ const GUTTER = 12
  * as a second surface — the same 12 the screen keeps at its edges.
  */
 const GAP = 12
+/**
+ * The least of the copy kept when the stack is cut down: about one line of a
+ * bubble, enough to still say which message the menu is for.
+ */
+const LEAST_COPY = 44
 
 /**
  * Where the strip, the bubble and the menu go once a bubble has been pressed.
@@ -86,30 +97,48 @@ export function messageMenuLayout(input: MenuLayoutInput): MenuLayout {
   const menuLeft = align(menu.width)
   const bubbleLeft = anchor.x
 
-  if (fitsBelow || !fitsAbove) {
+  const total = strip.height + GAP + anchor.height + GAP + menu.height
+
+  if (fitsBelow || (!fitsAbove && total <= safeBottom - safeTop)) {
     // The fallback branch too: neither fits, so the whole stack is centred in
     // the safe area and the bubble moves off its measured position with it.
-    const total = strip.height + GAP + anchor.height + GAP + menu.height
-    const stackTop = fitsBelow
-      ? belowTop
-      : // Clamped bottom-first, then top: a stack taller than the safe area
-        // fits nowhere, and pinning it to the top at least leaves the strip and
-        // the bubble reachable. The other order pushes both off the top instead.
-        Math.max(safeTop, Math.min((safeTop + safeBottom - total) / 2, safeBottom - total))
+    const stackTop = fitsBelow ? belowTop : (safeTop + safeBottom - total) / 2
     const bubbleTop = stackTop + strip.height + GAP
 
     return {
       placement: 'below',
       strip: { top: stackTop, left: stripLeft },
-      bubble: { top: bubbleTop, left: bubbleLeft },
-      menu: { top: bubbleTop + anchor.height + GAP, left: menuLeft },
+      bubble: { top: bubbleTop, left: bubbleLeft, height: anchor.height },
+      menu: { top: bubbleTop + anchor.height + GAP, left: menuLeft, height: menu.height },
+    }
+  }
+
+  if (!fitsAbove) {
+    /*
+     * Taller than the safe area: something has to give, and it is the copy.
+     * The menu is the only part of this that gets pressed — the copy is a
+     * picture of what was pressed — so the strip keeps the top, the menu keeps
+     * the bottom and the copy gets what is left between them. This used to pin
+     * the stack to the top at the bubble's full height instead, and a long
+     * message pushed every row past the first two under the bottom edge.
+     */
+    const bubbleTop = safeTop + strip.height + GAP
+    const room = safeBottom - safeTop - strip.height - GAP - GAP - menu.height
+    const bubbleHeight = Math.min(anchor.height, Math.max(room, LEAST_COPY))
+    const menuTop = bubbleTop + bubbleHeight + GAP
+
+    return {
+      placement: 'below',
+      strip: { top: safeTop, left: stripLeft },
+      bubble: { top: bubbleTop, left: bubbleLeft, height: bubbleHeight },
+      menu: { top: menuTop, left: menuLeft, height: Math.min(menu.height, safeBottom - menuTop) },
     }
   }
 
   return {
     placement: 'above',
-    menu: { top: aboveTop, left: menuLeft },
-    bubble: { top: anchor.y, left: bubbleLeft },
+    menu: { top: aboveTop, left: menuLeft, height: menu.height },
+    bubble: { top: anchor.y, left: bubbleLeft, height: anchor.height },
     strip: { top: anchor.y + anchor.height + GAP, left: stripLeft },
   }
 }

@@ -345,7 +345,7 @@ export function MessageMenuHost() {
   const tint = v3Look ? request.tint : undefined
   const tinted = tint ? { color: v3.colors.ink } : null
 
-  const copyText = (
+  const copyText = (lines: number) => (
     /*
       A message the thread shows as a hero has to look like one here too —
       otherwise holding an emoji shrinks it, which reads as the menu having
@@ -358,13 +358,16 @@ export function MessageMenuHost() {
         tinted,
         isBigEmoji(request.preview) && styles.copyHero,
       ]}
-      numberOfLines={6}
+      numberOfLines={lines}
     >
       {request.preview}
     </Text>
   )
 
-  const copy =
+  /** Whether the copy is the message's words, the one copy the host caps at `COPY_LINES`. */
+  const textCopy = request.picture?.kind !== 'media' && !sticker
+
+  const copy = (lines: number) =>
     request.picture?.kind === 'media' ? (
       <>
         <MediaGallery items={request.picture.items} mine={request.mine} videoMode="preview" />
@@ -387,7 +390,7 @@ export function MessageMenuHost() {
     ) : (
       // A pack this build does not carry falls back to the label, which is the
       // same answer `MessageBubble` gives it.
-      copyText
+      copyText(lines)
     )
 
   if (request.anchor) {
@@ -407,8 +410,19 @@ export function MessageMenuHost() {
     const stripWidth = request.reactions
       ? Math.min(stripWidthFor(request.reactions.length + 1), screen.width - 24)
       : 0
+    /**
+     * The layout places the menu under the *copy*, so it is given the copy's
+     * height. A text copy stops at `COPY_LINES`, and a long message's bubble
+     * does not: laid out against the bubble, the menu hung under the whole
+     * message — a gap of thread between the copy and the menu, and on a phone
+     * the menu itself under the bottom edge.
+     */
+    const copyPadding = v3Look ? v3.space[10] : COPY_PADDING
+    const copyHeight = textCopy
+      ? Math.min(request.anchor.height, COPY_LINES * COPY_LINE + 2 * copyPadding)
+      : request.anchor.height
     const layout = messageMenuLayout({
-      anchor: request.anchor,
+      anchor: { ...request.anchor, height: copyHeight },
       screen: { width: screen.width, height: screen.height },
       insets: { top: insets.top, bottom: insets.bottom },
       menu: { width: menuWidth, height: menuHeight },
@@ -418,6 +432,17 @@ export function MessageMenuHost() {
     })
     /** `messageMenuLayout`'s own rule for which edge of the bubble the menu hangs from. */
     const trailing = request.mine !== isRtl
+    /**
+     * Where the stack is taller than the screen the layout keeps the menu whole
+     * and cuts the copy: clipped to what it was given, and a text copy loses
+     * whole lines rather than half of one.
+     */
+    const cut = layout.bubble.height < copyHeight
+    const copyLines = cut
+      ? Math.max(1, Math.floor((layout.bubble.height - 2 * copyPadding) / COPY_LINE))
+      : COPY_LINES
+    /** Shorter than its rows only in a window too short for the menu itself; then it scrolls. */
+    const menuScrolls = layout.menu.height < menuHeight
 
     return (
       <Modal
@@ -474,6 +499,7 @@ export function MessageMenuHost() {
                 left: layout.bubble.left,
                 maxWidth: Math.max(120, request.anchor.width),
               },
+              cut ? { maxHeight: layout.bubble.height, overflow: 'hidden' } : null,
               lifts
                 ? {
                     opacity: motion.scrim,
@@ -489,13 +515,14 @@ export function MessageMenuHost() {
                 : null,
             ]}
           >
-            {copy}
+            {copy(copyLines)}
           </Animated.View>
 
           <Animated.View
             style={[
               styles.menu,
               { top: layout.menu.top, left: layout.menu.left, width: menuWidth },
+              menuScrolls ? { height: layout.menu.height } : null,
               lifts
                 ? [
                     grow(motion.menu, MENU_MOTION.menuFrom),
@@ -504,7 +531,7 @@ export function MessageMenuHost() {
                 : null,
             ]}
           >
-            {rows}
+            {menuScrolls ? <ScrollView>{rows}</ScrollView> : rows}
           </Animated.View>
         </Pressable>
       </Modal>
@@ -593,6 +620,15 @@ const STRIP_HEIGHT = EMOJI_CELL + STRIP_CHROME
 
 const stripWidthFor = (count: number): number =>
   count * EMOJI_CELL + (count - 1) * EMOJI_GAP + STRIP_CHROME
+
+/**
+ * The text copy's cap and the numbers its height is derived from, so the
+ * layout reserves what is drawn: `copyText`'s line in both looks, and the
+ * current look's `copy` padding (v3's is its `space[10]`).
+ */
+const COPY_LINES = 6
+const COPY_LINE = 23
+const COPY_PADDING = 13
 
 /**
  * `MessageBubble`'s hero glyph, in both looks: v3 does not restyle the thread's
@@ -727,7 +763,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   copy: {
     borderRadius: 20,
     paddingHorizontal: 16,
-    paddingVertical: 13,
+    paddingVertical: COPY_PADDING,
     position: 'absolute',
   },
   // The lifted copy matches the v3 bubbles it stands in for.
@@ -738,7 +774,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   copyTailTheirs: { borderBottomStartRadius: 6 },
   // 16 on 23, exactly `MessageBubble`'s: a copy that shrinks the text is a
   // second bubble, not the one that was pressed.
-  copyText: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 23 },
+  copyText: { ...font.body, color: colors.text, fontSize: 16, lineHeight: COPY_LINE },
   copyTextMine: { color: colors.text },
   /** Under the picture, at the thread's own distance from it. */
   copyCaption: { marginTop: spacing.xs },
@@ -876,7 +912,7 @@ const useStylesV3 = makeStyles(({ v3 }) => ({
   copyTheirs: { backgroundColor: v3.colors.surface },
   copyTailMine: { borderBottomEndRadius: v3.space[8] },
   copyTailTheirs: { borderBottomStartRadius: v3.space[8] },
-  copyText: { ...v3.type.body, color: v3.colors.fg, lineHeight: 23 },
+  copyText: { ...v3.type.body, color: v3.colors.fg, lineHeight: COPY_LINE },
   copyTextMine: { color: v3.colors.onBlue },
   copyCaption: { marginTop: v3.space[4] },
   copyBare: { position: 'absolute' },
