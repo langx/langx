@@ -65,6 +65,45 @@ describe('messageMenuLayout', () => {
     expect(result.bubble.top).not.toBe(300)
   })
 
+  /**
+   * The bug report this was written for: a long message held on a phone. The
+   * stack used to be pinned to the top with the bubble at full height, which
+   * pushed the menu under the bottom of the screen — every row past the first
+   * two, `More…` and "Save as phrase" behind it among them, out of reach.
+   */
+  it('keeps the whole menu on screen under a bubble taller than the screen', () => {
+    const result = layout({ anchor: { x: 40, y: -100, width: 240, height: 900 } })
+    const safeBottom = BASE.screen.height - BASE.insets.bottom
+    expect(result.strip.top).toBeGreaterThanOrEqual(BASE.insets.top)
+    expect(result.menu.top + BASE.menu.height).toBeLessThanOrEqual(safeBottom)
+    expect(result.menu.height).toBe(BASE.menu.height)
+  })
+
+  /** The copy is a picture of what was pressed; the menu is what gets pressed. */
+  it('gives the copy only the room left between the strip and the menu', () => {
+    const result = layout({ anchor: { x: 40, y: -100, width: 240, height: 900 } })
+    expect(result.bubble.top).toBeGreaterThanOrEqual(result.strip.top + BASE.strip.height)
+    expect(result.bubble.height).toBeLessThan(900)
+    expect(result.bubble.top + result.bubble.height).toBeLessThanOrEqual(result.menu.top)
+  })
+
+  it('leaves the copy at the bubble’s own height whenever the stack fits', () => {
+    for (const y of [100, 300, 500, 700]) {
+      const result = layout({ anchor: { x: 40, y, width: 240, height: 60 } })
+      expect(result.bubble.height).toBe(60)
+      expect(result.menu.height).toBe(BASE.menu.height)
+    }
+  })
+
+  /** A short browser window: the menu itself is taller than the room, so it scrolls. */
+  it('shortens the menu to the screen when not even the menu fits', () => {
+    const result = layout({ menu: { width: 220, height: 700 } })
+    const safeBottom = BASE.screen.height - BASE.insets.bottom
+    expect(result.menu.top + result.menu.height).toBeLessThanOrEqual(safeBottom)
+    expect(result.menu.height).toBeLessThan(700)
+    expect(result.bubble.height).toBeGreaterThan(0)
+  })
+
   it('keeps the three in order whichever way it lands', () => {
     for (const y of [100, 300, 500, 700]) {
       const result = layout({ anchor: { x: 40, y, width: 240, height: 60 } })
