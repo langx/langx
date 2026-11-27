@@ -16,7 +16,7 @@ import { refreshEntitlement, refreshEntitlementIfHeld } from './refresh'
 import { reconcilePausedLanguages } from '../profiles/languagePause'
 import { welcomeIfBecamePro } from './proWelcome'
 import type { RevenueCatClient } from './revenueCatClient'
-import { notifyBilling, type BillingNotifier } from './notify'
+import type { BillingNotifier } from './notify'
 
 export interface SubscriptionRecord {
   eventId: string
@@ -227,23 +227,14 @@ export async function processRevenueCatWebhook(
       { _id: userId },
       { $set: { 'entitlement.willRenew': false, updatedAt: now } },
     )
-  } else if (event.type === 'BILLING_ISSUE' && announce) {
-    /*
-     * The one event that changes no entitlement and still has to be said out
-     * loud. The store will retry, and the subscription stays active while it
-     * does — but the card that failed is a thing only its owner can fix, and
-     * the first they would otherwise hear of it is the plan ending.
-     *
-     * "Stays active while it does" is the premise, and it is not always true:
-     * a store that has given up sends BILLING_ISSUE and EXPIRATION together —
-     * twenty-four milliseconds apart on 12 September 2026 — and then this
-     * letter says the subscription is fine in the same minute the other says
-     * it ended. When the period is already over there is nothing left to
-     * retry into, so the expiry is the only message worth sending.
-     */
-    const expired = record.expiresAt !== null && record.expiresAt <= now
-    if (!expired) await notifyBilling(db, announce, userId, 'paymentFailed', previousTier)
   }
+  /*
+   * BILLING_ISSUE changes no entitlement and is not said here either: the
+   * "your payment did not go through" letter waits for `runPaymentFailedPass`
+   * to look again, because a failed web charge arrives with its own
+   * EXPIRATION in the same second and the letter would say the plan stays
+   * active as it ends.
+   */
   // Anything else unrecognized: recorded above for audit, no entitlement change.
 
   return { processed: true }
