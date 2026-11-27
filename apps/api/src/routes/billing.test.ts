@@ -9,6 +9,7 @@ import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import type { Profile } from '../modules/profiles/profiles'
 import type { RevenueCatClient, SubscriberEntitlement } from '../modules/billing/revenueCatClient'
+import { runPaymentFailedPass } from '../modules/billing/paymentFailed'
 import { runPlanEndedPass, PLAN_ENDED_DELAY_MS } from '../modules/billing/planEnded'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
@@ -211,6 +212,18 @@ describe('Faz 7 — billing', () => {
         },
       })
       expect(response.statusCode, response.body).toBe(200)
+
+      // Not yet: a failed web charge brings its EXPIRATION in the same
+      // second, so the letter waits for a second look.
+      expect(emailSender.messages).toHaveLength(0)
+      const later = new Date(Date.now() + PLAN_ENDED_DELAY_MS + 60_000)
+      expect(
+        await runPaymentFailedPass(
+          handle.db,
+          { email: emailSender, push: app.push, logger: app.log },
+          later,
+        ),
+      ).toEqual({ sent: 1 })
 
       // Turkish, because that is the native language the fixture onboards
       // with — `localeFor` reads it, not the request's headers.

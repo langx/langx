@@ -749,6 +749,8 @@ export const INDEXES: Partial<IndexSpec> = {
     // RevenueCat redelivers webhooks; this is what makes handling idempotent.
     { key: { eventId: 1 }, name: 'event_id_unique', unique: true },
     { key: { userId: 1, createdAt: -1 }, name: 'user_created' },
+    // `runPaymentFailedPass` reads the last day's BILLING_ISSUE rows every half hour.
+    { key: { type: 1, createdAt: -1 }, name: 'type_created' },
   ],
 
   [COLLECTIONS.stickerGifts]: [

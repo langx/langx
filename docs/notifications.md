@@ -218,11 +218,11 @@ account is noise.
 
 `modules/billing/notify.ts`, fired from the RevenueCat webhook.
 
-| Message                             | Fires on                                                                        | Note                                                                      |
-| ----------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| **Your payment did not go through** | `BILLING_ISSUE`, unless the period is already over                              | Access is untouched; the store will retry                                 |
-| **Your plan has ended**             | Half an hour after the fall, if the account is still free — `planEnded.ts`      | An expiry under a gift or a second subscription that runs on ends nothing |
-| **Your free trial ends on {date}**  | Two days before a renewing trial's last day, in waking hours — `trialEnding.ts` | Once per trial; off until `flags.trialEndingReminder` is on               |
+| Message                             | Fires on                                                                             | Note                                                                      |
+| ----------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| **Your payment did not go through** | `BILLING_ISSUE`, half an hour later, if the plan is still paid and no `RENEWAL` came | Access is untouched; the store will retry                                 |
+| **Your plan has ended**             | Half an hour after the fall, if the account is still free — `planEnded.ts`           | An expiry under a gift or a second subscription that runs on ends nothing |
+| **Your free trial ends on {date}**  | Two days before a renewing trial's last day, in waking hours — `trialEnding.ts`      | Once per trial; off until `flags.trialEndingReminder` is on               |
 
 A renewal that succeeds says nothing — the store already mails a receipt.
 
@@ -287,6 +287,13 @@ when an account was told twice that it had lost a subscription it still had:
 - **A `BILLING_ISSUE` whose period has already ended says nothing.** A store
   that has given up sends both events together — twenty-four milliseconds
   apart, that day — and "the store will retry" is then simply false.
+- **The payment-failed letter waits half an hour too.** A web (`RC_BILLING`)
+  trial's first charge is taken an hour before the trial ends; when it fails,
+  `BILLING_ISSUE`, `CANCELLATION` and `EXPIRATION` arrive in the same second
+  with the period still an hour away, so the event alone looks like a retry.
+  Four people were told "your plan stays active" as it ended (21–27 Nov 2026).
+  `runPaymentFailedPass` writes only to accounts still on a paid tier with no
+  `RENEWAL` since the issue.
 
 And nothing at all is said about a **sandbox or TestFlight** event: those move
 the entitlement so a tester can see the paid app, and write no `churnedFrom`,

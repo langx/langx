@@ -4,7 +4,6 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { connectToDatabase, type DbHandle } from '../../db/client'
 import { COLLECTIONS } from '../../db/collections'
 import type { EmailMessage, EmailSender } from '../../email/sender'
-import { translator } from '../../i18n'
 import type { Profile } from '../profiles/profiles'
 import type { BillingNotifier } from './notify'
 import type { RevenueCatClient } from './revenueCatClient'
@@ -189,7 +188,11 @@ describe('processRevenueCatWebhook', () => {
   })
 
   describe('what the webhook says out loud', () => {
-    it('BILLING_ISSUE inside the period says the card failed', async () => {
+    /**
+     * Said later, by `runPaymentFailedPass`, and only if the plan is still
+     * there: a failed web charge brings its EXPIRATION in the same second.
+     */
+    it('BILLING_ISSUE inside the period says nothing yet', async () => {
       const { userId, mailbox, notify } = await subscriber('pro')
 
       await processRevenueCatWebhook(
@@ -205,10 +208,7 @@ describe('processRevenueCatWebhook', () => {
         notify,
       )
 
-      // In their own language, like every letter this app sends — the profile
-      // above is a Turkish speaker, so the English subject is the wrong one.
-      expect(mailbox).toHaveLength(1)
-      expect(mailbox[0]?.subject).toBe(translator('tr')('email.billing.paymentFailedTitle'))
+      expect(mailbox).toHaveLength(0)
     })
 
     /**

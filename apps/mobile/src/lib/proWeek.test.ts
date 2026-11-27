@@ -3,7 +3,10 @@ import { proWeekRecapDue, proWeekStarted, proWeekUntil, type ProWeekSubject } fr
 
 const NOW = new Date('2026-10-24T12:00:00Z')
 const END = '2026-10-25T09:00:00Z'
-const LATER = '2026-11-24T09:00:00Z'
+// Far ahead on purpose: `proWeekStarted` reads the real clock, so a
+// subscription ending on a date that has passed reads as no subscription.
+// It was 2026-11-24, and the suite went red on that day.
+const LATER = '2099-11-24T09:00:00Z'
 
 const week = { startedAt: '2026-10-18T09:00:00Z', endsAt: END }
 

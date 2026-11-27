@@ -2,6 +2,7 @@ import type { Db } from 'mongodb'
 import type { NotificationEmailContext } from '../../email/notify'
 import type { PushSender } from '../push/devices'
 import { runBroadcastQueuePass } from '../admin/broadcastQueue'
+import { runPaymentFailedPass } from '../billing/paymentFailed'
 import { runPlanEndedPass } from '../billing/planEnded'
 import { runProGiftPass, type ProGiftDeps } from '../billing/proGifts'
 import { runTrialEndingPass } from '../billing/trialEnding'
@@ -132,6 +133,18 @@ export function startNotificationScheduler(
         () =>
           run('billing plan ended', () =>
             runPlanEndedPass(db, { email: senders.email.sender, push: senders.push, logger }, now),
+          ),
+        /*
+         * Late for the same reason: a failed web charge ends the plan in the
+         * same second, and "it will retry" is only worth saying if it did not.
+         */
+        () =>
+          run('billing payment failed', () =>
+            runPaymentFailedPass(
+              db,
+              { email: senders.email.sender, push: senders.push, logger },
+              now,
+            ),
           ),
         /*
          * Its sibling ahead of the money rather than behind it: two days
